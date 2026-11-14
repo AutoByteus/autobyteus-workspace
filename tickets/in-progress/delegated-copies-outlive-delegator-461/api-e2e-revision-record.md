@@ -18,6 +18,7 @@ The latest coverage investigation and execution coverage report remain authorita
 | API-REV-010 | Code Reviewer, `code-review-report.md` CRR-038, round 10 | SR-079, IR-027, IR-028 (code `15c41ad242`), CRR-036 … CRR-038 | Fail / 89% | Fail / 88% |
 | API-REV-011 | Code Reviewer, `code-review-report.md` CRR-040, round 11 | SR-080, CR-461-076 (code `a4641a0985`), CRR-039, CRR-040 | Fail / 88% | Fail / 87% |
 | API-REV-012 | Code Reviewer, `code-review-report.md` CRR-042, round 12 | CR-461-077 (code `5b455a9ec7`), CRR-041, CRR-042 | Fail / 87% | Fail / 87% |
+| API-REV-013 | Code Reviewer, `code-review-report.md` CRR-045, round 13 | SR-081 … SR-083, CR-461-078 … CR-461-085 (code `58cc542572`), CRR-043 … CRR-045 | Fail / 87% | Fail / 87% |
 
 ## Revision Entries
 
@@ -517,3 +518,34 @@ None
 - New or remaining failure IDs: F-60, F-61, F-62, F-64, F-65, F-66 (`Local Fix`); F-63 (`Unclear`, security-relevant); PLN-09 (`Unclear`)
 - Recommended owner: per the failure-origin review.
 - Remaining risks, blocked evidence, or untested scope: the live suite's rewrite (LE-A1 … LE-T1) and the large-hub redesign wait for the fix; BR-011 unclassified; signing and other platforms (runner only); the background-task live suites Not Tested (safety).
+
+### API-REV-013: round 13 on SR-082/083 (statuses by run ID, open targets); F-61 … F-66 resolved; F-60 remains; F-67 … F-73
+
+- Triggering role, report path, and round: `/software_engineering_team/code_reviewer`, `code-review-report.md` (CRR-045 at `58cc542572`), API/E2E round 13
+- Triggering finding or case IDs: SR-082 item 3 (rerun everything that shows or opens runs and statuses); CRR-043's held PLN-09; LE-O1 under SR-081; LRL-001/004; BR-011
+- Related revision IDs: SR-081, SR-082, SR-083; CR-461-078 … CR-461-085; CRR-043, CRR-044, CRR-045
+- Why this revision was recorded: the fix round for API-REV-012 and the new status spine
+- Coverage decisions or durable test paths changed: the report's "Durable Coverage Changed" (a run-status probe client; FOLLOW-L, FOLLOW-D, RTP-08 added; 11 server suites and 9 web probes moved to the new status and open paths)
+- Cases added, changed, removed, or rechecked: runner scripts `/tmp/api461/r13-*.sh`; API-P04 compared to the round-12 base capture
+- Commands, environment, fixture, or broader-validation delta: full server E2E (ENV-1); DeepSeek LE-O1 (ENV-6); fresh clone (ENV-5)
+
+#### Prior Failure Resolution
+
+| Prior ID | Classification | Now | Proven By |
+| --- | --- | --- | --- |
+| F-60 | Local Fix | Remains | DCP-001/003/005, SSR-004 |
+| F-61 | Local Fix | Resolved | AFS-002's copy card, DCR rows |
+| F-62 | Local Fix | Resolved | AFS-001 |
+| F-63 | design (SR-081) | Resolved | LE-O1's correction step, two runs |
+| F-64 | Local Fix | Resolved | LRL-001 |
+| F-65 | Local Fix | Resolved | LRL-004 |
+| F-66 | Local Fix | Resolved | API-P04 (`launches` on the peer rows) |
+| PLN-09 (held) | — | F-67 | the server's refusal captured; the window shows no reason |
+
+- Canonical artifacts and sections updated: the execution report; the progress log; `evidence/api-e2e/*r13*`.
+- Prior result and confidence: Fail / 87%
+- Current result and confidence: Fail / 87%
+- New or remaining failure IDs: F-60, F-67, F-69, F-70, F-73 (`Local Fix`); F-68, F-71, F-72 (`Unclear`)
+- Recommended owner: per the failure-origin review.
+- Remaining risks, blocked evidence, or untested scope: the unclassified items (the extended native runtime switch, LE-O1's later step, AFS-002's later step, BR-011); LE-A1 … LE-T1; the large-hub redesign; no base phone comparison.
+

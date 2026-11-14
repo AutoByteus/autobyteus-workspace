@@ -697,16 +697,32 @@ suite("The collaboration contract's stories, run against the built server (autob
         const r = await ctx.call(M, "delegate_task", { recipient_address: "/research_team", node: "node-b", description: "Market study …" });
         const problem = ctx.bindings.bind("adhoc_task_7c7c", r.task_id as string); if (problem) throw new Error(problem);
         await ctx.bindRun("research_team_77aa", r.target_team_run_id as string, "B");
-        // The peer row in base's shapes (rule 1, SR-057): M's view lists node B's research team under M with its node, and
-        // M's listed-run poll carries no status for it (no request to the peer per poll).
+        // The peer row in base's shapes (rule 1, SR-057): M's view lists node B's research team under M with its node. Its
+        // statuses are its own (SR-082, SR-083): M's run-status answer carries none of them; the peer run's own, through
+        // its handle on node A, lists its agents.
         const view = (await ctx.nodes.A!.gql(`query($id:String!){agentRunCollaboration(runId:$id)}`, { id: ctx.real(M) })).agentRunCollaboration as Rec;
         const peer = ((view?.root_agent?.remote_task_executions ?? []) as Rec[]).find((row) => row.team_run_id === r.target_team_run_id);
         expect(peer, `M's peer rows: ${JSON.stringify(view?.root_agent?.remote_task_executions ?? null).slice(0, 1500)}`).toBeTruthy();
         expect(peer, JSON.stringify(peer)).toMatchObject({ node_id: ctx.nodes.B!.nodeId, delegator_agent_run_id: ctx.real(M) });
-        const poll = (await ctx.nodes.A!.gql(`query($ids:[String!]!){agentRunCollaborationStatuses(runIds:$ids){runId statuses{agentRunId}}}`,
-          { ids: [ctx.real(M)] })).agentRunCollaborationStatuses as Rec[];
         const peerAgents = new Set(((peer!.members ?? []) as Rec[]).map((member) => member.agent_run_id));
-        expect((poll[0]?.statuses as Rec[] ?? []).filter((status) => peerAgents.has(status.agentRunId)), "no peer status per poll").toEqual([]);
+        const statusSocket = new WebSocket(`${ctx.nodes.A!.url.replace(/^http/, "ws")}/ws/run-status`);
+        ctx.nodes.A!.sockets.push(statusSocket);
+        const statusFrames: Rec[] = [];
+        statusSocket.on("message", (raw) => statusFrames.push(JSON.parse(String(raw))));
+        await new Promise<void>((resolve, reject) => { statusSocket.once("open", () => resolve()); statusSocket.once("error", reject); });
+        const snapshotOf = async (kind: string, runId: string) => {
+          statusSocket.send(JSON.stringify({ type: "SUBSCRIBE", payload: { runs: [{ kind, runId }] } }));
+          const deadline = Date.now() + 30_000;
+          let run: Rec | undefined;
+          while (!(run = statusFrames.filter((f) => f.type === "RUN_STATUS_SNAPSHOT").flatMap((f) => f.payload.runs as Rec[]).find((r) => r.runId === runId)) && Date.now() < deadline) await sleep(50);
+          expect(run, `run-status snapshot of ${runId}: ${JSON.stringify(statusFrames).slice(0, 800)}`).toBeTruthy();
+          return run!;
+        };
+        const mOwn = await snapshotOf("agent", ctx.real(M));
+        expect(((mOwn.agents ?? []) as Rec[]).filter((agent) => peerAgents.has(agent.agentRunId)), "M's answer carries no peer status").toEqual([]);
+        const peerOwn = await snapshotOf("agent_team", r.target_team_run_id as string);
+        expect(((peerOwn.agents ?? []) as Rec[]).map((agent) => agent.agentRunId).sort(), "the peer run's own answer lists its agents").toEqual([...peerAgents].sort());
+        statusSocket.close();
       },
       S18: async (ctx) => { await ctx.call("lead_0c11", "send_message_to", { target_agent_run_id: ctx.real(M), content: "Findings …" }); },
       S19: async (ctx) => {

@@ -21,7 +21,8 @@
 //   SDV-03 Org view: the same for an org run; the stopped org starts on its first input (the user's message to its agent).
 //   SDV-06 CR-461-076 / SR-080: a worker opens from its Task's card (Projects panel) for an Agent, Team and Org delegator ×
 //          an Agent worker and a Team worker (its coordinator).
-//   SDV-07 CR-461-076: a running delegated Team opens from its row in an Agent delegator's view, and from its coordinator's row
+//   SDV-07 CR-461-076, SR-083 (FU-031): a running delegated Team opens from its own row, at its coordinator, in every tree;
+//   (before SR-083: in a Team run's tree, from its coordinator's row)
 //          in a Team delegator's view (base's Team-tree rule, CRR-041 / FU-031).
 //   SDV-05 C15-03 (DS-15, CRR-039): page B opens the worker from its delegator's row while its Task is open; the Task closes;
 //          as at base (`returnToHostWhenUnlisted`), page B's view returns to the delegator, so the web offers no view of the closed
@@ -630,7 +631,7 @@ const caseTaskCardMatrix = async () => {
 /** CR-461-076 (CRR-040): a running delegated Team opens from its row in the delegator's view (Agent and Team delegators). */
 const caseRunningTeamRow = async () => {
   const out = {};
-  for (const kind of ['agent', 'team']) {
+  for (const kind of ['agent', 'team', 'org']) {
     const { ids, names } = await definitions(`Row${kind}`);
     const projectId = (await gql('mutation($input:CreateProjectInput!){createProject(input:$input){projectId}}', { input: { name: `Row ${kind} ${randomUUID().slice(0, 6)}` } })).createProject.projectId;
     const taskId = await createTask(projectId, 'Team row work.', 'Team row work.');
@@ -642,14 +643,17 @@ const caseRunningTeamRow = async () => {
     const { page, errors, context } = await newPage();
     try {
       await openRoot(page, root, names);
-      const teamRow = page.locator(`[data-test="workspace-team-transient-execution-row"][data-node-kind="agent_team"][data-member-address="/${segment(names.squad)}"]`).first();
-      await teamRow.waitFor({ state: 'visible', timeout: 60000 });
-      // An Agent delegator's tree opens the delegated Team from its row. A Team run's tree opens it from its coordinator's row,
-      // as at base (its Team row has no agent run; both Team-tree select handlers return for it: CRR-041, FU-031).
-      if (kind === 'team') {
-        if ((await teamRow.getAttribute('aria-expanded')) !== 'true') await teamRow.click();
-        await page.locator('[data-test="workspace-team-transient-execution-row"][data-member-address="/lead"]').first().click();
-      } else await teamRow.click();
+      const teamRow = kind === 'org'
+        ? page.locator('[data-test^="agent-org-task-team-row-"]').first()
+        : page.locator(`[data-test="workspace-team-transient-execution-row"][data-node-kind="agent_team"][data-member-address="/${segment(names.squad)}"]`).first();
+      await until(`${kind}: the delegated Team's row`, async () => {
+        if (await teamRow.isVisible().catch(() => false)) return true;
+        for (const toggle of await page.locator('[data-test^="agent-org-run-disclosure-"][aria-expanded="false"], [data-test="workspace-team-transient-disclosure"]').all()) await toggle.click().catch(() => undefined);
+        return false;
+      }, 60000);
+      // autobyteus-461 SR-083 step 3 (FU-031, FU-024): every tree opens a delegated Team from its own row, at its coordinator
+      // (the row's server-built open target), in Agent, Team and Org delegators alike.
+      await teamRow.click();
       await until(`${kind}: the running delegated Team's coordinator conversation`, async () => {
         const center = await centerText(page); return center.includes('Team row work.') && /You have a new task from/.test(center); }, 30000);
       await shot(page, `sdv-07-${kind}-team-row-opened`);
@@ -670,7 +674,7 @@ const CASES = {
   'SDV-03': ['Org view: stored mode while stopped; the worker answers live; the org stays stopped; it starts on its first input', () => caseStoppedRoot('org')],
   'SDV-04': ["Agent-run view: the worker's row leaves at DONE and is listed again, live, after the Manager reopens and continues it (CR-461-042)", caseReopenedRow],
   'SDV-06': ["CR-461-076 / SR-080: a worker opens from its Task's card for every delegator kind × worker kind", caseTaskCardMatrix],
-  'SDV-07': ["CR-461-076: a running delegated Team opens from its row in the delegator's view (Agent, Team)", caseRunningTeamRow],
+  'SDV-07': ["CR-461-076, SR-083 (FU-031): a running delegated Team opens from its own row, at its coordinator, in Agent, Team and Org delegators", caseRunningTeamRow],
   'SDV-05': ["C15-03: with the closed run's view open when its Task closes, the view returns to the delegator as at base (no rendered path to message a closed run); its row stays gone and the delegator's row keeps its status", caseClosedRunInput],
 };
 

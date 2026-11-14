@@ -377,6 +377,9 @@ export function registerLargeRunsLoadLessCases(h) {
     })
 
     const desk = await context.newPage()
+    // Every frame the window's sockets receive, from the start (CRR-045: a listener attached later misses the open streams).
+    const deskFrames = []
+    desk.on('websocket', (ws) => ws.on('framereceived', (f) => { deskFrames.push({ at: Date.now(), url: new URL(ws.url()).pathname, text: typeof f.payload === 'string' ? f.payload : f.payload.toString('utf8') }) }))
     try {
       await desk.goto(`${env().frontUrl}/workspace`, { waitUntil: 'domcontentloaded' }); await settle(desk, 2500)
       await openTeamRun(desk, r.teamRunId, r.teamDefinitionId)
@@ -390,8 +393,10 @@ export function registerLargeRunsLoadLessCases(h) {
         { k: 'agent_team', r: r.teamRunId, a: r.members.lead }).then(() => null, (e) => String(e.message))
       // The reason names the damaged file and line (AC-006 "with the reason").
       r.expectedReason = `${path.basename(r.damaged.file)}:line ${r.damaged.line} is not valid JSON`
-      assert(r.serverReason?.includes(r.expectedReason), 'the server refuses the damaged log with the reason', { serverReason: r.serverReason, expected: r.expectedReason })
-      assert(r.teamTabText.includes(r.expectedReason), 'the Team tab shows the reason', { teamTabText: r.teamTabText, expected: r.expectedReason })
+      // CR-461-083: the reason names the damaged file and its line (wording per FU-030).
+      const namesIt = (x) => Boolean(x) && x.includes(path.basename(r.damaged.file)) && x.includes(`line ${r.damaged.line}`)
+      assert(namesIt(r.serverReason), 'the server refuses the damaged log with the reason (file and line)', { serverReason: r.serverReason, expected: r.expectedReason })
+      assert(namesIt(r.teamTabText), 'the Team tab shows the reason (file and line)', { teamTabText: r.teamTabText, expected: r.expectedReason })
       assert(await teamTabRows(desk).count() === 0, 'no partial list', await rowTexts(desk))
       await shot(desk, 'LRL-004-team-tab-unavailable')
 
@@ -400,18 +405,22 @@ export function registerLargeRunsLoadLessCases(h) {
       // RestoreAgentTeamRun mutation), so the refusal is read from that stream's frames (and any GraphQL answer).
       const restores = [], consoleErrors = []
       desk.on('response', async (res) => { try { const b = res.request().postDataJSON(); if (b?.operationName === 'RestoreAgentTeamRun') restores.push(await res.text()) } catch { /* not JSON */ } })
-      desk.on('websocket', (ws) => ws.on('framereceived', (f) => { const text = typeof f.payload === 'string' ? f.payload : f.payload.toString('utf8'); if (/not valid JSON|restor|ERROR|error/i.test(text)) restores.push(text) }))
+      const framesFrom = Date.now()
+      const framesSince = () => deskFrames.filter((f) => f.at >= framesFrom && /not valid JSON|restor|ERROR|error/i.test(f.text)).map((f) => f.text)
       desk.on('console', (m) => { if (m.type() === 'error') consoleErrors.push(m.text()) })
       const resumeText = `Resume please ${t}.`
       await typeAndSend(desk, resumeText)
       const reasonCount = async () => (await desk.locator('body').innerText()).split(r.expectedReason).length - 1
       const reasonBefore = await reasonCount()
       // The refusal: in the restore's answer (a stream frame or GraphQL) or shown again in the window; recorded either way.
-      r.refusalSeen = await waitFor('the restore refusal', async () => restores.some((x) => x.includes(r.expectedReason)) || (await reasonCount()) > reasonBefore, 60000, 250)
+      // CR-461-083: the restore refusal names the damaged file and its line ("… (file) is damaged at line N. …").
+      const namesFileAndLine = (x) => x.includes(path.basename(r.damaged.file)) && x.includes(`line ${r.damaged.line}`) && /cannot be restored|damaged/i.test(x)
+      const refusalLines = async () => (await desk.locator('body').innerText()).split('\n').filter((l) => /cannot be restored/i.test(l))
+      r.refusalSeen = await waitFor('the restore refusal', async () => [...restores, ...framesSince()].some(namesFileAndLine) || (await refusalLines()).some(namesFileAndLine), 60000, 250)
         .then(() => true, () => false)
       await delay(1500)
       r.userMessageShown = (await desk.locator('main').innerText()).includes(resumeText)
-      r.restoreResponses = restores.map((x) => x.slice(0, 600))
+      r.restoreResponses = [...restores, ...framesSince()].map((x) => x.slice(0, 600))
       r.resumeConsoleErrors = consoleErrors.filter((x) => /sending|restor|JSON/i.test(x)).map((x) => x.slice(0, 300))
       r.activeAfterResume = await teamActive(r.teamRunId)
       r.composerStillHolds = (await desk.locator('main textarea:visible').last().inputValue()) === resumeText
@@ -460,7 +469,7 @@ export function registerLargeRunsLoadLessCases(h) {
       await phoneUnavailable.waitFor({ timeout: 30000 })
       r.phoneText = (await phoneUnavailable.innerText()).replace(/\s+/g, ' ').trim()
       r.phoneRows = await mobile.locator('[data-testid="mobile-team-message-row"]').count()
-      assert(r.phoneText.includes(r.expectedReason), 'the phone shows the reason', { phoneText: r.phoneText, expected: r.expectedReason })
+      assert(r.phoneText.includes(path.basename(r.damaged.file)) && r.phoneText.includes(`line ${r.damaged.line}`), 'the phone shows the reason (file and line)', { phoneText: r.phoneText, expected: r.expectedReason })
       assert(r.phoneRows === 0, 'the phone shows no partial list', r.phoneRows)
       await mobile.screenshot({ path: path.join(env().outDir, 'LRL-004-phone-unavailable.png') })
     } finally { await phone.close() }

@@ -11,7 +11,7 @@ import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { startStudioE2eRuntimeServer } from "../helpers/studio-runtime-test-server.js";
 import { buildE2eClientCommandIds, sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
 import { closeLiveServerVault, initializeLiveServerVault, requireLiveCapability } from "../../../../test-support/test-vault/live-server-vault.js";
-import { readRootMessages, agentRunIdsOfViewTree } from "../../helpers/collaboration-participant-messages.js";
+import { readRootMessages, readParticipantMessages, agentRunIdsOfViewTree } from "../../helpers/collaboration-participant-messages.js";
 
 /**
  * The collaboration model on real runtimes (live, paid/local inference): agent-initiated-collaborators SR-005 as revised by
@@ -313,6 +313,15 @@ describeLive("Agent-initiated collaborators on real runtimes (SR-005)", () => {
     (await gql<{ agentRunCollaborationMemberProjection: { conversation: ConversationEntry[] } }>(
       `query($h: String!, $a: String!, $r: String!) { agentRunCollaborationMemberProjection(hostRunId: $h, memberAddress: $a, agentRunId: $r) { conversation } }`,
       { h: hostRunId, a: memberAddress, r: agentRunId })).agentRunCollaborationMemberProjection.conversation;
+  /** autobyteus-461 rule 2: a delegated Team copy's member is read by its own team (its conversation, its messages). */
+  const copyMemberConversation = async (copyTeamRunId: string, agentRunId: string): Promise<ConversationEntry[]> =>
+    (await gql<{ getTeamMemberRunProjection: { conversation: ConversationEntry[] } | null }>(
+      "query($t: String!, $a: String!) { getTeamMemberRunProjection(teamRunId: $t, agentRunId: $a) { conversation } }",
+      { t: copyTeamRunId, a: agentRunId })).getTeamMemberRunProjection?.conversation ?? [];
+  const participantMessages = (rootKind: "agent" | "agent_team" | "agent_org", rootRunId: string, agentRunId: string) =>
+    readParticipantMessages(gql, { rootKind, rootRunId, agentRunId }).catch(() => []);
+  /** TC-12: a copy's own handoffs name its teammate from its own root (`/mate`), never under the delegation's name. */
+  const namesOwnMate = (text: string) => /(?<![\w/])\/mate\b/.test(text);
   /** An Agent root answers for one focused agent; the host's own composer unless another is given. */
   const mentionCandidates = async (rootSubjectKind: string, rootRunId: string, focusedAgentRunId: string | null = rootSubjectKind === "agent" ? rootRunId : null) =>
     (await gql<{ collaboratorMentionCandidates: { candidates: Array<{ kind: string; definitionId: string; name: string }> } }>(
@@ -985,10 +994,19 @@ describeLive("Agent-initiated collaborators on real runtimes (SR-005)", () => {
       const copyLead = memberRunId(execution, "/lead");
       const copyMate = memberRunId(execution, "/mate");
       expect(copyLead && copyMate && copyLead !== mountedLead && copyMate !== mountedMate, JSON.stringify(execution).slice(0, 600)).toBe(true);
-      const toMate = await waitFor(stream.messages, copyFrom, (message) => { const comm = commOf(message); return comm?.sender === copyLead && comm.content.includes(`COPY-${suffix}`); }, "copy lead → /squad/mate");
-      expect(commOf(toMate)!.receiver, "the copy's own mate, not the mounted one (REQ-007)").toBe(copyMate);
-      await waitFor(stream.messages, copyFrom, (message) => { const comm = commOf(message); return comm?.sender === copyLead && comm.receiver === coordRunId && comm.content.includes(`REPORT-${suffix}`); }, "copy lead → /coordinator (outside its team)");
-      expect(comms(stream).filter((comm) => comm.receiver === mountedMate && comm.content.includes(`COPY-${suffix}`)), "nothing reaches the mounted mate").toEqual([]);
+      void copyMate;
+      // autobyteus-461 SR-081 (TC-12, A-6): "/squad/mate" is the name the copy was delegated to plus its own member, so the
+      // copy lead is answered with the correction (its team is addressed from its own root), before step 2 could reach the
+      // Org's mounted namesake. Read by rule 2: the copy lead's conversation through its own team.
+      const copyTeamRunId = str(execution, "teamRunId");
+      expect(copyTeamRunId, JSON.stringify(execution).slice(0, 600)).toBeTruthy();
+      const correction = await poll("the copy lead's /squad/mate answered with the correction", async () =>
+        toolCallResults(await copyMemberConversation(copyTeamRunId, copyLead), "send_message_to").find((result) => /no longer an address/.test(result)));
+      expect(correction, "the correction names the address to use").toMatch(/\/mate|its own root/);
+      await poll("copy lead → /coordinator (outside its team)", async () => (await participantMessages("agent_org", orgRunId, coordRunId))
+        .some((message) => message.senderAgentRunId === copyLead && message.content.includes(`REPORT-${suffix}`)));
+      const toMountedMate = (await participantMessages("agent_org", orgRunId, mountedMate)).filter((message) => message.content.includes(`COPY-${suffix}`));
+      expect([...toMountedMate, ...comms(stream).filter((comm) => comm.receiver === mountedMate && comm.content.includes(`COPY-${suffix}`))], "nothing reaches the mounted mate").toEqual([]);
 
       // AC-005/007 in an Org: a catalog copy of a listed (not mounted) team follows its own handoffs with its own instruction.
       const catalogSquad = await createSquad(suffix, hint);
@@ -1000,15 +1018,20 @@ describeLive("Agent-initiated collaborators on real runtimes (SR-005)", () => {
       expect(str(field(catalogCopy, "source"), "teamDefinitionId")).toBe(catalogSquad.squadId);
       const catalogLead = memberRunId(catalogCopy, "/lead");
       const catalogMate = memberRunId(catalogCopy, "/mate");
-      const catalogRules = await waitFor(stream.messages, catalogFrom, (message) => message.payload.agent_run_id === catalogLead && isToolDone(message, "get_handoff_rules"), "Org catalog copy lead get_handoff_rules");
-      expect(JSON.stringify(catalogRules.payload), "an Org catalog copy follows its own handoffs").toContain(`${catalogSquad.squadAddress}/mate`);
+      // Rule 2: the catalog copy's member is read through its own team; TC-12: its handoffs name `/mate`.
+      const catalogTeamRunId = str(catalogCopy, "teamRunId");
+      const catalogRules = await poll("Org catalog copy lead get_handoff_rules", async () =>
+        toolCallResults(await copyMemberConversation(catalogTeamRunId, catalogLead), "get_handoff_rules")[0]);
+      expect(namesOwnMate(catalogRules), `an Org catalog copy follows its own handoffs: ${catalogRules.slice(0, 400)}`).toBe(true);
       if (instructionsVisible) {
         const catalogInstructions = await instructionsOf(stream, catalogLead);
         expect(catalogInstructions, "an Org catalog copy member gets its own team instruction").toContain(catalogSquad.squadInstruction);
         expect(catalogInstructions).not.toContain(orgInstruction);
       }
-      await waitFor(stream.messages, catalogFrom, (message) => { const comm = commOf(message); return comm?.sender === catalogLead && comm.receiver === catalogMate; }, "Org catalog copy lead → its own mate");
-      await waitFor(stream.messages, catalogFrom, (message) => { const comm = commOf(message); return comm?.sender === catalogLead && comm.receiver === coordRunId && /DONE/.test(comm.content); }, "Org catalog copy reports DONE");
+      await poll("Org catalog copy lead → its own mate", async () => (await participantMessages("agent_team", catalogTeamRunId, catalogLead))
+        .some((message) => message.senderAgentRunId === catalogLead && message.receiverAgentRunId === catalogMate));
+      await poll("Org catalog copy reports DONE", async () => (await participantMessages("agent_org", orgRunId, coordRunId))
+        .some((message) => message.senderAgentRunId === catalogLead && /DONE/.test(message.content)));
 
       // AC-013 / REQ-012: a mounted member's copy of a top-level (catalog) address is recorded at the Org top level;
       // its copy of a teammate stays under its team.
@@ -1030,7 +1053,8 @@ describeLive("Agent-initiated collaborators on real runtimes (SR-005)", () => {
       const catalogCopyRunId = str(mountedCatalogCopy, "teamRunId");
       expect(copyPath(placedOrg, catalogCopyRunId), "a mounted member's catalog copy is at rootOrg.taskExecutions").toMatch(/^taskExecutions\[\d+\]$/);
       expect(str(mountedCatalogCopy, "delegatorAgentRunId"), "the delegator is kept").toBe(mountedLead);
-      await waitFor(stream.messages, mountedCopyFrom, (message) => { const comm = commOf(message); return comm?.receiver === mountedLead && /DONE/.test(comm.content) && memberRunIds(mountedCatalogCopy).includes(comm.sender); }, "the top-level copy still reports to its delegator");
+      await poll("the top-level copy reports to the mounted lead", async () => (await participantMessages("agent_org", orgRunId, mountedLead))
+        .some((message) => /DONE/.test(message.content) && memberRunIds(mountedCatalogCopy).includes(message.senderAgentRunId)));
 
       // AC-005 in an Org: a message to an outside address is not found; nothing is added.
       const outsideFrom = stream.messages.length;
@@ -1052,7 +1076,11 @@ describeLive("Agent-initiated collaborators on real runtimes (SR-005)", () => {
       const reopenedMounted = await rulesOf(stream, sendTo, mountedLead, "reopened mounted lead");
       expect(reopenedMounted, "mounted team handoff after reopen").toContain("/squad/mate");
       expect(reopenedMounted, "cross-placement handoff after reopen").toContain("/coordinator");
-      expect(await rulesOf(stream, sendTo, catalogLead, "reopened Org catalog copy lead"), "Org catalog copy handoffs after reopen").toContain(`${catalogSquad.squadAddress}/mate`);
+      // Rule 2: the catalog copy's member is reached by its own team's stream (its own restore by member message).
+      const catalogOwn = await openSocket(`/ws/agent-team/${catalogTeamRunId}`, "TEAM_EXECUTION_VIEW_SNAPSHOT");
+      const sendToCatalog = (agentRunId: string, content: string) => sendE2eSendMessageCommand(catalogOwn.socket, { content, agent_run_id: agentRunId, context_file_paths: [], image_urls: [] });
+      expect(namesOwnMate(await rulesOf(catalogOwn, sendToCatalog, catalogLead, "reopened Org catalog copy lead")), "Org catalog copy handoffs after reopen").toBe(true);
+      catalogOwn.socket.close();
       const reopenedOrg = await orgSnapshot();
       expect(copyPath(reopenedOrg, catalogCopyRunId), "placement kept after restore").toBe(copyPath(placedOrg, catalogCopyRunId));
     }, 2_400_000);

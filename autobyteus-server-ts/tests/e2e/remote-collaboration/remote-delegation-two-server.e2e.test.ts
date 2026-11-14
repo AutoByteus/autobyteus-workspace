@@ -473,6 +473,22 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
   /** 278: the events of a standalone or Org root view (`ROOT_EXECUTION_EVENT`). */
   const rootEventsOf = (frames: Frame[]) => frames.filter((frame) => frame.type === "ROOT_EXECUTION_EVENT").map((frame) => (frame.payload as Rec).event as Rec);
   /** 278: a remote run's summaries in a root view (standalone and Org: events; Team: `REMOTE_TASK_EXECUTION_SUMMARY`). */
+  /** autobyteus-461 SR-082, SR-083: a run's statuses by its run ID on a node's `/ws/run-status` (a peer run's through its handle). */
+  const runStatus = async (node: NodeServer, kind: "agent" | "agent_team", runId: string) => {
+    const socket = new WebSocket(`ws://127.0.0.1:${node.port}/ws/run-status`);
+    sockets.push(socket);
+    const frames: Frame[] = [];
+    socket.on("message", (raw: unknown) => frames.push({ ...JSON.parse(String(raw)), at: Date.now() }));
+    await new Promise<void>((resolve, reject) => { socket.once("open", () => resolve()); socket.once("error", reject); });
+    socket.send(JSON.stringify({ type: "SUBSCRIBE", payload: { runs: [{ kind, runId }] } }));
+    await until(() => frames.some((f) => f.type === "RUN_STATUS_SNAPSHOT"), `${node.name} run-status snapshot of ${runId}`, 30_000);
+    const agents = () => ((frames.find((f) => f.type === "RUN_STATUS_SNAPSHOT")!.payload as Rec).runs as Rec[]).flatMap((r) => r.agents as Rec[]);
+    const statusesOf = (agentRunId: string, from = 0) => frames.slice(from).flatMap((f) => f.type === "RUN_STATUS_CHANGED"
+      ? ((f.payload as Rec).agentRunId === agentRunId ? [String((f.payload as Rec).status)] : [])
+      : f.type === "RUN_STATUS_SNAPSHOT" ? agents().filter((a) => a.agentRunId === agentRunId).map((a) => String(a.status)) : []);
+    const latest = (agentRunId: string) => statusesOf(agentRunId).at(-1) ?? null;
+    return { socket, frames, agents, statusesOf, latest };
+  };
   const remoteSummariesIn = (frames: Frame[], runId: string): Rec[] => [
     ...rootEventsOf(frames).filter((event) => event.kind === "remote_task_execution_summary"),
     ...frames.filter((frame) => frame.type === "REMOTE_TASK_EXECUTION_SUMMARY").map((frame) => frame.payload as Rec),
@@ -1410,15 +1426,18 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     const view = await connect(alpha, "agent-collaboration", delegator.runId, (frames) => frames.some((frame) => frame.type === "ROOT_EXECUTION_VIEW_SNAPSHOT"));
     const snapshot = view.frames.find((frame) => frame.type === "ROOT_EXECUTION_VIEW_SNAPSHOT")!.payload as Rec;
     const rows = objectsIn(snapshot).find((record) => Array.isArray(record.remote_task_executions))?.remote_task_executions as Rec[];
-    expect(rows.find((row) => row.agent_run_id === r9), JSON.stringify(rows)).toEqual({ kind: "agent", address: "/publisher", agent_run_id: r9, node_id: beta.nodeId,
+    // SR-083 (CR-461-084): the peer row also carries its launch, and its open target.
+    expect(rows.find((row) => row.agent_run_id === r9), JSON.stringify(rows)).toMatchObject({ kind: "agent", address: "/publisher", agent_run_id: r9, node_id: beta.nodeId,
       node_name: LABEL.beta, delegator_agent_run_id: delegator.runId, started_at: expect.any(String) });
+    const peerStatus = await runStatus(alpha, "agent", r9);
+    expect(peerStatus.agents().map((agent) => agent.agentRunId), "r9's statuses by its run ID on alpha (through its handle)").toEqual([r9]);
     await until(() => remoteSummariesIn(view.frames, r9).length > 0, "r9's summary", 25_000);
     const firstSummary = remoteSummariesIn(view.frames, r9)[0]!;
     // autobyteus-32 REQ-009 under SR-038: the peer's launch is read from the peer while the view is open, on its summary.
     expect(firstSummary.launches, JSON.stringify(firstSummary)).toEqual([{ address: "/publisher", runtime_kind: "antigravity_cli", llm_model_identifier: MODEL,
       source: { origin: "agent_default", fallbacks: [] } }]);
     expect(firstSummary).toMatchObject({ node_id: beta.nodeId, run_id: r9, reachable: true, title: "Tree work. Marker TREE-PACKET." });
-    expect((firstSummary.statuses as Rec[]).map((entry) => entry.agent_run_id)).toEqual([r9]);
+    // SR-083 / CR-461-085: a summary carries no statuses; the peer run's statuses come by its run ID (checked above).
 
     // AC-802: live output while viewing (beta's owner writes to the run on beta).
     const beforeLive = view.frames.length;
@@ -1466,12 +1485,14 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     const held = await ackOf(view, rootCommand(view, root, "SEND_MESSAGE", r9, ownerText("HOLD_TURN Marker HOLD-FROM-ALPHA")));
     expect(held.state).toBe("accepted");
     await until(async () => (await betaConversation(r9)).includes("HOLD-FROM-ALPHA"), "the held turn on beta", 20_000);
-    const whileHeld = await refreshAndRead();
+    await refreshAndRead();
+    await until(() => peerStatus.latest(r9) === "running", "r9 running while the turn is held (by its run ID)", 30_000);
+    const whileHeld = peerStatus.latest(r9);
     const interrupted = await ackOf(view, rootCommand(view, root, "INTERRUPT_GENERATION", r9));
     expect(interrupted, JSON.stringify(interrupted)).toMatchObject({ command_type: "INTERRUPT_GENERATION", state: "accepted" });
-    let afterInterrupt: Rec = {};
-    await until(async () => ((afterInterrupt = await refreshAndRead()).statuses as Rec[]).every((entry) => entry.status !== "running"), "not running after the interrupt", 30_000);
-    expect((whileHeld.statuses as Rec[])[0]?.status, "running while the turn is held").toBe("running");
+    await until(() => peerStatus.latest(r9) !== "running", "not running after the interrupt (by its run ID)", 30_000);
+    const afterInterrupt = peerStatus.latest(r9);
+    expect(whileHeld, "running while the turn is held").toBe("running");
 
     // DEC-804 Stop: through alpha; beta stops the run; the view's last summary reads it offline.
     const beforeStop = view.frames.length;
@@ -1479,9 +1500,11 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     const stopped = (await alpha.gql(`mutation($id:String!){terminateAgentRun(agentRunId:$id){success message}}`, { id: r9 })).terminateAgentRun;
     expect(stopped, JSON.stringify(stopped)).toMatchObject({ success: true });
     await until(async () => !(await processLive(r9)), "r9's CLI gone", 20_000);
-    await until(() => remoteSummariesIn(view.frames.slice(beforeStop), r9).some((summary) => (summary.statuses as Rec[]).length === 0), "a final summary (offline)", 15_000).catch(() => undefined);
-    const finalSummary = remoteSummariesIn(view.frames.slice(beforeStop), r9).at(-1) ?? null;
-    expect(finalSummary?.statuses, "after Stop the view's summary reads offline (the observation ended)").toEqual([]);
+    void beforeStop;
+    await until(() => peerStatus.latest(r9) === "offline", "r9 offline after Stop (by its run ID)", 15_000).catch(() => undefined);
+    const finalSummary = { status: peerStatus.latest(r9) };
+    expect(finalSummary.status, "after Stop the run reads offline by its run ID (the observation ended)").toBe("offline");
+    peerStatus.socket.close();
     ids.treeRun = r9;
     record("RC-31", { r9, row: rows.find((row) => row.agent_run_id === r9), firstSummary, liveSeen, sent, ownerEntry, whileHeld, afterInterrupt, stopped, finalSummary,
       framesTypes: [...new Set(view.frames.map((frame) => frame.type === "ROOT_EXECUTION_EVENT" ? `event:${((frame.payload as Rec).event as Rec).kind}` : frame.type))] });
@@ -1493,21 +1516,24 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     const r10 = delegated.target_agent_run_id as string;
     await receives(composeOnBeta(r10), "C2-PACKET");
     const view = await connect(alpha, "agent-collaboration", delegator.runId, (frames) => frames.some((frame) => frame.type === "ROOT_EXECUTION_VIEW_SNAPSHOT"));
-    await until(() => remoteSummariesIn(view.frames, r10).some((summary) => (summary.statuses as Rec[]).length > 0), "r10 live in alpha's view", 25_000);
+    const r10Status = await runStatus(alpha, "agent", r10);
+    await until(() => ["running", "idle", "initializing"].includes(String(r10Status.latest(r10))), "r10 live by its run ID on alpha", 25_000);
     const beforeOwnerStop = view.frames.length;
     const terminated = (await beta.gql(`mutation($id:String!){terminateAgentRun(agentRunId:$id){success message}}`, { id: r10 })).terminateAgentRun;
     expect(terminated.success, terminated.message).toBe(true);
     await until(async () => !(await processLive(r10)), "r10's CLI gone", 20_000);
-    await until(() => remoteSummariesIn(view.frames.slice(beforeOwnerStop), r10).some((summary) => (summary.statuses as Rec[]).length === 0), "alpha's view ends offline", 15_000).catch(() => undefined);
-    const after = remoteSummariesIn(view.frames.slice(beforeOwnerStop), r10);
+    void beforeOwnerStop;
+    await until(() => r10Status.latest(r10) === "offline", "alpha reads r10 offline", 15_000).catch(() => undefined);
+    const after = r10Status.statusesOf(r10);
     const refreshed = await (async () => {
       const before = remoteSummariesIn(view.frames, r10).length;
       view.socket.send(JSON.stringify({ type: "REFRESH_REMOTE_TASK_EXECUTIONS", payload: { root_subject_kind: "agent", root_run_id: delegator.runId } }));
       await until(() => remoteSummariesIn(view.frames, r10).length > before, "a refreshed summary", 25_000);
       return remoteSummariesIn(view.frames, r10).at(-1)!;
     })();
-    expect(refreshed.statuses, "beta reports it offline").toEqual([]);
-    expect(after.some((summary) => (summary.statuses as Rec[]).length === 0), "without a refresh, alpha's view ends offline when beta's owner stops the run (DS-006)").toBe(true);
+    expect(refreshed.reachable, "beta answers the summary").toBe(true);
+    expect(after.includes("offline"), "without a refresh, alpha reads the run offline when beta's owner stops it (DS-006; by its run ID)").toBe(true);
+    r10Status.socket.close();
     record("RC-32", { r10, terminated, summariesAfterOwnerStop: after, refreshed });
   }, 180_000);
 

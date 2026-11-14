@@ -103,19 +103,26 @@ const liveAgyCwds = (): string[] => spawnSync("pgrep", ["-f", "agy-failure-cli"]
   .filter(Boolean).map((pid) => (spawnSync("lsof", ["-a", "-d", "cwd", "-p", pid, "-Fn"], { encoding: "utf8" }).stdout
     .split("\n").find((line) => line.startsWith("n")) ?? "").slice(1));
 const processLive = (agentRunId: string) => liveAgyCwds().some((cwd) => cwd.includes(agentRunId));
-/** Status changes on a root view: Team `AGENT_STATUS` frames, or Agent/Org `agent_presentation` status messages. */
+/**
+ * Status changes: a delegated run's agents by run ID on `/ws/run-status` (autobyteus-461 SR-082: the views no longer
+ * carry their children's statuses), and a root's own agents on its views (Team `AGENT_STATUS` frames, or Agent/Org
+ * `agent_presentation` status messages).
+ */
 const signalsIn = (frames: readonly Frame[]): Signal[] => frames.flatMap((frame) => {
+  if (frame.type === "RUN_STATUS_CHANGED") return [{ agentRunId: frame.payload.agentRunId, status: frame.payload.status, at: frame.at }];
+  if (frame.type === "RUN_STATUS_SNAPSHOT") return (frame.payload.runs as any[]).flatMap((run) => (run.agents as any[])
+    .map((agent) => ({ agentRunId: agent.agentRunId, status: agent.status, at: frame.at })));
   if (frame.type === "AGENT_STATUS") return typeof frame.payload.agent_run_id === "string"
     ? [{ agentRunId: frame.payload.agent_run_id, status: frame.payload.status, at: frame.at }] : [];
   return objectsIn(frame.payload).flatMap((record) => record.message?.type === "AGENT_STATUS" && typeof record.agent_run_id === "string"
     && typeof record.message?.payload?.status === "string"
     ? [{ agentRunId: record.agent_run_id, status: record.message.payload.status, at: frame.at }] : []);
 });
-/** `agent_statuses` of a root view snapshot (what the sidebar and member header render), by run ID. */
+/** A run's agents' statuses from a fresh `/ws/run-status` snapshot (what a newly opened window renders), by run ID. */
 const snapshotStatuses = (frames: readonly Frame[]): Record<string, string> => Object.fromEntries(frames
-  .filter((frame) => frame.type.endsWith("_VIEW_SNAPSHOT"))
-  .flatMap((frame) => objectsIn(frame.payload).flatMap((record) => Array.isArray(record.agent_statuses) ? record.agent_statuses : []))
-  .map((status: any) => [status.agent_run_id, status.status]));
+  .filter((frame) => frame.type === "RUN_STATUS_SNAPSHOT")
+  .flatMap((frame) => (frame.payload.runs as any[]).flatMap((run) => run.agents as any[]))
+  .map((agent: any) => [agent.agentRunId, agent.status]));
 
 suite("Delegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)", () => {
   let dataDir = "", workspace = "", argvLog = "", app: FastifyInstance | undefined, url!: URL;
@@ -146,6 +153,15 @@ suite("Delegated Team copies start only the members that work reaches, in every 
     socket.on("message", (raw: unknown) => frames.push({ ...JSON.parse(String(raw)), at: Date.now() }));
     await new Promise<void>((resolve, reject) => { socket.once("open", resolve); socket.once("error", reject); });
     await until(() => ready(frames), `${route} stream ready`);
+    return { socket, frames };
+  };
+  /** A `/ws/run-status` connection (autobyteus-461 SR-082): statuses by run ID from each run itself. */
+  const connectRunStatus = async () => {
+    const socket = new WebSocket(`ws://${url.host}/ws/run-status`);
+    sockets.push(socket);
+    const frames: Frame[] = [];
+    socket.on("message", (raw: unknown) => frames.push({ ...JSON.parse(String(raw)), at: Date.now() }));
+    await new Promise<void>((resolve, reject) => { socket.once("open", resolve); socket.once("error", reject); });
     return { socket, frames };
   };
   /** Every AGY launch so far: the run it belongs to and whether it resumed a conversation. */
@@ -303,8 +319,12 @@ suite("Delegated Team copies start only the members that work reaches, in every 
       input: kind === "agent" ? await connect("agent", rootId, (frames) => frames.some((f) => f.type === "CONNECTED")) : null,
       view: await connect(viewRoute, rootId, (frames) => frames.some(isSnapshot)),
     };
-    /** Every status change seen on this root's views (across reconnects). */
-    const seen: Frame[][] = [channels.view.frames];
+    /** Every status change seen on this root's views (across reconnects) and on its run-status subscriptions. */
+    const statusChannel = await connectRunStatus();
+    const seen: Frame[][] = [channels.view.frames, statusChannel.frames];
+    /** Follows a delegated run's statuses by its run ID (SR-082), as a window showing it does. */
+    const watchRun = (runKind: "agent" | "agent_team", runId: string) =>
+      statusChannel.socket.send(JSON.stringify({ type: "SUBSCRIBE", payload: { runs: [{ kind: runKind, runId }] } }));
     const reconnect = async () => {
       // A stopped Org's view opens from its stored file; the next message to one of its agents on that view restores it
       // (autobyteus-461 SR-046 … SR-048: there is no Org restore mutation).
@@ -314,11 +334,13 @@ suite("Delegated Team copies start only the members that work reaches, in every 
       active.push({ kind, rootId });
     };
     const closeChannels = () => { channels.view.socket.close(); channels.input?.socket.close(); };
-    /** A fresh view's snapshot `agent_statuses` (what a newly opened sidebar renders). */
-    const freshStatuses = async () => {
-      const view = await connect(viewRoute, rootId, (frames) => frames.some(isSnapshot));
-      const statuses = snapshotStatuses(view.frames);
-      view.socket.close();
+    /** A delegated Team run's statuses as a newly opened window reads them: a fresh `/ws/run-status` snapshot (SR-082). */
+    const freshStatuses = async (teamRunId: string) => {
+      const fresh = await connectRunStatus();
+      fresh.socket.send(JSON.stringify({ type: "SUBSCRIBE", payload: { runs: [{ kind: "agent_team", runId: teamRunId }] } }));
+      await until(() => fresh.frames.some((frame) => frame.type === "RUN_STATUS_SNAPSHOT"), `${kind}: run-status snapshot of ${teamRunId}`);
+      const statuses = snapshotStatuses(fresh.frames);
+      fresh.socket.close();
       return statuses;
     };
     const sendToManager = (content: string) => {
@@ -373,7 +395,7 @@ suite("Delegated Team copies start only the members that work reaches, in every 
     const framesNaming = (agentRunId: string) => seen.flat().filter((frame) => JSON.stringify(frame).includes(agentRunId))
       .map((frame) => ({ type: frame.type, payload: JSON.stringify(frame.payload).slice(0, 400) }));
     return { kind, rootId, managerRunId, liveTree, conversationOf, callsFrom, managerCalls, signals, signal, answered, errorCards, framesNaming,
-      freshStatuses, reconnect, closeChannels };
+      freshStatuses, reconnect, closeChannels, watchRun };
   };
   type Root = Awaited<ReturnType<typeof startRoot>>;
 
@@ -393,6 +415,7 @@ suite("Delegated Team copies start only the members that work reaches, in every 
       Record<Member, { address: string; agentRunId: string }>;
     expect(Object.keys(members).sort()).toEqual([...MEMBERS].sort());
     expect(members.lead.agentRunId).toBe(lead);
+    root.watchRun("agent_team", copy!.teamRunId);
     return { teamRunId: copy!.teamRunId, members };
   };
   type Copy = Awaited<ReturnType<typeof copyOf>>;
@@ -411,7 +434,7 @@ suite("Delegated Team copies start only the members that work reaches, in every 
    * it was started and went idle, and its shutdown is the designed lifecycle. Every other expectation is exact.
    */
   const expectStatuses = async (root: Root, copy: Copy, expected: Record<Member, string>) => {
-    const statuses = statusesOf(await root.freshStatuses(), copy);
+    const statuses = statusesOf(await root.freshStatuses(copy.teamRunId), copy);
     const now = Date.now();
     for (const name of MEMBERS) {
       if (expected[name] !== "idle" || statuses[name] !== "offline") continue;

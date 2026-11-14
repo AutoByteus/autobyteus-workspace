@@ -5,22 +5,19 @@ This report records what ran and the result. The plan is in `api-e2e-coverage-in
 ## Round
 
 - Coverage investigation: `api-e2e-coverage-investigation.md`
-- API/E2E revision record and current revision ID: `api-e2e-revision-record.md` / `API-REV-012`
+- API/E2E revision record and current revision ID: `api-e2e-revision-record.md` / `API-REV-013`
 - Test progress log: `api-e2e-test-progress.md`
-- Round and trigger: round 12, on CRR-042. Code under test `5b455a9ec7` (web-only since `a4641a0985`; HEAD `47efe7fa9b` adds one docs line). Server `dist/` from round 11 (no server change since); the probes run the web from source (Nuxt dev).
-- Prior round reviewed: API-REV-011 (`Fail`: F-57, F-59; F-56 rejected in CRR-041).
-- Scope, per CRR-042: everything left, in this one round, so the fixes come back together:
-  - CR-461-077 (F-57) and F-59 rechecks;
-  - the stale rewrites (DLD, SSR, the seeded probes, PLN-09, BR-011);
-  - API-P04; API-F01; the live `agent-initiated-collaborators`.
-- Refusal wording: per FU-030, wording-only differences are recorded in `follow-ups.md` ("Collected differences"), not as failures. This round added DLP-004 and DCP-004.
+- Round and trigger: round 13, on CRR-045 (code review passed, round 32). Code under test `58cc542572` (HEAD `d3e52f5f4b`, docs only since). I rebuilt the server (`/tmp/api461/r13-build.log`, exit 0); the probes run the web from source.
+- Prior round reviewed: API-REV-012 (`Fail`: F-60 … F-66; CRR-043 routed them to the fixes).
+- Scope, per CRR-045 (SR-082 item 3): everything that shows or opens runs and statuses; the peer suite and API-P04; open targets (SDV, PMU, PLN; FU-031); Settings (RSM, DCP, AFS, an Org or stopped-Team copy's card); LRL-001, LRL-004, LE-O1 under SR-081, PLN-09, BR-011; regression runs for the rest; API-F01 (the contract packages changed again).
+- Refusal wording: FU-030 applies; no new wording-only difference this round (the damaged-log refusal's new text is checked by file and line).
 - Deviations from the plan, and why:
-  - **The base worktree's own install.** Its `node_modules` (root and web) were symlinks to the branch worktree's, so this round's first base runs resolved the branch's contract packages (base's web failed to load: "does not provide an export named `collaborationCopyAgentLaunch`"). I gave base its own `pnpm install --frozen-lockfile` and server build, then repeated the base runs. Only those repeats are used.
-  - **Stale parts of the live suite are not rewritten** (LE-A1, LE-A2, LE-A3, LE-T1): under the agreed rule, rewrites wait for the fix when the round has product failures. LE-O1 is a product failure candidate (F-63).
-  - **DLP-006 retired:** it strips stored files to the shape before the change while the server is down. DS-10 says the runtime reads only the converted shape (checklist item 6; no runtime repair), and the migration's own suites cover the conversion.
-  - **Not Tested under the safety rules:** the delegated background-task live suites (Claude CLI or real Antigravity CLI login); the live suite's Claude root default (`AIC_ROOT_RUNTIMES=autobyteus` used instead, DeepSeek through the test vault).
-- My own probe errors, corrected and rerun: the own-file readers first used camelCase on the GraphQL tree, whose members are snake_case (`launch_configuration`); BR-011 was first run without BR-008 … BR-010.
-- Evidence folder: `evidence/api-e2e/` (round 12 files carry `r12`); raw logs under `/tmp/api461/`.
+  - **Probes and suites moved to `/ws/run-status`** (SR-082 removed the view status frames and the status poll they read). A shared probe client, `tests/e2e/fixtures/run-status-client.mjs`, reads a run's statuses by run ID as a window does. Rewritten: the phone probe's MSP-12 and MSP-20, the closed-task-rows cases, the stories' S17, the lazy-member suite, the follow-child suite, the idle-lifetime suite, SUN-E2E-002, RC-31/RC-32. Checks added: FOLLOW-L (a listed, not-open delegator gets `RUN_TREE_CHANGED`), FOLLOW-D (a stopped delegator's child stays live), RTP-08 (a peer run's status after the unasked end, Retry and a new turn).
+  - **The live suite's LE-O1 rewritten** to SR-081 and rule 2 (the copy members' conversations and messages read through their own team). LE-A1 … LE-T1 are not in this round's list and stay stale (they read copies through the delegator's package, the host projection and the host stream).
+  - **A typecheck ran during the full server E2E job.** Every file that failed in that job was rerun alone.
+  - **No base comparison for the phone:** at base the phone probe stops at load ("duplicate case IDs MSP-32"), base's own defect.
+- My own probe errors, corrected and rerun: AFS-001 read the view's `state` instead of the copy's `status`; the Org tree helper missed a delegated Team's address; DCR-001 used a wrong projection field; the idle-lifetime suite's new signal type.
+- Evidence folder: `evidence/api-e2e/` (round 13 files carry `r13`; `API-r13-runs.txt` lists every run).
 
 ## Routing Classification
 
@@ -34,110 +31,98 @@ This report records what ran and the result. The plan is in `api-e2e-coverage-in
 
 | Env ID | Commit Tested | Platform / OS | Runtime, Browser, Or App Build | Other Settings That Matter |
 | --- | --- | --- | --- | --- |
-| ENV-2 | `5b455a9ec7` (server `dist/` from round 11; web from source) | macOS 26.5.2 (Darwin 25.5.0), arm64 | Probe-owned stack: built server, Nuxt dev, headless Chrome; scripted AGY CLI, the Grok and LM Studio stand-ins where used | Clean env `env -i PATH HOME=<resolved temp> TMPDIR USER`; never the user's app or `~/.autobyteus` |
-| ENV-4 | as ENV-2, and base `827f1e68dc` (its own install and build) | as ENV-2 | Two built-server nodes paired by invite (API-P04) | Owned by the probe |
-| ENV-5 | `47efe7fa9b`, fresh clone | as ENV-2 | `pnpm install --frozen-lockfile`, `pnpm build:electron:mac -- --arm64` (unsigned) | API-F01 |
-| ENV-6 | `5b455a9ec7` | as ENV-2 | In-process server, AutoByteus runtime on DeepSeek | `AUTOBYTEUS_TEST_VAULT`, `RUN_DEEPSEEK_E2E=1`, `AIC_ROOT_RUNTIMES=autobyteus` |
+| ENV-1 | `58cc542572` | macOS 26.5.2 (Darwin 25.5.0), arm64 | In-process and built servers, scripted AGY CLI (`RUN_AGY_FAILURE_E2E=1`) | Full `tests/e2e` folder; clean env |
+| ENV-2 | `58cc542572` (server `dist/` rebuilt; web from source) | as ENV-1 | Probe-owned stack: built server, Nuxt dev, headless Chrome; scripted AGY, Grok and LM Studio stand-ins | Clean env; never the user's app or `~/.autobyteus` |
+| ENV-3 | as ENV-2 | as ENV-1 | Phone shell probe | Owned by the probe |
+| ENV-4 | as ENV-2, and base `827f1e68dc` (its own install) | as ENV-1 | Two built-server nodes paired by invite | API-P04, the tree and title probes |
+| ENV-5 | HEAD, fresh clone | as ENV-1 | `pnpm install --frozen-lockfile`, `build:electron:mac -- --arm64` (unsigned) | API-F01 |
+| ENV-6 | `58cc542572` | as ENV-1 | In-process server, AutoByteus runtime on DeepSeek | `AUTOBYTEUS_TEST_VAULT`, `RUN_DEEPSEEK_E2E=1`, `AIC_ROOT_RUNTIMES=autobyteus` |
 
 ## Cases
 
 | Case ID | Criteria | Boundary / Surface | Command Or Steps | Env | Result | Evidence Files | Look For | Notes |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| F-57 recheck (CR-461-077) | SR-064 | Real browser | `runtime-switch-members-probe.mjs` | ENV-2 | Pass | `API-B03-r12-probes.txt` | RSM 7/7 | F-57 resolved |
-| F-59 recheck (SDV-06) | SR-080 | Real browser | `stopped-delegator-views-probe.mjs --cases SDV-06` | ENV-2 | Pass | as above | both surfaces | From the Workspace page and the Projects page, every delegator kind |
-| PMU | AC-007 | Real browser | `project-manager-ux-probe.mjs` | ENV-2 | Pass | as above | 25/25 | — |
-| DLD (DLP, DCP, DCR, AFS, LRL, SIR, TLU) | AC-001 … AC-012; rule 2; SR-064; F-39 | Real browser | `delegated-launch-defaults-probe.mjs` | ENV-2 | **Fail** | `API-B03-r12-*.png` | see Findings | 14/29 in the full run, then the reruns; DLP-003, DLP-007, DCP-002, DCP-004 pass after the rewrites |
-| SSR-001 … SSR-004 (rewritten) | SR-064, F-39 | Real browser | `--cases SSR-001,SSR-002,SSR-003,SSR-004` | ENV-2 | **Fail** (blocked by F-62) | `API-B03-r12-probes.txt` | the Saves | Every Save answered `RUN_ACTIVE`: the copy was live (`idle`) while its Settings showed it stopped |
-| LRL base comparison | large-runs-load-less AC-003, AC-006 | Real browser | base `827f1e68dc`, `--cases LRL-001,LRL-004,LRL-005` | ENV-2 (base) | Pass at base | `API-B03-r12-probes.txt` | 3/3 | Base passes LRL-001 and LRL-004; the branch fails both (F-64, F-65) |
-| `owner-scoped-file-reads` (seeded) | AC-001 … AC-012 | Real browser, phone | `--seed-to`, `--from-seed` | ENV-2 | Partly | as above | B-001 … B-007 Pass | T-API's two QR-002 checks were base's hub ownership; rewritten to rule 2 (run-id list and content of a delegated run are its own) after the run, so T-API's last form is not yet run |
-| `projects-left-navigation` | AC-008 (REQ-007) | Real browser | with archive diagnostics | ENV-2 | Partly | as above | PLN 9/11 | PLN-04 not 461; PLN-09 Unclear (Findings) |
-| BR-008 … BR-011 | restart | Real browser, real backend restart | `task-closure-tree-probe.mjs --cases BR-008,…,BR-011` | ENV-2 | Partly | as above | 3/4 | BR-011 "org: conversation after restart"; its failing step has varied across four runs (Unclassified) |
-| API-P04 | Rule 3 (SR-057, SR-038) | Two nodes, real browser | the same probe at base and on the branch, each capturing the key shapes of every view frame and GraphQL answer (`p04-capture-probe.mjs`, a temporary copy of `remote-runs-in-tree-probe.mjs`, unchanged from base) | ENV-4 | **Fail** (F-66) | `API-P04-r12-peer-shape-compare.json` | 52/64 identical | The 6 others differ only by the peer row's `launches[]`; `StopDelegatedExecution` → `TerminateAgentRun` is rule 2 |
-| API-F01 | build inputs | Fresh clone, release desktop build | TESTING.md "Fresh-start build" | ENV-5 | Pass | `API-B03-r12-probes.txt` | exit 0 | Prisma ARM64 and packaged terminal runtime checks, including the Electron-as-Node spawn probe; signing and other platforms Not Tested (runner only) |
-| Live `agent-initiated-collaborators` | collaboration model on a real runtime | In-process server, DeepSeek | `vitest run tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts` | ENV-6 | **Fail** (F-63) | `API-L-r12-live-collaborators-extract.txt` | 5 failed, 31 skipped | LE-O1: F-63. LE-A1, A2, A3, T1: stale (below) |
+| API-E01 (full server E2E) | regression; SR-082 statuses | Server | `vitest run tests/e2e` | ENV-1 | **Fail** | `API-r13-runs.txt` | 853 passed, 18 failed → after the stale fixes, reruns alone | The rest: remote-delegation-two-server (F-70, F-71, cascades), the extended runtime switch (unclassified) |
+| Statuses by run ID, local | SR-082 item 1; REQ-001 | Server | follow-child FOLLOW-A/T/E/L/D, lazy-member, idle-lifetime, SUN-E2E-002, stories S17 | ENV-1 | Pass | `API-r13-runs.txt` | a child's stop and restore with the view open; `RUN_TREE_CHANGED` for a listed, not-open delegator; a stopped delegator's child live | Agent, Team and Org delegators |
+| Statuses by run ID, peer | SR-082/083; CR-461-085; AR-403 | Server, two nodes, real browser | RC-31, RC-32; RTP-04, RTP-05, RTP-08 | ENV-1, ENV-4 | **Fail** (F-70) | `API-r13-F70-F71-RTP-04-peer-offline-no-live-answer.png` | the peer row's status live | `offline` at the unasked end, then never live again (RC-32, RTP-08), so the row's stop icon is hidden (RTP-05) |
+| Peer live output | AC-802 (autobyteus-278); rule 2/3 | Two nodes, real browser | RTP-04; RC-31, RC-33, RC-34 | ENV-1, ENV-4 | **Fail** (F-71) | as above; `API-P04-r13-peer-shape-compare.json` | the owner's message answered live in the opened peer run | Commit `445f1ed947` removed `remote_agent_presentation` |
+| API-P04 | Rule 3 (rows), SR-083 | Two nodes | the same probe at base and on the branch, capturing key shapes | ENV-4 | Pass for the row shapes | `API-P04-r13-peer-shape-compare.json` | peer rows | Branch adds `open_target`; `launches` on both (F-66 resolved); the only base-only peer frames are the live output ones (F-71) |
+| Open targets | SR-083 step 3; FU-031, FU-024 | Real browser | SDV 7/7, PMU 25/25, PLN 9/11 | ENV-2 | Pass | `API-r13-runs.txt` | SDV-07 in Agent, Team, Org trees | PLN-04 not 461; PLN-09 below |
+| Settings | DS-12; SR-064; V-11; F-39; CR-461-079/080 | Real browser | RSM, DLD (DCP, DCR, AFS), SSR | ENV-2 | **Fail** (F-60, F-69) | `API-r13-F60-*.png` | the saved card; the stored launches | RSM 7/7; AFS-001 (F-62 resolved), DLP-004, DCR-001 pass; AFS-002's Org copy card shows (F-61 resolved) |
+| Delegator Stop from Settings with working children | REQ-001; DS-13 | Real browser | SSR-002 (first run), DCR-002 | ENV-2 | **Fail** (F-68, intermittent) | `API-r13-F68-SSR-002-delegator-stop-refused.png` | the run reads Stopped | |
+| LRL-001, LRL-004 | large-runs-load-less AC-003, AC-006; CR-461-082/083 | Real browser | DLD LRL cases | ENV-2 | Pass | `API-r13-runs.txt` | one load; the refusal names the file and line | F-64, F-65 resolved |
+| PLN-09 | AC-008 (REQ-007) | Real browser | with archive diagnostics | ENV-2 | **Fail** (F-67) | `API-r13-F67-PLN-09-archive-diagnostics.json` | the refusal's reason in the window | |
+| Phone | SR-082 item 1; SR-083 step 3 | Phone shell | `mobile-shell-probe.mjs` | ENV-3 | **Fail** (F-73) | `API-r13-F73-phone-list-no-delegated-rows.png` | delegated rows, Team run screens | 18/30, then aborted; MSP-12 passes (no status poll) |
+| Remote title | autobyteus-278 titles | Two nodes | `remote-run-title-probe.mjs` | ENV-4 | **Fail** (F-72, minor) | `API-r13-runs.txt` | the Team row's title stays | |
+| LE-O1 live | SR-081 | DeepSeek | `-t LE-O1`, two runs | ENV-6 | Partly | `API-r13-runs.txt` | the correction | The SR-081 step passes in both runs; both then stop at the mounted lead's teammate delegation (unclassified) |
+| BR-008 … BR-011 | restart | Real browser | `task-closure-tree-probe.mjs` | ENV-2 | 15/16 | `API-r13-runs.txt` | | BR-011: "org: conversation after restart", the same step as round 12 |
+| `owner-scoped-file-reads` (seeded) | AC-001 … AC-012 | Real browser, phone | seeded | ENV-2 | Pass | | B-001 … B-007, T-API | T-API's rule-2 form passes |
+| API-F01 | build inputs | Fresh clone, release desktop build | TESTING.md "Fresh-start build" | ENV-5 | Pass | `API-r13-runs.txt` | exit 0 | Signing and other platforms: runner only |
 
 ### Findings
 
-- **Round 11's F-57 and F-59:** resolved.
+- **Resolved from round 12:** F-61 (an Org copy's own card), F-62 (a live copy shown live and locked after its delegator's Stop), F-63 (the correction before step 2), F-64, F-65, F-66. FU-031: SDV-07 passes in all three trees.
 
-| ID | Case | Expected (authority) | Observed (`5b455a9ec7`) | Preliminary Classification |
+| ID | Case | Expected (authority) | Observed (`58cc542572`) | Preliminary Classification |
 | --- | --- | --- | --- | --- |
-| F-60 | DCP-001, DCP-005 (DCP-003 asserts the same) | V-11: "an edited agent shows no origin text. The edit becomes the run's own launch"; SR-064 | After a Save on a stopped copy, its card shows the new model with the old origin: DCP-001 "Gemini test · … · Agent default" (`data-source="agent_default"`; the Writer's agent default is the Alt model); DCP-005 a Team copy member "Gemini test · … · Team default". The save is stored on the copy's own run. The save path (`StandaloneStoppedRunSelectionUpdater` → `commitRunRuntimeSwitch`) leaves the run's `launchSource` | `Local Fix` |
-| F-61 | DCP-003, AFS-002, DCR-001, DCR-002, DCR-003, DLP-004 (rerun) | U-B: "The rows, selection and Stop buttons stay"; a copy's own Settings card (autobyteus-366) | With Settings open, selecting a delegated copy in an Org run (running), or in a stopped Team run, shows the host's card (`existing-run-root-card`; the copy row selected). `resolveSettingsSubject` (`utils/runSettings/settingsSubject.ts`) finds no row for the copy in the editor's `delegated` rows, so the subject is `none`. In an Agent run, and in a running Team run, the copy's card shows | `Local Fix` (web) |
-| F-62 | AFS-001, SSR-001, SSR-002, SSR-003 | REQ-001 (a delegated run outlives its delegator's Stop); rule 1 statuses; DS-13 (idle counts) | With its delegator stopped, a copy that is live (`agentRunCollaborationStatuses`: `idle`; sidebar: green dot and stop icon) shows "Stopped", no stop icon and an unlocked model in its own Settings. The user cannot stop it there, and its Save is refused: `RUN_ACTIVE` "This run became active through another connected workflow…" (agent copies and team copies) | `Local Fix` (web) |
-| F-63 | live LE-O1 (DeepSeek) | TC-12 / A-6: an old prefixed address is refused with "Use /x"; contract §2.2: messaging needs the same open Task or the assigner | In an Org run, a delegated copy of the mounted `/squad` was told to message `/squad/mate`. Its lead's message reached the Org's own mounted mate (`…46c0ab09…`, the only mate created, by the earlier mounted step); the copy's mate (`…46cbd161…`) never started. Expected: refused, nothing reaching the mounted mate | `Unclear` (server admission; security-relevant: a copy reaches a configured member it shares no Task with) |
-| F-64 | LRL-001 | large-runs-load-less AC-003, QR-005: a stopped Team opens with one projection and one file-change request, for the focused member | Two of each per member, for three members (two of them other Team runs' members) at one open. Base `827f1e68dc` passes the same case | `Local Fix` (web) |
-| F-65 | LRL-004 | large-runs-load-less AC-006: a message to a Team whose stored message log is damaged is refused with the reason | The message shows in the conversation and the composer keeps it; the run stays stopped; no reason appears anywhere (no stream frame or GraphQL answer carries it). Base passes the same case | `Local Fix` |
-| F-66 | API-P04 | SR-038 (REQ-009): a peer child's row carries each agent's launch (`launches`, read from the peer while the view is open); rule 3 | Every peer row in the Agent, Team and Org view snapshots and in `agentRunCollaboration`, `getAgentOrgRunInspection`, `getTeamRunResumeConfig` has no `launches` key during the whole run (peer reachable; the probe's peer checks pass). At base each has `address`, `runtime_kind`, `llm_model_identifier`, `source.origin`, `source.fallbacks` | `Local Fix` (server) |
+| F-60 (remains) | DCP-001, DCP-003, DCP-005; SSR-004 | V-11 / CR-461-078: an edited agent shows no origin; the edit is the run's own launch; CR-461-079 rows from the view with their launch | After a copy's Save the card still shows the old origin ("Agent default", `data-source="agent_default"`; a Team copy member "Team default"). SSR-004: the thinking saved `xhigh` is stored on the member's own run, yet the reopened card shows `High`. So the Settings rows keep the launch they were read with | `Local Fix` (web) |
+| F-67 | PLN-09 | AC-008: refused, "and the reason is shown" | "Archive all" under P sends `ArchiveStoredRun` per run; the server refuses one: "This run can't be archived while a run it delegated to is working (/fact_checker_924b). …"; the window shows only "Archived 1 run. 1 failed." (`archiveRunRecord` drops the message) | `Local Fix` (web) |
+| F-68 | SSR-002 (one of two runs), DCR-002 | REQ-001: the delegator stops; its delegated runs keep working | Stopping a delegator from its Settings while its delegated runs work: an Agent Manager with two working Team copies showed "Couldn't terminate this run. Try again." and stayed Running (the second run stopped normally); an Org with working copies kept "Running" in its Settings with "Org configuration changed topology, identity, or locked fields. Refresh" while its tree showed its members stopped | `Unclear` (intermittent; web or server) |
+| F-69 | SSR-002, DCR-003 | Design (SR-075, F-39): a team-level choice on a stopped delegated team "changes the team's default, and each member keeps its own saved launch" | After a team-level Save, the copy team's own file has its default **and its following lead** on the new model (SSR-002 stored: lead `dlc-alt-model` → `gemini-3.8-flash-low`; DCR-003 stored lead = the team choice). Members with their own default or their own earlier save keep theirs | `Local Fix` (server) |
+| F-70 | RC-32, RTP-08, RTP-04, RTP-05 | SR-082/083: a peer run's statuses through its handle on `/ws/run-status`; CR-461-085: Retry observes again | On alpha a peer run's agents read `offline` (snapshot) and never change: not after beta's owner turns it, not after the outage, Retry and a new turn on beta (RTP-08 `changesAfterRetry: []`). The opened peer run's header says Offline while it works; the row's stop icon is hidden, so RTP-05 cannot stop it | `Local Fix` (server) |
+| F-71 | RTP-04; RC-31, RC-33, RC-34; API-P04 | AC-802 (autobyteus-278): a remote run's live output shows in the delegating window | The owner's message reaches the peer run, but its answer never shows live; the delegator views carry no peer output (`remote_agent_presentation` removed in `445f1ed947`). Design line 411 (rule 2) moves a child's output to its own stream, but a peer child has no such stream on the delegating node | `Unclear` (design: where a peer child's output is shown) |
+| F-72 (minor) | RRT-05 | A Team row keeps its stored title (autobyteus-278 SR-004) | On the peer node, a peer-started Team's row shows the delegated task message as its title for ~100 ms after the owner's message, then its title | `Unclear` |
+| F-73 | Phone MSP-02, -03, -05, -06, -08, -11, -14, -16, -17, -20, -33, -43 | SR-083 step 3 (the phone opens where the server says); the phone list as the desktop (autobyteus-426) | The phone list shows no delegated rows under a listed run (the Project Task Manager with delegated work has no disclosure), and a Team run's screen does not open (`team:delivery_team…`); the desktop shows the same rows | `Local Fix` (web, phone) |
 
-**Unclear (needs the reviewer's reading):**
-- PLN-09 (AC-008): "Archive all" on P's agent group after the squad's Stop shows "Archived 1 run. 1 failed." The one archive call captured succeeded; the failed one shows no reason. If the failed run was refused because a run it delegated to works (REQ-007), the reason must show (AC-008); which run and why is not in the evidence.
+**Unclassified:**
+- `runtime-switch-members-extended-built-server`: on the branch it failed three ways in three runs (EX-01 "attempt: outcome"; EX-04 `SESSION_NOT_READY` on the native first turn; the setup's `providerModelCatalogSnapshots` request); base `827f1e68dc` passes 5/5.
+- LE-O1's later step (the mounted lead's teammate delegation, the same in two runs; the model's tool arguments are not in the server log).
+- AFS-002's later step: in a fresh page, the stopped Org's direct agent's Settings did not open.
+- BR-011 (now the same step twice).
 
-**Stale, rewritten this round** (base's paths; each now follows the requirements and design):
-- `delegated-launch-defaults`:
-  - TC-12 own-root addresses for a copy member's calls (DLP-003 `/unoffered`, `/engineer`; DLP-006, DLP-007 `/engineer`) and row keys (DCP-005 `/lead@…`);
-  - the copy's own run for every stored launch (DCP-001, DCP-003, DCP-004 `getAgentRunResumeConfig`; DCP-005 the copy team's own file);
-  - FU-030 wording (DLP-003, DLP-004, DLP-005 "not offered"; DCP-004 "{name} is running. Stop it, then save again.");
-  - REQ-001 in AFS-001: the hub's Stop leaves its copies running; B is stopped by its own Stop before editing;
-  - AFS-001's stored reads from each copy's own run (F-57's own-run check).
-- `settings-saved-model-refresh-cases` (SSR): own-run saves (`UpdateStoppedAgentRunSelection`, `UpdateStoppedTeamRunSelections`), own-run reads, F-39 (a team-level Save keeps each member's own launch), TC-12 row keys, each copy stopped by its own Stop (REQ-001), SSR-003's read failure on any read after the committed write.
-- `large-runs-load-less-cases`: LRL-004 reads the refusal from the view stream (no restore mutation under rule 2); LRL-005 allows the stream to follow the run through its restore (SR-064).
-- `owner-scoped-file-reads`: T-API's QR-002 checks to rule 2.
-- `projects-left-navigation`: PLN-09 records the archive answers and the window's text.
+**Stale, rewritten this round** (each now follows the requirements and design): the status reads listed under Deviations; `topRun` in the change feed (SR-080); the "settings" origin in the stopped-run model-config suite and RS-02 (CR-461-078); RC-31's row (`launches`, `open_target`); C1 read as its own run and the copies stopped by their own Stop after the root's (DCR-001, DCR-002; REQ-001); the Org tree's Team copy address in the probe helper; SDV-07 to FU-031; RTP-08 added.
 
-**Stale, rewrite waiting for the fix** (the live suite, LE-A1 … LE-T1):
-- LE-A1 checks the delegator's `collaboration_tree.json` package (TC-13: logs in `agents/<id>/`; no delegator package);
-- LE-A2 expects `coordinatorAddress: /squad/lead` and handoffs naming `/squad/mate` (TC-12: `/lead`, `/mate`);
-- LE-A3 reads a copy member's conversation through the host's member projection (rule 2: its own team's projection);
-- LE-T1 waits for the copy lead's tool events on the host Team's stream (rule 2: the copy's own stream) and `/squad/mate` (TC-12).
+**Stale, still waiting:** the live suite's LE-A1 … LE-T1; the large-hub probe's redesign.
 
-**Not 461 (recorded):** PLN-04 (the composer's model menu option for a new Team run); `existing-run-model-config` (base drift `817bd9950f`); phone MSP-50, MSP-51 (autobyteus-23).
-
-**Wording only (FU-030):** DLP-004, DCP-004 added to `follow-ups.md` (with DLP-003, DLP-005, SIR-001 from round 11).
-
-**Classified earlier:** SIR-002, not 461 (CRR-041). SIR-001: FU-030.
-
-**Unclassified:** BR-011 (after a real backend restart; its failing step varies: "org: conversation after restart" this time).
-
-**Retired with rationale:** DLP-006 (DS-10 item 6). The large-hub probe's input, log path and request-count expectations are the hub-hosted model's; it needs a redesign under rule 2, which waits for the fix.
+**Not 461:** PLN-04; the base phone probe's duplicate case IDs.
 
 ## Acceptance-Criteria Proof
 
 | Acceptance-Criteria ID | Critical | Proven By Case IDs | Result | For A User-Only Part |
 | --- | --- | --- | --- | --- |
-| AC-001 … AC-006 | Yes | rounds 8 … 10 (server, stories, live) | Proven | — |
-| AC-007 | Yes | PMU 25/25, SDV-01 … 07 | Proven | — |
-| AC-008 | Yes | rounds 8 … 10 (server); PLN-09 | Proven at the server; the rendered group archive is Unclear | — |
-| AC-009 … AC-016 | mixed | rounds 8 … 10; API-P03 | Proven, except REQ-009's peer launches (F-66) | — |
-| AC-010 (REQ-006) | Yes | DCP-001 … 005, AFS-001, SSR | Not Proven in full (F-60, F-61, F-62) | — |
-| DS-12 (SR-064) | — | RSM 7/7; DCP; SSR | Not Proven in full (F-60, F-62) | — |
+| AC-001 … AC-006 | Yes | rounds 8 … 10; this round's full server E2E | Proven | — |
+| AC-007 | Yes | SDV 7/7, PMU 25/25 | Proven | — |
+| AC-008 | Yes | server suites; PLN-09 | Not Proven in the window (F-67) | — |
+| AC-010 (REQ-006) | Yes | DCP, DCR, SSR, AFS, RSM | Not Proven (F-60, F-69) | — |
+| AC-016 / REQ-009, REQ-013 (peers) | Yes | RTP, RC, API-P04 | Not Proven (F-70, F-71) | — |
+| AC-017 (statuses by run ID) | Yes | FOLLOW-A/T/E/L/D, lazy-member, idle-lifetime, MSP-12 | Proven locally; not for peers (F-70) or the phone's rows (F-73) | — |
 
 ## Validation Confidence Scorecard (Mandatory)
 
 | Confidence Category | Post-Repository Score | Final Score | What Supports It | Residual Uncertainty | What Could Improve It |
 | --- | --- | --- | --- | --- | --- |
-| Requirement and acceptance-criteria proof | 86% | 86% | Server criteria proven; AC-007 rendered; F-57, F-59 resolved | F-60 … F-66 | The fixes |
-| Changed-boundary execution directness | 93% | 93% | Real browser, two nodes, real runtime, fresh-clone build | — | — |
-| Cross-boundary integration realism and mock gap | 88% | 88% | Live DeepSeek run; base/branch capture | Scripted AGY elsewhere | — |
-| Environment, configuration, identity, and fixture fidelity | 92% | 92% | Base given its own install | — | — |
-| Failure, edge-case, lifecycle, and recovery evidence | 84% | 84% | Restarts, damaged logs, peers | F-65; BR-011 varies | The fixes |
-| User-surface, browser, and desktop-shell confidence | 78% | 78% | PMU, SDV, RSM pass; desktop build | F-60, F-61, F-62, F-64 | The fixes |
-| Durable regression coverage quality and relevance | 88% | 88% | DLD, SSR, LRL, osfr, PLN rewritten to the requirements | Live suite rewrite waiting | After the fix |
+| Requirement and acceptance-criteria proof | 84% | 84% | Six findings resolved; local statuses proven | F-60, F-67 … F-73 | The fixes |
+| Changed-boundary execution directness | 94% | 94% | Full server E2E, two nodes, phone, live, fresh build | — | — |
+| Cross-boundary integration realism and mock gap | 88% | 88% | Live DeepSeek; base/branch capture | Scripted AGY elsewhere | — |
+| Environment, configuration, identity, and fixture fidelity | 92% | 92% | Base with its own install | No base phone probe | — |
+| Failure, edge-case, lifecycle, and recovery evidence | 84% | 84% | Restarts, outages, Retry | F-68, F-70; BR-011 | The fixes |
+| User-surface, browser, and desktop-shell confidence | 76% | 76% | SDV, PMU, RSM, LRL | F-60, F-67, F-71, F-73 | The fixes |
+| Durable regression coverage quality and relevance | 90% | 90% | Run-status client; FOLLOW-L/D, RTP-08 added; 20 probes and suites updated | LE-A1 … LE-T1 | After the fix |
 
 - Overall post-repository confidence: 87%
 - Overall final confidence: 87%
 - Calculation method: simple average of the seven categories
-- Every critical acceptance criterion directly proven, apart from parts only the user can check: `No` (AC-010: F-60, F-61, F-62)
+- Every critical acceptance criterion directly proven, apart from parts only the user can check: `No` (AC-008, AC-010, AC-016, AC-017 partly)
 - Any final applicable category below `90%`: `Yes`
 - Default final confidence target of `95%` met: `No`
-- Confidence-limiting residual risks: F-60 … F-66; PLN-09; the live suite's waiting rewrite
+- Confidence-limiting residual risks: F-60, F-67 … F-73; the unclassified items
 
 ## Broader Validation Decision (Mandatory)
 
 - Decision: `Required`
 - Execution mode: `Browser`, `Worker or Distributed`, live runtime
-- The confidence gap it addresses, and the expected gain: rendered rule-2 Settings and lists; the peer view contract against base; the real runtime's addressing.
-- Browser validation needed, and why or why not: yes. F-60, F-61, F-62, F-64 and F-65 are visible only in the rendered app.
+- The confidence gap it addresses, and the expected gain: rendered statuses, Settings and peer rows on the new status spine.
+- Browser validation needed, and why or why not: yes. F-60, F-67, F-70, F-71 and F-73 are visible only in the rendered app.
 
 ## Desktop Application Validation
 
@@ -147,8 +132,8 @@ This report records what ran and the result. The plan is in `api-e2e-coverage-in
 
 ## Persisted-Data Transition Checks
 
-- Approved persisted-data decision: `Migration Required` (DS-10)
-- Cases proving the migration outcome: rounds 9 and 10 (no server change since).
+- Approved persisted-data decision: `Migration Required` (DS-10); CR-461-078's `"settings"` origin is for new writes only (design).
+- Cases proving the migration outcome: the full server E2E's migration suites (pass).
 - Version-specific runtime branch, dual read/write, or compatibility fallback observed: `No`
 - Residual untested persisted-data risk: none new.
 
@@ -156,50 +141,43 @@ This report records what ran and the result. The plan is in `api-e2e-coverage-in
 
 - Reviewed requirements/design introduce, tolerate, or ambiguously describe backward compatibility in scope: `No`
 - Compatibility-only or legacy-retention behavior observed in implementation: `No`
-- Durable coverage added or retained only for compatibility-only behavior: `No` (DLP-006 retired)
+- Durable coverage added or retained only for compatibility-only behavior: `No`
 - Reroute classification used: N/A
 - Upstream recipient notified: N/A
 
 ## Durable Coverage Changed In The Codebase
 
 - Repository-resident durable coverage added, updated, or removed this round: `Yes`.
-  - `autobyteus-web/tests/e2e/delegated-launch-defaults-probe.mjs`: own-root addresses and row keys (TC-12); `ownAgentLaunch`; DCP-005's own-file check; FU-030 wording; the delegated rows' team address from the tree depth; SSR registration gets `gql`, `teamTree`.
-  - `agent-settings-focused-cases.mjs`: AFS-001 own-run reads (F-57) and REQ-001 after the hub's Stop; AFS-002 own read.
-  - `settings-saved-model-refresh-cases.mjs`: SSR-001 … SSR-004 rewritten (see Findings).
-  - `delegated-copy-own-file-cases.mjs`: E6 own files, TC-12 trees, F-39.
-  - `large-runs-load-less-cases.mjs`: LRL-004, LRL-005.
-  - `owner-scoped-file-reads-probe.mjs`: the standalone member's own run route; B-003's selector; T-API's QR-002 checks.
-  - `projects-left-navigation-probe.mjs`: PLN-09's diagnostics.
-  - `stopped-delegator-views-probe.mjs`: SDV-06 from the Workspace and Projects pages.
+  - Added: `autobyteus-web/tests/e2e/fixtures/run-status-client.mjs`; FOLLOW-L and FOLLOW-D (`delegator-view-follows-child.e2e.test.ts`); RTP-08 (`remote-runs-in-tree-probe.mjs`).
+  - Server suites updated: `delegated-team-lazy-member-activation`, `collaboration-contract-stories` (S17), `delegator-view-follows-child`, `task-copy-idle-lifetime`, `project-change-feed`, `ad-hoc-task-delegation` (delete diagnostics), `stopped-run-model-config-graphql`, `runtime-switch-native-built-server` (RS-02), `agy-skill-update-notice-roots` (SUN-E2E-002), `remote-delegation-two-server` (RC-31, RC-32), `agent-initiated-collaborators` (LE-O1).
+  - Web probes updated: `mobile-shell-probe` (MSP-12, MSP-20), `mobile-closed-task-rows-cases`, `stopped-delegator-views-probe` (SDV-07), `large-runs-load-less-cases` (LRL-004), `projects-left-navigation-probe` (PLN-09), `agent-settings-focused-cases` (AFS-001), `delegated-copy-own-file-cases` (DCR-001/002/003), `delegated-launch-defaults-probe` (Org Team addresses), `settings-saved-model-refresh-cases` (SSR captures).
 - Added or updated paths attached for proportional test-code review: `Not Applicable` (Fail round)
 
 ## Dependencies Mocked Or Emulated
 
 | Dependency | Method | Why Real Dependency Was Not Used | Confidence Limitation |
 | --- | --- | --- | --- |
-| Every probe run's model | Scripted AGY CLI; the Grok and LM Studio stand-ins | Deterministic (TESTING.md) | The live suite covers a real model |
+| Every probe run's model | Scripted AGY CLI; the Grok and LM Studio stand-ins | Deterministic (TESTING.md) | The live LE-O1 covers a real model |
 
 ## Temporary Methods And Cleanup
 
 | Item | Owned By This Run | Cleanup Action | Result |
 | --- | --- | --- | --- |
 | Probe stacks, data roots, homes, peer nodes | Yes | The probes' `finally`; homes removed by the runner scripts | Removed |
-| `p04-capture-probe.mjs` (in the branch and base worktrees) | Yes | Deleted after the capture; never committed | Removed |
-| Base worktree `461-base-827f1e68` (its own install now) | Yes | Kept for the next base comparison | Kept |
-| Fresh clone `/tmp/api461/r12-f01-clone` | Yes | Removed after the round | Removed |
+| `p04-capture-probe.mjs` | Yes | Generated for the capture, removed after it; never committed | Removed |
+| Fresh clone `/tmp/api461/r13-f01-clone` | Yes | Removed after the round | Removed |
+| Base worktree `461-base-827f1e68` | Yes | Kept for the next base comparison | Kept |
 | `/tmp/api461/` logs | Yes | Kept; extracts committed (home paths shortened, secret scan clean) | Kept |
 
 ## Preliminary Classification (On `Fail`)
 
-- `Local Fix`: F-60, F-61, F-62, F-64, F-65 (web; F-60 and F-65 may touch the server), F-66 (server).
-- `Unclear`: F-63 (server admission), PLN-09.
+- `Local Fix`: F-60 (web), F-67 (web), F-69 (server), F-70 (server), F-73 (web, phone).
+- `Unclear`: F-68 (intermittent), F-71 (where a peer child's live output is shown), F-72 (minor).
 
 ## Latest Authoritative Result
 
 - Result: `Fail`
-- Criteria not proven: AC-010 / DS-12 in the rendered Settings (F-60, F-61, F-62); REQ-009's peer launches (F-66); TC-12 / §2.2 for an Org copy's prefixed address (F-63); large-runs-load-less AC-003 and AC-006 (F-64, F-65).
+- Criteria not proven: AC-008 in the window (F-67); AC-010 (F-60, F-69); peers AC-016 / REQ-009 / REQ-013 (F-70, F-71); the phone's rows (F-73); a delegator's Stop with working children from Settings (F-68).
 - Recommended owner: per the failure-origin review.
 - Next recipient from `get_handoff_rules`: `/software_engineering_team/code_reviewer` (failure-origin review)
-- Notes for the next round:
-  - First: recheck F-60 … F-66 (DCP-001/003/005, AFS-001/002, DCR-001 … 003, DLP-004, SSR-001 … 004, LRL-001, LRL-004, live LE-O1, API-P04 with `p04-capture-probe` regenerated by `/tmp/api461/p04/make-capture-probe.py`).
-  - Then: T-API's rewritten form; the live suite's rewrite (LE-A1 … LE-T1); the large-hub probe's redesign; BR-011.
+- Notes for the next round: recheck F-60, F-67 … F-73 (DCP-001/003/005, SSR-002/004, DCR-002/003, PLN-09, RC-31 … RC-37, RTP-04/05/08, RRT-05, the phone probe in full); then the unclassified items and LE-A1 … LE-T1.

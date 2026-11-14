@@ -77,7 +77,7 @@ export function registerSavedRefreshCases(h) {
     const request = req => {
       if (!req.url().endsWith('/graphql') || req.method() !== 'POST') return
       const body = req.postDataJSON()
-      if (!/UpdateStoppedAgentRunSelection|UpdateStoppedTeamRunSelections|AgentRunCollaboration|GetAgentRunResumeConfig|GetTeamRunResumeConfig/.test(body.query ?? '')) return
+      if (!/UpdateStoppedAgentRunSelection|UpdateStoppedTeamRunSelections|AgentRunCollaboration|GetAgentRunResumeConfig|GetTeamRunResumeConfig|TerminateAgentRun|TerminateAgentTeamRun/.test(body.query ?? '')) return
       const entry = { query: body.query, variables: body.variables, at: new Date().toISOString() }; records.push(entry)
       pending.push(req.response().then(async r => { entry.status = r?.status(); entry.response = r ? await r.json().catch(() => null) : null }).catch(e => { entry.error = e.message }))
     }
@@ -151,7 +151,8 @@ export function registerSavedRefreshCases(h) {
       const leadBefore = await summary(groupRow(p, memberKey('lead')))
       r.teamSave = await saveSameView(p, teamCard, MODEL, MODEL_LABEL)
       r.leadAfterTeamSave = await summary(groupRow(p, memberKey('lead')))
-      assert(r.leadAfterTeamSave === leadBefore, 'a team-level Save changed a member\'s own launch (F-39)', { before: leadBefore, after: r.leadAfterTeamSave })
+      r.storedAfterTeamSave = await ownTeam(r.copyId)
+      assert(r.leadAfterTeamSave === leadBefore, 'a team-level Save changed a member\'s own launch (F-39)', { before: leadBefore, after: r.leadAfterTeamSave, storedBefore: r.ownBefore, storedAfter: r.storedAfterTeamSave })
       assert(await summary(groupRow(p, memberKey('engineer'))) === engineerBefore, 'Own-default member changed')
       r.teamSecond = await saveSameView(p, teamCard, ALT, ALT_LABEL)
       assert(await summary(groupRow(p, memberKey('lead'))) === leadBefore, 'a second team-level Save changed a member\'s own launch (F-39)')

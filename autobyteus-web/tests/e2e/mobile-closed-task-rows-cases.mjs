@@ -41,6 +41,10 @@ import path from 'node:path';
 import { randomUUID } from 'node:crypto';
 import { attachToBrowserContext, ownerSocketUrl } from './fixtures/probe-node-access.mjs';
 import { waitForDevServerReady } from './fixtures/dev-server-ready.mjs';
+import { openRunStatus } from './fixtures/run-status-client.mjs';
+
+/** autobyteus-461 SR-082: whether a run is active is its own answer (the status poll is gone). */
+const activeOn = (node, runId) => node.gql('query($id:String!){getAgentRunResumeConfig(runId:$id){isActive}}', { id: runId }).then((r) => ({ isActive: r.getAgentRunResumeConfig?.isActive ?? null }))
 
 const PHONE_HOST = '192.168.77.30';
 const MODEL = 'gemini-3.8-flash-low';
@@ -269,7 +273,8 @@ export const runClosedTaskRowsCases = async (probe) => {
         const details = { quiet: { seconds: 50, ...quietCounts }, goneAfterCloseMs: goneMs, viewReadsAfterClose, viewReadsInThe15sAfterGone: viewReadsAfterGone,
           nodeListedBeforeClose, afterTodoOnly: afterTodo, rowBackAfterReactivationMs: reopenMs, listedOnOtherAtEnd: { writerRun: await listed(phoneOther, writerRun), teamRun: await listed(phoneOther, teamRun) } };
         assert(quietCounts.ptmViewReads === 0, 'no view read of the PTM while nothing changes (AC-005)', details);
-        assert(quietCounts.statuses >= 8 && quietCounts.statuses <= quietCounts.history + 1 && quietCounts.statusesNamingPtm === quietCounts.statuses, 'one batched statuses read per refresh, naming the PTM (AC-005)', details);
+        // autobyteus-461 SR-082: statuses by run ID on /ws/run-status; no status poll at all.
+        assert(quietCounts.statuses === 0, 'no status poll (SR-082)', details);
         assert(goneMs.otherA !== null && goneMs.otherA <= 10_000 && goneMs.otherB !== null && goneMs.otherB <= 10_000, 'phone-other: both delegated rows leave within 10 s (AC-001)', details);
         assert(goneMs.hostA !== null && goneMs.hostA <= 1_000 && goneMs.hostB !== null && goneMs.hostB <= 1_000, 'phone-host (the PTM open): both rows leave within 1 s (AC-004)', details);
         assert(viewReadsAfterClose >= 1 && viewReadsAfterClose <= 2 && viewReadsAfterGone === 0, 'one view re-read per close, none afterwards (QR-002)', details);
@@ -334,7 +339,10 @@ export const runClosedTaskRowsCases = async (probe) => {
           for (const phone of [phoneHost, phoneOther]) await unfold(phone, `agent:${ptm}`);
           return (await listed(phoneHost, copy)) && (await listed(phoneOther, copy));
         }, 60_000);
-        const statusOf = async () => (await delta.gql('query($ids:[String!]!){agentRunCollaborationStatuses(runIds:$ids){runId isActive closedTaskExecutionsDigest}}', { ids: [ptm] })).agentRunCollaborationStatuses[0];
+        const statusOf = () => activeOn(delta, ptm);
+        // The node tells a subscriber of the stopped host when its rows change (RUN_TREE_CHANGED; SR-082).
+        const deltaFeed = await openRunStatus(delta.baseUrl);
+        await deltaFeed.subscribe([{ kind: 'agent', runId: ptm }]);
         const stopped = (await delta.gql('mutation($id:String!){terminateAgentRun(agentRunId:$id){success message}}', { id: ptm })).terminateAgentRun;
         assert(stopped.success, 'the PTM stopped', stopped);
         await waitFor('the PTM inactive on delta', async () => (await statusOf())?.isActive === false, 30_000);
@@ -352,7 +360,8 @@ export const runClosedTaskRowsCases = async (probe) => {
         const closedAt = Date.now();
         const goneAt = await gone;
         await sleep(15_000);
-        const afterClose = { status: await statusOf(), goneAfterCloseMs: { phoneOther: goneAt.other && goneAt.other - closedAt, phoneHost: goneAt.host && goneAt.host - closedAt },
+        const treeAfterClose = deltaFeed.messages.filter((m) => m.type === 'RUN_TREE_CHANGED' && m.payload.runId === ptm && m.at >= closeFrom).length;
+        const afterClose = { status: await statusOf(), treeChanged: treeAfterClose, goneAfterCloseMs: { phoneOther: goneAt.other && goneAt.other - closedAt, phoneHost: goneAt.host && goneAt.host - closedAt },
           viewReads: { phoneHost: reads(phoneHost.net, closeFrom).filter(e => e.op === VIEW_OP && e.runId === ptm).length, phoneOther: reads(phoneOther.net, closeFrom).filter(e => e.op === VIEW_OP && e.runId === ptm).length } };
         await shot(phoneOther.page, 'MSP-34-phone-other-closed-stopped-host');
         // The manager sets Task D back to TODO: the phones agree with the node's stored view of the stopped host.
@@ -360,18 +369,19 @@ export const runClosedTaskRowsCases = async (probe) => {
         await closeTask({ runId: manager }, taskD.taskId, 'TODO');
         await sleep(15_000);
         const nodeListed = listedOnNode(await viewOnDelta(ptm), copy);
-        const afterTodo = { status: await statusOf(), nodeListed, listed: { phoneHost: await listed(phoneHost, copy), phoneOther: await listed(phoneOther, copy) },
+        const afterTodo = { status: await statusOf(), treeChanged: deltaFeed.messages.filter((m) => m.type === 'RUN_TREE_CHANGED' && m.payload.runId === ptm && m.at >= todoFrom).length, nodeListed, listed: { phoneHost: await listed(phoneHost, copy), phoneOther: await listed(phoneOther, copy) },
           viewReads: { phoneHost: reads(phoneHost.net, todoFrom).filter(e => e.op === VIEW_OP && e.runId === ptm).length, phoneOther: reads(phoneOther.net, todoFrom).filter(e => e.op === VIEW_OP && e.runId === ptm).length } };
         await shot(phoneOther.page, 'MSP-34-phone-other-todo-stopped-host');
         const details = { copy, manager, taskD: taskD.taskKey, stoppedBefore, afterClose, afterTodo };
         const failures = [
           [stoppedBefore.status?.isActive === false && stoppedBefore.nodeListed && stoppedBefore.listed.phoneHost && stoppedBefore.listed.phoneOther, 'the stopped host\'s delegated row is listed on the node and on both phones'],
-          [stoppedBefore.statusReadsNamingPtm >= 1 && stoppedBefore.viewReads.phoneHost === 0 && stoppedBefore.viewReads.phoneOther === 0, 'a stopped host is in the status read; no view read while nothing changes (QR-002)'],
+          [stoppedBefore.statusReadsNamingPtm === 0 && stoppedBefore.viewReads.phoneHost === 0 && stoppedBefore.viewReads.phoneOther === 0, 'no status poll (SR-082); no view read while nothing changes (QR-002)'],
           [afterClose.goneAfterCloseMs.phoneOther !== null && afterClose.goneAfterCloseMs.phoneOther <= 10_000 && afterClose.goneAfterCloseMs.phoneHost !== null && afterClose.goneAfterCloseMs.phoneHost <= 10_000, 'the closed Task\'s row leaves both phones within 10 s while its host is stopped (AC-011-1)'],
-          [afterClose.status?.isActive === false && afterTodo.status?.isActive === false && typeof afterClose.status?.closedTaskExecutionsDigest === 'string', 'the host stays stopped; the node answers its digest'],
+          [afterClose.status?.isActive === false && afterTodo.status?.isActive === false && afterClose.treeChanged >= 1 && afterTodo.treeChanged >= 1, 'the host stays stopped; the node tells its subscribers its rows changed, on close and on reopen (RUN_TREE_CHANGED)'],
           [afterClose.viewReads.phoneHost <= 1 && afterClose.viewReads.phoneOther <= 1 && afterTodo.viewReads.phoneHost <= 1 && afterTodo.viewReads.phoneOther <= 1, 'at most one view re-read per digest value (AC-011-2)'],
           [afterTodo.listed.phoneHost === nodeListed && afterTodo.listed.phoneOther === nodeListed, 'after TODO both phones agree with the node\'s stored view (AC-011-1, reopened)'],
         ].filter(([ok]) => !ok).map(([, label]) => label);
+        deltaFeed.close();
         assert(failures.length === 0, failures.join('; '), details);
         return details;
       });
@@ -386,7 +396,7 @@ export const runClosedTaskRowsCases = async (probe) => {
     await runCase('MSP-27', async () => {
       // The PTM active, and read as active by the window before the close.
       await stack.agentSay(stack.ptm, 'Status check before the close.');
-      const ptmActive = async () => (await alpha.gql('query($ids:[String!]!){agentRunCollaborationStatuses(runIds:$ids){runId isActive}}', { ids: [stack.ptm] })).agentRunCollaborationStatuses[0]?.isActive === true;
+      const ptmActive = async () => (await activeOn(alpha, stack.ptm)).isActive === true;
       await waitFor('the PTM active on alpha', ptmActive, 60_000);
       const context = await browser.newContext({ viewport: { width: 1440, height: 1400 }, locale: 'en-US', timezoneId: 'UTC' });
       await attachToBrowserContext(context);
@@ -435,7 +445,7 @@ export const runClosedTaskRowsCases = async (probe) => {
         const viewReadsAfterClose = reads(net, closedAt - 5_000).filter(e => e.op === VIEW_OP && e.runId === stack.ptm).length;
         const details = { openRun: openRunBeforeClose, openRunAtEnd: new URL(page.url()).searchParams.get('id'), quietSeconds: 12, quietViewReads, quietStatusReads, goneAfterCloseMs: goneAt && goneAt - closedAt, viewReadsAfterClose };
         assert(details.openRun === plain && details.openRunAtEnd === plain, 'the window\'s open run is a plain run, not the PTM, throughout', details);
-        assert(quietViewReads === 0 && quietStatusReads >= 1, 'the window polls the PTM\'s statuses and reads no view while nothing changes (AC-005)', details);
+        assert(quietViewReads === 0 && quietStatusReads === 0, 'no status poll (SR-082) and no view read while nothing changes (AC-005)', details);
         assert(details.goneAfterCloseMs !== null && details.goneAfterCloseMs <= 10_000, 'the closed Task\'s Team row leaves the desktop list within 10 s (AC-002)', details);
         return details;
       } finally {
@@ -452,7 +462,7 @@ export const runClosedTaskRowsCases = async (probe) => {
         { input: { projectId: stack.project, title: 'Translate the release notes.', description: 'Translate the release notes. Marker TASK-E.' } })).createProjectTask;
       const copy = pickId(await stack.agentCall(stack.ptm, 'delegate_task', { recipient_address: '/release_notes_writer', task_id: taskE.taskId }), 'target_agent_run_id');
       assert(copy, 'the PTM delegated Task E', { copy });
-      const statusOf = async () => (await alpha.gql('query($ids:[String!]!){agentRunCollaborationStatuses(runIds:$ids){runId isActive closedTaskExecutionsDigest}}', { ids: [stack.ptm] })).agentRunCollaborationStatuses[0];
+      const statusOf = () => activeOn(alpha, stack.ptm);
       const context = await browser.newContext({ viewport: { width: 1440, height: 1400 }, locale: 'en-US', timezoneId: 'UTC' });
       await attachToBrowserContext(context);
       await context.addInitScript(() => localStorage.setItem('autobyteus.localization.preference-mode', 'en'));
@@ -502,7 +512,7 @@ export const runClosedTaskRowsCases = async (probe) => {
         const details = { copy, manager: created.runId, taskE: taskE.taskKey, openRun: new URL(page.url()).searchParams.get('id'), before, afterClose, afterTodo };
         const failures = [
           [details.openRun === plain, 'the window\'s open run is a plain run, not the PTM'],
-          [before.listed && before.nodeListed && before.statusReadsNamingPtm >= 1 && before.viewReads === 0, 'the stopped host is in the status read, its row listed, no view read while nothing changes'],
+          [before.listed && before.nodeListed && before.statusReadsNamingPtm === 0 && before.viewReads === 0, 'the stopped host\'s row listed; no status poll (SR-082); no view read while nothing changes'],
           [afterClose.goneAfterCloseMs !== null && afterClose.goneAfterCloseMs <= 10_000, 'the closed Task\'s row leaves the desktop list within 10 s while its host is stopped (AC-011-1)'],
           [afterClose.status?.isActive === false && afterTodo.status?.isActive === false, 'the host stays stopped'],
           [afterClose.viewReads <= 1 && afterTodo.viewReads <= 1, 'at most one view re-read per digest value (AC-011-2)'],

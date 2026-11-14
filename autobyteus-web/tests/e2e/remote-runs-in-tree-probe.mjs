@@ -33,6 +33,7 @@ import { spawn } from 'node:child_process';
 import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
 import { attachToBrowserContext, ownerHeaders, ownerSocketUrl, pairNodes, probeNodeEnvironment } from './fixtures/probe-node-access.mjs';
+import { openRunStatus } from './fixtures/run-status-client.mjs';
 
 const require = createRequire(import.meta.url);
 const { chromium } = require('playwright-core');
@@ -449,8 +450,14 @@ try {
     await page.reload({ waitUntil: 'domcontentloaded' });
     await openTree(downReady);
   };
+  // RTP-08 (autobyteus-461 SR-083, CR-461-085, AR-403): the peer Agent run's status by its run ID on alpha's /ws/run-status,
+  // held across beta's outage: the unasked end shows `offline`; after beta is back and Retry, a turn on beta is live again.
+  const peerStatus = await openRunStatus(alpha.baseUrl);
+  await peerStatus.subscribe([{ kind: 'agent', runId: remoteAgentRun }]);
+  const rtp08 = { before: peerStatus.agentsOf('agent', remoteAgentRun) };
   const rowRetry = {};
   await betaDownAndReload();
+  rtp08.offlineAtEnd = await peerStatus.waitStatus('agent', remoteAgentRun, remoteAgentRun, (status) => status === 'offline', 45_000).then(() => true, () => false);
   for (const family of families) {
     rowRetry[family.name] = { beforeRootOpened: await rowStateOf(family) };
     await family.root().click();
@@ -499,6 +506,17 @@ try {
     noticeRetry[family.name] = { opened: memberRowShown ? family.open : 'the remote Team row', notice, retryShown, recovered, rowAtOpen, viewAtOpen };
   }
   await page.screenshot({ path: path.join(outputDir, 'RTP-07-after-notice-retry.png'), fullPage: true });
+  // A turn on beta after Retry: its live status reaches alpha's subscription again (one writer, run-status; CR-461-085).
+  const sinceRetry = peerStatus.messages.length;
+  await withSocket(`${beta.baseUrl.replace(/^http/, 'ws')}/ws/agent/${remoteAgentRun}`, async (socket) => {
+    const id = randomUUID();
+    socket.send(JSON.stringify({ type: 'SEND_MESSAGE', payload: { agent_run_id: remoteAgentRun, message_id: `rtp08-${id}`, dedupe_key: `agent_run_input:rtp08:${id}`, content: 'One more line, please.', context_file_paths: [], image_urls: [] } }));
+  });
+  rtp08.liveAgain = await waitFor('the peer run live again on alpha', async () => peerStatus.messages.slice(sinceRetry)
+    .some((m) => m.type === 'RUN_STATUS_CHANGED' && m.payload.agentRunId === remoteAgentRun && ['running', 'idle', 'initializing'].includes(m.payload.status)), 60_000).then(() => true, () => false);
+  rtp08.changesAfterRetry = peerStatus.messages.slice(sinceRetry).filter((m) => m.type === 'RUN_STATUS_CHANGED').map((m) => m.payload.status);
+  peerStatus.close();
+  evidence.cases['RTP-08'] = { result: rtp08.offlineAtEnd && rtp08.liveAgain ? 'Pass' : 'Fail', ...rtp08 };
   evidence.cases['RTP-07'] = { result: Object.values(noticeRetry).every(entry => entry.notice?.includes(`${NODE} isn't reachable`) && entry.retryShown && entry.recovered
     // One red line on the row: the remote run's, not a second loading error (SR-008, CRR-006 F-006).
     && !entry.rowAtOpen?.text?.includes("Couldn't load")) ? 'Pass' : 'Fail', noticeRetry };

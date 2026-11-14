@@ -118,6 +118,10 @@ const liveAgyCwds = async (): Promise<string[]> => {
  * frames, or an Agent/Org view's `agent_presentation` events carrying those messages.
  */
 const signalsIn = (frames: readonly Frame[]): Signal[] => frames.flatMap((frame) => {
+  // autobyteus-461 SR-082: a delegated run's statuses by its run ID on `/ws/run-status` (the views no longer carry them).
+  if (frame.type === "RUN_STATUS_CHANGED") return [{ agentRunId: frame.payload.agentRunId, kind: "status", status: frame.payload.status, at: frame.at }] as Signal[];
+  if (frame.type === "RUN_STATUS_SNAPSHOT") return (frame.payload.runs as any[]).flatMap((run) => (run.agents as any[])
+    .map((agent) => ({ agentRunId: agent.agentRunId as string, kind: "status", status: agent.status as string, at: frame.at }) as Signal));
   const kindOf = (type: unknown) => type === "AGENT_STATUS" ? "status" as const : type === "BACKGROUND_TASK_UPDATED" ? "background" as const : null;
   const direct = kindOf(frame.type);
   if (direct) return typeof frame.payload.agent_run_id === "string" && typeof frame.payload.status === "string"
@@ -343,16 +347,25 @@ suite("Idle shutdown keeps delegated copies with running background tasks in eve
     // its own stream. Each delegated run's own stream is followed from the moment it is a row of the view.
     const ownFrames: Array<{ agentRunId: string | null; frames: Frame[] }> = [];
     const followed = new Set<string>();
+    // Each followed run's statuses by its run ID (SR-082), on one run-status connection for this root.
+    const statusSocket = new WebSocket(`ws://${url.host}/ws/run-status`);
+    sockets.push(statusSocket);
+    const statusFrames: Frame[] = [];
+    statusSocket.on("message", (raw: unknown) => statusFrames.push({ ...JSON.parse(String(raw)), at: Date.now() }));
+    await new Promise<void>((resolve, reject) => { statusSocket.once("open", () => resolve()); statusSocket.once("error", reject); });
+    ownFrames.push({ agentRunId: null, frames: statusFrames });
     /** Follows one delegated run's own stream from now on (once): a background task's frames are live only, never replayed. */
     const follow = async (target: { teamRunId?: string | null; agentRunId?: string | null }) => {
       const key = target.teamRunId ? `team:${target.teamRunId}` : `agent:${target.agentRunId}`;
       if (followed.has(key)) return;
       followed.add(key);
+      statusSocket.send(JSON.stringify({ type: "SUBSCRIBE", payload: { runs: [target.teamRunId ? { kind: "agent_team", runId: target.teamRunId } : { kind: "agent", runId: target.agentRunId }] } }));
       const stream = target.teamRunId
         ? await connect("agent-team", target.teamRunId, (frames) => frames.some((f) => f.type === "TEAM_EXECUTION_VIEW_SNAPSHOT")).catch(() => null)
         : await connect("agent", target.agentRunId!, (frames) => frames.some((f) => f.type === "CONNECTED")).catch(() => null);
       // An agent run's own stream names the run in its URL, not in each payload.
       if (stream) ownFrames.push({ agentRunId: target.teamRunId ? null : target.agentRunId ?? null, frames: stream.frames });
+      else followed.delete(key); // retried on the next follow (its status still arrives by run ID)
     };
     const followOwnRuns = async () => { for (const node of await nodes()) await follow(node); };
     // A stream opened after a background task started does not replay it: as base's client does, the tasks the runtime knows

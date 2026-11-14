@@ -521,7 +521,13 @@ suite("@ delegates and every delegated copy is closable by its ad-hoc Task (real
     expect(refusedDelete.message).toContain(assistantAddress);
     const stoppedAssistant = (await graphql(`mutation($id:String!){terminateAgentRun(agentRunId:$id){success message}}`, { id: assistantRunId })).terminateAgentRun;
     expect(stoppedAssistant.success, stoppedAssistant.message).toBe(true);
-    await deletePermanently(kind, rootId);
+    // Diagnostics (API-REV-013): every run this root delegated to, whether it is active, before the delete.
+    const delegatedRuns = [...nodes, ...taskNodes(await liveTree())];
+    record.beforeDelete = await Promise.all([...new Map(delegatedRuns.filter((node) => node.agentRunId).map((node) => [node.agentRunId, node])).values()]
+      .map(async (node) => ({ address: node.address, agentRunId: node.agentRunId,
+        active: (await graphql(`query($id:String!){getAgentRunResumeConfig(runId:$id){isActive}}`, { id: node.agentRunId! }).catch((e: Error) => ({ error: e.message }))) })));
+    record.pendingTaskIdAtDelete = pendingTaskId ?? null;
+    await deletePermanently(kind, rootId).catch((error: Error) => { throw new Error(`${error.message}\nbeforeDelete=${JSON.stringify(record.beforeDelete)}`); });
     await until(async () => { const left = await adHocTaskIds(); return ownTasks.every((id) => !left.includes(id)); }, "own ad-hoc Tasks deleted", 30_000);
     expect(await exists(path.join(adHocRoot(), otherTaskId!, "task.json"))).toBe(true);
     expect((await projectTasks(projectId)).map((task) => task.taskId)).toEqual([projectTaskId]);

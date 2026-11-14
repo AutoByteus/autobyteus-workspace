@@ -430,7 +430,11 @@ describe.runIf(ENABLED)("agent runtime switch, native runtime and stopped-run se
     const undone = await metadata(runId);
     expect(undone).toMatchObject({ runtimeKind: NATIVE, llmModelIdentifier: nativeModel, platformAgentRunId: original.platformAgentRunId });
     expect(Object.hasOwn(undone, "pendingRuntimeSwitch"), "the undo cleared the pending switch").toBe(false);
-    expect(undone, "the undo restores the metadata as it was").toEqual(original);
+    // autobyteus-461 CR-461-078 (V-11): every Settings save, an undo too, is recorded as the run's own edit (origin "settings").
+    const { launchSource: undoneSource, ...undoneRest } = undone;
+    const { launchSource: _originalSource, ...originalRest } = original;
+    expect(undoneRest, "the undo restores the metadata as it was").toEqual(originalRest);
+    expect(undoneSource, "the undo is recorded as an edit").toEqual({ origin: "settings", fallbacks: [] });
     // Switch again, then edit only the model of the new runtime: the pending switch stays (same time, same previous binding).
     const againSave = await save(runId, AGY, AGY_MODEL);
     expect(againSave, `switch again: ${JSON.stringify(againSave)}`).toMatchObject({ success: true });

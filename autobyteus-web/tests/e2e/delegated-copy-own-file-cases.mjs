@@ -209,6 +209,9 @@ export function registerDelegatedCopyOwnFileCases(h) {
 
     // SCN-003: stop the Team run and set /worker to ALT in its Settings.
     await stopRootFromSettings(page)
+    // autobyteus-461 REQ-001: the root's Stop leaves its working copy running; C1 is stopped by its own Stop, so the next
+    // message restores it (rule 2: its own terminate).
+    await gql('mutation($id:String!){terminateAgentRun(agentRunId:$id){success message}}', { id: r.c1 })
     // autobyteus-366: the slot /worker's own Settings (its member row focused in the tree).
     const workerCard = async () => {
       await page.locator(sel(`workspace-team-member-${r.teamRunId}-/worker`)).first().click(); await settle(page, 1500)
@@ -262,7 +265,8 @@ export function registerDelegatedCopyOwnFileCases(h) {
     const finalRows = configuredRows(r.rowsFinal, '/worker')
     assert(finalRows.length === 2 && finalRows.some((x) => x.launch.includes(MODEL_LABEL)) && finalRows.some((x) => x.launch.includes(ALT_LABEL)), 'Settings: one row per copy, each on its own model, both "As configured in this run"', r.rowsFinal)
     await shot(page, 'DCR-001-settings-two-copies-1280', 1280)
-    const c1View = JSON.stringify(await memberProjection(r.teamRunId, r.c1))
+    // autobyteus-461 rule 2: the copy is its own run (its conversation by its own run ID); the slot is the team's member.
+    const c1View = JSON.stringify((await gql('query($id:String!){getRunProjection(runId:$id){runId conversation}}', { id: r.c1 })).getRunProjection)
     const slotView = JSON.stringify(await memberProjection(r.teamRunId, r.slotRunId))
     r.runView = { c1HasOwn: c1View.includes('COPY1-MARKER-DCR1') && c1View.includes('COPY1-RESUME-DCR1'), c1HasSlot: c1View.includes('SLOT-MARKER-DCR1'), slotHasOwn: slotView.includes('SLOT-MARKER-DCR1') }
     assert(r.runView.c1HasOwn && !r.runView.c1HasSlot && r.runView.slotHasOwn, 'run view: the copy shows its own conversation', r.runView)
@@ -342,6 +346,9 @@ export function registerDelegatedCopyOwnFileCases(h) {
 
     // SCN-003: stop the Org; set /writer and the /pair Team to MODEL.
     await stopRootFromSettings(page)
+    // autobyteus-461 REQ-001: the Org's Stop leaves its working copies running; each is stopped by its own Stop.
+    await gql('mutation($id:String!){terminateAgentRun(agentRunId:$id){success message}}', { id: r.cw })
+    await gql('mutation($id:String!){terminateAgentTeamRun(teamRunId:$id){success message}}', { id: r.cp })
     // autobyteus-366: /writer from its own Settings; the placed Team /pair from the Org's group view (one Save for both).
     await chooseAnyModel(page, await focusedCard(page, r.slotWriter), MODEL)
     await page.locator(sel('run-settings-switch-group')).click(); await settle(page, 600)
@@ -491,9 +498,14 @@ export function registerDelegatedCopyOwnFileCases(h) {
     // A row on a user choice carries no source attribute; read the lead's own row by its key.
     r.leadRowAfter = await summaryOf(groupRow(page, rowKey('/lead', r.cpLead)))
     r.engineerRowAfter = await summaryOf(groupRow(page, rowKey('/engineer', objectsIn((await ownFile(r.cp, 'team_run_execution_tree.json')).json).find((x) => x.address === '/engineer' && x.agentRunId)?.agentRunId)))
+    // The stored truth beside the rendered rows: the copy team's own file after the team-level Save.
+    const cpOwnAfter = (await ownFile(r.cp, 'team_run_execution_tree.json')).json
+    r.cpStoredAfter = { team: modelOf(pick(objectsIn(cpOwnAfter).find((x) => x.address === '/' && x.defaultLaunchConfiguration), 'defaultLaunchConfiguration')),
+      lead: modelOf(pick(objectsIn(cpOwnAfter).find((x) => x.address === '/lead' && x.launchConfiguration), 'launchConfiguration')),
+      engineer: modelOf(pick(objectsIn(cpOwnAfter).find((x) => x.address === '/engineer' && x.launchConfiguration), 'launchConfiguration')) }
     // autobyteus-461 F-39 (SR-075): a team-level choice changes the team's default; each member keeps its own saved launch.
     assert(r.cpRowAfter.includes(MODEL_LABEL) && !r.leadRowAfter.includes(MODEL_LABEL) && /grok/i.test(r.engineerRowAfter),
-      'Settings: the Team choice changes the team default; the lead and the engineer keep their own launches', { team: r.cpRowAfter, lead: r.leadRowAfter, engineer: r.engineerRowAfter })
+      'Settings: the Team choice changes the team default; the lead and the engineer keep their own launches', { team: r.cpRowAfter, lead: r.leadRowAfter, engineer: r.engineerRowAfter, stored: r.cpStoredAfter })
     await shot(page, 'DCR-003-copy-team-model-saved-1280', 1280)
     await backToConversation(page)
     await selectOrgManager(page)

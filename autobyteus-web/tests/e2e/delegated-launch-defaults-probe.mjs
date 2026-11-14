@@ -495,9 +495,12 @@ const delegatedRows = async (page, root) => {
     return target ? { browse: target.browse ? { ...target.browse } : null, runId: target.context?.state?.runId ?? null } : null
   })
   await expandTree(page); await expandTree(page)
-  const addressById = root.kind === 'org'
-    ? Object.fromEntries(objectsIn(await orgTree(root.id)).filter((x) => pick(x, 'agentRunId') && typeof x.address === 'string').map((x) => [pick(x, 'agentRunId'), x.address]))
-    : {}
+  const orgRecords = root.kind === 'org' ? objectsIn(await orgTree(root.id)) : []
+  const addressById = Object.fromEntries(orgRecords.filter((x) => pick(x, 'agentRunId') && typeof x.address === 'string').map((x) => [pick(x, 'agentRunId'), x.address]))
+  // An Org tree's delegated Team row is not a transient row; its members' team address comes from the Org's tree record
+  // that lists them (a Team copy: its `teamRunId`, its `address`, its members).
+  const teamAddressByMember = Object.fromEntries(orgRecords.filter((x) => pick(x, 'teamRunId') && typeof x.address === 'string' && Array.isArray(x.members))
+    .flatMap((team) => team.members.map((m) => [pick(m, 'agentRunId'), team.address])))
   const targets = await page.evaluate(([kind, id]) => {
     const scope = kind === 'agent' ? document.querySelector(`[data-test="workspace-agent-run-task-tree"][data-run-id="${id}"]`)
       : kind === 'org' ? document.querySelector(`[data-test="agent-org-run-children-${id}"]`) : document
@@ -537,7 +540,7 @@ const delegatedRows = async (page, root) => {
       const members = []
       // The probe labels a member under its team copy's delegation address (base's addressing), so the checks below read the
       // same; the product addresses it from the team's own root (TC-12).
-      const copyAddress = target.teamAddress
+      const copyAddress = target.teamAddress ?? teamAddressByMember[target.id] ?? null
       const label = (own) => copyAddress && !own.startsWith(`${copyAddress}/`) ? `${copyAddress}${own}` : own
       for (const handle of memberRows) {
         const key = (await handle.getAttribute('data-test')).replace('run-member-', '')
@@ -545,7 +548,7 @@ const delegatedRows = async (page, root) => {
           badge: await handle.$eval('[data-test="run-member-badge"]', (n) => n.textContent.trim()).catch(() => null) }))
         covered.add(key.replace(/^.*@/, ''))
       }
-      const teamAddress = target.teamAddress ?? (members[0]?.test.split('/').slice(0, -1).join('/') || target.address)
+      const teamAddress = copyAddress ?? (members[0]?.test.split('/').slice(0, -1).join('/') || target.address)
       rows.push(await rowFacts(await team.elementHandle(), { test: teamAddress, member: false, badge: 'Delegated copy',
         launch: await cardSummary(team), coordinator: false, membersHeading: members.length > 0 }))
       rows.push(...members)

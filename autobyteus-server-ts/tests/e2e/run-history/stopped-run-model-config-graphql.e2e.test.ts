@@ -220,9 +220,12 @@ const teamResume = (serverUrl: string, teamRunId: string) => executeGraphql<{
   }
 `, { teamRunId }).then((result) => result.getTeamRunResumeConfig);
 
+/** autobyteus-461 CR-461-078 (V-11): a Settings edit is recorded as the run's own launch, with origin "settings". */
+const SETTINGS_ORIGIN = { origin: "settings", fallbacks: [] };
 const withoutAgentLlmConfig = (metadata: JsonRecord): JsonRecord => {
   const clone = structuredClone(metadata);
   delete clone.llmConfig;
+  delete clone.launchSource;
   return clone;
 };
 
@@ -232,9 +235,9 @@ const withoutSelectedTeamLlmConfigs = (
 ): JsonRecord => {
   const clone = structuredClone(tree);
   const targets = new Set(addresses);
-  if (targets.has(clone.rootTeam.address)) delete clone.rootTeam.defaultLaunchConfiguration.llmConfig;
+  if (targets.has(clone.rootTeam.address)) { delete clone.rootTeam.defaultLaunchConfiguration.llmConfig; delete clone.rootTeam.defaultLaunchSource; }
   for (const member of clone.rootTeam.members as JsonRecord[]) {
-    if (targets.has(member.address)) delete member.launchConfiguration.llmConfig;
+    if (targets.has(member.address)) { delete member.launchConfiguration.llmConfig; delete member.launchSource; }
   }
   return clone;
 };
@@ -433,6 +436,7 @@ describe("stopped run model-config GraphQL lifecycle", () => {
     const afterUpdate = readJson(metadataPath);
     expect(afterUpdate.llmConfig).toEqual(UPDATED_CONFIG);
     expect(withoutAgentLlmConfig(afterUpdate)).toEqual(withoutAgentLlmConfig(beforeUpdate));
+    expect(afterUpdate.launchSource, "the edit is recorded as one (CR-461-078)").toEqual(SETTINGS_ORIGIN);
 
     const schema = await executeGraphql<{
       agentInput: { inputFields: Array<{ name: string }> };
@@ -686,6 +690,13 @@ describe("stopped run model-config GraphQL lifecycle", () => {
       "/coordinator",
       "/reviewer",
     ]));
+    // CR-461-078: each edited scope records the edit as its own launch; the unedited member keeps what it had.
+    expect(afterUpdate.rootTeam.defaultLaunchSource, "team default edit recorded").toEqual(SETTINGS_ORIGIN);
+    for (const address of ["/coordinator", "/reviewer"]) {
+      expect(afterUpdate.rootTeam.members.find((m: JsonRecord) => m.address === address)?.launchSource, `${address} edit recorded`).toEqual(SETTINGS_ORIGIN);
+    }
+    expect(afterUpdate.rootTeam.members.find((m: JsonRecord) => m.address === "/lead")?.launchSource)
+      .toEqual(beforeUpdate.rootTeam.members.find((m: JsonRecord) => m.address === "/lead")?.launchSource);
 
     await stopServer(first);
     const second = await startServer(target);

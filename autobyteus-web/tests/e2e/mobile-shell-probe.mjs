@@ -168,6 +168,7 @@ import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
 import { attachToBrowserContext, ownerHeaders, ownerSocketUrl, pairNodes, probeNodeEnvironment, redactCredentials } from './fixtures/probe-node-access.mjs';
 import { runLiveReconnectCases } from './mobile-live-reconnect-cases.mjs';
+import { openRunStatus } from './fixtures/run-status-client.mjs';
 import { runClosedTaskRowsCases } from './mobile-closed-task-rows-cases.mjs';
 import { runFileOpenCases } from './mobile-file-open-cases.mjs';
 // MSP-53, MSP-54, MSP-55 (autobyteus-461 AC-007, SCN-005, O-1): a stopped delegator's run on the phone.
@@ -1887,8 +1888,8 @@ const runCases = async () => {
     assert(onList.length >= 3 && onList.length <= 4, 'a poll every 5 s on the list', onList);
     assert(checksDuringPoll === 0, 'the poll sends no credential check (autobyteus-426 SR-008)', { checksDuringPoll });
     // (The list count depends on whether a listed run qualifies for the read at this point; MSP-20 measures it on a known hub.)
-    assert(statusReadsIn.run === 0 && statusReadsIn.view === 0 && statusReadsIn.hidden === 0,
-      'the delegated rows\' status read rides the list poll only: none on the run screen, a view or while hidden (autobyteus-426 D-09, AC-009c)', statusReadsIn);
+    // autobyteus-461 SR-082: statuses come by run ID on /ws/run-status; the status poll (GetAgentRunCollaborationStatuses) is gone.
+    assert(Object.values(statusReadsIn).every(n => n === 0), 'no status poll on any screen (SR-082: statuses by run ID on /ws/run-status)', statusReadsIn);
     assert(onRun.length === 0 && onView.length === 0 && hidden.length === 0, 'no poll on the run screen, a view or while hidden', { onRun, onView, hidden });
     assert(afterBack[0] && afterBack[0].dt <= 2_500 && afterShown[0] && afterShown[0].dt <= 1_500, 'one read at once when the list or the page comes back', { afterBack, afterShown });
     return { checksDuringPoll, statusReadsIn, onList, onRun, onView, afterBack, hidden, afterShown, backAt, shownAt, bytesPerRead: { min: bytes[0], median: bytes[Math.floor(bytes.length / 2)], max: bytes[bytes.length - 1] }, firstRowsMs, reads: all.length };
@@ -1908,11 +1909,21 @@ const runCases = async () => {
     const created = (await alpha.gql('mutation($i:CreateAgentRunInput!){createAgentRun(input:$i){success message runId}}', { i: { agentDefinitionId: hubDef, ...stack.runConfig } })).createAgentRun;
     assert(created.success, created.message);
     const hub = created.runId;
-    const serverStatuses = async () => (await alpha.gql('query($ids:[String!]!){agentRunCollaborationStatuses(runIds:$ids){runId isActive statuses{agentRunId status}}}', { ids: [hub] })).agentRunCollaborationStatuses[0];
-    const serverStatusOf = async id => (await serverStatuses())?.statuses.find(entry => entry.agentRunId === id)?.status ?? null;
+    // autobyteus-461 SR-082, SR-083: the node's own answer is each child's status by its run ID on /ws/run-status (the
+    // status poll is gone); the probe holds its own subscription to each child, as a window holds one.
+    const statusFeed = await openRunStatus(alpha.baseUrl);
+    await statusFeed.subscribe([{ kind: 'agent', runId: hub }]);
+    const subscribedChildren = new Set();
+    const serverStatusOf = async id => {
+      if (!subscribedChildren.has(id)) { subscribedChildren.add(id); await statusFeed.subscribe([{ kind: 'agent', runId: id }]); }
+      return statusFeed.statusOf('agent', id, id);
+    };
     const delegate = async (recipient, marker) => pickId(await stack.agentCall(hub, 'delegate_task', { recipient_address: recipient, description: `Status child. Marker ${marker}.` }), 'target_agent_run_id');
+    const treeFrom = statusFeed.messages.length;
     const childA = await delegate('/changelog_helper', 'D09-A');
     const childB = await delegate('/release_notes_writer', 'D09-B');
+    // A listed run's rows changed: its subscribers are told (RUN_TREE_CHANGED), without opening it.
+    const hubTreeChanged = await statusFeed.waitTreeChanged('agent', hub, treeFrom, 20_000).then(() => true, () => false);
     assert(childA && childB, 'the hub delegated two children', { childA, childB });
     await waitFor('both children idle on the node', async () => ['idle'].includes(String(await serverStatusOf(childA)).toLowerCase())
       && ['idle'].includes(String(await serverStatusOf(childB)).toLowerCase()), 60_000).catch(() => undefined);
@@ -1930,6 +1941,8 @@ const runCases = async () => {
       await context.addInitScript(() => localStorage.setItem('autobyteus.localization.preference-mode', 'en'));
       const desktopPage = await context.newPage();
       const net = [];
+      const sockets = [];
+      desktopPage.on('websocket', (ws) => sockets.push({ url: new URL(ws.url()).pathname, at: Date.now() }));
       desktopPage.on('requestfinished', async (request) => {
         if (request.method() !== 'POST' || !request.url().includes('/graphql')) return;
         let op = null; let runIds = null;
@@ -1943,7 +1956,7 @@ const runCases = async () => {
       });
       await desktopPage.goto(stack.frontendUrl, { waitUntil: 'domcontentloaded', timeout: 240_000 });
       await desktopRunsView(desktopPage);
-      return { context, page: desktopPage, net };
+      return { context, page: desktopPage, net, sockets };
     };
     const desktop = await openDesktop();
     const desktopStatus = id => desktop.page.evaluate((agentRunId) => {
@@ -2060,38 +2073,47 @@ const runCases = async () => {
     })();
     await shot(desktop.page, 'MSP-20-desktop-third-child');
     await shot(page, 'MSP-20-phone-third-child');
-    // (6) The run stops: its rows show offline.
+    // (6) The run stops. autobyteus-461 REQ-001: its delegated runs keep working, so its rows keep each child's own status
+    // (the node's answer by run ID), on both surfaces (base showed them offline).
     const stopFrom = Date.now();
     const stopped = (await alpha.gql('mutation($id:String!){terminateAgentRun(agentRunId:$id){success message}}', { id: hub })).terminateAgentRun;
     const stopAt = Date.now();
+    const own = async () => Promise.all([childA, childB, childC].map(async id => String(await serverStatusOf(id)).toLowerCase()));
     let offline = { desktop: null, phone: null };
+    await sleep(1_500);
     while (Date.now() < stopAt + 20_000 && (offline.desktop === null || offline.phone === null)) {
-      if (offline.desktop === null && [childA, childB, childC].every(Boolean) && (await Promise.all([childA, childB, childC].map(desktopStatus))).every(status => status === 'offline')) offline.desktop = Date.now() - stopAt;
-      if (offline.phone === null && (await Promise.all([childA, childB, childC].map(phoneStatus))).every(status => String(status).toLowerCase() === 'offline')) offline.phone = Date.now() - stopAt;
+      const want = await own();
+      if (offline.desktop === null && [childA, childB, childC].every(Boolean) && JSON.stringify(await Promise.all([childA, childB, childC].map(desktopStatus))) === JSON.stringify(want)) offline.desktop = Date.now() - stopAt;
+      if (offline.phone === null && JSON.stringify((await Promise.all([childA, childB, childC].map(phoneStatus))).map(x => String(x).toLowerCase())) === JSON.stringify(want)) offline.phone = Date.now() - stopAt;
       await sleep(200);
     }
     await sleep(6_000);
     const stopOps = { desktop: desktopOps(stopFrom), phone: phoneOps(stopFrom) };
     const stop = { success: stopped.success, desktopOfflineMs: offline.desktop, phoneOfflineMs: offline.phone,
       desktopViewReads: count(stopOps.desktop, VIEW_OP), phoneViewReads: count(stopOps.phone, VIEW_OP),
-      finalDesktop: await Promise.all([childA, childB, childC].map(desktopStatus)), finalPhone: await Promise.all([childA, childB, childC].map(phoneStatus)) };
+      finalNode: await own(), finalDesktop: await Promise.all([childA, childB, childC].map(desktopStatus)), finalPhone: await Promise.all([childA, childB, childC].map(phoneStatus)) };
     await shot(desktop.page, 'MSP-20-desktop-stopped');
     await shot(page, 'MSP-20-phone-stopped');
     collab.close();
     await desktop.context.close();
-    const ONE_POLL = 7_000; const TWO_POLLS = 12_000;
-    const facts = { hub, childA, childB, childC, quiet, phoneHidden, running, idleAgain, openRun, third, stop };
+    statusFeed.close();
+    // autobyteus-461 SR-082: pushed by run ID, so a change shows within a push budget, not a poll's; no status poll at all.
+    const PUSH = 5_000;
+    const runStatusSockets = { desktop: desktop.sockets.filter(x => x.url === '/ws/run-status').length,
+      phone: phoneSockets.filter(x => x.label === 'phone' && new URL(x.url).pathname === '/ws/run-status').length };
+    const statusPolls = { desktop: count(desktop.net, STATUS_OP), phone: count(phoneNet.filter(entry => entry.label === 'phone'), STATUS_OP) };
+    const facts = { hub, childA, childB, childC, hubTreeChanged, runStatusSockets, statusPolls, quiet, phoneHidden, running, idleAgain, openRun, third, stop };
     const failures = [
-      [quiet.desktopStatusReads >= 2 && quiet.phoneStatusReads >= 2 && quiet.desktopViewReads === 0 && quiet.phoneViewReads === 0, 'no change: a status read on each poll and no view read (AC-009a)'],
-      [quiet.hubInDesktopRead && quiet.hubInPhoneRead, 'the listed hub is in each status read'],
-      [phoneHidden.onRunScreen === 0 && phoneHidden.inBackground === 0 && phoneHidden.firstReadAfterShownMs !== null && phoneHidden.firstReadAfterShownMs <= 6_000, 'the phone sends no status read while its list is hidden or the page is in the background, and reads again once shown (AC-009c)'],
-      [quiet.desktopStatusBytes.every(entry => entry.hubBytes !== null && entry.hubBytes <= 2_048 && (entry.statuses > 10 || entry.bytes <= 2_048)), 'a status read carries only states: the hub\'s answer and any read of ≤ 10 children ≤ 2 KB (AC-009a)'],
-      [running.desktopAfterNodeMs !== null && running.desktopAfterNodeMs <= TWO_POLLS && running.phoneAfterNodeMs !== null && running.phoneAfterNodeMs <= ONE_POLL, 'running shows within ≤ 2 polls on the desktop and one on the phone (AC-009a, AC-009c)'],
-      [idleAgain.desktopAfterNodeMs !== null && idleAgain.desktopAfterNodeMs <= TWO_POLLS && idleAgain.phoneAfterNodeMs !== null && idleAgain.phoneAfterNodeMs <= ONE_POLL, 'idle again shows within ≤ 2 polls on the desktop and one on the phone'],
+      [statusPolls.desktop === 0 && statusPolls.phone === 0, 'no status poll (SR-082)'],
+      [runStatusSockets.desktop >= 1 && runStatusSockets.phone >= 1, 'each window reads statuses on /ws/run-status'],
+      [hubTreeChanged, 'the listed hub, not open, is told its rows changed (RUN_TREE_CHANGED) when it delegates'],
+      [quiet.desktopViewReads === 0 && quiet.phoneViewReads === 0, 'no change: no view read'],
+      [running.desktopAfterNodeMs !== null && running.desktopAfterNodeMs <= PUSH && running.phoneAfterNodeMs !== null && running.phoneAfterNodeMs <= PUSH, 'running shows on the desktop and the phone within the push budget'],
+      [idleAgain.desktopAfterNodeMs !== null && idleAgain.desktopAfterNodeMs <= PUSH && idleAgain.phoneAfterNodeMs !== null && idleAgain.phoneAfterNodeMs <= PUSH, 'idle again shows on both within the push budget'],
       [running.desktopViewReads === 0 && running.phoneViewReads === 0 && idleAgain.desktopViewReads === 0 && idleAgain.phoneViewReads === 0, 'a state change alone causes no view read'],
-      [openRun.statusReads === 0 || openRun.hubInRead === 0, 'the open run is not in the status read (AC-009d)'],
-      [third.desktopAfterNodeMs !== null && third.desktopAfterNodeMs <= ONE_POLL && third.phoneAfterNodeMs !== null && third.phoneAfterNodeMs <= ONE_POLL && third.desktopViewReads === 1 && third.phoneViewReads === 1, 'a third child appears within one poll with one view re-read on each surface (AC-009b)'],
-      [stop.success && stop.desktopOfflineMs !== null && stop.desktopOfflineMs <= ONE_POLL && stop.phoneOfflineMs !== null && stop.phoneOfflineMs <= ONE_POLL, 'after the run stops, its rows show offline within one poll (AC-009b)'],
+      [third.desktopAfterNodeMs !== null && third.desktopAfterNodeMs <= PUSH && third.phoneAfterNodeMs !== null && third.phoneAfterNodeMs <= PUSH && third.desktopViewReads >= 1 && third.desktopViewReads <= 2 && third.phoneViewReads >= 1 && third.phoneViewReads <= 2, 'a third child appears within the push budget, with its view read again on each surface'],
+      [stop.success && stop.finalNode.every(x => x !== 'offline') && stop.desktopOfflineMs !== null && stop.desktopOfflineMs <= PUSH + 1_500 && stop.phoneOfflineMs !== null && stop.phoneOfflineMs <= PUSH + 1_500,
+        'after the run stops, its children keep working and its rows show each child\'s own status (REQ-001)'],
     ].filter(([ok]) => !ok).map(([, label]) => label);
     assert(failures.length === 0, failures.join('; '), facts);
     return facts;

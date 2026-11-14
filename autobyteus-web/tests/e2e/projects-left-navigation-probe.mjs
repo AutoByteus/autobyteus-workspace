@@ -939,15 +939,38 @@ const archiveAndDelete = async () => {
     await group2.hover();
     await pSection.locator(T(`workspace-agent-group-archive-${s.ids.manager}`)).first().click();
     const dialogText = (await page.locator('[role="dialog"], [role="alertdialog"]').last().innerText().catch(() => '')).replace(/\s+/g, ' ');
-    // Diagnostics (AC-008): what each archive call answers, and what the window shows after it.
-    const archiveAnswers = [];
-    const onArchive = async (res) => { try { const q = res.request().postDataJSON()?.query ?? ''; if (/archive/i.test(q)) archiveAnswers.push({ query: /(mutation|query)\s*(\w*)/.exec(q)?.[0] ?? '', variables: res.request().postDataJSON()?.variables ?? null, body: (await res.text()).slice(0, 1500) }); } catch { /* not JSON */ } };
-    page.on('response', onArchive);
-    evidence.cases['PLN-09-archive-answers'] = archiveAnswers;
+    // Diagnostics (AC-008, CRR-043): which run "Archive all" fails on, and the server's answer for it.
+    const diag = { listedBefore: await listedRunIds(pSection), requests: [], answers: [], consoleErrors: [] };
+    evidence.cases['PLN-09-archive-diagnostics'] = diag;
+    const onRequest = (req) => { try { const b = req.postDataJSON(); if (/archive/i.test(b?.query ?? '')) diag.requests.push({ op: b.operationName ?? null, variables: b.variables ?? null, at: Date.now() }); } catch { /* not JSON */ } };
+    const onResponse = async (res) => { try { const b = res.request().postDataJSON(); if (/archive/i.test(b?.query ?? '')) diag.answers.push({ op: b.operationName ?? null, variables: b.variables ?? null, status: res.status(), body: (await res.text()).slice(0, 1500) }); } catch (e) { diag.answers.push({ unreadable: String(e).slice(0, 200) }); } };
+    const onConsole = (m) => { if (m.type() === 'error' || /archive/i.test(m.text())) diag.consoleErrors.push(m.text().slice(0, 600)); };
+    page.on('request', onRequest); page.on('response', onResponse); page.on('console', onConsole);
     await page.locator('button', { hasText: /^Archive all$/ }).last().click();
-    await sleep(4000);
-    page.off('response', onArchive);
+    // The window's archive notices while they show (a toast leaves after a few seconds).
+    const notices = new Set();
+    for (const end = Date.now() + 6000; Date.now() < end; await sleep(200)) {
+      for (const line of (await page.locator('body').innerText().catch(() => '')).split('\n')) if (/archiv/i.test(line) && !/^Archive all/.test(line.trim())) notices.add(line.trim());
+    }
+    diag.windowNotices = [...notices];
+    page.off('request', onRequest); page.off('response', onResponse); page.off('console', onConsole);
+    diag.listedAfter = await listedRunIds(pSection);
+    // The server's own answer for each run still listed, asked directly (the same mutation the window sends).
+    diag.serverAnswerForLeft = [];
+    for (const runId of diag.listedAfter) {
+      const answer = await gql('mutation($id:String!){archiveStoredRun(runId:$id){success message}}', { id: runId }).catch((e) => ({ error: String(e.message ?? e).slice(0, 600) }));
+      diag.serverAnswerForLeft.push({ runId, answer });
+    }
     evidence.cases['PLN-09-after-archive-text'] = (await page.locator('body').innerText()).replace(/\s+/g, ' ').slice(0, 3000);
+    // AC-008 (REQ-007): a refused archive shows its reason. When the server refuses a listed run because a run it delegated
+    // to is working (DS-13), the window must show that reason, naming the working run.
+    const refusals = diag.answers.filter((x) => x.op === 'ArchiveStoredRun').map((x) => { try { return JSON.parse(x.body).data?.archiveStoredRun; } catch { return null; } })
+      .filter((x) => x && !x.success && /delegated to is working/.test(x.message ?? ''));
+    diag.refusals = refusals.map((x) => x.message);
+    for (const refusal of refusals) {
+      const named = /\(([^)]+)\)/.exec(refusal.message)?.[1] ?? refusal.message;
+      assert(diag.windowNotices.some((line) => line.includes(named)), 'AC-008: the refused archive shows its reason, naming the working delegated run', { serverMessage: refusal.message, windowNotices: diag.windowNotices });
+    }
     await until('P group archive done', async () => (await listedRunIds(pSection)).length === 0, 30000).catch(async (error) => {
       // Record what is left and what the page says (REQ-007's refusal names the working runs).
       const body = (await page.locator('body').innerText().catch(() => '')).split('\n').filter((l) => /delegat|working|can't|cannot|refus/i.test(l)).slice(0, 8);

@@ -334,11 +334,17 @@ suite("Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shut
     const manager = await startManager();
     const copy = await manager.delegateCopy("ECHO_INPUT shutdown first");
     const idleSince = Date.now();
-    // Idle shutdown: the copy goes offline one grace period after its turn.
-    const offline = () => objectsIn(manager.view.frames.map((frame) => frame.payload)).some((record) =>
-      record.agent_run_id === copy.agentRunId && record.message?.type === "AGENT_STATUS" && record.message?.payload?.status === "offline");
+    // Idle shutdown: the copy goes offline one grace period after its turn. autobyteus-461 SR-082: its status is its own,
+    // by its run ID on `/ws/run-status` (the Manager's view no longer carries it).
+    const statusSocket = new WebSocket(`ws://${url.host}/ws/run-status`);
+    const statusFrames: any[] = [];
+    statusSocket.on("message", (raw: unknown) => statusFrames.push(JSON.parse(String(raw))));
+    await new Promise<void>((resolve, reject) => { statusSocket.once("open", () => resolve()); statusSocket.once("error", reject); });
+    statusSocket.send(JSON.stringify({ type: "SUBSCRIBE", payload: { runs: [{ kind: "agent", runId: copy.agentRunId }] } }));
+    const offline = () => statusFrames.some((frame) => (frame.type === "RUN_STATUS_CHANGED" && frame.payload.agentRunId === copy.agentRunId && frame.payload.status === "offline"));
     await until(() => offline(), "copy shut down after idle", GRACE_MS + 45_000);
     const offlineAfterMs = Date.now() - idleSince;
+    statusSocket.close();
     const launchesBefore = await launches();
     await writeSkill("roots-probe", `ROOTS-${randomUUID().slice(0, 4)}`);
     await wait(4_000);

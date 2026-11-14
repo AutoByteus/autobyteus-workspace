@@ -144,10 +144,11 @@ export function registerAgentSettingsFocusedCases(h) {
     // running, locked with its own stop icon, until it is stopped itself; then every copy is editable.
     await openSidebarAgent(page, r.b)
     r.bAfterHubStop = await waitSubject(page, 'B after the hub stop', 'Beta')
-    assert(r.bAfterHubStop.state === 'active' && r.bAfterHubStop.modelLocked && r.bAfterHubStop.copyStop,
+    // (`status` is the focused copy's own header status; `state` is the Settings view's, which follows the hub.)
+    assert(r.bAfterHubStop.status === 'active' && r.bAfterHubStop.modelLocked && r.bAfterHubStop.copyStop,
       'B keeps running after the hub\'s Stop: active, locked, its own stop icon (REQ-001)', r.bAfterHubStop)
     await page.locator(sel('run-member-stop')).click()
-    await waitFor('B stopped', async () => { const f = await facts(page); return f.state !== 'active' && !f.modelLocked }, 90000, 500)
+    await waitFor('B stopped', async () => { const f = await facts(page); return f.status !== 'active' && !f.modelLocked }, 90000, 500)
 
     // Edit A; focus B: the bar names A, B is unchanged; come back; Save stores only A, and A's card shows it (D-IMP-3).
     await openSidebarAgent(page, r.a); await waitSubject(page, 'A', 'Alpha')
