@@ -879,3 +879,29 @@ The current code and `implementation-handoff.md` remain authoritative.
   - The new codes `TEAM_RUN_NOT_RESTORABLE` and `AGENT_ORG_RUN_NOT_RESTORABLE` are this ticket's.
   - `delegate_task` by run ID (CR-461-043) still asks the conversation check through its own path. It uses the same builder.
 - Next recipient: Code Reviewer.
+
+### IR-026 — The assigner's message checks that a closed run can continue before reopening it (CR-461-072); the connect answers the admission's reason (CR-461-073)
+
+- Triggering role, report path, and round: Code Reviewer CRR-034 (`code-review-report.md` round 25): Fail, one `Local Fix` (CR-461-072). The Design Impact CR-461-073 was decided by the Solution Designer and passed ARCH-REV-051 unchanged. Round 26.
+- Triggering finding IDs: CR-461-072, CR-461-073. Large / High unchanged.
+- Prior authoritative result: IR-025 at `726666cad2`.
+- Current authoritative result: `2b48f995c9` (CR-461-072 `43f567b5d2`; CR-461-073 `2b48f995c9`).
+- Related solution / architecture-review revision IDs: SR-078 as revised for CR-461-073; ARCH-REV-051. Related code-review revision IDs: CRR-034.
+- Implementation delta:
+  - **CR-461-072 (`43f567b5d2`).** `CrossRunMessageDelivery.admit` committed `reopenAssignment` and only then asked `restorability.refusal`. A refused run kept its Task reopened, its row returned, and the text said it continued.
+    - Now, as base's reopen step (`assertRestorableChain`, before the commit): first the Task side's eligibility (`assertReopenable`), then whether the run can continue, then `reopenAssignment`.
+    - A refusal changes nothing and carries base's text without the "open again" note.
+    - A run this call reopened is not checked again before its root is restored.
+  - **CR-461-073 (`2b48f995c9`).** When the restore admission refuses a stopped team or org root, the view connect now answers the admission's own code and text and closes. Before, it answered `TEAM_NOT_FOUND` / `AGENT_ORG_NOT_FOUND`.
+    - The codes: `TEAM_RUN_STATE_PACKAGE_NOT_CATALOGED`, `TOKEN_USAGE_EXISTING_RUN_RESTORE_MIGRATION_REQUIRED`, or the org's counterparts, with base's texts.
+    - Both stopped views raise their "not restorable" error with the admission's refusal; the handlers already answer its code and text and close with 4004.
+    - The first message of a run that passed admission keeps answering the reason (round 25).
+- Tests (each fails without its fix):
+  - CR-461-072: the assigner's message to its closed run whose saved conversation cannot be read gets base's refusal; the Task stays closed, no reopen is asked, and nothing is logged. A DONE Task is refused by its eligibility first, and the run is not asked.
+  - R-8's test is restated: the DONE attempt no longer reaches `reopenAssignment`.
+  - CR-461-073: the team connect for both admission codes, and the org connect, answer the code and text and close.
+- Validation (IMP-81 at `2b48f995c9`):
+  - server type gate PASS; unit 8078 passed;
+  - integration 492 passed, 3 failed, all in the file watcher. Alone it passed 14/14, then 13/14 on a different test (FU-021);
+  - the web is unchanged since IMP-80.
+- Next recipient: Code Reviewer.
