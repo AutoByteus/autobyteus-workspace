@@ -406,7 +406,7 @@ So:
 
 **Sequencing tests** (SR-062, SR-063): a row change and a status change during an async stored capture appear once, after the snapshot, not twice; `liveSequenceId` stays the same across a stop and a restore of the run, and changes on a server restart; `lastMessageChangeSequence` moves only with the view's message events (the composed messages, SR-072), never with row or status frames; a stopped run's view and a live one each get consecutive frames mixing the run's own events, row events and status events; a snapshot taken between frames is followed by exactly the frames after it; a stored-to-live switch keeps the sequence; a checkpoint-bracketed recovery resumes at the checkpoint's sequence, and retries when a child's status changed during it.
 
-**Rule 3: the acceptance check of the frontend contract.** For each story of `stories.py`, a characterization at `827f1e68dc` captures the snapshots, events and list reads the web receives. The branch gives the same, except where rule 2 applies: a child's conversation, output and commands, which move to the child's own stream.
+**Rule 3: the acceptance check of the frontend contract.** For each story of `stories.py`, a characterization at `827f1e68dc` captures the snapshots, events and list reads the web receives. The branch gives the same, except where rule 2 applies: a child's conversation, output and commands, which move to the child's own stream. **Since SR-082, run trees and the statuses shown in them are also excepted.** Their format changes, and their acceptance is the tests of "The run-tree view and statuses by run ID" (item 5) and AC-017.
 
 **Every earlier web-facing item:**
 
