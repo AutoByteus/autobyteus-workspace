@@ -12,7 +12,9 @@ vi.mock('~/stores/delegatedRunsStore', async () => {
   return { useDelegatedRunsStore: fake.fakeDelegatedRunsStore }
 })
 vi.mock('vue-router', async (original) => ({ ...await original<typeof import('vue-router')>(), useRouter: () => ({ push: navigation.push }) }))
-vi.mock('~/stores/agentSelectionStore', () => ({ useAgentSelectionStore: () => ({ beginSelectionIntent: () => ({ isCurrent: navigation.isCurrent }) }) }))
+// The opened run is the selected one (the card's reveal goes on while it is: F-59).
+vi.mock('~/stores/agentSelectionStore', () => ({ useAgentSelectionStore: () => ({ beginSelectionIntent: () => ({ isCurrent: navigation.isCurrent }),
+  selectedType: 'agent', selectedRunId: 'host-run' }) }))
 vi.mock('~/composables/useWorkspaceHistorySubjectActions', () => ({ useWorkspaceHistorySubjectActions: () => ({ execute: vi.fn() }) }))
 vi.mock('~/services/workspace/workspaceNavigationService', () => ({ openWorkspaceExecutionLink: navigation.open, buildWorkspaceExecutionRoute: () => '/workspace/agent/host-run' }))
 

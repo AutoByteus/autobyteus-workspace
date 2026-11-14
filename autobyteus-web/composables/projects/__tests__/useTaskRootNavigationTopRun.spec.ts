@@ -9,14 +9,23 @@ import type { TaskRootView } from '~/types/project'
  * autobyteus-461 CR-461-076 (F-54), SR-080: the Task card opens its worker where its row lives, the view of the top of its
  * tree, as clicking that row does: the row selected there, so the worker opens as its own run (rule 2).
  */
-const navigation = vi.hoisted(() => ({ open: vi.fn(), push: vi.fn(), isCurrent: vi.fn(() => true), orgExecute: vi.fn() }))
+const navigation = vi.hoisted(() => ({ open: vi.fn(), push: vi.fn(), orgExecute: vi.fn(),
+  selection: { issued: 0, current: 0, selectedType: null as string | null, selectedRunId: null as string | null } }))
 vi.mock('~/stores/delegatedRunsStore', async () => {
   const fake = await import('~/test-support/delegatedRunsFake')
   fake.ownRuns.openAll = true
   return { useDelegatedRunsStore: fake.fakeDelegatedRunsStore }
 })
 vi.mock('vue-router', async (original) => ({ ...await original<typeof import('vue-router')>(), useRouter: () => ({ push: navigation.push }) }))
-vi.mock('~/stores/agentSelectionStore', () => ({ useAgentSelectionStore: () => ({ beginSelectionIntent: () => ({ isCurrent: navigation.isCurrent }) }) }))
+vi.mock('~/stores/agentSelectionStore', () => ({ useAgentSelectionStore: () => ({
+  beginSelectionIntent: () => {
+    const token = ++navigation.selection.issued
+    navigation.selection.current = token
+    return { isCurrent: () => navigation.selection.current === token }
+  },
+  get selectedType() { return navigation.selection.selectedType },
+  get selectedRunId() { return navigation.selection.selectedRunId },
+}) }))
 vi.mock('~/composables/useWorkspaceHistorySubjectActions', () => ({ useWorkspaceHistorySubjectActions: () => ({ execute: navigation.orgExecute }) }))
 vi.mock('~/services/workspace/workspaceNavigationService', () => ({ openWorkspaceExecutionLink: navigation.open,
   buildWorkspaceExecutionRoute: (link: { kind: string; runId?: string; teamRunId?: string }) => `/workspace/${link.kind}/${link.runId ?? link.teamRunId}` }))
@@ -40,7 +49,13 @@ const managerView = () => {
 
 beforeEach(() => {
   setActivePinia(createPinia()); vi.clearAllMocks()
-  navigation.isCurrent.mockReturnValue(true); navigation.open.mockResolvedValue({ disposition: 'committed' })
+  Object.assign(navigation.selection, { issued: 0, current: 0, selectedType: null, selectedRunId: null })
+  // Opening an Agent run selects it; on the Workspace page that moves to its chat, and the page's leave ends every
+  // selection intent (`useWorkspaceRouteSelection`), the opener's too.
+  navigation.open.mockImplementation(async (link: { kind: string; runId?: string }) => {
+    if (link.kind === 'agent') Object.assign(navigation.selection, { selectedType: 'agent', selectedRunId: link.runId, current: 0 })
+    return { disposition: 'committed' }
+  })
   useAgentRunCollaborationStore().contexts = { 'host-run': shallowReactive(buildMultiTeamContext(managerView())) }
 })
 
@@ -76,6 +91,20 @@ describe('useTaskRootNavigation (SR-080): the card opens its worker where its ro
     await useTaskRootNavigation().open(root({ ingressAgentRunId: 'orphan', topRun: { kind: 'agent', runId: 'orphan' } }))
     expect(navigation.open).toHaveBeenCalledWith({ kind: 'agent', runId: 'orphan' }, expect.anything())
     expect(navigation.push).toHaveBeenCalledWith('/workspace/agent/orphan')
+  })
+
+  it('F-59: opened from the Workspace page, whose leave ends the card\'s intent, the row is still selected', async () => {
+    const store = useAgentRunCollaborationStore()
+    await useTaskRootNavigation().open(root({}))
+    expect(navigation.selection.selectedRunId).toBe('host-run')
+    expect(store.selectedChild('host-run')).toBe('nested-helper')
+  })
+
+  it('a run the user selects while the card\'s run opens wins: no row of the card\'s run is selected', async () => {
+    const store = useAgentRunCollaborationStore()
+    navigation.push.mockImplementationOnce(async () => { Object.assign(navigation.selection, { selectedRunId: 'other-run' }) })
+    await useTaskRootNavigation().open(root({}))
+    expect(store.selectedChild('host-run')).toBeNull()
   })
 
   it('a root with no known top run opens nothing', async () => {

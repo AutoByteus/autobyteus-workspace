@@ -29,16 +29,20 @@ export const useTaskRootNavigation = () => {
     const link = { kind: 'agent' as const, runId: top.runId }
     const intent = selection.beginSelectionIntent()
     const opened = await openWorkspaceExecutionLink(link, intent)
-    if (opened.disposition !== 'committed' || !intent.isCurrent()) return
+    if (opened.disposition !== 'committed') return
+    // Selecting the run moves the Workspace page to its chat, and leaving that page ends every selection intent, this one
+    // too (F-59). So once at the chat, the reveal goes on under a new intent while the run is still the one selected.
     await router.push(buildWorkspaceExecutionRoute(link))
+    if (selection.selectedType !== 'agent' || selection.selectedRunId !== top.runId) return
     // The worker is its own top (its delegator was deleted): it opens as its own run, with no row to select.
     if (top.runId === root.ingressAgentRunId) return
+    const reveal = selection.beginSelectionIntent()
     if (!collaboration.contextFor(top.runId)) void collaboration.inspect(top.runId)
     const listed = () => collaboration.contextFor(top.runId)?.isListed(root.ingressAgentRunId) ?? false
     const deadline = Date.now() + CHILD_VIEW_WAIT_MS
-    while (!listed() && Date.now() < deadline && intent.isCurrent()) await new Promise((resolve) => setTimeout(resolve, 50))
+    while (!listed() && Date.now() < deadline && reveal.isCurrent()) await new Promise((resolve) => setTimeout(resolve, 50))
     const context = collaboration.contextFor(top.runId)
-    if (!listed() || !context || !intent.isCurrent()) return
+    if (!listed() || !context || !reveal.isCurrent()) return
     // Reveal the row as its own tree would: the task Teams above it, and a Team worker's own Team.
     const worker = root.teamRunId ? { teamRunId: root.teamRunId } : { agentRunId: root.ingressAgentRunId }
     for (const teamRunId of [...context.taskTeamPathOf(worker) ?? [], ...(root.teamRunId ? [root.teamRunId] : [])]) {
