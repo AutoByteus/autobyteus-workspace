@@ -76,6 +76,20 @@ describe('Org canonical settings read while the Org view refreshes (autobyteus-2
     expect(org.getAgentContext('agent-lead-configured')!.config.workspaceId).toBe('/B')
   })
 
+  it('CR-461-088 (AFS-002): a stopped Org with delegated runs reads its settings: the read carries its own configuration only, the view keeps its rows', async () => {
+    const store = useAgentOrgContextsStore()
+    const org = await stage(false); store.contexts['org-run'] = org
+    const rows = JSON.stringify(org.executionTree.rootOrg.taskExecutions)
+    expect(JSON.parse(rows).length).toBeGreaterThan(0)
+    // As the server answers it (rule 2): no delegated runs in the Org's own tree.
+    const read = JSON.parse(JSON.stringify(org.executionTree))
+    read.rootOrg.taskExecutions = []
+    read.rootOrg.members.forEach((member: any) => { if ('teamRunId' in member) member.taskExecutions = [] })
+    io.read.mockResolvedValue(canonical(read, false))
+    await expect(store.readRunConfig('org-run')).resolves.toMatchObject({ isActive: false })
+    expect(JSON.stringify(org.executionTree.rootOrg.taskExecutions)).toBe(rows)
+  })
+
   it.each(['released', 'binding', 'operation', 'inspection'])('refuses the read when the target changes mid-read (%s)', async change => {
     const store = useAgentOrgContextsStore()
     const org = await stage(true); store.contexts['org-run'] = org

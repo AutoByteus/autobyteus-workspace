@@ -2,7 +2,7 @@ import { useAgentActivityStore } from '~/stores/agentActivityStore';
 import type { TeamWorkspacePatch } from '~/services/runConfigEditing/existingAgentOrgWorkspaceDraft'
 import type { WorkspaceMetadata } from '~/types/workspace/WorkspaceMetadata'
 import type { AgentOrgExecutionTree } from '~/types/collaboration/agentOrgExecution'
-import { assertAgentOrgRunConfigChange } from '~/services/agentOrgExecution/agentOrgRunConfigAdoption'
+import { assertAgentOrgRunConfigChange, withViewRows } from '~/services/agentOrgExecution/agentOrgRunConfigAdoption'
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore'
 import { readAgentOrgRunConfig, updateStoppedAgentOrgRunConfig } from '~/services/runConfigEditing/agentOrgRunConfigClient'
 import type { ExistingAgentOrgModelConfigPatch } from '~/services/runConfigEditing/existingAgentOrgModelConfigDraft'
@@ -370,7 +370,8 @@ export const useAgentOrgContextsStore = defineStore('agentOrgContexts', () => {
   }
   const prepareConfigWorkspaces = async (org: AgentOrgExecutionContext, tree: AgentOrgExecutionTree,
     isCurrent: () => boolean): Promise<ReadonlyMap<string, WorkspaceMetadata | null>> => {
-    assertAgentOrgRunConfigChange(org.executionTree, tree)
+    // The read carries the Org's own configuration only; its view's rows are its delegated runs' (CR-461-088).
+    assertAgentOrgRunConfigChange(org.executionTree, withViewRows(org.executionTree, tree))
     const roots = new Set<string>()
     for (const member of tree.rootOrg.members) {
       const agents = 'agentRunId' in member ? [member] : member.members
