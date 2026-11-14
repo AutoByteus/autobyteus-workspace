@@ -5,12 +5,19 @@ import {
   type RemoteTaskExecutionView,
 } from "../../agent-collaboration/execution/remote/remote-run-observation.js";
 import type { RemoteAgentLaunch } from "../../run-history/domain/run-execution-tree-shared-records.js";
+import { openTargetOf } from "../../agent-collaboration/delegation/collaboration-tree.js";
 
 /** A remote link with its node's name as the root views list it (autobyteus-278). */
-export const projectRemoteTaskExecution = (execution: RemoteTaskExecutionView): RemoteTaskExecutionDto => {
+export const projectRemoteTaskExecution = (execution: RemoteTaskExecutionView, launches?: readonly RemoteAgentLaunch[]): RemoteTaskExecutionDto => {
+  // Where it opens (SR-083): the run on its node and its own agent, or its coordinator among its members.
+  const target = openTargetOf(execution.kind === "agent" ? { agentRunId: execution.agentRunId } : { teamRunId: execution.teamRunId },
+    execution.kind === "agent" ? undefined : { coordinatorAddress: execution.coordinatorAddress, members: execution.members });
   const common = {
     address: execution.address, node_id: execution.nodeId, node_name: execution.nodeName,
     delegator_agent_run_id: execution.delegatorAgentRunId, started_at: execution.startedAt,
+    // Its launches, from its node's summary (SR-038, F-66, CR-461-084).
+    ...(launches ? { launches: launches.map(projectRemoteLaunch) } : {}),
+    open_target: target ? { run_kind: target.runKind, run_id: target.runId, agent_run_id: target.agentRunId, node_id: execution.nodeId } : null,
   };
   return execution.kind === "agent"
     ? { kind: "agent", agent_run_id: execution.agentRunId, ...common }

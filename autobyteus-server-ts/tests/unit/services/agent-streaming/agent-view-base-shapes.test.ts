@@ -22,7 +22,10 @@ const pathsOf = (value: unknown, prefix = ""): string[] => {
   }
   return [];
 };
-const same = (actual: unknown, expected: unknown) => expect([...new Set(pathsOf(actual))].sort()).toEqual([...new Set(pathsOf(expected))].sort());
+/** SR-083: the rows gain where they open (`openTarget`, `open_target`); every other key path is base's. */
+const isOpenTargetPath = (path: string) => /\.(openTarget|open_target)(\.|$)/.test(path);
+const same = (actual: unknown, expected: unknown) =>
+  expect([...new Set(pathsOf(actual).filter((path) => !isOpenTargetPath(path)))].sort()).toEqual([...new Set(pathsOf(expected))].sort());
 
 const launch = { runtimeKind: RuntimeKind.CODEX_APP_SERVER, llmModelIdentifier: "gpt", llmConfig: { effort: "high" }, autoExecuteTools: true, workspaceRootPath: "/w" };
 const agentDto = projectDelegatedAgentRun({ kind: "agent", address: "/code_reviewer", agentRunId: "reviewer-run", agentDefinitionId: "code-reviewer",

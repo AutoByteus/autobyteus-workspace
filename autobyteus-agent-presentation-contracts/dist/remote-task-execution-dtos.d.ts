@@ -14,6 +14,7 @@ export declare const remoteAgentLaunchDtoSchema: z.ZodObject<{
             team_default: "team_default";
             inherited: "inherited";
             configured: "configured";
+            settings: "settings";
         }>;
         fallbacks: z.ZodArray<z.ZodObject<{
             layer: z.ZodEnum<{
@@ -62,6 +63,20 @@ export declare const remoteAgentLaunchDtoSchema: z.ZodObject<{
     }, z.core.$strict>]>;
 }, z.core.$strict>;
 export type RemoteAgentLaunchDto = Readonly<z.infer<typeof remoteAgentLaunchDtoSchema>>;
+/**
+ * Where a peer row opens (autobyteus-461 SR-083): the run on its node and the agent to focus (a team's coordinator); `null`
+ * is a row error (a team run whose coordinator is not one of its members). Set by the server on every row it builds.
+ */
+export declare const remoteRowOpenTargetDtoSchema: z.ZodObject<{
+    run_kind: z.ZodEnum<{
+        agent: "agent";
+        agent_team: "agent_team";
+    }>;
+    run_id: z.ZodString;
+    agent_run_id: z.ZodString;
+    node_id: z.ZodString;
+}, z.core.$strict>;
+export type RemoteRowOpenTargetDto = z.infer<typeof remoteRowOpenTargetDtoSchema>;
 export declare const remoteTaskExecutionDtoSchema: z.ZodDiscriminatedUnion<[z.ZodObject<{
     kind: z.ZodLiteral<"agent">;
     address: z.ZodString;
@@ -80,6 +95,7 @@ export declare const remoteTaskExecutionDtoSchema: z.ZodDiscriminatedUnion<[z.Zo
                 team_default: "team_default";
                 inherited: "inherited";
                 configured: "configured";
+                settings: "settings";
             }>;
             fallbacks: z.ZodArray<z.ZodObject<{
                 layer: z.ZodEnum<{
@@ -127,6 +143,15 @@ export declare const remoteTaskExecutionDtoSchema: z.ZodDiscriminatedUnion<[z.Zo
             task_kind: z.ZodString;
         }, z.core.$strict>]>;
     }, z.core.$strict>>>;
+    open_target: z.ZodOptional<z.ZodNullable<z.ZodObject<{
+        run_kind: z.ZodEnum<{
+            agent: "agent";
+            agent_team: "agent_team";
+        }>;
+        run_id: z.ZodString;
+        agent_run_id: z.ZodString;
+        node_id: z.ZodString;
+    }, z.core.$strict>>>;
 }, z.core.$strict>, z.ZodObject<{
     kind: z.ZodLiteral<"agent_team">;
     address: z.ZodString;
@@ -150,6 +175,7 @@ export declare const remoteTaskExecutionDtoSchema: z.ZodDiscriminatedUnion<[z.Zo
                 team_default: "team_default";
                 inherited: "inherited";
                 configured: "configured";
+                settings: "settings";
             }>;
             fallbacks: z.ZodArray<z.ZodObject<{
                 layer: z.ZodEnum<{
@@ -196,6 +222,15 @@ export declare const remoteTaskExecutionDtoSchema: z.ZodDiscriminatedUnion<[z.Zo
             choice_reason: z.ZodString;
             task_kind: z.ZodString;
         }, z.core.$strict>]>;
+    }, z.core.$strict>>>;
+    open_target: z.ZodOptional<z.ZodNullable<z.ZodObject<{
+        run_kind: z.ZodEnum<{
+            agent: "agent";
+            agent_team: "agent_team";
+        }>;
+        run_id: z.ZodString;
+        agent_run_id: z.ZodString;
+        node_id: z.ZodString;
     }, z.core.$strict>>>;
 }, z.core.$strict>], "kind">;
 export declare const remoteAgentStatusSchema: z.ZodEnum<{
@@ -236,6 +271,7 @@ export declare const remoteTaskExecutionSummaryDtoSchema: z.ZodObject<{
                 team_default: "team_default";
                 inherited: "inherited";
                 configured: "configured";
+                settings: "settings";
             }>;
             fallbacks: z.ZodArray<z.ZodObject<{
                 layer: z.ZodEnum<{

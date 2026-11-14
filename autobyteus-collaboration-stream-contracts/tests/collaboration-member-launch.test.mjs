@@ -41,3 +41,10 @@ test("a member's launch source is its own, else the Team's; null when not record
   assert.deepEqual(collaborationMemberLaunchSource(team, team.members[0]), team.defaultLaunchSource);
   assert.equal(collaborationMemberLaunchSource({}, {}), null);
 });
+
+test("SR-083: a row may carry where it opens (its run and the agent to focus), or null for a row error", () => {
+  const opened = { ...copy, openTarget: { runKind: "agent_team", runId: "copy", agentRunId: "run-0" } };
+  assert.deepEqual(taskExecutionDtoSchema.parse(opened), opened);
+  assert.deepEqual(taskExecutionDtoSchema.parse({ ...copy, openTarget: null }).openTarget, null);
+  assert.throws(() => taskExecutionDtoSchema.parse({ ...copy, openTarget: { runKind: "agent_team", runId: "copy" } }));
+});

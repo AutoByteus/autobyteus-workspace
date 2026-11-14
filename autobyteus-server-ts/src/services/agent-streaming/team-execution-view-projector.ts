@@ -156,6 +156,10 @@ const launchOf = (launch: Readonly<{ runtimeKind: string; llmModelIdentifier: st
   llm_config: launch.llmConfig as Record<string, import("@autobyteus/team-stream-contracts").JsonValue> | null,
   auto_execute_tools: launch.autoExecuteTools, workspace_root_path: launch.workspaceRootPath,
 });
+/** The row's open target (SR-083) in the team stream's snake case; absent when the row has none recorded. */
+const openTargetFieldOf = (child: CollaborationTaskExecutionDto): { open_target?: { run_kind: "agent" | "agent_team"; run_id: string; agent_run_id: string } | null } =>
+  child.openTarget === undefined ? {} : { open_target: child.openTarget
+    ? { run_kind: child.openTarget.runKind, run_id: child.openTarget.runId, agent_run_id: child.openTarget.agentRunId } : null };
 /** A child row of the team view, from the shared child-row DTO (the team stream's snake-case shape). */
 const teamTaskExecutionOf = (child: CollaborationTaskExecutionDto): TaskExecutionDto => {
   if ("agentRunId" in child) {
@@ -164,7 +168,7 @@ const teamTaskExecutionOf = (child: CollaborationTaskExecutionDto): TaskExecutio
     return { kind: "task_agent", address: child.address, agent_run_id: child.agentRunId, platform_agent_run_id: child.platformAgentRunId,
       delegator_agent_run_id: child.delegatorAgentRunId ?? null, started_at: child.startedAt,
       source: { kind: "agent", agent_definition_id: source.agentDefinitionId, launch_configuration: launchOf(source.launchConfiguration),
-        ...(launchSource ? { launch_source: launchSource } : {}) } };
+        ...(launchSource ? { launch_source: launchSource } : {}) }, ...openTargetFieldOf(child) };
   }
   const source = child.source;
   return { kind: "task_team", address: child.address, team_run_id: child.teamRunId,
@@ -178,7 +182,8 @@ const teamTaskExecutionOf = (child: CollaborationTaskExecutionDto): TaskExecutio
       }),
       handoffs: source.handoffs.map((handoff) => ({ from: handoff.from, to: handoff.to, rules: [...handoff.rules] })),
       default_launch_configuration: launchOf(source.defaultLaunchConfiguration),
-      ...(sourceOf(source.defaultLaunchSource) ? { default_launch_source: sourceOf(source.defaultLaunchSource) } : {}) } } as TaskExecutionDto;
+      ...(sourceOf(source.defaultLaunchSource) ? { default_launch_source: sourceOf(source.defaultLaunchSource) } : {}) },
+    ...openTargetFieldOf(child) } as TaskExecutionDto;
 };
 
 const projectLaunchSource = (source: LaunchConfigurationSource): LaunchConfigurationSourceDto => {

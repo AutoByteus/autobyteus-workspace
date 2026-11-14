@@ -28,6 +28,7 @@ const ORIGIN_LABEL: Readonly<Record<LaunchConfigurationOrigin, string>> = {
   model_router: "chosen by the Model Router",
   inherited: "inherited from the run",
   configured: "as configured in this run",
+  settings: "as set in its Settings",
 };
 
 const configured = (fallback: LaunchConfigurationFallback): string =>

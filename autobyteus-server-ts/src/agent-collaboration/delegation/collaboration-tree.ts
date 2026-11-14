@@ -61,6 +61,25 @@ const byRun = (a: RootExecutionIdentity, b: RootExecutionIdentity): number =>
   compare(a.rootSubjectKind, b.rootSubjectKind) || compare(a.rootRunId, b.rootRunId);
 
 /**
+ * Where a row opens (autobyteus-461 SR-083, FU-024, FU-031): the run's own identity and the agent to focus. An agent run
+ * focuses its own agent; a team run its coordinator, the member at its coordinator's address, in every view. A team run
+ * whose coordinator is not one of its members is a row error: logged, and no target (never another member).
+ */
+export type RowOpenTarget = Readonly<{ runKind: "agent" | "agent_team"; runId: string; agentRunId: string }>;
+export const openTargetOf = (
+  run: Readonly<{ agentRunId: string } | { teamRunId: string }>,
+  team?: Readonly<{ coordinatorAddress: string; members: readonly Readonly<{ address: string; agentRunId: string }>[] }>,
+): RowOpenTarget | null => {
+  if ("agentRunId" in run) return Object.freeze({ runKind: "agent", runId: run.agentRunId, agentRunId: run.agentRunId });
+  const coordinator = team?.members.find((member) => member.address === team.coordinatorAddress);
+  if (!coordinator) {
+    console.warn(`Row error: team run '${run.teamRunId}' has no coordinator among its members (${team?.coordinatorAddress ?? "none recorded"}); its row has no open target.`);
+    return null;
+  }
+  return Object.freeze({ runKind: "agent_team", runId: run.teamRunId, agentRunId: coordinator.agentRunId });
+};
+
+/**
  * A run's collaboration tree (autobyteus-461 SR-060, SR-061, contract §4): every cross-run answer for one run, derived
  * from the `DelegationIndex` when asked (`delegationIndex.collaborationTreeOf(run)`), never stored. Glossary: the design
  * called it the run's "collaboration map" (`RunCollaborationMap`) until SR-061; it is the tree the user sees under the

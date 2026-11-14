@@ -113,17 +113,23 @@ describe("a delegated team's recorded launch sources after a settings save (CR-4
   const patch = (scopeKind: string, scopeAddress: string, llmModelIdentifier: string) => ({
     scopeKind, scopeAddress, runtimeKind: RuntimeKind.CODEX_APP_SERVER, llmModelIdentifier, llmConfig: { effort: "medium" } } as any);
 
-  it("an edited member's launch becomes its own: its source is dropped; the team's stays", () => {
+  const settings = { origin: "settings", fallbacks: [] };
+  it("an edited member's launch becomes its own, recorded as the Settings edit; the team's stays", () => {
     const original = delegated();
     const updated: any = applyTeamRunSelectionPatches(original, resolveTeamRunSelectionTargets(original, [patch("CONFIGURED_AGENT", "/agent", "gpt-6")]));
-    expect(Object.hasOwn(updated.rootTeam.members[0], "launchSource")).toBe(false);
+    expect(updated.rootTeam.members[0].launchSource).toEqual(settings);
     expect(updated.rootTeam.defaultLaunchSource).toEqual(teamDefault);
+    // A member that followed its team (no source of its own) records the edit too: it never shows the team's origin again.
+    const follower = tree();
+    follower.rootTeam.defaultLaunchSource = teamDefault;
+    const edited: any = applyTeamRunSelectionPatches(follower, resolveTeamRunSelectionTargets(follower, [patch("CONFIGURED_AGENT", "/agent", "gpt-6")]));
+    expect(edited.rootTeam.members[0].launchSource).toEqual(settings);
   });
 
-  it("an edited team launch becomes its own: the team's source is dropped; the member's stays", () => {
+  it("an edited team launch becomes its own, recorded as the Settings edit; the member's stays", () => {
     const original = delegated();
     const updated: any = applyTeamRunSelectionPatches(original, resolveTeamRunSelectionTargets(original, [patch("CONFIGURED_TEAM", "/", "gpt-6")]));
-    expect(Object.hasOwn(updated.rootTeam, "defaultLaunchSource")).toBe(false);
+    expect(updated.rootTeam.defaultLaunchSource).toEqual(settings);
     expect(updated.rootTeam.members[0].launchSource).toEqual(agentDefault);
   });
 

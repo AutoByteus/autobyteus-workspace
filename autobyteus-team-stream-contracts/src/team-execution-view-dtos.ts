@@ -53,7 +53,7 @@ export type LaunchConfigurationFallbackDto = Readonly<{
   detail: string;
 }>;
 export type LaunchConfigurationSourceDto =
-  | Readonly<{ origin: "agent_default" | "team_default" | "inherited" | "configured"; fallbacks: readonly LaunchConfigurationFallbackDto[] }>
+  | Readonly<{ origin: "agent_default" | "team_default" | "inherited" | "configured" | "settings"; fallbacks: readonly LaunchConfigurationFallbackDto[] }>
   /** A choice of the node's Model Router (autobyteus-32): its one-sentence reason and task kind. */
   | Readonly<{ origin: "model_router"; fallbacks: readonly LaunchConfigurationFallbackDto[]; choice_reason: string; task_kind: string }>;
 
@@ -71,12 +71,6 @@ type TeamLaunchDto = Readonly<{
   default_launch_source?: LaunchConfigurationSourceDto;
 }>;
 
-/** The recorded source of a Team copy member's launch: its own, else its Team's; null when not recorded. */
-export const teamMemberLaunchSource = (
-  team: Pick<TeamLaunchDto, "default_launch_source">,
-  member: Pick<MemberLaunchDto, "launch_source">,
-): LaunchConfigurationSourceDto | null => member.launch_source ?? team.default_launch_source ?? null;
-
 /** The snapshot a delegated copy runs with: from the catalog or from a configured placement when it started. */
 export type TaskAgentExecutionSourceDto = Readonly<{
   kind: "agent";
@@ -93,6 +87,18 @@ export type TaskTeamExecutionSourceDto = Readonly<{
   handoffs: readonly Readonly<{ from: string; to: string; rules: readonly string[] }>[];
 }> & TeamLaunchDto;
 
+/** The recorded source of a Team copy member's launch: its own, else its Team's; null when not recorded. */
+export const teamMemberLaunchSource = (
+  team: Pick<TeamLaunchDto, "default_launch_source">,
+  member: Pick<MemberLaunchDto, "launch_source">,
+): LaunchConfigurationSourceDto | null => member.launch_source ?? team.default_launch_source ?? null;
+
+/**
+ * Where a row opens (autobyteus-461 SR-083): the run's own identity and the agent to focus (a team's coordinator). The
+ * server sets it on every row it builds; `null` is a row error (a team run whose coordinator is not one of its members).
+ */
+export type RowOpenTargetDto = Readonly<{ run_kind: "agent" | "agent_team"; run_id: string; agent_run_id: string }>;
+
 /** A delegated child Agent; `delegator_agent_run_id` is the AgentRun that started it (null when not recorded). */
 export type TaskAgentExecutionDto = Readonly<{
   kind: "task_agent";
@@ -102,6 +108,7 @@ export type TaskAgentExecutionDto = Readonly<{
   delegator_agent_run_id: string | null;
   started_at: string;
   source: TaskAgentExecutionSourceDto;
+  open_target?: RowOpenTargetDto | null;
 }>;
 
 export type TaskTeamAgentExecutionDto = Readonly<{
@@ -121,6 +128,7 @@ export type TaskTeamExecutionDto = Readonly<{
   delegator_agent_run_id: string | null;
   started_at: string;
   source: TaskTeamExecutionSourceDto;
+  open_target?: RowOpenTargetDto | null;
 }>;
 
 export type TaskExecutionDto = TaskAgentExecutionDto | TaskTeamExecutionDto;
@@ -145,7 +153,7 @@ const launchFallbacksSchema = z.array(z.object({
   detail: nonEmptyStringSchema,
 }).strict());
 const launchSourceSchema: z.ZodType<LaunchConfigurationSourceDto> = z.union([
-  z.object({ origin: z.enum(["agent_default", "team_default", "inherited", "configured"]), fallbacks: launchFallbacksSchema }).strict(),
+  z.object({ origin: z.enum(["agent_default", "team_default", "inherited", "configured", "settings"]), fallbacks: launchFallbacksSchema }).strict(),
   z.object({
     origin: z.literal("model_router"), fallbacks: launchFallbacksSchema, choice_reason: nonEmptyStringSchema, task_kind: nonEmptyStringSchema,
   }).strict(),
@@ -177,10 +185,15 @@ const taskTeamSourceSchema: z.ZodType<TaskTeamExecutionSourceDto> = z.object({
   default_launch_source: launchSourceSchema.optional(),
 }).strict();
 
+export const rowOpenTargetDtoSchema: z.ZodType<RowOpenTargetDto> = z.object({
+  run_kind: z.enum(["agent", "agent_team"]), run_id: nonEmptyStringSchema, agent_run_id: nonEmptyStringSchema,
+}).strict();
+const openTargetSchema = rowOpenTargetDtoSchema.nullable().optional();
+
 export const taskAgentExecutionDtoSchema: z.ZodType<TaskAgentExecutionDto> = z.object({
   kind: z.literal("task_agent"), address: agentTeamAddressDtoSchema, agent_run_id: nonEmptyStringSchema,
   platform_agent_run_id: nullableNonEmptyStringSchema, delegator_agent_run_id: nullableNonEmptyStringSchema,
-  started_at: nonEmptyStringSchema, source: taskAgentSourceSchema,
+  started_at: nonEmptyStringSchema, source: taskAgentSourceSchema, open_target: openTargetSchema,
 }).strict();
 
 const taskTeamAgentSchema: z.ZodType<TaskTeamAgentExecutionDto> = z.object({
@@ -193,7 +206,7 @@ export const taskTeamExecutionDtoSchema: z.ZodType<TaskTeamExecutionDto> = z.laz
   members: z.array(taskTeamAgentSchema),
   task_executions: z.array(z.union([taskAgentExecutionDtoSchema, taskTeamExecutionDtoSchema])),
   delegator_agent_run_id: nullableNonEmptyStringSchema, started_at: nonEmptyStringSchema,
-  source: taskTeamSourceSchema,
+  source: taskTeamSourceSchema, open_target: openTargetSchema,
 }).strict());
 
 export type TeamRunExecutionTreeDto = Readonly<{

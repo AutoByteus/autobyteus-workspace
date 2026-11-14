@@ -11,6 +11,7 @@ export declare const teamTaskExecutionStartedPayloadSchema: z.ZodObject<{
         delegator_agent_run_id: string | null;
         started_at: string;
         source: import("./team-execution-view-dtos.js").TaskAgentExecutionSourceDto;
+        open_target?: import("./team-execution-view-dtos.js").RowOpenTargetDto | null;
     }>, unknown, z.core.$ZodTypeInternals<Readonly<{
         kind: "task_agent";
         address: string;
@@ -19,6 +20,7 @@ export declare const teamTaskExecutionStartedPayloadSchema: z.ZodObject<{
         delegator_agent_run_id: string | null;
         started_at: string;
         source: import("./team-execution-view-dtos.js").TaskAgentExecutionSourceDto;
+        open_target?: import("./team-execution-view-dtos.js").RowOpenTargetDto | null;
     }>, unknown>>, z.ZodType<Readonly<{
         kind: "task_team";
         address: string;
@@ -28,6 +30,7 @@ export declare const teamTaskExecutionStartedPayloadSchema: z.ZodObject<{
         delegator_agent_run_id: string | null;
         started_at: string;
         source: import("./team-execution-view-dtos.js").TaskTeamExecutionSourceDto;
+        open_target?: import("./team-execution-view-dtos.js").RowOpenTargetDto | null;
     }>, unknown, z.core.$ZodTypeInternals<Readonly<{
         kind: "task_team";
         address: string;
@@ -37,6 +40,7 @@ export declare const teamTaskExecutionStartedPayloadSchema: z.ZodObject<{
         delegator_agent_run_id: string | null;
         started_at: string;
         source: import("./team-execution-view-dtos.js").TaskTeamExecutionSourceDto;
+        open_target?: import("./team-execution-view-dtos.js").RowOpenTargetDto | null;
     }>, unknown>>]>;
 }, z.core.$strict>;
 export type TeamTaskExecutionStartedPayload = Readonly<z.infer<typeof teamTaskExecutionStartedPayloadSchema>>;
@@ -74,6 +78,7 @@ export declare const teamTaskExecutionsReopenedPayloadSchema: z.ZodObject<{
             delegator_agent_run_id: string | null;
             started_at: string;
             source: import("./team-execution-view-dtos.js").TaskAgentExecutionSourceDto;
+            open_target?: import("./team-execution-view-dtos.js").RowOpenTargetDto | null;
         }>, unknown, z.core.$ZodTypeInternals<Readonly<{
             kind: "task_agent";
             address: string;
@@ -82,6 +87,7 @@ export declare const teamTaskExecutionsReopenedPayloadSchema: z.ZodObject<{
             delegator_agent_run_id: string | null;
             started_at: string;
             source: import("./team-execution-view-dtos.js").TaskAgentExecutionSourceDto;
+            open_target?: import("./team-execution-view-dtos.js").RowOpenTargetDto | null;
         }>, unknown>>, z.ZodType<Readonly<{
             kind: "task_team";
             address: string;
@@ -91,6 +97,7 @@ export declare const teamTaskExecutionsReopenedPayloadSchema: z.ZodObject<{
             delegator_agent_run_id: string | null;
             started_at: string;
             source: import("./team-execution-view-dtos.js").TaskTeamExecutionSourceDto;
+            open_target?: import("./team-execution-view-dtos.js").RowOpenTargetDto | null;
         }>, unknown, z.core.$ZodTypeInternals<Readonly<{
             kind: "task_team";
             address: string;
@@ -100,6 +107,7 @@ export declare const teamTaskExecutionsReopenedPayloadSchema: z.ZodObject<{
             delegator_agent_run_id: string | null;
             started_at: string;
             source: import("./team-execution-view-dtos.js").TaskTeamExecutionSourceDto;
+            open_target?: import("./team-execution-view-dtos.js").RowOpenTargetDto | null;
         }>, unknown>>]>;
     }, z.core.$strict>>;
 }, z.core.$strict>;

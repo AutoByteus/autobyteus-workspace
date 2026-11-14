@@ -48,7 +48,7 @@ const collaborationLaunchFallbacksDtoSchema = z.array(z.object({
  */
 export const collaborationLaunchConfigurationSourceDtoSchema = z.union([
   z.object({
-    origin: z.enum(["agent_default", "team_default", "inherited", "configured"]),
+    origin: z.enum(["agent_default", "team_default", "inherited", "configured", "settings"]),
     fallbacks: collaborationLaunchFallbacksDtoSchema,
   }).strict(),
   z.object({
@@ -74,12 +74,6 @@ type TeamLaunchDto = Readonly<{
   defaultLaunchSource?: CollaborationLaunchConfigurationSourceDto;
 }>;
 
-/** The recorded source of a Team copy member's launch: its own, else its Team's; null when not recorded. */
-export const collaborationMemberLaunchSource = (
-  team: Pick<TeamLaunchDto, "defaultLaunchSource">,
-  member: Pick<MemberLaunchDto, "launchSource">,
-): CollaborationLaunchConfigurationSourceDto | null => member.launchSource ?? team.defaultLaunchSource ?? null;
-
 /** The snapshot a delegated copy runs with: from the catalog or from a configured placement when it started. */
 export type TaskAgentExecutionSourceDto = Readonly<{
   kind: "agent";
@@ -94,6 +88,17 @@ export type TaskTeamExecutionSourceDto = Readonly<{
   members: readonly (Readonly<{ address: string; agentDefinitionId: string }> & MemberLaunchDto)[];
   handoffs: readonly Readonly<{ from: string; to: string; rules: readonly string[] }>[];
 }> & TeamLaunchDto;
+/** The recorded source of a Team copy member's launch: its own, else its Team's; null when not recorded. */
+export const collaborationMemberLaunchSource = (
+  team: Pick<TeamLaunchDto, "defaultLaunchSource">,
+  member: Pick<MemberLaunchDto, "launchSource">,
+): CollaborationLaunchConfigurationSourceDto | null => member.launchSource ?? team.defaultLaunchSource ?? null;
+
+/**
+ * Where a row opens (autobyteus-461 SR-083): the run's own identity and the agent to focus (a team's coordinator). The
+ * server sets it on every row it builds; `null` is a row error (a team run whose coordinator is not one of its members).
+ */
+export type RowOpenTargetDto = Readonly<{ runKind: "agent" | "agent_team"; runId: string; agentRunId: string }>;
 type TaskAgentExecutionDto = Readonly<{
   address: string;
   agentRunId: string;
@@ -102,6 +107,7 @@ type TaskAgentExecutionDto = Readonly<{
   delegatorAgentRunId?: string;
   startedAt: string;
   source: TaskAgentExecutionSourceDto;
+  openTarget?: RowOpenTargetDto | null;
 }>;
 type TaskTeamAgentExecutionDto = Readonly<{
   address: string;
@@ -117,6 +123,7 @@ type TaskTeamExecutionDto = Readonly<{
   delegatorAgentRunId?: string;
   startedAt: string;
   source: TaskTeamExecutionSourceDto;
+  openTarget?: RowOpenTargetDto | null;
 }>;
 type TaskExecutionDto = TaskAgentExecutionDto | TaskTeamExecutionDto;
 
@@ -133,9 +140,13 @@ const taskTeamSource: z.ZodType<TaskTeamExecutionSourceDto> = z.object({
   handoffs: z.array(handoff), defaultLaunchConfiguration: agentOrgLaunchConfigurationDtoSchema,
   defaultLaunchSource: launchSource,
 }).strict();
+export const rowOpenTargetDtoSchema: z.ZodType<RowOpenTargetDto> = z.object({
+  runKind: z.enum(["agent", "agent_team"]), runId: nonEmptyStringSchema, agentRunId: nonEmptyStringSchema,
+}).strict();
+const openTarget = rowOpenTargetDtoSchema.nullable().optional();
 const taskAgent: z.ZodType<TaskAgentExecutionDto> = z.object({
   address: agentAddressSchema, agentRunId: nonEmptyStringSchema, platformAgentRunId: nullableText,
-  delegatorAgentRunId: nonEmptyStringSchema.optional(), startedAt: timestamp, source: taskAgentSource,
+  delegatorAgentRunId: nonEmptyStringSchema.optional(), startedAt: timestamp, source: taskAgentSource, openTarget,
 }).strict();
 const taskTeamMember: z.ZodType<TaskTeamAgentExecutionDto> = z.object({
   address: agentAddressSchema, agentRunId: nonEmptyStringSchema, platformAgentRunId: nullableText,
@@ -143,7 +154,7 @@ const taskTeamMember: z.ZodType<TaskTeamAgentExecutionDto> = z.object({
 const taskTeam: z.ZodType<TaskTeamExecutionDto> = z.lazy(() => z.object({
   address: agentAddressSchema, teamRunId: nonEmptyStringSchema, members: z.array(taskTeamMember),
   taskExecutions: z.array(taskExecution), delegatorAgentRunId: nonEmptyStringSchema.optional(), startedAt: timestamp,
-  source: taskTeamSource,
+  source: taskTeamSource, openTarget,
 }).strict());
 const taskExecution: z.ZodType<TaskExecutionDto> = z.lazy(() => z.union([taskAgent, taskTeam]));
 /** Shared by every collaboration root view (Org and Agent roots). */

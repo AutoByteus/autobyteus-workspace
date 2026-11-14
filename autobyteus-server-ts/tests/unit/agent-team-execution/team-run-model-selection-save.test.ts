@@ -16,6 +16,8 @@ import { StudioRunModelConfigService } from '../../../src/run-history/services/s
 import { AgentTeamRunResolver } from '../../../src/api/graphql/types/agent-team-run.js';
 import { AgentMemoryLayout } from '../../../src/agent-memory/store/agent-memory-layout.js';
 import { TeamRunExecutionTreeStore } from '../../../src/run-history/store/team-run-execution-tree-store.js';
+
+const SETTINGS = { origin: 'settings', fallbacks: [] };
 import { writeAttachmentSidecars } from '../../fixtures/current-attachment-package-fixtures.js';
 const view = (rows: any[]) => ({ offeredModels: rows,
   findExactCurrent: (id: string) => rows.find((row) => row.model_identifier === id) ?? null });
@@ -86,7 +88,8 @@ describe('configured Team model selection Save', () => {
     const patch = { scopeKind: 'CONFIGURED_TEAM' as const, scopeAddress: '/', runtimeKind: RuntimeKind.AUTOBYTEUS, llmModelIdentifier: 'large', llmConfig: null };
     expect((await h.manager.updateStoppedSelections({ teamRunId: 'root', selectionPatches: [patch] })).outcome).toBe('UPDATED');
     expect(h.write).toHaveBeenCalledTimes(1);
-    expect(h.saved()).toEqual({ ...original, rootTeam: { ...original.rootTeam, defaultLaunchConfiguration: { ...original.rootTeam.defaultLaunchConfiguration, llmModelIdentifier: 'large' } } });
+    // The edit is the team's own launch, recorded as the Settings edit (V-11).
+    expect(h.saved()).toEqual({ ...original, rootTeam: { ...original.rootTeam, defaultLaunchSource: SETTINGS, defaultLaunchConfiguration: { ...original.rootTeam.defaultLaunchConfiguration, llmModelIdentifier: 'large' } } });
     expect((await h.manager.updateStoppedSelections({ teamRunId: 'root', selectionPatches: [{ ...patch, llmModelIdentifier: 'small' }] })).outcome).toBe('VALIDATION_FAILED');
     expect(h.write).toHaveBeenCalledTimes(1);
   });
@@ -126,7 +129,7 @@ describe('configured Team model selection Save', () => {
       });
       expect(h.write).toHaveBeenCalledTimes(1);
       expect(h.saved()).toEqual(physicalOutcome === 'not_committed' ? original : {
-        ...original, rootTeam: { ...original.rootTeam, defaultLaunchConfiguration: {
+        ...original, rootTeam: { ...original.rootTeam, defaultLaunchSource: SETTINGS, defaultLaunchConfiguration: {
           ...original.rootTeam.defaultLaunchConfiguration, llmModelIdentifier: 'large',
         } },
       });

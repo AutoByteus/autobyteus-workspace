@@ -5,6 +5,7 @@ import type { ChildRowProjection } from "../../agent-collaboration/delegation/ch
 import { peerRunIdOf, peerRunLinksOf } from "../../agent-collaboration/execution/remote/peer-run-link.js";
 import type { RemoteRunChannel } from "../../agent-collaboration/execution/remote/remote-run-channel.js";
 import { describeRemoteTaskExecutions } from "../../agent-collaboration/execution/remote/remote-run-observation.js";
+import { peerStatuses } from "../../agent-collaboration/execution/remote/peer-run-calls.js";
 import { projectRemoteTaskExecution } from "./remote-task-execution-dto-projection.js";
 import { AgentRunMetadataStore } from "../../run-history/store/agent-run-metadata-store.js";
 import { TeamRunExecutionTreeStore } from "../../run-history/store/team-run-execution-tree-store.js";
@@ -40,6 +41,8 @@ export const createChildRowProjection = (input: Readonly<{
     return row ? { kind: "local", row } : null;
   }
   const runId = "agentRunId" in child.run ? child.run.agentRunId : child.run.teamRunId;
-  const [peer] = await describeRemoteTaskExecutions(peerRunLinksOf(child.parent, input.tree).filter((link) => peerRunIdOf(link) === runId), input.channel());
-  return peer ? { kind: "peer", row: projectRemoteTaskExecution(peer) } : null;
+  const links = peerRunLinksOf(child.parent, input.tree).filter((link) => peerRunIdOf(link) === runId);
+  const [[peer], [summary]] = await Promise.all([describeRemoteTaskExecutions(links, input.channel()), peerStatuses(links, input.channel)]);
+  // Its launches, read from its node while the view reads it (SR-038, F-66); absent when the node does not answer.
+  return peer ? { kind: "peer", row: projectRemoteTaskExecution(peer, summary?.reachable ? summary.launches : undefined) } : null;
 } });

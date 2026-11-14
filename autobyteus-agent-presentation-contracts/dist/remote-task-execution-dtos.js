@@ -25,12 +25,19 @@ export const remoteAgentLaunchDtoSchema = z.object({
     runtime_kind: nonEmptyStringSchema,
     llm_model_identifier: nonEmptyStringSchema,
     source: z.union([
-        z.object({ origin: z.enum(["agent_default", "team_default", "inherited", "configured"]), fallbacks: remoteLaunchFallbacksDtoSchema }).strict(),
+        z.object({ origin: z.enum(["agent_default", "team_default", "inherited", "configured", "settings"]), fallbacks: remoteLaunchFallbacksDtoSchema }).strict(),
         z.object({
             origin: z.literal("model_router"), fallbacks: remoteLaunchFallbacksDtoSchema,
             choice_reason: nonEmptyStringSchema, task_kind: nonEmptyStringSchema,
         }).strict(),
     ]),
+}).strict();
+/**
+ * Where a peer row opens (autobyteus-461 SR-083): the run on its node and the agent to focus (a team's coordinator); `null`
+ * is a row error (a team run whose coordinator is not one of its members). Set by the server on every row it builds.
+ */
+export const remoteRowOpenTargetDtoSchema = z.object({
+    run_kind: z.enum(["agent", "agent_team"]), run_id: nonEmptyStringSchema, agent_run_id: nonEmptyStringSchema, node_id: nonEmptyStringSchema,
 }).strict();
 export const remoteTaskExecutionDtoSchema = z.discriminatedUnion("kind", [
     z.object({
@@ -42,6 +49,7 @@ export const remoteTaskExecutionDtoSchema = z.discriminatedUnion("kind", [
         delegator_agent_run_id: nonEmptyStringSchema,
         started_at: nonEmptyStringSchema,
         launches: z.array(remoteAgentLaunchDtoSchema).optional(),
+        open_target: remoteRowOpenTargetDtoSchema.nullable().optional(),
     }).strict(),
     z.object({
         kind: z.literal("agent_team"),
@@ -55,6 +63,7 @@ export const remoteTaskExecutionDtoSchema = z.discriminatedUnion("kind", [
         delegator_agent_run_id: nonEmptyStringSchema,
         started_at: nonEmptyStringSchema,
         launches: z.array(remoteAgentLaunchDtoSchema).optional(),
+        open_target: remoteRowOpenTargetDtoSchema.nullable().optional(),
     }).strict(),
 ]);
 export const remoteAgentStatusSchema = z.enum(["offline", "initializing", "idle", "running", "error"]);

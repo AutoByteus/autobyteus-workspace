@@ -1,5 +1,6 @@
 import { randomUUID } from "node:crypto";
 import { isDeepStrictEqual } from "node:util";
+import { SETTINGS_LAUNCH_SOURCE } from "../../agent-collaboration/domain/launch-configuration-source.js";
 import type {
   ConfiguredAgentExecutionNode,
   RootConfiguredTeamExecutionNode,
@@ -91,8 +92,8 @@ export const applyTeamRunSelectionPatches = (
   const defaultLaunch = rootPatch ? replaceLaunchConfig(root.defaultLaunchConfiguration, rootPatch) : root.defaultLaunchConfiguration;
   const rootTeam: RootConfiguredTeamExecutionNode = {
     ...root,
-    // An edit of the Team's own launch becomes its own (design V-11): a delegated team's recorded source no longer holds.
-    ...(defaultLaunchSource && isDeepStrictEqual(defaultLaunch, root.defaultLaunchConfiguration) ? { defaultLaunchSource } : {}),
+    // An edit of the Team's own launch becomes its own, recorded as one (design V-11).
+    ...(isDeepStrictEqual(defaultLaunch, root.defaultLaunchConfiguration) ? (defaultLaunchSource ? { defaultLaunchSource } : {}) : { defaultLaunchSource: SETTINGS_LAUNCH_SOURCE }),
     defaultLaunchConfiguration: defaultLaunch,
     members: patchMembers(root.members, patchByAddress, newSwitchId),
   };

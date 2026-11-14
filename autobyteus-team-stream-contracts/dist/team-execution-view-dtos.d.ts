@@ -34,7 +34,7 @@ export type LaunchConfigurationFallbackDto = Readonly<{
     detail: string;
 }>;
 export type LaunchConfigurationSourceDto = Readonly<{
-    origin: "agent_default" | "team_default" | "inherited" | "configured";
+    origin: "agent_default" | "team_default" | "inherited" | "configured" | "settings";
     fallbacks: readonly LaunchConfigurationFallbackDto[];
 }>
 /** A choice of the node's Model Router (autobyteus-32): its one-sentence reason and task kind. */
@@ -57,8 +57,6 @@ type TeamLaunchDto = Readonly<{
     default_launch_configuration: AgentLaunchConfigurationDto;
     default_launch_source?: LaunchConfigurationSourceDto;
 }>;
-/** The recorded source of a Team copy member's launch: its own, else its Team's; null when not recorded. */
-export declare const teamMemberLaunchSource: (team: Pick<TeamLaunchDto, "default_launch_source">, member: Pick<MemberLaunchDto, "launch_source">) => LaunchConfigurationSourceDto | null;
 /** The snapshot a delegated copy runs with: from the catalog or from a configured placement when it started. */
 export type TaskAgentExecutionSourceDto = Readonly<{
     kind: "agent";
@@ -80,6 +78,17 @@ export type TaskTeamExecutionSourceDto = Readonly<{
         rules: readonly string[];
     }>[];
 }> & TeamLaunchDto;
+/** The recorded source of a Team copy member's launch: its own, else its Team's; null when not recorded. */
+export declare const teamMemberLaunchSource: (team: Pick<TeamLaunchDto, "default_launch_source">, member: Pick<MemberLaunchDto, "launch_source">) => LaunchConfigurationSourceDto | null;
+/**
+ * Where a row opens (autobyteus-461 SR-083): the run's own identity and the agent to focus (a team's coordinator). The
+ * server sets it on every row it builds; `null` is a row error (a team run whose coordinator is not one of its members).
+ */
+export type RowOpenTargetDto = Readonly<{
+    run_kind: "agent" | "agent_team";
+    run_id: string;
+    agent_run_id: string;
+}>;
 /** A delegated child Agent; `delegator_agent_run_id` is the AgentRun that started it (null when not recorded). */
 export type TaskAgentExecutionDto = Readonly<{
     kind: "task_agent";
@@ -89,6 +98,7 @@ export type TaskAgentExecutionDto = Readonly<{
     delegator_agent_run_id: string | null;
     started_at: string;
     source: TaskAgentExecutionSourceDto;
+    open_target?: RowOpenTargetDto | null;
 }>;
 export type TaskTeamAgentExecutionDto = Readonly<{
     kind: "task_team_agent";
@@ -106,8 +116,10 @@ export type TaskTeamExecutionDto = Readonly<{
     delegator_agent_run_id: string | null;
     started_at: string;
     source: TaskTeamExecutionSourceDto;
+    open_target?: RowOpenTargetDto | null;
 }>;
 export type TaskExecutionDto = TaskAgentExecutionDto | TaskTeamExecutionDto;
+export declare const rowOpenTargetDtoSchema: z.ZodType<RowOpenTargetDto>;
 export declare const taskAgentExecutionDtoSchema: z.ZodType<TaskAgentExecutionDto>;
 export declare const taskTeamExecutionDtoSchema: z.ZodType<TaskTeamExecutionDto>;
 export type TeamRunExecutionTreeDto = Readonly<{

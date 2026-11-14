@@ -33,7 +33,7 @@ const collaborationLaunchFallbacksDtoSchema = z.array(z.object({
  */
 export const collaborationLaunchConfigurationSourceDtoSchema = z.union([
     z.object({
-        origin: z.enum(["agent_default", "team_default", "inherited", "configured"]),
+        origin: z.enum(["agent_default", "team_default", "inherited", "configured", "settings"]),
         fallbacks: collaborationLaunchFallbacksDtoSchema,
     }).strict(),
     z.object({
@@ -58,9 +58,13 @@ const taskTeamSource = z.object({
     handoffs: z.array(handoff), defaultLaunchConfiguration: agentOrgLaunchConfigurationDtoSchema,
     defaultLaunchSource: launchSource,
 }).strict();
+export const rowOpenTargetDtoSchema = z.object({
+    runKind: z.enum(["agent", "agent_team"]), runId: nonEmptyStringSchema, agentRunId: nonEmptyStringSchema,
+}).strict();
+const openTarget = rowOpenTargetDtoSchema.nullable().optional();
 const taskAgent = z.object({
     address: agentAddressSchema, agentRunId: nonEmptyStringSchema, platformAgentRunId: nullableText,
-    delegatorAgentRunId: nonEmptyStringSchema.optional(), startedAt: timestamp, source: taskAgentSource,
+    delegatorAgentRunId: nonEmptyStringSchema.optional(), startedAt: timestamp, source: taskAgentSource, openTarget,
 }).strict();
 const taskTeamMember = z.object({
     address: agentAddressSchema, agentRunId: nonEmptyStringSchema, platformAgentRunId: nullableText,
@@ -68,7 +72,7 @@ const taskTeamMember = z.object({
 const taskTeam = z.lazy(() => z.object({
     address: agentAddressSchema, teamRunId: nonEmptyStringSchema, members: z.array(taskTeamMember),
     taskExecutions: z.array(taskExecution), delegatorAgentRunId: nonEmptyStringSchema.optional(), startedAt: timestamp,
-    source: taskTeamSource,
+    source: taskTeamSource, openTarget,
 }).strict());
 const taskExecution = z.lazy(() => z.union([taskAgent, taskTeam]));
 /** Shared by every collaboration root view (Org and Agent roots). */

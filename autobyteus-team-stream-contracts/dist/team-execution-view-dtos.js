@@ -38,7 +38,7 @@ const launchFallbacksSchema = z.array(z.object({
     detail: nonEmptyStringSchema,
 }).strict());
 const launchSourceSchema = z.union([
-    z.object({ origin: z.enum(["agent_default", "team_default", "inherited", "configured"]), fallbacks: launchFallbacksSchema }).strict(),
+    z.object({ origin: z.enum(["agent_default", "team_default", "inherited", "configured", "settings"]), fallbacks: launchFallbacksSchema }).strict(),
     z.object({
         origin: z.literal("model_router"), fallbacks: launchFallbacksSchema, choice_reason: nonEmptyStringSchema, task_kind: nonEmptyStringSchema,
     }).strict(),
@@ -65,10 +65,14 @@ const taskTeamSourceSchema = z.object({
     handoffs: z.array(handoffDtoSchema), default_launch_configuration: launchConfigurationSchema,
     default_launch_source: launchSourceSchema.optional(),
 }).strict();
+export const rowOpenTargetDtoSchema = z.object({
+    run_kind: z.enum(["agent", "agent_team"]), run_id: nonEmptyStringSchema, agent_run_id: nonEmptyStringSchema,
+}).strict();
+const openTargetSchema = rowOpenTargetDtoSchema.nullable().optional();
 export const taskAgentExecutionDtoSchema = z.object({
     kind: z.literal("task_agent"), address: agentTeamAddressDtoSchema, agent_run_id: nonEmptyStringSchema,
     platform_agent_run_id: nullableNonEmptyStringSchema, delegator_agent_run_id: nullableNonEmptyStringSchema,
-    started_at: nonEmptyStringSchema, source: taskAgentSourceSchema,
+    started_at: nonEmptyStringSchema, source: taskAgentSourceSchema, open_target: openTargetSchema,
 }).strict();
 const taskTeamAgentSchema = z.object({
     kind: z.literal("task_team_agent"), address: agentTeamAddressDtoSchema,
@@ -79,7 +83,7 @@ export const taskTeamExecutionDtoSchema = z.lazy(() => z.object({
     members: z.array(taskTeamAgentSchema),
     task_executions: z.array(z.union([taskAgentExecutionDtoSchema, taskTeamExecutionDtoSchema])),
     delegator_agent_run_id: nullableNonEmptyStringSchema, started_at: nonEmptyStringSchema,
-    source: taskTeamSourceSchema,
+    source: taskTeamSourceSchema, open_target: openTargetSchema,
 }).strict());
 export const teamRunExecutionTreeDtoSchema = z.object({
     created_at: nonEmptyStringSchema, archived_at: nullableNonEmptyStringSchema,

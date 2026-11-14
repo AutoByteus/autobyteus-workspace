@@ -1,4 +1,5 @@
 import type { DelegatedRunIdentity } from "./child-run-identity.js";
+import { openTargetOf } from "../../agent-collaboration/delegation/collaboration-tree.js";
 import { agentOrgLaunchConfigurationDtoSchema, type CollaborationLaunchConfigurationSourceDto, type AgentOrgExecutionTreeDto, type AgentRunCollaborationTreeDto, type CollaborationTaskExecutionDto, type TaskAgentExecutionSourceDto } from "@autobyteus/collaboration-stream-contracts";
 import type { AgentLaunchConfiguration } from "../../agent-team-execution/domain/team-run-config.js";
 import type { CollaborationHandoff } from "../../agent-collaboration/domain/collaboration-handoff.js";
@@ -62,6 +63,7 @@ export const projectDelegatedAgentRun = (identity: Extract<DelegatedRunIdentity,
     launchConfiguration: projectLaunch({ runtimeKind: metadata.runtimeKind, llmModelIdentifier: metadata.llmModelIdentifier,
       llmConfig: metadata.llmConfig, autoExecuteTools: metadata.autoExecuteTools, workspaceRootPath: metadata.workspaceRootPath }),
     ...projectOptionalSource(metadata, "launchSource") },
+  openTarget: openTargetOf({ agentRunId: identity.agentRunId }),
 });
 
 /** A child row for a team run this run delegated to (DS-8): its identity and its launch details, read fresh from its own file. */
@@ -79,6 +81,8 @@ export const projectDelegatedTeamRun = (identity: Extract<DelegatedRunIdentity, 
         launchConfiguration: projectLaunch(member.launchConfiguration), followsTeam: sameLaunch(member), ...projectOptionalSource(member, "launchSource") })),
       handoffs: tree.handoffs.map(projectHandoff), defaultLaunchConfiguration: projectLaunch(team.defaultLaunchConfiguration),
       ...projectOptionalSource(team, "defaultLaunchSource") },
+    // Its coordinator, by its own address in its own run (TC-12), among the members it lists.
+    openTarget: openTargetOf({ teamRunId: identity.teamRunId }, { coordinatorAddress: team.coordinatorAddress, members: identity.members }),
   };
 };
 
