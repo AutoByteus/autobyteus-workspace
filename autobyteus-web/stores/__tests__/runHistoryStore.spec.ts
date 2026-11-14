@@ -2448,6 +2448,21 @@ describe('runHistoryStore', () => {
     expect(refreshSpy).toHaveBeenCalledTimes(1);
   });
 
+  it('CR-461-087: archiveRuns keeps each refused run\'s reason from the server, for every kind; a transport error gives none', async () => {
+    const reason = "This run can't be archived while a run it delegated to is working (/fact_checker_924b).";
+    mutateMock
+      .mockResolvedValueOnce({ data: { archiveStoredRun: { success: true, message: 'Run archived.' } }, errors: [] })
+      .mockResolvedValueOnce({ data: { archiveStoredRun: { success: false, message: reason } }, errors: [] })
+      .mockResolvedValueOnce({ data: { archiveStoredTeamRun: { success: false, message: 'Team run is active.' } }, errors: [] })
+      .mockRejectedValueOnce(new Error('network down'));
+    const store = useRunHistoryStore();
+    vi.spyOn(store, 'refreshTreeQuietly').mockResolvedValue(undefined);
+    vi.spyOn(store, 'refreshRunNavigationTopology').mockImplementation(() => undefined);
+    vi.spyOn(console, 'error').mockImplementation(() => undefined);
+    const outcome = await store.archiveRuns({ agentRunIds: ['run-1', 'run-2'], teamRunIds: ['team-1'], orgRunIds: ['org-1'] });
+    expect(outcome).toEqual({ archivedRunIds: ['run-1'], failedRunIds: ['run-2', 'team-1', 'org-1'], failureReasons: [reason, 'Team run is active.'] });
+  });
+
   it('archiveRun does not mutate local state when backend rejects archive', async () => {
     mutateMock.mockResolvedValueOnce({
       data: {
@@ -2848,7 +2863,7 @@ describe('runHistoryStore', () => {
       const topologySpy = vi.spyOn(store, 'refreshRunNavigationTopology');
 
       await expect(store.archiveTeamRuns(['team-1', 'team-2', 'team-3'])).resolves.toEqual({
-        archivedRunIds: ['team-1', 'team-3'], failedRunIds: ['team-2'],
+        archivedRunIds: ['team-1', 'team-3'], failedRunIds: ['team-2'], failureReasons: ['Team run is active.'],
       });
 
       expect(mutateMock.mock.calls.map(([options]: any) => options.variables)).toEqual([
@@ -2866,7 +2881,7 @@ describe('runHistoryStore', () => {
       store.workspaceGroups = [teamGroupWorkspace(['team-1'])];
       const refreshSpy = vi.spyOn(store, 'refreshTreeQuietly').mockResolvedValue(undefined);
 
-      await expect(store.archiveTeamRuns(['team-1'])).resolves.toEqual({ archivedRunIds: [], failedRunIds: ['team-1'] });
+      await expect(store.archiveTeamRuns(['team-1'])).resolves.toEqual({ archivedRunIds: [], failedRunIds: ['team-1'], failureReasons: ['active'] });
       expect(refreshSpy).not.toHaveBeenCalled();
     });
 
@@ -2883,7 +2898,7 @@ describe('runHistoryStore', () => {
       const refreshSpy = vi.spyOn(store, 'refreshTreeQuietly').mockResolvedValue(undefined);
 
       await expect(store.archiveAgentOrgRuns(['org-1', 'org-2'])).resolves.toEqual({
-        archivedRunIds: ['org-1', 'org-2'], failedRunIds: [],
+        archivedRunIds: ['org-1', 'org-2'], failedRunIds: [], failureReasons: [],
       });
 
       expect(store.agentOrgHistory.map((run) => run.rootRunId)).toEqual(['org-other']);

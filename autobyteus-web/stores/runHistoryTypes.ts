@@ -320,6 +320,8 @@ export interface ArchiveStoredAgentOrgRunMutationData {
 export interface RunGroupArchiveOutcome {
   archivedRunIds: string[];
   failedRunIds: string[];
+  /** The server's reasons for the runs it refused, each naming what blocked it (CR-461-087, AC-008). */
+  failureReasons?: string[];
 }
 
 /** Standalone agent group result; non-empty `activeRunIds` means the server archived nothing. */

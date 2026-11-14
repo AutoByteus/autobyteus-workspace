@@ -4,6 +4,7 @@ import type { RunArchiveTargets } from '~/stores/runHistoryMutationActions';
 import type { RunGroupArchiveOutcome } from '~/stores/runHistoryTypes';
 import type { RunListEntry } from '~/utils/runListProjection';
 import { escapeHtml } from '~/utils/escapeHtml';
+import { runGroupArchiveSummary } from '~/utils/runGroupArchiveSummary';
 
 /** A run "Archive all older" covers: every Team and Org run, and every saved Agent run (not one no read lists yet). */
 const isArchivable = (entry: RunListEntry): boolean => entry.kind !== 'agent' || entry.run.source === 'history';
@@ -46,11 +47,9 @@ export const useRunListArchiveOlder = (params: {
   };
   const cancelArchiveOlder = (): void => { pending.value = null; };
 
-  const report = ({ archivedRunIds, failedRunIds }: RunGroupArchiveOutcome): void => {
-    const runs = runCount(archivedRunIds.length);
-    if (failedRunIds.length === 0) params.addToast(t('workspace.history.groupArchive.archived', { runs }), 'success');
-    else if (archivedRunIds.length === 0) params.addToast(t('workspace.history.groupArchive.failed'), 'error');
-    else params.addToast(t('workspace.history.groupArchive.archivedWithFailures', { runs, failed: failedRunIds.length }), 'error');
+  const report = (outcome: RunGroupArchiveOutcome): void => {
+    const { message, type } = runGroupArchiveSummary(outcome, t);
+    params.addToast(message, type);
   };
 
   const confirmArchiveOlder = async (): Promise<void> => {

@@ -52,6 +52,18 @@ describe('useRunListArchiveOlder ("Archive all older", UIT-010)', () => {
     expect(archiveRuns).not.toHaveBeenCalled();
   });
 
+  it('CR-461-087 (AC-008): a refused run\'s reason from the server follows the summary; when every run was refused, the reasons are the message', async () => {
+    const reason = "This run can't be archived while a run it delegated to is working (/fact_checker_924b).";
+    const partial = setup([agent('a-1'), agent('a-2')], { archivedRunIds: ['a-1'], failedRunIds: ['a-2'], failureReasons: [reason] } as never);
+    partial.archive.requestArchiveOlder();
+    await partial.archive.confirmArchiveOlder();
+    expect(partial.addToast).toHaveBeenCalledExactlyOnceWith(`Archived 1 run. 1 failed. ${reason}`, 'error');
+    const none = setup([agent('a-1')], { archivedRunIds: [], failedRunIds: ['a-1'], failureReasons: [reason] } as never);
+    none.archive.requestArchiveOlder();
+    await none.archive.confirmArchiveOlder();
+    expect(none.addToast).toHaveBeenCalledExactlyOnceWith(reason, 'error');
+  });
+
   it('reports partial and total failures as the group archive did', async () => {
     const partial = setup([agent('a-1'), agent('a-2')], { archivedRunIds: ['a-1'], failedRunIds: ['a-2'] });
     partial.archive.requestArchiveOlder();
