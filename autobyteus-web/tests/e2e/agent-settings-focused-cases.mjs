@@ -356,8 +356,16 @@ export function registerAgentSettingsFocusedCases(h) {
         plus: await cold.locator('[data-test="workspace-header-new-run"], [data-test="workspace-header-new-agent-run"]').first().isVisible().catch(() => false) }
       assert(r.copyHeaderActions.gear, 'a stopped Org\'s copy has its Settings entry', r.copyHeaderActions)
       await openSettings(cold)
+      // autobyteus-461 REQ-001: the Org's Stop leaves its copy running (base stopped it with the Org): locked with its own
+      // stop icon until it is stopped itself (as AFS-001's B), then editable.
+      r.copyAfterOrgStop = await waitSubject(cold, 'stopped Org copy card', 'Helper')
+      assertOneCard(r.copyAfterOrgStop, 'stopped Org: copy')
+      if (r.copyAfterOrgStop.status === 'active') {
+        assert(r.copyAfterOrgStop.modelLocked && r.copyAfterOrgStop.copyStop, 'the copy keeps running after the Org\'s Stop: locked, its own stop icon (REQ-001)', r.copyAfterOrgStop)
+        await cold.locator(sel('run-member-stop')).click()
+        await waitFor('copy stopped', async () => !(await facts(cold)).modelLocked, 90000, 500)
+      }
       r.copyStopped = await waitSubject(cold, 'stopped Org copy card', 'Helper')
-      assertOneCard(r.copyStopped, 'stopped Org: copy')
       assert(!r.copyStopped.modelLocked, 'a stopped Org\'s copy is editable', r.copyStopped)
       await chooseModel(cold, subjectCard(cold), AGY, ALT)
       r.copyEdited = await facts(cold)
