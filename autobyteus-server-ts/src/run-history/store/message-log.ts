@@ -2,6 +2,7 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import type { CollaborationCommunicationMessage } from "../../agent-collaboration/execution/communication/collaboration-communication-message.js";
 import { validateCollaborationCommunicationMessage } from "../../agent-collaboration/execution/communication/collaboration-communication-message-schema.js";
+import { StoredFileDamagedError } from "./stored-file-damaged-error.js";
 import {
   getAtomicRunPackageFileCommitWriter,
   type AtomicRunPackageFileCommitWriter,
@@ -109,11 +110,16 @@ export class MessageLog {
       const lines = (await this.operations.readFile(filePath, "utf8")).split("\n");
       lines.pop();
       lines.forEach((line, index) => {
-        const label = `${path.basename(filePath)}:line ${index + 1}`;
+        const fileName = path.basename(filePath);
+        const label = `${fileName}:line ${index + 1}`;
+        // A line that cannot be read names its file and line (CR-461-083); the detail stays the reader's own.
+        const damaged = (detail: string) => new StoredFileDamagedError("message log", fileName, index + 1, detail);
         let value: unknown;
         try { value = JSON.parse(line); }
-        catch { throw new Error(`${label} is not valid JSON.`); }
-        const message = validateCollaborationCommunicationMessage(value, label);
+        catch { throw damaged(`${label} is not valid JSON.`); }
+        let message: CollaborationCommunicationMessage;
+        try { message = validateCollaborationCommunicationMessage(value, label); }
+        catch (error) { throw damaged(error instanceof Error ? error.message : String(error)); }
         if (!byId.has(message.messageId)) byId.set(message.messageId, message);
       });
     }

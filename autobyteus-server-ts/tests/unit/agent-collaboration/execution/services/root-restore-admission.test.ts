@@ -2,6 +2,7 @@ import { describe, expect, it, vi } from "vitest";
 import { TeamRunService } from "../../../../../src/agent-team-execution/services/team-run-service.js";
 import { AgentOrgRunService } from "../../../../../src/agent-org-execution/services/agent-org-run-service.js";
 import { TokenUsageCapabilityUnavailableError } from "../../../../../src/token-usage/providers/token-usage-capability.js";
+import { StoredFileDamagedError } from "../../../../../src/run-history/store/stored-file-damaged-error.js";
 
 /**
  * autobyteus-461 SR-078 (CR-461-069): base's restore admission of a stopped team or org root, asked before its stored file
@@ -56,6 +57,18 @@ describe("the restore admission of a stopped team or org root (SR-078, CR-461-06
     const registered = { teamRunId: "team" };
     raced.manager.getManagedTeamRun.mockReturnValueOnce(null).mockReturnValue(registered);
     await expect(raced.service.restoreForInput("team")).resolves.toBe(registered);
+  });
+
+  it("CR-461-083 (F-65): a damaged stored file is the reason, in plain words, with what to do; the parser's text stays in the log", async () => {
+    const damaged = new StoredFileDamagedError("message log", "team_communication_messages_active.jsonl", 2,
+      "team_communication_messages_active.jsonl:line 2 is not valid JSON.");
+    const answer = await teams({ restore: async () => { throw new Error("The team could not be read.", { cause: damaged }); } }).service.restoreForInput("team");
+    expect(answer).toEqual({ accepted: false, code: "TEAM_RUN_NOT_RESTORABLE",
+      message: "Team run 'team' cannot be restored: its message log (team_communication_messages_active.jsonl) is damaged at line 2. "
+        + "Its files were left unchanged; start a new run, or repair or remove that file." });
+    expect(JSON.stringify(answer)).not.toContain("not valid JSON");
+    await expect(orgs({ restore: async () => { throw damaged; } }).service.restoreForInput("org")).resolves.toMatchObject({
+      code: "AGENT_ORG_RUN_NOT_RESTORABLE", message: expect.stringContaining("its message log (team_communication_messages_active.jsonl) is damaged at line 2.") });
   });
 
   it("an org root: the catalog's reason; a restore failing after admission is not restorable", async () => {

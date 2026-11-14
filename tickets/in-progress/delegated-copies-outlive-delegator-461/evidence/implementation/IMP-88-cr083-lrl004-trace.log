@@ -1,0 +1,23 @@
+# CR-461-083 (F-65) pinned with LRL-004 on f1671cb523 (server rebuilt); temporary trace lines in agent-team-stream-handler.ts and TeamStreamingService.ts, reverted
+$ node tests/e2e/delegated-launch-defaults-probe.mjs --cases LRL-004 --output-dir /tmp/lrl004b
+LRL-004 Fail: the resume is refused with the reason (AC-006)
+
+## server (backend-damaged-log.log)
+restor-trace server send lrl_damaged_4892_56ca438edf714dfa82016de36ceb5d1a lrld_lead_4892_f13091a7d16b4c418c73f03495860ae7
+[2026-11-14T12:35:26.997Z] [WARN] [agent-collaboration.root-restore] ROOT_NOT_RESTORABLE {
+  detail: 'team_communication_messages_active.jsonl:line 2 is not valid JSON.'
+
+## web (page console, the probe's resumeConsoleErrors)
+restor-trace web send {"agentRunId":"lrld_lead_4892_f13091a7d16b4c418c73f03495860ae7","messageId":"client_44ce6c9c-0a2f-453d-92f8-2b0fde1ef23b","dedupeKey":"member_input:lrl_damaged_4892_56ca438edf714dfa82016de36ceb5d1a:lrld_lead_4892_f13091a7d16b4c418c73f03495860ae7:client_44ce6c9c-0a2f-453d-92f8-2
+restor-trace web ERROR {"code":"TEAM_SEND_MESSAGE_REJECTED","message":"Team run 'lrl_damaged_4892_56ca438edf714dfa82016de36ceb5d1a' cannot be restored: its saved state cannot be read. Its files were left unchanged.","details":"TEAM_RUN_NOT_RESTORABLE","error_scope":null,"error_effect":null,"turn_id"
+expectedReason "team_communication_messages_active.jsonl:line 2 is not valid JSON"
+userMessageShown true
+composerStillHolds true
+activeAfterResume false
+restoreResponses []
+
+## reading
+- The server refuses (TEAM_RUN_NOT_RESTORABLE) and sends ERROR TEAM_SEND_MESSAGE_REJECTED with its message on the page's team socket; the web receives it,
+  rejects the pending send (teamSendAdmission), keeps the draft and adds an 'Error Occurred' entry (failLocalSubmission).
+- The message omits base's reason ('...line 2 is not valid JSON'): unrestorableRoot keeps the detail in the log only (CR-461-069).
+- restoreResponses is empty because the probe attaches page.on('websocket') after the team socket opened: Playwright reports frames of new sockets only.
