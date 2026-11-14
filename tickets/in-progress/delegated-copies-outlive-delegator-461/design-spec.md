@@ -264,7 +264,7 @@ A full server-built tree (SR-082's `RunTreeView`, a new API, and rewriting the f
 **Rule 3 for statuses** (ARCH-REV-054 note 3, narrowed by SR-083): the characterization at `827f1e68dc` still covers the rows' shapes, which gain `openTarget`. It no longer covers the statuses, which leave the view stream. Their acceptance is item 5's tests and AC-017.
 
 **4. Review checks** (the code reviewer's principles):
-- every fact a client shows about a run is read from that run, or from `RunTreeView` built from the runs;
+- every fact a client shows about a run is read from that run, or from the rows and `openTarget` the backend builds from the runs;
 - no client keeps a copy of another run's state;
 - one builder per view;
 - every new layer must pass the empty-indirection check.
