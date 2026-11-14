@@ -1556,3 +1556,15 @@ No architecture review: these follow REQ-006, an approved exception, rule 2 and 
   - The rest are confirmed.
 - **The locators, confirmed none:** `TeamContextFileExecutionLocatorsV1` writes final locators by run ID (`team-context-file-locator-transition.ts:71`), and the runtime resolves them by `{teamRunId, agentRunId}` (`context-file-owner-resolver.ts:71-97`). No address is stored, so step 4's rebase doesn't affect a delegated team member's attachments.
 - **CRR-039 F-55 wording:** DS-15 no longer says a closed run is reached from its Task's page, which lists it muted and not openable, as at base. It is reached when its own view was already open as its Task closed.
+
+### SR-080 — The Task card opens its run in its tree's top view (answers the Implementation Engineer on CR-461-076)
+
+- **Triggering:** CR-461-076 (F-54), the Task card's open path. The card must open its worker as the row does. A nested worker's row lives only in its tree's top view, and `TaskRootView` carried only the one-hop `delegatingRun`.
+- **The Solution Designer's gap:** renaming `hostRoot` to `delegatingRun` changed its meaning from "the top" to "one hop" without keeping the top for the card, which base used.
+- **Decision:**
+  - add a derived `topRun` (`DelegationIndex.topOf`) to `TaskRootView`, carried on the GraphQL type, the change message and the web type;
+  - the card opens `topRun` and selects the row there through that view's own selection;
+  - `openable` follows it, and closed stays not openable;
+  - a peer run is unchanged.
+- **Why this needs no further review:** it is an addition to a view, not to stored data, and it restores base's behavior (rule 1). It is approved as part of the Local Fix, and code review sees it.
+
