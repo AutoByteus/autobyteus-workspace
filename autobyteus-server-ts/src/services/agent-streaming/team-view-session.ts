@@ -38,7 +38,10 @@ export type TeamViewSources = Readonly<{
 }>;
 
 export class TeamRunNotFoundError extends Error {}
-/** An admitted stopped run whose stored file cannot be read: answered with a reason, the detail logged (CR-461-069). */
+/**
+ * A stopped run that cannot be restored, answered with its reason: the restore admission's own (CR-461-073), or, for an
+ * admitted run whose stored file cannot be read, "cannot be restored" with the detail logged (CR-461-069).
+ */
 export class TeamRunNotRestorableError extends Error {
   constructor(readonly refusal: RootRestoreRefusal) { super(refusal.message); }
 }
@@ -132,8 +135,10 @@ export class TeamViewSession {
   }
 
   private async enterStored(): Promise<void> {
-    // Base's view answered a root its restore would refuse as not found, never with its stored file's parse error.
-    if (await this.sources.restoreRefusal(this.teamRunId)) throw new TeamRunNotFoundError(`Team run '${this.teamRunId}' not found`);
+    // A root its restore would refuse answers the admission's own code and text, then closes (CR-461-073: the connect is
+    // the one place the reason can reach the user); never its stored file's parse error.
+    const refused = await this.sources.restoreRefusal(this.teamRunId);
+    if (refused) throw new TeamRunNotRestorableError(refused);
     const stream = this.sources.streams.streamOf<TeamViewEvent>(this.identity);
     const connection = await stream.openSnapshotConnection(async (): Promise<ViewSnapshot> => {
       const atBase = this.atBase();

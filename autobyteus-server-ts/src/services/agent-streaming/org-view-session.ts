@@ -26,7 +26,10 @@ export type OrgViewSources = Readonly<{
 }>;
 
 export class OrgRunNotFoundError extends Error {}
-/** An admitted stopped Org whose stored file cannot be read: answered with a reason, the detail logged (CR-461-069). */
+/**
+ * A stopped Org that cannot be restored, answered with its reason: the restore admission's own (CR-461-073), or, for an
+ * admitted Org whose stored file cannot be read, "cannot be restored" with the detail logged (CR-461-069).
+ */
 export class OrgRunNotRestorableError extends Error {
   constructor(readonly refusal: RootRestoreRefusal) { super(refusal.message); }
 }
@@ -130,8 +133,10 @@ export class OrgViewSession {
   }
 
   private async enterStored(): Promise<void> {
-    // Base's view answered a root its restore would refuse as not found, never with its stored file's parse error.
-    if (await this.sources.restoreRefusal(this.orgRunId)) throw new OrgRunNotFoundError(`AgentOrg run '${this.orgRunId}' was not found.`);
+    // A root its restore would refuse answers the admission's own code and text, then closes (CR-461-073: the connect is
+    // the one place the reason can reach the user); never its stored file's parse error.
+    const refused = await this.sources.restoreRefusal(this.orgRunId);
+    if (refused) throw new OrgRunNotRestorableError(refused);
     const stream = this.sources.streams.streamOf<AgentOrgRunEvent>(this.identity);
     const connection = await stream.openSnapshotConnection(async (): Promise<ViewSnapshot> => {
       const atBase = this.atBase();

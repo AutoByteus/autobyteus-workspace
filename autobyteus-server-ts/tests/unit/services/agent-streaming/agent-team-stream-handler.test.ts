@@ -408,11 +408,14 @@ describe("AgentTeamStreamHandler current root stream", () => {
       expect(sent(harness.connection).at(-1)).toMatchObject({ type: "TASK_EXECUTION_STARTED" });
     });
 
-    it("SR-078 (CR-461-069): the view connect asks the restore admission before reading the stored file: refused, it answers TEAM_NOT_FOUND", async () => {
+    it.each([
+      ["TEAM_RUN_STATE_PACKAGE_NOT_CATALOGED", "TeamRun 'team-run-root' is not an admitted current package."],
+      ["TOKEN_USAGE_EXISTING_RUN_RESTORE_MIGRATION_REQUIRED", "Token usage history must finish migrating before existing runs can be restored."],
+    ])("SR-078 (CR-461-069, CR-461-073): the view connect asks the restore admission before reading the stored file: refused, it answers %s with its text and closes", async (code, message) => {
       const harness = createHarness({ stopped: true });
-      harness.teamRunService.restoreRefusal.mockResolvedValue({ accepted: false, code: "TEAM_RUN_STATE_PACKAGE_NOT_CATALOGED", message: "TeamRun 'team-run-root' is not an admitted current package." });
+      harness.teamRunService.restoreRefusal.mockResolvedValue({ accepted: false, code, message });
       expect(await harness.handler.connect(harness.connection, "team-run-root")).toBeNull();
-      expect(sent(harness.connection).at(-1)).toMatchObject({ type: "ERROR", payload: { code: "TEAM_NOT_FOUND" } });
+      expect(sent(harness.connection).at(-1)).toMatchObject({ type: "ERROR", payload: { code, message } });
       expect(harness.connection.close).toHaveBeenCalledWith(4004);
       expect(harness.readStoredTree).not.toHaveBeenCalled();
     });

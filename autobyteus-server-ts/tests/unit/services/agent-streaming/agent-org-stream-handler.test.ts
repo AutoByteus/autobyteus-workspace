@@ -298,11 +298,11 @@ describe("AgentOrgStreamHandler", () => {
       root_subject_kind: "agent_org", root_run_id: orgRunId, target_agent_run_id: agent.agentRunId, command_id: "c-1",
       content: "Start please", context_file_paths: [], image_urls: [], message_id: "m-1", dedupe_key: "d-1" } }));
 
-    it("the view connect asks the restore admission before reading the stored file: refused, it answers AGENT_ORG_NOT_FOUND", async () => {
+    it("the view connect asks the restore admission before reading the stored file: refused, it answers the admission's code and text and closes (CR-461-073)", async () => {
       const test = harness(undefined, { stopped: true }); const client = connection();
       test.service.restoreRefusal.mockResolvedValue(notCataloged);
       expect(await test.handler.connect(client.socket, orgRunId)).toBeNull();
-      expect(JSON.parse(client.sent.at(-1) ?? "{}")).toMatchObject({ type: "ERROR", payload: { code: "AGENT_ORG_NOT_FOUND" } });
+      expect(JSON.parse(client.sent.at(-1) ?? "{}")).toMatchObject({ type: "ERROR", payload: { code: notCataloged.code, message: notCataloged.message } });
       expect(client.socket.close).toHaveBeenCalledWith(4004);
       expect(test.readStoredTree).not.toHaveBeenCalled();
     });
