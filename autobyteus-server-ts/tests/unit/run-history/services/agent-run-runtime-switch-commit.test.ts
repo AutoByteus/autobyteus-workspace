@@ -57,6 +57,23 @@ describe("the metadata a settings save of a stopped run writes (AC-001)", () => 
   });
 });
 
+describe("a delegated run's recorded launch source after a settings save (CR-461-078, design V-11)", () => {
+  const source = { origin: "agent_default" as const, fallbacks: [] };
+  it("an edit becomes the run's own launch: the recorded source is dropped, for a model edit and for a switch", () => {
+    const edited = buildRuntimeSwitchMetadata({ metadata: stopped({ launchSource: source }), switchId: AT,
+      selection: { runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK, llmModelIdentifier: "opus", llmConfig: null } });
+    expect(edited).toEqual(stopped({ llmModelIdentifier: "opus", llmConfig: null }));
+    const switched = buildRuntimeSwitchMetadata({ metadata: stopped({ launchSource: source }), selection: codex, switchId: AT });
+    expect(Object.hasOwn(switched, "launchSource")).toBe(false);
+  });
+
+  it("a save of the same selection changes nothing: the source stays", () => {
+    const same = buildRuntimeSwitchMetadata({ metadata: stopped({ launchSource: source }), switchId: AT,
+      selection: { runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK, llmModelIdentifier: "sonnet", llmConfig: { effort: "low" } } });
+    expect(same).toEqual(stopped({ launchSource: source }));
+  });
+});
+
 describe("commitAgentRunRuntimeSwitch", () => {
   const store = (initial: AgentRunMetadata) => {
     let saved = initial;

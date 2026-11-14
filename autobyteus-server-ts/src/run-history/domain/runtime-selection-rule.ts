@@ -1,3 +1,4 @@
+import { isDeepStrictEqual } from "node:util";
 import type { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
 import type { PendingRuntimeSwitch, RunProviderBinding } from "../store/agent-run-metadata-types.js";
 import type { ConfiguredAgentExecutionNode } from "./run-execution-tree-shared-records.js";
@@ -124,7 +125,8 @@ export const commitRuntimeSwitchOnRecord = <T extends Readonly<{
 /**
  * A settings save on a configured member of a Team or Org (autobyteus-348): the shared rule over the node's own fields. The
  * node's `launchConfiguration` holds the selection (the NEW one while a switch is pending), `platformAgentRunId` the session,
- * `pendingRuntimeSwitch` the previous binding; tool approval and workspace never change.
+ * `pendingRuntimeSwitch` the previous binding; tool approval and workspace never change. A save that changes the binding
+ * drops the member's recorded `launchSource` (V-11).
  */
 export const applySelectionToConfiguredMember = (
   member: ConfiguredAgentExecutionNode,
@@ -132,17 +134,16 @@ export const applySelectionToConfiguredMember = (
   switchId: string,
 ): ConfiguredAgentExecutionNode => {
   const launch = member.launchConfiguration;
-  const next = applyRuntimeSelection(
-    {
-      binding: { runtimeKind: launch.runtimeKind, llmModelIdentifier: launch.llmModelIdentifier, llmConfig: launch.llmConfig, platformAgentRunId: member.platformAgentRunId },
-      ...(member.pendingRuntimeSwitch ? { pendingRuntimeSwitch: member.pendingRuntimeSwitch } : {}),
-    },
-    selection,
-    switchId,
-  );
-  const { pendingRuntimeSwitch: _pending, ...rest } = member;
+  const before: RuntimeBindingState = {
+    binding: { runtimeKind: launch.runtimeKind, llmModelIdentifier: launch.llmModelIdentifier, llmConfig: launch.llmConfig, platformAgentRunId: member.platformAgentRunId },
+    ...(member.pendingRuntimeSwitch ? { pendingRuntimeSwitch: member.pendingRuntimeSwitch } : {}),
+  };
+  const next = applyRuntimeSelection(before, selection, switchId);
+  const { pendingRuntimeSwitch: _pending, launchSource, ...rest } = member;
   return {
     ...rest,
+    // An edit becomes the member's own launch (design V-11): a delegated team member's recorded source no longer holds.
+    ...(launchSource && isDeepStrictEqual(next, before) ? { launchSource } : {}),
     platformAgentRunId: next.binding.platformAgentRunId,
     launchConfiguration: Object.freeze({
       ...launch,

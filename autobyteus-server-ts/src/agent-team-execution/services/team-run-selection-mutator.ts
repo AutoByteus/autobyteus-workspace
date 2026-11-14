@@ -1,4 +1,5 @@
 import { randomUUID } from "node:crypto";
+import { isDeepStrictEqual } from "node:util";
 import type {
   ConfiguredAgentExecutionNode,
   RootConfiguredTeamExecutionNode,
@@ -86,12 +87,14 @@ export const applyTeamRunSelectionPatches = (
 ): TeamRunExecutionTreeSnapshot => {
   const patchByAddress = new Map(targets.map((target) => [target.patch.scopeAddress, target.patch]));
   const rootPatch = patchByAddress.get("/");
+  const { defaultLaunchSource, ...root } = tree.rootTeam;
+  const defaultLaunch = rootPatch ? replaceLaunchConfig(root.defaultLaunchConfiguration, rootPatch) : root.defaultLaunchConfiguration;
   const rootTeam: RootConfiguredTeamExecutionNode = {
-    ...tree.rootTeam,
-    ...(rootPatch
-      ? { defaultLaunchConfiguration: replaceLaunchConfig(tree.rootTeam.defaultLaunchConfiguration, rootPatch) }
-      : {}),
-    members: patchMembers(tree.rootTeam.members, patchByAddress, newSwitchId),
+    ...root,
+    // An edit of the Team's own launch becomes its own (design V-11): a delegated team's recorded source no longer holds.
+    ...(defaultLaunchSource && isDeepStrictEqual(defaultLaunch, root.defaultLaunchConfiguration) ? { defaultLaunchSource } : {}),
+    defaultLaunchConfiguration: defaultLaunch,
+    members: patchMembers(root.members, patchByAddress, newSwitchId),
   };
   return { ...tree, rootTeam };
 };

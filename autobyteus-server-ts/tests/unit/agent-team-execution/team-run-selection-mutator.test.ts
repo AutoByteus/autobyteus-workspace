@@ -100,3 +100,37 @@ describe('Team run selection saves with an agent runtime (autobyteus-348, REQ-00
     expect(member(updated)).toEqual(member(original));
   });
 });
+
+describe("a delegated team's recorded launch sources after a settings save (CR-461-078, design V-11)", () => {
+  const agentDefault = { origin: "agent_default", fallbacks: [] };
+  const teamDefault = { origin: "team_default", fallbacks: [] };
+  const delegated = () => {
+    const original = tree();
+    original.rootTeam.defaultLaunchSource = teamDefault;
+    original.rootTeam.members[0].launchSource = agentDefault;
+    return original;
+  };
+  const patch = (scopeKind: string, scopeAddress: string, llmModelIdentifier: string) => ({
+    scopeKind, scopeAddress, runtimeKind: RuntimeKind.CODEX_APP_SERVER, llmModelIdentifier, llmConfig: { effort: "medium" } } as any);
+
+  it("an edited member's launch becomes its own: its source is dropped; the team's stays", () => {
+    const original = delegated();
+    const updated: any = applyTeamRunSelectionPatches(original, resolveTeamRunSelectionTargets(original, [patch("CONFIGURED_AGENT", "/agent", "gpt-6")]));
+    expect(Object.hasOwn(updated.rootTeam.members[0], "launchSource")).toBe(false);
+    expect(updated.rootTeam.defaultLaunchSource).toEqual(teamDefault);
+  });
+
+  it("an edited team launch becomes its own: the team's source is dropped; the member's stays", () => {
+    const original = delegated();
+    const updated: any = applyTeamRunSelectionPatches(original, resolveTeamRunSelectionTargets(original, [patch("CONFIGURED_TEAM", "/", "gpt-6")]));
+    expect(Object.hasOwn(updated.rootTeam, "defaultLaunchSource")).toBe(false);
+    expect(updated.rootTeam.members[0].launchSource).toEqual(agentDefault);
+  });
+
+  it("a save of the same selections changes nothing: both sources stay", () => {
+    const original = delegated();
+    const updated = applyTeamRunSelectionPatches(original, resolveTeamRunSelectionTargets(original,
+      [patch("CONFIGURED_TEAM", "/", "gpt"), patch("CONFIGURED_AGENT", "/agent", "gpt")]));
+    expect(updated).toEqual(original);
+  });
+});

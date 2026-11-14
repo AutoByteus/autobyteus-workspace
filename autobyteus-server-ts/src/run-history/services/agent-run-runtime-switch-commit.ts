@@ -18,21 +18,24 @@ export const buildRuntimeSwitchMetadata = (input: {
   switchId: string;
 }): AgentRunMetadata => {
   const { metadata } = input;
-  const { pendingRuntimeSwitch: _pending, ...rest } = metadata;
-  const next = applyRuntimeSelection(
-    {
-      binding: {
-        runtimeKind: metadata.runtimeKind,
-        llmModelIdentifier: metadata.llmModelIdentifier,
-        llmConfig: metadata.llmConfig ?? null,
-        platformAgentRunId: metadata.platformAgentRunId,
-      },
-      ...(metadata.pendingRuntimeSwitch ? { pendingRuntimeSwitch: metadata.pendingRuntimeSwitch } : {}),
+  const { pendingRuntimeSwitch: _pending, launchSource, ...rest } = metadata;
+  const before = {
+    binding: {
+      runtimeKind: metadata.runtimeKind,
+      llmModelIdentifier: metadata.llmModelIdentifier,
+      llmConfig: metadata.llmConfig ?? null,
+      platformAgentRunId: metadata.platformAgentRunId,
     },
-    input.selection,
-    input.switchId,
-  );
-  return { ...rest, ...next.binding, ...(next.pendingRuntimeSwitch ? { pendingRuntimeSwitch: next.pendingRuntimeSwitch } : {}) };
+    ...(metadata.pendingRuntimeSwitch ? { pendingRuntimeSwitch: metadata.pendingRuntimeSwitch } : {}),
+  };
+  const next = applyRuntimeSelection(before, input.selection, input.switchId);
+  return {
+    ...rest,
+    // An edit becomes the run's own launch (design V-11): the recorded source described the launch it replaces.
+    ...(launchSource && isDeepStrictEqual(next, before) ? { launchSource } : {}),
+    ...next.binding,
+    ...(next.pendingRuntimeSwitch ? { pendingRuntimeSwitch: next.pendingRuntimeSwitch } : {}),
+  };
 };
 
 export const commitAgentRunRuntimeSwitch = async (input: {
