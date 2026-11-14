@@ -63,18 +63,19 @@ describe('AgentRunCollaborationContext with remote children', () => {
     expect(context.getRemoteChild('researcher-run')).toMatchObject({ kind: 'remote_agent', delegatorAgentRunId: 'host-run' })
   })
 
-  it("applies a node's summary to its agents' statuses and the window's registry; an agent it does not list is offline", () => {
+  it("CR-461-085: a node's summary sets the run's title and reachability only; its agents' statuses are their own (by run ID)", () => {
     const context = build()
     const remoteRuns = useRemoteRunsStore()
     context.remoteExecutions.forEach((execution) => remoteRuns.register(execution, streamOnlyRetryAdapter()))
+    const before = context.getAgentContext('lead-run')?.state.currentStatus
     expect(context.applyEvent(5, { kind: 'remote_task_execution_summary', node_id: 'srv_docker', run_id: 'marketing-run', reachable: true,
       title: 'Plan the October campaign', statuses: [{ agent_run_id: 'lead-run', status: 'running' }] })).toBe('applied')
-    expect(context.getAgentContext('lead-run')?.state.currentStatus).toBe(AgentStatus.Running)
-    expect(context.getAgentContext('writer-run')?.state.currentStatus).toBe(AgentStatus.Offline)
+    // A summary does not change a status: `/ws/run-status` is its one source.
+    expect(context.getAgentContext('lead-run')?.state.currentStatus).toBe(before)
     expect(remoteRuns.runOfAgentRun('writer-run')).toMatchObject({ nodeName: 'docker', reachable: true, title: 'Plan the October campaign' })
     expect(context.applyEvent(6, { kind: 'remote_task_execution_summary', node_id: 'srv_docker', run_id: 'marketing-run', reachable: false,
       title: null, statuses: [] })).toBe('applied')
-    expect(context.getAgentContext('lead-run')?.state.currentStatus).toBe(AgentStatus.Offline)
+    expect(context.getAgentContext('lead-run')?.state.currentStatus).toBe(before)
     expect(remoteRuns.run('marketing-run')).toMatchObject({ reachable: false, title: 'Plan the October campaign' })
   })
 

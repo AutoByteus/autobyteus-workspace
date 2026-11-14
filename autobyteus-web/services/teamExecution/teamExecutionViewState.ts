@@ -13,7 +13,7 @@ import type { TeamRunConfigurationView } from '~/types/agent/TeamRunConfig';
 import { parseAgentTeamAddress, type AgentTeamAddress } from '~/types/agent/AgentTeamAddress';
 import { insertTaskExecution } from './teamExecutionTreeMutations';
 import { createRemoteTeamAgentContext, isKnownRemoteExecution, isRemoteAgentRun, remoteAgentLocations, teamNavigationRowsWithRemote } from './teamRemoteExecutions';
-import { applyRemoteSummaryStatuses } from '~/services/remoteRuns/remoteChildren';
+import { applyRemoteSummary } from '~/services/remoteRuns/remoteChildren';
 import type { RemoteTaskExecutionDto } from '@autobyteus/agent-presentation-contracts';
 import {
   agentRunKey,
@@ -421,7 +421,7 @@ export const createTeamExecutionViewState = (
           return Object.freeze({ disposition: 'applied', effects: Object.freeze([{ kind: 'team_stream_recovery_required' as const }]) });
         }
       } else if (message.type === 'REMOTE_TASK_EXECUTION_SUMMARY') {
-        applyRemoteSummaryStatuses(message.payload, (agentRunId) => publication.value.contexts.get(agentRunId) ?? null, publication.value.remote);
+        applyRemoteSummary(message.payload);
         effects.push({ kind: 'reconcile_team_navigation' });
       } else if (message.type === 'TASK_EXECUTIONS_CLOSED') {
         // Their Task is DONE: they stay in the tree and the Team tab, and leave the listing.

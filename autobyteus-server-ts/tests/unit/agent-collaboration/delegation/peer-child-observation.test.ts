@@ -55,14 +55,16 @@ const harness = () => {
     published.set(key, [...published.get(key) ?? [], event]);
   } }) };
   const current = () => channel as unknown as RemoteRunChannel;
-  const observation = new PeerChildObservation({ tree: tree as never, streams: streams as never, peerRunOf: createPeerRunOf(tree as never, current), channel: current });
+  const retried: string[][] = [];
+  const observation = new PeerChildObservation({ tree: tree as never, streams: streams as never, peerRunOf: createPeerRunOf(tree as never, current), channel: current,
+    retryStatuses: (peerRunIds) => { retried.push([...peerRunIds]); } });
   const eventsOf = (run: RootExecutionIdentity) => (published.get(rootExecutionIdentityKey(run)) ?? []) as Array<{ kind: string; summary?: unknown }>;
   const flush = async () => { for (let index = 0; index < 8; index += 1) await Promise.resolve(); };
   const changeRows = (run: RootExecutionIdentity, rows: unknown[]) => {
     rowsOf.set(rootExecutionIdentityKey(run), rows);
     rowListeners.forEach((listener) => listener({ run }));
   };
-  return { channel, observers, closed, observation, eventsOf, flush, changeRows };
+  return { channel, observers, closed, observation, eventsOf, flush, changeRows, retried };
 };
 
 describe("PeerChildObservation", () => {
@@ -94,13 +96,27 @@ describe("PeerChildObservation", () => {
     expect(f.eventsOf(top).filter((event) => event.kind === "remote_task_execution_summary")).toHaveLength(3);
   });
 
-  it("Retry asks the view's peer rows' nodes for fresh summaries", async () => {
+  it("Retry (CR-461-085): the view's peer runs' ended status observations again, and fresh summaries from their nodes", async () => {
     const f = harness();
     f.observation.follow(delegator);
     await f.flush();
     const before = f.channel.runSummaries.mock.calls.length;
     await f.observation.refresh(delegator);
+    expect(f.retried).toEqual([["researcher-run", "marketing-run", "analyst-run"]]);
     expect(f.channel.runSummaries.mock.calls.length).toBe(before + 2);
+  });
+
+  it("AR-403 (CR-461-085): a peer run's status observation that ended unasked fetches that run's summary once, for its views", async () => {
+    const f = harness();
+    f.observation.follow(delegator);
+    await f.flush();
+    const before = f.channel.runSummaries.mock.calls.length;
+    f.observation.ended("researcher-run");
+    await f.flush();
+    expect(f.channel.runSummaries.mock.calls.slice(before)).toEqual([[DOCKER, [{ kind: "agent", runId: "researcher-run" }]]]);
+    f.observation.ended("not-shown-run");
+    await f.flush();
+    expect(f.channel.runSummaries.mock.calls.length).toBe(before + 1);
   });
 
   it("a peer row that comes gets its summary while its view is open; one that goes leaves the view", async () => {

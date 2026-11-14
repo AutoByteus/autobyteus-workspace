@@ -30,7 +30,7 @@ const harness = () => {
   const tree = {
     collaborationTreeOf: (run: RootExecutionIdentity) => ({ rows: () => rows.get(run.rootRunId) ?? [], closedRows: () => [] }),
   };
-  const feed = new ChildRowsFeed({ streams, tree: tree as never, isRunning: () => true });
+  const feed = new ChildRowsFeed({ streams, tree: tree as never, isRunning: () => true, rowsChanged: () => undefined });
   feed.follow({ subscribeChildRows: (listener) => { report = listener; return () => undefined; } });
   const events = (run: RootExecutionIdentity) => {
     const seen: SequencedRootEvent<ChildRowRootEvent>[] = [];
@@ -97,7 +97,7 @@ describe("ChildRowsFeed", () => {
     tree.build();
     tasks.setEntriesListener(tree);
     const streams = testViewStreams();
-    const feed = new ChildRowsFeed({ streams, tree, isRunning: () => true });
+    const feed = new ChildRowsFeed({ streams, tree, isRunning: () => true, rowsChanged: () => undefined });
     feed.follow(tree);
     const seen: SequencedRootEvent<ChildRowRootEvent>[] = [];
     streams.streamOf<ChildRowRootEvent>(TEAM).subscribe((event) => seen.push(event));
@@ -116,7 +116,7 @@ describe("ChildRowsFeed", () => {
     const tree = new DelegationIndex(() => tasks, readerOfAgentRunIds(async (r) => [r.rootRunId]));
     tree.build();
     tasks.setEntriesListener(tree);
-    const runStatus = new RunStatusService({ agents: () => ({}) as never, peerRunOf: () => null, agentsOf: async () => [],
+    const runStatus = new RunStatusService({ agents: () => ({}) as never, peerRunOf: () => null, agentsOf: async () => [], peerEnded: () => undefined,
       registrations: { resolve: () => null, onRegistrationChanged: () => () => undefined } });
     const feed = new ChildRowsFeed({ streams: testViewStreams(), tree, isRunning: () => true, rowsChanged: (run) => runStatus.treeChanged(run) });
     feed.follow(tree);

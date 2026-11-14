@@ -74,4 +74,3 @@ const runStatusFeed = (deliver: (message: RunStatusServerMessage) => void): RunS
   feed = created
   return created
 }
-export const resetRunStatusFeedForTests = (): void => { feed = null }

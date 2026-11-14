@@ -23,7 +23,7 @@ import { advanceSequencedStream } from '~/services/agentStreaming/sequencedStrea
 import type { AgentPresentationMessage } from '@autobyteus/agent-presentation-contracts'
 import { applyOfflineOrTerminalCleanup } from '~/services/runStatus/agentRuntimeStatusState'
 import { AgentOrgExecutionViewIndex, type OrgRemoteAgent, type OrgWorkspaceSelection, type OrgAgentViewIdentity, type OrgTeamViewIdentity } from './agentOrgExecutionViewIndex'
-import { applyRemoteSummaryStatuses, isRemoteExecutionKnown } from '~/services/remoteRuns/remoteChildren'
+import { applyRemoteSummary, isRemoteExecutionKnown } from '~/services/remoteRuns/remoteChildren'
 import {
   assertAgentOrgCommunicationMessagesCorrelated,
   projectAgentOrgMessageIdentity,
@@ -266,7 +266,7 @@ export class AgentOrgExecutionContext {
       // autobyteus-278: a new remote child needs its contexts (one the view already lists needs nothing).
       if (!isRemoteExecutionKnown(this.view.remote_task_executions, event.execution)) return 'checkpoint_required'
     } else if (event.kind === 'remote_task_execution_summary') {
-      applyRemoteSummaryStatuses(event, (agentRunId) => this.contexts.get(agentRunId) ?? null, this.view.remote_task_executions)
+      applyRemoteSummary(event)
     } else {
       try {
         assertAgentOrgCommunicationMessagesCorrelated(this.index, [event.message])

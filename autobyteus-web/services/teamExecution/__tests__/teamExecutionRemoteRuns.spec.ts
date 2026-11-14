@@ -75,7 +75,8 @@ describe('Team execution view with remote runs', () => {
     const summary = view.applyMessage({ type: 'REMOTE_TASK_EXECUTION_SUMMARY', payload: { change_sequence: 4, node_id: 'srv_docker',
       run_id: 'marketing-run', reachable: true, title: 'Plan the October campaign', statuses: [{ agent_run_id: 'lead-run', status: 'running' }] } })
     expect(summary.disposition).toBe('applied')
-    expect(view.getAgentContext('lead-run')?.state.currentStatus).toBe(AgentStatus.Running)
+    // CR-461-085: the summary sets the title; the status is the run's own, from `/ws/run-status`, never the summary.
+    expect(view.getAgentContext('lead-run')?.state.currentStatus).not.toBe(AgentStatus.Running)
     expect(useRemoteRunsStore().run('marketing-run')?.title).toBe('Plan the October campaign')
     const output = view.applyMessage({ type: 'TURN_STARTED', payload: { change_sequence: 5, agent_run_id: 'writer-run', turn_id: 't1' } } as never)
     expect(output.effects).toEqual([expect.objectContaining({ kind: 'dispatch_agent', agentRunId: 'writer-run' })])

@@ -30,6 +30,8 @@ export class PeerChildObservation {
     streams: Pick<RunViewStreams, "streamOf">;
     peerRunOf: PeerRunOf;
     channel: PeerChannel;
+    /** Retry's other half: the peer runs' statuses (`RunStatusService`) observe again where they ended. */
+    retryStatuses(peerRunIds: readonly string[]): void;
   }>) {}
 
   /**
@@ -63,10 +65,18 @@ export class PeerChildObservation {
     };
   }
 
-  /** Retry (`REFRESH_REMOTE_TASK_EXECUTIONS`): fresh summaries of the view's peer rows. */
+  /** Retry (`REFRESH_REMOTE_TASK_EXECUTIONS`): the view's peer rows' ended status observations again, and fresh summaries. */
   refresh(run: RootExecutionIdentity): Promise<void> {
     const view = this.viewed.get(rootExecutionIdentityKey(run));
-    return view ? this.fetchSummaries(view) : Promise.resolve();
+    if (!view) return Promise.resolve();
+    this.dependencies.retryStatuses([...view.peers]);
+    return this.fetchSummaries(view);
+  }
+
+  /** A peer run's status observation ended unasked (AR-403): one summary for the views showing it sets its row. */
+  ended(peerRunId: string): void {
+    const entry = this.observed.get(peerRunId);
+    if (entry) void this.fetchFor([entry]);
   }
 
   /** The last summaries of the view's peer rows, in memory. */

@@ -32,7 +32,7 @@ export const followTestChildRows = () => {
     collaborationTreeOf: (run: RootExecutionIdentity) => ({ rows: () => rowsByRun.get(rootExecutionIdentityKey(run)) ?? [], closedRows: () => [] }),
     tasksOf: () => [],
   };
-  const feed = new ChildRowsFeed({ streams, tree: tree as never, isRunning: () => true });
+  const feed = new ChildRowsFeed({ streams, tree: tree as never, isRunning: () => true, rowsChanged: () => undefined });
   feed.follow({ subscribeChildRows: (next: (change: ChildRowsChange) => void) => { listener = next; return () => { listener = null; }; } });
   const projection = { rowOf: async (child: SubtreeRow) => "agentRunId" in child.run
     ? { kind: "local" as const, row: agentChildRow(child.run.agentRunId, child.recipientAddress) } : null };

@@ -72,7 +72,7 @@ export class ChildRowsFeed {
     /** Whether a run still runs (its root is live): base's closed set holds only runs that still run. */
     isRunning(run: RootExecutionIdentity): boolean;
     /** A run's rows changed (`/ws/run-status`'s `RUN_TREE_CHANGED`, SR-083): told for the run and every run above it. */
-    rowsChanged?(run: RootExecutionIdentity): void;
+    rowsChanged(run: RootExecutionIdentity): void;
   }>) {}
 
   /** Follows a tree's row reports until the returned function is called. */
@@ -117,6 +117,6 @@ export class ChildRowsFeed {
       stream.publish({ kind: "task_executions_closed", taskExecutions: Object.freeze([...change.removed]) });
     }
     if (closed.size) this.reportedClosed.set(runKey, closed); else this.reportedClosed.delete(runKey);
-    this.dependencies.rowsChanged?.(change.run);
+    this.dependencies.rowsChanged(change.run);
   }
 }

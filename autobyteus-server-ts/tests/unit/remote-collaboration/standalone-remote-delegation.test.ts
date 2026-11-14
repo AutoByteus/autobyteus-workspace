@@ -281,7 +281,7 @@ describe("remote delegation between two standalone runs, in process (slice 1 ste
     // autobyteus-278: A's run tree view lists it as a remote child of the delegator, never among the local copies.
     const inspection = (await a.manager.getInspection(DELEGATOR))!;
     // Its rows as the run's view and history reads give them (SR-061): from its collaboration tree, the peer row with its node.
-    const children = new RunViewChildren({ feed: new ChildRowsFeed({ streams: testViewStreams(), tree: a.taskSide.tree, isRunning: () => false }),
+    const children = new RunViewChildren({ feed: new ChildRowsFeed({ streams: testViewStreams(), tree: a.taskSide.tree, isRunning: () => false, rowsChanged: () => undefined }),
       projection: createChildRowProjection({ memoryDir: a.memoryDir, tree: a.taskSide.tree, channel: () => null }) });
     const { rows } = await children.read(createAgentRootExecutionIdentity(DELEGATOR));
     const view = projectAgentCollaborationView({ ...inspection, rows });
@@ -410,7 +410,8 @@ describe("remote delegation between two standalone runs, in process (slice 1 ste
     const peerRunOf = createPeerRunOf(a.taskSide.tree, a.channel);
     const events: RemoteRunRootEvent[] = [];
     const streams = { streamOf: () => ({ publish: (event: RemoteRunRootEvent) => events.push(event) }) };
-    const observation = new PeerChildObservation({ tree: a.taskSide.tree, streams: streams as never, peerRunOf, channel: a.channel });
+    const observation = new PeerChildObservation({ tree: a.taskSide.tree, streams: streams as never, peerRunOf, channel: a.channel,
+      retryStatuses: (peerRunIds) => runStatus.retryPeers(peerRunIds) });
     const settle = async () => { for (let index = 0; index < 20; index += 1) await new Promise((resolve) => setImmediate(resolve)); };
 
     // No root of A is read: its view's peer rows come from the tree.
@@ -422,7 +423,7 @@ describe("remote delegation between two standalone runs, in process (slice 1 ste
       launches: [expect.objectContaining({ address: "/publisher", runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK, llmModelIdentifier: "sonnet" })] } }]);
 
     // B's host reports running: A reads it by the run's ID through its handle (SR-083), not as a frame of its view.
-    const runStatus = new RunStatusService({ agents: () => ({}) as never, peerRunOf, agentsOf: async () => [],
+    const runStatus = new RunStatusService({ agents: () => ({}) as never, peerRunOf, agentsOf: async () => [], peerEnded: (id) => observation.ended(id),
       registrations: { resolve: () => null, onRegistrationChanged: () => () => undefined } });
     const statuses: RunStatusServerMessage[] = [];
     const statusConnection = runStatus.connect((message) => statuses.push(message));

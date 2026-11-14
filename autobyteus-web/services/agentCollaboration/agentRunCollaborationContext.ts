@@ -32,7 +32,7 @@ import {
   type CollaborationTreeNode,
 } from '~/utils/collaboration/taskExecutionClosure'
 import { resolveTeamStatus, type TeamStatus } from '~/utils/workspaceTeamAggregateStatus'
-import { applyRemoteSummaryStatuses, isRemoteExecutionKnown, mergeByStartTime, remoteRowsOf } from '~/services/remoteRuns/remoteChildren'
+import { applyRemoteSummary, isRemoteExecutionKnown, mergeByStartTime, remoteRowsOf } from '~/services/remoteRuns/remoteChildren'
 import { agentRunDelegatedRunSubject, delegatedRunMessagesKey } from '~/services/delegatedRuns/delegatedRunSubjects'
 import type { ParticipantMessagesKey } from '~/services/collaborationMessages/collaborationParticipantMessages'
 
@@ -183,7 +183,7 @@ export class AgentRunCollaborationContext {
       // A new remote child needs its own context too (one the view already lists needs nothing).
       if (!isRemoteExecutionKnown(this.view.remote_task_executions, event.execution)) return 'checkpoint_required'
     } else if (event.kind === 'remote_task_execution_summary') {
-      applyRemoteSummaryStatuses(event, (agentRunId) => this.contexts.get(agentRunId) ?? null, this.view.remote_task_executions)
+      applyRemoteSummary(event)
     } else if (event.kind === 'task_executions_closed') {
       // Their Task is DONE: they stay in the tree and the Team tab, and leave the listing.
       const unknown = event.task_executions.find((reference) => 'agentRunId' in reference

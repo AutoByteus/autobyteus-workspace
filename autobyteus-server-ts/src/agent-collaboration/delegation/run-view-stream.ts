@@ -35,7 +35,8 @@ export type RootSnapshotConnection<TSnapshot, TEvent> = Readonly<{
 /**
  * The one order/barrier owner of a run's view (autobyteus-461 SR-062, SR-063): base's `RootEventPublisher`, moved out of
  * the root. It numbers every frame of the run's view in one sequence: the run's own events (its live root hands them
- * over), the tree's row events (`ChildRowsFeed`) and the delegated rows' status events (`LocalChildObservation`). One
+ * over), the tree's row events (`ChildRowsFeed`) and its peer rows' summaries (`PeerChildObservation`); a row's status is
+ * its own run's, read by run ID (`RunStatusService`, SR-083). One
  * per run, from the composition root's `RunViewStreams`, living as long as the process, so the run's view exists
  * whether or not its root is loaded. Non-persisted; publication is synchronous and subscriber failures are isolated.
  */
@@ -125,7 +126,7 @@ export class RunViewStream<TEvent> {
 
 /**
  * The composition root's view stream registry (SR-062): each run's one `RunViewStream`, created on its first use and
- * kept for the life of the process. A run's root, its view sessions, `ChildRowsFeed` and `LocalChildObservation` all
+ * kept for the life of the process. A run's root, its view sessions, `ChildRowsFeed` and `PeerChildObservation` all
  * take the run's stream from here. Which events are messages, and each kind's message event, are each root kind's
  * rules, given by the composition root. It holds the node's message feed over these streams (`messages`, SR-072).
  */

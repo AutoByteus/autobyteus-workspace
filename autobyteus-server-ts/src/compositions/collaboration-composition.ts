@@ -233,12 +233,15 @@ export const composeCollaboration = async (input: Readonly<{
     // A peer run, reached by its own identity (SR-066): its handle from the tree, its live status and output per view.
     const peerRunOf = createPeerRunOf(tree, input.remoteChannel);
     // Each run's statuses by run ID, from the run itself, and its rows' change notice (SR-082, SR-083).
-    const runStatus = new RunStatusService({ agents: liveAgents, registrations: input.activeRoots, agentsOf: (run) => tree.agentsOf(run), peerRunOf });
+    // A peer run's status and its row's summary meet in Retry and in an unasked end (AR-403); `peers` is created below.
+    const runStatus = new RunStatusService({ agents: liveAgents, registrations: input.activeRoots, agentsOf: (run) => tree.agentsOf(run), peerRunOf,
+      peerEnded: (peerRunId) => peers.ended(peerRunId) });
     const feed = new ChildRowsFeed({ streams: taskSide.viewStreams, tree, isRunning: (run) => input.activeRoots.resolve(run) !== null,
       rowsChanged: (run) => runStatus.treeChanged(run) });
     releases.push(feed.follow(tree));
     const runViewChildren = new RunViewChildren({ feed, projection });
-    const peers = new PeerChildObservation({ tree, streams: taskSide.viewStreams, peerRunOf, channel: input.remoteChannel });
+    const peers = new PeerChildObservation({ tree, streams: taskSide.viewStreams, peerRunOf, channel: input.remoteChannel,
+      retryStatuses: (peerRunIds) => runStatus.retryPeers(peerRunIds) });
 
     // 8. Their consumers. Older singletons (their getters are FU-011) return the instance created here.
     releases.push(setProcessTaskDelegationToolService(new TaskDelegationToolService({ delegation,

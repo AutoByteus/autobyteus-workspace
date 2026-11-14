@@ -28,7 +28,9 @@ const harness = (input: Readonly<{ agents?: Record<string, string[]>; live?: Rec
   const peerClose = vi.fn();
   let peerObserver: { onFrame(agentRunId: string, message: unknown): void; onEnd(): void } | null = null;
   const peerObserve = vi.fn((observer: typeof peerObserver) => { peerObserver = observer; return { close: peerClose }; });
+  const peerEnded = vi.fn();
   const sources: RunStatusSources = {
+    peerEnded,
     agents: () => access as never,
     registrations: {
       resolve: (run: RootExecutionIdentity) => (live.has(run.rootRunId) ? ({} as never) : null),
@@ -49,7 +51,7 @@ const harness = (input: Readonly<{ agents?: Record<string, string[]>; live?: Rec
     return { sent, connection: service.connect((message) => sent.push(message)) };
   };
   const register = (runId: string, registered: boolean) => { for (const listener of registration.get(runId) ?? []) listener(registered); };
-  return { service, client, listeners, ended, live, register, observe, peer: { close: peerClose, observe: peerObserve, observer: () => peerObserver } };
+  return { service, client, listeners, ended, live, register, observe, peerEnded, peer: { close: peerClose, observe: peerObserve, observer: () => peerObserver } };
 };
 
 describe("RunStatusService (SR-082, SR-083)", () => {
@@ -112,6 +114,25 @@ describe("RunStatusService (SR-082, SR-083)", () => {
     b.connection.unsubscribe([{ kind: "agent_team", runId: "peer-team" }]);
     expect(h.peer.close).toHaveBeenCalledTimes(1);
     expect(h.service.heldRuns).toBe(0);
+  });
+
+  it("CR-461-085: a peer run whose link ended reads offline and asks its views for a summary; Retry observes it again and its status follows", async () => {
+    const h = harness({ peer: ["peer-team"] });
+    const { sent, connection } = h.client();
+    await connection.subscribe([{ kind: "agent_team", runId: "peer-team" }]);
+    h.peer.observer()!.onFrame("peer-team-lead", frame("running"));
+    h.peer.observer()!.onEnd();
+    expect(sent.at(-1)).toMatchObject({ type: "RUN_STATUS_CHANGED", payload: { agentRunId: "peer-team-lead", status: "offline" } });
+    expect(h.peerEnded).toHaveBeenCalledWith("peer-team");
+    // A frame of the ended link changes nothing; Retry observes the run again, and its status follows.
+    h.service.retryPeers(["peer-team"]);
+    expect(h.peer.observe).toHaveBeenCalledTimes(2);
+    h.peer.observer()!.onFrame("peer-team-lead", frame("idle"));
+    expect(sent.at(-1)).toMatchObject({ type: "RUN_STATUS_CHANGED", payload: { agentRunId: "peer-team-lead", status: "idle" } });
+    // A live observation is not opened twice.
+    h.service.retryPeers(["peer-team"]);
+    expect(h.peer.observe).toHaveBeenCalledTimes(2);
+    connection.close();
   });
 
   it("RUN_TREE_CHANGED reaches the run's subscribers only; an org run is held for it with no agents", async () => {

@@ -15,6 +15,8 @@ export type RunStatusSources = Readonly<{
   agentsOf(run: RootExecutionIdentity): Promise<readonly Readonly<{ agentRunId: string }>[]>;
   /** The handle of a run on a peer node, by its ID; `null` for a local run. */
   peerRunOf: PeerRunOf;
+  /** A peer run's observation ended without being asked (AR-403): its views ask its node for one summary. */
+  peerEnded(peerRunId: string): void;
 }>;
 
 const STATUSES: readonly RunAgentStatus[] = ["offline", "idle", "error", "initializing", "running"];
@@ -39,6 +41,8 @@ export class RunStatusEntry {
   readonly ready: Promise<void>;
   private closed = false;
   private readonly releases: (() => void)[] = [];
+  /** A peer run's observation again, after it ended (Retry, DEC-807 Phase 1); `null` for a local or org run. */
+  private observePeer: (() => void) | null = null;
 
   constructor(readonly ref: RunStatusRunRef, private readonly sources: RunStatusSources) {
     this.ready = this.start().catch((error: unknown) => { console.warn(`Run '${ref.runId}': its statuses could not be followed: ${String(error)}`); });
@@ -48,6 +52,9 @@ export class RunStatusEntry {
     this.closed = true;
     for (const release of this.releases.splice(0)) release();
   }
+
+  /** Retry: a peer run whose observation ended is observed again (DEC-807 Phase 1: an observation never reconnects alone). */
+  retry(): void { this.observePeer?.(); }
 
   private set(agentRunId: string, status: RunAgentStatus): void {
     if (this.closed || this.answers.get(agentRunId) === status) return;
@@ -97,18 +104,36 @@ export class RunStatusEntry {
     if (this.sources.registrations.resolve(root)) await observe();
   }
 
-  /** A peer run: its handle's own observation, shared by every subscriber (one entry per run); offline when it ends. */
+  /**
+   * A peer run: its handle's own observation, shared by every subscriber (one entry per run). When it ends unasked, its
+   * agents read offline and its views ask its node for one summary (AR-403); Retry observes it again.
+   */
   private startPeer(peer: PeerRun): void {
     const ids = peer.link.kind === "agent" ? [peer.link.agentRunId] : peer.link.members.map((member) => member.agentRunId);
     for (const agentRunId of ids) this.answers.set(agentRunId, "offline");
-    const stream = peer.observe({
-      onFrame: (agentRunId, message) => {
-        const status = ids.includes(agentRunId) ? statusOfFrame(message) : null;
-        if (status) this.set(agentRunId, status);
-      },
-      onEnd: () => this.allOffline(),
-    });
-    if (stream) this.releases.push(() => stream.close());
+    let stream: Readonly<{ close(): void }> | null = null;
+    const observe = (): void => {
+      if (this.closed || stream) return;
+      let current: Readonly<{ close(): void }> | null = null;
+      let ended = false;
+      const end = (): void => {
+        if (stream === current) stream = null;
+        this.allOffline();
+        if (!this.closed) this.sources.peerEnded(this.ref.runId);
+      };
+      current = peer.observe({
+        onFrame: (agentRunId, message) => {
+          const status = !ended && ids.includes(agentRunId) ? statusOfFrame(message) : null;
+          if (status) this.set(agentRunId, status);
+        },
+        onEnd: () => { ended = true; if (current) end(); },
+      });
+      if (ended || !current) { end(); return; }
+      stream = current;
+    };
+    this.observePeer = observe;
+    this.releases.push(() => { this.observePeer = null; stream?.close(); stream = null; });
+    observe();
   }
 }
 
@@ -132,6 +157,12 @@ export class RunStatusService {
   treeChanged(run: RootExecutionIdentity): void {
     const entry = this.entries.get(keyOf({ kind: run.rootSubjectKind as RunStatusRunRef["kind"], runId: run.rootRunId }));
     if (entry) for (const listener of [...entry.listeners]) listener.treeChanged(entry.ref);
+  }
+
+  /** Retry (`REFRESH_REMOTE_TASK_EXECUTIONS`): these peer runs' ended observations are observed again. */
+  retryPeers(peerRunIds: readonly string[]): void {
+    const ids = new Set(peerRunIds);
+    for (const entry of this.entries.values()) if (ids.has(entry.ref.runId)) entry.retry();
   }
 
   /** The number of runs held now (for tests and diagnostics). */

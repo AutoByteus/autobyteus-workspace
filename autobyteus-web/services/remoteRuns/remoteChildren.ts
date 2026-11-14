@@ -1,13 +1,10 @@
 import {
-  remoteTaskExecutionAgentsOf,
   remoteTaskExecutionRunIdOf,
   type RemoteTaskExecutionDto,
   type RemoteTaskExecutionSummaryDto,
 } from '@autobyteus/agent-presentation-contracts'
-import type { AgentContext } from '~/types/agent/AgentContext'
 import { AgentStatus } from '~/types/agent/AgentStatus'
 import type { RunHistoryTransientExecutionRow } from '~/stores/runHistoryTypes'
-import { normalizeAgentRuntimeStatus } from '~/services/runHydration/runtimeStatusNormalization'
 import { useRemoteRunsStore } from '~/stores/remoteRunsStore'
 import { resolveTeamStatus, type TeamStatus } from '~/utils/workspaceTeamAggregateStatus'
 
@@ -19,23 +16,10 @@ export const isRemoteExecutionKnown = (executions: readonly RemoteTaskExecutionD
   executions.some((known) => remoteTaskExecutionRunIdOf(known) === remoteTaskExecutionRunIdOf(execution))
 
 /**
- * A node's answer about a remote run (autobyteus-278): its agents' statuses (an agent the node does not list is
- * offline; a node that did not answer leaves every agent offline) and its title and reachability for the window.
+ * A peer run's summary from its node (autobyteus-278): its title, reachability and launches only. Its agents' statuses
+ * are its own, read by its run ID on `/ws/run-status` (autobyteus-461 SR-083, CR-461-085): one source writes them.
  */
-export const applyRemoteSummaryStatuses = (
-  summary: RemoteTaskExecutionSummaryDto,
-  contextOf: (agentRunId: string) => AgentContext | null,
-  executions: readonly RemoteTaskExecutionDto[],
-): void => {
-  const execution = executions.find((known) => remoteTaskExecutionRunIdOf(known) === summary.run_id)
-  if (!execution) return
-  const statuses = new Map(summary.statuses.map((status) => [status.agent_run_id, status.status]))
-  for (const agent of remoteTaskExecutionAgentsOf(execution)) {
-    const context = contextOf(agent.agent_run_id)
-    if (context) context.state.currentStatus = normalizeAgentRuntimeStatus(statuses.get(agent.agent_run_id) ?? null, AgentStatus.Offline)
-  }
-  useRemoteRunsStore().applySummary(summary)
-}
+export const applyRemoteSummary = (summary: RemoteTaskExecutionSummaryDto): void => { useRemoteRunsStore().applySummary(summary) }
 
 /**
  * A root's remote runs as rows (autobyteus-278): like a local copy's rows, plus the node (UI spec UIS-001). A remote
