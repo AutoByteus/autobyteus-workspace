@@ -34,6 +34,8 @@ import type { PeerWebSocket } from "../../../src/remote-collaboration/channel/pe
 import type { RemoteRunRootEvent } from "../../../src/agent-collaboration/execution/remote/remote-run-observation.js";
 import { AgentRunEventType } from "../../../src/agent-execution/domain/agent-run-event.js";
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
+import { RunStatusService } from "../../../src/agent-collaboration/execution/run-status-service.js";
+import type { RunStatusServerMessage } from "@autobyteus/collaboration-stream-contracts";
 import { projectAgentCollaborationView } from "../../../src/services/agent-streaming/agent-collaboration-view-projector.js";
 
 /**
@@ -280,9 +282,9 @@ describe("remote delegation between two standalone runs, in process (slice 1 ste
     const inspection = (await a.manager.getInspection(DELEGATOR))!;
     // Its rows as the run's view and history reads give them (SR-061): from its collaboration tree, the peer row with its node.
     const children = new RunViewChildren({ feed: new ChildRowsFeed({ streams: testViewStreams(), tree: a.taskSide.tree, isRunning: () => false }),
-      projection: createChildRowProjection({ memoryDir: a.memoryDir, tree: a.taskSide.tree, channel: () => null }), followers: { statuses: async () => [], currentStatuses: () => [] } });
+      projection: createChildRowProjection({ memoryDir: a.memoryDir, tree: a.taskSide.tree, channel: () => null }) });
     const { rows } = await children.read(createAgentRootExecutionIdentity(DELEGATOR));
-    const view = projectAgentCollaborationView({ ...inspection, rows, childStatuses: [] });
+    const view = projectAgentCollaborationView({ ...inspection, rows });
     if (view.root_subject_kind !== "agent") throw new Error("Expected an Agent root view.");
     expect(view.root_agent.execution_tree.taskExecutions).toEqual([]);
     // Its launches are read from B while the view is open (SR-038); nothing about them is stored on A.
@@ -311,7 +313,7 @@ describe("remote delegation between two standalone runs, in process (slice 1 ste
     const bRecords = await b.manager.getCollaborationRecordsSnapshot("publisher_r1");
     expect(bRecords.messages.messages.map((message) => message.content)).toEqual(["Published to the channel.", "Thanks, now add captions."]);
     const bInspection = (await b.manager.getInspection("publisher_r1"))!;
-    expect(JSON.stringify(projectAgentCollaborationView({ ...bInspection, rows: { taskExecutions: [], remoteTaskExecutions: [], closedTaskExecutions: [] }, childStatuses: [] }))).not.toContain("Published to the channel.");
+    expect(JSON.stringify(projectAgentCollaborationView({ ...bInspection, rows: { taskExecutions: [], remoteTaskExecutions: [], closedTaskExecutions: [] } }))).not.toContain("Published to the channel.");
   });
 
   it("keeps working after both nodes restart: A restores the link from its tree and B the back-link from run_metadata.json (REQ-108)", async () => {
@@ -419,10 +421,17 @@ describe("remote delegation between two standalone runs, in process (slice 1 ste
       // SR-038: the run's launches, from B's own file.
       launches: [expect.objectContaining({ address: "/publisher", runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK, llmModelIdentifier: "sonnet" })] } }]);
 
-    // B's host reports running: A's view presents it at the stored address (DS-002).
+    // B's host reports running: A reads it by the run's ID through its handle (SR-083), not as a frame of its view.
+    const runStatus = new RunStatusService({ agents: () => ({}) as never, peerRunOf, agentsOf: async () => [],
+      registrations: { resolve: () => null, onRegistrationChanged: () => () => undefined } });
+    const statuses: RunStatusServerMessage[] = [];
+    const statusConnection = runStatus.connect((message) => statuses.push(message));
+    await statusConnection.subscribe([{ kind: "agent", runId: "publisher_r1" }]);
+    await settle();
     b.runOf("publisher_r1").emit({ eventType: AgentRunEventType.AGENT_STATUS, runId: "publisher_r1", payload: { status: "running" }, statusHint: "ACTIVE" });
-    expect(events.at(-1)).toMatchObject({ kind: "remote_agent_presentation", nodeId: B_ID, agentRunId: "publisher_r1", memberAddress: "/publisher",
-      message: { type: "AGENT_STATUS", payload: { status: "running" } } });
+    await settle();
+    expect(statuses.at(-1)).toMatchObject({ type: "RUN_STATUS_CHANGED", payload: { runId: "publisher_r1", agentRunId: "publisher_r1", status: "running" } });
+    expect(events.every((event) => event.kind === "remote_task_execution_summary")).toBe(true);
 
     // The owner's message reaches B's run as user input under the heading naming the owner's node (DS-004, DS-004a).
     const peer = peerRunOf("publisher_r1")!;
@@ -433,14 +442,17 @@ describe("remote delegation between two standalone runs, in process (slice 1 ste
     const posted = b.runOf("publisher_r1").postUserMessage.mock.calls.at(-1)![0] as { metadata: Record<string, unknown> };
     expect(posted.metadata).toEqual({ input_origin: "user_message", message_id: "m1", dedupe_key: "d1" });
 
-    // Stop: B stops the run and ends the observation; A reads its final state once (AR-403).
-    events.length = 0;
+    // Stop: B stops the run and ends the observation; A reads it offline, by its run ID.
     await expect(peer.terminate()).resolves.toEqual({ accepted: true });
     await settle();
     expect(b.runOf("publisher_r1").active).toBe(false);
-    // A stopped run has no live status; its launches are still its own facts (SR-038).
+    expect(statuses.at(-1)).toMatchObject({ type: "RUN_STATUS_CHANGED", payload: { runId: "publisher_r1", status: "offline" } });
+    // Retry asks B again: a stopped run has no live status; its launches are still its own facts (SR-038).
+    events.length = 0;
+    await observation.refresh(delegator);
     expect(events).toEqual([{ kind: "remote_task_execution_summary", summary: { nodeId: B_ID, runId: "publisher_r1", reachable: true,
       title: "Publish the video draft.", statuses: [], launches: [expect.objectContaining({ address: "/publisher" })] } }]);
+    statusConnection.close();
     close();
   });
 });

@@ -1,29 +1,25 @@
 import { rootExecutionIdentityKey, type RootExecutionIdentity } from "../execution/domain/root-execution-identity.js";
 import { peerRunIdOf, peerRunLinksOf, type PeerRunLink } from "../execution/remote/peer-run-link.js";
-import { peerAgentAddressOf, peerStatuses, type PeerChannel } from "../execution/remote/peer-run-calls.js";
+import { peerStatuses, type PeerChannel } from "../execution/remote/peer-run-calls.js";
 import type { PeerRun, PeerRunOf } from "../execution/remote/peer-runs.js";
-import type { RemoteRunObservationStream } from "../execution/remote/remote-run-channel.js";
 import type { RemoteRunRootEvent, RemoteRunSummaryEvent } from "../execution/remote/remote-run-observation.js";
 import type { DelegationIndex } from "./delegation-index.js";
 import type { RunViewStreams } from "./run-view-stream.js";
 
 type Publish = (event: RemoteRunRootEvent) => void;
 
-/** One peer run's observation, shared by every open view that shows it (ARCH-REV-040 note 1). */
-type Observed = { peer: PeerRun; stream: RemoteRunObservationStream | null; views: Map<string, Publish>; lastSummary: RemoteRunSummaryEvent | null };
+/** One peer run's summary, shared by every open view that shows it (ARCH-REV-040 note 1). */
+type Observed = { peer: PeerRun; views: Map<string, Publish>; lastSummary: RemoteRunSummaryEvent | null };
 
 /** One open view's following: its viewers, and the peer runs it shows. */
 type Viewed = { viewers: number; peers: Set<string>; stopRows: () => void };
 
 /**
- * The live status and output of the peer runs in the open views (autobyteus-461 SR-066; the peer counterpart of
- * `LocalChildObservation`, which replaces base's root-opened `RemoteRunObservation`). It is one node-level owner, keyed
- * by peer run: the first open view that shows a peer run opens its `observe`; each view's `RunViewStream` numbers its
- * frames in its own sequence; the last view to close it closes it. A view shows its open peer rows at every depth
- * (`collaborationTreeOf(run).rows()`), followed as rows come and go. Each peer run's last summary is kept in memory and
- * published again to a view that attaches, after its snapshot (SR-063). It never reads a root, so a stopped delegator's
- * open view keeps its peer rows live. Phase 1 (DEC-807): an observation never reconnects; Retry (`refresh`) observes
- * again and asks for fresh summaries.
+ * The summaries of the peer runs in the open views (autobyteus-461 SR-066): their title, reachability and launches,
+ * asked of their nodes when a view opens and on Retry (`refresh`), published into each view's stream. One node-level
+ * owner, keyed by peer run; a view shows its open peer rows at every depth (`collaborationTreeOf(run).rows()`), followed as
+ * rows come and go. Each peer run's last summary is kept in memory and published again to a view that attaches, after
+ * its snapshot (SR-063). A peer run's status is its own, read by its run ID through its handle (`RunStatusService`, SR-083).
  */
 export class PeerChildObservation {
   private readonly observed = new Map<string, Observed>();
@@ -37,7 +33,7 @@ export class PeerChildObservation {
   }>) {}
 
   /**
-   * A view of `run` opens, after its snapshot: its peer rows are observed into its stream and get their summaries (the
+   * A view of `run` opens, after its snapshot: its peer rows get their summaries in its stream (the
    * cached one now, a fresh one when its node answers). The returned function closes the view.
    */
   follow(run: RootExecutionIdentity): () => void {
@@ -67,12 +63,10 @@ export class PeerChildObservation {
     };
   }
 
-  /** Retry (`REFRESH_REMOTE_TASK_EXECUTIONS`): every ended observation of the view's peer rows again, and fresh summaries. */
+  /** Retry (`REFRESH_REMOTE_TASK_EXECUTIONS`): fresh summaries of the view's peer rows. */
   refresh(run: RootExecutionIdentity): Promise<void> {
     const view = this.viewed.get(rootExecutionIdentityKey(run));
-    if (!view) return Promise.resolve();
-    view.peers.forEach((peerRunId) => { const entry = this.observed.get(peerRunId); if (entry && !entry.stream) this.open(peerRunId, entry); });
-    return this.fetchSummaries(view);
+    return view ? this.fetchSummaries(view) : Promise.resolve();
   }
 
   /** The last summaries of the view's peer rows, in memory. */
@@ -107,9 +101,8 @@ export class PeerChildObservation {
     if (!entry) {
       const peer = this.dependencies.peerRunOf(peerRunId);
       if (!peer) return null;
-      entry = { peer, stream: null, views: new Map(), lastSummary: null };
+      entry = { peer, views: new Map(), lastSummary: null };
       this.observed.set(peerRunId, entry);
-      this.open(peerRunId, entry);
     }
     entry.views.set(viewKey, publish);
     return entry;
@@ -121,30 +114,6 @@ export class PeerChildObservation {
     entry.views.delete(viewKey);
     if (entry.views.size > 0) return;
     this.observed.delete(peerRunId);
-    const stream = entry.stream;
-    entry.stream = null;
-    stream?.close();
-  }
-
-  private open(peerRunId: string, entry: Observed): void {
-    let endedEarly = false;
-    let current: RemoteRunObservationStream | null = null;
-    current = entry.peer.observe({
-      onFrame: (agentRunId, message) => {
-        const memberAddress = peerAgentAddressOf(entry.peer.link, agentRunId);
-        // AR-402: the node sends its run's own agents only; anything else is dropped.
-        if (!memberAddress) return;
-        this.publish(entry, { kind: "remote_agent_presentation", nodeId: entry.peer.link.nodeId, agentRunId, memberAddress, message });
-      },
-      onEnd: () => {
-        if (!current) { endedEarly = true; return; }
-        if (entry.stream === current) entry.stream = null;
-        // AR-403: an end nobody asked for shows plainly: one summary fetch sets the row.
-        if (this.observed.get(peerRunId) === entry) void this.fetchFor([entry]);
-      },
-    });
-    if (endedEarly) { void this.fetchFor([entry]); return; }
-    entry.stream = current;
   }
 
   private publish(entry: Observed, event: RemoteRunRootEvent): void {

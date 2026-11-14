@@ -9,7 +9,6 @@ import type { SequencedRootEvent } from "../../agent-collaboration/delegation/ru
 import type { StandaloneRootPackageSnapshot } from "../../standalone-agent-run-root/domain/standalone-agent-run-root.js";
 import type { StandaloneRootEvent } from "../../standalone-agent-run-root/domain/standalone-root-event.js";
 import { projectRemoteTaskExecutionSummary } from "./remote-task-execution-dto-projection.js";
-import type { LocalChildAgentStatus } from "../../agent-collaboration/execution/delegation/local-child-observation.js";
 import type { ProjectedRowEvent, ViewRows } from "./run-view-rows.js";
 
 /** Agent-root view (root kind `agent`) on the collaboration-stream contracts. */
@@ -22,8 +21,6 @@ export const projectAgentCollaborationView = (input: Readonly<{
   lastMessageChangeSequence: number | null;
   /** The rows under the run in base's shapes (SR-061): nested by placement, the peer rows, the closed set. */
   rows: ViewRows;
-  /** The rows' agents' statuses, each from its own run (SR-061 rule 1). */
-  childStatuses: readonly LocalChildAgentStatus[];
 }>): RootExecutionViewDto => RootExecutionViewDtoSchema.parse({
   root_subject_kind: "agent",
   root_run_id: input.hostRunId,
@@ -44,8 +41,7 @@ export const projectAgentCollaborationView = (input: Readonly<{
       error_message: status.details.errorMessage,
       error_details: null,
       recoverableBlock: status.details.recoverableBlock,
-    })), ...input.childStatuses.map((status) => ({ member_address: status.memberAddress, agent_run_id: status.agentRunId, status: status.status,
-      trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null }))],
+    }))],
     remote_task_executions: input.rows.remoteTaskExecutions,
   },
 });
@@ -72,11 +68,6 @@ export const projectAgentCollaborationEvent = (
       break;
     case "agent_presentation":
       event = { kind: "agent_presentation" as const, member_address: source.execution.memberAddress, agent_run_id: source.execution.agentRunId, message: source.message };
-      break;
-    // N-402: the one place a child's output (on a peer, or local, DS-8) becomes the stream's `agent_presentation`.
-    case "remote_agent_presentation":
-    case "local_child_presentation":
-      event = { kind: "agent_presentation" as const, member_address: source.memberAddress, agent_run_id: source.agentRunId, message: source.message };
       break;
     case "remote_task_execution_summary":
       event = { kind: "remote_task_execution_summary" as const, ...projectRemoteTaskExecutionSummary(source.summary) };

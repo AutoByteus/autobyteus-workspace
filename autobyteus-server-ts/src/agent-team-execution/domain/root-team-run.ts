@@ -29,7 +29,6 @@ import { TeamRunCollaborators } from "../services/team-run-collaborators.js";
 import { localPlacement } from "../../agent-collaboration/execution/task/task-delegation.js";
 import type { DelegationSource } from "../../agent-collaboration/execution/task/member-task-capability.js";
 import type { DelegationIndex } from "../../agent-collaboration/delegation/delegation-index.js";
-import type { LocalChildRootEvent } from "../../agent-collaboration/execution/delegation/local-child-observation.js";
 import type { CollaboratorRootPort } from "../../agent-collaboration/collaborators/collaborator-root-port.js";
 import type { CollaboratorAdmission, CollaboratorMention, RootCollaboratorAdmissionResult } from "../../agent-collaboration/collaborators/collaborator-admission.js";
 import type { AvailableCollaborator } from "../../agent-collaboration/collaborators/collaborator-candidate-policy.js";

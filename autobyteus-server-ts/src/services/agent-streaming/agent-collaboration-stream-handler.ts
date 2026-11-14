@@ -85,14 +85,11 @@ export class AgentCollaborationStreamHandler {
     }
     const sessionId = randomUUID();
     const identity = root.rootIdentity;
-    // The rows' statuses are followed into the run's stream before its snapshot: each after the base is a frame.
-    const stopFollowing = this.views.followers.follow(identity);
     let barrier;
     try {
       barrier = await root.openViewSnapshotConnection(() => readRowsAtBase(this.views, identity),
         async (own, atBase) => ({ own, ...await readViewSnapshot(this.views, identity, atBase) }));
     } catch (cause) {
-      stopFollowing();
       egress.send(error("AGENT_ROOT_STREAM_UNAVAILABLE", String(cause)));
       egress.dispose();
       connection.close(1011);
@@ -106,7 +103,7 @@ export class AgentCollaborationStreamHandler {
         type: "ROOT_EXECUTION_VIEW_SNAPSHOT",
         payload: projectAgentCollaborationView({ hostRunId, isActive: root.isHostLive(), snapshot: barrier.snapshot.own,
           baseChangeSequence: barrier.baseChangeSequence, liveSequenceId: barrier.liveSequenceId,
-          lastMessageChangeSequence: barrier.lastMessageChangeSequence, rows: barrier.snapshot.rows, childStatuses: barrier.snapshot.statuses }),
+          lastMessageChangeSequence: barrier.lastMessageChangeSequence, rows: barrier.snapshot.rows }),
       }));
       // Every frame after the base, in order; a row event's records are read when it is sent.
       let open = true;
@@ -134,11 +131,10 @@ export class AgentCollaborationStreamHandler {
       }));
       // The view's peer rows, observed after its snapshot (SR-066): never through the root.
       const stopPeers = this.views.peers.follow(root.rootIdentity);
-      this.sessions.set(sessionId, { egress, hostRunId, close: () => { open = false; unsubscribe(); stopPeers(); stopFollowing(); egress.dispose(); } });
+      this.sessions.set(sessionId, { egress, hostRunId, close: () => { open = false; unsubscribe(); stopPeers(); egress.dispose(); } });
       return sessionId;
     } catch (cause) {
       barrier.close();
-      stopFollowing();
       egress.send(error("AGENT_ROOT_STREAM_UNAVAILABLE", String(cause)));
       egress.dispose();
       connection.close(1011);

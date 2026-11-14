@@ -13,7 +13,6 @@ import type { MemberLogicalMessageInput } from "../../agent-collaboration/execut
 import type { TaskDelegationContext } from "../../agent-collaboration/execution/task/task-delegation-command.js";
 import type { DelegationSource } from "../../agent-collaboration/execution/task/member-task-capability.js";
 import type { DelegationIndex } from "../../agent-collaboration/delegation/delegation-index.js";
-import type { LocalChildRootEvent } from "../../agent-collaboration/execution/delegation/local-child-observation.js";
 import type { TaskExecutionIdleTimers } from "../../agent-collaboration/execution/task/task-execution-idle-shutdown-schedule.js";
 import type { WorkPacket } from "../../agent-collaboration/execution/task/task-delegation.js";
 import { RootCommunicationEngine, type RunSendInput } from "../../agent-collaboration/execution/communication/root-communication-engine.js";

@@ -12,7 +12,6 @@ import { projectTeamAgentStatusSnapshotDto } from "./team-agent-status-websocket
 import { projectTeamReferenceFile } from "../../agent-team-execution/services/team-reference-file-projection.js";
 import { projectTeamRemoteEvent } from "./team-remote-event-projector.js";
 import type { ProjectedRowEvent, ViewRows } from "./run-view-rows.js";
-import type { LocalChildAgentStatus } from "../../agent-collaboration/execution/delegation/local-child-observation.js";
 
 const projectReference = (ownerId: string, filePath: string, timestamp: string): TeamReferenceFileDto => {
   const reference = projectTeamReferenceFile(ownerId, filePath, timestamp);
@@ -33,8 +32,6 @@ export const projectTeamExecutionViewSnapshot = (
   }>,
   /** The rows under the run in base's shapes (SR-061): nested by placement, the peer rows, the closed set. */
   rows: ViewRows,
-  /** The rows' agents' statuses, each from its own run (SR-061 rule 1): the view reports one for every agent it lists. */
-  childStatuses: readonly LocalChildAgentStatus[] = [],
 ): TeamStreamServerMessage => parseTeamStreamServerMessage({
   type: "TEAM_EXECUTION_VIEW_SNAPSHOT",
   payload: {
@@ -44,19 +41,12 @@ export const projectTeamExecutionViewSnapshot = (
     last_message_change_sequence: lastMessageChangeSequence,
     execution_tree: projectExecutionTree(snapshot.tree, rows.taskExecutions),
     closed_task_executions: rows.closedTaskExecutions.map(projectTaskExecutionReference),
-    agent_statuses: [...snapshot.statuses.map(projectTeamAgentStatusSnapshotDto), ...childStatusDtos(snapshot.statuses, childStatuses)],
+    // The Team's own agents; a delegated or peer run's status is its own, read by its run ID (SR-083).
+    agent_statuses: snapshot.statuses.map(projectTeamAgentStatusSnapshotDto),
     agent_input_states: snapshot.inputStates,
     remote_task_executions: rows.remoteTaskExecutions,
   },
 });
-
-const childStatusDtos = (own: Pick<RootTeamRunPackageSnapshot, "statuses">["statuses"], children: readonly LocalChildAgentStatus[]) => {
-  const listed = new Set(own.map((status) => status.execution.agentRunId));
-  return children.filter((child) => !listed.has(child.agentRunId)).map((child) => ({
-    agent_run_id: child.agentRunId, member_address: child.memberAddress, status: child.status,
-    trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null,
-  }));
-};
 
 export const projectSequencedTeamRunEvent = (
   sequenced: SequencedRootEvent<TeamRunEvent>,

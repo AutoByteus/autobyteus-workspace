@@ -11,7 +11,6 @@ import { createCollaborationMemberExecutionIdentity, sameCollaborationMemberExec
 import type { MemberLogicalMessageInput } from "../../agent-collaboration/execution/domain/member-execution-context.js";
 import type { TaskDelegationContext } from "../../agent-collaboration/execution/task/task-delegation-command.js";
 import type { DelegationSource } from "../../agent-collaboration/execution/task/member-task-capability.js";
-import type { LocalChildRootEvent } from "../../agent-collaboration/execution/delegation/local-child-observation.js";
 import { RootCommunicationEngine } from "../../agent-collaboration/execution/communication/root-communication-engine.js";
 import type { ActiveRootMessageBoundary, ExactAgentMessageInput } from "../../agent-collaboration/execution/services/active-collaboration-root-directory.js";
 import type { RunViewStream } from "../../agent-collaboration/delegation/run-view-stream.js";

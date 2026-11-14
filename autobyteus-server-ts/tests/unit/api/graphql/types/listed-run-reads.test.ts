@@ -1,6 +1,5 @@
 import "reflect-metadata";
 import { describe, expect, it, vi } from "vitest";
-import { closedTaskExecutionsDigest } from "@autobyteus/collaboration-stream-contracts";
 import { RunViewChildren } from "../../../../../src/services/agent-streaming/run-view-children.js";
 
 const io = vi.hoisted(() => ({ children: null as unknown, roots: new Map<string, { isHostLive(): boolean }>(), history: null as unknown }));
@@ -12,7 +11,6 @@ vi.mock("../../../../../src/standalone-agent-run-root/services/standalone-agent-
   getStandaloneAgentRunRootManager: () => ({ getActive: (id: string) => io.roots.get(id) ?? null }),
 }));
 
-import { AgentRunCollaborationResolver } from "../../../../../src/api/graphql/types/agent-run-collaboration.js";
 import { CollaborationRootHistoryResolver } from "../../../../../src/api/graphql/types/collaboration-root-history.js";
 import { withTeamRows } from "../../../../../src/api/graphql/types/listed-team-rows.js";
 import { agentChildRow } from "../../../../helpers/child-rows-feed.js";
@@ -33,40 +31,15 @@ describe("the run list's reads", () => {
       projection: { rowOf: async (child: { run: { agentRunId: string } }) => {
         if (child.run.agentRunId === "helper") throw new Error("Unterminated string in JSON at position 527");
         return { kind: "local" as const, row: agentChildRow("writer") };
-      } } as never,
-      // The tree's parts were read before the file was truncated: the earlier statuses still name the helper.
-      followers: { statuses: async () => [{ agentRunId: "writer", memberAddress: "/writer", status: "running" }, { agentRunId: "helper", memberAddress: "/helper", status: "idle" }],
-        currentStatuses: (run) => run.rootRunId === "writer" ? [{ agentRunId: "writer", status: "running" }] : [] } });
-    const { rows, statuses } = await children.read({ rootSubjectKind: "agent", rootRunId: "host" });
+      } } as never });
+    const { rows } = await children.read({ rootSubjectKind: "agent", rootRunId: "host" });
     expect(rows.taskExecutions.map((execution) => (execution as { agentRunId: string }).agentRunId)).toEqual(["writer"]);
-    expect(statuses).toEqual([{ agentRunId: "writer", memberAddress: "/writer", status: "running" }]);
     expect(warn).toHaveBeenCalledWith(expect.stringContaining("The run 'helper' delegated under agent run 'host' was left out of its view"));
-    // The contract accepts the view (it rejected a status naming the left-out row's agent: "Agent root status identity mismatch.").
+    // The contract accepts the view; its rows' statuses are each run's own (SR-083), not in it.
     expect(() => projectAgentCollaborationView({ hostRunId: "host", isActive: true, baseChangeSequence: 0, liveSequenceId: "live", lastMessageChangeSequence: 0,
       snapshot: { host: { address: "/manager", agentRunId: "host", agentDefinitionId: "manager" }, createdAt: "2026-11-01T00:00:00.000Z", statuses: [], inputStates: [] } as never,
-      rows, childStatuses: statuses })).not.toThrow();
+      rows })).not.toThrow();
     warn.mockRestore();
-  });
-
-  it("RunViewChildren.poll: its rows' statuses and its local closed set, reading no row record", async () => {
-    const projection = { rowOf: vi.fn() };
-    const children = new RunViewChildren({ projection, followers: { statuses: async () => [{ agentRunId: "writer", memberAddress: "/writer", status: "running" }], currentStatuses: () => [] },
-      feed: { rowsOf: () => ({ open: [], closed: [placed({ agentRunId: "done" }), placed({ agentRunId: "far" }, "node-b")] }) } as never });
-    await expect(children.poll({ rootSubjectKind: "agent", rootRunId: "host" })).resolves.toEqual({
-      statuses: [{ agentRunId: "writer", memberAddress: "/writer", status: "running" }], closedTaskExecutions: [{ agentRunId: "done" }] });
-    expect(projection.rowOf).not.toHaveBeenCalled();
-  });
-
-  it("agentRunCollaborationStatuses: each listed run's own activity, its delegated runs' statuses and its closed-set digest", async () => {
-    io.roots.set("live-host", { isHostLive: () => true });
-    io.children = { poll: async (run: { rootRunId: string }) => run.rootRunId === "live-host"
-      ? { statuses: [{ agentRunId: "writer", memberAddress: "/writer", status: "running" }], closedTaskExecutions: [{ agentRunId: "done" }] }
-      : { statuses: [], closedTaskExecutions: [] } };
-    await expect(new AgentRunCollaborationResolver().agentRunCollaborationStatuses(["live-host", "stopped-host"])).resolves.toEqual([
-      { runId: "live-host", isActive: true, closedTaskExecutionsDigest: closedTaskExecutionsDigest([{ agentRunId: "done" }]),
-        statuses: [{ agentRunId: "writer", memberAddress: "/writer", status: "running", recoverableBlock: null }] },
-      { runId: "stopped-host", isActive: false, closedTaskExecutionsDigest: closedTaskExecutionsDigest([]), statuses: [] },
-    ]);
   });
 
   it("an Org's history read has its delegated rows placed in its tree and its closed set; a team's is as it was", async () => {

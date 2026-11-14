@@ -5,7 +5,6 @@ import { parseTeamStreamServerMessage, type TeamStreamServerMessage } from "@aut
 import type { RootSnapshotConnection, RunViewStreams, SequencedRootEvent } from "../../agent-collaboration/delegation/run-view-stream.js";
 import type { ChildRowRootEvent } from "../../agent-collaboration/delegation/child-rows-feed.js";
 import type { RemoteRunRootEvent } from "../../agent-collaboration/execution/remote/remote-run-observation.js";
-import type { LocalChildAgentStatus, LocalChildRootEvent } from "../../agent-collaboration/execution/delegation/local-child-observation.js";
 import { createTeamRootExecutionIdentity, type RootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import type { ActiveCollaborationRootDirectory } from "../../agent-collaboration/execution/services/active-collaboration-root-directory.js";
 import type { RootTeamRun, RootTeamRunPackageSnapshot } from "../../agent-team-execution/domain/root-team-run.js";
@@ -47,8 +46,8 @@ export class TeamRunNotRestorableError extends Error {
 }
 
 /** What a team run's view stream carries: the run's own events, its rows' (`ChildRowsFeed`) and their statuses. */
-type TeamViewEvent = TeamRunEvent | LocalChildRootEvent | RemoteRunRootEvent | ChildRowRootEvent;
-type ViewSnapshot = Readonly<{ own: Pick<RootTeamRunPackageSnapshot, "tree" | "statuses" | "inputStates">; rows: ViewRows; statuses: readonly LocalChildAgentStatus[] }>;
+type TeamViewEvent = TeamRunEvent | RemoteRunRootEvent | ChildRowRootEvent;
+type ViewSnapshot = Readonly<{ own: Pick<RootTeamRunPackageSnapshot, "tree" | "statuses" | "inputStates">; rows: ViewRows }>;
 
 const lifecycle = (isActive: boolean): TeamStreamServerMessage =>
   parseTeamStreamServerMessage({ type: "TEAM_RUN_LIFECYCLE", payload: { is_active: isActive } });
@@ -65,7 +64,6 @@ const lifecycle = (isActive: boolean): TeamStreamServerMessage =>
 export class TeamViewSession {
   private mode: Readonly<{ kind: "live"; root: RootTeamRun } | { kind: "stored" }> | null = null;
   private leaveMode: (() => void) | null = null;
-  private readonly stopFollowingRows: () => void;
   private readonly stopFollowing: () => void;
   private readonly identity: RootExecutionIdentity;
   private order: Promise<void> = Promise.resolve();
@@ -77,8 +75,6 @@ export class TeamViewSession {
     private readonly sources: TeamViewSources,
   ) {
     this.identity = createTeamRootExecutionIdentity(teamRunId);
-    // The rows' statuses are followed into the run's stream while the view is open: each one after a base is a frame.
-    this.stopFollowingRows = sources.rows.followers.follow(this.identity);
     this.stopFollowing = sources.registrations.onRegistrationChanged(this.identity, () => this.switchMode());
   }
 
@@ -106,7 +102,6 @@ export class TeamViewSession {
     this.stopFollowing();
     this.leaveMode?.();
     this.leaveMode = null;
-    this.stopFollowingRows();
   }
 
   private async follow(): Promise<void> {
@@ -162,7 +157,7 @@ export class TeamViewSession {
     this.sink.send(projectTeamExecutionViewSnapshot(this.teamRunId, {
       snapshot: connection.snapshot.own, baseChangeSequence: connection.baseChangeSequence, liveSequenceId: connection.liveSequenceId,
       lastMessageChangeSequence: connection.lastMessageChangeSequence,
-    }, connection.snapshot.rows, connection.snapshot.statuses));
+    }, connection.snapshot.rows));
     let open = true;
     const unsubscribe = connection.subscribe(inOrderViewDelivery((sequenced) => isChildRowRootEvent(sequenced.event as { kind?: unknown }), async (sequenced) => {
       if (!open) return;
@@ -182,9 +177,8 @@ export class TeamViewSession {
   /** One event in base's shapes; a row event with its records read (`null` when none could be read). */
   private project(sequenced: SequencedRootEvent<TeamViewEvent>, rowEvent: ProjectedRowEvent | null): TeamStreamServerMessage | null {
     const event = sequenced.event;
-    // The rows' statuses and the peer rows' summaries and output (SR-066), as base projected a hosted copy's and a peer's.
-    if ("kind" in event && (event.kind === "local_child_presentation" || event.kind === "remote_agent_presentation"
-      || event.kind === "remote_task_execution_summary")) return projectTeamRemoteEvent(event, sequenced.changeSequence);
+    // The peer rows' summaries (SR-066); every row's status is its own run's (SR-083).
+    if ("kind" in event && event.kind === "remote_task_execution_summary") return projectTeamRemoteEvent(event, sequenced.changeSequence);
     if (isChildRowRootEvent(event as { kind?: unknown })) return rowEvent ? projectTeamRowEvent(rowEvent, sequenced.changeSequence) : null;
     return projectSequencedTeamRunEvent(sequenced as SequencedRootEvent<TeamRunEvent>);
   }

@@ -4,7 +4,6 @@ import {
   type CollaborationStreamServerMessage,
 } from "@autobyteus/collaboration-stream-contracts";
 import type { RootSnapshotConnection, RunViewStreams } from "../../agent-collaboration/delegation/run-view-stream.js";
-import type { LocalChildAgentStatus } from "../../agent-collaboration/execution/delegation/local-child-observation.js";
 import { createAgentOrgRootExecutionIdentity, type RootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import type { ActiveCollaborationRootDirectory } from "../../agent-collaboration/execution/services/active-collaboration-root-directory.js";
 import type { AgentOrgRun, AgentOrgRunPackageSnapshot } from "../../agent-org-execution/domain/agent-org-run.js";
@@ -34,7 +33,7 @@ export class OrgRunNotRestorableError extends Error {
   constructor(readonly refusal: RootRestoreRefusal) { super(refusal.message); }
 }
 
-type ViewSnapshot = Readonly<{ own: AgentOrgRunPackageSnapshot; rows: ViewRows; statuses: readonly LocalChildAgentStatus[] }>;
+type ViewSnapshot = Readonly<{ own: AgentOrgRunPackageSnapshot; rows: ViewRows }>;
 
 /**
  * One connection's view of an Org run (autobyteus-461 DS-8; SR-045, SR-046, SR-061 … SR-063), as `TeamViewSession` for a
@@ -45,7 +44,6 @@ type ViewSnapshot = Readonly<{ own: AgentOrgRunPackageSnapshot; rows: ViewRows; 
 export class OrgViewSession {
   private mode: Readonly<{ kind: "live"; run: AgentOrgRun } | { kind: "stored" }> | null = null;
   private leaveMode: (() => void) | null = null;
-  private readonly stopFollowingRows: () => void;
   private readonly stopFollowing: () => void;
   private readonly identity: RootExecutionIdentity;
   private order: Promise<void> = Promise.resolve();
@@ -64,8 +62,6 @@ export class OrgViewSession {
     }>,
   ) {
     this.identity = createAgentOrgRootExecutionIdentity(orgRunId);
-    // The rows' statuses are followed into the run's stream while the view is open: each one after a base is a frame.
-    this.stopFollowingRows = sources.rows.followers.follow(this.identity);
     this.stopFollowing = sources.registrations.onRegistrationChanged(this.identity, () => this.switchMode());
   }
 
@@ -99,7 +95,6 @@ export class OrgViewSession {
     this.stopFollowing();
     this.leaveMode?.();
     this.leaveMode = null;
-    this.stopFollowingRows();
   }
 
   private lifecycle(isActive: boolean): CollaborationStreamServerMessage {
@@ -144,9 +139,8 @@ export class OrgViewSession {
         throw new OrgRunNotRestorableError(unrestorableRoot({ kind: "AgentOrg run", code: "AGENT_ORG_RUN_NOT_RESTORABLE", runId: this.orgRunId, error }));
       });
       if (!tree) throw new OrgRunNotFoundError(`AgentOrg run '${this.orgRunId}' was not found.`);
-      // A stopped Org reports no statuses of its own; its rows' come from their own runs.
-      // An inactive Org's snapshot carries no statuses (the contract's correlation rule); its rows' statuses follow as frames.
-      return { own: { tree, statuses: [], inputStates: [] }, rows: await readViewRows(this.sources.rows.projection, this.identity, atBase), statuses: [] };
+      // A stopped Org reports no statuses of its own; its rows' come from their own runs (SR-083).
+      return { own: { tree, statuses: [], inputStates: [] }, rows: await readViewRows(this.sources.rows.projection, this.identity, atBase) };
     });
     try {
       this.leaveMode = this.show(connection, false);
@@ -162,7 +156,7 @@ export class OrgViewSession {
     this.send(CollaborationStreamServerMessageSchema.parse({ type: "ROOT_EXECUTION_VIEW_SNAPSHOT", payload: projectAgentOrgExecutionSnapshot({
       orgRunId: this.orgRunId, isActive, snapshot: connection.snapshot.own,
       baseChangeSequence: connection.baseChangeSequence, liveSequenceId: connection.liveSequenceId,
-      lastMessageChangeSequence: connection.lastMessageChangeSequence, rows: connection.snapshot.rows, childStatuses: connection.snapshot.statuses,
+      lastMessageChangeSequence: connection.lastMessageChangeSequence, rows: connection.snapshot.rows,
     }) }));
     let open = true;
     const unsubscribe = connection.subscribe(inOrderViewDelivery((sequenced) => isChildRowRootEvent(sequenced.event), async (sequenced) => {

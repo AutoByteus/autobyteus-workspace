@@ -36,12 +36,9 @@ export const followTestChildRows = () => {
   feed.follow({ subscribeChildRows: (next: (change: ChildRowsChange) => void) => { listener = next; return () => { listener = null; }; } });
   const projection = { rowOf: async (child: SubtreeRow) => "agentRunId" in child.run
     ? { kind: "local" as const, row: agentChildRow(child.run.agentRunId, child.recipientAddress) } : null };
-  // A row's agents' statuses: none cached and none running unless a test sets them (CR-461-039).
-  const followers = { follow: () => () => undefined, cachedStatuses: vi.fn((_run: RootExecutionIdentity): readonly Readonly<{ agentRunId: string; memberAddress: string; status: string }>[] => []),
-    currentStatuses: vi.fn((_run: RootExecutionIdentity): readonly Readonly<{ agentRunId: string; status: string }>[] => []) };
   return {
     streams,
-    rows: { feed, projection, followers, peers: { follow: () => () => undefined, refresh: async () => undefined }, peerRunOf: () => null },
+    rows: { feed, projection, peers: { follow: () => () => undefined, refresh: async () => undefined }, peerRunOf: () => null },
     report: (change: Readonly<{ run: RootExecutionIdentity; added: readonly SubtreeRow[]; removed: ChildRowsChange["removed"] }>) => {
       const key = rootExecutionIdentityKey(change.run);
       const removed = new Set(change.removed.map((run) => "agentRunId" in run ? run.agentRunId : run.teamRunId));

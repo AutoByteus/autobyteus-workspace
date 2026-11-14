@@ -22,10 +22,13 @@ const pathsOf = (value: unknown, prefix = ""): string[] => {
   }
   return [];
 };
-/** SR-083: the rows gain where they open (`openTarget`, `open_target`); every other key path is base's. */
-const isOpenTargetPath = (path: string) => /\.(openTarget|open_target)(\.|$)/.test(path);
+/**
+ * SR-083 (rule 3 as narrowed): the rows gain where they open (`openTarget`, `open_target`), and the statuses leave the
+ * view (each run's own, by run ID); every other key path is base's.
+ */
+const isExceptedPath = (path: string) => /\.(openTarget|open_target|agent_statuses)(\.|\[|$)/.test(path);
 const same = (actual: unknown, expected: unknown) =>
-  expect([...new Set(pathsOf(actual).filter((path) => !isOpenTargetPath(path)))].sort()).toEqual([...new Set(pathsOf(expected))].sort());
+  expect([...new Set(pathsOf(actual).filter((path) => !isExceptedPath(path)))].sort()).toEqual([...new Set(pathsOf(expected).filter((path) => !isExceptedPath(path)))].sort());
 
 const launch = { runtimeKind: RuntimeKind.CODEX_APP_SERVER, llmModelIdentifier: "gpt", llmConfig: { effort: "high" }, autoExecuteTools: true, workspaceRootPath: "/w" };
 const agentDto = projectDelegatedAgentRun({ kind: "agent", address: "/code_reviewer", agentRunId: "reviewer-run", agentDefinitionId: "code-reviewer",
@@ -56,8 +59,7 @@ describe("an agent run's view in base's shapes (rule 3)", () => {
   it("the snapshot: its tree with the rows, its closed set and its statuses", () => {
     const snapshot = projectAgentCollaborationView({ hostRunId: "host", isActive: true, baseChangeSequence: 0, liveSequenceId: "live", lastMessageChangeSequence: 0,
       snapshot: { host, createdAt: "2026-11-01T00:00:00.000Z", statuses: [], inputStates: [] } as never,
-      rows: { taskExecutions: [agentDto, teamDto], remoteTaskExecutions: [], closedTaskExecutions: [] },
-      childStatuses: [{ agentRunId: "reviewer-run", memberAddress: "/code_reviewer", status: "running" }] });
+      rows: { taskExecutions: [agentDto, teamDto], remoteTaskExecutions: [], closedTaskExecutions: [] } });
     same(snapshot, base.snapshot);
   });
 

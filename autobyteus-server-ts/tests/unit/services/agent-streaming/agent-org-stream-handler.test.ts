@@ -350,7 +350,7 @@ describe("AgentOrgStreamHandler", () => {
         event: { kind: "task_execution_started", host_kind: "root", host_run_id: orgRunId, execution: { agentRunId: "analyst" } } } });
     });
 
-    it("CR-461-039: a live Org's snapshot gives every listed agent a status (a stopped delegated team's members, a newly listed run, and a running one) and parses", async () => {
+    it("SR-083 (superseding CR-461-039): a live Org's snapshot lists its delegated rows and parses; their statuses are each run's own, not in the view", async () => {
       const test = harness(orgPackage());
       const org = createAgentOrgRootExecutionIdentity(orgRunId);
       const teamTree = testExecutionTree({ rootTeamRunId: "copy", coordinatorAddress: "/lead",
@@ -361,8 +361,6 @@ describe("AgentOrgStreamHandler", () => {
         { ...teamTree, handoffs: [] } as never);
       (test.feed.rows as { projection: unknown }).projection = { rowOf: async (child: { run: { agentRunId?: string; teamRunId?: string }; recipientAddress: string }) => ({ kind: "local",
         row: child.run.teamRunId ? teamRow : agentChildRow(child.run.agentRunId!, child.recipientAddress) }) };
-      // Nothing cached (the followers' reads are asynchronous); only the new run's agent is running in its own root.
-      test.feed.rows.followers.currentStatuses.mockImplementation((run) => run.rootRunId === "fresh" ? [{ agentRunId: "fresh", status: "running" }] : []);
       test.feed.report({ run: org, added: [{ ...delegatedChild("idle", org) }, { ...delegatedChild("fresh", org) },
         { ...delegatedChild("copy", org), run: { teamRunId: "copy" }, entryAgentRunId: "copy-lead", recipientAddress: "/target" } as never], removed: [] });
       await test.feed.settled();
@@ -371,10 +369,10 @@ describe("AgentOrgStreamHandler", () => {
       const snapshot = parse(client).find((message) => message.type === "ROOT_EXECUTION_VIEW_SNAPSHOT")!.payload as {
         root_org: { agent_statuses: Array<{ agent_run_id: string; member_address: string; status: string }> } };
       const statuses = new Map(snapshot.root_org.agent_statuses.map((status) => [status.agent_run_id, [status.member_address, status.status]]));
-      expect(statuses.get("idle")).toEqual(["/idle", "offline"]);
-      expect(statuses.get("fresh")).toEqual(["/fresh", "running"]);
-      expect(statuses.get("copy-lead")).toEqual(["/lead", "offline"]);
-      expect(statuses.get("copy-qa")).toEqual(["/qa", "offline"]);
+      for (const delegated of ["idle", "fresh", "copy-lead", "copy-qa"]) expect(statuses.has(delegated)).toBe(false);
+      const rows = (snapshot as unknown as { root_org: { execution_tree: { rootOrg: { taskExecutions: Array<{ agentRunId?: string; teamRunId?: string }> } } } })
+        .root_org.execution_tree.rootOrg.taskExecutions.map((row) => row.agentRunId ?? row.teamRunId);
+      expect(rows).toEqual(expect.arrayContaining(["idle", "fresh", "copy"]));
       test.handler.disconnect(sessionId!);
     });
 

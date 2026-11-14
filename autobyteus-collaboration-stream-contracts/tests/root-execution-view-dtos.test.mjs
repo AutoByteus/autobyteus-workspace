@@ -169,7 +169,7 @@ test("requires sequenced events and an exact Org-root client command", () => {
   }).payload.root_run_id, "org-run-1");
 });
 
-test("requires one correlated status for every live Agent execution", () => {
+test("requires one correlated status for every live own Agent; a delegated run's agents report through their own runs (SR-083)", () => {
   const snapshot = orgSnapshot();
   snapshot.root_org.execution_tree.rootOrg.members.push(configuredAgent("/lead", "agent-run-lead"));
   snapshot.root_org.execution_tree.rootOrg.taskExecutions.push({
@@ -185,14 +185,14 @@ test("requires one correlated status for every live Agent execution", () => {
     startedAt: "2026-09-01T00:00:00.000Z",
     source: agentCopySource,
   });
-  // A closed (DONE) task execution stays in the tree, so it still has its status.
   snapshot.root_org.closed_task_executions.push({ agentRunId: "agent-run-task-closed" });
-  snapshot.root_org.agent_statuses.push(
-    status("/lead", "agent-run-lead"),
-    status("/task-active", "agent-run-task-active"),
-    status("/task-closed", "agent-run-task-closed"),
-  );
-  assert.equal(RootExecutionViewDtoSchema.parse(snapshot).root_org.agent_statuses.length, 3);
+  snapshot.root_org.agent_statuses.push(status("/lead", "agent-run-lead"));
+  assert.equal(RootExecutionViewDtoSchema.parse(snapshot).root_org.agent_statuses.length, 1);
+
+  // A delegated run's status in the view is not the view's (it is read by run ID): rejected.
+  const relayed = structuredClone(snapshot);
+  relayed.root_org.agent_statuses.push(status("/task-active", "agent-run-task-active"));
+  assert.throws(() => RootExecutionViewDtoSchema.parse(relayed), /status identity mismatch/);
 
   const missing = structuredClone(snapshot);
   missing.root_org.agent_statuses.pop();
@@ -293,13 +293,11 @@ test("correlates restored task executions by fresh run identity while reusing co
     status("/worker", "agent-run-worker-configured"),
     status("/team/lead", "agent-run-lead-configured"),
     status("/team/worker", "agent-run-team-worker-configured"),
-    status("/worker", "agent-run-worker-task"),
-    status("/team/lead", "agent-run-task-lead"),
-    status("/team/worker", "agent-run-task-worker"),
   );
 
+  // The task executions' agents report through their own runs (SR-083); the configured ones here.
   const parsed = RootExecutionViewDtoSchema.parse(snapshot);
-  assert.equal(parsed.root_org.agent_statuses.filter((entry) => entry.member_address === "/worker").length, 2);
+  assert.equal(parsed.root_org.agent_statuses.filter((entry) => entry.member_address === "/worker").length, 1);
 
   // A task execution reuses a configured address, never a configured run identity.
   const configuredRunAsTask = structuredClone(snapshot);

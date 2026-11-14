@@ -32,7 +32,7 @@ describe('strict read-only Org inspection', () => {
     const f = await fixture();
     const before = await Promise.all((await fs.readdir(f.dir)).map(async (name) => [name, await fs.readFile(path.join(f.dir, name), 'utf8')]));
     const result = await f.manager.getInspection('org');
-    const dto = projectAgentOrgExecutionSnapshot({ ...result, rows: { taskExecutions: [], remoteTaskExecutions: [], closedTaskExecutions: [] }, childStatuses: [] });
+    const dto = projectAgentOrgExecutionSnapshot({ ...result, rows: { taskExecutions: [], remoteTaskExecutions: [], closedTaskExecutions: [] } });
     expect(result).toMatchObject({ isActive: false, baseChangeSequence: 0, liveSequenceId: null, lastMessageChangeSequence: null });
     // autobyteus-358: the view reads the tree only; the messages are read through the records owner.
     expect(result.snapshot).not.toHaveProperty('messages');

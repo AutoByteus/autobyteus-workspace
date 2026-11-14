@@ -27,10 +27,13 @@ const pathsOf = (value: unknown, prefix = ""): string[] => {
   }
   return [];
 };
-/** SR-083: the rows gain where they open (`openTarget`, `open_target`); every other key path is base's. */
-const isOpenTargetPath = (path: string) => /\.(openTarget|open_target)(\.|$)/.test(path);
+/**
+ * SR-083 (rule 3 as narrowed): the rows gain where they open (`openTarget`, `open_target`), and the statuses leave the
+ * view (each run's own, by run ID); every other key path is base's.
+ */
+const isExceptedPath = (path: string) => /\.(openTarget|open_target|agent_statuses)(\.|\[|$)/.test(path);
 const same = (actual: unknown, expected: unknown) =>
-  expect([...new Set(pathsOf(JSON.parse(JSON.stringify(actual))).filter((path) => !isOpenTargetPath(path)))].sort()).toEqual([...new Set(pathsOf(expected))].sort());
+  expect([...new Set(pathsOf(JSON.parse(JSON.stringify(actual))).filter((path) => !isExceptedPath(path)))].sort()).toEqual([...new Set(pathsOf(expected).filter((path) => !isExceptedPath(path)))].sort());
 
 const launch = { runtimeKind: RuntimeKind.CODEX_APP_SERVER, llmModelIdentifier: "gpt", llmConfig: null, autoExecuteTools: true, workspaceRootPath: null };
 const agentRow = (agentRunId: string, address: string, delegatorAgentRunId: string) => projectDelegatedAgentRun({ kind: "agent", address, agentRunId,
@@ -47,7 +50,6 @@ const teamRow = (teamRunId: string, address: string, delegatorAgentRunId: string
     members: [{ address: "/lead", agentRunId: `${teamRunId}-lead`, agentDefinitionId: "lead" }, { address: "/designer", agentRunId: `${teamRunId}-designer`, agentDefinitionId: "designer" }] },
   file as never);
 };
-const status = (agentRunId: string, memberAddress: string, value: string) => ({ agentRunId, memberAddress, status: value });
 const sequenced = (changeSequence: number, kind: string) => ({ changeSequence, event: { kind } }) as never;
 const root = (hostRunId: string) => ({ hostKind: "root" as const, hostRunId });
 
@@ -58,8 +60,7 @@ describe("story 5.2: a Team run's view in base's shapes (rule 3)", () => {
 
   it("the snapshot: its tree with the rows, its closed set and its statuses", () => {
     const snapshot = projectTeamExecutionViewSnapshot("team", { snapshot: { tree, statuses: [], inputStates: [] }, baseChangeSequence: 0,
-      liveSequenceId: "live", lastMessageChangeSequence: 0 }, { taskExecutions: rows, remoteTaskExecutions: [], closedTaskExecutions: [] },
-      [status("reviewer", "/code_reviewer", "running"), status("coordinator", "/coordinator", "offline")]);
+      liveSequenceId: "live", lastMessageChangeSequence: 0 }, { taskExecutions: rows, remoteTaskExecutions: [], closedTaskExecutions: [] });
     same(snapshot, team.snapshot);
   });
 
@@ -82,11 +83,12 @@ describe("story 5.3: an Org run's view in base's shapes (rule 3)", () => {
   const rows = [teamRow("copy", "/target", "director", []), agentRow("notes", "/code_reviewer", "configured-lead")];
 
   it("the snapshot: its tree with the rows in its root, its closed set and its statuses", () => {
-    const snapshot = projectAgentOrgExecutionSnapshot({ orgRunId: "org", isActive: true, snapshot: { tree, statuses: [], inputStates: [] } as never,
+    // A live Org reports its own agents' statuses; its delegated runs' come from those runs (SR-083).
+    const own = [["director", "/director"], ["configured-lead", "/target/lead"], ["configured-writer", "/target/writer"]].map(([agentRunId, memberAddress]) => ({
+      execution: { agentRunId, memberAddress }, details: { status: "running", trigger: null, errorMessage: null, recoverableBlock: null } }));
+    const snapshot = projectAgentOrgExecutionSnapshot({ orgRunId: "org", isActive: true, snapshot: { tree, statuses: own, inputStates: [] } as never,
       baseChangeSequence: 0, liveSequenceId: "live", lastMessageChangeSequence: 0,
-      rows: { taskExecutions: rows, remoteTaskExecutions: [], closedTaskExecutions: [] },
-      childStatuses: [["director", "/director"], ["configured-lead", "/target/lead"], ["configured-writer", "/target/writer"], ["copy-lead", "/lead"],
-        ["copy-designer", "/designer"], ["notes", "/code_reviewer"]].map(([id, address]) => status(id!, address!, "running")) });
+      rows: { taskExecutions: rows, remoteTaskExecutions: [], closedTaskExecutions: [] } });
     same(snapshot, org.snapshot);
   });
 

@@ -150,7 +150,8 @@ export const RootExecutionViewDtoSchema = z.discriminatedUnion("root_subject_kin
     if (addressForRun !== undefined) addCorrelationIssue(context, `AgentOrg AgentRun identity '${agent.agentRunId}' is duplicated.`);
     addressesByRunId.set(agent.agentRunId, agent.address);
     if (scope === "configured") addConfiguredAddress(agent.address, "Agent");
-    if (active) statusRequiredAgentRunIds.add(agent.agentRunId);
+    // The Org's own agents report in its view; a delegated run's agents report through their own runs (SR-083).
+    if (active && scope === "configured") statusRequiredAgentRunIds.add(agent.agentRunId);
   };
   const addTeam = (team: TeamIdentityNode, scope: "configured" | "task_member" | "task_execution"): void => {
     if (addressesByTeamRunId.has(team.teamRunId)) addCorrelationIssue(context, `AgentOrg TeamRun identity '${team.teamRunId}' is duplicated.`);

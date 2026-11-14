@@ -19,7 +19,6 @@ import { ChildRowsFeed } from "../agent-collaboration/delegation/child-rows-feed
 import { DelegationIndex } from "../agent-collaboration/delegation/delegation-index.js";
 import { CrossRunMessageDelivery } from "../agent-collaboration/communication/cross-run-message-delivery.js";
 import { DelegatedRunStarter } from "../agent-collaboration/execution/delegation/delegated-run-starter.js";
-import { LocalChildFollowers } from "../agent-collaboration/execution/delegation/local-child-followers.js";
 import { RemoteDelegation } from "../agent-collaboration/execution/remote/remote-delegation.js";
 import type { RemoteRunChannel } from "../agent-collaboration/execution/remote/remote-run-channel.js";
 import type { ActiveCollaborationRootDirectory } from "../agent-collaboration/execution/services/active-collaboration-root-directory.js";
@@ -227,9 +226,8 @@ export const composeCollaboration = async (input: Readonly<{
       },
     });
 
-    // 7. The views' owners (SR-061 … SR-063): the rows' statuses followed into each run's view stream, base's row events
-    // from the tree, the rows' records.
-    const followers = new LocalChildFollowers({ tree, agents: liveAgents }, taskSide.viewStreams);
+    // 7. The views' owners (SR-061 … SR-063, SR-083): base's row events from the tree, the rows' records, each run's own
+    // statuses by run ID.
     const projection = createChildRowProjection({ memoryDir, tree, channel: input.remoteChannel });
     // A closed row is in its view's closed set while its run still runs (its root is live).
     // A peer run, reached by its own identity (SR-066): its handle from the tree, its live status and output per view.
@@ -239,7 +237,7 @@ export const composeCollaboration = async (input: Readonly<{
     const feed = new ChildRowsFeed({ streams: taskSide.viewStreams, tree, isRunning: (run) => input.activeRoots.resolve(run) !== null,
       rowsChanged: (run) => runStatus.treeChanged(run) });
     releases.push(feed.follow(tree));
-    const runViewChildren = new RunViewChildren({ feed, projection, followers });
+    const runViewChildren = new RunViewChildren({ feed, projection });
     const peers = new PeerChildObservation({ tree, streams: taskSide.viewStreams, peerRunOf, channel: input.remoteChannel });
 
     // 8. Their consumers. Older singletons (their getters are FU-011) return the instance created here.
@@ -255,7 +253,7 @@ export const composeCollaboration = async (input: Readonly<{
     releases.push(setProcessTeamRunHistoryService(runs.teamRunHistoryService));
     releases.push(setProcessWorkspaceRunHistoryService(new WorkspaceRunHistoryService({ tree,
       agentRunHistoryService: agentRunHistory, teamRunHistoryService: runs.teamRunHistoryService })));
-    const views = createRunViewSources({ memoryDir, streams: taskSide.viewStreams, rows: { feed, projection, followers, peers, peerRunOf }, registrations: input.activeRoots,
+    const views = createRunViewSources({ memoryDir, streams: taskSide.viewStreams, rows: { feed, projection, peers, peerRunOf }, registrations: input.activeRoots,
       closedTasks: taskSide.closedTasks, restorability });
     return Object.freeze({
       tasks, views, runViewChildren, runStatus, delegatedRunAgents: new DelegatedRunAgentsReader(tree),

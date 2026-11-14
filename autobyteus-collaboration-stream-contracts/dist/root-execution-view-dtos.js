@@ -127,7 +127,8 @@ export const RootExecutionViewDtoSchema = z.discriminatedUnion("root_subject_kin
         addressesByRunId.set(agent.agentRunId, agent.address);
         if (scope === "configured")
             addConfiguredAddress(agent.address, "Agent");
-        if (active)
+        // The Org's own agents report in its view; a delegated run's agents report through their own runs (SR-083).
+        if (active && scope === "configured")
             statusRequiredAgentRunIds.add(agent.agentRunId);
     };
     const addTeam = (team, scope) => {
