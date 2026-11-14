@@ -905,3 +905,4 @@ The current code and `implementation-handoff.md` remain authoritative.
   - integration 492 passed, 3 failed, all in the file watcher. Alone it passed 14/14, then 13/14 on a different test (FU-021);
   - the web is unchanged since IMP-80.
 - Next recipient: Code Reviewer.
+- Result: Code Review **Pass (CRR-035**, `code-review-report.md` round 26, head `f92881dd13`): CR-461-072 and -073 resolved. The reviewer routes to API/E2E.
