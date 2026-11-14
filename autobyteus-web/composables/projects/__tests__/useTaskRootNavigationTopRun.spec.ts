@@ -32,7 +32,7 @@ const root = (overrides: Partial<TaskRootView>): TaskRootView => ({
 /** The manager's view: three task Teams; the second's designer delegated a helper Agent, a worker two hops down. */
 const managerView = () => {
   const view = multiTeamView(3)
-  const team = view.execution_tree.taskExecutions[1] as { taskExecutions: unknown[] }
+  const team = view.execution_tree.taskExecutions[1] as unknown as { taskExecutions: unknown[] }
   team.taskExecutions.push({ address: '/helper', agentRunId: 'nested-helper', platformAgentRunId: null, delegatorAgentRunId: memberId(1, 0),
     startedAt: created, source: { kind: 'agent', agentDefinitionId: 'helper', launchConfiguration: launch } })
   return view
