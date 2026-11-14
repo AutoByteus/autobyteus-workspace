@@ -1625,6 +1625,16 @@ describe("TeamRun released-shape production upgrade to the current AgentOrg end 
     await terminateAgentRun(first.serverUrl, currentRunId);
     await first.stop();
     ownedServers.delete(first);
+    // autobyteus-461 (API-REV-010): optionally keep this still-blocked data root (synthesized, never user data) for the web
+    // probe of the connect's rendered answer (`autobyteus-web/tests/e2e/blocked-team-root-reason-probe.mjs`).
+    const keep = process.env["TEAM_RUN_V1_KEEP_BLOCKED"];
+    if (keep) {
+      fs.mkdirSync(keep, { recursive: true });
+      fs.cpSync(target.runtimeRoot, path.join(keep, "root"), { recursive: true });
+      fs.copyFileSync(target.database.databasePath, path.join(keep, "production.db"));
+      fs.writeFileSync(path.join(keep, "kept.json"), `${JSON.stringify({ rootTeamRunId: scenario.rootTeamRunId,
+        expectedCode: "TOKEN_USAGE_EXISTING_RUN_RESTORE_MIGRATION_REQUIRED", serverAnswer: blockedRestore.restoreAgentTeamRun.message })}\n`);
+    }
 
     const database = new DatabaseSync(target.database.databasePath);
     try {

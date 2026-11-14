@@ -1,0 +1,155 @@
+# API-E01 round 10 (API-REV-010): code 15c41ad242
+# Command: as API-E01-r9-batches.txt; part 1 = every e2e file outside runtime/, part 2 = runtime/; HOME a resolved temp folder
+
+## R10-A (migration family, F-53, late 20261020, late index v2, TAU, C27-02)
+ ✓ tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts > TeamRun released-shape production upgrade to the current AgentOrg end state through actual startup > migrates the exact supported cohort, serves history and new work, and remains imm
+ ✓ tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts > TeamRun released-shape production upgrade to the current AgentOrg end state through actual startup > isolates mixed root and token warnings and fails closed on an unreadable history 
+ ✓ tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts > TeamRun released-shape production upgrade to the current AgentOrg end state through actual startup > keeps the server healthy after failed consolidation, admits a new current run, an
+ ✓ tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts > TeamRun released-shape production upgrade to the current AgentOrg end state through actual startup > rejects a legacy/current run-ID overlap before source cleanup while preserving bo
+ ✓ tests/e2e/app-data-migrations/delegated-runs-own-runs-startup.e2e.test.ts > delegated runs own runs: the built server upgrades released app data at startup (autobyteus-461 API-E03) > DRO-1 converts every stored shape at startup, the converted runs open as r
+ ✓ tests/e2e/app-data-migrations/task-agent-own-run-startup.e2e.test.ts > task agent own run: the built server upgrades a faithful released install at startup > TAU-1 moves every task agent with its bytes, the runs open with their task agents, the Memory page 
+ ✓ tests/e2e/app-data-migrations/task-agent-own-run-startup.e2e.test.ts > task agent own run: the built server upgrades a faithful released install at startup > TAU-2 a run that cannot be moved leaves the app working; a copy preserved by the unfinished step is
+ ✓ tests/e2e/app-data-migrations/task-agent-own-run-startup.e2e.test.ts > task agent own run: the built server upgrades a faithful released install at startup > TAU-3 deleting a migrated hub removes only its folder; its task agents' folders stay with every fil
+ ✓ tests/e2e/run-history/open-task-tree-upgrade-startup.e2e.test.ts > A top run's tree is built from its open Tasks: upgrade, start, load, save and restarts (built server, scripted AGY) > OT-1 a closure removes the run from the tree (never stored in the tree f
+ ✓ tests/e2e/run-history/open-task-tree-upgrade-startup.e2e.test.ts > A top run's tree is built from its open Tasks: upgrade, start, load, save and restarts (built server, scripted AGY) > OT-2 an upgraded data root: admitted at start; trees hold open runs only
+ ✓ tests/e2e/run-history/open-task-tree-upgrade-startup.e2e.test.ts > A top run's tree is built from its open Tasks: upgrade, start, load, save and restarts (built server, scripted AGY) > OT-3 a Task record that cannot be read hides its run with a warning nami
+ ✓ tests/e2e/app-data-migrations/remove-skill-improvement-data-startup.e2e.test.ts > Removal of the Skill Improvement feature's data on startup (built Studio) > SID-1 starts on a fresh data folder: nothing to remove, and the improver is not bootstrapped 10099m
+ ✓ tests/e2e/app-data-migrations/remove-skill-improvement-data-startup.e2e.test.ts > Removal of the Skill Improvement feature's data on startup (built Studio) > SID-2 deletes exactly the feature's data once, keeps everything else byte-identical, and other runs
+ ✓ tests/e2e/app-data-migrations/remove-skill-improvement-data-startup.e2e.test.ts > Removal of the Skill Improvement feature's data on startup (built Studio) > SID-3 a helper run that cannot be deleted leaves startup working; the next start finishes (needs PO
+ ✓ tests/e2e/app-data-migrations/collaborators-to-delegated-runs-startup.e2e.test.ts > collaborators → delegated runs: the built server upgrades released app data at startup > converts collaborators of an Agent, Team and Org root, keeps run IDs and memory, ope
+ ✓ tests/e2e/app-data-migrations/late-team-history-index-v2-startup.e2e.test.ts > A late team history index v2: its follow-up restores the delegated team runs' rows (built server, SR-079) > LTI-1 v2 run late drops the current teams' rows (base); its follow-up 
+ Test Files  7 passed (7)
+      Tests  16 passed (16)
+   Duration  341.66s (transform 7.31s, setup 215ms, import 15.12s, tests 325.17s, environment 0ms)
+exit 0
+
+## Late index probe data kept (token-blocked case)
+ ↓ tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts > TeamRun released-shape production upgrade to the current AgentOrg end state through actual startup > migrates the exact supported cohort, serves history and new work, and remains imm
+ ↓ tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts > TeamRun released-shape production upgrade to the current AgentOrg end state through actual startup > isolates mixed root and token warnings and fails closed on an unreadable history 
+ ✓ tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts > TeamRun released-shape production upgrade to the current AgentOrg end state through actual startup > keeps the server healthy after failed consolidation, admits a new current run, an
+ ↓ tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts > TeamRun released-shape production upgrade to the current AgentOrg end state through actual startup > rejects a legacy/current run-ID overlap before source cleanup while preserving bo
+ Test Files  1 passed (1)
+      Tests  1 passed | 3 skipped (4)
+   Duration  70.29s (transform 1.86s, setup 56ms, import 2.76s, tests 66.98s, environment 0ms)
+
+## API-E01 part 1 (160 files)
+ × tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > keeps workspace/search snapshot APIs watcher-free, then leases one real watcher across visible websocket consumers 8132ms
+ × tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > E-007: current Projects/Tasks/context/assignments/history/registry/folders survive metadata/list patches and reader reconstruction 114ms
+ × tests/e2e/secret-management/provider-secret-lifecycle-graphql.e2e.test.ts > provider and Gemini one-vault GraphQL E2E > probes, creates, discovers, and deletes a custom provider through GraphQL and the vault 5008ms
+ × tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts > Terminal websocket lifecycle e2e > opens a real PTY in server home when cwd and rootPath are omitted 107ms
+ × tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts > @ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor) > standalone Agent root: @ resolves, described delegation creates a text-only ad-hoc Ta
+ × tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts > @ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor) > Agent Team root: same journey through the Team stream (TASK_EXECUTIONS_CLOSED) 3014ms
+ × tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts > @ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor) > Agent Org root: same journey through the Org stream 3379ms
+ ↓ tests/e2e/shutdown/busy-run-stop-now.e2e.test.ts > stop now with a busy run > server: Terminate and SIGTERM interrupt the busy turn, exit within the bound and leave nothing behind
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 7 ⎯⎯⎯⎯⎯⎯⎯
+ Test Files  5 failed | 144 passed | 11 skipped (160)
+      Tests  7 failed | 694 passed | 31 skipped (732)
+   Duration  4056.88s (transform 12.18s, setup 3.42s, import 189.58s, tests 3848.84s, environment 8ms)
+exit 1
+
+## Reruns alone: E-007 (moved last), file watcher, provider secrets
+ ✓ tests/e2e/secret-management/provider-secret-lifecycle-graphql.e2e.test.ts > provider and Gemini one-vault GraphQL E2E > saves and replaces a provider key without value readback 49ms
+ ✓ tests/e2e/secret-management/provider-secret-lifecycle-graphql.e2e.test.ts > provider and Gemini one-vault GraphQL E2E > exposes only the approved ordinary-provider and Gemini configuration commands 7ms
+ ✓ tests/e2e/secret-management/provider-secret-lifecycle-graphql.e2e.test.ts > provider and Gemini one-vault GraphQL E2E > serves five warm credential descriptor reads within the local budget 29ms
+ ✓ tests/e2e/secret-management/provider-secret-lifecycle-graphql.e2e.test.ts > provider and Gemini one-vault GraphQL E2E > keeps Gemini configuration independent and activation explicit with no priority/fallback 35ms
+ ✓ tests/e2e/secret-management/provider-secret-lifecycle-graphql.e2e.test.ts > provider and Gemini one-vault GraphQL E2E > keeps vault status and built-in catalogs value-free and available with missing credentials 6ms
+ ✓ tests/e2e/secret-management/provider-secret-lifecycle-graphql.e2e.test.ts > provider and Gemini one-vault GraphQL E2E > probes, creates, discovers, and deletes a custom provider through GraphQL and the vault 53ms
+ × tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > API-MCP: selected default host executes equivalent compact mutations and detailed native reads 6336ms
+ ✓ tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > API-FILES: multipart bytes, saved ownership, typed deltas and Done survive reader reconstruction 569ms
+ ✓ tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > API-MCP collision: selected protected list_projects adapter wins over a configured MCP name 5ms
+ ✓ tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > API-MCP collision: selected protected create_project adapter wins over a configured MCP name 29ms
+ ✓ tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > API-MCP collision: selected protected update_project adapter wins over a configured MCP name 33ms
+ ✓ tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > API-AGG: public registration is not mkdir; failed aggregate save preserves registry and prior records 169ms
+ ✓ tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > E-005: selected HTTP and native Project create/patch save defaults and reject invalid input atomically 328ms
+ ✓ tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > E-006: path links retain descriptions; lists replace, blanks and [] clear only associations 494ms
+ ✓ tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > E-007: current Projects/Tasks/context/assignments/history/registry/folders survive metadata/list patches and reader reconstruction 243ms
+ ✓ tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > CTX-E2E-001: context_files create/patch over MCP and native are saved, readable through GraphQL/REST/list and outlive their sources (AC-001..004, 006, 009, 01
+ ✓ tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > CTX-E2E-002: invalid context_files fail with a path-naming error and change nothing, including no DONE closure (AC-004, 005, 008) 631ms
+ × tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > CLS-API-001: CANCELLED patch/ack, DONE<->CANCELLED, reopen, list filter, tool schemas, errors, GraphQL enum, open count and stored shape (task-closed-status A
+ ✓ tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > TKD-API-001: keys as Task IDs, depends_on by key / any case / long ID, rejected dependencies write nothing, blocked Tasks start, a deleted Project's keys stay
+ × tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > POF-API-001: part_of by key / any case / long ID, "" clears, omitted keeps; partOf / parts in numeric key order; refusals write nothing; a parent's DONE / CAN
+ × tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > CMT-API-001: update_task add_comment by key / any case / long ID appends numbered comments, never the description; DONE + comment is one write; blank, wrong-s
+ ✓ tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > CMT-API-002: a parent's close names the part it could not close (damaged run data) in partsNotClosed, next to closedParts; the field is absent when every part
+ ✓ tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > TTL-API-001: a Task title is required, trimmed and kept whole however long; update_task changes it; refusals write nothing (MCP equals native; GraphQL the sam
+ ✓ tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > GET-API-001: get_project_task returns one Task in full by key in any case or long ID; another Project's or an unknown Task is TASK_NOT_FOUND; arguments are ch
+ ✓ tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > keeps workspace/search snapshot APIs watcher-free, then leases one real watcher across visible websocket consumers 674ms
+ ✓ tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > does not leak watcher leases when sockets close before CONNECTED is observed 330ms
+ ✓ tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > survives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy 806ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+ Test Files  1 failed | 2 passed (3)
+      Tests  4 failed | 23 passed (27)
+   Duration  29.97s (transform 6.79s, setup 106ms, import 10.05s, tests 19.09s, environment 0ms)
+
+## project-task-boundaries (E-007 last) and ad-hoc delegation (REQ-007 refusal asserted)
+ ✓ tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > API-MCP: selected default host executes equivalent compact mutations and detailed native reads 4092ms
+ ✓ tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > API-FILES: multipart bytes, saved ownership, typed deltas and Done survive reader reconstruction 508ms
+ ✓ tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > API-MCP collision: selected protected list_projects adapter wins over a configured MCP name 6ms
+ ✓ tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > API-MCP collision: selected protected create_project adapter wins over a configured MCP name 21ms
+ ✓ tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > API-MCP collision: selected protected update_project adapter wins over a configured MCP name 36ms
+ ✓ tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > API-AGG: public registration is not mkdir; failed aggregate save preserves registry and prior records 120ms
+ ✓ tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > E-005: selected HTTP and native Project create/patch save defaults and reject invalid input atomically 300ms
+ ✓ tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > E-006: path links retain descriptions; lists replace, blanks and [] clear only associations 471ms
+ ✓ tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > CTX-E2E-001: context_files create/patch over MCP and native are saved, readable through GraphQL/REST/list and outlive their sources (AC-001..004, 006, 009, 01
+ ✓ tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > CTX-E2E-002: invalid context_files fail with a path-naming error and change nothing, including no DONE closure (AC-004, 005, 008) 637ms
+ ✓ tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > CLS-API-001: CANCELLED patch/ack, DONE<->CANCELLED, reopen, list filter, tool schemas, errors, GraphQL enum, open count and stored shape (task-closed-status A
+ ✓ tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > TKD-API-001: keys as Task IDs, depends_on by key / any case / long ID, rejected dependencies write nothing, blocked Tasks start, a deleted Project's keys stay
+ ✓ tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > POF-API-001: part_of by key / any case / long ID, "" clears, omitted keeps; partOf / parts in numeric key order; refusals write nothing; a parent's DONE / CAN
+ ✓ tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > CMT-API-001: update_task add_comment by key / any case / long ID appends numbered comments, never the description; DONE + comment is one write; blank, wrong-s
+ ✓ tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > CMT-API-002: a parent's close names the part it could not close (damaged run data) in partsNotClosed, next to closedParts; the field is absent when every part
+ ✓ tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > TTL-API-001: a Task title is required, trimmed and kept whole however long; update_task changes it; refusals write nothing (MCP equals native; GraphQL the sam
+ ✓ tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > GET-API-001: get_project_task returns one Task in full by key in any case or long ID; another Project's or an unknown Task is TASK_NOT_FOUND; arguments are ch
+ ✓ tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > E-007: current Projects/Tasks/context/assignments/history/registry/folders survive metadata/list patches and reader reconstruction 225ms
+ ✓ tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts > @ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor) > standalone Agent root: @ resolves, described delegation creates a text-only ad-hoc Ta
+ ✓ tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts > @ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor) > Agent Team root: same journey through the Team stream (TASK_EXECUTIONS_CLOSED) 3287ms
+ ✓ tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts > @ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor) > Agent Org root: same journey through the Org stream 3392ms
+ Test Files  2 passed (2)
+      Tests  21 passed (21)
+   Duration  35.68s (transform 6.67s, setup 83ms, import 10.94s, tests 24.05s, environment 0ms)
+
+## terminal (resolved HOME)
+ ✓ tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts > Terminal websocket lifecycle e2e > opens a real PTY in the requested cwd and releases it on websocket close 194ms
+ ✓ tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts > Terminal websocket lifecycle e2e > opens a real PTY in server home when cwd and rootPath are omitted 123ms
+ ✓ tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts > Terminal websocket lifecycle e2e > rejects unavailable cwd before creating a PTY session 5ms
+ ✓ tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts > Terminal websocket lifecycle e2e > does not retain PTYs across close-before-connect and repeated open/close churn 564ms
+ Test Files  1 passed (1)
+      Tests  4 passed (4)
+   Duration  3.35s (transform 1.12s, setup 56ms, import 1.90s, tests 887ms, environment 0ms)
+
+## API-E01 part 2 (runtime/, 104 files)
+ ✓ tests/e2e/runtime/agent-runtimes-graphql.e2e.test.ts > Settings → Agent Runtimes GraphQL e2e (real studio server, scripted runtime CLIs) > AR-04 Update that exits 0 without a newer version is a failure with the vendor's text, version unchanged (AC-003) 728m
+ ✓ tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > agy (scripted CLI): all three tool kinds through autobyteus_agent_tools 728ms
+ ↓ tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > native: an agent calls all three tool kinds
+ ↓ tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > claude: an agent calls all three tool kinds
+ ↓ tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > codex: an agent calls all three tool kinds
+ ↓ tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > grok: an agent calls all three tool kinds
+ ↓ tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > codex MCP client (no model turn): all three tool kinds through autobyteus_agent_tools
+ ✓ tests/e2e/runtime/agent-runtimes-running-agents.e2e.test.ts > Agent Runtimes running-agent count and Application launch readiness (real studio server, Brief Studio, scripted CLIs) > RA-02 Application launch readiness for Claude: signed out (JSON + exit 1) k
+ ✓ tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay) > ends the turn as interrupted with an explicit runtime error when the Grok process exits mid-turn (QR-006) 149ms
+ ↓ tests/e2e/runtime/agy-background-task-updates-live.e2e.test.ts > real AGY daemons are shown as background tasks (AC-013) > (a) a daemon that exits 0 after its turn ends shows running, then completed about 20 s later without new input
+ ↓ tests/e2e/runtime/agy-background-task-updates-live.e2e.test.ts > real AGY daemons are shown as background tasks (AC-013) > (b) a daemon that exits 3 shows failed with the exit code in its summary
+ ↓ tests/e2e/runtime/agy-background-task-updates-live.e2e.test.ts > real AGY daemons are shown as background tasks (AC-013) > (c) a never-exiting daemon shows running and becomes stopped when the run is terminated
+ ↓ tests/e2e/runtime/agy-background-task-updates-live.e2e.test.ts > real AGY daemons are shown as background tasks (AC-013) > a daemon whose exit report exceeds the 64 KiB read bound never shows a false status and ends by the fail-safe
+ ↓ tests/e2e/runtime/autobyteus-anthropic-prompt-caching-live.e2e.test.ts > AutoByteus native Anthropic prompt caching (live, strict preserved-thinking check) > APC-E2E-003: run-level cache hit ≥ 90% with every call after the first reading the cache; 2 × 1h ma
+ ↓ tests/e2e/runtime/claude-agent-background-task.e2e.test.ts > Claude runtime background tasks (live E2E) > shows a failing background command as failed with the CLI's exit-code summary (path-claude)
+ ↓ tests/e2e/runtime/claude-agent-background-task.e2e.test.ts > Claude runtime background tasks (live E2E) > shows a failing background command as failed with the CLI's exit-code summary (sdk-bundled-claude)
+ ↓ tests/e2e/runtime/claude-agent-compaction-rotation.e2e.test.ts > Claude compaction rotation (live E2E) > closes a compaction cut off by a Claude process exit as failed before the turn error, without rotation [path-claude]
+ ↓ tests/e2e/runtime/claude-agent-compaction-rotation.e2e.test.ts > Claude compaction rotation (live E2E) > closes a compaction cut off by a Claude process exit as failed before the turn error, without rotation [sdk-bundled-claude]
+ ↓ tests/e2e/runtime/codex-runtime-exit-resend.e2e.test.ts > Codex runtime exit followed by a new message through the app WebSocket > restarts a standalone Codex run in the same thread after its app server crashed (AC-003)
+ Test Files  41 passed | 63 skipped (104)
+      Tests  169 passed | 310 skipped (479)
+   Duration  639.54s (transform 10.09s, setup 2.20s, import 150.26s, tests 477.52s, environment 5ms)
+exit 0
+
+## DRO-1/2/3 (DS-15 restart resume)
+ ✓ tests/e2e/app-data-migrations/delegated-runs-own-runs-startup.e2e.test.ts > delegated runs own runs: the built server upgrades released app data at startup (autobyteus-461 API-E03) > DRO-3 DS-15: restart resume skips a delegated run whose Task entry is clos
+ ✓ tests/e2e/app-data-migrations/delegated-runs-own-runs-startup.e2e.test.ts > delegated runs own runs: the built server upgrades released app data at startup (autobyteus-461 API-E03) > DRO-1 converts every stored shape at startup, the converted runs open as r
+ Test Files  1 passed (1)
+      Tests  2 passed (2)
+   Duration  34.67s (transform 9.32s, setup 103ms, import 13.14s, tests 20.81s, environment 0ms)
+
+## C27-02:
+C27-02: first start after the upgrade 2746 ms (a fresh install's start 1831 ms); 461 and its follow-ups: [{"migrationId":"20261111_delegated_runs_own_runs_v1","status":"SUCCEEDED","attempts":1,"summary":"Scanned 30; migrated 30; skipped 0; failed 0."},{"migrationId":"20261114_preserved_items_after_task_agent_own_run_v1","status":"SUCCEEDED","attempts":1,"summary":"Scanned 0; migrated 0; skipped 0; failed 0."},{"migrationId":"20261114_preserved_items_after_own_file_complete_v1","status":"SUCCEEDED","attempts":1,"summary":"Scanned 0; migrated 0; skipped 0; failed 0."},{"migrationId":"20261114_preserved_items_after_append_only_logs_v1","status":"SUCCEEDED","attempts":1,"summary":"Scanned 0; migrated 0; skipped 0; failed 0."},{"migrationId":"20261114_preserved_items_after_team_run_execution_tree_v1","status":"SUCCEEDED","attempts":1,"summary":"Scanned 0; migrated 0; skipped 0; failed 0."},{"migrationId":"20261114_preserved_items_after_team_run_execution_tree_v2","status":"SUCCEEDED","attempts":1,"summary":"Scanned 0; migrated 0; skipped 0; failed 0."},{"migrationId":"20261114_preserved_items_after_org_flat_team_families_v1","status":"SUCCEEDED","attempts":1,"summary":"Scanned 0; migrated 0; skipped 0; failed 0."},{"migrationId":"20261114_preserved_items_after_collaborators_to_delegated_runs_v1","status":"SUCCEEDED","attempts":1,"summary":"Scanned 0; migrated 0; skipped 0; failed 0."},{"migrationId":"20261114_preserved_items_after_team_run_history_index_v2","status":"SUCCEEDED","attempts":1,"summary":"Scanned 0; migrated 0; skipped 0; failed 0."},{"migrationId":"20261114_preserved_items_after_remove_skill_improvement_data","status":"SUCCEEDED","attempts":1,"summary":"Scanned 0; migrated 0; skipped 0; failed 0."}]
+
+## LTI-1:
+LTI-1: late v2 {"migrationId":"20260521_team_run_history_index_v2","status":"SUCCEEDED","attempts":1,"summary":"Scanned 2; migrated 0; skipped 2; failed 0."}; follow-up {"migrationId":"20261114_preserved_items_after_team_run_history_index_v2","status":"SUCCEEDED","attempts":1,"summary":"Scanned 1; migrated 1; skipped 0; failed 0."}; the user-started team's row after v2 (base FU-029): false
+

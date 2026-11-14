@@ -509,6 +509,18 @@ suite("@ delegates and every delegated copy is closable by its ad-hoc Task (real
     await until(async () => { otherTaskId = (await adHocTaskIds()).find((id) => !otherBefore.includes(id)); return Boolean(otherTaskId); },
       "other root's ad-hoc Task", 60_000);
     const ownTasks = [adHocTaskId!, ...(pendingTaskId ? [pendingTaskId] : [])];
+    // autobyteus-461 REQ-007 / DS-13: the open assistant copy outlives its delegator's Stop (REQ-001) and is idle after its
+    // answer, which counts as working, so deleting the root is refused naming it; its own Stop lets the delete go ahead.
+    const refusedDelete = kind === "agent"
+      ? (await graphql(`mutation($id:String!){deleteStoredRun(runId:$id){success message}}`, { id: rootId })).deleteStoredRun
+      : kind === "team"
+        ? (await graphql(`mutation($id:String!){deleteStoredTeamRun(teamRunId:$id){success message}}`, { id: rootId })).deleteStoredTeamRun
+        : (await graphql(`mutation($id:String!){deleteStoredAgentOrgRun(orgRunId:$id){success message}}`, { id: rootId })).deleteStoredAgentOrgRun;
+    record.refusedDelete = refusedDelete;
+    expect(refusedDelete, JSON.stringify(refusedDelete)).toMatchObject({ success: false, message: expect.stringContaining("a run it delegated to is working") });
+    expect(refusedDelete.message).toContain(assistantAddress);
+    const stoppedAssistant = (await graphql(`mutation($id:String!){terminateAgentRun(agentRunId:$id){success message}}`, { id: assistantRunId })).terminateAgentRun;
+    expect(stoppedAssistant.success, stoppedAssistant.message).toBe(true);
     await deletePermanently(kind, rootId);
     await until(async () => { const left = await adHocTaskIds(); return ownTasks.every((id) => !left.includes(id)); }, "own ad-hoc Tasks deleted", 30_000);
     expect(await exists(path.join(adHocRoot(), otherTaskId!, "task.json"))).toBe(true);

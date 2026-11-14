@@ -6,7 +6,7 @@ import { DatabaseSync } from "node:sqlite";
 import { spawnSync } from "node:child_process";
 import { afterAll, describe, expect, it } from "vitest";
 import { DELEGATED_RUNS_OWN_RUNS_V1_MIGRATION_ID } from "../../../src/app-data-migrations/migrations/delegated-runs-own-runs-v1/delegated-runs-own-runs-v1-app-data-migration.js";
-import { E, I, LEGACY, M, MARKETING, ORG, P, PEER_STARTED, RESEARCH, T1, T2, exists, paths, readJson, writeReleasedWorld } from "../../fixtures/app-data-migrations/released-delegation-shape-fixtures.js";
+import { E, I, LEGACY, M, MARKETING, ORG, P, PEER_STARTED, RESEARCH, T0, T1, T2, exists, paths, readJson, writeReleasedWorld } from "../../fixtures/app-data-migrations/released-delegation-shape-fixtures.js";
 import { RootRunPackageCurrentValidator } from "../../../src/run-history/services/root-run-package-current-validator.js";
 import { killBuiltStudios, startBuiltStudio, type BuiltStudio } from "../helpers/built-studio-roots.js";
 
@@ -58,6 +58,48 @@ suite("delegated runs own runs: the built server upgrades released app data at s
     const dir = process.env["DRO_E2E_EVIDENCE_DIR"];
     if (dir) { await fs.mkdir(dir, { recursive: true }); await fs.writeFile(path.join(dir, "API-E03-delegated-runs-own-runs-startup.json"), `${JSON.stringify(evidence, null, 2)}\n`); }
   }, 60_000);
+
+  /** DRO-1's released world on an install where every earlier migration completed (461's ledger row removed). */
+  const preparedWorld = async (label: string) => {
+    const root = await fs.realpath(await fs.mkdtemp(path.join(os.tmpdir(), `delegated-runs-own-runs-${label}-`))); roots.push(root);
+    await fs.mkdir(path.join(root, "home"));
+    await fs.writeFile(path.join(root, ".env"), "APP_ENV=test\nAUTOBYTEUS_SERVER_HOST=http://127.0.0.1:8000\n");
+    const fresh = await studio(root);
+    await fresh.stop();
+    const db = new DatabaseSync(path.join(root, "db", "production.db"));
+    db.prepare("DELETE FROM app_data_migration_records WHERE migration_id = ?").run(ID);
+    db.close();
+    const world = { appData: root, memory: path.join(root, "memory") };
+    await writeReleasedWorld(world);
+    const at = paths(world);
+    for (const run of [E, P, MARKETING]) await fs.writeFile(path.join(path.dirname(at.teamFile(run)), "team_communication_messages_active.jsonl"), "");
+    await fs.writeFile(path.join(path.dirname(at.orgFile(ORG)), "agent_org_communication_messages_active.jsonl"), "");
+    const releasedOrg = await readJson(at.orgFile(ORG));
+    Object.assign(releasedOrg.rootOrg.members[1], { role: null, description: null, coordinatorAddress: "/dev_team/lead", defaultLaunchConfiguration: releasedOrg.rootOrg.defaultLaunchConfiguration });
+    await fs.writeFile(at.orgFile(ORG), JSON.stringify(releasedOrg, null, 2));
+    return { root, at };
+  };
+
+  it("DRO-3 DS-15: restart resume skips a delegated run whose Task entry is closed (the same busy run with its entry open is resumed, DRO-1)", async () => {
+    const { root, at } = await preparedWorld("closed");
+    // P's Task entry was closed before the interrupted update restart; the busy-run record still names its designer.
+    const record = await readJson(at.taskRecord(T1));
+    const entry = (record.agentRunResources as Json[]).find((candidate) => candidate.agentRun?.teamRunId === P);
+    expect(entry, "P's Task entry").toBeTruthy();
+    entry!.closedAt = T0;
+    await fs.writeFile(at.taskRecord(T1), JSON.stringify(record, null, 2));
+    const server = await studio(root);
+    try {
+      const resumeOf = async (run: string) => (await server.gql(`query($id:String!){getTeamRunResumeConfig(teamRunId:$id){teamRunId isActive}}`, { id: run })).getTeamRunResumeConfig;
+      await expect(resumeOf(P)).resolves.toMatchObject({ teamRunId: P });
+      // Give a resume every chance to happen, then check: the closed run stays stopped (the fence covers restart resume).
+      await new Promise((resolve) => setTimeout(resolve, 5_000));
+      const p = await resumeOf(P);
+      evidence.dro3 = { pAfterStart: p, logLines: server.output().split("\n").filter((line) => line.includes(P) || /restart resume|RESTART_RESUME|TASK_AGENT_RESOURCE_CLOSED/i.test(line)).slice(0, 12) };
+      expect(p.isActive, `P's entry is closed: restart resume skips it (DS-15); ${JSON.stringify(evidence.dro3)}`).toBe(false);
+      for (const run of [E, MARKETING]) expect((await resumeOf(run)).isActive, `${run} stays stopped`).toBe(false);
+    } finally { await server.stop(); }
+  }, 300_000);
 
   it("DRO-1 converts every stored shape at startup, the converted runs open as runs of their own; DRO-2 a second start changes nothing", async () => {
     const root = await fs.realpath(await fs.mkdtemp(path.join(os.tmpdir(), "delegated-runs-own-runs-e2e-"))); roots.push(root);

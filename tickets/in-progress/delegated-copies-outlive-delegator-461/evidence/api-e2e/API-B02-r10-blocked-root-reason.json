@@ -1,0 +1,94 @@
+{
+  "startedAt": "2026-11-14T02:41:35.293Z",
+  "executablePath": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "cases": {
+    "BTR-01": {
+      "description": "the token-blocked team root's reason, at the connect and in the page",
+      "details": {
+        "expectedCode": "TOKEN_USAGE_EXISTING_RUN_RESTORE_MIGRATION_REQUIRED",
+        "connect": {
+          "closeCode": 4004,
+          "frames": [
+            {
+              "type": "CONNECTED"
+            },
+            {
+              "type": "ERROR",
+              "code": "TOKEN_USAGE_EXISTING_RUN_RESTORE_MIGRATION_REQUIRED",
+              "message": "TOKEN_USAGE_EXISTING_RUN_RESTORE_MIGRATION_REQUIRED: The token-usage history migration has not succeeded yet. Settings \u2192 Migrations shows its status and log."
+            }
+          ]
+        },
+        "listed": {
+          "data": {
+            "listWorkspaceRunHistory": [
+              {
+                "workspaceRootPath": "~/autobyteus_org/autobyteus-worktrees/delegated-copies-outlive-delegator-461/autobyteus-server-ts/tests/.tmp/token-consolidation-retry-startup-68026-1794624027772-a6e05176139ae/degraded-current-workspace",
+                "teamDefinitions": []
+              }
+            ]
+          }
+        },
+        "rowOffered": false,
+        "teamRowsShown": []
+      },
+      "result": "Fail"
+    }
+  },
+  "cleanup": {
+    "browser": "closed",
+    "frontend": {
+      "pid": 68180,
+      "status": "terminated",
+      "exit": "SIGTERM"
+    },
+    "backend": {
+      "pid": 68156,
+      "status": "terminated",
+      "exit": "SIGKILL"
+    },
+    "dataRootRemoved": true
+  },
+  "failures": [
+    {
+      "id": "BTR-01",
+      "message": "the run list does not offer the blocked root",
+      "details": {
+        "expectedCode": "TOKEN_USAGE_EXISTING_RUN_RESTORE_MIGRATION_REQUIRED",
+        "connect": {
+          "closeCode": 4004,
+          "frames": [
+            {
+              "type": "CONNECTED"
+            },
+            {
+              "type": "ERROR",
+              "code": "TOKEN_USAGE_EXISTING_RUN_RESTORE_MIGRATION_REQUIRED",
+              "message": "TOKEN_USAGE_EXISTING_RUN_RESTORE_MIGRATION_REQUIRED: The token-usage history migration has not succeeded yet. Settings \u2192 Migrations shows its status and log."
+            }
+          ]
+        },
+        "listed": {
+          "data": {
+            "listWorkspaceRunHistory": [
+              {
+                "workspaceRootPath": "~/autobyteus_org/autobyteus-worktrees/delegated-copies-outlive-delegator-461/autobyteus-server-ts/tests/.tmp/token-consolidation-retry-startup-68026-1794624027772-a6e05176139ae/degraded-current-workspace",
+                "teamDefinitions": []
+              }
+            ]
+          }
+        },
+        "rowOffered": false,
+        "teamRowsShown": []
+      }
+    }
+  ],
+  "stack": {
+    "backendUrl": "http://127.0.0.1:64803",
+    "frontendUrl": "http://127.0.0.1:64804",
+    "rootTeamRunId": "team-v1-supported-root"
+  },
+  "browserVersion": "157.0.8103.51",
+  "result": "Fail",
+  "finishedAt": "2026-11-14T02:42:18.969Z"
+}

@@ -1213,9 +1213,12 @@ const heldSidebarStop = async (page, id, stop, row, { operation, variables, fiel
 const keyboardStopCopy = async (page, id, stop, input, key, row = stop.locator('xpath=ancestor::*[@data-test="workspace-team-transient-execution-row"][1]')) => {
   const taskBefore = await taskOfCopy(input)
   assert(taskBefore && !taskBefore.root.closed && !['DONE', 'CANCELLED'].includes(taskBefore.status), 'expected open Task before Stop', taskBefore)
-  const r = await heldSidebarStop(page, `${id}-copy`, stop, row, { operation: 'StopDelegatedExecution', variables: { input }, field: 'stopDelegatedExecution', key, copy: true })
+  // autobyteus-461 rule 2: a delegated run's sidebar Stop is its own Stop (`stopDelegatedExecution` is gone).
+  const own = input.teamRunId ? ['TerminateAgentTeamRun', 'teamRunId', 'terminateAgentTeamRun', input.teamRunId]
+    : ['TerminateAgentRun', 'agentRunId', 'terminateAgentRun', input.agentRunId]
+  const r = await heldSidebarStop(page, `${id}-copy`, stop, row, { operation: own[0], variables: { [own[1]]: own[3] }, field: own[2], key, copy: true })
   r.taskBefore = taskBefore; r.taskAfter = await taskOfCopy(input); r.input = input
-  assert(r.response.data.stopDelegatedExecution.outcome === 'STOPPED', 'copy must actually stop', r.response)
+  assert(r.response.data[own[2]].success === true, 'copy must actually stop', r.response)
   assert(r.taskAfter?.taskId === taskBefore.taskId && r.taskAfter.status === taskBefore.status && !r.taskAfter.root.closed, 'Stop closed or changed the Task', r)
   r.parentAfterCopyStop = await rootHistory(input.rootKind, input.rootRunId)
   assert(rootActive(r.parentAfterCopyStop) === true, 'copy Stop affected its parent', r)

@@ -15,6 +15,7 @@ The latest coverage investigation and execution coverage report remain authorita
 | API-REV-007 | Code Reviewer, `code-review-report.md` CRR-029, round 7 (merged state) | SR-075, SR-076, IR-021, IR-022, CRR-027 … CRR-029 | Fail / 78% | Fail / 84% |
 | API-REV-008 | Code Reviewer, `code-review-report.md` CRR-032, round 8 | SR-077, IR-023, IR-024 (code `fdf5ad8380`), CRR-030 … CRR-032 | Fail / 84% | Fail / 86% |
 | API-REV-009 | Code Reviewer, `code-review-report.md` CRR-035, round 9 | SR-078, IR-025, IR-026 (code `f92881dd13`), CRR-033 … CRR-035 | Fail / 86% | Fail / 89% |
+| API-REV-010 | Code Reviewer, `code-review-report.md` CRR-038, round 10 | SR-079, IR-027, IR-028 (code `15c41ad242`), CRR-036 … CRR-038 | Fail / 89% | Fail / 88% |
 
 ## Revision Entries
 
@@ -442,3 +443,26 @@ None
 - New or remaining failure IDs: F-53 (`Unclear`: the design's predecessor set)
 - Recommended owner: Solution Designer (F-53), confirmed by failure-origin review.
 - Remaining risks, blocked evidence, or untested scope: the "Next Round" list in the investigation.
+
+### API-REV-010: round 10; F-53 resolved; SR-079's late predecessors; API-E01 in full; API-B03 batch 1; F-54, F-55
+
+- Triggering role, report path, and round: `/software_engineering_team/code_reviewer`, `code-review-report.md` (CRR-038 at `15c41ad242`), API/E2E round 10
+- Triggering finding or case IDs: F-53 (CR-461-074, SR-079); a late 20261020; a late team index v2; C27-02; the rendered connect answer (API-REV-009); the waiting list
+- Related revision IDs: SR-079, IR-027, IR-028, CRR-036 … CRR-038
+- Why this revision was recorded: the recheck of F-53, SR-079's late predecessors, and the waiting list (no product failure was open at the round's start)
+- Coverage decisions or durable test paths changed: see the report's "Durable Coverage Changed" (LTI-1, DRO-3, SID-3, the blocked-root probe, SDV-05, E-007, ad-hoc delegation, ten web probes for rule 2)
+- Cases added, changed, removed, or rechecked: R10-A; API-E01 parts 1 and 2 with the lone reruns; DRO; API-B03 batch 1; SDV-05; see the progress log
+- Commands, environment, fixture, or broader-validation delta: server rebuilt by this round; HOME a resolved temp folder (a `/tmp` HOME fails the terminal case)
+
+#### Prior Failure Resolution
+
+| Prior ID | Classification | Now | Proven By |
+| --- | --- | --- | --- |
+| F-53 | Unclear (predecessor set) | Resolved (SR-079) | team-run-v1 restart-retry case |
+
+- Canonical artifacts and sections updated: the coverage investigation (meta, deferred, ambiguities); the execution report; the progress log; `evidence/api-e2e/*r10*`.
+- Prior result and confidence: Fail / 89%
+- Current result and confidence: Fail / 88%
+- New or remaining failure IDs: F-54 (`Local Fix`, web), F-55 (`Unclear`), O-10a (`Unclear`)
+- Recommended owner: Implementation Engineer (F-54); Solution Designer (F-55, O-10a); confirmed by failure-origin review.
+- Remaining risks, blocked evidence, or untested scope: the "Next Round" list in the investigation; the batch-1 triage list in the report.

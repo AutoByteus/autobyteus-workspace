@@ -219,7 +219,8 @@ const copyInputFor = async (hostId) => {
 const viewFor = async (id) => (await gql('query($id:String!){agentRunCollaboration(runId:$id)}', { id })).agentRunCollaboration.root_agent;
 // autobyteus-358: the hub's view carries no messages; its Team tab loads the host's messages with this query.
 const hostMessagesFor = async (id) => (await gql('query($k:String!,$r:String!,$a:String!){collaborationParticipantMessages(rootKind:$k,rootRunId:$r,agentRunId:$a)}', { k: 'agent', r: id, a: id })).collaborationParticipantMessages.messages;
-const childProjection = async (host, address, run) => (await gql('query($host:String!,$address:String!,$run:String!){agentRunCollaborationMemberProjection(hostRunId:$host,memberAddress:$address,agentRunId:$run){conversation}}', { host, address, run })).agentRunCollaborationMemberProjection.conversation;
+// autobyteus-461 rule 2: a delegated run is read by its own path (the member query serves peer runs only).
+const childProjection = async (_host, _address, run) => (await gql('query($run:String!){getRunProjection(runId:$run){conversation}}', { run })).getRunProjection.conversation;
 const tasksFor = async (id) => (await gql('query($id:String!){projectTasks(projectId:$id){taskId status root {kind teamRunId ingressAgentRunId start status closed}}}', { id })).projectTasks;
 const terminateAgent = async (id) => {
   const r = (await gql('mutation($id:String!){terminateAgentRun(agentRunId:$id){success message}}', { id })).terminateAgentRun;
@@ -494,9 +495,9 @@ const apiTimings = async () => {
   const query = {
     hubView: ['query($id:String!){agentRunCollaboration(runId:$id)}', { id: setup.hostId }],
     hubConversation: ['query($id:String!){getRunProjection(runId:$id){conversation}}', { id: setup.hostId }],
-    copyProjection: ['query($h:String!,$a:String!,$r:String!){agentRunCollaborationMemberProjection(hostRunId:$h,memberAddress:$a,agentRunId:$r){conversation activities}}', { h: setup.hostId, a: marker.address, r: marker.agentRunId }],
+    copyProjection: ['query($r:String!){getRunProjection(runId:$r){conversation activities}}', { r: marker.agentRunId }],
     copyArtifactsGeneric: ['query($r:String!){getRunFileChanges(runId:$r){id}}', { r: marker.agentRunId }],
-    copyArtifactsScoped: ['query($h:String!,$a:String!,$r:String!){agentRunCollaborationMemberFileChanges(hostRunId:$h,memberAddress:$a,agentRunId:$r){id}}', { h: setup.hostId, a: marker.address, r: marker.agentRunId }],
+    copyArtifactsScoped: ['query($r:String!){getRunFileChanges(runId:$r){id}}', { r: marker.agentRunId }],
   };
   const result = {};
   for (const [name, [q, v]] of Object.entries(query)) {
@@ -670,7 +671,7 @@ const liveJourneys = async () => {
       await until(`large turn ${i + 1} stored`, async () => JSON.stringify(await childProjection(setup.hostId, target.address, target.agentRunId)).includes(`Large ${i + 1} ECHO_INPUT`), 60000);
     }
     await sleep(3000);
-    const projection = await gqlRaw('query($h:String!,$a:String!,$r:String!){agentRunCollaborationMemberProjection(hostRunId:$h,memberAddress:$a,agentRunId:$r){conversation activities}}', { h: setup.hostId, a: target.address, r: target.agentRunId });
+    const projection = await gqlRaw('query($r:String!){getRunProjection(runId:$r){conversation activities}}', { r: target.agentRunId });
     await coldOpenWorkspace();
     await runRow().click(); await until('live', async () => (await storeState()).phase === 'live', 120000); await quiet(1500);
     await expandTeam(team.teamRunId);

@@ -506,7 +506,8 @@ const startStoppedCopy = async (ctx, tag, writerAddress = '/switch_probe_writer'
   const copyDir = () => findFolder(path.join(dataRoot, 'memory', 'agents'), copyId)
   await waitFor('the native copy answered', async () => { const dir = await copyDir(); return dir && (await rawRecords(dir)).some((x) => x.trace_type === 'assistant') }, 120000, 1000)
   await delay(3000)
-  const stopped = (await gql('mutation($input:DelegatedExecutionTargetInput!){stopDelegatedExecution(input:$input){success outcome}}', { input: { rootKind: 'AGENT', rootRunId: hostId, agentRunId: copyId } })).stopDelegatedExecution
+  // autobyteus-461 rule 2: a delegated run is stopped by its own Stop (stopDelegatedExecution is gone).
+  const stopped = (await gql('mutation($id:String!){terminateAgentRun(agentRunId:$id){success message}}', { id: copyId })).terminateAgentRun
   assert(stopped.success, 'the copy did not stop', stopped)
   await gql('mutation($id:String!){terminateAgentRun(agentRunId:$id){success}}', { id: hostId })
   return { hostId, copyId, callHost, copyDir }

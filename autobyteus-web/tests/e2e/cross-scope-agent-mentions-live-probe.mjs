@@ -621,8 +621,8 @@ defineCase('A02', 'SCN-002 / AC-007 / AC-009: the user tells the host the notes 
   await waitHostIdle(page); await delay(1500)
   r.cards = await toolCards(page, RUN_VIEW)
   assert(r.cards.some((c) => /update_task/.test(c.text) && !c.error), 'expected a successful update_task card (AC-009)', r.cards)
-  const kept = await gql('query($h:String!,$a:String!,$r:String!){agentRunCollaborationMemberProjection(hostRunId:$h,memberAddress:$a,agentRunId:$r){conversation}}', { h: state.agentRunId, a: NOTE_TAKER_ADDRESS, r: state.children.notes })
-  r.closedConversationEntries = kept.agentRunCollaborationMemberProjection?.conversation?.length ?? 0
+  const kept = await gql('query($r:String!){getRunProjection(runId:$r){conversation}}', { r: state.children.notes })
+  r.closedConversationEntries = kept.getRunProjection?.conversation?.length ?? 0
   assert(r.closedConversationEntries > 0, 'the closed copy\'s conversation must be kept', r)
   assert(collaboratorsOf(await agentRootView(state.agentRunId)).length === 0, 'collaborator entry after DONE')
   await shot(page, 'A02-row-gone-after-done')

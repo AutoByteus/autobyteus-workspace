@@ -183,7 +183,7 @@ const createProject = async (name) => (await gql('mutation($input:CreateProjectI
 const firstLine = (description) => description.split('\n').map((line) => line.trim()).find(Boolean);
 const createTask = async (projectId, description) => (await gql('mutation($input:CreateProjectTaskInput!){createProjectTask(input:$input){taskId}}',
   { input: { projectId, title: firstLine(description), description } })).createProjectTask.taskId;
-const projectTasks = async (projectId) => (await gql('query($id:String!){projectTasks(projectId:$id){taskId taskKey title status root{kind recipientAddress ingressAgentRunId teamRunId start closed status hostRoot{kind runId}}}}', { id: projectId })).projectTasks;
+const projectTasks = async (projectId) => (await gql('query($id:String!){projectTasks(projectId:$id){taskId taskKey title status root{kind recipientAddress ingressAgentRunId teamRunId start closed status hostRoot: delegatingRun{kind runId}}}}', { id: projectId })).projectTasks;
 const tempTasks = async () => (await gql('query{tasksWithoutProject{taskId description status referenceFiles root{kind recipientAddress start closed status}}}')).tasksWithoutProject;
 const createRoot = async (kind, ids) => {
   if (kind === 'agent') {

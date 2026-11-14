@@ -184,7 +184,8 @@ const config = (workspaceRootPath) => ({ workspaceRootPath, llmModelIdentifier: 
 /** The files a run or member wrote, through its owner's list (asserts the expected count). */
 const filesOf = {
   run: (runId) => gql('query($r:String!){getRunFileChanges(runId:$r){path}}', { r: runId }).then((d) => d.getRunFileChanges),
-  standaloneMember: (s) => gql('query($h:String!,$a:String!,$r:String!){agentRunCollaborationMemberFileChanges(hostRunId:$h,memberAddress:$a,agentRunId:$r){path}}', { h: s.hostRunId, a: s.memberAddress, r: s.agentRunId }).then((d) => d.agentRunCollaborationMemberFileChanges),
+  // autobyteus-461 rule 2: a delegated agent's files are read by its own run.
+  standaloneMember: (s) => gql('query($r:String!){getRunFileChanges(runId:$r){path}}', { r: s.agentRunId }).then((d) => d.getRunFileChanges),
   teamMember: (s) => gql('query($t:String!,$a:String!){getTeamMemberFileChanges(teamRunId:$t,agentRunId:$a){path}}', { t: s.teamRunId, a: s.agentRunId }).then((d) => d.getTeamMemberFileChanges),
   agentOrgMember: (s) => gql('query($o:String!,$m:String!,$a:String!){getAgentOrgMemberFileChanges(orgRunId:$o,memberAddress:$m,agentRunId:$a){path}}', { o: s.orgRunId, m: s.memberAddress, a: s.agentRunId }).then((d) => d.getAgentOrgMemberFileChanges),
 };
@@ -340,7 +341,7 @@ const listQuery = (subject) => {
     case 'run': return ['query($r:String!){getRunFileChanges(runId:$r){id path status}}', { r: subject.runId }];
     case 'teamMember': return ['query($t:String!,$a:String!){getTeamMemberFileChanges(teamRunId:$t,agentRunId:$a){id path status}}', { t: subject.teamRunId, a: subject.agentRunId }];
     case 'agentOrgMember': return ['query($o:String!,$m:String!,$a:String!){getAgentOrgMemberFileChanges(orgRunId:$o,memberAddress:$m,agentRunId:$a){id path status}}', { o: subject.orgRunId, m: subject.memberAddress, a: subject.agentRunId }];
-    case 'standaloneMember': return ['query($h:String!,$a:String!,$r:String!){agentRunCollaborationMemberFileChanges(hostRunId:$h,memberAddress:$a,agentRunId:$r){id path status}}', { h: subject.hostRunId, a: subject.memberAddress, r: subject.agentRunId }];
+    case 'standaloneMember': return ['query($r:String!){getRunFileChanges(runId:$r){id path status}}', { r: subject.agentRunId }];
   }
   throw new Error(subject.kind);
 };

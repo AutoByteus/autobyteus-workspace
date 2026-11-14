@@ -39,8 +39,11 @@ const ID = TASK_AGENT_OWN_RUN_V1_MIGRATION_ID;
 // The migrations registered after this one: they run again on the released data, as an upgrade runs them (autobyteus-461's,
 // registered last since CR-461-048, included).
 const LATER = [APPEND_ONLY_MESSAGE_LOGS_V1_MIGRATION_ID, DELEGATED_COPY_OWN_FILE_COMPLETE_V1_MIGRATION_ID, DELEGATED_RUNS_OWN_RUNS_V1_MIGRATION_ID,
-  // SR-078 c: one follow-up per predecessor, registered after 461's.
-  "20261114_preserved_items_after_task_agent_own_run_v1", "20261114_preserved_items_after_own_file_complete_v1", "20261114_preserved_items_after_append_only_logs_v1"];
+  // SR-078 c, SR-079: one follow-up per classified predecessor (nine), registered after 461's.
+  "20261114_preserved_items_after_task_agent_own_run_v1", "20261114_preserved_items_after_own_file_complete_v1", "20261114_preserved_items_after_append_only_logs_v1",
+  "20261114_preserved_items_after_team_run_execution_tree_v1", "20261114_preserved_items_after_team_run_execution_tree_v2",
+  "20261114_preserved_items_after_org_flat_team_families_v1", "20261114_preserved_items_after_collaborators_to_delegated_runs_v1",
+  "20261114_preserved_items_after_team_run_history_index_v2", "20261114_preserved_items_after_remove_skill_improvement_data"];
 const AGY_CLI = path.resolve("tests/fixtures/agy-failure-cli.mjs");
 /** SR-078 c: the follow-ups of the predecessors TAU-2's blocked move leaves unfinished (20261017, and 20261019 that waits on it). */
 const WAITING_FOLLOW_UPS = ["20261114_preserved_items_after_task_agent_own_run_v1", "20261114_preserved_items_after_own_file_complete_v1"];
@@ -48,6 +51,8 @@ const MODEL = "gemini-3.8-flash-low";
 const ALT = "tau-alt-model";
 /** TAU-2 blocks a rename with POSIX mode bits; root ignores them and Windows has none (as project-task-boundaries.e2e). */
 const modeBitsBlock = process.platform !== "win32" && process.getuid?.() !== 0;
+/** C27-02: start durations (ms), recorded. */
+const startTimes: Record<string, number> = {};
 
 type Json = Record<string, any>;
 const children: ChildProcess[] = [];
@@ -137,7 +142,9 @@ const faithfulRoot = async () => {
   const root = await fs.mkdtemp(path.join(os.tmpdir(), "task-agent-own-run-e2e-")); roots.push(root);
   await fs.mkdir(path.join(root, "home")); await fs.mkdir(path.join(root, "workspace"));
   await fs.writeFile(path.join(root, ".env"), "APP_ENV=test\nAUTOBYTEUS_SERVER_HOST=http://127.0.0.1:8000\n");
+  const freshStart = Date.now();
   const fresh = await studio(root);
+  startTimes.fresh = Date.now() - freshStart;
   const recorded = (await fresh.gql("{getAppDataMigrations{migrationId status}}")).getAppDataMigrations as Json[];
   await fresh.stop();
   const db = new DatabaseSync(path.join(root, "db", "production.db"));
@@ -204,7 +211,14 @@ describe("task agent own run: the built server upgrades a faithful released inst
     const { root, memory } = await faithfulRoot();
     const before = await snapshot(memory);
 
+    // C27-02 (recorded): the first start after the upgrade on this corpus runs 461's migration and its nine follow-ups.
+    const upgradeStart = Date.now();
     const first = await studio(root);
+    const upgradeMs = Date.now() - upgradeStart;
+    const scans = ((await first.gql("{getAppDataMigrations{migrationId status attempts summary}}")).getAppDataMigrations as Json[])
+      .filter((m) => m.migrationId === DELEGATED_RUNS_OWN_RUNS_V1_MIGRATION_ID || String(m.migrationId).startsWith("20261114_"));
+    console.log(`C27-02: first start after the upgrade ${upgradeMs} ms (a fresh install's start ${startTimes.fresh} ms); 461 and its follow-ups: ${JSON.stringify(scans)}`);
+    expect(scans.filter((m) => String(m.migrationId).startsWith("20261114_")), "nine follow-ups").toHaveLength(9);
     const migration = await first.migration();
     expect(migration, JSON.stringify(migration)).toMatchObject({ status: "SUCCEEDED" });
     const log = await fs.readFile(migration.logPath, "utf8");

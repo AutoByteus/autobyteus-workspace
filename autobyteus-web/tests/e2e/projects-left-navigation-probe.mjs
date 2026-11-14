@@ -237,10 +237,25 @@ const restoreAgent = async (runId) => {
 };
 const teamIsActive = async (teamRunId) => (await gql('query{listWorkspaceRunHistory{teamDefinitions{runs{teamRunId isActive}}}}'))
   .listWorkspaceRunHistory.flatMap((g) => g.teamDefinitions.flatMap((d) => d.runs)).find((r) => r.teamRunId === teamRunId)?.isActive ?? false;
+/**
+ * A stopped Team is restored as the app does (autobyteus-461 CR-461-008, SR-046 … SR-048: no restore mutation): its view serves
+ * it from its stored file, and the user's message to one of its own members restores it.
+ */
 const restoreTeam = async (teamRunId) => {
   if (await teamIsActive(teamRunId)) return;
-  const r = (await gql('mutation($id:String!){restoreAgentTeamRun(teamRunId:$id){success message}}', { id: teamRunId })).restoreAgentTeamRun;
-  assert(r.success, r.message);
+  const tree = (await gql('query($id:String!){getTeamRunResumeConfig(teamRunId:$id){executionTree}}', { id: teamRunId })).getTeamRunResumeConfig.executionTree;
+  const memberRunId = tree.root_team.members.find((m) => m.agent_run_id)?.agent_run_id;
+  assert(memberRunId, `no member of team ${teamRunId}`);
+  const socket = new WebSocket(`${stack.backendUrl.replace(/^http/, 'ws')}/ws/agent-team/${teamRunId}`);
+  const frames = [];
+  socket.on('message', (raw) => frames.push(JSON.parse(String(raw))));
+  await new Promise((resolve, reject) => { socket.once('open', resolve); socket.once('error', reject); });
+  try {
+    await until('team view snapshot', () => frames.some((f) => f.type === 'TEAM_EXECUTION_VIEW_SNAPSHOT'), 30000);
+    socket.send(JSON.stringify({ type: 'SEND_MESSAGE', payload: { agent_run_id: memberRunId, message_id: `e2e-${randomUUID()}`,
+      dedupe_key: `agent_run_input:e2e:${randomUUID()}`, content: 'Continue.', context_file_paths: [], image_urls: [] } }));
+    await until('team restored by the member message', () => teamIsActive(teamRunId), 60000);
+  } finally { socket.close(); }
 };
 const terminateAgent = (runId) => gql('mutation($id:String!){terminateAgentRun(agentRunId:$id){success message}}', { id: runId });
 const taskNodes = (tree) => {
@@ -697,8 +712,9 @@ const closureAndReopen = async () => {
     await until('Team rows left Projects mode', async () => (await teamRow.count()) === 0, 60000);
     assert((await runRowIn(pSection, A).count()) === 1, 'the host run left with its Task');
     await until('closed in the stored root', async () => (await closedOf(A)).includes(squad.teamRunId), 30000);
-    const memberConversation = (await gql('query($h:String!,$a:String!,$r:String!){agentRunCollaborationMemberProjection(hostRunId:$h,memberAddress:$a,agentRunId:$r){conversation}}',
-      { h: A, a: squad.members[0].address, r: squad.members[0].agentRunId })).agentRunCollaborationMemberProjection?.conversation;
+    // autobyteus-461 rule 2: a delegated team's member is read through its own team.
+    const memberConversation = (await gql('query($t:String!,$a:String!){getTeamMemberRunProjection(teamRunId:$t,agentRunId:$a){conversation}}',
+      { t: squad.teamRunId, a: squad.members[0].agentRunId })).getTeamMemberRunProjection?.conversation;
     assert(Array.isArray(memberConversation) && memberConversation.length > 0, 'closed member conversation not kept');
     await shot(page, 'PLN-06-after-done');
     await agentCalls(A, 'update_task', { task_id: s.tasks.P1, status: 'IN_PROGRESS' });

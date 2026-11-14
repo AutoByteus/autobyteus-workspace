@@ -244,6 +244,8 @@ const storedLocalEntries = async (root) => {
       visit(inner);
     }
   };
+  // autobyteus-461 (contract §6): an Agent run has no collaboration tree file; it stores no delegated run.
+  if (root.kind === 'agent' && !fs.existsSync(storedTreeFile(root))) return found;
   visit(JSON.parse(await fsp.readFile(storedTreeFile(root), 'utf8')));
   return found;
 };
@@ -618,12 +620,34 @@ const teamMembersOf = (tree, teamRunId) => {
 const watchRows = (ids) => `(() => { const ids = ${JSON.stringify(ids)}; window.__rowsSeen = [];
   const check = () => { for (const id of ids) if (document.querySelector('[data-agent-run-id="' + id + '"], [data-test$="-row-' + id + '"]')) window.__rowsSeen.push(id); };
   new MutationObserver(check).observe(document, { subtree: true, childList: true, attributes: true }); })();`;
-/** What the app does before a send to a stopped root (after a restart): the root's restore mutation. */
+/**
+ * What the app does before a send to a stopped root (after a restart). An agent run: its restore mutation. A Team or Org run
+ * (autobyteus-461 CR-461-008, SR-046 … SR-048: their restore mutations are gone): its view serves the stopped run from its
+ * stored file, and the user's message to one of its own members restores it.
+ */
 const restoreRoot = async (root) => {
-  const r = Object.values(await gql(root.kind === 'agent' ? 'mutation($id:String!){restoreAgentRun(agentRunId:$id){success message}}'
-    : root.kind === 'team' ? 'mutation($id:String!){restoreAgentTeamRun(teamRunId:$id){success message}}'
-      : 'mutation($id:String!){restoreAgentOrgRun(agentOrgRunId:$id){success message}}', { id: root.rootId }))[0];
-  assert(r.success, `restore ${root.kind} root failed: ${r.message}`);
+  if (root.kind === 'agent') {
+    const r = (await gql('mutation($id:String!){restoreAgentRun(agentRunId:$id){success message}}', { id: root.rootId })).restoreAgentRun;
+    assert(r.success, `restore agent root failed: ${r.message}`);
+    return;
+  }
+  const route = root.kind === 'team' ? `agent-team/${root.rootId}` : `agent-org/${root.rootId}`;
+  const socket = new WebSocket(`${stack.backendUrl.replace(/^http/, 'ws')}/ws/${route}`); sockets.push(socket);
+  const frames = [];
+  socket.on('message', (raw) => frames.push(JSON.parse(String(raw))));
+  await new Promise((resolve, reject) => { socket.once('open', resolve); socket.once('error', reject); });
+  try {
+    await until(`${root.kind} view snapshot`, () => frames.some((f) => /SNAPSHOT$/.test(String(f.type))), 30000);
+    socket.send(JSON.stringify({ type: 'SEND_MESSAGE', payload: root.kind === 'org'
+      ? { root_subject_kind: 'agent_org', root_run_id: root.rootId, target_agent_run_id: root.managerRunId, command_id: randomUUID(),
+        message_id: randomUUID(), dedupe_key: randomUUID(), content: 'Continue.', context_file_paths: [], image_urls: [] }
+      : { agent_run_id: root.managerRunId, message_id: `e2e-${randomUUID()}`, dedupe_key: `agent_run_input:e2e:${randomUUID()}`,
+        content: 'Continue.', context_file_paths: [], image_urls: [] } }));
+    const active = async () => root.kind === 'team'
+      ? Boolean((await gql('query($id:String!){getTeamRunResumeConfig(teamRunId:$id){isActive}}', { id: root.rootId })).getTeamRunResumeConfig?.isActive)
+      : Boolean((await gql('query($id:String!){getAgentOrgRunConfig(orgRunId:$id){isActive}}', { id: root.rootId })).getAgentOrgRunConfig?.isActive);
+    await until(`${root.kind} root restored by the member message`, active, 60000);
+  } finally { socket.close(); }
 };
 const centerText = (page) => page.locator('[data-test="workspace-center-pane"]').innerText();
 /** The rendered status of one member row: an Org row's `data-status`, else the colour of its status dot. */

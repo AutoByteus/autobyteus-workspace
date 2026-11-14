@@ -18,11 +18,11 @@ All paths are under `/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-
 - Code Review Report: `code-review-report.md` (CRR-032, round 24, Pass; round 23 full review CRR-031; earlier CRR-029, CRR-026, CRR-023, CRR-018, CRR-015, CRR-011, CRR-007; failure-origin CRR-016, CRR-021, CRR-024, CRR-027, CRR-030)
 - Code Review Revision Record: `code-review-revision-record.md`
 - API/E2E Revision Record: `api-e2e-revision-record.md` (created after the first result)
-- Current API/E2E Revision ID: `API-REV-009`
+- Current API/E2E Revision ID: `API-REV-010`
 - Current Investigation Round: 8
 - Trigger: code review pass CRR-032 at code `fdf5ad8380`, from `/software_engineering_team/code_reviewer`. Earlier: round 7 CRR-029 at the merged state `a529abcbdd`; round 6 CRR-026 at `958cb22462`; round 5 CRR-023 at `56e4ce773b`; round 4 CRR-018 at `49f3db1047`; round 3 CRR-015 at `da80596b0a`; round 2 CRR-011 at `f75cf6b96b`; round 1 CRR-007 at `bc223a8ae0`
 - Prior Investigation Reviewed: this file, round 7 (API-REV-007)
-- Latest Authoritative Investigation: this file, round 9
+- Latest Authoritative Investigation: this file, round 10
 
 Code under test: branch `codex/delegated-copies-outlive-delegator-461`, base `origin/personal` `827f1e68dc`, round 8 code `fdf5ad8380` (head `392a1b447d`, docs only after the code). Round 7 was the merged state `a529abcbdd`.
 
@@ -275,28 +275,28 @@ Each probe that uses one of these is updated (`grep` of these names in `autobyte
 
 ## Not Tested / Infeasible / Deferred
 
-Round 9 ends at a product `Fail` (report: F-53).
+Round 10 ends at a product `Fail` (report: F-54; F-55 and O-10a Unclear).
 
-**Done this round, on `f92881dd13`:**
-- the rechecks: F-49 … F-52 resolved (USR-4/6/7/8, UC-1/2, team-run-v1's connects, TAU-2 over three starts);
-- O-8b answered at the server (parity with a user-started run; new suite);
-- the reruns: phone MSP-53 … 55, desktop SDV, peer suite (44/44), API-L01 (real inference).
+**Done this round, on `15c41ad242`:**
+- F-53 resolved; a late 20261020 (SID-3); a late team index v2 (LTI-1); C27-02 recorded;
+- the rendered connect answer probed (O-10a);
+- API-E01 in full (264 files; E-007 and ad-hoc delegation rewritten);
+- DS-15 restart resume (DRO-3);
+- API-B03: ten probes updated for rule 2; batch 1 run (F-54 found); SDV-05 (C15-03) added (F-55).
 
 **`Next Round`** (waiting for the fix; the first item comes first):
-- **Recheck F-53:** team-run-v1's retry case.
-- **The rendered blocked-root text:** a probe on the token-blocked scenario's data (the not-cataloged root is not offered by the web: its scenario's run list fails closed by design). O-8b's panel rendered, if still wanted.
-- **The stale items left:** `projects/project-task-boundaries` E-007; `runtime/agent-initiated-collaborators` and the two delegated background-task suites (live, rule 2).
+- **Recheck F-54, F-55, O-10a:** PMU-003, PMU-018, PLN-05, PMU-019; SDV-05; the blocked-root probe (the kept root `/tmp/api461/r10-kept`).
+- **API-B03:** the batch-1 triage list (report); batch 2 (`runtime-switch-members`, `delegated-launch-defaults` DCP, `existing-run-model-config`, `delegated-copies-large-hub`, `owner-scoped-file-reads`, phone MSP-44 … 46, MSP-50 … 52); the SSR rewrite to SR-064's own saves; PMU-004 to REQ-001.
+- **API-F01:** the fresh-start desktop build (build inputs touched), on the fixed code.
 - **The peer cases left:** API-P03, API-P04.
-- **DS-15:** restart resume skipping a closed run; C15-03's rendered two-view check.
-- **API-B03 web probes.**
-- **Then:** API-E01 in full and API-F01 on the fixed code.
+- **The live `agent-initiated-collaborators`** (DeepSeek gate, the test vault).
 
-`Not Tested` (could not run): none.
+`Not Tested` (could not run): the delegated background-task live suites (`claude-delegated-background-task`, `agy-delegated-background-task`): they need the Claude CLI or the real Antigravity CLI login, which the safety rules forbid; the test vault provides neither.
 
 ## Ambiguities Or Reroute Triggers
 
-- **F-53:** design lines 550-556 name four predecessors whose later retries 461 handles. The released team-run consolidation also writes a tree 461 converts, and a retry after 461's migration leaves its stored list.
-- **O-8a, O-8c:** observations, unchanged.
+- **F-55:** design line 633 says a closed run can be reached from its Task's page; the web's Task card keeps a closed run's line unopenable.
+- **O-10a:** a root its admission refuses is not listed by the web, so the connect's reason has no rendered surface.
 - **Base's nesting of a copy's copy:** needs rule 3's capture (API-P04).
 
 ## Investigation Decision
