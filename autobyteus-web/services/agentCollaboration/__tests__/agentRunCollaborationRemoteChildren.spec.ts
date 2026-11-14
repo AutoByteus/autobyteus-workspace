@@ -56,7 +56,9 @@ describe('AgentRunCollaborationContext with remote children', () => {
       ['agent:cua-run', 0, null], ['team:team-run', 0, null],
       ['agent:researcher-run', 0, 'docker'],
     ])
-    expect(context.index.coordinatorRunIdOf('marketing-run')).toBe('lead-run')
+    // SR-083: a peer Team's member row opens that Team on itself; the Team row's target is the server's.
+    expect(context.listTaskRows((teamRunId) => teamRunId === 'marketing-run').find(({ row }) => row.rowKey === 'agent:writer-run')?.row.openTarget)
+      .toMatchObject({ runKind: 'agent_team', runId: 'marketing-run', agentRunId: 'writer-run' })
     expect(context.isListed('writer-run')).toBe(true)
     expect(context.getRemoteChild('researcher-run')).toMatchObject({ kind: 'remote_agent', delegatorAgentRunId: 'host-run' })
   })

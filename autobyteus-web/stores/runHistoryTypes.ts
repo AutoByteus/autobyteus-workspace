@@ -197,8 +197,17 @@ export interface RunHistoryStableExecutionRow extends RunHistoryTeamExecutionRow
   row: TeamMemberTreeRow;
 }
 
+/**
+ * Where a delegated row opens (autobyteus-461 SR-083): the run's own identity and the agent to focus, as the server
+ * built it (a team its coordinator); a peer run's names its node. A delegated Team's member row opens that Team on that
+ * member. Clients never decide it (FU-024, FU-031).
+ */
+export type RowOpenTarget = Readonly<{ runKind: 'agent' | 'agent_team'; runId: string; agentRunId: string; nodeId?: string }>;
+
 export interface RunHistoryTransientExecutionRow extends RunHistoryTeamExecutionRowBase {
   kind: 'transient_execution';
+  /** Where it opens; null for a row error (a team run whose coordinator is not a member), absent where none was sent. */
+  openTarget?: RowOpenTarget | null;
   transientKind: 'task_agent' | 'task_team' | 'task_team_child';
   currentStatus: AgentStatus | string | null;
   /** Display name of the AgentRun that started a delegated child row; null otherwise. */

@@ -53,25 +53,29 @@ export const remoteRowsOf = (input: Readonly<{
   nameAt(address: string): string
 }>): readonly Readonly<{ startedAt: string; rows: RemoteTaskRow[] }>[] => input.executions.map((execution) => {
   const remote = Object.freeze({ runId: remoteTaskExecutionRunIdOf(execution), nodeName: execution.node_name })
+  // Where it opens, as the server sent it (SR-083); its members open its run on themselves.
+  const target = execution.open_target
+  const openTarget = target ? Object.freeze({ runKind: target.run_kind, runId: target.run_id, agentRunId: target.agent_run_id, nodeId: target.node_id }) : target ?? null
+  const memberTarget = (agentRunId: string) => Object.freeze({ runKind: 'agent_team' as const, runId: remote.runId, agentRunId, nodeId: execution.node_id })
   const common = { kind: 'transient_execution' as const, teamRunId: input.rootRunId, delegatedBy: input.delegatorName(execution.delegator_agent_run_id) }
   if (execution.kind === 'agent') {
     return { startedAt: execution.started_at, rows: [{ teamStatus: null, row: {
       ...common, transientKind: 'task_agent', rowKey: `agent:${execution.agent_run_id}`, memberAddress: execution.address,
       agentRunId: execution.agent_run_id, teamRunIdForNode: null, memberKind: 'agent', displayName: input.nameAt(execution.address),
-      currentStatus: input.statusOf(execution.agent_run_id), depth: 0, hasChildren: false, remote,
+      currentStatus: input.statusOf(execution.agent_run_id), depth: 0, hasChildren: false, remote, openTarget,
     } }] }
   }
   const statuses = execution.members.map((member) => input.statusOf(member.agent_run_id))
   const team: RemoteTaskRow = { teamStatus: resolveTeamStatus(statuses, input.isActive), row: {
     ...common, transientKind: 'task_team', rowKey: `team:${execution.team_run_id}`, memberAddress: execution.address,
     agentRunId: null, teamRunIdForNode: execution.team_run_id, memberKind: 'agent_team', displayName: input.nameAt(execution.address),
-    currentStatus: null, depth: 0, hasChildren: execution.members.length > 0, remote,
+    currentStatus: null, depth: 0, hasChildren: execution.members.length > 0, remote, openTarget,
   } }
   const members: RemoteTaskRow[] = input.isTeamExpanded(execution.team_run_id) ? execution.members.map((member) => ({ teamStatus: null, row: {
     kind: 'transient_execution', transientKind: 'task_team_child', rowKey: `agent:${member.agent_run_id}`, teamRunId: input.rootRunId,
     memberAddress: member.address, agentRunId: member.agent_run_id, teamRunIdForNode: null, memberKind: 'agent',
     displayName: input.nameAt(member.address), currentStatus: input.statusOf(member.agent_run_id), delegatedBy: null, depth: 1,
-    hasChildren: false, remote,
+    hasChildren: false, remote, openTarget: memberTarget(member.agent_run_id),
   } })) : []
   return { startedAt: execution.started_at, rows: [team, ...members] }
 })

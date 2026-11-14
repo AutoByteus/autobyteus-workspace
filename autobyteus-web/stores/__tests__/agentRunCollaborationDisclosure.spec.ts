@@ -145,9 +145,9 @@ describe('task row rules', () => {
     expect(Socket.instances).toHaveLength(0)
   })
 
-  it('selectTaskRow: a task Team row selects its coordinator; nothing is selected before the view is loaded', async () => {
+  it('selectTaskRow: a task Team row selects the agent its server open target names (its coordinator); nothing before the view is loaded', async () => {
     const store = useAgentRunCollaborationStore()
-    const teamRow = { agentRunId: null, teamRunIdForNode: teamId(1) } as never
+    const teamRow = { agentRunId: null, teamRunIdForNode: teamId(1), openTarget: { runKind: 'agent_team', runId: teamId(1), agentRunId: memberId(1, 0) } } as never
     expect(store.selectTaskRow('host-run', teamRow)).toBe(false)
     await store.inspect('host-run')
     expect(store.selectTaskRow('host-run', teamRow)).toBe(true)
@@ -157,7 +157,15 @@ describe('task row rules', () => {
   it('selectTaskRow: a task agent row selects that agent', async () => {
     const store = useAgentRunCollaborationStore()
     await store.inspect('host-run')
-    expect(store.selectTaskRow('host-run', { agentRunId: memberId(0, 2), teamRunIdForNode: null } as never)).toBe(true)
+    expect(store.selectTaskRow('host-run', { agentRunId: memberId(0, 2), teamRunIdForNode: null,
+      openTarget: { runKind: 'agent_team', runId: teamId(0), agentRunId: memberId(0, 2) } } as never)).toBe(true)
     expect(store.selectedChild('host-run')).toBe(memberId(0, 2))
+  })
+
+  it('SR-083 (FU-024): a row with no open target (a row error) opens nothing; the client never picks a member', async () => {
+    const store = useAgentRunCollaborationStore()
+    await store.inspect('host-run')
+    expect(store.selectTaskRow('host-run', { agentRunId: null, teamRunIdForNode: teamId(1), openTarget: null } as never)).toBe(false)
+    expect(store.selectedChild('host-run')).toBeNull()
   })
 })

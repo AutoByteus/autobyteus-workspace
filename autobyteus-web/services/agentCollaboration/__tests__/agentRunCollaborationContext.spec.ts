@@ -39,7 +39,6 @@ describe('AgentRunCollaborationContext', () => {
     const context = build()
     expect(context.index.requireAgent('cua-run')).toMatchObject({ kind: 'task_agent', source: { agentDefinitionId: 'computer-use' }, delegatorAgentRunId: 'host-run' })
     expect(context.index.requireAgent('pb-run')).toMatchObject({ kind: 'task_team_member', teamRunId: 'team-run', source: { agentDefinitionId: 'bootstrapper' } })
-    expect(context.index.coordinatorOf('team-run').agentRunId).toBe('pp-run')
     expect(context.getChild('host-run')).toBeNull()
     expect(context.getAgentContext('pp-run')?.state.currentStatus).toBe('running')
   })

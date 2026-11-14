@@ -323,11 +323,11 @@ export const useAgentRunCollaborationStore = defineStore('agentRunCollaboration'
    * A task row's open: a task Agent row selects its agent, a task Team row its coordinator. Answers whether a child
    * was selected (false while the run's view is not loaded).
    */
+  /** A delegated row opens where the server says (SR-083): its run, on the agent it names (a team's coordinator). */
   const selectTaskRow = (hostRunId: string, row: RunHistoryTransientExecutionRow): boolean => {
-    const context = contextFor(hostRunId)
-    if (!context) return false
-    const agentRunId = row.agentRunId ?? (row.teamRunIdForNode ? context.index.coordinatorRunIdOf(row.teamRunIdForNode) : null)
-    selectChild(hostRunId, agentRunId)
+    const target = row.openTarget?.agentRunId ?? null
+    if (!contextFor(hostRunId) || !target) return false
+    selectChild(hostRunId, target)
     return true
   }
 

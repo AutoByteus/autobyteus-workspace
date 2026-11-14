@@ -14,7 +14,7 @@ import type {
   CollaborationMessageMemberIdentity,
   CollaborationMessagesContextView,
 } from '~/types/workspace/collaborationMessagesContextView'
-import type { RunHistoryTransientExecutionRow } from '~/stores/runHistoryTypes'
+import type { RowOpenTarget, RunHistoryTransientExecutionRow } from '~/stores/runHistoryTypes'
 import { toAgentPresentationProjectionMessage } from '~/services/agentStreaming/teamStreamDtoAdapters'
 import { dispatchAgentStreamMessage } from '~/services/agentStreaming/agentStreamMessageProjector'
 import { advanceSequencedStream } from '~/services/agentStreaming/sequencedStreamRange'
@@ -316,16 +316,16 @@ export class AgentRunCollaborationContext {
       const address = this.index.addressOf(agentRunId)
       return address ? nameAt(address) : agentRunId
     }
-    const agentRow = (agent: AgentRootChildAgent, depth: number): RunHistoryTransientExecutionRow => ({
+    const agentRow = (agent: AgentRootChildAgent, depth: number, openTarget: RowOpenTarget | null): RunHistoryTransientExecutionRow => ({
       kind: 'transient_execution', transientKind: agent.kind === 'task_team_member' ? 'task_team_child' : 'task_agent',
       rowKey: `agent:${agent.agentRunId}`, teamRunId: this.hostRunId, memberAddress: agent.address,
       agentRunId: agent.agentRunId, teamRunIdForNode: null, memberKind: 'agent', displayName: nameAt(agent.address),
-      currentStatus: statusOf(agent.agentRunId), delegatedBy: delegatorName(agent.delegatorAgentRunId), depth, hasChildren: false,
+      currentStatus: statusOf(agent.agentRunId), delegatedBy: delegatorName(agent.delegatorAgentRunId), depth, hasChildren: false, openTarget,
     })
     type TaskExecution = AgentRunCollaborationViewDto['execution_tree']['taskExecutions'][number]
     const listed = (node: CollaborationTreeNode) => !hidden.has(collaborationTreeWalk.keyOf(node))
-    const visitAgent = (agentRunId: string, depth: number, shown: boolean): AgentStatus[] => {
-      if (shown) flat.push({ row: agentRow(this.index.requireAgent(agentRunId), depth), teamStatus: null })
+    const visitAgent = (agentRunId: string, depth: number, shown: boolean, openTarget: RowOpenTarget | null): AgentStatus[] => {
+      if (shown) flat.push({ row: agentRow(this.index.requireAgent(agentRunId), depth, openTarget), teamStatus: null })
       return [statusOf(agentRunId)]
     }
     // Every listed node is walked, so a collapsed Team still counts its agents; only shown rows are emitted.
@@ -333,7 +333,8 @@ export class AgentRunCollaborationContext {
     // are Agents; the Teams under it are the copies its members delegated (its own task executions).
     const visit = (task: TaskExecution, depth: number, shown: boolean): AgentStatus[] => {
       if (!listed(task)) return []
-      if ('agentRunId' in task) return visitAgent(task.agentRunId, depth, shown)
+      // Where each row opens is the server's (SR-083); a delegated Team's member opens that Team on itself.
+      if ('agentRunId' in task) return visitAgent(task.agentRunId, depth, shown, task.openTarget ?? null)
       const team = this.index.teams.get(task.teamRunId)!
       const members = task.members.filter(listed)
       const tasks = task.taskExecutions.filter(listed)
@@ -341,12 +342,13 @@ export class AgentRunCollaborationContext {
         kind: 'transient_execution', transientKind: 'task_team', rowKey: `team:${task.teamRunId}`, teamRunId: this.hostRunId,
         memberAddress: task.address, agentRunId: null, teamRunIdForNode: task.teamRunId, memberKind: 'agent_team',
         displayName: nameAt(task.address), currentStatus: null, delegatedBy: delegatorName(team.delegatorAgentRunId),
-        depth, hasChildren: members.length + tasks.length > 0,
+        depth, hasChildren: members.length + tasks.length > 0, openTarget: task.openTarget ?? null,
       }, teamStatus: null }
       if (shown) flat.push(entry)
       const childrenShown = shown && isTeamExpanded(task.teamRunId)
       const statuses = [
-        ...members.flatMap((member) => visitAgent(member.agentRunId, depth + 1, childrenShown)),
+        ...members.flatMap((member) => visitAgent(member.agentRunId, depth + 1, childrenShown,
+          Object.freeze({ runKind: 'agent_team' as const, runId: task.teamRunId, agentRunId: member.agentRunId }))),
         ...tasks.flatMap((child) => visit(child, depth + 1, childrenShown)),
       ]
       // A child Team's status is its own agents': it runs on its own, whether or not this run's agent does.

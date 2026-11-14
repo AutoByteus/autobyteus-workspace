@@ -43,7 +43,8 @@ const managerView = () => {
   const view = multiTeamView(3)
   const team = view.execution_tree.taskExecutions[1] as unknown as { taskExecutions: unknown[] }
   team.taskExecutions.push({ address: '/helper', agentRunId: 'nested-helper', platformAgentRunId: null, delegatorAgentRunId: memberId(1, 0),
-    startedAt: created, source: { kind: 'agent', agentDefinitionId: 'helper', launchConfiguration: launch } })
+    startedAt: created, source: { kind: 'agent', agentDefinitionId: 'helper', launchConfiguration: launch },
+    openTarget: { runKind: 'agent', runId: 'nested-helper', agentRunId: 'nested-helper' } })
   return view
 }
 

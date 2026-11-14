@@ -13,8 +13,10 @@ export const agentRootView = (): MutableView => ({
     // Delegated runs of the host: an Agent copy and a Team copy, each recording its catalog source.
     taskExecutions: [
       { address: '/computer_use_agent', agentRunId: 'cua-run', platformAgentRunId: null, delegatorAgentRunId: 'host-run', startedAt: created,
-        source: { kind: 'agent', agentDefinitionId: 'computer-use', launchConfiguration: launch } },
+        source: { kind: 'agent', agentDefinitionId: 'computer-use', launchConfiguration: launch },
+        openTarget: { runKind: 'agent', runId: 'cua-run', agentRunId: 'cua-run' } },
       { address: '/product_team', teamRunId: 'team-run', delegatorAgentRunId: 'host-run', startedAt: created,
+        openTarget: { runKind: 'agent_team', runId: 'team-run', agentRunId: 'pp-run' },
         members: [
           { address: '/product_team/prototyper', agentRunId: 'pp-run', platformAgentRunId: null },
           { address: '/product_team/bootstrapper', agentRunId: 'pb-run', platformAgentRunId: null },

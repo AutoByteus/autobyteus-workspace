@@ -93,23 +93,6 @@ export class AgentRunCollaborationIndex {
     return this.agents.get(agentRunId)?.address ?? this.remoteAgents.get(agentRunId)?.address ?? null
   }
 
-  /** The coordinator AgentRun of a task Team (the row a task Team opens). */
-  coordinatorOf(teamRunId: string): AgentRootChildAgent {
-    const team = this.teams.get(teamRunId)
-    if (!team) throw new Error(`TeamRun '${teamRunId}' is not a child of this run.`)
-    const members = [...this.agents.values()].filter((agent) => agent.teamRunId === teamRunId)
-    const coordinator = members.find((agent) => agent.address === team.coordinatorAddress) ?? members[0]
-    if (!coordinator) throw new Error(`Task Team '${teamRunId}' has no member.`)
-    return coordinator
-  }
-
-  /** The coordinator AgentRun a Team row opens: a local task Team's, or a remote Team's (autobyteus-278). */
-  coordinatorRunIdOf(teamRunId: string): string {
-    const remote = this.remoteExecutions.find((execution) => execution.kind === 'agent_team' && execution.team_run_id === teamRunId)
-    if (remote?.kind !== 'agent_team') return this.coordinatorOf(teamRunId).agentRunId
-    return (remote.members.find((member) => member.address === remote.coordinator_address) ?? remote.members[0]!).agent_run_id
-  }
-
   private register(runId: string): void {
     if (runId === this.hostRunId || this.agents.has(runId) || this.teams.has(runId)) {
       throw new Error(`Duplicate AgentRun collaboration execution '${runId}'.`)
