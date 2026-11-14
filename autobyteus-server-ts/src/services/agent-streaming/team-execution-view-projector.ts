@@ -168,7 +168,7 @@ const teamTaskExecutionOf = (child: CollaborationTaskExecutionDto): TaskExecutio
       members: source.members.map((member) => {
         const memberSource = sourceOf(member.launchSource);
         return { address: member.address, agent_definition_id: member.agentDefinitionId, launch_configuration: launchOf(member.launchConfiguration),
-          follows_team: member.followsTeam, ...(memberSource ? { launch_source: memberSource } : {}) };
+          ...(memberSource ? { launch_source: memberSource } : {}) };
       }),
       handoffs: source.handoffs.map((handoff) => ({ from: handoff.from, to: handoff.to, rules: [...handoff.rules] })),
       default_launch_configuration: launchOf(source.defaultLaunchConfiguration),

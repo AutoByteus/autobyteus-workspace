@@ -41,8 +41,8 @@ const productTeamCopy = {
   source: {
     kind: 'agent_team' as const, team_definition_id: 'product-team', coordinator_address: '/product_team/prototyper', handoffs: [],
     members: [
-      { address: '/product_team/prototyper', agent_definition_id: 'prototyper', launch_configuration: launch, follows_team: true },
-      { address: '/product_team/bootstrapper', agent_definition_id: 'bootstrapper', launch_configuration: launch, follows_team: true },
+      { address: '/product_team/prototyper', agent_definition_id: 'prototyper', launch_configuration: launch },
+      { address: '/product_team/bootstrapper', agent_definition_id: 'bootstrapper', launch_configuration: launch },
     ],
     default_launch_configuration: launch,
   },
@@ -90,8 +90,8 @@ describe('copy sources', () => {
     const productSource = {
       kind: 'agent_team' as const, team_definition_id: 'product-team', coordinator_address: '/product_team/product_prototyper',
       members: [
-        { address: '/product_team/product_prototyper', agent_definition_id: 'prototyper', launch_configuration: launch, follows_team: true },
-        { address: '/product_team/prototype_bootstrapper', agent_definition_id: 'bootstrapper', launch_configuration: launch, follows_team: true },
+        { address: '/product_team/product_prototyper', agent_definition_id: 'prototyper', launch_configuration: launch },
+        { address: '/product_team/prototype_bootstrapper', agent_definition_id: 'bootstrapper', launch_configuration: launch },
       ],
       handoffs: [], default_launch_configuration: launch,
     }
@@ -132,7 +132,7 @@ describe('copy sources', () => {
       { address: '/product_team', teamRunId: 'product-copy', delegatorAgentRunId: 'agent-director', startedAt: created, taskExecutions: [],
         members: [{ address: '/product_team/prototyper', agentRunId: 'copy-prototyper', platformAgentRunId: null }],
         source: { kind: 'agent_team', teamDefinitionId: 'product-team', coordinatorAddress: '/product_team/prototyper',
-          members: [{ address: '/product_team/prototyper', agentDefinitionId: 'prototyper', launchConfiguration: orgLaunch, followsTeam: true }],
+          members: [{ address: '/product_team/prototyper', agentDefinitionId: 'prototyper', launchConfiguration: orgLaunch }],
           handoffs: [], defaultLaunchConfiguration: orgLaunch } },
     )
     view.agent_statuses.push(
@@ -158,7 +158,7 @@ describe('per-member launch of Team copies (D-5, AC-011)', () => {
       ...productTeamCopy.source,
       members: [
         productTeamCopy.source.members[0]!,
-        { ...productTeamCopy.source.members[1]!, launch_configuration: sol, follows_team: false, launch_source: { origin: 'agent_default' as const, fallbacks: [] } },
+        { ...productTeamCopy.source.members[1]!, launch_configuration: sol, launch_source: { origin: 'agent_default' as const, fallbacks: [] } },
       ],
     },
   }
@@ -174,8 +174,8 @@ describe('per-member launch of Team copies (D-5, AC-011)', () => {
       source: {
         kind: 'agent_team', team_definition_id: 'se', coordinator_address: '/se_team/lead', handoffs: [],
         members: [
-          { address: '/se_team/lead', agent_definition_id: 'lead', launch_configuration: launch, follows_team: true },
-          { address: '/se_team/ie', agent_definition_id: 'ie', launch_configuration: sol, follows_team: false },
+          { address: '/se_team/lead', agent_definition_id: 'lead', launch_configuration: launch },
+          { address: '/se_team/ie', agent_definition_id: 'ie', launch_configuration: sol },
         ],
         default_launch_configuration: launch,
       },
@@ -198,8 +198,8 @@ describe('per-member launch of Team copies (D-5, AC-011)', () => {
       source: {
         kind: 'agent_team' as const, teamDefinitionId: 'se', coordinatorAddress: '/se_copy/lead', handoffs: [],
         members: [
-          { address: '/se_copy/lead', agentDefinitionId: 'lead', launchConfiguration: camel, followsTeam: true },
-          { address: '/se_copy/ie', agentDefinitionId: 'ie', launchConfiguration: solCamel, followsTeam: false },
+          { address: '/se_copy/lead', agentDefinitionId: 'lead', launchConfiguration: camel },
+          { address: '/se_copy/ie', agentDefinitionId: 'ie', launchConfiguration: solCamel },
         ],
         defaultLaunchConfiguration: camel,
       },
@@ -218,7 +218,7 @@ describe('what each copy agent runs with: the launch its own run records (autoby
     const tree = teamTree()
     rootOf(tree).task_executions = [
       { ...reviewerCopy, agent_run_id: 'reviewer-run', source: { ...reviewerCopy.source, launch_configuration: sol } },
-      { ...productTeamCopy, source: { ...productTeamCopy.source, members: [productTeamCopy.source.members[0]!, { ...productTeamCopy.source.members[1]!, launch_configuration: sol, follows_team: false }] } },
+      { ...productTeamCopy, source: { ...productTeamCopy.source, members: [productTeamCopy.source.members[0]!, { ...productTeamCopy.source.members[1]!, launch_configuration: sol }] } },
     ]
     const at = (agentRunId: string) => teamAgentSourceOf(tree, agentRunId)?.launch_configuration
     expect(at('reviewer-run')).toEqual(sol)
@@ -234,7 +234,7 @@ describe('what each copy agent runs with: the launch its own run records (autoby
       { address: '/se', teamRunId: 'se-run', taskExecutions: [], startedAt: created, delegatorAgentRunId: 'host',
         members: [{ address: '/se/lead', agentRunId: 'lead-run', platformAgentRunId: null }],
         source: { kind: 'agent_team' as const, teamDefinitionId: 'se', coordinatorAddress: '/se/lead', handoffs: [], defaultLaunchConfiguration: camel,
-          members: [{ address: '/se/lead', agentDefinitionId: 'lead', launchConfiguration: solCamel, followsTeam: true }] } },
+          members: [{ address: '/se/lead', agentDefinitionId: 'lead', launchConfiguration: solCamel }] } },
       { address: '/ie', agentRunId: 'ie-copy', platformAgentRunId: null, delegatorAgentRunId: 'host', startedAt: created,
         source: { kind: 'agent' as const, agentDefinitionId: 'ie', launchConfiguration: camel } },
     ]

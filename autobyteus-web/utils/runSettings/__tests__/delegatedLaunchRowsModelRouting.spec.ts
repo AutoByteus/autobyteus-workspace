@@ -33,8 +33,8 @@ const tree = (): TeamRunExecutionTreeDto => ({
         kind: 'agent_team', team_definition_id: 'se', coordinator_address: '/se/sd', handoffs: [],
         default_launch_configuration: claude, default_launch_source: { origin: 'inherited', fallbacks: [] },
         members: [
-          { address: '/se/sd', agent_definition_id: 'sd', launch_configuration: claude, follows_team: false, launch_source: { origin: 'agent_default', fallbacks: [] } },
-          { address: '/se/ie', agent_definition_id: 'ie', launch_configuration: codex, follows_team: false, launch_source: routed },
+          { address: '/se/sd', agent_definition_id: 'sd', launch_configuration: claude, launch_source: { origin: 'agent_default', fallbacks: [] } },
+          { address: '/se/ie', agent_definition_id: 'ie', launch_configuration: codex, launch_source: routed },
         ],
       },
     }],

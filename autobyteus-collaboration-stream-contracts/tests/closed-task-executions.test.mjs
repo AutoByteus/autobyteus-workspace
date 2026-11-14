@@ -10,7 +10,7 @@ const taskTeam = (address, teamRunId, memberRunId, taskExecutions = []) => ({
   address, teamRunId, startedAt: at, delegatorAgentRunId: "host-run",
   members: [{ address: `${address}/lead`, agentRunId: memberRunId, platformAgentRunId: null }], taskExecutions,
   source: { kind: "agent_team", teamDefinitionId: "team", coordinatorAddress: `${address}/lead`, handoffs: [], defaultLaunchConfiguration: launch,
-    members: [{ address: `${address}/lead`, agentDefinitionId: "lead", launchConfiguration: launch, followsTeam: true }] },
+    members: [{ address: `${address}/lead`, agentDefinitionId: "lead", launchConfiguration: launch }] },
 });
 
 const agentView = (closed) => ({

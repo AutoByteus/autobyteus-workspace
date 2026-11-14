@@ -26,8 +26,8 @@ const launch = {
 const studyGroupSource = {
   kind: 'agent_team' as const, team_definition_id: 'study-definition', coordinator_address: '/StudentStudyGroup/Coordinator',
   members: [
-    { address: '/StudentStudyGroup/Coordinator', agent_definition_id: 'coordinator-definition', launch_configuration: launch, follows_team: true },
-    { address: '/StudentStudyGroup/Student', agent_definition_id: 'student-definition', launch_configuration: launch, follows_team: true },
+    { address: '/StudentStudyGroup/Coordinator', agent_definition_id: 'coordinator-definition', launch_configuration: launch },
+    { address: '/StudentStudyGroup/Student', agent_definition_id: 'student-definition', launch_configuration: launch },
   ],
   handoffs: [], default_launch_configuration: launch,
 };

@@ -44,7 +44,7 @@ const launchSourceSchema = z.union([
     }).strict(),
 ]);
 const memberLaunchSchema = {
-    launch_configuration: launchConfigurationSchema, follows_team: z.boolean(), launch_source: launchSourceSchema.optional(),
+    launch_configuration: launchConfigurationSchema, launch_source: launchSourceSchema.optional(),
 };
 const handoffDtoSchema = z.object({ from: nonEmptyStringSchema, to: nonEmptyStringSchema, rules: z.array(nonEmptyStringSchema).min(1) }).strict();
 const configuredAgentSchema = z.object({

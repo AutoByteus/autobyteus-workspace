@@ -11,8 +11,8 @@ import { agentRootMessages, agentRootView, created, launch } from './agentRootFi
  */
 const agentSource = { kind: 'agent' as const, agentDefinitionId: 'computer-use', launchConfiguration: launch }
 const teamSource = { kind: 'agent_team' as const, teamDefinitionId: 'product-team', coordinatorAddress: '/product_team/prototyper', handoffs: [],
-  members: [{ address: '/product_team/prototyper', agentDefinitionId: 'prototyper', launchConfiguration: launch, followsTeam: true },
-    { address: '/product_team/bootstrapper', agentDefinitionId: 'bootstrapper', launchConfiguration: launch, followsTeam: true }],
+  members: [{ address: '/product_team/prototyper', agentDefinitionId: 'prototyper', launchConfiguration: launch },
+    { address: '/product_team/bootstrapper', agentDefinitionId: 'bootstrapper', launchConfiguration: launch }],
   defaultLaunchConfiguration: launch }
 
 export const closureView = (closed: Array<{ agentRunId: string } | { teamRunId: string }> = []) => {

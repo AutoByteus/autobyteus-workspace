@@ -12,7 +12,7 @@ vi.mock('~/composables/chat/useChatModelCatalog', () => ({ useChatModelCatalog: 
 
 /**
  * autobyteus-461 V-11 (CR-461-078, DCP-001, DCP-005): an edit is recorded as the user's own (`settings`) and shows no
- * origin, for an agent run and a team member; a member that follows its team, and a configured placement's member,
+ * origin, for an agent run and a team member; a member with no source of its own, and a configured placement's member,
  * keep their team's origin; a member with no source recorded still says so.
  */
 const created = '2026-11-01T00:00:00.000Z'
@@ -35,11 +35,11 @@ const tree = (defaultSource: Record<string, unknown> | undefined): TeamRunExecut
         kind: 'agent_team', team_definition_id: 'se', coordinator_address: '/se/lead', handoffs: [], default_launch_configuration: claude,
         ...(defaultSource ? { default_launch_source: defaultSource } : {}),
         members: [
-          member('/se/lead', { follows_team: true }),
-          member('/se/edited', { launch_configuration: codex, follows_team: false, launch_source: settingsSource }),
+          member('/se/lead', {}),
+          member('/se/edited', { launch_configuration: codex, launch_source: settingsSource }),
           // A configured placement's member: its own launch, not following its team, with the team's recorded source.
-          member('/se/own', { launch_configuration: codex, follows_team: false }),
-          member('/se/bare', { follows_team: true }),
+          member('/se/own', { launch_configuration: codex }),
+          member('/se/bare', {}),
         ],
       },
     }],
@@ -73,7 +73,7 @@ describe('Settings: an edit shows no origin (V-11)', () => {
     expect(sourceOf(rows, '/se/edited@edited-run')).toEqual({ key: 'settings', text: '' })
   })
 
-  it('a follower and a configured placement\'s member keep their team\'s origin', () => {
+  it('a member with no source of its own and a configured placement\'s member keep their team\'s origin', () => {
     const rows = teamDelegatedLaunchNodes(tree({ origin: 'configured', fallbacks: [] }), deps)
     expect(sourceOf(rows, '/se/lead@lead-run').key).toBe('configured')
     expect(sourceOf(rows, '/se/own@own-run').key).toBe('configured')

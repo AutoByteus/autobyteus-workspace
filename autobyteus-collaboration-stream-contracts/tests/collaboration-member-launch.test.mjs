@@ -11,8 +11,8 @@ const fallback = { layer: "team_default", runtimeKind: null, llmModelIdentifier:
 const team = {
   kind: "agent_team", teamDefinitionId: "se", coordinatorAddress: "/se/lead",
   members: [
-    { address: "/se/lead", agentDefinitionId: "lead", launchConfiguration: claude, followsTeam: true },
-    { address: "/se/ie", agentDefinitionId: "ie", launchConfiguration: codex, followsTeam: false, launchSource: { origin: "agent_default", fallbacks: [] } },
+    { address: "/se/lead", agentDefinitionId: "lead", launchConfiguration: claude },
+    { address: "/se/ie", agentDefinitionId: "ie", launchConfiguration: codex, launchSource: { origin: "agent_default", fallbacks: [] } },
   ],
   handoffs: [], defaultLaunchConfiguration: claude, defaultLaunchSource: { origin: "inherited", fallbacks: [fallback] },
 };
@@ -22,11 +22,11 @@ const copy = {
   source: team,
 };
 
-test("Team copy DTOs carry each member's complete launch, whether it follows the Team, and optional sources", () => {
+test("Team copy DTOs carry each member's complete launch and optional sources, and no follower flag (CR-461-089)", () => {
   assert.deepEqual(taskExecutionDtoSchema.parse(copy), copy);
   assert.throws(() => taskExecutionDtoSchema.parse({ ...copy, source: { ...team, defaultLaunchSource: { origin: "inherited" } } }));
-  const { followsTeam: _follows, ...noFollows } = team.members[0];
-  assert.throws(() => taskExecutionDtoSchema.parse({ ...copy, source: { ...team, members: [noFollows, team.members[1]] } }));
+  // autobyteus-461 CR-461-089: a Team-level choice is the Team's default only; no member says it follows the Team.
+  assert.throws(() => taskExecutionDtoSchema.parse({ ...copy, source: { ...team, members: [{ ...team.members[0], followsTeam: true }, team.members[1]] } }));
 });
 
 test("every copy carries its source; the configured origin is accepted", () => {

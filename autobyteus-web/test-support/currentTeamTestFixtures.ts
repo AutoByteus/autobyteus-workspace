@@ -210,7 +210,7 @@ const executionForDelegation = (
     source: {
       kind: 'agent_team', team_definition_id: team.teamDefinitionId, coordinator_address: team.coordinatorAddress,
       members: team.children.map((child) => ({ address: child.address, agent_definition_id: child.agentDefinitionId,
-        launch_configuration: launch(child), follows_team: true })),
+        launch_configuration: launch(child) })),
       handoffs: [], default_launch_configuration: team.defaultLaunchConfiguration,
     },
   };

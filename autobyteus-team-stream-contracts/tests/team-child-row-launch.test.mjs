@@ -6,7 +6,7 @@ import { taskAgentExecutionDtoSchema, taskTeamExecutionDtoSchema } from "../dist
 const claude = { runtime_kind: "claude_agent_sdk", llm_model_identifier: "opus", llm_config: null, auto_execute_tools: false, workspace_root_path: "/w" };
 const agentSource = { kind: "agent", agent_definition_id: "ie", launch_configuration: claude };
 const teamSource = { kind: "agent_team", team_definition_id: "se", coordinator_address: "/se/lead", handoffs: [], default_launch_configuration: claude,
-  members: [{ address: "/se/lead", agent_definition_id: "lead", launch_configuration: claude, follows_team: true }] };
+  members: [{ address: "/se/lead", agent_definition_id: "lead", launch_configuration: claude }] };
 const choice = { llm_model_identifier: "haiku", llm_config: null, selected_at: "2026-10-13T00:00:00.000Z" };
 
 test("a child row has its run's launch; a recorded copy choice is refused", () => {

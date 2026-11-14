@@ -75,12 +75,11 @@ export declare const collaborationLaunchConfigurationSourceDtoSchema: z.ZodUnion
 }, z.core.$strict>]>;
 export type CollaborationLaunchConfigurationSourceDto = Readonly<z.infer<typeof collaborationLaunchConfigurationSourceDtoSchema>>;
 /**
- * A Team copy member's launch: the complete launch it started with, and whether a Team-level choice
- * reaches it (`followsTeam`). `launchSource` is present only when its agent definition had a default.
+ * A Team copy member's launch: the complete launch its own run has (a Team-level choice is the Team's default only:
+ * autobyteus-461 CR-461-089). `launchSource` is present only when its agent definition had a default.
  */
 type MemberLaunchDto = Readonly<{
     launchConfiguration: LaunchConfigurationDto;
-    followsTeam: boolean;
     launchSource?: CollaborationLaunchConfigurationSourceDto;
 }>;
 type TeamLaunchDto = Readonly<{

@@ -55,7 +55,7 @@ describe("current Team delegated-execution stream contract", () => {
             kind: "agent_team",
             team_definition_id: "worker-team",
             coordinator_address: "/worker/lead",
-            members: [{ address: "/worker/lead", agent_definition_id: "lead", launch_configuration: launch, follows_team: true }],
+            members: [{ address: "/worker/lead", agent_definition_id: "lead", launch_configuration: launch }],
             handoffs: [],
             default_launch_configuration: launch,
           },

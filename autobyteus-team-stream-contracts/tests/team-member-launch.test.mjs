@@ -10,9 +10,9 @@ const claude = { runtime_kind: "claude_agent_sdk", llm_model_identifier: "opus",
 const codex = { ...claude, runtime_kind: "codex_app_server", llm_model_identifier: "sol-6.1", llm_config: { effort: "high" } };
 const fallback = { layer: "agent_default", runtime_kind: "codex_app_server", llm_model_identifier: "sol-6.1", reason: "runtime_unavailable", detail: "no codex" };
 const members = [
-  { address: "/se/lead", agent_definition_id: "lead", launch_configuration: claude, follows_team: true },
-  { address: "/se/ie", agent_definition_id: "ie", launch_configuration: codex, follows_team: false, launch_source: { origin: "agent_default", fallbacks: [] } },
-  { address: "/se/cr", agent_definition_id: "cr", launch_configuration: claude, follows_team: true, launch_source: { origin: "inherited", fallbacks: [fallback] } },
+  { address: "/se/lead", agent_definition_id: "lead", launch_configuration: claude },
+  { address: "/se/ie", agent_definition_id: "ie", launch_configuration: codex, launch_source: { origin: "agent_default", fallbacks: [] } },
+  { address: "/se/cr", agent_definition_id: "cr", launch_configuration: claude, launch_source: { origin: "inherited", fallbacks: [fallback] } },
 ];
 const source = {
   kind: "agent_team", team_definition_id: "se", coordinator_address: "/se/lead", handoffs: [], members,
@@ -24,13 +24,13 @@ const copy = {
   source,
 };
 
-test("Team copy DTOs carry each member's complete launch, whether it follows the Team, and optional sources", () => {
+test("Team copy DTOs carry each member's complete launch and optional sources, and no follower flag (CR-461-089)", () => {
   assert.deepEqual(taskTeamExecutionDtoSchema.parse(copy), copy);
   assert.throws(() => taskTeamExecutionDtoSchema.parse({ ...copy, source: { ...source, default_launch_source: { origin: "routing", fallbacks: [] } } }));
   const { launch_configuration: _launch, ...noLaunch } = members[0];
   assert.throws(() => taskTeamExecutionDtoSchema.parse({ ...copy, source: { ...source, members: [noLaunch, ...members.slice(1)] } }));
-  const { follows_team: _follows, ...noFollows } = members[0];
-  assert.throws(() => taskTeamExecutionDtoSchema.parse({ ...copy, source: { ...source, members: [noFollows, ...members.slice(1)] } }));
+  // autobyteus-461 CR-461-089: a Team-level choice is the Team's default only; no member says it follows the Team.
+  assert.throws(() => taskTeamExecutionDtoSchema.parse({ ...copy, source: { ...source, members: [{ ...members[0], follows_team: true }, ...members.slice(1)] } }));
 });
 
 test("every copy carries its source; a copy started from a configured placement records the configured origin", () => {

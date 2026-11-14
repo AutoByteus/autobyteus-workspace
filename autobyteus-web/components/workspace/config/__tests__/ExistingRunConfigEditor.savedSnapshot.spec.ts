@@ -75,16 +75,15 @@ beforeEach(() => {
       const entries = mocks.stored.execution_tree.taskExecutions.flatMap((e: any) => [e, ...(e.members ?? [])])
       const entry = entries.find((e: any) => key === `agent:${e.agentRunId}` || key === `team:${e.teamRunId}`)
       // Each child's change is saved by its own run (SR-039): its launch is the new one. A Team child's team-level save
-      // also applies to the members that follow the Team; a member's own save to its own launch.
+      // changes its default only (CR-461-089); a member's own save its own launch.
       const apply = (target: any) => Object.assign(target, Object.fromEntries(Object.entries(selection).filter(([, value]) => value !== undefined)))
       if (key.startsWith('team:')) {
         apply(entry.source.defaultLaunchConfiguration)
-        entry.source.members.filter((member: any) => member.followsTeam).forEach((member: any) => apply(member.launchConfiguration))
       } else if (entry.source) apply(entry.source.launchConfiguration)
       else {
         const team = mocks.stored.execution_tree.taskExecutions.find((t: any) => t.members?.includes(entry))
         const member = team.source.members.find((m: any) => m.address === entry.address)
-        apply(member.launchConfiguration); member.followsTeam = false
+        apply(member.launchConfiguration)
       }
     }
     return { success: true, outcome: 'UPDATED', message: 'Saved.', fieldErrors: [] }
@@ -209,7 +208,7 @@ it('renders the refreshed canonical settings on the real card of the focused cop
   wrapper.unmount()
 })
 
-it('refreshes a Team selection and its follower, preserves own defaults and neighboring instances', async () => {
+it('refreshes a Team selection only (CR-461-089: each member keeps its own launch), and neighboring instances', async () => {
   const own = { ...launch(), llmModelIdentifier: 'own-model' }
   mocks.stored.execution_tree.taskExecutions.push({ address: '/team', teamRunId: 'team-copy', delegatorAgentRunId: 'host', startedAt: '2026-10-13T00:00:00.000Z',
     taskExecutions: [], members: [
@@ -217,8 +216,8 @@ it('refreshes a Team selection and its follower, preserves own defaults and neig
       { address: '/team/own', agentRunId: 'own', platformAgentRunId: null },
     ],
     source: { kind: 'agent_team', teamDefinitionId: 'team', coordinatorAddress: '/team/lead', handoffs: [], defaultLaunchConfiguration: launch(), members: [
-      { address: '/team/lead', agentDefinitionId: 'lead', launchConfiguration: launch(), followsTeam: true },
-      { address: '/team/own', agentDefinitionId: 'own', launchConfiguration: own, followsTeam: false, launchSource: { origin: 'agent_default', fallbacks: [] } },
+      { address: '/team/lead', agentDefinitionId: 'lead', launchConfiguration: launch() },
+      { address: '/team/own', agentDefinitionId: 'own', launchConfiguration: own, launchSource: { origin: 'agent_default', fallbacks: [] } },
     ] } })
   mocks.focused.value = 'follower'
   const wrapper = mountEditor(); await flushPromises()
@@ -228,13 +227,13 @@ it('refreshes a Team selection and its follower, preserves own defaults and neig
   await wrapper.get('[data-test="edit-/team@team-copy"]').trigger('click')
   await wrapper.get('[data-test="save-existing-model-config"]').trigger('click'); await flushPromises()
   expect(wrapper.get('[data-test="/team@team-copy"]').text()).toBe('new:null')
-  expect(wrapper.get('[data-test="/team/lead@follower"]').text()).toBe('new:null')
+  expect(wrapper.get('[data-test="/team/lead@follower"]').text()).toBe('old:null')
   expect(wrapper.get('[data-test="/team/own@own"]').text()).toBe('own-model:null')
-  // A following member can now choose its own model/config without changing the Team or sibling.
+  // A member chooses its own model/config without changing the Team or sibling.
   wrapper.getComponent({ name: 'ExistingRunSettings' }).vm.$emit('change-delegated', '/team/lead@follower', { field: 'thinking', llmConfig: { reasoning_effort: 'high' } })
   await flushPromises()
   await wrapper.get('[data-test="save-existing-model-config"]').trigger('click'); await flushPromises()
-  expect(wrapper.get('[data-test="/team/lead@follower"]').text()).toBe('new:{"reasoning_effort":"high"}')
+  expect(wrapper.get('[data-test="/team/lead@follower"]').text()).toBe('old:{"reasoning_effort":"high"}')
   expect(wrapper.get('[data-test="/team@team-copy"]').text()).toBe('new:null')
   // A neighboring copy is untouched; another focus starts at that agent's own settings.
   mocks.focused.value = 'copy'; await flushPromises()

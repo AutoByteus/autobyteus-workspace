@@ -13,7 +13,7 @@ const launch = {
 const agentSource = (agentDefinitionId: string) => ({ kind: 'agent' as const, agentDefinitionId, launchConfiguration: launch });
 const teamSource = (teamDefinitionId: string, coordinatorAddress: string) => ({
   kind: 'agent_team' as const, teamDefinitionId, coordinatorAddress, handoffs: [], defaultLaunchConfiguration: launch,
-  members: [{ address: coordinatorAddress, agentDefinitionId: 'lead-definition', launchConfiguration: launch, followsTeam: true }],
+  members: [{ address: coordinatorAddress, agentDefinitionId: 'lead-definition', launchConfiguration: launch }],
 });
 
 const team: AgentOrgConfiguredTeamNode = {

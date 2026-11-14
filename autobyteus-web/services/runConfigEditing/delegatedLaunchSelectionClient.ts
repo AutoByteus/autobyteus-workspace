@@ -106,7 +106,7 @@ type Change = Readonly<{ key: DelegatedTargetKey; selection: ExistingAgentRunSel
 type RunSave = Readonly<{ kind: 'agent'; agentRunId: string; selection: ExistingAgentRunSelection; keys: readonly DelegatedTargetKey[] }>
   | Readonly<{ kind: 'team'; teamRunId: string; patches: ExistingTeamModelConfigPatch[]; keys: DelegatedTargetKey[] }>
 
-/** The changes as one save per run, in row order; a Team's choice reaches its followers without their own choice. */
+/** The changes as one save per run, in row order; a Team's choice is its default only (CR-461-089). */
 const savesOf = (changes: readonly Change[], targets: ReadonlyMap<DelegatedTargetKey, DelegatedSaveTarget>): RunSave[] => {
   const saves: RunSave[] = []
   const teamSave = (teamRunId: string) => {
@@ -114,7 +114,6 @@ const savesOf = (changes: readonly Change[], targets: ReadonlyMap<DelegatedTarge
     if (!save) { save = { kind: 'team', teamRunId, patches: [], keys: [] }; saves.push(save) }
     return save
   }
-  const own = new Set(changes.map((change) => change.key))
   for (const { key, selection } of changes) {
     const target = targets.get(key)
     if (!target) throw new Error('A changed row is no longer shown; refresh and try again.')
@@ -123,14 +122,8 @@ const savesOf = (changes: readonly Change[], targets: ReadonlyMap<DelegatedTarge
     save.keys.push(key)
     const patch = (scopeKind: ExistingTeamModelConfigPatch['scopeKind'], scopeAddress: string) =>
       save.patches.push({ scopeKind, scopeAddress, runtimeKind: selection.runtimeKind, llmModelIdentifier: selection.llmModelIdentifier, llmConfig: selection.llmConfig })
-    if (target.kind === 'team_member') { patch('CONFIGURED_AGENT', target.memberAddress); continue }
-    patch('CONFIGURED_TEAM', '/')
-    const memberKeys = new Map([...targets].flatMap(([memberKey, candidate]) =>
-      candidate.kind === 'team_member' && candidate.teamRunId === target.teamRunId ? [[candidate.memberAddress, memberKey] as const] : []))
-    for (const address of target.followerAddresses) {
-      const memberKey = memberKeys.get(address)
-      if (!memberKey || !own.has(memberKey)) patch('CONFIGURED_AGENT', address)
-    }
+    if (target.kind === 'team_member') patch('CONFIGURED_AGENT', target.memberAddress)
+    else patch('CONFIGURED_TEAM', '/')
   }
   return saves
 }
@@ -144,8 +137,8 @@ const teamSelection = (launch: Readonly<{ runtime_kind: string; llm_model_identi
   launch ? { runtimeKind: launch.runtime_kind, llmModelIdentifier: launch.llm_model_identifier, llmConfig: launch.llm_config ?? null } : null
 
 /**
- * What a Team run's save answer says each of its rows now has: the Team row its own launch, each member row its
- * member's (a member that follows the Team took the Team's choice).
+ * What a Team run's save answer says each of its rows now has: the Team row its default launch, each member row its
+ * member's own.
  */
 const savedOfTeam = (teamRunId: string, answer: unknown, targets: ReadonlyMap<DelegatedTargetKey, DelegatedSaveTarget>): Record<DelegatedTargetKey, ExistingAgentRunSelection> => {
   const parsed = teamRunExecutionTreeDtoSchema.safeParse(answer)

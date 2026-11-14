@@ -285,7 +285,7 @@ test("correlates restored task executions by fresh run identity while reusing co
     startedAt: "2026-09-01T00:00:02.000Z",
     source: {
       kind: "agent_team", teamDefinitionId: "team", coordinatorAddress: "/team/lead", handoffs: [], defaultLaunchConfiguration: launchConfiguration,
-      members: ["/team/lead", "/team/worker"].map((address) => ({ address, agentDefinitionId: "agent", launchConfiguration, followsTeam: true })),
+      members: ["/team/lead", "/team/worker"].map((address) => ({ address, agentDefinitionId: "agent", launchConfiguration })),
     },
   });
   snapshot.root_org.agent_statuses.push(

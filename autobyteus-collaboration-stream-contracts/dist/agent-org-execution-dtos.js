@@ -47,7 +47,7 @@ export const collaborationLaunchConfigurationSourceDtoSchema = z.union([
 export const collaborationMemberLaunchSource = (team, member) => member.launchSource ?? team.defaultLaunchSource ?? null;
 const handoff = z.object({ from: agentAddressSchema, to: agentAddressSchema, rules: z.array(nonEmptyStringSchema).min(1) }).strict();
 const launchSource = collaborationLaunchConfigurationSourceDtoSchema.optional();
-const memberLaunch = { launchConfiguration: agentOrgLaunchConfigurationDtoSchema, followsTeam: z.boolean(), launchSource };
+const memberLaunch = { launchConfiguration: agentOrgLaunchConfigurationDtoSchema, launchSource };
 const taskAgentSource = z.object({
     kind: z.literal("agent"), agentDefinitionId: nonEmptyStringSchema, launchConfiguration: agentOrgLaunchConfigurationDtoSchema,
     launchSource,

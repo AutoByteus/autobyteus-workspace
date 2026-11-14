@@ -70,7 +70,6 @@ export const projectDelegatedAgentRun = (identity: Extract<DelegatedRunIdentity,
 export const projectDelegatedTeamRun = (identity: Extract<DelegatedRunIdentity, { kind: "agent_team" }>, tree: TeamRunExecutionTreeFile): CollaborationTaskExecutionDto => {
   const team = tree.rootTeam;
   const platformRunOf = new Map(team.members.map((member) => [member.agentRunId, member.platformAgentRunId]));
-  const sameLaunch = (member: ConfiguredAgentExecutionNode) => JSON.stringify(projectLaunch(member.launchConfiguration)) === JSON.stringify(projectLaunch(team.defaultLaunchConfiguration));
   return {
     address: identity.address, startedAt: identity.startedAt, ...(identity.delegatorAgentRunId ? { delegatorAgentRunId: identity.delegatorAgentRunId } : {}),
     teamRunId: identity.teamRunId,
@@ -78,7 +77,7 @@ export const projectDelegatedTeamRun = (identity: Extract<DelegatedRunIdentity, 
     taskExecutions: [],
     source: { kind: "agent_team", teamDefinitionId: team.teamDefinitionId, coordinatorAddress: team.coordinatorAddress,
       members: team.members.map((member) => ({ address: member.address, agentDefinitionId: member.agentDefinitionId,
-        launchConfiguration: projectLaunch(member.launchConfiguration), followsTeam: sameLaunch(member), ...projectOptionalSource(member, "launchSource") })),
+        launchConfiguration: projectLaunch(member.launchConfiguration), ...projectOptionalSource(member, "launchSource") })),
       handoffs: tree.handoffs.map(projectHandoff), defaultLaunchConfiguration: projectLaunch(team.defaultLaunchConfiguration),
       ...projectOptionalSource(team, "defaultLaunchSource") },
     // Its coordinator, by its own address in its own run (TC-12), among the members it lists.

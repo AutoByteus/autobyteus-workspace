@@ -94,13 +94,12 @@ const selectionOf = (launch: Launch): Selection & Readonly<{ runtimeKind: string
   llmConfig: launch?.llmConfig ? { ...launch.llmConfig } : null,
 })
 /**
- * The draft rule: what a row runs with once this edit's unsaved choices apply (its own choice, else its Team's when it
- * follows the Team, else the launch its run has), and whether a choice decided it. Each saved choice is its run's own
- * launch (SR-039), so nothing else is layered on.
+ * The draft rule: what a row runs with once this edit's unsaved choice applies (its own choice, else the launch its run
+ * has), and whether a choice decided it. Each saved choice is its run's own launch (SR-039): a Team row's choice is its
+ * Team's default only, and each member keeps its own launch (CR-461-089, SR-075 F-39).
  */
-const draftLaunch = (input: Readonly<{ started: Launch; followsTeam: boolean; team: Selection | null; agent: Selection | null }>):
-  Readonly<{ launch: Launch; chosen: boolean }> => {
-  const choice = input.agent ?? (input.followsTeam ? input.team : null)
+const draftLaunch = (input: Readonly<{ started: Launch; choice: Selection | null }>): Readonly<{ launch: Launch; chosen: boolean }> => {
+  const choice = input.choice
   if (!input.started || !choice) return { launch: input.started, chosen: false }
   return { launch: { ...input.started, runtimeKind: choice.runtimeKind ?? input.started.runtimeKind,
     llmModelIdentifier: choice.llmModelIdentifier, llmConfig: choice.llmConfig }, chosen: true }
@@ -127,10 +126,7 @@ type RowInput = Readonly<{
   agentRunId?: string
   /** The launch its run has. */
   started: Launch
-  followsTeam?: boolean
   target: TargetKey
-  /** The Team-level target of a member row, whose draft also reaches a follower. */
-  teamTarget?: TargetKey
   stop: StopReference | null
   running: boolean
   facts: RunMemberLaunchFacts
@@ -141,13 +137,10 @@ type RowInput = Readonly<{
  * `nameOf` is the root's naming rule, so a row is named as the sidebar and the conversation name the copy.
  */
 const builders = (deps: RunMemberTreeDeps, control: DelegatedRowControl, nameOf: (address: string) => string) => {
-  const rowFacts = (recordedInput: RowInput, isTeam: boolean) => {
+  const rowFacts = (recordedInput: RowInput) => {
     const input: RowInput = { ...recordedInput, started: withSaved(recordedInput.started, control.savedOf(recordedInput.target)) }
-    // A Team row's card is the Team's choice; an agent follows the Team's choice only when it follows the Team.
-    const followsTeam = isTeam || Boolean(input.followsTeam)
-    const draftTeam = isTeam ? control.draftOf(input.target) : input.teamTarget ? control.draftOf(input.teamTarget) : null
-    const draftAgent = isTeam ? null : control.draftOf(input.target)
-    const current = draftLaunch({ started: input.started, followsTeam, team: draftTeam, agent: draftAgent })
+    // Each row shows its own choice only: a Team row's is its Team's default, a member's its own.
+    const current = draftLaunch({ started: input.started, choice: control.draftOf(input.target) })
     const stopping = input.stop ? control.isStopping(input.stop) : false
     const delegated: RunMemberDelegatedFacts = {
       target: input.target,
@@ -167,12 +160,12 @@ const builders = (deps: RunMemberTreeDeps, control: DelegatedRowControl, nameOf:
   }
   return {
     agent: (input: RowInput, isCoordinator = false): RunMemberNode => {
-      const { values, ...rest } = rowFacts(input, false)
+      const { values, ...rest } = rowFacts(input)
       return memberNode({ key: input.key, kind: 'agent', name: nameOf(input.address), agentRunId: input.agentRunId, isCoordinator, values, parentValues: values,
         fields: MEMBER_RUN_SETTING_FIELDS, ...rest }, deps)
     },
     team: (input: RowInput, children: readonly RunMemberNode[]): RunMemberNode => {
-      const { values, ...rest } = rowFacts(input, true)
+      const { values, ...rest } = rowFacts(input)
       return memberNode({ key: input.key, kind: 'team', name: nameOf(input.address), values, parentValues: values,
         fields: MEMBER_RUN_SETTING_FIELDS, children, ...rest }, deps)
     },
@@ -214,20 +207,18 @@ export const teamDelegatedLaunchNodes = (
       }
       const source = task.source
       const teamStarted = snakeLaunch(source.default_launch_configuration)
-      const teamTarget: TargetKey = `team:${task.team_run_id}`
       const running = live(task.members.map((member) => member.agent_run_id))
       const members = task.members.map((member) => {
         const recorded = source.members.find((candidate) => candidate.address === member.address)
         return build.agent({ key: `${member.address}@${member.agent_run_id}`, address: member.address, agentRunId: member.agent_run_id,
           started: snakeLaunch(recorded?.launch_configuration),
-          followsTeam: recorded?.follows_team ?? false,
-          target: `agent:${member.agent_run_id}`, teamTarget, stop: null, running,
+          target: `agent:${member.agent_run_id}`, stop: null, running,
           facts: factsOf(snakeSource(teamMemberLaunchSource(source, recorded ?? {})), Boolean(recorded?.launch_source), undefined,
             locatorOf(task.delegator_agent_run_id, task.address, member.address)) },
         member.address === source.coordinator_address)
       })
       result.push(build.team({ key: `${task.address}@${task.team_run_id}`, address: task.address, started: teamStarted,
-        target: teamTarget, stop: { teamRunId: task.team_run_id }, running,
+        target: `team:${task.team_run_id}`, stop: { teamRunId: task.team_run_id }, running,
         facts: factsOf(snakeSource(source.default_launch_source), true, 'delegated_copy') }, members))
       visit(task.task_executions)
     }
@@ -266,20 +257,18 @@ export const collaborationDelegatedLaunchNodes = (input: Readonly<{
       }
       const source = task.source
       const teamStarted = camelLaunch(source.defaultLaunchConfiguration)
-      const teamTarget: TargetKey = `team:${task.teamRunId}`
       const running = live(task.members.map((member) => member.agentRunId))
       const members = task.members.map((member) => {
         const recorded = source.members.find((candidate) => candidate.address === member.address)
         return build.agent({ key: `${member.address}@${member.agentRunId}`, address: member.address, agentRunId: member.agentRunId,
           started: camelLaunch(recorded?.launchConfiguration),
-          followsTeam: recorded?.followsTeam ?? false,
-          target: `agent:${member.agentRunId}`, teamTarget, stop: null, running,
+          target: `agent:${member.agentRunId}`, stop: null, running,
           facts: factsOf(camelSource(collaborationMemberLaunchSource(source, recorded ?? {})), Boolean(recorded?.launchSource), undefined,
             locatorOf(task.delegatorAgentRunId, task.address, member.address)) },
         member.address === source.coordinatorAddress)
       })
       result.push(build.team({ key: `${task.address}@${task.teamRunId}`, address: task.address, started: teamStarted,
-        target: teamTarget, stop: { teamRunId: task.teamRunId }, running,
+        target: `team:${task.teamRunId}`, stop: { teamRunId: task.teamRunId }, running,
         facts: factsOf(camelSource(source.defaultLaunchSource), true, 'delegated_copy') }, members))
       visit(task.taskExecutions)
     }
@@ -292,23 +281,23 @@ export const collaborationDelegatedLaunchNodes = (input: Readonly<{
 
 /**
  * The run a delegated row's change is saved to, by that run's own stopped-run save: an agent row's own run; a Team row
- * the Team run at `/` (with its members that follow it); a Team member row the Team run at the member's address in the
- * Team run's own space.
+ * the Team run at `/` (its default only: each member keeps its own launch, CR-461-089); a Team member row the Team run at
+ * the member's address in the Team run's own space.
  */
 export type DelegatedSaveTarget =
   | Readonly<{ kind: 'agent'; agentRunId: string }>
-  | Readonly<{ kind: 'team'; teamRunId: string; followerAddresses: readonly string[] }>
+  | Readonly<{ kind: 'team'; teamRunId: string }>
   | Readonly<{ kind: 'team_member'; teamRunId: string; memberAddress: string }>
 
 type SaveTask = Readonly<{ agentRunId: string } | { teamRunId: string; members: readonly Readonly<{ address: string; agentRunId: string }>[];
-  followerAddresses: readonly string[]; children: readonly SaveTask[] }>
+  children: readonly SaveTask[] }>
 
 const saveTargetsOf = (tasks: readonly SaveTask[]): ReadonlyMap<TargetKey, DelegatedSaveTarget> => {
   const targets = new Map<TargetKey, DelegatedSaveTarget>()
   const visit = (list: readonly SaveTask[]): void => {
     for (const task of list) {
       if ('agentRunId' in task) { targets.set(`agent:${task.agentRunId}`, Object.freeze({ kind: 'agent', agentRunId: task.agentRunId })); continue }
-      targets.set(`team:${task.teamRunId}`, Object.freeze({ kind: 'team', teamRunId: task.teamRunId, followerAddresses: task.followerAddresses }))
+      targets.set(`team:${task.teamRunId}`, Object.freeze({ kind: 'team', teamRunId: task.teamRunId }))
       for (const member of task.members) {
         targets.set(`agent:${member.agentRunId}`, Object.freeze({ kind: 'team_member', teamRunId: task.teamRunId, memberAddress: member.address }))
       }
@@ -323,7 +312,7 @@ const saveTargetsOf = (tasks: readonly SaveTask[]): ReadonlyMap<TargetKey, Deleg
 export const teamDelegatedSaveTargets = (tree: TeamRunExecutionTreeDto): ReadonlyMap<TargetKey, DelegatedSaveTarget> => {
   const of = (tasks: readonly TeamTaskExecutionDto[]): SaveTask[] => tasks.map((task) => task.kind === 'task_agent' ? { agentRunId: task.agent_run_id }
     : { teamRunId: task.team_run_id, members: task.members.map((member) => ({ address: member.address, agentRunId: member.agent_run_id })),
-      followerAddresses: task.source.members.filter((member) => member.follows_team).map((member) => member.address), children: of(task.task_executions) })
+      children: of(task.task_executions) })
   return saveTargetsOf(of(tree.root_team.task_executions))
 }
 
@@ -331,7 +320,7 @@ export const teamDelegatedSaveTargets = (tree: TeamRunExecutionTreeDto): Readonl
 export const collaborationDelegatedSaveTargets = (taskExecutions: readonly CollaborationTaskExecutionDto[]): ReadonlyMap<TargetKey, DelegatedSaveTarget> => {
   const of = (tasks: readonly CollaborationTaskExecutionDto[]): SaveTask[] => tasks.map((task) => 'agentRunId' in task ? { agentRunId: task.agentRunId }
     : { teamRunId: task.teamRunId, members: task.members.map((member) => ({ address: member.address, agentRunId: member.agentRunId })),
-      followerAddresses: task.source.members.filter((member) => member.followsTeam).map((member) => member.address), children: of(task.taskExecutions) })
+      children: of(task.taskExecutions) })
   return saveTargetsOf(of(taskExecutions))
 }
 

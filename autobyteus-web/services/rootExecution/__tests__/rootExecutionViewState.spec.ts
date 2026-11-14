@@ -34,8 +34,8 @@ const memberCopySource = { kind: 'agent' as const, agentDefinitionId: 'member-de
 const teamCopySource = {
   kind: 'agent_team' as const, teamDefinitionId: 'team-def', coordinatorAddress: '/team/coordinator',
   members: [
-    { address: '/team/coordinator', agentDefinitionId: 'coordinator-def', launchConfiguration: launch, followsTeam: true },
-    { address: '/team/member', agentDefinitionId: 'member-def', launchConfiguration: launch, followsTeam: true },
+    { address: '/team/coordinator', agentDefinitionId: 'coordinator-def', launchConfiguration: launch },
+    { address: '/team/member', agentDefinitionId: 'member-def', launchConfiguration: launch },
   ],
   handoffs: [], defaultLaunchConfiguration: launch, defaultLaunchSource: configured,
 }

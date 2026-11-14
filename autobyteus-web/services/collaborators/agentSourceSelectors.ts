@@ -17,8 +17,8 @@ import { collectConfiguredAgents } from '~/services/teamExecution/teamExecutionT
  * REQ-004).
  *
  * What one copy agent runs with is the launch its own run has (autobyteus-461: a child's change is saved
- * by its own run, SR-039). A Team copy's member records its complete launch and whether it follows the
- * Team (`followsTeam`, D-5). Teams are flat: a Team copy's members are Agents.
+ * by its own run, SR-039). A Team copy's member records its complete launch; a Team-level choice is the
+ * Team's default only (CR-461-089). Teams are flat: a Team copy's members are Agents.
  */
 
 /** One copy agent's launch and definition. */

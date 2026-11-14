@@ -39,12 +39,13 @@ describe("launch values and sources in run views' child rows", () => {
   const teamView = (recorded: boolean) => projectExecutionTree(testExecutionTree({ rootTeamRunId: "root", coordinatorAddress: "/pm",
     children: [testAgentNode("/pm", { agentRunId: "pm" })] }), [projectDelegatedTeamRun(teamIdentity, teamFile(recorded) as never)]);
 
-  it("the Team view (snake_case) carries each member's launch and whether it took the team's; sources only when recorded", () => {
+  it("the Team view (snake_case) carries each member's own launch and no follower flag (CR-461-089); sources only when recorded", () => {
     const dto = taskTeamExecutionDtoSchema.parse(teamView(true).root_team.task_executions[0]);
     expect(dto.source.members[0]).toMatchObject({ address: "/lead",
-      launch_configuration: { runtime_kind: "claude_agent_sdk", llm_model_identifier: "opus" }, follows_team: true,
+      launch_configuration: { runtime_kind: "claude_agent_sdk", llm_model_identifier: "opus" },
       launch_source: { origin: "inherited", fallbacks: [{ layer: "agent_default", runtime_kind: "grok_build", llm_model_identifier: "grok-4", reason: "runtime_unavailable", detail: "no grok" }] } });
-    expect(dto.source.members.map((member) => [member.launch_configuration.llm_model_identifier, member.follows_team])).toEqual([["opus", true], ["sol-6.1", false]]);
+    expect(dto.source.members.map((member) => member.launch_configuration.llm_model_identifier)).toEqual(["opus", "sol-6.1"]);
+    expect(dto.source.members.some((member) => "follows_team" in member)).toBe(false);
     expect(dto.source.default_launch_source).toEqual({ origin: "inherited", fallbacks: [] });
     expect(JSON.stringify(teamView(false).root_team.task_executions[0])).not.toMatch(/launch_source/);
   });
@@ -52,7 +53,8 @@ describe("launch values and sources in run views' child rows", () => {
   it("the Org and Agent views (camelCase) carry the same, and an agent child's source from its own run_metadata", () => {
     const projected = taskExecutionDtoSchema.parse(projectDelegatedTeamRun(teamIdentity, teamFile(true) as never));
     if (!("teamRunId" in projected) || projected.source.kind !== "agent_team") throw new Error("team child expected");
-    expect(projected.source.members.map((member) => [member.launchConfiguration.llmModelIdentifier, member.followsTeam])).toEqual([["opus", true], ["sol-6.1", false]]);
+    expect(projected.source.members.map((member) => member.launchConfiguration.llmModelIdentifier)).toEqual(["opus", "sol-6.1"]);
+    expect(projected.source.members.some((member) => "followsTeam" in member)).toBe(false);
     expect(projected.source.members[0]!.launchSource?.fallbacks[0]).toEqual(fallback);
     const agent = taskExecutionDtoSchema.parse(projectDelegatedAgentRun(agentIdentity, {
       runId: "writer-run", agentDefinitionId: "writer", address: "/writer", platformAgentRunId: null, ...claude,

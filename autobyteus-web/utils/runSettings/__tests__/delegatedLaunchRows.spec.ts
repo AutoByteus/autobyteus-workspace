@@ -36,9 +36,9 @@ const tree = (): TeamRunExecutionTreeDto => ({
           kind: 'agent_team', team_definition_id: 'se', coordinator_address: '/se/lead', handoffs: [],
           default_launch_configuration: claude, default_launch_source: { origin: 'inherited', fallbacks: [teamFallback] },
           members: [
-            { address: '/se/lead', agent_definition_id: 'lead', launch_configuration: claude, follows_team: true },
-            { address: '/se/ie', agent_definition_id: 'ie', launch_configuration: codex, follows_team: false, launch_source: { origin: 'agent_default', fallbacks: [] } },
-            { address: '/se/cr', agent_definition_id: 'cr', launch_configuration: claude, follows_team: true, launch_source: { origin: 'inherited', fallbacks: [fallback] } },
+            { address: '/se/lead', agent_definition_id: 'lead', launch_configuration: claude },
+            { address: '/se/ie', agent_definition_id: 'ie', launch_configuration: codex, launch_source: { origin: 'agent_default', fallbacks: [] } },
+            { address: '/se/cr', agent_definition_id: 'cr', launch_configuration: claude, launch_source: { origin: 'inherited', fallbacks: [fallback] } },
           ],
         },
       },
@@ -90,8 +90,8 @@ describe('delegated launch nodes (REQ-007, AC-010, SR-006)', () => {
           source: { kind: 'agent_team', teamDefinitionId: 'se', coordinatorAddress: '/se/qa', handoffs: [],
             defaultLaunchConfiguration: camel, defaultLaunchSource: configured,
             members: [
-              { address: '/se/lead', agentDefinitionId: 'lead', launchConfiguration: camel, followsTeam: true },
-              { address: '/se/qa', agentDefinitionId: 'qa', launchConfiguration: { ...camel, llmModelIdentifier: 'sonnet' }, followsTeam: false },
+              { address: '/se/lead', agentDefinitionId: 'lead', launchConfiguration: camel },
+              { address: '/se/qa', agentDefinitionId: 'qa', launchConfiguration: { ...camel, llmModelIdentifier: 'sonnet' } },
             ] } },
       ],
     }, deps)
@@ -125,7 +125,7 @@ describe('delegated row names follow the root\'s naming rule (autobyteus-208)', 
           members: [{ kind: 'task_team_agent', address: '/product_team/tech_lead', agent_run_id: 'tl-run', platform_agent_run_id: null }],
           source: { kind: 'agent_team', team_definition_id: 'pt', coordinator_address: '/product_team/tech_lead', handoffs: [],
             default_launch_configuration: claude,
-            members: [{ address: '/product_team/tech_lead', agent_definition_id: 'tl', launch_configuration: claude, follows_team: true }] } },
+            members: [{ address: '/product_team/tech_lead', agent_definition_id: 'tl', launch_configuration: claude }] } },
         // A copy of the configured member keeps its address basename.
         { kind: 'task_agent', address: '/code_reviewer', agent_run_id: 'cr-copy', platform_agent_run_id: null, delegator_agent_run_id: 'cr-run', started_at: created,
           source: { kind: 'agent', agent_definition_id: 'cr', launch_configuration: claude, launch_source: { origin: 'configured', fallbacks: [] } } },
@@ -156,7 +156,7 @@ describe('delegated row names follow the root\'s naming rule (autobyteus-208)', 
         members: [{ address: '/product_team/tech_lead', agentRunId: 'tl-run', platformAgentRunId: null }],
         source: { kind: 'agent_team', teamDefinitionId: 'pt', coordinatorAddress: '/product_team/tech_lead', handoffs: [],
           defaultLaunchConfiguration: camel,
-          members: [{ address: '/product_team/tech_lead', agentDefinitionId: 'tl', launchConfiguration: camel, followsTeam: true }] } },
+          members: [{ address: '/product_team/tech_lead', agentDefinitionId: 'tl', launchConfiguration: camel }] } },
     ] }, deps)
     expect(names(nodes)).toEqual([
       ['/scribe_5083@scribe-run', 'scribe 5083'],

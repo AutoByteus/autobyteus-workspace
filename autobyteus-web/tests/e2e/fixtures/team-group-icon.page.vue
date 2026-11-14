@@ -85,7 +85,7 @@ tree.rootOrg.taskExecutions = [...tree.rootOrg.taskExecutions, {
   address: '/product_team', teamRunId: 'product-run', delegatorAgentRunId: 'agent-director', startedAt: tree.createdAt, taskExecutions: [],
   members: [{ address: '/product_team/lead', agentRunId: 'product-lead', platformAgentRunId: null }],
   source: { kind: 'agent_team', teamDefinitionId: 'product-team', coordinatorAddress: '/product_team/lead', handoffs: [],
-    members: [{ address: '/product_team/lead', agentDefinitionId: 'lead', launchConfiguration: tree.rootOrg.defaultLaunchConfiguration, followsTeam: true }],
+    members: [{ address: '/product_team/lead', agentDefinitionId: 'lead', launchConfiguration: tree.rootOrg.defaultLaunchConfiguration }],
     defaultLaunchConfiguration: tree.rootOrg.defaultLaunchConfiguration },
 }];
 const groups = [{ stableKey: 'agent_org_definition:org-definition', definitionId: 'org-definition', name: 'Preview Org', runs: [{

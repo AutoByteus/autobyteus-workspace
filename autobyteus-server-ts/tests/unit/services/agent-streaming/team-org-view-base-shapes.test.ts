@@ -29,9 +29,10 @@ const pathsOf = (value: unknown, prefix = ""): string[] => {
 };
 /**
  * SR-083 (rule 3 as narrowed): the rows gain where they open (`openTarget`, `open_target`), and the statuses leave the
- * view (each run's own, by run ID); every other key path is base's.
+ * view (each run's own, by run ID); CR-461-089: a Team copy's member no longer says it follows its Team (`followsTeam`,
+ * `follows_team`: a Team-level choice is the Team's default only). Every other key path is base's.
  */
-const isExceptedPath = (path: string) => /\.(openTarget|open_target|agent_statuses)(\.|\[|$)/.test(path);
+const isExceptedPath = (path: string) => /\.(openTarget|open_target|agent_statuses|followsTeam|follows_team)(\.|\[|$)/.test(path);
 const same = (actual: unknown, expected: unknown) =>
   expect([...new Set(pathsOf(JSON.parse(JSON.stringify(actual))).filter((path) => !isExceptedPath(path)))].sort()).toEqual([...new Set(pathsOf(expected).filter((path) => !isExceptedPath(path)))].sort());
 

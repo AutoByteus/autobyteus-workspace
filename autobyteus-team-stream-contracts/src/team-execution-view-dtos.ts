@@ -58,12 +58,11 @@ export type LaunchConfigurationSourceDto =
   | Readonly<{ origin: "model_router"; fallbacks: readonly LaunchConfigurationFallbackDto[]; choice_reason: string; task_kind: string }>;
 
 /**
- * A Team copy member's launch: the complete launch it started with, and whether a Team-level choice
- * reaches it (`follows_team`). `launch_source` is present only when its agent definition had a default.
+ * A Team copy member's launch: the complete launch its own run has (a Team-level choice is the Team's default only:
+ * autobyteus-461 CR-461-089). `launch_source` is present only when its agent definition had a default.
  */
 type MemberLaunchDto = Readonly<{
   launch_configuration: AgentLaunchConfigurationDto;
-  follows_team: boolean;
   launch_source?: LaunchConfigurationSourceDto;
 }>;
 type TeamLaunchDto = Readonly<{
@@ -159,7 +158,7 @@ const launchSourceSchema: z.ZodType<LaunchConfigurationSourceDto> = z.union([
   }).strict(),
 ]);
 const memberLaunchSchema = {
-  launch_configuration: launchConfigurationSchema, follows_team: z.boolean(), launch_source: launchSourceSchema.optional(),
+  launch_configuration: launchConfigurationSchema, launch_source: launchSourceSchema.optional(),
 };
 
 const handoffDtoSchema = z.object({ from: nonEmptyStringSchema, to: nonEmptyStringSchema, rules: z.array(nonEmptyStringSchema).min(1) }).strict();

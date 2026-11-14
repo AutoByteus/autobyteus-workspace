@@ -37,9 +37,9 @@ const tree = (): TeamRunExecutionTreeDto => ({
         kind: 'agent_team', team_definition_id: 'se', coordinator_address: '/se/lead', handoffs: [],
         default_launch_configuration: claude, default_launch_source: { origin: 'inherited', fallbacks: [] },
         members: [
-          { address: '/se/lead', agent_definition_id: 'lead', launch_configuration: claude, follows_team: true },
-          { address: '/se/ie', agent_definition_id: 'ie', launch_configuration: codex, follows_team: false, launch_source: { origin: 'agent_default', fallbacks: [] } },
-          { address: '/se/cr', agent_definition_id: 'cr', launch_configuration: claude, follows_team: true },
+          { address: '/se/lead', agent_definition_id: 'lead', launch_configuration: claude },
+          { address: '/se/ie', agent_definition_id: 'ie', launch_configuration: codex, launch_source: { origin: 'agent_default', fallbacks: [] } },
+          { address: '/se/cr', agent_definition_id: 'cr', launch_configuration: claude },
         ],
       },
     }],
@@ -90,20 +90,20 @@ describe('copy rows and this edit\'s choices (SR-007)', () => {
     expect(rows({ isStopping: (reference) => 'agentRunId' in reference }).get('/writer@writer-run')?.locked?.model).toBe(true)
   })
 
-  it('apply this edit\'s choices: a Team draft reaches its followers only; originals stay what ran', () => {
+  it('apply this edit\'s choices: a Team draft is its Team\'s default only (CR-461-089): each member keeps its own launch; originals stay what ran', () => {
     const draft = { llmModelIdentifier: 'opus-next', llmConfig: null }
     const map = rows({ draftOf: (target) => target === 'team:se-copy' ? draft : null })
     expect(map.get('/se@se-copy')?.values.llmModelIdentifier).toBe('opus-next')
-    expect(map.get('/se/lead@lead-run')?.values.llmModelIdentifier).toBe('opus-next')
-    expect(map.get('/se/cr@cr-run')?.values.llmModelIdentifier).toBe('opus-next')
+    expect(map.get('/se/lead@lead-run')?.values.llmModelIdentifier).toBe('opus')
+    expect(map.get('/se/cr@cr-run')?.values.llmModelIdentifier).toBe('opus')
     expect(map.get('/se/ie@ie-run')?.values.llmModelIdentifier).toBe('sol-6.1')
     expect(map.get('/se@se-copy')?.delegated?.original.llmModelIdentifier).toBe('opus')
-    // An agent's own draft wins over its Team's.
+    // An agent's own draft is its own.
     const own = rows({ draftOf: (target) => target === 'team:se-copy' ? draft : target === 'agent:cr-run' ? { llmModelIdentifier: 'haiku', llmConfig: null } : null })
     expect(own.get('/se/cr@cr-run')?.values.llmModelIdentifier).toBe('haiku')
   })
 
-  it('a copy of a configured Team placement: members follow its Team as recorded in its source (AR-003, D-5)', () => {
+  it('a copy of a configured Team placement: a Team draft changes no member, whether it took its Team\'s launch at start or not (CR-461-089)', () => {
     const team = { runtimeKind: 'claude_agent_sdk' as const, llmModelIdentifier: 'opus', llmConfig: null, autoExecuteTools: false, workspaceRootPath: '/w' }
     const own = { ...team, llmModelIdentifier: 'opus-own' }
     const configured = { origin: 'configured' as const, fallbacks: [] }
@@ -113,11 +113,11 @@ describe('copy rows and this edit\'s choices (SR-007)', () => {
         source: { kind: 'agent_team', teamDefinitionId: 'target', coordinatorAddress: '/target/lead', handoffs: [],
           defaultLaunchConfiguration: team, defaultLaunchSource: configured,
           members: [
-            { address: '/target/lead', agentDefinitionId: 'lead', launchConfiguration: team, followsTeam: true },
-            { address: '/target/writer', agentDefinitionId: 'writer', launchConfiguration: own, followsTeam: false },
+            { address: '/target/lead', agentDefinitionId: 'lead', launchConfiguration: team },
+            { address: '/target/writer', agentDefinitionId: 'writer', launchConfiguration: own },
           ] } }],
     }, deps, control({ draftOf: (target) => target === 'team:copy' ? { llmModelIdentifier: 'sonnet', llmConfig: null } : null })))
-    expect(nodes.get('/target/lead@l')?.values.llmModelIdentifier).toBe('sonnet')
+    expect(nodes.get('/target/lead@l')?.values.llmModelIdentifier).toBe('opus')
     expect(nodes.get('/target/writer@w')?.values.llmModelIdentifier).toBe('opus-own')
     // The member without a choice shows its recorded origin.
     expect(nodes.get('/target/writer@w')?.sourceKey).toBe('configured')

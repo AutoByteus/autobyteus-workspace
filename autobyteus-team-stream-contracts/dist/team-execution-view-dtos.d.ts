@@ -45,12 +45,11 @@ export type LaunchConfigurationSourceDto = Readonly<{
     task_kind: string;
 }>;
 /**
- * A Team copy member's launch: the complete launch it started with, and whether a Team-level choice
- * reaches it (`follows_team`). `launch_source` is present only when its agent definition had a default.
+ * A Team copy member's launch: the complete launch its own run has (a Team-level choice is the Team's default only:
+ * autobyteus-461 CR-461-089). `launch_source` is present only when its agent definition had a default.
  */
 type MemberLaunchDto = Readonly<{
     launch_configuration: AgentLaunchConfigurationDto;
-    follows_team: boolean;
     launch_source?: LaunchConfigurationSourceDto;
 }>;
 type TeamLaunchDto = Readonly<{

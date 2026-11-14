@@ -24,7 +24,7 @@ export const multiTeamView = (count = 7, hostRunId = 'host-run') => {
       openTarget: { runKind: 'agent_team' as const, runId: teamId(index), agentRunId: memberId(index, memberNames.indexOf('solution_designer')) },
       // Each copy records its catalog source when it started (copy 0 is a converted former hosted Team).
       source: { kind: 'agent_team' as const, teamDefinitionId: 'software-team', coordinatorAddress: '/software_engineering_team/solution_designer', handoffs: [],
-        members: memberNames.map(name => ({ address: `/software_engineering_team/${name}`, agentDefinitionId: name, launchConfiguration: teamLaunch, followsTeam: true })),
+        members: memberNames.map(name => ({ address: `/software_engineering_team/${name}`, agentDefinitionId: name, launchConfiguration: teamLaunch })),
         defaultLaunchConfiguration: teamLaunch },
     })),
   }

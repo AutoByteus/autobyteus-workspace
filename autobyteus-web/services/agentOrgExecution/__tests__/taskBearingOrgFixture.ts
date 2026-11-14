@@ -84,8 +84,8 @@ export const taskBearingView = (): AgentOrgExecutionViewDto => ({
           // Keys in the contract schema's order (a parsed DTO's order).
           kind: 'agent_team', teamDefinitionId: 'team-definition', coordinatorAddress: '/team/lead',
           members: [
-            { address: '/team/lead', agentDefinitionId: 'definition-agent-lead-configured', launchConfiguration: launch, followsTeam: true },
-            { address: '/team/worker', agentDefinitionId: 'definition-agent-team-worker-configured', launchConfiguration: launch, followsTeam: true },
+            { address: '/team/lead', agentDefinitionId: 'definition-agent-lead-configured', launchConfiguration: launch },
+            { address: '/team/worker', agentDefinitionId: 'definition-agent-team-worker-configured', launchConfiguration: launch },
           ],
           handoffs: [], defaultLaunchConfiguration: launch, defaultLaunchSource: configuredOrigin,
         },

@@ -35,7 +35,7 @@ const copyLaunch = {
 };
 const teamSource = (address: string, coordinator: string) => ({
   kind: 'agent_team' as const, team_definition_id: `${address}-definition`, coordinator_address: coordinator,
-  members: [{ address: coordinator, agent_definition_id: `${coordinator}-definition`, launch_configuration: copyLaunch, follows_team: true }], handoffs: [],
+  members: [{ address: coordinator, agent_definition_id: `${coordinator}-definition`, launch_configuration: copyLaunch }], handoffs: [],
   default_launch_configuration: copyLaunch,
 });
 

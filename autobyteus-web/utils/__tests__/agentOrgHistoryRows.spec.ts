@@ -40,7 +40,7 @@ const nestedTree = (): OrgTree => {
           openTarget: { runKind: 'agent_team', runId: 'reviewers-task', agentRunId: 'agent-chair-task' },
           source: { kind: 'agent_team', teamDefinitionId: 'reviewers-definition', coordinatorAddress: '/reviewers/chair', handoffs: [],
             defaultLaunchConfiguration: launch, defaultLaunchSource: { origin: 'configured', fallbacks: [] },
-            members: [{ address: '/reviewers/chair', agentDefinitionId: 'definition-agent-chair-configured', launchConfiguration: launch, followsTeam: true }] },
+            members: [{ address: '/reviewers/chair', agentDefinitionId: 'definition-agent-chair-configured', launchConfiguration: launch }] },
         }],
       } : task),
     },

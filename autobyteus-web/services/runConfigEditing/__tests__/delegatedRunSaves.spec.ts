@@ -16,7 +16,7 @@ import { buildTestTeamContext, testAgentNode } from '~/test-support/currentTeamT
  */
 const targets = new Map<any, any>([
   ['agent:writer', { kind: 'agent', agentRunId: 'writer' }],
-  ['team:eng', { kind: 'team', teamRunId: 'eng', followerAddresses: ['/lead', '/dev'] }],
+  ['team:eng', { kind: 'team', teamRunId: 'eng' }],
   ['agent:lead', { kind: 'team_member', teamRunId: 'eng', memberAddress: '/lead' }],
   ['agent:dev', { kind: 'team_member', teamRunId: 'eng', memberAddress: '/dev' }],
 ])
@@ -27,7 +27,7 @@ const ok = { success: true, message: 'Saved.', fieldErrors: [] }
 beforeEach(() => { vi.clearAllMocks() })
 
 describe('delegated runs reached as themselves', () => {
-  it('saves each run by its own save in row order: an agent run, then one Team save with its own scope, its followers and a member', async () => {
+  it('saves each run by its own save in row order: an agent run, then one Team save with its own scope and a member (CR-461-089: the Team\'s choice is its default only)', async () => {
     io.agentSave.mockResolvedValue(ok); io.teamSave.mockResolvedValue(ok)
     const result = await saveDelegatedRuns({ targets, nameOf: (key) => key,
       changes: [{ key: 'agent:writer', selection: selection('opus') }, { key: 'team:eng', selection: selection('sonnet') }, { key: 'agent:dev', selection: selection('haiku') }] })
@@ -35,8 +35,7 @@ describe('delegated runs reached as themselves', () => {
     expect(io.agentSave).toHaveBeenCalledWith({ agentRunId: 'writer', ...selection('opus') })
     expect(io.teamSave).toHaveBeenCalledWith({ teamRunId: 'eng', selectionPatches: [
       { scopeKind: 'CONFIGURED_TEAM', scopeAddress: '/', ...selection('sonnet') },
-      // A follower with no choice of its own follows the Team's; one with its own choice keeps it.
-      { scopeKind: 'CONFIGURED_AGENT', scopeAddress: '/lead', ...selection('sonnet') },
+      // A member with no choice of its own keeps its own launch: no patch reaches '/lead'.
       { scopeKind: 'CONFIGURED_AGENT', scopeAddress: '/dev', ...selection('haiku') },
     ] })
     expect(io.agentSave.mock.invocationCallOrder[0]).toBeLessThan(io.teamSave.mock.invocationCallOrder[0]!)

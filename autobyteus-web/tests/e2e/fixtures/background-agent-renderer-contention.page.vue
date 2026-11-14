@@ -183,7 +183,7 @@ const richTeam = buildTestTeamContext({
       kind: 'task_team', address: '/ReviewTeam', team_run_id: 'rich-task-team-run',
       source: {
         kind: 'agent_team', team_definition_id: 'review-team', coordinator_address: '/ReviewTeam/reviewer',
-        members: [{ address: '/ReviewTeam/reviewer', agent_definition_id: 'reviewer-definition', launch_configuration: { runtime_kind: 'autobyteus', llm_model_identifier: 'test-model', llm_config: null, auto_execute_tools: true, workspace_root_path: null }, follows_team: true }], handoffs: [],
+        members: [{ address: '/ReviewTeam/reviewer', agent_definition_id: 'reviewer-definition', launch_configuration: { runtime_kind: 'autobyteus', llm_model_identifier: 'test-model', llm_config: null, auto_execute_tools: true, workspace_root_path: null } }], handoffs: [],
         default_launch_configuration: {
           runtime_kind: 'autobyteus', llm_model_identifier: 'test-model', llm_config: null,
           auto_execute_tools: true, workspace_root_path: null,
