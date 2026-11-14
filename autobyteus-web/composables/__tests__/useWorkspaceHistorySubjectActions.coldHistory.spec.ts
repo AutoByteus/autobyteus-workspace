@@ -28,12 +28,8 @@ const retainedView = (active: boolean) => {
   second.teamRunId = 'same-name-team-two'
   second.members.forEach(member => { member.agentRunId += '-two' })
   view.execution_tree.rootOrg.taskExecutions.push(second)
-  // Shut-down delegated executions are dormant: the active view reports them offline.
-  view.agent_statuses = active
-    ? view.agent_statuses.map(status => status.agent_run_id.startsWith('agent-task-') ? { ...status, status: 'offline' as const } : status)
-      .concat(second.members.map(member => ({ member_address: member.address, agent_run_id: (member as { agentRunId: string }).agentRunId,
-        status: 'offline' as const, trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null })))
-    : []
+  // The active view reports its own agents; the delegated executions' statuses are their own runs' (SR-083).
+  view.agent_statuses = active ? view.agent_statuses : []
   return view
 }
 const historyResponse = (view: ReturnType<typeof retainedView>) => ({ data: { listCollaborationRootHistory: [{

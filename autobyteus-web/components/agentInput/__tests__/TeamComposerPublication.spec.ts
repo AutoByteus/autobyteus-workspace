@@ -160,9 +160,9 @@ describe('strict flat Team publication with the selected shared composer mounted
       const count = witnesses.length;
       const result = kind === 'snapshot'
         ? team.view.applySnapshot({ type: 'TEAM_EXECUTION_VIEW_SNAPSHOT', payload: {
+          // Invalid: an own member (the verifier) without its status (SR-083: delegated runs' may be absent).
           ...snapshot(['fresh-first', 'fresh-second'], 7), agent_statuses: [
             { ...status('lead'), member_address: '/lead' },
-            { ...status('configured-verifier'), member_address: '/verifier' },
           ],
         } } as any)
         : team.view.applyMessage({ type: 'TASK_EXECUTION_STARTED', payload: {

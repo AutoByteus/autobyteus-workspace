@@ -708,7 +708,10 @@ describe('TPS through real Org and collaboration context admission', () => {
   };
   it('keeps four Org target kinds and same-address task copies distinct', () => {
     const view = taskBearingView();
-    const org = new AgentOrgExecutionContext({ orgRunId: 'org-run', view, entries: entries(view.agent_statuses) });
+    // Every agent the view lists: its own (with statuses) and its delegated runs' (their statuses are their own runs', SR-083).
+    const delegated = [['agent-worker-task', '/worker'], ['agent-task-lead', '/team/lead'], ['agent-task-worker', '/team/worker']]
+      .map(([agent_run_id, member_address]) => ({ agent_run_id: agent_run_id!, member_address: member_address! }));
+    const org = new AgentOrgExecutionContext({ orgRunId: 'org-run', view, entries: entries([...view.agent_statuses, ...delegated]) });
     const subjects = [
       ['agent-director', '/director', 'agent_org_direct_agent'],
       ['agent-lead-configured', '/team/lead', 'agent_org_team_member'],

@@ -433,14 +433,6 @@ export enum AgentPackageUpdateStatus {
   UpToDate = 'UP_TO_DATE'
 }
 
-export type AgentRunChildStatusObject = {
-  __typename?: 'AgentRunChildStatusObject';
-  agentRunId: Scalars['String']['output'];
-  memberAddress: Scalars['String']['output'];
-  recoverableBlock?: Maybe<Scalars['JSON']['output']>;
-  status: Scalars['String']['output'];
-};
-
 export type AgentRunCollaborationMemberProjectionPayload = {
   __typename?: 'AgentRunCollaborationMemberProjectionPayload';
   activities: Array<Scalars['JSON']['output']>;
@@ -450,15 +442,6 @@ export type AgentRunCollaborationMemberProjectionPayload = {
   lastActivityAt?: Maybe<Scalars['String']['output']>;
   memberAddress: Scalars['String']['output'];
   summary?: Maybe<Scalars['String']['output']>;
-};
-
-export type AgentRunCollaborationStatusesObject = {
-  __typename?: 'AgentRunCollaborationStatusesObject';
-  /** The run's closed-set digest (closedTaskExecutionsDigest): the runs it delegated to whose Tasks are all closed while they still run. */
-  closedTaskExecutionsDigest?: Maybe<Scalars['String']['output']>;
-  isActive: Scalars['Boolean']['output'];
-  runId: Scalars['String']['output'];
-  statuses: Array<AgentRunChildStatusObject>;
 };
 
 export type AgentRunMemoryPage = {
@@ -2911,7 +2894,6 @@ export type Query = {
   agentPackages: Array<AgentPackage>;
   agentRunCollaboration?: Maybe<Scalars['JSON']['output']>;
   agentRunCollaborationMemberProjection: AgentRunCollaborationMemberProjectionPayload;
-  agentRunCollaborationStatuses: Array<AgentRunCollaborationStatusesObject>;
   agentRunModelOptions: RunModelOptionsObject;
   agentRuntimeSignInBrowserAvailable: Scalars['Boolean']['output'];
   agentRuntimes: Array<AgentRuntime>;
@@ -3071,11 +3053,6 @@ export type QueryAgentRunCollaborationMemberProjectionArgs = {
   agentRunId: Scalars['String']['input'];
   hostRunId: Scalars['String']['input'];
   memberAddress: Scalars['String']['input'];
-};
-
-
-export type QueryAgentRunCollaborationStatusesArgs = {
-  runIds: Array<Scalars['String']['input']>;
 };
 
 

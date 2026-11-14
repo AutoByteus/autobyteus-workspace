@@ -99,8 +99,6 @@ export const taskBearingView = (): AgentOrgExecutionViewDto => ({
     status('/worker', 'agent-worker-configured'),
     status('/team/lead', 'agent-lead-configured'),
     status('/team/worker', 'agent-team-worker-configured'),
-    status('/worker', 'agent-worker-task'),
-    status('/team/lead', 'agent-task-lead'),
-    status('/team/worker', 'agent-task-worker'),
+    // The delegated runs' agents report through their own runs, by run ID (SR-083), not in the Org's view.
   ],
 })
