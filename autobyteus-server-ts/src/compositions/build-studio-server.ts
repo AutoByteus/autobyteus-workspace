@@ -469,6 +469,7 @@ export const buildStudioServer = async (input: {
         teamRunService: generalProcessRunSupervisor.teamRunService, standaloneRoots: generalProcessRunSupervisor.standaloneRootManager,
         agentPackageDefinitionChangeHub: agentPackageDefinitionFeed.hub,
         views: currentCollaboration.views,
+        runStatus: currentCollaboration.runStatus,
       });
       await registerGraphql(app);
       // Last preClose hook: after the native drain and the WebSocket plugin's client close (AR-003).

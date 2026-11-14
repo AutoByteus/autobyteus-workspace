@@ -3,6 +3,8 @@ import { registerFileExplorerWebsocket } from "./file-explorer.js";
 import { registerTerminalWebsocket } from "./terminal.js";
 import { registerNodeDesktopWebsocket } from "./node-desktop.js";
 import { registerProjectChangesWebsocket } from "./projects.js";
+import { registerRunStatusWebsocket } from "./run-status.js";
+import type { RunStatusService } from "../../agent-collaboration/execution/run-status-service.js";
 import { registerUpdateNotificationsWebsocket } from "./update-notifications.js";
 import { registerAgentPackageDefinitionsWebsocket } from "./agent-package-definitions.js";
 import type { AgentPackageDefinitionChangeHub } from "../../agent-package-definitions/changes/agent-package-definition-change-hub.js";
@@ -30,12 +32,15 @@ export async function registerWebsocketRoutes(
     agentPackageDefinitionChangeHub: AgentPackageDefinitionChangeHub;
     /** autobyteus-461 DS-8, SR-046: what the run view streams need (their child rows, the runs' registration, stored trees). */
     views: RunViewSources;
+    /** autobyteus-461 SR-082, SR-083: each run's statuses by run ID, and its rows' change notice. */
+    runStatus: RunStatusService;
   },
 ): Promise<void> {
   await registerFileExplorerWebsocket(app);
   await registerTerminalWebsocket(app);
   await registerNodeDesktopWebsocket(app);
   await registerProjectChangesWebsocket(app);
+  await registerRunStatusWebsocket(app, dependencies.runStatus);
   await registerUpdateNotificationsWebsocket(app);
   await registerAgentPackageDefinitionsWebsocket(app, dependencies.agentPackageDefinitionChangeHub);
   const { views } = dependencies;

@@ -8,6 +8,8 @@ import { testViewStreams } from "../../../helpers/view-streams.js";
 import { DelegationIndex } from "../../../../src/agent-collaboration/delegation/delegation-index.js";
 import { InMemoryTaskExecutionResources } from "../../../fixtures/task-execution-resource-fixtures.js";
 import { readerOfAgentRunIds } from "../../../helpers/run-agents-reader.js";
+import { RunStatusService } from "../../../../src/agent-collaboration/execution/run-status-service.js";
+import type { RunStatusServerMessage } from "@autobyteus/collaboration-stream-contracts";
 
 /**
  * autobyteus-461 SR-061 … SR-063: the feed publishes base's row events into each affected run's view stream at the change
@@ -108,5 +110,34 @@ describe("ChildRowsFeed", () => {
     expect(seen.map(({ event }) => [event.kind, event.kind === "task_execution_started" ? event.placed.row.run : null])).toEqual([
       ["task_execution_started", { agentRunId: "worker" }], ["task_execution_started", { agentRunId: "helper" }]]);
   });
-});
 
+  it("AR-028 (SR-083): a listed, not-open run is told its rows changed, at any depth, when a delegated row starts and when it closes", async () => {
+    const tasks = new InMemoryTaskExecutionResources();
+    const tree = new DelegationIndex(() => tasks, readerOfAgentRunIds(async (r) => [r.rootRunId]));
+    tree.build();
+    tasks.setEntriesListener(tree);
+    const runStatus = new RunStatusService({ agents: () => ({}) as never, peerRunOf: () => null, agentsOf: async () => [],
+      registrations: { resolve: () => null, onRegistrationChanged: () => () => undefined } });
+    const feed = new ChildRowsFeed({ streams: testViewStreams(), tree, isRunning: () => true, rowsChanged: (run) => runStatus.treeChanged(run) });
+    feed.follow(tree);
+    // The manager's row in the list is expanded but not open: only its status connection follows it.
+    const sent: RunStatusServerMessage[] = [];
+    const connection = runStatus.connect((message) => sent.push(message));
+    await connection.subscribe([{ kind: "agent", runId: "manager" }]);
+    const treeNotices = () => sent.filter((message) => message.type === "RUN_TREE_CHANGED").length;
+    tasks.addTask("T1");
+    await tasks.linkNewTaskExecution({ role: "assigned", taskId: "T1", recipientAddress: "/worker", delegatedFrom: { delegatingRun: M, delegatorAgentRunId: "manager" }, execution: { agentRunId: "worker" } });
+    await tasks.markStarted({ agentRunId: "worker" });
+    expect(treeNotices()).toBeGreaterThan(0);
+    // Two hops down: the worker's own sub-work is a row of the manager's too.
+    const beforeHelper = treeNotices();
+    await tasks.linkNewTaskExecution({ role: "subWork", recipientAddress: "/helper", delegatedFrom: { delegatingRun: { rootSubjectKind: "agent", rootRunId: "worker" }, delegatorAgentRunId: "worker" }, execution: { agentRunId: "helper" } });
+    expect(treeNotices()).toBeGreaterThan(beforeHelper);
+    // Its Task closes: its rows leave the manager's view.
+    const beforeClose = treeNotices();
+    tasks.close("T1");
+    expect(treeNotices()).toBeGreaterThan(beforeClose);
+    expect(sent.filter((message) => message.type === "RUN_TREE_CHANGED").every((message) => message.payload.runId === "manager")).toBe(true);
+    connection.close();
+  });
+});
