@@ -12,6 +12,7 @@ import { memberDisplayName } from '~/utils/collaboration/memberDisplayName';
 import type { RunListEntry } from '~/utils/runListProjection';
 import type { RunTreeRow } from '~/utils/runTreeProjection';
 import { teamBranchStatus, teamRunStatus } from '~/components/workspace/history/workspaceHistoryTeamBranchStatus';
+import { teamRowFocusOf } from '~/composables/useRunOpening';
 import { formatRunLabel, formatTeamRunLabel } from '~/components/workspace/history/workspaceHistoryRunLabels';
 
 /** What a row's tap opens, by the shared open action that owns that kind (autobyteus-277 DS-003). */
@@ -136,9 +137,8 @@ const teamExecutionRow = (
     name: row.displayName, title: transient ? delegatedTitleOf(transient, sources) : '', status: String(status),
     remote: transient ? remoteOf(transient, sources) : null, hasChildren: row.hasChildren, expanded,
     fold: row.hasChildren ? Object.freeze({ kind: 'teamRow', teamRunId: entry.runId, rowKey: row.rowKey }) : null,
-    open: row.agentRunId
-      ? Object.freeze({ kind: 'teamMember', target: { teamRunId: entry.runId, memberAddress: row.memberAddress, agentRunId: row.agentRunId } })
-      : null,
+    // The agent the row opens is the server's (SR-083): a delegated Team its coordinator, as on the desktop (FU-031).
+    open: teamRowFocusOf(entry.runId, row) ? Object.freeze({ kind: 'teamMember', target: teamRowFocusOf(entry.runId, row)! }) : null,
     lastActivityAt: null,
   });
 };
