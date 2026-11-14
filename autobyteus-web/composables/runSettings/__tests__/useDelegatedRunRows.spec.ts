@@ -32,13 +32,13 @@ describe('useDelegatedRunRows (SR-083)', () => {
     const runStatus = useRunStatusStore()
     const hold = vi.spyOn(runStatus, 'hold')
     // The stored tree has no rows (E9); the view has the copy.
-    const draft = ref({ kind: 'team', teamRunId: 'team-1', isActive: false, executionTree: tree(false) } as never)
+    const draft = ref<unknown>({ kind: 'team', teamRunId: 'team-1', isActive: false, executionTree: tree(false) })
     mocks.teamView = tree(true)
     const live = (id: string) => rows.isAgentLive(id)
     const control = computed(() => ({ ...NO_CONTROL_FOR_TESTS, isAgentLive: live }))
     let rows!: ReturnType<typeof useDelegatedRunRows>
     const scope = effectScope()
-    scope.run(() => { rows = useDelegatedRunRows({ draft, control, schemaFor: () => null }) })
+    scope.run(() => { rows = useDelegatedRunRows({ draft: draft as never, control, schemaFor: () => null }) })
     expect(rows.rows.value.map((row) => row.key)).toEqual(['/writer@copy'])
     expect(hold).toHaveBeenLastCalledWith([{ kind: 'agent', runId: 'copy' }])
     expect(rows.rows.value[0]!.delegated?.running).toBe(false)
@@ -46,7 +46,7 @@ describe('useDelegatedRunRows (SR-083)', () => {
     expect(rows.rows.value[0]!.delegated?.running).toBe(true)
     // Without the view, there are no rows: the stored tree is never read for them.
     mocks.teamView = null
-    draft.value = { ...(draft.value as object), teamRunId: 'team-2' } as never
+    draft.value = { ...(draft.value as object), teamRunId: 'team-2' }
     expect(rows.rows.value).toEqual([])
     scope.stop()
   })
