@@ -1521,3 +1521,29 @@ No architecture review: these follow REQ-006, an approved exception, rule 2 and 
   - The runtime reads only the target. The Solution Designer added steps 4 and 5b to the reviewer's rows-only proposal, so that the finished item reaches the target shape and not only a row. Part (a) and CR-461-069 stand.
 - **ARCH-REV-050 passed the AR-027 answer.** Its note is adopted: **one follow-up per predecessor** (20261017, 20261019 and 20261018), each with only its predecessor and our main migration as prerequisites, so a predecessor stuck `FAILED` for an unrelated item can't hold back another predecessor's finished items (REQ-011). The steps are split as each predecessor's items need: 4/5b/8, then 4/8, then 5b. There is a new test for the decoupling.
 - **CRR-034 CR-461-073:** SR-078's two answers for an unconverted root couldn't both be reached. The connect answered `TEAM_NOT_FOUND` and closed the stream, so no first message could carry the reason. **Decision:** the connect answers with the admission's own code and text, then closes. Base's user saw the reason when sending, through a path that no longer exists (a stopped run's view is its stream, SR-045/046), so the connect is the only place the reason can reach the user. The web doesn't special-case `TEAM_NOT_FOUND`. The test is corrected. The first message keeps the reason for a run that passed admission. The Solution Designer's gap: SR-078 placed two answers without checking that the second could be reached.
+
+### SR-079 — Every late predecessor, failed or waiting (answers CR-461-074)
+
+- **Triggering:** CRR-036 (F-53). `20260901_agent_org_flat_team_families_v1` waits (`NOT_RUN`) behind a failed `token-usage-run-records-v1`, runs after our migration, and writes an org tree with a `taskExecutions` list that no follow-up converts.
+- **The Solution Designer's gap:** SR-078 (c) covered only predecessors that are late because they are `FAILED`, and only the three that leave preserved copies. The registry's prerequisite chains, and the predecessors that write or read our shapes, were not checked.
+- **Investigation:**
+  - the registry (`app-data-migration-registry.ts:80-167`) and its prerequisites;
+  - a search of every earlier migration's folder for our source shapes.
+
+  The writers are 20261015, 20261017, 20261018, 20261019, team-run-execution-tree-v1, team-run-execution-tree-v2 and the flat-families migration. The reader is 20261020, which selects the improver's runs (F-25's class). The rebuilders are the two history-index v2 migrations.
+- **Decision:**
+  - classify every earlier migration;
+  - give each writer and reader a follow-up from one definition, `PreservedItemsFollowUp(predecessor, steps)`, which waits while its predecessor is `FAILED` or `NOT_RUN`;
+  - our main migration preserves items only for readers (the improver's delegated runs, while 20261020 is not terminal);
+  - rebuilders need nothing; a test confirms it;
+  - a registry test enforces that every earlier migration is classified.
+- **Tests:**
+  - the restart-retry scenario ends with no stored list;
+  - a late 20261020 keeps the improver's copy;
+  - the classification test;
+  - a late index rebuild keeps the rows.
+- **Requirements:** unchanged (REQ-011, rule 7).
+- **Next action:**
+  - architecture review;
+  - then the Implementation Engineer, who confirms each classification against the code as the classification test is written.
+
