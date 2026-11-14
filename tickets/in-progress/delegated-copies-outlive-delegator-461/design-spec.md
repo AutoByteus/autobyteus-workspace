@@ -235,7 +235,7 @@ A follow-up Task by run ID: `TaskDelegation.toExistingRun` → Task side `assign
   - `kind`: one of `agent`, `team`, `team_member`, `org_agent`, `org_team`, `peer_agent`, `peer_team`, `peer_member`.
   - `openTarget`: the run's own identity and the agent to focus, opened by the run's own stream (rule 2). A team row's target is its **coordinator**, explicitly, in every view (FU-031). There is no `members[0]` fallback (FU-024): a team whose coordinator is not a member is a row error, logged, with no target.
   - `statusIds`: the run IDs, or agent run IDs, whose statuses the row shows. There are no statuses in the tree (2).
-  - `launch`: for Settings, the run's own saved launch and its origin, read from its own file. A peer row carries its launch from its peer summary (F-66, folded in here).
+  - `launch`: for Settings, the run's own saved launch and its origin, read from its own file. A team member's origin is its own `launchSource` only. An edited member, whose save dropped its source (CR-461-078), shows **no origin**, never its team's source (V-11). The shared helpers' fallback to the team's source (`teamMemberLaunchSource`, `collaborationMemberLaunchSource`) goes with the view model. A peer row carries its launch from its peer summary (F-66, folded in here).
 - **Delivery:**
   - **an open view:** on X's view stream, as `RUN_TREE_SNAPSHOT` in the snapshot connection (SR-063, rows only), then `RUN_TREE_CHANGED { added, removed, updated }` frames, numbered by `RunViewStream`. `ChildRowsFeed` feeds the changes.
   - **a listed run that is not open:** the GraphQL query `runTree(run)`, built by the same builder. It is read when the user expands the run, and on list load for a listed agent run with `hasCollaboration`, as today.
