@@ -275,27 +275,22 @@ describe('TeamExecutionViewState', () => {
     expect(active.focusAgent('missing-run')).toMatchObject({ disposition: 'rejected', code: 'TEAM_AGENT_RUN_NOT_FOUND' });
   });
 
-  it('requires a snapshot status for every tree placement, including shut-down children', () => {
+  it('SR-083: a snapshot reports every own member\'s status; a delegated run\'s status comes from that run, so it may be absent', () => {
     const executionTree = tree();
     executionTree.root_team.task_executions = [...executionTree.root_team.task_executions, taskAgent('dormant-student-run', 'teacher-run')];
     const state = createStateFixture({ executionTree }).state;
     const status = (agent_run_id: string, member_address: string, value: AgentStatus) => ({
       agent_run_id, member_address, status: value, trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null,
     });
-    const configuredStatuses = [
-      status('teacher-run', '/Teacher', AgentStatus.Idle),
-      status('root-student-run', '/Student', AgentStatus.Idle),
-      status('coordinator-run', '/StudentStudyGroup/Coordinator', AgentStatus.Idle),
-      status('student-run', '/StudentStudyGroup/Student', AgentStatus.Idle),
-    ];
-    expect(state.applySnapshot({ type: 'TEAM_EXECUTION_VIEW_SNAPSHOT', payload: {
+    const snapshotWith = (agent_statuses: ReturnType<typeof status>[]) => ({ type: 'TEAM_EXECUTION_VIEW_SNAPSHOT' as const, payload: {
       root_team_run_id: 'root-team-1', base_change_sequence: 3, live_sequence_id: 'live-1', last_message_change_sequence: 0, closed_task_executions: [], execution_tree: executionTree,
-      agent_input_states: [], remote_task_executions: [], agent_statuses: configuredStatuses,
-    } })).toMatchObject({ disposition: 'rejected', code: 'TEAM_EXECUTION_SNAPSHOT_INVALID' });
-    expect(state.applySnapshot({ type: 'TEAM_EXECUTION_VIEW_SNAPSHOT', payload: {
-      root_team_run_id: 'root-team-1', base_change_sequence: 3, live_sequence_id: 'live-1', last_message_change_sequence: 0, closed_task_executions: [], execution_tree: executionTree,
-      agent_input_states: [], remote_task_executions: [], agent_statuses: [...configuredStatuses, status('dormant-student-run', '/Student', AgentStatus.Offline)],
-    } })).toMatchObject({ disposition: 'applied' });
+      agent_input_states: [], remote_task_executions: [], agent_statuses } });
+    // An own member without its status: rejected.
+    expect(state.applySnapshot(snapshotWith([status('root-student-run', '/Student', AgentStatus.Idle)])))
+      .toMatchObject({ disposition: 'rejected', code: 'TEAM_EXECUTION_SNAPSHOT_INVALID' });
+    // Every own member reports; the delegated runs (the study group, the dormant student) do not: applied.
+    expect(state.applySnapshot(snapshotWith([status('teacher-run', '/Teacher', AgentStatus.Idle), status('root-student-run', '/Student', AgentStatus.Idle)])))
+      .toMatchObject({ disposition: 'applied' });
     expect(state.getAgentContext('dormant-student-run')?.state.currentStatus).toBe(AgentStatus.Offline);
   });
 

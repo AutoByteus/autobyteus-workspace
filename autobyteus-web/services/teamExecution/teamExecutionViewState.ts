@@ -317,8 +317,9 @@ export const createTeamExecutionViewState = (
         statusIds.add(status.agent_run_id);
         validatedStatuses.push({ context, status: status.status as AgentStatus, recoverableBlock: status.recoverableBlock });
       }
-      // Every tree placement reports a status; shut-down children report offline (remote ones: their nodes' summaries).
-      if ([...nextLocations.keys()].some((agentRunId) => !statusIds.has(agentRunId) && !isRemoteAgentRun(payload.remote_task_executions, agentRunId))) {
+      // Every own member reports a status (SR-083: a delegated or peer run's comes from that run, by its run ID).
+      const ownIds = new Set(payload.execution_tree.root_team.members.map((member) => member.agent_run_id))
+      if ([...ownIds].some((agentRunId) => !statusIds.has(agentRunId))) {
         throw new Error('Snapshot omitted a canonical Agent status.');
       }
       const inputIds = new Set<string>();
@@ -328,7 +329,6 @@ export const createTeamExecutionViewState = (
       }
       // The view the open read, unchanged (CR-461-082, F-64): its rows, and its base, or (read stored, base 0) a Team still
       // stopped, whose own members are offline: a message to it would have started it.
-      const ownIds = new Set(payload.execution_tree.root_team.members.map((member) => member.agent_run_id))
       const sameBase = payload.base_change_sequence === publication.value.changeSequence || (publication.value.changeSequence === 0 && !rootActive.value
         && payload.agent_statuses.every((status) => !ownIds.has(status.agent_run_id) || status.status === 'offline'))
       const unchanged = sameBase && sameJsonValue([payload.execution_tree, payload.closed_task_executions.map(fromTeamTaskExecutionReference)],
@@ -502,7 +502,7 @@ export const createTeamExecutionViewState = (
     listAgentContextEntries: () => Object.freeze([...publication.value.contexts].map(([agentRunId, agentContext]) => Object.freeze({
       agentRunId, memberAddress: publication.value.locations.get(agentRunId)!.memberAddress, agentContext,
     }))),
-    // The stream snapshot reports a status for every tree placement.
+    // Every tree placement's context (own members by the snapshot, delegated and peer runs by their own statuses).
     listLiveAgentContextEntries: () => Object.freeze(collectAgentExecutionLocations(publication.value.tree)
       .map(({ agentRunId, memberAddress }) => Object.freeze({
         agentRunId, memberAddress, agentContext: publication.value.contexts.get(agentRunId)!,
