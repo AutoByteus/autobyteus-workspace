@@ -33,10 +33,13 @@ vi.mock('~/stores/agentContextsStore', () => ({ useAgentContextsStore: () => ({ 
 vi.mock('~/stores/agentDefinitionStore', () => ({ useAgentDefinitionStore: () => ({ getAgentDefinitionById: () => null }) }))
 vi.mock('~/stores/llmProviderConfig', () => ({ useLLMProviderConfigStore: () => ({ modelConfigSchemaByIdentifier: () => null }) }))
 vi.mock('~/stores/agentTeamContextsStore', () => ({ useAgentTeamContextsStore: () => ({
-  getTeamContextById: () => ({ view: { getFocusedAgentRunId: () => mocks.teamFocus.value, getClosedTaskExecutions: () => [] } }),
+  // The run's view holds its rows (SR-083): here, the draft's tree.
+  getTeamContextById: () => ({ view: { getFocusedAgentRunId: () => mocks.teamFocus.value, getClosedTaskExecutions: () => [],
+    getExecutionTree: () => (mocks.store as { draft?: { executionTree?: unknown } } | null)?.draft?.executionTree } }),
 }) }))
 vi.mock('~/stores/agentOrgContextsStore', () => ({ useAgentOrgContextsStore: () => ({
-  contextFor: () => ({ selection: mocks.orgSelection.value, index: { selectedAgent: () => ({ agentRunId: 'coordinator-of-selected-team' }) } }),
+  contextFor: () => ({ selection: mocks.orgSelection.value, index: { selectedAgent: () => ({ agentRunId: 'coordinator-of-selected-team' }) },
+    get executionTree() { return (mocks.store as { draft?: { executionTree?: unknown } } | null)?.draft?.executionTree } }),
 }) }))
 vi.mock('~/stores/delegatedLaunchDraftStore', () => ({ useDelegatedLaunchDraftStore: () => ({
   edits: {}, changes: [], originals: {}, optionsByKey: {}, saved: {}, dirty: false, saving: false, feedback: null, stopFeedback: null, changesAllowed: true,
