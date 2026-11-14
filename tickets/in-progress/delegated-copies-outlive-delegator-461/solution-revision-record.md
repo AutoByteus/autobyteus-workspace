@@ -1554,3 +1554,4 @@ No architecture review: these follow REQ-006, an approved exception, rule 2 and 
   - Its removal of user-started team rows is base's behavior: FU-029, outside this ticket.
   - The three address and path migrations are verified as none: memory layout acts only on v1 roots; the locators skip converted files; the projection addresses feed 20261018, whose follow-up covers them.
   - The rest are confirmed.
+- **The locators, confirmed none:** `TeamContextFileExecutionLocatorsV1` writes final locators by run ID (`team-context-file-locator-transition.ts:71`), and the runtime resolves them by `{teamRunId, agentRunId}` (`context-file-owner-resolver.ts:71-97`). No address is stored, so step 4's rebase doesn't affect a delegated team member's attachments.
