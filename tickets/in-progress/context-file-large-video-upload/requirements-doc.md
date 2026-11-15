@@ -77,7 +77,7 @@ BEH-003, BEH-004, BEH-005, BEH-006, BEH-010; the preserved column of BEH-001, BE
 
 ### Release-Order Constraint
 
-- RC-001: this ticket may be merged independently, but it must not be released before, or must be released together with, the Memory Sync large-file Task created from FU-001 (manager, 2026-11-15). Delivery checks this at release time; the Task Manager owns the order.
+- RC-001: this ticket may be merged independently, but it must not be released before, or must be released together with, the Memory Sync large-file Task `autobyteus-workspace-7` created from FU-001 (manager, Task comment 2026-11-16). Delivery checks this at release time; the Task Manager owns the order.
 
 ### Prerequisites
 

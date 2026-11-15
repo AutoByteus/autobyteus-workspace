@@ -13,7 +13,7 @@ The user could not attach three phone videos in the composer on Android ("无法
 ## Approval basis
 
 - Requirements `Approved` at SR-002. DEC-001 (media default 2048 MiB) decided by the manager under the user's delegation (message 2026-11-15); DEC-002..DEC-009 decided by the Solution Designer within the direction, user informed.
-- Release-order constraint RC-001: release only with or after the Memory Sync large-file Task (FU-001, created by the manager).
+- Release-order constraint RC-001: release only with or after the Memory Sync large-file Task `autobyteus-workspace-7` (FU-001, created by the manager).
 
 ## Solution in brief
 
