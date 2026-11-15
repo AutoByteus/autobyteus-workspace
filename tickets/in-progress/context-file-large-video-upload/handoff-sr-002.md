@@ -42,3 +42,4 @@ Architecture review of `design-spec.md` SR-002 against the approved requirements
 ## Route record
 
 - Handoff rules checked 2026-11-15: `Architecture Design Complete` with `task_size=Large` / `architectural_risk=High` → `/software_engineering_team/architecture_reviewer`.
+- Sent 2026-11-15 with `send_message_to` to `/software_engineering_team/architecture_reviewer` (run `architecture_reviewer_24f9f8b34e2b4d4a91b90c46e24d5ec8`): delivered.
