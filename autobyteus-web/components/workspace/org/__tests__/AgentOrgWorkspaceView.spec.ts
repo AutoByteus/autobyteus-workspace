@@ -8,6 +8,8 @@ const state = reactive({
   context: null as any,
   error: null as string | null,
   target: null as any,
+  /** What the Org has selected (its own target, before any delegated run's binding). */
+  selected: null as any,
 })
 const inspect = vi.fn().mockResolvedValue(undefined)
 const push = vi.fn().mockResolvedValue(undefined)
@@ -42,6 +44,7 @@ const context = (phase: 'live' | 'reopen_required' | 'historical' = 'live') => (
   phase,
   error: phase === 'reopen_required' ? 'Sequence gap' : null,
   executionTree: { rootOrg: { orgDefinitionId: 'org-def', orgRunId: 'org-run' } },
+  selectedTarget: () => state.selected,
 })
 const directTarget = {
   kind: 'agent_org_direct_agent', access: 'live',
@@ -83,6 +86,7 @@ describe('AgentOrgWorkspaceView', () => {
     state.context = context()
     state.error = null
     state.target = directTarget
+    state.selected = null
     route.query.orgRunId = 'org-run'
     route.query.mode = 'active'
     center.mode = 'chat'
@@ -118,6 +122,26 @@ describe('AgentOrgWorkspaceView', () => {
     await flushPromises()
     expect(wrapper.find('[data-test="whole-org-run-config"]').exists()).toBe(true)
     expect(center.mode).toBe('config')
+    state.target = null
+    await flushPromises()
+    expect(center.mode).toBe('chat')
+    wrapper.unmount()
+  })
+
+  it('CR-461-095 (D-IMP-1): Settings stay open while a run the Org delegated opens as its own run (selected, not yet bound)', async () => {
+    const wrapper = mountSubject()
+    await wrapper.get('[data-test="org-edit"]').trigger('click')
+    expect(center.mode).toBe('config')
+    // The copy is selected in the Org; its own run's binding has not come yet, so there is no target for a moment.
+    state.selected = { ...directTarget, kind: 'agent_org_task_agent', address: '/helper', context: { state: { runId: 'copy-run' } } }
+    state.target = null
+    await flushPromises()
+    expect(center.mode).toBe('config')
+    state.target = { ...state.selected, access: 'live' }
+    await flushPromises()
+    expect(center.mode).toBe('config')
+    // Nothing selected any more: they close.
+    state.selected = null
     state.target = null
     await flushPromises()
     expect(center.mode).toBe('chat')

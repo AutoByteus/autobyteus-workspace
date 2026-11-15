@@ -90,6 +90,7 @@ describe('AgentOrg workspace configuration boundary', () => {
     state.context = {
       phase: 'historical', error: null,
       executionTree: { rootOrg: { orgDefinitionId: 'org-def', orgRunId: 'org-run' } },
+      selectedTarget: () => null,
     }
     readOrg.mockImplementation(async (orgRunId: string) => {
       const tree = structuredClone(taskBearingView().execution_tree)

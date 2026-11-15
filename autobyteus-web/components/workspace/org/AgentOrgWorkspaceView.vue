@@ -148,8 +148,10 @@ watch(() => context.value?.phase, (phase) => {
     void router.replace({ path: '/workspace', query: { ...route.query, mode } })
   }
 }, { immediate: true })
-// Settings stay open across focus changes, with their unsaved edits (REQ-005); with nothing focused they close.
+// Settings stay open across focus changes, with their unsaved edits (REQ-005); with nothing focused they close. A run
+// the Org delegated opens as its own run (autobyteus-461 rule 2): while it binds, the Org still has it selected but no
+// target yet, and that moment is a focus change, not "nothing focused" (CR-461-095, D-IMP-1).
 watch(targetIdentity, (nextIdentity, previousIdentity) => {
-  if (previousIdentity && !nextIdentity) center.showChat()
+  if (previousIdentity && !nextIdentity && !context.value?.selectedTarget()) center.showChat()
 })
 </script>
