@@ -196,7 +196,3 @@ export const getMemoryHubStagedFileStore = (): MemoryHubStagedFileStore => {
   singleton ??= new MemoryHubStagedFileStore();
   return singleton;
 };
-
-export const resetMemoryHubStagedFileStoreForTests = (): void => {
-  singleton = null;
-};
