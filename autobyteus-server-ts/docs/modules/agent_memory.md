@@ -36,6 +36,10 @@ Memory files live under the configured memory root:
 - Imported Memory Sync sources: `memory/imports/<memorySyncSourceId>/agents/...` and
   `memory/imports/<memorySyncSourceId>/agent_teams/...`, with source metadata in
   `memory-sync-source.json` and sync state in `sync-manifest.json`.
+- Memory Sync staging (a hub only): `memory/memory-sync-staging/<memorySyncSourceId>/<sha256>.partial`, a
+  large file being uploaded by a source. Not a run folder and never part of `imports/`: a file moves into
+  `imports/` only after its size and SHA-256 are verified, and an abandoned partial is removed after 24 h
+  (see [Memory Sync](../features/memory_sync.md#sync-behavior)).
 - Agents' semantic memories: `memory/semantic/<encodeURIComponent(agentDefinitionId)>/` (see
   [Semantic Memory](#semantic-memory)); not a run folder.
 

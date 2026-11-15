@@ -127,8 +127,8 @@ The Memory Hub REST endpoints are:
   `{ error: "MemorySyncStagedFileOffsetMismatch", receivedBytes }`
 
 All of them admit only memory sync source credentials (node access model NA-7). A reverse proxy
-in front of a hub must accept request bodies of at least 50 MiB (`follow-ups.md` FU-002 of the
-`memory-sync-large-files` ticket tracks documenting proxy settings).
+in front of a hub must accept request bodies of at least 50 MiB (FU-002 in
+`tickets/done/memory-sync-large-files/follow-ups.md` tracks documenting proxy settings).
 
 Sources authenticate with an `Authorization: Bearer <mhub_...>` token. GraphQL
 connection testing is explicit about which configuration is being tested:
@@ -320,8 +320,8 @@ Current v1 limits are intentional:
 - no `memory/local/` migration and no runtime memory-provider rewrite;
 - no append, range, or delta sync protocol (a changed file is sent whole; only an interrupted upload
   of the same content resumes);
-- no per-source exclusion of files by size or type (`follow-ups.md` FU-001 of the
-  `memory-sync-large-files` ticket);
+- no per-source exclusion of files by size or type (FU-001 in
+  `tickets/done/memory-sync-large-files/follow-ups.md`);
 - no delete propagation from source to hub;
 - no analytics index, dataset curation, or model training pipeline;
 - no automated guarantee that Docker, Kubernetes, LAN, VPN, or tailnet routing is
