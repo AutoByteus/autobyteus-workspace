@@ -4,13 +4,6 @@ import {
 } from '@autobyteus/collaboration-stream-contracts'
 
 export type AgentOrgExecutionTree = AgentOrgExecutionTreeDto
-export type AgentOrgConfiguredMember = AgentOrgExecutionTree['rootOrg']['members'][number]
-export type AgentOrgConfiguredAgentNode = Extract<AgentOrgConfiguredMember, { agentRunId: string }>
-export type AgentOrgConfiguredTeamNode = Extract<AgentOrgConfiguredMember, { teamRunId: string }>
-
-export const isAgentOrgAgentNode = (
-  node: AgentOrgConfiguredMember,
-): node is AgentOrgConfiguredAgentNode => 'agentRunId' in node
 
 export const parseAgentOrgExecutionTree = (value: unknown): AgentOrgExecutionTree =>
   agentOrgExecutionTreeDtoSchema.parse(value)

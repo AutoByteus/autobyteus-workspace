@@ -5,6 +5,7 @@ import {
   runTreeDtoSchema,
   type RunStatusRunRef,
   type RunTreeChangeDto,
+  type RunTreeDto,
   type RunTreeRowDto,
 } from '@autobyteus/collaboration-stream-contracts'
 import { GetRunTree } from '~/graphql/queries/runTreeQueries'
@@ -94,7 +95,7 @@ export const useRunTreeStore = defineStore('runTree', () => {
         fetchPolicy: 'network-only', context: { queryDeduplication: false },
       })
       if (result.errors?.length) throw new Error(result.errors.map((error: { message: string }) => error.message).join(', '))
-      const tree = runTreeDtoSchema.parse(result.data?.runTree)
+      const tree: RunTreeDto = runTreeDtoSchema.parse(result.data?.runTree)
       if (tree.kind !== ref.kind || tree.runId !== ref.runId) throw new Error(`The run tree answered for ${tree.kind}:${tree.runId}, not ${key}.`)
       if (generations.get(key) !== generation || useWindowNodeContextStore().bindingRevision !== revision) return
       set(key, { rows: Object.freeze(tree.rows), via: 'query' })

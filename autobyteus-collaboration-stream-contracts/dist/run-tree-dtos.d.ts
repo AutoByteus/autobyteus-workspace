@@ -578,7 +578,6 @@ export declare const runTreeChangedEventDtoSchema: z.ZodObject<{
     }, z.core.$strict>>;
     kind: z.ZodLiteral<"run_tree_changed">;
 }, z.core.$strict>;
-export type RunTreeChangedEventDto = Readonly<z.infer<typeof runTreeChangedEventDtoSchema>>;
 /** The `runTree(kind, runId)` answer: a listed run's tree, read when it is expanded and again on `RUN_TREE_CHANGED`. */
 export declare const runTreeDtoSchema: z.ZodObject<{
     kind: z.ZodEnum<{

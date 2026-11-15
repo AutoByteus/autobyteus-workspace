@@ -65,7 +65,6 @@ export type RunTreeChangeDto = Readonly<z.infer<typeof runTreeChangeDtoSchema>>;
 
 /** In an agent or org view's events: the tree changed, numbered in the view's one sequence (an empty change still counts). */
 export const runTreeChangedEventDtoSchema = runTreeChangeDtoSchema.extend({ kind: z.literal("run_tree_changed") }).strict();
-export type RunTreeChangedEventDto = Readonly<z.infer<typeof runTreeChangedEventDtoSchema>>;
 
 /** The `runTree(kind, runId)` answer: a listed run's tree, read when it is expanded and again on `RUN_TREE_CHANGED`. */
 export const runTreeDtoSchema = z.object({
