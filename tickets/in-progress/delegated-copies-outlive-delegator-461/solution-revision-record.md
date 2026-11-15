@@ -1673,3 +1673,24 @@ No architecture review: these follow REQ-006, an approved exception, rule 2 and 
 - **ARCH-REV-057 passed SR-084.** Its notes are applied:
   - a row's `key` is built from identities only: kind plus run ID, plus the agent run ID for a member row, never position or depth;
   - SR-083's "FU-034 stays a follow-up" line in follow-ups.md is marked superseded.
+
+### SR-085 — The frontend's losses named; a run's own stream connects with a snapshot (the code reviewer's addendum to SR-084)
+
+- **Triggering:** the code reviewer's addendum; the user confirmed again, "we definitely do this".
+- **Point 1:** the design now names what the frontend loses:
+  - the four builders;
+  - the per-view open logic;
+  - Settings' row assembly, its per-row `runLaunch` reads and its save overlay;
+  - every hosted-copy rule.
+
+  The frontend keeps only presentation state.
+- **Point 2, taken:** a run's own agent stream connects with a snapshot.
+  - **Why:** the stored-conversation read followed by an unsequenced stream left a gap. CR-461-098 covered it with a bounded re-read and a heuristic. A sequenced connect closes it by construction, and it matches the user's direction to fix structure, not instances.
+  - **How:** each agent run's stream numbers its frames, and the session opens SR-063's snapshot connection on that sequence (`AGENT_STREAM_SNAPSHOT`). The web applies the snapshot and the frames after it, and reopens on a gap.
+  - **What goes:** the re-read, the heuristic and the separate stored read.
+  - **Scope:** every agent run, user-started and delegated alike.
+- **Point 3:** the reviewer's re-audit checks match the design's review checks.
+- **Next action:**
+  - architecture review (3b is new);
+  - then the Implementation Engineer.
+
