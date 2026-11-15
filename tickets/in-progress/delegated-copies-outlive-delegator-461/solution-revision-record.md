@@ -1693,4 +1693,4 @@ No architecture review: these follow REQ-006, an approved exception, rule 2 and 
 - **Next action:**
   - architecture review (3b is new);
   - then the Implementation Engineer.
-
+- **The user confirmed SR-084/085 to the Solution Designer** (2026-11-15): "I agree with the solution designer, yeah, we do this other round of refactoring regarding the backend run tree decision."
