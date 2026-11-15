@@ -592,3 +592,17 @@ Step 2c, org tree (uncommitted, web types PASS):
 - Next: the Task card (G-F1: `TaskRootView.openTarget` on the server, and `useTaskRootNavigation` through `openRunTarget`), then Settings.
 - `b6d7158f1f`: the Task card (G-F1). `TaskRootView.openTarget` reaches GraphQL and the change messages; the card selects the tree row by its target through `openRunTarget`. Web unit 5549 tests and the server projects tests pass; web types PASS with the baseline shrunk to 89.
 - Next: Settings (2f). Then G-D1, 3b plus G-G1, and the removals.
+- `431823213c`: Settings (2f).
+  - Rows come from `treeDelegatedLaunchNodes` and save targets from `treeDelegatedSaveTargets`.
+  - Removed: `runLaunch` (server resolver, `readRunLaunch` and its test), the client's `loadDelegatedRunLaunches`, and the draft store's `stored`, `applySaved` and `loadLaunches`.
+  - Gates: web types PASS (89); web unit 722 files and 5531 tests pass; server unit 897 files and 7265 tests pass.
+- Step 2 (all clients) is complete. Open points to state in the handoff:
+  - an org's mounted-team row status is folded from its members on the client (it is an org's own part);
+  - the team tree still opens through the team focus action with the server's target (not `openRunTarget`);
+  - data-test ids changed for org delegated rows (now the shared row) and Settings row keys (tree keys);
+  - the projection's transient-row patch code is dead (removed in step 4).
+- Next:
+  1. G-D1, `/ws/peer-run`;
+  2. 3b plus G-G1;
+  3. step 4 removals: the old row events and DTOs (`run-view-children`, `stored-view-children`, the child-row DTO projections, `task_executions` in the view snapshots, the web contexts' child handling, `agentOrgHistoryRows`, `listTaskRows` and `selectTaskRow`, `delegatedRunSubjects` derivations, `remote_agent_presentation`, `PeerChildObservation`'s summary events, `runHistoryNavigationPatches`' transient patches);
+  4. CR-461-098's re-read and `conversationMark` (in 3b).
