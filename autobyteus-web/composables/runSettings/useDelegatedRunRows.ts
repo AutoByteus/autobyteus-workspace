@@ -1,4 +1,5 @@
-import { computed, watchEffect, type Ref } from 'vue'
+import { computed, type Ref } from 'vue'
+import { watchHeldRuns } from '~/services/runStatus/heldRuns'
 import type { RunStatusRunRef } from '@autobyteus/collaboration-stream-contracts'
 import { useAgentRunCollaborationStore } from '~/stores/agentRunCollaborationStore'
 import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore'
@@ -81,11 +82,9 @@ export const useDelegatedRunRows = (input: Readonly<{
   })
 
   // Each delegated run's own statuses, while Settings shows it (a team's members ride on their team run).
-  watchEffect((onCleanup) => {
-    const refs: RunStatusRunRef[] = [...saveTargets.value.values()].flatMap((target): RunStatusRunRef[] => target.kind === 'agent'
-      ? [{ kind: 'agent', runId: target.agentRunId }] : target.kind === 'team' ? [{ kind: 'agent_team', runId: target.teamRunId }] : [])
-    onCleanup(runStatus.hold(refs))
-  })
+  watchHeldRuns(() => [...saveTargets.value.values()].flatMap((target): RunStatusRunRef[] => target.kind === 'agent'
+    ? [{ kind: 'agent', runId: target.agentRunId }] : target.kind === 'team' ? [{ kind: 'agent_team', runId: target.teamRunId }] : []),
+  (refs) => runStatus.hold(refs))
 
   return {
     rows: computed<readonly RunMemberNode[]>(() => [...local.value, ...remote.value]),

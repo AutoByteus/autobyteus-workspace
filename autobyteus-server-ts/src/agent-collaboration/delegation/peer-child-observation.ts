@@ -35,7 +35,8 @@ export class PeerChildObservation {
     peerRunOf: PeerRunOf;
     channel: PeerChannel;
     /** Retry's other half: the peer runs' statuses (`RunStatusService`) observe again where they ended. */
-    retryStatuses(peerRunIds: readonly string[]): void;
+    /** These peer runs' ended status observations again, and every other on their nodes (CR-461-094). */
+    retryStatuses(peerRunIds: readonly string[], nodeIds: readonly string[]): void;
   }>) {}
 
   /**
@@ -74,14 +75,15 @@ export class PeerChildObservation {
     const view = this.viewed.get(rootExecutionIdentityKey(run));
     if (!view) return Promise.resolve();
     view.peers.forEach((peerRunId) => { const entry = this.observed.get(peerRunId); if (entry && !entry.stream) this.open(entry); });
-    this.dependencies.retryStatuses([...view.peers]);
+    this.dependencies.retryStatuses([...view.peers], this.nodesOf([...view.peers]));
     return this.fetchSummaries(view);
   }
 
   /** A peer run's status observation ended unasked (AR-403): one summary for the views showing it sets its row. */
   ended(peerRunId: string): void {
     const entry = this.observed.get(peerRunId);
-    if (entry) void this.fetchFor([entry]);
+    // Never observed again from here: an observation its node keeps refusing would end, and be asked again, in a loop.
+    if (entry) void this.fetchFor([entry], false);
   }
 
   /** The last summaries of the view's peer rows, in memory. */
@@ -173,15 +175,28 @@ export class PeerChildObservation {
     return this.fetchFor((only ?? [...view.peers]).flatMap((peerRunId) => this.observed.get(peerRunId) ?? []));
   }
 
-  /** One request per node; each answer is cached and published to every view showing the run. */
-  private async fetchFor(entries: readonly Observed[]): Promise<void> {
+  /**
+   * One request per node; each answer is cached and published to every view showing the run. A node that answers is back
+   * (CR-461-094): the ended status observations of its runs are observed again (`reobserve`; a view's open, its rows'
+   * change and Retry), and an output observation of a run shown here that ended is opened again.
+   */
+  private async fetchFor(entries: readonly Observed[], reobserve = true): Promise<void> {
     if (!entries.length) return;
     const statuses = await peerStatuses(entries.map((entry) => entry.peer.link), this.dependencies.channel);
+    const answered: string[] = [];
     for (const entry of entries) {
       const summary = statuses.find((status) => status.nodeId === entry.peer.link.nodeId && status.runId === entry.peer.runId);
       if (!summary || this.observed.get(entry.peer.runId) !== entry) continue;
       entry.lastSummary = Object.freeze({ ...summary });
       this.publish(entry, { kind: "remote_task_execution_summary", summary: entry.lastSummary });
+      if (!reobserve || !summary.reachable) continue;
+      answered.push(entry.peer.runId);
+      if (!entry.stream) this.open(entry);
     }
+    if (answered.length) this.dependencies.retryStatuses(answered, this.nodesOf(answered));
+  }
+
+  private nodesOf(peerRunIds: readonly string[]): string[] {
+    return [...new Set(peerRunIds.flatMap((peerRunId) => this.observed.get(peerRunId)?.peer.link.nodeId ?? []))];
   }
 }

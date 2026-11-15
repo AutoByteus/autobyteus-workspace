@@ -2400,6 +2400,33 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     record("RC-44", { p1, refusedArchive, refusedDelete, deleted });
   }, 240_000);
 
+  it("RC-45 461 CR-461-094 (SR-083): a peer run's status on alpha's /ws/run-status follows again after beta's outage, once beta answers a view (no Retry of a view showing that run)", async () => {
+    const delegator = standaloneActor(alpha, ids.treeDelegator as string, "alpha tree delegator");
+    const solo = standaloneActor(alpha, ids.solo, "alpha standalone delegator");
+    // Two runs on beta from two delegators: the subscription holds the second; the first delegator's view is the only one opened.
+    const shown = (await calls(delegator, "delegate_task", { node: LABEL.beta, recipient_address: "/publisher", description: "Shown run. Marker OUTAGE-SHOWN." })).target_agent_run_id as string;
+    const followed = (await calls(solo, "delegate_task", { node: LABEL.beta, recipient_address: "/publisher", description: "Followed run. Marker OUTAGE-FOLLOWED." })).target_agent_run_id as string;
+    await receives(composeOnBeta(followed), "OUTAGE-FOLLOWED");
+    await receives(composeOnBeta(shown), "OUTAGE-SHOWN");
+    const status = await runStatus(alpha, "agent", followed);
+    await until(() => ["idle", "running", "initializing"].includes(String(status.latest(followed))), "the followed run live on alpha", 25_000);
+    // The outage: the link ends unasked; the run reads offline on alpha.
+    await beta.stop();
+    await until(() => status.latest(followed) === "offline", "the followed run offline during the outage", 30_000);
+    await beta.start();
+    // Beta answers a view that shows another of its runs: the node is back for every run on it.
+    const view = await connect(alpha, "agent-collaboration", ids.treeDelegator as string, (frames) => frames.some((frame) => frame.type === "ROOT_EXECUTION_VIEW_SNAPSHOT"));
+    await until(() => remoteSummariesIn(view.frames, shown).some((summary) => summary.reachable === true), "beta answers the view's summary", 30_000);
+    // A turn on beta: its live status reaches alpha's subscription again.
+    const since = status.frames.length;
+    await composeOnBeta(followed).send("After the outage. Marker OUTAGE-AFTER.");
+    await until(() => status.statusesOf(followed, since).some((value) => ["running", "idle", "initializing"].includes(value)), "the followed run live again on alpha after beta's outage", 60_000);
+    const after = status.statusesOf(followed, since);
+    view.socket.close();
+    status.socket.close();
+    record("RC-45", { shown, followed, after });
+  }, 240_000);
+
   it("RC-14 AC-106: a follow-up to a remote run whose history was deleted on beta is refused with 'not found'", async () => {
     const solo = standaloneActor(alpha, ids.solo, "alpha standalone delegator");
     const delegated = await delegateRemote(solo, "Short-lived work. Marker DELETED-PACKET.");

@@ -58,15 +58,16 @@ const harness = () => {
   } }) };
   const current = () => channel as unknown as RemoteRunChannel;
   const retried: string[][] = [];
+  const retriedNodes: string[][] = [];
   const observation = new PeerChildObservation({ tree: tree as never, streams: streams as never, peerRunOf: createPeerRunOf(tree as never, current), channel: current,
-    retryStatuses: (peerRunIds) => { retried.push([...peerRunIds]); } });
+    retryStatuses: (peerRunIds, nodeIds) => { retried.push([...peerRunIds]); retriedNodes.push([...nodeIds]); } });
   const eventsOf = (run: RootExecutionIdentity) => (published.get(rootExecutionIdentityKey(run)) ?? []) as Array<{ kind: string; summary?: unknown }>;
   const flush = async () => { for (let index = 0; index < 8; index += 1) await Promise.resolve(); };
   const changeRows = (run: RootExecutionIdentity, rows: unknown[]) => {
     rowsOf.set(rootExecutionIdentityKey(run), rows);
     rowListeners.forEach((listener) => listener({ run }));
   };
-  return { channel, observers, closed, observation, eventsOf, flush, changeRows, retried };
+  return { channel, observers, closed, observation, eventsOf, flush, changeRows, retried, retriedNodes };
 };
 
 describe("PeerChildObservation", () => {
@@ -128,8 +129,23 @@ describe("PeerChildObservation", () => {
     expect(f.channel.runSummaries.mock.calls.length).toBe(before);
     await f.observation.refresh(delegator);
     expect(f.channel.observeRun.mock.calls.map(([, root]) => root.runId)).toEqual(["researcher-run", "marketing-run", "analyst-run", "researcher-run"]);
-    expect(f.retried).toEqual([["researcher-run", "marketing-run", "analyst-run"]]);
+    // Retry asks for the view's peer runs, then its answering node's runs are observed again (the open's answer before it).
+    expect(f.retried).toEqual([["researcher-run", "marketing-run"], ["researcher-run", "marketing-run", "analyst-run"], ["researcher-run", "marketing-run"]]);
     expect(f.channel.runSummaries.mock.calls.length).toBe(before + 2);
+  });
+
+  it("CR-461-094: a node that answers a view's summaries is back: its runs' ended observations are observed again (an unreachable node's are not)", async () => {
+    const f = harness();
+    f.observation.follow(delegator);
+    await f.flush();
+    // DOCKER answers (researcher, marketing); OFFICE does not (analyst). The node goes with them: its other runs too.
+    expect(f.retried).toEqual([["researcher-run", "marketing-run"]]);
+    expect(f.retriedNodes).toEqual([[DOCKER]]);
+    // An output observation that ended is opened again when its node answers.
+    f.observers.get("marketing-run")!.onEnd();
+    f.observation.follow(top);
+    await f.flush();
+    expect(f.channel.observeRun.mock.calls.map(([, root]) => root.runId).filter((id) => id === "marketing-run")).toHaveLength(2);
   });
 
   it("AR-403 (CR-461-085): a peer run's status observation that ended unasked fetches that run's summary once, for its views", async () => {
@@ -137,8 +153,11 @@ describe("PeerChildObservation", () => {
     f.observation.follow(delegator);
     await f.flush();
     const before = f.channel.runSummaries.mock.calls.length;
+    const retriedBefore = f.retried.length;
     f.observation.ended("researcher-run");
     await f.flush();
+    // Its node answers, but the end is not observed again from here (a node refusing it would loop).
+    expect(f.retried).toHaveLength(retriedBefore);
     expect(f.channel.runSummaries.mock.calls.slice(before)).toEqual([[DOCKER, [{ kind: "agent", runId: "researcher-run" }]]]);
     f.observation.ended("not-shown-run");
     await f.flush();

@@ -34,6 +34,7 @@ import { rebuildOfView, useCollaborationParticipantMessagesStore } from '~/servi
 import { createRandomId } from '~/utils/randomId'
 import { agentRunDelegatedRunSubject } from '~/services/delegatedRuns/delegatedRunSubjects'
 import { useDelegatedRunsStore } from '~/stores/delegatedRunsStore'
+import { watchHeldRuns } from '~/services/runStatus/heldRuns'
 
 const delegatedRuns = () => useDelegatedRunsStore()
 
@@ -193,8 +194,8 @@ export const useAgentRunCollaborationStore = defineStore('agentRunCollaboration'
    * a newer read supersedes an older one in flight, so only the newest answer is applied.
    */
   const runStatus = useRunStatusStore()
-  watch(() => Object.entries(contexts.value).flatMap(([hostRunId, context]) => [{ kind: 'agent' as const, runId: hostRunId }, ...context.viewRuns().refs]),
-    (refs, _previous, onCleanup) => { onCleanup(runStatus.hold(refs)) }, { immediate: true, deep: true })
+  watchHeldRuns(() => Object.entries(contexts.value).flatMap(([hostRunId, context]) => [{ kind: 'agent' as const, runId: hostRunId }, ...context.viewRuns().refs]),
+    (refs) => runStatus.hold(refs))
   watch(() => Object.values(contexts.value).flatMap((context) => context.viewRuns().agentRunIds.map((agentRunId) => [context, agentRunId, runStatus.statusOf(agentRunId)] as const)),
     (entries) => { for (const [context, agentRunId, status] of entries) if (status) context.applyRunStatus(agentRunId, status as AgentStatus) }, { immediate: true })
   watch(() => Object.keys(contexts.value).map((hostRunId) => [hostRunId, runStatus.treeRevisionOf({ kind: 'agent', runId: hostRunId })] as const),

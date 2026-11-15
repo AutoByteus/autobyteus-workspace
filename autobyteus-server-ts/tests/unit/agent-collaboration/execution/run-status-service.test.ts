@@ -27,7 +27,11 @@ const harness = (input: Readonly<{ agents?: Record<string, string[]>; live?: Rec
   };
   const peerClose = vi.fn();
   let peerObserver: { onFrame(agentRunId: string, message: unknown): void; onEnd(): void } | null = null;
-  const peerObserve = vi.fn((observer: typeof peerObserver) => { peerObserver = observer; return { close: peerClose }; });
+  const peerObservers = new Map<string, NonNullable<typeof peerObserver>>();
+  const observeOf = (id: string) => vi.fn((observer: NonNullable<typeof peerObserver>) => { peerObserver = observer; peerObservers.set(id, observer); return { close: peerClose }; });
+  const peerObserves = new Map<string, ReturnType<typeof observeOf>>();
+  const peerObserve = observeOf("peer-team");
+  peerObserves.set("peer-team", peerObserve);
   const peerEnded = vi.fn();
   const sources: RunStatusSources = {
     peerEnded,
@@ -42,8 +46,12 @@ const harness = (input: Readonly<{ agents?: Record<string, string[]>; live?: Rec
       },
     },
     agentsOf: async (run) => (input.agents?.[run.rootRunId] ?? [run.rootRunId]).map((agentRunId) => ({ agentRunId })),
-    peerRunOf: (id) => (input.peer?.includes(id)
-      ? ({ link: { kind: "agent_team", teamRunId: id, members: [{ agentRunId: `${id}-lead` }] }, observe: peerObserve } as never) : null),
+    peerRunOf: (id) => {
+      if (!input.peer?.includes(id)) return null;
+      if (!peerObserves.has(id)) peerObserves.set(id, observeOf(id));
+      return { link: { kind: "agent_team", nodeId: id.startsWith("office-") ? "office" : "beta", teamRunId: id, members: [{ agentRunId: `${id}-lead` }] },
+        observe: peerObserves.get(id)! } as never;
+    },
   };
   const service = new RunStatusService(sources);
   const client = () => {
@@ -51,7 +59,8 @@ const harness = (input: Readonly<{ agents?: Record<string, string[]>; live?: Rec
     return { sent, connection: service.connect((message) => sent.push(message)) };
   };
   const register = (runId: string, registered: boolean) => { for (const listener of registration.get(runId) ?? []) listener(registered); };
-  return { service, client, listeners, ended, live, register, observe, peerEnded, peer: { close: peerClose, observe: peerObserve, observer: () => peerObserver } };
+  return { service, client, listeners, ended, live, register, observe, peerEnded, peer: { close: peerClose, observe: peerObserve, observer: () => peerObserver,
+    observerOf: (id: string) => peerObservers.get(id)!, observeOf: (id: string) => peerObserves.get(id)! } };
 };
 
 describe("RunStatusService (SR-082, SR-083)", () => {
@@ -132,6 +141,23 @@ describe("RunStatusService (SR-082, SR-083)", () => {
     // A live observation is not opened twice.
     h.service.retryPeers(["peer-team"]);
     expect(h.peer.observe).toHaveBeenCalledTimes(2);
+    connection.close();
+  });
+
+  it("CR-461-094: a Retry for one peer run observes again every ended observation on its node (its other runs too); another node's waits", async () => {
+    const h = harness({ peer: ["peer-team", "peer-other", "office-team"] });
+    const { connection } = h.client();
+    await connection.subscribe([{ kind: "agent_team", runId: "peer-team" }, { kind: "agent_team", runId: "peer-other" }, { kind: "agent_team", runId: "office-team" }]);
+    for (const id of ["peer-team", "peer-other", "office-team"]) h.peer.observerOf(id).onEnd();
+    // A view that shows only "peer-team" asks for its Retry: its node is back for "peer-other" as well.
+    h.service.retryPeers(["peer-team"]);
+    expect([h.peer.observeOf("peer-team"), h.peer.observeOf("peer-other"), h.peer.observeOf("office-team")].map((observe) => observe.mock.calls.length)).toEqual([2, 2, 1]);
+    h.peer.observerOf("peer-other").onFrame("peer-other-lead", frame("running"));
+    // A node named by the asking view's runs (none of them subscribed here) is back for every run on it.
+    h.peer.observerOf("peer-other").onEnd();
+    h.service.retryPeers(["not-subscribed"], ["beta"]);
+    expect(h.peer.observeOf("peer-other").mock.calls.length).toBe(3);
+    expect(h.peer.observeOf("office-team").mock.calls.length).toBe(1);
     connection.close();
   });
 

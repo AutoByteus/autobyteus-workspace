@@ -241,7 +241,7 @@ export const composeCollaboration = async (input: Readonly<{
     releases.push(feed.follow(tree));
     const runViewChildren = new RunViewChildren({ feed, projection });
     const peers = new PeerChildObservation({ tree, streams: taskSide.viewStreams, peerRunOf, channel: input.remoteChannel,
-      retryStatuses: (peerRunIds) => runStatus.retryPeers(peerRunIds) });
+      retryStatuses: (peerRunIds, nodeIds) => runStatus.retryPeers(peerRunIds, nodeIds) });
 
     // 8. Their consumers. Older singletons (their getters are FU-011) return the instance created here.
     releases.push(setProcessTaskDelegationToolService(new TaskDelegationToolService({ delegation,

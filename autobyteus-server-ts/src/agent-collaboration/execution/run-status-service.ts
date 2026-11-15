@@ -43,6 +43,8 @@ export class RunStatusEntry {
   private readonly releases: (() => void)[] = [];
   /** A peer run's observation again, after it ended (Retry, DEC-807 Phase 1); `null` for a local or org run. */
   private observePeer: (() => void) | null = null;
+  /** A peer run's node; `null` for a local or org run. */
+  private peerNodeId: string | null = null;
 
   constructor(readonly ref: RunStatusRunRef, private readonly sources: RunStatusSources) {
     this.ready = this.start().catch((error: unknown) => { console.warn(`Run '${ref.runId}': its statuses could not be followed: ${String(error)}`); });
@@ -55,6 +57,9 @@ export class RunStatusEntry {
 
   /** Retry: a peer run whose observation ended is observed again (DEC-807 Phase 1: an observation never reconnects alone). */
   retry(): void { this.observePeer?.(); }
+
+  /** The node a peer run runs on; `null` for a run on this node. */
+  get nodeId(): string | null { return this.peerNodeId; }
 
   private set(agentRunId: string, status: RunAgentStatus): void {
     if (this.closed || this.answers.get(agentRunId) === status) return;
@@ -109,6 +114,7 @@ export class RunStatusEntry {
    * agents read offline and its views ask its node for one summary (AR-403); Retry observes it again.
    */
   private startPeer(peer: PeerRun): void {
+    this.peerNodeId = peer.link.nodeId;
     const ids = peer.link.kind === "agent" ? [peer.link.agentRunId] : peer.link.members.map((member) => member.agentRunId);
     for (const agentRunId of ids) this.answers.set(agentRunId, "offline");
     let stream: Readonly<{ close(): void }> | null = null;
@@ -159,10 +165,15 @@ export class RunStatusService {
     if (entry) for (const listener of [...entry.listeners]) listener.treeChanged(entry.ref);
   }
 
-  /** Retry (`REFRESH_REMOTE_TASK_EXECUTIONS`): these peer runs' ended observations are observed again. */
-  retryPeers(peerRunIds: readonly string[]): void {
+  /**
+   * Retry (`REFRESH_REMOTE_TASK_EXECUTIONS`), or a node that answered again: these peer runs' ended observations are
+   * observed again, and every other ended observation of a run on their nodes (CR-461-094): the node is back for each of
+   * its runs, whichever view asked, so a run its views no longer show (a subscriber's alone) follows again too.
+   */
+  retryPeers(peerRunIds: readonly string[], nodeIds: readonly string[] = []): void {
     const ids = new Set(peerRunIds);
-    for (const entry of this.entries.values()) if (ids.has(entry.ref.runId)) entry.retry();
+    const nodes = new Set([...nodeIds, ...[...this.entries.values()].flatMap((entry) => ids.has(entry.ref.runId) && entry.nodeId ? [entry.nodeId] : [])]);
+    for (const entry of this.entries.values()) if (ids.has(entry.ref.runId) || (entry.nodeId && nodes.has(entry.nodeId))) entry.retry();
   }
 
   /** The number of runs held now (for tests and diagnostics). */

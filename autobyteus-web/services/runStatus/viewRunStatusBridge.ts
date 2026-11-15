@@ -5,6 +5,7 @@ import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore'
 import { useAgentOrgContextsStore } from '~/stores/agentOrgContextsStore'
 import { collaborationTaskExecutionLists } from '~/services/collaborators/agentSourceSelectors'
 import { collaborationViewRuns, type ViewRuns } from '~/services/runStatus/viewRunRefs'
+import { watchHeldRuns } from '~/services/runStatus/heldRuns'
 import type { AgentContext } from '~/types/agent/AgentContext'
 import type { AgentStatus } from '~/types/agent/AgentStatus'
 
@@ -35,7 +36,7 @@ export const installViewRunStatusBridge = (): (() => void) => {
         contextOf: (id: string) => org.getAgentContext(id),
       })),
     ]
-    watch(() => views().flatMap((view) => view.runs.refs), (refs, _previous, onCleanup) => { onCleanup(runStatus.hold(refs)) }, { immediate: true, deep: true })
+    watchHeldRuns(() => views().flatMap((view) => view.runs.refs), (refs) => runStatus.hold(refs))
     watch(() => views().flatMap((view) => view.runs.agentRunIds.map((id) => [view, id, runStatus.statusOf(id)] as const)), (entries) => {
       for (const [view, id, status] of entries) {
         const context = status ? view.contextOf(id) : null

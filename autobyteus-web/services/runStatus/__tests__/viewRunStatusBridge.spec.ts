@@ -39,6 +39,8 @@ describe('the Team and Org views\' run status bridge (SR-083)', () => {
     ] } })
     await nextTick()
     expect([copy.state.currentStatus, lead.state.currentStatus]).toEqual(['idle', 'running'])
+    // CR-461-094: a status shown in the view does not hold the runs again (the node would reopen each run's statuses).
+    expect(hold).toHaveBeenCalledTimes(1)
     // F-62: the stop icon of a running copy shows, whatever its delegator's status.
     expect(isDelegatedCopyLive({ rootKind: 'AGENT_TEAM', rootRunId: 'team-1' }, { teamRunId: 'squad' })).toBe(true)
     runStatus.apply({ type: 'RUN_STATUS_CHANGED', payload: { kind: 'agent_team', runId: 'squad', agentRunId: 'squad-lead', status: 'offline' } })
@@ -54,7 +56,7 @@ describe('the Team and Org views\' run status bridge (SR-083)', () => {
     const runStatus = useRunStatusStore()
     const hold = vi.spyOn(runStatus, 'hold').mockImplementation(() => () => undefined)
     const stop = installViewRunStatusBridge()
-    expect(hold).toHaveBeenLastCalledWith([{ kind: 'agent', runId: 'helper' }, { kind: 'agent_team', runId: 'sub' }, { kind: 'agent', runId: 'peer-agent' }])
+    expect(hold).toHaveBeenLastCalledWith([{ kind: 'agent', runId: 'helper' }, { kind: 'agent', runId: 'peer-agent' }, { kind: 'agent_team', runId: 'sub' }])
     runStatus.apply({ type: 'RUN_STATUS_SNAPSHOT', payload: { runs: [{ kind: 'agent', runId: 'helper', agents: [{ agentRunId: 'helper', status: 'running' }] }] } })
     await nextTick()
     expect(helper.state.currentStatus).toBe('running')

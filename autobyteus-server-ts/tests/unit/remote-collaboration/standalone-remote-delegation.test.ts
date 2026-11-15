@@ -416,8 +416,10 @@ describe("remote delegation between two standalone runs, in process (slice 1 ste
     const peerRunOf = createPeerRunOf(a.taskSide.tree, a.channel);
     const events: RemoteRunRootEvent[] = [];
     const streams = { streamOf: () => ({ publish: (event: RemoteRunRootEvent) => events.push(event) }) };
+    // The node's statuses (created below, after the view): a node that answers the view's summaries is observed again.
+    let runStatus: RunStatusService | null = null;
     const observation = new PeerChildObservation({ tree: a.taskSide.tree, streams: streams as never, peerRunOf, channel: a.channel,
-      retryStatuses: (peerRunIds) => runStatus.retryPeers(peerRunIds) });
+      retryStatuses: (peerRunIds, nodeIds) => runStatus?.retryPeers(peerRunIds, nodeIds) });
     const settle = async () => { for (let index = 0; index < 20; index += 1) await new Promise((resolve) => setImmediate(resolve)); };
 
     // No root of A is read: its view's peer rows come from the tree.
@@ -429,10 +431,10 @@ describe("remote delegation between two standalone runs, in process (slice 1 ste
       launches: [expect.objectContaining({ address: "/publisher", runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK, llmModelIdentifier: "sonnet" })] } }]);
 
     // B's host reports running: A reads it by the run's ID through its handle (SR-083), not as a frame of its view.
-    const runStatus = new RunStatusService({ agents: () => ({}) as never, peerRunOf, agentsOf: async () => [], peerEnded: (id) => observation.ended(id),
+    runStatus = new RunStatusService({ agents: () => ({}) as never, peerRunOf, agentsOf: async () => [], peerEnded: (id) => observation.ended(id),
       registrations: { resolve: () => null, onRegistrationChanged: () => () => undefined } });
     const statuses: RunStatusServerMessage[] = [];
-    const statusConnection = runStatus.connect((message) => statuses.push(message));
+    const statusConnection = runStatus!.connect((message) => statuses.push(message));
     await statusConnection.subscribe([{ kind: "agent", runId: "publisher_r1" }]);
     await settle();
     // CR-461-090: the run was already idle before A observed it: B's stream opens with its current status, so A reads it.

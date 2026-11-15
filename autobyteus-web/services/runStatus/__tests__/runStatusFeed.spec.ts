@@ -15,7 +15,7 @@ const createSocket = (): RunStatusSocket => {
 const agent = (runId: string) => ({ kind: 'agent' as const, runId })
 
 describe('RunStatusFeed', () => {
-  it('opens with the first held run, subscribes held runs on open and new ones after, unsubscribes the last release, closes when none is held', () => {
+  it('opens with the first held run, subscribes held runs on open and new ones after, unsubscribes the last release, closes when none is held', async () => {
     sockets.length = 0
     const deliver = vi.fn()
     const feed = new RunStatusFeed({ endpoint: () => 'ws://node/ws/run-status', deliver, createSocket })
@@ -30,8 +30,23 @@ describe('RunStatusFeed', () => {
     socket.onmessage!({ data: JSON.stringify({ type: 'RUN_STATUS_CHANGED', payload: { ...agent('a'), agentRunId: 'a', status: 'idle' } }) })
     expect(deliver).toHaveBeenCalledWith({ type: 'RUN_STATUS_CHANGED', payload: { ...agent('a'), agentRunId: 'a', status: 'idle' } })
     releaseAgain()
+    await Promise.resolve()
     expect(socket.sent.at(-1)).toEqual({ type: 'UNSUBSCRIBE', payload: { runs: [agent('a'), agent('b')] } })
     expect(socket.close).toHaveBeenCalled()
+  })
+
+  it('CR-461-094: a holder that releases and holds the same runs again in one step keeps their subscription', async () => {
+    sockets.length = 0
+    const feed = new RunStatusFeed({ endpoint: () => 'ws://node/ws/run-status', deliver: vi.fn(), createSocket })
+    let release = feed.hold([agent('a')])
+    sockets[0]!.onopen!()
+    for (let step = 0; step < 3; step += 1) { release(); release = feed.hold([agent('a')]) }
+    await Promise.resolve()
+    expect(sockets[0]!.sent).toEqual([{ type: 'SUBSCRIBE', payload: { runs: [agent('a')] } }])
+    expect(sockets[0]!.close).not.toHaveBeenCalled()
+    release()
+    await Promise.resolve()
+    expect(sockets[0]!.sent.at(-1)).toEqual({ type: 'UNSUBSCRIBE', payload: { runs: [agent('a')] } })
   })
 
   it('subscribes every held run again after a reconnect, and gives each a rows notice (a change while lost reached no one)', () => {

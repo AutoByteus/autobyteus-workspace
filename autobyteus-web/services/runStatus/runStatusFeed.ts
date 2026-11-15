@@ -31,6 +31,10 @@ const keyOf = (ref: Pick<RunStatusRunRef, 'kind' | 'runId'>): string => `${ref.k
  *   run) and delivered on the page resume: nothing is read in the background (autobyteus-435 AC-006);
  * - a reconnect after a loss catches up as the other streams do: the snapshot replaces the statuses, and each held run
  *   gets one rows notice, since a change of its rows while the connection was lost reached no one.
+ *
+ * A release that leaves a run unheld takes effect after the current task (CR-461-094): a holder that releases and holds
+ * the same runs again in one step keeps their subscription, so the node does not close and open each run's statuses
+ * again (for a peer run, its observation on its own node).
  */
 export class RunStatusFeed {
   private socket: RunStatusSocket | null = null
@@ -42,6 +46,8 @@ export class RunStatusFeed {
   private readonly heldTreeChanges = new Map<string, RunStatusServerMessage>()
   /** The connection was lost (or re-synchronized) since it was last open: the next open catches up. */
   private lost = false
+  /** Releases wait for the end of the current step (`applyReleases`). */
+  private releasing = false
   private readonly reconnect = new LiveStreamReconnectScheduler({
     attempt: () => this.attempt(),
     resynchronize: () => { this.dropSocket(); this.lost = true; this.reconnect.attemptNow() },
@@ -60,6 +66,7 @@ export class RunStatusFeed {
     const added: RunStatusRunRef[] = []
     for (const ref of refs) {
       const entry = this.held.get(keyOf(ref))
+      // An entry released in this step (count 0, not yet unsubscribed) is still subscribed: held again, nothing is sent.
       if (entry) entry.count += 1
       else { this.held.set(keyOf(ref), { ref, count: 1 }); added.push(ref) }
     }
@@ -70,17 +77,27 @@ export class RunStatusFeed {
     return () => {
       if (released) return
       released = true
-      const removed: RunStatusRunRef[] = []
+      let unheld = false
       for (const ref of refs) {
         const entry = this.held.get(keyOf(ref))
-        if (!entry || --entry.count > 0) continue
-        this.held.delete(keyOf(ref))
-        this.heldTreeChanges.delete(keyOf(ref))
-        removed.push(ref)
+        if (entry && --entry.count <= 0) unheld = true
       }
-      if (removed.length) this.send('UNSUBSCRIBE', removed)
-      if (this.held.size === 0) { this.dropSocket(); this.reconnect.startOver() }
+      if (unheld && !this.releasing) { this.releasing = true; queueMicrotask(() => this.applyReleases()) }
     }
+  }
+
+  /** The runs still unheld after the step that released them leave: unsubscribed, and the connection closes with the last. */
+  private applyReleases(): void {
+    this.releasing = false
+    const removed: RunStatusRunRef[] = []
+    for (const [key, entry] of this.held) {
+      if (entry.count > 0) continue
+      this.held.delete(key)
+      this.heldTreeChanges.delete(key)
+      removed.push(entry.ref)
+    }
+    if (removed.length) this.send('UNSUBSCRIBE', removed)
+    if (this.held.size === 0) { this.dropSocket(); this.reconnect.startOver() }
   }
 
   /** The window was bound to another node, or bound again: connect there. */
