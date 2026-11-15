@@ -12,7 +12,11 @@ import { ProjectService } from "../../../src/projects/services/project-service.j
 import { ProjectTaskService } from "../../../src/projects/services/project-task-service.js";
 import { ProjectTaskContextDrafts } from "../../../src/projects/services/project-task-context-drafts.js";
 import { ProjectTaskContextStore } from "../../../src/projects/context/project-task-context-store.js";
-import { CONTEXT_FILE_MAX_BYTES, contextFileMimeTypeForPath } from "../../../src/context-files/domain/context-file-upload-policy.js";
+import { contextFileMimeTypeForPath } from "../../../src/context-files/domain/context-file-upload-policy.js";
+import { defaultContextFileSizeLimits, MiB } from "../../helpers/context-file-size-limits.js";
+import { appConfigProvider } from "../../../src/config/app-config-provider.js";
+import { CONTEXT_FILE_AUDIO_VIDEO_MAX_MB_SETTING_KEY } from "../../../src/config/context-file-size-limit-settings.js";
+const OTHER_FILE_LIMIT = 25 * MiB;
 import { createRootExecutionIdentity } from "../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import type { TaskExecutionReleaseRequest } from "../../../src/agent-collaboration/execution/task/task-execution-resource-port.js";
 
@@ -36,7 +40,7 @@ describe("Project Task local context files", () => {
   const uiTask = async (description = "UI task") => {
     const draft = await drafts.beginContextDraft(projectId);
     const upload = await drafts.uploadContextFile(projectId, draft.draftId,
-      { filename: "ui.txt", mimetype: "text/plain", file: Readable.from([Buffer.from("ui bytes")]) } as never);
+      { filename: "ui.txt", mimetype: "text/plain", file: Readable.from([Buffer.from("ui bytes")]) } as never, defaultContextFileSizeLimits);
     return tasks.createTask({ projectId, title: description, description, contextDraft: { draftId: draft.draftId, storedFilenames: [upload.storedFilename] } });
   };
 
@@ -58,6 +62,22 @@ describe("Project Task local context files", () => {
     vi.restoreAllMocks();
     await fs.chmod(path.join(sources, "locked.txt"), 0o600).catch(() => undefined);
     await fs.rm(appData, { recursive: true, force: true });
+  });
+
+  it("applies the audio/video limit to a local video and the other-file limit to a document (AC-012)", async () => {
+    const video = path.join(sources, "clip.mp4"); await fs.mkdir(sources, { recursive: true });
+    await fs.writeFile(video, ""); await fs.truncate(video, 26 * MiB);
+    const view = await tasks.createTaskWithLocalContextFiles({ projectId, title: "Video", description: "Video", localContextFiles: [video] });
+    expect(view.contextFiles[0]).toMatchObject({ displayName: "clip.mp4", mimeType: "video/mp4", sizeBytes: 26 * MiB });
+    const pdf = path.join(sources, "big.pdf"); await fs.writeFile(pdf, ""); await fs.truncate(pdf, 26 * MiB);
+    await expect(tasks.createTaskWithLocalContextFiles({ projectId, title: "Pdf", description: "Pdf", localContextFiles: [pdf] }))
+      .rejects.toMatchObject({ code: "TASK_CONTEXT_INVALID", message: expect.stringMatching(/big\.pdf' is larger than the 25 MiB limit/) });
+    // The audio/video limit is a node setting read for each operation (here lowered to 10 MiB).
+    appConfigProvider.config.set(CONTEXT_FILE_AUDIO_VIDEO_MAX_MB_SETTING_KEY, "10");
+    try {
+      await expect(tasks.updateTaskById({ taskId: view.taskId, localContextFiles: [video] }))
+        .rejects.toMatchObject({ code: "TASK_CONTEXT_INVALID", message: expect.stringMatching(/clip\.mp4' is larger than the 10 MiB limit/) });
+    } finally { appConfigProvider.config.set(CONTEXT_FILE_AUDIO_VIDEO_MAX_MB_SETTING_KEY, ""); }
   });
 
   it("maps a path to an app-accepted MIME type by extension only", () => {
@@ -109,7 +129,7 @@ describe("Project Task local context files", () => {
     const good = await source("notes.md");
     await fs.mkdir(path.join(sources, "folder.md"));
     await source("code.ts"); await source("README");
-    await fs.truncate(await source("huge.txt", ""), CONTEXT_FILE_MAX_BYTES + 1);
+    await fs.truncate(await source("huge.txt", ""), OTHER_FILE_LIMIT + 1);
     const badPath = bad(sources);
     const error = await tasks.createTaskWithLocalContextFiles({ projectId, title: "Never", description: "Never", localContextFiles: [good, badPath] }).catch(e => e);
     expect(error).toMatchObject({ code, message: expect.stringContaining(`'${badPath}'`) });
@@ -154,7 +174,7 @@ describe("Project Task local context files", () => {
     expect(view.contextFiles[0]).toMatchObject({ displayName: "server.log", sizeBytes: 14, localPath: expect.any(String) });
     vi.mocked(fs.copyFile).mockImplementation(async (from, to, mode) => {
       await originalCopyFile(from, to, mode);
-      await fs.truncate(String(to), CONTEXT_FILE_MAX_BYTES + 1);
+      await fs.truncate(String(to), OTHER_FILE_LIMIT + 1);
     });
     await expect(tasks.updateTaskById({ taskId: view.taskId, localContextFiles: [log] }))
       .rejects.toMatchObject({ code: "TASK_CONTEXT_INVALID", message: expect.stringContaining(log) });

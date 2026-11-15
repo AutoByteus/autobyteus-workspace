@@ -10,7 +10,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 const config = vi.hoisted(() => ({ root: "" }));
 vi.mock("../../../../src/config/app-config-provider.js", () => ({ appConfigProvider: { config: {
-  getBaseUrl: () => "http://app.test",
+  getBaseUrl: () => "http://app.test", get: () => undefined,
   getAppDataDir: () => config.root,
   getMemoryDir: () => path.join(config.root, "memory"),
 } } }));

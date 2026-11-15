@@ -422,7 +422,8 @@ category-wide native task exposure are not restored.
   automatically: an agent has them only when its definition selects them.
   `context_files` (array of absolute node-local file paths, Project Tasks only)
   copies each file into the Task's saved context. A patch appends and never
-  removes. The app's file types and 25 MiB limit apply, and any invalid entry
+  removes. The app's file types and size limits apply (audio and video up to the audio/video limit, other files
+  up to the other-file limit; both are node settings), and any invalid entry
   fails the whole call with no change. When files were attached, the result's
   `task` also lists them as `attachedContextFiles: [{name, path}]`. See
   [Projects](projects.md#project-and-task-agent-tools).

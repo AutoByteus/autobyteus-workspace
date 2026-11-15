@@ -36,6 +36,12 @@ import {
   TASK_EXECUTION_IDLE_SHUTDOWN_GRACE_SETTING_KEY,
 } from "../config/task-execution-idle-shutdown-setting.js";
 import {
+  CONTEXT_FILE_AUDIO_VIDEO_MAX_MB_SETTING_KEY,
+  CONTEXT_FILE_OTHER_MAX_MB_SETTING_KEY,
+  normalizeContextFileAudioVideoMaxMbForPersistence,
+  normalizeContextFileOtherMaxMbForPersistence,
+} from "../config/context-file-size-limit-settings.js";
+import {
   normalizeShowInternalAgentsForPersistence,
   SHOW_INTERNAL_AGENTS_SETTING_KEY,
 } from "../config/show-internal-agents-setting.js";
@@ -206,6 +212,20 @@ export class ServerSettingsService {
       {
         normalizeForPersistence: normalizeTaskExecutionIdleShutdownGraceForPersistence,
       },
+    );
+
+    this.registerPredefinedSetting(
+      CONTEXT_FILE_AUDIO_VIDEO_MAX_MB_SETTING_KEY,
+      "Largest audio or video file a user can attach, in MiB. Applies to the next upload. Default: 2048 (2 GiB); allowed range 1 to 10240.",
+      true,
+      { normalizeForPersistence: normalizeContextFileAudioVideoMaxMbForPersistence },
+    );
+
+    this.registerPredefinedSetting(
+      CONTEXT_FILE_OTHER_MAX_MB_SETTING_KEY,
+      "Largest image, document or other non-audio/video file a user can attach, in MiB. Applies to the next upload. Default: 25; allowed range 1 to 1024.",
+      true,
+      { normalizeForPersistence: normalizeContextFileOtherMaxMbForPersistence },
     );
 
     this.registerPredefinedSetting(

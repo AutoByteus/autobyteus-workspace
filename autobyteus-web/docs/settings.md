@@ -207,6 +207,26 @@ per-team, runtime, provider, or frontend-renderer preference.
   Rebinding the window reads the newly bound server's effective value, so two
   nodes can legitimately retain different settings without cross-node leakage.
 
+## Server Settings: Context File Size Limits
+
+Two node settings bound the size of a context file (a file attached to a message or a Project
+Task); terms are in [GLOSSARY.md](../../GLOSSARY.md) "Context Files".
+
+| Setting | Applies to | Default | Allowed |
+| --- | --- | --- | --- |
+| `AUTOBYTEUS_CONTEXT_FILE_AUDIO_VIDEO_MAX_MB` | audio and video files (the audio/video limit) | 2048 (2 GiB) | whole MiB, 1–10240 |
+| `AUTOBYTEUS_CONTEXT_FILE_OTHER_MAX_MB` | every other accepted file, images and documents included (the other-file limit) | 25 | whole MiB, 1–1024 |
+
+- They are ordinary predefined server settings: set them as environment variables or in Settings ->
+  Server Settings (the advanced list, with the other predefined keys). The server refuses an invalid
+  value on save and uses the default for an invalid value that is already present.
+- A change applies to the next upload on that node without a restart; the composer reads the
+  limits at each pick (`GET /rest/context-files/size-limits`), so it needs no reload either.
+- Disk use grows with large videos: lower the audio/video limit to cap it. Draft uploads of any size
+  are removed after 24 hours if never sent.
+- The native AutoByteus runtime does not send a local media file larger than 25 MiB inline in a
+  model request, whatever these limits are; the agent opens it from its path.
+
 ## Server Settings: Claude Runtime
 
 Settings -> Server Settings -> Basics contains a node-bound **Claude runtime**
@@ -1488,6 +1508,7 @@ Browser-uploaded composer files now follow the same high-level orchestration pat
 1. UI surfaces work against the shared discriminated attachment model (`workspace_path`, `uploaded`, `external_url`) instead of raw path strings.
 2. `ContextFileUploadStore` owns upload, delete, and finalize transport. It stages browser uploads under an explicit draft owner and returns descriptors that keep `storedFilename` separate from the user-visible `displayName`.
 3. Shared UI helpers (`useContextAttachmentComposer` and `contextAttachmentPresentation`) own attachment-list mutation, display-label rendering, preview/open behavior, and pending-upload coordination so individual components do not parse locators themselves.
+   `useContextAttachmentComposer` also owns the pick sequence: it reads the node's context-file size limits once per pick (`ContextFileUploadStore.readSizeLimits()`), refuses an over-limit file before sending any byte, uploads the rest in parallel with per-item progress and an `AbortController` (`cancelUpload`), and groups failures (`ContextFileUploadFailure`: too large with its limit, unsupported type, interrupted, other) into the localized lines the component renders. Cancel removes the item without a message; the server's own error text is never shown.
 4. `hydrateContextAttachment` is the single persisted-locator convergence boundary. It transforms a valid legacy absolute POSIX or Windows-drive `local-file://` locator into the canonical fixed-authority form before normal classification/presentation, leaves canonical locators unchanged, and classifies opaque, adorned, or malformed local locators as `unsupported_local_file` rather than guessing a filesystem identity.
 5. Send stores begin the local user submission immediately after validation, then create or restore the final run/team identity, call `/context-files/finalize` with `attachments[{ storedFilename, displayName }]`, and replace draft uploaded descriptors with final run/member locators on the already-visible local message before runtime send.
 6. After finalization, `contextAttachmentSend.planContextAttachmentSubmission` is the only executable partition. The optimistic local message retains every current attachment, while only eligible current kinds enter `context_file_paths` or `image_urls`. A newly unsupported local locator remains visible/removable in the current composer/message and identity-matched live echo, but is excluded from every runtime/server media array and may disappear after a fresh reload because there is deliberately no metadata-only persistence transport. Historical unsupported records remain readable as non-executable metadata.

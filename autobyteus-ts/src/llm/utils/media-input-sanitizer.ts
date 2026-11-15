@@ -5,10 +5,17 @@ import {
   ToolResultPayload,
 } from './messages.js';
 import type { MultimodalCapabilities } from '../multimodal-capabilities.js';
-import { mediaSourceToBase64 } from './media-payload-formatter.js';
+import { promises as fs } from 'node:fs';
+import { isValidMediaPath, mediaSourceToBase64 } from './media-payload-formatter.js';
 
 export type MediaInputType = 'image' | 'audio' | 'video';
-export type MediaInputDiagnosticReason = 'unsupported' | 'invalid';
+export type MediaInputDiagnosticReason = 'unsupported' | 'invalid' | 'too_large';
+
+/**
+ * The largest local media file (image, audio or video) the runtime reads and sends inline in a model request.
+ * Larger files stay on disk: the agent opens them from their path.
+ */
+export const INLINE_MEDIA_MAX_BYTES = 25 * 1024 * 1024;
 
 export type MediaInputDiagnostic = {
   mediaType: MediaInputType;
@@ -54,8 +61,20 @@ const diagnostic = (
   reason,
   message: reason === 'unsupported'
     ? `The selected model does not support ${mediaType} input; the ${mediaType} was omitted from this request.`
-    : `The ${mediaType} input was invalid or empty and was omitted from this request.`,
+    : reason === 'too_large'
+      ? `The ${mediaType} file is larger than 25 MB and was not sent inline; the agent can open it from its path.`
+      : `The ${mediaType} input was invalid or empty and was omitted from this request.`,
 });
+
+/** A local media file (the sources the renderers read whole from disk) larger than the inline cap. */
+const isLocalFileOverInlineLimit = async (source: string): Promise<boolean> => {
+  if (!(await isValidMediaPath(source))) return false;
+  try {
+    return (await fs.stat(source)).size > INLINE_MEDIA_MAX_BYTES;
+  } catch {
+    return false;
+  }
+};
 
 const sanitizeSources = async (
   sources: string[],
@@ -68,12 +87,19 @@ const sanitizeSources = async (
     return [];
   }
 
-  if (mediaType !== 'image') return [...sources];
+  // Before the image base64 check below, so an oversized image is never read whole.
+  const tooLarge = await Promise.all(sources.map(isLocalFileOverInlineLimit));
+  const inlineable = sources.filter((_source, index) => {
+    if (tooLarge[index]) diagnostics.push(diagnostic(mediaType, 'too_large'));
+    return !tooLarge[index];
+  });
 
-  const settled = await Promise.allSettled(sources.map((source) => mediaSourceToBase64(source)));
+  if (mediaType !== 'image') return inlineable;
+
+  const settled = await Promise.allSettled(inlineable.map((source) => mediaSourceToBase64(source)));
   return settled.flatMap((result, index) => {
     if (result.status === 'fulfilled' && result.value.length > 0) {
-      return [sources[index]!];
+      return [inlineable[index]!];
     }
     diagnostics.push(diagnostic(mediaType, 'invalid'));
     return [];

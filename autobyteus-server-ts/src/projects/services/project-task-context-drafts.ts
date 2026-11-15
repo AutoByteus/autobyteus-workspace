@@ -1,4 +1,5 @@
 import type { MultipartFile } from "@fastify/multipart";
+import type { ContextFileSizeLimits } from "../../context-files/domain/context-file-upload-policy.js";
 import { ProjectError } from "../domain/project-errors.js";
 import { getProjectStore, type ProjectStore } from "../stores/project-store.js";
 import { getProjectTaskContextStore, type ProjectTaskContextStore } from "../context/project-task-context-store.js";
@@ -24,9 +25,9 @@ export class ProjectTaskContextDrafts {
     if (taskId) await this.ownership.reclaimUnpublished(projectId, taskId);
     return this.context.begin(projectId, taskId);
   }
-  async uploadContextFile(projectId: string, draftId: string, file: MultipartFile) {
+  async uploadContextFile(projectId: string, draftId: string, file: MultipartFile, limits: ContextFileSizeLimits) {
     await this.assertDraftOwner(projectId, draftId);
-    return this.context.upload(projectId, draftId, file);
+    return this.context.upload(projectId, draftId, file, limits);
   }
   async readDraftContextFile(projectId: string, draftId: string, filename: string) {
     await this.assertDraftOwner(projectId, draftId);

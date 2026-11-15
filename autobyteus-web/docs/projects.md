@@ -598,13 +598,20 @@ save retains entered content/context for action; late responses cannot navigate
 or publish to another active page. A captured server save may already commit
 after the page closes; local guards are not server rollback.
 
+Before uploading, `useProjectTaskDraft` reads the node's context-file size limits
+(`projectTaskContextClient.sizeLimits()`, the same `GET /rest/context-files/size-limits` the
+message composer uses) and refuses an over-limit file without sending it. A refusal, the
+server's `413`/`415`, a lost connection and any other upload failure are shown as the message
+composer's localized lines (too large with the limit, unsupported type, interrupted, other),
+never the server's own text. A failed file does not stop the others from uploading.
+
 The server prepares immutable copies before metadata commit and preserves
 omitted context on text/status writes, including DONE. Drafts expire after 24h;
 saved references do not. Cleanup failure can leave inaccessible orphan bytes,
 not fake rollback. Project/Task deletion cleans only scoped owned context;
 original uploads, physical workspaces and unrelated run files remain untouched.
 See [server Projects](../../autobyteus-server-ts/docs/modules/projects.md) for
-25 MiB/MIME limits, exact GraphQL/REST routes, containment and commit proof.
+per-type size/MIME limits, exact GraphQL/REST routes, containment and commit proof.
 
 ## Optional Local Voice Destination
 
@@ -671,7 +678,7 @@ not changed); `list_project_tasks` shows each Task's `commentCount` (and `get_pr
 texts) and `search_project_tasks` its `commentCount`. Delegating a saved Task sends its comments after the description.
 Both modes take optional `context_files` (absolute node-local file paths). The server
 copies each file into the Task's saved context under the same upload policy as the
-Task page (allowed types by extension, 25 MiB), so agent-attached files appear in
+Task page (allowed types by extension; audio and video up to the node's audio/video limit, other files up to its other-file limit), so agent-attached files appear in
 Context Files exactly like UI uploads (image preview included) and outlive their
 sources. Patches append and never remove; any invalid entry fails the whole call
 with no change (including no DONE closure); Tasks with no Project refuse files.

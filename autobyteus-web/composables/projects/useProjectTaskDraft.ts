@@ -1,5 +1,9 @@
 import { ref, computed, onBeforeUnmount, watch } from 'vue'
 import { createProjectTaskContextClient } from '~/services/projects/projectTaskContextClient'
+import { useLocalization } from '~/composables/useLocalization'
+import { contextFileMaxBytesFor } from '~/utils/contextFiles/contextFileSizeLimits'
+import { failureOfUploadError, groupContextFileFailures, type ContextFileUploadFailure } from '~/utils/contextFiles/contextFileUploadFailure'
+import { contextFileFailureMessage } from '~/utils/contextFiles/contextFileFailureMessage'
 import { useProjectTaskStore } from '~/stores/projectTaskStore'
 import { useVoiceInputStore } from '~/stores/voiceInputStore'
 import { mergeTranscriptWithDraft } from '~/utils/voiceInputCapture'
@@ -42,19 +46,42 @@ export function useProjectTaskDraft(projectId: string, saved?: ProjectTask, init
     }).finally(() => { beginPromise = null })
     return beginPromise
   }
+  /** The same localized reasons as the message composer; the server's own text is never shown. */
+  const localization = useLocalization()
+  const uploadFailureMessage = (failures: Array<{fileName: string; failure: ContextFileUploadFailure}>) =>
+    groupContextFileFailures(failures).map((group) => contextFileFailureMessage(group, localization.t, localization.resolvedLocale.value)).join(' ')
   const addFiles = async (incoming: File[]) => {
     if (blocked.value || !current() || !incoming.length) return
     pending.value = true; error.value = ''
+    const failures: Array<{fileName: string; failure: ContextFileUploadFailure}> = []
     try {
-      const id = await ensureDraft()
-      for (const file of incoming) {
+      let accepted = incoming
+      try {
+        // One read of the node's limits per pick; a file over its limit is refused before any byte is sent.
+        const limits = await client.sizeLimits()
+        accepted = incoming.filter((file) => {
+          const maxBytes = contextFileMaxBytesFor(file, limits)
+          if (file.size > maxBytes) failures.push({fileName: file.name, failure: {reason: 'too_large', maxBytes}})
+          return file.size <= maxBytes
+        })
+      } catch (e) {
+        if (current()) { console.error('Task context limits request failed.', e); error.value = uploadFailureMessage(incoming.map((file) => ({fileName: file.name, failure: failureOfUploadError(e)}))) }
+        return
+      }
+      const id = accepted.length ? await ensureDraft() : undefined
+      for (const file of accepted) {
         if (!current()) break
-        const uploaded = await client.upload(id, file)
-        if (!current()) { await client.discard(id).catch(() => undefined); break }
+        let uploaded: ProjectTaskContextFile
+        try { uploaded = await client.upload(id!, file) }
+        catch (e) { console.error(`Task context upload failed for '${file.name}'.`, e); failures.push({fileName: file.name, failure: failureOfUploadError(e)}); continue }
+        if (!current()) { await client.discard(id!).catch(() => undefined); break }
         added.add(uploaded.storedFilename); files.value = [...files.value, uploaded]
       }
     } catch (e) { if (current()) error.value = e instanceof Error ? e.message : 'File upload failed.' }
-    finally { if (alive) pending.value = false }
+    finally {
+      if (current() && failures.length && !error.value) error.value = uploadFailureMessage(failures)
+      if (alive) pending.value = false
+    }
   }
   const removeFile = async (name: string) => {
     if (blocked.value || !current()) return

@@ -1,18 +1,22 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { AxiosError, CanceledError } from 'axios';
 import { createPinia, setActivePinia } from 'pinia';
+import { ContextFileUploadError } from '~/utils/contextFiles/contextFileUploadFailure';
 import { useContextFileUploadStore } from '../contextFileUploadStore';
 import {
   createUploadedContextAttachment,
   createWorkspaceContextAttachment,
 } from '~/utils/contextFiles/contextAttachmentModel';
 
-const { apiPostMock } = vi.hoisted(() => ({
+const { apiPostMock, apiGetMock } = vi.hoisted(() => ({
   apiPostMock: vi.fn(),
+  apiGetMock: vi.fn(),
 }));
 
 vi.mock('~/services/api', () => ({
   default: {
     post: apiPostMock,
+    get: apiGetMock,
   },
 }));
 
@@ -161,5 +165,78 @@ describe('contextFileUploadStore', () => {
         phase: 'final',
       }),
     ]);
+  });
+
+  describe('size limits, progress and cancel', () => {
+    const owner = { kind: 'agent_draft', draftRunId: 'temp-1' } as const;
+    const video = new File(['v'], 'VID_1.mp4', { type: 'video/mp4' });
+    const refusal = (status: number | undefined, data?: unknown) => {
+      const error = new AxiosError('Request failed');
+      if (status !== undefined) error.response = { status, data, statusText: '', headers: {}, config: {} as never };
+      return error;
+    };
+
+    it('reads the node\'s published limits, counted as in flight', async () => {
+      const store = useContextFileUploadStore();
+      let inFlight = false;
+      apiGetMock.mockImplementation(async () => {
+        inFlight = store.isUploading;
+        return { data: { otherFileMaxBytes: 26214400, audioVideoMaxBytes: 2147483648, audioVideoMimeTypes: ['video/mp4'] } };
+      });
+      await expect(store.readSizeLimits()).resolves.toEqual({
+        otherFileMaxBytes: 26214400, audioVideoMaxBytes: 2147483648, audioVideoMimeTypes: ['video/mp4'],
+      });
+      expect(apiGetMock).toHaveBeenCalledWith('/context-files/size-limits');
+      expect(inFlight).toBe(true);
+      expect(store.isUploading).toBe(false);
+    });
+
+    it('reports a failed limits read as the same typed failures an upload has', async () => {
+      const store = useContextFileUploadStore();
+      apiGetMock.mockRejectedValueOnce(refusal(undefined));
+      await expect(store.readSizeLimits()).rejects.toMatchObject({ failure: { reason: 'interrupted' } });
+      apiGetMock.mockResolvedValueOnce({ data: { nonsense: true } });
+      await expect(store.readSizeLimits()).rejects.toMatchObject({ failure: { reason: 'other' } });
+      expect(store.isUploading).toBe(false);
+    });
+
+    it('passes the abort signal and reports whole-percent progress', async () => {
+      const store = useContextFileUploadStore();
+      const controller = new AbortController();
+      const percents: number[] = [];
+      apiPostMock.mockImplementation(async (_url, _body, config) => {
+        config.onUploadProgress({ loaded: 50, total: 200 });
+        config.onUploadProgress({ loaded: 1, total: undefined });
+        config.onUploadProgress({ loaded: 200, total: 200 });
+        return { data: { storedFilename: 'ctx_a__VID_1.mp4', locator: '/rest/drafts/agent-runs/temp-1/context-files/ctx_a__VID_1.mp4', displayName: 'VID_1.mp4', phase: 'draft' } };
+      });
+      await store.uploadAttachment({ owner, file: video, signal: controller.signal, onProgress: (p) => percents.push(p) });
+      expect(apiPostMock.mock.calls[0]![2].signal).toBe(controller.signal);
+      expect(percents).toEqual([25, 100]);
+    });
+
+    it('translates every refusal to a typed failure and never exposes the response body', async () => {
+      const store = useContextFileUploadStore();
+      const expectFailure = async (error: unknown, failure: object) => {
+        apiPostMock.mockRejectedValueOnce(error);
+        const thrown = await store.uploadAttachment({ owner, file: video }).catch((e) => e);
+        expect(thrown).toBeInstanceOf(ContextFileUploadError);
+        expect(thrown.failure).toEqual(failure);
+      };
+      await expectFailure(refusal(413, { code: 'CONTEXT_FILE_TOO_LARGE', detail: 'Uploaded file is too large.', maxBytes: 26214400 }), { reason: 'too_large', maxBytes: 26214400 });
+      await expectFailure(refusal(415, { code: 'CONTEXT_FILE_TYPE_UNSUPPORTED', detail: 'Unsupported file type: x' }), { reason: 'unsupported_type' });
+      await expectFailure(refusal(undefined), { reason: 'interrupted' });
+      await expectFailure(refusal(400, { detail: 'owner is required.' }), { reason: 'other' });
+      expect(store.isUploading).toBe(false);
+    });
+
+    it('rethrows the cancellation of its own aborted request untouched', async () => {
+      const store = useContextFileUploadStore();
+      const controller = new AbortController();
+      apiPostMock.mockImplementation(async () => { controller.abort(); throw new CanceledError(); });
+      const thrown = await store.uploadAttachment({ owner, file: video, signal: controller.signal }).catch((e) => e);
+      expect(thrown).toBeInstanceOf(CanceledError);
+      expect(store.isUploading).toBe(false);
+    });
   });
 });

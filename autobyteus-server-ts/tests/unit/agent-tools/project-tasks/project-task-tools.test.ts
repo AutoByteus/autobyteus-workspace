@@ -122,7 +122,7 @@ describe("Project data tools — actual native preparation/execute and selected 
       expect(Object.keys(native.properties)).toEqual(keys);
       expect(native.required ?? []).toEqual(required);
       expect(native.properties.context_files).toMatchObject({type: "array", items: {type: "string"}});
-      expect(native.properties.context_files.description).toMatch(/Absolute local file paths.*25 MiB/);
+      expect(native.properties.context_files.description).toMatch(/Absolute local file paths.*size limits/);
       const listed = provider.getAdapters().find(a => a.definition.name === name)!.definition;
       expect(listed.description).toBe(Tool.getDescription());
       expect(listed.description).toMatch(/context_files.*attachedContextFiles \[\{name, path\}\]/);
