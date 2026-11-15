@@ -1210,3 +1210,55 @@ The current code and `implementation-handoff.md` remain authoritative.
   - A projections boundary violation from `b6d7158f1f` (Projects importing `collaboration-tree`) was fixed in `1fec92414f`.
 - Shared `dist` folders: the server's was rebuilt by `codegen:local` (no API/E2E run was announced). The phone bundle and `autobyteus-ts/dist` were not rebuilt. No temporary traces are in the tree.
 - Next recipient: Code Reviewer.
+
+### IR-036 — CRR-051's Local Fixes (CR-461-099, CR-461-100), with SR-090's Retry
+
+- Triggering role, report path, and round: Code Reviewer CRR-051 (`code-review-report.md`, round 35), two Local Fixes. During CR-461-099, IMP-RETRY (Unclear) went to the Solution Designer and was answered as SR-090 (option A, `design-spec.md` 3c under G-A3). ARCH-REV-066 passed it, adding two details: a retry re-opens an ended observation, and concurrent retries are coalesced. Round 36.
+- Triggering finding IDs: CR-461-099 (with C35-03 and C35-08 folded in), CR-461-100; SR-090; CRR-051 suggestions C35-04 (measure the predating read) and C35-06 (one stage per commit). Large / High unchanged.
+- Prior authoritative result: IR-035 at `b2675ec918` (CRR-051 Fail, two Local Fixes).
+- Related solution / architecture-review revision IDs: SR-090; ARCH-REV-066. Code-review IDs: CRR-051.
+- Implementation delta, one stage per commit (C35-06):
+  1. **CR-461-100** (`28b3b956fd`):
+     - `AgentStreamSequence` confirms a turn at every turn end once its writes are durable, and drops its buffer. The ends are `TURN_COMPLETED`, `TURN_INTERRUPTED`, and an `ERROR` with turn-terminal evidence (`endsTurn`).
+     - Tests: an interrupted turn, and a turn ended by a turn-terminal error, are each confirmed and dropped; a later snapshot reads each from the stored part, once.
+  2. **SR-090, Retry over `/ws/run-status`** (`57aaa0ca53`):
+     - contract `RETRY_PEERS { runIds }`;
+     - `RunStatusConnection.retry` asks only the peer runs this connection holds;
+     - `RunStatusEntry.retry` keeps one Retry in flight per peer run (a later one joins its answer), re-opens an ended observation, asks the node, and once answered tells its state again, changed or not.
+     - The view streams' `REFRESH_REMOTE_TASK_EXECUTIONS` is removed: both contracts, the three handlers, `run-view-rows.retryPeers` and the composition's walk.
+     - Web: `RunStatusFeed.retry`, and the store's `checking` set, cleared by the run's next `RUN_STATE_CHANGED` or snapshot.
+  3. **C35-08** (`c7ad1ba54b`):
+     - removed `utils/runOpenTarget.ts`, the dead org guard and its types, and the unused `RunTreeChangedEventDto`;
+     - `RunTreeDto` now types the tree that `runTreeStore` parses.
+  4. **CR-461-099** (`6acf35eb4a`):
+     - The read subject `peerRun { nodeId, runId, agentRunId }` replaces `standaloneMember`. A peer binding browses as it. Its earlier events are refused ("kept there"), it has no file changes, and it has no content URL. This is base's behaviour; base's `agent-collaborations` route no longer exists.
+     - `runTreeStore.peerRunOf(agentRunId)` finds the peer rows in the shown trees.
+     - Rebased on it: `useRemoteRun` (with `checking`), `useRemoteRunView` (Retry → `retryPeers`), `remoteRunFileNode` (files "on {node}"), `useComposerTarget` (no mention scope, SR-069), `WorkspaceTransientExecutionRow` (the display row's `remote` gains `reachable` and `title` from the row's `peer`).
+     - Removed: `remoteRunsStore`, `services/remoteRuns/remoteChildren.ts` (with C35-08's four dead helpers), `test-support/remoteRunRetryAdapter.ts`, and their spec. `createRemoteAgentContext` is now `services/peerRuns/peerAgentContext.ts`.
+  5. **C35-03, the two-node run** (`84f4f96e4f`, `4dec092f80`): `RC-46` in `remote-delegation-two-server.e2e.test.ts`.
+     - RC-20's audit now lists G-D1's snapshot route.
+     - RC-46 runs after RC-45, because its beta restart would stop the Team that RC-12 expects to be running.
+- Tests:
+  - contracts: `RETRY_PEERS` parses; the view streams refuse `REFRESH_REMOTE_TASK_EXECUTIONS`.
+  - server: `run-status-service.test.ts`, three SR-090 cases:
+    - a node that stays down: two clients retry at once and make one call, and each is told the unchanged state;
+    - a node that comes back: the ended observation is re-opened and the state is told as answered;
+    - a run the client does not hold is not asked.
+  - web:
+    - `WorkspaceTransientExecutionRowRemote.spec.ts`: the title from the row; Retry checks, then settles while the node stays down and once it is back; nothing checks when it could not send.
+    - `AgentWorkspaceSurfaceRemote.spec.ts`, `RemoteRunViewAffordances.spec.ts`: the four families, seeded from tree peer rows; Retry over the feed.
+    - `peerComposerMentionScope.spec.ts`: a peer agent, a peer team's coordinator and a member have no scope; a local run has one.
+    - `runTreeStore.spec.ts` (`peerRunOf`), `delegatedRunsStore.spec.ts` (a peer member's binding browses `peerRun`), `ArtifactContentViewer.spec.ts` (no request for a peer run), `runStatusFeed.spec.ts` (`RETRY_PEERS` only while open).
+    - The file, trace and right-panel specs now read the tree.
+- Validation:
+  - contracts 36/0 and 13/0;
+  - server type gate PASS (production 0; tests at baseline 1012); web type gate PASS (production 0; tests at baseline 87);
+  - focused server and web suites green;
+  - two-node `RC-46` Pass (IMP-106);
+  - full two-node suite (IMP-107): 11 fail and 35 pass. No product defect: RC-31 … 34, 36, 37, 43 and 45 read the view summaries removed in stage A; RC-35 and RC-12 are cascades; RC-20 was this round's, and its test is now fixed;
+  - without the stale cases (IMP-109): `Tests  37 passed | 9 skipped`;
+  - whole web suite: 5496 passed, 2 skipped;
+  - server `pnpm test:unit`: 8113 passed, 9 skipped;
+  - C35-04's predating read measured (IMP-108).
+- Shared `dist` folders: the two contracts' (rebuilt by their tests, committed) and the server's (`pnpm build`, for the e2e). The phone bundle and `autobyteus-ts/dist` were not rebuilt.
+- Next recipient: Code Reviewer.
