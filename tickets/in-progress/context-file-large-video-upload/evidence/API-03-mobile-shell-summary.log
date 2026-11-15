@@ -1,0 +1,9 @@
+# API-03 | cd autobyteus-web && node tests/e2e/mobile-shell-probe.mjs --cases=MSP-53,MSP-54,MSP-55 --output-dir=<fresh> (PATH with pnpm/corepack shims) | code 80f958bc5 + new cases file | macOS Node 26.12, Chrome headless 390x844 zh-CN, built server + phone bundle | 2026-11-15
+[mobile-shell] MSP-53 …
+[mobile-shell] MSP-53 Pass
+[mobile-shell] MSP-54 …
+[mobile-shell] MSP-54 Pass
+[mobile-shell] MSP-55 …
+[mobile-shell] MSP-55 Pass
+mobile-shell probe: Pass
+exit 0
