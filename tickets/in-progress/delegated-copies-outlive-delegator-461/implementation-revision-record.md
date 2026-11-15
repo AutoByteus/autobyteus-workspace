@@ -1263,3 +1263,35 @@ The current code and `implementation-handoff.md` remain authoritative.
 - Shared `dist` folders: the two contracts' (rebuilt by their tests, committed) and the server's (`pnpm build`, for the e2e). The phone bundle and `autobyteus-ts/dist` were not rebuilt.
 - Next recipient: Code Reviewer.
 - Review result: **Pass**, CRR-052 (Code Reviewer, round 36, head `53f0ae2d4e`; `code-review-report.md`): CR-461-099 and CR-461-100 resolved; SR-090, C35-08 and C35-03 done. Next: API/E2E's full rerun (the reviewer's handoff). Informational; no implementation action.
+
+### IR-037 — CRR-053's Local Fixes (CR-461-101 … CR-461-104), and the Team-tab re-read found while verifying them
+
+- Triggering role, report path, and round: Code Reviewer CRR-053, the failure-origin review of API-REV-016 (`code-review-report.md`, top section). Four Local Fixes. Round 37.
+- Triggering finding IDs: CR-461-101 (F-76), CR-461-102 (F-77), CR-461-103 (F-78), CR-461-104 (F-79). Also, found while verifying CR-461-104: BR-001/002's next step (autobyteus-469 AC-011). Large / High unchanged.
+- Prior authoritative result: IR-036 at `53f0ae2d4e` (CRR-052 Pass), then API-REV-016 Fail (`b7a77b8279`).
+- Related solution / architecture-review revision IDs: N/A. Code-review IDs: CRR-053.
+- Implementation delta, one stage per commit:
+  1. **CR-461-101** (`5e7f627d49`, server):
+     - the Team and Org view sessions take an `announce` on their first `show()`; the handlers send `CONNECTED` through it, right before the snapshot, after every read (base's order), so `connect` resolves in the same step;
+     - a refused or missing run sends its error with no `CONNECTED`, as at base;
+     - the agent-collaboration and `/ws/agent` handlers already resolved at `CONNECTED`.
+  2. **CR-461-102** (`4979fcee52`, web):
+     - Org: `selectRouteAgent` in `agentOrgContextsStore`. The route's agent is one of the Org's own (selected in it) or a run the Org delegated, on this node or a peer node (selected by its tree row). `AgentOrgWorkspaceView` uses it, again when the Org's tree arrives. It used to re-select a delegated run as one of the Org's own agents, which cleared the row.
+     - Task card with a Team top: a member of the Team is focused in it; a run the Team delegated opens the Team, then the worker's own row (`openWorkerRow`, shared with the Agent top).
+  3. **CR-461-103** (`e999b4cbaa`, server and web), pinned with a temporary trace (IMP-111):
+     - `unbindStoppedRun` waits until the run's own sequence ends (`AgentStreamSequences.follow`), so the run's final `offline` reaches the session; a run restored meanwhile stays bound;
+     - the shared delegated row carries `data-status`, as base's Org rows did. TS-004/007 and BR-010 read an Org tree's rows by it, and the Team dot itself was right.
+  4. **CR-461-104** (`f78c3e28cd`, web), pinned from the probe's per-frame samples (IMP-112): a click, Enter or Space folds a Team row only; an agent row folds with its disclosure button. Opening the worker had folded its helper rows before its Task closed, so they did not leave with it.
+  5. **The Team-tab re-read** (`8f91060e61`, web): `reloadNamingUnknown` (the rule `reloadRoot` applied to a kept list). The Agent, Org and Team roots call it when a tree change removes rows, so the Team tab names an agent whose Task closed from the server's `pastParticipants` (autobyteus-469 D-5, AC-011). Since SR-084 a closure no longer rebuilds the view.
+- Tests:
+  - server: one test per kind, a command on `CONNECTED` finds the session (both fail on the old order); the stop in the runtime's order shows `offline` (it fails on the old unbind);
+  - web: the Org route agent (own, delegated agent, delegated Team, peer row, a tree arriving later), the Org view's route watch, the Task card (Team top × agent worker, Team worker, member), the row's `data-status`, its folding rule, the Team-tab re-read (store and Agent root).
+- Validation:
+  - focused suites green;
+  - server `test:unit`: 8115 passed, 1 failed (API/E2E's untracked helper);
+  - server type gate: production 0; IR-037's tests at the baseline; two above-baseline files are API/E2E's in-progress e2e files;
+  - web type gate PASS; the whole web suite green;
+  - the failing probe cases re-run (IMP-113): SDV-01/03/06/07 Pass, BR-001/002 Pass. TS-004 and TS-007 now stop at probe assertions written for base's Org-only rows (for API/E2E).
+- Not changed: SDV-01's later step ("the Manager started") failed 2 of 4 runs, before and after the fix. A capture shows the probe sending while the Manager's view still read "Loading" (IMP-111).
+- Shared `dist` folders: the server's was rebuilt several times for the probes; its final build is from this tree, with no traces. Contracts, the phone bundle and `autobyteus-ts/dist` were not rebuilt. API/E2E's uncommitted e2e rework was in the worktree throughout; it is not part of IR-037 and was not touched.
+- Next recipient: Code Reviewer.

@@ -1,0 +1,32 @@
+IMP-114 — IR-037 checks
+Code: the IR-037 tree; macOS, Node 22.23; 2026-11-15. API/E2E's uncommitted e2e rework (tests/e2e/**, helpers/agent-stream-frames) was in the worktree during these runs and is not part of IR-037.
+
+## server type gate
+[typecheck] server src (tsconfig.build.json): 0 errors, exit 0, 9.1s
+[typecheck] server tests (tsconfig.tests.json): 1014 errors, exit 2, 25.1s
+[typecheck] new test file with errors: tests/e2e/runtime/agy-delegated-background-task.e2e.test.ts (1)
+[typecheck] more errors than the baseline: tests/e2e/runtime/claude-delegated-background-task.e2e.test.ts (3, baseline 2)
+[typecheck] production errors: 0; test-file errors: 1014 in 317 files (baseline 1012 in 316 files)
+[typecheck] FAIL: fix the new type errors in the test files above
+(the two above-baseline files are API/E2E's in-progress e2e files; IR-037's files are at the baseline)
+
+## server pnpm test:unit
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+ FAIL  tests/architecture/tracked-imports.test.ts > tracked imports > finds no tracked code importing an untracked file in this repository
+ Test Files  1 failed | 991 passed | 5 skipped (997)
+      Tests  1 failed | 8115 passed | 9 skipped (8125)
+(the one failure: tracked-imports, API/E2E's untracked helpers/agent-stream-frames.js)
+
+## server agent websocket integration tests (the shared sequence fixture gained follow)
+ Test Files  2 passed (2)
+      Tests  16 passed (16)
+
+## web type gate
+[typecheck] production errors: 0; test-file errors: 87 in 37 files (baseline 87 in 37 files)
+[typecheck] PASS
+
+## whole web suite
+ Test Files  720 passed (720)
+      Tests  5389 passed (5389)
+ Test Files  23 passed (23)
+      Tests  130 passed | 2 skipped (132)
