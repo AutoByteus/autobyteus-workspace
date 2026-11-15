@@ -1086,3 +1086,44 @@ The current code and `implementation-handoff.md` remain authoritative.
   - web: type gate PASS, `Test Files  771 passed`, `Tests  5760 passed | 2 skipped`.
 - Next recipient: Code Reviewer, a targeted delta on the peer status path.
 - Result: Code Review **Pass (CRR-045**, `code-review-report.md` round 32, head `58cc542572`): CR-461-085 resolved. The reviewer routes to API/E2E.
+
+### IR-033 — CRR-046's Local Fixes, the addendum and the held items (CR-461-086 … CR-461-093)
+
+- Triggering role, report path, and round: Code Reviewer CRR-046 (failure-origin review of API-REV-013) and its addendum (`e89df890fa`), `code-review-report.md`. Round 33.
+- Triggering finding IDs: CR-461-086 … CR-461-092 (`Local Fix`); CR-461-093 (F-72, held); the held items (the extended runtime-switch suite, AFS-002's later step, BR-011, LE-O1's later step). Large / High unchanged.
+- Prior authoritative result: IR-032 at `58cc542572` (CRR-045 Pass; API-REV-013 Fail).
+- Related solution / architecture-review revision IDs: N/A. Related code-review revision IDs: CRR-046.
+- Implementation delta, `ae38f8e421` … `9e62ffd137`:
+  - **CR-461-090 (F-70), `ae38f8e421`, server.** Pinned with the real two-node suite and a temporary trace: beta's observation stream carries changes only, so a peer run already idle when alpha subscribed read offline until its next change. `RemoteRunViewProvider.observe` now opens the stream with each running agent's current status, read after the listener is attached (no change falls between). A run that is not running sends none.
+  - **CR-461-091 (F-71), `ae38f8e421`, server.** `PeerChildObservation` observes each shown peer run's live output again (one observation per peer run, shared by every view showing it, closed with the last). It publishes `remote_agent_presentation` at the agent's address under its delegator (AR-402). The Agent, Org and Team projectors present it as before. Status frames stay off the views (SR-083); an ended observation waits for Retry, and the status side asks for its summary (AR-403). The web's handling was unchanged and still in place.
+  - **CR-461-089 (F-69), `c7ab96c83c`, `6a30ddf41e`.**
+    - The web's team save target carries the team run only. A team row's choice is one `CONFIGURED_TEAM` patch, and a member row shows its own choice only.
+    - Both view contracts and both server projections drop `follows_team` / `followsTeam` (dist rebuilt). The stored record keeps it as the launch resolver's start-time fact.
+    - The team mutator: when the Team's default changes, a member with no source of its own keeps the Team's earlier source as its own (found by SSR-002: its origin text otherwise followed the Team's new `settings`).
+  - **CR-461-087 (F-67), `97974a91e2`, web.** The per-run archive cores return the server's refusal message. "Archive older" and the sidebar's group archive show it after the counts (`runGroupArchiveSummary`); when every run was refused, the reasons are the message. A listed agent group archives through the same path.
+  - **CR-461-086 (F-60), `88234df375`.**
+    - Server: `runLaunch(kind, runId)` answers a run's launch as its own file has it now: the same `source` its row shows, from projections now shared with the row projection.
+    - Web: Settings reads each delegated row's run with it when the row appears and after a Save or Stop. The store's `stored` replaces the session-only `saved` overlay. Rows take their launch and origin from it (a member's own source, else its Team's); a run not yet read keeps its record's.
+  - **CR-461-088 (F-68), `89950fec6e`, `f15ed58643`, web.**
+    - Pinned for the Org: under rule 2 the Org's configuration read carries no delegated runs, but its view does. Both the in-place adoption (`applyRunConfig`) and the contexts store's pre-check refused every stopped Org with delegated runs: "Org configuration changed topology…". That was F-68's Org symptom, and AFS-002's held step.
+    - Both now check and adopt the Org's own configuration with the view's rows (`withViewRows`).
+    - The Agent's "Couldn't terminate" did not reproduce: SSR-002's delegator Stop with two working copies ended stopped in 2 of 2 runs.
+  - **CR-461-092 (F-73).**
+    - At `88234df375` the phone's rows and Team screens pass: MSP-02, -03, -05, -06, -08, -11, -14, -16, -33, -43.
+    - MSP-03 needed a probe fix (`fc1da7d71f`): it read the delegated task agent through its delegator's member projection, and now reads it by its own run ID.
+    - MSP-17 and MSP-20's "running" step are probe reads, not the phone: MSP-17 looks for the delegated row in the Org's configuration read; in MSP-20 the scripted turn ends before the probe's sampling.
+  - **Probes:** AFS-002 stops the Org's working copy before editing it (REQ-001), as AFS-001 does (`0feffb0a06`).
+- Tests (each fails on the code before its fix):
+  - server: `remote-run-view-provider.test.ts` (the opening statuses, observe before read); `peer-child-observation.test.ts` (the shared output observation, AR-402 frames without status, Retry re-observes, rows come and go); `remote-child-output-projection.test.ts` (the three projectors); `standalone-remote-delegation.test.ts` (in-process two nodes through the real gateway; its fake socket now follows the route's frame order, N-401: the opening status and an output frame); `run-launch-read.test.ts`; `team-run-selection-mutator.test.ts`; contracts refuse a member with the follower flag;
+  - web: `delegatedRunSaves.spec.ts` (team saves; the launch reads), `delegatedCopyChoices.spec.ts` (drafts; stored launch and origin), `delegatedLaunchDraftStore.spec.ts` (reads on open, after a Save, after a reopen), `runHistoryStore.spec.ts`, `useRunListArchiveOlder.spec.ts`, `useWorkspaceHistoryGroupArchive.spec.ts` (refusal reasons), `agentOrgRunConfigAdoption.spec.ts`, `agentOrgRunConfigRead.spec.ts` (an Org's read without rows).
+- Held items (`IMP-97`):
+  - **The extended runtime switch:** not reproduced, 3/3 pass.
+  - **AFS-002's later step:** reproduced and fixed (above).
+  - **LE-O1's later step:** reproduced once (the same step as API/E2E); further live runs failed at other model-driven steps, and no product defect was found.
+  - **BR-011:** intermittent, 1 of 3 runs; not pinned.
+- **CR-461-093 (F-72):** not reproduced at the new head. RRT-05 passes 3/3; a temporary trace showed no Team row built without its stored title. Not pinned to one change.
+- Open: in AFS-002, focusing the running Org's copy row closed Settings once (D-IMP-1; `IMP-95`). The Org view closes Settings when its focused target is momentarily empty (`AgentOrgWorkspaceView.vue`, unchanged since autobyteus-366). Not fixed this round.
+- Validation: `IMP-93` … `IMP-98` in the handoff's Checks Run:
+  - server: type gate PASS, `Tests  7251 passed`, plus the watcher's timing test (alone 7/7);
+  - web: type gate PASS, `codegen:check` current, `Tests  5762 passed | 2 skipped`, plus one stale JSON fixture fixed in `9e62ffd137` (59/59).
+- Next recipient: Code Reviewer.

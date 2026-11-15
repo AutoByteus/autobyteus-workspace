@@ -1,0 +1,28 @@
+IMP-97 — the held items (CRR-046), reproduced on this worktree's code
+
+## runtime-switch-members-extended-built-server (server e2e, built dist at 6a30ddf41e; scripted AGY/Grok, test-owned roots)
+run 1:  Tests 5 passed (5)
+run 2:  Tests 5 passed (5)
+run 3:  Tests 5 passed (5)
+Not reproduced (3/3, load average 10-34). API/E2E saw three different failures in three runs (EX-01 attempt outcome; EX-04
+SESSION_NOT_READY on the native first turn; the setup's providerModelCatalogSnapshots request) and 5/5 at base.
+
+## AFS-002's later step: reproduced and fixed (see IMP-95; f15ed58643).
+
+## LE-O1's later step (live: AutoByteus over DeepSeek through AUTOBYTEUS_TEST_VAULT; AIC_ROOT_RUNTIMES=autobyteus)
+run 1 (test as committed): Error: Timed out waiting for mounted member's refused teammate delegation. Recent: AGENT_STATUS:{"recoverableBlock":null,"status":"running",
+  The mounted lead's last turn answered its catalog copy's report ('Reported the completed task OM-… to /coordinator.')
+  and nothing more. Likely (not proven: the server log is not kept by the suite): the teammate prompt is sent while the
+  lead's OM task is still running, so the two reach the lead together and the model answers one.
+run 2 (temporary test edit: wait for the lead's report to the coordinator first): Error: Timed out waiting for the mounted lead reports its task to the coordinator. Last: false
+run 3 (temporary test edit: wait for the lead's turn on its copy's report): Error: Timed out waiting for org coordinator get_handoff_rules. Recent: AGENT_STATUS:{"recoverableBlock":null,"status":"initializing","trigg
+  An earlier step this time: the coordinator did not call get_handoff_rules. The live suite's steps depend on the model
+  following each operator prompt. The test edits were reverted. The refusal itself (a member's own teammate as a
+  delegate_task recipient) is covered by unit tests (task-delegation.test.ts, refusal-texts-vocabulary.test.ts,
+  root-communication-engine-refusals.test.ts). No product defect found.
+
+## BR-008 … BR-011 (task-closure-tree-probe, browser; real backend restarts; at 0feffb0a06)
+run 1: BR-008/009/010 Pass; BR-011 Fail 'Timed out: org: conversation after restart' (the Org's reactivated worker
+       after the second restart; Agent and Team passed the same step; no capture in that run).
+run 2 and run 3 (a temporary capture of the Org's center on that failure, reverted): BR-008 … BR-011 Pass.
+Intermittent (1 of 3 here; API/E2E: the same step in rounds 12 and 13). Not pinned: the failing run kept no capture.
