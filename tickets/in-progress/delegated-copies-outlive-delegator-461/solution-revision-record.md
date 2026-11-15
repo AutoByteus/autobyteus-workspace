@@ -1729,3 +1729,4 @@ No architecture review: these follow REQ-006, an approved exception, rule 2 and 
   - **REQ-013's text** now records this one additive field, within the requirement's direction; the user is informed.
   - **Optional note applied:** `AgentStreamSequence` is released when no session holds it.
   - **Test:** a delta during the remote projection read appears once, plus the fallback.
+- **ARCH-REV-061 passed the AR-030 answer and corrected round 60.** `DESIGN.md` rule 9 rules out mismatched releases and any fallback for an unknown field. So the no-offset bracketing fallback and its test are removed: a frame without an offset is a contract violation, logged and dropped.
