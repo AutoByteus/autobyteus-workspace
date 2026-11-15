@@ -1754,3 +1754,4 @@ No architecture review: these follow REQ-006, an approved exception, rule 2 and 
   - **Entries with no turn** are always kept, matched by `messageId` (the web's ignoring of a repeat is to verify).
   - **A stopped run:** the read is unfiltered.
   - **New tests:** a restored live run, a stopped run, an interrupted earlier turn, and the native write-before-frame order.
+- **ARCH-REV-063 passed the AR-031 answer.** The "to verify" item is closed by its evidence: the web ignores a repeated message ID. The reviewer recommended, not as a finding, one shared implementation of the snapshot-connection rule for `RunViewStream`, `AgentStreamSequence` and the peer stream.
