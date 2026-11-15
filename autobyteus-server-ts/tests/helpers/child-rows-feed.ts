@@ -1,19 +1,19 @@
 import { vi } from "vitest";
 import type { ClosedTaskRefusal } from "../../src/agent-collaboration/execution/task/closed-task-fence.js";
-import type { CollaborationTaskExecutionDto } from "@autobyteus/collaboration-stream-contracts";
 import { ChildRowsFeed } from "../../src/agent-collaboration/delegation/child-rows-feed.js";
 import { RunTreeView, type RunOwnTree } from "../../src/agent-collaboration/delegation/run-tree-view.js";
 import { testViewStreams } from "./view-streams.js";
 import type { ChildRowsChange } from "../../src/agent-collaboration/delegation/delegation-index.js";
 import type { SubtreeRow } from "../../src/agent-collaboration/delegation/collaboration-tree.js";
 import { rootExecutionIdentityKey, type RootExecutionIdentity } from "../../src/agent-collaboration/execution/domain/root-execution-identity.js";
+import type { ChildRowRecord } from "../../src/agent-collaboration/delegation/run-tree-records.js";
 
 /** A local child's row as the views project it (`delegatedChildDto`). */
-export const agentChildRow = (agentRunId: string, address = `/${agentRunId}`): CollaborationTaskExecutionDto => ({
-  address, agentRunId, platformAgentRunId: null, delegatorAgentRunId: "delegator", startedAt: "2026-11-01T00:00:00.000Z",
-  source: { kind: "agent", agentDefinitionId: "writer",
-    launchConfiguration: { runtimeKind: "autobyteus", llmModelIdentifier: "m", llmConfig: null, autoExecuteTools: false, workspaceRootPath: null } },
-}) as CollaborationTaskExecutionDto;
+/** A delegated agent run's record, as `RunTreeView` reads it from the run's own file (stage C). */
+export const agentChildRow = (agentRunId: string, address = `/${agentRunId}`): ChildRowRecord => Object.freeze({
+  kind: "agent", agentRunId, address,
+  launch: { runtimeKind: "autobyteus", llmModelIdentifier: "m", llmConfig: null, autoExecuteTools: false, workspaceRootPath: null, source: null, ownSource: true },
+});
 
 /** A row under `parent` (default: a run `delegating`, the view's own run in most tests). */
 export const delegatedChild = (agentRunId: string, parent: RootExecutionIdentity = { rootSubjectKind: "agent", rootRunId: "delegating" }): SubtreeRow => ({
@@ -44,7 +44,7 @@ export const followTestChildRows = () => {
   const feed = new ChildRowsFeed({ streams, tree, rowsChanged: () => undefined });
   feed.follow({ subscribeChildRows: (next: (change: ChildRowsChange) => void) => { listener = next; return () => { listener = null; }; } });
   const projection = { rowOf: async (child: SubtreeRow) => "agentRunId" in child.run
-    ? { kind: "local" as const, row: agentChildRow(child.run.agentRunId, child.recipientAddress) } : null };
+    ? agentChildRow(child.run.agentRunId, child.recipientAddress) : null };
   const runTree = new RunTreeView({ tree: tree as never, ownTreeOf: async (run) => testOwnTree(run), projection });
   return {
     streams,

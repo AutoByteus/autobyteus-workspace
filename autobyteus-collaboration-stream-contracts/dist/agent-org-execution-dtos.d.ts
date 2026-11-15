@@ -1,5 +1,4 @@
 import { z } from "zod";
-import { type CollaborationLaunchConfigurationSourceDto } from "./launch-source-dtos.js";
 export declare const agentOrgLaunchConfigurationDtoSchema: z.ZodObject<{
     runtimeKind: z.ZodEnum<{
         autobyteus: "autobyteus";
@@ -14,82 +13,6 @@ export declare const agentOrgLaunchConfigurationDtoSchema: z.ZodObject<{
     autoExecuteTools: z.ZodBoolean;
     workspaceRootPath: z.ZodNullable<z.ZodString>;
 }, z.core.$strict>;
-type LaunchConfigurationDto = Readonly<z.infer<typeof agentOrgLaunchConfigurationDtoSchema>>;
-/**
- * A Team copy member's launch: the complete launch its own run has (a Team-level choice is the Team's default only:
- * autobyteus-461 CR-461-089). `launchSource` is present only when its agent definition had a default.
- */
-type MemberLaunchDto = Readonly<{
-    launchConfiguration: LaunchConfigurationDto;
-    launchSource?: CollaborationLaunchConfigurationSourceDto;
-}>;
-type TeamLaunchDto = Readonly<{
-    defaultLaunchConfiguration: LaunchConfigurationDto;
-    defaultLaunchSource?: CollaborationLaunchConfigurationSourceDto;
-}>;
-/** The snapshot a delegated copy runs with: from the catalog or from a configured placement when it started. */
-export type TaskAgentExecutionSourceDto = Readonly<{
-    kind: "agent";
-    agentDefinitionId: string;
-    launchConfiguration: LaunchConfigurationDto;
-    launchSource?: CollaborationLaunchConfigurationSourceDto;
-}>;
-export type TaskTeamExecutionSourceDto = Readonly<{
-    kind: "agent_team";
-    teamDefinitionId: string;
-    coordinatorAddress: string;
-    members: readonly (Readonly<{
-        address: string;
-        agentDefinitionId: string;
-    }> & MemberLaunchDto)[];
-    handoffs: readonly Readonly<{
-        from: string;
-        to: string;
-        rules: readonly string[];
-    }>[];
-}> & TeamLaunchDto;
-/** The recorded source of a Team copy member's launch: its own, else its Team's; null when not recorded. */
-export declare const collaborationMemberLaunchSource: (team: Pick<TeamLaunchDto, "defaultLaunchSource">, member: Pick<MemberLaunchDto, "launchSource">) => CollaborationLaunchConfigurationSourceDto | null;
-/**
- * Where a row opens (autobyteus-461 SR-083): the run's own identity and the agent to focus (a team's coordinator). The
- * server sets it on every row it builds; `null` is a row error (a team run whose coordinator is not one of its members).
- */
-export type RowOpenTargetDto = Readonly<{
-    runKind: "agent" | "agent_team";
-    runId: string;
-    agentRunId: string;
-}>;
-type TaskAgentExecutionDto = Readonly<{
-    address: string;
-    agentRunId: string;
-    platformAgentRunId: string | null;
-    /** Absent for children recorded before the delegator was stored. */
-    delegatorAgentRunId?: string;
-    startedAt: string;
-    source: TaskAgentExecutionSourceDto;
-    openTarget?: RowOpenTargetDto | null;
-}>;
-type TaskTeamAgentExecutionDto = Readonly<{
-    address: string;
-    agentRunId: string;
-    platformAgentRunId: string | null;
-}>;
-type TaskTeamExecutionDto = Readonly<{
-    address: string;
-    teamRunId: string;
-    members: readonly TaskTeamAgentExecutionDto[];
-    taskExecutions: readonly TaskExecutionDto[];
-    /** Absent for children recorded before the delegator was stored. */
-    delegatorAgentRunId?: string;
-    startedAt: string;
-    source: TaskTeamExecutionSourceDto;
-    openTarget?: RowOpenTargetDto | null;
-}>;
-type TaskExecutionDto = TaskAgentExecutionDto | TaskTeamExecutionDto;
-export declare const rowOpenTargetDtoSchema: z.ZodType<RowOpenTargetDto>;
-/** Shared by every collaboration root view (Org and Agent roots). */
-export declare const taskExecutionDtoSchema: z.ZodType<TaskExecutionDto, unknown, z.core.$ZodTypeInternals<TaskExecutionDto, unknown>>;
-export type CollaborationTaskExecutionDto = TaskExecutionDto;
 /**
  * Live: response text a chat socket coalesced over one content window. Each item is the
  * concatenated text of one agent segment, in order of first appearance. The envelope covers the
@@ -684,5 +607,4 @@ export type AgentOrgExecutionTreeDto = Readonly<z.infer<typeof agentOrgExecution
 export type AgentOrgExecutionViewDto = Readonly<z.infer<typeof agentOrgExecutionViewDtoSchema>>;
 export type AgentOrgExecutionEventDto = Readonly<z.infer<typeof agentOrgExecutionEventDtoSchema>>;
 export type AgentOrgCommunicationMessageDto = Readonly<z.infer<typeof agentOrgCommunicationMessageDtoSchema>>;
-export {};
 //# sourceMappingURL=agent-org-execution-dtos.d.ts.map

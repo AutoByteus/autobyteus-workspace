@@ -38,7 +38,22 @@ export const runTreeApollo = (trees: (kind: string, runId: string) => RunTreeDto
 })
 
 type OrgTree = import('@autobyteus/collaboration-stream-contracts').AgentOrgExecutionTreeDto
-type CollaborationTask = import('@autobyteus/collaboration-stream-contracts').CollaborationTaskExecutionDto
+type LaunchDto = OrgTree['rootOrg']['defaultLaunchConfiguration']
+type LaunchSource = import('@autobyteus/collaboration-stream-contracts').CollaborationLaunchConfigurationSourceDto
+type RowTarget = Readonly<{ runKind: 'agent' | 'agent_team'; runId: string; agentRunId: string }>
+/**
+ * A delegated run as a spec records it under its delegator (the shape base's views nested; no view carries it now:
+ * `orgRunTreeRows` and `agentRunTreeRows` turn it into the tree rows the server sends).
+ */
+type CollaborationTask = Readonly<{ address: string; delegatorAgentRunId?: string; startedAt: string; openTarget?: RowTarget | null }> & (
+  | Readonly<{ agentRunId: string; platformAgentRunId: string | null;
+    source: Readonly<{ kind: 'agent'; agentDefinitionId: string; launchConfiguration: LaunchDto; launchSource?: LaunchSource }> }>
+  | Readonly<{ teamRunId: string; members: readonly Readonly<{ address: string; agentRunId: string; platformAgentRunId: string | null }>[];
+    taskExecutions: readonly CollaborationTask[];
+    source: Readonly<{ kind: 'agent_team'; teamDefinitionId: string; coordinatorAddress: string; handoffs: readonly unknown[];
+      defaultLaunchConfiguration: LaunchDto; defaultLaunchSource?: LaunchSource;
+      members: readonly Readonly<{ address: string; agentDefinitionId: string; launchConfiguration: LaunchDto; launchSource?: LaunchSource }>[] }> }>
+)
 type OrgTask = CollaborationTask
 /**
  * An Org run's tree as a spec records it: its own parts, and the runs it delegated (`taskExecutions`, as base's views

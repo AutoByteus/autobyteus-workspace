@@ -1,5 +1,5 @@
 import { createPeerRunOf, executePeerCommand } from "../../../src/agent-collaboration/execution/remote/peer-runs.js";
-import { createChildRowProjection } from "../../../src/services/agent-streaming/delegated-children-dtos.js";
+import { createChildRowProjection } from "../../../src/agent-collaboration/delegation/run-tree-records.js";
 import { DelegatedRunStarter } from "../../../src/agent-collaboration/execution/delegation/delegated-run-starter.js";
 import { peerCallerOf } from "../../helpers/peer-caller.js";
 import { RunTreeView } from "../../../src/agent-collaboration/delegation/run-tree-view.js";

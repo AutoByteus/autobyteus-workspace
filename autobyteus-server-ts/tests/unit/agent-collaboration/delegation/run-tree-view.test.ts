@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 import { RunTreeView, type RunOwnTree } from "../../../../src/agent-collaboration/delegation/run-tree-view.js";
-import type { ChildRowRecord } from "../../../../src/agent-collaboration/delegation/child-rows-feed.js";
+import type { ChildRowRecord } from "../../../../src/agent-collaboration/delegation/run-tree-records.js";
 import type { SubtreeRow } from "../../../../src/agent-collaboration/delegation/collaboration-tree.js";
 import { createAgentRootExecutionIdentity, createRootExecutionIdentity, type RootExecutionIdentity } from "../../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 
@@ -20,29 +20,28 @@ const row = (parent: RootExecutionIdentity, run: SubtreeRow["run"], delegatorAge
   linkedAt: "2026-11-15T00:00:00.000Z", recipientAddress: "/x", ...extra,
 } as SubtreeRow);
 
-const agentRecord = (agentRunId: string, address: string, source: Record<string, unknown> | undefined = undefined): ChildRowRecord => ({ kind: "local", row: {
-  address, agentRunId, platformAgentRunId: null, startedAt: "t",
-  source: { kind: "agent", agentDefinitionId: address.slice(1), launchConfiguration: launch("opus", { reasoning_effort: "xhigh" }), ...(source ? { launchSource: source } : {}) },
-  openTarget: { runKind: "agent", runId: agentRunId, agentRunId },
-} as never });
-const teamRecord = (teamRunId: string, address: string, coordinatorAgentRunId: string | null): ChildRowRecord => ({ kind: "local", row: {
-  address, teamRunId, startedAt: "t", taskExecutions: [],
-  members: [{ address: "/lead", agentRunId: `${teamRunId}-lead`, platformAgentRunId: null }, { address: "/dev", agentRunId: `${teamRunId}-dev`, platformAgentRunId: null }],
-  source: { kind: "agent_team", teamDefinitionId: "squad", coordinatorAddress: "/lead", handoffs: [], defaultLaunchConfiguration: launch("sonnet"), defaultLaunchSource: configured,
-    members: [{ address: "/lead", agentDefinitionId: "lead", launchConfiguration: launch("sonnet") },
-      { address: "/dev", agentDefinitionId: "dev", launchConfiguration: launch("haiku", { reasoning_effort: "high" }), launchSource: settings }] },
-  openTarget: coordinatorAgentRunId ? { runKind: "agent_team", runId: teamRunId, agentRunId: coordinatorAgentRunId } : null,
-} as never });
-const peerAgentRecord = (agentRunId: string): ChildRowRecord => ({ kind: "peer", summary: { title: "Publish the draft.", reachable: true }, row: {
-  kind: "agent", address: "/publisher", agent_run_id: agentRunId, node_id: "beta-id", node_name: "beta-node", delegator_agent_run_id: "x", started_at: "t",
-  launches: [{ address: "/publisher", runtime_kind: "antigravity_cli", llm_model_identifier: "gemini", source: { origin: "agent_default", fallbacks: [] } }],
-  open_target: { run_kind: "agent", run_id: agentRunId, agent_run_id: agentRunId, node_id: "beta-id" },
-} as never });
-const peerTeamRecord = (teamRunId: string): ChildRowRecord => ({ kind: "peer", summary: null, row: {
-  kind: "agent_team", address: "/studio", team_run_id: teamRunId, node_id: "beta-id", node_name: "beta-node", coordinator_address: "/lead",
-  members: [{ address: "/lead", agent_run_id: `${teamRunId}-lead` }, { address: "/checker", agent_run_id: `${teamRunId}-checker` }],
-  delegator_agent_run_id: "x", started_at: "t", open_target: { run_kind: "agent_team", run_id: teamRunId, agent_run_id: `${teamRunId}-lead`, node_id: "beta-id" },
-} as never });
+/** Each delegated run's record, as `RunTreeView` reads it from the run's own files (stage C). */
+const launchRecord = (value: ReturnType<typeof launch>, source: Record<string, unknown> | null, ownSource: boolean) =>
+  ({ ...value, source: source as never, ownSource });
+const agentRecord = (agentRunId: string, address: string, source: Record<string, unknown> | undefined = undefined): ChildRowRecord =>
+  ({ kind: "agent", agentRunId, address, launch: launchRecord(launch("opus", { reasoning_effort: "xhigh" }), source ?? null, true) });
+/** A team run; `coordinatorAgentRunId` null: its recorded coordinator is not among its members (a row error). */
+const teamRecord = (teamRunId: string, address: string, coordinatorAgentRunId: string | null): ChildRowRecord => ({
+  kind: "agent_team", teamRunId, address, coordinatorAddress: coordinatorAgentRunId ? "/lead" : "/gone",
+  launch: launchRecord(launch("sonnet"), configured, true),
+  members: [
+    { address: "/lead", agentRunId: `${teamRunId}-lead`, launch: launchRecord(launch("sonnet"), configured, false) },
+    { address: "/dev", agentRunId: `${teamRunId}-dev`, launch: launchRecord(launch("haiku", { reasoning_effort: "high" }), settings, true) },
+  ],
+});
+const peerLaunch = (address: string) => ({ address, runtimeKind: "antigravity_cli", llmModelIdentifier: "gemini", source: { origin: "agent_default" as const, fallbacks: [] } });
+const peerAgentRecord = (agentRunId: string): ChildRowRecord => ({ kind: "peer", summary: { title: "Publish the draft.", reachable: true },
+  launches: [peerLaunch("/publisher")],
+  link: { kind: "agent", address: "/publisher", agentRunId, nodeId: "beta-id", nodeName: "beta-node", delegatorAgentRunId: "x", startedAt: "t", open: true } as never });
+const peerTeamRecord = (teamRunId: string): ChildRowRecord => ({ kind: "peer", summary: null, launches: null,
+  link: { kind: "agent_team", address: "/studio", teamRunId, nodeId: "beta-id", nodeName: "beta-node", coordinatorAddress: "/lead",
+    members: [{ address: "/lead", agentRunId: `${teamRunId}-lead` }, { address: "/checker", agentRunId: `${teamRunId}-checker` }],
+    delegatorAgentRunId: "x", startedAt: "t", open: true } as never });
 
 const view = (input: Readonly<{ own: RunOwnTree; rows: SubtreeRow[]; records: Record<string, ChildRowRecord | Error> }>) => {
   const state = { rows: input.rows };

@@ -31,6 +31,10 @@ type WsMessage = {
   type: string;
   payload: Record<string, unknown>;
 };
+/** The delta of a numbered content batch's single item (autobyteus-461 SR-087). */
+const batchDelta = (message: WsMessage | undefined): string | undefined =>
+  (message?.payload.items as Array<{ delta: string }> | undefined)?.[0]?.delta;
+
 
 const idleSnapshot = (): AgentRuntimeLifecycleSnapshot => ({
   availability: "active",
@@ -294,7 +298,7 @@ describe("Agent status WebSocket contract integration", () => {
         ]);
         expectStatusOnlyPayload(liveTrace[0]!, "running");
         expectStatusOnlyPayload(liveTrace[5]!, "idle");
-        expect(liveTrace[3]?.payload.items[0].delta).toBe("onetwo");
+        expect(batchDelta(liveTrace[3])).toBe("onetwo");
         expect(liveTrace.filter((message) => message.type === "AGENT_STATUS")).toHaveLength(2);
         expect(liveTrace.filter((message) => message.type !== "AGENT_STATUS")).toHaveLength(4);
 
@@ -375,7 +379,7 @@ describe("Agent status WebSocket contract integration", () => {
       );
       expect(internalContentEvents).toBe(30);
       expect(contentFrames).toHaveLength(1);
-      expect(contentFrames[0]?.payload.items[0].delta).toBe(deltas.join(""));
+      expect(batchDelta(contentFrames[0])).toBe(deltas.join(""));
       expect(Date.now() - openedAt).toBeGreaterThanOrEqual(500);
     } finally {
       unsubscribe();
@@ -422,7 +426,7 @@ describe("Agent status WebSocket contract integration", () => {
         .toHaveLength(0);
       await wait(300);
       expect(connection.messages.filter((message) => message.type === "SEGMENT_CONTENT_BATCH")
-        .map((message) => message.payload.items[0].delta)).toEqual(["first"]);
+        .map((message) => batchDelta(message))).toEqual(["first"]);
 
       await backend.emitSource([
         event(run.runId, AgentRunEventType.SEGMENT_CONTENT, {
@@ -433,10 +437,10 @@ describe("Agent status WebSocket contract integration", () => {
       ]);
       await wait(650);
       expect(connection.messages.filter((message) => message.type === "SEGMENT_CONTENT_BATCH")
-        .map((message) => message.payload.items[0].delta)).toEqual(["first"]);
+        .map((message) => batchDelta(message))).toEqual(["first"]);
       await wait(500);
       expect(connection.messages.filter((message) => message.type === "SEGMENT_CONTENT_BATCH")
-        .map((message) => message.payload.items[0].delta)).toEqual(["first", "second"]);
+        .map((message) => batchDelta(message))).toEqual(["first", "second"]);
     } finally {
       connection.socket.close();
       await harness.app.close();
@@ -500,7 +504,7 @@ describe("Agent status WebSocket contract integration", () => {
       const liveTrace = frames.filter(
         (frame) => frame.type === "SEGMENT_CONTENT_BATCH" || frame.type === "AGENT_INPUT_STATE",
       );
-      expect(liveTrace.map((frame) => [frame.type, frame.payload.items?.[0]?.delta ?? frame.payload.revision])).toEqual([
+      expect(liveTrace.map((frame) => [frame.type, batchDelta(frame) ?? frame.payload.revision])).toEqual([
         ["AGENT_INPUT_STATE", 1],
         ["SEGMENT_CONTENT_BATCH", "abc"],
         ["AGENT_INPUT_STATE", 2],
@@ -518,7 +522,7 @@ describe("Agent status WebSocket contract integration", () => {
       ]);
       await wait(650);
       expect(inputStates()).toHaveLength(2);
-      expect(frames.filter((frame) => frame.type === "SEGMENT_CONTENT_BATCH").map((frame) => frame.payload.items[0].delta))
+      expect(frames.filter((frame) => frame.type === "SEGMENT_CONTENT_BATCH").map((frame) => batchDelta(frame)))
         .toEqual(["abc", "d"]);
     } finally {
       socket.close();

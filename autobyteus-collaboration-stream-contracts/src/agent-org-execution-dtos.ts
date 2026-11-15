@@ -7,7 +7,6 @@ import {
   jsonValueSchema,
   nonEmptyStringSchema,
 } from "@autobyteus/agent-presentation-contracts";
-import { collaborationLaunchConfigurationSourceDtoSchema, type CollaborationLaunchConfigurationSourceDto } from "./launch-source-dtos.js";
 import { runTreeChangedEventDtoSchema } from "./run-tree-dtos.js";
 
 const timestamp = nonEmptyStringSchema;
@@ -27,107 +26,8 @@ const configuredAgent = z.object({
   platformAgentRunId: nullableText, launchConfiguration: agentOrgLaunchConfigurationDtoSchema,
 }).strict();
 
-type LaunchConfigurationDto = Readonly<z.infer<typeof agentOrgLaunchConfigurationDtoSchema>>;
-
-/**
- * A Team copy member's launch: the complete launch its own run has (a Team-level choice is the Team's default only:
- * autobyteus-461 CR-461-089). `launchSource` is present only when its agent definition had a default.
- */
-type MemberLaunchDto = Readonly<{
-  launchConfiguration: LaunchConfigurationDto;
-  launchSource?: CollaborationLaunchConfigurationSourceDto;
-}>;
-type TeamLaunchDto = Readonly<{
-  defaultLaunchConfiguration: LaunchConfigurationDto;
-  defaultLaunchSource?: CollaborationLaunchConfigurationSourceDto;
-}>;
-
-/** The snapshot a delegated copy runs with: from the catalog or from a configured placement when it started. */
-export type TaskAgentExecutionSourceDto = Readonly<{
-  kind: "agent";
-  agentDefinitionId: string;
-  launchConfiguration: LaunchConfigurationDto;
-  launchSource?: CollaborationLaunchConfigurationSourceDto;
-}>;
-export type TaskTeamExecutionSourceDto = Readonly<{
-  kind: "agent_team";
-  teamDefinitionId: string;
-  coordinatorAddress: string;
-  members: readonly (Readonly<{ address: string; agentDefinitionId: string }> & MemberLaunchDto)[];
-  handoffs: readonly Readonly<{ from: string; to: string; rules: readonly string[] }>[];
-}> & TeamLaunchDto;
-/** The recorded source of a Team copy member's launch: its own, else its Team's; null when not recorded. */
-export const collaborationMemberLaunchSource = (
-  team: Pick<TeamLaunchDto, "defaultLaunchSource">,
-  member: Pick<MemberLaunchDto, "launchSource">,
-): CollaborationLaunchConfigurationSourceDto | null => member.launchSource ?? team.defaultLaunchSource ?? null;
-
-/**
- * Where a row opens (autobyteus-461 SR-083): the run's own identity and the agent to focus (a team's coordinator). The
- * server sets it on every row it builds; `null` is a row error (a team run whose coordinator is not one of its members).
- */
-export type RowOpenTargetDto = Readonly<{ runKind: "agent" | "agent_team"; runId: string; agentRunId: string }>;
-type TaskAgentExecutionDto = Readonly<{
-  address: string;
-  agentRunId: string;
-  platformAgentRunId: string | null;
-  /** Absent for children recorded before the delegator was stored. */
-  delegatorAgentRunId?: string;
-  startedAt: string;
-  source: TaskAgentExecutionSourceDto;
-  openTarget?: RowOpenTargetDto | null;
-}>;
-type TaskTeamAgentExecutionDto = Readonly<{
-  address: string;
-  agentRunId: string;
-  platformAgentRunId: string | null;
-}>;
-type TaskTeamExecutionDto = Readonly<{
-  address: string;
-  teamRunId: string;
-  members: readonly TaskTeamAgentExecutionDto[];
-  taskExecutions: readonly TaskExecutionDto[];
-  /** Absent for children recorded before the delegator was stored. */
-  delegatorAgentRunId?: string;
-  startedAt: string;
-  source: TaskTeamExecutionSourceDto;
-  openTarget?: RowOpenTargetDto | null;
-}>;
-type TaskExecutionDto = TaskAgentExecutionDto | TaskTeamExecutionDto;
-
 const handoff = z.object({ from: agentAddressSchema, to: agentAddressSchema, rules: z.array(nonEmptyStringSchema).min(1) }).strict();
-const launchSource = collaborationLaunchConfigurationSourceDtoSchema.optional();
-const memberLaunch = { launchConfiguration: agentOrgLaunchConfigurationDtoSchema, launchSource };
-const taskAgentSource: z.ZodType<TaskAgentExecutionSourceDto> = z.object({
-  kind: z.literal("agent"), agentDefinitionId: nonEmptyStringSchema, launchConfiguration: agentOrgLaunchConfigurationDtoSchema,
-  launchSource,
-}).strict();
-const taskTeamSource: z.ZodType<TaskTeamExecutionSourceDto> = z.object({
-  kind: z.literal("agent_team"), teamDefinitionId: nonEmptyStringSchema, coordinatorAddress: agentAddressSchema,
-  members: z.array(z.object({ address: agentAddressSchema, agentDefinitionId: nonEmptyStringSchema, ...memberLaunch }).strict()).min(1),
-  handoffs: z.array(handoff), defaultLaunchConfiguration: agentOrgLaunchConfigurationDtoSchema,
-  defaultLaunchSource: launchSource,
-}).strict();
-export const rowOpenTargetDtoSchema: z.ZodType<RowOpenTargetDto> = z.object({
-  runKind: z.enum(["agent", "agent_team"]), runId: nonEmptyStringSchema, agentRunId: nonEmptyStringSchema,
-}).strict();
-const openTarget = rowOpenTargetDtoSchema.nullable().optional();
-const taskAgent: z.ZodType<TaskAgentExecutionDto> = z.object({
-  address: agentAddressSchema, agentRunId: nonEmptyStringSchema, platformAgentRunId: nullableText,
-  delegatorAgentRunId: nonEmptyStringSchema.optional(), startedAt: timestamp, source: taskAgentSource, openTarget,
-}).strict();
-const taskTeamMember: z.ZodType<TaskTeamAgentExecutionDto> = z.object({
-  address: agentAddressSchema, agentRunId: nonEmptyStringSchema, platformAgentRunId: nullableText,
-}).strict();
-const taskTeam: z.ZodType<TaskTeamExecutionDto> = z.lazy(() => z.object({
-  address: agentAddressSchema, teamRunId: nonEmptyStringSchema, members: z.array(taskTeamMember),
-  taskExecutions: z.array(taskExecution), delegatorAgentRunId: nonEmptyStringSchema.optional(), startedAt: timestamp,
-  source: taskTeamSource, openTarget,
-}).strict());
-const taskExecution: z.ZodType<TaskExecutionDto> = z.lazy(() => z.union([taskAgent, taskTeam]));
-/** Shared by every collaboration root view (Org and Agent roots). */
-export const taskExecutionDtoSchema = taskExecution;
-export type CollaborationTaskExecutionDto = TaskExecutionDto;
+// A run's delegated runs are its tree's rows (`run-tree-dtos.ts`, autobyteus-461 SR-084): no view carries them.
 
 /**
  * Live: response text a chat socket coalesced over one content window. Each item is the

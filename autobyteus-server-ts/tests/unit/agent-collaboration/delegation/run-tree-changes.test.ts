@@ -18,7 +18,7 @@ const harness = () => {
     tree: { collaborationTreeOf: () => ({ rows: () => state.rows }) } as never,
     ownTreeOf: async () => ({ kind: "agent", agentRunId: "delegator", address: "/delegator" }),
     projection: { rowOf: async (row) => "agentRunId" in row.run
-      ? { kind: "local", row: agentChildRow(row.run.agentRunId, state.addresses.get(row.run.agentRunId) ?? `/${row.run.agentRunId}`) } : null },
+      ? agentChildRow(row.run.agentRunId, state.addresses.get(row.run.agentRunId) ?? `/${row.run.agentRunId}`) : null },
   });
   return { state, runTree };
 };

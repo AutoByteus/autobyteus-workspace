@@ -1,9 +1,9 @@
-import type { CollaborationLaunchConfigurationSourceDto, CollaborationTaskExecutionDto } from "@autobyteus/collaboration-stream-contracts";
-import type { RemoteAgentLaunchDto, RemoteTaskExecutionDto } from "@autobyteus/agent-presentation-contracts";
+import type { CollaborationLaunchConfigurationSourceDto } from "@autobyteus/collaboration-stream-contracts";
+import type { RemoteAgentLaunch } from "../../run-history/domain/run-execution-tree-shared-records.js";
 import { rootExecutionIdentityKey, type RootExecutionIdentity } from "../execution/domain/root-execution-identity.js";
 import { runIdentityOf } from "../execution/task/task-execution-resource-port.js";
 import { openTargetOf, type SubtreeRow } from "./collaboration-tree.js";
-import type { ChildRowProjection, ChildRowRecord } from "./child-rows-feed.js";
+import { launchSourceDtoOf, type ChildRowProjection, type ChildRowRecord, type RunLaunchRecord } from "./run-tree-records.js";
 import type { DelegationIndex } from "./delegation-index.js";
 
 /** What a row is: a run's own parts (an agent run, a team and its members, an org's agents and mounted teams), a run it delegated, a peer's run. */
@@ -89,26 +89,18 @@ export const runTreeRowKey = (kind: RunTreeRowKind, runId: string, agentRunId?: 
 
 type Draft = Omit<RunTreeRow, "depth">;
 
-const launchOf = (
-  launch: Readonly<{ runtimeKind: string; llmModelIdentifier: string; llmConfig: Readonly<Record<string, unknown>> | null; autoExecuteTools: boolean; workspaceRootPath: string | null }>,
-  source: CollaborationLaunchConfigurationSourceDto | null | undefined,
-  ownSource: boolean,
-): RunTreeLaunch => Object.freeze({
-  runtimeKind: launch.runtimeKind, llmModelIdentifier: launch.llmModelIdentifier, llmConfig: launch.llmConfig ?? null,
-  autoExecuteTools: launch.autoExecuteTools, workspaceRootPath: launch.workspaceRootPath ?? null, source: source ?? null, ownSource,
+/** A row's launch, from its run's record (CR-461-086). */
+const launchOf = (launch: RunLaunchRecord): RunTreeLaunch => Object.freeze({
+  runtimeKind: launch.runtimeKind, llmModelIdentifier: launch.llmModelIdentifier, llmConfig: launch.llmConfig,
+  autoExecuteTools: launch.autoExecuteTools, workspaceRootPath: launch.workspaceRootPath,
+  source: launch.source ? launchSourceDtoOf(launch.source) : null, ownSource: launch.ownSource,
 });
 
-const peerSourceOf = (source: RemoteAgentLaunchDto["source"]): CollaborationLaunchConfigurationSourceDto => {
-  const fallbacks = source.fallbacks.map((fallback) => ({ layer: fallback.layer, runtimeKind: fallback.runtime_kind,
-    llmModelIdentifier: fallback.llm_model_identifier, reason: fallback.reason, detail: fallback.detail }));
-  return (source.origin === "model_router"
-    ? { origin: source.origin, fallbacks, choiceReason: source.choice_reason, taskKind: source.task_kind }
-    : { origin: source.origin, fallbacks }) as CollaborationLaunchConfigurationSourceDto;
-};
-const peerLaunchOf = (launches: readonly RemoteAgentLaunchDto[] | undefined, address: string): RunTreeLaunch | undefined => {
+/** A peer row's launch, from its node's latest answer: its node keeps the rest. */
+const peerLaunchOf = (launches: readonly RemoteAgentLaunch[] | null, address: string): RunTreeLaunch | undefined => {
   const launch = launches?.find((candidate) => candidate.address === address);
-  return launch ? Object.freeze({ runtimeKind: launch.runtime_kind, llmModelIdentifier: launch.llm_model_identifier, llmConfig: null,
-    autoExecuteTools: null, workspaceRootPath: null, source: peerSourceOf(launch.source), ownSource: true }) : undefined;
+  return launch ? Object.freeze({ runtimeKind: launch.runtimeKind, llmModelIdentifier: launch.llmModelIdentifier, llmConfig: null,
+    autoExecuteTools: null, workspaceRootPath: null, source: launchSourceDtoOf(launch.source), ownSource: true }) : undefined;
 };
 
 /**
@@ -196,29 +188,24 @@ export class RunTreeView {
 
   /** A delegated run's rows (its own row first, then its members), and where its own delegations hang. */
   private delegatedRows(row: SubtreeRow, record: ChildRowRecord, anchor: (holder: RootExecutionIdentity, agentRunId: string, key: string) => void): Draft[] {
-    if (record.kind === "peer") return peerRows(record.row, record.summary);
-    const execution: CollaborationTaskExecutionDto = record.row;
+    if (record.kind === "peer") return peerRows(record);
     const holder = runIdentityOf(row.run);
-    if ("agentRunId" in execution && execution.source.kind === "agent") {
-      const key = runTreeRowKey("agent", execution.agentRunId);
-      anchor(holder, execution.agentRunId, key);
-      return [Object.freeze({ key, parentKey: null, kind: "agent", name: rowNameOf(execution.address, execution.agentRunId), address: execution.address,
-        openTarget: execution.openTarget ?? null, statusIds: Object.freeze([execution.agentRunId]),
-        launch: launchOf(execution.source.launchConfiguration, execution.source.launchSource, true) })];
+    if (record.kind === "agent") {
+      const key = runTreeRowKey("agent", record.agentRunId);
+      anchor(holder, record.agentRunId, key);
+      return [Object.freeze({ key, parentKey: null, kind: "agent", name: rowNameOf(record.address, record.agentRunId), address: record.address,
+        openTarget: openTargetOf({ agentRunId: record.agentRunId }), statusIds: Object.freeze([record.agentRunId]), launch: launchOf(record.launch) })];
     }
-    if (!("teamRunId" in execution) || execution.source.kind !== "agent_team") return [];
-    const source = execution.source;
-    const key = runTreeRowKey("team", execution.teamRunId);
-    const rows: Draft[] = [Object.freeze({ key, parentKey: null, kind: "team", name: rowNameOf(execution.address, execution.teamRunId), address: execution.address,
-      openTarget: execution.openTarget ?? null, statusIds: Object.freeze([execution.teamRunId]),
-      launch: launchOf(source.defaultLaunchConfiguration, source.defaultLaunchSource, true) })];
-    for (const member of execution.members) {
-      const memberKey = runTreeRowKey("team_member", execution.teamRunId, member.agentRunId);
-      const recorded = source.members.find((candidate) => candidate.address === member.address);
+    const key = runTreeRowKey("team", record.teamRunId);
+    // Its coordinator, by its own address in its own run (TC-12), among the members it lists.
+    const rows: Draft[] = [Object.freeze({ key, parentKey: null, kind: "team", name: rowNameOf(record.address, record.teamRunId), address: record.address,
+      openTarget: openTargetOf({ teamRunId: record.teamRunId }, record), statusIds: Object.freeze([record.teamRunId]), launch: launchOf(record.launch) })];
+    for (const member of record.members) {
+      const memberKey = runTreeRowKey("team_member", record.teamRunId, member.agentRunId);
       anchor(holder, member.agentRunId, memberKey);
       rows.push(Object.freeze({ key: memberKey, parentKey: key, kind: "team_member", name: rowNameOf(member.address, member.agentRunId), address: member.address,
-        openTarget: Object.freeze({ runKind: "agent_team" as const, runId: execution.teamRunId, agentRunId: member.agentRunId }), statusIds: Object.freeze([member.agentRunId]),
-        ...(recorded ? { launch: launchOf(recorded.launchConfiguration, recorded.launchSource ?? source.defaultLaunchSource, Boolean(recorded.launchSource)) } : {}) }));
+        openTarget: Object.freeze({ runKind: "agent_team" as const, runId: record.teamRunId, agentRunId: member.agentRunId }), statusIds: Object.freeze([member.agentRunId]),
+        ...(member.launch ? { launch: launchOf(member.launch) } : {}) }));
     }
     return rows;
   }
@@ -232,25 +219,28 @@ export class RunTreeView {
   }
 }
 
-const peerRows = (execution: RemoteTaskExecutionDto, summary: Readonly<{ title: string | null; reachable: boolean }> | null): Draft[] => {
-  const peer = Object.freeze({ nodeId: execution.node_id, nodeName: execution.node_name, title: summary?.title ?? null, reachable: summary?.reachable ?? null });
-  const target = execution.open_target ? Object.freeze({ runKind: execution.open_target.run_kind, runId: execution.open_target.run_id,
-    agentRunId: execution.open_target.agent_run_id, nodeId: execution.open_target.node_id }) : null;
-  if (execution.kind === "agent") {
-    const launch = peerLaunchOf(execution.launches, execution.address);
-    return [Object.freeze({ key: runTreeRowKey("peer_agent", execution.agent_run_id), parentKey: null, kind: "peer_agent" as const,
-      name: rowNameOf(execution.address, execution.agent_run_id), address: execution.address, openTarget: target,
-      statusIds: Object.freeze([execution.agent_run_id]), peer, ...(launch ? { launch } : {}) })];
+/** A peer's run (autobyteus-278): its rows from its Task link, its launches and title from its node's latest answer. */
+const peerRows = (record: Extract<ChildRowRecord, { kind: "peer" }>): Draft[] => {
+  const { link, summary } = record;
+  const peer = Object.freeze({ nodeId: link.nodeId, nodeName: link.nodeName, title: summary?.title ?? null, reachable: summary?.reachable ?? null });
+  // Where it opens (SR-083): the run on its node and its own agent, or its coordinator among its members.
+  const target = link.kind === "agent" ? openTargetOf({ agentRunId: link.agentRunId }) : openTargetOf({ teamRunId: link.teamRunId }, link);
+  const openTarget = target ? Object.freeze({ ...target, nodeId: link.nodeId }) : null;
+  if (link.kind === "agent") {
+    const launch = peerLaunchOf(record.launches, link.address);
+    return [Object.freeze({ key: runTreeRowKey("peer_agent", link.agentRunId), parentKey: null, kind: "peer_agent" as const,
+      name: rowNameOf(link.address, link.agentRunId), address: link.address, openTarget,
+      statusIds: Object.freeze([link.agentRunId]), peer, ...(launch ? { launch } : {}) })];
   }
-  const key = runTreeRowKey("peer_team", execution.team_run_id);
-  return [Object.freeze({ key, parentKey: null, kind: "peer_team" as const, name: rowNameOf(execution.address, execution.team_run_id), address: execution.address,
-    openTarget: target, statusIds: Object.freeze([execution.team_run_id]), peer }),
-  ...execution.members.map((member) => {
-    const launch = peerLaunchOf(execution.launches, member.address);
-    return Object.freeze({ key: runTreeRowKey("peer_member", execution.team_run_id, member.agent_run_id), parentKey: key, kind: "peer_member" as const,
-      name: rowNameOf(member.address, member.agent_run_id), address: member.address,
-      openTarget: Object.freeze({ runKind: "agent_team" as const, runId: execution.team_run_id, agentRunId: member.agent_run_id, nodeId: execution.node_id }),
-      statusIds: Object.freeze([member.agent_run_id]), peer, ...(launch ? { launch } : {}) });
+  const key = runTreeRowKey("peer_team", link.teamRunId);
+  return [Object.freeze({ key, parentKey: null, kind: "peer_team" as const, name: rowNameOf(link.address, link.teamRunId), address: link.address,
+    openTarget, statusIds: Object.freeze([link.teamRunId]), peer }),
+  ...link.members.map((member) => {
+    const launch = peerLaunchOf(record.launches, member.address);
+    return Object.freeze({ key: runTreeRowKey("peer_member", link.teamRunId, member.agentRunId), parentKey: key, kind: "peer_member" as const,
+      name: rowNameOf(member.address, member.agentRunId), address: member.address,
+      openTarget: Object.freeze({ runKind: "agent_team" as const, runId: link.teamRunId, agentRunId: member.agentRunId, nodeId: link.nodeId }),
+      statusIds: Object.freeze([member.agentRunId]), peer, ...(launch ? { launch } : {}) });
   })];
 };
 

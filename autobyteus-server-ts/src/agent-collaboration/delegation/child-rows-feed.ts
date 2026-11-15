@@ -1,20 +1,7 @@
-import type { RemoteTaskExecutionDto } from "@autobyteus/agent-presentation-contracts";
-import type { CollaborationTaskExecutionDto } from "@autobyteus/collaboration-stream-contracts";
 import type { RootExecutionIdentity } from "../execution/domain/root-execution-identity.js";
 import type { DelegationIndex } from "./delegation-index.js";
-import type { SubtreeRow } from "./collaboration-tree.js";
 import type { RunViewStreams } from "./run-view-stream.js";
 import { RUN_TREE_CHANGED_EVENT, type RunTreeChangedEvent } from "./run-tree-view.js";
-
-/** One row as a view projects it: a run on this node (from its own file), or a peer's run. */
-export type ChildRowRecord =
-  | Readonly<{ kind: "local"; row: CollaborationTaskExecutionDto }>
-  | Readonly<{ kind: "peer"; row: RemoteTaskExecutionDto; summary: Readonly<{ title: string | null; reachable: boolean }> | null }>;
-
-/** The views' own projection of one row (at any depth, under its `parent`); `null` when its record cannot be read. Bound by the composition. */
-export type ChildRowProjection = Readonly<{
-  rowOf(row: SubtreeRow): Promise<ChildRowRecord | null>;
-}>;
 
 /**
  * The one feed of a run's tree changes (autobyteus-461 SR-084): it follows the `DelegationIndex`'s row changes and, at

@@ -53,7 +53,7 @@ import { setProcessTeamMemberRunViewProjectionService, TeamMemberRunViewProjecti
 import { setProcessTeamRunHistoryService } from "../run-history/services/team-run-history-service.js";
 import { setProcessWorkspaceRunHistoryService, WorkspaceRunHistoryService } from "../run-history/services/workspace-run-history-service.js";
 import { RunOwnAgentsReader } from "../run-history/store/run-own-agents-reader.js";
-import { createChildRowProjection } from "../services/agent-streaming/delegated-children-dtos.js";
+import { createChildRowProjection } from "../agent-collaboration/delegation/run-tree-records.js";
 import { AgentOrgAgentStatuses } from "../agent-org-execution/services/agent-org-agent-statuses.js";
 import { peerNodeNames } from "../agent-collaboration/execution/remote/remote-run-observation.js";
 import { peerStatuses } from "../agent-collaboration/execution/remote/peer-run-calls.js";
