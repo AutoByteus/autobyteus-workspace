@@ -41,13 +41,13 @@ describe("teamStreamSequencedShape", () => {
 });
 
 describe("rootExecutionEventSequencedShape", () => {
-  const event = (seq: number, agent: string, message: unknown, rootKind: "agent_org" | "agent" = "agent_org") =>
+  const event = (seq: number, agent: string, message: unknown) =>
     CollaborationStreamServerMessageSchema.parse({ type: "ROOT_EXECUTION_EVENT", payload: {
-      root_subject_kind: rootKind, root_run_id: "root-1", change_sequence: seq,
+      root_subject_kind: "agent_org", root_run_id: "root-1", change_sequence: seq,
       event: { kind: "agent_presentation", member_address: `/${agent}`, agent_run_id: agent, message },
     } });
-  const content = (seq: number, agent: string, delta: string, rootKind?: "agent_org" | "agent") =>
-    event(seq, agent, { type: "SEGMENT_CONTENT", payload: { ...segment, delta } }, rootKind);
+  const content = (seq: number, agent: string, delta: string) =>
+    event(seq, agent, { type: "SEGMENT_CONTENT", payload: { ...segment, delta } });
   const status = (seq: number, agent: string) => event(seq, agent, { type: "AGENT_STATUS", payload: runningStatus });
 
   it("reads envelope sequences, content identity and envelope-free status", () => {
@@ -64,11 +64,11 @@ describe("rootExecutionEventSequencedShape", () => {
     expect(streamPayloadsEqual(one.comparable, two.comparable)).toBe(true);
   });
 
-  it.each(["agent_org", "agent"] as const)("builds a valid %s agent_presentation_batch envelope", (rootKind) => {
-    const parts = [content(1, "a", "x", rootKind), content(2, "b", "1", rootKind)].map((message) => rootExecutionEventSequencedShape.contentOf(message)!);
+  it("builds a valid Org agent_presentation_batch envelope", () => {
+    const parts = [content(1, "a", "x"), content(2, "b", "1")].map((message) => rootExecutionEventSequencedShape.contentOf(message)!);
     const batch = rootExecutionEventSequencedShape.buildBatch(21, 26, [{ item: parts[0]!.item, text: "xy" }, { item: parts[1]!.item, text: "12" }]);
     expect(batch).toEqual({ type: "ROOT_EXECUTION_EVENT", payload: {
-      root_subject_kind: rootKind, root_run_id: "root-1", change_sequence: 21, change_sequence_through: 26,
+      root_subject_kind: "agent_org", root_run_id: "root-1", change_sequence: 21, change_sequence_through: 26,
       event: { kind: "agent_presentation_batch", items: [
         { member_address: "/a", agent_run_id: "a", message: { type: "SEGMENT_CONTENT", payload: { ...segment, delta: "xy" } } },
         { member_address: "/b", agent_run_id: "b", message: { type: "SEGMENT_CONTENT", payload: { ...segment, delta: "12" } } },

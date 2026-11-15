@@ -121,9 +121,9 @@ export const RootExecutionViewDtoSchema = z.discriminatedUnion("root_subject_kin
 export const RootExecutionEventDtoSchema = z.discriminatedUnion("root_subject_kind", [
     z.object({ root_subject_kind: z.literal("agent_team"), root_run_id: nonEmptyStringSchema, change_sequence: positiveSequence, event: z.unknown() }).strict(),
     z.object({ root_subject_kind: z.literal("agent_org"), root_run_id: nonEmptyStringSchema, change_sequence: positiveSequence, change_sequence_through: positiveSequence.optional(), event: agentOrgExecutionEventDtoSchema }).strict(),
-    z.object({ root_subject_kind: z.literal("agent"), root_run_id: nonEmptyStringSchema, change_sequence: positiveSequence, change_sequence_through: positiveSequence.optional(), event: agentRunCollaborationEventDtoSchema }).strict(),
+    z.object({ root_subject_kind: z.literal("agent"), root_run_id: nonEmptyStringSchema, change_sequence: positiveSequence, event: agentRunCollaborationEventDtoSchema }).strict(),
 ]).superRefine((value, context) => {
-    if (value.root_subject_kind === "agent_team")
+    if (value.root_subject_kind !== "agent_org")
         return;
     const batch = value.event.kind === "agent_presentation_batch";
     if (batch !== (value.change_sequence_through !== undefined)) {

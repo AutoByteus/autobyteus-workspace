@@ -91,7 +91,7 @@ describe("ChildRowsFeed", () => {
     const tree = new DelegationIndex(() => tasks, readerOfAgentRunIds(async (r) => [r.rootRunId]));
     tree.build();
     tasks.setEntriesListener(tree);
-    const runStatus = new RunStatusService({ agents: () => ({}) as never, peerRunOf: () => null, agentsOf: async () => [], peerEnded: () => undefined,
+    const runStatus = new RunStatusService({ agents: () => ({}) as never, peerRunOf: () => null, agentsOf: async () => [],
       peerNodeName: async (nodeId) => nodeId, peerSummary: async () => null, summaryChanged: () => undefined,
       registrations: { resolve: () => null, onRegistrationChanged: () => () => undefined } });
     const feed = new ChildRowsFeed({ streams: testViewStreams(), tree, rowsChanged: (run) => runStatus.treeChanged(run) });

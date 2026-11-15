@@ -63,7 +63,6 @@ import type { CollaborationRootResolver } from "./collaboration-root-resolver.js
 import { composeProjectRunLinks } from "./project-run-links-composition.js";
 import { createRunViewSources, type RunViewSources } from "./run-view-composition.js";
 import { createPeerRunOf } from "../agent-collaboration/execution/remote/peer-runs.js";
-import { PeerChildObservation } from "../agent-collaboration/delegation/peer-child-observation.js";
 
 /**
  * The Task service's post-commit marks: the `/ws/projects` publisher, and Project Task search for Task writes and
@@ -237,12 +236,12 @@ export const composeCollaboration = async (input: Readonly<{
     // 7. The views' owners (SR-061 … SR-063, SR-083, SR-084): each run's tree and its change notice, the rows' records,
     // each run's own statuses by run ID.
     const projection = createChildRowProjection({ memoryDir, tree, channel: input.remoteChannel, peerSummaryOf: (runId) => runStatus.peerSummaryOf(runId) });
-    // A peer run, reached by its own identity (SR-066): its handle from the tree, its live status and output per view.
+    // A peer run, reached by its own identity (SR-066): its handle from the tree.
     const peerRunOf = createPeerRunOf(tree, input.remoteChannel);
-    // Each run's statuses by run ID, from the run itself, and its rows' change notice (SR-082, SR-083).
-    // A peer run's status and its row's summary meet in Retry and in an unasked end (AR-403); `peers` is created below.
+    // Each run's statuses by run ID, from the run itself, and its rows' change notice (SR-082, SR-083); a peer run's
+    // node's answer is kept with its status (SR-086 G-B2), asked when it is held, on Retry and after an unasked end.
     const runStatus = new RunStatusService({ agents: (kind) => kind === "agent_org" ? orgAgents : liveAgents(kind), registrations: input.activeRoots,
-      agentsOf: (run) => tree.agentsOf(run), peerRunOf, peerEnded: (peerRunId) => peers.ended(peerRunId),
+      agentsOf: (run) => tree.agentsOf(run), peerRunOf,
       peerNodeName: async (nodeId) => (await peerNodeNames([nodeId], input.remoteChannel())).get(nodeId) ?? nodeId,
       peerSummary: async (peer) => (await peerStatuses([peer.link], input.remoteChannel))[0] ?? null,
       summaryChanged: (run) => feed.rowChanged(run) });
@@ -250,8 +249,9 @@ export const composeCollaboration = async (input: Readonly<{
     releases.push(feed.follow(tree));
     const ownFiles = new RunOwnAgentsReader(memoryDir);
     const runTree = new RunTreeView({ tree, ownTreeOf: (run) => ownFiles.ownTreeOf(run), projection });
-    const peers = new PeerChildObservation({ tree, streams: taskSide.viewStreams, peerRunOf, channel: input.remoteChannel,
-      retryStatuses: (peerRunIds, nodeIds) => runStatus.retryPeers(peerRunIds, nodeIds), answered: (summary) => runStatus.peerAnswered(summary) });
+    // Retry on a view: its peer rows (at every depth) are observed and asked again.
+    const retryPeers = (run: RootExecutionIdentity) => runStatus.retryPeers(tree.collaborationTreeOf(run).rows()
+      .flatMap((row) => row.nodeId === undefined ? [] : ["agentRunId" in row.run ? row.run.agentRunId : row.run.teamRunId]));
 
     // 8. Their consumers. Older singletons (their getters are FU-011) return the instance created here.
     releases.push(setProcessTaskDelegationToolService(new TaskDelegationToolService({ delegation,
@@ -266,7 +266,7 @@ export const composeCollaboration = async (input: Readonly<{
     releases.push(setProcessTeamRunHistoryService(runs.teamRunHistoryService));
     releases.push(setProcessWorkspaceRunHistoryService(new WorkspaceRunHistoryService({ tree,
       agentRunHistoryService: agentRunHistory, teamRunHistoryService: runs.teamRunHistoryService })));
-    const views = createRunViewSources({ memoryDir, streams: taskSide.viewStreams, rows: { peers, peerRunOf, runTree }, registrations: input.activeRoots,
+    const views = createRunViewSources({ memoryDir, streams: taskSide.viewStreams, rows: { retryPeers, peerRunOf, runTree }, registrations: input.activeRoots,
       closedTasks: taskSide.closedTasks, restorability });
     return Object.freeze({
       tasks, views, runTree, runStatus, delegatedRunAgents: new DelegatedRunAgentsReader(tree),

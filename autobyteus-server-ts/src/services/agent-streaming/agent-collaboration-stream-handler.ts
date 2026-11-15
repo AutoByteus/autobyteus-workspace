@@ -139,9 +139,7 @@ export class AgentCollaborationStreamHandler {
       egress.send(CollaborationStreamServerMessageSchema.parse({
         type: "ROOT_LIFECYCLE", payload: { root_subject_kind: "agent", root_run_id: hostRunId, is_active: root.isHostLive() },
       }));
-      // The view's peer rows, observed after its snapshot (SR-066): never through the root.
-      const stopPeers = this.views.peers.follow(root.rootIdentity);
-      this.sessions.set(sessionId, { egress, hostRunId, close: () => { open = false; unsubscribe(); stopPeers(); egress.dispose(); } });
+      this.sessions.set(sessionId, { egress, hostRunId, close: () => { open = false; unsubscribe(); egress.dispose(); } });
       return sessionId;
     } catch (cause) {
       barrier.close();
@@ -163,9 +161,9 @@ export class AgentCollaborationStreamHandler {
       return;
     }
     if (parsed.type === "REFRESH_REMOTE_TASK_EXECUTIONS") {
-      // Retry: the answers arrive as root events.
+      // Retry (autobyteus-278): its peer rows' answers update their rows (`run_tree_changed`) and statuses (`/ws/run-status`).
       if (parsed.payload.root_subject_kind === "agent" && parsed.payload.root_run_id === session.hostRunId) {
-        void this.views.peers.refresh(createAgentRootExecutionIdentity(session.hostRunId));
+        this.views.retryPeers(createAgentRootExecutionIdentity(session.hostRunId));
       }
       return;
     }

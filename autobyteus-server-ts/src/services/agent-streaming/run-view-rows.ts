@@ -1,4 +1,3 @@
-import type { PeerChildObservation } from "../../agent-collaboration/delegation/peer-child-observation.js";
 import type { PeerRunOf } from "../../agent-collaboration/execution/remote/peer-runs.js";
 import type { RootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import { isRunTreeChangedEvent, type RunTreeBase, type RunTreeView } from "../../agent-collaboration/delegation/run-tree-view.js";
@@ -6,8 +5,8 @@ import { RunTreeSessionRows } from "../../agent-collaboration/delegation/run-tre
 
 /** What a run's view reads about the runs under it (SR-061 … SR-063, SR-084), from the composition root. */
 export type RunViewRowSources = Readonly<{
-  /** The peer rows' live output and summaries (SR-066): asked after a view's snapshot; Retry asks again. Statuses are each run's own (SR-083). */
-  peers: Pick<PeerChildObservation, "follow" | "refresh">;
+  /** Retry: the view's peer rows are observed and asked again (their statuses and summaries are each run's own, SR-083, G-B2). */
+  retryPeers(run: RootExecutionIdentity): void;
   /** A peer run by its own ID (SR-066): a view's command for a peer row goes to its handle, never through a root. */
   peerRunOf: PeerRunOf;
   /** The run's tree (SR-084): its rows read with a snapshot's base, sent after it, and read again on each tree notice. */

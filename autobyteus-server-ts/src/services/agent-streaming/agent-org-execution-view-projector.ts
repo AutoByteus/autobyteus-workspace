@@ -59,10 +59,6 @@ export const projectAgentOrgExecutionEvent = (
         message: source.message,
       };
       break;
-    // N-402: the one place a peer child's output (DS-8, AC-802) becomes the stream's `agent_presentation`.
-    case "remote_agent_presentation":
-      event = { kind: "agent_presentation" as const, member_address: source.memberAddress, agent_run_id: source.agentRunId, message: source.message };
-      break;
     case "communication":
       event = { kind: "communication" as const, message: source.message };
       break;

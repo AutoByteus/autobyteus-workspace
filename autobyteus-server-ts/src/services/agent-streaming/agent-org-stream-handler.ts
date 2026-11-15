@@ -121,9 +121,9 @@ export class AgentOrgStreamHandler {
       return;
     }
     if (parsed.type === "REFRESH_REMOTE_TASK_EXECUTIONS") {
-      // Retry: the answers arrive as root events.
+      // Retry (autobyteus-278): its peer rows' answers update their rows (`run_tree_changed`) and statuses (`/ws/run-status`).
       if (parsed.payload.root_subject_kind === "agent_org" && parsed.payload.root_run_id === orgRunId) {
-        void this.sources.rows.peers.refresh(createAgentOrgRootExecutionIdentity(orgRunId));
+        this.sources.rows.retryPeers(createAgentOrgRootExecutionIdentity(orgRunId));
       }
       return;
     }

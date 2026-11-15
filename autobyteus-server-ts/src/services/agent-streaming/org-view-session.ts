@@ -179,8 +179,6 @@ export class OrgViewSession {
       } catch (cause) { console.error(`Error projecting an AgentOrg event: ${String(cause)}`); }
     }));
     this.send(this.lifecycle(isActive));
-    // The view's peer rows, observed after its snapshot (SR-066): never through the root.
-    const stopPeers = this.sources.rows.peers.follow(this.identity);
-    return () => { open = false; unsubscribe(); stopPeers(); };
+    return () => { open = false; unsubscribe(); };
   }
 }

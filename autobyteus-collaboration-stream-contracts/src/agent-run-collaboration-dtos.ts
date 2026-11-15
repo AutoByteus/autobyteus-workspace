@@ -1,13 +1,6 @@
 import { z } from "zod";
-import {
-  agentAddressSchema,
-  agentPresentationMessageSchema,
-  nonEmptyStringSchema,
-} from "@autobyteus/agent-presentation-contracts";
-import {
-  agentPresentationBatchEventDtoSchema,
-  agentOrgCommunicationMessageDtoSchema,
-} from "./agent-org-execution-dtos.js";
+import { agentAddressSchema, nonEmptyStringSchema } from "@autobyteus/agent-presentation-contracts";
+import { agentOrgCommunicationMessageDtoSchema } from "./agent-org-execution-dtos.js";
 import { runTreeChangedEventDtoSchema } from "./run-tree-dtos.js";
 
 const timestamp = nonEmptyStringSchema;
@@ -37,9 +30,11 @@ export const agentRunCollaborationViewDtoSchema = z.object({
   execution_tree: agentRunCollaborationTreeDtoSchema,
 }).strict();
 
+/**
+ * The Agent root view's events: its messages and its tree's changes. Its host presents on its own Agent stream, and each
+ * run it delegated on its own (rule 2; a peer's run through `/ws/peer-run`, SR-086 G-D1).
+ */
 export const agentRunCollaborationEventDtoSchema = z.discriminatedUnion("kind", [
-  z.object({ kind: z.literal("agent_presentation"), member_address: agentAddressSchema, agent_run_id: nonEmptyStringSchema, message: agentPresentationMessageSchema }).strict(),
-  agentPresentationBatchEventDtoSchema,
   z.object({ kind: z.literal("communication"), message: agentOrgCommunicationMessageDtoSchema }).strict(),
   runTreeChangedEventDtoSchema,
 ]);

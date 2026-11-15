@@ -16,8 +16,6 @@ export type RunStatusSources = Readonly<{
   agentsOf(run: RootExecutionIdentity): Promise<readonly Readonly<{ agentRunId: string }>[]>;
   /** The handle of a run on a peer node, by its ID; `null` for a local run. */
   peerRunOf: PeerRunOf;
-  /** A peer run's observation ended without being asked (AR-403): its views ask its node for one summary. */
-  peerEnded(peerRunId: string): void;
   /** A peer node's name, from this node's own registry (its ID when it names none). */
   peerNodeName(nodeId: string): Promise<string>;
   /** A peer run's node's answer about it (title, reachability, statuses, launches); `null` when it gave none. */
@@ -56,12 +54,19 @@ export class RunStatusEntry {
   private observePeer: (() => void) | null = null;
   /** A peer run's node; `null` for a local or org run. */
   private peerNodeId: string | null = null;
+  /** A peer run's handle; `null` for a local or org run. */
+  private peer: PeerRun | null = null;
   private answer: RunStatusAnswer = "ok";
   private unreachableNode: string | null = null;
   /** The state its listeners were last told (or answered in a snapshot). */
   private told: RunState | null = null;
 
-  constructor(readonly ref: RunStatusRunRef, private readonly sources: RunStatusSources) {
+  constructor(
+    readonly ref: RunStatusRunRef,
+    private readonly sources: RunStatusSources,
+    /** A peer run's node answered (it is back, CR-461-094): the ended observations of its other runs are observed again. */
+    private readonly nodeAnswered: (nodeId: string) => void = () => undefined,
+  ) {
     this.ready = this.start().catch((error: unknown) => { console.warn(`Run '${ref.runId}': its statuses could not be followed: ${String(error)}`); });
   }
 
@@ -70,8 +75,17 @@ export class RunStatusEntry {
     for (const release of this.releases.splice(0)) release();
   }
 
-  /** Retry: a peer run whose observation ended is observed again (DEC-807 Phase 1: an observation never reconnects alone). */
-  retry(): void { this.observePeer?.(); }
+  /**
+   * Retry: a peer run whose observation ended is observed again (DEC-807 Phase 1: an observation never reconnects alone),
+   * and its node is asked again for its answer.
+   */
+  retry(): void {
+    this.observePeer?.();
+    if (this.peer) this.askSummary(this.peer, true);
+  }
+
+  /** Its node is back: an ended observation is observed again (an open one stays as it is). */
+  reobserve(): void { this.observePeer?.(); }
 
   /** The node a peer run runs on; `null` for a run on this node. */
   get nodeId(): string | null { return this.peerNodeId; }
@@ -91,7 +105,7 @@ export class RunStatusEntry {
   summary: RemoteRunSummaryEvent | null = null;
 
   /** A peer run's node answered: kept, and its state set; answers whether its content (title, reachability, launches) changed. */
-  applySummary(summary: RemoteRunSummaryEvent): boolean {
+  private applySummary(summary: RemoteRunSummaryEvent): boolean {
     if (this.closed || !this.peerNodeId || summary.nodeId !== this.peerNodeId) return false;
     const content = (value: RemoteRunSummaryEvent | null) => JSON.stringify(value && [value.title, value.reachable, value.launches]);
     const changed = content(this.summary) !== content(summary);
@@ -104,7 +118,7 @@ export class RunStatusEntry {
   stateForSnapshot(): RunState { this.told = this.state; return this.told; }
 
   /** A peer run's node answered about it (G-A3): reachable, or not, with the node's name. */
-  peerAnswered(summary: Pick<RemoteRunSummaryEvent, "reachable">): void {
+  private peerAnswered(summary: Pick<RemoteRunSummaryEvent, "reachable">): void {
     if (this.closed || !this.peerNodeId) return;
     if (summary.reachable) { this.answer = "ok"; this.unreachableNode = null; this.tellState(); return; }
     const nodeId = this.peerNodeId;
@@ -176,10 +190,12 @@ export class RunStatusEntry {
 
   /**
    * A peer run: its handle's own observation, shared by every subscriber (one entry per run). When it ends unasked, its
-   * agents read offline and its views ask its node for one summary (AR-403); Retry observes it again.
+   * agents read offline and its node is asked once for its answer (AR-403), never observed again from there (a node that
+   * keeps refusing would loop); Retry, or its node answering another ask, observes it again.
    */
   private startPeer(peer: PeerRun): void {
     this.peerNodeId = peer.link.nodeId;
+    this.peer = peer;
     const ids = peer.link.kind === "agent" ? [peer.link.agentRunId] : peer.link.members.map((member) => member.agentRunId);
     for (const agentRunId of ids) this.answers.set(agentRunId, "offline");
     let stream: Readonly<{ close(): void }> | null = null;
@@ -190,7 +206,7 @@ export class RunStatusEntry {
       const end = (): void => {
         if (stream === current) stream = null;
         this.allOffline();
-        if (!this.closed) { this.sources.peerEnded(this.ref.runId); this.askSummary(peer); }
+        if (!this.closed) this.askSummary(peer, false);
       };
       current = peer.observe({
         onFrame: (agentRunId, message) => {
@@ -205,13 +221,18 @@ export class RunStatusEntry {
     this.observePeer = observe;
     this.releases.push(() => { this.observePeer = null; stream?.close(); stream = null; });
     observe();
-    this.askSummary(peer);
+    this.askSummary(peer, true);
   }
 
-  /** Asks the run's node for its answer (when first held, and after its observation ended unasked). */
-  private askSummary(peer: PeerRun): void {
+  /**
+   * Asks the run's node for its answer: when first held, on Retry and after its observation ended unasked. An answer
+   * that reaches it (not after an unasked end) says its node is back.
+   */
+  private askSummary(peer: PeerRun, nodeBack: boolean): void {
     void this.sources.peerSummary(peer).then((summary) => {
-      if (summary && this.applySummary(summary)) this.sources.summaryChanged({ rootSubjectKind: this.ref.kind, rootRunId: this.ref.runId } as RootExecutionIdentity);
+      if (!summary || this.closed) return;
+      if (this.applySummary(summary)) this.sources.summaryChanged({ rootSubjectKind: this.ref.kind, rootRunId: this.ref.runId } as RootExecutionIdentity);
+      if (nodeBack && summary.reachable) this.nodeAnswered(peer.link.nodeId);
     }).catch((error: unknown) => console.warn(`Peer run '${this.ref.runId}': its node's answer could not be read: ${String(error)}`));
   }
 }
@@ -239,22 +260,17 @@ export class RunStatusService {
   }
 
   /**
-   * Retry (`REFRESH_REMOTE_TASK_EXECUTIONS`), or a node that answered again: these peer runs' ended observations are
-   * observed again, and every other ended observation of a run on their nodes (CR-461-094): the node is back for each of
-   * its runs, whichever view asked, so a run its views no longer show (a subscriber's alone) follows again too.
+   * Retry (`REFRESH_REMOTE_TASK_EXECUTIONS`, a view's peer rows): these peer runs' ended observations are observed again,
+   * and their nodes asked again. A node that answers is back for each of its runs (CR-461-094), so every other ended
+   * observation of a run on it follows again too, whichever view asked.
    */
-  retryPeers(peerRunIds: readonly string[], nodeIds: readonly string[] = []): void {
+  retryPeers(peerRunIds: readonly string[]): void {
     const ids = new Set(peerRunIds);
-    const nodes = new Set([...nodeIds, ...[...this.entries.values()].flatMap((entry) => ids.has(entry.ref.runId) && entry.nodeId ? [entry.nodeId] : [])]);
-    for (const entry of this.entries.values()) if (ids.has(entry.ref.runId) || (entry.nodeId && nodes.has(entry.nodeId))) entry.retry();
+    for (const entry of this.entries.values()) if (ids.has(entry.ref.runId)) entry.retry();
   }
 
-  /** A node's answer about one of its runs (a view's ask, SR-066): kept with the run when it is held (G-B2). */
-  peerAnswered(summary: RemoteRunSummaryEvent): void {
-    for (const entry of this.entries.values()) {
-      if (entry.ref.runId !== summary.runId || !entry.applySummary(summary)) continue;
-      this.sources.summaryChanged({ rootSubjectKind: entry.ref.kind, rootRunId: entry.ref.runId } as RootExecutionIdentity);
-    }
+  private nodeAnswered(nodeId: string): void {
+    for (const entry of this.entries.values()) if (entry.nodeId === nodeId) entry.reobserve();
   }
 
   /** A held peer run's latest answer from its node; `null` when it is not held or has not answered. */
@@ -269,7 +285,10 @@ export class RunStatusService {
   hold(ref: RunStatusRunRef): RunStatusEntry {
     const key = keyOf(ref);
     let entry = this.entries.get(key);
-    if (!entry) { entry = new RunStatusEntry(Object.freeze({ kind: ref.kind, runId: ref.runId }), this.sources); this.entries.set(key, entry); }
+    if (!entry) {
+      entry = new RunStatusEntry(Object.freeze({ kind: ref.kind, runId: ref.runId }), this.sources, (nodeId) => this.nodeAnswered(nodeId));
+      this.entries.set(key, entry);
+    }
     entry.holders += 1;
     return entry;
   }

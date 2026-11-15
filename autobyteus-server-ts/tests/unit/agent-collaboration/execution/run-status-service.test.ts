@@ -38,13 +38,13 @@ const harness = (input: Readonly<{ agents?: Record<string, string[]>; live?: Rec
   const peerObserves = new Map<string, ReturnType<typeof observeOf>>();
   const peerObserve = observeOf("peer-team");
   peerObserves.set("peer-team", peerObserve);
-  const peerEnded = vi.fn();
   const summaryChanged = vi.fn();
+  /** Each ask of a peer run's node, by the run's ID. */
+  const peerSummary = vi.fn(async (peer: unknown) => (input.summary?.((peer as { link: { teamRunId: string } }).link.teamRunId) ?? null) as never);
   const sources: RunStatusSources = {
-    peerEnded,
     summaryChanged,
     peerNodeName: async (nodeId) => `${nodeId}-node`,
-    peerSummary: async (peer) => (input.summary?.((peer as unknown as { link: { teamRunId: string } }).link.teamRunId) ?? null) as never,
+    peerSummary,
     agents: () => access as never,
     registrations: {
       resolve: (run: RootExecutionIdentity) => (live.has(run.rootRunId) ? ({} as never) : null),
@@ -69,7 +69,7 @@ const harness = (input: Readonly<{ agents?: Record<string, string[]>; live?: Rec
     return { sent, connection: service.connect((message) => sent.push(message)) };
   };
   const register = (runId: string, registered: boolean) => { for (const listener of registration.get(runId) ?? []) listener(registered); };
-  return { service, client, listeners, ended, live, register, observe, peerEnded, summaryChanged, peer: { close: peerClose, observe: peerObserve, observer: () => peerObserver,
+  return { service, client, listeners, ended, live, register, observe, peerSummary, summaryChanged, peer: { close: peerClose, observe: peerObserve, observer: () => peerObserver,
     observerOf: (id: string) => peerObservers.get(id)!, observeOf: (id: string) => peerObserves.get(id)! } };
 };
 
@@ -137,17 +137,22 @@ describe("RunStatusService (SR-082, SR-083)", () => {
     expect(h.service.heldRuns).toBe(0);
   });
 
-  it("CR-461-085: a peer run whose link ended reads offline and asks its views for a summary; Retry observes it again and its status follows", async () => {
+  it("CR-461-085: a peer run whose link ended reads offline and its node is asked once (AR-403); Retry observes it again, asks again, and its status follows", async () => {
     const h = harness({ peer: ["peer-team"] });
     const { sent, connection } = h.client();
     await connection.subscribe([{ kind: "agent_team", runId: "peer-team" }]);
+    expect(h.peerSummary).toHaveBeenCalledTimes(1);
     h.peer.observer()!.onFrame("peer-team-lead", frame("running"));
     h.peer.observer()!.onEnd();
     expect(changes(sent).at(-1)).toMatchObject({ type: "RUN_STATUS_CHANGED", payload: { agentRunId: "peer-team-lead", status: "offline" } });
-    expect(h.peerEnded).toHaveBeenCalledWith("peer-team");
-    // A frame of the ended link changes nothing; Retry observes the run again, and its status follows.
+    expect(h.peerSummary).toHaveBeenCalledTimes(2);
+    // Never observed again from there (a node that keeps refusing would loop).
+    await flush();
+    expect(h.peer.observe).toHaveBeenCalledTimes(1);
+    // A frame of the ended link changes nothing; Retry observes the run again and asks its node, and its status follows.
     h.service.retryPeers(["peer-team"]);
     expect(h.peer.observe).toHaveBeenCalledTimes(2);
+    expect(h.peerSummary).toHaveBeenCalledTimes(3);
     h.peer.observer()!.onFrame("peer-team-lead", frame("idle"));
     expect(changes(sent).at(-1)).toMatchObject({ type: "RUN_STATUS_CHANGED", payload: { agentRunId: "peer-team-lead", status: "idle" } });
     // A live observation is not opened twice.
@@ -156,20 +161,20 @@ describe("RunStatusService (SR-082, SR-083)", () => {
     connection.close();
   });
 
-  it("CR-461-094: a Retry for one peer run observes again every ended observation on its node (its other runs too); another node's waits", async () => {
-    const h = harness({ peer: ["peer-team", "peer-other", "office-team"] });
+  it("CR-461-094: a Retry whose node answers brings that node back: every ended observation on it is observed again (its other runs too); another node's waits", async () => {
+    const h = harness({ peer: ["peer-team", "peer-other", "office-team"], summary: (runId) => ({ nodeId: runId.startsWith("office-") ? "office" : "beta",
+      runId, reachable: true, title: null, statuses: [], launches: [] }) });
     const { connection } = h.client();
     await connection.subscribe([{ kind: "agent_team", runId: "peer-team" }, { kind: "agent_team", runId: "peer-other" }, { kind: "agent_team", runId: "office-team" }]);
+    await flush();
     for (const id of ["peer-team", "peer-other", "office-team"]) h.peer.observerOf(id).onEnd();
-    // A view that shows only "peer-team" asks for its Retry: its node is back for "peer-other" as well.
+    await flush();
+    // An unasked end's answer does not bring the node back (no loop).
+    expect([h.peer.observeOf("peer-team"), h.peer.observeOf("peer-other"), h.peer.observeOf("office-team")].map((observe) => observe.mock.calls.length)).toEqual([1, 1, 1]);
+    // A view that shows only "peer-team" asks for its Retry: its node answers, and is back for "peer-other" as well.
     h.service.retryPeers(["peer-team"]);
+    await flush();
     expect([h.peer.observeOf("peer-team"), h.peer.observeOf("peer-other"), h.peer.observeOf("office-team")].map((observe) => observe.mock.calls.length)).toEqual([2, 2, 1]);
-    h.peer.observerOf("peer-other").onFrame("peer-other-lead", frame("running"));
-    // A node named by the asking view's runs (none of them subscribed here) is back for every run on it.
-    h.peer.observerOf("peer-other").onEnd();
-    h.service.retryPeers(["not-subscribed"], ["beta"]);
-    expect(h.peer.observeOf("peer-other").mock.calls.length).toBe(3);
-    expect(h.peer.observeOf("office-team").mock.calls.length).toBe(1);
     connection.close();
   });
 
@@ -225,14 +230,15 @@ describe("RunStatusService (SR-082, SR-083)", () => {
     expect(latest).toMatchObject({ kind: "agent_team", runId: "peer-team", answer: "unreachable", node: "beta-node", status: null });
     expect(h.service.peerSummaryOf("peer-team")).toMatchObject({ title: "Studio", reachable: false });
     expect(h.summaryChanged).toHaveBeenCalledWith({ rootSubjectKind: "agent_team", rootRunId: "peer-team" });
-    // A view's ask brings the node back: answered, and its trees are told; the same answer again tells nothing.
+    // Retry brings the node back: answered, and its trees are told; the same answer again tells nothing.
     reachable = true;
-    const launches = [{ address: "/lead", runtimeKind: "codex_app_server", llmModelIdentifier: "gpt", source: { origin: "agent_default", fallbacks: [] } }];
-    h.service.peerAnswered({ nodeId: "beta", runId: "peer-team", reachable: true, title: "Studio", statuses: [], launches } as never);
+    h.service.retryPeers(["peer-team"]);
+    await flush();
     expect(states(sent).at(-1)).toMatchObject({ payload: { answer: "ok", node: null, status: "offline" } });
-    expect(h.service.peerSummaryOf("peer-team")?.launches).toEqual(launches);
+    expect(h.service.peerSummaryOf("peer-team")).toMatchObject({ reachable: true });
     expect(h.summaryChanged).toHaveBeenCalledTimes(2);
-    h.service.peerAnswered({ nodeId: "beta", runId: "peer-team", reachable: true, title: "Studio", statuses: [], launches } as never);
+    h.service.retryPeers(["peer-team"]);
+    await flush();
     expect(h.summaryChanged).toHaveBeenCalledTimes(2);
     // Released with its last subscriber: its answer is not kept.
     connection.close();

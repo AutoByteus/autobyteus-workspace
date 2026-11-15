@@ -3,7 +3,6 @@ import type { DelegatedRunRestorability } from "../../agent-collaboration/execut
 import type { ClosedTaskEntryFence } from "../../agent-collaboration/execution/task/closed-task-fence.js";
 import { parseTeamStreamServerMessage, type TeamStreamServerMessage } from "@autobyteus/team-stream-contracts";
 import type { RootSnapshotConnection, RunViewStreams, SequencedRootEvent } from "../../agent-collaboration/delegation/run-view-stream.js";
-import type { RemoteRunRootEvent } from "../../agent-collaboration/execution/remote/remote-run-observation.js";
 import { createTeamRootExecutionIdentity, type RootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import type { ActiveCollaborationRootDirectory } from "../../agent-collaboration/execution/services/active-collaboration-root-directory.js";
 import type { RootTeamRun, RootTeamRunPackageSnapshot } from "../../agent-team-execution/domain/root-team-run.js";
@@ -14,7 +13,6 @@ import { isRunTreeChangedEvent, type RunTreeChangedEvent } from "../../agent-col
 import type { RunTreeSessionRows } from "../../agent-collaboration/delegation/run-tree-changes.js";
 import { storedTeamPackageSnapshot } from "./stored-team-package-snapshot.js";
 import { projectSequencedTeamRunEvent, projectTeamExecutionViewSnapshot } from "./team-execution-view-projector.js";
-import { projectTeamRemoteEvent } from "./team-remote-event-projector.js";
 import type { AgentStreamServerMessageSink } from "./websocket-egress/agent-stream-websocket-egress.js";
 
 /** What a team run's view session needs, passed in by the composition (autobyteus-461 SR-046, SR-061 … SR-063). */
@@ -46,8 +44,8 @@ export class TeamRunNotRestorableError extends Error {
   constructor(readonly refusal: RootRestoreRefusal) { super(refusal.message); }
 }
 
-/** What a team run's view stream carries: the run's own events, its peer rows' output and its tree's notices (`ChildRowsFeed`). */
-type TeamViewEvent = TeamRunEvent | RemoteRunRootEvent | RunTreeChangedEvent;
+/** What a team run's view stream carries: the run's own events and its tree's notices (`ChildRowsFeed`). */
+type TeamViewEvent = TeamRunEvent | RunTreeChangedEvent;
 type ViewSnapshot = Readonly<{ own: Pick<RootTeamRunPackageSnapshot, "tree" | "statuses" | "inputStates">; tree: RunTreeSessionRows }>;
 
 const lifecycle = (isActive: boolean): TeamStreamServerMessage =>
@@ -177,16 +175,11 @@ export class TeamViewSession {
       } catch (error) { console.error(`Error projecting a team run's view event: ${String(error)}`); }
     }));
     this.sink.send(lifecycle(isActive));
-    // The view's peer rows, observed after its snapshot (SR-066): never through the root.
-    const stopPeers = this.sources.rows.peers.follow(this.identity);
-    return () => { open = false; unsubscribe(); stopPeers(); };
+    return () => { open = false; unsubscribe(); };
   }
 
-  /** One event in base's shapes. */
+  /** One event of the run's own in base's shapes (a peer row's output is its own, `/ws/peer-run`, SR-086 G-D1). */
   private project(sequenced: SequencedRootEvent<TeamViewEvent>): TeamStreamServerMessage | null {
-    const event = sequenced.event;
-    // The peer rows' live output (SR-066, DS-8); every row's status is its own run's (SR-083).
-    if ("kind" in event && event.kind === "remote_agent_presentation") return projectTeamRemoteEvent(event, sequenced.changeSequence);
     return projectSequencedTeamRunEvent(sequenced as SequencedRootEvent<TeamRunEvent>);
   }
 }
