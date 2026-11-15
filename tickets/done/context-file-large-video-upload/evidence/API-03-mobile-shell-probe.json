@@ -1,0 +1,185 @@
+{
+  "startedAt": "2026-11-15T14:09:56.869Z",
+  "result": "Pass",
+  "node": "v26.12.0",
+  "servers": {
+    "beta": {
+      "port": 60179,
+      "nodeId": "srv_XB1QiGI7NNmZwrq4ydy4Nf_vt_RnmpGS",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    },
+    "alpha": {
+      "port": 60178,
+      "nodeId": "srv_HUOAYi-Bwg2yQKYOLZtph9Zbl3WnWgAI",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    },
+    "eta": {
+      "port": 60334,
+      "nodeId": "srv_F4_OWVNxvgA3xjnRo9z_KQIh6yiLmNcR",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    }
+  },
+  "runs": {
+    "ptm": "project_task_manager_49b055208ad943bc816a92db33b5fd4f",
+    "writerRun": "release_notes_writer_032f99a46a034e8c8d58853954cd32d0",
+    "squadRun": "docs_review_team_c89d0fbbe39c4bb9a6cf935a379ba508",
+    "reviewer": "release_notes_writer_4d42634a4d9f4a3ea2de6b33130e184c",
+    "memberDelegated": "fact_checker_d524733f0ab64af5866468eb00d9e927",
+    "remoteAgentRun": "publisher_fb75f98f91184a69984f9c3685a4daf6",
+    "remoteTeamRun": "studio_team_24b598755af747e0bb2896373ebe81e8",
+    "plain": [
+      "fact_checker_13456ca52b6447e0abd72b78384d17d8",
+      "fact_checker_b9fcf16167554a08a01fbda18c123804",
+      "fact_checker_6d0087d89940431d9170c4ebb545c639"
+    ],
+    "org": "delivery_org_e2a5cc748a8a4e3ca5ffcc55b1d5fbfe",
+    "orgPlanner": "release_notes_writer_17063bfd6887449eae0c8d4a7683a5d5",
+    "reviewOrg": "review_org_dc34004c716244869d42068081f1b011",
+    "reviewOrgCoordinator": {
+      "address": "/squad/reviewer",
+      "agentRunId": "release_notes_writer_a54e6d94110f48cfb1077ab23b8b1afe",
+      "teamRunId": null
+    },
+    "delivery": "delivery_team_44406fb56f6a411abe27009bd9807094",
+    "deliveryLead": "fact_checker_8a7edcee388c43a18bbaf0f39311e416",
+    "deliveryMate": "release_notes_writer_dd88ff337fd644fa8be23fc0e646afd5",
+    "leadDelegated": "changelog_helper_f22bbab19ef34135a8e2d6819f591328",
+    "approver": "approver_1dc391be10744fab81239c7b00092c5e",
+    "taskA": "launch-5df842-1",
+    "taskB": "launch-5df842-2"
+  },
+  "cases": {
+    "MSP-53": {
+      "result": "Pass",
+      "seconds": 0.7,
+      "fileType": "video/mp4",
+      "percentagesSeen": [
+        0,
+        8
+      ],
+      "sendBlockedWhileUploading": true,
+      "uploadStatuses": [
+        200
+      ],
+      "draftSize": 27262976,
+      "finalSize": 27262976,
+      "referenceFilesLine": [
+        "<eta data dir>/memory/agents/size_checker_b171fa2014754db691fdac5a23a7587b/context_files/ctx_3f12ba101780__video-26mib.mp4"
+      ],
+      "agentOpenedWholeFileSha256Matches": true,
+      "pathInAgentInput": true
+    },
+    "MSP-54": {
+      "result": "Pass",
+      "seconds": 1,
+      "firstPick": {
+        "lines": [
+          "无法附加 big-clip.mp4：文件超过 3 MB 大小限制。",
+          "无法附加 big-spec.pdf：文件超过 1 MB 大小限制。"
+        ],
+        "refusedUploads": 0,
+        "limitReads": 1
+      },
+      "afterRaise": {
+        "uploads": [
+          200
+        ],
+        "lines": []
+      },
+      "staleRead": {
+        "sent": [
+          413
+        ],
+        "refused": [
+          "无法附加 big-clip.mp4：文件超过 3 MB 大小限制。"
+        ]
+      }
+    },
+    "MSP-55": {
+      "result": "Pass",
+      "seconds": 4.3,
+      "cancelLabel": "取消上传 drop-clip.mp4",
+      "cancelLines": [],
+      "cancelUploadRequests": 1,
+      "dropLines": [
+        "无法附加 drop-clip.mp4：上传中断，请检查网络后重试。"
+      ],
+      "draftFilesAfterDrop": 0,
+      "itemAfterDrop": 0,
+      "sendUsable": true
+    }
+  },
+  "browserErrors": [
+    {
+      "case": "size-setup",
+      "line": "phone-eta console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's own favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "size-setup",
+      "line": "phone-eta console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's own favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "size-setup",
+      "line": "phone-eta console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's own favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "size-setup",
+      "line": "phone-eta console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's own favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-54",
+      "line": "phone-eta console: Failed to load resource: the server responded with a status of 413 (Payload Too Large)",
+      "known": true,
+      "cause": "the node's 413 of the stale-limits upload, provoked on purpose"
+    },
+    {
+      "case": "MSP-55",
+      "line": "phone-eta console: Context file upload failed for 'drop-clip.mp4': ContextFileUploadError: Context file upload failed: interrupted\n    at fI (http://192.168.77.40:60353/mobile/_nuxt/C66ugLDX.js:1177:2332)\n    at Proxy.uploadAttachment (http://192.168.77.40:60353/mobile/_nuxt/C66ugLDX.js:1177:3646)\n    at async http://192.168.77.40:60353/mobile/_nuxt/BTCv_KqQ.js:2:5479\n    at async Promise.all (index 0)\n    at async z (http://192.168.77.40:60353/mobile/_nuxt/BTCv_KqQ.js:2:5236)\n    at async Me (http://192.168.77.40:60353/mobile/_nuxt/BTCv_KqQ.js:2:16027)",
+      "known": true,
+      "cause": "the link reset of the interrupted-upload case, provoked on purpose"
+    },
+    {
+      "case": "MSP-55",
+      "line": "phone-eta console: Failed to load resource: net::ERR_CONNECTION_RESET",
+      "known": true,
+      "cause": "the link reset of the interrupted-upload case, provoked on purpose"
+    }
+  ],
+  "failedRequests": [],
+  "network": {},
+  "cleanup": {
+    "frontendExited": true,
+    "serversLeft": 0,
+    "rootRemoved": true
+  },
+  "error": null,
+  "summary": {
+    "cases": {
+      "MSP-53": "Pass",
+      "MSP-54": "Pass",
+      "MSP-55": "Pass"
+    },
+    "unknownBrowserErrors": 0
+  },
+  "finishedAt": "2026-11-15T14:10:53.494Z"
+}

@@ -698,7 +698,10 @@ Project-only boundary; local paths never travel on those GraphQL commands.
   `delegate_task.reference_files`. Paths within one call must be unique.
 - The app's upload policy applies: the type, taken from the file extension,
   must be on the app's allowlist (so `.ts`, `.js`, `.yaml`, `.sh`, `.py` and
-  files without an extension are rejected), and each file is at most 25 MiB.
+  files without an extension are rejected), and each file is within the size limit of its
+  type: the audio/video limit (default 2048 MiB) for audio and video, the other-file limit
+  (default 25 MiB) for everything else (see the
+  [context-file size limits](../FILE_RENDERING_AND_MEDIA_PIPELINE.md#context-file-size-limits)).
 - All or nothing: if any entry is invalid, the call fails, naming the path, and
   changes nothing (no Task created, no text/status change, no DONE closure, no
   file added).
@@ -726,7 +729,7 @@ Task input validation (Project rules are above):
 - `context_files` that is not an array, or has a non-string or blank entry,
   fails with `PROJECT_TOOL_ARGUMENT_INVALID`. A path that is not normalized and
   absolute, is listed twice, has a type the app does not accept or is larger
-  than 25 MiB fails with `TASK_CONTEXT_INVALID`. A missing, non-regular or
+  than the limit of its type fails with `TASK_CONTEXT_INVALID` (the message names the limit). A missing, non-regular or
   unreadable file, or one that cannot be copied, fails with
   `TASK_CONTEXT_FILE_UNAVAILABLE`.
 - There is no batch update, workspace discovery/registration, context
@@ -1227,7 +1230,10 @@ client path, locator fetch or run-context fallback.
 Uploads use the neutral policy and writer in
 `src/context-files/domain/context-file-upload-policy.ts` and
 `services/context-file-upload-writer.ts`, shared with existing run uploads:
-- MIME allowlist and a 25 MiB maximum;
+- MIME allowlist and a per-type maximum (audio/video limit, other-file limit; node settings, see
+  [context-file size limits](../FILE_RENDERING_AND_MEDIA_PIPELINE.md#context-file-size-limits));
+  the upload route answers `413`/`415` with
+  `{error: {code: "CONTEXT_FILE_TOO_LARGE" | "CONTEXT_FILE_TYPE_UNSUPPORTED", message, maxBytes?}}`;
 - safe generated names and exclusive writes;
 - rejection of truncated multipart uploads;
 - descendant symlinks and traversal fail closed. A configured root symlink is

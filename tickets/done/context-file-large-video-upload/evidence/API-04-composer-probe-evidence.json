@@ -1,0 +1,86 @@
+{
+  "startedAt": "2026-11-15T14:15:53.292Z",
+  "executablePath": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "cases": {
+    "CF-014": {
+      "result": "Pass",
+      "description": "Server Settings page: invalid limit refused, saved limits apply to the open composer's next pick (zh-CN), no reload",
+      "details": {
+        "listedAtStart": {
+          "video": false,
+          "other": false
+        },
+        "refusal": "Audio/video size limit must be a whole number of MiB from 1 through 10240.",
+        "editRefusal": "Audio/video size limit must be a whole number of MiB from 1 through 10240.",
+        "listed": {
+          "video": "3",
+          "other": "1",
+          "videoDescription": "AUTOBYTEUS_CONTEXT_FILE_AUDIO_VIDEO_MAX_MB Largest audio or video file a user can attach, in MiB. Applies to the next upload. Default: 2048 (2 GiB); allowed range 1 to 10240. "
+        },
+        "lines": [
+          "无法附加 clip-big.mp4：文件超过 3 MB 大小限制。",
+          "无法附加 doc-big.pdf：文件超过 1 MB 大小限制。"
+        ]
+      }
+    }
+  },
+  "cleanup": {
+    "browser": "closed",
+    "frontend": {
+      "pid": 68364,
+      "status": "terminated",
+      "exit": "SIGTERM"
+    },
+    "backend": {
+      "pid": 68355,
+      "status": "terminated",
+      "exit": 0
+    },
+    "dataRootRemoved": true
+  },
+  "failures": [],
+  "stack": {
+    "backendUrl": "http://127.0.0.1:60805",
+    "frontendUrl": "http://127.0.0.1:60806",
+    "dataRoot": "/var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/composer-context-file-removal-V3ET2Z"
+  },
+  "world": {
+    "names": {
+      "manager": "Manager 53b1",
+      "worker": "Release Notes Writer 53b1",
+      "helper": "Fact Checker 53b1",
+      "squad": "Docs Review Team 53b1",
+      "team": "Delivery Team 53b1",
+      "org": "Delivery Org 53b1"
+    },
+    "agentRoot": "manager_53b1_7b0395f5b841438ca47bcd544a1295f8",
+    "agentCopy": "release_notes_writer_53b1_237681d3fa794835b4f98362ecaa249c",
+    "teamCopy": {
+      "teamRunId": "docs_review_team_53b1_66447037538a45f9b91779c8bd9cc01c",
+      "members": [
+        {
+          "address": "/docs_review_team_53b1/reviewer",
+          "agentRunId": "release_notes_writer_53b1_4a30bee772854a229380f66c785c3699"
+        },
+        {
+          "address": "/docs_review_team_53b1/editor",
+          "agentRunId": "fact_checker_53b1_780ac96e992f44cf93aecd0d0e8b1a2e"
+        }
+      ]
+    },
+    "teamCopyCoordinator": {
+      "address": "/docs_review_team_53b1/reviewer",
+      "agentRunId": "release_notes_writer_53b1_4a30bee772854a229380f66c785c3699"
+    },
+    "teamRoot": "delivery_team_53b1_0a76e04d77c940a8b7bf3667583d8027",
+    "orgRoot": "delivery_org_53b1_9df2a8e0586542ca8d820dc322747f33",
+    "orgManager": "manager_53b1_e075f5a1f3d44f7694ef0d1a92d28304",
+    "orgSquad": "docs_review_team_53b1_2df8ca17207b4785bf6bcb14075cde49",
+    "orgSquadMember": "release_notes_writer_53b1_f3bf7cb31f9e45048a095e252c22ad60",
+    "orgTask": "release_notes_writer_53b1_241cac5371dd4d7b847d66727c77a128",
+    "workspaceFile": "/var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/composer-context-file-removal-V3ET2Z/workspace/release-checklist.md"
+  },
+  "browserVersion": "157.0.8103.52",
+  "result": "Pass",
+  "finishedAt": "2026-11-15T14:16:15.563Z"
+}

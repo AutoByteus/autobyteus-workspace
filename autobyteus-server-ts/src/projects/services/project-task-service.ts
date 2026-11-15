@@ -31,6 +31,7 @@ import { readDelegatedTaskIdentity } from "./task-identity-reader.js";
 import { projectFolderForNewCopy } from "./project-new-copy-folder.js";
 import { bestEffortContextCleanup, TaskContextOwnership } from "./task-context-ownership.js";
 import type { ProjectTaskSearchCleanup } from "../search/project-task-search-service.js";
+import { resolveContextFileSizeLimits } from "../../config/context-file-size-limit-settings.js";
 import { sameDependencies } from "../domain/task-dependencies.js";
 import { appendComment, normalizeCommentText } from "../domain/task-comments.js";
 import { normalizeTaskDescription, normalizeTaskTitle, taskTextPatchOf } from "../domain/task-text.js";
@@ -120,7 +121,8 @@ export class ProjectTaskService implements TaskExecutionResourcePort {
   }
   /** Agent-tool create: context is copied from node-local files (may be none); dependencies and parent by key or ID. Never reachable from GraphQL. */
   async createTaskWithLocalContextFiles(command: CreateTaskWithLocalContextFilesCommand): Promise<ProjectTaskView> {
-    return this.create(command.projectId, command, (taskId) => this.context.importLocalFiles(command.projectId, taskId, command.localContextFiles),
+    const limits = resolveContextFileSizeLimits();
+    return this.create(command.projectId, command, (taskId) => this.context.importLocalFiles(command.projectId, taskId, command.localContextFiles, limits),
       async () => ({ dependsOnTaskIds: command.dependsOn && await this.relations.dependencyIdsOf(command.projectId, command.dependsOn),
         partOfTaskId: command.partOf === undefined ? undefined : await this.relations.parentIdOf(command.projectId, command.partOf) }));
   }
@@ -179,8 +181,9 @@ export class ProjectTaskService implements TaskExecutionResourcePort {
     const { projectId, task: { taskId: id } } = await this.references.projectTask(taskId);
     const relations = { dependsOnTaskIds: command.dependsOn && await this.relations.dependencyIdsOf(projectId, command.dependsOn),
       partOfTaskId: command.partOf === undefined ? undefined : await this.relations.parentIdOf(projectId, command.partOf) };
+    const limits = resolveContextFileSizeLimits();
     const write = () => this.update(projectId, id, { ...text, status, ...relations, addComment }, {
-      removals: [], writesContextList: localContextFiles.length > 0, prepare: () => this.context.importLocalFiles(projectId, id, localContextFiles),
+      removals: [], writesContextList: localContextFiles.length > 0, prepare: () => this.context.importLocalFiles(projectId, id, localContextFiles, limits),
     });
     const { task, attached, parts } = await this.relations.write(projectId, id, relations, write);
     return { projectId, taskId: id, taskReference: task.taskKey, title: task.title, status: task.status, dependsOnTaskIds: task.dependsOnTaskIds, partOfTaskId: task.partOfTaskId,

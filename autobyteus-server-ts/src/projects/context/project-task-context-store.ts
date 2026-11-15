@@ -5,8 +5,10 @@ import { randomUUID } from "node:crypto";
 import type { MultipartFile } from "@fastify/multipart";
 import { withFilePathLock } from "../../persistence/file/store-utils.js";
 import {
-  buildStoredFilename, CONTEXT_FILE_DRAFT_TTL_MS, CONTEXT_FILE_MAX_BYTES, contextFileMimeTypeForPath,
+  buildStoredFilename, CONTEXT_FILE_DRAFT_TTL_MS, contextFileMaxBytesFor, contextFileMimeTypeForPath,
+  type ContextFileSizeLimits,
 } from "../../context-files/domain/context-file-upload-policy.js";
+import { ContextFileTooLargeError, UnsupportedContextFileTypeError } from "../../context-files/domain/context-file-upload-errors.js";
 import { writeContextFileUpload } from "../../context-files/services/context-file-upload-writer.js";
 import type { ProjectTaskContextFile, ProjectTaskDraftManifest } from "../domain/project-task-context.js";
 import { ProjectError } from "../domain/project-errors.js";
@@ -17,16 +19,16 @@ interface LocalContextSource { sourcePath: string; displayName: string; mimeType
 const missing = (): never => { throw new ProjectError("TASK_CONTEXT_NOT_FOUND", "Task context was not found."); };
 const invalidSource = (sourcePath: string, reason: string) => new ProjectError("TASK_CONTEXT_INVALID", `Context file '${sourcePath}' ${reason}`);
 const unavailableSource = (sourcePath: string, reason: string) => new ProjectError("TASK_CONTEXT_FILE_UNAVAILABLE", `Context file '${sourcePath}' ${reason}`);
-const tooLarge = (sourcePath: string) => invalidSource(sourcePath, `is larger than the ${CONTEXT_FILE_MAX_BYTES / (1024 * 1024)} MiB limit.`);
+const tooLarge = (sourcePath: string, maxBytes: number) => invalidSource(sourcePath, `is larger than the ${maxBytes / (1024 * 1024)} MiB limit for its file type.`);
 /** Same rule as delegate_task reference files: a normalized absolute path naming an existing, readable regular file. */
-const localContextSource = async (sourcePath: string): Promise<LocalContextSource> => {
+const localContextSource = async (sourcePath: string, limits: ContextFileSizeLimits): Promise<LocalContextSource> => {
   if (!path.isAbsolute(sourcePath) || path.normalize(sourcePath) !== sourcePath) throw invalidSource(sourcePath, "must be a normalized absolute path.");
   const stat = await fs.stat(sourcePath).catch(() => { throw unavailableSource(sourcePath, "does not exist or cannot be accessed."); });
   if (!stat.isFile()) throw unavailableSource(sourcePath, "is not a regular file.");
   await fs.access(sourcePath, constants.R_OK).catch(() => { throw unavailableSource(sourcePath, "is not readable."); });
   const mimeType = contextFileMimeTypeForPath(sourcePath);
   if (!mimeType) throw invalidSource(sourcePath, "has a file type the app does not accept as context.");
-  if (stat.size > CONTEXT_FILE_MAX_BYTES) throw tooLarge(sourcePath);
+  if (stat.size > contextFileMaxBytesFor(mimeType, limits)) throw tooLarge(sourcePath, contextFileMaxBytesFor(mimeType, limits));
   return { sourcePath, displayName: path.basename(sourcePath), mimeType };
 };
 export class ProjectTaskContextStore {
@@ -40,15 +42,19 @@ export class ProjectTaskContextStore {
   async describe(projectId: string, draftId: string): Promise<ProjectTaskDraftManifest> {
     return this.lockDraft(projectId, draftId, (dir) => this.readManifest(dir, projectId, draftId));
   }
-  async upload(projectId: string, draftId: string, file: MultipartFile): Promise<ProjectTaskContextFile> {
+  async upload(projectId: string, draftId: string, file: MultipartFile, limits: ContextFileSizeLimits): Promise<ProjectTaskContextFile> {
     return this.lockDraft(projectId, draftId, async (dir) => {
       const manifest = await this.readManifest(dir, projectId, draftId);
       await this.expire(dir, manifest);
       const storedFilename = buildStoredFilename(file.filename, file.mimetype);
       const filePath = this.layout.file(dir, storedFilename);
       let sizeBytes: number;
-      try { sizeBytes = await writeContextFileUpload(file, filePath); }
-      catch (e) { throw new ProjectError("TASK_CONTEXT_INVALID", e instanceof Error ? e.message : "Upload failed."); }
+      try { sizeBytes = await writeContextFileUpload(file, filePath, limits); }
+      catch (e) {
+        // The route maps the two refusals by their type; any other write failure keeps its Task-context code.
+        if (e instanceof ContextFileTooLargeError || e instanceof UnsupportedContextFileTypeError) throw e;
+        throw new ProjectError("TASK_CONTEXT_INVALID", e instanceof Error ? e.message : "Upload failed.");
+      }
       const uploaded = { storedFilename, displayName: file.filename, mimeType: file.mimetype, sizeBytes };
       manifest.files.push(uploaded);
       await this.writeManifest(dir, manifest);
@@ -117,12 +123,12 @@ export class ProjectTaskContextStore {
    * validated before any byte is written; if a copy then fails, this call's copies are removed.
    * Sources are only read, never changed. The result is published by the Task metadata save.
    */
-  async importLocalFiles(projectId: string, taskId: string, sourcePaths: readonly string[]): Promise<PreparedTaskContext> {
+  async importLocalFiles(projectId: string, taskId: string, sourcePaths: readonly string[], limits: ContextFileSizeLimits): Promise<PreparedTaskContext> {
     if (!sourcePaths.length) return { files: [], consumed: [] };
     const duplicate = sourcePaths.find((p, i) => sourcePaths.indexOf(p) !== i);
     if (duplicate !== undefined) throw invalidSource(duplicate, "is listed more than once.");
     const sources: LocalContextSource[] = [];
-    for (const sourcePath of sourcePaths) sources.push(await localContextSource(sourcePath));
+    for (const sourcePath of sourcePaths) sources.push(await localContextSource(sourcePath, limits));
     const target = this.layout.contextDir(projectId, taskId);
     await this.layout.directory(target, true);
     const files: ProjectTaskContextFile[] = [], written: string[] = [];
@@ -142,7 +148,7 @@ export class ProjectTaskContextStore {
         await this.layout.regular(targetPath);
         // The copied size is authoritative: a source may change between validation and copy.
         const { size } = await fs.stat(targetPath);
-        if (size > CONTEXT_FILE_MAX_BYTES) throw tooLarge(source.sourcePath);
+        if (size > contextFileMaxBytesFor(source.mimeType, limits)) throw tooLarge(source.sourcePath, contextFileMaxBytesFor(source.mimeType, limits));
         await fs.utimes(targetPath, new Date(), new Date());
         files.push({ storedFilename, displayName: source.displayName, mimeType: source.mimeType, sizeBytes: size });
       }

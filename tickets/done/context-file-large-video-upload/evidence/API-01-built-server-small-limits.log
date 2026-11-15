@@ -1,0 +1,17 @@
+# API-01 | cd autobyteus-server-ts && env -i PATH HOME=<temp> TMPDIR pnpm exec vitest run tests/e2e/context-files/context-file-size-limits-built-server.e2e.test.ts --no-watch --reporter=verbose | code de0250122 | macOS Node 26.12, built dist/app.js (80f958bc5 sources) | 2026-11-15 15:18:52
+ RUN  v4.1.12 /Users/normy/autobyteus-org/autobyteus-task-worktrees/context-file-large-video-upload/autobyteus-server-ts
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus-org/autobyteus-task-worktrees/context-file-large-video-upload/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+Database reset successful
+ ✓ tests/e2e/context-files/context-file-size-limits-built-server.e2e.test.ts > context-file size limits on the built server (small limits) > BS-01: the limits come from the environment; at the limit is accepted and one byte over is refused with the limit in bytes 64ms
+ ✓ tests/e2e/context-files/context-file-size-limits-built-server.e2e.test.ts > context-file size limits on the built server (small limits) > BS-02: the owner and a paired phone read the limits and upload; a forged credential is refused 43ms
+ ✓ tests/e2e/context-files/context-file-size-limits-built-server.e2e.test.ts > context-file size limits on the built server (small limits) > BS-04: invalid values are refused on save and change nothing 10ms
+ ✓ tests/e2e/context-files/context-file-size-limits-built-server.e2e.test.ts > context-file size limits on the built server (small limits) > BS-05: an unsupported type is refused 415; a dropped connection leaves no file and the node keeps serving 7ms
+ ✓ tests/e2e/context-files/context-file-size-limits-built-server.e2e.test.ts > context-file size limits on the built server (small limits) > BS-06: a large draft is read back whole at its locator 21ms
+ ✓ tests/e2e/context-files/context-file-size-limits-built-server.e2e.test.ts > context-file size limits on the built server (small limits) > BS-03: a setting changed through GraphQL applies to the next upload with no restart 33ms
+ ✓ tests/e2e/context-files/context-file-size-limits-built-server.e2e.test.ts > context-file size limits on the built server (small limits) > BS-07: /upload-file still refuses above 25 MiB 41ms
+ ↓ tests/e2e/context-files/context-file-size-limits-built-server.e2e.test.ts > context-file size limits on the built server (default limits, large bodies) > BS-10: a large video streams within bounded memory and is stored whole; a video over 2 GiB is refused and leaves nothing
+ Test Files  1 passed (1)
+      Tests  7 passed | 1 skipped (8)
+   Start at  15:18:55
+   Duration  2.94s (transform 37ms, setup 46ms, import 17ms, tests 2.45s, environment 0ms)
