@@ -148,6 +148,24 @@ describe('useRunStatusStore', () => {
     expect(store.treeRevisionOf(agent('copy'))).toBe(1)
   })
 
+  it('SR-086 G-A1: a fresh snapshot (after a reconnect) replaces each answered run\'s statuses', () => {
+    setActivePinia(createPinia())
+    const store = useRunStatusStore()
+    const team = { kind: 'agent_team' as const, runId: 'squad' }
+    store.apply({ type: 'RUN_STATUS_SNAPSHOT', payload: { runs: [
+      { ...team, answer: 'ok', node: null, status: 'running', agents: [{ agentRunId: 'lead', status: 'running' }, { agentRunId: 'dev', status: 'running' }] },
+      { ...agent('other'), answer: 'ok', node: null, status: 'idle', agents: [{ agentRunId: 'other', status: 'idle' }] },
+    ] } })
+    store.apply({ type: 'RUN_STATUS_SNAPSHOT', payload: { runs: [
+      { ...team, answer: 'ok', node: null, status: 'idle', agents: [{ agentRunId: 'lead', status: 'idle' }] },
+    ] } })
+    expect(store.statusOf('lead')).toBe('idle')
+    expect(store.statusOf('dev')).toBeNull()
+    expect(store.runStateOf(team)).toEqual({ answer: 'ok', node: null, status: 'idle' })
+    // A run the answer did not name keeps its own.
+    expect(store.statusOf('other')).toBe('idle')
+  })
+
   it('SR-086 G-A2 … G-A4: a run\'s own state is its node\'s answer: a team\'s status from its root, not_found, unreachable with its node', () => {
     setActivePinia(createPinia())
     const store = useRunStatusStore()

@@ -51,6 +51,10 @@ export const useRunStatusStore = defineStore('runStatus', {
         const next = { ...this.statuses }
         const agents = { ...this.runAgents }
         const states = { ...this.runStates }
+        // SR-086 G-A1: the answer replaces each answered run's statuses; an agent no run names any more shows none.
+        const answered = new Set(message.payload.runs.map(runKeyOf))
+        const namedElsewhere = new Set(Object.entries(agents).flatMap(([key, ids]) => answered.has(key) ? [] : ids))
+        for (const key of answered) for (const agentRunId of agents[key] ?? []) if (!namedElsewhere.has(agentRunId)) delete next[agentRunId]
         for (const run of message.payload.runs) {
           for (const agent of run.agents) next[agent.agentRunId] = agent.status
           agents[runKeyOf(run)] = run.agents.map((agent) => agent.agentRunId)
