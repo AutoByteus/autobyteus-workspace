@@ -1755,3 +1755,18 @@ No architecture review: these follow REQ-006, an approved exception, rule 2 and 
   - **A stopped run:** the read is unfiltered.
   - **New tests:** a restored live run, a stopped run, an interrupted earlier turn, and the native write-before-frame order.
 - **ARCH-REV-063 passed the AR-031 answer.** The "to verify" item is closed by its evidence: the web ignores a repeated message ID. The reviewer recommended, not as a finding, one shared implementation of the snapshot-connection rule for `RunViewStream`, `AgentStreamSequence` and the peer stream.
+
+### SR-088 — A peer agent's conversation is node B's own agent stream, relayed (answers the Implementation Engineer's IMP-G-D1)
+
+- **Triggering:** the Implementation Engineer. G-D1 numbered the run-level `observe` frames with node B's `AgentStreamSequence`. That isn't exact: that observation is built from the root's events, including synthesized statuses and `MEMBER_INPUT` messages, which have no number in the agent's sequence. So the base and the frames would come from different sources.
+- **The Solution Designer's gap:** G-D1 assumed the observed frames are the agent's stream frames, without reading how the observation is built. The same lesson as 2026-11-15-R3.
+- **Decision:** the engineer's option (A).
+  - Node B serves two agent-scoped peer requests: `agentStreamSnapshot` (3b's rule) and `observeAgentStream` (that agent's numbered `/ws/agent` frames, following restores by `liveSequenceId`). Both use the back-link check.
+  - Node A's `/ws/peer-run` relays them in the `/ws/agent` protocol, so the web reuses `AgentStreamingService`.
+  - The run-level `observe` stays for statuses and summaries.
+  - Option (B), a separate counter, is rejected because the base would be unrelated to the frames.
+- **Requirements:** REQ-013's text is updated to name the two agent-scoped additions.
+- **Next action:**
+  - architecture review (narrow);
+  - then the Implementation Engineer.
+
