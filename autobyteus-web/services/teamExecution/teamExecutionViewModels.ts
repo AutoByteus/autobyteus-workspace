@@ -1,4 +1,3 @@
-import type { RowOpenTarget } from '~/stores/runHistoryTypes'
 import type {
   TeamStreamServerMessage,
 } from '@autobyteus/team-stream-contracts';
@@ -9,12 +8,8 @@ import type { AgentStatus } from '~/types/agent/AgentStatus';
 import type { AgentTeamAddress } from '~/types/agent/AgentTeamAddress';
 import type { TeamTokenUsageDetails } from '~/types/tokenUsageMeter';
 
-export type TeamExecutionRowKind =
-  | 'configured_team'
-  | 'configured_agent'
-  | 'task_agent'
-  | 'task_team'
-  | 'task_team_agent';
+/** A Team view's own rows: the Team and its members (the runs it delegated are its tree's rows, SR-084). */
+export type TeamExecutionRowKind = 'configured_team' | 'configured_agent';
 
 export interface TeamExecutionNavigationRow {
   readonly key: string;
@@ -26,14 +21,10 @@ export interface TeamExecutionNavigationRow {
   readonly parentKey: string | null;
   readonly agentRunId: string | null;
   readonly teamRunId: string | null;
-  /** Display name of the AgentRun that started a delegated child row; null for other rows. */
-  readonly delegatedBy: string | null;
   readonly currentStatus: AgentStatus | null;
   readonly focusable: boolean;
   readonly expandable: boolean;
   readonly coordinator: boolean;
-  /** Where a delegated row opens, as the server sent it (SR-083); absent on the run's own rows. */
-  readonly openTarget?: RowOpenTarget | null;
 }
 
 export interface TeamAgentContextEntry {
@@ -51,8 +42,7 @@ export interface TeamAgentExecutionLocation {
 /** One member's message; a SEGMENT_CONTENT_BATCH is applied as one SEGMENT_CONTENT per item. */
 export type TeamAgentStreamMessage = Exclude<TeamStreamServerMessage,
   | { type: 'CONNECTED' | 'TEAM_RUN_LIFECYCLE' | 'TEAM_EXECUTION_VIEW_SNAPSHOT' | 'SEGMENT_CONTENT_BATCH' }
-  | { type: 'AGENT_COMMAND_ACK' | 'TASK_EXECUTION_STARTED' | 'TASK_EXECUTIONS_CLOSED' | 'TASK_EXECUTIONS_REOPENED' | 'TEAM_COMMUNICATION_MESSAGE'
-    | 'DELEGATED_LAUNCH_SELECTIONS_CHANGED' | 'REMOTE_TASK_EXECUTION_STARTED' | 'REMOTE_TASK_EXECUTION_SUMMARY' | 'RUN_TREE_SNAPSHOT' | 'RUN_TREE_CHANGED' }>;
+  | { type: 'AGENT_COMMAND_ACK' | 'TEAM_COMMUNICATION_MESSAGE' | 'RUN_TREE_SNAPSHOT' | 'RUN_TREE_CHANGED' }>;
 
 export type TeamExecutionEffect =
   | Readonly<{ kind: 'dispatch_agent'; agentRunId: string; message: TeamAgentStreamMessage }>

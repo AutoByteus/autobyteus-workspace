@@ -64,11 +64,6 @@
           <span class="block truncate text-sm font-medium" :title="row.displayName">{{ row.displayName }}</span>
           <span v-if="row.teamRunId" class="mt-0.5 block text-xs text-slate-500">Team</span>
           <span
-            v-if="row.delegatedBy"
-            class="mt-0.5 block truncate text-xs text-slate-500"
-            data-test="team-member-started-by"
-          >{{ $t('workspace.members.started_by', { name: row.delegatedBy }) }}</span>
-          <span
             v-if="inspectionAttempt(row)?.state === 'loading'"
             class="mt-0.5 block text-xs font-medium text-indigo-700"
             role="status"
@@ -141,11 +136,7 @@ const isStopPending = computed(() => {
   const rootTeamRunId = activeTeam.value?.view.getRootTeamRunId();
   return rootTeamRunId ? Boolean(teamRunStore.stopPendingTeamIds[rootTeamRunId]) : false;
 });
-const accessibleRowLabel = (row: TeamExecutionNavigationRow): string => [
-  row.accessibleName,
-  row.delegatedBy ? t('workspace.members.started_by', { name: row.delegatedBy }) : '',
-  row.address,
-].filter(Boolean).join(', ');
+const accessibleRowLabel = (row: TeamExecutionNavigationRow): string => [row.accessibleName, row.address].filter(Boolean).join(', ');
 const inspectionAttempt = (row: TeamExecutionNavigationRow) => row.agentRunId && activeTeam.value
   ? runHistoryStore.getTeamMemberInspectionAttempt(
     activeTeam.value.view.getRootTeamRunId(),

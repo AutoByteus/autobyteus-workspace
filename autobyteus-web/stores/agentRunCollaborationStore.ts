@@ -1,73 +1,40 @@
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore'
 import { defineStore } from 'pinia'
 import { shallowReactive, shallowRef, watch } from 'vue'
-import { useRunStatusStore } from '~/stores/runStatusStore'
-import { AgentStatus } from '~/types/agent/AgentStatus'
-import type { AgentContext } from '~/types/agent/AgentContext'
-import type { ContextFilePath } from '~/types/conversation'
 import type { ActiveAgentWorkspaceTarget } from '~/types/workspace/activeAgentWorkspaceTarget'
 import type { CollaborationMessagesContextView } from '~/types/workspace/collaborationMessagesContextView'
-import type { RunHistoryTransientExecutionRow } from '~/stores/runHistoryTypes'
-import { AgentRunCollaborationContext, type AgentRunTaskTreeRow } from '~/services/agentCollaboration/agentRunCollaborationContext'
+import { AgentRunCollaborationContext } from '~/services/agentCollaboration/agentRunCollaborationContext'
 import { AgentRunCollaborationStreamingService } from '~/services/agentCollaboration/agentRunCollaborationStreamingService'
-import {
-  readAgentRunCollaboration,
-  buildAgentRunCollaborationContext,
-} from '~/services/agentCollaboration/agentRunCollaborationHydration'
-import { hubChildLoadTarget } from '~/services/agentCollaboration/agentRunCollaborationChildHydration'
-import { memberLoader } from '~/services/runHydration/memberLoader'
-import {
-  acceptLocalSubmission,
-  beginLocalUserSubmission,
-  failLocalSubmission,
-  finalizeLocalSubmissionAttachments,
-} from '~/services/runSubmission/localUserSubmission'
-import { useContextFileUploadStore } from '~/stores/contextFileUploadStore'
-import { isDraftUploadedContextAttachment, coerceDraftUploadedContextAttachment } from '~/utils/contextFiles/contextAttachmentModel'
-import {
-  buildAgentCollaborationMemberDraftContextFileOwner,
-  buildAgentCollaborationMemberFinalContextFileOwner,
-} from '~/utils/contextFiles/contextFileOwner'
-import { mentionsPresentInText, toCollaboratorMentionDtos } from '~/utils/collaborators/collaboratorMentionText'
-import { useRemoteRunsStore, type RemoteRunRetryAdapter } from '~/stores/remoteRunsStore'
+import { readAgentRunCollaboration } from '~/services/agentCollaboration/agentRunCollaborationHydration'
 import { rebuildOfView, useCollaborationParticipantMessagesStore } from '~/services/collaborationMessages/collaborationParticipantMessages'
-import { createRandomId } from '~/utils/randomId'
-import { agentRunDelegatedRunSubject, subjectOfTarget } from '~/services/delegatedRuns/delegatedRunSubjects'
+import { subjectOfTarget, type DelegatedRunSubject } from '~/services/delegatedRuns/delegatedRunSubjects'
 import type { RunTreeOpenTargetDto, RunTreeRowDto } from '@autobyteus/collaboration-stream-contracts'
 import { isTeamRow } from '~/utils/runTree/runTreeDisplayRows'
 import { useDelegatedRunsStore } from '~/stores/delegatedRunsStore'
-import { watchHeldRuns } from '~/services/runStatus/heldRuns'
+import { useRunTreeStore } from '~/stores/runTreeStore'
 
 const delegatedRuns = () => useDelegatedRunsStore()
 
 /**
- * The client side of standalone runs' collaboration roots: the task children brought in with
- * `@`, their rows under the run row, direct chat with a child and the run's Team tab.
+ * The client side of standalone runs' collaboration roots (autobyteus-461 SR-084): each run's view and Team tab, and
+ * the row the user selected in its tree. The rows are its tree's (`runTreeStore`); a selected row opens its own run
+ * (rule 2), by the target the server gave it, and this store only keeps which one.
  *
- * Reading never restores a host: a listed run's stored view comes from `agentRunCollaboration`.
- * The open run's view has its stream whether the run's own agent runs or not (autobyteus-461
- * SR-045): its children are runs of their own, and the stream never restores the run.
- *
- * A published context carries the tree and statuses only. A child's stored conversation,
- * activities and artifacts are loaded by the member loader when it is selected, and again for the
- * selected child after every publication (each one begins a new member-loader generation).
+ * Reading never restores a host: a listed run's stored view comes from `agentRunCollaboration`. The open run's view has
+ * its stream whether the run's own agent runs or not (SR-045), and the stream never restores the run.
  */
 export const useAgentRunCollaborationStore = defineStore('agentRunCollaboration', () => {
   const contexts = shallowRef<Record<string, AgentRunCollaborationContext>>({})
-  const selection = shallowReactive<Record<string, string | null>>({})
   /** The tree row the user selected under each run (SR-084): its key, where it opens, and its address. */
   const selectedRows = shallowReactive<Record<string, Readonly<{ key: string; target: RunTreeOpenTargetDto; address: string | null }> | null>>({})
   /** Tree rows the user expanded or collapsed (by key); a team row starts collapsed, any other row expanded. */
   const toggledRows = shallowReactive<Record<string, readonly string[]>>({})
-  const expandedTeams = shallowReactive<Record<string, readonly string[]>>({})
   const errors = shallowReactive<Record<string, string | null>>({})
   const services = new Map<string, AgentRunCollaborationStreamingService>()
   /** A read of a hub's view in flight; it ends with its failure's reason, or null. */
   const inspections = new Map<string, Promise<string | null>>()
   const terminations = new Map<string, object>()
-  const loaderRoot = (hostRunId: string) => `agent:${hostRunId}`
   const binding = useWindowNodeContextStore()
-  const remoteRuns = useRemoteRunsStore()
   const participantMessages = useCollaborationParticipantMessagesStore()
   const assertNotTerminating = (id: string) => {
     if (terminations.has(id)) throw new Error('This Agent collaboration is being stopped.')
@@ -81,53 +48,11 @@ export const useAgentRunCollaborationStore = defineStore('agentRunCollaboration'
   }
 
   const publish = (hostRunId: string, context: AgentRunCollaborationContext) => {
-    const previous = contexts.value[hostRunId]
-    const adopt = previous
-      ? context.prepareLocalContextAdoption(previous, (agentRunId) => memberLoader().isHydrated(loaderRoot(hostRunId), agentRunId))
-      : () => undefined
-    adopt()
     setContext(hostRunId, context)
-    // A rebuilt view begins a new generation: no child is loaded in it (events may have been missed in between).
-    memberLoader().beginRoot(loaderRoot(hostRunId))
     errors[hostRunId] = null
     // Every publication is a rebuilt view (inspect, attach, reopen): the Team tab's lists load again when a message
     // could have been missed meanwhile (SR-004, SR-005).
     participantMessages.reloadRoot('agent', hostRunId, rebuildOfView(context.view), (agentRunId) => context.holdsAgent(agentRunId))
-    // autobyteus-278: the runs this root delegated to other nodes; Retry (the store's rule) acts through this root.
-    context.remoteExecutions.forEach((execution) => remoteRuns.register(execution, remoteRetryAdapter(hostRunId)))
-    returnToHostWhenUnlisted(hostRunId, context)
-    ensureChildHydrated(hostRunId, selection[hostRunId] ?? null)
-  }
-
-  /**
-   * Starts loading one child's stored details into the published context through the member loader,
-   * unless it is loaded there already (a load in flight is shared). A load whose context is no longer
-   * published ends without writing; a failed load leaves the child not loaded, so selecting it again
-   * retries. Answers whether a load is under way.
-   */
-  const ensureChildHydrated = (hostRunId: string, agentRunId: string | null): boolean => {
-    const context = contexts.value[hostRunId]
-    if (!agentRunId || !(context?.getChild(agentRunId) || context?.getRemoteChild(agentRunId))) return false
-    // A delegated run on this node is opened as its own run (autobyteus-461 rule 2); only a peer's goes through the host.
-    const own = agentRunDelegatedRunSubject(context.index, agentRunId)
-    if (own) { delegatedRuns().ensureOpen(own); return true }
-    if (memberLoader().isHydrated(loaderRoot(hostRunId), agentRunId)) return false
-    void memberLoader().ensure(loaderRoot(hostRunId), agentRunId, () => {
-      const published = contexts.value[hostRunId]
-      return published === context && !terminations.has(hostRunId) ? hubChildLoadTarget({
-        hostRunId, collaboration: context, agentRunId,
-        liveToolAuthority: () => context.isActive && services.get(hostRunId)?.isReady() === true,
-      }) : null
-    }).catch((cause) => {
-      console.warn(`[agentRunCollaboration] Could not load '${agentRunId}' of '${hostRunId}'.`, cause)
-    })
-    return true
-  }
-
-  /** A selected child that left the listing (absent, or its Task is DONE) returns the view to the run's own agent. */
-  const returnToHostWhenUnlisted = (hostRunId: string, context: AgentRunCollaborationContext) => {
-    const selected = selection[hostRunId]
-    if (selected && !context.isListed(selected)) selection[hostRunId] = null
   }
 
   const attach = (hostRunId: string): AgentRunCollaborationStreamingService => {
@@ -145,20 +70,11 @@ export const useAgentRunCollaborationStore = defineStore('agentRunCollaboration'
         publish(hostRunId, context)
       },
       reportError: (message) => { if (isCurrent()) errors[hostRunId] = message },
-      onTaskExecutionsClosed: (context) => { if (isCurrent()) returnToHostWhenUnlisted(hostRunId, context) },
     })
     services.set(hostRunId, service)
     service.connect()
     return service
   }
-
-  /** autobyteus-278 (SR-008): this root's mechanisms for the store's Retry rule; a remote child loads as any child. */
-  const remoteRetryAdapter = (hostRunId: string): RemoteRunRetryAdapter => Object.freeze({
-    refreshOnStream: () => services.get(hostRunId)?.refreshRemote() ?? false,
-    selectedAgent: () => selection[hostRunId] ?? null,
-    isLoaded: (agentRunId: string) => memberLoader().isHydrated(loaderRoot(hostRunId), agentRunId),
-    rereadAgent: (agentRunId: string) => ensureChildHydrated(hostRunId, agentRunId),
-  })
 
   const detach = (hostRunId: string) => {
     const service = services.get(hostRunId)
@@ -179,8 +95,7 @@ export const useAgentRunCollaborationStore = defineStore('agentRunCollaboration'
         const view = await readAgentRunCollaboration(hostRunId)
         if (!isCurrent()) return null
         if (!view) { setContext(hostRunId, null); return null }
-        const context = await buildAgentRunCollaborationContext({ hostRunId, view })
-        if (isCurrent()) publish(hostRunId, context)
+        if (isCurrent()) publish(hostRunId, new AgentRunCollaborationContext({ hostRunId, view }))
         return null
       } catch (cause) {
         const failure = cause instanceof Error ? cause.message : String(cause)
@@ -195,44 +110,8 @@ export const useAgentRunCollaborationStore = defineStore('agentRunCollaboration'
   const inspect = async (hostRunId: string): Promise<void> => { await read(hostRunId) }
 
   /**
-   * Each published view's delegated runs' statuses, read by run ID from each run (autobyteus-461 SR-083, FU-026), and its
-   * rows' notice: a view that is not open (no stream) reads its view again when its rows changed (`RUN_TREE_CHANGED`);
-   * a newer read supersedes an older one in flight, so only the newest answer is applied.
-   */
-  const runStatus = useRunStatusStore()
-  watchHeldRuns(() => Object.entries(contexts.value).flatMap(([hostRunId, context]) => [{ kind: 'agent' as const, runId: hostRunId }, ...context.viewRuns().refs]),
-    (refs) => runStatus.hold(refs))
-  watch(() => Object.values(contexts.value).flatMap((context) => context.viewRuns().agentRunIds.map((agentRunId) => [context, agentRunId, runStatus.statusOf(agentRunId)] as const)),
-    (entries) => { for (const [context, agentRunId, status] of entries) if (status) context.applyRunStatus(agentRunId, status as AgentStatus) }, { immediate: true })
-  watch(() => Object.keys(contexts.value).map((hostRunId) => [hostRunId, runStatus.treeRevisionOf({ kind: 'agent', runId: hostRunId })] as const),
-    (next, previous) => {
-      const before = new Map(previous ?? [])
-      for (const [hostRunId, revision] of next) {
-        if (revision === (before.get(hostRunId) ?? revision) || services.has(hostRunId)) continue
-        inspections.delete(hostRunId)
-        void read(hostRunId)
-      }
-    })
-
-  /**
-   * The hub's stored view for Settings (autobyteus-358, DS-004): the inspection in flight, else the published view,
-   * else a new inspection, so one hub selection reads the view once.
-   */
-  const viewFor = async (hostRunId: string, options: Readonly<{ fresh?: boolean }> = {}): Promise<AgentRunCollaborationContext['view'] | null> => {
-    // A deliberate re-read (after a committed Save, a stop or Refresh) never takes the published view, nor a read
-    // started before it (autobyteus-366): a stopped host has no stream to deliver the saved choices, so its stored view
-    // is read again, and a copy's switched runtime shows at once (autobyteus-348); a live host's stream keeps it current.
-    if (options.fresh) inspections.delete(hostRunId)
-    const pending = inspections.get(hostRunId)
-    const failure = pending ? await pending : options.fresh || !contexts.value[hostRunId] ? await read(hostRunId) : null
-    // A failed read fails the Settings load (its reason, and Refresh), never a silently older view.
-    if (failure) throw new Error(failure)
-    return contexts.value[hostRunId]?.view ?? null
-  }
-
-  /**
    * A Stop of the run's own agent (one request-local exclusion owned here, never a server receipt). The view keeps its
-   * stream and its children keep their states: they are runs of their own (autobyteus-461 SR-045). A confirmed Stop
+   * stream and the runs it delegated keep their states: they are runs of their own (autobyteus-461 SR-045). A confirmed Stop
    * marks the run's agent stopped; the server ends the run's root, and the stream reconnects to a fresh view.
    */
   const beginHostTermination = (hostRunId: string) => {
@@ -255,8 +134,9 @@ export const useAgentRunCollaborationStore = defineStore('agentRunCollaboration'
   }
 
   /**
-   * Called for the selected standalone run. The open run's view keeps its stream whether its own agent runs or not (autobyteus-461 SR-045): its children are runs
-   * of their own, so their rows and output stay live while it is stopped. Its agent's state only updates the view.
+   * Called for the selected standalone run. The open run's view keeps its stream whether its own agent runs or not
+   * (autobyteus-461 SR-045): the runs it delegated are runs of their own, so its tree stays live while it is stopped. Its
+   * agent's state only updates the view.
    */
   const syncHost = (hostRunId: string, hostRunning: boolean) => {
     if (terminations.has(hostRunId)) return
@@ -267,40 +147,43 @@ export const useAgentRunCollaborationStore = defineStore('agentRunCollaboration'
 
   const contextFor = (hostRunId: string): AgentRunCollaborationContext | null => contexts.value[hostRunId] ?? null
 
-  /** Selects a child (null: the run's own agent) and starts loading its details if needed. */
-  const selectChild = (hostRunId: string, agentRunId: string | null) => {
-    selection[hostRunId] = agentRunId && contextFor(hostRunId)?.isListed(agentRunId) ? agentRunId : null
-    selectedRows[hostRunId] = null
-    ensureChildHydrated(hostRunId, selection[hostRunId] ?? null)
+  /** The run's own agent is selected: no row under it. */
+  const selectHost = (hostRunId: string) => { selectedRows[hostRunId] = null }
+
+  /** The selected row, while it is in the run's tree; a row that left it returns the view to the run's own agent. */
+  const selectedRow = (hostRunId: string) => {
+    const picked = selectedRows[hostRunId]
+    return picked && useRunTreeStore().rowsOf({ kind: 'agent', runId: hostRunId }).some((row) => row.key === picked.key) ? picked : null
   }
 
   /**
    * A tree row's open (SR-084, through `openRunTarget`): where the server says it opens. The run's own row selects its
-   * own agent; a delegated run on this node opens as its own run (rule 2) by its target; a peer's run through this view.
-   * Answers whether it was selected (false for a row error, or while the run's view is not loaded).
+   * own agent; a delegated run on this node opens as its own run (rule 2) by its target. A peer's run opens on its own
+   * node, not through this view (SR-086 G-D1). Answers whether it was selected (false for a row error, or while the run's
+   * view is not loaded).
    */
   const selectTreeRow = (hostRunId: string, row: RunTreeRowDto): boolean => {
     const target = row.openTarget
-    if (!target || target.runKind === 'agent_org' || !contextFor(hostRunId)) return false
+    if (!target || target.runKind === 'agent_org' || target.nodeId || !contextFor(hostRunId)) return false
     if (target.runKind === 'agent' && target.runId === hostRunId) {
-      selection[hostRunId] = null
-      selectedRows[hostRunId] = null
+      selectHost(hostRunId)
       return true
     }
-    selection[hostRunId] = target.agentRunId
     selectedRows[hostRunId] = Object.freeze({ key: row.key, target, address: row.address })
-    if (target.nodeId) ensureChildHydrated(hostRunId, target.agentRunId)
-    else delegatedRuns().ensureOpen(subjectOfTarget(target as Parameters<typeof subjectOfTarget>[0]))
+    delegatedRuns().ensureOpen(subjectOfSelected(target))
     return true
   }
-  const selectedRowKey = (hostRunId: string): string | null => selectedRows[hostRunId]?.key ?? null
+  const subjectOfSelected = (target: RunTreeOpenTargetDto): DelegatedRunSubject =>
+    subjectOfTarget({ runKind: target.runKind as 'agent' | 'agent_team', runId: target.runId, agentRunId: target.agentRunId })
+  const selectedRowKey = (hostRunId: string): string | null => selectedRow(hostRunId)?.key ?? null
   const isTreeRowExpanded = (hostRunId: string, row: RunTreeRowDto): boolean =>
     isTeamRow(row) === (toggledRows[hostRunId] ?? []).includes(row.key)
   const toggleTreeRow = (hostRunId: string, key: string): void => {
     const current = toggledRows[hostRunId] ?? []
     toggledRows[hostRunId] = Object.freeze(current.includes(key) ? current.filter((candidate) => candidate !== key) : [...current, key])
   }
-  const selectedChild = (hostRunId: string): string | null => selection[hostRunId] ?? null
+  /** The agent of the selected row (null: the run's own agent). */
+  const selectedChild = (hostRunId: string): string | null => selectedRow(hostRunId)?.target.agentRunId ?? null
 
   /**
    * A listed standalone run's stored view, read once without restoring the run, when it has collaboration and is not
@@ -310,143 +193,35 @@ export const useAgentRunCollaborationStore = defineStore('agentRunCollaboration'
     if (hasCollaboration && !contextFor(hostRunId)) void inspect(hostRunId)
   }
 
-  /**
-   * A task row's open: a task Agent row selects its agent, a task Team row its coordinator. Answers whether a child
-   * was selected (false while the run's view is not loaded).
-   */
-  /** A delegated row opens where the server says (SR-083): its run, on the agent it names (a team's coordinator). */
-  const selectTaskRow = (hostRunId: string, row: RunHistoryTransientExecutionRow): boolean => {
-    const target = row.openTarget?.agentRunId ?? null
-    if (!contextFor(hostRunId) || !target) return false
-    selectChild(hostRunId, target)
-    return true
-  }
-
-  // Publication never changes disclosure: new Teams are closed until explicitly revealed.
-  const isTaskTeamExpanded = (hostRunId: string, teamRunId: string) => (expandedTeams[hostRunId] ?? []).includes(teamRunId)
-  const toggleTaskTeam = (hostRunId: string, teamRunId: string) => {
-    const current = expandedTeams[hostRunId] ?? []
-    expandedTeams[hostRunId] = Object.freeze(current.includes(teamRunId)
-      ? current.filter((id) => id !== teamRunId)
-      : [...current, teamRunId])
-  }
-
-  const taskRows = (hostRunId: string): AgentRunTaskTreeRow[] =>
-    contextFor(hostRunId)?.listTaskRows((teamRunId) => isTaskTeamExpanded(hostRunId, teamRunId)) ?? []
-
-  /** The host's Team tab: messages with its children, once it has any. */
+  /** The host's Team tab: messages with the runs it delegated, once it has any. */
   const hostMessagesView = (hostRunId: string): CollaborationMessagesContextView | null => {
     const context = contextFor(hostRunId)
-    return context?.hasChildren ? context.messagesView(hostRunId) : null
-  }
-
-  /** A message to a peer's child over the view's stream (autobyteus-278); a local child is reached by its own run (rule 2). */
-  const submit = async (hostRunId: string, agentRunId: string, context: AgentContext,
-    content: string, paths: readonly ContextFilePath[]): Promise<void> => {
-    assertNotTerminating(hostRunId)
-    const collaboration = contexts.value[hostRunId]
-    if (collaboration && agentRunDelegatedRunSubject(collaboration.index, agentRunId)) {
-      throw new Error('A delegated run on this node is reached through its own run.')
-    }
-    if (collaboration?.getAgentContext(agentRunId) !== context) throw new Error('Agent collaboration child was replaced.')
-    if (context.submissionPending) throw new Error('A message to this collaborator is already pending.')
-    const mentions = mentionsPresentInText(content, context.requestedMentions)
-    let attachments = paths.map((attachment) => ({ ...attachment }))
-    const messageId = createRandomId()
-    const dedupeKey = `member_input:${hostRunId}:${agentRunId}:${messageId}`
-    const submission = beginLocalUserSubmission(context, { text: content, attachments, navigationTarget: null, mentions, identity: { messageId, dedupeKey } })
-    try {
-      // A peer's child (autobyteus-278): over the view's stream, ready once its snapshot is applied (SR-045).
-      const service = attach(hostRunId)
-      await service.whenReady()
-      if (attachments.some((file) => isDraftUploadedContextAttachment(file) || coerceDraftUploadedContextAttachment(file))) {
-        attachments = await useContextFileUploadStore().finalizeDraftAttachments({
-          draftOwner: buildAgentCollaborationMemberDraftContextFileOwner(hostRunId, agentRunId),
-          finalOwner: buildAgentCollaborationMemberFinalContextFileOwner(hostRunId, agentRunId),
-          attachments,
-        })
-        finalizeLocalSubmissionAttachments(submission, attachments)
-      }
-      await service.sendMessage({ agentRunId, content, attachments, messageId, dedupeKey,
-        mentions: toCollaboratorMentionDtos(content, mentions) })
-      acceptLocalSubmission(submission)
-    } catch (cause) {
-      // A rejected add posted nothing: the notice shows and the draft stays as typed.
-      if (failLocalSubmission(submission, cause) === 'kept_draft') return
-      context.requirement = content
-      context.contextFilePaths = attachments
-      context.requestedMentions = [...mentions]
-      throw cause
-    }
+    return context?.hasDelegatedRuns ? context.messagesView(hostRunId) : null
   }
 
   /**
-   * The selected child of a standalone run, as the composer and center view target. A child on this node is bound to
-   * its own run's context, stream and reads (autobyteus-461 rule 2); null while that run opens. A child on a peer node
-   * keeps the route through the host (autobyteus-278).
+   * A run this run delegated is selected under it, and its own run is still opening (rule 2): the view has no target
+   * until it is open, never this run's own, as in the Team and Org views (CR-461-057). Typing meanwhile would otherwise
+   * go to the delegator's draft, and its send to the delegator.
    */
-  /**
-   * A run this run delegated on this node is selected under it, and its own run is still opening (rule 2): the view has
-   * no target until it is open, never this run's own, as in the Team and Org views (CR-461-057). Typing meanwhile would
-   * otherwise go to the delegator's draft, and its send to the delegator.
-   */
-  /** The selected row's own run on this node, by its target (SR-084); else by the view's index. */
-  const selectedSubject = (hostRunId: string, agentRunId: string, collaboration: AgentRunCollaborationContext) => {
-    const picked = selectedRows[hostRunId]
-    if (picked?.target.agentRunId === agentRunId) {
-      return picked.target.nodeId ? null : subjectOfTarget(picked.target as Parameters<typeof subjectOfTarget>[0])
-    }
-    return collaboration.getChild(agentRunId) ? agentRunDelegatedRunSubject(collaboration.index, agentRunId) : null
-  }
-
   const isSelectedChildOpening = (hostRunId: string): boolean => {
-    const collaboration = contextFor(hostRunId)
-    const agentRunId = selectedChild(hostRunId)
-    const own = agentRunId && collaboration ? selectedSubject(hostRunId, agentRunId, collaboration) : null
-    return Boolean(own && !delegatedRuns().bindingOf(own))
+    const picked = selectedRow(hostRunId)
+    return Boolean(picked && contextFor(hostRunId) && !delegatedRuns().bindingOf(subjectOfSelected(picked.target)))
   }
 
+  /** The selected row's own run, as the composer and center view target: bound to its own context and stream (rule 2). */
   const childTargetFor = (hostRunId: string): ActiveAgentWorkspaceTarget | null => {
     const collaboration = contextFor(hostRunId)
-    const agentRunId = selectedChild(hostRunId)
-    const local = agentRunId ? collaboration?.getChild(agentRunId) : null
-    // autobyteus-278: a remote child is opened like a local copy; its node keeps its workspace.
-    const remote = agentRunId && !local ? collaboration?.getRemoteChild(agentRunId) : null
-    const child = local ?? remote
-    if (!collaboration || !child) return null
-    const kind = child.kind === 'task_team_member' || child.kind === 'remote_team_member' ? 'agent_run_task_team_member' as const : 'agent_run_task_agent' as const
-    const own = local ? selectedSubject(hostRunId, child.agentRunId, collaboration) : null
-    if (own) {
-      const binding = delegatedRuns().bindingOf(own)
-      if (!binding) return null
-      return Object.freeze({
-        kind, host: Object.freeze({ hostRunId }), address: child.address, agentRunId: child.agentRunId,
-        collaborationMessages: collaboration.messagesView(child.agentRunId),
-        access: 'live' as const, ...binding,
-      })
-    }
-    const context = collaboration.getAgentContext(child.agentRunId)
-    if (!context) return null
-    const service = () => { assertNotTerminating(hostRunId); return services.get(hostRunId) }
+    const picked = selectedRow(hostRunId)
+    if (!collaboration || !picked) return null
+    const own = delegatedRuns().bindingOf(subjectOfSelected(picked.target))
+    if (!own) return null
+    const agentRunId = picked.target.agentRunId
     return Object.freeze({
-      kind,
-      host: Object.freeze({ hostRunId }),
-      address: child.address,
-      agentRunId: child.agentRunId,
-      context,
-      workspaceRootPath: null,
-      collaborationMessages: collaboration.messagesView(child.agentRunId),
-      // A peer's child is read through the host (autobyteus-278).
-      browse: Object.freeze({ kind: 'standaloneMember' as const, hostRunId, memberAddress: child.address, agentRunId: child.agentRunId }),
-      // A peer's child is always addressable: a message wakes it through the host's stream.
-      access: 'live' as const,
-      interaction: Object.freeze({
-        send: (content: string, files: readonly ContextFilePath[]) => submit(hostRunId, child.agentRunId, context, content, files),
-        interrupt: async () => { await service()?.interrupt(child.agentRunId) },
-        decideTool: async (invocationId: string, approved: boolean, reason: string | null) => {
-          await service()?.decideTool(child.agentRunId, invocationId, approved, reason)
-        },
-      }),
+      kind: picked.target.runKind === 'agent_team' ? 'agent_run_task_team_member' as const : 'agent_run_task_agent' as const,
+      host: Object.freeze({ hostRunId }), address: (picked.address ?? '') as never, agentRunId,
+      collaborationMessages: collaboration.messagesView(agentRunId),
+      access: 'live' as const, ...own,
     })
   }
 
@@ -456,11 +231,8 @@ export const useAgentRunCollaborationStore = defineStore('agentRunCollaboration'
     detach(hostRunId)
     setContext(hostRunId, null)
     participantMessages.releaseRoot('agent', hostRunId)
-    memberLoader().releaseRoot(loaderRoot(hostRunId))
-    delete selection[hostRunId]
     delete selectedRows[hostRunId]
     delete toggledRows[hostRunId]
-    delete expandedTeams[hostRunId]
     delete errors[hostRunId]
   }
 
@@ -472,7 +244,7 @@ export const useAgentRunCollaborationStore = defineStore('agentRunCollaboration'
   watch(() => binding.bindingRevision, releaseAll, { flush: 'sync' })
 
   return {
-    contexts, errors, contextFor, syncHost, inspect, viewFor, attach, release, releaseAll, beginHostTermination,
-    selectChild, selectedChild, ensureStoredView, selectTaskRow, selectTreeRow, selectedRowKey, isTreeRowExpanded, toggleTreeRow, isTaskTeamExpanded, toggleTaskTeam, taskRows, hostMessagesView, childTargetFor, isSelectedChildOpening, submit,
+    contexts, errors, contextFor, syncHost, inspect, attach, release, releaseAll, beginHostTermination,
+    selectHost, selectedChild, ensureStoredView, selectTreeRow, selectedRowKey, isTreeRowExpanded, toggleTreeRow, hostMessagesView, childTargetFor, isSelectedChildOpening,
   }
 })

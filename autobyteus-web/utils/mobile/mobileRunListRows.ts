@@ -2,7 +2,7 @@ import type { RunTreeRowDto } from '@autobyteus/collaboration-stream-contracts';
 import type { AgentOrgRunHistoryItem, RunHistoryTransientExecutionRow, TeamTreeNode } from '~/stores/runHistoryTypes';
 import type { RunTreeRef } from '~/stores/runTreeStore';
 import { AgentStatus } from '~/types/agent/AgentStatus';
-import { agentOrgFirstMemberAddress } from '~/utils/agentOrgHistoryRows';
+import { agentOrgFirstMemberAddress } from '~/utils/agentOrgFirstMemberAddress';
 import type { RunListEntry } from '~/utils/runListProjection';
 import type { RunTreeRow } from '~/utils/runTreeProjection';
 import { teamRunStatus } from '~/components/workspace/history/workspaceHistoryTeamBranchStatus';

@@ -251,8 +251,6 @@ export const GetTeamRunResumeConfig = gql`
       teamRunId
       isActive
       executionTree
-      closedTaskExecutions
-      remoteTaskExecutions
       modelConfigEditability {
         editable
         reason

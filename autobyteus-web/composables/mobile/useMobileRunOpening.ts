@@ -16,7 +16,7 @@ import { treeRefOf } from '~/utils/mobile/mobileRunListRows';
 import { useMobileRunOpeningStore } from '~/stores/mobileRunOpeningStore';
 import { useRunHistoryStore } from '~/stores/runHistoryStore';
 import type { MobileRowOpen, MobileRunTreeRow } from '~/utils/mobile/mobileRunListRows';
-import { agentOrgFirstMemberAddress } from '~/utils/agentOrgHistoryRows';
+import { agentOrgFirstMemberAddress } from '~/utils/agentOrgFirstMemberAddress';
 import type { AgentOrgRunHistoryItem } from '~/stores/runHistoryTypes';
 
 type OrgOpen = Readonly<{ orgRun: AgentOrgRunHistoryItem; command: WorkspaceHistorySubjectAction }>;

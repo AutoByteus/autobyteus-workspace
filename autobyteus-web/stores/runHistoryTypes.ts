@@ -4,7 +4,6 @@ import type { RunProjectionConversationEntry } from '~/services/runHydration/run
 import type { RunProjectionActivityEntry } from '~/services/runHydration/runProjectionActivityHydration';
 import type { TeamRunExecutionTreeDto } from '@autobyteus/team-stream-contracts';
 import type { AgentOrgExecutionTree } from '~/types/collaboration/agentOrgExecution';
-import type { TaskExecutionReference } from '~/utils/collaboration/taskExecutionClosure';
 import type { RunTreeWorkspaceNode } from '~/utils/runTreeProjection';
 
 export type RunKnownStatus = 'ACTIVE' | 'IDLE' | 'ERROR' | 'TERMINATED';
@@ -50,8 +49,6 @@ export interface AgentOrgRunHistoryItem {
   isActive: boolean;
   summary: string;
   executionTree: AgentOrgExecutionTree;
-  /** Task executions of `executionTree` whose Task is DONE; the rows leave them out before the Org context hydrates. */
-  closedTaskExecutions: readonly TaskExecutionReference[];
 }
 
 export interface AgentOrgHistoryDefinitionGroup {

@@ -1,4 +1,3 @@
-import { useRemoteRunsStore } from '~/stores/remoteRunsStore';
 import type { WorkspaceSelectionIntent } from '~/stores/agentSelectionStore';
 import type { AgentTeamContext } from '~/types/agent/AgentTeamContext';
 import { useAgentTeamRunStore } from '~/stores/agentTeamRunStore';
@@ -7,8 +6,6 @@ import { fetchExactTeamMemberProjection } from './teamRunContextHydrationService
 import { fetchRunFileChanges } from './runFileChangeHydrationService';
 import { memberLoader, type MemberLoadTarget } from './memberLoader';
 import { teamAgentSourceOf } from '~/services/collaborators/agentSourceSelectors';
-import { teamDelegatedRunSubject } from '~/services/delegatedRuns/delegatedRunSubjects';
-import { useDelegatedRunsStore } from '~/stores/delegatedRunsStore';
 
 export type TeamMemberProjectionHydrationResult = Readonly<{
   disposition: 'authoritative' | 'hydrated' | 'superseded';
@@ -26,32 +23,21 @@ const teamMemberLoadTarget = (team: AgentTeamContext, agentRunId: string): Membe
   const location = team.view.getAgentExecutionLocation(agentRunId);
   if (!agent || agent.state.runId !== agentRunId || !location || location.agentRunId !== agentRunId) return null;
   const configured = teamAgentSourceOf(team.view.getExecutionTree(), agentRunId);
-  // autobyteus-278: an agent of a run another node runs: its conversation is read from its node; its files stay there.
-  const remote = configured ? null : useRemoteRunsStore().runOfAgentRun(agentRunId);
-  if (!configured && !remote) throw new Error(`AgentRun '${agentRunId}' has no configured Team placement.`);
+  if (!configured) throw new Error(`AgentRun '${agentRunId}' has no configured Team placement.`);
   return Object.freeze({
     agent,
     conversationDefaults: {
-      agentDefinitionId: configured?.agent_definition_id ?? '',
+      agentDefinitionId: configured.agent_definition_id,
       agentName: location.memberAddress.split('/').at(-1) ?? location.memberAddress,
-      llmModelIdentifier: configured?.launch_configuration.llm_model_identifier ?? '',
+      llmModelIdentifier: configured.launch_configuration.llm_model_identifier,
     },
-    fetchProjection: async () => {
-      try {
-        const projection = await fetchExactTeamMemberProjection(rootTeamRunId, agentRunId);
-        if (remote) useRemoteRunsStore().markReachable(remote.runId, true);
-        return projection;
-      } catch (cause) {
-        if (remote) useRemoteRunsStore().markReachable(remote.runId, false);
-        throw cause;
-      }
-    },
-    fetchFileChanges: () => remote ? Promise.resolve([]) : fetchRunFileChanges({
+    fetchProjection: () => fetchExactTeamMemberProjection(rootTeamRunId, agentRunId),
+    fetchFileChanges: () => fetchRunFileChanges({
       kind: 'teamMember', teamRunId: rootTeamRunId, memberAddress: location.memberAddress, agentRunId,
     }),
     // Content authority does not supersede currently observed live tool decisions.
     liveToolAuthority: () => team.view.isRootTeamActive() && !team.view.needsStreamRecovery()
-      && team.view.listLiveAgentContextEntries().some((entry) => entry.agentRunId === agentRunId && entry.agentContext === agent)
+      && team.view.listAgentContextEntries().some((entry) => entry.agentRunId === agentRunId && entry.agentContext === agent)
       && useAgentTeamRunStore().isTeamStreamReady(rootTeamRunId),
   });
 };
@@ -67,11 +53,6 @@ export const ensureAuthoritativeTeamMemberProjection = async (input: {
   selectionIntent?: WorkspaceSelectionIntent;
 }): Promise<TeamMemberProjectionHydrationResult> => {
   const agentRunId = input.agentRunId.trim();
-  const own = teamDelegatedRunSubject(input.team.view.getExecutionTree(), agentRunId);
-  if (own) {
-    useDelegatedRunsStore().ensureOpen(own);
-    return Object.freeze({ disposition: 'authoritative', agentRunId });
-  }
   if (!teamMemberLoadTarget(input.team, agentRunId)) {
     throw new Error(`AgentRun '${agentRunId}' is not a retained member of Team '${input.team.view.getRootTeamRunId()}'.`);
   }

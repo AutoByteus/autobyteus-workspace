@@ -47,6 +47,7 @@
 <script setup lang="ts">
 import { computed, watch } from 'vue';
 import { useRunTreeStore } from '~/stores/runTreeStore';
+import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
 import { useRunStatusStore } from '~/stores/runStatusStore';
 import { isTeamRow, runTreeDisplayRows } from '~/utils/runTree/runTreeDisplayRows';
 import WorkspaceStableExecutionRow from '~/components/workspace/history/WorkspaceStableExecutionRow.vue';
@@ -165,10 +166,13 @@ const ownRows = computed<VisibleTeamExecutionRow[]>(() => {
 // Task workers show their current Task's summary; it locates the Task in Projects.
 const { taskOf, locate } = useTaskWorkerTasks(() => visibleRows.value.map((displayRow) => displayRow.row));
 
-const isSelected = (row: RunHistoryTeamExecutionRow): boolean =>
-  props.isTeamSelected
-  && row.agentRunId !== null
-  && row.agentRunId === props.team.focusedAgentRunId;
+/** The selected row: a run the Team delegated, when one is selected under it (SR-084); else its focused member. */
+const teamContexts = useAgentTeamContextsStore();
+const isSelected = (row: RunHistoryTeamExecutionRow): boolean => {
+  if (!props.isTeamSelected) return false;
+  const delegated = teamContexts.selectedTreeRowOf(props.team.teamRunId);
+  return delegated ? row.rowKey === delegated.key : row.agentRunId !== null && row.agentRunId === props.team.focusedAgentRunId;
+};
 
 /** Derived from the current rows on every render, so member status patches and collapse stay current. */
 const teamStatusOf = (row: RunHistoryTeamExecutionRow): TeamStatus =>

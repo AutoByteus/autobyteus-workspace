@@ -14,7 +14,6 @@ import {
   resetRecentEventMonitorBaseline,
 } from '~/services/eventMonitor/recentEventMonitorMutationCoordinator'
 import { GetAgentOrgMemberRunProjection } from '~/graphql/queries/runHistoryQueries'
-import { orgDelegatedRunSubject } from '~/services/delegatedRuns/delegatedRunSubjects'
 import { getApolloClient } from '~/utils/apolloClient'
 import { useRunHistoryStore } from '~/stores/runHistoryStore'
 import { useAgentActivityStore } from '~/stores/agentActivityStore'
@@ -25,9 +24,6 @@ import {
   type MemberRunStateCommit,
 } from '~/services/runHydration/memberRunStateHydration'
 import { fetchRunFileChanges } from '~/services/runHydration/runFileChangeHydrationService'
-import { createRemoteAgentContext } from '~/services/remoteRuns/remoteAgentContext'
-import { remoteTaskExecutionRunIdOf } from '@autobyteus/agent-presentation-contracts'
-import { useRemoteRunsStore } from '~/stores/remoteRunsStore'
 import {
   AgentOrgExecutionContext,
   type AgentOrgContextEntry,
@@ -157,21 +153,15 @@ export const stageAgentOrgExecutionContext = async (input: Readonly<{
   })
   const focus = typeof input.focus === 'string' ? index.configuredSelection(input.focus) : input.focus
   const selected = local.find((item) => item.seed.agentRunId === index.selectedAgent(focus)?.agentRunId) ?? null
-  // A delegated run is read as its own run (rule 2, `delegatedRunsStore`), never through the Org's member reads, which
-  // refuse it: a focused delegated row stages nothing here (found by SDV-03: the reopen failed on it and retried).
-  const focused = selected && !orgDelegatedRunSubject(index, selected.seed.agentRunId) ? selected : null
-  const expectedActivityRevision = focused ? useAgentActivityStore().getActivityContentRevision(focused.seed.agentRunId) : 0
-  const staged = focused ? applyProjection(focused.entry.context, focused.seed, await fetchMemberRunState({
-    fetchProjection: () => fetchProjection(input.orgRunId, focused.seed),
+  const expectedActivityRevision = selected ? useAgentActivityStore().getActivityContentRevision(selected.seed.agentRunId) : 0
+  const staged = selected ? applyProjection(selected.entry.context, selected.seed, await fetchMemberRunState({
+    fetchProjection: () => fetchProjection(input.orgRunId, selected.seed),
     fetchFileChanges: () => fetchRunFileChanges({
-      kind: 'agentOrgMember', orgRunId: input.orgRunId, memberAddress: focused.seed.address, agentRunId: focused.seed.agentRunId,
+      kind: 'agentOrgMember', orgRunId: input.orgRunId, memberAddress: selected.seed.address, agentRunId: selected.seed.agentRunId,
     }),
   }), expectedActivityRevision) : null
   if (input.isCurrent && !input.isCurrent()) throw new Error('AgentOrg hydration ownership released.')
-  // autobyteus-278: the agents of the runs this Org delegated to other nodes; each is read from its node when selected.
-  const remote = [...index.remoteAgents.values()].map((agent) => Object.freeze({ agentRunId: agent.agentRunId, memberAddress: agent.address,
-    context: createRemoteAgentContext(agent.agentRunId, agent.address, agent.execution.started_at) }) satisfies AgentOrgContextEntry)
-  const context = new AgentOrgExecutionContext({ ...input, entries: [...local.map((item) => item.entry), ...remote] })
+  const context = new AgentOrgExecutionContext({ ...input, entries: local.map((item) => item.entry) })
   // Commits the staged member's state (activities, then artifacts) when the caller publishes the context.
   return { context, commit: () => {
     if (!staged) return null
@@ -183,10 +173,8 @@ export const stageAgentOrgExecutionContext = async (input: Readonly<{
 }
 
 /**
- * What the member loader reads to load one member of a published Org context: its stored conversation and
- * activities, and its files. A remote member's conversation is read from its node by this node's server
- * (autobyteus-278, the same member-projection query); its files stay there, and a failed read marks its node
- * unreachable. Null when the member is not in the context.
+ * What the member loader reads to load one of a published Org context's own agents: its stored conversation and
+ * activities, and its files. Null when the agent is not one of the Org's own.
  */
 export const orgMemberLoadTarget = (input: Readonly<{
   orgRunId: string
@@ -196,27 +184,14 @@ export const orgMemberLoadTarget = (input: Readonly<{
 }>): MemberLoadTarget | null => {
   const agent = input.context.getAgentContext(input.agentRunId)
   const local = input.context.index.agents.get(input.agentRunId)
-  const remote = local ? null : input.context.index.remoteAgents.get(input.agentRunId)
-  if (!agent || !(local || remote)) return null
-  const seed: AgentSeed = local
-    ? Object.freeze({ address: local.address, agentRunId: local.agentRunId, agentDefinitionId: local.source.agentDefinitionId, launch: local.source.launchConfiguration })
-    : Object.freeze({ address: remote!.address, agentRunId: remote!.agentRunId, agentDefinitionId: '',
-      launch: { runtimeKind: 'autobyteus', llmModelIdentifier: '', llmConfig: null, autoExecuteTools: true, workspaceRootPath: null } as AgentSeed['launch'] })
-  const remoteRunId = remote ? remoteTaskExecutionRunIdOf(remote.execution) : null
+  if (!agent || !local) return null
+  const seed: AgentSeed = Object.freeze({ address: local.address, agentRunId: local.agentRunId,
+    agentDefinitionId: local.source.agentDefinitionId, launch: local.source.launchConfiguration })
   return Object.freeze({
     agent,
     conversationDefaults: { agentDefinitionId: seed.agentDefinitionId, agentName: nameAt(seed.address), llmModelIdentifier: seed.launch.llmModelIdentifier },
-    fetchProjection: async () => {
-      try {
-        const projection = await fetchProjection(input.orgRunId, seed)
-        if (remoteRunId) useRemoteRunsStore().markReachable(remoteRunId, true)
-        return projection
-      } catch (cause) {
-        if (remoteRunId) useRemoteRunsStore().markReachable(remoteRunId, false)
-        throw cause
-      }
-    },
-    fetchFileChanges: () => remote ? Promise.resolve([]) : fetchRunFileChanges({
+    fetchProjection: () => fetchProjection(input.orgRunId, seed),
+    fetchFileChanges: () => fetchRunFileChanges({
       kind: 'agentOrgMember', orgRunId: input.orgRunId, memberAddress: seed.address, agentRunId: seed.agentRunId,
     }),
     liveToolAuthority: input.liveToolAuthority,

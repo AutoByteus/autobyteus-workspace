@@ -1,4 +1,6 @@
 import { useRoute, useRouter } from 'vue-router'
+import { useRunTreeStore } from '~/stores/runTreeStore'
+import { treeRowOfAgent } from '~/utils/runTree/runTreeAgents'
 import { useAgentOrgContextsStore } from '~/stores/agentOrgContextsStore'
 import { useRunHistoryStore } from '~/stores/runHistoryStore'
 import { useAgentSelectionStore, type WorkspaceSelectionIntent, type WorkspaceSelectionOutcome } from '~/stores/agentSelectionStore'
@@ -72,12 +74,16 @@ export const useWorkspaceHistorySubjectActions = (setup: { shell?: WorkspaceHist
     const context = orgContexts.contextFor(run.rootRunId)
     if (!context) throw new Error(`AgentOrg inspection '${run.rootRunId}' is unavailable.`)
     if (command.action === 'inspect') {
-      // A task copy, or an agent of a run another node runs (autobyteus-278).
-      const address = command.agentRunId ? context.index.addressOf(command.agentRunId) : null
-      if (!command.agentRunId || !address || (command.memberAddress && address !== command.memberAddress)) {
+      // An agent of the Org's tree (SR-084): its own agent selected in it, or a run it delegated opened as its own run
+      // (rule 2), by its row's target. The tree is read once when it has not arrived yet.
+      const trees = useRunTreeStore()
+      const treeRef = { kind: 'agent_org' as const, runId: run.rootRunId }
+      const rowOf = () => command.agentRunId ? treeRowOfAgent(trees.rowsOf(treeRef), command.agentRunId) : null
+      if (!rowOf() && command.agentRunId) await trees.read(treeRef)
+      const row = rowOf()
+      if (!row || (command.memberAddress && row.address !== command.memberAddress) || !orgContexts.selectTreeRow(run.rootRunId, row)) {
         throw new Error('Exact task Agent execution is unavailable.')
       }
-      orgContexts.select(run.rootRunId, { kind: 'agent_execution', agentRunId: command.agentRunId })
     } else if (command.action === 'select') {
       const address = command.memberAddress?.trim()
       if (!address || !context.index.configured.has(address)) throw new Error('AgentOrg member selection requires an exact address.')

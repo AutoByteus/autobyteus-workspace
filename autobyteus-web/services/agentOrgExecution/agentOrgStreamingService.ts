@@ -202,7 +202,7 @@ export class AgentOrgStreamingService {
     attachments: readonly ContextFilePath[]; messageId: string; dedupeKey: string;
     mentions?: readonly CollaboratorMentionDto[] }>): Promise<void> {
     const context = this.requireReadyContext()
-    if (!context.index.requireAgent(input.agentRunId).live) throw new Error('AgentOrg send target is not live.')
+    context.index.requireAgent(input.agentRunId)
     return this.command({ type: 'SEND_MESSAGE', payload: {
       ...this.commandRoot(input.agentRunId), content: input.content,
       context_file_paths: input.attachments.map(attachmentLocator), image_urls: [],
@@ -219,15 +219,6 @@ export class AgentOrgStreamingService {
     return this.command({ type: approved ? 'APPROVE_TOOL' : 'DENY_TOOL', payload: {
       ...this.commandRoot(agentRunId), invocation_id: invocationId, reason,
     } })
-  }
-
-  /** Retry (autobyteus-278): the Org asks the nodes of its remote runs again; the answers arrive as events;
-   * `false` when the stream is not ready. */
-  refreshRemote(): boolean {
-    if (!this.isReady()) return false
-    this.socket!.send(JSON.stringify({ type: 'REFRESH_REMOTE_TASK_EXECUTIONS',
-      payload: { root_subject_kind: 'agent_org', root_run_id: this.options.orgRunId } } satisfies CollaborationStreamClientMessage))
-    return true
   }
 
   private commandRoot(targetAgentRunId: string) {
@@ -339,12 +330,9 @@ export class AgentOrgStreamingService {
         throw new Error('AgentOrg stream supplied a non-Org event.')
       }
       const { change_sequence: first, change_sequence_through: through } = message.payload
-      const application = this.context.applyEvent(first, message.payload.event, through)
-      // Applied, or a single checkpoint event seen: the Team tab's lists are consistent through it (SR-004).
-      if (application === 'applied' || through === undefined) {
-        useCollaborationParticipantMessagesStore().advance('agent_org', this.options.orgRunId, this.context.view.live_sequence_id, through ?? first)
-      }
-      if (application === 'checkpoint_required') await this.reopenOwned(generation)
+      this.context.applyEvent(first, message.payload.event, through)
+      // The Team tab's lists are consistent through it (SR-004).
+      useCollaborationParticipantMessagesStore().advance('agent_org', this.options.orgRunId, this.context.view.live_sequence_id, through ?? first)
       return
     }
     // The Org's own lifecycle updates the view; the stream continues (autobyteus-461 SR-045).

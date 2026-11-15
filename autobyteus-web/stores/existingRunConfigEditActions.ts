@@ -92,7 +92,7 @@ export const existingRunConfigEditActions = {
     if (!target || this.saving || this.reconciling) return false
     if (committed) this.discardChanges()
     const binding = useWindowNodeContextStore().bindingRevision
-    const loading = target.kind === 'agent' ? this.loadAgentCanonical(target.runId, committed)
+    const loading = target.kind === 'agent' ? this.loadAgentCanonical(target.runId)
       : target.kind === 'team' ? this.loadTeamCanonical(target.teamRunId) : this.loadAgentOrgCanonical(target.orgRunId)
     const request = this.canonicalLoadRequestId
     const loaded = await loading

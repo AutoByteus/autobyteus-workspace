@@ -375,7 +375,7 @@ export const reconcileDiscoveredActiveRuns = async (
       const streamConnected = agentTeamRunStore.isTeamStreamReady(teamRunId);
       if (!streamReopenRequired) {
         // Retired executions keep their terminal history status even when the root is active.
-        existingTeamContext.view.listLiveAgentContextEntries().forEach(({ agentContext }) => {
+        existingTeamContext.view.listAgentContextEntries().forEach(({ agentContext }) => {
           agentContext.config.isLocked = true;
           applyActiveRuntimePlaceholder(agentContext, {
             preserveExistingLive: true,

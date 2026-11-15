@@ -1,48 +1,28 @@
-import { collaboratorAddRejectionOf } from '~/services/collaborators/collaboratorAddFailures'
 import {
   CollaborationStreamServerMessageSchema,
-  type CollaborationStreamClientMessage,
   type CollaborationStreamServerMessage,
 } from '@autobyteus/collaboration-stream-contracts'
 import { shallowReactive } from 'vue'
-import type { ContextFilePath } from '~/types/conversation'
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore'
 import { getActiveRemoteAccessCredential } from '~/utils/remoteAccess/authorizedTransport'
 import { buildAuthenticatedWebSocketUrl } from '~/utils/remoteAccess/websocketAuth'
-import type { CollaboratorMentionDto } from '~/utils/collaborators/collaboratorMentionText'
-import { buildAgentRunCollaborationContext } from './agentRunCollaborationHydration'
-import type { AgentRunCollaborationContext } from './agentRunCollaborationContext'
+import { AgentRunCollaborationContext } from './agentRunCollaborationContext'
 import { useRunTreeStore } from '~/stores/runTreeStore'
 import { useCollaborationParticipantMessagesStore } from '~/services/collaborationMessages/collaborationParticipantMessages'
-import { createRandomId } from '~/utils/randomId'
 import { LiveStreamReconnectScheduler } from '~/services/liveStreamLifecycle/liveStreamReconnectScheduler'
 import { isCredentialRefusalClose } from '~/services/liveStreamLifecycle/credentialRefusalClose'
 
-type CommandAck = Extract<CollaborationStreamServerMessage, { type: 'AGENT_COMMAND_ACK' }>
-type PendingCommand = Readonly<{
-  commandType: CollaborationStreamClientMessage['type']
-  targetAgentRunId: string
-  resolve(): void
-  reject(error: Error): void
-  timeout: ReturnType<typeof setTimeout>
-}>
 type Phase = 'disconnected' | 'awaiting_connected' | 'awaiting_snapshot' | 'ready'
 
-const COMMAND_TIMEOUT_MS = 15_000
-
 /**
- * The live stream of a standalone run's collaboration root (`/ws/agent-collaboration/:hostRunId`).
- * Connecting makes the root command-ready, which restores a stopped host: callers attach it only
- * for an active host or when the user sends to a child. Each snapshot republishes the context
- * (tree and statuses only); a newly started child or a settings Save reloads through a fresh snapshot.
+ * The live stream of a standalone run's collaboration root (`/ws/agent-collaboration/:hostRunId`): its view, its Team
+ * tab's messages and its tree (autobyteus-461 SR-084). Connecting never restores the run's agent. Each snapshot
+ * republishes the context; the tree's snapshot and changes feed `runTreeStore`.
  */
 export class AgentRunCollaborationStreamingService {
   private socket: WebSocket | null = null
   private context: AgentRunCollaborationContext | null = null
   private phase: Phase = 'disconnected'
-  private processing: Promise<void> = Promise.resolve()
-  private readonly pending = new Map<string, PendingCommand>()
-  private readonly readiness = new Set<{ resolve(): void; reject(error: Error): void }>()
   private released = false
   private intentionalClose = false
   private lastFailureDetail = 'The Agent collaboration stream closed.'
@@ -53,10 +33,7 @@ export class AgentRunCollaborationStreamingService {
       this.closeSocket('Agent collaboration re-synchronize')
       this.reconnect.attemptNow()
     },
-    onPersistentFailure: () => {
-      this.options.reportError(this.lastFailureDetail)
-      this.settleReadiness(new Error(this.lastFailureDetail))
-    },
+    onPersistentFailure: () => this.options.reportError(this.lastFailureDetail),
   })
 
   constructor(private readonly options: Readonly<{
@@ -64,8 +41,6 @@ export class AgentRunCollaborationStreamingService {
     isCurrent(): boolean
     publish(context: AgentRunCollaborationContext): void
     reportError(message: string): void
-    /** Task executions were closed in place (Task DONE); a selected one leaves with its rows. */
-    onTaskExecutionsClosed?(context: AgentRunCollaborationContext): void
   }>) {}
 
   /** The store's connect: starts over (any wait is cancelled) and opens. */
@@ -89,35 +64,20 @@ export class AgentRunCollaborationStreamingService {
     this.phase = 'awaiting_connected'
     this.intentionalClose = false
     socket.onmessage = (raw) => {
-      this.processing = this.processing.then(() => this.processFrame(socket, String(raw.data)))
+      this.processFrame(socket, String(raw.data))
     }
     socket.onerror = () => undefined
     socket.onclose = (event) => {
       if (this.socket !== socket || !this.options.isCurrent()) return
       this.socket = null
       this.phase = 'disconnected'
-      this.rejectPending('The Agent collaboration stream closed before command acknowledgement.')
       // 4004: this run cannot host delegated copies; a credential refusal: the node refuses this client. Retrying
       // cannot help either.
       const finalClose = event.code === 4004 ? 'This run cannot host delegated copies.'
         : isCredentialRefusalClose(event.code, event.reason) ? 'The node refused this connection\'s credential.' : null
       if (!this.intentionalClose && !finalClose) this.recoveryFailed('The Agent collaboration stream closed.')
-      else if (finalClose) {
-        this.reconnect.startOver()
-        this.settleReadiness(new Error(finalClose))
-      }
+      else if (finalClose) this.reconnect.startOver()
     }
-  }
-
-  isReady(): boolean {
-    return !this.released && this.options.isCurrent() && this.phase === 'ready' && this.context?.phase === 'live'
-      && this.socket?.readyState === WebSocket.OPEN
-  }
-
-  whenReady(): Promise<void> {
-    if (this.isReady()) return Promise.resolve()
-    if (this.released) return Promise.reject(new Error('The Agent collaboration view was released.'))
-    return new Promise((resolve, reject) => { this.readiness.add({ resolve, reject }) })
   }
 
   disconnect(): void {
@@ -126,74 +86,14 @@ export class AgentRunCollaborationStreamingService {
     this.closeSocket('Agent collaboration view released')
     useRunTreeStore().streamEnded(this.treeRef)
     this.context = null
-    this.settleReadiness(new Error('The Agent collaboration view was released.'))
-  }
-
-  sendMessage(input: Readonly<{ agentRunId: string; content: string; attachments: readonly ContextFilePath[];
-    messageId: string; dedupeKey: string; mentions?: readonly CollaboratorMentionDto[] }>): Promise<void> {
-    return this.command({ type: 'SEND_MESSAGE', payload: {
-      ...this.commandRoot(input.agentRunId), content: input.content,
-      context_file_paths: input.attachments.map((attachment) => attachment.locator), image_urls: [],
-      message_id: input.messageId, dedupe_key: input.dedupeKey,
-      ...(input.mentions?.length ? { mentions: input.mentions.map((mention) => ({ ...mention })) } : {}),
-    } })
-  }
-
-  interrupt(agentRunId: string): Promise<void> {
-    return this.command({ type: 'INTERRUPT_GENERATION', payload: this.commandRoot(agentRunId) })
-  }
-
-  decideTool(agentRunId: string, invocationId: string, approved: boolean, reason: string | null): Promise<void> {
-    return this.command({ type: approved ? 'APPROVE_TOOL' : 'DENY_TOOL', payload: {
-      ...this.commandRoot(agentRunId), invocation_id: invocationId, reason,
-    } })
-  }
-
-  /** Retry (autobyteus-278): the root asks the nodes of its remote runs again; the answers arrive as events;
-   * `false` when the stream is not ready. */
-  refreshRemote(): boolean {
-    if (!this.isReady()) return false
-    this.socket!.send(JSON.stringify({ type: 'REFRESH_REMOTE_TASK_EXECUTIONS',
-      payload: { root_subject_kind: 'agent', root_run_id: this.options.hostRunId } } satisfies CollaborationStreamClientMessage))
-    return true
   }
 
   private get treeRef() { return { kind: 'agent' as const, runId: this.options.hostRunId } }
 
-  private commandRoot(targetAgentRunId: string) {
-    return {
-      root_subject_kind: 'agent' as const,
-      root_run_id: this.options.hostRunId,
-      target_agent_run_id: targetAgentRunId,
-      command_id: createRandomId(),
-    }
-  }
-
-  private command(message: Exclude<CollaborationStreamClientMessage, { type: 'REFRESH_REMOTE_TASK_EXECUTIONS' }>): Promise<void> {
-    if (!this.isReady()) return Promise.reject(new Error('The Agent collaboration stream is not ready.'))
-    const socket = this.socket!
-    return new Promise<void>((resolve, reject) => {
-      const timeout = setTimeout(() => {
-        this.pending.delete(message.payload.command_id)
-        reject(new Error(`Agent collaboration command '${message.payload.command_id}' acknowledgement timed out.`))
-      }, COMMAND_TIMEOUT_MS)
-      this.pending.set(message.payload.command_id, Object.freeze({
-        commandType: message.type, targetAgentRunId: message.payload.target_agent_run_id, resolve, reject, timeout,
-      }))
-      try {
-        socket.send(JSON.stringify(message))
-      } catch (cause) {
-        clearTimeout(timeout)
-        this.pending.delete(message.payload.command_id)
-        reject(cause instanceof Error ? cause : new Error(String(cause)))
-      }
-    })
-  }
-
-  private async processFrame(socket: WebSocket, raw: string): Promise<void> {
+  private processFrame(socket: WebSocket, raw: string): void {
     if (this.socket !== socket || !this.options.isCurrent()) return
     try {
-      await this.handleMessage(socket, raw)
+      this.handleMessage(raw)
     } catch (cause) {
       if (this.socket !== socket || !this.options.isCurrent()) return
       const detail = cause instanceof Error ? cause.message : String(cause)
@@ -203,10 +103,9 @@ export class AgentRunCollaborationStreamingService {
     }
   }
 
-  private async handleMessage(socket: WebSocket, raw: string): Promise<void> {
+  private handleMessage(raw: string): void {
     const message = CollaborationStreamServerMessageSchema.parse(JSON.parse(raw))
     if (message.type === 'ERROR') {
-      this.settleReadiness(new Error(message.payload.message))
       this.options.reportError(message.payload.message)
       return
     }
@@ -222,17 +121,11 @@ export class AgentRunCollaborationStreamingService {
       if (this.phase !== 'awaiting_snapshot' || message.payload.root_subject_kind !== 'agent') {
         throw new Error('Agent collaboration snapshot arrived out of order.')
       }
-      const context = await buildAgentRunCollaborationContext({
-        hostRunId: this.options.hostRunId, view: message.payload.root_agent,
-      })
-      if (this.socket !== socket || !this.options.isCurrent()) return
-      const candidate = shallowReactive(context)
+      const candidate = shallowReactive(new AgentRunCollaborationContext({ hostRunId: this.options.hostRunId, view: message.payload.root_agent }))
       this.options.publish(candidate)
       this.context = candidate
       this.phase = 'ready'
       this.reconnect.connected()
-      // SR-045: the stream lives with the open view, active or stopped; it is ready once its snapshot is applied.
-      this.settleReadiness()
       return
     }
     if (!this.context || this.phase !== 'ready') throw new Error('Agent collaboration event arrived before the snapshot.')
@@ -242,42 +135,17 @@ export class AgentRunCollaborationStreamingService {
       useRunTreeStore().streamSnapshot(this.treeRef, message.payload.rows)
       return
     }
-    if (message.type === 'AGENT_COMMAND_ACK') {
-      this.acknowledge(message)
-      return
-    }
+    if (message.type === 'AGENT_COMMAND_ACK') throw new Error('An Agent collaboration acknowledgement arrived for a command this view never sends.')
     if (message.type === 'ROOT_EXECUTION_EVENT') {
       if (message.payload.root_subject_kind !== 'agent') throw new Error('Agent collaboration stream supplied a foreign event.')
-      const { change_sequence: first, change_sequence_through: through } = message.payload
-      const application = this.context.applyEvent(first, message.payload.event, through)
-      // Applied, or a single checkpoint event seen: the Team tab's lists are consistent through it (SR-004).
-      if (application === 'applied' || through === undefined) {
-        useCollaborationParticipantMessagesStore().advance('agent', this.options.hostRunId, this.context.view.live_sequence_id, through ?? first)
-      }
-      if (application === 'checkpoint_required') {
-        // A new child or a settings Save: reconnect for a fresh snapshot (the view only).
-        this.closeSocket('Agent collaboration reload')
-        this.openSocket()
-      } else if (message.payload.event.kind === 'task_executions_closed') {
-        this.options.onTaskExecutionsClosed?.(this.context)
-      }
+      const sequence = message.payload.change_sequence
+      this.context.applyEvent(sequence, message.payload.event)
+      // The Team tab's lists are consistent through it (SR-004).
+      useCollaborationParticipantMessagesStore().advance('agent', this.options.hostRunId, this.context.view.live_sequence_id, sequence)
       return
     }
     // The run's own agent started or stopped: the view says so and its stream continues (SR-045).
     this.context.setActive(message.payload.is_active)
-  }
-
-  private acknowledge(message: CommandAck): void {
-    const command = this.pending.get(message.payload.command_id)
-    if (!command) return
-    if (command.commandType !== message.payload.command_type || command.targetAgentRunId !== message.payload.target_agent_run_id) {
-      throw new Error(`Agent collaboration acknowledgement '${message.payload.command_id}' identity mismatch.`)
-    }
-    clearTimeout(command.timeout)
-    this.pending.delete(message.payload.command_id)
-    if (message.payload.state === 'accepted') command.resolve()
-    else command.reject(collaboratorAddRejectionOf(message.payload)
-      ?? new Error(message.payload.message ?? message.payload.code ?? 'Agent collaboration command rejected.'))
   }
 
   /** A loss, or a failed attempt before the snapshot: the scheduler waits and attempts again. */
@@ -295,19 +163,7 @@ export class AgentRunCollaborationStreamingService {
     this.socket = null
     this.phase = 'disconnected'
     socket?.close(1000, reason)
-    this.rejectPending('The Agent collaboration stream closed before command acknowledgement.')
   }
 
-  private settleReadiness(error?: Error): void {
-    for (const waiter of this.readiness) error ? waiter.reject(error) : waiter.resolve()
-    this.readiness.clear()
-  }
 
-  private rejectPending(message: string): void {
-    for (const pending of this.pending.values()) {
-      clearTimeout(pending.timeout)
-      pending.reject(new Error(message))
-    }
-    this.pending.clear()
-  }
 }

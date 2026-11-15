@@ -1,0 +1,44 @@
+import type { RunTreeRowDto } from '@autobyteus/collaboration-stream-contracts'
+import type { CollaborationMessageMemberIdentity } from '~/types/workspace/collaborationMessagesContextView'
+import { memberDisplayName } from '~/utils/collaboration/memberDisplayName'
+import { subjectOfTarget, type DelegatedRunSubject } from '~/services/delegatedRuns/delegatedRunSubjects'
+import { isTeamRow } from '~/utils/runTree/runTreeDisplayRows'
+
+/**
+ * The tree row that shows one agent (autobyteus-461 SR-084): an agent row, a member row or a peer agent row, found by the
+ * agent its open target focuses. A team row names its coordinator there, so it never shows an agent; null when none does.
+ */
+export const treeRowOfAgent = (rows: readonly RunTreeRowDto[], agentRunId: string): RunTreeRowDto | null =>
+  rows.find((row) => !isTeamRow(row) && row.openTarget?.agentRunId === agentRunId) ?? null
+
+/**
+ * The run a tree row opens on this node as a run of its own (rule 2), read from its open target, as the server built
+ * it; null for the view's own parts (its run's own ID) and for a peer's run (it opens on its node).
+ */
+export const delegatedSubjectOfRow = (row: RunTreeRowDto, ownRunId: string): DelegatedRunSubject | null => {
+  const target = row.openTarget
+  if (!target || target.runKind === 'agent_org' || target.nodeId || target.runId === ownRunId) return null
+  return subjectOfTarget({ runKind: target.runKind, runId: target.runId, agentRunId: target.agentRunId })
+}
+
+/**
+ * An agent of a run in a view's tree, as its Team tab names it: at its address, with the run it belongs to (a team
+ * member's team run; else the view's own run hosts it). Null when the tree has no row for it.
+ */
+export const treeAgentIdentity = (rows: readonly RunTreeRowDto[], agentRunId: string, viewRunId: string): CollaborationMessageMemberIdentity | null => {
+  const row = treeRowOfAgent(rows, agentRunId)
+  const target = row?.openTarget
+  if (!row?.address || !target) return null
+  const teamRunId = target.runKind === 'agent_team' ? target.runId : null
+  return Object.freeze({ kind: 'delegated', address: row.address, label: memberDisplayName(row.address),
+    hostRunId: teamRunId ?? viewRunId, executionRunId: teamRunId ?? agentRunId })
+}
+
+/** A Team run's own coordinator, from its tree: where the Team shows while a run it delegated is selected under it. */
+export const teamCoordinatorFocusOf = (rows: readonly RunTreeRowDto[], teamRunId: string): Readonly<{
+  teamRunId: string; memberAddress: string; agentRunId: string }> | null => {
+  const coordinator = rows.find((row) => row.key === `team:${teamRunId}`)?.openTarget?.agentRunId
+  const member = coordinator ? rows.find((row) => row.kind === 'team_member' && row.openTarget?.runId === teamRunId
+    && row.openTarget.agentRunId === coordinator) : undefined
+  return member?.address ? Object.freeze({ teamRunId, memberAddress: member.address, agentRunId: coordinator! }) : null
+}

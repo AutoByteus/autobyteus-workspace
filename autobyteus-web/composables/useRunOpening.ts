@@ -2,6 +2,8 @@ import type { RunTreeRowDto } from '@autobyteus/collaboration-stream-contracts'
 import type { RunHistoryTeamExecutionRow, TeamMemberFocusTarget } from '~/stores/runHistoryTypes'
 import type { RunTreeRef } from '~/stores/runTreeStore'
 import { useAgentRunCollaborationStore } from '~/stores/agentRunCollaborationStore'
+import { useAgentOrgContextsStore } from '~/stores/agentOrgContextsStore'
+import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore'
 
 /**
  * The agent a row opens (autobyteus-461 SR-083, FU-031): the run's own member, or a delegated row's target as the server
@@ -24,5 +26,7 @@ export const teamRowFocusOf = (teamRunId: string, row: RunHistoryTeamExecutionRo
  */
 export const openRunTarget = (top: RunTreeRef, row: RunTreeRowDto): boolean => {
   if (top.kind === 'agent') return useAgentRunCollaborationStore().selectTreeRow(top.runId, row)
-  return false
+  if (top.kind === 'agent_org') return useAgentOrgContextsStore().selectTreeRow(top.runId, row)
+  // A Team's own member is focused in the Team (its open action); a run it delegated opens as its own run.
+  return useAgentTeamContextsStore().selectTreeRow(top.runId, row)
 }
