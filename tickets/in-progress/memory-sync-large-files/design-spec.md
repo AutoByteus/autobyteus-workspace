@@ -3,7 +3,7 @@
 ## Solution And Approval Basis
 
 - Current solution revision ID: `SR-004` (SR-003 revised SR-002 for ARCH-REV-001 AR-001..AR-006 and R-AR-1; SR-004 resolves ARCH-REV-002 AR-007 and AR-008)
-- Approved requirements baseline: `requirements-doc.md` at SR-003 (SR-001 baseline; SR-002 revised REQ-008/AC-007/AC-008/DEC-007 to DESIGN.md rule 9; SR-003 clarified REQ-005/SCN-004: a lost connection is run-level and the next run resumes), approved by the Solution Designer within the direction, user informed in this conversation on 2026-11-15.
+- Approved requirements baseline: `requirements-doc.md` at SR-005 (SR-005 restated AC-003/QR-002 only, no design change; SR-001 baseline; SR-002 revised REQ-008/AC-007/AC-008/DEC-007 to DESIGN.md rule 9; SR-003 clarified REQ-005/SCN-004: a lost connection is run-level and the next run resumes), approved by the Solution Designer within the direction, user informed in this conversation on 2026-11-15.
 - Behavior-defining supplements: None
 - User approval of the design: `Not required` (the Task does not ask for design approval)
 - Design status: `Ready`
@@ -410,6 +410,7 @@ N/A — ownership above is sufficient.
 - Mixed versions: an older hub answers 404 to staged routes and rejects `staged` operations; per rule 9 this is not handled; documented "update every node together" (already in `memory_sync.md`).
 - `generated/graphql.ts` is a fresh-start build input (TESTING.md "Fresh-start build"): delivery runs the fresh-start desktop build.
 - Reverse proxies with small body limits (FU-002).
+- Memory (SR-005, DEC-008): measured peak growth of a staged transfer is bounded and size-independent but includes a fixed first-use cost (~140 MiB on Node 24); AC-003/QR-002 now bind < 400 MiB on Node 22 and the desktop's Node 24; reduction is FU-004.
 - R-AR-1 (residual, reduced): verification time per batch is bounded by the 4 GiB staged budget or one file; the AC-003 run records the actual 2 GiB verification time against the 300 s default.
 - Sweep cadence: a partial is removed at the first sweep after it is 24 h old; sweeps run at start and at most hourly when any source calls. A hub that receives no request from any source and does not restart keeps an abandoned partial until either happens.
 

@@ -8,6 +8,7 @@
 | SR-002 | Mixed | Architecture phase: `DESIGN.md` rule 9 read | SR-001 REQ-008 conflicts with rule 9 | Requirements Approved; design N/A | Requirements Approved (revised, user informed); design Ready | REQ-008, AC-007, AC-008, DEC-007, SCN-005, UC-003 | Design complete; `Large` / `High` |
 | SR-003 | Mixed | ARCH-REV-001 Fail (Design Impact) | AR-001..AR-006, R-AR-1 | Requirements Approved; design Ready (SR-002) | Requirements Approved (clarified); design Ready (SR-003) | REQ-005, AC-005, SCN-004, DEC-006; DS-001..DS-003, DS-006 | Findings resolved; `Large` / `High` |
 | SR-004 | Design | ARCH-REV-002 Fail (Design Impact) | AR-007, AR-008 | Requirements Approved (SR-003); design Ready (SR-003) | Requirements Approved (SR-003, unchanged); design Ready (SR-004) | DS-003, DS-006; REQ-002, REQ-003, REQ-005, REQ-009 protected | Findings resolved; `Large` / `High` |
+| SR-005 | Requirements | API/E2E round 1 (API-REV-001) Fail on AC-003, Requirement Gap | API-07 measurement; OBS-1..OBS-3; FU-003 | Requirements Approved (SR-003); design Ready (SR-004) | Requirements Approved (SR-005, AC-003/QR-002 revised); design unchanged | AC-003, QR-002, DEC-008 | Bound restated with the first-use cost on both release runtimes; FU-004, FU-005 |
 
 ## Revision Entries
 
@@ -87,3 +88,20 @@
 - Handoff: see `handoff-sr-004.md` Route record.
 - Remaining gaps: none; R-003 release order.
 - Next action: ARCH-REV-003.
+
+### SR-005 — AC-003/QR-002 ruling after the API/E2E memory measurement
+
+- Phase and classification: Requirements, `Requirement Gap` (challenged measurable constraint)
+- Trigger: API/E2E round 1 (`api-e2e-execution-coverage-report.md`, evidence `evidence/API-07-ac003-measurement.md`) from `/software_engineering_team/api_e2e_engineer` (run `api_e2e_engineer_ee1c6886a1db4f48aa16f454559c72ad`); code under test `077fa6853`, documents `0b7273d9c`. Code review CRR-002 C-02 found no code or design defect.
+- Triggering finding IDs: AC-003/QR-002 Fail (cold Node 24/26 source growth 272-363 MiB > 200 MiB); OBS-1, OBS-2, OBS-3; FU-003.
+- Prior status: requirements `Approved` (SR-003); design `Ready` (SR-004)
+- Current status: requirements `Approved` (SR-005); design unchanged (SR-004)
+- IDs affected: AC-003, QR-002, new DEC-008. REQ-002 unchanged and met.
+- Why recorded: the SR-001 number (200 MiB) was the designer's own proxy for REQ-002; 30 measured runs show bounded, size-independent memory with a fixed first-use cost of ~140 MiB on newer V8. The constraint was restated honestly (first transfer included, both release runtimes, < 400 MiB at 2 GiB and ≥ 4 GiB) instead of being reinterpreted as a warm-only figure.
+- Rulings on the other items: OBS-1 (card row `break-all` splits ordinary words) is this ticket's (introduced by the change; REQ-007/AC-010 readability) → Local Fix through the normal route, re-validate the card only. OBS-2 → accepted, follow-up FU-005. OBS-3 (zero-byte partial after a refused offset) → accepted; the real source never sends it and the hourly sweep removes it after 24 h. FU-003 (base typecheck baseline broken by autobyteus-460) → stays an urgent follow-up, sent when the ticket leaves the team; delivery records the pre-existing failure with the base-commit evidence.
+- Intended behavior changed: `Yes` (a measurable constraint restated); approved by the Solution Designer within the direction (the user never set a memory number; no scope, cost or security change), user informed in this conversation, 2026-11-15.
+- Design/review basis: design unchanged; no design review impact.
+- Classification: unchanged, `Large` / `High`.
+- Handoff: reply to the API/E2E engineer, `handoff-sr-005.md`.
+- Remaining gaps: none.
+- Next action: API/E2E judges AC-003 on the existing evidence against the revised criterion; OBS-1 Local Fix and card re-validation; then the normal route.

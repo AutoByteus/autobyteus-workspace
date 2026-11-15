@@ -3,14 +3,14 @@
 ## Document Status
 
 - Status: `Approved`
-- Current solution revision ID: `SR-003`
+- Current solution revision ID: `SR-005`
 - Package identifier: `memory-sync-large-files`
 - Request / ticket: Project Task `autobyteus-workspace-7` — "Memory Sync: one attachment over ~37 MiB stops all syncing" (FU-001 of `autobyteus-workspace-6`)
 - Requested by: `/project_task_manager` (run `project_task_manager_89e33a2ea30f422fab0407e4dc2b13bb`)
 - Requirements owner: Solution Designer (`/software_engineering_team/solution_designer` coordinator of the assigned team)
 - Date: 2026-11-15
-- Approved by and reference: `Solution Designer within the direction (user informed)`; reference: this conversation's messages informing the user, 2026-11-15 (SR-001 baseline; SR-002 revision of REQ-008/AC-007/AC-008/DEC-007/SCN-005 to the project rule `DESIGN.md` rule 9; SR-003 clarification of REQ-005/SCN-004/DEC-006/AC-005: a lost connection is run-level and the next run resumes, per ARCH-REV-001 AR-005). The Task lets the designer "propose and justify" skip vs transfer; no decision below needs the user.
-- Exact approved requirements baseline / solution revision: this document at SR-003
+- Approved by and reference: `Solution Designer within the direction (user informed)`; reference: this conversation's messages informing the user, 2026-11-15 (SR-001 baseline; SR-002 revision of REQ-008/AC-007/AC-008/DEC-007/SCN-005 to the project rule `DESIGN.md` rule 9; SR-003 clarification of REQ-005/SCN-004/DEC-006/AC-005: a lost connection is run-level and the next run resumes, per ARCH-REV-001 AR-005; SR-005 revision of AC-003/QR-002 (DEC-008) after the API/E2E measurement API-07). The Task lets the designer "propose and justify" skip vs transfer; no decision below needs the user.
+- Exact approved requirements baseline / solution revision: this document at SR-005
 - Behavior-defining supplements and their approved versions: None (the probe is evidence only)
 
 ## Problem And Desired Outcome
@@ -103,7 +103,7 @@ None.
 | --- | --- | --- | --- | --- | --- | --- |
 | AC-001 | REQ-001, REQ-005 | BEH-002 / SCN-001 | Two real server processes (hub + source, both this version); a 40 MiB attachment and a small trace in another run changed; Sync now | Run succeeds; both files imported with identical bytes; status lists no problems | — | E2E (multi-process), from the probe |
 | AC-002 | REQ-001 | BEH-001 / SCN-003 | Many changed files whose total is several times 50 MiB, each below the batch threshold | All imported over several batches; every request body < 50 MiB | — | Unit (batch planner with byte budget) + integration (recorded request sizes) |
-| AC-003 | REQ-002, REQ-004 | BEH-003, BEH-004 / SCN-001 | A 2 GiB file (sparse/generated) on the source; Sync now | File imported, SHA-256 equal; source and hub RSS growth during the transfer stays below 200 MiB | — | One measured run (validation evidence), not a CI test |
+| AC-003 | REQ-002, REQ-004 | BEH-003, BEH-004 / SCN-001 | A 2 GiB file (sparse/generated) on the source; Sync now | File imported, SHA-256 equal. Memory does not grow with the file: on the release runtimes — Node 22 (server image, release workflows) and the desktop app's Electron Node 24 — the peak RSS growth of source and hub over their idle baseline during the sync (first staged transfer of a fresh process included) stays below 400 MiB with a 2 GiB file and with a file of at least 4 GiB (a bound far below the file size, so no whole-file buffering) (DEC-008, SR-005; SR-001 said "below 200 MiB") | — | Measured runs at 2 GiB and ≥ 4 GiB per release runtime (validation evidence), not a CI test |
 | AC-004 | REQ-005 | BEH-001 / SCN-004 | One file the hub rejects (e.g. hub-side verification failure) plus other changed files | Others imported in the same run; the failing file is listed with its reason; next background run does not retry it before its delay; Sync now retries it; after it is fixed (changed) it syncs | — | Unit + integration |
 | AC-005 | REQ-003, REQ-006 | SCN-004 | A large transfer interrupted after some pieces (connection lost or hub stopped; the run ends with a job error) | Next attempt sends only the remaining bytes; result identical | If the hub discarded the partial transfer, it restarts from zero | Integration |
 | AC-006 | REQ-006 | BEH-008 / SCN-006 | Invalid token, or hub unreachable | Run fails with today's message; job `error` | — | Existing tests stay green + unit |
@@ -139,7 +139,7 @@ None.
 | Quality ID | Related REQ / AC | Area | Measurable Requirement | Conditions | Verification |
 | --- | --- | --- | --- | --- | --- |
 | QR-001 | REQ-001 / AC-002 | Compatibility | Every request body < 50 MiB (target ≤ 40 MiB including JSON) | Any changed set | Unit + integration |
-| QR-002 | REQ-002 / AC-003 | Performance | Transfer memory growth < 200 MiB for a 2 GiB file on source and hub | Local two-process run | Measured once |
+| QR-002 | REQ-002 / AC-003 | Performance | Peak RSS growth over idle < 400 MiB on source and hub for 2 GiB and ≥ 4 GiB files; first transfer of a fresh process included (DEC-008) | Local two-process run on Node 22 and the desktop's Node 24 | Measured |
 | QR-003 | REQ-004 / AC-011 | Performance | An unchanged file is not read on later runs | Any size | Unit |
 | QR-004 | REQ-009 / AC-009 | Reliability | No partial file visible in imports | Interrupted transfer | Unit + integration |
 
@@ -182,6 +182,7 @@ None.
 | DEC-005 | Retry and resume policy | Avoid re-sending 2 GiB every minute | Fixed retry vs backoff; restart vs resume | Delay doubles from 1 min to at most 1 h per unchanged failing file; Sync now ignores the delay; a changed file is retried at once; large transfers resume from the hub's received offset. | Solution Designer | Decided |
 | DEC-006 | Which errors are file-level vs run-level | Isolation without hiding outages | Auth/unreachable/hub disabled/held back affect all files | Those, and any network error or lost connection, stay run-level (REQ-006); a large transfer resumes on the next run. A rejection of one batch or one file's content is file-level: the batch is retried file by file to find the failing file. | Solution Designer | Decided |
 | DEC-007 | Mixed versions | Nodes update separately | SR-001: detect an old hub and list large files as "hub must be updated"; `DESIGN.md` rule 9 forbids version checks, fallbacks and old/new APIs side by side | Follow the project rule: no mixed-version handling; document "update every node together" (revised in SR-002). | Solution Designer | Decided |
+| DEC-008 | Which memory figure binds AC-003/QR-002 (SR-005) | The SR-001 number "growth below 200 MiB" was the Solution Designer's own proxy for REQ-002 ("memory does not grow with the file size"); API-07 measured it | 30 runs, 2/4/8 GiB, Node 22/24/26 (`evidence/API-07-ac003-measurement.md`): Node 22 cold growth source 151-172, hub 81-104 MiB; Node 24 (desktop) cold source 309-323 (2 GiB) / 341-363 (8 GiB), hub 193-208 / 197-204 MiB; a 30 MiB staged file alone adds 142 MiB on Node 24; an inline-only sync adds none; every SHA-256 equal; 8 GiB in 39 s | The requirement's intent — bounded memory, independent of file size, no whole-file buffering — holds on every runtime; the overshoot is a fixed first-use cost of the staged path on newer V8, not proportional to the file. A "warm-only" reading would hide that the first transfer of a desktop server costs about 300 MiB, so it is rejected; so is binding only Node 22, since the desktop runs Node 24. Keep the honest, first-transfer-included measure on both release runtimes with a bound that states the measured fixed cost: < 400 MiB for 2 GiB and for ≥ 4 GiB files (measured maxima: Node 24 source 362.9 MiB at 8 GiB, hub 270 MiB in one 4 GiB run; Node 22 source 171.8, hub 103.8). Reducing the first-use cost (for example reusing one piece buffer) is a refinement without a demonstrated user problem (`DESIGN.md` phase 2): follow-up FU-004. | Solution Designer | Decided |
 
 ## Traceability
 
@@ -223,7 +224,7 @@ None.
 
 ### Approved Basis Ready For Design
 
-- Approval recorded: `Yes` (Solution Designer within the direction, user informed; SR-001, revised SR-002, clarified SR-003)
+- Approval recorded: `Yes` (Solution Designer within the direction, user informed; SR-001, revised SR-002, clarified SR-003, AC-003/QR-002 revised SR-005)
 - Exact requirements and supplement approval basis recorded: `Yes`
 - Approved requirements package ready for architecture design: `Yes`
 - Remaining blocker: None

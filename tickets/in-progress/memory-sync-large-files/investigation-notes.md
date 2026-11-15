@@ -190,6 +190,7 @@ Architecture-phase evidence, 2026-11-15 (authorities: `references/architecture-d
 | SR-003: Node built-in `fetch` (undici) default `headersTimeout` 300 s (library default, Read, not measured) | A batch whose verification takes longer would surface as a network error | Staged bytes budget 4 GiB per batch; AC-003 run records the real verification time (R-AR-1) |
 | SR-004 (ARCH-REV-002): `store-utils.ts:40-125` (reviewer, MP-004) | `withFilePathLock` holds an in-process lock and a cross-process lock file per path; a commit holds its source's manifest lock while it hashes staged content | Sweep off the request path, hourly, not awaited; per-source lock kept inside the sweep (AR-008) |
 | SR-004: `local-file-memory-import-store.ts:208-211` (reviewer, MP-005) | Inline writes use temp + rename | `placeStagedFile` copies via a temp sibling and renames (AR-007) |
+| SR-005: `evidence/API-07-ac003-measurement.md` (API/E2E, Measured, 30 runs) | Staged transfer RSS growth: Node 22 cold 151-172 / 81-104 MiB (source/hub); Node 24 (desktop) 309-363 / 193-270; Node 26 272-304 / 168-190; 30 MiB staged control alone 75-143 MiB; inline-only sync adds none; flat across 2/4/8 GiB; 8 GiB in 39 s | AC-003/QR-002 restated (DEC-008); FU-004 |
 
 
 ## Requirement Implications
