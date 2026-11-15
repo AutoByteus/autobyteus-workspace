@@ -1703,3 +1703,24 @@ No architecture review: these follow REQ-006, an approved exception, rule 2 and 
   - offsets are UTF-16 code units, against the segment's single raw field;
   - an open segment's projection carries that raw field at the server's length, including an open tool call's `rawContent`;
   - the partial-overlap test includes an open tool-call segment, and surrogate pairs.
+
+### SR-086 — The view spines walked again for every case, after SR-082 … SR-085 (the user's question)
+
+- **Triggering:** the user asked whether every data-flow spine had been validated for every use case after the new design. It had not: SR-067's walk predates SR-082 … SR-085.
+- **The Solution Designer's gap:** SR-082 … SR-085 were reviewed revision by revision, without re-walking the view spines that they rebuilt.
+- **Done:** `evidence/spine-validation/spine-walk-2026-11-15.md` walks the six spines these revisions touch, across every case: V-S statuses, V-T an open view's tree, V-L a listed run's tree, V-O opening, V-E Settings, V-C a run's own conversation. SR-067's walk stands for the untouched spines.
+- **Found and answered:**
+  - **G-A1:** the status connection's reconnect and re-subscribe;
+  - **G-A2:** unknown ids are answered `not_found`;
+  - **G-A3:** a peer that can't be reached is answered `unreachable`;
+  - **G-A4:** a team's or org's own status is computed by its root, not by the client;
+  - **G-B1:** a save's launch change emits tree updates. This was needed, because SR-085 removed the save overlay;
+  - **G-B2:** a peer row's launch comes from its summary;
+  - **G-C1:** SR-073 is superseded;
+  - **G-D1 (significant):** a peer run's live output reached the screen only through the delegator's view, which SR-082 removed. It now opens by its own identity, through `/ws/peer-run` served by its handle;
+  - **G-F1:** the Task card gets `openTarget`;
+  - **G-G1:** `AgentStreamSequence`'s lifetime.
+- **Next action:**
+  - architecture review;
+  - then the Implementation Engineer.
+
