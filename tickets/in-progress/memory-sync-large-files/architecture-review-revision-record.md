@@ -7,6 +7,7 @@ The latest `design-review-report.md` remains authoritative.
 | Revision ID | Review Round / Trigger | Related Solution Revision IDs | Prior Decision | Current Decision | Affected Finding IDs |
 | --- | --- | --- | --- | --- | --- |
 | ARCH-REV-001 | Round 1 / SR-002 handoff (Architecture Design Complete, Large/High) | SR-001, SR-002 | N/A | Fail (Design Impact) | AR-001, AR-002, AR-003, AR-004, AR-005, AR-006 |
+| ARCH-REV-002 | Round 2 / SR-003 handoff (revision for ARCH-REV-001) | SR-003 | Fail | Fail (Design Impact) | AR-001..AR-006 resolved; new AR-007, AR-008 |
 
 ## Revision Entries
 
@@ -28,3 +29,30 @@ None
 - Material classification changes: None (`task_size: Large`, `architectural_risk: High`)
 - Recommended recipient: Solution Designer
 - Remaining risks or uncertainty: R-AR-1 staged bytes per batch vs hub verification time (MP-003 `Unclear`, recommendation); R-003 release order with `autobyteus-workspace-6`.
+
+### ARCH-REV-002 — Recheck of SR-003; two new defects from the revision
+
+- Canonical design review report: `/Users/normy/autobyteus-org/autobyteus-task-worktrees/memory-sync-large-files/tickets/in-progress/memory-sync-large-files/design-review-report.md`
+- Review round and trigger: Round 2; Solution Designer `handoff-sr-003.md` (branch @ `c9563a9b3`)
+- Triggering role, report path, and finding IDs: Solution Designer, `handoff-sr-003.md`, AR-001..AR-006, R-AR-1
+- Relevant solution revision IDs: SR-003
+- Prior authoritative decision: `Fail` (ARCH-REV-001)
+- Current authoritative decision: `Fail` — `Design Impact`
+- What changed: every round-1 finding is resolved in the current spec (verified against the sections listed below). Two new defects come from the SR-003 changes: copies made by `placeStagedFile` are not atomic (AR-007), and the all-source sweep runs on the critical path of every hub request and waits on other sources' commit locks (AR-008, verified against `store-utils.ts:40-125`).
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| AR-001 | Open (High) | Resolved | SR-003 | design-spec DS-003 spine and narrative, Ownership Map (`LocalFileMemoryImportStore` owns grouping and verify-all-then-write), Interfaces (`placeStagedFile(…, targetPaths[])`), "Same content twice" example, tests. The copy mechanics are a new finding (AR-007). |
+| AR-002 | Open (Medium) | Resolved | SR-003 | Terminology "Run trigger"; DS-001 spine; run-gate bounded spine (background joins, manual queues one); Interfaces `startSync(trigger)`, `isDue(…, trigger, now)`; example; tests |
+| AR-003 | Open (Medium) | Resolved (removal of abandoned partials) | SR-003 | DS-006 sweeps all sources under each source's manifest lock; callers ingestion + startup loader (`background-runner.ts` entry). Its cadence is a new finding (AR-008). |
+| AR-004 | Open (Low) | Resolved | SR-003 | DS-002 narrative; stager bounded spine (hash `[0, receivedBytes)`, read to exactly `size`, 409 re-hash); Resume example |
+| AR-005 | Open (Low) | Resolved | SR-003 | requirements REQ-005, SCN-004, DEC-006, AC-005 aligned with REQ-006; design off-spine error classification and Run-level example |
+| AR-006 | Open (Low) | Resolved | SR-003 | DS-001 spine and narrative, Ownership Map, test "per-batch recording survives a later run-level error" |
+| R-AR-1 (rec.) | Open | Addressed | SR-003 | 4 GiB staged budget; lock order (batchId check → verify → write → manifest); `requireMemorySyncReady()` on staged store |
+
+- New or remaining finding IDs: AR-007 (Low), AR-008 (Medium)
+- Material classification changes: None (`Large` / `High`)
+- Recommended recipient: Solution Designer
+- Remaining risks or uncertainty: R-AR-1 verification time (measured in AC-003 run); R-003 release order.

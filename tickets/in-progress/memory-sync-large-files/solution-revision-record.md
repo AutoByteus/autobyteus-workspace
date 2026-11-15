@@ -7,6 +7,7 @@
 | SR-001 | Requirements | Initial baseline from Task `autobyteus-workspace-7` + manager message + reproduction | N/A | N/A | Approved (Solution Designer within the direction, user informed) | BEH-001..008, REQ-001..010 | Transfer, not skip (DEC-001) |
 | SR-002 | Mixed | Architecture phase: `DESIGN.md` rule 9 read | SR-001 REQ-008 conflicts with rule 9 | Requirements Approved; design N/A | Requirements Approved (revised, user informed); design Ready | REQ-008, AC-007, AC-008, DEC-007, SCN-005, UC-003 | Design complete; `Large` / `High` |
 | SR-003 | Mixed | ARCH-REV-001 Fail (Design Impact) | AR-001..AR-006, R-AR-1 | Requirements Approved; design Ready (SR-002) | Requirements Approved (clarified); design Ready (SR-003) | REQ-005, AC-005, SCN-004, DEC-006; DS-001..DS-003, DS-006 | Findings resolved; `Large` / `High` |
+| SR-004 | Design | ARCH-REV-002 Fail (Design Impact) | AR-007, AR-008 | Requirements Approved (SR-003); design Ready (SR-003) | Requirements Approved (SR-003, unchanged); design Ready (SR-004) | DS-003, DS-006; REQ-002, REQ-003, REQ-005, REQ-009 protected | Findings resolved; `Large` / `High` |
 
 ## Revision Entries
 
@@ -69,3 +70,20 @@
 - Handoff: see `handoff-sr-003.md` Route record.
 - Remaining gaps: none; residual sweep cadence and R-AR-1 verification time recorded in design Risks; R-003 release order.
 - Next action: ARCH-REV-002.
+
+### SR-004 — ARCH-REV-002 Design Impact resolutions
+
+- Phase and classification: Design, `Design Impact`
+- Trigger: architecture review ARCH-REV-002 (Fail), `design-review-report.md`, from `/software_engineering_team/architecture_reviewer` (run `architecture_reviewer_60670f8f6eb84995b4139723af54d0fe`); AR-001..AR-006 and R-AR-1 confirmed resolved.
+- Triggering finding IDs: AR-007 (Low: copies to extra targets were not atomic), AR-008 (Medium: all-source sweep on every request waited on other sources' commit locks).
+- Prior status: requirements `Approved` (SR-003); design `Ready` (SR-003), review Fail
+- Current status: requirements `Approved` (SR-003, unchanged); design `Ready` (SR-004)
+- IDs affected: design DS-003, DS-006; protects REQ-002, REQ-003, REQ-005, REQ-009, AC-009.
+- Sections changed: design-spec (Solution basis, ARCH-REV-001 Resolution table + AR-007/AR-008 rows, DS-006 inventory/narrative, DS-003 spine/narrative, Ownership Map, Interfaces (+ `requestStagingSweep`), limits (+ sweep interval 1 h), file mapping (startup loader calls `requestStagingSweep`), examples, tradeoffs, risks, tests); investigation-notes (SR-004 rows).
+- Intended behavior changed: `No` (requirements untouched; no renewed approval needed).
+- Approval: unchanged (SR-003).
+- Design/review basis: SR-003 design superseded by SR-004; ARCH-REV-002 applies to SR-003.
+- Classification: unchanged, `Large` / `High`.
+- Handoff: see `handoff-sr-004.md` Route record.
+- Remaining gaps: none; R-003 release order.
+- Next action: ARCH-REV-003.

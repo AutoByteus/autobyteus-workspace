@@ -11,7 +11,7 @@
 - Finalization target remote / branch: `origin/personal`; no release (Task: "Stop at merge-ready; no release")
 - Bootstrap result: worktree created with `git worktree add -b task/memory-sync-large-files … origin/personal`; `pnpm install --frozen-lockfile` (pnpm 10.28.2 through `npx`, pnpm is not on this shell's PATH), `pnpm -C autobyteus-server-ts prebuild` and `build` passed.
 - Bootstrap blocker: None
-- Current solution revision ID: `SR-003`
+- Current solution revision ID: `SR-004`
 - Authorities read (requirements reading gate; file and date): `references/requirements-engineering.md`, `references/finding-the-cause.md`, `references/ticket-scope.md` (2026-11-15); `TESTING.md` (2026-11-15)
 - Investigation status: Requirements investigation complete; architecture investigation below.
 
@@ -188,6 +188,8 @@ Architecture-phase evidence, 2026-11-15 (authorities: `references/architecture-d
 | SR-003: `startup/background-runner.ts:18`, `startup/memory-sync-worker-loader.ts`, `startup/app-data-capability-readiness.ts:21-26` | Background-runner entries load startup jobs; Memory Sync readiness is applied by the capability owner | Startup staging-sweep loader checks `isMemorySyncReady()` (AR-003) |
 | SR-003: `context-files/store/context-file-layout.ts:58-70` (reviewer MP-001) | Each run keeps its own copy of an attached file, so one video attached to two runs gives two files with one SHA-256 | Commit places one staged content at every target (AR-001) |
 | SR-003: Node built-in `fetch` (undici) default `headersTimeout` 300 s (library default, Read, not measured) | A batch whose verification takes longer would surface as a network error | Staged bytes budget 4 GiB per batch; AC-003 run records the real verification time (R-AR-1) |
+| SR-004 (ARCH-REV-002): `store-utils.ts:40-125` (reviewer, MP-004) | `withFilePathLock` holds an in-process lock and a cross-process lock file per path; a commit holds its source's manifest lock while it hashes staged content | Sweep off the request path, hourly, not awaited; per-source lock kept inside the sweep (AR-008) |
+| SR-004: `local-file-memory-import-store.ts:208-211` (reviewer, MP-005) | Inline writes use temp + rename | `placeStagedFile` copies via a temp sibling and renames (AR-007) |
 
 
 ## Requirement Implications
