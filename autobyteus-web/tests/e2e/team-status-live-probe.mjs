@@ -28,6 +28,8 @@ import { spawn } from 'node:child_process';
 import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
 import { attachToBrowserContext, attachToProbeProcess, withNodeCredential } from './fixtures/probe-node-access.mjs';
+import { waitRunSocketReady } from './fixtures/run-socket-ready.mjs';
+import { delegatedNodes, readRunTree } from './fixtures/run-tree.mjs';
 // Every node needs a credential (autobyteus-437): the probe's nodes start with its launch credential, and the probe's
 // own calls and its desktop browser contexts carry it (fixtures/probe-node-access.mjs).
 attachToProbeProcess();
@@ -183,11 +185,8 @@ const createRoot = async (kind, ids) => {
   const tree = (await gql('query($id:String!){getAgentOrgRunConfig(orgRunId:$id){executionTree}}', { id: r.agentOrgRunId })).getAgentOrgRunConfig.executionTree;
   return { kind, rootId: r.agentOrgRunId, managerRunId: tree.rootOrg.members.find((m) => m.address === '/manager').agentRunId };
 };
-const storedTree = async (root) => {
-  if (root.kind === 'agent') return (await gql('query($id:String!){agentRunCollaboration(runId:$id)}', { id: root.rootId })).agentRunCollaboration?.root_agent?.execution_tree;
-  if (root.kind === 'team') return (await gql('query($id:String!){getTeamRunResumeConfig(teamRunId:$id){executionTree}}', { id: root.rootId })).getTeamRunResumeConfig.executionTree;
-  return (await gql('query($id:String!){getAgentOrgRootHistory(orgRunId:$id){org}}', { id: root.rootId })).getAgentOrgRootHistory.org;
-};
+/** The root's delegated runs, from its tree (autobyteus-461 SR-084: its view carries its own parts only); each marked listed. */
+const storedTree = async (root) => ({ taskExecutions: delegatedNodes(await readRunTree(gql, root.kind, root.rootId)).map((node) => ({ ...node, startedAt: 'listed' })) });
 const terminateViaApi = async (root) => Object.values(await gql(root.kind === 'agent' ? 'mutation($id:String!){terminateAgentRun(agentRunId:$id){success message}}'
   : root.kind === 'team' ? 'mutation($id:String!){terminateAgentTeamRun(teamRunId:$id){success message}}'
     : 'mutation($id:String!){terminateAgentOrgRun(agentOrgRunId:$id){success message}}', { id: root.rootId }))[0];
@@ -210,7 +209,10 @@ const sockets = [];
 const managerInput = async (root) => {
   const route = root.kind === 'agent' ? `agent/${root.rootId}` : root.kind === 'team' ? `agent-team/${root.rootId}` : `agent-org/${root.rootId}`;
   const socket = new WebSocket(`${stack.backendUrl.replace(/^http/, 'ws')}/ws/${route}`); sockets.push(socket);
+  const frames = [];
+  socket.on('message', (raw) => { try { frames.push(JSON.parse(String(raw))); } catch { /* not JSON */ } });
   await new Promise((resolve, reject) => { socket.once('open', resolve); socket.once('error', reject); });
+  await waitRunSocketReady(frames, route);
   const send = (content) => socket.send(JSON.stringify({ type: 'SEND_MESSAGE', payload: root.kind === 'org'
     ? { root_subject_kind: 'agent_org', root_run_id: root.rootId, target_agent_run_id: root.managerRunId, command_id: randomUUID(),
       message_id: randomUUID(), dedupe_key: randomUUID(), content, context_file_paths: [], image_urls: [] }
@@ -278,8 +280,8 @@ const openRoot = async (page, root, names) => {
 };
 const TEAM_DOT = '[data-test="team-aggregate-status-dot"]';
 const TASK_TEAM_ROW = '[data-test="workspace-team-transient-execution-row"][data-transient-kind="task_team"]';
-const taskTeamRow = (page, kind, teamRunId) => page.locator(kind === 'org' ? `[data-test="agent-org-task-team-row-${teamRunId}"]` : TASK_TEAM_ROW).first();
-const agentRow = (page, kind, agentRunId) => page.locator(kind === 'org' ? `[data-test="agent-org-task-agent-row-${agentRunId}"], [data-test="agent-org-agent-row-${agentRunId}"]`
+const taskTeamRow = (page, kind, teamRunId) => page.locator(TASK_TEAM_ROW).first();
+const agentRow = (page, kind, agentRunId) => page.locator(kind === 'org' ? `[data-test="workspace-team-transient-execution-row"][data-agent-run-id="${agentRunId}"], [data-test="agent-org-agent-row-${agentRunId}"]`
   : `[data-test="workspace-team-transient-execution-row"][data-agent-run-id="${agentRunId}"]`).first();
 const COLOURS = [['gray', 'offline'], ['green', 'idle'], ['blue', 'running'], ['amber', 'initializing'], ['red', 'error']];
 const statusFromClass = (cls) => COLOURS.find(([c]) => new RegExp(`(?:bg|text)-${c}-`).test(cls ?? ''))?.[1] ?? `unknown(${cls})`;
@@ -631,7 +633,7 @@ const nestedTaskTeamJourney = (kind) => async () => {
   const byRole = (team, role) => team.members.find((m) => new RegExp(`/${role}$`).test(m.address));
   const agents = { reviewer: byRole(outer, 'reviewer'), editor: byRole(outer, 'editor'), builder: byRole(inner, 'builder'), checker: byRole(inner, 'checker') };
   assert(Object.values(agents).every(Boolean), 'task Team members not found', { outer, inner });
-  const rowSelector = (team) => (kind === 'org' ? `[data-test="agent-org-task-team-row-${team.teamRunId}"]` : `${TASK_TEAM_ROW}[data-member-address="${team.address}"]`);
+  const rowSelector = (team) => `${TASK_TEAM_ROW}[data-member-address="${team.address}"]`;
   const teamRow = (page, team) => page.locator(rowSelector(team)).first();
   const setExpanded = async (page, team, expanded) => {
     const row = teamRow(page, team);
@@ -656,7 +658,7 @@ const nestedTaskTeamJourney = (kind) => async () => {
   }, kind === 'org');
   /** The agent run ids shown under a Team row: the rows after it, deeper than it, until the next row at its depth or above. */
   const shownUnder = (rows, team) => {
-    const index = rows.findIndex((r) => (kind === 'org' ? r.test === `agent-org-task-team-row-${team.teamRunId}` : r.address === team.address && r.agentRunId === null));
+    const index = rows.findIndex((r) => (r.address === team.address && r.agentRunId === null));
     assert(index >= 0, `${team.address} row not found among the tree rows`, rows);
     const out = [];
     for (let i = index + 1; i < rows.length && rows[i].depth > rows[index].depth; i += 1) if (rows[i].agentRunId) out.push(rows[i].agentRunId);

@@ -607,3 +607,25 @@ None
 - Recommended owner: Code Reviewer (proportional test-code review of the probe changes)
 - Remaining risks, blocked evidence, or untested scope: the full rerun after FU-034; LE-O1 and LE-A1 … LE-T1 (DeepSeek balance); one base-guard console error in 1 of 2 tree runs.
 
+
+### API-REV-016: round 16, the full rerun (CRR-052): the server side passes after the rework; F-76 … F-79 in the window
+
+- Triggering role, report path, and round: `/software_engineering_team/code_reviewer`, `code-review-report.md` (CRR-052 at `53f0ae2d4e`), API/E2E round 16
+- Triggering finding or case IDs: SR-084 … SR-090 (trees built on the server, views with their own parts, a run's own stream snapshot, `/ws/peer-run`, `RETRY_PEERS`, the peer row bound to its tree row)
+- Related revision IDs: CRR-052; IR-035, IR-036
+- Why this revision was recorded: the full rerun
+- Coverage decisions or durable test paths changed: the tree reads of about 30 server suites and two harnesses moved to `runTree` (`helpers/run-tree-delegated.ts`); the two-node cases reworked; OST-1 … 3 added; the C35-04 timing test added (gated); the web probes' command channels wait for the session (`fixtures/run-socket-ready.mjs`)
+- Cases added, changed, removed, or rechecked: `/tmp/api461/r16-*.sh`
+
+#### Prior Failure Resolution
+
+| Prior ID | Classification | Now | Proven By |
+| --- | --- | --- | --- |
+| (none open) | — | — | — |
+
+- Canonical artifacts and sections updated: the execution report; the progress log; `evidence/api-e2e/API-r16-runs.txt`.
+- Prior result and confidence: Pass / 91% (targeted)
+- Current result and confidence: Fail / 71%
+- New or remaining failure IDs: F-76 (Team and Org `CONNECTED` before the session), F-77 (a delegated run does not open from a Team or Org surface), F-78 (tree statuses), F-79 (leaving rows); the stale stream clients and mocked probes; unclassified DLD, MSP and some PMU, TS and BR cases
+- Recommended owner: per the failure-origin review.
+- Remaining risks, blocked evidence, or untested scope: the rendered peer checks (RTP-04 … 09) not reached; LE-O1 and LE-A1 … LE-T1 (DeepSeek balance).

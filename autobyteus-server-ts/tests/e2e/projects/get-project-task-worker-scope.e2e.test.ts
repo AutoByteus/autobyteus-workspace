@@ -15,6 +15,7 @@ import { callTool, calledResults, segment, stringsOf, taskAgentsIn, toolResult, 
 import { flattenE2eConfiguredAgentExecutions } from "../helpers/team-run-metadata-helpers.js";
 import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
 import { builtServerLaunchEnvironment } from "../helpers/built-server-launch-credential.js";
+import { delegatedRunsTree } from "../helpers/run-tree-delegated.js";
 
 // autobyteus-260 get_project_task (REQ-014..REQ-017; AC-012, AC-013, AC-014, AC-015; AR-006, AR-008, MP-003) through the
 // built server (`dist/app.js`) in separate processes on a test-owned data root: real Team root, task copies, the Agent Tools
@@ -328,7 +329,8 @@ suite("get_project_task worker scope through real roots and runtimes (built serv
     const sub = await agyCall("squad coordinator", runs.coordinator, "delegate_task", { recipient_address: `/${segment(names.Reviewer!)}`, description: "Review the docs site's API pages." });
     expect(sub).toMatchObject({ delegated: true });
     runs.reviewer = sub.target_agent_run_id;
-    await until(async () => Boolean((await taskAgentsIn(await tree())).find((entry) => entry.agentRunId === runs.reviewer)), "reviewer in the tree", 60_000);
+    // autobyteus-461 SR-084: the delegated runs come from the run's tree (its own config carries its own parts only).
+    await until(async () => Boolean(taskAgentsIn(await delegatedRunsTree(server.graphql, "team", rootRunId)).find((entry) => entry.agentRunId === runs.reviewer)), "reviewer in the tree", 60_000);
     await firstMessageOf("reviewer (sub-work)", runs.reviewer);
     expect(await agyCall("reviewer", runs.reviewer, "get_project_task", { project_id: projectId, task_id: tasks.B.taskKey })).toMatchObject({ taskId: tasks.B.taskKey, isError: false });
     expect(await agyCall("reviewer", runs.reviewer, "get_project_task", { project_id: projectId, task_id: tasks.C.taskKey })).toEqual({ ...outOfScope(tasks.B.taskKey), isError: true });

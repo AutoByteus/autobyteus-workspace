@@ -14,6 +14,7 @@ import {
   testRuntimeRoot,
 } from "../../../../test-support/live-e2e/test-runtime-bootstrap.mjs";
 import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
+import { delegatedRunsTree } from "../helpers/run-tree-delegated.js";
 
 // A registered Agent root follows the saved edit of its stopped host (stopped-run-edit-root-check, FU-008 of autobyteus-348, API/E2E) on the
 // BUILT server (`dist/app.js`, test-owned data root, private HOME). Only models are scripted: Antigravity = tests/fixtures/agy-failure-cli.mjs
@@ -261,8 +262,11 @@ describe.runIf(ENABLED)("a registered Agent root follows the saved edit of its s
       return toolResult(callsOf(copyDir()), before);
     };
     const copyLaunches = async (): Promise<Record<string, Json>> => {
-      const view = (await gql("query($id: String!) { agentRunCollaboration(runId: $id) }", { id: hostId })).agentRunCollaboration.root_agent.execution_tree as Json;
-      return Object.fromEntries((view.taskExecutions as Json[]).filter((entry) => entry.agentRunId).map((entry) => [entry.agentRunId as string, entry.source.launchConfiguration as Json]));
+      // autobyteus-461 SR-084: the delegated runs come from the run's tree (its view carries its own parts only). Each row carries the launch its run recorded.
+      const copies = (await delegatedRunsTree((query, variables) => gql(query, variables), "agent", hostId)).taskExecutions as Json[];
+      // At every depth: a copy a copy delegated sits in its delegator's `taskExecutions`.
+      const all = (entries: Json[]): Json[] => entries.flatMap((entry) => [entry, ...all(entry.taskExecutions as Json[])]);
+      return Object.fromEntries(all(copies).filter((entry) => entry.agentRunId).map((entry) => [entry.agentRunId as string, entry.launch as Json]));
     };
     const hostActive = async () => (await gql("query($id: String!) { getAgentRunResumeConfig(runId: $id) { isActive } }", { id: hostId })).getAgentRunResumeConfig.isActive as boolean;
     const edit = async (runtimeKind: string, llmModelIdentifier: string) => (await gql(`mutation($input: UpdateStoppedAgentRunSelectionInput!) { updateStoppedAgentRunSelection(input: $input) { success outcome message isActive } }`,

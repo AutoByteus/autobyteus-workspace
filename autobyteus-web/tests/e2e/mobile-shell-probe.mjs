@@ -169,6 +169,7 @@ import { fileURLToPath } from 'node:url';
 import { attachToBrowserContext, ownerHeaders, ownerSocketUrl, pairNodes, probeNodeEnvironment, redactCredentials } from './fixtures/probe-node-access.mjs';
 import { runLiveReconnectCases } from './mobile-live-reconnect-cases.mjs';
 import { openRunStatus } from './fixtures/run-status-client.mjs';
+import { readRunTree, asTaskExecutions } from './fixtures/run-tree.mjs';
 import { runClosedTaskRowsCases } from './mobile-closed-task-rows-cases.mjs';
 import { runFileOpenCases } from './mobile-file-open-cases.mjs';
 // MSP-53, MSP-54, MSP-55 (autobyteus-461 AC-007, SCN-005, O-1): a stopped delegator's run on the phone.
@@ -472,7 +473,8 @@ const setUp = async () => {
   let reviewer = null;
   let memberDelegated = null;
   await waitFor('the reviewer\'s delegation', async () => {
-    const nodes = treeNodes((await alpha.gql('query($id:String!){agentRunCollaboration(runId:$id)}', { id: ptm })).agentRunCollaboration);
+    // autobyteus-461 SR-084: a run's delegated runs are its tree's rows (`runTree`).
+    const nodes = treeNodes(asTaskExecutions(await readRunTree(alpha.gql, 'agent', ptm)));
     reviewer = nodes.find(node => node.address?.endsWith('/reviewer') && node.agentRunId)?.agentRunId ?? null;
     memberDelegated = nodes.find(node => node.address === '/fact_checker' && node.agentRunId)?.agentRunId ?? null;
     stack.ptmTreeNodes = nodes;
@@ -1555,7 +1557,7 @@ const runCases = async () => {
     // teammate's address keeps the own-team words.
     const SELF = 'is your own address; you can\'t delegate to yourself. Do the work yourself, or delegate it to another agent or agent team.';
     const TEAM = 'is in your own team; you can\'t delegate to it. Talk with it using send_message_to.';
-    const ptmNodes = async () => treeNodes((await alpha.gql('query($id:String!){agentRunCollaboration(runId:$id)}', { id: stack.ptm })).agentRunCollaboration)
+    const ptmNodes = async () => treeNodes(asTaskExecutions(await readRunTree(alpha.gql, 'agent', stack.ptm)))
       .filter(node => node.agentRunId || node.teamRunId).length;
     const leadCall = async (name, args) => {
       const before = calledResults(await stack.leadProjection()).length;
@@ -2300,7 +2302,7 @@ const runCases = async () => {
     let task = null;
     // autobyteus-461 rule 2: the Org's delegated runs are rows of its view, not of its configuration; the run is read by its
     // own run ID.
-    const orgView = async () => (await alpha.gql('query($id:String!){getAgentOrgRootHistory(orgRunId:$id){org}}', { id: orgRunId })).getAgentOrgRootHistory?.org;
+    const orgView = async () => asTaskExecutions(await readRunTree(alpha.gql, 'agent_org', orgRunId));
     await waitFor('the Org\'s task agent', async () => (task = treeNodes(await orgView()).find(node => node.agentRunId && /changelog_helper/.test(node.address ?? '')) ?? null) !== null, 60_000);
     let echoed = false;
     await waitFor('the task agent\'s answer naming the file', async () => (echoed = await storedHas(alpha, { runId: task.agentRunId }, `ECHO:`)), 60_000).catch(() => undefined);

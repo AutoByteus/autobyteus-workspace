@@ -698,14 +698,16 @@ suite("The collaboration contract's stories, run against the built server (autob
         const r = await ctx.call(M, "delegate_task", { recipient_address: "/research_team", node: "node-b", description: "Market study …" });
         const problem = ctx.bindings.bind("adhoc_task_7c7c", r.task_id as string); if (problem) throw new Error(problem);
         await ctx.bindRun("research_team_77aa", r.target_team_run_id as string, "B");
-        // The peer row in base's shapes (rule 1, SR-057): M's view lists node B's research team under M with its node. Its
-        // statuses are its own (SR-082, SR-083): M's run-status answer carries none of them; the peer run's own, through
+        // The peer row (SR-084): M's tree, built by node A, has node B's research team under M with its node and members.
+        // Its statuses are its own (SR-082, SR-083): M's run-status answer carries none of them; the peer run's own, through
         // its handle on node A, lists its agents.
-        const view = (await ctx.nodes.A!.gql(`query($id:String!){agentRunCollaboration(runId:$id)}`, { id: ctx.real(M) })).agentRunCollaboration as Rec;
-        const peer = ((view?.root_agent?.remote_task_executions ?? []) as Rec[]).find((row) => row.team_run_id === r.target_team_run_id);
-        expect(peer, `M's peer rows: ${JSON.stringify(view?.root_agent?.remote_task_executions ?? null).slice(0, 1500)}`).toBeTruthy();
-        expect(peer, JSON.stringify(peer)).toMatchObject({ node_id: ctx.nodes.B!.nodeId, delegator_agent_run_id: ctx.real(M) });
-        const peerAgents = new Set(((peer!.members ?? []) as Rec[]).map((member) => member.agent_run_id));
+        const tree = (await ctx.nodes.A!.gql(`query($k:String!,$r:String!){runTree(kind:$k,runId:$r)}`, { k: "agent", r: ctx.real(M) })).runTree as { rows: Rec[] };
+        const peer = tree.rows.find((row) => row.kind === "peer_team" && row.openTarget?.runId === r.target_team_run_id);
+        expect(peer, `M's tree rows: ${JSON.stringify(tree?.rows ?? null).slice(0, 1500)}`).toBeTruthy();
+        expect(peer, JSON.stringify(peer)).toMatchObject({ peer: { nodeId: ctx.nodes.B!.nodeId }, openTarget: { nodeId: ctx.nodes.B!.nodeId } });
+        expect(tree.rows.find((row) => row.key === peer!.parentKey)?.openTarget?.agentRunId, "the peer row hangs under M").toBe(ctx.real(M));
+        const peerAgents = new Set(tree.rows.filter((row) => row.parentKey === peer!.key).map((member) => member.openTarget?.agentRunId as string));
+        expect(peerAgents.size, "its members are rows under it").toBeGreaterThan(0);
         const statusSocket = new WebSocket(`${ctx.nodes.A!.url.replace(/^http/, "ws")}/ws/run-status`);
         ctx.nodes.A!.sockets.push(statusSocket);
         const statusFrames: Rec[] = [];

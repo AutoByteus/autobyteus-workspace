@@ -180,11 +180,9 @@ export const runStoppedDelegatorCases = async (probe) => {
     const nodeLists = async (root) => {
       const history = (await eta.gql('query{listWorkspaceRunHistory(limitPerAgent:20){agentDefinitions{agentName runs{runId isActive hasCollaboration}} teamDefinitions{teamDefinitionName runs{teamRunId isActive members{memberAddress agentRunId}}}}}', {})).listWorkspaceRunHistory;
       const listedAgentRuns = history.flatMap((ws) => ws.agentDefinitions.flatMap((d) => d.runs.map((r) => ({ agent: d.agentName, ...r }))));
-      const rootRows = root.kind === 'agent'
-        ? (await eta.gql('query($id:String!){agentRunCollaboration(runId:$id)}', { id: root.rootId }).catch((e) => ({ error: String(e.message ?? e) })))
-        : root.kind === 'team'
-          ? (await eta.gql('query($id:String!){getTeamRunResumeConfig(teamRunId:$id){executionTree}}', { id: root.rootId }).catch((e) => ({ error: String(e.message ?? e) })))
-          : (await eta.gql('query($id:String!){getAgentOrgRootHistory(orgRunId:$id){org}}', { id: root.rootId }).catch((e) => ({ error: String(e.message ?? e) })));
+      // autobyteus-461 SR-084: the root's rows are its tree's (`runTree`).
+      const rootRows = await eta.gql('query($k:String!,$r:String!){runTree(kind:$k,runId:$r)}', { k: root.kind === 'agent' ? 'agent' : root.kind === 'team' ? 'agent_team' : 'agent_org', r: root.rootId })
+        .catch((e) => ({ error: String(e.message ?? e) }));
       return { listedAgentRuns, workerListedAsAgentRun: listedAgentRuns.some((r) => r.runId === root.worker), rootRows: redact(JSON.stringify(rootRows)).slice(0, 4000) };
     };
     const openRow = async (row, label) => {

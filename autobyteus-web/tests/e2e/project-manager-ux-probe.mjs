@@ -20,6 +20,7 @@ import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
 import { createTaskLocatorCases } from './project-manager-ux-task-locator-cases.mjs';
 import { attachToBrowserContext, attachToProbeProcess, withNodeCredential } from './fixtures/probe-node-access.mjs';
+import { waitRunSocketReady } from './fixtures/run-socket-ready.mjs';
 // Every node needs a credential (autobyteus-437): the probe's nodes start with its launch credential, and the probe's
 // own calls and its desktop browser contexts carry it (fixtures/probe-node-access.mjs).
 attachToProbeProcess();
@@ -212,7 +213,10 @@ const sockets = [];
 const managerInput = async (root) => {
   const route = root.kind === 'agent' ? `agent/${root.rootId}` : root.kind === 'team' ? `agent-team/${root.rootId}` : `agent-org/${root.rootId}`;
   const socket = new WebSocket(`${stack.backendUrl.replace(/^http/, 'ws')}/ws/${route}`); sockets.push(socket);
+  const frames = [];
+  socket.on('message', (raw) => { try { frames.push(JSON.parse(String(raw))); } catch { /* not JSON */ } });
   await new Promise((resolve, reject) => { socket.once('open', resolve); socket.once('error', reject); });
+  await waitRunSocketReady(frames, route);
   const send = (content) => socket.send(JSON.stringify({ type: 'SEND_MESSAGE', payload: root.kind === 'org'
     ? { root_subject_kind: 'agent_org', root_run_id: root.rootId, target_agent_run_id: root.managerRunId, command_id: randomUUID(),
       message_id: randomUUID(), dedupe_key: randomUUID(), content, context_file_paths: [], image_urls: [] }
@@ -815,7 +819,7 @@ const orgRootUnhydrated = async () => {
     await line.waitFor({ timeout: 30000 });
     await line.click();
     await until('org worker conversation opened', async () => inWorkspace(page) && /You have a new task from/.test(await centerText(page)), 30000);
-    const workerRow = page.locator(`[data-test="agent-org-task-agent-row-${hosted.ingressAgentRunId}"]`);
+    const workerRow = page.locator(`[data-test="workspace-team-transient-execution-row"][data-agent-run-id="${hosted.ingressAgentRunId}"]`);
     const selected = await until('org worker row selected', () => isSelected(workerRow), 15000).catch(() => false);
     await shot(page, 'pmu-012-org-root-opened-cold');
     assertNoBrowserErrors(errors);

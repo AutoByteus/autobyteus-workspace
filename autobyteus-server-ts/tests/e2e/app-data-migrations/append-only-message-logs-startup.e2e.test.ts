@@ -19,6 +19,7 @@ import { flattenE2eConfiguredAgentExecutions } from "../helpers/team-run-metadat
 import { HUB_MESSAGES, ORG_MESSAGES, T0, TEAM_RUN_MESSAGES, writeOpenTaskRecordsOfReleasedData, writeReleasedDataRoot } from "../../fixtures/app-data-migrations/released-task-agent-layout-fixtures.js";
 import { readRootMessages, agentRunIdsOfViewTree } from "../../helpers/collaboration-participant-messages.js";
 import { builtServerLaunchEnvironment } from "../helpers/built-server-launch-credential.js";
+import { readRunTree } from "../helpers/run-tree-delegated.js";
 
 // The startup migration `20261018_append_only_message_logs_v1` through the BUILT Studio server (`dist/app.js`, the server the
 // desktop app embeds) on a faithful upgrade, with the real migration runner, its SQLite ledger and the production registry order.
@@ -216,13 +217,11 @@ const views = (server: Studio) => {
   const messagesOf = async (rootKind: "agent" | "agent_team" | "agent_org", rootRunId: string, tree: unknown) =>
     (await readRootMessages(server.gql, { rootKind, rootRunId, agentRunIds: agentRunIdsOfViewTree(tree) })) as unknown as Json[];
   return {
-    hub: async (id: string): Promise<Message[]> => (await messagesOf("agent", id,
-      (await server.gql(`query($id:String!){agentRunCollaboration(runId:$id)}`, { id })).agentRunCollaboration.root_agent.execution_tree)).map(fields),
-    team: async (id: string): Promise<Array<Message & { referenceIds: string[] }>> => (await messagesOf("agent_team", id,
-      (await server.gql(`query($id:String!){getTeamRunResumeConfig(teamRunId:$id){executionTree}}`, { id })).getTeamRunResumeConfig.executionTree))
+    // autobyteus-461 SR-084: a run's agents (its own and its delegated runs') are its tree's rows (views carry own parts only).
+    hub: async (id: string): Promise<Message[]> => (await messagesOf("agent", id, await readRunTree(server.gql, "agent", id))).map(fields),
+    team: async (id: string): Promise<Array<Message & { referenceIds: string[] }>> => (await messagesOf("agent_team", id, await readRunTree(server.gql, "agent_team", id)))
       .map((entry) => ({ ...fields(entry), referenceIds: (entry.referenceFiles as string[]).map((file) => rootReferenceId(entry.messageId as string, file)) })),
-    org: async (id: string): Promise<Message[]> => (await messagesOf("agent_org", id,
-      (await server.gql(`query($id:String!){getAgentOrgRunInspection(orgRunId:$id)}`, { id })).getAgentOrgRunInspection.root_org.execution_tree)).map(fields),
+    org: async (id: string): Promise<Message[]> => (await messagesOf("agent_org", id, await readRunTree(server.gql, "agent_org", id))).map(fields),
   };
 };
 /** The renderer's reference id of a hub or organization message (`agentOrgReferenceProjection.ts`). */

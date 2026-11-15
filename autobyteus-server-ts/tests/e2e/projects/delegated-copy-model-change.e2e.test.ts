@@ -16,6 +16,7 @@ import { until } from "../helpers/agy-runtime-error-fixture.js";
 import { flattenE2eConfiguredAgentExecutions } from "../helpers/team-run-metadata-helpers.js";
 import { grokAcpFixturePath } from "../helpers/grok-fake-cli.js";
 import { fileURLToPath } from "node:url";
+import { delegatedRunsTree } from "../helpers/run-tree-delegated.js";
 
 // A delegated copy's model changed by the user (delegated-copy-model-change SR-004..SR-007: REQ-001..REQ-009,
 // AC-001..AC-011) through the real Studio HTTP/GraphQL/WebSocket server, scoped MCP agent tools, the task lifecycle,
@@ -317,11 +318,14 @@ suite("A delegated copy's model changed by the user: stop, choose, resume (real 
     const viewRoute = kind === "agent" ? "agent-collaboration" : kind === "team" ? "agent-team" : "agent-org";
     const isSnapshot = (frame: Frame) => frame.type === (kind === "team" ? "TEAM_EXECUTION_VIEW_SNAPSHOT" : "ROOT_EXECUTION_VIEW_SNAPSHOT");
     const view: { socket: WebSocket; frames: Frame[] } = await connect(viewRoute, rootId, (frames) => frames.some(isSnapshot));
-    const storedTree = async () => kind === "agent"
+    /** The root's own parts as its stored config holds them. */
+    const storedOwnTree = async () => kind === "agent"
       ? (await graphql(`query($id:String!){agentRunCollaboration(runId:$id)}`, { id: rootId })).agentRunCollaboration?.root_agent?.execution_tree ?? null
       : kind === "team"
         ? (await graphql(`query($id:String!){getTeamRunResumeConfig(teamRunId:$id){executionTree}}`, { id: rootId })).getTeamRunResumeConfig.executionTree
         : (await graphql(`query($id:String!){getAgentOrgRootHistory(orgRunId:$id){org}}`, { id: rootId })).getAgentOrgRootHistory.org;
+    // autobyteus-461 SR-084: its own parts, and its delegated runs from its tree (its view and config carry its own parts only).
+    const storedTree = async () => ({ own: await storedOwnTree(), delegated: await delegatedRunsTree(graphql, kind, rootId) });
     /** The conversation of the Manager, or of any agent of the run (a copy member, a collaborator) by run ID and address. */
     const conversationOf = async (agentRunId: string, address: string) => {
       // A run this root (or one of its runs) delegated to is read by its own run (autobyteus-461 rule 2).
@@ -368,7 +372,7 @@ suite("A delegated copy's model changed by the user: stop, choose, resume (real 
       view.frames = reconnected.frames;
     };
     const rootKind = kind === "agent" ? "AGENT" : kind === "team" ? "AGENT_TEAM" : "AGENT_ORG";
-    return { kind, rootId, managerRunId, rootKind, view, storedTree, conversationOf, managerCalls, memberCalls, reopen };
+    return { kind, rootId, managerRunId, rootKind, view, storedTree, storedOwnTree, conversationOf, managerCalls, memberCalls, reopen };
   };
   type Root = Awaited<ReturnType<typeof startRoot>>;
   /** The Manager messages a copy by run ID (a stopped copy is restored first, REQ-004). */
@@ -434,7 +438,7 @@ suite("A delegated copy's model changed by the user: stop, choose, resume (real 
     await terminate("team", root.rootId);
     await stop("AGENT_TEAM", root.rootId, { agentRunId: copyRunId });
     await until(async () => !(await isRunActive({ agentRunId: copyRunId })), "team: copy stopped by its own Stop", 30_000);
-    const workerTree = async () => flattenE2eConfiguredAgentExecutions(await root.storedTree()).find((member) => member.memberAddress === "/worker")!;
+    const workerTree = async () => flattenE2eConfiguredAgentExecutions(await root.storedOwnTree()).find((member) => member.memberAddress === "/worker")!;
     const workerPatch = { scopeKind: "CONFIGURED_AGENT", scopeAddress: "/worker", runtimeKind: AGY, llmModelIdentifier: ALT, llmConfig: null };
     const copyBefore = JSON.stringify(await agentMetadata(copyRunId));
     await expect(update("AGENT_TEAM", root.rootId, [{ agentRunId: copyRunId, selection: choice(NOT_OFFERED) }]))

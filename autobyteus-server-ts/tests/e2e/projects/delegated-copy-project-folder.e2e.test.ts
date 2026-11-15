@@ -13,6 +13,7 @@ import { calledResults, callTool, objectsIn, segment, startCollaborationHarness,
   type CollaborationHarness, type Rec } from "../helpers/collaboration-root-harness.js";
 import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
 import { builtServerLaunchEnvironment } from "../helpers/built-server-launch-credential.js";
+import { delegatedRunsTree } from "../helpers/run-tree-delegated.js";
 
 // delegated-copy-project-workspace (autobyteus-97): a new local copy runs in its Task's Project's first linked folder.
 // Real Studio HTTP/WebSocket/GraphQL server, scoped MCP agent tools, Project/Task services, AGY backend. The external AGY CLI
@@ -337,7 +338,8 @@ suite("Copies keep their folders across a real process restart (built server, sc
     expect(inF.delegated, JSON.stringify(inF)).toBe(true);
     const copyF = inF.target_agent_run_id as string;
 
-    const treeOf = async (server: Server) => (await server.graphql(`query($id:String!){agentRunCollaboration(runId:$id)}`, { id: managerId })).agentRunCollaboration?.root_agent?.execution_tree;
+    // autobyteus-461 SR-084: the Manager's delegated runs, from its tree (each row carries its launch's folder).
+    const treeOf = async (server: Server) => delegatedRunsTree((query, variables) => server.graphql(query, variables), "agent", managerId);
     const folderReadings = async (server: Server) => { const tree = await treeOf(server);
       return { copyG: recordedFolders(nodeOf(tree, copyG)), copyF: recordedFolders(nodeOf(tree, copyF)) }; };
     const live = await folderReadings(first);

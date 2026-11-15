@@ -42,6 +42,7 @@ import { randomUUID } from 'node:crypto';
 import { attachToBrowserContext, ownerSocketUrl } from './fixtures/probe-node-access.mjs';
 import { waitForDevServerReady } from './fixtures/dev-server-ready.mjs';
 import { openRunStatus } from './fixtures/run-status-client.mjs';
+import { readRunTree } from './fixtures/run-tree.mjs';
 
 /** autobyteus-461 SR-082: whether a run is active is its own answer (the status poll is gone). */
 const activeOn = (node, runId) => node.gql('query($id:String!){getAgentRunResumeConfig(runId:$id){isActive}}', { id: runId }).then((r) => ({ isActive: r.getAgentRunResumeConfig?.isActive ?? null }))
@@ -59,6 +60,8 @@ const HISTORY_OP = 'ListWorkspaceRunHistory';
  * `{ root_subject_kind, root_run_id, root_agent: { execution_tree, closed_task_executions, … } }`.
  */
 const listedOnNode = (view, runId) => {
+  // autobyteus-461 SR-084: the node's rows are the run's tree (`runTree`); a closed Task's stopped copy is not among them.
+  if (view?.rows) return JSON.stringify(view.rows).includes(`"${runId}"`);
   const root = view?.root_agent ?? null;
   return JSON.stringify(root?.execution_tree ?? null).includes(`"${runId}"`)
     && !JSON.stringify(root?.closed_task_executions ?? []).includes(`"${runId}"`);
@@ -160,7 +163,7 @@ export const runClosedTaskRowsCases = async (probe) => {
       assert(writerRun && teamRun && liveLead && leadTaskRun, 'the delegations on delta', { writerRun, teamRun, liveLead, leadTaskRun });
       evidence.closedTaskRows = { runs: { ptm, other, writerRun, teamRun, liveTeam: liveTeam.teamRunId, liveLead, leadTaskRun }, tasks: { a: taskA.taskKey, b: taskB.taskKey, c: taskC.taskKey } };
       const closeTask = (by, taskId, status) => callTool(by, 'update_task', { task_id: taskId, status });
-      const viewOnDelta = async (runId) => (await delta.gql('query($id:String!){agentRunCollaboration(runId:$id)}', { id: runId })).agentRunCollaboration;
+      const viewOnDelta = (runId) => readRunTree(delta.gql, 'agent', runId);
 
       // ---- the phones -------------------------------------------------------------------------------------------------
       phoneBrowser = await chromium.launch({ headless: true, executablePath, args: ['--no-sandbox', '--disable-dev-shm-usage', `--host-resolver-rules=MAP ${PHONE_HOST} 127.0.0.1`] });
@@ -492,7 +495,7 @@ export const runClosedTaskRowsCases = async (probe) => {
         await sleep(12_000);
         const quietFrom = Date.now();
         await sleep(12_000);
-        const before = { listed: await desktopListed(), nodeListed: listedOnNode((await alpha.gql('query($id:String!){agentRunCollaboration(runId:$id)}', { id: stack.ptm })).agentRunCollaboration, copy), viewReads: reads(net, quietFrom).filter(e => e.op === VIEW_OP && e.runId === stack.ptm).length,
+        const before = { listed: await desktopListed(), nodeListed: listedOnNode(await readRunTree(alpha.gql, 'agent', stack.ptm), copy), viewReads: reads(net, quietFrom).filter(e => e.op === VIEW_OP && e.runId === stack.ptm).length,
           statusReadsNamingPtm: reads(net, quietFrom).filter(e => e.op === STATUS_OP && e.runIds?.includes(stack.ptm)).length };
         await page.screenshot({ path: path.join(outputDir, 'MSP-35-desktop-stopped-host-before.png') });
         const created = (await alpha.gql('mutation($i:CreateAgentRunInput!){createAgentRun(input:$i){success message runId}}', { i: { agentDefinitionId: stack.ids.ptm, ...stack.runConfig } })).createAgentRun;
@@ -508,7 +511,7 @@ export const runClosedTaskRowsCases = async (probe) => {
         const todoFrom = Date.now();
         await stack.agentCall(created.runId, 'update_task', { task_id: taskE.taskId, status: 'TODO' });
         await sleep(15_000);
-        const nodeListed = listedOnNode((await alpha.gql('query($id:String!){agentRunCollaboration(runId:$id)}', { id: stack.ptm })).agentRunCollaboration, copy);
+        const nodeListed = listedOnNode(await readRunTree(alpha.gql, 'agent', stack.ptm), copy);
         const afterTodo = { status: await statusOf(), nodeListed, listed: await desktopListed(), viewReads: reads(net, todoFrom).filter(e => e.op === VIEW_OP && e.runId === stack.ptm).length };
         const details = { copy, manager: created.runId, taskE: taskE.taskKey, openRun: new URL(page.url()).searchParams.get('id'), before, afterClose, afterTodo };
         const failures = [

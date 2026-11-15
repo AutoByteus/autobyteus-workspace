@@ -75,7 +75,8 @@ suite("An unreadable delegated run's own file is contained to that run (rule 7; 
   /** A delegated run read by its own path (rule 2). */
   const ownRead = (runId: string) => query(`query($r:String!){getRunProjection(runId:$r){runId conversation}}`, { r: runId });
   const tokenSummary = (runId: string) => query(`query($r:String!){getStandaloneRunTokenUsageSummary(runId:$r){runId}}`, { r: runId });
-  const collaboration = (runId: string) => query(`query($r:String!){agentRunCollaboration(runId:$r)}`, { r: runId });
+  // A delegator's view and its tree (autobyteus-461 SR-084: its delegated rows are the tree's; the view carries its own parts).
+  const collaboration = (runId: string) => query(`query($r:String!){agentRunCollaboration(runId:$r) runTree(kind:"agent",runId:$r)}`, { r: runId });
 
   beforeAll(async () => {
     h = await startCollaborationHarness("uc-e2e");

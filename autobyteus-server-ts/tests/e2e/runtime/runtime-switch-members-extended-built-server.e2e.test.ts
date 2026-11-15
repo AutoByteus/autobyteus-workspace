@@ -14,6 +14,7 @@ import {
   testRuntimeRoot,
 } from "../../../../test-support/live-e2e/test-runtime-bootstrap.mjs";
 import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
+import { delegatedRunsTree, readRunTree } from "../helpers/run-tree-delegated.js";
 
 // Agent runtime switch of Org members and delegated copies beyond runtime-switch-members-built-server (autobyteus-348, API/E2E):
 // failed starts, restarts, Grok and native targets, and Team copies activated in different orders, on the BUILT server
@@ -397,7 +398,8 @@ describe.runIf(ENABLED)("agent runtime switch of Org members and delegated copie
       const result = await host.call("delegate_task", { recipient_address: `/${segmentName(duo.name)}`, description: "Review the notes." }, `host delegates Team copy ${label}`);
       expect(result.delegated, JSON.stringify(result)).toBe(true);
       const teamRunId = result.target_team_run_id as string;
-      const tree = (await gql("query($id: String!) { agentRunCollaboration(runId: $id) }", { id: host.runId })).agentRunCollaboration.root_agent.execution_tree as Json;
+      // autobyteus-461 SR-084: the delegated runs come from the run's tree (its view carries its own parts only).
+      const tree = await delegatedRunsTree((query, variables) => gql(query, variables), "agent", host.runId);
       const execution = (tree.taskExecutions as Json[]).find((entry) => entry.teamRunId === teamRunId)!;
       const byName = (name: string) => (execution.members as Json[]).find((entry) => String(entry.address).endsWith(`/${name}`))!.agentRunId as string;
       return { teamRunId, lead: byName("lead"), worker: byName("worker") };
@@ -457,7 +459,7 @@ describe.runIf(ENABLED)("agent runtime switch of Org members and delegated copie
     expect(active(dirOf(three.worker)).some((record) => record.trace_type === "system_instruction"), "it started as a native agent (its own instruction)").toBe(true);
     await wake(three.lead, "lead-three"); await switched(three.lead, "lead three", agyBefore.lead3!);
     // the host's saved tree records the Team-level choice for every copy
-    const saved = JSON.stringify((await gql("query($id: String!) { agentRunCollaboration(runId: $id) }", { id: host.runId })).agentRunCollaboration);
+    const saved = JSON.stringify(await readRunTree((query, variables) => gql(query, variables), "agent", host.runId));
     expect((saved.match(new RegExp(`"(runtimeKind|runtime_kind)":"${NATIVE}"`, "g")) ?? []).length, "the Team-level runtime choice is recorded").toBeGreaterThan(0);
   }, 900_000);
 

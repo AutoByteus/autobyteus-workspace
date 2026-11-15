@@ -17,6 +17,7 @@ import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.
 import { until } from "../helpers/agy-runtime-error-fixture.js";
 import { buildTeamLocalAgentDefinitionId } from "../../../src/agent-team-definition/utils/team-local-definition-id.js";
 import { buildAgentOrgOwnedDefinitionId } from "../../../src/agent-org-definition/utils/agent-org-owned-definition-id.js";
+import { delegatedRunsTree } from "../helpers/run-tree-delegated.js";
 
 // agent-package-auto-refresh at the real server/wire boundary: the Studio HTTP/GraphQL server, the
 // `/ws/agent-package-definitions` feed with remote-access auth, the package folder watcher on real temp package folders
@@ -645,8 +646,8 @@ describe("Agent package definitions live refresh at the real server/wire boundar
     const managerCalls = async (content: string) => toolText(await ask(managerSocket, managerRunId, content, "CALLED:"));
     const listNames = async () => (JSON.parse((await managerCalls(callTool("list_available_agents", {}))).text).agents as Array<{ name: string }>)
       .map((entry) => entry.name);
-    const tree = async () => (await graphql(`query($id:String!){agentRunCollaboration(runId:$id)}`, { id: managerRunId }))
-      .agentRunCollaboration?.root_agent?.execution_tree ?? null;
+    // autobyteus-461 SR-084: the delegated runs come from the run's tree (its view carries its own parts only).
+    const tree = async () => delegatedRunsTree(graphql, "agent", managerRunId);
     // A delegated copy is a run of its own (autobyteus-461 rule 2): read by its own run, never through the manager.
     const memberConversation = async (_address: string, agentRunId: string) =>
       (await projectionByOwnRun(graphql, path.join(dataDir, "memory"), agentRunId))?.conversation;

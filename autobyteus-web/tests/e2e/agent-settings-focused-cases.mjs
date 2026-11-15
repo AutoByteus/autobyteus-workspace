@@ -250,7 +250,7 @@ export function registerAgentSettingsFocusedCases(h) {
     /** An Org's Settings have their own back button. */
     const orgBack = async (p) => { const back = p.locator(sel('agent-org-config-back-to-events')); if (await back.isVisible().catch(() => false)) { await back.click(); await settle(p, 1000) } }
     const memberButton = (p, id) => p.locator(sel(`agent-org-agent-row-${id}`)).first()
-    const copyButton = (p, id) => p.locator(sel(`agent-org-task-agent-row-${id}`)).first()
+    const copyButton = (p, id) => p.locator(`${sel('workspace-team-transient-execution-row')}[data-agent-run-id="${id}"]`).first()
     const expandTeamRows = async (p) => {
       for (const team of await p.locator('[data-test^="agent-org-team-row-"]').all()) {
         if (await team.getAttribute('aria-expanded').catch(() => null) === 'false') await team.click().catch(() => {})

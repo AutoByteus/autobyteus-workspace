@@ -186,7 +186,6 @@ const teamTree = {
     team_run_id: 'team-run-browser-1',
     coordinator_address: '/coordinator',
     default_launch_configuration: launch('low'),
-    task_executions: [],
     members: [
       {
         kind: 'configured_agent',
@@ -300,7 +299,6 @@ const operationResponse = async (operationName, variables) => {
       teamRunId: 'team-run-browser-1',
       isActive: false,
       executionTree: clone(state.teamTree),
-      closedTaskExecutions: [],
       modelConfigEditability: { editable: true, reason: null },
     } } }
   }

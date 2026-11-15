@@ -42,6 +42,8 @@ import { spawn } from 'node:child_process';
 import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
 import { attachToBrowserContext, attachToProbeProcess, withNodeCredential } from './fixtures/probe-node-access.mjs';
+import { waitRunSocketReady } from './fixtures/run-socket-ready.mjs';
+import { readRunTree, asTaskExecutions } from './fixtures/run-tree.mjs';
 attachToProbeProcess();
 
 const require = createRequire(import.meta.url);
@@ -201,7 +203,10 @@ const sockets = [];
 const managerInput = async (root) => {
   const route = root.kind === 'agent' ? `agent/${root.rootId}` : root.kind === 'team' ? `agent-team/${root.rootId}` : `agent-org/${root.rootId}`;
   const socket = new WebSocket(`${stack.backendUrl.replace(/^http/, 'ws')}/ws/${route}`); sockets.push(socket);
+  const frames = [];
+  socket.on('message', (raw) => { try { frames.push(JSON.parse(String(raw))); } catch { /* not JSON */ } });
   await new Promise((resolve, reject) => { socket.once('open', resolve); socket.once('error', reject); });
+  await waitRunSocketReady(frames, route);
   await sleep(300);
   const send = (content) => socket.send(JSON.stringify({ type: 'SEND_MESSAGE', payload: root.kind === 'org'
     ? { root_subject_kind: 'agent_org', root_run_id: root.rootId, target_agent_run_id: root.managerRunId, command_id: randomUUID(),
@@ -215,18 +220,10 @@ const managerInput = async (root) => {
  * agent run's collaboration view, the team's resume config tree, the org's history item. Rows carry `startedAt`; the root's
  * own members do not.
  */
-const viewTreeOf = async (root) => root.kind === 'agent'
-  ? (await gql('query($id:String!){agentRunCollaboration(runId:$id)}', { id: root.rootId })).agentRunCollaboration
-  : root.kind === 'team' ? (await gql('query($id:String!){getTeamRunResumeConfig(teamRunId:$id){executionTree}}', { id: root.rootId })).getTeamRunResumeConfig.executionTree
-    : (await gql('query($id:String!){getAgentOrgRootHistory(orgRunId:$id){org}}', { id: root.rootId })).getAgentOrgRootHistory?.org;
-const childRunIds = async (root) => {
-  const found = [];
-  const visit = (v) => { if (Array.isArray(v)) v.forEach(visit); else if (v && typeof v === 'object') {
-    const startedAt = v.startedAt ?? v.started_at; const id = v.agentRunId ?? v.agent_run_id ?? v.coordinatorAgentRunId ?? v.coordinator_agent_run_id;
-    if (startedAt && id && id !== root.managerRunId && !found.includes(id)) found.push(id); Object.values(v).forEach(visit); } };
-  visit(await viewTreeOf(root));
-  return found;
-};
+// autobyteus-461 SR-084: a run's delegated runs are its tree's rows (`runTree`); its view carries its own parts only.
+const viewTreeOf = async (root) => asTaskExecutions(await readRunTree(gql, root.kind, root.rootId));
+const childRunIds = async (root) => (await viewTreeOf(root)).taskExecutions
+  .map((node) => node.agentRunId ?? node.coordinatorAgentRunId).filter((id) => id && id !== root.managerRunId);
 /** A root of one kind whose Manager delegated a Task (a project Task) to the worker; returns the worker's run ID. */
 const setupRoot = async (kind, label) => {
   const { ids, names } = await definitions(label);
@@ -292,7 +289,7 @@ const openRoot = async (page, root, names) => {
   await runRow.click();
   return runRow;
 };
-const childRow = (kind, agentRunId) => kind === 'org' ? `[data-test="agent-org-task-agent-row-${agentRunId}"]`
+const childRow = (kind, agentRunId) => kind === 'org' ? `[data-test="workspace-team-transient-execution-row"][data-agent-run-id="${agentRunId}"]`
   : `[data-test="workspace-team-transient-execution-row"][data-agent-run-id="${agentRunId}"]`;
 const managerRow = (kind, root, runRow) => kind === 'team' ? `[data-test="workspace-team-member-${root.rootId}-/manager"]`
   : kind === 'org' ? `[data-test="agent-org-agent-row-${root.managerRunId}"]` : runRow;
@@ -371,7 +368,7 @@ const childWhileStopped = async (s, page, out) => {
   await send(page, callTool('delegate_task', { recipient_address: `/${segment(s.names.helper)}`, description: 'Collect the links.' }));
   const helperId = await until('helper delegated', async () => {
     // The worker's own children, from its own view (rule 1: a delegated run's view has its rows like any run's).
-    const tree = (await gql('query($id:String!){agentRunCollaboration(runId:$id)}', { id: s.worker }).catch(() => null));
+    const tree = await readRunTree(gql, 'agent', s.worker).catch(() => null);
     const ids = JSON.stringify(tree ?? {}).match(new RegExp(`${segment(s.names.helper)}_[0-9a-f]+`, 'g'));
     return ids?.[0] ?? null;
   }, 90000).catch(() => null);
@@ -385,7 +382,7 @@ const childWhileStopped = async (s, page, out) => {
     assert(false, `${root.kind}: the worker did not delegate to the helper`, out);
   }
   // REQ-002: a run delegated by a delegated run is shown under the run that delegated it (the worker's row), live.
-  await page.locator(`[data-agent-run-id="${helperId}"], [data-test="agent-org-task-agent-row-${helperId}"]`).first().waitFor({ state: 'visible', timeout: 30000 })
+  await page.locator(`[data-agent-run-id="${helperId}"]`).first().waitFor({ state: 'visible', timeout: 30000 })
     .catch(async (error) => {
       out.helperRunId = helperId;
       out.rowsShown = await page.locator('[data-agent-run-id]').evaluateAll((els) => els.map((el) => el.getAttribute('data-agent-run-id'))).catch(() => null);
@@ -644,7 +641,7 @@ const caseRunningTeamRow = async () => {
     try {
       await openRoot(page, root, names);
       const teamRow = kind === 'org'
-        ? page.locator('[data-test^="agent-org-task-team-row-"]').first()
+        ? page.locator('[data-test="workspace-team-transient-execution-row"][data-transient-kind="task_team"]').first()
         : page.locator(`[data-test="workspace-team-transient-execution-row"][data-node-kind="agent_team"][data-member-address="/${segment(names.squad)}"]`).first();
       await until(`${kind}: the delegated Team's row`, async () => {
         if (await teamRow.isVisible().catch(() => false)) return true;

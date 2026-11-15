@@ -410,7 +410,7 @@ export function registerDelegatedCopyOwnFileCases(h) {
     await backToConversation(page)
     // AC-004: the Org context of each agent copy (opened from its sidebar row) and of the slot.
     for (const id of [r.cw, r.cw2]) {
-      const row = page.locator(sel(`agent-org-task-agent-row-${id}`)).first()
+      const row = page.locator(`${sel('workspace-team-transient-execution-row')}[data-agent-run-id="${id}"]`).first()
       await waitFor(`Org sidebar row ${id}`, async () => row.isVisible().catch(() => false), 60000, 1000)
       await row.click(); await settle(page, 1500)
     }

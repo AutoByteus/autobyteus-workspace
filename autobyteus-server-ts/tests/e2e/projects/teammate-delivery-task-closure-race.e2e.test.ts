@@ -19,6 +19,7 @@ import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.
 import { readRootMessages, agentRunIdsOfViewTree } from "../../helpers/collaboration-participant-messages.js";
 import { until } from "../helpers/agy-runtime-error-fixture.js";
 import { flattenE2eConfiguredAgentExecutions } from "../helpers/team-run-metadata-helpers.js";
+import { delegatedRunsTree } from "../helpers/run-tree-delegated.js";
 
 // A Task closing while a teammate message is being saved (agent-input-delivery-simplification SR-006 REQ-012, AC-012,
 // DEC-005; DEC-001 = A) through the real Studio HTTP/WebSocket server, scoped MCP agent tools, Task services, roots,
@@ -348,12 +349,12 @@ suite("A Task closing while a teammate message is being saved never fail-stops t
     /** The root's saved messages as freshly opened Team tabs load them (autobyteus-358: per participant; its own Manager always included,
      * since an Agent root's tree holds only the runs it delegated to). */
     const snapshotMessages = async (): Promise<string[]> => {
-      const view = await connect(viewRoute, rootId, (frames) => frames.some(isSnapshot));
-      const payload = view.frames.find(isSnapshot)!.payload;
+      // autobyteus-461 SR-084: the participants are the view's tree rows (RUN_TREE_SNAPSHOT follows its own snapshot).
+      const view = await connect(viewRoute, rootId, (frames) => frames.some(isSnapshot) && frames.some((frame) => frame.type === "RUN_TREE_SNAPSHOT"));
+      const rows = view.frames.find((frame) => frame.type === "RUN_TREE_SNAPSHOT")!.payload.rows;
       view.socket.close();
-      const body = kind === "agent" ? payload.root_agent : kind === "org" ? payload.root_org : payload;
       const list = await readRootMessages(graphql, { rootKind: kind === "agent" ? "agent" : kind === "org" ? "agent_org" : "agent_team",
-        rootRunId: rootId, agentRunIds: [...new Set([managerRunId, ...agentRunIdsOfViewTree(body.execution_tree)])] });
+        rootRunId: rootId, agentRunIds: [...new Set([managerRunId, ...agentRunIdsOfViewTree(rows)])] });
       return list.map((message) => String(message.content));
     };
     const send = (agentRunId: string, content: string) => {
@@ -362,11 +363,8 @@ suite("A Task closing while a teammate message is being saved never fail-stops t
         command_id: randomUUID(), message_id: randomUUID(), dedupe_key: randomUUID(), content, context_file_paths: [], image_urls: [] } }));
       else sendE2eSendMessageCommand(kind === "agent" ? channels.input!.socket : channels.view.socket, { agent_run_id: agentRunId, content });
     };
-    const liveTree = async () => {
-      if (kind === "agent") return (await graphql(`query($id:String!){agentRunCollaboration(runId:$id)}`, { id: rootId })).agentRunCollaboration?.root_agent?.execution_tree ?? null;
-      if (kind === "team") return (await graphql(`query($id:String!){getTeamRunResumeConfig(teamRunId:$id){executionTree}}`, { id: rootId })).getTeamRunResumeConfig.executionTree;
-      return (await graphql(`query($id:String!){getAgentOrgRootHistory(orgRunId:$id){org}}`, { id: rootId })).getAgentOrgRootHistory.org;
-    };
+    // autobyteus-461 SR-084: the root's delegated runs at every depth, from its tree (its view carries its own parts only).
+    const liveTree = async () => delegatedRunsTree(graphql, kind, rootId);
     const conversationOf = async (agentRunId: string, address: string) => {
       // A run this root (or one of its runs) delegated to is read by its own run (autobyteus-461 rule 2).
       const ownRead = await delegatedConversation(graphql, path.join(dataDir, "memory"), rootId, agentRunId);

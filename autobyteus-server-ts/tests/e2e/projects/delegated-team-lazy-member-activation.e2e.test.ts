@@ -13,6 +13,7 @@ import { startStudioE2eRuntimeServer } from "../helpers/studio-runtime-test-serv
 import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
 import { until } from "../helpers/agy-runtime-error-fixture.js";
 import { flattenE2eConfiguredAgentExecutions } from "../helpers/team-run-metadata-helpers.js";
+import { delegatedRunsTree } from "../helpers/run-tree-delegated.js";
 
 // Delegated Team copies start only the member that work reaches (delegated-team-member-lazy-activation SR-002:
 // REQ-001..REQ-006, AC-001..AC-005, QR-001) through the real Studio HTTP/WebSocket server, scoped MCP agent tools,
@@ -349,11 +350,8 @@ suite("Delegated Team copies start only the members that work reaches, in every 
         command_id: randomUUID(), message_id: randomUUID(), dedupe_key: randomUUID(), content, context_file_paths: [], image_urls: [] } }));
       else sendE2eSendMessageCommand(kind === "agent" ? channels.input!.socket : channels.view.socket, { agent_run_id: managerRunId, content });
     };
-    const liveTree = async () => {
-      if (kind === "agent") return (await graphql(`query($id:String!){agentRunCollaboration(runId:$id)}`, { id: rootId })).agentRunCollaboration?.root_agent?.execution_tree ?? null;
-      if (kind === "team") return (await graphql(`query($id:String!){getTeamRunResumeConfig(teamRunId:$id){executionTree}}`, { id: rootId })).getTeamRunResumeConfig.executionTree;
-      return (await graphql(`query($id:String!){getAgentOrgRootHistory(orgRunId:$id){org}}`, { id: rootId })).getAgentOrgRootHistory.org;
-    };
+    // autobyteus-461 SR-084: the root's delegated runs at every depth, from its tree (its view carries its own parts only).
+    const liveTree = async () => delegatedRunsTree(graphql, kind, rootId);
     const conversationOf = async (agentRunId: string, address: string) => {
       // A run this root (or one of its runs) delegated to is read by its own run (autobyteus-461 rule 2).
       const ownRead = await delegatedConversation(graphql, path.join(dataDir, "memory"), rootId, agentRunId);

@@ -13,6 +13,7 @@ import { startStudioE2eRuntimeServer } from "../helpers/studio-runtime-test-serv
 import { buildE2eClientCommandIds, sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
 import { until } from "../helpers/agy-runtime-error-fixture.js";
 import { flattenE2eConfiguredAgentExecutions } from "../helpers/team-run-metadata-helpers.js";
+import { delegatedRunsTree } from "../helpers/run-tree-delegated.js";
 
 // The collaboration model (collaboration-model-contract REQ-001..REQ-004, AC-001..AC-006): inside your run you message;
 // outside your run you delegate first and then message the copy by its run ID; messaging never creates a run.
@@ -165,11 +166,8 @@ suite("Collaboration model: message inside, delegate outside (real HTTP/WS/Graph
         content, context_file_paths: [], image_urls: [], ...buildE2eClientCommandIds() } }));
       else sendE2eSendMessageCommand(kind === "agent" ? inputChannel!.socket : view.socket, { agent_run_id: agentRunId, content });
     };
-    const liveTree = async () => {
-      if (kind === "agent") return (await graphql(`query($id:String!){agentRunCollaboration(runId:$id)}`, { id: rootId })).agentRunCollaboration?.root_agent?.execution_tree ?? null;
-      if (kind === "team") return (await graphql(`query($id:String!){getTeamRunResumeConfig(teamRunId:$id){executionTree}}`, { id: rootId })).getTeamRunResumeConfig.executionTree;
-      return (await graphql(`query($id:String!){getAgentOrgRootHistory(orgRunId:$id){org}}`, { id: rootId })).getAgentOrgRootHistory.org;
-    };
+    // autobyteus-461 SR-084: the root's delegated runs at every depth, from its tree (its view carries its own parts only).
+    const liveTree = async () => delegatedRunsTree(graphql, kind, rootId);
     const conversationOf = async (agentRunId: string, address: string) => {
       // A run this root (or one of its runs) delegated to is read by its own run (autobyteus-461 rule 2).
       const ownRead = await delegatedConversation(graphql, path.join(dataDir, "memory"), rootId, agentRunId);

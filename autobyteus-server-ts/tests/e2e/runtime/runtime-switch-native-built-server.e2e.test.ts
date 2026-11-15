@@ -10,6 +10,7 @@ import WebSocket from "ws";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
 import { builtServerLaunchEnvironment } from "../helpers/built-server-launch-credential.js";
+import { readRunTree } from "../helpers/run-tree-delegated.js";
 
 // Agent runtime switch to and from the NATIVE runtime and to Grok, the stopped-run settings, a failed attempt and a server
 // restart, on the BUILT server (autobyteus-316: REQ-001, REQ-002, REQ-010, REQ-011, REQ-013, REQ-014; AC-001, AC-002, AC-009,
@@ -510,7 +511,8 @@ describe.runIf(ENABLED)("agent runtime switch, native runtime and stopped-run se
       pendingRuntimeSwitch: { from: expect.objectContaining({ runtimeKind: AGY, platformAgentRunId: hostBefore.platformAgentRunId }) } });
     // The copy keeps its own runtime; its chosen model is recorded in its own file, and the host's view row shows it.
     expect(await metadata(copyId)).toMatchObject({ runtimeKind: AGY, llmModelIdentifier: AGY_ALT });
-    const tree = JSON.stringify((await gql("query($id: String!) { agentRunCollaboration(runId: $id) }", { id: hostId })).agentRunCollaboration ?? {});
+    // autobyteus-461 SR-084: the delegated runs come from the run's tree (its view carries its own parts only).
+    const tree = JSON.stringify(await readRunTree((query, variables) => gql(query, variables), "agent", hostId));
     expect(tree).toContain(AGY_ALT);
     expect(tree).toContain(copyId);
 
@@ -520,7 +522,7 @@ describe.runIf(ENABLED)("agent runtime switch, native runtime and stopped-run se
     expect(activeRecords(hostId)[0]).toMatchObject({ trace_type: "system_task_notification", correlation_id: key });
     expect(await metadata(hostId)).toMatchObject({ runtimeKind: NATIVE });
     expect(await metadata(copyId), "the copy was not touched by the host's switch").toMatchObject({ runtimeKind: AGY });
-    expect(JSON.stringify((await gql("query($id: String!) { agentRunCollaboration(runId: $id) }", { id: hostId })).agentRunCollaboration ?? {})).toContain(copyId);
+    expect(JSON.stringify(await readRunTree((query, variables) => gql(query, variables), "agent", hostId))).toContain(copyId);
   }, 300_000);
 
   it("RS-04: a pending switch survives a server restart; an activated switch whose notice was not yet delivered still delivers it, once, after a restart", async () => {

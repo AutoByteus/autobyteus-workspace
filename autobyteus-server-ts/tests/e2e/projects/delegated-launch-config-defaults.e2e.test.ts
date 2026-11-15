@@ -16,6 +16,7 @@ import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.
 import { until } from "../helpers/agy-runtime-error-fixture.js";
 import { flattenE2eConfiguredAgentExecutions } from "../helpers/team-run-metadata-helpers.js";
 import { grokAcpFixturePath } from "../helpers/grok-fake-cli.js";
+import { delegatedRunsTree, withRecordedSources } from "../helpers/run-tree-delegated.js";
 
 // Delegated copies honor agent and team launch defaults (delegated-launch-config-defaults SR-002:
 // REQ-001..REQ-008, AC-001..AC-009, AC-015 shape) through the real Studio HTTP/GraphQL/WebSocket server, scoped MCP
@@ -289,11 +290,9 @@ suite("Delegated copies honor agent and team launch defaults in every root (real
         message_id: randomUUID(), dedupe_key: randomUUID(), content, context_file_paths: [], image_urls: [], ...extra } }));
       else sendE2eSendMessageCommand(kind === "agent" ? channels.input!.socket : channels.view.socket, { agent_run_id: managerRunId, content, ...extra });
     };
-    const liveTree = async () => {
-      if (kind === "agent") return (await graphql(`query($id:String!){agentRunCollaboration(runId:$id)}`, { id: rootId })).agentRunCollaboration?.root_agent?.execution_tree ?? null;
-      if (kind === "team") return (await graphql(`query($id:String!){getTeamRunResumeConfig(teamRunId:$id){executionTree}}`, { id: rootId })).getTeamRunResumeConfig.executionTree;
-      return (await graphql(`query($id:String!){getAgentOrgRootHistory(orgRunId:$id){org}}`, { id: rootId })).getAgentOrgRootHistory.org;
-    };
+    // autobyteus-461 SR-084: the root's delegated runs at every depth, from its tree (its view carries its own parts only), each
+    // with the launch it recorded as this suite reads it (`withRecordedSources`).
+    const liveTree = async () => withRecordedSources(await delegatedRunsTree(graphql, kind, rootId));
     const conversationOf = async (agentRunId: string, address: string) => {
       // A run this root (or one of its runs) delegated to is read by its own run (autobyteus-461 rule 2).
       const ownRead = await delegatedConversation(graphql, path.join(dataDir, "memory"), rootId, agentRunId);

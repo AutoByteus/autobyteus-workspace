@@ -11,6 +11,7 @@ import { DELEGATED_RUNS_OWN_RUNS_V1_MIGRATION_ID } from "../../../src/app-data-m
 import { DELEGATED_COPY_OWN_FILE_COMPLETE_V1_MIGRATION_ID } from "../../../src/app-data-migrations/migrations/delegated-copy-own-file-complete-v1/delegated-copy-own-file-complete-v1-app-data-migration.js";
 import { NEW_FOLDERS, OLD_FOLDERS, snapshot, writeOpenTaskRecordsOfReleasedData, writeReleasedDataRoot } from "../../fixtures/app-data-migrations/released-task-agent-layout-fixtures.js";
 import { builtServerLaunchEnvironment } from "../helpers/built-server-launch-credential.js";
+import { delegatedRunsTree } from "../helpers/run-tree-delegated.js";
 
 // The startup migration `20261017_task_agent_own_run_v1` through the BUILT Studio server (`dist/app.js`) on a FAITHFUL
 // upgrade: the app-data folder of an install where every earlier released migration already completed and this one never
@@ -203,8 +204,9 @@ const expectOwnFilesComplete = async (memory: string) => {
 
 const historyRunIds = async (gql: (q: string) => Promise<any>) => objectsIn(await gql("{listWorkspaceRunHistory{agentDefinitions{runs{runId}}}}"))
   .flatMap((record) => typeof record["runId"] === "string" ? [record["runId"] as string] : []);
-const hubTaskAgents = async (gql: (q: string, v?: Json) => Promise<any>) => objectsIn((await gql(`query($id:String!){agentRunCollaboration(runId:$id)}`, { id: "hub" }))
-  .agentRunCollaboration?.root_agent?.execution_tree).filter((r) => r["started_at"] ?? r["startedAt"]).map((r) => r["agent_run_id"] ?? r["agentRunId"] ?? r["team_run_id"] ?? r["teamRunId"]);
+// autobyteus-461 SR-084: the hub's delegated runs, from its tree (its view carries its own parts only).
+const hubTaskAgents = async (gql: (q: string, v?: Json) => Promise<any>) => objectsIn(await delegatedRunsTree(gql, "agent", "hub"))
+  .filter((r) => r["started_at"] ?? r["startedAt"]).map((r) => r["agent_run_id"] ?? r["agentRunId"] ?? r["team_run_id"] ?? r["teamRunId"]);
 
 describe("task agent own run: the built server upgrades a faithful released install at startup", () => {
   it("TAU-1 moves every task agent with its bytes, the runs open with their task agents, the Memory page attributes them, a second start changes nothing", async () => {
@@ -242,7 +244,8 @@ describe("task agent own run: the built server upgrades a faithful released inst
     }
     // AC-006: the runs open with all their task agents; a task agent's conversation is read from its own folder.
     expect(await hubTaskAgents(first.gql)).toEqual(expect.arrayContaining(["c1-reviewer", "c2-team-a", "c2-team-b", "never-ran"]));
-    const teamView = JSON.stringify((await first.gql(`query($id:String!){getTeamRunResumeConfig(teamRunId:$id){executionTree}}`, { id: "team-r" })).getTeamRunResumeConfig.executionTree);
+    // autobyteus-461 SR-084: the team run's delegated runs are its tree's rows.
+    const teamView = JSON.stringify(await delegatedRunsTree(first.gql, "team", "team-r"));
     for (const id of ["c3-writer-copy", "nd-copy", "c4-qa"]) expect(teamView, `team run shows ${id}`).toContain(id);
     // (The org is read by run id: the hand-built data writes no history index rows.)
     // The org opens. Its stored tree no longer lists its delegated runs (461 E9: `taskExecutions` removed; the open view composes

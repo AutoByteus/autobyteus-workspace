@@ -49,6 +49,7 @@ import { spawn } from 'node:child_process';
 import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
 import { attachToBrowserContext, attachToProbeProcess, withNodeCredential } from './fixtures/probe-node-access.mjs';
+import { readRunTree, delegatedNodes } from './fixtures/run-tree.mjs';
 // Every node needs a credential (autobyteus-437): the probe's nodes start with its launch credential, and the probe's
 // own calls and its desktop browser contexts carry it (fixtures/probe-node-access.mjs).
 attachToProbeProcess();
@@ -270,9 +271,8 @@ const taskNodes = (tree) => {
   };
   visit(tree); return found;
 };
-const storedTree = async (runId) => (await gql('query($id:String!){agentRunCollaboration(runId:$id)}', { id: runId })).agentRunCollaboration?.root_agent?.execution_tree;
-const closedOf = async (runId) => ((await gql('query($id:String!){agentRunCollaboration(runId:$id)}', { id: runId })).agentRunCollaboration?.root_agent?.closed_task_executions ?? [])
-  .map((e) => e.teamRunId ?? e.agentRunId);
+// autobyteus-461 SR-084: an Agent run's delegated runs are its tree's rows (`runTree`); each marked listed for `taskNodes`.
+const storedTree = async (runId) => ({ taskExecutions: delegatedNodes(await readRunTree(gql, 'agent', runId)).map((node) => ({ ...node, startedAt: 'listed' })) });
 const conversationText = async (runId) => JSON.stringify((await gql('query($id:String!){getRunProjection(runId:$id){conversation}}', { id: runId })).getRunProjection?.conversation ?? []);
 const sockets = [];
 /** The run's own input channel (what its composer sends): a user message to the agent. */
@@ -976,8 +976,8 @@ const archiveAndDelete = async () => {
       // outlive their delegator's Stop), then "Archive all" archives them.
       diag.stoppedDelegated = [];
       for (const runId of diag.listedAfter) {
-        const view = (await gql('query($id:String!){agentRunCollaboration(runId:$id)}', { id: runId })).agentRunCollaboration?.root_agent?.execution_tree;
-        const rows = JSON.stringify(view ?? {}).match(/"(agentRunId|teamRunId)":"[^"]+"/g) ?? [];
+        const view = { taskExecutions: delegatedNodes(await readRunTree(gql, 'agent', runId)) };
+        const rows = JSON.stringify(view).match(/"(agentRunId|teamRunId)":"[^"]+"/g) ?? [];
         for (const pair of [...new Set(rows)]) {
           const [, key, id] = /"(agentRunId|teamRunId)":"([^"]+)"/.exec(pair);
           if (id === runId) continue;

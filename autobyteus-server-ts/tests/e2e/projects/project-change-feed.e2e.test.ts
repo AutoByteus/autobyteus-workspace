@@ -13,6 +13,7 @@ import { startStudioE2eRuntimeServer } from "../helpers/studio-runtime-test-serv
 import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
 import { until } from "../helpers/agy-runtime-error-fixture.js";
 import { flattenE2eConfiguredAgentExecutions } from "../helpers/team-run-metadata-helpers.js";
+import { delegatedRunsTree } from "../helpers/run-tree-delegated.js";
 
 // project-manager-ux at the real server/wire boundary: the per-node `/ws/projects` change feed and the Task root,
 // through the real Studio HTTP/WebSocket server, scoped MCP, Project/Task services, roots and the publisher.
@@ -34,7 +35,8 @@ const segment = (name: string) => name.toLowerCase().replace(/[^a-z0-9]+/g, "_")
 const callTool = (name: string, args: object) => `CALL_TOOL:${JSON.stringify({ name, arguments: args })}`;
 const AD_HOC_ID = /ad_hoc_task_[0-9a-f-]{36}/;
 // autobyteus-461 SR-080: a Task root also names its tree's top run (`topRun`), which the feed carries too.
-const ROOT_FIELDS = "kind recipientAddress ingressAgentRunId teamRunId delegatingRun { kind runId } topRun { kind runId } start startError { code message } closed status";
+// autobyteus-461 SR-086 G-F1: a Task root carries where it opens (its node: null for a local root).
+const ROOT_FIELDS = "kind recipientAddress ingressAgentRunId teamRunId delegatingRun { kind runId } topRun { kind runId } openTarget { runKind runId agentRunId nodeId } start startError { code message } closed status";
 const PROJECT_TASKS = `query($id:String!){projectTasks(projectId:$id){taskId projectId taskKey title description status dependsOnTaskIds partOfTaskId comments { id createdAt text } createdAt updatedAt
   contextFiles { storedFilename displayName mimeType sizeBytes locator } root { ${ROOT_FIELDS} }}}`;
 const TASKS_WITHOUT_PROJECT = `query{tasksWithoutProject{taskId description status referenceFiles createdAt updatedAt root { ${ROOT_FIELDS} }}}`;
@@ -261,11 +263,8 @@ suite("Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AG
         command_id: randomUUID(), message_id: randomUUID(), dedupe_key: randomUUID(), content, context_file_paths: [], image_urls: [] } }));
       else sendE2eSendMessageCommand(channel.socket, { agent_run_id: managerRunId, content });
     };
-    const liveTree = async () => {
-      if (kind === "agent") return (await graphql(`query($id:String!){agentRunCollaboration(runId:$id)}`, { id: rootId })).agentRunCollaboration?.root_agent?.execution_tree ?? null;
-      if (kind === "team") return (await graphql(`query($id:String!){getTeamRunResumeConfig(teamRunId:$id){executionTree}}`, { id: rootId })).getTeamRunResumeConfig.executionTree;
-      return (await graphql(`query($id:String!){getAgentOrgRootHistory(orgRunId:$id){org}}`, { id: rootId })).getAgentOrgRootHistory.org;
-    };
+    // autobyteus-461 SR-084: the root's delegated runs at every depth, from its tree (its view carries its own parts only).
+    const liveTree = async () => delegatedRunsTree(graphql, kind, rootId);
     const managerConversation = async () => {
       if (kind === "agent") return (await graphql(`query($id:String!){getRunProjection(runId:$id){conversation}}`, { id: rootId })).getRunProjection?.conversation;
       if (kind === "team") return (await graphql(`query($id:String!,$a:String!){getTeamMemberRunProjection(teamRunId:$id,agentRunId:$a){conversation}}`,
@@ -389,7 +388,9 @@ suite("Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AG
     task = await settledTask(scope, taskId, "delegated Task", (t) => t.root?.status === "idle");
     expect(task.root).toEqual({ kind: "agent", recipientAddress: workerAddress, ingressAgentRunId: worker, teamRunId: null,
       // SR-080: the Task root names its tree's top run (here the delegator itself).
-      delegatingRun: { kind: "agent", runId: root.rootId }, topRun: { kind: "agent", runId: root.rootId }, start: "started", startError: null, closed: false, status: "idle" });
+      delegatingRun: { kind: "agent", runId: root.rootId }, topRun: { kind: "agent", runId: root.rootId },
+      // SR-086 G-F1: where the Task's root opens: the worker's own run (a local one: no node).
+      openTarget: { runKind: "agent", runId: worker, agentRunId: worker, nodeId: null }, start: "started", startError: null, closed: false, status: "idle" });
     const rootsSeen = monitor.frames.slice(from).filter((f) => f.type === "task_upserted" && f.task.taskId === taskId && f.task.root)
       .map((f) => f.task.root.ingressAgentRunId);
     expect(new Set(rootsSeen)).toEqual(new Set([worker]));

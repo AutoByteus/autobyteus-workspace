@@ -9,6 +9,7 @@ import { DELEGATED_RUNS_OWN_RUNS_V1_MIGRATION_ID } from "../../../src/app-data-m
 import { E, I, LEGACY, M, MARKETING, ORG, P, PEER_STARTED, RESEARCH, T0, T1, T2, exists, paths, readJson, writeReleasedWorld } from "../../fixtures/app-data-migrations/released-delegation-shape-fixtures.js";
 import { RootRunPackageCurrentValidator } from "../../../src/run-history/services/root-run-package-current-validator.js";
 import { killBuiltStudios, startBuiltStudio, type BuiltStudio } from "../helpers/built-studio-roots.js";
+import { delegatedRunsTree } from "../helpers/run-tree-delegated.js";
 
 // autobyteus-461 API-E03 (AC-014; design DS-10): the startup migration `20261111_delegated_runs_own_runs_v1` through the BUILT
 // Studio server (`dist/app.js`) on a FAITHFUL upgrade: an app-data folder where every earlier migration completed (a first
@@ -189,7 +190,8 @@ suite("delegated runs own runs: the built server upgrades released app data at s
 
       // The DelegationIndex from the converted entries: the manager's view shows its delegated runs at every depth, each
       // nested under the run that delegated it (SR-058, rule 1): E under M, P (E's sub-work) under E, I (P's) under P.
-      const collaboration = (await server.gql(`query($id:String!){agentRunCollaboration(runId:$id)}`, { id: M })).agentRunCollaboration as Json;
+      // autobyteus-461 SR-084: M's delegated runs, nested by delegator, from its tree (its view carries its own parts only).
+      const collaboration = await delegatedRunsTree(server.gql, "agent", M) as Json;
       evidence.managerView = collaboration;
       const rowOf = (value: unknown, id: string): Json | null => {
         if (Array.isArray(value)) { for (const item of value) { const found = rowOf(item, id); if (found) return found; } return null; }
@@ -205,7 +207,7 @@ suite("delegated runs own runs: the built server upgrades released app data at s
       expect(JSON.stringify(rowE), "P is nested under E (E's sub-work)").toContain(P);
       expect(rowP, "P is a row of M's view").toBeTruthy();
       expect(JSON.stringify(rowP), "I is nested under P (P's sub-work)").toContain(I);
-      const engineeringView = (await server.gql(`query($id:String!){getTeamRunResumeConfig(teamRunId:$id){executionTree}}`, { id: E })).getTeamRunResumeConfig.executionTree;
+      const engineeringView = await delegatedRunsTree(server.gql, "agent_team", E);
       evidence.engineeringView = engineeringView;
       expect(JSON.stringify(engineeringView), "E's view lists its own child P").toContain(P);
       // BEH-007: a delegated run is a row under the run that delegated it, not a top-level run, unless that run is gone. A run

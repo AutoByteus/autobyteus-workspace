@@ -20,6 +20,7 @@ import { testAgentNode, testExecutionTree } from "../../fixtures/current-team-ru
 import { testAgentOrgExecutionTree, testOrgAgentNode } from "../../fixtures/current-agent-org-run-fixtures.js";
 import { agentCollaborator, sourcelessCopy, T1, T2, teamCollaborator, type Json } from "../../app-data-migrations/collaborators-to-delegated-runs-v1/released-collaborator-fixtures.js";
 import { builtServerLaunchEnvironment } from "../helpers/built-server-launch-credential.js";
+import { readRunTree } from "../helpers/run-tree-delegated.js";
 
 // The startup migration `20261015_collaborators_to_delegated_runs_v1` through the BUILT Studio server (`dist/app.js`), the way a
 // user meets it: a new version starts on an app-data folder written by the previous version. The source is SYNTHESIZED test data
@@ -290,10 +291,11 @@ describe("collaborators → delegated runs: the built server upgrades released a
     for (const runId of ["agent-writer", "agent-squad", "agent-reviewer", "agent-reviewer-copy"]) expect(JSON.stringify(agentView)).not.toContain(runId);
     const teamView = (await first.gql(`query($id:String!){getTeamRunResumeConfig(teamRunId:$id){executionTree}}`, { id: "team-root" })).getTeamRunResumeConfig.executionTree;
     expect(teamView, "the Team root opens").toBeTruthy();
-    expect(JSON.stringify(teamView)).not.toContain("team-qa");
+    // autobyteus-461 SR-084: its delegated rows are its tree's (its own config carries its own parts only).
+    expect(JSON.stringify(await readRunTree(first.gql, "agent_team", "team-root"))).not.toContain("team-qa");
     const orgView = (await first.gql(`query($id:String!){getAgentOrgRunConfig(orgRunId:$id){executionTree}}`, { id: "org-root" })).getAgentOrgRunConfig.executionTree;
     expect(orgView, "the Org root opens").toBeTruthy();
-    expect(JSON.stringify(orgView)).not.toContain("org-designer");
+    expect(JSON.stringify(await readRunTree(first.gql, "agent_org", "org-root"))).not.toContain("org-designer");
     await first.stop();
 
     // Second start: nothing changes (idempotent), the migration stays done. The one new file is the standalone run history

@@ -13,6 +13,7 @@ import { startStudioE2eRuntimeServer } from "../helpers/studio-runtime-test-serv
 import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
 import { until } from "../helpers/agy-runtime-error-fixture.js";
 import { flattenE2eConfiguredAgentExecutions } from "../helpers/team-run-metadata-helpers.js";
+import { delegatedRunsTree, withRecordedSources } from "../helpers/run-tree-delegated.js";
 
 // Teams and Orgs of a registered agent package are edited in the app and saved into the package folder
 // (imported-team-defaults-edit SR-003: REQ-001..REQ-003, AC-001..AC-006) through the real Studio HTTP/GraphQL/WebSocket
@@ -349,7 +350,8 @@ suite("Registered package Teams and Orgs are edited and saved into the package (
       expect(result.delegated, JSON.stringify(result)).toBe(true);
       expect(result.target_kind).toBe("team");
       let copy: Rec | undefined;
-      await until(async () => Boolean(copy = teamCopyOf(await tree(), result.target_team_coordinator_agent_run_id)), "copy of the package Team", 60_000);
+      // autobyteus-461 SR-084: the delegated runs come from the run's tree (its own config carries its own parts only). Each copy with the launch it recorded.
+      await until(async () => Boolean(copy = teamCopyOf(withRecordedSources(await delegatedRunsTree(graphql, "team", rootId)), result.target_team_coordinator_agent_run_id)), "copy of the package Team", 60_000);
       const coordinator = result.target_team_coordinator_agent_run_id as string;
       // The coordinator starts on the work it received; its AGY launch carries the model it resolved.
       await until(async () => (await agyLaunches()).slice(from).some((entry) => entry.runId === coordinator), "copy coordinator AGY launch", 60_000);

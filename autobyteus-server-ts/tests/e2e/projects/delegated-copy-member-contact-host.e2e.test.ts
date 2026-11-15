@@ -13,6 +13,7 @@ import { startStudioE2eRuntimeServer } from "../helpers/studio-runtime-test-serv
 import { buildE2eClientCommandIds, sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
 import { until } from "../helpers/agy-runtime-error-fixture.js";
 import { readParticipantMessages } from "../../helpers/collaboration-participant-messages.js";
+import { delegatedRunsTree } from "../helpers/run-tree-delegated.js";
 
 // Members of a delegated copy contact the standalone Agent-run host that delegated the work
 // (delegated-copy-member-contact-delegator SR-005/SR-006: REQ-001..REQ-004, REQ-006; AC-001..AC-003, AC-006, AC-009)
@@ -192,8 +193,8 @@ suite("Delegated copy members contact the Agent-run host (real HTTP/WS/GraphQL/s
     hostRunId = created.runId; rootActive = true;
     const input = await connect("agent", hostRunId, (frames) => frames.some((frame) => frame.type === "CONNECTED"));
     const view = await connect("agent-collaboration", hostRunId, (frames) => frames.some((frame) => frame.type === "ROOT_EXECUTION_VIEW_SNAPSHOT"));
-    const liveTree = async () => (await graphql(`query($id:String!){agentRunCollaboration(runId:$id)}`, { id: hostRunId }))
-      .agentRunCollaboration?.root_agent?.execution_tree ?? null;
+    // autobyteus-461 SR-084: the host's delegated runs, from its tree (its view carries its own parts only).
+    const liveTree = async () => delegatedRunsTree(graphql, "agent", hostRunId);
     const hostConversation = async () => (await graphql(`query($id:String!){getRunProjection(runId:$id){conversation}}`,
       { id: hostRunId })).getRunProjection?.conversation;
     // A copy is a run of its own (autobyteus-461 rule 2): read by its own run, never through the host.
@@ -219,13 +220,12 @@ suite("Delegated copy members contact the Agent-run host (real HTTP/WS/GraphQL/s
     const postToChild = async (agentRunId: string, content: string, mentions?: Array<{ kind: "agent" | "agent_team"; definition_id: string }>) => {
       // An agent run's own stream answers with its command ACK; a member of a team run is sent on its team's own stream,
       // which answers a refusal with an ERROR naming the member and an accepted message with the member's input echo.
-      // A member that never ran has no memory folder yet: its team is found from the host's view rows (rule 1).
+      // A member that never ran has no memory folder yet: its team is found from the host's tree rows (SR-084).
       let own = await ownRunOfAgent(path.join(dataDir, "memory"), agentRunId);
       if (!own) {
-        const view = (await graphql(`query($id:String!){agentRunCollaboration(runId:$id)}`, { id: hostRunId })).agentRunCollaboration;
-        const team = objectsIn(view).find((row) => typeof (row.team_run_id ?? row.teamRunId) === "string" && Array.isArray(row.members)
-          && (row.members as Record<string, any>[]).some((member) => (member.agent_run_id ?? member.agentRunId) === agentRunId));
-        if (team) own = { kind: "team", teamRunId: String(team.team_run_id ?? team.teamRunId) };
+        const team = objectsIn(await liveTree()).find((row) => typeof row.teamRunId === "string" && Array.isArray(row.members)
+          && (row.members as Record<string, any>[]).some((member) => member.agentRunId === agentRunId));
+        if (team) own = { kind: "team", teamRunId: String(team.teamRunId) };
       }
       const key = own?.kind === "team" ? `team:${own.teamRunId}` : `agent:${agentRunId}`;
       if (!childStreams.has(key)) childStreams.set(key, own?.kind === "team"

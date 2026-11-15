@@ -14,6 +14,7 @@ import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.
 import { until } from "../helpers/agy-runtime-error-fixture.js";
 import { flattenE2eConfiguredAgentExecutions } from "../helpers/team-run-metadata-helpers.js";
 import { ProjectChangeMessageSchema } from "../../../src/projects/changes/project-change-messages.js";
+import { addedRowKeysPerChange, delegatedRunsTree, hasTreeSnapshot, isRunRowKey, removedRowKeysPerChange, treeSnapshotRunsOf } from "../helpers/run-tree-delegated.js";
 
 // Follow-up Tasks to an existing copy (delegate-to-existing-copy AC-001..AC-010, AC-012, AC-013, AC-018, QR-001, QR-002)
 // through the real Studio HTTP/WebSocket server, scoped MCP, Project/Task services, roots, exact delivery, publishers
@@ -107,14 +108,13 @@ suite("Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MC
    * autobyteus-469 (a top run's tree is built from its open Tasks): a closed run leaves the root's tree once its stop is
    * confirmed, so a fresh snapshot lists it neither in the tree nor among the closed runs. Waits for that.
    */
-  const leftTree = async (root: { snapshot: () => Promise<{ tree: unknown; closed: Record<string, any>[] }> }, out: string[]) => {
+  const leftTree = async (root: { snapshot: () => Promise<{ tree: unknown }> }, out: string[]) => {
     let last: unknown;
     await until(async () => {
       const s = await root.snapshot();
       const inTree = keys(taskNodes(s.tree));
-      const closed = keys(s.closed ?? []);
-      last = { inTree, closed };
-      return out.every((key) => !inTree.includes(key) && !closed.includes(key));
+      last = { inTree };
+      return out.every((key) => !inTree.includes(key));
     }, `closed runs left the tree: ${out.join(", ")}`, 30_000).catch((error) => { throw new Error(`${error}: ${JSON.stringify(last)}`); });
   };
   const config = (overrides: Record<string, unknown> = {}) => ({ workspaceRootPath: workspace, llmModelIdentifier: "gemini-3.8-flash-low",
@@ -281,7 +281,8 @@ suite("Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MC
     const viewRoute = kind === "agent" ? "agent-collaboration" : kind === "team" ? "agent-team" : "agent-org";
     const isSnapshot = (frame: Frame) => frame.type === (kind === "team" ? "TEAM_EXECUTION_VIEW_SNAPSHOT" : "ROOT_EXECUTION_VIEW_SNAPSHOT");
     const inputChannel = kind === "agent" ? await connect("agent", rootId, (frames) => frames.some((f) => f.type === "CONNECTED")) : null;
-    const openView = () => connect(viewRoute, rootId, (frames) => frames.some(isSnapshot));
+    // autobyteus-461 SR-084: the view's tree follows its own snapshot as RUN_TREE_SNAPSHOT.
+    const openView = () => connect(viewRoute, rootId, (frames) => frames.some(isSnapshot) && hasTreeSnapshot(frames));
     // One long-lived view socket collects every live frame of the root (closures and reopenings); snapshots use their own.
     const live = await openView();
     const sendTo = (agentRunId: string, content: string) => {
@@ -292,16 +293,12 @@ suite("Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MC
     };
     const snapshot = async () => {
       const view = await openView();
-      const payload = view.frames.find(isSnapshot)!.payload;
       view.socket.close();
-      const body = kind === "agent" ? payload.root_agent : kind === "org" ? payload.root_org : payload;
-      return { tree: body.execution_tree, closed: body.closed_task_executions as Record<string, any>[] };
+      // The delegated runs in the view's tree snapshot (SR-084; no closed list: a closed Task's stopped runs leave the tree).
+      return { tree: treeSnapshotRunsOf(view.frames) };
     };
-    const liveTree = async () => {
-      if (kind === "agent") return (await graphql(`query($id:String!){agentRunCollaboration(runId:$id)}`, { id: rootId })).agentRunCollaboration?.root_agent?.execution_tree ?? null;
-      if (kind === "team") return (await graphql(`query($id:String!){getTeamRunResumeConfig(teamRunId:$id){executionTree}}`, { id: rootId })).getTeamRunResumeConfig.executionTree;
-      return (await graphql(`query($id:String!){getAgentOrgRootHistory(orgRunId:$id){org}}`, { id: rootId })).getAgentOrgRootHistory.org;
-    };
+    // autobyteus-461 SR-084: the root's delegated runs at every depth, from its tree (its view carries its own parts only).
+    const liveTree = async () => delegatedRunsTree(graphql, kind, rootId);
     const conversationOf = async (agentRunId: string, address: string) => {
       // A run this root (or one of its runs) delegated to is read by its own run (autobyteus-461 rule 2).
       const ownRead = await delegatedConversation(graphql, path.join(dataDir, "memory"), rootId, agentRunId);
@@ -336,16 +333,17 @@ suite("Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MC
         .catch((error) => { throw new Error(`${error.message}; nodes=${JSON.stringify(nodes).slice(0, 2000)}`); });
       return nodes;
     };
-    const closedFrame = (frame: Frame) => kind === "team" ? frame.type === "TASK_EXECUTIONS_CLOSED"
-      : frame.type === "ROOT_EXECUTION_EVENT" && frame.payload.event?.kind === "task_executions_closed";
-    const reopenedFrame = (frame: Frame) => kind === "team" ? frame.type === "TASK_EXECUTIONS_REOPENED"
-      : frame.type === "ROOT_EXECUTION_EVENT" && frame.payload.event?.kind === "task_executions_reopened";
-    // A Team's "reopened" carries records (autobyteus-469 D-8); its references are the records' run IDs.
-    const refsOf = (frame: Frame) => (kind === "team" ? (frame.payload.task_executions ?? frame.payload.executions.map((entry: Record<string, any>) => entry.execution.agent_run_id
-      ? { agent_run_id: entry.execution.agent_run_id } : { team_run_id: entry.execution.team_run_id })) : frame.payload.event.task_executions) as Record<string, any>[];
-    /** Keys of the copies in every closure / reopening frame since a mark. */
-    const closedSince = (from: number) => live.frames.slice(from).filter(closedFrame).flatMap((frame) => keys(refsOf(frame)));
-    const reopenedSince = (from: number) => live.frames.slice(from).filter(reopenedFrame).map((frame) => keys(refsOf(frame)));
+    // autobyteus-461 SR-084: closures and reopenings as the open view sees them, in its tree changes. A closed Task's copy leaves
+    // the tree (its row removed); a reopened one comes back (its row added again). Row keys are `agent:<id>` / `team:<id>`.
+    /** Keys of the copies whose rows the tree changes since a mark removed. */
+    const closedSince = (from: number) => removedRowKeysPerChange(live.frames.slice(from)).flat().filter(isRunRowKey).sort();
+    /** Per tree change since a mark, the copies that came back (added again after an earlier removal on this view). */
+    const reopenedSince = (from: number) => live.frames.slice(from).flatMap((frame, offset) => {
+      const added = addedRowKeysPerChange([frame]).flat().filter(isRunRowKey);
+      const removedBefore = new Set(removedRowKeysPerChange(live.frames.slice(0, from + offset)).flat());
+      const back = added.filter((key) => removedBefore.has(key)).sort();
+      return back.length ? [back] : [];
+    });
     const mark = () => live.frames.length;
     const close = () => { live.socket.close(); inputChannel?.socket.close(); };
     return { kind, rootId, managerRunId, members, managerAddress, sendTo, snapshot, liveTree, conversationOf, agentCalls, managerCalls,
@@ -566,7 +564,6 @@ suite("Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MC
     expect(resumedB, JSON.stringify(resumedB)).toEqual([{ resumed: true, conversation: expect.any(String) }]);
     expect(processLive(coordinator)).toBe(true);
     const afterB = await root.snapshot();
-    expect(keys(afterB.closed)).not.toContain(teamKey);
     const teamAfterB = taskNodes(afterB.tree).filter((n) => n.teamRunId === team);
     expect(teamAfterB).toHaveLength(1);
     expect(teamAfterB[0]!.members.map((member: any) => member.agentRunId).sort()).toEqual(teamMembers);
@@ -607,7 +604,7 @@ suite("Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MC
       await sleep(2_000);
       expect(root.closedSince(from), `closure frames after Task A ${status}`).not.toContain(teamKey);
       expect(processLive(coordinator), `coordinator process after Task A ${status}`).toBe(true);
-      expect(keys((await root.snapshot()).closed)).not.toContain(teamKey);
+      expect(keys(taskNodes((await root.snapshot()).tree)), `the Team copy stays in the tree after Task A ${status}`).toContain(teamKey);
       expect(await fs.readFile(resourcesFile(projectId, taskA), "utf8")).toBe(aFileAtDone);
       repeated.push({ status, ack, closedKeys: root.closedSince(from) });
     }
@@ -713,7 +710,6 @@ suite("Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MC
     expect(await launchesOf(worker, argvFrom)).toEqual([{ resumed: true, conversation: expect.any(String) }]);
     const afterD = await root.snapshot();
     // autobyteus-469: the worker is in the tree again; its closed sub-work stays out of it.
-    expect(keys(afterD.closed)).toEqual([]);
     expect(keys(taskNodes(afterD.tree))).toContain(`agent:${worker}`);
     expect(keys(taskNodes(afterD.tree))).not.toContain(`agent:${subWork}`);
     await until(async () => (await taskOf(projectId, taskD)).root?.start === "started", "Task D root started", 30_000);
@@ -781,7 +777,7 @@ suite("Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MC
           // The copy now works on the next Task: open there only, live, listed, and it received the work.
           expect(open).toEqual([next]);
           expect(processLive(ingress), `${key} must not be stopped while assigned ${next} (offset ${offset})`).toBe(true);
-          expect(keys((await root.snapshot()).closed)).not.toContain(key);
+          expect(keys(taskNodes((await root.snapshot()).tree)), `${key} is in the tree while assigned ${next}`).toContain(key);
           await until(async () => JSON.stringify(await root.conversationOf(ingress, ingressAddress)).includes(`New Task assigned to you: ${k(next)}`),
             "the copy received the next Task", 60_000);
           await sleep(1_500);

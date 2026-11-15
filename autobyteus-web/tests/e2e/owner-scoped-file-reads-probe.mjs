@@ -36,6 +36,7 @@ import { spawn, execFileSync } from 'node:child_process';
 import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
 import { attachToBrowserContext, attachToProbeProcess, withNodeCredential } from './fixtures/probe-node-access.mjs';
+import { readRunTree, delegatedNodes } from './fixtures/run-tree.mjs';
 // Every node needs a credential (autobyteus-437): the probe's nodes start with its launch credential, and the probe's
 // own calls and its desktop browser contexts carry it (fixtures/probe-node-access.mjs).
 attachToProbeProcess();
@@ -221,7 +222,9 @@ const seed = async () => {
     await until(`${label} file ${name} listed live`, async () => (await listOf(subject)).some((e) => e.path === name), 90000);
     files.push({ label, subject, path: name, absolutePath: fileIn(name), text: `Owner-scoped file of ${label} (${name}) ${randomUUID().slice(0, 8)}` });
   };
+  // autobyteus-461 SR-084: a run's delegated runs are its tree's rows (`runTree`).
   const taskAgentsIn = (tree) => {
+    if (tree?.rows) return delegatedNodes(tree).filter((n) => n.agentRunId).map((n) => ({ agentRunId: n.agentRunId, address: n.address }));
     const out = []; const walk = (v) => { if (Array.isArray(v)) return v.forEach(walk); if (!v || typeof v !== 'object') return;
       const startedAt = v.startedAt ?? v.started_at, agentRunId = v.agentRunId ?? v.agent_run_id;
       if (typeof startedAt === 'string' && agentRunId && !(v.teamRunId ?? v.team_run_id)) out.push({ agentRunId, address: v.address });
@@ -240,7 +243,7 @@ const seed = async () => {
   const toHub = (content) => hubInput.socket.send(JSON.stringify({ type: 'SEND_MESSAGE', payload: { agent_run_id: hub.runId, message_id: randomUUID(), dedupe_key: randomUUID(), content, context_file_paths: [], image_urls: [] } }));
   toHub(writeImage('hub-notes.md'));
   await recorded('standalone run', { kind: 'run', runId: hub.runId }, 'hub-notes.md');
-  const hubTree = async () => (await gql('query($id:String!){agentRunCollaboration(runId:$id)}', { id: hub.runId })).agentRunCollaboration?.root_agent?.execution_tree ?? null;
+  const hubTree = () => readRunTree(gql, 'agent', hub.runId);
   toHub(delegateWriter('copy-notes.md'));
   const copy = await newTaskAgent('copy', hubTree, []);
   await recorded('delegated copy', { kind: 'standaloneMember', hostRunId: hub.runId, memberAddress: copy.address, agentRunId: copy.agentRunId }, 'copy-notes.md');
@@ -261,7 +264,7 @@ const seed = async () => {
   toTeamMember(teamManager.agentRunId, writeImage('team-manager-notes.md'));
   await recorded('team configured member', teamManager, 'team-manager-notes.md');
   toTeamMember(teamManager.agentRunId, delegateWriter('team-task-agent-notes.md'));
-  const teamTask = await newTaskAgent('team task agent', teamTreeOf, []);
+  const teamTask = await newTaskAgent('team task agent', () => readRunTree(gql, 'agent_team', teamRun.teamRunId), []);
   // autobyteus-461 rule 2: a delegated agent run's files are read by its own run (it is not a member of its delegator).
   await recorded('team task agent', { kind: 'run', runId: teamTask.agentRunId }, 'team-task-agent-notes.md');
 
@@ -275,7 +278,7 @@ const seed = async () => {
     if (member.agentRunId) orgMembers[member.address] = member.agentRunId;
     for (const inner of member.members ?? []) if (inner.agentRunId) orgMembers[inner.address] = inner.agentRunId;
   }
-  const orgTreeOf = async () => (await gql('query($id:String!){getAgentOrgRootHistory(orgRunId:$id){org}}', { id: orgRun.agentOrgRunId })).getAgentOrgRootHistory.org;
+  const orgTreeOf = () => readRunTree(gql, 'agent_org', orgRun.agentOrgRunId);
   const orgView = await openSocket('agent-org', orgRun.agentOrgRunId, (f) => f.type === 'ROOT_EXECUTION_VIEW_SNAPSHOT');
   const toOrgMember = (agentRunId, content) => orgView.socket.send(JSON.stringify({ type: 'SEND_MESSAGE', payload: {
     root_subject_kind: 'agent_org', root_run_id: orgRun.agentOrgRunId, target_agent_run_id: agentRunId,
@@ -617,7 +620,7 @@ const journeys = [
     opened.push(await openArtifact(leadFile));
     for (const label of ['org-root task agent', 'org member-team task agent']) {
       const file = fileOf(label);
-      await page.locator(`[data-test="agent-org-task-agent-row-${file.subject.runId ?? file.subject.agentRunId}"]`).click();
+      await page.locator(`[data-test="workspace-team-transient-execution-row"][data-agent-run-id="${file.subject.runId ?? file.subject.agentRunId}"]`).click();
       opened.push(await openArtifact(file));
     }
     await shot('B-003-org-task-agent-file');

@@ -15,6 +15,7 @@ import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.
 import { until } from "../helpers/agy-runtime-error-fixture.js";
 import { headReadRepository, headReadResponse } from "../helpers/github-head-read-stub.js";
 import { flattenE2eConfiguredAgentExecutions } from "../helpers/team-run-metadata-helpers.js";
+import { delegatedRunsTree } from "../helpers/run-tree-delegated.js";
 
 // Skill update notices across run roots at the real server/wire boundary (Studio HTTP/GraphQL/WebSocket, scoped MCP
 // agent tools, run supervisor, idle shutdown, skill catalog and GitHub skill sources). Only the AGY CLI is scripted
@@ -221,7 +222,8 @@ suite("Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shut
       await until(async () => { results = markerTexts(await conversation(), "CALLED:"); return results.length > before; }, `Manager result for ${content.slice(0, 80)}`, 60_000);
       return results[before]!;
     };
-    const tree = async () => (await graphql(`query($id:String!){agentRunCollaboration(runId:$id)}`, { id: runId })).agentRunCollaboration?.root_agent?.execution_tree ?? null;
+    // autobyteus-461 SR-084: the delegated runs come from the run's tree (its view carries its own parts only).
+    const tree = async () => delegatedRunsTree(graphql, "agent", runId);
     // A copy is a run of its own (autobyteus-461 rule 2): read by its own run, never through the manager.
     const copyConversation = async (_address: string, agentRunId: string) =>
       (await projectionByOwnRun(graphql, path.join(dataDir, "memory"), agentRunId))?.conversation;

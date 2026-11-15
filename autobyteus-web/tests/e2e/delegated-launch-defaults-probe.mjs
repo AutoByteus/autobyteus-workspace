@@ -275,12 +275,22 @@ const squadNotes = () => {
 
 // ---------------------------------------------------------------------------------------------
 // Server reads (assertion readback only; every action goes through the UI)
-const agentTree = async (runId) => (await gql('query($id:String!){agentRunCollaboration(runId:$id)}', { id: runId })).agentRunCollaboration?.root_agent?.execution_tree
+/**
+ * autobyteus-461 SR-084: a run's delegated runs are its tree's rows (`runTree`), built by the server; a run's view carries
+ * its own parts only. `agentTree`/`hostTeamTree`/`orgRunTree` read an Agent, Team or Org run's tree.
+ */
+const runTreeOf = async (kind, runId) => (await gql('query($k:String!,$r:String!){runTree(kind:$k,runId:$r)}', { k: kind, r: runId })).runTree
+const agentTree = (runId) => runTreeOf('agent', runId)
+const hostTeamTree = (teamRunId) => runTreeOf('agent_team', teamRunId)
+const orgRunTree = (orgRunId) => runTreeOf('agent_org', orgRunId)
 /** autobyteus-461 rule 2 / SR-064: a delegated agent run's saved launch is its own run's. */
 const ownAgentLaunch = async (runId) => (await gql('query($id:String!){getAgentRunResumeConfig(runId:$id){metadataConfig{llmModelIdentifier runtimeKind}}}', { id: runId })).getAgentRunResumeConfig?.metadataConfig ?? null
 const teamTree = async (teamRunId) => (await gql('query($id:String!){getTeamRunResumeConfig(teamRunId:$id){executionTree}}', { id: teamRunId })).getTeamRunResumeConfig.executionTree
 const orgTree = async (orgRunId) => (await gql('query($id:String!){getAgentOrgRootHistory(orgRunId:$id){org}}', { id: orgRunId })).getAgentOrgRootHistory.org
-const teamCopies = (tree, key) => objectsIn(tree).filter((r) => pick(r, 'teamRunId') && pick(r, 'startedAt') && Array.isArray(r.members) && r.address === address(key))
+/** A run's delegated Team copies at an address, from its tree's rows: each with its team run and its members. */
+const teamCopies = (tree, key) => (tree?.rows ?? []).filter((row) => row.kind === 'team' && row.parentKey !== null && row.address === address(key))
+  .map((team) => ({ address: team.address, teamRunId: team.openTarget?.runId ?? null, row: team,
+    members: tree.rows.filter((m) => m.parentKey === team.key && m.kind === 'team_member').map((m) => ({ address: m.address, agentRunId: m.openTarget?.agentRunId ?? null, launch: m.launch ?? null })) }))
 const membersOf = (copy) => Object.fromEntries(copy.members.map((m) => [String(m.address).split('/').pop(), pick(m, 'agentRunId')]))
 const teamRunIds = async (teamDefinitionId) => {
   const h = await gql('{ listWorkspaceRunHistory(limitPerAgent: 50) { teamDefinitions { teamDefinitionId runs { teamRunId } } } }')
@@ -424,14 +434,14 @@ const backToConversation = async (page) => {
 const subjectCard = (page) => page.locator(sel('existing-run-subject-card'))
 const settingsOpen = (page) => page.locator(sel('existing-run-settings')).isVisible().catch(() => false)
 const treeAgentRow = (page, id) => page.locator([`${sel('workspace-team-transient-execution-row')}[data-agent-run-id="${id}"]`,
-  sel(`agent-org-task-agent-row-${id}`), sel(`agent-org-agent-row-${id}`)].join(', ')).first()
+  sel(`agent-org-agent-row-${id}`)].join(', ')).first()
 /** Opens every closed copy, Org run and task team in the left tree (never a placed team's row: that changes the focus). */
 const expandTree = async (page) => {
   for (const toggle of await page.locator(sel('workspace-team-transient-disclosure')).all()) {
     const holder = toggle.locator('xpath=ancestor::*[@aria-expanded][1]')
     if (await holder.getAttribute('aria-expanded').catch(() => null) === 'false') await toggle.click().catch(() => {})
   }
-  for (const toggle of await page.locator('[data-test^="agent-org-run-disclosure-"], [data-test^="agent-org-task-team-disclosure-"]').all()) {
+  for (const toggle of await page.locator('[data-test^="agent-org-run-disclosure-"]').all()) {
     if (await toggle.getAttribute('aria-expanded').catch(() => null) === 'false') await toggle.click().catch(() => {})
   }
   await expandWorkspaces(page)
@@ -495,18 +505,19 @@ const delegatedRows = async (page, root) => {
     return target ? { browse: target.browse ? { ...target.browse } : null, runId: target.context?.state?.runId ?? null } : null
   })
   await expandTree(page); await expandTree(page)
-  const orgRecords = root.kind === 'org' ? objectsIn(await orgTree(root.id)) : []
-  const addressById = Object.fromEntries(orgRecords.filter((x) => pick(x, 'agentRunId') && typeof x.address === 'string').map((x) => [pick(x, 'agentRunId'), x.address]))
-  // An Org tree's delegated Team row is not a transient row; its members' team address comes from the Org's tree record
-  // that lists them (a Team copy: its `teamRunId`, its `address`, its members).
-  const teamAddressByMember = Object.fromEntries(orgRecords.filter((x) => pick(x, 'teamRunId') && typeof x.address === 'string' && Array.isArray(x.members))
-    .flatMap((team) => team.members.map((m) => [pick(m, 'agentRunId'), team.address])))
+  // An Org tree's delegated Team row is not a transient row; its members' team address comes from the Org's run tree
+  // (SR-084): the delegated team row and the member rows under it.
+  const orgRows = root.kind === 'org' ? ((await orgRunTree(root.id))?.rows ?? []) : []
+  const addressById = Object.fromEntries(orgRows.filter((x) => x.openTarget?.agentRunId && typeof x.address === 'string' && x.kind !== 'team')
+    .map((x) => [x.openTarget.agentRunId, x.address]))
+  const teamAddressByMember = Object.fromEntries(orgRows.filter((x) => x.kind === 'team_member' && x.parentKey)
+    .map((m) => [m.openTarget?.agentRunId, orgRows.find((t) => t.key === m.parentKey && t.kind === 'team')?.address ?? null]).filter(([, a]) => a))
   const targets = await page.evaluate(([kind, id]) => {
     const scope = kind === 'agent' ? document.querySelector(`[data-test="workspace-agent-run-task-tree"][data-run-id="${id}"]`)
       : kind === 'org' ? document.querySelector(`[data-test="agent-org-run-children-${id}"]`) : document
     // autobyteus-461 TC-12: a team copy's members are addressed from the team's own root (`/lead`); the team's delegation
     // address is its own row's, the nearest team row above a member row in the tree (by depth).
-    const all = [...(scope?.querySelectorAll('[data-test="workspace-team-transient-execution-row"], [data-test^="agent-org-task-agent-row-"]') ?? [])]
+    const all = [...(scope?.querySelectorAll('[data-test="workspace-team-transient-execution-row"]') ?? [])]
       .filter((el) => kind !== 'team' || el.dataset.teamRunId === id)
     const teamAbove = []
     const out = []
@@ -514,8 +525,8 @@ const delegatedRows = async (page, root) => {
       const depth = Number(el.dataset.treeDepth ?? 0)
       while (teamAbove.length && teamAbove.at(-1).depth >= depth) teamAbove.pop()
       if (el.dataset.nodeKind === 'agent_team' && !el.dataset.agentRunId) { teamAbove.push({ depth, address: el.dataset.memberAddress ?? null }); continue }
-      if (!el.dataset.agentRunId && !el.getAttribute('data-test').startsWith('agent-org-task-agent-row-')) continue
-      out.push({ id: el.dataset.agentRunId ?? el.getAttribute('data-test').replace('agent-org-task-agent-row-', ''), address: el.dataset.memberAddress ?? null,
+      if (!el.dataset.agentRunId) continue
+      out.push({ id: el.dataset.agentRunId, address: el.dataset.memberAddress ?? null,
         teamAddress: teamAbove.at(-1)?.address ?? null })
     }
     return out
@@ -777,7 +788,7 @@ defineCase('DLP-004', 'AC-010: Team run (New chat) and Org run (Org launch page)
   await typeAndSend(page, callTool('delegate_task', { recipient_address: address('squad'), description: 'Squad work.' }))
   await page.waitForURL(/\/workspace/, { timeout: 180000 })
   r.teamRunId = await waitFor('new team run', async () => (await teamRunIds(ids.home)).find((id) => !before.has(id)), 60000)
-  await waitFor('Squad copy in the team run', async () => teamCopies(await teamTree(r.teamRunId), 'squad').length === 1, 120000, 1500)
+  await waitFor('Squad copy in the team run', async () => teamCopies(await hostTeamTree(r.teamRunId), 'squad').length === 1, 120000, 1500)
   await settle(page, 1500)
   r.teamPairCall = await callFromComposer(page, 'team: delegate Pair', 'delegate_task', { recipient_address: address('pair'), description: 'Pair work.' })
   assert(r.teamPairCall.includes('"delegated":true') && r.teamPairCall.includes('launch_notes'), 'team root: Pair delegation note not shown', r.teamPairCall)
@@ -884,11 +895,11 @@ defineCase('DLP-006', 'AC-009/QR-002: runs saved before this change (stripped wh
   await typeAndSend(page, callTool('delegate_task', { recipient_address: address('squad'), description: 'Squad work.' }))
   await page.waitForURL(/\/workspace/, { timeout: 180000 })
   r.teamRunId = await waitFor('new team run', async () => (await teamRunIds(ids.home)).find((id) => !before.has(id)), 60000)
-  await waitFor('Squad copy in the team run', async () => teamCopies(await teamTree(r.teamRunId), 'squad').length === 1, 120000, 1500)
+  await waitFor('Squad copy in the team run', async () => teamCopies(await hostTeamTree(r.teamRunId), 'squad').length === 1, 120000, 1500)
   const agentRun = await agentTree(r.runId)
   const agentCopy = teamCopies(agentRun, 'squad')[0]
   const pair = teamCopies(agentRun, 'pair')[0]
-  const teamCopy = teamCopies(await teamTree(r.teamRunId), 'squad')[0]
+  const teamCopy = teamCopies(await hostTeamTree(r.teamRunId), 'squad')[0]
   r.copies = { agentCopy: pick(agentCopy, 'teamRunId'), pair: pick(pair, 'teamRunId'), teamCopy: pick(teamCopy, 'teamRunId') }
   r.agentCopyMembers = membersOf(agentCopy)
   // The app is quit, its saved runs are in the pre-change shape, and it starts again.
@@ -1377,7 +1388,7 @@ defineCase('DCP-002', 'delegated-copy-model-change AC-002/003, IR-002 (Team root
   await typeAndSend(page, callTool('delegate_task', { recipient_address: address('pair'), description: 'Pair work.' }))
   await page.waitForURL(/\/workspace/, { timeout: 180000 })
   r.teamRunId = await waitFor('new team run', async () => (await teamRunIds(ids.home)).find((id) => !before.has(id)), 60000)
-  const copy = await waitFor('Pair copy in the team run', async () => teamCopies(await teamTree(r.teamRunId), 'pair')[0], 120000, 1500)
+  const copy = await waitFor('Pair copy in the team run', async () => teamCopies(await hostTeamTree(r.teamRunId), 'pair')[0], 120000, 1500)
   r.copyTeamRunId = pick(copy, 'teamRunId')
   r.copyMembers = membersOf(copy)
   await waitFor('copy lead started on the Team default', async () => (await agyLaunchesOf(r.copyMembers.lead)).length > 0, 60000)
@@ -1461,13 +1472,13 @@ defineCase('DCP-003', 'delegated-copy-model-change AC-001/002 (Org root, UI): a 
   r.copyRunId = /"target_agent_run_id":"([^"]+)"/.exec(r.copyCall)?.[1] ?? null
   assert(r.copyCall.includes('"delegated":true') && r.copyRunId, 'Writer copy not started', r.copyCall)
   await waitFor('copy started', async () => (await agyLaunchesOf(r.copyRunId)).length > 0, 60000)
-  const orgStop = page.locator(sel(`agent-org-task-agent-row-${r.copyRunId}`)).locator('xpath=..').locator(sel('workspace-delegated-stop')).first()
+  const orgStop = page.locator(`${sel('workspace-team-transient-execution-row')}[data-agent-run-id="${r.copyRunId}"]`).locator('xpath=..').locator(sel('workspace-delegated-stop')).first()
   await waitFor('Org sidebar copy row has the stop icon', async () => {
     if (await orgStop.isVisible().catch(() => false)) return true
     await expandWorkspaces(page)
     return false
   }, 60000, 1000)
-  const orgCopyRow = page.locator(sel(`agent-org-task-agent-row-${r.copyRunId}`))
+  const orgCopyRow = page.locator(`${sel('workspace-team-transient-execution-row')}[data-agent-run-id="${r.copyRunId}"]`)
   const orgRootRow = page.locator(sel(`agent-org-run-open-${r.orgRunId}`))
   const orgRootStop = orgRootRow.locator('xpath=..').getByRole('button', { name: 'Stop Agent Org', exact: true })
   r.paint = await sidebarPaint(page, 'DCP-003', orgCopyRow, orgRootStop, { stop: orgStop, parentTransition: '0s' })
@@ -1585,7 +1596,7 @@ defineCase('DCP-005', 'delegated-copy-model-change REQ-001 (any member), AC-010 
   await typeAndSend(page, callTool('delegate_task', { recipient_address: address('pair'), description: 'Pair review work.' }))
   await page.waitForURL(/\/workspace/, { timeout: 180000 })
   r.teamRunId = await waitFor('new team run', async () => (await teamRunIds(ids.home)).find((id) => !before.has(id)), 60000)
-  const copy = await waitFor('Pair copy in the team run', async () => teamCopies(await teamTree(r.teamRunId), 'pair')[0], 120000, 1500)
+  const copy = await waitFor('Pair copy in the team run', async () => teamCopies(await hostTeamTree(r.teamRunId), 'pair')[0], 120000, 1500)
   r.copyTeamRunId = pick(copy, 'teamRunId')
   r.members = membersOf(copy)
   const member = 'unoffered'

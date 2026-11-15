@@ -12,6 +12,7 @@ import { projectionByOwnRun } from "../helpers/own-run-reads.js";
 import { startStudioE2eRuntimeServer } from "../helpers/studio-runtime-test-server.js";
 import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
 import { until } from "../helpers/agy-runtime-error-fixture.js";
+import { removedRunIdsIn } from "../helpers/run-tree-delegated.js";
 
 // project-task-tool-context-files AC-005 (DONE half), AC-007 and AC-010 through the real Studio HTTP/WebSocket
 // server, the Manager's scoped Agent Tools MCP session, Project/Task services, a live delegated worker and the
@@ -152,7 +153,8 @@ suite("Agent-attached Task context files reach the worker and never break DONE o
         `Manager tool result for ${content.slice(0, 120)}`, 60_000);
       return toolResult(results[before]!);
     };
-    const closedFrame = (frame: Frame) => frame.type === "ROOT_EXECUTION_EVENT" && frame.payload.event?.kind === "task_executions_closed";
+    // autobyteus-461 SR-084: a closed Task's copy leaves the tree; the view tells it as a tree change removing its row.
+    const closedFrame = (frame: Frame) => removedRunIdsIn([frame]).length > 0;
     const workerAddress = `/${segment(workerName)}`;
 
     // 1. AC-001/AC-002 through the Manager's own MCP session: create with [png, md], then a files-only patch.
@@ -217,9 +219,7 @@ suite("Agent-attached Task context files reach the worker and never break DONE o
     const doneFrom = view.frames.length;
     const done = await managerCalls(callTool("update_task", { task_id: taskKey, status: "DONE", context_files: [final] }));
     expect(done).toEqual({ task: { projectId, taskId: taskKey, title: "Read the reference files", status: "DONE", attachedContextFiles: [savedCopy("final.md")] } });
-    await until(() => view.frames.slice(doneFrom).some(closedFrame), "live task_executions_closed", 60_000);
-    const closedRefs = view.frames.slice(doneFrom).find(closedFrame)!.payload.event.task_executions as any[];
-    expect(closedRefs.map((ref) => ref.agentRunId ?? ref.agent_run_id)).toContain(worker);
+    await until(() => removedRunIdsIn(view.frames.slice(doneFrom)).includes(worker), "the worker's row removed live from the tree", 60_000);
     const doneTask = await projectTask(projectId, taskId);
     expect(doneTask.status).toBe("DONE");
     expect(doneTask.contextFiles.map((file: any) => file.displayName)).toEqual([...expected.map((file) => file.name), "final.md"]);
@@ -245,6 +245,6 @@ suite("Agent-attached Task context files reach the worker and never break DONE o
     input.socket.close(); view.socket.close();
     await terminate(rootId);
     Object.assign(evidence, { rootId, projectId, taskId, worker, create, patch, localPaths, workerFirstMessage: firstMessage, workerRead: read,
-      badDone, stillOpen, done, closedRefs, adHocTaskId, refused, textPatch });
+      badDone, stillOpen, done, adHocTaskId, refused, textPatch });
   }, 300000);
 });

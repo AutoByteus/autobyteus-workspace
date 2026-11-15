@@ -12,6 +12,7 @@ import { callTool, calledResults, segment, stringsOf, taskAgentsIn, toolResult, 
 import { flattenE2eConfiguredAgentExecutions } from "../helpers/team-run-metadata-helpers.js";
 import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
 import { builtServerLaunchEnvironment } from "../helpers/built-server-launch-credential.js";
+import { delegatedRunsTree } from "../helpers/run-tree-delegated.js";
 
 // unclean-shutdown-delegated-run-restore AC-005 (REQ-001..REQ-004, QR-002) and AC-006 (REQ-005) through the built server
 // (`dist/app.js`) in separate processes on a test-owned data root, the Team stream, GraphQL and the AGY backend. Only the
@@ -213,8 +214,8 @@ suite("A delegated Team whose coordinator's log was damaged by an unclean shutdo
       const teamRunId = delegated.target_team_run_id as string;
       const coordinator = delegated.target_team_coordinator_agent_run_id as string;
       let node: ReturnType<typeof taskAgentsIn>[number] | undefined;
-      await until(async () => Boolean(node = taskAgentsIn((await first.graphql(`query($id:String!){getTeamRunResumeConfig(teamRunId:$id){executionTree}}`,
-        { id: rootRunId })).getTeamRunResumeConfig.executionTree).find((entry) => entry.teamRunId === teamRunId)), `${caseId}: delegated Team in the tree`, 60_000);
+      // autobyteus-461 SR-084: the delegated runs come from the run's tree (its own config carries its own parts only).
+      await until(async () => Boolean(node = taskAgentsIn(await delegatedRunsTree(first.graphql, "team", rootRunId)).find((entry) => entry.teamRunId === teamRunId)), `${caseId}: delegated Team in the tree`, 60_000);
       // The coordinator works on its Task: it receives it and answers; the user then talks with it in non-ASCII text, so the
       // records before the damage hold multi-byte characters (the old repair cut by characters, not bytes).
       const own = await openTeam(first, teamRunId);
@@ -429,8 +430,7 @@ suite("A delegated Team whose coordinator's log was damaged by an unclean shutdo
     const reopened = await managerCalls(restart, callTool("update_task", { task_id: copy.taskId, status: "IN_PROGRESS" }));
     expect(reopened, "the Manager sets the Task IN_PROGRESS").not.toMatch(/"isError"\s*:\s*true/);
     await until(async () => (await status()) === "IN_PROGRESS", "USR-8: the Task is IN_PROGRESS", 30_000);
-    const rowShown = async () => taskAgentsIn((await restart.graphql(`query($id:String!){getTeamRunResumeConfig(teamRunId:$id){executionTree}}`,
-      { id: rootRunId })).getTeamRunResumeConfig.executionTree).some((entry) => entry.teamRunId === copy.teamRunId);
+    const rowShown = async () => taskAgentsIn(await delegatedRunsTree(restart.graphql, "team", rootRunId)).some((entry) => entry.teamRunId === copy.teamRunId);
     expect(await rowShown(), "USR-8: the closed run is not a row before the message").toBe(false);
     const raw = await managerCalls(restart, callTool("send_message_to", { target_agent_run_id: copy.coordinator, content: "Please reopen and continue (USR-8)." }));
     evidence.cases["USR-8"] = { result: raw.slice(0, 1200), taskStatusAfter: await status() };

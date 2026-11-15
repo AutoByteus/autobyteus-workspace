@@ -13,6 +13,7 @@ import { findAgyRunCapsule } from "./agy-run-capsule.js";
 import { flattenE2eConfiguredAgentExecutions } from "./team-run-metadata-helpers.js";
 import { restoreByMemberMessage } from "./restore-by-member-message.js";
 import { ownRunOfAgent, projectionByOwnRun } from "./own-run-reads.js";
+import { delegatedRunsTree } from "./run-tree-delegated.js";
 
 /**
  * Drives real Agent, Agent Team and Agent Org roots on a test-owned Studio server with the scripted AGY CLI
@@ -246,11 +247,8 @@ export const startCollaborationHarness = async (label: string) => {
       const state = (ack!.payload as Rec).state;
       if (state !== "accepted") throw new Error(`The ${kind} view ${String(state)} the message for ${agentRunId}: ${JSON.stringify(ack!.payload)}`);
     };
-    const liveTree = async () => {
-      if (kind === "agent") return (await graphql(`query($id:String!){agentRunCollaboration(runId:$id)}`, { id: rootId })).agentRunCollaboration?.root_agent?.execution_tree ?? null;
-      if (kind === "team") return (await graphql(`query($id:String!){getTeamRunResumeConfig(teamRunId:$id){executionTree}}`, { id: rootId })).getTeamRunResumeConfig.executionTree;
-      return (await graphql(`query($id:String!){getAgentOrgRootHistory(orgRunId:$id){org}}`, { id: rootId })).getAgentOrgRootHistory.org;
-    };
+    // autobyteus-461 SR-084: the root's delegated runs at every depth, from its tree (its view carries its own parts only).
+    const liveTree = async () => delegatedRunsTree(graphql, kind, rootId);
     const conversationOf = async (agentRunId: string, address: string) => {
       // An agent of a run this root delegated to is read through its own run (autobyteus-461 CR-461-014).
       if (agentRunId !== rootId && agentRunId !== managerRunId && !Object.values(members).includes(agentRunId)) {
