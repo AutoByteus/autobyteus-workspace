@@ -5,6 +5,7 @@
 | Revision ID | Canonical Review Report | Entry Point / Trigger | Prior Result | Current Result | Affected Finding IDs |
 | --- | --- | --- | --- | --- | --- |
 | CRR-001 | `code-review-report.md` | Implementation Review, round 1 / IR-001 at `3a78c3eee` | N/A | Fail (Local Fix) | CR-001 |
+| CRR-002 | `code-review-report.md` | Implementation Review, round 2 (Targeted Delta) / IR-002 at `077fa6853` | Fail (Local Fix) | Pass | CR-001 (resolved) |
 
 ## Revision Entries
 
@@ -32,3 +33,30 @@ None
 - Material score or classification changes: Cleanup Completeness 8.9 (CR-001); every other category ≥ 9.3
 - Recommended recipient: `/software_engineering_team/implementation_engineer`
 - Remaining risks or uncertainty: acceptance of the AC-003 cold figure; the rendered card check; the release order with `autobyteus-workspace-6`
+
+### CRR-002 — Targeted delta review of IR-002 (CR-001 fix)
+
+- Canonical review report updated: `code-review-report.md`
+- Review entry point and round: Implementation Review, round 2
+- Review scope: `Targeted Delta Review`. `git diff --stat 3a78c3eee bfcd82366 -- . ':!tickets'` shows one file with 4 deletions, all within CR-001.
+- Triggering role, report path, and finding or scenario IDs: implementation engineer, `implementation-handoff.md` (IR-002), CR-001
+- Relevant solution revision IDs: SR-004
+- Relevant architecture-review revision IDs: ARCH-REV-003
+- Relevant implementation revision IDs: IR-002 (code `077fa6853`, documents `bfcd82366`)
+- Relevant API/E2E revision IDs: N/A
+- Relevant delivery revision IDs: N/A
+- Prior authoritative result: Fail, Local Fix (CRR-001)
+- Current authoritative result: Pass
+- What changed in the review result and why: the unused `resetMemoryHubStagedFileStoreForTests` is deleted. Nothing references it (`git grep` at `bfcd82366` finds no match), and IMP-06 shows tsc 0 errors and 70 unit tests passing. No other code changed, so every other check and score carries forward from CRR-001.
+- Supported product scenario / material-premise basis changes: none
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| CR-001 | Open (Local Fix) | Resolved | IR-002, `077fa6853` | the diff deletes lines 199-202 of `memory-hub-staged-file-store.ts`; no reference remains; `evidence/IMP-06-cr001-delta.log` |
+
+- New or remaining finding IDs: none
+- Material score or classification changes: Cleanup Completeness 8.9 → 9.5; average 9.35 → 9.41; the classification is now Pass
+- Recommended recipient: `/software_engineering_team/api_e2e_engineer` (Implementation Engineer gets the informational notice)
+- Remaining risks or uncertainty: acceptance of the AC-003 cold RSS figure in API/E2E's independent run; the rendered card check; the release order with `autobyteus-workspace-6` and the fresh-start build

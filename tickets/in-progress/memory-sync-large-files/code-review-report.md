@@ -16,13 +16,13 @@
 - Implementation Revision Record Reviewed As Context: `implementation-revision-record.md`
 - Relevant Implementation Revision IDs: IR-001
 - Code Review Revision Record: `code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-001`
-- Current Review Round: 1
-- Review Scope: `Full Review`
-- Review Scope Evidence (round >1): N/A
-- Trigger: implementation handoff IR-001 (Large / High), code commit `3a78c3eee` on `task/memory-sync-large-files`, base `origin/personal` @ `3d738de6e`
-- Prior Review Round Reviewed: N/A
-- Latest Authoritative Round: 1
+- Current Code Review Revision ID: `CRR-002`
+- Current Review Round: 2
+- Review Scope: round 1 `Full Review` (CRR-001, at `3a78c3eee`); round 2 `Targeted Delta Review` (CRR-002, at `077fa6853`)
+- Review Scope Evidence (round >1): `git diff --stat 3a78c3eee bfcd82366 -- . ':!tickets'` shows one file, 4 deletions (`memory-hub-staged-file-store.ts`: CR-001's function). No spine, interface or data-shape change, no new files, no fix layered on a fix.
+- Trigger: round 1 was implementation handoff IR-001 (Large / High), code commit `3a78c3eee`. Round 2 is IR-002 (the CR-001 Local Fix), code commit `077fa6853`, with documents in `bfcd82366`. Branch `task/memory-sync-large-files`, base `origin/personal` @ `3d738de6e`.
+- Prior Review Round Reviewed: 1 (CRR-001, Fail, Local Fix)
+- Latest Authoritative Round: 2
 - Coverage Investigation / Execution Coverage / API/E2E Revision Record: N/A (implementation review)
 - Delivery Revision Record: N/A
 - Failing Scenario IDs / Commands / Evidence: N/A
@@ -78,7 +78,7 @@ ARCH-REV resolutions checked in code: AR-001 grouping by SHA-256, one verificati
 
 | Candidate ID | Observation Or Mechanism | Scenario / Contract ID | Independent Trigger | Forward Path / Lifecycle / Consequence | Evidence | Disposition | Scope | Reason / Proportionate Response |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| C-01 | `resetMemoryHubStagedFileStoreForTests` exported from the new `memory-hub-staged-file-store.ts` has no caller anywhere (production or tests) | C-ENG-1 | — (contract) | Dead export introduced by this change; also a test-only name in production code | `git grep resetMemoryHubStagedFileStoreForTests 3a78c3eee` → only its definition (`memory-hub-staged-file-store.ts:200`) | Promote | This ticket | Delete the function (CR-001) |
+| C-01 | `resetMemoryHubStagedFileStoreForTests` exported from the new `memory-hub-staged-file-store.ts` has no caller anywhere (production or tests) | C-ENG-1 | — (contract) | Dead export introduced by this change; also a test-only name in production code | `git grep resetMemoryHubStagedFileStoreForTests 3a78c3eee` → only its definition (`memory-hub-staged-file-store.ts:200`) | Promote | This ticket | Delete the function (CR-001). Resolved in `077fa6853` (round 2) |
 | C-02 | Cold 2 GiB source RSS growth 264 MiB > QR-002's 200 MiB → transfer memory inadequate (Design Impact per the design's escalation trigger) | SCN-001, QR-002 | Owner's Sync now with a 2 GiB file | DS-002 on source and hub | IMP-05: 4 GiB cold peak ≈ 2 GiB cold peak (584 vs 561 MiB source; hub lower at 4 GiB); warm 2 GiB adds 84 / 74 MiB; cold 30 MiB control already +116 MiB; code holds one 8 MiB piece buffer (source), one parsed 8 MiB body per piece and 64 KiB stream chunks (hub); no allocation scales with file size | Reject (as a code or design defect) | — | The evidence shows bounded, size-independent transfer memory (REQ-002) and that the excess above 200 MiB is a fixed first-sync process cost, not transfer memory. Whether AC-003's literal "RSS growth during the transfer" is judged on the cold figure is an acceptance question for API/E2E's independent AC-003 run and the requirement owner — recorded in Residual Risks, not a finding here |
 | C-03 | R-AR-1: hub verification inside the commit request could approach the 300 s fetch headers timeout | SCN-001 | 2–4 GiB staged batch | DS-003 commit | IMP-05: 5.7 s (2 GiB), 12.8 s (4 GiB) | Reject | — | ~2–4 % of the timeout; the 4 GiB per-batch budget bounds it |
 | C-04 | `sweepStale` skips the lock for a source with no `imports/<id>` folder | AR-003 | A >24 h-old partial committed at the same instant as that source's first-ever commit | — | handoff Important Assumptions | Reject | — | Technically Possible but Unsupported/Contrived (needs a staged file abandoned for a day plus an exact-instant first commit); taking the lock would create a visible empty imports folder |
@@ -109,7 +109,7 @@ ARCH-REV resolutions checked in code: AR-001 grouping by SHA-256, one verificati
 | Naming quality and Core Principle 15 | Pass | "staged file", "piece", "file failure", "run trigger" used consistently in code, wire, doc and UI ("files could not be synced", per design Terminology) | — |
 | No unjustified duplication | Pass | the temp-path expression repeats in import store and staged store (pre-existing local pattern, three lines) — not material | — |
 | Patch-on-patch complexity control | Pass | rewrites replace the old paths cleanly | — |
-| Dead code removed in the touched files and modules (Core Principle 7) | Fail | `resetMemoryHubStagedFileStoreForTests` has no caller (C-01) | CR-001 |
+| Dead code removed in the touched files and modules (Core Principle 7) | Pass | Round 1 failed on CR-001. Round 2: the function is deleted in `077fa6853`, and `git grep` at `bfcd82366` finds no match | — |
 | Relevant test scenarios and assertions are clear and requirement-aligned | Pass | test names cite AC/AR IDs; e2e asserts identical bytes, request sizes, resumed offsets, manifest absence of partials | — |
 | Test fixtures/helpers reasonably reusable, structure coherent | Pass | e2e shares one two-server + proxy harness across its four cases | — |
 | No stale, duplicated, or compatibility-only tests retained | Pass | run-gate, scanner `deferred`, background-task list tests updated to current behavior | — |
@@ -122,7 +122,7 @@ Effective non-empty lines, base `3d738de6e` → `3a78c3eee`. No file is over 500
 | Source File | Before | After | `>500` Check | `>220` Delta Check | SoC / Ownership | Placement | Classification | Required Action |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | `hub/local-file-memory-import-store.ts` | 216 | 282 | Pass | Pass (+66) | Pass (designed commit owner) | Pass | — | — |
-| `hub/memory-hub-staged-file-store.ts` (new) | 0 | 184 | Pass | Pass | Pass | Pass | Local Fix (CR-001) | Remove dead export |
+| `hub/memory-hub-staged-file-store.ts` (new) | 0 | 181 | Pass | Pass | Pass | Pass | — (CR-001 resolved) | — |
 | `hub/memory-hub-ingestion-service.ts` | 62 | 114 | Pass | Pass | Pass | Pass | — | — |
 | `source/memory-sync-service.ts` | 157 | 200 | Pass | Pass | Pass | Pass | — | — |
 | `source/memory-sync-batch-transfer.ts` (new) | 0 | 159 | Pass | Pass | Pass | Pass | — | — |
@@ -147,7 +147,7 @@ Effective non-empty lines, base `3d738de6e` → `3a78c3eee`. No file is over 500
 | --- | --- | --- |
 | No backward-compatibility mechanisms in changed scope | Pass | no old-hub detection, no v2 route; inline and staged are two encodings of one protocol with explicit size rules |
 | No legacy old-behavior retention in changed scope | Pass | whole-file scanner reads, `buildReplaceOperation`, `maxOperations`, `chunkOperations`, `MemoryFileDescriptor`, the `50 * 1024 * 1024` literal and the scanner `deferred` list are removed |
-| Dead code removed in the touched files and modules | Fail | CR-001 |
+| Dead code removed in the touched files and modules | Pass | CR-001 resolved in `077fa6853` |
 | Approved persisted-data transition decision is followed without unnecessary migration work | Pass | `fileFailures` optional, projected by `normalizeFileFailures`; absent → `{}`; no migration |
 | No version-specific dual reads/writes or request-time old-shape fallback | Pass | — |
 | Approved transition mechanics match the reviewed design | Pass | `Directly Usable — No Migration` / `Not Affected` as designed |
@@ -156,7 +156,7 @@ Effective non-empty lines, base `3d738de6e` → `3a78c3eee`. No file is over 500
 
 | Item / Path | Type | Evidence | Why It Must Be Removed | Required Action |
 | --- | --- | --- | --- | --- |
-| `autobyteus-server-ts/src/memory-sync/hub/memory-hub-staged-file-store.ts:200-202` `resetMemoryHubStagedFileStoreForTests` | `UnusedHelper` | `git grep` at `3a78c3eee`: no caller in `src` or `tests`; the singleton reads `getMemoryDir()` on each call, so no test needs a reset | New dead export in a file this change adds (Core Principle 7); a production function named for tests with no use (`DESIGN.md` rule 11) | Delete the function |
+| `autobyteus-server-ts/src/memory-sync/hub/memory-hub-staged-file-store.ts:200-202` `resetMemoryHubStagedFileStoreForTests` | `UnusedHelper` | `git grep` at `3a78c3eee`: no caller in `src` or `tests` | New dead export in a file this change adds (Core Principle 7; `DESIGN.md` rule 11) | Done: deleted in `077fa6853` (round 2). No item remains |
 
 ## Docs-Impact Verdict
 
@@ -176,7 +176,7 @@ New or reclassified premises: None (C-02..C-07 are recorded in the candidate gat
 
 ## Review Scorecard (Mandatory)
 
-- Overall score: `9.35 / 10` (simple average; not the decision rule)
+- Overall score: `9.41 / 10` (simple average; not the decision rule). Round 2 changes only categories 6 and 10; every other row is carried forward from round 1 unchanged, because the delta touches nothing they assess.
 
 | Priority | Category | Score | Why This Score | What Is Weak / Holding It Down | What Should Improve |
 | --- | --- | --- | --- | --- | --- |
@@ -185,15 +185,17 @@ New or reclassified premises: None (C-02..C-07 are recorded in the candidate gat
 | `3` | `API / Interface / Query / Command Clarity` | 9.4 | explicit identity on staged routes; trigger as data; typed `MemoryHubRequestError` | — | — |
 | `4` | `Separation of Concerns and File Placement` | 9.4 | each new file one concern; manifest path helpers moved to `shared/` to keep dependency direction | — | — |
 | `5` | `Shared-Structure / Data-Model Tightness and Reusable Owned Structures` | 9.4 | discriminated operation union; stat vs hashed entry types | — | — |
-| `6` | `Naming Quality and Local Readability` | 9.3 | consistent domain words; short comments state the rule | minor: one test-named export (CR-001) | removed with CR-001 |
+| `6` | `Naming Quality and Local Readability` | 9.3 | consistent domain words; short comments state the rule; the test-named export is gone | — | — |
 | `7` | `API/E2E Readiness` | 9.3 | real two-server e2e harness and counting proxy ready for independent runs | rendered card not yet checked (handoff says so) | API/E2E rendered check |
 | `8` | `Runtime Correctness And Behavioral Fidelity` | 9.3 | verify-all-then-write, resume, isolation and run gate traced and tested; memory size-independent per IMP-05 | AC-003 cold figure needs the independent acceptance call (Residual Risks) | — |
 | `9` | `No Backward-Compatibility / No Legacy Retention` | 9.6 | clean cut; all listed replaced code removed | — | — |
-| `10` | `Cleanup Completeness` | 8.9 | removal plan executed in full | one dead export in a new file (CR-001) | delete it |
+| `10` | `Cleanup Completeness` | 9.5 | removal plan executed in full; CR-001's dead export deleted | — | — |
 
 ## Findings
 
-### CR-001 — Dead test-only export in the new staged-file store (Low, Local Fix)
+No open findings. CR-001 is resolved (see `code-review-revision-record.md` CRR-002).
+
+### CR-001 — Dead test-only export in the new staged-file store (Low, Local Fix) — Resolved in round 2
 
 - Where: `autobyteus-server-ts/src/memory-sync/hub/memory-hub-staged-file-store.ts:200-202`, `resetMemoryHubStagedFileStoreForTests`.
 - Basis: Core Principle 7 (No Dead Code, touched files are this ticket) and `DESIGN.md` rule 11 (no production code only tests use). Candidate C-01.
@@ -206,11 +208,11 @@ New or reclassified premises: None (C-02..C-07 are recorded in the candidate gat
 
 ## Classification
 
-- `Local Fix` (implementation-owned): CR-001.
+- Round 2: none (Pass). Round 1 was `Local Fix` (implementation-owned) for CR-001, now resolved.
 
 ## Recommended Recipient
 
-- Implementation Engineer (`/software_engineering_team/implementation_engineer`), per the rule "source review identifies an implementation-owned Local Fix". After the fix: targeted delta review here, then API/E2E.
+- API/E2E Engineer (`/software_engineering_team/api_e2e_engineer`), per the rule "implementation review passes". The Implementation Engineer gets the informational pass notice.
 
 ## Residual Risks
 
@@ -221,11 +223,11 @@ New or reclassified premises: None (C-02..C-07 are recorded in the candidate gat
 
 ## Latest Authoritative Result
 
-- Review Decision: `Fail` (Local Fix)
-- Review Entry Point: `Implementation Review`
+- Review Decision: `Pass`
+- Review Entry Point: `Implementation Review` (round 2, Targeted Delta Review)
 - Supported Product Scenario Gate: `Pass`
 - Material-Premise Gate: `Pass`
-- Score Summary: 9.35 average; Cleanup Completeness 8.9 (CR-001); all other categories ≥ 9.3
+- Score Summary: 9.41 average; every category ≥ 9.3 (Cleanup Completeness 9.5)
 - Failure Origin: N/A
-- Recommended Recipient: `/software_engineering_team/implementation_engineer`
-- Notes: the design is implemented faithfully, and the AR-001..AR-008 points are kept. The only required change is deleting one unused function. A targeted delta review will follow.
+- Recommended Recipient: `/software_engineering_team/api_e2e_engineer`
+- Notes: CR-001 is resolved; no open findings. Code reviewed: `077fa6853` (`3a78c3eee` plus the 4-line deletion). Evidence: IMP-01..IMP-05 on `3a78c3eee` still hold, because the deletion removes a function nothing called; IMP-06 on `077fa6853` shows tsc 0 errors and 70 unit tests passing. Carried forward to API/E2E: the Residual Risks above, chiefly the AC-003 acceptance call on the cold RSS figure and the rendered card check.

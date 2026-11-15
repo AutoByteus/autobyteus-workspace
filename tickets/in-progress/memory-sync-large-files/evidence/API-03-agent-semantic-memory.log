@@ -1,0 +1,31 @@
+# API-03: vitest run agent-semantic-memory.e2e; commit bfcd82366; Sun Nov 15 14:23:49 CET 2026; env -i
+Server setting 'AUTOBYTEUS_AGENT_PACKAGE_ROOTS' updated
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary[2m > [22m[2mSM-01 (AC-007): a user's own agent is switched on and off in its agent-config.json, other fields kept, and reads create no folder
+[22m[39mAgent Definition created successfully with ID: sm-scout-b4003c
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary[2m > [22m[2mSM-01 (AC-007): a user's own agent is switched on and off in its agent-config.json, other fields kept, and reads create no folder
+[22m[39mAgent Definition with ID sm-scout-b4003c updated successfully.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary[2m > [22m[2mSM-01 (AC-007): a user's own agent is switched on and off in its agent-config.json, other fields kept, and reads create no folder
+[22m[39mAgent Definition with ID sm-scout-b4003c updated successfully.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary[2m > [22m[2mSM-01 (AC-007): a user's own agent is switched on and off in its agent-config.json, other fields kept, and reads create no folder
+[22m[39mAgent Definition with ID sm-scout-b4003c updated successfully.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary[2m > [22m[2mSM-01 (AC-007): a user's own agent is switched on and off in its agent-config.json, other fields kept, and reads create no folder
+[22m[39mAgent Definition with ID sm-scout-b4003c updated successfully.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary[2m > [22m[2mSM-02 (AC-007, DEC-012): a package agent's switch is a personal setting with a reset; a package that declares it reads on
+[22m[39mAgent Definition with ID sm-packaged-b4003c updated successfully.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary[2m > [22m[2mSM-02 (AC-007, DEC-012): a package agent's switch is a personal setting with a reset; a package that declares it reads on
+[22m[39mAgent Definition with ID sm-declared-b4003c updated successfully.
+
+ [32m✓[39m tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts [2m([22m[2m9 tests[22m[2m | [22m[33m7 skipped[39m[2m)[22m[33m 408[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m1 passed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[32m2 passed[39m[22m[2m | [22m[33m7 skipped[39m[90m (9)[39m
+[2m   Start at [22m 14:23:49
+[2m   Duration [22m 7.97s[2m (transform 5.40s, setup 46ms, import 7.07s, tests 408ms, environment 0ms)[22m
+

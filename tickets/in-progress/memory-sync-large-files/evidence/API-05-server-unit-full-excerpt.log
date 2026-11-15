@@ -1,0 +1,68 @@
+# API-05: full server unit suite (vitest run tests/unit tests/app-data-migrations tests/architecture tests/agent-work-journal --exclude **/*.integration.test.ts); commit 077fa6853; Node v26.12.0; 2026-11-15 14:24-14:35; env -i + pnpm shim. Tail and failure excerpts only (full raw log 13k lines)
+[22m[39mAgentSession s2 closed
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-session.test.ts[2m > [22m[2mAgentSession[2m > [22m[2mcloses and resets connected state
+[22m[39mAgentSession s3 connected to run agent-3
+AgentSession s3 closed
+
+[33m[39m[32m·[39m[33m[39m[32m·[39m[33m[39m[32m·[39m[33m[39m[32m·[39m[33m[39m[32m·[39m[33m[39m[32m·[39m[33m[39m[32m·[39m[33m[39m[32m·[39m[33m[39m[32m·[39m
+
+[31m⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 3 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m tests/unit/memory-search/memory-search-store.test.ts[2m > [22mMemorySearchStore[2m > [22mindexes chunks without keeping their text, finds them by words (Chinese too), and replaces or removes them
+[31m[1mRangeError[22m: Value is too large to be represented as a JavaScript number: 9007336693694464[39m
+[36m [2m❯[22m MemorySearchStore.deleteChunks src/memory-search/store/memory-search-store.ts:[2m197:105[22m[39m
+    [90m195|[39m
+    [90m196|[39m   [35mprivate[39m [34mdeleteChunks[39m(db[33m:[39m [33mDatabaseSync[39m[33m,[39m fileId[33m:[39m number)[33m:[39m [35mvoid[39m {
+    [90m197|[39m     db.prepare("DELETE FROM chunk_text WHERE rowid IN (SELECT chunk_id…
+    [90m   |[39m                                                                                                         [31m^[39m
+    [90m198|[39m     db[33m.[39m[34mprepare[39m([32m"DELETE FROM chunks WHERE file_id = ?"[39m)[33m.[39m[34mrun[39m(fileId)[33m;[39m
+    [90m199|[39m   }
+[90m [2m❯[22m src/memory-search/store/memory-search-store.ts:[2m78:26[22m[39m
+[90m [2m❯[22m MemorySearchStore.transaction src/memory-search/store/memory-search-store.ts:[2m210:7[22m[39m
+[90m [2m❯[22m MemorySearchStore.replaceJournalFile src/memory-search/store/memory-search-store.ts:[2m76:10[22m[39m
+[90m [2m❯[22m tests/unit/memory-search/memory-search-store.test.ts:[2m43:11[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/unit/memory-search/memory-search.test.ts[2m > [22mMemorySearch (pipeline and search over Work Journals)[2m > [22mqueues a live change made while a pass runs: during the first build and during a later full pass (CR-001)
+[31m[1mError[22m: Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".[39m
+[36m [2m❯[22m tests/unit/memory-search/memory-search.test.ts:[2m235:3[22m[39m
+    [90m233|[39m   })[33m;[39m
+    [90m234|[39m
+    [90m235|[39m   it("queues a live change made while a pass runs: during the first bu…
+    [90m   |[39m   [31m^[39m
+    [90m236|[39m     [35mconst[39m designer [33m=[39m path[33m.[39m[34mjoin[39m(memoryDir[33m,[39m [32m"agents/designer_1"[39m)[33m;[39m
+    [90m237|[39m     [35mconst[39m read [33m=[39m journals[33m.[39mreadJournalFile[33m.[39m[34mbind[39m(journals)[33m;[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/unit/agent-execution/backends/grok/grok-build-compaction.test.ts[2m > [22mGrok Build compaction replayed through the ACP session into memory[2m > [22mrecords Grok's own completed report for a no-op /compact as one boundary (G09)
+[31m[1mAssertionError[22m: expected [] to deeply equal [ 'compacted:42' ][39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- [[39m
+[32m-   "compacted:42",[39m
+[32m- ][39m
+[31m+ [][39m
+
+[36m [2m❯[22m tests/unit/agent-execution/backends/grok/grok-build-compaction.test.ts:[2m178:29[22m[39m
+    [90m176|[39m   it("records Grok's own completed report for a no-op /compact as one …
+    [90m177|[39m     [35mconst[39m events [33m=[39m [35mawait[39m [34mreplaySession[39m([32m"compaction-noop"[39m)[33m;[39m
+    [90m178|[39m     [34mexpect[39m([34msummary[39m(events))[33m.[39m[34mtoEqual[39m([[32m"compacted:42"[39m])[33m;[39m
+    [90m   |[39m                             [31m^[39m
+    [90m179|[39m     expect(compactions(events)[0]?.payload).toMatchObject({ pre_tokens…
+    [90m180|[39m     [34mexpect[39m(([35mawait[39m [34mrecordIntoMemory[39m(events))[33m.[39msegments)[33m.[39m[34mtoHaveLength[39m([34m1[39m)[33m;[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m3 failed[39m[22m[2m | [22m[1m[32m994 passed[39m[22m[2m | [22m[33m5 skipped[39m[90m (1002)[39m
+[2m      Tests [22m [1m[31m3 failed[39m[22m[2m | [22m[1m[32m8486 passed[39m[22m[2m | [22m[33m10 skipped[39m[90m (8499)[39m
+[2m   Start at [22m 14:24:23
+[2m   Duration [22m 671.81s[2m (transform 14.07s, setup 21.18s, import 236.32s, tests 301.84s, environment 686ms)[22m
+
+exit=1

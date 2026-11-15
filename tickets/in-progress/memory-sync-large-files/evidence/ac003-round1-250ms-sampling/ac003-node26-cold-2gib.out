@@ -1,0 +1,1 @@
+{"label":"cold 2048 MiB","ms":9889,"run":{"scannedFiles":2,"changedFiles":2,"committedBatches":1,"failedFiles":0},"baseline":{"source":296.7,"hub":298.8},"peak":{"source":591,"hub":434.6},"growth":{"source":294.3,"hub":135.8},"settledAfter3s":{"source":588.4,"hub":434.7},"identical":true,"samples":38}

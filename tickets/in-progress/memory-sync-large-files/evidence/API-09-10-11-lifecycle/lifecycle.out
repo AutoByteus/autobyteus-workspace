@@ -1,0 +1,37 @@
+ok   API-11 no credential -> refused (401/403) {"status":401,"body":"{\"error\":\"NODE_CREDENTIAL_REQUIRED\",\"code\":\"NODE_CREDENTIAL_REQUIRED\",\"message\":\"This node needs a credential. Connect it on the Nodes page.\"}"}
+ok   API-11 the node's own owner credential on the staged route -> refused (401/403) {"status":403,"body":"{\"error\":\"NODE_ROUTE_NOT_PERMITTED\",\"code\":\"NODE_ROUTE_NOT_PERMITTED\",\"message\":\"This credential does not open this endpoint.\"}"}
+ok   API-11 a wrong token -> refused (401/403) {"status":401,"body":"{\"error\":\"NODE_CREDENTIAL_INVALID\",\"code\":\"NODE_CREDENTIAL_INVALID\",\"message\":\"This node does not accept this credential.\"}"}
+ok   API-11 the source token, its own source id -> 200 receivedBytes 0 {"status":200,"body":"{\"receivedBytes\":0}"}
+ok   API-11 the source token for another source id -> refused (4xx, not 200) {"status":403,"body":"{\"error\":\"MemoryHubCredentialError\",\"message\":\"Memory Hub source token is bound to a different Memory Sync source ID.\"}"}
+ok   API-11 a piece of 8 MiB + 1 byte -> 413 {"status":413,"body":"{\"statusCode\":413,\"code\":\"FST_ERR_CTP_BODY_TOO_LARGE\",\"error\":\"Payload Too Large\",\"message\":\"Request body is too large\"}"}
+ok   API-11 a piece at an offset that is not the received length -> 409 {"status":409,"body":"{\"error\":\"MemorySyncStagedFileOffsetMismatch\",\"message\":\"Staged file piece offset does not match the 0 bytes the hub holds.\",\"receivedBytes\":0}"}
+ok   API-11 a piece sent as application/json -> 400 "must be sent as application/octet-stream" {"status":400,"body":"{\"error\":\"MemoryHubIngestionError\",\"message\":\"A staged file piece must be sent as application/octet-stream.\"}"}
+ok   API-11 a malformed SHA-256 -> 400 {"status":400,"body":"{\"error\":\"MemorySyncRequestError\",\"message\":\"sha256 must be 64 lowercase hex characters.\"}"}
+ok   API-11 the refused requests left no content in staging (only zero-byte partials, OBS-2) [{"name":"939cb35f214a8f1d90618e9e6a0a54224caac87086065d1856a831ba836f0a49.partial","bytes":0}]
+ok   API-11 nothing of them is in imports or the manifest null
+ok   API-11 the hub still serves its owner (GraphQL with the owner credential) 
+ok   API-09 the background run was uploading (>= 4 pieces) when Sync now was pressed {"pieces":4}
+ok   API-09 both Sync now calls returned the same single queued run {"a":{"scannedFiles":3,"changedFiles":1,"unchangedFiles":2,"committedBatches":1,"failedFiles":0,"deferredFiles":0},"b":{"scannedFiles":3,"changedFiles":1,"unchangedFiles":2,"committedBatches":1,"failedFiles":0,"deferredFiles":0}}
+ok   API-09 the queued manual run found only the file written after the background scan (changedFiles 1) {"scannedFiles":3,"changedFiles":1,"unchangedFiles":2,"committedBatches":1,"failedFiles":0,"deferredFiles":0}
+ok   API-09 exactly two commit requests in total: one background batch, one queued manual batch {"posts":2}
+ok   API-09 the big file was negotiated once (one status GET), never uploaded by two runs {"gets":1,"puts":50}
+ok   API-09 the manual run started only after the background run finished (its commit came after the last piece) {"lastPieceAt":1794751421996,"secondCommitAt":1794751422349}
+ok   API-09 imported big file identical 
+ok   API-09 late file imported by the manual run 
+ok   API-09 final state success, no file failures {"jobState":"success","lastError":null,"fileFailureCount":0,"lastSuccessfulSyncAt":"2026-11-15T14:03:42.370Z"}
+ok   API-10a the hub was killed mid-upload and the run ended with a run-level error "source graphql: 200 [{\"message\":\"fetch failed\",\"locations\":[{\"line\":1,\"column\":10}],\"path\":[\"startMemorySync\"]}]"
+ok   API-10a state: jobState error, the error shown, no file failure recorded {"jobState":"error","lastError":"fetch failed","fileFailureCount":0,"lastSuccessfulSyncAt":"2026-11-15T14:03:42.370Z"}
+ok   API-10a Sync now while the hub is down also fails as a run (hub unreachable), not as file problems "source graphql: 200 [{\"message\":\"fetch failed\",\"locations\":[{\"line\":1,\"column\":10}],\"path\":[\"startMemorySync\"]}]"
+ok   API-10a after the restart the partial file is on the hub, outside imports, not in the manifest {"partialBytes":50331648,"multipleOfPiece":true}
+ok   API-10a the next run resumed from what the hub held (first piece offset equals the partial size) {"firstOffset":50331648,"partialBytes":50331648,"pieces":19}
+ok   API-10a only the remaining bytes were sent {"pieces":19}
+ok   API-10a run succeeded; imported file identical to the source {"scannedFiles":4,"changedFiles":1,"unchangedFiles":3,"committedBatches":1,"failedFiles":0,"deferredFiles":0}
+ok   API-10a staging holds nothing for the file afterwards ["939cb35f214a8f1d90618e9e6a0a54224caac87086065d1856a831ba836f0a49.partial"]
+ok   API-10a state success, no file failures {"jobState":"success","lastError":null,"fileFailureCount":0,"lastSuccessfulSyncAt":"2026-11-15T14:03:47.286Z"}
+ok   API-10b the hub was killed during the commit request; the run ended with a run-level error "source graphql: 200 [{\"message\":\"fetch failed\",\"locations\":[{\"line\":1,\"column\":10}],\"path\":[\"startMemorySync\"]}]"
+ok   API-10b all 128 pieces had been uploaded before the commit {"puts1":128}
+ok   API-10b after the restart: the complete staged file is still outside imports and the manifest {"staged":1073741824}
+ok   API-10b the next run uploaded no piece and committed the staged file {"puts2":0,"resumed":{"scannedFiles":5,"changedFiles":1,"unchangedFiles":4,"committedBatches":1,"failedFiles":0,"deferredFiles":0}}
+ok   API-10b imported file identical to the source 
+ok   API-10b staging empty and state success {"jobState":"success","lastError":null,"fileFailureCount":0,"lastSuccessfulSyncAt":"2026-11-15T14:03:56.655Z"}
+{"result":"Pass","cleanup":{"rootRemoved":true,"serversStopped":true}}

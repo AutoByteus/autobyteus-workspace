@@ -1,0 +1,16 @@
+# API-01b: web-generated-graphql-current with the pnpm shim on PATH; commit bfcd82366; Sun Nov 15 14:22:39 CET 2026
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+[90mstdout[2m | tests/architecture/web-generated-graphql-current.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [32m✓[39m tests/architecture/web-generated-graphql-current.test.ts [2m([22m[2m1 test[22m[2m)[22m[33m 9611[2mms[22m[39m
+     [33m[2m✓[22m[39m equals the web codegen output for the current server schema, and the check fails on a changed schema [33m 9469[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m1 passed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[32m1 passed[39m[22m[90m (1)[39m
+[2m   Start at [22m 14:22:39
+[2m   Duration [22m 15.10s[2m (transform 3.77s, setup 47ms, import 4.99s, tests 9.61s, environment 0ms)[22m
+

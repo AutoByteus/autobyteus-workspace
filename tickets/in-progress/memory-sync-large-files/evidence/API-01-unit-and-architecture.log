@@ -1,0 +1,41 @@
+# API-01: vitest run tests/unit/memory-sync + architecture; commit bfcd82366; macOS Node v26.12.0; Sun Nov 15 14:22:16 CET 2026; env -i
+[22m[39mMemory Sync staging sweep failed: Error: ENOENT: no such file or directory, scandir '/var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/memory-ingestion-sweep-dT91vY/memory-sync-staging/source-b'
+
+ [32m✓[39m tests/unit/memory-sync/memory-hub-ingestion-sweep.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 119[2mms[22m[39m
+ [32m✓[39m tests/unit/memory-sync/memory-hub-staged-commit.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 63[2mms[22m[39m
+ [32m✓[39m tests/unit/memory-sync/memory-sync-batch-transfer.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 15[2mms[22m[39m
+ [32m✓[39m tests/unit/memory-sync/memory-sync-file-failures-state.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 14[2mms[22m[39m
+ [32m✓[39m tests/unit/memory-sync/memory-file-change-planner.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 10[2mms[22m[39m
+ [32m✓[39m tests/unit/memory-sync/memory-hub-response-parser.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 5[2mms[22m[39m
+ [32m✓[39m tests/unit/memory-sync/memory-sync-batch-planner.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 3[2mms[22m[39m
+ [32m✓[39m tests/unit/memory-sync/memory-sync-file-failure-policy.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 2[2mms[22m[39m
+
+[31m⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 1 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m tests/architecture/web-generated-graphql-current.test.ts[2m > [22mautobyteus-web/generated/graphql.ts[2m > [22mequals the web codegen output for the current server schema, and the check fails on a changed schema
+[31m[1mAssertionError[22m: 
+spawnSync pnpm ENOENT
+: expected 1 to be +0 // Object.is equality[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- 0[39m
+[31m+ 1[39m
+
+[36m [2m❯[22m tests/architecture/web-generated-graphql-current.test.ts:[2m42:65[22m[39m
+    [90m 40|[39m     [34mwriteFileSync[39m(current[33m,[39m [32m`[39m[36m${[39msdl[36m}[39m[32m\n`[39m)[33m;[39m
+    [90m 41|[39m     [35mconst[39m passed [33m=[39m [34mcheck[39m(current)[33m;[39m
+    [90m 42|[39m     expect(passed.status, `${passed.stdout}\n${passed.stderr}`).toBe(0…
+    [90m   |[39m                                                                 [31m^[39m
+    [90m 43|[39m
+    [90m 44|[39m     [35mconst[39m changed [33m=[39m [34mjoin[39m(scratch[33m,[39m [32m"changed.graphql"[39m)[33m;[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[2m | [22m[1m[32m16 passed[39m[22m[90m (17)[39m
+[2m      Tests [22m [1m[31m1 failed[39m[22m[2m | [22m[1m[32m90 passed[39m[22m[90m (91)[39m
+[2m   Start at [22m 14:22:16
+[2m   Duration [22m 16.26s[2m (transform 4.19s, setup 402ms, import 6.33s, tests 7.21s, environment 1ms)[22m
+
