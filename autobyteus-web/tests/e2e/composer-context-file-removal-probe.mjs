@@ -20,6 +20,10 @@
 //   CF-013 context-file size limits (autobyteus-workspace-6): over-limit files are refused before any upload request, one
 //          localized line per limit; a real throttled upload shows progress and its cancel leaves nothing on the node,
 //          an unthrottled retry attaches the 6 MiB video. (The node's limits are answered by a route stub in part A only.)
+//   CF-014 the Server Settings page (advanced list; a setting with no value is not listed, so the owner adds it with the list's
+//          "new setting" row): an invalid audio/video limit is refused and changes nothing, also as an edit of its row; saved
+//          limits (3 MB / 1 MB) apply to the next pick of an already open composer with no reload, as zh-CN lines naming each
+//          limit; the defaults are restored through the rows.
 //   CF-009 an Org task agent while its message is pending (finalize held) and the Manager delegates another task:
 //          `+` disabled with a reason, a pasted image shows the message and uploads nothing, a pasted path attaches.
 //   CF-004 the backend is stopped: × shows the error and keeps the item; after it returns the retry removes it.
@@ -62,7 +66,7 @@ const ledger = getArg('ledger');
 const executablePath = getArg('browser-executable', process.env.PLAYWRIGHT_CHROME_EXECUTABLE_PATH)
   || ['/Applications/Google Chrome.app/Contents/MacOS/Google Chrome', '/usr/bin/google-chrome', '/usr/bin/chromium', '/usr/bin/chromium-browser']
     .find((candidate) => fs.existsSync(candidate));
-const ALL_CASES = ['CF-001', 'CF-002', 'CF-003', 'CF-006', 'CF-007', 'CF-008', 'CF-013', 'CF-009', 'CF-011', 'CF-012', 'CF-004', 'CF-005'];
+const ALL_CASES = ['CF-001', 'CF-002', 'CF-003', 'CF-006', 'CF-007', 'CF-008', 'CF-013', 'CF-014', 'CF-009', 'CF-011', 'CF-012', 'CF-004', 'CF-005'];
 const selectedCases = (getArg('cases') ?? ALL_CASES.join(',')).split(',').map((c) => c.trim()).filter(Boolean);
 // A 2x2 opaque PNG (what a screenshot paste delivers, minus the size).
 const PNG = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAIAAAD91JpzAAAAFklEQVR4nGP8z8DAwMDAxMDAwMDAAAANHQEDasKb6QAAAABJRU5ErkJggg==', 'base64');
@@ -803,6 +807,94 @@ const sizeLimitsProgressCancel = async () => {
   } finally { await context.close(); }
 };
 
+/** CF-014: the node's limits changed on the Server Settings page apply to the next pick of an open composer (autobyteus-workspace-6; AC-004, AC-005; REQ-002, REQ-005). */
+const settingsChangeApplies = async () => {
+  const VIDEO = 'AUTOBYTEUS_CONTEXT_FILE_AUDIO_VIDEO_MAX_MB';
+  const OTHER = 'AUTOBYTEUS_CONTEXT_FILE_OTHER_MAX_MB';
+  const limits = async () => (await (await fetch(`${stack.backendUrl}/rest/context-files/size-limits`)).json());
+  const composer = await newPage();
+  const settings = await newPage();
+  try {
+    for (const { context } of [composer, settings]) await context.addInitScript(() => localStorage.setItem('autobyteus.localization.preference-mode', 'zh-CN'));
+    const { page } = composer;
+    // The shared helpers' selectors are English; the zh-CN composer has its own labels.
+    const pickZh = async (names) => {
+      const [chooser] = await Promise.all([page.waitForEvent('filechooser', { timeout: 10000 }), centerTray(page).locator('button[aria-label="上传文件"]').click()]);
+      await chooser.setFiles(names.map((n) => path.join(outputDir, n)));
+    };
+    const clearAllZh = (tray) => tray.getByRole('button', { name: /全部清除/ });
+    await openAgentCopy(page);
+    const tray = centerTray(page);
+    const before = await limits();
+    assert(before.audioVideoMaxBytes === 2048 * 1024 * 1024 && before.otherFileMaxBytes === 25 * 1024 * 1024, 'the node starts on the default limits', before);
+    // The composer is open and has picked once, so it has read the default limits.
+    await pickZh(['spec-a.txt']);
+    await waitCount(tray, 1, 'first pick under the default limits');
+    await clearAllZh(tray).click();
+    await waitCount(tray, 0, 'first pick cleared');
+    // The owner changes the limits on the Server Settings page (advanced list).
+    const sp = settings.page;
+    await sp.goto(`${stack.frontendUrl}/settings?section=server-settings&mode=advanced`, { waitUntil: 'networkidle', timeout: 120000 });
+    const field = (key) => sp.locator(`[data-testid="server-setting-value-${key}"]`);
+    const save = (key) => sp.locator(`[data-testid="server-setting-save-${key}"]`);
+    await sp.locator('tbody tr:last-child input').first().waitFor({ state: 'visible', timeout: 60000 }).catch(async (error) => {
+      await shot(sp, 'settings-page-not-ready');
+      error.details = { url: sp.url(), keys: (await sp.locator('[data-testid^="server-setting-value-"]').evaluateAll((els) => els.map((e) => e.getAttribute('data-testid')))).slice(0, 80),
+        text: (await sp.locator('body').innerText().catch(() => '')).slice(0, 600) };
+      throw error;
+    });
+    const notice = () => sp.locator('div.fixed.bottom-4.right-4').first();
+    // The settings have no value on a node that never set them, and the list shows only settings that have a value (the same rule as
+    // every predefined setting): the owner adds them with the list's "new setting" row, which is the path exercised here.
+    const listedAtStart = { video: (await field(VIDEO).count()) > 0, other: (await field(OTHER).count()) > 0 };
+    const addRow = sp.locator('tbody tr:last-child');
+    const addSetting = async (key, value) => {
+      await addRow.locator('input').nth(0).fill(key);
+      await addRow.locator('input').nth(1).fill(value);
+      await addRow.locator('button').click();
+    };
+    await addSetting(VIDEO, 'abc');
+    const refusal = await until('the refusal notice', async () => { const t = await notice().innerText().catch(() => ''); return /whole number|must be/i.test(t) ? t : null; }, 15000);
+    await shot(sp, 'settings-invalid-refused');
+    assert((await limits()).audioVideoMaxBytes === 2048 * 1024 * 1024, 'an invalid value changed the limit', await limits());
+    assert((await field(VIDEO).count()) === 0, 'an invalid value was stored and listed');
+    await addRow.locator('input').nth(0).fill(''); await addRow.locator('input').nth(1).fill('');
+    // Valid values are saved and the settings appear in the list.
+    await addSetting(VIDEO, '3');
+    await field(VIDEO).waitFor({ state: 'visible', timeout: 20000 });
+    await until('the node reports 3 MiB', async () => (await limits()).audioVideoMaxBytes === 3 * 1024 * 1024, 10000);
+    await addSetting(OTHER, '1');
+    await field(OTHER).waitFor({ state: 'visible', timeout: 20000 });
+    await until('the node reports 1 MiB', async () => (await limits()).otherFileMaxBytes === 1024 * 1024, 15000);
+    const listed = { video: await field(VIDEO).inputValue(), other: await field(OTHER).inputValue(),
+      videoDescription: (await sp.locator('tr', { has: field(VIDEO) }).innerText()).replace(/\s+/g, ' ').slice(0, 200) };
+    await shot(sp, 'settings-saved');
+    // An invalid edit of the listed row is refused too, and the stored value stays.
+    await field(VIDEO).fill('10241');
+    await save(VIDEO).click();
+    const editRefusal = await until('the edit refusal notice', async () => { const t = await notice().innerText().catch(() => ''); return /whole number|must be/i.test(t) ? t : null; }, 15000);
+    assert((await limits()).audioVideoMaxBytes === 3 * 1024 * 1024, 'an invalid edit changed the limit', await limits());
+    // The open composer, with no reload, now refuses by the new limits in zh-CN (6 MiB video over 3 MiB, 2 MiB PDF over 1 MiB).
+    const uploadsBefore = uploads(composer.net).length;
+    await pickZh(['clip-big.mp4', 'doc-big.pdf']);
+    const lines = await until('the two zh-CN lines', async () => { const all = (await tray.locator('[data-testid="context-file-error-line"]').allInnerTexts()).map((t) => t.trim()).filter(Boolean); return all.length === 2 ? all : null; }, 15000);
+    await shot(page, 'settings-composer-zh-CN-refused');
+    assert(lines.includes('无法附加 clip-big.mp4：文件超过 3 MB 大小限制。') && lines.includes('无法附加 doc-big.pdf：文件超过 1 MB 大小限制。'), 'zh-CN lines with the new limits', { lines });
+    assert(uploads(composer.net).length === uploadsBefore && (await trayCount(tray)) === 0, 'an over-limit file was sent or kept', { lines });
+    // The defaults come back through the same page.
+    await field(VIDEO).fill('2048');
+    await save(VIDEO).click();
+    await until('the audio/video row saved', async () => (await limits()).audioVideoMaxBytes === 2048 * 1024 * 1024, 15000);
+    await field(OTHER).fill('25');
+    await save(OTHER).click();
+    await until('the defaults are back', async () => { const l = await limits(); return l.audioVideoMaxBytes === 2048 * 1024 * 1024 && l.otherFileMaxBytes === 25 * 1024 * 1024; }, 15000);
+    // The settings store logs each refused save to the console (the two invalid saves above); nothing else may be logged.
+    const refusedSaves = settings.errors.filter((e) => /^Failed to update server setting AUTOBYTEUS_CONTEXT_FILE_AUDIO_VIDEO_MAX_MB: Error: Audio\/video size limit must be a whole number of MiB from 1 through 10240\./.test(e));
+    assert(composer.errors.length === 0 && refusedSaves.length === 2 && settings.errors.length === 2, 'browser errors', { composer: composer.errors, settings: settings.errors });
+    return { listedAtStart, refusal: refusal.trim(), editRefusal: editRefusal.trim(), listed, lines };
+  } finally { await composer.context.close(); await settings.context.close(); }
+};
+
 /** CF-009: AC-007 — an Org task agent while its message is pending has no upload owner. */
 const pendingWithoutUploadOwner = async () => {
   const { page, errors, context, net } = await newPage();
@@ -975,6 +1067,7 @@ const CASES = {
   'CF-007': ['Pasted foreign draft URL is cloned; removing it keeps the source', foreignDraftClone],
   'CF-008': ['Injected DELETE/upload failure: visible error naming the file, item kept, retry clears', injectedFailures],
   'CF-013': ['Size limits: over-limit refused before upload; progress and cancel on a throttled upload; retry attaches', sizeLimitsProgressCancel],
+  'CF-014': ['Server Settings page: invalid limit refused, saved limits apply to the open composer\'s next pick (zh-CN), no reload', settingsChangeApplies],
   'CF-009': ['Org task agent while its message is pending: + disabled, paste shows message, path still attaches', pendingWithoutUploadOwner],
   'CF-011': ['+ on the Manager run → New chat → attach → send: temp-chat draft finalized, agent-final file readable',
     firstSendFromNewChat('new-chat-agent-send', async (page) => { await openAgentRoot(page); await centerTray(page).waitFor(); },
