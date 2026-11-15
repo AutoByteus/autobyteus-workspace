@@ -45,3 +45,8 @@ All under `/Users/normy/autobyteus-org/autobyteus-task-worktrees/context-file-la
 ## Expected next action
 
 The manager answers DEC-001 (the number, or "use the recommendation"), and says whether FU-001 becomes its own Task now. The Solution Designer then records approval, designs, classifies and routes the package by the team's rules.
+
+## Route record
+
+- Handoff rules checked 2026-11-15: no rule covers a pending requirements decision (all rules need Architecture Design Complete, Release Requested or a delivery receipt gap).
+- Sent per the Task's instruction ("report your recommendation first") with `send_message_to` to run `project_task_manager_89e33a2ea30f422fab0407e4dc2b13bb`: delivered. Holding at `Ready for Approval` until the answer.
