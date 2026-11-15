@@ -37,6 +37,8 @@ export const useRunStatusStore = defineStore('runStatus', {
     hold(refs: readonly RunStatusRunRef[]): () => void {
       return refs.length ? runStatusFeed(this.apply.bind(this)).hold(refs) : () => undefined
     },
+    /** The window's session ended (its credential is gone): the connection closes until the window is bound again. */
+    suspend(): void { feed?.suspend() },
     apply(message: RunStatusServerMessage): void {
       if (message.type === 'RUN_STATUS_SNAPSHOT') {
         const next = { ...this.statuses }
