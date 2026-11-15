@@ -32,3 +32,4 @@ Release before or with `autobyteus-workspace-6`.
 ## Route record
 
 - No handoff rule covers answering a downstream question; replied to the asking agent by run id (the rules cover Architecture Design Complete, Release Requested and delivery receipt gaps only).
+- Sent with `send_message_to` to run `api_e2e_engineer_ee1c6886a1db4f48aa16f454559c72ad` on 2026-11-15: delivered.
