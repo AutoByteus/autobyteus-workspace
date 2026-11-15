@@ -218,8 +218,10 @@ Task); terms are in [GLOSSARY.md](../../GLOSSARY.md) "Context Files".
 | `AUTOBYTEUS_CONTEXT_FILE_OTHER_MAX_MB` | every other accepted file, images and documents included (the other-file limit) | 25 | whole MiB, 1–1024 |
 
 - They are ordinary predefined server settings: set them as environment variables or in Settings ->
-  Server Settings (the advanced list, with the other predefined keys). The server refuses an invalid
-  value on save and uses the default for an invalid value that is already present.
+  Server Settings. A predefined setting that has no value is not listed (the node uses its default),
+  so on a node that never set them the owner adds each key with the advanced list's new-setting row;
+  once it has a value it is listed with its description. The server refuses an invalid value on save
+  and uses the default for an invalid value that is already present.
 - A change applies to the next upload on that node without a restart; the composer reads the
   limits at each pick (`GET /rest/context-files/size-limits`), so it needs no reload either.
 - Disk use grows with large videos: lower the audio/video limit to cap it. Draft uploads of any size
