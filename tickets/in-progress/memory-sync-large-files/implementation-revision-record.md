@@ -5,6 +5,7 @@
 | Revision ID | Triggering Role / Report / Round | Finding IDs | Classification | Related Revision IDs | Result |
 | --- | --- | --- | --- | --- | --- |
 | IR-001 | Architecture reviewer, ARCH-REV-003 pass of SR-004 (`design-review-report.md`) | N/A | `Initial Baseline` | SR-004, ARCH-REV-003 | Large-file transfer, per-file outcomes, trigger-aware run gate, staged-file hub store and routes, owner status block implemented at `3a78c3eee`; checks pass; AC-003 measured |
+| IR-002 | Code reviewer, CRR-001 round 1 (Fail) | CR-001 | `Local Fix` | CRR-001 (SR-004, ARCH-REV-003 unchanged) | Removed the unused `resetMemoryHubStagedFileStoreForTests` at 077fa6853 |
 
 ## Revision Entries
 
@@ -27,3 +28,23 @@
 - Local validation and result: see `implementation-handoff.md` Checks Run (IMP-01..IMP-05): all pass; the AC-003 run is recorded in `evidence/IMP-05-ac003-measurement.md`.
 - Next recipient or routing: code reviewer (Large + High)
 - Remaining limitations or risks: cold-start source RSS growth during the 2 GiB measurement was 264 MiB (warm: 84 MiB); not rendered in a browser; release order with `autobyteus-workspace-6`; fresh-start build input `generated/graphql.ts` changed.
+
+### IR-002 — Remove dead test reset from the staged-file store (CR-001)
+
+- Triggering role, report path, and round: code reviewer, `code-review-report.md`, CRR-001 round 1 (Fail)
+- Triggering finding IDs: CR-001 (Low)
+- Classification: `Local Fix`
+- Prior authoritative result: IR-001 at `3a78c3eee`
+- Current authoritative result: IR-001 plus this fix, code commit `077fa6853`
+- Related solution revision IDs: SR-004
+- Related architecture-review revision IDs: ARCH-REV-003
+- Related code-review revision IDs: CRR-001
+- Related API/E2E revision IDs: N/A
+- Related delivery revision IDs: N/A
+- Why this revision is recorded: `resetMemoryHubStagedFileStoreForTests` had no caller and was a production function named for tests (Core Principle 7, DESIGN.md rule 11)
+- Approved behavior or requirement IDs affected: none
+- Implementation delta: deleted that export (3 lines) from `memory-hub-staged-file-store.ts`; no other change
+- Changed files or areas: `autobyteus-server-ts/src/memory-sync/hub/memory-hub-staged-file-store.ts`
+- Local validation and result: `git grep` finds no caller or definition; server src typecheck 0 errors; `tests/unit/memory-sync` and `tracked-imports` pass (15 files, 70 tests): `evidence/IMP-06-cr001-delta.log`
+- Next recipient or routing: code reviewer, targeted delta review
+- Remaining limitations or risks: unchanged from IR-001
