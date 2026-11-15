@@ -91,6 +91,29 @@ const harness = (snapshot = { tree, messages, statuses, inputStates: [] },
 };
 
 describe("AgentOrgStreamHandler", () => {
+  it("CR-461-101: CONNECTED comes after every read, right before the snapshot, so a command sent on CONNECTED finds the session", async () => {
+    const h = harness(undefined, { stopped: true });
+    let release: () => void = () => undefined;
+    h.readStoredTree.mockImplementationOnce(() => new Promise((resolve) => { release = () => resolve(tree); }));
+    const sent: string[] = [];
+    let sessionId: string | null = null;
+    let readyOnConnected: boolean | null = null;
+    // The client sends its command when CONNECTED arrives (a later task); the route takes messages once connect resolved.
+    const socket = { close: vi.fn(), send: (value: string) => {
+      sent.push(value);
+      if (JSON.parse(value).type === "CONNECTED") setTimeout(() => { readyOnConnected = sessionId !== null; }, 0);
+    } };
+    const connecting = h.handler.connect(socket, orgRunId).then((id) => { sessionId = id; return id; });
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    expect(sent, "nothing while the snapshot is read").toEqual([]);
+    release();
+    const id = await connecting;
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    expect(readyOnConnected, "the session takes a command sent on CONNECTED").toBe(true);
+    expect(sent.map((value) => JSON.parse(value).type).slice(0, 2)).toEqual(["CONNECTED", "ROOT_EXECUTION_VIEW_SNAPSHOT"]);
+    h.handler.disconnect(id!);
+  });
+
   it("sends the native snapshot for AGY Org root, direct Agents and nested Team members", async () => {
     const current = orgPackage();
     const agy = (launch: typeof current.tree.rootOrg.defaultLaunchConfiguration) => ({

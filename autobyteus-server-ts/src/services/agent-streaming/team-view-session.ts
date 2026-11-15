@@ -67,6 +67,8 @@ export class TeamViewSession {
   private readonly identity: RootExecutionIdentity;
   private order: Promise<void> = Promise.resolve();
   private closed = false;
+  /** `CONNECTED`, sent once, right before the first snapshot (CR-461-101): the session takes commands from then on. */
+  private announce: (() => void) | null = null;
 
   constructor(
     readonly teamRunId: string,
@@ -94,6 +96,15 @@ export class TeamViewSession {
    * not exist.
    */
   showCurrentMode(): Promise<void> { return this.run(() => this.follow()); }
+
+  /**
+   * The first snapshot on connect, announced first (CR-461-101, base's order): `announce` sends `CONNECTED` right before
+   * the snapshot, after every read, so the session takes a command sent on `CONNECTED`.
+   */
+  open(announce: () => void): Promise<void> {
+    this.announce = announce;
+    return this.showCurrentMode().finally(() => { this.announce = null; });
+  }
 
   close(): void {
     if (this.closed) return;
@@ -153,6 +164,9 @@ export class TeamViewSession {
 
   /** Sends the snapshot and its lifecycle, then every frame after its base, in order; returns the unsubscribe. */
   private show(connection: RootSnapshotConnection<ViewSnapshot, TeamViewEvent>, isActive: boolean): () => void {
+    const announce = this.announce;
+    this.announce = null;
+    announce?.();
     this.sink.send(projectTeamExecutionViewSnapshot(this.teamRunId, {
       snapshot: connection.snapshot.own, baseChangeSequence: connection.baseChangeSequence, liveSequenceId: connection.liveSequenceId,
       lastMessageChangeSequence: connection.lastMessageChangeSequence,

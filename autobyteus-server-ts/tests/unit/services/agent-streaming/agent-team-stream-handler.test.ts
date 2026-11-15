@@ -93,6 +93,26 @@ afterEach(async () => {
 });
 
 describe("AgentTeamStreamHandler current root stream", () => {
+  it("CR-461-101: CONNECTED comes after every read, right before the snapshot, so a command sent on CONNECTED finds the session", async () => {
+    const harness = createHarness({ stopped: true });
+    let release: () => void = () => undefined;
+    harness.readStoredTree.mockImplementationOnce(() => new Promise((resolve) => { release = () => resolve(tree); }));
+    let sessionId: string | null = null;
+    const connecting = harness.handler.connect(harness.connection, "team-run-root").then((id) => { sessionId = id; return id; });
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    expect(sent(harness.connection), "nothing while the snapshot is read").toEqual([]);
+    // The client sends its command when CONNECTED arrives (a later task), as the websocket route takes it.
+    let readyOnConnected: boolean | null = null;
+    harness.connection.send.mockImplementation((raw: unknown) => {
+      if (JSON.parse(String(raw)).type === "CONNECTED") setTimeout(() => { readyOnConnected = sessionId !== null; }, 0);
+    });
+    release();
+    sessions.push({ handler: harness.handler, id: (await connecting)! });
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    expect(readyOnConnected, "the session takes a command sent on CONNECTED").toBe(true);
+    expect(sent(harness.connection).map((message) => message.type).slice(0, 2)).toEqual(["CONNECTED", "TEAM_EXECUTION_VIEW_SNAPSHOT"]);
+  });
+
   it("connects with one atomic snapshot (tree, statuses) before lifecycle changes", async () => {
     const harness = createHarness();
     const sessionId = await harness.handler.connect(harness.connection, "team-run-root");

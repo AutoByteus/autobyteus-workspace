@@ -81,11 +81,12 @@ export class AgentOrgStreamHandler {
     const sessionId = randomUUID();
     const view = new OrgViewSession(orgRunId, (message) => egress.send(message),
       { ...this.sources, activeOrgRun: (id) => this.service.getActive(id), restoreRefusal: (id) => this.service.restoreRefusal(id) });
-    egress.send(CollaborationStreamServerMessageSchema.parse({
-      type: "CONNECTED", payload: { root_subject_kind: "agent_org", root_run_id: orgRunId, session_id: sessionId },
-    }));
     try {
-      await view.open();
+      // `CONNECTED` right before the first snapshot, after every read (CR-461-101): connect then resolves at once, so a
+      // command the client sends on `CONNECTED` finds the session.
+      await view.open(() => egress.send(CollaborationStreamServerMessageSchema.parse({
+        type: "CONNECTED", payload: { root_subject_kind: "agent_org", root_run_id: orgRunId, session_id: sessionId },
+      })));
     } catch (cause) {
       view.close();
       const notFound = cause instanceof OrgRunNotFoundError;

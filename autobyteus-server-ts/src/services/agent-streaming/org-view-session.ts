@@ -50,6 +50,8 @@ export class OrgViewSession {
   private readonly identity: RootExecutionIdentity;
   private order: Promise<void> = Promise.resolve();
   private closed = false;
+  /** `CONNECTED`, sent once, right before the first snapshot (CR-461-101): the session takes commands from then on. */
+  private announce: (() => void) | null = null;
   /** Messages that may restore the stopped run, in flight: a switch waits for them (its snapshot carries their input). */
   private restoring = 0;
   private switchWaiting = false;
@@ -89,7 +91,14 @@ export class OrgViewSession {
     return result;
   }
 
-  open(): Promise<void> { return this.run(() => this.follow()); }
+  /**
+   * The first snapshot on connect, announced first (CR-461-101, base's order): `announce` sends `CONNECTED` right before
+   * the snapshot, after every read, so the session takes a command sent on `CONNECTED`.
+   */
+  open(announce: () => void): Promise<void> {
+    this.announce = announce;
+    return this.run(() => this.follow()).finally(() => { this.announce = null; });
+  }
 
   close(): void {
     if (this.closed) return;
@@ -155,6 +164,9 @@ export class OrgViewSession {
 
   /** Sends the snapshot and its lifecycle, then every frame after its base, in order; returns the unsubscribe. */
   private show(connection: RootSnapshotConnection<ViewSnapshot, AgentOrgRunEvent>, isActive: boolean): () => void {
+    const announce = this.announce;
+    this.announce = null;
+    announce?.();
     this.send(CollaborationStreamServerMessageSchema.parse({ type: "ROOT_EXECUTION_VIEW_SNAPSHOT", payload: projectAgentOrgExecutionSnapshot({
       orgRunId: this.orgRunId, isActive, snapshot: connection.snapshot.own,
       baseChangeSequence: connection.baseChangeSequence, liveSequenceId: connection.liveSequenceId,

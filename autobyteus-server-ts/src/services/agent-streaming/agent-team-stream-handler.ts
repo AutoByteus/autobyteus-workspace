@@ -99,9 +99,10 @@ export class AgentTeamStreamHandler {
     const view = new TeamViewSession(teamRunId, egress, { ...this.sources, activeTeamRun: (id) => this.teamRunService.getActiveTeamRun(id),
       restoreRefusal: (id) => this.teamRunService.restoreRefusal(id) });
     this.sessions.set(sessionId, { view, egress });
-    egress.send(parseTeamStreamServerMessage({ type: "CONNECTED", payload: { session_id: sessionId, root_team_run_id: teamRunId } }));
     try {
-      await view.showCurrentMode();
+      // `CONNECTED` right before the first snapshot, after every read (CR-461-101): connect then resolves at once, so a
+      // command the client sends on `CONNECTED` finds the session.
+      await view.open(() => egress.send(parseTeamStreamServerMessage({ type: "CONNECTED", payload: { session_id: sessionId, root_team_run_id: teamRunId } })));
     } catch (error) {
       egress.send(error instanceof TeamRunNotFoundError ? errorMessage("TEAM_NOT_FOUND", error.message)
         : error instanceof TeamRunNotRestorableError ? errorMessage(error.refusal.code, error.refusal.message)
