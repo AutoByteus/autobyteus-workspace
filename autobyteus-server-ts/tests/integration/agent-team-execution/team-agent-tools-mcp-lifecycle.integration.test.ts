@@ -20,6 +20,7 @@ import { ActiveCollaborationRootDirectory } from "../../../src/agent-collaborati
 import { createAgentToolsMcpHost } from "../../../src/agent-tools/mcp/agent-tools-mcp-host.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { createAgentRunManagerInfrastructureFixture } from "../../fixtures/agent-run-manager-infrastructure-fixtures.js";
+import { getAgentStreamSequences } from "../../../src/services/agent-streaming/agent-stream-sequence.js";
 import { testBackendFactory } from "../../fixtures/agent-run-preparation-fixtures.js";
 import {
   testAgentNode,
@@ -237,6 +238,9 @@ describe("supported Team Agent Tools MCP lifecycle integration", () => {
       await expect(freshTeam.postMessage(new AgentInputUserMessage("Start lifecycle probe"), memberNode.agentRunId)).resolves.toMatchObject({ accepted: true });
       const currentRun = agentRunManager.getActiveRun(memberNode.agentRunId);
       expect(currentRun).not.toBeNull();
+      // SR-089: a member's AgentRun, started lazily by its first message, has its own stream sequence from activation.
+      const firstSequence = getAgentStreamSequences().of(memberNode.agentRunId);
+      expect(firstSequence).not.toBeNull();
       const firstServerUrl = activate();
 
       await expectMcpStatus(firstServerUrl, 200);
@@ -250,6 +254,7 @@ describe("supported Team Agent Tools MCP lifecycle integration", () => {
         teamRunManager.terminateTeamRun(teamConfig.rootTeam.teamRunId),
       ).resolves.toBe(true);
       expect(agentRunManager.getActiveRun(memberNode.agentRunId)).toBeNull();
+      expect(getAgentStreamSequences().of(memberNode.agentRunId)).toBeNull();
       await expectMcpStatus(firstServerUrl, 404);
 
       const restoredContext = new AgentRunContext({
@@ -269,6 +274,9 @@ describe("supported Team Agent Tools MCP lifecycle integration", () => {
       const restoredRun = agentRunManager.getActiveRun(memberNode.agentRunId);
       expect(restoredRun).not.toBeNull();
       expect(restoredRun).not.toBe(currentRun);
+      // A restore is a new sequence (a new liveSequenceId): its stream's client takes a new snapshot.
+      expect(getAgentStreamSequences().of(memberNode.agentRunId)?.liveSequenceId).toBeDefined();
+      expect(getAgentStreamSequences().of(memberNode.agentRunId)?.liveSequenceId).not.toBe(firstSequence!.liveSequenceId);
       const restoredServerUrl = activate();
       expect(restoredServerUrl).toBe(firstServerUrl);
       await expectMcpStatus(restoredServerUrl, 200);

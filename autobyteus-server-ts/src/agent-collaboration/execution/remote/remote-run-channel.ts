@@ -80,6 +80,20 @@ export type RemoteRunObserver = Readonly<{
 export type RemoteRunObservationStream = Readonly<{ close(): void }>;
 
 /**
+ * One agent's own stream snapshot on its node (autobyteus-461 SR-088): its stored part, its unconfirmed turns' frames,
+ * its base and sequence (null: a stopped agent), in the `/ws/agent` shape, with the agent's current status message.
+ */
+export type RemoteAgentStreamSnapshotAnswer =
+  | Readonly<{ accepted: true; snapshot: Readonly<Record<string, unknown>>; status: Readonly<Record<string, unknown>> }>
+  | RemoteChannelRefusal;
+/** Receives one agent's own numbered frames, each with the sequence it is numbered in (a new one after a restore). */
+export type RemoteAgentStreamObserver = Readonly<{
+  onFrame(liveSequenceId: string, frame: Readonly<Record<string, unknown>>): void;
+  /** The stream ended without `close()`. Called once. */
+  onEnd(): void;
+}>;
+
+/**
  * The outbound channel to peer nodes, as collaboration roots use it (owned here, implemented by
  * `remote-collaboration`'s `PeerClient`). Roots reach it only through `RemoteRunLinks` and `RemoteDelegation`; it never
  * exposes HTTP.
@@ -108,6 +122,10 @@ export interface RemoteRunChannel {
   ownerCommand(nodeId: string, targetRoot: RemoteTargetRoot, agentRunId: string, command: RemoteOwnerCommand): Promise<RemoteDeliveryReceipt>;
   /** autobyteus-278: the run's live output while the stream is open; it never reconnects (DEC-807). */
   observeRun(nodeId: string, targetRoot: RemoteTargetRoot, observer: RemoteRunObserver): RemoteRunObservationStream;
+  /** autobyteus-461 SR-088: one agent's own stream snapshot, by its node's rule (3b). */
+  agentStreamSnapshot(nodeId: string, targetRoot: RemoteTargetRoot, agentRunId: string): Promise<RemoteAgentStreamSnapshotAnswer>;
+  /** autobyteus-461 SR-088: one agent's own numbered frames, following it across restores, while the stream is open. */
+  observeAgentStream(nodeId: string, targetRoot: RemoteTargetRoot, agentRunId: string, observer: RemoteAgentStreamObserver): RemoteRunObservationStream;
 }
 
 let processChannel: RemoteRunChannel | null = null;

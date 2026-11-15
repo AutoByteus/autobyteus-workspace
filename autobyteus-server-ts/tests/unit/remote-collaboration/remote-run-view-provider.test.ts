@@ -5,6 +5,7 @@ import type { PeerNode } from "../../../src/remote-collaboration/domain/peer-nod
 import type { RemoteRootDirectory } from "../../../src/remote-collaboration/inbound/remote-message-receiver.js";
 import { RemoteRunViewProvider } from "../../../src/remote-collaboration/inbound/remote-run-view-provider.js";
 import type { PairedAgentAccess, PairedAgentPresentationListener } from "../../../src/agent-collaboration/execution/remote/paired-agent-access.js";
+import { AgentStreamSequences } from "../../../src/services/agent-streaming/agent-stream-sequence.js";
 
 /** autobyteus-278: the running node's one inbound owner of what a peer's owner reads and drives (link check first). */
 
@@ -35,13 +36,20 @@ const harness = () => {
   const views = { runTitle: vi.fn(async () => "Plan the October campaign"), runLaunches: vi.fn(async () => launches), agentProjection: vi.fn(async () => ({
     agentRunId: "lead-run", conversation: [], activities: [], summary: null, lastActivityAt: null, hasEarlierActiveTraceEvents: true,
   })) };
-  const provider = new RemoteRunViewProvider(roots, views);
+  // autobyteus-461 SR-088: the agents' own stream sequences (the lead's is attached to a fake run below).
+  const sequences = new AgentStreamSequences();
+  const leadListeners = new Set<(event: unknown) => void>();
+  sequences.attachToRun({ runId: "lead-run", config: { memoryDir: null },
+    subscribeToEvents: (listener: (event: unknown) => void) => { leadListeners.add(listener); return () => leadListeners.delete(listener); } } as never,
+  { whenPersisted: async () => undefined });
+  const provider = new RemoteRunViewProvider(roots, views, sequences);
   const gateway = new PeerGateway({
     ownNodeId: async () => SELF, capability: { isEnabled: () => true },
     peers: { findByNodeId: async (nodeId) => [ALPHA, OTHER].find((peer) => peer.nodeId === nodeId) ?? null },
     delegatedRuns: {} as never, messages: {} as never, availableAgents: {} as never, runViews: provider,
   });
-  return { access, storedLinkCheck, views, provider, gateway, observation, emit: (...args: Parameters<PairedAgentPresentationListener>) => listener?.(...args),
+  return { access, storedLinkCheck, views, provider, gateway, observation,
+    emitLead: (event: unknown) => leadListeners.forEach((listener) => listener(event)), emit: (...args: Parameters<PairedAgentPresentationListener>) => listener?.(...args),
     /** The root kind reports the run ended (stop, terminate or delete by any path). */
     end: () => ended?.() };
 };
@@ -115,5 +123,23 @@ describe("RemoteRunViewProvider behind the gateway", () => {
     if (!closing.answer.accepted || !("observation" in closing.answer)) throw new Error("expected an observation");
     closing.answer.observation.close();
     expect(f.observation.close).toHaveBeenCalledTimes(1);
+  });
+
+  it("SR-088: an agent's own stream snapshot and its numbered frames, each behind the link check, for the paired agent only", async () => {
+    const f = harness();
+    const body = { ...envelope(), targetRoot: TEAM, agentRunId: "lead-run" };
+    const answer = await f.gateway.agentStreamSnapshot(body, peerCallerOfBody(body));
+    expect(answer.answer).toMatchObject({ accepted: true, nodeId: SELF, status: { type: "AGENT_STATUS", payload: { status: "running" } },
+      snapshot: { base_sequence: 0, live_sequence_id: expect.any(String), turn_frames: [], stored: { runId: "lead-run" } } });
+    const other = { ...envelope(), targetRoot: TEAM, agentRunId: "someone-else" };
+    expect((await f.gateway.agentStreamSnapshot(other, peerCallerOfBody(other))).answer).toMatchObject({ accepted: false, code: "REMOTE_TARGET_NOT_PERMITTED" });
+    const sink = { send: vi.fn(), close: vi.fn() };
+    const opened = await f.gateway.openRunObservation(body, peerCallerOfBody(body), sink);
+    if (!opened.answer.accepted || !("observation" in opened.answer)) throw new Error("expected an observation");
+    expect(f.access.observePairedAgents).not.toHaveBeenCalled();
+    f.emitLead({ runId: "lead-run", eventType: "SEGMENT_START", payload: { id: "s", turn_id: "t", segment_type: "text" }, statusHint: null });
+    expect(sink.send).toHaveBeenCalledWith(expect.objectContaining({ agentRunId: "lead-run", liveSequenceId: expect.any(String),
+      frame: expect.objectContaining({ type: "SEGMENT_START", sequence: 1 }) }));
+    opened.answer.observation.close();
   });
 });

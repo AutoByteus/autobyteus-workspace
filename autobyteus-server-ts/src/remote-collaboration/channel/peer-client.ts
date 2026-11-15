@@ -1,6 +1,8 @@
 import { NodeIdentityNotMigratedError, NODE_IDENTITY_NOT_MIGRATED_TEXT } from "../../remote-access/services/node-identity-service.js";
 import type {
   RemoteAgentProjectionAnswer,
+  RemoteAgentStreamObserver,
+  RemoteAgentStreamSnapshotAnswer,
   RemoteDeliveryReceipt,
   RemoteMessageTransmission,
   RemoteOwnerCommand,
@@ -23,6 +25,7 @@ import { localRefusalText, peerRefusalText, REMOTE_REFUSAL, type PeerRefusalRout
 import type { DelegationWork } from "../../model-routing/domain/model-routing-types.js";
 import {
   REMOTE_AGENT_PROJECTION_PATH,
+  REMOTE_AGENT_STREAM_SNAPSHOT_PATH,
   REMOTE_AVAILABILITY_PATH,
   REMOTE_AVAILABLE_AGENTS_PATH,
   REMOTE_DELEGATED_RUNS_PATH,
@@ -239,6 +242,33 @@ export class PeerClient implements RemoteRunChannel, PeerIdentityProbe, PeerPair
       path: REMOTE_RUN_OBSERVATIONS_PATH,
       targetRoot,
       observer,
+      openWebSocket: this.dependencies.openWebSocket,
+      openingTimeoutMs: this.dependencies.timeoutMs ?? PEER_REQUEST_TIMEOUT_MS,
+    });
+  }
+
+  /** autobyteus-461 SR-088: one agent's own stream snapshot on its node. */
+  agentStreamSnapshot(nodeId: string, targetRoot: RemoteTargetRoot, agentRunId: string): Promise<RemoteAgentStreamSnapshotAnswer> {
+    return this.call(nodeId, REMOTE_AGENT_STREAM_SNAPSHOT_PATH, (envelope): AgentProjectionRequest => ({
+      ...envelope, targetRoot: { kind: targetRoot.kind, runId: targetRoot.runId }, agentRunId,
+    }), "did not answer in time", (answer, peer) => {
+      const record = (value: unknown) => value && typeof value === "object" && !Array.isArray(value) ? value as Record<string, unknown> : null;
+      const snapshot = record(answer.snapshot), status = record(answer.status);
+      return snapshot && status ? Object.freeze({ accepted: true as const, snapshot, status })
+        : refusal(REMOTE_REFUSAL.PEER_UNREACHABLE, peerRefusalText(peer.name, REMOTE_REFUSAL.PEER_UNREACHABLE, "it answered without the snapshot"));
+    });
+  }
+
+  /** autobyteus-461 SR-088: one agent's own numbered frames, on the observation route opened for the agent. */
+  observeAgentStream(nodeId: string, targetRoot: RemoteTargetRoot, agentRunId: string, observer: RemoteAgentStreamObserver): RemoteRunObservationStream {
+    return openPeerRunObservation({
+      resolvePeer: async () => this.dependencies.capability.isEnabled() ? this.dependencies.peers.findByNodeId(nodeId) : null,
+      peerSecret: (peerNodeId) => this.dependencies.peers.peerSecret(peerNodeId),
+      ownNodeId: this.dependencies.ownNodeId,
+      path: REMOTE_RUN_OBSERVATIONS_PATH,
+      targetRoot,
+      observer: { onFrame: () => undefined, onEnd: () => observer.onEnd() },
+      agentStream: { agentRunId, onFrame: (liveSequenceId, frame) => observer.onFrame(liveSequenceId, frame) },
       openWebSocket: this.dependencies.openWebSocket,
       openingTimeoutMs: this.dependencies.timeoutMs ?? PEER_REQUEST_TIMEOUT_MS,
     });

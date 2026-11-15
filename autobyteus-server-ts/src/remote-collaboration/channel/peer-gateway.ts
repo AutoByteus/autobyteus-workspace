@@ -77,6 +77,9 @@ export type RemoteRunViewHandler = Readonly<{
   projection(request: AgentProjectionRequest, from: PeerNode): Promise<Readonly<{ accepted: true; projection: RemoteAgentProjection }> | PeerHandlerRefusal>;
   command(request: OwnerCommandRequest, from: PeerNode): Promise<Readonly<{ accepted: true }> | PeerHandlerRefusal>;
   observe(opening: RunObservationOpening, from: PeerNode, sink: RunObservationSink): Promise<Readonly<{ accepted: true; observation: PairedAgentObservation }> | PeerHandlerRefusal>;
+  /** autobyteus-461 SR-088: one agent's own stream snapshot, and its numbered frames. */
+  agentStreamSnapshot(request: AgentProjectionRequest, from: PeerNode): Promise<Readonly<{ accepted: true; snapshot: unknown; status: unknown }> | PeerHandlerRefusal>;
+  observeAgentStream(opening: RunObservationOpening & Readonly<{ agentRunId: string }>, from: PeerNode, sink: RunObservationSink): Promise<Readonly<{ accepted: true; observation: PairedAgentObservation }> | PeerHandlerRefusal>;
 }>;
 
 class MalformedRequestError extends Error {}
@@ -180,9 +183,11 @@ const parseOwnerCommandRequest = (value: unknown): OwnerCommandRequest => {
   };
 };
 
-const parseObservationOpening = (value: unknown): RunObservationOpening => {
+/** An observation's opening: a run's (statuses and summaries), or one agent's own stream when it names the agent (SR-088). */
+const parseObservationOpening = (value: unknown): RunObservationOpening & Readonly<{ agentRunId?: string }> => {
   const body = field(() => objectRecord(value, "request"));
-  return { ...parseEnvelope(body), targetRoot: runRefOf(body.targetRoot, "targetRoot") };
+  const opening = { ...parseEnvelope(body), targetRoot: runRefOf(body.targetRoot, "targetRoot") };
+  return body.agentRunId === undefined ? opening : { ...opening, agentRunId: field(() => requiredString(body.agentRunId, "agentRunId")) };
 };
 
 /**
@@ -248,7 +253,14 @@ export class PeerGateway {
    * socket closes when it closes; the frames go to `sink`.
    */
   openRunObservation(body: unknown, caller: ClientIdentity | null, sink: RunObservationSink) {
-    return this.admit(body, caller, parseObservationOpening, (request, peer) => this.dependencies.runViews.observe(request, peer, sink));
+    return this.admit(body, caller, parseObservationOpening, (request, peer) => request.agentRunId === undefined
+      ? this.dependencies.runViews.observe(request, peer, sink)
+      : this.dependencies.runViews.observeAgentStream({ ...request, agentRunId: request.agentRunId }, peer, sink));
+  }
+
+  /** autobyteus-461 SR-088: one agent's own stream snapshot, in a run the caller's delegation started (read-only). */
+  agentStreamSnapshot(body: unknown, caller: ClientIdentity | null) {
+    return this.admit(body, caller, parseAgentProjectionRequest, (request, peer) => this.dependencies.runViews.agentStreamSnapshot(request, peer));
   }
 
   private async admit<TRequest extends RemoteEnvelope, TAccepted extends object>(

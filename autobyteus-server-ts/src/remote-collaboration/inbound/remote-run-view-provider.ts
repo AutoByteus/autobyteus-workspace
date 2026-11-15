@@ -18,6 +18,9 @@ import type {
   RunSummariesRequest,
 } from "../domain/remote-requests.js";
 import type { RemoteRootDirectory } from "./remote-message-receiver.js";
+import { getAgentStreamSequences, type AgentStreamSequences } from "../../services/agent-streaming/agent-stream-sequence.js";
+import type { AgentStreamSnapshotPayload } from "../../services/agent-streaming/agent-stream-snapshot.js";
+import { observePeerAgentStream, peerAgentStreamSnapshot, type PeerAgentStreamFrame } from "./peer-agent-stream.js";
 
 /** The stored reads of a run a peer started, as this node's own window has them. */
 export type PeerStartedRunViews = Readonly<{
@@ -31,7 +34,8 @@ export type PeerStartedRunViews = Readonly<{
 
 /** Where the frames of an open observation go: the peer's stream, until either side closes it. */
 export type RunObservationSink = Readonly<{
-  send(frame: Readonly<{ agentRunId: string; message: AgentPresentationMessage }>): void;
+  /** A run observation's presentation frame, or an agent stream observation's numbered frame (SR-088). */
+  send(frame: Readonly<{ agentRunId: string; message: AgentPresentationMessage }> | PeerAgentStreamFrame): void;
   close(): void;
 }>;
 
@@ -53,7 +57,12 @@ const startedRunOf = (root: RemoteTargetRoot): RemoteStartedRunRef | null =>
  * calling node started it), and then served by the root kind's own API behind `RemoteRootDirectory` (N-304).
  */
 export class RemoteRunViewProvider {
-  constructor(private readonly roots: RemoteRootDirectory, private readonly views: PeerStartedRunViews) {}
+  constructor(
+    private readonly roots: RemoteRootDirectory,
+    private readonly views: PeerStartedRunViews,
+    /** This node's agent stream sequences (SR-088): an agent's own stream, served to the peer that started its run. */
+    private readonly sequences: Pick<AgentStreamSequences, "of" | "follow"> = getAgentStreamSequences(),
+  ) {}
 
   async summaries(request: RunSummariesRequest, from: PeerNode): Promise<Readonly<{ accepted: true; runs: readonly RemoteRunSummary[] }>> {
     const runs: RemoteRunSummary[] = [];
@@ -117,6 +126,37 @@ export class RemoteRunViewProvider {
     // listener is attached (no change falls between them). A run that is not running has none: its peer reads offline.
     for (const live of agents.pairedAgentStatuses(run.runId)) sink.send({ agentRunId: live.agentRunId, message: pairedAgentStatusFrame(live.status) });
     return Object.freeze({ accepted: true as const, observation });
+  }
+
+  /**
+   * One agent's own stream snapshot (autobyteus-461 SR-088): this node's, by 3b's rule; a stopped agent's is its full
+   * stored read. With it, the agent's current status (`offline` when it is not running), which the peer shows first.
+   */
+  async agentStreamSnapshot(request: AgentProjectionRequest, from: PeerNode) {
+    const run = startedRunOf(request.targetRoot);
+    if (!run) return notFound();
+    const refused = await this.check(run, from, request.agentRunId);
+    if (refused) return refused;
+    try {
+      const snapshot: AgentStreamSnapshotPayload = await peerAgentStreamSnapshot(this.sequences, request.agentRunId,
+        () => this.views.agentProjection(run, request.agentRunId));
+      const live = this.roots.pairedAgents(run.kind).pairedAgentStatuses(run.runId).find((agent) => agent.agentRunId === request.agentRunId);
+      return Object.freeze({ accepted: true as const, snapshot, status: pairedAgentStatusFrame(live?.status ?? "offline") });
+    } catch (error) {
+      return refusal(REMOTE_REFUSAL.TARGET_NOT_FOUND, error instanceof Error ? error.message : String(error));
+    }
+  }
+
+  /**
+   * One agent's own numbered frames (SR-088), following it across stops and restores until the peer closes the stream.
+   * The run-level `observe` stays for statuses and summaries.
+   */
+  async observeAgentStream(opening: RunObservationOpening & Readonly<{ agentRunId: string }>, from: PeerNode, sink: RunObservationSink) {
+    const run = startedRunOf(opening.targetRoot);
+    if (!run) return notFound();
+    const refused = await this.check(run, from, opening.agentRunId);
+    if (refused) return refused;
+    return Object.freeze({ accepted: true as const, observation: observePeerAgentStream(this.sequences, opening.agentRunId, (frame) => sink.send(frame)) });
   }
 
   /** The link check against the stored back-link (N-303/N-304): `null` when the calling node started the run. */

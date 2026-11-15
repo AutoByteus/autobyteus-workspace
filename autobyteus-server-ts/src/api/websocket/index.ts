@@ -4,6 +4,7 @@ import { registerTerminalWebsocket } from "./terminal.js";
 import { registerNodeDesktopWebsocket } from "./node-desktop.js";
 import { registerProjectChangesWebsocket } from "./projects.js";
 import { registerRunStatusWebsocket } from "./run-status.js";
+import { registerPeerRunWebsocket } from "./peer-run.js";
 import type { RunStatusService } from "../../agent-collaboration/execution/run-status-service.js";
 import { registerUpdateNotificationsWebsocket } from "./update-notifications.js";
 import { registerAgentPackageDefinitionsWebsocket } from "./agent-package-definitions.js";
@@ -41,6 +42,7 @@ export async function registerWebsocketRoutes(
   await registerNodeDesktopWebsocket(app);
   await registerProjectChangesWebsocket(app);
   await registerRunStatusWebsocket(app, dependencies.runStatus);
+  await registerPeerRunWebsocket(app);
   await registerUpdateNotificationsWebsocket(app);
   await registerAgentPackageDefinitionsWebsocket(app, dependencies.agentPackageDefinitionChangeHub);
   const { views } = dependencies;

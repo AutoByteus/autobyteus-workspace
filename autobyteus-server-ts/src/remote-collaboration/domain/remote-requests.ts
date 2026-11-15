@@ -32,6 +32,8 @@ export const REMOTE_OWNER_COMMANDS_PATH = "/rest/remote/owner-commands";
  * frame `{nodeId}` (or a refusal, then close), then `{agentRunId, message}` frames for the run's own agents only.
  */
 export const REMOTE_RUN_OBSERVATIONS_PATH = "/rest/remote/run-observations";
+/** autobyteus-461 SR-088: one agent's own stream snapshot. */
+export const REMOTE_AGENT_STREAM_SNAPSHOT_PATH = "/rest/remote/agent-stream-snapshot";
 /** autobyteus-437: the pairing exchange (exempt from credentials: the accepting node has no peer secret yet). */
 export const REMOTE_PEER_PAIRING_EXCHANGES_PATH = "/rest/remote/peer-pairing-exchanges";
 

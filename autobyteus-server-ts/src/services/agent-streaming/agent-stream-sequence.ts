@@ -134,6 +134,11 @@ export class AgentStreamSequence {
     return this.frames.open(() => read(base));
   }
 
+  /** Every frame numbered from now on (a peer's observation of this agent: SR-088). */
+  subscribe(listener: (frame: AgentStreamFrame) => void): () => void {
+    return this.frames.subscribe(listener);
+  }
+
   dispose(): void {
     this.disposed = true;
     this.buffers.clear();
@@ -160,6 +165,7 @@ export const readStoredTurnIds = (memoryDir: string | null | undefined): Readonl
  */
 export class AgentStreamSequences {
   private readonly sequences = new Map<string, AgentStreamSequence>();
+  private readonly followers = new Map<string, Set<(sequence: AgentStreamSequence | null) => void>>();
 
   attachToRun(run: AgentRun, recorder: Pick<AgentRunMemoryRecorder, "whenPersisted">): () => void {
     const mapper = getAgentRunEventMessageMapper();
@@ -174,11 +180,35 @@ export class AgentStreamSequences {
     const unsubscribe = run.subscribeToEvents((event: unknown) => {
       if (isAgentRunEvent(event)) sequence.accept(event);
     });
+    this.notify(run.runId, sequence);
     return () => {
       unsubscribe();
       sequence.dispose();
-      if (this.sequences.get(run.runId) === sequence) this.sequences.delete(run.runId);
+      if (this.sequences.get(run.runId) !== sequence) return;
+      this.sequences.delete(run.runId);
+      this.notify(run.runId, null);
     };
+  }
+
+  /**
+   * Follows an agent run's sequences across stops and restores (SR-088): `listener` gets its current one (or `null`),
+   * then each new one as its run activates, and `null` when it stops.
+   */
+  follow(runId: string, listener: (sequence: AgentStreamSequence | null) => void): () => void {
+    const listeners = this.followers.get(runId) ?? new Set();
+    listeners.add(listener);
+    this.followers.set(runId, listeners);
+    listener(this.of(runId));
+    return () => {
+      listeners.delete(listener);
+      if (!listeners.size && this.followers.get(runId) === listeners) this.followers.delete(runId);
+    };
+  }
+
+  private notify(runId: string, sequence: AgentStreamSequence | null): void {
+    for (const listener of [...this.followers.get(runId) ?? []]) {
+      try { listener(sequence); } catch (error) { console.error(`Agent stream sequence follower of '${runId}' failed: ${String(error)}`); }
+    }
   }
 
   of(runId: string): AgentStreamSequence | null {

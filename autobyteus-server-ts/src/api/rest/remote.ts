@@ -38,6 +38,8 @@ export async function registerRemoteCollaborationRoutes(app: FastifyInstance): P
   post("/remote/run-summaries", (gateway, body, caller) => gateway.runSummaries(body, caller));
   post("/remote/agent-projection", (gateway, body, caller) => gateway.agentProjection(body, caller));
   post("/remote/owner-commands", (gateway, body, caller) => gateway.ownerCommand(body, caller));
+  // autobyteus-461 SR-088: one agent's own stream snapshot (its frames come on `run-observations`, opened for the agent).
+  post("/remote/agent-stream-snapshot", (gateway, body, caller) => gateway.agentStreamSnapshot(body, caller));
 
   // autobyteus-437: the inviting node's side of peer pairing (exempt: the caller has no peer secret yet).
   app.post("/remote/peer-pairing-exchanges", async (request, reply) => {
