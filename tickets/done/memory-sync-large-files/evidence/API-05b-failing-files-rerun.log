@@ -1,0 +1,29 @@
+# API-05b: the 3 failing files of API-05, run alone; commit 077fa6853; Sun Nov 15 14:35:59 CET 2026
+## Node v26.12.0 (the version API-05 ran on)
+[22m[39mMEMORY_SEARCH_PASS_FAILED {
+     [32m✓[39m before the first build says so, writes no journal and starts nothing[32m 8[2mms[22m[39m
+     [32m✓[39m builds on Index now: every run's journal made current, text and meaning indexed, steps done[32m 27[2mms[22m[39m
+     [32m✓[39m finds a run by words: pointer, snippet with secrets masked, days, source; the asking run left out[32m 22[2mms[22m[39m
+     [32m✓[39m finds Chinese by two-character phrases, and a run by meaning only, pointing at its first request[32m 30[2mms[22m[39m
+     [32m✓[39m names the query words each text match holds, and the words no journal holds (UD-020)[32m 20[2mms[22m[39m
+     [32m✓[39m names a text match's words by the index's rule: separator variants count; punctuation is no word (CR-004, CR-005)[32m 17[2mms[22m[39m
+     [32m✓[39m names no word as not found while the text index is incomplete: a shown pass is still indexing[32m 46[2mms[22m[39m
+     [32m✓[39m a queued or running live pass does not hold back the words not found: the new word is named until indexed (R-13)[32m 55[2mms[22m[39m
+     [32m✓[39m does not name a word that only the asking run's journal holds as not found (R-15)[32m 18[2mms[22m[39m
+     [32m✓[39m masks a secret before cutting a snippet line, so a cut never leaves part of it (C-06)[32m 19[2mms[22m[39m
+     [32m✓[39m lists lines found by both tiers once, as the text match with its words (SR-006)[32m 18[2mms[22m[39m
+     [32m✓[39m says when nothing matches, never that memory is empty[32m 17[2mms[22m[39m
+     [32m✓[39m keeps itself current after a turn: the changed journal is findable by words after the quiet period[32m 58[2mms[22m[39m
+[31m     [31m×[31m queues a live change made while a pass runs: during the first build and during a later full pass (CR-001)[39m[33m 5013[2mms[22m[39m
+     [33m[2m✓[22m[39m drops only its own Journals step's notifications: a build is not followed by a live pass of every run [33m 319[2mms[22m[39m
+     [32m✓[39m reports the settled index while a live update runs; a search during it claims no missing coverage (CR-002)[32m 66[2mms[22m[39m
+     [32m✓[39m in modelChanged, a search after a restart asks for no meaning sync, and nothing shows as building (CR-002)[32m 31[2mms[22m[39m
+     [32m✓[39m after a restart catches up without loading the model; the first search syncs the meaning index[32m 43[2mms[22m[39m
+       [32m✓[39m a new renderer revision changes every run's fingerprint: the next pass renders every journal again; an unchanged one renders none[32m 42[2mms[22m[39m
+## Node 22 (the release workflow's node-version)
+ [32m✓[39m tests/unit/memory-search/memory-search.test.ts [2m([22m[2m21 tests[22m[2m)[22m[33m 1042[2mms[22m[39m
+     [33m[2m✓[22m[39m drops only its own Journals step's notifications: a build is not followed by a live pass of every run [33m 319[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-execution/backends/grok/grok-build-compaction.test.ts [2m([22m[2m11 tests[22m[2m)[22m[33m 1005[2mms[22m[39m
+ [32m✓[39m tests/unit/memory-search/memory-search-store.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 18[2mms[22m[39m
+[2m Test Files [22m [1m[32m3 passed[39m[22m[90m (3)[39m
+[2m      Tests [22m [1m[32m34 passed[39m[22m[90m (34)[39m

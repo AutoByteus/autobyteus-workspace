@@ -2130,6 +2130,7 @@ describe("application framework architecture boundaries", () => {
       { key: undefined, name: "Cache Pre-loading", modulePath: "./cache-preloader.js", exportName: "runCachePreloading" },
       { key: undefined, name: "MCP Tool Registration", modulePath: "./mcp-loader.js", exportName: "runMcpToolRegistration" },
       { key: undefined, name: "Memory Sync Worker", modulePath: "./memory-sync-worker-loader.js", exportName: "loadMemorySyncWorker" },
+      { key: undefined, name: "Memory Hub Staging Sweep", modulePath: "./memory-hub-staging-sweep-loader.js", exportName: "loadMemoryHubStagingSweep" },
       { key: undefined, name: "Memory Search", modulePath: "./memory-search-loader.js", exportName: "startMemorySearch" },
     ]);
 

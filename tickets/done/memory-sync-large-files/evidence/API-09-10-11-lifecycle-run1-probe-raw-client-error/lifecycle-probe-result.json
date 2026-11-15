@@ -1,0 +1,57 @@
+{
+  "startedAt": "2026-11-15T14:00:07.122Z",
+  "node": "v26.12.0",
+  "cases": {
+    "API-11": {
+      "checks": [
+        {
+          "name": "no credential -> refused (401/403)",
+          "ok": true,
+          "detail": {
+            "status": 401,
+            "body": "{\"error\":\"NODE_CREDENTIAL_REQUIRED\",\"code\":\"NODE_CREDENTIAL_REQUIRED\",\"message\":\"This node needs a credential. Connect it on the Nodes page.\"}"
+          }
+        },
+        {
+          "name": "the node's own owner credential on the staged route -> refused (401/403)",
+          "ok": true,
+          "detail": {
+            "status": 403,
+            "body": "{\"error\":\"NODE_ROUTE_NOT_PERMITTED\",\"code\":\"NODE_ROUTE_NOT_PERMITTED\",\"message\":\"This credential does not open this endpoint.\"}"
+          }
+        },
+        {
+          "name": "a wrong token -> refused (401/403)",
+          "ok": true,
+          "detail": {
+            "status": 401,
+            "body": "{\"error\":\"NODE_CREDENTIAL_INVALID\",\"code\":\"NODE_CREDENTIAL_INVALID\",\"message\":\"This node does not accept this credential.\"}"
+          }
+        },
+        {
+          "name": "the source token, its own source id -> 200 receivedBytes 0",
+          "ok": false,
+          "detail": {
+            "status": null,
+            "body": ""
+          }
+        },
+        {
+          "name": "the source token for another source id -> refused (4xx, not 200)",
+          "ok": false,
+          "detail": {
+            "status": null,
+            "body": ""
+          }
+        }
+      ]
+    }
+  },
+  "cleanup": {
+    "rootRemoved": true,
+    "serversStopped": true
+  },
+  "error": "Error: write EPIPE\n    at WriteWrap.onWriteComplete [as oncomplete] (node:internal/stream_base_commons:51:19)",
+  "result": "Error",
+  "finishedAt": "2026-11-15T14:00:13.901Z"
+}

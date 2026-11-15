@@ -1,0 +1,70 @@
+{
+  "scenario": "staged30-then-big",
+  "sizeMiB": 2048,
+  "node": "v26.12.0",
+  "startedAt": "2026-11-15T13:46:16.418Z",
+  "runs": [
+    {
+      "label": "cold 30 MiB staged",
+      "ms": 219,
+      "run": {
+        "scannedFiles": 1,
+        "changedFiles": 1,
+        "committedBatches": 1,
+        "failedFiles": 0
+      },
+      "baseline": {
+        "source": 297.1,
+        "hub": 296.1
+      },
+      "peak": {
+        "source": 419.6,
+        "hub": 369.2
+      },
+      "growth": {
+        "source": 122.4,
+        "hub": 73.1
+      },
+      "settledAfter3s": {
+        "source": 419.6,
+        "hub": 371.2
+      },
+      "identical": true,
+      "samples": 5
+    },
+    {
+      "label": "warm 2048 MiB after 30 MiB",
+      "ms": 9390,
+      "run": {
+        "scannedFiles": 3,
+        "changedFiles": 2,
+        "committedBatches": 1,
+        "failedFiles": 0
+      },
+      "baseline": {
+        "source": 419.6,
+        "hub": 371.2
+      },
+      "peak": {
+        "source": 593.3,
+        "hub": 485
+      },
+      "growth": {
+        "source": 173.7,
+        "hub": 113.8
+      },
+      "settledAfter3s": {
+        "source": 535.8,
+        "hub": 451.8
+      },
+      "identical": true,
+      "samples": 191
+    }
+  ],
+  "cleanup": {
+    "removedRoot": true,
+    "serversStopped": true
+  },
+  "result": "Done",
+  "finishedAt": "2026-11-15T13:46:49.368Z"
+}

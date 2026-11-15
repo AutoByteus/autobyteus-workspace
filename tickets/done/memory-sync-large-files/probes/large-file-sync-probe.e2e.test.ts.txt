@@ -1,0 +1,283 @@
+import fs from "node:fs";
+import os from "node:os";
+import path from "node:path";
+import net from "node:net";
+import { createRequire } from "node:module";
+import { execFileSync, spawn, type ChildProcessWithoutNullStreams } from "node:child_process";
+import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import {
+  testAgentNode,
+  testExecutionTree,
+} from "../../fixtures/current-team-run-fixtures.js";
+import { builtServerLaunchEnvironment } from "../helpers/built-server-launch-credential.js";
+
+/**
+ * Memory Sync between two real built server processes: a source node's standalone run and current
+ * flat Team package are synced into a hub, and the hub reads them back through the explicit
+ * IMPORTED source.
+ *
+ * The former nested-Team layout cases (MP_001 flat-residue vs canonical conflict, MP_002 retained
+ * history relocated from the flat to the canonical child-Team directory) were dropped: they need a
+ * configured Team inside a Team, which current Team V2 rejects since the flat Agent Org model
+ * (flat-agent-organization-model REQ-002). A flat Team member's canonical directory is the flat
+ * one, so there is no layout to repair.
+ */
+
+const require = createRequire(import.meta.url);
+const serverRoot = path.resolve(import.meta.dirname, "../../..");
+const appEntry = path.join(serverRoot, "dist", "app.js");
+const memorySyncSourceId = "large-file-probe-source";
+const sourceRunId = "mp-source-run";
+const sourceTeamRunId = "mp-source-team-run";
+const flatTeamRunId = "mp-flat-team-run";
+const flatTeamAgentRunId = "mp-flat-team-agent-run";
+const flatTeamDefinitionId = "mp-flat-team-definition";
+
+type ServerProcess = {
+  name: string;
+  port: number;
+  baseUrl: string;
+  dataDir: string;
+  child: ChildProcessWithoutNullStreams;
+  logs: string[];
+};
+
+const writeText = (filePath: string, content: string) => {
+  fs.mkdirSync(path.dirname(filePath), { recursive: true });
+  fs.writeFileSync(filePath, content, "utf-8");
+};
+
+const writeCurrentTeamPackage = (input: {
+  memoryDir: string;
+  rootTeamRunId: string;
+  agentRunId: string;
+  teamDefinitionId: string;
+}): { rootDir: string; memberDir: string } => {
+  const rootDir = path.join(input.memoryDir, "agent_teams", input.rootTeamRunId);
+  const tree = testExecutionTree({
+    rootTeamRunId: input.rootTeamRunId,
+    rootTeamDefinitionId: input.teamDefinitionId,
+    teamDefinitionName: input.teamDefinitionId,
+    coordinatorAddress: "/lead",
+    children: [
+      testAgentNode("/lead"),
+      testAgentNode("/member", { agentRunId: input.agentRunId }),
+    ],
+  });
+  writeText(path.join(rootDir, "team_run_execution_tree.json"), `${JSON.stringify(tree, null, 2)}\n`);
+  writeText(path.join(rootDir, "team_communication_messages_active.jsonl"), "");
+  return { rootDir, memberDir: path.join(rootDir, input.agentRunId) };
+};
+
+const appendLog = (logs: string[], chunk: Buffer) => {
+  const text = chunk.toString("utf-8");
+  for (const line of text.split(/\r?\n/)) {
+    if (line.trim()) {
+      logs.push(line);
+    }
+  }
+  while (logs.length > 240) {
+    logs.shift();
+  }
+};
+
+const getFreePort = async (): Promise<number> => new Promise((resolve, reject) => {
+  const server = net.createServer();
+  server.once("error", reject);
+  server.listen(0, "127.0.0.1", () => {
+    const address = server.address();
+    if (!address || typeof address === "string") {
+      server.close(() => reject(new Error("Unable to allocate a TCP port.")));
+      return;
+    }
+    const { port } = address;
+    server.close(() => resolve(port));
+  });
+});
+
+const sleep = (ms: number): Promise<void> => new Promise((resolve) => setTimeout(resolve, ms));
+
+const waitForHealth = async (server: ServerProcess, timeoutMs = 90_000): Promise<void> => {
+  const deadline = Date.now() + timeoutMs;
+  let lastError: unknown = null;
+  while (Date.now() < deadline) {
+    if (server.child.exitCode !== null) {
+      throw new Error(`${server.name} server exited before health check passed. Logs:\n${server.logs.join("\n")}`);
+    }
+    try {
+      const response = await fetch(`${server.baseUrl}/rest/health`);
+      if (response.ok) {
+        return;
+      }
+      lastError = new Error(`health returned ${response.status}`);
+    } catch (error) {
+      lastError = error;
+    }
+    await sleep(500);
+  }
+  throw new Error(`${server.name} server did not become healthy: ${String(lastError)}\nLogs:\n${server.logs.join("\n")}`);
+};
+
+const stopServer = async (server: ServerProcess | null): Promise<void> => {
+  if (!server || server.child.exitCode !== null) {
+    return;
+  }
+  const exited = new Promise<void>((resolve) => {
+    server.child.once("exit", () => resolve());
+  });
+  server.child.kill("SIGTERM");
+  await Promise.race([
+    exited,
+    sleep(10_000).then(() => {
+      if (server.child.exitCode === null) {
+        server.child.kill("SIGKILL");
+      }
+    }),
+  ]);
+};
+
+const prepareServerDist = (): void => {
+  const tscPath = require.resolve("typescript/bin/tsc");
+  execFileSync(process.execPath, [tscPath, "-p", "tsconfig.build.json"], {
+    cwd: serverRoot,
+    stdio: "inherit",
+  });
+  execFileSync(process.execPath, [path.join(serverRoot, "scripts", "copy-build-assets.mjs")], {
+    cwd: serverRoot,
+    stdio: "inherit",
+  });
+};
+
+const startServerProcess = async (name: string, rootDir: string): Promise<ServerProcess> => {
+  const port = await getFreePort();
+  const baseUrl = `http://127.0.0.1:${port}`;
+  const dataDir = path.join(rootDir, name);
+  fs.mkdirSync(dataDir, { recursive: true });
+  writeText(path.join(dataDir, ".env"), [
+    `AUTOBYTEUS_SERVER_HOST=${baseUrl}`,
+    "APP_ENV=test",
+    "LOG_LEVEL=ERROR",
+    "HTTP_ACCESS_LOG_MODE=off",
+    "",
+  ].join("\n"));
+
+  const env = { ...process.env };
+  delete env.DATABASE_URL;
+  delete env.DATABASE_URL_TEST;
+  delete env.AUTOBYTEUS_MEMORY_DIR;
+  env.AUTOBYTEUS_SERVER_HOST = baseUrl;
+  env.APP_ENV = "test";
+  env.LOG_LEVEL = "ERROR";
+  env.HTTP_ACCESS_LOG_MODE = "off";
+
+  const child = spawn(process.execPath, [
+    appEntry,
+    "--host", "127.0.0.1",
+    "--port", String(port),
+    "--data-dir", dataDir,
+  ], {
+    cwd: serverRoot,
+    env: { ...env, ...builtServerLaunchEnvironment() },
+    stdio: ["ignore", "pipe", "pipe"],
+  });
+  const logs: string[] = [];
+  child.stdout.on("data", (chunk: Buffer) => appendLog(logs, chunk));
+  child.stderr.on("data", (chunk: Buffer) => appendLog(logs, chunk));
+  child.once("error", (error) => logs.push(`process error: ${String(error)}`));
+
+  const server = { name, port, baseUrl, dataDir, child, logs };
+  await waitForHealth(server);
+  return server;
+};
+
+const graphql = async <T>(server: ServerProcess, query: string, variables?: Record<string, unknown>): Promise<T> => {
+  const response = await fetch(`${server.baseUrl}/graphql`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ query, variables }),
+  });
+  const payload = await response.json() as { data?: T; errors?: Array<{ message: string }> };
+  if (!response.ok || payload.errors?.length) {
+    throw new Error(`${server.name} GraphQL failed: ${response.status} ${JSON.stringify(payload.errors ?? payload)}`);
+  }
+  return payload.data as T;
+};
+
+
+const MiB = 1024 * 1024;
+const writeBytes = (filePath: string, size: number, fill: number) => {
+  fs.mkdirSync(path.dirname(filePath), { recursive: true });
+  fs.writeFileSync(filePath, Buffer.alloc(size, fill));
+};
+
+/**
+ * PROBE (autobyteus-workspace-7, not a committed test): reproduces that one large run attachment
+ * makes every Memory Sync run fail and keeps the small files behind it from ever syncing.
+ */
+describe("PROBE Memory Sync large files", () => {
+  let tempRoot: string;
+  let hub: ServerProcess | null = null;
+  let source: ServerProcess | null = null;
+
+  beforeAll(async () => {
+    tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), "autobyteus-memory-sync-large-probe-"));
+    hub = await startServerProcess("hub", tempRoot);
+    source = await startServerProcess("source", tempRoot);
+  }, 180_000);
+
+  afterAll(async () => {
+    await Promise.all([stopServer(source), stopServer(hub)]);
+    if (tempRoot) fs.rmSync(tempRoot, { recursive: true, force: true });
+  }, 30_000);
+
+  it("reproduces", async () => {
+    const hubServer = hub as ServerProcess;
+    const sourceServer = source as ServerProcess;
+    const memoryDir = path.join(sourceServer.dataDir, "memory");
+    const hubStatus = await graphql<{ updateMemoryHubConfig: { oneTimePlaintextToken: string | null } }>(hubServer, `
+      mutation EnableHub($input: UpdateMemoryHubConfigInput!) {
+        updateMemoryHubConfig(input: $input) { oneTimePlaintextToken }
+      }`, { input: { enabled: true, advertisedHubBaseUrl: hubServer.baseUrl } });
+    const token = hubStatus.updateMemoryHubConfig.oneTimePlaintextToken ?? "";
+    await graphql(sourceServer, `
+      mutation ConfigureSource($input: UpdateMemorySyncSourceConfigInput!) {
+        updateMemorySyncSourceConfig(input: $input) { source { enabled } }
+      }`, { input: { enabled: true, memorySyncSourceId, displayName: "probe", hubBaseUrl: hubServer.baseUrl, hubToken: token, backgroundEnabled: false, batchSize: 25 } });
+
+    const sync = async (label: string) => {
+      const started = Date.now();
+      const response = await fetch(`${sourceServer.baseUrl}/graphql`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ query: "mutation { startMemorySync { scannedFiles changedFiles committedBatches deferredFiles } }" }),
+      });
+      const payload = await response.json();
+      const status = await (await fetch(`${sourceServer.baseUrl}/graphql`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ query: "{ getMemorySyncStatus { sourceState { jobState lastSuccessfulSyncAt lastError trackedFileCount } } }" }),
+      })).json();
+      console.log(`PROBE ${label} (${Date.now() - started} ms): result=${JSON.stringify(payload)} status=${JSON.stringify(status.data.getMemorySyncStatus.sourceState)}`);
+    };
+    const imported = (rel: string) => fs.existsSync(path.join(hubServer.dataDir, "memory", "imports", memorySyncSourceId, rel));
+
+    // Case 0: baseline, small files only.
+    writeText(path.join(memoryDir, "agents", "run-a", "run_metadata.json"), "{}");
+    await sync("case0 small only");
+
+    // Case A: one 40 MiB attachment (sorted first) plus a small trace written after it.
+    writeBytes(path.join(memoryDir, "agents", "run-b", "context_files", "video.mp4"), 40 * MiB, 1);
+    writeText(path.join(memoryDir, "agents", "run-c", "raw_traces_active.jsonl"), "{\"later\":true}\n");
+    await sync("caseA run1 one 40MiB file");
+    await sync("caseA run2 (retry)");
+    console.log(`PROBE caseA small file behind it imported: ${imported("agents/run-c/raw_traces_active.jsonl")}`);
+
+    // Case B: remove A; two 20 MiB attachments (each under today's 25 MiB limit) in one batch.
+    fs.rmSync(path.join(memoryDir, "agents", "run-b"), { recursive: true, force: true });
+    writeBytes(path.join(memoryDir, "agents", "run-d", "context_files", "a.mp4"), 20 * MiB, 2);
+    writeBytes(path.join(memoryDir, "agents", "run-d", "context_files", "b.mp4"), 20 * MiB, 3);
+    await sync("caseB two 20MiB files");
+    console.log(`PROBE caseB run-c imported: ${imported("agents/run-c/raw_traces_active.jsonl")}`);
+    console.log(`PROBE hub logs tail: ${hubServer.logs.slice(-5).join(" | ")}`);
+  }, 300_000);
+});

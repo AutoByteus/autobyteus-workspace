@@ -1,0 +1,339 @@
+{
+  "startedAt": "2026-11-15T14:03:10.431Z",
+  "node": "v26.12.0",
+  "cases": {
+    "API-11": {
+      "checks": [
+        {
+          "name": "no credential -> refused (401/403)",
+          "ok": true,
+          "detail": {
+            "status": 401,
+            "body": "{\"error\":\"NODE_CREDENTIAL_REQUIRED\",\"code\":\"NODE_CREDENTIAL_REQUIRED\",\"message\":\"This node needs a credential. Connect it on the Nodes page.\"}"
+          }
+        },
+        {
+          "name": "the node's own owner credential on the staged route -> refused (401/403)",
+          "ok": true,
+          "detail": {
+            "status": 403,
+            "body": "{\"error\":\"NODE_ROUTE_NOT_PERMITTED\",\"code\":\"NODE_ROUTE_NOT_PERMITTED\",\"message\":\"This credential does not open this endpoint.\"}"
+          }
+        },
+        {
+          "name": "a wrong token -> refused (401/403)",
+          "ok": true,
+          "detail": {
+            "status": 401,
+            "body": "{\"error\":\"NODE_CREDENTIAL_INVALID\",\"code\":\"NODE_CREDENTIAL_INVALID\",\"message\":\"This node does not accept this credential.\"}"
+          }
+        },
+        {
+          "name": "the source token, its own source id -> 200 receivedBytes 0",
+          "ok": true,
+          "detail": {
+            "status": 200,
+            "body": "{\"receivedBytes\":0}"
+          }
+        },
+        {
+          "name": "the source token for another source id -> refused (4xx, not 200)",
+          "ok": true,
+          "detail": {
+            "status": 403,
+            "body": "{\"error\":\"MemoryHubCredentialError\",\"message\":\"Memory Hub source token is bound to a different Memory Sync source ID.\"}"
+          }
+        },
+        {
+          "name": "a piece of 8 MiB + 1 byte -> 413",
+          "ok": true,
+          "detail": {
+            "status": 413,
+            "body": "{\"statusCode\":413,\"code\":\"FST_ERR_CTP_BODY_TOO_LARGE\",\"error\":\"Payload Too Large\",\"message\":\"Request body is too large\"}"
+          }
+        },
+        {
+          "name": "a piece at an offset that is not the received length -> 409",
+          "ok": true,
+          "detail": {
+            "status": 409,
+            "body": "{\"error\":\"MemorySyncStagedFileOffsetMismatch\",\"message\":\"Staged file piece offset does not match the 0 bytes the hub holds.\",\"receivedBytes\":0}"
+          }
+        },
+        {
+          "name": "a piece sent as application/json -> 400 \"must be sent as application/octet-stream\"",
+          "ok": true,
+          "detail": {
+            "status": 400,
+            "body": "{\"error\":\"MemoryHubIngestionError\",\"message\":\"A staged file piece must be sent as application/octet-stream.\"}"
+          }
+        },
+        {
+          "name": "a malformed SHA-256 -> 400",
+          "ok": true,
+          "detail": {
+            "status": 400,
+            "body": "{\"error\":\"MemorySyncRequestError\",\"message\":\"sha256 must be 64 lowercase hex characters.\"}"
+          }
+        },
+        {
+          "name": "the refused requests left no content in staging (only zero-byte partials, OBS-2)",
+          "ok": true,
+          "detail": [
+            {
+              "name": "939cb35f214a8f1d90618e9e6a0a54224caac87086065d1856a831ba836f0a49.partial",
+              "bytes": 0
+            }
+          ]
+        },
+        {
+          "name": "nothing of them is in imports or the manifest",
+          "ok": true,
+          "detail": null
+        },
+        {
+          "name": "the hub still serves its owner (GraphQL with the owner credential)",
+          "ok": true
+        }
+      ],
+      "rawGoodTokenObservation": {
+        "status": null,
+        "body": ""
+      }
+    },
+    "API-09": {
+      "checks": [
+        {
+          "name": "the background run was uploading (>= 4 pieces) when Sync now was pressed",
+          "ok": true,
+          "detail": {
+            "pieces": 4
+          }
+        },
+        {
+          "name": "both Sync now calls returned the same single queued run",
+          "ok": true,
+          "detail": {
+            "a": {
+              "scannedFiles": 3,
+              "changedFiles": 1,
+              "unchangedFiles": 2,
+              "committedBatches": 1,
+              "failedFiles": 0,
+              "deferredFiles": 0
+            },
+            "b": {
+              "scannedFiles": 3,
+              "changedFiles": 1,
+              "unchangedFiles": 2,
+              "committedBatches": 1,
+              "failedFiles": 0,
+              "deferredFiles": 0
+            }
+          }
+        },
+        {
+          "name": "the queued manual run found only the file written after the background scan (changedFiles 1)",
+          "ok": true,
+          "detail": {
+            "scannedFiles": 3,
+            "changedFiles": 1,
+            "unchangedFiles": 2,
+            "committedBatches": 1,
+            "failedFiles": 0,
+            "deferredFiles": 0
+          }
+        },
+        {
+          "name": "exactly two commit requests in total: one background batch, one queued manual batch",
+          "ok": true,
+          "detail": {
+            "posts": 2
+          }
+        },
+        {
+          "name": "the big file was negotiated once (one status GET), never uploaded by two runs",
+          "ok": true,
+          "detail": {
+            "gets": 1,
+            "puts": 50
+          }
+        },
+        {
+          "name": "the manual run started only after the background run finished (its commit came after the last piece)",
+          "ok": true,
+          "detail": {
+            "lastPieceAt": 1794751421996,
+            "secondCommitAt": 1794751422349
+          }
+        },
+        {
+          "name": "imported big file identical",
+          "ok": true
+        },
+        {
+          "name": "late file imported by the manual run",
+          "ok": true
+        },
+        {
+          "name": "final state success, no file failures",
+          "ok": true,
+          "detail": {
+            "jobState": "success",
+            "lastError": null,
+            "fileFailureCount": 0,
+            "lastSuccessfulSyncAt": "2026-11-15T14:03:42.370Z"
+          }
+        }
+      ],
+      "detail": {
+        "manualCallMs": 21339,
+        "relayEventCount": 106
+      }
+    },
+    "API-10a": {
+      "checks": [
+        {
+          "name": "the hub was killed mid-upload and the run ended with a run-level error",
+          "ok": true,
+          "detail": "source graphql: 200 [{\"message\":\"fetch failed\",\"locations\":[{\"line\":1,\"column\":10}],\"path\":[\"startMemorySync\"]}]"
+        },
+        {
+          "name": "state: jobState error, the error shown, no file failure recorded",
+          "ok": true,
+          "detail": {
+            "jobState": "error",
+            "lastError": "fetch failed",
+            "fileFailureCount": 0,
+            "lastSuccessfulSyncAt": "2026-11-15T14:03:42.370Z"
+          }
+        },
+        {
+          "name": "Sync now while the hub is down also fails as a run (hub unreachable), not as file problems",
+          "ok": true,
+          "detail": "source graphql: 200 [{\"message\":\"fetch failed\",\"locations\":[{\"line\":1,\"column\":10}],\"path\":[\"startMemorySync\"]}]"
+        },
+        {
+          "name": "after the restart the partial file is on the hub, outside imports, not in the manifest",
+          "ok": true,
+          "detail": {
+            "partialBytes": 50331648,
+            "multipleOfPiece": true
+          }
+        },
+        {
+          "name": "the next run resumed from what the hub held (first piece offset equals the partial size)",
+          "ok": true,
+          "detail": {
+            "firstOffset": 50331648,
+            "partialBytes": 50331648,
+            "pieces": 19
+          }
+        },
+        {
+          "name": "only the remaining bytes were sent",
+          "ok": true,
+          "detail": {
+            "pieces": 19
+          }
+        },
+        {
+          "name": "run succeeded; imported file identical to the source",
+          "ok": true,
+          "detail": {
+            "scannedFiles": 4,
+            "changedFiles": 1,
+            "unchangedFiles": 3,
+            "committedBatches": 1,
+            "failedFiles": 0,
+            "deferredFiles": 0
+          }
+        },
+        {
+          "name": "staging holds nothing for the file afterwards",
+          "ok": true,
+          "detail": [
+            "939cb35f214a8f1d90618e9e6a0a54224caac87086065d1856a831ba836f0a49.partial"
+          ]
+        },
+        {
+          "name": "state success, no file failures",
+          "ok": true,
+          "detail": {
+            "jobState": "success",
+            "lastError": null,
+            "fileFailureCount": 0,
+            "lastSuccessfulSyncAt": "2026-11-15T14:03:47.286Z"
+          }
+        }
+      ],
+      "detail": {
+        "firstError": "source graphql: 200 [{\"message\":\"fetch failed\",\"locations\":[{\"line\":1,\"column\":10}],\"path\":[\"startMemorySync\"]}]",
+        "secondError": "source graphql: 200 [{\"message\":\"fetch failed\",\"locations\":[{\"line\":1,\"column\":10}],\"path\":[\"startMemorySync\"]}]",
+        "partialBytes": 50331648
+      }
+    },
+    "API-10b": {
+      "checks": [
+        {
+          "name": "the hub was killed during the commit request; the run ended with a run-level error",
+          "ok": true,
+          "detail": "source graphql: 200 [{\"message\":\"fetch failed\",\"locations\":[{\"line\":1,\"column\":10}],\"path\":[\"startMemorySync\"]}]"
+        },
+        {
+          "name": "all 128 pieces had been uploaded before the commit",
+          "ok": true,
+          "detail": {
+            "puts1": 128
+          }
+        },
+        {
+          "name": "after the restart: the complete staged file is still outside imports and the manifest",
+          "ok": true,
+          "detail": {
+            "staged": 1073741824
+          }
+        },
+        {
+          "name": "the next run uploaded no piece and committed the staged file",
+          "ok": true,
+          "detail": {
+            "puts2": 0,
+            "resumed": {
+              "scannedFiles": 5,
+              "changedFiles": 1,
+              "unchangedFiles": 4,
+              "committedBatches": 1,
+              "failedFiles": 0,
+              "deferredFiles": 0
+            }
+          }
+        },
+        {
+          "name": "imported file identical to the source",
+          "ok": true
+        },
+        {
+          "name": "staging empty and state success",
+          "ok": true,
+          "detail": {
+            "jobState": "success",
+            "lastError": null,
+            "fileFailureCount": 0,
+            "lastSuccessfulSyncAt": "2026-11-15T14:03:56.655Z"
+          }
+        }
+      ],
+      "detail": {
+        "firstError": "source graphql: 200 [{\"message\":\"fetch failed\",\"locations\":[{\"line\":1,\"column\":10}],\"path\":[\"startMemorySync\"]}]"
+      }
+    }
+  },
+  "cleanup": {
+    "rootRemoved": true,
+    "serversStopped": true
+  },
+  "error": null,
+  "result": "Pass",
+  "finishedAt": "2026-11-15T14:04:00.523Z"
+}

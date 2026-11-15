@@ -1,0 +1,59 @@
+{
+  "result": {
+    "scannedFiles": 2,
+    "changedFiles": 2,
+    "committedBatches": 1,
+    "deferredFiles": 0,
+    "failedFiles": 0
+  },
+  "totalMs": 53995,
+  "baselineMiB": {
+    "source": 296.984375,
+    "hub": 293.234375
+  },
+  "peakMiB": {
+    "source": 584.5,
+    "hub": 432.34375
+  },
+  "growthMiB": {
+    "source": 287.515625,
+    "hub": 139.109375
+  },
+  "series": [
+    "0s src=359 hub=293",
+    "2s src=395 hub=293",
+    "4s src=403 hub=293",
+    "6s src=411 hub=293",
+    "8s src=423 hub=293",
+    "10s src=422 hub=293",
+    "12s src=584 hub=363",
+    "14s src=584 hub=367",
+    "16s src=584 hub=391",
+    "18s src=584 hub=401",
+    "20s src=585 hub=360",
+    "22s src=584 hub=360",
+    "24s src=584 hub=360",
+    "26s src=584 hub=362",
+    "28s src=568 hub=354",
+    "30s src=569 hub=358",
+    "32s src=569 hub=359",
+    "34s src=568 hub=359",
+    "36s src=568 hub=359",
+    "39s src=568 hub=359",
+    "41s src=569 hub=359",
+    "43s src=570 hub=404",
+    "45s src=570 hub=417",
+    "47s src=570 hub=420",
+    "49s src=570 hub=432",
+    "51s src=570 hub=432",
+    "53s src=570 hub=432"
+  ],
+  "puts": 512,
+  "batchPosts": [
+    {
+      "bytes": 835,
+      "ms": 12826
+    }
+  ],
+  "identical": true
+}

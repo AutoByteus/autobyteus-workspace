@@ -1828,6 +1828,17 @@ export type MemorySearchRunResult = {
   workspace?: Maybe<Scalars['String']['output']>;
 };
 
+export type MemorySyncFileFailureGql = {
+  __typename?: 'MemorySyncFileFailureGql';
+  attempts: Scalars['Int']['output'];
+  kind: Scalars['String']['output'];
+  lastFailedAt: Scalars['String']['output'];
+  nextAttemptAt: Scalars['String']['output'];
+  reason: Scalars['String']['output'];
+  relativePath: Scalars['String']['output'];
+  size: Scalars['Float']['output'];
+};
+
 export type MemorySyncHubConfigGql = {
   __typename?: 'MemorySyncHubConfigGql';
   advertisedHubBaseUrl?: Maybe<Scalars['String']['output']>;
@@ -1841,6 +1852,7 @@ export type MemorySyncRunResultGql = {
   committedBatches: Scalars['Int']['output'];
   deferredFiles: Scalars['Int']['output'];
   duplicateBatches: Scalars['Int']['output'];
+  failedFiles: Scalars['Int']['output'];
   finishedAt: Scalars['String']['output'];
   scannedFiles: Scalars['Int']['output'];
   startedAt: Scalars['String']['output'];
@@ -1863,6 +1875,8 @@ export type MemorySyncSourceConfigGql = {
 
 export type MemorySyncSourceStateGql = {
   __typename?: 'MemorySyncSourceStateGql';
+  fileFailureCount: Scalars['Int']['output'];
+  fileFailures: Array<MemorySyncFileFailureGql>;
   jobState: Scalars['String']['output'];
   lastError?: Maybe<Scalars['String']['output']>;
   lastSuccessfulSyncAt?: Maybe<Scalars['String']['output']>;
@@ -5296,21 +5310,21 @@ export type RebuildMemoryIndexMutationVariables = Exact<{ [key: string]: never; 
 
 export type RebuildMemoryIndexMutation = { __typename?: 'Mutation', rebuildMemoryIndex: boolean };
 
-export type MemorySyncStatusFieldsFragment = { __typename?: 'MemorySyncStatusGql', oneTimePlaintextToken?: string | null, hub: { __typename?: 'MemorySyncHubConfigGql', enabled: boolean, advertisedHubBaseUrl?: string | null, updatedAt?: string | null }, source: { __typename?: 'MemorySyncSourceConfigGql', enabled: boolean, memorySyncSourceId?: string | null, displayName?: string | null, hubBaseUrl?: string | null, hubTokenConfigured: boolean, hubTokenPreview?: string | null, backgroundEnabled: boolean, intervalMs: number, batchSize: number, updatedAt?: string | null }, connectionInfo: { __typename?: 'MemoryHubConnectionInfoGql', hubEnabled: boolean, advertisedHubBaseUrl?: string | null, ingestEndpointUrl?: string | null, healthEndpointUrl?: string | null, secureTransportWarning?: string | null, credentials: Array<{ __typename?: 'MemoryHubCredentialSummaryGql', credentialId: string, label?: string | null, boundMemorySyncSourceId?: string | null, createdAt: string, lastUsedAt?: string | null, revokedAt?: string | null, status: string }> }, sourceState?: { __typename?: 'MemorySyncSourceStateGql', jobState: string, lastSuccessfulSyncAt?: string | null, lastError?: string | null, trackedFileCount: number } | null, imports: Array<{ __typename?: 'MemoryImportSummaryGql', memorySyncSourceId: string, displayName?: string | null, lastKnownEndpoint?: string | null, firstImportedAt?: string | null, lastImportedAt?: string | null, lastSyncStatus?: string | null, lastError?: string | null, fileCount: number, totalBytes: number, lastCommittedBatchId?: string | null, lastCommittedAt?: string | null }> };
+export type MemorySyncStatusFieldsFragment = { __typename?: 'MemorySyncStatusGql', oneTimePlaintextToken?: string | null, hub: { __typename?: 'MemorySyncHubConfigGql', enabled: boolean, advertisedHubBaseUrl?: string | null, updatedAt?: string | null }, source: { __typename?: 'MemorySyncSourceConfigGql', enabled: boolean, memorySyncSourceId?: string | null, displayName?: string | null, hubBaseUrl?: string | null, hubTokenConfigured: boolean, hubTokenPreview?: string | null, backgroundEnabled: boolean, intervalMs: number, batchSize: number, updatedAt?: string | null }, connectionInfo: { __typename?: 'MemoryHubConnectionInfoGql', hubEnabled: boolean, advertisedHubBaseUrl?: string | null, ingestEndpointUrl?: string | null, healthEndpointUrl?: string | null, secureTransportWarning?: string | null, credentials: Array<{ __typename?: 'MemoryHubCredentialSummaryGql', credentialId: string, label?: string | null, boundMemorySyncSourceId?: string | null, createdAt: string, lastUsedAt?: string | null, revokedAt?: string | null, status: string }> }, sourceState?: { __typename?: 'MemorySyncSourceStateGql', jobState: string, lastSuccessfulSyncAt?: string | null, lastError?: string | null, trackedFileCount: number, fileFailureCount: number, fileFailures: Array<{ __typename?: 'MemorySyncFileFailureGql', kind: string, relativePath: string, size: number, reason: string, attempts: number, lastFailedAt: string, nextAttemptAt: string }> } | null, imports: Array<{ __typename?: 'MemoryImportSummaryGql', memorySyncSourceId: string, displayName?: string | null, lastKnownEndpoint?: string | null, firstImportedAt?: string | null, lastImportedAt?: string | null, lastSyncStatus?: string | null, lastError?: string | null, fileCount: number, totalBytes: number, lastCommittedBatchId?: string | null, lastCommittedAt?: string | null }> };
 
 export type UpdateMemoryHubConfigMutationVariables = Exact<{
   input: UpdateMemoryHubConfigInput;
 }>;
 
 
-export type UpdateMemoryHubConfigMutation = { __typename?: 'Mutation', updateMemoryHubConfig: { __typename?: 'MemorySyncStatusGql', oneTimePlaintextToken?: string | null, hub: { __typename?: 'MemorySyncHubConfigGql', enabled: boolean, advertisedHubBaseUrl?: string | null, updatedAt?: string | null }, source: { __typename?: 'MemorySyncSourceConfigGql', enabled: boolean, memorySyncSourceId?: string | null, displayName?: string | null, hubBaseUrl?: string | null, hubTokenConfigured: boolean, hubTokenPreview?: string | null, backgroundEnabled: boolean, intervalMs: number, batchSize: number, updatedAt?: string | null }, connectionInfo: { __typename?: 'MemoryHubConnectionInfoGql', hubEnabled: boolean, advertisedHubBaseUrl?: string | null, ingestEndpointUrl?: string | null, healthEndpointUrl?: string | null, secureTransportWarning?: string | null, credentials: Array<{ __typename?: 'MemoryHubCredentialSummaryGql', credentialId: string, label?: string | null, boundMemorySyncSourceId?: string | null, createdAt: string, lastUsedAt?: string | null, revokedAt?: string | null, status: string }> }, sourceState?: { __typename?: 'MemorySyncSourceStateGql', jobState: string, lastSuccessfulSyncAt?: string | null, lastError?: string | null, trackedFileCount: number } | null, imports: Array<{ __typename?: 'MemoryImportSummaryGql', memorySyncSourceId: string, displayName?: string | null, lastKnownEndpoint?: string | null, firstImportedAt?: string | null, lastImportedAt?: string | null, lastSyncStatus?: string | null, lastError?: string | null, fileCount: number, totalBytes: number, lastCommittedBatchId?: string | null, lastCommittedAt?: string | null }> } };
+export type UpdateMemoryHubConfigMutation = { __typename?: 'Mutation', updateMemoryHubConfig: { __typename?: 'MemorySyncStatusGql', oneTimePlaintextToken?: string | null, hub: { __typename?: 'MemorySyncHubConfigGql', enabled: boolean, advertisedHubBaseUrl?: string | null, updatedAt?: string | null }, source: { __typename?: 'MemorySyncSourceConfigGql', enabled: boolean, memorySyncSourceId?: string | null, displayName?: string | null, hubBaseUrl?: string | null, hubTokenConfigured: boolean, hubTokenPreview?: string | null, backgroundEnabled: boolean, intervalMs: number, batchSize: number, updatedAt?: string | null }, connectionInfo: { __typename?: 'MemoryHubConnectionInfoGql', hubEnabled: boolean, advertisedHubBaseUrl?: string | null, ingestEndpointUrl?: string | null, healthEndpointUrl?: string | null, secureTransportWarning?: string | null, credentials: Array<{ __typename?: 'MemoryHubCredentialSummaryGql', credentialId: string, label?: string | null, boundMemorySyncSourceId?: string | null, createdAt: string, lastUsedAt?: string | null, revokedAt?: string | null, status: string }> }, sourceState?: { __typename?: 'MemorySyncSourceStateGql', jobState: string, lastSuccessfulSyncAt?: string | null, lastError?: string | null, trackedFileCount: number, fileFailureCount: number, fileFailures: Array<{ __typename?: 'MemorySyncFileFailureGql', kind: string, relativePath: string, size: number, reason: string, attempts: number, lastFailedAt: string, nextAttemptAt: string }> } | null, imports: Array<{ __typename?: 'MemoryImportSummaryGql', memorySyncSourceId: string, displayName?: string | null, lastKnownEndpoint?: string | null, firstImportedAt?: string | null, lastImportedAt?: string | null, lastSyncStatus?: string | null, lastError?: string | null, fileCount: number, totalBytes: number, lastCommittedBatchId?: string | null, lastCommittedAt?: string | null }> } };
 
 export type UpdateMemorySyncSourceConfigMutationVariables = Exact<{
   input: UpdateMemorySyncSourceConfigInput;
 }>;
 
 
-export type UpdateMemorySyncSourceConfigMutation = { __typename?: 'Mutation', updateMemorySyncSourceConfig: { __typename?: 'MemorySyncStatusGql', oneTimePlaintextToken?: string | null, hub: { __typename?: 'MemorySyncHubConfigGql', enabled: boolean, advertisedHubBaseUrl?: string | null, updatedAt?: string | null }, source: { __typename?: 'MemorySyncSourceConfigGql', enabled: boolean, memorySyncSourceId?: string | null, displayName?: string | null, hubBaseUrl?: string | null, hubTokenConfigured: boolean, hubTokenPreview?: string | null, backgroundEnabled: boolean, intervalMs: number, batchSize: number, updatedAt?: string | null }, connectionInfo: { __typename?: 'MemoryHubConnectionInfoGql', hubEnabled: boolean, advertisedHubBaseUrl?: string | null, ingestEndpointUrl?: string | null, healthEndpointUrl?: string | null, secureTransportWarning?: string | null, credentials: Array<{ __typename?: 'MemoryHubCredentialSummaryGql', credentialId: string, label?: string | null, boundMemorySyncSourceId?: string | null, createdAt: string, lastUsedAt?: string | null, revokedAt?: string | null, status: string }> }, sourceState?: { __typename?: 'MemorySyncSourceStateGql', jobState: string, lastSuccessfulSyncAt?: string | null, lastError?: string | null, trackedFileCount: number } | null, imports: Array<{ __typename?: 'MemoryImportSummaryGql', memorySyncSourceId: string, displayName?: string | null, lastKnownEndpoint?: string | null, firstImportedAt?: string | null, lastImportedAt?: string | null, lastSyncStatus?: string | null, lastError?: string | null, fileCount: number, totalBytes: number, lastCommittedBatchId?: string | null, lastCommittedAt?: string | null }> } };
+export type UpdateMemorySyncSourceConfigMutation = { __typename?: 'Mutation', updateMemorySyncSourceConfig: { __typename?: 'MemorySyncStatusGql', oneTimePlaintextToken?: string | null, hub: { __typename?: 'MemorySyncHubConfigGql', enabled: boolean, advertisedHubBaseUrl?: string | null, updatedAt?: string | null }, source: { __typename?: 'MemorySyncSourceConfigGql', enabled: boolean, memorySyncSourceId?: string | null, displayName?: string | null, hubBaseUrl?: string | null, hubTokenConfigured: boolean, hubTokenPreview?: string | null, backgroundEnabled: boolean, intervalMs: number, batchSize: number, updatedAt?: string | null }, connectionInfo: { __typename?: 'MemoryHubConnectionInfoGql', hubEnabled: boolean, advertisedHubBaseUrl?: string | null, ingestEndpointUrl?: string | null, healthEndpointUrl?: string | null, secureTransportWarning?: string | null, credentials: Array<{ __typename?: 'MemoryHubCredentialSummaryGql', credentialId: string, label?: string | null, boundMemorySyncSourceId?: string | null, createdAt: string, lastUsedAt?: string | null, revokedAt?: string | null, status: string }> }, sourceState?: { __typename?: 'MemorySyncSourceStateGql', jobState: string, lastSuccessfulSyncAt?: string | null, lastError?: string | null, trackedFileCount: number, fileFailureCount: number, fileFailures: Array<{ __typename?: 'MemorySyncFileFailureGql', kind: string, relativePath: string, size: number, reason: string, attempts: number, lastFailedAt: string, nextAttemptAt: string }> } | null, imports: Array<{ __typename?: 'MemoryImportSummaryGql', memorySyncSourceId: string, displayName?: string | null, lastKnownEndpoint?: string | null, firstImportedAt?: string | null, lastImportedAt?: string | null, lastSyncStatus?: string | null, lastError?: string | null, fileCount: number, totalBytes: number, lastCommittedBatchId?: string | null, lastCommittedAt?: string | null }> } };
 
 export type CreateMemoryHubSourceCredentialMutationVariables = Exact<{
   input?: InputMaybe<CreateMemoryHubCredentialInput>;
@@ -5343,7 +5357,7 @@ export type TestMemoryHubConnectionMutation = { __typename?: 'Mutation', testMem
 export type StartMemorySyncMutationVariables = Exact<{ [key: string]: never; }>;
 
 
-export type StartMemorySyncMutation = { __typename?: 'Mutation', startMemorySync: { __typename?: 'MemorySyncRunResultGql', startedAt: string, finishedAt: string, scannedFiles: number, changedFiles: number, unchangedFiles: number, deferredFiles: number, committedBatches: number, duplicateBatches: number } };
+export type StartMemorySyncMutation = { __typename?: 'Mutation', startMemorySync: { __typename?: 'MemorySyncRunResultGql', startedAt: string, finishedAt: string, scannedFiles: number, changedFiles: number, unchangedFiles: number, deferredFiles: number, failedFiles: number, committedBatches: number, duplicateBatches: number } };
 
 export type SetModelRoutingEnabledMutationVariables = Exact<{
   enabled: Scalars['Boolean']['input'];
@@ -5880,7 +5894,7 @@ export type ListAgentOrgRunsWithMemoryQuery = { __typename?: 'Query', listAgentO
 export type GetMemorySyncStatusQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetMemorySyncStatusQuery = { __typename?: 'Query', getMemorySyncStatus: { __typename?: 'MemorySyncStatusGql', oneTimePlaintextToken?: string | null, hub: { __typename?: 'MemorySyncHubConfigGql', enabled: boolean, advertisedHubBaseUrl?: string | null, updatedAt?: string | null }, source: { __typename?: 'MemorySyncSourceConfigGql', enabled: boolean, memorySyncSourceId?: string | null, displayName?: string | null, hubBaseUrl?: string | null, hubTokenConfigured: boolean, hubTokenPreview?: string | null, backgroundEnabled: boolean, intervalMs: number, batchSize: number, updatedAt?: string | null }, connectionInfo: { __typename?: 'MemoryHubConnectionInfoGql', hubEnabled: boolean, advertisedHubBaseUrl?: string | null, ingestEndpointUrl?: string | null, healthEndpointUrl?: string | null, secureTransportWarning?: string | null, credentials: Array<{ __typename?: 'MemoryHubCredentialSummaryGql', credentialId: string, label?: string | null, boundMemorySyncSourceId?: string | null, createdAt: string, lastUsedAt?: string | null, revokedAt?: string | null, status: string }> }, sourceState?: { __typename?: 'MemorySyncSourceStateGql', jobState: string, lastSuccessfulSyncAt?: string | null, lastError?: string | null, trackedFileCount: number } | null, imports: Array<{ __typename?: 'MemoryImportSummaryGql', memorySyncSourceId: string, displayName?: string | null, lastKnownEndpoint?: string | null, firstImportedAt?: string | null, lastImportedAt?: string | null, lastSyncStatus?: string | null, lastError?: string | null, fileCount: number, totalBytes: number, lastCommittedBatchId?: string | null, lastCommittedAt?: string | null }> } };
+export type GetMemorySyncStatusQuery = { __typename?: 'Query', getMemorySyncStatus: { __typename?: 'MemorySyncStatusGql', oneTimePlaintextToken?: string | null, hub: { __typename?: 'MemorySyncHubConfigGql', enabled: boolean, advertisedHubBaseUrl?: string | null, updatedAt?: string | null }, source: { __typename?: 'MemorySyncSourceConfigGql', enabled: boolean, memorySyncSourceId?: string | null, displayName?: string | null, hubBaseUrl?: string | null, hubTokenConfigured: boolean, hubTokenPreview?: string | null, backgroundEnabled: boolean, intervalMs: number, batchSize: number, updatedAt?: string | null }, connectionInfo: { __typename?: 'MemoryHubConnectionInfoGql', hubEnabled: boolean, advertisedHubBaseUrl?: string | null, ingestEndpointUrl?: string | null, healthEndpointUrl?: string | null, secureTransportWarning?: string | null, credentials: Array<{ __typename?: 'MemoryHubCredentialSummaryGql', credentialId: string, label?: string | null, boundMemorySyncSourceId?: string | null, createdAt: string, lastUsedAt?: string | null, revokedAt?: string | null, status: string }> }, sourceState?: { __typename?: 'MemorySyncSourceStateGql', jobState: string, lastSuccessfulSyncAt?: string | null, lastError?: string | null, trackedFileCount: number, fileFailureCount: number, fileFailures: Array<{ __typename?: 'MemorySyncFileFailureGql', kind: string, relativePath: string, size: number, reason: string, attempts: number, lastFailedAt: string, nextAttemptAt: string }> } | null, imports: Array<{ __typename?: 'MemoryImportSummaryGql', memorySyncSourceId: string, displayName?: string | null, lastKnownEndpoint?: string | null, firstImportedAt?: string | null, lastImportedAt?: string | null, lastSyncStatus?: string | null, lastError?: string | null, fileCount: number, totalBytes: number, lastCommittedBatchId?: string | null, lastCommittedAt?: string | null }> } };
 
 export type ListMemoryHubUrlCandidatesQueryVariables = Exact<{
   currentNodeBaseUrl?: InputMaybe<Scalars['String']['input']>;
@@ -6775,6 +6789,16 @@ export const MemorySyncStatusFieldsFragmentDoc = gql`
     lastSuccessfulSyncAt
     lastError
     trackedFileCount
+    fileFailureCount
+    fileFailures {
+      kind
+      relativePath
+      size
+      reason
+      attempts
+      lastFailedAt
+      nextAttemptAt
+    }
   }
   imports {
     memorySyncSourceId
@@ -10121,6 +10145,7 @@ export const StartMemorySyncDocument = gql`
     changedFiles
     unchangedFiles
     deferredFiles
+    failedFiles
     committedBatches
     duplicateBatches
   }
@@ -12979,6 +13004,16 @@ export const GetMemorySyncStatusDocument = gql`
       lastSuccessfulSyncAt
       lastError
       trackedFileCount
+      fileFailureCount
+      fileFailures {
+        kind
+        relativePath
+        size
+        reason
+        attempts
+        lastFailedAt
+        nextAttemptAt
+      }
     }
     imports {
       memorySyncSourceId

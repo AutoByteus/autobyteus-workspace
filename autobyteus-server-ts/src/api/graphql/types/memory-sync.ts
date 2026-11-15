@@ -27,6 +27,9 @@ import {
   UpdateMemorySyncSourceConfigInput,
 } from "./memory-sync-schema.js";
 
+/** The status lists this many file failures; the count says how many there are. */
+const MEMORY_SYNC_STATUS_FILE_FAILURE_LIMIT = 20;
+
 const mapCredential = (credential: DomainCredentialSummary): MemoryHubCredentialSummaryGql => ({ ...credential });
 const mapImport = (summary: DomainImportSummary): MemoryImportSummaryGql => ({ ...summary });
 const mapCandidate = (candidate: DomainServerAddressCandidate): ServerAddressCandidateGql => ({ ...candidate });
@@ -44,6 +47,13 @@ const buildStatus = async (oneTimePlaintextToken?: string | null): Promise<Memor
       lastSuccessfulSyncAt: state.lastSuccessfulSyncAt,
       lastError: state.lastError,
       trackedFileCount: Object.keys(state.files).length,
+      fileFailureCount: Object.keys(state.fileFailures).length,
+      fileFailures: Object.values(state.fileFailures)
+        .sort((a, b) => b.lastFailedAt.localeCompare(a.lastFailedAt))
+        .slice(0, MEMORY_SYNC_STATUS_FILE_FAILURE_LIMIT)
+        .map(({ kind, relativePath, size, reason, attempts, lastFailedAt, nextAttemptAt }) => ({
+          kind, relativePath, size, reason, attempts, lastFailedAt, nextAttemptAt,
+        })),
     };
   }
   return {

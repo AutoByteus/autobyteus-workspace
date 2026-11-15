@@ -1,0 +1,6 @@
+# DEL-01: server typecheck on the integrated state (delivery); commit fa14fc465; Node v22.23.3; Sun Nov 15 15:28:05 CET 2026
+[typecheck] server src (tsconfig.build.json): 0 errors, exit 0, 8.7s
+[typecheck] server tests (tsconfig.tests.json): 1180 errors, exit 2, 27.3s
+[typecheck] production errors: 0; test-file errors: 1180 in 364 files (baseline 1180 in 364 files)
+[typecheck] PASS
+exit=0

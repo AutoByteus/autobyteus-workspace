@@ -1,4 +1,3 @@
-import { createHash } from "node:crypto";
 import fs from "node:fs/promises";
 import path from "node:path";
 import { appConfigProvider } from "../../config/app-config-provider.js";
@@ -7,19 +6,17 @@ import {
   normalizeMemorySyncRelativePath,
   shouldExcludeMemorySyncLeaf,
 } from "../shared/memory-sync-path-policy.js";
-import type { MemoryFileDescriptor } from "../shared/memory-sync-types.js";
+import type { MemoryFileEntry } from "../shared/memory-sync-types.js";
 
 type AppConfigLike = { getMemoryDir(): string };
 
 type ScanRoot = { kind: MemorySyncFileKind; rootDir: string };
 
-const sha256Buffer = (buffer: Buffer): string => createHash("sha256").update(buffer).digest("hex");
-
 export type LocalMemoryExportScanResult = {
-  files: MemoryFileDescriptor[];
-  deferred: Array<{ kind: MemorySyncFileKind; relativePath: string; reason: string }>;
+  files: MemoryFileEntry[];
 };
 
+/** Lists the regular files under the memory roots with their size and modification time. It reads no content. */
 export class LocalMemoryExportScanner {
   constructor(private readonly config: AppConfigLike = appConfigProvider.config) {}
 
@@ -29,22 +26,16 @@ export class LocalMemoryExportScanner {
       { kind: "agents", rootDir: path.join(memoryDir, "agents") },
       { kind: "agent_teams", rootDir: path.join(memoryDir, "agent_teams") },
     ];
-    const files: MemoryFileDescriptor[] = [];
-    const deferred: LocalMemoryExportScanResult["deferred"] = [];
+    const files: MemoryFileEntry[] = [];
 
     for (const root of roots) {
-      await this.walkRoot(root, root.rootDir, files, deferred);
+      await this.walkRoot(root, root.rootDir, files);
     }
     files.sort((a, b) => `${a.kind}/${a.relativePath}`.localeCompare(`${b.kind}/${b.relativePath}`));
-    return { files, deferred };
+    return { files };
   }
 
-  private async walkRoot(
-    root: ScanRoot,
-    currentDir: string,
-    files: MemoryFileDescriptor[],
-    deferred: LocalMemoryExportScanResult["deferred"],
-  ): Promise<void> {
+  private async walkRoot(root: ScanRoot, currentDir: string, files: MemoryFileEntry[]): Promise<void> {
     let entries: import("node:fs").Dirent[];
     try {
       entries = await fs.readdir(currentDir, { withFileTypes: true });
@@ -64,43 +55,28 @@ export class LocalMemoryExportScanner {
         continue;
       }
       if (entry.isDirectory()) {
-        await this.walkRoot(root, absolutePath, files, deferred);
+        await this.walkRoot(root, absolutePath, files);
         continue;
       }
       if (!entry.isFile()) {
         continue;
       }
-      const relativePath = normalizeMemorySyncRelativePath(path.relative(root.rootDir, absolutePath));
-      const descriptor = await this.describeStableFile(root.kind, relativePath, absolutePath);
-      if (descriptor) {
-        files.push(descriptor);
-      } else {
-        deferred.push({ kind: root.kind, relativePath, reason: "file changed while being read" });
+      const stat = await fs.stat(absolutePath).catch((error: NodeJS.ErrnoException) => {
+        if (error.code === "ENOENT") {
+          return null;
+        }
+        throw error;
+      });
+      if (!stat?.isFile()) {
+        continue;
       }
+      files.push({
+        kind: root.kind,
+        relativePath: normalizeMemorySyncRelativePath(path.relative(root.rootDir, absolutePath)),
+        absolutePath,
+        size: stat.size,
+        mtimeMs: stat.mtimeMs,
+      });
     }
-  }
-
-  private async describeStableFile(
-    kind: MemorySyncFileKind,
-    relativePath: string,
-    absolutePath: string,
-  ): Promise<MemoryFileDescriptor | null> {
-    const before = await fs.stat(absolutePath);
-    if (!before.isFile()) {
-      return null;
-    }
-    const content = await fs.readFile(absolutePath);
-    const after = await fs.stat(absolutePath);
-    if (before.size !== after.size || before.mtimeMs !== after.mtimeMs) {
-      return null;
-    }
-    return {
-      kind,
-      relativePath,
-      absolutePath,
-      size: after.size,
-      mtimeMs: after.mtimeMs,
-      sha256: sha256Buffer(content),
-    };
   }
 }

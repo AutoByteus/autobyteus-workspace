@@ -136,6 +136,16 @@
         <p data-testid="memory-sync-current-job"><span class="font-medium text-slate-800">{{ t('settings.components.settings.MemorySyncCard.currentJob') }}:</span> {{ currentJobText }}</p>
         <p data-testid="memory-sync-last-sync" :class="lastSyncStatusClass"><span class="font-medium text-slate-800">{{ t('settings.components.settings.MemorySyncCard.lastSync') }}:</span> {{ lastSyncText }}</p>
       </div>
+
+      <div v-if="fileFailureCount > 0" data-testid="memory-sync-file-failures" class="mt-3 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-800" role="status">
+        <p class="font-semibold" data-testid="memory-sync-file-failures-title">{{ fileFailuresTitle }}</p>
+        <ul class="mt-1 space-y-1">
+          <li v-for="failure in fileFailures" :key="`${failure.kind}/${failure.relativePath}`" data-testid="memory-sync-file-failure" class="break-words text-xs">
+            <span class="break-all font-mono">{{ failure.kind }}/{{ failure.relativePath }}</span> · {{ formatBytes(failure.size) }} · {{ failure.reason }} · {{ t('settings.components.settings.MemorySyncCard.nextAttempt') }} {{ formatTimestamp(failure.nextAttemptAt) }}
+          </li>
+        </ul>
+        <p v-if="hiddenFileFailureCount > 0" data-testid="memory-sync-file-failures-more" class="mt-1 text-xs">{{ t('settings.components.settings.MemorySyncCard.fileFailuresMore', { count: hiddenFileFailureCount }) }}</p>
+      </div>
     </section>
   </div>
 </template>
@@ -270,6 +280,16 @@ const lastSyncText = computed(() => {
   return t('settings.components.settings.MemorySyncCard.notSyncedYet');
 });
 
+const fileFailureCount = computed(() => store.status.sourceState?.fileFailureCount ?? 0);
+const fileFailures = computed(() => store.status.sourceState?.fileFailures ?? []);
+const hiddenFileFailureCount = computed(() => Math.max(fileFailureCount.value - fileFailures.value.length, 0));
+const fileFailuresTitle = computed(() => t(
+  fileFailureCount.value === 1
+    ? 'settings.components.settings.MemorySyncCard.fileFailuresTitleOne'
+    : 'settings.components.settings.MemorySyncCard.fileFailuresTitle',
+  { count: fileFailureCount.value },
+));
+
 const lastSyncStatusClass = computed(() => {
   if (lastSyncState.value === 'error') return 'text-red-700';
   if (lastSyncState.value === 'success') return 'text-green-700';
@@ -331,6 +351,7 @@ const formatBytes = (value: number) => {
   if (!Number.isFinite(value)) return '0 B';
   if (value < 1024) return `${value} B`;
   if (value < 1024 * 1024) return `${(value / 1024).toFixed(1)} KB`;
-  return `${(value / (1024 * 1024)).toFixed(1)} MB`;
+  if (value < 1024 * 1024 * 1024) return `${(value / (1024 * 1024)).toFixed(1)} MB`;
+  return `${(value / (1024 * 1024 * 1024)).toFixed(1)} GB`;
 };
 </script>

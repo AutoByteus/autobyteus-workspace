@@ -92,7 +92,6 @@ const seedUpgradedNode = async (memory: string) => {
 /** What the hub's ingestion stores: every exported file at `<import root>/<kind>/<relativePath>`. */
 const exportAndImport = async (sourceMemory: string, importRoot: string): Promise<string[]> => {
   const scanned = await new LocalMemoryExportScanner({ getMemoryDir: () => sourceMemory }).scan();
-  expect(scanned.deferred).toEqual([]);
   for (const file of scanned.files) {
     await put(path.join(importRoot, file.kind, file.relativePath), await fs.readFile(path.join(sourceMemory, file.kind, file.relativePath), "utf-8"));
   }

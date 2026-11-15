@@ -1,10 +1,15 @@
-import { randomBytes } from "node:crypto";
 import { appConfigProvider } from "../../config/app-config-provider.js";
 import { toMemorySyncFileKey } from "../shared/memory-sync-path-policy.js";
-import type { MemoryFileOperation, MemorySyncBatch, MemorySyncSourceFileState } from "../shared/memory-sync-types.js";
+import type { MemorySyncFileFailure, MemorySyncSourceFileState } from "../shared/memory-sync-types.js";
 import { LocalMemoryExportScanner } from "./local-memory-export-scanner.js";
 import { MemoryFileChangePlanner } from "./memory-file-change-planner.js";
-import { MemoryHubClient } from "./memory-hub-client.js";
+import { planMemorySyncBatches } from "./memory-sync-batch-planner.js";
+import {
+  type MemorySyncBatchContext,
+  MemorySyncBatchTransfer,
+  type MemorySyncFileOutcome,
+} from "./memory-sync-batch-transfer.js";
+import { buildFileFailure, type MemorySyncRunTrigger } from "./memory-sync-file-failure-policy.js";
 import { getMemorySyncConfigService, type MemorySyncConfigService } from "./memory-sync-config-service.js";
 import {
   getLocalFileMemorySyncStateStore,
@@ -18,83 +23,108 @@ export type MemorySyncRunResult = {
   changedFiles: number;
   unchangedFiles: number;
   deferredFiles: number;
+  failedFiles: number;
   committedBatches: number;
   duplicateBatches: number;
 };
 
-const createBatchId = (): string => `batch-${new Date().toISOString().replace(/[:.]/g, "")}-${randomBytes(6).toString("hex")}`;
+const logger = { warn: (...args: unknown[]) => console.warn(...args) };
 
 export class MemorySyncService {
-  private running: Promise<MemorySyncRunResult> | null = null;
+  private running: { trigger: MemorySyncRunTrigger; promise: Promise<MemorySyncRunResult> } | null = null;
+  private queuedManual: Promise<MemorySyncRunResult> | null = null;
 
   constructor(
     private readonly configService: MemorySyncConfigService = getMemorySyncConfigService(),
     private readonly stateStore: LocalFileMemorySyncStateStore = getLocalFileMemorySyncStateStore(),
     private readonly scanner = new LocalMemoryExportScanner(),
     private readonly planner = new MemoryFileChangePlanner(),
-    private readonly hubClient = new MemoryHubClient(),
+    private readonly batchTransfer = new MemorySyncBatchTransfer(),
   ) {}
 
+  /** Sync now: retries every failing file, even during another run (it then runs once after it). */
   async startManualSync(): Promise<MemorySyncRunResult> {
-    return this.startSync();
+    return this.startSync("manual");
   }
 
-  async startSync(): Promise<MemorySyncRunResult> {
-    if (this.running) {
-      return this.running;
+  /**
+   * The run gate. A `background` start while a run is in progress joins it. A `manual` start while a `background` run
+   * is in progress waits for it and then starts one `manual` run; further manual starts join that queued run.
+   */
+  async startSync(trigger: MemorySyncRunTrigger): Promise<MemorySyncRunResult> {
+    if (!this.running) {
+      const promise = this.runOnce(trigger).finally(() => {
+        this.running = null;
+      });
+      this.running = { trigger, promise };
+      return promise;
     }
-    this.running = this.runOnce().finally(() => {
-      this.running = null;
-    });
-    return this.running;
+    if (trigger === "background" || this.running.trigger === "manual") {
+      return this.running.promise;
+    }
+    this.queuedManual ??= this.running.promise
+      .then(() => undefined, () => undefined)
+      .then(() => {
+        this.queuedManual = null;
+        return this.startSync("manual");
+      });
+    return this.queuedManual;
   }
 
-  private async runOnce(): Promise<MemorySyncRunResult> {
+  private async runOnce(trigger: MemorySyncRunTrigger): Promise<MemorySyncRunResult> {
     const config = await this.configService.getConfig();
     const source = config.source;
     if (!source.enabled || !source.memorySyncSourceId || !source.hubBaseUrl || !source.hubToken) {
       throw new Error("Memory Sync source is not fully configured.");
     }
+    const hubBaseUrl = source.hubBaseUrl;
+    const memorySyncSourceId = source.memorySyncSourceId;
 
     const startedAt = new Date().toISOString();
-    await this.stateStore.updateState(source.hubBaseUrl, source.memorySyncSourceId, (state) => ({
+    await this.stateStore.updateState(hubBaseUrl, memorySyncSourceId, (state) => ({
       ...state,
       lastJobState: "running",
       lastError: null,
     }));
 
     try {
-      const state = await this.stateStore.readState(source.hubBaseUrl, source.memorySyncSourceId);
+      const state = await this.stateStore.readState(hubBaseUrl, memorySyncSourceId);
       const scan = await this.scanner.scan();
-      const plan = await this.planner.planChangedFiles(scan.files, state.files, { maxOperations: source.batchSize });
+      const plan = await this.planner.planChangedFiles(scan.files, state, trigger, new Date());
+      const context: MemorySyncBatchContext = {
+        hubBaseUrl,
+        token: source.hubToken,
+        memorySyncSourceId,
+        sourceDisplayName: source.displayName,
+        sourceEndpoint: this.safeBaseUrl(),
+      };
+      let failedFiles = plan.failed.length;
       let committedBatches = 0;
       let duplicateBatches = 0;
+      let deferredFiles = plan.deferred.length + plan.waitingCount;
 
-      if (plan.operations.length > 0) {
-        for (const batchOperations of this.chunkOperations(plan.operations, source.batchSize)) {
-          const batch: MemorySyncBatch = {
-            protocolVersion: 1,
-            batchId: createBatchId(),
-            memorySyncSourceId: source.memorySyncSourceId,
-            sourceDisplayName: source.displayName,
-            sourceEndpoint: this.safeBaseUrl(),
-            generatedAt: new Date().toISOString(),
-            operations: batchOperations,
-          };
-          const response = await this.hubClient.pushBatch({
-            hubBaseUrl: source.hubBaseUrl,
-            token: source.hubToken,
-            batch,
-          });
-          committedBatches += response.duplicate ? 0 : 1;
-          duplicateBatches += response.duplicate ? 1 : 0;
-          await this.markOperationsSynced(source.hubBaseUrl, source.memorySyncSourceId, batchOperations, response.batchId, response.committedAt);
-        }
+      await this.recordOutcomes(hubBaseUrl, memorySyncSourceId, plan.failed.map(({ entry, reason }) => ({
+        status: "failed" as const,
+        file: entry,
+        reason,
+      })));
+
+      // Each batch's outcomes are recorded right after its send, so a later run-level error keeps them.
+      for (const batch of planMemorySyncBatches(plan.changed, source.batchSize)) {
+        const sent = await this.batchTransfer.send(batch, context);
+        await this.recordOutcomes(hubBaseUrl, memorySyncSourceId, sent.outcomes);
+        committedBatches += sent.committedBatches;
+        duplicateBatches += sent.duplicateBatches;
+        failedFiles += sent.outcomes.filter((outcome) => outcome.status === "failed").length;
+        deferredFiles += sent.outcomes.filter((outcome) => outcome.status === "deferred").length;
       }
 
       const finishedAt = new Date().toISOString();
-      await this.stateStore.updateState(source.hubBaseUrl, source.memorySyncSourceId, (latest) => ({
+      const listedKeys = new Set(scan.files.map((entry) => toMemorySyncFileKey(entry.kind, entry.relativePath)));
+      await this.stateStore.updateState(hubBaseUrl, memorySyncSourceId, (latest) => ({
         ...latest,
+        // A file that no longer exists has nothing left to retry.
+        fileFailures: Object.fromEntries(Object.entries(latest.fileFailures).filter(([key]) => listedKeys.has(key))),
         lastSuccessfulSyncAt: finishedAt,
         lastJobState: "success",
         lastError: null,
@@ -103,14 +133,15 @@ export class MemorySyncService {
         startedAt,
         finishedAt,
         scannedFiles: scan.files.length,
-        changedFiles: plan.operations.length,
+        changedFiles: plan.changed.length,
         unchangedFiles: plan.unchangedCount,
-        deferredFiles: scan.deferred.length + plan.deferred.length,
+        deferredFiles,
+        failedFiles,
         committedBatches,
         duplicateBatches,
       };
     } catch (error) {
-      await this.stateStore.updateState(source.hubBaseUrl, source.memorySyncSourceId, (latest) => ({
+      await this.stateStore.updateState(hubBaseUrl, memorySyncSourceId, (latest) => ({
         ...latest,
         lastJobState: "error",
         lastError: error instanceof Error ? error.message : String(error),
@@ -119,38 +150,50 @@ export class MemorySyncService {
     }
   }
 
-  private async markOperationsSynced(
+  /** Synced files replace their record and clear their failure; failed files get a failure record, logged once per reason. */
+  private async recordOutcomes(
     hubBaseUrl: string,
     memorySyncSourceId: string,
-    operations: MemoryFileOperation[],
-    batchId: string,
-    syncedAt: string,
+    outcomes: MemorySyncFileOutcome[],
   ): Promise<void> {
+    if (outcomes.every((outcome) => outcome.status === "deferred")) {
+      return;
+    }
+    const logged: MemorySyncFileFailure[] = [];
     await this.stateStore.updateState(hubBaseUrl, memorySyncSourceId, (state) => {
       const files = { ...state.files };
-      for (const operation of operations) {
-        const key = toMemorySyncFileKey(operation.kind, operation.relativePath);
-        const nextState: MemorySyncSourceFileState = {
-          kind: operation.kind,
-          relativePath: operation.relativePath,
-          size: operation.size,
-          sha256: operation.sha256,
-          mtimeMs: operation.mtimeMs ?? null,
-          lastSyncedAt: syncedAt,
-          lastBatchId: batchId,
-        };
-        files[key] = nextState;
+      const fileFailures = { ...state.fileFailures };
+      const now = new Date();
+      for (const outcome of outcomes) {
+        const key = toMemorySyncFileKey(outcome.file.kind, outcome.file.relativePath);
+        if (outcome.status === "synced") {
+          const synced: MemorySyncSourceFileState = {
+            kind: outcome.file.kind,
+            relativePath: outcome.file.relativePath,
+            size: outcome.file.size,
+            sha256: outcome.file.sha256,
+            mtimeMs: outcome.file.mtimeMs,
+            lastSyncedAt: outcome.committedAt,
+            lastBatchId: outcome.batchId,
+          };
+          files[key] = synced;
+          delete fileFailures[key];
+        } else if (outcome.status === "failed") {
+          const previous = fileFailures[key];
+          const failure = buildFileFailure(outcome.file, outcome.reason, previous, now);
+          fileFailures[key] = failure;
+          if (previous?.reason !== failure.reason) {
+            logged.push(failure);
+          }
+        }
       }
-      return { ...state, files };
+      return { ...state, files, fileFailures };
     });
-  }
-
-  private chunkOperations(operations: MemoryFileOperation[], batchSize: number): MemoryFileOperation[][] {
-    const chunks: MemoryFileOperation[][] = [];
-    for (let index = 0; index < operations.length; index += batchSize) {
-      chunks.push(operations.slice(index, index + batchSize));
+    for (const failure of logged) {
+      logger.warn(
+        `Memory Sync could not sync ${failure.kind}/${failure.relativePath} (${failure.size} bytes): ${failure.reason}. Next attempt at ${failure.nextAttemptAt}.`,
+      );
     }
-    return chunks;
   }
 
   private safeBaseUrl(): string | null {

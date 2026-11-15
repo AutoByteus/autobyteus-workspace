@@ -59,7 +59,7 @@ export class MemorySyncWorker {
     }
     this.running = true;
     try {
-      await getMemorySyncService().startSync();
+      await getMemorySyncService().startSync("background");
       logger.info("Memory Sync background cycle completed.");
     } catch (error) {
       logger.warn(`Memory Sync background cycle failed: ${String(error)}`);
