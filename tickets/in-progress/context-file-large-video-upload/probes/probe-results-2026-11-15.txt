@@ -1,0 +1,16 @@
+Probe: probes/large-upload-probe.integration.test.ts.txt (rename to .ts and place under
+autobyteus-server-ts/tests/integration/api/rest/ to run; base origin/personal 3d738de6e; Node v26.12.0;
+@fastify/multipart 10.1.6; fastify 5.12.7). Command:
+  pnpm -C autobyteus-server-ts exec vitest run tests/integration/api/rest/zz-probe-large-upload.integration.test.ts --no-watch
+Results are appended to $PROBE_OUT (default /tmp/cf-probe.txt).
+
+P1 result {"status":400,"body":"{\"detail\":\"Uploaded file is too large.\"}","aborted":false} files left: (none)
+   -> real /rest/context-files/upload route, multipart registered exactly as build-studio-server.ts
+      (limits.fileSize = CONTEXT_FILE_MAX_BYTES, throwFileSizeLimit default), a 26 MiB video/mp4 over real HTTP:
+      reproduces the user's server detail; no partial file remains.
+P2 result {"status":200,"body":"{\"bytes\":629145600,\"truncated\":false}","aborted":false} ms 436 rss base MiB 82 rss peak MiB 180 file MiB 600
+   -> 600 MiB through @fastify/multipart (fileSize 1 GiB) + counting Transform + fs write stream (the writer's shape):
+      RSS peak 180 MiB (client and server in one process): the chain streams, nothing buffers the whole file.
+P3 result {"status":null,"body":"","aborted":true} settled: abort /rest/context-files/upload files left: (none)
+   -> client destroys the socket after 8 of 20 MiB on the real route: request is reported aborted, the writer's
+      pipeline fails and removes the partial draft file; nothing is left on disk.
