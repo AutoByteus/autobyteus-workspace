@@ -1652,3 +1652,22 @@ No architecture review: these follow REQ-006, an approved exception, rule 2 and 
   - then the Implementation Engineer, when the user lets him continue.
 - **CR-461-083 (F-65), decided:** the refusal reaches the user (`TEAM_SEND_MESSAGE_REJECTED`, with the draft kept), but its reason was dropped by CR-461-069's no-detail rule. Decision: option (a), refined. The message names the damaged file and line in plain words, plus the next step. Parser and schema internals stay in the log. This refines CR-461-069's rule 7: a file name and line is a reason, not a schema error, and base's AC-006 asks for the reason. The probe's late `page.on('websocket')` and its parse-text condition are API/E2E's to fix.
 - **V-11's "an edited member shows no origin" is refined** (the Implementation Engineer, SR-083 step 2). Removing the team fallback would mislabel followers and configured-placement members, and an absent source renders as "Not recorded". **Decision:** a changing Settings save writes `{ origin: "settings", fallbacks: [] }`, a new origin value, written by new writes only and with no migration. The web shows no origin for it; a member's own `"settings"` wins over the team fallback, and the fallback stays for everything else.
+
+### SR-084 — The server-built run tree reinstated (the user's decision of 2026-11-15)
+
+- **Triggering:** the code reviewer relayed the user's decision after rounds 13–14: build the run trees on the backend now (FU-034, as SR-082 designed it). Client code rebuilding a run's facts kept producing bugs: F-60 (Settings rows from stale records), F-69 (the hosted-copy follower path), F-73 (the phone's own projection), and earlier F-54, F-56, F-57, F-61, F-64. Statuses by run ID fixed that class for statuses (proven in rounds 13–14), but not for trees.
+- **The Solution Designer's gap:** SR-083 judged the tree not worth its cost, and rounds 13–14 showed the client-side class continuing. The judgment underweighted how much client code still rebuilt run facts.
+- **Decision:** SR-082's tree is reinstated.
+  - `RunTreeView`, with `runTree(run)`, on the view stream, and `RUN_TREE_CHANGED` for listed runs. Rows carry kind, name, address, depth, `openTarget` from SR-083's `openTargetOf`, `statusIds`, and `launch` as the run has it now, including the `"settings"` origin.
+  - `runLaunch` and the Settings row assembly fold into the rows.
+  - Clients only display, with one open path.
+  - The four builders are removed, with the follower path, the phone's projection and the Settings assembly.
+  - Statuses stay on `/ws/run-status`, and the top level of the run list stays as it is.
+- **CR-461-095** (Org Settings closing on an empty target) is folded in: Settings' target is a tree row key, kept through a refresh. CR-461-094, -096, -097 and -098 continue.
+- **Requirements:** REQ-014 restored to the tree wording. AC-017 stands.
+- **Follow-ups:** FU-034 is moved into 461 again.
+- **Next action:**
+  - architecture review (SR-082's tree parts were reviewed in ARCH-REV-054/055);
+  - then the Implementation Engineer;
+  - then API/E2E reruns everything that shows or opens runs.
+

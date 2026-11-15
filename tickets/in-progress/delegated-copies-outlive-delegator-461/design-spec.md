@@ -2,7 +2,7 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: `SR-083` (SR-082 narrowed: statuses by run ID stay; the full server tree goes back to FU-034; existing rows carry a server-decided `openTarget`). Earlier: `SR-082` (the run-tree view and statuses by run ID: one backend builder, one status channel, one open path; supersedes rule 1 for trees and statuses). Earlier: `SR-081` (the old-name correction is checked before address step 2). Earlier: `SR-080` (the Task card opens its run in its tree's top view: `topRun` on the Task's run view). Earlier: `SR-079` (every late predecessor, failed or waiting, classified; follow-ups for writers and readers through one mechanism). Earlier: `SR-078` (a preserved copy's history row created when first needed; an unconvertible root answers base's reasons at connect and at its first message). Earlier: `SR-077` (the model's S26 stops M before the delete, with the mutation's result shape; a preserved copy is not editable until its predecessor finishes). Earlier: `SR-076` (a message whose Task closes during its durable write stays in the log and is shown, as at base). Earlier: `SR-075` (CR-461-064: a delegated team's team-level choice saved as any team's, a run does not list its own definition, the error card on the run's own path, a deleted run takes its Tasks with no Project). Earlier: `SR-074` (the Team tab: one in-view rule for the read and for live; the unreadable-record check before the root loads). Earlier: `SR-073` (a listed team's or org's delegated rows show when it is opened, as at base). Earlier: `SR-072` (the Team tab's messages composed over the run's subtree; CR-461-055's seven questions decided). Earlier: `SR-071` (refusals in base's order, codes and texts: R-8 before R-7, a team run's ID answered with its coordinator's). Earlier: `SR-070` (DS-15: the user's message to a delegated run; the closed-Task input fence restored in each run's own root). Earlier: `SR-069` (a peer run takes no `@` mentions, as at base). Earlier: `SR-068` (`hasCollaboration` returns on the agent run history item, from the stored row). Earlier: `SR-067` (every spine walked for every case; G-1 archive/delete asks peer runs, G-2 a deleted run leaves the tree, G-3 the agent stream at connect). Earlier: `SR-066` (a peer child is reached by its own identity, through `PeerAgentRun` / `PeerTeamRun`, never through its delegator; REQ-013). Earlier: `SR-065` (each local child's model options come from its own queries; its peer route is replaced by SR-066). Earlier: `SR-064` (an agent run's own stream follows its run; a child's Settings save composed by the web from each run's own save). Earlier: `SR-063` (`RunViewStream` is base's `RootEventPublisher` moved out of the root). Earlier: `SR-061` (the frontend contract: views in base's shapes, every run reached the same way; the names `DelegationIndex` and `CollaborationTree`). Earlier: `SR-033` (the contract's Task rules as cases; SR-031: the contract's executable model and generated walkthrough). Earlier: `SR-027` (the contract starts from the runs the user starts and from talking inside one run: RUN-1 … RUN-4, IN-1 … IN-8). SR-026 was contract revision 7: every case in one file, checked case by case; TC-13, one place for an agent run's log. SR-025 answers ARCH-REV-008 AR-018: TC-12 revised, a delegated team run is rooted at `/`). SR-024 first added TC-12, raised by the Implementation Engineer. SR-023 answered ARCH-REV-006: AR-016, AR-017. SR-022 was contract revision 6: the run's own `delegatedFrom` and the in-memory `DelegationIndex`, the user's decisions TC-10 revised and TC-11). SR-021 passed architecture review ARCH-REV-005 (answering ARCH-REV-004: AR-005, narrowed again). SR-020 answered ARCH-REV-003 (AR-005). SR-019 answered ARCH-REV-002 (AR-004, AR-005, AR-008, AR-011 … AR-015). SR-018 was self-validated and approved by the user for review. SR-017 widened the scope to team and org runs (TC-4 revised). A new design on the 469 base. It replaces the design of SR-010, which was built on contract revision 2 and failed architecture review ARCH-REV-001 (AR-001 … AR-010, answered below).
+- Current solution revision ID: `SR-084` (SR-082's server-built run tree reinstated by the user's decision; statuses by run ID and `openTargetOf` kept). Earlier: `SR-083` (SR-082 narrowed: statuses by run ID stay; the full server tree goes back to FU-034; existing rows carry a server-decided `openTarget`). Earlier: `SR-082` (the run-tree view and statuses by run ID: one backend builder, one status channel, one open path; supersedes rule 1 for trees and statuses). Earlier: `SR-081` (the old-name correction is checked before address step 2). Earlier: `SR-080` (the Task card opens its run in its tree's top view: `topRun` on the Task's run view). Earlier: `SR-079` (every late predecessor, failed or waiting, classified; follow-ups for writers and readers through one mechanism). Earlier: `SR-078` (a preserved copy's history row created when first needed; an unconvertible root answers base's reasons at connect and at its first message). Earlier: `SR-077` (the model's S26 stops M before the delete, with the mutation's result shape; a preserved copy is not editable until its predecessor finishes). Earlier: `SR-076` (a message whose Task closes during its durable write stays in the log and is shown, as at base). Earlier: `SR-075` (CR-461-064: a delegated team's team-level choice saved as any team's, a run does not list its own definition, the error card on the run's own path, a deleted run takes its Tasks with no Project). Earlier: `SR-074` (the Team tab: one in-view rule for the read and for live; the unreadable-record check before the root loads). Earlier: `SR-073` (a listed team's or org's delegated rows show when it is opened, as at base). Earlier: `SR-072` (the Team tab's messages composed over the run's subtree; CR-461-055's seven questions decided). Earlier: `SR-071` (refusals in base's order, codes and texts: R-8 before R-7, a team run's ID answered with its coordinator's). Earlier: `SR-070` (DS-15: the user's message to a delegated run; the closed-Task input fence restored in each run's own root). Earlier: `SR-069` (a peer run takes no `@` mentions, as at base). Earlier: `SR-068` (`hasCollaboration` returns on the agent run history item, from the stored row). Earlier: `SR-067` (every spine walked for every case; G-1 archive/delete asks peer runs, G-2 a deleted run leaves the tree, G-3 the agent stream at connect). Earlier: `SR-066` (a peer child is reached by its own identity, through `PeerAgentRun` / `PeerTeamRun`, never through its delegator; REQ-013). Earlier: `SR-065` (each local child's model options come from its own queries; its peer route is replaced by SR-066). Earlier: `SR-064` (an agent run's own stream follows its run; a child's Settings save composed by the web from each run's own save). Earlier: `SR-063` (`RunViewStream` is base's `RootEventPublisher` moved out of the root). Earlier: `SR-061` (the frontend contract: views in base's shapes, every run reached the same way; the names `DelegationIndex` and `CollaborationTree`). Earlier: `SR-033` (the contract's Task rules as cases; SR-031: the contract's executable model and generated walkthrough). Earlier: `SR-027` (the contract starts from the runs the user starts and from talking inside one run: RUN-1 … RUN-4, IN-1 … IN-8). SR-026 was contract revision 7: every case in one file, checked case by case; TC-13, one place for an agent run's log. SR-025 answers ARCH-REV-008 AR-018: TC-12 revised, a delegated team run is rooted at `/`). SR-024 first added TC-12, raised by the Implementation Engineer. SR-023 answered ARCH-REV-006: AR-016, AR-017. SR-022 was contract revision 6: the run's own `delegatedFrom` and the in-memory `DelegationIndex`, the user's decisions TC-10 revised and TC-11). SR-021 passed architecture review ARCH-REV-005 (answering ARCH-REV-004: AR-005, narrowed again). SR-020 answered ARCH-REV-003 (AR-005). SR-019 answered ARCH-REV-002 (AR-004, AR-005, AR-008, AR-011 … AR-015). SR-018 was self-validated and approved by the user for review. SR-017 widened the scope to team and org runs (TC-4 revised). A new design on the 469 base. It replaces the design of SR-010, which was built on contract revision 2 and failed architecture review ARCH-REV-001 (AR-001 … AR-010, answered below).
 - Approved requirements baseline, who approved, and approval reference: `requirements-doc.md` with `target-collaboration-contract.md` revision 5. Every contract decision was taken by the user on 2026-11-11: TC-4 (revised), TC-7, TC-8, TC-9, TC-10 (revised in revision 6), TC-11, DEC-011 (quotes in `solution-revision-record.md` SR-014 … SR-016).
 - Behavior-defining supplements: `target-collaboration-contract.md` revision 5.
 - User approval of the design: `Obtained`, the user, 2026-11-11: "please validate by yourself and whether the design specification works … After validation by yourself to work, you will send to the review by yourself. Yeah. I think you'll get an approval from me. You sent your architecture reviewer to review."
@@ -215,7 +215,7 @@ A follow-up Task by run ID: `TaskDelegation.toExistingRun` → Task side `assign
 
 `the run's own agent status → DelegatedRunIdleShutdown / DelegatedTeamIdleShutdown → at the grace end, in the run's gate: shut down if quiet → the next message restores it (DS-2)`
 
-### Statuses by run ID, and rows that carry their open target (SR-082, revised by SR-083; REQ-014 / AC-017; the user's decisions of 2026-11-14)
+### The run-tree view and statuses by run ID (SR-082; narrowed by SR-083, reinstated by SR-084; REQ-014 / AC-017; the user's decisions of 2026-11-14 and 2026-11-15)
 
 **Why.** About ten findings shared one cause: a delegated run's facts were derived from its delegator, a leftover of hosting.
 - **The status relay** (CR-461-039, -061, -067, -071): `LocalChildFollowers` / `LocalChildObservation` forward each child's status into its delegator's view sequence and keep a cache for the snapshot. `PeerChildObservation` does the same for peers. The Org snapshot must then correlate every child agent's status.
@@ -226,24 +226,22 @@ A follow-up Task by run ID: `TaskDelegation.toExistingRun` → Task side `assign
   - `mobileRunTreeProjection`.
 - **Settings** derives a delegated run's liveness from its delegator (`ExistingRunConfigEditor.vue` `isAgentLive`, the Implementation Engineer's finding).
 
-**This section supersedes rule 1 ("base's shapes") for the statuses shown in rows,** and adds `openTarget` to the rows. Everything else keeps rule 1: conversations, a run's own stream, Settings saves, Task records, the Team tab's messages and refusals.
+**This section supersedes rule 1 ("base's shapes") for run trees and for the statuses shown in them** (SR-084 reinstates SR-082's tree). Everything else keeps rule 1: conversations, a run's own stream, Settings saves, Task records, the Team tab's messages and refusals.
 
-**1. The existing rows carry their open target; the full server tree stays a follow-up** (SR-083, revising SR-082 at the user's request to weigh its benefit).
-
-A full server-built tree (SR-082's `RunTreeView`, a new API, and rewriting the four client builders) was judged not worth its cost in this ticket. Its value is consistency between views, and it costs the largest web rewrite and test re-run late in the ticket. Most of that value comes cheaper. So the current endpoints and their shapes stay (rule 1), and:
-- **The server puts an `openTarget` on every row it already builds,** in every view snapshot, row event and history read: the run's own identity and the agent to focus. A team row's target is its **coordinator**, explicitly, in every view (FU-031). There is no `members[0]` fallback (FU-024): a team whose coordinator is not a member gives a row error, logged, with no target. One server helper (`openTargetOf(row)`, beside the row builder in `collaboration-tree.ts`) computes it for every row kind.
-- **A peer row carries its launch** from its peer summary (F-66, CR-461-084).
-- **An edit is recorded as an edit** (V-11, CR-461-078 / DCP-001, DCP-005; refined by the Implementation Engineer's finding).
-  - **Why the fallback can't simply go:** a member with no source of its own legitimately has its team's origin: a follower, or a member of a configured placement, whose team source is `configured`. And an absent source renders as "Not recorded", which is origin text.
-  - **So a changing Settings save writes an explicit source,** `{ origin: "settings", fallbacks: [] }`, for an agent run, a team member and a team default: the three places CR-461-078 touched. `"settings"` is a new value in `LAUNCH_CONFIGURATION_ORIGINS` and in the two contract source schemas. It is added for new writes only, and stored data needs no migration.
-  - **The web renders `"settings"` with no origin text,** the edit being the run's own launch.
-  - **A member's own `"settings"` source wins over the team fallback.** The fallback (`teamMemberLaunchSource`, `collaborationMemberLaunchSource`) stays for every other case, followers and configured placements included.
-  - **Tests:**
-    - an edited agent run and an edited member show no origin;
-    - a follower and a configured placement's member keep their team's origin;
-    - an unedited member with no source still shows "Not recorded".
-- **The four client builders stay, but only display.** They read `openTarget` and never decide a row's target or a run's facts from its delegator. The full server tree stays as **FU-034**.
-- **Live changes for a listed run that is not open** (AR-028): `/ws/run-status` carries `RUN_TREE_CHANGED { runId }` for a subscribed run whose rows changed, fed by `ChildRowsFeed` for the run and every ancestor. The client re-reads that run's existing view read for an expanded run, applying only the newest answer. This replaces the list poll's re-read.
+**1. One backend view of a run tree** (SR-084: SR-082's tree reinstated by the user's decision of 2026-11-15, after rounds 13–14. Client code rebuilding a run's facts kept producing bugs: F-60, F-69, F-73, and earlier F-54, F-56, F-57, F-61, F-64).
+- **Owner:** `RunTreeView` (`agent-collaboration/delegation/run-tree-view.ts`), one builder for agent, team and org runs, started or delegated, on desktop and phone.
+- **What it builds:** for run X, X's own parts (from its own file, or its loaded root's index), then `collaborationTreeOf(X).rows` (its open subtree, every depth, nested under the agent or member that delegated each run), then its peer rows (from the index).
+- **A row** is `{ key, parentKey, depth, kind, name, address, openTarget, statusIds, launch? }`:
+  - `kind`: one of `agent`, `team`, `team_member`, `org_agent`, `org_team`, `peer_agent`, `peer_team`, `peer_member`;
+  - `openTarget`: from the one helper `openTargetOf(row)` (SR-083, kept). It is the run's own identity and the agent to focus. A team's target is its **coordinator**, explicitly, with no `members[0]` fallback (FU-024, FU-031); a team whose coordinator is not a member gives a row error, logged, with no target;
+  - `statusIds`: the run IDs, or agent run IDs, whose statuses the row shows. There are no statuses in the tree; they come from `/ws/run-status` (2);
+  - `launch`: for Settings, the run's launch and its origin **as the run has them now**, read from its own file. That includes an edit's `"settings"` origin (V-11). A peer row carries its launch from its peer summary (F-66). **`runLaunch` (CR-461-086) and the Settings row assembly fold into this field.**
+- **Delivery:**
+  - **an open view:** on X's view stream, as `RUN_TREE_SNAPSHOT` in the snapshot connection (SR-063, rows only), then `RUN_TREE_CHANGED { added, removed, updated }` frames, numbered by `RunViewStream`. `ChildRowsFeed` feeds the changes;
+  - **a listed run that is not open:** the GraphQL query `runTree(run)`, from the same builder. It is read when the user expands the run, and on list load for a listed agent run with `hasCollaboration`;
+  - **live changes for a listed run that is not open** (AR-028): `/ws/run-status` carries `RUN_TREE_CHANGED { runId }` for a subscribed run whose tree changed, fed by `ChildRowsFeed` for the run and every ancestor. The client re-reads `runTree(run)` for an expanded run, and applies only the newest answer (ARCH-REV-055).
+- **The run list's top level stays as it is:** `ListWorkspaceRunHistory` and the org history give the roots (DS-11). The rows under a root come from its tree.
+- **Replaced on the server:** the per-kind child-row DTOs and the `task_executions` rows in the three views' snapshots and history reads. These are `run-view-children.ts`, `stored-view-children.ts`, `delegated-children-dtos.ts`, the child-row parts of `run-view-rows.ts`, `collaboration-execution-tree-dto-projection.ts` and `remote-task-execution-dto-projection.ts`. The three view projectors keep their own parts and the conversation.
 
 **2. Statuses by run ID (FU-026).**
 - **Owner:** `RunStatusService` (`agent-collaboration/execution/run-status-service.ts`), node-level. It holds one answer per run ID, or agent run ID, from the run itself:
@@ -261,34 +259,48 @@ A full server-built tree (SR-082's `RunTreeView`, a new API, and rewriting the f
   - the list poll `agentRunCollaborationStatuses`, and the child statuses in the history reads;
   - the web's merging of relayed status frames.
 
-**3. One open path, and Settings from the run itself.**
-- **One open path:** `openRunTarget(openTarget)` (web, `composables/useRunOpening.ts`) is the only way a row, a Task card or a phone row opens a run. It opens the target's own stream (rule 2) and selects the row in its top run's tree (SR-080's `topRun`). The view-specific open paths (`selectTaskRow`, `selectTeamRow`, the org's `openAgentRunId`, the phone's opening) call it.
+**3. Clients only display.** Desktop, phone, the Task card and Settings render `RunTreeView` rows and the subscribed statuses. They keep only presentation state: expanded, selected, drafts.
+- **One open path:** `openRunTarget(openTarget)` (web, `composables/useRunOpening.ts`) is the only way a row, a Task card or a phone row opens a run. It opens the target's own stream (rule 2) and selects the row in its top run's tree (SR-080's `topRun`).
+- **Removed on the web:** the four client tree builders, and with them every client derivation of a run's facts from somewhere other than the run:
+  - `agentRunCollaborationContext.listTaskRows` / `selectTaskRow`;
+  - `runHistoryTeamExecutionRows`;
+  - `agentOrgHistoryRows`;
+  - `mobileRunTreeProjection`, the phone's own projection (F-73);
+  - the hosted-copy follower path (F-69);
+  - the delegator-derived parts of `delegatedRunsStore`;
+  - the Settings rows built from view records (F-60).
 - **Settings:**
-  - its delegated rows are the view's rows, with their launch (CR-461-079), not the stored tree's lists;
-  - its liveness is the run's own status from `/ws/run-status` (CR-461-080, F-62: `isAgentLive` and `isDelegatedCopyLive` stop reading the delegator);
-  - its save stays each run's own save (SR-064).
+  - its rows are the `RunTreeView` rows, with `launch` (CR-461-079, CR-461-086);
+  - its liveness is the run's own status from `/ws/run-status` (F-62);
+  - its save stays each run's own save (SR-064);
+  - its target is a row key of the tree, kept while the tree refreshes, because the newest answer replaces the rows in one step (CR-461-095).
 - **Opening a stopped team** requests the focused member's data only, once (CR-461-082).
 
-**Rule 3 for statuses** (ARCH-REV-054 note 3, narrowed by SR-083): the characterization at `827f1e68dc` still covers the rows' shapes, which gain `openTarget`. It no longer covers the statuses, which leave the view stream. Their acceptance is item 5's tests and AC-017.
+**Rule 3 for trees and statuses** (ARCH-REV-054 note 3; SR-084): the characterization at `827f1e68dc` no longer covers run trees and the statuses in them, because their format changes. Their acceptance is item 5's tests and AC-017.
 
 **4. Review checks** (the code reviewer's principles):
-- every fact a client shows about a run is read from that run, or from the rows and `openTarget` the backend builds from the runs;
+- every fact a client shows about a run is read from that run, or from `RunTreeView` built from the runs;
 - no client keeps a copy of another run's state;
 - one builder per view;
 - every new layer must pass the empty-indirection check.
 
 **5. Tests:**
 - **Server:**
-  - every row kind in every view snapshot, row event and history read carries `openTarget`: a run's own identity, and for a team its coordinator;
+  - `RunTreeView` for agent, team and org runs, started and delegated, with local and peer rows at two depths: the same rows by both the stream and the query;
+  - row changes on the stream;
+  - every row's `openTarget` (for a team, its coordinator);
+  - a team without its coordinator gives a row error;
   - a peer row carries its launch;
-  - an edited member shows no origin;
+  - an edited run and member carry the `"settings"` origin;
   - a team without its coordinator gives a row error;
   - `RunStatusService` gives each local run's own status and `offline` when it is not loaded, and a peer run's status from its handle;
   - one connection serves many ids;
   - a subscription is exact, and a peer observation is released with its last subscriber;
   - **a listed, expanded, not-open run gets a new delegated row, and loses a closed one, without a reload** (AR-028).
 - **Web:**
-  - each client opens every row through `openRunTarget` with the server's `openTarget`, and none derives a target;
+  - each client renders `RunTreeView` rows and opens through `openRunTarget`; none builds a tree or derives a target;
+  - the same tree shows the same rows on desktop and phone (F-73);
+  - Settings keeps its target through a tree refresh (CR-461-095);
   - the same row behaves the same in every view (FU-031);
   - a running delegated run under a stopped delegator shows running, and Settings refuses its save until it stops (F-62);
   - a stopped team requests one member (F-64).
@@ -300,11 +312,14 @@ A full server-built tree (SR-082's `RunTreeView`, a new API, and rewriting the f
 
   Regression runs only for the contract stories, the migration suites and the message and delegation suites, whose code doesn't change.
 
-**6. Order of work:**
-1. `RunStatusService` and `/ws/run-status`, with `RUN_TREE_CHANGED`;
-2. `openTarget` on every row, the peer launch, the member origin;
-3. the web's `openRunTarget` and each client's use of it, Settings, and the focused-member load;
-4. removing the relay, the poll and every client derivation once nothing reads them.
+**6. Order of work** (statuses by run ID and `openTargetOf` are done, rounds 13–14):
+1. `RunTreeView`, on the view stream and through `runTree(run)`, with `RUN_TREE_CHANGED` on `/ws/run-status`;
+2. the web clients, one by one, each rendering the tree through `openRunTarget`:
+   - the desktop agent, team and org trees;
+   - the phone;
+   - the Task card;
+   - Settings, folding `runLaunch` into the rows;
+3. removing the four builders, the per-kind child DTOs and every client derivation, once nothing reads them.
 
 ### The frontend contract: views in base's shapes, every run reached the same way (SR-061, the user's direction of 2026-11-12)
 
@@ -408,7 +423,7 @@ So:
 
 **Sequencing tests** (SR-062, SR-063): a row change and a status change during an async stored capture appear once, after the snapshot, not twice; `liveSequenceId` stays the same across a stop and a restore of the run, and changes on a server restart; `lastMessageChangeSequence` moves only with the view's message events (the composed messages, SR-072), never with row or status frames; a stopped run's view and a live one each get consecutive frames mixing the run's own events, row events and status events; a snapshot taken between frames is followed by exactly the frames after it; a stored-to-live switch keeps the sequence; a checkpoint-bracketed recovery resumes at the checkpoint's sequence, and retries when a child's status changed during it.
 
-**Rule 3: the acceptance check of the frontend contract.** For each story of `stories.py`, a characterization at `827f1e68dc` captures the snapshots, events and list reads the web receives. The branch gives the same, except where rule 2 applies: a child's conversation, output and commands, which move to the child's own stream. **Since SR-082/083, the statuses shown in rows are also excepted, and rows gain `openTarget`.** Their acceptance is the tests of "The run-tree view and statuses by run ID" (item 5) and AC-017.
+**Rule 3: the acceptance check of the frontend contract.** For each story of `stories.py`, a characterization at `827f1e68dc` captures the snapshots, events and list reads the web receives. The branch gives the same, except where rule 2 applies: a child's conversation, output and commands, which move to the child's own stream. **Since SR-084, run trees and the statuses shown in them are also excepted.** Their acceptance is the tests of "The run-tree view and statuses by run ID" (item 5) and AC-017.
 
 **Every earlier web-facing item:**
 

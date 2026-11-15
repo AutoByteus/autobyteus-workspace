@@ -110,7 +110,7 @@ Withdrawn (not to send): FU-001, FU-003, FU-004, FU-005, FU-008, FU-009, FU-012,
 
 ## FU-034 — The backend sends each run tree as a ready-to-display view; clients only display it (with FU-026)
 
-- **Still a follow-up, to be sent** (SR-083): moved into 461 on 2026-11-14, then judged not worth its cost in this ticket. FU-026 (statuses by run ID) is done in 461, so this follow-up is only the server-built tree that replaces the four client builders.
+- **Moved into autobyteus-461 (SR-084, the user's decision of 2026-11-15):** the server-built tree replacing the four client builders is done in this ticket. Not to be sent.
 
 - **Found by:** Code Reviewer, with the user (2026-11-14), from CRR-039 … CRR-041 (F-54, F-56, F-57) and FU-024.
 - **What is wrong:** the backend owns every run and their relationships, but the clients rebuild the run trees from records in four separate places, each deciding what a row is and what clicking it opens:
@@ -132,6 +132,6 @@ Withdrawn (not to send): FU-001, FU-003, FU-004, FU-005, FU-008, FU-009, FU-012,
 ## Moved into autobyteus-461 (2026-11-14)
 
 - **FU-024, FU-026 and FU-031** are done in this ticket (SR-082, narrowed by SR-083): statuses by run ID, and a server-decided `openTarget` on every row. They are **not** to be sent as separate Tasks.
-- **FU-034 (the full server-built tree) stays a follow-up and IS to be sent** when the ticket leaves the team (SR-083; ARCH-REV-056).
+- **FU-034 (the full server-built tree) is moved into this ticket again** by the user's decision of 2026-11-15 (SR-084), and is **not** to be sent as a separate Task. FU-024, FU-026 and FU-031 are done (SR-082/083).
 - **Update (SR-083, 2026-11-14):** FU-026 (statuses by run ID), FU-031 (one row behavior) and FU-024 (no `members[0]`) are done in 461 through the server-decided `openTarget` and `/ws/run-status`. **FU-034 (the full server-built tree that replaces the client builders) stays a follow-up.** The user asked whether its benefit was worth its cost here, and the Solution Designer judged it not worth it in this ticket.
 
