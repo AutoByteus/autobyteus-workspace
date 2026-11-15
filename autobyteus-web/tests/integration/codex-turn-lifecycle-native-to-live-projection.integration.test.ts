@@ -21,6 +21,7 @@ import { CodexThreadEventName } from '../../../autobyteus-server-ts/src/agent-ex
 import { RuntimeKind } from '../../../autobyteus-server-ts/src/runtime-management/runtime-kind-enum.js';
 import { AgentRunEventMessageMapper } from '../../../autobyteus-server-ts/src/services/agent-streaming/agent-run-event-message-mapper.js';
 import { AgentRunMemoryRecorder } from '../../../autobyteus-server-ts/src/agent-memory/services/agent-run-memory-recorder.js';
+import { createTestRunWorkspaceSkills } from '../../../autobyteus-server-ts/tests/fixtures/run-workspace-skills-fixtures.js';
 
 const tempDirs = new Set<string>();
 
@@ -65,6 +66,7 @@ const createNativeToProjectionHarness = (memoryDir?: string) => {
       llmConfig: null,
     }),
     runtimeContext: new CodexAgentRunContext({
+      workspaceSkills: createTestRunWorkspaceSkills({ runId }),
       threadId: 'thread-1',
       codexThreadConfig: {
         model: 'gpt-5.6-sol',
