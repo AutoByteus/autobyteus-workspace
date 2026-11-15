@@ -59,7 +59,8 @@ const harness = () => {
   const current = () => channel as unknown as RemoteRunChannel;
   const retried: string[][] = [];
   const retriedNodes: string[][] = [];
-  const observation = new PeerChildObservation({ tree: tree as never, streams: streams as never, peerRunOf: createPeerRunOf(tree as never, current), channel: current,
+  const answered = vi.fn((_summary: { runId: string }) => undefined);
+  const observation = new PeerChildObservation({ answered, tree: tree as never, streams: streams as never, peerRunOf: createPeerRunOf(tree as never, current), channel: current,
     retryStatuses: (peerRunIds, nodeIds) => { retried.push([...peerRunIds]); retriedNodes.push([...nodeIds]); } });
   const eventsOf = (run: RootExecutionIdentity) => (published.get(rootExecutionIdentityKey(run)) ?? []) as Array<{ kind: string; summary?: unknown }>;
   const flush = async () => { for (let index = 0; index < 8; index += 1) await Promise.resolve(); };
@@ -67,7 +68,7 @@ const harness = () => {
     rowsOf.set(rootExecutionIdentityKey(run), rows);
     rowListeners.forEach((listener) => listener({ run }));
   };
-  return { channel, observers, closed, observation, eventsOf, flush, changeRows, retried, retriedNodes };
+  return { channel, observers, closed, observation, eventsOf, flush, changeRows, retried, retriedNodes, answered };
 };
 
 describe("PeerChildObservation", () => {
@@ -111,10 +112,9 @@ describe("PeerChildObservation", () => {
       expect.objectContaining({ runId: "researcher-run", reachable: true, title: "Title of researcher-run" }),
       expect.objectContaining({ runId: "marketing-run", reachable: true }),
       expect.objectContaining({ runId: "analyst-run", reachable: false, statuses: [] }),
-      undefined,
     ]);
-    // The answers are in the view's tree's peer rows (SR-084): one tree notice after them.
-    expect(f.eventsOf(delegator).at(-1)).toEqual({ kind: "run_tree_changed" });
+    // Each answer is kept with its run's status (SR-086 G-B2), which tells the trees holding its row.
+    expect(f.answered.mock.calls.map(([summary]) => summary.runId)).toEqual(["researcher-run", "marketing-run", "analyst-run"]);
     expect(f.observation.cachedSummaries(delegator)).toHaveLength(3);
     // A view that opens later (after its snapshot) gets the cached summaries at once, as frames of its own sequence.
     f.observation.follow(top);

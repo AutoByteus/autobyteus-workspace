@@ -4,8 +4,7 @@ import type { DelegatedChild, DelegationIndex } from "../../agent-collaboration/
 import type { ChildRowProjection } from "../../agent-collaboration/delegation/child-rows-feed.js";
 import { peerRunIdOf, peerRunLinksOf } from "../../agent-collaboration/execution/remote/peer-run-link.js";
 import type { RemoteRunChannel } from "../../agent-collaboration/execution/remote/remote-run-channel.js";
-import { describeRemoteTaskExecutions } from "../../agent-collaboration/execution/remote/remote-run-observation.js";
-import { peerStatuses } from "../../agent-collaboration/execution/remote/peer-run-calls.js";
+import { describeRemoteTaskExecutions, type RemoteRunSummaryEvent } from "../../agent-collaboration/execution/remote/remote-run-observation.js";
 import { projectRemoteTaskExecution } from "./remote-task-execution-dto-projection.js";
 import { AgentRunMetadataStore } from "../../run-history/store/agent-run-metadata-store.js";
 import { TeamRunExecutionTreeStore } from "../../run-history/store/team-run-execution-tree-store.js";
@@ -46,12 +45,15 @@ export const delegatedChildDto = async (child: DelegatedChild, memoryDir: string
 
 /**
  * The views' projection of one row (SR-061): a run on this node from its own files (`delegatedChildDto`), a peer's run
- * from its Task entry and its node's answer (autobyteus-278); `null` when its record cannot be read.
+ * from its Task entry and its node's latest answer, kept with its status (autobyteus-278; SR-086 G-B2: never asked of its
+ * node on each read); `null` when its record cannot be read.
  */
 export const createChildRowProjection = (input: Readonly<{
   memoryDir: string;
   tree: Pick<DelegationIndex, "agentsOf" | "peerChildrenOf">;
   channel: () => RemoteRunChannel | null;
+  /** A held peer run's latest answer from its node (`RunStatusService`); `null` until it answered. */
+  peerSummaryOf(runId: string): RemoteRunSummaryEvent | null;
 }>): ChildRowProjection => ({ rowOf: async (child) => {
   if (child.nodeId === undefined) {
     const row = await delegatedChildDto(child, input.memoryDir, input.tree);
@@ -59,8 +61,9 @@ export const createChildRowProjection = (input: Readonly<{
   }
   const runId = "agentRunId" in child.run ? child.run.agentRunId : child.run.teamRunId;
   const links = peerRunLinksOf(child.parent, input.tree).filter((link) => peerRunIdOf(link) === runId);
-  const [[peer], [summary]] = await Promise.all([describeRemoteTaskExecutions(links, input.channel()), peerStatuses(links, input.channel)]);
-  // Its launches, read from its node while the view reads it (SR-038, F-66); absent when the node does not answer.
+  const [peer] = await describeRemoteTaskExecutions(links, input.channel());
+  const summary = input.peerSummaryOf(runId);
+  // Its launches, from its node's latest answer (SR-038, F-66, G-B2); absent until the node answered.
   return peer ? { kind: "peer", row: projectRemoteTaskExecution(peer, summary?.reachable ? summary.launches : undefined),
     summary: summary ? Object.freeze({ title: summary.title, reachable: summary.reachable }) : null } : null;
 } });

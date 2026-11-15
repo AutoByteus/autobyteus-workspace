@@ -42,7 +42,7 @@ describe('useDelegatedRunRows (SR-083)', () => {
     expect(rows.rows.value.map((row) => row.key)).toEqual(['/writer@copy'])
     expect(hold).toHaveBeenLastCalledWith([{ kind: 'agent', runId: 'copy' }])
     expect(rows.rows.value[0]!.delegated?.running).toBe(false)
-    runStatus.apply({ type: 'RUN_STATUS_SNAPSHOT', payload: { runs: [{ kind: 'agent', runId: 'copy', agents: [{ agentRunId: 'copy', status: 'idle' }] }] } })
+    runStatus.apply({ type: 'RUN_STATUS_SNAPSHOT', payload: { runs: [{ kind: 'agent', runId: 'copy', answer: 'ok', node: null, status: null, agents: [{ agentRunId: 'copy', status: 'idle' }] }] } })
     expect(rows.rows.value[0]!.delegated?.running).toBe(true)
     // Without the view, there are no rows: the stored tree is never read for them.
     mocks.teamView = null

@@ -1,3 +1,4 @@
+import { createAgentRootExecutionIdentity, createTeamRootExecutionIdentity, type RootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import type { RunModelSelectionService } from "../../llm-management/services/run-model-selection-service.js";
 import type { RunModelOptions } from "../../llm-management/domain/run-model-selection.js";
 import type { AgentLaunchConfiguration } from "../../agent-team-execution/domain/team-run-config.js";
@@ -34,6 +35,8 @@ export class StudioRunModelConfigService {
     teamResumeConfigService: Pick<TeamRunHistoryService, "getTeamRunResumeConfig">;
     agentRunService: Pick<AgentRunService, "updateStoppedSelection">;
     teamRunService: Pick<TeamRunService, "updateStoppedSelections">;
+    /** A saved launch (SR-086 G-B1): the trees that hold the run's row show it at once (`ChildRowsFeed.rowChanged`). */
+    launchSaved(run: RootExecutionIdentity): void;
   }>) {}
 
   async getAgentRunResumeConfig(runId: string): Promise<AgentRunResumeConfig> {
@@ -117,7 +120,9 @@ export class StudioRunModelConfigService {
         fieldErrors: Object.freeze([]),
       });
     }
-    return this.dependencies.agentRunService.updateStoppedSelection(input);
+    const result = await this.dependencies.agentRunService.updateStoppedSelection(input);
+    if (result.success) this.dependencies.launchSaved(createAgentRootExecutionIdentity(input.agentRunId));
+    return result;
   }
 
   async updateStoppedTeamRunSelections(input: {
@@ -155,6 +160,8 @@ export class StudioRunModelConfigService {
         fieldErrors: Object.freeze([]),
       });
     }
-    return this.dependencies.teamRunService.updateStoppedSelections(input);
+    const result = await this.dependencies.teamRunService.updateStoppedSelections(input);
+    if (result.success) this.dependencies.launchSaved(createTeamRootExecutionIdentity(input.teamRunId));
+    return result;
   }
 }

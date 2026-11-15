@@ -38,7 +38,11 @@ export type RunTreeRow = Readonly<{
   name: string;
   address: string | null;
   openTarget: RunTreeOpenTarget | null;
-  /** The agent run IDs whose statuses the row shows (`/ws/run-status`); the tree holds no status. */
+  /**
+   * The IDs whose statuses the row shows (`/ws/run-status`); the tree holds no status. An agent or member row names its
+   * agent run; a team row its team run, whose own status its root computes (SR-086 G-A4); an Org's mounted team its
+   * members, whose statuses the Org's own stream has.
+   */
   statusIds: readonly string[];
   /** A run it delegated, or its member: its launch as the run has it now. */
   launch?: RunTreeLaunch;
@@ -157,7 +161,7 @@ export class RunTreeView {
     if (own.kind === "agent_team") {
       const key = runTreeRowKey("team", own.teamRunId);
       drafts.push(Object.freeze({ key, parentKey: null, kind: "team", name: rowNameOf(null, own.teamRunId), address: null,
-        openTarget: openTargetOf({ teamRunId: own.teamRunId }, own), statusIds: Object.freeze(own.members.map((member) => member.agentRunId)) }));
+        openTarget: openTargetOf({ teamRunId: own.teamRunId }, own), statusIds: Object.freeze([own.teamRunId]) }));
       for (const member of own.members) {
         const memberKey = runTreeRowKey("team_member", own.teamRunId, member.agentRunId);
         drafts.push(Object.freeze({ key: memberKey, parentKey: key, kind: "team_member", name: rowNameOf(member.address, member.agentRunId), address: member.address,
@@ -206,7 +210,7 @@ export class RunTreeView {
     const source = execution.source;
     const key = runTreeRowKey("team", execution.teamRunId);
     const rows: Draft[] = [Object.freeze({ key, parentKey: null, kind: "team", name: rowNameOf(execution.address, execution.teamRunId), address: execution.address,
-      openTarget: execution.openTarget ?? null, statusIds: Object.freeze(execution.members.map((member) => member.agentRunId)),
+      openTarget: execution.openTarget ?? null, statusIds: Object.freeze([execution.teamRunId]),
       launch: launchOf(source.defaultLaunchConfiguration, source.defaultLaunchSource, true) })];
     for (const member of execution.members) {
       const memberKey = runTreeRowKey("team_member", execution.teamRunId, member.agentRunId);
@@ -240,7 +244,7 @@ const peerRows = (execution: RemoteTaskExecutionDto, summary: Readonly<{ title: 
   }
   const key = runTreeRowKey("peer_team", execution.team_run_id);
   return [Object.freeze({ key, parentKey: null, kind: "peer_team" as const, name: rowNameOf(execution.address, execution.team_run_id), address: execution.address,
-    openTarget: target, statusIds: Object.freeze(execution.members.map((member) => member.agent_run_id)), peer }),
+    openTarget: target, statusIds: Object.freeze([execution.team_run_id]), peer }),
   ...execution.members.map((member) => {
     const launch = peerLaunchOf(execution.launches, member.address);
     return Object.freeze({ key: runTreeRowKey("peer_member", execution.team_run_id, member.agent_run_id), parentKey: key, kind: "peer_member" as const,

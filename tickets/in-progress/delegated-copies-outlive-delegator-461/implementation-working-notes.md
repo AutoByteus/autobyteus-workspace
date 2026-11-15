@@ -537,3 +537,32 @@ Step 1, `RunTreeView`:
   - expansion and selection by row key;
   - every open through `openRunTarget(topRun, row.openTarget)` in `composables/useRunOpening.ts`.
 - 3b (later): `agent-stream-handler.ts` is at 490 effective lines, so the snapshot connection, `AgentStreamSequence` and offsets go in new files.
+
+Step 1 committed: `d986c59d0a` (the server stream delivery, contracts, the web `runTreeStore` fed by the three view clients, and the runTree query and codegen). Gates: server types PASS, server unit suite 14 failures, all fixed in that commit (studio test service sets lacked `runTree`; peer tests expected no notice); web types PASS; web view specs 661/661.
+
+SR-086 (item 3c) passed ARCH-REV-061. Plan, in order:
+1. Run-status contract (G-A4, G-A2, G-A3):
+   - a run-level answer per subscribed run: `answer` (ok, not_found, unreachable), the node name when unreachable, and the run's own `status`: an agent's own; a team's from its members by `foldTeamAggregateStatus` (live); an org's from its own agents. The org source watches `AgentOrgRun` `agent_presentation` AGENT_STATUS frames plus `getAgentStatusSnapshots()`, with `agentOrgRunService.getActive`.
+   - a team or org tree row's `statusIds` becomes `[runId]`, and the client reads the run-level status;
+   - G-A1: reconnect and re-subscribe are already in `RunStatusFeed`; the fresh snapshot replaces the statuses (check this).
+2. G-B1: every launch-changing save notifies `ChildRowsFeed` (a `launchChanged(run)` that publishes `run_tree_changed` in the views holding the row and `rowsChanged`). G-B2: `RunStatusService` keeps each peer run's latest summary, and the projection reads the peer launch from it.
+3. Step 2 web clients, plus G-C1 (listed teams and orgs expand) and G-F1 (`TaskRootView.openTarget`).
+4. G-D1: `/ws/peer-run` (snapshot `readConversation`, numbered observe frames with node B's offsets, no fallback; message and interrupt through the handle). The `remote_agent_presentation` frames go.
+5. 3b plus G-G1 (`AgentStreamSequence` per agent run, released when unheld).
+6. The removals.
+
+Progress, uncommitted until the web suite passes:
+- SR-086 server:
+  - G-A4: `RunState`; an org's own agents through `AgentOrgAgentStatuses`; a team or peer team row's `statusIds` is `[runId]`.
+  - G-A2: `not_found` when there are no agents and no root.
+  - G-A3: `unreachable` plus the node's name, from the peer summary.
+  - G-B2: `RunStatusService` keeps each held peer run's summary (asked when first held and after an unasked end, and taken from the views' asks through `PeerChildObservation.answered`); the projection reads `peerSummaryOf`; a change calls `ChildRowsFeed.rowChanged`.
+  - G-B1: `StudioRunModelConfigService` calls `launchSaved`, which calls `rowChanged`.
+  - The contract gains `RUN_STATE_CHANGED`, and the snapshot carries each run's `answer`, `node` and `status`.
+- Web:
+  - `runStatusStore.runStateOf`;
+  - step 2a, the desktop agent tree: `AgentRunTaskRows` shows `runTreeDisplayRows` from `runTreeStore`, holds the tree for each listed run with collaboration, and opens rows through `openRunTarget` (in `useRunOpening`), which calls `agentRunCollaborationStore.selectTreeRow`;
+  - expansion and selection are by row key (`isTreeRowExpanded`, `toggleTreeRow`, `selectedRowKey`);
+  - the team-member subject has no address now (`subjectOfTarget`; the browse address comes from the team view);
+  - test fixtures are in `test-support/runTreeFixtures.ts`. An Apollo mock must not import this file from inside its own factory, which deadlocks.
+- Next: the team tree (`WorkspaceTeamExecutionTree`, `runHistoryNavigationProjection`, `buildRunHistoryTeamExecutionRows`), the org tree (`agentOrgHistoryRows`, `WorkspaceAgentOrgHistoryCollection`), the phone (`useMobileRunTree`, `mobileRunTreeProjection`), the Task card (`useTaskRootNavigation`, G-F1), Settings, and G-C1.

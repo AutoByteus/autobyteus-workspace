@@ -20,7 +20,7 @@ describe('agentRunDelegatedRunSubject (rule 2: a delegated run on this node, by 
   it('reads a delegated Team member through its Team run, at its address there', () => {
     const member = child({ agentRunId: 'm-1', kind: 'task_team_member', teamRunId: 'team-1', address: '/reviewer' as AgentRootChildAgent['address'] })
     expect(agentRunDelegatedRunSubject(indexOf(member), 'm-1'))
-      .toEqual({ kind: 'team_member', teamRunId: 'team-1', memberAddress: '/reviewer', agentRunId: 'm-1' })
+      .toEqual({ kind: 'team_member', teamRunId: 'team-1', agentRunId: 'm-1' })
   })
 
   it('refuses a Team member without its Team run: never read as an agent run (CR-461-028, CR-461-037)', () => {

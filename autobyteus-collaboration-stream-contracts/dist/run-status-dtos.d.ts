@@ -48,6 +48,13 @@ export declare const runStatusClientMessageSchema: z.ZodDiscriminatedUnion<[z.Zo
     }, z.core.$strict>;
 }, z.core.$strict>], "type">;
 export type RunStatusClientMessage = z.infer<typeof runStatusClientMessageSchema>;
+/** Whether the node could answer for a run (SR-086 G-A2, G-A3): it knows it, it does not, or the run's peer node did not answer. */
+export declare const runStatusAnswerSchema: z.ZodEnum<{
+    ok: "ok";
+    not_found: "not_found";
+    unreachable: "unreachable";
+}>;
+export type RunStatusAnswer = z.infer<typeof runStatusAnswerSchema>;
 export declare const runStatusServerMessageSchema: z.ZodDiscriminatedUnion<[z.ZodObject<{
     type: z.ZodLiteral<"RUN_STATUS_SNAPSHOT">;
     payload: z.ZodObject<{
@@ -68,7 +75,43 @@ export declare const runStatusServerMessageSchema: z.ZodDiscriminatedUnion<[z.Zo
                     running: "running";
                 }>;
             }, z.core.$strict>>;
+            answer: z.ZodEnum<{
+                ok: "ok";
+                not_found: "not_found";
+                unreachable: "unreachable";
+            }>;
+            node: z.ZodNullable<z.ZodString>;
+            status: z.ZodNullable<z.ZodEnum<{
+                error: "error";
+                offline: "offline";
+                initializing: "initializing";
+                idle: "idle";
+                running: "running";
+            }>>;
         }, z.core.$strict>>;
+    }, z.core.$strict>;
+}, z.core.$strict>, z.ZodObject<{
+    type: z.ZodLiteral<"RUN_STATE_CHANGED">;
+    payload: z.ZodObject<{
+        kind: z.ZodEnum<{
+            agent: "agent";
+            agent_team: "agent_team";
+            agent_org: "agent_org";
+        }>;
+        runId: z.ZodString;
+        answer: z.ZodEnum<{
+            ok: "ok";
+            not_found: "not_found";
+            unreachable: "unreachable";
+        }>;
+        node: z.ZodNullable<z.ZodString>;
+        status: z.ZodNullable<z.ZodEnum<{
+            error: "error";
+            offline: "offline";
+            initializing: "initializing";
+            idle: "idle";
+            running: "running";
+        }>>;
     }, z.core.$strict>;
 }, z.core.$strict>, z.ZodObject<{
     type: z.ZodLiteral<"RUN_STATUS_CHANGED">;

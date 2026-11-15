@@ -34,6 +34,7 @@ import type { PeerWebSocket } from "../../../src/remote-collaboration/channel/pe
 import type { RemoteRunRootEvent } from "../../../src/agent-collaboration/execution/remote/remote-run-observation.js";
 import { AgentRunEventType } from "../../../src/agent-execution/domain/agent-run-event.js";
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
+import { peerStatuses } from "../../../src/agent-collaboration/execution/remote/peer-run-calls.js";
 import { RunStatusService } from "../../../src/agent-collaboration/execution/run-status-service.js";
 import type { RunStatusServerMessage } from "@autobyteus/collaboration-stream-contracts";
 import { projectAgentCollaborationView } from "../../../src/services/agent-streaming/agent-collaboration-view-projector.js";
@@ -288,7 +289,7 @@ describe("remote delegation between two standalone runs, in process (slice 1 ste
     const inspection = (await a.manager.getInspection(DELEGATOR))!;
     // Its rows as the run's view and history reads give them (SR-061): from its collaboration tree, the peer row with its node.
     const children = new RunViewChildren({ feed: new ChildRowsFeed({ streams: testViewStreams(), tree: a.taskSide.tree, isRunning: () => false, rowsChanged: () => undefined }),
-      projection: createChildRowProjection({ memoryDir: a.memoryDir, tree: a.taskSide.tree, channel: () => null }) });
+      projection: createChildRowProjection({ memoryDir: a.memoryDir, tree: a.taskSide.tree, channel: () => null, peerSummaryOf: () => null }) });
     const { rows } = await children.read(createAgentRootExecutionIdentity(DELEGATOR));
     const view = projectAgentCollaborationView({ ...inspection, rows });
     if (view.root_subject_kind !== "agent") throw new Error("Expected an Agent root view.");
@@ -419,7 +420,7 @@ describe("remote delegation between two standalone runs, in process (slice 1 ste
     // The node's statuses (created below, after the view): a node that answers the view's summaries is observed again.
     let runStatus: RunStatusService | null = null;
     const observation = new PeerChildObservation({ tree: a.taskSide.tree, streams: streams as never, peerRunOf, channel: a.channel,
-      retryStatuses: (peerRunIds, nodeIds) => runStatus?.retryPeers(peerRunIds, nodeIds) });
+      retryStatuses: (peerRunIds, nodeIds) => runStatus?.retryPeers(peerRunIds, nodeIds), answered: (summary) => runStatus?.peerAnswered(summary) });
     const settle = async () => { for (let index = 0; index < 20; index += 1) await new Promise((resolve) => setImmediate(resolve)); };
 
     // No root of A is read: its view's peer rows come from the tree.
@@ -428,22 +429,25 @@ describe("remote delegation between two standalone runs, in process (slice 1 ste
     expect(events).toEqual([{ kind: "remote_task_execution_summary", summary: { nodeId: B_ID, runId: "publisher_r1", reachable: true,
       title: "Publish the video draft.", statuses: [{ agentRunId: "publisher_r1", status: "idle" }],
       // SR-038: the run's launches, from B's own file.
-      launches: [expect.objectContaining({ address: "/publisher", runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK, llmModelIdentifier: "sonnet" })] } },
-      // SR-084: the answer is in the view's tree's peer row; one notice after it.
-      { kind: "run_tree_changed" }]);
+      launches: [expect.objectContaining({ address: "/publisher", runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK, llmModelIdentifier: "sonnet" })] } }]);
 
     // B's host reports running: A reads it by the run's ID through its handle (SR-083), not as a frame of its view.
+    const summaryChanged = vi.fn();
     runStatus = new RunStatusService({ agents: () => ({}) as never, peerRunOf, agentsOf: async () => [], peerEnded: (id) => observation.ended(id),
-      registrations: { resolve: () => null, onRegistrationChanged: () => () => undefined } });
+      registrations: { resolve: () => null, onRegistrationChanged: () => () => undefined }, peerNodeName: async (nodeId) => nodeId,
+      peerSummary: async (held) => (await peerStatuses([held.link], a.channel))[0] ?? null, summaryChanged });
     const statuses: RunStatusServerMessage[] = [];
     const statusConnection = runStatus!.connect((message) => statuses.push(message));
     await statusConnection.subscribe([{ kind: "agent", runId: "publisher_r1" }]);
     await settle();
     // CR-461-090: the run was already idle before A observed it: B's stream opens with its current status, so A reads it.
-    expect(statuses.at(-1)).toMatchObject({ type: "RUN_STATUS_CHANGED", payload: { runId: "publisher_r1", agentRunId: "publisher_r1", status: "idle" } });
+    const changes = () => statuses.filter((message) => message.type === "RUN_STATUS_CHANGED");
+    expect(changes().at(-1)).toMatchObject({ type: "RUN_STATUS_CHANGED", payload: { runId: "publisher_r1", agentRunId: "publisher_r1", status: "idle" } });
+    // SR-086 G-B2: held, its node's answer is kept with its status, and its row's launches read from it.
+    expect(runStatus.peerSummaryOf("publisher_r1")?.launches).toEqual([expect.objectContaining({ address: "/publisher", llmModelIdentifier: "sonnet" })]);
     b.runOf("publisher_r1").emit({ eventType: AgentRunEventType.AGENT_STATUS, runId: "publisher_r1", payload: { status: "running" }, statusHint: "ACTIVE" });
     await settle();
-    expect(statuses.at(-1)).toMatchObject({ type: "RUN_STATUS_CHANGED", payload: { runId: "publisher_r1", agentRunId: "publisher_r1", status: "running" } });
+    expect(changes().at(-1)).toMatchObject({ type: "RUN_STATUS_CHANGED", payload: { runId: "publisher_r1", agentRunId: "publisher_r1", status: "running" } });
     // CR-461-091: its output reaches A's open view at its address (AR-402); its status frames are not the view's (SR-083).
     b.runOf("publisher_r1").emit({ eventType: AgentRunEventType.SEGMENT_CONTENT, runId: "publisher_r1", payload: { id: "segment-1", turn_id: "turn-1", segment_type: "text", delta: "Publishing now." }, statusHint: null });
     await settle();
@@ -463,12 +467,12 @@ describe("remote delegation between two standalone runs, in process (slice 1 ste
     await expect(peer.terminate()).resolves.toEqual({ accepted: true });
     await settle();
     expect(b.runOf("publisher_r1").active).toBe(false);
-    expect(statuses.at(-1)).toMatchObject({ type: "RUN_STATUS_CHANGED", payload: { runId: "publisher_r1", status: "offline" } });
+    expect(changes().at(-1)).toMatchObject({ type: "RUN_STATUS_CHANGED", payload: { runId: "publisher_r1", status: "offline" } });
     // Retry asks B again: a stopped run has no live status; its launches are still its own facts (SR-038).
     events.length = 0;
     await observation.refresh(delegator);
     expect(events).toEqual([{ kind: "remote_task_execution_summary", summary: { nodeId: B_ID, runId: "publisher_r1", reachable: true,
-      title: "Publish the video draft.", statuses: [], launches: [expect.objectContaining({ address: "/publisher" })] } }, { kind: "run_tree_changed" }]);
+      title: "Publish the video draft.", statuses: [], launches: [expect.objectContaining({ address: "/publisher" })] } }]);
     statusConnection.close();
     close();
   });

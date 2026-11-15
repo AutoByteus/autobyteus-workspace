@@ -111,6 +111,7 @@ describe('configured Team model selection Save', () => {
           modelConfigEditability: { editable: true, reason: null },
         })) },
         teamRunService: { updateStoppedSelections: input => h.manager.updateStoppedSelections(input) },
+        launchSaved: () => undefined,
       });
       const response = await AgentTeamRunResolver.prototype.updateStoppedTeamRunSelections.call(
         { runModelConfigService: service } as never,

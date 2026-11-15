@@ -1,5 +1,6 @@
 import type { AgentPresentationMessage } from "@autobyteus/agent-presentation-contracts";
-import type { RunAgentStatus, RunStatusRunRef, RunStatusServerMessage } from "@autobyteus/collaboration-stream-contracts";
+import { foldTeamAggregateStatus, type RunAgentStatus, type RunStatusAnswer, type RunStatusRunRef, type RunStatusServerMessage } from "@autobyteus/collaboration-stream-contracts";
+import type { RemoteRunSummaryEvent } from "./remote/remote-run-observation.js";
 import type { RootExecutionIdentity } from "./domain/root-execution-identity.js";
 import type { ActiveCollaborationRootDirectory } from "./services/active-collaboration-root-directory.js";
 import type { PairedAgentAccess, PairedAgentObservation } from "./remote/paired-agent-access.js";
@@ -7,8 +8,8 @@ import type { PeerRun, PeerRunOf } from "./remote/peer-runs.js";
 
 /** Where a run's statuses come from: the run itself (its own root, or its peer's handle), never its delegator. */
 export type RunStatusSources = Readonly<{
-  /** A local run's own agents: their live statuses and changes, while its root runs. */
-  agents(kind: "agent" | "agent_team"): Pick<PairedAgentAccess, "observePairedAgents" | "pairedAgentStatuses">;
+  /** A local run's own agents: their live statuses and changes, while its root runs (an Org's own agents too, G-A4). */
+  agents(kind: "agent" | "agent_team" | "agent_org"): Pick<PairedAgentAccess, "observePairedAgents" | "pairedAgentStatuses">;
   /** Whether a run's root runs, and when that changes. */
   registrations: Pick<ActiveCollaborationRootDirectory, "onRegistrationChanged" | "resolve">;
   /** A local run's agents, from its own file (offline until its root says otherwise). */
@@ -17,7 +18,16 @@ export type RunStatusSources = Readonly<{
   peerRunOf: PeerRunOf;
   /** A peer run's observation ended without being asked (AR-403): its views ask its node for one summary. */
   peerEnded(peerRunId: string): void;
+  /** A peer node's name, from this node's own registry (its ID when it names none). */
+  peerNodeName(nodeId: string): Promise<string>;
+  /** A peer run's node's answer about it (title, reachability, statuses, launches); `null` when it gave none. */
+  peerSummary(peer: PeerRun): Promise<RemoteRunSummaryEvent | null>;
+  /** A held peer run's answer changed (SR-086 G-B2): the trees holding its row are told (`ChildRowsFeed.rowChanged`). */
+  summaryChanged(run: RootExecutionIdentity): void;
 }>;
+
+/** A run's own state (SR-086 G-A2 … G-A4): the node's answer, the peer node when it did not answer, the run's own status. */
+export type RunState = Readonly<{ answer: RunStatusAnswer; node: string | null; status: RunAgentStatus | null }>;
 
 const STATUSES: readonly RunAgentStatus[] = ["offline", "idle", "error", "initializing", "running"];
 const toStatus = (value: unknown): RunAgentStatus => {
@@ -30,6 +40,7 @@ const keyOf = (ref: Pick<RunStatusRunRef, "kind" | "runId">): string => `${ref.k
 
 type Listener = Readonly<{
   statusChanged(ref: RunStatusRunRef, agentRunId: string, status: RunAgentStatus): void;
+  stateChanged(ref: RunStatusRunRef, state: RunState): void;
   treeChanged(ref: RunStatusRunRef): void;
 }>;
 
@@ -45,6 +56,10 @@ export class RunStatusEntry {
   private observePeer: (() => void) | null = null;
   /** A peer run's node; `null` for a local or org run. */
   private peerNodeId: string | null = null;
+  private answer: RunStatusAnswer = "ok";
+  private unreachableNode: string | null = null;
+  /** The state its listeners were last told (or answered in a snapshot). */
+  private told: RunState | null = null;
 
   constructor(readonly ref: RunStatusRunRef, private readonly sources: RunStatusSources) {
     this.ready = this.start().catch((error: unknown) => { console.warn(`Run '${ref.runId}': its statuses could not be followed: ${String(error)}`); });
@@ -61,20 +76,67 @@ export class RunStatusEntry {
   /** The node a peer run runs on; `null` for a run on this node. */
   get nodeId(): string | null { return this.peerNodeId; }
 
+  /**
+   * The run's own state (G-A4): an agent run's own agent's status; a Team's or an Org's from its own agents by the one
+   * team status rule (base's), on the server, never derived by a client. No status unless the node answered for it.
+   */
+  get state(): RunState {
+    const status = this.answer !== "ok" ? null
+      : this.ref.kind === "agent" ? this.answers.get(this.ref.runId) ?? "offline"
+      : foldTeamAggregateStatus([...this.answers.values()], "live");
+    return Object.freeze({ answer: this.answer, node: this.unreachableNode, status });
+  }
+
+  /** A peer run's latest answer from its node (G-B2), kept while the run is held; its row's launches come from it. */
+  summary: RemoteRunSummaryEvent | null = null;
+
+  /** A peer run's node answered: kept, and its state set; answers whether its content (title, reachability, launches) changed. */
+  applySummary(summary: RemoteRunSummaryEvent): boolean {
+    if (this.closed || !this.peerNodeId || summary.nodeId !== this.peerNodeId) return false;
+    const content = (value: RemoteRunSummaryEvent | null) => JSON.stringify(value && [value.title, value.reachable, value.launches]);
+    const changed = content(this.summary) !== content(summary);
+    this.summary = summary;
+    this.peerAnswered(summary);
+    return changed;
+  }
+
+  /** The state as a snapshot answers it: later changes are told against it. */
+  stateForSnapshot(): RunState { this.told = this.state; return this.told; }
+
+  /** A peer run's node answered about it (G-A3): reachable, or not, with the node's name. */
+  peerAnswered(summary: Pick<RemoteRunSummaryEvent, "reachable">): void {
+    if (this.closed || !this.peerNodeId) return;
+    if (summary.reachable) { this.answer = "ok"; this.unreachableNode = null; this.tellState(); return; }
+    const nodeId = this.peerNodeId;
+    void this.sources.peerNodeName(nodeId).catch(() => nodeId).then((name) => {
+      if (this.closed) return;
+      this.answer = "unreachable";
+      this.unreachableNode = name;
+      this.tellState();
+    });
+  }
+
+  private tellState(): void {
+    const state = this.state;
+    const told = this.told;
+    if (told && told.answer === state.answer && told.node === state.node && told.status === state.status) return;
+    this.told = state;
+    for (const listener of [...this.listeners]) listener.stateChanged(this.ref, state);
+  }
+
   private set(agentRunId: string, status: RunAgentStatus): void {
     if (this.closed || this.answers.get(agentRunId) === status) return;
     this.answers.set(agentRunId, status);
     for (const listener of [...this.listeners]) listener.statusChanged(this.ref, agentRunId, status);
+    this.tellState();
   }
 
   private allOffline(): void {
     for (const agentRunId of [...this.answers.keys()]) this.set(agentRunId, "offline");
   }
 
-  /** An org run's own agents are its own stream's; it is held for its rows' notices only. */
   private async start(): Promise<void> {
-    if (this.ref.kind === "agent_org") return;
-    const peer = this.sources.peerRunOf(this.ref.runId);
+    const peer = this.ref.kind === "agent_org" ? null : this.sources.peerRunOf(this.ref.runId);
     if (peer) { this.startPeer(peer); return; }
     await this.startLocal(this.ref.kind);
   }
@@ -83,10 +145,12 @@ export class RunStatusEntry {
    * A local run: its agents are offline until its root runs; while it runs, its own root's statuses. The listener is
    * attached first and the current statuses read after it, so no change falls between them; a restore observes again.
    */
-  private async startLocal(kind: "agent" | "agent_team"): Promise<void> {
+  private async startLocal(kind: RunStatusRunRef["kind"]): Promise<void> {
     const root: RootExecutionIdentity = { rootSubjectKind: kind, rootRunId: this.ref.runId } as RootExecutionIdentity;
     for (const agent of await this.sources.agentsOf(root)) if (!this.answers.has(agent.agentRunId)) this.answers.set(agent.agentRunId, "offline");
     if (this.closed) return;
+    // A run this node has no file of and no root for is not one of its runs (G-A2); its registration answers it later.
+    if (this.answers.size === 0 && !this.sources.registrations.resolve(root)) this.answer = "not_found";
     const access = this.sources.agents(kind);
     let observation: PairedAgentObservation | null = null;
     let generation = 0;
@@ -103,6 +167,7 @@ export class RunStatusEntry {
       for (const live of access.pairedAgentStatuses(this.ref.runId)) this.set(live.agentRunId, toStatus(live.status));
     };
     this.releases.push(this.sources.registrations.onRegistrationChanged(root, (registered) => {
+      if (registered && this.answer === "not_found") { this.answer = "ok"; this.tellState(); }
       if (registered) void observe().catch((error: unknown) => console.warn(`Run '${this.ref.runId}': its statuses could not be followed: ${String(error)}`));
       else { stop(); this.allOffline(); }
     }), stop);
@@ -125,7 +190,7 @@ export class RunStatusEntry {
       const end = (): void => {
         if (stream === current) stream = null;
         this.allOffline();
-        if (!this.closed) this.sources.peerEnded(this.ref.runId);
+        if (!this.closed) { this.sources.peerEnded(this.ref.runId); this.askSummary(peer); }
       };
       current = peer.observe({
         onFrame: (agentRunId, message) => {
@@ -140,6 +205,14 @@ export class RunStatusEntry {
     this.observePeer = observe;
     this.releases.push(() => { this.observePeer = null; stream?.close(); stream = null; });
     observe();
+    this.askSummary(peer);
+  }
+
+  /** Asks the run's node for its answer (when first held, and after its observation ended unasked). */
+  private askSummary(peer: PeerRun): void {
+    void this.sources.peerSummary(peer).then((summary) => {
+      if (summary && this.applySummary(summary)) this.sources.summaryChanged({ rootSubjectKind: this.ref.kind, rootRunId: this.ref.runId } as RootExecutionIdentity);
+    }).catch((error: unknown) => console.warn(`Peer run '${this.ref.runId}': its node's answer could not be read: ${String(error)}`));
   }
 }
 
@@ -174,6 +247,20 @@ export class RunStatusService {
     const ids = new Set(peerRunIds);
     const nodes = new Set([...nodeIds, ...[...this.entries.values()].flatMap((entry) => ids.has(entry.ref.runId) && entry.nodeId ? [entry.nodeId] : [])]);
     for (const entry of this.entries.values()) if (ids.has(entry.ref.runId) || (entry.nodeId && nodes.has(entry.nodeId))) entry.retry();
+  }
+
+  /** A node's answer about one of its runs (a view's ask, SR-066): kept with the run when it is held (G-B2). */
+  peerAnswered(summary: RemoteRunSummaryEvent): void {
+    for (const entry of this.entries.values()) {
+      if (entry.ref.runId !== summary.runId || !entry.applySummary(summary)) continue;
+      this.sources.summaryChanged({ rootSubjectKind: entry.ref.kind, rootRunId: entry.ref.runId } as RootExecutionIdentity);
+    }
+  }
+
+  /** A held peer run's latest answer from its node; `null` when it is not held or has not answered. */
+  peerSummaryOf(runId: string): RemoteRunSummaryEvent | null {
+    for (const entry of this.entries.values()) if (entry.ref.runId === runId && entry.summary) return entry.summary;
+    return null;
   }
 
   /** The number of runs held now (for tests and diagnostics). */
@@ -212,11 +299,11 @@ export class RunStatusConnection implements Listener {
     }
     await Promise.all(added.map((entry) => entry.ready));
     // One synchronous step: a change after it reaches this connection; one before it is in the answers read here.
-    const snapshot: Array<RunStatusRunRef & { agents: { agentRunId: string; status: RunAgentStatus }[] }> = [];
+    const snapshot: Array<RunStatusRunRef & RunState & { agents: { agentRunId: string; status: RunAgentStatus }[] }> = [];
     for (const entry of added) {
       if (this.closed || this.held.get(keyOf(entry.ref)) !== entry) continue;
       entry.listeners.add(this);
-      snapshot.push({ ...entry.ref, agents: [...entry.answers].map(([agentRunId, status]) => ({ agentRunId, status })) });
+      snapshot.push({ ...entry.ref, ...entry.stateForSnapshot(), agents: [...entry.answers].map(([agentRunId, status]) => ({ agentRunId, status })) });
     }
     if (snapshot.length) this.send({ type: "RUN_STATUS_SNAPSHOT", payload: { runs: snapshot } });
   }
@@ -239,6 +326,10 @@ export class RunStatusConnection implements Listener {
 
   statusChanged(ref: RunStatusRunRef, agentRunId: string, status: RunAgentStatus): void {
     this.send({ type: "RUN_STATUS_CHANGED", payload: { ...ref, agentRunId, status } });
+  }
+
+  stateChanged(ref: RunStatusRunRef, state: RunState): void {
+    this.send({ type: "RUN_STATE_CHANGED", payload: { ...ref, ...state } });
   }
 
   treeChanged(ref: RunStatusRunRef): void {

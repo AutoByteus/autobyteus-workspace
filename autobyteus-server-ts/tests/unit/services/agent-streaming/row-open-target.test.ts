@@ -74,17 +74,20 @@ describe("rows that say where they open (SR-083)", () => {
       .toEqual({ run_kind: "agent", run_id: "peer-agent", agent_run_id: "peer-agent", node_id: "node-b" });
   });
 
-  it("F-66: the views' row projection reads a peer row's launches from its node (absent when the node does not answer)", async () => {
+  it("F-66, SR-086 G-B2: the views' row projection reads a peer row's launches from its node's latest answer, kept with its status, never asking the node", async () => {
     const link = { recipientAddress: "/helper", nodeId: "node-b", delegatorAgentRunId: "host", linkedAt: "t", open: true, run: { agentRunId: "peer-agent" } };
-    const answer = { accepted: true, runs: [{ kind: "agent", runId: "peer-agent", title: null, statuses: [],
-      launches: [{ address: "/helper", runtimeKind: "codex_app_server", llmModelIdentifier: "gpt", source: { origin: "agent_default", fallbacks: [] } }] }] };
-    const channel = { peerName: async () => "B", runSummaries: vi.fn(async () => answer) };
-    const projection = createChildRowProjection({ memoryDir: "/unused", channel: () => channel as never,
+    const summary = { nodeId: "node-b", runId: "peer-agent", reachable: true, title: "Help", statuses: [],
+      launches: [{ address: "/helper", runtimeKind: "codex_app_server", llmModelIdentifier: "gpt", source: { origin: "agent_default", fallbacks: [] } }] };
+    const channel = { peerName: async () => "B", runSummaries: vi.fn() };
+    let kept: typeof summary | null = summary;
+    const projection = createChildRowProjection({ memoryDir: "/unused", channel: () => channel as never, peerSummaryOf: () => kept as never,
       tree: { agentsOf: async () => [], peerChildrenOf: () => [link] } as never });
     const child = { run: { agentRunId: "peer-agent" }, nodeId: "node-b", parent: { rootSubjectKind: "agent", rootRunId: "host" } } as never;
     const record = await projection.rowOf(child);
-    expect(record).toMatchObject({ kind: "peer", row: { launches: [{ address: "/helper", llm_model_identifier: "gpt" }], open_target: { run_id: "peer-agent", node_id: "node-b" } } });
-    channel.runSummaries.mockResolvedValueOnce(null as never);
+    expect(record).toMatchObject({ kind: "peer", summary: { title: "Help", reachable: true },
+      row: { launches: [{ address: "/helper", llm_model_identifier: "gpt" }], open_target: { run_id: "peer-agent", node_id: "node-b" } } });
+    kept = null;
     expect((await projection.rowOf(child))?.row).not.toHaveProperty("launches");
+    expect(channel.runSummaries).not.toHaveBeenCalled();
   });
 });

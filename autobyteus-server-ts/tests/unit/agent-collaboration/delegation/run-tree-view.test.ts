@@ -94,7 +94,9 @@ describe("RunTreeView (SR-082, SR-084)", () => {
     // A team's target is its coordinator; a member opens its team at itself; statuses are named, never held.
     expect(by.get("team:squad")!.openTarget).toEqual({ runKind: "agent_team", runId: "squad", agentRunId: "squad-lead" });
     expect(by.get("team_member:squad:squad-dev")!.openTarget).toEqual({ runKind: "agent_team", runId: "squad", agentRunId: "squad-dev" });
-    expect(by.get("team:squad")!.statusIds).toEqual(["squad-lead", "squad-dev"]);
+    // SR-086 G-A4: a team row shows its team run's own status, computed by its root.
+    expect(by.get("team:squad")!.statusIds).toEqual(["squad"]);
+    expect(by.get("peer_team:studio")!.statusIds).toEqual(["studio"]);
     expect(by.get("team_member:squad:squad-dev")!.name).toBe("dev");
     // Each row's launch as its run has it now (CR-461-086 folded in): an edit's "settings" origin, a member's own or its team's.
     expect(by.get("agent:writer")!.launch).toMatchObject({ llmModelIdentifier: "opus", llmConfig: { reasoning_effort: "xhigh" }, source: settings, ownSource: true });

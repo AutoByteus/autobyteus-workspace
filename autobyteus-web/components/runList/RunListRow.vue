@@ -145,6 +145,7 @@ import type { WorkspaceHistoryAvatarBindings } from '~/components/workspace/hist
 import type { RunListSectionActions, RunListSectionState } from '~/components/runList/runListSectionContracts'
 import { useLocalization } from '~/composables/useLocalization'
 import { useAgentRunCollaborationStore } from '~/stores/agentRunCollaborationStore'
+import { useRunTreeStore } from '~/stores/runTreeStore'
 import type { RunHistoryTeamExecutionRow } from '~/stores/runHistoryTypes'
 import type { RunTreeRow } from '~/utils/runTreeProjection'
 import type { RunListEntry } from '~/utils/runListProjection'
@@ -185,7 +186,9 @@ const expanded = computed(() => props.entry.kind === 'team'
   ? props.state.isTeamExpanded(props.entry.runId)
   : props.entry.kind === 'org' && (props.state.isAgentOrgRunExpanded?.(props.entry.runId) ?? false))
 const orgTerminationError = computed(() => props.entry.kind === 'org' ? props.state.agentOrgTerminationError?.(props.entry.runId) ?? null : null)
-const hasDelegated = computed(() => props.entry.kind === 'agent' && collaboration.taskRows(props.entry.runId).length > 0)
+// The run's tree (SR-084) has rows under its own agent: it delegated runs that are still listed.
+const trees = useRunTreeStore()
+const hasDelegated = computed(() => props.entry.kind === 'agent' && trees.rowsOf({ kind: 'agent', runId: props.entry.runId }).length > 1)
 const disclosureLabel = computed(() => t(props.state.isRunExpanded(props.entry.runId) ? 'runList.collapse' : 'runList.expand', { name: props.entry.name }))
 
 /** Stopped and stored: Archive and Delete are offered. */

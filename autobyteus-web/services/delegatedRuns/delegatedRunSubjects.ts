@@ -11,11 +11,18 @@ import type { ParticipantMessagesKey } from '~/services/collaborationMessages/co
  */
 export type DelegatedRunSubject =
   | Readonly<{ kind: 'agent'; agentRunId: string }>
-  | Readonly<{ kind: 'team_member'; teamRunId: string; memberAddress: string; agentRunId: string }>
+  | Readonly<{ kind: 'team_member'; teamRunId: string; agentRunId: string }>
 
 const agentSubject = (agentRunId: string): DelegatedRunSubject => Object.freeze({ kind: 'agent', agentRunId })
-const memberSubject = (teamRunId: string, memberAddress: string, agentRunId: string): DelegatedRunSubject =>
-  Object.freeze({ kind: 'team_member', teamRunId, memberAddress, agentRunId })
+const memberSubject = (teamRunId: string, agentRunId: string): DelegatedRunSubject =>
+  Object.freeze({ kind: 'team_member', teamRunId, agentRunId })
+
+/**
+ * The run a tree row opens (autobyteus-461 SR-084): its `openTarget`, as the server built it, read as a subject: an agent
+ * run, or a team run at the agent to focus. Nothing about the run is derived on the client.
+ */
+export const subjectOfTarget = (target: Readonly<{ runKind: 'agent' | 'agent_team'; runId: string; agentRunId: string }>): DelegatedRunSubject =>
+  target.runKind === 'agent' ? agentSubject(target.agentRunId) : memberSubject(target.runId, target.agentRunId)
 
 const teamTaskSubject = (tasks: readonly TeamTaskExecutionDto[], agentRunId: string): DelegatedRunSubject | null => {
   for (const task of tasks) {
@@ -24,7 +31,7 @@ const teamTaskSubject = (tasks: readonly TeamTaskExecutionDto[], agentRunId: str
       continue
     }
     const member = task.members.find((candidate) => candidate.agent_run_id === agentRunId)
-    if (member) return memberSubject(task.team_run_id, member.address, agentRunId)
+    if (member) return memberSubject(task.team_run_id, agentRunId)
     const nested = teamTaskSubject(task.task_executions, agentRunId)
     if (nested) return nested
   }
@@ -39,7 +46,7 @@ export const teamDelegatedRunSubject = (tree: TeamRunExecutionTreeDto, agentRunI
 export const orgDelegatedRunSubject = (index: Pick<AgentOrgExecutionViewIndex, 'agents'>, agentRunId: string): DelegatedRunSubject | null => {
   const agent = index.agents.get(agentRunId)
   if (agent?.kind === 'task') return agentSubject(agentRunId)
-  if (agent?.kind === 'task_team_member') return memberSubject(agent.host.runId, agent.address, agentRunId)
+  if (agent?.kind === 'task_team_member') return memberSubject(agent.host.runId, agentRunId)
   return null
 }
 
@@ -52,7 +59,7 @@ export const agentRunDelegatedRunSubject = (index: Pick<AgentRunCollaborationInd
   if (!child) return null
   if (child.kind === 'task_agent') return agentSubject(agentRunId)
   if (!child.teamRunId) throw new Error(`Task Team member '${agentRunId}' has no Team run.`)
-  return memberSubject(child.teamRunId, child.address, agentRunId)
+  return memberSubject(child.teamRunId, agentRunId)
 }
 
 /** Whose log holds a delegated run's Team tab messages: its own run's (CR-461-020, CR-461-022). */

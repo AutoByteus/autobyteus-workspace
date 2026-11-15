@@ -11,7 +11,12 @@ type Presentation = (agentRunId: string, message: { type: string; payload: unkno
 const frame = (status: string) => ({ type: "AGENT_STATUS", payload: { status } });
 const flush = () => new Promise((resolve) => setTimeout(resolve, 0));
 
-const harness = (input: Readonly<{ agents?: Record<string, string[]>; live?: Record<string, Record<string, string>>; peer?: string[] }> = {}) => {
+const changes = (sent: readonly RunStatusServerMessage[]) => sent.filter((message) => message.type === "RUN_STATUS_CHANGED");
+const states = (sent: readonly RunStatusServerMessage[]) => sent.filter((message) => message.type === "RUN_STATE_CHANGED");
+const ok = (status: string) => ({ answer: "ok", node: null, status });
+
+const harness = (input: Readonly<{ agents?: Record<string, string[]>; live?: Record<string, Record<string, string>>; peer?: string[];
+  summary?: (runId: string) => unknown }> = {}) => {
   const listeners = new Map<string, Presentation>();
   const ended = new Map<string, () => void>();
   const live = new Map(Object.entries(input.live ?? {}));
@@ -34,8 +39,12 @@ const harness = (input: Readonly<{ agents?: Record<string, string[]>; live?: Rec
   const peerObserve = observeOf("peer-team");
   peerObserves.set("peer-team", peerObserve);
   const peerEnded = vi.fn();
+  const summaryChanged = vi.fn();
   const sources: RunStatusSources = {
     peerEnded,
+    summaryChanged,
+    peerNodeName: async (nodeId) => `${nodeId}-node`,
+    peerSummary: async (peer) => (input.summary?.((peer as unknown as { link: { teamRunId: string } }).link.teamRunId) ?? null) as never,
     agents: () => access as never,
     registrations: {
       resolve: (run: RootExecutionIdentity) => (live.has(run.rootRunId) ? ({} as never) : null),
@@ -60,7 +69,7 @@ const harness = (input: Readonly<{ agents?: Record<string, string[]>; live?: Rec
     return { sent, connection: service.connect((message) => sent.push(message)) };
   };
   const register = (runId: string, registered: boolean) => { for (const listener of registration.get(runId) ?? []) listener(registered); };
-  return { service, client, listeners, ended, live, register, observe, peerEnded, peer: { close: peerClose, observe: peerObserve, observer: () => peerObserver,
+  return { service, client, listeners, ended, live, register, observe, peerEnded, summaryChanged, peer: { close: peerClose, observe: peerObserve, observer: () => peerObserver,
     observerOf: (id: string) => peerObservers.get(id)!, observeOf: (id: string) => peerObserves.get(id)! } };
 };
 
@@ -70,18 +79,19 @@ describe("RunStatusService (SR-082, SR-083)", () => {
     const { sent, connection } = h.client();
     await connection.subscribe([{ kind: "agent", runId: "copy" }, { kind: "agent_team", runId: "team" }]);
     expect(sent).toEqual([{ type: "RUN_STATUS_SNAPSHOT", payload: { runs: [
-      { kind: "agent", runId: "copy", agents: [{ agentRunId: "copy", status: "idle" }] },
-      { kind: "agent_team", runId: "team", agents: [{ agentRunId: "lead", status: "offline" }, { agentRunId: "mate", status: "offline" }] },
+      { kind: "agent", runId: "copy", ...ok("idle"), agents: [{ agentRunId: "copy", status: "idle" }] },
+      { kind: "agent_team", runId: "team", ...ok("offline"), agents: [{ agentRunId: "lead", status: "offline" }, { agentRunId: "mate", status: "offline" }] },
     ] } }]);
     h.listeners.get("copy")!("copy", frame("running"));
-    expect(sent.at(-1)).toEqual({ type: "RUN_STATUS_CHANGED", payload: { kind: "agent", runId: "copy", agentRunId: "copy", status: "running" } });
+    expect(changes(sent).at(-1)).toEqual({ type: "RUN_STATUS_CHANGED", payload: { kind: "agent", runId: "copy", agentRunId: "copy", status: "running" } });
+    expect(sent.at(-1)).toEqual({ type: "RUN_STATE_CHANGED", payload: { kind: "agent", runId: "copy", ...ok("running") } });
     // The team starts later: its own root is observed then; it stops: its agents read offline.
     h.live.set("team", { lead: "idle" });
     h.register("team", true);
     await flush();
-    expect(sent.at(-1)).toEqual({ type: "RUN_STATUS_CHANGED", payload: { kind: "agent_team", runId: "team", agentRunId: "lead", status: "idle" } });
+    expect(changes(sent).at(-1)).toEqual({ type: "RUN_STATUS_CHANGED", payload: { kind: "agent_team", runId: "team", agentRunId: "lead", status: "idle" } });
     h.register("team", false);
-    expect(sent.at(-1)).toMatchObject({ type: "RUN_STATUS_CHANGED", payload: { agentRunId: "lead", status: "offline" } });
+    expect(changes(sent).at(-1)).toMatchObject({ type: "RUN_STATUS_CHANGED", payload: { agentRunId: "lead", status: "offline" } });
   });
 
   it("a run's end sets its agents offline; a status the run's delegator would show is never read (no delegator here at all)", async () => {
@@ -89,7 +99,7 @@ describe("RunStatusService (SR-082, SR-083)", () => {
     const { sent, connection } = h.client();
     await connection.subscribe([{ kind: "agent", runId: "copy" }]);
     h.ended.get("copy")!();
-    expect(sent.at(-1)).toMatchObject({ type: "RUN_STATUS_CHANGED", payload: { agentRunId: "copy", status: "offline" } });
+    expect(changes(sent).at(-1)).toMatchObject({ type: "RUN_STATUS_CHANGED", payload: { agentRunId: "copy", status: "offline" } });
   });
 
   it("a subscription is exact: a change before the synchronous step is in the snapshot, one after it follows it, none is lost or repeated", async () => {
@@ -102,8 +112,9 @@ describe("RunStatusService (SR-082, SR-083)", () => {
     await subscribing;
     h.listeners.get("copy")!("copy", frame("idle")); // after it
     expect(second.sent).toEqual([
-      { type: "RUN_STATUS_SNAPSHOT", payload: { runs: [{ kind: "agent", runId: "copy", agents: [{ agentRunId: "copy", status: "running" }] }] } },
+      { type: "RUN_STATUS_SNAPSHOT", payload: { runs: [{ kind: "agent", runId: "copy", ...ok("running"), agents: [{ agentRunId: "copy", status: "running" }] }] } },
       { type: "RUN_STATUS_CHANGED", payload: { kind: "agent", runId: "copy", agentRunId: "copy", status: "idle" } },
+      { type: "RUN_STATE_CHANGED", payload: { kind: "agent", runId: "copy", ...ok("idle") } },
     ]);
     // One root observation serves both.
     expect(h.observe).toHaveBeenCalledTimes(1);
@@ -117,7 +128,7 @@ describe("RunStatusService (SR-082, SR-083)", () => {
     expect(h.peer.observe).toHaveBeenCalledTimes(1);
     h.peer.observer()!.onFrame("peer-team-lead", frame("running"));
     h.peer.observer()!.onFrame("someone-else", frame("running")); // not one of the run's own agents: dropped
-    expect(b.sent.at(-1)).toEqual({ type: "RUN_STATUS_CHANGED", payload: { kind: "agent_team", runId: "peer-team", agentRunId: "peer-team-lead", status: "running" } });
+    expect(changes(b.sent).at(-1)).toEqual({ type: "RUN_STATUS_CHANGED", payload: { kind: "agent_team", runId: "peer-team", agentRunId: "peer-team-lead", status: "running" } });
     expect(a.sent.filter((message) => message.type === "RUN_STATUS_CHANGED")).toHaveLength(1);
     a.connection.close();
     expect(h.peer.close).not.toHaveBeenCalled();
@@ -132,13 +143,13 @@ describe("RunStatusService (SR-082, SR-083)", () => {
     await connection.subscribe([{ kind: "agent_team", runId: "peer-team" }]);
     h.peer.observer()!.onFrame("peer-team-lead", frame("running"));
     h.peer.observer()!.onEnd();
-    expect(sent.at(-1)).toMatchObject({ type: "RUN_STATUS_CHANGED", payload: { agentRunId: "peer-team-lead", status: "offline" } });
+    expect(changes(sent).at(-1)).toMatchObject({ type: "RUN_STATUS_CHANGED", payload: { agentRunId: "peer-team-lead", status: "offline" } });
     expect(h.peerEnded).toHaveBeenCalledWith("peer-team");
     // A frame of the ended link changes nothing; Retry observes the run again, and its status follows.
     h.service.retryPeers(["peer-team"]);
     expect(h.peer.observe).toHaveBeenCalledTimes(2);
     h.peer.observer()!.onFrame("peer-team-lead", frame("idle"));
-    expect(sent.at(-1)).toMatchObject({ type: "RUN_STATUS_CHANGED", payload: { agentRunId: "peer-team-lead", status: "idle" } });
+    expect(changes(sent).at(-1)).toMatchObject({ type: "RUN_STATUS_CHANGED", payload: { agentRunId: "peer-team-lead", status: "idle" } });
     // A live observation is not opened twice.
     h.service.retryPeers(["peer-team"]);
     expect(h.peer.observe).toHaveBeenCalledTimes(2);
@@ -162,16 +173,69 @@ describe("RunStatusService (SR-082, SR-083)", () => {
     connection.close();
   });
 
-  it("RUN_TREE_CHANGED reaches the run's subscribers only; an org run is held for it with no agents", async () => {
-    const h = harness();
+  it("RUN_TREE_CHANGED reaches the run's subscribers only", async () => {
+    const h = harness({ agents: { org: ["planner"] } });
     const { sent, connection } = h.client();
     await connection.subscribe([{ kind: "agent_org", runId: "org" }]);
-    expect(sent).toEqual([{ type: "RUN_STATUS_SNAPSHOT", payload: { runs: [{ kind: "agent_org", runId: "org", agents: [] }] } }]);
+    expect(sent).toEqual([{ type: "RUN_STATUS_SNAPSHOT", payload: { runs: [{ kind: "agent_org", runId: "org", ...ok("offline"), agents: [{ agentRunId: "planner", status: "offline" }] }] } }]);
     h.service.treeChanged({ rootSubjectKind: "agent_org", rootRunId: "org" } as RootExecutionIdentity);
     h.service.treeChanged({ rootSubjectKind: "agent", rootRunId: "other" } as RootExecutionIdentity);
     expect(sent.slice(1)).toEqual([{ type: "RUN_TREE_CHANGED", payload: { kind: "agent_org", runId: "org" } }]);
     connection.close();
     h.service.treeChanged({ rootSubjectKind: "agent_org", rootRunId: "org" } as RootExecutionIdentity);
     expect(sent).toHaveLength(2);
+  });
+
+  it("SR-086 G-A4: a team's and an org's own status is computed by their root's node from their own agents by the one team rule, never by a client", async () => {
+    const h = harness({ agents: { team: ["lead", "mate"], org: ["planner", "writer"] }, live: { team: { lead: "idle" }, org: { planner: "idle" } } });
+    const { sent, connection } = h.client();
+    await connection.subscribe([{ kind: "agent_team", runId: "team" }, { kind: "agent_org", runId: "org" }]);
+    expect(sent[0]).toMatchObject({ payload: { runs: [{ runId: "team", ...ok("idle") }, { runId: "org", ...ok("idle") }] } });
+    h.listeners.get("team")!("mate", frame("running"));
+    h.listeners.get("org")!("writer", frame("error"));
+    expect(states(sent)).toEqual([
+      { type: "RUN_STATE_CHANGED", payload: { kind: "agent_team", runId: "team", ...ok("running") } },
+      { type: "RUN_STATE_CHANGED", payload: { kind: "agent_org", runId: "org", ...ok("error") } },
+    ]);
+    // A member's change that keeps the team's status tells no state change.
+    h.listeners.get("team")!("lead", frame("running"));
+    expect(states(sent)).toHaveLength(2);
+  });
+
+  it("SR-086 G-A2: a run the node does not know is answered not_found, with no status; it is answered when its root registers", async () => {
+    const h = harness({ agents: { gone: [] } });
+    const { sent, connection } = h.client();
+    await connection.subscribe([{ kind: "agent", runId: "gone" }]);
+    expect(sent).toEqual([{ type: "RUN_STATUS_SNAPSHOT", payload: { runs: [{ kind: "agent", runId: "gone", answer: "not_found", node: null, status: null, agents: [] }] } }]);
+    h.live.set("gone", { gone: "idle" });
+    h.register("gone", true);
+    await flush();
+    expect(states(sent)[0]).toMatchObject({ payload: { answer: "ok" } });
+  });
+
+  it("SR-086 G-A3, G-B2: a peer run's node's answer is kept with its status: unreachable with the node's name; a changed answer tells its trees", async () => {
+    let reachable = false;
+    const h = harness({ peer: ["peer-team"], summary: (runId) => ({ nodeId: "beta", runId, reachable, title: "Studio", statuses: [], launches: [] }) });
+    const { sent, connection } = h.client();
+    await connection.subscribe([{ kind: "agent_team", runId: "peer-team" }]);
+    await flush();
+    await flush();
+    // Its node's answer comes before or after the snapshot: the latest state the subscriber was told is unreachable.
+    const latest = states(sent).at(-1)?.payload ?? (sent[0] as Extract<RunStatusServerMessage, { type: "RUN_STATUS_SNAPSHOT" }>).payload.runs[0];
+    expect(latest).toMatchObject({ kind: "agent_team", runId: "peer-team", answer: "unreachable", node: "beta-node", status: null });
+    expect(h.service.peerSummaryOf("peer-team")).toMatchObject({ title: "Studio", reachable: false });
+    expect(h.summaryChanged).toHaveBeenCalledWith({ rootSubjectKind: "agent_team", rootRunId: "peer-team" });
+    // A view's ask brings the node back: answered, and its trees are told; the same answer again tells nothing.
+    reachable = true;
+    const launches = [{ address: "/lead", runtimeKind: "codex_app_server", llmModelIdentifier: "gpt", source: { origin: "agent_default", fallbacks: [] } }];
+    h.service.peerAnswered({ nodeId: "beta", runId: "peer-team", reachable: true, title: "Studio", statuses: [], launches } as never);
+    expect(states(sent).at(-1)).toMatchObject({ payload: { answer: "ok", node: null, status: "offline" } });
+    expect(h.service.peerSummaryOf("peer-team")?.launches).toEqual(launches);
+    expect(h.summaryChanged).toHaveBeenCalledTimes(2);
+    h.service.peerAnswered({ nodeId: "beta", runId: "peer-team", reachable: true, title: "Studio", statuses: [], launches } as never);
+    expect(h.summaryChanged).toHaveBeenCalledTimes(2);
+    // Released with its last subscriber: its answer is not kept.
+    connection.close();
+    expect(h.service.peerSummaryOf("peer-team")).toBeNull();
   });
 });

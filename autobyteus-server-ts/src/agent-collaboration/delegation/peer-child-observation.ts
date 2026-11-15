@@ -6,9 +6,7 @@ import type { RemoteRunObservationStream } from "../execution/remote/remote-run-
 import type { RemoteRunRootEvent, RemoteRunSummaryEvent } from "../execution/remote/remote-run-observation.js";
 import type { DelegationIndex } from "./delegation-index.js";
 import type { RunViewStreams } from "./run-view-stream.js";
-import { RUN_TREE_CHANGED_EVENT, type RunTreeChangedEvent } from "./run-tree-view.js";
-
-type Publish = (event: RemoteRunRootEvent | RunTreeChangedEvent) => void;
+type Publish = (event: RemoteRunRootEvent) => void;
 
 /** One peer run's output observation and summary, shared by every open view that shows it (ARCH-REV-040 note 1). */
 type Observed = { peer: PeerRun; stream: RemoteRunObservationStream | null; views: Map<string, Publish>; lastSummary: RemoteRunSummaryEvent | null };
@@ -38,6 +36,8 @@ export class PeerChildObservation {
     /** Retry's other half: the peer runs' statuses (`RunStatusService`) observe again where they ended. */
     /** These peer runs' ended status observations again, and every other on their nodes (CR-461-094). */
     retryStatuses(peerRunIds: readonly string[], nodeIds: readonly string[]): void;
+    /** A node's answer about one of its runs, kept with the run's status (SR-086 G-B2): the trees holding its row are told. */
+    answered(summary: RemoteRunSummaryEvent): void;
   }>) {}
 
   /**
@@ -104,7 +104,7 @@ export class PeerChildObservation {
       if (link) shown.set(runId, link);
     }
     for (const peerRunId of [...view.peers]) if (!shown.has(peerRunId)) { view.peers.delete(peerRunId); this.leave(peerRunId, key); }
-    const publish: Publish = (event) => this.dependencies.streams.streamOf<RemoteRunRootEvent | RunTreeChangedEvent>(run).publish(event);
+    const publish: Publish = (event) => this.dependencies.streams.streamOf<RemoteRunRootEvent>(run).publish(event);
     for (const [peerRunId] of shown) {
       if (view.peers.has(peerRunId)) continue;
       const entry = this.join(peerRunId, key, publish);
@@ -185,20 +185,16 @@ export class PeerChildObservation {
     if (!entries.length) return;
     const statuses = await peerStatuses(entries.map((entry) => entry.peer.link), this.dependencies.channel);
     const answered: string[] = [];
-    const trees = new Map<string, Publish>();
     for (const entry of entries) {
       const summary = statuses.find((status) => status.nodeId === entry.peer.link.nodeId && status.runId === entry.peer.runId);
       if (!summary || this.observed.get(entry.peer.runId) !== entry) continue;
       entry.lastSummary = Object.freeze({ ...summary });
       this.publish(entry, { kind: "remote_task_execution_summary", summary: entry.lastSummary });
-      for (const [viewKey, publish] of entry.views) trees.set(viewKey, publish);
+      // Its row's title, reachability and launches (SR-084, G-B2): kept with the run's status, which tells its trees.
+      this.dependencies.answered(entry.lastSummary);
       if (!reobserve || !summary.reachable) continue;
       answered.push(entry.peer.runId);
       if (!entry.stream) this.open(entry);
-    }
-    // The answers are in the peer rows of each view's tree (title, reachability, launches, SR-084): one notice per view.
-    for (const publish of trees.values()) {
-      try { publish(RUN_TREE_CHANGED_EVENT); } catch (error) { console.warn(`A view's tree notice was not published: ${String(error)}`); }
     }
     if (answered.length) this.dependencies.retryStatuses(answered, this.nodesOf(answered));
   }

@@ -256,6 +256,7 @@ describe("Application-owned Studio run-model configuration integration", () => {
       } as never,
       agentRunService: agentRunService as never,
       teamRunService: teamRunService as never,
+      launchSaved: () => undefined,
     });
 
     return {

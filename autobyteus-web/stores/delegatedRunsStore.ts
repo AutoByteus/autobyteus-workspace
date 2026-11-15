@@ -138,7 +138,9 @@ export const useDelegatedRunsStore = defineStore('delegatedRuns', () => {
         : teamOf(subject.teamRunId)?.view.getAgentWorkspaceRootPath(subject.agentRunId) ?? null,
       browse: subject.kind === 'agent'
         ? Object.freeze({ kind: 'run' as const, runId: subject.agentRunId })
-        : Object.freeze({ kind: 'teamMember' as const, teamRunId: subject.teamRunId, memberAddress: subject.memberAddress, agentRunId: subject.agentRunId }),
+        // The member's address in its team run's own space, from the open team's view.
+        : Object.freeze({ kind: 'teamMember' as const, teamRunId: subject.teamRunId,
+          memberAddress: teamOf(subject.teamRunId)?.view.getMemberAddress(subject.agentRunId) ?? '', agentRunId: subject.agentRunId }),
       interaction: interactionOf(subject),
     })
   }

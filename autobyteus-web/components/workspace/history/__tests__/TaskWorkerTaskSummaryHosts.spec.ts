@@ -6,12 +6,9 @@ import type { TaskWorkerRef, TaskWorkerTask } from '~/types/project'
 import { AgentStatus } from '~/types/agent/AgentStatus'
 
 vi.mock('@iconify/vue', () => ({ Icon: { props: ['icon'], template: '<span :data-icon="icon" />' } }))
-const collaboration = vi.hoisted(() => ({ rows: [] as unknown[] }))
 vi.mock('~/stores/agentRunCollaborationStore', () => ({
   useAgentRunCollaborationStore: () => ({
-    taskRows: () => collaboration.rows,
-    contextFor: () => ({ index: { coordinatorOf: () => ({ agentRunId: 'lead-run' }) } }), ensureStoredView: vi.fn(), isTaskTeamExpanded: () => true,
-    selectedChild: () => null, toggleTaskTeam: vi.fn(), selectTaskRow: vi.fn(() => true),
+    ensureStoredView: vi.fn(), isTreeRowExpanded: () => true, selectedRowKey: () => null, toggleTreeRow: vi.fn(), selectTreeRow: vi.fn(() => true),
   }),
 }))
 
@@ -19,6 +16,8 @@ import AgentRunTaskRows from '../AgentRunTaskRows.vue'
 import WorkspaceTeamExecutionTree from '../WorkspaceTeamExecutionTree.vue'
 import { useTaskWorkerTaskStore } from '~/stores/taskWorkerTaskStore'
 import { useTaskLocatorStore } from '~/stores/taskLocatorStore'
+import { useRunTreeStore } from '~/stores/runTreeStore'
+import type { RunTreeRowDto } from '@autobyteus/collaboration-stream-contracts'
 
 const transient = (transientKind: RunHistoryTransientExecutionRow['transientKind'], id: string, depth = 0): RunHistoryTransientExecutionRow => ({
   kind: 'transient_execution', transientKind, rowKey: `${transientKind}:${id}`, teamRunId: 'host-run', memberAddress: `/${id}`,
@@ -48,7 +47,17 @@ describe('Task summaries under Agent-run and Team-run hosts (delegated-copy-task
   })
 
   const mountAgentHost = () => {
-    collaboration.rows = [workerRow, teamCopyRow, memberRow, collaboratorRow].map((row) => ({ row, continuingAncestorDepths: [], hasFollowingSibling: false }))
+    // The Agent run's tree as the server builds it (SR-084): its own agent, a worker, a Team copy with a member, a collaborator.
+    const agent = (id: string, parentKey: string, depth: number): RunTreeRowDto => ({ key: `agent:${id}`, parentKey, depth, kind: 'agent', name: id,
+      address: `/${id}`, openTarget: { runKind: 'agent', runId: id, agentRunId: id }, statusIds: [id] })
+    useRunTreeStore().streamSnapshot({ kind: 'agent', runId: 'host-run' }, [
+      agent('host-run', null as never, 0), agent('writer-run', 'agent:host-run', 1),
+      { key: 'team:review-team', parentKey: 'agent:host-run', depth: 1, kind: 'team', name: 'review-team', address: '/review-team',
+        openTarget: { runKind: 'agent_team', runId: 'review-team', agentRunId: 'reviewer-run' }, statusIds: ['review-team'] },
+      { key: 'team_member:review-team:reviewer-run', parentKey: 'team:review-team', depth: 2, kind: 'team_member', name: 'reviewer-run', address: '/reviewer-run',
+        openTarget: { runKind: 'agent_team', runId: 'review-team', agentRunId: 'reviewer-run' }, statusIds: ['reviewer-run'] },
+      agent('collaborator-run', 'agent:host-run', 1),
+    ])
     return mount(AgentRunTaskRows, { props: { runId: 'host-run', label: 'Manager run', runSelected: false, hasCollaboration: true },
       global: { stubs: { transition: false, 'transition-group': false } } })
   }

@@ -1,6 +1,9 @@
 import { defineStore } from 'pinia'
 import { watch } from 'vue'
-import type { RunAgentStatus, RunStatusRunRef, RunStatusServerMessage } from '@autobyteus/collaboration-stream-contracts'
+import type { RunAgentStatus, RunStatusAnswer, RunStatusRunRef, RunStatusServerMessage } from '@autobyteus/collaboration-stream-contracts'
+
+/** A run's own state (SR-086 G-A2 … G-A4): the node's answer, the peer node when it did not answer, the run's own status. */
+export type RunState = Readonly<{ answer: RunStatusAnswer; node: string | null; status: RunAgentStatus | null }>
 import { RunStatusFeed } from '~/services/runStatus/runStatusFeed'
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore'
 import { buildAuthenticatedWebSocketUrl } from '~/utils/remoteAccess/websocketAuth'
@@ -21,6 +24,8 @@ export const useRunStatusStore = defineStore('runStatus', {
     treeRevision: {} as Record<string, number>,
     /** Per run (`kind:runId`), the agents its answers name. */
     runAgents: {} as Record<string, readonly string[]>,
+    /** Per run (`kind:runId`), its own state as its node answered it: a team's or an org's status is its root's, not folded here. */
+    runStates: {} as Record<string, RunState>,
   }),
   getters: {
     /** An agent's own status; `null` while its run's answer has not come. */
@@ -28,6 +33,8 @@ export const useRunStatusStore = defineStore('runStatus', {
     /** Whether the agent runs: any status but offline (not known yet counts as not running). */
     isLive: (state) => (agentRunId: string): boolean => (state.statuses[agentRunId] ?? 'offline') !== 'offline',
     treeRevisionOf: (state) => (ref: Pick<RunStatusRunRef, 'kind' | 'runId'>): number => state.treeRevision[runKeyOf(ref)] ?? 0,
+    /** A run's own state; `null` while its answer has not come. */
+    runStateOf: (state) => (ref: Pick<RunStatusRunRef, 'kind' | 'runId'>): RunState | null => state.runStates[runKeyOf(ref)] ?? null,
     /** A run runs when any of its own agents does (a Team counts as one unit), by its own answers. */
     isRunLive: (state) => (ref: Pick<RunStatusRunRef, 'kind' | 'runId'>): boolean =>
       (state.runAgents[runKeyOf(ref)] ?? []).some((agentRunId) => (state.statuses[agentRunId] ?? 'offline') !== 'offline'),
@@ -43,12 +50,18 @@ export const useRunStatusStore = defineStore('runStatus', {
       if (message.type === 'RUN_STATUS_SNAPSHOT') {
         const next = { ...this.statuses }
         const agents = { ...this.runAgents }
+        const states = { ...this.runStates }
         for (const run of message.payload.runs) {
           for (const agent of run.agents) next[agent.agentRunId] = agent.status
           agents[runKeyOf(run)] = run.agents.map((agent) => agent.agentRunId)
+          states[runKeyOf(run)] = Object.freeze({ answer: run.answer, node: run.node, status: run.status })
         }
         this.statuses = next
         this.runAgents = agents
+        this.runStates = states
+      } else if (message.type === 'RUN_STATE_CHANGED') {
+        const { answer, node, status } = message.payload
+        this.runStates = { ...this.runStates, [runKeyOf(message.payload)]: Object.freeze({ answer, node, status }) }
       } else if (message.type === 'RUN_STATUS_CHANGED') {
         this.statuses = { ...this.statuses, [message.payload.agentRunId]: message.payload.status }
         const key = runKeyOf(message.payload), named = this.runAgents[key] ?? []

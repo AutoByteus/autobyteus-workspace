@@ -31,9 +31,11 @@ import { useDelegatedRunsStore } from '../delegatedRunsStore'
 
 const flush = async () => { for (let i = 0; i < 10; i++) await Promise.resolve() }
 const agent = { kind: 'agent' as const, agentRunId: 'child-run' }
-const member = { kind: 'team_member' as const, teamRunId: 'child-team', memberAddress: '/reviewer', agentRunId: 'reviewer-run' }
+const member = { kind: 'team_member' as const, teamRunId: 'child-team', agentRunId: 'reviewer-run' }
 const teamContext = (contexts: Record<string, unknown>) => ({ view: {
   getAgentContext: (id: string) => contexts[id] ?? null, getAgentWorkspaceRootPath: () => '/team-ws',
+  // The member's address in the Team run's own space (SR-084: the subject carries none; the open Team's view has it).
+  getMemberAddress: (id: string) => (id === 'reviewer-run' ? '/reviewer' : null),
 } })
 
 /** autobyteus-461 rule 2: a delegated run is reached through its own standard path, by its own run ID. */
@@ -94,7 +96,7 @@ describe('delegatedRunsStore', () => {
     expect(io.teamRuns.postToolExecutionApproval).toHaveBeenCalledWith('invocation', false, 'no', null, 'child-team')
     expect(io.teamRuns.terminateTeamRun).toHaveBeenCalledWith('child-team')
     // The Team open already connects its stream; another member of the open Team is read as its own view reads one.
-    store.ensureOpen({ ...member, agentRunId: 'other-run', memberAddress: '/other' }); await flush()
+    store.ensureOpen({ ...member, agentRunId: 'other-run' }); await flush()
     expect(io.openTeamRun).toHaveBeenCalledOnce()
     expect(io.teamRuns.connectToTeamStream).toHaveBeenCalledWith('child-team')
     expect(io.ensureMember).toHaveBeenCalledWith(expect.objectContaining({ agentRunId: 'other-run' }))

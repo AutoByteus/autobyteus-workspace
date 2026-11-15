@@ -32,7 +32,9 @@ import { mentionsPresentInText, toCollaboratorMentionDtos } from '~/utils/collab
 import { useRemoteRunsStore, type RemoteRunRetryAdapter } from '~/stores/remoteRunsStore'
 import { rebuildOfView, useCollaborationParticipantMessagesStore } from '~/services/collaborationMessages/collaborationParticipantMessages'
 import { createRandomId } from '~/utils/randomId'
-import { agentRunDelegatedRunSubject } from '~/services/delegatedRuns/delegatedRunSubjects'
+import { agentRunDelegatedRunSubject, subjectOfTarget } from '~/services/delegatedRuns/delegatedRunSubjects'
+import type { RunTreeOpenTargetDto, RunTreeRowDto } from '@autobyteus/collaboration-stream-contracts'
+import { isTeamRow } from '~/utils/runTree/runTreeDisplayRows'
 import { useDelegatedRunsStore } from '~/stores/delegatedRunsStore'
 import { watchHeldRuns } from '~/services/runStatus/heldRuns'
 
@@ -53,6 +55,10 @@ const delegatedRuns = () => useDelegatedRunsStore()
 export const useAgentRunCollaborationStore = defineStore('agentRunCollaboration', () => {
   const contexts = shallowRef<Record<string, AgentRunCollaborationContext>>({})
   const selection = shallowReactive<Record<string, string | null>>({})
+  /** The tree row the user selected under each run (SR-084): its key, where it opens, and its address. */
+  const selectedRows = shallowReactive<Record<string, Readonly<{ key: string; target: RunTreeOpenTargetDto; address: string | null }> | null>>({})
+  /** Tree rows the user expanded or collapsed (by key); a team row starts collapsed, any other row expanded. */
+  const toggledRows = shallowReactive<Record<string, readonly string[]>>({})
   const expandedTeams = shallowReactive<Record<string, readonly string[]>>({})
   const errors = shallowReactive<Record<string, string | null>>({})
   const services = new Map<string, AgentRunCollaborationStreamingService>()
@@ -264,7 +270,35 @@ export const useAgentRunCollaborationStore = defineStore('agentRunCollaboration'
   /** Selects a child (null: the run's own agent) and starts loading its details if needed. */
   const selectChild = (hostRunId: string, agentRunId: string | null) => {
     selection[hostRunId] = agentRunId && contextFor(hostRunId)?.isListed(agentRunId) ? agentRunId : null
+    selectedRows[hostRunId] = null
     ensureChildHydrated(hostRunId, selection[hostRunId] ?? null)
+  }
+
+  /**
+   * A tree row's open (SR-084, through `openRunTarget`): where the server says it opens. The run's own row selects its
+   * own agent; a delegated run on this node opens as its own run (rule 2) by its target; a peer's run through this view.
+   * Answers whether it was selected (false for a row error, or while the run's view is not loaded).
+   */
+  const selectTreeRow = (hostRunId: string, row: RunTreeRowDto): boolean => {
+    const target = row.openTarget
+    if (!target || target.runKind === 'agent_org' || !contextFor(hostRunId)) return false
+    if (target.runKind === 'agent' && target.runId === hostRunId) {
+      selection[hostRunId] = null
+      selectedRows[hostRunId] = null
+      return true
+    }
+    selection[hostRunId] = target.agentRunId
+    selectedRows[hostRunId] = Object.freeze({ key: row.key, target, address: row.address })
+    if (target.nodeId) ensureChildHydrated(hostRunId, target.agentRunId)
+    else delegatedRuns().ensureOpen(subjectOfTarget(target as Parameters<typeof subjectOfTarget>[0]))
+    return true
+  }
+  const selectedRowKey = (hostRunId: string): string | null => selectedRows[hostRunId]?.key ?? null
+  const isTreeRowExpanded = (hostRunId: string, row: RunTreeRowDto): boolean =>
+    isTeamRow(row) === (toggledRows[hostRunId] ?? []).includes(row.key)
+  const toggleTreeRow = (hostRunId: string, key: string): void => {
+    const current = toggledRows[hostRunId] ?? []
+    toggledRows[hostRunId] = Object.freeze(current.includes(key) ? current.filter((candidate) => candidate !== key) : [...current, key])
   }
   const selectedChild = (hostRunId: string): string | null => selection[hostRunId] ?? null
 
@@ -356,11 +390,19 @@ export const useAgentRunCollaborationStore = defineStore('agentRunCollaboration'
    * no target until it is open, never this run's own, as in the Team and Org views (CR-461-057). Typing meanwhile would
    * otherwise go to the delegator's draft, and its send to the delegator.
    */
+  /** The selected row's own run on this node, by its target (SR-084); else by the view's index. */
+  const selectedSubject = (hostRunId: string, agentRunId: string, collaboration: AgentRunCollaborationContext) => {
+    const picked = selectedRows[hostRunId]
+    if (picked?.target.agentRunId === agentRunId) {
+      return picked.target.nodeId ? null : subjectOfTarget(picked.target as Parameters<typeof subjectOfTarget>[0])
+    }
+    return collaboration.getChild(agentRunId) ? agentRunDelegatedRunSubject(collaboration.index, agentRunId) : null
+  }
+
   const isSelectedChildOpening = (hostRunId: string): boolean => {
     const collaboration = contextFor(hostRunId)
     const agentRunId = selectedChild(hostRunId)
-    const local = agentRunId && collaboration ? collaboration.getChild(agentRunId) : null
-    const own = local && collaboration ? agentRunDelegatedRunSubject(collaboration.index, local.agentRunId) : null
+    const own = agentRunId && collaboration ? selectedSubject(hostRunId, agentRunId, collaboration) : null
     return Boolean(own && !delegatedRuns().bindingOf(own))
   }
 
@@ -373,7 +415,7 @@ export const useAgentRunCollaborationStore = defineStore('agentRunCollaboration'
     const child = local ?? remote
     if (!collaboration || !child) return null
     const kind = child.kind === 'task_team_member' || child.kind === 'remote_team_member' ? 'agent_run_task_team_member' as const : 'agent_run_task_agent' as const
-    const own = local ? agentRunDelegatedRunSubject(collaboration.index, child.agentRunId) : null
+    const own = local ? selectedSubject(hostRunId, child.agentRunId, collaboration) : null
     if (own) {
       const binding = delegatedRuns().bindingOf(own)
       if (!binding) return null
@@ -416,6 +458,8 @@ export const useAgentRunCollaborationStore = defineStore('agentRunCollaboration'
     participantMessages.releaseRoot('agent', hostRunId)
     memberLoader().releaseRoot(loaderRoot(hostRunId))
     delete selection[hostRunId]
+    delete selectedRows[hostRunId]
+    delete toggledRows[hostRunId]
     delete expandedTeams[hostRunId]
     delete errors[hostRunId]
   }
@@ -429,6 +473,6 @@ export const useAgentRunCollaborationStore = defineStore('agentRunCollaboration'
 
   return {
     contexts, errors, contextFor, syncHost, inspect, viewFor, attach, release, releaseAll, beginHostTermination,
-    selectChild, selectedChild, ensureStoredView, selectTaskRow, isTaskTeamExpanded, toggleTaskTeam, taskRows, hostMessagesView, childTargetFor, isSelectedChildOpening, submit,
+    selectChild, selectedChild, ensureStoredView, selectTaskRow, selectTreeRow, selectedRowKey, isTreeRowExpanded, toggleTreeRow, isTaskTeamExpanded, toggleTaskTeam, taskRows, hostMessagesView, childTargetFor, isSelectedChildOpening, submit,
   }
 })

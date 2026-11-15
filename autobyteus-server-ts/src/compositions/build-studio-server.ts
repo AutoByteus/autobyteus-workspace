@@ -398,6 +398,7 @@ export const buildStudioServer = async (input: {
       teamResumeConfigService: generalProcessRunSupervisor.teamRunHistoryService,
       agentRunService: generalProcessRunSupervisor.agentRunService,
       teamRunService: generalProcessRunSupervisor.teamRunService,
+      launchSaved: (run) => currentCollaboration.rowChanged(run),
     });
     studioApiHandle = configureStudioApplicationApiServices({
       bundleService: packages.bundleService,

@@ -26,11 +26,27 @@ export type RunStatusClientMessage = z.infer<typeof runStatusClientMessageSchema
 
 const agentStatus = z.object({ agentRunId: nonEmptyStringSchema, status: runAgentStatusSchema }).strict();
 
+/** Whether the node could answer for a run (SR-086 G-A2, G-A3): it knows it, it does not, or the run's peer node did not answer. */
+export const runStatusAnswerSchema = z.enum(["ok", "not_found", "unreachable"]);
+export type RunStatusAnswer = z.infer<typeof runStatusAnswerSchema>;
+
+/**
+ * A run's own state (G-A4): the node's answer, the peer node's name when it did not answer, and the run's own status:
+ * an agent run's agent's, a team's or org's from its own agents by the one team status rule. `null` unless answered.
+ */
+const runState = {
+  answer: runStatusAnswerSchema,
+  node: nonEmptyStringSchema.nullable(),
+  status: runAgentStatusSchema.nullable(),
+};
+
 export const runStatusServerMessageSchema = z.discriminatedUnion("type", [
-  /** The newly subscribed runs' agents and their current statuses (an org run lists none: its own stream has them). */
+  /** The newly subscribed runs' own states and their agents' current statuses. */
   z.object({ type: z.literal("RUN_STATUS_SNAPSHOT"), payload: z.object({
-    runs: z.array(runStatusRunRefSchema.extend({ agents: z.array(agentStatus) }).strict()),
+    runs: z.array(runStatusRunRefSchema.extend({ ...runState, agents: z.array(agentStatus) }).strict()),
   }).strict() }).strict(),
+  /** A subscribed run's own state changed: its answer, or its own status. */
+  z.object({ type: z.literal("RUN_STATE_CHANGED"), payload: runStatusRunRefSchema.extend(runState).strict() }).strict(),
   /** One agent of a subscribed run changed its status. */
   z.object({ type: z.literal("RUN_STATUS_CHANGED"), payload: runStatusRunRefSchema.extend(agentStatus.shape).strict() }).strict(),
   /** A subscribed run's rows changed (a delegated run started, closed or came back, at any depth): read its view again. */

@@ -23,11 +23,18 @@ vi.mock('~/stores/runHistoryStore', () => ({ useRunHistoryStore: () => ({ getTea
 vi.mock('~/composables/projects/useTaskWorkerTasks', () => ({ useTaskWorkerTasks: () => ({ taskOf: () => null, locate: vi.fn() }) }))
 
 import { useAgentRunCollaborationStore } from '~/stores/agentRunCollaborationStore'
+import { useRunTreeStore } from '~/stores/runTreeStore'
+import { multiTeamTree } from '~/test-support/runTreeFixtures'
 import AgentRunTaskRows from '../AgentRunTaskRows.vue'
 
-/** Actual row -> actual store -> actual context: unlike the selection-only mocked-store test. */
+/** Actual row -> actual stores (the server's tree, SR-084, and the run's view): unlike the selection-only mocked-store test. */
 describe('AgentRunTaskRows independent Team disclosure', () => {
-  beforeEach(() => { setActivePinia(createPinia()); vi.clearAllMocks() })
+  beforeEach(() => {
+    setActivePinia(createPinia())
+    vi.clearAllMocks()
+    // The run's open view's stream fed its tree: seven delegated Team copies, each opening at its coordinator.
+    useRunTreeStore().streamSnapshot({ kind: 'agent', runId: 'host-run' }, multiTeamTree().rows)
+  })
   const render = () => mount(AgentRunTaskRows, {
     props: { runId: 'host-run', label: 'Project Task Manager', runSelected: true, hasCollaboration: true },
     global: { stubs: { transition: false, 'transition-group': false } },

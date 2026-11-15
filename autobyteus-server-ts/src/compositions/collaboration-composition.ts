@@ -55,6 +55,9 @@ import { setProcessWorkspaceRunHistoryService, WorkspaceRunHistoryService } from
 import { RunOwnAgentsReader } from "../run-history/store/run-own-agents-reader.js";
 import { createChildRowProjection } from "../services/agent-streaming/delegated-children-dtos.js";
 import { RunViewChildren } from "../services/agent-streaming/run-view-children.js";
+import { AgentOrgAgentStatuses } from "../agent-org-execution/services/agent-org-agent-statuses.js";
+import { peerNodeNames } from "../agent-collaboration/execution/remote/remote-run-observation.js";
+import { peerStatuses } from "../agent-collaboration/execution/remote/peer-run-calls.js";
 import { RunTreeView } from "../agent-collaboration/delegation/run-tree-view.js";
 import { setProcessStandaloneRootMemberViewProjectionService, StandaloneRootMemberViewProjectionService } from "../standalone-agent-run-root/services/standalone-root-member-view-projection-service.js";
 import type { CollaborationRootResolver } from "./collaboration-root-resolver.js";
@@ -124,6 +127,8 @@ export type Collaboration = Readonly<{
   runViewChildren: RunViewChildren;
   /** Each run's tree, built once on the server (SR-084): every view, the list's expanded runs, the phone and Settings show it. */
   runTree: RunTreeView;
+  /** A row's content changed (a saved launch, SR-086 G-B1): every tree that holds it is told. */
+  rowChanged(run: RootExecutionIdentity): void;
   /** Each run's statuses by run ID, from the run itself, and its rows' change notice (`/ws/run-status`, SR-082, SR-083). */
   runStatus: RunStatusService;
   delegatedRunAgents: DelegatedRunAgentsReader;
@@ -191,6 +196,8 @@ export const composeCollaboration = async (input: Readonly<{
       activeOrgRun: (orgRunId) => runs.agentOrgRunService.getActive(orgRunId) }, run.rootSubjectKind, run.rootRunId, viewer);
     const ownDelegations = new RunOwnDelegations({ files: runFiles, admission: () => getCollaboratorAdmission(), portOf });
     const liveAgents = (kind: "agent" | "agent_team") => kind === "agent" ? runs.standaloneRootManager.pairedAgents : runs.teamRunService.pairedAgents;
+    // An Org's own agents' statuses, for its own status (SR-086 G-A4).
+    const orgAgents = new AgentOrgAgentStatuses({ getActive: (orgRunId) => runs.agentOrgRunService.getActive(orgRunId) });
     // Whether input may restore a delegated run (CR-461-070): the delegator's message and a team run's own stream.
     const restorability = createDelegatedRunRestorability({ memoryDir, tree, ownDelegations, liveAgents });
     const crossRun = new CrossRunMessageDelivery({
@@ -231,14 +238,17 @@ export const composeCollaboration = async (input: Readonly<{
 
     // 7. The views' owners (SR-061 … SR-063, SR-083): base's row events from the tree, the rows' records, each run's own
     // statuses by run ID.
-    const projection = createChildRowProjection({ memoryDir, tree, channel: input.remoteChannel });
+    const projection = createChildRowProjection({ memoryDir, tree, channel: input.remoteChannel, peerSummaryOf: (runId) => runStatus.peerSummaryOf(runId) });
     // A closed row is in its view's closed set while its run still runs (its root is live).
     // A peer run, reached by its own identity (SR-066): its handle from the tree, its live status and output per view.
     const peerRunOf = createPeerRunOf(tree, input.remoteChannel);
     // Each run's statuses by run ID, from the run itself, and its rows' change notice (SR-082, SR-083).
     // A peer run's status and its row's summary meet in Retry and in an unasked end (AR-403); `peers` is created below.
-    const runStatus = new RunStatusService({ agents: liveAgents, registrations: input.activeRoots, agentsOf: (run) => tree.agentsOf(run), peerRunOf,
-      peerEnded: (peerRunId) => peers.ended(peerRunId) });
+    const runStatus = new RunStatusService({ agents: (kind) => kind === "agent_org" ? orgAgents : liveAgents(kind), registrations: input.activeRoots,
+      agentsOf: (run) => tree.agentsOf(run), peerRunOf, peerEnded: (peerRunId) => peers.ended(peerRunId),
+      peerNodeName: async (nodeId) => (await peerNodeNames([nodeId], input.remoteChannel())).get(nodeId) ?? nodeId,
+      peerSummary: async (peer) => (await peerStatuses([peer.link], input.remoteChannel))[0] ?? null,
+      summaryChanged: (run) => feed.rowChanged(run) });
     const feed = new ChildRowsFeed({ streams: taskSide.viewStreams, tree, isRunning: (run) => input.activeRoots.resolve(run) !== null,
       rowsChanged: (run) => runStatus.treeChanged(run) });
     releases.push(feed.follow(tree));
@@ -246,7 +256,7 @@ export const composeCollaboration = async (input: Readonly<{
     const ownFiles = new RunOwnAgentsReader(memoryDir);
     const runTree = new RunTreeView({ tree, ownTreeOf: (run) => ownFiles.ownTreeOf(run), projection });
     const peers = new PeerChildObservation({ tree, streams: taskSide.viewStreams, peerRunOf, channel: input.remoteChannel,
-      retryStatuses: (peerRunIds, nodeIds) => runStatus.retryPeers(peerRunIds, nodeIds) });
+      retryStatuses: (peerRunIds, nodeIds) => runStatus.retryPeers(peerRunIds, nodeIds), answered: (summary) => runStatus.peerAnswered(summary) });
 
     // 8. Their consumers. Older singletons (their getters are FU-011) return the instance created here.
     releases.push(setProcessTaskDelegationToolService(new TaskDelegationToolService({ delegation,
@@ -265,6 +275,7 @@ export const composeCollaboration = async (input: Readonly<{
       closedTasks: taskSide.closedTasks, restorability });
     return Object.freeze({
       tasks, views, runViewChildren, runTree, runStatus, delegatedRunAgents: new DelegatedRunAgentsReader(tree),
+      rowChanged: (run: RootExecutionIdentity) => feed.rowChanged(run),
       release: () => { for (const release of releases.splice(0).reverse()) release(); },
     });
   } catch (error) {

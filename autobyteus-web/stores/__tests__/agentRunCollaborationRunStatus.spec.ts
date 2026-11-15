@@ -32,7 +32,7 @@ describe('an Agent run\'s view and its delegated runs\' own statuses (SR-083)', 
     await nextTick()
     expect(hold).toHaveBeenLastCalledWith(expect.arrayContaining([{ kind: 'agent', runId: 'host-run' },
       { kind: 'agent_team', runId: teamId(0) }, { kind: 'agent_team', runId: teamId(1) }]))
-    runStatus.apply({ type: 'RUN_STATUS_SNAPSHOT', payload: { runs: [{ kind: 'agent_team', runId: teamId(1), agents: [{ agentRunId: memberId(1, 0), status: 'running' }] }] } })
+    runStatus.apply({ type: 'RUN_STATUS_SNAPSHOT', payload: { runs: [{ kind: 'agent_team', runId: teamId(1), answer: 'ok', node: null, status: null, agents: [{ agentRunId: memberId(1, 0), status: 'running' }] }] } })
     await nextTick()
     expect(store.contextFor('host-run')!.getAgentContext(memberId(1, 0))?.state.currentStatus).toBe('running')
   })

@@ -69,7 +69,7 @@ export class ChildRowsFeed {
 
   constructor(private readonly dependencies: Readonly<{
     streams: Pick<RunViewStreams, "streamOf">;
-    tree: Pick<DelegationIndex, "collaborationTreeOf">;
+    tree: Pick<DelegationIndex, "collaborationTreeOf" | "chainOf">;
     /** Whether a run still runs (its root is live): base's closed set holds only runs that still run. */
     isRunning(run: RootExecutionIdentity): boolean;
     /** A run's rows changed (`/ws/run-status`'s `RUN_TREE_CHANGED`, SR-083): told for the run and every run above it. */
@@ -94,6 +94,18 @@ export class ChildRowsFeed {
       open: Object.freeze(rows.map((row) => Object.freeze({ row, host: placementOf(run, row, rows) }))),
       closed: Object.freeze(closedRows.map((row) => Object.freeze({ row, host: placementOf(run, row, all) }))),
     });
+  }
+
+  /**
+   * A row's content changed (SR-086 G-B1, G-B2): a saved launch, or a peer run's node answered about it. Every tree that
+   * holds the row (the run's own, and each run above it) is told: its open views read it again and send what changed
+   * (`updated`), and its listed views are told on `/ws/run-status`.
+   */
+  rowChanged(run: RootExecutionIdentity): void {
+    for (const holder of this.dependencies.tree.chainOf(run)) {
+      this.dependencies.streams.streamOf<RunTreeChangedEvent>(holder).publish(RUN_TREE_CHANGED_EVENT);
+      this.dependencies.rowsChanged(holder);
+    }
   }
 
   /**

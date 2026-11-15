@@ -34,8 +34,8 @@ describe('the Team and Org views\' run status bridge (SR-083)', () => {
     const stop = installViewRunStatusBridge()
     expect(hold).toHaveBeenLastCalledWith([{ kind: 'agent', runId: 'copy' }, { kind: 'agent_team', runId: 'squad' }])
     runStatus.apply({ type: 'RUN_STATUS_SNAPSHOT', payload: { runs: [
-      { kind: 'agent', runId: 'copy', agents: [{ agentRunId: 'copy', status: 'idle' }] },
-      { kind: 'agent_team', runId: 'squad', agents: [{ agentRunId: 'squad-lead', status: 'running' }] },
+      { kind: 'agent', runId: 'copy', answer: 'ok', node: null, status: null, agents: [{ agentRunId: 'copy', status: 'idle' }] },
+      { kind: 'agent_team', runId: 'squad', answer: 'ok', node: null, status: null, agents: [{ agentRunId: 'squad-lead', status: 'running' }] },
     ] } })
     await nextTick()
     expect([copy.state.currentStatus, lead.state.currentStatus]).toEqual(['idle', 'running'])
@@ -57,7 +57,7 @@ describe('the Team and Org views\' run status bridge (SR-083)', () => {
     const hold = vi.spyOn(runStatus, 'hold').mockImplementation(() => () => undefined)
     const stop = installViewRunStatusBridge()
     expect(hold).toHaveBeenLastCalledWith([{ kind: 'agent', runId: 'helper' }, { kind: 'agent', runId: 'peer-agent' }, { kind: 'agent_team', runId: 'sub' }])
-    runStatus.apply({ type: 'RUN_STATUS_SNAPSHOT', payload: { runs: [{ kind: 'agent', runId: 'helper', agents: [{ agentRunId: 'helper', status: 'running' }] }] } })
+    runStatus.apply({ type: 'RUN_STATUS_SNAPSHOT', payload: { runs: [{ kind: 'agent', runId: 'helper', answer: 'ok', node: null, status: null, agents: [{ agentRunId: 'helper', status: 'running' }] }] } })
     await nextTick()
     expect(helper.state.currentStatus).toBe('running')
     stop()

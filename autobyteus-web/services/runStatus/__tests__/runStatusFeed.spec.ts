@@ -140,11 +140,26 @@ describe('useRunStatusStore', () => {
     setActivePinia(createPinia())
     const store = useRunStatusStore()
     expect(store.isLive('copy')).toBe(false)
-    store.apply({ type: 'RUN_STATUS_SNAPSHOT', payload: { runs: [{ ...agent('copy'), agents: [{ agentRunId: 'copy', status: 'idle' }] }] } })
+    store.apply({ type: 'RUN_STATUS_SNAPSHOT', payload: { runs: [{ ...agent('copy'), answer: 'ok', node: null, status: null, agents: [{ agentRunId: 'copy', status: 'idle' }] }] } })
     expect(store.isLive('copy')).toBe(true)
     store.apply({ type: 'RUN_STATUS_CHANGED', payload: { ...agent('copy'), agentRunId: 'copy', status: 'offline' } })
     expect(store.statusOf('copy')).toBe('offline')
     store.apply({ type: 'RUN_TREE_CHANGED', payload: agent('copy') })
     expect(store.treeRevisionOf(agent('copy'))).toBe(1)
+  })
+
+  it('SR-086 G-A2 … G-A4: a run\'s own state is its node\'s answer: a team\'s status from its root, not_found, unreachable with its node', () => {
+    setActivePinia(createPinia())
+    const store = useRunStatusStore()
+    const team = { kind: 'agent_team' as const, runId: 'squad' }
+    expect(store.runStateOf(team)).toBeNull()
+    store.apply({ type: 'RUN_STATUS_SNAPSHOT', payload: { runs: [
+      { ...team, answer: 'ok', node: null, status: 'running', agents: [{ agentRunId: 'lead', status: 'idle' }, { agentRunId: 'dev', status: 'running' }] },
+      { ...agent('gone'), answer: 'not_found', node: null, status: null, agents: [] },
+    ] } })
+    expect(store.runStateOf(team)).toEqual({ answer: 'ok', node: null, status: 'running' })
+    expect(store.runStateOf(agent('gone'))).toEqual({ answer: 'not_found', node: null, status: null })
+    store.apply({ type: 'RUN_STATE_CHANGED', payload: { ...team, answer: 'unreachable', node: 'beta-node', status: null } })
+    expect(store.runStateOf(team)).toEqual({ answer: 'unreachable', node: 'beta-node', status: null })
   })
 })

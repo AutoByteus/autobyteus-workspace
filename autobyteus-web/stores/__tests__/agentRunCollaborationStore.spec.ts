@@ -41,11 +41,12 @@ vi.mock('~/services/agentCollaboration/agentRunCollaborationChildHydration', () 
 const own = vi.hoisted(() => ({ ensureOpen: vi.fn(), send: vi.fn(async () => undefined), contexts: new Map<string, unknown>() }))
 vi.mock('~/stores/delegatedRunsStore', () => ({ useDelegatedRunsStore: () => ({
   ensureOpen: own.ensureOpen,
-  bindingOf: (subject: { kind: string; agentRunId: string; teamRunId?: string; memberAddress?: string }) => {
+  bindingOf: (subject: { kind: string; agentRunId: string; teamRunId?: string }) => {
     if (!own.contexts.has(subject.agentRunId)) return null
     return { context: own.contexts.get(subject.agentRunId), workspaceRootPath: '/own-ws',
       browse: subject.kind === 'agent' ? { kind: 'run', runId: subject.agentRunId }
-        : { kind: 'teamMember', teamRunId: subject.teamRunId, memberAddress: subject.memberAddress, agentRunId: subject.agentRunId },
+        // The member's address, as the open Team's own view answers it (the subject names the Team run and the agent only).
+        : { kind: 'teamMember', teamRunId: subject.teamRunId, memberAddress: ({ 'pp-run': '/product_team/prototyper' } as Record<string, string>)[subject.agentRunId], agentRunId: subject.agentRunId },
       interaction: { send: own.send, interrupt: vi.fn(), decideTool: vi.fn() } }
   },
 }) }))
@@ -97,7 +98,7 @@ describe('agentRunCollaborationStore', () => {
     // A child the view no longer has is not opening: the run's own target returns.
     expect(store.isSelectedChildOpening('host-run')).toBe(false)
     expect(own.ensureOpen.mock.calls.map(([subject]) => subject)).toEqual([
-      { kind: 'team_member', teamRunId: 'team-run', memberAddress: '/product_team/prototyper', agentRunId: 'pp-run' },
+      { kind: 'team_member', teamRunId: 'team-run', agentRunId: 'pp-run' },
       { kind: 'agent', agentRunId: 'cua-run' },
     ])
     expect(childHydration.hydrate).not.toHaveBeenCalled()

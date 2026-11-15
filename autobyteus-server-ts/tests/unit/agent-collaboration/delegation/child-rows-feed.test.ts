@@ -84,6 +84,21 @@ describe("ChildRowsFeed", () => {
     expect(seen).toEqual([]);
   });
 
+  it("SR-086 G-B1, G-B2: a row's content changed: every tree that holds it (its run's own, and each run above it) is told, open and listed", () => {
+    const changed: string[] = [];
+    const streams = testViewStreams();
+    const worker = { rootSubjectKind: "agent", rootRunId: "worker" } as RootExecutionIdentity;
+    const feed = new ChildRowsFeed({ streams, isRunning: () => true, rowsChanged: (run) => changed.push(run.rootRunId),
+      tree: { collaborationTreeOf: () => ({ rows: () => [], closedRows: () => [] }), chainOf: (run: RootExecutionIdentity) => [run, M] } as never });
+    const seen = (run: RootExecutionIdentity) => { const events: unknown[] = []; streams.streamOf(run).subscribe(({ event }) => events.push(event)); return events; };
+    const atWorker = seen(worker);
+    const atManager = seen(M);
+    feed.rowChanged(worker);
+    expect(atWorker).toEqual([{ kind: "run_tree_changed" }]);
+    expect(atManager).toEqual([{ kind: "run_tree_changed" }]);
+    expect(changed).toEqual(["worker", "manager"]);
+  });
+
   it("base's placement: a row is in the root, in the team run that delegated it, or where its delegating task agent is", () => {
     const squad = teamRow("squad");
     const fromTeam = row("checker", TEAM);
@@ -123,6 +138,7 @@ describe("ChildRowsFeed", () => {
     tree.build();
     tasks.setEntriesListener(tree);
     const runStatus = new RunStatusService({ agents: () => ({}) as never, peerRunOf: () => null, agentsOf: async () => [], peerEnded: () => undefined,
+      peerNodeName: async (nodeId) => nodeId, peerSummary: async () => null, summaryChanged: () => undefined,
       registrations: { resolve: () => null, onRegistrationChanged: () => () => undefined } });
     const feed = new ChildRowsFeed({ streams: testViewStreams(), tree, isRunning: () => true, rowsChanged: (run) => runStatus.treeChanged(run) });
     feed.follow(tree);

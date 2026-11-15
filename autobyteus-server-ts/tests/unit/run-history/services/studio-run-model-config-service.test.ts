@@ -53,8 +53,9 @@ const harness = () => {
   const hasLiveRunOwnership = vi.fn(async () => false);
   const getAgentRunResumeConfig = vi.fn(async () => agentResume);
   const getTeamRunResumeConfig = vi.fn(async () => teamResume);
-  const updateStoppedSelection = vi.fn(async () => ({ subject: "agent-general" }));
-  const updateStoppedSelections = vi.fn(async () => ({ subject: "team-general" }));
+  const updateStoppedSelection = vi.fn(async () => ({ subject: "agent-general", success: true }));
+  const updateStoppedSelections = vi.fn(async () => ({ subject: "team-general", success: true }));
+  const launchSaved = vi.fn();
   const listOptionsMany = vi.fn(async (contexts) => contexts.map(context => ({ currentModelIdentifier: context.currentModelIdentifier, modelListReadable: true, currentModel: null, replacements: [], unavailableReason: null })));
   return {
     listOptionsMany,
@@ -63,7 +64,9 @@ const harness = () => {
     getTeamRunResumeConfig,
     updateStoppedSelection,
     updateStoppedSelections,
+    launchSaved,
     service: new StudioRunModelConfigService({
+      launchSaved,
       modelSelectionService: { listOptions: vi.fn(), listOptionsMany },
       applicationRunOwnership: { hasLiveRunOwnership },
       agentResumeConfigService: { getAgentRunResumeConfig },
@@ -134,6 +137,7 @@ describe("StudioRunModelConfigService", () => {
       canonical: { runId: "agent-run-1", llmConfig: { reasoning_effort: "medium" } },
     });
     expect(agent.updateStoppedSelection).not.toHaveBeenCalled();
+    expect(agent.launchSaved).not.toHaveBeenCalled();
 
     const team = harness();
     team.hasLiveRunOwnership.mockResolvedValue(true);
@@ -154,8 +158,10 @@ describe("StudioRunModelConfigService", () => {
     const agent = harness();
     const agentInput = { agentRunId: "agent-run-1", llmModelIdentifier: "model-1", llmConfig: null };
     await expect(agent.service.updateStoppedAgentRunSelection(agentInput))
-      .resolves.toEqual({ subject: "agent-general" });
+      .resolves.toEqual({ subject: "agent-general", success: true });
     expect(agent.updateStoppedSelection).toHaveBeenCalledWith(agentInput);
+    // SR-086 G-B1: a saved launch tells the trees that hold the run's row.
+    expect(agent.launchSaved).toHaveBeenCalledWith({ rootSubjectKind: "agent", rootRunId: "agent-run-1" });
 
     const team = harness();
     const teamInput = {
@@ -163,8 +169,9 @@ describe("StudioRunModelConfigService", () => {
       selectionPatches: [{ scopeKind: "CONFIGURED_AGENT" as const, scopeAddress: "/coordinator", runtimeKind: RuntimeKind.AUTOBYTEUS, llmModelIdentifier: "model-1", llmConfig: null }],
     };
     await expect(team.service.updateStoppedTeamRunSelections(teamInput))
-      .resolves.toEqual({ subject: "team-general" });
+      .resolves.toEqual({ subject: "team-general", success: true });
     expect(team.updateStoppedSelections).toHaveBeenCalledWith(teamInput);
+    expect(team.launchSaved).toHaveBeenCalledWith({ rootSubjectKind: "agent_team", rootRunId: "team-run-1" });
   });
 
   it("fails reads closed and returns INTERNAL_ERROR/no write when ownership is unreadable", async () => {
