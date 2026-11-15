@@ -1794,4 +1794,4 @@ No architecture review: these follow REQ-006, an approved exception, rule 2 and 
 - **Next action:**
   - architecture review (narrow: a client message on the status connection);
   - then the Implementation Engineer.
-
+- **ARCH-REV-066 passed SR-090.** Its note is applied: a retry re-opens an ended shared peer observation (DEC-807), and concurrent retries for one peer run are coalesced into one peer call.

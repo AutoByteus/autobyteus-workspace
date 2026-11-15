@@ -321,6 +321,8 @@ A run opened as its own run (rule 2) reads its stored conversation, then connect
 - **Retry for an unreachable peer** (SR-090, IMP-RETRY; base's red notice with "Checking {node}…", autobyteus-278). Retry is a status action, so it goes over the status connection:
   - the client sends `RETRY_PEERS { runIds }` on `/ws/run-status`, for peer runs this connection subscribes to. It works from any shown tree: the run list, the phone, the Task card, or an open view;
   - the server calls `RunStatusService.retryPeers`. After each retry's answer, it tells the run's state again, **even if unchanged**, so "Checking" always settles on the next `RUN_STATE_CHANGED` for that run;
+  - a retry **re-opens the shared peer observation if it has ended**, because `observe` never reconnects by itself (DEC-807);
+  - concurrent retries for one peer run are **coalesced**: one is in flight, and later requests join its answer, so several clients pressing Retry make one peer call (ARCH-REV-066);
   - the row's reachability and its notice title come from the tree row's `peer`;
   - removed: the view streams' `REFRESH_REMOTE_TASK_EXECUTIONS` (its contract, the three handlers and `run-view-rows.retryPeers`), which no client sends since stage A;
   - tests: a Retry from the run list and from an open view settles "Checking" for a node that stays unreachable, and for one that comes back.
