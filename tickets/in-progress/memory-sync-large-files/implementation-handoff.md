@@ -147,3 +147,8 @@ Code commit tested: `3a78c3eee` (IMP-01..IMP-05; IR-002 only deletes one export,
 ## API / E2E / Executable Coverage Investigation And Execution Still Required
 
 Independent executable validation remains with `api_e2e_engineer` (AC-003 independent run, rendered card check, any broader environment). Source review first (Large / High).
+
+## Notes for the API-08 / API-06a rerun (from CRR-003)
+
+- In zh-CN, a line break between two Han characters is normal line breaking, not a word split.
+- The probe should also assert the computed `word-break` of a failure row in the DOM (`normal`, with `overflow-wrap: break-word`) and of the path span (`break-all`).
