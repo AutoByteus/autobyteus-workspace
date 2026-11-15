@@ -43,7 +43,8 @@ this file.
   It reruns something only when:
   - the evidence has a gap (send it back to API/E2E, which closes it);
   - new base commits came in when the branch was brought current (one
-    relevant check on the merged state);
+    relevant check on the merged state, and both typechecks, web and
+    server, as TESTING.md's "Rerun by impact" step 5 says);
   - the ticket or this guide asks delivery for it by name.
   The checks this guide lists before tagging are the release's own and always
   run.
