@@ -1,6 +1,8 @@
 import { agentInputStateSchema, compactionRecoveryBlockSchema } from "@autobyteus/agent-presentation-contracts";
 import { z } from "zod";
 import { agentAddressSchema, agentPresentationMessageSchema, agentPresentationPayloadSchemas, jsonValueSchema, nonEmptyStringSchema, remoteTaskExecutionDtoSchema, remoteTaskExecutionSummaryDtoSchema, } from "@autobyteus/agent-presentation-contracts";
+import { collaborationLaunchConfigurationSourceDtoSchema } from "./launch-source-dtos.js";
+import { runTreeChangedEventDtoSchema } from "./run-tree-dtos.js";
 const timestamp = nonEmptyStringSchema;
 const nullableText = nonEmptyStringSchema.nullable();
 export const agentOrgLaunchConfigurationDtoSchema = z.object({
@@ -15,34 +17,6 @@ const configuredAgent = z.object({
     role: z.string().nullable(), description: z.string().nullable(), agentRunId: nonEmptyStringSchema,
     platformAgentRunId: nullableText, launchConfiguration: agentOrgLaunchConfigurationDtoSchema,
 }).strict();
-const collaborationLaunchFallbacksDtoSchema = z.array(z.object({
-    layer: z.enum(["agent_default", "team_default", "model_router"]),
-    runtimeKind: nullableText,
-    llmModelIdentifier: nullableText,
-    reason: z.enum([
-        "incomplete", "runtime_unavailable", "signed_out", "model_unavailable", "blocked", "model_settings_invalid",
-        "router_not_active", "router_failed",
-    ]),
-    detail: nonEmptyStringSchema,
-}).strict());
-/**
- * Where an agent's (or a Team's) launch values came from and the layers skipped before it; `configured` marks a copy
- * started from a configured placement of the coordinating run; `model_router` a choice of the node's Model Router,
- * with its one-sentence reason and task kind (autobyteus-32). Absent on records written before sources existed
- * ("not recorded").
- */
-export const collaborationLaunchConfigurationSourceDtoSchema = z.union([
-    z.object({
-        origin: z.enum(["agent_default", "team_default", "inherited", "configured", "settings"]),
-        fallbacks: collaborationLaunchFallbacksDtoSchema,
-    }).strict(),
-    z.object({
-        origin: z.literal("model_router"),
-        fallbacks: collaborationLaunchFallbacksDtoSchema,
-        choiceReason: nonEmptyStringSchema,
-        taskKind: nonEmptyStringSchema,
-    }).strict(),
-]);
 /** The recorded source of a Team copy member's launch: its own, else its Team's; null when not recorded. */
 export const collaborationMemberLaunchSource = (team, member) => member.launchSource ?? team.defaultLaunchSource ?? null;
 const handoff = z.object({ from: agentAddressSchema, to: agentAddressSchema, rules: z.array(nonEmptyStringSchema).min(1) }).strict();
@@ -167,5 +141,6 @@ export const agentOrgExecutionEventDtoSchema = z.discriminatedUnion("kind", [
     taskExecutionsReopenedEventDtoSchema,
     z.object({ kind: z.literal("remote_task_execution_started"), execution: remoteTaskExecutionDtoSchema }).strict(),
     remoteTaskExecutionSummaryDtoSchema.extend({ kind: z.literal("remote_task_execution_summary") }).strict(),
+    runTreeChangedEventDtoSchema,
 ]);
 //# sourceMappingURL=agent-org-execution-dtos.js.map

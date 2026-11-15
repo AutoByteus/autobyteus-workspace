@@ -1,4 +1,5 @@
 import { agentInputStateSchema, remoteTaskExecutionDtoSchema, remoteTaskExecutionSummaryDtoSchema, } from "@autobyteus/agent-presentation-contracts";
+import { runTreeChangeDtoSchema, runTreeRowDtoSchema } from "@autobyteus/collaboration-stream-contracts";
 import { z } from "zod";
 import { teamAgentErrorPayloadSchema, teamAgentPayloadSchemas, teamInterruptCommandAckPayloadSchema, teamSegmentContentBatchPayloadSchema, } from "./team-agent-message-dtos.js";
 import { teamCommunicationMessagePayloadSchema, teamMemberInputMessagePayloadSchema, } from "./team-collaboration-message-dtos.js";
@@ -26,6 +27,10 @@ const changeSequence = { change_sequence: z.number().int().positive() };
 export const teamRemoteTaskExecutionStartedPayloadSchema = z.object({ ...changeSequence, execution: remoteTaskExecutionDtoSchema }).strict();
 /** What a remote run's node answered about it (autobyteus-278). */
 export const teamRemoteTaskExecutionSummaryPayloadSchema = remoteTaskExecutionSummaryDtoSchema.extend(changeSequence).strict();
+/** The Team view's tree at the snapshot's base (autobyteus-461 SR-084), sent right after it. */
+export const teamRunTreeSnapshotPayloadSchema = z.object({ base_change_sequence: z.number().int().nonnegative(), rows: z.array(runTreeRowDtoSchema) }).strict();
+/** The Team view's tree changed, numbered in its one sequence (an empty change still counts). */
+export const teamRunTreeChangedPayloadSchema = runTreeChangeDtoSchema.extend(changeSequence).strict();
 export const teamStreamServerMessageSchema = z.discriminatedUnion("type", [
     message("SYSTEM_INSTRUCTIONS_SUPPLIED", teamAgentPayloadSchemas.SYSTEM_INSTRUCTIONS_SUPPLIED),
     message("TURN_STARTED", teamAgentPayloadSchemas.TURN_STARTED),
@@ -65,6 +70,8 @@ export const teamStreamServerMessageSchema = z.discriminatedUnion("type", [
     z.object({ type: z.literal("MEMBER_INPUT_MESSAGE"), payload: teamMemberInputMessagePayloadSchema }).strict(),
     z.object({ type: z.literal("REMOTE_TASK_EXECUTION_STARTED"), payload: teamRemoteTaskExecutionStartedPayloadSchema }).strict(),
     z.object({ type: z.literal("REMOTE_TASK_EXECUTION_SUMMARY"), payload: teamRemoteTaskExecutionSummaryPayloadSchema }).strict(),
+    z.object({ type: z.literal("RUN_TREE_SNAPSHOT"), payload: teamRunTreeSnapshotPayloadSchema }).strict(),
+    z.object({ type: z.literal("RUN_TREE_CHANGED"), payload: teamRunTreeChangedPayloadSchema }).strict(),
     z.object({ type: z.literal("ERROR"), payload: teamAgentErrorPayloadSchema }).strict(),
 ]);
 export const parseTeamStreamServerMessage = (value) => {

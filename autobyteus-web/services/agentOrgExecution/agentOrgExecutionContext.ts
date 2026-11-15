@@ -29,6 +29,7 @@ import {
   projectAgentOrgMessageIdentity,
 } from './agentOrgCommunicationPerspective'
 import { useRunHistoryStore } from '~/stores/runHistoryStore'
+import { useRunTreeStore } from '~/stores/runTreeStore'
 import { useCollaborationParticipantMessagesStore } from '~/services/collaborationMessages/collaborationParticipantMessages'
 import { participantMessagesView } from '~/services/collaborationMessages/participantMessageRows'
 import { createAgentContext } from './agentOrgMemberContextFactory'
@@ -269,6 +270,9 @@ export class AgentOrgExecutionContext {
       if (!isRemoteExecutionKnown(this.view.remote_task_executions, event.execution)) return 'checkpoint_required'
     } else if (event.kind === 'remote_task_execution_summary') {
       applyRemoteSummary(event)
+    } else if (event.kind === 'run_tree_changed') {
+      // The Org's tree (SR-084): numbered in the view's sequence, applied to the rows its tree snapshot gave.
+      useRunTreeStore().streamChange({ kind: 'agent_org', runId: this.orgRunId }, event)
     } else {
       try {
         assertAgentOrgCommunicationMessagesCorrelated(this.index, [event.message])

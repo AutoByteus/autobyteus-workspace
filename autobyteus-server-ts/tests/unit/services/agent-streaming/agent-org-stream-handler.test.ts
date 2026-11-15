@@ -117,7 +117,7 @@ describe("AgentOrgStreamHandler", () => {
     expect(sessionId, client.sent.at(-1)).toBeTruthy();
     expect(client.socket.close).not.toHaveBeenCalled();
     const messages = client.sent.map((value) => CollaborationStreamServerMessageSchema.parse(JSON.parse(value)));
-    expect(messages.map((message) => message.type)).toEqual(["CONNECTED", "ROOT_EXECUTION_VIEW_SNAPSHOT", "ROOT_LIFECYCLE"]);
+    expect(messages.map((message) => message.type)).toEqual(["CONNECTED", "ROOT_EXECUTION_VIEW_SNAPSHOT", "RUN_TREE_SNAPSHOT", "ROOT_LIFECYCLE"]);
     expect(messages[1]).toMatchObject({ payload: { root_org: { execution_tree: { rootOrg: {
       defaultLaunchConfiguration: { runtimeKind: RuntimeKind.ANTIGRAVITY_CLI },
       members: [
@@ -136,7 +136,7 @@ describe("AgentOrgStreamHandler", () => {
     const test = harness(); const client = connection(); const sessionId = await test.handler.connect(client.socket, orgRunId);
     expect(sessionId).toBeTruthy();
     const initial = client.sent.map((value) => CollaborationStreamServerMessageSchema.parse(JSON.parse(value)));
-    expect(initial.map((message) => message.type)).toEqual(["CONNECTED", "ROOT_EXECUTION_VIEW_SNAPSHOT", "ROOT_LIFECYCLE"]);
+    expect(initial.map((message) => message.type)).toEqual(["CONNECTED", "ROOT_EXECUTION_VIEW_SNAPSHOT", "RUN_TREE_SNAPSHOT", "ROOT_LIFECYCLE"]);
     const snapshot = initial[1]; expect(snapshot.type).toBe("ROOT_EXECUTION_VIEW_SNAPSHOT");
     if (snapshot.type === "ROOT_EXECUTION_VIEW_SNAPSHOT") expect(snapshot.payload).toMatchObject({ root_subject_kind: "agent_org", root_run_id: orgRunId, root_org: { execution_tree: { rootOrg: { orgRunId } } } });
     test.publisher.publish({
@@ -151,7 +151,7 @@ describe("AgentOrgStreamHandler", () => {
     test.publisher.publish({ kind: "lifecycle", isActive: false });
     // Every frame after the base is sent in order, through the view's ordered sends (SR-062).
     for (let i = 0; i < 10; i += 1) await new Promise((resolve) => setTimeout(resolve, 0));
-    const emitted = client.sent.slice(3).map((value) => CollaborationStreamServerMessageSchema.parse(JSON.parse(value)));
+    const emitted = client.sent.slice(4).map((value) => CollaborationStreamServerMessageSchema.parse(JSON.parse(value)));
     expect(emitted.map((message) => message.type)).toEqual(["ROOT_EXECUTION_EVENT"]);
     expect(emitted[0]).toMatchObject({ payload: { root_subject_kind: "agent_org", root_run_id: orgRunId, change_sequence: 1, event: { kind: "agent_presentation" } } });
   });
@@ -257,13 +257,14 @@ describe("AgentOrgStreamHandler", () => {
     } } });
     test.stop();
     for (let i = 0; i < 10; i += 1) await new Promise((resolve) => setTimeout(resolve, 0));
-    const emitted = client.sent.slice(3).map((value) => CollaborationStreamServerMessageSchema.parse(JSON.parse(value)));
+    const emitted = client.sent.slice(4).map((value) => CollaborationStreamServerMessageSchema.parse(JSON.parse(value)));
     expect(emitted).toMatchObject([
       { type: "ROOT_EXECUTION_EVENT", payload: { change_sequence: 1, change_sequence_through: 1, event: {
         kind: "agent_presentation_batch", items: [{ agent_run_id: agent.agentRunId, message: { payload: { delta: "last words" } } }],
       } } },
       // The switch is an in-band snapshot at the current sequence, in the same live sequence (SR-062, DS-8).
       { type: "ROOT_EXECUTION_VIEW_SNAPSHOT", payload: { root_org: { is_active: false, base_change_sequence: 1, live_sequence_id: test.publisher.liveSequenceId } } },
+      { type: "RUN_TREE_SNAPSHOT", payload: { base_change_sequence: 1 } },
       { type: "ROOT_LIFECYCLE", payload: { is_active: false } },
     ]);
     expect(client.socket.close).not.toHaveBeenCalled();
@@ -279,7 +280,7 @@ describe("AgentOrgStreamHandler", () => {
       } } });
       test.handler.disconnect(sessionId!);
       vi.advanceTimersByTime(2_000);
-      expect(client.sent).toHaveLength(3);
+      expect(client.sent).toHaveLength(4);
     } finally {
       vi.useRealTimers();
     }
@@ -338,16 +339,18 @@ describe("AgentOrgStreamHandler", () => {
       const test = harness(undefined, { stopped: true }); const client = connection();
       expect(await test.handler.connect(client.socket, orgRunId)).toBeTruthy();
       const messages = parse(client);
-      expect(messages.map((message) => message.type)).toEqual(["CONNECTED", "ROOT_EXECUTION_VIEW_SNAPSHOT", "ROOT_LIFECYCLE"]);
+      expect(messages.map((message) => message.type)).toEqual(["CONNECTED", "ROOT_EXECUTION_VIEW_SNAPSHOT", "RUN_TREE_SNAPSHOT", "ROOT_LIFECYCLE"]);
       // The run's one view stream (SR-062): the stopped view is numbered in it, under its live sequence.
       expect(messages[1]).toMatchObject({ payload: { root_org: { is_active: false, base_change_sequence: 0, agent_statuses: [], live_sequence_id: test.publisher.liveSequenceId,
         closed_task_executions: [] } } });
-      expect(messages[2]).toMatchObject({ payload: { is_active: false } });
+      expect(messages[3]).toMatchObject({ payload: { is_active: false } });
       expect(test.service.restoreForInput).not.toHaveBeenCalled();
       test.feed.report({ run: createAgentOrgRootExecutionIdentity(orgRunId), added: [delegatedChild("analyst")], removed: [] });
       await test.feed.settled();
-      expect(parse(client).at(-1)).toMatchObject({ type: "ROOT_EXECUTION_EVENT", payload: { change_sequence: 1,
+      expect(parse(client).at(-2)).toMatchObject({ type: "ROOT_EXECUTION_EVENT", payload: { change_sequence: 1,
         event: { kind: "task_execution_started", host_kind: "root", host_run_id: orgRunId, execution: { agentRunId: "analyst" } } } });
+      // A stopped Org's view follows its tree too (SR-084).
+      expect(parse(client).at(-1)).toMatchObject({ type: "ROOT_EXECUTION_EVENT", payload: { change_sequence: 2, event: { kind: "run_tree_changed", added: [{ key: "agent:analyst" }] } } });
     });
 
     it("SR-083 (superseding CR-461-039): a live Org's snapshot lists its delegated rows and parses; their statuses are each run's own, not in the view", async () => {
@@ -386,7 +389,7 @@ describe("AgentOrgStreamHandler", () => {
       const sessionId = await test.handler.connect(live.socket, orgRunId);
       test.feed.report({ run: org, added: [delegatedChild("by-team", org), delegatedChild("by-worker", org)], removed: [] });
       await test.feed.settled();
-      const started = parse(live).filter((message) => message.type === "ROOT_EXECUTION_EVENT").map((message) => message.payload as { event: { host_kind: string; host_run_id: string; execution: { agentRunId: string } } });
+      const started = parse(live).filter((message) => message.type === "ROOT_EXECUTION_EVENT" && (message.payload as { event: { kind: string } }).event.kind === "task_execution_started").map((message) => message.payload as { event: { host_kind: string; host_run_id: string; execution: { agentRunId: string } } });
       expect(started.map(({ event }) => [event.execution.agentRunId, event.host_kind, event.host_run_id])).toEqual([
         ["by-team", "root", orgRunId], ["by-worker", "root", orgRunId]]);
       const later = connection();
@@ -435,10 +438,10 @@ describe("AgentOrgStreamHandler", () => {
       await flush();
       expect(test.service.restoreForInput).toHaveBeenCalledOnce();
       expect(test.executeAgentCommandWithExecutionKind).toHaveBeenCalledOnce();
-      const tail = parse(client).slice(-3);
-      expect(tail.map((message) => message.type)).toEqual(["AGENT_COMMAND_ACK", "ROOT_EXECUTION_VIEW_SNAPSHOT", "ROOT_LIFECYCLE"]);
+      const tail = parse(client).slice(-4);
+      expect(tail.map((message) => message.type)).toEqual(["AGENT_COMMAND_ACK", "ROOT_EXECUTION_VIEW_SNAPSHOT", "RUN_TREE_SNAPSHOT", "ROOT_LIFECYCLE"]);
       expect(tail[1]).toMatchObject({ payload: { root_org: { is_active: true } } });
-      expect(tail[2]).toMatchObject({ payload: { is_active: true } });
+      expect(tail[3]).toMatchObject({ payload: { is_active: true } });
       expect(client.socket.close).not.toHaveBeenCalled();
     });
   });
@@ -455,18 +458,25 @@ describe("AgentOrgStreamHandler", () => {
     const sessionId = await handler.connect(client.socket, orgRunId);
     await feed.settled();
     const sent = client.sent.map((raw) => CollaborationStreamServerMessageSchema.parse(JSON.parse(raw)));
-    expect(sent.map((message) => message.type)).toEqual(["CONNECTED", "ROOT_EXECUTION_VIEW_SNAPSHOT", "ROOT_LIFECYCLE", "ROOT_EXECUTION_EVENT"]);
+    expect(sent.map((message) => message.type)).toEqual(["CONNECTED", "ROOT_EXECUTION_VIEW_SNAPSHOT", "RUN_TREE_SNAPSHOT", "ROOT_LIFECYCLE", "ROOT_EXECUTION_EVENT", "ROOT_EXECUTION_EVENT"]);
     expect(sent[1]).toMatchObject({ payload: { root_org: { execution_tree: { rootOrg: { taskExecutions: [] } } } } });
-    expect(sent[3]).toMatchObject({ payload: { change_sequence: 1, event: { kind: "task_execution_started", execution: { agentRunId: "analyst" } } } });
+    // SR-084: the tree read at the same base; the row committed after it comes as the tree's change, once.
+    expect(sent[2]).toMatchObject({ payload: { root_subject_kind: "agent_org", base_change_sequence: 0, rows: [{ key: `org_agent:${orgRunId}:delegator` }] } });
+    expect(sent[4]).toMatchObject({ payload: { change_sequence: 1, event: { kind: "task_execution_started", execution: { agentRunId: "analyst" } } } });
+    expect(sent[5]).toMatchObject({ payload: { change_sequence: 2, event: { kind: "run_tree_changed",
+      added: [{ key: "agent:analyst", parentKey: `org_agent:${orgRunId}:delegator`, depth: 1 }] } } });
     feed.report({ run: createAgentOrgRootExecutionIdentity(orgRunId), added: [], removed: [{ teamRunId: "eng" }] });
     await feed.settled();
-    expect(JSON.parse(client.sent.at(-1)!)).toMatchObject({ type: "ROOT_EXECUTION_EVENT", payload: { change_sequence: 2,
+    expect(JSON.parse(client.sent.at(-2)!)).toMatchObject({ type: "ROOT_EXECUTION_EVENT", payload: { change_sequence: 3,
       event: { kind: "task_executions_closed", task_executions: [{ teamRunId: "eng" }] } } });
     // CR-461-042: a row back after its assigner reactivated it is base's reopened row, not a new one.
     feed.report({ run: createAgentOrgRootExecutionIdentity(orgRunId), added: [], removed: [{ agentRunId: "analyst" }] });
     feed.report({ run: createAgentOrgRootExecutionIdentity(orgRunId), added: [delegatedChild("analyst")], removed: [] });
     await feed.settled();
-    expect(JSON.parse(client.sent.at(-1)!)).toMatchObject({ type: "ROOT_EXECUTION_EVENT", payload: { change_sequence: 4, event: { kind: "task_executions_reopened" } } });
+    expect(JSON.parse(client.sent.at(-2)!)).toMatchObject({ type: "ROOT_EXECUTION_EVENT", payload: { change_sequence: 7, event: { kind: "task_executions_reopened" } } });
+    // The tree is read when its notice is sent: the analyst was back before either notice was read, so neither changes it.
+    expect(JSON.parse(client.sent.at(-1)!)).toMatchObject({ payload: { change_sequence: 8, event: { kind: "run_tree_changed", added: [], removed: [], updated: [] } } });
+    expect(JSON.parse(client.sent.at(-3)!)).toMatchObject({ payload: { change_sequence: 6, event: { kind: "run_tree_changed", added: [], removed: [], updated: [] } } });
     handler.disconnect(sessionId!);
   });
 });

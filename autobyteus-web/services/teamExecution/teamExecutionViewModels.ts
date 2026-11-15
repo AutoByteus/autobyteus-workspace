@@ -2,7 +2,7 @@ import type { RowOpenTarget } from '~/stores/runHistoryTypes'
 import type {
   TeamStreamServerMessage,
 } from '@autobyteus/team-stream-contracts';
-import type { CollaborationParticipantMessageDto } from '@autobyteus/collaboration-stream-contracts';
+import type { CollaborationParticipantMessageDto, RunTreeChangeDto } from '@autobyteus/collaboration-stream-contracts';
 import type { RootContextRebuild } from '~/services/collaborationMessages/collaborationParticipantMessages';
 import type { AgentContext } from '~/types/agent/AgentContext';
 import type { AgentStatus } from '~/types/agent/AgentStatus';
@@ -52,7 +52,7 @@ export interface TeamAgentExecutionLocation {
 export type TeamAgentStreamMessage = Exclude<TeamStreamServerMessage,
   | { type: 'CONNECTED' | 'TEAM_RUN_LIFECYCLE' | 'TEAM_EXECUTION_VIEW_SNAPSHOT' | 'SEGMENT_CONTENT_BATCH' }
   | { type: 'AGENT_COMMAND_ACK' | 'TASK_EXECUTION_STARTED' | 'TASK_EXECUTIONS_CLOSED' | 'TASK_EXECUTIONS_REOPENED' | 'TEAM_COMMUNICATION_MESSAGE'
-    | 'DELEGATED_LAUNCH_SELECTIONS_CHANGED' | 'REMOTE_TASK_EXECUTION_STARTED' | 'REMOTE_TASK_EXECUTION_SUMMARY' }>;
+    | 'DELEGATED_LAUNCH_SELECTIONS_CHANGED' | 'REMOTE_TASK_EXECUTION_STARTED' | 'REMOTE_TASK_EXECUTION_SUMMARY' | 'RUN_TREE_SNAPSHOT' | 'RUN_TREE_CHANGED' }>;
 
 export type TeamExecutionEffect =
   | Readonly<{ kind: 'dispatch_agent'; agentRunId: string; message: TeamAgentStreamMessage }>
@@ -67,7 +67,9 @@ export type TeamExecutionEffect =
   /** The view was rebuilt from a snapshot: the Team tab's lists load again when a message could have been missed. */
   | Readonly<{ kind: 'reload_collaboration_messages'; rebuild: RootContextRebuild }>
   /** A snapshot of the view the lists were loaded with: they hold, and follow its live sequence from its base. */
-  | Readonly<{ kind: 'adopt_collaboration_messages'; rebuild: RootContextRebuild }>;
+  | Readonly<{ kind: 'adopt_collaboration_messages'; rebuild: RootContextRebuild }>
+  /** The Team's tree changed (autobyteus-461 SR-084), numbered in the view's sequence. */
+  | Readonly<{ kind: 'apply_run_tree_change'; change: RunTreeChangeDto }>;
 
 export type TeamExecutionApplyResult =
   | Readonly<{ disposition: 'applied' | 'unchanged'; effects: readonly TeamExecutionEffect[] }>

@@ -1,6 +1,7 @@
 import { executePeerCommand, PEER_MENTIONS_REFUSAL } from "../../agent-collaboration/execution/remote/peer-runs.js";
 import { createAgentRootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
-import { inOrderViewDelivery, isChildRowRootEvent, readRowEvent, readRowsAtBase, readViewSnapshot, type RunViewRowSources } from "./run-view-rows.js";
+import { inOrderViewDelivery, isChildRowRootEvent, isReadBeforeSending, readRowEvent, readRowsAtBase, readViewSnapshot, type RunViewRowSources } from "./run-view-rows.js";
+import { isRunTreeChangedEvent } from "../../agent-collaboration/delegation/run-tree-view.js";
 import { randomUUID } from "node:crypto";
 import {
   CollaborationStreamClientMessageSchema,
@@ -105,11 +106,21 @@ export class AgentCollaborationStreamHandler {
           baseChangeSequence: barrier.baseChangeSequence, liveSequenceId: barrier.liveSequenceId,
           lastMessageChangeSequence: barrier.lastMessageChangeSequence, rows: barrier.snapshot.rows }),
       }));
-      // Every frame after the base, in order; a row event's records are read when it is sent.
+      // The run's tree at the same base (SR-084); its changes follow as numbered `run_tree_changed` events.
+      const tree = barrier.snapshot.tree;
+      egress.send(CollaborationStreamServerMessageSchema.parse({ type: "RUN_TREE_SNAPSHOT", payload: { root_subject_kind: "agent", root_run_id: hostRunId,
+        base_change_sequence: barrier.baseChangeSequence, rows: tree.current } }));
+      // Every frame after the base, in order; a row event's records, and the tree on its notice, are read when it is sent.
       let open = true;
-      const unsubscribe = barrier.subscribe(inOrderViewDelivery((event) => isChildRowRootEvent(event.event), async (event) => {
+      const unsubscribe = barrier.subscribe(inOrderViewDelivery((event) => isReadBeforeSending(event.event), async (event) => {
         if (!open) return;
         try {
+          if (isRunTreeChangedEvent(event.event)) {
+            const change = await tree.next();
+            if (open) egress.send(CollaborationStreamServerMessageSchema.parse({ type: "ROOT_EXECUTION_EVENT", payload: { root_subject_kind: "agent",
+              root_run_id: hostRunId, change_sequence: event.changeSequence, event: { kind: "run_tree_changed", ...change } } }));
+            return;
+          }
           const rowEvent = isChildRowRootEvent(event.event) ? await readRowEvent(this.views.projection, identity, event.event) : null;
           const projected = projectAgentCollaborationEvent(hostRunId, event, rowEvent);
           if (projected && open) egress.send(CollaborationStreamServerMessageSchema.parse({ type: "ROOT_EXECUTION_EVENT", payload: projected }));

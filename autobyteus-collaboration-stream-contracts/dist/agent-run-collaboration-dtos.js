@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { agentAddressSchema, agentInputStateSchema, agentPresentationMessageSchema, nonEmptyStringSchema, remoteTaskExecutionDtoSchema, remoteTaskExecutionSummaryDtoSchema, } from "@autobyteus/agent-presentation-contracts";
 import { agentOrgAgentStatusDtoSchema, agentPresentationBatchEventDtoSchema, agentOrgCommunicationMessageDtoSchema, closedTaskExecutionsDtoSchema, taskExecutionDtoSchema, taskExecutionsClosedEventDtoSchema, taskExecutionsReopenedEventDtoSchema, } from "./agent-org-execution-dtos.js";
+import { runTreeChangedEventDtoSchema } from "./run-tree-dtos.js";
 const timestamp = nonEmptyStringSchema;
 /**
  * The collaboration package of one standalone Agent run (root kind `agent`): its host
@@ -51,5 +52,6 @@ export const agentRunCollaborationEventDtoSchema = z.discriminatedUnion("kind", 
     taskExecutionsReopenedEventDtoSchema,
     remoteTaskExecutionStartedEventDtoSchema,
     remoteTaskExecutionSummaryEventDtoSchema,
+    runTreeChangedEventDtoSchema,
 ]);
 //# sourceMappingURL=agent-run-collaboration-dtos.js.map

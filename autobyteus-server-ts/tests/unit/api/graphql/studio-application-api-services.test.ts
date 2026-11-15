@@ -32,6 +32,7 @@ const buildServices = () => ({
   runModelConfigService: { subject: "run-model-config" },
   runViewChildren: { subject: "run-view-children" },
   delegatedRunAgents: { subject: "delegated-run-agents" },
+  runTree: { subject: "run-tree" },
   runViewStreams: { subject: "run-view-streams" },
   bundleService: { subject: "bundle" },
   capabilityService: { subject: "capability" },

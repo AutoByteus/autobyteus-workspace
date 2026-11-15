@@ -52,9 +52,12 @@ describe("AgentCollaborationStreamHandler", () => {
     const { wire } = await connect({ resolveRoot, getActive: () => null }, feed);
     expect(resolveRoot).toHaveBeenCalledWith(HOST);
     expect(root.ensureHostReady).not.toHaveBeenCalled();
-    expect(wire.map((message) => message.type)).toEqual(["CONNECTED", "ROOT_EXECUTION_VIEW_SNAPSHOT", "ROOT_LIFECYCLE"]);
+    expect(wire.map((message) => message.type)).toEqual(["CONNECTED", "ROOT_EXECUTION_VIEW_SNAPSHOT", "RUN_TREE_SNAPSHOT", "ROOT_LIFECYCLE"]);
     expect(wire[1]).toMatchObject({ payload: { root_subject_kind: "agent", root_run_id: HOST,
       root_agent: { is_active: true, closed_task_executions: [], live_sequence_id: root.stream.liveSequenceId } } });
+    // SR-084: the run's tree at the same base, right after the view's snapshot.
+    expect(wire[2]).toMatchObject({ payload: { root_subject_kind: "agent", root_run_id: HOST, base_change_sequence: 0,
+      rows: [{ key: "agent:delegator", parentKey: null, depth: 0, kind: "agent" }] } });
   });
 
   it("reports the agent's real state in the snapshot", async () => {
@@ -101,7 +104,7 @@ describe("AgentCollaborationStreamHandler", () => {
     expect(wire.at(-1)).toMatchObject({ payload: { state: "failed", code: "AGENT_ROOT_COMMAND_FAILED" } });
   });
 
-  it("autobyteus-461 SR-061 … SR-063: a delegation is base's task_execution_started in the run's sequence, with its record; a closure is task_executions_closed", async () => {
+  it("autobyteus-461 SR-061 … SR-063, SR-084: a delegation is base's task_execution_started in the run's sequence, with its record, then the tree's change; a closure is task_executions_closed, then the row leaves the tree", async () => {
     const feed = followTestChildRows();
     const root = fakeRoot(feed, false);
     const hostRun = createAgentRootExecutionIdentity(HOST);
@@ -109,21 +112,25 @@ describe("AgentCollaborationStreamHandler", () => {
     feed.report({ run: hostRun, added: [delegatedChild("writer")], removed: [] });
     feed.report({ run: createAgentRootExecutionIdentity("another-run"), added: [delegatedChild("other")], removed: [] });
     await feed.settled();
-    expect(wire.at(-1)).toMatchObject({ type: "ROOT_EXECUTION_EVENT", payload: { change_sequence: 1,
+    expect(wire.at(-2)).toMatchObject({ type: "ROOT_EXECUTION_EVENT", payload: { change_sequence: 1,
       event: { kind: "task_execution_started", host_kind: "root", host_run_id: HOST, execution: { agentRunId: "writer", address: "/writer" } } } });
+    expect(wire.at(-1)).toMatchObject({ type: "ROOT_EXECUTION_EVENT", payload: { change_sequence: 2,
+      event: { kind: "run_tree_changed", added: [{ key: "agent:writer", parentKey: "agent:delegator", depth: 1, name: "writer" }], removed: [], updated: [] } } });
     feed.report({ run: hostRun, added: [], removed: [{ agentRunId: "writer" }] });
     await feed.settled();
-    expect(wire.at(-1)).toMatchObject({ type: "ROOT_EXECUTION_EVENT", payload: { change_sequence: 2,
+    expect(wire.at(-2)).toMatchObject({ type: "ROOT_EXECUTION_EVENT", payload: { change_sequence: 3,
       event: { kind: "task_executions_closed", task_executions: [{ agentRunId: "writer" }] } } });
+    expect(wire.at(-1)).toMatchObject({ type: "ROOT_EXECUTION_EVENT", payload: { change_sequence: 4, event: { kind: "run_tree_changed", added: [], removed: ["agent:writer"] } } });
     // CR-461-042: back after its assigner reactivated it, as base's reopened row.
     feed.report({ run: hostRun, added: [delegatedChild("writer")], removed: [] });
     await feed.settled();
-    expect(wire.at(-1)).toMatchObject({ type: "ROOT_EXECUTION_EVENT", payload: { change_sequence: 3, event: { kind: "task_executions_reopened" } } });
-    expect(wire).toHaveLength(6);
+    expect(wire.at(-2)).toMatchObject({ type: "ROOT_EXECUTION_EVENT", payload: { change_sequence: 5, event: { kind: "task_executions_reopened" } } });
+    expect(wire.at(-1)).toMatchObject({ type: "ROOT_EXECUTION_EVENT", payload: { change_sequence: 6, event: { kind: "run_tree_changed" } } });
+    expect(wire).toHaveLength(10);
     handler.disconnect(sessionId!);
     feed.report({ run: hostRun, added: [delegatedChild("late")], removed: [] });
     await feed.settled();
-    expect(wire).toHaveLength(6);
+    expect(wire).toHaveLength(10);
   });
 
   it("a row reported while the snapshot is read is in the snapshot or after it, never both (SR-063)", async () => {
@@ -141,6 +148,9 @@ describe("AgentCollaborationStreamHandler", () => {
     const snapshot = wire.find((message) => message.type === "ROOT_EXECUTION_VIEW_SNAPSHOT");
     expect(snapshot).toMatchObject({ payload: { root_agent: { base_change_sequence: 0, execution_tree: { taskExecutions: [] } } } });
     expect(wire.filter((message) => message.type === "ROOT_EXECUTION_EVENT")).toEqual([expect.objectContaining({ payload: expect.objectContaining({
-      change_sequence: 1, event: expect.objectContaining({ kind: "task_execution_started" }) }) })]);
+      change_sequence: 1, event: expect.objectContaining({ kind: "task_execution_started" }) }) }), expect.objectContaining({ payload: expect.objectContaining({
+      change_sequence: 2, event: expect.objectContaining({ kind: "run_tree_changed", added: [expect.objectContaining({ key: "agent:writer" })] }) }) })]);
+    // The tree too (SR-084): read at the same base, so the row is in its change, not its snapshot.
+    expect(wire.find((message) => message.type === "RUN_TREE_SNAPSHOT")).toMatchObject({ payload: { base_change_sequence: 0, rows: [{ key: "agent:delegator" }] } });
   });
 });

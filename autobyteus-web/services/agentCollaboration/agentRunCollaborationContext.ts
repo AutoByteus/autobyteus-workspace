@@ -21,6 +21,7 @@ import { dispatchAgentStreamMessage } from '~/services/agentStreaming/agentStrea
 import { advanceSequencedStream } from '~/services/agentStreaming/sequencedStreamRange'
 import type { AgentPresentationMessage, CompactionRecoveryBlockDto } from '@autobyteus/agent-presentation-contracts'
 import { useCollaborationParticipantMessagesStore } from '~/services/collaborationMessages/collaborationParticipantMessages'
+import { useRunTreeStore } from '~/stores/runTreeStore'
 import { participantMessagesView } from '~/services/collaborationMessages/participantMessageRows'
 import { AgentRunCollaborationIndex, type AgentRootChildAgent, type AgentRootRemoteAgent } from './agentRunCollaborationIndex'
 import {
@@ -184,6 +185,9 @@ export class AgentRunCollaborationContext {
       if (!isRemoteExecutionKnown(this.view.remote_task_executions, event.execution)) return 'checkpoint_required'
     } else if (event.kind === 'remote_task_execution_summary') {
       applyRemoteSummary(event)
+    } else if (event.kind === 'run_tree_changed') {
+      // The run's tree (SR-084): numbered in the view's sequence, applied to the rows its tree snapshot gave.
+      useRunTreeStore().streamChange({ kind: 'agent', runId: this.hostRunId }, event)
     } else if (event.kind === 'task_executions_closed') {
       // Their Task is DONE: they stay in the tree and the Team tab, and leave the listing.
       const unknown = event.task_executions.find((reference) => 'agentRunId' in reference

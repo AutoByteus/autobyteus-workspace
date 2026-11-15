@@ -261,7 +261,7 @@ export const composeCollaboration = async (input: Readonly<{
     releases.push(setProcessTeamRunHistoryService(runs.teamRunHistoryService));
     releases.push(setProcessWorkspaceRunHistoryService(new WorkspaceRunHistoryService({ tree,
       agentRunHistoryService: agentRunHistory, teamRunHistoryService: runs.teamRunHistoryService })));
-    const views = createRunViewSources({ memoryDir, streams: taskSide.viewStreams, rows: { feed, projection, peers, peerRunOf }, registrations: input.activeRoots,
+    const views = createRunViewSources({ memoryDir, streams: taskSide.viewStreams, rows: { feed, projection, peers, peerRunOf, runTree }, registrations: input.activeRoots,
       closedTasks: taskSide.closedTasks, restorability });
     return Object.freeze({
       tasks, views, runViewChildren, runTree, runStatus, delegatedRunAgents: new DelegatedRunAgentsReader(tree),

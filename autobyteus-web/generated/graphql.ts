@@ -2989,6 +2989,7 @@ export type Query = {
   remoteCollaborationCapability: RemoteCollaborationCapabilityGql;
   runFolderWorkJournal?: Maybe<WorkJournalView>;
   runLaunch?: Maybe<Scalars['JSON']['output']>;
+  runTree: Scalars['JSON']['output'];
   runtimeAvailability: RuntimeAvailabilityObject;
   runtimeAvailabilityKinds: Array<Scalars['String']['output']>;
   runtimeCurrentModelDescriptors: Array<RuntimeCurrentModelDescriptorObject>;
@@ -3399,6 +3400,12 @@ export type QueryRunFolderWorkJournalArgs = {
 
 
 export type QueryRunLaunchArgs = {
+  kind: Scalars['String']['input'];
+  runId: Scalars['String']['input'];
+};
+
+
+export type QueryRunTreeArgs = {
   kind: Scalars['String']['input'];
   runId: Scalars['String']['input'];
 };
@@ -6022,6 +6029,14 @@ export type AgentOrgRunModelOptionsQueryVariables = Exact<{
 
 
 export type AgentOrgRunModelOptionsQuery = { __typename?: 'Query', agentOrgRunModelOptions: Array<{ __typename?: 'AgentOrgRunModelOptionObject', scopeKind: string, scopeAddress: string, currentModelIdentifier: string, modelListReadable: boolean, unavailableReason?: string | null, currentModel?: { __typename?: 'RunModelOptionObject', llmModelIdentifier: string, providerName: string, displayName: string, canonicalName: string, description?: string | null, configSchema?: any | null, recommended: boolean } | null, replacements: Array<{ __typename?: 'RunModelOptionObject', llmModelIdentifier: string, providerName: string, displayName: string, canonicalName: string, description?: string | null, configSchema?: any | null, recommended: boolean }> }> };
+
+export type GetRunTreeQueryVariables = Exact<{
+  kind: Scalars['String']['input'];
+  runId: Scalars['String']['input'];
+}>;
+
+
+export type GetRunTreeQuery = { __typename?: 'Query', runTree: any };
 
 export type RuntimeCurrentModelDescriptorsQueryVariables = Exact<{
   runtimeKind: Scalars['String']['input'];
@@ -14273,6 +14288,35 @@ export function useAgentOrgRunModelOptionsLazyQuery(variables?: AgentOrgRunModel
   return VueApolloComposable.useLazyQuery<AgentOrgRunModelOptionsQuery, AgentOrgRunModelOptionsQueryVariables>(AgentOrgRunModelOptionsDocument, variables, options);
 }
 export type AgentOrgRunModelOptionsQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<AgentOrgRunModelOptionsQuery, AgentOrgRunModelOptionsQueryVariables>;
+export const GetRunTreeDocument = gql`
+    query GetRunTree($kind: String!, $runId: String!) {
+  runTree(kind: $kind, runId: $runId)
+}
+    `;
+
+/**
+ * __useGetRunTreeQuery__
+ *
+ * To run a query within a Vue component, call `useGetRunTreeQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetRunTreeQuery` returns an object from Apollo Client that contains result, loading and error properties
+ * you can use to render your UI.
+ *
+ * @param variables that will be passed into the query
+ * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
+ *
+ * @example
+ * const { result, loading, error } = useGetRunTreeQuery({
+ *   kind: // value for 'kind'
+ *   runId: // value for 'runId'
+ * });
+ */
+export function useGetRunTreeQuery(variables: GetRunTreeQueryVariables | VueCompositionApi.Ref<GetRunTreeQueryVariables> | ReactiveFunction<GetRunTreeQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetRunTreeQuery, GetRunTreeQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetRunTreeQuery, GetRunTreeQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetRunTreeQuery, GetRunTreeQueryVariables>> = {}) {
+  return VueApolloComposable.useQuery<GetRunTreeQuery, GetRunTreeQueryVariables>(GetRunTreeDocument, variables, options);
+}
+export function useGetRunTreeLazyQuery(variables?: GetRunTreeQueryVariables | VueCompositionApi.Ref<GetRunTreeQueryVariables> | ReactiveFunction<GetRunTreeQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetRunTreeQuery, GetRunTreeQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetRunTreeQuery, GetRunTreeQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetRunTreeQuery, GetRunTreeQueryVariables>> = {}) {
+  return VueApolloComposable.useLazyQuery<GetRunTreeQuery, GetRunTreeQueryVariables>(GetRunTreeDocument, variables, options);
+}
+export type GetRunTreeQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetRunTreeQuery, GetRunTreeQueryVariables>;
 export const RuntimeCurrentModelDescriptorsDocument = gql`
     query RuntimeCurrentModelDescriptors($runtimeKind: String!, $identifiers: [String!]!) {
   runtimeCurrentModelDescriptors(

@@ -4,6 +4,7 @@ import {
   remoteTaskExecutionDtoSchema,
   remoteTaskExecutionSummaryDtoSchema,
 } from "@autobyteus/agent-presentation-contracts";
+import { runTreeChangeDtoSchema, runTreeRowDtoSchema } from "@autobyteus/collaboration-stream-contracts";
 import { z } from "zod";
 import {
   teamAgentErrorPayloadSchema,
@@ -52,6 +53,10 @@ const changeSequence = { change_sequence: z.number().int().positive() };
 export const teamRemoteTaskExecutionStartedPayloadSchema = z.object({ ...changeSequence, execution: remoteTaskExecutionDtoSchema }).strict();
 /** What a remote run's node answered about it (autobyteus-278). */
 export const teamRemoteTaskExecutionSummaryPayloadSchema = remoteTaskExecutionSummaryDtoSchema.extend(changeSequence).strict();
+/** The Team view's tree at the snapshot's base (autobyteus-461 SR-084), sent right after it. */
+export const teamRunTreeSnapshotPayloadSchema = z.object({ base_change_sequence: z.number().int().nonnegative(), rows: z.array(runTreeRowDtoSchema) }).strict();
+/** The Team view's tree changed, numbered in its one sequence (an empty change still counts). */
+export const teamRunTreeChangedPayloadSchema = runTreeChangeDtoSchema.extend(changeSequence).strict();
 
 export const teamStreamServerMessageSchema = z.discriminatedUnion("type", [
   message("SYSTEM_INSTRUCTIONS_SUPPLIED", teamAgentPayloadSchemas.SYSTEM_INSTRUCTIONS_SUPPLIED),
@@ -92,6 +97,8 @@ export const teamStreamServerMessageSchema = z.discriminatedUnion("type", [
   z.object({ type: z.literal("MEMBER_INPUT_MESSAGE"), payload: teamMemberInputMessagePayloadSchema }).strict(),
   z.object({ type: z.literal("REMOTE_TASK_EXECUTION_STARTED"), payload: teamRemoteTaskExecutionStartedPayloadSchema }).strict(),
   z.object({ type: z.literal("REMOTE_TASK_EXECUTION_SUMMARY"), payload: teamRemoteTaskExecutionSummaryPayloadSchema }).strict(),
+  z.object({ type: z.literal("RUN_TREE_SNAPSHOT"), payload: teamRunTreeSnapshotPayloadSchema }).strict(),
+  z.object({ type: z.literal("RUN_TREE_CHANGED"), payload: teamRunTreeChangedPayloadSchema }).strict(),
   z.object({ type: z.literal("ERROR"), payload: teamAgentErrorPayloadSchema }).strict(),
 ]);
 
@@ -116,6 +123,8 @@ export type TeamStreamServerMessage =
   | Readonly<{ type: "MEMBER_INPUT_MESSAGE"; payload: z.infer<typeof teamMemberInputMessagePayloadSchema> }>
   | Readonly<{ type: "REMOTE_TASK_EXECUTION_STARTED"; payload: z.infer<typeof teamRemoteTaskExecutionStartedPayloadSchema> }>
   | Readonly<{ type: "REMOTE_TASK_EXECUTION_SUMMARY"; payload: z.infer<typeof teamRemoteTaskExecutionSummaryPayloadSchema> }>
+  | Readonly<{ type: "RUN_TREE_SNAPSHOT"; payload: z.infer<typeof teamRunTreeSnapshotPayloadSchema> }>
+  | Readonly<{ type: "RUN_TREE_CHANGED"; payload: z.infer<typeof teamRunTreeChangedPayloadSchema> }>
   | Readonly<{ type: "ERROR"; payload: z.infer<typeof teamAgentErrorPayloadSchema> }>;
 
 export const parseTeamStreamServerMessage = (value: string | unknown): TeamStreamServerMessage => {

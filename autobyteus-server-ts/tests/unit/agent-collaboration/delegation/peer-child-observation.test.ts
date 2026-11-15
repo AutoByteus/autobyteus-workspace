@@ -111,7 +111,10 @@ describe("PeerChildObservation", () => {
       expect.objectContaining({ runId: "researcher-run", reachable: true, title: "Title of researcher-run" }),
       expect.objectContaining({ runId: "marketing-run", reachable: true }),
       expect.objectContaining({ runId: "analyst-run", reachable: false, statuses: [] }),
+      undefined,
     ]);
+    // The answers are in the view's tree's peer rows (SR-084): one tree notice after them.
+    expect(f.eventsOf(delegator).at(-1)).toEqual({ kind: "run_tree_changed" });
     expect(f.observation.cachedSummaries(delegator)).toHaveLength(3);
     // A view that opens later (after its snapshot) gets the cached summaries at once, as frames of its own sequence.
     f.observation.follow(top);

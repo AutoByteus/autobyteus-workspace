@@ -12,6 +12,7 @@ import { buildAuthenticatedWebSocketUrl } from '~/utils/remoteAccess/websocketAu
 import type { CollaboratorMentionDto } from '~/utils/collaborators/collaboratorMentionText'
 import { buildAgentRunCollaborationContext } from './agentRunCollaborationHydration'
 import type { AgentRunCollaborationContext } from './agentRunCollaborationContext'
+import { useRunTreeStore } from '~/stores/runTreeStore'
 import { useCollaborationParticipantMessagesStore } from '~/services/collaborationMessages/collaborationParticipantMessages'
 import { createRandomId } from '~/utils/randomId'
 import { LiveStreamReconnectScheduler } from '~/services/liveStreamLifecycle/liveStreamReconnectScheduler'
@@ -123,6 +124,7 @@ export class AgentRunCollaborationStreamingService {
     this.released = true
     this.reconnect.dispose()
     this.closeSocket('Agent collaboration view released')
+    useRunTreeStore().streamEnded(this.treeRef)
     this.context = null
     this.settleReadiness(new Error('The Agent collaboration view was released.'))
   }
@@ -155,6 +157,8 @@ export class AgentRunCollaborationStreamingService {
       payload: { root_subject_kind: 'agent', root_run_id: this.options.hostRunId } } satisfies CollaborationStreamClientMessage))
     return true
   }
+
+  private get treeRef() { return { kind: 'agent' as const, runId: this.options.hostRunId } }
 
   private commandRoot(targetAgentRunId: string) {
     return {
@@ -232,6 +236,12 @@ export class AgentRunCollaborationStreamingService {
       return
     }
     if (!this.context || this.phase !== 'ready') throw new Error('Agent collaboration event arrived before the snapshot.')
+    if (message.type === 'RUN_TREE_SNAPSHOT') {
+      // The run's tree at the view's base (SR-084); its changes follow as numbered events.
+      if (message.payload.base_change_sequence !== this.context.changeSequence) throw new Error('Agent run tree snapshot is not at the view\'s base.')
+      useRunTreeStore().streamSnapshot(this.treeRef, message.payload.rows)
+      return
+    }
     if (message.type === 'AGENT_COMMAND_ACK') {
       this.acknowledge(message)
       return
@@ -273,6 +283,8 @@ export class AgentRunCollaborationStreamingService {
   /** A loss, or a failed attempt before the snapshot: the scheduler waits and attempts again. */
   private recoveryFailed(detail: string): void {
     if (this.released || !this.options.isCurrent()) return
+    // Meanwhile the run's tree is read, as a listed run's is (SR-084).
+    useRunTreeStore().streamEnded(this.treeRef)
     this.lastFailureDetail = detail
     this.reconnect.connectionLost()
   }

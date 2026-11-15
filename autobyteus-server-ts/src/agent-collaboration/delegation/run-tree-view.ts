@@ -55,6 +55,18 @@ export type RunOwnTree =
     | Readonly<{ kind: "agent"; address: string; agentRunId: string }>
     | Readonly<{ kind: "team"; address: string; teamRunId: string; coordinatorAddress: string; members: readonly RunOwnMember[] }>)[] }>;
 
+/** A run's delegated rows as read at a view's base (`RunTreeView.readAtBase`); their records are read after. */
+export type RunTreeBase = Readonly<{ subtree: readonly SubtreeRow[] }>;
+
+/**
+ * The notice in a run's view stream that its tree may have changed (SR-084): a delegated run started, closed or came
+ * back at any depth (`ChildRowsFeed`), or a peer run's node answered about it (`PeerChildObservation`). Numbered like
+ * every frame of the view; each view session reads the tree again when it sends it and sends what changed.
+ */
+export type RunTreeChangedEvent = Readonly<{ kind: "run_tree_changed" }>;
+export const RUN_TREE_CHANGED_EVENT: RunTreeChangedEvent = Object.freeze({ kind: "run_tree_changed" });
+export const isRunTreeChangedEvent = (event: { kind?: unknown }): event is RunTreeChangedEvent => event.kind === "run_tree_changed";
+
 export type RunTreeSources = Readonly<{
   tree: Pick<DelegationIndex, "collaborationTreeOf">;
   ownTreeOf(run: RootExecutionIdentity): Promise<RunOwnTree | null>;
@@ -105,7 +117,13 @@ const peerLaunchOf = (launches: readonly RemoteAgentLaunchDto[] | undefined, add
 export class RunTreeView {
   constructor(private readonly sources: RunTreeSources) {}
 
-  async rowsOf(run: RootExecutionIdentity): Promise<readonly RunTreeRow[]> {
+  /** The run's delegated rows now, read synchronously: a view's snapshot reads them in the step that takes its base (SR-063). */
+  readAtBase(run: RootExecutionIdentity): RunTreeBase {
+    return Object.freeze({ subtree: this.sources.tree.collaborationTreeOf(run).rows() });
+  }
+
+  /** The run's rows: its own parts, then its delegated rows as read at `atBase` (now, when not given), their records read after. */
+  async rowsOf(run: RootExecutionIdentity, atBase: RunTreeBase = this.readAtBase(run)): Promise<readonly RunTreeRow[]> {
     const own = await this.sources.ownTreeOf(run);
     if (!own) return [];
     const drafts: Draft[] = [];
@@ -114,8 +132,7 @@ export class RunTreeView {
     const anchor = (holder: RootExecutionIdentity, agentRunId: string, key: string) => anchors.set(`${rootExecutionIdentityKey(holder)}|${agentRunId}`, key);
     const fallbackParent = this.ownParts(run, own, drafts, anchor);
 
-    const subtree = this.sources.tree.collaborationTreeOf(run).rows();
-    const records = await Promise.all(subtree.map(async (row) => ({ row, record: await this.recordOf(run, row) })));
+    const records = await Promise.all(atBase.subtree.map(async (row) => ({ row, record: await this.recordOf(run, row) })));
     // Anchors first (a row's delegations may be listed before it is read), then the rows under their delegators.
     const placed = records.map(({ row, record }) => ({ row, rows: record ? this.delegatedRows(row, record, anchor) : [] }));
     for (const { row, rows } of placed) {

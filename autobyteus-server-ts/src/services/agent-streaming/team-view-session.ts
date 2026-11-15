@@ -10,7 +10,9 @@ import type { ActiveCollaborationRootDirectory } from "../../agent-collaboration
 import type { RootTeamRun, RootTeamRunPackageSnapshot } from "../../agent-team-execution/domain/root-team-run.js";
 import type { TeamRunEvent } from "../../agent-team-execution/domain/team-run-event.js";
 import type { TeamRunExecutionTreeSnapshot } from "../../agent-team-execution/domain/team-run-execution-tree.js";
-import { inOrderViewDelivery, isChildRowRootEvent, readRowEvent, readRowsAtBase, readViewSnapshot, type ProjectedRowEvent, type RunViewRowSources, type ViewRows } from "./run-view-rows.js";
+import { inOrderViewDelivery, isChildRowRootEvent, isReadBeforeSending, readRowEvent, readRowsAtBase, readViewSnapshot, type ProjectedRowEvent, type RunViewRowSources, type ViewRows } from "./run-view-rows.js";
+import { isRunTreeChangedEvent, type RunTreeChangedEvent } from "../../agent-collaboration/delegation/run-tree-view.js";
+import type { RunTreeSessionRows } from "../../agent-collaboration/delegation/run-tree-changes.js";
 import { storedTeamPackageSnapshot } from "./stored-view-children.js";
 import { projectSequencedTeamRunEvent, projectTeamExecutionViewSnapshot, projectTeamRowEvent } from "./team-execution-view-projector.js";
 import { projectTeamRemoteEvent } from "./team-remote-event-projector.js";
@@ -46,8 +48,8 @@ export class TeamRunNotRestorableError extends Error {
 }
 
 /** What a team run's view stream carries: the run's own events, its rows' (`ChildRowsFeed`) and their statuses. */
-type TeamViewEvent = TeamRunEvent | RemoteRunRootEvent | ChildRowRootEvent;
-type ViewSnapshot = Readonly<{ own: Pick<RootTeamRunPackageSnapshot, "tree" | "statuses" | "inputStates">; rows: ViewRows }>;
+type TeamViewEvent = TeamRunEvent | RemoteRunRootEvent | ChildRowRootEvent | RunTreeChangedEvent;
+type ViewSnapshot = Readonly<{ own: Pick<RootTeamRunPackageSnapshot, "tree" | "statuses" | "inputStates">; rows: ViewRows; tree: RunTreeSessionRows }>;
 
 const lifecycle = (isActive: boolean): TeamStreamServerMessage =>
   parseTeamStreamServerMessage({ type: "TEAM_RUN_LIFECYCLE", payload: { is_active: isActive } });
@@ -158,11 +160,19 @@ export class TeamViewSession {
       snapshot: connection.snapshot.own, baseChangeSequence: connection.baseChangeSequence, liveSequenceId: connection.liveSequenceId,
       lastMessageChangeSequence: connection.lastMessageChangeSequence,
     }, connection.snapshot.rows));
+    // The run's tree at the same base (SR-084); its changes follow as numbered `RUN_TREE_CHANGED` frames.
+    const tree = connection.snapshot.tree;
+    this.sink.send(parseTeamStreamServerMessage({ type: "RUN_TREE_SNAPSHOT", payload: { base_change_sequence: connection.baseChangeSequence, rows: tree.current } }));
     let open = true;
-    const unsubscribe = connection.subscribe(inOrderViewDelivery((sequenced) => isChildRowRootEvent(sequenced.event as { kind?: unknown }), async (sequenced) => {
+    const unsubscribe = connection.subscribe(inOrderViewDelivery((sequenced) => isReadBeforeSending(sequenced.event as { kind?: unknown }), async (sequenced) => {
       if (!open) return;
       try {
         const event = sequenced.event;
+        if (isRunTreeChangedEvent(event as { kind?: unknown })) {
+          const change = await tree.next();
+          if (open) this.sink.send(parseTeamStreamServerMessage({ type: "RUN_TREE_CHANGED", payload: { change_sequence: sequenced.changeSequence, ...change } }));
+          return;
+        }
         const rowEvent = isChildRowRootEvent(event as { kind?: unknown }) ? await readRowEvent(this.sources.rows.projection, this.identity, event as ChildRowRootEvent) : null;
         const message = this.project(sequenced, rowEvent);
         if (message && open) this.sink.send(message);

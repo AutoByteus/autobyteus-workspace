@@ -78,7 +78,7 @@ export interface TeamExecutionViewState {
   isRemoteAgent(agentRunId: string): boolean;
   applySnapshot(message: Extract<TeamStreamServerMessage, { type: 'TEAM_EXECUTION_VIEW_SNAPSHOT' }>): TeamExecutionApplyResult;
   applyMessage(message: Exclude<TeamStreamServerMessage,
-    { type: 'CONNECTED' | 'TEAM_RUN_LIFECYCLE' | 'TEAM_EXECUTION_VIEW_SNAPSHOT' | 'AGENT_COMMAND_ACK' }>): TeamExecutionApplyResult;
+    { type: 'CONNECTED' | 'TEAM_RUN_LIFECYCLE' | 'TEAM_EXECUTION_VIEW_SNAPSHOT' | 'AGENT_COMMAND_ACK' | 'RUN_TREE_SNAPSHOT' }>): TeamExecutionApplyResult;
 }
 
 export interface CreateTeamExecutionViewStateInput {
@@ -112,7 +112,7 @@ const sequenceOf = (message: Exclude<TeamStreamServerMessage,
 
 const targetAgentRunId = (message: Exclude<TeamStreamServerMessage,
   { type: 'CONNECTED' | 'TEAM_RUN_LIFECYCLE' | 'TEAM_EXECUTION_VIEW_SNAPSHOT' | 'AGENT_COMMAND_ACK' | 'SEGMENT_CONTENT_BATCH' | 'TASK_EXECUTION_STARTED' | 'TASK_EXECUTIONS_CLOSED' | 'TASK_EXECUTIONS_REOPENED' | 'TEAM_COMMUNICATION_MESSAGE' | 'DELEGATED_LAUNCH_SELECTIONS_CHANGED'
-    | 'REMOTE_TASK_EXECUTION_STARTED' | 'REMOTE_TASK_EXECUTION_SUMMARY' }>): string | null => {
+    | 'REMOTE_TASK_EXECUTION_STARTED' | 'REMOTE_TASK_EXECUTION_SUMMARY' | 'RUN_TREE_SNAPSHOT' | 'RUN_TREE_CHANGED' }>): string | null => {
   if (message.type === 'MEMBER_INPUT_MESSAGE') return message.payload.recipient_agent_run_id;
   if (message.type === 'ERROR') return message.payload.agent_run_id;
   return message.payload.agent_run_id;
@@ -367,7 +367,7 @@ export const createTeamExecutionViewState = (
   };
 
   const applyMessage = (message: Exclude<TeamStreamServerMessage,
-    { type: 'CONNECTED' | 'TEAM_RUN_LIFECYCLE' | 'TEAM_EXECUTION_VIEW_SNAPSHOT' | 'AGENT_COMMAND_ACK' }>): TeamExecutionApplyResult => {
+    { type: 'CONNECTED' | 'TEAM_RUN_LIFECYCLE' | 'TEAM_EXECUTION_VIEW_SNAPSHOT' | 'AGENT_COMMAND_ACK' | 'RUN_TREE_SNAPSHOT' }>): TeamExecutionApplyResult => {
     if (streamRecoveryRequired.value) {
       return Object.freeze({
         disposition: 'rejected', code: 'TEAM_EXECUTION_STREAM_RECOVERY_REQUIRED',
@@ -420,6 +420,7 @@ export const createTeamExecutionViewState = (
           streamRecoveryRequired.value = true;
           return Object.freeze({ disposition: 'applied', effects: Object.freeze([{ kind: 'team_stream_recovery_required' as const }]) });
         }
+      } else if (message.type === 'RUN_TREE_CHANGED') { effects.push({ kind: 'apply_run_tree_change', change: message.payload }); // SR-084
       } else if (message.type === 'REMOTE_TASK_EXECUTION_SUMMARY') {
         applyRemoteSummary(message.payload);
         effects.push({ kind: 'reconcile_team_navigation' });

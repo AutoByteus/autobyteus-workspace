@@ -103,8 +103,11 @@ describe("AgentTeamStreamHandler current root stream", () => {
     expect(output.map((message) => message.type)).toEqual([
       "CONNECTED",
       "TEAM_EXECUTION_VIEW_SNAPSHOT",
+      "RUN_TREE_SNAPSHOT",
       "TEAM_RUN_LIFECYCLE",
     ]);
+    // SR-084: the run's tree at the same base, right after the view's snapshot.
+    expect(output[2]).toMatchObject({ payload: { base_change_sequence: 31 } });
     expect(output[1]).toMatchObject({
       payload: {
         root_team_run_id: "team-run-root",
@@ -287,11 +290,18 @@ describe("AgentTeamStreamHandler current root stream", () => {
     sessions.push({ handler: harness.handler, id: sessionId! });
     await harness.feed.settled();
     const output = sent(harness.connection);
-    expect(output.map((message) => message.type)).toEqual(["CONNECTED", "TEAM_EXECUTION_VIEW_SNAPSHOT", "TEAM_RUN_LIFECYCLE", "TASK_EXECUTION_STARTED", "TASK_EXECUTIONS_CLOSED"]);
+    expect(output.map((message) => message.type)).toEqual(["CONNECTED", "TEAM_EXECUTION_VIEW_SNAPSHOT", "RUN_TREE_SNAPSHOT", "TEAM_RUN_LIFECYCLE",
+      "TASK_EXECUTION_STARTED", "RUN_TREE_CHANGED", "TASK_EXECUTIONS_CLOSED", "RUN_TREE_CHANGED"]);
     expect(output[1]!.payload).toMatchObject({ closed_task_executions: [], execution_tree: { root_team: { task_executions: [] } } });
-    expect(output[3]!.payload).toEqual({ change_sequence: 1, parent_team_run_id: "team-run-root",
+    // SR-084: the tree read at the same base; the row committed after it comes as the tree's change, once.
+    expect(output[2]!.payload).toEqual({ base_change_sequence: 0, rows: [expect.objectContaining({ key: "team:team-run-root" }),
+      expect.objectContaining({ key: "team_member:team-run-root:delegator" })] });
+    expect(output[4]!.payload).toEqual({ change_sequence: 1, parent_team_run_id: "team-run-root",
       execution: expect.objectContaining({ kind: "task_agent", agent_run_id: "writer", address: "/writer" }) });
-    expect(output[4]!.payload).toEqual({ change_sequence: 2, task_executions: [{ agent_run_id: "old-helper" }] });
+    expect(output[5]!.payload).toMatchObject({ change_sequence: 2, added: [{ key: "agent:writer", parentKey: "team_member:team-run-root:delegator", depth: 2 }],
+      removed: [], updated: [] });
+    expect(output[6]!.payload).toEqual({ change_sequence: 3, task_executions: [{ agent_run_id: "old-helper" }] });
+    expect(output[7]!.payload).toEqual({ change_sequence: 4, added: [], removed: [], updated: [] });
   });
 
   it("CR-461-042: a row back after its assigner reactivated it is base's TASK_EXECUTIONS_REOPENED, not TASK_EXECUTION_STARTED", async () => {
@@ -305,7 +315,7 @@ describe("AgentTeamStreamHandler current root stream", () => {
     await harness.feed.settled();
     const rowEvents = sent(harness.connection).filter((message) => message.type.startsWith("TASK_EXECUTION"));
     expect(rowEvents.map((message) => message.type)).toEqual(["TASK_EXECUTION_STARTED", "TASK_EXECUTIONS_CLOSED", "TASK_EXECUTIONS_REOPENED"]);
-    expect(rowEvents[2]!.payload).toMatchObject({ change_sequence: 3, executions: [{ parent_team_run_id: "team-run-root", execution: { agent_run_id: "writer" } }] });
+    expect(rowEvents[2]!.payload).toMatchObject({ change_sequence: 5, executions: [{ parent_team_run_id: "team-run-root", execution: { agent_run_id: "writer" } }] });
   });
 
   describe("SR-046: a stopped team run's view (stored mode), never restored to serve the view", () => {
@@ -316,17 +326,18 @@ describe("AgentTeamStreamHandler current root stream", () => {
       const sessionId = await harness.handler.connect(harness.connection, "team-run-root");
       sessions.push({ handler: harness.handler, id: sessionId! });
       const output = sent(harness.connection);
-      expect(output.map((message) => message.type)).toEqual(["CONNECTED", "TEAM_EXECUTION_VIEW_SNAPSHOT", "TEAM_RUN_LIFECYCLE"]);
+      expect(output.map((message) => message.type)).toEqual(["CONNECTED", "TEAM_EXECUTION_VIEW_SNAPSHOT", "RUN_TREE_SNAPSHOT", "TEAM_RUN_LIFECYCLE"]);
       // The run's one view stream (SR-062): the stopped view is numbered in it, under its live sequence.
       expect(output[1]!.payload).toMatchObject({ root_team_run_id: "team-run-root", base_change_sequence: 0, live_sequence_id: harness.stream.liveSequenceId, closed_task_executions: [] });
       expect((output[1]!.payload.agent_statuses as Array<{ status: string }>).every((status) => status.status === "offline")).toBe(true);
-      expect(output[2]).toEqual({ type: "TEAM_RUN_LIFECYCLE", payload: { is_active: false } });
+      expect(output[3]).toEqual({ type: "TEAM_RUN_LIFECYCLE", payload: { is_active: false } });
       expect(harness.teamRunService.restoreForInput).not.toHaveBeenCalled();
       expect(harness.root.openViewSnapshotConnection).not.toHaveBeenCalled();
-      // Its rows stay live: base's row events, numbered in the run's stream.
+      // Its rows stay live: base's row events, numbered in the run's stream, then its tree's change (SR-084).
       harness.feed.report({ run: createTeamRootExecutionIdentity("team-run-root"), added: [delegatedChild("checker")], removed: [] });
       await harness.feed.settled();
-      expect(sent(harness.connection).at(-1)).toMatchObject({ type: "TASK_EXECUTION_STARTED", payload: { change_sequence: 1, execution: { agent_run_id: "checker" } } });
+      expect(sent(harness.connection).at(-2)).toMatchObject({ type: "TASK_EXECUTION_STARTED", payload: { change_sequence: 1, execution: { agent_run_id: "checker" } } });
+      expect(sent(harness.connection).at(-1)).toMatchObject({ type: "RUN_TREE_CHANGED", payload: { change_sequence: 2, added: [{ key: "agent:checker" }] } });
     });
 
     it("an interrupt or tool approval for a member of the stopped team is refused and restores nothing", async () => {
@@ -383,11 +394,12 @@ describe("AgentTeamStreamHandler current root stream", () => {
       await flush();
       expect(harness.teamRunService.restoreForInput).toHaveBeenCalledOnce();
       expect(order).toEqual(["live snapshot", "posted"]);
-      const tail = sent(harness.connection).slice(-3);
-      expect(tail.map((message) => message.type)).toEqual(["TEAM_EXECUTION_VIEW_SNAPSHOT", "TEAM_RUN_LIFECYCLE", "AGENT_STATUS"]);
+      const tail = sent(harness.connection).slice(-4);
+      expect(tail.map((message) => message.type)).toEqual(["TEAM_EXECUTION_VIEW_SNAPSHOT", "RUN_TREE_SNAPSHOT", "TEAM_RUN_LIFECYCLE", "AGENT_STATUS"]);
       expect(tail[0]!.payload).toMatchObject({ base_change_sequence: 31, live_sequence_id: "live-team-1" });
-      expect(tail[1]).toEqual({ type: "TEAM_RUN_LIFECYCLE", payload: { is_active: true } });
-      expect(tail[2]!.payload).toMatchObject({ change_sequence: 32, agent_run_id: "nested-task-agent-run-001" });
+      expect(tail[1]!.payload).toMatchObject({ base_change_sequence: 31 });
+      expect(tail[2]).toEqual({ type: "TEAM_RUN_LIFECYCLE", payload: { is_active: true } });
+      expect(tail[3]!.payload).toMatchObject({ change_sequence: 32, agent_run_id: "nested-task-agent-run-001" });
       expect(sent(harness.connection).filter((message) => message.type === "CONNECTED")).toHaveLength(1);
     });
 
@@ -397,15 +409,17 @@ describe("AgentTeamStreamHandler current root stream", () => {
       sessions.push({ handler: harness.handler, id: sessionId! });
       harness.stop();
       await flush();
-      const tail = sent(harness.connection).slice(-2);
-      expect(tail.map((message) => message.type)).toEqual(["TEAM_EXECUTION_VIEW_SNAPSHOT", "TEAM_RUN_LIFECYCLE"]);
-      // The switch is an in-band snapshot at the current sequence, in the same live sequence (SR-062, DS-8).
+      const tail = sent(harness.connection).slice(-3);
+      expect(tail.map((message) => message.type)).toEqual(["TEAM_EXECUTION_VIEW_SNAPSHOT", "RUN_TREE_SNAPSHOT", "TEAM_RUN_LIFECYCLE"]);
+      // The switch is an in-band snapshot at the current sequence, in the same live sequence (SR-062, DS-8), the tree's too.
       expect(tail[0]!.payload).toMatchObject({ base_change_sequence: harness.stream.getCurrentChangeSequence(), live_sequence_id: harness.stream.liveSequenceId });
-      expect(tail[1]).toEqual({ type: "TEAM_RUN_LIFECYCLE", payload: { is_active: false } });
+      expect(tail[1]!.payload).toMatchObject({ base_change_sequence: harness.stream.getCurrentChangeSequence() });
+      expect(tail[2]).toEqual({ type: "TEAM_RUN_LIFECYCLE", payload: { is_active: false } });
       expect(harness.connection.close).not.toHaveBeenCalled();
       harness.feed.report({ run: createTeamRootExecutionIdentity("team-run-root"), added: [delegatedChild("checker")], removed: [] });
       await harness.feed.settled();
-      expect(sent(harness.connection).at(-1)).toMatchObject({ type: "TASK_EXECUTION_STARTED" });
+      expect(sent(harness.connection).at(-2)).toMatchObject({ type: "TASK_EXECUTION_STARTED" });
+      expect(sent(harness.connection).at(-1)).toMatchObject({ type: "RUN_TREE_CHANGED", payload: { added: [{ key: "agent:checker" }] } });
     });
 
     it.each([

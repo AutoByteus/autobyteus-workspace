@@ -14,6 +14,7 @@ import { buildAuthenticatedWebSocketUrl } from '~/utils/remoteAccess/websocketAu
 import { GetAgentOrgExecutionCheckpoint } from '~/graphql/queries/runHistoryQueries'
 import { getApolloClient } from '~/utils/apolloClient'
 import { stageAgentOrgExecutionContext } from './agentOrgContextHydration'
+import { useRunTreeStore } from '~/stores/runTreeStore'
 import { useCollaborationParticipantMessagesStore } from '~/services/collaborationMessages/collaborationParticipantMessages'
 import { AgentOrgExecutionContext } from './agentOrgExecutionContext'
 import type { CollaboratorMentionDto } from '~/utils/collaborators/collaboratorMentionText'
@@ -167,10 +168,13 @@ export class AgentOrgStreamingService {
     this.openSocket()
   }
 
+  private get treeRef() { return { kind: 'agent_org' as const, runId: this.options.orgRunId } }
+
   disconnect(): void {
     this.released = true
     this.reconnect.dispose()
     this.closeSocket('AgentOrg context released')
+    useRunTreeStore().streamEnded(this.treeRef)
     this.context = null
     this.recoveryCheckpoint = null
     this.recoveryFocus = null
@@ -322,6 +326,14 @@ export class AgentOrgStreamingService {
     if (!this.context || this.streamPhase !== 'ready') {
       throw new Error('AgentOrg stream event arrived before the snapshot barrier.')
     }
+    if (message.type === 'RUN_TREE_SNAPSHOT') {
+      // The Org's tree at the view's base (SR-084), after each snapshot; its changes follow as numbered events.
+      if (message.payload.root_subject_kind !== 'agent_org' || message.payload.base_change_sequence !== this.context.changeSequence) {
+        throw new Error('AgentOrg run tree snapshot is not at the view\'s base.')
+      }
+      useRunTreeStore().streamSnapshot(this.treeRef, message.payload.rows)
+      return
+    }
     if (message.type === 'ROOT_EXECUTION_EVENT') {
       if (message.payload.root_subject_kind !== 'agent_org') {
         throw new Error('AgentOrg stream supplied a non-Org event.')
@@ -409,6 +421,8 @@ export class AgentOrgStreamingService {
   /** A loss, or a failed attempt before the snapshot: the scheduler waits and attempts again. */
   private recoveryFailed(detail: string): void {
     if (this.released) return
+    // Meanwhile the Org's tree is read, as a listed run's is (SR-084).
+    useRunTreeStore().streamEnded(this.treeRef)
     this.lastFailureDetail = detail
     this.reconnect.connectionLost()
   }

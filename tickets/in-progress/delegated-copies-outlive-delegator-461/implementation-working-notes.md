@@ -513,3 +513,27 @@ Team-tab keys by own run) and the server follower (`agent-run-follower.ts`, hand
 3. server: `PeerChildStop` (peer only), remove the save/options/`DelegatedChildLaunches`; codegen;
 4. tests: Team and Org peer-child message + interrupt reach the node (ARCH-REV-039 note 1);
 5. remaining server items (SR-039 routing is part of 3; checkpoints; sequencing tests), step 7, docs, handoff.
+
+## SR-084 / SR-085 (round 35)
+
+Step 1, `RunTreeView`:
+- `4778dd20d8`: the builder (`run-tree-view.ts`), `ownTreeOf`, the peer summary on `ChildRowRecord`, and the `runTree(kind, runId)` query.
+- Uncommitted: the view-stream delivery. Pieces:
+  - `RunTreeView.readAtBase`;
+  - `run-tree-changes.ts` (`diffRunTree`, `RunTreeSessionRows`);
+  - the `run_tree_changed` notice: `ChildRowsFeed` publishes it after each change's row events, and `PeerChildObservation` publishes one per view after a batch of answers;
+  - `readRowsAtBase` / `readViewSnapshot` carry the tree;
+  - the three sessions send `RUN_TREE_SNAPSHOT` right after the view snapshot. Each notice becomes a numbered `run_tree_changed` root event (agent and org streams) or a `RUN_TREE_CHANGED` message (team stream), sent even when empty, since its number counts;
+  - contracts: `launch-source-dtos.ts` (moved out of the org file, to avoid an import cycle), `run-tree-dtos.ts` (rows, change, `applyRunTreeChange`), the event in both unions, and `RUN_TREE_SNAPSHOT`. The team-stream contracts gain a dependency on the collaboration contracts.
+  - Tests are written (feed, peer observation, the three handlers, `run-tree-changes.test.ts`, contract tests); helper `testOwnTree`.
+- Blocked until API/E2E is done:
+  - `pnpm install` (to link the new team-contracts dependency) and a rebuild of the contracts `dist`;
+  - then run the handler, contract and `run-tree-changes` tests;
+  - then commit step 1.
+  - The web must accept the new event kinds (advance the sequence) in the same round, or its view clients reopen on a gap.
+- Step 2 web plan:
+  - one client store of run trees per run ref: the view stream's rows when the view is open, else `runTree` read on expand or list load, and re-read on `RUN_TREE_CHANGED`, newest answer only;
+  - rows rendered with statuses by `statusIds`;
+  - expansion and selection by row key;
+  - every open through `openRunTarget(topRun, row.openTarget)` in `composables/useRunOpening.ts`.
+- 3b (later): `agent-stream-handler.ts` is at 490 effective lines, so the snapshot connection, `AgentStreamSequence` and offsets go in new files.

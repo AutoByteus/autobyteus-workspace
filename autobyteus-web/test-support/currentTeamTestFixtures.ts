@@ -315,5 +315,5 @@ export const testTeamMessagesOf = (team: AgentTeamContext): readonly Collaborati
 export const applyTestTeamMessage = (
   context: AgentTeamContext,
   message: Exclude<TeamStreamServerMessage,
-    { type: 'CONNECTED' | 'TEAM_RUN_LIFECYCLE' | 'TEAM_EXECUTION_VIEW_SNAPSHOT' | 'AGENT_COMMAND_ACK' }>,
+    { type: 'CONNECTED' | 'TEAM_RUN_LIFECYCLE' | 'TEAM_EXECUTION_VIEW_SNAPSHOT' | 'AGENT_COMMAND_ACK' | 'RUN_TREE_SNAPSHOT' }>,
 ) => context.view.applyMessage(message);

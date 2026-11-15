@@ -6,6 +6,7 @@ import type { TaskExecutionReference } from "../execution/task/task-execution-re
 import type { ChildRowsChange, DelegationIndex } from "./delegation-index.js";
 import type { SubtreeRow } from "./collaboration-tree.js";
 import type { RunViewStreams } from "./run-view-stream.js";
+import { RUN_TREE_CHANGED_EVENT, type RunTreeChangedEvent } from "./run-tree-view.js";
 
 /** One row as a view projects it: a run on this node (from its own file), or a peer's run. */
 export type ChildRowRecord =
@@ -102,7 +103,7 @@ export class ChildRowsFeed {
    */
   private changed(change: ChildRowsChange): void {
     const rows = this.dependencies.tree.collaborationTreeOf(change.run).rows();
-    const stream = this.dependencies.streams.streamOf<ChildRowRootEvent>(change.run);
+    const stream = this.dependencies.streams.streamOf<ChildRowRootEvent | RunTreeChangedEvent>(change.run);
     const runKey = rootExecutionIdentityKey(change.run);
     const closed = this.reportedClosed.get(runKey) ?? new Set<string>();
     const reopened: PlacedRow[] = [];
@@ -117,6 +118,8 @@ export class ChildRowsFeed {
       stream.publish({ kind: "task_executions_closed", taskExecutions: Object.freeze([...change.removed]) });
     }
     if (closed.size) this.reportedClosed.set(runKey, closed); else this.reportedClosed.delete(runKey);
+    // The run's tree (SR-084): its open views read it again; its listed, not-open views are told on `/ws/run-status`.
+    stream.publish(RUN_TREE_CHANGED_EVENT);
     this.dependencies.rowsChanged(change.run);
   }
 }

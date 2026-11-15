@@ -2,6 +2,7 @@ import { vi } from "vitest";
 import type { ClosedTaskRefusal } from "../../src/agent-collaboration/execution/task/closed-task-fence.js";
 import type { CollaborationTaskExecutionDto } from "@autobyteus/collaboration-stream-contracts";
 import { ChildRowsFeed } from "../../src/agent-collaboration/delegation/child-rows-feed.js";
+import { RunTreeView, type RunOwnTree } from "../../src/agent-collaboration/delegation/run-tree-view.js";
 import { testViewStreams } from "./view-streams.js";
 import type { ChildRowsChange } from "../../src/agent-collaboration/delegation/delegation-index.js";
 import type { SubtreeRow } from "../../src/agent-collaboration/delegation/collaboration-tree.js";
@@ -18,6 +19,14 @@ export const agentChildRow = (agentRunId: string, address = `/${agentRunId}`): C
 export const delegatedChild = (agentRunId: string, parent: RootExecutionIdentity = { rootSubjectKind: "agent", rootRunId: "delegating" }): SubtreeRow => ({
   run: { agentRunId }, taskId: "T1", delegatorAgentRunId: "delegator",
   entryAgentRunId: agentRunId, started: true, linkedAt: "2026-11-01T00:00:00.000Z", recipientAddress: `/${agentRunId}`, parent });
+
+/** A test run's own parts: its one agent (or member) is the `delegator` of the test's rows. */
+export const testOwnTree = (run: RootExecutionIdentity): RunOwnTree => {
+  const delegator = { address: "/delegator", agentRunId: "delegator" };
+  if (run.rootSubjectKind === "agent") return { kind: "agent", ...delegator };
+  if (run.rootSubjectKind === "agent_team") return { kind: "agent_team", teamRunId: run.rootRunId, coordinatorAddress: delegator.address, members: [delegator] };
+  return { kind: "agent_org", orgRunId: run.rootRunId, parts: [{ kind: "agent", ...delegator }] };
+};
 
 /**
  * A `ChildRowsFeed` over a test's own row reports (autobyteus-461 SR-061 … SR-063): `report(change)` updates the rows and
@@ -36,9 +45,10 @@ export const followTestChildRows = () => {
   feed.follow({ subscribeChildRows: (next: (change: ChildRowsChange) => void) => { listener = next; return () => { listener = null; }; } });
   const projection = { rowOf: async (child: SubtreeRow) => "agentRunId" in child.run
     ? { kind: "local" as const, row: agentChildRow(child.run.agentRunId, child.recipientAddress) } : null };
+  const runTree = new RunTreeView({ tree: tree as never, ownTreeOf: async (run) => testOwnTree(run), projection });
   return {
     streams,
-    rows: { feed, projection, peers: { follow: () => () => undefined, refresh: async () => undefined }, peerRunOf: () => null },
+    rows: { feed, projection, peers: { follow: () => () => undefined, refresh: async () => undefined }, peerRunOf: () => null, runTree },
     report: (change: Readonly<{ run: RootExecutionIdentity; added: readonly SubtreeRow[]; removed: ChildRowsChange["removed"] }>) => {
       const key = rootExecutionIdentityKey(change.run);
       const removed = new Set(change.removed.map((run) => "agentRunId" in run ? run.agentRunId : run.teamRunId));

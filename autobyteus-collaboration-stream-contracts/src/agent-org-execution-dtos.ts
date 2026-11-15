@@ -9,6 +9,8 @@ import {
   remoteTaskExecutionDtoSchema,
   remoteTaskExecutionSummaryDtoSchema,
 } from "@autobyteus/agent-presentation-contracts";
+import { collaborationLaunchConfigurationSourceDtoSchema, type CollaborationLaunchConfigurationSourceDto } from "./launch-source-dtos.js";
+import { runTreeChangedEventDtoSchema } from "./run-tree-dtos.js";
 
 const timestamp = nonEmptyStringSchema;
 const nullableText = nonEmptyStringSchema.nullable();
@@ -28,37 +30,6 @@ const configuredAgent = z.object({
 }).strict();
 
 type LaunchConfigurationDto = Readonly<z.infer<typeof agentOrgLaunchConfigurationDtoSchema>>;
-
-const collaborationLaunchFallbacksDtoSchema = z.array(z.object({
-  layer: z.enum(["agent_default", "team_default", "model_router"]),
-  runtimeKind: nullableText,
-  llmModelIdentifier: nullableText,
-  reason: z.enum([
-    "incomplete", "runtime_unavailable", "signed_out", "model_unavailable", "blocked", "model_settings_invalid",
-    "router_not_active", "router_failed",
-  ]),
-  detail: nonEmptyStringSchema,
-}).strict());
-
-/**
- * Where an agent's (or a Team's) launch values came from and the layers skipped before it; `configured` marks a copy
- * started from a configured placement of the coordinating run; `model_router` a choice of the node's Model Router,
- * with its one-sentence reason and task kind (autobyteus-32). Absent on records written before sources existed
- * ("not recorded").
- */
-export const collaborationLaunchConfigurationSourceDtoSchema = z.union([
-  z.object({
-    origin: z.enum(["agent_default", "team_default", "inherited", "configured", "settings"]),
-    fallbacks: collaborationLaunchFallbacksDtoSchema,
-  }).strict(),
-  z.object({
-    origin: z.literal("model_router"),
-    fallbacks: collaborationLaunchFallbacksDtoSchema,
-    choiceReason: nonEmptyStringSchema,
-    taskKind: nonEmptyStringSchema,
-  }).strict(),
-]);
-export type CollaborationLaunchConfigurationSourceDto = Readonly<z.infer<typeof collaborationLaunchConfigurationSourceDtoSchema>>;
 
 /**
  * A Team copy member's launch: the complete launch its own run has (a Team-level choice is the Team's default only:
@@ -259,6 +230,7 @@ export const agentOrgExecutionEventDtoSchema = z.discriminatedUnion("kind", [
   taskExecutionsReopenedEventDtoSchema,
   z.object({ kind: z.literal("remote_task_execution_started"), execution: remoteTaskExecutionDtoSchema }).strict(),
   remoteTaskExecutionSummaryDtoSchema.extend({ kind: z.literal("remote_task_execution_summary") }).strict(),
+  runTreeChangedEventDtoSchema,
 ]);
 
 export type AgentOrgExecutionTreeDto = Readonly<z.infer<typeof agentOrgExecutionTreeDtoSchema>>;

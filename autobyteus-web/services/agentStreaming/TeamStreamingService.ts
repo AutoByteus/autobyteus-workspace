@@ -28,6 +28,7 @@ import {
 import { toAgentProjectionMessage } from './teamStreamDtoAdapters';
 import type { CollaboratorMentionDto } from '~/utils/collaborators/collaboratorMentionText';
 import type { TeamExecutionEffect } from '~/services/teamExecution/teamExecutionViewModels';
+import { useRunTreeStore } from '~/stores/runTreeStore';
 import { useCollaborationParticipantMessagesStore } from '~/services/collaborationMessages/collaborationParticipantMessages';
 import {
   beginTeamMemberGeneration,
@@ -129,6 +130,7 @@ export class TeamStreamingService {
   }
 
   disconnect(): void {
+    if (this.teamContext) useRunTreeStore().streamEnded(this.treeRefOf(this.teamContext));
     this.rejectCandidate(new Error('Candidate Team stream was disposed before readiness.'));
     this.drainPendingInterruptCommands('Interrupt was cancelled because the stream disconnected.');
     this.teamSends.drain('Team message admission was interrupted because the stream disconnected.');
@@ -274,7 +276,11 @@ export class TeamStreamingService {
     else this.reconnect.startOver();
   };
 
+  private treeRefOf(context: AgentTeamContext) { return { kind: 'agent_team' as const, runId: context.view.getRootTeamRunId() }; }
+
   private markTransportLost(reason: string | undefined): void {
+    // Meanwhile the Team's tree is read, as a listed run's is (SR-084).
+    if (this.teamContext) useRunTreeStore().streamEnded(this.treeRefOf(this.teamContext));
     if (!this.isReopenRequired) this.phase = 'disconnected';
     this.drainPendingInterruptCommands(reason || 'Interrupt result was lost because the stream disconnected.');
     this.teamSends.drain(reason || 'Team message admission was lost because the stream disconnected.');
@@ -327,6 +333,14 @@ export class TeamStreamingService {
       this.expectedBaseChangeSequence = null;
       this.reconnect.connected();
       this.resolveCandidate();
+      return;
+    }
+    if (message.type === 'RUN_TREE_SNAPSHOT') {
+      // The Team's tree at the view's base (SR-084), after each snapshot; its changes follow as numbered messages.
+      if (this.phase !== 'ready' || message.payload.base_change_sequence !== context.view.getChangeSequence()) {
+        throw new Error(`Team run tree snapshot is not at the view's base (during '${this.phase}').`);
+      }
+      useRunTreeStore().streamSnapshot(this.treeRefOf(context), message.payload.rows);
       return;
     }
     if (message.type === 'TEAM_RUN_LIFECYCLE') {
@@ -391,6 +405,8 @@ export class TeamStreamingService {
             context.view.getFocusedAgentRunId(),
           );
         }
+      } else if (effect.kind === 'apply_run_tree_change') {
+        useRunTreeStore().streamChange(this.treeRefOf(context), effect.change);
       } else if (effect.kind === 'record_team_token_usage') {
         useTokenUsageMeterStore().applyTeamTokenUsage(context.view.getRootTeamRunId(), effect.agentRunId, effect.details);
       } else if (effect.kind === 'dispatch_agent') {

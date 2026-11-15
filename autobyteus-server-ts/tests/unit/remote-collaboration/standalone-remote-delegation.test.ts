@@ -428,7 +428,9 @@ describe("remote delegation between two standalone runs, in process (slice 1 ste
     expect(events).toEqual([{ kind: "remote_task_execution_summary", summary: { nodeId: B_ID, runId: "publisher_r1", reachable: true,
       title: "Publish the video draft.", statuses: [{ agentRunId: "publisher_r1", status: "idle" }],
       // SR-038: the run's launches, from B's own file.
-      launches: [expect.objectContaining({ address: "/publisher", runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK, llmModelIdentifier: "sonnet" })] } }]);
+      launches: [expect.objectContaining({ address: "/publisher", runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK, llmModelIdentifier: "sonnet" })] } },
+      // SR-084: the answer is in the view's tree's peer row; one notice after it.
+      { kind: "run_tree_changed" }]);
 
     // B's host reports running: A reads it by the run's ID through its handle (SR-083), not as a frame of its view.
     runStatus = new RunStatusService({ agents: () => ({}) as never, peerRunOf, agentsOf: async () => [], peerEnded: (id) => observation.ended(id),
@@ -466,7 +468,7 @@ describe("remote delegation between two standalone runs, in process (slice 1 ste
     events.length = 0;
     await observation.refresh(delegator);
     expect(events).toEqual([{ kind: "remote_task_execution_summary", summary: { nodeId: B_ID, runId: "publisher_r1", reachable: true,
-      title: "Publish the video draft.", statuses: [], launches: [expect.objectContaining({ address: "/publisher" })] } }]);
+      title: "Publish the video draft.", statuses: [], launches: [expect.objectContaining({ address: "/publisher" })] } }, { kind: "run_tree_changed" }]);
     statusConnection.close();
     close();
   });

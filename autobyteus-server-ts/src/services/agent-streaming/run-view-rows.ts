@@ -6,6 +6,8 @@ import type { PeerRunOf } from "../../agent-collaboration/execution/remote/peer-
 import type { RootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import { runIdentityOf } from "../../agent-collaboration/execution/task/task-execution-resource-port.js";
 import type { TaskExecutionReference } from "../../agent-collaboration/execution/task/task-execution-reference.js";
+import { isRunTreeChangedEvent, type RunTreeBase, type RunTreeView } from "../../agent-collaboration/delegation/run-tree-view.js";
+import { RunTreeSessionRows } from "../../agent-collaboration/delegation/run-tree-changes.js";
 
 /** What a run's view reads about the rows under it (SR-061 … SR-063), from the composition root. */
 export type RunViewRowSources = Readonly<{
@@ -15,6 +17,8 @@ export type RunViewRowSources = Readonly<{
   peers: Pick<PeerChildObservation, "follow" | "refresh">;
   /** A peer run by its own ID (SR-066): a view's command for a peer row goes to its handle, never through a root. */
   peerRunOf: PeerRunOf;
+  /** The run's tree (SR-084): its rows read with a snapshot's base, sent after it, and read again on each tree notice. */
+  runTree: Pick<RunTreeView, "readAtBase" | "rowsOf">;
 }>;
 
 /**
@@ -23,8 +27,11 @@ export type RunViewRowSources = Readonly<{
  */
 export type RowsAtBase = Readonly<{ rows: ReturnType<ChildRowsFeed["rowsOf"]> }>;
 
-export const readRowsAtBase = (sources: Pick<RunViewRowSources, "feed">, run: RootExecutionIdentity): RowsAtBase =>
-  Object.freeze({ rows: sources.feed.rowsOf(run) });
+/** A view snapshot's rows and its tree's delegated rows, read in the one synchronous step that takes its base (SR-063). */
+export type ViewAtBase = RowsAtBase & Readonly<{ tree: RunTreeBase }>;
+
+export const readRowsAtBase = (sources: Pick<RunViewRowSources, "feed" | "runTree">, run: RootExecutionIdentity): ViewAtBase =>
+  Object.freeze({ rows: sources.feed.rowsOf(run), tree: sources.runTree.readAtBase(run) });
 
 type LocalRecord = Readonly<{ placed: PlacedRow; execution: CollaborationTaskExecutionDto }>;
 
@@ -85,9 +92,15 @@ export const readViewRows = async (projection: ChildRowProjection, run: RootExec
   });
 };
 
-/** A snapshot's rows, their records read (SR-063, CR-461-071); a row whose record cannot be read is left out. */
-export const readViewSnapshot = async (sources: Readonly<{ projection: ChildRowProjection }>, run: RootExecutionIdentity, atBase: RowsAtBase):
-  Promise<Readonly<{ rows: ViewRows }>> => Object.freeze({ rows: await readViewRows(sources.projection, run, atBase) });
+/**
+ * A snapshot's rows, their records read (SR-063, CR-461-071; a row whose record cannot be read is left out), and its
+ * session's tree from the rows read at the base (SR-084).
+ */
+export const readViewSnapshot = async (sources: Pick<RunViewRowSources, "projection" | "runTree">, run: RootExecutionIdentity, atBase: ViewAtBase):
+  Promise<Readonly<{ rows: ViewRows; tree: RunTreeSessionRows }>> => {
+  const [rows, tree] = await Promise.all([readViewRows(sources.projection, run, atBase), RunTreeSessionRows.open(sources.runTree, run, atBase.tree)]);
+  return Object.freeze({ rows, tree });
+};
 
 /** A row event with its records read, as each view kind projects it (base's events). */
 export type ProjectedRowEvent =
@@ -134,6 +147,9 @@ export const inOrderViewDelivery = <S>(isRowEvent: (sequenced: S) => boolean, de
     void next.then(settle, settle);
   };
 };
+
+/** Whether a view sends an event of its stream after reading (a row event's records, or its tree again): later ones wait behind it. */
+export const isReadBeforeSending = (event: { kind?: unknown }): boolean => isChildRowRootEvent(event) || isRunTreeChangedEvent(event);
 
 /** Whether an event of a run's view stream is a row event. */
 export const isChildRowRootEvent = (event: { kind?: unknown }): event is ChildRowRootEvent =>

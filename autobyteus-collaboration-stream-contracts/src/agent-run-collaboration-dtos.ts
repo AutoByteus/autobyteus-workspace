@@ -16,6 +16,7 @@ import {
   taskExecutionsClosedEventDtoSchema,
   taskExecutionsReopenedEventDtoSchema,
 } from "./agent-org-execution-dtos.js";
+import { runTreeChangedEventDtoSchema } from "./run-tree-dtos.js";
 
 const timestamp = nonEmptyStringSchema;
 
@@ -71,6 +72,7 @@ export const agentRunCollaborationEventDtoSchema = z.discriminatedUnion("kind", 
   taskExecutionsReopenedEventDtoSchema,
   remoteTaskExecutionStartedEventDtoSchema,
   remoteTaskExecutionSummaryEventDtoSchema,
+  runTreeChangedEventDtoSchema,
 ]);
 
 export type AgentRunCollaborationTreeDto = Readonly<z.infer<typeof agentRunCollaborationTreeDtoSchema>>;

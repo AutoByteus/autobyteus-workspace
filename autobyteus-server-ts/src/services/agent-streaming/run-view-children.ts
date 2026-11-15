@@ -1,6 +1,6 @@
 import type { ChildRowProjection, ChildRowsFeed } from "../../agent-collaboration/delegation/child-rows-feed.js";
 import type { RootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
-import { readViewSnapshot, type ViewRows } from "./run-view-rows.js";
+import { readViewRows, type ViewRows } from "./run-view-rows.js";
 
 /**
  * A run's rows as its history and inspection reads give them (SR-061 rule 1): in base's shapes (nested by placement,
@@ -14,8 +14,8 @@ export class RunViewChildren {
     projection: ChildRowProjection;
   }>) {}
 
-  /** The rows, by the views' one builder (`readViewSnapshot`, CR-461-071): a row whose record cannot be read is left out. */
-  read(run: RootExecutionIdentity): Promise<Readonly<{ rows: ViewRows }>> {
-    return readViewSnapshot({ projection: this.input.projection }, run, { rows: this.input.feed.rowsOf(run) });
+  /** The rows, by the views' one builder (`readViewRows`, CR-461-071): a row whose record cannot be read is left out. */
+  async read(run: RootExecutionIdentity): Promise<Readonly<{ rows: ViewRows }>> {
+    return Object.freeze({ rows: await readViewRows(this.input.projection, run, { rows: this.input.feed.rowsOf(run) }) });
   }
 }

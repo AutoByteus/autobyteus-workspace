@@ -9,7 +9,9 @@ import type { ActiveCollaborationRootDirectory } from "../../agent-collaboration
 import type { AgentOrgRun, AgentOrgRunPackageSnapshot } from "../../agent-org-execution/domain/agent-org-run.js";
 import type { AgentOrgRunEvent } from "../../agent-org-execution/domain/agent-org-run-event.js";
 import type { AgentOrgRunExecutionTreeSnapshot } from "../../agent-org-execution/domain/agent-org-run-execution-tree.js";
-import { inOrderViewDelivery, isChildRowRootEvent, readRowEvent, readRowsAtBase, readViewRows, readViewSnapshot, type RunViewRowSources, type ViewRows } from "./run-view-rows.js";
+import { inOrderViewDelivery, isChildRowRootEvent, isReadBeforeSending, readRowEvent, readRowsAtBase, readViewSnapshot, type RunViewRowSources, type ViewRows } from "./run-view-rows.js";
+import { isRunTreeChangedEvent } from "../../agent-collaboration/delegation/run-tree-view.js";
+import type { RunTreeSessionRows } from "../../agent-collaboration/delegation/run-tree-changes.js";
 import { projectAgentOrgExecutionEvent, projectAgentOrgExecutionSnapshot } from "./agent-org-execution-view-projector.js";
 
 /** What an Org run's view session needs, passed in by the composition (autobyteus-461 SR-046, SR-061 … SR-063). */
@@ -33,7 +35,7 @@ export class OrgRunNotRestorableError extends Error {
   constructor(readonly refusal: RootRestoreRefusal) { super(refusal.message); }
 }
 
-type ViewSnapshot = Readonly<{ own: AgentOrgRunPackageSnapshot; rows: ViewRows }>;
+type ViewSnapshot = Readonly<{ own: AgentOrgRunPackageSnapshot; rows: ViewRows; tree: RunTreeSessionRows }>;
 
 /**
  * One connection's view of an Org run (autobyteus-461 DS-8; SR-045, SR-046, SR-061 … SR-063), as `TeamViewSession` for a
@@ -140,7 +142,7 @@ export class OrgViewSession {
       });
       if (!tree) throw new OrgRunNotFoundError(`AgentOrg run '${this.orgRunId}' was not found.`);
       // A stopped Org reports no statuses of its own; its rows' come from their own runs (SR-083).
-      return { own: { tree, statuses: [], inputStates: [] }, rows: await readViewRows(this.sources.rows.projection, this.identity, atBase) };
+      return { own: { tree, statuses: [], inputStates: [] }, ...await readViewSnapshot(this.sources.rows, this.identity, atBase) };
     });
     try {
       this.leaveMode = this.show(connection, false);
@@ -158,10 +160,20 @@ export class OrgViewSession {
       baseChangeSequence: connection.baseChangeSequence, liveSequenceId: connection.liveSequenceId,
       lastMessageChangeSequence: connection.lastMessageChangeSequence, rows: connection.snapshot.rows,
     }) }));
+    // The run's tree at the same base (SR-084); its changes follow as numbered `run_tree_changed` events.
+    const tree = connection.snapshot.tree;
+    this.send(CollaborationStreamServerMessageSchema.parse({ type: "RUN_TREE_SNAPSHOT", payload: { root_subject_kind: "agent_org", root_run_id: this.orgRunId,
+      base_change_sequence: connection.baseChangeSequence, rows: tree.current } }));
     let open = true;
-    const unsubscribe = connection.subscribe(inOrderViewDelivery((sequenced) => isChildRowRootEvent(sequenced.event), async (sequenced) => {
+    const unsubscribe = connection.subscribe(inOrderViewDelivery((sequenced) => isReadBeforeSending(sequenced.event), async (sequenced) => {
       if (!open) return;
       try {
+        if (isRunTreeChangedEvent(sequenced.event)) {
+          const change = await tree.next();
+          if (open) this.send(CollaborationStreamServerMessageSchema.parse({ type: "ROOT_EXECUTION_EVENT", payload: { root_subject_kind: "agent_org",
+            root_run_id: this.orgRunId, change_sequence: sequenced.changeSequence, event: { kind: "run_tree_changed", ...change } } }));
+          return;
+        }
         const rowEvent = isChildRowRootEvent(sequenced.event) ? await readRowEvent(this.sources.rows.projection, this.identity, sequenced.event) : null;
         const projected = projectAgentOrgExecutionEvent(this.orgRunId, sequenced, rowEvent);
         if (projected && open) this.send(CollaborationStreamServerMessageSchema.parse({ type: "ROOT_EXECUTION_EVENT", payload: projected }));

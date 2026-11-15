@@ -5,6 +5,7 @@ import {
   agentRunCollaborationEventDtoSchema,
   agentRunCollaborationViewDtoSchema,
 } from "./agent-run-collaboration-dtos.js";
+import { runTreeRowDtoSchema } from "./run-tree-dtos.js";
 
 type AgentIdentityNode = Readonly<{ address: string; agentRunId: string }>;
 type TeamIdentityNode = Readonly<{
@@ -251,6 +252,9 @@ export const CollaborationStreamServerMessageSchema = z.discriminatedUnion("type
   z.object({ type: z.literal("CONNECTED"), payload: z.object({ root_subject_kind: rootSubjectKind, root_run_id: nonEmptyStringSchema, session_id: nonEmptyStringSchema }).strict() }).strict(),
   z.object({ type: z.literal("ROOT_EXECUTION_VIEW_SNAPSHOT"), payload: RootExecutionViewDtoSchema }).strict(),
   z.object({ type: z.literal("ROOT_EXECUTION_EVENT"), payload: RootExecutionEventDtoSchema }).strict(),
+  /** The view's tree at the snapshot's base (autobyteus-461 SR-084), sent right after it; its changes are `run_tree_changed` events. */
+  z.object({ type: z.literal("RUN_TREE_SNAPSHOT"), payload: z.object({ root_subject_kind: commandRootSubjectKind, root_run_id: nonEmptyStringSchema,
+    base_change_sequence: z.number().int().nonnegative(), rows: z.array(runTreeRowDtoSchema) }).strict() }).strict(),
   z.object({ type: z.literal("ROOT_LIFECYCLE"), payload: z.object({ root_subject_kind: rootSubjectKind, root_run_id: nonEmptyStringSchema, is_active: z.boolean() }).strict() }).strict(),
   z.object({ type: z.literal("AGENT_COMMAND_ACK"), payload: commandAck }).strict(),
   z.object({ type: z.literal("ERROR"), payload: z.object({ code: nonEmptyStringSchema, message: nonEmptyStringSchema }).strict() }).strict(),
