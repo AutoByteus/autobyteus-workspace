@@ -8,7 +8,8 @@ import MobileActivity from '../MobileActivity.vue';
 import { useFileExplorerStore } from '~/stores/fileExplorer';
 import { useWorkspaceStore, type WorkspaceInfo } from '~/stores/workspace';
 import { useRunFileChangesStore } from '~/stores/runFileChangesStore';
-import { useRemoteRunsStore } from '~/stores/remoteRunsStore';
+import { useRunTreeStore } from '~/stores/runTreeStore';
+import { peerAgentRow, seedPeerRows } from '~/test-support/runTreeFixtures';
 import { createDefaultWorkspaceFileExplorerState } from '~/stores/fileExplorerState';
 import { createNodeIdToNodeDictionary } from '~/utils/fileExplorer/fileUtils';
 import { TreeNode } from '~/utils/fileExplorer/TreeNode';
@@ -147,7 +148,7 @@ describe('the phone\'s view screens read the open target (autobyteus-277 DS-005,
     });
 
     it('a run on another node: its files are on that node (278 wording)', async () => {
-      vi.spyOn(useRemoteRunsStore(), 'runOfAgentRun').mockReturnValue({ runId: 'r', nodeName: 'docker', reachable: true } as never);
+      seedPeerRows(useRunTreeStore(), 'host-run', [peerAgentRow('run-1', 'agent:host-run', { nodeName: 'docker', reachable: true })]);
       const { wrapper } = await mountView(MobileFiles, targetOf({ workspaceRootPath: null }));
       expect(wrapper.get('[data-testid="mobile-files-remote"]').text()).toBe('remote.panel.files:docker');
     });
@@ -204,7 +205,7 @@ describe('the phone\'s view screens read the open target (autobyteus-277 DS-005,
     });
 
     it('Artifacts of a run on another node say its files are on that node', async () => {
-      vi.spyOn(useRemoteRunsStore(), 'runOfAgentRun').mockReturnValue({ runId: 'r', nodeName: 'docker', reachable: true } as never);
+      seedPeerRows(useRunTreeStore(), 'host-run', [peerAgentRow('run-1', 'agent:host-run', { nodeName: 'docker', reachable: true })]);
       const { wrapper } = await mountView(MobileArtifacts);
       expect(wrapper.get('[data-testid="mobile-artifacts-remote"]').text()).toBe('remote.panel.artifacts:docker');
     });

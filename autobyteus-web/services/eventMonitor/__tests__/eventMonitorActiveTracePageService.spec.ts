@@ -20,7 +20,7 @@ describe('fetchEventMonitorActiveTracePage', () => {
 
   it('a run on a peer node keeps its trace there: refused, and nothing is asked (autobyteus-461 CR-461-022)', async () => {
     await expect(fetchEventMonitorActiveTracePage(
-      { kind: 'standaloneMember', hostRunId: 'host-run', memberAddress: '/research', agentRunId: 'far-run' }, 'cursor-1',
+      { kind: 'peerRun', nodeId: 'node-b', runId: 'far-run', agentRunId: 'far-run' }, 'cursor-1',
     )).rejects.toThrow("AgentRun 'far-run' runs on another node; its trace is kept there.");
     expect(query).not.toHaveBeenCalled();
   });

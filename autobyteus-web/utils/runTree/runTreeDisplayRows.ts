@@ -75,7 +75,9 @@ export const runTreeDisplayRows = (input: Readonly<{
       depth,
       hasChildren: (children.get(tree.key)?.length ?? 0) > 0,
       openTarget: target && target.runKind !== 'agent_org' ? { ...target, runKind: target.runKind } : null,
-      remote: tree.peer && target ? Object.freeze({ runId: target.runId, nodeName: tree.peer.nodeName }) : null,
+      remote: tree.peer && target
+        ? Object.freeze({ runId: target.runId, nodeName: tree.peer.nodeName, reachable: tree.peer.reachable, title: tree.peer.title })
+        : null,
     }
     return Object.freeze({
       tree, row,

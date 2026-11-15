@@ -1,7 +1,7 @@
 import { reactive, shallowReactive } from 'vue'
 import type { AgentContext } from '~/types/agent/AgentContext'
 import { AgentStreamingService } from '~/services/agentStreaming/AgentStreamingService'
-import { createRemoteAgentContext } from '~/services/remoteRuns/remoteAgentContext'
+import { createPeerAgentContext } from '~/services/peerRuns/peerAgentContext'
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore'
 
 type PeerSubject = Readonly<{ nodeId: string; runKind: 'agent' | 'agent_team'; runId: string; agentRunId: string; address: string }>
@@ -26,7 +26,7 @@ export const createPeerRunStreams = () => {
     const endpoint = `${useWindowNodeContextStore().getBoundEndpoints().peerRunWs}/${encodeURIComponent(subject.nodeId)}/${subject.runKind}/${encodeURIComponent(subject.runId)}`
     const stream: PeerRunStream = {
       // Reactive, as the stores' contexts are: the view follows its stream's changes.
-      context: reactive(createRemoteAgentContext(subject.agentRunId, subject.address, new Date().toISOString())) as AgentContext,
+      context: reactive(createPeerAgentContext(subject.agentRunId, subject.address, new Date().toISOString())) as AgentContext,
       service: new AgentStreamingService(endpoint), timer: null, closed: false,
     }
     stream.service.onConnectionChange((event) => {

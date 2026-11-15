@@ -213,8 +213,6 @@ describe('ArtifactContentViewer', () => {
       'http://localhost:3000/rest/team-runs/team-1/agent-runs/agent-1/file-change-content?path=docs%2Fa.md'],
     [{ kind: 'agentOrgMember', orgRunId: 'org-1', memberAddress: '/research/writer', agentRunId: 'agent-1' },
       'http://localhost:3000/rest/agent-org-runs/org-1/agent-runs/agent-1/file-change-content?memberAddress=%2Fresearch%2Fwriter&path=docs%2Fa.md'],
-    [{ kind: 'standaloneMember', hostRunId: 'hub-1', memberAddress: '/reviewer', agentRunId: 'agent-1' },
-      'http://localhost:3000/rest/agent-collaborations/hub-1/agent-runs/agent-1/file-change-content?memberAddress=%2Freviewer&path=docs%2Fa.md'],
   ] as Array<[AgentRunReadSubject, string]>)('reads a %o member artifact through its owner route', async (subject, url) => {
     const fetchMock = vi.mocked(global.fetch);
     fetchMock.mockResolvedValue({ ok: true, status: 200, text: async () => 'member content' } as Response);
@@ -224,6 +222,14 @@ describe('ArtifactContentViewer', () => {
 
     expect(fetchMock).toHaveBeenCalledExactlyOnceWith(url, { cache: 'no-store', headers: expect.any(Headers) });
     expect(wrapper.find('[data-testid="file-viewer"]').text()).toContain('member content');
+  });
+
+  it("CR-461-099: a peer's run keeps its files on its node: no content is requested here", async () => {
+    const fetchMock = vi.mocked(global.fetch);
+    mountComponent({ ...defaultArtifact, path: 'docs/a.md', status: 'available', sourceTool: 'edit_file' }, 0,
+      { kind: 'peerRun', nodeId: 'node-b', runId: 'studio-team', agentRunId: 'agent-1' });
+    await flushPromises();
+    expect(fetchMock).not.toHaveBeenCalled();
   });
 
   it('requests nothing while the owner subject names another run or is missing, then reads once it matches', async () => {

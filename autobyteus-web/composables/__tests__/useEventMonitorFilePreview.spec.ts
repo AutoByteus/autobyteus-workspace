@@ -34,8 +34,8 @@ const {
 }));
 
 vi.mock('~/stores/activeContextStore', () => ({ useActiveContextStore: () => activeContextStoreMock }));
-const remoteRunsMock = vi.hoisted(() => ({ runOfAgentRun: vi.fn((_agentRunId?: string | null): { nodeName: string } | null => null) }));
-vi.mock('~/stores/remoteRunsStore', () => ({ useRemoteRunsStore: () => remoteRunsMock }));
+const remoteRunsMock = vi.hoisted(() => ({ peerRunOf: vi.fn((_agentRunId?: string | null): { nodeName: string } | null => null) }));
+vi.mock('~/stores/runTreeStore', () => ({ useRunTreeStore: () => remoteRunsMock }));
 
 vi.mock('~/stores/fileExplorer', () => ({
   useFileExplorerStore: () => fileExplorerStoreMock,
@@ -206,11 +206,11 @@ describe('selected execution preview identity', () => {
 
   it('says where a run another node runs keeps its file, and opens nothing (autobyteus-471 REQ-003)', async () => {
     windowNodeContextStoreMock.isEmbeddedWindow = false;
-    remoteRunsMock.runOfAgentRun.mockImplementation((id?: string | null) => (id === 'remote-run' ? { nodeName: 'studio' } : null));
+    remoteRunsMock.peerRunOf.mockImplementation((id?: string | null) => (id === 'remote-run' ? { nodeName: 'studio' } : null));
     expect(await useEventMonitorFilePreview({ ...options(), originRunId: () => 'remote-run' }).openPath(action)).toEqual({
       status: 'unavailable', message: 'workspace.components.conversation.segments.renderer.MarkdownRenderer.file_on_other_node' });
     // The run whose conversation names the path decides, not the window's selected run.
-    expect(remoteRunsMock.runOfAgentRun).toHaveBeenCalledWith('remote-run');
+    expect(remoteRunsMock.peerRunOf).toHaveBeenCalledWith('remote-run');
     expect(fileExplorerStoreMock.openFilePreview).not.toHaveBeenCalled();
     expect(revealToolMock).not.toHaveBeenCalled();
   });

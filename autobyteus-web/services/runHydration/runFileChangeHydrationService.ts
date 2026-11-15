@@ -10,7 +10,7 @@ import { getApolloClient } from '~/utils/apolloClient';
 type FileChangesQuery = Readonly<{ document: unknown; field: string; variables: Record<string, string> }>;
 
 /** The owner's file-change list query: each names its owner, so the server reads only that owner's tree. */
-const fileChangesQueryOf = (subject: Exclude<AgentRunReadSubject, { kind: 'standaloneMember' }>): FileChangesQuery => {
+const fileChangesQueryOf = (subject: Exclude<AgentRunReadSubject, { kind: 'peerRun' }>): FileChangesQuery => {
   switch (subject.kind) {
     case 'run':
       return { document: GetRunFileChanges, field: 'getRunFileChanges', variables: { runId: subject.runId } };
@@ -35,7 +35,7 @@ const fileChangesQueryOf = (subject: Exclude<AgentRunReadSubject, { kind: 'stand
  */
 export const fetchRunFileChanges = async (subject: AgentRunReadSubject): Promise<RunFileChangeArtifact[]> => {
   // A run on a peer node keeps its files there (autobyteus-278): this node has none of them.
-  if (subject.kind === 'standaloneMember') return [];
+  if (subject.kind === 'peerRun') return [];
   const { document, field, variables } = fileChangesQueryOf(subject);
   const response = await getApolloClient().query<Record<string, RunFileChangeArtifact[] | null>>({
     query: document as never,

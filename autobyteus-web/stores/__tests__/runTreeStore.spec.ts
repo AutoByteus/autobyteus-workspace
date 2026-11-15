@@ -90,4 +90,16 @@ describe('runTreeStore (SR-084)', () => {
     await settle()
     expect(store.rowsOf(manager).map((r) => r.key)).toEqual(['agent:manager', 'agent:writer'])
   })
+
+  it("CR-461-099: an agent of a peer's run is its tree row's: its run, node and answer; a run of this node has none", () => {
+    const store = useRunTreeStore()
+    const peer = { nodeId: 'node-b', nodeName: 'Node B', title: 'Studio', reachable: false }
+    store.streamSnapshot(manager, [row('agent:manager', null, 0, { runKind: 'agent', runId: 'manager', agentRunId: 'manager' }),
+      { ...row('peer_team:studio', 'agent:manager', 1, { runKind: 'agent_team', runId: 'studio', agentRunId: 'lead', nodeId: 'node-b' }), kind: 'peer_team', peer },
+      { ...row('peer_member:studio:mate', 'peer_team:studio', 2, { runKind: 'agent_team', runId: 'studio', agentRunId: 'mate', nodeId: 'node-b' }), kind: 'peer_member', peer }])
+    expect(store.peerRunOf('mate')).toEqual({ runId: 'studio', nodeId: 'node-b', nodeName: 'Node B', reachable: false, title: 'Studio' })
+    expect(store.peerRunOf('lead')).toMatchObject({ runId: 'studio', nodeName: 'Node B' })
+    expect(store.peerRunOf('manager')).toBeNull()
+    expect(store.peerRunOf(null)).toBeNull()
+  })
 })

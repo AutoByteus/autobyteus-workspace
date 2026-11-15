@@ -51,7 +51,7 @@ describe('fetchRunFileChanges', () => {
   });
 
   it('a run on a peer node keeps its files there: none, and nothing is asked (autobyteus-461 CR-461-022)', async () => {
-    await expect(fetchRunFileChanges({ kind: 'standaloneMember', hostRunId: 'hub-1', memberAddress: '/reviewer', agentRunId: RUN }))
+    await expect(fetchRunFileChanges({ kind: 'peerRun', nodeId: 'node-b', runId: 'peer-team', agentRunId: RUN }))
       .resolves.toEqual([]);
     expect(query).not.toHaveBeenCalled();
   });

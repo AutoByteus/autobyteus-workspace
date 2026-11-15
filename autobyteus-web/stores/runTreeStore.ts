@@ -21,6 +21,18 @@ type HeldTree = Readonly<{ rows: readonly RunTreeRowDto[]; via: 'stream' | 'quer
 
 const keyOf = (ref: RunTreeRef): string => `${ref.kind}:${ref.runId}`
 
+/**
+ * An agent of a run on a peer node, as its tree row has it (autobyteus-461 G-D1): its run and node, and what the node
+ * last answered about it (`null` while not answered).
+ */
+export type PeerRunOfAgent = Readonly<{
+  runId: string
+  nodeId: string
+  nodeName: string
+  reachable: boolean | null
+  title: string | null
+}>
+
 /** The runs whose statuses a tree's rows show (SR-083): each row's own run, never the org's own parts (its stream has them). */
 export const statusRunsOf = (rows: readonly RunTreeRowDto[]): RunStatusRunRef[] => rows.flatMap((row): RunStatusRunRef[] => {
   const target = row.openTarget
@@ -125,6 +137,22 @@ export const useRunTreeStore = defineStore('runTree', () => {
   }
 
   const rowsOf = (ref: RunTreeRef): readonly RunTreeRowDto[] => trees.value[keyOf(ref)]?.rows ?? []
+
+  /**
+   * The peer's run an agent run belongs to, from the shown trees' peer rows (the row's `peer` and `openTarget`); `null`
+   * for a run of this node. Run IDs are unique, so any tree that shows it answers the same.
+   */
+  const peerRunOf = (agentRunId: string | null | undefined): PeerRunOfAgent | null => {
+    if (!agentRunId) return null
+    for (const tree of Object.values(trees.value)) {
+      const row = tree.rows.find((candidate) => candidate.peer && candidate.openTarget?.agentRunId === agentRunId)
+      if (row?.peer && row.openTarget) {
+        const { nodeId, nodeName, reachable, title } = row.peer
+        return Object.freeze({ runId: row.openTarget.runId, nodeId, nodeName, reachable, title })
+      }
+    }
+    return null
+  }
   /** Whether the run's tree has been answered (by its view or a read). */
   const hasTree = (ref: RunTreeRef): boolean => Boolean(trees.value[keyOf(ref)])
 
@@ -146,5 +174,5 @@ export const useRunTreeStore = defineStore('runTree', () => {
     for (const { ref } of Object.values(held.value)) void read(ref)
   }, { flush: 'sync' })
 
-  return { trees, streamSnapshot, streamChange, streamEnded, read, hold, rowsOf, hasTree }
+  return { trees, streamSnapshot, streamChange, streamEnded, read, hold, rowsOf, hasTree, peerRunOf }
 })

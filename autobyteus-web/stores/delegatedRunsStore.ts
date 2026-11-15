@@ -159,8 +159,9 @@ export const useDelegatedRunsStore = defineStore('delegatedRuns', () => {
     const context = contextOf(subject)
     if (!context) return null
     if (subject.kind === 'peer') {
-      // Its node keeps its workspace and files; its trace is read as its own run's (its stream's snapshot holds it).
-      return Object.freeze({ context, workspaceRootPath: null, browse: Object.freeze({ kind: 'run' as const, runId: subject.agentRunId }),
+      // Its node keeps its workspace, files and trace (autobyteus-278): its stream's snapshot is what this view shows.
+      return Object.freeze({ context, workspaceRootPath: null,
+        browse: Object.freeze({ kind: 'peerRun' as const, nodeId: subject.nodeId, runId: subject.runId, agentRunId: subject.agentRunId }),
         interaction: interactionOf(subject) })
     }
     return Object.freeze({

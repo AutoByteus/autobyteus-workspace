@@ -8,9 +8,9 @@ import { memberDisplayName } from '~/utils/collaboration/memberDisplayName'
 /**
  * One Offline context for an agent of a run another node runs (autobyteus-278), in any root family. Its node keeps
  * its definition, model and workspace; the window knows its address, so the context names it and holds its
- * conversation (read from its node, and live from the root's stream while viewed).
+ * conversation (its own stream through this node's `/ws/peer-run`, G-D1).
  */
-export const createRemoteAgentContext = (agentRunId: string, address: string, createdAt: string): AgentContext => {
+export const createPeerAgentContext = (agentRunId: string, address: string, createdAt: string): AgentContext => {
   const name = memberDisplayName(address)
   const config: AgentRunConfig = {
     agentDefinitionId: '', agentDefinitionName: name, llmModelIdentifier: '', runtimeKind: '',

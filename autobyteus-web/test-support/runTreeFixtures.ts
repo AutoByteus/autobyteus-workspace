@@ -183,3 +183,35 @@ export const agentRunTreeRows = (hostRunId: string, tasks: readonly Collaboratio
   visit(tasks)
   return rows
 }
+
+/** A peer's run as its node last answered it (`null` while not answered), for a peer row's `peer`. */
+export type PeerAnswer = Readonly<{ nodeId?: string; nodeName?: string; reachable?: boolean | null; title?: string | null }>
+const peerOf = (answer: PeerAnswer = {}) => ({ nodeId: answer.nodeId ?? 'node-b', nodeName: answer.nodeName ?? 'Node B',
+  title: answer.title ?? null, reachable: answer.reachable ?? null })
+
+/** A peer agent run's row (autobyteus-461 G-D1): it opens on its node, by its own identity. */
+export const peerAgentRow = (agentRunId: string, parentKey: string | null, answer: PeerAnswer = {}, address = '/market_researcher'): RunTreeRowDto => {
+  const peer = peerOf(answer)
+  return { key: `peer_agent:${agentRunId}`, parentKey, depth: parentKey ? 1 : 0, kind: 'peer_agent', name: address.slice(1).replace(/_/g, ' '), address,
+    openTarget: { runKind: 'agent', runId: agentRunId, agentRunId, nodeId: peer.nodeId }, statusIds: [agentRunId], peer }
+}
+
+/** A peer team run's rows: the team (opening at its coordinator, the first member) and its members, each opening on its node. */
+export const peerTeamRows = (teamRunId: string, parentKey: string | null, members: readonly Readonly<{ agentRunId: string; address: string }>[],
+  answer: PeerAnswer = {}): RunTreeRowDto[] => {
+  const peer = peerOf(answer)
+  const key = `peer_team:${teamRunId}`
+  const depth = parentKey ? 1 : 0
+  const target = (agentRunId: string) => ({ runKind: 'agent_team' as const, runId: teamRunId, agentRunId, nodeId: peer.nodeId })
+  return [
+    { key, parentKey, depth, kind: 'peer_team', name: 'studio team', address: '/studio_team', openTarget: target(members[0]!.agentRunId), statusIds: [teamRunId], peer },
+    ...members.map((member): RunTreeRowDto => ({ key: `peer_member:${teamRunId}:${member.agentRunId}`, parentKey: key, depth: depth + 1, kind: 'peer_member',
+      name: member.address.split('/').at(-1)!.replace(/_/g, ' '), address: member.address, openTarget: target(member.agentRunId), statusIds: [member.agentRunId], peer })),
+  ]
+}
+
+/** Seeds an agent run's tree with these peer rows, as its open view's stream would feed it. */
+export const seedPeerRows = (trees: Readonly<{ streamSnapshot(ref: Readonly<{ kind: 'agent'; runId: string }>, rows: readonly RunTreeRowDto[]): void }>,
+  hostRunId: string, rows: readonly RunTreeRowDto[]): void => {
+  trees.streamSnapshot({ kind: 'agent', runId: hostRunId }, [agentRow(hostRunId, null, 0), ...rows])
+}

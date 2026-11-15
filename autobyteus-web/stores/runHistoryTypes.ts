@@ -210,10 +210,10 @@ export interface RunHistoryTransientExecutionRow extends RunHistoryTeamExecution
   /** Display name of the AgentRun that started a delegated child row; null otherwise. */
   delegatedBy: string | null;
   /**
-   * autobyteus-278: set on a run another node runs (this node's delegation started it): the run and its node's
-   * name. Its reachability and title are the remote runs store's.
+   * autobyteus-278: set on a run another node runs (this node's delegation started it): the run, its node's name, and
+   * what its node last answered (`reachable` and `title` are `null` until it answered), from its tree row's `peer`.
    */
-  remote?: Readonly<{ runId: string; nodeName: string }> | null;
+  remote?: Readonly<{ runId: string; nodeName: string; reachable: boolean | null; title: string | null }> | null;
 }
 
 export type RunHistoryTeamExecutionRow =

@@ -39,8 +39,8 @@ export const fetchEventMonitorActiveTracePage = async (
       return (await query<GetAgentOrgMemberEventMonitorActiveTracePageQuery>(GetAgentOrgMemberEventMonitorActiveTracePage, {
         orgRunId: subject.orgRunId, memberAddress: subject.memberAddress, agentRunId: subject.agentRunId, beforeCursor,
       })).getAgentOrgMemberEventMonitorActiveTracePage;
-    case 'standaloneMember':
-      // A run on a peer node keeps its trace there (autobyteus-278), as a peer child of a team or org view does.
+    case 'peerRun':
+      // A run on a peer node keeps its trace there (autobyteus-278): its stream's snapshot is what this node shows.
       throw new Error(`AgentRun '${subject.agentRunId}' runs on another node; its trace is kept there.`);
   }
 };

@@ -26,6 +26,12 @@ vi.mock('~/stores/agentRunStore', () => ({ useAgentRunStore: () => io.agentRuns 
 vi.mock('~/stores/agentTeamRunStore', () => ({ useAgentTeamRunStore: () => io.teamRuns }))
 vi.mock('~/stores/runHistoryLoadActions', () => ({ ensureRunHistoryWorkspaceByRootPath: io.ensureWorkspace }))
 vi.mock('~/stores/workspace', () => ({ useWorkspaceStore: () => ({ resolveWorkspaceMetadataByRootPath: vi.fn(async () => null) }) }))
+const peerStreams = vi.hoisted(() => ({ opened: new Map<string, { context: unknown; service: unknown }>() }))
+vi.mock('~/services/peerRuns/peerRunStreams', () => ({ createPeerRunStreams: () => ({
+  open: (subject: { agentRunId: string }) => { peerStreams.opened.set(subject.agentRunId, { context: { state: { runId: subject.agentRunId } }, service: {} }) },
+  streamOf: (subject: { agentRunId: string }) => peerStreams.opened.get(subject.agentRunId) ?? null,
+  closeAll: () => peerStreams.opened.clear(),
+}) }))
 
 import { useDelegatedRunsStore } from '../delegatedRunsStore'
 
@@ -112,5 +118,14 @@ describe('delegatedRunsStore', () => {
     expect(io.openAgentRun).toHaveBeenCalledTimes(2)
     expect(store.errorFor(agent)).toBeNull()
     expect(store.bindingOf(agent)).not.toBeNull()
+  })
+
+  it("CR-461-099: a peer team's member binds as its run on its node: no workspace, and its trace and files read as a peer's (kept there)", async () => {
+    const peer = { kind: 'peer' as const, nodeId: 'node-b', runKind: 'agent_team' as const, runId: 'studio-team', agentRunId: 'studio-mate', address: '/studio_team/mate' }
+    const store = useDelegatedRunsStore()
+    store.ensureOpen(peer)
+    await store.whenOpen(peer)
+    expect(store.bindingOf(peer)).toMatchObject({ workspaceRootPath: null,
+      browse: { kind: 'peerRun', nodeId: 'node-b', runId: 'studio-team', agentRunId: 'studio-mate' } })
   })
 })

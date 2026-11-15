@@ -1,7 +1,7 @@
 import { computed, toValue, type MaybeRefOrGetter } from 'vue'
 import { useLocalization } from '~/composables/useLocalization'
 import { useRemoteRun } from '~/composables/remoteRuns/useRemoteRun'
-import { useRemoteRunsStore } from '~/stores/remoteRunsStore'
+import { useRunStatusStore } from '~/stores/runStatusStore'
 
 /**
  * autobyteus-278 REQ-808: what an opened run another node runs changes in its view, for every family (the agent and
@@ -14,7 +14,7 @@ export const useRemoteRunView = (input: Readonly<{
   agentName: MaybeRefOrGetter<string>
 }>) => {
   const { t } = useLocalization()
-  const remoteRuns = useRemoteRunsStore()
+  const runStatus = useRunStatusStore()
   const remote = useRemoteRun(input.agentRunId)
   return {
     remote,
@@ -26,8 +26,9 @@ export const useRemoteRunView = (input: Readonly<{
     composerPlaceholder: (local: string | null): string | null => remote.value
       ? t('remote.composer.placeholder', { agent: toValue(input.agentName), node: remote.value.nodeName })
       : local,
+    /** Retry: its node is asked again over `/ws/run-status` (SR-090); its open stream reopens by itself. */
     retry: (): void => {
-      if (remote.value) remoteRuns.retry(remote.value.runId)
+      if (remote.value) runStatus.retryPeers([remote.value.runId])
     },
   }
 }
