@@ -26,9 +26,10 @@ const harness = (input: Readonly<{ agents?: Record<string, string[]>; live?: Rec
     pairedAgentStatuses: (runId: string) => Object.entries(live.get(runId) ?? {}).map(([agentRunId, status]) => ({ agentRunId, status })),
   };
   const peerClose = vi.fn();
-  let peerObserver: { onFrame(agentRunId: string, message: unknown): void; onEnd(): void } | null = null;
-  const peerObservers = new Map<string, NonNullable<typeof peerObserver>>();
-  const observeOf = (id: string) => vi.fn((observer: NonNullable<typeof peerObserver>) => { peerObserver = observer; peerObservers.set(id, observer); return { close: peerClose }; });
+  type PeerObserver = { onFrame(agentRunId: string, message: unknown): void; onEnd(): void };
+  let peerObserver: PeerObserver | null = null;
+  const peerObservers = new Map<string, PeerObserver>();
+  const observeOf = (id: string) => vi.fn((observer: PeerObserver) => { peerObserver = observer; peerObservers.set(id, observer); return { close: peerClose }; });
   const peerObserves = new Map<string, ReturnType<typeof observeOf>>();
   const peerObserve = observeOf("peer-team");
   peerObserves.set("peer-team", peerObserve);
