@@ -1770,3 +1770,13 @@ No architecture review: these follow REQ-006, an approved exception, rule 2 and 
   - architecture review (narrow);
   - then the Implementation Engineer.
 
+### SR-089 — Every AgentRun has an agent stream sequence (answers ARCH-REV-064 AR-032)
+
+- **Triggering:** AR-032. A peer team's coordinator and members had no `AgentStreamSequence` on node B, because 3b's scope covered only an agent run's own stream. So SR-088's two requests couldn't serve a peer team row, which AC-016 covers.
+- **Read before deciding** (lesson 2026-11-15-R3): a team's member is an `AgentRun` (`flat-team-agent-execution-handle.ts:71`), and `AgentStreamSequences.attachToRun(run, recorder)` attaches per `AgentRun`.
+- **Decision, option (a):** attach a sequence, with its turn buffer and exclusion snapshot, to every `AgentRun`, team and org members included. Node B serves a peer member through the same two requests, and every peer row has one peer path. A team's or org's own view keeps its stream.
+- **Test:** a peer team's coordinator and a member, opened from node A with the delegator stopped: snapshot and live output once each (AC-016).
+- **Next action:**
+  - architecture review (narrow);
+  - then the Implementation Engineer.
+
