@@ -2,6 +2,7 @@ import { randomUUID } from "node:crypto";
 import path from "node:path";
 import type { AgentRun } from "../../agent-execution/domain/agent-run.js";
 import { AgentRunEventType, isAgentRunEvent, type AgentRunEvent } from "../../agent-execution/domain/agent-run-event.js";
+import { resolveAgentRunErrorEvidence } from "../../agent-execution/domain/agent-run-error-evidence.js";
 import type { AgentRunMemoryRecorder } from "../../agent-memory/services/agent-run-memory-recorder.js";
 import { AgentMemoryService } from "../../agent-memory/services/agent-memory-service.js";
 import { MemoryFileStore } from "../../agent-memory/store/memory-file-store.js";
@@ -31,6 +32,11 @@ export type AgentStreamSequenceDeps = Readonly<{
   map: (event: AgentRunEvent) => ServerMessage;
 }>;
 
+/** A turn ends completed, interrupted, or with a turn-terminal error; each closes its records. */
+const endsTurn = (event: AgentRunEvent): boolean => event.eventType === AgentRunEventType.TURN_COMPLETED
+  || event.eventType === AgentRunEventType.TURN_INTERRUPTED
+  || resolveAgentRunErrorEvidence(event)?.kind === "TURN_TERMINAL";
+
 const turnOf = (event: AgentRunEvent): string | null => {
   const value = event.payload.turn_id ?? event.payload.turnId;
   return typeof value === "string" && value.trim() ? value.trim() : null;
@@ -39,8 +45,8 @@ const turnOf = (event: AgentRunEvent): string | null => {
 /**
  * One agent run's own stream sequence (autobyteus-461 SR-085, SR-087; G-G1 revised), owned by the agent stream and
  * independent of the run's view stream (`RunViewStream`). It numbers every frame of the run, keeps the frames of every
- * turn not yet confirmed from that turn's first frame, and drops them when the turn is confirmed: its `TURN_COMPLETED`
- * seen and its records written (`whenPersisted`). It lives while the run's `AgentRun` is active, whether or not a
+ * turn not yet confirmed from that turn's first frame, and drops them when the turn is confirmed: its end seen
+ * (`TURN_COMPLETED`, `TURN_INTERRUPTED` or a turn-terminal error) and its records written (`whenPersisted`). It lives while the run's `AgentRun` is active, whether or not a
  * session is connected; a new one (after a stop or a restart) has a new `liveSequenceId`.
  */
 export class AgentStreamSequence {
@@ -96,8 +102,9 @@ export class AgentStreamSequence {
       }
     }
     this.frames.deliver(frame);
-    if (turnId && event.eventType === AgentRunEventType.TURN_COMPLETED) {
-      // Asked now, from the listener after the recorder's: it covers every record of this turn.
+    if (turnId && endsTurn(event)) {
+      // Asked now, from the listener after the recorder's: it covers every record of this turn (CR-461-100: at every
+      // turn end, so an interrupted or failed turn is read from the stored part too, once written).
       void this.deps.whenPersisted(this.runId).then(() => {
         this.confirmed.add(turnId);
         this.buffers.delete(turnId);

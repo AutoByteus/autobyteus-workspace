@@ -176,4 +176,20 @@ describe("AgentStreamSequence snapshot", () => {
     await expect(sequence.connect((base) => activeRunSnapshot(sequence, base, async (runId) => buildRunProjectionBundle(runId, [], []))))
       .rejects.toThrow("no record of its stored turns");
   });
+
+  it.each([
+    ["interrupted", (turnId: string) => event(AgentRunEventType.TURN_INTERRUPTED, { turn_id: turnId })],
+    ["ended by a turn-terminal error", (turnId: string) => event(AgentRunEventType.ERROR,
+      { code: "X", message: "failed", error_scope: "turn", error_effect: "terminal", turn_id: turnId })],
+  ] as const)("CR-461-100: a turn %s is confirmed once written, its frames dropped; a later snapshot reads it from the stored part once", async (_label, end) => {
+    const run = harness();
+    run.emit(...segment("t1", "s1"), end("t1"));
+    run.memory.push(stored("t1", "s1-text"));
+    run.persisted[0]!.resolve();
+    await settle();
+    const result = await run.snapshot();
+    expect(result.turn_frames).toEqual([]);
+    expect(result.stored.conversation).toEqual([stored("t1", "s1-text")]);
+    expect(run.sourcesOf(result, "t1")).toBe(1);
+  });
 });
