@@ -8,6 +8,7 @@ The latest `api-e2e-coverage-investigation.md` and `api-e2e-execution-coverage-r
 | --- | --- | --- | --- | --- |
 | API-REV-001 | `code_reviewer`, `code-review-report.md` CRR-002 (Pass), round 1 | SR-004 / ARCH-REV-003 / IR-002 / CRR-001, CRR-002 | N/A | `Fail` on AC-003 only (Requirement Gap, routed to Solution Designer); final confidence 90% |
 | API-REV-002 | `solution_designer`, `handoff-sr-005.md` (SR-005, DEC-008), round 2 | SR-005 (requirements AC-003/QR-002); design SR-004 unchanged | `Fail` / 90% | `Fail` on OBS-1 only (Local Fix); AC-003 Proven; final confidence 91% |
+| API-REV-003 | `code_reviewer`, `code-review-report.md` CRR-004 (Pass), round 3 | IR-003, CRR-003/CRR-004; SR-005 | `Fail` / 91% | `Pass` / 93% |
 
 ## Revision Entries
 
@@ -55,3 +56,26 @@ None. (CRR-001's CR-001 was resolved by the implementation in `077fa6853` before
 - New or remaining failure IDs: OBS-1 (API-08).
 - Recommended owner: implementation engineer (`Local Fix`), through the code reviewer's failure-origin review.
 - Remaining risks, blocked evidence, or untested scope: unchanged from API-REV-001 except AC-003, which is closed. FU-003, FU-004, FU-005 are follow-ups.
+
+### API-REV-003 — OBS-1 Local Fix re-validated
+
+- Triggering role, report path, and round: Code Reviewer, `code-review-report.md` CRR-004 (targeted delta review of IR-003, Pass); API/E2E round 3.
+- Triggering finding or case IDs: API-08 (OBS-1 / CR-002).
+- Related architecture-design, architecture-review, implementation, code-review, or delivery revision IDs: IR-003 (code `542bf871f`), CRR-003/CRR-004, SR-005.
+- Why this revision was recorded: the implementation fixed the failing card case; rerun on the fix.
+- Coverage decisions or durable test paths changed: none; the card spec was not changed.
+- Cases added, changed, removed, or rechecked: API-08 rerun with new DOM assertions (computed `word-break` per row and per path span; per-character line check for split short Latin words) and a negative control; API-06a rerun. Not rerun: all others (change = two class names in `MemorySyncCard.vue`).
+- Commands, environment, fixture, or broader-validation delta: probe extended (`evidence/probes-api-e2e/card-probe.mjs`, `CONTROL_BREAK_ALL=1` for the control); evidence `API-08-card-browser-round2-after-fix/`, `API-08-card-browser-round2-negative-control/`, `API-06a-web-specs-round2.log`.
+
+#### Prior Failure Resolution
+
+| Prior Case / Failure Reference | Previous Classification | Current Resolution | Case IDs Now Proving It |
+| --- | --- | --- | --- |
+| API-REV-002 OBS-1 (card row words split) | `Local Fix` | Fixed in `542bf871f`: rows `word-break: normal` + `overflow-wrap: break-word`, path span `break-all`; 0 split short Latin words of 476 (en) / 436 (zh-CN); the control detects 21 / 2 | API-08, API-06a |
+
+- Canonical artifacts and sections updated: execution report (Round, Tested Builds, API-08, Acceptance-Criteria Proof, scorecard, Observations, Result), coverage investigation round.
+- Prior result and confidence: `Fail` / 91%
+- Current result and confidence: `Pass` / 93%
+- New or remaining failure IDs: None.
+- Recommended owner: N/A.
+- Remaining risks, blocked evidence, or untested scope: packaged desktop build blocked by the base typecheck failure (FU-003); Electron's own Node approximated by Node 24.15.0; torn piece after a kill mid-write not hit; 24 h expiry by unit clock.

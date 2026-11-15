@@ -17,8 +17,8 @@ The plan: what must be proven, how, the decisions about existing tests, and the 
 - Code Review Revision Record: `code-review-revision-record.md`
 - Delivery Revision Record / IDs: N/A
 - API/E2E Revision Record: `api-e2e-revision-record.md`
-- Current API/E2E Revision ID: `API-REV-002`
-- Current Investigation Round: 2 (round 1 baseline above; round 2 = SR-005 ruling and OBS-1)
+- Current API/E2E Revision ID: `API-REV-003`
+- Current Investigation Round: 3 (round 1 baseline; round 2 = SR-005 ruling and OBS-1; round 3 = rerun of API-08 and API-06a on the OBS-1 fix `542bf871f`)
 - Trigger: code review CRR-002 Pass (Large / High), message from `code_reviewer`
 - Prior Investigation Reviewed: None (first round)
 - Latest Authoritative Investigation: this file
