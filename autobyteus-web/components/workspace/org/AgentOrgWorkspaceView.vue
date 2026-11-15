@@ -71,6 +71,8 @@ import { useRoute, useRouter } from 'vue-router'
 import { useRunStart } from '~/composables/runSettings/useRunStart'
 import { Icon } from '@iconify/vue'
 import { useActiveContextStore } from '~/stores/activeContextStore'
+import { useAgentOrgContextsStore } from '~/stores/agentOrgContextsStore'
+import { useRunTreeStore } from '~/stores/runTreeStore'
 import AgentWorkspaceSurface from '~/components/workspace/agent/AgentWorkspaceSurface.vue'
 import TeamWorkspaceSurface from '~/components/workspace/team/TeamWorkspaceSurface.vue'
 import WorkspaceRecoveryNotice from '~/components/workspace/common/WorkspaceRecoveryNotice.vue'
@@ -80,6 +82,8 @@ import { useWorkspaceCenterViewStore } from '~/stores/workspaceCenterViewStore'
 const route = useRoute()
 const router = useRouter()
 const active = useActiveContextStore()
+const orgContexts = useAgentOrgContextsStore()
+const runTrees = useRunTreeStore()
 const center = useWorkspaceCenterViewStore()
 const runStart = useRunStart()
 const { t } = useLocalization()
@@ -110,16 +114,16 @@ const selectRouteExecution = () => {
   if (!orgRunId.value) return
   const agentRunId = String(route.query.agentRunId || '')
   const address = String(route.query.memberAddress || '')
-  if (agentRunId) {
-    const identity = context.value?.index.agents.get(agentRunId)
-    if (identity && address && identity.address !== address) {
-      active.selectAgentOrg(orgRunId.value, null)
-      return
-    }
-    active.selectAgentOrg(orgRunId.value, { kind: 'agent_execution', agentRunId })
-  } else if (address) active.selectAgentOrg(orgRunId.value, address)
+  // An agent of the Org, or a run it delegated (its tree row, rule 2; CR-461-102).
+  if (agentRunId) orgContexts.selectRouteAgent(orgRunId.value, agentRunId, address)
+  else if (address) active.selectAgentOrg(orgRunId.value, address)
 }
 watch([() => route.query.agentRunId, () => route.query.memberAddress, context], selectRouteExecution, { immediate: true })
+// A delegated run the route names opens once the Org's tree has its row (its tree may arrive after the view).
+watch(() => runTrees.rowsOf({ kind: 'agent_org', runId: orgRunId.value }), () => {
+  const agentRunId = String(route.query.agentRunId || '')
+  if (agentRunId && !context.value?.index.agents.has(agentRunId)) selectRouteExecution()
+})
 /** ＋ opens the Org launch page prefilled from this run (REQ-013). */
 const openNewOrgRun = () => {
   const source = context.value?.executionTree.rootOrg

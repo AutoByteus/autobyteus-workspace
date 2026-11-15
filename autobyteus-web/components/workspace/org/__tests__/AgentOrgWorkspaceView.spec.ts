@@ -36,6 +36,10 @@ vi.mock('~/stores/activeContextStore', () => ({
     agentOrgErrorFor: () => state.error,
   }),
 }))
+const orgStore = vi.hoisted(() => ({ selectRouteAgent: vi.fn() }))
+const treeRows = reactive({ rows: [] as unknown[] })
+vi.mock('~/stores/agentOrgContextsStore', () => ({ useAgentOrgContextsStore: () => orgStore }))
+vi.mock('~/stores/runTreeStore', () => ({ useRunTreeStore: () => ({ rowsOf: () => treeRows.rows }) }))
 vi.mock('~/stores/workspaceCenterViewStore', () => ({
   useWorkspaceCenterViewStore: () => center,
 }))
@@ -89,7 +93,29 @@ describe('AgentOrgWorkspaceView', () => {
     state.selected = null
     route.query.orgRunId = 'org-run'
     route.query.mode = 'active'
+    delete (route.query as Record<string, unknown>).agentRunId
+    delete (route.query as Record<string, unknown>).memberAddress
+    treeRows.rows = []
     center.mode = 'chat'
+  })
+
+  it('CR-461-102: the route\'s agent goes to the Org\'s selection, a delegated run again once the Org\'s tree lists it', async () => {
+    state.context = { ...context(), index: { agents: new Map([['agent-run', { address: '/writer' }]]) } }
+    Object.assign(route.query, { agentRunId: 'delegated-agent', memberAddress: '/helper' })
+    const wrapper = mountSubject()
+    expect(orgStore.selectRouteAgent).toHaveBeenCalledWith('org-run', 'delegated-agent', '/helper')
+    orgStore.selectRouteAgent.mockClear()
+    treeRows.rows = [{ key: 'agent:delegated-agent' }]
+    await flushPromises()
+    expect(orgStore.selectRouteAgent).toHaveBeenCalledWith('org-run', 'delegated-agent', '/helper')
+    // One of the Org's own agents is not selected again by a tree change.
+    Object.assign(route.query, { agentRunId: 'agent-run', memberAddress: '/writer' })
+    await flushPromises()
+    orgStore.selectRouteAgent.mockClear()
+    treeRows.rows = [{ key: 'agent:delegated-agent' }, { key: 'agent:other' }]
+    await flushPromises()
+    expect(orgStore.selectRouteAgent).not.toHaveBeenCalled()
+    wrapper.unmount()
   })
 
   it.each([directTarget, mountedTeamTarget])('exposes stopped configured $kind Settings and existing + semantics', async target => {

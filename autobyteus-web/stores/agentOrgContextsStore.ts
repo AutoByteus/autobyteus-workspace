@@ -35,6 +35,7 @@ import { useRunTreeStore } from '~/stores/runTreeStore'
 import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore'
 import { teamWorkspaceContextViewOf } from '~/services/teamExecution/teamWorkspaceContextView'
 import type { RunTreeOpenTargetDto, RunTreeRowDto } from '@autobyteus/collaboration-stream-contracts'
+import { treeRowOfAgent } from '~/utils/runTree/runTreeAgents'
 
 const MAX_CONFIG_READ_ATTEMPTS = 3
 
@@ -198,6 +199,18 @@ export const useAgentOrgContextsStore = defineStore('agentOrgContexts', () => {
     return true
   }
   const selectedRowKey = (id: string): string | null => selectedRow(id)?.key ?? null
+  /**
+   * The agent the route names (CR-461-102): one of the Org's own agents is selected in it; a run the Org delegated, here
+   * or on a peer node, is selected by its tree row and opens as its own run (rule 2). An agent the Org has not got yet
+   * (its view or tree still loading) selects nothing.
+   */
+  const selectRouteAgent = (id: string, agentRunId: string, address: string): void => {
+    const org = contexts.value[id]
+    const own = org?.index.agents.get(agentRunId)
+    if (own) { select(id, address && own.address !== address ? null : { kind: 'agent_execution', agentRunId }); return }
+    const row = treeRowOfAgent(useRunTreeStore().rowsOf({ kind: 'agent_org', runId: id }), agentRunId)
+    if (row && selectedRowKey(id) !== row.key) selectTreeRow(id, row)
+  }
 
   /** The selected delegated row's own run, as the Org's center view and composer target (rule 2); null while it opens. */
   const delegatedTargetFor = (id: string): ActiveAgentWorkspaceTarget | null => {
@@ -472,5 +485,5 @@ export const useAgentOrgContextsStore = defineStore('agentOrgContexts', () => {
 
   const contextFor = (id: string): AgentOrgExecutionContext | null => contexts.value[id] ?? null
   const errorFor = (id: string): string | null => errors.value[id] ?? null
-  return { readRunConfig, saveRunConfig, contexts, errors, operations, reconcileRetainedHistory, openForInspection, releaseContext, releaseAll, select, selectTreeRow, selectedRowKey, contextFor, errorFor, activeTargetFor, stopAndInspect }
+  return { readRunConfig, saveRunConfig, contexts, errors, operations, reconcileRetainedHistory, openForInspection, releaseContext, releaseAll, select, selectTreeRow, selectedRowKey, selectRouteAgent, contextFor, errorFor, activeTargetFor, stopAndInspect }
 })
