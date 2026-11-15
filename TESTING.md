@@ -34,7 +34,7 @@ Run commands from the repository root. `pnpm -C <dir>` runs a package's script.
 | Web unit and component tests | Nuxt components, stores, composables, utilities (colocated `__tests__`) | `pnpm -C autobyteus-web test:nuxt` |
 | Electron main-process tests | Electron main, preload, launch profile, server manager, updater | `pnpm -C autobyteus-web test:electron` |
 | Web guards | Web boundary and localization rules | `pnpm -C autobyteus-web guard:web-boundary`, `guard:localization-boundary`, `audit:localization-literals` |
-| Web typecheck | Nuxt app, Electron main, build scripts and the tests that import server code under their own configs; production files must have no errors, test files may not exceed `typecheck-baseline.json`. A lower count also fails until `pnpm -C autobyteus-web typecheck:update-baseline` shrinks the baseline; the update refuses growth. It builds the shared types it reads (`@autobyteus/application-sdk-contracts`) first, so it runs right after `pnpm install`. The desktop build runs it | `pnpm -C autobyteus-web typecheck` |
+| Web typecheck | Nuxt app, Electron main, build scripts and the tests that import server code under their own configs; those tests compile the server's `src` and the server test fixtures they import, so a server change can fail this typecheck; production files must have no errors, test files may not exceed `typecheck-baseline.json`. A lower count also fails until `pnpm -C autobyteus-web typecheck:update-baseline` shrinks the baseline; the update refuses growth. It builds the shared types it reads (`@autobyteus/application-sdk-contracts`) first, so it runs right after `pnpm install`. The desktop build runs it | `pnpm -C autobyteus-web typecheck` |
 | Workspace native-to-web integration | Native producer/FIFO and web hydration at a workspace-owned boundary (`test-support/`) | `pnpm test:native-input-history` |
 | Server unit / integration | Backend logic and in-process integration | `pnpm -C autobyteus-server-ts test:unit`; `test:integration:prepare` once, then `test:integration`; one file: `pnpm -C autobyteus-server-ts exec vitest run <path> --no-watch` |
 | Server typecheck | `src` and the test files (`tests/`, `../test-support/`) under the build type policy, so a test that calls a removed or renamed API fails it. Production files must have no errors; test files may not exceed `typecheck-baseline.json`. A lower count also fails until `pnpm -C autobyteus-server-ts typecheck:update-baseline` shrinks the baseline; the update refuses growth. It builds the shared packages first | `pnpm -C autobyteus-server-ts typecheck` |
@@ -81,6 +81,8 @@ closes the remaining confidence gap.
 | Launch profile, isolation or packaged-launch mechanics | Packaged Electron harness |
 | The node's request gate, node credentials, the MCP gateway token, or the shared server test harness (`autobyteus-server-ts/tests/setup/`, `tests/e2e/helpers/`, `test-support/`) | The whole server E2E suite (`pnpm test:e2e`): each suite reaches its node its own way, so a subset proves only the ways it uses |
 
+**Both typechecks, whatever the change touches.** A change to TypeScript in any workspace package runs `pnpm -C autobyteus-web typecheck` and `pnpm -C autobyteus-server-ts typecheck`, not only the typecheck of the package it changed. Each reads beyond its own package: the web typecheck, which the desktop build runs, compiles the server's source and server test fixtures through its cross-package tests, and the server typecheck builds and reads `autobyteus-ts` and the shared packages. A server-only change that a web test calls passes the server typecheck and still stops every desktop build.
+
 These are separate evidence layers; none substitutes for another. A browser probe proves
 web-equivalent behavior, not the Electron shell. A scripted runtime proves the transport,
 not paid inference. Agent-run testing is not the user's verification.
@@ -101,7 +103,7 @@ refresh) before running anything:
    lockfile, the database schema or migrations, `autobyteus-ts`, the contract packages,
    the test harness or fixtures, or build configuration. A large diff without such a
    change is not a reason to rerun everything: plan by what the cases exercise.
-5. After a merge or rebase, also rerun the typechecks and rebuild every built output the
+5. After a merge or rebase, also rerun both typechecks (web and server, as [Choosing the path](#choosing-the-path) says) and rebuild every built output the
    planned cases use (`dist/`, `electron-dist/`): they are cheap and catch a broken merge,
    and a build made before the merge is stale.
 6. Run only the cases marked Rerun or new, and record their new commit.
