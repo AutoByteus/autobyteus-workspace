@@ -220,6 +220,8 @@ export class AgentOrgExecutionContext {
     } else if (event.kind === 'run_tree_changed') {
       // The Org's tree (SR-084): numbered in the view's sequence, applied to the rows its tree snapshot gave.
       useRunTreeStore().streamChange({ kind: 'agent_org', runId: this.orgRunId }, event)
+      // Its Team tab still names an agent that left the tree (its Task closed): from the server's answer.
+      if (event.removed.length) useCollaborationParticipantMessagesStore().reloadNamingUnknown('agent_org', this.orgRunId, (id) => this.holdsAgent(id))
     } else {
       try {
         assertAgentOrgCommunicationMessagesCorrelated([event.message])

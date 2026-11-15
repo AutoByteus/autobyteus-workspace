@@ -81,6 +81,17 @@ describe('AgentRunCollaborationContext', () => {
     expect(context.phase).toBe('reopen_required')
   })
 
+  it('autobyteus-461 SR-084 (AC-011): a tree change that removes rows re-loads the Team tab lists naming an agent no longer held', () => {
+    const context = build()
+    const reload = vi.spyOn(useCollaborationParticipantMessagesStore(), 'reloadNamingUnknown')
+    context.applyEvent(5, { kind: 'run_tree_changed', added: [agentRow('cr-copy-run', 'agent:host-run', 1)], removed: [], updated: [] })
+    expect(reload).not.toHaveBeenCalled()
+    context.applyEvent(6, { kind: 'run_tree_changed', added: [], removed: ['agent:cua-run'], updated: [] })
+    expect(reload).toHaveBeenCalledOnce()
+    const [rootKind, rootRunId, holds] = reload.mock.calls[0]!
+    expect([rootKind, rootRunId, holds('cua-run'), holds('host-run')]).toEqual(['agent', 'host-run', false, true])
+  })
+
   it('refuses a message an agent sent to itself; a stop of its own agent keeps the stream (SR-045)', () => {
     const context = build()
     expect(() => context.applyEvent(5, { kind: 'communication', message: message('m-self', 'host-run', 'host-run') })).toThrow('identity mismatch')

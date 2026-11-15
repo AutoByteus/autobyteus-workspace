@@ -29,6 +29,7 @@ import type { CollaboratorMentionDto } from '~/utils/collaborators/collaboratorM
 import type { TeamExecutionEffect } from '~/services/teamExecution/teamExecutionViewModels';
 import { useRunTreeStore } from '~/stores/runTreeStore';
 import { useCollaborationParticipantMessagesStore } from '~/services/collaborationMessages/collaborationParticipantMessages';
+import { treeRowOfAgent } from '~/utils/runTree/runTreeAgents';
 import {
   beginTeamMemberGeneration,
   invalidateTeamMemberProjection,
@@ -396,7 +397,13 @@ export class TeamStreamingService {
           );
         }
       } else if (effect.kind === 'apply_run_tree_change') {
-        useRunTreeStore().streamChange(this.treeRefOf(context), effect.change);
+        const ref = this.treeRefOf(context);
+        useRunTreeStore().streamChange(ref, effect.change);
+        // Its Team tab still names an agent that left the tree (its Task closed): from the server's answer.
+        if (effect.change.removed.length) {
+          useCollaborationParticipantMessagesStore().reloadNamingUnknown('agent_team', context.view.getRootTeamRunId(), (agentRunId) =>
+            context.view.getMemberAddress(agentRunId) !== null || treeRowOfAgent(useRunTreeStore().rowsOf(ref), agentRunId) !== null);
+        }
       } else if (effect.kind === 'record_team_token_usage') {
         useTokenUsageMeterStore().applyTeamTokenUsage(context.view.getRootTeamRunId(), effect.agentRunId, effect.details);
       } else if (effect.kind === 'dispatch_agent') {

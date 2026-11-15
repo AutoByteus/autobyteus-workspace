@@ -70,6 +70,8 @@ export class AgentRunCollaborationContext {
     if (event.kind === 'run_tree_changed') {
       // The run's tree (SR-084): numbered in the view's sequence, applied to the rows its tree snapshot gave.
       useRunTreeStore().streamChange({ kind: 'agent', runId: this.hostRunId }, event)
+      // Its Team tab still names an agent that left the tree (its Task closed): from the server's answer.
+      if (event.removed.length) useCollaborationParticipantMessagesStore().reloadNamingUnknown('agent', this.hostRunId, (id) => this.holdsAgent(id))
     } else {
       // The Team tab's lists own the messages (autobyteus-358); the view holds none.
       this.assertMessageCorrelated(event.message)
