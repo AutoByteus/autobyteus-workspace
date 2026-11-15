@@ -23,3 +23,5 @@
 | 2026-11-15 15:06:19 | API-12 | Started | fresh clone + frozen install + build:electron:mac (Node 22), background |
 | 2026-11-15 15:15:32 | API-12 | Completed | install Pass; build stops at typecheck failing identically on base (FU-003); generate:electron Pass; packaging not run |
 | 2026-11-15 15:15:32 | ALL | Completed | report, revision record, follow-up FU-003, TESTING.md node rule written; result Fail on AC-003 only (Requirement Gap) -> Solution Designer |
+| 2026-11-15 15:19:09 | API-07 | Rejudged | SR-005 wording: Pass on round-1 data (no code change since 077fa6853) |
+| 2026-11-15 15:19:09 | API-08 | Reclassified | OBS-1 promoted to Local Fix: Fail until fix re-validated |

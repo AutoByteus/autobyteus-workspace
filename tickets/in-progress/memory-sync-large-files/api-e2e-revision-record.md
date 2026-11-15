@@ -7,6 +7,7 @@ The latest `api-e2e-coverage-investigation.md` and `api-e2e-execution-coverage-r
 | Revision ID | Triggering Role / Report / Round | Related Upstream Revision IDs | Prior Result / Confidence | Current Result / Confidence |
 | --- | --- | --- | --- | --- |
 | API-REV-001 | `code_reviewer`, `code-review-report.md` CRR-002 (Pass), round 1 | SR-004 / ARCH-REV-003 / IR-002 / CRR-001, CRR-002 | N/A | `Fail` on AC-003 only (Requirement Gap, routed to Solution Designer); final confidence 90% |
+| API-REV-002 | `solution_designer`, `handoff-sr-005.md` (SR-005, DEC-008), round 2 | SR-005 (requirements AC-003/QR-002); design SR-004 unchanged | `Fail` / 90% | `Fail` on OBS-1 only (Local Fix); AC-003 Proven; final confidence 91% |
 
 ## Revision Entries
 
@@ -30,3 +31,27 @@ None. (CRR-001's CR-001 was resolved by the implementation in `077fa6853` before
 - New or remaining failure IDs: AC-003 (case API-07). Observations OBS-1 (card word breaks), OBS-2 (hub reason repeats path), OBS-3 (zero-byte partial after a refused piece) are non-blocking. FU-003 (web typecheck gate fails on base) is out of scope and urgent for delivery.
 - Recommended owner: Solution Designer (`Requirement Gap`: cold or steady-state, which Node). A `Design Impact` follows only if cold on Node 24 binds.
 - Remaining risks, blocked evidence, or untested scope: packaged desktop build (stops at FU-003; signing needs the runner); Electron-embedded Node approximated by Node 24.15.0; a torn piece after a kill mid-write not hit; 24 h staging expiry by unit clock; no remote network (FU-002).
+
+### API-REV-002 — SR-005 ruling on AC-003/QR-002, and OBS-1 promoted to a Local Fix
+
+- Triggering role, report path, and round: Solution Designer, `handoff-sr-005.md`, API/E2E round 2.
+- Triggering finding or case IDs: API-07 (AC-003); OBS-1, OBS-2, OBS-3 of API-08/API-11.
+- Related architecture-design, architecture-review, implementation, code-review, or delivery revision IDs: SR-005 (requirements restated; design SR-004, ARCH-REV-003 unchanged); IR-002; CRR-002.
+- Why this revision was recorded: the Solution Designer ruled DEC-008: the first transfer of a fresh process counts, on Node 22 and the desktop's Node 24; AC-003/QR-002 now require peak RSS growth over idle below 400 MiB for 2 GiB and ≥ 4 GiB files with equal SHA-256. OBS-1 belongs to this ticket (REQ-007, AC-010); OBS-2 is FU-005; OBS-3 is accepted.
+- Coverage decisions or durable test paths changed: none; no durable test added, updated or removed.
+- Cases added, changed, removed, or rechecked: API-07 rejudged against the new wording on the round-1 data, not rerun (the code did not change since `077fa6853`; `git diff --name-only 077fa6853 HEAD` is documents only): `Pass`. API-08 `Fail` (OBS-1). API-06a (card spec) and API-08 will rerun on the fix's commit.
+- Commands, environment, fixture, or broader-validation delta: none this round.
+
+#### Prior Failure Resolution
+
+| Prior Case / Failure Reference | Previous Classification | Current Resolution | Case IDs Now Proving It |
+| --- | --- | --- | --- |
+| API-REV-001 AC-003 (cold growth above 200 MiB on Node 24/26) | `Requirement Gap` | Resolved by SR-005: the bound is 400 MiB, first transfer included; Node 22 max 171.8 / 103.8 and Node 24 max 362.9 / 270 MiB (source / hub) are below it | API-07 |
+| API-REV-001 OBS-1 (card row words split) | non-blocking observation | Promoted to `Local Fix` by SR-005; open until the fix is re-validated | API-08 (to rerun) |
+
+- Canonical artifacts and sections updated: execution report (Round, API-07, API-08, Acceptance-Criteria Proof, scorecard, Observations, Classification, Result), coverage investigation (round, ambiguities).
+- Prior result and confidence: `Fail` / 90%
+- Current result and confidence: `Fail` (OBS-1 only) / 91%
+- New or remaining failure IDs: OBS-1 (API-08).
+- Recommended owner: implementation engineer (`Local Fix`), through the code reviewer's failure-origin review.
+- Remaining risks, blocked evidence, or untested scope: unchanged from API-REV-001 except AC-003, which is closed. FU-003, FU-004, FU-005 are follow-ups.

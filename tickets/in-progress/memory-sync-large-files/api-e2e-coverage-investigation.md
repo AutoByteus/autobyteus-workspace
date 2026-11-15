@@ -17,8 +17,8 @@ The plan: what must be proven, how, the decisions about existing tests, and the 
 - Code Review Revision Record: `code-review-revision-record.md`
 - Delivery Revision Record / IDs: N/A
 - API/E2E Revision Record: `api-e2e-revision-record.md`
-- Current API/E2E Revision ID: `API-REV-001`
-- Current Investigation Round: 1
+- Current API/E2E Revision ID: `API-REV-002`
+- Current Investigation Round: 2 (round 1 baseline above; round 2 = SR-005 ruling and OBS-1)
 - Trigger: code review CRR-002 Pass (Large / High), message from `code_reviewer`
 - Prior Investigation Reviewed: None (first round)
 - Latest Authoritative Investigation: this file
@@ -176,6 +176,8 @@ None.
 | Issue | Classification | Evidence | Recommended Owner |
 | --- | --- | --- | --- |
 | AC-003 literal reading: "RSS growth during the transfer stays below 200 MiB"; the implementation's cold figure for the source is 264 MiB | to be decided by my independent run | IMP-05; CRR-002 residual risk 1 | If the cold figure is binding: Solution Designer (design escalation trigger), not implementation |
+| (Resolved, round 2) AC-003/QR-002 were restated by SR-005 / DEC-008: peak RSS growth over idle below 400 MiB for 2 GiB and ≥ 4 GiB files, first transfer of a fresh process included, on Node 22 and the desktop's Node 24 | none left; API-07's evidence judged against it | `handoff-sr-005.md`; requirements-doc AC-003, QR-002, DEC-008 | Solution Designer (done) |
+| OBS-1 card row words split (`break-all` on the whole row): promoted to a Local Fix by the Solution Designer | `Local Fix` | API-08 screenshots | implementation_engineer |
 
 ## Investigation Decision
 
