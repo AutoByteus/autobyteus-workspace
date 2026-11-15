@@ -633,3 +633,40 @@ Step 2c, org tree (uncommitted, web types PASS):
   - a restore during an open stream gives one in-band snapshot;
   - BR-011 passes with the heuristic removed.
 - G-D1 then uses the same offsets on node B's observed frames (an additive field on the observed `AgentPresentationMessage`).
+
+Progress (2026-11-15, after IMP-3b):
+- IMP-3b (`bb9ccf774a`, `evidence/implementation/IMP-3b-snapshot-stored-read-gap.md`): the stored read can't be exact by IDs and offsets. Sent to the designer as a Design Impact, answered as SR-087 (`761da92499`, under architecture review):
+  - the stored read covers confirmed turns only, with `whenPersisted(turnId)` on the recorder;
+  - `AgentStreamSequence` buffers the frames of unconfirmed turns while the run is active (G-G1 revised);
+  - the snapshot is `{ stored, turnFrames, baseSequence, liveSequenceId }`;
+  - no offsets anywhere;
+  - G-D1 takes node B's own snapshot and sequence.
+  3b and G-D1 start once SR-087 passes.
+- G-A1 (`877cbb7adc`): a fresh `RUN_STATUS_SNAPSHOT` replaces each answered run's statuses.
+- Step 4, in stages:
+  - A, the views' snapshots, events and history reads drop the child-row shapes (`taskExecutions`, `closed_task_executions`, `remote_task_executions`, the row events and `remote_task_execution_summary`). Contracts, server and web change together;
+  - B, the web derivations go;
+  - C, `RunTreeView` reads its own records, and the DTO projections go (`delegated-children-dtos`, `child-run-identity`, the child parts of `collaboration-execution-tree-dto-projection`, `remote-task-execution-dto-projection`).
+  `remote_agent_presentation` and CR-461-098's re-read stay until G-D1 and 3b.
+
+Progress (stage A and peer frames; head after `c17a11f2ef`):
+- Server and contracts, committed and green (server unit 894 files pass after the fix; types at baseline):
+  - `6964b684a4`: the views have no child rows or row events;
+  - `c17a11f2ef`: `remote_agent_presentation` and `PeerChildObservation` are removed; Retry and peer asks move to `RunStatusService` (`retryPeers`, node-back re-observe); the Agent root view carries no presentation frames.
+- SR-087 passed (ARCH-REV-063). Its recommendation: one shared snapshot-connection component for `RunViewStream`, `AgentStreamSequence` and the peer stream.
+- Web stage A+B, in progress (uncommitted; the web typecheck had 230 production errors before this round):
+  - done:
+    - agent context, streaming service and store rewritten on tree rows (`utils/runTree/runTreeAgents.ts`: `treeRowOfAgent`, `delegatedSubjectOfRow`, `treeAgentIdentity`);
+    - removed `agentRunCollaborationIndex`, the child context factory, the child hydration and `agentRunDelegatedRunSubject`;
+    - org index and context keep only their own parts; `agentOrgHistoryRows` and `agentOrgTeamBranchStatus` are removed (`agentOrgFirstMemberAddress` moved to its own file);
+    - org store: `selectTreeRow`, `selectedRowKey`, `delegatedTargetFor`; `openRunTarget` routes the org top; the org `inspect` subject action opens through the tree row;
+    - `teamWorkspaceContextViewOf` moved to `services/teamExecution/teamWorkspaceContextView.ts`;
+    - the view status bridge, `viewRunRefs` and their plugin are removed.
+  - next:
+    - team view state: own members only; remove closed, remote and task events; add a selected tree row for delegated rows, like the org's;
+    - team tree selectors, mutations, remote executions and registry;
+    - `TeamStreamingService`, the team hydration services, `teamRunOpenCoordinator`, `teamDelegatedRunSubject` users, `agentSourceSelectors`, `taskExecutionClosure`;
+    - runHistory types and support, `ExistingRunModelConfigDraft`, `existingRunConfigStore`, `agentOrgContextHydration`, GraphQL queries (closed and remote fields), codegen;
+    - then specs.
+  - Peer rows can't be opened in this interim; `remoteRunsStore` and the web peer path are replaced in G-D1.
+- After stage A web: 3b (with the shared snapshot-connection component), G-D1, stage C.
