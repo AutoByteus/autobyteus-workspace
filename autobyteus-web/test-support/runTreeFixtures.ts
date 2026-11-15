@@ -102,3 +102,51 @@ export const seedOrgRunTrees = (trees: Readonly<{ streamSnapshot(ref: Readonly<{
   runs: readonly Readonly<{ rootRunId: string; executionTree: OrgTree; closedTaskExecutions?: Closed }>[]): void => {
   for (const run of runs) trees.streamSnapshot({ kind: 'agent_org', runId: run.rootRunId }, orgRunTreeRows(run.rootRunId, run.executionTree, run.closedTaskExecutions))
 }
+
+type CollaborationTask = import('@autobyteus/collaboration-stream-contracts').CollaborationTaskExecutionDto
+type RowLaunch = NonNullable<RunTreeRowDto['launch']>
+const rowLaunchOf = (launch: Readonly<{ runtimeKind: string; llmModelIdentifier: string; llmConfig: unknown; autoExecuteTools: boolean; workspaceRootPath?: string | null }>,
+  source: unknown, ownSource: boolean): RowLaunch => ({ runtimeKind: launch.runtimeKind, llmModelIdentifier: launch.llmModelIdentifier,
+  llmConfig: (launch.llmConfig ?? null) as RowLaunch['llmConfig'], autoExecuteTools: launch.autoExecuteTools, workspaceRootPath: launch.workspaceRootPath ?? null,
+  source: (source ?? null) as RowLaunch['source'], ownSource })
+
+/**
+ * What the server's `RunTreeView` sends for an agent run whose recorded delegations are `tasks` (SR-084), for web specs
+ * whose fixtures hold an agent run's view: its own agent, then each run it delegated under the agent or member that
+ * delegated it, each with its launch and origin as its record has them.
+ */
+export const agentRunTreeRows = (hostRunId: string, tasks: readonly CollaborationTask[]): RunTreeRowDto[] => {
+  const rows: RunTreeRowDto[] = [agentRow(hostRunId, null, 0)]
+  const anchors = new Map<string, Readonly<{ key: string; depth: number }>>([[hostRunId, { key: `agent:${hostRunId}`, depth: 0 }]])
+  const nameOf = (address: string) => address.split('/').filter(Boolean).at(-1)?.replace(/[_-]+/g, ' ') ?? address
+  const visit = (list: readonly CollaborationTask[]) => {
+    for (const task of list) {
+      const anchor = (task.delegatorAgentRunId && anchors.get(task.delegatorAgentRunId)) || anchors.get(hostRunId)!
+      if ('agentRunId' in task) {
+        const row: RunTreeRowDto = { key: `agent:${task.agentRunId}`, parentKey: anchor.key, depth: anchor.depth + 1, kind: 'agent', name: nameOf(task.address),
+          address: task.address, openTarget: { runKind: 'agent', runId: task.agentRunId, agentRunId: task.agentRunId }, statusIds: [task.agentRunId],
+          launch: rowLaunchOf(task.source.launchConfiguration, task.source.launchSource, true) }
+        rows.push(row)
+        anchors.set(task.agentRunId, { key: row.key, depth: row.depth })
+        continue
+      }
+      const source = task.source
+      const coordinator = task.members.find((member) => member.address === source.coordinatorAddress) ?? task.members[0]
+      const teamKey = `team:${task.teamRunId}`
+      rows.push({ key: teamKey, parentKey: anchor.key, depth: anchor.depth + 1, kind: 'team', name: nameOf(task.address), address: task.address,
+        openTarget: coordinator ? { runKind: 'agent_team', runId: task.teamRunId, agentRunId: coordinator.agentRunId } : null, statusIds: [task.teamRunId],
+        launch: rowLaunchOf(source.defaultLaunchConfiguration, source.defaultLaunchSource, true) })
+      for (const member of task.members) {
+        const recorded = source.members.find((candidate) => candidate.address === member.address)
+        const key = `team_member:${task.teamRunId}:${member.agentRunId}`
+        rows.push({ key, parentKey: teamKey, depth: anchor.depth + 2, kind: 'team_member', name: nameOf(member.address), address: member.address,
+          openTarget: { runKind: 'agent_team', runId: task.teamRunId, agentRunId: member.agentRunId }, statusIds: [member.agentRunId],
+          ...(recorded ? { launch: rowLaunchOf(recorded.launchConfiguration, recorded.launchSource ?? source.defaultLaunchSource, Boolean(recorded.launchSource)) } : {}) })
+        anchors.set(member.agentRunId, { key, depth: anchor.depth + 2 })
+      }
+      visit(task.taskExecutions)
+    }
+  }
+  visit(tasks)
+  return rows
+}

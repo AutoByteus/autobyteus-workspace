@@ -244,7 +244,6 @@ const delegatedControl = computed<DelegatedRowControl>(() => {
     isAgentLive: (agentRunId) => delegated.isAgentLive(agentRunId),
     isStopping: (reference) => Boolean(root && delegatedDraft.isStopping(root, reference)),
     draftOf: (target) => delegatedDraft.edits[target] ?? null,
-    storedOf: (target) => delegatedDraft.stored[target] ?? null,
   }
 })
 

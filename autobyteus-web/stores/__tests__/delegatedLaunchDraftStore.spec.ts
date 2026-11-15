@@ -3,7 +3,6 @@ import { createPinia, setActivePinia } from 'pinia'
 
 const client = vi.hoisted(() => ({
   loadDelegatedRunOptions: vi.fn(),
-  loadDelegatedRunLaunches: vi.fn(),
   saveDelegatedRuns: vi.fn(),
   terminateDelegatedRun: vi.fn(),
 }))
@@ -35,7 +34,6 @@ beforeEach(() => {
   setActivePinia(createPinia())
   Object.values(client).forEach((mock) => mock.mockReset())
   client.loadDelegatedRunOptions.mockResolvedValue(answer({ 'agent:copy': options('opus', ['sonnet']) }))
-  client.loadDelegatedRunLaunches.mockResolvedValue({})
 })
 
 describe('delegatedLaunchDraftStore', () => {
@@ -155,35 +153,10 @@ describe('delegatedLaunchDraftStore', () => {
       changes: [{ key: 'agent:copy', selection: { runtimeKind: 'codex_app_server', llmModelIdentifier: 'sonnet', llmConfig: null } }] })
     expect(store.dirty).toBe(false)
     expect(store.feedback).toEqual({ kind: 'success', message: 'Saved.' })
-    // CR-002: no client copy of the edit. CR-461-077: the store keeps what each run's own save answered (its canonical
-    // read), which its row shows until Settings are bound to another run.
+    // CR-002: no client copy of the edit; SR-084: no overlay of what the runs saved either. Each row shows its run's
+    // launch from the tree's next answer (a save tells the trees that hold its row, SR-086 G-B1).
     expect(store.$state).not.toHaveProperty('savedByRoot')
-    expect(store.stored).toEqual({ 'agent:copy': { launch: answered, ownSource: true } })
-    store.bind(null)
-    expect(store.stored).toEqual({})
-  })
-
-  it('CR-461-086: each row\'s run is read when its row appears and again after a Save, so a reopen and a save show what the run has now', async () => {
-    const before = { launch: { runtimeKind: 'claude_agent_sdk', llmModelIdentifier: 'opus', llmConfig: { reasoning_effort: 'high' } }, source: { origin: 'configured', fallbacks: [] }, ownSource: true }
-    const after = { launch: { runtimeKind: 'claude_agent_sdk', llmModelIdentifier: 'opus', llmConfig: { reasoning_effort: 'xhigh' } }, source: { origin: 'settings', fallbacks: [] }, ownSource: true }
-    client.loadDelegatedRunLaunches.mockResolvedValueOnce({ 'agent:copy': before }).mockResolvedValueOnce({ 'agent:copy': after })
-    const store = useDelegatedLaunchDraftStore()
-    bound(store)
-    await flush()
-    expect(client.loadDelegatedRunLaunches).toHaveBeenCalledWith(targets)
-    expect(store.stored['agent:copy']).toEqual(before)
-    client.saveDelegatedRuns.mockResolvedValue({ success: true, message: 'Saved.', fieldErrors: [], saved: { 'agent:copy': after.launch } })
-    store.edit('agent:copy', before.launch, after.launch)
-    await expect(store.save(rows, async () => true)).resolves.toBe(true)
-    // The run is read again after its save: its origin as the run recorded it, not the one shown before.
-    expect(client.loadDelegatedRunLaunches).toHaveBeenCalledTimes(2)
-    expect(store.stored['agent:copy']).toEqual(after)
-    // Settings opened again (bound anew): the runs are read again; nothing is kept from before.
-    client.loadDelegatedRunLaunches.mockResolvedValueOnce({ 'agent:copy': after })
-    store.bind(null); store.bind(root); store.setTargets(targets)
-    await flush()
-    expect(client.loadDelegatedRunLaunches).toHaveBeenCalledTimes(3)
-    expect(store.stored['agent:copy']).toEqual(after)
+    expect(store.$state).not.toHaveProperty('stored')
   })
 
   it('a row whose run is running refuses the Save before any write, naming it (SR-064)', async () => {

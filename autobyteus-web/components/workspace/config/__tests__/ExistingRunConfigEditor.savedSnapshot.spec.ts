@@ -6,6 +6,7 @@ import ExistingRunConfigEditor from '../ExistingRunConfigEditor.vue'
 import { useExistingRunConfigStore } from '~/stores/existingRunConfigStore'
 import { useDelegatedLaunchDraftStore } from '~/stores/delegatedLaunchDraftStore'
 import { injectLockedModelOptionsRefresh } from '~/composables/useLockedModelOptionsRefresh'
+import { useRunStatusStore } from '~/stores/runStatusStore'
 
 // Render the real editor + Settings/Save bar with real draft stores. Only network, unrelated
 // runtime stores and leaf controls are replaced; the stale live view deliberately never changes.
@@ -24,6 +25,12 @@ const choice = (id: string) => ({ llmModelIdentifier: id, displayName: id, canon
 const readableOptions = () => ({ status: 'ready', options: { currentModelIdentifier: 'old', currentModel: choice('old'), replacements: [choice('new')], unavailableReason: null } })
 const options = () => mocks.unreadable
   ? { status: 'unavailable', options: null, message: 'The model list of Codex App Server could not be read. Try again.' } : readableOptions()
+// The run's tree, as the server builds it from what its runs have now (SR-084): answered from the same stored state.
+vi.mock('~/utils/apolloClient', async () => {
+  const { agentRunTreeRows } = await import('~/test-support/runTreeFixtures')
+  return { getApolloClient: () => ({ query: async ({ variables }: { variables: { kind: string; runId: string } }) => ({ data: { runTree: {
+    kind: variables.kind, runId: variables.runId, rows: agentRunTreeRows(variables.runId, structuredClone(mocks.stored).execution_tree.taskExecutions) } } }) }) }
+})
 vi.mock('~/services/runConfigEditing/delegatedLaunchSelectionClient', async original => ({ ...await original<object>(),
   // Each row's options from its own run's query; each run's change by its own save (autobyteus-461 SR-064, SR-065).
   loadDelegatedRunOptions: async (targets: ReadonlyMap<string, unknown>) => ({ options: Object.fromEntries([...targets.keys()].map((key) => [key, options()])), complete: true }),
@@ -88,6 +95,8 @@ beforeEach(() => {
         apply(member.launchConfiguration)
       }
     }
+    // The runs' saves tell the trees that hold their rows (SR-086 G-B1): the run's tree is read again.
+    useRunStatusStore().apply({ type: 'RUN_TREE_CHANGED', payload: { kind: 'agent', runId: 'host' } })
     return { success: true, outcome: 'UPDATED', message: 'Saved.', fieldErrors: [], saved: {} }
   })
 })
@@ -95,9 +104,9 @@ beforeEach(() => {
 describe('stopped Agent same-view canonical saved rows', () => {
   it('keeps the accepted saved model in the mounted row after Save, not the stale live view', async () => {
     const wrapper = mountEditor(); await flushPromises()
-    const row = () => wrapper.get('[data-test="/writer@copy"]').text()
+    const row = () => wrapper.get('[data-test="agent:copy"]').text()
     expect(row()).toBe('old:null')
-    await wrapper.get('[data-test="edit-/writer@copy"]').trigger('click'); await flushPromises()
+    await wrapper.get('[data-test="edit-agent:copy"]').trigger('click'); await flushPromises()
     expect(row()).toBe('new:null')
     await wrapper.get('[data-test="save-existing-model-config"]').trigger('click'); await flushPromises()
     expect(mocks.stored.execution_tree.taskExecutions[0].source.launchConfiguration.llmModelIdentifier).toBe('new')
@@ -114,7 +123,7 @@ describe('stopped Agent same-view canonical saved rows', () => {
 it('retains the mounted Settings view and edit lock through readback, then uses the new value as the next original', async () => {
   const wrapper = mountEditor(); await flushPromises()
   const mounted = wrapper.get('[data-test="existing-run-settings"]').element
-  await wrapper.get('[data-test="edit-/writer@copy"]').trigger('click')
+  await wrapper.get('[data-test="edit-agent:copy"]').trigger('click')
   let finish!: (value: any) => void
   mocks.read.mockImplementationOnce(() => new Promise(resolve => { finish = resolve }))
   await wrapper.get('[data-test="save-existing-model-config"]').trigger('click'); await flushPromises()
@@ -126,15 +135,15 @@ it('retains the mounted Settings view and edit lock through readback, then uses 
   finish(structuredClone(mocks.stored)); await flushPromises()
   expect(wrapper.get('[data-test="existing-run-settings"]').element).toBe(mounted)
   const settings = wrapper.getComponent({ name: 'ExistingRunSettings' })
-  settings.vm.$emit('change-delegated', '/writer@copy', { field: 'thinking', llmConfig: { reasoning_effort: 'high', service_tier: 'fast' } })
+  settings.vm.$emit('change-delegated', 'agent:copy', { field: 'thinking', llmConfig: { reasoning_effort: 'high', service_tier: 'fast' } })
   await flushPromises()
   expect(delegated.originals['agent:copy']).toEqual({ runtimeKind: 'codex_app_server', llmModelIdentifier: 'new', llmConfig: null })
   await wrapper.get('[data-test="save-existing-model-config"]').trigger('click'); await flushPromises()
-  expect(wrapper.get('[data-test="/writer@copy"]').text()).toBe('new:{"reasoning_effort":"high","service_tier":"fast"}')
+  expect(wrapper.get('[data-test="agent:copy"]').text()).toBe('new:{"reasoning_effort":"high","service_tier":"fast"}')
   expect(delegated.dirty).toBe(false)
   wrapper.unmount()
   const reopened = mountEditor(); await flushPromises()
-  expect(reopened.get('[data-test="/writer@copy"]').text()).toContain('new:{"reasoning_effort":"high"')
+  expect(reopened.get('[data-test="agent:copy"]').text()).toContain('new:{"reasoning_effort":"high"')
   reopened.unmount()
 })
 
@@ -142,7 +151,7 @@ it('clears committed edits, locks stale rows with an honest error and retries re
   const wrapper = mountEditor(); await flushPromises()
   const store = useExistingRunConfigStore()
   store.updateAgentModelConfig({ llmModelIdentifier: 'new', llmConfig: null })
-  await wrapper.get('[data-test="edit-/writer@copy"]').trigger('click')
+  await wrapper.get('[data-test="edit-agent:copy"]').trigger('click')
   // The run's own save and the delegated runs' saves each read the run again after (SR-064): both reads fail.
   mocks.read.mockRejectedValueOnce(new Error('read unavailable')).mockRejectedValueOnce(new Error('read unavailable'))
   await wrapper.get('[data-test="save-existing-model-config"]').trigger('click'); await flushPromises()
@@ -158,7 +167,7 @@ it('clears committed edits, locks stale rows with an honest error and retries re
   await wrapper.get('[data-test="existing-run-refresh"]').trigger('click'); await flushPromises()
   // Refresh reads the hub's view again, and shows the saved model.
   expect(mocks.read).toHaveBeenLastCalledWith('host', { fresh: true })
-  expect(wrapper.get('[data-test="/writer@copy"]').text()).toBe('new:null')
+  expect(wrapper.get('[data-test="agent:copy"]').text()).toBe('new:null')
   expect(store.reconciliationRequired).toBe(false)
   expect(mocks.mutate).toHaveBeenCalledTimes(1)
   wrapper.unmount()
@@ -167,23 +176,23 @@ it('clears committed edits, locks stale rows with an honest error and retries re
 it('initial failed snapshot load has no stale live fallback and exposes a working Refresh', async () => {
   mocks.read.mockRejectedValueOnce(new Error('read unavailable'))
   const wrapper = mountEditor(); await flushPromises()
-  expect(wrapper.find('[data-test="/writer@copy"]').exists()).toBe(false)
+  expect(wrapper.find('[data-test="agent:copy"]').exists()).toBe(false)
   await wrapper.get('[data-test="existing-run-refresh"]').trigger('click'); await flushPromises()
-  expect(wrapper.get('[data-test="/writer@copy"]').text()).toBe('old:null')
+  expect(wrapper.get('[data-test="agent:copy"]').text()).toBe('old:null')
   expect(mocks.mutate).not.toHaveBeenCalled()
   wrapper.unmount()
 })
 
 it('Cancel writes nothing and rejected Save keeps the recoverable edit without Saved feedback', async () => {
   const wrapper = mountEditor(); await flushPromises()
-  await wrapper.get('[data-test="edit-/writer@copy"]').trigger('click')
+  await wrapper.get('[data-test="edit-agent:copy"]').trigger('click')
   await wrapper.get('[data-test="existing-run-cancel"]').trigger('click'); await flushPromises()
-  expect(wrapper.get('[data-test="/writer@copy"]').text()).toBe('old:null')
+  expect(wrapper.get('[data-test="agent:copy"]').text()).toBe('old:null')
   expect(mocks.mutate).not.toHaveBeenCalled()
-  await wrapper.get('[data-test="edit-/writer@copy"]').trigger('click')
+  await wrapper.get('[data-test="edit-agent:copy"]').trigger('click')
   mocks.mutate.mockResolvedValueOnce({ success: false, message: 'Copy running', fieldErrors: [], saved: {} })
   await wrapper.get('[data-test="save-existing-model-config"]').trigger('click'); await flushPromises()
-  expect(wrapper.get('[data-test="/writer@copy"]').text()).toBe('new:null')
+  expect(wrapper.get('[data-test="agent:copy"]').text()).toBe('new:null')
   expect(wrapper.get('[data-test="existing-run-note"]').text()).toContain('Copy running')
   expect(useDelegatedLaunchDraftStore().dirty).toBe(true)
   // A refused Save reads the rows again (SR-064: a run that saved keeps its save).
@@ -199,11 +208,11 @@ it('renders the refreshed canonical settings on the real card of the focused cop
   const values = () => wrapper.get('[data-test="existing-run-subject-card"]').getComponent({ name: 'RunSettingsCard' }).props('values')
   expect(values().llmModelIdentifier).toBe('old')
   const settings = wrapper.getComponent({ name: 'ExistingRunSettings' })
-  settings.vm.$emit('change-delegated', '/writer@copy', { field: 'model', choice: choice('new') })
+  settings.vm.$emit('change-delegated', 'agent:copy', { field: 'model', choice: choice('new') })
   await flushPromises()
   await wrapper.get('[data-test="save-existing-model-config"]').trigger('click'); await flushPromises()
   expect(values().llmModelIdentifier).toBe('new')
-  settings.vm.$emit('change-delegated', '/writer@copy', { field: 'thinking', llmConfig: { reasoning_effort: 'high', service_tier: 'fast' } })
+  settings.vm.$emit('change-delegated', 'agent:copy', { field: 'thinking', llmConfig: { reasoning_effort: 'high', service_tier: 'fast' } })
   await flushPromises()
   await wrapper.get('[data-test="save-existing-model-config"]').trigger('click'); await flushPromises()
   expect(values().llmConfig).toEqual({ reasoning_effort: 'high', service_tier: 'fast' })
@@ -224,23 +233,23 @@ it('refreshes a Team selection only (CR-461-089: each member keeps its own launc
   mocks.focused.value = 'follower'
   const wrapper = mountEditor(); await flushPromises()
   // The member's own card first; the switch shows its Team copy and that copy's agents.
-  expect(wrapper.find('[data-test="/team@team-copy"]').exists()).toBe(false)
+  expect(wrapper.find('[data-test="team:team-copy"]').exists()).toBe(false)
   await wrapper.get('[data-test="run-settings-switch-group"]').trigger('click')
-  await wrapper.get('[data-test="edit-/team@team-copy"]').trigger('click')
+  await wrapper.get('[data-test="edit-team:team-copy"]').trigger('click')
   await wrapper.get('[data-test="save-existing-model-config"]').trigger('click'); await flushPromises()
-  expect(wrapper.get('[data-test="/team@team-copy"]').text()).toBe('new:null')
-  expect(wrapper.get('[data-test="/team/lead@follower"]').text()).toBe('old:null')
-  expect(wrapper.get('[data-test="/team/own@own"]').text()).toBe('own-model:null')
+  expect(wrapper.get('[data-test="team:team-copy"]').text()).toBe('new:null')
+  expect(wrapper.get('[data-test="team_member:team-copy:follower"]').text()).toBe('old:null')
+  expect(wrapper.get('[data-test="team_member:team-copy:own"]').text()).toBe('own-model:null')
   // A member chooses its own model/config without changing the Team or sibling.
-  wrapper.getComponent({ name: 'ExistingRunSettings' }).vm.$emit('change-delegated', '/team/lead@follower', { field: 'thinking', llmConfig: { reasoning_effort: 'high' } })
+  wrapper.getComponent({ name: 'ExistingRunSettings' }).vm.$emit('change-delegated', 'team_member:team-copy:follower', { field: 'thinking', llmConfig: { reasoning_effort: 'high' } })
   await flushPromises()
   await wrapper.get('[data-test="save-existing-model-config"]').trigger('click'); await flushPromises()
-  expect(wrapper.get('[data-test="/team/lead@follower"]').text()).toBe('old:{"reasoning_effort":"high"}')
-  expect(wrapper.get('[data-test="/team@team-copy"]').text()).toBe('new:null')
+  expect(wrapper.get('[data-test="team_member:team-copy:follower"]').text()).toBe('old:{"reasoning_effort":"high"}')
+  expect(wrapper.get('[data-test="team:team-copy"]').text()).toBe('new:null')
   // A neighboring copy is untouched; another focus starts at that agent's own settings.
   mocks.focused.value = 'copy'; await flushPromises()
-  expect(wrapper.get('[data-test="/writer@copy"]').text()).toBe('old:null')
-  expect(wrapper.find('[data-test="/team@team-copy"]').exists()).toBe(false)
+  expect(wrapper.get('[data-test="agent:copy"]').text()).toBe('old:null')
+  expect(wrapper.find('[data-test="team:team-copy"]').exists()).toBe(false)
   wrapper.unmount()
 })
 
@@ -252,33 +261,33 @@ describe('edits across focus changes (autobyteus-366, AC-005)', () => {
   it('an edit stays pending after the focus moves, the save bar names it, and Save commits exactly it', async () => {
     twoCopies()
     const wrapper = mountEditor(); await flushPromises()
-    await wrapper.get('[data-test="edit-/writer@copy"]').trigger('click'); await flushPromises()
+    await wrapper.get('[data-test="edit-agent:copy"]').trigger('click'); await flushPromises()
     expect(saveText(wrapper)).toContain('writer')
     mocks.focused.value = 'follower'; await flushPromises()
-    expect(wrapper.get('[data-test="/reviewer@follower"]').text()).toBe('old:null')
+    expect(wrapper.get('[data-test="agent:follower"]').text()).toBe('old:null')
     expect(saveText(wrapper)).toContain('writer')
     expect(saveText(wrapper)).not.toContain('reviewer')
     await wrapper.get('[data-test="save-existing-model-config"]').trigger('click'); await flushPromises()
     expect(mocks.mutate).toHaveBeenCalledTimes(1)
     expect(mocks.mutate.mock.calls[0]![0].changes.map((change: any) => change.key)).toEqual(['agent:copy'])
-    expect(wrapper.get('[data-test="/reviewer@follower"]').text()).toBe('old:null')
+    expect(wrapper.get('[data-test="agent:follower"]').text()).toBe('old:null')
     mocks.focused.value = 'copy'; await flushPromises()
-    expect(wrapper.get('[data-test="/writer@copy"]').text()).toBe('new:null')
+    expect(wrapper.get('[data-test="agent:copy"]').text()).toBe('new:null')
     wrapper.unmount()
   })
 
   it('Cancel discards the edit of an agent no longer on screen; edits on two agents are both named', async () => {
     twoCopies()
     const wrapper = mountEditor(); await flushPromises()
-    await wrapper.get('[data-test="edit-/writer@copy"]').trigger('click')
+    await wrapper.get('[data-test="edit-agent:copy"]').trigger('click')
     mocks.focused.value = 'follower'; await flushPromises()
-    await wrapper.get('[data-test="edit-/reviewer@follower"]').trigger('click'); await flushPromises()
+    await wrapper.get('[data-test="edit-agent:follower"]').trigger('click'); await flushPromises()
     expect(saveText(wrapper)).toContain('writer, reviewer')
     await wrapper.get('[data-test="existing-run-cancel"]').trigger('click'); await flushPromises()
     expect(mocks.mutate).not.toHaveBeenCalled()
-    expect(wrapper.get('[data-test="/reviewer@follower"]').text()).toBe('old:null')
+    expect(wrapper.get('[data-test="agent:follower"]').text()).toBe('old:null')
     mocks.focused.value = 'copy'; await flushPromises()
-    expect(wrapper.get('[data-test="/writer@copy"]').text()).toBe('old:null')
+    expect(wrapper.get('[data-test="agent:copy"]').text()).toBe('old:null')
     wrapper.unmount()
   })
 })
@@ -292,10 +301,10 @@ it('leaves active Agent rows live-view-backed and does not request a stopped sna
     return result
   })
   const wrapper = mountEditor(); await flushPromises()
-  expect(wrapper.get('[data-test="/writer@copy"]').text()).toBe('old:null')
-  await wrapper.get('[data-test="edit-/writer@copy"]').trigger('click')
+  expect(wrapper.get('[data-test="agent:copy"]').text()).toBe('old:null')
+  await wrapper.get('[data-test="edit-agent:copy"]').trigger('click')
   await wrapper.get('[data-test="save-existing-model-config"]').trigger('click'); await flushPromises()
-  expect(wrapper.get('[data-test="/writer@copy"]').text()).toBe('new:null')
+  expect(wrapper.get('[data-test="agent:copy"]').text()).toBe('new:null')
   expect(mocks.read).not.toHaveBeenCalled()
   expect(useDelegatedLaunchDraftStore().feedback?.kind).toBe('success')
   wrapper.unmount()

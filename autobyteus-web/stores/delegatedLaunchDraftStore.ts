@@ -2,14 +2,12 @@ import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore'
 import { defineStore } from 'pinia'
 import {
   delegatedTargetKey,
-  loadDelegatedRunLaunches,
   loadDelegatedRunOptions,
   saveDelegatedRuns,
   terminateDelegatedRun,
   type DelegatedReference,
   type DelegatedRoot,
   type DelegatedTargetKey,
-  type StoredRunLaunch,
 } from '~/services/runConfigEditing/delegatedLaunchSelectionClient'
 import type { DelegatedSaveTarget } from '~/utils/runSettings/delegatedLaunchRows'
 import { cloneExistingAgentRunSelection, existingAgentRunSelectionsEqual, selectionAllowed } from '~/services/runConfigEditing/existingAgentModelConfigDraft'
@@ -43,13 +41,6 @@ export const useDelegatedLaunchDraftStore = defineStore('delegatedLaunchDraft', 
     edits: {} as Record<DelegatedTargetKey, ExistingAgentRunSelection>,
     originals: {} as Record<DelegatedTargetKey, ExistingAgentRunSelection>,
     optionsByKey: {} as Record<DelegatedTargetKey, ExistingRunModelOptionsState>,
-    /**
-     * Each row's run's launch as its own file has it now (CR-461-086): read from the run itself when its row appears and
-     * after a Save or a Stop, and its own save answer until that read returns (CR-461-077). Its row shows it, not the
-     * launch the delegator's view read earlier.
-     */
-    stored: {} as Record<DelegatedTargetKey, StoredRunLaunch>,
-    launchesRequestId: 0,
     optionsStatus: 'idle' as 'idle' | 'loading' | 'ready' | 'unavailable',
     optionsRequestId: 0,
     saving: false,
@@ -88,39 +79,16 @@ export const useDelegatedLaunchDraftStore = defineStore('delegatedLaunchDraft', 
       this.root = root ? { ...root } : null
       this.targets = new Map()
       this.discard()
-      this.stored = {}
-      this.launchesRequestId += 1
       this.optionsByKey = {}
       this.optionsStatus = 'idle'
       this.optionsRequestId += 1
       this.stopFeedback = null
     },
-    /** The rows shown changed: their options and launches are read when a row is new (its own run's reads, SR-065). */
+    /** The rows shown changed: their options are read when a row is new (its own run's reads, SR-065). */
     setTargets(targets: ReadonlyMap<DelegatedTargetKey, DelegatedSaveTarget>): void {
       const known = this.targets
       this.targets = targets
-      if (this.root && [...targets.keys()].some((key) => !known.has(key))) {
-        void this.loadOptions()
-        void this.loadLaunches()
-      }
-    },
-    /** Each row's run's launch, read from the run itself (CR-461-086); a run that cannot be read keeps what its row had. */
-    async loadLaunches(): Promise<void> {
-      if (!this.root) return
-      const requestId = ++this.launchesRequestId, binding = useWindowNodeContextStore().bindingRevision
-      const launches = await loadDelegatedRunLaunches(this.targets)
-      if (requestId !== this.launchesRequestId || binding !== useWindowNodeContextStore().bindingRevision) return
-      this.stored = { ...this.stored, ...launches }
-    },
-    /** A run's own save answer: its launch now, until its read returns its source too. */
-    applySaved(saved: Readonly<Record<DelegatedTargetKey, ExistingAgentRunSelection>>): void {
-      const next = { ...this.stored }
-      for (const [key, selection] of Object.entries(saved) as [DelegatedTargetKey, ExistingAgentRunSelection][]) {
-        const before = next[key]
-        next[key] = { launch: { ...before?.launch, ...cloneExistingAgentRunSelection(selection) }, ownSource: before?.ownSource ?? true,
-          ...(before && 'source' in before ? { source: before.source } : {}) }
-      }
-      this.stored = next
+      if (this.root && [...targets.keys()].some((key) => !known.has(key))) void this.loadOptions()
     },
     async loadOptions(): Promise<void> {
       if (!this.root) return
@@ -183,21 +151,16 @@ export const useDelegatedLaunchDraftStore = defineStore('delegatedLaunchDraft', 
         }
         const result = await saveDelegatedRuns({ changes: this.changes, targets: this.targets, nameOf: rows.nameOf })
         if (!current()) return false
-        // Each saved row shows what its run now has (also when a later run refused: the runs before it keep their save),
-        // then its run is read again for its source (a changing save records `settings`, V-11).
-        this.applySaved(result.saved)
+        // Each saved run's row shows what its run now has from the tree's next answer: a save tells the trees that hold its
+        // row (SR-086 G-B1), with no overlay here (also when a later run refused: the runs before it keep their save).
         if (!result.success) {
           this.feedback = { kind: 'error', message: result.message }
           this.fieldErrors = [...result.fieldErrors]
-          // A run that saved keeps its save: the rows are read again.
           void reconcile()
           void this.loadOptions()
-          void this.loadLaunches()
           return false
         }
         void this.loadOptions()
-        await this.loadLaunches()
-        if (!current()) return false
         // Keep the save lock through canonical publication. A committed edit is not unsaved work,
         // even if the read fails; the Settings owner exposes read-only Refresh in that case.
         let reconciled = false
@@ -224,7 +187,7 @@ export const useDelegatedLaunchDraftStore = defineStore('delegatedLaunchDraft', 
       try {
         const result = await terminateDelegatedRun(reference)
         if (!result.success) this.stopFeedback = { kind: 'error', message: result.message }
-        if (sameRoot(this.root, root)) { void this.loadOptions(); void this.loadLaunches() }
+        if (sameRoot(this.root, root)) void this.loadOptions()
         return result.success
       } catch (error) {
         this.stopFeedback = { kind: 'error', message: error instanceof Error ? error.message : String(error) }

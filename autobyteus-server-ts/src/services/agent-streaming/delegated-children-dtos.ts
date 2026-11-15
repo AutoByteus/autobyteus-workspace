@@ -1,4 +1,4 @@
-import type { CollaborationTaskExecutionDto, TaskAgentExecutionSourceDto, TaskTeamExecutionSourceDto } from "@autobyteus/collaboration-stream-contracts";
+import type { CollaborationTaskExecutionDto } from "@autobyteus/collaboration-stream-contracts";
 import { AgentMemoryLayout } from "../../agent-memory/store/agent-memory-layout.js";
 import type { DelegatedChild, DelegationIndex } from "../../agent-collaboration/delegation/delegation-index.js";
 import type { ChildRowProjection } from "../../agent-collaboration/delegation/child-rows-feed.js";
@@ -9,24 +9,10 @@ import { projectRemoteTaskExecution } from "./remote-task-execution-dto-projecti
 import { AgentRunMetadataStore } from "../../run-history/store/agent-run-metadata-store.js";
 import { TeamRunExecutionTreeStore } from "../../run-history/store/team-run-execution-tree-store.js";
 import { childRunIdentity } from "./child-run-identity.js";
-import { projectAgentRunSource, projectDelegatedAgentRun, projectDelegatedTeamRun, projectTeamRunSource } from "./collaboration-execution-tree-dto-projection.js";
+import { projectDelegatedAgentRun, projectDelegatedTeamRun } from "./collaboration-execution-tree-dto-projection.js";
 
 const readTeamFile = (memoryDir: string, teamRunId: string) =>
   new TeamRunExecutionTreeStore().read(new AgentMemoryLayout(memoryDir).getTeamDirPath({ rootTeamRunId: teamRunId, ancestorTeamRunIds: [] }), teamRunId);
-
-/**
- * A run's launch as its own file has it now (autobyteus-461 CR-461-086, SR-064/065): the same `source` its row shows, read
- * from the run itself, so a delegator's Settings shows what each delegated run runs with after a save or a reopen;
- * `null` when the run has no file on this node.
- */
-export const readRunLaunch = async (run: Readonly<{ kind: "agent" | "agent_team"; runId: string }>, memoryDir: string): Promise<TaskAgentExecutionSourceDto | TaskTeamExecutionSourceDto | null> => {
-  if (run.kind === "agent") {
-    const metadata = await new AgentRunMetadataStore(memoryDir).readMetadata(run.runId);
-    return metadata ? projectAgentRunSource(metadata) : null;
-  }
-  const file = await readTeamFile(memoryDir, run.runId);
-  return file ? projectTeamRunSource(file) : null;
-};
 
 /**
  * One child row as the view shows it: its identity (the tree's per-run data, read once) and its launch details, read

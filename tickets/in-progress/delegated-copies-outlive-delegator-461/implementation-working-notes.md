@@ -590,3 +590,5 @@ Step 2c, org tree (uncommitted, web types PASS):
 - Next: the phone (2d): `useMobileRunTree`, `mobileRunTreeProjection`, `MobileRunList`, `MobileRunRow`, `useMobileRunOpening`.
 - `ba0101c672`: the phone (2d). `mobileRunTreeProjection` is replaced by `mobileRunListRows`, a display of the server's rows. Gates: web types PASS; web unit 726 files and 5549 tests all pass (before the last phone spec fix; the phone specs then passed, 132).
 - Next: the Task card (G-F1: `TaskRootView.openTarget` on the server, and `useTaskRootNavigation` through `openRunTarget`), then Settings.
+- `b6d7158f1f`: the Task card (G-F1). `TaskRootView.openTarget` reaches GraphQL and the change messages; the card selects the tree row by its target through `openRunTarget`. Web unit 5549 tests and the server projects tests pass; web types PASS with the baseline shrunk to 89.
+- Next: Settings (2f). Then G-D1, 3b plus G-G1, and the removals.

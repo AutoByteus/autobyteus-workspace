@@ -53,7 +53,7 @@ export const projectAgentCollaborationTree = (input: Readonly<{
 });
 
 /** An agent run's launch, from its own `run_metadata.json`: what it runs with and where that came from (a Settings save changes them, SR-039). */
-export const projectAgentRunSource = (metadata: AgentRunMetadata): TaskAgentExecutionSourceDto => ({
+const projectAgentRunSource = (metadata: AgentRunMetadata): TaskAgentExecutionSourceDto => ({
   kind: "agent", agentDefinitionId: metadata.agentDefinitionId,
   launchConfiguration: projectLaunch({ runtimeKind: metadata.runtimeKind, llmModelIdentifier: metadata.llmModelIdentifier,
     llmConfig: metadata.llmConfig, autoExecuteTools: metadata.autoExecuteTools, workspaceRootPath: metadata.workspaceRootPath }),
@@ -61,7 +61,7 @@ export const projectAgentRunSource = (metadata: AgentRunMetadata): TaskAgentExec
 });
 
 /** A team run's launch, from its own file: its default and each member's, with where each came from. */
-export const projectTeamRunSource = (tree: TeamRunExecutionTreeFile): TaskTeamExecutionSourceDto => {
+const projectTeamRunSource = (tree: TeamRunExecutionTreeFile): TaskTeamExecutionSourceDto => {
   const team = tree.rootTeam;
   return { kind: "agent_team", teamDefinitionId: team.teamDefinitionId, coordinatorAddress: team.coordinatorAddress,
     members: team.members.map((member) => ({ address: member.address, agentDefinitionId: member.agentDefinitionId,
