@@ -25,6 +25,8 @@ export interface OpenRunWithCoordinatorInput {
   selectRun?: boolean;
   selectionIntent?: WorkspaceSelectionIntent;
   selectionMode?: RunOpenSelectionMode;
+  /** A live run's stream connects with a catch-up of its stored state (a delegated run's open, CR-461-098). */
+  catchUpConnect?: boolean;
 }
 
 export interface OpenRunWithCoordinatorResult {
@@ -123,7 +125,8 @@ export async function openAgentRun(input: OpenRunWithCoordinatorInput): Promise<
   }
 
   if (shouldTreatAsLive) {
-    agentRunStore.connectToAgentStream(input.runId);
+    if (input.catchUpConnect) agentRunStore.connectToAgentStream(input.runId, { catchUp: true });
+    else agentRunStore.connectToAgentStream(input.runId);
   } else if (streamConnected) {
     agentRunStore.disconnectAgentStream(input.runId);
   }

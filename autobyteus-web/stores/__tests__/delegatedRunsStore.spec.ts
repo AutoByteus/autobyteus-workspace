@@ -52,8 +52,9 @@ describe('delegatedRunsStore', () => {
     store.ensureOpen(agent); store.ensureOpen(agent)
     await flush()
     expect(io.openAgentRun).toHaveBeenCalledOnce()
-    expect(io.openAgentRun).toHaveBeenCalledWith(expect.objectContaining({ runId: 'child-run', selectRun: false }))
-    expect(io.agentRuns.connectToAgentStream).toHaveBeenCalledWith('child-run')
+    // CR-461-098: the agent stream has no snapshot; its stream opens after a catch-up read (and so does a live run's open).
+    expect(io.openAgentRun).toHaveBeenCalledWith(expect.objectContaining({ runId: 'child-run', selectRun: false, catchUpConnect: true }))
+    expect(io.agentRuns.connectToAgentStream).toHaveBeenCalledWith('child-run', { catchUp: true })
     expect(store.bindingOf(agent)).toMatchObject({ context: { state: { runId: 'child-run' } }, workspaceRootPath: '/own-ws', browse: { kind: 'run', runId: 'child-run' } })
     // Opened already: selecting it again only keeps its stream.
     store.ensureOpen(agent)

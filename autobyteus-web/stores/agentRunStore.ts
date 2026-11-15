@@ -290,17 +290,20 @@ export const useAgentRunStore = defineStore('agentRun', {
      * @action connectToAgentStream
      * @description Establishes a WebSocket connection to receive real-time events for a specific run.
      */
-    connectToAgentStream(runId: string): AgentStreamingService | null {
+    connectToAgentStream(runId: string, options: Readonly<{ catchUp?: boolean }> = {}): AgentStreamingService | null {
       const agentContextsStore = useAgentContextsStore();
       const agent = agentContextsStore.getRun(runId);
 
       if (!agent) return null;
 
+      // `catchUp`: read the stored state, then open at once (a delegated run opened from its delegator's view, CR-461-098).
+      const request = (reconnection: { requestConnect(): void; requestCatchUpConnect(): void }) =>
+        options.catchUp ? reconnection.requestCatchUpConnect() : reconnection.requestConnect();
       const existing = streamingServices.get(runId);
       if (existing) {
         existing.service.attachContext(agent);
         // A stream in a loss streak connects only through its catch-up (the Agent Connect Rule).
-        existing.reconnection.requestConnect();
+        request(existing.reconnection);
         return existing.service;
       }
 
@@ -313,7 +316,7 @@ export const useAgentRunStore = defineStore('agentRun', {
         },
       });
       streamingServices.set(runId, stream);
-      stream.reconnection.requestConnect();
+      request(stream.reconnection);
       return stream.service;
     },
 

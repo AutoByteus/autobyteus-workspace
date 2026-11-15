@@ -103,6 +103,46 @@ describe('AgentRunStreamReconnection', () => {
     expect(projectionReads()).toBe(0);
   });
 
+  it('CR-461-098: a catch-up connect reads the stored state once the node binds the stream (CONNECTED), and commits it', async () => {
+    // The open read the conversation before the delegator's message restored the run; the turn ran before the binding.
+    io.projection.mockResolvedValue(storedProjection('answer to the message after the restart'));
+    context.state.currentStatus = AgentStatus.Idle;
+    stream.reconnection.requestCatchUpConnect();
+    expect(ws.connects).toBe(1);
+    expect(projectionReads()).toBe(0);
+    ws.open();
+    await flush();
+    expect(projectionReads()).toBe(0);
+    deliver('CONNECTED', { agent_run_id: runId, session_id: 'session-1' });
+    await flush();
+    expect(projectionReads()).toBe(1);
+    expect(shown()).toContain('answer to the message after the restart');
+    // Bound already: a later request reads now, without a second connect.
+    stream.reconnection.requestCatchUpConnect();
+    await flush();
+    expect(projectionReads()).toBe(2);
+    expect(ws.connects).toBe(1);
+  });
+
+  it('CR-461-098: a live event during the catch-up read keeps what the stream shows, and the read is made again', async () => {
+    context.state.currentStatus = AgentStatus.Idle;
+    let release!: (value: unknown) => void;
+    io.projection.mockReturnValueOnce(new Promise((resolve) => { release = resolve; }));
+    io.projection.mockResolvedValue(storedProjection('stored after the live event'));
+    stream.reconnection.requestCatchUpConnect();
+    ws.open();
+    deliver('CONNECTED', { agent_run_id: runId, session_id: 'session-1' });
+    await flush();
+    expect(projectionReads()).toBe(1);
+    deliver('SEGMENT_START', { id: 'seg-live', turn_id: 'turn-2', segment_type: 'text' });
+    deliver('SEGMENT_CONTENT', { id: 'seg-live', turn_id: 'turn-2', segment_type: 'text', delta: 'live while reading' });
+    release(storedProjection('stale read'));
+    await flush();
+    expect(shown()).not.toContain('stale read');
+    expect(projectionReads()).toBe(2);
+    expect(shown()).toContain('stored after the live event');
+  });
+
   it('after a loss it loads and commits the stored state while the socket is closed, then opens', async () => {
     openAsOwner();
     deliver('SEGMENT_START', { id: 'seg-old', turn_id: 'turn-1', segment_type: 'text' });

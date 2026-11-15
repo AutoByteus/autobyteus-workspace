@@ -54,9 +54,13 @@ export interface AgentStreamingServiceOptions {
   onSendMessageCommandAck?: (ack: SendMessageCommandAckPayload) => void;
 }
 
-/** What the service tells its owner about its socket: opened, or lost without being asked to close. */
+/**
+ * What the service tells its owner about its socket: opened, bound (the node's `CONNECTED`: its session follows the run
+ * from here on), or lost without being asked to close.
+ */
 export type AgentStreamConnectionEvent =
   | Readonly<{ kind: 'opened' }>
+  | Readonly<{ kind: 'bound' }>
   | Readonly<{ kind: 'lost'; retryable: boolean }>;
 
 export class AgentStreamingService {
@@ -265,6 +269,7 @@ export class AgentStreamingService {
         this.settleAdmission(message.payload);
         this.onSendMessageCommandAck(message.payload);
       }
+      if (message.type === 'CONNECTED') this.notifyConnection({ kind: 'bound' });
       this.logMessage(message);
       this.dispatchMessage(message, this.context);
     } catch (e) {

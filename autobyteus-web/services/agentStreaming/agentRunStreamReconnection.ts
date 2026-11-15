@@ -1,4 +1,5 @@
 import type { AgentContext } from '~/types/agent/AgentContext';
+import { AgentStatus } from '~/types/agent/AgentStatus';
 import { useAgentContextsStore } from '~/stores/agentContextsStore';
 import { useAgentActivityStore } from '~/stores/agentActivityStore';
 import { LiveStreamReconnectScheduler } from '~/services/liveStreamLifecycle/liveStreamReconnectScheduler';
@@ -37,6 +38,7 @@ export class AgentRunStreamReconnection {
     });
     this.stopListening = service.onConnectionChange((event) => {
       if (event.kind === 'opened') this.reconnect.connected();
+      else if (event.kind === 'bound') { if (this.catchUpWhenBound) { this.catchUpWhenBound = false; void this.catchUpBound(); } }
       else if (event.retryable) this.reconnect.connectionLost();
       else this.reconnect.startOver();
     });
@@ -61,6 +63,45 @@ export class AgentRunStreamReconnection {
         this.reconnect.startOver();
         this.service.connect(this.runId, context);
       }
+    }
+  }
+
+  /**
+   * A connect that catches up once the node has bound the stream (autobyteus-461 CR-461-098). A delegator's view opens a
+   * delegated run as its own run (rule 2) after its open's reads; a message that restored the run before the node bound
+   * the stream (its delegator's), and its turn, are in neither the open's read nor the stream. So once bound (the
+   * node's `CONNECTED`), the stored state is read again and committed: when the run is not mid-turn, and only when no
+   * live event changed the conversation during the read (else read again, a bounded number of times). Live events after
+   * the binding arrive on the stream as always. A stream already bound reads now.
+   */
+  requestCatchUpConnect(): void {
+    if (this.service.connectionState === ConnectionState.CONNECTED) { void this.catchUpBound(); return; }
+    this.catchUpWhenBound = true;
+    this.requestConnect();
+  }
+
+  private catchUpWhenBound = false;
+
+  private async catchUpBound(): Promise<void> {
+    const contexts = useAgentContextsStore();
+    for (let attempt = 0; attempt < CATCH_UP_ATTEMPTS && !this.disposed; attempt += 1) {
+      const context = contexts.getRun(this.runId);
+      if (!context) return;
+      await untilSettled(context);
+      if (this.disposed || contexts.getRun(this.runId) !== context) return;
+      const before = conversationMark(context);
+      let stored: RunStoredState;
+      try {
+        stored = await loadRunStoredState(this.runId, conversationDefaultsOf(context));
+      } catch (error) {
+        console.warn(`Agent stream catch-up for '${this.runId}' could not load the stored state.`, error);
+        return;
+      }
+      if (this.disposed || contexts.getRun(this.runId) !== context) return;
+      // A live event changed it during the read, or a turn began: read again once it settles.
+      if (conversationMark(context) !== before || isMidTurn(context)) continue;
+      commitStoredState(this.runId, context, stored);
+      return;
     }
   }
 
@@ -108,6 +149,22 @@ export class AgentRunStreamReconnection {
     this.reconnect.attemptNow();
   }
 }
+
+/** How many reads a catch-up after binding tries before it leaves the live stream to itself. */
+const CATCH_UP_ATTEMPTS = 5;
+const isMidTurn = (context: AgentContext): boolean =>
+  context.state.currentStatus === AgentStatus.Running || context.state.currentStatus === AgentStatus.Initializing;
+/** Waits while the run is mid-turn (its turn's events are still arriving and being stored), up to a bound. */
+const untilSettled = async (context: AgentContext, boundMs = 30_000): Promise<void> => {
+  const deadline = Date.now() + boundMs;
+  while (isMidTurn(context) && Date.now() < deadline) await new Promise((resolve) => setTimeout(resolve, 250));
+};
+/** What the view shows now, as one mark: a live event that lands during a read changes it. */
+const conversationMark = (context: AgentContext): string => {
+  const messages = context.state.conversation.messages;
+  const last = messages.at(-1) as unknown as Record<string, unknown> | undefined;
+  return `${messages.length}:${JSON.stringify(last ?? null).length}`;
+};
 
 const conversationDefaultsOf = (context: AgentContext) => ({
   agentDefinitionId: context.config.agentDefinitionId,

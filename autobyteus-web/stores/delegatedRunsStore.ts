@@ -50,9 +50,13 @@ export const useDelegatedRunsStore = defineStore('delegatedRuns', () => {
     ? useAgentContextsStore().getRun(subject.agentRunId) ?? null
     : teamOf(subject.teamRunId)?.view.getAgentContext(subject.agentRunId) ?? null
 
-  /** Keeps the run's own stream while its row is open, whether it runs or not (SR-045); it never starts the run. */
+  /**
+   * Keeps the run's own stream while its row is open, whether it runs or not (SR-045); it never starts the run. An agent
+   * run's stream sends no snapshot, so it opens with a catch-up: its stored state is read again and the socket opens at
+   * once, so a message that restored the run while the open read it is shown (CR-461-098).
+   */
   const connect = (subject: DelegatedRunSubject): void => {
-    if (subject.kind === 'agent') useAgentRunStore().connectToAgentStream(subject.agentRunId)
+    if (subject.kind === 'agent') useAgentRunStore().connectToAgentStream(subject.agentRunId, { catchUp: true })
     else useAgentTeamRunStore().connectToTeamStream(subject.teamRunId)
   }
 
@@ -75,7 +79,7 @@ export const useDelegatedRunsStore = defineStore('delegatedRuns', () => {
     } else {
       const resolveWorkspaceMetadataByRootPath = (rootPath: string) => useWorkspaceStore().resolveWorkspaceMetadataByRootPath(rootPath)
       const open = subject.kind === 'agent'
-        ? openAgentRun({ runId: subject.agentRunId, fallbackAgentName: null, resolveWorkspaceMetadataByRootPath, selectRun: false })
+        ? openAgentRun({ runId: subject.agentRunId, fallbackAgentName: null, resolveWorkspaceMetadataByRootPath, selectRun: false, catchUpConnect: true })
           .then(() => connect(subject))
         // An active Team's members run in its workspaces: they are activated as the Team's own open does (CR-461-076:
         // without it the open of a running delegated Team failed and its row's conversation stayed empty).
