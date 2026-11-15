@@ -33,3 +33,4 @@ ARCH-REV-002 by the architecture reviewer.
 ## Route record
 
 - Handoff rules checked 2026-11-15: "Architecture Design Complete with task_size=Large or architectural_risk=High" → `/software_engineering_team/architecture_reviewer`.
+- Sent with `send_message_to` to `/software_engineering_team/architecture_reviewer` (run `architecture_reviewer_60670f8f6eb84995b4139723af54d0fe`) on 2026-11-15: delivered.
