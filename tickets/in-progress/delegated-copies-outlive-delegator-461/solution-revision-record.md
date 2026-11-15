@@ -1699,3 +1699,7 @@ No architecture review: these follow REQ-006, an approved exception, rule 2 and 
   - **Decision, option (b):** every appending frame (`SEGMENT_CONTENT`, the reasoning and tool-output deltas) carries its offset in its segment. The web applies only what lies beyond the segment's current length (base's `appendContentToSegment` gains the check). Non-appending frames are idempotent by their IDs.
   - **The numbering owner:** a separate per-agent-run `AgentStreamSequence`, with its own `liveSequenceId`, independent of the view's. The web keys nothing in the conversation by it.
   - **Tests added:** a delta during the read appears once; a partial overlap is applied in part.
+- **ARCH-REV-059 passed the AR-029 answer.** Its note is applied:
+  - offsets are UTF-16 code units, against the segment's single raw field;
+  - an open segment's projection carries that raw field at the server's length, including an open tool call's `rawContent`;
+  - the partial-overlap test includes an open tool-call segment, and surrogate pairs.
