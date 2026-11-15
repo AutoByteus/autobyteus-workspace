@@ -29,3 +29,4 @@ Architecture re-review of SR-003 (AR-001, AR-002 rechecks; AR-003..AR-007 dispos
 ## Route record
 
 - Handoff rules checked 2026-11-15: revised `Architecture Design Complete`, Large/High → `/software_engineering_team/architecture_reviewer`.
+- Sent 2026-11-15 to `/software_engineering_team/architecture_reviewer` (run `architecture_reviewer_24f9f8b34e2b4d4a91b90c46e24d5ec8`): delivered. Task comment added on autobyteus-workspace-6 recording the setting-name change.
