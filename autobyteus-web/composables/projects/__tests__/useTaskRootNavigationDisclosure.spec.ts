@@ -19,6 +19,8 @@ vi.mock('~/composables/useWorkspaceHistorySubjectActions', () => ({ useWorkspace
 vi.mock('~/services/workspace/workspaceNavigationService', () => ({ openWorkspaceExecutionLink: navigation.open, buildWorkspaceExecutionRoute: () => '/workspace/agent/host-run' }))
 
 import { useAgentRunCollaborationStore } from '~/stores/agentRunCollaborationStore'
+import { useRunTreeStore } from '~/stores/runTreeStore'
+import { multiTeamTree } from '~/test-support/runTreeFixtures'
 import { useTaskRootNavigation } from '../useTaskRootNavigation'
 
 beforeEach(() => {
@@ -26,18 +28,21 @@ beforeEach(() => {
   navigation.isCurrent.mockReturnValue(true); navigation.open.mockResolvedValue({ disposition: 'committed' })
 })
 
-it('explicit Task-root navigation reveals only its exact Team and coordinator, and repeated open does not collapse it', async () => {
+it('explicit Task-root navigation opens its exact Team row at its coordinator, and a repeated open folds nothing (SR-084, G-F1)', async () => {
   const store = useAgentRunCollaborationStore()
   store.contexts = { 'host-run': shallowReactive(buildMultiTeamContext()) }
+  const tree = multiTeamTree()
+  useRunTreeStore().streamSnapshot({ kind: 'agent', runId: 'host-run' }, tree.rows)
   const root: TaskRootView = {
     kind: 'team', recipientAddress: '/software_engineering_team', teamRunId: teamId(5), ingressAgentRunId: memberId(5, 0),
-    delegatingRun: { kind: 'agent', runId: 'host-run' }, topRun: { kind: 'agent', runId: 'host-run' }, start: 'started', startError: null, closed: false, status: 'running',
+    delegatingRun: { kind: 'agent', runId: 'host-run' }, topRun: { kind: 'agent', runId: 'host-run' },
+    openTarget: { runKind: 'agent_team', runId: teamId(5), agentRunId: memberId(5, 0) }, start: 'started', startError: null, closed: false, status: 'running',
   }
   const navigationAction = useTaskRootNavigation()
   await navigationAction.open(root); await navigationAction.open(root)
+  expect(store.selectedRowKey('host-run')).toBe(`team:${teamId(5)}`)
   expect(store.selectedChild('host-run')).toBe(memberId(5, 0))
-  expect(store.childTargetFor('host-run')?.agentRunId).toBe(memberId(5, 0))
-  expect(Array.from({ length: 7 }, (_, index) => store.isTaskTeamExpanded('host-run', teamId(index)))).toEqual([false, false, false, false, false, true, false])
+  const teams = tree.rows.filter((row) => row.kind === 'team')
+  expect(teams.map((row) => store.isTreeRowExpanded('host-run', row))).toEqual(Array(7).fill(false))
   expect(navigation.push).toHaveBeenCalledWith('/workspace/agent/host-run')
-  expect(store.taskRows('host-run')).toHaveLength(13)
 })

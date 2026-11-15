@@ -588,3 +588,5 @@ Step 2c, org tree (uncommitted, web types PASS):
   - `runTreeStore.streamEnded` no longer reads; notices re-read the tree.
   - A team row's inspect passes no address (the target names its coordinator).
 - Next: the phone (2d): `useMobileRunTree`, `mobileRunTreeProjection`, `MobileRunList`, `MobileRunRow`, `useMobileRunOpening`.
+- `ba0101c672`: the phone (2d). `mobileRunTreeProjection` is replaced by `mobileRunListRows`, a display of the server's rows. Gates: web types PASS; web unit 726 files and 5549 tests all pass (before the last phone spec fix; the phone specs then passed, 132).
+- Next: the Task card (G-F1: `TaskRootView.openTarget` on the server, and `useTaskRootNavigation` through `openRunTarget`), then Settings.

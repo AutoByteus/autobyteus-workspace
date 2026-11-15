@@ -49,6 +49,11 @@ export interface TaskRootView {
    * the worker's row selected, as base opened its host. Null when the server does not know it (the card does not open).
    */
   topRun: { kind: 'agent' | 'agent_team' | 'agent_org'; runId: string } | null
+  /**
+   * Where the worker opens, as its tree's row opens (autobyteus-461 SR-086 G-F1): its agent run, or its team run at its
+   * coordinator; a peer's run names its node. Null is a row error (the card does not open).
+   */
+  openTarget: { runKind: 'agent' | 'agent_team'; runId: string; agentRunId: string; nodeId?: string | null } | null
   start: 'starting' | 'started' | 'failed'
   startError: { code: string; message: string } | null
   closed: boolean

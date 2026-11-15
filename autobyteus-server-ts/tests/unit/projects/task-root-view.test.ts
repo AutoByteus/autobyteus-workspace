@@ -45,8 +45,8 @@ describe("Task roots: recorded address, reader/writer, and views", () => {
     const resolve = vi.fn(() => "running" as const);
     const root = latestAssignedEntry(file)!;
     expect(buildTaskRootView(root, resolve, null)).toEqual({ kind: "agent", recipientAddress: "/second", ingressAgentRunId: "second", teamRunId: null,
-      delegatingRun: { kind: "agent_team", runId: "team-root" }, topRun: null, start: "failed", startError: { code: "NO_MODEL", message: "No model is set." },
-      closed: false, status: "offline" });
+      delegatingRun: { kind: "agent_team", runId: "team-root" }, topRun: null, openTarget: { runKind: "agent", runId: "second", agentRunId: "second" },
+      start: "failed", startError: { code: "NO_MODEL", message: "No model is set." }, closed: false, status: "offline" });
     expect(resolve).not.toHaveBeenCalled();
     expect(buildTaskRootView({ ...root, start: "started", startError: undefined, closedAt: "x" }, resolve, null).status).toBe("offline");
     expect(buildTaskRootView({ ...root, start: "started", startError: undefined }, resolve, null).status).toBe("running");
@@ -68,6 +68,18 @@ describe("Task roots: recorded address, reader/writer, and views", () => {
       topRun: { kind: "agent", runId: "manager" } });
     expect(topOf).toHaveBeenCalledWith({ agentRunId: "worker" });
     expect(buildTaskRootView(root, () => "idle", null).topRun).toBeNull();
+  });
+
+  it("SR-086 G-F1: the root opens where its tree's row opens: its agent run; a team at its recorded coordinator, a row error without one; a peer's on its node", () => {
+    const file = parseTaskExecutionResourceFile({ taskId: "t", agentRunResources: [stored()] }, "t");
+    const agent = latestAssignedEntry(file)!;
+    expect(buildTaskRootView(agent, () => "idle", null).openTarget).toEqual({ runKind: "agent", runId: "worker", agentRunId: "worker" });
+    const team = { ...agent, execution: { teamRunId: "squad" }, teamCoordinatorAgentRunId: "squad-lead" } as never;
+    expect(buildTaskRootView(team, () => "idle", null).openTarget).toEqual({ runKind: "agent_team", runId: "squad", agentRunId: "squad-lead" });
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => undefined);
+    expect(buildTaskRootView({ ...(team as object), teamCoordinatorAgentRunId: undefined } as never, () => "idle", null).openTarget).toBeNull();
+    warn.mockRestore();
+    expect(buildTaskRootView({ ...agent, nodeId: "beta" }, () => "idle", null).openTarget).toEqual({ runKind: "agent", runId: "worker", agentRunId: "worker", nodeId: "beta" });
   });
 
   describe("on disk", () => {

@@ -6,7 +6,7 @@ import type { TaskRootView } from '~/types/project'
 
 const root = (overrides: Partial<TaskRootView> = {}): TaskRootView => ({
   kind: 'agent', recipientAddress: '/product_team/release_writer', ingressAgentRunId: 'worker', teamRunId: null,
-  delegatingRun: { kind: 'agent', runId: 'manager-root' }, topRun: { kind: 'agent', runId: 'manager-root' }, start: 'started', startError: null, closed: false, status: 'running', ...overrides,
+  delegatingRun: { kind: 'agent', runId: 'manager-root' }, topRun: { kind: 'agent', runId: 'manager-root' }, openTarget: { runKind: 'agent', runId: 'worker-run', agentRunId: 'worker-run' }, start: 'started', startError: null, closed: false, status: 'running', ...overrides,
 })
 
 describe('presentTaskRoot (AR-002 openable rule, DEC-006 statuses)', () => {

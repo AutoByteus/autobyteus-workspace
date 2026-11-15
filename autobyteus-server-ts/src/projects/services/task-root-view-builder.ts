@@ -1,3 +1,4 @@
+import { openTargetOf } from "../../agent-collaboration/delegation/collaboration-tree.js";
 import type { TaskExecutionReference } from "../../agent-collaboration/execution/task/task-execution-reference.js";
 import type { RootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import type { TaskRootStatus, TaskRootView } from "../domain/models.js";
@@ -32,6 +33,17 @@ export const rootWorkerStatus = (entry: TaskExecutionResource, resolve: TaskWork
   return entry.start === "starting" && status === "offline" ? "initializing" : status;
 };
 
+/** Where the worker opens (G-F1): its agent run, or its team run at the coordinator recorded when it started; a peer's on its node. */
+const openTargetOfEntry = (entry: TaskExecutionResource): TaskRootView["openTarget"] => {
+  const node = entry.nodeId !== undefined ? { nodeId: entry.nodeId } : {};
+  if ("agentRunId" in entry.execution) return { ...openTargetOf({ agentRunId: entry.execution.agentRunId })!, ...node };
+  if (!entry.teamCoordinatorAgentRunId) {
+    console.warn(`Row error: team run '${entry.execution.teamRunId}' has no recorded coordinator; its Task card has no open target.`);
+    return null;
+  }
+  return { runKind: "agent_team", runId: entry.execution.teamRunId, agentRunId: entry.teamCoordinatorAgentRunId, ...node };
+};
+
 export const buildTaskRootView = (entry: TaskExecutionResource, resolve: TaskWorkerStatusResolver, topOf: TaskTopRunResolver | null): TaskRootView => {
   const team = "teamRunId" in entry.execution;
   const top = topOf ? topOf(entry.execution) : null;
@@ -42,6 +54,7 @@ export const buildTaskRootView = (entry: TaskExecutionResource, resolve: TaskWor
     teamRunId: "teamRunId" in entry.execution ? entry.execution.teamRunId : null,
     delegatingRun: { kind: entry.delegatedFrom.delegatingRun.rootSubjectKind, runId: entry.delegatedFrom.delegatingRun.rootRunId },
     topRun: top && { kind: top.rootSubjectKind, runId: top.rootRunId },
+    openTarget: openTargetOfEntry(entry),
     start: entry.start,
     startError: entry.startError ? { code: entry.startError.code, message: entry.startError.message } : null,
     closed: entry.closedAt !== null,

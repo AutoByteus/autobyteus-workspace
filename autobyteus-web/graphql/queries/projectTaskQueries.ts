@@ -8,6 +8,7 @@ export const TaskRootFields = gql`
     teamRunId
     delegatingRun { kind runId }
     topRun { kind runId }
+    openTarget { runKind runId agentRunId nodeId }
     start
     startError { code message }
     closed

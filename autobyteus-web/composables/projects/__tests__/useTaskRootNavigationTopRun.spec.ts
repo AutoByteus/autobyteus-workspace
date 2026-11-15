@@ -31,12 +31,14 @@ vi.mock('~/services/workspace/workspaceNavigationService', () => ({ openWorkspac
   buildWorkspaceExecutionRoute: (link: { kind: string; runId?: string; teamRunId?: string }) => `/workspace/${link.kind}/${link.runId ?? link.teamRunId}` }))
 
 import { useAgentRunCollaborationStore } from '~/stores/agentRunCollaborationStore'
+import { useRunTreeStore } from '~/stores/runTreeStore'
+import { multiTeamTree } from '~/test-support/runTreeFixtures'
 import { useTaskRootNavigation } from '../useTaskRootNavigation'
 
 const root = (overrides: Partial<TaskRootView>): TaskRootView => ({
   kind: 'agent', recipientAddress: '/helper', ingressAgentRunId: 'nested-helper', teamRunId: null,
   delegatingRun: { kind: 'agent_team', runId: teamId(1) }, topRun: { kind: 'agent', runId: 'host-run' },
-  start: 'started', startError: null, closed: false, status: 'running', ...overrides,
+  openTarget: { runKind: 'agent', runId: 'nested-helper', agentRunId: 'nested-helper' }, start: 'started', startError: null, closed: false, status: 'running', ...overrides,
 })
 /** The manager's view: three task Teams; the second's designer delegated a helper Agent, a worker two hops down. */
 const managerView = () => {
@@ -58,7 +60,12 @@ beforeEach(() => {
     return { disposition: 'committed' }
   })
   useAgentRunCollaborationStore().contexts = { 'host-run': shallowReactive(buildMultiTeamContext(managerView())) }
+  // The manager's tree as the server builds it (SR-084): the helper under the second Team's designer, two hops down.
+  useRunTreeStore().streamSnapshot({ kind: 'agent', runId: 'host-run' }, [...multiTeamTree(3).rows, { key: 'agent:nested-helper',
+    parentKey: `team_member:${teamId(1)}:${memberId(1, 0)}`, depth: 3, kind: 'agent', name: 'helper', address: '/helper',
+    openTarget: { runKind: 'agent', runId: 'nested-helper', agentRunId: 'nested-helper' }, statusIds: ['nested-helper'] }])
 })
+const teamRow = (copy: number) => multiTeamTree(3).rows.find((row) => row.key === `team:${teamId(copy)}`)!
 
 describe('useTaskRootNavigation (SR-080): the card opens its worker where its row lives', () => {
   it('a worker two hops down opens in its top run\'s view with its row revealed and selected, not in its delegator\'s', async () => {
@@ -66,30 +73,35 @@ describe('useTaskRootNavigation (SR-080): the card opens its worker where its ro
     await useTaskRootNavigation().open(root({}))
     expect(navigation.open).toHaveBeenCalledWith({ kind: 'agent', runId: 'host-run' }, expect.anything())
     expect(navigation.push).toHaveBeenCalledWith('/workspace/agent/host-run')
-    // Its row is under the second Team: that Team expands (and only it), and the row is selected as a click selects it.
-    expect([0, 1, 2].map((copy) => store.isTaskTeamExpanded('host-run', teamId(copy)))).toEqual([false, true, false])
-    expect(store.taskRows('host-run').some((entry) => entry.row.agentRunId === 'nested-helper')).toBe(true)
+    // Its row is under the second Team: that Team unfolds (and only it), and the row is opened as a click opens it.
+    expect([0, 1, 2].map((copy) => store.isTreeRowExpanded('host-run', teamRow(copy)))).toEqual([false, true, false])
+    expect(store.selectedRowKey('host-run')).toBe('agent:nested-helper')
     expect(store.selectedChild('host-run')).toBe('nested-helper')
   })
 
   it('PMU-003: a Team worker in an Agent top run opens its coordinator through its Team row, the Team expanded', async () => {
     const store = useAgentRunCollaborationStore()
     await useTaskRootNavigation().open(root({ kind: 'team', recipientAddress: '/software_engineering_team', teamRunId: teamId(2),
-      ingressAgentRunId: memberId(2, 0), delegatingRun: { kind: 'agent', runId: 'host-run' } }))
-    expect(store.isTaskTeamExpanded('host-run', teamId(2))).toBe(true)
+      ingressAgentRunId: memberId(2, 0), delegatingRun: { kind: 'agent', runId: 'host-run' },
+      openTarget: { runKind: 'agent_team', runId: teamId(2), agentRunId: memberId(2, 0) } }))
+    // Its row is the Team's (the server's target is the Team at its coordinator): opened as a click on it opens it.
+    expect(store.selectedRowKey('host-run')).toBe(`team:${teamId(2)}`)
     expect(store.selectedChild('host-run')).toBe(memberId(2, 0))
     expect(store.childTargetFor('host-run')).not.toBeNull()
   })
 
   it('a Team top opens on the worker as the Team\'s row does; an Org top through its inspect action', async () => {
-    await useTaskRootNavigation().open(root({ topRun: { kind: 'agent_team', runId: 'team-top' }, ingressAgentRunId: 'reviewer-run' }))
+    await useTaskRootNavigation().open(root({ topRun: { kind: 'agent_team', runId: 'team-top' }, ingressAgentRunId: 'reviewer-run',
+      openTarget: { runKind: 'agent', runId: 'reviewer-run', agentRunId: 'reviewer-run' } }))
     expect(navigation.open).toHaveBeenCalledWith({ kind: 'team', teamRunId: 'team-top', agentRunId: 'reviewer-run' }, expect.anything())
-    await useTaskRootNavigation().open(root({ topRun: { kind: 'agent_org', runId: 'org-top' }, ingressAgentRunId: 'analyst-run' }))
+    await useTaskRootNavigation().open(root({ topRun: { kind: 'agent_org', runId: 'org-top' }, ingressAgentRunId: 'analyst-run',
+      openTarget: { runKind: 'agent', runId: 'analyst-run', agentRunId: 'analyst-run' } }))
     expect(navigation.orgExecute).toHaveBeenCalledWith({ rootSubjectKind: 'agent_org', rootRunId: 'org-top', action: 'inspect', agentRunId: 'analyst-run' })
   })
 
   it('a worker whose delegator was deleted is its own top: it opens as its own run', async () => {
-    await useTaskRootNavigation().open(root({ ingressAgentRunId: 'orphan', topRun: { kind: 'agent', runId: 'orphan' } }))
+    await useTaskRootNavigation().open(root({ ingressAgentRunId: 'orphan', topRun: { kind: 'agent', runId: 'orphan' },
+      openTarget: { runKind: 'agent', runId: 'orphan', agentRunId: 'orphan' } }))
     expect(navigation.open).toHaveBeenCalledWith({ kind: 'agent', runId: 'orphan' }, expect.anything())
     expect(navigation.push).toHaveBeenCalledWith('/workspace/agent/orphan')
   })

@@ -23,6 +23,7 @@ const rootSchema = z.strictObject({
   teamRunId: text.nullable(),
   delegatingRun: z.strictObject({ kind: z.enum(["agent", "agent_team", "agent_org"]), runId: text }),
   topRun: z.strictObject({ kind: z.enum(["agent", "agent_team", "agent_org"]), runId: text }).nullable(),
+  openTarget: z.strictObject({ runKind: z.enum(["agent", "agent_team"]), runId: text, agentRunId: text, nodeId: text.nullable() }).nullable(),
   start: z.enum(["starting", "started", "failed"]),
   startError: z.strictObject({ code: text, message: z.string() }).nullable(),
   closed: z.boolean(),
@@ -70,7 +71,10 @@ export const serializeProjectChangeMessage = (message: ProjectChangeMessage): st
 const rootWire = (root: TaskRootView | null) => root && {
   kind: root.kind, recipientAddress: root.recipientAddress, ingressAgentRunId: root.ingressAgentRunId, teamRunId: root.teamRunId,
   delegatingRun: { kind: root.delegatingRun.kind, runId: root.delegatingRun.runId },
-  topRun: root.topRun && { kind: root.topRun.kind, runId: root.topRun.runId }, start: root.start,
+  topRun: root.topRun && { kind: root.topRun.kind, runId: root.topRun.runId },
+  openTarget: root.openTarget && { runKind: root.openTarget.runKind, runId: root.openTarget.runId, agentRunId: root.openTarget.agentRunId,
+    nodeId: root.openTarget.nodeId ?? null },
+  start: root.start,
   startError: root.startError && { code: root.startError.code, message: root.startError.message }, closed: root.closed, status: root.status,
 };
 /** GraphQL `ProjectTask` fields only (no server paths). */
