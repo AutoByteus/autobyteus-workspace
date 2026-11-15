@@ -5,16 +5,20 @@ This report records what ran and the result. The plan is in `api-e2e-coverage-in
 ## Round
 
 - Coverage investigation: `api-e2e-coverage-investigation.md`
-- API/E2E revision record and current revision ID: `api-e2e-revision-record.md` / `API-REV-014`
+- API/E2E revision record and current revision ID: `api-e2e-revision-record.md` / `API-REV-015`
 - Test progress log: `api-e2e-test-progress.md`
-- Round and trigger: round 14, on CRR-047 (code review passed, round 33). Code under test `4062c809d2` (HEAD `84ef73e99f`, docs only since). Server `dist/` rebuilt; web from source.
-- Prior round reviewed: API-REV-013 (`Fail`: F-60, F-67 … F-73; CRR-046 routed them as CR-461-086 … -093).
-- Scope, per CRR-047: the peer cases (RC-31 … RC-34, RTP-04/05/08); RRT-05 several times; Settings (DCP, SSR-002, SSR-004, DCR-003, AFS-002, RSM); the phone in full; PLN-09; the held items (the delegator's Stop from Settings with SSR-002 repeated, the extended runtime switch, BR-011, LE-O1's later step, D-IMP-1's frequency); API-F01 (the contract packages changed again); regression runs (the remote and projects server folders, SDV, PMU, LRL).
-- Refusal wording: FU-030; no new wording-only difference.
-- Deviations from the plan, and why:
-  - **LE-O1 blocked by the environment:** DeepSeek answered "402 Insufficient Balance" twice; the test vault's DeepSeek account is out of credit. Not a 461 result.
-  - **Probe reads corrected** (all stale under the design, not product changes): MSP-17 (the Org's delegated run found in its view and read as its own run; its composer is its own, rule 2), MSP-20 (a child's turn sent on its own stream, rule 2), MSP-34 (a reopen gives a row notice only when the node lists the run again), DCP-001/003/005 (the recorded "settings" origin, V-11), DCP-002 (the lead resumes on its own launch, F-39), DCR-002 (copies read as their own runs; `/lead`), PLN-09 (after the refusal, the delegated runs are stopped by their own Stop and "Archive all" completes), RTP-05 (waits for the stop icon), and two server suites (ad-hoc: the second root's copy stopped before its delete, REQ-007; stories: send after CONNECTED).
-- Evidence folder: `evidence/api-e2e/` (round 14 files carry `r14`; `API-r14-runs.txt` lists every run; `API-r14-open-findings.json` holds the open findings' records).
+- Round and trigger: round 15, on CRR-049 (code review passed, round 34). Code under test `77f24482a8` (HEAD `e2db923419`, docs only since). I rebuilt `autobyteus-server-ts/dist` myself before the runs (the implementer had confirmed it free of traces); web from source.
+- **A targeted check only**, as CRR-049 asks: the user has decided to build the run trees on the backend in 461 (FU-034); the Solution Designer is revising the design, and the full rerun follows that implementation.
+- Prior round reviewed: API-REV-014 (`Fail`: F-70 in the window, F-74, F-75, D-IMP-1; BR-011 classified 461's; CRR-048 routed them as CR-461-094 … -098).
+- Scope (CRR-049):
+  1. CR-461-094: RTP-01 … RTP-08, the new RC-45, and a churn check (a view with peer rows open for minutes: the status settles and alpha does not re-observe beta in a loop);
+  2. CR-461-096/097: MSP-32 and MSP-25 (`GetTaskWorkerTasks` from `/ws/projects` is base's and outside AC-006);
+  3. CR-461-098: BR-008 … BR-011, several runs;
+  4. CR-461-095: AFS-002.
+- Refusal wording: FU-030; no new difference.
+- Deviations: none from the request. LE-O1 still waits for the test vault's DeepSeek top-up (402 Insufficient Balance in round 14).
+- **The churn check's method (new, RTP-09):** the two-node probe puts a counting TCP proxy in front of beta: beta advertises the proxy's address, so every connection to beta (alpha's and the probe's own) goes through it, and each new connection's first request line is recorded. A view with peer rows stays open for three minutes; the case counts the `run-observations` connections alpha opens to beta in that window and the peer run's status changes on a `/ws/run-status` subscription. A loop like round 31's (about 33,000 re-observations per run) would show as many connections per second.
+- Evidence folder: `evidence/api-e2e/` (`API-r15-targeted-checks.json`); raw logs `/tmp/api461/r15`.
 
 ## Routing Classification
 
@@ -22,103 +26,79 @@ This report records what ran and the result. The plan is in `api-e2e-coverage-in
 - Architectural risk: `High`
 - Input route: `Reviewed`
 - Successful-output route: `Code Review`
-- Proportional test-code review decision: `Not Applicable` this round (`Fail`: failure-origin review requested)
+- Proportional test-code review decision: `Required` for this round's probe change (`remote-runs-in-tree-probe.mjs`: the counting proxy and RTP-09; `task-closure-tree-probe.mjs`: the BR-011 step record from round 14's addendum)
 
 ## Tested Builds And Environments
 
 | Env ID | Commit Tested | Platform / OS | Runtime, Browser, Or App Build | Other Settings That Matter |
 | --- | --- | --- | --- | --- |
-| ENV-1 | `4062c809d2` | macOS 26.5.2 (Darwin 25.5.0), arm64 | In-process and built servers, scripted AGY (`RUN_AGY_FAILURE_E2E=1`) | remote-collaboration, projects folders; extended runtime switch |
-| ENV-2 | `4062c809d2` | as ENV-1 | Probe-owned stack: built server, Nuxt dev, headless Chrome; scripted runtimes | Clean env; never the user's app or `~/.autobyteus` |
+| ENV-1 | `77f24482a8` | macOS 26.5.2 (Darwin 25.5.0), arm64 | Two real server processes, scripted AGY (`RUN_AGY_FAILURE_E2E=1`) | `tests/e2e/remote-collaboration` |
+| ENV-2 | `77f24482a8` | as ENV-1 | Probe-owned stack: built server, Nuxt dev, headless Chrome; scripted runtimes | Clean env; never the user's app or `~/.autobyteus` |
 | ENV-3 | as ENV-2 | as ENV-1 | Phone shell probe | Owned by the probe |
-| ENV-4 | as ENV-2, base `827f1e68dc` | as ENV-1 | Two built-server nodes | Tree, title, API-P04 |
-| ENV-5 | HEAD, fresh clone | as ENV-1 | `pnpm install --frozen-lockfile`, `build:electron:mac -- --arm64` (unsigned) | API-F01 |
-| ENV-6 | `4062c809d2` | as ENV-1 | DeepSeek through the test vault | Blocked: 402 Insufficient Balance |
+| ENV-4 | as ENV-2 | as ENV-1 | Two built-server nodes; beta behind the probe's counting proxy | RTP-09 |
 
 ## Cases
 
 | Case ID | Criteria | Boundary / Surface | Command Or Steps | Env | Result | Evidence Files | Look For | Notes |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Peer server suite | REQ-009, REQ-013; SR-082/083; CR-461-090/091 | Two server processes | `vitest run tests/e2e/remote-collaboration` | ENV-1 | Pass | `API-r14-runs.txt` | 45/45 | RC-31 … RC-37 |
-| Peer rows in the window | as above; AR-403 | Two nodes, real browser | `remote-runs-in-tree-probe.mjs`, twice | ENV-4 | **Fail** (F-70) | `API-r14-open-findings.json` | RTP-04, RTP-05, RTP-08 | RTP-04 Pass (live answer; F-71 resolved); RTP-05 and RTP-08 fail twice |
-| API-P04 | rule 3 rows | Two nodes | capture vs the round-12 base capture | ENV-4 | Pass for rows | `API-P04-r14-peer-shape-compare.json` | peer rows | as round 13 (`open_target`, `launches`) |
-| RRT-05 (CR-461-093) | autobyteus-278 titles | Two nodes | three runs | ENV-4 | Pass | `API-r14-runs.txt` | the Team row's title | 3/3: F-72 not seen |
-| Settings | DS-12; SR-064; V-11; F-39; CR-461-086/089 | Real browser | DLD, SSR, RSM | ENV-2 | Pass, except D-IMP-1 | `API-r14-runs.txt` | the saved card, the stored launches, the resume | DCP-001 … 005, DCR-001 … 003, SSR 4/4, SSR-002 ×3, RSM 7/7 |
-| D-IMP-1 | AFS (autobyteus-366 D-IMP-1) | Real browser | AFS-002, three runs | ENV-2 | **Fail** 3/3 | `API-r14-open-findings.json` | Settings stay open across focus | Focusing the running Org's copy closes Settings every time |
-| Delegator Stop from Settings with working copies | REQ-001 | Real browser | SSR-002 ×3 | ENV-2 | Pass 3/3 | | the run stops | F-68 not seen |
-| PLN-09 | AC-008 | Real browser | with diagnostics | ENV-2 | Pass | | the reason shown, then archived | F-67 resolved |
-| The phone | SR-082/083; autobyteus-426/435 | Phone shell | full, then reruns | ENV-3 | **Fail** (F-74, F-75) | `API-r14-open-findings.json` | rows, screens, background reads, revoked phone | 49/55, F-73 resolved; MSP-50/51 not 461 |
-| Open targets, regression | SR-083 step 3 | Real browser | SDV, PMU | ENV-2 | Pass | | | SDV 7/7, PMU 25/25 |
-| Server regression | | Server | projects folder | ENV-1 | Pass after stale fixes | | | ad-hoc 3/3, stories 3/3 rerun |
-| Extended runtime switch (held) | | Built server | twice | ENV-1 | Pass | | 5/5 twice | Cleared |
-| BR-011 (held) | restart | Real browser | `--cases BR-008…BR-011` | ENV-2 | Fail | | | The same step as rounds 12 and 13 |
-| LE-O1 (held) | SR-081 | DeepSeek | `-t LE-O1` | ENV-6 | Blocked | | | 402 Insufficient Balance |
-| API-F01 | build inputs | Fresh clone | TESTING.md | ENV-5 | Pass | | exit 0 | |
+| Peer server suite incl. RC-45 | CR-461-094; SR-083 | Two server processes | `vitest run tests/e2e/remote-collaboration` | ENV-1 | Pass | `API-r15-targeted-checks.json` | 46/46 | RC-45: a peer run's status on alpha follows again after an outage, for a run no open view shows |
+| RTP-01 … RTP-08 | CR-461-094; AC-016 | Two nodes, real browser | `remote-runs-in-tree-probe.mjs`, two runs | ENV-4 | Pass ×2 | as above | the row's status and stop icon; live again after the outage and Retry | F-70 resolved in the window |
+| RTP-09 (churn, new) | CR-461-094 | Two nodes, beta behind a counting proxy | three minutes with the view open | ENV-4 | Pass ×2 | as above | `run-observations` connections; status changes | 0 observations opened and 0 status changes in each 180 s window (6 observations before the window, while the rows were first shown); final statuses settled (`idle`, `offline` for the never-started member) |
+| MSP-25, MSP-32 | CR-461-096/097; autobyteus-426/435 | Phone shell | `--cases=MSP-13,MSP-21,MSP-22,MSP-25,MSP-32` | ENV-3 | Pass | as above | no reads while hidden; no refused sockets after the revoke | F-74, F-75 resolved |
+| BR-008 … BR-011 | CR-461-098 | Real browser, real backend restarts | three runs | ENV-2 | Pass ×3 | as above | the reactivated Org worker's conversation after the second restart | BR-011 resolved |
+| AFS-002 | CR-461-095 (D-IMP-1) | Real browser | three runs | ENV-2 | Pass ×3 | as above | Settings stay open across focus in an Org | D-IMP-1 resolved |
 
 ### Findings
 
-- **Resolved from round 13:** F-60, F-67, F-69, F-71, F-73 (F-72 not seen in 3 runs; F-68 not seen in 3 runs).
-
-| ID | Case | Expected (authority) | Observed (`4062c809d2`) | Preliminary Classification |
-| --- | --- | --- | --- | --- |
-| F-70 (remains, in the window) | RTP-05, RTP-08 (two runs each) | SR-082/083: a peer run's status by its run ID; CR-461-085/090: Retry observes again, live again after a turn | The server suite passes (45/45), but in the window: RTP-05 the peer row reads `offline` (in the second run its stop icon showed within 30 s and was gone at the click), so Stop cannot be used; RTP-08 the probe's own `/ws/run-status` subscription on alpha reads the peer run `idle` (run 1) or `offline` (run 2) before the outage, `offline` at it, and after Retry from the row and the notice and a new turn on beta, no change at all | `Local Fix` |
-| D-IMP-1 (held) | AFS-002, three runs | autobyteus-366 D-IMP-1: Settings stay open across focus changes inside a run | Focusing the running Org's copy row closes the Org's Settings in 3 of 3 runs (reopened, the copy's card shows) | `Local Fix` (web; `AgentOrgWorkspaceView.vue`, per the implementer's note) |
-| F-74 | MSP-32 (two runs) | autobyteus-426: a revoked phone stops; it sends no refused request | After MSP-13 revokes the phone's credential, its `/ws/run-status` connection keeps reconnecting: 980 connections refused with 4401 in 17 minutes (77 in the short rerun). Its other requests stopped (`refused: []`) | `Local Fix` (web, phone) |
-| F-75 | MSP-25 (two runs) | autobyteus-435 AC-006 / E-25: no read while the phone is in the background | 2.35 s after the page is hidden, the phone reads a listed run's view (`GetAgentRunCollaboration`) and `GetTaskWorkerTasks`, before the Task closes (2.9 s) | `Local Fix` (web, phone) |
-
-**BR-011 classified (after CRR-048): 461's.** Base `827f1e68dc`, with its own probe, passes BR-008 … BR-011 in 2 of 2 runs; the branch fails BR-011 at the same step ("org: conversation after restart": the reactivated Org worker's conversation after the second real backend restart) in rounds 12, 13 and 14. The probe now records which markers the window shows and a screenshot at that step. A branch rerun with that record was cut short: the worktree's `autobyteus-ts/dist` was being rebuilt by the implementer's work in progress, so the probe's restarted backend could not load (`ERR_MODULE_NOT_FOUND`); not a product result.
-
-**Blocked:** LE-O1 (DeepSeek balance).
-
-**Stale, still waiting:** the live suite's LE-A1 … LE-T1 (their run is blocked by the same balance); the large-hub redesign.
+- **Resolved:** F-70 (in the window), F-74, F-75, D-IMP-1, BR-011.
+- **No new finding.**
+- **Observation (not a finding):** in the first of the two tree runs the browser logged once "Failed to open team: Error: Team context '…' became mounted while it was loading." (`teamRunOpenCoordinator.ts:60`, a guard present at base `827f1e68dc`), while opening the Remote Squad team; every case of that run passed and its rows opened. The second run logged no browser error. Recorded for the reviewer's judgement.
 
 ## Acceptance-Criteria Proof
 
 | Acceptance-Criteria ID | Critical | Proven By Case IDs | Result | For A User-Only Part |
 | --- | --- | --- | --- | --- |
-| AC-001 … AC-007 | Yes | server suites; SDV, PMU | Proven | — |
-| AC-008 | Yes | server suites; PLN-09 | Proven | — |
-| AC-010 (REQ-006) | Yes | DCP, DCR, SSR, RSM | Proven | — |
-| AC-016 / REQ-009, REQ-013 (peers) | Yes | RC-31 … RC-37; RTP | Proven at the server; not in the window (F-70) | — |
-| AC-017 (statuses by run ID) | Yes | round 13's FOLLOW cases; MSP-12, MSP-20 | Proven locally; not for peers in the window (F-70) | — |
+| AC-016 / REQ-009, REQ-013 (peers) | Yes | RC-31 … RC-45; RTP-01 … RTP-09 | Proven (this round's scope) | — |
+| AC-017 (statuses by run ID) | Yes | RC-45, RTP-08/09, MSP-25/32 | Proven (this round's scope) | — |
+| Others | — | rounds 13 and 14 | As recorded there; the full rerun follows the FU-034 implementation | — |
 
 ## Validation Confidence Scorecard (Mandatory)
 
 | Confidence Category | Post-Repository Score | Final Score | What Supports It | Residual Uncertainty | What Could Improve It |
 | --- | --- | --- | --- | --- | --- |
-| Requirement and acceptance-criteria proof | 91% | 91% | Five findings resolved; Settings, archive, phone rows proven | F-70, F-74, F-75, D-IMP-1 | The fixes |
-| Changed-boundary execution directness | 94% | 94% | Two nodes, phone, server folders, fresh build | — | — |
-| Cross-boundary integration realism and mock gap | 86% | 86% | Two real server processes | No live model run (DeepSeek balance) | A funded test account |
-| Environment, configuration, identity, and fixture fidelity | 92% | 92% | Base with its own install | — | — |
-| Failure, edge-case, lifecycle, and recovery evidence | 87% | 87% | Outages, revocation, restarts | F-70 after Retry; BR-011 | The fixes |
-| User-surface, browser, and desktop-shell confidence | 85% | 85% | SDV, PMU, DCP, SSR, phone 49/55 | F-70, F-74, F-75, D-IMP-1 | The fixes |
-| Durable regression coverage quality and relevance | 91% | 91% | Probes follow the design | LE-A1 … LE-T1 | After the fix |
+| Requirement and acceptance-criteria proof | 92% | 92% | Every requested check passes, repeated | Targeted scope only | The full rerun after FU-034 |
+| Changed-boundary execution directness | 94% | 94% | Two real nodes, phone, real restarts, a wire-level count | — | — |
+| Cross-boundary integration realism and mock gap | 87% | 87% | Two real server processes | No live model run (DeepSeek balance) | A funded test account |
+| Environment, configuration, identity, and fixture fidelity | 92% | 92% | Server rebuilt after the implementer's trace build | — | — |
+| Failure, edge-case, lifecycle, and recovery evidence | 92% | 92% | Outage and Retry, revocation, two restarts ×3 | — | — |
+| User-surface, browser, and desktop-shell confidence | 90% | 90% | RTP, MSP, AFS repeated | One base-guard console error in 1 of 2 runs | — |
+| Durable regression coverage quality and relevance | 92% | 92% | RTP-09 adds a churn guard | — | — |
 
-- Overall post-repository confidence: 89%
-- Overall final confidence: 89%
+- Overall post-repository confidence: 91%
+- Overall final confidence: 91%
 - Calculation method: simple average of the seven categories
-- Every critical acceptance criterion directly proven, apart from parts only the user can check: `No` (peers in the window: F-70)
-- Any final applicable category below `90%`: `Yes`
+- Every critical acceptance criterion directly proven, apart from parts only the user can check: `Yes` for this round's scope
+- Any final applicable category below `90%`: `Yes` (no live model run)
 - Default final confidence target of `95%` met: `No`
-- Confidence-limiting residual risks: F-70, F-74, F-75, D-IMP-1; BR-011; no live model run
+- Confidence-limiting residual risks: the targeted scope (the full rerun follows FU-034); no live model run until the DeepSeek top-up
 
 ## Broader Validation Decision (Mandatory)
 
-- Decision: `Required`
+- Decision: `Required` (deferred to the full rerun after FU-034, per CRR-049)
 - Execution mode: `Browser`, `Worker or Distributed`
-- The confidence gap it addresses, and the expected gain: the rendered peer rows, the phone's background behavior and revocation.
-- Browser validation needed, and why or why not: yes; F-70, F-74, F-75 and D-IMP-1 are visible only in the rendered app.
+- The confidence gap it addresses, and the expected gain: this round's fixes, repeated; the churn at the wire.
+- Browser validation needed, and why or why not: yes; done for this round's scope.
 
 ## Desktop Application Validation
 
-- Approach executed: probe-owned real stack; the fresh-clone desktop build (API-F01).
+- Approach executed: probe-owned real stack.
 - Effect on any already-running desktop application: `None`.
-- Behavior not directly proven: signing, notarization and the other platforms (runner only).
+- Behavior not directly proven: the full suites (next round).
 
 ## Persisted-Data Transition Checks
 
-- Approved persisted-data decision: `Migration Required` (DS-10).
-- Cases proving the migration outcome: the projects folder's migration suites (pass).
+- Approved persisted-data decision: `Migration Required` (DS-10); not in this round's scope.
+- Cases proving the migration outcome: round 14.
 - Version-specific runtime branch, dual read/write, or compatibility fallback observed: `No`
 - Residual untested persisted-data risk: none new.
 
@@ -132,32 +112,28 @@ This report records what ran and the result. The plan is in `api-e2e-coverage-in
 
 ## Durable Coverage Changed In The Codebase
 
-- Repository-resident durable coverage updated this round: `Yes`: `mobile-shell-probe.mjs` (MSP-17, MSP-20), `mobile-closed-task-rows-cases.mjs` (MSP-34), `delegated-launch-defaults-probe.mjs` (DCP-001/002/003/005), `delegated-copy-own-file-cases.mjs` (DCR-002), `projects-left-navigation-probe.mjs` (PLN-09), `remote-runs-in-tree-probe.mjs` (RTP-05), `ad-hoc-task-delegation.e2e.test.ts`, `collaboration-contract-stories.e2e.test.ts`.
-- Added or updated paths attached for proportional test-code review: `Not Applicable` (Fail round)
+- Repository-resident durable coverage added this round: `Yes`.
+  - `autobyteus-web/tests/e2e/remote-runs-in-tree-probe.mjs`: a counting TCP proxy in front of beta (`startCountingProxy`; beta's advertised address is the proxy's); RTP-09, the churn check (`--churn-ms`, default 180000); the proxy's connection counts in the evidence.
+  - `autobyteus-web/tests/e2e/task-closure-tree-probe.mjs`: the BR-011 step records its markers and a screenshot on a timeout (round 14's addendum).
+- Added or updated paths attached for proportional test-code review: `Yes` (the two files above).
 
 ## Dependencies Mocked Or Emulated
 
 | Dependency | Method | Why Real Dependency Was Not Used | Confidence Limitation |
 | --- | --- | --- | --- |
-| Every probe run's model | Scripted AGY CLI; the Grok and LM Studio stand-ins | Deterministic (TESTING.md) | The live run was blocked (DeepSeek balance) |
+| Every probe run's model | Scripted AGY CLI | Deterministic (TESTING.md) | No live model run this round |
+| Network path alpha → beta | A local TCP pass-through proxy (counts connections; changes no bytes) | To count observations at the wire | None for behavior |
 
 ## Temporary Methods And Cleanup
 
 | Item | Owned By This Run | Cleanup Action | Result |
 | --- | --- | --- | --- |
-| Probe stacks, data roots, homes, peer nodes | Yes | The probes' `finally`; homes removed by the runner scripts | Removed |
-| `p04-capture-probe.mjs`, fresh clone | Yes | Removed after use | Removed |
-| `/tmp/api461/` logs | Yes | Kept; extracts committed (home paths shortened, secret scan clean) | Kept |
-
-## Preliminary Classification (On `Fail`)
-
-- `Local Fix`: F-70 (peer statuses in the window), F-74, F-75 (phone), D-IMP-1 (held, now 3/3).
-- `Local Fix` candidate: BR-011 (461's; base passes). Blocked: LE-O1.
+| Probe stacks, data roots, homes, peer nodes, proxies | Yes | The probes' `finally` (proxies closed); homes removed by the runner script | Removed |
+| `/tmp/api461/r15` logs | Yes | Kept; extract committed (home paths shortened, secret scan clean) | Kept |
 
 ## Latest Authoritative Result
 
-- Result: `Fail`
-- Criteria not proven: peers in the window (F-70); the phone's background reads (F-75) and revocation (F-74); Settings across focus in an Org (D-IMP-1).
-- Recommended owner: per the failure-origin review.
-- Next recipient from `get_handoff_rules`: `/software_engineering_team/code_reviewer` (failure-origin review)
-- Notes for the next round: recheck RTP-05/08, MSP-25, MSP-32, AFS-002; BR-011; LE-O1 and LE-A1 … LE-T1 once the DeepSeek test account has balance.
+- Result: `Pass` (targeted check of CR-461-094 … -098)
+- Criteria not proven: none in this round's scope.
+- Next recipient from `get_handoff_rules`: `/software_engineering_team/code_reviewer` (proportional test-code review of the two probe changes)
+- Notes for the next round: the full rerun after the FU-034 implementation (every suite and probe); LE-O1 and LE-A1 … LE-T1 once the DeepSeek test account has balance; the base-guard console error (1 of 2 tree runs) is watched.

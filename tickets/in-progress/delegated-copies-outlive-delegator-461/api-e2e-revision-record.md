@@ -20,6 +20,7 @@ The latest coverage investigation and execution coverage report remain authorita
 | API-REV-012 | Code Reviewer, `code-review-report.md` CRR-042, round 12 | CR-461-077 (code `5b455a9ec7`), CRR-041, CRR-042 | Fail / 87% | Fail / 87% |
 | API-REV-013 | Code Reviewer, `code-review-report.md` CRR-045, round 13 | SR-081 … SR-083, CR-461-078 … CR-461-085 (code `58cc542572`), CRR-043 … CRR-045 | Fail / 87% | Fail / 87% |
 | API-REV-014 | Code Reviewer, `code-review-report.md` CRR-047, round 14 | CR-461-086 … CR-461-093 (code `4062c809d2`), CRR-046, CRR-047 | Fail / 87% | Fail / 89% |
+| API-REV-015 | Code Reviewer, `code-review-report.md` CRR-049, round 15 (targeted) | CR-461-094 … CR-461-098 (code `77f24482a8`), CRR-048, CRR-049 | Fail / 89% | Pass / 91% |
 
 ## Revision Entries
 
@@ -579,4 +580,30 @@ None
 - New or remaining failure IDs: F-70 (window), F-74, F-75, D-IMP-1 (`Local Fix`); BR-011 unclassified; LE-O1 blocked
 - Recommended owner: per the failure-origin review.
 - Remaining risks, blocked evidence, or untested scope: no live model run until the DeepSeek test account has balance; LE-A1 … LE-T1; the large-hub redesign.
+
+### API-REV-015: round 15, targeted (CRR-049): CR-461-094 … -098 pass; the churn check added
+
+- Triggering role, report path, and round: `/software_engineering_team/code_reviewer`, `code-review-report.md` (CRR-049 at `77f24482a8`), API/E2E round 15
+- Triggering finding or case IDs: CR-461-094 (F-70 in the window; RC-45; churn), CR-461-095 (D-IMP-1), CR-461-096/097 (F-74, F-75), CR-461-098 (BR-011)
+- Related revision IDs: CRR-048, CRR-049; FU-034 (the user's decision: run trees built on the backend in 461; the full rerun follows it)
+- Why this revision was recorded: a targeted check of this round's fixes
+- Coverage decisions or durable test paths changed: RTP-09 and the counting proxy in `remote-runs-in-tree-probe.mjs`
+- Cases added, changed, removed, or rechecked: `/tmp/api461/r15.sh`
+
+#### Prior Failure Resolution
+
+| Prior ID | Classification | Now | Proven By |
+| --- | --- | --- | --- |
+| F-70 (window) | Local Fix (CR-461-094) | Resolved | RC-45; RTP-05, RTP-08 ×2; RTP-09 ×2 |
+| D-IMP-1 | Local Fix (CR-461-095) | Resolved | AFS-002 ×3 |
+| F-74 | Local Fix (CR-461-096/097) | Resolved | MSP-32 |
+| F-75 | Local Fix (CR-461-096/097) | Resolved | MSP-25 |
+| BR-011 | 461's (CR-461-098) | Resolved | BR-008 … BR-011 ×3 |
+
+- Canonical artifacts and sections updated: the execution report; the progress log; `evidence/api-e2e/API-r15-targeted-checks.json`.
+- Prior result and confidence: Fail / 89%
+- Current result and confidence: Pass / 91% (targeted)
+- New or remaining failure IDs: none
+- Recommended owner: Code Reviewer (proportional test-code review of the probe changes)
+- Remaining risks, blocked evidence, or untested scope: the full rerun after FU-034; LE-O1 and LE-A1 … LE-T1 (DeepSeek balance); one base-guard console error in 1 of 2 tree runs.
 

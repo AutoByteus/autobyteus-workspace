@@ -75,12 +75,34 @@ const children = new Set();
 const frontendPort = await freePort();
 const frontendUrl = `http://127.0.0.1:${frontendPort}`;
 
-const serverAt = async (name, port) => {
+/**
+ * A counting TCP proxy in front of a node (autobyteus-461 CRR-049, the churn check): every connection to the node goes
+ * through it, and each new connection's first request line is recorded, so the observations another node opens are counted.
+ */
+const proxyLog = [];
+const startCountingProxy = (name, publicPort, targetPort) => new Promise((resolve) => {
+  const server = net.createServer((client) => {
+    const upstream = net.connect(targetPort, '127.0.0.1');
+    let first = true;
+    client.on('data', (chunk) => {
+      if (first) { first = false; proxyLog.push({ node: name, at: Date.now(), line: chunk.toString('latin1').split('\r\n')[0].replace(/\?.*? HTTP/, ' HTTP') }); }
+      upstream.write(chunk);
+    });
+    upstream.on('data', (chunk) => client.write(chunk));
+    const close = () => { client.destroy(); upstream.destroy(); };
+    client.on('error', close); upstream.on('error', close); client.on('close', close); upstream.on('close', close);
+  });
+  server.listen(publicPort, '127.0.0.1', () => resolve(server));
+});
+const proxies = [];
+const serverAt = async (name, port, { viaProxy = false } = {}) => {
   const dataDir = path.join(root, name, 'data');
   const home = path.join(root, name, 'home');
   await fs.mkdir(dataDir, { recursive: true });
   await fs.mkdir(home, { recursive: true });
-  const baseUrl = `http://127.0.0.1:${port}`;
+  const publicPort = viaProxy ? await freePort() : port;
+  if (viaProxy) proxies.push(await startCountingProxy(name, publicPort, port));
+  const baseUrl = `http://127.0.0.1:${publicPort}`;
   if (!existsSync(path.join(dataDir, '.env'))) await fs.writeFile(path.join(dataDir, '.env'), `AUTOBYTEUS_SERVER_HOST=${baseUrl}\nAPP_ENV=test\nLOG_LEVEL=WARN\nHTTP_ACCESS_LOG_MODE=off\n`);
   const node = { name, port, baseUrl, dataDir, child: null, nodeId: '' };
   node.start = async () => {
@@ -129,7 +151,7 @@ let frontend, browser;
 await fs.mkdir(outputDir, { recursive: true });
 try {
   assert(existsSync(appEntry), 'Build the worktree server first: pnpm -C autobyteus-server-ts build');
-  const [alpha, beta] = await Promise.all([serverAt('alpha', await freePort()), serverAt('beta', await freePort())]);
+  const [alpha, beta] = await Promise.all([serverAt('alpha', await freePort()), serverAt('beta', await freePort(), { viaProxy: true })]);
   for (const node of [alpha, beta]) await node.gql('mutation{setRemoteCollaborationEnabled(enabled:true){enabled}}');
   // The nodes pair by invite (autobyteus-437 DS-004): alpha names beta NODE, beta names alpha 'alpha-node'.
   await pairNodes({ inviter: beta.gql, accepter: alpha.gql, inviterName: NODE, accepterName: 'alpha-node' });
@@ -452,6 +474,28 @@ try {
     await page.reload({ waitUntil: 'domcontentloaded' });
     await openTree(downReady);
   };
+  // RTP-09 (autobyteus-461 CRR-049, CR-461-094: the churn check): a view with peer rows stays open for three minutes; the
+  // peer's status settles and alpha opens no new observation of beta in a loop (counted on beta's counting proxy).
+  const churnMs = Number(arg('churn-ms', '180000'));
+  await page.locator(`[data-test="workspace-agent-run-row"][data-run-id="${standalone.runId}"]`).first().click();
+  await waitFor('the standalone view with its peer rows', async () => (await centerPane.innerText()).includes('studio_team'), 30_000).catch(() => undefined);
+  const churnStatus = await openRunStatus(alpha.baseUrl);
+  await churnStatus.subscribe([{ kind: 'agent_team', runId: remoteTeamRun }]);
+  const observationLines = (from, to = Date.now()) => proxyLog.filter((entry) => entry.node === 'beta' && entry.at >= from && entry.at <= to && /run-observations/.test(entry.line));
+  const churnFrom = Date.now();
+  const sinceStatus = churnStatus.messages.length;
+  await sleep(churnMs);
+  const churnTo = Date.now();
+  const statusChanges = churnStatus.messages.slice(sinceStatus).filter((m) => m.type === 'RUN_STATUS_CHANGED');
+  const rtp09 = { windowMs: churnTo - churnFrom, observationsOpened: observationLines(churnFrom, churnTo).length,
+    observationsBeforeWindow: observationLines(0, churnFrom).length, statusChanges: statusChanges.length,
+    lastStatuses: churnStatus.agentsOf('agent_team', remoteTeamRun), connectionsByPath: Object.entries(proxyLog.filter((e) => e.at >= churnFrom && e.at <= churnTo)
+      .reduce((acc, e) => { const key = e.line.replace(/\/[A-Za-z0-9_-]{20,}/g, '/:id'); acc[key] = (acc[key] ?? 0) + 1; return acc; }, {})) };
+  churnStatus.close();
+  // Settled: at most a handful of new observations and status changes in three quiet minutes (round 31's loop: ~33,000).
+  evidence.cases['RTP-09'] = { result: rtp09.observationsOpened <= 3 && rtp09.statusChanges <= 3 ? 'Pass' : 'Fail', ...rtp09 };
+  await page.screenshot({ path: path.join(outputDir, 'RTP-09-after-three-minutes.png'), fullPage: true });
+
   // RTP-08 (autobyteus-461 SR-083, CR-461-085, AR-403): the peer Agent run's status by its run ID on alpha's /ws/run-status,
   // held across beta's outage: the unasked end shows `offline`; after beta is back and Retry, a turn on beta is live again.
   const peerStatus = await openRunStatus(alpha.baseUrl);
@@ -542,6 +586,8 @@ try {
     children.delete(child);
   }
   await fs.rm(root, { recursive: true, force: true }).catch(() => undefined);
+  for (const proxy of proxies) proxy.close();
+  evidence.proxyConnections = { total: proxyLog.length, observations: proxyLog.filter((e) => /run-observations/.test(e.line)).length };
   evidence.cleanup = { frontendExited: !frontend || exited(frontend), serversLeft: children.size, rootRemoved: !existsSync(root) };
   evidence.finishedAt = new Date().toISOString();
   await fs.writeFile(path.join(outputDir, 'remote-runs-in-tree-probe.json'), `${JSON.stringify(evidence, null, 2)}\n`);
