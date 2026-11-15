@@ -61,5 +61,6 @@ export const createChildRowProjection = (input: Readonly<{
   const links = peerRunLinksOf(child.parent, input.tree).filter((link) => peerRunIdOf(link) === runId);
   const [[peer], [summary]] = await Promise.all([describeRemoteTaskExecutions(links, input.channel()), peerStatuses(links, input.channel)]);
   // Its launches, read from its node while the view reads it (SR-038, F-66); absent when the node does not answer.
-  return peer ? { kind: "peer", row: projectRemoteTaskExecution(peer, summary?.reachable ? summary.launches : undefined) } : null;
+  return peer ? { kind: "peer", row: projectRemoteTaskExecution(peer, summary?.reachable ? summary.launches : undefined),
+    summary: summary ? Object.freeze({ title: summary.title, reachable: summary.reachable }) : null } : null;
 } });

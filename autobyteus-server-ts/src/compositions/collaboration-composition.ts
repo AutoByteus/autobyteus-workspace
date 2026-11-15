@@ -55,6 +55,7 @@ import { setProcessWorkspaceRunHistoryService, WorkspaceRunHistoryService } from
 import { RunOwnAgentsReader } from "../run-history/store/run-own-agents-reader.js";
 import { createChildRowProjection } from "../services/agent-streaming/delegated-children-dtos.js";
 import { RunViewChildren } from "../services/agent-streaming/run-view-children.js";
+import { RunTreeView } from "../agent-collaboration/delegation/run-tree-view.js";
 import { setProcessStandaloneRootMemberViewProjectionService, StandaloneRootMemberViewProjectionService } from "../standalone-agent-run-root/services/standalone-root-member-view-projection-service.js";
 import type { CollaborationRootResolver } from "./collaboration-root-resolver.js";
 import { composeProjectRunLinks } from "./project-run-links-composition.js";
@@ -121,6 +122,8 @@ export type Collaboration = Readonly<{
   tasks: ProjectTaskService;
   views: RunViewSources;
   runViewChildren: RunViewChildren;
+  /** Each run's tree, built once on the server (SR-084): every view, the list's expanded runs, the phone and Settings show it. */
+  runTree: RunTreeView;
   /** Each run's statuses by run ID, from the run itself, and its rows' change notice (`/ws/run-status`, SR-082, SR-083). */
   runStatus: RunStatusService;
   delegatedRunAgents: DelegatedRunAgentsReader;
@@ -240,6 +243,8 @@ export const composeCollaboration = async (input: Readonly<{
       rowsChanged: (run) => runStatus.treeChanged(run) });
     releases.push(feed.follow(tree));
     const runViewChildren = new RunViewChildren({ feed, projection });
+    const ownFiles = new RunOwnAgentsReader(memoryDir);
+    const runTree = new RunTreeView({ tree, ownTreeOf: (run) => ownFiles.ownTreeOf(run), projection });
     const peers = new PeerChildObservation({ tree, streams: taskSide.viewStreams, peerRunOf, channel: input.remoteChannel,
       retryStatuses: (peerRunIds, nodeIds) => runStatus.retryPeers(peerRunIds, nodeIds) });
 
@@ -259,7 +264,7 @@ export const composeCollaboration = async (input: Readonly<{
     const views = createRunViewSources({ memoryDir, streams: taskSide.viewStreams, rows: { feed, projection, peers, peerRunOf }, registrations: input.activeRoots,
       closedTasks: taskSide.closedTasks, restorability });
     return Object.freeze({
-      tasks, views, runViewChildren, runStatus, delegatedRunAgents: new DelegatedRunAgentsReader(tree),
+      tasks, views, runViewChildren, runTree, runStatus, delegatedRunAgents: new DelegatedRunAgentsReader(tree),
       release: () => { for (const release of releases.splice(0).reverse()) release(); },
     });
   } catch (error) {

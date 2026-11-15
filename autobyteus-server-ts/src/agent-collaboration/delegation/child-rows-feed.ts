@@ -10,7 +10,7 @@ import type { RunViewStreams } from "./run-view-stream.js";
 /** One row as a view projects it: a run on this node (from its own file), or a peer's run. */
 export type ChildRowRecord =
   | Readonly<{ kind: "local"; row: CollaborationTaskExecutionDto }>
-  | Readonly<{ kind: "peer"; row: RemoteTaskExecutionDto }>;
+  | Readonly<{ kind: "peer"; row: RemoteTaskExecutionDto; summary: Readonly<{ title: string | null; reachable: boolean }> | null }>;
 
 /** The views' own projection of one row (at any depth, under its `parent`); `null` when its record cannot be read. Bound by the composition. */
 export type ChildRowProjection = Readonly<{

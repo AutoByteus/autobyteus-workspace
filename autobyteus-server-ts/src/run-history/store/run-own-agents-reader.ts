@@ -2,6 +2,7 @@ import { promises as fs } from "node:fs";
 import { AgentMemoryLayout } from "../../agent-memory/store/agent-memory-layout.js";
 import type { RunAgent, RunParts } from "../../agent-collaboration/delegation/delegation-index.js";
 import type { ConfiguredPlacement, OrgPlacements, RunFilesReader } from "../../agent-collaboration/delegation/collaboration-tree.js";
+import type { RunOwnMember, RunOwnTree } from "../../agent-collaboration/delegation/run-tree-view.js";
 import type { RootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import type { CatalogDefinitionRef } from "../../agent-collaboration/collaborators/catalog-address-map.js";
 import type { RunDelegatedFrom } from "../../agent-collaboration/execution/task/task-execution-resource-port.js";
@@ -24,6 +25,8 @@ type MemberNode = Readonly<{ address?: string; agentRunId?: string; agentDefinit
 const agentsOfMembers = (members: readonly MemberNode[]): RunAgent[] => members.flatMap((member) => member.agentRunId
   ? [{ agentRunId: member.agentRunId, address: member.address ?? null, agentDefinitionId: member.agentDefinitionId ?? null }]
   : agentsOfMembers(member.members ?? []));
+const membersOf = (members: readonly MemberNode[]): RunOwnMember[] =>
+  members.flatMap((member) => member.agentRunId && member.address ? [{ address: member.address, agentRunId: member.agentRunId }] : []);
 /** An org run's mounted teams, each with the member at its coordinator address. */
 const mountedTeamsOf = (members: readonly MemberNode[]): RunParts["mountedTeams"] => members.flatMap((member) => {
   const coordinator = member.members?.find((inner) => inner.address === member.coordinatorAddress);
@@ -76,6 +79,34 @@ export class RunOwnAgentsReader implements RunFilesReader {
         if (!tree) return null;
         const members = tree.rootOrg.members as readonly MemberNode[];
         return { agents: agentsOfMembers(members), coordinatorAddress: null, mountedTeams: mountedTeamsOf(members) };
+      }
+    }
+  }
+
+  /**
+   * The run's own parts as its tree shows them (autobyteus-461 SR-084, `RunTreeView`): an agent run's own agent; a team
+   * run's members and coordinator; an org run's direct agents and mounted teams with their members. `null` when absent.
+   */
+  async ownTreeOf(run: RootExecutionIdentity): Promise<RunOwnTree | null> {
+    switch (run.rootSubjectKind) {
+      case "agent": {
+        const metadata = await this.stores.agents.readMetadata(run.rootRunId);
+        return metadata ? { kind: "agent", agentRunId: run.rootRunId, address: metadata.address ?? null } : null;
+      }
+      case "agent_team": {
+        const tree = await this.stores.team.read(this.layout.getTeamDirPath({ rootTeamRunId: run.rootRunId, ancestorTeamRunIds: [] }), run.rootRunId);
+        return tree ? { kind: "agent_team", teamRunId: run.rootRunId, coordinatorAddress: tree.rootTeam.coordinatorAddress,
+          members: membersOf(tree.rootTeam.members as readonly MemberNode[]) } : null;
+      }
+      case "agent_org": {
+        const tree = await this.stores.org.read(this.layout.getOrgDirPath(run.rootRunId), run.rootRunId);
+        if (!tree) return null;
+        type Part = Extract<RunOwnTree, { kind: "agent_org" }>["parts"][number];
+        return { kind: "agent_org", orgRunId: run.rootRunId, parts: (tree.rootOrg.members as readonly (MemberNode & { teamRunId?: string })[]).flatMap((member): Part[] =>
+          member.agentRunId && member.address ? [{ kind: "agent" as const, address: member.address, agentRunId: member.agentRunId }]
+            : member.teamRunId && member.address && member.coordinatorAddress
+              ? [{ kind: "team" as const, address: member.address, teamRunId: member.teamRunId, coordinatorAddress: member.coordinatorAddress,
+                members: membersOf(member.members ?? []) }] : []) };
       }
     }
   }
