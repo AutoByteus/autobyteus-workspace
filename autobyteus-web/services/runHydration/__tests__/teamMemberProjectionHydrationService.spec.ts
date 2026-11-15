@@ -3,7 +3,7 @@ import { createPinia, setActivePinia } from 'pinia';
 import { AgentStatus } from '~/types/agent/AgentStatus';
 import { useAgentActivityStore } from '~/stores/agentActivityStore';
 import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
-import { buildTestTeamContext, testAgentNode, testDelegation } from '~/test-support/currentTeamTestFixtures';
+import { buildTestTeamContext, testAgentNode } from '~/test-support/currentTeamTestFixtures';
 import { useRunFileChangesStore } from '~/stores/runFileChangesStore';
 import { ensureAuthoritativeTeamMemberProjection } from '../teamMemberProjectionHydrationService';
 
@@ -11,8 +11,6 @@ const { fetchProjection, fetchFileChanges } = vi.hoisted(() => ({ fetchProjectio
 vi.mock('../teamRunContextHydrationService', () => ({
   fetchExactTeamMemberProjection: fetchProjection,
 }));
-const { ensureOpen } = vi.hoisted(() => ({ ensureOpen: vi.fn() }));
-vi.mock('~/stores/delegatedRunsStore', () => ({ useDelegatedRunsStore: () => ({ ensureOpen }) }));
 vi.mock('../runFileChangeHydrationService', async (importOriginal) => ({
   ...await importOriginal<typeof import('../runFileChangeHydrationService')>(),
   fetchRunFileChanges: fetchFileChanges,
@@ -132,17 +130,10 @@ describe('teamMemberProjectionHydrationService', () => {
     expect(useAgentActivityStore().getActivities(TASK_RUN)).toEqual([]);
   });
 
-  it('a run the Team delegated is not read through the Team: it opens as its own run (autobyteus-461 rule 2)', async () => {
-    const team = buildTestTeamContext({
-      teamRunId: ROOT, coordinatorAddress: '/member-a', focusedAgentRunId: 'run-a',
-      rootChildren: [testAgentNode('/member-a', { agentRunId: 'run-a' })],
-      delegations: [testDelegation({ delegatorAgentRunId: 'run-a', recipientAddress: '/member-a', target: { agentRunId: 'delegated-run' } })],
-    });
-    useAgentTeamContextsStore().teams = new Map([[ROOT, team]]);
-    const mounted = useAgentTeamContextsStore().getTeamContextById(ROOT)!;
-    await expect(ensureAuthoritativeTeamMemberProjection({ team: mounted, agentRunId: 'delegated-run' }))
-      .resolves.toEqual({ disposition: 'authoritative', agentRunId: 'delegated-run' });
-    expect(ensureOpen).toHaveBeenCalledWith({ kind: 'agent', agentRunId: 'delegated-run' });
+  it('a run the Team delegated is not one of its members: it is never read through the Team (autobyteus-461 rule 2)', async () => {
+    const team = mountTaskTeam();
+    await expect(ensureAuthoritativeTeamMemberProjection({ team, agentRunId: 'delegated-run' }))
+      .rejects.toThrow("AgentRun 'delegated-run' is not a retained member");
     expect(fetchProjection).not.toHaveBeenCalled();
     expect(fetchFileChanges).not.toHaveBeenCalled();
   });

@@ -2,7 +2,6 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { createPinia, setActivePinia } from 'pinia'
 import { shallowReactive } from 'vue'
 import { buildMultiTeamContext, memberId, multiTeamView, teamId } from '~/services/agentCollaboration/__tests__/agentRootMultiTeamFixture'
-import { created, launch } from '~/services/agentCollaboration/__tests__/agentRootFixture'
 import type { TaskRootView } from '~/types/project'
 
 /**
@@ -40,16 +39,6 @@ const root = (overrides: Partial<TaskRootView>): TaskRootView => ({
   delegatingRun: { kind: 'agent_team', runId: teamId(1) }, topRun: { kind: 'agent', runId: 'host-run' },
   openTarget: { runKind: 'agent', runId: 'nested-helper', agentRunId: 'nested-helper' }, start: 'started', startError: null, closed: false, status: 'running', ...overrides,
 })
-/** The manager's view: three task Teams; the second's designer delegated a helper Agent, a worker two hops down. */
-const managerView = () => {
-  const view = multiTeamView(3)
-  const team = view.execution_tree.taskExecutions[1] as unknown as { taskExecutions: unknown[] }
-  team.taskExecutions.push({ address: '/helper', agentRunId: 'nested-helper', platformAgentRunId: null, delegatorAgentRunId: memberId(1, 0),
-    startedAt: created, source: { kind: 'agent', agentDefinitionId: 'helper', launchConfiguration: launch },
-    openTarget: { runKind: 'agent', runId: 'nested-helper', agentRunId: 'nested-helper' } })
-  return view
-}
-
 beforeEach(() => {
   setActivePinia(createPinia()); vi.clearAllMocks()
   Object.assign(navigation.selection, { issued: 0, current: 0, selectedType: null, selectedRunId: null })
@@ -59,7 +48,7 @@ beforeEach(() => {
     if (link.kind === 'agent') Object.assign(navigation.selection, { selectedType: 'agent', selectedRunId: link.runId, current: 0 })
     return { disposition: 'committed' }
   })
-  useAgentRunCollaborationStore().contexts = { 'host-run': shallowReactive(buildMultiTeamContext(managerView())) }
+  useAgentRunCollaborationStore().contexts = { 'host-run': shallowReactive(buildMultiTeamContext(multiTeamView(3))) }
   // The manager's tree as the server builds it (SR-084): the helper under the second Team's designer, two hops down.
   useRunTreeStore().streamSnapshot({ kind: 'agent', runId: 'host-run' }, [...multiTeamTree(3).rows, { key: 'agent:nested-helper',
     parentKey: `team_member:${teamId(1)}:${memberId(1, 0)}`, depth: 3, kind: 'agent', name: 'helper', address: '/helper',

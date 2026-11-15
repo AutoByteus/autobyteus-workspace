@@ -191,12 +191,12 @@ describe('useWorkspaceHistorySelectionActions current AgentRun identity', () => 
   it('onOpenAgentRun opens the run\'s own agent: its selected child is cleared, then the run opens', async () => {
     setActivePinia(createPinia())
     const collaboration = useAgentRunCollaborationStore()
-    const selectChild = vi.spyOn(collaboration, 'selectChild')
+    const selectHost = vi.spyOn(collaboration, 'selectHost')
     const { actions, runHistoryStore } = buildActions()
     const run = { runId: 'agent-run-1' } as never
     await actions.onOpenAgentRun(run)
-    expect(selectChild).toHaveBeenCalledWith('agent-run-1', null)
+    expect(selectHost).toHaveBeenCalledWith('agent-run-1')
     expect(runHistoryStore.selectTreeRun).toHaveBeenCalledWith(run, expect.any(Object))
-    expect(selectChild.mock.invocationCallOrder[0]!).toBeLessThan(runHistoryStore.selectTreeRun.mock.invocationCallOrder[0]!)
+    expect(selectHost.mock.invocationCallOrder[0]!).toBeLessThan(runHistoryStore.selectTreeRun.mock.invocationCallOrder[0]!)
   })
 });

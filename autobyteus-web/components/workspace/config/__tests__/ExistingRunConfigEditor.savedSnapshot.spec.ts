@@ -12,7 +12,7 @@ import { useRunStatusStore } from '~/stores/runStatusStore'
 // runtime stores and leaf controls are replaced; the stale live view deliberately never changes.
 const mocks = await vi.hoisted(async () => {
   const { ref } = await import('vue')
-  return { read: vi.fn(), mutate: vi.fn(), live: null as any, stored: null as any, active: false, schema: null as any,
+  return { read: vi.fn(), mutate: vi.fn(), ownRead: vi.fn((): unknown => undefined), live: null as any, stored: null as any, active: false, schema: null as any,
     /** The copy focused in the left tree (autobyteus-366: Settings show it). */
     focused: ref<string | null>('copy'),
     /** The server answers that the runtime's model list could not be read (SR-004: it answers, it does not throw). */
@@ -25,11 +25,14 @@ const choice = (id: string) => ({ llmModelIdentifier: id, displayName: id, canon
 const readableOptions = () => ({ status: 'ready', options: { currentModelIdentifier: 'old', currentModel: choice('old'), replacements: [choice('new')], unavailableReason: null } })
 const options = () => mocks.unreadable
   ? { status: 'unavailable', options: null, message: 'The model list of Codex App Server could not be read. Try again.' } : readableOptions()
-// The run's tree, as the server builds it from what its runs have now (SR-084): answered from the same stored state.
+// The run's tree, as the server builds it from what its runs have now (SR-084): answered from the same stored state;
+// `mocks.read` is each read of it.
 vi.mock('~/utils/apolloClient', async () => {
   const { agentRunTreeRows } = await import('~/test-support/runTreeFixtures')
-  return { getApolloClient: () => ({ query: async ({ variables }: { variables: { kind: string; runId: string } }) => ({ data: { runTree: {
-    kind: variables.kind, runId: variables.runId, rows: agentRunTreeRows(variables.runId, structuredClone(mocks.stored).execution_tree.taskExecutions) } } }) }) }
+  return { getApolloClient: () => ({ query: async ({ variables }: { variables: { kind: string; runId: string } }) => {
+    const stored = await mocks.read(variables.runId)
+    return { data: { runTree: { kind: variables.kind, runId: variables.runId, rows: agentRunTreeRows(variables.runId, stored.execution_tree.taskExecutions) } } }
+  } }) }
 })
 vi.mock('~/services/runConfigEditing/delegatedLaunchSelectionClient', async original => ({ ...await original<object>(),
   // Each row's options from its own run's query; each run's change by its own save (autobyteus-461 SR-064, SR-065).
@@ -48,14 +51,14 @@ vi.mock('~/services/runConfigEditing/existingRunModelConfigMutationClient', () =
 vi.mock('~/services/runConfigEditing/existingRunModelOptionsClient', () => ({ loadExistingRunModelOptions: async () => ({ '/': options() }) }))
 vi.mock('~/stores/agentSelectionStore', () => ({ useAgentSelectionStore: () => ({ subject: { kind: 'agent_run', runId: 'host' } }) }))
 vi.mock('~/stores/runHistoryStore', () => ({ useRunHistoryStore: () => ({ resumeConfigByRunId: {}, teamResumeConfigByTeamRunId: {},
-  refreshAgentResumeConfig: async () => ({ runId: 'host', isActive: mocks.active, modelConfigEditability: { editable: !mocks.active, reason: mocks.active ? 'RUN_ACTIVE' : null },
+  refreshAgentResumeConfig: async () => mocks.ownRead() ?? ({ runId: 'host', isActive: mocks.active, modelConfigEditability: { editable: !mocks.active, reason: mocks.active ? 'RUN_ACTIVE' : null },
     metadataConfig: { agentDefinitionId: 'host', ...launch() } }),
 }) }))
 vi.mock('~/stores/agentContextsStore', () => ({ useAgentContextsStore: () => ({ getConfigForRun: () => null }) }))
 vi.mock('~/stores/agentDefinitionStore', () => ({ useAgentDefinitionStore: () => ({ getAgentDefinitionById: () => ({ name: 'Host' }) }) }))
-// autobyteus-358 (DS-004): Settings takes the hub's stored view from the collaboration store (`viewFor`).
-vi.mock('~/stores/agentRunCollaborationStore', () => ({ useAgentRunCollaborationStore: () => ({ viewFor: mocks.read, selectedChild: () => mocks.focused.value,
-  contextFor: () => ({ view: mocks.live, getAgentContext: () => null }) }) }))
+// The row selected in the run's tree (autobyteus-366: Settings show it).
+vi.mock('~/stores/agentRunCollaborationStore', () => ({ useAgentRunCollaborationStore: () => ({ selectedChild: () => mocks.focused.value,
+  contextFor: () => null }) }))
 vi.mock('~/composables/chat/useChatModelCatalog', () => ({ useChatModelCatalog: () => ({ ensureCatalog: vi.fn(), schemaFor: () => mocks.schema, modelLabel: (_runtime: string, id: string) => id }) }))
 vi.mock('~/stores/llmProviderConfig', () => ({ useLLMProviderConfigStore: () => ({ modelConfigSchemaByIdentifier: () => mocks.schema }) }))
 vi.mock('~/composables/runSettings/useRunStopAction', async () => {
@@ -75,7 +78,7 @@ const mountEditor = () => mount(ExistingRunConfigEditor, { global: { stubs: { Ru
 
 beforeEach(() => {
   setActivePinia(createPinia())
-  mocks.read.mockReset(); mocks.mutate.mockReset()
+  mocks.read.mockReset(); mocks.mutate.mockReset(); mocks.ownRead.mockReset().mockReturnValue(undefined)
   mocks.active = false; mocks.schema = null; mocks.focused.value = 'copy'; mocks.unreadable = false
   mocks.live = snapshot(); mocks.stored = snapshot()
   mocks.read.mockImplementation(async () => structuredClone(mocks.stored))
@@ -111,8 +114,8 @@ describe('stopped Agent same-view canonical saved rows', () => {
     await wrapper.get('[data-test="save-existing-model-config"]').trigger('click'); await flushPromises()
     expect(mocks.stored.execution_tree.taskExecutions[0].source.launchConfiguration.llmModelIdentifier).toBe('new')
     expect(mocks.live.execution_tree.taskExecutions[0].source.launchConfiguration.llmModelIdentifier).toBe('old')
-    // The first load reads the hub's view once; the committed Save reads it again, fresh (autobyteus-366, CR-003).
-    expect(mocks.read.mock.calls).toEqual([['host', { fresh: false }], ['host', { fresh: true }]])
+    // The first load reads the run's tree once; the committed Save reads it again (autobyteus-366, CR-003).
+    expect(mocks.read.mock.calls).toEqual([['host'], ['host']])
     expect(row()).toBe('new:null')
     expect(useDelegatedLaunchDraftStore().dirty).toBe(false)
     expect(useExistingRunConfigStore().reconciliationRequired).toBe(false)
@@ -120,19 +123,12 @@ describe('stopped Agent same-view canonical saved rows', () => {
   })
 })
 
-it('retains the mounted Settings view and edit lock through readback, then uses the new value as the next original', async () => {
+it('keeps the mounted Settings view through Save, then uses the new value as the next original', async () => {
   const wrapper = mountEditor(); await flushPromises()
   const mounted = wrapper.get('[data-test="existing-run-settings"]').element
   await wrapper.get('[data-test="edit-agent:copy"]').trigger('click')
-  let finish!: (value: any) => void
-  mocks.read.mockImplementationOnce(() => new Promise(resolve => { finish = resolve }))
   await wrapper.get('[data-test="save-existing-model-config"]').trigger('click'); await flushPromises()
   const delegated = useDelegatedLaunchDraftStore()
-  expect(delegated.saving).toBe(true)
-  expect(delegated.feedback).toBeNull()
-  expect(wrapper.get('[data-test="existing-run-settings"]').element).toBe(mounted)
-  expect(wrapper.get('[data-test="save-existing-model-config"]').attributes('disabled')).toBeDefined()
-  finish(structuredClone(mocks.stored)); await flushPromises()
   expect(wrapper.get('[data-test="existing-run-settings"]').element).toBe(mounted)
   const settings = wrapper.getComponent({ name: 'ExistingRunSettings' })
   settings.vm.$emit('change-delegated', 'agent:copy', { field: 'thinking', llmConfig: { reasoning_effort: 'high', service_tier: 'fast' } })
@@ -153,7 +149,8 @@ it('clears committed edits, locks stale rows with an honest error and retries re
   store.updateAgentModelConfig({ llmModelIdentifier: 'new', llmConfig: null })
   await wrapper.get('[data-test="edit-agent:copy"]').trigger('click')
   // The run's own save and the delegated runs' saves each read the run again after (SR-064): both reads fail.
-  mocks.read.mockRejectedValueOnce(new Error('read unavailable')).mockRejectedValueOnce(new Error('read unavailable'))
+  const unavailable = () => { throw new Error('read unavailable') }
+  mocks.ownRead.mockImplementationOnce(unavailable).mockImplementationOnce(unavailable)
   await wrapper.get('[data-test="save-existing-model-config"]').trigger('click'); await flushPromises()
   expect(store.reconciliationRequired).toBe(true)
   expect(store.dirty).toBe(false)
@@ -165,21 +162,11 @@ it('clears committed edits, locks stale rows with an honest error and retries re
   expect(useDelegatedLaunchDraftStore().feedback?.kind).not.toBe('success')
   expect(wrapper.get('[data-test="existing-run-settings"]').attributes('data-state')).toBe('refresh-required')
   await wrapper.get('[data-test="existing-run-refresh"]').trigger('click'); await flushPromises()
-  // Refresh reads the hub's view again, and shows the saved model.
-  expect(mocks.read).toHaveBeenLastCalledWith('host', { fresh: true })
+  // Refresh reads the run's tree again, and shows the saved model.
+  expect(mocks.read).toHaveBeenLastCalledWith('host')
   expect(wrapper.get('[data-test="agent:copy"]').text()).toBe('new:null')
   expect(store.reconciliationRequired).toBe(false)
   expect(mocks.mutate).toHaveBeenCalledTimes(1)
-  wrapper.unmount()
-})
-
-it('initial failed snapshot load has no stale live fallback and exposes a working Refresh', async () => {
-  mocks.read.mockRejectedValueOnce(new Error('read unavailable'))
-  const wrapper = mountEditor(); await flushPromises()
-  expect(wrapper.find('[data-test="agent:copy"]').exists()).toBe(false)
-  await wrapper.get('[data-test="existing-run-refresh"]').trigger('click'); await flushPromises()
-  expect(wrapper.get('[data-test="agent:copy"]').text()).toBe('old:null')
-  expect(mocks.mutate).not.toHaveBeenCalled()
   wrapper.unmount()
 })
 
@@ -195,8 +182,8 @@ it('Cancel writes nothing and rejected Save keeps the recoverable edit without S
   expect(wrapper.get('[data-test="agent:copy"]').text()).toBe('new:null')
   expect(wrapper.get('[data-test="existing-run-note"]').text()).toContain('Copy running')
   expect(useDelegatedLaunchDraftStore().dirty).toBe(true)
-  // A refused Save reads the rows again (SR-064: a run that saved keeps its save).
-  expect(mocks.read).toHaveBeenCalledTimes(2)
+  // A refused Save changes no run, so the run's tree is not read again (a run that saved tells it: SR-086 G-B1).
+  expect(mocks.read).toHaveBeenCalledTimes(1)
   wrapper.unmount()
 })
 
@@ -292,7 +279,7 @@ describe('edits across focus changes (autobyteus-366, AC-005)', () => {
   })
 })
 
-it('leaves active Agent rows live-view-backed and does not request a stopped snapshot after Save', async () => {
+it('an active run\'s rows are its tree\'s too: after Save they show the saved value from its next read', async () => {
   mocks.active = true
   const mutate = mocks.mutate.getMockImplementation()!
   mocks.mutate.mockImplementation(async (input) => {
@@ -305,7 +292,7 @@ it('leaves active Agent rows live-view-backed and does not request a stopped sna
   await wrapper.get('[data-test="edit-agent:copy"]').trigger('click')
   await wrapper.get('[data-test="save-existing-model-config"]').trigger('click'); await flushPromises()
   expect(wrapper.get('[data-test="agent:copy"]').text()).toBe('new:null')
-  expect(mocks.read).not.toHaveBeenCalled()
+  expect(mocks.read).toHaveBeenCalledTimes(2)
   expect(useDelegatedLaunchDraftStore().feedback?.kind).toBe('success')
   wrapper.unmount()
 })

@@ -31,7 +31,6 @@ const agentOrgDefinitionGroup = (): AgentOrgHistoryDefinitionGroup => {
       archivedAt: null,
       isActive: true,
       summary: 'Deliver current package',
-      closedTaskExecutions: [],
       executionTree: {
         subjectKind: 'agent_org',
         createdAt: '2026-09-03T00:00:00.000Z',
@@ -40,11 +39,11 @@ const agentOrgDefinitionGroup = (): AgentOrgHistoryDefinitionGroup => {
         handoffs: [],
         rootOrg: {
           address: '/', orgDefinitionId: 'org-definition', orgDefinitionName: 'Delivery Org', orgRunId: 'org-run',
-          defaultLaunchConfiguration: launch, taskExecutions: [],
+          defaultLaunchConfiguration: launch,
           members: [{
             address: '/software', teamDefinitionId: 'software-team', role: null, description: null,
             teamRunId: 'mounted-team-run', coordinatorAddress: '/software/implementation',
-            defaultLaunchConfiguration: launch, taskExecutions: [],
+            defaultLaunchConfiguration: launch,
             members: [{
               address: '/software/implementation', agentDefinitionId: 'implementation-agent', role: null,
               description: null, agentRunId: 'implementation-run', platformAgentRunId: null,

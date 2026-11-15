@@ -13,7 +13,9 @@ import { shallowReactive } from 'vue';
 import RunListPanel from '~/components/runList/RunListPanel.vue';
 import { useAgentRunCollaborationStore } from '~/stores/agentRunCollaborationStore';
 import { useRunHistoryStore } from '~/stores/runHistoryStore';
-import { buildMultiTeamContext, multiTeamView } from '~/services/agentCollaboration/__tests__/agentRootMultiTeamFixture';
+import { buildMultiTeamContext, multiTeamView, teamId } from '~/services/agentCollaboration/__tests__/agentRootMultiTeamFixture';
+import { useRunTreeStore } from '~/stores/runTreeStore';
+import { multiTeamTree } from '~/test-support/runTreeFixtures';
 import { AgentStatus } from '~/types/agent/AgentStatus';
 
 definePageMeta({ layout: false });
@@ -31,14 +33,12 @@ runHistory.workspaceGroups = [{ workspaceRootPath: '/probe', workspaceName: 'pro
   run(HOST, 'Project Task Manager', 30, true),
 ] }] as never;
 
-// The stored delegated view is already in the store, as after its first load: no server read.
+// The run's view and its tree (SR-084) are already in the stores, as after their first load: no server read.
 const collaboration = useAgentRunCollaborationStore();
-const contextWithout = (closed: readonly number[]) => {
-  const view = multiTeamView(DELEGATED, HOST);
-  view.execution_tree.taskExecutions = view.execution_tree.taskExecutions.filter((_, index) => !closed.includes(index));
-  return shallowReactive(buildMultiTeamContext(view));
-};
-collaboration.contexts = { [HOST]: contextWithout([]) };
+collaboration.contexts = { [HOST]: shallowReactive(buildMultiTeamContext(multiTeamView(DELEGATED, HOST))) };
+const trees = useRunTreeStore();
+const treeRef = { kind: 'agent' as const, runId: HOST };
+trees.streamSnapshot(treeRef, multiTeamTree(DELEGATED, HOST).rows);
 const isExpanded = () => document.querySelector(`li[data-run-id="${HOST}"] [data-test="run-list-disclosure"]`)?.getAttribute('aria-expanded') === 'true';
 
 const treeSelector = `[data-test="workspace-agent-run-task-tree"][data-run-id="${HOST}"]`;
@@ -117,6 +117,10 @@ let recording: { frames: { t: number; rows: ReturnType<typeof sample> }[]; stop:
     finally { inside.remove(); outside.remove(); }
   },
   /** The delegation's Task is DONE: its row leaves the tree. */
-  closeDelegation(copy: number) { collaboration.contexts = { [HOST]: contextWithout([copy]) }; },
+  closeDelegation(copy: number) {
+    const team = `team:${teamId(copy)}`;
+    trees.streamChange(treeRef, { added: [], updated: [],
+      removed: trees.rowsOf(treeRef).filter((row) => row.key === team || row.parentKey === team).map((row) => row.key) });
+  },
 };
 </script>

@@ -1,41 +1,29 @@
-import type { AgentRunCollaborationViewDto } from '@autobyteus/collaboration-stream-contracts'
+import type { AgentRunCollaborationViewDto, RunTreeRowDto } from '@autobyteus/collaboration-stream-contracts'
+import { agentRow, teamRows } from '~/test-support/runTreeFixtures'
 
 export const created = '2026-09-30T00:00:00.000Z'
 export const launch = { runtimeKind: 'codex_app_server' as const, llmModelIdentifier: 'root-model', llmConfig: null, autoExecuteTools: false, workspaceRootPath: '/ws' }
 
 type MutableView = { -readonly [K in keyof AgentRunCollaborationViewDto]: AgentRunCollaborationViewDto[K] }
+/** An agent run's view (autobyteus-461 SR-084): its host only; the runs it delegated are its tree's rows (`agentRootTreeRows`). */
 export const agentRootView = (): MutableView => ({
   base_change_sequence: 4, live_sequence_id: 'live-1', last_message_change_sequence: 0,
   is_active: true,
-  closed_task_executions: [], execution_tree: {
+  execution_tree: {
     subjectKind: 'agent', createdAt: created,
     host: { address: '/research_assistant', agentRunId: 'host-run', agentDefinitionId: 'research-assistant' },
-    // Delegated runs of the host: an Agent copy and a Team copy, each recording its catalog source.
-    taskExecutions: [
-      { address: '/computer_use_agent', agentRunId: 'cua-run', platformAgentRunId: null, delegatorAgentRunId: 'host-run', startedAt: created,
-        source: { kind: 'agent', agentDefinitionId: 'computer-use', launchConfiguration: launch },
-        openTarget: { runKind: 'agent', runId: 'cua-run', agentRunId: 'cua-run' } },
-      { address: '/product_team', teamRunId: 'team-run', delegatorAgentRunId: 'host-run', startedAt: created,
-        openTarget: { runKind: 'agent_team', runId: 'team-run', agentRunId: 'pp-run' },
-        members: [
-          { address: '/product_team/prototyper', agentRunId: 'pp-run', platformAgentRunId: null },
-          { address: '/product_team/bootstrapper', agentRunId: 'pb-run', platformAgentRunId: null },
-        ],
-        taskExecutions: [],
-        source: { kind: 'agent_team', teamDefinitionId: 'product-team', coordinatorAddress: '/product_team/prototyper', handoffs: [],
-          members: [
-            { address: '/product_team/prototyper', agentDefinitionId: 'prototyper', launchConfiguration: launch },
-            { address: '/product_team/bootstrapper', agentDefinitionId: 'bootstrapper', launchConfiguration: launch },
-          ], defaultLaunchConfiguration: launch } },
-    ],
   },
-  agent_input_states: [], remote_task_executions: [],
-  agent_statuses: [
-    { agent_run_id: 'cua-run', member_address: '/computer_use_agent', status: 'idle', trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null },
-    { agent_run_id: 'pp-run', member_address: '/product_team/prototyper', status: 'running', trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null },
-    { agent_run_id: 'pb-run', member_address: '/product_team/bootstrapper', status: 'offline', trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null },
-  ],
 } as MutableView)
+
+/** The host's tree as the server builds it: the host, an Agent it delegated and a Team it delegated with two members. */
+export const agentRootTreeRows = (): RunTreeRowDto[] => [
+  agentRow('host-run', null, 0, 'research assistant'),
+  { ...agentRow('cua-run', 'agent:host-run', 1, 'computer use agent'), address: '/computer_use_agent' },
+  ...teamRows('team-run', 'agent:host-run', 1, ['pp-run', 'pb-run'])
+    .map((row) => row.kind === 'team' ? { ...row, name: 'product team', address: '/product_team' }
+      : { ...row, address: row.openTarget?.agentRunId === 'pp-run' ? '/product_team/prototyper' : '/product_team/bootstrapper',
+        name: row.openTarget?.agentRunId === 'pp-run' ? 'prototyper' : 'bootstrapper' }),
+]
 
 /** The hub's stored messages (autobyteus-358: the Team tab loads them per participant; the view carries none). */
 export const agentRootMessages = Object.freeze([{

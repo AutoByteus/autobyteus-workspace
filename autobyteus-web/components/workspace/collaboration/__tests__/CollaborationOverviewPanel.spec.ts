@@ -6,7 +6,6 @@ import CollaborationOverviewPanel from '../CollaborationOverviewPanel.vue';
 import {
   buildTestTeamContext,
   testAgentNode,
-  testDelegation,
 } from '~/test-support/currentTeamTestFixtures';
 import { testCollaborationMessagesContextView } from '~/test-support/teamWorkspaceContextView';
 
@@ -30,11 +29,8 @@ const seedTeam = () => buildTestTeamContext({
   ],
   coordinatorAddress: '/implementation_engineer',
   focusedAgentRunId: 'impl-run',
-  delegations: [testDelegation({
-    delegatorAgentRunId: 'impl-run', recipientAddress: '/code_reviewer', target: { agentRunId: 'review-child-run' },
-  })],
   messages: [{
-    message_id: 'message-1', sender_agent_run_id: 'impl-run', receiver_agent_run_id: 'review-child-run',
+    message_id: 'message-1', sender_agent_run_id: 'impl-run', receiver_agent_run_id: 'review-run',
     content: 'Please review this.', message_type: 'agent_message', created_at: '2026-04-12T10:00:00.000Z',
     reference_files: [],
   }],

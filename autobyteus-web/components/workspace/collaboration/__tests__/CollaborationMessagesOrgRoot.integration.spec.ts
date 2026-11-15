@@ -49,16 +49,15 @@ const message = (index: number, senderAgentRunId: string, receiverAgentRunId: st
 const largeOrgView = (): AgentOrgExecutionViewDto => ({
   base_change_sequence: 4, live_sequence_id: 'live-1', last_message_change_sequence: 0,
   is_active: true,
-  closed_task_executions: [], execution_tree: {
+  execution_tree: {
     subjectKind: 'agent_org', createdAt: timestamp(0), archivedAt: null, applicationBinding: null, handoffs: [],
     rootOrg: {
       address: '/', orgDefinitionId: 'org-def', orgDefinitionName: 'Org', orgRunId: 'org-run',
-      defaultLaunchConfiguration: launch, taskExecutions: [],
+      defaultLaunchConfiguration: launch,
       members: [agent('/designer', 'agent-designer'), agent('/reviewer', 'agent-reviewer'), agent('/tester', 'agent-tester')],
     },
   },
-  agent_input_states: [], remote_task_executions: [],
-  agent_statuses: [idle('/designer', 'agent-designer'), idle('/reviewer', 'agent-reviewer'), idle('/tester', 'agent-tester')],
+  agent_input_states: [], agent_statuses: [idle('/designer', 'agent-designer'), idle('/reviewer', 'agent-reviewer'), idle('/tester', 'agent-tester')],
 })
 const agentContext = (runId: string) => new AgentContext({
   agentDefinitionId: `${runId}-def`, agentDefinitionName: runId, llmModelIdentifier: launch.llmModelIdentifier,

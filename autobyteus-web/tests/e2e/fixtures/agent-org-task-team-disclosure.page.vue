@@ -32,7 +32,7 @@ const agent = (address: string, agentRunId: string) => ({
 });
 const mountedTeam = (address: string, teamRunId: string, coordinator: string, members: ReturnType<typeof agent>[]) => ({
   address, teamDefinitionId: `definition-${teamRunId}`, role: null, description: null, teamRunId,
-  coordinatorAddress: coordinator, defaultLaunchConfiguration: launch, members, taskExecutions: [],
+  coordinatorAddress: coordinator, defaultLaunchConfiguration: launch, members,
 });
 const taskMember = (address: string, agentRunId: string) => ({ address, agentRunId, platformAgentRunId: null });
 // Baseline fix (autobyteus-385 API/E2E): a Team copy records the source it started from (7d689455ad); its coordinator is
@@ -78,7 +78,7 @@ const executionTree = {
 const groups = reactive<AgentOrgHistoryDefinitionGroup[]>([{
   stableKey: 'agent_org_definition:ttrc-org-definition', definitionId: 'ttrc-org-definition', name: 'Nested Classroom Test Org',
   runs: [{ stableKey: `agent_org_run:${ROOT}`, rootSubjectKind: 'agent_org', rootRunId: ROOT, createdAt: '2026-09-29T08:00:00.000Z', lastActivityAt: '2026-09-29T08:00:00.000Z',
-    archivedAt: null, isActive: false, summary: 'Classroom run', executionTree, closedTaskExecutions: [] }],
+    archivedAt: null, isActive: false, summary: 'Classroom run', executionTree }],
 }]);
 
 const tree = useWorkspaceHistoryTreeState({ runHistoryStore: useRunHistoryStore(), selectionStore: useAgentSelectionStore() });

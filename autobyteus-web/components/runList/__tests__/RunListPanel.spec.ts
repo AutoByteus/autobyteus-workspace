@@ -21,8 +21,7 @@ const teamRun = (teamRunId: string, offset: number, address: string) => {
     summary: `${teamRunId} work`, createdAt: day(offset), isActive: false,
     members: [{ memberAddress: address, memberName: address.slice(1), displayName: address.slice(1), agentRunId, workspaceRootPath: '/ws/a', status: 'offline' }],
     rootTeam: {
-      team_definition_id: 'team-def', team_definition_name: 'Video Team', team_run_id: teamRunId, coordinator_address: address, task_executions: [],
-      members: [{ kind: 'configured_agent', address, agent_definition_id: 'agent-1', role: null, description: null, agent_run_id: agentRunId, platform_agent_run_id: null,
+      team_definition_id: 'team-def', team_definition_name: 'Video Team', team_run_id: teamRunId, coordinator_address: address, members: [{ kind: 'configured_agent', address, agent_definition_id: 'agent-1', role: null, description: null, agent_run_id: agentRunId, platform_agent_run_id: null,
         launch_configuration: { runtime_kind: 'AUTOBYTEUS', llm_model_identifier: 'model-x', llm_config: null, auto_execute_tools: false, workspace_root_path: '/ws/a' } }],
     },
   };

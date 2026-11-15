@@ -38,16 +38,16 @@ beforeEach(() => {
 })
 
 describe('guarded Org configuration publication', () => {
-  it('deduplicates resolution, clears unavailable changed metadata, retries without replacing retained state or task config', async () => {
+  it('deduplicates resolution, clears unavailable changed metadata, retries without replacing retained state', async () => {
     const { store, org, tree } = await setup()
-    const member = org.getAgentContext('agent-lead-configured')!, task = org.getAgentContext('agent-task-lead')!
-    const state = member.state, taskConfig = task.config, selection = org.selection
+    const member = org.getAgentContext('agent-lead-configured')!
+    const state = member.state, selection = org.selection
     io.metadata.mockRejectedValueOnce(new Error('metadata unavailable'))
     io.save.mockResolvedValue(result(tree)); io.metadata.mockClear()
     await store.saveRunConfig('org-run', { selectionPatches: [], teamWorkspacePatches: [{ teamAddress: '/team', workspaceRootPath: '/B' }] })
     expect(io.metadata).toHaveBeenCalledExactlyOnceWith('/B')
     expect(member.config.workspaceId).toBeNull(); expect(member.state).toBe(state)
-    expect(task.config).toBe(taskConfig); expect(org.selection).toBe(selection)
+    expect(org.selection).toBe(selection)
     io.read.mockResolvedValue(result(tree)); await store.readRunConfig('org-run')
     expect(member.config.workspaceId).toBe('/B'); expect(member.state).toBe(state)
     expect(io.save).toHaveBeenCalledTimes(1)

@@ -1,6 +1,6 @@
 {
   "composables/__tests__/useAccessibleDrawer.spec.ts": 9,
-  "composables/__tests__/useWorkspaceHistorySubjectActions.coldHistory.spec.ts": 4,
+  "composables/__tests__/useWorkspaceHistorySubjectActions.coldHistory.spec.ts": 2,
   "composables/__tests__/useWorkspaceHistoryTreeState.spec.ts": 2,
   "composables/projects/__tests__/useProjectTaskDraft.spec.ts": 1,
   "composables/projects/__tests__/useProjectTaskPage.spec.ts": 1,

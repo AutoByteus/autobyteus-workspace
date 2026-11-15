@@ -1,7 +1,5 @@
 import { AgentOrgExecutionContext } from '~/services/agentOrgExecution/agentOrgExecutionContext';
 import { taskBearingView } from '~/services/agentOrgExecution/__tests__/taskBearingOrgFixture';
-import { AgentRunCollaborationContext } from '~/services/agentCollaboration/agentRunCollaborationContext';
-import { agentRootView } from '~/services/agentCollaboration/__tests__/agentRootFixture';
 import { createAgentContext } from '~/services/agentOrgExecution/agentOrgMemberContextFactory';
 import { parseAgentTeamAddress } from '~/types/agent/AgentTeamAddress';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
@@ -706,17 +704,14 @@ describe('TPS through real Org and collaboration context admission', () => {
     return { kind: 'agent_presentation' as const, agent_run_id: runId, member_address: address,
       message: { type: 'TOKEN_USAGE_UPDATED' as const, payload } };
   };
-  it('keeps four Org target kinds and same-address task copies distinct', () => {
+  it('keeps the Org\'s own target kinds distinct, by run ID', () => {
     const view = taskBearingView();
-    // Every agent the view lists: its own (with statuses) and its delegated runs' (their statuses are their own runs', SR-083).
-    const delegated = [['agent-worker-task', '/worker'], ['agent-task-lead', '/team/lead'], ['agent-task-worker', '/team/worker']]
-      .map(([agent_run_id, member_address]) => ({ agent_run_id: agent_run_id!, member_address: member_address! }));
-    const org = new AgentOrgExecutionContext({ orgRunId: 'org-run', view, entries: entries([...view.agent_statuses, ...delegated]) });
+    // The Org's view holds its own agents; a run it delegated reports through its own run (autobyteus-461 rule 2).
+    const org = new AgentOrgExecutionContext({ orgRunId: 'org-run', view, entries: entries(view.agent_statuses) });
     const subjects = [
       ['agent-director', '/director', 'agent_org_direct_agent'],
+      ['agent-worker-configured', '/worker', 'agent_org_direct_agent'],
       ['agent-lead-configured', '/team/lead', 'agent_org_team_member'],
-      ['agent-worker-task', '/worker', 'agent_org_task_agent'],
-      ['agent-task-lead', '/team/lead', 'agent_org_task_team_member'],
     ];
     let sequence = view.base_change_sequence;
     for (const revision of [1, 2]) for (const [index, [id, address]] of subjects.entries()) {
@@ -731,22 +726,7 @@ describe('TPS through real Org and collaboration context admission', () => {
         outputTokens: (index + 1) * 200, durationMs: 10_000, model: `reported-${id}` });
     }
     expect(meter.getRunTps('org-run')).toBeNull();
-    expect(() => org.applyEvent(++sequence, event('agent-task-lead', '/director', 3, 9999))).toThrow(/identity/);
-    expect(meter.getRunTps('agent-task-lead')).toMatchObject({ outputTokens: 800 });
-  });
-  it('routes hosted Agent and Team calls without attributing children to their standalone host', () => {
-    const view = agentRootView();
-    const root = new AgentRunCollaborationContext({ hostRunId: 'host-run', view, entries: entries(view.agent_statuses) });
-    let sequence = view.base_change_sequence;
-    const subjects = [['cua-run', '/computer_use_agent'], ['pp-run', '/product_team/prototyper']];
-    for (const revision of [1, 2]) for (const [index, [id, address]] of subjects.entries()) {
-      expect(root.applyEvent(++sequence, event(id!, address!, revision, (index + 1) * 200))).toBe('applied');
-    }
-    const meter = useTokenUsageMeterStore();
-    for (const [index, [id]] of subjects.entries()) expect(meter.getRunTps(root.getAgentContext(id!)!.state.runId))
-      .toEqual({ method: 'end_to_end', outputTokens: (index + 1) * 200, durationMs: 10_000, model: `reported-${id}` });
-    expect(meter.getRunTps('host-run')).toBeNull();
-    expect(() => root.applyEvent(++sequence, event('host-run', '/research_assistant', 1, 9999))).toThrow(/identity/);
-    expect(meter.getRunTps('host-run')).toBeNull();
+    expect(() => org.applyEvent(++sequence, event('agent-lead-configured', '/director', 3, 9999))).toThrow(/identity/);
+    expect(meter.getRunTps('agent-lead-configured')).toMatchObject({ outputTokens: 600 });
   });
 });

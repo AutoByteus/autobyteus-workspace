@@ -5,18 +5,16 @@ import { AgentStatus } from '~/types/agent/AgentStatus';
 import {
   buildTestTeamContext,
   testAgentNode,
-  testDelegation,
-  testTaskTeamLayout,
 } from '~/test-support/currentTeamTestFixtures';
 import { createPinia, setActivePinia } from 'pinia';
-import { markTeamMemberProjectionAuthoritative } from '~/services/runHydration/teamMemberProjectionHydrationService';
 
 const { state, teamContextsStoreMock, agentDefinitionStoreMock, teamRunConfigStoreMock,
   agentRunConfigStoreMock, selectionStoreMock, workspaceCenterViewStoreMock, agentTeamRunStoreMock } = vi.hoisted(() => {
   const localState = { activeTeamContext: null as any, recoveryNotice: null as any };
   return {
     state: localState,
-    teamContextsStoreMock: { get activeTeamContext() { return localState.activeTeamContext; } },
+    // The Team's own focus; no run it delegated is selected in its tree (autobyteus-461 SR-084).
+    teamContextsStoreMock: { get activeTeamContext() { return localState.activeTeamContext; }, delegatedFocusOf: () => null, selectedTreeRowOf: () => null },
     agentDefinitionStoreMock: {
       agentDefinitions: [{ id: 'agent-professor-def', name: 'Professor', avatarUrl: 'https://example.com/professor.png' }],
       fetchAllAgentDefinitions: vi.fn().mockResolvedValue(undefined),
@@ -34,15 +32,6 @@ const { state, teamContextsStoreMock, agentDefinitionStoreMock, teamRunConfigSto
   };
 });
 
-// A delegated row is its own run (autobyteus-461 rule 2); here every one is open.
-vi.mock('~/stores/delegatedRunsStore', async () => {
-  const fake = await import('~/test-support/delegatedRunsFake')
-  const { useAgentTeamContextsStore } = await import('~/stores/agentTeamContextsStore')
-  fake.ownRuns.openAll = true
-  // Its own context is, here, the one the Team view holds for its row.
-  fake.ownRuns.contextOf = (agentRunId) => useAgentTeamContextsStore().activeTeamContext?.view.getAgentContext(agentRunId) ?? null
-  return { useDelegatedRunsStore: fake.fakeDelegatedRunsStore }
-})
 vi.mock('~/stores/runHistoryStore', () => ({ useRunHistoryStore: () => ({ refreshTeamResumeConfig: async () => ({ teamRunId: 'team-1', executionTree: state.activeTeamContext.view.getExecutionTree() }), resolveWorkspaceMetadataByRootPath: async (path: string) => ({ workspaceId: 'ws-1', workspaceRootPath: path, displayName: 'Workspace', kind: 'filesystem' }) }) }));
 
 vi.mock('~/stores/agentTeamContextsStore', () => ({ useAgentTeamContextsStore: () => teamContextsStoreMock }));
@@ -109,23 +98,6 @@ describe('TeamWorkspaceView current aggregate', () => {
     expect(wrapper.get('[data-test="header-status"]').text()).toBe(AgentStatus.Initializing);
   });
 
-  it('renders a focused delegated Agent with its standard status and no task lifecycle', () => {
-    state.activeTeamContext = buildTestTeamContext({
-      teamRunId: 'team-1', teamDefinitionName: 'Class Room Simulation', teamDefinitionId: 'team-def-1',
-      rootChildren: [buildAgent('/Student', 'Student', 'student-run', 'agent-student-def')],
-      coordinatorAddress: '/Student', focusedAgentRunId: 'task-student-run',
-      delegations: [testDelegation({ delegatorAgentRunId: 'student-run', recipientAddress: '/Student', target: { agentRunId: 'task-student-run' } })],
-    });
-    state.activeTeamContext.view.getAgentContext('task-student-run').state.currentStatus = AgentStatus.Idle;
-    markTeamMemberProjectionAuthoritative(state.activeTeamContext, 'task-student-run');
-
-    const wrapper = mountComponent();
-
-    expect(wrapper.find('[data-test="team-workspace-task-status"]').exists()).toBe(false);
-    expect(wrapper.get('[data-test="header-status"]').text()).toBe(AgentStatus.Idle);
-    expect(wrapper.find('[data-test="team-task-authoritative-empty"]').exists()).toBe(false);
-  });
-
   it('renders persistent actionable guidance while the selected Team stream requires recovery', () => {
     state.recoveryNotice = { kind: 'team_stream_recovery_required', rootTeamRunId: 'team-1' };
     const wrapper = mountComponent();
@@ -158,20 +130,4 @@ describe('TeamWorkspaceView current aggregate', () => {
     expect(copyTeamRun).toHaveBeenCalledWith(expect.objectContaining({ teamRunId: 'team-1', teamDefinitionId: 'team-def-1' }));
   });
 
-  it('focuses an exact Agent of a delegated task Team copy', () => {
-    const professor = buildAgent('/Professor', 'Professor', 'professor-run', 'agent-professor-def');
-    const student = buildAgent('/subteam/student', 'Student', 'student-run', 'agent-student-def');
-    state.activeTeamContext = buildTestTeamContext({
-      teamRunId: 'team-1', teamDefinitionId: 'team-def-1', teamDefinitionName: 'Class Room Simulation',
-      rootChildren: [professor],
-      delegations: [testDelegation({
-        delegatorAgentRunId: 'professor-run', recipientAddress: '/subteam',
-        target: { teamRunId: 'subteam-run', team: testTaskTeamLayout('/subteam', [student]) },
-      })],
-      coordinatorAddress: '/Professor', focusedAgentRunId: 'subteam-run:student-run',
-    });
-    const wrapper = mountComponent();
-    expect(wrapper.find('h4').text()).toBe('student');
-    expect(wrapper.findComponent({ name: 'AgentEventMonitor' }).props('runId')).toBe('subteam-run:student-run');
-  });
 });

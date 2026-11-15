@@ -23,8 +23,7 @@ const tree = (): TeamRunExecutionTreeDto => ({
   handoffs: [],
   root_team: {
     address: '/', team_definition_id: 'root-def', team_definition_name: 'Team', team_run_id: 'root-run',
-    coordinator_address: '/linked', default_launch_configuration: launch('gpt', { effort: 'medium' }), task_executions: [],
-    members: [
+    coordinator_address: '/linked', default_launch_configuration: launch('gpt', { effort: 'medium' }), members: [
       {
         kind: 'configured_agent', address: '/linked', agent_definition_id: 'linked-def', role: null, description: null,
         agent_run_id: 'linked-run', platform_agent_run_id: null, launch_configuration: launch('gpt', { effort: 'medium' }),

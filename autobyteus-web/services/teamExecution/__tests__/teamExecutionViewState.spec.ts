@@ -1,11 +1,6 @@
-import type { TaskExecutionReference } from '~/utils/collaboration/taskExecutionClosure';
 import { describe, expect, it } from 'vitest';
-import { computed, isReactive, toRaw } from 'vue';
-import type {
-  TaskExecutionDto,
-  TeamRunExecutionTreeDto,
-  TeamStreamServerMessage,
-} from '@autobyteus/team-stream-contracts';
+import { isReactive } from 'vue';
+import type { TeamRunExecutionTreeDto, TeamStreamServerMessage } from '@autobyteus/team-stream-contracts';
 import { AgentContext } from '~/types/agent/AgentContext';
 import { AgentRunState } from '~/types/agent/AgentRunState';
 import { AgentStatus } from '~/types/agent/AgentStatus';
@@ -22,137 +17,59 @@ const launch = {
   workspace_root_path: null,
 };
 
-/** The recorded catalog source of a study-group Team copy (Teams are flat: its members are Agents). */
-const studyGroupSource = {
-  kind: 'agent_team' as const, team_definition_id: 'study-definition', coordinator_address: '/StudentStudyGroup/Coordinator',
-  members: [
-    { address: '/StudentStudyGroup/Coordinator', agent_definition_id: 'coordinator-definition', launch_configuration: launch },
-    { address: '/StudentStudyGroup/Student', agent_definition_id: 'student-definition', launch_configuration: launch },
-  ],
-  handoffs: [], default_launch_configuration: launch,
-};
-
-/** The test tree, whose root Team's `task_executions` the cases replace (the DTO declares it read-only). */
 type EditableExecutionTree = Omit<TeamRunExecutionTreeDto, 'root_team'> & {
   root_team: { -readonly [K in keyof TeamRunExecutionTreeDto['root_team']]: TeamRunExecutionTreeDto['root_team'][K] }
 };
 
-/** A flat root Team whose Teacher delegated a study-group Team copy (`study-team-persistent`). */
+/** A flat root Team of two members (the runs it delegated are its tree's rows, autobyteus-461 SR-084). */
 const tree = (): EditableExecutionTree => ({
-  created_at: createdAt,
-  archived_at: null,
-  application_binding: null,
-  handoffs: [],
+  created_at: createdAt, archived_at: null, application_binding: null, handoffs: [],
   root_team: {
-    address: '/',
-    team_definition_id: 'classroom-definition',
-    team_definition_name: 'Classroom',
-    team_run_id: 'root-team-1',
-    coordinator_address: '/Teacher',
-    default_launch_configuration: launch,
+    address: '/', team_definition_id: 'classroom-definition', team_definition_name: 'Classroom', team_run_id: 'root-team-1',
+    coordinator_address: '/Teacher', default_launch_configuration: launch,
     members: [
-      {
-        kind: 'configured_agent', address: '/Teacher', agent_definition_id: 'teacher-definition',
-        role: 'Teacher', description: null, agent_run_id: 'teacher-run', platform_agent_run_id: null,
-        launch_configuration: launch,
-      },
-      {
-        kind: 'configured_agent', address: '/Student', agent_definition_id: 'student-definition',
-        role: 'Student', description: null, agent_run_id: 'root-student-run', platform_agent_run_id: null,
-        launch_configuration: launch,
-      },
+      { kind: 'configured_agent', address: '/Teacher', agent_definition_id: 'teacher-definition', role: 'Teacher', description: null,
+        agent_run_id: 'teacher-run', platform_agent_run_id: null, launch_configuration: { ...launch, workspace_root_path: '/configured' } },
+      { kind: 'configured_agent', address: '/Student', agent_definition_id: 'student-definition', role: 'Student', description: null,
+        agent_run_id: 'root-student-run', platform_agent_run_id: null, launch_configuration: launch },
     ],
-    task_executions: [{
-      kind: 'task_team', address: '/StudentStudyGroup', team_run_id: 'study-team-persistent',
-      delegator_agent_run_id: 'teacher-run', started_at: createdAt, task_executions: [], source: studyGroupSource,
-      members: [
-        { kind: 'task_team_agent', address: '/StudentStudyGroup/Coordinator', agent_run_id: 'coordinator-run', platform_agent_run_id: null },
-        { kind: 'task_team_agent', address: '/StudentStudyGroup/Student', agent_run_id: 'student-run', platform_agent_run_id: null },
-      ],
-    }],
   },
 });
 
 const context = (agentRunId: string, address: AgentTeamAddress): AgentContext => {
-  const conversation = {
-    id: agentRunId,
-    messages: [],
-    createdAt,
-    updatedAt: createdAt,
-    agentDefinitionId: `${address}-definition`,
-    agentName: address.split('/').at(-1) ?? address,
-    llmModelIdentifier: 'provider:model',
-  };
-  const state = new AgentRunState(agentRunId, conversation);
+  const state = new AgentRunState(agentRunId, { id: agentRunId, messages: [], createdAt, updatedAt: createdAt,
+    agentDefinitionId: `${address}-definition`, agentName: address.split('/').at(-1) ?? address, llmModelIdentifier: 'provider:model' });
   state.currentStatus = AgentStatus.Offline;
-  return new AgentContext({
-    agentDefinitionId: `${address}-definition`,
-    agentDefinitionName: address.split('/').at(-1) ?? address,
-    llmModelIdentifier: 'provider:model', runtimeKind: 'autobyteus', workspaceId: null,
-    workspaceMetadata: null, autoExecuteTools: false, isLocked: true,
-  }, state);
+  return new AgentContext({ agentDefinitionId: `${address}-definition`, agentDefinitionName: address.split('/').at(-1) ?? address,
+    llmModelIdentifier: 'provider:model', runtimeKind: 'autobyteus', workspaceId: null, workspaceMetadata: null, autoExecuteTools: false, isLocked: true }, state);
 };
 
-const config = (executionTree: TeamRunExecutionTreeDto) => createTeamConfigurationView({
-  tree: executionTree,
-  workspaceMetadataByAddress: new Map(),
-});
-
-
-const createStateFixture = (input: {
-  rootActive?: boolean;
-  executionTree?: TeamRunExecutionTreeDto;
-  closedTaskExecutions?: readonly TaskExecutionReference[];
-  initialFocusedAgentRunId?: string;
-} = {}) => {
+const createStateFixture = (input: { rootActive?: boolean; executionTree?: TeamRunExecutionTreeDto } = {}) => {
   const initialTree = input.executionTree ?? tree();
-  const initial = [
-    ['teacher-run', '/Teacher'],
-    ['root-student-run', '/Student'],
-    ['coordinator-run', '/StudentStudyGroup/Coordinator'],
-    ['student-run', '/StudentStudyGroup/Student'],
-  ] as const;
-  const initialContexts = new Map(initial.map(([agentRunId, memberAddress]) => [
-    agentRunId,
-    context(agentRunId, memberAddress),
-  ]));
-  const dynamicallyCreatedContexts = new Map<string, AgentContext>();
+  const initial = [['teacher-run', '/Teacher'], ['root-student-run', '/Student']] as const;
+  const initialContexts = new Map(initial.map(([agentRunId, address]) => [agentRunId, context(agentRunId, address)]));
   const state = createTeamExecutionViewState({
-    rootTeamRunId: 'root-team-1', rootActive: input.rootActive ?? true, executionTree: initialTree, closedTaskExecutions: input.closedTaskExecutions ?? [],
-    configuration: config(initialTree),
-    initialFocusedAgentRunId: input.initialFocusedAgentRunId ?? 'teacher-run',
-    agentContexts: initial.map(([agentRunId, memberAddress]) => ({
-      agentRunId, memberAddress, agentContext: initialContexts.get(agentRunId)!,
-    })),
-    createAgentContext: (agentRunId, address) => {
-      const created = context(agentRunId, address);
-      dynamicallyCreatedContexts.set(agentRunId, created);
-      return created;
-    },
+    rootTeamRunId: 'root-team-1', rootActive: input.rootActive ?? true, executionTree: initialTree,
+    configuration: createTeamConfigurationView({ tree: initialTree, workspaceMetadataByAddress: new Map() }),
+    initialFocusedAgentRunId: 'teacher-run',
+    agentContexts: initial.map(([agentRunId, memberAddress]) => ({ agentRunId, memberAddress, agentContext: initialContexts.get(agentRunId)! })),
+    createAgentContext: (agentRunId, address) => context(agentRunId, address),
   });
-  return { state, initialContexts, dynamicallyCreatedContexts };
+  return { state, initialContexts };
 };
-
 const createState = () => createStateFixture().state;
 
-const taskAgent = (
-  agentRunId: string,
-  delegatorAgentRunId: string,
-  address: AgentTeamAddress = '/Student',
-): TaskExecutionDto => ({
-  kind: 'task_agent', address, agent_run_id: agentRunId,
-  platform_agent_run_id: null, delegator_agent_run_id: delegatorAgentRunId, started_at: createdAt,
-  // A copy of the configured placement at `address`: its recorded snapshot of that placement.
-  source: { kind: 'agent', agent_definition_id: 'student', launch_configuration: launch, launch_source: { origin: 'configured', fallbacks: [] } },
+const status = (agent_run_id: string, member_address: string, value: AgentStatus) =>
+  ({ agent_run_id, member_address, status: value, trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null });
+const snapshot = (input: { base?: number; root?: string; statuses?: ReturnType<typeof status>[] } = {}) => ({
+  type: 'TEAM_EXECUTION_VIEW_SNAPSHOT' as const,
+  payload: { root_team_run_id: input.root ?? 'root-team-1', base_change_sequence: input.base ?? 4, live_sequence_id: 'live-1',
+    last_message_change_sequence: 0, execution_tree: tree(), agent_input_states: [],
+    agent_statuses: input.statuses ?? [status('teacher-run', '/Teacher', AgentStatus.Idle), status('root-student-run', '/Student', AgentStatus.Idle)] },
 });
-
-const started = (
-  changeSequence: number,
-  parentTeamRunId: string,
-  execution: TaskExecutionDto,
-): Extract<TeamStreamServerMessage, { type: 'TASK_EXECUTION_STARTED' }> => ({
-  type: 'TASK_EXECUTION_STARTED',
-  payload: { change_sequence: changeSequence, parent_team_run_id: parentTeamRunId, execution },
+const communication = (change_sequence: number): Extract<TeamStreamServerMessage, { type: 'TEAM_COMMUNICATION_MESSAGE' }> => ({
+  type: 'TEAM_COMMUNICATION_MESSAGE', payload: { change_sequence, message: { message_id: `m-${change_sequence}`, sender_agent_run_id: 'teacher-run',
+    receiver_agent_run_id: 'delegated-run', content: 'hi', message_type: 'direct_message', reference_files: [], created_at: createdAt } },
 });
 
 const expectApplied = (result: ReturnType<ReturnType<typeof createState>['applyMessage']>): void => {
@@ -160,190 +77,63 @@ const expectApplied = (result: ReturnType<ReturnType<typeof createState>['applyM
   expect(result.disposition).toBe('applied');
 };
 
+/** autobyteus-461 SR-084: a Team run's view holds its own members only; the runs it delegated are its tree's rows. */
 describe('TeamExecutionViewState', () => {
-  it('projects one immutable configured or delegated execution location with the exact containing TeamRun', () => {
-    const state = createState();
-
-    expect(state.getAgentExecutionLocation('teacher-run')).toEqual({
-      agentRunId: 'teacher-run',
-      memberAddress: '/Teacher',
-      containingTeamRunId: 'root-team-1',
-    });
-    expect(state.getAgentExecutionLocation('student-run')).toEqual({
-      agentRunId: 'student-run',
-      memberAddress: '/StudentStudyGroup/Student',
-      containingTeamRunId: 'study-team-persistent',
-    });
-    expect(Object.isFrozen(state.getAgentExecutionLocation('student-run'))).toBe(true);
-    expect(state.getAgentExecutionLocation('unknown-run')).toBeNull();
-  });
-
-  it('stores one canonical reactive context proxy for initial and dynamically associated members', () => {
-    const { state, initialContexts, dynamicallyCreatedContexts } = createStateFixture();
+  it('places each own member in the Team run and keeps one reactive context per member', () => {
+    const { state, initialContexts } = createStateFixture();
+    expect(state.getAgentExecutionLocation('root-student-run')).toEqual({ agentRunId: 'root-student-run', memberAddress: '/Student', containingTeamRunId: 'root-team-1' });
+    expect(state.getAgentExecutionLocation('delegated-run')).toBeNull();
+    expect(state.hasAgentRun('delegated-run')).toBe(false);
     const teacher = state.getAgentContext('teacher-run')!;
-    const teacherRequirement = computed(() => teacher.requirement);
-    const teacherStatus = computed(() => teacher.state.currentStatus);
-
-    expect(teacherRequirement.value).toBe('');
-    expect(teacherStatus.value).toBe(AgentStatus.Offline);
-    teacher.requirement = 'Initial member draft';
-    expect(teacherRequirement.value).toBe('Initial member draft');
-    teacher.state.currentStatus = AgentStatus.Running;
-    expect(teacherStatus.value).toBe(AgentStatus.Running);
     expect(isReactive(teacher)).toBe(true);
-    expect(toRaw(teacher)).toBe(initialContexts.get('teacher-run'));
-    expect(state.getFocusedAgentContext()).toBe(teacher);
-
-    expectApplied(state.applyMessage(started(1, 'study-team-persistent', taskAgent('dynamic-student-run', 'coordinator-run', '/StudentStudyGroup/Student'))));
-
-    const dynamic = state.getAgentContext('dynamic-student-run')!;
-    const dynamicStatus = computed(() => dynamic.state.currentStatus);
-    expect(dynamicStatus.value).toBe(AgentStatus.Offline);
-    dynamic.state.currentStatus = AgentStatus.Idle;
-    expect(dynamicStatus.value).toBe(AgentStatus.Idle);
-    expect(isReactive(dynamic)).toBe(true);
-    expect(toRaw(dynamic)).toBe(dynamicallyCreatedContexts.get('dynamic-student-run'));
-    expect(state.getAgentExecutionLocation('dynamic-student-run')).toEqual({
-      agentRunId: 'dynamic-student-run',
-      memberAddress: '/StudentStudyGroup/Student',
-      containingTeamRunId: 'study-team-persistent',
-    });
-    expect(state.focusAgent('dynamic-student-run').disposition).toBe('applied');
-    expect(state.getFocusedAgentContext()).toBe(dynamic);
+    expect(teacher.state.runId).toBe(initialContexts.get('teacher-run')!.state.runId);
+    expect(state.listAgentContextEntries().map((entry) => entry.agentRunId)).toEqual(['teacher-run', 'root-student-run']);
   });
 
-  it('materializes started task-Team and nested task-Agent rows with the standard status and their delegator', () => {
+  it('lists the Team and its members as its own rows; a member is focusable, a run it delegated is not its to focus', () => {
     const state = createState();
-    const taskTeamExecution: TaskExecutionDto = {
-      kind: 'task_team', address: '/StudentStudyGroup', team_run_id: 'study-team-task-1',
-      delegator_agent_run_id: 'teacher-run', started_at: createdAt, task_executions: [], source: studyGroupSource,
-      members: [
-        { kind: 'task_team_agent', address: '/StudentStudyGroup/Coordinator', agent_run_id: 'task-coordinator-run', platform_agent_run_id: null },
-        { kind: 'task_team_agent', address: '/StudentStudyGroup/Student', agent_run_id: 'task-student-run', platform_agent_run_id: null },
-      ],
-    };
-    const taskTeamResult = state.applyMessage(started(1, 'root-team-1', taskTeamExecution));
-    expectApplied(taskTeamResult);
-    expect(taskTeamResult.effects).toEqual([
-      { kind: 'invalidate_team_member_projection', agentRunIds: ['task-coordinator-run', 'task-student-run'] },
-      { kind: 'reconcile_team_navigation' },
+    expect(state.listNavigationRows().map((row) => [row.key, row.kind, row.depth, row.coordinator])).toEqual([
+      ['team:root-team-1', 'configured_team', 0, false],
+      ['agent:teacher-run', 'configured_agent', 1, true],
+      ['agent:root-student-run', 'configured_agent', 1, false],
     ]);
-    expect(state.getAgentExecutionLocation('task-coordinator-run')).toEqual({
-      agentRunId: 'task-coordinator-run',
-      memberAddress: '/StudentStudyGroup/Coordinator',
-      containingTeamRunId: 'study-team-task-1',
-    });
-    expect(state.listNavigationRows().find((row) => row.teamRunId === 'study-team-task-1')).toMatchObject({
-      kind: 'task_team', displayName: 'StudentStudyGroup', delegatedBy: 'Teacher', focusable: false,
-    });
-    expect(state.listNavigationRows().find((row) => row.agentRunId === 'task-student-run')).toMatchObject({
-      kind: 'task_team_agent', displayName: 'Student', delegatedBy: null, currentStatus: AgentStatus.Offline,
-    });
-
-    const activationResult = state.applyMessage(started(2, 'study-team-task-1', taskAgent('nested-student-run', 'task-coordinator-run', '/StudentStudyGroup/Student')));
-    expectApplied(activationResult);
-    expect(activationResult.effects).toEqual([
-      { kind: 'invalidate_team_member_projection', agentRunIds: ['nested-student-run'] },
-      { kind: 'reconcile_team_navigation' },
-    ]);
-    expect(state.listNavigationRows().find((row) => row.agentRunId === 'nested-student-run')).toMatchObject({
-      kind: 'task_agent', displayName: 'Student', delegatedBy: 'Coordinator', focusable: true,
-    });
-    expect(state.getAgentExecutionLocation('nested-student-run')?.containingTeamRunId).toBe('study-team-task-1');
+    expect(state.focusAgent('root-student-run')).toEqual({ disposition: 'applied' });
+    expect(state.getFocusedMemberAddress()).toBe('/Student');
+    expect(state.focusAgent('delegated-run')).toMatchObject({ disposition: 'rejected', code: 'TEAM_AGENT_RUN_NOT_FOUND' });
   });
 
-  it('shows no starter for a child recorded before the delegator was stored (R-14)', () => {
+  it('reads each own member\'s workspace root from its own launch, never its Team\'s default', () => {
     const executionTree = tree();
-    executionTree.root_team.task_executions = [...executionTree.root_team.task_executions, { ...taskAgent('old-student-run', 'teacher-run'), delegator_agent_run_id: null }];
-    const { state } = createStateFixture({ rootActive: false, executionTree });
-    expect(state.listNavigationRows().find((row) => row.agentRunId === 'old-student-run')).toMatchObject({
-      kind: 'task_agent', displayName: 'Student', delegatedBy: null, focusable: true,
-    });
+    executionTree.root_team.default_launch_configuration = { ...launch, workspace_root_path: '/parent' };
+    const { state } = createStateFixture({ executionTree });
+    expect(state.getAgentWorkspaceRootPath('teacher-run')).toBe('/configured');
+    expect(state.getAgentWorkspaceRootPath('root-student-run')).toBeNull();
+    expect(state.getAgentWorkspaceRootPath('unknown')).toBeNull();
   });
 
-  it('keeps shut-down delegated children navigable and live-addressable', () => {
-    const executionTree = tree();
-    executionTree.root_team.task_executions = [...executionTree.root_team.task_executions, taskAgent('dormant-student-run', 'teacher-run')];
-    const inactive = createStateFixture({ rootActive: false, executionTree }).state;
-    expect(inactive.focusAgent('dormant-student-run')).toMatchObject({ disposition: 'applied' });
-    expect(inactive.getFocusedNavigationRow()).toMatchObject({ agentRunId: 'dormant-student-run', delegatedBy: 'Teacher' });
-
-    const active = createStateFixture({ executionTree }).state;
-    expect(active.focusAgent('dormant-student-run')).toMatchObject({ disposition: 'applied' });
-    expect(active.getFocusedAgentAccess()).toBe('live');
-    expect(active.listLiveAgentContextEntries().map((entry) => entry.agentRunId)).toContain('dormant-student-run');
-    expect(active.focusAgent('missing-run')).toMatchObject({ disposition: 'rejected', code: 'TEAM_AGENT_RUN_NOT_FOUND' });
-  });
-
-  it('SR-083: a snapshot reports every own member\'s status; a delegated run\'s status comes from that run, so it may be absent', () => {
-    const executionTree = tree();
-    executionTree.root_team.task_executions = [...executionTree.root_team.task_executions, taskAgent('dormant-student-run', 'teacher-run')];
-    const state = createStateFixture({ executionTree }).state;
-    const status = (agent_run_id: string, member_address: string, value: AgentStatus) => ({
-      agent_run_id, member_address, status: value, trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null,
-    });
-    const snapshotWith = (agent_statuses: ReturnType<typeof status>[]) => ({ type: 'TEAM_EXECUTION_VIEW_SNAPSHOT' as const, payload: {
-      root_team_run_id: 'root-team-1', base_change_sequence: 3, live_sequence_id: 'live-1', last_message_change_sequence: 0, closed_task_executions: [], execution_tree: executionTree,
-      agent_input_states: [], remote_task_executions: [], agent_statuses } });
-    // An own member without its status: rejected.
-    expect(state.applySnapshot(snapshotWith([status('root-student-run', '/Student', AgentStatus.Idle)])))
+  it('a snapshot reports every own member\'s status; one that omits an own member is refused', () => {
+    const state = createState();
+    expect(state.applySnapshot(snapshot())).toMatchObject({ disposition: 'applied' });
+    expect(state.getAgentContext('teacher-run')!.state.currentStatus).toBe(AgentStatus.Idle);
+    expect(state.applySnapshot(snapshot({ statuses: [status('teacher-run', '/Teacher', AgentStatus.Idle)] })))
       .toMatchObject({ disposition: 'rejected', code: 'TEAM_EXECUTION_SNAPSHOT_INVALID' });
-    // Every own member reports; the delegated runs (the study group, the dormant student) do not: applied.
-    expect(state.applySnapshot(snapshotWith([status('teacher-run', '/Teacher', AgentStatus.Idle), status('root-student-run', '/Student', AgentStatus.Idle)])))
-      .toMatchObject({ disposition: 'applied' });
-    expect(state.getAgentContext('dormant-student-run')?.state.currentStatus).toBe(AgentStatus.Offline);
   });
 
   it('rejects sequence gaps and invalid snapshots without partially replacing authoritative state', () => {
     const state = createState();
     const beforeTree = state.getExecutionTree();
-    const gap = state.applyMessage(started(2, 'root-team-1', taskAgent('unseen-run', 'teacher-run')));
-    expect(gap).toMatchObject({
-      disposition: 'rejected',
-      code: 'TEAM_EXECUTION_CHANGE_SEQUENCE_GAP',
-      effects: [{ kind: 'team_stream_recovery_required' }],
+    expect(state.applyMessage(communication(2))).toMatchObject({
+      disposition: 'rejected', code: 'TEAM_EXECUTION_CHANGE_SEQUENCE_GAP', effects: [{ kind: 'team_stream_recovery_required' }],
     });
     expect(state.needsStreamRecovery()).toBe(true);
-
-    const later = state.applyMessage(started(1, 'root-team-1', taskAgent('later-run', 'teacher-run')));
-    expect(later).toMatchObject({
-      disposition: 'rejected',
-      code: 'TEAM_EXECUTION_STREAM_RECOVERY_REQUIRED',
-      effects: [],
-    });
-    expect(state.hasAgentRun('later-run')).toBe(false);
-
-    const invalidSnapshot = {
-      type: 'TEAM_EXECUTION_VIEW_SNAPSHOT' as const,
-      payload: {
-        root_team_run_id: 'foreign-root', base_change_sequence: 9, live_sequence_id: 'live-1', last_message_change_sequence: 0, closed_task_executions: [], execution_tree: beforeTree,
-        agent_input_states: [], remote_task_executions: [], agent_statuses: [],
-      },
-    };
-    expect(state.applySnapshot(invalidSnapshot)).toMatchObject({
-      disposition: 'rejected', code: 'TEAM_EXECUTION_ROOT_MISMATCH',
-    });
+    expect(state.applyMessage(communication(1))).toMatchObject({ disposition: 'rejected', code: 'TEAM_EXECUTION_STREAM_RECOVERY_REQUIRED', effects: [] });
+    expect(state.applySnapshot(snapshot({ root: 'foreign-root', base: 9 }))).toMatchObject({ disposition: 'rejected', code: 'TEAM_EXECUTION_ROOT_MISMATCH' });
     expect(state.getExecutionTree()).toEqual(beforeTree);
     expect(state.getChangeSequence()).toBe(0);
   });
 
-
-  it('invalidates projection authority and reconciles navigation/focus after a valid snapshot', () => {
-    const state = createState();
-    const snapshot = state.applySnapshot({
-      type: 'TEAM_EXECUTION_VIEW_SNAPSHOT',
-      payload: {
-        root_team_run_id: 'root-team-1', base_change_sequence: 4, live_sequence_id: 'live-1', last_message_change_sequence: 0, closed_task_executions: [], execution_tree: tree(),
-        agent_input_states: [], remote_task_executions: [], agent_statuses: [
-          { agent_run_id: 'teacher-run', member_address: '/Teacher', status: AgentStatus.Idle, trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null },
-          { agent_run_id: 'root-student-run', member_address: '/Student', status: AgentStatus.Idle, trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null },
-          { agent_run_id: 'coordinator-run', member_address: '/StudentStudyGroup/Coordinator', status: AgentStatus.Idle, trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null },
-          { agent_run_id: 'student-run', member_address: '/StudentStudyGroup/Student', status: AgentStatus.Idle, trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null },
-        ],
-      },
-    });
-
-    expect(snapshot).toMatchObject({
+  it('invalidates projection authority and reconciles navigation and focus after a valid snapshot', () => {
+    expect(createState().applySnapshot(snapshot())).toMatchObject({
       disposition: 'applied',
       effects: [
         { kind: 'invalidate_team_member_projections' },
@@ -355,99 +145,26 @@ describe('TeamExecutionViewState', () => {
   });
 
   it('CR-461-082 (F-64): a stopped Team\'s stream sends the view its open read: the loaded member and lists hold; a member running again rebuilds', () => {
-    const status = (agent_run_id: string, member_address: string, value: AgentStatus) =>
-      ({ agent_run_id, member_address, status: value, trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null })
-    const snapshotWith = (teacher: AgentStatus) => ({ type: 'TEAM_EXECUTION_VIEW_SNAPSHOT' as const, payload: {
-      root_team_run_id: 'root-team-1', base_change_sequence: 205, live_sequence_id: 'live-1', last_message_change_sequence: 0, closed_task_executions: [],
-      execution_tree: tree(), agent_input_states: [], remote_task_executions: [], agent_statuses: [
-        status('teacher-run', '/Teacher', teacher), status('root-student-run', '/Student', AgentStatus.Offline),
-        status('coordinator-run', '/StudentStudyGroup/Coordinator', AgentStatus.Offline), status('student-run', '/StudentStudyGroup/Student', AgentStatus.Offline),
-      ] } })
+    const offline = [status('teacher-run', '/Teacher', AgentStatus.Offline), status('root-student-run', '/Student', AgentStatus.Offline)];
     // Read stored at open (no base), the Team stopped, its own members offline: nothing could have changed.
-    expect(createStateFixture({ rootActive: false }).state.applySnapshot(snapshotWith(AgentStatus.Offline)).effects.map((effect) => effect.kind))
-      .toEqual(['adopt_collaboration_messages', 'reconcile_team_navigation'])
+    expect(createStateFixture({ rootActive: false }).state.applySnapshot(snapshot({ base: 205, statuses: offline })).effects.map((effect) => effect.kind))
+      .toEqual(['adopt_collaboration_messages', 'reconcile_team_navigation']);
     // One of its own members runs: the Team started since the read; the view rebuilds as before.
-    expect(createStateFixture({ rootActive: false }).state.applySnapshot(snapshotWith(AgentStatus.Idle)).effects.map((effect) => effect.kind))
-      .toEqual(['invalidate_team_member_projections', 'reload_collaboration_messages', 'reconcile_team_navigation', 'reconcile_focused_team_member_projection'])
+    expect(createStateFixture({ rootActive: false }).state.applySnapshot(snapshot({ base: 205,
+      statuses: [status('teacher-run', '/Teacher', AgentStatus.Idle), offline[1]!] })).effects.map((effect) => effect.kind))
+      .toEqual(['invalidate_team_member_projections', 'reload_collaboration_messages', 'reconcile_team_navigation', 'reconcile_focused_team_member_projection']);
   });
 
-  it('rejects a containing-Team placement change before committing snapshot state', () => {
+  it('SR-084: the tree\'s change is numbered in the view\'s sequence and handed to the tree; a message to a delegated agent goes to the Team tab', () => {
     const state = createState();
-    const beforeTree = state.getExecutionTree();
-    const beforeLocation = state.getAgentExecutionLocation('student-run');
-    // `student-run` moves out of its delegated study-group TeamRun into a second Team copy.
-    const changedTree = tree();
-    const studyTeam = changedTree.root_team.task_executions[0];
-    if (!studyTeam || studyTeam.kind !== 'task_team') throw new Error('Expected the study-group Team copy.');
-    const student = studyTeam.members.find((member) => member.agent_run_id === 'student-run')!;
-    const relocatedTree: TeamRunExecutionTreeDto = {
-      ...changedTree,
-      root_team: {
-        ...changedTree.root_team,
-        task_executions: [
-          { ...studyTeam, members: studyTeam.members.filter((member) => member !== student) },
-          { ...studyTeam, team_run_id: 'study-team-other', members: [student] },
-        ],
-      },
-    };
-
-    const result = state.applySnapshot({
-      type: 'TEAM_EXECUTION_VIEW_SNAPSHOT',
-      payload: {
-        root_team_run_id: 'root-team-1',
-        base_change_sequence: 7, live_sequence_id: 'live-1', last_message_change_sequence: 0,
-        closed_task_executions: [], execution_tree: relocatedTree,
-        agent_input_states: [], remote_task_executions: [], agent_statuses: [
-          {
-            agent_run_id: 'teacher-run', member_address: '/Teacher', status: AgentStatus.Offline,
-            trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null,
-          },
-          {
-            agent_run_id: 'root-student-run', member_address: '/Student', status: AgentStatus.Offline,
-            trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null,
-          },
-          {
-            agent_run_id: 'coordinator-run', member_address: '/StudentStudyGroup/Coordinator', status: AgentStatus.Offline,
-            trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null,
-          },
-          {
-            agent_run_id: 'student-run', member_address: '/StudentStudyGroup/Student', status: AgentStatus.Offline,
-            trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null,
-          },
-        ],
-      },
-    });
-
-    expect(result).toMatchObject({
-      disposition: 'rejected',
-      code: 'TEAM_EXECUTION_SNAPSHOT_INVALID',
-      message: expect.stringContaining("AgentRun 'student-run' changed logical placement."),
-    });
-    expect(state.getExecutionTree()).toBe(beforeTree);
-    expect(state.getAgentExecutionLocation('student-run')).toBe(beforeLocation);
-    expect(state.getChangeSequence()).toBe(0);
-  });
-});
-
-
-describe('selected source workspace root', () => {
-  it('resolves configured and catalog roots by exact AgentRun placement', () => {
-    const executionTree = tree();
-    const root = executionTree.root_team as any;
-    root.default_launch_configuration = { ...launch, workspace_root_path: '/parent' };
-    root.members[0].launch_configuration = { ...launch, workspace_root_path: '/configured' };
-    root.task_executions = [...root.task_executions, { kind: 'task_agent', address: '/Guest', agent_run_id: 'guest-run', platform_agent_run_id: null,
-      delegator_agent_run_id: 'teacher-run', started_at: createdAt,
-      source: { kind: 'agent', agent_definition_id: 'guest', launch_configuration: { ...launch, workspace_root_path: '/guest' } } },
-    { kind: 'task_agent', address: '/Copy', agent_run_id: 'copy-run', platform_agent_run_id: null,
-      delegator_agent_run_id: 'teacher-run', started_at: createdAt,
-      source: { kind: 'agent', agent_definition_id: 'copy', launch_configuration: { ...launch, workspace_root_path: '/copy' } } }];
-    const { state } = createStateFixture({ executionTree });
-    expect(state.getAgentWorkspaceRootPath('teacher-run')).toBe('/configured');
-    expect(state.getAgentWorkspaceRootPath('guest-run')).toBe('/guest');
-    expect(state.getAgentWorkspaceRootPath('copy-run')).toBe('/copy');
-    expect(state.getAgentWorkspaceRootPath('student-run')).toBeNull(); // Never parent fallback.
-    expect(state.getAgentWorkspaceRootPath('unknown')).toBeNull();
+    const change = { change_sequence: 1, added: [], removed: ['agent:gone'], updated: [] };
+    const treeChange = state.applyMessage({ type: 'RUN_TREE_CHANGED', payload: change });
+    expectApplied(treeChange);
+    expect(treeChange.effects).toEqual([{ kind: 'apply_run_tree_change', change }]);
+    const message = state.applyMessage(communication(2));
+    expectApplied(message);
+    expect(message.effects).toEqual([expect.objectContaining({ kind: 'append_collaboration_message', message: expect.objectContaining({ receiverAgentRunId: 'delegated-run' }) })]);
+    expect(state.getChangeSequence()).toBe(2);
   });
 });
 
@@ -461,18 +178,18 @@ describe('SEGMENT_CONTENT_BATCH (autobyteus-139)', () => {
 
   it('dispatches one SEGMENT_CONTENT per item in item order and advances past the whole range', () => {
     const state = createState();
-    const result = state.applyMessage(batch(1, 6, item('teacher-run', 'xy'), item('student-run', '12')));
+    const result = state.applyMessage(batch(1, 6, item('teacher-run', 'xy'), item('root-student-run', '12')));
     expectApplied(result);
     expect(result.effects).toEqual([
       { kind: 'dispatch_agent', agentRunId: 'teacher-run', message: { type: 'SEGMENT_CONTENT', payload: {
         change_sequence: 1, agent_run_id: 'teacher-run', segment_id: 'segment-teacher-run', turn_id: 'turn-1', segment_type: 'text', delta: 'xy',
       } } },
-      { kind: 'dispatch_agent', agentRunId: 'student-run', message: { type: 'SEGMENT_CONTENT', payload: {
-        change_sequence: 1, agent_run_id: 'student-run', segment_id: 'segment-student-run', turn_id: 'turn-1', segment_type: 'text', delta: '12',
+      { kind: 'dispatch_agent', agentRunId: 'root-student-run', message: { type: 'SEGMENT_CONTENT', payload: {
+        change_sequence: 1, agent_run_id: 'root-student-run', segment_id: 'segment-root-student-run', turn_id: 'turn-1', segment_type: 'text', delta: '12',
       } } },
     ]);
     expect(state.getChangeSequence()).toBe(6);
-    expectApplied(state.applyMessage(started(7, 'root-team-1', taskAgent('after-batch-run', 'teacher-run'))));
+    expectApplied(state.applyMessage(communication(7)));
     expect(state.getChangeSequence()).toBe(7);
   });
 
@@ -484,20 +201,11 @@ describe('SEGMENT_CONTENT_BATCH (autobyteus-139)', () => {
     expect(state.getChangeSequence()).toBe(0);
   });
 
-  it('rejects a batch naming an unknown AgentRun without dispatching any item', () => {
+  it('rejects a batch naming an AgentRun that is not an own member without dispatching any item', () => {
     const state = createState();
-    expect(state.applyMessage(batch(1, 2, item('teacher-run', 'x'), item('unknown-run', 'y')))).toMatchObject({
+    expect(state.applyMessage(batch(1, 2, item('teacher-run', 'x'), item('delegated-run', 'y')))).toMatchObject({
       disposition: 'rejected', code: 'TEAM_EXECUTION_EVENT_INVALID', effects: [],
     });
     expect(state.getChangeSequence()).toBe(0);
   });
-
-  it('CR-461-040: in a stopped Team, a row two hops down (delegated by the Team\'s delegated agent) is listed live under the Team', () => {
-    const state = createStateFixture({ rootActive: false }).state;
-    expectApplied(state.applyMessage(started(1, 'root-team-1', taskAgent('worker-run', 'teacher-run', '/worker'))));
-    expectApplied(state.applyMessage(started(2, 'root-team-1', taskAgent('helper-run', 'worker-run', '/helper'))));
-    const rows = state.listNavigationRows().filter((row) => state.isTaskExecutionRowListed(row))
-    expect(rows.map((row) => [row.agentRunId, row.depth, row.delegatedBy])).toEqual(expect.arrayContaining([['worker-run', 1, 'Teacher'], ['helper-run', 1, 'worker']]))
-  });
 });
-

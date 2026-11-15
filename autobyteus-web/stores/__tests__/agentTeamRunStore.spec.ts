@@ -11,8 +11,6 @@ import { AgentStatus } from '~/types/agent/AgentStatus'
 import {
   buildTestTeamContext,
   testAgentNode,
-  testDelegation,
-  testTaskTeamLayout,
 } from '~/test-support/currentTeamTestFixtures'
 import type { AgentTeamContext } from '~/types/agent/AgentTeamContext'
 import type { TeamLaunchDraft } from '~/types/agent/TeamLaunchDraft'
@@ -173,7 +171,6 @@ const teamHydrationCandidate = (hydratedContext: AgentTeamContext): any => {
     hydratedContext,
     projectionByAgentRunId: new Map([[focusedAgentRunId, { agentRunId: focusedAgentRunId }]]),
     memberRunStates: [],
-    remoteTaskExecutions: [],
     rebuild: { liveSequenceId: hydratedContext.view.isRootTeamActive() ? 'live-1' : null, baseChangeSequence: 0, lastMessageChangeSequence: hydratedContext.view.isRootTeamActive() ? 0 : null },
   }
 }
@@ -274,25 +271,6 @@ const flatHydratedTeam = (): AgentTeamContext => buildTestTeamContext({
     testAgentNode('/implementer', { agentRunId: 'impl-run' }),
   ],
 })
-
-/** A Team root whose program manager delegated a copy of a catalog Team (`build-run`); Teams are flat. */
-const delegatedTeamHydratedTeam = (): AgentTeamContext => {
-  const programManager = testAgentNode('/program_manager', { agentRunId: 'pm-run' })
-  const reviewer = testAgentNode('/BuildSquad/review_lead', { agentRunId: 'review-run' })
-  const implementer = testAgentNode('/BuildSquad/implementer', { agentRunId: 'impl-run' })
-  return buildTestTeamContext({
-    teamRunId: 'team-delegating-live',
-    teamDefinitionId: 'root-definition',
-    coordinatorAddress: programManager.address,
-    rootChildren: [programManager],
-    delegations: [testDelegation({
-      delegatorAgentRunId: programManager.agentRunId, recipientAddress: '/BuildSquad',
-      target: { teamRunId: 'build-run', team: testTaskTeamLayout('/BuildSquad', [reviewer, implementer], {
-        teamDefinitionId: 'build-definition', coordinatorAddress: reviewer.address,
-      }) },
-    })],
-  })
-}
 
 describe('agentTeamRunStore current rooted execution contract', () => {
   beforeEach(() => {
@@ -545,48 +523,8 @@ describe('agentTeamRunStore current rooted execution contract', () => {
     expect(runHistoryStoreMock.markTeamAsActive).not.toHaveBeenCalled()
   })
 
-  it('finalizes a delegated task-Team Agent upload with its containing TeamRun while preserving root send scope', async () => {
-    const team = delegatedTeamHydratedTeam()
-    expect(team.view.focusAgent('build-run:review-run')).toMatchObject({ disposition: 'applied' })
-    setActiveTeam(team)
-    const draftImage: ContextAttachment = {
-      kind: 'uploaded', id: 'delegated-image', locator: '/rest/drafts/delegated-image.png',
-      storedFilename: 'ctx_delegated__image.png', displayName: 'image.png', phase: 'draft', type: 'Image',
-    }
-    const finalImage: ContextAttachment = {
-      ...draftImage, locator: '/rest/team-runs/build-run/agent-runs/build-run:review-run/context-files/ctx_delegated__image.png',
-      phase: 'final',
-    }
-    contextFileUploadStoreMock.finalizeDraftAttachments.mockResolvedValueOnce([finalImage])
-
-    await useAgentTeamRunStore().sendMessageToFocusedMember('inspect delegated image', [draftImage])
-
-    expect(contextFileUploadStoreMock.finalizeDraftAttachments).toHaveBeenCalledWith({
-      draftOwner: {
-        kind: 'team_member_draft',
-        teamDraftId: 'team-delegating-live',
-        memberAddress: '/BuildSquad/review_lead',
-      },
-      finalOwner: {
-        kind: 'team_member_final',
-        teamRunId: 'build-run',
-        agentRunId: 'build-run:review-run',
-      },
-      attachments: [draftImage],
-    })
-    expect(mockSendMessage).toHaveBeenCalledWith(
-      'inspect delegated image',
-      'build-run:review-run',
-      [],
-      [finalImage.locator],
-      expect.objectContaining({ dedupeKey: expect.stringContaining('team-delegating-live') }),
-    )
-    expect(runHistoryStoreMock.markTeamAsActive).not.toHaveBeenCalled()
-  })
-
   it('finalizes attachments from an explicit source owner (a Team started from a New chat)', async () => {
-    const team = delegatedTeamHydratedTeam()
-    expect(team.view.focusAgent('build-run:review-run')).toMatchObject({ disposition: 'applied' })
+    const team = twoMemberTeam({ teamRunId: 'team-chat', focusedMemberAddress: '/worker' })
     setActiveTeam(team)
     const draftFile: ContextAttachment = {
       kind: 'uploaded', id: 'chat-file', locator: '/rest/drafts/agent-runs/temp-chat-1/context-files/ctx__notes.txt',
@@ -599,7 +537,7 @@ describe('agentTeamRunStore current rooted execution contract', () => {
 
     expect(contextFileUploadStoreMock.finalizeDraftAttachments).toHaveBeenCalledWith(expect.objectContaining({
       draftOwner: { kind: 'agent_draft', draftRunId: 'temp-chat-1' },
-      finalOwner: { kind: 'team_member_final', teamRunId: 'build-run', agentRunId: 'build-run:review-run' },
+      finalOwner: { kind: 'team_member_final', teamRunId: 'team-chat', agentRunId: 'team-chat-worker-run' },
     }))
   })
 

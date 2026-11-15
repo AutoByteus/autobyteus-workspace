@@ -72,7 +72,6 @@ const buildWorkspaceHistoryGroup = (workspace: Record<string, any>): any => {
               workspace_root_path: member.workspaceRootPath ?? teamRun.workspaceRootPath ?? null,
             },
           })),
-          task_executions: [],
         },
       };
     }),
@@ -150,7 +149,6 @@ const buildAgentOrgHistoryRow = (input: {
     archived_at: null,
     is_active: false,
     summary: input.summary ?? 'Agent Org run',
-    closed_task_executions: [],
     org: {
       subjectKind: 'agent_org',
       createdAt: '2026-09-03T00:00:00.000Z',
@@ -163,7 +161,6 @@ const buildAgentOrgHistoryRow = (input: {
         orgDefinitionName: input.definitionName ?? 'Delivery Org',
         orgRunId: input.treeRootRunId ?? input.rootRunId,
         defaultLaunchConfiguration: launchConfiguration,
-        taskExecutions: [],
         members: [{
           address: '/writer',
           agentDefinitionId: 'writer-definition',
@@ -527,7 +524,6 @@ describe('runHistoryStore', () => {
         hydratedContext,
         projectionByAgentRunId: new Map([[member.agentRunId, { agentRunId: member.agentRunId }]]),
         memberRunStates: [],
-        remoteTaskExecutions: [],
         rebuild: { liveSequenceId: 'live-1', baseChangeSequence: 0, lastMessageChangeSequence: 0 },
       };
     });
@@ -769,7 +765,7 @@ describe('runHistoryStore', () => {
     for (const row of others) expect(store.agentOrgHistory.find(next => next.rootRunId === row.rootRunId)).toBe(row);
     const retained = store.agentOrgHistory;
     const bad = structuredClone(updated);
-    if (invalid === 'private-stamp') Object.assign(bad.org.rootOrg.taskExecutions[0]!, {
+    if (invalid === 'private-stamp') Object.assign(bad.org.rootOrg.members[0]!, {
       taskLifetime: { lifetimeId: 'negative-scoped-control', purpose: 'assignment' },
     });
     else bad.org.rootOrg.orgRunId = 'not-selected-root';
@@ -788,7 +784,7 @@ describe('runHistoryStore', () => {
     queryMock.mockImplementation(async ({ query }: { query: string }) => {
       if (query === 'ListWorkspaceRunHistory') return { data: { listWorkspaceRunHistory: [] }, errors: [] };
       const rows = structuredClone(linkedOrgHistory);
-      if (leakPrivateStamp) Object.assign(rows[0]!.org.rootOrg.taskExecutions[0]!, {
+      if (leakPrivateStamp) Object.assign(rows[0]!.org.rootOrg.members[0]!, {
         taskLifetime: { lifetimeId: 'negative-private-control', purpose: 'assignment' },
       });
       return { data: { listCollaborationRootHistory: rows }, errors: [] };

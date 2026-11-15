@@ -4,7 +4,6 @@ import type { WorkspaceSelectionState } from '~/types/workspace/WorkspaceSelecti
 import { createExistingAgentOrgWorkspaceDraft, updateExistingAgentOrgWorkspaceDraft,
   planExistingAgentOrgWorkspacePatches, existingAgentOrgWorkspacesDirty, existingAgentOrgWorkspacesValid } from '~/services/runConfigEditing/existingAgentOrgWorkspaceDraft'
 import type { ExistingRunConfigDraft } from '~/types/agent/ExistingRunConfigDraft'
-import { useAgentRunCollaborationStore } from '~/stores/agentRunCollaborationStore'
 import { defineStore } from 'pinia'
 import { teamRunExecutionTreeDtoSchema } from '@autobyteus/team-stream-contracts'
 import { useRunHistoryStore } from '~/stores/runHistoryStore'

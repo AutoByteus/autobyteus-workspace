@@ -1,15 +1,13 @@
 import { beforeEach, expect, it, vi } from 'vitest'
 import { createPinia, setActivePinia } from 'pinia'
 import { AgentRunCollaborationStreamingService } from '../agentRunCollaborationStreamingService'
-import { AgentRunCollaborationContext } from '../agentRunCollaborationContext'
-import { AgentRunCollaborationIndex } from '../agentRunCollaborationIndex'
-import { createChildContext } from '../agentRunCollaborationChildContextFactory'
-import { agentRootView } from './agentRootFixture'
-const building = vi.hoisted(() => ({ build: vi.fn() }))
-vi.mock('../agentRunCollaborationHydration', () => ({ buildAgentRunCollaborationContext: building.build }))
+import { agentRootTreeRows, agentRootView, created } from './agentRootFixture'
+import { useRunTreeStore } from '~/stores/runTreeStore'
+import { agentRow } from '~/test-support/runTreeFixtures'
 vi.mock('~/utils/remoteAccess/authorizedTransport', () => ({ getActiveRemoteAccessCredential: () => null }))
 vi.mock('~/utils/remoteAccess/websocketAuth', () => ({ buildAuthenticatedWebSocketUrl: (url: string) => url }))
-vi.mock('~/stores/windowNodeContextStore', () => ({ useWindowNodeContextStore: () => ({ getBoundEndpoints: () => ({ agentCollaborationWs: 'ws://test.invalid' }) }) }))
+vi.mock('~/stores/windowNodeContextStore', () => ({ useWindowNodeContextStore: () => ({ getBoundEndpoints: () => ({ agentCollaborationWs: 'ws://test.invalid' }), bindingRevision: 1 }) }))
+vi.mock('~/utils/apolloClient', () => ({ getApolloClient: () => ({ query: vi.fn(async () => ({ data: { runTree: null } })) }) }))
 class Socket {
   static OPEN = 1; static instances: Socket[] = []; readyState = 1
   onmessage?: (event: { data: string }) => void; onclose?: (event: { code: number }) => void
@@ -17,57 +15,56 @@ class Socket {
   constructor(_url: string) { Socket.instances.push(this) }
   frame(value: unknown) { this.onmessage?.({ data: JSON.stringify(value) }) }
 }
-const flush = async () => { for (let i = 0; i < 10; i++) await Promise.resolve() }
 beforeEach(() => { setActivePinia(createPinia()); Socket.instances.length = 0; vi.stubGlobal('WebSocket', Socket); vi.clearAllMocks() })
+const HOST = { kind: 'agent' as const, runId: 'host-run' }
+const event = (change_sequence: number, value: unknown) => ({ type: 'ROOT_EXECUTION_EVENT', payload: { root_subject_kind: 'agent', root_run_id: 'host-run', change_sequence, event: value } })
 const setup = () => {
-  const view = agentRootView()
-  const context = new AgentRunCollaborationContext({ hostRunId: 'host-run', view,
-    entries: [...new AgentRunCollaborationIndex(view.execution_tree).agents.values()].map(child => ({
-      agentRunId: child.agentRunId, memberAddress: child.address, context: createChildContext(child, view.execution_tree.createdAt, null),
-    })) })
-  let resolve!: (v: any) => void
-  building.build.mockReturnValue(new Promise(yes => { resolve = yes }))
   let current = true
-  const options = { hostRunId: 'host-run', isCurrent: () => current, reportError: vi.fn(), onInactive: vi.fn(),
-    publish: vi.fn() }
+  const options = { hostRunId: 'host-run', isCurrent: () => current, reportError: vi.fn(), publish: vi.fn() }
+  const service = new AgentRunCollaborationStreamingService(options); service.connect()
+  const socket = Socket.instances.at(-1)!
+  socket.frame({ type: 'CONNECTED', payload: { session_id: 's', root_subject_kind: 'agent', root_run_id: 'host-run' } })
+  socket.frame({ type: 'ROOT_EXECUTION_VIEW_SNAPSHOT', payload: { root_subject_kind: 'agent', root_run_id: 'host-run', root_agent: agentRootView() } })
+  return { service, socket, options, retireOwner: () => { current = false } }
+}
+
+/** autobyteus-461 SR-084: the agent root's stream: its view snapshot, its tree at the same base, then numbered frames. */
+it('publishes the snapshot\'s view, then feeds the tree its snapshot and changes, in the view\'s sequence', () => {
+  const f = setup()
+  expect(f.options.publish).toHaveBeenCalledOnce()
+  const context = f.options.publish.mock.calls[0]![0]
+  expect(context.changeSequence).toBe(4)
+  f.socket.frame({ type: 'RUN_TREE_SNAPSHOT', payload: { root_subject_kind: 'agent', root_run_id: 'host-run', base_change_sequence: 4, rows: agentRootTreeRows() } })
+  expect(useRunTreeStore().rowsOf(HOST).map((row) => row.key)).toContain('agent:cua-run')
+  f.socket.frame(event(5, { kind: 'run_tree_changed', added: [agentRow('new-run', 'agent:host-run', 1)], removed: ['agent:cua-run'], updated: [] }))
+  expect(useRunTreeStore().rowsOf(HOST).map((row) => row.key)).toEqual(expect.arrayContaining(['agent:new-run']))
+  expect(useRunTreeStore().rowsOf(HOST).map((row) => row.key)).not.toContain('agent:cua-run')
+  expect(context.changeSequence).toBe(5)
+  expect(f.options.reportError).not.toHaveBeenCalled(); expect(f.socket.close).not.toHaveBeenCalled()
+  f.service.disconnect()
+})
+
+it('a tree snapshot not at the view\'s base, or a sequence gap, closes the stream to reopen it', () => {
+  const f = setup()
+  f.socket.frame({ type: 'RUN_TREE_SNAPSHOT', payload: { root_subject_kind: 'agent', root_run_id: 'host-run', base_change_sequence: 3, rows: [] } })
+  expect(f.socket.close).toHaveBeenCalled()
+  f.service.disconnect()
+  const g = setup()
+  g.socket.frame(event(7, { kind: 'communication', message: { messageId: 'm', senderAgentRunId: 'host-run', receiverAgentRunId: 'cua-run',
+    content: 'x', messageType: 'direct_message', referenceFiles: [], createdAt: created } }))
+  expect(g.socket.close).toHaveBeenCalled()
+  g.service.disconnect()
+})
+
+it('a snapshot after its owner retired is not published', () => {
+  let current = true
+  const options = { hostRunId: 'host-run', isCurrent: () => current, reportError: vi.fn(), publish: vi.fn() }
   const service = new AgentRunCollaborationStreamingService(options); service.connect()
   const socket = Socket.instances[0]!
   socket.frame({ type: 'CONNECTED', payload: { session_id: 's', root_subject_kind: 'agent', root_run_id: 'host-run' } })
-  socket.frame({ type: 'ROOT_EXECUTION_VIEW_SNAPSHOT', payload: { root_subject_kind: 'agent', root_run_id: 'host-run', root_agent: view } })
-  return { service, socket, options, context, finish: () => resolve(context), retireOwner: () => { current = false } }
-}
-it('buffers live input until the snapshot context is built and published', async () => {
-  const f = setup(); await flush()
-  f.socket.frame({ type: 'ROOT_EXECUTION_EVENT', payload: { root_subject_kind: 'agent', root_run_id: 'host-run', change_sequence: 5,
-    event: { kind: 'agent_presentation', agent_run_id: 'cua-run', member_address: '/computer_use_agent', message: {
-      type: 'AGENT_INPUT_STATE', payload: { run_instance_id: 'i', revision: 4, entries: [], recoverableBlock: null },
-    } } } })
-  await flush(); expect(f.context.getAgentContext('cua-run')!.state.inputProjection).toBeNull()
-  f.finish(); await flush()
-  expect(f.options.publish).toHaveBeenCalledOnce()
-  expect(f.context.getAgentContext('cua-run')!.state.inputProjection?.revision).toBe(4)
-  expect(f.service.isReady()).toBe(true); f.service.disconnect()
-})
-it.each(['disconnect', 'owner'])('a late snapshot after %s cannot publish', async kind => {
-  const f = setup(); await flush()
-  if (kind === 'disconnect') f.service.disconnect(); else f.retireOwner()
-  f.finish(); await flush()
-  expect(f.options.publish).not.toHaveBeenCalled()
-  expect(f.options.reportError).not.toHaveBeenCalled(); expect(f.service.isReady()).toBe(false)
-  f.service.disconnect()
-})
-it('applies a received content batch frame and continues after its covered range (autobyteus-139)', async () => {
-  const f = setup(); f.finish(); await flush()
-  const segment = { segment_id: 's-1', turn_id: 't-1', segment_type: 'text' }
-  f.socket.frame({ type: 'ROOT_EXECUTION_EVENT', payload: { root_subject_kind: 'agent', root_run_id: 'host-run', change_sequence: 5,
-    event: { kind: 'agent_presentation', agent_run_id: 'cua-run', member_address: '/computer_use_agent', message: {
-      type: 'SEGMENT_START', payload: { ...segment, metadata: null } } } } })
-  f.socket.frame({ type: 'ROOT_EXECUTION_EVENT', payload: { root_subject_kind: 'agent', root_run_id: 'host-run', change_sequence: 6,
-    change_sequence_through: 11, event: { kind: 'agent_presentation_batch', items: [{ agent_run_id: 'cua-run', member_address: '/computer_use_agent',
-      message: { type: 'SEGMENT_CONTENT', payload: { ...segment, delta: 'xy' } } }] } } })
-  await flush()
-  expect(f.context.changeSequence).toBe(11)
-  expect(JSON.stringify(f.context.getAgentContext('cua-run')!.conversation.messages)).toContain('"content":"xy"')
-  expect(f.options.reportError).not.toHaveBeenCalled(); expect(f.socket.close).not.toHaveBeenCalled()
-  f.service.disconnect()
+  current = false
+  socket.frame({ type: 'ROOT_EXECUTION_VIEW_SNAPSHOT', payload: { root_subject_kind: 'agent', root_run_id: 'host-run', root_agent: agentRootView() } })
+  expect(options.publish).not.toHaveBeenCalled()
+  expect(options.reportError).not.toHaveBeenCalled()
+  service.disconnect()
 })

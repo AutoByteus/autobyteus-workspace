@@ -68,7 +68,6 @@
     "test:e2e:nodes-docker-address": "node tests/e2e/nodes-docker-address-probe.mjs",
     "test:e2e:vnc-live": "node tests/e2e/vnc-live-probe.mjs",
     "test:e2e:background-contention": "node tests/e2e/background-agent-renderer-contention-probe.mjs",
-    "test:e2e:task-agent-monitor-visibility": "node tests/e2e/task-agent-monitor-visibility-probe.mjs",
     "test:e2e:agent-org-role-labels": "node tests/e2e/agent-org-role-labels-probe.mjs",
     "test:e2e:agent-org-draft-retention": "node tests/e2e/agent-org-draft-retention-probe.mjs",
     "test:e2e:agent-org-task-team-disclosure": "node tests/e2e/agent-org-task-team-disclosure-probe.mjs",

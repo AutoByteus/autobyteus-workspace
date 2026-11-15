@@ -8,6 +8,7 @@ import { AgentStatus } from '~/types/agent/AgentStatus';
 import { buildRunHistoryTeamExecutionRows } from '~/stores/runHistoryTeamExecutionRows';
 import { useTaskWorkerTaskStore } from '~/stores/taskWorkerTaskStore';
 import { useRunTreeStore } from '~/stores/runTreeStore';
+import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
 import { seedOrgRunTrees } from '~/test-support/runTreeFixtures';
 import { useRunStatusStore } from '~/stores/runStatusStore';
 import type { RunTreeRowDto } from '@autobyteus/collaboration-stream-contracts';
@@ -19,7 +20,6 @@ import type {
 import {
   buildTestTeamContext,
   testAgentNode,
-  testDelegation,
 } from '~/test-support/currentTeamTestFixtures';
 
 vi.mock('@iconify/vue', () => ({ Icon: {props: ['icon'], template: '<span :data-icon="icon" />'} }));
@@ -80,7 +80,6 @@ const agentOrgDefinitionGroup = (): AgentOrgHistoryDefinitionGroup => {
       archivedAt: null,
       isActive: true,
       summary: 'Deliver current package',
-      closedTaskExecutions: [],
       executionTree: {
         subjectKind: 'agent_org',
         createdAt: '2026-09-03T00:00:00.000Z',
@@ -89,11 +88,11 @@ const agentOrgDefinitionGroup = (): AgentOrgHistoryDefinitionGroup => {
         handoffs: [],
         rootOrg: {
           address: '/', orgDefinitionId: 'org-definition', orgDefinitionName: 'Delivery Org', orgRunId: 'org-run',
-          defaultLaunchConfiguration: launch, taskExecutions: [],
+          defaultLaunchConfiguration: launch,
           members: [{
             address: '/software', teamDefinitionId: 'software-team', role: null, description: null,
             teamRunId: 'mounted-team-run', coordinatorAddress: '/software/implementation',
-            defaultLaunchConfiguration: launch, taskExecutions: [],
+            defaultLaunchConfiguration: launch,
             members: [{
               address: '/software/implementation', agentDefinitionId: 'implementation-agent', role: null,
               description: null, agentRunId: 'implementation-run', platformAgentRunId: null,
@@ -146,13 +145,10 @@ const mountSubject = (options: {
     teamDefinitionName: 'Team Alpha',
     rootChildren: [testAgentNode('/worker', { agentRunId: worker.agentRunId!, displayName: 'worker' })],
     coordinatorAddress: '/worker',
-    focusedAgentRunId: 'task-agent-run-1',
+    focusedAgentRunId: worker.agentRunId!,
     workspaceRootPath: '/ws/a',
-    delegations: [testDelegation({ delegatorAgentRunId: worker.agentRunId!, recipientAddress: '/worker', target: { agentRunId: 'task-agent-run-1' } })],
   });
-  if (!options.liveContext) {
-    liveContext.view.getAgentContext('task-agent-run-1')!.state.currentStatus = AgentStatus.Running;
-  }
+  // The run its worker delegated is its own run: the Team's tree row, with its own status (autobyteus-461 rule 2).
   const team: TeamTreeNode = {
     teamRunId: 'team-run-1',
     teamDefinitionId: 'team-def-1',
@@ -450,6 +446,10 @@ describe('WorkspaceHistoryWorkspaceSection current execution rows', () => {
     expect(state.toggleTeamMember).not.toHaveBeenCalled();
 
     actions.onSelectTeamMember.mockClear();
+    // The selected delegated row is the Team's selected tree row (it opens as its own run, rule 2).
+    const selected = useRunTreeStore().rowsOf({ kind: 'agent_team', runId: 'team-run-1' }).find((row) => row.openTarget?.agentRunId === 'task-agent-run-1')!;
+    useAgentTeamContextsStore().$patch({ delegatedRows: { 'team-run-1': { key: selected.key, target: selected.openTarget!, address: selected.address } } });
+    await nextTick();
     const taskRow = wrapper.get('[data-test="workspace-team-transient-execution-row"]');
     expect(taskRow.attributes('data-transient-kind')).toBe('task_agent');
     expect(taskRow.attributes('data-member-address')).toBe('/worker');

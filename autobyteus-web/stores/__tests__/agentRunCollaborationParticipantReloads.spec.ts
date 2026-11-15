@@ -4,6 +4,7 @@ import type { CollaborationParticipantMessageDto } from '@autobyteus/collaborati
 import { GetAgentRunCollaboration } from '~/graphql/queries/collaboratorQueries'
 import { agentRootView, created } from '~/services/agentCollaboration/__tests__/agentRootFixture'
 import { clearStoredParticipantMessages, participantMessagesQueryStub, storeParticipantMessages } from '~/test-support/participantMessagesStub'
+import { agentRow } from '~/test-support/runTreeFixtures'
 
 const io = vi.hoisted(() => ({ query: vi.fn(), participantRequests: vi.fn() }))
 // Each run's own statuses (`/ws/run-status`, SR-083) are not this spec's: its sockets are the view's stream.
@@ -57,12 +58,9 @@ const snapshot = async (socket: Socket, base: number, liveSequenceId = 'live-1',
 }
 const event = (socket: Socket, change_sequence: number, body: unknown) =>
   socket.frame({ type: 'ROOT_EXECUTION_EVENT', payload: { root_subject_kind: 'agent', root_run_id: HOST, change_sequence, event: body } })
-/** A new delegated copy (`checkpoint_required`): the stream reconnects for a fresh snapshot. */
+/** A new delegated run: a change to the run's tree, on the same stream (autobyteus-461 SR-084). */
 const newChild = (socket: Socket, change_sequence: number) => event(socket, change_sequence, {
-  kind: 'task_execution_started', host_kind: 'root', host_run_id: HOST, execution: {
-    address: '/code_reviewer', agentRunId: 'cr-copy-run', platformAgentRunId: null, delegatorAgentRunId: HOST, startedAt: created,
-    source: agentRootView().execution_tree.taskExecutions[0]!.source,
-  },
+  kind: 'run_tree_changed', added: [agentRow('cr-copy-run', `agent:${HOST}`, 1)], removed: [], updated: [],
 })
 const listed = () => useCollaborationParticipantMessagesStore().messagesOf(key).map((entry) => entry.messageId)
 const requests = () => io.participantRequests.mock.calls.length
@@ -100,22 +98,17 @@ describe('A running hub fetches its Team-tab list again only when a message coul
     expect(listed()).toEqual(['m1'])
   })
 
-  it('a new child with no message in the reconnect window keeps the list; a message in that window fetches it once (API-08 L-002)', async () => {
+  it('a new delegated run keeps the stream and the list; a reconnect whose snapshot shows a message in its window fetches it once (API-08 L-002)', async () => {
     await selectRunningHub()
     newChild(Socket.instances[0]!, 5); await settle()
-    expect(Socket.instances).toHaveLength(2)
-    await snapshot(Socket.instances[1]!, 5)
+    expect(Socket.instances).toHaveLength(1)
     expect(requests()).toBe(1)
 
-    // The next copy publishes its output (sequences 7 to 22) before the reconnect's snapshot, but no message.
-    newChild(Socket.instances[1]!, 6); await settle()
-    await snapshot(Socket.instances[2]!, 22)
-    expect(requests()).toBe(1)
-
-    newChild(Socket.instances[2]!, 23); await settle()
-    // The server stored m2 (sequence 25) before the reconnect's snapshot.
+    // The connection drops; the server stored m2 (sequence 25) before the reconnect's snapshot.
+    Socket.instances[0]!.onclose?.({ code: 1006 })
+    await vi.waitFor(() => expect(Socket.instances).toHaveLength(2), { timeout: 2_500 })
     storeParticipantMessages('agent', HOST, [message('m1'), message('m2')])
-    await snapshot(Socket.instances[3]!, 26, 'live-1', 25)
+    await snapshot(Socket.instances[1]!, 26, 'live-1', 25)
     expect(requests()).toBe(2)
     expect(listed()).toEqual(['m1', 'm2'])
   })

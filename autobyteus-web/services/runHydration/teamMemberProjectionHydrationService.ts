@@ -43,9 +43,8 @@ const teamMemberLoadTarget = (team: AgentTeamContext, agentRunId: string): Membe
 };
 
 /**
- * Loads one Team member's stored conversation, activities and files through the member loader, unless loaded. A run
- * this Team delegated on this node is not read through the Team: it opens as its own run (autobyteus-461 rule 2), and
- * its row's context only shows its status.
+ * Loads one of the Team's own members' stored conversation, activities and files through the member loader, unless
+ * loaded. A run the Team delegated is not one of them: it is its own run, read as one (autobyteus-461 rule 2).
  */
 export const ensureAuthoritativeTeamMemberProjection = async (input: {
   team: AgentTeamContext;

@@ -3,12 +3,10 @@ import { AgentStatus } from '~/types/agent/AgentStatus';
 import type { AIMessage } from '~/types/conversation';
 import { TeamStreamingService } from '../TeamStreamingService';
 import { useAgentBackgroundTaskStore } from '~/stores/agentBackgroundTaskStore';
-import { isTeamMemberProjectionAuthoritative } from '~/services/runHydration/teamMemberProjectionHydrationService';
 import { useCollaborationParticipantMessagesStore } from '~/services/collaborationMessages/collaborationParticipantMessages';
 import {
   buildTestTeamContext,
   testAgentNode,
-  testDelegation,
 } from '~/test-support/currentTeamTestFixtures';
 
 const { handleBrowserToolExecutionSucceededMock, runHistoryStoreMock, teamContextsStoreMock } = vi.hoisted(() => ({
@@ -31,7 +29,8 @@ vi.mock('~/services/collaborationMessages/participantMessagesQuery', async () =>
 const rootTeamRunId = 'classroom-run';
 const teacherRunId = 'teacher-run';
 const persistentStudentRunId = 'persistent-student-run';
-const taskStudentRunId = 'task-student-run';
+// A third own member (a run a member delegated is its own run, outside the Team: autobyteus-461 rule 2).
+const taskStudentRunId = 'tutor-run';
 
 const createHarness = () => {
   const callbacks = new Map<string, (payload?: any) => void>();
@@ -49,12 +48,8 @@ const createHarness = () => {
     rootChildren: [
       testAgentNode('/Teacher', { agentRunId: teacherRunId, displayName: 'Teacher' }),
       testAgentNode('/Student', { agentRunId: persistentStudentRunId, displayName: 'Student' }),
+      testAgentNode('/Tutor', { agentRunId: taskStudentRunId, displayName: 'Tutor' }),
     ],
-    delegations: [testDelegation({
-      delegatorAgentRunId: teacherRunId,
-      recipientAddress: '/Student',
-      target: { agentRunId: taskStudentRunId },
-    })],
   });
   const recoveryRequired = vi.fn();
   const service = new TeamStreamingService('ws://localhost:8000/ws/agent-team', {
@@ -74,9 +69,8 @@ const emit = (
 const snapshotPayload = (team: ReturnType<typeof buildTestTeamContext>, baseChangeSequence = team.view.getChangeSequence()) => ({
   root_team_run_id: rootTeamRunId,
   base_change_sequence: baseChangeSequence, live_sequence_id: 'live-1', last_message_change_sequence: 0,
-  closed_task_executions: [], execution_tree: team.view.getExecutionTree(),
-  agent_input_states: [], remote_task_executions: [],
-  agent_statuses: team.view.listAgentContextEntries().map((entry) => ({
+  execution_tree: team.view.getExecutionTree(),
+  agent_input_states: [], agent_statuses: team.view.listAgentContextEntries().map((entry) => ({
     agent_run_id: entry.agentRunId,
     member_address: entry.memberAddress,
     status: 'idle',
@@ -170,26 +164,6 @@ describe('TeamStreamingService current AgentRun event dispatch', () => {
     expect(team.view.isRootTeamActive()).toBe(true);
     // Nothing is left pending for the member: its next message is admitted.
     expect(() => service.sendMessage('next input', teacherRunId, [], [], { messageId: 'message-next', dedupeKey: 'dedupe-next' })).not.toThrow();
-  });
-
-  it('reconciles a mounted task activation without stealing exact focus', () => {
-    const { callbacks, team } = createHarness();
-    teamContextsStoreMock.getTeamContextById.mockReturnValue(team);
-    admitReady(callbacks, team);
-    vi.clearAllMocks();
-
-    emit(callbacks, 'TASK_EXECUTION_STARTED', {
-      change_sequence: 1, parent_team_run_id: rootTeamRunId,
-      execution: {
-        kind: 'task_agent', address: '/Student', agent_run_id: 'dynamic-task-run',
-        platform_agent_run_id: null, delegator_agent_run_id: teacherRunId, started_at: '2026-08-14T12:00:00.000Z', source: { kind: 'agent', agent_definition_id: 'Student', launch_configuration: { runtime_kind: 'autobyteus', llm_model_identifier: 'test-model', llm_config: null, auto_execute_tools: false, workspace_root_path: null } } },
-    });
-
-    expect(team.view.hasAgentRun('dynamic-task-run')).toBe(true);
-    expect(isTeamMemberProjectionAuthoritative(team, 'dynamic-task-run')).toBe(false);
-    expect(team.view.getFocusedAgentRunId()).toBe(teacherRunId);
-    expect(runHistoryStoreMock.refreshRunNavigationTopology)
-      .toHaveBeenCalledWith('team-stream-structure');
   });
 
   it('rejects a foreign connected root and cannot admit its snapshot', () => {
@@ -342,7 +316,7 @@ describe('TeamStreamingService current AgentRun event dispatch', () => {
     }));
   });
 
-  it('projects MEMBER_INPUT into the exact task AgentRun without persistent substitution', () => {
+  it('projects MEMBER_INPUT into the exact AgentRun without substitution', () => {
     const { callbacks, team } = createHarness();
     admitReady(callbacks, team);
     const taskStudent = team.view.getAgentContext(taskStudentRunId)!;
@@ -444,8 +418,8 @@ describe('TeamStreamingService current AgentRun event dispatch', () => {
       // The rebuilt view holds the same agents (a view that drops one a list names re-fetches that list, autobyteus-469 CR-002).
       const candidateTeam = buildTestTeamContext({ teamRunId: rootTeamRunId, coordinatorAddress: '/Teacher',
         rootChildren: [testAgentNode('/Teacher', { agentRunId: teacherRunId, displayName: 'Teacher' }),
-          testAgentNode('/Student', { agentRunId: persistentStudentRunId, displayName: 'Student' })],
-        delegations: [testDelegation({ delegatorAgentRunId: teacherRunId, recipientAddress: '/Student', target: { agentRunId: taskStudentRunId } })] });
+          testAgentNode('/Student', { agentRunId: persistentStudentRunId, displayName: 'Student' }),
+          testAgentNode('/Tutor', { agentRunId: taskStudentRunId, displayName: 'Tutor' })] });
       const service = new TeamStreamingService('ws://localhost:8000/ws/agent-team', { wsClient });
       void service.connectCandidate(rootTeamRunId, candidateTeam, snapshot.base_change_sequence as number);
       emit(candidateCallbacks, 'CONNECTED', { session_id: 'candidate-session', root_team_run_id: rootTeamRunId });

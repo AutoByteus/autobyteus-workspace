@@ -6,7 +6,6 @@ import type { RunNavigationEffect } from '~/services/agentStreaming/agentStreamM
 import {
   buildTestTeamContext,
   testAgentNode,
-  testDelegation,
 } from '~/test-support/currentTeamTestFixtures';
 import {
   applyRunNavigationEffectToProjection,
@@ -23,6 +22,7 @@ beforeAll(() => {
 });
 afterAll(() => vi.useRealTimers());
 const stableAgentRunId = (teamRunId: string) => `${teamRunId}-worker-run`;
+// The Team's second own member (a run a member delegated is its own run, outside the Team: autobyteus-461 rule 2).
 const taskAgentRunId = (teamRunId: string) => `${teamRunId}-task-run`;
 
 const buildAgentContext = (runId: string, workspaceRootPath: string, status = AgentStatus.Idle) => ({
@@ -54,9 +54,8 @@ const buildTeamContext = (
     teamDefinitionName: `Team ${teamRunId}`,
     coordinatorAddress: worker.address,
     focusedAgentRunId: stableAgentRunId(teamRunId),
-    rootChildren: [worker],
+    rootChildren: [worker, testAgentNode('/reviewer', { displayName: 'Reviewer', agentRunId: taskAgentRunId(teamRunId) })],
     workspaceRootPath,
-    delegations: [testDelegation({ delegatorAgentRunId: stableAgentRunId(teamRunId), recipientAddress: '/worker', target: { agentRunId: taskAgentRunId(teamRunId) } })],
   });
   team.view.getAgentContext(taskAgentRunId(teamRunId))!.state.currentStatus = taskStatus;
   expect(team.view.focusAgent(taskAgentRunId(teamRunId)).disposition).toBe('applied');
@@ -93,7 +92,9 @@ describe('runHistoryNavigationProjection current exact execution identity', () =
 
     expect(team.focusedAgentRunId).toBe(taskAgentRunId('team-a'));
     // SR-084: the Team's own members only; the runs it delegated are its tree's rows (runTreeStore).
-    expect(team.executionRows.map((row) => `${row.kind}:${row.rowKey}`)).toEqual([`stable_member:agent:${stableAgentRunId('team-a')}`]);
+    expect(team.executionRows.map((row) => `${row.kind}:${row.rowKey}`)).toEqual([
+      `stable_member:agent:${stableAgentRunId('team-a')}`, `stable_member:agent:${taskAgentRunId('team-a')}`,
+    ]);
     expect(first.runAncestryById['standalone-a']).toEqual({
       workspaceId: 'workspace:/workspace-a',
       agentDefinitionId: 'standalone-a-definition',

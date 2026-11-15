@@ -5,7 +5,6 @@ import {
   buildTestTeamContext,
   testAgentContext,
   testAgentNode,
-  testDelegation,
 } from '~/test-support/currentTeamTestFixtures';
 
 const { state, teamContextsStoreMock, activityStoreMock, authorityMock } = vi.hoisted(() => {
@@ -77,27 +76,4 @@ describe('AgentTeamEventMonitor exact AgentRun focus', () => {
     expect(monitor.props('agentName')).toBe('Student');
   });
 
-  it('renders a task Agent at the same placement as its own conversation, never the persistent substitute', () => {
-    const persistent = state.activeTeamContext;
-    const tree = persistent.view.getExecutionTree();
-    const rebuilt = buildTestTeamContext({
-      teamRunId: 'team-1', coordinatorAddress: '/Professor', focusedAgentRunId: 'task-student-run',
-      rootChildren: [
-        testAgentNode('/Professor', { agentRunId: 'professor-run', agentDefinitionId: 'agent-professor-def' }),
-        testAgentNode('/Student', { agentRunId: 'student-run' }),
-      ],
-      delegations: [testDelegation({ delegatorAgentRunId: 'professor-run', recipientAddress: '/Student', target: { agentRunId: 'task-student-run' } })],
-      contexts: [{ agentRunId: 'task-student-run', context: testAgentContext({
-        runId: 'task-student-run', displayName: 'Student', messages: [{
-          type: 'user', text: 'Dedicated task packet', timestamp: new Date('2026-08-15T00:00:00.000Z'),
-        }] as any,
-      }) }],
-      configuration: persistent.view.getConfigurationView(),
-    });
-    expect(tree.root_team.team_run_id).toBe(rebuilt.view.getRootTeamRunId());
-    state.activeTeamContext = rebuilt;
-    const monitor = mountSubject().findComponent({ name: 'AgentEventMonitor' });
-    expect(monitor.props('runId')).toBe('task-student-run');
-    expect((monitor.props('conversation') as any).messages[0].text).toBe('Dedicated task packet');
-  });
 });

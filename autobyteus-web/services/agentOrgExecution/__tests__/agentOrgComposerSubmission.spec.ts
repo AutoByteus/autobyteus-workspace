@@ -9,7 +9,9 @@ import { createPinia, setActivePinia } from 'pinia'
 import AgentUserInputTextArea from '~/components/agentInput/AgentUserInputTextArea.vue'
 import { useAgentOrgContextsStore } from '~/stores/agentOrgContextsStore'
 import { useActiveContextStore } from '~/stores/activeContextStore'
-import { taskBearingView } from './taskBearingOrgFixture'
+import { taskBearingTreeRows, taskBearingView } from './taskBearingOrgFixture'
+import { createAgentContext } from '../agentOrgMemberContextFactory'
+import { parseAgentTeamAddress } from '~/types/agent/AgentTeamAddress'
 
 const mocks = vi.hoisted(() => ({
   query: vi.fn(), mutate: vi.fn(), routeReplace: vi.fn(), activity: vi.fn(), historyRefresh: vi.fn(), navigation: vi.fn(),
@@ -87,6 +89,23 @@ const status = (value: string) => presentation({ type: 'AGENT_STATUS', payload: 
   status: value, trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null,
 } })
 
+/** The Org's tree at the snapshot's base, as its stream gives it after each snapshot (SR-084). */
+const treeSnapshot = (base: number) => socket.emit({ type: 'RUN_TREE_SNAPSHOT', payload: {
+  root_subject_kind: 'agent_org', root_run_id: 'org-run', base_change_sequence: base, rows: taskBearingTreeRows() } })
+/**
+ * Selects one of the Org's own agents, or a run it delegated by its tree row: that run is its own (autobyteus-461 rule 2),
+ * with its own context.
+ */
+const select = (agentRunId: string, own: (agentRunId: string) => void) => {
+  const store = useAgentOrgContextsStore()
+  const row = taskBearingTreeRows().find((candidate) => candidate.openTarget?.agentRunId === agentRunId
+    && (candidate.kind === 'agent' || Boolean(candidate.parentKey?.startsWith('team:'))))
+  if (!row) { own(agentRunId); return }
+  ownRuns.contexts.set(agentRunId, createAgentContext({ agentRunId, address: parseAgentTeamAddress(row.address!),
+    agentDefinitionId: 'delegated-definition', launch: taskBearingView().execution_tree.rootOrg.defaultLaunchConfiguration }, '2026-09-01T00:00:00Z', null))
+  expect(store.selectTreeRow('org-run', row)).toBe(true)
+}
+
 async function open(agentRunId = 'agent-director') {
   const store = useAgentOrgContextsStore()
   await store.openForInspection('org-run')
@@ -98,12 +117,9 @@ async function open(agentRunId = 'agent-director') {
     root_subject_kind: 'agent_org', root_run_id: 'org-run', root_org: view,
   } })
   await vi.waitFor(() => expect(store.contextFor('org-run')?.phase).toBe('live'))
+  treeSnapshot(view.base_change_sequence)
   const org = store.contextFor('org-run')!
-  // A run the Org delegated is its own run (autobyteus-461 rule 2): its own context, here the same object.
-  for (const agent of org.index.agents.values()) {
-    if (agent.kind !== 'configured') ownRuns.contexts.set(agent.agentRunId, org.getAgentContext(agent.agentRunId))
-  }
-  org.select({ kind: 'agent_execution', agentRunId })
+  select(agentRunId, (id) => org.select({ kind: 'agent_execution', agentRunId: id }))
   const active = useActiveContextStore()
   wrapper = mount(withActiveComposerTarget(AgentUserInputTextArea), { global: { stubs: { Icon: true } } })
   await flushPromises()
@@ -139,7 +155,7 @@ afterEach(async () => {
 
 describe('Org shared composer -> exact interaction -> correlated stream', () => {
   it('rule 2: a message to a task child goes to its own run, never over the Org\'s stream (autobyteus-461)', async () => {
-    const { active } = await open('agent-task-worker')
+    const { active } = await open('agent-worker-task')
     await wrapper!.find('textarea').setValue('to the child')
     await wrapper!.find('button[title="Send message"]').trigger('click')
     await flushPromises()
@@ -404,10 +420,7 @@ async function inactive(id = 'agent-director') {
   await store.openForInspection('org-run')
   await connectStored()
   const org = store.contextFor('org-run')!
-  for (const agent of org.index.agents.values()) {
-    if (agent.kind !== 'configured') ownRuns.contexts.set(agent.agentRunId, org.getAgentContext(agent.agentRunId))
-  }
-  store.select('org-run', { kind: 'agent_execution', agentRunId: id })
+  select(id, (own) => store.select('org-run', { kind: 'agent_execution', agentRunId: own }))
   const active = useActiveContextStore()
   wrapper = mount(withActiveComposerTarget(AgentUserInputTextArea), { global: { stubs: { Icon: true } } })
   await flushPromises()
@@ -423,6 +436,8 @@ async function connectStored() {
   socket.emit({ type: 'CONNECTED', payload: { root_subject_kind: 'agent_org', root_run_id: 'org-run', session_id: 'stored' } })
   socket.emit({ type: 'ROOT_EXECUTION_VIEW_SNAPSHOT', payload: { root_subject_kind: 'agent_org', root_run_id: 'org-run',
     root_org: { ...view, base_change_sequence: 0, live_sequence_id: 'stored-1', last_message_change_sequence: 0 } } })
+  await flushPromises()
+  treeSnapshot(0)
   socket.emit({ type: 'ROOT_LIFECYCLE', payload: { root_subject_kind: 'agent_org', root_run_id: 'org-run', is_active: false } })
   await flushPromises()
 }
@@ -490,7 +505,7 @@ describe('observational Org history, exact deliberate continuation and retained 
   })
 
   it('a stopped Org\'s task child is a run of its own: its message goes to its own run and the Org stays stopped (SR-045; rule 2)', async () => {
-    const { store, active } = await inactive('agent-task-worker')
+    const { store, active } = await inactive('agent-worker-task')
     expect(active.activeWorkspaceTarget?.access).toBe('live')
     await wrapper!.get('textarea').setValue('to the child')
     await active.send()
@@ -544,7 +559,7 @@ describe('observational Org history, exact deliberate continuation and retained 
     const store = useAgentOrgContextsStore()
     await expect(store.stopAndInspect('org-run')).rejects.toThrow('final read unavailable')
     expect(store.contextFor('org-run')).toBe(org)
-    expect(org.phase).toBe('historical'); expect(org.selectedTarget()?.context).toBe(context)
+    expect(org.phase).toBe('historical'); expect(store.activeTargetFor('org-run')?.context).toBe(context)
     expect(context.state.currentStatus).toBe('offline'); expect(context.requirement).toBe('unsent after stop')
     expect(context.conversation.messages.at(-1)?.text).toBe('last conversation')
     expect(store.activeTargetFor('org-run')?.access).toBe('continuable')
@@ -597,12 +612,12 @@ describe('Org strict candidate and terminal boundaries', () => {
   })
 
   it('a correlated inactive event stops the Org\'s own agents; its task child keeps its state and the view keeps its stream (SR-045)', async () => {
-    const { org, context } = await open('agent-task-worker')
+    const { org, context } = await open('agent-worker-task')
     const childStatus = context.state.currentStatus
     socket.emit({ type: 'ROOT_LIFECYCLE', payload: { root_subject_kind: 'agent_org', root_run_id: 'org-run', is_active: false } })
     await flushPromises()
     const store = useAgentOrgContextsStore()
-    expect(org.phase).toBe('historical'); expect(org.selectedTarget()?.context).toBe(context)
+    expect(org.phase).toBe('historical'); expect(store.activeTargetFor('org-run')?.context).toBe(context)
     expect(context.state.currentStatus).toBe(childStatus); expect(store.activeTargetFor('org-run')?.access).toBe('live')
     expect(org.getAgentContext('agent-director')!.state.currentStatus).toBe('offline')
     expect(socket.readyState).toBe(Socket.OPEN)

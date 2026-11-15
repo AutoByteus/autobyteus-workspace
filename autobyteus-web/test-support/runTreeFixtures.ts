@@ -38,15 +38,34 @@ export const runTreeApollo = (trees: (kind: string, runId: string) => RunTreeDto
 })
 
 type OrgTree = import('@autobyteus/collaboration-stream-contracts').AgentOrgExecutionTreeDto
-type OrgTask = OrgTree['rootOrg']['taskExecutions'][number]
+type CollaborationTask = import('@autobyteus/collaboration-stream-contracts').CollaborationTaskExecutionDto
+type OrgTask = CollaborationTask
+/**
+ * An Org run's tree as a spec records it: its own parts, and the runs it delegated (`taskExecutions`, as base's views
+ * nested them). The app's views carry only the own parts (`ownOrgTree`); the delegated ones become tree rows.
+ */
+export type RecordedOrgTree = Omit<OrgTree, 'rootOrg'> & Readonly<{ rootOrg: Omit<OrgTree['rootOrg'], 'members'> & Readonly<{
+  members: readonly (OrgTree['rootOrg']['members'][number] & Readonly<{ taskExecutions?: readonly OrgTask[] }>)[]
+  taskExecutions?: readonly OrgTask[]
+}> }>
 type Closed = readonly (Readonly<{ agentRunId: string }> | Readonly<{ teamRunId: string }>)[]
+
+/** A recorded Org tree's own parts, as the app's views and history reads carry it (SR-084). */
+export const ownOrgTree = (tree: RecordedOrgTree): OrgTree => {
+  const { taskExecutions: _delegated, ...rootOrg } = tree.rootOrg
+  return { ...tree, rootOrg: { ...rootOrg, members: rootOrg.members.map((member) => {
+    if (!('teamRunId' in member)) return member
+    const { taskExecutions: _memberDelegated, ...own } = member
+    return own
+  }) } } as OrgTree
+}
 
 /**
  * What the server's `RunTreeView` sends for an Org run whose recorded tree is `tree` (SR-084), for web specs whose
  * fixtures hold Org execution trees: its own agents and mounted teams (opening in the Org), then each run it delegated
  * under the agent or member that delegated it; closed runs (and everything under them) are not in the tree.
  */
-export const orgRunTreeRows = (orgRunId: string, tree: OrgTree, closed: Closed = []): RunTreeRowDto[] => {
+export const orgRunTreeRows = (orgRunId: string, tree: RecordedOrgTree, closed: Closed = []): RunTreeRowDto[] => {
   const rows: RunTreeRowDto[] = []
   const anchors = new Map<string, Readonly<{ key: string; depth: number }>>()
   const closedIds = new Set(closed.map((reference) => 'agentRunId' in reference ? reference.agentRunId : reference.teamRunId))
@@ -70,7 +89,7 @@ export const orgRunTreeRows = (orgRunId: string, tree: OrgTree, closed: Closed =
       push({ key: `team_member:${member.teamRunId}:${agent.agentRunId}`, parentKey: `org_team:${member.teamRunId}`, depth: 1, kind: 'team_member',
         name: nameOf(agent.address), address: agent.address, openTarget: inOrg(agent.agentRunId), statusIds: [agent.agentRunId] }, agent.agentRunId)
     }
-    teamTasks.push(...member.taskExecutions)
+    teamTasks.push(...member.taskExecutions ?? [])
   }
   const visit = (tasks: readonly OrgTask[]) => {
     for (const task of tasks) {
@@ -93,17 +112,16 @@ export const orgRunTreeRows = (orgRunId: string, tree: OrgTree, closed: Closed =
       visit(task.taskExecutions)
     }
   }
-  visit([...tree.rootOrg.taskExecutions, ...teamTasks])
+  visit([...tree.rootOrg.taskExecutions ?? [], ...teamTasks])
   return rows
 }
 
 /** Seeds each Org run's tree as its open view's stream would feed it (SR-084), from the run's recorded tree. */
 export const seedOrgRunTrees = (trees: Readonly<{ streamSnapshot(ref: Readonly<{ kind: 'agent_org'; runId: string }>, rows: readonly RunTreeRowDto[]): void }>,
-  runs: readonly Readonly<{ rootRunId: string; executionTree: OrgTree; closedTaskExecutions?: Closed }>[]): void => {
+  runs: readonly Readonly<{ rootRunId: string; executionTree: RecordedOrgTree; closedTaskExecutions?: Closed }>[]): void => {
   for (const run of runs) trees.streamSnapshot({ kind: 'agent_org', runId: run.rootRunId }, orgRunTreeRows(run.rootRunId, run.executionTree, run.closedTaskExecutions))
 }
 
-type CollaborationTask = import('@autobyteus/collaboration-stream-contracts').CollaborationTaskExecutionDto
 type RowLaunch = NonNullable<RunTreeRowDto['launch']>
 const rowLaunchOf = (launch: Readonly<{ runtimeKind: string; llmModelIdentifier: string; llmConfig: unknown; autoExecuteTools: boolean; workspaceRootPath?: string | null }>,
   source: unknown, ownSource: boolean): RowLaunch => ({ runtimeKind: launch.runtimeKind, llmModelIdentifier: launch.llmModelIdentifier,

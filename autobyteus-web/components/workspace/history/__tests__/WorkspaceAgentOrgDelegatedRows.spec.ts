@@ -5,11 +5,10 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import WorkspaceAgentOrgHistoryCollection from '../WorkspaceAgentOrgHistoryCollection.vue';
 import type { AgentOrgHistoryDefinitionGroup } from '~/stores/runHistoryTypes';
 import type { WorkspaceHistorySectionState } from '../workspaceHistorySectionContracts';
-import { taskBearingView } from '~/services/agentOrgExecution/__tests__/taskBearingOrgFixture';
+import { taskBearingTreeRows, taskBearingView } from '~/services/agentOrgExecution/__tests__/taskBearingOrgFixture';
 import { AgentStatus } from '~/types/agent/AgentStatus';
 import { useRunTreeStore } from '~/stores/runTreeStore';
 import { useRunStatusStore } from '~/stores/runStatusStore';
-import { orgRunTreeRows } from '~/test-support/runTreeFixtures';
 vi.mock('@iconify/vue', () => ({ Icon: { props: ['icon'], template: '<span :data-icon="icon" />' } }));
 
 /**
@@ -18,11 +17,11 @@ vi.mock('@iconify/vue', () => ({ Icon: { props: ['icon'], template: '<span :data
  */
 const mountOrg = () => {
   const tree = structuredClone(taskBearingView().execution_tree);
-  useRunTreeStore().streamSnapshot({ kind: 'agent_org', runId: 'org-run' }, orgRunTreeRows('org-run', tree));
+  useRunTreeStore().streamSnapshot({ kind: 'agent_org', runId: 'org-run' }, taskBearingTreeRows());
   const group: AgentOrgHistoryDefinitionGroup = {
     stableKey: 'agent_org_definition:org-definition', definitionId: 'org-definition', name: 'Restored Org',
     runs: [{ stableKey: 'agent_org_run:org-run', rootSubjectKind: 'agent_org', rootRunId: 'org-run', createdAt: tree.createdAt,
-      lastActivityAt: tree.createdAt, archivedAt: null, isActive: true, summary: 'Delegating Org', executionTree: tree, closedTaskExecutions: [] }],
+      lastActivityAt: tree.createdAt, archivedAt: null, isActive: true, summary: 'Delegating Org', executionTree: tree }],
   };
   const expanded = reactive<Record<string, boolean>>({});
   const state = {

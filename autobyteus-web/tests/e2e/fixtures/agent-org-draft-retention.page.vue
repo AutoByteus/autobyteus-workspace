@@ -95,7 +95,7 @@ const createOrgView = (
   base_change_sequence: 0,
   live_sequence_id: null, last_message_change_sequence: null,
   is_active: false,
-  closed_task_executions: [], execution_tree: {
+  execution_tree: {
     subjectKind: 'agent_org',
     createdAt: NOW,
     archivedAt: null,
@@ -116,7 +116,6 @@ const createOrgView = (
         platformAgentRunId: null,
         launchConfiguration: launch,
       })),
-      taskExecutions: [],
     },
   },
   agent_statuses: members.map((member) => ({

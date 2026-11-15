@@ -50,32 +50,19 @@ describe('AgentOrg whole model-only canonical adoption', () => {
       expect(item.entry.context.conversation.messages).toBe(item.messages)
       expect(item.entry.context.contextFilePaths).toBe(item.files)
       const configured = org.index.agents.get(item.entry.agentRunId)
-      if (configured?.kind === 'configured') expect(item.entry.context.config.llmModelIdentifier).toBe(expectedByRunId.get(item.entry.agentRunId))
+      if (configured) expect(item.entry.context.config.llmModelIdentifier).toBe(expectedByRunId.get(item.entry.agentRunId))
     }
   })
 
-  it('CR-461-088: the Org\'s configuration read carries no delegated runs (rule 2): it adopts the Org\'s own settings and keeps the view\'s rows', async () => {
+  it('CR-461-088: the Org\'s view and its configuration read are its own tree (rule 2): it adopts the Org\'s own settings', async () => {
     const staged = await stageAgentOrgExecutionContext({ focus: null, source: 'inspection', orgRunId: 'org-run', view: inactiveView() })
     const org = staged.context
-    const rows = JSON.stringify(org.executionTree.rootOrg.taskExecutions)
-    const mountedRows = (tree: any) => JSON.stringify(tree.rootOrg.members.filter((member: any) => 'teamRunId' in member).map((member: any) => member.taskExecutions))
-    const teamRows = mountedRows(org.executionTree)
-    expect(org.executionTree.rootOrg.taskExecutions.length + JSON.parse(teamRows).flat().length).toBeGreaterThan(0)
-    // As the server answers it: the Org's own tree, its delegated runs in their own runs.
+    expect(JSON.stringify(org.executionTree)).not.toContain('taskExecutions')
     const read = JSON.parse(JSON.stringify(org.executionTree)) as any
-    read.rootOrg.taskExecutions = []
-    read.rootOrg.members.forEach((member: any) => { if ('teamRunId' in member) member.taskExecutions = [] })
     read.rootOrg.defaultLaunchConfiguration.llmModelIdentifier = 'root-next'
     expect(org.applyRunConfig(read, false)).toBe(true)
     expect(org.executionTree.rootOrg.defaultLaunchConfiguration.llmModelIdentifier).toBe('root-next')
-    expect(JSON.stringify(org.executionTree.rootOrg.taskExecutions)).toBe(rows)
-    expect(mountedRows(org.executionTree)).toBe(teamRows)
-    // A row's content in a read changes nothing: a delegated run's launch is its own run's (read from the run, CR-461-086).
-    const drifted = JSON.parse(JSON.stringify(org.executionTree)) as any
-    const first = drifted.rootOrg.taskExecutions[0] ?? drifted.rootOrg.members.find((member: any) => member.taskExecutions?.length)?.taskExecutions[0]
-    first.address = '/renamed'
-    expect(org.applyRunConfig(drifted, false)).toBe(true)
-    expect(JSON.stringify(org.executionTree)).not.toContain('/renamed')
+    expect(JSON.stringify(org.executionTree)).not.toContain('agent-worker-task')
   })
 
   it('rejects topology, handoff, binding, archive and locked-field drift without partial publication', async () => {

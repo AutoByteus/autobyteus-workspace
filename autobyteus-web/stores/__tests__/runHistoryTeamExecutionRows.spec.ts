@@ -3,8 +3,6 @@ import { AgentStatus } from '~/types/agent/AgentStatus';
 import {
   buildTestTeamContext,
   testAgentNode,
-  testDelegation,
-  testTaskTeamLayout,
 } from '~/test-support/currentTeamTestFixtures';
 import { buildRunHistoryTeamExecutionRows } from '../runHistoryTeamExecutionRows';
 import { buildRunHistoryNavigationProjection, runHistoryMemberIndexKey } from '../runHistoryNavigationProjection';
