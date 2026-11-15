@@ -1,0 +1,146 @@
+{
+  "startedAt": "2026-11-15T14:22:28.432Z",
+  "node": "v26.12.0",
+  "cases": {
+    "en": {
+      "title": "23 files could not be synced",
+      "rowCount": 20,
+      "more": "and 3 more",
+      "firstRow": "agents/000-run-with-a-deep-path/context_files/nested-folder-with-a-long-name/nested-folder-with-a-long-name/nested-folder-with-a-long-name/very-long-attachment-name-very-long-attachment-name-very-long-attachment-name-very-long-attachment-name-very-long-attachment-name-very-long-attachment-name-very-long-attachment-name-end.mp4 · 8.5 MB · Uploaded file hash mismatch for agents/000-run-with-a-deep-path/context_files/nested-folder-with-a-long-name/nested-folder-with-a-long-name/nested-folder-with-a-long-name/very-long-attachment-name-very-long-attachment-name-very-long-attachment-name-very-long-attachment-name-very-long-attachment-name-very-long-attachment-name-very-long-attachment-name-end.mp4. · next attempt 11/15/2026, 2:23:35 PM",
+      "secondRow": "agents/run-01/context_files/video-1.mp4 · 8.5 MB · Uploaded file hash mismatch for agents/run-01/context_files/video-1.mp4. · next attempt 11/15/2026, 2:23:35 PM",
+      "geometry": {
+        "boxLeft": 376,
+        "boxRight": 1227,
+        "boxWidth": 851,
+        "scrollWidth": 849,
+        "clientWidth": 849,
+        "docOverflowX": false,
+        "rowOverflows": [
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false
+        ],
+        "firstRowHeight": 112,
+        "otherRowHeight": 32,
+        "amber": "rgb(255, 251, 235)",
+        "borderColor": "rgb(253, 230, 138)"
+      },
+      "wordBreakEvidence": {
+        "rowWordBreak": [
+          "normal"
+        ],
+        "rowOverflowWrap": [
+          "break-word"
+        ],
+        "pathSpanWordBreak": [
+          "break-all"
+        ],
+        "splitShortLatinWords": [],
+        "checkedShortLatinWords": 476,
+        "longPathLinesInFirstRow": 7,
+        "firstPathSpanRects": 3
+      },
+      "statusLines": [
+        "Current job: idle",
+        "Last sync: success · 11/15/2026, 2:22:35 PM"
+      ]
+    },
+    "zh-CN": {
+      "title": "23 个文件未能同步",
+      "rowCount": 20,
+      "more": "另有 3 个",
+      "firstRow": "agents/000-run-with-a-deep-path/context_files/nested-folder-with-a-long-name/nested-folder-with-a-long-name/nested-folder-with-a-long-name/very-long-attachment-name-very-long-attachment-name-very-long-attachment-name-very-long-attachment-name-very-long-attachment-name-very-long-attachment-name-very-long-attachment-name-end.mp4 · 8.5 MB · Uploaded file hash mismatch for agents/000-run-with-a-deep-path/context_files/nested-folder-with-a-long-name/nested-folder-with-a-long-name/nested-folder-with-a-long-name/very-long-attachment-name-very-long-attachment-name-very-long-attachment-name-very-long-attachment-name-very-long-attachment-name-very-long-attachment-name-very-long-attachment-name-end.mp4. · 下次尝试 2026/11/15 14:23:35",
+      "secondRow": "agents/run-01/context_files/video-1.mp4 · 8.5 MB · Uploaded file hash mismatch for agents/run-01/context_files/video-1.mp4. · 下次尝试 2026/11/15 14:23:35",
+      "geometry": {
+        "boxLeft": 376,
+        "boxRight": 1227,
+        "boxWidth": 851,
+        "scrollWidth": 849,
+        "clientWidth": 849,
+        "docOverflowX": false,
+        "rowOverflows": [
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false
+        ],
+        "firstRowHeight": 112,
+        "otherRowHeight": 32,
+        "amber": "rgb(255, 251, 235)",
+        "borderColor": "rgb(253, 230, 138)"
+      },
+      "wordBreakEvidence": {
+        "rowWordBreak": [
+          "normal"
+        ],
+        "rowOverflowWrap": [
+          "break-word"
+        ],
+        "pathSpanWordBreak": [
+          "break-all"
+        ],
+        "splitShortLatinWords": [],
+        "checkedShortLatinWords": 436,
+        "longPathLinesInFirstRow": 7,
+        "firstPathSpanRects": 3
+      },
+      "statusLines": [
+        "当前任务: 空闲",
+        "最近同步: 成功 · 2026/11/15 14:22:35"
+      ]
+    }
+  },
+  "browserErrors": [],
+  "cleanup": {
+    "rootRemoved": true,
+    "serversStopped": true,
+    "frontendStopped": true
+  },
+  "error": null,
+  "run": {
+    "changedFiles": 24,
+    "committedBatches": 1,
+    "failedFiles": 23
+  },
+  "graphqlState": {
+    "jobState": "success",
+    "fileFailureCount": 23,
+    "listed": 20,
+    "firstReason": "Uploaded file hash mismatch for agents/000-run-with-a-deep-path/context_files/nested-folder-with-a-long-name/nested-folder-with-a-long-name/nested-folder-with-a-long-name/very-long-attachment-name-very-long-attachment-name-very-long-attachment-name-very-long-attachment-name-very-long-attachment-name-very-long-attachment-name-very-long-attachment-name-end.mp4."
+  },
+  "result": "Done",
+  "finishedAt": "2026-11-15T14:22:59.735Z"
+}

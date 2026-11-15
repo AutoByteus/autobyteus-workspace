@@ -147,12 +147,47 @@ try {
         firstRowHeight: rowEls[0].getBoundingClientRect().height, otherRowHeight: rowEls[1].getBoundingClientRect().height,
         amber: getComputedStyle(card).backgroundColor, borderColor: getComputedStyle(card).borderTopColor };
     });
+    // Negative control (CONTROL_BREAK_ALL=1): force the pre-fix `word-break: break-all` on the rows; the checker below must then report split words.
+    if (process.env.CONTROL_BREAK_ALL) await page.addStyleTag({ content: '[data-testid="memory-sync-file-failure"]{word-break:break-all !important}' });
+    // Round 2 (after the OBS-1 fix): computed styles and a per-character line check. Han text may break between characters; Latin words of up to 20 characters
+    // outside the path span must stay on one line.
+    const wordBreakEvidence = await page.evaluate(() => {
+      const rows = [...document.querySelectorAll('[data-testid="memory-sync-file-failure"]')];
+      const out = { rowWordBreak: [...new Set(rows.map((r) => getComputedStyle(r).wordBreak))], rowOverflowWrap: [...new Set(rows.map((r) => getComputedStyle(r).overflowWrap))],
+        pathSpanWordBreak: [...new Set(rows.map((r) => getComputedStyle(r.querySelector('span.font-mono')).wordBreak))], splitShortLatinWords: [], checkedShortLatinWords: 0, longPathLinesInFirstRow: null };
+      for (const row of rows) {
+        const walker = document.createTreeWalker(row, NodeFilter.SHOW_TEXT);
+        const chars = [];
+        for (let n = walker.nextNode(); n; n = walker.nextNode()) {
+          if (n.parentElement.closest('span.font-mono')) continue;
+          for (let i = 0; i < n.data.length; i += 1) {
+            const range = document.createRange(); range.setStart(n, i); range.setEnd(n, i + 1);
+            const rect = range.getClientRects()[0];
+            chars.push({ ch: n.data[i], top: rect ? Math.round(rect.top) : null });
+          }
+        }
+        let word = [];
+        const flush = () => {
+          if (word.length >= 2 && word.length <= 20 && word.every((c) => c.top !== null)) {
+            out.checkedShortLatinWords += 1;
+            if (new Set(word.map((c) => c.top)).size > 1) out.splitShortLatinWords.push(word.map((c) => c.ch).join('') + ' @ ' + row.innerText.slice(0, 40));
+          }
+          word = [];
+        };
+        for (const c of chars) { if (/[A-Za-z0-9]/.test(c.ch)) word.push(c); else flush(); }
+        flush();
+      }
+      const firstSpan = rows[0].querySelector('span.font-mono');
+      out.longPathLinesInFirstRow = Math.round(rows[0].getBoundingClientRect().height / parseFloat(getComputedStyle(rows[0]).lineHeight));
+      out.firstPathSpanRects = firstSpan.getClientRects().length;
+      return out;
+    });
     const statusLines = [await page.locator('[data-testid="memory-sync-current-job"]').innerText(), await page.locator('[data-testid="memory-sync-last-sync"]').innerText()];
     await box.scrollIntoViewIfNeeded();
     await page.screenshot({ path: path.join(outputDir, `card-${locale}-full.png`), fullPage: true });
     await box.screenshot({ path: path.join(outputDir, `card-${locale}-failures-block.png`) });
     fs.writeFileSync(path.join(outputDir, `card-${locale}-dom.txt`), [`locale: ${locale}`, `title: ${title}`, `rows: ${rows.length}`, ...rows.map((t, i) => `row ${i}: ${t.replace(/\s+/g, ' ')}`), `more: ${more}`, `status: ${statusLines.join(' | ').replace(/\s+/g, ' ')}`, ''].join('\n'));
-    evidence.cases[locale] = { title, rowCount: rows.length, more, firstRow: rows[0]?.replace(/\s+/g, ' '), secondRow: rows[1]?.replace(/\s+/g, ' '), geometry, statusLines: statusLines.map((s) => s.replace(/\s+/g, ' ')) };
+    evidence.cases[locale] = { title, rowCount: rows.length, more, firstRow: rows[0]?.replace(/\s+/g, ' '), secondRow: rows[1]?.replace(/\s+/g, ' '), geometry, wordBreakEvidence, statusLines: statusLines.map((s) => s.replace(/\s+/g, ' ')) };
     await context.close();
   }
   evidence.result = 'Done';

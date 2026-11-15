@@ -7,6 +7,7 @@
 | CRR-001 | `code-review-report.md` | Implementation Review, round 1 / IR-001 at `3a78c3eee` | N/A | Fail (Local Fix) | CR-001 |
 | CRR-002 | `code-review-report.md` | Implementation Review, round 2 (Targeted Delta) / IR-002 at `077fa6853` | Fail (Local Fix) | Pass | CR-001 (resolved) |
 | CRR-003 | `code-review-report.md` | API/E2E Failure-Origin Review, round 3 / API-REV-002, API-08 OBS-1 at `077fa6853` | Pass | Fail (Local Fix, implementation defect) | CR-002 |
+| CRR-004 | `code-review-report.md` | Implementation Review, round 4 (Targeted Delta) / IR-003 at `542bf871f` | Fail (Local Fix) | Pass | CR-002 (resolved) |
 
 ## Revision Entries
 
@@ -91,3 +92,35 @@ None
 - Material score or classification changes: category 8's round-2 rationale is marked overstated (review gap); no full rescore in a failure-origin round
 - Recommended recipient: `/software_engineering_team/implementation_engineer`
 - Remaining risks or uncertainty: the zh-CN re-validation must not count a normal line break between Han characters as a word split. API-08's rerun should assert computed `word-break` in the DOM, not only use screenshots (`TESTING.md`).
+
+### CRR-004 — Targeted delta review of IR-003 (CR-002 fix)
+
+- Canonical review report updated: `code-review-report.md`
+- Review entry point and round: Implementation Review, round 4
+- Review scope: `Targeted Delta Review`. `git diff 077fa6853 542bf871f` changes two class attributes in `MemorySyncCard.vue:143-144`, and the only other non-ticket change in the range is API/E2E's earlier `TESTING.md` commit.
+- Triggering role, report path, and finding or scenario IDs: implementation engineer, `implementation-handoff.md` (IR-003), CR-002
+- Relevant solution revision IDs: SR-005
+- Relevant architecture-review revision IDs: ARCH-REV-003
+- Relevant implementation revision IDs: IR-003 (code `542bf871f`, documents `99a8f3445`)
+- Relevant API/E2E revision IDs: API-REV-002
+- Relevant delivery revision IDs: N/A
+- Prior authoritative result: Fail, Local Fix (CRR-003)
+- Current authoritative result: Pass
+- What changed in the review result and why:
+  - The row now uses `break-words` (`overflow-wrap: break-word`), so ordinary words wrap whole.
+  - Only the path `<span>` keeps `break-all`. The long path repeated in the reason text still wraps without overflow.
+  - `break-words` is an existing Tailwind utility in this app (`UiErrorPanel.vue`, `NodeAutoUpdate.vue`).
+  - IMP-07: the card spec passes, 7 tests.
+- Supported product scenario / material-premise basis changes: none
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| CR-001 | Resolved | Resolved | IR-002 | unchanged |
+| CR-002 | Open (Local Fix) | Resolved in source; browser proof pending API-08 rerun | IR-003, `542bf871f` | diff of `MemorySyncCard.vue:143-144`; `evidence/IMP-07-card-wrapping-delta.log` |
+
+- New or remaining finding IDs: none
+- Material score or classification changes: category 8 restored to 9.3 with a corrected rationale; average 9.41
+- Recommended recipient: `/software_engineering_team/api_e2e_engineer` (Implementation Engineer gets the informational notice)
+- Remaining risks or uncertainty: the browser re-validation by API-08 (en and zh-CN, DOM assertion of `word-break`)

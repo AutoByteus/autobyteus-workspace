@@ -25,3 +25,5 @@
 | 2026-11-15 15:15:32 | ALL | Completed | report, revision record, follow-up FU-003, TESTING.md node rule written; result Fail on AC-003 only (Requirement Gap) -> Solution Designer |
 | 2026-11-15 15:19:09 | API-07 | Rejudged | SR-005 wording: Pass on round-1 data (no code change since 077fa6853) |
 | 2026-11-15 15:19:09 | API-08 | Reclassified | OBS-1 promoted to Local Fix: Fail until fix re-validated |
+| 2026-11-15 15:22:28 | API-08 | Started | round 2 rerun on 542bf871f (+docs) with DOM word-break assertions |
+| 2026-11-15 15:24:27 | API-08 | Completed | round 3 Pass on 542bf871f; split short Latin words 0/476 en, 0/436 zh-CN; negative control 21/2; API-06a 17 passed |

@@ -2,7 +2,7 @@
 
 ## Review Round Meta
 
-- Review Entry Point: rounds 1–2 `Implementation Review`; round 3 `API/E2E Failure-Origin Review`
+- Review Entry Point: rounds 1–2 and 4 `Implementation Review`; round 3 `API/E2E Failure-Origin Review`
 - Requirements Doc Reviewed As Context: `requirements-doc.md` (SR-003 for rounds 1–2; SR-005 for round 3, with AC-003/QR-002 restated, DEC-008)
 - Investigation Notes Reviewed As Context: `investigation-notes.md` (cited sections only)
 - Solution Revision Record Reviewed As Context: `solution-revision-record.md`
@@ -14,15 +14,16 @@
 - Relevant Architecture Review Revision IDs: ARCH-REV-003
 - Implementation Handoff Reviewed As Context: `implementation-handoff.md`
 - Implementation Revision Record Reviewed As Context: `implementation-revision-record.md`
-- Relevant Implementation Revision IDs: IR-001, IR-002
+- Relevant Implementation Revision IDs: IR-001, IR-002, IR-003
 - Code Review Revision Record: `code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-003`
-- Current Review Round: 3
-- Review Scope: round 1 `Full Review` (CRR-001, at `3a78c3eee`); round 2 `Targeted Delta Review` (CRR-002, at `077fa6853`); round 3 `N/A` (failure-origin round, CRR-003, code unchanged at `077fa6853`)
+- Current Code Review Revision ID: `CRR-004`
+- Current Review Round: 4
+- Review Scope: round 1 `Full Review` (CRR-001, at `3a78c3eee`); round 2 `Targeted Delta Review` (CRR-002, at `077fa6853`); round 3 `N/A` (failure-origin round, CRR-003, code unchanged at `077fa6853`); round 4 `Targeted Delta Review` (CRR-004, at `542bf871f`). Round 4 evidence: `git diff 077fa6853 542bf871f` changes two class attributes in `MemorySyncCard.vue:143-144`, within CR-002. No logic, interface or data change.
 - Review Scope Evidence (round >1): `git diff --stat 3a78c3eee bfcd82366 -- . ':!tickets'` shows one file, 4 deletions (`memory-hub-staged-file-store.ts`: CR-001's function). No spine, interface or data-shape change, no new files, no fix layered on a fix.
 - Trigger: round 1 was implementation handoff IR-001 (Large / High), code commit `3a78c3eee`. Round 2 is IR-002 (the CR-001 Local Fix), code commit `077fa6853`, with documents in `bfcd82366`. Branch `task/memory-sync-large-files`, base `origin/personal` @ `3d738de6e`.
-- Prior Review Round Reviewed: 2 (CRR-002, Pass)
-- Latest Authoritative Round: 3
+- Prior Review Round Reviewed: 3 (CRR-003, Fail, Local Fix)
+- Latest Authoritative Round: 4
+- Round 4 trigger: IR-003 (the CR-002 Local Fix), code `542bf871f`, documents `99a8f3445`; IMP-07 shows the card spec passing, 7 tests.
 - Round 3 trigger: API/E2E round 2 (API-REV-002), documents in `c74b4a5be`. The code is unchanged at `077fa6853`; only `TESTING.md` changed since.
 - Coverage Investigation Reviewed (failure-origin entry point): `api-e2e-coverage-investigation.md`
 - Execution Coverage Report Reviewed (failure-origin entry point): `api-e2e-execution-coverage-report.md` (API-08 row, AC-010 row, OBS-1)
@@ -193,16 +194,16 @@ New or reclassified premises: None (C-02..C-07 are recorded in the candidate gat
 | `4` | `Separation of Concerns and File Placement` | 9.4 | each new file one concern; manifest path helpers moved to `shared/` to keep dependency direction | — | — |
 | `5` | `Shared-Structure / Data-Model Tightness and Reusable Owned Structures` | 9.4 | discriminated operation union; stat vs hashed entry types | — | — |
 | `6` | `Naming Quality and Local Readability` | 9.3 | consistent domain words; short comments state the rule; the test-named export is gone | — | — |
-| `7` | `API/E2E Readiness` | 9.3 | real two-server e2e harness and counting proxy ready for independent runs | rendered card not yet checked (handoff says so). Round 3: the rendered check found CR-002 | CR-002 fix, then an API-08 rerun |
-| `8` | `Runtime Correctness And Behavioral Fidelity` | 9.3 (round 2). Round 3 rationale: overstated; the card row is not readable as REQ-007 requires (CR-002) | verify-all-then-write, resume, isolation and run gate traced and tested; memory size-independent per IMP-05 | AC-003 settled by SR-005. CR-002: `break-all` on the whole failure row splits ordinary words, a review gap (see Findings) | Fix CR-002 |
+| `7` | `API/E2E Readiness` | 9.3 | real two-server e2e harness and counting proxy ready for independent runs; round 4: CR-002 fixed in source | the browser proof of the fix is API-08's rerun | API-08 rerun (en, zh-CN, DOM assertion of `word-break`) |
+| `8` | `Runtime Correctness And Behavioral Fidelity` | 9.3 | verify-all-then-write, resume, isolation and run gate traced and tested; memory size-independent (AC-003 proven under SR-005); round 4: rows wrap at word boundaries (`overflow-wrap: break-word`), only the path breaks anywhere | round 3 found CR-002 (a round-1 review gap), now fixed | — |
 | `9` | `No Backward-Compatibility / No Legacy Retention` | 9.6 | clean cut; all listed replaced code removed | — | — |
 | `10` | `Cleanup Completeness` | 9.5 | removal plan executed in full; CR-001's dead export deleted | — | — |
 
 ## Findings
 
-Open: CR-002 (round 3). CR-001 is resolved (see `code-review-revision-record.md` CRR-002).
+No open findings. CR-001 is resolved (CRR-002) and CR-002 is resolved (CRR-004).
 
-### CR-002 — Failure rows split ordinary words mid-word (Medium, Local Fix, implementation-owned) — round 3, API-08 / OBS-1
+### CR-002 — Failure rows split ordinary words mid-word (Medium, Local Fix, implementation-owned) — round 3, API-08 / OBS-1 — Resolved in round 4 (`542bf871f`: `break-words` on the `<li>`, `break-all` on the path `<span>` only)
 
 - **Where:** `autobyteus-web/components/settings/MemorySyncCard.vue:143`, `<li ... class="break-all text-xs">`, added in `3a78c3eee`. The base commit's only `break-all` is on the one-time token `<code>` (line 50).
 - **Scenario:** SCN-007 (Supported Normal Scenario): the owner opens Nodes → Memory Sync while file failures are recorded. The trigger is independent of the probe. The relay only produces a real failure state (the hub refusing a content), which the product records through its normal path: 23 failures recorded, 20 listed, "and 3 more".
@@ -232,26 +233,29 @@ Open: CR-002 (round 3). CR-001 is resolved (see `code-review-revision-record.md`
 
 ## Classification
 
-- Round 3 (failure-origin): `Local Fix`, implementation-owned, for CR-002, an implementation defect introduced by the change. Round 2: none (Pass). Round 1: `Local Fix` for CR-001, now resolved.
+- Round 4: none (Pass). Round 3 (failure-origin): `Local Fix`, implementation-owned, for CR-002, now resolved. Round 2: none (Pass). Round 1: `Local Fix` for CR-001, now resolved.
 
 ## Recommended Recipient
 
-- Round 3: Implementation Engineer (`/software_engineering_team/implementation_engineer`), per the rule "API/E2E failure-origin review confirms that the owning problem is an implementation defect". After the fix: implementation source review again (a targeted delta here), then API/E2E reruns API-08 and API-06a.
+- Round 4: API/E2E Engineer (`/software_engineering_team/api_e2e_engineer`), per the rule "implementation review passes": rerun API-08 and API-06a. The Implementation Engineer gets the informational notice.
 
 ## Residual Risks
 
 - **AC-003 / QR-002 acceptance (for API/E2E's independent AC-003 run):** cold first-sync source RSS growth with a 2 GiB file was 264 MiB (hub 191 MiB). The literal AC wording is "RSS growth during the transfer stays below 200 MiB". Code review finds no defect or design inadequacy here (C-02). Nothing in the code scales with file size: 4 GiB peaks at about the 2 GiB peak, and a warm 2 GiB transfer adds 84 / 74 MiB. A 30 MiB cold control already adds 116 MiB, which is the fixed first-sync cost of a fresh process. The API/E2E run should record cold and warm figures and state its acceptance against the AC. If the cold figure is held to be binding, that is a requirement/design question for the Solution Designer (the design's escalation trigger), not an implementation Local Fix.
-- Rendered card check: done by API-08 (round 3). It found CR-002; re-validation follows the fix. AC-003 is closed by SR-005 (DEC-008): peak growth over idle below 400 MiB on Node 22 and Node 24, first transfer included; API/E2E has proven it.
+- Rendered card check: done by API-08 (round 3). It found CR-002, fixed in `542bf871f`; the browser re-validation is API-08's rerun. AC-003 is closed by SR-005 (DEC-008): peak growth over idle below 400 MiB on Node 22 and Node 24, first transfer included; API/E2E has proven it.
 - Not run by implementation: full server unit suite end to end, web typecheck gate, `agent-semantic-memory.e2e.test.ts`. The failures reported there (SQLite RangeError, `localStorage` under Node 26) are in files this change does not touch.
 - Release order: release before or with `autobyteus-workspace-6`. `generated/graphql.ts` changed, so delivery runs the fresh-start build.
 
 ## Latest Authoritative Result
 
-- Review Decision: `Fail` (failure-origin: implementation defect)
-- Review Entry Point: `API/E2E Failure-Origin Review` (round 3)
-- Supported Product Scenario Gate: `Pass` (SCN-007; the failing scenario still represents approved behavior, REQ-007 / AC-010, ruled in scope by SR-005)
+- Review Decision: `Pass`
+- Review Entry Point: `Implementation Review` (round 4, Targeted Delta Review of IR-003)
+- Supported Product Scenario Gate: `Pass`
 - Material-Premise Gate: `Pass`
-- Score Summary: no full rescore (failure-origin round). Category 8's round-2 score of 9.3 is marked overstated because of CR-002.
-- Failure Origin: implementation defect introduced by this change (`MemorySyncCard.vue:143`), plus an earlier review gap in round 1. The test, fixture, environment and requirement are not at fault.
-- Recommended Recipient: `/software_engineering_team/implementation_engineer`
-- Notes: Local Fix CR-002. After it, a targeted delta source review here, then the API/E2E rerun of API-08 (en and zh-CN; see the zh-CN and DOM-assertion notes in CR-002) and API-06a. No follow-up added.
+- Score Summary: average 9.41; every category ≥ 9.3. Categories 7 and 8 were re-checked for the CR-002 fix; the others are carried forward.
+- Failure Origin: N/A (round 3's origin, an implementation defect, is resolved)
+- Recommended Recipient: `/software_engineering_team/api_e2e_engineer`
+- Notes:
+  - Code reviewed: `542bf871f`, which is `077fa6853` plus the two class changes.
+  - The browser proof of the fix is API-08's rerun, in en and zh-CN. In zh-CN, a break between two Han characters is normal line breaking. The probe should assert the computed `word-break` in the DOM (`TESTING.md`).
+  - No durable test changed, so the later test-code review is `Not Applicable` unless API/E2E adds one.
