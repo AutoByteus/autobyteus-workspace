@@ -4,6 +4,11 @@ import { MemoryHubCredentialError } from "../../memory-sync/hub/memory-hub-crede
 import { getClientIdentity } from "../security/node-access-gate.js";
 import type { MemorySyncBatch } from "../../memory-sync/shared/memory-sync-types.js";
 import { MemorySyncNotMigratedError } from "../../memory-sync/shared/memory-sync-capability.js";
+import { MemoryStagedFileOffsetMismatchError } from "../../memory-sync/hub/memory-hub-staged-file-store.js";
+import {
+  MEMORY_SYNC_BATCH_REQUEST_LIMIT_BYTES,
+  MEMORY_SYNC_STAGED_PIECE_MAX_BYTES,
+} from "../../memory-sync/shared/memory-sync-transfer-limits.js";
 
 const sendMemorySyncError = (
   reply: { code: (statusCode: number) => { send: (payload: unknown) => unknown } },
@@ -12,6 +17,13 @@ const sendMemorySyncError = (
   // While Memory Sync is held back (autobyteus-290 `memory_sync`), the hub answers its sources that it is unavailable.
   if (error instanceof MemorySyncNotMigratedError) {
     return reply.code(503).send({ error: error.code, message: error.message });
+  }
+  if (error instanceof MemoryStagedFileOffsetMismatchError) {
+    return reply.code(409).send({
+      error: "MemorySyncStagedFileOffsetMismatch",
+      message: error.message,
+      receivedBytes: error.receivedBytes,
+    });
   }
   if (error instanceof MemoryHubIngestionError || error instanceof MemoryHubCredentialError) {
     return reply.code(error.statusCode).send({ error: error.name, message: error.message });
@@ -40,7 +52,7 @@ export async function registerMemorySyncRoutes(app: FastifyInstance): Promise<vo
 
   app.post<{ Body: MemorySyncBatch }>(
     "/memory-sync/v1/batches",
-    { bodyLimit: 50 * 1024 * 1024 },
+    { bodyLimit: MEMORY_SYNC_BATCH_REQUEST_LIMIT_BYTES },
     async (request, reply) => {
       try {
         return await getMemoryHubIngestionService().commitBatch({
@@ -52,4 +64,54 @@ export async function registerMemorySyncRoutes(app: FastifyInstance): Promise<vo
       }
     },
   );
+
+  // Pieces of staged files are raw bytes. Their parser and body limit live in this scope only; the other routes
+  // keep answering 415 to an octet-stream body.
+  await app.register(async (stagedFileScope) => {
+    stagedFileScope.addContentTypeParser(
+      "application/octet-stream",
+      { parseAs: "buffer" },
+      (_request, body, done) => done(null, body),
+    );
+
+    stagedFileScope.get<{ Params: { memorySyncSourceId: string; sha256: string } }>(
+      "/memory-sync/v1/sources/:memorySyncSourceId/staged-files/:sha256",
+      async (request, reply) => {
+        try {
+          return await getMemoryHubIngestionService().getStagedFileStatus({
+            credentialId: sourceCredentialId(request),
+            memorySyncSourceId: request.params.memorySyncSourceId,
+            sha256: request.params.sha256,
+          });
+        } catch (error) {
+          return sendMemorySyncError(reply, error);
+        }
+      },
+    );
+
+    stagedFileScope.put<{ Params: { memorySyncSourceId: string; sha256: string }; Querystring: { offset?: string }; Body: Buffer }>(
+      "/memory-sync/v1/sources/:memorySyncSourceId/staged-files/:sha256",
+      { bodyLimit: MEMORY_SYNC_STAGED_PIECE_MAX_BYTES },
+      async (request, reply) => {
+        try {
+          const offset = Number(request.query.offset);
+          if (!Number.isSafeInteger(offset) || offset < 0) {
+            throw new MemoryHubIngestionError("offset must be a non-negative integer.");
+          }
+          if (!Buffer.isBuffer(request.body)) {
+            throw new MemoryHubIngestionError("A staged file piece must be sent as application/octet-stream.");
+          }
+          return await getMemoryHubIngestionService().receiveStagedFilePiece({
+            credentialId: sourceCredentialId(request),
+            memorySyncSourceId: request.params.memorySyncSourceId,
+            sha256: request.params.sha256,
+            offset,
+            bytes: request.body,
+          });
+        } catch (error) {
+          return sendMemorySyncError(reply, error);
+        }
+      },
+    );
+  });
 }

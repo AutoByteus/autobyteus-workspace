@@ -7,15 +7,32 @@ import {
   createEmptyMemorySyncManifest,
   normalizeMemorySyncManifest,
   recomputeMemorySyncManifestTotals,
+  resolveMemorySyncImportRootDir,
+  resolveMemorySyncManifestPath,
 } from "../shared/memory-sync-manifest.js";
-import { normalizeMemorySyncFileKind, normalizeMemorySyncRelativePath, resolveKindRelativePathUnderRoot, resolveUnderRoot, toMemorySyncFileKey } from "../shared/memory-sync-path-policy.js";
+import type { MemorySyncFileKind } from "../shared/memory-sync-path-policy.js";
+import { normalizeMemorySyncFileKind, normalizeMemorySyncRelativePath, resolveKindRelativePathUnderRoot, toMemorySyncFileKey } from "../shared/memory-sync-path-policy.js";
 import { digestMemorySyncOperations, validateMemorySyncBatchId } from "./memory-sync-batch-identity.js";
 import type { MemoryFileOperation, MemorySyncBatch, MemorySyncBatchCommitResult, MemorySyncManifest, MemorySyncSourceMetadata } from "../shared/memory-sync-types.js";
 import { normalizeMemorySyncSourceId } from "../shared/memory-sync-source-id.js";
 import { requireMemorySyncReady } from "../shared/memory-sync-capability.js";
 import type { MemoryImportStore } from "./memory-import-store.js";
+import {
+  getMemoryHubStagedFileStore,
+  MemoryStagedFileVerificationError,
+  type MemoryHubStagedFileStore,
+} from "./memory-hub-staged-file-store.js";
 
 type AppConfigLike = { getMemoryDir(): string };
+
+/** One operation of a batch, validated: where it goes and, for an inline operation, its decoded content. */
+type VerifiedOperation = {
+  operation: MemoryFileOperation;
+  kind: MemorySyncFileKind;
+  relativePath: string;
+  targetPath: string;
+  content: Buffer | null;
+};
 
 const RECENT_BATCH_LIMIT = 50;
 
@@ -42,7 +59,10 @@ const writeJsonFile = async (filePath: string, value: unknown): Promise<void> =>
 const sha256Buffer = (buffer: Buffer): string => createHash("sha256").update(buffer).digest("hex");
 
 export class LocalFileMemoryImportStore implements MemoryImportStore {
-  constructor(private readonly config: AppConfigLike = appConfigProvider.config) {}
+  constructor(
+    private readonly config: AppConfigLike = appConfigProvider.config,
+    private readonly stagedFiles: MemoryHubStagedFileStore = getMemoryHubStagedFileStore(),
+  ) {}
 
   /** Every path into the imports goes through here, so nothing reads or writes them while Memory Sync is held back. */
   getImportsRootDir(): string {
@@ -51,7 +71,8 @@ export class LocalFileMemoryImportStore implements MemoryImportStore {
   }
 
   getImportRootDir(memorySyncSourceId: string): string {
-    return resolveUnderRoot(this.getImportsRootDir(), normalizeMemorySyncSourceId(memorySyncSourceId));
+    requireMemorySyncReady();
+    return resolveMemorySyncImportRootDir(this.config.getMemoryDir(), memorySyncSourceId);
   }
 
   async sourceExists(memorySyncSourceId: string): Promise<boolean> {
@@ -96,7 +117,7 @@ export class LocalFileMemoryImportStore implements MemoryImportStore {
 
   async readManifest(memorySyncSourceId: string): Promise<MemorySyncManifest> {
     const normalizedMemorySyncSourceId = normalizeMemorySyncSourceId(memorySyncSourceId);
-    const filePath = path.join(this.getImportRootDir(normalizedMemorySyncSourceId), "sync-manifest.json");
+    const filePath = resolveMemorySyncManifestPath(this.getImportRootDir(normalizedMemorySyncSourceId));
     const raw = await readJsonFile<Partial<MemorySyncManifest>>(filePath);
     return normalizeMemorySyncManifest(normalizedMemorySyncSourceId, raw);
   }
@@ -112,7 +133,7 @@ export class LocalFileMemoryImportStore implements MemoryImportStore {
     }
 
     const importRoot = this.getImportRootDir(memorySyncSourceId);
-    const manifestPath = path.join(importRoot, "sync-manifest.json");
+    const manifestPath = resolveMemorySyncManifestPath(importRoot);
     const digest = digestMemorySyncOperations(batch.operations);
     let result: MemorySyncBatchCommitResult | null = null;
 
@@ -136,11 +157,12 @@ export class LocalFileMemoryImportStore implements MemoryImportStore {
           return manifest;
         }
 
+        // Verify every operation before writing any, so a batch that cannot be written is refused as a whole.
+        const verified = await this.verifyOperations(memorySyncSourceId, importRoot, batch.operations);
+        await this.writeOperations(memorySyncSourceId, verified);
+
         const committedAt = nowIso();
-        for (const operation of batch.operations) {
-          await this.commitReplaceOperation(importRoot, operation);
-          const kind = normalizeMemorySyncFileKind(operation.kind);
-          const relativePath = normalizeMemorySyncRelativePath(operation.relativePath);
+        for (const { operation, kind, relativePath } of verified) {
           const key = toMemorySyncFileKey(kind, relativePath);
           manifest.files[key] = {
             kind,
@@ -187,28 +209,75 @@ export class LocalFileMemoryImportStore implements MemoryImportStore {
     return result;
   }
 
-  private async commitReplaceOperation(importRoot: string, operation: MemoryFileOperation): Promise<void> {
-    if (operation.operation !== "replace") {
-      throw new Error("Memory Sync v1 supports only full-file replace operations.");
+  /**
+   * Inline operations: decode, check size and SHA-256. Staged operations: grouped by SHA-256, each distinct staged
+   * content verified once (the same attachment under two runs is one content at two targets).
+   */
+  private async verifyOperations(
+    memorySyncSourceId: string,
+    importRoot: string,
+    operations: MemoryFileOperation[],
+  ): Promise<VerifiedOperation[]> {
+    const verified: VerifiedOperation[] = [];
+    const stagedBySha256 = new Map<string, VerifiedOperation[]>();
+    for (const operation of operations) {
+      if (operation.operation !== "replace") {
+        throw new Error("Memory Sync supports only full-file replace operations.");
+      }
+      const kind = normalizeMemorySyncFileKind(operation.kind);
+      const relativePath = normalizeMemorySyncRelativePath(operation.relativePath);
+      const targetPath = resolveKindRelativePathUnderRoot(importRoot, kind, relativePath);
+      if (operation.contentEncoding === "staged") {
+        const entry: VerifiedOperation = { operation, kind, relativePath, targetPath, content: null };
+        verified.push(entry);
+        stagedBySha256.set(operation.sha256, [...(stagedBySha256.get(operation.sha256) ?? []), entry]);
+        continue;
+      }
+      if (operation.contentEncoding !== "base64") {
+        throw new Error(`Unsupported Memory Sync content encoding for ${kind}/${relativePath}.`);
+      }
+      const content = Buffer.from(operation.contentBase64, "base64");
+      if (content.byteLength !== operation.size) {
+        throw new Error(`Uploaded file size mismatch for ${kind}/${relativePath}.`);
+      }
+      if (sha256Buffer(content) !== operation.sha256) {
+        throw new Error(`Uploaded file hash mismatch for ${kind}/${relativePath}.`);
+      }
+      verified.push({ operation, kind, relativePath, targetPath, content });
     }
-    if (operation.contentEncoding !== "base64") {
-      throw new Error("Memory Sync JSON ingestion requires base64 content.");
+    for (const [sha256, group] of stagedBySha256) {
+      const first = group[0] as VerifiedOperation;
+      const name = `${first.kind}/${first.relativePath}`;
+      if (group.some((entry) => entry.operation.size !== first.operation.size)) {
+        throw new Error(`Uploaded file size mismatch for ${name}.`);
+      }
+      try {
+        await this.stagedFiles.verifyStagedFile(memorySyncSourceId, sha256, first.operation.size);
+      } catch (error) {
+        if (error instanceof MemoryStagedFileVerificationError) {
+          throw new Error(`${error.message} for ${name}.`);
+        }
+        throw error;
+      }
     }
-    const kind = normalizeMemorySyncFileKind(operation.kind);
-    const relativePath = normalizeMemorySyncRelativePath(operation.relativePath);
-    const targetPath = resolveKindRelativePathUnderRoot(importRoot, kind, relativePath);
-    const content = Buffer.from(operation.contentBase64, "base64");
-    if (content.byteLength !== operation.size) {
-      throw new Error(`Uploaded file size mismatch for ${kind}/${relativePath}.`);
+    return verified;
+  }
+
+  private async writeOperations(memorySyncSourceId: string, verified: VerifiedOperation[]): Promise<void> {
+    const stagedTargets = new Map<string, string[]>();
+    for (const { operation, targetPath, content } of verified) {
+      if (!content) {
+        stagedTargets.set(operation.sha256, [...(stagedTargets.get(operation.sha256) ?? []), targetPath]);
+        continue;
+      }
+      await fs.mkdir(path.dirname(targetPath), { recursive: true });
+      const tempPath = `${targetPath}.${process.pid}.${Date.now()}.${Math.random().toString(16).slice(2)}.tmp`;
+      await fs.writeFile(tempPath, content);
+      await fs.rename(tempPath, targetPath);
     }
-    const actualHash = sha256Buffer(content);
-    if (actualHash !== operation.sha256) {
-      throw new Error(`Uploaded file hash mismatch for ${kind}/${relativePath}.`);
+    for (const [sha256, targetPaths] of stagedTargets) {
+      await this.stagedFiles.placeStagedFile(memorySyncSourceId, sha256, targetPaths);
     }
-    await fs.mkdir(path.dirname(targetPath), { recursive: true });
-    const tempPath = `${targetPath}.${process.pid}.${Date.now()}.${Math.random().toString(16).slice(2)}.tmp`;
-    await fs.writeFile(tempPath, content);
-    await fs.rename(tempPath, targetPath);
   }
 
   private async writeMemorySyncSourceMetadata(batch: MemorySyncBatch, importedAt: string): Promise<void> {

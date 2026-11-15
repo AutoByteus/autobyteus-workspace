@@ -40,6 +40,16 @@ const MEMORY_SYNC_STATUS_FIELDS = gql`
       lastSuccessfulSyncAt
       lastError
       trackedFileCount
+      fileFailureCount
+      fileFailures {
+        kind
+        relativePath
+        size
+        reason
+        attempts
+        lastFailedAt
+        nextAttemptAt
+      }
     }
     imports {
       memorySyncSourceId
@@ -145,6 +155,7 @@ export const START_MEMORY_SYNC = gql`
       changedFiles
       unchangedFiles
       deferredFiles
+      failedFiles
       committedBatches
       duplicateBatches
     }

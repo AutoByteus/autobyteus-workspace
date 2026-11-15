@@ -41,6 +41,16 @@ export const GET_MEMORY_SYNC_STATUS = gql`
         lastSuccessfulSyncAt
         lastError
         trackedFileCount
+        fileFailureCount
+        fileFailures {
+          kind
+          relativePath
+          size
+          reason
+          attempts
+          lastFailedAt
+          nextAttemptAt
+        }
       }
       imports {
         memorySyncSourceId

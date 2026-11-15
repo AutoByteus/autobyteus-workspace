@@ -2,7 +2,7 @@ import { createHash } from "node:crypto";
 import path from "node:path";
 import { appConfigProvider } from "../../config/app-config-provider.js";
 import { readJsonFile, updateJsonFile, writeJsonFile } from "../../persistence/file/store-utils.js";
-import type { MemorySyncSourceState } from "../shared/memory-sync-types.js";
+import type { MemorySyncFileFailure, MemorySyncSourceState } from "../shared/memory-sync-types.js";
 import { normalizeMemorySyncSourceId } from "../shared/memory-sync-source-id.js";
 import { requireMemorySyncReady } from "../shared/memory-sync-capability.js";
 import type { MemorySyncStateStore } from "./memory-sync-state-store.js";
@@ -23,7 +23,42 @@ const defaultState = (hubBaseUrl: string, memorySyncSourceId: string): MemorySyn
   lastError: null,
   lastJobState: "idle",
   files: {},
+  fileFailures: {},
 });
+
+const isFileFailure = (value: unknown): value is MemorySyncFileFailure => {
+  const record = value as Partial<MemorySyncFileFailure> | null;
+  return typeof record === "object" && record !== null
+    && (record.kind === "agents" || record.kind === "agent_teams")
+    && typeof record.relativePath === "string"
+    && Number.isFinite(record.size) && Number.isFinite(record.mtimeMs) && Number.isFinite(record.attempts)
+    && typeof record.reason === "string"
+    && typeof record.lastFailedAt === "string" && Number.isFinite(Date.parse(record.lastFailedAt))
+    && typeof record.nextAttemptAt === "string" && Number.isFinite(Date.parse(record.nextAttemptAt));
+};
+
+/** Reads the known fields of each failure record and drops one that is not a valid record (its file is retried). */
+const normalizeFileFailures = (value: unknown): Record<string, MemorySyncFileFailure> => {
+  const failures: Record<string, MemorySyncFileFailure> = {};
+  if (typeof value !== "object" || value === null) {
+    return failures;
+  }
+  for (const [key, record] of Object.entries(value)) {
+    if (isFileFailure(record)) {
+      failures[key] = {
+        kind: record.kind,
+        relativePath: record.relativePath,
+        size: record.size,
+        mtimeMs: record.mtimeMs,
+        reason: record.reason,
+        attempts: record.attempts,
+        lastFailedAt: record.lastFailedAt,
+        nextAttemptAt: record.nextAttemptAt,
+      };
+    }
+  }
+  return failures;
+};
 
 const normalizeState = (hubBaseUrl: string, memorySyncSourceId: string, value: Partial<MemorySyncSourceState>): MemorySyncSourceState => ({
   schemaVersion: 1,
@@ -36,6 +71,7 @@ const normalizeState = (hubBaseUrl: string, memorySyncSourceId: string, value: P
     ? value.lastJobState
     : "idle",
   files: value.files && typeof value.files === "object" ? value.files : {},
+  fileFailures: normalizeFileFailures(value.fileFailures),
 });
 
 export class LocalFileMemorySyncStateStore implements MemorySyncStateStore {
