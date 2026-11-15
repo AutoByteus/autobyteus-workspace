@@ -1,39 +1,31 @@
 import { computed, watch } from 'vue';
+import type { RunTreeRowDto } from '@autobyteus/collaboration-stream-contracts';
 import { useTaskWorkerTasks } from '~/composables/projects/useTaskWorkerTasks';
 import { useRouteSelectedAgentOrg } from '~/composables/runHistory/useRouteSelectedAgentOrg';
 import { useRunListDisclosure } from '~/composables/useRunListDisclosure';
 import { useActiveContextStore } from '~/stores/activeContextStore';
-import { useAgentOrgContextsStore } from '~/stores/agentOrgContextsStore';
 import { useAgentRunCollaborationStore } from '~/stores/agentRunCollaborationStore';
 import { useAgentSelectionStore } from '~/stores/agentSelectionStore';
-import { useRemoteRunsStore } from '~/stores/remoteRunsStore';
 import { useRunHistoryStore } from '~/stores/runHistoryStore';
 import { useRunListStore } from '~/stores/runListStore';
-import { projectAgentOrgHistoryRows } from '~/utils/agentOrgHistoryRows';
+import { useRunStatusStore } from '~/stores/runStatusStore';
+import { useRunTreeStore } from '~/stores/runTreeStore';
+import { AgentStatus } from '~/types/agent/AgentStatus';
 import { taskWorkerTaskLabel } from '~/utils/projects/taskText';
+import type { RunListEntry } from '~/utils/runListProjection';
+import { isTeamRow } from '~/utils/runTree/runTreeDisplayRows';
+import { resolveTeamStatus } from '~/utils/workspaceTeamAggregateStatus';
 import {
-  buildMobileRunTreeRows,
+  buildMobileRunListRows,
   openAgentRunIdOf,
+  treeDisplayRowsOf,
+  treeRefOf,
   type MobileRowFold,
   type MobileRunTreeRow,
-} from '~/utils/mobile/mobileRunTreeProjection';
+} from '~/utils/mobile/mobileRunListRows';
 
 /** The phone folds Org runs' delegated Teams and unfolds Org runs (REQ-002, AR-004). */
 const PHONE_DEFAULT_EXPANSION = Object.freeze({ orgRuns: true, orgTaskTeams: false });
-
-/** The rows above `isTarget`'s row in a depth-ordered tree list that contain it, nearest first. */
-const ancestorsOf = <T>(rows: readonly T[], depthOf: (row: T) => number, isTarget: (row: T) => boolean): T[] => {
-  const index = rows.findIndex(isTarget);
-  if (index < 0) return [];
-  const ancestors: T[] = [];
-  let depth = depthOf(rows[index]!);
-  for (let at = index - 1; at >= 0 && depth > 0; at -= 1) {
-    if (depthOf(rows[at]!) >= depth) continue;
-    ancestors.push(rows[at]!);
-    depth = depthOf(rows[at]!);
-  }
-  return ancestors;
-};
 
 /**
  * The phone's run list rows (autobyteus-277 DS-002): the run list store's shown runs, each with the rows of its kind's
@@ -46,9 +38,9 @@ export function useMobileRunTree() {
   const runListStore = useRunListStore();
   const selectionStore = useAgentSelectionStore();
   const collaboration = useAgentRunCollaborationStore();
-  const orgContexts = useAgentOrgContextsStore();
-  const remoteRuns = useRemoteRunsStore();
   const activeContext = useActiveContextStore();
+  const trees = useRunTreeStore();
+  const runStatus = useRunStatusStore();
 
   const disclosure = useRunListDisclosure({
     runHistoryStore, runListStore, selectionStore,
@@ -57,37 +49,46 @@ export function useMobileRunTree() {
     defaultExpansion: PHONE_DEFAULT_EXPANSION,
   });
 
-  // A listed Agent run's delegated work comes from its stored view, read once (a live run's stream keeps it current).
-  watch(() => runListStore.shownEntries.flatMap((entry) => entry.kind === 'agent' && entry.run.hasCollaboration ? [entry.runId] : []),
-    (runIds) => runIds.forEach((runId) => collaboration.ensureStoredView(runId, true)), { immediate: true });
+  const isEntryExpanded = (entry: RunListEntry) => entry.kind === 'agent' ? disclosure.isRunExpanded(entry.runId)
+    : entry.kind === 'team' ? disclosure.isTeamExpanded(entry.runId) : disclosure.isAgentOrgRunExpanded(entry.runId);
+  // Each shown run's tree, built on the server (SR-084): an Agent run's while it is listed with delegated work (its
+  // second line and fold need it), a Team's or an Org's while it is unfolded; read again when its rows change.
+  watch(() => runListStore.shownEntries.filter((entry) => entry.kind === 'agent' ? entry.run.hasCollaboration === true : isEntryExpanded(entry))
+    .map((entry) => `${entry.kind}:${entry.runId}`).join('|'), (_key, _previous, onCleanup) => {
+    const releases = runListStore.shownEntries
+      .filter((entry) => entry.kind === 'agent' ? entry.run.hasCollaboration === true : isEntryExpanded(entry))
+      .map((entry) => trees.hold(treeRefOf(entry)));
+    onCleanup(() => releases.forEach((release) => release()));
+  }, { immediate: true });
+
+  /** A tree row folds by its run's disclosure: an Agent run's rows by key; a Team's by key; an Org's mounted team by address. */
+  const isTreeRowExpanded = (entry: RunListEntry, row: RunTreeRowDto): boolean => {
+    if (entry.kind === 'agent') return collaboration.isTreeRowExpanded(entry.runId, row);
+    if (entry.kind === 'team') return isTeamRow(row) === disclosure.isRowExpanded(entry.runId, row.key);
+    return row.kind === 'org_team' ? disclosure.isAgentOrgTeamExpanded(entry.runId, row.address ?? '')
+      : disclosure.isAgentOrgTaskTeamExpanded(entry.runId, row.key);
+  };
+  /** Each row's status is its own run's (SR-083, G-A4); an Org's mounted team's is its members', as the Org reports them. */
+  const statusOf = (row: RunTreeRowDto, id: string): AgentStatus | string | null => {
+    if (row.kind === 'team' || row.kind === 'peer_team') return runStatus.runStateOf({ kind: 'agent_team', runId: id })?.status ?? null;
+    if (row.kind === 'org_team') return resolveTeamStatus(row.statusIds.map((agentRunId) => runStatus.statusOf(agentRunId)), true);
+    return runStatus.statusOf(id);
+  };
+  const sources = { treeRows: (entry: RunListEntry) => trees.rowsOf(treeRefOf(entry)), statusOf, isTreeRowExpanded };
 
   // The listed Task workers' current Tasks (the desktop's second line; summaries only, no locating on the phone).
-  const { taskOf } = useTaskWorkerTasks(() => runListStore.shownEntries.flatMap((entry) => entry.kind === 'agent'
-    ? collaboration.taskRows(entry.runId).map((display) => display.row)
-    : entry.kind === 'team' ? entry.team.executionRows : []));
+  const { taskOf } = useTaskWorkerTasks(() => runListStore.shownEntries.flatMap((entry) => treeDisplayRowsOf(entry, sources).map((display) => display.row)));
 
-  const rows = computed<MobileRunTreeRow[]>(() => buildMobileRunTreeRows({
+  const rows = computed<MobileRunTreeRow[]>(() => buildMobileRunListRows({
     entries: runListStore.shownEntries,
-    taskRows: (hostRunId) => collaboration.taskRows(hostRunId),
-    orgRows: (orgRun) => projectAgentOrgHistoryRows({
-      run: orgRun,
-      context: orgContexts.contextFor(orgRun.rootRunId),
-      isTeamExpanded: (address) => disclosure.isAgentOrgTeamExpanded(orgRun.rootRunId, address),
-      isTaskTeamExpanded: (teamRunId) => disclosure.isAgentOrgTaskTeamExpanded(orgRun.rootRunId, teamRunId),
-    }),
-    remoteReachable: (runId) => remoteRuns.run(runId)?.reachable !== false,
-    remoteTitle: (runId) => remoteRuns.run(runId)?.title ?? null,
+    ...sources,
     taskSummary: (row) => {
       const task = taskOf(row);
       return task ? taskWorkerTaskLabel(task) : null;
     },
     isRunExpanded: disclosure.isRunExpanded,
     isTeamExpanded: disclosure.isTeamExpanded,
-    isTeamRowExpanded: disclosure.isRowExpanded,
     isAgentOrgRunExpanded: disclosure.isAgentOrgRunExpanded,
-    isAgentOrgTeamExpanded: disclosure.isAgentOrgTeamExpanded,
-    isTaskTeamExpanded: (hostRunId, teamRunId) => collaboration.isTaskTeamExpanded(hostRunId, teamRunId),
-    isAgentOrgTaskTeamExpanded: disclosure.isAgentOrgTaskTeamExpanded,
   }));
 
   /** The open target's agent; its row is the open row. */
@@ -106,40 +107,38 @@ export function useMobileRunTree() {
   });
   const openRow = computed(() => rows.value.find((row) => row.key === openRowKey.value) ?? null);
 
+  const toggleTreeRow = (entry: RunListEntry, row: RunTreeRowDto): void => {
+    if (entry.kind === 'agent') collaboration.toggleTreeRow(entry.runId, row.key);
+    else if (entry.kind === 'team') disclosure.toggleTeamMember(entry.runId, row.key);
+    else if (row.kind === 'org_team') disclosure.toggleAgentOrgTeam(entry.runId, row.address ?? '');
+    else disclosure.toggleAgentOrgTaskTeam(entry.runId, row.key);
+  };
   const toggle = (fold: MobileRowFold): void => {
     if (fold.kind === 'run') disclosure.toggleRun(fold.runId);
     else if (fold.kind === 'team') disclosure.toggleTeam(fold.teamRunId);
-    else if (fold.kind === 'teamRow') disclosure.toggleTeamMember(fold.teamRunId, fold.rowKey);
-    else if (fold.kind === 'taskTeam') collaboration.toggleTaskTeam(fold.hostRunId, fold.teamRunId);
     else if (fold.kind === 'orgRun') disclosure.toggleAgentOrgRun(fold.rootRunId);
-    else if (fold.kind === 'orgTeam') disclosure.toggleAgentOrgTeam(fold.rootRunId, fold.address);
-    else disclosure.toggleAgentOrgTaskTeam(fold.rootRunId, fold.teamRunId);
+    else toggleTreeRow(fold.entry, fold.row);
   };
 
   /**
-   * Opens every fold on the path to a row, never closing one (autobyteus-435 DS-006 restore): the older runs' fold for
-   * its run; a Team member's Team and each ancestor Team row (from the Team's rows in the history read); a delegated
-   * row's run and each ancestor task Team (from the run's published view). A row whose run is not listed reveals nothing.
+   * Opens every fold on the path to a row, never closing one (autobyteus-435 DS-006 restore): its run's fold, then each
+   * row above it in its run's tree (the server's rows, by their keys). A row whose run is not listed reveals nothing.
    */
   const revealRow = (key: string): void => {
     const slash = key.indexOf('/');
     const entry = runListStore.entries.find((candidate) => candidate.key === (slash < 0 ? key : key.slice(0, slash)));
     if (!entry) return;
     runListStore.showRun(entry.runId);
+    if (entry.kind === 'team') disclosure.setTeamExpanded(entry.runId, true);
+    else if (entry.kind === 'agent' ? !disclosure.isRunExpanded(entry.runId) : !disclosure.isAgentOrgRunExpanded(entry.runId)) {
+      if (entry.kind === 'agent') disclosure.toggleRun(entry.runId); else disclosure.toggleAgentOrgRun(entry.runId);
+    }
     if (slash < 0) return;
-    const rowKey = key.slice(slash + 1);
-    if (entry.kind === 'team') {
-      disclosure.setTeamExpanded(entry.runId, true);
-      for (const row of ancestorsOf(entry.team.executionRows, (row) => row.depth, (row) => row.rowKey === rowKey)) {
-        if (!disclosure.isRowExpanded(entry.runId, row.rowKey)) disclosure.toggleTeamMember(entry.runId, row.rowKey);
-      }
-    } else if (entry.kind === 'agent') {
-      if (!disclosure.isRunExpanded(entry.runId)) disclosure.toggleRun(entry.runId);
-      const taskRows = collaboration.contextFor(entry.runId)?.listTaskRows(() => true) ?? [];
-      for (const { row } of ancestorsOf(taskRows, ({ row }) => row.depth, ({ row }) => row.rowKey === rowKey)) {
-        const teamRunId = row.teamRunIdForNode;
-        if (teamRunId && !collaboration.isTaskTeamExpanded(entry.runId, teamRunId)) collaboration.toggleTaskTeam(entry.runId, teamRunId);
-      }
+    const treeRows = trees.rowsOf(treeRefOf(entry));
+    const byKey = new Map(treeRows.map((row) => [row.key, row]));
+    for (let row = byKey.get(byKey.get(key.slice(slash + 1))?.parentKey ?? ''); row; row = byKey.get(row.parentKey ?? '')) {
+      // An Agent's or a Team's own row is the listed run's (its fold is opened above); an Org's own parts fold themselves.
+      if ((entry.kind === 'org' || row.parentKey !== null) && !isTreeRowExpanded(entry, row)) toggleTreeRow(entry, row);
     }
   };
 

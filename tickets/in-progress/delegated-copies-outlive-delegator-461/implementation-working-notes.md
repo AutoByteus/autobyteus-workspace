@@ -584,3 +584,7 @@ Step 2c, org tree (uncommitted, web types PASS):
   - An `org_team` row's status is folded from its members on the client. It is an org's own part, so the server has no run-level answer for it. Flag this for review.
 - `WorkspaceAgentOrgHistoryCollection` now renders `AgentOrgRunMemberTree`; its inline duplicate tree is gone.
 - Org specs failing (about 30): add a test-support helper that turns a fixture's org execution tree into server-shaped rows, seed `runTreeStore` in each spec, and update the delegated-row selectors.
+- `829c46cb22`: the desktop org tree (2c). Gates: web types PASS; web unit 726 files and 5554 tests all pass.
+  - `runTreeStore.streamEnded` no longer reads; notices re-read the tree.
+  - A team row's inspect passes no address (the target names its coordinator).
+- Next: the phone (2d): `useMobileRunTree`, `mobileRunTreeProjection`, `MobileRunList`, `MobileRunRow`, `useMobileRunOpening`.

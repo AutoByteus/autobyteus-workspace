@@ -22,10 +22,10 @@ vi.mock('~/composables/useLocalization', () => ({ useLocalization: () => ({ t: (
 import { useMobileRunOpening } from '../useMobileRunOpening';
 import { useMobileRunOpeningStore } from '~/stores/mobileRunOpeningStore';
 import { useAgentRunCollaborationStore } from '~/stores/agentRunCollaborationStore';
-import { useAgentOrgContextsStore } from '~/stores/agentOrgContextsStore';
 import { useDelegatedRunsStore } from '~/stores/delegatedRunsStore';
-import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
-import type { MobileRunTreeRow } from '~/utils/mobile/mobileRunTreeProjection';
+import type { MobileRunTreeRow } from '~/utils/mobile/mobileRunListRows';
+import type { RunTreeRowDto } from '@autobyteus/collaboration-stream-contracts';
+import { agentRow } from '~/test-support/runTreeFixtures';
 import { createMobileTestRouter, withSetup } from './mobileTestRouter';
 
 const disclosure = { setTeamExpanded: vi.fn(), toggleTeam: vi.fn(), expandTeamMemberAncestors: vi.fn(() => true) };
@@ -35,6 +35,15 @@ const row = (open: MobileRunTreeRow['open'], key = 'agent:host'): MobileRunTreeR
 });
 const orgRun = { rootRunId: 'org-1', isActive: true, executionTree: { rootOrg: { orgDefinitionId: 'org-def', members: [{ address: '/software_team', teamRunId: 't' }, { address: '/director', agentRunId: 'd' }] } } } as never;
 const ORG_KEYS = { rootSubjectKind: 'agent_org', definitionId: 'org-def', orgRunId: 'org-1', mode: 'active' };
+// The listed runs, and a row of each one's tree as the server builds it (SR-084).
+const agentEntry = { kind: 'agent', key: 'agent:host', runId: 'host', run } as never;
+const teamEntry = { kind: 'team', key: 'team:t', runId: 't', team: { teamRunId: 't' } } as never;
+const orgEntry = { kind: 'org', key: 'org:org-1', runId: 'org-1', orgRun } as never;
+const treeRow = (entry: unknown, tree: RunTreeRowDto) => ({ kind: 'treeRow', entry, row: tree }) as MobileRunTreeRow['open'];
+const teamMember = (agentRunId: string, address: string): RunTreeRowDto => ({ key: `team_member:t:${agentRunId}`, parentKey: 'team:t', depth: 1,
+  kind: 'team_member', name: agentRunId, address, openTarget: { runKind: 'agent_team', runId: 't', agentRunId }, statusIds: [agentRunId] });
+const orgAgent = (agentRunId: string, address: string): RunTreeRowDto => ({ key: `org_agent:org-1:${agentRunId}`, parentKey: null, depth: 0,
+  kind: 'org_agent', name: agentRunId, address, openTarget: { runKind: 'agent_org', runId: 'org-1', agentRunId }, statusIds: [agentRunId] });
 
 let pinia: Pinia;
 const setup = async () => {
@@ -81,37 +90,31 @@ describe('useMobileRunOpening', () => {
     expect(store.failure).toEqual({ key: 'agent:host' });
   });
 
-  it('a Team run, a member and a task row each open through their shared action', async () => {
+  it('a Team run, a member and an agent run\'s tree row each open through their shared action; a tree row through openRunTarget (SR-084)', async () => {
     const { opening } = await setup();
     const collaboration = useAgentRunCollaborationStore();
-    const selectTaskRow = vi.spyOn(collaboration, 'selectTaskRow').mockReturnValue(true);
+    const selectTreeRow = vi.spyOn(collaboration, 'selectTreeRow').mockReturnValue(true);
     const team = { teamRunId: 't' } as never;
-    const target = { teamRunId: 't', memberAddress: '/m', agentRunId: 'm' };
-    const taskRow = { agentRunId: 'child' } as never;
+    const child = agentRow('child', 'agent:host', 1);
     await opening.open(row({ kind: 'team', team }, 'team:t'));
-    await opening.open(row({ kind: 'teamMember', target }, 'team:t/m'));
-    await opening.open(row({ kind: 'taskRow', hostRun: run, row: taskRow }, 'agent:host/child'));
+    await opening.open(row(treeRow(teamEntry, teamMember('m', '/m')), 'team:t/team_member:t:m'));
+    await opening.open(row(treeRow(agentEntry, child), 'agent:host/agent:child'));
     expect(shared.actions.onOpenTeamRun).toHaveBeenCalledWith(team);
-    expect(shared.actions.onSelectTeamMember).toHaveBeenCalledWith(target);
-    expect(selectTaskRow).toHaveBeenCalledWith('host', taskRow);
+    expect(shared.actions.onSelectTeamMember).toHaveBeenCalledWith({ teamRunId: 't', memberAddress: '/m', agentRunId: 'm' });
+    expect(selectTreeRow).toHaveBeenCalledWith('host', child);
     expect(shared.actions.onSelectRun).toHaveBeenCalledWith(run);
   });
 
   // CR-461-057, CR-461-062: one owner for every view's delegated rows. Each is shown as its own run, once that run is open.
   it.each([
-    ['an agent run\'s view (its selected child)', 'agent:host/worker', () => {
-      const collaboration = useAgentRunCollaborationStore();
-      vi.spyOn(collaboration, 'selectTaskRow').mockReturnValue(true);
-      vi.spyOn(collaboration, 'contextFor').mockReturnValue({ index: { agents: new Map([['worker', { kind: 'task_agent' }]]) } } as never);
-      vi.spyOn(collaboration, 'selectedChild').mockReturnValue('worker');
+    ['an agent run\'s tree', 'agent:host/agent:worker', () => {
+      vi.spyOn(useAgentRunCollaborationStore(), 'selectTreeRow').mockReturnValue(true);
       shared.actions.onSelectRun.mockImplementation(async () => { shared.selectionParams!.emitRunSelected({ type: 'agent', runId: 'host' }); });
-      return row({ kind: 'taskRow', hostRun: run, row: { agentRunId: 'worker' } as never }, 'agent:host/worker');
+      return row(treeRow(agentEntry, agentRow('worker', 'agent:host', 1)), 'agent:host/agent:worker');
     }],
-    ['a stopped Team (its delegated worker)', 'team:t/worker', () => {
-      useAgentTeamContextsStore().teams.set('t', { view: { getExecutionTree: () => ({ root_team: { task_executions: [
-        { kind: 'task_agent', address: '/worker', agent_run_id: 'worker', task_executions: [] }] } }) } } as never);
+    ['a stopped Team\'s tree (its delegated worker)', 'team:t/agent:worker', () => {
       shared.actions.onSelectTeamMember.mockImplementation(async () => { shared.selectionParams!.emitRunSelected({ type: 'team', runId: 't' }); });
-      return row({ kind: 'teamMember', target: { teamRunId: 't', memberAddress: '/worker', agentRunId: 'worker' } }, 'team:t/worker');
+      return row(treeRow(teamEntry, agentRow('worker', 'team_member:t:lead', 2)), 'team:t/agent:worker');
     }],
   ] as const)('a delegated row of %s commits once its own run is open; it fails when that open fails', async (_view, key, rowOf) => {
     const { opening, store } = await setup();
@@ -135,10 +138,10 @@ describe('useMobileRunOpening', () => {
     expect(store.failure).toEqual({ key });
   });
 
-  it('a task row whose run view is not loaded selects nothing and fails', async () => {
+  it('a tree row whose run view is not loaded selects nothing and fails', async () => {
     const { opening, store } = await setup();
-    vi.spyOn(useAgentRunCollaborationStore(), 'selectTaskRow').mockReturnValue(false);
-    await opening.open(row({ kind: 'taskRow', hostRun: run, row: {} as never }, 'agent:host/x'));
+    vi.spyOn(useAgentRunCollaborationStore(), 'selectTreeRow').mockReturnValue(false);
+    await opening.open(row(treeRow(agentEntry, agentRow('x', 'agent:host', 1)), 'agent:host/x'));
     expect(shared.actions.onSelectRun).not.toHaveBeenCalled();
     expect(store.failure).toEqual({ key: 'agent:host/x' });
   });
@@ -146,7 +149,7 @@ describe('useMobileRunOpening', () => {
   it('an Org member opens with its keys on the list entry and the run entry; the subject action commits', async () => {
     const { router, opening, store } = await setup();
     shared.execute.mockResolvedValue({ disposition: 'committed' });
-    await opening.open(row({ kind: 'orgMember', orgRun, address: '/lead', agentRunId: 'lead' }, 'org:org-1/agent:lead'));
+    await opening.open(row(treeRow(orgEntry, orgAgent('lead', '/lead')), 'org:org-1/agent:lead'));
     expect(shared.execute).toHaveBeenCalledWith({ rootSubjectKind: 'agent_org', rootRunId: 'org-1', action: 'select', memberAddress: '/lead' });
     expect(router.currentRoute.value.query).toEqual({ ...ORG_KEYS, memberAddress: '/lead', screen: 'run' });
     expect(store.pending).toBeNull();
@@ -156,9 +159,8 @@ describe('useMobileRunOpening', () => {
   });
 
   // autobyteus-461 CR-461-053 (F-34): a run the Org delegated is shown as its own run (rule 2), once that run is open.
-  const delegatedOrgRow = () => row({ kind: 'orgExecution', orgRun, agentRunId: 'worker', address: '/worker' }, 'org:org-1/task-agent:worker');
+  const delegatedOrgRow = () => row(treeRow(orgEntry, { ...agentRow('worker', 'org_agent:org-1:d', 1), address: '/worker' }), 'org:org-1/task-agent:worker');
   const withDelegatedWorker = () => {
-    vi.spyOn(useAgentOrgContextsStore(), 'contextFor').mockReturnValue({ index: { agents: new Map([['worker', { kind: 'task' }]]) } } as never);
     const runs = useDelegatedRunsStore();
     let settle!: () => void;
     vi.spyOn(runs, 'whenOpen').mockReturnValue(new Promise<void>((resolve) => { settle = resolve; }));

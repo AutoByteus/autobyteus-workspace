@@ -7,7 +7,7 @@ import { useMobileSubjectRestore } from '../useMobileSubjectRestore';
 import { useMobileRunOpeningStore } from '~/stores/mobileRunOpeningStore';
 import { useAgentRunCollaborationStore } from '~/stores/agentRunCollaborationStore';
 import { useRunHistoryStore } from '~/stores/runHistoryStore';
-import type { MobileRunTreeRow } from '~/utils/mobile/mobileRunTreeProjection';
+import type { MobileRunTreeRow } from '~/utils/mobile/mobileRunListRows';
 import { createMobileTestRouter, withSetup } from './mobileTestRouter';
 
 const rowOf = (key: string): MobileRunTreeRow => ({

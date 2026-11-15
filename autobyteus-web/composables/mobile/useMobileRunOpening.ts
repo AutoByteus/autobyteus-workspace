@@ -7,26 +7,36 @@ import {
   useWorkspaceHistorySubjectActions,
   type WorkspaceHistorySubjectAction,
 } from '~/composables/useWorkspaceHistorySubjectActions';
-import { useAgentOrgContextsStore } from '~/stores/agentOrgContextsStore';
-import { useAgentRunCollaborationStore } from '~/stores/agentRunCollaborationStore';
 import { useDelegatedRunsStore } from '~/stores/delegatedRunsStore';
-import { agentRunDelegatedRunSubject, orgDelegatedRunSubject, teamDelegatedRunSubject, type DelegatedRunSubject } from '~/services/delegatedRuns/delegatedRunSubjects';
-import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
+import { subjectOfTarget, type DelegatedRunSubject } from '~/services/delegatedRuns/delegatedRunSubjects';
 import { useAgentSelectionStore } from '~/stores/agentSelectionStore';
+import { openRunTarget } from '~/composables/useRunOpening';
+import { isTeamRow } from '~/utils/runTree/runTreeDisplayRows';
+import { treeRefOf } from '~/utils/mobile/mobileRunListRows';
 import { useMobileRunOpeningStore } from '~/stores/mobileRunOpeningStore';
 import { useRunHistoryStore } from '~/stores/runHistoryStore';
-import type { MobileRowOpen, MobileRunTreeRow } from '~/utils/mobile/mobileRunTreeProjection';
+import type { MobileRowOpen, MobileRunTreeRow } from '~/utils/mobile/mobileRunListRows';
 import { agentOrgFirstMemberAddress } from '~/utils/agentOrgHistoryRows';
+import type { AgentOrgRunHistoryItem } from '~/stores/runHistoryTypes';
 
-type OrgOpen = Extract<MobileRowOpen, { kind: 'orgRun' | 'orgMember' | 'orgExecution' }>;
-const isOrgOpen = (open: MobileRowOpen): open is OrgOpen =>
-  open.kind === 'orgRun' || open.kind === 'orgMember' || open.kind === 'orgExecution';
-const orgCommandOf = (open: OrgOpen): WorkspaceHistorySubjectAction => {
-  const rootRunId = open.orgRun.rootRunId;
-  // An Org run opens its first configured member (REQ-003a); the row has an open only when there is one.
-  if (open.kind === 'orgRun') return { rootSubjectKind: 'agent_org', rootRunId, action: 'select', memberAddress: agentOrgFirstMemberAddress(open.orgRun) ?? '' };
-  if (open.kind === 'orgMember') return { rootSubjectKind: 'agent_org', rootRunId, action: 'select', memberAddress: open.address };
-  return { rootSubjectKind: 'agent_org', rootRunId, action: 'inspect', agentRunId: open.agentRunId, memberAddress: open.address };
+type OrgOpen = Readonly<{ orgRun: AgentOrgRunHistoryItem; command: WorkspaceHistorySubjectAction }>;
+/**
+ * An Org's open as its shared action takes it: the Org run opens its first configured member (REQ-003a); an Org's own
+ * agent or mounted team by its address; a run it delegated where the server says (a team row at its coordinator).
+ */
+const orgOpenOf = (open: MobileRowOpen): OrgOpen | null => {
+  if (open.kind === 'orgRun') {
+    return { orgRun: open.orgRun, command: { rootSubjectKind: 'agent_org', rootRunId: open.orgRun.rootRunId, action: 'select',
+      memberAddress: agentOrgFirstMemberAddress(open.orgRun) ?? '' } };
+  }
+  if (open.kind !== 'treeRow' || open.entry.kind !== 'org') return null;
+  const { row } = open;
+  const rootRunId = open.entry.orgRun.rootRunId;
+  if (row.kind === 'org_team' || row.openTarget?.runKind === 'agent_org') {
+    return { orgRun: open.entry.orgRun, command: { rootSubjectKind: 'agent_org', rootRunId, action: 'select', memberAddress: row.address ?? '' } };
+  }
+  return { orgRun: open.entry.orgRun, command: { rootSubjectKind: 'agent_org', rootRunId, action: 'inspect', agentRunId: row.openTarget!.agentRunId,
+    memberAddress: isTeamRow(row) ? '' : row.address ?? '' } };
 };
 
 /**
@@ -41,29 +51,18 @@ export function useMobileRunOpening(disclosure: {
 }) {
   const opening = useMobileRunOpeningStore();
   const navigation = useMobileNavigation();
-  const collaboration = useAgentRunCollaborationStore();
-  const orgContexts = useAgentOrgContextsStore();
   const delegatedRuns = useDelegatedRunsStore();
-  const teamContexts = useAgentTeamContextsStore();
   /**
-   * The run delegated on this node that a row opens, once its shared action selected it (rule 2): a row of an Org, of an
-   * agent run's view (its selected child) or of a Team. `null` for a run's own agents, a peer's run and a run itself.
+   * The run delegated on this node that a row opens (rule 2), by the server's target (SR-084): `null` for a listed run's
+   * own agents and members, a peer's run and a run itself.
    */
   const delegatedRunOf = (open: MobileRowOpen): DelegatedRunSubject | null => {
-    if (open.kind === 'orgExecution') {
-      const index = orgContexts.contextFor(open.orgRun.rootRunId)?.index;
-      return index ? orgDelegatedRunSubject(index, open.agentRunId) : null;
-    }
-    if (open.kind === 'taskRow') {
-      const host = collaboration.contextFor(open.hostRun.runId);
-      const child = collaboration.selectedChild(open.hostRun.runId);
-      return host && child ? agentRunDelegatedRunSubject(host.index, child) : null;
-    }
-    if (open.kind === 'teamMember') {
-      const team = teamContexts.getTeamContextById(open.target.teamRunId);
-      return team ? teamDelegatedRunSubject(team.view.getExecutionTree(), open.target.agentRunId) : null;
-    }
-    return null;
+    if (open.kind !== 'treeRow') return null;
+    const target = open.row.openTarget;
+    if (!target || target.runKind === 'agent_org' || target.nodeId) return null;
+    const top = treeRefOf(open.entry);
+    if (target.runKind === top.kind && target.runId === top.runId) return null;
+    return subjectOfTarget(target as Parameters<typeof subjectOfTarget>[0]);
   };
   const { addToast } = useToasts();
   const { t } = useLocalization();
@@ -91,12 +90,16 @@ export function useMobileRunOpening(disclosure: {
 
   /** Runs the row's kind's shared open action; `true` when it selected the row. */
   const runSharedAction = async (key: string, open: MobileRowOpen): Promise<boolean> => {
-    if (isOrgOpen(open)) return (await subject.execute(orgCommandOf(open))).disposition === 'committed';
+    const org = orgOpenOf(open);
+    if (org) return (await subject.execute(org.command)).disposition === 'committed';
     if (open.kind === 'agentRun') await selection.onOpenAgentRun(open.run);
-    else if (open.kind === 'taskRow') {
-      if (collaboration.selectTaskRow(open.hostRun.runId, open.row)) await selection.onSelectRun(open.hostRun);
-    } else if (open.kind === 'team') await selection.onOpenTeamRun(open.team);
-    else await selection.onSelectTeamMember(open.target);
+    else if (open.kind === 'team') await selection.onOpenTeamRun(open.team);
+    else if (open.kind === 'treeRow' && open.entry.kind === 'agent') {
+      // The one open path of a tree row (SR-084): where the server says, selected in its run's tree.
+      if (openRunTarget(treeRefOf(open.entry), open.row)) await selection.onSelectRun(open.entry.run);
+    } else if (open.kind === 'treeRow' && open.entry.kind === 'team' && open.row.openTarget) {
+      await selection.onSelectTeamMember({ teamRunId: open.entry.runId, memberAddress: open.row.address ?? '', agentRunId: open.row.openTarget.agentRunId });
+    }
     return selected.has(key);
   };
 
@@ -129,9 +132,8 @@ export function useMobileRunOpening(disclosure: {
     const rowOpen = row.open;
     opening.begin(row.key);
     // An Org subject is named by its Org keys; an agent run or a Team subject by its row (autobyteus-435 DS-006).
-    await navigation.openRun(isOrgOpen(rowOpen)
-      ? { orgQuery: agentOrgRouteQuery(rowOpen.orgRun, orgCommandOf(rowOpen), rowOpen.orgRun.isActive) }
-      : { rowKey: row.key });
+    const org = orgOpenOf(rowOpen);
+    await navigation.openRun(org ? { orgQuery: agentOrgRouteQuery(org.orgRun, org.command, org.orgRun.isActive) } : { rowKey: row.key });
     await settle(row.key, rowOpen);
   };
 
