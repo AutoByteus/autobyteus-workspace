@@ -606,3 +606,30 @@ Step 2c, org tree (uncommitted, web types PASS):
   2. 3b plus G-G1;
   3. step 4 removals: the old row events and DTOs (`run-view-children`, `stored-view-children`, the child-row DTO projections, `task_executions` in the view snapshots, the web contexts' child handling, `agentOrgHistoryRows`, `listTaskRows` and `selectTaskRow`, `delegatedRunSubjects` derivations, `remote_agent_presentation`, `PeerChildObservation`'s summary events, `runHistoryNavigationPatches`' transient patches);
   4. CR-461-098's re-read and `conversationMark` (in 3b).
+
+3b plan (SR-085, ARCH-REV-059 and its note, ARCH-REV-061; G-G1):
+- Appending frames on the web:
+  - `SEGMENT_CONTENT`, whose delta goes through `appendContentToSegment` (`segmentHandler.ts:317`) into one raw field: `content` for text and think; `rawContent` for tool_call; `originalContent` for write_file and edit_file; `command` for terminal_command;
+  - `TOOL_LOG`, through `toolLifecycleHandler.appendLog` and `addToolActivityLog`. Its offset is the entry index in the tool's log.
+- Server mapping: `agent-run-event-message-mapper.ts:95` (SEGMENT_CONTENT carries `{id, turn_id, segment_type, delta}`) and `:127` (TOOL_LOG).
+- Server, new file `services/agent-streaming/agent-stream-sequence.ts`:
+  - one `AgentStreamSequence` per agent run (`liveSequenceId`, `changeSequence`, barriers like `RunViewStream`). It is created when the first session connects and released when none holds it (G-G1).
+  - per segment it tracks the raw field's UTF-16 length (the sum of delta `.length`), plus each open segment's start and accumulated raw text for the snapshot; per tool invocation it tracks the log count.
+  - it stamps each appending frame with `offset` (the length before the delta).
+- Server, `AgentStreamHandler` connect (the file is at 490 effective lines, so the code goes in a new `agent-stream-session.ts`):
+  1. take the base in one synchronous step;
+  2. read the projection (stored or live) behind the queue and append the open segments' raw fields at the server's length;
+  3. send `AGENT_STREAM_SNAPSHOT { projection, baseSequence, liveSequenceId }`;
+  4. send the queued frames numbered after the base, then live frames.
+  - A restore that rebinds sends an in-band snapshot with no new base.
+- Web: `AgentStreamingService` applies the snapshot, then frames after its base; it reopens on a sequence gap.
+  - `appendContentToSegment(segment, delta, offset)` applies only the part beyond the current length (UTF-16), and skips a frame that ends at or before it.
+  - Remove CR-461-098's re-read, `conversationMark`, `requestCatchUpConnect`, `catchUpConnect` and the separate stored read.
+  - A frame with no offset is a contract violation: log it, with no fallback.
+- Tests:
+  - an event between the projection read and the binding appears exactly once;
+  - a delta queued during the read appears once;
+  - a partial overlap is applied in part, including an open tool-call segment and surrogate pairs;
+  - a restore during an open stream gives one in-band snapshot;
+  - BR-011 passes with the heuristic removed.
+- G-D1 then uses the same offsets on node B's observed frames (an additive field on the observed `AgentPresentationMessage`).
