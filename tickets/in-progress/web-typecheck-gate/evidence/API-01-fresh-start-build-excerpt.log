@@ -1,0 +1,21 @@
+# API-01 fresh-start build | commit 25aa717ba57dadd4c1f4ca3fd5bf22948d077bee (fresh 'git clone --no-local' at /tmp/wtg-fresh/clone, no build output) | macOS arm64, Node 22.23.3, pnpm 10.28.2 | 2026-11-15
+# excerpt: the lines that prove the result
+v22.23.3
+10.28.2
+=== INSTALL Sun Nov 15 15:55:57 CET 2026
+9:[guard:web-boundary] Passed.
+14:[guard:localization-boundary] Passed.
+19:[audit:localization-literals] Passed with zero unresolved findings.
+48:Prisma schema loaded from prisma/schema.prisma
+66:[typecheck] Nuxt app (tsconfig.json): 66 errors, exit 2, 30.3s
+67:[typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 1.7s
+68:[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 0.5s
+69:[typecheck] cross-package tests (tsconfig.cross-package-tests.json): 0 errors, exit 0, 19.4s
+70:[typecheck] production errors: 0; test-file errors: 93 in 40 files (baseline 93 in 40 files)
+71:[typecheck] PASS
+99:Prisma schema loaded from prisma/schema.prisma
+137:Prisma schema loaded from prisma/schema.prisma
+520:Prisma schema loaded from resources/server/prisma/schema.prisma
+901:  '/private/tmp/wtg-fresh/clone/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.5.13-beta.6.dmg',
+4:install exit 0
+11:build exit 0
