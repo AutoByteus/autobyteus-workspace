@@ -1,0 +1,30 @@
+{
+  "result": {
+    "scannedFiles": 2,
+    "changedFiles": 2,
+    "committedBatches": 1,
+    "deferredFiles": 0,
+    "failedFiles": 0
+  },
+  "totalMs": 25673,
+  "baselineMiB": {
+    "source": 296.71875,
+    "hub": 296.59375
+  },
+  "peakMiB": {
+    "source": 561.15625,
+    "hub": 487.625
+  },
+  "growthMiB": {
+    "source": 264.4375,
+    "hub": 191.03125
+  },
+  "puts": 256,
+  "batchPosts": [
+    {
+      "bytes": 835,
+      "ms": 5661
+    }
+  ],
+  "identical": true
+}

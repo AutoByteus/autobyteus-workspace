@@ -2,45 +2,45 @@
 
 ## Review Round Meta
 
-- Upstream Requirements Doc: `/Users/normy/autobyteus-org/autobyteus-task-worktrees/memory-sync-large-files/tickets/in-progress/memory-sync-large-files/requirements-doc.md` (SR-003, Approved)
-- Upstream Investigation Notes: `…/memory-sync-large-files/investigation-notes.md` (SR-003 rows added)
-- Upstream Solution Revision Record: `…/memory-sync-large-files/solution-revision-record.md` (SR-003)
-- Reviewed Design Spec: `…/memory-sync-large-files/design-spec.md` (SR-003, Ready)
-- Supplemental Task Artifacts Reviewed: `probes/large-file-sync-probe.e2e.test.ts.txt` (evidence only, unchanged); `handoff-sr-003.md`; `follow-ups.md`
-- Relevant Solution Revision IDs: SR-001, SR-002, SR-003
+- Upstream Requirements Doc: `/Users/normy/autobyteus-org/autobyteus-task-worktrees/memory-sync-large-files/tickets/in-progress/memory-sync-large-files/requirements-doc.md` (SR-003, Approved; unchanged in SR-004)
+- Upstream Investigation Notes: `…/memory-sync-large-files/investigation-notes.md` (SR-004 rows)
+- Upstream Solution Revision Record: `…/memory-sync-large-files/solution-revision-record.md` (SR-004)
+- Reviewed Design Spec: `…/memory-sync-large-files/design-spec.md` (SR-004, Ready)
+- Supplemental Task Artifacts Reviewed: `probes/large-file-sync-probe.e2e.test.ts.txt` (evidence only, unchanged); `handoff-sr-004.md`; `follow-ups.md`
+- Relevant Solution Revision IDs: SR-001, SR-002, SR-003, SR-004
 - Architecture Review Revision Record: `…/memory-sync-large-files/architecture-review-revision-record.md`
-- Current Architecture Review Revision ID: `ARCH-REV-002`
-- Current Review Round: 2
-- Trigger: Solution Designer handoff SR-003 (design revised for ARCH-REV-001)
-- Prior Review Round Reviewed: 1 (`ARCH-REV-001`, Fail)
-- Latest Authoritative Round: 2
-- Current-State Evidence Basis: branch `task/memory-sync-large-files` @ `c9563a9b3` (ticket documents only changed since round 1; source unchanged). Round-1 code reads still valid. Opened this round: `persistence/file/store-utils.ts:40-125` (`withFilePathLock` = in-process queue **plus** a cross-process `wx` lock file with retry), `startup/background-runner.ts:1-40`, `startup/memory-sync-worker-loader.ts`, `startup/app-data-capability-readiness.ts:15-26`, `local-file-memory-import-store.ts:208-211` (inline write = temp + rename).
+- Current Architecture Review Revision ID: `ARCH-REV-003`
+- Current Review Round: 3
+- Trigger: Solution Designer handoff SR-004 (design revised for ARCH-REV-002 AR-007, AR-008)
+- Prior Review Round Reviewed: 2 (`ARCH-REV-002`, Fail)
+- Latest Authoritative Round: 3
+- Current-State Evidence Basis: branch `task/memory-sync-large-files` @ `7ae4be962`. Source code is unchanged since round 1, so the code reads from rounds 1–2 still hold (service, scanner, planners, client, parser, state store, worker, import store, ingestion, batch identity, route, types, GraphQL resolver, `store-utils.ts:40-125`, `background-runner.ts`, context-file layout). SR-004 changed only `design-spec.md` (DS-003, DS-006, Ownership Map, Interfaces, limits, examples, Risks, tests), investigation notes (two evidence rows) and the solution revision record. I checked the whole diff `c9563a9b3..7ae4be962` for those files.
 
 ## Routing Classification Review
 
 - Task size: `Large`; Architectural risk: `High`
-- Classification rationale reviewed: unchanged and still accurate (SR-003 adds one startup loader).
+- Classification rationale reviewed: unchanged and accurate (three subsystems; new node-to-node contract, hub staging persistence, additive source state, run-lifecycle change).
 - Independent Architecture Review required by the classification: `Yes`
 - Classification evidence or correction required: None. Design approval `Not required`.
 
 ## Upstream Behavior And Production-Path Basis Confirmation
 
 - Overall Basis Status: `Confirmed`
-- Approved requirements / intended behavior understood: Yes. SR-003 clarified REQ-005, SCN-004, DEC-006 and AC-005 (a lost connection is run-level and the next run resumes). This matches REQ-006, which was already approved, and adds no new behavior.
-- Relevant existing behavior and evidence confirmed: Yes (round 1, plus the reads above).
-- Scope guardrail confirmed: Yes, unchanged.
-- Every prospective blocking `Design Impact` finding is traceable to an approved ID: `Yes`
+- Approved requirements / intended behavior understood: Yes (SR-003 baseline; SR-004 changes no requirement).
+- Relevant existing behavior and evidence confirmed: Yes.
+- Scope guardrail confirmed: Yes.
+- Every prospective blocking `Design Impact` finding is traceable to an approved ID: `Yes` (none remain).
 - Remaining material ambiguity: None.
-- Statements about existing code the design relies on: the SR-003 citations hold. `memory-sync-service.ts:38-50` and `:91`, `memory-sync-worker.ts:62`, resolver `:151`, `store-utils.ts:101` (`withFilePathLock`) and `background-runner.ts:18` were all checked. `context-file-layout.ts:58-70` confirms that each run keeps its own copy.
+- Statements about existing code the design relies on: all checked in rounds 1–2. The new SR-004 citations (`store-utils.ts:40-125`, `local-file-memory-import-store.ts:208-211`) are accurate.
 
 | Behavior ID | Kind | Design Alignment | Trigger / Current-State Evidence | Target Path / Spine Coherence | Status | Required Action |
 | --- | --- | --- | --- | --- | --- | --- |
 | BEH-001 | System | Pass | Pass | Pass | Confirmed | — |
-| BEH-002 | System | Pass | Pass | Fail | Needs Correction | AR-008 (each piece waits on other sources' commit locks) |
+| BEH-002 | System | Pass | Pass | Pass | Confirmed | — |
 | BEH-003/004 | System | Pass | Pass | Pass | Confirmed | — |
 | BEH-005 | System | Pass | Pass | Pass | Confirmed | — |
 | BEH-006 | Operational | Pass | Pass | Pass | Confirmed | — |
-| BEH-007 | Contract | Pass | Pass | Fail | Needs Correction | AR-007 (copy target not written atomically) |
+| BEH-007 | Contract | Pass | Pass | Pass | Confirmed | — |
 | BEH-008 | System | Pass | Pass | Pass | Confirmed | — |
 
 ## Supplemental Artifact Coherence Verdict
@@ -53,143 +53,136 @@
 
 | Assessment Area | Result | Evidence | Required Action |
 | --- | --- | --- | --- |
-| Present for the task posture | Pass | Unchanged from round 1 | — |
-| Root cause explicit and evidence-backed | Pass | Unchanged | — |
+| Present for the task posture | Pass | Bug Fix + Larger Requirement | — |
+| Root cause explicit and evidence-backed | Pass | Missing Invariant + Responsibility Drift (planner 43-46/58-80, service 73-93/148-154) | — |
 | Refactor decision explicit | Pass | Yes, now | — |
-| Decision reflected in design sections | Pass | Plus run gate, staged placement, DS-006 | — |
+| Decision reflected in design sections | Pass | Scanner / change planner / batch planner / transfer / stager / failure policy / run gate / staged store / sweep cadence | — |
 
 ## Spine Inventory Verdict
 
 | Spine ID | Scope | Readable | Narrative Clear | Facade vs Owner | Naming | One Owner Per Node, In Call Order | Off-Spine Off Main Line | Verdict |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| DS-001 | Primary run | Pass | Pass (trigger, per-batch recording, run gate) | Pass | Pass | Pass | Pass | Pass |
-| DS-002 | Primary staged transfer | Pass | Pass (prefix hash, exact `size`, 409) | N/A | Pass | Pass | Pass | Pass |
-| DS-003 | Primary commit | Pass | Fail (the copy branch of `placeStagedFile` writes the target in place) | Pass | Pass | Pass | Pass | Fail (AR-007) |
+| DS-001 | Primary run (trigger, run gate, per-batch recording) | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
+| DS-002 | Primary staged transfer (prefix hash, exact `size`, 409) | Pass | Pass | N/A | Pass | Pass | Pass | Pass |
+| DS-003 | Primary commit (batchId → verify all, grouped by SHA-256 → write by temp + rename / staged rename → manifest) | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
 | DS-004 | Bounded local change plan | Pass | Pass | N/A | Pass | Pass | Pass | Pass |
-| DS-005 | Return/event | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
-| DS-006 | Bounded local sweep | Pass | Fail (runs before every hub request and takes every source's manifest lock) | N/A | Pass | Pass | Fail (global work on every piece's critical path) | Fail (AR-008) |
+| DS-005 | Return/event owner visibility | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
+| DS-006 | Bounded local staging sweep (cadence: ingestion, at most hourly, not awaited; mechanics: staged store, per-source lock one folder at a time) | Pass | Pass | Pass (cadence owner vs mechanics owner named) | Pass | Pass | Pass (off every request's critical path) | Pass |
 
 ## Boundary Encapsulation Verdict
 
 | Boundary / Owner | Entry Point Clear | Internals Internal | Bypass Controlled | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `MemorySyncService` | Pass | Pass | Pass | Pass | Trigger is a parameter of the service entry; worker/resolver still depend only on it |
-| `MemoryHubIngestionService` | Pass | Pass | Pass | Pass | — |
-| `LocalFileMemoryImportStore.commitBatch` | Pass | Pass | Pass | Pass | Owns the grouping and the verify-all-then-write rule |
-| `MemoryHubStagedFileStore` | Pass | Pass | Pass | Pass | `placeStagedFile` only inside the commit lock; startup loader calls only `sweepStale()` |
+| `MemorySyncService` | Pass | Pass | Pass | Pass | Worker/resolver pass only the trigger |
+| `MemoryHubIngestionService` | Pass | Pass | Pass | Pass | Routes and the startup loader call only it; `sweepStale` is called only by `requestStagingSweep` |
+| `LocalFileMemoryImportStore.commitBatch` | Pass | Pass | Pass | Pass | Owns grouping and verify-all-then-write |
+| `MemoryHubStagedFileStore` | Pass | Pass | Pass | Pass | `placeStagedFile` only inside the commit lock after verification |
 
 ## Dependency Direction / Forbidden Shortcut Verdict
 
 | Owner / Boundary | Allowed Clear | Shortcuts Explicit | Coherent | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| source / hub / shared / api rules | Pass | Pass | Pass | Pass | Unchanged |
-| `startup/memory-hub-staging-sweep-loader.ts` → hub staged store, capability check | Pass | Pass | Pass | Pass | Same shape as `memory-sync-worker-loader.ts` |
+| source / hub / shared / api | Pass | Pass | Pass | Pass | Unchanged |
+| startup loader → ingestion service (`requestStagingSweep`) | Pass | Pass | Pass | Pass | SR-004 routes the loader through the cadence owner instead of calling the store directly |
 
 ## Interface Boundary Verdict
 
 | Interface | Subject | Singular | Identity | Risk | Verdict |
 | --- | --- | --- | --- | --- | --- |
-| Staged-file GET/PUT, batches POST | Pass | Pass | Pass | Low | Pass |
-| `startSync(trigger)`, `runOnce(trigger)`, `planChangedFiles(…, trigger, now)`, `isDue(…, trigger, now)` | Pass | Pass | Pass | Low | Pass (AR-002 resolved) |
-| `placeStagedFile(sourceId, sha256, targetPaths[])` | Pass | Pass | Pass | Low | Pass (write mechanics: AR-007) |
-| `sweepStale()` (all sources) | Pass | Pass | Pass | Low | Pass (call cadence: AR-008) |
-| GraphQL fields | Pass | Pass | N/A | Low | Pass |
+| Staged-file GET/PUT; batches POST | Pass | Pass | Pass | Low | Pass |
+| `startSync(trigger)` / `runOnce(trigger)` / `planChangedFiles(…, trigger, now)` / `isDue(…, trigger, now)` | Pass | Pass | Pass | Low | Pass |
+| `placeStagedFile(sourceId, sha256, targetPaths[])` | Pass | Pass | Pass | Low | Pass |
+| `requestStagingSweep(): void`; `sweepStale()` | Pass | Pass | Pass | Low | Pass |
+| GraphQL `fileFailureCount`, `fileFailures`, `failedFiles` | Pass | Pass | N/A | Low | Pass |
 
 ## Existing Capability / Subsystem Reuse Verdict
 
 | Need | Checked | Decision Sound | New Piece Justified | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Startup job | Pass | Pass | Pass | Pass | Reuses the `background-runner.ts` task list |
-| Lock for sweep vs commit | Pass | Pass | N/A | Pass | Reuses `withFilePathLock`; how often it is called is AR-008 |
-| Others | Pass | Pass | — | Pass | Unchanged from round 1 |
+| Status, locked JSON, hub commit, access gate, binary parsing | Pass | Pass | N/A | Pass | Unchanged |
+| Streaming hash | Pass | Pass | Pass | Pass | Shared by source and hub |
+| Startup job | Pass | Pass | Pass | Pass | `background-runner.ts` task list |
+| Per-source lock | Pass | Pass | N/A | Pass | `withFilePathLock`, now off the request path |
 
 ## Subsystem / Capability-Area Allocation Verdict
 
 | Area | Allocation Clear | Decision Sound | Supports Spine Owners | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `memory-sync/source`, `hub`, `shared`, `api`, web | Pass | Pass | Pass | Pass | — |
-| `startup/` | Pass | Pass | Pass | Pass | One loader |
-
-Both entry forms (background, manual) are now traced through the run gate to `isDue`.
+| `memory-sync/source`, `hub`, `shared`, `api`, `startup`, web | Pass | Pass | Pass | Pass | Each sequence has one owner that calls its mechanisms itself; no callbacks reach other collaborators; both run entry forms are traced |
 
 ## Reusable Owned Structures Verdict
 
-Unchanged from ARCH-REV-001: `Pass` (limits gain `MEMORY_SYNC_BATCH_STAGED_BYTES_BUDGET`; one owner).
+| Repeated Structure | Evaluated | Shared File Sound | Ownership Clear | Verdict | Notes |
+| --- | --- | --- | --- | --- | --- |
+| Transfer limits (+ sweep interval) | Pass | Pass | Pass | Pass | One owner for source and hub numbers |
+| Streaming SHA-256 | Pass | Pass | Pass | Pass | — |
+| Operation union | Pass | Pass | Pass | Pass | — |
 
 ## Shared Structure / Data Model Tightness Verdict
 
-Unchanged: `Pass`. Derived consumers: `Pass`. Vocabulary (adds "run trigger"): `Pass`.
+| Structure | One Meaning | Redundant Removed | Overlap Controlled | Core vs Variant | Verdict | Notes |
+| --- | --- | --- | --- | --- | --- | --- |
+| `MemoryFileOperation` union | Pass | Pass | Pass | Pass | Pass | — |
+| `MemorySyncFileFailure` | Pass | Pass | Pass | N/A | Pass | — |
+| `MemoryFileEntry` / `ChangedMemoryFile` | Pass | Pass | Pass | Pass | Pass | — |
+
+Derived consumers listed with a decision each (Principle 11): `Pass`. One vocabulary (Principle 15): `Pass`.
 
 ## File Responsibility Mapping Verdict
 
 | File | Singular | Matches Owner | Re-Tightened | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `memory-sync-service.ts` (run gate with trigger) | Pass | Pass | Pass | Pass | — |
-| `memory-sync-worker.ts` | Pass | Pass | N/A | Pass | — |
-| `memory-hub-staged-file-store.ts` | Pass | Pass | N/A | Pass | AR-007 |
-| `memory-hub-ingestion-service.ts` | Pass | Pass | N/A | Pass | AR-008 |
-| `startup/memory-hub-staging-sweep-loader.ts` | Pass | Pass | N/A | Pass | — |
-| Remaining | Pass | Pass | — | Pass | Unchanged |
+| All mapped files (shared limits/hash/types; source scanner, change planner, batch planner, transfer, stager, failure policy, client, parser, service, worker, state store; hub staged store, import store, ingestion; startup loader; REST; GraphQL; web; doc) | Pass | Pass | Pass | Pass | Ingestion service gains the cadence owner, a small timestamp + in-flight flag tied to its hub calls; not a mixed concern |
 
 ## Subsystem / Folder / File Placement Verdict
 
-`Pass` (unchanged; one startup loader beside `memory-sync-worker-loader.ts`).
+| Path / Item | Placement Clear | Folder Matches Owner | Risk | Verdict | Notes |
+| --- | --- | --- | --- | --- | --- |
+| Flat `source/`, `hub/`, `shared/`; `startup/` loader | Pass | Pass | Low | Pass | — |
+| `<memoryDir>/memory-sync-staging/<sourceId>/<sha256>.partial` | Pass | Pass | Low | Pass | Outside every reader's root |
 
 ## Removal / Decommission Completeness Verdict
 
-`Pass` (unchanged; nothing new becomes obsolete).
+| Item / Area | Named | Replacement Clear | Scope Explicit | Verdict | Notes |
+| --- | --- | --- | --- | --- | --- |
+| Scanner whole-file read, planner base64/`maxOperations`, `chunkOperations`, route literal, `MemoryFileDescriptor.sha256` | Pass | Pass | Pass | Pass | Dead-code grep recorded |
 
 ## Legacy / Backward-Compatibility Verdict
 
-`Pass` (unchanged; no mixed-version handling, per rule 9).
+| Area | Retention Exists | Clean Cut Explicit | Verdict | Notes |
+| --- | --- | --- | --- | --- |
+| Inline vs staged | No (two encodings of one protocol) | Pass | Pass | — |
+| Mixed versions | No (rule 9) | Pass | Pass | — |
 
 ## Persisted-Data Transition Verdict
 
 | Subject | Decision | Evidence | Proportionate | Migration Safety | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
 | Source state `fileFailures` | Directly Usable — No Migration | Pass | Pass | N/A | Pass | — |
-| Hub staging | Not Affected (disposable; lifetime stated) | Pass | Pass | N/A | Pass | — |
+| Hub staging | Not Affected (disposable; lifetime: taken, failed verification, or swept after 24 h) | Pass | Pass | N/A | Pass | — |
 | Manifest / imports | Not Affected | Pass | Pass | N/A | Pass | — |
 
 ## Change / Refactor Safety Verdict
 
-`Pass` (sequence unchanged; startup loader in step 2/3 implied by the file mapping).
+| Area | Sequence Realistic | Temporary Seams | Cleanup Explicit | Verdict |
+| --- | --- | --- | --- | --- |
+| Shared → hub → source → GraphQL/web → tests/docs | Pass | Pass (none) | Pass | Pass |
 
 ## Example Adequacy Verdict
 
 | Topic | Needed | Present | Bad Shape | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Same content twice | Yes | Pass | Pass | Pass | — |
-| Staged budget | Yes | Pass | Pass | Pass | — |
-| Sync now during a background run | Yes | Pass | Pass | Pass | — |
-| Resume | Yes | Pass | Pass | Pass | Fixed |
-| Others | — | Pass | Pass | Pass | Unchanged |
+| Batch cutting; staged budget; same content twice (temp sibling); sweep off the request path; isolation; run-level; Sync now during a run; resume; card | Yes | Pass | Pass | Pass | — |
 
 ## Material Premise Validation
 
-MP-001 (same SHA-256 twice in one batch) and MP-002 (abandoned partial whose source never returns) are unchanged and now handled. MP-003 (verification time) is bounded by the 4 GiB staged budget; it stays `Unclear` and will be measured in the AC-003 run, which is acceptable.
+- MP-001 (same SHA-256 twice in one batch): `Reachable`. Handled by grouping and temp + rename placement.
+- MP-002 (abandoned partial whose source never returns): `Reachable`. Handled by the all-source sweep at start and at most hourly.
+- MP-003 (verification time against fetch timeouts): `Unclear`. Bounded by the 4 GiB staged budget; measured in the AC-003 run. Residual risk only.
+- MP-004 (a piece request waits behind another source's commit): `Reachable`. Resolved because no request waits for the sweep.
+- MP-005 (a partly copied imported file is visible): `Reachable`. Resolved by temp + rename.
 
-### MP-004 — A source's piece upload waits behind another source's commit
-
-- Related approved requirement: REQ-002, REQ-003 (large files transfer and resume); project `DESIGN.md` rule 3 (justify critical-path dependencies and global work).
-- Relevant behavior ID(s): BEH-002
-- Initiating basis kind: `System`
-- Independent trigger: several sources sync to one hub, each on its own background interval (the hub is "a central read-only corpus … from several nodes", investigation notes, Product understanding). Source B commits a batch that has staged files while source A is uploading pieces.
-- Forward path: A `PUT` piece → `MemoryHubIngestionService.receiveStagedFilePiece` → `sweepStale()` **before** handling (DS-006) → for every source folder, `withFilePathLock(<that source's manifest path>)`. This is an in-process queue plus a cross-process `wx` lock file with retry (`store-utils.ts:40-125`). B's folder lock is held by B's `commitBatch`, which hashes up to 4 GiB, or one file up to 10 GiB, inside that lock (DS-003, Key Tradeoffs) → A's `PUT` waits for B's whole verification and write.
-- Consequence: every piece of A (1,280 pieces for a 10 GiB file) can wait tens of seconds behind another source's commit. Sources that the per-source lock was meant to keep independent become coupled. Every hub request also takes and releases one lock file per source. A long wait reaches the source as a slow or timed-out request, which counts as a run-level error.
-- Reachability: `Reachable` (several sources per hub is the product's purpose; background runs overlap in normal operation).
-- Review consequence: AR-008.
-
-### MP-005 — A reader sees a partly copied imported file
-
-- Related approved requirement: REQ-009; preserved invariant "nothing partial is ever visible in the imported Memory view"; AC-009.
-- Relevant behavior ID(s): BEH-007
-- Initiating basis kind: `User` + `System`
-- Independent trigger: the same > 8 MiB content committed to two targets in one batch (MP-001 trigger) while the hub owner has the imported source open in the Memory page (`memory-explorer-source-service.ts:83`, root `imports/<id>`).
-- Forward path: `placeStagedFile(S, [t1, t2])` → "copy to all but the last" writes `t1` in place (no temp + rename stated) for the length of a multi-GiB copy → the explorer lists and reads `t1` during the copy.
-- Consequence: a truncated file is visible under imports while the copy runs, which breaks the stated invariant. Inline writes and the rename branch are atomic (`local-file-memory-import-store.ts:208-211`).
-- Reachability: `Reachable` (the window is short but real).
-- Review consequence: AR-007.
+No new premise in this round.
 
 ## Unresolved Approved-Behavior Or Current-State Gaps
 
@@ -197,50 +190,33 @@ None.
 
 ## Review Decision
 
-`Fail`. All six ARCH-REV-001 findings and R-AR-1 are resolved in the current spec. Two new defects come from the SR-003 changes: one Medium, one Low wording fix. Both are small.
+`Pass`
 
 ## Findings
 
-### AR-007 — `placeStagedFile` copies are not atomic
-
-- Type: `Design Impact`; Severity: Low; blocking (one-line spec fix)
-- Protects: REQ-009, AC-009, preserved invariant "nothing partial visible"
-- Scope status: `Within Approved Scope`; changes approved behavior: No
-- Evidence: MP-005. DS-003 narrative, Ownership Map and the "Same content twice" example say "copy to all but the last, rename to the last", with no temp step for the copies. Today's inline write uses temp + rename (`local-file-memory-import-store.ts:208-211`).
-- Required update: state that each copy goes to a temp file next to its target (the same naming as inline writes) and is then renamed onto the target. Only the last target takes the staged file by rename. Add an assertion to the import store test.
-- Recipient: Solution Designer
-
-### AR-008 — The all-source sweep runs before every hub request and waits on other sources' commit locks
-
-- Type: `Design Impact`; Severity: Medium; blocking
-- Protects: REQ-002, REQ-003 (large transfers complete and resume), REQ-005 (one source's large file must not stall others); project `DESIGN.md` rule 3
-- Scope status: `Within Approved Scope`; changes approved behavior: No
-- Evidence: MP-004. DS-006 and the Ownership Map say `sweepStale()` runs "before handling any staged-file request or batch commit (any source)" and takes each source's manifest lock. That lock is held during multi-GiB verification (DS-003). `withFilePathLock` also creates a cross-process lock file (`store-utils.ts:40-125`).
-- Required update: take the sweep off the request path. The sweep's purpose is removing partials older than 24 h, so a sweep every few minutes is enough. Either:
-  - let the ingestion service start a sweep at most once per interval (for example once an hour) without the request waiting for it, plus the startup run; or
-  - run it from the startup loader and on a timer.
-
-  Keep the per-source manifest lock inside the sweep, so it still cannot remove a staged file between a commit's verify and write. Say who owns the interval (the staged store or the ingestion service; one owner). Update the DS-006 trigger, the Ownership Map, the Interface notes, the Risks "Sweep cadence" line and the unit test ("a piece request does not wait for a sweep").
-- Proportionate because: it is a call-site change. Without it, large uploads from one source are throttled whenever another source commits.
-- Recipient: Solution Designer
+None. All prior findings (AR-001..AR-008) are resolved; see `architecture-review-revision-record.md` ARCH-REV-003.
 
 ## Classification
 
-`Design Impact` (both findings).
+N/A (Pass).
 
 ## Recommended Recipient
 
-Solution Designer (`/software_engineering_team/solution_designer`).
+Implementation Engineer (`/software_engineering_team/implementation_engineer`); informational notice to the Solution Designer.
 
 ## Residual Risks
 
-- R-AR-1 (reduced): verification time per batch is bounded by the 4 GiB budget or one file. The AC-003 run records the actual time against the 300 s fetch default.
-- Sync now holds the GraphQL mutation open until the queued manual run ends. Today it already waits for the whole run, so this is the same pattern with a longer worst case.
-- Copying one content to several targets costs one extra write per extra target, inside one source's lock. This is acceptable.
-- R-003 release order with `autobyteus-workspace-6`; `generated/graphql.ts` fresh-start build at delivery.
+- R-AR-1: staged verification time per batch (≤ 4 GiB or one file) against Node fetch's default 300 s response-headers timeout. The AC-003 run records the actual time; if it comes close, return a `Design Impact`.
+- Sweep cadence: on a hub that receives no source request and does not restart, an abandoned partial stays until either happens (stated in the design Risks).
+- Sync now holds the GraphQL mutation open until the queued manual run ends (same pattern as today, with a longer worst case).
+- R-003 release order: release before or with `autobyteus-workspace-6`. `generated/graphql.ts` needs the fresh-start build at delivery.
+- Implementation notes (not findings):
+  - The background sweep's promise must handle its own rejection (log a warning) so it never becomes an unhandled rejection.
+  - `requestStagingSweep` must record the start time before it starts the sweep, so calls arriving at the same moment start only one.
+  - The temp sibling name follows the inline writer's pattern, which the source scanner already excludes (`.tmp`).
 
 ## Latest Authoritative Result
 
-- Review Decision: `Fail`
-- Material-Premise Gate: `Pass` (MP-004 and MP-005 are reachable with independent triggers)
-- Notes: AR-001..AR-006 resolved; new AR-007 (Low) and AR-008 (Medium), both `Design Impact`. Classification `Large` / `High` unchanged.
+- Review Decision: `Pass`
+- Material-Premise Gate: `Pass`
+- Notes: ARCH-REV-003. `task_size: Large`, `architectural_risk: High`. Ready for implementation.

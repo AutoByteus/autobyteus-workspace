@@ -8,6 +8,7 @@ The latest `design-review-report.md` remains authoritative.
 | --- | --- | --- | --- | --- | --- |
 | ARCH-REV-001 | Round 1 / SR-002 handoff (Architecture Design Complete, Large/High) | SR-001, SR-002 | N/A | Fail (Design Impact) | AR-001, AR-002, AR-003, AR-004, AR-005, AR-006 |
 | ARCH-REV-002 | Round 2 / SR-003 handoff (revision for ARCH-REV-001) | SR-003 | Fail | Fail (Design Impact) | AR-001..AR-006 resolved; new AR-007, AR-008 |
+| ARCH-REV-003 | Round 3 / SR-004 handoff (revision for ARCH-REV-002) | SR-004 | Fail | Pass | AR-007, AR-008 resolved; none open |
 
 ## Revision Entries
 
@@ -56,3 +57,26 @@ None
 - Material classification changes: None (`Large` / `High`)
 - Recommended recipient: Solution Designer
 - Remaining risks or uncertainty: R-AR-1 verification time (measured in AC-003 run); R-003 release order.
+
+### ARCH-REV-003 — SR-004 resolves AR-007 and AR-008; Pass
+
+- Canonical design review report: `/Users/normy/autobyteus-org/autobyteus-task-worktrees/memory-sync-large-files/tickets/in-progress/memory-sync-large-files/design-review-report.md`
+- Review round and trigger: Round 3; Solution Designer `handoff-sr-004.md` (branch @ `7ae4be962`)
+- Triggering role, report path, and finding IDs: Solution Designer, `handoff-sr-004.md`, AR-007, AR-008
+- Relevant solution revision IDs: SR-004 (requirements still SR-003)
+- Prior authoritative decision: `Fail` (ARCH-REV-002)
+- Current authoritative decision: `Pass`
+- What changed: I checked the whole SR-004 diff (`c9563a9b3..7ae4be962`) of design-spec and investigation notes. Placement now writes every copy by temp + rename, and the sweep is off the request path under one cadence owner. Nothing else changed, so the round-2 verdicts on the rest of the design still hold.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| AR-001..AR-006 | Resolved (ARCH-REV-002) | Resolved | SR-003 | Sections unchanged in SR-004 apart from AR-007/AR-008 edits |
+| AR-007 | Open (Low) | Resolved | SR-004 | DS-003 narrative (copy to temp sibling, rename into place; staged file renamed to the last target); Ownership Map; Interfaces ("writes every target by temp + rename"); "Same content twice" example; test "first target path does not exist until its complete content is renamed into place" |
+| AR-008 | Open (Medium) | Resolved | SR-004 | DS-006 (`requestStagingSweep()` returns at once, at most once per `MEMORY_SYNC_STAGING_SWEEP_INTERVAL_MS`, never concurrent, failure logged); DS-003 spine (not awaited); Ownership Map (cadence: ingestion; mechanics: staged store); Interfaces (`sweepStale` only from `requestStagingSweep`; startup loader calls `requestStagingSweep`); limits; example; tests (piece completes while sweep waits on another source's lock; no second sweep within the hour) |
+
+- New or remaining finding IDs: None
+- Material classification changes: None (`Large` / `High`)
+- Recommended recipient: Implementation Engineer; informational to Solution Designer
+- Remaining risks or uncertainty: R-AR-1 (measured in AC-003 run); sweep cadence on an idle hub; R-003 release order with `autobyteus-workspace-6`.
