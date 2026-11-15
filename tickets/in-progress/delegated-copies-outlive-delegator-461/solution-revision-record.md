@@ -1730,3 +1730,22 @@ No architecture review: these follow REQ-006, an approved exception, rule 2 and 
   - **Optional note applied:** `AgentStreamSequence` is released when no session holds it.
   - **Test:** a delta during the remote projection read appears once, plus the fallback.
 - **ARCH-REV-061 passed the AR-030 answer and corrected round 60.** `DESIGN.md` rule 9 rules out mismatched releases and any fallback for an unknown field. So the no-offset bracketing fallback and its test are removed: a frame without an offset is a contract violation, logged and dropped.
+
+### SR-087 — A run's own stream: each turn from one source (answers the Implementation Engineer's IMP-3b Design Impact)
+
+- **Triggering:** the Implementation Engineer read the 3b path before building (`evidence/implementation/IMP-3b-snapshot-stored-read-gap.md`). Neither premise of SR-085's exactness holds:
+  1. stored segments carry no ID the web can match, so a non-appending frame isn't idempotent against them, and an offset has no segment to measure against;
+  2. a step's write and its segment end arrive in either order (the native write at settle; the external runtimes' async recorder queue; open reasoning flushed at a tool boundary). So a stored read loses or doubles segments.
+- **The Solution Designer's gap:** 3b assumed the stored projection matches the stream's segments by ID and ends where the live part begins, without checking the projection's shape or the write timing.
+- **Decision:** option (A), completed for the lagging-write question.
+  - A turn is confirmed once `TURN_COMPLETED` is seen and its writes are durable (`whenPersisted(turnId)` from the recorder).
+  - `AgentStreamSequence` buffers every unconfirmed turn's frames, while the run is active, regardless of sessions.
+  - The snapshot connection takes, in one synchronous step, the base, the confirmed set and a copy of the buffer. It then reads the stored part filtered to that set, and sends `AGENT_STREAM_SNAPSHOT { stored, turnFrames, … }`. The web replays `turnFrames` through its handlers, and the frames after the base continue them.
+  - No offsets are needed: AR-029's offsets and ARCH-REV-059's rules are withdrawn, and the web's append stays as at base.
+- **Peer (G-D1):** node A's snapshot is node B's own snapshot by the same rule, through a peer request `agentStreamSnapshot`. Node B's observed frames carry its sequence number, an additive field that replaces SR-086's offset. REQ-013's text is updated.
+- **G-G1 revised:** the sequence and its buffer live while the run is active, not by sessions. This reverses ARCH-REV-060's optional note, because the buffer must exist before any session connects.
+- **Tests:** a closed but unwritten segment, a segment written during the read, open reasoning flushed at a tool boundary, and a turn confirmed during the read each appear once.
+- **Next action:**
+  - architecture review;
+  - then the Implementation Engineer.
+
