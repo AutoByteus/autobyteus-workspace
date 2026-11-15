@@ -6,6 +6,7 @@
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | SR-001 | Requirements | Initial baseline from Task `autobyteus-workspace-7` + manager message + reproduction | N/A | N/A | Approved (Solution Designer within the direction, user informed) | BEH-001..008, REQ-001..010 | Transfer, not skip (DEC-001) |
 | SR-002 | Mixed | Architecture phase: `DESIGN.md` rule 9 read | SR-001 REQ-008 conflicts with rule 9 | Requirements Approved; design N/A | Requirements Approved (revised, user informed); design Ready | REQ-008, AC-007, AC-008, DEC-007, SCN-005, UC-003 | Design complete; `Large` / `High` |
+| SR-003 | Mixed | ARCH-REV-001 Fail (Design Impact) | AR-001..AR-006, R-AR-1 | Requirements Approved; design Ready (SR-002) | Requirements Approved (clarified); design Ready (SR-003) | REQ-005, AC-005, SCN-004, DEC-006; DS-001..DS-003, DS-006 | Findings resolved; `Large` / `High` |
 
 ## Revision Entries
 
@@ -49,3 +50,22 @@
 - Downstream impact: architecture review per the team's rules.
 - Remaining gaps: none; release-order risk R-003 stated.
 - Next action: architecture review.
+
+### SR-003 — ARCH-REV-001 Design Impact resolutions
+
+- Phase and classification: Mixed, `Design Impact` (+ requirements wording clarification)
+- Trigger: architecture review ARCH-REV-001 (Fail), `design-review-report.md`, from `/software_engineering_team/architecture_reviewer` (run `architecture_reviewer_60670f8f6eb84995b4139723af54d0fe`).
+- Triggering finding IDs: AR-001 (High), AR-002, AR-003 (Medium), AR-004, AR-005, AR-006 (Low); recommendation R-AR-1 and two non-blocking clarifications (verify/lock order; `requireMemorySyncReady` on staging).
+- Prior status: requirements `Approved` (SR-002); design `Ready` (SR-002), review Fail
+- Current status: requirements `Approved` (SR-003); design `Ready` (SR-003)
+- IDs affected: REQ-005, AC-005, SCN-004, DEC-006 (wording: lost connection is run-level, next run resumes — matches REQ-006 and the SR-002 design); design DS-001, DS-002, DS-003, new DS-006.
+- Why recorded: resolve all review findings.
+- Sections changed: design-spec (Solution basis, new "ARCH-REV-001 Resolution", Current-State Read, Intended Change, Change Scope, behavior map BEH-001, Terminology, persisted-data staging lifetime, spine inventory/spines/narratives, Ownership Map, bounded local spines, off-spine limits and error classification, interfaces, file mapping (+ startup loader, worker), examples, tradeoffs, risks, test guidance); requirements-doc (status, REQ-005, AC-005, SCN-004, DEC-006); investigation-notes (SR-003 evidence rows).
+- Supplements: unchanged.
+- Intended behavior changed: `No` in substance (AR-005 aligns SCN-004's wording with REQ-006 and the design; no new behavior). Recorded as a clarification within the direction; user informed in this conversation.
+- Approval: Solution Designer within the direction, user informed, 2026-11-15.
+- Design/review basis invalidated or rebuilt: SR-002 design superseded by SR-003; ARCH-REV-001 applies to SR-002 only.
+- Classification: unchanged, `Large` / `High`.
+- Handoff: see `handoff-sr-003.md` Route record.
+- Remaining gaps: none; residual sweep cadence and R-AR-1 verification time recorded in design Risks; R-003 release order.
+- Next action: ARCH-REV-002.

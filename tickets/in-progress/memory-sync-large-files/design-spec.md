@@ -2,20 +2,34 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: `SR-002`
-- Approved requirements baseline: `requirements-doc.md` at SR-002 (SR-001 baseline plus REQ-008/AC-007/AC-008/DEC-007 revised to DESIGN.md rule 9), approved by the Solution Designer within the direction, user informed in this conversation on 2026-11-15.
+- Current solution revision ID: `SR-003` (revises SR-002 for ARCH-REV-001 findings AR-001..AR-006 and recommendation R-AR-1)
+- Approved requirements baseline: `requirements-doc.md` at SR-003 (SR-001 baseline; SR-002 revised REQ-008/AC-007/AC-008/DEC-007 to DESIGN.md rule 9; SR-003 clarified REQ-005/SCN-004: a lost connection is run-level and the next run resumes), approved by the Solution Designer within the direction, user informed in this conversation on 2026-11-15.
 - Behavior-defining supplements: None
 - User approval of the design: `Not required` (the Task does not ask for design approval)
 - Design status: `Ready`
 - Canonical investigation-notes path: `/Users/normy/autobyteus-org/autobyteus-task-worktrees/memory-sync-large-files/tickets/in-progress/memory-sync-large-files/investigation-notes.md`
-- Authorities read (2026-11-15): `references/architecture-design.md`, `references/design-principles.md`, `DESIGN.md` (repository root, the only one), `autobyteus-server-ts/docs/design/data_migration_guideline.md` §2–§3, `autobyteus-server-ts/docs/design/node_access_model.md` (NA-7, NAS-26), `autobyteus-server-ts/docs/features/memory_sync.md`, `TESTING.md`.
+- Authorities read (2026-11-15; re-entered for SR-003): `design-review-report.md` ARCH-REV-001, `references/architecture-design.md`, `references/design-principles.md`, `DESIGN.md` (repository root, the only one), `autobyteus-server-ts/docs/design/data_migration_guideline.md` §2–§3, `autobyteus-server-ts/docs/design/node_access_model.md` (NA-7, NAS-26), `autobyteus-server-ts/docs/features/memory_sync.md`, `TESTING.md`.
 - Project design-principle conflicts or discrepancies: none with the general principles. The approved SR-001 REQ-008 contradicted `DESIGN.md` rule 9 (no compatibility between software versions); the requirement was revised (SR-002), not the rule.
+
+## ARCH-REV-001 Resolution (SR-003)
+
+| Finding | Resolution | Where in this spec |
+| --- | --- | --- |
+| AR-001 (High) | One rule, owned by `LocalFileMemoryImportStore.commitBatch`: staged operations are grouped by SHA-256, each distinct content is verified once, every operation is verified (size equal to the staged file) before any write and the batch is refused before writing if one cannot be written; `MemoryHubStagedFileStore.placeStagedFile` puts one staged content at every target (copy to all but the last, rename to the last). Split re-sends call the stager again. | DS-003 spine and narrative; Ownership Map; Interfaces; example "Same content twice"; tests |
+| AR-002 (Medium) | Trigger `manual` / `background` decided by `MemorySyncService` from its entry and passed as data to the change planner and `isDue`; `manual` during a running run queues one manual run after it; `background` joins. | Current-State Read; Terminology; DS-001; run-gate bounded spine; Interfaces; example |
+| AR-003 (Medium) | `sweepStale()` covers every source folder, runs under each source's manifest lock, called by `MemoryHubIngestionService` on every hub call (any source) and by a startup loader once Memory Sync is ready. | DS-006; Ownership Map; File mapping; Risks |
+| AR-004 (Low) | Stager hashes the received prefix locally, reads exactly `size` bytes, compares with the planned SHA-256. | DS-002 narrative; stager bounded spine; Resume example |
+| AR-005 (Low) | Lost connection / network error (also mid-piece) is run-level; the next run resumes from the hub's received bytes. Requirements SCN-004 and REQ-005 wording aligned (SR-003). | Off-spine "Hub error classification"; Run-level example; requirements-doc |
+| AR-006 (Low) | Each batch's outcomes are recorded right after its send, before the next batch, as today (`memory-sync-service.ts:91`). | DS-001 spine and narrative; Ownership Map; tests |
+| R-AR-1 (rec.) | Staged bytes budget 4 GiB per batch (a larger file goes alone); verification order stated (inside the lock: batchId check, verify, write, manifest); `requireMemorySyncReady()` on every staged-store path. | Limits; batch planner; DS-003; Ownership Map; example "Staged budget" |
 
 ## Current-State Read
 
 One sync run (`memory-sync-service.ts:52-120`) reads config, marks the job `running`, scans, plans, posts batches one after another and marks `success`; any throw marks the whole job `error` and rethrows. The scanner (`local-memory-export-scanner.ts:83-105`) reads and SHA-256-hashes **every** file whole on every run. The planner (`memory-file-change-planner.ts:27-80`) compares fingerprints (size, sha256, truncated mtime), stops after `maxOperations` (= `batchSize`, so a run sends one batch) and reads each changed file whole again to put it base64 into the operation. The client (`memory-hub-client.ts:32-50`) posts `JSON.stringify(batch)`. The hub route (`api/rest/memory-sync.ts:41-54`) has `bodyLimit: 50 MiB`. The hub store (`local-file-memory-import-store.ts:104-212`) commits the batch under the manifest lock (`store-utils.ts:213-228`): for each operation in turn it decodes, verifies size and SHA-256, writes temp + renames, then records the manifest with the batch digest (idempotency).
 
 Problems (evidence: investigation notes, Runtime findings): a batch over 50 MiB fails, the same files lead the next plan, so every later run fails (reproduced with one 40 MiB or two 20 MiB files); ≥ 384 MiB cannot be base64-encoded; ≥ 2 GiB breaks the scan; unchanged files are re-read every minute; the error names no file. Real raw-trace files on the user's node are 40–54 MB.
+
+Both run triggers reach one entry without telling it which they are: the worker calls `startSync()` (`memory-sync-worker.ts:62`), GraphQL `startMemorySync` calls `startManualSync()`, which only calls `startSync()` (`memory-sync-service.ts:38-40`); `startSync()` returns the in-flight run when one is running (`:43-45`). Synced files are recorded after each batch (`memory-sync-service.ts:91`).
 
 Constraints: `/rest/memory-sync` is gated to memory sync source credentials (`node-route-permissions.ts:85`); source and hub run the same release (`DESIGN.md` rule 9); a file is visible in the imports only after verification (BEH-007); the hub may be the user's own node.
 
@@ -43,11 +57,11 @@ Constraints: `/rest/memory-sync` is gated to memory sync source credentials (`no
 
 ## Intended Change
 
-Changed files of a run go to the hub in batches cut by count and by inline bytes. A file larger than 8 MiB is no longer inlined: it is first uploaded as raw bytes in 8 MiB pieces to a hub staging area (resumable), and the batch then commits it with the new `staged` content encoding through the same manifest commit. Change detection stops re-reading unchanged files and hashes changed ones by streaming. Each file gets its own outcome: a file-level problem is recorded with a reason and a retry delay while the rest of the run continues; the owner sees the list in the Memory Sync card and the node log.
+Changed files of a run go to the hub in batches cut by count and by inline bytes. A file larger than 8 MiB is no longer inlined: it is first uploaded as raw bytes in 8 MiB pieces to a hub staging area (resumable), and the batch then commits it with the new `staged` content encoding through the same manifest commit. Change detection stops re-reading unchanged files and hashes changed ones by streaming. Each file gets its own outcome: a file-level problem is recorded with a reason and a retry delay while the rest of the run continues; the owner sees the list in the Memory Sync card and the node log. The run knows its trigger (`manual` / `background`); Sync now retries every failing file.
 
 ## Change Scope (Mandatory)
 
-- In scope: UC-001..UC-004. Areas: `autobyteus-server-ts/src/memory-sync/{source,hub,shared}`, `src/api/rest/memory-sync.ts`, `src/api/graphql/types/memory-sync{,-schema}.ts`, `autobyteus-web` Memory Sync card/store/query/localization and generated GraphQL types, `docs/features/memory_sync.md`, tests.
+- In scope: UC-001..UC-004. Areas: `autobyteus-server-ts/src/memory-sync/{source,hub,shared}`, `src/startup/` (one staging-sweep loader + its background-runner entry), `src/api/rest/memory-sync.ts`, `src/api/graphql/types/memory-sync{,-schema}.ts`, `autobyteus-web` Memory Sync card/store/query/localization and generated GraphQL types, `docs/features/memory_sync.md`, tests.
 - Derived consumers:
   - `MemorySyncSourceState` (source state file): readers are `local-file-memory-sync-state-store.ts` `normalizeState` (extended: projects `fileFailures`), `memory-sync-service.ts` (writer), GraphQL `buildStatus` (`memory-sync.ts:35-60`, extended with the failure count and list). No other reader (grep `readState(`).
   - `MemoryFileOperation` (wire): `memory-sync-batch-identity.ts` digest (unchanged: it hashes metadata, not content, so a staged and an inline operation of the same file digest alike — correct, same content), `local-file-memory-import-store.ts` commit (extended), source batch building (new). Tests that build operations (`tests/e2e/memory-sync/memory-sync-api.e2e.test.ts`) keep the inline shape, which stays valid.
@@ -60,7 +74,7 @@ Changed files of a run go to the hub in batches cut by count and by inline bytes
 
 | Behavior ID | Kind | Requirement / AC IDs | Trigger | Existing Behavior | Approved Change / Preserved Outcome | Target Path / Spine |
 | --- | --- | --- | --- | --- | --- | --- |
-| BEH-001 | System | REQ-001, REQ-005; AC-001, AC-002, AC-004 | Background tick or Sync now | All-or-nothing, one batch per run | All changed, due files per run; batches by count and bytes; per-file outcomes | DS-001, DS-003 |
+| BEH-001 | System | REQ-001, REQ-005; AC-001, AC-002, AC-004 | Background tick (`background`) or Sync now (`manual`) | All-or-nothing, one batch per run; no trigger distinction | All changed, due files per run; batches by count, inline bytes and staged bytes; per-file outcomes recorded after each batch | DS-001, DS-003 |
 | BEH-002 | System | REQ-001..REQ-003; AC-001, AC-003, AC-005 | A changed file > 8 MiB | Inlined → 413 | Uploaded in pieces to staging, committed by reference | DS-001, DS-002 |
 | BEH-003/004 | System | REQ-002, REQ-004; AC-003, AC-011 | File ≥ 384 MiB / ≥ 2 GiB | Throws | Streaming hash, pieces | DS-001, DS-004 |
 | BEH-005 | System | REQ-004; AC-011 | Every run | Re-read all | Unchanged by size+mtime → not read | DS-004 |
@@ -99,7 +113,8 @@ No project glossary entry exists for Memory Sync words (`GLOSSARY.md` has none);
 - **Staged file**: a changed file > 8 MiB, uploaded first in raw pieces to the hub's staging area, then committed by a batch operation with `contentEncoding: "staged"`. Its staging name is its SHA-256.
 - **Piece**: one raw-byte upload of at most 8 MiB at an offset of a staged file.
 - **File failure**: a file-level problem recorded in source state with reason, attempts and next attempt time. UI: "files could not be synced".
-- **Due**: a file with a file failure is due when its next attempt time has passed, its size or mtime changed, or the run is Sync now.
+- **Due**: a file with a file failure is due when the run's trigger is `manual` (Sync now), its next attempt time has passed, or its size or mtime differs from the failure record.
+- **Run trigger**: `manual` (Sync now, GraphQL `startMemorySync`) or `background` (worker tick); decided by `MemorySyncService` from its entry point and passed as data to the change planner.
 
 ## Legacy Removal Policy (Mandatory)
 
@@ -113,7 +128,7 @@ No project glossary entry exists for Memory Sync words (`GLOSSARY.md` has none);
 - Reader/writer: `normalizeState` projects known fields (`local-file-memory-sync-state-store.ts:28-39`); extended to project `fileFailures` (each record validated; invalid records dropped). Writer writes the exact current shape.
 - Semantics under direct use: absence of `fileFailures` truthfully means "no recorded file failure" → every changed file is due, which is exactly today's behavior.
 - Constraints: staging must be on the same file system as `imports/` for an atomic rename → under the memory directory, outside `imports/` so no imported reader or source listing ever sees it.
-- Decision: (1) `Directly Usable — No Migration`; (2) `Not Affected` (new, disposable: a removed partial only restarts that upload); (3) `Not Affected`.
+- Decision: (1) `Directly Usable — No Migration`; (2) `Not Affected` (new, disposable: a removed partial only restarts that upload; lifetime: removed when taken by a commit, when it fails verification, or by the sweep once older than 24 h — see DS-006); (3) `Not Affected`.
 - Rationale: migration guideline §3 "adding an optional field, provided its absence has a truthful meaning".
 - Guideline §2 checklist: Need — none (tolerant reader). Availability — unaffected; Memory Sync stays behind its existing capability gate. Source/target shapes — released state files have no `fileFailures`; fixture: existing tests' state files plus one with `fileFailures`. Disposition — N/A. Commit/retry — existing locked atomic JSON writer. Current-only boundary — no old-shape code. Cost — no pass over history; unchanged files are no longer read (cost falls). References — file keys reuse `toMemorySyncFileKey`. Evidence — unit tests of `normalizeState` and service. Lessons — tolerant-reader pattern; no schema version field added.
 - Supports: REQ-005, REQ-007, REQ-009; AC-004, AC-009.
@@ -127,41 +142,43 @@ No project glossary entry exists for Memory Sync words (`GLOSSARY.md` has none);
 | DS-003 | Primary End-to-End | BEH-001, 007 | Batch transfer posts a batch | Hub manifest committed | `MemorySyncBatchTransfer` (source) → `LocalFileMemoryImportStore` (hub) | One commit path for both encodings |
 | DS-004 | Bounded Local | BEH-004, 005 | Scan entries + prior state | Changed, due files with SHA-256 | `MemoryFileChangePlanner` | No re-reads, streaming hash |
 | DS-005 | Return-Event | BEH-006 | Recorded file failures | Card list, log line | `MemorySyncService` (record + log) → GraphQL status → card | Owner visibility |
+| DS-006 | Bounded Local | BEH-007 | Server start (Memory Sync ready) or any hub ingestion call | Stale partials and empty source folders removed | `MemoryHubStagedFileStore.sweepStale` (callers: `MemoryHubIngestionService`, startup loader) | Abandoned partials never stay (AR-003) |
 
 ## Primary Execution Spine(s)
 
-- DS-001: `MemorySyncWorker tick / GraphQL startMemorySync -> MemorySyncService.runOnce -> LocalMemoryExportScanner.scan -> MemoryFileChangePlanner.planChangedFiles -> planMemorySyncBatches -> MemorySyncBatchTransfer.send (per batch) -> MemorySyncService records outcomes in LocalFileMemorySyncStateStore -> MemorySyncRunResult`
+- DS-001: `MemorySyncWorker tick -> startSync("background") | GraphQL startMemorySync -> startManualSync() -> startSync("manual") -> MemorySyncService.runOnce(trigger) -> LocalMemoryExportScanner.scan -> MemoryFileChangePlanner.planChangedFiles(entries, state, trigger) -> planMemorySyncBatches -> for each batch: MemorySyncBatchTransfer.send -> MemorySyncService records that batch's outcomes in LocalFileMemorySyncStateStore -> (next batch) -> MemorySyncRunResult`
 - DS-002: `MemorySyncBatchTransfer -> MemoryFileStager.stage -> MemoryHubClient (GET status, PUT pieces) -> REST staged-file routes -> MemoryHubIngestionService -> MemoryHubStagedFileStore.appendPiece`
-- DS-003: `MemorySyncBatchTransfer -> MemoryHubClient.pushBatch -> REST POST batches -> MemoryHubIngestionService.commitBatch -> LocalFileMemoryImportStore.commitBatch (verify all operations, then write; staged via MemoryHubStagedFileStore.verifyStagedFile/takeStagedFile) -> manifest`
+- DS-003: `MemorySyncBatchTransfer -> MemoryHubClient.pushBatch -> REST POST batches -> MemoryHubIngestionService.commitBatch (sweep, checks) -> LocalFileMemoryImportStore.commitBatch, inside the source's manifest lock: duplicate batchId check -> verify every operation (inline: decode, size, hash; staged: one verification per distinct SHA-256 via MemoryHubStagedFileStore.verifyStagedFile) -> write every operation (inline: temp + rename; staged: MemoryHubStagedFileStore.placeStagedFile(sha256, targets)) -> manifest`
 
 ## Spine Narratives (Mandatory)
 
 | Spine ID | Short Narrative | Main Domain Subject Nodes | Governing Owner | Key Off-Spine Concerns |
 | --- | --- | --- | --- | --- |
-| DS-001 | A run lists files with their stat, keeps the changed and due ones (hashing them by streaming), cuts them into batches, sends each batch through the batch transfer, and records per-file outcomes: synced files into `files`, problems into `fileFailures`, cleared failures for synced or vanished files. A run-level error (hub refusal, unreachable) stops the run as today. All changed, due files are handled in one run. | file list, changed file, planned batch, file outcome | `MemorySyncService` | failure policy, state store, logger |
-| DS-002 | For a staged file the stager asks the hub how many bytes of `<sha256>` it already holds, then reads the file from that offset in 8 MiB pieces and PUTs each at its offset, hashing what it reads; when the bytes read do not hash to the planned SHA-256 (the file changed), the file is deferred. The hub appends a piece only at its current length (else 409 with the current length). | staged file, piece, received bytes | `MemoryFileStager`; hub side `MemoryHubStagedFileStore` | hub client errors |
-| DS-003 | The batch transfer reads each inline file's content just in time (stable-read check), builds the batch (inline `base64` + `staged` operations) and posts it. The hub verifies every operation first — inline: decode, size, hash; staged: staged file exists, size, streaming hash — and only then writes them (inline: temp+rename; staged: rename from staging) and records the manifest. On a file-level rejection of a multi-file batch the transfer re-sends each file alone to find the failing ones. | batch, operation | `MemorySyncBatchTransfer`; hub `LocalFileMemoryImportStore` | identity digest |
+| DS-001 | A run starts with its trigger (`manual` from Sync now, `background` from the worker). It lists files with their stat, keeps the changed and due ones (hashing them by streaming), cuts them into batches, and for each batch calls the batch transfer and then **immediately records that batch's outcomes** (synced files into `files`, problems into `fileFailures`, cleared failures for synced files) before the next batch, as today (`memory-sync-service.ts:91`). Failures of files that vanished are cleared at the end of the run. A run-level error (hub refusal, unreachable, connection lost) stops the run as today; batches already recorded stay recorded, and a large file interrupted mid-upload resumes on the next run from the hub's received bytes. All changed, due files are handled in one run. Run gate: a `background` start while a run is in progress joins it (today's coalescing); a `manual` start while a run is in progress waits for it and then starts one `manual` run (at most one queued; further Sync now clicks join the queued run), so Sync now always ends with every failing file retried. | file list, changed file, planned batch, file outcome | `MemorySyncService` | failure policy, state store, logger |
+| DS-002 | For a staged file the stager asks the hub how many bytes of `<sha256>` it already holds (`receivedBytes`). It hashes the local file's first `receivedBytes` bytes without sending them (resume), then reads the rest up to exactly the planned `size` in pieces of at most 8 MiB, hashing and PUTting each at its offset. When the hash of the `size` bytes it read does not equal the planned SHA-256 (the file changed), the file is deferred ("changed while being read") and not committed. `receivedBytes` ≥ `size` → no upload; the hub's commit verification decides. The hub appends a piece only at its current length (else 409 with the current length; the stager continues from that length, re-hashing its prefix). | staged file, piece, received bytes | `MemoryFileStager`; hub side `MemoryHubStagedFileStore` | hub client errors |
+| DS-003 | The batch transfer stages every staged file of the batch (stager, which skips bytes the hub holds), reads each inline file's content just in time (stable-read check), builds the batch (inline `base64` + `staged` operations) and posts it. Inside the source's manifest lock the hub checks the batchId, verifies every operation — inline: decode, size, hash; staged: once per distinct SHA-256, the staged file exists, its size equals every operation's declared size, its streaming hash matches — and refuses the whole batch (400 naming the file) before writing anything if one cannot be written. Then it writes: inline temp + rename; staged: `placeStagedFile` copies the staged content to every target of that SHA-256 but the last and renames it to the last (so several files with the same content in one batch — the same video attached to two runs — all land). Then the manifest. On a file-level rejection of a multi-file batch the transfer re-sends each file alone, calling the stager again for a staged file first (the hub may still hold it; else it is uploaded again). | batch, operation | `MemorySyncBatchTransfer`; hub `LocalFileMemoryImportStore` | identity digest |
 | DS-004 | For each listed file: unchanged when size and mtime equal its synced record; otherwise, if it has a file failure that is not due, it waits; else its SHA-256 is computed by streaming with a stable-read check (changed while read → deferred). | file entry, changed file | `MemoryFileChangePlanner` | failure policy (`isDue`) |
 | DS-005 | When the service records a new failure or a changed reason it logs one warning; GraphQL status returns the count and the 20 most recent failures; the card renders them. | file failure | `MemorySyncService` | GraphQL mapping, card |
+| DS-006 | `sweepStale()` lists every source folder under `memory-sync-staging/`; for each it takes that source's manifest lock (`withFilePathLock`, `store-utils.ts:101`) and removes partials whose mtime is older than 24 h, then the folder when empty. Callers: `MemoryHubIngestionService` before handling any staged-file request or batch commit (any source), and the startup loader once Memory Sync is ready. Holding the manifest lock means a sweep can never remove a staged file between a commit's verification and its write. | staged partial | `MemoryHubStagedFileStore` | startup loader |
 
 ## Spine Actors / Main-Line Nodes
 
-`MemorySyncService`, `LocalMemoryExportScanner`, `MemoryFileChangePlanner`, `planMemorySyncBatches`, `MemorySyncBatchTransfer`, `MemoryFileStager`, `MemoryHubClient`, hub REST routes, `MemoryHubIngestionService`, `MemoryHubStagedFileStore`, `LocalFileMemoryImportStore`.
+`MemorySyncWorker` / GraphQL resolver (entry, trigger), `MemorySyncService`, `LocalMemoryExportScanner`, `MemoryFileChangePlanner`, `planMemorySyncBatches`, `MemorySyncBatchTransfer`, `MemoryFileStager`, `MemoryHubClient`, hub REST routes, `MemoryHubIngestionService`, `MemoryHubStagedFileStore`, `LocalFileMemoryImportStore`.
 
 ## Ownership Map
 
-- `MemorySyncService`: run lifecycle (gate, job state, run result), sequencing of scan → plan → batches, recording outcomes in source state (`files`, `fileFailures`), the per-failure log line. Calls each mechanism itself.
+- `MemorySyncService`: run lifecycle (gate with trigger rule: `background` joins a running run, `manual` queues one run after it; job state; run result), the run trigger, sequencing of scan → plan → batches, recording each batch's outcomes right after its send (`files`, `fileFailures`), clearing failures of vanished files, the per-failure log line. Calls each mechanism itself.
 - `LocalMemoryExportScanner`: walking the roots and listing regular files with `size` and `mtimeMs` (no reads); exclusion rules unchanged.
-- `MemoryFileChangePlanner`: change and due decisions; streaming SHA-256 with stable-read check.
-- `planMemorySyncBatches` (pure function): batch cutting by `batchSize` and inline byte budget; inline vs staged per file by the 8 MiB threshold.
+- `MemoryFileChangePlanner`: change and due decisions (`isDue(failure, entry, trigger, now)` from the failure policy, trigger received as data); streaming SHA-256 with stable-read check.
+- `planMemorySyncBatches` (pure function): batch cutting by `batchSize`, inline byte budget (24 MiB) and staged byte budget (4 GiB; a staged file larger than the budget goes alone with any inline files that fit); inline vs staged per file by the 8 MiB threshold.
 - `MemorySyncBatchTransfer`: sending one planned batch with per-file isolation: staging large files, reading inline content, building operations, posting, splitting on file-level rejection; returns per-file outcomes. Owns the file-level vs run-level classification of hub errors.
-- `MemoryFileStager`: resumable piece upload of one file with read-hash verification.
+- `MemoryFileStager`: resumable piece upload of exactly `size` bytes of one file; hashes the received prefix locally on resume; compares the hash of the `size` bytes read with the planned SHA-256.
 - `memory-sync-file-failure-policy.ts`: retry delay (1 min doubling, max 1 h), `isDue`, building/clearing failure records.
 - `MemoryHubClient`: HTTP calls; throws `MemoryHubRequestError` carrying `status` and hub `code`.
 - Hub REST routes: transport, body parsing, mapping errors to status codes.
-- `MemoryHubIngestionService`: hub enabled check and credential binding for every hub call (batches and staged files).
-- `MemoryHubStagedFileStore`: staging folder per source, append at offset, received bytes, verification (size + streaming hash; removes a staged file that fails), take (rename into a target path), sweeping partials older than 24 h.
-- `LocalFileMemoryImportStore`: batch commit under the manifest lock for both encodings.
+- `MemoryHubIngestionService`: hub enabled check, credential binding, and calling `sweepStale()` for every hub call (batches and staged files).
+- `MemoryHubStagedFileStore`: staging folder per source (every path through `requireMemorySyncReady()`, like `local-file-memory-import-store.ts:48-50`), append at offset, received bytes, verification (size + streaming hash; removes a staged file that fails), placement of one staged content at one or more target paths (copy to all but the last, rename to the last), sweeping partials older than 24 h in every source folder under the source's manifest lock.
+- `LocalFileMemoryImportStore`: batch commit under the manifest lock for both encodings; owns the rule "verify every operation, refuse the batch before writing if one cannot be written, then write" and the grouping of staged operations by SHA-256 (AR-001).
 
 ## Thin Entry Facades / Public Wrappers (If Applicable)
 
@@ -188,17 +205,19 @@ DS-005 above: `MemorySyncService (records failure, logs) -> LocalFileMemorySyncS
 
 ## Bounded Local / Internal Spines (If Applicable)
 
-- Parent `MemorySyncBatchTransfer`: `planned batch -> stage each staged file (failure → file outcome, file left out) -> read each inline file (changed → deferred) -> post batch -> success: all committed | file-level rejection and >1 operation: post each alone | run-level error: rethrow`.
-- Parent `MemoryFileStager`: `GET received -> (received ≥ size: done) -> loop: read piece at offset, hash, PUT at offset (409: continue from hub's received) -> compare read hash with planned SHA-256 (mismatch → deferred "changed while being read")`.
+- Parent `MemorySyncBatchTransfer`: `planned batch -> stage each staged file (file-level failure → file outcome, file left out; deferred → left out) -> read each inline file (changed → deferred) -> post batch -> success: all committed | file-level rejection and >1 operation: for each file: (staged: stage again) post it alone | run-level error: rethrow`.
+- Parent `MemoryFileStager`: `GET receivedBytes -> (receivedBytes ≥ size: done) -> hash local [0, receivedBytes) -> loop until size: read piece [offset, min(offset + 8 MiB, size)), hash, PUT at offset (409: restart hashing at the hub's receivedBytes) -> compare hash of the size bytes with planned SHA-256 (mismatch → deferred "changed while being read")`.
+- Parent `MemorySyncService` (run gate): `startSync(trigger) -> no run: start runOnce(trigger) | running and trigger background: return running | running and trigger manual: return queued manual run (create it if none: after running settles, runOnce("manual"))`.
+- Parent `MemoryHubStagedFileStore`: DS-006.
 
 ## Off-Spine Concerns Around The Spine
 
 | Off-Spine Concern | Spine | Serves | Responsibility | Why | Risk If On Main Line |
 | --- | --- | --- | --- | --- | --- |
 | Failure policy | DS-001, DS-004 | Service, change planner | Delay, due, record shapes | One rule for retries | Delay rules duplicated in planner and service |
-| Transfer limits | DS-002, DS-003 | Batch planner, stager, routes | Inline threshold 8 MiB, batch inline budget 24 MiB, piece 8 MiB, batch request limit 50 MiB | One owner for numbers shared by source and hub | Drift between source budget and hub limit |
+| Transfer limits | DS-002, DS-003 | Batch planner, stager, routes | Inline threshold 8 MiB, batch inline budget 24 MiB, batch staged budget 4 GiB, piece 8 MiB, batch request limit 50 MiB, staged partial max age 24 h | One owner for numbers shared by source and hub | Drift between source budget and hub limit |
 | Streaming hash | DS-004, DS-002 hub | Change planner, staged store | SHA-256 of a file by stream with stat check | Constant memory | Whole-file reads return |
-| Hub error classification | DS-003 | Batch transfer | file-level vs run-level | Isolation without hiding outages | Every error poisons or every error is swallowed |
+| Hub error classification | DS-003 | Batch transfer | file-level (hub answered 400/409-after-retry/413/422 for a batch or piece) vs run-level (401/403 gate refusal, 503, any network error or lost connection) | Isolation without hiding outages | Every error poisons or every error is swallowed |
 | Logging | DS-005 | Service | One warn line per new failure/reason | Owner log | Log spam every minute |
 
 ## Ownership Boundaries
@@ -224,11 +243,13 @@ Source: callers (worker, GraphQL) depend only on `MemorySyncService`. The servic
 
 | Interface | Subject | Responsibility | Identity Shape | Notes |
 | --- | --- | --- | --- | --- |
-| `GET /rest/memory-sync/v1/sources/:memorySyncSourceId/staged-files/:sha256` | Staged file of a source | Received bytes | source id + 64-hex SHA-256 | `{ receivedBytes }`; 0 when none; sweeps that source's stale partials |
+| `GET /rest/memory-sync/v1/sources/:memorySyncSourceId/staged-files/:sha256` | Staged file of a source | Received bytes | source id + 64-hex SHA-256 | `{ receivedBytes }`; 0 when none |
 | `PUT /rest/memory-sync/v1/sources/:memorySyncSourceId/staged-files/:sha256?offset=<n>` (`application/octet-stream`, ≤ 8 MiB) | Same | Append one piece | same + offset | `{ receivedBytes }`; 409 `{ error: "MemorySyncStagedFileOffsetMismatch", message, receivedBytes }` |
 | `POST /rest/memory-sync/v1/batches` | Batch | Commit | body `memorySyncSourceId`, `batchId` | Operation `contentEncoding: "base64"` (with `contentBase64`) or `"staged"` (content = staged `<sha256>` of that source) |
-| `MemoryHubIngestionService.getStagedFileStatus({credentialId, memorySyncSourceId, sha256})`, `.receiveStagedFilePiece({…, offset, bytes})` | Staged file | Checks + delegate | explicit | Same hub-enabled and `bindCredentialToSource(bindOnFirstUse: true)` as batches |
-| `MemoryHubStagedFileStore.receivedBytes / appendPiece / verifyStagedFile / takeStagedFile / sweepStale` | Staged file | Storage | `(memorySyncSourceId, sha256)` | |
+| `MemoryHubIngestionService.getStagedFileStatus({credentialId, memorySyncSourceId, sha256})`, `.receiveStagedFilePiece({…, offset, bytes})` | Staged file | Checks + sweep + delegate | explicit | Same hub-enabled and `bindCredentialToSource(bindOnFirstUse: true)` as batches; `commitBatch` also sweeps |
+| `MemoryHubStagedFileStore.receivedBytes / appendPiece / verifyStagedFile / placeStagedFile(memorySyncSourceId, sha256, targetPaths[]) / sweepStale()` | Staged file | Storage | `(memorySyncSourceId, sha256)`; `sweepStale` takes none (all sources) | `placeStagedFile` is called only inside the commit's manifest lock after verification |
+| `MemorySyncService.startSync(trigger: "manual" \| "background")`, `startManualSync()` = `startSync("manual")`, `runOnce(trigger)` | Run | Run gate + run | trigger | Worker passes `"background"` |
+| `MemoryFileChangePlanner.planChangedFiles(entries, state, trigger, now)`; failure policy `isDue(failure, entry, trigger, now)` | Change plan | Due decision | trigger as data | |
 | `MemorySyncBatchTransfer.send(batch, context) → MemorySyncFileOutcome[]` | Planned batch | Send with isolation | — | Outcome: `synced` (batchId, committedAt) / `deferred` (reason) / `failed` (reason) |
 | GraphQL `MemorySyncSourceStateGql.fileFailureCount: Int`, `.fileFailures: [MemorySyncFileFailureGql]` | Source state | Status | — | List: 20 most recent by `lastFailedAt`; fields `kind relativePath size reason attempts lastFailedAt nextAttemptAt` |
 | GraphQL `MemorySyncRunResultGql.failedFiles: Int` | Run | Count | — | |
@@ -294,7 +315,7 @@ See Final mapping; the draft put batch cutting inside `memory-sync-batch-transfe
 
 | File | Area | Owner | Concrete Concern |
 | --- | --- | --- | --- |
-| `src/memory-sync/shared/memory-sync-transfer-limits.ts` (new) | shared | limits | `MEMORY_SYNC_INLINE_FILE_MAX_BYTES = 8 MiB`, `MEMORY_SYNC_BATCH_INLINE_BYTES_BUDGET = 24 MiB`, `MEMORY_SYNC_STAGED_PIECE_MAX_BYTES = 8 MiB`, `MEMORY_SYNC_BATCH_REQUEST_LIMIT_BYTES = 50 MiB`, `MEMORY_SYNC_STAGED_FILE_MAX_AGE_MS = 24 h` |
+| `src/memory-sync/shared/memory-sync-transfer-limits.ts` (new) | shared | limits | `MEMORY_SYNC_INLINE_FILE_MAX_BYTES = 8 MiB`, `MEMORY_SYNC_BATCH_INLINE_BYTES_BUDGET = 24 MiB`, `MEMORY_SYNC_BATCH_STAGED_BYTES_BUDGET = 4 GiB`, `MEMORY_SYNC_STAGED_PIECE_MAX_BYTES = 8 MiB`, `MEMORY_SYNC_BATCH_REQUEST_LIMIT_BYTES = 50 MiB`, `MEMORY_SYNC_STAGED_FILE_MAX_AGE_MS = 24 h` |
 | `src/memory-sync/shared/memory-sync-file-hash.ts` (new) | shared | hash | `hashStableFile(path, {size, mtimeMs}) → sha256 \| null` (stream, stat before/after) and `hashFile(path)` |
 | `src/memory-sync/shared/memory-sync-types.ts` | shared | wire + state types | Operation union; `MemoryFileEntry`, `ChangedMemoryFile`; `MemorySyncFileFailure`; `fileFailures` in `MemorySyncSourceState` |
 | `src/memory-sync/source/local-memory-export-scanner.ts` | source | scanner | List entries with stat |
@@ -305,11 +326,13 @@ See Final mapping; the draft put batch cutting inside `memory-sync-batch-transfe
 | `src/memory-sync/source/memory-sync-file-failure-policy.ts` (new) | source | failure policy | Delay, due, record, clear |
 | `src/memory-sync/source/memory-hub-client.ts` | source | client | + `getStagedFileStatus`, `putStagedFilePiece` |
 | `src/memory-sync/source/memory-hub-response-parser.ts` | source | parser | Throw `MemoryHubRequestError { status, code, receivedBytes? }` (gate refusal texts unchanged) |
-| `src/memory-sync/source/memory-sync-service.ts` | source | run owner | Sequence, outcomes → state, log, result (+`failedFiles`) |
+| `src/memory-sync/source/memory-sync-service.ts` | source | run owner | Run gate with trigger, sequence, per-batch outcomes → state, log, result (+`failedFiles`) |
+| `src/memory-sync/source/memory-sync-worker.ts` | source | worker | Calls `startSync("background")` |
 | `src/memory-sync/source/local-file-memory-sync-state-store.ts` | source | state store | `normalizeState` projects `fileFailures` |
-| `src/memory-sync/hub/memory-hub-staged-file-store.ts` (new) | hub | staged store | Staging folder, append, received, verify, take, sweep |
-| `src/memory-sync/hub/local-file-memory-import-store.ts` | hub | import store | Verify all ops, then write; staged take |
-| `src/memory-sync/hub/memory-hub-ingestion-service.ts` | hub | ingestion | + staged status/piece methods with the same checks |
+| `src/memory-sync/hub/memory-hub-staged-file-store.ts` (new) | hub | staged store | Staging folder, append, received, verify, place at targets, sweep all sources |
+| `src/startup/memory-hub-staging-sweep-loader.ts` (new) + one entry in `src/startup/background-runner.ts` | startup | startup caller | When `isMemorySyncReady()`, call `sweepStale()` once; otherwise return |
+| `src/memory-sync/hub/local-file-memory-import-store.ts` | hub | import store | In the lock: batchId check, verify all ops (staged grouped by SHA-256), refuse before writing, write (staged via `placeStagedFile`), manifest |
+| `src/memory-sync/hub/memory-hub-ingestion-service.ts` | hub | ingestion | + staged status/piece methods with the same checks; `sweepStale()` on every call |
 | `src/api/rest/memory-sync.ts` | api | routes | + GET/PUT staged-file routes in a scoped child with the octet-stream parser; limits from shared |
 | `src/api/graphql/types/memory-sync-schema.ts`, `memory-sync.ts` | api | GraphQL | Failure count/list; `failedFiles` |
 | `autobyteus-web/graphql/queries/memorySyncQueries.ts`, `graphql/mutations/memorySyncMutations.ts`, `generated/graphql.ts` (codegen) | web | API types | New fields |
@@ -339,10 +362,13 @@ Flat layout inside `source/`, `hub/`, `shared/` kept (existing pattern; each new
 
 | Topic | Good Example | Bad / Avoided Shape | Why |
 | --- | --- | --- | --- |
+| Staged budget | changed staged files `[3 GiB, 2 GiB, 10 GiB]` → batch 1: 3 GiB; batch 2: 2 GiB; batch 3: 10 GiB alone (each batch's staged bytes ≤ 4 GiB, except a single larger file). Hub verification per batch: ≤ 4 GiB, or one file; at 100 MB/s that is ≤ ~100 s for the 10 GiB maximum, inside Node fetch's default 300 s response-headers timeout (undici default; not measured — AC-003 run records the actual time) | 25 × 2 GiB in one batch → 50 GiB hashed in one request | R-AR-1 |
+| Same content twice (AR-001) | `agents/r1/context_files/v.mp4` and `agents/r2/context_files/v.mp4`, same SHA-256 `S`, in one batch → stager uploads `S` once (second GET: complete) → hub verifies `S` once → `placeStagedFile(S, [r1 target, r2 target])`: copy to r1, rename to r2 → manifest records both | Second take fails after the first rename: r1 written but unrecorded, run loops | Shows the one rule |
 | Batch cutting | changed files sizes `[1 KiB, 40 MiB, 5 MiB×6, 2 GiB]`, `batchSize 25` → batch 1: 1 KiB inline, 40 MiB staged, 5 MiB×4 inline (≈ 20 MiB inline; a fifth 5 MiB file would pass 24 MiB), batch 2: 5 MiB×2 inline, 2 GiB staged. Staged files count toward `batchSize`, not toward the inline budget | One batch carrying 31 MiB of inline content (→ 41 MiB base64 + JSON, near the limit) | Shows both limits |
 | Isolation | batch [a, b(bad path), c] → hub 400 → send [a], [b], [c] → a, c synced; b `failed: <hub message>` | Whole run `error` | REQ-005 |
-| Run-level | hub 401/403 gate refusal, 503, network error → rethrow, job `error` | Recording a file failure for every file on an outage | REQ-006 |
-| Resume | file 2 GiB, hub holds 1.2 GiB of `<sha>` → GET 1.2 GiB → PUT from 1.2 GiB | Restart from 0 | REQ-003 |
+| Run-level | hub 401/403 gate refusal, 503, network error or lost connection (also mid-piece) → rethrow, job `error`; batches already recorded stay; the interrupted staged file resumes next run | Recording a file failure for every file on an outage | REQ-006 |
+| Sync now during a background run | background run with a 2 GiB upload in progress; owner clicks Sync now → card shows syncing; when the background run ends, one `manual` run starts and retries every failing file; the GraphQL mutation returns that manual run's result | Joining the background run, so the failing file waits up to 1 h | AC-004 |
+| Resume | file 2 GiB, hub holds 1.2 GiB of `<sha>` → GET 1.2 GiB → stager hashes local bytes [0, 1.2 GiB) without sending → reads and PUTs [1.2 GiB, 2 GiB) in 8 MiB pieces → hash of the 2 GiB equals `<sha>` → commit | Restart from 0; or hashing only the tail and deferring every resumed file | REQ-003 |
 | Card | `Last sync: success · 15/11 14:02` then amber `2 files could not be synced` and rows `agents/run-b/context_files/video.mp4 · 1.9 GB · Uploaded file hash mismatch … · next attempt 14:06` | Raw `error · Request body is too large` | REQ-007 |
 
 ## Backward-Compatibility Rejection Log (Mandatory)
@@ -370,7 +396,9 @@ N/A — ownership above is sufficient.
 - Two encodings (inline/staged) instead of staging everything: keeps one request per up to 25 small files (first sync of thousands of small files stays fast) while large files never go base64. The 8 MiB threshold equals the piece size, so a staged file always needs ≥ 2 pieces or exactly fills them.
 - A run now sends all changed due files instead of one batch: Sync now finishes the job; a run with a 2 GiB file lasts minutes (the run gate already coalesces overlapping runs).
 - Size + mtime change detection: standard; content changes that keep both are missed (no writer in this product does that).
-- Hub verification hashes a staged file in the batch request (≈ seconds per GiB) before taking the manifest lock.
+- Hub verification hashes staged files inside the source's manifest lock (≈ seconds per GiB, ≤ 4 GiB per batch or one larger file). The lock is per source, and a source sends its batches one after another, so only that source's own next batch waits; holding it also orders verification, write and sweep (no staged file can disappear between verify and write).
+- Same content in one batch is placed by copy (one extra write per extra target) rather than uploaded twice; across batches the stager uploads it again (rare; no cross-batch content index).
+- Sync now queues one manual run after a running one rather than interrupting it: simple, and every failing file is retried.
 
 ## Risks
 
@@ -378,11 +406,13 @@ N/A — ownership above is sufficient.
 - Mixed versions: an older hub answers 404 to staged routes and rejects `staged` operations; per rule 9 this is not handled; documented "update every node together" (already in `memory_sync.md`).
 - `generated/graphql.ts` is a fresh-start build input (TESTING.md "Fresh-start build"): delivery runs the fresh-start desktop build.
 - Reverse proxies with small body limits (FU-002).
+- R-AR-1 (residual, reduced): verification time per batch is bounded by the 4 GiB staged budget or one file; the AC-003 run records the actual 2 GiB verification time against the 300 s default.
+- Sweep cadence: a hub that receives no request from any source and does not restart keeps an abandoned partial until either happens (bounded by the next start or the next request from any source).
 
 ## Guidance For Implementation
 
-- Reproduction to start from: `tickets/in-progress/memory-sync-large-files/probes/large-file-sync-probe.e2e.test.ts.txt` (command in investigation notes). Turn it into durable `tests/e2e/memory-sync/memory-sync-large-files.e2e.test.ts` (two built server processes) asserting: 40 MiB + small file synced in one run (AC-001); two 20 MiB files synced (AC-002); a 20 MiB file interrupted (stop the hub mid-transfer or a first run that fails after some pieces) resumes (AC-005); a file failure is listed in GraphQL status and others sync (AC-004, AC-010).
-- Unit: batch planner (budget, count, threshold, examples above); change planner (fast path AC-011, due rules, deferral); failure policy (delays 1, 2, 4 … 60 min; Sync now; changed file); stager (resume, 409, read-hash mismatch); batch transfer (split on 400, run-level errors AC-006); staged store (offset rules, verify removes bad file, sweep, never under `imports/` AC-009); import store (verify-all-then-write, staged take, digest unchanged); state store projection (absent → `{}`; invalid records dropped; exact written keys).
+- Reproduction to start from: `tickets/in-progress/memory-sync-large-files/probes/large-file-sync-probe.e2e.test.ts.txt` (command in investigation notes). Turn it into durable `tests/e2e/memory-sync/memory-sync-large-files.e2e.test.ts` (two built server processes) asserting: 40 MiB + small file synced in one run (AC-001); two 20 MiB files synced (AC-002); the same 20 MiB content under two runs synced in one run, both imported and in the manifest (AR-001); a 20 MiB file interrupted (stop the hub mid-transfer or a first run that fails after some pieces) resumes (AC-005); a file failure is listed in GraphQL status and others sync (AC-004, AC-010).
+- Unit: batch planner (inline budget, staged budget, count, threshold, examples above); run gate (background joins; manual during a run queues exactly one manual run; manual makes failing files due); per-batch recording survives a later run-level error (AR-006); import store: two staged operations with one SHA-256 both land and are recorded, a staged op whose size differs from the staged file refuses the batch before any write (AR-001); stager resume hashes the prefix and reads exactly `size` while the file grows (AR-004); sweep removes old partials of a source that never calls again and skips fresh ones, and never runs while a commit holds that source's lock (AR-003); staged store paths refuse while Memory Sync is held back; change planner (fast path AC-011, due rules, deferral); failure policy (delays 1, 2, 4 … 60 min; Sync now; changed file); stager (resume, 409, read-hash mismatch); batch transfer (split on 400, run-level errors AC-006); staged store (offset rules, verify removes bad file, sweep, never under `imports/` AC-009); import store (verify-all-then-write, staged take, digest unchanged); state store projection (absent → `{}`; invalid records dropped; exact written keys).
 - Keep `tests/e2e/memory-sync/memory-sync-api.e2e.test.ts` and the multiprocess test green (AC-008 inline shape).
 - AC-003 is one measured run with a 2 GiB generated file (RSS of both processes sampled), recorded as validation evidence; not a CI test.
 - No test-only parameters in production code (`DESIGN.md` rule 11): tests use real sizes (20–40 MiB files in a temp dir) and pure functions with sizes as data.

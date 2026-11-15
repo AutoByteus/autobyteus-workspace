@@ -11,7 +11,7 @@
 - Finalization target remote / branch: `origin/personal`; no release (Task: "Stop at merge-ready; no release")
 - Bootstrap result: worktree created with `git worktree add -b task/memory-sync-large-files … origin/personal`; `pnpm install --frozen-lockfile` (pnpm 10.28.2 through `npx`, pnpm is not on this shell's PATH), `pnpm -C autobyteus-server-ts prebuild` and `build` passed.
 - Bootstrap blocker: None
-- Current solution revision ID: `SR-002`
+- Current solution revision ID: `SR-003`
 - Authorities read (requirements reading gate; file and date): `references/requirements-engineering.md`, `references/finding-the-cause.md`, `references/ticket-scope.md` (2026-11-15); `TESTING.md` (2026-11-15)
 - Investigation status: Requirements investigation complete; architecture investigation below.
 
@@ -182,6 +182,12 @@ Architecture-phase evidence, 2026-11-15 (authorities: `references/architecture-d
 | `memory-sync-batch-identity.ts:5-16` | Digest covers op metadata, not content encoding | A staged and an inline op of the same file digest alike; idempotency unchanged |
 | `local-file-memory-import-store.ts:139-154` | Ops are written one by one inside the lock; a later op's failure leaves earlier files written but unrecorded | Verify every op before writing any |
 | `autobyteus-web/generated/graphql.ts` | Codegen output, a TESTING.md fresh-start build input | Delivery runs the fresh-start build |
+| SR-003 (ARCH-REV-001): `memory-sync-service.ts:38-50`, `memory-sync-worker.ts:62`, `api/graphql/types/memory-sync.ts:151` | Sync now and the background tick both reach `startSync()`; no trigger; a start during a run joins it | Trigger argument; manual queues one run after a running one (AR-002) |
+| SR-003: `memory-sync-service.ts:91` | Synced files recorded after each batch | Kept: outcomes recorded per batch (AR-006) |
+| SR-003: `store-utils.ts:101` | `withFilePathLock` exported (per-path lock used by `updateJsonFile`) | Sweep takes each source's manifest lock (AR-003) |
+| SR-003: `startup/background-runner.ts:18`, `startup/memory-sync-worker-loader.ts`, `startup/app-data-capability-readiness.ts:21-26` | Background-runner entries load startup jobs; Memory Sync readiness is applied by the capability owner | Startup staging-sweep loader checks `isMemorySyncReady()` (AR-003) |
+| SR-003: `context-files/store/context-file-layout.ts:58-70` (reviewer MP-001) | Each run keeps its own copy of an attached file, so one video attached to two runs gives two files with one SHA-256 | Commit places one staged content at every target (AR-001) |
+| SR-003: Node built-in `fetch` (undici) default `headersTimeout` 300 s (library default, Read, not measured) | A batch whose verification takes longer would surface as a network error | Staged bytes budget 4 GiB per batch; AC-003 run records the real verification time (R-AR-1) |
 
 
 ## Requirement Implications

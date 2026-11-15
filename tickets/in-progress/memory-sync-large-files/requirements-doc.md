@@ -3,14 +3,14 @@
 ## Document Status
 
 - Status: `Approved`
-- Current solution revision ID: `SR-002`
+- Current solution revision ID: `SR-003`
 - Package identifier: `memory-sync-large-files`
 - Request / ticket: Project Task `autobyteus-workspace-7` — "Memory Sync: one attachment over ~37 MiB stops all syncing" (FU-001 of `autobyteus-workspace-6`)
 - Requested by: `/project_task_manager` (run `project_task_manager_89e33a2ea30f422fab0407e4dc2b13bb`)
 - Requirements owner: Solution Designer (`/software_engineering_team/solution_designer` coordinator of the assigned team)
 - Date: 2026-11-15
-- Approved by and reference: `Solution Designer within the direction (user informed)`; reference: this conversation's messages informing the user, 2026-11-15 (SR-001 baseline; SR-002 revision of REQ-008/AC-007/AC-008/DEC-007/SCN-005 to the project rule `DESIGN.md` rule 9). The Task lets the designer "propose and justify" skip vs transfer; no decision below needs the user.
-- Exact approved requirements baseline / solution revision: this document at SR-002
+- Approved by and reference: `Solution Designer within the direction (user informed)`; reference: this conversation's messages informing the user, 2026-11-15 (SR-001 baseline; SR-002 revision of REQ-008/AC-007/AC-008/DEC-007/SCN-005 to the project rule `DESIGN.md` rule 9; SR-003 clarification of REQ-005/SCN-004/DEC-006/AC-005: a lost connection is run-level and the next run resumes, per ARCH-REV-001 AR-005). The Task lets the designer "propose and justify" skip vs transfer; no decision below needs the user.
+- Exact approved requirements baseline / solution revision: this document at SR-003
 - Behavior-defining supplements and their approved versions: None (the probe is evidence only)
 
 ## Problem And Desired Outcome
@@ -90,7 +90,7 @@ None.
 | REQ-002 | A file larger than what fits in a batch is transferred to a hub that supports it as raw bytes in bounded pieces (never as one whole-file base64 value), up to at least 10 GiB; source and hub memory used by the transfer does not grow with the file size. | BEH-002, BEH-003, BEH-004 | Must | Real traces 54 MB; videos up to 2 GiB (max configurable 10 GiB) | Node ceilings measured (384 MiB base64, 2 GiB readFile); streaming avoids both | Task; manager; DEC-001 |
 | REQ-003 | A large transfer interrupted mid-way resumes from what the hub already received on the next attempt rather than restarting from zero. | BEH-002 | Should | 2 GiB over a home network | Design to prove | DEC-005 |
 | REQ-004 | A file whose size and modification time equal its last synced record is not re-read; a changed file is read in a streaming way to compute its hash. | BEH-004, BEH-005 | Must | IO and memory every minute | Code read | DEC-003 |
-| REQ-005 | A problem with one file (it changes while being read, the hub rejects it, its transfer fails) does not stop other files in the same run; the file is retried on later runs with an increasing delay (Sync now retries at once), and is retried at once when it changes. | BEH-001, BEH-002 | Must | "one bad file never blocks the rest" | Probe shows poisoning today | Task; DEC-005, DEC-006 |
+| REQ-005 | A problem with one file (it changes while being read, or the hub rejects it or its content) does not stop other files in the same run; a lost connection or unreachable hub is not a problem of one file (REQ-006): the run stops and the next run resumes an interrupted large transfer (REQ-003); the file is retried on later runs with an increasing delay (Sync now retries at once), and is retried at once when it changes. | BEH-001, BEH-002 | Must | "one bad file never blocks the rest" | Probe shows poisoning today | Task; DEC-005, DEC-006 |
 | REQ-006 | Problems that affect every file (hub unreachable, token invalid or revoked, hub disabled, Memory Sync held back) still fail the run as today, with the same messages. | BEH-008 | Must | Preserve | Code read | Preserved |
 | REQ-007 | The owner sees, in Nodes → Memory Sync, the number of files not synced and for each (up to a bounded list) its path, size, reason in plain words and next retry time; the node log has one warning line per file when a problem is first recorded or its reason changes. | BEH-006 | Must | "clear logs/status for the owner" | — | Task; DEC-004 |
 | REQ-008 | Source and hub of the same release carry every file size; no detection of, fallback for, or negotiation with an older or newer node is built (`DESIGN.md` rule 9); the feature document tells owners to update every Memory Sync node together. | BEH-007 | Must | Project rule: no compatibility between software versions | `DESIGN.md` rule 9 | DEC-007 (SR-002) |
@@ -105,7 +105,7 @@ None.
 | AC-002 | REQ-001 | BEH-001 / SCN-003 | Many changed files whose total is several times 50 MiB, each below the batch threshold | All imported over several batches; every request body < 50 MiB | — | Unit (batch planner with byte budget) + integration (recorded request sizes) |
 | AC-003 | REQ-002, REQ-004 | BEH-003, BEH-004 / SCN-001 | A 2 GiB file (sparse/generated) on the source; Sync now | File imported, SHA-256 equal; source and hub RSS growth during the transfer stays below 200 MiB | — | One measured run (validation evidence), not a CI test |
 | AC-004 | REQ-005 | BEH-001 / SCN-004 | One file the hub rejects (e.g. hub-side verification failure) plus other changed files | Others imported in the same run; the failing file is listed with its reason; next background run does not retry it before its delay; Sync now retries it; after it is fixed (changed) it syncs | — | Unit + integration |
-| AC-005 | REQ-003 | SCN-004 | A large transfer interrupted after some pieces | Next attempt sends only the remaining bytes; result identical | If the hub discarded the partial transfer, it restarts from zero | Integration |
+| AC-005 | REQ-003, REQ-006 | SCN-004 | A large transfer interrupted after some pieces (connection lost or hub stopped; the run ends with a job error) | Next attempt sends only the remaining bytes; result identical | If the hub discarded the partial transfer, it restarts from zero | Integration |
 | AC-006 | REQ-006 | BEH-008 / SCN-006 | Invalid token, or hub unreachable | Run fails with today's message; job `error` | — | Existing tests stay green + unit |
 | AC-007 | REQ-008 | BEH-007 / SCN-005 | Feature document | States that every Memory Sync node must run the same release and be updated together | — | Review |
 | AC-008 | REQ-008, REQ-009 | BEH-007 | A batch whose operations carry inline (base64) content, as the source sends for small files | Accepted and committed with today's verification and idempotency | — | Existing E2E `memory-sync-api.e2e.test.ts` stays green |
@@ -121,7 +121,7 @@ None.
 | SCN-001 | User + System | Owner, then background loop | A large attachment reaches the hub | Owner attaches a video (40 MiB–2 GiB) to a run; next background run or Sync now | Memory Sync on, hub configured | Attachment stored under the run's `context_files/`; run detects it; transfers it in pieces with the small files | Imported on the hub | Old hub → AC-007 | Supported Normal Scenario | Context-file layout; sibling 2 GiB plan | REQ-001..005, AC-001, AC-003 |
 | SCN-002 | System | Agent run | Long run's trace file grows past the batch limit | Trace append | Memory Sync on | Changed trace detected; sent as a large file | Imported | — | Supported Normal Scenario | Real files 40–54 MB | REQ-002, AC-001 |
 | SCN-003 | Operational | Owner | First sync after enabling on a node with much memory | Enable + Sync now | Thousands of files | Batches by bytes and count over runs | All imported, no 413 | — | Supported Normal Scenario | Code | REQ-001, AC-002 |
-| SCN-004 | System | Background loop | One file fails | Hub rejects, file changes during read, connection drops | Other changed files | Failing file recorded; others continue; retry later, resume large | Rest imported | — | Supported Normal Scenario | Probe | REQ-003, REQ-005, AC-004, AC-005 |
+| SCN-004 | System | Background loop | One file fails, or a transfer is interrupted | Hub rejects a file or its content; file changes during read; connection drops during a transfer | Other changed files | Rejected file recorded as a file failure, others continue, retry later; changed file deferred to the next run; connection drop: run error as REQ-006, next run resumes the large transfer from the hub's received bytes | Rest imported (in the same run for a rejection, on the next run for a drop) | — | Supported Normal Scenario | Probe | REQ-003, REQ-005, AC-004, AC-005 |
 | SCN-005 | Operational | Owners of two nodes | Nodes on different versions | Update one node only | Hub older or newer | — | Not supported: owners update every node together | — | Technically Possible but Unsupported/Contrived (`DESIGN.md` rule 9) | `DESIGN.md` rule 9; `memory_sync.md` "Update every node together" | REQ-008, AC-007, AC-008 |
 | SCN-006 | Operational | Owner | Hub not usable | Token revoked / hub down | — | Run fails | `error · <message>` | — | Supported Normal Scenario | Code | REQ-006, AC-006 |
 | SCN-007 | User | Owner | Know what did not sync | Opens Nodes → Memory Sync | Problems recorded | Reads card | Count + list with reasons | — | Supported Normal Scenario | Card | REQ-007, AC-010 |
@@ -180,7 +180,7 @@ None.
 | DEC-003 | How to detect changes without re-reading? | IO each minute | size+mtime vs. full hash | A file whose size and mtime equal the last synced record is unchanged (rsync's default); otherwise hash it streaming. | Solution Designer | Decided |
 | DEC-004 | How the owner sees problems | Visible behavior | Existing card lines | Keep `Current job` / `Last sync`; add a warning-coloured "N files not synced" block with a bounded list; job state values unchanged (a run with file problems is `success`). | Solution Designer | Decided |
 | DEC-005 | Retry and resume policy | Avoid re-sending 2 GiB every minute | Fixed retry vs backoff; restart vs resume | Delay doubles from 1 min to at most 1 h per unchanged failing file; Sync now ignores the delay; a changed file is retried at once; large transfers resume from the hub's received offset. | Solution Designer | Decided |
-| DEC-006 | Which errors are file-level vs run-level | Isolation without hiding outages | Auth/unreachable/hub disabled/held back affect all files | Those stay run-level (REQ-006). A rejection of one batch or one file's content is file-level: the batch is retried file by file to find the failing file. | Solution Designer | Decided |
+| DEC-006 | Which errors are file-level vs run-level | Isolation without hiding outages | Auth/unreachable/hub disabled/held back affect all files | Those, and any network error or lost connection, stay run-level (REQ-006); a large transfer resumes on the next run. A rejection of one batch or one file's content is file-level: the batch is retried file by file to find the failing file. | Solution Designer | Decided |
 | DEC-007 | Mixed versions | Nodes update separately | SR-001: detect an old hub and list large files as "hub must be updated"; `DESIGN.md` rule 9 forbids version checks, fallbacks and old/new APIs side by side | Follow the project rule: no mixed-version handling; document "update every node together" (revised in SR-002). | Solution Designer | Decided |
 
 ## Traceability
@@ -223,7 +223,7 @@ None.
 
 ### Approved Basis Ready For Design
 
-- Approval recorded: `Yes` (Solution Designer within the direction, user informed; SR-001, revised SR-002)
+- Approval recorded: `Yes` (Solution Designer within the direction, user informed; SR-001, revised SR-002, clarified SR-003)
 - Exact requirements and supplement approval basis recorded: `Yes`
 - Approved requirements package ready for architecture design: `Yes`
 - Remaining blocker: None
