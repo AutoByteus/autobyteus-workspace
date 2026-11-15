@@ -1128,3 +1128,39 @@ The current code and `implementation-handoff.md` remain authoritative.
   - web: type gate PASS, `codegen:check` current, `Tests  5762 passed | 2 skipped`, plus one stale JSON fixture fixed in `9e62ffd137` (59/59).
 - Next recipient: Code Reviewer.
 - Result: Code Review **Pass (CRR-047**, `code-review-report.md` round 33, head `4062c809d2`): CR-461-086, -087, -089 … -092 resolved, and CR-461-088's Org part. CR-461-093 and CR-461-088's Agent part are held for API/E2E's rerun. The reviewer routes to API/E2E.
+
+### IR-034 — CRR-048's Local Fixes and its addendum (CR-461-094 … CR-461-098)
+
+- Triggering role, report path, and round: Code Reviewer CRR-048 (failure-origin review of API-REV-014) and its addendum (BR-011 → CR-461-098), `code-review-report.md`. Round 34.
+- Triggering finding IDs: CR-461-094 … CR-461-098. Large / High unchanged.
+- Prior authoritative result: IR-033 at `4062c809d2` (CRR-047 Pass; API-REV-014 Fail).
+- Related solution / architecture-review revision IDs: N/A. Related code-review revision IDs: CRR-048.
+- Implementation delta, `4be99b1dca` … `eced354f65` (`eced354f65`: a test's typing for the type gate):
+  - **CR-461-096, CR-461-097 (F-74, F-75), `4be99b1dca`, web.** `RunStatusFeed` follows the window's one live-stream lifecycle:
+    - the shared `LiveStreamReconnectScheduler` (capped waits while visible, held while hidden, an attempt on resume, a resync after a long hide);
+    - it stops on a credential-ending close (`isCredentialRefusalClose`) until bound again, and `closeAllLiveStreams` suspends it;
+    - `RUN_TREE_CHANGED` is held while hidden (one per run) and delivered on resume;
+    - a reconnect after a loss gives each held run one rows notice.
+  - **CR-461-095 (D-IMP-1), `59b077f1c7`, web.** The Org view closes Settings only when the Org has nothing selected. A copy it delegated is selected while its own run's binding comes, so that moment no longer closes them.
+  - **CR-461-094 (F-70 in the window), `b8e2d0f527`.** Pinned with `remote-runs-in-tree-probe` and server traces:
+    - **The churn (web).** The window's deep watchers released and re-held every run on any read of its views, such as a status. The node closed and reopened each run's statuses (a peer run's observation on beta) about 33,000 times per run, so statuses never settled.
+      - `watchHeldRuns` (Agent store, Team/Org bridge, Settings) holds again only when the set of runs changes.
+      - The feed applies a release after the current step, so a same-step re-hold keeps the subscription.
+    - **The outage (server).** Retry re-observed only the asking view's runs; a run no open view retries stayed offline while it worked again.
+      - A Retry, or a view's summary its node answers, observes again every ended status observation on that node (`retryPeers` with node IDs), and reopens an ended output observation of a shown run.
+      - An unasked end's summary never re-observes, so a refusing node can't loop.
+  - **CR-461-098 (BR-011), `7986b3e3a2`, web.**
+    - **Cause:** a delegated agent run opened from its delegator's view (rule 2) read its stored conversation, then connected a stream that sends no snapshot. A message delivered before the node bound the stream, and its turn, were in neither. The failing record showed the reply without the message; a catch-up before connecting still lost a whole turn once.
+    - **Fix:** the delegated path connects with a catch-up after binding. On the node's `CONNECTED` (a new `bound` connection event), once the run isn't mid-turn, the stored state is read again and committed only if no live event changed the conversation during the read; otherwise it reads again (bounded).
+- Tests (each fails on the code before it):
+  - web: `runStatusFeed.spec.ts` (refusal codes; background hold and resume; reconnect catch-up; suspend; same-step re-hold), `closeAllLiveStreams.spec.ts`, `heldRuns.spec.ts`, `viewRunStatusBridge.spec.ts`, `AgentOrgWorkspaceView.spec.ts` (Settings stay open while a copy binds), `agentRunStreamReconnection.spec.ts` (catch-up after `CONNECTED`; a live event during the read), `delegatedRunsStore.spec.ts`;
+  - server: `run-status-service.test.ts` (node-wide Retry), `peer-child-observation.test.ts` (a reachable answer re-observes; an unasked end doesn't), `standalone-remote-delegation.test.ts`; RC-45 in the real two-node suite.
+- Validation (`IMP-99` … `IMP-103`; gates: server type gate PASS, `Tests  7254 passed`; web type gate PASS, `Tests  5777 passed | 2 skipped`):
+  - remote-runs-in-tree RTP-01 … RTP-08 all pass (RTP-05 and RTP-08 failed before);
+  - the two-server suite 45/45 with RC-45 (RC-45 failed before);
+  - BR-008 … BR-011 pass 3/3 (BR-011 failed 1 of 2 and 1 of 3 before);
+  - AFS-002 passes with `settingsClosedBy` empty;
+  - phone MSP-13, MSP-25 and MSP-32 pass: no refusal after the revoke; no history, status or view read in the background.
+- Open, for the reviewer: MSP-25 still records two `GetTaskWorkerTasks` reads while hidden. They follow the Task close the case makes while hidden (`/ws/projects` `task_upserted` in `taskWorkerTaskStore`, unchanged since base) and are outside AC-006's history, status and view reads.
+- Shared `dist` folders: the server's was rebuilt for this round (after API/E2E confirmed nothing was running); the temporary traces were reverted before the final build. The phone bundle (`autobyteus-web/dist`) was rebuilt for MSP-13/-25/-32. `autobyteus-ts/dist` was not rebuilt.
+- Next recipient: Code Reviewer.

@@ -1,0 +1,19 @@
+IMP-103 — the gates at 7986b3e3a2 (the server test's typing fixed in eced354f65)
+macOS, Node 22.23.
+
+== server typecheck
+[typecheck] FAIL: fix the new type errors in the test files above
+ ELIFECYCLE  Command failed with exit code 1.
+== server unit
+ Test Files  896 passed | 4 skipped (900)
+      Tests  7254 passed | 7 skipped (7261)
+== web typecheck
+[typecheck] production errors: 0; test-file errors: 90 in 38 files (baseline 90 in 38 files)
+[typecheck] PASS
+== web full
+ Test Files  772 passed (772)
+      Tests  5777 passed | 2 skipped (5779)
+
+After eced354f65: server typecheck: production errors 0; test-file errors 1012 in 316 files (baseline 1012 in 316 files); PASS.
+run-status-service.test.ts: Tests 7 passed (7).
+Contracts unchanged this round; no GraphQL change (codegen not affected).

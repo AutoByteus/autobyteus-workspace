@@ -1,0 +1,21 @@
+IMP-99 — CR-461-094 (F-70 in the window): remote-runs-in-tree-probe.mjs (RTP-01 … RTP-08), real alpha/beta, nuxt dev, Chrome
+The probe owns its servers, data roots, ports and browser; scripted AGY CLI. Temporary server traces (RS-TRACE on alpha's
+RunStatusEntry, BETA-TRACE on beta's observe/attach/run-ended) were used in runs 1 and 2 and then reverted.
+
+## Run 1 (code 59b077f1c7, traced build)
+   {'RTP-01': 'Pass', 'RTP-02': 'Pass', 'RTP-03': 'Pass', 'RTP-04': 'Pass', 'RTP-05': 'Fail', 'RTP-06': 'Pass', 'RTP-08': 'Fail', 'RTP-07': 'Pass'}
+   RTP-08 {"result": "Fail", "before": {"publisher_2a8009c364a2421e8cc3c5382f6352ea": "offline"}, "offlineAtEnd": true, "liveAgain": false, "changesAfterRetry": []}
+   alpha's trace: 100357 observe-calls from fresh entries (about 33,000 per run, local runs too):
+   the window released and held each run again on every read of its views (deep watchers re-run on any status), so the
+   node closed and reopened each run's statuses (a peer run's observation on beta) in a loop.
+
+## Run 2 (the web's held runs keyed by their set, b8e2d0f527's web part; same traced build)
+   {'RTP-01': 'Pass', 'RTP-02': 'Pass', 'RTP-03': 'Pass', 'RTP-04': 'Pass', 'RTP-05': 'Pass', 'RTP-06': 'Pass', 'RTP-08': 'Fail', 'RTP-07': 'Pass'}
+   RTP-08 {"result": "Fail", "before": {"publisher_e51223bd1d754f11a17f594995c24b09": "offline"}, "offlineAtEnd": true, "liveAgain": false, "changesAfterRetry": []}
+   observe-calls: 29. The peer run's statuses followed live (idle, initializing,
+   running, idle), RTP-05 stopped it. RTP-07's four outages: each Retry re-observed only its own view's runs; the last is the
+   Org family's, which does not show RTP-08's run, and a reachable row offers no Retry: the run stayed offline.
+
+## Run 3 (b8e2d0f527: node-wide re-observation; server rebuilt, no traces)
+   {'RTP-01': 'Pass', 'RTP-02': 'Pass', 'RTP-03': 'Pass', 'RTP-04': 'Pass', 'RTP-05': 'Pass', 'RTP-06': 'Pass', 'RTP-08': 'Pass', 'RTP-07': 'Pass'}
+   RTP-08 {"result": "Pass", "before": {"publisher_9fec692fd124453495a434e819a5d27f": "offline"}, "offlineAtEnd": true, "liveAgain": true, "changesAfterRetry": ["initializing", "running", "idle"]}

@@ -1,0 +1,18 @@
+IMP-101 — CR-461-098 (BR-011): task-closure-tree-probe.mjs --cases BR-008,BR-009,BR-010,BR-011 (browser; real backend restarts)
+The probe owns its backend, data root, nuxt dev and Chrome; scripted AGY CLI. Its BR-011 records the markers on a timeout.
+
+## Before (code b8e2d0f527)
+run 1: BR-011 Pass; run 2: BR-011 Fail 'org: conversation after restart', markers:
+   {'preDone': True, 'postReopen': True, 'postRestart': False}
+   the conversation ends with the reply "OK" after POST-REOPEN's, without the POST-RESTART message itself
+
+## A catch-up before connecting (intermediate, not committed)
+{'BR-008': 'Pass', 'BR-009': 'Pass', 'BR-010': 'Pass', 'BR-011': 'Fail'}
+{'BR-008': 'Pass', 'BR-009': 'Pass', 'BR-010': 'Pass', 'BR-011': 'Pass'}
+{'BR-008': 'Pass', 'BR-009': 'Pass', 'BR-010': 'Pass', 'BR-011': 'Pass'}
+   run 1: Timed out: agent: conversation after restart {'preDone': True, 'postReopen': True, 'postRestart': False} (neither the message nor its reply: consistent with the restored turn running between the catch-up read and the node binding the stream)
+
+## After (7986b3e3a2: the catch-up after the node binds the stream)
+{'BR-008': 'Pass', 'BR-009': 'Pass', 'BR-010': 'Pass', 'BR-011': 'Pass'}
+{'BR-008': 'Pass', 'BR-009': 'Pass', 'BR-010': 'Pass', 'BR-011': 'Pass'}
+{'BR-008': 'Pass', 'BR-009': 'Pass', 'BR-010': 'Pass', 'BR-011': 'Pass'}
