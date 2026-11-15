@@ -27,3 +27,10 @@ test("run-status (SR-086 G-A2 … G-A4): a run's own state: its status, not_foun
   assert.deepEqual(parseRunStatusServerMessage(running), running);
   assert.throws(() => parseRunStatusServerMessage({ type: "RUN_STATE_CHANGED", payload: { kind: "agent", runId: "a", answer: "maybe", node: null, status: null } }));
 });
+
+test("run-status (SR-090): a client asks the nodes of held peer runs again, by run ID", () => {
+  const retry = { type: "RETRY_PEERS", payload: { runIds: ["peer-team", "peer-agent"] } };
+  assert.deepEqual(parseRunStatusClientMessage(serializeRunStatusMessage(retry)), retry);
+  assert.throws(() => parseRunStatusClientMessage(JSON.stringify({ type: "RETRY_PEERS", payload: { runIds: [""] } })));
+  assert.throws(() => parseRunStatusClientMessage(JSON.stringify({ type: "RETRY_PEERS", payload: { runs: [{ kind: "agent", runId: "a" }] } })));
+});

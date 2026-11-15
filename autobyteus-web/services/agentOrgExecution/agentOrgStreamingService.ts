@@ -236,7 +236,7 @@ export class AgentOrgStreamingService {
     return this.context!
   }
 
-  private async command(message: Exclude<CollaborationStreamClientMessage, { type: 'REFRESH_REMOTE_TASK_EXECUTIONS' }>): Promise<void> {
+  private async command(message: CollaborationStreamClientMessage): Promise<void> {
     this.requireReadyContext()
     const socket = this.socket!
     return new Promise<void>((resolve, reject) => {

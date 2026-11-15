@@ -21,6 +21,11 @@ const runRefs = z.object({ runs: z.array(runStatusRunRefSchema) }).strict();
 export const runStatusClientMessageSchema = z.discriminatedUnion("type", [
   z.object({ type: z.literal("SUBSCRIBE"), payload: runRefs }).strict(),
   z.object({ type: z.literal("UNSUBSCRIBE"), payload: runRefs }).strict(),
+  /**
+   * Retry (autobyteus-278; autobyteus-461 SR-090): ask the nodes of these held peer runs again. Each run's state is told
+   * again once its node answered (`RUN_STATE_CHANGED`), changed or not, so the client's "Checking {node}…" settles.
+   */
+  z.object({ type: z.literal("RETRY_PEERS"), payload: z.object({ runIds: z.array(nonEmptyStringSchema) }).strict() }).strict(),
 ]);
 export type RunStatusClientMessage = z.infer<typeof runStatusClientMessageSchema>;
 

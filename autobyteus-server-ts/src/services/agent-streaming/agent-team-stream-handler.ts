@@ -121,11 +121,6 @@ export class AgentTeamStreamHandler {
       try {
         const message = AgentTeamStreamHandler.parseMessage(raw);
         const teamRunId = session.view.teamRunId;
-        if (message.type === "REFRESH_REMOTE_TASK_EXECUTIONS") {
-          // Retry (autobyteus-278): its peer rows' answers update their rows (`run_tree_changed`) and statuses (`/ws/run-status`).
-          this.sources.rows.retryPeers(createTeamRootExecutionIdentity(teamRunId));
-          return;
-        }
         // A command to one of the team's agents (a peer run's through the root); a delegated run is reached by its own
         // stream (SR-061 rule 2).
         const routed: MemberCommands = { executeAgentCommand: (agentRunId, command) => this.memberCommand(session.view, agentRunId, command) };

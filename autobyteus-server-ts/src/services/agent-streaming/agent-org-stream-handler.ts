@@ -1,5 +1,4 @@
 import { executePeerCommand, PEER_MENTIONS_REFUSAL } from "../../agent-collaboration/execution/remote/peer-runs.js";
-import { createAgentOrgRootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import { randomUUID } from "node:crypto";
 import {
   CollaborationStreamClientMessageSchema,
@@ -16,7 +15,7 @@ import { createRootExecutionStreamEgress, type RootExecutionStreamEgress } from 
 import { OrgRunNotFoundError, OrgRunNotRestorableError, OrgViewSession, type OrgViewSources } from "./org-view-session.js";
 
 /** A command for one agent of the Org (every client command but Retry). */
-type AgentCommand = Exclude<CollaborationStreamClientMessage, { type: "REFRESH_REMOTE_TASK_EXECUTIONS" }>;
+type AgentCommand = CollaborationStreamClientMessage;
 
 const error = (code: string, message: string): CollaborationStreamServerMessage =>
   CollaborationStreamServerMessageSchema.parse({ type: "ERROR", payload: { code, message } });
@@ -118,13 +117,6 @@ export class AgentOrgStreamHandler {
         "AGENT_ORG_COMMAND_INVALID",
         cause instanceof Error ? cause.message : String(cause),
       ));
-      return;
-    }
-    if (parsed.type === "REFRESH_REMOTE_TASK_EXECUTIONS") {
-      // Retry (autobyteus-278): its peer rows' answers update their rows (`run_tree_changed`) and statuses (`/ws/run-status`).
-      if (parsed.payload.root_subject_kind === "agent_org" && parsed.payload.root_run_id === orgRunId) {
-        this.sources.rows.retryPeers(createAgentOrgRootExecutionIdentity(orgRunId));
-      }
       return;
     }
     const message: AgentCommand = parsed;

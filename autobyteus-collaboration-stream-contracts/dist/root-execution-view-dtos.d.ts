@@ -1775,15 +1775,6 @@ export declare const CollaborationStreamClientMessageSchema: z.ZodDiscriminatedU
         target_agent_run_id: z.ZodString;
         command_id: z.ZodString;
     }, z.core.$strict>;
-}, z.core.$strict>, z.ZodObject<{
-    type: z.ZodLiteral<"REFRESH_REMOTE_TASK_EXECUTIONS">;
-    payload: z.ZodObject<{
-        root_subject_kind: z.ZodEnum<{
-            agent: "agent";
-            agent_org: "agent_org";
-        }>;
-        root_run_id: z.ZodString;
-    }, z.core.$strict>;
 }, z.core.$strict>], "type">;
 export type AgentTeamRootExecutionViewDto = z.infer<typeof AgentTeamRootExecutionViewDtoSchema>;
 export type AgentOrgRootExecutionViewDto = z.infer<typeof AgentOrgRootExecutionViewDtoSchema>;

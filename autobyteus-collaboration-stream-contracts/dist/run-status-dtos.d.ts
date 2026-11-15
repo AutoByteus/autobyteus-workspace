@@ -46,6 +46,11 @@ export declare const runStatusClientMessageSchema: z.ZodDiscriminatedUnion<[z.Zo
             runId: z.ZodString;
         }, z.core.$strict>>;
     }, z.core.$strict>;
+}, z.core.$strict>, z.ZodObject<{
+    type: z.ZodLiteral<"RETRY_PEERS">;
+    payload: z.ZodObject<{
+        runIds: z.ZodArray<z.ZodString>;
+    }, z.core.$strict>;
 }, z.core.$strict>], "type">;
 export type RunStatusClientMessage = z.infer<typeof runStatusClientMessageSchema>;
 /** Whether the node could answer for a run (SR-086 G-A2, G-A3): it knows it, it does not, or the run's peer node did not answer. */

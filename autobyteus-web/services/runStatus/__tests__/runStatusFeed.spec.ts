@@ -135,6 +135,19 @@ describe('RunStatusFeed lifecycle', () => {
   })
 })
 
+describe('RunStatusFeed Retry (SR-090)', () => {
+  it('asks the nodes of held peer runs over the open connection; nothing is asked while it is not open', () => {
+    sockets.length = 0
+    const feed = new RunStatusFeed({ endpoint: () => 'ws://node/ws/run-status', deliver: vi.fn(), createSocket })
+    expect(feed.retry(['studio'])).toBe(false)
+    feed.hold([{ kind: 'agent_team', runId: 'studio' }])
+    expect(feed.retry(['studio'])).toBe(false)
+    sockets[0]!.onopen!()
+    expect(feed.retry(['studio'])).toBe(true)
+    expect(sockets[0]!.sent.at(-1)).toEqual({ type: 'RETRY_PEERS', payload: { runIds: ['studio'] } })
+  })
+})
+
 describe('useRunStatusStore', () => {
   it('each agent\'s status is its own run\'s answer; a run\'s rows change bumps its revision', () => {
     setActivePinia(createPinia())

@@ -100,6 +100,15 @@ export class RunStatusFeed {
     if (this.held.size === 0) { this.dropSocket(); this.reconnect.startOver() }
   }
 
+  /**
+   * Retry (SR-090): asks the nodes of these held peer runs again; `false` when the connection is not open (nothing is
+   * asked, and nothing will answer). Each run's state is told again once its node answered.
+   */
+  retry(runIds: readonly string[]): boolean {
+    if (!this.socket || !this.open || !runIds.length) return false
+    try { this.socket.send(serializeRunStatusMessage({ type: 'RETRY_PEERS', payload: { runIds: [...runIds] } })); return true } catch { return false }
+  }
+
   /** The window was bound to another node, or bound again: connect there. */
   rebind(): void {
     this.refused = false

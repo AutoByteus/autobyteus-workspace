@@ -178,6 +178,54 @@ describe("RunStatusService (SR-082, SR-083)", () => {
     connection.close();
   });
 
+  it("SR-090: a Retry for a node that stays down settles: its state is told again, unchanged; concurrent Retries make one call", async () => {
+    const h = harness({ peer: ["peer-team"], summary: (runId) => ({ nodeId: "beta", runId, reachable: false, title: null, statuses: [], launches: [] }) });
+    const first = h.client();
+    const second = h.client();
+    await first.connection.subscribe([{ kind: "agent_team", runId: "peer-team" }]);
+    await second.connection.subscribe([{ kind: "agent_team", runId: "peer-team" }]);
+    await flush();
+    const told = (sent: readonly RunStatusServerMessage[]) => states(sent).length;
+    const before = [told(first.sent), told(second.sent)];
+    const asked = h.peerSummary.mock.calls.length;
+    // Two clients ask at once: one call to the node; both are told its (unchanged) state once it answered.
+    await Promise.all([first.connection.retry(["peer-team"]), second.connection.retry(["peer-team"])]);
+    expect(h.peerSummary.mock.calls.length).toBe(asked + 1);
+    expect([told(first.sent), told(second.sent)]).toEqual([before[0]! + 1, before[1]! + 1]);
+    expect(states(first.sent).at(-1)).toMatchObject({ payload: { runId: "peer-team", answer: "unreachable", node: "beta-node" } });
+    // The next Retry is a new call.
+    await first.connection.retry(["peer-team"]);
+    expect(h.peerSummary.mock.calls.length).toBe(asked + 2);
+    first.connection.close();
+    second.connection.close();
+  });
+
+  it("SR-090: a Retry for a node that comes back settles with its answer; it opens the ended observation again", async () => {
+    let reachable = false;
+    const h = harness({ peer: ["peer-team"], summary: (runId) => ({ nodeId: "beta", runId, reachable, title: "Studio", statuses: [], launches: [] }) });
+    const { sent, connection } = h.client();
+    await connection.subscribe([{ kind: "agent_team", runId: "peer-team" }]);
+    h.peer.observer()!.onEnd();
+    await flush();
+    reachable = true;
+    await connection.retry(["peer-team"]);
+    expect(h.peer.observe).toHaveBeenCalledTimes(2);
+    expect(states(sent).at(-1)).toMatchObject({ payload: { answer: "ok", node: null } });
+    connection.close();
+  });
+
+  it("SR-090: a client retries only the peer runs it holds; a run it does not hold is not asked", async () => {
+    const h = harness({ peer: ["peer-team"], summary: (runId) => ({ nodeId: "beta", runId, reachable: false, title: null, statuses: [], launches: [] }) });
+    const holder = h.client();
+    const other = h.client();
+    await holder.connection.subscribe([{ kind: "agent_team", runId: "peer-team" }]);
+    await flush();
+    const asked = h.peerSummary.mock.calls.length;
+    await other.connection.retry(["peer-team"]);
+    expect(h.peerSummary.mock.calls.length).toBe(asked);
+    holder.connection.close();
+  });
+
   it("RUN_TREE_CHANGED reaches the run's subscribers only", async () => {
     const h = harness({ agents: { org: ["planner"] } });
     const { sent, connection } = h.client();

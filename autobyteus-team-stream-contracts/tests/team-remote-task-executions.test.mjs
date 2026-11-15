@@ -8,8 +8,6 @@ test("a Team stream carries no remote rows or their summaries: a peer run is a r
   }
 });
 
-test("Retry is a Team client command without a payload", () => {
-  const refresh = { type: "REFRESH_REMOTE_TASK_EXECUTIONS", payload: {} };
-  assert.deepEqual(parseTeamStreamClientMessage(refresh), refresh);
-  assert.throws(() => parseTeamStreamClientMessage({ type: "REFRESH_REMOTE_TASK_EXECUTIONS", payload: { agent_run_id: "x" } }));
+test("a Team stream takes no Retry: a peer row's Retry goes over /ws/run-status (autobyteus-461 SR-090)", () => {
+  assert.throws(() => parseTeamStreamClientMessage({ type: "REFRESH_REMOTE_TASK_EXECUTIONS", payload: {} }));
 });

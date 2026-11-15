@@ -10,8 +10,6 @@ test("a view carries no remote rows or their summaries: a peer run is a row of t
   }
 });
 
-test("Retry is a root command without a target", () => {
-  const refresh = { type: "REFRESH_REMOTE_TASK_EXECUTIONS", payload: { root_subject_kind: "agent", root_run_id: "host-run" } };
-  assert.deepEqual(CollaborationStreamClientMessageSchema.parse(refresh), refresh);
-  assert.throws(() => CollaborationStreamClientMessageSchema.parse({ ...refresh, payload: { ...refresh.payload, target_agent_run_id: "x" } }));
+test("a view takes no Retry: a peer row's Retry goes over /ws/run-status (autobyteus-461 SR-090)", () => {
+  assert.throws(() => CollaborationStreamClientMessageSchema.parse({ type: "REFRESH_REMOTE_TASK_EXECUTIONS", payload: { root_subject_kind: "agent", root_run_id: "host-run" } }));
 });

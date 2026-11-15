@@ -60,6 +60,8 @@ export class RunStatusEntry {
   private unreachableNode: string | null = null;
   /** The state its listeners were last told (or answered in a snapshot). */
   private told: RunState | null = null;
+  /** The Retry in flight: a later Retry joins its answer (SR-090), so several clients make one call to the node. */
+  private retrying: Promise<void> | null = null;
 
   constructor(
     readonly ref: RunStatusRunRef,
@@ -76,12 +78,20 @@ export class RunStatusEntry {
   }
 
   /**
-   * Retry: a peer run whose observation ended is observed again (DEC-807 Phase 1: an observation never reconnects alone),
-   * and its node is asked again for its answer.
+   * Retry (autobyteus-278; SR-090): a peer run whose observation ended is observed again (DEC-807 Phase 1: an observation
+   * never reconnects alone), and its node is asked again for its answer. One is in flight at a time: a later Retry joins
+   * its answer. Once answered, its state is told again, changed or not, so each client's "Checking {node}…" settles.
    */
-  retry(): void {
+  retry(): Promise<void> {
+    if (!this.peer) return Promise.resolve();
+    if (this.retrying) return this.retrying;
     this.observePeer?.();
-    if (this.peer) this.askSummary(this.peer, true);
+    const retrying = this.askSummary(this.peer, true).then(() => {
+      if (this.retrying === retrying) this.retrying = null;
+      if (!this.closed) this.tellState(true);
+    });
+    this.retrying = retrying;
+    return retrying;
   }
 
   /** Its node is back: an ended observation is observed again (an open one stays as it is). */
@@ -104,25 +114,27 @@ export class RunStatusEntry {
   /** A peer run's latest answer from its node (G-B2), kept while the run is held; its row's launches come from it. */
   summary: RemoteRunSummaryEvent | null = null;
 
-  /** A peer run's node answered: kept, and its state set; answers whether its content (title, reachability, launches) changed. */
-  private applySummary(summary: RemoteRunSummaryEvent): boolean {
-    if (this.closed || !this.peerNodeId || summary.nodeId !== this.peerNodeId) return false;
+  /**
+   * A peer run's node answered: kept, and its state set. Answers whether its content (title, reachability, launches)
+   * changed, and when its state is set (an unreachable node's name is read first).
+   */
+  private applySummary(summary: RemoteRunSummaryEvent): Readonly<{ changed: boolean; stateSet: Promise<void> }> {
+    if (this.closed || !this.peerNodeId || summary.nodeId !== this.peerNodeId) return { changed: false, stateSet: Promise.resolve() };
     const content = (value: RemoteRunSummaryEvent | null) => JSON.stringify(value && [value.title, value.reachable, value.launches]);
     const changed = content(this.summary) !== content(summary);
     this.summary = summary;
-    this.peerAnswered(summary);
-    return changed;
+    return { changed, stateSet: this.peerAnswered(summary) };
   }
 
   /** The state as a snapshot answers it: later changes are told against it. */
   stateForSnapshot(): RunState { this.told = this.state; return this.told; }
 
   /** A peer run's node answered about it (G-A3): reachable, or not, with the node's name. */
-  private peerAnswered(summary: Pick<RemoteRunSummaryEvent, "reachable">): void {
+  private async peerAnswered(summary: Pick<RemoteRunSummaryEvent, "reachable">): Promise<void> {
     if (this.closed || !this.peerNodeId) return;
     if (summary.reachable) { this.answer = "ok"; this.unreachableNode = null; this.tellState(); return; }
     const nodeId = this.peerNodeId;
-    void this.sources.peerNodeName(nodeId).catch(() => nodeId).then((name) => {
+    await this.sources.peerNodeName(nodeId).catch(() => nodeId).then((name) => {
       if (this.closed) return;
       this.answer = "unreachable";
       this.unreachableNode = name;
@@ -130,10 +142,11 @@ export class RunStatusEntry {
     });
   }
 
-  private tellState(): void {
+  /** Tells its listeners a changed state; `again` tells it unchanged too (a Retry's answer, SR-090). */
+  private tellState(again = false): void {
     const state = this.state;
     const told = this.told;
-    if (told && told.answer === state.answer && told.node === state.node && told.status === state.status) return;
+    if (!again && told && told.answer === state.answer && told.node === state.node && told.status === state.status) return;
     this.told = state;
     for (const listener of [...this.listeners]) listener.stateChanged(this.ref, state);
   }
@@ -206,7 +219,7 @@ export class RunStatusEntry {
       const end = (): void => {
         if (stream === current) stream = null;
         this.allOffline();
-        if (!this.closed) this.askSummary(peer, false);
+        if (!this.closed) void this.askSummary(peer, false);
       };
       current = peer.observe({
         onFrame: (agentRunId, message) => {
@@ -221,18 +234,20 @@ export class RunStatusEntry {
     this.observePeer = observe;
     this.releases.push(() => { this.observePeer = null; stream?.close(); stream = null; });
     observe();
-    this.askSummary(peer, true);
+    void this.askSummary(peer, true);
   }
 
   /**
    * Asks the run's node for its answer: when first held, on Retry and after its observation ended unasked. An answer
    * that reaches it (not after an unasked end) says its node is back.
    */
-  private askSummary(peer: PeerRun, nodeBack: boolean): void {
-    void this.sources.peerSummary(peer).then((summary) => {
+  private askSummary(peer: PeerRun, nodeBack: boolean): Promise<void> {
+    return this.sources.peerSummary(peer).then(async (summary) => {
       if (!summary || this.closed) return;
-      if (this.applySummary(summary)) this.sources.summaryChanged({ rootSubjectKind: this.ref.kind, rootRunId: this.ref.runId } as RootExecutionIdentity);
+      const { changed, stateSet } = this.applySummary(summary);
+      if (changed) this.sources.summaryChanged({ rootSubjectKind: this.ref.kind, rootRunId: this.ref.runId } as RootExecutionIdentity);
       if (nodeBack && summary.reachable) this.nodeAnswered(peer.link.nodeId);
+      await stateSet;
     }).catch((error: unknown) => console.warn(`Peer run '${this.ref.runId}': its node's answer could not be read: ${String(error)}`));
   }
 }
@@ -260,13 +275,13 @@ export class RunStatusService {
   }
 
   /**
-   * Retry (`REFRESH_REMOTE_TASK_EXECUTIONS`, a view's peer rows): these peer runs' ended observations are observed again,
-   * and their nodes asked again. A node that answers is back for each of its runs (CR-461-094), so every other ended
-   * observation of a run on it follows again too, whichever view asked.
+   * Retry (`RETRY_PEERS` on `/ws/run-status`, SR-090): these peer runs' ended observations are observed again, and their
+   * nodes asked again. A node that answers is back for each of its runs (CR-461-094), so every other ended observation
+   * of a run on it follows again too, whichever client asked. Settles when each one's state was told again.
    */
-  retryPeers(peerRunIds: readonly string[]): void {
+  async retryPeers(peerRunIds: readonly string[]): Promise<void> {
     const ids = new Set(peerRunIds);
-    for (const entry of this.entries.values()) if (ids.has(entry.ref.runId)) entry.retry();
+    await Promise.all([...this.entries.values()].filter((entry) => ids.has(entry.ref.runId)).map((entry) => entry.retry()));
   }
 
   private nodeAnswered(nodeId: string): void {
@@ -325,6 +340,12 @@ export class RunStatusConnection implements Listener {
       snapshot.push({ ...entry.ref, ...entry.stateForSnapshot(), agents: [...entry.answers].map(([agentRunId, status]) => ({ agentRunId, status })) });
     }
     if (snapshot.length) this.send({ type: "RUN_STATUS_SNAPSHOT", payload: { runs: snapshot } });
+  }
+
+  /** Retry (SR-090): the held peer runs among these run IDs are asked again; a run this client does not hold is not. */
+  retry(runIds: readonly string[]): Promise<void> {
+    const ids = new Set(runIds);
+    return this.service.retryPeers([...this.held.values()].map((entry) => entry.ref.runId).filter((runId) => ids.has(runId)));
   }
 
   unsubscribe(runs: readonly RunStatusRunRef[]): void {

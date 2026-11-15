@@ -1,5 +1,4 @@
 import { executePeerCommand, PEER_MENTIONS_REFUSAL } from "../../agent-collaboration/execution/remote/peer-runs.js";
-import { createAgentRootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import { inOrderViewDelivery, isReadBeforeSending, readTreeAtBase, readViewTree, type RunViewRowSources } from "./run-view-rows.js";
 import { isRunTreeChangedEvent } from "../../agent-collaboration/delegation/run-tree-view.js";
 import { randomUUID } from "node:crypto";
@@ -22,7 +21,7 @@ import type { WebSocketConnection } from "./agent-team-stream-handler.js";
 import { createRootExecutionStreamEgress, type RootExecutionStreamEgress } from "./websocket-egress/root-execution-stream-egress.js";
 
 /** A command for one agent of the root (every client command but Retry). */
-type AgentCommand = Exclude<CollaborationStreamClientMessage, { type: "REFRESH_REMOTE_TASK_EXECUTIONS" }>;
+type AgentCommand = CollaborationStreamClientMessage;
 
 const error = (code: string, message: string): CollaborationStreamServerMessage =>
   CollaborationStreamServerMessageSchema.parse({ type: "ERROR", payload: { code, message } });
@@ -158,13 +157,6 @@ export class AgentCollaborationStreamHandler {
       parsed = CollaborationStreamClientMessageSchema.parse(JSON.parse(raw));
     } catch (cause) {
       session.egress.send(error("AGENT_ROOT_COMMAND_INVALID", cause instanceof Error ? cause.message : String(cause)));
-      return;
-    }
-    if (parsed.type === "REFRESH_REMOTE_TASK_EXECUTIONS") {
-      // Retry (autobyteus-278): its peer rows' answers update their rows (`run_tree_changed`) and statuses (`/ws/run-status`).
-      if (parsed.payload.root_subject_kind === "agent" && parsed.payload.root_run_id === session.hostRunId) {
-        this.views.retryPeers(createAgentRootExecutionIdentity(session.hostRunId));
-      }
       return;
     }
     const message: AgentCommand = parsed;

@@ -26,6 +26,8 @@ export const useRunStatusStore = defineStore('runStatus', {
     runAgents: {} as Record<string, readonly string[]>,
     /** Per run (`kind:runId`), its own state as its node answered it: a team's or an org's status is its root's, not folded here. */
     runStates: {} as Record<string, RunState>,
+    /** Peer runs whose Retry waits for their node's answer ("Checking {node}…", SR-090), by run ID. */
+    checking: {} as Record<string, true>,
   }),
   getters: {
     /** An agent's own status; `null` while its run's answer has not come. */
@@ -33,6 +35,8 @@ export const useRunStatusStore = defineStore('runStatus', {
     /** Whether the agent runs: any status but offline (not known yet counts as not running). */
     isLive: (state) => (agentRunId: string): boolean => (state.statuses[agentRunId] ?? 'offline') !== 'offline',
     treeRevisionOf: (state) => (ref: Pick<RunStatusRunRef, 'kind' | 'runId'>): number => state.treeRevision[runKeyOf(ref)] ?? 0,
+    /** A peer run's Retry waits for its node's answer. */
+    isChecking: (state) => (runId: string): boolean => Boolean(state.checking[runId]),
     /** A run's own state; `null` while its answer has not come. */
     runStateOf: (state) => (ref: Pick<RunStatusRunRef, 'kind' | 'runId'>): RunState | null => state.runStates[runKeyOf(ref)] ?? null,
     /** A run runs when any of its own agents does (a Team counts as one unit), by its own answers. */
@@ -46,6 +50,21 @@ export const useRunStatusStore = defineStore('runStatus', {
     },
     /** The window's session ended (its credential is gone): the connection closes until the window is bound again. */
     suspend(): void { feed?.suspend() },
+    /**
+     * Retry (autobyteus-278; SR-090): asks the nodes of these held peer runs again. Each is checking until its state is
+     * told again (`RUN_STATE_CHANGED`, sent once its node answered, changed or not); nothing is checking when the
+     * connection could not ask.
+     */
+    retryPeers(runIds: readonly string[]): void {
+      if (!runStatusFeed(this.apply.bind(this)).retry(runIds)) return
+      this.checking = { ...this.checking, ...Object.fromEntries(runIds.map((runId) => [runId, true as const])) }
+    },
+    settleChecking(runIds: readonly string[]): void {
+      if (!runIds.some((runId) => this.checking[runId])) return
+      const next = { ...this.checking }
+      for (const runId of runIds) delete next[runId]
+      this.checking = next
+    },
     apply(message: RunStatusServerMessage): void {
       if (message.type === 'RUN_STATUS_SNAPSHOT') {
         const next = { ...this.statuses }
@@ -63,9 +82,11 @@ export const useRunStatusStore = defineStore('runStatus', {
         this.statuses = next
         this.runAgents = agents
         this.runStates = states
+        this.settleChecking(message.payload.runs.map((run) => run.runId))
       } else if (message.type === 'RUN_STATE_CHANGED') {
         const { answer, node, status } = message.payload
         this.runStates = { ...this.runStates, [runKeyOf(message.payload)]: Object.freeze({ answer, node, status }) }
+        this.settleChecking([message.payload.runId])
       } else if (message.type === 'RUN_STATUS_CHANGED') {
         this.statuses = { ...this.statuses, [message.payload.agentRunId]: message.payload.status }
         const key = runKeyOf(message.payload), named = this.runAgents[key] ?? []
