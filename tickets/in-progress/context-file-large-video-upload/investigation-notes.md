@@ -120,7 +120,7 @@
 ## Persisted Data And State Facts
 
 - Affected stored subject: draft files under `<appData>/draft_context_files/...` and final files under `memory/agents|agent_teams/.../context_files`.
-- Volume: per file up to the new media limit; no aggregate quota exists today.
+- Volume: per file up to the new audio/video limit; no aggregate quota exists today.
 - Readers/writers: unchanged; no schema or metadata format change needed.
 - Required semantics: existing drafts/finals untouched; TTL cleanup unchanged.
 - Acceptable loss: none.

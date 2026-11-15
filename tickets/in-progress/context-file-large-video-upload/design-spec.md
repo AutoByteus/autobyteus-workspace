@@ -21,7 +21,7 @@ The composer (one component, `ContextFilePathInputArea.vue`, used by `ChatCompos
 - Size rationale: three packages (`autobyteus-server-ts`, `autobyteus-web`, `autobyteus-ts`); about 25 production files across the context-file policy, config/settings, two REST route groups, the Project Task store, the agent-tool contract text, the web composer store/composable/component, the Project Task web client/composable, localization catalogs, and the native runtime's media filter, plus tests and docs.
 - Architectural risk: `High`
 - Risk rationale: material contract changes — a new REST endpoint (`GET /rest/context-files/size-limits`), a changed error contract of both context-file upload routes (status codes and machine-readable body), two new node settings, changed agent-facing tool description text, and a changed provider-request rule in the native runtime. No persistence or security-boundary change.
-- Escalation trigger: any need to change persisted context-file metadata, node access rules, the allowed type list, or the draft TTL; or evidence that a phone browser/WebView reports `File.type` differently from the multipart Content-Type (ASM-001) in a way the published media type list cannot cover.
+- Escalation trigger: any need to change persisted context-file metadata, node access rules, the allowed type list, or the draft TTL; or evidence that a phone browser/WebView reports `File.type` differently from the multipart Content-Type (ASM-001) in a way the published audio/video type list (`audioVideoMimeTypes`) cannot cover.
 
 ## Architecture Investigation Evidence
 
