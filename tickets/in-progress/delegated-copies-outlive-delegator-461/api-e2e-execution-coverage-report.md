@@ -66,7 +66,7 @@ This report records what ran and the result. The plan is in `api-e2e-coverage-in
 | F-74 | MSP-32 (two runs) | autobyteus-426: a revoked phone stops; it sends no refused request | After MSP-13 revokes the phone's credential, its `/ws/run-status` connection keeps reconnecting: 980 connections refused with 4401 in 17 minutes (77 in the short rerun). Its other requests stopped (`refused: []`) | `Local Fix` (web, phone) |
 | F-75 | MSP-25 (two runs) | autobyteus-435 AC-006 / E-25: no read while the phone is in the background | 2.35 s after the page is hidden, the phone reads a listed run's view (`GetAgentRunCollaboration`) and `GetTaskWorkerTasks`, before the Task closes (2.9 s) | `Local Fix` (web, phone) |
 
-**Unclassified:** BR-011 (the same step, "org: conversation after restart", in rounds 12, 13 and 14).
+**BR-011 classified (after CRR-048): 461's.** Base `827f1e68dc`, with its own probe, passes BR-008 … BR-011 in 2 of 2 runs; the branch fails BR-011 at the same step ("org: conversation after restart": the reactivated Org worker's conversation after the second real backend restart) in rounds 12, 13 and 14. The probe now records which markers the window shows and a screenshot at that step. A branch rerun with that record was cut short: the worktree's `autobyteus-ts/dist` was being rebuilt by the implementer's work in progress, so the probe's restarted backend could not load (`ERR_MODULE_NOT_FOUND`); not a product result.
 
 **Blocked:** LE-O1 (DeepSeek balance).
 
@@ -152,7 +152,7 @@ This report records what ran and the result. The plan is in `api-e2e-coverage-in
 ## Preliminary Classification (On `Fail`)
 
 - `Local Fix`: F-70 (peer statuses in the window), F-74, F-75 (phone), D-IMP-1 (held, now 3/3).
-- Unclassified: BR-011. Blocked: LE-O1.
+- `Local Fix` candidate: BR-011 (461's; base passes). Blocked: LE-O1.
 
 ## Latest Authoritative Result
 

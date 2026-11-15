@@ -817,7 +817,13 @@ const reactivationAcrossRestart = async () => {
       await page.locator(rowSelector(kind, r.worker)).waitFor({ state: 'visible', timeout: 90000 });
       await page.locator(rowSelector(kind, r.worker)).click();
       await until(`${kind}: conversation after restart`, async () => { const t = await centerText(page);
-        return t.includes('PRE-DONE-7731') && t.includes('POST-REOPEN-9902') && t.includes('POST-RESTART-4242'); }, 60000);
+        return t.includes('PRE-DONE-7731') && t.includes('POST-REOPEN-9902') && t.includes('POST-RESTART-4242'); }, 60000)
+        .catch(async (error) => {
+          // Diagnostics (CRR-048): which markers the window shows, and where it is.
+          const t = await centerText(page).catch(() => '');
+          await shot(page, `${kind}-conversation-after-restart-failure`).catch(() => undefined);
+          throw Object.assign(error, { details: { url: page.url(), markers: { preDone: t.includes('PRE-DONE-7731'), postReopen: t.includes('POST-REOPEN-9902'), postRestart: t.includes('POST-RESTART-4242') }, centerText: t.slice(0, 1500) } });
+        });
       for (const ref of r.helperRefs) assert(await page.locator(rowSelector(kind, ref)).count() === 0, `${kind}: helper row listed after restart`);
       await shot(page, `${kind}-reactivated-after-second-restart`);
       assert(errors.length === 0, `${kind}: browser errors after the second restart`, errors);

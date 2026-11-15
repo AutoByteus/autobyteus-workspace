@@ -209,4 +209,4 @@
 | 2026-11-15 (round 14) | Chain A | Completed | Partly | server rebuilt; remote-collaboration 45/45; projects 178/181 (stale parts); extended runtime switch 5/5 ×2; tree: RTP-04 Pass, RTP-05/08 Fail (**F-70** in the window); API-P04 rows match; RRT-05 3/3; LE-O1 blocked (DeepSeek 402) |
 | 2026-11-15 (round 14) | Chain B | Completed | Fail | DLD 20/29 (stale checks), AFS-002 D-IMP-1 3/3, SSR 4/4, SSR-002 ×3 Pass, RSM 7/7, SDV 7/7, PMU 23/25, PLN-09 reason shown, BR-011 Fail, phone 49/55 (**F-74**, **F-75**), API-F01 Pass |
 | 2026-11-15 (round 14) | Reruns | Completed | Fail | ad-hoc 3/3, stories 3/3, DCP-001/002/003/005 and DCR-002 Pass, PMU 25/25, PLN-09 Pass, MSP-13/17/34 Pass; RTP-05/08, MSP-25, MSP-32 fail again; typecheck at baseline |
-
+| 2026-11-15 (round 14, after CRR-048) | BR-011 base comparison | Completed | Classified | Base `827f1e68dc` (its own probe) BR-008 … BR-011 Pass in 2 of 2 runs (`/tmp/api461/r14-br-base`): BR-011 is 461's. Branch rerun with the new step record cut short by a concurrent `autobyteus-ts/dist` rebuild in the worktree (`ERR_MODULE_NOT_FOUND` at the restart) |
