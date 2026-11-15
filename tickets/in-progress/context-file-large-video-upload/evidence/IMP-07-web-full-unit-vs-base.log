@@ -1,0 +1,47 @@
+check: IMP-07
+command: (cd autobyteus-web && NUXT_TEST=true vitest run)  [whole web unit suite], then the 34 failing files rerun on the base (git checkout HEAD~1 -- sources)
+commit: 62bda32c4 (diff to HEAD: one server e2e test file)
+environment: macOS Darwin 25.6, Node v26.12.0
+date: 2026-11-15
+----
+ Test Files  34 failed | 731 passed (765)
+      Tests  258 failed | 5543 passed | 2 skipped (5803)
+--- files that fail on this branch AND fail identically on the unmodified base (33):
+components/__tests__/AppLeftPanel.navigation.spec.ts
+components/agents/__tests__/AgentDetail.spec.ts
+components/layout/__tests__/LeftSidebarStrip.spec.ts
+components/layout/__tests__/WorkspaceToolShell.taskLocate.spec.ts
+components/mobile/__tests__/MobilePairingBootstrap.spec.ts
+components/projects/panel/__tests__/ProjectsPanel.spec.ts
+components/projects/panel/__tests__/ProjectsPanelTaskLocate.spec.ts
+components/run-settings/__tests__/OrgLaunchPage.spec.ts
+components/run-settings/__tests__/RunMembersLine.spec.ts
+components/settings/__tests__/DisplaySettingsManager.spec.ts
+components/settings/__tests__/LanguageSettingsManager.integration.spec.ts
+components/tools/__tests__/McpSecretMoveBanner.spec.ts
+components/tools/__tests__/McpServerFormModal.spec.ts
+components/workspace/collaboration/__tests__/CollaborationMessageReferenceViewer.spec.ts
+components/workspace/history/__tests__/ProjectsRunsTree.spec.ts
+components/workspace/history/__tests__/RunSectionHeader.spec.ts
+components/workspace/history/__tests__/RunSectionPanel.spec.ts
+composables/__tests__/useAppLeftPanelSectionResize.spec.ts
+pages/__tests__/mobile-root-shell.spec.ts
+services/agentOrgExecution/__tests__/agentOrgLaunchService.spec.ts
+services/chat/__tests__/chatCopiedStartReadiness.spec.ts
+services/chat/__tests__/chatLaunchService.spec.ts
+stores/__tests__/agentOrgLaunchDraftStore.spec.ts
+stores/__tests__/appFontSizeStore.spec.ts
+stores/__tests__/chatDraftStore.spec.ts
+stores/__tests__/projectsPanelStore.spec.ts
+stores/__tests__/runSectionModeStore.spec.ts
+stores/__tests__/taskLocatorStore.spec.ts
+utils/chat/__tests__/chatLastModelPreference.spec.ts
+utils/mcp/__tests__/mcpSecretReviewState.spec.ts
+utils/remoteAccess/__tests__/authorizedResourceUrl.spec.ts
+utils/remoteAccess/__tests__/authorizedTransport.spec.ts
+utils/remoteAccess/__tests__/mobileSessionBootstrap.spec.ts
+--- base run:
+ Test Files  33 failed | 1 passed (34)
+      Tests  251 failed | 43 passed (294)
+cause on base (39x): TypeError: Cannot read properties of undefined (reading 'clear')  [Node v26 global localStorage vs happy-dom]
+--- the 34th file, services/agentOrgExecution/__tests__/agentOrgContextFiles.spec.ts, failed only on this branch (limits read added a step); fixed in the commit and passes: see IMP-06

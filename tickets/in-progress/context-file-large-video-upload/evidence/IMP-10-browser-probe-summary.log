@@ -1,0 +1,10 @@
+check: IMP-10
+command: (cd autobyteus-web && PATH=<pnpm shim> node tests/e2e/composer-context-file-removal-probe.mjs --output-dir <fresh> --cases CF-002,CF-008,CF-013 --browser-executable <Chrome>)  [real Nuxt dev frontend + built backend (autobyteus-server-ts dist built from the same sources) + headless Chrome]
+commit: 80f958bc5
+environment: macOS Darwin 25.6, Node v26.12.0, Google Chrome headless (Playwright)
+date: 2026-11-15
+----
+CF-002: Pass  {}
+CF-008: Pass  {"removeError": "Couldn't remove spec-a.txt.", "clearError": "Couldn't remove spec-b.txt.", "uploadError": "Couldn't attach spec-c.txt."}
+CF-013: Pass  {"refused": "Couldn't attach clip-big.mp4: over the 2 MB size limit.\n\nCouldn't attach doc-big.pdf: over the 1 MB size limit.", "progressSeen": 1, "stored": ["ctx_2cd55ac2a046__clip-big.mp4"]}
+Earlier run at 62bda32c4: CF-008 failed once on the probe's old assertion that expected the raw server detail after the remove sentence (BEH-009 removed it); the assertion was updated to the localized line alone.
