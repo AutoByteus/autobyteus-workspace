@@ -57,16 +57,7 @@
       </button>
     </div>
 
-    <div
-      v-if="attachmentErrorMessages.length > 0"
-      role="alert"
-      data-testid="context-file-error"
-      class="mb-2 px-1 text-xs text-red-600 break-words space-y-0.5"
-    >
-      <p v-for="(message, index) in attachmentErrorMessages" :key="index" data-testid="context-file-error-line">
-        {{ message }}
-      </p>
-    </div>
+    <ContextFileErrorLines :lines="attachmentErrorLines" />
 
     <div v-if="isContextListExpanded && displayedItems.length > 0" id="context-file-list" class="space-y-2">
       <div v-if="thumbnailItems.length > 0" class="thumbnail-row-container">
@@ -199,9 +190,9 @@ import { useContextAttachmentComposer } from '~/composables/useContextAttachment
 import { useAuthorizedObjectUrl } from '~/composables/useAuthorizedObjectUrl';
 import { useMobileAttachmentOpening } from '~/composables/mobile/useMobileAttachmentOpening';
 import { isMobileRemoteAccessRuntime } from '~/utils/remoteAccess/mobileRuntime';
+import ContextFileErrorLines from '~/components/agentInput/ContextFileErrorLines.vue';
 import MessageAttachmentThumbnail from '~/components/conversation/MessageAttachmentThumbnail.vue';
 import { useLocalization } from '~/composables/useLocalization';
-import { contextFileFailureMessage } from '~/utils/contextFiles/contextFileFailureMessage';
 import { useContextFileUploadStore } from '~/stores/contextFileUploadStore';
 import { useFileExplorerStore } from '~/stores/fileExplorer';
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore';
@@ -217,7 +208,7 @@ const props = defineProps<{
   target: ComposerTarget | null;
 }>();
 
-const { t, resolvedLocale } = useLocalization();
+const { t } = useLocalization();
 const contextFileUploadStore = useContextFileUploadStore();
 const fileExplorerStore = useFileExplorerStore();
 const windowNodeContextStore = useWindowNodeContextStore();
@@ -300,19 +291,6 @@ const {
   getWorkspaceId: () => workspaceId.value,
   getIsEmbeddedElectronRuntime: () => isEmbeddedElectronRuntime.value,
 });
-
-const attachmentErrorMessages = computed((): string[] =>
-  attachmentErrorLines.value.map((line) => {
-    switch (line.kind) {
-      case 'uploads_unavailable':
-        return t('agentInput.components.agentInput.ContextFilePathInputArea.uploads_unavailable');
-      case 'remove_failed':
-        return t('agentInput.components.agentInput.ContextFilePathInputArea.remove_failed', { name: line.fileNames.join(', ') });
-      default:
-        return contextFileFailureMessage(line.group, t, resolvedLocale.value);
-    }
-  }),
-);
 
 const uploadProgressText = (item: { progress?: number }): string =>
   t('agentInput.components.agentInput.ContextFilePathInputArea.upload_progress', { percent: item.progress ?? 0 });
