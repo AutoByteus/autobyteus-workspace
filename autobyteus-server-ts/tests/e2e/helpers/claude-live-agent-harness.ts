@@ -149,7 +149,6 @@ export const createClaudeLiveAgentHarness = async (input: {
     new AgentSessionManager(),
     agentRunService as never,
     undefined,
-    undefined,
     new AgentRunCommandCoordinator({
       agentRunService: agentRunService as never,
       projectionService: statusProjectionService as never,

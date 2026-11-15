@@ -1,5 +1,7 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { AgentRunEventType } from "../../../../src/agent-execution/domain/agent-run-event.js";
+import { AgentRunEventType, isAgentRunEvent } from "../../../../src/agent-execution/domain/agent-run-event.js";
+import { AgentStreamSequence } from "../../../../src/services/agent-streaming/agent-stream-sequence.js";
+import { buildRunProjectionBundle } from "../../../../src/run-history/projection/run-projection-utils.js";
 import { AgentStreamHandler } from "../../../../src/services/agent-streaming/agent-stream-handler.js";
 import { getAgentRunEventMessageMapper } from "../../../../src/services/agent-streaming/agent-run-event-message-mapper.js";
 import { AgentSessionManager } from "../../../../src/services/agent-streaming/agent-session-manager.js";
@@ -40,33 +42,47 @@ const setup = () => {
   let registered = false;
   const agentRunService = { getAgentRun: vi.fn(() => live), recordRunActivity: vi.fn() };
   let reservation: ReturnType<ActiveCollaborationRootDirectory["reserve"]> | null = null;
+  /** Each run's own stream sequence (SR-087), attached at its activation and released with it, as its resources do. */
+  const attached = new Map<object, Readonly<{ sequence: AgentStreamSequence; release: () => void }>>();
+  const activate = (run: ReturnType<typeof fakeRun>) => {
+    const mapper = getAgentRunEventMessageMapper();
+    const sequence = new AgentStreamSequence(RUN, { storedTurnIds: () => new Set(), whenPersisted: async () => undefined, map: (event) => mapper.map(event) });
+    sequence.recordPredating();
+    const off = run.subscribeToEvents((event) => { if (isAgentRunEvent(event)) sequence.accept(event); });
+    attached.set(run, { sequence, release: () => { off(); sequence.dispose(); } });
+  };
+  const sequences = { of: (id: string) => (live && id === RUN ? attached.get(live)?.sequence ?? null : null) };
   /** The delegator's Task message restores the child: its root registers, then its host is made ready in its gate. */
   const restore = () => {
     reservation = registrations.reserve(createAgentRootExecutionIdentity(RUN), boundary);
     registered = true;
     reservation.commit();
     const run = fakeRun();
+    activate(run);
     live = run;
     hostReady.forEach((listener) => listener(run as never));
     return run;
   };
-  const stop = () => { live = null; registered = false; reservation?.release(); };
+  const stop = () => { if (live) attached.get(live)?.release(); live = null; registered = false; reservation?.release(); };
   const coordinator = { postUserMessage: vi.fn(async (input: any) => {
     const run = live ?? restore();
     input.onActiveRunReady?.(run);
     return { ack: { command_type: "SEND_MESSAGE", run_id: RUN, message_id: input.messageId, dedupe_key: input.dedupeKey,
       state: "accepted", accepted: true, duplicate: false } };
   }) };
-  const handler = new AgentStreamHandler(new AgentSessionManager(), agentRunService as never, getAgentRunEventMessageMapper(),
+  const handler = new AgentStreamHandler(new AgentSessionManager(), agentRunService as never,
     undefined, coordinator as never, { getRunStatusProjection: vi.fn(async () => stopped) } as never,
-    { registrations, roots: { getActive: (id: string) => (registered && id === RUN ? root : null) } });
+    { registrations, roots: { getActive: (id: string) => (registered && id === RUN ? root : null) } },
+    sequences, async (runId: string) => buildRunProjectionBundle(runId, [], []));
   const connection = { send: vi.fn(), close: vi.fn() };
   const wire = () => connection.send.mock.calls.map(([raw]) => JSON.parse(raw));
-  const deltas = () => wire().filter((message) => message.type === ServerMessageType.SEGMENT_CONTENT).map((message) => message.payload.delta);
+  // Coalesced content leaves as numbered batches (SR-087).
+  const deltas = () => wire().filter((message) => message.type === ServerMessageType.SEGMENT_CONTENT_BATCH)
+    .flatMap((message) => message.payload.items.map((item: { delta: string }) => item.delta));
   return { handler, connection, restore, stop, wire, deltas };
 };
 
-const settle = async () => { await Promise.resolve(); await Promise.resolve(); vi.advanceTimersByTime(500); await Promise.resolve(); };
+const settle = async () => { for (let i = 0; i < 10; i += 1) await Promise.resolve(); vi.advanceTimersByTime(500); await Promise.resolve(); };
 
 describe("AgentStreamHandler follows its run (SR-064)", () => {
   afterEach(() => vi.useRealTimers());
@@ -79,7 +95,7 @@ describe("AgentStreamHandler follows its run (SR-064)", () => {
     run.emit("first");
     run.emit("output");
     await settle();
-    expect(deltas()).toEqual(["first", "output"]);
+    expect(deltas().join("")).toBe("firstoutput");
     expect(connection.close).not.toHaveBeenCalled();
   });
 

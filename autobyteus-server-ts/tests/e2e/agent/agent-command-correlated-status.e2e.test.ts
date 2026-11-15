@@ -357,7 +357,6 @@ const startHarness = async (input: {
   const handler = new AgentStreamHandler(
     new AgentSessionManager(),
     agentRunService as any,
-    undefined,
     broadcaster,
     commandCoordinator,
     projectionService,

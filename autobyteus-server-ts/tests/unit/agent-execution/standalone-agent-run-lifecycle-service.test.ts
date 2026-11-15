@@ -797,7 +797,7 @@ describe("StandaloneAgentRunLifecycleService previous runtime release", () => {
     const runSessions = { deactivateForRun: vi.fn(() => 0) };
     const activationRegistry = new AgentRunActivationRegistry(new AgentRunResourceManager({
       runSessions, runFileChangeService: noop as never, publishedArtifactRelayService: noop as never,
-      memoryRecorder: memoryRecorder as never, workJournalUpdater: noop as never,
+      memoryRecorder: memoryRecorder as never, streamSequences: { attachToRun: vi.fn(() => vi.fn()) }, workJournalUpdater: noop as never,
       mcpServerInstances: { cleanupMcpServerInstancesForAgent: async () => undefined },
     }));
     const manager = new AgentRunManager({

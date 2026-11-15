@@ -2,6 +2,7 @@ import { randomUUID } from "node:crypto";
 import { rootExecutionIdentityKey, type RootExecutionIdentity } from "../execution/domain/root-execution-identity.js";
 import type { DelegationIndex } from "./delegation-index.js";
 import { RunMessagesFeed, type RunMessageEvents } from "./run-messages-feed.js";
+import { SnapshotBarrier } from "../../utils/snapshot-barrier.js";
 
 export type SequencedRootEvent<TEvent> = Readonly<{
   changeSequence: number;
@@ -39,6 +40,7 @@ export type RootSnapshotConnection<TSnapshot, TEvent> = Readonly<{
  * its own run's, read by run ID (`RunStatusService`, SR-083). One
  * per run, from the composition root's `RunViewStreams`, living as long as the process, so the run's view exists
  * whether or not its root is loaded. Non-persisted; publication is synchronous and subscriber failures are isolated.
+ * Its snapshot connection is the shared `SnapshotBarrier` (SR-063's rule, owned once).
  */
 export class RunViewStream<TEvent> {
   /**
@@ -49,8 +51,7 @@ export class RunViewStream<TEvent> {
   readonly liveSequenceId = randomUUID();
   private changeSequence = 0;
   private lastMessageChangeSequence = 0;
-  private readonly listeners = new Set<RootEventListener<TEvent>>();
-  private readonly barriers = new Set<SequencedRootEvent<TEvent>[]>();
+  private readonly frames = new SnapshotBarrier<SequencedRootEvent<TEvent>>();
 
   constructor(private readonly options: RunViewStreamOptions<TEvent>) {}
 
@@ -71,55 +72,30 @@ export class RunViewStream<TEvent> {
     });
     this.changeSequence = sequenced.changeSequence;
     if (this.options.isMessageEvent(event)) this.lastMessageChangeSequence = sequenced.changeSequence;
-    for (const queue of this.barriers) queue.push(sequenced);
-    for (const listener of [...this.listeners]) {
-      try {
-        listener(sequenced);
-      } catch (error) {
-        console.error("collaboration root event subscriber failed:", error);
-      }
-    }
+    this.frames.deliver(sequenced);
     return sequenced;
   }
 
   subscribe(listener: RootEventListener<TEvent>): () => void {
-    this.listeners.add(listener);
-    return () => this.listeners.delete(listener);
+    return this.frames.subscribe(listener);
   }
 
   async openSnapshotConnection<TSnapshot>(
     capture: () => Promise<TSnapshot> | TSnapshot,
   ): Promise<RootSnapshotConnection<TSnapshot, TEvent>> {
+    // The base, in one synchronous step with the barrier's queue (publication is synchronous).
     const baseChangeSequence = this.changeSequence;
     const lastMessageChangeSequence = this.lastMessageChangeSequence;
-    const queued: SequencedRootEvent<TEvent>[] = [];
-    this.barriers.add(queued);
-    try {
-      const snapshot = await capture();
-      let open = true;
-      const close = (): void => {
-        if (!open) return;
-        open = false;
-        this.barriers.delete(queued);
-      };
-      return Object.freeze({
-        snapshot,
-        baseChangeSequence,
-        liveSequenceId: this.liveSequenceId,
-        lastMessageChangeSequence,
-        get queuedEvents() { return Object.freeze([...queued]); },
-        subscribe: (listener: RootEventListener<TEvent>) => {
-          if (!open) throw new Error("Root snapshot connection is closed.");
-          close();
-          for (const event of queued) listener(event);
-          return this.subscribe(listener);
-        },
-        close,
-      });
-    } catch (error) {
-      this.barriers.delete(queued);
-      throw error;
-    }
+    const connection = await this.frames.open(capture);
+    return Object.freeze({
+      snapshot: connection.snapshot,
+      baseChangeSequence,
+      liveSequenceId: this.liveSequenceId,
+      lastMessageChangeSequence,
+      get queuedEvents() { return connection.queuedFrames; },
+      subscribe: (listener: RootEventListener<TEvent>) => connection.subscribe(listener),
+      close: () => connection.close(),
+    });
   }
 
 }

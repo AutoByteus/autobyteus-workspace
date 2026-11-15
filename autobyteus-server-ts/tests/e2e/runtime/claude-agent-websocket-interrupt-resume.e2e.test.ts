@@ -425,7 +425,6 @@ const createClaudeWebSocketHarnessWithSdkClient = async (input: {
     new AgentSessionManager(),
     agentRunService as never,
     undefined,
-    undefined,
     commandCoordinator,
     statusProjectionService as never,
   );

@@ -7,6 +7,7 @@ import type { ScopedAgentToolMcpSessionAuthority } from "../../agent-tools/mcp/a
 import { AgentRunIdentityAllocator } from "../services/agent-run-identity-allocator.js";
 import { AgentRunManager } from "../services/agent-run-manager.js";
 import { AgentRunMemoryRecorder } from "../../agent-memory/services/agent-run-memory-recorder.js";
+import { getAgentStreamSequences } from "../../services/agent-streaming/agent-stream-sequence.js";
 import { WorkJournalRunUpdater } from "../../agent-work-journal/services/work-journal-run-updater.js";
 import { getWorkJournalService } from "../../agent-work-journal/services/work-journal-service.js";
 import { McpServerInstanceManager } from "autobyteus-ts/tools/mcp/server-instance-manager.js";
@@ -152,6 +153,7 @@ export class GeneralProcessRunSupervisor {
         runFileChangeService,
         publishedArtifactRelayService: createGeneralProcessPublishedArtifactRelayService(),
         memoryRecorder,
+        streamSequences: getAgentStreamSequences(),
         workJournalUpdater: new WorkJournalRunUpdater({ memoryRecorder, journalService: getWorkJournalService() }),
         lifecycleObserver: input.platformInputNotices ?? null,
         mcpServerInstances: McpServerInstanceManager.getInstance(),

@@ -19,6 +19,7 @@ import { AgentOrgRunManager } from "../../src/agent-org-execution/services/agent
 import { createNoopAgentToolMcpRunSessionDeactivator } from "../fixtures/agent-tool-mcp-run-session-deactivator-fixtures.js";
 import type { TokenUsageRunStore } from "../../src/token-usage/providers/token-usage-run-store.js";
 import { buildCurrentTokenUsagePayload } from "./token-usage-run-record-fixtures.js";
+import { getAgentStreamSequences } from "../../src/services/agent-streaming/agent-stream-sequence.js";
 
 export const retainedThread = "isolated-retained-provider-thread";
 export const migrationUsage = (ordinal: number) => buildCurrentTokenUsagePayload({
@@ -84,7 +85,7 @@ export const createMigrationContinuationRuntime = (memoryDir: string, store: Tok
     memoryRecorder: recorder, agentToolMcpRunSessionDeactivator: sessions,
     providerInputNormalizer: { normalizeForProvider: (dispatch) => dispatch },
     activationRegistry: new AgentRunActivationRegistry(new AgentRunResourceManager({ runSessions: sessions,
-      memoryRecorder: recorder, runFileChangeService: noAttachment as never, publishedArtifactRelayService: noAttachment as never, workJournalUpdater: noAttachment as never,
+      memoryRecorder: recorder, streamSequences: getAgentStreamSequences(), runFileChangeService: noAttachment as never, publishedArtifactRelayService: noAttachment as never, workJournalUpdater: noAttachment as never,
       mcpServerInstances: { cleanupMcpServerInstancesForAgent: async () => undefined } })),
   });
   const dependencies = { agentRunManager: agentManager, memoryLocator: new AgentRunMemoryLocator({ memoryDir }),

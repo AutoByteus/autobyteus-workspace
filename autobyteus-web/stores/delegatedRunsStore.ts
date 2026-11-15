@@ -56,7 +56,7 @@ export const useDelegatedRunsStore = defineStore('delegatedRuns', () => {
    * once, so a message that restored the run while the open read it is shown (CR-461-098).
    */
   const connect = (subject: DelegatedRunSubject): void => {
-    if (subject.kind === 'agent') useAgentRunStore().connectToAgentStream(subject.agentRunId, { catchUp: true })
+    if (subject.kind === 'agent') useAgentRunStore().connectToAgentStream(subject.agentRunId)
     else useAgentTeamRunStore().connectToTeamStream(subject.teamRunId)
   }
 
@@ -79,7 +79,7 @@ export const useDelegatedRunsStore = defineStore('delegatedRuns', () => {
     } else {
       const resolveWorkspaceMetadataByRootPath = (rootPath: string) => useWorkspaceStore().resolveWorkspaceMetadataByRootPath(rootPath)
       const open = subject.kind === 'agent'
-        ? openAgentRun({ runId: subject.agentRunId, fallbackAgentName: null, resolveWorkspaceMetadataByRootPath, selectRun: false, catchUpConnect: true })
+        ? openAgentRun({ runId: subject.agentRunId, fallbackAgentName: null, resolveWorkspaceMetadataByRootPath, selectRun: false })
           .then(() => connect(subject))
         // An active Team's members run in its workspaces: they are activated as the Team's own open does (CR-461-076:
         // without it the open of a running delegated Team failed and its row's conversation stayed empty).

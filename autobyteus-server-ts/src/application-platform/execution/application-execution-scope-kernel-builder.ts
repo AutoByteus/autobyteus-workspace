@@ -1,6 +1,7 @@
 import { AgentConversationActivityInspector } from "../../agent-memory/services/agent-conversation-activity-inspector.js";
 import { AgentMemoryLocationService } from "../../agent-memory/services/agent-memory-location-service.js";
 import { AgentRunMemoryRecorder } from "../../agent-memory/services/agent-run-memory-recorder.js";
+import { getAgentStreamSequences } from "../../services/agent-streaming/agent-stream-sequence.js";
 import { WorkJournalRunUpdater } from "../../agent-work-journal/services/work-journal-run-updater.js";
 import { getWorkJournalService } from "../../agent-work-journal/services/work-journal-service.js";
 import { AgentRunActivationRegistry } from "../../agent-execution/runtime/agent-run-activation-registry.js";
@@ -103,6 +104,7 @@ export const buildApplicationExecutionScopeKernel = (
       runFileChangeService,
       publishedArtifactRelayService: relay,
       memoryRecorder,
+      streamSequences: getAgentStreamSequences(),
       workJournalUpdater: new WorkJournalRunUpdater({ memoryRecorder, journalService: getWorkJournalService() }),
       mcpServerInstances: McpServerInstanceManager.getInstance(),
       runPasses: input.runPasses,

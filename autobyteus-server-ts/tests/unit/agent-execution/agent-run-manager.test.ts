@@ -105,7 +105,7 @@ const createManagerFixture = (input: {
       runSessions,
       runFileChangeService,
       publishedArtifactRelayService,
-      memoryRecorder, workJournalUpdater: { attachToRun: vi.fn(() => vi.fn()) },
+      memoryRecorder, streamSequences: { attachToRun: vi.fn(() => vi.fn()) }, workJournalUpdater: { attachToRun: vi.fn(() => vi.fn()) },
       mcpServerInstances: { cleanupMcpServerInstancesForAgent: async () => undefined },
       runPasses: input.runPasses ?? null,
     }),

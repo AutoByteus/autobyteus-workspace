@@ -9,7 +9,6 @@ import type { AgentContext } from '~/types/agent/AgentContext';
 import type { CollaboratorMentionDto } from '~/utils/collaborators/collaboratorMentionText';
 import { WebSocketClient, ConnectionState, type IWebSocketClient } from './transport';
 import {
-  parseServerMessage,
   serializeClientMessage,
   type ServerMessage,
   type ClientMessage,
@@ -22,6 +21,9 @@ import { getActiveRemoteAccessCredential } from '~/utils/remoteAccess/authorized
 import { buildAuthenticatedWebSocketUrl } from '~/utils/remoteAccess/websocketAuth';
 import { collaboratorAddRejectionOf } from '~/services/collaborators/collaboratorAddFailures';
 import { dispatchAgentStreamMessage } from './agentStreamMessageProjector';
+import { parseAgentStreamMessage } from './protocol/agentStreamEnvelope';
+import { AgentStreamSequencing } from './agentStreamSequencing';
+import { applyAgentStreamSnapshot } from './agentStreamSnapshotApplication';
 import {
   drainPendingInterruptTransportFailures,
   interruptCommandTargetsEqual,
@@ -75,6 +77,8 @@ export class AgentStreamingService {
   private readonly onInterruptCommandTransportFailure: (failure: InterruptCommandTransportFailure) => void;
   private readonly onSendMessageCommandAck: (ack: SendMessageCommandAckPayload) => void;
   private readonly connectionListeners = new Set<(event: AgentStreamConnectionEvent) => void>();
+  /** Where the view is in the run's own stream: set by each snapshot, continued by its numbered frames (SR-087). */
+  private readonly sequencing = new AgentStreamSequencing();
 
   /**
    * Create an AgentStreamingService.
@@ -257,25 +261,52 @@ export class AgentStreamingService {
     if (!this.context) return;
 
     try {
-      const message = parseServerMessage(raw);
-      if (
-        message.type === 'AGENT_COMMAND_ACK'
-        && message.payload.command_type === 'INTERRUPT_GENERATION'
-      ) {
-        this.handleInterruptCommandAck(message.payload);
+      const wire = parseAgentStreamMessage(raw);
+      if (wire.type === 'AGENT_STREAM_SNAPSHOT') {
+        // The run's snapshot (SR-087): its stored part and unconfirmed turns, then the frames after its base.
+        this.sequencing.reset(wire.payload.base_sequence, wire.payload.live_sequence_id);
+        const context = this.context;
+        applyAgentStreamSnapshot(context.state.runId, context, wire.payload, (frame) => this.dispatchMessage(frame, context));
         return;
       }
-      if (message.type === 'AGENT_COMMAND_ACK' && message.payload.command_type === 'SEND_MESSAGE') {
-        this.settleAdmission(message.payload);
-        this.onSendMessageCommandAck(message.payload);
+      if (typeof wire.sequence === 'number') {
+        const admission = this.sequencing.admit(wire as typeof wire & { sequence: number });
+        if (admission.kind === 'gap') { this.reopen(admission.reason); return; }
+        if (admission.kind === 'skip') return;
+        for (const message of admission.messages) this.receive(message);
+        return;
       }
-      if (message.type === 'CONNECTED') this.notifyConnection({ kind: 'bound' });
-      this.logMessage(message);
-      this.dispatchMessage(message, this.context);
+      this.receive(wire as ServerMessage);
     } catch (e) {
       console.error('Failed to parse WebSocket message:', e);
     }
   };
+
+  private receive(message: ServerMessage): void {
+    if (!this.context) return;
+    if (
+      message.type === 'AGENT_COMMAND_ACK'
+      && message.payload.command_type === 'INTERRUPT_GENERATION'
+    ) {
+      this.handleInterruptCommandAck(message.payload);
+      return;
+    }
+    if (message.type === 'AGENT_COMMAND_ACK' && message.payload.command_type === 'SEND_MESSAGE') {
+      this.settleAdmission(message.payload);
+      this.onSendMessageCommandAck(message.payload);
+    }
+    if (message.type === 'CONNECTED') this.notifyConnection({ kind: 'bound' });
+    this.logMessage(message);
+    this.dispatchMessage(message, this.context);
+  }
+
+  /** A gap in the run's frames: close, and let the owner open the stream again for a fresh snapshot. */
+  private reopen(reason: string): void {
+    console.warn(reason);
+    this.sequencing.clear();
+    this.dropConnection(reason);
+    this.notifyConnection({ kind: 'lost', retryable: true });
+  }
 
   private handleConnect = (): void => {
     console.log('Agent WebSocket connected');
@@ -284,6 +315,7 @@ export class AgentStreamingService {
 
   private handleDisconnect = (reason: string | undefined, retryable: boolean): void => {
     console.log('Agent WebSocket disconnected:', reason);
+    this.sequencing.clear();
     this.rejectInFlight(reason);
     this.notifyConnection({ kind: 'lost', retryable });
   };

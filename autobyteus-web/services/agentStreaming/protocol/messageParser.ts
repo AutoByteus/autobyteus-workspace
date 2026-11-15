@@ -43,7 +43,7 @@ const validOptionalProviderStatus = (payload: Record<string, unknown>): boolean 
   || (typeof payload.provider_status === 'number' && Number.isFinite(payload.provider_status))
   || (typeof payload.provider_status === 'string' && payload.provider_status.trim().length > 0);
 
-const validateCanonicalBoundary = (type: string, payload: unknown): void => {
+export const validateCanonicalBoundary = (type: string, payload: unknown): void => {
   if (!isRecord(payload)) throw new Error(`${type} payload must be an object`);
   if (type === 'AGENT_INPUT_STATE') { agentInputStateSchema.parse(payload); }
   else if (type === 'COMPACTION_BLOCKED' || type === 'COMPACTION_RESUMED') { compactionRecoveryEventSchema.parse(payload); }

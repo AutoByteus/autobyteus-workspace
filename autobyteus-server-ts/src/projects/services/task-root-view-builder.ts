@@ -1,4 +1,3 @@
-import { openTargetOf } from "../../agent-collaboration/delegation/collaboration-tree.js";
 import type { TaskExecutionReference } from "../../agent-collaboration/execution/task/task-execution-reference.js";
 import type { RootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import type { TaskRootStatus, TaskRootView } from "../domain/models.js";
@@ -36,7 +35,11 @@ export const rootWorkerStatus = (entry: TaskExecutionResource, resolve: TaskWork
 /** Where the worker opens (G-F1): its agent run, or its team run at the coordinator recorded when it started; a peer's on its node. */
 const openTargetOfEntry = (entry: TaskExecutionResource): TaskRootView["openTarget"] => {
   const node = entry.nodeId !== undefined ? { nodeId: entry.nodeId } : {};
-  if ("agentRunId" in entry.execution) return { ...openTargetOf({ agentRunId: entry.execution.agentRunId })!, ...node };
+  // The same target a run tree row of the worker carries (`openTargetOf`); Projects keeps to the neutral contracts.
+  if ("agentRunId" in entry.execution) {
+    const agentRunId = entry.execution.agentRunId;
+    return { runKind: "agent", runId: agentRunId, agentRunId, ...node };
+  }
   if (!entry.teamCoordinatorAgentRunId) {
     console.warn(`Row error: team run '${entry.execution.teamRunId}' has no recorded coordinator; its Task card has no open target.`);
     return null;

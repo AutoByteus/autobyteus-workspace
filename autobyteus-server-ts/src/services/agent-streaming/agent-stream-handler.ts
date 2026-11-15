@@ -6,11 +6,6 @@ import {
   ContextFile,
   ContextFileType,
 } from "autobyteus-ts";
-import {
-  AgentRunEventType,
-  isAgentRunEvent,
-  type AgentRunEvent,
-} from "../../agent-execution/domain/agent-run-event.js";
 import { AgentRun } from "../../agent-execution/domain/agent-run.js";
 import {
   AgentRunService,
@@ -30,10 +25,6 @@ import {
   getAgentStreamBroadcaster,
 } from "./agent-stream-broadcaster.js";
 import {
-  AgentRunEventMessageMapper,
-  getAgentRunEventMessageMapper,
-} from "./agent-run-event-message-mapper.js";
-import {
   ClientMessageType,
   createConnectedMessage,
   ServerMessage,
@@ -44,10 +35,13 @@ import {
   buildInterruptGenerationCommandAck,
   normalizeInterruptCommandId,
 } from "./interrupt-generation-command-ack.js";
-import {
-  AgentStreamWebSocketEgress,
-  type AgentStreamServerMessageSink,
-} from "./websocket-egress/agent-stream-websocket-egress.js";
+import { AgentStreamWebSocketEgress, type AgentStreamServerMessageSink } from "./websocket-egress/agent-stream-websocket-egress.js";
+import { createSequencedStreamEgressControlComposition } from "./websocket-egress/agent-stream-egress-control-composition.js";
+import { agentStreamSequencedShape } from "./websocket-egress/agent-stream-sequenced-shape.js";
+import { getAgentStreamSequences, type AgentStreamSequences } from "./agent-stream-sequence.js";
+import { connectToActiveRun, sendStoredSnapshot } from "./agent-stream-connection.js";
+import type { ReadStoredRun } from "./agent-stream-snapshot.js";
+import { getAgentRunViewProjectionService } from "../../run-history/services/agent-run-view-projection-service.js";
 import { followAgentRun, type AgentRunFollowSources } from "./agent-run-follower.js";
 import { getActiveCollaborationRootDirectory } from "../../agent-collaboration/execution/services/active-collaboration-root-directory.js";
 import { getStandaloneAgentRunRootManager } from "../../standalone-agent-run-root/services/standalone-agent-run-root-manager.js";
@@ -68,36 +62,11 @@ const logger = {
   error: (...args: unknown[]) => console.error(...args),
 };
 
-const isRuntimeRawEventDebugEnabled = process.env.RUNTIME_RAW_EVENT_DEBUG === "1";
-const runtimeRawEventMaxChars = Number.isFinite(Number(process.env.RUNTIME_RAW_EVENT_MAX_CHARS))
-  ? Math.max(512, Number(process.env.RUNTIME_RAW_EVENT_MAX_CHARS))
-  : 20_000;
-
-const truncateForDebug = (value: string): string =>
-  value.length <= runtimeRawEventMaxChars ? value : `${value.slice(0, runtimeRawEventMaxChars)}...<truncated>`;
-
-const stringifyForDebug = (value: unknown): string => {
-  try {
-    return JSON.stringify(value);
-  } catch {
-    return "[unserializable-runtime-event]";
-  }
-};
-
-const systemInstructionDebugDetails = (event: AgentRunEvent) => {
-  const { trace_id, ts, content } = event.payload;
-  return {
-    eventType: event.eventType,
-    trace_id: typeof trace_id === "string" ? trace_id : null,
-    ts: typeof ts === "number" && Number.isFinite(ts) ? ts : null,
-    contentLength: typeof content === "string" ? Array.from(content).length : null,
-  };
-};
-
 export class AgentStreamHandler {
   private sessionManager: AgentSessionManager;
-  private eventMessageMapper: AgentRunEventMessageMapper;
+  /** Each session's connection to its bound run's own stream (SR-087): its close. */
   private activeRunUnsubscribers = new Map<string, () => void>();
+  private connections = new Map<string, WebSocketConnection>();
   private sessionEgresses = new Map<string, AgentStreamWebSocketEgress>();
   private subscribedRunsBySessionId = new Map<
     string,
@@ -106,7 +75,6 @@ export class AgentStreamHandler {
   private agentRunService: AgentRunService;
   private commandCoordinator: AgentRunCommandCoordinator;
   private statusProjectionService: AgentRunStatusProjectionService;
-  private runtimeEventSequence = 0;
   private broadcaster: AgentStreamBroadcaster;
   /** Each open session's follow of its run (SR-064): it binds whenever the run becomes ready, whoever readied it. */
   private followers = new Map<string, () => void>();
@@ -114,15 +82,16 @@ export class AgentStreamHandler {
   constructor(
     sessionManager: AgentSessionManager = new AgentSessionManager(),
     agentRunService: AgentRunService = getAgentRunService(),
-    eventMessageMapper: AgentRunEventMessageMapper = getAgentRunEventMessageMapper(),
     broadcaster: AgentStreamBroadcaster = getAgentStreamBroadcaster(),
     commandCoordinator: AgentRunCommandCoordinator = getAgentRunCommandCoordinator(),
     statusProjectionService: AgentRunStatusProjectionService = getAgentRunStatusProjectionService(),
     private readonly follow: AgentRunFollowSources | null = null,
+    /** Each active run's own stream sequence (SR-087), and its stored read for the snapshot. */
+    private readonly sequences: Pick<AgentStreamSequences, "of"> = getAgentStreamSequences(),
+    private readonly readStored: ReadStoredRun = (runId) => getAgentRunViewProjectionService().getProjection(runId),
   ) {
     this.sessionManager = sessionManager;
     this.agentRunService = agentRunService;
-    this.eventMessageMapper = eventMessageMapper;
     this.broadcaster = broadcaster;
     this.commandCoordinator = commandCoordinator;
     this.statusProjectionService = statusProjectionService;
@@ -147,8 +116,11 @@ export class AgentStreamHandler {
       return null;
     }
 
+    // Its frames are numbered (SR-087): coalesced content keeps the range it covers, and nothing is suppressed.
     const egress = new AgentStreamWebSocketEgress({
       sendRaw: (payload) => connection.send(payload),
+      serialize: (message) => JSON.stringify(message),
+      createControls: (options) => createSequencedStreamEgressControlComposition(agentStreamSequencedShape, options),
       onSendError: (error) => logger.error(
         `Agent WebSocket egress failed: session=${sessionId}, run=${agentRunId}: ${String(error)}`,
       ),
@@ -156,10 +128,12 @@ export class AgentStreamHandler {
     const connectedMsg = createConnectedMessage(agentRunId, sessionId);
     this.broadcaster.registerConnection(sessionId, agentRunId, egress);
     this.sessionEgresses.set(sessionId, egress);
+    this.connections.set(sessionId, connection);
 
     const activeRun = this.getActiveRun(agentRunId);
     if (activeRun && !this.bindSessionToRun(sessionId, activeRun, egress)) {
       this.sessionEgresses.delete(sessionId);
+      this.connections.delete(sessionId);
       this.broadcaster.unregisterConnection(sessionId);
       this.sessionManager.closeSession(sessionId);
       const errorMsg = createErrorMessage(
@@ -179,6 +153,12 @@ export class AgentStreamHandler {
         activeRun?.getStatusSnapshot() ?? projection.statusPayload,
       ),
     );
+    // A stopped run's session gets its full stored conversation; an active run's, its snapshot connection (SR-087).
+    if (!activeRun) {
+      void sendStoredSnapshot({ runId: agentRunId, sink: egress, readStored: this.readStored,
+        isCurrent: () => this.sessionEgresses.get(sessionId) === egress && !this.subscribedRunsBySessionId.has(sessionId) })
+        .catch((error: unknown) => this.failSnapshot(sessionId, agentRunId, error));
+    }
 
     if (this.follow) this.followers.set(sessionId, followAgentRun(this.follow, agentRunId, {
       ready: (run) => { this.bindSessionToRun(sessionId, run, egress); },
@@ -243,6 +223,7 @@ export class AgentStreamHandler {
     }
     this.sessionEgresses.get(sessionId)?.dispose();
     this.sessionEgresses.delete(sessionId);
+    this.connections.delete(sessionId);
     this.subscribedRunsBySessionId.delete(sessionId);
 
     this.sessionManager.closeSession(sessionId);
@@ -268,6 +249,10 @@ export class AgentStreamHandler {
     return !!activeRun && this.bindSessionToRun(sessionId, activeRun, egress);
   }
 
+  /**
+   * Binds a session to its active run: a snapshot connection to the run's own stream sequence (SR-087), sent in-band
+   * when the run is restored while the stream is open (SR-064). A run with no sequence cannot be streamed.
+   */
   private bindSessionToRun(
     sessionId: string,
     activeRun: AgentRun,
@@ -277,6 +262,11 @@ export class AgentStreamHandler {
     if (subscribedRun === activeRun) {
       return true;
     }
+    const sequence = this.sequences.of(activeRun.runId);
+    if (!sequence) {
+      logger.error(`Agent run '${activeRun.runId}' has no stream sequence.`);
+      return false;
+    }
 
     const existingUnsubscribe = this.activeRunUnsubscribers.get(sessionId);
     if (existingUnsubscribe) {
@@ -285,67 +275,25 @@ export class AgentStreamHandler {
     existingUnsubscribe?.();
     this.activeRunUnsubscribers.delete(sessionId);
 
-    this.startRunEventLoop(egress, activeRun, sessionId);
+    this.activeRunUnsubscribers.set(sessionId, connectToActiveRun({
+      sequence,
+      sink: egress,
+      readStored: this.readStored,
+      onFailure: (error) => this.failSnapshot(sessionId, activeRun.runId, error),
+    }));
     this.subscribedRunsBySessionId.set(sessionId, activeRun);
     return true;
   }
 
-  private startRunEventLoop(
-    sink: AgentStreamServerMessageSink,
-    activeRun: AgentRun,
-    sessionId: string,
-  ): void {
-    const unsubscribe = activeRun.subscribeToEvents((event: unknown) => {
-      if (!isAgentRunEvent(event)) {
-        return;
-      }
-      void this.forwardRunEvent(sink, activeRun.runId, event);
-    });
-    this.activeRunUnsubscribers.set(sessionId, unsubscribe);
-  }
-
-  private async forwardRunEvent(
-    sink: AgentStreamServerMessageSink,
-    runId: string,
-    event: AgentRunEvent,
-  ): Promise<void> {
-    try {
-      if (isRuntimeRawEventDebugEnabled) {
-        this.runtimeEventSequence += 1;
-        if (event.eventType === AgentRunEventType.SYSTEM_INSTRUCTIONS_SUPPLIED) {
-          console.log("[RuntimeEvent]", systemInstructionDebugDetails(event));
-        } else {
-          const payload = event.payload;
-          console.log("[RuntimeEvent]", {
-            sequence: this.runtimeEventSequence,
-            runId,
-            eventType: event.eventType,
-            statusHint: event.statusHint,
-            payloadKeys: Object.keys(payload),
-            rawEventJson: truncateForDebug(stringifyForDebug(event)),
-          });
-        }
-      }
-
-      const message = this.eventMessageMapper.map(event);
-      if (isRuntimeRawEventDebugEnabled) {
-        console.log("[RuntimeMappedMessage]", {
-          sequence: this.runtimeEventSequence,
-          runId,
-          messageType: message.type,
-          payloadId:
-            typeof message.payload?.id === "string" ? message.payload.id : null,
-          segmentType:
-            typeof message.payload?.segment_type === "string"
-              ? message.payload.segment_type
-              : null,
-          eventType: event.eventType,
-        });
-      }
-      sink.send(message);
-    } catch (error) {
-      logger.error(`Error forwarding runtime event: ${String(error)}`);
-    }
+  /** A snapshot that could not be read: the session ends with an error, and the client opens it again. */
+  private failSnapshot(sessionId: string, runId: string, error: unknown): void {
+    logger.error(`Agent stream snapshot for run '${runId}' failed: ${String(error)}`);
+    const egress = this.sessionEgresses.get(sessionId);
+    const connection = this.connections.get(sessionId);
+    egress?.send(createErrorMessage("AGENT_STREAM_SNAPSHOT_UNAVAILABLE", `Agent run '${runId}' stream snapshot is unavailable.`));
+    egress?.flush();
+    void this.disconnect(sessionId);
+    connection?.close(1011);
   }
 
   private async handleSendMessage(
@@ -528,7 +476,6 @@ export const getAgentStreamHandler = (): AgentStreamHandler => {
     cachedAgentStreamHandler = new AgentStreamHandler(
       new AgentSessionManager(),
       getAgentRunService(),
-      getAgentRunEventMessageMapper(),
       getAgentStreamBroadcaster(),
       getAgentRunCommandCoordinator(),
       getAgentRunStatusProjectionService(),

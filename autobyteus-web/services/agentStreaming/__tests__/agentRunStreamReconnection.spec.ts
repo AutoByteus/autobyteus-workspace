@@ -50,9 +50,9 @@ const storedProjection = (assistantText: string) => ({
 });
 
 /**
- * autobyteus-434 DS-003 and the Agent Connect Rule: the agent stream sends no snapshot, so a scheduler-driven attempt
- * loads the stored state, commits it into the live context while the socket is closed, then opens. Every socket open is
- * the success point. A connect request during a loss streak goes through the catch-up.
+ * autobyteus-434 and the Agent Connect Rule, with autobyteus-461 SR-087: every connection starts with the run's own
+ * stream snapshot (its stored part, its unconfirmed turns' frames, its base), then its numbered frames after the base.
+ * So an attempt just opens the socket: the snapshot is the catch-up, and nothing is read beside it.
  */
 describe('AgentRunStreamReconnection', () => {
   let ws: FakeSocketClient;
@@ -61,8 +61,14 @@ describe('AgentRunStreamReconnection', () => {
 
   const shown = (): string => JSON.stringify(context.state.conversation.messages);
   const flush = () => vi.advanceTimersByTimeAsync(0);
-  const deliver = (type: string, payload: Record<string, unknown>) => ws.message(type, payload);
   const projectionReads = () => io.queries.filter((name) => name === 'GetRunProjection').length;
+  /** The node's snapshot of the run at `base` (live `sequenceId`; null: a stopped run). */
+  const snapshot = (assistantText: string, base = 0, turnFrames: unknown[] = [], sequenceId: string | null = 'live-1') =>
+    ws.message('AGENT_STREAM_SNAPSHOT', { stored: storedProjection(assistantText), turn_frames: turnFrames,
+      base_sequence: base, live_sequence_id: sequenceId });
+  const start = (id: string, turn: string, sequence: number) => ({ type: 'SEGMENT_START', payload: { id, turn_id: turn, segment_type: 'text' }, sequence });
+  const content = (id: string, turn: string, delta: string, sequence: number) =>
+    ({ type: 'SEGMENT_CONTENT', payload: { id, turn_id: turn, segment_type: 'text', delta }, sequence });
 
   beforeEach(() => {
     vi.useFakeTimers();
@@ -97,107 +103,84 @@ describe('AgentRunStreamReconnection', () => {
     ws.open();
   };
 
-  it('an owner connect on an idle stream connects without a catch-up', () => {
+  it('an owner connect on an idle stream connects, and reads nothing beside the stream', () => {
     stream.reconnection.requestConnect();
     expect(ws.connects).toBe(1);
     expect(projectionReads()).toBe(0);
   });
 
-  it('CR-461-098: a catch-up connect reads the stored state once the node binds the stream (CONNECTED), and commits it', async () => {
-    // The open read the conversation before the delegator's message restored the run; the turn ran before the binding.
-    io.projection.mockResolvedValue(storedProjection('answer to the message after the restart'));
-    context.state.currentStatus = AgentStatus.Idle;
-    stream.reconnection.requestCatchUpConnect();
-    expect(ws.connects).toBe(1);
-    expect(projectionReads()).toBe(0);
-    ws.open();
-    await flush();
-    expect(projectionReads()).toBe(0);
-    deliver('CONNECTED', { agent_run_id: runId, session_id: 'session-1' });
-    await flush();
-    expect(projectionReads()).toBe(1);
-    expect(shown()).toContain('answer to the message after the restart');
-    // Bound already: a later request reads now, without a second connect.
-    stream.reconnection.requestCatchUpConnect();
-    await flush();
-    expect(projectionReads()).toBe(2);
-    expect(ws.connects).toBe(1);
-  });
-
-  it('CR-461-098: a live event during the catch-up read keeps what the stream shows, and the read is made again', async () => {
-    context.state.currentStatus = AgentStatus.Idle;
-    let release!: (value: unknown) => void;
-    io.projection.mockReturnValueOnce(new Promise((resolve) => { release = resolve; }));
-    io.projection.mockResolvedValue(storedProjection('stored after the live event'));
-    stream.reconnection.requestCatchUpConnect();
-    ws.open();
-    deliver('CONNECTED', { agent_run_id: runId, session_id: 'session-1' });
-    await flush();
-    expect(projectionReads()).toBe(1);
-    deliver('SEGMENT_START', { id: 'seg-live', turn_id: 'turn-2', segment_type: 'text' });
-    deliver('SEGMENT_CONTENT', { id: 'seg-live', turn_id: 'turn-2', segment_type: 'text', delta: 'live while reading' });
-    release(storedProjection('stale read'));
-    await flush();
-    expect(shown()).not.toContain('stale read');
-    expect(projectionReads()).toBe(2);
-    expect(shown()).toContain('stored after the live event');
-  });
-
-  it('after a loss it loads and commits the stored state while the socket is closed, then opens', async () => {
+  it('the snapshot shows the stored part, replays the unconfirmed turn, and the frames after its base continue it', async () => {
     openAsOwner();
-    deliver('SEGMENT_START', { id: 'seg-old', turn_id: 'turn-1', segment_type: 'text' });
-    deliver('SEGMENT_CONTENT', { id: 'seg-old', turn_id: 'turn-1', segment_type: 'text', delta: 'shown before the loss' });
+    snapshot('confirmed answer', 2, [start('seg-1', 'turn-2', 1), content('seg-1', 'turn-2', 'live ', 2)]);
+    ws.frame('SEGMENT_CONTENT', { id: 'seg-1', turn_id: 'turn-2', segment_type: 'text', delta: 'and on' }, 3);
+    // Coalesced content covers a range of frames.
+    ws.frame('SEGMENT_CONTENT_BATCH', { items: [{ id: 'seg-1', turn_id: 'turn-2', segment_type: 'text', delta: ' more' }] }, 4, 6);
+    await flush();
+    expect(shown()).toContain('Run the long build');
+    expect(shown()).toContain('confirmed answer');
+    expect(shown()).toContain('live and on more');
+    expect(projectionReads()).toBe(0);
+  });
+
+  it('a frame at or below the base is already shown; a gap reopens the stream for a fresh snapshot', async () => {
+    openAsOwner();
+    snapshot('stored', 3);
+    ws.frame('SEGMENT_START', { id: 'seg-old', turn_id: 'turn-1', segment_type: 'text' }, 3);
+    await flush();
+    expect(shown()).not.toContain('seg-old');
+    ws.frame('SEGMENT_START', { id: 'seg-gap', turn_id: 'turn-1', segment_type: 'text' }, 5);
+    expect(ws.state).toBe(ConnectionState.DISCONNECTED);
+    await vi.advanceTimersByTimeAsync(1_000);
+    expect(ws.connects).toBe(2);
+    ws.open();
+    snapshot('after the gap', 5);
+    await flush();
+    expect(shown()).toContain('after the gap');
+  });
+
+  it('after a loss the attempt just opens: the new snapshot replaces what was shown', async () => {
+    openAsOwner();
+    snapshot('stored', 0);
+    ws.frame('SEGMENT_START', { id: 'seg-old', turn_id: 'turn-1', segment_type: 'text' }, 1);
+    ws.frame('SEGMENT_CONTENT', { id: 'seg-old', turn_id: 'turn-1', segment_type: 'text', delta: 'shown before the loss' }, 2);
     ws.lose();
 
     await vi.advanceTimersByTimeAsync(1_000);
-    expect(projectionReads()).toBe(1);
     expect(ws.connects).toBe(2);
+    expect(projectionReads()).toBe(0);
+    ws.open();
+    snapshot('stored answer', 9);
+    await flush();
     expect(shown()).toContain('stored answer');
-    expect(shown()).toContain('Run the long build');
     expect(shown()).not.toContain('shown before the loss');
   });
 
-  it('a failed load is a failed attempt: no open, and the next wait grows', async () => {
+  it('a restore while the stream is open sends one in-band snapshot of the new sequence, with no gap', async () => {
     openAsOwner();
-    io.projection.mockRejectedValueOnce(new Error('node unreachable'));
-    ws.lose();
-    await vi.advanceTimersByTimeAsync(1_000);
-    expect(projectionReads()).toBe(1);
-    expect(ws.connects).toBe(1);
-    await vi.advanceTimersByTimeAsync(1_999);
-    expect(projectionReads()).toBe(1);
-    await vi.advanceTimersByTimeAsync(1);
-    expect(projectionReads()).toBe(2);
-    expect(ws.connects).toBe(2);
-  });
-
-  it('AR-001(a): deltas the node keeps producing show after the open; the attempt reads once and does not stall', async () => {
-    openAsOwner();
-    ws.lose();
-    // The node kept writing during the outage: the stored state already holds "part A".
-    io.projection.mockResolvedValue(storedProjection('part A'));
-    await vi.advanceTimersByTimeAsync(1_000);
-    ws.open();
-    deliver('AGENT_STATUS', { status: 'running', recoverableBlock: null });
-    deliver('SEGMENT_START', { id: 'seg-2', turn_id: 'turn-1', segment_type: 'text' });
-    deliver('SEGMENT_CONTENT', { id: 'seg-2', turn_id: 'turn-1', segment_type: 'text', delta: 'part B' });
+    snapshot('before the stop', 4, [], 'live-1');
+    snapshot('after the restore', 0, [], 'live-2');
+    ws.frame('SEGMENT_START', { id: 'seg-new', turn_id: 'turn-9', segment_type: 'text' }, 1);
+    ws.frame('SEGMENT_CONTENT', { id: 'seg-new', turn_id: 'turn-9', segment_type: 'text', delta: 'resumed' }, 2);
     await flush();
-
-    expect(projectionReads()).toBe(1);
-    expect(shown().indexOf('Run the long build')).toBeLessThan(shown().indexOf('part A'));
-    expect(shown().indexOf('part A')).toBeLessThan(shown().indexOf('part B'));
-    // The open is the success point: the next loss waits 1 s again.
-    ws.lose();
-    await vi.advanceTimersByTimeAsync(1_000);
-    expect(projectionReads()).toBe(2);
+    expect(shown()).toContain('after the restore');
+    expect(shown()).toContain('resumed');
+    expect(ws.connects).toBe(1);
   });
 
-  it('P-004: a connect request during a wait catches up at once; while held it attempts nothing', async () => {
+  it('a stopped run\'s snapshot is its whole stored conversation, and no frame follows it', async () => {
+    openAsOwner();
+    snapshot('the whole conversation', 0, [], null);
+    ws.frame('SEGMENT_START', { id: 'seg-x', turn_id: 'turn-1', segment_type: 'text' }, 1);
+    await flush();
+    expect(shown()).toContain('the whole conversation');
+    expect(ws.state).toBe(ConnectionState.DISCONNECTED);
+  });
+
+  it('P-004: a connect request during a wait connects at once; while held it attempts nothing', async () => {
     openAsOwner();
     ws.lose();
     stream.reconnection.requestConnect();
     await flush();
-    expect(projectionReads()).toBe(1);
     expect(ws.connects).toBe(2);
     ws.open();
 
@@ -205,11 +188,9 @@ describe('AgentRunStreamReconnection', () => {
     ws.lose();
     stream.reconnection.requestConnect();
     await vi.advanceTimersByTimeAsync(60_000);
-    expect(projectionReads()).toBe(1);
     expect(ws.connects).toBe(2);
     showPage();
     await flush();
-    expect(projectionReads()).toBe(2);
     expect(ws.connects).toBe(3);
   });
 
@@ -232,9 +213,7 @@ describe('AgentRunStreamReconnection', () => {
     expect(interruptFailures).toEqual([expect.objectContaining({
       reason: expect.objectContaining({ message: 'Agent stream is re-synchronizing.' }),
     })]);
-    expect(ws.state).toBe(ConnectionState.CONNECTING);
     await flush();
-    expect(projectionReads()).toBe(1);
     expect(ws.connects).toBe(2);
   });
 
@@ -244,55 +223,27 @@ describe('AgentRunStreamReconnection', () => {
     await vi.advanceTimersByTimeAsync(29_000);
     showPage();
     await flush();
-    expect(projectionReads()).toBe(0);
     expect(ws.connects).toBe(1);
   });
 
-  it('N-7: the context removed during the load ends the attempt idle: no open, no retry, and a later connect is plain', async () => {
+  it('N-7: the context removed during a wait ends the attempt idle: no open, no retry, and a later connect is plain', async () => {
     openAsOwner();
-    let finishLoad!: (value: unknown) => void;
-    io.projection.mockReturnValueOnce(new Promise((resolve) => { finishLoad = resolve; }));
     ws.lose();
-    await vi.advanceTimersByTimeAsync(1_000);
     useAgentContextsStore().removeRun(runId);
-    finishLoad(storedProjection('late'));
     await vi.advanceTimersByTimeAsync(120_000);
     expect(ws.connects).toBe(1);
-    expect(projectionReads()).toBe(1);
 
     context = useAgentContextsStore().upsertProjectionContext({
       runId, config: context.config, conversation: context.state.conversation, status: AgentStatus.Running,
     });
     stream.reconnection.requestConnect();
     expect(ws.connects).toBe(2);
-    expect(projectionReads()).toBe(1);
-  });
-
-  it('N-7: a socket started during the load is left to its own open, which is the success point', async () => {
-    openAsOwner();
-    let finishLoad!: (value: unknown) => void;
-    io.projection.mockReturnValueOnce(new Promise((resolve) => { finishLoad = resolve; }));
-    ws.lose();
-    await vi.advanceTimersByTimeAsync(1_000);
-    stream.service.connect(runId, context);
-    ws.open();
-    finishLoad(storedProjection('late'));
-    await flush();
-    expect(shown()).not.toContain('late');
-    expect(ws.connects).toBe(2);
-    // Connected: a hide ≥ 30 s re-syncs it.
-    hidePage();
-    await vi.advanceTimersByTimeAsync(30_000);
-    showPage();
-    await flush();
-    expect(projectionReads()).toBe(2);
   });
 
   it('a non-retryable close (4004/4005) is not retried', async () => {
     openAsOwner();
     ws.lose(false);
     await vi.advanceTimersByTimeAsync(120_000);
-    expect(projectionReads()).toBe(0);
     expect(ws.connects).toBe(1);
   });
 });
@@ -305,7 +256,6 @@ describe('agentRunStore.connectToAgentStream (P-004 through the store)', () => {
     setActivePinia(createPinia());
     io.queries.length = 0;
     io.projection.mockReset();
-    io.projection.mockResolvedValue(storedProjection('the gap\'s answer'));
     ws = new FakeSocketClient();
     io.ws = ws;
   });
@@ -314,7 +264,7 @@ describe('agentRunStore.connectToAgentStream (P-004 through the store)', () => {
     vi.useRealTimers();
   });
 
-  it('a history read during a wait shows the gap\'s events: it triggers the catch-up attempt, not a plain connect', async () => {
+  it('a history read during a wait shows the gap\'s events: it opens at once, and the snapshot carries them', async () => {
     const { useAgentRunStore } = await import('~/stores/agentRunStore');
     const context = useAgentContextsStore().upsertProjectionContext({
       runId,
@@ -333,8 +283,11 @@ describe('agentRunStore.connectToAgentStream (P-004 through the store)', () => {
 
     store.connectToAgentStream(runId); // reconcileDiscoveredActiveRuns: active run, stream not ready
     await vi.advanceTimersByTimeAsync(0);
-    expect(io.queries.filter((name) => name === 'GetRunProjection')).toHaveLength(1);
     expect(ws.connects).toBe(2);
+    ws.open();
+    ws.message('AGENT_STREAM_SNAPSHOT', { stored: storedProjection('the gap\'s answer'), turn_frames: [], base_sequence: 7, live_sequence_id: 'live-1' });
+    await vi.advanceTimersByTimeAsync(0);
+    expect(io.queries.filter((name) => name === 'GetRunProjection')).toHaveLength(0);
     expect(JSON.stringify(context.state.conversation.messages)).toContain('the gap\'s answer');
     store.disconnectAgentStream(runId);
     await vi.advanceTimersByTimeAsync(120_000);

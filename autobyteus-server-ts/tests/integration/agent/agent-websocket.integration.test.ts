@@ -15,6 +15,7 @@ import { AgentSessionManager } from "../../../src/services/agent-streaming/agent
 import { registerAgentWebsocket } from "../../../src/api/websocket/agent.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import type { AgentRunMetadata } from "../../../src/run-history/store/agent-run-metadata-types.js";
+import { lazyAgentStreamSequences } from "../../helpers/agent-stream-sequence-fixture.js";
 
 class FakeRuntimeRun {
   readonly runtimeKind = RuntimeKind.CODEX_APP_SERVER;
@@ -281,13 +282,17 @@ const startAgentWsHarness = async (options: {
     projectionService,
     broadcaster,
   });
+  // Each run's own stream sequence (SR-087), attached to the run the service returns.
+  const stream = lazyAgentStreamSequences((runId) => agentRunService.getAgentRun(runId));
   const handler = new AgentStreamHandler(
     new AgentSessionManager(),
     agentRunService as any,
-    undefined,
     broadcaster,
     commandCoordinator,
     projectionService,
+    null,
+    stream.sequences,
+    stream.readStored,
   );
   const app = fastify();
   await app.register(websocket);
@@ -699,7 +704,9 @@ describe("Agent websocket backend-owned command lifecycle integration", () => {
         message: `Agent run '${runId}' is not active.`,
         target: { target_kind: "standalone_run", run_id: runId },
       });
-      expect(messages).toHaveLength(3);
+      // CONNECTED, the status, the stopped run's stored snapshot (SR-087) and the ACK.
+      expect(messages.map((message) => message.type).sort()).toEqual(
+        ["AGENT_COMMAND_ACK", "AGENT_STATUS", "AGENT_STREAM_SNAPSHOT", "CONNECTED"]);
     } finally {
       socket.close();
       await harness.app.close();

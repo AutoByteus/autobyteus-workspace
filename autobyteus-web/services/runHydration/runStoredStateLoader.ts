@@ -8,8 +8,8 @@ import { fetchRunFileChanges } from './runFileChangeHydrationService';
 
 /**
  * A run's stored state: the node's projection of its conversation and activities, and its recorded
- * file changes. The one reader of a standalone run's projection, used by the full hydration (open path)
- * and by the agent stream's catch-up before it reopens (autobyteus-434).
+ * file changes. The one reader of a standalone run's projection, used by the full hydration (open path); the agent
+ * stream's snapshot carries the same projection and is built by `buildRunStoredState` (autobyteus-461 SR-087).
  */
 
 export interface RunProjectionPayload {
@@ -78,8 +78,3 @@ export const buildRunStoredState = (read: RunStoredStateRead, defaults: RunConve
     hasEarlierActiveTraceEvents: read.projection.hasEarlierActiveTraceEvents === true,
   };
 };
-
-export const loadRunStoredState = async (
-  runId: string,
-  defaults: RunConversationDefaults,
-): Promise<RunStoredState> => buildRunStoredState(await readRunStoredState(runId), defaults);

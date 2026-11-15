@@ -25,6 +25,7 @@ import { STREAMING_CONTENT_FLUSH_INTERVAL_SETTING_KEY } from "../../../src/confi
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { AgentStreamHandler } from "../../../src/services/agent-streaming/agent-stream-handler.js";
 import { AgentSessionManager } from "../../../src/services/agent-streaming/agent-session-manager.js";
+import { lazyAgentStreamSequences } from "../../helpers/agent-stream-sequence-fixture.js";
 
 type WsMessage = {
   type: string;
@@ -160,7 +161,8 @@ const captureMessages = (socket: WebSocket): WsMessage[] => {
   const messages: WsMessage[] = [];
   socket.on("message", (data) => {
     const message = JSON.parse(data.toString()) as WsMessage;
-    if (message.type !== "AGENT_INPUT_STATE") messages.push(message);
+    // The run's snapshot (SR-087) has its own tests; these are about the frames after it.
+    if (message.type !== "AGENT_INPUT_STATE" && message.type !== "AGENT_STREAM_SNAPSHOT") messages.push(message);
   });
   return messages;
 };
@@ -197,6 +199,8 @@ const openAgentApp = async (run: AgentRun) => {
     overlayStore,
     commandRegistry,
   });
+  // The run's own stream sequence (SR-087), attached as its resources attach it.
+  const stream = lazyAgentStreamSequences((runId) => (runId === run.runId ? run : null));
   const streamHandler = new AgentStreamHandler(
     new AgentSessionManager(),
     {
@@ -205,8 +209,10 @@ const openAgentApp = async (run: AgentRun) => {
     } as never,
     undefined,
     undefined,
-    undefined,
     statusProjectionService,
+    null,
+    stream.sequences,
+    stream.readStored,
   );
   const app = fastify();
   await app.register(websocket);
@@ -282,13 +288,13 @@ describe("Agent status WebSocket contract integration", () => {
           "AGENT_STATUS",
           "TURN_STARTED",
           "SEGMENT_START",
-          "SEGMENT_CONTENT",
+          "SEGMENT_CONTENT_BATCH",
           "TURN_COMPLETED",
           "AGENT_STATUS",
         ]);
         expectStatusOnlyPayload(liveTrace[0]!, "running");
         expectStatusOnlyPayload(liveTrace[5]!, "idle");
-        expect(liveTrace[3]?.payload.delta).toBe("onetwo");
+        expect(liveTrace[3]?.payload.items[0].delta).toBe("onetwo");
         expect(liveTrace.filter((message) => message.type === "AGENT_STATUS")).toHaveLength(2);
         expect(liveTrace.filter((message) => message.type !== "AGENT_STATUS")).toHaveLength(4);
 
@@ -361,15 +367,15 @@ describe("Agent status WebSocket contract integration", () => {
       ]);
 
       await wait(350);
-      expect(connection.messages.filter((message) => message.type === "SEGMENT_CONTENT")).toHaveLength(0);
+      expect(connection.messages.filter((message) => message.type === "SEGMENT_CONTENT_BATCH")).toHaveLength(0);
       await wait(300);
 
       const contentFrames = connection.messages.filter(
-        (message) => message.type === "SEGMENT_CONTENT",
+        (message) => message.type === "SEGMENT_CONTENT_BATCH",
       );
       expect(internalContentEvents).toBe(30);
       expect(contentFrames).toHaveLength(1);
-      expect(contentFrames[0]?.payload.delta).toBe(deltas.join(""));
+      expect(contentFrames[0]?.payload.items[0].delta).toBe(deltas.join(""));
       expect(Date.now() - openedAt).toBeGreaterThanOrEqual(500);
     } finally {
       unsubscribe();
@@ -412,11 +418,11 @@ describe("Agent status WebSocket contract integration", () => {
       process.env[STREAMING_CONTENT_FLUSH_INTERVAL_SETTING_KEY] = "1000";
 
       await wait(350);
-      expect(connection.messages.filter((message) => message.type === "SEGMENT_CONTENT"))
+      expect(connection.messages.filter((message) => message.type === "SEGMENT_CONTENT_BATCH"))
         .toHaveLength(0);
       await wait(300);
-      expect(connection.messages.filter((message) => message.type === "SEGMENT_CONTENT")
-        .map((message) => message.payload.delta)).toEqual(["first"]);
+      expect(connection.messages.filter((message) => message.type === "SEGMENT_CONTENT_BATCH")
+        .map((message) => message.payload.items[0].delta)).toEqual(["first"]);
 
       await backend.emitSource([
         event(run.runId, AgentRunEventType.SEGMENT_CONTENT, {
@@ -426,11 +432,11 @@ describe("Agent status WebSocket contract integration", () => {
         }),
       ]);
       await wait(650);
-      expect(connection.messages.filter((message) => message.type === "SEGMENT_CONTENT")
-        .map((message) => message.payload.delta)).toEqual(["first"]);
+      expect(connection.messages.filter((message) => message.type === "SEGMENT_CONTENT_BATCH")
+        .map((message) => message.payload.items[0].delta)).toEqual(["first"]);
       await wait(500);
-      expect(connection.messages.filter((message) => message.type === "SEGMENT_CONTENT")
-        .map((message) => message.payload.delta)).toEqual(["first", "second"]);
+      expect(connection.messages.filter((message) => message.type === "SEGMENT_CONTENT_BATCH")
+        .map((message) => message.payload.items[0].delta)).toEqual(["first", "second"]);
     } finally {
       connection.socket.close();
       await harness.app.close();
@@ -482,7 +488,7 @@ describe("Agent status WebSocket contract integration", () => {
       }
       await wait(150);
       expect(inputStates()).toHaveLength(1);
-      expect(frames.filter((frame) => frame.type === "SEGMENT_CONTENT")).toHaveLength(0);
+      expect(frames.filter((frame) => frame.type === "SEGMENT_CONTENT_BATCH")).toHaveLength(0);
 
       const postedAt = Date.now();
       await expect(run.postUserMessage(new AgentInputUserMessage("queued during the window")))
@@ -492,11 +498,11 @@ describe("Agent status WebSocket contract integration", () => {
       expect(Date.now() - postedAt).toBeLessThan(250);
 
       const liveTrace = frames.filter(
-        (frame) => frame.type === "SEGMENT_CONTENT" || frame.type === "AGENT_INPUT_STATE",
+        (frame) => frame.type === "SEGMENT_CONTENT_BATCH" || frame.type === "AGENT_INPUT_STATE",
       );
-      expect(liveTrace.map((frame) => [frame.type, frame.payload.delta ?? frame.payload.revision])).toEqual([
+      expect(liveTrace.map((frame) => [frame.type, frame.payload.items?.[0]?.delta ?? frame.payload.revision])).toEqual([
         ["AGENT_INPUT_STATE", 1],
-        ["SEGMENT_CONTENT", "abc"],
+        ["SEGMENT_CONTENT_BATCH", "abc"],
         ["AGENT_INPUT_STATE", 2],
       ]);
       expect(inputStates()[1]?.payload.entries).toMatchObject([
@@ -512,7 +518,7 @@ describe("Agent status WebSocket contract integration", () => {
       ]);
       await wait(650);
       expect(inputStates()).toHaveLength(2);
-      expect(frames.filter((frame) => frame.type === "SEGMENT_CONTENT").map((frame) => frame.payload.delta))
+      expect(frames.filter((frame) => frame.type === "SEGMENT_CONTENT_BATCH").map((frame) => frame.payload.items[0].delta))
         .toEqual(["abc", "d"]);
     } finally {
       socket.close();
@@ -667,6 +673,8 @@ describe("Agent status WebSocket contract integration", () => {
       ]);
       expect(trace[3]).toEqual({
         type: "ERROR",
+        // A frame of the run's own stream carries its number (SR-087).
+        sequence: expect.any(Number),
         payload: {
           code: "LLM_PROVIDER_ERROR",
           message: "terminal turn failure",

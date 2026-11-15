@@ -27,6 +27,14 @@ export const buildReplayTurnGroupId = (turnId: string | null | undefined, eventI
   return value ? `turn:v1:${lengthPrefixed(value)}` : `ungrouped:${eventId}`;
 };
 
+/** The turn ID a replay group was built from (`buildReplayTurnGroupId`); null for an ungrouped event. */
+export const turnIdOfReplayTurnGroup = (turnGroupId: string): string | null => {
+  const prefix = "turn:v1:";
+  if (!turnGroupId.startsWith(prefix)) return null;
+  const separator = turnGroupId.indexOf(":", prefix.length);
+  return separator < 0 ? null : turnGroupId.slice(separator + 1) || null;
+};
+
 export const buildLegacyTraceFingerprint = (trace: MemoryTurnTraceEvent): string => digest([
   normalized(trace.traceType),
   normalized(trace.turnId),

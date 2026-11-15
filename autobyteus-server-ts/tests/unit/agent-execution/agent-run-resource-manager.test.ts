@@ -10,7 +10,7 @@ const managerWith = (mcpServerInstances: unknown, memoryDispose: () => void = vi
   runSessions: { deactivateForRun: vi.fn(() => 0) },
   runFileChangeService: { attachToRun: vi.fn(() => vi.fn()) },
   publishedArtifactRelayService: { attachToRun: vi.fn(() => vi.fn()) },
-  memoryRecorder: { attachToRun: vi.fn(() => memoryDispose) },
+  memoryRecorder: { attachToRun: vi.fn(() => memoryDispose) }, streamSequences: { attachToRun: vi.fn(() => vi.fn()) },
   workJournalUpdater: { attachToRun: vi.fn(() => vi.fn()) },
   mcpServerInstances,
 } as never);
@@ -26,7 +26,7 @@ describe("AgentRunResourceManager", () => {
       runSessions: { deactivateForRun },
       runFileChangeService: { attachToRun: vi.fn(() => fileDispose) },
       publishedArtifactRelayService: { attachToRun: vi.fn(() => relayDispose) },
-      memoryRecorder: { attachToRun: vi.fn(() => memoryDispose) },
+      memoryRecorder: { attachToRun: vi.fn(() => memoryDispose) }, streamSequences: { attachToRun: vi.fn(() => vi.fn()) },
       workJournalUpdater: { attachToRun: vi.fn(() => journalDispose) },
       mcpServerInstances: noMcpServers(),
     } as never);
@@ -58,7 +58,7 @@ describe("AgentRunResourceManager", () => {
       publishedArtifactRelayService: {
         attachToRun: vi.fn(() => { throw new Error("relay attach failed"); }),
       },
-      memoryRecorder: { attachToRun: vi.fn() },
+      memoryRecorder: { attachToRun: vi.fn() }, streamSequences: { attachToRun: vi.fn(() => vi.fn()) },
       workJournalUpdater: { attachToRun: vi.fn() },
       mcpServerInstances: noMcpServers(),
     } as never);
@@ -82,7 +82,7 @@ describe("AgentRunResourceManager", () => {
       runSessions: { deactivateForRun },
       runFileChangeService: { attachToRun: vi.fn(() => fileDispose) },
       publishedArtifactRelayService: { attachToRun: vi.fn(() => relayDispose) },
-      memoryRecorder: { attachToRun: vi.fn(() => memoryDispose) },
+      memoryRecorder: { attachToRun: vi.fn(() => memoryDispose) }, streamSequences: { attachToRun: vi.fn(() => vi.fn()) },
       workJournalUpdater: { attachToRun: vi.fn(() => vi.fn()) },
       mcpServerInstances: noMcpServers(),
     } as never);
@@ -112,7 +112,7 @@ describe("AgentRunResourceManager", () => {
       runSessions: { deactivateForRun: vi.fn(() => 0) },
       runFileChangeService: { attachToRun: vi.fn(() => vi.fn()) },
       publishedArtifactRelayService: { attachToRun: vi.fn(() => vi.fn()) },
-      memoryRecorder: { attachToRun: vi.fn(() => memoryDispose) },
+      memoryRecorder: { attachToRun: vi.fn(() => memoryDispose) }, streamSequences: { attachToRun: vi.fn(() => vi.fn()) },
       workJournalUpdater: { attachToRun: vi.fn(() => vi.fn()) },
       lifecycleObserver: { runReleased },
       mcpServerInstances: noMcpServers(),

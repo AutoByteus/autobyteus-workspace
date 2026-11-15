@@ -1,5 +1,16 @@
 import type { EventMonitorReplayEvent } from "../historical-replay-event-types.js";
 import type { RunProjectionConversationEntry } from "../run-projection-types.js";
+import { turnIdOfReplayTurnGroup } from "../historical-replay-event-identity.js";
+
+/**
+ * The turn an agent's own output belongs to (autobyteus-461 SR-087): an agent stream snapshot keeps or leaves out an
+ * entry by it. User and inter-agent messages and notices carry none: they are always kept, and the web matches them
+ * by `messageId`.
+ */
+const turnOf = (event: EventMonitorReplayEvent): { turnId?: string } => {
+  const turnId = turnIdOfReplayTurnGroup(event.turnGroupId);
+  return turnId ? { turnId } : {};
+};
 
 export const buildRunProjectionConversation = (
   events: EventMonitorReplayEvent[],
@@ -28,6 +39,7 @@ export const buildRunProjectionConversation = (
         ...(event.role === "user" && event.messageId ? { messageId: event.messageId } : {}),
         ...(event.role === "user" && event.dedupeKey ? { dedupeKey: event.dedupeKey } : {}),
         ...(event.role === "user" && event.fileAttachments?.length ? { fileAttachments: event.fileAttachments } : {}),
+        ...(event.role === "user" ? {} : turnOf(event)),
         content: event.content,
         media: event.media,
         ts: event.ts,
@@ -38,6 +50,7 @@ export const buildRunProjectionConversation = (
       return [{
         kind: "reasoning",
         role: null,
+        ...turnOf(event),
         content: event.content,
         media: event.media,
         ts: event.ts,
@@ -65,6 +78,7 @@ export const buildRunProjectionConversation = (
           : "tool_call",
       invocationId: event.invocationId,
       role: null,
+      ...turnOf(event),
       content: event.content,
       toolName: event.toolName,
       toolArgs: event.toolArgs,
