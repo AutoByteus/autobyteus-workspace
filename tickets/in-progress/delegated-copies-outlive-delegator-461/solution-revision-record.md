@@ -1779,4 +1779,4 @@ No architecture review: these follow REQ-006, an approved exception, rule 2 and 
 - **Next action:**
   - architecture review (narrow);
   - then the Implementation Engineer.
-
+- **ARCH-REV-065 passed SR-089.** It verified the single attach point (`AgentRunActivationRegistry.markPrepared` → `AgentRunResourceManager.attach` → `attachToRun`). Its note is added to the tests: a team member's and an org agent's `AgentRun`, including a lazily started one, has a sequence.

@@ -312,6 +312,7 @@ A run opened as its own run (rule 2) reads its stored conversation, then connect
   - **a turn whose write lands before its first frame reaches the sequence** (the native settle order) appears once, because it is not in the predating set;
   - a restore during an open stream gives one in-band snapshot, with no gap;
   - BR-011 (the Org worker's conversation after a restart) passes with the heuristic removed.
+  - a team member's and an org agent's `AgentRun`, including one started lazily, has an `AgentStreamSequence`. The single attach point is `AgentRunActivationRegistry.markPrepared` → `AgentRunResourceManager.attach` (ARCH-REV-065).
 
 **3c. Gaps closed by walking the view spines for every case** (SR-086; `evidence/spine-validation/spine-walk-2026-11-15.md`):
 - **Status connection, reconnect (G-A1):** the client reconnects `/ws/run-status` with backoff and re-subscribes every id it shows. The server answers with a fresh `RUN_STATUS_SNAPSHOT`, which replaces the client's statuses.
