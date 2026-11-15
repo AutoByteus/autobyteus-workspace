@@ -155,6 +155,13 @@ or because Gradle's cache already holds a dependency the runner must download.
   `autobyteus-server-ts/dist/app.js` need a current build of this worktree:
   `pnpm -C autobyteus-server-ts build`. Never use an installed app or an older build as
   proof of current source.
+- **Node version.** Run server and web suites on Node 22, the version the release workflows and
+  the server image use. A newer default Node (26) fails `tests/unit/memory-search` for a reason that
+  is not in the code (`node:sqlite` `RangeError: Value is too large to be represented as a
+  JavaScript number`) and gives other memory figures. The desktop app runs its server on
+  Electron's own Node (`ELECTRON_RUN_AS_NODE=1 <Electron binary> -p process.versions.node`; 24 for
+  Electron 42), so a memory, GC or timing measurement also runs on that version. Name the Node
+  version in the evidence.
 - **A local run does not prove a release build.** The packages are already built in your
   worktree; a release runner starts from `pnpm install` alone. When a change touches a
   build input, prove it as [Fresh-start build](#fresh-start-build) says.
