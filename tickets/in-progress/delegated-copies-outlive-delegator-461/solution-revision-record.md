@@ -1780,3 +1780,18 @@ No architecture review: these follow REQ-006, an approved exception, rule 2 and 
   - architecture review (narrow);
   - then the Implementation Engineer.
 - **ARCH-REV-065 passed SR-089.** It verified the single attach point (`AgentRunActivationRegistry.markPrepared` → `AgentRunResourceManager.attach` → `attachToRun`). Its note is added to the tests: a team member's and an org agent's `AgentRun`, including a lazily started one, has a sequence.
+
+### SR-090 — A peer row's Retry goes over the status connection (answers the Implementation Engineer's IMP-RETRY)
+
+- **Triggering:** CR-461-099 removes `remoteRunsStore`, which owned base's Retry, and its sender has been gone since stage A, so the button did nothing. The server's view-stream handler `REFRESH_REMOTE_TASK_EXECUTIONS` has no client. And "Checking" can't settle for a node that stays unreachable, because the status service tells only changes.
+- **The Solution Designer's gap:** SR-082's status design named unreachable answers (G-A3) but not the user's Retry of them.
+- **Decision, the engineer's option (A):**
+  - `RETRY_PEERS { runIds }` on `/ws/run-status` calls `RunStatusService.retryPeers`;
+  - after each retry's answer, the state is told again even if unchanged, so "Checking" settles;
+  - it works from any shown tree;
+  - the view streams' `REFRESH_REMOTE_TASK_EXECUTIONS` is removed.
+  - Rejected: (B), which works only while a view is open, and (C), which loses base behavior.
+- **Next action:**
+  - architecture review (narrow: a client message on the status connection);
+  - then the Implementation Engineer.
+

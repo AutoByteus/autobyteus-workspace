@@ -318,6 +318,12 @@ A run opened as its own run (rule 2) reads its stored conversation, then connect
 - **Status connection, reconnect (G-A1):** the client reconnects `/ws/run-status` with backoff and re-subscribes every id it shows. The server answers with a fresh `RUN_STATUS_SNAPSHOT`, which replaces the client's statuses.
 - **Unknown ids (G-A2):** an id the node doesn't know is answered `not_found`, and no status is shown.
 - **Peer unreachable (G-A3):** answered `unreachable`, with the node's name. "Couldn't reach {node}." is shown, as at base.
+- **Retry for an unreachable peer** (SR-090, IMP-RETRY; base's red notice with "Checking {node}…", autobyteus-278). Retry is a status action, so it goes over the status connection:
+  - the client sends `RETRY_PEERS { runIds }` on `/ws/run-status`, for peer runs this connection subscribes to. It works from any shown tree: the run list, the phone, the Task card, or an open view;
+  - the server calls `RunStatusService.retryPeers`. After each retry's answer, it tells the run's state again, **even if unchanged**, so "Checking" always settles on the next `RUN_STATE_CHANGED` for that run;
+  - the row's reachability and its notice title come from the tree row's `peer`;
+  - removed: the view streams' `REFRESH_REMOTE_TASK_EXECUTIONS` (its contract, the three handlers and `run-view-rows.retryPeers`), which no client sends since stage A;
+  - tests: a Retry from the run list and from an open view settles "Checking" for a node that stays unreachable, and for one that comes back.
 - **A team's or org's own status (G-A4):** a team or org run ID has its own status in `RunStatusService`, computed by its root from its members by base's rule. It moves from the client's feeding of `TeamAggregateStatusDot` to the server. A team or org row's `statusIds` is its run ID, and its members' rows carry their agent run IDs.
 - **A saved launch shows at once (G-B1):** every save that changes a launch (agent run, team default, member) notifies `ChildRowsFeed` for that run. It emits `RUN_TREE_CHANGED { updated }` on the open views whose tree holds the row, and `RUN_TREE_CHANGED { runId }` for listed runs. No client overlay.
 - **A peer row's launch (G-B2):** it comes from the peer run's summary, carried by the same shared observation as its status. `RunStatusService` keeps the latest summary, `RunTreeView` reads it, and a change emits `updated`.
