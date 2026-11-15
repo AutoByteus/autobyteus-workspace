@@ -199,7 +199,7 @@ export const buildRunHistoryNavigationProjection = (
       ...team,
       focusedAgentRunId: context?.view.getFocusedAgentRunId() ?? team.focusedAgentRunId,
     };
-    return { ...focused, executionRows: buildRunHistoryTeamExecutionRows(focused, context) };
+    return { ...focused, executionRows: buildRunHistoryTeamExecutionRows(focused) };
   });
   const workspaceNodes = previous
     ? retainEqualNodes(previous.workspaceNodes, builtWorkspaceNodes, (node) => node.workspaceId, equalWorkspace)

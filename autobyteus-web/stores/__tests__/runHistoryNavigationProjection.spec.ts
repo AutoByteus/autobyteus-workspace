@@ -10,7 +10,6 @@ import {
 } from '~/test-support/currentTeamTestFixtures';
 import {
   applyRunNavigationEffectToProjection,
-  applyTaskExecutionRowPresentationToProjection,
 } from '../runHistoryNavigationPatches';
 import {
   buildRunHistoryNavigationProjection,
@@ -25,7 +24,6 @@ beforeAll(() => {
 afterAll(() => vi.useRealTimers());
 const stableAgentRunId = (teamRunId: string) => `${teamRunId}-worker-run`;
 const taskAgentRunId = (teamRunId: string) => `${teamRunId}-task-run`;
-const taskRowKey = (teamRunId: string) => `agent:${taskAgentRunId(teamRunId)}`;
 
 const buildAgentContext = (runId: string, workspaceRootPath: string, status = AgentStatus.Idle) => ({
   config: {
@@ -87,53 +85,15 @@ const buildProjection = (
   agentOrgHistory: [],
 }, previous);
 
-const buildHistoricalProjection = () => {
-  const teamRunId = 'historical-team';
-  const worker = testAgentNode('/worker', {
-    displayName: 'Worker',
-    agentRunId: stableAgentRunId(teamRunId),
-  });
-  const taskRecord = testDelegation({ delegatorAgentRunId: worker.agentRunId, recipientAddress: worker.address, target: { agentRunId: taskAgentRunId(teamRunId) } });
-  const context = buildTestTeamContext({
-    teamRunId,
-    teamDefinitionId: `${teamRunId}-definition`,
-    teamDefinitionName: 'Historical Team',
-    coordinatorAddress: worker.address,
-    focusedAgentRunId: taskAgentRunId(teamRunId),
-    rootChildren: [worker],
-    workspaceRootPath: '/historical-workspace',
-    isActive: false,
-    delegations: [taskRecord],
-    taskExecutions: [{
-      kind: 'task_agent', address: worker.address, agent_run_id: taskAgentRunId(teamRunId),
-      platform_agent_run_id: null, delegator_agent_run_id: worker.agentRunId, started_at: timestamp, source: { kind: 'agent', agent_definition_id: 'agent', launch_configuration: { runtime_kind: 'autobyteus', llm_model_identifier: 'test-model', llm_config: null, auto_execute_tools: false, workspace_root_path: null } } }],
-  });
-  return buildRunHistoryNavigationProjection({
-    workspaceGroups: [],
-    agentAvatarByDefinitionId: {},
-    allWorkspaces: [{
-      workspaceId: 'historical-workspace',
-      workspaceRootPath: '/historical-workspace',
-      name: 'Historical Workspace',
-    }],
-    workspacesById: {},
-    agentContexts: new Map(),
-    teamContexts: [context],
-    agentOrgHistory: [],
-  });
-};
 
 describe('runHistoryNavigationProjection current exact execution identity', () => {
-  it('publishes stable and transient rows, exact focus/indexes, and reconciles equal branches', () => {
+  it('publishes the Team\'s own rows, exact focus/indexes, and reconciles equal branches', () => {
     const first = buildProjection();
     const team = first.teamNodes.find((candidate) => candidate.teamRunId === 'team-a')!;
 
     expect(team.focusedAgentRunId).toBe(taskAgentRunId('team-a'));
-    expect(team.executionRows.map((row) => `${row.kind}:${row.rowKey}`)).toEqual([
-      `stable_member:agent:${stableAgentRunId('team-a')}`,
-      `transient_execution:${taskRowKey('team-a')}`,
-    ]);
-    expect(first.memberIndexByIdentity[runHistoryMemberIndexKey('team-a', taskAgentRunId('team-a'))]).toBe(1);
+    // SR-084: the Team's own members only; the runs it delegated are its tree's rows (runTreeStore).
+    expect(team.executionRows.map((row) => `${row.kind}:${row.rowKey}`)).toEqual([`stable_member:agent:${stableAgentRunId('team-a')}`]);
     expect(first.runAncestryById['standalone-a']).toEqual({
       workspaceId: 'workspace:/workspace-a',
       agentDefinitionId: 'standalone-a-definition',
@@ -142,41 +102,11 @@ describe('runHistoryNavigationProjection current exact execution identity', () =
       workspaceId: 'workspace:/workspace-a',
       teamDefinitionGroupKey: 'team-a-definition',
     });
-    expect(first.memberAncestorExecutionKeysByIdentity[
-      runHistoryMemberIndexKey('team-a', taskAgentRunId('team-a'))
-    ]).toEqual([]);
 
     const second = buildProjection(AgentStatus.Running, first);
     expect(second.workspaceNodes).toBe(first.workspaceNodes);
     expect(second.teamNodes).toBe(first.teamNodes);
     expect(second.teamNodesByWorkspaceRoot).toBe(first.teamNodesByWorkspaceRoot);
-  });
-
-  it('indexes settled historical task rows with their exact execution ancestry and focus', () => {
-    const projection = buildHistoricalProjection();
-    const team = projection.teamNodes.find((candidate) => candidate.teamRunId === 'historical-team')!;
-    const identity = runHistoryMemberIndexKey('historical-team', taskAgentRunId('historical-team'));
-
-    expect(team).toMatchObject({ isActive: false, focusedAgentRunId: taskAgentRunId('historical-team') });
-    expect(team.executionRows.find((row) => row.agentRunId === taskAgentRunId('historical-team')))
-      .toMatchObject({
-        kind: 'transient_execution',
-        transientKind: 'task_agent',
-        rowKey: taskRowKey('historical-team'),
-      });
-    expect(projection.memberIndexByIdentity[identity]).toBe(1);
-    expect(projection.memberAncestorExecutionKeysByIdentity[identity])
-      .toEqual([]);
-  });
-
-  it('reuses an unrelated workspace Team bucket when one Team topology changes', () => {
-    const first = buildProjection();
-    const changed = buildProjection(AgentStatus.Idle, first);
-
-    expect(changed.teamNodes).not.toBe(first.teamNodes);
-    expect(changed.teamNodesByWorkspaceRoot).not.toBe(first.teamNodesByWorkspaceRoot);
-    expect(changed.teamNodesByWorkspaceRoot['/workspace-a']).not.toBe(first.teamNodesByWorkspaceRoot['/workspace-a']);
-    expect(changed.teamNodesByWorkspaceRoot['/workspace-b']).toBe(first.teamNodesByWorkspaceRoot['/workspace-b']);
   });
 
   it('patches only the indexed standalone branch and skips activity in the same minute bucket', () => {
@@ -193,28 +123,6 @@ describe('runHistoryNavigationProjection current exact execution identity', () =
     expect(changed.state.workspaceNodes[0]).not.toBe(state.workspaceNodes[0]);
     expect(changed.state.workspaceNodes[1]).toBe(state.workspaceNodes[1]);
     expect(changed.state.teamNodes).toBe(state.teamNodes);
-  });
-
-  it('applies tight task-row patches while equal/detail-free changes do no work', () => {
-    const state = buildProjection();
-    const otherTeam = state.teamNodes.find((team) => team.teamRunId === 'team-b');
-    const status = applyTaskExecutionRowPresentationToProjection(
-      state,
-      'team-a',
-      taskRowKey('team-a'),
-      [{ field: 'CURRENT_STATUS', value: AgentStatus.Idle }],
-    );
-
-    expect(status.changed).toBe(true);
-    expect(status.state.teamNodes.find((team) => team.teamRunId === 'team-b')).toBe(otherTeam);
-    expect(status.state.teamNodes.find((team) => team.teamRunId === 'team-a')?.executionRows
-      .find((row) => row.rowKey === taskRowKey('team-a')))
-      .toMatchObject({ currentStatus: AgentStatus.Idle });
-    expect(applyTaskExecutionRowPresentationToProjection(
-      status.state, 'team-a', taskRowKey('team-a'), [{ field: 'CURRENT_STATUS', value: AgentStatus.Idle }],
-    ).changed).toBe(false);
-    expect(applyTaskExecutionRowPresentationToProjection(status.state, 'team-a', taskRowKey('team-a'), []).changed)
-      .toBe(false);
   });
 
   it('applies combined status, summary, and activity through one exact Team branch patch', () => {
@@ -240,8 +148,6 @@ describe('runHistoryNavigationProjection current exact execution identity', () =
     }, { kind: 'PRESENTATION', occurredAt: '2026-07-01T10:01:00.000Z' });
     const teamNode = team.state.teamNodes.find((candidate) => candidate.teamRunId === 'team-a');
     expect(teamNode).toMatchObject({ summary: 'local team message', lastActivityAt: '2026-07-01T10:01:00.000Z' });
-    expect(teamNode?.executionRows.find((row) => row.rowKey === taskRowKey('team-a')))
-      .toMatchObject({ currentStatus: AgentStatus.Idle });
     expect(team.state.teamNodesByWorkspaceRoot['/workspace-b'])
       .toBe(standalone.state.teamNodesByWorkspaceRoot['/workspace-b']);
   });
@@ -276,14 +182,12 @@ describe('typed navigation presentation equality', () => {
       .map(field => ['member', field]),
     ...['teamRunId', 'memberAddress', 'agentRunId', 'teamRunIdForNode', 'rowKey', 'memberKind',
       'displayName', 'depth', 'hasChildren'].map(field => ['execution', field]),
-    ...['transientKind', 'currentStatus', 'delegatedBy'].map(field => ['transient', field]),
   ])('does not retain a previous %s with changed %s', (area, field) => {
     const first = buildProjection()
     const old = first.teamNodes.find(team => team.teamRunId === 'team-a')!
     const other = first.teamNodes.find(team => team.teamRunId === 'team-b')!
     const target = area === 'team' ? old : area === 'root' ? old.rootTeam
       : area === 'member' ? old.members[0]!
-      : area === 'transient' ? old.executionRows.find(row => row.kind === 'transient_execution')!
       : old.executionRows.find(row => row.kind === 'stable_member')!
     expect(target).toBeDefined()
     ;(target as any)[field!] = changed((target as any)[field!])

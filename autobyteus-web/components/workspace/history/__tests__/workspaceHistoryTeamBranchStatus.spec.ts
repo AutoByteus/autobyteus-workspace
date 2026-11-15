@@ -1,4 +1,6 @@
-import { describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it } from 'vitest';
+import { createPinia, setActivePinia } from 'pinia';
+import { useRunStatusStore } from '~/stores/runStatusStore';
 import { AgentStatus } from '~/types/agent/AgentStatus';
 import type {
   RunHistoryStableExecutionRow,
@@ -92,24 +94,7 @@ const taskTeamRow = (
   hasChildren: true,
 });
 
-const teamNode = (
-  teamRunId: string,
-  isActive: boolean,
-  executionRows: RunHistoryTeamExecutionRow[],
-): TeamTreeNode => ({
-  teamRunId,
-  teamDefinitionId: 'team-def',
-  teamDefinitionName: 'Team',
-  workspaceRootPath: '/workspace',
-  summary: 'Summary',
-  lastActivityAt: '2026-08-29T00:00:00.000Z',
-  isActive,
-  deleteLifecycle: 'READY',
-  focusedAgentRunId: '',
-  rootTeam: memberTreeRow('agent_team', 'root', null),
-  members: [],
-  executionRows,
-});
+
 
 /** delegated-team-aggregate-status REQ-001/002/003/005, AC-002..004/007/009. */
 describe('teamBranchStatus', () => {
@@ -203,30 +188,25 @@ describe('teamBranchStatus', () => {
 });
 
 /** delegated-team-aggregate-status REQ-001..004, AC-002/007/008 (TEAMS run and group rows). */
-describe('teamRunStatus and teamDefinitionGroupStatus', () => {
-  const idleRun = () => teamNode('idle-run', true, [
-    stableAgentRow('solution-designer', 0, AgentStatus.Idle),
-    stableAgentRow('reviewer', 0, AgentStatus.Offline),
-  ]);
-  const busyRun = (isActive = true) => teamNode('busy-run', isActive, [
-    stableAgentRow('lead', 0, AgentStatus.Offline),
-    taskTeamRow('delegated-team', 0, null),
-    taskAgentRow('delegated-member', 1, AgentStatus.Running, 'task_team_child'),
-  ]);
-  const stoppedRun = () => teamNode('stopped-run', false, [stableAgentRow('lead', 0, AgentStatus.Running)]);
+describe('teamRunStatus and teamDefinitionGroupStatus (SR-086 G-A4)', () => {
+  beforeEach(() => setActivePinia(createPinia()));
+  const answer = (runs: Record<string, string>) => useRunStatusStore().apply({ type: 'RUN_STATUS_SNAPSHOT', payload: {
+    runs: Object.entries(runs).map(([runId, status]) => ({ kind: 'agent_team' as const, runId, answer: 'ok' as const, node: null, status: status as never, agents: [] })) } });
 
-  it('reads a run from all of its Agent rows (delegated Teams too), gray when stopped', () => {
-    expect(teamRunStatus(idleRun())).toBe(AgentStatus.Idle);
-    expect(teamRunStatus(busyRun())).toBe(AgentStatus.Running);
-    expect(teamRunStatus(stoppedRun())).toBe(AgentStatus.Offline);
-    expect(teamRunStatus(teamNode('restored-run', true, [stableAgentRow('lead', 0, AgentStatus.Offline)])))
-      .toBe(AgentStatus.Offline);
+  it('reads a run\'s own status as its root computed it, never its rows; offline until its node answered', () => {
+    expect(teamRunStatus({ teamRunId: 'idle-run' })).toBe(AgentStatus.Offline);
+    answer({ 'idle-run': 'idle', 'busy-run': 'initializing', 'stopped-run': 'offline' });
+    expect(teamRunStatus({ teamRunId: 'idle-run' })).toBe(AgentStatus.Idle);
+    expect(teamRunStatus({ teamRunId: 'busy-run' })).toBe(AgentStatus.Running);
+    expect(teamRunStatus({ teamRunId: 'stopped-run' })).toBe(AgentStatus.Offline);
   });
 
   it('reads a group as the highest status among its runs', () => {
-    expect(teamDefinitionGroupStatus([stoppedRun(), idleRun(), busyRun()])).toBe(AgentStatus.Running);
-    expect(teamDefinitionGroupStatus([stoppedRun(), idleRun(), busyRun(false)])).toBe(AgentStatus.Idle);
-    expect(teamDefinitionGroupStatus([stoppedRun(), busyRun(false)])).toBe(AgentStatus.Offline);
+    answer({ 'idle-run': 'idle', 'busy-run': 'running', 'stopped-run': 'offline' });
+    const runs = (...ids: string[]) => ids.map((teamRunId) => ({ teamRunId }) as TeamTreeNode);
+    expect(teamDefinitionGroupStatus(runs('stopped-run', 'idle-run', 'busy-run'))).toBe(AgentStatus.Running);
+    expect(teamDefinitionGroupStatus(runs('stopped-run', 'idle-run'))).toBe(AgentStatus.Idle);
+    expect(teamDefinitionGroupStatus(runs('stopped-run'))).toBe(AgentStatus.Offline);
     expect(teamDefinitionGroupStatus([])).toBe(AgentStatus.Offline);
   });
 });

@@ -318,6 +318,7 @@ import { Icon } from '@iconify/vue';
 import StatusDot from '~/components/workspace/common/StatusDot.vue';
 import TeamAggregateStatusDot from '~/components/workspace/history/TeamAggregateStatusDot.vue';
 import { teamDefinitionGroupStatus, teamRunStatus } from '~/components/workspace/history/workspaceHistoryTeamBranchStatus';
+import { useHeldRunStates } from '~/composables/useHeldRunStates';
 import WorkspaceTeamExecutionTree from '~/components/workspace/history/WorkspaceTeamExecutionTree.vue';
 import WorkspaceAgentOrgHistoryCollection from '~/components/workspace/history/WorkspaceAgentOrgHistoryCollection.vue';
 import AgentRunTaskRows from '~/components/workspace/history/AgentRunTaskRows.vue';
@@ -360,6 +361,8 @@ const props = defineProps<{
   projectScope?: ProjectSectionScope | null;
 }>();
 const collaboration = useAgentRunCollaborationStore();
+// The listed Team runs' own statuses are their roots' (SR-086 G-A4): held while they are listed.
+useHeldRunStates(() => props.teams.map((team) => ({ kind: 'agent_team' as const, runId: team.teamRunId })));
 /** The run row shows the run's own agent again (not a task child under it). */
 const selectAgentRun = (run: Parameters<typeof props.actions.onOpenAgentRun>[0]) => props.actions.onOpenAgentRun(run);
 const workspacePresentationId = computed(() => props.node.stableKey);

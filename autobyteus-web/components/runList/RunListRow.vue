@@ -146,6 +146,7 @@ import type { RunListSectionActions, RunListSectionState } from '~/components/ru
 import { useLocalization } from '~/composables/useLocalization'
 import { useAgentRunCollaborationStore } from '~/stores/agentRunCollaborationStore'
 import { useRunTreeStore } from '~/stores/runTreeStore'
+import { useHeldRunStates } from '~/composables/useHeldRunStates'
 import type { RunHistoryTeamExecutionRow } from '~/stores/runHistoryTypes'
 import type { RunTreeRow } from '~/utils/runTreeProjection'
 import type { RunListEntry } from '~/utils/runListProjection'
@@ -186,6 +187,8 @@ const expanded = computed(() => props.entry.kind === 'team'
   ? props.state.isTeamExpanded(props.entry.runId)
   : props.entry.kind === 'org' && (props.state.isAgentOrgRunExpanded?.(props.entry.runId) ?? false))
 const orgTerminationError = computed(() => props.entry.kind === 'org' ? props.state.agentOrgTerminationError?.(props.entry.runId) ?? null : null)
+// A listed Team run's own status is its root's (SR-086 G-A4): held while it is listed.
+useHeldRunStates(() => props.entry.kind === 'team' ? [{ kind: 'agent_team', runId: props.entry.runId }] : [])
 // The run's tree (SR-084) has rows under its own agent: it delegated runs that are still listed.
 const trees = useRunTreeStore()
 const hasDelegated = computed(() => props.entry.kind === 'agent' && trees.rowsOf({ kind: 'agent', runId: props.entry.runId }).length > 1)
