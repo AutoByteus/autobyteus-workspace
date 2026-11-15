@@ -14,3 +14,17 @@ P2 result {"status":200,"body":"{\"bytes\":629145600,\"truncated\":false}","abor
 P3 result {"status":null,"body":"","aborted":true} settled: abort /rest/context-files/upload files left: (none)
    -> client destroys the socket after 8 of 20 MiB on the real route: request is reported aborted, the writer's
       pipeline fails and removes the partial draft file; nothing is left on disk.
+
+Added 2026-11-15 for ARCH-REV-001 AR-007 (same probe file, cases P4 and P5):
+P4 result {"status":400,"body":"{\"detail\":\"Uploaded file is too large.\"}","aborted":false}; files left: (none);
+   P4 conns-after-response 1, app.close() did not finish within 8000 ms; onResponse fired ("response 400").
+   -> real route, multipart cap 1 GiB, writer limit 25 MiB, 60 MiB mp4: when the WRITER refuses mid-stream (Transform
+      error destroys the file stream), the client still receives the refusal body and no file remains, BUT busboy stalls
+      on the undrained request: the keep-alive connection stays busy and never becomes idle (server close hangs). This is
+      the path the per-type design creates for non-audio/video files over their limit. The truncation path (P1) does not
+      show it.
+P5 result {"status":413,"body":"{\"code\":\"CONTEXT_FILE_TOO_LARGE\",\"maxBytes\":26214400}","aborted":false}; conns 1 then
+   app.close() "closed" in 0 ms; files left: (none)
+   -> same setup, but the limiting Transform stops writing and DISCARDS the rest of the file (keeps consuming) and the
+      handler answers 413 after the pipeline ends: the response reaches the client, the connection is idle, no file
+      remains. Design rule: the writer drains an over-limit file instead of destroying the stream.

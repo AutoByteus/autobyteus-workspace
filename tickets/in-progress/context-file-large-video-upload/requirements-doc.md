@@ -3,14 +3,14 @@
 ## Document Status
 
 - Status: `Approved`
-- Current solution revision ID: `SR-002`
+- Current solution revision ID: `SR-003`
 - Package identifier: `context-file-large-video-upload`
 - Request / ticket: Project Task `autobyteus-workspace-6` (Project `project_3165230d-b602-4efc-ac42-fb61a03f1ed5`)
 - Requested by: `/project_task_manager` (run id `project_task_manager_89e33a2ea30f422fab0407e4dc2b13bb`), on the user's report of 2026-11-16
 - Requirements owner: Solution Designer
 - Date: 2026-11-15
 - Approved by and reference: `Solution Designer within the direction (user informed)` for DEC-002..DEC-009; DEC-001 decided by the manager under the user's delegation (the Task: "the manager decides the product numbers under the user's delegation"), message from `/project_task_manager` run `project_task_manager_89e33a2ea30f422fab0407e4dc2b13bb` on 2026-11-15: "use the recommendation: default limit 2 GiB for video and audio … Proceed: approval recorded"
-- Exact approved requirements baseline / solution revision: this document at SR-002 (SR-001 content plus DEC-001 = 2048 MiB and the release-order constraint RC-001)
+- Exact approved requirements baseline / solution revision: this document at SR-002 (SR-001 content plus DEC-001 = 2048 MiB and the release-order constraint RC-001); SR-003 changes terminology only (limit names, ARCH-REV-001 AR-001) and states the per-limit grouping already implied by REQ-006 (AR-002); intended behavior unchanged, approval carries over
 - Behavior-defining supplements and their approved versions: None (probes are evidence only)
 
 ## Problem And Desired Outcome
@@ -24,7 +24,7 @@
 
 | Behavior ID | Kind | Scenario IDs | Current Behavior (evidence) | Desired Behavior | Preserved Behavior | Evidence |
 | --- | --- | --- | --- | --- | --- | --- |
-| BEH-001 | User | SCN-001, SCN-002 | All types ≤ 25 MiB; videos larger fail (P1) | Video and audio up to the media limit (default DEC-001); other types up to the file limit (default 25 MiB) | Allowed type list; draft → final flow; send blocked while uploading | investigation-notes Source Log, P1 |
+| BEH-001 | User | SCN-001, SCN-002 | All types ≤ 25 MiB; videos larger fail (P1) | Video and audio up to the audio/video limit (default DEC-001); other types up to the other-file limit (default 25 MiB) | Allowed type list; draft → final flow; send blocked while uploading | investigation-notes Source Log, P1 |
 | BEH-002 | User | SCN-002, SCN-004 | "无法附加 X。 Uploaded file is too large." (raw server text) | One localized message per failure reason, with names and (for size) the limit; no raw server text | Message appears in the same place, per composer target | screenshot, `ContextFilePathInputArea.vue` |
 | BEH-003 | System | SCN-002, SCN-003 | Partial file removed on over-limit and abort (P1, P3) | Same, also for cancel | Yes | probes |
 | BEH-004 | System | SCN-001 | Upload streams, no whole-file buffering (P2) | Same at the larger limit | Yes | P2 |
@@ -55,7 +55,7 @@
 | UC-002 | Be told, in the UI language, that a file is over the limit, before it is uploaded | SCN-002 |
 | UC-003 | Follow and cancel a long upload; recover from a dropped connection | SCN-003 |
 | UC-004 | See localized messages for every other composer attach/remove failure | SCN-004 |
-| UC-005 | Node owner sets the file and media size limits | SCN-008 |
+| UC-005 | Node owner sets the audio/video limit and the other-file limit | SCN-008 |
 | UC-006 | Agent on the native runtime receives a large video safely | SCN-006 |
 | UC-007 | Attach the same files to a Project Task (web composer and agent tools) under the same limits | SCN-007 |
 
@@ -94,12 +94,12 @@ None. (Memory Sync, R-001/FU-001, does not block this ticket's goal: the attach 
 
 | ID | Requirement | Behavior IDs | Priority | Rationale | Feasibility | Source / Decision |
 | --- | --- | --- | --- | --- | --- | --- |
-| REQ-001 | The node accepts a context file whose type is video or audio up to the **media limit**, and any other allowed type up to the **file limit**; a file exactly at its limit is accepted, one byte more is refused. | BEH-001 | Must | User's videos | P2 (600 MiB streamed, constant memory) | Task; DEC-001, DEC-002 |
-| REQ-002 | Both limits are node settings, in MiB, settable as environment variables and in the node's server settings, validated (whole numbers in a documented range; invalid values refused on save and ignored with the default at use), and applied to the next upload without a restart. Defaults: file limit 25 MiB; media limit 2048 MiB (DEC-001). | BEH-001 | Must | Configurable per Task | N/A | DEC-003 |
+| REQ-001 | The node accepts a context file whose type is video or audio up to the **audio/video limit**, and any other allowed type up to the **other-file limit**; a file exactly at its limit is accepted, one byte more is refused. | BEH-001 | Must | User's videos | P2 (600 MiB streamed, constant memory) | Task; DEC-001, DEC-002 |
+| REQ-002 | Both limits are node settings, in MiB, settable as environment variables and in the node's server settings, validated (whole numbers in a documented range; invalid values refused on save and ignored with the default at use), and applied to the next upload without a restart. Defaults: other-file limit 25 MiB; audio/video limit 2048 MiB (DEC-001). | BEH-001 | Must | Configurable per Task | N/A | DEC-003 |
 | REQ-003 | The same per-type limits govern every context-file entry: composer uploads, Project Task uploads, and Project Task agent-tool local-file copies. Agent-tool descriptions state the rule without a stale number. | BEH-008 | Must | One policy, "same limit as the app" contract | N/A | DEC-008 |
 | REQ-004 | An over-limit refusal from the server is machine-readable: it identifies the reason (too large, unsupported type) and carries the limit in bytes that applied. | BEH-002, BEH-008 | Must | Lets every client localize | N/A | DEC-006 |
 | REQ-005 | The web app knows the node's current limits and refuses an over-limit file before sending any of its bytes. The server remains the authority (a file that passes the client check but exceeds the server's current limit is still refused). | BEH-001, BEH-002 | Must | No wasted mobile data | N/A | DEC-004 |
-| REQ-006 | Composer failures are shown as one localized message per failure reason, naming the files and, for size, the limit formatted in the UI language (e.g. `25 MB`, `2 GB`); a raw server or exception text is never shown (it goes to the console). Reasons: too large, unsupported type, interrupted connection, other. Remove failures likewise. | BEH-002, BEH-009 | Must | Task item (3) | N/A | DEC-006 |
+| REQ-006 | Composer failures are shown as one localized message per failure reason (for size: per limit, so every file is shown with its own limit), naming the files and, for size, the limit formatted in the UI language (e.g. `25 MB`, `2 GB`); a raw server or exception text is never shown (it goes to the console). Reasons: too large, unsupported type, interrupted connection, other. Remove failures likewise. | BEH-002, BEH-009 | Must | Task item (3) | N/A | DEC-006 |
 | REQ-007 | While a composer upload runs, its item shows progress (percent) and a cancel control. Cancel stops the transfer, removes the item without an error message, and leaves no file on the node. Send stays blocked while any upload runs. | BEH-001, BEH-003 | Must | Mobile robustness | P3 (abort cleans up) | DEC-005 |
 | REQ-008 | A dropped connection during an upload ends that item with the localized "interrupted" message and leaves no file on the node. | BEH-003 | Must | Mobile robustness | P3 | DEC-006 |
 | REQ-009 | Drafts of any size keep the 24 h cleanup; finalized large files reach the agent as an absolute path like any other context file. | BEH-005, BEH-006 | Must | Preserved | Code read | Task |
@@ -112,20 +112,20 @@ None. (Memory Sync, R-001/FU-001, does not block this ticket's goal: the attach 
 | AC ID | REQ IDs | Scenario | Trigger | Expected Outcome | Alternate / Failure | Verification |
 | --- | --- | --- | --- | --- | --- | --- |
 | AC-001 | REQ-001, REQ-009 | SCN-001 | Phone bundle: attach a 200 MiB `.mp4` and send | Item shows progress, attaches, message sends; the agent's message lists an absolute path to the full file | — | Server integration (route) + mobile-shell browser probe |
-| AC-002 | REQ-001, REQ-004 | SCN-002 | Server: upload a video exactly at the media limit, and one byte over (test override of the limit) | At limit: 200 + draft; over: refused with code `too large` and the limit in bytes; no file on disk | — | Server unit (writer) + integration (route) |
+| AC-002 | REQ-001, REQ-004 | SCN-002 | Server: upload a video exactly at the audio/video limit, and one byte over (test override of the limit) | At limit: 200 + draft; over: refused with code `too large` and the limit in bytes; no file on disk | — | Server unit (writer) + integration (route) |
 | AC-003 | REQ-001 | SCN-002 | Non-media file exactly 25 MiB and 25 MiB + 1 | Accepted / refused as today, now with the structured reason | — | Server unit + integration |
 | AC-004 | REQ-002, REQ-005 | SCN-008 | Change a limit setting, then upload | The next upload (server enforcement and the web pre-check) uses the new value without restart; an invalid value is refused on save and, if present in the environment, ignored in favor of the default | — | Server unit (parse/normalize) + integration |
-| AC-005 | REQ-005, REQ-006 | SCN-002 | zh-CN UI, pick a file over the limit | No upload request is made; message `无法附加 <name>：文件超过 <limit> 大小限制。`; English UI: the English equivalent; several such files → one message listing them | — | Web unit (composable + component) + mobile-shell probe |
+| AC-005 | REQ-005, REQ-006 | SCN-002 | zh-CN UI, pick a file over the limit | No upload request is made; message `无法附加 <name>：文件超过 <limit> 大小限制。`; English UI: the English equivalent; several files over the same limit → one message listing them; files over different limits (a video over the audio/video limit and a PDF over the other-file limit) → one message per limit | — | Web unit (composable + component) + mobile-shell probe |
 | AC-006 | REQ-004, REQ-006 | SCN-002 | Server refuses a file the client let through (limit lowered after the client read it) | Same localized message with the server's limit | — | Web unit |
 | AC-007 | REQ-007 | SCN-003 | Cancel an upload mid-way | Request aborted, item removed, no error message, no draft file on the node, send unblocked | — | Web unit + server integration (abort cleanup) |
 | AC-008 | REQ-008 | SCN-003 | Connection drops mid-upload | Localized "interrupted" message; no draft file on the node | — | Web unit (network error mapping) + server integration (P3 as regression) |
 | AC-009 | REQ-006 | SCN-004 | Unsupported type, generic server failure, remove failure | Localized messages only; no raw server/exception text in the UI | Regression: the screenshot string never appears | Web unit (regression for the reported message) |
 | AC-010 | REQ-009 | SCN-005 | Draft older than 24 h, large | Removed by the next upload's cleanup | — | Server unit (existing cleanup test extended or confirmed) |
 | AC-011 | REQ-010 | SCN-006 | Native runtime, video-capable model, attached video > 25 MiB; and one ≤ 25 MiB | > 25 MiB: not in the provider request's media, diagnostic logged, path in `Reference files:`; ≤ 25 MiB: inlined as today | — | autobyteus-ts unit (sanitizer) |
-| AC-012 | REQ-003, REQ-011 | SCN-007 | Project Task: upload a video > 25 MiB within the media limit; an over-limit one; agent tool with a local video path | Accepted; localized too-large message before upload; tool copy accepted under the same limit and refused over it with `TASK_CONTEXT_INVALID` naming the limit | — | Server unit/integration + web unit |
+| AC-012 | REQ-003, REQ-011 | SCN-007 | Project Task: upload a video > 25 MiB within the audio/video limit; an over-limit one; agent tool with a local video path | Accepted; localized too-large message before upload; tool copy accepted under the same limit and refused over it with `TASK_CONTEXT_INVALID` naming the limit | — | Server unit/integration + web unit |
 | AC-013 | — | — | `/upload-file` with 26 MiB | Refused as today (25 MiB unchanged) | — | Server integration |
 | AC-014 | REQ-012 | SCN-008 | Read docs | Settings, defaults, ranges and the per-type rule are documented (server settings/remote-access or context-files docs and web docs) | — | Doc review |
-| AC-015 | REQ-001 | SCN-001 | Memory during a large upload | Server memory stays bounded (streaming) at the media limit | — | Server integration (P2 shape, or measured once in validation) |
+| AC-015 | REQ-001 | SCN-001 | Memory during a large upload | Server memory stays bounded (streaming) at the audio/video limit | — | Server integration (P2 shape, or measured once in validation) |
 
 ## Relevant Scenarios And Journeys
 
@@ -156,7 +156,7 @@ None. (Memory Sync, R-001/FU-001, does not block this ticket's goal: the attach 
 
 | Quality ID | REQ / AC | Area | Constraint | Conditions | Verification |
 | --- | --- | --- | --- | --- | --- |
-| QR-001 | REQ-001 / AC-015 | Performance | Server memory does not grow with file size (streaming) | Uploads up to the media limit | Integration/measurement |
+| QR-001 | REQ-001 / AC-015 | Performance | Server memory does not grow with file size (streaming) | Uploads up to the audio/video limit | Integration/measurement |
 | QR-002 | REQ-007, REQ-008 / AC-007, AC-008 | Reliability | No partial file remains after over-limit, cancel or disconnect | All three causes | Server integration |
 | QR-003 | REQ-010 / AC-011 | Reliability | No model request carries an inline local media file > 25 MiB | Native runtime | autobyteus-ts unit |
 | QR-004 | REQ-002 | Security / Operability | Limits are owner-controlled; the upload route stays behind node access (owner and phone credentials) | — | Existing access tests unchanged |
@@ -194,9 +194,9 @@ None. (Memory Sync, R-001/FU-001, does not block this ticket's goal: the attach 
 
 | ID | Question | Why It Matters | Options / Evidence | Reasoning And Recommendation | Owner | Status |
 | --- | --- | --- | --- | --- | --- | --- |
-| DEC-001 | Default media (video/audio) limit | Decides which phone videos attach out of the box | 500 MiB (Task's floor) ≈ 4 min 1080p / ~1.3 min 4K; 1 GiB ≈ 8 min / ~2.5 min; 2 GiB ≈ 16 min / ~5 min. Telegram and WhatsApp documents allow 2 GB. Streaming and cleanup are size-independent (P2, P3); the client refuses over-limit files before sending, so a high ceiling costs nothing unless used; disk is the only cost and the owner can lower it. | **Recommend 2048 MiB (2 GiB)**: covers ordinary phone recordings, including several minutes of 4K, matching what users know from messengers. 500 MiB would refuse many 4K clips and longer screen recordings. | Manager (user-delegated, per the Task) | Decided by the manager 2026-11-15: 2048 MiB |
+| DEC-001 | Default audio/video limit | Decides which phone videos attach out of the box | 500 MiB (Task's floor) ≈ 4 min 1080p / ~1.3 min 4K; 1 GiB ≈ 8 min / ~2.5 min; 2 GiB ≈ 16 min / ~5 min. Telegram and WhatsApp documents allow 2 GB. Streaming and cleanup are size-independent (P2, P3); the client refuses over-limit files before sending, so a high ceiling costs nothing unless used; disk is the only cost and the owner can lower it. | **Recommend 2048 MiB (2 GiB)**: covers ordinary phone recordings, including several minutes of 4K, matching what users know from messengers. 500 MiB would refuse many 4K clips and longer screen recordings. | Manager (user-delegated, per the Task) | Decided by the manager 2026-11-15: 2048 MiB |
 | DEC-002 | Do other types change? | Images are inlined into model requests; documents/text > 25 MiB are rare | Raising them adds provider risk with no reported need | Keep 25 MiB default for every non-video/audio type, configurable | Solution Designer | Decided |
-| DEC-003 | Configuration shape | Owner control | One number vs. per-type | Two settings: `AUTOBYTEUS_CONTEXT_FILE_MAX_MB` (default 25, range 1–1024) and `AUTOBYTEUS_CONTEXT_FILE_MEDIA_MAX_MB` (default 2048, range 1–10240), in the existing typed-setting pattern, read at each upload | Solution Designer | Decided |
+| DEC-003 | Configuration shape | Owner control | One number vs. per-type | Two settings: `AUTOBYTEUS_CONTEXT_FILE_OTHER_MAX_MB` (default 25, range 1–1024) and `AUTOBYTEUS_CONTEXT_FILE_AUDIO_VIDEO_MAX_MB` (default 2048, range 1–10240), in the existing typed-setting pattern, read at each upload | Solution Designer | Decided |
 | DEC-004 | Where the limit is checked | Mobile data | Server only (today) wastes the upload | Client pre-check from the node's published limits + server enforcement | Solution Designer | Decided |
 | DEC-005 | Progress/cancel scope | Effort vs. need | Chat composer is where the user attaches videos | Progress + cancel in the message composer (desktop and phone); Project Task composer gets the pre-check and messages only | Solution Designer | Decided |
 | DEC-006 | Error model | Mixed-language text | Raw detail appended today | Server sends a reason code and limit; web maps reasons to localized copy; raw text only to the console; one message per reason | Solution Designer | Decided |

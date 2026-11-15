@@ -6,6 +6,7 @@
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | SR-001 | Requirements | Initial coherent baseline (Task autobyteus-workspace-6) | N/A | N/A | Ready for Approval | BEH-001..BEH-010; REQ-001..REQ-012; AC-001..AC-015 | Requirements ready; DEC-001 (default media limit) sent to the manager |
 | SR-002 | Mixed | Manager decision DEC-001 (2026-11-15); architecture design | N/A | Ready for Approval | Approved; design Ready (Large / High) | REQ-002 (default 2048 MiB), DEC-001, RC-001 | Requirements approved; design-spec.md written; routed to architecture review |
+| SR-003 | Design | ARCH-REV-001 Fail (Design Impact) | AR-001..AR-007 | Approved; design Ready (SR-002) | Approved (terminology only); design Ready (SR-003) | REQ-001, REQ-002, REQ-006, AC-005, DEC-003 (wording); DS-003; writer bounded spine | Limits renamed (audio/video, other-file), GLOSSARY.md section added; per-limit grouping; writer drains over-limit files (new probe P4/P5); AR-003..AR-007 applied; back to architecture review |
 
 ## Revision Entries
 
@@ -51,3 +52,30 @@
 - Handoff: `handoff-sr-002.md` to `/software_engineering_team/architecture_reviewer`
 - Remaining gaps: none; FU-001 is its own Task (manager), release order RC-001
 - Next action: architecture review
+
+### SR-003 — Architecture review ARCH-REV-001 corrections
+
+- Phase and classification: Design, `Design Impact`
+- Trigger: `/software_engineering_team/architecture_reviewer` ARCH-REV-001 (Fail): `design-review-report.md`, `architecture-review-revision-record.md`
+- Finding IDs: AR-001 (blocking), AR-002 (blocking), AR-003..AR-007 (non-blocking, applied)
+- Prior status: requirements Approved, design Ready (SR-002)
+- Current status: requirements Approved (terminology only changed), design Ready (SR-003)
+- IDs affected: REQ-001, REQ-002, DEC-003 (limit names), REQ-006 and AC-005 (per-limit grouping stated); DS-003; writer bounded spine; dependency rules; interface rows; risks
+- Scenario basis: unchanged
+- Why recorded: review corrections, plus one new evidence finding
+- Changes:
+  - AR-001: "media limit"/"file limit" renamed to **audio/video limit** (`AUTOBYTEUS_CONTEXT_FILE_AUDIO_VIDEO_MAX_MB`, `audioVideoMaxBytes`, `audioVideoMimeTypes`) and **other-file limit** (`AUTOBYTEUS_CONTEXT_FILE_OTHER_MAX_MB`, `otherFileMaxBytes`) everywhere; `GLOSSARY.md` gains a "Context Files" section (written on the branch).
+  - AR-002: size failures grouped by `(too_large, maxBytes)` in the composable; two-limit example added.
+  - AR-003: limits resolved once per operation at the routes and in `ProjectTaskService`; stores and writer receive them.
+  - AR-004: each web transport unwraps its own envelope; one shared mapping from `{status, code, maxBytes}`.
+  - AR-005: sanitizer size check before image base64 validation, reusing `isValidMediaPath`.
+  - AR-006: ASM-001 risk text corrected; P-001, P-002 recorded.
+  - AR-007 + new evidence: probe P4 showed that a writer refusal that errors the stream leaves the request undrained (connection never idle, server close hangs > 8 s) although the client gets the body; P5 showed that draining the rest of the file fixes it. The writer now drains over-limit files; the integration test checks prompt close.
+- Supplements: `probes/large-upload-probe.integration.test.ts.txt` (P4, P5 added), `probes/probe-results-2026-11-15.txt` (P4, P5)
+- Intended behavior changed: No (names and a stated grouping rule; the reviewer classified both as within approved scope)
+- Approval impact: none; SR-002 approval carries over
+- Design/review basis: design-spec.md SR-003; ARCH-REV-001 applied to SR-002
+- Classification: unchanged (Large / High)
+- Handoff: `handoff-sr-003.md` to `/software_engineering_team/architecture_reviewer`
+- Remaining gaps: none; FU-001..003 unchanged; RC-001 (autobyteus-workspace-7)
+- Next action: architecture re-review

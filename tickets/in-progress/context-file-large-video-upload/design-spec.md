@@ -2,13 +2,13 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: `SR-002`
-- Approved requirements baseline: `requirements-doc.md` at SR-002. DEC-002..DEC-009 approved by the Solution Designer within the direction (user informed); DEC-001 (2048 MiB media default) decided by `/project_task_manager` under the user's delegation, message of 2026-11-15 ("use the recommendation … Proceed: approval recorded").
+- Current solution revision ID: `SR-003`
+- Approved requirements baseline: `requirements-doc.md` at SR-002. DEC-002..DEC-009 approved by the Solution Designer within the direction (user informed); DEC-001 (2048 MiB audio/video default) decided by `/project_task_manager` under the user's delegation, message of 2026-11-15 ("use the recommendation … Proceed: approval recorded").
 - Behavior-defining supplements: None.
 - User approval of the design: `Not required` (the direction does not ask for it).
-- Design status: `Ready`
+- Design status: `Ready` (SR-003 revises SR-002 for ARCH-REV-001 AR-001..AR-007)
 - Canonical investigation notes: `investigation-notes.md` (same folder)
-- Authorities read (2026-11-15): `references/architecture-design.md`, `references/design-principles.md`, `DESIGN.md` (repository root, incl. rules 9 and 11 and the Node Access Model pointer), `autobyteus-server-ts/docs/design/node_access_model.md` (NA-2), `autobyteus-web/docs/localization.md`, `TESTING.md`.
+- Authorities read (2026-11-15): `GLOSSARY.md`, `references/architecture-design.md`, `references/design-principles.md`, `DESIGN.md` (repository root, incl. rules 9 and 11 and the Node Access Model pointer), `autobyteus-server-ts/docs/design/node_access_model.md` (NA-2), `autobyteus-web/docs/localization.md`, `TESTING.md`.
 - Conflicts or discrepancies: None.
 
 ## Current-State Read
@@ -39,11 +39,11 @@ The composer (one component, `ContextFilePathInputArea.vue`, used by `ChatCompos
 
 ## Intended Change
 
-Replace the single 25 MiB constant with a per-type, configurable size policy (file limit 25 MiB, media limit 2048 MiB by default), published to clients and enforced by each upload route; give over-limit and unsupported-type refusals a machine-readable reason and limit; make the web refuse over-limit files before sending, show progress and cancel, and render one localized message per failure reason; stop the native runtime from inlining local media larger than 25 MiB.
+Replace the single 25 MiB constant with a per-type, configurable size policy (other-file limit 25 MiB, audio/video limit 2048 MiB by default), published to clients and enforced by each upload route; give over-limit and unsupported-type refusals a machine-readable reason and limit; make the web refuse over-limit files before sending, show progress and cancel, and render one localized message per failure reason; stop the native runtime from inlining local media larger than 25 MiB.
 
 ## Change Scope (Mandatory)
 
-- In scope: UC-001..UC-007. Areas: context-file size policy and upload errors; two new node settings; context-file and Project Task upload routes; Project Task local-copy check; agent-tool `context_files` description text; `/upload-file` gets its own per-request limit (value unchanged); web composer upload store/composable/component and localization; Project Task web upload client/composable; native-runtime media sanitizer; docs that state the old limit or describe uploads.
+- In scope: UC-001..UC-007. Areas: `GLOSSARY.md` (new "Context Files" section); context-file size policy and upload errors; two new node settings; context-file and Project Task upload routes; Project Task local-copy check; agent-tool `context_files` description text; `/upload-file` gets its own per-request limit (value unchanged); web composer upload store/composable/component and localization; Project Task web upload client/composable; native-runtime media sanitizer; docs that state the old limit or describe uploads.
 - Derived consumers: `CONTEXT_FILE_MAX_BYTES` readers — writer, studio-server multipart registration, Project Task store (two checks), tests (`context-file-upload-writer.test.ts`, `project-task-local-context-files.test.ts`, `project-task-boundaries.e2e.test.ts`, route integration tests). Each moves to the new policy; the constant is removed. The upload error body is read by the web store and the Project Task web client only (grep `detail` readers: `useContextAttachmentComposer.ts:91-95`, `projectTaskContextClient.ts:27-30`); both move to the typed failure. Tool description text is asserted in `project-task-tools.test.ts:125` and `task-tool-runtime-parity.test.ts:90,136`; update them.
 - Deliberately left alone: Memory Sync (FU-001, own Task; release order RC-001); draft paste re-download (FU-002); `Context Files (n)` label (FU-003); allowed type list; draft TTL; finalization; agent runtimes other than the native one (they already pass video as a path); avatar upload behavior.
 - Follow-ups: FU-001, FU-002, FU-003.
@@ -53,7 +53,7 @@ Replace the single 25 MiB constant with a per-type, configurable size policy (fi
 | Behavior ID | Kind | REQ / AC | Trigger | Existing (evidence) | Change / Preserved | Target path / Spine |
 | --- | --- | --- | --- | --- | --- | --- |
 | BEH-001 | User | REQ-001, 002, 005; AC-001..005, 015 | Pick/drop/paste in composer | 25 MiB for all (policy.ts:4) | Per-type limits, pre-check, streaming kept | DS-001, DS-002 |
-| BEH-002 | User | REQ-004, 006; AC-005, 006, 009 | Failure | raw detail appended | One localized message per reason | DS-001 return, DS-003 |
+| BEH-002 | User | REQ-004, 006; AC-005, 006, 009 | Failure | raw detail appended | One localized message per reason (size refusals per reason and limit) | DS-001 return, DS-003 |
 | BEH-003 | System | REQ-007, 008; AC-007, 008 | Over-limit/abort/cancel | writer cleanup (P1, P3) | Preserved, cancel added | DS-001 |
 | BEH-005 | System | REQ-009; AC-010 | Next upload after 24 h | cleanup service | Preserved | unchanged |
 | BEH-006 | System | REQ-009; AC-001 | Send | finalize + `Reference files:` | Preserved | unchanged |
@@ -74,8 +74,8 @@ Replace the single 25 MiB constant with a per-type, configurable size policy (fi
 - Change posture: `Feature` (with a bug fix in the error message)
 - Current design issue found: `Yes`
 - Structural triggers:
-  - *Several kinds or forms* (P1): one policy serves three entry forms (composer upload, Project Task upload, Project Task tool local copy) and two subjects (media, other). Each form is traced in the behavior map; all use the one policy function.
-  - *Derived data* (P11): the client must know which limit applies. Rather than recomputing the media classification in the web, the server publishes `mediaMimeTypes` with the limits; the client reads them.
+  - *Several kinds or forms* (P1): one policy serves three entry forms (composer upload, Project Task upload, Project Task tool local copy) and two subjects (audio/video, other files). Each form is traced in the behavior map; all use the one policy function.
+  - *Derived data* (P11): the client must know which limit applies. Rather than recomputing the audio/video classification in the web, the server publishes `audioVideoMimeTypes` with the limits; the client reads them.
   - *Responsibility overload / coupling*: the context-file constant also caps the unrelated avatar route through the global plugin registration (`build-studio-server.ts:451`). Fixed by per-route limits.
   - *Vocabulary drift* (P15): "too large" is an English sentence today, not a reason. The reason becomes a code (`CONTEXT_FILE_TOO_LARGE`) with the limit.
   - Ruled out: repeated coordination (one resolver, called at each operation's entry), ambiguous boundary (the new endpoint has one subject), legacy pressure (clean cut, no old error shape kept).
@@ -87,10 +87,13 @@ Replace the single 25 MiB constant with a per-type, configurable size policy (fi
 
 ## Terminology
 
-- **File limit** — the maximum size of a context file that is not video or audio (setting `AUTOBYTEUS_CONTEXT_FILE_MAX_MB`).
-- **Media limit** — the maximum size of a video or audio context file (setting `AUTOBYTEUS_CONTEXT_FILE_MEDIA_MAX_MB`). "Media" here means video and audio only; images use the file limit. (The native runtime's "media input" — image, audio, video — keeps its existing meaning inside `autobyteus-ts`; the new inline cap is named `INLINE_MEDIA_MAX_BYTES` there.)
-- **Size limits** — the pair, as published by `GET /rest/context-files/size-limits`.
-- `GLOSSARY.md` has no context-file entries; these terms are local to this feature and appear in its docs.
+Defined in `GLOSSARY.md` (new section "Context Files", added in this change; ARCH-REV-001 AR-001):
+
+- **Context file** — a file attached to a message or a Project Task so an agent can read it from disk (draft until sent, then final).
+- **Audio/video limit** — the maximum size of a context file whose type is audio or video (`audioVideoMaxBytes`; setting `AUTOBYTEUS_CONTEXT_FILE_AUDIO_VIDEO_MAX_MB`; the types are published as `audioVideoMimeTypes`).
+- **Other-file limit** — the maximum size of every other accepted context file, images and documents included (`otherFileMaxBytes`; setting `AUTOBYTEUS_CONTEXT_FILE_OTHER_MAX_MB`).
+- **Context-file size limits** — the pair, as published by `GET /rest/context-files/size-limits`.
+- The word "media" is not used for context-file limits. It keeps its existing meaning (image, audio and video) in the native runtime (`INLINE_MEDIA_MAX_BYTES`, "media input"), in media default models and in media storage.
 
 ## Legacy Removal Policy (Mandatory)
 
@@ -124,7 +127,7 @@ Replace the single 25 MiB constant with a per-type, configurable size policy (fi
 | --- | --- | --- | --- | --- |
 | DS-001 | On each pick the composable reads the node's current size limits once, refuses any file over its limit (no request), then uploads the rest in parallel with per-item progress and an abort controller. The route resolves the limits once per request, caps multipart at the larger limit, and the writer enforces the file's own limit while streaming. | context file, size limits | composable / route | failure classification, size formatting |
 | DS-002 | A saved or environment value is parsed at each use; an invalid stored value falls back to the default; saving an invalid value is refused by the normalizer. | setting | settings file | settings registry |
-| DS-003 | Every failure becomes a typed `ContextFileUploadFailure` (`too_large` + maxBytes, `unsupported_type`, `interrupted`, `other`); the composable groups failures by reason; the component renders one localized line per reason; cancel produces no failure. | failure | composable | localization catalogs |
+| DS-003 | Every failure becomes a typed `ContextFileUploadFailure` (`too_large` + maxBytes, `unsupported_type`, `interrupted`, `other`); the composable groups failures into lines keyed by `(reason, maxBytes)` for `too_large` and by `reason` otherwise (a computed in the composable); the component renders one localized line per group (rendering only); cancel produces no failure. | failure | composable | localization catalogs |
 | DS-004 | Same policy and typed errors; the Project Task REST guard maps the typed errors; the tool path keeps `TASK_CONTEXT_INVALID` with a message naming the applicable limit. | task context file | store | route mapping |
 | DS-005 | Before rendering, the sanitizer stats local media paths and omits any above 25 MiB with a diagnostic; the path remains in the message text's `Reference files:`. | media source | sanitizer | — |
 
@@ -134,13 +137,13 @@ Composer component; `useContextAttachmentComposer`; `contextFileUploadStore`; `P
 
 ## Ownership Map
 
-- `context-file-upload-policy.ts` (domain): allowed types, media classification, per-type max for a MIME type, the upload cap (larger limit). Owns the rule; holds no setting I/O.
+- `context-file-upload-policy.ts` (domain): allowed types, audio/video classification, per-type max for a MIME type, the upload cap (larger limit). Owns the rule; holds no setting I/O.
 - `context-file-size-limit-settings.ts` (config): keys, defaults, ranges, parse, persistence normalizers, `resolveContextFileSizeLimits()` → bytes. Owns configuration.
 - `context-file-upload-errors.ts` (domain): `ContextFileTooLargeError(maxBytes)`, `UnsupportedContextFileTypeError(mimeType)`.
 - `writeContextFileUpload`: byte enforcement, type check, exclusive create, cleanup. Signature `(file, filePath, limits)`.
 - Upload routes: resolve limits once per request, pass multipart cap and limits down, map typed errors to HTTP.
 - `contextFileUploadStore`: transport (limits read, upload with progress/abort), translation of transport outcomes into `ContextFileUploadFailure` / cancellation.
-- `useContextAttachmentComposer`: sequence (limits → pre-check → uploads), placeholders with progress and cancel, failure grouping.
+- `useContextAttachmentComposer`: sequence (limits → pre-check → uploads), placeholders with progress and cancel, failure grouping into message lines: `too_large` grouped by its `maxBytes` (files sharing a limit share a line), every other reason one line.
 - `ContextFilePathInputArea.vue`: rendering only.
 - `sanitizeMediaInputMessages`: provider-neutral media filtering, now including the inline size cap.
 
@@ -148,7 +151,7 @@ Composer component; `useContextAttachmentComposer`; `contextFileUploadStore`; `P
 
 | Facade | Owner behind | Why | Must not own |
 | --- | --- | --- | --- |
-| `GET /rest/context-files/size-limits` | `resolveContextFileSizeLimits` + policy `mediaContextFileMimeTypes` | Publish the policy to clients | Any client-specific formatting |
+| `GET /rest/context-files/size-limits` | `resolveContextFileSizeLimits` + policy `audioVideoContextFileMimeTypes` | Publish the policy to clients | Any client-specific formatting |
 
 ## Removal / Decommission Plan (Mandatory)
 
@@ -168,7 +171,8 @@ DS-003 above. Network error without a response (axios `ERR_NETWORK`, or `ECONNAB
 
 ## Bounded Local / Internal Spines
 
-- Writer (parent `writeContextFileUpload`): `multipart stream -> counting Transform (> maxBytes → ContextFileTooLargeError) -> file stream (wx)`; after pipeline: `truncated → ContextFileTooLargeError`; on any error remove the created file. Unchanged shape; only the limit and error types change.
+- Writer (parent `writeContextFileUpload`): `multipart stream -> limiting Transform -> file stream (wx)`. When the count passes the file's own limit, the Transform **stops writing and keeps consuming (discarding) the rest of the file**; after the pipeline ends, `over limit` or `truncated` → remove the created file and throw `ContextFileTooLargeError(maxBytes)`; on any other error remove the created file and rethrow.
+- Why draining matters (probe P4/P5, `probes/probe-results-2026-11-15.txt`): with the multipart cap at the larger limit, an other-type file over its smaller limit is refused by the writer, not by multipart truncation. Erroring the Transform destroys the file stream: the client still gets the refusal, but busboy stalls on the undrained request and the keep-alive connection never becomes idle (P4: `app.close()` hung > 8 s). Draining, as busboy itself does on truncation, answers 413 with the connection idle and no file left (P5). The refusal therefore arrives after the client has sent the file; the web pre-check avoids that in the UI.
 
 ## Off-Spine Concerns Around The Spine
 
@@ -188,12 +192,12 @@ Server: routes are the HTTP boundary; services/stores own the operation; the wri
 | --- | --- | --- | --- | --- |
 | `writeContextFileUpload` | byte counting, type check, cleanup | `ContextFileUploadService`, `ProjectTaskContextStore.upload` | callers re-checking types or sizes themselves | extend writer |
 | `contextFileUploadStore` | axios, error translation | composable | composable reading `error.response.data` | extend store |
-| `resolveContextFileSizeLimits` | settings access, parsing | routes, `ProjectTaskContextStore` local copy | reading `appConfigProvider.config.get(KEY)` elsewhere | — |
+| `resolveContextFileSizeLimits` | settings access, parsing | the two upload routes, `ProjectTaskService` | reading `appConfigProvider.config.get(KEY)` elsewhere | — |
 
 ## Dependency Rules
 
 - `config/context-file-size-limit-settings.ts` → `context-files/domain/context-file-upload-policy.ts` (for the `ContextFileSizeLimits` type) only. Domain never imports config.
-- Routes → settings resolver + services; services/stores → writer + policy; writer → policy + errors.
+- Each operation resolves the limits once at its entry point and passes them down: the two upload routes (they also need the multipart cap) and `ProjectTaskService` for agent-tool `create_task`/`update_task` local files (`project-task-service.ts:123,183`). Stores and the writer receive `limits` and never call the resolver: `ProjectTaskContextStore.upload(…, limits)` and `importLocalFiles(projectId, taskId, sourcePaths, limits)`, whose pre-copy (`:29`) and post-copy (`:145`) checks use that one value. Writer → policy + errors.
 - Web: component → composable → store → `services/api`; utilities are leaf modules. Components never read raw error bodies.
 - `autobyteus-ts` change is self-contained (no server import).
 
@@ -201,15 +205,15 @@ Server: routes are the HTTP boundary; services/stores own the operation; the wri
 
 | Interface | Subject | Responsibility | Identity / shape | Notes |
 | --- | --- | --- | --- | --- |
-| `GET /rest/context-files/size-limits` → `200 {fileMaxBytes:number, mediaMaxBytes:number, mediaMimeTypes:string[]}` | node's context-file size policy | publish current limits | none | owner and phone (NA-2) |
+| `GET /rest/context-files/size-limits` → `200 {otherFileMaxBytes:number, audioVideoMaxBytes:number, audioVideoMimeTypes:string[]}` | node's context-file size policy | publish current limits | none | owner and phone (NA-2) |
 | `POST /rest/context-files/upload` errors | upload refusal | `413 {code:"CONTEXT_FILE_TOO_LARGE", detail, maxBytes}`, `415 {code:"CONTEXT_FILE_TYPE_UNSUPPORTED", detail}`, other `400 {detail}` | — | `detail` stays English for logs/API users; clients localize by `code` |
 | Project Task `POST …/context-files` errors | same | `413 {error:{code:"CONTEXT_FILE_TOO_LARGE", message, maxBytes}}`, `415 {error:{code:"CONTEXT_FILE_TYPE_UNSUPPORTED", message}}`; other codes unchanged | — | route group's existing `{error}` shape |
 | `writeContextFileUpload(file, filePath, limits): Promise<number>` | bytes | enforce | `ContextFileSizeLimits` | throws typed errors |
 | `ContextFileUploadService.uploadDraftAttachment(owner, file, limits)` | draft upload | — | — | — |
-| `ProjectTaskContextStore.upload(projectId, draftId, file, limits)` | task draft upload | — | — | local copy resolves limits itself |
+| `ProjectTaskContextStore.upload(projectId, draftId, file, limits)`; `importLocalFiles(projectId, taskId, sourcePaths, limits)` | task context | — | — | callers resolve limits once per operation |
 | `contextFileUploadStore.readSizeLimits()`; `uploadAttachment({owner, file, signal, onProgress})` | transport | — | — | throws `ContextFileUploadError{failure}`; abort rethrows the cancel |
 | `projectTaskContextClient.sizeLimits()`; `upload()` throws `ContextFileUploadError` for 413/415 | transport | — | — | — |
-| Settings `AUTOBYTEUS_CONTEXT_FILE_MAX_MB` (1–1024, default 25), `AUTOBYTEUS_CONTEXT_FILE_MEDIA_MAX_MB` (1–10240, default 2048) | configuration | — | whole MiB | read per use |
+| Settings `AUTOBYTEUS_CONTEXT_FILE_OTHER_MAX_MB` (1–1024, default 25), `AUTOBYTEUS_CONTEXT_FILE_AUDIO_VIDEO_MAX_MB` (1–10240, default 2048) | configuration | — | whole MiB | read per use |
 
 ## Interface Boundary Check
 
@@ -223,9 +227,9 @@ Server: routes are the HTTP boundary; services/stores own the operation; the wri
 
 | Subject | Name | Natural | Consistent | Drift | Action |
 | --- | --- | --- | --- | --- | --- |
-| per-type limits | `ContextFileSizeLimits {fileMaxBytes, mediaMaxBytes}` | Yes | Yes (same names on wire and web) | Low | — |
+| per-type limits | `ContextFileSizeLimits {audioVideoMaxBytes, otherFileMaxBytes}`; settings `AUTOBYTEUS_CONTEXT_FILE_AUDIO_VIDEO_MAX_MB`, `AUTOBYTEUS_CONTEXT_FILE_OTHER_MAX_MB`; published `audioVideoMimeTypes` | Yes | Yes: each name says exactly what it covers; same words in keys, wire, web, docs and GLOSSARY.md | Low | Renamed in SR-003 (AR-001) |
 | refusal reason | `CONTEXT_FILE_TOO_LARGE`, `CONTEXT_FILE_TYPE_UNSUPPORTED` | Yes | Yes | Low | — |
-| native inline cap | `INLINE_MEDIA_MAX_BYTES` | Yes | "media" there = image/audio/video, as in that package | Low | documented in Terminology |
+| native inline cap | `INLINE_MEDIA_MAX_BYTES` | Yes | Yes: "media" = image, audio and video, as everywhere else in the repository | Low | — |
 
 ## Existing Capability / Subsystem Reuse Check
 
@@ -255,7 +259,7 @@ Server: routes are the HTTP boundary; services/stores own the operation; the wri
 
 | File | Area | Concern |
 | --- | --- | --- |
-| `autobyteus-server-ts/src/context-files/domain/context-file-upload-policy.ts` (modify) | context-files | Remove `CONTEXT_FILE_MAX_BYTES`; add `ContextFileSizeLimits` type, `mediaContextFileMimeTypes` (allowed `video/*` and `audio/*`), `contextFileMaxBytesFor(mimeType, limits)`, `contextFileUploadCapBytes(limits)` |
+| `autobyteus-server-ts/src/context-files/domain/context-file-upload-policy.ts` (modify) | context-files | Remove `CONTEXT_FILE_MAX_BYTES`; add `ContextFileSizeLimits` type, `audioVideoContextFileMimeTypes` (allowed `video/*` and `audio/*`), `contextFileMaxBytesFor(mimeType, limits)`, `contextFileUploadCapBytes(limits)` |
 | `…/context-files/domain/context-file-upload-errors.ts` (add) | context-files | `ContextFileTooLargeError` (`maxBytes`), `UnsupportedContextFileTypeError` (`mimeType`) |
 | `…/context-files/services/context-file-upload-writer.ts` (modify) | context-files | `(file, filePath, limits)`; typed errors |
 | `…/context-files/services/context-file-upload-service.ts` (modify) | context-files | pass `limits`; drop duplicate type check |
@@ -265,18 +269,20 @@ Server: routes are the HTTP boundary; services/stores own the operation; the wri
 | `…/src/api/rest/project-task-context-files.ts` (modify) | api | upload: same cap; `guarded` maps the two typed errors |
 | `…/src/api/rest/upload-file.ts` (modify) | api | own constant `UPLOAD_FILE_MAX_BYTES = 25 MiB` passed per request |
 | `…/src/compositions/build-studio-server.ts` (modify) | composition | register multipart without `limits` |
-| `…/src/projects/context/project-task-context-store.ts` (modify) | projects | `upload(…, limits)`; typed errors propagate; local copy uses `resolveContextFileSizeLimits()` + `contextFileMaxBytesFor`, message names the applicable limit |
+| `…/src/projects/context/project-task-context-store.ts` (modify) | projects | `upload(…, limits)`; typed errors propagate; `importLocalFiles(…, limits)` checks both sizes with `contextFileMaxBytesFor(mimeType, limits)`; message names the applicable limit |
+| `…/src/projects/services/project-task-service.ts` (modify) | projects | resolve limits once per `create`/`update` with local files and pass them to `importLocalFiles` |
 | `…/src/projects/services/project-task-context-drafts.ts` (modify) | projects | pass limits through `uploadContextFile` |
 | `…/src/agent-tools/project-tasks/project-task-tool-contract.ts` (modify) | agent-tools | "Same file types and size limits as the app." (4 places) |
 | `autobyteus-web/utils/contextFiles/contextFileSizeLimits.ts` (add) | web utils | type, `parseContextFileSizeLimits`, `contextFileMaxBytesFor(file, limits)`, `formatContextFileSizeLimit(bytes, locale)` |
-| `autobyteus-web/utils/contextFiles/contextFileUploadFailure.ts` (add) | web utils | `ContextFileUploadFailure`, `ContextFileUploadError`, `contextFileUploadFailureFromResponse(status, body)`, `contextFileUploadFailureFromAxiosError(error)` |
+| `autobyteus-web/utils/contextFiles/contextFileUploadFailure.ts` (add) | web utils | `ContextFileUploadFailure`, `ContextFileUploadError`, one mapping `contextFileUploadFailureFor({status, code, maxBytes})` plus `interrupted` for no response; each transport unwraps its own envelope (store: `{code, maxBytes}` at the top level; Project Task client: `{error:{code, maxBytes}}`) before calling it (AR-004) |
 | `autobyteus-web/stores/contextFileUploadStore.ts` (modify) | web | `readSizeLimits()`; `uploadAttachment` with `signal` + `onProgress`; throws `ContextFileUploadError` or rethrows cancel |
-| `autobyteus-web/composables/useContextAttachmentComposer.ts` (modify) | web | pre-check, placeholder `progress` + `cancelUpload(key)`, failures grouped by reason; error type `{kind:'upload_failed', failures:[{fileName, failure}]} \| {kind:'remove_failed', fileNames} \| {kind:'uploads_unavailable'}` |
-| `autobyteus-web/components/agentInput/ContextFilePathInputArea.vue` (modify) | web | one line per reason; `NN%` and cancel on uploading items |
+| `autobyteus-web/composables/useContextAttachmentComposer.ts` (modify) | web | pre-check, placeholder `progress` + `cancelUpload(key)`, error lines grouped by `(too_large, maxBytes)` / other reason; error type `{kind:'upload_failed', failures:[{fileName, failure}]} \| {kind:'remove_failed', fileNames} \| {kind:'uploads_unavailable'}` |
+| `autobyteus-web/components/agentInput/ContextFilePathInputArea.vue` (modify) | web | one localized line per error group (formats the limit); `NN%` and cancel on uploading items |
 | `autobyteus-web/localization/messages/{en,zh-CN}/agentInput.generated.ts` (modify) | web | keys `upload_too_large`, `upload_unsupported_type`, `upload_interrupted`, `cancel_upload`, `upload_progress` |
 | `autobyteus-web/services/projects/projectTaskContextClient.ts` (modify) | web | `sizeLimits()`; upload errors → `ContextFileUploadError` |
 | `autobyteus-web/composables/projects/useProjectTaskDraft.ts` (modify) | web | pre-check; localized message by reason (reuses the composer's keys) |
-| `autobyteus-ts/src/llm/utils/media-input-sanitizer.ts` (modify) | llm | `INLINE_MEDIA_MAX_BYTES = 25 MiB`; for a local-path source, `fs.stat` size > cap → diagnostic reason `too_large` ("…larger than 25 MB and was not sent inline; the agent can open it from its path."), dropped; applies to image, audio, video |
+| `autobyteus-ts/src/llm/utils/media-input-sanitizer.ts` (modify) | llm | `INLINE_MEDIA_MAX_BYTES = 25 MiB`; the size check runs first, before the existing image base64 validation (`:73`), so an oversized image is never read whole; "local path" uses the existing source classification in `media-payload-formatter.ts` (`isValidMediaPath`), not a new rule; for a local-path source, `fs.stat` size > cap → diagnostic reason `too_large` ("…larger than 25 MB and was not sent inline; the agent can open it from its path."), dropped; applies to image, audio, video |
+| `GLOSSARY.md` (modify) | docs | "Context Files" section: context file, audio/video limit, other-file limit, context-file size limits (written with SR-003) |
 | Docs (modify) | docs | `autobyteus-server-ts/docs/FILE_RENDERING_AND_MEDIA_PIPELINE.md` (limits, settings, error codes, endpoint), `docs/modules/projects.md` and `docs/modules/agent_tools_mcp_server.md` (limit text), `autobyteus-web/docs/projects.md` (limit text), `autobyteus-web/docs/settings.md` (the two settings), `autobyteus-web/docs/chat.md` (progress, cancel, messages) |
 
 ## Reusable Owned Structures Check
@@ -284,7 +290,7 @@ Server: routes are the HTTP boundary; services/stores own the operation; the wri
 | Structure | File | Owner | Why shared | Tight |
 | --- | --- | --- | --- | --- |
 | `ContextFileSizeLimits` (server) | policy | context-files | settings, routes, writer, store | Yes (two numbers) |
-| Published limits + `mediaMimeTypes` (web) | `contextFileSizeLimits.ts` | web utils | two composers | Yes |
+| Published limits + `audioVideoMimeTypes` (web) | `contextFileSizeLimits.ts` | web utils | two composers | Yes |
 | `ContextFileUploadFailure` | `contextFileUploadFailure.ts` | web utils | two transports | Yes (discriminated union; `maxBytes` only on `too_large`) |
 
 ## Shared Structure / Data Model Tightness Check
@@ -309,6 +315,7 @@ All placements follow existing folders for the same concerns; risk Low.
 | --- | --- | --- | --- |
 | Composer message | zh-CN, three over-limit videos: `无法附加 VID_1.mp4, VID_2.mp4, VID_3.mp4：文件超过 2 GB 大小限制。` | `无法附加 VID_1.mp4…。 Uploaded file is too large.` | The reported defect |
 | Mixed reasons | two lines: `无法附加 a.mp4：文件超过 2 GB 大小限制。` / `无法附加 b.exe：不支持此文件类型。` | one line with the first detail | One message per reason |
+| Two size limits in one pick | two lines: `无法附加 a.mp4：文件超过 2 GB 大小限制。` / `无法附加 b.pdf：文件超过 25 MB 大小限制。` | one `too_large` line showing one limit for both files | Each file is shown with its own limit (AR-002) |
 | Limit display | 26214400 → `25 MB`; 2147483648 → `2 GB`; 1572864000 → `1.5 GB` (base 1024, ≤ 1 decimal, `Intl.NumberFormat(resolvedLocale)`) | `2048 MiB`, `2.0 GB` | — |
 | Route cap | `request.file({ limits: { fileSize: contextFileUploadCapBytes(limits) } })`, writer enforces the per-type limit | raising the global plugin limit | Avatar route stays 25 MiB |
 | Pre-check | `if (file.size > contextFileMaxBytesFor(file, limits)) failures.push({fileName, failure:{reason:'too_large', maxBytes}})` before any request | uploading and waiting for 413 | No wasted mobile data |
@@ -318,7 +325,7 @@ All placements follow existing folders for the same concerns; risk Low.
 | Candidate | Why considered | Decision | Replacement |
 | --- | --- | --- | --- |
 | Keep `{detail}`-only errors and parse English text in the web | Smaller change | Rejected | Typed codes (clean cut, DESIGN.md rule 9) |
-| Keep `CONTEXT_FILE_MAX_BYTES` as alias of the file limit | Fewer edits | Rejected | Removed; readers move |
+| Keep `CONTEXT_FILE_MAX_BYTES` as alias of the other-file limit | Fewer edits | Rejected | Removed; readers move |
 | Skip the pre-check when the limits cannot be read | Resilience | Rejected | A failed limits read reports every picked file as `interrupted` (no response) or `other`; the user retries |
 
 ## Derived Layering
@@ -336,21 +343,23 @@ N/A.
 ## Key Tradeoffs
 
 - One limits read per pick (one small GET) instead of a cache: always current after a settings change, no invalidation logic.
-- Media limit applies to video and audio only; images stay on the file limit because images are inlined into model requests.
+- The audio/video limit applies to video and audio only; images stay on the other-file limit because images are inlined into model requests.
 - Inline cap fixed at 25 MiB (not a setting): it protects providers and the runtime, and equals today's upload limit, so nothing that worked before changes.
 
 ## Risks
 
 - R-001 Memory Sync (FU-001): release order RC-001.
-- ASM-001: a phone reporting an empty `File.type` for a video gets the file limit in the pre-check; the server then classifies by the multipart Content-Type (also derived from `File.type`), so client and server agree; worst case a video with unknown type is refused as unsupported, as today.
+- ASM-001: a file whose `File.type` is empty or not on the published audio/video list gets the other-file limit in the pre-check. Above 25 MiB it is reported as "too large" by the pre-check (today the server reported it as unsupported or too large); at or below, the server classifies it by the multipart Content-Type (derived from the same `File.type`) and refuses an unaccepted type as unsupported. Either way it is refused; the message difference is accepted (AR-006).
+- P-001 (review): a long Project Task upload holds its draft lock, so a second Task composer's `begin()` on the same project waits; delay only, concurrent workflow not established.
+- P-002 (review): a cancel that lands just after the server finished writing leaves a draft until the 24 h cleanup.
 - Disk use grows with large videos (owner-configurable).
 
 ## Guidance For Implementation
 
-- Reproduction to start from: `probes/large-upload-probe.integration.test.ts.txt` P1 (26 MiB mp4 → today 400 "Uploaded file is too large."; after: 200 with the default media limit, and 413 `CONTEXT_FILE_TOO_LARGE` with a lowered setting).
+- Reproduction to start from: `probes/large-upload-probe.integration.test.ts.txt` P1 (26 MiB mp4 → today 400 "Uploaded file is too large."; after: 200 with the default audio/video limit, and 413 `CONTEXT_FILE_TOO_LARGE` with a lowered setting).
 - Tests (TESTING.md layers):
-  - Server unit: writer at/over limit for media and non-media, truncated, unsupported, cleanup (AC-002, 003); settings parse/normalize/invalid/default (AC-004); policy classification.
-  - Server integration: upload route with production-shaped registration over real HTTP: at limit, over limit (413 body), setting override without restart, abort cleanup (P3 shape), `/upload-file` still 25 MiB (AC-013), size-limits GET (and through the node access gate with a phone credential if an existing harness covers it); Project Task route mapping and tool local copy (AC-012). Update tests asserting the old constant/text.
+  - Server unit: writer at/over limit for audio/video and other files, truncated, unsupported, cleanup (AC-002, 003); settings parse/normalize/invalid/default (AC-004); policy classification.
+  - Server integration: upload route with production-shaped registration over real HTTP and the default limits: at limit, over limit for audio/video (multipart truncation path) and for an other-type file (writer drain path: the 413 body reaches the client, no file remains, and the server closes promptly afterwards — the P4/P5 check, AR-007), setting override without restart, abort cleanup (P3 shape), `/upload-file` still 25 MiB (AC-013), size-limits GET (and through the node access gate with a phone credential if an existing harness covers it); Project Task route mapping and tool local copy (AC-012). Update tests asserting the old constant/text.
   - autobyteus-ts unit: sanitizer cap at 25 MiB boundary for local files, non-local sources untouched (AC-011).
   - Web unit: store progress/abort/error translation; composable pre-check makes no request, grouping, cancel without error, interrupted mapping; component renders the zh-CN and en messages with name and limit, and a regression that the screenshot string (raw detail after the sentence) never renders (AC-005, 006, 007, 008, 009); Project Task composable messages (AC-012).
   - Web guards and typecheck; server typecheck.

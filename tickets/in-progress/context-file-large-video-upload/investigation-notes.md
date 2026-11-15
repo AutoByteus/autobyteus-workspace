@@ -11,7 +11,7 @@
 - Finalization target remote / branch: `origin/personal` (no release; the Task says stop at merge-ready)
 - Bootstrap result: worktree created from refreshed `origin/personal`; `pnpm install --frozen-lockfile` (pnpm 10.28.2 via `npx`, no global pnpm on this machine) succeeded
 - Bootstrap blocker: None
-- Current solution revision ID: `SR-002`
+- Current solution revision ID: `SR-003`
 - Authorities read (requirements reading gate; 2026-11-15): `references/requirements-engineering.md`, `references/finding-the-cause.md`, `references/ticket-scope.md`; also `AGENTS.md`, `TESTING.md` (test layers, phone-bundle rule), `autobyteus-web/docs/localization.md`, `docs/android_mobile_access.md`
 - Investigation status: requirements and architecture investigation complete (2026-11-15). Design reading gate: `references/architecture-design.md`, `references/design-principles.md`, `DESIGN.md`, `autobyteus-server-ts/docs/design/node_access_model.md`
 
@@ -167,3 +167,12 @@
 
 - Verified: per-request multipart `limits.fileSize` works; writer and multipart stream (P2); abort cleans up (P3); no timeouts in Fastify; no proxies in the default chains.
 - To verify in design: how the web reads the policy per bound node (phone credential can read a new REST route by default); axios progress/abort in the WebView; `test:e2e:mobile-shell` coverage for the composer; where the Gemini inline guard belongs (sanitizer is provider-neutral and already the single filter).
+
+## SR-003 Evidence Addendum (2026-11-15, ARCH-REV-001 AR-007)
+
+| Method | Scenario | Observation | Established | Implication |
+| --- | --- | --- | --- | --- |
+| Probe P4 (real route, multipart cap 1 GiB, writer limit 25 MiB, 60 MiB mp4, real HTTP) | Writer refuses mid-stream by erroring its Transform | Client receives `400 {"detail":"Uploaded file is too large."}`, no file left; but one connection stays busy and `app.close()` does not finish within 8 s | Reproduced | Undrained request after a writer refusal; the per-type design would hit this for other-type files over their limit |
+| Probe P5 (custom route, same setup) | Limiting Transform discards the rest, handler answers 413 after the pipeline | `413 {code, maxBytes}` reaches the client; connection idle; close 0 ms; no file | Reproduced | Writer drains over-limit files (design-spec, Bounded Local Spines) |
+
+Probe file and results: `probes/large-upload-probe.integration.test.ts.txt`, `probes/probe-results-2026-11-15.txt`. The temporary test copy was removed from `autobyteus-server-ts/tests/`.
