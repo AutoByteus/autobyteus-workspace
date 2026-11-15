@@ -1,0 +1,758 @@
+{
+  "kinds": {
+    "frames /_nuxt/ connected": {
+      "inBase": true,
+      "inBranch": true,
+      "same": true,
+      "peerOnlyBase": [],
+      "peerOnlyBranch": [],
+      "onlyBase": [],
+      "onlyBranch": []
+    },
+    "frames /_nuxt/ full-reload": {
+      "inBase": true,
+      "inBranch": false,
+      "same": false,
+      "peerOnlyBase": [],
+      "peerOnlyBranch": [],
+      "onlyBase": [
+        "path",
+        "type"
+      ],
+      "onlyBranch": []
+    },
+    "frames /_nuxt/ prune": {
+      "inBase": true,
+      "inBranch": false,
+      "same": false,
+      "peerOnlyBase": [],
+      "peerOnlyBranch": [],
+      "onlyBase": [
+        "paths[]",
+        "type"
+      ],
+      "onlyBranch": []
+    },
+    "frames /ws/:id connected": {
+      "inBase": true,
+      "inBranch": true,
+      "same": true,
+      "peerOnlyBase": [],
+      "peerOnlyBranch": [],
+      "onlyBase": [],
+      "onlyBranch": []
+    },
+    "frames /ws/agent-collaboration/:id CONNECTED": {
+      "inBase": true,
+      "inBranch": true,
+      "same": true,
+      "peerOnlyBase": [],
+      "peerOnlyBranch": [],
+      "onlyBase": [],
+      "onlyBranch": []
+    },
+    "frames /ws/agent-collaboration/:id ROOT_EXECUTION_EVENT": {
+      "inBase": true,
+      "inBranch": true,
+      "same": false,
+      "peerOnlyBase": [],
+      "peerOnlyBranch": [],
+      "onlyBase": [],
+      "onlyBranch": [
+        "payload.event.launches[]",
+        "payload.event.launches[].address",
+        "payload.event.launches[].llm_model_identifier",
+        "payload.event.launches[].runtime_kind",
+        "payload.event.launches[].source.fallbacks[]",
+        "payload.event.launches[].source.origin"
+      ]
+    },
+    "frames /ws/agent-collaboration/:id ROOT_EXECUTION_VIEW_SNAPSHOT": {
+      "inBase": true,
+      "inBranch": true,
+      "same": false,
+      "peerOnlyBase": [],
+      "peerOnlyBranch": [
+        "payload.root_agent.remote_task_executions[].open_target.agent_run_id",
+        "payload.root_agent.remote_task_executions[].open_target.node_id",
+        "payload.root_agent.remote_task_executions[].open_target.run_id",
+        "payload.root_agent.remote_task_executions[].open_target.run_kind"
+      ],
+      "onlyBase": [],
+      "onlyBranch": [
+        "payload.root_agent.remote_task_executions[].open_target.agent_run_id",
+        "payload.root_agent.remote_task_executions[].open_target.node_id",
+        "payload.root_agent.remote_task_executions[].open_target.run_id",
+        "payload.root_agent.remote_task_executions[].open_target.run_kind"
+      ]
+    },
+    "frames /ws/agent-collaboration/:id ROOT_LIFECYCLE": {
+      "inBase": true,
+      "inBranch": true,
+      "same": true,
+      "peerOnlyBase": [],
+      "peerOnlyBranch": [],
+      "onlyBase": [],
+      "onlyBranch": []
+    },
+    "frames /ws/agent-org/:id CONNECTED": {
+      "inBase": true,
+      "inBranch": true,
+      "same": true,
+      "peerOnlyBase": [],
+      "peerOnlyBranch": [],
+      "onlyBase": [],
+      "onlyBranch": []
+    },
+    "frames /ws/agent-org/:id ROOT_EXECUTION_EVENT": {
+      "inBase": true,
+      "inBranch": true,
+      "same": false,
+      "peerOnlyBase": [],
+      "peerOnlyBranch": [],
+      "onlyBase": [],
+      "onlyBranch": [
+        "payload.event.launches[]",
+        "payload.event.launches[].address",
+        "payload.event.launches[].llm_model_identifier",
+        "payload.event.launches[].runtime_kind",
+        "payload.event.launches[].source.fallbacks[]",
+        "payload.event.launches[].source.origin"
+      ]
+    },
+    "frames /ws/agent-org/:id ROOT_EXECUTION_VIEW_SNAPSHOT": {
+      "inBase": true,
+      "inBranch": true,
+      "same": false,
+      "peerOnlyBase": [],
+      "peerOnlyBranch": [
+        "payload.root_org.remote_task_executions[].open_target.agent_run_id",
+        "payload.root_org.remote_task_executions[].open_target.node_id",
+        "payload.root_org.remote_task_executions[].open_target.run_id",
+        "payload.root_org.remote_task_executions[].open_target.run_kind"
+      ],
+      "onlyBase": [],
+      "onlyBranch": [
+        "payload.root_org.remote_task_executions[].open_target.agent_run_id",
+        "payload.root_org.remote_task_executions[].open_target.node_id",
+        "payload.root_org.remote_task_executions[].open_target.run_id",
+        "payload.root_org.remote_task_executions[].open_target.run_kind"
+      ]
+    },
+    "frames /ws/agent-org/:id ROOT_LIFECYCLE": {
+      "inBase": true,
+      "inBranch": true,
+      "same": true,
+      "peerOnlyBase": [],
+      "peerOnlyBranch": [],
+      "onlyBase": [],
+      "onlyBranch": []
+    },
+    "frames /ws/agent-team/:id AGENT_INPUT_STATE": {
+      "inBase": true,
+      "inBranch": true,
+      "same": true,
+      "peerOnlyBase": [],
+      "peerOnlyBranch": [],
+      "onlyBase": [],
+      "onlyBranch": []
+    },
+    "frames /ws/agent-team/:id AGENT_STATUS": {
+      "inBase": true,
+      "inBranch": false,
+      "same": false,
+      "peerOnlyBase": [],
+      "peerOnlyBranch": [],
+      "onlyBase": [
+        "payload.agent_run_id",
+        "payload.change_sequence",
+        "payload.error_details",
+        "payload.error_message",
+        "payload.recoverableBlock",
+        "payload.status",
+        "payload.tool_name",
+        "payload.trigger",
+        "type"
+      ],
+      "onlyBranch": []
+    },
+    "frames /ws/agent-team/:id CONNECTED": {
+      "inBase": true,
+      "inBranch": true,
+      "same": true,
+      "peerOnlyBase": [],
+      "peerOnlyBranch": [],
+      "onlyBase": [],
+      "onlyBranch": []
+    },
+    "frames /ws/agent-team/:id REMOTE_TASK_EXECUTION_SUMMARY": {
+      "inBase": true,
+      "inBranch": true,
+      "same": false,
+      "peerOnlyBase": [],
+      "peerOnlyBranch": [],
+      "onlyBase": [],
+      "onlyBranch": [
+        "payload.launches[]",
+        "payload.launches[].address",
+        "payload.launches[].llm_model_identifier",
+        "payload.launches[].runtime_kind",
+        "payload.launches[].source.fallbacks[]",
+        "payload.launches[].source.origin"
+      ]
+    },
+    "frames /ws/agent-team/:id SEGMENT_CONTENT_BATCH": {
+      "inBase": true,
+      "inBranch": true,
+      "same": true,
+      "peerOnlyBase": [],
+      "peerOnlyBranch": [],
+      "onlyBase": [],
+      "onlyBranch": []
+    },
+    "frames /ws/agent-team/:id SEGMENT_END": {
+      "inBase": true,
+      "inBranch": true,
+      "same": true,
+      "peerOnlyBase": [],
+      "peerOnlyBranch": [],
+      "onlyBase": [],
+      "onlyBranch": []
+    },
+    "frames /ws/agent-team/:id SEGMENT_START": {
+      "inBase": true,
+      "inBranch": true,
+      "same": true,
+      "peerOnlyBase": [],
+      "peerOnlyBranch": [],
+      "onlyBase": [],
+      "onlyBranch": []
+    },
+    "frames /ws/agent-team/:id TEAM_EXECUTION_VIEW_SNAPSHOT": {
+      "inBase": true,
+      "inBranch": true,
+      "same": false,
+      "peerOnlyBase": [],
+      "peerOnlyBranch": [
+        "payload.remote_task_executions[].open_target.agent_run_id",
+        "payload.remote_task_executions[].open_target.node_id",
+        "payload.remote_task_executions[].open_target.run_id",
+        "payload.remote_task_executions[].open_target.run_kind"
+      ],
+      "onlyBase": [],
+      "onlyBranch": [
+        "payload.execution_tree.root_team.task_executions[].open_target.agent_run_id",
+        "payload.execution_tree.root_team.task_executions[].open_target.run_id",
+        "payload.execution_tree.root_team.task_executions[].open_target.run_kind",
+        "payload.remote_task_executions[].open_target.agent_run_id",
+        "payload.remote_task_executions[].open_target.node_id",
+        "payload.remote_task_executions[].open_target.run_id",
+        "payload.remote_task_executions[].open_target.run_kind"
+      ]
+    },
+    "frames /ws/agent-team/:id TEAM_RUN_LIFECYCLE": {
+      "inBase": true,
+      "inBranch": true,
+      "same": true,
+      "peerOnlyBase": [],
+      "peerOnlyBranch": [],
+      "onlyBase": [],
+      "onlyBranch": []
+    },
+    "frames /ws/agent-team/:id TURN_COMPLETED": {
+      "inBase": true,
+      "inBranch": true,
+      "same": true,
+      "peerOnlyBase": [],
+      "peerOnlyBranch": [],
+      "onlyBase": [],
+      "onlyBranch": []
+    },
+    "frames /ws/agent-team/:id TURN_STARTED": {
+      "inBase": true,
+      "inBranch": true,
+      "same": true,
+      "peerOnlyBase": [],
+      "peerOnlyBranch": [],
+      "onlyBase": [],
+      "onlyBranch": []
+    },
+    "frames /ws/agent/:id AGENT_INPUT_STATE": {
+      "inBase": true,
+      "inBranch": true,
+      "same": true,
+      "peerOnlyBase": [],
+      "peerOnlyBranch": [],
+      "onlyBase": [],
+      "onlyBranch": []
+    },
+    "frames /ws/agent/:id AGENT_STATUS": {
+      "inBase": true,
+      "inBranch": true,
+      "same": true,
+      "peerOnlyBase": [],
+      "peerOnlyBranch": [],
+      "onlyBase": [],
+      "onlyBranch": []
+    },
+    "frames /ws/agent/:id CONNECTED": {
+      "inBase": true,
+      "inBranch": true,
+      "same": true,
+      "peerOnlyBase": [],
+      "peerOnlyBranch": [],
+      "onlyBase": [],
+      "onlyBranch": []
+    },
+    "frames /ws/projects connected": {
+      "inBase": true,
+      "inBranch": true,
+      "same": true,
+      "peerOnlyBase": [],
+      "peerOnlyBranch": [],
+      "onlyBase": [],
+      "onlyBranch": []
+    },
+    "frames /ws/run-status RUN_STATUS_CHANGED": {
+      "inBase": false,
+      "inBranch": true,
+      "same": false,
+      "peerOnlyBase": [],
+      "peerOnlyBranch": [],
+      "onlyBase": [],
+      "onlyBranch": [
+        "payload.agentRunId",
+        "payload.kind",
+        "payload.runId",
+        "payload.status",
+        "type"
+      ]
+    },
+    "frames /ws/run-status RUN_STATUS_SNAPSHOT": {
+      "inBase": false,
+      "inBranch": true,
+      "same": false,
+      "peerOnlyBase": [],
+      "peerOnlyBranch": [],
+      "onlyBase": [],
+      "onlyBranch": [
+        "payload.runs[].agents[].agentRunId",
+        "payload.runs[].agents[].status",
+        "payload.runs[].kind",
+        "payload.runs[].runId",
+        "type"
+      ]
+    },
+    "frames /ws/terminal/:id output": {
+      "inBase": true,
+      "inBranch": true,
+      "same": true,
+      "peerOnlyBase": [],
+      "peerOnlyBranch": [],
+      "onlyBase": [],
+      "onlyBranch": []
+    },
+    "graphql CollaborationParticipantMessages": {
+      "inBase": true,
+      "inBranch": true,
+      "same": true,
+      "peerOnlyBase": [],
+      "peerOnlyBranch": [],
+      "onlyBase": [],
+      "onlyBranch": []
+    },
+    "graphql GetAgentDefinitions": {
+      "inBase": true,
+      "inBranch": true,
+      "same": true,
+      "peerOnlyBase": [],
+      "peerOnlyBranch": [],
+      "onlyBase": [],
+      "onlyBranch": []
+    },
+    "graphql GetAgentOrgDefinitions": {
+      "inBase": true,
+      "inBranch": true,
+      "same": true,
+      "peerOnlyBase": [],
+      "peerOnlyBranch": [],
+      "onlyBase": [],
+      "onlyBranch": []
+    },
+    "graphql GetAgentOrgMemberFileChanges": {
+      "inBase": true,
+      "inBranch": true,
+      "same": true,
+      "peerOnlyBase": [],
+      "peerOnlyBranch": [],
+      "onlyBase": [],
+      "onlyBranch": []
+    },
+    "graphql GetAgentOrgMemberRunProjection": {
+      "inBase": true,
+      "inBranch": true,
+      "same": true,
+      "peerOnlyBase": [],
+      "peerOnlyBranch": [],
+      "onlyBase": [],
+      "onlyBranch": []
+    },
+    "graphql GetAgentOrgRootHistory": {
+      "inBase": true,
+      "inBranch": true,
+      "same": true,
+      "peerOnlyBase": [],
+      "peerOnlyBranch": [],
+      "onlyBase": [],
+      "onlyBranch": []
+    },
+    "graphql GetAgentOrgRunInspection": {
+      "inBase": true,
+      "inBranch": true,
+      "same": false,
+      "peerOnlyBase": [],
+      "peerOnlyBranch": [
+        "data.getAgentOrgRunInspection.root_org.remote_task_executions[].open_target.agent_run_id",
+        "data.getAgentOrgRunInspection.root_org.remote_task_executions[].open_target.node_id",
+        "data.getAgentOrgRunInspection.root_org.remote_task_executions[].open_target.run_id",
+        "data.getAgentOrgRunInspection.root_org.remote_task_executions[].open_target.run_kind"
+      ],
+      "onlyBase": [],
+      "onlyBranch": [
+        "data.getAgentOrgRunInspection.root_org.remote_task_executions[].open_target.agent_run_id",
+        "data.getAgentOrgRunInspection.root_org.remote_task_executions[].open_target.node_id",
+        "data.getAgentOrgRunInspection.root_org.remote_task_executions[].open_target.run_id",
+        "data.getAgentOrgRunInspection.root_org.remote_task_executions[].open_target.run_kind"
+      ]
+    },
+    "graphql GetAgentRunCollaboration": {
+      "inBase": true,
+      "inBranch": true,
+      "same": false,
+      "peerOnlyBase": [],
+      "peerOnlyBranch": [
+        "data.agentRunCollaboration.root_agent.remote_task_executions[].open_target.agent_run_id",
+        "data.agentRunCollaboration.root_agent.remote_task_executions[].open_target.node_id",
+        "data.agentRunCollaboration.root_agent.remote_task_executions[].open_target.run_id",
+        "data.agentRunCollaboration.root_agent.remote_task_executions[].open_target.run_kind"
+      ],
+      "onlyBase": [],
+      "onlyBranch": [
+        "data.agentRunCollaboration.root_agent.remote_task_executions[].open_target.agent_run_id",
+        "data.agentRunCollaboration.root_agent.remote_task_executions[].open_target.node_id",
+        "data.agentRunCollaboration.root_agent.remote_task_executions[].open_target.run_id",
+        "data.agentRunCollaboration.root_agent.remote_task_executions[].open_target.run_kind"
+      ]
+    },
+    "graphql GetAgentRunCollaborationMemberProjection": {
+      "inBase": true,
+      "inBranch": true,
+      "same": true,
+      "peerOnlyBase": [],
+      "peerOnlyBranch": [],
+      "onlyBase": [],
+      "onlyBranch": []
+    },
+    "graphql GetAgentRunCollaborationStatuses": {
+      "inBase": true,
+      "inBranch": false,
+      "same": false,
+      "peerOnlyBase": [],
+      "peerOnlyBranch": [],
+      "onlyBase": [
+        "data.agentRunCollaborationStatuses[].__typename",
+        "data.agentRunCollaborationStatuses[].closedTaskExecutionsDigest",
+        "data.agentRunCollaborationStatuses[].isActive",
+        "data.agentRunCollaborationStatuses[].runId",
+        "data.agentRunCollaborationStatuses[].statuses[]"
+      ],
+      "onlyBranch": []
+    },
+    "graphql GetAgentRunResumeConfig": {
+      "inBase": true,
+      "inBranch": true,
+      "same": true,
+      "peerOnlyBase": [],
+      "peerOnlyBranch": [],
+      "onlyBase": [],
+      "onlyBranch": []
+    },
+    "graphql GetAgentTeamDefinitions": {
+      "inBase": true,
+      "inBranch": true,
+      "same": true,
+      "peerOnlyBase": [],
+      "peerOnlyBranch": [],
+      "onlyBase": [],
+      "onlyBranch": []
+    },
+    "graphql GetAllWorkspaces": {
+      "inBase": true,
+      "inBranch": true,
+      "same": true,
+      "peerOnlyBase": [],
+      "peerOnlyBranch": [],
+      "onlyBase": [],
+      "onlyBranch": []
+    },
+    "graphql GetApplicationsCapability": {
+      "inBase": true,
+      "inBranch": true,
+      "same": true,
+      "peerOnlyBase": [],
+      "peerOnlyBranch": [],
+      "onlyBase": [],
+      "onlyBranch": []
+    },
+    "graphql GetCollaboratorMentionCandidates": {
+      "inBase": true,
+      "inBranch": true,
+      "same": true,
+      "peerOnlyBase": [],
+      "peerOnlyBranch": [],
+      "onlyBase": [],
+      "onlyBranch": []
+    },
+    "graphql GetProjects": {
+      "inBase": true,
+      "inBranch": true,
+      "same": true,
+      "peerOnlyBase": [],
+      "peerOnlyBranch": [],
+      "onlyBase": [],
+      "onlyBranch": []
+    },
+    "graphql GetProviderModelCatalogSnapshots": {
+      "inBase": true,
+      "inBranch": true,
+      "same": true,
+      "peerOnlyBase": [],
+      "peerOnlyBranch": [],
+      "onlyBase": [],
+      "onlyBranch": []
+    },
+    "graphql GetRunFileChanges": {
+      "inBase": true,
+      "inBranch": true,
+      "same": true,
+      "peerOnlyBase": [],
+      "peerOnlyBranch": [],
+      "onlyBase": [],
+      "onlyBranch": []
+    },
+    "graphql GetRunProjection": {
+      "inBase": true,
+      "inBranch": true,
+      "same": true,
+      "peerOnlyBase": [],
+      "peerOnlyBranch": [],
+      "onlyBase": [],
+      "onlyBranch": []
+    },
+    "graphql GetRuntimeAvailability": {
+      "inBase": true,
+      "inBranch": true,
+      "same": true,
+      "peerOnlyBase": [],
+      "peerOnlyBranch": [],
+      "onlyBase": [],
+      "onlyBranch": []
+    },
+    "graphql GetRuntimeAvailabilityKinds": {
+      "inBase": true,
+      "inBranch": true,
+      "same": true,
+      "peerOnlyBase": [],
+      "peerOnlyBranch": [],
+      "onlyBase": [],
+      "onlyBranch": []
+    },
+    "graphql GetServerSettings": {
+      "inBase": true,
+      "inBranch": true,
+      "same": true,
+      "peerOnlyBase": [],
+      "peerOnlyBranch": [],
+      "onlyBase": [],
+      "onlyBranch": []
+    },
+    "graphql GetSkills": {
+      "inBase": true,
+      "inBranch": true,
+      "same": true,
+      "peerOnlyBase": [],
+      "peerOnlyBranch": [],
+      "onlyBase": [],
+      "onlyBranch": []
+    },
+    "graphql GetTaskWorkerTasks": {
+      "inBase": true,
+      "inBranch": true,
+      "same": true,
+      "peerOnlyBase": [],
+      "peerOnlyBranch": [],
+      "onlyBase": [],
+      "onlyBranch": []
+    },
+    "graphql GetTasksWithoutProject": {
+      "inBase": true,
+      "inBranch": true,
+      "same": false,
+      "peerOnlyBase": [],
+      "peerOnlyBranch": [],
+      "onlyBase": [
+        "data.tasksWithoutProject[].root.hostRoot.__typename",
+        "data.tasksWithoutProject[].root.hostRoot.kind",
+        "data.tasksWithoutProject[].root.hostRoot.runId"
+      ],
+      "onlyBranch": [
+        "data.tasksWithoutProject[].root.delegatingRun.__typename",
+        "data.tasksWithoutProject[].root.delegatingRun.kind",
+        "data.tasksWithoutProject[].root.delegatingRun.runId",
+        "data.tasksWithoutProject[].root.topRun.__typename",
+        "data.tasksWithoutProject[].root.topRun.kind",
+        "data.tasksWithoutProject[].root.topRun.runId"
+      ]
+    },
+    "graphql GetTeamMemberFileChanges": {
+      "inBase": true,
+      "inBranch": true,
+      "same": true,
+      "peerOnlyBase": [],
+      "peerOnlyBranch": [],
+      "onlyBase": [],
+      "onlyBranch": []
+    },
+    "graphql GetTeamMemberRunProjection": {
+      "inBase": true,
+      "inBranch": true,
+      "same": true,
+      "peerOnlyBase": [],
+      "peerOnlyBranch": [],
+      "onlyBase": [],
+      "onlyBranch": []
+    },
+    "graphql GetTeamRunResumeConfig": {
+      "inBase": true,
+      "inBranch": true,
+      "same": false,
+      "peerOnlyBase": [],
+      "peerOnlyBranch": [
+        "data.getTeamRunResumeConfig.remoteTaskExecutions[].open_target.agent_run_id",
+        "data.getTeamRunResumeConfig.remoteTaskExecutions[].open_target.node_id",
+        "data.getTeamRunResumeConfig.remoteTaskExecutions[].open_target.run_id",
+        "data.getTeamRunResumeConfig.remoteTaskExecutions[].open_target.run_kind"
+      ],
+      "onlyBase": [],
+      "onlyBranch": [
+        "data.getTeamRunResumeConfig.executionTree.root_team.task_executions[].open_target.agent_run_id",
+        "data.getTeamRunResumeConfig.executionTree.root_team.task_executions[].open_target.run_id",
+        "data.getTeamRunResumeConfig.executionTree.root_team.task_executions[].open_target.run_kind",
+        "data.getTeamRunResumeConfig.remoteTaskExecutions[].open_target.agent_run_id",
+        "data.getTeamRunResumeConfig.remoteTaskExecutions[].open_target.node_id",
+        "data.getTeamRunResumeConfig.remoteTaskExecutions[].open_target.run_id",
+        "data.getTeamRunResumeConfig.remoteTaskExecutions[].open_target.run_kind"
+      ]
+    },
+    "graphql GetUpdateAutomationSettings": {
+      "inBase": true,
+      "inBranch": true,
+      "same": true,
+      "peerOnlyBase": [],
+      "peerOnlyBranch": [],
+      "onlyBase": [],
+      "onlyBranch": []
+    },
+    "graphql GetUpdateNotifications": {
+      "inBase": true,
+      "inBranch": true,
+      "same": true,
+      "peerOnlyBase": [],
+      "peerOnlyBranch": [],
+      "onlyBase": [],
+      "onlyBranch": []
+    },
+    "graphql GetWorkspaceMetadata": {
+      "inBase": true,
+      "inBranch": true,
+      "same": true,
+      "peerOnlyBase": [],
+      "peerOnlyBranch": [],
+      "onlyBase": [],
+      "onlyBranch": []
+    },
+    "graphql GetWorkspaceRunHistory": {
+      "inBase": true,
+      "inBranch": true,
+      "same": false,
+      "peerOnlyBase": [],
+      "peerOnlyBranch": [],
+      "onlyBase": [],
+      "onlyBranch": [
+        "data.workspaceRunHistory.teamDefinitions[].runs[].rootTeam.task_executions[].open_target.agent_run_id",
+        "data.workspaceRunHistory.teamDefinitions[].runs[].rootTeam.task_executions[].open_target.run_id",
+        "data.workspaceRunHistory.teamDefinitions[].runs[].rootTeam.task_executions[].open_target.run_kind"
+      ]
+    },
+    "graphql ListCollaborationRootHistory": {
+      "inBase": true,
+      "inBranch": true,
+      "same": true,
+      "peerOnlyBase": [],
+      "peerOnlyBranch": [],
+      "onlyBase": [],
+      "onlyBranch": []
+    },
+    "graphql ListWorkspaceRunHistory": {
+      "inBase": true,
+      "inBranch": true,
+      "same": false,
+      "peerOnlyBase": [],
+      "peerOnlyBranch": [],
+      "onlyBase": [],
+      "onlyBranch": [
+        "data.listWorkspaceRunHistory[].teamDefinitions[].runs[].rootTeam.task_executions[].open_target.agent_run_id",
+        "data.listWorkspaceRunHistory[].teamDefinitions[].runs[].rootTeam.task_executions[].open_target.run_id",
+        "data.listWorkspaceRunHistory[].teamDefinitions[].runs[].rootTeam.task_executions[].open_target.run_kind"
+      ]
+    },
+    "graphql StopDelegatedExecution": {
+      "inBase": true,
+      "inBranch": false,
+      "same": false,
+      "peerOnlyBase": [],
+      "peerOnlyBranch": [],
+      "onlyBase": [
+        "data.stopDelegatedExecution.__typename",
+        "data.stopDelegatedExecution.message",
+        "data.stopDelegatedExecution.notStoppedUnattributed",
+        "data.stopDelegatedExecution.outcome",
+        "data.stopDelegatedExecution.success"
+      ],
+      "onlyBranch": []
+    }
+  },
+  "summary": {
+    "compared": 65,
+    "same": 46,
+    "peerDifferences": [
+      "frames /ws/agent-collaboration/:id ROOT_EXECUTION_VIEW_SNAPSHOT",
+      "frames /ws/agent-org/:id ROOT_EXECUTION_VIEW_SNAPSHOT",
+      "frames /ws/agent-team/:id TEAM_EXECUTION_VIEW_SNAPSHOT",
+      "graphql GetAgentOrgRunInspection",
+      "graphql GetAgentRunCollaboration",
+      "graphql GetTeamRunResumeConfig"
+    ],
+    "onlyInBase": [
+      "frames /_nuxt/ full-reload",
+      "frames /_nuxt/ prune",
+      "frames /ws/agent-team/:id AGENT_STATUS",
+      "graphql GetAgentRunCollaborationStatuses",
+      "graphql StopDelegatedExecution"
+    ],
+    "onlyInBranch": [
+      "frames /ws/run-status RUN_STATUS_CHANGED",
+      "frames /ws/run-status RUN_STATUS_SNAPSHOT"
+    ]
+  }
+}

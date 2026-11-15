@@ -971,6 +971,28 @@ const archiveAndDelete = async () => {
       const named = /\(([^)]+)\)/.exec(refusal.message)?.[1] ?? refusal.message;
       assert(diag.windowNotices.some((line) => line.includes(named)), 'AC-008: the refused archive shows its reason, naming the working delegated run', { serverMessage: refusal.message, windowNotices: diag.windowNotices });
     }
+    if (refusals.length) {
+      // AC-008 "then it succeeds": the runs still listed have their delegated runs stopped by their own Stop (REQ-001: they
+      // outlive their delegator's Stop), then "Archive all" archives them.
+      diag.stoppedDelegated = [];
+      for (const runId of diag.listedAfter) {
+        const view = (await gql('query($id:String!){agentRunCollaboration(runId:$id)}', { id: runId })).agentRunCollaboration?.root_agent?.execution_tree;
+        const rows = JSON.stringify(view ?? {}).match(/"(agentRunId|teamRunId)":"[^"]+"/g) ?? [];
+        for (const pair of [...new Set(rows)]) {
+          const [, key, id] = /"(agentRunId|teamRunId)":"([^"]+)"/.exec(pair);
+          if (id === runId) continue;
+          const answer = key === 'agentRunId'
+            ? (await gql('mutation($id:String!){terminateAgentRun(agentRunId:$id){success}}', { id })).terminateAgentRun
+            : (await gql('mutation($id:String!){terminateAgentTeamRun(teamRunId:$id){success}}', { id })).terminateAgentTeamRun;
+          diag.stoppedDelegated.push({ id, success: answer?.success ?? null });
+        }
+      }
+      await sleep(2000);
+      const group3 = await openAgentGroup(pSection, s.ids.manager);
+      await group3.hover();
+      await pSection.locator(T(`workspace-agent-group-archive-${s.ids.manager}`)).first().click();
+      await page.locator('button', { hasText: /^Archive all$/ }).last().click();
+    }
     await until('P group archive done', async () => (await listedRunIds(pSection)).length === 0, 30000).catch(async (error) => {
       // Record what is left and what the page says (REQ-007's refusal names the working runs).
       const body = (await page.locator('body').innerText().catch(() => '')).split('\n').filter((l) => /delegat|working|can't|cannot|refus/i.test(l)).slice(0, 8);

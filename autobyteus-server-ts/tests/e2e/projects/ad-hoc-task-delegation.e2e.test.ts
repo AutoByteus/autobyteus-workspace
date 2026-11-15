@@ -533,6 +533,13 @@ suite("@ delegates and every delegated copy is closable by its ad-hoc Task (real
     expect((await projectTasks(projectId)).map((task) => task.taskId)).toEqual([projectTaskId]);
     otherInput.socket.close();
     await terminate("agent", other.rootId);
+    // autobyteus-461 REQ-001 / REQ-007 (DS-13): the other root's reviewer copy outlives its Stop and, idle, counts as working,
+    // so it is stopped by its own Stop before the delete (as the first root's assistant copy above).
+    const otherTree = (await graphql(`query($id:String!){agentRunCollaboration(runId:$id)}`, { id: other.rootId })).agentRunCollaboration?.root_agent?.execution_tree;
+    for (const node of taskNodes(otherTree)) {
+      if (node.agentRunId) await graphql(`mutation($id:String!){terminateAgentRun(agentRunId:$id){success message}}`, { id: node.agentRunId });
+      else if (node.teamRunId) await graphql(`mutation($id:String!){terminateAgentTeamRun(teamRunId:$id){success message}}`, { id: node.teamRunId });
+    }
     await deletePermanently("agent", other.rootId);
     await until(async () => !(await adHocTaskIds()).includes(otherTaskId!), "other root's ad-hoc Task deleted with its run", 30_000);
 

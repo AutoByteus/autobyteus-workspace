@@ -206,3 +206,7 @@
 | 2026-11-14 (round 13) | Live, API-F01 | Completed | Partly / Pass | LE-O1 (DeepSeek): the SR-081 step passes; the later step stops (unclassified). API-F01 Pass |
 | 2026-11-14 (round 13) | Reruns | Completed | Fail | DLP-004, DCR-001, AFS-001 pass after probe fixes; **F-69** (SSR-002, DCR-003 stored: the following lead takes the team-level choice); DCR-002 (F-68); typecheck at baseline |
 | 2026-11-14 (round 13, after CRR-046) | F-72 base comparison | Completed | Answered | `remote-run-title-probe.mjs` (identical at base): base `827f1e68dc` RRT-05 Pass ×2 (title only); branch RRT-05 Fail in both completed runs (the task message for ~30–100 ms); one branch run stopped in setup (AGY model discovery timeout). `/tmp/api461/r13-rrt-base`, `/tmp/api461/r13-rrt-branch` |
+| 2026-11-15 (round 14) | Chain A | Completed | Partly | server rebuilt; remote-collaboration 45/45; projects 178/181 (stale parts); extended runtime switch 5/5 ×2; tree: RTP-04 Pass, RTP-05/08 Fail (**F-70** in the window); API-P04 rows match; RRT-05 3/3; LE-O1 blocked (DeepSeek 402) |
+| 2026-11-15 (round 14) | Chain B | Completed | Fail | DLD 20/29 (stale checks), AFS-002 D-IMP-1 3/3, SSR 4/4, SSR-002 ×3 Pass, RSM 7/7, SDV 7/7, PMU 23/25, PLN-09 reason shown, BR-011 Fail, phone 49/55 (**F-74**, **F-75**), API-F01 Pass |
+| 2026-11-15 (round 14) | Reruns | Completed | Fail | ad-hoc 3/3, stories 3/3, DCP-001/002/003/005 and DCR-002 Pass, PMU 25/25, PLN-09 Pass, MSP-13/17/34 Pass; RTP-05/08, MSP-25, MSP-32 fail again; typecheck at baseline |
+

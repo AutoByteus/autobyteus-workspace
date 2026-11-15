@@ -1321,7 +1321,8 @@ defineCase('DCP-001', 'delegated-copy-model-change AC-001/002/004/011, DEC-010: 
   await waitFor('saved', async () => /^\s*Saved\./.test(await page.locator(sel('existing-run-save-bar')).innerText().catch(() => '')), 60000, 1000)
   r.savedSummary = (await cardSummary(copyRow()))
   r.savedSource = await copyRow().getAttribute('data-source')
-  assert(r.savedSummary.includes(MODEL_LABEL) && r.savedSource === null, 'saved copy row should show the chosen model without an origin', r)
+  // V-11 / CR-461-078: the edit is recorded as the run's own (origin "settings"), shown with no origin text.
+  assert(r.savedSummary.includes(MODEL_LABEL) && [null, 'settings'].includes(r.savedSource) && !/default|inherited|configured|recorded/i.test(r.savedSummary.split('·').slice(2).join('·')), 'saved copy row should show the chosen model without an origin', r)
   r.stored = await ownAgentLaunch(r.copyRunId)
   assert(r.stored?.llmModelIdentifier === MODEL, 'choice not recorded on the copy\'s own run', r.stored)
   await shot(page, 'DCP-001-settings-copy-saved-1280', 1280)
@@ -1437,7 +1438,9 @@ defineCase('DCP-002', 'delegated-copy-model-change AC-002/003, IR-002 (Team root
   assert(r.resume.includes('"accepted":true'), 'message to the stopped copy not accepted', r.resume)
   await waitFor('copy lead resumed', async () => (await agyLaunchesOf(r.copyMembers.lead)).length > resumeFrom, 60000)
   r.resumedModels = (await agyLaunchesOf(r.copyMembers.lead)).slice(resumeFrom)
-  assert(r.resumedModels.every((model) => model === MODEL), 'copy lead did not resume on the Team choice', r.resumedModels)
+  // autobyteus-461 F-39 (SR-075, CR-461-089): a team-level choice changes the team's default only; the lead keeps its own
+  // launch (the Team value it started with, ALT) and resumes on it.
+  assert(r.resumedModels.every((model) => model === ALT), 'copy lead should resume on its own launch (F-39)', r.resumedModels)
   r.rootStop = await keyboardStopRoot(page, 'DCP-002', 'AGENT_TEAM', r.teamRunId, parentStop,
     page.locator(sel(`workspace-team-row-${r.teamRunId}`)), 'Enter')
   return r
@@ -1486,7 +1489,7 @@ defineCase('DCP-003', 'delegated-copy-model-change AC-001/002 (Org root, UI): a 
   await saveSettings(page)
   await waitFor('saved', async () => /^\s*Saved\./.test(await saveBarText(page)), 60000, 1000)
   r.savedSummary = (await cardSummary(row()))
-  assert(r.savedSummary.includes(MODEL_LABEL) && await row().getAttribute('data-source') === null, 'saved copy row should show the chosen model without an origin', r)
+  assert(r.savedSummary.includes(MODEL_LABEL) && [null, 'settings'].includes(await row().getAttribute('data-source')) && !/default|inherited|configured|recorded/i.test(r.savedSummary.split('·').slice(2).join('·')), 'saved copy row should show the chosen model without an origin', r)
   const stored = await ownAgentLaunch(r.copyRunId)
   assert(stored?.llmModelIdentifier === MODEL, 'choice not recorded on the copy\'s own run', stored)
   await shot(page, 'DCP-003-org-settings-copy-saved-1280', 1280)
@@ -1637,7 +1640,7 @@ defineCase('DCP-005', 'delegated-copy-model-change REQ-001 (any member), AC-010 
   await focusedCard(page, r.members[member], { group: true })
   r.after = { team: await summaryOf(teamKey), lead: await summaryOf(keyOf('lead')), engineer: await summaryOf(keyOf('engineer')), member: await summaryOf(keyOf(member)) }
   r.memberSource = await rowOf(keyOf(member)).getAttribute('data-source')
-  assert(r.after.member.includes(MODEL_LABEL) && !r.after.member.includes(ALT_LABEL) && r.memberSource === null, 'the member row should show its new model without an origin', r)
+  assert(r.after.member.includes(MODEL_LABEL) && !r.after.member.includes(ALT_LABEL) && [null, 'settings'].includes(r.memberSource) && !/default|inherited|configured|recorded/i.test(r.after.member), 'the member row should show its new model without an origin', r)
   r.engineerAfter = await engineerRecord()
   // Catalog hydration may replace the same model's raw ID with its friendly label; configuration must stay exact.
   const catalogLabel = text => text.replace('grok-4.7', 'Grok 4.7')

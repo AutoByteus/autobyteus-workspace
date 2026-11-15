@@ -352,7 +352,8 @@ suite("The collaboration contract's stories, run against the built server (autob
       socket.on("message", (raw) => frames.push(JSON.parse(String(raw))));
       await new Promise<void>((resolve, reject) => { socket.once("open", () => resolve()); socket.once("error", reject); });
       const deadline = Date.now() + 30_000;
-      while (!frames.length && Date.now() < deadline) await sleep(50);
+      // The stream accepts input once it has said CONNECTED (otherwise SESSION_NOT_READY).
+      while (!frames.some((frame) => frame.type === "CONNECTED") && Date.now() < deadline) await sleep(50);
       socket.send(JSON.stringify({ type: "SEND_MESSAGE", payload: run.kind === "agent_org"
         ? { root_subject_kind: "agent_org", root_run_id: runId, target_agent_run_id: agent, command_id: randomUUID(), message_id: randomUUID(),
           dedupe_key: randomUUID(), content, context_file_paths: [], image_urls: [] }

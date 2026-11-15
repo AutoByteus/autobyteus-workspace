@@ -19,6 +19,7 @@ The latest coverage investigation and execution coverage report remain authorita
 | API-REV-011 | Code Reviewer, `code-review-report.md` CRR-040, round 11 | SR-080, CR-461-076 (code `a4641a0985`), CRR-039, CRR-040 | Fail / 88% | Fail / 87% |
 | API-REV-012 | Code Reviewer, `code-review-report.md` CRR-042, round 12 | CR-461-077 (code `5b455a9ec7`), CRR-041, CRR-042 | Fail / 87% | Fail / 87% |
 | API-REV-013 | Code Reviewer, `code-review-report.md` CRR-045, round 13 | SR-081 … SR-083, CR-461-078 … CR-461-085 (code `58cc542572`), CRR-043 … CRR-045 | Fail / 87% | Fail / 87% |
+| API-REV-014 | Code Reviewer, `code-review-report.md` CRR-047, round 14 | CR-461-086 … CR-461-093 (code `4062c809d2`), CRR-046, CRR-047 | Fail / 87% | Fail / 89% |
 
 ## Revision Entries
 
@@ -548,4 +549,34 @@ None
 - New or remaining failure IDs: F-60, F-67, F-69, F-70, F-73 (`Local Fix`); F-68, F-71, F-72 (`Unclear`)
 - Recommended owner: per the failure-origin review.
 - Remaining risks, blocked evidence, or untested scope: the unclassified items (the extended native runtime switch, LE-O1's later step, AFS-002's later step, BR-011); LE-A1 … LE-T1; the large-hub redesign; no base phone comparison.
+
+### API-REV-014: round 14; F-60, F-67, F-69, F-71, F-73 resolved; F-70 in the window; F-74, F-75; D-IMP-1 3/3
+
+- Triggering role, report path, and round: `/software_engineering_team/code_reviewer`, `code-review-report.md` (CRR-047 at `4062c809d2`), API/E2E round 14
+- Triggering finding or case IDs: CR-461-086 … CR-461-093; the held items (CRR-046)
+- Related revision IDs: CRR-046, CRR-047
+- Why this revision was recorded: the fix round for API-REV-013
+- Coverage decisions or durable test paths changed: probe reads corrected to the design (the report's "Durable Coverage Changed")
+- Cases added, changed, removed, or rechecked: runner scripts `/tmp/api461/r14-a.sh`, `r14-b.sh`, `r14-c.sh`
+- Commands, environment, fixture, or broader-validation delta: the live DeepSeek run is blocked (402 Insufficient Balance on the test vault's account)
+
+#### Prior Failure Resolution
+
+| Prior ID | Classification | Now | Proven By |
+| --- | --- | --- | --- |
+| F-60 | Local Fix | Resolved | DCP-001/003/005, SSR-004 |
+| F-67 | Local Fix | Resolved | PLN-09 |
+| F-68 | Local Fix (CR-461-088) | Not seen | SSR-002 ×3 |
+| F-69 | Local Fix | Resolved | SSR-002, DCR-003, DCP-002 |
+| F-70 | Local Fix | Server resolved; window remains | RC 45/45; RTP-05, RTP-08 fail |
+| F-71 | Local Fix | Resolved | RTP-04; RC-31/33/34 |
+| F-72 | CR-461-093 | Not seen | RRT-05 ×3 |
+| F-73 | Local Fix | Resolved | MSP-02/03/05/06/08/11/14/16/20/33/43 |
+
+- Canonical artifacts and sections updated: the execution report; the progress log; `evidence/api-e2e/*r14*`.
+- Prior result and confidence: Fail / 87%
+- Current result and confidence: Fail / 89%
+- New or remaining failure IDs: F-70 (window), F-74, F-75, D-IMP-1 (`Local Fix`); BR-011 unclassified; LE-O1 blocked
+- Recommended owner: per the failure-origin review.
+- Remaining risks, blocked evidence, or untested scope: no live model run until the DeepSeek test account has balance; LE-A1 … LE-T1; the large-hub redesign.
 

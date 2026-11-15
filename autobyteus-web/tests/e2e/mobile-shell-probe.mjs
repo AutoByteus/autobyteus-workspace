@@ -1931,8 +1931,17 @@ const runCases = async () => {
     const collab = new PhoneUpstreamWebSocket(ownerSocketUrl(stack.wsUrl(`agent-collaboration/${hub}`)));
     await new Promise((resolve, reject) => { collab.once('open', resolve); collab.once('error', reject); });
     await sleep(800);
-    const toChild = (type, target, content) => { const id = randomUUID();
-      collab.send(JSON.stringify({ type, payload: { root_subject_kind: 'agent', root_run_id: hub, target_agent_run_id: target, command_id: randomUUID(),
+    // autobyteus-461 rule 2: a child's commands go to its own stream (the hub's view no longer carries them).
+    const childSockets = new Map();
+    const toChild = async (type, target, content) => { const id = randomUUID();
+      let socket = childSockets.get(target);
+      if (!socket) {
+        socket = new PhoneUpstreamWebSocket(ownerSocketUrl(stack.wsUrl(`agent/${target}`)));
+        await new Promise((resolve, reject) => { socket.once('open', resolve); socket.once('error', reject); });
+        await sleep(500);
+        childSockets.set(target, socket);
+      }
+      socket.send(JSON.stringify({ type, payload: { agent_run_id: target,
         ...(type === 'SEND_MESSAGE' ? { message_id: id, dedupe_key: `agent_run_input:probe:${id}`, content, context_file_paths: [], image_urls: [] } : {}) } })); };
 
     // The desktop window (the Runs view) with its GraphQL log: operation, response bytes, the status read's run IDs and body.
@@ -2096,6 +2105,7 @@ const runCases = async () => {
     await shot(desktop.page, 'MSP-20-desktop-stopped');
     await shot(page, 'MSP-20-phone-stopped');
     collab.close();
+    for (const socket of childSockets.values()) socket.close();
     await desktop.context.close();
     statusFeed.close();
     // autobyteus-461 SR-082: pushed by run ID, so a change shows within a push budget, not a poll's; no status poll at all.
@@ -2288,9 +2298,12 @@ const runCases = async () => {
       command_id: randomUUID(), message_id: randomUUID(), dedupe_key: randomUUID(), context_file_paths: [], image_urls: [],
       content: callTool('delegate_task', { recipient_address: '/changelog_helper', description: `ECHO_INPUT ${marker} The old notes are in [old-notes.txt](${outsidePath}).` }) });
     let task = null;
-    await waitFor('the Org\'s task agent', async () => (task = treeNodes(await orgTree()).find(node => node.agentRunId && /changelog_helper/.test(node.address ?? '')) ?? null) !== null, 60_000);
+    // autobyteus-461 rule 2: the Org's delegated runs are rows of its view, not of its configuration; the run is read by its
+    // own run ID.
+    const orgView = async () => (await alpha.gql('query($id:String!){getAgentOrgRootHistory(orgRunId:$id){org}}', { id: orgRunId })).getAgentOrgRootHistory?.org;
+    await waitFor('the Org\'s task agent', async () => (task = treeNodes(await orgView()).find(node => node.agentRunId && /changelog_helper/.test(node.address ?? '')) ?? null) !== null, 60_000);
     let echoed = false;
-    await waitFor('the task agent\'s answer naming the file', async () => (echoed = await storedHas(alpha, { orgRunId, memberAddress: task.address, agentRunId: task.agentRunId }, `ECHO:`)), 60_000).catch(() => undefined);
+    await waitFor('the task agent\'s answer naming the file', async () => (echoed = await storedHas(alpha, { runId: task.agentRunId }, `ECHO:`)), 60_000).catch(() => undefined);
     const terminated = (await alpha.gql('mutation($id:String!){terminateAgentOrgRun(agentOrgRunId:$id){success message}}', { id: orgRunId })).terminateAgentOrgRun;
     assert(terminated.success, terminated.message);
     // The phone: the stopped Org's task agent.
@@ -2340,7 +2353,9 @@ const runCases = async () => {
     const backToList = { backs, list: await page.locator(`${sel('mobile-run-list')}:visible`).count() };
     await shot(page, 'MSP-17-after-back');
     const facts = { orgRunId, task, echoed, terminated: terminated.success, taskKey, before, after, backToList };
-    assert(before.links >= 1 && before.composer === 0 && before.status === 0, 'the read-only conversation: the file link, no composer, no status yet', facts);
+    // autobyteus-461 rule 2: an Org's delegated run is its own run, so its conversation keeps its own composer (as on the
+    // desktop); the file link and its read-only opening are what this case checks.
+    assert(before.links >= 1 && before.status === 0, 'the delegated run\'s conversation: the file link, no status yet', facts);
     assert(after.status === 0 && after.composer === 0 && after.urlChanged && after.nodeFile === outsidePath && after.viewer === 1 && after.text,
       'a tap on a file outside the workspace opens it read-only (autobyteus-436); still no composer', facts);
     return facts;

@@ -357,7 +357,9 @@ export function registerDelegatedCopyOwnFileCases(h) {
     const edited = await orgConfigTree(r.orgRunId)
     r.slotsAfterEdit = { writer: modelOf(pick(configuredAt(edited, '/writer'), 'launchConfiguration')), pair: modelOf(pick(configuredAt(edited, '/pair'), 'defaultLaunchConfiguration')),
       pairLead: modelOf(pick(configuredAt(edited, '/pair/lead'), 'launchConfiguration')) }
-    r.copiesAfterEdit = { cw: modelOf(pick(pick(recordOf(edited, r.cw), 'source'), 'launchConfiguration')), cp: modelOf(pick(pick(recordOf(edited, r.cp), 'source'), 'defaultLaunchConfiguration')) }
+    // autobyteus-461 rule 2: the Org's configuration holds no delegated runs; each copy's launch is its own run's.
+    r.copiesAfterEdit = { cw: (await gql('query($id:String!){getAgentRunResumeConfig(runId:$id){metadataConfig{llmModelIdentifier}}}', { id: r.cw })).getAgentRunResumeConfig?.metadataConfig?.llmModelIdentifier ?? null,
+      cp: modelOf(pick(objectsIn(await teamTree(r.cp)).find((x) => x.defaultLaunchConfiguration || x.default_launch_configuration), 'defaultLaunchConfiguration')) }
     assert(r.slotsAfterEdit.writer === MODEL && r.slotsAfterEdit.pair === MODEL && r.copiesAfterEdit.cw === ALT && r.copiesAfterEdit.cp === ALT, 'slots edited; copies keep their snapshots', r)
     r.rowsStopped = await delegatedRows(page, { kind: 'org', id: r.orgRunId })
     assert(configuredRows(r.rowsStopped, '/writer')[0]?.launch.includes(ALT_LABEL) && configuredRows(r.rowsStopped, '/pair')[0]?.launch.includes(ALT_LABEL), 'Settings after the edit: copies still on ALT', r.rowsStopped)
@@ -392,8 +394,9 @@ export function registerDelegatedCopyOwnFileCases(h) {
     assertAgentOwnFile(await ownFile(r.cw2, 'run_metadata.json'), { address: '/writer', model: MODEL }, 'CW2')
     const cp2Tree = (await ownFile(r.cp2, 'team_run_execution_tree.json')).json
     r.cp2Facts = { default: modelOf(objectsIn(cp2Tree).find((x) => x.defaultLaunchConfiguration)?.defaultLaunchConfiguration),
-      lead: objectsIn(cp2Tree).filter((x) => x.address === '/pair/lead' && x.launchConfiguration).map((x) => ({ model: modelOf(x.launchConfiguration), followsTeam: x.followsTeam })) }
-    r.cp2Lead = coordinatorRunIdOf(r.cp2Call) ?? objectsIn(cp2Tree).find((x) => x.address === '/pair/lead' && pick(x, 'agentRunId'))?.agentRunId
+      // TC-12: the copy team's own file is rooted at `/` (its lead is `/lead`); CR-461-089: no `followsTeam`.
+      lead: objectsIn(cp2Tree).filter((x) => x.address === '/lead' && x.launchConfiguration).map((x) => ({ model: modelOf(x.launchConfiguration) })) }
+    r.cp2Lead = coordinatorRunIdOf(r.cp2Call) ?? objectsIn(cp2Tree).find((x) => x.address === '/lead' && pick(x, 'agentRunId'))?.agentRunId
     r.cp2LeadLaunches = await waitLaunches('CP2 lead started', r.cp2Lead, 1)
     assert(r.cp2Facts.default === MODEL && r.cp2Facts.lead[0]?.model === r.slotsAfterEdit.pairLead && r.cp2LeadLaunches[0][0] === r.slotsAfterEdit.pairLead, 'CP2 should start from the edited Team slot', r)
 

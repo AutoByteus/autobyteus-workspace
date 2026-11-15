@@ -377,7 +377,8 @@ export const runClosedTaskRowsCases = async (probe) => {
           [stoppedBefore.status?.isActive === false && stoppedBefore.nodeListed && stoppedBefore.listed.phoneHost && stoppedBefore.listed.phoneOther, 'the stopped host\'s delegated row is listed on the node and on both phones'],
           [stoppedBefore.statusReadsNamingPtm === 0 && stoppedBefore.viewReads.phoneHost === 0 && stoppedBefore.viewReads.phoneOther === 0, 'no status poll (SR-082); no view read while nothing changes (QR-002)'],
           [afterClose.goneAfterCloseMs.phoneOther !== null && afterClose.goneAfterCloseMs.phoneOther <= 10_000 && afterClose.goneAfterCloseMs.phoneHost !== null && afterClose.goneAfterCloseMs.phoneHost <= 10_000, 'the closed Task\'s row leaves both phones within 10 s while its host is stopped (AC-011-1)'],
-          [afterClose.status?.isActive === false && afterTodo.status?.isActive === false && afterClose.treeChanged >= 1 && afterTodo.treeChanged >= 1, 'the host stays stopped; the node tells its subscribers its rows changed, on close and on reopen (RUN_TREE_CHANGED)'],
+          // A notice when the node's rows change: at the close always; at the reopen only if the stopped host lists the run again.
+          [afterClose.status?.isActive === false && afterTodo.status?.isActive === false && afterClose.treeChanged >= 1 && (afterTodo.treeChanged >= 1 || afterTodo.nodeListed === false), 'the host stays stopped; the node tells its subscribers when its rows change (RUN_TREE_CHANGED)'],
           [afterClose.viewReads.phoneHost <= 1 && afterClose.viewReads.phoneOther <= 1 && afterTodo.viewReads.phoneHost <= 1 && afterTodo.viewReads.phoneOther <= 1, 'at most one view re-read per digest value (AC-011-2)'],
           [afterTodo.listed.phoneHost === nodeListed && afterTodo.listed.phoneOther === nodeListed, 'after TODO both phones agree with the node\'s stored view (AC-011-1, reopened)'],
         ].filter(([ok]) => !ok).map(([, label]) => label);

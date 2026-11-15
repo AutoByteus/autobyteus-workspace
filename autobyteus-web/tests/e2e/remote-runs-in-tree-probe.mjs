@@ -409,6 +409,8 @@ try {
 
   // RTP-05: Stop on the remote row stops the run on beta.
   const stop = rowOf(remoteAgentRun).first().locator('[data-test="workspace-delegated-stop"]');
+  // The row's live status (and its stop icon) arrives by the run's ID on /ws/run-status: wait for it (autobyteus-461 SR-083).
+  const rowBeforeStop = await waitFor('the remote row\'s stop icon', async () => (await stop.count()) > 0, 30_000).then(() => null, async () => rowInfo(remoteAgentRun));
   const stopVisible = (await stop.count()) > 0;
   if (stopVisible) await stop.click();
   let stoppedOnBeta = false;
@@ -416,7 +418,7 @@ try {
     const groups = (await beta.gql('query{listWorkspaceRunHistory(limitPerAgent:50){agentDefinitions{runs{runId isActive}}}}')).listWorkspaceRunHistory;
     return (stoppedOnBeta = groups.flatMap(group => group.agentDefinitions.flatMap(definition => definition.runs)).some(run => run.runId === remoteAgentRun && run.isActive === false));
   }, 30_000).catch(() => undefined);
-  evidence.cases['RTP-05'] = { result: stopVisible && stoppedOnBeta ? 'Pass' : 'Fail', stopVisible, stoppedOnBeta, rowAfter: await rowInfo(remoteAgentRun) };
+  evidence.cases['RTP-05'] = { result: stopVisible && stoppedOnBeta ? 'Pass' : 'Fail', stopVisible, stoppedOnBeta, rowBeforeStop, rowAfter: await rowInfo(remoteAgentRun) };
 
   // RTP-06 / RTP-07: beta stopped: every family's remote row says "Couldn't reach beta-node." with Retry, and an opened
   // remote run shows the notice with Retry; the rest of the tree works; beta back: Retry from the row (RTP-06) and from
