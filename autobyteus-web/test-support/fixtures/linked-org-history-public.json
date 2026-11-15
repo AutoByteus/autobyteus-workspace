@@ -231,8 +231,7 @@
                     },
                     "autoExecuteTools": true,
                     "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-YVI5WL/validation-workspace/physical-task-workers-round9"
-                  },
-                  "followsTeam": true
+                  }
                 },
                 {
                   "address": "/workers/reader",
@@ -245,8 +244,7 @@
                     },
                     "autoExecuteTools": true,
                     "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-YVI5WL/validation-workspace/physical-task-workers-round9"
-                  },
-                  "followsTeam": true
+                  }
                 }
               ],
               "handoffs": [],
@@ -358,8 +356,7 @@
                     },
                     "autoExecuteTools": true,
                     "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-YVI5WL/validation-workspace/physical-manager-round9"
-                  },
-                  "followsTeam": true
+                  }
                 },
                 {
                   "address": "/api009p_physical_helper_team/reader",
@@ -372,8 +369,7 @@
                     },
                     "autoExecuteTools": true,
                     "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-YVI5WL/validation-workspace/physical-manager-round9"
-                  },
-                  "followsTeam": true
+                  }
                 }
               ],
               "handoffs": [],
@@ -516,8 +512,7 @@
                     },
                     "autoExecuteTools": true,
                     "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-YVI5WL/validation-workspace/concrete-agent_org"
-                  },
-                  "followsTeam": true
+                  }
                 },
                 {
                   "address": "/api009_packet_team/reader",
@@ -530,8 +525,7 @@
                     },
                     "autoExecuteTools": true,
                     "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-YVI5WL/validation-workspace/concrete-agent_org"
-                  },
-                  "followsTeam": true
+                  }
                 }
               ],
               "handoffs": [],
@@ -580,8 +574,7 @@
                     },
                     "autoExecuteTools": true,
                     "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-YVI5WL/validation-workspace/concrete-agent_org"
-                  },
-                  "followsTeam": true
+                  }
                 },
                 {
                   "address": "/api009_packet_team/reader",
@@ -594,8 +587,7 @@
                     },
                     "autoExecuteTools": true,
                     "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-YVI5WL/validation-workspace/concrete-agent_org"
-                  },
-                  "followsTeam": true
+                  }
                 }
               ],
               "handoffs": [],
