@@ -1698,6 +1698,145 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     record("RC-43", { ...out, a1, t1, a2, a3 });
   }, 420_000);
 
+  it("RC-46 461 G-D1 (SR-088, SR-089, CR-461-099) and SR-090: with the delegator stopped, a peer Agent and a peer Team's member open by their own identity on alpha's /ws/peer-run: the snapshot, live output once each, a message, an interrupt, the files; Retry on /ws/run-status settles while beta is down and once it is back", async () => {
+    const out: Rec = {};
+    /** One peer agent opened on alpha's `/ws/peer-run`, as the window opens a peer row. */
+    const peerRun = async (runKind: "agent" | "agent_team", runId: string, agentRunId: string) => {
+      const socket = new WebSocket(`ws://127.0.0.1:${alpha.port}/ws/peer-run/${encodeURIComponent(beta.nodeId)}/${runKind}/${encodeURIComponent(runId)}/${encodeURIComponent(agentRunId)}`);
+      sockets.push(socket);
+      const frames: Frame[] = [];
+      socket.on("message", (raw: unknown) => frames.push({ ...JSON.parse(String(raw)), at: Date.now() }));
+      await new Promise<void>((resolve, reject) => { socket.once("open", () => resolve()); socket.once("error", reject); });
+      await until(() => frames.some((frame) => frame.type === "AGENT_STREAM_SNAPSHOT"), `${agentRunId}'s snapshot on /ws/peer-run`, 30_000);
+      const deltasOf = (frame: Rec): string[] => frame.type === "SEGMENT_CONTENT" ? [String(frame.payload?.delta ?? "")]
+        : frame.type === "SEGMENT_CONTENT_BATCH" ? (frame.payload?.items as Rec[] ?? []).map((item) => String(item.delta ?? "")) : [];
+      /** What the session shows now: its latest snapshot's stored entries and turn frames, then every frame after it. */
+      const shown = () => {
+        const at = frames.map((frame) => frame.type).lastIndexOf("AGENT_STREAM_SNAPSHOT");
+        const snapshot = frames[at]!.payload;
+        const stored = (snapshot.stored.conversation as Rec[]).map((entry) => String(entry.content ?? "")).join("\n");
+        return `${stored}\n${[...(snapshot.turn_frames as Rec[]), ...frames.slice(at + 1)].flatMap(deltasOf).join("")}`;
+      };
+      const count = (marker: string) => shown().split(marker).length - 1;
+      const ack = async (key: "message_id" | "command_id", id: string) => {
+        let found: Rec | undefined;
+        await until(() => Boolean(found = frames.find((frame) => frame.type === "AGENT_COMMAND_ACK" && frame.payload[key] === id)?.payload), `ack ${id}`, 30_000);
+        return found!;
+      };
+      const send = (content: string) => { const id = randomUUID(); socket.send(JSON.stringify({ type: "SEND_MESSAGE", payload: { content, message_id: id, dedupe_key: id } })); return ack("message_id", id); };
+      const interrupt = () => { const id = randomUUID(); socket.send(JSON.stringify({ type: "INTERRUPT_GENERATION", payload: { command_id: id } })); return ack("command_id", id); };
+      return { socket, frames, count, send, interrupt, snapshots: () => frames.filter((frame) => frame.type === "AGENT_STREAM_SNAPSHOT").length };
+    };
+    /** A reply whose text only the agent's output carries (the message names the file, not its text). */
+    const replyWith = async (name: string, text: string) => {
+      const file = path.join(root, "beta", `${name}.txt`);
+      await fsp.writeFile(file, text);
+      return `REPLY_FILE:${file}`;
+    };
+    const settleFor = async (ms: number) => { await wait(ms); };
+
+    // A delegator with a peer Agent and a peer Team on beta; then the user stops it.
+    const solo = await createStandalone(alpha, defs.delegator, "G-D1 delegator");
+    const a1 = (await delegateRemote(solo, "G-D1 agent work. Marker GD1-AGENT-PACKET.")).target_agent_run_id as string;
+    await receives(composeOnBeta(a1), "GD1-AGENT-PACKET");
+    const team = await calls(solo, "delegate_task", { node: LABEL.beta, recipient_address: "/studio_team", description: "G-D1 studio work. Marker GD1-TEAM-PACKET." });
+    expect(team, JSON.stringify(team)).toMatchObject({ delegated: true, target_kind: "team" });
+    const t1 = team.target_team_run_id as string, lead = team.target_team_coordinator_agent_run_id as string;
+    await receives(teamActor(beta, t1, lead, "beta G-D1 studio lead"), "GD1-TEAM-PACKET");
+    const members = flattenE2eConfiguredAgentExecutions((await beta.gql(`query($id:String!){getTeamRunResumeConfig(teamRunId:$id){executionTree}}`, { id: t1 }))
+      .getTeamRunResumeConfig.executionTree);
+    const checker = members.find((member) => member.memberAddress === "/checker")!.agentRunId as string;
+    expect((await alpha.gql(`mutation($id:String!){terminateAgentRun(agentRunId:$id){success message}}`, { id: solo.runId })).terminateAgentRun.success).toBe(true);
+    await until(async () => !(await alpha.gql(`query($id:String!){getAgentRunResumeConfig(runId:$id){isActive}}`, { id: solo.runId })).getAgentRunResumeConfig?.isActive,
+      "the delegator stopped", 30_000);
+
+    // The peer Agent: its snapshot is its whole conversation so far, once.
+    const agent = await peerRun("agent", a1, a1);
+    expect(agent.count("GD1-AGENT-PACKET"), "the packet once in the snapshot").toBe(1);
+    // A message from alpha's window: accepted; its answer shows live, once.
+    expect(await agent.send(await replyWith("gd1-live-agent", "GD1-LIVE-AGENT-REPLY")), "the message's ack").toMatchObject({ command_type: "SEND_MESSAGE", accepted: true });
+    await until(() => agent.count("GD1-LIVE-AGENT-REPLY") > 0, "the peer Agent's answer live on /ws/peer-run", 30_000);
+    await settleFor(2_000);
+    out.agentLive = agent.count("GD1-LIVE-AGENT-REPLY");
+    expect(out.agentLive, "the answer once, live").toBe(1);
+    // A later open of the same run: its snapshot has the answer once (stored or turn frames, never both).
+    const agentAgain = await peerRun("agent", a1, a1);
+    out.agentSnapshotAgain = agentAgain.count("GD1-LIVE-AGENT-REPLY");
+    expect(out.agentSnapshotAgain, "the answer once in a later snapshot").toBe(1);
+    agentAgain.socket.close();
+    // Interrupt: a held turn, then INTERRUPT_GENERATION through /ws/peer-run; the run stops running.
+    const a1Status = await runStatus(alpha, "agent", a1);
+    expect((await agent.send("HOLD_TURN Marker GD1-HOLD")).accepted).toBe(true);
+    await until(() => a1Status.latest(a1) === "running", "the held turn running (by its run ID)", 30_000);
+    out.interrupted = await agent.interrupt();
+    expect(out.interrupted, JSON.stringify(out.interrupted)).toMatchObject({ command_type: "INTERRUPT_GENERATION", state: "accepted" });
+    await until(() => a1Status.latest(a1) !== "running", "not running after the interrupt", 30_000);
+    out.agentTurnEnds = agent.frames.filter((frame) => frame.type === "TURN_INTERRUPTED" || frame.type === "TURN_COMPLETED").map((frame) => frame.type);
+    // The files: the run writes one on beta; it is beta's, read there; alpha serves none of a peer's files.
+    const image = path.join(betaTempWorkspace(), "gd1-image.png");
+    expect((await agent.send(`GENERATE_IMAGE:${image}`)).accepted).toBe(true);
+    await until(() => agent.frames.some((frame) => JSON.stringify(frame).includes("gd1-image.png")), "the file's tool call live", 30_000);
+    let betaFiles: Rec[] = [];
+    await until(async () => (betaFiles = (await beta.gql(`query($id:String!){getRunFileChanges(runId:$id){path status}}`, { id: a1 })).getRunFileChanges ?? [])
+      .some((file) => String(file.path).endsWith("gd1-image.png")), "the file recorded on beta", 30_000);
+    const alphaFiles = await alpha.gqlRaw(`query($id:String!){getRunFileChanges(runId:$id){path status}}`, { id: a1 });
+    const alphaContent = await fetch(`${alpha.baseUrl}/rest/runs/${encodeURIComponent(a1)}/file-change-content?path=${encodeURIComponent(image)}`);
+    out.files = { beta: betaFiles, alpha: { errors: alphaFiles.errors?.map((error) => error.message), data: alphaFiles.data?.getRunFileChanges ?? null }, alphaContentStatus: alphaContent.status };
+    expect((alphaFiles.data?.getRunFileChanges ?? []).length, "alpha lists none of the peer run's files").toBe(0);
+    expect(alphaContent.status, "alpha serves none of the peer run's file contents").not.toBe(200);
+    a1Status.socket.close();
+
+    // The peer Team's member (never started until now): its snapshot, then a message starts it; its answer once, live.
+    const member = await peerRun("agent_team", t1, checker);
+    out.memberSnapshotsBefore = member.snapshots();
+    expect(await member.send(await replyWith("gd1-live-member", "GD1-LIVE-MEMBER-REPLY")), "the member message's ack").toMatchObject({ accepted: true });
+    await until(() => member.count("GD1-LIVE-MEMBER-REPLY") > 0, "the member's answer live on /ws/peer-run", 60_000);
+    await settleFor(2_000);
+    out.memberLive = member.count("GD1-LIVE-MEMBER-REPLY");
+    out.memberSnapshotsAfter = member.snapshots();
+    expect(out.memberLive, "the member's answer once, live").toBe(1);
+    const memberAgain = await peerRun("agent_team", t1, checker);
+    out.memberSnapshotAgain = memberAgain.count("GD1-LIVE-MEMBER-REPLY");
+    expect(out.memberSnapshotAgain, "the member's answer once in a later snapshot").toBe(1);
+    memberAgain.socket.close();
+    // An interrupt of the member, through the same stream.
+    const memberStatus = await runStatus(alpha, "agent_team", t1);
+    expect((await member.send("HOLD_TURN Marker GD1-MEMBER-HOLD")).accepted).toBe(true);
+    await until(() => memberStatus.latest(checker) === "running", "the member's held turn running", 30_000);
+    out.memberInterrupted = await member.interrupt();
+    expect(out.memberInterrupted).toMatchObject({ command_type: "INTERRUPT_GENERATION", state: "accepted" });
+    await until(() => memberStatus.latest(checker) !== "running", "the member not running after the interrupt", 30_000);
+    memberStatus.socket.close();
+    expect(await alpha.gql(`query($id:String!){getAgentRunResumeConfig(runId:$id){isActive}}`, { id: solo.runId }).then((data) => data.getAgentRunResumeConfig?.isActive),
+      "the delegator stayed stopped").toBe(false);
+
+    // SR-090 Retry on /ws/run-status: with beta down, a Retry is answered (its state told again, unreachable); back, ok.
+    const held = await runStatus(alpha, "agent", a1);
+    const statesOf = () => held.frames.filter((frame) => frame.type === "RUN_STATE_CHANGED" && frame.payload.runId === a1).map((frame) => frame.payload);
+    const retry = async () => {
+      const before = statesOf().length;
+      const started = Date.now();
+      held.socket.send(JSON.stringify({ type: "RETRY_PEERS", payload: { runIds: [a1] } }));
+      await until(() => statesOf().length > before, "the Retry's answer (its state told again)", 40_000);
+      return { state: statesOf().at(-1), elapsedMs: Date.now() - started };
+    };
+    await beta.stop();
+    try {
+      await until(() => statesOf().some((state) => state.answer === "unreachable"), "unreachable once beta stopped", 40_000);
+      out.retryWhileDown = await retry();
+      expect(out.retryWhileDown.state, "a Retry while beta stays down settles, unreachable").toMatchObject({ answer: "unreachable", node: LABEL.beta });
+      await beta.start();
+      out.retryBack = await retry();
+      expect(out.retryBack.state, "a Retry once beta is back settles, answered").toMatchObject({ answer: "ok", node: null });
+    } finally {
+      if (!beta.child || beta.child.exitCode !== null) await beta.start();
+    }
+    held.socket.close();
+    agent.socket.close();
+    member.socket.close();
+    record("RC-46", { a1, t1, checker, ...out });
+  }, 420_000);
+
   it("RC-35 278 security: a registered peer that did not start the run is refused on all four routes; naming an agent outside the run is refused; summaries omit runs the caller did not start", async () => {
     const r9 = ids.treeRun as string;
     const gamma = new NodeServer("gamma", root, await getFreePort());
