@@ -1723,4 +1723,9 @@ No architecture review: these follow REQ-006, an approved exception, rule 2 and 
 - **Next action:**
   - architecture review;
   - then the Implementation Engineer.
-
+- **ARCH-REV-060 failed SR-086 on AR-030, now answered.**
+  - **The problem:** G-D1's offsets had no source, because node A can't compute node B's segment positions.
+  - **Decision:** node B sends them, as an additive field on observed appending frames, the same offsets as its own agent stream (3b). Both nodes run the same release (rule 9). A frame without an offset falls back to bracketing (at most three re-reads, then base's in-order append), logged.
+  - **REQ-013's text** now records this one additive field, within the requirement's direction; the user is informed.
+  - **Optional note applied:** `AgentStreamSequence` is released when no session holds it.
+  - **Test:** a delta during the remote projection read appears once, plus the fallback.
