@@ -18,14 +18,14 @@
 
 ## Current Implementation Summary
 
-- Implementation cycle: `Rework` (IR-002, CR-001 Local Fix of CRR-001)
+- Implementation cycle: `Rework` (IR-003, CR-002 Local Fix of CRR-003; before it IR-002, CR-001)
 - Implementation revision record: `.../implementation-revision-record.md`
-- Current implementation revision ID: `IR-002` (IR-001 is the baseline)
+- Current implementation revision ID: `IR-003` (IR-001 baseline, IR-002 CR-001 fix)
 - Related solution revision IDs: SR-004
 - Related architecture-review revision IDs: ARCH-REV-003
-- Related code-review revision IDs: CRR-001; API/E2E / delivery: N/A
-- Triggering finding IDs: CR-001
-- Worktree: `/Users/normy/autobyteus-org/autobyteus-task-worktrees/memory-sync-large-files`, branch `task/memory-sync-large-files`, base `origin/personal` @ `3d738de6e`; code commits `3a78c3eee` (IR-001) and `077fa6853` (IR-002: deleted the unused `resetMemoryHubStagedFileStoreForTests`, nothing else); no release (stop at merge-ready).
+- Related code-review revision IDs: CRR-001, CRR-003; API/E2E: API-REV-002; delivery: N/A
+- Triggering finding IDs: CR-002 (IR-003), CR-001 (IR-002)
+- Worktree: `/Users/normy/autobyteus-org/autobyteus-task-worktrees/memory-sync-large-files`, branch `task/memory-sync-large-files`, base `origin/personal` @ `3d738de6e`; code commits `3a78c3eee` (IR-001) and `077fa6853` (IR-002: deleted the unused `resetMemoryHubStagedFileStoreForTests`, nothing else) and `542bf871f` (IR-003: failure rows of `MemorySyncCard.vue` use `break-words`, only the path span uses `break-all`); no release (stop at merge-ready).
 
 Built exactly as the design sequence: shared limits/hash/types; hub staged store, verify-all-then-write commit, ingestion + sweep owner, routes; source scanner/change planner/batch planner/transfer/stager/failure policy/service; GraphQL; web; tests; doc; replaced code removed.
 
@@ -124,6 +124,7 @@ Code commit tested: `3a78c3eee` (IMP-01..IMP-05; IR-002 only deletes one export,
 | IMP-03 | `node scripts/typecheck.mjs` (server) | 3a78c3eee | same | src + tests | all | Pass | `evidence/IMP-03-server-typecheck.log` | `production errors: 0; test-file errors: 1180 in 364 files (baseline 1180 in 364 files)` and `PASS` |
 | IMP-04 | `vitest run components/settings/__tests__/MemorySyncCard.spec.ts` | 3a78c3eee | jsdom | card, store types | AC-010 | Pass | `evidence/IMP-04-web-memory-sync-card.log` | `Tests  7 passed (7)`; the three "files that could not be synced" tests |
 | IMP-06 | `tsc -p tsconfig.build.json --noEmit`; `vitest run tests/unit/memory-sync tests/architecture/tracked-imports.test.ts` | 077fa6853 | same | staged-file store, tracked imports | CR-001 | Pass | `evidence/IMP-06-cr001-delta.log` | `Tests  70 passed (70)`; no grep match for the removed export |
+| IMP-07 | `vitest run components/settings/__tests__/MemorySyncCard.spec.ts` (web) | 542bf871f | jsdom | `MemorySyncCard.vue` | CR-002 | Pass (line breaking itself is not checkable in jsdom; API/E2E reruns API-08 and API-06a in the browser) | `evidence/IMP-07-card-wrapping-delta.log` | `Tests  7 passed (7)` |
 | IMP-05 | one measured 2 GiB (and 4 GiB, warm, 30 MiB control) run, RSS sampled every 250 ms | 3a78c3eee | same | stager, hub store, commit | AC-003, QR-002, R-AR-1 | Pass with a note (cold source growth 264 MiB > 200) | `evidence/IMP-05-ac003-measurement.md` (+ raw json) | table rows "Cold 2 GiB", "Warm 2 GiB"; hub commit request `5661 ms` |
 
 - Not run, and why: the full server unit suite end to end (it exceeded my time limit; only the memory-sync, node-access, architecture and migration-gate subsets ran; `tests/unit/memory-search/memory-search-store.test.ts` and `tests/architecture` memory-search cases fail in this environment with `RangeError: Value is too large to be represented as a JavaScript number` from the SQLite store, which this change does not touch); the web typecheck gate (`node scripts/typecheck.mjs` in `autobyteus-web` reports 6 more test-file errors than baseline in files this change does not touch (`layouts/__tests__/default-drawer.spec.ts`, `test-support/*`) and none in changed files; I did not run `prepare:shared-types`) and two web specs (`DisplaySettingsManager`, `LanguageSettingsManager.integration`) that fail here on `localStorage.clear` under Node 26, unrelated; `agent-semantic-memory.e2e.test.ts` (edited for the removed `deferred` field; type-checks; needs its own environment); fresh-start desktop build and `pnpm release:test` (delivery).

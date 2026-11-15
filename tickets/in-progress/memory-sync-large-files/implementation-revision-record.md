@@ -6,6 +6,7 @@
 | --- | --- | --- | --- | --- | --- |
 | IR-001 | Architecture reviewer, ARCH-REV-003 pass of SR-004 (`design-review-report.md`) | N/A | `Initial Baseline` | SR-004, ARCH-REV-003 | Large-file transfer, per-file outcomes, trigger-aware run gate, staged-file hub store and routes, owner status block implemented at `3a78c3eee`; checks pass; AC-003 measured |
 | IR-002 | Code reviewer, CRR-001 round 1 (Fail) | CR-001 | `Local Fix` | CRR-001 (SR-004, ARCH-REV-003 unchanged) | Removed the unused `resetMemoryHubStagedFileStoreForTests` at 077fa6853 |
+| IR-003 | Code reviewer CRR-003 (failure origin of API/E2E round 2, API-REV-002, API-08 / OBS-1) | CR-002 | `Local Fix` | CRR-003, API-REV-002, SR-005 | Failure rows wrap at word boundaries; only the path breaks anywhere (542bf871f) |
 
 ## Revision Entries
 
@@ -48,3 +49,23 @@
 - Local validation and result: `git grep` finds no caller or definition; server src typecheck 0 errors; `tests/unit/memory-sync` and `tracked-imports` pass (15 files, 70 tests): `evidence/IMP-06-cr001-delta.log`
 - Next recipient or routing: code reviewer, targeted delta review
 - Remaining limitations or risks: unchanged from IR-001
+
+### IR-003 — Word-boundary wrapping in the failure rows (CR-002)
+
+- Triggering role, report path, and round: code reviewer, `code-review-report.md`, CRR-003 (failure-origin review of API/E2E round 2, API-REV-002, API-08 / OBS-1)
+- Triggering finding IDs: CR-002 (Medium)
+- Classification: `Local Fix`
+- Prior authoritative result: IR-002 (code `077fa6853`)
+- Current authoritative result: IR-002 plus this fix, code commit `542bf871f`
+- Related solution revision IDs: SR-004, SR-005
+- Related architecture-review revision IDs: ARCH-REV-003
+- Related code-review revision IDs: CRR-001, CRR-002, CRR-003
+- Related API/E2E revision IDs: API-REV-002
+- Related delivery revision IDs: N/A
+- Why this revision is recorded: `break-all` on the whole failure `<li>` broke ordinary words ("Upload/ed", "next atte/mpt") in the real browser (en and zh-CN)
+- Approved behavior or requirement IDs affected: REQ-007 / AC-010 (card readability); no behavior change
+- Implementation delta: `<li>` class `break-all` -> `break-words`; the path `<span class="font-mono">` gets `break-all`. The long path inside the hub's reason text still wraps under `overflow-wrap: break-word`
+- Changed files or areas: `autobyteus-web/components/settings/MemorySyncCard.vue` (one template block, 2 lines)
+- Local validation and result: `MemorySyncCard.spec.ts` 7 passed (`evidence/IMP-07-card-wrapping-delta.log`). jsdom cannot show line breaking and no durable test was added (reviewer ruling); the proof is API/E2E's browser rerun of API-08 and API-06a
+- Next recipient or routing: code reviewer, targeted delta review; then API/E2E reruns API-08 and API-06a
+- Remaining limitations or risks: not visually checked by me; the wrapping result is only provable in the real browser
