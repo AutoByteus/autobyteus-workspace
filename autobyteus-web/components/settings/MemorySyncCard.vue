@@ -140,8 +140,8 @@
       <div v-if="fileFailureCount > 0" data-testid="memory-sync-file-failures" class="mt-3 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-800" role="status">
         <p class="font-semibold" data-testid="memory-sync-file-failures-title">{{ fileFailuresTitle }}</p>
         <ul class="mt-1 space-y-1">
-          <li v-for="failure in fileFailures" :key="`${failure.kind}/${failure.relativePath}`" data-testid="memory-sync-file-failure" class="break-all text-xs">
-            <span class="font-mono">{{ failure.kind }}/{{ failure.relativePath }}</span> · {{ formatBytes(failure.size) }} · {{ failure.reason }} · {{ t('settings.components.settings.MemorySyncCard.nextAttempt') }} {{ formatTimestamp(failure.nextAttemptAt) }}
+          <li v-for="failure in fileFailures" :key="`${failure.kind}/${failure.relativePath}`" data-testid="memory-sync-file-failure" class="break-words text-xs">
+            <span class="break-all font-mono">{{ failure.kind }}/{{ failure.relativePath }}</span> · {{ formatBytes(failure.size) }} · {{ failure.reason }} · {{ t('settings.components.settings.MemorySyncCard.nextAttempt') }} {{ formatTimestamp(failure.nextAttemptAt) }}
           </li>
         </ul>
         <p v-if="hiddenFileFailureCount > 0" data-testid="memory-sync-file-failures-more" class="mt-1 text-xs">{{ t('settings.components.settings.MemorySyncCard.fileFailuresMore', { count: hiddenFileFailureCount }) }}</p>
