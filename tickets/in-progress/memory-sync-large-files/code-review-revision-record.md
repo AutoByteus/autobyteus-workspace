@@ -8,6 +8,7 @@
 | CRR-002 | `code-review-report.md` | Implementation Review, round 2 (Targeted Delta) / IR-002 at `077fa6853` | Fail (Local Fix) | Pass | CR-001 (resolved) |
 | CRR-003 | `code-review-report.md` | API/E2E Failure-Origin Review, round 3 / API-REV-002, API-08 OBS-1 at `077fa6853` | Pass | Fail (Local Fix, implementation defect) | CR-002 |
 | CRR-004 | `code-review-report.md` | Implementation Review, round 4 (Targeted Delta) / IR-003 at `542bf871f` | Fail (Local Fix) | Pass | CR-002 (resolved) |
+| CRR-005 | `api-e2e-test-review-report.md` | Post-API/E2E test-code review / API-REV-003 Pass | Pass (CRR-004) | Not Applicable | None |
 
 ## Revision Entries
 
@@ -124,3 +125,30 @@ None
 - Material score or classification changes: category 8 restored to 9.3 with a corrected rationale; average 9.41
 - Recommended recipient: `/software_engineering_team/api_e2e_engineer` (Implementation Engineer gets the informational notice)
 - Remaining risks or uncertainty: the browser re-validation by API-08 (en and zh-CN, DOM assertion of `word-break`)
+
+### CRR-005 — Proportional test-code review after API/E2E Pass (API-REV-003)
+
+- Canonical review report updated: `api-e2e-test-review-report.md` (new)
+- Review entry point and round: Successful API/E2E test-code review, round 1
+- Review scope: `N/A` (test review)
+- Triggering role, report path, and finding or scenario IDs: API/E2E engineer, `api-e2e-execution-coverage-report.md` (API-REV-003, Pass, 93%)
+- Relevant solution revision IDs: SR-005
+- Relevant architecture-review revision IDs: ARCH-REV-003
+- Relevant implementation revision IDs: IR-003
+- Relevant API/E2E revision IDs: API-REV-001, API-REV-002, API-REV-003
+- Relevant delivery revision IDs: N/A
+- Prior authoritative result: Pass (CRR-004, implementation review)
+- Current authoritative result: Not Applicable (no durable test file changed)
+- What changed in the review result and why: `git diff --stat bfcd82366 HEAD -- . ':!tickets'` shows only `TESTING.md` and the CR-002 source fix. The probes are temporary evidence. For context, the API-08 re-validation of CR-002 asserts computed `word-break` in the DOM and has a negative control that fails, so CR-002 is now proven in the browser.
+- Supported product scenario / material-premise basis changes: none
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| CR-002 | Resolved in source; browser proof pending | Resolved and proven | API-REV-003 | `evidence/API-08-card-browser-round2-after-fix/card-probe-result.json` (`splitShortLatinWords: []`); negative control finds 21 / 2 split words |
+
+- New or remaining finding IDs: none
+- Material score or classification changes: none
+- Recommended recipient: `/software_engineering_team/delivery_engineer`
+- Remaining risks or uncertainty: packaged desktop run blocked by FU-003 (base-commit web typecheck); release order with `autobyteus-workspace-6`
