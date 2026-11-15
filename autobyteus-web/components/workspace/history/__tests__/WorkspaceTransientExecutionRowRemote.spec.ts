@@ -78,6 +78,14 @@ describe('WorkspaceTransientExecutionRow for a run another node runs', () => {
     expect(wrapper.find('[data-test="workspace-remote-run-checking"]').exists()).toBe(false);
   });
 
+  it('CR-461-103: the row carries its status as data-status (as base\'s Org rows did): a Team its own, an agent its own', () => {
+    const team = mount(WorkspaceTransientExecutionRow, { props: { row: teamRow({ remote: null }), teamStatus: AgentStatus.Idle, hasChildren: true } });
+    expect(team.get('[data-test="workspace-team-transient-execution-row"]').attributes('data-status')).toBe('idle');
+    const agent = mount(WorkspaceTransientExecutionRow, { props: { row: teamRow({ remote: null, transientKind: 'task_team_child', memberKind: 'agent',
+      agentRunId: 'lead-run', teamRunIdForNode: null, currentStatus: AgentStatus.Offline, hasChildren: false }) } });
+    expect(agent.get('[data-test="workspace-team-transient-execution-row"]').attributes('data-status')).toBe('offline');
+  });
+
   it('a member of a remote Team carries no chip of its own; a local row has none', () => {
     const member = mount(WorkspaceTransientExecutionRow, { props: { row: teamRow({ transientKind: 'task_team_child', rowKey: 'peer_member:marketing-run:lead-run',
       agentRunId: 'lead-run', teamRunIdForNode: null, memberKind: 'agent', memberAddress: '/marketing_team/lead', depth: 1, hasChildren: false }) } });

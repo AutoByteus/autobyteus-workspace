@@ -27,6 +27,8 @@ const fakeRun = () => {
     subscribeToEvents: vi.fn((listener: (event: unknown) => void) => { listeners.add(listener); return () => listeners.delete(listener); }),
     emit: (delta: string) => listeners.forEach((listener) => listener({ runId: RUN, eventType: AgentRunEventType.SEGMENT_CONTENT,
       payload: { id: "item-1", delta, segment_type: "text" }, statusHint: null })),
+    status: (status: string) => listeners.forEach((listener) => listener({ runId: RUN, eventType: AgentRunEventType.AGENT_STATUS,
+      payload: { status, agent_id: RUN }, statusHint: null })),
     listenerCount: () => listeners.size,
   };
 };
@@ -49,9 +51,18 @@ const setup = () => {
     const sequence = new AgentStreamSequence(RUN, { storedTurnIds: () => new Set(), whenPersisted: async () => undefined, map: (event) => mapper.map(event) });
     sequence.recordPredating();
     const off = run.subscribeToEvents((event) => { if (isAgentRunEvent(event)) sequence.accept(event); });
-    attached.set(run, { sequence, release: () => { off(); sequence.dispose(); } });
+    attached.set(run, { sequence, release: () => { off(); sequence.dispose(); followers.forEach((listener) => listener(null)); } });
+    followers.forEach((listener) => listener(sequence));
   };
-  const sequences = { of: (id: string) => (live && id === RUN ? attached.get(live)?.sequence ?? null : null) };
+  const followers = new Set<(sequence: AgentStreamSequence | null) => void>();
+  const sequences = {
+    of: (id: string) => (live && id === RUN ? attached.get(live)?.sequence ?? null : null),
+    follow: (id: string, listener: (sequence: AgentStreamSequence | null) => void) => {
+      followers.add(listener);
+      listener(sequences.of(id));
+      return () => { followers.delete(listener); };
+    },
+  };
   /** The delegator's Task message restores the child: its root registers, then its host is made ready in its gate. */
   const restore = () => {
     reservation = registrations.reserve(createAgentRootExecutionIdentity(RUN), boundary);
@@ -64,6 +75,19 @@ const setup = () => {
     return run;
   };
   const stop = () => { if (live) attached.get(live)?.release(); live = null; registered = false; reservation?.release(); };
+  /**
+   * A stop in the order the runtime takes it (CR-461-103): the root unregisters first, then the run reports its final
+   * status, then its resources (its sequence) detach and it leaves the run manager.
+   */
+  const stopInOrder = async (beforeDetach: () => Promise<void>) => {
+    const run = live!;
+    registered = false;
+    reservation?.release();
+    await beforeDetach();
+    run.status("offline");
+    attached.get(run)?.release();
+    live = null;
+  };
   const coordinator = { postUserMessage: vi.fn(async (input: any) => {
     const run = live ?? restore();
     input.onActiveRunReady?.(run);
@@ -71,7 +95,9 @@ const setup = () => {
       state: "accepted", accepted: true, duplicate: false } };
   }) };
   const handler = new AgentStreamHandler(new AgentSessionManager(), agentRunService as never,
-    undefined, coordinator as never, { getRunStatusProjection: vi.fn(async () => stopped) } as never,
+    // A run still in the run manager answers its live status; a stopped one its stored offline (as the projection does).
+    undefined, coordinator as never, { getRunStatusProjection: vi.fn(async () => (live
+      ? { ...stopped, status: "idle", statusPayload: { status: "idle", agent_id: RUN } } : stopped)) } as never,
     { registrations, roots: { getActive: (id: string) => (registered && id === RUN ? root : null) } },
     sequences, async (runId: string) => buildRunProjectionBundle(runId, [], []));
   const connection = { send: vi.fn(), close: vi.fn() };
@@ -79,7 +105,7 @@ const setup = () => {
   // Coalesced content leaves as numbered batches (SR-087).
   const deltas = () => wire().filter((message) => message.type === ServerMessageType.SEGMENT_CONTENT_BATCH)
     .flatMap((message) => message.payload.items.map((item: { delta: string }) => item.delta));
-  return { handler, connection, restore, stop, wire, deltas };
+  return { handler, connection, restore, stop, stopInOrder, wire, deltas };
 };
 
 const settle = async () => { for (let i = 0; i < 10; i += 1) await Promise.resolve(); vi.advanceTimersByTime(500); await Promise.resolve(); };
@@ -125,5 +151,22 @@ describe("AgentStreamHandler follows its run (SR-064)", () => {
     run.emit("once");
     await settle();
     expect(deltas()).toEqual(["once"]);
+  });
+
+  it("CR-461-103: a run that unregisters before its final status shows that status, not the live one read at the unregistration", async () => {
+    vi.useFakeTimers();
+    const { handler, connection, restore, stopInOrder, wire } = setup();
+    await handler.connect(connection, RUN);
+    const run = restore();
+    run.status("idle");
+    await settle();
+    await stopInOrder(settle);
+    await settle();
+    const statuses = wire().filter((message) => message.type === ServerMessageType.AGENT_STATUS).map((message) => message.payload.status);
+    expect(statuses.at(-1), JSON.stringify(statuses)).toBe("offline");
+    // The run's own idle, then only offline: no stale live status after the stop.
+    expect(statuses.lastIndexOf("idle"), JSON.stringify(statuses)).toBe(statuses.indexOf("idle"));
+    expect(run.listenerCount()).toBe(0);
+    expect(connection.close).not.toHaveBeenCalled();
   });
 });

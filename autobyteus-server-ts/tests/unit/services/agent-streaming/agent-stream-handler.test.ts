@@ -56,6 +56,11 @@ const sequences = {
     }
     return sequence;
   },
+  /** A run's sequence as it is now; in these tests it never ends while a session follows it. */
+  follow: (runId: string, listener: (sequence: AgentStreamSequence | null) => void): (() => void) => {
+    listener(sequences.of(runId));
+    return () => undefined;
+  },
 };
 const readStored = vi.fn(async (runId: string) => buildRunProjectionBundle(runId, [], []));
 const streamed = <T extends StreamedRun>(run: T): T => { runsById.set(run.runId, run); return run; };

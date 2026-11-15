@@ -87,7 +87,7 @@ export class AgentStreamHandler {
     statusProjectionService: AgentRunStatusProjectionService = getAgentRunStatusProjectionService(),
     private readonly follow: AgentRunFollowSources | null = null,
     /** Each active run's own stream sequence (SR-087), and its stored read for the snapshot. */
-    private readonly sequences: Pick<AgentStreamSequences, "of"> = getAgentStreamSequences(),
+    private readonly sequences: Pick<AgentStreamSequences, "of" | "follow"> = getAgentStreamSequences(),
     private readonly readStored: ReadStoredRun = (runId) => getAgentRunViewProjectionService().getProjection(runId),
   ) {
     this.sessionManager = sessionManager;
@@ -233,11 +233,33 @@ export class AgentStreamHandler {
 
   /** The run stopped (its root ended): the session stays open, unbound, with the run's stopped status (SR-064). */
   private async unbindStoppedRun(sessionId: string, agentRunId: string, egress: AgentStreamWebSocketEgress): Promise<void> {
+    // The run unregisters before its last frames (its final status): the session keeps its frames until the run's own
+    // sequence ends, then leaves it (CR-461-103). A run restored meanwhile is bound again and stays bound.
+    const stopped = this.subscribedRunsBySessionId.get(sessionId);
+    await this.untilSequenceEnds(agentRunId);
+    if (this.sessionEgresses.get(sessionId) !== egress || this.subscribedRunsBySessionId.get(sessionId) !== stopped) return;
     this.activeRunUnsubscribers.get(sessionId)?.();
     this.activeRunUnsubscribers.delete(sessionId);
     this.subscribedRunsBySessionId.delete(sessionId);
     const projection = await this.statusProjectionService.getRunStatusProjection(agentRunId);
     if (this.sessionEgresses.get(sessionId) === egress) egress.send(new ServerMessage(ServerMessageType.AGENT_STATUS, projection.statusPayload));
+  }
+
+  /** Settles when the run's current sequence ends (it detaches after the run's last event), at once when it has none. */
+  private untilSequenceEnds(runId: string): Promise<void> {
+    const current = this.sequences.of(runId);
+    if (!current) return Promise.resolve();
+    return new Promise((resolve) => {
+      let ended = false;
+      let unfollow: (() => void) | null = null;
+      unfollow = this.sequences.follow(runId, (sequence) => {
+        if (sequence === current || ended) return;
+        ended = true;
+        unfollow?.();
+        resolve();
+      });
+      if (ended) unfollow();
+    });
   }
 
   private ensureActiveSessionSubscription(sessionId: string, runId: string): boolean {

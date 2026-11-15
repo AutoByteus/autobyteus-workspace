@@ -34,6 +34,11 @@ export const lazyAgentStreamSequences = (
         }
         return sequence;
       },
+      /** A run's sequence as it is now; a sequence here never ends while a session follows it. */
+      follow(runId: string, listener: (sequence: AgentStreamSequence | null) => void): () => void {
+        listener(this.of(runId));
+        return () => undefined;
+      },
     },
     readStored: async (runId: string) => stored(runId),
   };

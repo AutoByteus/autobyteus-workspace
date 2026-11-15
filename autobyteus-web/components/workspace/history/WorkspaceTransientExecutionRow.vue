@@ -10,6 +10,7 @@
     :data-team-run-id="row.teamRunId"
     :data-member-address="row.memberAddress"
     :data-agent-run-id="row.agentRunId ?? undefined"
+    :data-status="status"
     :data-tree-depth="row.depth"
     :title="identityLabel"
     :aria-label="accessibleLabel"
