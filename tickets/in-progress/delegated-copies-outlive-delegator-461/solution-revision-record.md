@@ -1748,4 +1748,9 @@ No architecture review: these follow REQ-006, an approved exception, rule 2 and 
 - **Next action:**
   - architecture review;
   - then the Implementation Engineer.
-
+- **ARCH-REV-062 failed SR-087 on AR-031, now answered.**
+  - **The turn key:** the raw trace's `turn_id`, recorded by both writers and carried by the replay events, gains a server-side `turnId` on the projection entry. This was read in the code before answering (lesson 2026-11-15-R3).
+  - **Filter by exclusion:** keep a turn that predates this sequence, or was confirmed at the base. "Predates" is the set of turn IDs already stored when the `AgentRun` activated, taken from the restore's memory load. It is not a file position, because compaction rewrites trace files.
+  - **Entries with no turn** are always kept, matched by `messageId` (the web's ignoring of a repeat is to verify).
+  - **A stopped run:** the read is unfiltered.
+  - **New tests:** a restored live run, a stopped run, an interrupted earlier turn, and the native write-before-frame order.

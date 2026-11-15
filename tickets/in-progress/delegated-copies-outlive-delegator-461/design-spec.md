@@ -291,9 +291,13 @@ A run opened as its own run (rule 2) reads its stored conversation, then connect
   - **The turn buffer:** `AgentStreamSequence` keeps the frames of every turn that is not yet confirmed, from that turn's first frame. A turn's frames are dropped when it is confirmed. The buffer exists while the run's `AgentRun` is active, whether or not a session is connected (the session-scoped lifetime of G-G1 is revised). It goes when the run stops, by which point every turn has ended.
   - **The snapshot connection,** for SR-063's rule on the run's own stream:
     1. in one synchronous step: the base sequence, the set of confirmed turns, and a copy of the buffered frames of the unconfirmed turns;
-    2. the stored read, behind the queue, filtered to the confirmed set taken in step 1: those turns' assistant and tool entries, plus the user's and inter-agent messages (matched by `messageId`). An unconfirmed turn's entries are left out even if they were written during the read, because its frames are in the copy;
+    2. the stored read, behind the queue, filtered **by exclusion** (ARCH-REV-062 AR-031). A stored entry is **kept** when its turn predates this sequence or was confirmed at the base. Every other turn's entries are left out, even if they were written during the read: a turn unconfirmed at the base (its frames are in the copy), and a turn started after it (its frames follow the base). In detail:
+       - **The turn key:** the raw trace's `turn_id` (`raw-trace-item.ts:14, 86`), which both the native and the external writers record (`runtime-memory-event-accumulator.ts:40, 72`). The historical replay events already carry it (`historical-replay-event-identity.ts:32`). `RunProjectionConversationEntry` gains a server-side `turnId`, which the web ignores;
+       - **"Predates this sequence":** when the `AgentRun` activates, `AgentStreamSequence` records the set of turn IDs already in the run's stored memory, active and archived traces alike, from the memory load that the restore already performs. Compaction archives or rewrites trace files, so a file position would not be stable; turn IDs are. A turn interrupted in an earlier instance, without `TURN_COMPLETED`, is in that set and is kept once;
+       - **Entries with no turn** (user and inter-agent messages, notices) are always kept. The web matches messages by `messageId`. **To verify** before building: that the web's message handlers ignore a repeated `messageId`;
     3. `AGENT_STREAM_SNAPSHOT { stored, turnFrames, baseSequence, liveSequenceId }`. The web replays `turnFrames` through its own stream handlers, so the open segments get their stream identities;
     4. the frames after the base, which belong only to unconfirmed or later turns, so they continue the replayed segments and never overlap the stored part.
+  - **A stopped run, or a run with no active sequence:** the read is unfiltered: the full stored conversation, with `turnFrames` empty. When the run is restored while the stream is open (SR-064), a new sequence starts, records its predating set, and the in-band snapshot follows the same steps.
   - **So no offsets are needed.** SR-085's per-frame offsets (AR-029) and their UTF-16 and raw-field rules (ARCH-REV-059) are withdrawn, and base's `appendContentToSegment` stays unchanged. A restore that rebinds the session (SR-064) sends an in-band snapshot by the same steps.
 - **The web:** `AgentStreamingService` applies the stored part, replays `turnFrames`, then the frames after the base, and reopens on a sequence gap. CR-461-098's re-read and `conversationMark` heuristic are removed, and so is the separate stored read before connecting.
 - **Scope:** every agent run's own stream, user-started and delegated alike (one rule). A team's member uses the team stream's existing connection.
@@ -302,6 +306,10 @@ A run opened as its own run (rule 2) reads its stored conversation, then connect
   - **a segment written during the read** appears once, because its turn is unconfirmed at the base and filtered out of the stored part;
   - **reasoning flushed while still open at a tool boundary** appears once;
   - **a turn confirmed during the read** appears once: it is not in step 1's confirmed set, so it comes from its frames;
+  - **a run restored after idle shutdown or a restart, opened live,** keeps its whole earlier conversation in the snapshot;
+  - **a stopped run's snapshot** is its full stored conversation;
+  - **an earlier turn interrupted without `TURN_COMPLETED`** appears once;
+  - **a turn whose write lands before its first frame reaches the sequence** (the native settle order) appears once, because it is not in the predating set;
   - a restore during an open stream gives one in-band snapshot, with no gap;
   - BR-011 (the Org worker's conversation after a restart) passes with the heuristic removed.
 
