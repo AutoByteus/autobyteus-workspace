@@ -11,9 +11,9 @@
 - Finalization target remote / branch: `origin/personal` (no release; the Task says stop at merge-ready)
 - Bootstrap result: worktree created from refreshed `origin/personal`; `pnpm install --frozen-lockfile` (pnpm 10.28.2 via `npx`, no global pnpm on this machine) succeeded
 - Bootstrap blocker: None
-- Current solution revision ID: `SR-001`
+- Current solution revision ID: `SR-002`
 - Authorities read (requirements reading gate; 2026-11-15): `references/requirements-engineering.md`, `references/finding-the-cause.md`, `references/ticket-scope.md`; also `AGENTS.md`, `TESTING.md` (test layers, phone-bundle rule), `autobyteus-web/docs/localization.md`, `docs/android_mobile_access.md`
-- Investigation status: requirements investigation complete; architecture investigation not started (waits for approval)
+- Investigation status: requirements and architecture investigation complete (2026-11-15). Design reading gate: `references/architecture-design.md`, `references/design-principles.md`, `DESIGN.md`, `autobyteus-server-ts/docs/design/node_access_model.md`
 
 ## Initial Request And Clarifications
 
@@ -146,6 +146,18 @@
 | R-002 | Risk | No disk quota for drafts/finals | Large videos consume disk | Accepted with the configurable limit; owner can lower it | Accepted |
 | R-003 | Risk | Pasting a draft attachment from another composer re-downloads it into browser memory (`cloneDraftAttachmentToTarget`) | A multi-GB video could exhaust a phone WebView | Rare path; recorded as FU-002 | Open |
 | U-001 | Unknown | Exact sizes of the user's three videos | Whether 500 MiB would have sufficed | Manager decides the default (DEC-001) | Open |
+
+## Architecture Investigation Findings
+
+| Source | Observation | Used for |
+| --- | --- | --- |
+| `node_modules/@fastify/multipart/index.js:235-287` | `handleMultipart(opts)` deep-merges per-request options over plugin options | Per-route `limits.fileSize`; the plugin registration drops its global limit |
+| `src/api/security/node-route-permissions.ts:118`, node access model NA-2 | Unlisted REST routes are open to owner and phone | `GET /rest/context-files/size-limits` needs no permission row or model update |
+| `src/config/task-execution-idle-shutdown-setting.ts`, `src/services/server-settings-service.ts:194-210` | Typed setting pattern: key, default, range, resolve at use, persistence normalizer registered | The two limit settings follow it |
+| `autobyteus-ts/src/agent/llm-request-assembler.ts:113`, `src/agent/loop/llm-phase-summary-port.ts:106` | Both provider request paths call `sanitizeMediaInputMessages` | Inline cap placed in the sanitizer covers every renderer |
+| `autobyteus-web/tests/e2e/mobile-shell-probe.mjs` (MSP-28..31) | Phone-bundle attachment cases exist | Phone cases for AC-001/AC-005 |
+| `useContextAttachmentComposer.ts:91-95`, `projectTaskContextClient.ts:27-30` | Only readers of upload error bodies | Both move to the typed failure |
+| Tests asserting old values: `tests/unit/context-files/context-file-upload-writer.test.ts`, `tests/unit/projects/project-task-local-context-files.test.ts:107`, `tests/e2e/projects/project-task-boundaries.e2e.test.ts:674,698`, `tests/unit/agent-tools/project-tasks/project-task-tools.test.ts:125`, `tests/unit/agent-execution/shared/task-tool-runtime-parity.test.ts:90,136` | Derived consumers | Updated with the change |
 
 ## Requirement Implications
 

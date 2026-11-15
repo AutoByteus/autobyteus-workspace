@@ -2,15 +2,15 @@
 
 ## Document Status
 
-- Status: `Ready for Approval` (one decision, DEC-001, waits for the manager's number; everything else is decided within the direction)
-- Current solution revision ID: `SR-001`
+- Status: `Approved`
+- Current solution revision ID: `SR-002`
 - Package identifier: `context-file-large-video-upload`
 - Request / ticket: Project Task `autobyteus-workspace-6` (Project `project_3165230d-b602-4efc-ac42-fb61a03f1ed5`)
 - Requested by: `/project_task_manager` (run id `project_task_manager_89e33a2ea30f422fab0407e4dc2b13bb`), on the user's report of 2026-11-16
 - Requirements owner: Solution Designer
 - Date: 2026-11-15
-- Approved by and reference: not yet
-- Exact approved requirements baseline / solution revision: not yet
+- Approved by and reference: `Solution Designer within the direction (user informed)` for DEC-002..DEC-009; DEC-001 decided by the manager under the user's delegation (the Task: "the manager decides the product numbers under the user's delegation"), message from `/project_task_manager` run `project_task_manager_89e33a2ea30f422fab0407e4dc2b13bb` on 2026-11-15: "use the recommendation: default limit 2 GiB for video and audio … Proceed: approval recorded"
+- Exact approved requirements baseline / solution revision: this document at SR-002 (SR-001 content plus DEC-001 = 2048 MiB and the release-order constraint RC-001)
 - Behavior-defining supplements and their approved versions: None (probes are evidence only)
 
 ## Problem And Desired Outcome
@@ -75,6 +75,10 @@
 
 BEH-003, BEH-004, BEH-005, BEH-006, BEH-010; the preserved column of BEH-001, BEH-002, BEH-007, BEH-008; AC-003, AC-013.
 
+### Release-Order Constraint
+
+- RC-001: this ticket may be merged independently, but it must not be released before, or must be released together with, the Memory Sync large-file Task created from FU-001 (manager, 2026-11-15). Delivery checks this at release time; the Task Manager owns the order.
+
 ### Prerequisites
 
 None. (Memory Sync, R-001/FU-001, does not block this ticket's goal: the attach journey works without it and Memory Sync is opt-in; see DEC-009.)
@@ -91,7 +95,7 @@ None. (Memory Sync, R-001/FU-001, does not block this ticket's goal: the attach 
 | ID | Requirement | Behavior IDs | Priority | Rationale | Feasibility | Source / Decision |
 | --- | --- | --- | --- | --- | --- | --- |
 | REQ-001 | The node accepts a context file whose type is video or audio up to the **media limit**, and any other allowed type up to the **file limit**; a file exactly at its limit is accepted, one byte more is refused. | BEH-001 | Must | User's videos | P2 (600 MiB streamed, constant memory) | Task; DEC-001, DEC-002 |
-| REQ-002 | Both limits are node settings, in MiB, settable as environment variables and in the node's server settings, validated (whole numbers in a documented range; invalid values refused on save and ignored with the default at use), and applied to the next upload without a restart. Defaults: file limit 25 MiB; media limit per DEC-001. | BEH-001 | Must | Configurable per Task | N/A | DEC-003 |
+| REQ-002 | Both limits are node settings, in MiB, settable as environment variables and in the node's server settings, validated (whole numbers in a documented range; invalid values refused on save and ignored with the default at use), and applied to the next upload without a restart. Defaults: file limit 25 MiB; media limit 2048 MiB (DEC-001). | BEH-001 | Must | Configurable per Task | N/A | DEC-003 |
 | REQ-003 | The same per-type limits govern every context-file entry: composer uploads, Project Task uploads, and Project Task agent-tool local-file copies. Agent-tool descriptions state the rule without a stale number. | BEH-008 | Must | One policy, "same limit as the app" contract | N/A | DEC-008 |
 | REQ-004 | An over-limit refusal from the server is machine-readable: it identifies the reason (too large, unsupported type) and carries the limit in bytes that applied. | BEH-002, BEH-008 | Must | Lets every client localize | N/A | DEC-006 |
 | REQ-005 | The web app knows the node's current limits and refuses an over-limit file before sending any of its bytes. The server remains the authority (a file that passes the client check but exceeds the server's current limit is still refused). | BEH-001, BEH-002 | Must | No wasted mobile data | N/A | DEC-004 |
@@ -190,9 +194,9 @@ None. (Memory Sync, R-001/FU-001, does not block this ticket's goal: the attach 
 
 | ID | Question | Why It Matters | Options / Evidence | Reasoning And Recommendation | Owner | Status |
 | --- | --- | --- | --- | --- | --- | --- |
-| DEC-001 | Default media (video/audio) limit | Decides which phone videos attach out of the box | 500 MiB (Task's floor) ≈ 4 min 1080p / ~1.3 min 4K; 1 GiB ≈ 8 min / ~2.5 min; 2 GiB ≈ 16 min / ~5 min. Telegram and WhatsApp documents allow 2 GB. Streaming and cleanup are size-independent (P2, P3); the client refuses over-limit files before sending, so a high ceiling costs nothing unless used; disk is the only cost and the owner can lower it. | **Recommend 2048 MiB (2 GiB)**: covers ordinary phone recordings, including several minutes of 4K, matching what users know from messengers. 500 MiB would refuse many 4K clips and longer screen recordings. | Manager (user-delegated, per the Task: "report your recommendation first") | **Needs user (manager)** |
+| DEC-001 | Default media (video/audio) limit | Decides which phone videos attach out of the box | 500 MiB (Task's floor) ≈ 4 min 1080p / ~1.3 min 4K; 1 GiB ≈ 8 min / ~2.5 min; 2 GiB ≈ 16 min / ~5 min. Telegram and WhatsApp documents allow 2 GB. Streaming and cleanup are size-independent (P2, P3); the client refuses over-limit files before sending, so a high ceiling costs nothing unless used; disk is the only cost and the owner can lower it. | **Recommend 2048 MiB (2 GiB)**: covers ordinary phone recordings, including several minutes of 4K, matching what users know from messengers. 500 MiB would refuse many 4K clips and longer screen recordings. | Manager (user-delegated, per the Task) | Decided by the manager 2026-11-15: 2048 MiB |
 | DEC-002 | Do other types change? | Images are inlined into model requests; documents/text > 25 MiB are rare | Raising them adds provider risk with no reported need | Keep 25 MiB default for every non-video/audio type, configurable | Solution Designer | Decided |
-| DEC-003 | Configuration shape | Owner control | One number vs. per-type | Two settings: `AUTOBYTEUS_CONTEXT_FILE_MAX_MB` (default 25, range 1–1024) and `AUTOBYTEUS_CONTEXT_FILE_MEDIA_MAX_MB` (default DEC-001, range 1–10240), in the existing typed-setting pattern, read at each upload | Solution Designer | Decided |
+| DEC-003 | Configuration shape | Owner control | One number vs. per-type | Two settings: `AUTOBYTEUS_CONTEXT_FILE_MAX_MB` (default 25, range 1–1024) and `AUTOBYTEUS_CONTEXT_FILE_MEDIA_MAX_MB` (default 2048, range 1–10240), in the existing typed-setting pattern, read at each upload | Solution Designer | Decided |
 | DEC-004 | Where the limit is checked | Mobile data | Server only (today) wastes the upload | Client pre-check from the node's published limits + server enforcement | Solution Designer | Decided |
 | DEC-005 | Progress/cancel scope | Effort vs. need | Chat composer is where the user attaches videos | Progress + cancel in the message composer (desktop and phone); Project Task composer gets the pre-check and messages only | Solution Designer | Decided |
 | DEC-006 | Error model | Mixed-language text | Raw detail appended today | Server sends a reason code and limit; web maps reasons to localized copy; raw text only to the console; one message per reason | Solution Designer | Decided |
@@ -238,11 +242,11 @@ None. (Memory Sync, R-001/FU-001, does not block this ticket's goal: the attach 
 - Applicable UI/UX approval and final visual-reference basis are recorded: `N/A`
 - Material assumptions and decisions are visible, each with reasoning and recommendation: `Yes`
 - Content ready for approval: `Yes`
-- Remaining content blocker: DEC-001 number from the manager
+- Remaining content blocker: None
 
 ### Approved Basis Ready For Design
 
-- Approval recorded: `No`
-- Exact requirements and supplement approval basis recorded: `No`
-- Approved requirements package ready for architecture design: `No`
-- Remaining blocker: DEC-001
+- Approval recorded: `Yes`
+- Exact requirements and supplement approval basis recorded: `Yes`
+- Approved requirements package ready for architecture design: `Yes`
+- Remaining blocker: None
