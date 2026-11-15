@@ -14,6 +14,14 @@ import type { DraftContextFileOwnerDescriptor } from '~/utils/contextFiles/conte
 import { resolveContextAttachmentUrl } from '~/utils/contextFiles/contextAttachmentUrl';
 import { authorizedFetch } from '~/utils/remoteAccess/authorizedTransport';
 import { createRandomId } from '~/utils/randomId';
+import { contextFileMaxBytesFor } from '~/utils/contextFiles/contextFileSizeLimits';
+import {
+  ContextFileUploadError,
+  failureOfUploadError,
+  groupContextFileFailures,
+  type ContextFileFailureGroup,
+  type ContextFileUploadFailure,
+} from '~/utils/contextFiles/contextFileUploadFailure';
 
 export type ContextAttachmentComposerTarget<TSubject> = {
   key: string;
@@ -28,11 +36,22 @@ type UploadPlaceholder = {
   label: string;
   type: ContextAttachmentType;
   previewUrl: string | null;
+  /** Whole percent of the file sent so far. */
+  progress: number;
 };
+
+type UploadFailureEntry = { fileName: string; failure: ContextFileUploadFailure };
 
 /** A failed attach/remove (or an attach the target cannot accept), shown in this composer only. */
 export type ContextAttachmentComposerError =
-  | { kind: 'upload_failed' | 'remove_failed'; fileNames: string[]; detail: string | null }
+  | { kind: 'upload_failed'; failures: UploadFailureEntry[] }
+  | { kind: 'remove_failed'; fileNames: string[] }
+  | { kind: 'uploads_unavailable' };
+
+/** One line of the error message: what the component renders, one localized sentence each. */
+export type ContextAttachmentComposerErrorLine =
+  | { kind: 'upload_failed'; group: ContextFileFailureGroup }
+  | { kind: 'remove_failed'; fileNames: string[] }
   | { kind: 'uploads_unavailable' };
 
 export type ContextAttachmentComposerDisplayItem = {
@@ -41,6 +60,8 @@ export type ContextAttachmentComposerDisplayItem = {
   type: ContextAttachmentType;
   previewUrl: string | null;
   isUploading: boolean;
+  /** Whole percent sent so far, while `isUploading`. */
+  progress?: number;
   attachment?: ContextAttachment;
   index?: number;
 };
@@ -84,12 +105,6 @@ const isOwnDraftAttachment = (
   return parsedDraft !== null && sameDraftOwner(parsedDraft.owner, draftOwner);
 };
 
-const errorDetail = (error: unknown): string | null => {
-  const candidate = (error as { response?: { data?: { detail?: unknown } } })?.response?.data?.detail
-    ?? (error instanceof Error ? error.message : null);
-  return typeof candidate === 'string' && candidate.trim() ? candidate : null;
-};
-
 export function useContextAttachmentComposer<TSubject>(options: {
   getCurrentTarget: () => ContextAttachmentComposerTarget<TSubject> | null;
   commitAttachments: (
@@ -108,6 +123,15 @@ export function useContextAttachmentComposer<TSubject>(options: {
   const attachmentError = computed<ContextAttachmentComposerError | null>(() =>
     errorState.value && errorState.value.targetKey === options.getCurrentTarget()?.key ? errorState.value.error : null,
   );
+  /** Failed uploads group by reason, and too-large ones by their limit; the component only renders these lines. */
+  const attachmentErrorLines = computed<ContextAttachmentComposerErrorLine[]>(() => {
+    const error = attachmentError.value;
+    if (!error) return [];
+    if (error.kind === 'uploads_unavailable') return [{ kind: 'uploads_unavailable' }];
+    if (error.kind === 'remove_failed') return [{ kind: 'remove_failed', fileNames: error.fileNames }];
+    return groupContextFileFailures(error.failures).map((group) => ({ kind: 'upload_failed' as const, group }));
+  });
+  const uploadControllers = new Map<string, AbortController>();
 
   /** Uploads need the target's draft owner; path attachments do not. */
   const canUpload = computed(() => Boolean(options.getCurrentTarget()?.draftOwner));
@@ -123,19 +147,23 @@ export function useContextAttachmentComposer<TSubject>(options: {
     }
   };
 
+  /** The raw error goes to the console only (a refusal for size or type is expected, not an error); the user sees the localized reason. */
   const reportFailure = (
     target: ContextAttachmentComposerTarget<TSubject>,
     kind: 'upload_failed' | 'remove_failed',
     failures: Array<{ fileName: string; error: unknown }>,
   ): void => {
     for (const failure of failures) {
+      const reason = failureOfUploadError(failure.error).reason;
+      if (reason === 'too_large' || reason === 'unsupported_type') continue;
       console.error(`Context file ${kind === 'upload_failed' ? 'upload' : 'removal'} failed for '${failure.fileName}':`, failure.error);
     }
-    setAttachmentError(target, {
-      kind,
-      fileNames: failures.map((failure) => failure.fileName),
-      detail: failures.map((failure) => errorDetail(failure.error)).find((detail) => detail !== null) ?? null,
-    });
+    setAttachmentError(
+      target,
+      kind === 'upload_failed'
+        ? { kind, failures: failures.map((failure) => ({ fileName: failure.fileName, failure: failureOfUploadError(failure.error) })) }
+        : { kind, fileNames: failures.map((failure) => failure.fileName) },
+    );
   };
 
   const resolveAttachmentPreviewUrl = (attachment: ContextAttachment): string | null =>
@@ -169,6 +197,7 @@ export function useContextAttachmentComposer<TSubject>(options: {
         type: placeholder.type,
         previewUrl: placeholder.previewUrl,
         isUploading: true,
+        progress: placeholder.progress,
       }));
 
     return [...attachments, ...placeholders];
@@ -289,6 +318,15 @@ export function useContextAttachmentComposer<TSubject>(options: {
     }
   };
 
+  const setUploadProgress = (key: string, progress: number): void => {
+    uploadPlaceholders.value = uploadPlaceholders.value.map((item) => (item.key === key ? { ...item, progress } : item));
+  };
+
+  /** Stops the transfer; the item disappears and no message is shown. The node removes the partial file. */
+  const cancelUpload = (key: string): void => {
+    uploadControllers.get(key)?.abort();
+  };
+
   const removeUploadPlaceholder = (key: string): void => {
     const placeholder = uploadPlaceholders.value.find((item) => item.key === key);
     revokePreviewUrl(placeholder?.previewUrl ?? null);
@@ -309,11 +347,31 @@ export function useContextAttachmentComposer<TSubject>(options: {
     const draftOwner = target.draftOwner;
     const failedUploads: Array<{ fileName: string; error: unknown }> = [];
 
+    // One read of the node's current limits per pick; a file over its limit is refused here, before any byte is sent.
+    let uploadable = files;
+    try {
+      const limits = await contextFileUploadStore.readSizeLimits();
+      uploadable = [];
+      for (const file of files) {
+        const maxBytes = contextFileMaxBytesFor(file, limits);
+        if (file.size > maxBytes) {
+          failedUploads.push({ fileName: file.name, error: new ContextFileUploadError({ reason: 'too_large', maxBytes }) });
+        } else {
+          uploadable.push(file);
+        }
+      }
+    } catch (error) {
+      reportFailure(target, 'upload_failed', files.map((file) => ({ fileName: file.name, error })));
+      return;
+    }
+
     await Promise.all(
-      files.map(async (file) => {
+      uploadable.map(async (file) => {
         const type = inferContextAttachmentType(file);
         const key = buildUploadKey();
         const previewUrl = type === 'Image' ? URL.createObjectURL(file) : null;
+        const controller = new AbortController();
+        uploadControllers.set(key, controller);
 
         uploadPlaceholders.value = [
           ...uploadPlaceholders.value,
@@ -323,11 +381,17 @@ export function useContextAttachmentComposer<TSubject>(options: {
             label: file.name,
             type,
             previewUrl,
+            progress: 0,
           },
         ];
 
         try {
-          const attachment = await contextFileUploadStore.uploadAttachment({ owner: draftOwner, file });
+          const attachment = await contextFileUploadStore.uploadAttachment({
+            owner: draftOwner,
+            file,
+            signal: controller.signal,
+            onProgress: (percent) => setUploadProgress(key, percent),
+          });
           commitTargetAttachments(target, (current) => {
             if (current.some((existingAttachment) => sameAttachment(existingAttachment, attachment))) {
               return current;
@@ -335,8 +399,10 @@ export function useContextAttachmentComposer<TSubject>(options: {
             return [...current, attachment];
           });
         } catch (error) {
-          failedUploads.push({ fileName: file.name, error });
+          // A cancel is the user's own decision, not a failure.
+          if (!controller.signal.aborted) failedUploads.push({ fileName: file.name, error });
         } finally {
+          uploadControllers.delete(key);
           removeUploadPlaceholder(key);
         }
       }),
@@ -453,11 +519,13 @@ export function useContextAttachmentComposer<TSubject>(options: {
     thumbnailItems,
     regularItems,
     attachmentError,
+    attachmentErrorLines,
     canUpload,
     appendAttachments,
     appendLocatorAttachments,
     appendWorkspaceLocators,
     uploadFiles,
+    cancelUpload,
     openAttachment,
     removeItem,
     clearCurrentTargetAttachments,

@@ -1,0 +1,3 @@
+# API-04 | cd autobyteus-web && node tests/e2e/composer-context-file-removal-probe.mjs --cases CF-014 --output-dir <fresh> (PATH with pnpm/corepack shims) | code 80f958bc5 + CF-014 | macOS Node 26.12, real Nuxt dev + built backend + Chrome 1440x1000 zh-CN | 2026-11-15
+Composer context-file removal probe: Pass. Evidence: /tmp/api-e2e-ws6/cf-run5/evidence.json
+exit 0

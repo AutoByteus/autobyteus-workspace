@@ -9,6 +9,12 @@ import {
   parseFinalContextFileOwnerDescriptor,
 } from "../../context-files/domain/context-file-owner-types.js";
 import { ContextFileDraftCleanupService } from "../../context-files/services/context-file-draft-cleanup-service.js";
+import {
+  audioVideoContextFileMimeTypes, contextFileUploadCapBytes,
+} from "../../context-files/domain/context-file-upload-policy.js";
+import { ContextFileTooLargeError, UnsupportedContextFileTypeError } from "../../context-files/domain/context-file-upload-errors.js";
+import { discardUploadedFile } from "../../context-files/services/context-file-upload-writer.js";
+import { resolveContextFileSizeLimits } from "../../config/context-file-size-limit-settings.js";
 import { ContextFileUploadService } from "../../context-files/services/context-file-upload-service.js";
 import { ContextFileFinalizationService } from "../../context-files/services/context-file-finalization-service.js";
 import { ContextFileReadService } from "../../context-files/services/context-file-read-service.js";
@@ -85,13 +91,29 @@ const contextFileContent = (filePath: string): UserFileContent => ({
 export async function registerContextFileRoutes(app: FastifyInstance): Promise<void> {
   const { uploadService, finalizationService, readService } = buildServices();
 
-  app.post("/context-files/upload", async (request, reply) => {
-    try {
-      const file = await request.file();
-      if (!file) {
-        return reply.code(400).send({ detail: "No file uploaded." });
-      }
+  /** The node's current per-type size limits, so a client can refuse an over-limit file before sending it. */
+  app.get("/context-files/size-limits", async (_request, reply) => {
+    const limits = resolveContextFileSizeLimits();
+    return reply.send({
+      otherFileMaxBytes: limits.otherFileMaxBytes,
+      audioVideoMaxBytes: limits.audioVideoMaxBytes,
+      audioVideoMimeTypes: audioVideoContextFileMimeTypes,
+    });
+  });
 
+  app.post("/context-files/upload", async (request, reply) => {
+    const limits = resolveContextFileSizeLimits();
+    let file: Awaited<ReturnType<typeof request.file>>;
+    try {
+      file = await request.file({ limits: { fileSize: contextFileUploadCapBytes(limits) } });
+    } catch (error) {
+      logger.error(`Failed to read context file upload: ${String(error)}`);
+      return reply.code(400).send({ detail: error instanceof Error ? error.message : "Upload failed." });
+    }
+    if (!file) {
+      return reply.code(400).send({ detail: "No file uploaded." });
+    }
+    try {
       const ownerField = file.fields.owner;
       const ownerPart = Array.isArray(ownerField) ? ownerField[0] : ownerField;
       const ownerValue = ownerPart && "value" in ownerPart ? ownerPart.value : null;
@@ -99,10 +121,17 @@ export async function registerContextFileRoutes(app: FastifyInstance): Promise<v
         throw new Error("owner is required.");
       }
       const owner = parseDraftContextFileOwnerDescriptor(JSON.parse(ownerValue));
-      const uploadedAttachment = await uploadService.uploadDraftAttachment(owner, file);
+      const uploadedAttachment = await uploadService.uploadDraftAttachment(owner, file, limits);
       return reply.send(uploadedAttachment);
     } catch (error) {
       logger.error(`Failed to upload context file: ${String(error)}`);
+      await discardUploadedFile(file);
+      if (error instanceof ContextFileTooLargeError) {
+        return reply.code(413).send({ code: "CONTEXT_FILE_TOO_LARGE", detail: error.message, maxBytes: error.maxBytes });
+      }
+      if (error instanceof UnsupportedContextFileTypeError) {
+        return reply.code(415).send({ code: "CONTEXT_FILE_TYPE_UNSUPPORTED", detail: error.message });
+      }
       return reply.code(400).send({ detail: error instanceof Error ? error.message : "Upload failed." });
     }
   });

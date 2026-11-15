@@ -257,14 +257,9 @@ describe("REST upload-file route", () => {
     await app.close();
   });
 
-  it("returns 413 and does not persist truncated files when upload exceeds file size limit", async () => {
+  it("keeps its own 25 MiB limit with the plugin registered without limits: 413 and no persisted file (AC-013)", async () => {
     const app = fastify();
-    await app.register(multipart, {
-      limits: {
-        fileSize: 1024,
-      },
-      throwFileSizeLimit: false,
-    });
+    await app.register(multipart);
     await app.register(
       async (instance) => {
         await registerUploadRoutes(instance);
@@ -272,7 +267,7 @@ describe("REST upload-file route", () => {
       { prefix: "/rest" },
     );
 
-    const oversizedPngPayload = Buffer.alloc(4096, 0x89);
+    const oversizedPngPayload = Buffer.alloc(26 * 1024 * 1024, 0x89);
     const { boundary, payload } = buildMultipartPayload({
       fieldName: "file",
       filename: "oversized-avatar.png",

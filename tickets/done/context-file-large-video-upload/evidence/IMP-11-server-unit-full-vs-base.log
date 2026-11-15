@@ -1,0 +1,22 @@
+check: IMP-11
+command: (cd autobyteus-server-ts && vitest run tests/architecture tests/unit tests/app-data-migrations tests/agent-work-journal --exclude '**/*.integration.test.ts')
+commit: 62bda32c4 + tracked-imports rerun after commit
+environment: macOS Darwin 25.6, Node v26.12.0
+date: 2026-11-15
+----
+ FAIL  tests/architecture/tracked-imports.test.ts > tracked imports > finds no tracked code importing an untracked file in this repository
+ FAIL  tests/architecture/web-generated-graphql-current.test.ts > autobyteus-web/generated/graphql.ts > equals the web codegen output for the current server schema, and the check fails on a changed schema
+ FAIL  tests/unit/memory-search/memory-search-store.test.ts > MemorySearchStore > indexes chunks without keeping their text, finds them by words (Chinese too), and replaces or removes them
+ FAIL  tests/unit/memory-search/memory-search.test.ts > MemorySearch (pipeline and search over Work Journals) > queues a live change made while a pass runs: during the first build and during a later full pass (CR-001)
+ FAIL  tests/unit/agent-execution/backends/grok/grok-build-compaction.test.ts > Grok Build compaction replayed through the ACP session into memory > records a manual /compact as a single completed compaction and one archive (REQ-G2)
+ FAIL  tests/unit/agent-execution/backends/grok/grok-build-compaction.test.ts > Grok Build compaction replayed through the ACP session into memory > records Grok's own completed report for a no-op /compact as one boundary (G09)
+ Test Files  5 failed | 983 passed | 5 skipped (993)
+      Tests  6 failed | 8461 passed | 10 skipped (8477)
+--- after the commit, tests/architecture/tracked-imports.test.ts passes (it failed only while new files were untracked). The other 4 failing files fail identically on the unmodified base (HEAD~1 sources):
+ FAIL  tests/architecture/web-generated-graphql-current.test.ts > autobyteus-web/generated/graphql.ts > equals the web codegen output for the current server schema, and the check fails on a changed schema
+ FAIL  tests/unit/memory-search/memory-search-store.test.ts > MemorySearchStore > indexes chunks without keeping their text, finds them by words (Chinese too), and replaces or removes them
+ FAIL  tests/unit/memory-search/memory-search.test.ts > MemorySearch (pipeline and search over Work Journals) > queues a live change made while a pass runs: during the first build and during a later full pass (CR-001)
+ FAIL  tests/unit/agent-execution/backends/grok/grok-build-compaction.test.ts > Grok Build compaction replayed through the ACP session into memory > records a manual /compact as a single completed compaction and one archive (REQ-G2)
+ FAIL  tests/unit/agent-execution/backends/grok/grok-build-compaction.test.ts > Grok Build compaction replayed through the ACP session into memory > never rotates twice for the same Grok completion, even if a replay were recorded again (REQ-G1, REQ-G4)
+ Test Files  4 failed (4)
+      Tests  5 failed | 30 passed (35)

@@ -17,6 +17,7 @@ vi.mock("../../../../src/config/app-config-provider.js", () => ({
       getAppDataDir: (): string => appConfigState.root,
       getMemoryDir: (): string => path.join(appConfigState.root, "memory"),
       getBaseUrl: (): string => appConfigState.baseUrl,
+      get: (): string | undefined => undefined, // no size-limit override: the defaults apply
     },
   },
 }));
@@ -187,10 +188,7 @@ describe("REST context-files routes", () => {
     appConfigState.root = tempDir;
     for (const id of ["run-A", "run-display"]) writeAttachmentAgentMetadata(memoryDir, id);
     app = fastify();
-    await app.register(multipart, {
-      limits: { fileSize: 25 * 1024 * 1024 },
-      throwFileSizeLimit: false,
-    });
+    await app.register(multipart);
     await app.register(registerContextFileRoutes, { prefix: "/rest" });
   });
 

@@ -1,7 +1,6 @@
 import path from "node:path";
 import { randomUUID } from "node:crypto";
 import { extension as mimeExtension, lookup as mimeLookup } from "mime-types";
-export const CONTEXT_FILE_MAX_BYTES = 25 * 1024 * 1024;
 export const CONTEXT_FILE_DRAFT_TTL_MS = 24 * 60 * 60 * 1000;
 export const allowedMimeTypes = new Set([
   "application/pdf",
@@ -33,6 +32,21 @@ export const allowedMimeTypes = new Set([
   "video/x-matroska",
   "video/webm",
 ]);
+
+/** The per-type size limits of a context file, in bytes (see GLOSSARY.md "Context Files"). */
+export interface ContextFileSizeLimits { audioVideoMaxBytes: number; otherFileMaxBytes: number }
+
+/** The accepted audio and video types: the files the audio/video limit covers. */
+export const audioVideoContextFileMimeTypes: readonly string[] = [...allowedMimeTypes]
+  .filter((mimeType) => mimeType.startsWith("audio/") || mimeType.startsWith("video/"));
+
+/** The size limit that applies to a file of this type. */
+export const contextFileMaxBytesFor = (mimeType: string, limits: ContextFileSizeLimits): number =>
+  audioVideoContextFileMimeTypes.includes(mimeType) ? limits.audioVideoMaxBytes : limits.otherFileMaxBytes;
+
+/** The multipart cap of an upload route: the larger limit; the writer enforces the file's own limit. */
+export const contextFileUploadCapBytes = (limits: ContextFileSizeLimits): number =>
+  Math.max(limits.audioVideoMaxBytes, limits.otherFileMaxBytes);
 
 /** The accepted MIME type of a local file, from its extension; null when the app does not accept that type. */
 export const contextFileMimeTypeForPath = (filePath: string): string | null => {

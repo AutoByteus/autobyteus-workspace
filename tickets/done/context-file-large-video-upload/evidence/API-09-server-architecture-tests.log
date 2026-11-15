@@ -1,0 +1,15 @@
+# API-09 | cd autobyteus-server-ts && env -i PATH HOME=<temp> TMPDIR pnpm exec vitest run tests/architecture --no-watch | code de0250122 (the new e2e test file committed) | macOS Node 26.12 | 2026-11-15 15:18:15
+ ✓ tests/architecture/agent-provider-composition-boundaries.test.ts (14 tests) 5850ms
+ ✓ tests/architecture/server-package-contents.test.ts (5 tests) 4547ms
+ ✓ tests/architecture/web-generated-graphql-current.test.ts (1 test) 2122ms
+ ✓ tests/architecture/application-framework-boundaries.test.ts (20 tests) 2847ms
+ ✓ tests/architecture/tracked-imports.test.ts (2 tests) 1756ms
+ ✓ tests/architecture/runtime-labels-source-check.test.ts (1 test) 728ms
+ ✓ tests/architecture/node-access-boundaries.test.ts (4 tests) 294ms
+ ✓ tests/architecture/user-file-replies.test.ts (3 tests) 50ms
+ ✓ tests/architecture/projects-boundaries.test.ts (4 tests) 35ms
+ ✓ tests/architecture/e2e-node-credential-paths.test.ts (4 tests) 33ms
+ ✓ tests/architecture/agent-tool-result-boundaries.test.ts (5 tests) 21ms
+ ✓ tests/architecture/application-agent-addressing-boundaries.test.ts (6 tests) 10ms
+ Test Files  13 passed (13)
+      Tests  72 passed (72)

@@ -1,5 +1,5 @@
 import type { MultipartFile } from "@fastify/multipart";
-import { allowedMimeTypes, buildStoredFilename } from "../domain/context-file-upload-policy.js";
+import { buildStoredFilename, type ContextFileSizeLimits } from "../domain/context-file-upload-policy.js";
 import { writeContextFileUpload } from "./context-file-upload-writer.js";
 import type { ContextFileDraftOwnerDescriptor } from "../domain/context-file-owner-types.js";
 import { buildDraftContextFileLocator } from "../domain/context-file-owner-types.js";
@@ -25,11 +25,8 @@ export class ContextFileUploadService {
   async uploadDraftAttachment(
     owner: ContextFileDraftOwnerDescriptor,
     file: MultipartFile,
+    limits: ContextFileSizeLimits,
   ): Promise<UploadedDraftContextFile> {
-    if (!allowedMimeTypes.has(file.mimetype)) {
-      throw new Error(`Unsupported file type: ${file.mimetype}`);
-    }
-
     await this.ownerResolver.validateDraftOwner(owner);
     await this.cleanupService.cleanupExpiredDrafts();
     await this.layout.ensureDraftOwnerDir(owner);
@@ -37,7 +34,7 @@ export class ContextFileUploadService {
     const storedFilename = buildStoredFilename(file.filename, file.mimetype);
     const filePath = this.layout.getDraftFilePath(owner, storedFilename);
 
-    await writeContextFileUpload(file, filePath);
+    await writeContextFileUpload(file, filePath, limits);
 
     return {
       storedFilename,

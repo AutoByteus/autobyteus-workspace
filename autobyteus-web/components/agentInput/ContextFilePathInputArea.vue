@@ -57,14 +57,7 @@
       </button>
     </div>
 
-    <p
-      v-if="attachmentErrorMessage"
-      role="alert"
-      data-testid="context-file-error"
-      class="mb-2 px-1 text-xs text-red-600 break-words"
-    >
-      {{ attachmentErrorMessage }}
-    </p>
+    <ContextFileErrorLines :lines="attachmentErrorLines" />
 
     <div v-if="isContextListExpanded && displayedItems.length > 0" id="context-file-list" class="space-y-2">
       <div v-if="thumbnailItems.length > 0" class="thumbnail-row-container">
@@ -90,10 +83,10 @@
               </div>
             </button>
             <button
+              v-if="!item.isUploading"
               class="thumbnail-remove-button"
               :title="$t('agentInput.components.agentInput.ContextFilePathInputArea.remove_this_file')"
               :aria-label="$t('agentInput.components.agentInput.ContextFilePathInputArea.remove_file')"
-              :disabled="item.isUploading"
               @click.stop="handleRemoveItem(item)"
             >
               <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -101,8 +94,21 @@
               </svg>
             </button>
             <div v-if="item.isUploading" class="thumbnail-uploading">
-              <i class="fas fa-spinner fa-spin mr-1"></i>Uploading
+              <i class="fas fa-spinner fa-spin mr-1"></i>{{ uploadProgressText(item) }}
             </div>
+            <button
+              v-if="item.isUploading"
+              type="button"
+              class="thumbnail-cancel-button"
+              data-testid="context-file-cancel-upload"
+              :title="cancelUploadLabel(item)"
+              :aria-label="cancelUploadLabel(item)"
+              @click.stop="cancelUpload(item.key)"
+            >
+              <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </button>
           </div>
         </div>
       </div>
@@ -126,15 +132,28 @@
                 {{ item.label }}
               </button>
             </div>
-            <span v-if="item.isUploading" class="text-xs text-blue-500 ml-auto flex-shrink-0">
-              <i class="fas fa-spinner fa-spin mr-1"></i>Uploading...
+            <span v-if="item.isUploading" class="text-xs text-blue-500 ml-auto flex-shrink-0" data-testid="context-file-upload-progress">
+              <i class="fas fa-spinner fa-spin mr-1"></i>{{ uploadProgressText(item) }}
             </span>
           </div>
           <button
+            v-if="item.isUploading"
+            type="button"
+            class="text-gray-500 hover:text-white hover:bg-gray-500 transition-colors duration-300 p-1 rounded-full focus:outline-none focus:ring-2 focus:ring-gray-500 ml-2 flex-shrink-0"
+            data-testid="context-file-cancel-upload"
+            :title="cancelUploadLabel(item)"
+            :aria-label="cancelUploadLabel(item)"
+            @click.stop="cancelUpload(item.key)"
+          >
+            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </button>
+          <button
+            v-else
             class="text-red-500 hover:text-white hover:bg-red-500 transition-colors duration-300 p-1 rounded-full focus:outline-none focus:ring-2 focus:ring-red-500 ml-2 flex-shrink-0 disabled:opacity-50 disabled:cursor-not-allowed"
             :title="$t('agentInput.components.agentInput.ContextFilePathInputArea.remove_this_file')"
             :aria-label="$t('agentInput.components.agentInput.ContextFilePathInputArea.remove_file')"
-            :disabled="item.isUploading"
             @click.stop="handleRemoveItem(item)"
           >
             <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -171,6 +190,7 @@ import { useContextAttachmentComposer } from '~/composables/useContextAttachment
 import { useAuthorizedObjectUrl } from '~/composables/useAuthorizedObjectUrl';
 import { useMobileAttachmentOpening } from '~/composables/mobile/useMobileAttachmentOpening';
 import { isMobileRemoteAccessRuntime } from '~/utils/remoteAccess/mobileRuntime';
+import ContextFileErrorLines from '~/components/agentInput/ContextFileErrorLines.vue';
 import MessageAttachmentThumbnail from '~/components/conversation/MessageAttachmentThumbnail.vue';
 import { useLocalization } from '~/composables/useLocalization';
 import { useContextFileUploadStore } from '~/stores/contextFileUploadStore';
@@ -235,11 +255,12 @@ const {
   displayedItems,
   thumbnailItems,
   regularItems,
-  attachmentError,
+  attachmentErrorLines,
   canUpload,
   appendLocatorAttachments,
   appendWorkspaceLocators,
   uploadFiles,
+  cancelUpload,
   openAttachment,
   removeItem,
   clearCurrentTargetAttachments,
@@ -271,22 +292,11 @@ const {
   getIsEmbeddedElectronRuntime: () => isEmbeddedElectronRuntime.value,
 });
 
-const attachmentErrorMessage = computed((): string | null => {
-  const error = attachmentError.value;
-  if (!error) {
-    return null;
-  }
-  if (error.kind === 'uploads_unavailable') {
-    return t('agentInput.components.agentInput.ContextFilePathInputArea.uploads_unavailable');
-  }
-  const message = t(
-    error.kind === 'upload_failed'
-      ? 'agentInput.components.agentInput.ContextFilePathInputArea.upload_failed'
-      : 'agentInput.components.agentInput.ContextFilePathInputArea.remove_failed',
-    { name: error.fileNames.join(', ') },
-  );
-  return error.detail ? `${message} ${error.detail}` : message;
-});
+const uploadProgressText = (item: { progress?: number }): string =>
+  t('agentInput.components.agentInput.ContextFilePathInputArea.upload_progress', { percent: item.progress ?? 0 });
+
+const cancelUploadLabel = (item: { label: string }): string =>
+  t('agentInput.components.agentInput.ContextFilePathInputArea.cancel_upload', { name: item.label });
 
 const toggleContextList = (): void => {
   if (displayedItems.value.length > 0) {
@@ -481,6 +491,20 @@ watch(
 
 .thumbnail-card:hover .thumbnail-remove-button {
   opacity: 1;
+}
+
+.thumbnail-cancel-button {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  width: 18px;
+  height: 18px;
+  border-radius: 9999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  background-color: #6b7280;
 }
 
 .thumbnail-remove-button:disabled {

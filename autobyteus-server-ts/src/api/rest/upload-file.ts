@@ -17,6 +17,9 @@ const logger = {
   error: (...args: unknown[]) => console.error(...args),
 };
 
+/** The avatar/media upload limit; its own rule, independent of the context-file limits. */
+const UPLOAD_FILE_MAX_BYTES = 25 * 1024 * 1024;
+
 const allowedMimeTypes = new Set([
   "application/pdf",
   "text/csv",
@@ -82,7 +85,7 @@ function getCategoryFromMimetype(mimeType: string): string {
 
 export async function registerUploadRoutes(app: FastifyInstance): Promise<void> {
   app.post("/upload-file", async (request, reply) => {
-    const file = await request.file();
+    const file = await request.file({ limits: { fileSize: UPLOAD_FILE_MAX_BYTES } });
     if (!file) {
       return reply.code(400).send({ detail: "No file uploaded." });
     }
