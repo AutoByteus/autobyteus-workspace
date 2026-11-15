@@ -1694,3 +1694,8 @@ No architecture review: these follow REQ-006, an approved exception, rule 2 and 
   - architecture review (3b is new);
   - then the Implementation Engineer.
 - **The user confirmed SR-084/085 to the Solution Designer** (2026-11-15): "I agree with the solution designer, yeah, we do this other round of refactoring regarding the backend run tree decision."
+- **ARCH-REV-058 failed SR-085 on AR-029, now answered.**
+  - **The problem:** agent content frames append, so a delta that is both in the projection and queued would be doubled.
+  - **Decision, option (b):** every appending frame (`SEGMENT_CONTENT`, the reasoning and tool-output deltas) carries its offset in its segment. The web applies only what lies beyond the segment's current length (base's `appendContentToSegment` gains the check). Non-appending frames are idempotent by their IDs.
+  - **The numbering owner:** a separate per-agent-run `AgentStreamSequence`, with its own `liveSequenceId`, independent of the view's. The web keys nothing in the conversation by it.
+  - **Tests added:** a delta during the read appears once; a partial overlap is applied in part.
