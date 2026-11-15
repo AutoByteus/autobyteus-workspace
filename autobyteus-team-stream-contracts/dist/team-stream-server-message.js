@@ -1,10 +1,9 @@
-import { agentInputStateSchema, remoteTaskExecutionDtoSchema, remoteTaskExecutionSummaryDtoSchema, } from "@autobyteus/agent-presentation-contracts";
+import { agentInputStateSchema } from "@autobyteus/agent-presentation-contracts";
 import { runTreeChangeDtoSchema, runTreeRowDtoSchema } from "@autobyteus/collaboration-stream-contracts";
 import { z } from "zod";
 import { teamAgentErrorPayloadSchema, teamAgentPayloadSchemas, teamInterruptCommandAckPayloadSchema, teamSegmentContentBatchPayloadSchema, } from "./team-agent-message-dtos.js";
 import { teamCommunicationMessagePayloadSchema, teamMemberInputMessagePayloadSchema, } from "./team-collaboration-message-dtos.js";
 import { teamConnectedPayloadSchema, teamRunLifecyclePayloadSchema } from "./team-control-message-dtos.js";
-import { teamTaskExecutionReferenceDtoSchema, teamTaskExecutionStartedPayloadSchema, teamTaskExecutionsClosedPayloadSchema, teamTaskExecutionsReopenedPayloadSchema, } from "./team-task-execution-message-dtos.js";
 import { readonlyParsed } from "./schema-helpers.js";
 import { teamAgentStatusDtoSchema, teamRunExecutionTreeDtoSchema, } from "./team-execution-view-dtos.js";
 const message = (type, payload) => z.object({ type: z.literal(type), payload }).strict();
@@ -16,17 +15,10 @@ export const teamExecutionViewSnapshotPayloadSchema = z.object({
     /** The sequence of the Team's latest message through `base_change_sequence` (0 when none). */
     last_message_change_sequence: z.number().int().nonnegative(),
     execution_tree: teamRunExecutionTreeDtoSchema,
-    closed_task_executions: z.array(teamTaskExecutionReferenceDtoSchema),
     agent_statuses: z.array(teamAgentStatusDtoSchema),
     agent_input_states: z.array(z.object({ agent_run_id: z.string().min(1), state: agentInputStateSchema }).strict()),
-    /** The runs this Team delegated to other nodes (autobyteus-278); their summaries arrive as messages. */
-    remote_task_executions: z.array(remoteTaskExecutionDtoSchema),
 }).strict();
 const changeSequence = { change_sequence: z.number().int().positive() };
-/** A run this Team delegated to another node was recorded (autobyteus-278). */
-export const teamRemoteTaskExecutionStartedPayloadSchema = z.object({ ...changeSequence, execution: remoteTaskExecutionDtoSchema }).strict();
-/** What a remote run's node answered about it (autobyteus-278). */
-export const teamRemoteTaskExecutionSummaryPayloadSchema = remoteTaskExecutionSummaryDtoSchema.extend(changeSequence).strict();
 /** The Team view's tree at the snapshot's base (autobyteus-461 SR-084), sent right after it. */
 export const teamRunTreeSnapshotPayloadSchema = z.object({ base_change_sequence: z.number().int().nonnegative(), rows: z.array(runTreeRowDtoSchema) }).strict();
 /** The Team view's tree changed, numbered in its one sequence (an empty change still counts). */
@@ -63,13 +55,8 @@ export const teamStreamServerMessageSchema = z.discriminatedUnion("type", [
     z.object({ type: z.literal("TEAM_RUN_LIFECYCLE"), payload: teamRunLifecyclePayloadSchema }).strict(),
     z.object({ type: z.literal("TEAM_EXECUTION_VIEW_SNAPSHOT"), payload: teamExecutionViewSnapshotPayloadSchema }).strict(),
     z.object({ type: z.literal("AGENT_COMMAND_ACK"), payload: teamInterruptCommandAckPayloadSchema }).strict(),
-    z.object({ type: z.literal("TASK_EXECUTION_STARTED"), payload: teamTaskExecutionStartedPayloadSchema }).strict(),
-    z.object({ type: z.literal("TASK_EXECUTIONS_CLOSED"), payload: teamTaskExecutionsClosedPayloadSchema }).strict(),
-    z.object({ type: z.literal("TASK_EXECUTIONS_REOPENED"), payload: teamTaskExecutionsReopenedPayloadSchema }).strict(),
     z.object({ type: z.literal("TEAM_COMMUNICATION_MESSAGE"), payload: teamCommunicationMessagePayloadSchema }).strict(),
     z.object({ type: z.literal("MEMBER_INPUT_MESSAGE"), payload: teamMemberInputMessagePayloadSchema }).strict(),
-    z.object({ type: z.literal("REMOTE_TASK_EXECUTION_STARTED"), payload: teamRemoteTaskExecutionStartedPayloadSchema }).strict(),
-    z.object({ type: z.literal("REMOTE_TASK_EXECUTION_SUMMARY"), payload: teamRemoteTaskExecutionSummaryPayloadSchema }).strict(),
     z.object({ type: z.literal("RUN_TREE_SNAPSHOT"), payload: teamRunTreeSnapshotPayloadSchema }).strict(),
     z.object({ type: z.literal("RUN_TREE_CHANGED"), payload: teamRunTreeChangedPayloadSchema }).strict(),
     z.object({ type: z.literal("ERROR"), payload: teamAgentErrorPayloadSchema }).strict(),

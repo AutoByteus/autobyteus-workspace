@@ -1,6 +1,6 @@
 import { agentInputStateSchema, compactionRecoveryBlockSchema } from "@autobyteus/agent-presentation-contracts";
 import { z } from "zod";
-import { agentAddressSchema, agentPresentationMessageSchema, agentPresentationPayloadSchemas, jsonValueSchema, nonEmptyStringSchema, remoteTaskExecutionDtoSchema, remoteTaskExecutionSummaryDtoSchema, } from "@autobyteus/agent-presentation-contracts";
+import { agentAddressSchema, agentPresentationMessageSchema, agentPresentationPayloadSchemas, jsonValueSchema, nonEmptyStringSchema, } from "@autobyteus/agent-presentation-contracts";
 import { collaborationLaunchConfigurationSourceDtoSchema } from "./launch-source-dtos.js";
 import { runTreeChangedEventDtoSchema } from "./run-tree-dtos.js";
 const timestamp = nonEmptyStringSchema;
@@ -51,21 +51,6 @@ const taskTeam = z.lazy(() => z.object({
 const taskExecution = z.lazy(() => z.union([taskAgent, taskTeam]));
 /** Shared by every collaboration root view (Org and Agent roots). */
 export const taskExecutionDtoSchema = taskExecution;
-/** Identity of one task execution node (a task Agent or a task Team) of a root's execution tree. */
-export const taskExecutionReferenceDtoSchema = z.union([
-    z.object({ agentRunId: nonEmptyStringSchema }).strict(),
-    z.object({ teamRunId: nonEmptyStringSchema }).strict(),
-]);
-/** Task executions whose Task is DONE: the tree keeps them, the Workspaces listing leaves them out. */
-export const closedTaskExecutionsDtoSchema = z.array(taskExecutionReferenceDtoSchema);
-/** Live: these task executions of the root were closed (their Task became DONE). */
-export const taskExecutionsClosedEventDtoSchema = z.object({
-    kind: z.literal("task_executions_closed"), task_executions: z.array(taskExecutionReferenceDtoSchema).min(1),
-}).strict();
-/** Live: these closed task executions were reactivated by their assigner; the listing shows them again. */
-export const taskExecutionsReopenedEventDtoSchema = z.object({
-    kind: z.literal("task_executions_reopened"), task_executions: z.array(taskExecutionReferenceDtoSchema).min(1),
-}).strict();
 /**
  * Live: response text a chat socket coalesced over one content window. Each item is the
  * concatenated text of one agent segment, in order of first appearance. The envelope covers the
@@ -83,7 +68,7 @@ const configuredTeam = z.object({
     address: agentAddressSchema, teamDefinitionId: nonEmptyStringSchema,
     role: z.string().nullable(), description: z.string().nullable(), teamRunId: nonEmptyStringSchema,
     coordinatorAddress: agentAddressSchema, defaultLaunchConfiguration: agentOrgLaunchConfigurationDtoSchema,
-    members: z.array(configuredAgent), taskExecutions: z.array(taskExecution),
+    members: z.array(configuredAgent),
 }).strict().superRefine((team, context) => {
     if (!team.members.some((member) => member.address === team.coordinatorAddress)) {
         context.addIssue({
@@ -102,7 +87,6 @@ export const agentOrgExecutionTreeDtoSchema = z.object({
         address: z.literal("/"), orgDefinitionId: nonEmptyStringSchema, orgDefinitionName: nonEmptyStringSchema,
         orgRunId: nonEmptyStringSchema, defaultLaunchConfiguration: agentOrgLaunchConfigurationDtoSchema,
         members: z.array(z.union([configuredAgent, configuredTeam])),
-        taskExecutions: z.array(taskExecution),
     }).strict(),
 }).strict();
 export const agentOrgCommunicationMessageDtoSchema = z.object({
@@ -123,24 +107,13 @@ export const agentOrgExecutionViewDtoSchema = z.object({
     /** The sequence of the root's latest message through `base_change_sequence` (0 when none); null for a stored view. */
     last_message_change_sequence: z.number().int().nonnegative().nullable(),
     execution_tree: agentOrgExecutionTreeDtoSchema,
-    closed_task_executions: closedTaskExecutionsDtoSchema,
     agent_statuses: z.array(agentOrgAgentStatusDtoSchema),
     agent_input_states: z.array(z.object({ agent_run_id: z.string().min(1), state: agentInputStateSchema }).strict()),
-    /** The runs this root delegated to other nodes (autobyteus-278); their summaries arrive as events. */
-    remote_task_executions: z.array(remoteTaskExecutionDtoSchema),
 }).strict();
 export const agentOrgExecutionEventDtoSchema = z.discriminatedUnion("kind", [
     z.object({ kind: z.literal("agent_presentation"), member_address: agentAddressSchema, agent_run_id: nonEmptyStringSchema, message: agentPresentationMessageSchema }).strict(),
     agentPresentationBatchEventDtoSchema,
-    z.object({
-        kind: z.literal("task_execution_started"),
-        host_kind: z.enum(["root", "team"]), host_run_id: nonEmptyStringSchema, execution: taskExecution,
-    }).strict(),
     z.object({ kind: z.literal("communication"), message: agentOrgCommunicationMessageDtoSchema }).strict(),
-    taskExecutionsClosedEventDtoSchema,
-    taskExecutionsReopenedEventDtoSchema,
-    z.object({ kind: z.literal("remote_task_execution_started"), execution: remoteTaskExecutionDtoSchema }).strict(),
-    remoteTaskExecutionSummaryDtoSchema.extend({ kind: z.literal("remote_task_execution_summary") }).strict(),
     runTreeChangedEventDtoSchema,
 ]);
 //# sourceMappingURL=agent-org-execution-dtos.js.map

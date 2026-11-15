@@ -20,7 +20,6 @@ import type { CrossRunAcceptInput } from "../../agent-collaboration/communicatio
 import type { ActiveRootMessageBoundary, ExactAgentMessageInput } from "../../agent-collaboration/execution/services/active-collaboration-root-directory.js";
 import type { RunViewStream, RootSnapshotConnection } from "../../agent-collaboration/delegation/run-view-stream.js";
 import { OWN_RUN_LOG, OTHER_RUN_LOG } from "../../run-history/store/message-log-owners.js";
-import type { CollaborationAgentStatusSnapshot } from "../../agent-collaboration/execution/domain/collaboration-agent-execution-event.js";
 import type { CollaboratorRootPort } from "../../agent-collaboration/collaborators/collaborator-root-port.js";
 import type { CollaboratorAdmission, CollaboratorMention, RootCollaboratorAdmissionResult } from "../../agent-collaboration/collaborators/collaborator-admission.js";
 import type { AvailableCollaborator } from "../../agent-collaboration/collaborators/collaborator-candidate-policy.js";
@@ -45,12 +44,11 @@ import type { AgentRunManager } from "../../agent-execution/services/agent-run-m
 import { DelegatedRunIdleShutdown } from "../services/delegated-run-idle-shutdown.js";
 import { TaskWorkerStatusNotice } from "../../agent-collaboration/execution/task/task-worker-status-notice.js";
 
-/** What a view of the run opens with: its own agent; its children are the runs it delegated to (the view adds them). */
+/** What a view of the run opens with: its own agent (the runs it delegated are its tree's rows, SR-084). */
 export type StandaloneRootPackageSnapshot = Readonly<{
   host: StandaloneRootHost;
   /** When the run started (its view tree's `createdAt`). */
   createdAt: string;
-  statuses: readonly CollaborationAgentStatusSnapshot[];
 }>;
 
 /**
@@ -243,7 +241,7 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
 
   /**
    * The run's view snapshot (SR-063): in the view stream's snapshot connection, `atBase` runs in the same synchronous
-   * step as the base (the view's rows and statuses, in memory); then `read` completes it with the root's own parts.
+   * step as the base (the view's tree, in memory); then `read` completes it with the root's own parts.
    */
   openViewSnapshotConnection<TAtBase, TSnapshot>(
     atBase: () => TAtBase,
@@ -251,7 +249,7 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
   ): Promise<RootSnapshotConnection<TSnapshot, StandaloneRootEvent>> {
     return this.options.publisher.openSnapshotConnection(() => {
       const rows = atBase();
-      return read(Object.freeze({ host: this.options.host, createdAt: this.options.createdAt, statuses: Object.freeze([]) }), rows);
+      return read(Object.freeze({ host: this.options.host, createdAt: this.options.createdAt }), rows);
     });
   }
 

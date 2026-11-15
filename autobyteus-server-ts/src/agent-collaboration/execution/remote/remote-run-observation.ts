@@ -17,14 +17,13 @@ export type RemoteRunSummaryEvent = Readonly<{
 }>;
 
 /**
- * The events of a view's peer rows (autobyteus-278; SR-066: published by `PeerChildObservation` into each view's stream):
- * their summaries (title, reachability, launches), and their live output (DS-8, AC-802: a peer run has no stream of its
- * own on this node). Only the views' DTO projectors read them, and `remote_agent_presentation` becomes the stream's
- * `agent_presentation` there and nowhere else (N-402). A peer run's status is its own, read by its run ID (SR-083).
+ * The live output of a view's peer rows (autobyteus-278; SR-066: published by `PeerChildObservation` into each view's
+ * stream; DS-8, AC-802: a peer run has no stream of its own on this node). Only the views' DTO projectors read it, and it
+ * becomes the stream's `agent_presentation` there and nowhere else (N-402). A peer run's status and summary are its own,
+ * read by its run ID (SR-083, SR-086 G-B2).
  */
 export type RemoteRunRootEvent =
-  | Readonly<{ kind: "remote_task_execution_summary"; summary: RemoteRunSummaryEvent }>
-  | Readonly<{
+  Readonly<{
       kind: "remote_agent_presentation";
       nodeId: string;
       agentRunId: string;

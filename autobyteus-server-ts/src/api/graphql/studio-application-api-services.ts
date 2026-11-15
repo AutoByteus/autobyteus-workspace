@@ -11,7 +11,6 @@ import type { AgentOrgRunService } from "../../agent-org-execution/services/agen
 import type { StudioRunModelConfigService } from "../../run-history/services/studio-run-model-config-service.js";
 import type { DefinitionAdmissionService } from "../../collaboration-definition-admission/services/definition-admission-service.js";
 import type { CollaborationRootHistoryService } from "../../run-history/services/collaboration-root-history-service.js";
-import type { RunViewChildren } from "../../services/agent-streaming/run-view-children.js";
 import type { RunTreeView } from "../../agent-collaboration/delegation/run-tree-view.js";
 import type { DelegatedRunAgentsReader } from "../../run-history/services/delegated-run-agents-reader.js";
 import type { RunViewStreams } from "../../agent-collaboration/delegation/run-view-stream.js";
@@ -26,8 +25,6 @@ type StudioApplicationApiServices = Readonly<{
   definitionAdmissionService: DefinitionAdmissionService;
   collaborationRootHistoryService: CollaborationRootHistoryService;
   runModelConfigService: StudioRunModelConfigService;
-  /** A run view's children and the history poll's child statuses (autobyteus-461 DS-8; SR-047). */
-  runViewChildren: RunViewChildren;
   /** Each run's tree (SR-084), for `runTree(run)`. */
   runTree: RunTreeView;
   /** The agents of the runs a run delegated to, open or closed (token totals, the Team tab's past participants). */
@@ -55,7 +52,6 @@ export const configureStudioApplicationApiServices = (
     || !services.definitionAdmissionService
     || !services.collaborationRootHistoryService
     || !services.runModelConfigService
-    || !services.runViewChildren
     || !services.runTree
     || !services.delegatedRunAgents
     || !services.runViewStreams
@@ -130,9 +126,6 @@ export const getStudioApplicationPackageQueries =
 
 export const getStudioApplicationPackageCommands =
   (): ApplicationPackageCommandService => requireConfiguredServices().packageCommands;
-
-export const getStudioRunViewChildren = (): RunViewChildren =>
-  requireConfiguredServices().runViewChildren;
 
 export const getStudioRunTreeView = (): RunTreeView =>
   requireConfiguredServices().runTree;

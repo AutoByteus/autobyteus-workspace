@@ -1,6 +1,5 @@
 import { createTeamRootExecutionIdentity } from "../../../agent-collaboration/execution/domain/root-execution-identity.js";
 import { getStudioRunViewStreams } from "../studio-application-api-services.js";
-import { getStudioRunViewChildren } from "../studio-application-api-services.js";
 import { Arg, Field, Int, Mutation, ObjectType, Query, Resolver } from "type-graphql";
 import { GraphQLJSON } from "graphql-scalars";
 import { getTeamRunHistoryService } from "../../../run-history/services/team-run-history-service.js";
@@ -22,14 +21,6 @@ class TeamRunResumeConfigPayload {
 
   @Field(() => GraphQLJSON)
   executionTree!: unknown;
-
-  /** `{ agentRunId } | { teamRunId }` of each row in `executionTree` whose Tasks are all closed while it still runs (SR-061). */
-  @Field(() => GraphQLJSON)
-  closedTaskExecutions!: unknown;
-
-  /** autobyteus-278: the runs this Team delegated to other nodes, with their node's name, as its stream snapshot lists them. */
-  @Field(() => GraphQLJSON)
-  remoteTaskExecutions!: unknown;
 
   @Field(() => RunModelConfigEditabilityObject)
   modelConfigEditability!: RunModelConfigEditabilityObject;
@@ -109,16 +100,11 @@ export class TeamRunHistoryResolver {
     @Arg("teamRunId", () => String) teamRunId: string,
   ): Promise<TeamRunResumeConfigPayload> {
     const config = await this.runModelConfigService.getTeamRunResumeConfig(teamRunId);
-    const children = getStudioRunViewChildren();
-    const run = { rootSubjectKind: "agent_team" as const, rootRunId: config.executionTree.rootTeam.teamRunId };
-    const { rows } = await children.read(run);
     return {
       teamRunId: config.teamRunId,
       isActive: config.isActive,
-      // Its rows in base's shapes (SR-061): nested by placement, the closed set, the peer rows.
-      executionTree: projectExecutionTree(config.executionTree, rows.taskExecutions),
-      closedTaskExecutions: rows.closedTaskExecutions,
-      remoteTaskExecutions: rows.remoteTaskExecutions,
+      // Its own members; the runs it delegated are its tree's rows (`runTree`, SR-084).
+      executionTree: projectExecutionTree(config.executionTree),
       modelConfigEditability: config.modelConfigEditability,
       liveSequenceId: config.liveSequenceId,
       baseChangeSequence: config.baseChangeSequence,

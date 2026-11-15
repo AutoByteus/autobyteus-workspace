@@ -1,7 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { taskTeamExecutionDtoSchema } from "@autobyteus/team-stream-contracts";
 import { taskExecutionDtoSchema } from "@autobyteus/collaboration-stream-contracts";
-import { projectExecutionTree } from "../../../../src/services/agent-streaming/team-execution-view-projector.js";
 import { projectDelegatedAgentRun, projectDelegatedTeamRun } from "../../../../src/services/agent-streaming/collaboration-execution-tree-dto-projection.js";
 import { toDelegateTaskResult } from "../../../../src/agent-tools/task-delegation/task-delegation-tool-serialization.js";
 import { DelegateTaskResultSchema } from "../../../../src/agent-team-execution/task-delegation/task-delegation-result-contract.js";
@@ -36,19 +34,6 @@ const teamFile = (recorded: boolean) => {
 };
 
 describe("launch values and sources in run views' child rows", () => {
-  const teamView = (recorded: boolean) => projectExecutionTree(testExecutionTree({ rootTeamRunId: "root", coordinatorAddress: "/pm",
-    children: [testAgentNode("/pm", { agentRunId: "pm" })] }), [projectDelegatedTeamRun(teamIdentity, teamFile(recorded) as never)]);
-
-  it("the Team view (snake_case) carries each member's own launch and no follower flag (CR-461-089); sources only when recorded", () => {
-    const dto = taskTeamExecutionDtoSchema.parse(teamView(true).root_team.task_executions[0]);
-    expect(dto.source.members[0]).toMatchObject({ address: "/lead",
-      launch_configuration: { runtime_kind: "claude_agent_sdk", llm_model_identifier: "opus" },
-      launch_source: { origin: "inherited", fallbacks: [{ layer: "agent_default", runtime_kind: "grok_build", llm_model_identifier: "grok-4", reason: "runtime_unavailable", detail: "no grok" }] } });
-    expect(dto.source.members.map((member) => member.launch_configuration.llm_model_identifier)).toEqual(["opus", "sol-6.1"]);
-    expect(dto.source.members.some((member) => "follows_team" in member)).toBe(false);
-    expect(dto.source.default_launch_source).toEqual({ origin: "inherited", fallbacks: [] });
-    expect(JSON.stringify(teamView(false).root_team.task_executions[0])).not.toMatch(/launch_source/);
-  });
 
   it("the Org and Agent views (camelCase) carry the same, and an agent child's source from its own run_metadata", () => {
     const projected = taskExecutionDtoSchema.parse(projectDelegatedTeamRun(teamIdentity, teamFile(true) as never));

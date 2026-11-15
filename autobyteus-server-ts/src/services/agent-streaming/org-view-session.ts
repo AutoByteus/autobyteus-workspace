@@ -9,7 +9,7 @@ import type { ActiveCollaborationRootDirectory } from "../../agent-collaboration
 import type { AgentOrgRun, AgentOrgRunPackageSnapshot } from "../../agent-org-execution/domain/agent-org-run.js";
 import type { AgentOrgRunEvent } from "../../agent-org-execution/domain/agent-org-run-event.js";
 import type { AgentOrgRunExecutionTreeSnapshot } from "../../agent-org-execution/domain/agent-org-run-execution-tree.js";
-import { inOrderViewDelivery, isChildRowRootEvent, isReadBeforeSending, readRowEvent, readRowsAtBase, readViewSnapshot, type RunViewRowSources, type ViewRows } from "./run-view-rows.js";
+import { inOrderViewDelivery, isReadBeforeSending, readTreeAtBase, readViewTree, type RunViewRowSources } from "./run-view-rows.js";
 import { isRunTreeChangedEvent } from "../../agent-collaboration/delegation/run-tree-view.js";
 import type { RunTreeSessionRows } from "../../agent-collaboration/delegation/run-tree-changes.js";
 import { projectAgentOrgExecutionEvent, projectAgentOrgExecutionSnapshot } from "./agent-org-execution-view-projector.js";
@@ -18,7 +18,7 @@ import { projectAgentOrgExecutionEvent, projectAgentOrgExecutionSnapshot } from 
 export type OrgViewSources = Readonly<{
   /** Each run's one view stream (SR-062). */
   streams: Pick<RunViewStreams, "streamOf">;
-  /** The rows under the run: read with a snapshot's base, their records after it, their statuses followed. */
+  /** The runs under it: its tree read with a snapshot's base, its peer rows' output followed (SR-084). */
   rows: RunViewRowSources;
   /** The run's registration (managed) and its end, by its identity. */
   registrations: Pick<ActiveCollaborationRootDirectory, "onRegistrationChanged">;
@@ -35,12 +35,12 @@ export class OrgRunNotRestorableError extends Error {
   constructor(readonly refusal: RootRestoreRefusal) { super(refusal.message); }
 }
 
-type ViewSnapshot = Readonly<{ own: AgentOrgRunPackageSnapshot; rows: ViewRows; tree: RunTreeSessionRows }>;
+type ViewSnapshot = Readonly<{ own: AgentOrgRunPackageSnapshot; tree: RunTreeSessionRows }>;
 
 /**
  * One connection's view of an Org run (autobyteus-461 DS-8; SR-045, SR-046, SR-061 … SR-063), as `TeamViewSession` for a
- * team run: in base's shapes, from the run's one `RunViewStream`; it never restores the run; a snapshot reads the base,
- * the rows and their statuses in one synchronous step, then the run's own parts (a live run's, or a stopped run's stored
+ * team run: in base's shapes, from the run's one `RunViewStream`; it never restores the run; a snapshot reads the base
+ * and its tree in one synchronous step, then the run's own parts (a live run's, or a stopped run's stored
  * tree); every frame after the base follows in order; a mode switch is an in-band snapshot at the current sequence.
  */
 export class OrgViewSession {
@@ -113,11 +113,11 @@ export class OrgViewSession {
     else await this.enterStored();
   }
 
-  private atBase() { return readRowsAtBase(this.sources.rows, this.identity); }
+  private atBase() { return readTreeAtBase(this.sources.rows, this.identity); }
 
   private async enterLive(run: AgentOrgRun): Promise<void> {
     const connection = await run.openViewSnapshotConnection(() => this.atBase(),
-      async (own, atBase): Promise<ViewSnapshot> => ({ own, ...await readViewSnapshot(this.sources.rows, this.identity, atBase) }));
+      async (own, atBase): Promise<ViewSnapshot> => ({ own, tree: await readViewTree(this.sources.rows, this.identity, atBase) }));
     try {
       // The run's own end reaches the view as its unregistration (an in-band stored snapshot follows), not as a close.
       const stopEvents = this.show(connection, run.isActive());
@@ -142,7 +142,7 @@ export class OrgViewSession {
       });
       if (!tree) throw new OrgRunNotFoundError(`AgentOrg run '${this.orgRunId}' was not found.`);
       // A stopped Org reports no statuses of its own; its rows' come from their own runs (SR-083).
-      return { own: { tree, statuses: [], inputStates: [] }, ...await readViewSnapshot(this.sources.rows, this.identity, atBase) };
+      return { own: { tree, statuses: [], inputStates: [] }, tree: await readViewTree(this.sources.rows, this.identity, atBase) };
     });
     try {
       this.leaveMode = this.show(connection, false);
@@ -158,7 +158,7 @@ export class OrgViewSession {
     this.send(CollaborationStreamServerMessageSchema.parse({ type: "ROOT_EXECUTION_VIEW_SNAPSHOT", payload: projectAgentOrgExecutionSnapshot({
       orgRunId: this.orgRunId, isActive, snapshot: connection.snapshot.own,
       baseChangeSequence: connection.baseChangeSequence, liveSequenceId: connection.liveSequenceId,
-      lastMessageChangeSequence: connection.lastMessageChangeSequence, rows: connection.snapshot.rows,
+      lastMessageChangeSequence: connection.lastMessageChangeSequence,
     }) }));
     // The run's tree at the same base (SR-084); its changes follow as numbered `run_tree_changed` events.
     const tree = connection.snapshot.tree;
@@ -174,8 +174,7 @@ export class OrgViewSession {
             root_run_id: this.orgRunId, change_sequence: sequenced.changeSequence, event: { kind: "run_tree_changed", ...change } } }));
           return;
         }
-        const rowEvent = isChildRowRootEvent(sequenced.event) ? await readRowEvent(this.sources.rows.projection, this.identity, sequenced.event) : null;
-        const projected = projectAgentOrgExecutionEvent(this.orgRunId, sequenced, rowEvent);
+        const projected = projectAgentOrgExecutionEvent(this.orgRunId, sequenced);
         if (projected && open) this.send(CollaborationStreamServerMessageSchema.parse({ type: "ROOT_EXECUTION_EVENT", payload: projected }));
       } catch (cause) { console.error(`Error projecting an AgentOrg event: ${String(cause)}`); }
     }));

@@ -8,8 +8,8 @@ import type { DelegationIndex } from "./delegation-index.js";
 import type { RunViewStreams } from "./run-view-stream.js";
 type Publish = (event: RemoteRunRootEvent) => void;
 
-/** One peer run's output observation and summary, shared by every open view that shows it (ARCH-REV-040 note 1). */
-type Observed = { peer: PeerRun; stream: RemoteRunObservationStream | null; views: Map<string, Publish>; lastSummary: RemoteRunSummaryEvent | null };
+/** One peer run's output observation, shared by every open view that shows it (ARCH-REV-040 note 1). */
+type Observed = { peer: PeerRun; stream: RemoteRunObservationStream | null; views: Map<string, Publish> };
 
 /** One open view's following: its viewers, and the peer runs it shows. */
 type Viewed = { viewers: number; peers: Set<string>; stopRows: () => void };
@@ -17,11 +17,11 @@ type Viewed = { viewers: number; peers: Set<string>; stopRows: () => void };
 /**
  * The peer runs in the open views (autobyteus-461 SR-066; DS-8, AC-802: a peer run has no stream of its own on this
  * node): their live output, observed while a view shows them and numbered in each view's stream, and their summaries
- * (title, reachability, launches), asked of their nodes when a view opens and on Retry (`refresh`). One node-level owner,
- * keyed by peer run: the first open view that shows a peer run opens its `observe`, the last to close it closes it. A
- * view shows its open peer rows at every depth (`collaborationTreeOf(run).rows()`), followed as rows come and go. Each
- * peer run's last summary is kept in memory and published again to a view that attaches, after its snapshot (SR-063). A
- * peer run's status is its own, read by its run ID through its handle (`RunStatusService`, SR-083): status frames are
+ * (title, reachability, launches), asked of their nodes when a view opens and on Retry (`refresh`) and kept with each
+ * run's status (`answered`, SR-086 G-B2), whose change tells the trees holding its row. One node-level owner, keyed by
+ * peer run: the first open view that shows a peer run opens its `observe`, the last to close it closes it. A view shows
+ * its open peer rows at every depth (`collaborationTreeOf(run).rows()`), followed as rows come and go. A peer run's
+ * status is its own, read by its run ID through its handle (`RunStatusService`, SR-083): status frames are
  * not the view's. Phase 1 (DEC-807): an observation never reconnects; Retry observes again.
  */
 export class PeerChildObservation {
@@ -40,10 +40,7 @@ export class PeerChildObservation {
     answered(summary: RemoteRunSummaryEvent): void;
   }>) {}
 
-  /**
-   * A view of `run` opens, after its snapshot: its peer rows get their summaries in its stream (the
-   * cached one now, a fresh one when its node answers). The returned function closes the view.
-   */
+  /** A view of `run` opens, after its snapshot: its peer rows' nodes are asked for their summaries. The returned function closes the view. */
   follow(run: RootExecutionIdentity): () => void {
     const key = rootExecutionIdentityKey(run);
     let view = this.viewed.get(key);
@@ -58,7 +55,6 @@ export class PeerChildObservation {
     }
     const current = view;
     current.viewers += 1;
-    this.republish(key, current);
     void this.fetchSummaries(current);
     let closed = false;
     return () => {
@@ -87,12 +83,6 @@ export class PeerChildObservation {
     if (entry) void this.fetchFor([entry], false);
   }
 
-  /** The last summaries of the view's peer rows, in memory. */
-  cachedSummaries(run: RootExecutionIdentity): readonly RemoteRunSummaryEvent[] {
-    const view = this.viewed.get(rootExecutionIdentityKey(run));
-    return view ? [...view.peers].flatMap((peerRunId) => this.observed.get(peerRunId)?.lastSummary ?? []) : [];
-  }
-
   /** The view's peer rows now: newly shown ones are joined, ones no longer shown are left. */
   private sync(run: RootExecutionIdentity, view: Viewed): void {
     const key = rootExecutionIdentityKey(run);
@@ -119,7 +109,7 @@ export class PeerChildObservation {
     if (!entry) {
       const peer = this.dependencies.peerRunOf(peerRunId);
       if (!peer) return null;
-      entry = { peer, stream: null, views: new Map(), lastSummary: null };
+      entry = { peer, stream: null, views: new Map() };
       this.observed.set(peerRunId, entry);
       this.open(entry);
     }
@@ -163,21 +153,12 @@ export class PeerChildObservation {
     }
   }
 
-  /** The cached summaries of the view's peer rows, published again to its stream (a viewer attached after its snapshot). */
-  private republish(viewKey: string, view: Viewed): void {
-    for (const peerRunId of view.peers) {
-      const entry = this.observed.get(peerRunId);
-      const publish = entry?.views.get(viewKey);
-      if (entry?.lastSummary && publish) publish({ kind: "remote_task_execution_summary", summary: entry.lastSummary });
-    }
-  }
-
   private fetchSummaries(view: Viewed, only?: readonly string[]): Promise<void> {
     return this.fetchFor((only ?? [...view.peers]).flatMap((peerRunId) => this.observed.get(peerRunId) ?? []));
   }
 
   /**
-   * One request per node; each answer is cached and published to every view showing the run. A node that answers is back
+   * One request per node; each answer is kept with the run's status (`answered`). A node that answers is back
    * (CR-461-094): the ended status observations of its runs are observed again (`reobserve`; a view's open, its rows'
    * change and Retry), and an output observation of a run shown here that ended is opened again.
    */
@@ -188,10 +169,8 @@ export class PeerChildObservation {
     for (const entry of entries) {
       const summary = statuses.find((status) => status.nodeId === entry.peer.link.nodeId && status.runId === entry.peer.runId);
       if (!summary || this.observed.get(entry.peer.runId) !== entry) continue;
-      entry.lastSummary = Object.freeze({ ...summary });
-      this.publish(entry, { kind: "remote_task_execution_summary", summary: entry.lastSummary });
       // Its row's title, reachability and launches (SR-084, G-B2): kept with the run's status, which tells its trees.
-      this.dependencies.answered(entry.lastSummary);
+      this.dependencies.answered(Object.freeze({ ...summary }));
       if (!reobserve || !summary.reachable) continue;
       answered.push(entry.peer.runId);
       if (!entry.stream) this.open(entry);

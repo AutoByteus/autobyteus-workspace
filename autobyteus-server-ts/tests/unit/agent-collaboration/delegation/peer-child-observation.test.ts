@@ -100,7 +100,7 @@ describe("PeerChildObservation", () => {
     expect(f.eventsOf(top).filter((event) => event.kind === "remote_agent_presentation")).toEqual(expected);
   });
 
-  it("summaries: one request per node; an unanswered node is unreachable; a later view gets the cached ones, then fresh ones", async () => {
+  it("summaries: one request per node; an unanswered node is unreachable; each answer is kept with its run's status, never a frame of the view (SR-084)", async () => {
     const f = harness();
     f.observation.follow(delegator);
     await f.flush();
@@ -108,17 +108,13 @@ describe("PeerChildObservation", () => {
       [DOCKER, [{ kind: "agent", runId: "researcher-run" }, { kind: "agent_team", runId: "marketing-run" }]],
       [OFFICE, [{ kind: "agent", runId: "analyst-run" }]],
     ]);
-    expect(f.eventsOf(delegator).map((event) => event.summary)).toEqual([
+    // Each answer is kept with its run's status (SR-086 G-B2), which tells the trees holding its row.
+    expect(f.answered.mock.calls.map(([summary]) => summary)).toEqual([
       expect.objectContaining({ runId: "researcher-run", reachable: true, title: "Title of researcher-run" }),
       expect.objectContaining({ runId: "marketing-run", reachable: true }),
       expect.objectContaining({ runId: "analyst-run", reachable: false, statuses: [] }),
     ]);
-    // Each answer is kept with its run's status (SR-086 G-B2), which tells the trees holding its row.
-    expect(f.answered.mock.calls.map(([summary]) => summary.runId)).toEqual(["researcher-run", "marketing-run", "analyst-run"]);
-    expect(f.observation.cachedSummaries(delegator)).toHaveLength(3);
-    // A view that opens later (after its snapshot) gets the cached summaries at once, as frames of its own sequence.
-    f.observation.follow(top);
-    expect(f.eventsOf(top).filter((event) => event.kind === "remote_task_execution_summary")).toHaveLength(3);
+    expect(f.eventsOf(delegator)).toEqual([]);
   });
 
   it("Retry (CR-461-085, CR-461-091): the view's peer runs' ended observations again (output and status), and fresh summaries from their nodes", async () => {

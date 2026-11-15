@@ -40,16 +40,12 @@ const projectConfigured = (member: ConfiguredExecutionNode): AgentOrgExecutionTr
     address: member.address, teamDefinitionId: member.teamDefinitionId, role: member.role, description: member.description,
     teamRunId: member.teamRunId, coordinatorAddress: member.coordinatorAddress,
     defaultLaunchConfiguration: projectLaunch(member.defaultLaunchConfiguration), members: member.members.map(projectConfiguredAgent),
-    taskExecutions: [],
   };
 
-/** A standalone run's view tree: its own agent and its child rows (the runs it delegated to, DS-8). */
-export const projectAgentCollaborationTree = (input: Readonly<{
-  host: StandaloneRootHost; createdAt: string; taskExecutions: readonly CollaborationTaskExecutionDto[];
-}>): AgentRunCollaborationTreeDto => ({
+/** A standalone run's view tree: its own agent (the runs it delegated are its tree's rows, SR-084). */
+export const projectAgentCollaborationTree = (input: Readonly<{ host: StandaloneRootHost; createdAt: string }>): AgentRunCollaborationTreeDto => ({
   subjectKind: "agent", createdAt: input.createdAt,
   host: { address: input.host.address, agentRunId: input.host.agentRunId, agentDefinitionId: input.host.agentDefinitionId },
-  taskExecutions: [...input.taskExecutions],
 });
 
 /** An agent run's launch, from its own `run_metadata.json`: what it runs with and where that came from (a Settings save changes them, SR-039). */
@@ -96,7 +92,8 @@ export const projectDelegatedTeamRun = (identity: Extract<DelegatedRunIdentity, 
   };
 };
 
-export const projectAgentOrgExecutionTree = (tree: AgentOrgRunExecutionTreeSnapshot, delegated: readonly CollaborationTaskExecutionDto[] = []): AgentOrgExecutionTreeDto => ({
+/** An Org run's own tree: its agents and mounted teams (the runs it delegated are its tree's rows, SR-084). */
+export const projectAgentOrgExecutionTree = (tree: AgentOrgRunExecutionTreeSnapshot): AgentOrgExecutionTreeDto => ({
   subjectKind: "agent_org", createdAt: tree.createdAt, archivedAt: tree.archivedAt,
   applicationBinding: tree.applicationBinding === null ? null : {
     applicationId: tree.applicationBinding.applicationId, bindingId: tree.applicationBinding.bindingId,
@@ -106,8 +103,5 @@ export const projectAgentOrgExecutionTree = (tree: AgentOrgRunExecutionTreeSnaps
     address: tree.rootOrg.address, orgDefinitionId: tree.rootOrg.orgDefinitionId, orgDefinitionName: tree.rootOrg.orgDefinitionName,
     orgRunId: tree.rootOrg.orgRunId, defaultLaunchConfiguration: projectLaunch(tree.rootOrg.defaultLaunchConfiguration),
     members: tree.rootOrg.members.map(projectConfigured),
-    // Every new run an Org delegates sits in its root, as at base (`agent-org-task-execution-adapter.ts:115`, rule 3, the
-    // characterization of story 5.3); a run it delegated further nests under it. Nothing is hosted.
-    taskExecutions: [...delegated],
   },
 });

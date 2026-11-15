@@ -54,7 +54,6 @@ import { setProcessTeamRunHistoryService } from "../run-history/services/team-ru
 import { setProcessWorkspaceRunHistoryService, WorkspaceRunHistoryService } from "../run-history/services/workspace-run-history-service.js";
 import { RunOwnAgentsReader } from "../run-history/store/run-own-agents-reader.js";
 import { createChildRowProjection } from "../services/agent-streaming/delegated-children-dtos.js";
-import { RunViewChildren } from "../services/agent-streaming/run-view-children.js";
 import { AgentOrgAgentStatuses } from "../agent-org-execution/services/agent-org-agent-statuses.js";
 import { peerNodeNames } from "../agent-collaboration/execution/remote/remote-run-observation.js";
 import { peerStatuses } from "../agent-collaboration/execution/remote/peer-run-calls.js";
@@ -124,7 +123,6 @@ export const composeTaskSide = async (input: Readonly<{ appDataDir: string; memo
 export type Collaboration = Readonly<{
   tasks: ProjectTaskService;
   views: RunViewSources;
-  runViewChildren: RunViewChildren;
   /** Each run's tree, built once on the server (SR-084): every view, the list's expanded runs, the phone and Settings show it. */
   runTree: RunTreeView;
   /** A row's content changed (a saved launch, SR-086 G-B1): every tree that holds it is told. */
@@ -236,10 +234,9 @@ export const composeCollaboration = async (input: Readonly<{
       },
     });
 
-    // 7. The views' owners (SR-061 … SR-063, SR-083): base's row events from the tree, the rows' records, each run's own
-    // statuses by run ID.
+    // 7. The views' owners (SR-061 … SR-063, SR-083, SR-084): each run's tree and its change notice, the rows' records,
+    // each run's own statuses by run ID.
     const projection = createChildRowProjection({ memoryDir, tree, channel: input.remoteChannel, peerSummaryOf: (runId) => runStatus.peerSummaryOf(runId) });
-    // A closed row is in its view's closed set while its run still runs (its root is live).
     // A peer run, reached by its own identity (SR-066): its handle from the tree, its live status and output per view.
     const peerRunOf = createPeerRunOf(tree, input.remoteChannel);
     // Each run's statuses by run ID, from the run itself, and its rows' change notice (SR-082, SR-083).
@@ -249,10 +246,8 @@ export const composeCollaboration = async (input: Readonly<{
       peerNodeName: async (nodeId) => (await peerNodeNames([nodeId], input.remoteChannel())).get(nodeId) ?? nodeId,
       peerSummary: async (peer) => (await peerStatuses([peer.link], input.remoteChannel))[0] ?? null,
       summaryChanged: (run) => feed.rowChanged(run) });
-    const feed = new ChildRowsFeed({ streams: taskSide.viewStreams, tree, isRunning: (run) => input.activeRoots.resolve(run) !== null,
-      rowsChanged: (run) => runStatus.treeChanged(run) });
+    const feed = new ChildRowsFeed({ streams: taskSide.viewStreams, tree, rowsChanged: (run) => runStatus.treeChanged(run) });
     releases.push(feed.follow(tree));
-    const runViewChildren = new RunViewChildren({ feed, projection });
     const ownFiles = new RunOwnAgentsReader(memoryDir);
     const runTree = new RunTreeView({ tree, ownTreeOf: (run) => ownFiles.ownTreeOf(run), projection });
     const peers = new PeerChildObservation({ tree, streams: taskSide.viewStreams, peerRunOf, channel: input.remoteChannel,
@@ -271,10 +266,10 @@ export const composeCollaboration = async (input: Readonly<{
     releases.push(setProcessTeamRunHistoryService(runs.teamRunHistoryService));
     releases.push(setProcessWorkspaceRunHistoryService(new WorkspaceRunHistoryService({ tree,
       agentRunHistoryService: agentRunHistory, teamRunHistoryService: runs.teamRunHistoryService })));
-    const views = createRunViewSources({ memoryDir, streams: taskSide.viewStreams, rows: { feed, projection, peers, peerRunOf, runTree }, registrations: input.activeRoots,
+    const views = createRunViewSources({ memoryDir, streams: taskSide.viewStreams, rows: { peers, peerRunOf, runTree }, registrations: input.activeRoots,
       closedTasks: taskSide.closedTasks, restorability });
     return Object.freeze({
-      tasks, views, runViewChildren, runTree, runStatus, delegatedRunAgents: new DelegatedRunAgentsReader(tree),
+      tasks, views, runTree, runStatus, delegatedRunAgents: new DelegatedRunAgentsReader(tree),
       rowChanged: (run: RootExecutionIdentity) => feed.rowChanged(run),
       release: () => { for (const release of releases.splice(0).reverse()) release(); },
     });

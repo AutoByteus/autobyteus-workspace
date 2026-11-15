@@ -1,4 +1,3 @@
-import { getStudioRunViewChildren } from "../studio-application-api-services.js";
 import { GraphQLJSON } from "graphql-scalars";
 import { Arg, Field, Int, ObjectType, Query, Resolver } from "type-graphql";
 import { isRootSubjectKind } from "../../../agent-collaboration/execution/domain/root-execution-identity.js";
@@ -39,17 +38,13 @@ export class AgentRunCollaborationMemberProjectionPayload {
 @Resolver()
 export class AgentRunCollaborationResolver {
   /**
-   * The Agent-root view of a standalone run: the live root snapshot when one is active, else the stored package, with
-   * its rows. Each row's status is its own run's (`/ws/run-status`, SR-083). Null when the run has no package. Never restores.
+   * The Agent-root view of a standalone run: the live root snapshot when one is active, else the stored package. Its
+   * tree is `runTree(run)` (SR-084). Null when the run has no package. Never restores.
    */
   @Query(() => GraphQLJSON, { nullable: true })
   async agentRunCollaboration(@Arg("runId", () => String) runId: string): Promise<unknown> {
     const inspection = await getStandaloneAgentRunRootManager().getInspection(runId);
-    if (!inspection) return null;
-    const run = { rootSubjectKind: "agent" as const, rootRunId: inspection.hostRunId };
-    const children = getStudioRunViewChildren();
-    const { rows } = await children.read(run);
-    return projectAgentCollaborationView({ ...inspection, rows });
+    return inspection ? projectAgentCollaborationView(inspection) : null;
   }
 
   @Query(() => AgentRunCollaborationMemberProjectionPayload)

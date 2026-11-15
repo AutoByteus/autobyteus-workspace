@@ -2,18 +2,10 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { parseTeamStreamClientMessage, parseTeamStreamServerMessage } from "../dist/index.js";
 
-const remoteAgent = {
-  kind: "agent", address: "/market_researcher", agent_run_id: "researcher-run", node_id: "srv_docker", node_name: "docker",
-  delegator_agent_run_id: "coordinator-run", started_at: "2026-10-23T08:00:00.000Z",
-};
-
-test("a Team stream carries a remote run's start and its node's summary, sequenced", () => {
-  const started = { type: "REMOTE_TASK_EXECUTION_STARTED", payload: { change_sequence: 3, execution: remoteAgent } };
-  assert.deepEqual(parseTeamStreamServerMessage(started), started);
-  const summary = { type: "REMOTE_TASK_EXECUTION_SUMMARY", payload: { change_sequence: 4, node_id: "srv_docker",
-    run_id: "researcher-run", reachable: false, title: null, statuses: [] } };
-  assert.deepEqual(parseTeamStreamServerMessage(summary), summary);
-  assert.throws(() => parseTeamStreamServerMessage({ ...summary, payload: { ...summary.payload, change_sequence: undefined } }));
+test("a Team stream carries no remote rows or their summaries: a peer run is a row of the Team's tree (autobyteus-461 SR-084)", () => {
+  for (const type of ["REMOTE_TASK_EXECUTION_STARTED", "REMOTE_TASK_EXECUTION_SUMMARY", "TASK_EXECUTION_STARTED", "TASK_EXECUTIONS_CLOSED", "TASK_EXECUTIONS_REOPENED"]) {
+    assert.throws(() => parseTeamStreamServerMessage({ type, payload: { change_sequence: 3 } }));
+  }
 });
 
 test("Retry is a Team client command without a payload", () => {

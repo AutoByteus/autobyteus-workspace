@@ -10,10 +10,7 @@ const mocks = vi.hoisted(() => ({
   getActiveTeamRun: vi.fn(),
   getTeamRunResumeConfig: vi.fn(),
   projectExecutionTree: vi.fn((tree: unknown) => tree),
-  // autobyteus-461: the peer runs a run delegated to come from its Task entries, by the run's identity.
-  peerDtos: [] as unknown[],
   viewStreams: null as unknown,
-  remoteTaskExecutionDtos: vi.fn(async (_run: unknown) => mocks.peerDtos),
 }));
 
 vi.mock(
@@ -25,9 +22,6 @@ vi.mock(
   () => ({ getStudioRunModelConfigService: () => ({
     getTeamRunResumeConfig: mocks.getTeamRunResumeConfig,
   }),
-  // SR-047: the run's children as the views read them, from the framework-edge container.
-  getStudioRunViewChildren: () => ({ read: async (run: unknown) => ({ statuses: [],
-    rows: { taskExecutions: [], closedTaskExecutions: [], remoteTaskExecutions: await mocks.remoteTaskExecutionDtos(run) } }) }),
   getStudioRunViewStreams: () => mocks.viewStreams }),
 );
 vi.mock(
@@ -77,20 +71,16 @@ describe("TeamRunHistoryResolver execution checkpoint", () => {
     expect(mocks.projectExecutionTree).toHaveBeenCalledTimes(1);
   });
 
-  it("lists the Team's remote runs, as its stream snapshot does, so a stopped Team still shows them (autobyteus-278)", async () => {
-    const link = { kind: "agent", address: "/publisher", agentRunId: "publisher-run", nodeId: "srv_docker", delegatorAgentRunId: "lead-run", startedAt: "2026-10-23T08:00:00.000Z" };
+  it("its runs delegated, local or on another node, are not in it: they are its tree's rows (`runTree`, autobyteus-461 SR-084)", async () => {
     mocks.getTeamRunResumeConfig.mockResolvedValue({
       teamRunId: "team-run-1",
       isActive: false,
       executionTree: { rootTeam: { address: "/", teamRunId: "team-run-1", members: [] } },
       modelConfigEditability: { editable: true, reason: null },
     });
-
-    mocks.peerDtos = [{ ...link, node_name: "docker" }];
     const config = await new TeamRunHistoryResolver().getTeamRunResumeConfig("team-run-1");
-
-    expect(mocks.remoteTaskExecutionDtos).toHaveBeenCalledWith({ rootSubjectKind: "agent_team", rootRunId: "team-run-1" });
-    expect(config.remoteTaskExecutions).toEqual([{ ...link, node_name: "docker" }]);
+    expect(config).not.toHaveProperty("remoteTaskExecutions");
+    expect(config).not.toHaveProperty("closedTaskExecutions");
   });
 
   it("reads a team member's file changes through the team-scoped member view", async () => {

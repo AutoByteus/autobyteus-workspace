@@ -1,9 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 import { openTargetOf } from "../../../../src/agent-collaboration/delegation/collaboration-tree.js";
 import { projectDelegatedAgentRun, projectDelegatedTeamRun } from "../../../../src/services/agent-streaming/collaboration-execution-tree-dto-projection.js";
-import { projectTeamRowEvent, projectTeamTaskExecutions } from "../../../../src/services/agent-streaming/team-execution-view-projector.js";
-import { projectAgentCollaborationEvent } from "../../../../src/services/agent-streaming/agent-collaboration-view-projector.js";
-import { projectAgentOrgExecutionEvent } from "../../../../src/services/agent-streaming/agent-org-execution-view-projector.js";
 import { projectRemoteTaskExecution } from "../../../../src/services/agent-streaming/remote-task-execution-dto-projection.js";
 import { createChildRowProjection } from "../../../../src/services/agent-streaming/delegated-children-dtos.js";
 import { RuntimeKind } from "../../../../src/runtime-management/runtime-kind-enum.js";
@@ -27,8 +24,6 @@ const teamIdentity = { kind: "agent_team" as const, address: "/product_team", te
   delegatorAgentRunId: "host", startedAt: "2026-11-01T00:00:00.000Z",
   members: [{ address: "/designer", agentRunId: "designer-run", agentDefinitionId: "designer" }, { address: "/lead", agentRunId: "lead-run", agentDefinitionId: "lead" }] };
 const teamRow = projectDelegatedTeamRun(teamIdentity, teamFile() as never);
-const root = { hostKind: "root" as const, hostRunId: "host" };
-const sequenced = (kind: string) => ({ changeSequence: 1, event: { kind } }) as never;
 
 describe("rows that say where they open (SR-083)", () => {
   it("one helper: an agent run opens its own agent; a team run its coordinator, the member at its coordinator's address", () => {
@@ -49,18 +44,6 @@ describe("rows that say where they open (SR-083)", () => {
   it("the local rows every view builds from: an agent run and a team run (its coordinator)", () => {
     expect(agentRow.openTarget).toEqual({ runKind: "agent", runId: "reviewer-run", agentRunId: "reviewer-run" });
     expect(teamRow.openTarget).toEqual({ runKind: "agent_team", runId: "team-run", agentRunId: "lead-run" });
-  });
-
-  it("an agent run's and an org run's row events carry them; a team run's view and its list row, in its snake case", () => {
-    for (const row of [agentRow, teamRow]) {
-      const agentEvent = projectAgentCollaborationEvent("host", sequenced("task_execution_started"), { kind: "task_execution_started", host: root, execution: row })?.event as { execution?: { openTarget?: unknown } };
-      expect(agentEvent?.execution?.openTarget).toEqual(row.openTarget);
-      const orgEvent = projectAgentOrgExecutionEvent("org", sequenced("task_execution_started"), { kind: "task_execution_started", host: { hostKind: "root", hostRunId: "org" }, execution: row })?.event as { execution?: { openTarget?: unknown } };
-      expect(orgEvent?.execution?.openTarget).toEqual(row.openTarget);
-    }
-    const teamEvent = projectTeamRowEvent({ kind: "task_execution_started", host: { hostKind: "root", hostRunId: "team" }, execution: teamRow }, 1) as { payload: { execution: { open_target?: unknown } } };
-    expect(teamEvent.payload.execution.open_target).toEqual({ run_kind: "agent_team", run_id: "team-run", agent_run_id: "lead-run" });
-    expect(projectTeamTaskExecutions([agentRow]).map((row) => row.open_target)).toEqual([{ run_kind: "agent", run_id: "reviewer-run", agent_run_id: "reviewer-run" }]);
   });
 
   it("a peer row opens on its node (a team at its coordinator) and carries its launches from its node's answer", () => {

@@ -21,106 +21,7 @@ export type ConfiguredAgentExecutionDto = Readonly<{
     platform_agent_run_id: string | null;
     launch_configuration: AgentLaunchConfigurationDto;
 }>;
-/**
- * Where an agent's (or a Team's) launch values came from and the configured layers skipped before
- * it; `configured` marks a copy started from a configured placement of the coordinating run. Absent on
- * records written before sources existed ("not recorded").
- */
-export type LaunchConfigurationFallbackDto = Readonly<{
-    layer: "agent_default" | "team_default" | "model_router";
-    runtime_kind: string | null;
-    llm_model_identifier: string | null;
-    reason: "incomplete" | "runtime_unavailable" | "signed_out" | "model_unavailable" | "blocked" | "model_settings_invalid" | "router_not_active" | "router_failed";
-    detail: string;
-}>;
-export type LaunchConfigurationSourceDto = Readonly<{
-    origin: "agent_default" | "team_default" | "inherited" | "configured" | "settings";
-    fallbacks: readonly LaunchConfigurationFallbackDto[];
-}>
-/** A choice of the node's Model Router (autobyteus-32): its one-sentence reason and task kind. */
- | Readonly<{
-    origin: "model_router";
-    fallbacks: readonly LaunchConfigurationFallbackDto[];
-    choice_reason: string;
-    task_kind: string;
-}>;
-/**
- * A Team copy member's launch: the complete launch its own run has (a Team-level choice is the Team's default only:
- * autobyteus-461 CR-461-089). `launch_source` is present only when its agent definition had a default.
- */
-type MemberLaunchDto = Readonly<{
-    launch_configuration: AgentLaunchConfigurationDto;
-    launch_source?: LaunchConfigurationSourceDto;
-}>;
-type TeamLaunchDto = Readonly<{
-    default_launch_configuration: AgentLaunchConfigurationDto;
-    default_launch_source?: LaunchConfigurationSourceDto;
-}>;
-/** The snapshot a delegated copy runs with: from the catalog or from a configured placement when it started. */
-export type TaskAgentExecutionSourceDto = Readonly<{
-    kind: "agent";
-    agent_definition_id: string;
-    launch_configuration: AgentLaunchConfigurationDto;
-    launch_source?: LaunchConfigurationSourceDto;
-}>;
-export type TaskTeamExecutionSourceDto = Readonly<{
-    kind: "agent_team";
-    team_definition_id: string;
-    coordinator_address: string;
-    members: readonly (Readonly<{
-        address: string;
-        agent_definition_id: string;
-    }> & MemberLaunchDto)[];
-    handoffs: readonly Readonly<{
-        from: string;
-        to: string;
-        rules: readonly string[];
-    }>[];
-}> & TeamLaunchDto;
-/** The recorded source of a Team copy member's launch: its own, else its Team's; null when not recorded. */
-export declare const teamMemberLaunchSource: (team: Pick<TeamLaunchDto, "default_launch_source">, member: Pick<MemberLaunchDto, "launch_source">) => LaunchConfigurationSourceDto | null;
-/**
- * Where a row opens (autobyteus-461 SR-083): the run's own identity and the agent to focus (a team's coordinator). The
- * server sets it on every row it builds; `null` is a row error (a team run whose coordinator is not one of its members).
- */
-export type RowOpenTargetDto = Readonly<{
-    run_kind: "agent" | "agent_team";
-    run_id: string;
-    agent_run_id: string;
-}>;
-/** A delegated child Agent; `delegator_agent_run_id` is the AgentRun that started it (null when not recorded). */
-export type TaskAgentExecutionDto = Readonly<{
-    kind: "task_agent";
-    address: string;
-    agent_run_id: string;
-    platform_agent_run_id: string | null;
-    delegator_agent_run_id: string | null;
-    started_at: string;
-    source: TaskAgentExecutionSourceDto;
-    open_target?: RowOpenTargetDto | null;
-}>;
-export type TaskTeamAgentExecutionDto = Readonly<{
-    kind: "task_team_agent";
-    address: string;
-    agent_run_id: string;
-    platform_agent_run_id: string | null;
-}>;
-/** A delegated child Team; `delegator_agent_run_id` is the AgentRun that started it (null when not recorded). */
-export type TaskTeamExecutionDto = Readonly<{
-    kind: "task_team";
-    address: string;
-    team_run_id: string;
-    members: readonly TaskTeamAgentExecutionDto[];
-    task_executions: readonly TaskExecutionDto[];
-    delegator_agent_run_id: string | null;
-    started_at: string;
-    source: TaskTeamExecutionSourceDto;
-    open_target?: RowOpenTargetDto | null;
-}>;
-export type TaskExecutionDto = TaskAgentExecutionDto | TaskTeamExecutionDto;
-export declare const rowOpenTargetDtoSchema: z.ZodType<RowOpenTargetDto>;
-export declare const taskAgentExecutionDtoSchema: z.ZodType<TaskAgentExecutionDto>;
-export declare const taskTeamExecutionDtoSchema: z.ZodType<TaskTeamExecutionDto>;
+/** A Team run's own tree: its members. The runs it delegated are its tree's rows (`RUN_TREE_SNAPSHOT`, autobyteus-461 SR-084). */
 export type TeamRunExecutionTreeDto = Readonly<{
     created_at: string;
     archived_at: string | null;
@@ -141,7 +42,6 @@ export type TeamRunExecutionTreeDto = Readonly<{
         coordinator_address: string;
         default_launch_configuration: AgentLaunchConfigurationDto;
         members: readonly ConfiguredAgentExecutionDto[];
-        task_executions: readonly TaskExecutionDto[];
     }>;
 }>;
 export declare const teamRunExecutionTreeDtoSchema: z.ZodType<TeamRunExecutionTreeDto>;
@@ -180,5 +80,4 @@ export declare const teamAgentStatusDtoSchema: z.ZodObject<{
 }, z.core.$strict>;
 export type TeamMemberExecutionIdentityDto = Readonly<z.infer<typeof teamMemberExecutionIdentityDtoSchema>>;
 export type TeamAgentStatusDto = Readonly<z.infer<typeof teamAgentStatusDtoSchema>>;
-export {};
 //# sourceMappingURL=team-execution-view-dtos.d.ts.map

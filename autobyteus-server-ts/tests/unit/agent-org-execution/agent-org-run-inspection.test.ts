@@ -32,14 +32,14 @@ describe('strict read-only Org inspection', () => {
     const f = await fixture();
     const before = await Promise.all((await fs.readdir(f.dir)).map(async (name) => [name, await fs.readFile(path.join(f.dir, name), 'utf8')]));
     const result = await f.manager.getInspection('org');
-    const dto = projectAgentOrgExecutionSnapshot({ ...result, rows: { taskExecutions: [], remoteTaskExecutions: [], closedTaskExecutions: [] } });
+    const dto = projectAgentOrgExecutionSnapshot(result);
     expect(result).toMatchObject({ isActive: false, baseChangeSequence: 0, liveSequenceId: null, lastMessageChangeSequence: null });
     // autobyteus-358: the view reads the tree only; the messages are read through the records owner.
     expect(result.snapshot).not.toHaveProperty('messages');
     expect(result.snapshot).not.toHaveProperty('tasks');
     expect((await f.manager.getCollaborationRecordsSnapshot('org')).messages).toEqual(f.messages);
-    // Its child rows are the runs its agents delegated to (DS-8); none are linked here, and nothing is hosted.
-    expect(dto.root_org.execution_tree.rootOrg.taskExecutions).toEqual([]);
+    // Its own parts only: the runs its agents delegated are its tree's rows (SR-084); nothing is hosted.
+    expect(dto.root_org.execution_tree.rootOrg).not.toHaveProperty('taskExecutions');
     expect(await fs.readdir(f.dir)).not.toContain('agent_org_task_delegation_records.json');
     expect(dto.root_org.agent_statuses).toEqual([]);
     expect(f.manager.getActive('org')).toBeNull();

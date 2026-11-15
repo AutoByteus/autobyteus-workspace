@@ -2,7 +2,6 @@ import { RunViewStreams } from "../../../src/agent-collaboration/delegation/run-
 import { AgentDefinitionService } from "../../../src/agent-definition/services/agent-definition-service.js";
 import { AgentTeamDefinitionService } from "../../../src/agent-team-definition/services/agent-team-definition-service.js";
 import { configureStudioApplicationApiServices } from "../../../src/api/graphql/studio-application-api-services.js";
-import { RunViewChildren } from "../../../src/services/agent-streaming/run-view-children.js";
 import { DelegatedRunAgentsReader } from "../../../src/run-history/services/delegated-run-agents-reader.js";
 import { RunTreeView } from "../../../src/agent-collaboration/delegation/run-tree-view.js";
 
@@ -21,8 +20,6 @@ export type E2eStudioApplicationApiServiceOverrides = Partial<
  */
 const NO_DELEGATIONS = Object.freeze({ childrenOf: () => [], subtreeOf: () => [], openChildrenOf: () => [], peerChildrenOf: () => [], agentsOf: async () => [],
   collaborationTreeOf: () => ({ rows: () => [] }) as never });
-const NO_DELEGATIONS_VIEW_CHILDREN = new RunViewChildren({ feed: { rowsOf: () => ({ open: [], closed: [] }) },
-  projection: { rowOf: async () => null } });
 const NO_DELEGATIONS_RUN_AGENTS = new DelegatedRunAgentsReader(NO_DELEGATIONS);
 /** A run's tree (SR-084) over the same empty delegation tree: a suite that reads trees passes its own run files. */
 const NO_DELEGATIONS_RUN_TREE = new RunTreeView({ tree: NO_DELEGATIONS, ownTreeOf: async () => null, projection: { rowOf: async () => null } });
@@ -54,7 +51,6 @@ export const configureE2eStudioApplicationApiServices = (
     ?? AgentTeamDefinitionService.getInstance({ agentDefinitionService });
 
   return configureStudioApplicationApiServices({
-    runViewChildren: overrides.runViewChildren ?? NO_DELEGATIONS_VIEW_CHILDREN,
     delegatedRunAgents: overrides.delegatedRunAgents ?? NO_DELEGATIONS_RUN_AGENTS,
     runTree: overrides.runTree ?? NO_DELEGATIONS_RUN_TREE,
     runViewStreams: overrides.runViewStreams ?? new RunViewStreams({ agent: () => false, agent_team: () => false, agent_org: () => false }, { tree: { chainOf: (run) => [run], collaborationTreeOf: () => ({ rows: () => [] }) as never }, events: { agent: (message) => message, agent_team: (message) => message, agent_org: (message) => message } }),

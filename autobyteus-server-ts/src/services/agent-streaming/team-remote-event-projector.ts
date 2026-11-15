@@ -1,7 +1,6 @@
 import type { AgentPresentationMessage } from "@autobyteus/agent-presentation-contracts";
 import { parseTeamStreamServerMessage, type TeamStreamServerMessage } from "@autobyteus/team-stream-contracts";
 import type { RemoteRunRootEvent } from "../../agent-collaboration/execution/remote/remote-run-observation.js";
-import { projectRemoteTaskExecutionSummary } from "./remote-task-execution-dto-projection.js";
 
 /**
  * A peer child's presentation message on the Team stream (autobyteus-278): the Team stream's agent messages are the
@@ -20,9 +19,6 @@ const teamAgentMessageOf = (agentRunId: string, message: AgentPresentationMessag
   return parseTeamStreamServerMessage({ type: message.type, payload: { ...message.payload, change_sequence: changeSequence, agent_run_id: agentRunId } });
 };
 
-/** A Team root's peer rows' events (N-402): a peer child's output becomes a Team agent message; its summary is its row's. */
+/** A Team root's peer rows' output (N-402): a peer child's output becomes a Team agent message. */
 export const projectTeamRemoteEvent = (event: RemoteRunRootEvent, changeSequence: number): TeamStreamServerMessage =>
-  event.kind === "remote_agent_presentation" ? teamAgentMessageOf(event.agentRunId, event.message, changeSequence)
-    : parseTeamStreamServerMessage({ type: "REMOTE_TASK_EXECUTION_SUMMARY", payload: {
-      change_sequence: changeSequence, ...projectRemoteTaskExecutionSummary(event.summary),
-    } });
+  teamAgentMessageOf(event.agentRunId, event.message, changeSequence);

@@ -8,12 +8,7 @@ import {
 import { runTreeRowDtoSchema } from "./run-tree-dtos.js";
 
 type AgentIdentityNode = Readonly<{ address: string; agentRunId: string }>;
-type TeamIdentityNode = Readonly<{
-  address: string;
-  teamRunId: string;
-  members: readonly IdentityNode[];
-  taskExecutions: readonly IdentityNode[];
-}>;
+type TeamIdentityNode = Readonly<{ address: string; teamRunId: string; members: readonly IdentityNode[] }>;
 type IdentityNode = AgentIdentityNode | TeamIdentityNode;
 
 const addCorrelationIssue = (context: z.RefinementCtx, message: string): void => {
@@ -21,51 +16,9 @@ const addCorrelationIssue = (context: z.RefinementCtx, message: string): void =>
 };
 
 type TaskExecutionReference = Readonly<{ agentRunId: string }> | Readonly<{ teamRunId: string }>;
-/** A tree node that can host task executions directly or through its Team members. */
-type TaskExecutionHolder = Readonly<{ members?: readonly unknown[]; taskExecutions?: readonly IdentityNode[] }>;
 /** The one key of a task execution, `agent:<agentRunId>` or `team:<teamRunId>`, used by the node and the client. */
 export const taskExecutionReferenceKey = (reference: TaskExecutionReference): string =>
   "agentRunId" in reference ? `agent:${reference.agentRunId}` : `team:${reference.teamRunId}`;
-
-/**
- * A short, order-independent fingerprint of a root's closed task executions, `<count>:<8 hex digits>` (FNV-1a 32-bit
- * over the code points of the sorted, distinct keys). The node and the client compute it from the same list with this
- * one function, so a run list can tell that a host's closed set changed without reading it (autobyteus-446).
- */
-export const closedTaskExecutionsDigest = (references: readonly TaskExecutionReference[]): string => {
-  const keys = [...new Set(references.map(taskExecutionReferenceKey))].sort();
-  let hash = 0x811c9dc5;
-  for (const char of keys.join("\n")) {
-    hash ^= char.codePointAt(0)!;
-    hash = Math.imul(hash, 0x01000193) >>> 0;
-  }
-  return `${keys.length}:${hash.toString(16).padStart(8, "0")}`;
-};
-
-/** Each closed reference must identify a task execution node (at any depth), never a configured or member node. */
-const validateClosedTaskExecutions = (
-  closed: readonly TaskExecutionReference[],
-  holders: readonly TaskExecutionHolder[],
-  label: string,
-  context: z.RefinementCtx,
-): void => {
-  const taskExecutionKeys = new Set<string>();
-  const visit = (holder: TaskExecutionHolder): void => {
-    for (const task of holder.taskExecutions ?? []) {
-      taskExecutionKeys.add(taskExecutionReferenceKey(task));
-      if ("teamRunId" in task) visit(task);
-    }
-    for (const member of holder.members ?? []) {
-      if (typeof member === "object" && member !== null && "teamRunId" in member) visit(member as TaskExecutionHolder);
-    }
-  };
-  holders.forEach(visit);
-  for (const reference of closed) {
-    if (!taskExecutionKeys.has(taskExecutionReferenceKey(reference))) {
-      addCorrelationIssue(context, `${label} closed task execution '${taskExecutionReferenceKey(reference)}' is not a task execution of the execution tree.`);
-    }
-  }
-};
 
 const positiveSequence = z.number().int().positive();
 export const AgentTeamRootExecutionViewDtoSchema = z.object({
@@ -83,33 +36,11 @@ export const AgentRootExecutionViewDtoSchema = z.object({
   root_agent: agentRunCollaborationViewDtoSchema,
 }).strict();
 
+/** An Agent root's view is its host's: the runs it delegated are its tree's rows (SR-084). */
 const validateAgentRootCorrelation = (value: AgentRootExecutionViewDto, context: z.RefinementCtx): void => {
-  const view = value.root_agent;
-  if (view.execution_tree.host.agentRunId !== value.root_run_id) {
+  if (value.root_agent.execution_tree.host.agentRunId !== value.root_run_id) {
     addCorrelationIssue(context, "Agent root snapshot host correlation mismatch.");
   }
-  const addresses = new Map<string, string>([[view.execution_tree.host.agentRunId, view.execution_tree.host.address]]);
-  const childRunIds = new Set<string>();
-  const visit = (nodes: readonly IdentityNode[]): void => {
-    for (const node of nodes) {
-      if ("agentRunId" in node) {
-        if (addresses.has(node.agentRunId)) addCorrelationIssue(context, `Agent root AgentRun identity '${node.agentRunId}' is duplicated.`);
-        addresses.set(node.agentRunId, node.address);
-        childRunIds.add(node.agentRunId);
-      } else {
-        visit(node.members);
-        visit(node.taskExecutions);
-      }
-    }
-  };
-  visit(view.execution_tree.taskExecutions as readonly IdentityNode[]);
-  for (const status of view.agent_statuses) {
-    if (!childRunIds.has(status.agent_run_id) || addresses.get(status.agent_run_id) !== status.member_address) {
-      addCorrelationIssue(context, "Agent root status identity mismatch.");
-    }
-  }
-  validateClosedTaskExecutions(view.closed_task_executions,
-    [view.execution_tree as TaskExecutionHolder], "Agent root", context);
 };
 
 /** A live view names its live sequence and its latest message sequence (at most its base); a stored view neither. */
@@ -146,53 +77,30 @@ export const RootExecutionViewDtoSchema = z.discriminatedUnion("root_subject_kin
     }
     (kind === "Agent" ? configuredAgentAddresses : configuredTeamAddresses).add(address);
   };
-  const addAgent = (agent: AgentIdentityNode, active: boolean, scope: "configured" | "task_member" | "task_execution"): void => {
+  const addAgent = (agent: AgentIdentityNode, active: boolean, scope: "configured"): void => {
     const addressForRun = addressesByRunId.get(agent.agentRunId);
     if (addressForRun !== undefined) addCorrelationIssue(context, `AgentOrg AgentRun identity '${agent.agentRunId}' is duplicated.`);
     addressesByRunId.set(agent.agentRunId, agent.address);
     if (scope === "configured") addConfiguredAddress(agent.address, "Agent");
     // The Org's own agents report in its view; a delegated run's agents report through their own runs (SR-083).
-    if (active && scope === "configured") statusRequiredAgentRunIds.add(agent.agentRunId);
+    if (active) statusRequiredAgentRunIds.add(agent.agentRunId);
   };
-  const addTeam = (team: TeamIdentityNode, scope: "configured" | "task_member" | "task_execution"): void => {
+  const addTeam = (team: TeamIdentityNode): void => {
     if (addressesByTeamRunId.has(team.teamRunId)) addCorrelationIssue(context, `AgentOrg TeamRun identity '${team.teamRunId}' is duplicated.`);
     addressesByTeamRunId.set(team.teamRunId, team.address);
-    if (scope === "configured") addConfiguredAddress(team.address, "Team");
+    addConfiguredAddress(team.address, "Team");
   };
-  const taskIdentities = (tasks: readonly IdentityNode[], active: boolean): void => {
-    for (const task of tasks) {
-      if ("agentRunId" in task) addAgent(task, active, "task_execution");
-      else {
-        addTeam(task, "task_execution");
-        memberIdentities(task.members, active, "task_member");
-        taskIdentities(task.taskExecutions, active);
-      }
-    }
-  };
-  const memberIdentities = (
-    members: readonly IdentityNode[],
-    live: boolean,
-    scope: "configured" | "task_member",
-  ): void => {
+  const memberIdentities = (members: readonly IdentityNode[], live: boolean): void => {
     for (const member of members) {
-      if ("agentRunId" in member) addAgent(member, live, scope);
+      if ("agentRunId" in member) addAgent(member, live, "configured");
       else {
-        addTeam(member, scope);
-        memberIdentities(member.members, live, scope);
-        taskIdentities(member.taskExecutions, live);
+        addTeam(member);
+        memberIdentities(member.members, live);
       }
     }
   };
-  const rootLive = value.root_org.is_active;
-  for (const member of value.root_org.execution_tree.rootOrg.members) {
-    if ("agentRunId" in member) addAgent(member, rootLive, "configured");
-    else {
-      addTeam(member as unknown as TeamIdentityNode, "configured");
-      memberIdentities(member.members as readonly IdentityNode[], rootLive, "configured");
-      taskIdentities(member.taskExecutions as readonly IdentityNode[], rootLive);
-    }
-  }
-  taskIdentities(value.root_org.execution_tree.rootOrg.taskExecutions as readonly IdentityNode[], rootLive);
+  // The Org's own parts; the runs it delegated are its tree's rows (SR-084).
+  memberIdentities(value.root_org.execution_tree.rootOrg.members as readonly IdentityNode[], value.root_org.is_active);
 
   const inputIds = new Set<string>();
   for (const input of value.root_org.agent_input_states) {
@@ -212,9 +120,6 @@ export const RootExecutionViewDtoSchema = z.discriminatedUnion("root_subject_kin
   for (const agentRunId of statusRequiredAgentRunIds) {
     if (!statusRunIds.has(agentRunId)) addCorrelationIssue(context, `AgentOrg AgentRun '${agentRunId}' has no status record.`);
   }
-  const rootOrg = value.root_org.execution_tree.rootOrg;
-  validateClosedTaskExecutions(value.root_org.closed_task_executions,
-    [rootOrg as TaskExecutionHolder], "AgentOrg", context);
 });
 
 /**

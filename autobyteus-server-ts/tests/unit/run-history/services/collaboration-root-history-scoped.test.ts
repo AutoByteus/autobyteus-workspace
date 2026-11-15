@@ -26,7 +26,7 @@ describe("one authoritative admitted Org history subject", () => {
     expect(await f.service.getAgentOrg("org-one")).toBeNull();
     f.trees.read.mockClear(); f.orgRuns.getActive.mockReturnValue({ getExecutionTreeSnapshot: () => f.tree });
     expect(await f.service.getAgentOrg("org-one")).toMatchObject({ is_active: true, archived_at: "2026-10-01", summary: "Server summary",
-      org: { rootOrg: { orgRunId: "org-one", members: [{ agentRunId: "worker-one" }], taskExecutions: [] } } });
+      org: { rootOrg: { orgRunId: "org-one", members: [{ agentRunId: "worker-one" }] } } });
     expect(f.trees.read).not.toHaveBeenCalled();
   });
   it("carries no closed set: a run it delegated to is its own run, and only open ones are child rows (autobyteus-461)", async () => {

@@ -29,26 +29,27 @@ export const testOwnTree = (run: RootExecutionIdentity): RunOwnTree => {
 };
 
 /**
- * A `ChildRowsFeed` over a test's own row reports (autobyteus-461 SR-061 … SR-063): `report(change)` updates the rows and
- * reports the change, so the feed publishes base's row events into the run's view stream; the rows' records are
- * `agentChildRow`. `rows` is what a view session reads (no statuses followed); `settled()` lets the sessions send.
+ * A `ChildRowsFeed` over a test's own row reports (autobyteus-461 SR-084): `report(change)` updates the rows and reports
+ * the change, so the feed publishes the tree's notice into the run's view stream; the rows' records are `agentChildRow`.
+ * `rows` is what a view session reads (no statuses followed); `settled()` lets the sessions send.
  */
 export const followTestChildRows = () => {
   let listener: ((change: ChildRowsChange) => void) | null = null;
   const streams = testViewStreams();
   const rowsByRun = new Map<string, SubtreeRow[]>();
   const tree = {
-    collaborationTreeOf: (run: RootExecutionIdentity) => ({ rows: () => rowsByRun.get(rootExecutionIdentityKey(run)) ?? [], closedRows: () => [] }),
-    tasksOf: () => [],
+    collaborationTreeOf: (run: RootExecutionIdentity) => ({ rows: () => rowsByRun.get(rootExecutionIdentityKey(run)) ?? [] }),
+    chainOf: (run: RootExecutionIdentity) => [run],
   };
-  const feed = new ChildRowsFeed({ streams, tree: tree as never, isRunning: () => true, rowsChanged: () => undefined });
+  const feed = new ChildRowsFeed({ streams, tree, rowsChanged: () => undefined });
   feed.follow({ subscribeChildRows: (next: (change: ChildRowsChange) => void) => { listener = next; return () => { listener = null; }; } });
   const projection = { rowOf: async (child: SubtreeRow) => "agentRunId" in child.run
     ? { kind: "local" as const, row: agentChildRow(child.run.agentRunId, child.recipientAddress) } : null };
   const runTree = new RunTreeView({ tree: tree as never, ownTreeOf: async (run) => testOwnTree(run), projection });
   return {
     streams,
-    rows: { feed, projection, peers: { follow: () => () => undefined, refresh: async () => undefined }, peerRunOf: () => null, runTree },
+    feed,
+    rows: { peers: { follow: () => () => undefined, refresh: async () => undefined }, peerRunOf: () => null, runTree },
     report: (change: Readonly<{ run: RootExecutionIdentity; added: readonly SubtreeRow[]; removed: ChildRowsChange["removed"] }>) => {
       const key = rootExecutionIdentityKey(change.run);
       const removed = new Set(change.removed.map((run) => "agentRunId" in run ? run.agentRunId : run.teamRunId));

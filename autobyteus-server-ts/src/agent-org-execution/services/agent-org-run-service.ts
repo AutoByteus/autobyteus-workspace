@@ -1,4 +1,3 @@
-import type { RunViewChildren } from "../../services/agent-streaming/run-view-children.js";
 import { TokenUsageCapability } from "../../token-usage/providers/token-usage-capability.js";
 import { rootRestoreRefusal, unrestorableRoot, type RootRestoreRefusal } from "../../agent-collaboration/execution/services/root-restore-admission.js";
 import type { DelegatedWorkGuard } from "../../run-history/services/delegated-work-guard.js";
@@ -251,13 +250,9 @@ export class AgentOrgRunService {
     return this.dependencies.manager.getActive(required(agentOrgRunId, "agentOrgRunId"));
   }
 
-  /** The Org's stored or live view, with its children as `children` reads them (DS-8; passed by the read, SR-047). */
-  async getInspection(orgRunId: string, children: Pick<RunViewChildren, "read">) {
-    const inspection = await this.dependencies.manager.getInspection(orgRunId);
-    const run = { rootSubjectKind: "agent_org" as const, rootRunId: inspection.snapshot.tree.rootOrg.orgRunId };
-    // As the view session reads them (org-view-session.ts): its rows; each row's status is its own run's (SR-083).
-    const { rows } = await children.read(run);
-    return projectAgentOrgExecutionSnapshot({ ...inspection, rows });
+  /** The Org's stored or live view: its own parts (its tree is `runTree(run)`, SR-084). */
+  async getInspection(orgRunId: string) {
+    return projectAgentOrgExecutionSnapshot(await this.dependencies.manager.getInspection(orgRunId));
   }
 
   recordRunActivity(run: AgentOrgRun, input: { summary?: string | null } = {}): Promise<void> {

@@ -1,9 +1,5 @@
-import type { RemoteAgentLaunchDto, RemoteTaskExecutionDto, RemoteTaskExecutionSummaryDto } from "@autobyteus/agent-presentation-contracts";
-import {
-  describeRemoteTaskExecutions,
-  type RemoteRunSummaryEvent,
-  type RemoteTaskExecutionView,
-} from "../../agent-collaboration/execution/remote/remote-run-observation.js";
+import type { RemoteAgentLaunchDto, RemoteTaskExecutionDto } from "@autobyteus/agent-presentation-contracts";
+import type { RemoteTaskExecutionView } from "../../agent-collaboration/execution/remote/remote-run-observation.js";
 import type { RemoteAgentLaunch } from "../../run-history/domain/run-execution-tree-shared-records.js";
 import { openTargetOf } from "../../agent-collaboration/delegation/collaboration-tree.js";
 
@@ -40,12 +36,3 @@ const projectRemoteLaunch = (launch: RemoteAgentLaunch): RemoteAgentLaunchDto =>
       : { origin: launch.source.origin, fallbacks },
   };
 };
-
-export const projectRemoteTaskExecutionSummary = (summary: RemoteRunSummaryEvent): RemoteTaskExecutionSummaryDto => ({
-  node_id: summary.nodeId,
-  run_id: summary.runId,
-  reachable: summary.reachable,
-  title: summary.title,
-  statuses: summary.statuses.map((status) => ({ agent_run_id: status.agentRunId, status: status.status })),
-  launches: summary.launches.map(projectRemoteLaunch),
-});

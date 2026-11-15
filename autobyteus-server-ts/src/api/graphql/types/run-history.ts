@@ -16,7 +16,6 @@ import { getWorkspaceRunHistoryService } from "../../../run-history/services/wor
 import { getWorkspaceManager } from "../../../workspaces/workspace-manager.js";
 import { EventMonitorActiveTracePageObject } from "./event-monitor-active-trace-page.js";
 import { RunModelConfigEditabilityObject } from "./run-model-config.js";
-import { withTeamRows } from "./listed-team-rows.js";
 
 @ObjectType()
 class RunHistoryItemObject {
@@ -277,7 +276,7 @@ export class RunHistoryResolver {
   async listWorkspaceRunHistory(
     @Arg("limitPerAgent", () => Int, { nullable: true, defaultValue: 6 }) limitPerAgent: number | null,
   ): Promise<WorkspaceRunHistoryGroupObject[]> {
-    return Promise.all((await this.workspaceRunHistoryService.listWorkspaceRunHistory(limitPerAgent)).map(withTeamRows));
+    return this.workspaceRunHistoryService.listWorkspaceRunHistory(limitPerAgent);
   }
 
   @Query(() => WorkspaceRunHistoryGroupObject)
@@ -290,7 +289,7 @@ export class RunHistoryResolver {
     if (!workspaceRootPath) {
       throw new Error(`Workspace '${workspaceId}' was not found or is not visible for run history.`);
     }
-    return withTeamRows(await this.workspaceRunHistoryService.getWorkspaceRunHistory(workspaceRootPath, limitPerAgent));
+    return this.workspaceRunHistoryService.getWorkspaceRunHistory(workspaceRootPath, limitPerAgent);
   }
 
   @Query(() => RunProjectionPayload)

@@ -346,7 +346,7 @@ export class StandaloneAgentRunRootManager implements StandaloneRunCommandPort, 
     const metadata = await this.options.host.readMetadata(hostRunId);
     if (!metadata || !isCollaborationEligibleStandaloneRun(metadata)) return null;
     return Object.freeze({ hostRunId, isActive: false, baseChangeSequence: 0, liveSequenceId: null, lastMessageChangeSequence: null,
-      snapshot: Object.freeze({ host: await this.hostOf(metadata), createdAt: metadata.startedAt ?? new Date(0).toISOString(), statuses: Object.freeze([]) }) });
+      snapshot: Object.freeze({ host: await this.hostOf(metadata), createdAt: metadata.startedAt ?? new Date(0).toISOString() }) });
   }
 
   /** The run's messages (autobyteus-358: the one log reader): the live root's, else its own stored log. */

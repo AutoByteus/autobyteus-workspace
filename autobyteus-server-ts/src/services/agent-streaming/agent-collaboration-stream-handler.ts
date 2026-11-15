@@ -1,6 +1,6 @@
 import { executePeerCommand, PEER_MENTIONS_REFUSAL } from "../../agent-collaboration/execution/remote/peer-runs.js";
 import { createAgentRootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
-import { inOrderViewDelivery, isChildRowRootEvent, isReadBeforeSending, readRowEvent, readRowsAtBase, readViewSnapshot, type RunViewRowSources } from "./run-view-rows.js";
+import { inOrderViewDelivery, isReadBeforeSending, readTreeAtBase, readViewTree, type RunViewRowSources } from "./run-view-rows.js";
 import { isRunTreeChangedEvent } from "../../agent-collaboration/delegation/run-tree-view.js";
 import { randomUUID } from "node:crypto";
 import {
@@ -48,9 +48,9 @@ const commandAck = (
 });
 
 /**
- * Agent-run stream `/ws/agent-collaboration/:hostRunId` (design DS-8; SR-061 … SR-063): the run's view in base's shapes,
- * from its one `RunViewStream`: the snapshot (its rows read with the base), then every frame after it in order (the run's
- * own events, base's row events with their records, its rows' statuses). Connecting resolves the run's root and never
+ * Agent-run stream `/ws/agent-collaboration/:hostRunId` (design DS-8; SR-061 … SR-063, SR-084): the run's view, from its
+ * one `RunViewStream`: the snapshot and its tree (read with the base), then every frame after it in order (the run's own
+ * events, and its tree's changes). Its rows' statuses are each run's own (`/ws/run-status`, SR-083). Connecting resolves the run's root and never
  * starts its agent. A delegated run is reached by its own stream (rule 2); a peer run's commands go through the root to
  * its node, as at base. Commands for the run's own agent stay on `/ws/agent/:runId`.
  */
@@ -88,8 +88,8 @@ export class AgentCollaborationStreamHandler {
     const identity = root.rootIdentity;
     let barrier;
     try {
-      barrier = await root.openViewSnapshotConnection(() => readRowsAtBase(this.views, identity),
-        async (own, atBase) => ({ own, ...await readViewSnapshot(this.views, identity, atBase) }));
+      barrier = await root.openViewSnapshotConnection(() => readTreeAtBase(this.views, identity),
+        async (own, atBase) => ({ own, tree: await readViewTree(this.views, identity, atBase) }));
     } catch (cause) {
       egress.send(error("AGENT_ROOT_STREAM_UNAVAILABLE", String(cause)));
       egress.dispose();
@@ -104,13 +104,13 @@ export class AgentCollaborationStreamHandler {
         type: "ROOT_EXECUTION_VIEW_SNAPSHOT",
         payload: projectAgentCollaborationView({ hostRunId, isActive: root.isHostLive(), snapshot: barrier.snapshot.own,
           baseChangeSequence: barrier.baseChangeSequence, liveSequenceId: barrier.liveSequenceId,
-          lastMessageChangeSequence: barrier.lastMessageChangeSequence, rows: barrier.snapshot.rows }),
+          lastMessageChangeSequence: barrier.lastMessageChangeSequence }),
       }));
       // The run's tree at the same base (SR-084); its changes follow as numbered `run_tree_changed` events.
       const tree = barrier.snapshot.tree;
       egress.send(CollaborationStreamServerMessageSchema.parse({ type: "RUN_TREE_SNAPSHOT", payload: { root_subject_kind: "agent", root_run_id: hostRunId,
         base_change_sequence: barrier.baseChangeSequence, rows: tree.current } }));
-      // Every frame after the base, in order; a row event's records, and the tree on its notice, are read when it is sent.
+      // Every frame after the base, in order; the tree is read again on its notice, when the notice is sent.
       let open = true;
       const unsubscribe = barrier.subscribe(inOrderViewDelivery((event) => isReadBeforeSending(event.event), async (event) => {
         if (!open) return;
@@ -121,8 +121,7 @@ export class AgentCollaborationStreamHandler {
               root_run_id: hostRunId, change_sequence: event.changeSequence, event: { kind: "run_tree_changed", ...change } } }));
             return;
           }
-          const rowEvent = isChildRowRootEvent(event.event) ? await readRowEvent(this.views.projection, identity, event.event) : null;
-          const projected = projectAgentCollaborationEvent(hostRunId, event, rowEvent);
+          const projected = projectAgentCollaborationEvent(hostRunId, event);
           if (projected && open) egress.send(CollaborationStreamServerMessageSchema.parse({ type: "ROOT_EXECUTION_EVENT", payload: projected }));
         } catch (cause) {
           egress.send(error("AGENT_ROOT_STREAM_PROJECTION_FAILED", cause instanceof Error ? cause.message : String(cause)));

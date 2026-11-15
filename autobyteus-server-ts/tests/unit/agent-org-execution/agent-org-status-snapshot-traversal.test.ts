@@ -107,7 +107,6 @@ describe("AgentOrg status snapshot traversal", () => {
     for (const { snapshot } of [first, second]) {
       expect(snapshot.payload.root_org!.execution_tree).toMatchObject({ rootOrg: {
         members: [{ agentRunId: "direct-agent" }, { teamRunId: "mounted-configured-team" }, { teamRunId: "target-configured-team" }],
-        taskExecutions: [],
       } });
       const ids = snapshot.payload.root_org!.agent_statuses.map((entry) => entry.agent_run_id);
       expect(ids).toEqual(["direct-agent", "mounted-agent", "target-agent"]);

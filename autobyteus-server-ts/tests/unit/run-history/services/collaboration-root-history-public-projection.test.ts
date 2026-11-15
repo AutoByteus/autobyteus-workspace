@@ -30,13 +30,12 @@ const orgTree = () => {
 };
 
 // Check every public field, not just a set of IDs. A run its agents delegated to is its own run (autobyteus-461): the
-// tree holds none, and the history row's `taskExecutions` is empty.
+// history row holds the Org's own parts only (its delegated runs are its tree's rows, SR-084).
 const setup = async (active: boolean) => {
   const memoryDir = await fs.mkdtemp(path.join(os.tmpdir(), "org-history-public-"));
   roots.push(memoryDir);
   const tree = orgTree();
-  const expected = agentOrgExecutionTreeDtoSchema.parse({ ...JSON.parse(JSON.stringify(tree)), rootOrg: { ...JSON.parse(JSON.stringify(tree.rootOrg)),
-    taskExecutions: [], members: tree.rootOrg.members.map((member) => "teamRunId" in member ? { ...member, taskExecutions: [] } : member) } });
+  const expected = agentOrgExecutionTreeDtoSchema.parse(JSON.parse(JSON.stringify(tree)));
   const store = new AgentOrgRunExecutionTreeStore();
   const packagePath = new AgentMemoryLayout(memoryDir).getOrgDirPath("org-root");
   await store.write(packagePath, tree);
