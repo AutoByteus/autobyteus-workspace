@@ -1295,3 +1295,4 @@ The current code and `implementation-handoff.md` remain authoritative.
 - Not changed: SDV-01's later step ("the Manager started") failed 2 of 4 runs, before and after the fix. A capture shows the probe sending while the Manager's view still read "Loading" (IMP-111).
 - Shared `dist` folders: the server's was rebuilt several times for the probes; its final build is from this tree, with no traces. Contracts, the phone bundle and `autobyteus-ts/dist` were not rebuilt. API/E2E's uncommitted e2e rework was in the worktree throughout; it is not part of IR-037 and was not touched.
 - Next recipient: Code Reviewer.
+- Review result: **Pass**, CRR-054 (Code Reviewer, round 37, head `568dea0159`; `code-review-report.md`): CR-461-101 … CR-461-104 resolved; `8f91060e61` recorded as CR-461-105 (this ticket's regression, resolved by reusing the one `reloadNamingUnknown` rule). Next: API/E2E (the reviewer's handoff). Informational; no implementation action.
