@@ -1,4 +1,6 @@
 import { beforeEach, afterEach, describe, expect, it, vi } from 'vitest';
+import { useRunTreeStore } from '~/stores/runTreeStore';
+import { seedOrgRunTrees } from '~/test-support/runTreeFixtures';
 import { createPinia, setActivePinia } from 'pinia';
 import { mount, flushPromises } from '@vue/test-utils';
 import Panel from '../RunSectionPanel.vue';
@@ -99,6 +101,8 @@ describe('independent family publication through real initialized Pinia projecti
       expect(orgIds()).toEqual(['org-history']);
       await wrapper!.get('[data-test="agent-org-definition-org-definition"]').trigger('click');
       expect(wrapper!.find('[data-test="agent-org-run-open-org-history"]').exists()).toBe(true);
+      // The Org run's tree as the server builds it (SR-084), from its listed history row.
+      seedOrgRunTrees(useRunTreeStore(), store.agentOrgHistory);
       await wrapper!.get('[data-test="agent-org-run-open-org-history"]').trigger('click');
       await flushPromises();
       expect(wrapper!.find('[data-test="agent-org-agent-row-writer-org-history"]').exists()).toBe(true);

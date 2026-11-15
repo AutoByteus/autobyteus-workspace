@@ -26,8 +26,8 @@ export const isTeamRow = (row: Pick<RunTreeRowDto, 'kind'>): boolean => TEAM_KIN
  */
 export const runTreeDisplayRows = (input: Readonly<{
   rows: readonly RunTreeRowDto[]
-  /** The row the list starts under (its own row is shown elsewhere, as the run's row). */
-  rootKey: string
+  /** The row the list starts under (its own row is shown elsewhere, as the run's row); `null`: the tree's top rows (an Org's own parts). */
+  rootKey: string | null
   /** The run the rows belong to: selection and inspection are keyed by it. */
   topRunId: string
   isExpanded(row: RunTreeRowDto): boolean
@@ -35,17 +35,16 @@ export const runTreeDisplayRows = (input: Readonly<{
   statusOf(row: RunTreeRowDto, id: string): AgentStatus | string | null
 }>): RunTreeDisplayRow[] => {
   const byKey = new Map(input.rows.map((row) => [row.key, row]))
-  const root = byKey.get(input.rootKey)
-  const children = new Map<string, RunTreeRowDto[]>()
-  for (const row of input.rows) if (row.parentKey) children.set(row.parentKey, [...children.get(row.parentKey) ?? [], row])
+  const children = new Map<string | null, RunTreeRowDto[]>()
+  for (const row of input.rows) children.set(row.parentKey, [...children.get(row.parentKey) ?? [], row])
   const shown: { tree: RunTreeRowDto; depth: number }[] = []
-  const visit = (key: string, depth: number): void => {
+  const visit = (key: string | null, depth: number): void => {
     for (const row of children.get(key) ?? []) {
       shown.push({ tree: row, depth })
       if (input.isExpanded(row)) visit(row.key, depth + 1)
     }
   }
-  if (root) visit(root.key, 0)
+  if (input.rootKey === null || byKey.has(input.rootKey)) visit(input.rootKey, 0)
   const delegatorName = (row: RunTreeRowDto): string | null => {
     if (MEMBER_KINDS.has(row.kind) || !row.parentKey) return null
     return byKey.get(row.parentKey)?.name ?? null

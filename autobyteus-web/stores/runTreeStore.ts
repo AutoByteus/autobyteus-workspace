@@ -71,13 +71,15 @@ export const useRunTreeStore = defineStore('runTree', () => {
     set(key, { rows: Object.freeze(applyRunTreeChange(tree.rows, change)), via: 'stream' })
   }
 
-  /** The run's view closed: its tree is read from now on, and at once when it is still shown. */
+  /**
+   * The run's view closed: its rows stay, and from now on its notices (`RUN_TREE_CHANGED`, the shown run is held) read it
+   * again; a view that opens again sends its own snapshot. Nothing is read at the close itself.
+   */
   const streamEnded = (ref: RunTreeRef): void => {
     const key = keyOf(ref)
     const tree = trees.value[key]
     if (tree?.via !== 'stream') return
     set(key, { rows: tree.rows, via: 'query' })
-    if (held.value[key]) void read(ref)
   }
 
   /** Reads the run's tree, unless its open view feeds it; a later read or a stream snapshot supersedes this one. */

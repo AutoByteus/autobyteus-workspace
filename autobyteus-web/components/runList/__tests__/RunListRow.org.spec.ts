@@ -2,6 +2,8 @@ import { mount } from '@vue/test-utils';
 import { computed, defineComponent, h, nextTick, reactive, ref } from 'vue';
 import { describe, expect, it, vi } from 'vitest';
 import RunListRow from '../RunListRow.vue';
+import { useRunTreeStore } from '~/stores/runTreeStore';
+import { orgRunTreeRows } from '~/test-support/runTreeFixtures';
 import { useRunListDisclosure } from '~/composables/useRunListDisclosure';
 import { useRunHistoryAvatarState } from '~/composables/useRunHistoryAvatarState';
 import type { OrgWorkspaceSelection } from '~/services/agentOrgExecution/agentOrgExecutionViewIndex';
@@ -59,6 +61,8 @@ const orgEntry = (run: AgentOrgRunHistoryItem): RunListEntry => ({
 const harness = (active = true, selected = true) => {
   const run = reactive(agentOrgRun());
   run.isActive = active;
+  // The Org run's tree as the server builds it (SR-084), fed by its open view.
+  useRunTreeStore().streamSnapshot({ kind: 'agent_org', runId: 'org-run' }, orgRunTreeRows('org-run', run.executionTree));
   const runList = reactive({ entries: [] as RunListEntry[], showRun: vi.fn() });
   runList.entries = [orgEntry(run)];
   const selectedOrg = ref<{rootRunId: string; focusAddress: string | null; selection: OrgWorkspaceSelection | null} | null>(selected ? { rootRunId: 'org-run', focusAddress: '/software/implementation',

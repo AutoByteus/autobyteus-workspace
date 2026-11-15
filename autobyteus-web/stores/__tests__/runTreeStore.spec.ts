@@ -73,7 +73,7 @@ describe('runTreeStore (SR-084)', () => {
     expect(query).toHaveBeenCalledTimes(1)
   })
 
-  it('a change before any snapshot is refused (the view reopens); a closed view\'s shown tree is read again', async () => {
+  it('a change before any snapshot is refused (the view reopens); a closed view\'s tree stays, and its next notice reads it again', async () => {
     const store = useRunTreeStore()
     expect(() => store.streamChange(manager, { added: [], removed: [], updated: [] })).toThrow(/before its tree snapshot/)
     store.streamSnapshot(manager, [row('agent:manager', null, 0)])
@@ -81,6 +81,12 @@ describe('runTreeStore (SR-084)', () => {
     store.hold(manager)
     expect(query).not.toHaveBeenCalled()
     store.streamEnded(manager)
+    await settle()
+    // Nothing is read at the close itself.
+    expect(query).not.toHaveBeenCalled()
+    expect(store.rowsOf(manager).map((r) => r.key)).toEqual(['agent:manager'])
+    status.treeRevision = { 'agent:manager': 1 }
+    await nextTick()
     await settle()
     expect(store.rowsOf(manager).map((r) => r.key)).toEqual(['agent:manager', 'agent:writer'])
   })

@@ -1,4 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { useRunTreeStore } from '~/stores/runTreeStore';
+import { seedOrgRunTrees } from '~/test-support/runTreeFixtures';
 import { mount } from '@vue/test-utils';
 import { createPinia, setActivePinia } from 'pinia';
 import { nextTick, reactive } from 'vue';
@@ -2141,6 +2143,8 @@ describe('RunSectionPanel', () => {
     };
     runHistoryState.nodes[0].agentOrgDefinitions = [{ stableKey: 'org-definition', definitionId: 'org-definition', name: 'Restored Org', runs: [orgRun] }];
     (runHistoryStoreMock as any).agentOrgHistory = [orgRun];
+    // The Org run's tree as the server builds it (SR-084).
+    seedOrgRunTrees(useRunTreeStore(), [orgRun]);
     (runHistoryStoreMock as any).historyFamilyErrors = {};
     (selectionStoreMock as any).clearSelection = vi.fn();
     const orgContexts = useAgentOrgContextsStore();
@@ -2166,10 +2170,11 @@ describe('RunSectionPanel', () => {
       openForInspection.mockClear(); select.mockClear(); routerHarness.push.mockClear();
       opened = false;
 
-      const row = () => wrapper.get('[data-test="agent-org-task-team-row-team-task"]');
-      const member = () => wrapper.find('[data-test="agent-org-task-agent-row-agent-task-worker"]');
+      // A delegated Team is the shared delegated row (SR-084, FU-031).
+      const row = () => wrapper.get('[data-test="workspace-team-transient-execution-row"][data-transient-kind="task_team"]');
+      const member = () => wrapper.find('[data-agent-run-id="agent-task-worker"]');
       expect(row().attributes('aria-expanded')).toBe('true');
-      expect(row().find('[data-test="agent-org-task-team-disclosure-team-task"]').exists()).toBe(true);
+      expect(row().find('[data-test="workspace-team-transient-disclosure"]').exists()).toBe(true);
       expect(member().exists()).toBe(true);
 
       await row().trigger('click');
@@ -2179,7 +2184,8 @@ describe('RunSectionPanel', () => {
       expect(openForInspection).toHaveBeenCalledWith('org-run', expect.anything());
       expect(select).toHaveBeenCalledWith('org-run', { kind: 'agent_execution', agentRunId: 'agent-task-lead' });
       expect(routerHarness.push).toHaveBeenCalledWith({ path: '/workspace', query: expect.objectContaining({
-        rootSubjectKind: 'agent_org', orgRunId: 'org-run', memberAddress: '/team/lead', agentRunId: 'agent-task-lead',
+        // The server's target names the coordinator by its run ID (SR-084): the route needs no address from the row.
+        rootSubjectKind: 'agent_org', orgRunId: 'org-run', agentRunId: 'agent-task-lead',
       }) });
 
       await row().trigger('click');

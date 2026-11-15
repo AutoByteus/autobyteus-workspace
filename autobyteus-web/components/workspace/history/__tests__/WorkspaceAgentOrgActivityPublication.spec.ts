@@ -1,4 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { orgRunTreeRows } from '~/test-support/runTreeFixtures'
 import { flushPromises, mount } from '@vue/test-utils'
 import { createPinia, setActivePinia } from 'pinia'
 import { computed, defineComponent, h, reactive } from 'vue'
@@ -104,6 +105,9 @@ async function open(address: string) {
   socket.emit({ type: 'ROOT_EXECUTION_VIEW_SNAPSHOT', payload: {
     root_subject_kind: 'agent_org', root_run_id: 'org-run', root_org: taskBearingView(),
   } })
+  // The Org's tree at the view's base, as the server sends it next (SR-084).
+  socket.emit({ type: 'RUN_TREE_SNAPSHOT', payload: { root_subject_kind: 'agent_org', root_run_id: 'org-run',
+    base_change_sequence: taskBearingView().base_change_sequence, rows: orgRunTreeRows('org-run', taskBearingView().execution_tree) } })
   await vi.waitFor(() => expect(orgs.contextFor('org-run')?.phase).toBe('live'))
   await flushPromises()
   orgs.select('org-run', address)

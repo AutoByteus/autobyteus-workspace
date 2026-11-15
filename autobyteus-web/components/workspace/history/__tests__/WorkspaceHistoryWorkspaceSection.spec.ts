@@ -8,6 +8,7 @@ import { AgentStatus } from '~/types/agent/AgentStatus';
 import { buildRunHistoryTeamExecutionRows } from '~/stores/runHistoryTeamExecutionRows';
 import { useTaskWorkerTaskStore } from '~/stores/taskWorkerTaskStore';
 import { useRunTreeStore } from '~/stores/runTreeStore';
+import { seedOrgRunTrees } from '~/test-support/runTreeFixtures';
 import { useRunStatusStore } from '~/stores/runStatusStore';
 import type { RunTreeRowDto } from '@autobyteus/collaboration-stream-contracts';
 import type {
@@ -170,6 +171,7 @@ const mountSubject = (options: {
   useRunTreeStore().streamSnapshot({ kind: 'agent_team', runId: 'team-run-1' }, options.treeRows
     ?? [teamRoot(), memberRow('worker-run', '/worker'), delegatedAgent('task-agent-run-1', 'worker-run', '/worker')]);
   if (!options.treeRows) answerStatuses({ 'team-run-1': 'running', 'task-agent-run-1': 'running' }, { 'task-agent-run-1': 'running' });
+  seedOrgRunTrees(useRunTreeStore(), (options.agentOrgDefinitions ?? []).flatMap((group) => group.runs));
 
   const actions = {
     onCreateRun: vi.fn(), onSelectRun: vi.fn(), onOpenAgentRun: vi.fn(),

@@ -36,3 +36,69 @@ export const multiTeamTree = (count = 7, hostRunId = 'host-run'): RunTreeDto => 
 export const runTreeApollo = (trees: (kind: string, runId: string) => RunTreeDto | null) => ({
   query: async ({ variables }: { variables: { kind: string; runId: string } }) => ({ data: { runTree: trees(variables.kind, variables.runId) } }),
 })
+
+type OrgTree = import('@autobyteus/collaboration-stream-contracts').AgentOrgExecutionTreeDto
+type OrgTask = OrgTree['rootOrg']['taskExecutions'][number]
+type Closed = readonly (Readonly<{ agentRunId: string }> | Readonly<{ teamRunId: string }>)[]
+
+/**
+ * What the server's `RunTreeView` sends for an Org run whose recorded tree is `tree` (SR-084), for web specs whose
+ * fixtures hold Org execution trees: its own agents and mounted teams (opening in the Org), then each run it delegated
+ * under the agent or member that delegated it; closed runs (and everything under them) are not in the tree.
+ */
+export const orgRunTreeRows = (orgRunId: string, tree: OrgTree, closed: Closed = []): RunTreeRowDto[] => {
+  const rows: RunTreeRowDto[] = []
+  const anchors = new Map<string, Readonly<{ key: string; depth: number }>>()
+  const closedIds = new Set(closed.map((reference) => 'agentRunId' in reference ? reference.agentRunId : reference.teamRunId))
+  const nameOf = (address: string) => address.split('/').filter(Boolean).at(-1)?.replace(/[_-]+/g, ' ') ?? address
+  const inOrg = (agentRunId: string) => ({ runKind: 'agent_org' as const, runId: orgRunId, agentRunId })
+  const push = (row: RunTreeRowDto, anchorAgentRunId?: string) => {
+    rows.push(row)
+    if (anchorAgentRunId) anchors.set(anchorAgentRunId, { key: row.key, depth: row.depth })
+  }
+  const teamTasks: OrgTask[] = []
+  for (const member of tree.rootOrg.members) {
+    if ('agentRunId' in member) {
+      push({ key: `org_agent:${orgRunId}:${member.agentRunId}`, parentKey: null, depth: 0, kind: 'org_agent', name: nameOf(member.address),
+        address: member.address, openTarget: inOrg(member.agentRunId), statusIds: [member.agentRunId] }, member.agentRunId)
+      continue
+    }
+    const coordinator = member.members.find((candidate) => candidate.address === member.coordinatorAddress) ?? member.members[0]!
+    push({ key: `org_team:${member.teamRunId}`, parentKey: null, depth: 0, kind: 'org_team', name: nameOf(member.address), address: member.address,
+      openTarget: inOrg(coordinator.agentRunId), statusIds: member.members.map((candidate) => candidate.agentRunId) })
+    for (const agent of member.members) {
+      push({ key: `team_member:${member.teamRunId}:${agent.agentRunId}`, parentKey: `org_team:${member.teamRunId}`, depth: 1, kind: 'team_member',
+        name: nameOf(agent.address), address: agent.address, openTarget: inOrg(agent.agentRunId), statusIds: [agent.agentRunId] }, agent.agentRunId)
+    }
+    teamTasks.push(...member.taskExecutions)
+  }
+  const visit = (tasks: readonly OrgTask[]) => {
+    for (const task of tasks) {
+      if (closedIds.has('agentRunId' in task ? task.agentRunId : task.teamRunId)) continue
+      const anchor = (task.delegatorAgentRunId && anchors.get(task.delegatorAgentRunId)) || null
+      const depth = anchor ? anchor.depth + 1 : 0
+      if ('agentRunId' in task) {
+        push({ key: `agent:${task.agentRunId}`, parentKey: anchor?.key ?? null, depth, kind: 'agent', name: nameOf(task.address), address: task.address,
+          openTarget: task.openTarget ?? { runKind: 'agent', runId: task.agentRunId, agentRunId: task.agentRunId }, statusIds: [task.agentRunId] }, task.agentRunId)
+        continue
+      }
+      push({ key: `team:${task.teamRunId}`, parentKey: anchor?.key ?? null, depth, kind: 'team', name: nameOf(task.address), address: task.address,
+        openTarget: task.openTarget ?? (task.members[0] ? { runKind: 'agent_team', runId: task.teamRunId, agentRunId: task.members[0].agentRunId } : null),
+        statusIds: [task.teamRunId] })
+      for (const agent of task.members) {
+        push({ key: `team_member:${task.teamRunId}:${agent.agentRunId}`, parentKey: `team:${task.teamRunId}`, depth: depth + 1, kind: 'team_member',
+          name: nameOf(agent.address), address: agent.address, openTarget: { runKind: 'agent_team', runId: task.teamRunId, agentRunId: agent.agentRunId },
+          statusIds: [agent.agentRunId] }, agent.agentRunId)
+      }
+      visit(task.taskExecutions)
+    }
+  }
+  visit([...tree.rootOrg.taskExecutions, ...teamTasks])
+  return rows
+}
+
+/** Seeds each Org run's tree as its open view's stream would feed it (SR-084), from the run's recorded tree. */
+export const seedOrgRunTrees = (trees: Readonly<{ streamSnapshot(ref: Readonly<{ kind: 'agent_org'; runId: string }>, rows: readonly RunTreeRowDto[]): void }>,
+  runs: readonly Readonly<{ rootRunId: string; executionTree: OrgTree; closedTaskExecutions?: Closed }>[]): void => {
+  for (const run of runs) trees.streamSnapshot({ kind: 'agent_org', runId: run.rootRunId }, orgRunTreeRows(run.rootRunId, run.executionTree, run.closedTaskExecutions))
+}

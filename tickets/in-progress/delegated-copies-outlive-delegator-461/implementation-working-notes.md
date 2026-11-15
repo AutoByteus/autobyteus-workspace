@@ -566,3 +566,21 @@ Progress, uncommitted until the web suite passes:
   - the team-member subject has no address now (`subjectOfTarget`; the browse address comes from the team view);
   - test fixtures are in `test-support/runTreeFixtures.ts`. An Apollo mock must not import this file from inside its own factory, which deadlocks.
 - Next: the team tree (`WorkspaceTeamExecutionTree`, `runHistoryNavigationProjection`, `buildRunHistoryTeamExecutionRows`), the org tree (`agentOrgHistoryRows`, `WorkspaceAgentOrgHistoryCollection`), the phone (`useMobileRunTree`, `mobileRunTreeProjection`), the Task card (`useTaskRootNavigation`, G-F1), Settings, and G-C1.
+
+Committed:
+- `9835366d0d`: the SR-086 server pieces (G-A2, A3, A4, B1, B2) and the desktop agent tree (2a).
+- `99a4eef71e`: the desktop team tree (2b, G-C1) and the team run status from the server (G-A4).
+  - A team row keeps its own members' stable rows, with delegated runs nested under them. A member click selects only; its disclosure folds.
+  - Team rows still open through the team's own focus path (`onSelectTeamMember`) with the server's target; converting that to `openRunTarget` is still open.
+  - The projection's transient-row patches (`applyTaskExecutionRowPresentationToProjection`, `runHistoryNavigationPatches`) are dead now; remove them in step 4.
+- Gates at `99a4eef71e`: web types PASS; web unit 726 files and 5562 tests all pass; the server unit suite all passed at `9835366d0d`.
+- Next: the org tree (2c), the phone, the Task card (G-F1), Settings, G-D1, 3b plus G-G1, then the removals.
+
+Step 2c, org tree (uncommitted, web types PASS):
+- `AgentOrgRunMemberTree` holds the org tree and renders `runTreeDisplayRows` with `rootKey: null` (the adapter now starts at a tree's top rows).
+  - Own parts (`org_agent`, `org_team` and its `team_member` rows, which open `agent_org`) keep the org buttons and data-test ids.
+  - Delegated rows use `WorkspaceTransientExecutionRow`, so the old `agent-org-task-agent-row-*` and `agent-org-task-team-row-*` ids are gone; tell API/E2E.
+  - Delegated-row expansion is keyed by row key through `isAgentOrgTaskTeamExpanded` and `toggleAgentOrgTaskTeam`: a team row expands when toggled, any other row starts expanded.
+  - An `org_team` row's status is folded from its members on the client. It is an org's own part, so the server has no run-level answer for it. Flag this for review.
+- `WorkspaceAgentOrgHistoryCollection` now renders `AgentOrgRunMemberTree`; its inline duplicate tree is gone.
+- Org specs failing (about 30): add a test-support helper that turns a fixture's org execution tree into server-shaped rows, seed `runTreeStore` in each spec, and update the delegated-row selectors.
