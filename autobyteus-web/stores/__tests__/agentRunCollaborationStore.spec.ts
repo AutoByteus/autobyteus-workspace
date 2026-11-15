@@ -79,7 +79,7 @@ describe('agentRunCollaborationStore', () => {
     expect(store.selectedChild('host-run')).toBeNull()
   })
 
-  it('a selected row that leaves the tree returns the view to the run\'s own agent; a peer\'s row, or a row error, is not selected here', async () => {
+  it('a selected row that leaves the tree returns the view to the run\'s own agent; a peer\'s row opens by its own identity on its node (G-D1); a row error is not selected', async () => {
     const store = useAgentRunCollaborationStore()
     await store.inspect('host-run')
     store.selectTreeRow('host-run', rowOf('agent:cua-run'))
@@ -88,7 +88,8 @@ describe('agentRunCollaborationStore', () => {
     expect(store.isSelectedChildOpening('host-run')).toBe(false)
     const peer: RunTreeRowDto = { ...rowOf('agent:host-run'), key: 'peer_agent:remote', kind: 'peer_agent', parentKey: 'agent:host-run',
       openTarget: { runKind: 'agent', runId: 'remote', agentRunId: 'remote', nodeId: 'beta' } }
-    expect(store.selectTreeRow('host-run', peer)).toBe(false)
+    expect(store.selectTreeRow('host-run', { ...peer, address: '/publisher' })).toBe(true)
+    expect(own.ensureOpen).toHaveBeenLastCalledWith({ kind: 'peer', nodeId: 'beta', runKind: 'agent', runId: 'remote', agentRunId: 'remote', address: '/publisher' })
     expect(store.selectTreeRow('host-run', { ...peer, openTarget: null })).toBe(false)
   })
 

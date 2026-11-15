@@ -61,7 +61,8 @@ export const useAgentTeamContextsStore = defineStore('agentTeamContexts', {
         if (!picked) return null;
         const target = picked.target;
         return Object.freeze({ address: picked.address ?? '', agentRunId: target.agentRunId,
-          subject: subjectOfTarget({ runKind: target.runKind as 'agent' | 'agent_team', runId: target.runId, agentRunId: target.agentRunId }) });
+          subject: subjectOfTarget({ runKind: target.runKind as 'agent' | 'agent_team', runId: target.runId, agentRunId: target.agentRunId,
+            nodeId: target.nodeId }, picked.address ?? '') });
       };
     },
   },
@@ -112,7 +113,8 @@ export const useAgentTeamContextsStore = defineStore('agentTeamContexts', {
     },
     /**
      * A row of the Team's tree that a run it delegated on this node opens (SR-084): selected under the Team, and opened as
-     * its own run (rule 2) by its target. Answers whether it was (false for the Team's own rows and a peer's run).
+     * its own run (rule 2) by its target, a peer's run by its own identity on its node (G-D1). Answers whether it was
+     * (false for the Team's own rows).
      */
     selectTreeRow(teamRunId: string, row: RunTreeRowDto): boolean {
       const subject = delegatedSubjectOfRow(row, teamRunId);

@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { reactive } from 'vue'
+import { reactive, watch } from 'vue'
 import { openAgentRun } from '~/services/runOpen/agentRunOpenCoordinator'
 import { openTeamRun } from '~/services/runOpen/teamRunOpenCoordinator'
 import { ensureRunHistoryWorkspaceByRootPath } from '~/stores/runHistoryLoadActions'
@@ -15,6 +15,8 @@ import { useAgentRunStore } from './agentRunStore'
 import { useAgentTeamContextsStore } from './agentTeamContextsStore'
 import { useAgentTeamRunStore } from './agentTeamRunStore'
 import { useWorkspaceStore } from './workspace'
+import { createPeerRunStreams } from '~/services/peerRuns/peerRunStreams'
+import { useWindowNodeContextStore } from './windowNodeContextStore'
 
 /** A delegated run's own parts, as a delegator's view shows it when its row is selected. */
 export type DelegatedRunBinding = Readonly<{
@@ -25,7 +27,9 @@ export type DelegatedRunBinding = Readonly<{
 }>
 
 const runKey = (subject: DelegatedRunSubject): string =>
-  subject.kind === 'agent' ? `agent:${subject.agentRunId}` : `agent_team:${subject.teamRunId}`
+  subject.kind === 'agent' ? `agent:${subject.agentRunId}`
+    : subject.kind === 'peer' ? `peer:${subject.nodeId}:${subject.agentRunId}` : `agent_team:${subject.teamRunId}`
+type PeerSubject = Extract<DelegatedRunSubject, { kind: 'peer' }>
 
 /**
  * Rule 2 of the frontend contract (autobyteus-461 SR-061, SR-064): a delegated run is reached like any run of its kind,
@@ -41,21 +45,28 @@ export const useDelegatedRunsStore = defineStore('delegatedRuns', () => {
   /** The last open failure per run; selecting the row again retries. */
   const errors = reactive<Record<string, string>>({})
 
+  /** A peer's run (G-D1): its own stream through this node's `/ws/peer-run`, one per agent while the window is open. */
+  const peers = createPeerRunStreams()
+  // A peer's run is reached through the window's node: another node closes its streams.
+  watch(() => useWindowNodeContextStore().bindingRevision, () => peers.closeAll(), { flush: 'sync' })
+
   const teamOf = (teamRunId: string) => useAgentTeamContextsStore().getTeamContextById(teamRunId) ?? null
-  const isLoaded = (subject: DelegatedRunSubject): boolean => subject.kind === 'agent'
+  const isLoaded = (subject: Exclude<DelegatedRunSubject, PeerSubject>): boolean => subject.kind === 'agent'
     ? Boolean(useAgentContextsStore().getRun(subject.agentRunId))
     : Boolean(teamOf(subject.teamRunId))
 
-  const contextOf = (subject: DelegatedRunSubject): AgentContext | null => subject.kind === 'agent'
-    ? useAgentContextsStore().getRun(subject.agentRunId) ?? null
-    : teamOf(subject.teamRunId)?.view.getAgentContext(subject.agentRunId) ?? null
+  const contextOf = (subject: DelegatedRunSubject): AgentContext | null => subject.kind === 'peer'
+    ? peers.streamOf(subject)?.context ?? null
+    : subject.kind === 'agent'
+      ? useAgentContextsStore().getRun(subject.agentRunId) ?? null
+      : teamOf(subject.teamRunId)?.view.getAgentContext(subject.agentRunId) ?? null
 
   /**
    * Keeps the run's own stream while its row is open, whether it runs or not (SR-045); it never starts the run. An agent
    * run's stream sends no snapshot, so it opens with a catch-up: its stored state is read again and the socket opens at
    * once, so a message that restored the run while the open read it is shown (CR-461-098).
    */
-  const connect = (subject: DelegatedRunSubject): void => {
+  const connect = (subject: Exclude<DelegatedRunSubject, PeerSubject>): void => {
     if (subject.kind === 'agent') useAgentRunStore().connectToAgentStream(subject.agentRunId)
     else useAgentTeamRunStore().connectToTeamStream(subject.teamRunId)
   }
@@ -70,6 +81,8 @@ export const useDelegatedRunsStore = defineStore('delegatedRuns', () => {
   const ensureOpen = (subject: DelegatedRunSubject): void => {
     const key = runKey(subject)
     owned.add(key)
+    // A peer's run opens by its own stream, whose snapshot is its whole read (SR-088).
+    if (subject.kind === 'peer') { peers.open(subject); return }
     if (opening.has(key)) return
     let attempt: Promise<void>
     if (isLoaded(subject)) {
@@ -103,6 +116,7 @@ export const useDelegatedRunsStore = defineStore('delegatedRuns', () => {
   const whenOpen = (subject: DelegatedRunSubject): Promise<void> => opening.get(runKey(subject)) ?? Promise.resolve()
 
   const interactionOf = (subject: DelegatedRunSubject): AgentInteractionPort => {
+    if (subject.kind === 'peer') return peerInteractionOf(subject)
     if (subject.kind === 'agent') {
       const runs = useAgentRunStore()
       return Object.freeze({
@@ -127,10 +141,28 @@ export const useDelegatedRunsStore = defineStore('delegatedRuns', () => {
     })
   }
 
+  /** A peer's run: a message and an interrupt go to its node through its stream; no tool approval, as at base. */
+  const peerInteractionOf = (subject: PeerSubject): AgentInteractionPort => Object.freeze({
+    send: async (content: string) => {
+      const stream = peers.streamOf(subject)
+      if (!stream) throw new Error('This peer run is not open.')
+      const messageId = `peer_msg_${crypto.randomUUID()}`
+      await stream.service.sendMessageAwaitingAdmission(content, [], [], { messageId, dedupeKey: messageId })
+      stream.context.requirement = ''
+    },
+    interrupt: async () => { peers.streamOf(subject)?.service.interruptGeneration(`peer_interrupt_${crypto.randomUUID()}`) },
+    decideTool: async () => undefined,
+  })
+
   /** The run's own parts once it is open; null while it loads (or failed: see `errorFor`). */
   const bindingOf = (subject: DelegatedRunSubject): DelegatedRunBinding | null => {
     const context = contextOf(subject)
     if (!context) return null
+    if (subject.kind === 'peer') {
+      // Its node keeps its workspace and files; its trace is read as its own run's (its stream's snapshot holds it).
+      return Object.freeze({ context, workspaceRootPath: null, browse: Object.freeze({ kind: 'run' as const, runId: subject.agentRunId }),
+        interaction: interactionOf(subject) })
+    }
     return Object.freeze({
       context,
       workspaceRootPath: subject.kind === 'agent'
@@ -146,13 +178,19 @@ export const useDelegatedRunsStore = defineStore('delegatedRuns', () => {
   }
 
   /** Stops the delegated run through its own Stop: the agent run, or the whole delegated Team run. */
-  const stop = (subject: DelegatedRunSubject): Promise<boolean> => subject.kind === 'agent'
-    ? useAgentRunStore().terminateRun(subject.agentRunId)
-    : useAgentTeamRunStore().terminateTeamRun(subject.teamRunId)
+  const stop = (subject: DelegatedRunSubject): Promise<boolean> => subject.kind === 'peer'
+    // A peer's run is stopped on its node (its owner's Stop there), not from this view.
+    ? Promise.resolve(false)
+    : subject.kind === 'agent'
+      ? useAgentRunStore().terminateRun(subject.agentRunId)
+      : useAgentTeamRunStore().terminateTeamRun(subject.teamRunId)
 
   /** Whether this store opened the agent run (a delegated agent run), or the team run (a delegated team run). */
   const ownsAgentRun = (agentRunId: string): boolean => owned.has(`agent:${agentRunId}`)
   const ownsTeamRun = (teamRunId: string): boolean => owned.has(`agent_team:${teamRunId}`)
 
-  return { ensureOpen, whenOpen, bindingOf, errorFor, stop, ownsAgentRun, ownsTeamRun }
+  /** Closes every peer stream: the window's node changed. */
+  const releasePeers = (): void => peers.closeAll()
+
+  return { ensureOpen, whenOpen, bindingOf, errorFor, stop, ownsAgentRun, ownsTeamRun, releasePeers }
 })

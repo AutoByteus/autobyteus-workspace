@@ -158,23 +158,24 @@ export const useAgentRunCollaborationStore = defineStore('agentRunCollaboration'
 
   /**
    * A tree row's open (SR-084, through `openRunTarget`): where the server says it opens. The run's own row selects its
-   * own agent; a delegated run on this node opens as its own run (rule 2) by its target. A peer's run opens on its own
-   * node, not through this view (SR-086 G-D1). Answers whether it was selected (false for a row error, or while the run's
-   * view is not loaded).
+   * own agent; a delegated run opens as its own run (rule 2) by its target, a peer's run by its own identity on its node
+   * (G-D1). Answers whether it was selected (false for a row error, or while the run's view is not loaded).
    */
   const selectTreeRow = (hostRunId: string, row: RunTreeRowDto): boolean => {
     const target = row.openTarget
-    if (!target || target.runKind === 'agent_org' || target.nodeId || !contextFor(hostRunId)) return false
-    if (target.runKind === 'agent' && target.runId === hostRunId) {
+    if (!target || target.runKind === 'agent_org' || !contextFor(hostRunId)) return false
+    if (!target.nodeId && target.runKind === 'agent' && target.runId === hostRunId) {
       selectHost(hostRunId)
       return true
     }
     selectedRows[hostRunId] = Object.freeze({ key: row.key, target, address: row.address })
-    delegatedRuns().ensureOpen(subjectOfSelected(target))
+    delegatedRuns().ensureOpen(subjectOfSelected(target, row.address))
     return true
   }
-  const subjectOfSelected = (target: RunTreeOpenTargetDto): DelegatedRunSubject =>
-    subjectOfTarget({ runKind: target.runKind as 'agent' | 'agent_team', runId: target.runId, agentRunId: target.agentRunId })
+  /** The selected row's own run: on this node, or a peer's run by its own identity on its node (G-D1). */
+  const subjectOfSelected = (target: RunTreeOpenTargetDto, address: string | null): DelegatedRunSubject =>
+    subjectOfTarget({ runKind: target.runKind as 'agent' | 'agent_team', runId: target.runId, agentRunId: target.agentRunId, nodeId: target.nodeId },
+      address ?? '')
   const selectedRowKey = (hostRunId: string): string | null => selectedRow(hostRunId)?.key ?? null
   const isTreeRowExpanded = (hostRunId: string, row: RunTreeRowDto): boolean =>
     isTeamRow(row) === (toggledRows[hostRunId] ?? []).includes(row.key)
@@ -206,7 +207,7 @@ export const useAgentRunCollaborationStore = defineStore('agentRunCollaboration'
    */
   const isSelectedChildOpening = (hostRunId: string): boolean => {
     const picked = selectedRow(hostRunId)
-    return Boolean(picked && contextFor(hostRunId) && !delegatedRuns().bindingOf(subjectOfSelected(picked.target)))
+    return Boolean(picked && contextFor(hostRunId) && !delegatedRuns().bindingOf(subjectOfSelected(picked.target, picked.address)))
   }
 
   /** The selected row's own run, as the composer and center view target: bound to its own context and stream (rule 2). */
@@ -214,11 +215,11 @@ export const useAgentRunCollaborationStore = defineStore('agentRunCollaboration'
     const collaboration = contextFor(hostRunId)
     const picked = selectedRow(hostRunId)
     if (!collaboration || !picked) return null
-    const own = delegatedRuns().bindingOf(subjectOfSelected(picked.target))
+    const own = delegatedRuns().bindingOf(subjectOfSelected(picked.target, picked.address))
     if (!own) return null
     const agentRunId = picked.target.agentRunId
     return Object.freeze({
-      kind: picked.target.runKind === 'agent_team' ? 'agent_run_task_team_member' as const : 'agent_run_task_agent' as const,
+      kind: picked.target.runKind === 'agent_team' && !picked.target.nodeId ? 'agent_run_task_team_member' as const : 'agent_run_task_agent' as const,
       host: Object.freeze({ hostRunId }), address: (picked.address ?? '') as never, agentRunId,
       collaborationMessages: collaboration.messagesView(agentRunId),
       access: 'live' as const, ...own,

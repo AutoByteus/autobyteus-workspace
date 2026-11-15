@@ -12,13 +12,13 @@ export const treeRowOfAgent = (rows: readonly RunTreeRowDto[], agentRunId: strin
   rows.find((row) => !isTeamRow(row) && row.openTarget?.agentRunId === agentRunId) ?? null
 
 /**
- * The run a tree row opens on this node as a run of its own (rule 2), read from its open target, as the server built
- * it; null for the view's own parts (its run's own ID) and for a peer's run (it opens on its node).
+ * The run a tree row opens as a run of its own (rule 2), read from its open target, as the server built it: a run on this
+ * node, or a peer's run by its own identity on its node (G-D1); null for the view's own parts (its run's own ID).
  */
 export const delegatedSubjectOfRow = (row: RunTreeRowDto, ownRunId: string): DelegatedRunSubject | null => {
   const target = row.openTarget
-  if (!target || target.runKind === 'agent_org' || target.nodeId || target.runId === ownRunId) return null
-  return subjectOfTarget({ runKind: target.runKind, runId: target.runId, agentRunId: target.agentRunId })
+  if (!target || target.runKind === 'agent_org' || (!target.nodeId && target.runId === ownRunId)) return null
+  return subjectOfTarget({ runKind: target.runKind, runId: target.runId, agentRunId: target.agentRunId, nodeId: target.nodeId }, row.address ?? '')
 }
 
 /**

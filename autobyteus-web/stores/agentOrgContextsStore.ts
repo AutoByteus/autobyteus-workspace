@@ -176,8 +176,9 @@ export const useAgentOrgContextsStore = defineStore('agentOrgContexts', () => {
     const picked = selectedRows.value[id]
     return picked && useRunTreeStore().rowsOf({ kind: 'agent_org', runId: id }).some((row) => row.key === picked.key) ? picked : null
   }
-  const subjectOfSelected = (target: RunTreeOpenTargetDto) =>
-    subjectOfTarget({ runKind: target.runKind as 'agent' | 'agent_team', runId: target.runId, agentRunId: target.agentRunId })
+  const subjectOfSelected = (target: RunTreeOpenTargetDto, address: string | null) =>
+    subjectOfTarget({ runKind: target.runKind as 'agent' | 'agent_team', runId: target.runId, agentRunId: target.agentRunId, nodeId: target.nodeId },
+      address ?? '')
 
   /**
    * A tree row's open (SR-084, through `openRunTarget`): an Org's own row selects its agent in the Org; a run it delegated
@@ -186,14 +187,14 @@ export const useAgentOrgContextsStore = defineStore('agentOrgContexts', () => {
    */
   const selectTreeRow = (id: string, row: RunTreeRowDto): boolean => {
     const target = row.openTarget
-    if (!target || target.nodeId || !contexts.value[id]) return false
+    if (!target || !contexts.value[id]) return false
     if (target.runKind === 'agent_org') {
       select(id, { kind: 'agent_execution', agentRunId: target.agentRunId })
       return true
     }
     select(id, null)
     selectedRows.value = { ...selectedRows.value, [id]: Object.freeze({ key: row.key, target, address: row.address }) }
-    useDelegatedRunsStore().ensureOpen(subjectOfSelected(target))
+    useDelegatedRunsStore().ensureOpen(subjectOfSelected(target, row.address))
     return true
   }
   const selectedRowKey = (id: string): string | null => selectedRow(id)?.key ?? null
@@ -203,12 +204,13 @@ export const useAgentOrgContextsStore = defineStore('agentOrgContexts', () => {
     const org = contexts.value[id]
     const picked = selectedRow(id)
     if (!org || !picked) return null
-    const subject = subjectOfSelected(picked.target)
+    const subject = subjectOfSelected(picked.target, picked.address)
     const binding = useDelegatedRunsStore().bindingOf(subject)
     if (!binding) return null
     const common = { root: Object.freeze({ orgRunId: id }), address: (picked.address ?? '') as never,
       collaborationMessages: org.delegatedRunMessagesView(subject, picked.address ?? '', picked.target.agentRunId), access: 'live' as const, ...binding }
-    if (subject.kind === 'agent') return Object.freeze({ ...common, kind: 'agent_org_task_agent' as const })
+    // A peer's run shows as its own agent (its node keeps its team).
+    if (subject.kind === 'agent' || subject.kind === 'peer') return Object.freeze({ ...common, kind: 'agent_org_task_agent' as const })
     const team = useAgentTeamContextsStore().getTeamContextById(subject.teamRunId)
     return team ? Object.freeze({ ...common, kind: 'agent_org_task_team_member' as const, team: teamWorkspaceContextViewOf(team) }) : null
   }
