@@ -77,7 +77,7 @@ The reviewed points kept as designed: hub commit order inside the manifest lock 
 - **R-AR-1 outcome:** hub verification of a staged 2 GiB file inside the commit request took 5.7 s (6.3 s warm), 12.8 s for 4 GiB, against the 300 s fetch timeout: about 2 %. No Design Impact.
 - A source sends all changed files in one run: a run with a 2 GiB file lasts about half a minute locally, minutes over a home network (the run gate coalesces; Sync now queues one run).
 - Mixed versions are unsupported by rule (an older hub answers 404 to staged routes).
-- Source files near the guardrail: none above 500 lines; largest changed `local-file-memory-import-store.ts` 310 lines (+123/-?; one concern).
+- Source files near the guardrail: none above 500 lines; largest changed `local-file-memory-import-store.ts` 310 lines (+123 lines; one concern).
 
 ## Task Design Health Assessment Implementation Check
 
