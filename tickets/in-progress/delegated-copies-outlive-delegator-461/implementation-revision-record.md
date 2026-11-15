@@ -1165,3 +1165,48 @@ The current code and `implementation-handoff.md` remain authoritative.
 - Shared `dist` folders: the server's was rebuilt for this round (after API/E2E confirmed nothing was running); the temporary traces were reverted before the final build. The phone bundle (`autobyteus-web/dist`) was rebuilt for MSP-13/-25/-32. `autobyteus-ts/dist` was not rebuilt.
 - Next recipient: Code Reviewer.
 - Result: Code Review **Pass (CRR-049**, `code-review-report.md` round 34, head `77f24482a8`): CR-461-094 … -098 resolved; API/E2E runs a targeted check. The reviewer's note for the tree work: the delegated agent stream's catch-up after binding (CR-461-098) is a heuristic; a sequenced connect (a snapshot or sequence on the agent stream, as the views have) would close that gap structurally.
+
+### IR-035 — Run trees from the server, views with their own parts only, the agent stream's snapshot, peer runs by their own identity (SR-084 … SR-089)
+
+- Triggering role, report path, and round: Solution Designer SR-082 … SR-089 (`solution-revision-record.md`, `design-spec.md` 3a … 3c, step 4), each passed by Architecture Review (ARCH-REV-054 … ARCH-REV-065, `design-review-report.md` up to round 65). The IMP-3b and IMP-G-D1 Design Impacts were answered as SR-087 and SR-088; ARCH-REV-064's finding was answered as SR-089. Round 35.
+- Triggering finding IDs: SR-084 (steps 1 … 4), SR-085 as revised by SR-087, SR-086 (G-A1, G-A4, G-B1, G-B2, G-C1, G-D1, G-F1, G-G1), SR-088, SR-089; IMP-3b, IMP-G-D1; ARCH-REV-063 and -065 notes. Large / High unchanged.
+- Prior authoritative result: IR-034 at `77f24482a8` (CRR-049 Pass), then API-REV-015 Pass (`8ab0c6c420`).
+- Related solution / architecture-review revision IDs: SR-082 … SR-089; ARCH-REV-054 … ARCH-REV-065. Code-review IDs: N/A (this is new work for review).
+- Implementation delta, `4778dd20d8` … `8c21b75dad`, in the design's order:
+  1. **SR-084 steps 1 and 2** (`4778dd20d8`, `d986c59d0a`, `9835366d0d`, `99a4eef71e`, `829c46cb22`, `ba0101c672`, `b6d7158f1f`, `431823213c`, `877cbb7adc`):
+     - `RunTreeView` builds a run's tree once on the server, sent on the view stream (`RUN_TREE_SNAPSHOT`, then `run_tree_changed`) and through `runTree(run)`;
+     - the window's `runTreeStore` holds the trees;
+     - the desktop agent, team and org trees, the phone, the Task card (G-F1) and Settings (step 2f, `runLaunch` folded into the rows) render the rows and open through `openRunTarget`;
+     - run-level statuses (G-A4) and the status reconnect (G-A1) are in place.
+  2. **Step 4, stage A** (server `6964b684a4`; peer frames `c17a11f2ef`; web `5595493885`, `15aa25ed84`):
+     - the views carry only their own parts: no delegated child, closed or remote rows, and no `TASK_*` or `REMOTE_*` events;
+     - delegated runs are tree rows only, selected through `selectTreeRow` and opened as their own runs (rule 2).
+  3. **3b, as revised by SR-087** (`1fec92414f`):
+     - `AgentStreamSequence`: per active `AgentRun`, attached after the memory recorder;
+     - `whenPersisted`: confirmation at `TURN_COMPLETED` once written;
+     - the predating turns, read synchronously at activation;
+     - the snapshot connection by exclusion, through the shared `SnapshotBarrier`, which `RunViewStream` now uses too (ARCH-REV-063's recommendation);
+     - `AGENT_STREAM_SNAPSHOT`, and numbered `/ws/agent` frames on the sequenced egress (content as `SEGMENT_CONTENT_BATCH` ranges; an exact repeated status is not numbered);
+     - server-side `turnId` on projection entries;
+     - on the web: the snapshot is applied, the turn frames replayed, a frame at or below the base skipped, and a gap reopens the stream. CR-461-098's catch-up and the pre-connect read are removed.
+  4. **Stage C** (`7c41658785`; `ff350c974c`, the Solution Designer's docs commit, carried three deletions staged at the time):
+     - `RunTreeView` reads its rows' records from the runs' own files (`run-tree-records.ts`);
+     - the child DTO projections and the collaboration contracts' task-execution DTOs are removed.
+  5. **G-D1 with SR-088 and SR-089** (`6182755a29`, `8c21b75dad`):
+     - every `AgentRun` has a sequence (asserted for a lazily started team member, its restore, and a lazily started org agent);
+     - node B serves `agentStreamSnapshot` and `observeAgentStream` behind the back-link check;
+     - node A's `/ws/peer-run` relays node B's stream one for one (a gap or a new `liveSequenceId` means a new snapshot; a frame without a sequence is dropped and logged);
+     - the web opens a peer row through the same `AgentStreamingService`.
+- Tests:
+  - server: `agent-stream-sequence.test.ts` (the 3b cases: closed but unwritten; written during the read; reasoning flushed at a tool boundary; confirmed during the read; confirmed at the base; restored; earlier interrupted turn; written before its first frame; entries with no turn; repeated status; stopped run; unreadable stored turns), `conversation-turn-ids.test.ts`, `run-tree-records.test.ts`, `peer-agent-stream.test.ts`, `peer-run-stream-session.test.ts`, `remote-run-view-provider.test.ts` (SR-088 case), the handler, follow and websocket integration tests rewritten to the snapshot model;
+  - web: `agentRunStreamReconnection.spec.ts` (snapshot, turn frames, batch ranges, skip, gap, restore in-band, stopped run), `peerRunStreams.spec.ts`, the store and view specs.
+- Validation: server type gate PASS (production 0; tests at baseline 1012); web type gate PASS (production 0; tests 87, baseline lowered from 89). Server suites green in directory batches (unit 2707 + 1436 + 1227; integration agent 171; architecture 71); web suites green in directory batches (about 5,000 specs). The `/ws/peer-run` path has no two-node run yet (API/E2E).
+- Open, for the reviewer:
+  - **The old peer-run web client** (`remoteRunsStore`, `services/remoteRuns`, `composables/remoteRuns`, and their uses in `RightSideTabs`, `AgentEventMonitor`, the file preview, the composer target, `UserMessage`, the phone's files and artifacts) has received no registrations since stage A.
+    - Its affordances for a remote agent (its node's label, its files, the mention scope) are not yet bound to the new `peer` subject.
+    - A peer row's binding reads its trace as a run of this node (`browse: run`), so its earlier events and its files are not shown.
+    - Re-binding these to the peer subject, or removing them, remains.
+  - The `generated/graphql.ts` drift from stage A was regenerated in `1fec92414f`.
+  - A projections boundary violation from `b6d7158f1f` (Projects importing `collaboration-tree`) was fixed in `1fec92414f`.
+- Shared `dist` folders: the server's was rebuilt by `codegen:local` (no API/E2E run was announced). The phone bundle and `autobyteus-ts/dist` were not rebuilt. No temporary traces are in the tree.
+- Next recipient: Code Reviewer.
