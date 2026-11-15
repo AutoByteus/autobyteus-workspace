@@ -1670,4 +1670,6 @@ No architecture review: these follow REQ-006, an approved exception, rule 2 and 
   - architecture review (SR-082's tree parts were reviewed in ARCH-REV-054/055);
   - then the Implementation Engineer;
   - then API/E2E reruns everything that shows or opens runs.
-
+- **ARCH-REV-057 passed SR-084.** Its notes are applied:
+  - a row's `key` is built from identities only: kind plus run ID, plus the agent run ID for a member row, never position or depth;
+  - SR-083's "FU-034 stays a follow-up" line in follow-ups.md is marked superseded.

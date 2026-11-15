@@ -232,6 +232,7 @@ A follow-up Task by run ID: `TaskDelegation.toExistingRun` → Task side `assign
 - **Owner:** `RunTreeView` (`agent-collaboration/delegation/run-tree-view.ts`), one builder for agent, team and org runs, started or delegated, on desktop and phone.
 - **What it builds:** for run X, X's own parts (from its own file, or its loaded root's index), then `collaborationTreeOf(X).rows` (its open subtree, every depth, nested under the agent or member that delegated each run), then its peer rows (from the index).
 - **A row** is `{ key, parentKey, depth, kind, name, address, openTarget, statusIds, launch? }`:
+  - `key`: built from identities only, never from position or depth (ARCH-REV-057). It is the row's kind plus its run ID, plus the agent run ID for a member row (`team_member`, `org_agent` inside an org, `peer_member`). So a row keeps its key across refreshes and reorderings, and `parentKey` is the parent row's key.
   - `kind`: one of `agent`, `team`, `team_member`, `org_agent`, `org_team`, `peer_agent`, `peer_team`, `peer_member`;
   - `openTarget`: from the one helper `openTargetOf(row)` (SR-083, kept). It is the run's own identity and the agent to focus. A team's target is its **coordinator**, explicitly, with no `members[0]` fallback (FU-024, FU-031); a team whose coordinator is not a member gives a row error, logged, with no target;
   - `statusIds`: the run IDs, or agent run IDs, whose statuses the row shows. There are no statuses in the tree; they come from `/ws/run-status` (2);
