@@ -1,0 +1,41 @@
+# API-02: vitest run tests/e2e/memory-sync; commit bfcd82366; Sun Nov 15 14:22:58 CET 2026; env -i
+
+[90mstdout[2m | tests/e2e/memory-sync/memory-sync-held-back-graphql.e2e.test.ts[2m > [22m[2mMemory Sync settings while held back
+[22m[39mSuccessfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+
+[90mstdout[2m | tests/e2e/memory-sync/memory-sync-held-back-graphql.e2e.test.ts[2m > [22m[2mMemory Sync settings while held back
+[22m[39mRegistered required tool unit: Agent Communication Tools
+
+[90mstdout[2m | tests/e2e/memory-sync/memory-sync-held-back-graphql.e2e.test.ts[2m > [22m[2mMemory Sync settings while held back
+[22m[39mSuccessfully registered tool definition: 'search_memory'
+
+[90mstdout[2m | tests/e2e/memory-sync/memory-sync-held-back-graphql.e2e.test.ts[2m > [22m[2mMemory Sync settings while held back
+[22m[39mRegistered required tool unit: Memory Tools
+
+[90mstdout[2m | tests/e2e/memory-sync/memory-sync-held-back-graphql.e2e.test.ts[2m > [22m[2mMemory Sync settings while held back
+[22m[39mSuccessfully registered tool definition: 'list_available_agent_runtimes'
+Successfully registered tool definition: 'submit_launch_choices'
+
+[90mstdout[2m | tests/e2e/memory-sync/memory-sync-held-back-graphql.e2e.test.ts[2m > [22m[2mMemory Sync settings while held back
+[22m[39mRegistered required tool unit: Agent Runtime Tools
+
+[90mstdout[2m | tests/e2e/memory-sync/memory-sync-held-back-graphql.e2e.test.ts[2m > [22m[2mMemory Sync settings while held back
+[22m[39mRegistered required tool unit: Browser Tools
+
+[90mstdout[2m | tests/e2e/memory-sync/memory-sync-held-back-graphql.e2e.test.ts[2m > [22m[2mMemory Sync settings while held back
+[22m[39mSuccessfully registered tool definition: 'search_web'
+
+[90mstderr[2m | tests/e2e/memory-sync/memory-sync-held-back-graphql.e2e.test.ts[2m > [22m[2mMemory Sync settings while held back
+[22m[39mOverwriting existing tool definition for name: 'search_web'
+
+[90mstdout[2m | tests/e2e/memory-sync/memory-sync-held-back-graphql.e2e.test.ts[2m > [22m[2mMemory Sync settings while held back
+[22m[39mRegistered required tool unit: Search Tools
+
+ [32m✓[39m tests/e2e/memory-sync/memory-sync-held-back-graphql.e2e.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 212[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m5 passed[39m[22m[90m (5)[39m
+[2m      Tests [22m [1m[32m8 passed[39m[22m[90m (8)[39m
+[2m   Start at [22m 14:22:58
+[2m   Duration [22m 46.27s[2m (transform 5.87s, setup 143ms, import 8.70s, tests 36.49s, environment 0ms)[22m
+

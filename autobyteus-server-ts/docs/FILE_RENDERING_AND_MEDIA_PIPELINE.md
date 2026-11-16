@@ -202,12 +202,31 @@ checksum, not that label alone, to distinguish them.
 
 ### Composer uploaded context-file flow
 
-1. The browser uploads a file to `/rest/context-files/upload` with an explicit draft-owner descriptor.
-2. `ContextFileUploadService` writes the bytes under the draft context-file tree and returns an uploaded descriptor with `storedFilename`, `displayName`, `locator`, and `phase='draft'`.
+1. The browser reads the node's size limits (`GET /rest/context-files/size-limits`), refuses a file over its limit, and uploads the rest to `/rest/context-files/upload` with an explicit draft-owner descriptor.
+2. `ContextFileUploadService` writes the bytes (`writeContextFileUpload`, streaming, no whole-file buffering) under the draft context-file tree and returns an uploaded descriptor with `storedFilename`, `displayName`, `locator`, and `phase='draft'`.
 3. The send owner creates or restores the final run/team-member identity, then posts `/rest/context-files/finalize` with `attachments[{ storedFilename, displayName }]`.
 4. `ContextFileFinalizationService` moves the bytes into run/member-owned `context_files/`, returns final locators, and preserves the original uploaded `displayName` instead of deriving it from the sanitized stored filename.
 5. Prompt-building, Codex mapping, and Claude session text mapping resolve only the final `/rest/.../context-files/...` locators back to local filesystem paths.
 6. If one or more context files resolve to local absolute paths, the runtime-visible current user message text includes one generated `Reference files:` block listing those paths. Native AutoByteus and Codex still preserve their existing media payloads (`image_urls` / `localImage`) in addition to the text block; Claude receives the text reference only.
+
+### Context-file size limits
+
+A context file has one of two size limits, chosen by its type (terms: [GLOSSARY.md](../../GLOSSARY.md) "Context Files"):
+
+| Limit | Applies to | Setting (whole MiB) | Default | Range |
+| --- | --- | --- | --- | --- |
+| Audio/video limit | the accepted `audio/*` and `video/*` types (`audioVideoContextFileMimeTypes`) | `AUTOBYTEUS_CONTEXT_FILE_AUDIO_VIDEO_MAX_MB` | 2048 | 1–10240 |
+| Other-file limit | every other accepted type, images and documents included | `AUTOBYTEUS_CONTEXT_FILE_OTHER_MAX_MB` | 25 | 1–1024 |
+
+- Both are node settings (environment variable or Server Settings). `resolveContextFileSizeLimits()` (`src/config/context-file-size-limit-settings.ts`) reads them at the start of each operation, so a change applies to the next upload without a restart; an invalid stored value uses the default, and saving an invalid value is refused.
+- One policy covers every context-file entry: the composer upload (`POST /rest/context-files/upload`), the Project Task upload (`POST /rest/projects/:projectId/task-context-drafts/:draftId/context-files`) and the Project Task agent tools' `context_files` local copies. A file exactly at its limit is accepted; one byte more is refused.
+- Each of the two upload routes passes `limits.fileSize` (the larger limit) to `request.file()`; the multipart plugin itself is registered without limits. The writer then enforces the file's own limit while streaming. `/upload-file` (avatars and other media) keeps its own 25 MiB limit.
+- `GET /rest/context-files/size-limits` answers `200 {otherFileMaxBytes, audioVideoMaxBytes, audioVideoMimeTypes}` so a client can refuse an over-limit file before sending it. It is open to the owner and to paired phones (node access model NA-2).
+- Refusals are machine-readable; the English `detail` is for logs and API users, and the web localizes by `code`:
+  - composer upload: `413 {code: "CONTEXT_FILE_TOO_LARGE", detail, maxBytes}` (the limit that applied), `415 {code: "CONTEXT_FILE_TYPE_UNSUPPORTED", detail}`; any other failure stays `400 {detail}`;
+  - Project Task upload: the same codes in the route group's envelope, `{error: {code, message, maxBytes?}}`.
+- Writer behavior: a file over its limit is read to its end and discarded (not cut off), then removed, so the keep-alive connection stays usable; the route also reads the rest of the file before any refusal that comes after `request.file()` (unsupported type, owner-field errors). A client that disconnects mid-upload leaves no file.
+- The native AutoByteus runtime never base64-inlines a local image, audio or video file larger than 25 MiB into a model request (`INLINE_MEDIA_MAX_BYTES` in `autobyteus-ts` `media-input-sanitizer.ts`); the path stays in the message's `Reference files:` block and the agent opens the file itself.
 
 ### Run-scoped artifact preview flow
 

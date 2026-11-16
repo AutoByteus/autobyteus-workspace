@@ -17,6 +17,13 @@
 //          a nested Org team member and an Org task agent (regressions).
 //   CF-007 pasting another composer's draft URL clones it; removing the clone never deletes the source.
 //   CF-008 an injected DELETE / upload 5xx shows an error naming the file, keeps the item; the retry clears it.
+//   CF-013 context-file size limits (autobyteus-workspace-6): over-limit files are refused before any upload request, one
+//          localized line per limit; a real throttled upload shows progress and its cancel leaves nothing on the node,
+//          an unthrottled retry attaches the 6 MiB video. (The node's limits are answered by a route stub in part A only.)
+//   CF-014 the Server Settings page (advanced list; a setting with no value is not listed, so the owner adds it with the list's
+//          "new setting" row): an invalid audio/video limit is refused and changes nothing, also as an edit of its row; saved
+//          limits (3 MB / 1 MB) apply to the next pick of an already open composer with no reload, as zh-CN lines naming each
+//          limit; the defaults are restored through the rows.
 //   (CF-009, an Org task agent with no upload owner while its message is pending, is retired: under autobyteus-461's
 //          rule 2 the task agent is a run of its own and always owns its drafts.)
 //   CF-004 the backend is stopped: × shows the error and keeps the item; after it returns the retry removes it.
@@ -63,11 +70,21 @@ const executablePath = getArg('browser-executable', process.env.PLAYWRIGHT_CHROM
     .find((candidate) => fs.existsSync(candidate));
 // CF-009 retired (autobyteus-461 rule 2, CRR-056): its premise, a pending Org task agent left with no upload owner, cannot occur:
 // the task agent is a run of its own and always owns its drafts.
-const ALL_CASES = ['CF-001', 'CF-002', 'CF-003', 'CF-006', 'CF-007', 'CF-008', 'CF-011', 'CF-012', 'CF-004', 'CF-005'];
+const ALL_CASES = ['CF-001', 'CF-002', 'CF-003', 'CF-006', 'CF-007', 'CF-008', 'CF-013', 'CF-014', 'CF-011', 'CF-012', 'CF-004', 'CF-005'];
 const selectedCases = (getArg('cases') ?? ALL_CASES.join(',')).split(',').map((c) => c.trim()).filter(Boolean);
 // A 2x2 opaque PNG (what a screenshot paste delivers, minus the size).
 const PNG = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAIAAAD91JpzAAAAFklEQVR4nGP8z8DAwMDAxMDAwMDAAAANHQEDasKb6QAAAABJRU5ErkJggg==', 'base64');
 const ERROR_LINE = '[data-testid="context-file-error"]';
+/** A valid, incompressible RGB PNG (about 3 bytes per pixel): big enough to show upload progress when throttled. */
+const noisePng = (width, height) => {
+  const crcTable = Array.from({ length: 256 }, (_, n) => { let c = n; for (let k = 0; k < 8; k++) c = c & 1 ? 0xedb88320 ^ (c >>> 1) : c >>> 1; return c >>> 0; });
+  const crc = (buf) => { let c = 0xffffffff; for (const b of buf) c = crcTable[(c ^ b) & 0xff] ^ (c >>> 8); return (c ^ 0xffffffff) >>> 0; };
+  const chunk = (type, data) => { const body = Buffer.concat([Buffer.from(type), data]); const out = Buffer.alloc(body.length + 8); out.writeUInt32BE(data.length, 0); body.copy(out, 4); out.writeUInt32BE(crc(body), body.length + 4); return out; };
+  const header = Buffer.alloc(13); header.writeUInt32BE(width, 0); header.writeUInt32BE(height, 4); header.set([8, 2, 0, 0, 0], 8);
+  const rows = Buffer.alloc((width * 3 + 1) * height);
+  for (let y = 0; y < height; y++) for (let i = 1; i <= width * 3; i++) rows[y * (width * 3 + 1) + i] = (Math.imul(y * 7919 + i, 2654435761) >>> 24) & 0xff;
+  return Buffer.concat([Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]), chunk('IHDR', header), chunk('IDAT', require('node:zlib').deflateSync(rows, { level: 0 })), chunk('IEND', Buffer.alloc(0))]);
+};
 const UPLOADS_UNAVAILABLE = "This agent can't receive uploaded files right now.";
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -270,6 +287,10 @@ const setupWorld = async () => {
   world.workspaceFile = path.join(workspace(), 'release-checklist.md');
   await fsp.writeFile(world.workspaceFile, '# Release checklist\n');
   for (const name of ['spec-a.txt', 'spec-b.txt', 'spec-c.txt']) await fsp.writeFile(path.join(outputDir, name), `${name} bytes\n`);
+  // CF-013: a 6 MiB video and a 2 MiB document (their browser types are video/mp4 and application/pdf).
+  await fsp.writeFile(path.join(outputDir, 'clip-big.mp4'), Buffer.alloc(6 * 1024 * 1024, 7));
+  await fsp.writeFile(path.join(outputDir, 'doc-big.pdf'), Buffer.alloc(2 * 1024 * 1024, 7));
+  await fsp.writeFile(path.join(outputDir, 'photo-big.png'), noisePng(700, 700));
   evidence.world = { ...world, ids: undefined };
 };
 
@@ -716,7 +737,8 @@ const injectedFailures = async () => {
     await failOnce('DELETE', '**/rest/drafts/**', 'Simulated server failure.');
     await removeButtonFor(tray, 'spec-a.txt').click();
     const removeError = await until('remove error line', () => errorText(tray), 10000);
-    assert(/Couldn't remove spec-a\.txt\./.test(removeError) && /Simulated server failure\./.test(removeError), 'remove error does not name the file / detail', { removeError });
+    // The server's own text is never shown (BEH-009): the line names the file and nothing else.
+    assert(removeError === "Couldn't remove spec-a.txt.", 'remove error is not the localized line alone', { removeError });
     assert((await trayCount(tray)) === 2 && (await listDir(dir)).length === 2, 'failed delete removed the item or the file');
     assert((await tray.locator(ERROR_LINE).getAttribute('role')) === 'alert', 'error line is not role=alert');
     await shot(page, 'failure-remove-error');
@@ -727,7 +749,7 @@ const injectedFailures = async () => {
     await failOnce('DELETE', '**/rest/drafts/**', 'Disk busy.');
     await clearAll(tray).click();
     const clearError = await until('Clear All error line', () => errorText(tray), 10000);
-    assert(/Couldn't remove spec-b\.txt\./.test(clearError), 'Clear All error does not name the file', { clearError });
+    assert(clearError === "Couldn't remove spec-b.txt.", 'Clear All error is not the localized line alone', { clearError });
     assert((await trayCount(tray)) === 1, 'Clear All dropped the failed item');
     await page.unrouteAll();
     await clearAll(tray).click();
@@ -737,7 +759,7 @@ const injectedFailures = async () => {
     await failOnce('POST', '**/rest/context-files/upload', 'Upload rejected by the server.');
     await pickFiles(page, tray, ['spec-c.txt']);
     const uploadError = await until('upload error line', () => errorText(tray), 10000);
-    assert(/Couldn't attach spec-c\.txt\./.test(uploadError), 'upload error does not name the file', { uploadError });
+    assert(uploadError === "Couldn't attach spec-c.txt.", 'upload error is not the localized line alone', { uploadError });
     assert((await trayCount(tray)) === 0, 'failed upload left a placeholder/item');
     await shot(page, 'failure-upload-error');
     await page.unrouteAll();
@@ -751,6 +773,146 @@ const injectedFailures = async () => {
   } finally { await context.close(); }
 };
 
+/** CF-013: size limits, progress and cancel (autobyteus-workspace-6; AC-005, AC-007, AC-001). */
+const sizeLimitsProgressCancel = async () => {
+  const { page, errors, context, net } = await newPage();
+  try {
+    await openAgentCopy(page);
+    const tray = centerTray(page);
+    const dir = copyOwnDir(world.agentCopy);
+    const uploads = () => net.filter((n) => n.method === 'POST' && n.path === '/rest/context-files/upload');
+    // A: the node publishes small limits (stubbed): both files are refused before any upload request.
+    await page.route('**/rest/context-files/size-limits', (route) => route.fulfill({ status: 200, contentType: 'application/json',
+      headers: { 'access-control-allow-origin': '*' },
+      body: JSON.stringify({ otherFileMaxBytes: 1024 * 1024, audioVideoMaxBytes: 2 * 1024 * 1024, audioVideoMimeTypes: ['video/mp4'] }) }));
+    await pickFiles(page, tray, ['clip-big.mp4', 'doc-big.pdf']);
+    const refused = await until('over-limit lines', async () => { const t = await errorText(tray); return t && /clip-big/.test(t) && /doc-big/.test(t) ? t : null; }, 10000);
+    assert(refused.split('\n').map((l) => l.trim()).filter(Boolean).length === 2, 'expected one line per limit', { refused });
+    assert(/Couldn't attach clip-big\.mp4: over the 2 MB size limit\./.test(refused) && /Couldn't attach doc-big\.pdf: over the 1 MB size limit\./.test(refused), 'over-limit messages', { refused });
+    assert(uploads().length === 0 && (await trayCount(tray)) === 0 && (await listDir(dir)).length === 0, 'an over-limit file was sent or kept');
+    await shot(page, 'size-limit-refused');
+    await page.unroute('**/rest/context-files/size-limits');
+    // B: the node's real limits (2 GiB); a throttled upload of the 6 MiB video shows progress, and cancel stops it.
+    const cdp = await context.newCDPSession(page);
+    await cdp.send('Network.enable');
+    await cdp.send('Network.emulateNetworkConditions', { offline: false, latency: 0, downloadThroughput: -1, uploadThroughput: 400 * 1024 });
+    await pickFiles(page, tray, ['clip-big.mp4']);
+    const progress = tray.locator('[data-testid="context-file-upload-progress"]');
+    const pct = await until('upload progress above 0%', async () => { const t = (await progress.first().innerText().catch(() => '')).match(/(\d+)%/); return t && Number(t[1]) > 0 ? Number(t[1]) : null; }, 20000);
+    await shot(page, 'upload-progress');
+    await tray.locator('button[aria-label="Cancel upload of clip-big.mp4"]').click();
+    await until('cancelled item gone', async () => (await progress.count()) === 0, 10000);
+    assert((await errorText(tray)) === null, 'cancel showed a message');
+    assert((await trayCount(tray)) === 0, 'cancelled upload left an item');
+    await until('no draft left after cancel', async () => (await listDir(dir)).length === 0, 10000);
+    // B2: an image uploads as a thumbnail card: it shows the same progress and cancel.
+    await pickFiles(page, tray, ['photo-big.png']);
+    await until('thumbnail upload progress', async () => /\d+%/.test(await tray.locator('.thumbnail-uploading').first().innerText().catch(() => '')), 20000);
+    await shot(page, 'upload-progress-thumbnail');
+    await tray.locator('button[aria-label="Cancel upload of photo-big.png"]').click();
+    await until('cancelled thumbnail gone', async () => (await tray.locator('.thumbnail-uploading').count()) === 0, 10000);
+    assert((await trayCount(tray)) === 0, 'cancelled image upload left an item');
+    await until('no draft left after image cancel', async () => (await listDir(dir)).length === 0, 10000);
+    // C: unthrottled, the same 6 MiB video attaches (files above the old 25 MiB limit are covered by the server integration test).
+    await cdp.send('Network.emulateNetworkConditions', { offline: false, latency: 0, downloadThroughput: -1, uploadThroughput: -1 });
+    await pickFiles(page, tray, ['clip-big.mp4']);
+    await waitCount(tray, 1, 'unthrottled upload');
+    const stored = await until('video on disk', async () => { const f = await listDir(dir); return f.length === 1 && f; }, 10000);
+    await shot(page, 'upload-attached');
+    await clearAll(tray).click();
+    await waitCount(tray, 0, 'cleanup');
+    assert(errors.length === 0, 'browser errors', errors);
+    return { refused, progressSeen: pct, stored, uploadRequests: uploads().length, net };
+  } finally { await context.close(); }
+};
+
+/** CF-014: the node's limits changed on the Server Settings page apply to the next pick of an open composer (autobyteus-workspace-6; AC-004, AC-005; REQ-002, REQ-005). */
+const settingsChangeApplies = async () => {
+  const VIDEO = 'AUTOBYTEUS_CONTEXT_FILE_AUDIO_VIDEO_MAX_MB';
+  const OTHER = 'AUTOBYTEUS_CONTEXT_FILE_OTHER_MAX_MB';
+  const limits = async () => (await (await fetch(`${stack.backendUrl}/rest/context-files/size-limits`)).json());
+  const composer = await newPage();
+  const settings = await newPage();
+  try {
+    for (const { context } of [composer, settings]) await context.addInitScript(() => localStorage.setItem('autobyteus.localization.preference-mode', 'zh-CN'));
+    const { page } = composer;
+    // The shared helpers' selectors are English; the zh-CN composer has its own labels.
+    const pickZh = async (names) => {
+      const [chooser] = await Promise.all([page.waitForEvent('filechooser', { timeout: 10000 }), centerTray(page).locator('button[aria-label="上传文件"]').click()]);
+      await chooser.setFiles(names.map((n) => path.join(outputDir, n)));
+    };
+    const clearAllZh = (tray) => tray.getByRole('button', { name: /全部清除/ });
+    await openAgentCopy(page);
+    const tray = centerTray(page);
+    const before = await limits();
+    assert(before.audioVideoMaxBytes === 2048 * 1024 * 1024 && before.otherFileMaxBytes === 25 * 1024 * 1024, 'the node starts on the default limits', before);
+    // The composer is open and has picked once, so it has read the default limits.
+    await pickZh(['spec-a.txt']);
+    await waitCount(tray, 1, 'first pick under the default limits');
+    await clearAllZh(tray).click();
+    await waitCount(tray, 0, 'first pick cleared');
+    // The owner changes the limits on the Server Settings page (advanced list).
+    const sp = settings.page;
+    await sp.goto(`${stack.frontendUrl}/settings?section=server-settings&mode=advanced`, { waitUntil: 'networkidle', timeout: 120000 });
+    const field = (key) => sp.locator(`[data-testid="server-setting-value-${key}"]`);
+    const save = (key) => sp.locator(`[data-testid="server-setting-save-${key}"]`);
+    await sp.locator('tbody tr:last-child input').first().waitFor({ state: 'visible', timeout: 60000 }).catch(async (error) => {
+      await shot(sp, 'settings-page-not-ready');
+      error.details = { url: sp.url(), keys: (await sp.locator('[data-testid^="server-setting-value-"]').evaluateAll((els) => els.map((e) => e.getAttribute('data-testid')))).slice(0, 80),
+        text: (await sp.locator('body').innerText().catch(() => '')).slice(0, 600) };
+      throw error;
+    });
+    const notice = () => sp.locator('div.fixed.bottom-4.right-4').first();
+    // The settings have no value on a node that never set them, and the list shows only settings that have a value (the same rule as
+    // every predefined setting): the owner adds them with the list's "new setting" row, which is the path exercised here.
+    const listedAtStart = { video: (await field(VIDEO).count()) > 0, other: (await field(OTHER).count()) > 0 };
+    const addRow = sp.locator('tbody tr:last-child');
+    const addSetting = async (key, value) => {
+      await addRow.locator('input').nth(0).fill(key);
+      await addRow.locator('input').nth(1).fill(value);
+      await addRow.locator('button').click();
+    };
+    await addSetting(VIDEO, 'abc');
+    const refusal = await until('the refusal notice', async () => { const t = await notice().innerText().catch(() => ''); return /whole number|must be/i.test(t) ? t : null; }, 15000);
+    await shot(sp, 'settings-invalid-refused');
+    assert((await limits()).audioVideoMaxBytes === 2048 * 1024 * 1024, 'an invalid value changed the limit', await limits());
+    assert((await field(VIDEO).count()) === 0, 'an invalid value was stored and listed');
+    await addRow.locator('input').nth(0).fill(''); await addRow.locator('input').nth(1).fill('');
+    // Valid values are saved and the settings appear in the list.
+    await addSetting(VIDEO, '3');
+    await field(VIDEO).waitFor({ state: 'visible', timeout: 20000 });
+    await until('the node reports 3 MiB', async () => (await limits()).audioVideoMaxBytes === 3 * 1024 * 1024, 10000);
+    await addSetting(OTHER, '1');
+    await field(OTHER).waitFor({ state: 'visible', timeout: 20000 });
+    await until('the node reports 1 MiB', async () => (await limits()).otherFileMaxBytes === 1024 * 1024, 15000);
+    const listed = { video: await field(VIDEO).inputValue(), other: await field(OTHER).inputValue(),
+      videoDescription: (await sp.locator('tr', { has: field(VIDEO) }).innerText()).replace(/\s+/g, ' ').slice(0, 200) };
+    await shot(sp, 'settings-saved');
+    // An invalid edit of the listed row is refused too, and the stored value stays.
+    await field(VIDEO).fill('10241');
+    await save(VIDEO).click();
+    const editRefusal = await until('the edit refusal notice', async () => { const t = await notice().innerText().catch(() => ''); return /whole number|must be/i.test(t) ? t : null; }, 15000);
+    assert((await limits()).audioVideoMaxBytes === 3 * 1024 * 1024, 'an invalid edit changed the limit', await limits());
+    // The open composer, with no reload, now refuses by the new limits in zh-CN (6 MiB video over 3 MiB, 2 MiB PDF over 1 MiB).
+    const uploadsBefore = uploads(composer.net).length;
+    await pickZh(['clip-big.mp4', 'doc-big.pdf']);
+    const lines = await until('the two zh-CN lines', async () => { const all = (await tray.locator('[data-testid="context-file-error-line"]').allInnerTexts()).map((t) => t.trim()).filter(Boolean); return all.length === 2 ? all : null; }, 15000);
+    await shot(page, 'settings-composer-zh-CN-refused');
+    assert(lines.includes('无法附加 clip-big.mp4：文件超过 3 MB 大小限制。') && lines.includes('无法附加 doc-big.pdf：文件超过 1 MB 大小限制。'), 'zh-CN lines with the new limits', { lines });
+    assert(uploads(composer.net).length === uploadsBefore && (await trayCount(tray)) === 0, 'an over-limit file was sent or kept', { lines });
+    // The defaults come back through the same page.
+    await field(VIDEO).fill('2048');
+    await save(VIDEO).click();
+    await until('the audio/video row saved', async () => (await limits()).audioVideoMaxBytes === 2048 * 1024 * 1024, 15000);
+    await field(OTHER).fill('25');
+    await save(OTHER).click();
+    await until('the defaults are back', async () => { const l = await limits(); return l.audioVideoMaxBytes === 2048 * 1024 * 1024 && l.otherFileMaxBytes === 25 * 1024 * 1024; }, 15000);
+    // The settings store logs each refused save to the console (the two invalid saves above); nothing else may be logged.
+    const refusedSaves = settings.errors.filter((e) => /^Failed to update server setting AUTOBYTEUS_CONTEXT_FILE_AUDIO_VIDEO_MAX_MB: Error: Audio\/video size limit must be a whole number of MiB from 1 through 10240\./.test(e));
+    assert(composer.errors.length === 0 && refusedSaves.length === 2 && settings.errors.length === 2, 'browser errors', { composer: composer.errors, settings: settings.errors });
+    return { listedAtStart, refusal: refusal.trim(), editRefusal: editRefusal.trim(), listed, lines };
+  } finally { await composer.context.close(); await settings.context.close(); }
+};
 
 /** CF-004: AC-008/RU-1 — the server is unreachable while removing; the retry works once it is back. */
 const outageRetry = async () => {
@@ -855,6 +1017,8 @@ const CASES = {
   'CF-006': ['Regressions: Manager, New chat, Team members, Org direct member, Org team member, Org task agent', regressions],
   'CF-007': ['Pasted foreign draft URL is cloned; removing it keeps the source', foreignDraftClone],
   'CF-008': ['Injected DELETE/upload failure: visible error naming the file, item kept, retry clears', injectedFailures],
+  'CF-013': ['Size limits: over-limit refused before upload; progress and cancel on a throttled upload; retry attaches', sizeLimitsProgressCancel],
+  'CF-014': ['Server Settings page: invalid limit refused, saved limits apply to the open composer\'s next pick (zh-CN), no reload', settingsChangeApplies],
   'CF-011': ['+ on the Manager run → New chat → attach → send: temp-chat draft finalized, agent-final file readable',
     firstSendFromNewChat('new-chat-agent-send', async (page) => { await openAgentRoot(page); await centerTray(page).waitFor(); },
       /^\/rest\/runs\/[A-Za-z0-9_-]+\/context-files\/ctx_[A-Za-z0-9]+__spec-c\.txt$/)],

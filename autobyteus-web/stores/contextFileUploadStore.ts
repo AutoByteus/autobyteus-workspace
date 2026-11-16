@@ -12,6 +12,8 @@ import type {
   FinalContextFileOwnerDescriptor,
 } from '~/utils/contextFiles/contextFileOwner';
 import { resolveContextAttachmentUrl } from '~/utils/contextFiles/contextAttachmentUrl';
+import { parseContextFileSizeLimits, type ContextFileSizeLimits } from '~/utils/contextFiles/contextFileSizeLimits';
+import { contextFileUploadErrorFromAxios } from '~/utils/contextFiles/contextFileUploadFailure';
 import { authorizedFetch } from '~/utils/remoteAccess/authorizedTransport';
 
 interface UploadDraftResponse {
@@ -53,9 +55,28 @@ export const useContextFileUploadStore = defineStore('contextFileUpload', {
   },
 
   actions: {
+    /** The node's current limits; a failed read reports the same failures as an upload (no response is `interrupted`). */
+    async readSizeLimits(): Promise<ContextFileSizeLimits> {
+      this.activeRequestCount += 1;
+      try {
+        const response = await apiService.get<unknown>('/context-files/size-limits');
+        return parseContextFileSizeLimits(response.data);
+      } catch (error) {
+        throw contextFileUploadErrorFromAxios(error);
+      } finally {
+        this.activeRequestCount -= 1;
+      }
+    },
+
+    /**
+     * Uploads one file. Failures throw `ContextFileUploadError`; aborting `signal` rejects with the transport's
+     * cancellation, which the caller recognizes by its own aborted signal. `onProgress` gets whole percents.
+     */
     async uploadAttachment(input: {
       owner: DraftContextFileOwnerDescriptor;
       file: File;
+      signal?: AbortSignal;
+      onProgress?: (percent: number) => void;
     }): Promise<UploadedContextAttachment> {
       this.activeRequestCount += 1;
       const formData = new FormData();
@@ -65,6 +86,12 @@ export const useContextFileUploadStore = defineStore('contextFileUpload', {
       try {
         const response = await apiService.post<UploadDraftResponse>('/context-files/upload', formData, {
           headers: { 'Content-Type': 'multipart/form-data' },
+          signal: input.signal,
+          onUploadProgress: (event) => {
+            if (input.onProgress && event.total) {
+              input.onProgress(Math.min(100, Math.round((event.loaded / event.total) * 100)));
+            }
+          },
         });
         return createUploadedContextAttachment({
           storedFilename: response.data.storedFilename,
@@ -73,6 +100,9 @@ export const useContextFileUploadStore = defineStore('contextFileUpload', {
           phase: 'draft',
           type: inferContextAttachmentType(input.file),
         });
+      } catch (error) {
+        if (input.signal?.aborted) throw error;
+        throw contextFileUploadErrorFromAxios(error);
       } finally {
         this.activeRequestCount -= 1;
       }

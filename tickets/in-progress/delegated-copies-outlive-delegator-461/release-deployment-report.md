@@ -40,6 +40,12 @@ Deliver `codex/delegated-copies-outlive-delegator-461` (Project Task `autobyteus
 - Other files changed on both sides auto-merged (26 non-ticket paths in total, including `build-studio-server.ts`, `project-task-service.ts`, `autobyteus-web/generated/graphql.ts`, and the docs `GLOSSARY.md`, `agent_memory.md`, `projects.md`, web `agent_execution_architecture.md` and `memory.md`). These need the implementation's checks on the merged state.
 - The skill rule: a refresh that creates conflicts or changes effective behavior blocks delivery and is routed, not resolved in delivery.
 
+## Release Decision
+
+- Decision: `Beta`, once delivery's gates pass (verification from the evidence, finalization, the checks before tagging)
+- Decided by: the user, 2026-11-16, given in advance while delivery was blocked: "if everything is fine for this ticket, please release a new beta"
+- Prepared 2026-11-16: `claude`, `codex`, `grok`, `gitleaks` and `gh` are on `PATH`; the latest tag is `v1.5.13-beta.6`, so the next beta would be `v1.5.13-beta.7` (to be confirmed at tagging). At release: the migration registry-order test's released set (code reviewer's note), and the `## What you need to do` sections of every ticket since `v1.5.13-beta.6`, including autobyteus-469's no-going-back warning
+
 ## Escalation / Reroute
 
 - Classification: `Local Fix` (integration of the latest base into the ticket branch)

@@ -1,0 +1,32 @@
+
+> autobyteus@1.5.13-beta.6 test:nuxt /Users/normy/autobyteus-org/autobyteus-task-worktrees/web-typecheck-gate/autobyteus-web
+> cross-env NUXT_TEST=true vitest --run tests/integration/codex-turn-lifecycle-native-to-live-projection.integration.test.ts
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Duplicated imports "getters", the one from "/Users/normy/autobyteus-org/autobyteus-task-worktrees/web-typecheck-gate/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/Users/normy/autobyteus-org/autobyteus-task-worktrees/web-typecheck-gate/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "getters", the one from "/Users/normy/autobyteus-org/autobyteus-task-worktrees/web-typecheck-gate/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/Users/normy/autobyteus-org/autobyteus-task-worktrees/web-typecheck-gate/autobyteus-web/stores/serverStore.ts" is used
+
+ RUN  v3.2.7 /Users/normy/autobyteus-org/autobyteus-task-worktrees/web-typecheck-gate/autobyteus-web
+
+Duplicated imports "getters", the one from "/Users/normy/autobyteus-org/autobyteus-task-worktrees/web-typecheck-gate/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/Users/normy/autobyteus-org/autobyteus-task-worktrees/web-typecheck-gate/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "getters", the one from "/Users/normy/autobyteus-org/autobyteus-task-worktrees/web-typecheck-gate/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/Users/normy/autobyteus-org/autobyteus-task-worktrees/web-typecheck-gate/autobyteus-web/stores/serverStore.ts" is used
+stderr | tests/integration/codex-turn-lifecycle-native-to-live-projection.integration.test.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | tests/integration/codex-turn-lifecycle-native-to-live-projection.integration.test.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | tests/integration/codex-turn-lifecycle-native-to-live-projection.integration.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:75612) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/integration/codex-turn-lifecycle-native-to-live-projection.integration.test.ts (2 tests) 58ms
+
+ Test Files  1 passed (1)
+      Tests  2 passed (2)
+   Start at  15:46:02
+   Duration  8.56s (transform 5.12s, setup 4.47s, collect 3.58s, tests 58ms, environment 113ms, prepare 103ms)
+

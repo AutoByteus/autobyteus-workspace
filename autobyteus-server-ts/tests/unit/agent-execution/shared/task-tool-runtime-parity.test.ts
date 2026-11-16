@@ -87,7 +87,7 @@ describe("task tool exposure and schemas across runtimes", () => {
       {
         "properties": {
           "context_files": {
-            "description": "Absolute local file paths on this node to copy into the new Task's saved context. Same file types and 25 MiB limit as the app.",
+            "description": "Absolute local file paths on this node to copy into the new Task's saved context. Same file types and size limits as the app.",
             "items": {
               "type": "string",
             },
@@ -133,7 +133,7 @@ describe("task tool exposure and schemas across runtimes", () => {
             "type": "string",
           },
           "context_files": {
-            "description": "Absolute local file paths on this node to copy into the Project Task's saved context (appended; never removes). Same file types and 25 MiB limit as the app.",
+            "description": "Absolute local file paths on this node to copy into the Project Task's saved context (appended; never removes). Same file types and size limits as the app.",
             "items": {
               "type": "string",
             },

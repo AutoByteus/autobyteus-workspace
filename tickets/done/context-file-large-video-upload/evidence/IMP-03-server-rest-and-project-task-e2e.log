@@ -1,0 +1,43 @@
+check: IMP-03
+command: (cd autobyteus-server-ts && ./node_modules/.bin/vitest run tests/integration/api tests/integration/agent-memory/user-attachment-history.integration.test.ts tests/integration/services/server-settings-service.integration.test.ts tests/e2e/projects)
+commit: 5fad14c5a
+environment: macOS Darwin 25.6, Node v26.12.0
+date: 2026-11-15T13:14:52Z
+----
+ RUN  v4.1.12 /Users/normy/autobyteus-org/autobyteus-task-worktrees/context-file-large-video-upload/autobyteus-server-ts
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus-org/autobyteus-task-worktrees/context-file-large-video-upload/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+Database reset successful
+The following migration(s) have been applied:
+ Test Files  17 passed | 28 skipped (45)
+      Tests  133 passed | 123 skipped (256)
+   Start at  14:14:52
+   Duration  111.55s (transform 6.67s, setup 990ms, import 53.06s, tests 52.07s, environment 2ms)
+exit: 0

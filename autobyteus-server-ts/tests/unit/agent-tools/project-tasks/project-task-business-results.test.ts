@@ -15,6 +15,7 @@ import { AdHocTaskStore } from "../../../../src/projects/stores/ad-hoc-task-stor
 import { AdHocTasksLayout } from "../../../../src/projects/stores/ad-hoc-tasks-layout.js";
 import { createRootExecutionIdentity, type RootSubjectKind } from "../../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import type { TaskExecutionReleaseRequest } from "../../../../src/agent-collaboration/execution/task/task-execution-resource-port.js";
+import { defaultContextFileSizeLimits } from "../../../helpers/context-file-size-limits.js";
 import { CreateTaskTool, UpdateTaskTool, ListProjectTasksTool, createBoundGetProjectTaskTool } from "../../../../src/agent-tools/project-tasks/project-task-native-tools.js";
 import { ProjectTaskToolsMcpAdapterProvider } from "../../../../src/agent-tools/mcp/providers/project-task-tools-mcp-adapter-provider.js";
 import { withTaskRunResources } from "../../../helpers/task-run-resources.js";
@@ -53,7 +54,7 @@ describe("shared native/MCP business Task result boundary (Q-2)", () => {
   it("lists saved work/context, open and closed assignments with explicit copy IDs, never workers' internal runs or platform detail (REQ-010, AC-013)", async () => {
     const drafts = new ProjectTaskContextDrafts({ store, contextStore: context });
     const draft = await drafts.beginContextDraft(projectId);
-    const upload = await drafts.uploadContextFile(projectId, draft.draftId, { filename: "instructions.txt", mimetype: "text/plain", file: Readable.from(["saved context"]) } as never);
+    const upload = await drafts.uploadContextFile(projectId, draft.draftId, { filename: "instructions.txt", mimetype: "text/plain", file: Readable.from(["saved context"]) } as never, defaultContextFileSizeLimits);
     const task = await tasks.createTask({ projectId, title: "Full saved work description", description: "Full saved work description",
       contextDraft: { draftId: draft.draftId, storedFilenames: [upload.storedFilename] } });
     const assigned = (agentRun: { agentRunId: string } | { teamRunId: string }, kind: RootSubjectKind, coordinatorAgentRunId?: string) =>

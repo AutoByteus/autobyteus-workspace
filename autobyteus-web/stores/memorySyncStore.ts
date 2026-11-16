@@ -3,6 +3,16 @@ import { getApolloClient } from '~/utils/apolloClient';
 import { GET_MEMORY_SYNC_STATUS, LIST_MEMORY_HUB_URL_CANDIDATES } from '~/graphql/queries/memorySyncQueries';
 import { CREATE_MEMORY_HUB_SOURCE_CREDENTIAL, REGENERATE_MEMORY_HUB_SOURCE_CREDENTIAL, REVOKE_MEMORY_HUB_SOURCE_CREDENTIAL, START_MEMORY_SYNC, TEST_MEMORY_HUB_CONNECTION, UPDATE_MEMORY_HUB_CONFIG, UPDATE_MEMORY_SYNC_SOURCE_CONFIG } from '~/graphql/mutations/memorySyncMutations';
 
+export interface MemorySyncFileFailure {
+  kind: string;
+  relativePath: string;
+  size: number;
+  reason: string;
+  attempts: number;
+  lastFailedAt: string;
+  nextAttemptAt: string;
+}
+
 export interface MemoryHubCredentialSummary {
   credentialId: string;
   label?: string | null;
@@ -46,7 +56,14 @@ export interface MemorySyncStatus {
     secureTransportWarning?: string | null;
     credentials: MemoryHubCredentialSummary[];
   };
-  sourceState?: { jobState: string; lastSuccessfulSyncAt?: string | null; lastError?: string | null; trackedFileCount: number } | null;
+  sourceState?: {
+    jobState: string;
+    lastSuccessfulSyncAt?: string | null;
+    lastError?: string | null;
+    trackedFileCount: number;
+    fileFailureCount: number;
+    fileFailures: MemorySyncFileFailure[];
+  } | null;
   imports: MemoryImportSummary[];
   oneTimePlaintextToken?: string | null;
 }

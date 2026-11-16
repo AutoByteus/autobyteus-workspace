@@ -1,0 +1,54 @@
+
+> autobyteus@1.5.13-beta.6 typecheck /Users/normy/autobyteus-org/autobyteus-task-worktrees/web-typecheck-gate/autobyteus-web
+> pnpm prepare:shared-types && nuxt prepare && node ./scripts/typecheck.mjs
+
+
+> autobyteus@1.5.13-beta.6 prepare:shared-types /Users/normy/autobyteus-org/autobyteus-task-worktrees/web-typecheck-gate/autobyteus-web
+> pnpm -C ../autobyteus-server-ts prepare:source
+
+
+> autobyteus-server-ts@0.1.1 prepare:source /Users/normy/autobyteus-org/autobyteus-task-worktrees/web-typecheck-gate/autobyteus-server-ts
+> pnpm prepare:shared && pnpm exec prisma generate --schema ./prisma/schema.prisma
+
+
+> autobyteus-server-ts@0.1.1 prepare:shared /Users/normy/autobyteus-org/autobyteus-task-worktrees/web-typecheck-gate/autobyteus-server-ts
+> pnpm -C .. --filter autobyteus-ts --filter @autobyteus/application-sdk-contracts --filter @autobyteus/application-backend-sdk build
+
+Scope: 3 of 13 workspace projects
+autobyteus-ts build$ node ./scripts/clean-dist.mjs && tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs
+autobyteus-application-sdk-contracts build$ tsc -p tsconfig.build.json
+autobyteus-application-sdk-contracts build: Done
+autobyteus-ts build: [verify:runtime-deps] OK
+autobyteus-ts build: Done
+autobyteus-application-backend-sdk build$ tsc -p tsconfig.build.json
+autobyteus-application-backend-sdk build: Done
+Prisma schema loaded from prisma/schema.prisma
+
+✔ Generated Prisma Client (v5.22.0) to ./../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client in 122ms
+
+Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+
+Tip: Want real-time updates to your database without manual polling? Discover how with Pulse: https://pris.ly/tip-0-pulse
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+
+ WARN  Duplicated imports "getters", the one from "/Users/normy/autobyteus-org/autobyteus-task-worktrees/web-typecheck-gate/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/Users/normy/autobyteus-org/autobyteus-task-worktrees/web-typecheck-gate/autobyteus-web/stores/serverStore.ts" is used
+
+
+ WARN  Duplicated imports "getters", the one from "/Users/normy/autobyteus-org/autobyteus-task-worktrees/web-typecheck-gate/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/Users/normy/autobyteus-org/autobyteus-task-worktrees/web-typecheck-gate/autobyteus-web/stores/serverStore.ts" is used
+
+│
+◆  Types generated in .nuxt.
+[typecheck] Nuxt app (tsconfig.json): 66 errors, exit 2, 31.4s
+[typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 1.7s
+[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 0.6s
+[typecheck] cross-package tests (tsconfig.cross-package-tests.json): 1 errors, exit 2, 19.4s
+
+Test files above their baseline count:
+tests/integration/codex-turn-lifecycle-native-to-live-projection.integration.test.ts(67,46): error TS2345: Argument of type '{ threadId: string; codexThreadConfig: { model: string; workingDirectory: string; reasoningEffort: string; serviceTier: null; approvalPolicy: CodexApprovalPolicy.NEVER; sandbox: "workspace-write"; baseInstructions: null; developerInstructions: null; dynamicTools: never[]; }; }' is not assignable to parameter of type '{ codexThreadConfig: CodexThreadConfig; workspaceSkills: RunWorkspaceSkills | null; dynamicToolHandlers?: CodexDynamicToolHandlerMap | null | undefined; runtimeToolExposure?: RuntimeAgentToolExposure | ... 1 more ... | undefined; threadId?: string | ... 1 more ... | undefined; activeTurnId?: string | ... 1 more ... ...'.
+  Property 'workspaceSkills' is missing in type '{ threadId: string; codexThreadConfig: { model: string; workingDirectory: string; reasoningEffort: string; serviceTier: null; approvalPolicy: CodexApprovalPolicy.NEVER; sandbox: "workspace-write"; baseInstructions: null; developerInstructions: null; dynamicTools: never[]; }; }' but required in type '{ codexThreadConfig: CodexThreadConfig; workspaceSkills: RunWorkspaceSkills | null; dynamicToolHandlers?: CodexDynamicToolHandlerMap | null | undefined; runtimeToolExposure?: RuntimeAgentToolExposure | ... 1 more ... | undefined; threadId?: string | ... 1 more ... | undefined; activeTurnId?: string | ... 1 more ... ...'.
+[typecheck] new test file with errors: tests/integration/codex-turn-lifecycle-native-to-live-projection.integration.test.ts (1)
+[typecheck] production errors: 0; test-file errors: 94 in 41 files (baseline 93 in 40 files)
+[typecheck] FAIL: fix the new type errors in the test files above
+ ELIFECYCLE  Command failed with exit code 1.

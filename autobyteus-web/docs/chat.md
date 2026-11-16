@@ -570,6 +570,25 @@ target mode.
   it) and attaches `/ws/agent-collaboration/:runId` only while the host runs or
   when the user sends to a child.
 
+## Attaching Files: Limits, Progress, Cancel
+
+The message composer (`ContextFilePathInputArea.vue`, on desktop and the phone) attaches files by the
+`+` button, drop or paste.
+
+- **Limits.** The node's audio/video limit (default 2 GB) and other-file limit (default 25 MB) are read at
+  each pick. A file over its limit is refused before any byte is sent. Limits are node settings
+  (see Server Settings: Context File Size Limits in [Settings](./settings.md)).
+- **Progress and cancel.** An uploading item shows `NN%` and a cancel control (accessible name
+  "Cancel upload of <name>"). Cancel stops the transfer, removes the item without an error message, and
+  the node removes the partial file. Send stays blocked while any upload runs.
+- **Messages.** Failures appear in the same place as before, one localized line per reason: too large
+  names the files and the limit (files over different limits get one line per limit), unsupported type,
+  interrupted connection, and a generic "couldn't attach" line. A failed removal names the file only. The
+  server's own error text is never shown (it goes to the console). Limits are formatted in the UI language
+  with base-1024 `MB`/`GB`.
+- **Large files and the agent.** The agent receives the absolute path to the full file in `Reference files:`.
+  The native runtime does not send a local media file larger than 25 MB inline to the model.
+
 ## Tests
 
 - `stores/__tests__/chatDraftStore.spec.ts`

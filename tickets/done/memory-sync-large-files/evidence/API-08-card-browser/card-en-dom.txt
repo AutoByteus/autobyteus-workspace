@@ -1,0 +1,25 @@
+locale: en
+title: 23 files could not be synced
+rows: 20
+row 0: agents/000-run-with-a-deep-path/context_files/nested-folder-with-a-long-name/nested-folder-with-a-long-name/nested-folder-with-a-long-name/very-long-attachment-name-very-long-attachment-name-very-long-attachment-name-very-long-attachment-name-very-long-attachment-name-very-long-attachment-name-very-long-attachment-name-end.mp4 · 8.5 MB · Uploaded file hash mismatch for agents/000-run-with-a-deep-path/context_files/nested-folder-with-a-long-name/nested-folder-with-a-long-name/nested-folder-with-a-long-name/very-long-attachment-name-very-long-attachment-name-very-long-attachment-name-very-long-attachment-name-very-long-attachment-name-very-long-attachment-name-very-long-attachment-name-end.mp4. · next attempt 11/15/2026, 2:00:32 PM
+row 1: agents/run-01/context_files/video-1.mp4 · 8.5 MB · Uploaded file hash mismatch for agents/run-01/context_files/video-1.mp4. · next attempt 11/15/2026, 2:00:32 PM
+row 2: agents/run-02/context_files/video-2.mp4 · 8.5 MB · Uploaded file hash mismatch for agents/run-02/context_files/video-2.mp4. · next attempt 11/15/2026, 2:00:32 PM
+row 3: agents/run-03/context_files/video-3.mp4 · 8.5 MB · Uploaded file hash mismatch for agents/run-03/context_files/video-3.mp4. · next attempt 11/15/2026, 2:00:32 PM
+row 4: agents/run-04/context_files/video-4.mp4 · 8.5 MB · Uploaded file hash mismatch for agents/run-04/context_files/video-4.mp4. · next attempt 11/15/2026, 2:00:32 PM
+row 5: agents/run-05/context_files/video-5.mp4 · 8.5 MB · Uploaded file hash mismatch for agents/run-05/context_files/video-5.mp4. · next attempt 11/15/2026, 2:00:32 PM
+row 6: agents/run-06/context_files/video-6.mp4 · 8.5 MB · Uploaded file hash mismatch for agents/run-06/context_files/video-6.mp4. · next attempt 11/15/2026, 2:00:32 PM
+row 7: agents/run-07/context_files/video-7.mp4 · 8.5 MB · Uploaded file hash mismatch for agents/run-07/context_files/video-7.mp4. · next attempt 11/15/2026, 2:00:32 PM
+row 8: agents/run-08/context_files/video-8.mp4 · 8.5 MB · Uploaded file hash mismatch for agents/run-08/context_files/video-8.mp4. · next attempt 11/15/2026, 2:00:32 PM
+row 9: agents/run-09/context_files/video-9.mp4 · 8.5 MB · Uploaded file hash mismatch for agents/run-09/context_files/video-9.mp4. · next attempt 11/15/2026, 2:00:32 PM
+row 10: agents/run-10/context_files/video-10.mp4 · 8.5 MB · Uploaded file hash mismatch for agents/run-10/context_files/video-10.mp4. · next attempt 11/15/2026, 2:00:32 PM
+row 11: agents/run-11/context_files/video-11.mp4 · 8.5 MB · Uploaded file hash mismatch for agents/run-11/context_files/video-11.mp4. · next attempt 11/15/2026, 2:00:32 PM
+row 12: agents/run-12/context_files/video-12.mp4 · 8.5 MB · Uploaded file hash mismatch for agents/run-12/context_files/video-12.mp4. · next attempt 11/15/2026, 2:00:32 PM
+row 13: agents/run-13/context_files/video-13.mp4 · 8.5 MB · Uploaded file hash mismatch for agents/run-13/context_files/video-13.mp4. · next attempt 11/15/2026, 2:00:32 PM
+row 14: agents/run-14/context_files/video-14.mp4 · 8.5 MB · Uploaded file hash mismatch for agents/run-14/context_files/video-14.mp4. · next attempt 11/15/2026, 2:00:32 PM
+row 15: agents/run-15/context_files/video-15.mp4 · 8.5 MB · Uploaded file hash mismatch for agents/run-15/context_files/video-15.mp4. · next attempt 11/15/2026, 2:00:32 PM
+row 16: agents/run-16/context_files/video-16.mp4 · 8.5 MB · Uploaded file hash mismatch for agents/run-16/context_files/video-16.mp4. · next attempt 11/15/2026, 2:00:32 PM
+row 17: agents/run-17/context_files/video-17.mp4 · 8.5 MB · Uploaded file hash mismatch for agents/run-17/context_files/video-17.mp4. · next attempt 11/15/2026, 2:00:32 PM
+row 18: agents/run-18/context_files/video-18.mp4 · 8.5 MB · Uploaded file hash mismatch for agents/run-18/context_files/video-18.mp4. · next attempt 11/15/2026, 2:00:32 PM
+row 19: agents/run-19/context_files/video-19.mp4 · 8.5 MB · Uploaded file hash mismatch for agents/run-19/context_files/video-19.mp4. · next attempt 11/15/2026, 2:00:32 PM
+more: and 3 more
+status: Current job: idle | Last sync: success · 11/15/2026, 1:59:32 PM

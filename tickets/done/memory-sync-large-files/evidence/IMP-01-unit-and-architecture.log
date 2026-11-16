@@ -1,0 +1,32 @@
+# IMP-01
+# command: node node_modules/vitest/vitest.mjs run tests/unit/memory-sync tests/architecture/tracked-imports.test.ts tests/architecture/application-framework-boundaries.test.ts tests/architecture/web-generated-graphql-current.test.ts --no-watch (PATH includes a pnpm shim for the codegen check)
+# commit: 3a78c3eee
+# environment: macOS (Darwin 25.6), Node v26.12.0, vitest, env -i isolated HOME
+# date: 2026-11-15
+
+ ✓ tests/architecture/tracked-imports.test.ts (2 tests) 1773ms
+     ✓ finds no tracked code importing an untracked file in this repository  1584ms
+ ✓ tests/architecture/web-generated-graphql-current.test.ts (1 test) 8325ms
+     ✓ equals the web codegen output for the current server schema, and the check fails on a changed schema  8192ms
+ ✓ tests/architecture/application-framework-boundaries.test.ts (20 tests) 3021ms
+     ✓ keeps the complete current TS/JS/Vue tree inside AFB-001 through AFB-005  469ms
+     ✓ keeps required tool registration behind the single lifecycle readiness owner  1234ms
+     ✓ guards the exact SR-011 host definition and public/general run authority  694ms
+ ✓ tests/unit/memory-sync/memory-sync-task-agent-layout.test.ts (3 tests) 617ms
+     ✓ F-SYNC-NEW: an upgraded node exports task agents as their own run folders and its import shows hubs with their task agents  581ms
+ ✓ tests/unit/memory-sync/memory-sync-local-fixes.test.ts (10 tests) 493ms
+     ✓ rejects conflicting hub batchId reuse after the batch falls out of recentBatches  370ms
+ ✓ tests/unit/memory-sync/memory-file-stager.test.ts (7 tests) 259ms
+ ✓ tests/unit/memory-sync/memory-hub-staged-file-store.test.ts (7 tests) 181ms
+ ✓ tests/unit/memory-sync/memory-sync-run-outcomes.test.ts (5 tests) 171ms
+ ✓ tests/unit/memory-sync/memory-sync-hold-back.test.ts (6 tests) 123ms
+ ✓ tests/unit/memory-sync/memory-hub-ingestion-sweep.test.ts (3 tests) 114ms
+ ✓ tests/unit/memory-sync/memory-hub-staged-commit.test.ts (5 tests) 61ms
+ ✓ tests/unit/memory-sync/memory-sync-file-failures-state.test.ts (2 tests) 13ms
+ ✓ tests/unit/memory-sync/memory-sync-batch-transfer.test.ts (6 tests) 14ms
+ ✓ tests/unit/memory-sync/memory-file-change-planner.test.ts (4 tests) 9ms
+ ✓ tests/unit/memory-sync/memory-hub-response-parser.test.ts (2 tests) 5ms
+ ✓ tests/unit/memory-sync/memory-sync-batch-planner.test.ts (5 tests) 3ms
+ ✓ tests/unit/memory-sync/memory-sync-file-failure-policy.test.ts (3 tests) 3ms
+ Test Files  17 passed (17)
+      Tests  91 passed (91)

@@ -1,0 +1,31 @@
+# API-03b: agent-semantic-memory.e2e with the scripted AGY gate (SM-10 uses the edited scanner line); commit bfcd82366; Sun Nov 15 14:24:04 CET 2026
+[22m[39mAgent Definition with ID sm-scout-f3a7c2 updated successfully.
+[90mstdout[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary[2m > [22m[2mrun start paths (scripted AGY CLI)[2m > [22m[2mSM-07 (AC-008): off → a new run has no section and the folder and document stay; on → the same folder again
+[22m[39mCreating new workspace for rootPath: /var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/sm-e2e-RnKS3l/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/sm-e2e-RnKS3l/workspace.
+[90mstdout[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary[2m > [22m[2mrun start paths (scripted AGY CLI)[2m > [22m[2mSM-07 (AC-008): off → a new run has no section and the folder and document stay; on → the same folder again
+[90mstdout[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary[2m > [22m[2mrun start paths (scripted AGY CLI)[2m > [22m[2mSM-07 (AC-008): off → a new run has no section and the folder and document stay; on → the same folder again
+[22m[39mCreating new workspace for rootPath: /var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/sm-e2e-RnKS3l/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/sm-e2e-RnKS3l/workspace.
+[90mstdout[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary[2m > [22m[2mrun start paths (scripted AGY CLI)[2m > [22m[2mSM-07 (AC-008): off → a new run has no section and the folder and document stay; on → the same folder again
+[90mstdout[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary[2m > [22m[2mrun start paths (scripted AGY CLI)[2m > [22m[2mSM-07 (AC-008): off → a new run has no section and the folder and document stay; on → the same folder again
+[22m[39mAGY compaction detection off for run sm_scout_f3a7c2_2cb7bf04e17f40df8e118c81cbc1b6ce: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+[90mstdout[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary[2m > [22m[2mrun start paths (scripted AGY CLI)[2m > [22m[2mSM-07 (AC-008): off → a new run has no section and the folder and document stay; on → the same folder again
+[22m[39mAgent websocket attached for run sm_scout_f3a7c2_2cb7bf04e17f40df8e118c81cbc1b6ce
+Created agent session 20ab61cf-7a80-4a72-96d4-4abed28f0d3c for run sm_scout_f3a7c2_2cb7bf04e17f40df8e118c81cbc1b6ce
+Agent WebSocket connected: session=20ab61cf-7a80-4a72-96d4-4abed28f0d3c, run=sm_scout_f3a7c2_2cb7bf04e17f40df8e118c81cbc1b6ce
+[90mstdout[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary[2m > [22m[2mrun start paths (scripted AGY CLI)[2m > [22m[2mSM-07 (AC-008): off → a new run has no section and the folder and document stay; on → the same folder again
+[22m[39mClosed agent session 20ab61cf-7a80-4a72-96d4-4abed28f0d3c
+Agent WebSocket disconnected: 20ab61cf-7a80-4a72-96d4-4abed28f0d3c
+[90mstdout[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary[2m > [22m[2mrun start paths (scripted AGY CLI)[2m > [22m[2mSM-08 (REQ-007): deleting the agent leaves its semantic memory folder
+[22m[39mAgent Definition with ID sm-scout-f3a7c2 deleted successfully.
+ [32m✓[39m tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts [2m([22m[2m9 tests[22m[2m)[22m[33m 4128[2mms[22m[39m
+       [33m[2m✓[22m[39m SM-03 (AC-005): a run of an agent without the setting has no section and creates no semantic folder [33m 425[2mms[22m[39m
+       [33m[2m✓[22m[39m SM-04 (AC-001): a run under Project A is told its folder after the Project section; the folder exists outside the workspace and the package [33m 329[2mms[22m[39m
+       [33m[2m✓[22m[39m SM-05 (AC-003, AC-004): a run under Project B, the agent as a shared team member and as a delegated copy are told the same folder [33m 1861[2mms[22m[39m
+       [33m[2m✓[22m[39m SM-06 (AC-006): a team-local agent with the same local name, enabled in its package file, has its own folder [33m 328[2mms[22m[39m
+       [33m[2m✓[22m[39m SM-07 (AC-008): off → a new run has no section and the folder and document stay; on → the same folder again [33m 690[2mms[22m[39m
+[2m Test Files [22m [1m[32m1 passed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[32m9 passed[39m[22m[90m (9)[39m
+[2m   Start at [22m 14:24:04
+[2m   Duration [22m 11.98s[2m (transform 5.37s, setup 43ms, import 7.36s, tests 4.13s, environment 0ms)[22m

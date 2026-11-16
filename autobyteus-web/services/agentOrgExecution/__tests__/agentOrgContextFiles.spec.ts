@@ -51,7 +51,10 @@ class Socket {
   emit(message: unknown) { this.onmessage?.({ data: JSON.stringify(message) }) }
 }
 
-vi.mock('~/services/api', () => ({ default: { post: mocks.post } }))
+vi.mock('~/services/api', () => ({ default: {
+  post: mocks.post,
+  get: async () => ({ data: { otherFileMaxBytes: 25 * 1024 * 1024, audioVideoMaxBytes: 2048 * 1024 * 1024, audioVideoMimeTypes: ['video/mp4'] } }),
+} }))
 
 const mounted: ReturnType<typeof mount>[] = []
 let activeView: ReturnType<typeof taskBearingView>
@@ -183,6 +186,7 @@ describe('actual shared Org file input -> active target -> attachment upload own
     const input = files.find('input[type="file"]')
     Object.defineProperty(input.element, 'files', { configurable: true, value: [file()] })
     await input.trigger('change')
+    await flushPromises() // the node's size limits are read first; the upload starts after that
     store.select('org-run', { kind: 'agent_execution', agentRunId: 'agent-team-worker-configured' })
     const next = useActiveContextStore().activeAgentContext!
     next.requirement = 'new draft'

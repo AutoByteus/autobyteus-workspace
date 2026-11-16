@@ -3,7 +3,6 @@ import type { ProviderRelayAccess } from "../credential-proxy/provider-relays/pr
 import { setProcessProviderRelayAccess } from "../credential-proxy/provider-relays/provider-relay-process-access.js";
 import type { RunPassRevocation } from "../credential-proxy/run-pass-revocation.js";
 import { NativeCommandShutdown } from "./native-command-shutdown.js";
-import { CONTEXT_FILE_MAX_BYTES } from "../context-files/domain/context-file-upload-policy.js";
 import fastify, { LogController, type FastifyInstance } from "fastify";
 import { installClientConnectionClose } from "../shutdown/client-connection-close.js";
 import multipart from "@fastify/multipart";
@@ -452,7 +451,8 @@ export const buildStudioServer = async (input: {
       // The node's first request rule: before the MCP gateway hook, CORS preflights and the origin/access hook.
       registerRemoteAccessHostGate(app);
       await registerMcpGatewayRoutes(app, { accessGate: currentNodeAccess.mcpGatewayAccess });
-      await app.register(multipart, { limits: { fileSize: CONTEXT_FILE_MAX_BYTES } });
+      // No plugin-wide limit: each multipart route passes its own `limits.fileSize`.
+      await app.register(multipart);
       await registerNodeAccessPlugin(app, currentNodeAccess.gate);
       await registerMobileWebStaticRoutes(app);
       await app.register(

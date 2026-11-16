@@ -115,6 +115,30 @@ export class MemoryImportSummaryGql {
 }
 
 @ObjectType()
+export class MemorySyncFileFailureGql {
+  @Field(() => String)
+  kind!: string;
+
+  @Field(() => String)
+  relativePath!: string;
+
+  @Field(() => Float)
+  size!: number;
+
+  @Field(() => String)
+  reason!: string;
+
+  @Field(() => Int)
+  attempts!: number;
+
+  @Field(() => String)
+  lastFailedAt!: string;
+
+  @Field(() => String)
+  nextAttemptAt!: string;
+}
+
+@ObjectType()
 export class MemorySyncSourceStateGql {
   @Field(() => String)
   jobState!: string;
@@ -127,6 +151,13 @@ export class MemorySyncSourceStateGql {
 
   @Field(() => Int)
   trackedFileCount!: number;
+
+  @Field(() => Int)
+  fileFailureCount!: number;
+
+  /** The 20 most recent file failures. */
+  @Field(() => [MemorySyncFileFailureGql])
+  fileFailures!: MemorySyncFileFailureGql[];
 }
 
 @ObjectType()
@@ -217,6 +248,9 @@ export class MemorySyncRunResultGql {
 
   @Field(() => Int)
   deferredFiles!: number;
+
+  @Field(() => Int)
+  failedFiles!: number;
 
   @Field(() => Int)
   committedBatches!: number;

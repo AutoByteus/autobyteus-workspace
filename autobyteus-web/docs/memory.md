@@ -326,8 +326,23 @@ users distinguish manual from background runs. Low-frequency status refresh keep
 the status lines current without rehydrating the editable source form, so
 unsaved hub URL/source id edits and pasted draft tokens are preserved.
 
-Current v1 sync mirrors local `agents` and `agent_teams` files with full-file
-replacement batches. It excludes temporary/partial/lock files and does not sync
+When a run could not sync some files, the card adds a warning-coloured block
+under the status lines: "N files could not be synced" ("1 file could not be
+synced" for one), then one row per file (path, size, the hub's reason and the
+next attempt; at most 20 rows, then "and N more"). Only the path may break inside
+a word; the rest of a row wraps at word boundaries. The run itself still reports
+`success`, because one file that fails never stops the others, and **Sync now**
+retries every failing file at once. Problems that affect every file (an
+unreachable hub, a revoked token) stay in the `Last sync` error line as before.
+The block's text is localized (English, 简体中文) in
+`localization/messages/<locale>/memorySyncSettings.ts`.
+
+Current v1 sync mirrors local `agents` and `agent_teams` files of any size: small
+files travel in size-bounded batches, a file above 8 MiB is uploaded to the hub
+in pieces and committed by reference, and a file whose size and modification time
+are unchanged since its last sync is not read again (the limits are in
+[`memory_sync.md`](../../autobyteus-server-ts/docs/features/memory_sync.md#sync-behavior)).
+It excludes temporary/partial/lock files and does not sync
 deletes, deltas, analytics indexes, or runnable restore state. Consequently, a
 hub may retain a pre-upgrade flat nested-member path beside the later canonical
 path, or receive both paths from a preserved local conflict. This is a physical
@@ -357,5 +372,6 @@ Coverage includes:
 
 - Backend unit and GraphQL e2e checks for memory-derived agent/team/org inclusion, one execution-tree read per root per list request, task-agent and task-team member targets with their group paths, each member target's own run id, org member views (including task-team members), no-memory exclusion, `Unattributed runs`, selected agent/team filtering, memory-view raw-trace lazy loading, selected raw-trace file listing/reads, invalid selector fallback, imported read-only source behavior, and merged-corpus preservation.
 - Backend Memory Sync API/E2E checks for hub enablement, URL candidates, one-time token handling, source config redaction, explicit draft and saved connection-test modes, REST batch ingestion, imported-source Memory Explorer reads, duplicate retry, source-token binding, latest-error source status, and unsafe path rejection.
-- Backend multi-process Memory Sync E2E starts two real server processes with isolated app-data directories, configures hub/source through HTTP GraphQL, validates saved-mode connection testing, syncs over HTTP, and asserts hub import files without requiring browser, Electron, Docker, or Kubernetes.
+- Backend multi-process Memory Sync E2E starts two real server processes with isolated app-data directories, configures hub/source through HTTP GraphQL, validates saved-mode connection testing, syncs over HTTP, and asserts hub import files without requiring browser, Electron, Docker, or Kubernetes. Its large-file case (`tests/e2e/memory-sync/memory-sync-large-files.e2e.test.ts`) puts a counting proxy between the two: a 40 MiB attachment and two 20 MiB files sync with every request within the limits, an interrupted upload resumes, and a corrupted piece fails only its own file.
+- `components/settings/__tests__/MemorySyncCard.spec.ts` covers the card's status lines and the "files could not be synced" block (nothing extra without failures, many failures with "and N more", one failure); how long paths wrap is checked in a browser, because jsdom does no line breaking.
 - Frontend store/component/page tests for memory search (result mapping, found words, words-not-found/none/coverage/error states, opening each run kind by its subject), the memory index (status mapping, polling while building, Index now/Try again/Rebuild with confirmation, model changed), the Work Journal view (windows, jumps, matched lines, missing-journal states), Memory Home (Browse/Search/Index tabs, task-team tag), source selection and home-only sources refresh, one request per navigation, agent detail, team and org detail with the member tree, inspector targets, direct route restoration, search/pagination behavior, tab-specific raw-trace fetching, raw-trace file selector state/rendering, Memory Sync tab entry, source-aware query variables, form-preserving Memory Sync status refresh, saved-vs-draft connection-test dispatch, inline connection feedback, `Current job`/`Last sync` precedence, and sync button loading state.

@@ -1,0 +1,18 @@
+# IMP-02
+# command: env -i PATH=$PATH HOME=<tmp> TMPDIR=$TMPDIR node node_modules/vitest/vitest.mjs run tests/e2e/memory-sync --no-watch
+# commit: 3a78c3eee
+# environment: macOS (Darwin 25.6), Node v26.12.0, real built server processes (dist/app.js) hub + source + counting proxy
+# date: 2026-11-15
+
+ ✓ tests/e2e/memory-sync/memory-sync-large-files.e2e.test.ts (4 tests) 34631ms
+     ✓ syncs a 40 MiB attachment, two 20 MiB files and many small files in one run, every request within the limits (AC-001, AC-002)  2960ms
+     ✓ imports the same attachment under two runs and uploads its content once (AR-001)  700ms
+     ✓ resumes an interrupted upload from what the hub holds, and shows nothing partial in the imports (AC-005, AC-009)  843ms
+     ✓ keeps syncing the other files when the hub refuses one, lists it with its reason, and retries it on Sync now (AC-004, AC-010)  2269ms
+ ✓ tests/e2e/memory-sync/memory-sync-multiprocess.e2e.test.ts (1 test) 27066ms
+ ✓ tests/e2e/memory-sync/raw-trace-manifest-runtime-names-sync.e2e.test.ts (1 test) 9341ms
+     ✓ uploads the converted manifest once; the hub mirrors the converted file; an older import stays as it is  307ms
+ ✓ tests/e2e/memory-sync/memory-sync-api.e2e.test.ts (1 test) 308ms
+ ✓ tests/e2e/memory-sync/memory-sync-held-back-graphql.e2e.test.ts (1 test) 223ms
+ Test Files  5 passed (5)
+      Tests  8 passed (8)

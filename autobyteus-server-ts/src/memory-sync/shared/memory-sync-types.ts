@@ -12,16 +12,35 @@ export type MemoryFileFingerprint = {
   mtimeMs?: number | null;
 };
 
-export type MemoryFileDescriptor = MemoryFileFingerprint & {
+/** A file the scanner listed: its stat, not its content. */
+export type MemoryFileEntry = {
+  kind: MemorySyncFileKind;
+  relativePath: string;
   absolutePath: string;
+  size: number;
+  mtimeMs: number;
 };
 
-export type MemoryFileOperation = MemoryFileFingerprint & {
+/** A listed file whose content differs from the last synced record, with its streamed SHA-256. */
+export type ChangedMemoryFile = MemoryFileEntry & { sha256: string };
+
+type MemoryFileOperationBase = MemoryFileFingerprint & {
   opId: string;
   operation: "replace";
+};
+
+/** A file up to the inline threshold: its content travels in the batch. */
+export type MemoryFileInlineOperation = MemoryFileOperationBase & {
   contentEncoding: "base64";
   contentBase64: string;
 };
+
+/** A larger file: its content was uploaded to the hub's staging area (named by `sha256`) before the batch. */
+export type MemoryFileStagedOperation = MemoryFileOperationBase & {
+  contentEncoding: "staged";
+};
+
+export type MemoryFileOperation = MemoryFileInlineOperation | MemoryFileStagedOperation;
 
 export type MemorySyncBatch = {
   protocolVersion: 1;
@@ -84,6 +103,18 @@ export type MemorySyncSourceFileState = MemoryFileFingerprint & {
   lastBatchId: string;
 };
 
+/** A file-level problem: the file is retried at `nextAttemptAt`, or at once when its size or mtime changes. */
+export type MemorySyncFileFailure = {
+  kind: MemorySyncFileKind;
+  relativePath: string;
+  size: number;
+  mtimeMs: number;
+  reason: string;
+  attempts: number;
+  lastFailedAt: string;
+  nextAttemptAt: string;
+};
+
 export type MemorySyncSourceState = {
   schemaVersion: 1;
   hubKey: string;
@@ -93,6 +124,7 @@ export type MemorySyncSourceState = {
   lastError: string | null;
   lastJobState: MemorySyncJobState;
   files: Record<string, MemorySyncSourceFileState>;
+  fileFailures: Record<string, MemorySyncFileFailure>;
 };
 
 export type MemoryHubSourceCredentialRecord = {

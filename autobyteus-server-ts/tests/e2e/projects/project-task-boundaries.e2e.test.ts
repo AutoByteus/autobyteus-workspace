@@ -269,8 +269,12 @@ describe("Project Task production HTTP boundaries", () => {
     await expect(fs.stat(projected.contextFiles[0].path)).rejects.toMatchObject({ code: "ENOENT" });
     expect(await (await fetch(`${origin}${updated.contextFiles[0]!.locator}`)).text()).toBe("replacement");
     const replacementPath = (await call("get_project_task", { project_id: projectId, task_id: task.taskId })).structuredContent.contextFiles[0].path;
-    const rejected = await draft(projectId); expect((await upload(projectId, rejected.draftId, "bad", "application/x-executable", "bad.exe")).status).toBe(400);
-    const oversized = await upload(projectId, rejected.draftId, "x".repeat(25 * 1024 * 1024 + 1)); expect(oversized.ok).toBe(false);
+    const rejected = await draft(projectId); const unsupported = await upload(projectId, rejected.draftId, "bad", "application/x-executable", "bad.exe");
+    expect(unsupported.status).toBe(415);
+    expect(await unsupported.json()).toMatchObject({ error: { code: "CONTEXT_FILE_TYPE_UNSUPPORTED" } });
+    const oversized = await upload(projectId, rejected.draftId, "x".repeat(25 * 1024 * 1024 + 1));
+    expect(oversized.status).toBe(413);
+    expect(await oversized.json()).toMatchObject({ error: { code: "CONTEXT_FILE_TOO_LARGE", maxBytes: 25 * 1024 * 1024 } });
     expect(await list(projectId)).toHaveLength(2);
     await gql("mutation($i:DeleteProjectTaskInput!){deleteProjectTask(input:$i)}", { i: { projectId, taskId: task.taskId } });
     expect((await fetch(`${origin}${updated.contextFiles[0]!.locator}`)).status).toBe(404);

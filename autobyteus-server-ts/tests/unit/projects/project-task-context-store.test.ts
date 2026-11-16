@@ -12,6 +12,8 @@ import { ProjectTaskContextStore } from "../../../src/projects/context/project-t
 import { ProjectsLayout } from "../../../src/projects/stores/projects-layout.js";
 import { CONTEXT_FILE_DRAFT_TTL_MS } from "../../../src/context-files/domain/context-file-upload-policy.js";
 import { withTaskRunResources } from "../../helpers/task-run-resources.js";
+import { UnsupportedContextFileTypeError } from "../../../src/context-files/domain/context-file-upload-errors.js";
+import { defaultContextFileSizeLimits } from "../../helpers/context-file-size-limits.js";
 const upload = (text = "hello", mimetype = "text/plain", truncated = false): MultipartFile => ({
   filename: "note.txt", mimetype, file: Object.assign(Readable.from([Buffer.from(text)]), {truncated}),
 }) as unknown as MultipartFile;
@@ -30,7 +32,7 @@ describe("Task-owned context transaction", () => {
   afterEach(async () => { vi.restoreAllMocks(); await fs.rm(root, {recursive: true, force: true}); });
   const save = async () => {
     const draft = await drafts.beginContextDraft(projectId);
-    const file = await drafts.uploadContextFile(projectId, draft.draftId, upload());
+    const file = await drafts.uploadContextFile(projectId, draft.draftId, upload(), defaultContextFileSizeLimits);
     const task = await tasks.createTask({projectId, title: "Saved", description: "Saved", contextDraft: {draftId: draft.draftId, storedFilenames: [file.storedFilename]}});
     return {task, draft, file};
   };
@@ -50,7 +52,7 @@ describe("Task-owned context transaction", () => {
   it("Cancel touches only draft copies; explicit edit removal deletes saved copies after commit", async () => {
     const {task} = await save();
     const draft = await drafts.beginContextDraft(projectId, task.taskId);
-    await drafts.uploadContextFile(projectId, draft.draftId, upload("discard"));
+    await drafts.uploadContextFile(projectId, draft.draftId, upload("discard"), defaultContextFileSizeLimits);
     await drafts.discardContextDraft(projectId, draft.draftId);
     const saved = task.contextFiles[0]!;
     expect(await fs.readFile(saved.localPath!, "utf8")).toBe("hello");
@@ -64,10 +66,10 @@ describe("Task-owned context transaction", () => {
     await expect(drafts.readSavedContextFile(projectId, other.taskId, file.storedFilename)).rejects.toMatchObject({code: "TASK_CONTEXT_NOT_FOUND"});
     await expect(drafts.readSavedContextFile(projectId, task.taskId, "../note.txt")).rejects.toMatchObject({code: "TASK_CONTEXT_NOT_FOUND"});
     const draft = await drafts.beginContextDraft(projectId, other.taskId);
-    const added = await drafts.uploadContextFile(projectId, draft.draftId, upload());
+    const added = await drafts.uploadContextFile(projectId, draft.draftId, upload(), defaultContextFileSizeLimits);
     await expect(tasks.updateTask({projectId, taskId: task.taskId, contextChanges: {draftId: draft.draftId, addStoredFilenames: [added.storedFilename]}})).rejects.toMatchObject({code: "TASK_CONTEXT_INVALID"});
-    await expect(drafts.uploadContextFile(projectId, draft.draftId, upload("x", "application/octet-stream"))).rejects.toMatchObject({code: "TASK_CONTEXT_INVALID"});
-    await expect(drafts.uploadContextFile(projectId, draft.draftId, upload("x", "text/plain", true))).rejects.toMatchObject({code: "TASK_CONTEXT_INVALID"});
+    await expect(drafts.uploadContextFile(projectId, draft.draftId, upload("x", "application/octet-stream"), defaultContextFileSizeLimits)).rejects.toBeInstanceOf(UnsupportedContextFileTypeError);
+    await expect(drafts.uploadContextFile(projectId, draft.draftId, upload("x", "text/plain", true), defaultContextFileSizeLimits)).rejects.toMatchObject({maxBytes: defaultContextFileSizeLimits.otherFileMaxBytes});
     await fs.writeFile(path.join(root, "outside.txt"), "outside");
     await fs.unlink(file.localPath!); await fs.symlink(path.join(root, "outside.txt"), file.localPath!);
     await expect(drafts.readSavedContextFile(projectId, task.taskId, file.storedFilename)).rejects.toMatchObject({code: "TASK_CONTEXT_NOT_FOUND"});
@@ -76,7 +78,7 @@ describe("Task-owned context transaction", () => {
   it("preserves old bytes and original drafts after failure before metadata rename", async () => {
     const {task} = await save(); const old = task.contextFiles[0]!;
     const draft = await drafts.beginContextDraft(projectId, task.taskId);
-    const file = await drafts.uploadContextFile(projectId, draft.draftId, upload("new"));
+    const file = await drafts.uploadContextFile(projectId, draft.draftId, upload("new"), defaultContextFileSizeLimits);
     let commits = 0;
     const rename = vi.spyOn(fs, "rename");
     rename.mockImplementation(async (from, to) => { if (String(to) === layout.taskFile(projectId, task.taskId) && ++commits === 2) throw new Error("precommit failure"); return originalRename(from, to); });
@@ -89,7 +91,7 @@ describe("Task-owned context transaction", () => {
   });
   it("returns proven committed metadata even when subsequent lock finalization fails", async () => {
     const draft = await drafts.beginContextDraft(projectId);
-    const file = await drafts.uploadContextFile(projectId, draft.draftId, upload("committed bytes"));
+    const file = await drafts.uploadContextFile(projectId, draft.draftId, upload("committed bytes"), defaultContextFileSizeLimits);
     const originalUnlink = fs.unlink.bind(fs);
     const unlink = vi.spyOn(fs, "unlink").mockImplementation(async (file) => {
       if (String(file).endsWith(`${path.sep}task.json.lock`)) throw new Error("release failure");
@@ -103,7 +105,7 @@ describe("Task-owned context transaction", () => {
   it("expires draft files but never TTL-expires saved references", async () => {
     const {task} = await save(); const saved = task.contextFiles[0]!;
     const draft = await drafts.beginContextDraft(projectId, task.taskId);
-    const file = await drafts.uploadContextFile(projectId, draft.draftId, upload());
+    const file = await drafts.uploadContextFile(projectId, draft.draftId, upload(), defaultContextFileSizeLimits);
     const draftPath = (await drafts.readDraftContextFile(projectId, draft.draftId, file.storedFilename)).filePath;
     const old = new Date(Date.now() - CONTEXT_FILE_DRAFT_TTL_MS - 1000);
     await fs.utimes(draftPath, old, old); await fs.utimes(saved.localPath!, old, old);

@@ -1,0 +1,15 @@
+# IMP-04
+# command: node_modules/.bin/vitest run components/settings/__tests__/MemorySyncCard.spec.ts --no-watch (after node_modules/.bin/nuxt prepare)
+# commit: 3a78c3eee
+# environment: macOS, Node v26.12.0, jsdom/vitest
+# date: 2026-11-15
+
+ ✓ components/settings/__tests__/MemorySyncCard.spec.ts > MemorySyncCard > preserves edited Source form values and pasted tokens when status refresh changes store status 25ms
+ ✓ components/settings/__tests__/MemorySyncCard.spec.ts > MemorySyncCard > uses saved connection-test mode when the token field is blank even if draft identity fields changed 4ms
+ ✓ components/settings/__tests__/MemorySyncCard.spec.ts > MemorySyncCard > uses draft connection-test mode when a draft token is present 3ms
+ ✓ components/settings/__tests__/MemorySyncCard.spec.ts > MemorySyncCard > shows latest sync error before stale success without legacy success metrics or global info 2ms
+ ✓ components/settings/__tests__/MemorySyncCard.spec.ts > MemorySyncCard > files that could not be synced > shows nothing extra while no file has failed 2ms
+ ✓ components/settings/__tests__/MemorySyncCard.spec.ts > MemorySyncCard > files that could not be synced > lists each failed file with its size, reason and next attempt, and how many more there are 3ms
+ ✓ components/settings/__tests__/MemorySyncCard.spec.ts > MemorySyncCard > files that could not be synced > says "1 file" for a single failure 2ms
+ Test Files  1 passed (1)
+      Tests  7 passed (7)

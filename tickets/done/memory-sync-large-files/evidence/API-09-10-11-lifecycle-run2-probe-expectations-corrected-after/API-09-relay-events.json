@@ -1,0 +1,691 @@
+[
+ {
+  "t": 1794751326296,
+  "phase": "in",
+  "kind": "get",
+  "url": "/rest/memory-sync/v1/sources/rs-source/staged-files/90b21f58",
+  "bytes": 0
+ },
+ {
+  "t": 1794751326304,
+  "phase": "out",
+  "kind": "get",
+  "status": 200
+ },
+ {
+  "t": 1794751326324,
+  "phase": "in",
+  "kind": "put",
+  "url": "/rest/memory-sync/v1/sources/rs-source/staged-files/90b21f58?offset=0",
+  "bytes": 8388608
+ },
+ {
+  "t": 1794751326748,
+  "phase": "out",
+  "kind": "put",
+  "status": 200
+ },
+ {
+  "t": 1794751326768,
+  "phase": "in",
+  "kind": "put",
+  "url": "/rest/memory-sync/v1/sources/rs-source/staged-files/90b21f58?offset=8388608",
+  "bytes": 8388608
+ },
+ {
+  "t": 1794751327204,
+  "phase": "out",
+  "kind": "put",
+  "status": 200
+ },
+ {
+  "t": 1794751327227,
+  "phase": "in",
+  "kind": "put",
+  "url": "/rest/memory-sync/v1/sources/rs-source/staged-files/90b21f58?offset=16777216",
+  "bytes": 8388608
+ },
+ {
+  "t": 1794751327655,
+  "phase": "out",
+  "kind": "put",
+  "status": 200
+ },
+ {
+  "t": 1794751327673,
+  "phase": "in",
+  "kind": "put",
+  "url": "/rest/memory-sync/v1/sources/rs-source/staged-files/90b21f58?offset=25165824",
+  "bytes": 8388608
+ },
+ {
+  "t": 1794751328107,
+  "phase": "out",
+  "kind": "put",
+  "status": 200
+ },
+ {
+  "t": 1794751328120,
+  "phase": "in",
+  "kind": "put",
+  "url": "/rest/memory-sync/v1/sources/rs-source/staged-files/90b21f58?offset=33554432",
+  "bytes": 8388608
+ },
+ {
+  "t": 1794751328555,
+  "phase": "out",
+  "kind": "put",
+  "status": 200
+ },
+ {
+  "t": 1794751328581,
+  "phase": "in",
+  "kind": "put",
+  "url": "/rest/memory-sync/v1/sources/rs-source/staged-files/90b21f58?offset=41943040",
+  "bytes": 8388608
+ },
+ {
+  "t": 1794751329015,
+  "phase": "out",
+  "kind": "put",
+  "status": 200
+ },
+ {
+  "t": 1794751329035,
+  "phase": "in",
+  "kind": "put",
+  "url": "/rest/memory-sync/v1/sources/rs-source/staged-files/90b21f58?offset=50331648",
+  "bytes": 8388608
+ },
+ {
+  "t": 1794751329472,
+  "phase": "out",
+  "kind": "put",
+  "status": 200
+ },
+ {
+  "t": 1794751329491,
+  "phase": "in",
+  "kind": "put",
+  "url": "/rest/memory-sync/v1/sources/rs-source/staged-files/90b21f58?offset=58720256",
+  "bytes": 8388608
+ },
+ {
+  "t": 1794751329919,
+  "phase": "out",
+  "kind": "put",
+  "status": 200
+ },
+ {
+  "t": 1794751329933,
+  "phase": "in",
+  "kind": "put",
+  "url": "/rest/memory-sync/v1/sources/rs-source/staged-files/90b21f58?offset=67108864",
+  "bytes": 8388608
+ },
+ {
+  "t": 1794751330366,
+  "phase": "out",
+  "kind": "put",
+  "status": 200
+ },
+ {
+  "t": 1794751330383,
+  "phase": "in",
+  "kind": "put",
+  "url": "/rest/memory-sync/v1/sources/rs-source/staged-files/90b21f58?offset=75497472",
+  "bytes": 8388608
+ },
+ {
+  "t": 1794751330804,
+  "phase": "out",
+  "kind": "put",
+  "status": 200
+ },
+ {
+  "t": 1794751330817,
+  "phase": "in",
+  "kind": "put",
+  "url": "/rest/memory-sync/v1/sources/rs-source/staged-files/90b21f58?offset=83886080",
+  "bytes": 8388608
+ },
+ {
+  "t": 1794751331244,
+  "phase": "out",
+  "kind": "put",
+  "status": 200
+ },
+ {
+  "t": 1794751331262,
+  "phase": "in",
+  "kind": "put",
+  "url": "/rest/memory-sync/v1/sources/rs-source/staged-files/90b21f58?offset=92274688",
+  "bytes": 8388608
+ },
+ {
+  "t": 1794751331685,
+  "phase": "out",
+  "kind": "put",
+  "status": 200
+ },
+ {
+  "t": 1794751331697,
+  "phase": "in",
+  "kind": "put",
+  "url": "/rest/memory-sync/v1/sources/rs-source/staged-files/90b21f58?offset=100663296",
+  "bytes": 8388608
+ },
+ {
+  "t": 1794751332123,
+  "phase": "out",
+  "kind": "put",
+  "status": 200
+ },
+ {
+  "t": 1794751332138,
+  "phase": "in",
+  "kind": "put",
+  "url": "/rest/memory-sync/v1/sources/rs-source/staged-files/90b21f58?offset=109051904",
+  "bytes": 8388608
+ },
+ {
+  "t": 1794751332569,
+  "phase": "out",
+  "kind": "put",
+  "status": 200
+ },
+ {
+  "t": 1794751332587,
+  "phase": "in",
+  "kind": "put",
+  "url": "/rest/memory-sync/v1/sources/rs-source/staged-files/90b21f58?offset=117440512",
+  "bytes": 8388608
+ },
+ {
+  "t": 1794751333019,
+  "phase": "out",
+  "kind": "put",
+  "status": 200
+ },
+ {
+  "t": 1794751333036,
+  "phase": "in",
+  "kind": "put",
+  "url": "/rest/memory-sync/v1/sources/rs-source/staged-files/90b21f58?offset=125829120",
+  "bytes": 8388608
+ },
+ {
+  "t": 1794751333467,
+  "phase": "out",
+  "kind": "put",
+  "status": 200
+ },
+ {
+  "t": 1794751333486,
+  "phase": "in",
+  "kind": "put",
+  "url": "/rest/memory-sync/v1/sources/rs-source/staged-files/90b21f58?offset=134217728",
+  "bytes": 8388608
+ },
+ {
+  "t": 1794751333918,
+  "phase": "out",
+  "kind": "put",
+  "status": 200
+ },
+ {
+  "t": 1794751333936,
+  "phase": "in",
+  "kind": "put",
+  "url": "/rest/memory-sync/v1/sources/rs-source/staged-files/90b21f58?offset=142606336",
+  "bytes": 8388608
+ },
+ {
+  "t": 1794751334369,
+  "phase": "out",
+  "kind": "put",
+  "status": 200
+ },
+ {
+  "t": 1794751334385,
+  "phase": "in",
+  "kind": "put",
+  "url": "/rest/memory-sync/v1/sources/rs-source/staged-files/90b21f58?offset=150994944",
+  "bytes": 8388608
+ },
+ {
+  "t": 1794751334811,
+  "phase": "out",
+  "kind": "put",
+  "status": 200
+ },
+ {
+  "t": 1794751334824,
+  "phase": "in",
+  "kind": "put",
+  "url": "/rest/memory-sync/v1/sources/rs-source/staged-files/90b21f58?offset=159383552",
+  "bytes": 8388608
+ },
+ {
+  "t": 1794751335254,
+  "phase": "out",
+  "kind": "put",
+  "status": 200
+ },
+ {
+  "t": 1794751335271,
+  "phase": "in",
+  "kind": "put",
+  "url": "/rest/memory-sync/v1/sources/rs-source/staged-files/90b21f58?offset=167772160",
+  "bytes": 8388608
+ },
+ {
+  "t": 1794751335707,
+  "phase": "out",
+  "kind": "put",
+  "status": 200
+ },
+ {
+  "t": 1794751335721,
+  "phase": "in",
+  "kind": "put",
+  "url": "/rest/memory-sync/v1/sources/rs-source/staged-files/90b21f58?offset=176160768",
+  "bytes": 8388608
+ },
+ {
+  "t": 1794751336146,
+  "phase": "out",
+  "kind": "put",
+  "status": 200
+ },
+ {
+  "t": 1794751336157,
+  "phase": "in",
+  "kind": "put",
+  "url": "/rest/memory-sync/v1/sources/rs-source/staged-files/90b21f58?offset=184549376",
+  "bytes": 8388608
+ },
+ {
+  "t": 1794751336590,
+  "phase": "out",
+  "kind": "put",
+  "status": 200
+ },
+ {
+  "t": 1794751336609,
+  "phase": "in",
+  "kind": "put",
+  "url": "/rest/memory-sync/v1/sources/rs-source/staged-files/90b21f58?offset=192937984",
+  "bytes": 8388608
+ },
+ {
+  "t": 1794751337036,
+  "phase": "out",
+  "kind": "put",
+  "status": 200
+ },
+ {
+  "t": 1794751337046,
+  "phase": "in",
+  "kind": "put",
+  "url": "/rest/memory-sync/v1/sources/rs-source/staged-files/90b21f58?offset=201326592",
+  "bytes": 8388608
+ },
+ {
+  "t": 1794751337468,
+  "phase": "out",
+  "kind": "put",
+  "status": 200
+ },
+ {
+  "t": 1794751337478,
+  "phase": "in",
+  "kind": "put",
+  "url": "/rest/memory-sync/v1/sources/rs-source/staged-files/90b21f58?offset=209715200",
+  "bytes": 8388608
+ },
+ {
+  "t": 1794751337912,
+  "phase": "out",
+  "kind": "put",
+  "status": 200
+ },
+ {
+  "t": 1794751337933,
+  "phase": "in",
+  "kind": "put",
+  "url": "/rest/memory-sync/v1/sources/rs-source/staged-files/90b21f58?offset=218103808",
+  "bytes": 8388608
+ },
+ {
+  "t": 1794751338362,
+  "phase": "out",
+  "kind": "put",
+  "status": 200
+ },
+ {
+  "t": 1794751338381,
+  "phase": "in",
+  "kind": "put",
+  "url": "/rest/memory-sync/v1/sources/rs-source/staged-files/90b21f58?offset=226492416",
+  "bytes": 8388608
+ },
+ {
+  "t": 1794751338806,
+  "phase": "out",
+  "kind": "put",
+  "status": 200
+ },
+ {
+  "t": 1794751338818,
+  "phase": "in",
+  "kind": "put",
+  "url": "/rest/memory-sync/v1/sources/rs-source/staged-files/90b21f58?offset=234881024",
+  "bytes": 8388608
+ },
+ {
+  "t": 1794751339251,
+  "phase": "out",
+  "kind": "put",
+  "status": 200
+ },
+ {
+  "t": 1794751339271,
+  "phase": "in",
+  "kind": "put",
+  "url": "/rest/memory-sync/v1/sources/rs-source/staged-files/90b21f58?offset=243269632",
+  "bytes": 8388608
+ },
+ {
+  "t": 1794751339699,
+  "phase": "out",
+  "kind": "put",
+  "status": 200
+ },
+ {
+  "t": 1794751339716,
+  "phase": "in",
+  "kind": "put",
+  "url": "/rest/memory-sync/v1/sources/rs-source/staged-files/90b21f58?offset=251658240",
+  "bytes": 8388608
+ },
+ {
+  "t": 1794751340143,
+  "phase": "out",
+  "kind": "put",
+  "status": 200
+ },
+ {
+  "t": 1794751340153,
+  "phase": "in",
+  "kind": "put",
+  "url": "/rest/memory-sync/v1/sources/rs-source/staged-files/90b21f58?offset=260046848",
+  "bytes": 8388608
+ },
+ {
+  "t": 1794751340587,
+  "phase": "out",
+  "kind": "put",
+  "status": 200
+ },
+ {
+  "t": 1794751340596,
+  "phase": "in",
+  "kind": "put",
+  "url": "/rest/memory-sync/v1/sources/rs-source/staged-files/90b21f58?offset=268435456",
+  "bytes": 8388608
+ },
+ {
+  "t": 1794751341027,
+  "phase": "out",
+  "kind": "put",
+  "status": 200
+ },
+ {
+  "t": 1794751341050,
+  "phase": "in",
+  "kind": "put",
+  "url": "/rest/memory-sync/v1/sources/rs-source/staged-files/90b21f58?offset=276824064",
+  "bytes": 8388608
+ },
+ {
+  "t": 1794751341482,
+  "phase": "out",
+  "kind": "put",
+  "status": 200
+ },
+ {
+  "t": 1794751341496,
+  "phase": "in",
+  "kind": "put",
+  "url": "/rest/memory-sync/v1/sources/rs-source/staged-files/90b21f58?offset=285212672",
+  "bytes": 8388608
+ },
+ {
+  "t": 1794751341929,
+  "phase": "out",
+  "kind": "put",
+  "status": 200
+ },
+ {
+  "t": 1794751341945,
+  "phase": "in",
+  "kind": "put",
+  "url": "/rest/memory-sync/v1/sources/rs-source/staged-files/90b21f58?offset=293601280",
+  "bytes": 8388608
+ },
+ {
+  "t": 1794751342376,
+  "phase": "out",
+  "kind": "put",
+  "status": 200
+ },
+ {
+  "t": 1794751342391,
+  "phase": "in",
+  "kind": "put",
+  "url": "/rest/memory-sync/v1/sources/rs-source/staged-files/90b21f58?offset=301989888",
+  "bytes": 8388608
+ },
+ {
+  "t": 1794751342813,
+  "phase": "out",
+  "kind": "put",
+  "status": 200
+ },
+ {
+  "t": 1794751342822,
+  "phase": "in",
+  "kind": "put",
+  "url": "/rest/memory-sync/v1/sources/rs-source/staged-files/90b21f58?offset=310378496",
+  "bytes": 8388608
+ },
+ {
+  "t": 1794751343256,
+  "phase": "out",
+  "kind": "put",
+  "status": 200
+ },
+ {
+  "t": 1794751343271,
+  "phase": "in",
+  "kind": "put",
+  "url": "/rest/memory-sync/v1/sources/rs-source/staged-files/90b21f58?offset=318767104",
+  "bytes": 8388608
+ },
+ {
+  "t": 1794751343701,
+  "phase": "out",
+  "kind": "put",
+  "status": 200
+ },
+ {
+  "t": 1794751343719,
+  "phase": "in",
+  "kind": "put",
+  "url": "/rest/memory-sync/v1/sources/rs-source/staged-files/90b21f58?offset=327155712",
+  "bytes": 8388608
+ },
+ {
+  "t": 1794751344150,
+  "phase": "out",
+  "kind": "put",
+  "status": 200
+ },
+ {
+  "t": 1794751344171,
+  "phase": "in",
+  "kind": "put",
+  "url": "/rest/memory-sync/v1/sources/rs-source/staged-files/90b21f58?offset=335544320",
+  "bytes": 8388608
+ },
+ {
+  "t": 1794751344596,
+  "phase": "out",
+  "kind": "put",
+  "status": 200
+ },
+ {
+  "t": 1794751344607,
+  "phase": "in",
+  "kind": "put",
+  "url": "/rest/memory-sync/v1/sources/rs-source/staged-files/90b21f58?offset=343932928",
+  "bytes": 8388608
+ },
+ {
+  "t": 1794751345030,
+  "phase": "out",
+  "kind": "put",
+  "status": 200
+ },
+ {
+  "t": 1794751345041,
+  "phase": "in",
+  "kind": "put",
+  "url": "/rest/memory-sync/v1/sources/rs-source/staged-files/90b21f58?offset=352321536",
+  "bytes": 8388608
+ },
+ {
+  "t": 1794751345472,
+  "phase": "out",
+  "kind": "put",
+  "status": 200
+ },
+ {
+  "t": 1794751345490,
+  "phase": "in",
+  "kind": "put",
+  "url": "/rest/memory-sync/v1/sources/rs-source/staged-files/90b21f58?offset=360710144",
+  "bytes": 8388608
+ },
+ {
+  "t": 1794751345921,
+  "phase": "out",
+  "kind": "put",
+  "status": 200
+ },
+ {
+  "t": 1794751345940,
+  "phase": "in",
+  "kind": "put",
+  "url": "/rest/memory-sync/v1/sources/rs-source/staged-files/90b21f58?offset=369098752",
+  "bytes": 8388608
+ },
+ {
+  "t": 1794751346357,
+  "phase": "out",
+  "kind": "put",
+  "status": 200
+ },
+ {
+  "t": 1794751346368,
+  "phase": "in",
+  "kind": "put",
+  "url": "/rest/memory-sync/v1/sources/rs-source/staged-files/90b21f58?offset=377487360",
+  "bytes": 8388608
+ },
+ {
+  "t": 1794751346801,
+  "phase": "out",
+  "kind": "put",
+  "status": 200
+ },
+ {
+  "t": 1794751346817,
+  "phase": "in",
+  "kind": "put",
+  "url": "/rest/memory-sync/v1/sources/rs-source/staged-files/90b21f58?offset=385875968",
+  "bytes": 8388608
+ },
+ {
+  "t": 1794751347232,
+  "phase": "out",
+  "kind": "put",
+  "status": 200
+ },
+ {
+  "t": 1794751347243,
+  "phase": "in",
+  "kind": "put",
+  "url": "/rest/memory-sync/v1/sources/rs-source/staged-files/90b21f58?offset=394264576",
+  "bytes": 8388608
+ },
+ {
+  "t": 1794751347670,
+  "phase": "out",
+  "kind": "put",
+  "status": 200
+ },
+ {
+  "t": 1794751347692,
+  "phase": "in",
+  "kind": "put",
+  "url": "/rest/memory-sync/v1/sources/rs-source/staged-files/90b21f58?offset=402653184",
+  "bytes": 8388608
+ },
+ {
+  "t": 1794751348118,
+  "phase": "out",
+  "kind": "put",
+  "status": 200
+ },
+ {
+  "t": 1794751348136,
+  "phase": "in",
+  "kind": "put",
+  "url": "/rest/memory-sync/v1/sources/rs-source/staged-files/90b21f58?offset=411041792",
+  "bytes": 8388608
+ },
+ {
+  "t": 1794751348553,
+  "phase": "out",
+  "kind": "put",
+  "status": 200
+ },
+ {
+  "t": 1794751348555,
+  "phase": "in",
+  "kind": "commit",
+  "url": "/rest/memory-sync/v1/batches",
+  "bytes": 824
+ },
+ {
+  "t": 1794751348891,
+  "phase": "out",
+  "kind": "commit",
+  "status": 200
+ },
+ {
+  "t": 1794751348913,
+  "phase": "in",
+  "kind": "commit",
+  "url": "/rest/memory-sync/v1/batches",
+  "bytes": 551
+ },
+ {
+  "t": 1794751348927,
+  "phase": "out",
+  "kind": "commit",
+  "status": 200
+ }
+]

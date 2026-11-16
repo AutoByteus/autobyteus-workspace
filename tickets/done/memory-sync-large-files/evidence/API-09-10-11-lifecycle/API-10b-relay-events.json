@@ -1,0 +1,28 @@
+[
+ {
+  "t": 1794751435925,
+  "phase": "in",
+  "kind": "get",
+  "url": "/rest/memory-sync/v1/sources/rs-source/staged-files/e98b559f",
+  "bytes": 0
+ },
+ {
+  "t": 1794751435933,
+  "phase": "out",
+  "kind": "get",
+  "status": 200
+ },
+ {
+  "t": 1794751435935,
+  "phase": "in",
+  "kind": "commit",
+  "url": "/rest/memory-sync/v1/batches",
+  "bytes": 522
+ },
+ {
+  "t": 1794751436646,
+  "phase": "out",
+  "kind": "commit",
+  "status": 200
+ }
+]

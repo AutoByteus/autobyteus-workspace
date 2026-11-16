@@ -1,0 +1,148 @@
+// TEMPORARY PROBE (autobyteus-workspace-6 investigation). Not a product test; removed before handoff.
+// A copy is kept in tickets/in-progress/context-file-large-video-upload/probes/.
+import fs from "node:fs";
+import http from "node:http";
+import os from "node:os";
+import path from "node:path";
+import { Transform } from "node:stream";
+import { pipeline } from "node:stream/promises";
+import fastify, { type FastifyInstance } from "fastify";
+import multipart from "@fastify/multipart";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+
+const appConfigState = vi.hoisted(() => ({ root: "" }));
+vi.mock("../../../../src/config/app-config-provider.js", () => ({
+  appConfigProvider: { config: {
+    getAppDataDir: (): string => appConfigState.root,
+    getMemoryDir: (): string => path.join(appConfigState.root, "memory"),
+    getBaseUrl: (): string => "http://localhost:8000",
+  } },
+}));
+
+import { registerContextFileRoutes } from "../../../../src/api/rest/context-files.js";
+import { CONTEXT_FILE_MAX_BYTES } from "../../../../src/context-files/domain/context-file-upload-policy.js";
+
+const MiB = 1024 * 1024;
+const boundary = "----probe-boundary";
+const head = (owner: unknown, filename: string, type: string) => Buffer.from(
+  `--${boundary}\r\nContent-Disposition: form-data; name="owner"\r\n\r\n${JSON.stringify(owner)}\r\n` +
+  `--${boundary}\r\nContent-Disposition: form-data; name="file"; filename="${filename}"\r\nContent-Type: ${type}\r\n\r\n`);
+const tail = Buffer.from(`\r\n--${boundary}--\r\n`);
+
+/** Streams a multipart body of `bytes` file bytes over real HTTP; `abortAfter` destroys the socket mid-body. */
+const streamUpload = (port: number, urlPath: string, bytes: number, abortAfter?: number) =>
+  new Promise<{ status: number | null; body: string; aborted: boolean }>((resolve) => {
+    const h = head({ kind: "agent_draft", draftRunId: "draft-probe" }, "VID_probe.mp4", "video/mp4");
+    const req = http.request({ port, path: urlPath, method: "POST", headers: {
+      "content-type": `multipart/form-data; boundary=${boundary}`, "content-length": h.length + bytes + tail.length,
+    } }, (res) => {
+      let body = ""; res.on("data", (c) => { body += c; }); res.on("end", () => resolve({ status: res.statusCode ?? null, body, aborted: false }));
+    });
+    req.on("error", () => resolve({ status: null, body: "", aborted: true }));
+    const chunk = Buffer.alloc(MiB, 7);
+    let sent = 0;
+    const pump = () => {
+      if (sent === 0) req.write(h);
+      while (sent < bytes) {
+        if (abortAfter !== undefined && sent >= abortAfter) { req.destroy(); return; }
+        const n = Math.min(MiB, bytes - sent); sent += n;
+        if (!req.write(n === MiB ? chunk : chunk.subarray(0, n))) { req.once("drain", pump); return; }
+      }
+      req.end(tail);
+    };
+    pump();
+  });
+
+const listFiles = (dir: string): string[] => fs.existsSync(dir)
+  ? fs.readdirSync(dir, { recursive: true, withFileTypes: true }).filter((e) => e.isFile()).map((e) => path.join(e.parentPath, e.name)) : [];
+
+describe("PROBE large context-file uploads", () => {
+  let tempDir: string; let app: FastifyInstance; let port: number;
+  beforeEach(() => { tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "probe-large-upload-")); appConfigState.root = tempDir; });
+  afterEach(async () => { await app?.close(); fs.rmSync(tempDir, { recursive: true, force: true }); });
+
+  it("P1 production-shaped 25 MiB limit: a 26 MiB mp4 over real HTTP", async () => {
+    app = fastify();
+    await app.register(multipart, { limits: { fileSize: CONTEXT_FILE_MAX_BYTES } }); // as build-studio-server.ts
+    await app.register(registerContextFileRoutes, { prefix: "/rest" });
+    await app.listen({ port: 0 }); port = (app.server.address() as { port: number }).port;
+    const result = await streamUpload(port, "/rest/context-files/upload", 26 * MiB);
+    fs.appendFileSync(process.env.PROBE_OUT ?? "/tmp/cf-probe.txt", ["P1 result", JSON.stringify(result), "files left:", listFiles(tempDir)].join(" ") + "\n");
+    expect(result.status).toBe(400);
+  }, 60_000);
+
+  it("P4 writer refuses mid-stream (multipart cap 1 GiB, writer limit 25 MiB): 60 MiB mp4 over real HTTP", async () => {
+    app = fastify();
+    await app.register(multipart, { limits: { fileSize: 1024 * MiB } });
+    const settled: string[] = [];
+    app.addHook("onResponse", async (req, reply) => { settled.push(`response ${reply.statusCode}`); });
+    app.addHook("onRequestAbort", async (_req) => { settled.push("abort"); });
+    await app.register(registerContextFileRoutes, { prefix: "/rest" });
+    await app.listen({ port: 0 }); port = (app.server.address() as { port: number }).port;
+    const started = Date.now();
+    const result = await streamUpload(port, "/rest/context-files/upload", 60 * MiB);
+    await new Promise((r) => setTimeout(r, 500));
+    const conns = await new Promise<number>((r) => app.server.getConnections((_e, n) => r(n)));
+    const closeStart = Date.now();
+    const closed = await Promise.race([app.close().then(() => "closed"), new Promise((r) => setTimeout(() => r("close-timeout"), 8000))]);
+    fs.appendFileSync(process.env.PROBE_OUT ?? "/tmp/cf-probe.txt", ["P4 conns-after-response", conns, "close", closed, Date.now() - closeStart, "ms; settled:", JSON.stringify(settled)].join(" ") + "\n");
+    fs.appendFileSync(process.env.PROBE_OUT ?? "/tmp/cf-probe.txt", ["P4 result", JSON.stringify(result), "ms", Date.now() - started, "files left:", listFiles(tempDir).join(",")].join(" ") + "\n");
+  }, 120_000);
+
+  it("P5 draining refusal: custom route discards the rest after the limit, then answers 413", async () => {
+    app = fastify();
+    await app.register(multipart, { limits: { fileSize: 1024 * MiB } });
+    const target = path.join(tempDir, "drain.mp4");
+    app.post("/drain", async (request, reply) => {
+      const file = await request.file(); if (!file) return { error: "no file" };
+      let bytes = 0; let over = false;
+      const limit = new Transform({ transform(c, _e, cb) { bytes += c.length; if (bytes > 25 * MiB) { over = true; cb(); return; } cb(null, c); } });
+      try { await pipeline(file.file, limit, fs.createWriteStream(target, { flags: "wx" })); } catch (e) { fs.rmSync(target, { force: true }); throw e; }
+      if (over) { fs.rmSync(target, { force: true }); return reply.code(413).send({ code: "CONTEXT_FILE_TOO_LARGE", maxBytes: 25 * MiB }); }
+      return { bytes };
+    });
+    await app.listen({ port: 0 }); port = (app.server.address() as { port: number }).port;
+    const started = Date.now();
+    const result = await streamUpload(port, "/drain", 60 * MiB);
+    const conns = await new Promise<number>((r) => setTimeout(() => app.server.getConnections((_e, n) => r(n)), 300));
+    const closeStart = Date.now();
+    const closed = await Promise.race([app.close().then(() => "closed"), new Promise((r) => setTimeout(() => r("close-timeout"), 8000))]);
+    fs.appendFileSync(process.env.PROBE_OUT ?? "/tmp/cf-probe.txt", ["P5 result", JSON.stringify(result), "ms", Date.now() - started, "conns", conns, "close", closed, Date.now() - closeStart, "ms; files left:", listFiles(tempDir).join(",")].join(" ") + "\n");
+  }, 120_000);
+
+  it("P2 streaming memory: 600 MiB through multipart (fileSize 1 GiB) + counting Transform + file stream", async () => {
+    app = fastify();
+    await app.register(multipart, { limits: { fileSize: 1024 * MiB } });
+    const target = path.join(tempDir, "big.mp4");
+    app.post("/big", async (request) => {
+      const file = await request.file(); if (!file) return { error: "no file" };
+      let bytes = 0;
+      const counter = new Transform({ transform(c, _e, cb) { bytes += c.length; cb(null, c); } });
+      await pipeline(file.file, counter, fs.createWriteStream(target, { flags: "wx" }));
+      return { bytes, truncated: file.file.truncated };
+    });
+    await app.listen({ port: 0 }); port = (app.server.address() as { port: number }).port;
+    global.gc?.();
+    const base = process.memoryUsage().rss; let peak = base;
+    const timer = setInterval(() => { peak = Math.max(peak, process.memoryUsage().rss); }, 50);
+    const started = Date.now();
+    const result = await streamUpload(port, "/big", 600 * MiB);
+    clearInterval(timer);
+    fs.appendFileSync(process.env.PROBE_OUT ?? "/tmp/cf-probe.txt", ["P2 result", JSON.stringify(result), "ms", Date.now() - started,
+      "rss base MiB", (base / MiB).toFixed(0), "rss peak MiB", (peak / MiB).toFixed(0), "file MiB", (fs.statSync(target).size / MiB).toFixed(0)].join(" ") + "\n");
+    expect(fs.statSync(target).size).toBe(600 * MiB);
+  }, 300_000);
+
+  it("P3 client aborts mid-upload (8 of 20 MiB) on the real route", async () => {
+    app = fastify();
+    await app.register(multipart, { limits: { fileSize: CONTEXT_FILE_MAX_BYTES } });
+    const settled: string[] = [];
+    app.addHook("onResponse", async (req, reply) => { settled.push(`${req.url} ${reply.statusCode}`); });
+    app.addHook("onRequestAbort", async (req) => { settled.push(`abort ${req.url}`); });
+    await app.register(registerContextFileRoutes, { prefix: "/rest" });
+    await app.listen({ port: 0 }); port = (app.server.address() as { port: number }).port;
+    const result = await streamUpload(port, "/rest/context-files/upload", 20 * MiB, 8 * MiB);
+    await new Promise((r) => setTimeout(r, 1500));
+    fs.appendFileSync(process.env.PROBE_OUT ?? "/tmp/cf-probe.txt", ["P3 result", JSON.stringify(result), "settled:", settled, "files left:", listFiles(tempDir).map((f) => `${f} ${fs.statSync(f).size}`)].join(" ") + "\n");
+  }, 60_000);
+});

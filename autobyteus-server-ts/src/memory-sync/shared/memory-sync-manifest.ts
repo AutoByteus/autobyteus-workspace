@@ -1,4 +1,16 @@
+import path from "node:path";
 import type { MemorySyncManifest } from "./memory-sync-types.js";
+import { normalizeMemorySyncSourceId } from "./memory-sync-source-id.js";
+import { resolveUnderRoot } from "./memory-sync-path-policy.js";
+
+/** `<memoryDir>/imports/<sourceId>`: the imported tree of one source. */
+export const resolveMemorySyncImportRootDir = (memoryDir: string, memorySyncSourceId: string): string =>
+  resolveUnderRoot(path.join(memoryDir, "imports"), normalizeMemorySyncSourceId(memorySyncSourceId));
+
+/** The manifest file of one source; its lock orders every commit and staging sweep of that source. */
+export const resolveMemorySyncManifestPath = (importRootDir: string): string =>
+  path.join(importRootDir, "sync-manifest.json");
+
 
 export const createEmptyMemorySyncManifest = (memorySyncSourceId: string): MemorySyncManifest => ({
   schemaVersion: 1,

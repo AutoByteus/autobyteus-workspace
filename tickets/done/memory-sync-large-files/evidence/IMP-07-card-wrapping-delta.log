@@ -1,0 +1,8 @@
+# IMP-07
+# command: node_modules/.bin/vitest run components/settings/__tests__/MemorySyncCard.spec.ts --no-watch (autobyteus-web)
+# commit: 542bf871f
+# environment: macOS, Node v26.12.0, jsdom
+# date: 2026-11-15
+
+Test Files  1 passed (1)
+Tests  7 passed (7)

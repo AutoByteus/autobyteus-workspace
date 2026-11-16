@@ -1,0 +1,13 @@
+# DEL-05: web typecheck (pnpm -C autobyteus-web typecheck) on the integrated state (delivery); commit fa14fc465; Node v22.23.3; Sun Nov 15 15:30:36 CET 2026
+[typecheck] Nuxt app (tsconfig.json): 66 errors, exit 2, 30.9s
+[typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 1.7s
+[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 0.6s
+[typecheck] cross-package tests (tsconfig.cross-package-tests.json): 1 errors, exit 2, 19.8s
+Test files above their baseline count:
+tests/integration/codex-turn-lifecycle-native-to-live-projection.integration.test.ts(67,46): error TS2345: Argument of type '{ threadId: string; codexThreadConfig: { model: string; workingDirectory: string; reasoningEffort: string; serviceTier: null; approvalPolicy: CodexApprovalPolicy.NEVER; sandbox: "workspace-write"; baseInst
+  Property 'workspaceSkills' is missing in type '{ threadId: string; codexThreadConfig: { model: string; workingDirectory: string; reasoningEffort: string; serviceTier: null; approvalPolicy: CodexApprovalPolicy.NEVER; sandbox: "workspace-write"; baseInstructions: null; developerInstructions: null; dynamicTools: never[]; }; }' bu
+[typecheck] new test file with errors: tests/integration/codex-turn-lifecycle-native-to-live-projection.integration.test.ts (1)
+[typecheck] production errors: 0; test-file errors: 94 in 41 files (baseline 93 in 40 files)
+[typecheck] FAIL: fix the new type errors in the test files above
+ ELIFECYCLE  Command failed with exit code 1.
+exit=1

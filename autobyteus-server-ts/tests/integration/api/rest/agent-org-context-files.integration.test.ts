@@ -8,7 +8,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 const config = vi.hoisted(() => ({ root: '' }));
 vi.mock('../../../../src/config/app-config-provider.js', () => ({ appConfigProvider: { config: {
-  getBaseUrl: () => "http://app.test", getAppDataDir: () => config.root, getMemoryDir: () => path.join(config.root, 'memory'),
+  getBaseUrl: () => "http://app.test", get: () => undefined, getAppDataDir: () => config.root, getMemoryDir: () => path.join(config.root, 'memory'),
 } } }));
 import { registerContextFileRoutes } from '../../../../src/api/rest/context-files.js';
 import { AgentOrgRunExecutionTreeStore } from '../../../../src/run-history/store/agent-org-run-execution-tree-store.js';

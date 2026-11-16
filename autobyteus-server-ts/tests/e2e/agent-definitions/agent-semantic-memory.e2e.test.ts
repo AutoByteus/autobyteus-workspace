@@ -384,7 +384,7 @@ describe("Agent semantic memory at the real server boundary", () => {
       for (const run of discovered) expect(isInside(path.resolve(run.memoryDir), semanticRoot), run.memoryDir).toBe(false);
       const scanned = await new LocalMemoryExportScanner({ getMemoryDir: () => memoryDir }).scan();
       expect(scanned.files.length).toBeGreaterThan(0);
-      const listed = [...scanned.files.map((file) => `${file.kind}/${file.relativePath}`), ...scanned.deferred.map((file) => `${file.kind}/${file.relativePath}`)];
+      const listed = scanned.files.map((file) => `${file.kind}/${file.relativePath}`);
       expect(listed.filter((entry) => entry.includes("semantic") || entry.includes("controls.md"))).toEqual([]);
       await keep("SM-10-listings.json", { semanticFolders, memoryPageAgents: agents, memoryPageRunIds: runIds,
         memorySearchRuns: discovered.map((run) => run.memoryDir), memorySyncFiles: listed });

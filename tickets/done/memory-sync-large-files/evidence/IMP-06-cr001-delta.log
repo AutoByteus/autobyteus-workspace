@@ -1,0 +1,10 @@
+# IMP-06
+# command: tsc -p tsconfig.build.json --noEmit; vitest run tests/unit/memory-sync tests/architecture/tracked-imports.test.ts --no-watch
+# commit: 077fa6853
+# environment: macOS, Node v26.12.0, env -i
+# date: 2026-11-15
+
+tsc: 0 errors
+Test Files  15 passed (15)
+Tests  70 passed (70)
+git grep resetMemoryHubStagedFileStoreForTests: no match

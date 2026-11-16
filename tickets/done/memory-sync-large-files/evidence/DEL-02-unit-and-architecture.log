@@ -1,0 +1,28 @@
+# DEL-02: memory-sync unit + architecture on the integrated state (delivery); commit fa14fc465; Node v22.23.3; Sun Nov 15 15:28:46 CET 2026
+$ env -i PATH=<node22>:/tmp/msync-bin:$PATH HOME=<temp> TMPDIR=<temp> node node_modules/vitest/vitest.mjs run tests/unit/memory-sync tests/architecture/tracked-imports.test.ts tests/architecture/application-framework-boundaries.test.ts tests/architecture/web-generated-graphql-current.test.ts --no-watch
+
+ [32m✓[39m tests/unit/memory-sync/memory-sync-run-outcomes.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 173[2mms[22m[39m
+[90mstderr[2m | tests/unit/memory-sync/memory-hub-ingestion-sweep.test.ts[2m > [22m[2mMemoryHubIngestionService staging sweep cadence[2m > [22m[2mcompletes a piece request of one source while a sweep waits on another source's manifest lock
+[22m[39mMemory Sync staging sweep failed: Error: ENOENT: no such file or directory, scandir '/private/var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/tmp.fB7CmADUGV/memory-ingestion-sweep-UEkbjj/memory-sync-staging/source-b'
+
+ [32m✓[39m tests/unit/memory-sync/memory-hub-ingestion-sweep.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 123[2mms[22m[39m
+[90mstdout[2m | tests/unit/memory-sync/memory-sync-hold-back.test.ts[2m > [22m[2mMemory Sync held back (autobyteus-290 memory_sync)[2m > [22m[2mevery store refuses with the one error and writes nothing
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus-org/autobyteus-task-worktrees/memory-sync-large-files/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus-org/autobyteus-task-worktrees/memory-sync-large-files/autobyteus-server-ts
+
+ [32m✓[39m tests/unit/memory-sync/memory-sync-hold-back.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 149[2mms[22m[39m
+ [32m✓[39m tests/unit/memory-sync/memory-hub-staged-commit.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 65[2mms[22m[39m
+ [32m✓[39m tests/unit/memory-sync/memory-sync-batch-transfer.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 18[2mms[22m[39m
+ [32m✓[39m tests/unit/memory-sync/memory-sync-file-failures-state.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 14[2mms[22m[39m
+ [32m✓[39m tests/unit/memory-sync/memory-file-change-planner.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 11[2mms[22m[39m
+ [32m✓[39m tests/unit/memory-sync/memory-hub-response-parser.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 5[2mms[22m[39m
+ [32m✓[39m tests/unit/memory-sync/memory-sync-file-failure-policy.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 3[2mms[22m[39m
+ [32m✓[39m tests/unit/memory-sync/memory-sync-batch-planner.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 3[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m17 passed[39m[22m[90m (17)[39m
+[2m      Tests [22m [1m[32m91 passed[39m[22m[90m (91)[39m
+[2m   Start at [22m 15:28:47
+[2m   Duration [22m 26.16s[2m (transform 3.98s, setup 609ms, import 6.13s, tests 17.07s, environment 1ms)[22m
+
+exit=0

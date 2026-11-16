@@ -297,6 +297,24 @@ delegated run, …) are defined in the
 - **Activity record:** one line of `<app-data-dir>/integrations/activity.jsonl`
   per proxied call or refusal (no token, pass, query, headers or bodies).
 
+## Context Files
+
+- **Context file:** a file attached to a message or to a Project Task so an
+  agent can read it from disk. An uploaded one is a *draft* until the message
+  is sent (deleted after 24 hours when never sent), then *final* in the run's
+  `context_files`. The agent gets its absolute path under `Reference files:`.
+- **Audio/video limit:** the largest accepted size of a context file whose
+  type is audio or video (`audioVideoMaxBytes`; node setting
+  `AUTOBYTEUS_CONTEXT_FILE_AUDIO_VIDEO_MAX_MB`, default 2048 MiB). The types it
+  covers are published as `audioVideoMimeTypes`.
+- **Other-file limit:** the largest accepted size of every other accepted
+  context file, images and documents included (`otherFileMaxBytes`; node
+  setting `AUTOBYTEUS_CONTEXT_FILE_OTHER_MAX_MB`, default 25 MiB).
+- **Context-file size limits:** the two limits together, as a node publishes
+  them at `GET /rest/context-files/size-limits`. Context-file limits never use
+  the word *media*: media means image, audio and video (media default models,
+  media storage, the native runtime's media input).
+
 ## Project Tasks
 
 - **Title:** a Project Task's one-line name, given by its writer (an agent's
