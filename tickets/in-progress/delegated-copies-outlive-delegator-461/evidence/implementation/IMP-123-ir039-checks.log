@@ -1,0 +1,36 @@
+# IMP-123 (IR-039): gates and whole suites
+## web type gate (at 4501a0fed4's tree)
+[typecheck] production errors: 0; test-file errors: 87 in 37 files (baseline 87 in 37 files)
+[typecheck] PASS
+## web suite (nuxt) at 4501a0fed4
+ Test Files  750 passed (750)
+      Tests  5620 passed | 2 skipped (5622)
+nuxt exit 0
+## web suite (electron)
+ Test Files  66 passed | 1 skipped (67)
+      Tests  492 passed | 1 skipped (493)
+electron exit 0
+## codegen:check
+autobyteus-web/generated/graphql.ts is current.
+codegen exit 0
+## server type gate at 2b20fd0898
+[typecheck] production errors: 0; test-file errors: 1012 in 316 files (baseline 1012 in 316 files)
+[typecheck] PASS
+## server test:unit at 4501a0fed4 (first run): the projects boundary test caught the Task view's import (fixed in 2b20fd0898); the rest are the folder watchers
+ Test Files  3 failed | 990 passed | 5 skipped (998)
+      Tests  5 failed | 8120 passed | 9 skipped (8134)
+ FAIL  tests/architecture/projects-boundaries.test.ts
+ FAIL  tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts
+ FAIL  tests/unit/skill-update-notices/skill-folder-watcher.test.ts
+## server test:unit at 2b20fd0898
+ Test Files  1 failed | 992 passed | 5 skipped (998)
+      Tests  1 failed | 8125 passed | 9 skipped (8135)
+unit exit 1
+ FAIL  tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts
+## the folder watcher files alone
+ Test Files  2 passed (2) / Tests  27 passed (27)
+## projects + architecture boundary at 2b20fd0898
+ Test Files  31 passed (31) / Tests  299 passed (299)
+## final builds from 2b20fd0898: server dist and the phone bundle
+Sanitized built-module/bootstrap smoke passed without DATABASE_URL.
+Mobile web assets written to /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copies-outlive-delegator-461/aut

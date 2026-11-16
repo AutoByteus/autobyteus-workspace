@@ -1347,3 +1347,31 @@ The current code and `implementation-handoff.md` remain authoritative.
 - Shared `dist` folders: the server's was rebuilt from this tree for the probes (no traces; the CR-461-107 traces were removed before the build). The phone bundle was rebuilt three times; its last build is from the final web tree. Contracts and `autobyteus-ts/dist` were not rebuilt. API/E2E's uncommitted `team-status-live-probe.mjs` was in the worktree throughout; it is not part of IR-038 and was not touched.
 - Next recipient: Code Reviewer.
 - Review result: **Pass**, CRR-056 (Code Reviewer, round 38, head `7df54669c4`; `code-review-report.md`): CR-461-106 … CR-461-110 and the triage's product fixes resolved; the probe items go to API/E2E. Next: API/E2E (the reviewer's handoff). Informational; no implementation action.
+
+### IR-039 — CRR-057's Local Fixes (CR-461-111, CR-461-112), and SR-091 (one name for a delegated run)
+
+- Triggering role, report path, and round: Code Reviewer CRR-057, the failure-origin review of API-REV-018 (`code-review-report.md`, top section): two Local Fixes. The Solution Designer's SR-091 (`solution-revision-record.md`, design-spec item 3a), which answers CR-461-113 (F-89). Round 39.
+- Triggering finding IDs: CR-461-111 (F-87), CR-461-112 (F-88), SR-091 / CR-461-113 (F-89). Large / High unchanged.
+- Prior authoritative result: IR-038 at `7df54669c4` (CRR-056 Pass), then API-REV-018 Fail (`bac59031c3`; API/E2E's commit `dc00f57d64` on top).
+- Related solution / architecture-review revision IDs: SR-091. Code-review IDs: CRR-057.
+- Implementation delta, one stage per commit: `e3cc8827b5` (CR-461-111), `e5de48606f` (CR-461-112), `946e8224db` (SR-091, server), `4501a0fed4` (SR-091, web), `2b20fd0898` (SR-091: the Task view's name through a composition-bound resolver, so Projects keeps to the neutral contracts; the projects boundary test caught the direct import):
+  1. **CR-461-111** (web), pinned with traces on both sides (IMP-120):
+     - What happened: the probe stops the hub, which makes its view not current while the Stop runs (`terminations`). The server ends the view's stream then (`lifecycle inactive` → close 1000). The close handler returned at once when not current, so the hub's tree stayed marked stream-fed with no stream. The Save's `RUN_TREE_CHANGED` on `/ws/run-status` then skipped the read (`via === 'stream'`), and nothing reconnected the view.
+     - Fix: when the view's own socket closes, its tree is no longer stream-fed, whatever ended it (a close while not current is still no loss to recover from). When a host's Stop finishes, the store reconnects its view to the stopped run's fresh one, which keeps its tree live (SR-045).
+  2. **CR-461-112** (web): the phone held its listed runs' trees by releasing all and holding again whenever the shown list changed (its order included); a released tree is read again when next held. The trees are now held per run: only the runs that came are held, only those that left released.
+  3. **SR-091** (server and web): a delegated run has one name everywhere, its slot.
+     - Server: `displayNameOf({ delegated, address })` beside `openTargetOf` (the address's last segment), and `runDisplayNameOf(index, run)`, which reads a run as its tree row does (delegated when a Task names it; an agent run's own address, else its entry's `recipientAddress`; a team run's entry's `recipientAddress`).
+     - It feeds the `RunTreeView` rows of delegated and peer runs; `displayName` on the agent and team resume configs (the opened run's context and header); on the agent and team history items (the run list's row of a delegated run standing on its own, DS-11); and on the Task view (`TaskRootView.displayName`, over GraphQL and the project change message).
+     - Web: the agent context's name (and its conversation's) is the resume config's `displayName`, else the definition's; the Team view's `getDisplayName()` (replacing `getTeamDefinitionName`) likewise; the run list, the Task card and Settings' delegated rows show the server's name. No client derives a delegated run's name.
+- Tests (each new case was run against the code before its fix and fails there):
+  - web, CR-461-111: `agentRunCollaborationStreamingService.spec.ts` (a close while not current ends the tree's stream feed, no recovery), `agentRunCollaborationStore.spec.ts` (the Stop's finish reconnects the view, once);
+  - web, CR-461-112: `useMobileRunTreeHolds.spec.ts` (a run that stays listed is not read again; a run that comes is read once);
+  - server, SR-091: `run-display-name.test.ts` (the helper and the lookup), `agent-run-resume-config-service.test.ts`, `agent-run-history-service.test.ts`, `team-run-history-service.test.ts`, `task-root-view.test.ts`;
+  - web, SR-091: `runContextHydrationService.spec.ts`, `teamExecutionViewState.spec.ts`, `runListProjection.spec.ts`, `treeDelegatedLaunchNodes.spec.ts`, `taskRootPresentation.spec.ts`; Task-view fixtures carry `displayName` (one is API/E2E's page fixture `tests/e2e/fixtures/team-group-icon.page.vue`, a one-field type fix).
+- Validation:
+  - probes (IMP-120 … IMP-122): AFS-001 Pass (after the fix; pinned before it), MSP-24 Pass, DCR-001/002 Pass with every copy's context named as its row ("worker", "writer"), PMU-003/012/016/018 Pass;
+  - web type gate PASS (87 at baseline); the whole web suite `Tests  5620 passed | 2 skipped`, electron `492 passed`; `codegen:check` current;
+  - server type gate PASS (1012 at baseline); `pnpm test:unit` `Tests  1 failed | 8125 passed` (the folder watcher's timing test, which passes alone, as in IMP-85) (IMP-123).
+- Classification: Large / High, unchanged. SR-091 adds one nullable field to four GraphQL types, the Task view and the project change message; no persisted data changes (names are read from the Task entries when asked).
+- Shared `dist` folders: the server's and the phone bundle were rebuilt from `2b20fd0898`'s tree for the probes and are final; the traces are gone (removed before the final builds). Contracts and `autobyteus-ts/dist` were not rebuilt.
+- Next recipient: Code Reviewer.

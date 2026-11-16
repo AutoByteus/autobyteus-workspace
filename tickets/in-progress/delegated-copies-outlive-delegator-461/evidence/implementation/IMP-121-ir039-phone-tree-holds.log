@@ -1,0 +1,7 @@
+# IMP-121 (IR-039, CR-461-112): MSP-24 on the rebuilt phone bundle after the per-run tree holds
+mobile build 0
+[mobile-shell] MSP-24 Pass
+null
+## the spec, before (useMobileRunTree.ts at HEAD) and after
+before: Tests  1 failed (1)  × a run that stays listed across a list reload keeps its tree, with no read again
+after: Tests  1 passed (1); composables/mobile: Tests  89 passed (89)
