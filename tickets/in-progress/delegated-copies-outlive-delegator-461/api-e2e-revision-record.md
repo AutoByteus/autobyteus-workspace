@@ -24,6 +24,7 @@ The latest coverage investigation and execution coverage report remain authorita
 | API-REV-016 | Code Reviewer, `code-review-report.md` CRR-052, round 16 | SR-084 … SR-090 (code `53f0ae2d4e`), CRR-050 … CRR-052 | Pass / 91% | Fail / 71% |
 | API-REV-017 | Code Reviewer, `code-review-report.md` CRR-054, round 17 | CR-461-101 … CR-461-105 (code `568dea0159`), CRR-053, CRR-054 | Fail / 71% | Fail / 79% |
 | API-REV-018 | Code Reviewer, `code-review-report.md` CRR-056, round 18 | IR-038, CR-461-106 … CR-461-110 (code `bac59031c3`), CRR-055, CRR-056 | Fail / 79% | Fail / 87% |
+| API-REV-019 | Code Reviewer, `code-review-report.md` CRR-058, round 19 | IR-039, SR-091, CR-461-111 … CR-461-113 (code `2b20fd0898`), CRR-057, CRR-058 | Fail / 87% | Fail / 92% |
 
 ## Revision Entries
 
@@ -681,3 +682,26 @@ None
 - New or remaining failure IDs: F-87; F-88 (low); F-89 (design question)
 - Recommended owner: per the failure-origin review.
 - Remaining risks, blocked evidence, or untested scope: LE-O1 and LE-A1 … LE-T1 (DeepSeek: 402 Insufficient Balance on the first turn).
+
+### API-REV-019: round 19 (CRR-058): F-87 … F-89 resolved; live on five runtimes; the desktop app; F-90 new
+
+- Triggering role, report path, and round: `/software_engineering_team/code_reviewer`, `code-review-report.md` (CRR-058 at `63edb246c4`; code `2b20fd0898`), API/E2E round 19
+- Triggering finding or case IDs: F-87 (CR-461-111), F-88 (CR-461-112), F-89 (SR-091, CR-461-113); LE-O1 and LE-A1 … LE-T1
+- Why this revision was recorded: the rechecks, a full rerun (SR-091 changes names everywhere), the live runs, and the desktop journeys the user asked for
+- Coverage decisions or durable test paths changed: the live suite reworked to the 461 rules; `project-change-feed` selects `displayName`; DCR-001/002 per SR-091
+
+#### Prior Failure Resolution
+
+| Prior ID | Classification | Now | Proven By |
+| --- | --- | --- | --- |
+| F-87 | Local Fix (CR-461-111) | Resolved | AFS-001; desktop J1 |
+| F-88 | Local Fix (CR-461-112) | Resolved | MSP-24 |
+| F-89 | Requirement Gap (CR-461-113, SR-091) | Resolved | DCR-001/002; desktop rows, headers, Task cards |
+
+- Canonical artifacts and sections updated: the execution report; the progress log; `evidence/api-e2e/API-r19-runs.txt`.
+- Prior result and confidence: Fail / 87%
+- Current result and confidence: Fail / 92%
+- New or remaining failure IDs: F-90
+- Recommended owner: per the failure-origin review.
+- Remaining risks, blocked evidence, or untested scope: Grok is not usable on this machine (base too); two observations for the reviewer.
+

@@ -155,6 +155,53 @@ export function registerDelegatedCopyOwnFileCases(h) {
     const ctx = stores.get('agentContexts')?.getRun(a)
     return ctx ? { config: { llmModelIdentifier: ctx.config.llmModelIdentifier }, state: { conversation: { llmModelIdentifier: ctx.state.conversation.llmModelIdentifier, agentName: ctx.state.conversation.agentName } } } : null
   }, agentRunId).then(contextFacts)
+  /**
+   * autobyteus-461 SR-091 (REQ-014): a delegated run has one name everywhere, its slot's (the last segment of its delegation
+   * address), as at base. For a copy opened from its row: its row, its own context, its header, its Task card, its Settings
+   * card and, when the run list lists it, its run-list name. `marker` is a word of its Task's description. A copy delegated by
+   * a run that works on a Task is sub-work of that Task (a described delegation creates no Task of its own:
+   * `TaskDelegation.prepareWork`), so it has no Task card and no Task view (`ownTask: false`).
+   */
+  const namesOf = async (page, agentRunId, marker, rowName) => {
+    // The opened run's header: the Agent surface's title, or (a copy opened in a Team run's tree) the Team surface's member name.
+    const header = await waitFor('copy header', async () => (await page.locator(`${sel('agent-workspace-title')}:visible, [data-testid="team-workspace-surface"] h4:visible`).first()
+      .innerText({ timeout: 1000 }).catch(() => ''))?.trim() || null, 15000, 300).catch(() => null)
+    const surfaceAtRead = await page.evaluate(() => ({ agentSurface: document.querySelectorAll('[data-testid="agent-workspace-surface"]').length, teamSurface: document.querySelectorAll('[data-testid="team-workspace-surface"]').length,
+      titles: document.querySelectorAll('[data-test="agent-workspace-title"]').length, url: location.href }))
+    if (!header) await shot(page, `names-${agentRunId.slice(-6)}-header-read`)
+    const context = (await ownContext(page, agentRunId))?.name ?? null
+    // The Task card, found as a user finds it: the board's search (a description match) leaves its one card.
+    const search = page.locator('[data-testid="temp-tasks-search-input"]:visible, [data-testid="project-tasks-search-input"]:visible').first()
+    let taskCard = null
+    if (await search.isVisible().catch(() => false)) {
+      await search.fill(marker); await settle(page, 800)
+      const cards = (await page.locator('[data-testid="project-task-root-name"]:visible').allInnerTexts()).map((x) => x.trim())
+      taskCard = cards.length === 1 ? cards[0] : cards.length ? `ambiguous: ${cards.join(', ')}` : null
+      await search.fill(''); await settle(page, 300)
+    }
+    const view = await settingsView(page)
+    const settings = await view.locator(sel('run-subject-name')).first().innerText().catch(() => null)
+    await backToConversation(page)
+    const history = (await gql('query{listWorkspaceRunHistory(limitPerAgent: 50){agentDefinitions{runs{runId displayName}}}}')).listWorkspaceRunHistory
+    const listed = objectsIn(history).find((x) => x.runId === agentRunId)
+    // The server's Task view (what the Task page and card read): the Task whose description carries the marker.
+    const tasks = (await gql('query{tasksWithoutProject{taskId description root{displayName ingressAgentRunId}}}')).tasksWithoutProject ?? []
+    const task = tasks.find((x) => x.description?.includes(marker))
+    const names = { row: rowName, context, header: header?.trim() ?? null, taskCard, taskView: task ? (task.root?.displayName ?? null) : 'no Task', settings: settings?.trim() ?? null,
+      runList: listed ? (listed.displayName ?? null) : 'not listed' }
+    // When a page read is empty, what the page showed (for classification).
+    names.surfaceAtRead = surfaceAtRead
+    if (!names.header || !names.taskCard) names.page = await page.evaluate(() => ({ url: location.href,
+      titles: [...document.querySelectorAll('[data-test="agent-workspace-title"]')].map((el) => ({ text: el.textContent?.trim(), visible: el.offsetParent !== null })),
+      settingsOpen: Boolean(document.querySelector('[data-test="existing-run-settings"]')),
+      boardSearch: [...document.querySelectorAll('[data-testid$="tasks-search-input"]')].map((el) => ({ id: el.getAttribute('data-testid'), visible: el.offsetParent !== null })),
+      cards: [...document.querySelectorAll('[data-testid="project-task-root-name"]')].map((el) => el.textContent?.trim()) }))
+    if (!names.taskCard) names.taskDescriptions = tasks.map((x) => x.description?.slice(0, 60))
+    return names
+  }
+  const allNamed = (names, slot, ownTask = true) => names.row === slot && names.context === slot && (names.header === slot || names.header?.startsWith(`${slot} - `))
+    && (ownTask ? names.taskCard === slot && names.taskView === slot : names.taskCard === null && names.taskView === 'no Task')
+    && names.settings?.toLowerCase() === slot && (names.runList === 'not listed' || names.runList === slot)
   const CONFIGURED_LABEL = 'As configured in this run'
   const configuredRows = (rows, address) => rowsAt(rows, address).filter((r) => !r.member && r.source === 'configured' && r.launch.includes(CONFIGURED_LABEL))
 
@@ -272,12 +319,17 @@ export function registerDelegatedCopyOwnFileCases(h) {
     await openSidebarAgent(page, r.c1)
     await openSidebarAgent(page, r.c2)
     r.contexts = { c1: await ownContext(page, r.c1), c2: await ownContext(page, r.c2), slot: await teamContext(page, r.teamRunId, r.slotRunId) }
-    // Rule 2: a copy's context is its own run's, named as its own row names it (base named copies after the slot they lived in).
+    assert(r.contexts.c1?.model === MODEL && r.contexts.c2?.model === ALT && r.contexts.slot?.model === ALT && r.contexts.slot.name === 'worker',
+      'Team contexts: each copy on its own model; the slot on its edit, named "worker"', r.contexts)
+    // SR-091: each copy of /worker is named "worker" everywhere: row, context, header, Task card, Settings, run list.
     const teamRows = await delegatedOf(r.teamRunId)
-    r.rowNames = { c1: teamRows.find((x) => x.agentRunId === r.c1)?.name ?? null, c2: teamRows.find((x) => x.agentRunId === r.c2)?.name ?? null }
-    assert(r.contexts.c1?.model === MODEL && r.contexts.c2?.model === ALT && r.contexts.slot?.model === ALT
-      && r.contexts.c1.name === r.rowNames.c1 && r.contexts.c2.name === r.rowNames.c2 && r.contexts.slot.name === 'worker',
-      'Team contexts: each copy on its own model, named as its row; the slot on its edit, named "worker"', { contexts: r.contexts, rowNames: r.rowNames })
+    r.slotNames = {}
+    for (const [key, id, marker] of [['c1', r.c1, 'COPY1-MARKER-DCR1'], ['c2', r.c2, 'COPY2-MARKER-DCR1']]) {
+      await openSidebarAgent(page, id)
+      r.slotNames[key] = await namesOf(page, id, marker, teamRows.find((x) => x.agentRunId === id)?.name ?? null)
+    }
+    // C1 and C2 are delegated by W, which works on its Task: they are sub-work of it, with no Task of their own.
+    assert(allNamed(r.slotNames.c1, 'worker', false) && allNamed(r.slotNames.c2, 'worker', false), 'SR-091: each copy of /worker reads "worker" in its row, context, header, Settings and run list (sub-work: no Task of its own)', r.slotNames)
     await openTeamRun(page, r.teamRunId, r.teamDefinitionId)
     await settingsView(page)
     r.rowsFinal = await delegatedRows(page, { kind: 'team', id: r.teamRunId })
@@ -434,12 +486,17 @@ export function registerDelegatedCopyOwnFileCases(h) {
       await row.click(); await settle(page, 1500)
     }
     r.contexts = { cw: await ownContext(page, r.cw), cw2: await ownContext(page, r.cw2), slot: await orgContext(page, r.orgRunId, r.slotWriter) }
-    // Rule 2: a copy's context is its own run's, named as its own row names it (base named copies after the slot they lived in).
+    assert(r.contexts.cw?.model === ALT && r.contexts.cw2?.model === MODEL && r.contexts.slot?.model === MODEL,
+      'Org contexts: each copy on its own model; the slot on its edit', r.contexts)
+    // SR-091: each copy of /writer is named "writer" everywhere: row, context, header, Task card, Settings, run list.
     const orgRows = delegatedNodes(await readRunTree(gql, 'org', r.orgRunId))
-    r.rowNames = { cw: orgRows.find((x) => x.agentRunId === r.cw)?.name ?? null, cw2: orgRows.find((x) => x.agentRunId === r.cw2)?.name ?? null }
-    assert(r.contexts.cw?.model === ALT && r.contexts.cw2?.model === MODEL && r.contexts.slot?.model === MODEL
-      && r.contexts.cw.name === r.rowNames.cw && r.contexts.cw2.name === r.rowNames.cw2,
-      'Org contexts: each copy on its own model, named as its row; the slot on its edit', { contexts: r.contexts, rowNames: r.rowNames })
+    r.slotNames = {}
+    for (const [key, id, marker] of [['cw', r.cw, 'CW-MARKER-DCR2'], ['cw2', r.cw2, 'CW2-MARKER-DCR2']]) {
+      const row = page.locator(`${sel('workspace-team-transient-execution-row')}[data-agent-run-id="${id}"]`).first()
+      await row.click(); await settle(page, 1500)
+      r.slotNames[key] = await namesOf(page, id, marker, orgRows.find((x) => x.agentRunId === id)?.name ?? null)
+    }
+    assert(allNamed(r.slotNames.cw, 'writer') && allNamed(r.slotNames.cw2, 'writer'), 'SR-091: each copy of /writer reads "writer" in its row, context, header, Task card, Settings and run list', r.slotNames)
     return r
   })
 

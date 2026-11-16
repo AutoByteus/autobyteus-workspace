@@ -224,4 +224,8 @@
 | 2026-11-16 (round 18) | Build, full server E2E | Completed | Pass after reruns | On CRR-056 at `bac59031c3`: server `dist` and the phone bundle rebuilt; 871 passed, 4 failed; alone: interrupt-resend 3/3, EXC 7/7 (AGY discovery timeout), provider-secret 6/6 (load); DCF-E2E-007 compared with base |
 | 2026-11-16 (round 18) | Web batch | Completed | Fail | SDV 7/7, PMU 25/25, TCT 16/16, BR Pass, osfr 8/8, CFR 10/10, tree ×2 Pass, title, RSM 7/7, PLN 10/11, mocked probes Pass; F-80 … F-83 and F-86 resolved; DLD 23/29, phone 52/55 |
 | 2026-11-16 (round 18) | Reruns, live | Completed | Fail | TS 7/7 (F-84 stale); **F-87** AFS-001; **F-88** MSP-24 (low); **F-89** DCR-001/002 (design question); LE: DeepSeek 402 |
+| 2026-11-16 (round 19) | Build, full server E2E | Completed | Pass after reruns | On CRR-058 at `2b20fd0898`: 862 passed, 6 failed; `project-change-feed` stale (`displayName`) fixed 7/7; folder 8/8 and two-node 46/46 alone |
+| 2026-11-16 (round 19) | Web and phone | Completed | Pass | F-87 (AFS-001), F-88 (MSP-24), F-89 (DCR-001/002) resolved; closure 16/16 alone; phone 53/55 |
+| 2026-11-16 (round 19) | Live, five runtimes | Completed | Fail | The live suite reworked; LE-A1/A2/A3 Pass on four runtimes, LE-O1 on three, Antigravity 5/5; **F-90** (LE-T1 on Codex, Claude, DeepSeek; base Pass); Grok fails on base too |
+| 2026-11-16 (round 19) | Desktop (isolated Electron) | Completed | Pass | J1 … J4 across Codex, Claude, Antigravity and DeepSeek; instance stopped and removed |
 
