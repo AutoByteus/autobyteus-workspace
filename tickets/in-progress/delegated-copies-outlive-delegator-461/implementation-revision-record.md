@@ -1296,3 +1296,53 @@ The current code and `implementation-handoff.md` remain authoritative.
 - Shared `dist` folders: the server's was rebuilt several times for the probes; its final build is from this tree, with no traces. Contracts, the phone bundle and `autobyteus-ts/dist` were not rebuilt. API/E2E's uncommitted e2e rework was in the worktree throughout; it is not part of IR-037 and was not touched.
 - Next recipient: Code Reviewer.
 - Review result: **Pass**, CRR-054 (Code Reviewer, round 37, head `568dea0159`; `code-review-report.md`): CR-461-101 … CR-461-104 resolved; `8f91060e61` recorded as CR-461-105 (this ticket's regression, resolved by reusing the one `reloadNamingUnknown` rule). Next: API/E2E (the reviewer's handoff). Informational; no implementation action.
+
+### IR-038 — CRR-055's Local Fixes (CR-461-106 … CR-461-110), and the triage of API-REV-017's unclassified failures
+
+- Triggering role, report path, and round: Code Reviewer CRR-055, the failure-origin review of API-REV-017 (`code-review-report.md`, top section). Five Local Fixes and a triage. Round 38.
+- Triggering finding IDs: CR-461-106 (F-80), CR-461-107 (F-81), CR-461-108 (F-82), CR-461-109 (F-83), CR-461-110 (F-86); the triage of DLD (DCP-003/005, DCR-001/002/003, DLP-003/004/007, AFS-001/002), the phone (MSP-02/03/05/06/07/20/22/24/29/33/46/52/53) and PMU-021/024. Large / High unchanged.
+- Prior authoritative result: IR-037 at `8f91060e61` (CRR-054 Pass), then API-REV-017 Fail (`568dea0159`; API/E2E's commit `3df252e132` on top).
+- Related solution / architecture-review revision IDs: N/A. Code-review IDs: CRR-055.
+- Implementation delta, one stage per commit: `e19ed3819f` (CR-461-106), `492fe23b7e` (CR-461-107), `b1e85dd309` (CR-461-109), `4c09000dac` (CR-461-108), `1c4f2d4173` (CR-461-110), `d05f92cbde` (the phone triage fixes), `bac59031c3` (the peer send's ids and the Org Settings guard):
+  1. **CR-461-106** (web): the composer's draft owner comes from the run the target browses (rule 2): `run` → `agent_draft`, `teamMember` → `team_member_draft`, `agentOrgMember` → `org_member_draft`, `peerRun` → none. A delegated run attaches under its own run's owner, wherever it was opened from. The unused `agent_collaboration_member_*` builders are removed; the owner kind stays for parsing stored paths.
+  2. **CR-461-107** (server), pinned with a trace (IMP-115, IMP-116): a peer entry whose observation ended (its run stopped, so the node answered once) is asked again when a client newly holds it (`RunStatusEntry.refreshEnded`, from `hold`). A live observation is not asked. The reload's snapshot had carried the stale `reachable` answer, so "Couldn't reach {node}" never showed.
+  3. **CR-461-109** (web): an Org's delegated pick records the Org agent that delegated it (`returnTo`, the nearest Org row above it). When the picked row leaves the Org's tree (its Task closed), the view returns to that agent, as base's `returnToHostWhenUnlisted` did. This commit also exports `selectedRow`, which stage 4 reads.
+  4. **CR-461-108** (web): opening a row reveals what it opens, in every view.
+     - A Team row opened from its row or its Task card expands and never folds on open; only its chevron folds it. CR-461-104 is kept: agent rows never fold on open.
+     - The row marked selected is the opened agent's: a delegated Team opened at its coordinator marks the coordinator's row, in the Agent, Team and Org trees (`AgentRunTaskRows`, `WorkspaceTeamExecutionTree`, `orgTreeSelection`).
+     - The reveal unfolds the rows above the opened agent: the Team tree's (`teamRowsAboveAgent`, used by `getTeamMemberNavigationAncestorRowKeys`) and the Org's (`rowsToUnfoldFor`, `unfoldOrgRows`), in "Your runs" too.
+     - Org: since SR-084 a delegated pick lived only in the store's `selectedRows`, so the Org tree marked the Org run row instead and never revealed the pick (PMU-018's Org part, pinned with a diagnostic copy of the probe, IMP-116). `useRouteSelectedAgentOrg` now carries the pick (`delegated`).
+     - The Task card opens a Team-delegated Team at its own row, expanded.
+  5. **CR-461-110** (web): Settings of a delegated run opened in a Team or an Org show that run's own configuration (the Team's `delegatedFocusOf`; the Org's picked row), not the delegating Team's or Org agent's.
+  6. **Triage fixes** (web):
+     - phone: an Org agent's delegated runs show beside it (unfolded until toggled), as on the desktop; a delegated Team still starts folded;
+     - phone: a tree row of an Agent run the phone never opened (a stopped delegator, MSP-53; any listed run, MSP-33) reads that run's view first, as the desktop's rows and the phone's restore do. Before, the open selected nothing and the run screen never opened;
+     - peer run: a message and an interrupt get their ids from `createRandomId`. `crypto.randomUUID` is missing on the phone's trusted private HTTP pairing (MSP-06);
+     - phone restore after a reload: a tree row (a Team's member, a delegated run) is a row of its listed run's tree, so the restore reads that tree first when the window has none (`ensureTreeOf`). It showed the list for a Team member (MSP-33);
+     - Org Settings (AFS-002): CR-461-095's guard keeps Settings open while a copy the Org delegated binds. Since SR-084 the pick is the store's (`selectedRowKey`), not the Org's own selection, so the guard missed it and Settings closed.
+- Triage, the rest (probe, for API/E2E; evidence in IMP-116 … IMP-118):
+  - CFR CF-002/003/004/005/007/008: the probe expects the old owners (`agent-collaborations/<host>/…`; `agent-org-runs/…` for an Org's task agent). The product writes under each run's own owner (CR-461-106).
+  - CFR CF-009: its premise (a tree change leaves the pending Org task agent with no upload owner) cannot occur under rule 2: the task agent is its own run, with its own owner.
+  - DLD DCP-005, DCR-002/003, DLP-003/004/007, AFS-001: Settings rows have been keyed by tree row key (`run-member-${node.key}`) since SR-084 step 2f (`431823213c`, before the reviewed head). The probe parses `<address>@<agentRunId>` and counts `run-member-/…`. DCR-002's duplicated `/pair` rows come from that: the probe's `covered` set never matches, so the Team copy is walked twice.
+  - DLD DCR-001: it waits for the copy inside the delegating Team's `executionTree`. Since design step 6 a Team tree has no `taskExecutions` lists; the copy is its own run, listed in the run tree.
+  - PMU-019: the editor opens (the center shows it), but the probe reads the root Team's focused member, which rule 2 does not change.
+  - PMU-021: Tab reaches the agent row's disclosure button (CR-461-104) before the summary; the button is a real control.
+  - PMU-024: it holds `task_executions_closed` on `/ws/agent-collaboration/`; since SR-084 a row leaves through the run stream's tree change, which that hold does not delay.
+  - MSP-02: it expects a member's delegated run beside the member (ticket 277's DEC-009); the design nests each row under its delegator (design-spec, "Each row carries its parent … nests it under its delegator"), on the desktop and the phone alike.
+  - MSP-03/05/07: the Org's own member is keyed `org_agent:<org>:<agent>`; the probe builds `org:<org>/agent:<agent>`.
+  - MSP-29: a peer run's row is keyed `peer_agent:<agent>`; the probe builds `agent:<agent>`.
+  - MSP-20/24 read view re-reads that tree changes replaced (SR-084); MSP-22 expects the catch-up read that SR-087 removed.
+- Tests (each new case was also run against the code before its fix, and fails there):
+  - server: `run-status-service.test.ts`, a newly held peer entry whose observation ended is asked once, a live one is not (IMP-115);
+  - web, CR-461-106: `composerDraftOwner.spec.ts` (each `browse` kind's owner); the composer specs' targets carry `browse`, and delegated children use their own owners;
+  - web, CR-461-108: `teamRowsAboveAgent.spec.ts` (`teamRowsAboveAgent`, `rowsToUnfoldFor`); `useRunListDisclosure.spec.ts` (the Team reveal; the Org pick selected, the Org row not, the rows above it and its Team row unfolded); `AgentRunTaskRowsSelect.spec.ts` (the coordinator's row selected, not the Team row); the row, panel and Org specs (a click unfolds and never folds; the chevron folds); the Task card (the opened Team expanded);
+  - web, CR-461-109: `agentOrgRouteAgent.spec.ts` (the row leaves; the view returns to the delegating Org agent);
+  - web, CR-461-110: `ExistingRunConfigEditor.subject.spec.ts` (a Team's and an Org's delegated pick);
+  - web, triage: `useMobileRunTreeRevealRow.spec.ts` (an Org agent's delegated runs beside it), `useMobileRunOpening.spec.ts` (the view read first, once), `useMobileSubjectRestore.spec.ts` (a Team member waits for its Team's tree), `delegatedRunsStore.spec.ts` (a peer send without `crypto.randomUUID`), `AgentOrgWorkspaceView.spec.ts` (Settings stay open while the picked copy binds).
+- Validation:
+  - web type gate PASS (87 at baseline); the whole web suite `Tests  5613 passed | 2 skipped`; electron 491 passed, plus one real-subprocess timing test that failed under the full run and passes alone (`electron/` unchanged);
+  - server type gate PASS (1012 at baseline); `pnpm test:unit` `Tests  8117 passed | 9 skipped` (IMP-119);
+  - probes (IMP-116 … IMP-118): RTP all Pass (RTP-06 included), BR-001/002/003 Pass, PMU-003/012/016/018 Pass, DCP-002/003 and AFS-002 Pass, MSP-06/33/46/52/53 Pass. The rest are the triage's probe items above.
+- Classification: Large / High, unchanged. The changes stay in the web's selection, reveal, Settings and phone paths, and in one server status entry; no contract, persistence or boundary changed.
+- Shared `dist` folders: the server's was rebuilt from this tree for the probes (no traces; the CR-461-107 traces were removed before the build). The phone bundle was rebuilt three times; its last build is from the final web tree. Contracts and `autobyteus-ts/dist` were not rebuilt. API/E2E's uncommitted `team-status-live-probe.mjs` was in the worktree throughout; it is not part of IR-038 and was not touched.
+- Next recipient: Code Reviewer.
