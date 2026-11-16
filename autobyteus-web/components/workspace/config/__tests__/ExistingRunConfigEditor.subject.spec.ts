@@ -19,6 +19,9 @@ const mocks = await vi.hoisted(async () => {
       fieldErrors: [], modelOptionsByAddress: {}, dirty: false, canSave: false, clear: vi.fn(), loadTeamCanonical: vi.fn(), loadAgentOrgCanonical: vi.fn() }),
     teamFocus: ref('lead-run'),
     orgSelection: ref<unknown>(null),
+    /** The Team's or the Org's selected delegated row (CR-461-110). */
+    teamDelegated: ref<{ agentRunId: string } | null>(null),
+    orgDelegatedKey: ref<string | null>(null),
   }
 })
 vi.mock('pinia', async (original) => {
@@ -34,10 +37,12 @@ vi.mock('~/stores/agentDefinitionStore', () => ({ useAgentDefinitionStore: () =>
 vi.mock('~/stores/llmProviderConfig', () => ({ useLLMProviderConfigStore: () => ({ modelConfigSchemaByIdentifier: () => null }) }))
 vi.mock('~/stores/agentTeamContextsStore', () => ({ useAgentTeamContextsStore: () => ({
   // The run's view holds its rows (SR-083): here, the draft's tree.
+  delegatedFocusOf: () => mocks.teamDelegated.value,
   getTeamContextById: () => ({ view: { getFocusedAgentRunId: () => mocks.teamFocus.value, getClosedTaskExecutions: () => [],
     getExecutionTree: () => (mocks.store as { draft?: { executionTree?: unknown } } | null)?.draft?.executionTree } }),
 }) }))
 vi.mock('~/stores/agentOrgContextsStore', () => ({ useAgentOrgContextsStore: () => ({
+  selectedRowKey: () => mocks.orgDelegatedKey.value,
   contextFor: () => ({ selection: mocks.orgSelection.value, index: { selectedAgent: () => ({ agentRunId: 'coordinator-of-selected-team' }) },
     get executionTree() { return (mocks.store as { draft?: { executionTree?: unknown } } | null)?.draft?.executionTree } }),
 }) }))
@@ -69,6 +74,8 @@ beforeEach(() => {
   mocks.store.dirty = false
   mocks.teamFocus.value = 'lead-run'
   mocks.orgSelection.value = null
+  mocks.teamDelegated.value = null
+  mocks.orgDelegatedKey.value = null
 })
 
 describe('ExistingRunConfigEditor: the focused agent', () => {
@@ -118,5 +125,20 @@ describe('ExistingRunConfigEditor: the focused agent', () => {
     expect(view.props('unsavedNames')).toEqual([mocks.store.draft.executionTree.root_team.team_definition_name])
     mocks.store.draft = edited('/reviewer'); await flushPromises()
     expect(view.props('unsavedNames')).toEqual(['reviewer'])
+  })
+
+  it('CR-461-110: a Team copy the Team delegated, selected in its tree, shows that copy\'s own Settings, not the delegating Team\'s', async () => {
+    const { useRunTreeStore } = await import('~/stores/runTreeStore')
+    const launch = { runtimeKind: 'autobyteus', llmModelIdentifier: 'copy-model', llmConfig: null, autoExecuteTools: false, workspaceRootPath: null, source: null, ownSource: true }
+    useRunTreeStore().streamSnapshot({ kind: 'agent_team', runId: 'team-1' }, [
+      { key: 'team:team-1', parentKey: null, depth: 0, kind: 'team', name: 'home', address: null, openTarget: { runKind: 'agent_team', runId: 'team-1', agentRunId: 'lead-run' }, statusIds: ['team-1'] },
+      { key: 'team_member:team-1:lead-run', parentKey: 'team:team-1', depth: 1, kind: 'team_member', name: 'lead', address: '/lead', openTarget: { runKind: 'agent_team', runId: 'team-1', agentRunId: 'lead-run' }, statusIds: ['lead-run'] },
+      { key: 'team:copy', parentKey: 'team_member:team-1:lead-run', depth: 2, kind: 'team', name: 'copy', address: '/copy_team', openTarget: { runKind: 'agent_team', runId: 'copy', agentRunId: 'copy-lead' }, statusIds: ['copy'], launch },
+      { key: 'team_member:copy:copy-lead', parentKey: 'team:copy', depth: 3, kind: 'team_member', name: 'copy lead', address: '/copy_team/lead', openTarget: { runKind: 'agent_team', runId: 'copy', agentRunId: 'copy-lead' }, statusIds: ['copy-lead'], launch },
+    ])
+    const view = mountEditor()
+    expect(view.props('subject')).toMatchObject({ origin: 'member', subject: { agentRunId: 'lead-run' } })
+    mocks.teamDelegated.value = { agentRunId: 'copy-lead' }; await flushPromises()
+    expect(view.props('subject')).toMatchObject({ origin: 'delegated', subject: { agentRunId: 'copy-lead' }, group: { key: 'team:copy' } })
   })
 })

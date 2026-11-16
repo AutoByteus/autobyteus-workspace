@@ -66,6 +66,7 @@ import { useExistingRunConfigStore } from '~/stores/existingRunConfigStore'
 import { useLLMProviderConfigStore } from '~/stores/llmProviderConfig'
 import { useRunHistoryStore } from '~/stores/runHistoryStore'
 import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore'
+import { useRunTreeStore } from '~/stores/runTreeStore'
 import { useAgentRunCollaborationStore } from '~/stores/agentRunCollaborationStore'
 import { delegatedRowsByKey, type DelegatedRowControl } from '~/utils/runSettings/delegatedLaunchRows'
 import { useDelegatedRunRows } from '~/composables/runSettings/useDelegatedRunRows'
@@ -254,13 +255,24 @@ const delegatedByKey = computed(() => delegatedRowsByKey(delegatedRows.value))
 const delegatedSaveTargets = delegated.saveTargets
 watch(delegatedSaveTargets, (targets) => delegatedDraft.setTargets(targets), { immediate: true })
 
-/** The agent focused in the left tree: a hub's selected copy or the hub itself, a Team's focused member, an Org's selection. */
+/**
+ * The agent focused in the left tree: a hub's selected copy or the hub itself; a Team's or an Org's selected delegated row
+ * (its copy, CR-461-110), else the Team's focused member or the Org's selection.
+ */
 const focusedAgentRunId = computed<string | null>(() => {
   const current = draft.value
   if (!current) return null
   if (current.kind === 'agent') return useAgentRunCollaborationStore().selectedChild(current.runId) ?? current.runId
-  if (current.kind === 'team') return useAgentTeamContextsStore().getTeamContextById(current.teamRunId)?.view.getFocusedAgentRunId() ?? null
-  const org = useAgentOrgContextsStore().contextFor(current.orgRunId)
+  if (current.kind === 'team') {
+    const teams = useAgentTeamContextsStore()
+    return teams.delegatedFocusOf(current.teamRunId)?.agentRunId ?? teams.getTeamContextById(current.teamRunId)?.view.getFocusedAgentRunId() ?? null
+  }
+  const orgContexts = useAgentOrgContextsStore()
+  const delegatedKey = orgContexts.selectedRowKey(current.orgRunId)
+  if (delegatedKey) {
+    return useRunTreeStore().rowsOf({ kind: 'agent_org', runId: current.orgRunId }).find((row) => row.key === delegatedKey)?.openTarget?.agentRunId ?? null
+  }
+  const org = orgContexts.contextFor(current.orgRunId)
   if (!org?.selection) return null
   return org.selection.kind === 'agent_execution' ? org.selection.agentRunId : org.index.selectedAgent(org.selection)?.agentRunId ?? null
 })
