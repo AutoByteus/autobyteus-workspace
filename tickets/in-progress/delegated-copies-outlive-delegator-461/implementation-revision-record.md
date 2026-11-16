@@ -1459,3 +1459,4 @@ The current code and `implementation-handoff.md` remain authoritative.
 - Validation: the reviewer's scan `evidence/code-review/CRR-064-names-in-neither-tree.sh` (names in neither tree that 461's own history added and removed) now prints only `REMOTE_PEER`, the base's doc and not 461's; delivery's base-versus-branch scan (`/tmp/docscan2.py`) is unchanged (no unexplained line). Both scans are part of my docs check from now on.
 - Classification: Large / High, unchanged. No code changed.
 - Next recipient: Code Reviewer (light docs delta; then delivery; no API/E2E, per CRR-064).
+- Review result: **Pass**, CRR-065 (Code Reviewer, round 43): CR-461-117 and CR-461-118 resolved; the dispatcher call (`send-message-to-dispatcher.ts:115`) matches the docs. The package is back with delivery. Informational; no implementation action.
