@@ -203,6 +203,16 @@ gh run watch <run-id> --exit-status       # about 25 minutes
 
 ## Cutting The Release
 
+Before the script, record the migrations this release ships. In
+`autobyteus-server-ts/tests/unit/app-data-migrations/app-data-migration-registry-order.test.ts`,
+set `RELEASED` to the registry as it will be released, in its order, and name
+the version and its commit in the comment above it. Run that test, and commit
+it on the finalize branch (`test(app-data-migrations): released set as of
+vX.Y.Z[-beta.N]`). The data migration guideline's "Registry order and late
+predecessors" (`autobyteus-server-ts/docs/design/data_migration_guideline.md`)
+makes this list the rule that no new migration runs ahead of a released one.
+A release that adds no migration leaves it unchanged.
+
 The release script refuses to run unless the worktree is clean, including
 untracked files, so delete the untracked `*/dist/` folders first. Run it on the
 finalize branch with `--no-push`, then push the branch and the tag yourself:
