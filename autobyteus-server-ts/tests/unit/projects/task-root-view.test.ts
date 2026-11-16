@@ -44,8 +44,7 @@ describe("Task roots: recorded address, reader/writer, and views", () => {
     ] }, "t");
     const resolve = vi.fn(() => "running" as const);
     const root = latestAssignedEntry(file)!;
-    // SR-091: the card names the worker as its row and its own view do, its slot, from the server.
-    expect(buildTaskRootView(root, resolve, null)).toEqual({ kind: "agent", recipientAddress: "/second", displayName: "second", ingressAgentRunId: "second", teamRunId: null,
+    expect(buildTaskRootView(root, resolve, null)).toEqual({ kind: "agent", recipientAddress: "/second", displayName: null, ingressAgentRunId: "second", teamRunId: null,
       delegatingRun: { kind: "agent_team", runId: "team-root" }, topRun: null, openTarget: { runKind: "agent", runId: "second", agentRunId: "second" },
       start: "failed", startError: { code: "NO_MODEL", message: "No model is set." }, closed: false, status: "offline" });
     expect(resolve).not.toHaveBeenCalled();
@@ -114,5 +113,14 @@ describe("Task roots: recorded address, reader/writer, and views", () => {
       expect(listed[0]!.root).toMatchObject({ start: "starting", recipientAddress: "/writer" });
       expect(warn).toHaveBeenCalledWith("AD_HOC_TASK_UNREADABLE", { folder: "not-a-task" });
     });
+  });
+
+  // SR-091: the card names the worker as its row and its own view do, with the composition's one name rule.
+  it("names the worker by the name resolver the composition binds (its slot), from the address it was delegated to", () => {
+    const entry = latestAssignedEntry(parseTaskExecutionResourceFile({ taskId: "t", agentRunResources: [
+      stored({ recipientAddress: "/squad/release_writer", agentRun: { kind: "agent", agentRunId: "w" } })] }, "t"))!;
+    const nameOf = (address: string | null) => (address ? `slot of ${address}` : null);
+    expect(buildTaskRootView(entry, () => "idle", null, nameOf).displayName).toBe("slot of /squad/release_writer");
+    expect(buildTaskRootView(entry, () => "idle", null).displayName).toBeNull();
   });
 });

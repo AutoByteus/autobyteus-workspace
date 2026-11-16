@@ -3,7 +3,7 @@ import type { ProjectTask, ProjectTaskView, TaskRootView, TaskWithoutProjectView
 import { projectTaskFileLocator, type ProjectTaskContextFile, type ProjectTaskContextFileView } from "../domain/project-task-context.js";
 import type { ProjectTaskContextStore } from "../context/project-task-context-store.js";
 import type { TaskExecutionResourceService } from "./task-execution-resource-service.js";
-import { buildTaskRootView, type TaskTopRunResolver, type TaskWorkerStatusResolver } from "./task-root-view-builder.js";
+import { buildTaskRootView, type TaskDisplayNameResolver, type TaskTopRunResolver, type TaskWorkerStatusResolver } from "./task-root-view-builder.js";
 
 /**
  * ProjectTaskService's client views of Tasks (GraphQL and the change feed): a Project Task with its key,
@@ -16,6 +16,7 @@ export class ProjectTaskViews {
     private readonly workerStatus: TaskWorkerStatusResolver,
     /** Where a worker's row is listed (SR-080); null when the tree is not known: no card opens. */
     private readonly topRun: TaskTopRunResolver | null,
+    private readonly displayName: TaskDisplayNameResolver | null = null,
   ) {}
 
   async projectTask(projectId: string, task: ProjectTask): Promise<ProjectTaskView> {
@@ -34,6 +35,6 @@ export class ProjectTaskViews {
   }
   private root(taskId: string): TaskRootView | null {
     const root = this.resources.latestAssignment(taskId);
-    return root ? buildTaskRootView(root, this.workerStatus, this.topRun) : null;
+    return root ? buildTaskRootView(root, this.workerStatus, this.topRun, this.displayName) : null;
   }
 }

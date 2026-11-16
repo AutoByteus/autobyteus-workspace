@@ -21,7 +21,7 @@ import { TaskExecutionResourceService, type TaskAssignmentViews } from "./task-e
 import { TaskExecutionResourceStore } from "../stores/task-execution-resource-store.js";
 import { getProjectChangePublisher, type ProjectChangeMarks } from "../changes/project-change-publisher.js";
 import type { TaskChangeView } from "../changes/project-change-messages.js";
-import { rootWorkerStatus, type TaskTopRunResolver, type TaskWorkerStatusResolver } from "./task-root-view-builder.js";
+import { rootWorkerStatus, type TaskDisplayNameResolver, type TaskTopRunResolver, type TaskWorkerStatusResolver } from "./task-root-view-builder.js";
 import { ProjectTaskViews } from "./project-task-views.js";
 import { TaskRelationWrites, type SuppliedTaskRelations } from "./task-relation-writes.js";
 import { NO_PART_CLOSURE, TaskPartClosure, type PartClosureResult } from "./task-part-closure.js";
@@ -54,6 +54,8 @@ type Dependencies = {
   workerStatus?: TaskWorkerStatusResolver;
   /** The run at the top of a worker's tree, where its row is listed (SR-080, composition-bound); absent means no card opens. */
   topRun?: TaskTopRunResolver;
+  /** A worker's name, as its row and its own view name it (SR-091, composition-bound); absent means no name. */
+  displayName?: TaskDisplayNameResolver;
   /** Search index cleanup after a committed delete (composition-bound; never throws or waits); absent means no index. */
   searchCleanup?: ProjectTaskSearchCleanup;
 };
@@ -91,7 +93,7 @@ export class ProjectTaskService implements TaskExecutionResourcePort {
   private get relations() { return new TaskRelationWrites(() => this.store, () => this.changes, this.references); }
   /** A part closes through this service's own update, with the cascade off (a part has no parts). */
   private get partClosure() { return new TaskPartClosure(() => this.store, (projectId, taskId, status) => this.update(projectId, taskId, { status }, noContextChange, false)); }
-  private get views() { return new ProjectTaskViews(this.context, this.resources, this.workerStatus, this.deps.topRun ?? null); }
+  private get views() { return new ProjectTaskViews(this.context, this.resources, this.workerStatus, this.deps.topRun ?? null, this.deps.displayName ?? null); }
   private get eligibility() { return new TaskAssignmentEligibility(() => this.store, this.adHocTasks, this.resources); }
   private nowIso(): string { return (this.deps.now?.() ?? new Date()).toISOString(); }
 
@@ -446,7 +448,7 @@ let singleton: ProjectTaskService | null = null;
 /** The process instance; an uninitialized process (tests, tool-only contexts) gets an unbound instance. */
 export const getProjectTaskService = (): ProjectTaskService => singleton ??= new ProjectTaskService();
 /** Called once by the process composition before any getProjectTaskService(); fails fast otherwise. */
-export const initializeProjectTaskServiceProcessInstance = (deps: Pick<Dependencies, "taskExecutionResources" | "adHocTasks" | "requestRelease" | "workerStatus" | "topRun" | "searchCleanup" | "changes">): ProjectTaskService => {
+export const initializeProjectTaskServiceProcessInstance = (deps: Pick<Dependencies, "taskExecutionResources" | "adHocTasks" | "requestRelease" | "workerStatus" | "topRun" | "displayName" | "searchCleanup" | "changes">): ProjectTaskService => {
   if (singleton) throw new Error("The process ProjectTaskService is already initialized.");
   return singleton = new ProjectTaskService(deps);
 };

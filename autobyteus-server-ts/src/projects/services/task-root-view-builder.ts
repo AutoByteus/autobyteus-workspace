@@ -1,5 +1,4 @@
 import type { TaskExecutionReference } from "../../agent-collaboration/execution/task/task-execution-reference.js";
-import { displayNameOf } from "../../agent-collaboration/delegation/collaboration-tree.js";
 import type { RootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import type { TaskRootStatus, TaskRootView } from "../domain/models.js";
 import type { TaskExecutionResource, TaskExecutionResourceFile } from "../domain/task-execution-resources.js";
@@ -11,6 +10,11 @@ import type { TaskExecutionResource, TaskExecutionResourceFile } from "../domain
 export type TaskWorkerStatusResolver = (execution: TaskExecutionReference) => TaskRootStatus | null;
 /** The run at the top of a run's tree (`DelegationIndex.topOf`, composition-bound, SR-080): where its row is listed. */
 export type TaskTopRunResolver = (execution: TaskExecutionReference) => RootExecutionIdentity;
+/**
+ * A worker's name from the address it was delegated to (composition-bound, SR-091: the one `displayNameOf` that names its
+ * row and its own view); null when the address was not kept. Projects keeps to the neutral contracts.
+ */
+export type TaskDisplayNameResolver = (recipientAddress: string | null) => string | null;
 
 /** The Task's root: its latest `assigned` entry (file order is link order); null when never assigned. */
 export const latestAssignedEntry = (file: TaskExecutionResourceFile | null): TaskExecutionResource | null => {
@@ -48,13 +52,14 @@ const openTargetOfEntry = (entry: TaskExecutionResource): TaskRootView["openTarg
   return { runKind: "agent_team", runId: entry.execution.teamRunId, agentRunId: entry.teamCoordinatorAgentRunId, ...node };
 };
 
-export const buildTaskRootView = (entry: TaskExecutionResource, resolve: TaskWorkerStatusResolver, topOf: TaskTopRunResolver | null): TaskRootView => {
+export const buildTaskRootView = (entry: TaskExecutionResource, resolve: TaskWorkerStatusResolver, topOf: TaskTopRunResolver | null,
+  nameOf: TaskDisplayNameResolver | null = null): TaskRootView => {
   const team = "teamRunId" in entry.execution;
   const top = topOf ? topOf(entry.execution) : null;
   return {
     kind: team ? "team" : "agent",
     recipientAddress: entry.recipientAddress ?? null,
-    displayName: displayNameOf({ delegated: true, address: entry.recipientAddress }),
+    displayName: nameOf ? nameOf(entry.recipientAddress ?? null) : null,
     ingressAgentRunId: "agentRunId" in entry.execution ? entry.execution.agentRunId : entry.teamCoordinatorAgentRunId!,
     teamRunId: "teamRunId" in entry.execution ? entry.execution.teamRunId : null,
     delegatingRun: { kind: entry.delegatedFrom.delegatingRun.rootSubjectKind, runId: entry.delegatedFrom.delegatingRun.rootRunId },

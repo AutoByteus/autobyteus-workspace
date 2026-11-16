@@ -17,6 +17,7 @@ import path from "node:path";
 import { RunStatusService } from "../agent-collaboration/execution/run-status-service.js";
 import { ChildRowsFeed } from "../agent-collaboration/delegation/child-rows-feed.js";
 import { DelegationIndex } from "../agent-collaboration/delegation/delegation-index.js";
+import { displayNameOf } from "../agent-collaboration/delegation/collaboration-tree.js";
 import { CrossRunMessageDelivery } from "../agent-collaboration/communication/cross-run-message-delivery.js";
 import { DelegatedRunStarter } from "../agent-collaboration/execution/delegation/delegated-run-starter.js";
 import { RemoteDelegation } from "../agent-collaboration/execution/remote/remote-delegation.js";
@@ -163,6 +164,8 @@ export const composeCollaboration = async (input: Readonly<{
       workerStatus: (run) => runControl.ownStatus(run),
       // Where a worker's row is listed: the top of its tree (SR-080).
       topRun: (run) => tree.topOf(runIdentityOf(run)),
+      // A worker's name, as its row and its own view name it: its slot (SR-091).
+      displayName: (address) => displayNameOf({ delegated: true, address }),
       searchCleanup: processProjectTaskSearchCleanup,
       changes: taskChangeMarks,
     });
