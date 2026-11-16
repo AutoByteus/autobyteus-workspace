@@ -65,6 +65,8 @@
 | CRR-059 | `code-review-report.md` | API/E2E failure-origin review / API-REV-019 | Pass (CRR-058) | Fail: Local Fix ×2 | CR-461-114, -115 new; one observation held |
 | CRR-060 | `code-review-report.md` | Implementation Review, round 40 (Targeted Delta) / IR-040 | Fail (CRR-059) | Pass | CR-461-114 … -116 resolved |
 | CRR-061 | `api-e2e-test-review-report.md` | Proportional test-code review / API-REV-020 (and the failed rounds 18–19's changes) | Pass (CRR-060) | Pass | None |
+| CRR-062 | `code-review-report.md` | Merge review, round 41 (Targeted Delta) / IR-041, base `1e8b6e5d0a` | Pass (CRR-061) | Pass | None |
+| CRR-063 | `api-e2e-test-review-report.md` | Proportional test-code review / API-REV-021 (merged state) | Pass (CRR-062) | Pass | None; two stale comment IDs for delivery |
 
 ## Revision Entries
 
@@ -1842,3 +1844,51 @@ None changed (CR-461-001 … CR-461-005 open as in CRR-003).
   - surface notes: a team row's status is its own members' (SR-082), nesting under the delegating member (SR-084), the runtime notice shown live at its stored place (CR-461-116);
   - base's desktop build doesn't start (a base packaging issue);
   - the follow-ups in `follow-ups.md`, with the suggested grouping.
+
+### CRR-062: Merge review of IR-041 (the base `1e8b6e5d0a`): Pass
+- Review entry point and round: implementation review, round 41 (a base-merge Local Fix from delivery)
+- Review scope: Targeted Delta, `c48e331924..339602ff36`: the merge `0f3ae7eca8` (it carries another agent's docs message) and `33c9ce8d04`
+- Triggering role, report path, and finding or scenario IDs: Implementation Engineer, `implementation-handoff.md` (IR-041, IMP-127); delivery's base-integration block
+- Relevant solution revision IDs: SR-091 (unchanged)
+- Relevant architecture-review revision IDs: N/A
+- Relevant implementation revision IDs: IR-041
+- Relevant API/E2E revision IDs: API-REV-020
+- Relevant delivery revision IDs: the delivery engineer's base-integration block (`release-deployment-report.md`)
+- Prior authoritative result: Pass (CRR-061)
+- Current authoritative result: Pass
+- What changed in the review result and why:
+  - The remerge diff shows only the five conflict files plus the docs edit beyond git's automatic merge. Every resolution keeps both sides' intent.
+  - CF-009 stays retired.
+  - CF-013 reads the delegated run's own draft folder.
+  - `context-files.ts` carries 461's delta unchanged beside the base's size limits.
+- Supported product scenario / material-premise basis changes: none
+- Prior finding resolution: N/A
+- New or remaining finding IDs: none
+- Material score or classification changes: none
+- Recommended recipient: `/software_engineering_team/api_e2e_engineer`, for the full server E2E folder and the RRT-05 comparison, 5 runs each, base `1e8b6e5d0a` against the branch
+- Remaining risks or uncertainty: whether RRT-05 is pre-existing, which that comparison settles
+
+### CRR-063: Proportional test-code review after API-REV-021 (merged state): Pass
+- Review entry point and round: successful API/E2E test-code review (round 21, on `339602ff36`)
+- Review scope: `f1f8ffc643` (`mobile-shell-probe.mjs`, `mobile-stopped-delegator-cases.mjs`); `dc00f57d64`, `2ecdb8b356`, `8df4a7ee41`, `67d8ea56bc` stand from CRR-061
+- Triggering role, report path, and finding or scenario IDs: API/E2E Engineer, `api-e2e-execution-coverage-report.md` (API-REV-021)
+- Relevant solution revision IDs: SR-091 (unchanged)
+- Relevant architecture-review revision IDs: N/A
+- Relevant implementation revision IDs: IR-041
+- Relevant API/E2E revision IDs: API-REV-021
+- Relevant delivery revision IDs: N/A
+- Prior authoritative result: Pass (CRR-062)
+- Current authoritative result: Pass
+- What changed in the review result and why:
+  - 461's phone stopped-delegator cases are renumbered MSP-53…55 → MSP-56…58, after the base's context-file size cases took those IDs.
+  - The probe's duplicate-ID check now reads `journey('ID'` too.
+  - The full server E2E folder passes: 886/0.
+  - RRT-05 matches the base: 15/15 across three trees. F-72 stays closed.
+- Supported product scenario / material-premise basis changes: none
+- Prior finding resolution: N/A
+- New or remaining finding IDs: none
+- Material score or classification changes: none
+- Recommended recipient: `/software_engineering_team/delivery_engineer`
+- Remaining risks or uncertainty, for delivery:
+  - Two comments still cite MSP-53 for the stopped-delegator journey; it is now MSP-56. They are in `autobyteus-web/composables/mobile/useMobileRunOpening.ts:101` and `autobyteus-web/composables/mobile/__tests__/useMobileRunOpening.spec.ts:143`. The fix is comment-only.
+  - CRR-061's notes stand: the stale doc line `agent_teams.md:315`, the surface notes, base's desktop build, and the follow-ups. Grok is FU-035.

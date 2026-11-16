@@ -135,3 +135,11 @@ Withdrawn (not to send): FU-001, FU-003, FU-004, FU-005, FU-008, FU-009, FU-012,
 - **FU-034 (the full server-built tree) is moved into this ticket again** by the user's decision of 2026-11-15 (SR-084), and is **not** to be sent as a separate Task. FU-024, FU-026 and FU-031 are done (SR-082/083).
 - *Superseded by SR-084 (the line above): FU-034 is moved into 461 again.* **Update (SR-083, 2026-11-14):** FU-026 (statuses by run ID), FU-031 (one row behavior) and FU-024 (no `members[0]`) are done in 461 through the server-decided `openTarget` and `/ws/run-status`. **FU-034 (the full server-built tree that replaces the client builders) stays a follow-up.** The user asked whether its benefit was worth its cost here, and the Solution Designer judged it not worth it in this ticket.
 
+
+## FU-035 — Grok: a refused tool call reaches the agent only as "Tool execution failed." (the user's decision: out of 461's scope)
+
+- **Found by:** API/E2E (API-REV-020 addendum, `2542974ae7`); recorded by the Code Reviewer.
+- **What is wrong, where:** on `grok_build`, when the server refuses a tool call, the agent sees only "Tool execution failed.". `grok-build-tool-projection.ts` falls back to that text when Grok's tool result carries none, so the server's reason and guidance never reach the model.
+- **Why it is outside this ticket:** 461 changed neither the Grok backend nor the error path (the two MCP adapters only defer a lookup). Base's own run failed earlier, on its first turn, so base is unproven. The user decided it's a follow-up.
+- **Urgent:** No.
+- **Suggested Task description:** a refused tool call on `grok_build` carries the server's refusal text and guidance to the agent, as the other runtimes do. **Done when:** a live Grok run shows the server's reason for a refused call, with a test.

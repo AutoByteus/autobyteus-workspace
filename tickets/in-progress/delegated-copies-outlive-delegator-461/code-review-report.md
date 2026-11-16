@@ -1,6 +1,71 @@
 # Code Review Report: autobyteus-461 (delegated runs are runs of their own)
 
-The latest implementation result is round 40 (CRR-060, Pass). It comes first. CRR-059, round 35's full review (CRR-051) and earlier results follow as history, with their finding IDs reused. API/E2E round 20 passed (94%). The proportional test-code reviews (CRR-050; the latest, CRR-061, Pass) are in `api-e2e-test-review-report.md`, and the package goes to delivery.
+The latest implementation result is round 41 (CRR-062, Pass): the merge of the latest base. It comes first. Round 40 (CRR-060), CRR-059, round 35's full review (CRR-051) and earlier results follow as history, with their finding IDs reused. API/E2E round 20 passed (94%). API/E2E round 21 passed on the merged state (95%; the full server E2E folder, and RRT-05 matching the base). The proportional test-code reviews (CRR-050, CRR-061; the latest, CRR-063, Pass) are in `api-e2e-test-review-report.md`, and the package goes to delivery.
+
+## Round 41: Merge Review Of IR-041, The Base `1e8b6e5d0a` (CRR-062)
+
+- Review Entry Point: `Implementation Review` (base-merge Local Fix from delivery). Current Code Review Revision ID: `CRR-062`; Current Review Round: `41`.
+- Review Scope: `Targeted Delta Review` of the merge, `c48e331924..339602ff36`:
+  - `0f3ae7eca8`, the merge (parents `ae09bc8473` and `1e8b6e5d0a`). It carries another agent's docs message, because that commit landed while the merge was staged. History is not rewritten, and IR-041 records why.
+  - `33c9ce8d04`: two merge interactions.
+  - 461's own source is unchanged. A Full Re-Audit isn't needed: the review asks whether the merge kept both sides, not whether 461's design changed.
+- Classification: task_size `Large`, architectural_risk `High`, unchanged.
+- **Method:**
+  - `git show --remerge-diff 0f3ae7eca8` shows what the merge commit adds beyond git's automatic merge: the five conflict files and the docs edit, nothing else.
+  - `git diff 1e8b6e5d0a HEAD` checks 461's delta on top of the new base for the areas both sides touched.
+  - `origin/personal` (`1e8b6e5d0a`) is an ancestor of the head.
+
+**The conflict resolutions: correct.**
+1. `context-files.integration.test.ts`: the base's plain `multipart` (its limits now live in the route) and 461's `registerContextFileRoutes(scope, noDelegations())`.
+2. `project-task-context-store.test.ts`, `mobile-shell-probe.mjs`: the union of both sides' imports. Both runners are called in the merged body (`runContextFileSizeCases` at line 2524).
+3. `composer-context-file-removal-probe.mjs`:
+   - The base's CF-013 and CF-014 are taken.
+   - The base's CF-009 is left out: its function, header and registry entry. That is correct, because CF-009's premise (a pending Org task agent with no upload owner) can't occur under rule 2 (CRR-056).
+   - CF-013 now reads `copyOwnDir(world.agentCopy)` rather than the pre-461 `collabDir`. That is the delegated run's own draft folder, as 461's other cases read it (CR-461-106). `copyOwnDir` and `openAgentCopy` exist in the probe.
+   - CF-014 uses only `openAgentCopy` and the settings page, with no hosting-era paths.
+4. `memory-sync-task-agent-layout.test.ts`: deleted. 461 removed it with the hosted-copy fixtures it needs, and the base's only change to it was one dropped assertion. Nothing of the base's intent is lost.
+- **The base's new phone cases:** `mobile-context-file-size-cases.mjs` has no Org, task-agent, hosting or delegation assumptions, so it needs no change.
+
+**The merge interactions (`33c9ce8d04`): correct.**
+- **The base's `context-file-size-limits.integration.test.ts`:** it now registers the routes with `noDelegations()`, as 461's route signature needs.
+- **The Codex projection test:** the base had already added `workspaceSkills: createTestRunWorkspaceSkills({ runId })`, so 461's `workspaceSkills: null` became a duplicate key. Keeping the base's fixture is right.
+
+**`src/api/rest/context-files.ts` (auto-merged): correct.**
+- On top of the base, 461's delta is exactly its original one:
+  - the route takes `Pick<DelegationIndex, "childrenOf">`;
+  - `agents:` resolves through `DelegatedChildLocations`.
+- The base's size limits (`GET /context-files/size-limits`, the upload cap, limits passed to the upload service) sit beside it untouched.
+- The limits are per file type, not per owner. A delegated run's upload under its own owner (rule 2) gets the same limits, so there is no design question.
+
+**Base changes in 461's areas.**
+- **Memory Sync:** the base's export reads `agents/` and `agent_teams/`, and every delegated run is an ordinary run there. 461 changes no Memory Sync source.
+- **The web typecheck gate:** 461's delta to `typecheck-baseline.json` only lowers or removes entries (files 461 fixed or deleted), never raises them. The base didn't change the gate scripts.
+- **The build:** the server `dist` was rebuilt at 21:26, after the last source commit, which replaces the output API/E2E's interrupted build removed.
+
+**Checks.**
+- I didn't rerun IMP-127; the merged tree hasn't changed since it ran:
+  - type gates at baseline (server 1012 in 316 files; web 87 in 37);
+  - `codegen:check` current;
+  - web 5678, electron 492;
+  - server unit 8204 passed, with 2 folder-watcher timing failures (FU-021; no watcher code in 461 or the merge);
+  - the integration suites for `api/rest`, `projects`, `run-history` and context files.
+- The full server E2E folder, RRT-05 and the probes are API/E2E's next round, as planned.
+
+**Candidate gate.** No candidate promoted. The merge commit's borrowed message is a history-labelling oddity, not a code concern. It is recorded in IR-041 and needs no rewrite of shared history.
+
+**Scorecard.** As round 40: overall 9.4, every category at 9.2 or above. The merge changes no 461 structure.
+
+**Findings.** None open.
+
+**For API/E2E (planned with the user and the delivery engineer):**
+1. The full server E2E folder, once, on the merged code (`339602ff36`).
+2. RRT-05, 5 runs each, at the current base `1e8b6e5d0a` (a separate base worktree) and on the branch. `827f1e68dc` is optional. If the base is clean and the branch flickers, F-72 / CR-461-093 reopens as 461's.
+3. The merged areas: CF-013 and CF-014 in the composer probe, and the base's phone context-file size cases, as you judge.
+4. **If it passes:** I do the proportional test-code review of that round's test changes, and the package goes to delivery.
+
+**Routing.** `Pass`. Recipient: `/software_engineering_team/api_e2e_engineer`. The Implementation Engineer is informed.
+
+---
 
 ## Round 40: Implementation Review Of IR-040 (CRR-060)
 

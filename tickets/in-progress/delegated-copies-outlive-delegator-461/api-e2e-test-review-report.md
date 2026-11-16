@@ -1,6 +1,46 @@
 # API/E2E Test Review Report: autobyteus-461
 
-The latest result is CRR-061, after API-REV-020. It comes first. CRR-050 follows as history.
+The latest result is CRR-063, after API-REV-021. It comes first. CRR-061 and CRR-050 follow as history.
+
+## API-REV-021 (CRR-063)
+
+### Review Meta
+- Entry point: proportional test-code review after a successful API/E2E round (round 21, on the merged state `339602ff36`; CRR-062).
+- Scope:
+  - `dc00f57d64`, `2ecdb8b356`, `8df4a7ee41` and `67d8ea56bc` were reviewed in CRR-061, and that result stands unchanged.
+  - New: `f1f8ffc643`, whose durable test changes are `mobile-shell-probe.mjs` and `mobile-stopped-delegator-cases.mjs`. The other files are the report, the revision record and evidence.
+- Result: **Pass**.
+
+### What the round established (not re-run here)
+- **The full server E2E folder:** 886 passed, 0 failed (193 files; 343 live-gated skips).
+- **RRT-05 base comparison, 5 runs each, alternating:**
+  - all 15 pass on `1e8b6e5d0a`, the branch and `827f1e68dc`;
+  - the title appears first on every tree, at 2–18 ms;
+  - the base and the branch behave the same, so F-72 / CR-461-093 stays closed.
+- **The composer probe:** 12/12, with CF-013 and CF-014.
+- **The phone cases MSP-53 … 58:** 6/6.
+- **Type gates:** at baseline.
+
+### Changed tests
+**The phone case-ID clash: correct fix.**
+- After the merge, the base's context-file size cases (`mobile-context-file-size-cases.mjs`, autobyteus-workspace-6) and 461's stopped-delegator cases both used MSP-53 … 55. The probe skips a repeated ID, so one set silently didn't run.
+- Renumbering 461's cases to MSP-56 … 58 is the right side to move, because the base's IDs are already released.
+- The start-up duplicate check now also reads `journey('ID'`. It catches the clash it missed, and the base's literal `runCase('MSP-53'` is still matched.
+- Header comments and the `ids` list agree with the new numbers.
+
+**Note for delivery:** two comments still point at the old number.
+- `autobyteus-web/composables/mobile/useMobileRunOpening.ts:101` and `autobyteus-web/composables/mobile/__tests__/useMobileRunOpening.spec.ts:143` cite "MSP-53" for the stopped-delegator journey. That ID is now the base's context-file size case, and the agent-root journey is **MSP-56**.
+- It's a comment-only correction with no behavior. Delivery can make it in its sync, so it doesn't need another loop.
+- (`context-file-size-limits-built-server.e2e.test.ts:18` also says MSP-53, but it is the base's own reference and is correct.)
+
+### Checklist
+- Organization and names clear: yes. Assertions prove the requirement: unchanged. Reuse: yes. Determinism: unchanged. No skipped or focused tests. Real triggers: unchanged.
+
+### Result
+- **Pass.** No findings.
+- Recipient: `/software_engineering_team/delivery_engineer`, with the two comment corrections above.
+
+---
 
 ## API-REV-020 (CRR-061)
 
