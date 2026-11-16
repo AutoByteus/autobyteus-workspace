@@ -98,7 +98,7 @@ export function useMobileRunOpening(disclosure: {
     else if (open.kind === 'team') await selection.onOpenTeamRun(open.team);
     else if (open.kind === 'treeRow' && open.entry.kind === 'agent') {
       // The one open path of a tree row (SR-084): where the server says, selected in its run's tree. The run's view is
-      // read first when the phone has not read it (a run the list shows but never opened, a stopped delegator: MSP-53),
+      // read first when the phone has not read it (a run the list shows but never opened, a stopped delegator: MSP-56),
       // as the desktop's rows read it when they show and the phone's restore reads it.
       if (!collaboration.contextFor(open.entry.runId)) await collaboration.inspect(open.entry.runId);
       if (openRunTarget(treeRefOf(open.entry), open.row)) await selection.onSelectRun(open.entry.run);

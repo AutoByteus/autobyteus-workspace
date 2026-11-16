@@ -140,7 +140,7 @@ describe('useMobileRunOpening', () => {
     expect(store.failure).toEqual({ key });
   });
 
-  // MSP-53: the phone lists a run it never opened (a stopped delegator); its row reads the run's view first, as the
+  // MSP-56: the phone lists a run it never opened (a stopped delegator); its row reads the run's view first, as the
   // desktop's rows do when they show, then selects in it. A run whose view is read already is not read again.
   it('a tree row of a run whose view the phone has not read reads it first, then selects in it', async () => {
     const { opening, inspect } = await setup();

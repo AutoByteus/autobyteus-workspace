@@ -311,8 +311,11 @@ concept: runs that earlier releases recorded as collaborators were converted at 
 these rows. Every copy, a catalog copy or a copy of a configured member, carries on its task DTO
 the `source` it started with. The view reads a copy's definition and launch settings only from
 that `source`, by run ID, never from the configured member at its address:
-- `agentSourceSelectors.teamAgentSourceOf` for the copy and its members: the started launch with the
-  copy's own model choice, else its Team's when the member's recorded `follows_team` says it follows;
+- the copy's launch and origin as its own run has them, carried on the server's tree row
+  (autobyteus-461 SR-084). `agentSourceSelectors.teamAgentSourceOf` answers only for the root Team's
+  own configured members, by run ID, and returns null for a run the Team delegated. A Team-level
+  choice on a delegated Team changes that Team's default only; each member keeps its own launch
+  (CR-461-089);
 - `source.coordinator_address` for a Team copy's coordinator.
 
 A new copy arrives as `TASK_EXECUTION_STARTED`. Rows and tab labels use
