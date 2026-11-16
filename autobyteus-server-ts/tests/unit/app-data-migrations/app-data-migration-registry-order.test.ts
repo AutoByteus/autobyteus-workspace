@@ -6,8 +6,8 @@ import { AppDataMigrationRegistry } from "../../../src/app-data-migrations/app-d
  * migration keeps its place, and no new migration runs ahead of one: data that has not yet run a released migration
  * would otherwise meet the new one in a shape no released build left it in.
  *
- * The registry as released in v1.5.13-beta.6 (`3228eff74b`), in its order (dependency order, not date order). A later
- * release only appends to it, so this list stays correct when it is not updated.
+ * The registry as released in v1.5.13-beta.7 (merged into personal as `d5d4fc7c81`), in its order (dependency order,
+ * not date order). A later release only appends to it, so this list stays correct when it is not updated.
  */
 const RELEASED = [
   "20260727_custom_provider_v1_secret_migration",
@@ -45,6 +45,16 @@ const RELEASED = [
   "20261024_node_identity_file_name",
   "20261024_memory_sync_source_id_names",
   "20261030_raw_trace_manifest_runtime_names",
+  "20261111_delegated_runs_own_runs_v1",
+  "20261114_preserved_items_after_task_agent_own_run_v1",
+  "20261114_preserved_items_after_own_file_complete_v1",
+  "20261114_preserved_items_after_append_only_logs_v1",
+  "20261114_preserved_items_after_team_run_execution_tree_v1",
+  "20261114_preserved_items_after_team_run_execution_tree_v2",
+  "20261114_preserved_items_after_org_flat_team_families_v1",
+  "20261114_preserved_items_after_collaborators_to_delegated_runs_v1",
+  "20261114_preserved_items_after_team_run_history_index_v2",
+  "20261114_preserved_items_after_remove_skill_improvement_data",
 ];
 
 const dateOf = (id: string) => id.slice(0, 8);
