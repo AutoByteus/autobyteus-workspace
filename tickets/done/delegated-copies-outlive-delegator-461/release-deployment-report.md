@@ -2,7 +2,13 @@
 
 ## Release / Publication / Deployment Scope
 
-Deliver `codex/delegated-copies-outlive-delegator-461` (Project Task `autobyteus-461`; `task_size` `Large`, `architectural_risk` `High`, route `Reviewed`) into `origin/personal`. **Status (2026-11-16, second pass): integration done (IR-041, `339602ff36`, base `1e8b6e5d0a` still current); verification complete from the evidence; docs sync `Blocked`, routed to the implementation engineer (`docs-sync-report.md`).** The first pass's integration block below is kept as history.
+Deliver `codex/delegated-copies-outlive-delegator-461` (Project Task `autobyteus-461`; `task_size` `Large`, `architectural_risk` `High`, route `Reviewed`) into `origin/personal`. **Status (2026-11-17): integration done (IR-041, `339602ff36`, base `1e8b6e5d0a` still current); verification complete from the evidence; docs sync `Updated` after the docs Local Fix (IR-042/043, CRR-065); ticket archived to `tickets/done/delegated-copies-outlive-delegator-461`. Finalization and the beta follow; their results are in `delivery-revision-record.md` DR-001 and the terminal message.** The first pass's integration block below is kept as history.
+
+## Project Release Guide (second pass)
+
+- `RELEASE.md` at the ticket branch (base `1e8b6e5d0a` plus this ticket's step, `6ec89d2007`).
+- Deviations: none planned.
+- Guide change made by this ticket: record the shipped migrations in the registry-order test before tagging (the data migration guideline's new rule).
 
 ## Verification (second pass)
 
