@@ -150,10 +150,16 @@ describe('agentRunCollaborationStore', () => {
     expect(stream.instances).toHaveLength(1)
     expect(stream.instances[0]!.disconnect).not.toHaveBeenCalled()
     expect(hydration.read).not.toHaveBeenCalled()
-    // A Stop leaves the stream.
+    // A Stop leaves the service; the server ended the view's stream, so its end reconnects the view to the stopped run's
+    // fresh one (CR-461-111): its tree stays live, and a later Save's row change is shown.
     const stop = store.beginHostTermination('host-run')
     expect(stop.confirm()).toBe(true)
+    expect(stream.instances[0]!.connect).toHaveBeenCalledOnce()
     stop.finish()
     expect(stream.instances[0]!.disconnect).not.toHaveBeenCalled()
+    expect(stream.instances[0]!.connect).toHaveBeenCalledTimes(2)
+    // A Stop that is not this one's ends nothing.
+    stop.finish()
+    expect(stream.instances[0]!.connect).toHaveBeenCalledTimes(2)
   })
 })

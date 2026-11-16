@@ -128,7 +128,11 @@ export const useAgentRunCollaborationStore = defineStore('agentRunCollaboration'
         return true
       },
       finish: (): void => {
-        if (terminations.get(hostRunId) === token) terminations.delete(hostRunId)
+        if (terminations.get(hostRunId) !== token) return
+        terminations.delete(hostRunId)
+        // The Stop ended the run's root, and with it the view's stream: the open view reconnects to the stopped run's
+        // fresh view, which keeps its tree live (SR-045, CR-461-111).
+        services.get(hostRunId)?.connect()
       },
     })
   }

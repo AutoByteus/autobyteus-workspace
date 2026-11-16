@@ -68,9 +68,13 @@ export class AgentRunCollaborationStreamingService {
     }
     socket.onerror = () => undefined
     socket.onclose = (event) => {
-      if (this.socket !== socket || !this.options.isCurrent()) return
+      if (this.socket !== socket) return
       this.socket = null
       this.phase = 'disconnected'
+      // Whatever ended it, the view no longer feeds the run's tree: from now on its notices read it (CR-461-111). A
+      // close while the view is not current (its run being stopped, its node changing) is not a loss to recover from.
+      if (!this.released) useRunTreeStore().streamEnded(this.treeRef)
+      if (!this.options.isCurrent()) return
       // 4004: this run cannot host delegated copies; a credential refusal: the node refuses this client. Retrying
       // cannot help either.
       const finalClose = event.code === 4004 ? 'This run cannot host delegated copies.'

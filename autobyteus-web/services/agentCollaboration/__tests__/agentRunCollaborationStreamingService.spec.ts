@@ -44,6 +44,21 @@ it('publishes the snapshot\'s view, then feeds the tree its snapshot and changes
   f.service.disconnect()
 })
 
+// CR-461-111 (F-87): a Stop makes the view not current while it runs, and the server ends the view's stream then. The
+// tree is no longer fed by it: it must read on its notices again, or a later Save's row change is never shown.
+it('a close while the view is not current ends the tree\'s stream feed, and is no loss to recover from', () => {
+  const f = setup()
+  f.socket.frame({ type: 'RUN_TREE_SNAPSHOT', payload: { root_subject_kind: 'agent', root_run_id: 'host-run', base_change_sequence: 4, rows: agentRootTreeRows() } })
+  expect(useRunTreeStore().trees['agent:host-run']?.via).toBe('stream')
+  f.retireOwner()
+  f.socket.onclose?.({ code: 1000 })
+  expect(useRunTreeStore().trees['agent:host-run']?.via).toBe('query')
+  expect(useRunTreeStore().rowsOf(HOST).map((row) => row.key)).toContain('agent:cua-run')
+  expect(f.options.reportError).not.toHaveBeenCalled()
+  expect(Socket.instances).toHaveLength(1)
+  f.service.disconnect()
+})
+
 it('a tree snapshot not at the view\'s base, or a sequence gap, closes the stream to reopen it', () => {
   const f = setup()
   f.socket.frame({ type: 'RUN_TREE_SNAPSHOT', payload: { root_subject_kind: 'agent', root_run_id: 'host-run', base_change_sequence: 3, rows: [] } })
