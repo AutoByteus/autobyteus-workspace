@@ -51,7 +51,8 @@ export class StandaloneHostMemberContextBuilder {
     const instruction = collaboration.placement ? await this.options.orgInstruction(collaboration.placement.orgDefinitionId) : null;
     return new MemberExecutionContext({
       identity,
-      teamScoped: collaboration.placement !== null,
+      // Team-scoped where base's hosted copy was (CR-461-114): its tree starts at a Team or an Org run.
+      teamScoped: collaboration.teamScoped,
       collaborationRole: collaboration.role,
       inOrganization: false,
       authoredEnclosingScopeInstruction: instruction,

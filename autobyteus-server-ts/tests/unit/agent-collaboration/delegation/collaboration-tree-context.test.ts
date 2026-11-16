@@ -38,7 +38,7 @@ const harness = () => {
 describe("RunCollaborationContext", () => {
   it("a run the user started keeps its own role: no Task names it", async () => {
     const h = harness();
-    await expect(h.context.ofAgentRun("mine")).resolves.toEqual({ role: "standalone_agent", placement: null });
+    await expect(h.context.ofAgentRun("mine")).resolves.toEqual({ role: "standalone_agent", placement: null, teamScoped: false });
     expect(h.context.inOrganization({ rootSubjectKind: "agent_team", rootRunId: "mine" })).toBe(false);
   });
 
@@ -46,19 +46,39 @@ describe("RunCollaborationContext", () => {
     const h = harness();
     await h.delegate("T1", AGENT, "/outsider", { agentRunId: "outsider" });
     await h.delegate("T2", ORG, "/outsider", { agentRunId: "org-outsider" });
-    await expect(h.context.ofAgentRun("outsider")).resolves.toEqual({ role: "task_agent", placement: null });
-    await expect(h.context.ofAgentRun("org-outsider")).resolves.toEqual({ role: "task_agent", placement: null });
+    await expect(h.context.ofAgentRun("outsider")).resolves.toEqual({ role: "task_agent", placement: null, teamScoped: false });
+    await expect(h.context.ofAgentRun("org-outsider")).resolves.toEqual({ role: "task_agent", placement: null, teamScoped: true });
   });
 
   it("a copy of an org's configured agent keeps that address's handoff rules and reads the org's instruction, read at use", async () => {
     const h = harness();
     await h.delegate("T1", ORG, "/sibling", { agentRunId: "sibling-copy" });
     await expect(h.context.ofAgentRun("sibling-copy")).resolves.toEqual({ role: "task_agent",
-      placement: { handoffs: [handoffs[0]], orgDefinitionId: "org-def" } });
+      placement: { handoffs: [handoffs[0]], orgDefinitionId: "org-def" }, teamScoped: true });
     expect(h.orgPlacementsOf).toHaveBeenCalledWith("org");
     // The same address delegated by an agent run is not a placement of an org.
     await h.delegate("T2", AGENT, "/sibling", { agentRunId: "agent-sibling" });
-    await expect(h.context.ofAgentRun("agent-sibling")).resolves.toEqual({ role: "task_agent", placement: null });
+    await expect(h.context.ofAgentRun("agent-sibling")).resolves.toEqual({ role: "task_agent", placement: null, teamScoped: false });
+  });
+
+  // CR-461-114 (F-90, REQ-009): `get_handoff_rules` where base's hosted copy had it: its tree starts at a Team or an Org run
+  // (base hosted every copy of that tree in that root); a tree that starts at an Agent run gives none.
+  it("is Team-scoped when its tree starts at a Team or an Org run, a copy's copy too; never under an Agent run", async () => {
+    const h = harness();
+    const TEAM: RootExecutionIdentity = { rootSubjectKind: "agent_team", rootRunId: "team" };
+    await h.delegate("T1", TEAM, "/writer", { agentRunId: "team-copy" });
+    await h.delegate("T2", { rootSubjectKind: "agent", rootRunId: "team-copy" }, "/helper", { agentRunId: "team-copy-copy" }, "subWork");
+    await h.delegate("T3", ORG, "/outsider", { agentRunId: "org-copy" });
+    await h.delegate("T4", AGENT, "/writer", { agentRunId: "agent-copy" });
+    await h.delegate("T5", { rootSubjectKind: "agent", rootRunId: "agent-copy" }, "/helper", { agentRunId: "agent-copy-copy" }, "subWork");
+    const scoped = async (id: string) => (await h.context.ofAgentRun(id)).teamScoped;
+    expect(await scoped("team-copy")).toBe(true);
+    expect(await scoped("team-copy-copy")).toBe(true);
+    expect(await scoped("org-copy")).toBe(true);
+    expect(await scoped("agent-copy")).toBe(false);
+    expect(await scoped("agent-copy-copy")).toBe(false);
+    // A catalog copy has no placement: its rules are none.
+    expect((await h.context.ofAgentRun("team-copy")).placement).toBeNull();
   });
 
   it("the organization line: a run working on a Task an org assigned, including sub-work in that Task", async () => {

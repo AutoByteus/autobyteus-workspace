@@ -2,7 +2,7 @@ import type { CollaborationLaunchConfigurationSourceDto } from "@autobyteus/coll
 import type { RemoteAgentLaunch } from "../../run-history/domain/run-execution-tree-shared-records.js";
 import { rootExecutionIdentityKey, type RootExecutionIdentity } from "../execution/domain/root-execution-identity.js";
 import { runIdentityOf } from "../execution/task/task-execution-resource-port.js";
-import { displayNameOf, openTargetOf, type SubtreeRow } from "./collaboration-tree.js";
+import { displayNameOf, openTargetOf, slotNameOf, type SubtreeRow } from "./collaboration-tree.js";
 import { launchSourceDtoOf, type ChildRowProjection, type ChildRowRecord, type RunLaunchRecord } from "./run-tree-records.js";
 import type { DelegationIndex } from "./delegation-index.js";
 
@@ -79,10 +79,7 @@ export type RunTreeSources = Readonly<{
 }>;
 
 /** The one name rule of every view (the address's last segment, `_` and `-` as spaces). */
-export const rowNameOf = (address: string | null, fallback: string): string => {
-  const leaf = (address ?? "").split("/").filter(Boolean).at(-1) ?? "";
-  return leaf.replace(/[_-]+/g, " ").replace(/\s+/g, " ").trim() || address || fallback;
-};
+export const rowNameOf = (address: string | null, fallback: string): string => slotNameOf(address) || address || fallback;
 
 export const runTreeRowKey = (kind: RunTreeRowKind, runId: string, agentRunId?: string): string =>
   agentRunId === undefined ? `${kind}:${runId}` : `${kind}:${runId}:${agentRunId}`;

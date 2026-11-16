@@ -47,12 +47,18 @@ export type AgentRunCollaboration = Readonly<{
   role: "standalone_agent" | "task_agent";
   /** A copy of an org's configured agent: that address's handoff rules and the org definition whose instruction it reads. */
   placement: Readonly<{ handoffs: readonly CollaborationHandoff[]; orgDefinitionId: string }> | null;
+  /**
+   * Team-scoped (`get_handoff_rules`), as base's hosted copy was (CR-461-114, REQ-009): the run at the top of its tree, the
+   * run base hosted the copy in, is a Team or an Org run. A copy whose tree starts at an Agent run is not, as base's task
+   * agent under an Agent root was not.
+   */
+  teamScoped: boolean;
 }>;
 
 /** One row under a run (its open subtree, CR-461-033): the delegated run, and the run that delegated it. */
 export type SubtreeRow = DelegatedChild & Readonly<{ parent: RootExecutionIdentity }>;
 
-type MapTree = Pick<DelegationIndex, "tasksOf" | "assignersOf" | "standingOf" | "agentsOf" | "currentTaskOf" | "canMessage" | "subtreeOf" | "openChildrenOf">;
+type MapTree = Pick<DelegationIndex, "tasksOf" | "assignersOf" | "standingOf" | "agentsOf" | "currentTaskOf" | "canMessage" | "subtreeOf" | "openChildrenOf" | "topOf">;
 
 const NO_LONGER = (address: string) => `${address} is no longer an address: your team is addressed from its own root.`;
 const compare = (a: string, b: string): number => (a < b ? -1 : a > b ? 1 : 0);
@@ -86,9 +92,12 @@ export const openTargetOf = (
  * Task entry's `recipientAddress` (a team run, whose own root is `/`). The tree rows, the run's own resume config (its
  * context and header), the Task page and the run list take it from here; no client derives a delegated run's name.
  */
-export const displayNameOf = (run: Readonly<{ delegated: boolean; address: string | null | undefined }>): string | null => {
-  if (!run.delegated) return null;
-  const leaf = (run.address ?? "").split("/").filter(Boolean).at(-1) ?? "";
+export const displayNameOf = (run: Readonly<{ delegated: boolean; address: string | null | undefined }>): string | null =>
+  run.delegated ? slotNameOf(run.address) : null;
+
+/** The one name rule (SR-091; the rows' too): an address's last segment, `_` and `-` read as spaces; null when it has none. */
+export const slotNameOf = (address: string | null | undefined): string | null => {
+  const leaf = (address ?? "").split("/").filter(Boolean).at(-1) ?? "";
   return leaf.replace(/[_-]+/g, " ").replace(/\s+/g, " ").trim() || null;
 };
 
@@ -207,13 +216,14 @@ export class CollaborationTree {
   async agentCollaboration(): Promise<AgentRunCollaboration> {
     const reference = runReferenceOf(this.run);
     const entry = reference ? this.tree.currentTaskOf(reference) : null;
-    if (!entry) return Object.freeze({ role: "standalone_agent", placement: null });
+    if (!entry) return Object.freeze({ role: "standalone_agent", placement: null, teamScoped: false });
     const delegatingRun = entry.delegatedFrom.delegatingRun;
     const org = delegatingRun.rootSubjectKind === "agent_org" ? await this.files.orgPlacementsOf(delegatingRun.rootRunId) : null;
     const address = entry.recipientAddress;
+    const top = this.tree.topOf(this.run).rootSubjectKind;
     return Object.freeze({ role: "task_agent", placement: org && org.agentAddresses.includes(address)
       ? Object.freeze({ handoffs: Object.freeze(org.handoffs.filter((handoff) => handoff.from === address)), orgDefinitionId: org.orgDefinitionId })
-      : null });
+      : null, teamScoped: top === "agent_team" || top === "agent_org" });
   }
 
   /** The organization line: the run works on a Task an org assigned, exactly when step 2 reaches the org. */
