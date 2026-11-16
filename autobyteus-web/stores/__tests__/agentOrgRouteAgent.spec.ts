@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { createPinia, setActivePinia } from 'pinia'
+import { nextTick } from 'vue'
 import type { RunTreeRowDto } from '@autobyteus/collaboration-stream-contracts'
 import { taskBearingView } from '~/services/agentOrgExecution/__tests__/taskBearingOrgFixture'
 
@@ -89,6 +90,17 @@ describe('the Org route\'s agent (CR-461-102)', () => {
     useRunTreeStore().streamSnapshot({ kind: 'agent_org', runId: ORG }, orgTree())
     store.selectRouteAgent(ORG, 'delegated-agent', '/helper')
     store.selectRouteAgent(ORG, 'agent-worker-configured', '/worker')
+    expect(store.selectedRowKey(ORG)).toBeNull()
+    expect(store.contextFor(ORG)?.selectedTarget()).toMatchObject({ context: { state: { runId: 'agent-worker-configured' } } })
+  })
+
+  it('CR-461-109: when the shown delegated row leaves the tree (its Task closed), the view returns to the Org agent that delegated it', async () => {
+    const store = useAgentOrgContextsStore()
+    useRunTreeStore().streamSnapshot({ kind: 'agent_org', runId: ORG }, orgTree())
+    store.selectRouteAgent(ORG, 'delegated-agent', '/helper')
+    expect(store.selectedRowKey(ORG)).toBe('agent:delegated-agent')
+    useRunTreeStore().streamChange({ kind: 'agent_org', runId: ORG }, { added: [], removed: ['agent:delegated-agent'], updated: [] })
+    await nextTick()
     expect(store.selectedRowKey(ORG)).toBeNull()
     expect(store.contextFor(ORG)?.selectedTarget()).toMatchObject({ context: { state: { runId: 'agent-worker-configured' } } })
   })

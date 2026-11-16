@@ -36,6 +36,7 @@ import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore'
 import { teamWorkspaceContextViewOf } from '~/services/teamExecution/teamWorkspaceContextView'
 import type { RunTreeOpenTargetDto, RunTreeRowDto } from '@autobyteus/collaboration-stream-contracts'
 import { treeRowOfAgent } from '~/utils/runTree/runTreeAgents'
+import { isTeamRow } from '~/utils/runTree/runTreeDisplayRows'
 
 const MAX_CONFIG_READ_ATTEMPTS = 3
 
@@ -51,7 +52,8 @@ export const useAgentOrgContextsStore = defineStore('agentOrgContexts', () => {
   const deferredReleases = new Set<string>()
   const keyFor = (root: string, agent: string) => `${root}\0${agent}`
   /** The delegated row the user selected under each Org (SR-084): its key, where it opens, and its address. */
-  const selectedRows = ref<Record<string, Readonly<{ key: string; target: RunTreeOpenTargetDto; address: string | null }> | null>>({})
+  /** The delegated row each Org shows, and the Org's own agent that delegated it (the view returns to it when the row leaves). */
+  const selectedRows = ref<Record<string, Readonly<{ key: string; target: RunTreeOpenTargetDto; address: string | null; returnTo: string | null }> | null>>({})
   const report = (id: string, cause: unknown) => {
     errors.value = { ...errors.value, [id]: cause instanceof Error ? cause.message : String(cause) }
   }
@@ -194,11 +196,25 @@ export const useAgentOrgContextsStore = defineStore('agentOrgContexts', () => {
       return true
     }
     select(id, null)
-    selectedRows.value = { ...selectedRows.value, [id]: Object.freeze({ key: row.key, target, address: row.address }) }
+    selectedRows.value = { ...selectedRows.value, [id]: Object.freeze({ key: row.key, target, address: row.address, returnTo: delegatingOrgAgentOf(id, row) }) }
     useDelegatedRunsStore().ensureOpen(subjectOfSelected(target, row.address))
     return true
   }
   const selectedRowKey = (id: string): string | null => selectedRow(id)?.key ?? null
+  /** The Org's own agent a delegated row hangs under (its nearest Org row above it); null when none does. */
+  const delegatingOrgAgentOf = (id: string, row: RunTreeRowDto): string | null => {
+    const byKey = new Map(useRunTreeStore().rowsOf({ kind: 'agent_org', runId: id }).map((candidate) => [candidate.key, candidate]))
+    for (let above = byKey.get(row.parentKey ?? ''); above; above = byKey.get(above.parentKey ?? '')) {
+      if (above.openTarget?.runKind === 'agent_org' && !isTeamRow(above)) return above.openTarget.agentRunId
+    }
+    return null
+  }
+  // A shown delegated row that left the Org's tree (its Task closed): the view returns to the Org agent that delegated it,
+  // as base's returnToHostWhenUnlisted did (CR-461-109); the Agent family returns to its run's own agent.
+  watch(() => Object.entries(selectedRows.value).map(([id, picked]) => [id, picked?.returnTo ?? null,
+    Boolean(picked) && !selectedRow(id)] as const), (entries) => {
+    for (const [id, returnTo, left] of entries) if (left && returnTo) select(id, { kind: 'agent_execution', agentRunId: returnTo })
+  })
   /**
    * The agent the route names (CR-461-102): one of the Org's own agents is selected in it; a run the Org delegated, here
    * or on a peer node, is selected by its tree row and opens as its own run (rule 2). An agent the Org has not got yet
@@ -485,5 +501,5 @@ export const useAgentOrgContextsStore = defineStore('agentOrgContexts', () => {
 
   const contextFor = (id: string): AgentOrgExecutionContext | null => contexts.value[id] ?? null
   const errorFor = (id: string): string | null => errors.value[id] ?? null
-  return { readRunConfig, saveRunConfig, contexts, errors, operations, reconcileRetainedHistory, openForInspection, releaseContext, releaseAll, select, selectTreeRow, selectedRowKey, selectRouteAgent, contextFor, errorFor, activeTargetFor, stopAndInspect }
+  return { readRunConfig, saveRunConfig, contexts, errors, operations, reconcileRetainedHistory, openForInspection, releaseContext, releaseAll, select, selectTreeRow, selectedRow, selectedRowKey, selectRouteAgent, contextFor, errorFor, activeTargetFor, stopAndInspect }
 })
