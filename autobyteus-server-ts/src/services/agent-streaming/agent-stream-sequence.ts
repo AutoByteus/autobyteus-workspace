@@ -3,6 +3,7 @@ import path from "node:path";
 import type { AgentRun } from "../../agent-execution/domain/agent-run.js";
 import { AgentRunEventType, isAgentRunEvent, type AgentRunEvent } from "../../agent-execution/domain/agent-run-event.js";
 import { resolveAgentRunErrorEvidence } from "../../agent-execution/domain/agent-run-error-evidence.js";
+import { RUNTIME_HANDOVER_NOTICE_SENDER_ID } from "../../agent-execution/domain/system-task-notification-senders.js";
 import type { AgentRunMemoryRecorder } from "../../agent-memory/services/agent-run-memory-recorder.js";
 import { AgentMemoryService } from "../../agent-memory/services/agent-memory-service.js";
 import { MemoryFileStore } from "../../agent-memory/store/memory-file-store.js";
@@ -36,6 +37,15 @@ export type AgentStreamSequenceDeps = Readonly<{
 const endsTurn = (event: AgentRunEvent): boolean => event.eventType === AgentRunEventType.TURN_COMPLETED
   || event.eventType === AgentRunEventType.TURN_INTERRUPTED
   || resolveAgentRunErrorEvidence(event)?.kind === "TURN_TERMINAL";
+
+/**
+ * The runtime hand-over notice's live echo (CR-461-116). The switch marker it shows is written into the run's file at the
+ * switch's activation, before this sequence began, so it predates the sequence and every snapshot's stored part carries
+ * it, at its stored place. Numbering the echo too showed the notice twice live (base showed it once; a reload shows the
+ * marker once). Other notices are recorded with their turn and come from one source as any turn does.
+ */
+const isStoredMarkerEcho = (event: AgentRunEvent): boolean => event.eventType === AgentRunEventType.SYSTEM_TASK_NOTIFICATION
+  && event.payload.sender_id === RUNTIME_HANDOVER_NOTICE_SENDER_ID;
 
 const turnOf = (event: AgentRunEvent): string | null => {
   const value = event.payload.turn_id ?? event.payload.turnId;
@@ -78,7 +88,7 @@ export class AgentStreamSequence {
 
   /** Numbers one run event; called from the run's listener, subscribed after the memory recorder's. */
   accept(event: AgentRunEvent): void {
-    if (this.disposed) return;
+    if (this.disposed || isStoredMarkerEcho(event)) return;
     let message: ServerMessage;
     try {
       message = this.deps.map(event);

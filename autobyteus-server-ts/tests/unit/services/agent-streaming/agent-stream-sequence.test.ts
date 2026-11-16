@@ -192,4 +192,26 @@ describe("AgentStreamSequence snapshot", () => {
     expect(result.stored.conversation).toEqual([stored("t1", "s1-text")]);
     expect(run.sourcesOf(result, "t1")).toBe(1);
   });
+
+  // CR-461-116 (F-91): after an agent runtime switch, the hand-over notice shows once live, at the marker's stored place,
+  // as a reload shows it (base showed one): the marker is written before the sequence begins, so every snapshot carries it.
+  it("CR-461-116: the runtime hand-over notice comes from the stored marker only, never also from its live echo", async () => {
+    const marker = { kind: "system_task_notification", role: null, senderId: "system.runtime_handover", content: "Agent runtime changed",
+      turnId: "runtime_switch" } as unknown as RunProjectionConversationEntry;
+    const run = harness({ predating: ["t0", "runtime_switch"], memory: [stored("t0", "earlier answer"), marker] });
+    const echo = (turnId: string) => event(AgentRunEventType.SYSTEM_TASK_NOTIFICATION,
+      { sender_id: "system.runtime_handover", content: "Agent runtime changed", turn_id: turnId });
+    run.emit(echo("t1"), ...segment("t1", "s1"));
+    const result = await run.snapshot();
+    const notices = [
+      ...result.stored.conversation.filter((entry) => entry.kind === "system_task_notification"),
+      ...result.turn_frames.filter((frame) => frame.type === "SYSTEM_TASK_NOTIFICATION"),
+    ];
+    expect(notices).toEqual([marker]);
+    run.emit(echo("t2"));
+    expect((result.after as { type: string }[]).filter((frame) => frame.type === "SYSTEM_TASK_NOTIFICATION")).toEqual([]);
+    // Any other notice is a frame of its turn, as before.
+    run.emit(event(AgentRunEventType.SYSTEM_TASK_NOTIFICATION, { sender_id: "system.skill_update_notifier", content: "skill changed", turn_id: "t2" }));
+    expect((result.after as { type: string }[]).filter((frame) => frame.type === "SYSTEM_TASK_NOTIFICATION")).toHaveLength(1);
+  });
 });
