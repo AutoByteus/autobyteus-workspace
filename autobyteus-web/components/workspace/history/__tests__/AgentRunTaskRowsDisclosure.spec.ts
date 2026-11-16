@@ -4,6 +4,12 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { shallowReactive } from 'vue'
 import { buildMultiTeamContext, memberId, multiTeamView } from '~/services/agentCollaboration/__tests__/agentRootMultiTeamFixture'
 
+// A delegated row is its own run (autobyteus-461 rule 2); here every one is open.
+vi.mock('~/stores/delegatedRunsStore', async () => {
+  const fake = await import('~/test-support/delegatedRunsFake')
+  fake.ownRuns.openAll = true
+  return { useDelegatedRunsStore: fake.fakeDelegatedRunsStore }
+})
 vi.mock('@iconify/vue', () => ({ Icon: { props: ['icon'], template: '<span :data-icon="icon" />' } }))
 vi.mock('~/services/agentCollaboration/agentRunCollaborationHydration', () => ({
   readAgentRunCollaboration: vi.fn(async () => multiTeamView()),
@@ -17,11 +23,18 @@ vi.mock('~/stores/runHistoryStore', () => ({ useRunHistoryStore: () => ({ getTea
 vi.mock('~/composables/projects/useTaskWorkerTasks', () => ({ useTaskWorkerTasks: () => ({ taskOf: () => null, locate: vi.fn() }) }))
 
 import { useAgentRunCollaborationStore } from '~/stores/agentRunCollaborationStore'
+import { useRunTreeStore } from '~/stores/runTreeStore'
+import { multiTeamTree } from '~/test-support/runTreeFixtures'
 import AgentRunTaskRows from '../AgentRunTaskRows.vue'
 
-/** Actual row -> actual store -> actual context: unlike the selection-only mocked-store test. */
+/** Actual row -> actual stores (the server's tree, SR-084, and the run's view): unlike the selection-only mocked-store test. */
 describe('AgentRunTaskRows independent Team disclosure', () => {
-  beforeEach(() => { setActivePinia(createPinia()); vi.clearAllMocks() })
+  beforeEach(() => {
+    setActivePinia(createPinia())
+    vi.clearAllMocks()
+    // The run's open view's stream fed its tree: seven delegated Team copies, each opening at its coordinator.
+    useRunTreeStore().streamSnapshot({ kind: 'agent', runId: 'host-run' }, multiTeamTree().rows)
+  })
   const render = () => mount(AgentRunTaskRows, {
     props: { runId: 'host-run', label: 'Project Task Manager', runSelected: true, hasCollaboration: true },
     global: { stubs: { transition: false, 'transition-group': false } },
@@ -54,7 +67,7 @@ describe('AgentRunTaskRows independent Team disclosure', () => {
     wrapper.unmount()
   })
 
-  it.each(['click', 'keydown.enter', 'keydown.space'])('Team body %s toggles only that Team and selects its coordinator', async (action) => {
+  it.each(['click', 'keydown.enter', 'keydown.space'])('Team body %s unfolds only that Team and selects its coordinator; opening it again folds nothing (CR-461-108)', async (action) => {
     const wrapper = render(); await flushPromises()
     const store = useAgentRunCollaborationStore()
     await team(wrapper, 2).trigger(action)
@@ -63,7 +76,8 @@ describe('AgentRunTaskRows independent Team disclosure', () => {
     expect(team(wrapper, 1).attributes('aria-expanded')).toBe('false')
     expect(wrapper.emitted('select-run')).toHaveLength(1)
     await team(wrapper, 2).trigger(action)
-    expect(wrapper.findAll('[role="treeitem"]:not([aria-hidden="true"])')).toHaveLength(7)
+    expect(wrapper.findAll('[role="treeitem"]:not([aria-hidden="true"])')).toHaveLength(13)
+    expect(team(wrapper, 2).attributes('aria-expanded')).toBe('true')
     const child = store.childTargetFor('host-run')
     expect(child?.kind).toBe('agent_run_task_team_member')
     expect(child && 'agentRunId' in child ? child.agentRunId : null).toBe(memberId(2, 0))

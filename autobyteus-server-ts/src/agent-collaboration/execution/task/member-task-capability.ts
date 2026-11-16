@@ -1,4 +1,8 @@
-import type { AssignToExistingCopyInput, SpawnTaskInput, TaskDelegationOutcome } from "./task-delegation-command.js";
+import type { DelegationWork } from "../../../model-routing/domain/model-routing-types.js";
+import type { AgentTeamAddress } from "../../domain/agent-team-address.js";
+import type { PeerRunLink } from "../remote/peer-run-link.js";
+import type { TaskDelegationOutcome } from "./task-delegation-command.js";
+import type { LocalDelegationPlacement } from "./task-delegation.js";
 import type { TaskExecutionOwner } from "./task-execution-resource-port.js";
 import {
   cloneRootExecutionIdentity,
@@ -7,14 +11,28 @@ import {
   type RootExecutionIdentity,
 } from "../domain/root-execution-identity.js";
 
+/** A delegation the sender's root refuses for its own run (an inactive root). */
+export type DelegationRefusal = Extract<TaskDelegationOutcome, { delegated: false }>;
+
 /**
- * The caller's root-bound Task capability: its task commands, one per subject (a new copy from an address, or an
- * existing copy by its ID), and the read of the Task it works on.
+ * What the sender's root answers for its own run when one of its agents delegates (autobyteus-461 SR-049), read in its
+ * gate: the sender and its run; its own catalog address map with the own-address, own-team and
+ * own-definition refusals (`resolvePlacement`, in its gate again); and its view's notice of a peer run it delegated to.
+ * The delegation itself (the Task side, the new run, the work packet) is the tool path's, through `TaskDelegation`.
+ */
+export type DelegationSource = Readonly<{
+  sender: CollaborationMemberExecutionIdentity;
+  senderRun: RootExecutionIdentity;
+  resolvePlacement(address: string, work: DelegationWork, folder: string | null): Promise<LocalDelegationPlacement>;
+}>;
+
+/**
+ * The caller's root-bound Task capability: what its root answers for a delegation by one of its agents, and the read
+ * of the Task it works on.
  */
 export type MemberTaskCapability = Readonly<{
   root: RootExecutionIdentity;
-  delegateToNewCopy(caller: CollaborationMemberExecutionIdentity, input: SpawnTaskInput): Promise<TaskDelegationOutcome>;
-  assignToExistingCopy(caller: CollaborationMemberExecutionIdentity, input: AssignToExistingCopyInput): Promise<TaskDelegationOutcome>;
+  delegationSource(caller: CollaborationMemberExecutionIdentity): Promise<DelegationSource | DelegationRefusal>;
   /**
    * The Task the caller works on: its copy's current Task (the root's `ownerOf` over its containment chain), or null
    * when it works on none. Throws `TASK_AGENT_RESOURCES_UNAVAILABLE` when that can't be told (damaged run data).
@@ -25,20 +43,15 @@ export type MemberTaskCapability = Readonly<{
 export const requireMemberTaskCapability = (
   value: MemberTaskCapability | null | undefined,
 ): MemberTaskCapability => {
-  if (!value || typeof value.delegateToNewCopy !== "function" || typeof value.assignToExistingCopy !== "function"
-    || typeof value.ownedTaskOf !== "function") {
+  if (!value || typeof value.delegationSource !== "function" || typeof value.ownedTaskOf !== "function") {
     throw new Error("MemberTaskCapability is required.");
   }
   const root = cloneRootExecutionIdentity(value.root);
   return Object.freeze({
     root,
-    delegateToNewCopy: (caller, input) => {
+    delegationSource: (caller) => {
       assertCallerRoot(root, caller);
-      return value.delegateToNewCopy(caller, input);
-    },
-    assignToExistingCopy: (caller, input) => {
-      assertCallerRoot(root, caller);
-      return value.assignToExistingCopy(caller, input);
+      return value.delegationSource(caller);
     },
     ownedTaskOf: (caller) => {
       assertCallerRoot(root, caller);

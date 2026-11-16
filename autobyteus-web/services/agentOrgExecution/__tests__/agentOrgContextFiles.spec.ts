@@ -22,6 +22,8 @@ vi.mock('~/utils/remoteAccess/authorizedTransport', () => ({
   authorizedFetch: (input: string, init?: RequestInit) => mocks.fetch(input, init),
 }))
 vi.mock('~/utils/remoteAccess/websocketAuth', () => ({ buildAuthenticatedWebSocketUrl: (url: string) => url }))
+// A run the Org delegated is its own run (autobyteus-461 rule 2); here none of them is open yet.
+vi.mock('~/stores/delegatedRunsStore', async () => ({ useDelegatedRunsStore: (await import('~/test-support/delegatedRunsFake')).fakeDelegatedRunsStore }))
 vi.mock('~/utils/apolloClient', () => ({ getApolloClient: () => ({ query: mocks.query, mutate: mocks.mutate }) }))
 vi.mock('~/stores/runHistoryStore', () => ({ useRunHistoryStore: () => ({
   applyAgentOrgActivity: vi.fn(), refreshAgentOrgHistoryItem: mocks.historyRefresh, applyRunNavigationEffect: mocks.navigation,
@@ -90,7 +92,6 @@ beforeEach(() => {
   mocks.route.query.orgRunId = 'org-run'
   vi.stubGlobal('WebSocket', Socket)
   activeView = taskBearingView()
-  mocks.mutate.mockResolvedValue({ data: { restoreAgentOrgRun: { success: true, agentOrgRunId: 'org-run' } } })
   mocks.query.mockImplementation(async ({ variables }: any) => !variables.agentRunId
     ? { data: { getAgentOrgRunInspection: { root_subject_kind: 'agent_org', root_run_id: 'org-run', root_org: activeView } } }
     : { data: { getAgentOrgMemberRunProjection: { agentRunId: variables.agentRunId, memberAddress: variables.memberAddress, conversation: [], activities: [], hasEarlierActiveTraceEvents: false } } })
@@ -137,7 +138,8 @@ describe('actual shared Org file input -> active target -> attachment upload own
     expect(context.contextFilePaths).toHaveLength(1)
     await files.findAll('button').find((button) => /clear.all/i.test(button.text()))!.trigger('click'); await flushPromises()
     expect(context.contextFilePaths).toEqual([])
-    expect(mocks.mutate).not.toHaveBeenCalled(); expect(Socket.instances).toHaveLength(0)
+    // The stopped Org's open view has its stream (autobyteus-461 SR-045); nothing is sent on it.
+    expect(mocks.mutate).not.toHaveBeenCalled(); expect(Socket.instances).toHaveLength(1); expect(Socket.instances[0]!.sent).toEqual([])
   })
   it.each(['agent-director', 'agent-team-worker-configured'])('finalizes captured %s attachments only on deliberate continuation and opens the canonical sent file', async (id) => {
     const context = await open(id); await choose()
@@ -145,7 +147,8 @@ describe('actual shared Org file input -> active target -> attachment upload own
     const composer = mount(withActiveComposerTarget(AgentUserInputTextArea), { global: { stubs: { Icon: true } } }); mounted.push(composer)
     await composer.find('textarea').setValue('Use this file')
     await composer.find('button[title="Send message"]').trigger('click'); await flushPromises()
-    expect(mocks.mutate).toHaveBeenCalledOnce(); expect(context.contextFilePaths).toEqual([]); expect(context.submissionPending).toBe(true)
+    // The continuation waits for the view's stream and goes over it (SR-045, SR-046): no restore call.
+    expect(mocks.mutate).not.toHaveBeenCalled(); expect(context.contextFilePaths).toEqual([]); expect(context.submissionPending).toBe(true)
     expect(mocks.post.mock.calls.map(([url]) => url)).toEqual(['/context-files/upload'])
     const socket = await ready(); await flushPromises()
     expect(mocks.post.mock.calls[1]).toEqual(['/context-files/finalize', {
@@ -171,11 +174,11 @@ describe('actual shared Org file input -> active target -> attachment upload own
     const opened = vi.spyOn(window, 'open').mockImplementation(() => null)
     await message.find('button[title^="Open "]').trigger('click')
     expect(await uploaded.get(opened.mock.calls[0]![0] as string)!.text()).toBe('Exact selected Agent file contents')
-    expect(mocks.historyRefresh).toHaveBeenCalledTimes(4); // Inspection, Restore, synchronized snapshot, accepted Send.
+    expect(mocks.historyRefresh).toHaveBeenCalledTimes(3); // Inspection, synchronized snapshot, accepted Send.
     expect(mocks.historyRefresh.mock.calls.every(([id]) => id === 'org-run')).toBe(true); expect(mocks.navigation).not.toHaveBeenCalled()
     expect(mocks.fetch).not.toHaveBeenCalled()
   })
-  it('captures upload ownership across focus switches and does not acquire draft ownership for stopped tasks', async () => {
+  it('captures upload ownership across focus switches and does not acquire draft ownership for a task child not yet open', async () => {
     const original = await open()
     let finish!: (value: any) => void
     const physical = mocks.post.getMockImplementation()!
@@ -189,8 +192,9 @@ describe('actual shared Org file input -> active target -> attachment upload own
     next.requirement = 'new draft'
     finish(null); await flushPromises()
     expect(original.contextFilePaths).toHaveLength(1); expect(next.contextFilePaths).toEqual([]); expect(next.requirement).toBe('new draft')
+    // A task child is its own run (rule 2): until it is open there is no target, so nothing takes its draft.
     store.select('org-run', { kind: 'agent_execution', agentRunId: 'agent-task-worker' })
-    expect(useActiveContextStore().activeWorkspaceTarget?.access).toBe('read_only')
+    expect(useActiveContextStore().activeWorkspaceTarget).toBeNull()
     await flushPromises() // the composer re-renders with the newly focused target before the next user action
     await choose(); expect(mocks.post).toHaveBeenCalledOnce(); expect(mocks.mutate).not.toHaveBeenCalled()
   })
@@ -245,7 +249,8 @@ describe('actual shared Org file input -> active target -> attachment upload own
     const opened = vi.spyOn(window, 'open').mockImplementation(() => null)
     await message.find('button[title^="Open "]').trigger('click')
     expect(opened).toHaveBeenCalledWith('http://example.test' + locator, '_blank', 'noopener,noreferrer')
-    expect(Socket.instances).toHaveLength(0); expect(mocks.mutate).not.toHaveBeenCalled(); expect(mocks.post).not.toHaveBeenCalled()
+    expect(Socket.instances).toHaveLength(1); expect(Socket.instances[0]!.sent).toEqual([])
+    expect(mocks.mutate).not.toHaveBeenCalled(); expect(mocks.post).not.toHaveBeenCalled()
   })
 
 })

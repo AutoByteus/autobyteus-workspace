@@ -48,32 +48,32 @@ describe('AgentOrg context content batches (autobyteus-139)', () => {
 
   it('applies a batch at the next sequence, per agent in item order, and continues after its range', async () => {
     const context = await hydrate()
-    expect(context.applyEvent(9, start('/worker', 'agent-worker-task'))).toBe('applied')
-    expect(context.applyEvent(10, start('/team/lead', 'agent-task-lead'))).toBe('applied')
+    expect(context.applyEvent(9, start('/worker', 'agent-worker-configured'))).toBe('applied')
+    expect(context.applyEvent(10, start('/team/lead', 'agent-lead-configured'))).toBe('applied')
     expect(context.applyEvent(11, batch(
-      item('/worker', 'agent-worker-task', 'xy'), item('/team/lead', 'agent-task-lead', '12'),
+      item('/worker', 'agent-worker-configured', 'xy'), item('/team/lead', 'agent-lead-configured', '12'),
     ), 16)).toBe('applied')
     expect(context.changeSequence).toBe(16)
-    expect(text(context.getAgentContext('agent-worker-task')!)).toBe('xy')
-    expect(text(context.getAgentContext('agent-task-lead')!)).toBe('12')
-    expect(context.applyEvent(17, batch(item('/worker', 'agent-worker-task', 'z')), 17)).toBe('applied')
-    expect(text(context.getAgentContext('agent-worker-task')!)).toBe('xyz')
+    expect(text(context.getAgentContext('agent-worker-configured')!)).toBe('xy')
+    expect(text(context.getAgentContext('agent-lead-configured')!)).toBe('12')
+    expect(context.applyEvent(17, batch(item('/worker', 'agent-worker-configured', 'z')), 17)).toBe('applied')
+    expect(text(context.getAgentContext('agent-worker-configured')!)).toBe('xyz')
     expect(context.phase).toBe('live')
   })
 
   it('requires reopen for a batch that does not start at the next sequence', async () => {
     const context = await hydrate()
-    expect(() => context.applyEvent(10, batch(item('/worker', 'agent-worker-task', 'x')), 12))
+    expect(() => context.applyEvent(10, batch(item('/worker', 'agent-worker-configured', 'x')), 12))
       .toThrow('Expected change sequence 9, received 10.')
     expect(context.phase).toBe('reopen_required')
   })
 
   it('requires reopen for a batch with a wrong identity before applying any of its items', async () => {
     const context = await hydrate()
-    context.applyEvent(9, start('/worker', 'agent-worker-task'))
+    context.applyEvent(9, start('/worker', 'agent-worker-configured'))
     expect(() => context.applyEvent(10, batch(
-      item('/worker', 'agent-worker-task', 'x'), item('/elsewhere', 'agent-task-lead', 'y'),
-    ), 11)).toThrow("Agent presentation identity 'agent-task-lead' is not in the context.")
-    expect(text(context.getAgentContext('agent-worker-task')!)).toBe('')
+      item('/worker', 'agent-worker-configured', 'x'), item('/elsewhere', 'agent-lead-configured', 'y'),
+    ), 11)).toThrow("Agent presentation identity 'agent-lead-configured' is not in the context.")
+    expect(text(context.getAgentContext('agent-worker-configured')!)).toBe('')
   })
 })

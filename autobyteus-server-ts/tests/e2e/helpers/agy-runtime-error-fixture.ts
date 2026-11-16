@@ -9,6 +9,7 @@ import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { startStudioE2eRuntimeServer } from "./studio-runtime-test-server.js";
 import { sendE2eSendMessageCommand } from "./websocket-command-helpers.js";
 import { flattenE2eConfiguredAgentExecutions } from "./team-run-metadata-helpers.js";
+import { ownRunOfAgent, projectionByOwnRun } from "./own-run-reads.js";
 
 export type Scope = "agent" | "team" | "org";
 export type Wire = { type: string; payload: Record<string, any> };
@@ -117,11 +118,26 @@ export class AgyRuntimeErrorFixture {
     return { socket, frames, projected, send };
   }
   async projection(run: Run) {
+    // An agent of a run the root delegated to is read through its own run (autobyteus-461 CR-461-014: a team or org view's
+    // member reads answer only that run's own members).
+    if (run.scope !== "agent" || run.runId !== run.rootId) {
+      const own = await ownRunOfAgent(path.join(this.dataDir, "memory"), run.runId);
+      const delegated = own !== null && !(await this.isOwnMember(run));
+      if (delegated) return projectionByOwnRun((query, variables) => this.graphql(query, variables), path.join(this.dataDir, "memory"), run.runId);
+    }
     if (run.scope === "agent") return (await this.graphql(`query($id:String!){getRunProjection(runId:$id){conversation activities}}`, { id: run.runId })).getRunProjection;
     if (run.scope === "team") return (await this.graphql(`query($id:String!,$agent:String!){getTeamMemberRunProjection(teamRunId:$id,agentRunId:$agent){conversation activities}}`,
       { id: run.rootId, agent: run.runId })).getTeamMemberRunProjection;
     return (await this.graphql(`query($id:String!,$agent:String!,$address:String!){getAgentOrgMemberRunProjection(orgRunId:$id,memberAddress:$address,agentRunId:$agent){conversation activities}}`,
       { id: run.rootId, agent: run.runId, address: run.address })).getAgentOrgMemberRunProjection;
+  }
+  /** Whether the agent is one of its root's own members (its root's own file names it). */
+  private async isOwnMember(run: Run): Promise<boolean> {
+    if (run.scope === "agent") return run.runId === run.rootId;
+    const file = run.scope === "team" ? path.join(this.dataDir, "memory", "agent_teams", run.rootId, "team_run_execution_tree.json")
+      : path.join(this.dataDir, "memory", "agent_orgs", run.rootId, "agent_org_run_execution_tree.json");
+    const text = await fs.readFile(file, "utf8").catch(() => "");
+    return text.includes(`"agentRunId": "${run.runId}"`) || text.includes(`"agentRunId":"${run.runId}"`);
   }
   async audit() {
     const file = process.env["AGY_FAKE_INPUT_LOG"]!;

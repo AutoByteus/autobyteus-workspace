@@ -30,6 +30,8 @@ import { spawn } from 'node:child_process';
 import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
 import { attachToBrowserContext, attachToProbeProcess, withNodeCredential } from './fixtures/probe-node-access.mjs';
+import { waitRunSocketReady } from './fixtures/run-socket-ready.mjs';
+import { readRunTree, delegatedNodes } from './fixtures/run-tree.mjs';
 // Every node needs a credential (autobyteus-437): the probe's nodes start with its launch credential, and the probe's
 // own calls and its desktop browser contexts carry it (fixtures/probe-node-access.mjs).
 attachToProbeProcess();
@@ -226,11 +228,9 @@ const createRoot = async (kind, ids) => {
   const tree = (await gql('query($id:String!){getAgentOrgRunConfig(orgRunId:$id){executionTree}}', { id: r.agentOrgRunId })).getAgentOrgRunConfig.executionTree;
   return { kind, rootId: r.agentOrgRunId, managerRunId: tree.rootOrg.members.find((m) => m.address === '/manager').agentRunId };
 };
-const storedTree = async (root) => {
-  if (root.kind === 'agent') return (await gql('query($id:String!){agentRunCollaboration(runId:$id)}', { id: root.rootId })).agentRunCollaboration?.root_agent?.execution_tree;
-  if (root.kind === 'team') return (await gql('query($id:String!){getTeamRunResumeConfig(teamRunId:$id){executionTree}}', { id: root.rootId })).getTeamRunResumeConfig.executionTree;
-  return (await gql('query($id:String!){getAgentOrgRootHistory(orgRunId:$id){org}}', { id: root.rootId })).getAgentOrgRootHistory.org;
-};
+// autobyteus-461 SR-084: the root's delegated runs, as its tree lists them (`runTree`; a view carries its own parts only),
+// each marked listed for the walkers below.
+const storedTree = async (root) => ({ taskExecutions: delegatedNodes(await readRunTree(gql, root.kind, root.rootId)).map((node) => ({ ...node, startedAt: 'listed' })) });
 /** autobyteus-469 AC-001: the root's tree file on disk; every stored entry without `nodeId` in a `taskExecutions` list. */
 const storedTreeFile = (root) => path.join(stack.dataRoot, 'memory', ...(root.kind === 'agent' ? ['agents', root.rootId, 'collaboration', 'collaboration_tree.json']
   : root.kind === 'team' ? ['agent_teams', root.rootId, 'team_run_execution_tree.json'] : ['agent_orgs', root.rootId, 'agent_org_run_execution_tree.json']));
@@ -244,6 +244,8 @@ const storedLocalEntries = async (root) => {
       visit(inner);
     }
   };
+  // autobyteus-461 (contract §6): an Agent run has no collaboration tree file; it stores no delegated run.
+  if (root.kind === 'agent' && !fs.existsSync(storedTreeFile(root))) return found;
   visit(JSON.parse(await fsp.readFile(storedTreeFile(root), 'utf8')));
   return found;
 };
@@ -255,7 +257,12 @@ const sockets = [];
 const managerInput = async (root) => {
   const route = root.kind === 'agent' ? `agent/${root.rootId}` : root.kind === 'team' ? `agent-team/${root.rootId}` : `agent-org/${root.rootId}`;
   const socket = new WebSocket(`${stack.backendUrl.replace(/^http/, 'ws')}/ws/${route}`); sockets.push(socket);
+  const frames = [];
+  socket.on('message', (raw) => { try { frames.push(JSON.parse(String(raw))); } catch { /* not JSON */ } });
   await new Promise((resolve, reject) => { socket.once('open', resolve); socket.once('error', reject); });
+  await waitRunSocketReady(frames, route);
+  // A Team or Org view takes input once its snapshot is sent (a client's composer is shown after it): wait for it.
+  if (root.kind !== 'agent') await until(`${root.kind} view snapshot before input`, () => frames.some((f) => /SNAPSHOT$/.test(String(f.type))), 30000);
   const send = (content) => socket.send(JSON.stringify({ type: 'SEND_MESSAGE', payload: root.kind === 'org'
     ? { root_subject_kind: 'agent_org', root_run_id: root.rootId, target_agent_run_id: root.managerRunId, command_id: randomUUID(),
       message_id: randomUUID(), dedupe_key: randomUUID(), content, context_file_paths: [], image_urls: [] }
@@ -333,7 +340,7 @@ const openRoot = async (page, root, names, { requireTaskTree = true } = {}) => {
   return runRow;
 };
 const rowSelector = (kind, ref) => {
-  if (kind === 'org') return ref.teamRunId ? `[data-test="agent-org-task-team-row-${ref.teamRunId}"]` : `[data-test="agent-org-task-agent-row-${ref.agentRunId}"]`;
+  // autobyteus-461 SR-084: an Org's delegated rows are the same tree rows as in every other view.
   // Transient rows expose no node Team run ID; each probe root has exactly one task Team.
   return ref.teamRunId ? '[data-test="workspace-team-transient-execution-row"][data-transient-kind="task_team"]'
     : `[data-test="workspace-team-transient-execution-row"][data-agent-run-id="${ref.agentRunId}"]`;
@@ -581,7 +588,7 @@ const reloadAndRestart = async () => {
 const orgHistoryFirstRender = async () => {
   const r = runs.org; assert(r, 'BR-007 needs BR-003 in the same run');
   const t = await terminate(r.root);
-  const item = (await gql('query($id:String!){getAgentOrgRootHistory(orgRunId:$id){is_active closed_task_executions}}', { id: r.root.rootId })).getAgentOrgRootHistory;
+  const item = (await gql('query($id:String!){getAgentOrgRootHistory(orgRunId:$id){is_active}}', { id: r.root.rootId })).getAgentOrgRootHistory;
   assert(item.is_active === false, 'Org root still active', { t, item });
   const { page, errors, context } = await newPage({ initScript: watchClosed(closedIdsOf(r)) });
   try {
@@ -595,7 +602,8 @@ const orgHistoryFirstRender = async () => {
     assert(seen.length === 0, 'closed Org rows rendered from the history list', { seen });
     await shot(page, 'org-history-first-render');
     assert(errors.length === 0, 'browser errors', errors);
-    return { closedIds: closedIdsOf(r).length, seen, historyItemClosed: item.closed_task_executions };
+    // autobyteus-461 SR-084: the history item carries the run's own parts only (no closed rows); the check is the render.
+    return { closedIds: closedIdsOf(r).length, seen };
   } finally { await context.close(); }
 };
 
@@ -618,12 +626,35 @@ const teamMembersOf = (tree, teamRunId) => {
 const watchRows = (ids) => `(() => { const ids = ${JSON.stringify(ids)}; window.__rowsSeen = [];
   const check = () => { for (const id of ids) if (document.querySelector('[data-agent-run-id="' + id + '"], [data-test$="-row-' + id + '"]')) window.__rowsSeen.push(id); };
   new MutationObserver(check).observe(document, { subtree: true, childList: true, attributes: true }); })();`;
-/** What the app does before a send to a stopped root (after a restart): the root's restore mutation. */
+/**
+ * What the app does before a send to a stopped root (after a restart). An agent run: its restore mutation. A Team or Org run
+ * (autobyteus-461 CR-461-008, SR-046 … SR-048: their restore mutations are gone): its view serves the stopped run from its
+ * stored file, and the user's message to one of its own members restores it.
+ */
 const restoreRoot = async (root) => {
-  const r = Object.values(await gql(root.kind === 'agent' ? 'mutation($id:String!){restoreAgentRun(agentRunId:$id){success message}}'
-    : root.kind === 'team' ? 'mutation($id:String!){restoreAgentTeamRun(teamRunId:$id){success message}}'
-      : 'mutation($id:String!){restoreAgentOrgRun(agentOrgRunId:$id){success message}}', { id: root.rootId }))[0];
-  assert(r.success, `restore ${root.kind} root failed: ${r.message}`);
+  if (root.kind === 'agent') {
+    const r = (await gql('mutation($id:String!){restoreAgentRun(agentRunId:$id){success message}}', { id: root.rootId })).restoreAgentRun;
+    assert(r.success, `restore agent root failed: ${r.message}`);
+    return;
+  }
+  const route = root.kind === 'team' ? `agent-team/${root.rootId}` : `agent-org/${root.rootId}`;
+  const socket = new WebSocket(`${stack.backendUrl.replace(/^http/, 'ws')}/ws/${route}`); sockets.push(socket);
+  const frames = [];
+  socket.on('message', (raw) => frames.push(JSON.parse(String(raw))));
+  await new Promise((resolve, reject) => { socket.once('open', resolve); socket.once('error', reject); });
+  await waitRunSocketReady(frames, route);
+  try {
+    await until(`${root.kind} view snapshot`, () => frames.some((f) => /SNAPSHOT$/.test(String(f.type))), 30000);
+    socket.send(JSON.stringify({ type: 'SEND_MESSAGE', payload: root.kind === 'org'
+      ? { root_subject_kind: 'agent_org', root_run_id: root.rootId, target_agent_run_id: root.managerRunId, command_id: randomUUID(),
+        message_id: randomUUID(), dedupe_key: randomUUID(), content: 'Continue.', context_file_paths: [], image_urls: [] }
+      : { agent_run_id: root.managerRunId, message_id: `e2e-${randomUUID()}`, dedupe_key: `agent_run_input:e2e:${randomUUID()}`,
+        content: 'Continue.', context_file_paths: [], image_urls: [] } }));
+    const active = async () => root.kind === 'team'
+      ? Boolean((await gql('query($id:String!){getTeamRunResumeConfig(teamRunId:$id){isActive}}', { id: root.rootId })).getTeamRunResumeConfig?.isActive)
+      : Boolean((await gql('query($id:String!){getAgentOrgRunConfig(orgRunId:$id){isActive}}', { id: root.rootId })).getAgentOrgRunConfig?.isActive);
+    await until(`${root.kind} root restored by the member message`, active, 60000);
+  } finally { socket.close(); }
 };
 const centerText = (page) => page.locator('[data-test="workspace-center-pane"]').innerText();
 /** The rendered status of one member row: an Org row's `data-status`, else the colour of its status dot. */
@@ -789,7 +820,13 @@ const reactivationAcrossRestart = async () => {
       await page.locator(rowSelector(kind, r.worker)).waitFor({ state: 'visible', timeout: 90000 });
       await page.locator(rowSelector(kind, r.worker)).click();
       await until(`${kind}: conversation after restart`, async () => { const t = await centerText(page);
-        return t.includes('PRE-DONE-7731') && t.includes('POST-REOPEN-9902') && t.includes('POST-RESTART-4242'); }, 60000);
+        return t.includes('PRE-DONE-7731') && t.includes('POST-REOPEN-9902') && t.includes('POST-RESTART-4242'); }, 60000)
+        .catch(async (error) => {
+          // Diagnostics (CRR-048): which markers the window shows, and where it is.
+          const t = await centerText(page).catch(() => '');
+          await shot(page, `${kind}-conversation-after-restart-failure`).catch(() => undefined);
+          throw Object.assign(error, { details: { url: page.url(), markers: { preDone: t.includes('PRE-DONE-7731'), postReopen: t.includes('POST-REOPEN-9902'), postRestart: t.includes('POST-RESTART-4242') }, centerText: t.slice(0, 1500) } });
+        });
       for (const ref of r.helperRefs) assert(await page.locator(rowSelector(kind, ref)).count() === 0, `${kind}: helper row listed after restart`);
       await shot(page, `${kind}-reactivated-after-second-restart`);
       assert(errors.length === 0, `${kind}: browser errors after the second restart`, errors);

@@ -1,0 +1,24 @@
+# F-37 (task-reactivation step 12), r6-batchA2.log, code 958cb22462
+ FAIL  tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts > Reactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > standalone Agent root: target_kind, refused while DONE, status-only reopen, helper and non-assigner refusals, Agent and Team copy reactivation, DONE cycle, deleted Task, ad hoc TODO
+AssertionError: {"accepted":false,"code":"TARGET_AGENT_RUN_NOT_ACTIVE","message":"No running agent has the run id 'tra_worker_1eb5ab_63c55c66ec444c869e5612c9913f1147', so the message was not sent. Use an exact run id you were given: a sender run id (from a message or your new task), or a run id delegate_task returned to you."}: expected { accepted: false, …(2) } to match object { accepted: false, …(1) }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+    "accepted": false,
+-   "code": "TASK_NOT_FOUND",
++   "code": "TARGET_AGENT_RUN_NOT_ACTIVE",
+  }
+
+ ❯ rootScenario tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts:549:51
+    547|     // later steps run; the answer is recorded.
+    548|     record.deletedTaskMessage = deleted;
+    549|     expect.soft(deleted, JSON.stringify(deleted)).toMatchObject({ acce…
+       |                                                   ^
+    550|     expect.soft(String(deleted.message)).toMatch(/The Task was deleted…
+    551|     expect(deleted).toMatchObject({ accepted: false });
+ ❯ tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts:741:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/18]⎯

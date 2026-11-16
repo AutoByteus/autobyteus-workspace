@@ -1,0 +1,3 @@
+# API-B01 desktop, round 9 (f92881dd13)
+# Command: cd autobyteus-web && env -i PATH HOME=<temp> TMPDIR USER node tests/e2e/stopped-delegator-views-probe.mjs --output-dir <dir>
+Stopped delegator views probe: Pass. Evidence: /tmp/api461/r9-sdv/evidence.json

@@ -1,0 +1,11 @@
+# IMP-115 (IR-038, CR-461-107): run-status-service.test.ts after, then with run-status-service.ts at HEAD (before)
+## after (worktree)
+ Test Files  1 passed (1)
+      Tests  14 passed (14)
+LOG: /tmp/svt-17843.log
+## before (src at HEAD 3df252e132)
+ Test Files  1 failed (1)
+      Tests  1 failed | 13 passed (14)
+     × CR-461-107: a client that newly shows a peer run whose observation ended asks its node again once; a live observation is not asked 9ms
+ FAIL  tests/unit/agent-collaboration/execution/run-status-service.test.ts > RunStatusService (SR-082, SR-083) > CR-461-107: a client that newly shows a peer run whose observation ended asks its node again once; a live observation is not asked
+LOG: /tmp/svt-17868.log

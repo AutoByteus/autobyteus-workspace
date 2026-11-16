@@ -19,12 +19,12 @@ const tree = (members) => ({
   subjectKind: "agent_org", createdAt: "2026-11-02T00:00:00.000Z", archivedAt: null, applicationBinding: null, handoffs: [],
   rootOrg: {
     address: "/", orgDefinitionId: "org-def", orgDefinitionName: "Org", orgRunId: "org-run",
-    defaultLaunchConfiguration: launch("autobyteus", "native-model"), members, taskExecutions: [],
+    defaultLaunchConfiguration: launch("autobyteus", "native-model"), members,
   },
 });
 const crew = (worker) => ({
   address: "/crew", teamDefinitionId: "team-def", role: null, description: null, teamRunId: "team-run", coordinatorAddress: "/crew/lead",
-  defaultLaunchConfiguration: launch("autobyteus", "native-model"), members: [agent("/crew/lead", "lead-run"), worker], taskExecutions: [],
+  defaultLaunchConfiguration: launch("autobyteus", "native-model"), members: [agent("/crew/lead", "lead-run"), worker],
 });
 
 test("a wire Org tree of members without a pending switch is valid", () => {

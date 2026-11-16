@@ -26,7 +26,7 @@ const runContext = new AgentRunContext({
     workspaceId: 'workspace-1',
     runtimeKind: RuntimeKind.CODEX_APP_SERVER,
     memberExecutionContext: new MemberExecutionContext({
-      teamScoped: true, collaborationRole: "team_member",
+      teamScoped: true, collaborationRole: "team_member", inOrganization: false,
       identity: {
         root: createTeamRootExecutionIdentity('team-run-1'),
         memberAddress: '/planner/worker',

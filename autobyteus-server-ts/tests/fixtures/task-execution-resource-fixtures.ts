@@ -1,9 +1,11 @@
+import type { RunTaskRecords } from "../../src/agent-collaboration/execution/task/task-execution-resource-port.js";
 import type { TaskDelegationOutcome } from "../../src/agent-collaboration/execution/task/task-delegation-command.js";
-import type { ExistingTaskExecutionAssignInput, NewTaskExecutionLinkInput, TaskExecutionOwner, TaskExecutionResourcePort, TaskExecutionReopenInput, TaskExecutionRole } from "../../src/agent-collaboration/execution/task/task-execution-resource-port.js";
-import { rootExecutionIdentityKey, type RootExecutionIdentity } from "../../src/agent-collaboration/execution/domain/root-execution-identity.js";
+import {
+  runReferenceOf,
+  type ExistingTaskExecutionAssignInput, type NewTaskExecutionLinkInput, type PeerRunMember, type RunDelegatedFrom,
+  type TaskEntriesListener, type TaskExecutionResourcePort, type TaskExecutionReopenInput, type TaskExecutionRole, type TaskRunEntry,
+} from "../../src/agent-collaboration/execution/task/task-execution-resource-port.js";
 import type { TaskExecutionReference } from "../../src/agent-collaboration/execution/task/task-execution-reference.js";
-import type { OpenDelegatedRun, OpenDelegatedRunSource } from "../../src/run-history/store/open-delegated-run-source.js";
-import type { TaskAgentCoordinatingRun } from "../../src/run-history/store/agent-run-metadata-types.js";
 import { taskExecutionReferenceKey } from "@autobyteus/collaboration-stream-contracts";
 
 const rejection = (code: string, message: string) => Object.assign(new Error(message), { code });
@@ -11,8 +13,8 @@ const rejection = (code: string, message: string) => Object.assign(new Error(mes
  * One copy's current entry (a copy moves between Tasks by assignment; `everStarted` spans its periods). A copy given
  * another Task while open keeps its earlier open Tasks in `otherOpenTaskIds` (oldest first).
  */
-type Entry = { taskId: string; hostRoot: RootExecutionIdentity; execution: TaskExecutionReference; role: TaskExecutionRole; assignedBy?: string; open: boolean; start: "starting" | "started" | "failed"; everStarted?: true; otherOpenTaskIds?: string[];
-  /** A Team copy's coordinator (its ingress). */ teamCoordinatorAgentRunId?: string };
+type Entry = { taskId: string; delegatedFrom: RunDelegatedFrom; execution: TaskExecutionReference; role: TaskExecutionRole; open: boolean; start: "starting" | "started" | "failed"; everStarted?: true; otherOpenTaskIds?: string[];
+  /** A Team copy's coordinator (its ingress). */ teamCoordinatorAgentRunId?: string; recipientAddress: string; nodeId?: string; members?: readonly PeerRunMember[]; linkedAt: string };
 
 /**
  * Runtime-test double of the Task side's loaded agent run resources. It follows the reviewed
@@ -21,7 +23,7 @@ type Entry = { taskId: string; hostRoot: RootExecutionIdentity; execution: TaskE
  * assigner and may hold several open Tasks, closed only when its last one closes, damaged data fails closed);
  * the Projects implementation is tested separately.
  */
-export class InMemoryTaskExecutionResources implements TaskExecutionResourcePort, OpenDelegatedRunSource {
+export class InMemoryTaskExecutionResources implements TaskExecutionResourcePort, RunTaskRecords {
   readonly entries = new Map<string, Entry>();
   readonly tasks = new Map<string, { description: string; referenceFiles: string[]; done: boolean; adHoc?: true; taskKey?: string; comments?: string[] }>();
   readonly damaged = new Set<string>();
@@ -35,6 +37,12 @@ export class InMemoryTaskExecutionResources implements TaskExecutionResourcePort
   /** Each Project's new-copy folder when it has a linked one (AC-001): absent means no link. A value of an Error refuses. */
   readonly projectFolders = new Map<string, string | Error>();
   private adHocCount = 0;
+  private linkCount = 0;
+  /** The `DelegationIndex` a harness builds over this double, told after each change (like the Task side). */
+  private listener: TaskEntriesListener | null = null;
+  setEntriesListener(listener: TaskEntriesListener): void { this.listener = listener; }
+  /** Tells the listener of a change made directly in `entries` (a test's own write). */
+  changed(taskId: string): void { this.listener?.entriesChanged(taskId); }
 
   async projectFolderForNewCopy(projectId: string): Promise<string | null> {
     const folder = this.projectFolders.get(projectId) ?? null;
@@ -57,7 +65,14 @@ export class InMemoryTaskExecutionResources implements TaskExecutionResourcePort
       const next = entry.otherOpenTaskIds?.pop();
       if (next) entry.taskId = next; else entry.open = false;
     }
+    this.changed(taskId);
     return this.closedAgentRuns(taskId);
+  }
+  /** The Task is deleted: its entries go with it, and the tree is told (as `ProjectTaskService` deletes a Task). */
+  deleteTask(taskId: string): void {
+    this.tasks.delete(taskId);
+    for (const [key, entry] of this.entries) if (entry.taskId === taskId) this.entries.delete(key);
+    this.changed(taskId);
   }
   /** The agent's own status change out of DONE (it reopens no entry). */
   setTaskOpen(taskId: string): void { this.tasks.get(taskId)!.done = false; }
@@ -98,60 +113,56 @@ export class InMemoryTaskExecutionResources implements TaskExecutionResourcePort
       if (this.damaged.has(taskId)) throw rejection("TASK_AGENT_RESOURCES_UNAVAILABLE", "Task run data could not be read.");
       if (this.tasks.get(taskId)?.done !== false) throw rejection("TASK_AGENT_RESOURCE_CLOSED", "Task is DONE or unknown.");
     } else {
-      const creator = this.entry(input.creator);
+      const creatorRun = runReferenceOf(input.delegatedFrom.delegatingRun);
+      const creator = creatorRun ? this.entry(creatorRun) : undefined;
       if (!creator?.open) throw rejection("TASK_AGENT_RESOURCE_CLOSED", "The creating Task run is closed.");
       taskId = creator.taskId;
     }
     const key = taskExecutionReferenceKey(input.execution);
     if (this.entries.has(key)) throw rejection("TASK_AGENT_RESOURCE_CONFLICT", "Already linked.");
-    this.entries.set(key, { taskId, hostRoot: input.hostRoot, execution: input.execution, role: input.role,
-      ...(input.role === "assigned" ? { assignedBy: input.assignedBy } : {}), open: true, start: "starting",
+    this.entries.set(key, { taskId, delegatedFrom: input.delegatedFrom, execution: input.execution, role: input.role, open: true, start: "starting",
+      linkedAt: new Date(Date.UTC(2026, 0, 1, 0, 0, ++this.linkCount)).toISOString(),
+      recipientAddress: input.recipientAddress,
+      ...(input.nodeId !== undefined ? { nodeId: input.nodeId } : {}), ...(input.members ? { members: input.members } : {}),
       ...(input.teamCoordinatorAgentRunId ? { teamCoordinatorAgentRunId: input.teamCoordinatorAgentRunId } : {}) });
     this.links.push(input);
+    this.changed(taskId);
     return { taskId };
   }
   async markStarted(execution: TaskExecutionReference) {
     const entry = this.entry(execution);
-    if (entry?.start === "starting") { entry.start = "started"; entry.everStarted = true; }
+    if (entry?.start === "starting") { entry.start = "started"; entry.everStarted = true; this.changed(entry.taskId); }
   }
   async markFailed(execution: TaskExecutionReference) {
     const entry = this.entry(execution);
-    if (entry?.start === "starting") entry.start = "failed";
-  }
-  /** The innermost linked element of the chain decides, by its current entry. */
-  ownerOf(chain: readonly TaskExecutionReference[]): TaskExecutionOwner | null {
-    const innermost = chain.map(execution => this.entry(execution)).find(entry => entry !== undefined);
-    if (!innermost) {
-      if (this.damaged.size) throw rejection("TASK_AGENT_RESOURCES_UNAVAILABLE", "Task run data could not be read.");
-      return null;
-    }
-    return { taskId: innermost.taskId, execution: innermost.execution, open: innermost.open };
+    if (entry?.start === "starting") { entry.start = "failed"; this.changed(entry.taskId); }
   }
   isOpen(execution: TaskExecutionReference): boolean { return this.entry(execution)?.open === true; }
-  closedTaskExecutionsIn(hostRoot: RootExecutionIdentity): TaskExecutionReference[] {
-    return [...this.entries.values()].filter(e => !e.open && !this.damaged.has(e.taskId)
-      && rootExecutionIdentityKey(e.hostRoot) === rootExecutionIdentityKey(hostRoot)).map(e => e.execution);
+  /** The first damaged Task's message, as the Task side gives it (CR-461-051). */
+  unreadable(): string | null {
+    const [first] = this.damaged;
+    return first === undefined ? null : `Task run data could not be read (${first}). Fix or restore the file and restart the app; other features keep working.`;
   }
-  closedTaskExecutionOf(hostRoot: RootExecutionIdentity, by: Readonly<{ ingressAgentRunId: string }> | TaskExecutionReference) {
-    for (const entry of this.entries.values()) {
-      if (entry.open || this.damaged.has(entry.taskId) || rootExecutionIdentityKey(entry.hostRoot) !== rootExecutionIdentityKey(hostRoot)) continue;
-      const ingressAgentRunId = "agentRunId" in entry.execution ? entry.execution.agentRunId : entry.teamCoordinatorAgentRunId!;
-      const matches = "ingressAgentRunId" in by ? by.ingressAgentRunId === ingressAgentRunId
-        : taskExecutionReferenceKey(by) === taskExecutionReferenceKey(entry.execution);
-      if (matches) return { execution: entry.execution, ingressAgentRunId };
-    }
-    return null;
+  taskIdsWithEntries(): readonly string[] {
+    return [...new Set([...this.entries.values()].flatMap((entry) => [entry.taskId, ...entry.otherOpenTaskIds ?? []]))]
+      .filter((taskId) => !this.damaged.has(taskId));
   }
-  /** The tree stores' source (design D-1): this root's open copies, as the Projects side answers. */
-  openDelegatedRunsOf(coordinatingRun: TaskAgentCoordinatingRun): readonly OpenDelegatedRun[] {
-    const rootKey = rootExecutionIdentityKey({ rootSubjectKind: coordinatingRun.kind, rootRunId: coordinatingRun.runId });
-    return [...this.entries.values()].filter((entry) => entry.open && !this.damaged.has(entry.taskId)
-      && rootExecutionIdentityKey(entry.hostRoot) === rootKey).map((entry) => ({ run: entry.execution, started: entry.start === "started" }));
+  /** Each run's entry in the Task: its current one, or an earlier open Task it still holds (open). */
+  entriesOf(taskId: string): readonly TaskRunEntry[] {
+    if (this.damaged.has(taskId)) return [];
+    return [...this.entries.values()].flatMap((entry): TaskRunEntry[] => {
+      const current = entry.taskId === taskId;
+      if (!current && !entry.otherOpenTaskIds?.includes(taskId)) return [];
+      return [{ taskId, role: entry.role, delegatedFrom: entry.delegatedFrom, run: entry.execution, entryAgentRunId: entryAgentOf(entry),
+        open: current ? entry.open : true, start: entry.start, linkedAt: entry.linkedAt,
+        recipientAddress: entry.recipientAddress,
+        ...(entry.nodeId !== undefined ? { nodeId: entry.nodeId } : {}), ...(entry.members ? { members: entry.members } : {}) }];
+    });
   }
   async assertReopenable(input: TaskExecutionReopenInput): Promise<void> {
     const entry = this.entry(input.execution);
     if (!entry) throw rejection("TASK_AGENT_RESOURCE_CONFLICT", "The agent run belongs to no Task.");
-    if (entry.role !== "assigned" || entry.assignedBy !== input.requestedBy) throw rejection("TASK_AGENT_RESOURCE_CLOSED", "Only the agent that assigned the Task can continue it.");
+    if (entry.role !== "assigned" || entry.delegatedFrom.delegatorAgentRunId !== input.requestedBy) throw rejection("TASK_AGENT_RESOURCE_CLOSED", "Only the agent that assigned the Task can continue it.");
     if (entry.start !== "started") throw rejection("TASK_REACTIVATION_UNAVAILABLE", "This assignment never started.");
     const task = this.tasks.get(entry.taskId);
     if (!task) throw rejection("TASK_NOT_FOUND", "The Task was deleted, so its task agent cannot continue.");
@@ -163,25 +174,45 @@ export class InMemoryTaskExecutionResources implements TaskExecutionResourcePort
     const entry = this.entry(input.execution)!;
     const reopened = !entry.open;
     entry.open = true;
+    this.changed(entry.taskId);
     return { taskId: entry.taskId, reopened };
   }
-  async assertAssignable(input: Readonly<{ execution: TaskExecutionReference; requestedBy: string; taskId: string }>): Promise<void> {
+  async assertAssignable(input: Readonly<{ execution: TaskExecutionReference; requestedBy: string; taskId: string; ownDelegatorAgentRunId?: string }>): Promise<void> {
     this.assertResourceDataReadable();
     await this.resolveAssignment(input.taskId);
     const entry = this.entry(input.execution);
+    // Every Task of the run was deleted: the delegator its own file names may give it a new Task (SR-072 F-24).
+    if (!entry && input.ownDelegatorAgentRunId !== undefined) {
+      if (input.ownDelegatorAgentRunId !== input.requestedBy) throw rejection("TASK_AGENT_RESOURCE_CONFLICT", "Only the agent that gave this task agent its most recent Task can give it a new one.");
+      return;
+    }
     if (!entry) throw rejection("TASK_AGENT_RESOURCE_CONFLICT", "This copy belongs to no Task.");
     if (entry.role !== "assigned") throw rejection("TASK_AGENT_RESOURCE_CONFLICT", "This task agent works on part of another agent's Task, so you can't give it a Task.");
-    if (entry.assignedBy !== input.requestedBy) throw rejection("TASK_AGENT_RESOURCE_CONFLICT", "Only the agent that gave this task agent its most recent Task can give it a new one.");
+    if (entry.delegatedFrom.delegatorAgentRunId !== input.requestedBy) throw rejection("TASK_AGENT_RESOURCE_CONFLICT", "Only the agent that gave this task agent its most recent Task can give it a new one.");
     if (!entry.open && entry.taskId === input.taskId) throw rejection("TASK_AGENT_RESOURCE_CONFLICT", `This task agent already has Task ${input.taskId}.`);
     if (entry.open && [entry.taskId, ...entry.otherOpenTaskIds ?? []].includes(input.taskId)) throw rejection("TASK_AGENT_RESOURCE_CONFLICT", "This task agent already works on this Task.");
     if (!entry.everStarted) throw rejection("TASK_REACTIVATION_UNAVAILABLE", "This copy never started, so it has no conversation to resume.");
   }
   async assignExistingTaskExecution(input: ExistingTaskExecutionAssignInput): Promise<void> {
     await this.beforeAssignCommit?.(input);
-    await this.assertAssignable({ execution: input.execution, requestedBy: input.assignedBy, taskId: input.taskId });
+    await this.assertAssignable({ execution: input.execution, requestedBy: input.delegatedFrom.delegatorAgentRunId, taskId: input.taskId,
+      ...(input.recipientAddress ? { ownDelegatorAgentRunId: input.delegatedFrom.delegatorAgentRunId } : {}) });
+    if (!this.entry(input.execution) && input.recipientAddress) {
+      // A run no Task names any more: a new entry repeating its own delegation and address (U11).
+      this.entries.set(taskExecutionReferenceKey(input.execution), { taskId: input.taskId, delegatedFrom: input.delegatedFrom, execution: input.execution,
+        role: "assigned", open: true, start: "starting", everStarted: true, recipientAddress: input.recipientAddress,
+        linkedAt: new Date(Date.UTC(2026, 0, 1, 0, 0, ++this.linkCount)).toISOString(),
+        ...(input.teamCoordinatorAgentRunId ? { teamCoordinatorAgentRunId: input.teamCoordinatorAgentRunId } : {}) });
+      this.changed(input.taskId);
+      this.assignments.push(input);
+      return;
+    }
     const entry = this.entry(input.execution)!;
     const otherOpenTaskIds = entry.open ? [...entry.otherOpenTaskIds ?? [], entry.taskId] : [];
-    Object.assign(entry, { taskId: input.taskId, assignedBy: input.assignedBy, open: true, start: "starting" as const, otherOpenTaskIds });
+    const previousTaskId = entry.taskId;
+    Object.assign(entry, { taskId: input.taskId, delegatedFrom: input.delegatedFrom, open: true, start: "starting" as const, otherOpenTaskIds });
+    this.changed(previousTaskId);
+    this.changed(input.taskId);
     this.assignments.push(input);
   }
   async openTaskReferencesOf(execution: TaskExecutionReference, exceptTaskId: string): Promise<string[]> {
@@ -189,15 +220,17 @@ export class InMemoryTaskExecutionResources implements TaskExecutionResourcePort
     if (!entry?.open) return [];
     return [...entry.otherOpenTaskIds ?? [], entry.taskId].filter((id) => id !== exceptTaskId).map((id) => this.tasks.get(id)?.taskKey ?? id);
   }
-  /** Every status-change notification, in order. */
-  readonly statusChanges: Array<{ hostRoot: RootExecutionIdentity; references: TaskExecutionReference[] }> = [];
-  taskExecutionsStatusChanged(hostRoot: RootExecutionIdentity, references: readonly TaskExecutionReference[]): void {
-    this.statusChanges.push({ hostRoot, references: [...references] });
+  /** Every status-change notification, in order (the run side's `RunTaskRecords.statusChanged`, SR-053). */
+  readonly statusChanges: Array<{ references: TaskExecutionReference[] }> = [];
+  statusChanged(execution: TaskExecutionReference): void {
+    this.statusChanges.push({ references: [execution] });
   }
   assertResourceDataReadable(): void {
     if (this.damaged.size) throw rejection("TASK_AGENT_RESOURCES_UNAVAILABLE", "Task run data could not be read. Fix or restore the file and restart the app; other features keep working.");
   }
 }
+
+const entryAgentOf = (entry: Entry): string => "agentRunId" in entry.execution ? entry.execution.agentRunId : entry.teamCoordinatorAgentRunId!;
 
 /** The agent run that receives a delegated copy's work (an Agent copy itself, or a Team copy's coordinator); throws on a failed delegation. */
 export const ingressOfOutcome = (outcome: TaskDelegationOutcome): string => {

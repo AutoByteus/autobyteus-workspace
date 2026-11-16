@@ -19,6 +19,7 @@ import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.
 import { assertBriefStudioPackageBuilt, BRIEF_STUDIO_PACKAGE } from "../helpers/brief-studio-package.js";
 import { fakeRuntimeState, prepareFakeRuntimes } from "../helpers/agent-runtimes-e2e-harness.js";
 import { closeLiveServerVault, initializeLiveServerVault, requireLiveCapability } from "../../../../test-support/test-vault/live-server-vault.js";
+import { agentStreamFramesOf } from "../helpers/agent-stream-frames.js";
 
 /**
  * DeepSeek Harness live: the real `dsh` (DeepSeek Harness 0.2.2-rc.1, `--profile acp`) against the REAL DeepSeek API
@@ -153,7 +154,8 @@ describeLive("DeepSeek Harness live (real dsh, real DeepSeek API, product relay)
     socket.on("message", (raw: unknown) => {
       try {
         const parsed = JSON.parse(String(raw)) as { type?: unknown; payload?: unknown };
-        if (typeof parsed.type === "string") messages.push({ type: parsed.type, payload: (parsed.payload ?? {}) as Record<string, unknown> });
+        // autobyteus-461 SR-087: a SEGMENT_CONTENT_BATCH is its items (each a SEGMENT_CONTENT), as the web applies it.
+        messages.push(...agentStreamFramesOf(parsed));
       } catch { /* diagnostic rows only */ }
     });
     await new Promise<void>((resolve, reject) => { socket.once("open", () => resolve()); socket.once("error", reject); });

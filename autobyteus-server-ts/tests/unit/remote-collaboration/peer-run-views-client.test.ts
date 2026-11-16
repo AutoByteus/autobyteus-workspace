@@ -48,7 +48,8 @@ describe("PeerClient run views (autobyteus-278)", () => {
   it("asks one node for its runs' summaries and reads the answer strictly", async () => {
     const runs = [{ kind: "agent_team", runId: "team-run", title: "Plan the October campaign", statuses: [{ agentRunId: "lead-run", status: "running" }] }];
     const f = client(async () => answer({ accepted: true, nodeId: PEER.nodeId, runs }));
-    await expect(f.client.runSummaries(PEER.nodeId, [TEAM])).resolves.toEqual({ accepted: true, runs });
+    // A peer that sends no launches (SR-038) is read with none.
+    await expect(f.client.runSummaries(PEER.nodeId, [TEAM])).resolves.toEqual({ accepted: true, runs: runs.map((run) => ({ ...run, launches: [] })) });
     const [url, init] = f.fetch.mock.calls[0]!;
     expect(url).toBe("http://peer:29700/rest/remote/run-summaries");
     expect(JSON.parse(String(init.body))).toEqual({ fromNodeId: SELF, toNodeId: PEER.nodeId, runs: [TEAM] });

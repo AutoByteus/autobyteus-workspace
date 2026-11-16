@@ -8,6 +8,8 @@ import { expect } from "vitest";
 import { calledResults, taskAgentsIn, toolResult, type Rec } from "./collaboration-root-harness.js";
 import { builtServerLaunchEnvironment } from "./built-server-launch-credential.js";
 import { PARTICIPANT_MESSAGES_QUERY } from "../../helpers/collaboration-participant-messages.js";
+import { restoreByMemberMessage } from "./restore-by-member-message.js";
+import { delegatedRunsTree } from "./run-tree-delegated.js";
 
 /**
  * The BUILT Studio server (`dist/app.js`) as a separate process on a test-owned data root, and the Agent, Agent Team and
@@ -106,12 +108,8 @@ export const createRoot = async (s: BuiltStudio, kind: Kind, ids: { manager: str
   return { kind, rootId: r.agentOrgRunId, managerRunId: tree.rootOrg.members.find((m: Rec) => m.address === "/manager").agentRunId };
 };
 
-/** The tree the server reports for a root (its composed view). */
-export const treeOf = async (s: BuiltStudio, root: Root) => {
-  if (root.kind === "agent") return (await s.gql(`query($id:String!){agentRunCollaboration(runId:$id)}`, { id: root.rootId })).agentRunCollaboration?.root_agent?.execution_tree;
-  if (root.kind === "team") return (await s.gql(`query($id:String!){getTeamRunResumeConfig(teamRunId:$id){executionTree}}`, { id: root.rootId })).getTeamRunResumeConfig.executionTree;
-  return (await s.gql(`query($id:String!){getAgentOrgRootHistory(orgRunId:$id){org}}`, { id: root.rootId })).getAgentOrgRootHistory.org;
-};
+/** A root's delegated runs at every depth, from the tree the server builds for it (autobyteus-461 SR-084; views carry own parts only). */
+export const treeOf = async (s: BuiltStudio, root: Root) => delegatedRunsTree((query, variables) => s.gql(query, variables), root.kind, root.rootId);
 export const treeRunIds = async (s: BuiltStudio, root: Root) => taskAgentsIn(await treeOf(s, root)).map((t) => t.agentRunId ?? t.teamRunId!);
 
 export const managerConversation = async (s: BuiltStudio, root: Root) => {
@@ -127,7 +125,11 @@ export const managerOf = async (s: BuiltStudio, root: Root) => {
   const route = root.kind === "agent" ? `agent/${root.rootId}` : root.kind === "team" ? `agent-team/${root.rootId}` : `agent-org/${root.rootId}`;
   const socket = new WebSocket(`${s.url.replace(/^http/, "ws")}/ws/${route}`);
   s.sockets.push(socket);
+  const frames: Rec[] = [];
+  socket.on("message", (raw: unknown) => { try { frames.push(JSON.parse(String(raw)) as Rec); } catch { /* not a frame */ } });
   await new Promise<void>((resolve, reject) => { socket.once("open", () => resolve()); socket.once("error", reject); });
+  // The protocol: commands wait for the session, which CONNECTED announces.
+  await until(async () => frames.some((frame) => frame.type === "CONNECTED") || null, `${root.kind} Manager channel CONNECTED`, 30_000);
   const send = (content: string) => socket.send(JSON.stringify({ type: "SEND_MESSAGE", payload: root.kind === "org"
     ? { root_subject_kind: "agent_org", root_run_id: root.rootId, target_agent_run_id: root.managerRunId, command_id: randomUUID(),
       message_id: randomUUID(), dedupe_key: randomUUID(), content, context_file_paths: [], image_urls: [] }
@@ -143,11 +145,16 @@ export const managerOf = async (s: BuiltStudio, root: Root) => {
   return { call, close: () => socket.close() };
 };
 
+/**
+ * Restores a stopped root as the app does: a standalone agent run by its restore mutation; a Team or Org run by the user's
+ * message to its Manager on its view stream (autobyteus-461 CR-461-008: the Team and Org restore mutations are gone).
+ */
 export const restoreRoot = async (s: BuiltStudio, root: Root) => {
-  const mutation = root.kind === "agent" ? `mutation($id:String!){restoreAgentRun(agentRunId:$id){success message}}`
-    : root.kind === "team" ? `mutation($id:String!){restoreAgentTeamRun(teamRunId:$id){success message}}`
-      : `mutation($id:String!){restoreAgentOrgRun(agentOrgRunId:$id){success message}}`;
-  const restored = Object.values(await s.gql(mutation, { id: root.rootId }))[0] as Rec;
+  if (root.kind !== "agent") {
+    await restoreByMemberMessage({ url: s.url, gql: (q, v) => s.gql(q, v), kind: root.kind, runId: root.rootId, memberRunId: root.managerRunId });
+    return;
+  }
+  const restored = (await s.gql(`mutation($id:String!){restoreAgentRun(agentRunId:$id){success message}}`, { id: root.rootId })).restoreAgentRun as Rec;
   expect(restored.success, restored.message).toBe(true);
 };
 export const terminateRoot = async (s: BuiltStudio, root: Root) => {

@@ -15,6 +15,7 @@ import { AdHocTasksLayout } from "../../../../src/projects/stores/ad-hoc-tasks-l
 import { createRootExecutionIdentity } from "../../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import { ProjectTaskToolsMcpAdapterProvider } from "../../../../src/agent-tools/mcp/providers/project-task-tools-mcp-adapter-provider.js";
 import { PROJECT_TASK_TOOL_DESCRIPTIONS, buildProjectTaskToolSchema, parseCreateTaskInput, parseUpdateTaskInput } from "../../../../src/agent-tools/project-tasks/project-task-tool-contract.js";
+import { withTaskRunResources } from "../../../helpers/task-run-resources.js";
 
 /** task-part-of: `part_of` on create_task / update_task; `partOf`, `parts` and `closedParts` by key in tool results (REQ-013, REQ-014, REQ-017). */
 const tool = async (name: string, args: Record<string, unknown>) => {
@@ -33,9 +34,9 @@ beforeEach(async () => {
   store = new ProjectStore(layout);
   const changes = { taskChanged() {}, taskRemoved() {}, workerStatusChanged() {}, projectChanged() {}, projectRemoved() {} };
   projects = new ProjectService({ store, changes, workspaceLookup: { listRegisteredWorkspaceRootPaths: async () => [] } });
-  tasks = new ProjectTaskService({ store, changes, contextStore: new ProjectTaskContextStore(layout),
+  tasks = new ProjectTaskService(withTaskRunResources({ store, changes, contextStore: new ProjectTaskContextStore(layout),
     adHocTasks: new AdHocTaskStore(new AdHocTasksLayout(path.join(dir, "ad-hoc-tasks"))),
-    requestRelease: (releases = trackReleases()).request });
+    requestRelease: (releases = trackReleases()).request }));
   await tasks.load();
   vi.spyOn(taskServices, "getProjectTaskService").mockImplementation(() => tasks);
   projectId = (await projects.createProject({ name: "AutoByteus" })).projectId;
@@ -64,7 +65,7 @@ describe("part_of through the tools (AC-014)", () => {
     const parent = await create("Parent");
     const part = await create("Part", { part_of: parent.taskId });
     const before = await Promise.all([parent, part].map(async (t) => fs.readFile(layout.taskFile(projectId, await idOfKey(t.taskId)), "utf8")));
-    const { taskId: temp } = await tasks.linkNewTaskExecution({ role: "assigned", assignedBy: "manager", recipientAddress: "/w", hostRoot,
+    const { taskId: temp } = await tasks.linkNewTaskExecution({ role: "assigned", delegatedFrom: { delegatingRun: hostRoot, delegatorAgentRunId: "manager" }, recipientAddress: "/w",
       execution: { agentRunId: "temp-worker" }, adHocTask: { description: "Temp", referenceFiles: [] } });
     for (const args of [{ task_id: part.taskId, part_of: "autobyteus-99" }, { task_id: part.taskId, part_of: part.taskId },
       { task_id: parent.taskId, part_of: part.taskId }, { task_id: part.taskId, part_of: temp }, { task_id: temp, part_of: parent.taskId }]) {
@@ -142,7 +143,7 @@ describe("closedParts in the update_task result (AC-018, REQ-017)", () => {
     const b = await create("B", { part_of: parent.taskId });
     await create("C", { part_of: parent.taskId });
     await tool("update_task", { task_id: "autobyteus-4", status: "DONE" });
-    await tasks.linkNewTaskExecution({ role: "assigned", taskId: await idOfKey(b.taskId), assignedBy: "manager", hostRoot, execution: { agentRunId: "b-worker" } });
+    await tasks.linkNewTaskExecution({ role: "assigned", recipientAddress: "/worker", taskId: await idOfKey(b.taskId), delegatedFrom: { delegatingRun: hostRoot, delegatorAgentRunId: "manager" }, execution: { agentRunId: "b-worker" } });
     const result = await tool("update_task", { task_id: parent.taskId, status: "CANCELLED" });
     expect(result).toEqual({ task: { projectId, taskId: "autobyteus-1", title: "Parent", status: "CANCELLED", closedParts: [a.taskId, b.taskId] } });
     expect(tasks.isOpen({ agentRunId: "b-worker" })).toBe(false);

@@ -1,3 +1,4 @@
+import { noDelegations, openTaskRecords } from "../../helpers/no-delegations.js";
 import "reflect-metadata";
 import { createHash } from "node:crypto";
 import fsSync from "node:fs";
@@ -25,7 +26,7 @@ import type { AgentRunMetadata } from "../../../src/run-history/store/agent-run-
 import { AgentMemoryLayout } from "../../../src/agent-memory/store/agent-memory-layout.js";
 import { testAgentNode, testExecutionTree, writeCurrentTeamRunPackage } from "../../fixtures/current-team-run-fixtures.js";
 import { configureE2eStudioApplicationApiServices } from "../helpers/studio-application-api-services.js";
-import { openEveryOwnFileUnder } from "../../fixtures/open-delegated-run-sources.js";
+import { setE2eRunHistoryServices } from "../helpers/e2e-run-history-services.js";
 
 const GRAPHQL_QUERY = `
   query RunProjection($runId: String!) {
@@ -255,6 +256,7 @@ describe("recent run projection GraphQL e2e", () => {
   let workspaceRootPath: string;
   let memoryDir: string;
   let closeStudioServices: (() => void) | null = null;
+  let releaseRunHistory: (() => void) | null = null;
   let ownedAgentRunManager: AgentRunManager | null = null;
   let ownedAgentTeamRunManager: AgentTeamRunManager | null = null;
 
@@ -270,7 +272,7 @@ describe("recent run projection GraphQL e2e", () => {
     memoryDir = appConfigProvider.config.getMemoryDir();
     // autobyteus-469: no Task records are written here and this process composes no Task side; every delegated run under
     // this root counts as open (the tests' Task-side stand-in; which runs are in a tree is not this suite's subject).
-    openEveryOwnFileUnder(memoryDir);
+   
     // This file runs in its own Vitest worker. Never borrow or replace another
     // process instance: initialize explicitly and release only these instances.
     ownedAgentRunManager = AgentRunManager.initializeProcessInstance({
@@ -285,17 +287,15 @@ describe("recent run projection GraphQL e2e", () => {
       providerInputNormalizer: { normalizeForProvider: unavailableExecution },
       agentToolMcpRunSessionDeactivator: unusedExecutionBoundary(),
     });
-    ownedAgentTeamRunManager = AgentTeamRunManager.initializeProcessInstance({
+    ownedAgentTeamRunManager = AgentTeamRunManager.initializeProcessInstance({ delegationIndex: noDelegations(), taskRecords: openTaskRecords(),
       memoryDir,
       flatTeamExecutionFactory: unusedExecutionBoundary(),
       memberExecutionContextBuilder: unusedExecutionBoundary(),
-      taskExecutionIdentity: {
-        agentRuns: { allocateForAgentDefinition: unavailableExecution },
-        taskTeams: { create: unavailableExecution },
-      },
       modelSelectionValidator: { validate: unavailableExecution },
     });
     closeStudioServices = configureE2eStudioApplicationApiServices().close;
+    // The history readers, as the composition root sets them (autobyteus-461 SR-047 step 8).
+    releaseRunHistory = setE2eRunHistoryServices({ memoryDir });
     schema = await buildGraphqlSchema();
 
     const require = createRequire(import.meta.url);
@@ -310,6 +310,7 @@ describe("recent run projection GraphQL e2e", () => {
   });
 
   afterAll(async () => {
+    releaseRunHistory?.();
     closeStudioServices?.();
     if (ownedAgentTeamRunManager) AgentTeamRunManager.releaseProcessInstance(ownedAgentTeamRunManager);
     if (ownedAgentRunManager) AgentRunManager.releaseProcessInstance(ownedAgentRunManager);

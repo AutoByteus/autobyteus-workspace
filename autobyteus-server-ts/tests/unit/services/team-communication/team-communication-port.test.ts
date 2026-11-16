@@ -1,5 +1,7 @@
+import { messageFeedInto } from "../../../helpers/view-streams.js";
+import { teamRunMessageEvent } from "../../../../src/agent-team-execution/domain/team-run-event.js";
 import { describe, expect, it, vi } from "vitest";
-import { COORDINATING_LOG } from "../../../../src/run-history/store/task-agent-message-logs.js";
+import { OWN_RUN_LOG } from "../../../../src/run-history/store/message-log-owners.js";
 import { buildDeliveryEndpointForParticipant } from "../../../../src/agent-team-execution/domain/inter-agent-message-delivery.js";
 import type { CollaborationMemberExecutionIdentity } from "../../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import type { TeamRun } from "../../../../src/agent-team-execution/domain/team-run.js";
@@ -49,10 +51,12 @@ const buildHarness = (input: {
     initial: Object.freeze({ schemaVersion: 1 as const, rootTeamRunId, messages: Object.freeze([]) }),
     assertDeliveryAllowed,
     isCurrentAgent: input.currentAgent ?? (() => true),
-    messageLogOwnerOf: () => COORDINATING_LOG,
+    messageLogOwnerOf: () => OWN_RUN_LOG,
     requireContainingTeamRun: vi.fn(async () => ({ reserveDirectAgentInput }) as unknown as TeamRun),
     commitMessageAppend: commit,
     publish,
+    // The node's message feed into the same view (a root with no delegations): its COMMUNICATION events reach `publish`.
+    messageFeed: messageFeedInto({ publish }, teamRunMessageEvent),
   }));
   /** The Team root's delivery hands the engine one intent at a time (TeamRunMessageDelivery). */
   const service = {

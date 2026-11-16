@@ -250,9 +250,7 @@ describe.runIf(ENABLED)("LIVE agent runtime switch of members and a copy between
         saveSelection: async (runtimeKind, model) => {
           const saved = (await gql(`mutation($input: UpdateStoppedAgentOrgRunConfigInput!) { updateStoppedAgentOrgRunConfig(input: $input) { success outcome message fieldErrors { path message } } }`, { input: {
             orgRunId, teamWorkspacePatches: [], selectionPatches: [{ scopeKind: "CONFIGURED_AGENT", scopeAddress: address, runtimeKind, llmModelIdentifier: model, llmConfig: null }] } })).updateStoppedAgentOrgRunConfig as Json;
-          // a stopped Org is restored as the Settings page does; its members start on their first message
-          const restored = (await gql("mutation($id: String!) { restoreAgentOrgRun(agentOrgRunId: $id) { success message } }", { id: orgRunId })).restoreAgentOrgRun as Json;
-          expect(restored.success, restored.message).toBe(true);
+          // The stopped Org's view serves it from its stored file; the first message to one of its agents on that view restores it (autobyteus-461 CR-461-008).
           return saved;
         },
         message: (content, step) => talk(orgStream(orgRunId), runId, content, step),
@@ -294,7 +292,8 @@ describe.runIf(ENABLED)("LIVE agent runtime switch of members and a copy between
     const copyTree = JSON.stringify((await gql("query($id: String!) { agentRunCollaboration(runId: $id) }", { id: hostId })).agentRunCollaboration);
     expect(copyTree, "the copy started on Claude").toContain(`"${CLAUDE}"`);
     const stopCopy = async () => {
-      const stopped = (await gql("mutation($input: DelegatedExecutionTargetInput!) { stopDelegatedExecution(input: $input) { success outcome } }", { input: { rootKind: "AGENT", rootRunId: hostId, agentRunId: copyId } })).stopDelegatedExecution;
+      // The copy is a run of its own: its own Stop and its own stopped-run save (autobyteus-461 rule 2, SR-064).
+      const stopped = (await gql("mutation($id: String!) { terminateAgentRun(agentRunId: $id) { success message } }", { id: copyId })).terminateAgentRun;
       expect(stopped, JSON.stringify(stopped)).toMatchObject({ success: true });
     };
     await journey("delegated-copy", {
@@ -304,8 +303,8 @@ describe.runIf(ENABLED)("LIVE agent runtime switch of members and a copy between
         const hostRun = (await gql("mutation($id: String!) { terminateAgentRun(agentRunId: $id) { success } }", { id: hostId })).terminateAgentRun;
         expect(hostRun.success).toBe(true);
       },
-      saveSelection: async (runtimeKind, model) => (await gql("mutation($input: UpdateDelegatedLaunchSelectionsInput!) { updateDelegatedLaunchSelections(input: $input) { success outcome message fieldErrors { path message } } }",
-        { input: { rootKind: "AGENT", rootRunId: hostId, changes: [{ agentRunId: copyId, selection: { runtimeKind, llmModelIdentifier: model, llmConfig: null } }] } })).updateDelegatedLaunchSelections as Json,
+      saveSelection: async (runtimeKind, model) => (await gql("mutation($input: UpdateStoppedAgentRunSelectionInput!) { updateStoppedAgentRunSelection(input: $input) { success outcome message fieldErrors { path message } } }",
+        { input: { agentRunId: copyId, runtimeKind, llmModelIdentifier: model, llmConfig: null } })).updateStoppedAgentRunSelection as Json,
       message: async (content, step) => {
         if (step.endsWith("claude task")) return;
         await call("send_message_to", { target_agent_run_id: copyId, content }, `${step}: host wakes the copy`);

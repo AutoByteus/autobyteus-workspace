@@ -45,60 +45,19 @@ export class StandaloneStoppedRunSelectionUpdater {
     this.modelSelectionValidator = deps.modelSelectionValidator;
   }
 
+  /** The Save's checks without writing: the refusal, or `null` when it would be saved (SR-039: a delegator checks first). */
+  async check(runId: string, input: StoppedRunSelectionInput): Promise<UpdateResult | null> {
+    const planned = await this.plan(runId, input);
+    return planned.kind === "refused" ? planned.result : null;
+  }
+
   async update(runId: string, input: StoppedRunSelectionInput): Promise<UpdateResult> {
-    const state = await this.deps.metadataService.readMetadataState(runId);
-    const metadata = state.kind === "present" ? state.metadata : null;
-    if (!metadata) {
-      return this.result({
-        outcome: "NOT_FOUND",
-        message: `Run '${runId}' was not found.`,
-        metadata: null,
-        active: false,
-      });
-    }
-    if (this.deps.agentRunManager.getActiveRun(runId)) {
-      return this.result({
-        outcome: "RUN_ACTIVE",
-        message: "This run became active through another connected workflow. Stop it, reopen Settings, and try again.",
-        metadata,
-        active: true,
-      });
-    }
-    const row = await this.deps.historyCatalogService.getCatalogRow(runId);
-    if (!row) {
-      return this.result({ outcome: "NOT_FOUND", message: `Run '${runId}' was not found.`, metadata, active: false });
-    }
-    if (row.archivedAt) {
-      return this.result({ outcome: "RUN_ARCHIVED", message: "Archived runs cannot be edited.", metadata, active: false, archived: true });
-    }
-    if (input.runtimeKind !== metadata.runtimeKind && !canSwitchRuntime(metadata)) {
-      return this.result({
-        outcome: "VALIDATION_FAILED",
-        message: "This run cannot change its agent runtime. Only a started, standalone Agent run that is not a delegated copy can.",
-        metadata,
-        active: false,
-        fieldErrors: [{ path: "runtimeKind", message: "The agent runtime of this run cannot be changed." }],
-      });
-    }
-    const validation = await this.modelSelectionValidator.validate({
-      context: selectionContextFor(metadata, input),
-      selection: { llmModelIdentifier: input.llmModelIdentifier, llmConfig: input.llmConfig },
-    });
-    if (validation.kind !== "valid") {
-      const refusal = isUnavailableModelSelection(validation)
-        ? runModelSelectionRefusal({ result: validation, llmModelIdentifier: input.llmModelIdentifier,
-          runtimeKind: input.runtimeKind, savedSettingsUnchanged: true })
-        : { outcome: "VALIDATION_FAILED" as const, message: "Model settings are invalid." };
-      return this.result({
-        ...refusal,
-        metadata,
-        active: false,
-        fieldErrors: validation.kind === "invalid" ? validation.errors : [],
-      });
-    }
+    const planned = await this.plan(runId, input);
+    if (planned.kind === "refused") return planned.result;
+    const { metadata, selection } = planned;
     const committed = await this.deps.historyCatalogService.commitRunRuntimeSwitch({
       runId,
-      selection: { runtimeKind: input.runtimeKind, ...validation.selection },
+      selection: { runtimeKind: input.runtimeKind, ...selection },
       switchId: randomUUID(),
     });
     if (committed.kind === "committed" || committed.kind === "unchanged") {
@@ -133,6 +92,63 @@ export class StandaloneStoppedRunSelectionUpdater {
       active: false,
       archived: outcome === "RUN_ARCHIVED",
     });
+  }
+
+  private async plan(runId: string, input: StoppedRunSelectionInput): Promise<
+    | Readonly<{ kind: "refused"; result: UpdateResult }>
+    | Readonly<{ kind: "planned"; metadata: AgentRunMetadata; selection: Readonly<{ llmModelIdentifier: string; llmConfig: Readonly<Record<string, unknown>> | null }> }>> {
+    const refused = (result: UpdateResult) => ({ kind: "refused" as const, result });
+    const state = await this.deps.metadataService.readMetadataState(runId);
+    const metadata = state.kind === "present" ? state.metadata : null;
+    if (!metadata) {
+      return refused(this.result({
+        outcome: "NOT_FOUND",
+        message: `Run '${runId}' was not found.`,
+        metadata: null,
+        active: false,
+      }));
+    }
+    if (this.deps.agentRunManager.getActiveRun(runId)) {
+      return refused(this.result({
+        outcome: "RUN_ACTIVE",
+        message: "This run became active through another connected workflow. Stop it, reopen Settings, and try again.",
+        metadata,
+        active: true,
+      }));
+    }
+    const row = await this.deps.historyCatalogService.getCatalogRow(runId);
+    if (!row) {
+      return refused(this.result({ outcome: "NOT_FOUND", message: `Run '${runId}' was not found.`, metadata, active: false }));
+    }
+    if (row.archivedAt) {
+      return refused(this.result({ outcome: "RUN_ARCHIVED", message: "Archived runs cannot be edited.", metadata, active: false, archived: true }));
+    }
+    if (input.runtimeKind !== metadata.runtimeKind && !canSwitchRuntime(metadata)) {
+      return refused(this.result({
+        outcome: "VALIDATION_FAILED",
+        message: "This run cannot change its agent runtime. Only a started standalone Agent run that no peer node started can.",
+        metadata,
+        active: false,
+        fieldErrors: [{ path: "runtimeKind", message: "The agent runtime of this run cannot be changed." }],
+      }));
+    }
+    const validation = await this.modelSelectionValidator.validate({
+      context: selectionContextFor(metadata, input),
+      selection: { llmModelIdentifier: input.llmModelIdentifier, llmConfig: input.llmConfig },
+    });
+    if (validation.kind !== "valid") {
+      const refusal = isUnavailableModelSelection(validation)
+        ? runModelSelectionRefusal({ result: validation, llmModelIdentifier: input.llmModelIdentifier,
+          runtimeKind: input.runtimeKind, savedSettingsUnchanged: true })
+        : { outcome: "VALIDATION_FAILED" as const, message: "Model settings are invalid." };
+      return refused(this.result({
+        ...refusal,
+        metadata,
+        active: false,
+        fieldErrors: validation.kind === "invalid" ? validation.errors : [],
+      }));
+    }
+    return { kind: "planned", metadata, selection: validation.selection };
   }
 
   private result(input: {

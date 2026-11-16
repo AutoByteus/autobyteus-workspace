@@ -31,6 +31,7 @@ import { CodexAppServerClient } from "../../../src/runtime-management/codex/clie
 import { CodexAppServerClientManager } from "../../../src/runtime-management/codex/client/codex-app-server-client-manager.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { startAgentToolsMcpTestHost } from "../../helpers/agent-tools-mcp-test-host.js";
+import { getAgentStreamSequences } from "../../../src/services/agent-streaming/agent-stream-sequence.js";
 
 const codexBinaryReady = spawnSync("codex", ["--version"], { stdio: "ignore" }).status === 0;
 const liveCodexTestsEnabled = process.env.RUN_CODEX_E2E === "1";
@@ -282,7 +283,7 @@ describeLiveCodexMemory("Codex live memory persistence e2e", () => {
         runSessions: deactivator,
         runFileChangeService: createNoopSidecar() as never,
         publishedArtifactRelayService: createNoopSidecar() as never,
-        memoryRecorder: recorder, workJournalUpdater: createNoopSidecar() as never,
+        memoryRecorder: recorder, streamSequences: getAgentStreamSequences(), workJournalUpdater: createNoopSidecar() as never,
         mcpServerInstances: { cleanupMcpServerInstancesForAgent: async () => undefined },
         runPasses: null,
       }),
@@ -494,7 +495,7 @@ describeLiveCodexMemory("Codex live memory persistence e2e", () => {
         runSessions: deactivator,
         runFileChangeService: createNoopSidecar() as never,
         publishedArtifactRelayService: createNoopSidecar() as never,
-        memoryRecorder: recorder, workJournalUpdater: createNoopSidecar() as never,
+        memoryRecorder: recorder, streamSequences: getAgentStreamSequences(), workJournalUpdater: createNoopSidecar() as never,
         mcpServerInstances: { cleanupMcpServerInstancesForAgent: async () => undefined },
         runPasses: null,
       }),
@@ -649,7 +650,7 @@ describeLiveCodexMemory("Codex live memory persistence e2e", () => {
         runSessions: deactivator,
         runFileChangeService: createNoopSidecar() as never,
         publishedArtifactRelayService: createNoopSidecar() as never,
-        memoryRecorder: recorder, workJournalUpdater: createNoopSidecar() as never,
+        memoryRecorder: recorder, streamSequences: getAgentStreamSequences(), workJournalUpdater: createNoopSidecar() as never,
         mcpServerInstances: { cleanupMcpServerInstancesForAgent: async () => undefined },
         runPasses: null,
       }),

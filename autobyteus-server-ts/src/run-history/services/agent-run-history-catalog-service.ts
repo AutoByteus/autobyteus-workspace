@@ -100,7 +100,7 @@ export class AgentRunHistoryCatalogService {
   private readonly liveness: StandaloneRunLiveness;
   private readonly state: CatalogState;
   private readonly definitionNameCache = new Map<string, string>();
-  private readonly adHocTasks?: Pick<ProjectTaskService, "deleteAdHocTasksHostedBy">;
+  private readonly adHocTasks?: Pick<ProjectTaskService, "deleteAdHocTasksDelegatedFrom">;
 
   constructor(
     private readonly memoryDir: string,
@@ -111,7 +111,7 @@ export class AgentRunHistoryCatalogService {
       agentDefinitionService?: AgentDefinitionLookup;
       agentRunManager?: AgentRunActivityLookup;
       collaborationRoots?: StandaloneRunCollaborationRoots;
-      adHocTasks?: Pick<ProjectTaskService, "deleteAdHocTasksHostedBy">; // default: the process Task service
+      adHocTasks?: Pick<ProjectTaskService, "deleteAdHocTasksDelegatedFrom">; // default: the process Task service
     } = {},
   ) {
     this.adHocTasks = dependencies.adHocTasks;
@@ -303,7 +303,7 @@ export class AgentRunHistoryCatalogService {
     const result = await this.removeCatalogRowAndDirectory(identity.runId, identity.runDirPath, "deleted permanently");
     // After the committed delete, the run's ad-hoc Tasks go too (best effort; never throws).
     if (result.success) await (this.adHocTasks ?? getProjectTaskService())
-      .deleteAdHocTasksHostedBy(createRootExecutionIdentity({ rootSubjectKind: "agent", rootRunId: identity.runId }));
+      .deleteAdHocTasksDelegatedFrom(createRootExecutionIdentity({ rootSubjectKind: "agent", rootRunId: identity.runId }));
     return result;
   }
 

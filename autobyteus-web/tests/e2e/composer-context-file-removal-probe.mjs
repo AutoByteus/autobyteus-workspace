@@ -24,13 +24,13 @@
 //          "new setting" row): an invalid audio/video limit is refused and changes nothing, also as an edit of its row; saved
 //          limits (3 MB / 1 MB) apply to the next pick of an already open composer with no reload, as zh-CN lines naming each
 //          limit; the defaults are restored through the rows.
-//   CF-009 an Org task agent while its message is pending (finalize held) and the Manager delegates another task:
-//          `+` disabled with a reason, a pasted image shows the message and uploads nothing, a pasted path attaches.
+//   (CF-009, an Org task agent with no upload owner while its message is pending, is retired: under autobyteus-461's
+//          rule 2 the task agent is a run of its own and always owns its drafts.)
 //   CF-004 the backend is stopped: × shows the error and keeps the item; after it returns the retry removes it.
 //   CF-005 the delegated children after the root is stopped, a real backend restart and a reload (AC-003).
 //   CF-011 / CF-012 `+` on the Manager run / a Team run opens New chat with the run's settings; a file attached
 //          there (owner `temp-chat-…`) is finalized by the first send and read back at its final locator.
-// Only CF-008 (one response each) and CF-009 (finalize held, then released) alter HTTP; nothing else is mocked.
+// Only CF-008 (one response each) alters HTTP; nothing else is mocked.
 // CF-001 also sends malformed upload/finalize owners and an invalid final filename to the built server and checks
 // that no context file anywhere in the data root changed.
 // The probe owns a private data root, free ports, the backend and Nuxt process groups and Chrome, and removes
@@ -46,6 +46,8 @@ import { spawn } from 'node:child_process';
 import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
 import { attachToBrowserContext, attachToProbeProcess, withNodeCredential } from './fixtures/probe-node-access.mjs';
+import { delegatedNodes, readRunTree } from './fixtures/run-tree.mjs';
+import { waitRunSocketReady } from './fixtures/run-socket-ready.mjs';
 // Every node needs a credential (autobyteus-437): the probe's nodes start with its launch credential, and the probe's
 // own calls and its desktop browser contexts carry it (fixtures/probe-node-access.mjs).
 attachToProbeProcess();
@@ -66,7 +68,9 @@ const ledger = getArg('ledger');
 const executablePath = getArg('browser-executable', process.env.PLAYWRIGHT_CHROME_EXECUTABLE_PATH)
   || ['/Applications/Google Chrome.app/Contents/MacOS/Google Chrome', '/usr/bin/google-chrome', '/usr/bin/chromium', '/usr/bin/chromium-browser']
     .find((candidate) => fs.existsSync(candidate));
-const ALL_CASES = ['CF-001', 'CF-002', 'CF-003', 'CF-006', 'CF-007', 'CF-008', 'CF-013', 'CF-014', 'CF-009', 'CF-011', 'CF-012', 'CF-004', 'CF-005'];
+// CF-009 retired (autobyteus-461 rule 2, CRR-056): its premise, a pending Org task agent left with no upload owner, cannot occur:
+// the task agent is a run of its own and always owns its drafts.
+const ALL_CASES = ['CF-001', 'CF-002', 'CF-003', 'CF-006', 'CF-007', 'CF-008', 'CF-013', 'CF-014', 'CF-011', 'CF-012', 'CF-004', 'CF-005'];
 const selectedCases = (getArg('cases') ?? ALL_CASES.join(',')).split(',').map((c) => c.trim()).filter(Boolean);
 // A 2x2 opaque PNG (what a screenshot paste delivers, minus the size).
 const PNG = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAIAAAD91JpzAAAAFklEQVR4nGP8z8DAwMDAxMDAwMDAAAANHQEDasKb6QAAAABJRU5ErkJggg==', 'base64');
@@ -201,7 +205,10 @@ const taskNodes = (tree) => {
 const sockets = [];
 const rootInput = async (route, payload) => {
   const socket = new WebSocket(`${stack.backendUrl.replace(/^http/, 'ws')}/ws/${route}`); sockets.push(socket);
+  const frames = [];
+  socket.on('message', (raw) => { try { frames.push(JSON.parse(String(raw))); } catch { /* not JSON */ } });
   await new Promise((resolve, reject) => { socket.once('open', resolve); socket.once('error', reject); });
+  await waitRunSocketReady(frames, route);
   return { send: (content) => socket.send(JSON.stringify({ type: 'SEND_MESSAGE', payload: payload(content) })), close: () => socket.close() };
 };
 
@@ -231,7 +238,9 @@ const setupWorld = async () => {
   world.agentRoot = agentRun.runId;
   const managerIn = await rootInput(`agent/${agentRun.runId}`, (content) => ({ agent_run_id: agentRun.runId, message_id: `e2e-${randomUUID()}`,
     dedupe_key: `agent_run_input:e2e:${randomUUID()}`, content, context_file_paths: [], image_urls: [] }));
-  const agentTree = async () => (await gql('query($id:String!){agentRunCollaboration(runId:$id)}', { id: agentRun.runId })).agentRunCollaboration?.root_agent?.execution_tree;
+  // autobyteus-461 SR-084: a run's delegated runs are its tree's rows (its view carries its own parts only); each marked listed.
+  const listedOf = async (kind, runId) => ({ taskExecutions: delegatedNodes(await readRunTree(gql, kind, runId)).map((node) => ({ ...node, startedAt: 'listed' })) });
+  const agentTree = async () => listedOf('agent', agentRun.runId);
   managerIn.send(callTool('delegate_task', { recipient_address: `/${segment(names.worker)}`, description: 'Draft the release notes.' }));
   await until('Agent copy delegated', async () => taskNodes(await agentTree()).some((n) => n.agentRunId), 90000);
   managerIn.send(callTool('delegate_task', { recipient_address: `/${segment(names.squad)}`, description: 'Review the docs site.' }));
@@ -269,7 +278,7 @@ const setupWorld = async () => {
   const orgIn = await rootInput(`agent-org/${orgRun.agentOrgRunId}`, (content) => ({ root_subject_kind: 'agent_org', root_run_id: orgRun.agentOrgRunId,
     target_agent_run_id: world.orgManager, command_id: randomUUID(), message_id: randomUUID(), dedupe_key: randomUUID(), content,
     context_file_paths: [], image_urls: [] }));
-  const orgHistory = async () => (await gql('query($id:String!){getAgentOrgRootHistory(orgRunId:$id){org}}', { id: orgRun.agentOrgRunId })).getAgentOrgRootHistory.org;
+  const orgHistory = async () => listedOf('org', orgRun.agentOrgRunId);
   orgIn.send(callTool('delegate_task', { recipient_address: '/worker', description: 'Collect the changelog links.' }));
   world.orgTask = (await until('Org task agent delegated', async () => taskNodes(await orgHistory()).find((n) => n.agentRunId), 90000)).agentRunId;
   orgIn.close();
@@ -329,7 +338,16 @@ const ownerDir = (owner) => {
   if (owner.kind === 'org_member_draft') return path.join(draftRoot(), 'agent-org-runs', owner.orgRunId, 'agent-runs', owner.agentRunId, 'context_files');
   return path.join(draftRoot(), 'agent-collaborations', owner.hostRunId, 'agent-runs', owner.agentRunId, 'context_files');
 };
-const collabDir = (agentRunId) => ownerDir({ kind: 'agent_collaboration_member_draft', hostRunId: world.agentRoot, agentRunId });
+/**
+ * A delegated run's composer drafts under its own run (autobyteus-461 rule 2, CR-461-106): an Agent copy's under its agent run,
+ * a Team copy member's under its Team copy at its own-team address (TC-12), never under the delegator.
+ */
+const copyOwnDir = (agentRunId) => {
+  if (agentRunId === world.agentCopy) return ownerDir({ kind: 'agent_draft', draftRunId: agentRunId });
+  const member = world.teamCopy.members.find((m) => m.agentRunId === agentRunId);
+  assert(member, 'not a member of the Team copy', { agentRunId, teamCopy: world.teamCopy });
+  return ownerDir({ kind: 'team_member_draft', teamDraftId: world.teamCopy.teamRunId, memberAddress: member.address });
+};
 
 /** CF-001: AC-005/QR-001 over real HTTP with real owners; RU-2 traversal; RU-3 bearer. */
 const universalRoutes = async () => {
@@ -655,8 +673,9 @@ const regressions = async () => {
     ownerDir({ kind: 'org_member_draft', orgRunId: world.orgRoot, agentRunId: world.orgManager }));
   await run('org-team-member', (page) => orgMember(page, `[data-test="agent-org-agent-row-${world.orgSquadMember}"]`, `[data-test="agent-org-team-row-${world.orgSquad}"]`),
     ownerDir({ kind: 'org_member_draft', orgRunId: world.orgRoot, agentRunId: world.orgSquadMember }));
-  await run('org-task-agent', (page) => orgMember(page, `[data-test="agent-org-task-agent-row-${world.orgTask}"]`),
-    ownerDir({ kind: 'org_member_draft', orgRunId: world.orgRoot, agentRunId: world.orgTask }));
+  await run('org-task-agent', (page) => orgMember(page, `[data-test="workspace-team-transient-execution-row"][data-agent-run-id="${world.orgTask}"]`),
+    // autobyteus-461 rule 2 (CR-461-106): an Org's task agent is a run of its own; its drafts are its own.
+    ownerDir({ kind: 'agent_draft', draftRunId: world.orgTask }));
   return out;
 };
 
@@ -673,7 +692,7 @@ const foreignDraftClone = async () => {
     await pasteText(page, tray, `${stack.backendUrl}${source.locator}`);
     await waitCount(tray, 1, 'clone pasted');
     const clone = await until('clone on disk', async () => (await draftFiles()).find((f) => !before.includes(f)), 10000);
-    const childFolder = path.relative(draftRoot(), collabDir(world.teamCopyCoordinator.agentRunId));
+    const childFolder = path.relative(draftRoot(), copyOwnDir(world.teamCopyCoordinator.agentRunId));
     assert(path.dirname(clone) === childFolder, 'clone not stored under this composer\'s owner', { clone, childFolder });
     const cloneGet = net.find((n) => n.method === 'GET' && n.path === source.locator);
     assert(cloneGet?.status === 200, 'clone did not read the source draft', { net });
@@ -703,7 +722,7 @@ const injectedFailures = async () => {
     const tray = centerTray(page);
     await pickFiles(page, tray, ['spec-a.txt', 'spec-b.txt']);
     await waitCount(tray, 2, 'failure setup');
-    const dir = collabDir(world.agentCopy);
+    const dir = copyOwnDir(world.agentCopy);
     const files = await until('setup on disk', async () => { const f = await listDir(dir); return f.length === 2 && f; }, 10000);
     const failOnce = (method, pattern, detail) => {
       let used = false;
@@ -760,7 +779,7 @@ const sizeLimitsProgressCancel = async () => {
   try {
     await openAgentCopy(page);
     const tray = centerTray(page);
-    const dir = collabDir(world.agentCopy);
+    const dir = copyOwnDir(world.agentCopy);
     const uploads = () => net.filter((n) => n.method === 'POST' && n.path === '/rest/context-files/upload');
     // A: the node publishes small limits (stubbed): both files are refused before any upload request.
     await page.route('**/rest/context-files/size-limits', (route) => route.fulfill({ status: 200, contentType: 'application/json',
@@ -895,74 +914,6 @@ const settingsChangeApplies = async () => {
   } finally { await composer.context.close(); await settings.context.close(); }
 };
 
-/** CF-009: AC-007 — an Org task agent while its message is pending has no upload owner. */
-const pendingWithoutUploadOwner = async () => {
-  const { page, errors, context, net } = await newPage();
-  const held = [];
-  let orgIn = null;
-  try {
-    await openWorkspace(page);
-    await page.locator(`[data-test="agent-org-definition-${slug(world.names.org)}"]`).click();
-    await page.locator(`[data-test="agent-org-run-open-${world.orgRoot}"]`).click();
-    const row = page.locator(`[data-test="agent-org-task-agent-row-${world.orgTask}"]`);
-    await row.waitFor({ state: 'visible', timeout: 30000 });
-    await row.click();
-    const tray = centerTray(page);
-    await tray.waitFor({ timeout: 30000 });
-    // A message with an uploaded draft: its finalize is the slow step that keeps the submission pending.
-    await pickFiles(page, tray, ['spec-a.txt']);
-    await waitCount(tray, 1, 'pending setup');
-    await page.route('**/rest/context-files/finalize', (route) => { held.push(route); });
-    const textarea = page.locator('[data-test="workspace-center-pane"] textarea').first();
-    await textarea.fill('Please use the attached spec.');
-    await textarea.press('Enter');
-    await until('finalize in flight', () => held.length === 1, 15000);
-    // While the send is pending the Manager delegates another task: the Org tree changes, the view recomputes the
-    // target, and the pending task agent is now read-only with no upload owner (the state SCN-003 names).
-    orgIn = await rootInput(`agent-org/${world.orgRoot}`, (content) => ({ root_subject_kind: 'agent_org', root_run_id: world.orgRoot,
-      target_agent_run_id: world.orgManager, command_id: randomUUID(), message_id: randomUUID(), dedupe_key: randomUUID(), content,
-      context_file_paths: [], image_urls: [] }));
-    orgIn.send(callTool('delegate_task', { recipient_address: '/worker', description: 'Summarize the open issues.' }));
-    await until('upload button disabled while pending', async () => plusButton(tray).isDisabled(), 15000);
-    const title = await plusButton(tray).getAttribute('title');
-    assert(title === UPLOADS_UNAVAILABLE, 'disabled + has no reason', { title });
-    const uploadsBefore = uploads(net).length;
-    const countBefore = await trayCount(tray);
-    await pasteImage(page, tray);
-    const message = await until('uploads unavailable message', () => errorText(tray), 10000);
-    assert(message === UPLOADS_UNAVAILABLE, 'pasted file did not show the message', { message });
-    await sleep(500);
-    assert(uploads(net).length === uploadsBefore, 'a file was uploaded without an upload owner', { net });
-    assert((await trayCount(tray)) === countBefore, 'a pasted file was attached without an upload owner');
-    await shot(page, 'pending-no-upload-owner');
-    await pasteText(page, tray, world.workspaceFile);
-    await waitCount(tray, countBefore + 1, 'path attached while pending');
-    const pathAccepted = await tray.innerText();
-    for (const route of held.splice(0)) await route.continue();
-    await page.unrouteAll();
-    await until('finalize completed', () => net.some((n) => n.path === '/rest/context-files/finalize' && n.status === 200), 30000);
-    await until('message delivered', async () => /Please use the attached spec\./.test(await page.locator('[data-test="workspace-center-pane"]').innerText()), 30000);
-    // Observed, not graded: the Org view keeps the pending-time target until something recomputes it
-    // (composer visibility is outside this ticket; see the execution report).
-    await sleep(3000);
-    const afterSend = { composerVisible: await tray.isVisible(), plusDisabled: (await plusButton(tray).count()) ? await plusButton(tray).isDisabled() : null };
-    await shot(page, 'pending-after-send');
-    // A target change (another member, then back) recomputes the target: uploads are offered again, the error is gone.
-    await page.locator(`[data-test="agent-org-agent-row-${world.orgManager}"]`).click();
-    await row.click();
-    await until('upload offered again after reselecting', async () => (await plusButton(tray).count()) === 1 && !(await plusButton(tray).isDisabled()), 30000);
-    assert((await errorText(tray)) === null, 'uploads-unavailable message survived a target change', { error: await errorText(tray) });
-    const afterReselect = { title: await plusButton(tray).getAttribute('title'), count: await trayCount(tray) };
-    if (afterReselect.count > 0) { await clearAll(tray).click(); await waitCount(tray, 0, 'pending cleanup'); }
-    assert(errors.length === 0, 'browser errors', errors);
-    return { title, message, pathAccepted: pathAccepted.includes('release-checklist.md'), afterSend, afterReselect, net };
-  } finally {
-    for (const route of held.splice(0)) await route.continue().catch(() => {});
-    orgIn?.close();
-    await context.close();
-  }
-};
-
 /** CF-004: AC-008/RU-1 — the server is unreachable while removing; the retry works once it is back. */
 const outageRetry = async () => {
   const { page, errors, context, net } = await newPage();
@@ -971,7 +922,7 @@ const outageRetry = async () => {
     const tray = centerTray(page);
     await pickFiles(page, tray, ['spec-b.txt']);
     await waitCount(tray, 1, 'outage setup');
-    const dir = collabDir(world.teamCopyCoordinator.agentRunId);
+    const dir = copyOwnDir(world.teamCopyCoordinator.agentRunId);
     await until('outage file on disk', async () => (await listDir(dir)).length === 1, 10000);
     const stopped = await stopGroup(stack.backend);
     await removeButtonFor(tray, 'spec-b.txt').click();
@@ -1000,9 +951,9 @@ const offlineAfterRestart = async () => {
   const { page, errors, context, net } = await newPage();
   try {
     await openAgentCopy(page);
-    out.agentCopy = await trayJourney({ page, tray: centerTray(page), net, dir: collabDir(world.agentCopy), label: 'offline-agent-copy' });
+    out.agentCopy = await trayJourney({ page, tray: centerTray(page), net, dir: copyOwnDir(world.agentCopy), label: 'offline-agent-copy' });
     await openTeamCopyMember(page);
-    out.teamCopyMember = await trayJourney({ page, tray: centerTray(page), net, dir: collabDir(world.teamCopyCoordinator.agentRunId), label: 'offline-team-copy-member' });
+    out.teamCopyMember = await trayJourney({ page, tray: centerTray(page), net, dir: copyOwnDir(world.teamCopyCoordinator.agentRunId), label: 'offline-team-copy-member' });
     assert(errors.length === 0, 'browser errors', errors);
     return out;
   } finally { await context.close(); }
@@ -1060,15 +1011,14 @@ const openTeamRunMember = async (page) => {
 const CASES = {
   'CF-001': ['Universal draft routes over real HTTP: every owner kind, status mapping, traversal, bearer', universalRoutes],
   'CF-002': ['Delegated Agent copy: paste, +, path, ×, Clear All; drafts leave the disk',
-    journeyCase('agent-copy', openAgentCopy, () => collabDir(world.agentCopy))],
+    journeyCase('agent-copy', openAgentCopy, () => copyOwnDir(world.agentCopy))],
   'CF-003': ['Delegated Team-copy member (19.png): paste, +, path, ×, Clear All; drafts leave the disk',
-    journeyCase('team-copy-member', (page) => openTeamCopyMember(page), () => collabDir(world.teamCopyCoordinator.agentRunId))],
+    journeyCase('team-copy-member', (page) => openTeamCopyMember(page), () => copyOwnDir(world.teamCopyCoordinator.agentRunId))],
   'CF-006': ['Regressions: Manager, New chat, Team members, Org direct member, Org team member, Org task agent', regressions],
   'CF-007': ['Pasted foreign draft URL is cloned; removing it keeps the source', foreignDraftClone],
   'CF-008': ['Injected DELETE/upload failure: visible error naming the file, item kept, retry clears', injectedFailures],
   'CF-013': ['Size limits: over-limit refused before upload; progress and cancel on a throttled upload; retry attaches', sizeLimitsProgressCancel],
   'CF-014': ['Server Settings page: invalid limit refused, saved limits apply to the open composer\'s next pick (zh-CN), no reload', settingsChangeApplies],
-  'CF-009': ['Org task agent while its message is pending: + disabled, paste shows message, path still attaches', pendingWithoutUploadOwner],
   'CF-011': ['+ on the Manager run → New chat → attach → send: temp-chat draft finalized, agent-final file readable',
     firstSendFromNewChat('new-chat-agent-send', async (page) => { await openAgentRoot(page); await centerTray(page).waitFor(); },
       /^\/rest\/runs\/[A-Za-z0-9_-]+\/context-files\/ctx_[A-Za-z0-9]+__spec-c\.txt$/)],

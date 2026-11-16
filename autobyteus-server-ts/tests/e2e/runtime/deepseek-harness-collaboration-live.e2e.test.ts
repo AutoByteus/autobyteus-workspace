@@ -15,6 +15,7 @@ import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.
 import { flattenE2eConfiguredAgentExecutions } from "../helpers/team-run-metadata-helpers.js";
 import { isE2eTeamCommunicationMessage } from "../helpers/team-communication-message-helpers.js";
 import { closeLiveServerVault, initializeLiveServerVault, requireLiveCapability } from "../../../../test-support/test-vault/live-server-vault.js";
+import { agentStreamFramesOf } from "../helpers/agent-stream-frames.js";
 
 /**
  * DeepSeek Harness in Teams, Orgs and a runtime switch, live: the real `dsh` (0.2.2-rc.1, `--profile acp`) against the
@@ -91,7 +92,8 @@ describe.runIf(live)("DeepSeek Harness in Teams, Orgs and a runtime switch (real
     socket.on("message", (raw: unknown) => {
       try {
         const parsed = JSON.parse(String(raw)) as { type?: unknown; payload?: unknown };
-        if (typeof parsed.type === "string") frames.push({ type: parsed.type, payload: (parsed.payload ?? {}) as Record<string, unknown> });
+        // autobyteus-461 SR-087: a SEGMENT_CONTENT_BATCH is its items (each a SEGMENT_CONTENT), as the web applies it.
+        frames.push(...agentStreamFramesOf(parsed));
       } catch { /* diagnostic rows only */ }
     });
     await new Promise<void>((resolve, reject) => { socket.once("open", () => resolve()); socket.once("error", reject); });
@@ -194,9 +196,7 @@ describe.runIf(live)("DeepSeek Harness in Teams, Orgs and a runtime switch (real
     expect((await graphql<{ terminateAgentTeamRun: { success: boolean; message: string } }>(
       "mutation($teamRunId: String!) { terminateAgentTeamRun(teamRunId: $teamRunId) { success message } }", { teamRunId }))
       .terminateAgentTeamRun.success).toBe(true);
-    const restored = await graphql<{ restoreAgentTeamRun: { success: boolean; message: string } }>(
-      "mutation($teamRunId: String!) { restoreAgentTeamRun(teamRunId: $teamRunId) { success message } }", { teamRunId });
-    expect(restored.restoreAgentTeamRun.success, restored.restoreAgentTeamRun.message).toBe(true);
+    // The stopped run's view serves it from its stored file; the next message to one of its members on it restores the run (autobyteus-461 CR-461-008).
     ({ socket, frames } = await socketTo(`/ws/agent-team/${teamRunId}`));
     const afterRestore = frames.length;
     send("pong", "We continue after a restart. Reply with only the exact content of the message ping sent you.");

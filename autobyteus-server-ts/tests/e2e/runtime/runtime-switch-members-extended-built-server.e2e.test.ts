@@ -14,6 +14,7 @@ import {
   testRuntimeRoot,
 } from "../../../../test-support/live-e2e/test-runtime-bootstrap.mjs";
 import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
+import { delegatedRunsTree, readRunTree } from "../helpers/run-tree-delegated.js";
 
 // Agent runtime switch of Org members and delegated copies beyond runtime-switch-members-built-server (autobyteus-348, API/E2E):
 // failed starts, restarts, Grok and native targets, and Team copies activated in different orders, on the BUILT server
@@ -29,7 +30,8 @@ import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.
 //   EX-02 an agent COPY (AGY -> native): the choice is saved, the server restarts before the first message, the first message
 //         fails after the candidate wrote its instruction (obstructed), the file is byte-identical, the retry completes with one
 //         marker and one segment (I-7).
-//   EX-03 a Team COPY with a Team-level choice of another runtime, two copies of one definition woken in opposite orders:
+//   EX-03 a Team COPY with a Team-level choice of another runtime and its members' patches (SR-075 F-39: saved as a team the user
+//         started), two copies of one definition woken in opposite orders:
 //         each member switches at its own first input with its own segment and marker; a member that never ran starts plainly.
 //   EX-04 a configured Team's default runtime edit with its linked members in one save (the `CONFIGURED_TEAM` scope plus a patch per
 //         member, as the web draft planner sends them): each member holds its own pending switch; they switch at their own first
@@ -287,8 +289,7 @@ describe.runIf(ENABLED)("agent runtime switch of Org members and delegated copie
     const keyOf = (address: string, runId: string) => `runtime_switch:${runId}:${orgAgent(pendingTree, address).pendingRuntimeSwitch.switchId}`;
     expect(orgAgent(pendingTree, "/direct")).toMatchObject({ launchConfiguration: expect.objectContaining({ runtimeKind: NATIVE }), platformAgentRunId: null });
     expect(orgAgent(pendingTree, "/crew/worker")).toMatchObject({ launchConfiguration: expect.objectContaining({ runtimeKind: GROK }), platformAgentRunId: null });
-    const restored = (await gql("mutation($id: String!) { restoreAgentOrgRun(agentOrgRunId: $id) { success message } }", { id: orgRunId })).restoreAgentOrgRun as Json;
-    expect(restored.success, restored.message).toBe(true);
+    // The stopped Org's view serves it from its stored file; the first message to one of its agents on that view restores it (autobyteus-461 CR-461-008).
 
     // --- the native member: the start fails after the native candidate wrote its instruction
     const directBefore = activeText(dir(direct));
@@ -348,12 +349,12 @@ describe.runIf(ENABLED)("agent runtime switch of Org members and delegated copie
     await until(() => echoed(copyDir()).length > 0, "the copy answered", 60_000);
     const agyIds = ids(active(copyDir()));
 
-    const stopped = (await gql("mutation($input: DelegatedExecutionTargetInput!) { stopDelegatedExecution(input: $input) { success outcome } }", { input: { rootKind: "AGENT", rootRunId: host.runId, agentRunId: copyRunId } })).stopDelegatedExecution;
-    expect(stopped).toMatchObject({ success: true });
+    // The copy is a run of its own: its own Stop and its own stopped-run save (autobyteus-461 rule 2, SR-064).
+    expect((await gql("mutation($id: String!) { terminateAgentRun(agentRunId: $id) { success } }", { id: copyRunId })).terminateAgentRun.success).toBe(true);
     expect((await gql("mutation($id: String!) { terminateAgentRun(agentRunId: $id) { success } }", { id: host.runId })).terminateAgentRun.success).toBe(true);
     const copyBefore = activeText(copyDir());
-    const update = (await gql("mutation($input: UpdateDelegatedLaunchSelectionsInput!) { updateDelegatedLaunchSelections(input: $input) { success outcome message fieldErrors { path message } } }",
-      { input: { rootKind: "AGENT", rootRunId: host.runId, changes: [{ agentRunId: copyRunId, selection: { runtimeKind: NATIVE, llmModelIdentifier: nativeModel, llmConfig: null } }] } })).updateDelegatedLaunchSelections as Json;
+    const update = (await gql("mutation($input: UpdateStoppedAgentRunSelectionInput!) { updateStoppedAgentRunSelection(input: $input) { success outcome message fieldErrors { path message } } }",
+      { input: { agentRunId: copyRunId, runtimeKind: NATIVE, llmModelIdentifier: nativeModel, llmConfig: null } })).updateStoppedAgentRunSelection as Json;
     expect(update, JSON.stringify(update)).toMatchObject({ success: true, outcome: "UPDATED" });
     expect(activeText(copyDir()), "the save changed no raw trace of the copy").toBe(copyBefore);
     expect(completeSegments(copyDir()), "nothing archived by the save").toEqual([]);
@@ -397,7 +398,8 @@ describe.runIf(ENABLED)("agent runtime switch of Org members and delegated copie
       const result = await host.call("delegate_task", { recipient_address: `/${segmentName(duo.name)}`, description: "Review the notes." }, `host delegates Team copy ${label}`);
       expect(result.delegated, JSON.stringify(result)).toBe(true);
       const teamRunId = result.target_team_run_id as string;
-      const tree = (await gql("query($id: String!) { agentRunCollaboration(runId: $id) }", { id: host.runId })).agentRunCollaboration.root_agent.execution_tree as Json;
+      // autobyteus-461 SR-084: the delegated runs come from the run's tree (its view carries its own parts only).
+      const tree = await delegatedRunsTree((query, variables) => gql(query, variables), "agent", host.runId);
       const execution = (tree.taskExecutions as Json[]).find((entry) => entry.teamRunId === teamRunId)!;
       const byName = (name: string) => (execution.members as Json[]).find((entry) => String(entry.address).endsWith(`/${name}`))!.agentRunId as string;
       return { teamRunId, lead: byName("lead"), worker: byName("worker") };
@@ -420,13 +422,19 @@ describe.runIf(ENABLED)("agent runtime switch of Org members and delegated copie
     const agyBefore = Object.fromEntries([one, two, three].flatMap((copy, i) => [[`lead${i + 1}`, ids(active(dirOf(copy.lead)))], ...(i < 2 ? [[`worker${i + 1}`, ids(active(dirOf(copy.worker)))]] : [])]));
     expect(findDir(memory(), three.worker), "the worker of copy three never ran: it has no memory folder").toBeNull();
 
+    // Each team copy is a run of its own: its own Stop, then its own stopped-run save, in row order (autobyteus-461 rule 2,
+    // SR-064: the editor composes the Save from each run's own save). SR-075 F-39: the save is as for a team the user started:
+    // the team scope changes the default only, so the editor sends a patch per member that follows it (as EX-04's planner).
     for (const copy of [one, two, three]) {
-      const stopped = (await gql("mutation($input: DelegatedExecutionTargetInput!) { stopDelegatedExecution(input: $input) { success outcome } }", { input: { rootKind: "AGENT", rootRunId: host.runId, teamRunId: copy.teamRunId } })).stopDelegatedExecution;
+      const stopped = (await gql("mutation($id: String!) { terminateAgentTeamRun(teamRunId: $id) { success message } }", { id: copy.teamRunId })).terminateAgentTeamRun;
       expect(stopped, JSON.stringify(stopped)).toMatchObject({ success: true });
     }
-    const update = (await gql("mutation($input: UpdateDelegatedLaunchSelectionsInput!) { updateDelegatedLaunchSelections(input: $input) { success outcome message fieldErrors { path message } } }",
-      { input: { rootKind: "AGENT", rootRunId: host.runId, changes: [one, two, three].map((copy) => ({ teamRunId: copy.teamRunId, selection: { runtimeKind: NATIVE, llmModelIdentifier: nativeModel, llmConfig: null } })) } })).updateDelegatedLaunchSelections as Json;
-    expect(update, JSON.stringify(update)).toMatchObject({ success: true, outcome: "UPDATED" });
+    for (const copy of [one, two, three]) {
+      const update = (await gql("mutation($input: UpdateStoppedTeamRunSelectionsInput!) { updateStoppedTeamRunSelections(input: $input) { success outcome message } }", { input: { teamRunId: copy.teamRunId,
+        selectionPatches: [{ scopeKind: "CONFIGURED_TEAM", scopeAddress: "/", runtimeKind: NATIVE, llmModelIdentifier: nativeModel, llmConfig: null },
+          ...["/lead", "/worker"].map((scopeAddress) => ({ scopeKind: "CONFIGURED_AGENT", scopeAddress, runtimeKind: NATIVE, llmModelIdentifier: nativeModel, llmConfig: null }))] } })).updateStoppedTeamRunSelections as Json;
+      expect(update, JSON.stringify(update)).toMatchObject({ success: true, outcome: "UPDATED" });
+    }
 
     const switched = async (runId: string, label: string, previous: string[]) => {
       await until(() => !!findDir(memory(), runId) && markers(dirOf(runId)).length > 0, `${label} switched`, 90_000);
@@ -451,7 +459,7 @@ describe.runIf(ENABLED)("agent runtime switch of Org members and delegated copie
     expect(active(dirOf(three.worker)).some((record) => record.trace_type === "system_instruction"), "it started as a native agent (its own instruction)").toBe(true);
     await wake(three.lead, "lead-three"); await switched(three.lead, "lead three", agyBefore.lead3!);
     // the host's saved tree records the Team-level choice for every copy
-    const saved = JSON.stringify((await gql("query($id: String!) { agentRunCollaboration(runId: $id) }", { id: host.runId })).agentRunCollaboration);
+    const saved = JSON.stringify(await readRunTree((query, variables) => gql(query, variables), "agent", host.runId));
     expect((saved.match(new RegExp(`"(runtimeKind|runtime_kind)":"${NATIVE}"`, "g")) ?? []).length, "the Team-level runtime choice is recorded").toBeGreaterThan(0);
   }, 900_000);
 

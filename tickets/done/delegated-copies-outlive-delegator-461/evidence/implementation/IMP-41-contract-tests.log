@@ -1,0 +1,10 @@
+# IMP-41 collaboration stream contracts: build and tests, on the merged state (CR-461-029)
+# command: (autobyteus-collaboration-stream-contracts) pnpm test
+# commit: 8a47481617 (merge of origin/personal at 3228eff74b); macOS, Node v22.23.1; 2026-11-12T11:53Z
+
+# tests 41
+# pass 41
+# fail 0
+
+## dist matches the committed build
+(no 'changed:' line: the rebuilt dist equals the committed one)

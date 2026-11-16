@@ -1,4 +1,3 @@
-import type { AgentRunCollaborationViewDto } from '@autobyteus/collaboration-stream-contracts'
 import type { TeamRunExecutionTreeDto } from '@autobyteus/team-stream-contracts'
 import type { RunMetadataConfigPayload, RunModelConfigEditability } from '~/stores/runHistoryTypes'
 import type { ExistingTeamModelConfigDraft } from '~/services/runConfigEditing/existingTeamModelConfigDraft'
@@ -13,8 +12,6 @@ export type ExistingRunModelConfigFieldError = Readonly<{
   message: string
 }>
 
-export type ExistingAgentDelegatedSnapshot = Pick<AgentRunCollaborationViewDto, 'execution_tree' | 'closed_task_executions' | 'remote_task_executions'>
-
 export type ExistingAgentModelConfigDraft = Readonly<{
   kind: 'agent'
   runId: string
@@ -22,7 +19,6 @@ export type ExistingAgentModelConfigDraft = Readonly<{
   editability: RunModelConfigEditability
   metadata: RunMetadataConfigPayload
   draftSelection: ExistingAgentRunSelection
-  delegatedSnapshot: ExistingAgentDelegatedSnapshot | null
 }>
 
 export type ExistingTeamRunModelConfigDraft = Readonly<{

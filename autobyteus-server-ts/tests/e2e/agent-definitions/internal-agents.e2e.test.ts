@@ -11,6 +11,7 @@ import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { startStudioE2eRuntimeServer } from "../helpers/studio-runtime-test-server.js";
 import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
 import { until } from "../helpers/agy-runtime-error-fixture.js";
+import { delegatedRunsTree } from "../helpers/run-tree-delegated.js";
 
 /**
  * Internal agents (autobyteus-308) through the real Studio HTTP/WebSocket server, GraphQL, the agent runs' scoped Agent
@@ -245,7 +246,8 @@ suite("Internal agents: hidden unless \"Show internal agents\" is on (real HTTP/
     const scout = await connect(scoutRunId);
     const candidates = async () => ((await graphql(`query($k:String!,$id:String!,$f:String){collaboratorMentionCandidates(rootSubjectKind:$k,rootRunId:$id,focusedAgentRunId:$f){candidates{kind definitionId name}}}`,
       { k: "agent", id: scoutRunId, f: scoutRunId })).collaboratorMentionCandidates.candidates as Rec[]);
-    const delegatedRuns = async () => objectsIn((await graphql(`query($id:String!){agentRunCollaboration(runId:$id)}`, { id: scoutRunId })).agentRunCollaboration)
+    // autobyteus-461 SR-084: the delegated runs come from the run's tree (its view carries its own parts only).
+    const delegatedRuns = async () => objectsIn(await delegatedRunsTree(graphql, "agent", scoutRunId))
       .filter((record) => (record.address === INTERNAL_ADDRESS) && (record.agentRunId ?? record.agent_run_id)).length;
 
     // Hidden: list, delegate, @ candidates, @ by ID.

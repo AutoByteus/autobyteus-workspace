@@ -1,0 +1,8 @@
+# IMP-07
+# command: pnpm -C autobyteus-web exec cross-env NUXT_TEST=true vitest run composables/projects stores/__tests__/projectRunsStore.spec.ts stores/__tests__/projectLiveChanges.spec.ts stores/__tests__/taskWorkerTaskStore.spec.ts utils/projects components/projects
+# commit: dbb688161e
+# environment: macOS (Darwin 25.5), Node 22, pnpm
+# date: 2026-11-11
+
+ Test Files  30 passed (30)
+      Tests  225 passed (225)

@@ -1,0 +1,27 @@
+# F-47 (EXC-E2E-001 … 003: an unknown Task ID by run ID), r7-batchA.log, merged state a529abcbdd
+# Base's own EXC test at origin/personal expects { delegated: false } and the 'must identify exactly one current node-local Task (found 0)' message on this path (target_team_run_id); base's TKD expects { error: { code: TASK_DELEGATION_ERROR } } on the recipient_address path.
+ FAIL  tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-001 standalone Agent root: explicit IDs, every refusal, Team copy A → B → A, Agent copy C → D, repeated closes of the earlier Task, views
+AssertionError: expected { error: { …(2) } } to match object { delegated: false }
+(3 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "delegated": false,
++   "error": {
++     "code": "TASK_DELEGATION_ERROR",
++     "message": "Task 'project_task_b6f4ef64-73ff-4191-8f1a-861402dcfe36' must identify exactly one current node-local Task (found 0).",
++   },
+  }
+
+ ❯ rootScenario tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts:540:25
+    538|     expect(bCancelled).toMatchObject({ delegated: false });
+    539|     expect(bCancelled.message).toMatch(/CANCELLED/);
+    540|     expect(unknownTask).toMatchObject({ delegated: false });
+       |                         ^
+    541|     expect(unknownTask.message).toMatch(/must identify exactly one cur…
+    542|     expect(await filesNow()).toEqual(files);
+ ❯ tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts:739:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯

@@ -3,7 +3,6 @@ import { TeamStreamingService } from '../TeamStreamingService';
 import {
   buildTestTeamContext,
   testAgentNode,
-  testDelegation,
 } from '~/test-support/currentTeamTestFixtures';
 
 const createHarness = (state = 'connected') => {
@@ -19,11 +18,8 @@ const createHarness = (state = 'connected') => {
   });
   const team = buildTestTeamContext({
     teamRunId: 'team-1', coordinatorAddress: '/worker',
-    rootChildren: [testAgentNode('/worker', { agentRunId: 'worker-run' })],
-    delegations: [testDelegation({
-      delegatorAgentRunId: 'worker-run', recipientAddress: '/worker',
-      target: { agentRunId: 'task-agent-run-1' },
-    })],
+    // Two own members; a run a member delegated is its own run, outside the Team's stream (autobyteus-461 rule 2).
+    rootChildren: [testAgentNode('/worker', { agentRunId: 'worker-run' }), testAgentNode('/reviewer', { agentRunId: 'reviewer-run' })],
   });
   service.connect('team-1', team);
   callbacks.get('onMessage')?.(JSON.stringify({
@@ -33,9 +29,8 @@ const createHarness = (state = 'connected') => {
     type: 'TEAM_EXECUTION_VIEW_SNAPSHOT', payload: {
       root_team_run_id: 'team-1',
       base_change_sequence: 0, live_sequence_id: 'live-1', last_message_change_sequence: 0,
-      closed_task_executions: [], execution_tree: team.view.getExecutionTree(),
-      agent_input_states: [], remote_task_executions: [],
-  agent_statuses: team.view.listAgentContextEntries().map((entry) => ({
+      execution_tree: team.view.getExecutionTree(),
+      agent_input_states: [], agent_statuses: team.view.listAgentContextEntries().map((entry) => ({
         agent_run_id: entry.agentRunId,
         member_address: entry.memberAddress,
         status: 'idle',
@@ -54,7 +49,7 @@ const sent = (wsClient: { send: ReturnType<typeof vi.fn> }, index = 0) =>
   JSON.parse(String(wsClient.send.mock.calls[index]?.[0]));
 
 describe('TeamStreamingService exact AgentRun command selection', () => {
-  it.each(['worker-run', 'task-agent-run-1'])('serializes SEND_MESSAGE only with current AgentRun %s', (agentRunId) => {
+  it.each(['worker-run', 'reviewer-run'])('serializes SEND_MESSAGE only with current AgentRun %s', (agentRunId) => {
     const { service, wsClient } = createHarness();
     service.sendMessage('perform exact work', agentRunId, ['/tmp/context.txt'], ['https://example.invalid/image.png'], {
       messageId: 'message-1', dedupeKey: 'dedupe-1',
@@ -99,7 +94,7 @@ describe('TeamStreamingService exact AgentRun command selection', () => {
   it('rejects a pending Team send from the exact target-correlated command failure', async () => {
     const { callbacks, service } = createHarness();
     let rejected = false;
-    const admission = service.sendMessage('preserve this prompt', 'task-agent-run-1', [], [], {
+    const admission = service.sendMessage('preserve this prompt', 'reviewer-run', [], [], {
       messageId: 'message-rejected', dedupeKey: 'dedupe-rejected',
     }).catch((error) => { rejected = true; throw error; });
     callbacks.get('onMessage')?.(JSON.stringify({
@@ -114,7 +109,7 @@ describe('TeamStreamingService exact AgentRun command selection', () => {
     callbacks.get('onMessage')?.(JSON.stringify({
       type: 'ERROR', payload: {
         code: 'TEAM_SEND_MESSAGE_REJECTED', message: 'runtime is stopping',
-        change_sequence: null, agent_run_id: 'task-agent-run-1',
+        change_sequence: null, agent_run_id: 'reviewer-run',
         error_scope: null, error_effect: null, turn_id: null,
       },
     }));
@@ -174,7 +169,7 @@ describe('TeamStreamingService exact AgentRun command selection', () => {
     await expect(admission).rejects.toThrow('socket closed');
   });
 
-  it.each(['worker-run', 'task-agent-run-1'])('serializes INTERRUPT_GENERATION only with current AgentRun %s', (agentRunId) => {
+  it.each(['worker-run', 'reviewer-run'])('serializes INTERRUPT_GENERATION only with current AgentRun %s', (agentRunId) => {
     const { service, wsClient } = createHarness();
     expect(service.interruptGeneration('interrupt-1', { agentRunId })).toBe(true);
     expect(sent(wsClient)).toEqual({
@@ -184,11 +179,11 @@ describe('TeamStreamingService exact AgentRun command selection', () => {
 
   it('uses one explicit current AgentRun for approval and denial', () => {
     const { service, wsClient } = createHarness();
-    service.approveTool('invocation-1', { agentRunId: 'task-agent-run-1' }, 'approved by user');
+    service.approveTool('invocation-1', { agentRunId: 'reviewer-run' }, 'approved by user');
     service.denyTool('invocation-2', { agentRunId: 'worker-run' }, 'not approved');
     expect(sent(wsClient, 0)).toEqual({
       type: 'APPROVE_TOOL', payload: {
-        invocation_id: 'invocation-1', agent_run_id: 'task-agent-run-1', reason: 'approved by user',
+        invocation_id: 'invocation-1', agent_run_id: 'reviewer-run', reason: 'approved by user',
       },
     });
     expect(sent(wsClient, 1)).toEqual({
@@ -202,13 +197,13 @@ describe('TeamStreamingService exact AgentRun command selection', () => {
     const { callbacks, service, wsClient } = createHarness();
     callbacks.get('onMessage')?.(JSON.stringify({
       type: 'TOOL_APPROVAL_REQUESTED', payload: {
-        change_sequence: 1, agent_run_id: 'task-agent-run-1', invocation_id: 'invocation-tracked',
+        change_sequence: 1, agent_run_id: 'reviewer-run', invocation_id: 'invocation-tracked',
         tool_name: 'run_bash', turn_id: 'turn-1', arguments: { command: 'pwd' },
       },
     }));
     service.approveTool('invocation-tracked');
     expect(sent(wsClient)).toMatchObject({
-      type: 'APPROVE_TOOL', payload: { invocation_id: 'invocation-tracked', agent_run_id: 'task-agent-run-1' },
+      type: 'APPROVE_TOOL', payload: { invocation_id: 'invocation-tracked', agent_run_id: 'reviewer-run' },
     });
   });
 
@@ -221,13 +216,13 @@ describe('TeamStreamingService exact AgentRun command selection', () => {
 
   it('rejects interrupt transport while disconnected without sending', () => {
     const { service, wsClient } = createHarness('disconnected');
-    expect(service.interruptGeneration('interrupt-disconnected', { agentRunId: 'task-agent-run-1' })).toBe(false);
+    expect(service.interruptGeneration('interrupt-disconnected', { agentRunId: 'reviewer-run' })).toBe(false);
     expect(wsClient.send).not.toHaveBeenCalled();
   });
 
   it('accepts only an acknowledgement matching the exact pending AgentRun', () => {
     const { callbacks, commandResults, service } = createHarness();
-    expect(service.interruptGeneration('interrupt-ack', { agentRunId: 'task-agent-run-1' })).toBe(true);
+    expect(service.interruptGeneration('interrupt-ack', { agentRunId: 'reviewer-run' })).toBe(true);
     callbacks.get('onMessage')?.(JSON.stringify({
       type: 'AGENT_COMMAND_ACK', payload: {
         command_type: 'INTERRUPT_GENERATION', command_id: 'interrupt-ack', state: 'accepted', agent_run_id: 'worker-run',
@@ -236,7 +231,7 @@ describe('TeamStreamingService exact AgentRun command selection', () => {
     expect(commandResults).not.toHaveBeenCalled();
     callbacks.get('onMessage')?.(JSON.stringify({
       type: 'AGENT_COMMAND_ACK', payload: {
-        command_type: 'INTERRUPT_GENERATION', command_id: 'interrupt-ack', state: 'accepted', agent_run_id: 'task-agent-run-1',
+        command_type: 'INTERRUPT_GENERATION', command_id: 'interrupt-ack', state: 'accepted', agent_run_id: 'reviewer-run',
       },
     }));
     expect(commandResults).toHaveBeenCalledOnce();

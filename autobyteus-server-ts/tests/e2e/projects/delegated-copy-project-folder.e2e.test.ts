@@ -9,10 +9,11 @@ import WebSocket from "ws";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { until } from "../helpers/agy-runtime-error-fixture.js";
 import { findAgyRunCapsule } from "../helpers/agy-run-capsule.js";
-import { calledResults, callTool, objectsIn, segment, startCollaborationHarness, taskAgentsIn, toolResult,
+import { calledResults, callTool, objectsIn, segment, startCollaborationHarness, toolResult,
   type CollaborationHarness, type Rec } from "../helpers/collaboration-root-harness.js";
 import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
 import { builtServerLaunchEnvironment } from "../helpers/built-server-launch-credential.js";
+import { delegatedRunsTree } from "../helpers/run-tree-delegated.js";
 
 // delegated-copy-project-workspace (autobyteus-97): a new local copy runs in its Task's Project's first linked folder.
 // Real Studio HTTP/WebSocket/GraphQL server, scoped MCP agent tools, Project/Task services, AGY backend. The external AGY CLI
@@ -83,7 +84,12 @@ suite("A new delegated copy runs in its Task's Project's first linked folder (re
     await until(() => Boolean(capsule = findAgyRunCapsule(memory(), runId)), `capsule of ${runId}`, 60_000);
     let addDirs: string[] = [];
     await until(() => (addDirs = addDirsOf(argvLog, capsule!.path)).length > 0, `launch of ${runId}`, 60_000);
-    return { recorded: recordedFolders(nodeOf(await root.liveTree(), runId)), capsule: capsule!.workspacePath, addDirs };
+    // A run two hops down (sub-work of a worker) is a child of the worker, not a row of the root's view (autobyteus-461):
+    // its recorded folder is in its own file.
+    const inRootView = recordedFolders(nodeOf(await root.liveTree(), runId));
+    const ownFile = path.join(memory(), "agents", runId, "run_metadata.json");
+    const recorded = inRootView.length || !fs.existsSync(ownFile) ? inRootView : [JSON.parse(fs.readFileSync(ownFile, "utf8")).workspaceRootPath];
+    return { recorded, capsule: capsule!.workspacePath, addDirs };
   };
   const expectIn = (launch: { recorded: string[]; capsule: string; addDirs: string[] }, folder: string) => {
     expect(launch.recorded).toEqual([folder]);
@@ -148,9 +154,14 @@ suite("A new delegated copy runs in its Task's Project's first linked folder (re
     expect(coordinator.addDirs).toEqual([folders.F]);
     // The other member starts when it first gets a message.
     const other = team.members.find((member) => member.agentRunId !== delegated.target_team_coordinator_agent_run_id)!;
-    await agentRoot.conversationOf(other.agentRunId, other.address);
-    agentRoot.sendTo(other.agentRunId, "Reply OK.");
-    const member = await launchOf(agentRoot, other.agentRunId);
+    // autobyteus-461 rule 2: a delegated team's member is reached on its own team's stream, not through the delegator's view.
+    const teamSocket = new WebSocket(`ws://${new URL(h.url).host}/ws/agent-team/${delegated.target_team_run_id}`);
+    const teamFrames: Rec[] = [];
+    teamSocket.on("message", (raw: unknown) => teamFrames.push(JSON.parse(String(raw))));
+    await new Promise<void>((resolve, reject) => { teamSocket.once("open", () => resolve()); teamSocket.once("error", reject); });
+    await until(() => teamFrames.some((f) => f.type === "TEAM_EXECUTION_VIEW_SNAPSHOT"), "the delegated team's own view", 30_000);
+    sendE2eSendMessageCommand(teamSocket, { agent_run_id: other.agentRunId, content: "Reply OK." });
+    const member = await launchOf(agentRoot, other.agentRunId).finally(() => teamSocket.terminate());
     expect(member.capsule).toBe(folders.F);
     expect(member.addDirs).toEqual([folders.F]);
     evidence.dcf02 = { teamRunId: delegated.target_team_run_id, coordinator, member };
@@ -159,7 +170,7 @@ suite("A new delegated copy runs in its Task's Project's first linked folder (re
   it("DCF-03: a worker of that Task delegates without task_id: the sub-work runs in F, with the manager in G", async () => {
     const taskId = await createTask(projects.P, callTool("delegate_task", { recipient_address: `/${segment(names.helper)}`, description: "Reply OK." }));
     const delegated = delegatedOk(await agentRoot.calls(agentRoot.rootId, "/", callTool("delegate_task", { recipient_address: `/${segment(names.writer)}`, task_id: taskId })));
-    let sub: ReturnType<typeof taskAgentsIn>[number] | undefined;
+    let sub: Awaited<ReturnType<typeof agentRoot.taskAgents>>[number] | undefined;
     await until(async () => Boolean(sub = (await agentRoot.taskAgents()).find((agent) => agent.delegatorAgentRunId === delegated.target_agent_run_id)), "sub-work started", 60_000);
     const launch = await launchOf(agentRoot, sub!.agentRunId!);
     expectIn(launch, folders.F);
@@ -184,7 +195,7 @@ suite("A new delegated copy runs in its Task's Project's first linked folder (re
     evidence.dcf05 = launch;
   }, 120_000);
 
-  it("DCF-06: a first link that does not exist, or is a file, refuses with a coded error naming the Project and the folder; no Task entry, no copy", async () => {
+  it("DCF-06: a first link that does not exist, or is a file, refuses naming the Project and the folder; no Task entry, no copy", async () => {
     const results: Rec = {};
     for (const [key, projectId, folder] of [["missing", projects.gone, folders.missing], ["file", projects.file, folders.file]] as const) {
       const taskId = await createTask(projectId, "Reply OK.");
@@ -192,8 +203,10 @@ suite("A new delegated copy runs in its Task's Project's first linked folder (re
       const refused = await agentRoot.calls(agentRoot.rootId, "/", callTool("delegate_task", { recipient_address: `/${segment(names.writer)}`, task_id: taskId }));
       const text = JSON.stringify(refused);
       expect(refused.delegated, text).not.toBe(true);
-      expect(text).toContain("TASK_PROJECT_FOLDER_UNAVAILABLE");
+      // A refused delegate_task is `{ delegated: false, message }` with no code (contract §2, SR-054); the message names the
+      // Project's folder and says nothing was started.
       expect(text).toContain(folder);
+      expect(text).toContain("Nothing was started.");
       expect((await agentRoot.taskAgents()).length).toBe(before);
       const resources = path.join(h.dataDir, "projects", projectId, "tasks", taskId, "agent_run_resources.json");
       const entries = fs.existsSync(resources) ? (JSON.parse(fs.readFileSync(resources, "utf8")) as Rec).executionResources as unknown[] : [];
@@ -325,7 +338,8 @@ suite("Copies keep their folders across a real process restart (built server, sc
     expect(inF.delegated, JSON.stringify(inF)).toBe(true);
     const copyF = inF.target_agent_run_id as string;
 
-    const treeOf = async (server: Server) => (await server.graphql(`query($id:String!){agentRunCollaboration(runId:$id)}`, { id: managerId })).agentRunCollaboration?.root_agent?.execution_tree;
+    // autobyteus-461 SR-084: the Manager's delegated runs, from its tree (each row carries its launch's folder).
+    const treeOf = async (server: Server) => delegatedRunsTree((query, variables) => server.graphql(query, variables), "agent", managerId);
     const folderReadings = async (server: Server) => { const tree = await treeOf(server);
       return { copyG: recordedFolders(nodeOf(tree, copyG)), copyF: recordedFolders(nodeOf(tree, copyF)) }; };
     const live = await folderReadings(first);

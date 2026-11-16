@@ -1,25 +1,7 @@
-import {
-  teamCopyAgentLaunch,
-  teamMemberLaunchSource,
-  type AgentLaunchConfigurationDto,
-  type LaunchConfigurationSourceDto,
-  type TaskExecutionDto as TeamTaskExecutionDto,
-  type TeamRunExecutionTreeDto,
-  type UserLaunchSelectionDto,
-} from '@autobyteus/team-stream-contracts'
-import {
-  collaborationCopyAgentLaunch,
-  collaborationMemberLaunchSource,
-  type CollaborationLaunchConfigurationSourceDto,
-  type CollaborationTaskExecutionDto,
-  type TaskAgentExecutionSourceDto,
-  type UserLaunchSelectionDto as CamelSelectionDto,
-} from '@autobyteus/collaboration-stream-contracts'
-import type { RemoteAgentLaunchDto, RemoteTaskExecutionDto } from '@autobyteus/agent-presentation-contracts'
-import type { TaskExecutionReference } from '~/utils/collaboration/taskExecutionClosure'
-import { memberDisplayName } from '~/utils/collaboration/memberDisplayName'
-import { teamMemberName } from '~/services/teamExecution/teamExecutionTreeSelectors'
+import type { CollaborationLaunchConfigurationSourceDto, RunTreeLaunchDto, RunTreeRowDto } from '@autobyteus/collaboration-stream-contracts'
+import type { RunTreeRef } from '~/stores/runTreeStore'
 import { MEMBER_RUN_SETTING_FIELDS, type RunSettingFlags, type RunSettingsValues } from '~/types/runSettings/RunSettings'
+import { isTeamRow } from '~/utils/runTree/runTreeDisplayRows'
 import {
   memberNode,
   type RunMemberDelegatedFacts,
@@ -35,15 +17,15 @@ import {
 /**
  * DS-004 / REQ-007 (SR-006, SR-007): a run's open delegated copies as member rows.
  * One row per copy, with a badge; a Team row edits its Team-level choice and has its
- * agents as child rows. Each row shows what it runs with by the single launch rule (its own user
- * choice, else its Team's when it follows the Team, else its started value; the contract packages'
- * functions), with this edit's choices applied. Every value comes from the copy's own recorded source
+ * agents as child rows. Each row shows what its run has: its launch and origin as the server's tree row carries them,
+ * read from the run itself (SR-084, CR-461-086 folded in; after a save, the tree's next answer), with this edit's
+ * unsaved choices applied by the draft rule (`draftLaunch`). Every value comes from the copy's own recorded source
  * (a copy of a configured placement records it too, with the `configured` origin: "As configured in this
  * run"). A row with a choice shows no origin; others say where their launch came from, with recorded
  * fallbacks as notes (a Team-level one once, on the Team row).
  * Model, its settings and its agent runtime are editable only while the copy is stopped; approval and
- * workspace never are. The copy itself carries the stop target. Closed copies (Task
- * DONE or CANCELLED) are left out, with everything under one. Keys are `<address>@<run ID>`.
+ * workspace never are. The copy itself carries the stop target. The rows are the view's child rows, the open ones
+ * (autobyteus-461). A row's key is its tree row's key, kept through refreshes (CR-461-095).
  */
 type Launch = Readonly<{
   runtimeKind: string
@@ -59,7 +41,7 @@ type RecordedSource = Readonly<{
 }>
 /** Where a copy agent's decision is recorded on this node: the delegating run, the copy and the agent (D9). */
 type DecisionLocator = NonNullable<RunMemberRouting['decision']>
-/** A copy's choice: its model and settings and, when it names one, its agent runtime (a recorded choice leaves out the started one). */
+/** An unsaved choice of this edit: its model and settings and, when it names one, its agent runtime. */
 type Selection = Readonly<{ runtimeKind?: string; llmModelIdentifier: string; llmConfig: Record<string, unknown> | null }>
 type StopReference = NonNullable<RunMemberDelegatedFacts['stop']>
 type TargetKey = RunMemberDelegatedFacts['target']
@@ -79,8 +61,6 @@ const NO_CONTROL: DelegatedRowControl = { editable: false, isAgentLive: () => fa
 const LOCKED: RunSettingFlags = { workspace: true, model: true, thinking: true, approval: true }
 const MODEL_EDITABLE: RunSettingFlags = { workspace: true, model: false, thinking: false, approval: true }
 
-const referenceKey = (reference: TaskExecutionReference): string =>
-  'agentRunId' in reference ? `agent:${reference.agentRunId}` : `team:${reference.teamRunId}`
 const valuesOf = (launch: Launch): RunSettingsValues => ({
   workspace: null,
   runtimeKind: launch?.runtimeKind ?? '',
@@ -93,34 +73,16 @@ const selectionOf = (launch: Launch): Selection & Readonly<{ runtimeKind: string
   llmModelIdentifier: launch?.llmModelIdentifier ?? '',
   llmConfig: launch?.llmConfig ? { ...launch.llmConfig } : null,
 })
-/** The single launch rule (a contract function per DTO casing): what a row runs with, and whether a user choice decided it. */
-type LaunchRule = (input: Readonly<{ started: Launch; followsTeam: boolean; team: Selection | null; agent: Selection | null }>) =>
-  Readonly<{ launch: Launch; chosen: boolean }>
-const snakeRule: LaunchRule = ({ started, followsTeam, team, agent }) => {
-  if (!started) return { launch: null, chosen: false }
-  const selection = (choice: Selection | null) => choice
-    ? { ...(choice.runtimeKind ? { runtime_kind: choice.runtimeKind as AgentLaunchConfigurationDto['runtime_kind'] } : {}),
-      llm_model_identifier: choice.llmModelIdentifier, llm_config: choice.llmConfig as UserLaunchSelectionDto['llm_config'], selected_at: '' }
-    : null
-  const { launch, selected } = teamCopyAgentLaunch({
-    started: { runtime_kind: started.runtimeKind as AgentLaunchConfigurationDto['runtime_kind'], llm_model_identifier: started.llmModelIdentifier,
-      llm_config: started.llmConfig as AgentLaunchConfigurationDto['llm_config'], auto_execute_tools: started.autoExecuteTools, workspace_root_path: null },
-    followsTeam, teamSelection: selection(team), agentSelection: selection(agent),
-  })
-  return { launch: snakeLaunch(launch), chosen: selected !== null }
-}
-const camelRule: LaunchRule = ({ started, followsTeam, team, agent }) => {
-  if (!started) return { launch: null, chosen: false }
-  const selection = (choice: Selection | null) => choice
-    ? { ...(choice.runtimeKind ? { runtimeKind: choice.runtimeKind as CamelLaunch['runtimeKind'] } : {}),
-      llmModelIdentifier: choice.llmModelIdentifier, llmConfig: choice.llmConfig as CamelSelectionDto['llmConfig'], selectedAt: '' }
-    : null
-  const { launch, selected } = collaborationCopyAgentLaunch({
-    started: { runtimeKind: started.runtimeKind as CamelLaunch['runtimeKind'], llmModelIdentifier: started.llmModelIdentifier,
-      llmConfig: started.llmConfig as CamelLaunch['llmConfig'], autoExecuteTools: started.autoExecuteTools, workspaceRootPath: null },
-    followsTeam, teamSelection: selection(team), agentSelection: selection(agent),
-  })
-  return { launch: camelLaunch(launch), chosen: selected !== null }
+/**
+ * The draft rule: what a row runs with once this edit's unsaved choice applies (its own choice, else the launch its run
+ * has), and whether a choice decided it. Each saved choice is its run's own launch (SR-039): a Team row's choice is its
+ * Team's default only, and each member keeps its own launch (CR-461-089, SR-075 F-39).
+ */
+const draftLaunch = (input: Readonly<{ started: Launch; choice: Selection | null }>): Readonly<{ launch: Launch; chosen: boolean }> => {
+  const choice = input.choice
+  if (!input.started || !choice) return { launch: input.started, chosen: false }
+  return { launch: { ...input.started, runtimeKind: choice.runtimeKind ?? input.started.runtimeKind,
+    llmModelIdentifier: choice.llmModelIdentifier, llmConfig: choice.llmConfig }, chosen: true }
 }
 /**
  * A row's source label and the fallbacks it shows itself (`ownNotes` false: a member whose source is its Team's); a
@@ -136,252 +98,155 @@ const factsOf = (source: RecordedSource | null, ownNotes = true, badge?: RunMemb
 const locatorOf = (delegator: string | null | undefined, copy: string, agent: string): DecisionLocator | null =>
   delegator ? { runId: delegator, copy, agent } : null
 
+/** Where a row's launch came from, as its record says: its source, whether it is its own, its badge and router decision. */
+type RowOrigin = Readonly<{ source: RecordedSource | null; ownNotes: boolean; badge?: RunMemberNode['badge']; decision: DecisionLocator | null }>
 /** One row's control: its target and the choice applied, whether its copy runs, and its locks. */
 type RowInput = Readonly<{
   key: string
   address: string
   /** An agent row's run ID (a Team row has none: a Team is never the focused agent). */
   agentRunId?: string
-  /** The launch before any user choice. */
+  /** The launch its run has. */
   started: Launch
-  /** The user's choices recorded on the run (what it runs with now). */
-  recorded: Readonly<{ agent?: Selection | null; team?: Selection | null }>
-  followsTeam?: boolean
   target: TargetKey
-  /** The Team-level target of a member row, whose draft also reaches a follower. */
-  teamTarget?: TargetKey
   stop: StopReference | null
   running: boolean
-  facts: RunMemberLaunchFacts
+  origin: RowOrigin
+  /** A peer's run (read-only): its node's name. */
+  remoteNode?: string
+  /** A delegated run's own name, as the server named its row (autobyteus-461 SR-091); a member is named by `nameOf`. */
+  name?: string
 }>
 
 /**
  * Nodes from neutral facts (both DTO casings), shaped like the run's own Members: a Team shows its settings card, then its agents.
  * `nameOf` is the root's naming rule, so a row is named as the sidebar and the conversation name the copy.
  */
-const builders = (deps: RunMemberTreeDeps, control: DelegatedRowControl, rule: LaunchRule, nameOf: (address: string) => string) => {
-  const rowFacts = (input: RowInput, isTeam: boolean) => {
-    const recordedTeam = input.recorded.team ?? null
-    const recordedAgent = isTeam ? null : input.recorded.agent ?? null
-    // A Team row's card is the Team's choice; an agent follows the Team's choice only when it follows the Team.
-    const followsTeam = isTeam || Boolean(input.followsTeam)
-    const draftTeam = isTeam ? control.draftOf(input.target) : input.teamTarget ? control.draftOf(input.teamTarget) : null
-    const draftAgent = isTeam ? null : control.draftOf(input.target)
-    const original = rule({ started: input.started, followsTeam, team: recordedTeam, agent: recordedAgent })
-    const current = rule({ started: input.started, followsTeam, team: draftTeam ?? recordedTeam, agent: draftAgent ?? recordedAgent })
+const builders = (deps: RunMemberTreeDeps, control: DelegatedRowControl, nameOf: (address: string) => string) => {
+  const rowFacts = (input: RowInput) => {
+    // Its launch and origin as its run has them now (the tree's `launch`, SR-084: a save records `settings`, V-11).
+    const origin = input.origin
+    const facts = factsOf(origin.source, origin.ownNotes, origin.badge, origin.decision)
+    // Each row shows its own choice only: a Team row's is its Team's default, a member's its own.
+    const current = draftLaunch({ started: input.started, choice: control.draftOf(input.target) })
     const stopping = input.stop ? control.isStopping(input.stop) : false
     const delegated: RunMemberDelegatedFacts = {
       target: input.target,
-      original: selectionOf(original.launch),
+      original: selectionOf(input.started),
       stop: input.stop,
       running: input.running,
       stopping,
     }
     // A row with a user choice shows no origin (and so no router reason either).
-    const { sourceKey, routing, ...facts } = input.facts
+    const { sourceKey, routing, ...rest } = facts
     return {
       values: valuesOf(current.launch),
       delegated,
-      locked: control.editable && !input.running && !stopping ? MODEL_EDITABLE : LOCKED,
-      launch: current.chosen ? facts : { ...facts, sourceKey, ...(routing ? { routing } : {}) },
+      locked: !input.remoteNode && control.editable && !input.running && !stopping ? MODEL_EDITABLE : LOCKED,
+      launch: { ...(current.chosen ? rest : { ...rest, sourceKey, ...(routing ? { routing } : {}) }), ...(input.remoteNode ? { remoteNode: input.remoteNode } : {}) },
     }
   }
   return {
     agent: (input: RowInput, isCoordinator = false): RunMemberNode => {
-      const { values, ...rest } = rowFacts(input, false)
-      return memberNode({ key: input.key, kind: 'agent', name: nameOf(input.address), agentRunId: input.agentRunId, isCoordinator, values, parentValues: values,
+      const { values, ...rest } = rowFacts(input)
+      return memberNode({ key: input.key, kind: 'agent', name: input.name ?? nameOf(input.address), agentRunId: input.agentRunId, isCoordinator, values, parentValues: values,
         fields: MEMBER_RUN_SETTING_FIELDS, ...rest }, deps)
     },
     team: (input: RowInput, children: readonly RunMemberNode[]): RunMemberNode => {
-      const { values, ...rest } = rowFacts(input, true)
-      return memberNode({ key: input.key, kind: 'team', name: nameOf(input.address), values, parentValues: values,
+      const { values, ...rest } = rowFacts(input)
+      return memberNode({ key: input.key, kind: 'team', name: input.name ?? nameOf(input.address), values, parentValues: values,
         fields: MEMBER_RUN_SETTING_FIELDS, children, ...rest }, deps)
     },
   }
 }
 
-// --- Team root (snake_case DTOs) ---
+// --- The run's tree's delegated rows (SR-084) ---
 
-const snakeLaunch = (launch: AgentLaunchConfigurationDto | null | undefined): Launch => launch ? {
-  runtimeKind: launch.runtime_kind, llmModelIdentifier: launch.llm_model_identifier,
-  llmConfig: launch.llm_config, autoExecuteTools: launch.auto_execute_tools,
-} : null
 /** The configured layers a copy skipped (the Model Router's own failure is shown on the Model Routing page, not here). */
 const configuredFallbacks = <T extends { layer: string }>(fallbacks: readonly T[]) =>
   fallbacks.filter((fallback): fallback is T & { layer: RunMemberLaunchFallback['layer'] } => fallback.layer !== 'model_router')
-const snakeSource = (source: LaunchConfigurationSourceDto | null | undefined): RecordedSource | null => source ? {
-  origin: source.origin,
-  fallbacks: configuredFallbacks(source.fallbacks).map((fallback) => ({
-    layer: fallback.layer, runtimeKind: fallback.runtime_kind, llmModelIdentifier: fallback.llm_model_identifier, detail: fallback.detail,
-  })),
-  ...(source.origin === 'model_router' ? { routing: { taskKind: source.task_kind, reason: source.choice_reason } } : {}),
-} : null
-const snakeChoice = (selection: UserLaunchSelectionDto | undefined): Selection | null => selection
-  ? { ...(selection.runtime_kind ? { runtimeKind: selection.runtime_kind } : {}),
-    llmModelIdentifier: selection.llm_model_identifier, llmConfig: selection.llm_config ? { ...selection.llm_config } : null }
-  : null
-
-export const teamDelegatedLaunchNodes = (
-  tree: TeamRunExecutionTreeDto,
-  closed: readonly TaskExecutionReference[],
-  deps: RunMemberTreeDeps,
-  control: DelegatedRowControl = NO_CONTROL,
-): RunMemberNode[] => {
-  const build = builders(deps, control, snakeRule, (address) => teamMemberName(tree, address))
-  const live = (ids: readonly string[]) => ids.some((id) => control.isAgentLive(id))
-  const closedKeys = new Set(closed.map(referenceKey))
-  const result: RunMemberNode[] = []
-  const visit = (tasks: readonly TeamTaskExecutionDto[]): void => {
-    for (const task of tasks) {
-      if (task.kind === 'task_agent') {
-        if (closedKeys.has(`agent:${task.agent_run_id}`)) continue
-        result.push(build.agent({ key: `${task.address}@${task.agent_run_id}`, address: task.address, agentRunId: task.agent_run_id,
-          started: snakeLaunch(task.source.launch_configuration),
-          recorded: { agent: snakeChoice(task.user_launch_selection) },
-          target: `agent:${task.agent_run_id}`, stop: { agentRunId: task.agent_run_id }, running: live([task.agent_run_id]),
-          facts: factsOf(snakeSource(task.source.launch_source), true, 'delegated_copy', locatorOf(task.delegator_agent_run_id, task.address, task.address)) }))
-        continue
-      }
-      if (closedKeys.has(`team:${task.team_run_id}`)) continue
-      const source = task.source
-      const teamStarted = snakeLaunch(source.default_launch_configuration)
-      const teamChoice = snakeChoice(task.user_team_launch_selection)
-      const teamTarget: TargetKey = `team:${task.team_run_id}`
-      const running = live(task.members.map((member) => member.agent_run_id))
-      const members = task.members.map((member) => {
-        const recorded = source.members.find((candidate) => candidate.address === member.address)
-        return build.agent({ key: `${member.address}@${member.agent_run_id}`, address: member.address, agentRunId: member.agent_run_id,
-          started: snakeLaunch(recorded?.launch_configuration),
-          recorded: { agent: snakeChoice(member.user_launch_selection), team: teamChoice },
-          followsTeam: recorded?.follows_team ?? false,
-          target: `agent:${member.agent_run_id}`, teamTarget, stop: null, running,
-          facts: factsOf(snakeSource(teamMemberLaunchSource(source, recorded ?? {})), Boolean(recorded?.launch_source), undefined,
-            locatorOf(task.delegator_agent_run_id, task.address, member.address)) },
-        member.address === source.coordinator_address)
-      })
-      result.push(build.team({ key: `${task.address}@${task.team_run_id}`, address: task.address, started: teamStarted,
-        recorded: { team: teamChoice }, target: teamTarget, stop: { teamRunId: task.team_run_id }, running,
-        facts: factsOf(snakeSource(source.default_launch_source), true, 'delegated_copy') }, members))
-      visit(task.task_executions)
-    }
-  }
-  visit(tree.root_team.task_executions)
-  return result
-}
-
-// --- Org and Agent roots (camelCase DTOs) ---
-
-type CamelLaunch = TaskAgentExecutionSourceDto['launchConfiguration']
-const camelLaunch = (launch: CamelLaunch | null | undefined): Launch => launch ? {
-  runtimeKind: launch.runtimeKind, llmModelIdentifier: launch.llmModelIdentifier,
-  llmConfig: launch.llmConfig, autoExecuteTools: launch.autoExecuteTools,
-} : null
-const camelSource = (source: CollaborationLaunchConfigurationSourceDto | null | undefined): RecordedSource | null => source ? {
+const sourceOf = (source: CollaborationLaunchConfigurationSourceDto | null | undefined): RecordedSource | null => source ? {
   origin: source.origin,
   fallbacks: configuredFallbacks(source.fallbacks).map(({ layer, runtimeKind, llmModelIdentifier, detail }) => ({ layer, runtimeKind, llmModelIdentifier, detail })),
   ...(source.origin === 'model_router' ? { routing: { taskKind: source.taskKind, reason: source.choiceReason } } : {}),
 } : null
-const camelChoice = (selection: CamelSelectionDto | undefined): Selection | null => selection
-  ? { ...(selection.runtimeKind ? { runtimeKind: selection.runtimeKind } : {}),
-    llmModelIdentifier: selection.llmModelIdentifier, llmConfig: selection.llmConfig ? { ...selection.llmConfig } : null }
-  : null
+const launchOf = (launch: RunTreeLaunchDto | undefined): Launch => launch ? {
+  runtimeKind: launch.runtimeKind, llmModelIdentifier: launch.llmModelIdentifier,
+  llmConfig: launch.llmConfig, autoExecuteTools: launch.autoExecuteTools ?? false,
+} : null
 
-export const collaborationDelegatedLaunchNodes = (input: Readonly<{
-  /** Every task-execution list of the root (see `collaborationTaskExecutionLists`). */
-  taskExecutions: readonly CollaborationTaskExecutionDto[]
-  closed?: readonly TaskExecutionReference[]
-}>, deps: RunMemberTreeDeps, control: DelegatedRowControl = NO_CONTROL): RunMemberNode[] => {
-  const build = builders(deps, control, camelRule, memberDisplayName)
+/** A row of a run the top run delegated (here or on a peer node): not one of its own parts, not its own row. */
+const isDelegatedRow = (row: RunTreeRowDto, top: RunTreeRef): boolean => {
+  const target = row.openTarget
+  if (row.key === `${top.kind === 'agent_team' ? 'team' : 'agent'}:${top.runId}`) return false
+  if (row.kind === 'org_agent' || row.kind === 'org_team' || target?.runKind === 'agent_org') return false
+  return !(target && target.runKind === (top.kind === 'agent' ? 'agent' : top.kind) && target.runId === top.runId)
+}
+
+/**
+ * Settings' delegated rows (autobyteus-461 SR-084): the run's tree's rows of the runs it delegated, at any depth, each a
+ * row of its own, a team with its members as child rows. A peer's run is read-only, with its node's name. Nothing about
+ * a run is derived here: its launch, origin, target and members are the server's.
+ */
+export const treeDelegatedLaunchNodes = (rows: readonly RunTreeRowDto[], top: RunTreeRef, deps: RunMemberTreeDeps,
+  control: DelegatedRowControl = NO_CONTROL): RunMemberNode[] => {
+  const build = builders(deps, control, (address) => rows.find((row) => row.address === address)?.name ?? address)
+  const byKey = new Map(rows.map((row) => [row.key, row]))
+  const delegatorOf = (row: RunTreeRowDto) => row.parentKey ? byKey.get(row.parentKey)?.openTarget?.agentRunId ?? null : null
   const live = (ids: readonly string[]) => ids.some((id) => control.isAgentLive(id))
-  const closedKeys = new Set((input.closed ?? []).map(referenceKey))
   const result: RunMemberNode[] = []
-  const visit = (tasks: readonly CollaborationTaskExecutionDto[]): void => {
-    for (const task of tasks) {
-      if ('agentRunId' in task) {
-        if (closedKeys.has(`agent:${task.agentRunId}`)) continue
-        result.push(build.agent({ key: `${task.address}@${task.agentRunId}`, address: task.address, agentRunId: task.agentRunId,
-          started: camelLaunch(task.source.launchConfiguration),
-          recorded: { agent: camelChoice(task.userLaunchSelection) },
-          target: `agent:${task.agentRunId}`, stop: { agentRunId: task.agentRunId }, running: live([task.agentRunId]),
-          facts: factsOf(camelSource(task.source.launchSource), true, 'delegated_copy', locatorOf(task.delegatorAgentRunId, task.address, task.address)) }))
-        continue
-      }
-      if (closedKeys.has(`team:${task.teamRunId}`)) continue
-      const source = task.source
-      const teamStarted = camelLaunch(source.defaultLaunchConfiguration)
-      const teamChoice = camelChoice(task.userTeamLaunchSelection)
-      const teamTarget: TargetKey = `team:${task.teamRunId}`
-      const running = live(task.members.map((member) => member.agentRunId))
-      const members = task.members.map((member) => {
-        const recorded = source.members.find((candidate) => candidate.address === member.address)
-        return build.agent({ key: `${member.address}@${member.agentRunId}`, address: member.address, agentRunId: member.agentRunId,
-          started: camelLaunch(recorded?.launchConfiguration),
-          recorded: { agent: camelChoice(member.userLaunchSelection), team: teamChoice },
-          followsTeam: recorded?.followsTeam ?? false,
-          target: `agent:${member.agentRunId}`, teamTarget, stop: null, running,
-          facts: factsOf(camelSource(collaborationMemberLaunchSource(source, recorded ?? {})), Boolean(recorded?.launchSource), undefined,
-            locatorOf(task.delegatorAgentRunId, task.address, member.address)) },
-        member.address === source.coordinatorAddress)
-      })
-      result.push(build.team({ key: `${task.address}@${task.teamRunId}`, address: task.address, started: teamStarted,
-        recorded: { team: teamChoice }, target: teamTarget, stop: { teamRunId: task.teamRunId }, running,
-        facts: factsOf(camelSource(source.defaultLaunchSource), true, 'delegated_copy') }, members))
-      visit(task.taskExecutions)
+  for (const row of rows) {
+    if (!isDelegatedRow(row, top) || row.kind === 'team_member' || row.kind === 'peer_member') continue
+    const target = row.openTarget
+    const remoteNode = row.peer?.nodeName
+    if (!isTeamRow(row)) {
+      const agentRunId = target?.agentRunId ?? row.statusIds[0]!
+      result.push(build.agent({ key: row.key, address: row.address ?? '', name: row.name, agentRunId, started: launchOf(row.launch), target: `agent:${agentRunId}`,
+        stop: remoteNode ? null : { agentRunId }, running: live([agentRunId]), remoteNode,
+        origin: { source: sourceOf(row.launch?.source), ownNotes: true, badge: 'delegated_copy', decision: locatorOf(delegatorOf(row), row.address ?? '', row.address ?? '') } }))
+      continue
     }
+    const teamRunId = target?.runId ?? row.key.slice(row.key.indexOf(':') + 1)
+    const memberRows = rows.filter((candidate) => candidate.parentKey === row.key)
+    const running = live(memberRows.map((member) => member.statusIds[0]!))
+    const members = memberRows.map((member) => {
+      const agentRunId = member.openTarget?.agentRunId ?? member.statusIds[0]!
+      return build.agent({ key: member.key, address: member.address ?? '', agentRunId, started: launchOf(member.launch), target: `agent:${agentRunId}`,
+        stop: null, running, remoteNode, origin: { source: sourceOf(member.launch?.source), ownNotes: member.launch?.ownSource ?? false,
+          decision: locatorOf(delegatorOf(row), row.address ?? '', member.address ?? '') } }, agentRunId === target?.agentRunId)
+    })
+    result.push(build.team({ key: row.key, address: row.address ?? '', name: row.name, started: launchOf(row.launch ?? memberRows.find((member) => member.openTarget?.agentRunId === target?.agentRunId)?.launch),
+      target: `team:${teamRunId}`, stop: remoteNode ? null : { teamRunId }, running, remoteNode,
+      origin: { source: sourceOf(row.launch?.source), ownNotes: true, badge: 'delegated_copy', decision: null } }, members))
   }
-  visit(input.taskExecutions)
   return result
 }
 
-// --- Copies another node runs (autobyteus-32 REQ-009) ---
-
-const remoteSource = (source: RemoteAgentLaunchDto['source']): RecordedSource => ({
-  origin: source.origin,
-  fallbacks: configuredFallbacks(source.fallbacks).map((fallback) => ({
-    layer: fallback.layer, runtimeKind: fallback.runtime_kind, llmModelIdentifier: fallback.llm_model_identifier, detail: fallback.detail,
-  })),
-  ...(source.origin === 'model_router' ? { routing: { taskKind: source.task_kind, reason: source.choice_reason } } : {}),
-})
+// --- Where each row's Save goes (autobyteus-461 SR-064, rule 2) ---
 
 /**
- * Read-only rows for the copies the run delegated to other nodes, from the launches each node answered: an Agent, or a
- * Team with its members. Each carries its node's name; a router choice its task kind and reason (its decision is on
- * that node, so no "View decision"). Links recorded before autobyteus-32 have no launches and no row, as before.
+ * The run a delegated row's change is saved to, by that run's own stopped-run save: an agent row's own run; a Team row
+ * the Team run at `/` (its default only: each member keeps its own launch, CR-461-089); a Team member row the Team run at
+ * the member's address in the Team run's own space.
  */
-export const remoteDelegatedLaunchNodes = (executions: readonly RemoteTaskExecutionDto[], deps: RunMemberTreeDeps): RunMemberNode[] =>
-  executions.flatMap((execution): RunMemberNode[] => {
-    const launches = execution.launches ?? []
-    if (!launches.length) return []
-    const rowOf = (launch: RemoteAgentLaunchDto, badge?: RunMemberNode['badge'], isCoordinator = false): RunMemberNode => {
-      const values = valuesOf({ runtimeKind: launch.runtime_kind, llmModelIdentifier: launch.llm_model_identifier, llmConfig: null, autoExecuteTools: true })
-      const agentRunId = execution.kind === 'agent' ? execution.agent_run_id
-        : execution.members.find((member) => member.address === launch.address)?.agent_run_id
-      return memberNode({ key: `${launch.address}@${execution.node_id}`, kind: 'agent', name: memberDisplayName(launch.address), agentRunId, isCoordinator,
-        values, parentValues: values, fields: MEMBER_RUN_SETTING_FIELDS, locked: LOCKED,
-        launch: { ...factsOf(remoteSource(launch.source), true, badge), remoteNode: execution.node_name } }, deps)
-    }
-    if (execution.kind === 'agent') return [rowOf(launches[0]!, 'delegated_copy')]
-    const members = launches.map((launch) => rowOf(launch, undefined, launch.address === execution.coordinator_address))
-    const coordinator = launches.find((launch) => launch.address === execution.coordinator_address) ?? launches[0]!
-    const values = valuesOf({ runtimeKind: coordinator.runtime_kind, llmModelIdentifier: coordinator.llm_model_identifier, llmConfig: null, autoExecuteTools: true })
-    return [memberNode({ key: `${execution.address}@${execution.node_id}`, kind: 'team', name: memberDisplayName(execution.address),
-      values, parentValues: values, fields: MEMBER_RUN_SETTING_FIELDS, locked: LOCKED, children: members,
-      launch: { badge: 'delegated_copy', notes: [], remoteNode: execution.node_name } }, deps)]
-  })
+export type DelegatedSaveTarget =
+  | Readonly<{ kind: 'agent'; agentRunId: string }>
+  | Readonly<{ kind: 'team'; teamRunId: string }>
+  | Readonly<{ kind: 'team_member'; teamRunId: string; memberAddress: string }>
 
-/** Every agent run ID in a Team or Org execution tree (both casings), to find the remote runs its agents delegated. */
-export const agentRunIdsOf = (tree: unknown): ReadonlySet<string> => {
-  const ids = new Set<string>()
-  const visit = (value: unknown): void => {
-    if (Array.isArray(value)) { value.forEach(visit); return }
-    if (!value || typeof value !== 'object') return
-    for (const [key, entry] of Object.entries(value)) {
-      if ((key === 'agent_run_id' || key === 'agentRunId') && typeof entry === 'string') ids.add(entry)
-      else visit(entry)
+/** Each local delegated row's save target, from the tree (peer rows keep no editable launch). */
+export const treeDelegatedSaveTargets = (rows: readonly RunTreeRowDto[], top: RunTreeRef): ReadonlyMap<TargetKey, DelegatedSaveTarget> => {
+  const targets = new Map<TargetKey, DelegatedSaveTarget>()
+  for (const row of rows) {
+    const target = row.openTarget
+    if (!target || row.peer || !isDelegatedRow(row, top)) continue
+    if (row.kind === 'agent') targets.set(`agent:${target.agentRunId}`, Object.freeze({ kind: 'agent', agentRunId: target.agentRunId }))
+    else if (row.kind === 'team') targets.set(`team:${target.runId}`, Object.freeze({ kind: 'team', teamRunId: target.runId }))
+    else if (row.kind === 'team_member') {
+      targets.set(`agent:${target.agentRunId}`, Object.freeze({ kind: 'team_member', teamRunId: target.runId, memberAddress: row.address ?? '' }))
     }
   }
-  visit(tree)
-  return ids
+  return targets
 }
 
 /** Rows (at any depth) by key, for edits and options. */

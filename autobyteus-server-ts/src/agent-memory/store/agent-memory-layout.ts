@@ -124,36 +124,6 @@ export class AgentMemoryLayout {
 
   /** The memory directory of one agent at its placement (contract L1); the only composer of agent memory paths. */
   getAgentRunMemoryDirPath(placement: AgentRunMemoryPlacement, agentRunId: string): string {
-    switch (placement.kind) {
-      case "run_part":
-        return this.getRootedAgentRunDirPath(placement.scope, agentRunId);
-      case "task_agent":
-        return this.getStandaloneRunDirPath(agentRunId);
-      case "task_agent_team_member":
-        return this.getTeamAgentRunDirPath({ rootTeamRunId: placement.teamRunId, ancestorTeamRunIds: [] }, agentRunId);
-    }
+    return this.getRootedAgentRunDirPath(placement.scope, agentRunId);
   }
 }
-
-/**
- * The memory root that holds a coordinating run's package directory, as the layout composes it:
- * `<memory>/agent_teams/<id>`, `<memory>/agent_orgs/<id>` or `<memory>/agents/<id>/collaboration`. A task
- * agent's own files live under the same root (contract L1); any other directory shape is refused, so own
- * files are never written outside a memory root.
- */
-export const memoryRootOfCoordinatingDir = (
-  kind: "agent" | "agent_team" | "agent_org",
-  coordinatingDir: string,
-): string => {
-  const dir = path.resolve(coordinatingDir);
-  const [familyDir, expected] = kind === "agent"
-    ? [path.dirname(path.dirname(dir)), "agents"]
-    : [path.dirname(dir), kind === "agent_team" ? "agent_teams" : "agent_orgs"];
-  if (kind === "agent" && path.basename(dir) !== AGENT_RUN_COLLABORATION_DIR_NAME) {
-    throw new Error(`'${dir}' is not an Agent-root collaboration directory.`);
-  }
-  if (path.basename(familyDir) !== expected) {
-    throw new Error(`'${dir}' is not inside a memory root's '${expected}' folder.`);
-  }
-  return path.dirname(familyDir);
-};

@@ -6,11 +6,10 @@ const block={operationId:'op',failureEpoch:1,position:{kind:'held_turn',turnId:'
 const state={run_instance_id:'instance',revision:2,recoverableBlock:block,entries:[{sequence:1,message_id:'A',dedupe_key:'input:A',turn_id:'turn-A',state:'held',content:'real A',sender_type:'user',file_attachments:[]}]};
 const snapshot=()=>({root_subject_kind:'agent_org',root_run_id:'org',root_org:{
  base_change_sequence:0,live_sequence_id: 'live-1', last_message_change_sequence: 0,is_active:true,
- execution_tree:{subjectKind:'agent_org',createdAt:'2026-09-01',archivedAt:null,applicationBinding:null,handoffs:[],rootOrg:{address:'/',orgDefinitionId:'definition',orgDefinitionName:'Org',orgRunId:'org',defaultLaunchConfiguration:launch,members:[{address:'/worker',agentDefinitionId:'worker',role:null,description:null,agentRunId:'run',platformAgentRunId:null,launchConfiguration:launch}],taskExecutions:[]}},
- closed_task_executions:[],
+ execution_tree:{subjectKind:'agent_org',createdAt:'2026-09-01',archivedAt:null,applicationBinding:null,handoffs:[],rootOrg:{address:'/',orgDefinitionId:'definition',orgDefinitionName:'Org',orgRunId:'org',defaultLaunchConfiguration:launch,members:[{address:'/worker',agentDefinitionId:'worker',role:null,description:null,agentRunId:'run',platformAgentRunId:null,launchConfiguration:launch}]}},
  
  agent_statuses:[{member_address:'/worker',agent_run_id:'run',status:'error',trigger:null,tool_name:null,error_message:null,error_details:null,recoverableBlock:block}],
- agent_input_states:[{agent_run_id:'run',state:structuredClone(state)}],remote_task_executions:[],
+ agent_input_states:[{agent_run_id:'run',state:structuredClone(state)}],
 }});
 test('current versionless Org snapshot carries exact live held/queued state',()=>{
  const value=snapshot();const parsed=RootExecutionViewDtoSchema.parse(value);assert.deepEqual(parsed,value);

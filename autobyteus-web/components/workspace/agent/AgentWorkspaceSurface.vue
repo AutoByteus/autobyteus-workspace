@@ -94,8 +94,10 @@ const fallbackTitle = computed(() => {
   const suffix = props.target.context.state.runId.slice(-4).toUpperCase()
   return `${agentName.value} - ${suffix}`
 })
-// A task child of a standalone run is titled by its name.
-const isRunChild = computed(() => props.target.kind === 'agent_run_task_agent' || props.target.kind === 'agent_run_task_team_member')
+// A run delegated by the run whose view shows it, an Agent run's or an Org's, is titled by its name alone (autobyteus-461
+// SR-091, CR-461-115): one name everywhere, as its row names it.
+const isRunChild = computed(() => props.target.kind === 'agent_run_task_agent' || props.target.kind === 'agent_run_task_team_member'
+  || props.target.kind === 'agent_org_task_agent')
 const headerTitle = computed(() => isRunChild.value ? agentName.value : standaloneRunTitle.title.value ?? fallbackTitle.value)
 const headerFullTitle = computed(() => isRunChild.value ? agentName.value : standaloneRunTitle.fullTitle.value ?? fallbackTitle.value)
 

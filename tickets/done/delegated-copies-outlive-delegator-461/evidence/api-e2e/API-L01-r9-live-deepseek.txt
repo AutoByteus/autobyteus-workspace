@@ -1,0 +1,58 @@
+# API-L01 (AC-001, real runtime), round 9 (f92881dd13); command as API-L01-r6-live-deepseek.txt; key from the test vault only
+# Result: Tests 2 passed (2)
+{
+  "agent": {
+    "model": "deepseek-v4-flash",
+    "finishedAfterMs": 14081,
+    "statuses": [
+      "running"
+    ],
+    "answerTail": "\\n40. Modern aids to navigation still use solar power, radar beacons and LED optics on historic towers.\\n\\nOUTLIVE-AGENT-181851\"},\"toolResult\":null,\"toolError\":null,\"media\":null,\"ts\":1794619785.924}]}"
+  },
+  "team": {
+    "model": "deepseek-v4-flash",
+    "finishedAfterMs": 18526,
+    "statuses": [
+      "running",
+      "running",
+      "running",
+      "running",
+      "running",
+      "running",
+      "running",
+      "running",
+      "running",
+      "running",
+      "running",
+      "running",
+      "running",
+      "running",
+      "running",
+      "running",
+      "running",
+      "running",
+      "running",
+      "running",
+      "running",
+      "running",
+      "running",
+      "running",
+      "running",
+      "running",
+      "running",
+      "running",
+      "running",
+      "running",
+      "running",
+      "running",
+      "running",
+      "running",
+      "running",
+      "running",
+      "running",
+      "running",
+      "running"
+    ],
+    "answerTail": "er lights to nonprofit stewards.\\n40. Lighthouse imagery remains an enduring symbol of guidance, safety, and solitude in art and literature.\\n\\nOUTLIVE-TEAM-908a26\",\"media\":null,\"ts\":1794619806.119}]}"
+  }
+}

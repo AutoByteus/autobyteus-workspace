@@ -4,7 +4,7 @@ import { SenderType } from "autobyteus-ts/agent/sender-type.js";
 import type { CollaborationCommunicationMessage } from "../../../../../src/agent-collaboration/execution/communication/collaboration-communication-message.js";
 import { createRootMessageAppend } from "../../../../../src/agent-collaboration/execution/communication/root-message-append.js";
 import { TaskDelegationError } from "../../../../../src/agent-collaboration/execution/task/task-delegation-command.js";
-import { COORDINATING_LOG } from "../../../../../src/run-history/store/task-agent-message-logs.js";
+import { OWN_RUN_LOG } from "../../../../../src/run-history/store/message-log-owners.js";
 
 /** The one append protocol (DS-004): its states, the slot rule, and the closure classification. */
 const message: CollaborationCommunicationMessage = Object.freeze({
@@ -34,7 +34,7 @@ const subject = (options: { current?: readonly CollaborationCommunicationMessage
     isOpen: () => options.open ?? true,
     getMessages: () => options.current ?? [],
     setMessages,
-    logOwnersOf: () => [COORDINATING_LOG],
+    logOwnersOf: () => [OWN_RUN_LOG],
     publishToRootView: options.publishes === false ? null : () => { order.push("publish"); },
     scopeRefusalOf: refusalOf,
   });
@@ -44,7 +44,7 @@ const subject = (options: { current?: readonly CollaborationCommunicationMessage
 describe("RootMessageAppend", () => {
   it("prepares under the lock, then after durability: list, slot commit, publish, present, release", () => {
     const s = subject();
-    expect(s.append.prepare()).toEqual({ kind: "append", logOwners: [COORDINATING_LOG] });
+    expect(s.append.prepare()).toEqual({ kind: "append", logOwners: [OWN_RUN_LOG] });
     s.append.commitAfterDurability();
     expect(s.order).toEqual(["list:1", "commit", "publish", "present", "release"]);
     expect(s.closure()).toBeNull();
@@ -81,6 +81,15 @@ describe("RootMessageAppend", () => {
     expect(s.append.prepare()).toEqual({ kind: "refused" });
     expect(s.closure()).toEqual({ kind: "task_scope", refusal: { accepted: false, code, message: `Refused: ${code}` } });
     expect(s.order).toEqual(["cancel"]);
+  });
+
+  it("CR-461-060 (469 DEC-005): a Task that closed while the message waited for the log is answered as the closure, though the closure also closed the root's admission", () => {
+    const s = subject({ open: false });
+    s.scope.error = new TaskDelegationError("TASK_AGENT_RESOURCE_CLOSED", "Your Task is DONE or CANCELLED, so you can't start new work.");
+    expect(s.append.prepare()).toEqual({ kind: "refused" });
+    expect(s.closure()).toEqual({ kind: "task_scope", refusal: { accepted: false, code: "TASK_AGENT_RESOURCE_CLOSED", message: "Your Task is DONE or CANCELLED, so you can't start new work." } });
+    expect(s.order).toEqual(["cancel"]);
+    expect(s.setMessages).not.toHaveBeenCalled();
   });
 
   it("RR-003: a genuine scope error is rethrown with nothing changed, so abandon drops the slot", () => {

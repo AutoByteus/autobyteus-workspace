@@ -37,7 +37,6 @@ const createHarness = () => {
     })),
   });
   const context = new TeamRunContext({
-    teamKind: "configured",
     physicalScope: createRootExecutionPhysicalScope({
       root: createTeamRootExecutionIdentity(config.rootTeam.teamRunId),
       ancestorTeamRunIds: [],
@@ -56,12 +55,6 @@ const createHarness = () => {
     reserveDirectAgentInput: vi.fn(),
     deliverToDirectAgent: vi.fn(async () => ({ accepted: true })),
     executeDirectAgentCommand: vi.fn(async () => ({ accepted: true })),
-    beginTaskAgent: vi.fn(),
-    beginTaskTeam: vi.fn(),
-    restoreTaskAgent: vi.fn(),
-    restoreTaskTeam: vi.fn(),
-    hasLiveDirectTaskExecution: vi.fn(() => true),
-    tryShutDownDirectTaskExecutionIfQuiet: vi.fn(async () => true),
     prepareTermination: vi.fn(),
     terminate: vi.fn(async () => ({ accepted: true })),
   };
@@ -95,31 +88,13 @@ describe("FlatTeamRunBackend exact local facade integration", () => {
     expect(manager.executeDirectAgentCommand).toHaveBeenCalledWith("reviewer-run", command);
   });
 
-  it("forwards prepared task execution, restore, liveness, quiet shutdown, and termination capabilities without alternate ownership", async () => {
+  it("forwards prepared termination and termination without alternate ownership (a delegated run is its own run, autobyteus-461)", async () => {
     const { backend, manager } = createHarness();
-    const taskAgentInput = { taskId: "task-agent-1" } as never;
-    const taskTeamInput = { taskId: "task-team-1" } as never;
-    const agentOperation = Object.freeze({ executionKind: "task_agent" });
-    const teamOperation = Object.freeze({ executionKind: "task_agent_team" });
     const preparedTermination = Object.freeze({ commit: vi.fn(), cancel: vi.fn() });
-    manager.beginTaskAgent.mockReturnValue(agentOperation);
-    manager.beginTaskTeam.mockReturnValue(teamOperation);
     manager.prepareTermination.mockResolvedValue(preparedTermination);
 
-    expect(backend.beginTaskAgent(taskAgentInput)).toBe(agentOperation);
-    expect(backend.beginTaskTeam(taskTeamInput)).toBe(teamOperation);
-    const restoreInput = { address: "/reviewer", agentRunId: "task-agent-run", platformAgentRunId: null, sourceNode: {} } as never;
-    backend.restoreTaskAgent(restoreInput);
-    expect(backend.hasLiveDirectTaskExecution({ agentRunId: "task-agent-run" })).toBe(true);
-    await expect(backend.tryShutDownDirectTaskExecutionIfQuiet({ agentRunId: "task-agent-run" })).resolves.toBe(true);
     await expect(backend.prepareTermination()).resolves.toBe(preparedTermination);
     await expect(backend.terminate()).resolves.toEqual({ accepted: true });
-
-    expect(manager.beginTaskAgent).toHaveBeenCalledWith(taskAgentInput);
-    expect(manager.beginTaskTeam).toHaveBeenCalledWith(taskTeamInput);
-    expect(manager.restoreTaskAgent).toHaveBeenCalledWith(restoreInput);
-    expect(manager.hasLiveDirectTaskExecution).toHaveBeenCalledWith({ agentRunId: "task-agent-run" });
-    expect(manager.tryShutDownDirectTaskExecutionIfQuiet).toHaveBeenCalledWith({ agentRunId: "task-agent-run" });
     expect(manager.terminate).toHaveBeenCalledOnce();
   });
 });

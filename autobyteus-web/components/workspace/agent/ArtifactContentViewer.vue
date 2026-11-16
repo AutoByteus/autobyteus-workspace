@@ -149,8 +149,9 @@ const artifactContentUrl = computed(() => {
   const artifact = props.artifact;
   const subject = contentReadSubject.value;
   if (!artifact || !artifact.path || !subject) return null;
-  const restBaseUrl = windowNodeContextStore.getBoundEndpoints().rest.replace(/\/$/, '');
-  return `${restBaseUrl}${runFileChangeContentPath(subject, displayPath.value)}`;
+  const path = runFileChangeContentPath(subject, displayPath.value);
+  if (!path) return null;
+  return `${windowNodeContextStore.getBoundEndpoints().rest.replace(/\/$/, '')}${path}`;
 });
 const displayContent = computed(() => {
   if (!props.artifact) return null;

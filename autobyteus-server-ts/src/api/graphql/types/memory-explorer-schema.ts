@@ -20,8 +20,6 @@ registerEnumType(MemoryExplorerSourceType, {
 
 export enum CollaborationMemberExecutionKind {
   CONFIGURED = "CONFIGURED",
-  TASK_AGENT = "TASK_AGENT",
-  TASK_TEAM_MEMBER = "TASK_TEAM_MEMBER",
 }
 
 registerEnumType(CollaborationMemberExecutionKind, {
@@ -203,12 +201,6 @@ export class AgentTeamWithMemorySummary {
 
   @Field(() => MemoryAvailabilitySummary)
   memory!: MemoryAvailabilitySummary;
-
-  @Field(() => Boolean)
-  isTaskTeam!: boolean;
-
-  @Field(() => String, { nullable: true })
-  startedByAgentName!: string | null;
 }
 
 @ObjectType()
@@ -305,12 +297,6 @@ export class AgentTeamRunMemorySummary {
 
   @Field(() => [CollaborationMemberMemoryTargetSummary])
   memberTargets!: CollaborationMemberMemoryTargetSummary[];
-
-  @Field(() => Boolean)
-  isTaskTeam!: boolean;
-
-  @Field(() => String, { nullable: true })
-  startedByAgentName!: string | null;
 }
 
 @ObjectType()

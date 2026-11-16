@@ -64,9 +64,9 @@ import { getLlmProviderService } from "../llm-management/llm-providers/services/
 import { getCodexAppServerClientManager } from "../runtime-management/codex/client/codex-app-server-client-manager.js";
 import { LLMFactory } from "autobyteus-ts/llm/llm-factory.js";
 import { createProcessAgentProviderFactoryBuilder } from "../compositions/create-process-agent-provider-factory-builder.js";
+import { composeCollaboration, composeTaskSide, type Collaboration } from "../compositions/collaboration-composition.js";
+import { createCollaborationRootResolver } from "../compositions/collaboration-root-resolver.js";
 import { getActiveCollaborationRootDirectory } from "../agent-collaboration/execution/services/active-collaboration-root-directory.js";
-import type { TaskExecutionResourcePort } from "../agent-collaboration/execution/task/task-execution-resource-port.js";
-import { composeProjectTaskExecutionResources, releaseProjectTaskExecutionResources } from "../compositions/project-task-execution-resource-composition.js";
 import { createPlatformNoticeSources, type PlatformNoticeSources } from "../compositions/platform-notice-sources.js";
 import { AgentRunPlatformNotices } from "../agent-execution/domain/agent-run-platform-notices.js";
 
@@ -201,7 +201,7 @@ export const startStandaloneApplicationHost = async (
   let generalProcessRunSupervisor:
     GeneralProcessRunSupervisor | null = null;
   let platformNotices: PlatformNoticeSources | null = null;
-  let taskExecutionResources: TaskExecutionResourcePort | null = null;
+  let collaboration: Collaboration | null = null;
   let hostDefinitionServices: HostDefinitionServices | null = null;
   try {
     processResources = await initializeStandaloneProcessResources(config);
@@ -239,8 +239,8 @@ export const startStandaloneApplicationHost = async (
       },
       assertExecutionCapabilitiesReady: () => undefined,
     });
-    taskExecutionResources = await composeProjectTaskExecutionResources({
-      activeRootDirectory: getActiveCollaborationRootDirectory(), appDataDir: processResources.appConfig.getAppDataDir() });
+    // autobyteus-461 SR-047, SR-052: the same composition steps as the studio. Steps 1–2 here; 4–8 after the run services.
+    const taskSide = await composeTaskSide({ appDataDir: processResources.appConfig.getAppDataDir(), memoryDir: processResources.appConfig.getMemoryDir() });
     platformNotices = createPlatformNoticeSources({
       agentDefinitionService: hostDefinitionServices.agentDefinitionService,
       definitionChanges: hostDefinitionServices.agentDefinitionChanges,
@@ -264,13 +264,24 @@ export const startStandaloneApplicationHost = async (
         runPasses: null,
         agentToolMcpSessionAuthority: generalProcessAuthority,
         modelSelectionValidator,
-        taskExecutionResources,
+        taskRecords: taskSide.taskRecords,
+        delegationIndex: taskSide.tree, viewStreams: taskSide.viewStreams,
+       
         // One notice slot: tool list updates, skill notices, then background task notices (one notice per input).
         platformInputNotices: new AgentRunPlatformNotices(platformNotices.sources),
       });
     generalProcessAuthority = null;
+    collaboration = await composeCollaboration({ memoryDir: processResources.appConfig.getMemoryDir(), taskSide, runs: generalProcessRunSupervisor,
+      rootResolver: createCollaborationRootResolver({ standaloneRoots: generalProcessRunSupervisor.standaloneRootManager,
+        teamRuns: generalProcessRunSupervisor.teamRunService, orgRuns: generalProcessRunSupervisor.agentOrgRunService }),
+      activeRoots: getActiveCollaborationRootDirectory(),
+      // This host has no peer nodes (ARCH-REV-027: its real equivalent, as at base).
+      remoteChannel: () => null });
     const applicationRuntime = buildApplicationPlatformRuntime({
       appConfig: processResources.appConfig,
+      delegationIndex: taskSide.tree, viewStreams: taskSide.viewStreams,
+     
+      taskRecords: taskSide.taskRecords,
       contextFilePathEnvironment,
       bundleService,
       agentDefinitionService: hostDefinitionServices.agentDefinitionService,
@@ -310,10 +321,11 @@ export const startStandaloneApplicationHost = async (
         } finally {
           // Platform notices stop first, so none go out while runs stop.
           await platformNotices?.close();
+          // Reverse order: steps 8 … 4, then the run services.
+          collaboration?.release();
           try {
             await generalProcessRunSupervisor!.close();
           } finally {
-            releaseProjectTaskExecutionResources(taskExecutionResources!);
             try {
               await agentToolsMcpHost!.close();
             } finally {
@@ -346,11 +358,11 @@ export const startStandaloneApplicationHost = async (
       }
     } finally {
       await platformNotices?.close();
+      collaboration?.release();
       if (processResources) {
         try {
           await generalProcessRunSupervisor?.close();
         } finally {
-          if (taskExecutionResources) releaseProjectTaskExecutionResources(taskExecutionResources);
           try {
             generalProcessAuthority?.close();
           } finally {

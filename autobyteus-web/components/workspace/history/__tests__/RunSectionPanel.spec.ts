@@ -1,4 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { useRunTreeStore } from '~/stores/runTreeStore';
+import { seedOrgRunTrees } from '~/test-support/runTreeFixtures';
 import { mount } from '@vue/test-utils';
 import { createPinia, setActivePinia } from 'pinia';
 import { nextTick, reactive } from 'vue';
@@ -6,7 +8,7 @@ import RunSectionPanel from '../RunSectionPanel.vue';
 import { localizationRuntime } from '~/localization/runtime/localizationRuntime';
 import { useAgentOrgContextsStore } from '~/stores/agentOrgContextsStore';
 import { useRunSectionModeStore } from '~/stores/runSectionModeStore';
-import { taskBearingView } from '~/services/agentOrgExecution/__tests__/taskBearingOrgFixture';
+import { taskBearingView, taskBearingRecordedTree } from '~/services/agentOrgExecution/__tests__/taskBearingOrgFixture';
 
 const routerHarness = vi.hoisted(() => ({
   route: { query: {} as Record<string, string> },
@@ -1995,9 +1997,9 @@ describe('RunSectionPanel', () => {
     const orgRun = {
       stableKey: "org-run:org-stopped", rootSubjectKind: "agent_org", rootRunId: "org-stopped",
       createdAt: "2026-09-21T00:00:00.000Z", archivedAt: null, isActive: false, summary: "Stopped Org",
-      closedTaskExecutions: [], executionTree: { subjectKind: "agent_org", createdAt: "2026-09-21T00:00:00.000Z",
+      executionTree: { subjectKind: "agent_org", createdAt: "2026-09-21T00:00:00.000Z",
         archivedAt: null, applicationBinding: null, handoffs: [], rootOrg: { address: "/", orgDefinitionId: "org-def",
-          orgDefinitionName: "Org", orgRunId: "org-stopped", defaultLaunchConfiguration: launch, members: [], taskExecutions: [] } },
+          orgDefinitionName: "Org", orgRunId: "org-stopped", defaultLaunchConfiguration: launch, members: [] } },
     };
     runHistoryState.nodes[0].agentOrgDefinitions = [{ stableKey: "org-def", definitionId: "org-def", name: "Org", runs: [orgRun] }];
     routerHarness.route.query = { rootSubjectKind: "agent_org", orgRunId: "org-stopped", mode: "history" };
@@ -2066,9 +2068,9 @@ describe('RunSectionPanel', () => {
     const orgRun = (rootRunId: string) => ({
       stableKey: `org-run:${rootRunId}`, rootSubjectKind: "agent_org", rootRunId,
       createdAt: "2026-09-21T00:00:00.000Z", archivedAt: null, isActive: false, summary: rootRunId,
-      closedTaskExecutions: [], executionTree: { subjectKind: "agent_org", createdAt: "2026-09-21T00:00:00.000Z",
+      executionTree: { subjectKind: "agent_org", createdAt: "2026-09-21T00:00:00.000Z",
         archivedAt: null, applicationBinding: null, handoffs: [], rootOrg: { address: "/", orgDefinitionId: "org-def",
-          orgDefinitionName: "Org", orgRunId: rootRunId, defaultLaunchConfiguration: launch, members: [], taskExecutions: [] } },
+          orgDefinitionName: "Org", orgRunId: rootRunId, defaultLaunchConfiguration: launch, members: [] } },
     });
     runHistoryState.nodes[0].agentOrgDefinitions = [{
       stableKey: "org-def", definitionId: "org-def", name: "Org", runs: [orgRun("org-a"), orgRun("org-b")],
@@ -2098,9 +2100,9 @@ describe('RunSectionPanel', () => {
     const orgRun = {
       stableKey: 'org-run:org-stopped', rootSubjectKind: 'agent_org', rootRunId: 'org-stopped',
       createdAt: '2026-09-21T00:00:00.000Z', archivedAt: null, isActive: false, summary: 'Stopped Org',
-      closedTaskExecutions: [], executionTree: { subjectKind: 'agent_org', createdAt: '2026-09-21T00:00:00.000Z',
+      executionTree: { subjectKind: 'agent_org', createdAt: '2026-09-21T00:00:00.000Z',
         archivedAt: null, applicationBinding: null, handoffs: [], rootOrg: { address: '/', orgDefinitionId: 'org-def',
-          orgDefinitionName: 'Org', orgRunId: 'org-stopped', defaultLaunchConfiguration: launch, members: [], taskExecutions: [] } },
+          orgDefinitionName: 'Org', orgRunId: 'org-stopped', defaultLaunchConfiguration: launch, members: [] } },
     };
     runHistoryState.nodes[0].agentOrgDefinitions = [{
       stableKey: 'org-def', definitionId: 'org-def', name: 'Org', runs: [orgRun],
@@ -2133,26 +2135,29 @@ describe('RunSectionPanel', () => {
   });
 
   /** API-TTRC-003 (REQ-006 / AC-004, design §2): the real panel binds delegated-Team disclosure and inspects the coordinator. */
-  it('toggles a delegated Team row through the panel tree state and inspects its exact coordinator', async () => {
+  it('opens a delegated Team row at its exact coordinator without folding it; its chevron folds it (CR-461-108)', async () => {
     const tree = structuredClone(taskBearingView().execution_tree) as any;
     const orgRun = {
       stableKey: 'agent_org_run:org-run', rootSubjectKind: 'agent_org', rootRunId: 'org-run',
-      createdAt: tree.createdAt, archivedAt: null, isActive: false, summary: 'Delegating Org', executionTree: tree, closedTaskExecutions: [],
-    };
+      createdAt: tree.createdAt, archivedAt: null, isActive: false, summary: 'Delegating Org', executionTree: tree };
     runHistoryState.nodes[0].agentOrgDefinitions = [{ stableKey: 'org-definition', definitionId: 'org-definition', name: 'Restored Org', runs: [orgRun] }];
     (runHistoryStoreMock as any).agentOrgHistory = [orgRun];
+    // The Org run's tree as the server builds it from its records (SR-084).
+    seedOrgRunTrees(useRunTreeStore(), [{ rootRunId: 'org-run', executionTree: taskBearingRecordedTree() }]);
     (runHistoryStoreMock as any).historyFamilyErrors = {};
     (selectionStoreMock as any).clearSelection = vi.fn();
     const orgContexts = useAgentOrgContextsStore();
     let opened = false;
     const inspected = {
-      orgRunId: 'org-run', isActive: false, phase: 'historical', executionTree: tree, view: { closed_task_executions: [] }, selectedAddress: null, selection: null,
+      orgRunId: 'org-run', isActive: false, phase: 'historical', executionTree: tree, view: {}, selectedAddress: null, selection: null,
       index: { agents: new Map([['agent-task-lead', { agentRunId: 'agent-task-lead', address: '/team/lead' }]]), configured: new Set<string>(),
         addressOf: (agentRunId: string) => agentRunId === 'agent-task-lead' ? '/team/lead' : null },
     };
     const openForInspection = vi.spyOn(orgContexts, 'openForInspection').mockImplementation(async () => { opened = true; });
     vi.spyOn(orgContexts, 'contextFor').mockImplementation(((id: string) => opened && id === 'org-run' ? inspected : null) as never);
     const select = vi.spyOn(orgContexts, 'select').mockImplementation(() => undefined);
+    // A delegated row opens as its own run, by the target its tree row carries (autobyteus-461 rule 2).
+    const selectTreeRow = vi.spyOn(orgContexts, 'selectTreeRow').mockReturnValue(true);
     const wrapper = mountComponent();
     try {
       await flushPromises();
@@ -2163,30 +2168,39 @@ describe('RunSectionPanel', () => {
       const run = wrapper.get('[data-test="agent-org-run-open-org-run"]');
       if (run.attributes('aria-expanded') !== 'true') await run.trigger('click');
       await flushPromises();
-      openForInspection.mockClear(); select.mockClear(); routerHarness.push.mockClear();
+      openForInspection.mockClear(); select.mockClear(); selectTreeRow.mockClear(); routerHarness.push.mockClear();
       opened = false;
 
-      const row = () => wrapper.get('[data-test="agent-org-task-team-row-team-task"]');
-      const member = () => wrapper.find('[data-test="agent-org-task-agent-row-agent-task-worker"]');
+      // A delegated Team is the shared delegated row (SR-084, FU-031).
+      const row = () => wrapper.get('[data-test="workspace-team-transient-execution-row"][data-transient-kind="task_team"]');
+      const member = () => wrapper.find('[data-agent-run-id="agent-task-worker"]');
       expect(row().attributes('aria-expanded')).toBe('true');
-      expect(row().find('[data-test="agent-org-task-team-disclosure-team-task"]').exists()).toBe(true);
+      expect(row().find('[data-test="workspace-team-transient-disclosure"]').exists()).toBe(true);
       expect(member().exists()).toBe(true);
 
       await row().trigger('click');
+      await flushPromises();
+      // Opening reveals what it opens: the row stays unfolded, its coordinator shown.
+      expect(row().attributes('aria-expanded')).toBe('true');
+      expect(member().exists()).toBe(true);
+      expect(openForInspection).toHaveBeenCalledWith('org-run', expect.anything());
+      expect(selectTreeRow).toHaveBeenCalledWith('org-run', expect.objectContaining({ openTarget: expect.objectContaining({ agentRunId: 'agent-task-lead' }) }));
+      expect(select).not.toHaveBeenCalled();
+      expect(routerHarness.push).toHaveBeenCalledWith({ path: '/workspace', query: expect.objectContaining({
+        // The server's target names the coordinator by its run ID (SR-084): the route needs no address from the row.
+        rootSubjectKind: 'agent_org', orgRunId: 'org-run', agentRunId: 'agent-task-lead',
+      }) });
+
+      // Only the chevron folds; a click on the folded row unfolds it again and opens it.
+      await row().get('[data-test="workspace-team-transient-disclosure"]').trigger('click');
       await flushPromises();
       expect(row().attributes('aria-expanded')).toBe('false');
       expect(member().exists()).toBe(false);
-      expect(openForInspection).toHaveBeenCalledWith('org-run', expect.anything());
-      expect(select).toHaveBeenCalledWith('org-run', { kind: 'agent_execution', agentRunId: 'agent-task-lead' });
-      expect(routerHarness.push).toHaveBeenCalledWith({ path: '/workspace', query: expect.objectContaining({
-        rootSubjectKind: 'agent_org', orgRunId: 'org-run', memberAddress: '/team/lead', agentRunId: 'agent-task-lead',
-      }) });
-
       await row().trigger('click');
       await flushPromises();
       expect(row().attributes('aria-expanded')).toBe('true');
       expect(member().exists()).toBe(true);
-      expect(select).toHaveBeenCalledTimes(2);
+      expect(selectTreeRow).toHaveBeenCalledTimes(2);
     } finally {
       wrapper.unmount();
       delete (runHistoryStoreMock as any).agentOrgHistory;

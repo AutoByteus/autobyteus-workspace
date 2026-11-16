@@ -1,0 +1,43 @@
+{
+  "case": "API-E01 round 9 (API-REV-009): F-50 on every entry point (CR-461-070, CR-461-072), code f92881dd13; unclean-shutdown-delegated-team-restore USR-4/6/7/8 (R9-C, all pass)",
+  "usr4_team_stream": {
+    "refusal": {
+      "code": "TEAM_SEND_MESSAGE_REJECTED",
+      "message": "The delegated Team at '/usdr_marketing_721a65' cannot be restored: the saved conversation of its coordinator '/lead' cannot be read (line 3 of raw_traces_active.jsonl is damaged). Its files were left unchanged. Start a new delegation for this work, or restore its saved conversation from a backup.",
+      "details": "TASK_EXECUTION_CONTEXT_UNAVAILABLE",
+      "error_scope": null,
+      "error_effect": null,
+      "turn_id": null,
+      "change_sequence": null,
+      "agent_run_id": "usdr_lead_721a65_875075b37cbd4da8a20200c1f59c0c4f"
+    },
+    "damagedLine": 3,
+    "fileUnchanged": true,
+    "serverWarningLogged": true
+  },
+  "usr6_agent_stream_ack": {
+    "ack": {
+      "command_type": "SEND_MESSAGE",
+      "run_id": "usdr_writer_721a65_f322175393974280afb0884ca3797f6c",
+      "message_id": "e2e-b81fb36e-fd10-40b3-ba9d-7bbf24532819",
+      "dedupe_key": "agent_run_input:e2e:e2e-b81fb36e-fd10-40b3-ba9d-7bbf24532819",
+      "state": "rejected",
+      "accepted": false,
+      "duplicate": false,
+      "code": "TASK_EXECUTION_CONTEXT_UNAVAILABLE",
+      "message": "The delegated Agent at '/usdr_writer_721a65' cannot be restored: its saved conversation cannot be read (line 3 of raw_traces_active.jsonl is damaged). Its files were left unchanged. Start a new delegation for this work, or restore its saved conversation from a backup.",
+      "status": {
+        "status": "offline",
+        "recoverableBlock": null,
+        "agent_id": "usdr_writer_721a65_f322175393974280afb0884ca3797f6c"
+      }
+    }
+  },
+  "usr7_delegator_send_message_to": {
+    "result": "{\"content\":[{\"type\":\"text\",\"text\":\"{\\\"accepted\\\":false,\\\"code\\\":\\\"TASK_EXECUTION_CONTEXT_UNAVAILABLE\\\",\\\"message\\\":\\\"The delegated Team at '/usdr_marketing_721a65' cannot be restored: the saved conversation of its coordinator '/lead' cannot be read (line 3 of raw_traces_active.jsonl is damaged). Its files were left unchanged. Start a new delegation for this work, or restore its saved conversation from a backup.\\\"}\"}],\"structuredContent\":{\"accepted\":false,\"code\":\"TASK_EXECUTION_CONTEXT_UNAVAILABLE\",\"message\":\"The delegated Team at '/usdr_marketing_721a65' cannot be restored: the saved conversation of its coordinator '/lead' cannot be read (line 3 of raw_traces_active.jsonl is damaged). Its files were left unchanged. Start a new delegation for this work, or restore its saved conversation from a backup.\"},\"isError\":true}"
+  },
+  "usr8_assigner_reactivation": {
+    "result": "{\"content\":[{\"type\":\"text\",\"text\":\"{\\\"accepted\\\":false,\\\"code\\\":\\\"TASK_EXECUTION_CONTEXT_UNAVAILABLE\\\",\\\"message\\\":\\\"The delegated Team at '/usdr_marketing_721a65' cannot be restored: the saved conversation of its coordinator '/lead' cannot be read (line 3 of raw_traces_active.jsonl is damaged). Its files were left unchanged. Start a new delegation for this work, or restore its saved conversation from a backup.\\\"}\"}],\"structuredContent\":{\"accepted\":false,\"code\":\"TASK_EXECUTION_CONTEXT_UNAVAILABLE\",\"message\":\"The delegated Team at '/usdr_marketing_721a65' cannot be restored: the saved conversation of its coordinator '/lead' cannot be read (line 3 of raw_traces_active.jsonl is damaged). Its files were left unchanged. Start a new delegation for this work, or restore its saved conversation from a backup.\"},\"isError\":true}",
+    "taskStatusAfter": "IN_PROGRESS"
+  }
+}

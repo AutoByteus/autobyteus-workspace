@@ -1,0 +1,23 @@
+# IMP-23 web checks
+# commands: pnpm -C autobyteus-web codegen:local; git diff --stat autobyteus-web/generated; pnpm -C autobyteus-web typecheck; guard:localization-boundary; audit:localization-literals
+# commit: 296ad69b43; macOS, Node v22.23.1; 2026-11-11T22:46Z
+# A first run on 4a3f221c72 found one new test-file type error (retainedActivityTermination.spec.ts: status typed string); fixed in 296ad69b43.
+
+== codegen
+[SUCCESS] Generate outputs
+== generated diff (empty: generated types match the server schema)
+== typecheck
+[typecheck] Nuxt app (tsconfig.json): 66 errors, exit 2, 35.4s
+[typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 1.9s
+[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 0.6s
+[typecheck] cross-package tests (tsconfig.cross-package-tests.json): 0 errors, exit 0, 21.4s
+[typecheck] production errors: 0; test-file errors: 93 in 40 files (baseline 93 in 40 files)
+[typecheck] PASS
+== guard:localization-boundary
+> autobyteus@1.5.13-beta.4 guard:localization-boundary /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copies-outlive-delegator-461/autobyteus-web
+> node ./scripts/guard-localization-boundary.mjs
+[guard:localization-boundary] Passed.
+== audit:localization-literals
+> autobyteus@1.5.13-beta.4 audit:localization-literals /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copies-outlive-delegator-461/autobyteus-web
+> node ./scripts/audit-localization-literals.mjs
+[audit:localization-literals] Passed with zero unresolved findings.

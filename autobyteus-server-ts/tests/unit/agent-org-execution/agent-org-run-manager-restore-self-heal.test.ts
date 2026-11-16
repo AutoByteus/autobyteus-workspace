@@ -1,3 +1,4 @@
+import { noDelegations, openTaskRecords } from "../../helpers/no-delegations.js";
 import { mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
@@ -61,7 +62,7 @@ const setup = (orgRunId: string, firstTerminateResults: Result[] = []) => {
     return run as unknown as AgentOrgRun;
   });
   const directory = new ActiveCollaborationRootDirectory();
-  const manager = new AgentOrgRunManager({
+  const manager = new AgentOrgRunManager({ delegationIndex: noDelegations(), taskRecords: openTaskRecords(),
     memoryDir,
     scopeBuilder: { build } as unknown as AgentOrgExecutionScopeBuilder,
     activeRootDirectory: directory,

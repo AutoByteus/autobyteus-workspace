@@ -81,7 +81,8 @@ const placementInFolder = (placement: DelegationPlacement, folder: string | null
  * `delegate_task(address)` placement (DS-001), called inside the root gate:
  * 1. CM-1: the sender itself, a teammate or its own Team is refused before any placement,
  *    preparation or Task link, with guidance to use `send_message_to`;
- * 2. the root's in-run configured placements, with the placement's snapshot;
+ * 2. the root's in-run configured placements, then a configured placement its address step 2 reaches (SR-059, as base
+ *    answered a hosted copy), with the placement's snapshot;
  * 3. a listed catalog definition that is not in the run: a fresh copy with its source snapshot.
  * A catalog definition that cannot run returns its reason as a not-found delegation result.
  * A new copy with its own folder (`newCopyFolder`) runs there in both forms; `null` keeps the placement's or base's.
@@ -91,7 +92,8 @@ export const resolveDelegationPlacement = async (input: Readonly<{
   senderAgentRunId: string;
   address: AgentTeamAddress;
   newCopyFolder: string | null;
-  resolveInRun(): DelegationPlacement;
+  /** An in-run placement (the run's own configured one, else one its address step 2 reaches, SR-059). */
+  resolveInRun(): Promise<DelegationPlacement>;
   catalogSource(workspaceRootPath: string | null): Promise<CatalogTaskSource | null>;
 }>): Promise<DelegationPlacement> => {
   // The sender's own address is told apart from a teammate's, so the agent is not told to message itself.
@@ -102,7 +104,7 @@ export const resolveDelegationPlacement = async (input: Readonly<{
     throw new CollaborationContractError("COLLABORATION_SELF_TARGET_REJECTED", ownTeamDelegationRefusedMessage(input.address));
   }
   try {
-    return placementInFolder(input.resolveInRun(), input.newCopyFolder);
+    return placementInFolder(await input.resolveInRun(), input.newCopyFolder);
   } catch (error) {
     if (!(error instanceof CollaborationContractError) || error.code !== "COLLABORATION_TARGET_NOT_FOUND") throw error;
     let catalog: CatalogTaskSource | null;

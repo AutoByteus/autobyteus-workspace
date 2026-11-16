@@ -1,0 +1,14 @@
+# Case: API-E02 §5.2, API-REV-005 round 5, code 56e4ce773b; regenerated model
+# Command: as API-E02-r5-contract-stories-5.1.txt, with -t "5.2"
+# Result: 11 of 11 steps match
+U0 ['RUN-2'] match
+U1 ['IN-1', 'IN-2'] match
+U2 ['IN-3'] match
+U3 ['DL-2'] match
+U4 ['B-3'] match
+U5 ['DL-6'] match
+U6 ['DL-11'] match
+U7 ['DL-11'] match
+U8 ['DL-8'] match
+U9 ['R-7'] match
+U10 ['R-12'] match

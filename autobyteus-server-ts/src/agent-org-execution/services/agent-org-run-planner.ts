@@ -72,7 +72,7 @@ export class AgentOrgRunPlanner {
       members.push({ address, teamDefinitionId: member.teamDefinitionId, role: null, description: null,
         teamRunId: this.identities.allocateTeam(member.team.definition.name),
         coordinatorAddress: createAgentTeamAddress(member.team.coordinator.absolutePath),
-        defaultLaunchConfiguration: launch.teams.get(address)!, members: configuredAgents, taskExecutions: [] });
+        defaultLaunchConfiguration: launch.teams.get(address)!, members: configuredAgents });
     }
     return validateAgentOrgRunExecutionTreePayload({
       subjectKind: "agent_org", createdAt: input.createdAt ?? new Date().toISOString(), archivedAt: null,
@@ -80,7 +80,7 @@ export class AgentOrgRunPlanner {
       handoffs: new CollaborationHandoffCompiler().compileOrg(topology),
       rootOrg: { address: "/", orgDefinitionId: input.definition.id, orgDefinitionName: input.definition.name,
         orgRunId: this.identities.allocateOrg(input.definition.name), defaultLaunchConfiguration: launch.root,
-        members, taskExecutions: [] },
+        members },
     });
   }
   static defaultOrgIdentity(name: string): string { return orgRunId(name); }

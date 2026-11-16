@@ -1,6 +1,8 @@
+import { currentTaskOf } from "../../helpers/delegation-index-of.js";
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
+import { runIdentityOf } from "../../../src/agent-collaboration/execution/task/task-execution-resource-port.js";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { trackReleases, type ReleaseTracker } from "../../helpers/project-task-release-tracker.js";
 import { ProjectStore } from "../../../src/projects/stores/project-store.js";
@@ -12,6 +14,7 @@ import { TaskExecutionResourceStore } from "../../../src/projects/stores/task-ex
 import { ProjectTaskContextStore } from "../../../src/projects/context/project-task-context-store.js";
 import { createRootExecutionIdentity } from "../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import type { TaskExecutionReleaseRequest } from "../../../src/agent-collaboration/execution/task/task-execution-resource-port.js";
+import { taskRunResources } from "../../helpers/task-run-resources.js";
 
 const hostRoot = createRootExecutionIdentity({ rootSubjectKind: "agent", rootRunId: "manager-root" });
 
@@ -27,16 +30,16 @@ describe("a task agent with several open Tasks", () => {
   const team = { teamRunId: "team-1" };
   const create = async (description: string, partOfTaskId?: string) => tasks.createTask({ projectId, title: description, description, ...(partOfTaskId ? { partOfTaskId } : {}) });
   const setStatus = (taskId: string, status: "DONE" | "CANCELLED" | "TODO") => tasks.updateTaskById({ taskId, status });
-  const released = () => release.mock.calls.map(([, runs]) => runs);
+  const released = () => release.mock.calls.map(([run]) => [run]);
   /** The first Task: a new copy linked and started, as delegation does. */
   const assignFirst = async (taskId: string) => {
-    await tasks.linkNewTaskExecution({ role: "assigned", taskId, assignedBy: "manager", hostRoot, execution: team, teamCoordinatorAgentRunId: "lead-1" });
+    await tasks.linkNewTaskExecution({ role: "assigned", recipientAddress: "/worker", taskId, delegatedFrom: { delegatingRun: hostRoot, delegatorAgentRunId: "manager" }, execution: team, teamCoordinatorAgentRunId: "lead-1" });
     await tasks.markStarted(team);
   };
   /** Another Task to the same copy, as delegate_task with target_team_run_id does (advisory check, then the commit, then start). */
   const assignAnother = async (taskId: string, requestedBy = "manager") => {
     await tasks.assertAssignable({ execution: team, requestedBy, taskId });
-    await tasks.assignExistingTaskExecution({ hostRoot, execution: team, taskId, assignedBy: requestedBy, teamCoordinatorAgentRunId: "lead-1" });
+    await tasks.assignExistingTaskExecution({ delegatedFrom: { delegatingRun: hostRoot, delegatorAgentRunId: requestedBy }, execution: team, taskId, teamCoordinatorAgentRunId: "lead-1" });
     await tasks.markStarted(team);
   };
 
@@ -45,8 +48,8 @@ describe("a task agent with several open Tasks", () => {
     layout = new ProjectsLayout(path.join(root, "projects"));
     store = new ProjectStore(layout);
     projectId = (await new ProjectService({ store, workspaceLookup: { listRegisteredWorkspaceRootPaths: async () => [] } }).createProject({ name: "P" })).projectId;
-    release = vi.fn<TaskExecutionReleaseRequest>(async (_r, runs) => runs.map((execution) => ({ execution, stopped: true })));
-    resources = new TaskExecutionResourceService(new TaskExecutionResourceStore(layout));
+    release = vi.fn<TaskExecutionReleaseRequest>(async (execution) => ({ execution, stopped: true }));
+    resources = taskRunResources(new TaskExecutionResourceStore(layout));
     tasks = new ProjectTaskService({ store, contextStore: new ProjectTaskContextStore(layout), requestRelease: (releases = trackReleases(release)).request, taskExecutionResources: resources });
     await tasks.load();
   });
@@ -58,14 +61,14 @@ describe("a task agent with several open Tasks", () => {
     await assignFirst(a.taskId);
     // The second open entry, written directly as the probe did (independent of the assignment rule).
     await resources.serialize(b.taskId, () => resources.assignExisting({ projectId, taskId: b.taskId },
-      { hostRoot, execution: team, taskId: b.taskId, assignedBy: "manager", teamCoordinatorAgentRunId: "lead-1" }));
+      { delegatedFrom: { delegatingRun: hostRoot, delegatorAgentRunId: "manager" }, execution: team, taskId: b.taskId, teamCoordinatorAgentRunId: "lead-1" }));
     await setStatus(b.taskId, "DONE"); await releases.settled();
     expect(released()).toEqual([]);
     expect(tasks.isOpen(team)).toBe(true);
     await setStatus(a.taskId, "DONE"); await releases.settled();
     expect(tasks.isOpen(team)).toBe(false);
     expect(released()).toEqual([[team]]);
-    expect(release).toHaveBeenCalledWith(hostRoot, [team]);
+    expect(release).toHaveBeenCalledWith(team);
   });
 
   it("gives B while A is open, by the most recent assigner only; both show the copy (AC-001, AC-002)", async () => {
@@ -74,7 +77,7 @@ describe("a task agent with several open Tasks", () => {
     await expect(assignAnother(b.taskId, "intruder")).rejects.toMatchObject({ code: "TASK_AGENT_RESOURCE_CONFLICT",
       message: expect.stringContaining("Only the agent that gave this task agent its most recent Task") });
     await assignAnother(b.taskId);
-    expect(tasks.ownerOf([team])).toEqual({ taskId: b.taskId, execution: team, open: true });
+    expect(currentTaskOf(tasks, team)).toMatchObject({ taskId: b.taskId, open: true });
     expect(await tasks.openTaskReferencesOf(team, b.taskId)).toEqual([a.taskKey]);
     for (const task of [a, b]) {
       expect((await tasks.readTaskChangeView({ projectId, taskId: task.taskId }))?.task.root).toMatchObject({ teamRunId: "team-1", closed: false });
@@ -89,7 +92,7 @@ describe("a task agent with several open Tasks", () => {
     await setStatus(b.taskId, "DONE"); await releases.settled();
     expect(released()).toEqual([]);
     expect(tasks.isOpen(team)).toBe(true);
-    expect(tasks.ownerOf([team])).toEqual({ taskId: a.taskId, execution: team, open: true });
+    expect(currentTaskOf(tasks, team)).toMatchObject({ taskId: a.taskId, open: true });
     expect((await tasks.readTaskChangeView({ projectId, taskId: b.taskId }))?.task.root).toMatchObject({ closed: true });
     await setStatus(a.taskId, "DONE"); await releases.settled();
     expect(released()).toEqual([[team]]);
@@ -113,9 +116,9 @@ describe("a task agent with several open Tasks", () => {
     await assignFirst(a.taskId);
     await assignAnother(b.taskId);
     const helper = { agentRunId: "helper" };
-    await tasks.linkNewTaskExecution({ role: "delegated", creator: team, hostRoot, execution: helper });
+    await tasks.linkNewTaskExecution({ role: "subWork", recipientAddress: "/worker", delegatedFrom: { delegatingRun: runIdentityOf(team), delegatorAgentRunId: "lead" }, execution: helper });
     await tasks.markStarted(helper);
-    expect(tasks.ownerOf([helper, team])).toMatchObject({ taskId: b.taskId, execution: helper, open: true });
+    expect(currentTaskOf(tasks, helper)).toMatchObject({ taskId: b.taskId, role: "subWork", open: true });
     await setStatus(b.taskId, "DONE"); await releases.settled();
     expect(released()).toEqual([[helper]]);
     expect(tasks.isOpen(team)).toBe(true);
@@ -129,7 +132,7 @@ describe("a task agent with several open Tasks", () => {
     await setStatus(a.taskId, "DONE"); await releases.settled();
     await setStatus(a.taskId, "TODO");
     await assignAnother(a.taskId);
-    expect(tasks.ownerOf([team])).toEqual({ taskId: a.taskId, execution: team, open: true });
+    expect(currentTaskOf(tasks, team)).toMatchObject({ taskId: a.taskId, open: true });
     expect(await tasks.openTaskReferencesOf(team, a.taskId)).toEqual([b.taskKey]);
     expect(released()).toEqual([]);
   });

@@ -25,8 +25,8 @@ export class AgentOrgRootHistoryObject {
   @Field(() => String, { nullable: true }) archived_at!: string | null;
   @Field(() => Boolean) is_active!: boolean;
   @Field(() => String) summary!: string;
+  /** Its own parts; the runs it delegated are its tree's rows (`runTree`, SR-084). */
   @Field(() => GraphQLJSON) org!: unknown;
-  @Field(() => GraphQLJSON) closed_task_executions!: unknown;
 }
 
 const CollaborationRootHistoryUnion = createUnionType({
@@ -39,7 +39,9 @@ const CollaborationRootHistoryUnion = createUnionType({
 export class CollaborationRootHistoryResolver {
   private readonly service = getStudioCollaborationRootHistoryService();
   @Query(() => [CollaborationRootHistoryUnion])
-  listCollaborationRootHistory() { return this.service.list(); }
+  async listCollaborationRootHistory() { return this.service.list(); }
   @Query(() => AgentOrgRootHistoryObject, { nullable: true })
-  getAgentOrgRootHistory(@Arg("orgRunId", () => String) orgRunId: string) { return this.service.getAgentOrg(orgRunId); }
+  async getAgentOrgRootHistory(@Arg("orgRunId", () => String) orgRunId: string) {
+    return this.service.getAgentOrg(orgRunId);
+  }
 }

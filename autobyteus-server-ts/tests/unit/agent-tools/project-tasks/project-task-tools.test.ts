@@ -4,7 +4,7 @@ import path from "node:path";
 import { beforeEach, afterEach, describe, it, expect, vi } from "vitest";
 import { appConfigProvider } from "../../../../src/config/app-config-provider.js";
 import { getProjectService, resetProjectServiceForTests } from "../../../../src/projects/services/project-service.js";
-import { resetProjectTaskServiceForTests } from "../../../../src/projects/services/project-task-service.js";
+import { getProjectTaskService, releaseProjectTaskServiceProcessInstance } from "../../../../src/projects/services/project-task-service.js";
 import { resetProjectStoreForTests } from "../../../../src/projects/stores/project-store.js";
 import { resetProjectTaskContextStoreForTests } from "../../../../src/projects/context/project-task-context-store.js";
 import { ListProjectsTool, ListProjectTasksTool, CreateProjectTool, UpdateProjectTool, CreateTaskTool, UpdateTaskTool, registerProjectTaskTools } from "../../../../src/agent-tools/project-tasks/project-task-native-tools.js";
@@ -48,14 +48,14 @@ describe("Project data tools — actual native preparation/execute and selected 
   beforeEach(async () => {
     root = await fs.mkdtemp(path.join(os.tmpdir(), "project-tools-unit-"));
     appConfigProvider.resetForTests(); appConfigProvider.initialize({appDataDir: root});
-    resetProjectServiceForTests(); resetProjectTaskServiceForTests(); resetProjectStoreForTests(); resetProjectTaskContextStoreForTests();
+    resetProjectServiceForTests(); releaseProjectTaskServiceProcessInstance(getProjectTaskService()); resetProjectStoreForTests(); resetProjectTaskContextStoreForTests();
     registerProjectTaskTools();
     projectId = (await getProjectService().createProject({name: "Tools fixture"})).projectId;
   });
   afterEach(async () => {
     vi.restoreAllMocks();
     await fs.rm(root, {recursive: true, force: true});
-    appConfigProvider.resetForTests(); resetProjectServiceForTests(); resetProjectTaskServiceForTests(); resetProjectStoreForTests(); resetProjectTaskContextStoreForTests();
+    appConfigProvider.resetForTests(); resetProjectServiceForTests(); releaseProjectTaskServiceProcessInstance(getProjectTaskService()); resetProjectStoreForTests(); resetProjectTaskContextStoreForTests();
   });
 
   it.each(PROJECT_TOOL_NAMES)("protects the selected Project tool %s from configured MCP collision and rejects unselected calls", name => {

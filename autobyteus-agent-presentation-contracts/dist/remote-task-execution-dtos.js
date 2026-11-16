@@ -25,12 +25,19 @@ export const remoteAgentLaunchDtoSchema = z.object({
     runtime_kind: nonEmptyStringSchema,
     llm_model_identifier: nonEmptyStringSchema,
     source: z.union([
-        z.object({ origin: z.enum(["agent_default", "team_default", "inherited", "configured"]), fallbacks: remoteLaunchFallbacksDtoSchema }).strict(),
+        z.object({ origin: z.enum(["agent_default", "team_default", "inherited", "configured", "settings"]), fallbacks: remoteLaunchFallbacksDtoSchema }).strict(),
         z.object({
             origin: z.literal("model_router"), fallbacks: remoteLaunchFallbacksDtoSchema,
             choice_reason: nonEmptyStringSchema, task_kind: nonEmptyStringSchema,
         }).strict(),
     ]),
+}).strict();
+/**
+ * Where a peer row opens (autobyteus-461 SR-083): the run on its node and the agent to focus (a team's coordinator); `null`
+ * is a row error (a team run whose coordinator is not one of its members). Set by the server on every row it builds.
+ */
+export const remoteRowOpenTargetDtoSchema = z.object({
+    run_kind: z.enum(["agent", "agent_team"]), run_id: nonEmptyStringSchema, agent_run_id: nonEmptyStringSchema, node_id: nonEmptyStringSchema,
 }).strict();
 export const remoteTaskExecutionDtoSchema = z.discriminatedUnion("kind", [
     z.object({
@@ -42,6 +49,7 @@ export const remoteTaskExecutionDtoSchema = z.discriminatedUnion("kind", [
         delegator_agent_run_id: nonEmptyStringSchema,
         started_at: nonEmptyStringSchema,
         launches: z.array(remoteAgentLaunchDtoSchema).optional(),
+        open_target: remoteRowOpenTargetDtoSchema.nullable().optional(),
     }).strict(),
     z.object({
         kind: z.literal("agent_team"),
@@ -55,13 +63,15 @@ export const remoteTaskExecutionDtoSchema = z.discriminatedUnion("kind", [
         delegator_agent_run_id: nonEmptyStringSchema,
         started_at: nonEmptyStringSchema,
         launches: z.array(remoteAgentLaunchDtoSchema).optional(),
+        open_target: remoteRowOpenTargetDtoSchema.nullable().optional(),
     }).strict(),
 ]);
 export const remoteAgentStatusSchema = z.enum(["offline", "initializing", "idle", "running", "error"]);
 /**
- * What the run's node answered about one remote run: its title and the statuses of its own agents (an Agent's
- * run, or a Team's members). `reachable: false` when the node did not answer; then there is no title and no
- * status, and the window shows "Couldn't reach {node}." with Retry. `run_id` is the Agent run or the Team run.
+ * What the run's node answered about one remote run: its title, the statuses of its own agents (an Agent's
+ * run, or a Team's members) and their launches (runtime, model and launch source, read from the run's own file
+ * there; SR-038). `reachable: false` when the node did not answer; then there is no title, no status and no
+ * launch, and the window shows "Couldn't reach {node}." with Retry. `run_id` is the Agent run or the Team run.
  */
 export const remoteTaskExecutionSummaryDtoSchema = z.object({
     node_id: nonEmptyStringSchema,
@@ -69,6 +79,7 @@ export const remoteTaskExecutionSummaryDtoSchema = z.object({
     reachable: z.boolean(),
     title: z.string().nullable(),
     statuses: z.array(z.object({ agent_run_id: nonEmptyStringSchema, status: remoteAgentStatusSchema }).strict()),
+    launches: z.array(remoteAgentLaunchDtoSchema).optional(),
 }).strict();
 /** The run ID a remote execution names on its node: the Agent run, or the Team run. */
 export const remoteTaskExecutionRunIdOf = (execution) => execution.kind === "agent" ? execution.agent_run_id : execution.team_run_id;

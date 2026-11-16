@@ -1,3 +1,5 @@
+import { testViewStreams } from "../../helpers/view-streams.js";
+import { noDelegations, openTaskRecords } from "../../helpers/no-delegations.js";
 import "reflect-metadata";
 import fs from "node:fs/promises";
 import os from "node:os";
@@ -125,8 +127,6 @@ describe("Team communication API integration", () => {
     process.env.AUTOBYTEUS_SERVER_HOST = "http://localhost:8000";
 
     vi.resetModules();
-    // Bound in the module graph the app uses after the reset (autobyteus-469: a tree read needs its source).
-    (await import("../../fixtures/open-delegated-run-sources.js")).openEveryOwnFileUnder(path.join(appDataDir, "memory"));
     const { appConfigProvider } = await import("../../../src/config/app-config-provider.js");
     appConfigProvider.resetForTests();
     appConfigProvider.initialize({ appDataDir });
@@ -144,16 +144,20 @@ describe("Team communication API integration", () => {
       providerInputNormalizer: { normalizeForProvider: (dispatch) => dispatch },
       agentToolMcpRunSessionDeactivator: {} as never,
     });
-    const ownedTeamRunManager = AgentTeamRunManager.initializeProcessInstance({
+    const ownedTeamRunManager = AgentTeamRunManager.initializeProcessInstance({ delegationIndex: noDelegations(), viewStreams: testViewStreams(), taskRecords: openTaskRecords(),
       memoryDir: appConfigProvider.config.getMemoryDir(), flatTeamExecutionFactory: {} as never,
       memberExecutionContextBuilder: {} as never,
-      taskExecutionIdentity: {
-        agentRuns: { allocateForAgentDefinition: () => "unused-agent-run" },
-        taskTeams: { create: () => "unused-task-team" },
-      } as never,
       modelSelectionValidator: { validate: () => undefined } as never,
     });
+    // The participant read composes the runs below the root (autobyteus-461 SR-072): none here.
+    const [{ configureStudioApplicationApiServices }, { DelegatedRunAgentsReader }] = await Promise.all([
+      import("../../../src/api/graphql/studio-application-api-services.js"),
+      import("../../../src/run-history/services/delegated-run-agents-reader.js"),
+    ]);
+    const studio = configureStudioApplicationApiServices(new Proxy({ delegatedRunAgents: new DelegatedRunAgentsReader(noDelegations()) } as Record<string, unknown>,
+      { get: (target, name) => target[name as string] ?? {} }) as never);
     releaseOwnedRunManagers = () => {
+      studio.close();
       AgentTeamRunManager.releaseProcessInstance(ownedTeamRunManager);
       AgentRunManager.releaseProcessInstance(ownedAgentRunManager);
     };

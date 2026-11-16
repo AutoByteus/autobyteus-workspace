@@ -8,28 +8,18 @@ import type { AgentOrgRunExecutionTreeSnapshot } from "../domain/agent-org-run-e
 import type { RootAgentExecutionRegistry } from "../../agent-collaboration/execution/backends/root-agent-execution-registry.js";
 import type { RootTeamExecutionDirectory } from "../../agent-collaboration/execution/backends/root-team-execution-directory.js";
 
-/**
- * Projects status leaves from the structural execution roots owned by the Org.
- *
- * The Team directory is intentionally flat for exact identity/lifecycle lookup,
- * while every TeamRun recursively owns the task Teams beneath it. Walking every
- * directory entry would therefore visit the leaves of task Teams delegated beneath a TeamRun more than once.
- */
+/** Projects status leaves of the Org's own agents: its direct agents and the members of its mounted teams. */
 export const projectAgentOrgAgentStatusSnapshots = (input: Readonly<{
   tree: AgentOrgRunExecutionTreeSnapshot;
   rootAgents: Pick<RootAgentExecutionRegistry, "getStatusSnapshots">;
   teams: Pick<RootTeamExecutionDirectory, "require" | "get">;
 }>): readonly CollaborationAgentStatusSnapshot[] => {
-  const rootTeamRunIds = [
-    ...input.tree.rootOrg.members.flatMap((member) => "teamRunId" in member ? [member.teamRunId] : []),
-    ...input.tree.rootOrg.taskExecutions.flatMap((task) =>
-      "teamRunId" in task && input.teams.get(task.teamRunId) ? [task.teamRunId] : []),
-  ];
+  const rootTeamRunIds = input.tree.rootOrg.members.flatMap((member) => "teamRunId" in member ? [member.teamRunId] : []);
   const live = [
     ...input.rootAgents.getStatusSnapshots(),
     ...rootTeamRunIds.flatMap((teamRunId) => input.teams.require(teamRunId).getLeafAgentStatusSnapshots()),
   ];
-  // Every tree agent without a live execution (a shut-down child) reports `offline`.
+  // Every agent without a live execution reports `offline`.
   const reported = new Set(live.map((snapshot) => snapshot.execution.agentRunId));
   const index = new AgentOrgExecutionIndex(input.tree);
   const dormant = index.listAgents()

@@ -42,66 +42,45 @@
         <Icon icon="heroicons:user-group-20-solid" class="mr-1.5 h-4 w-4 text-gray-500" />
         <span class="truncate font-semibold">{{ label(display.row.address) }}</span>
       </button>
-      <!-- SR-007: a running copy has the stop icon beside its row (never inside the row's button). -->
-      <div v-else-if="display.row.kind === 'task_agent'" class="relative">
-        <button type="button" @click="actions.onInspectAgentOrgExecution?.(run, display.row.agentRunId, display.row.address)" :aria-selected="isMemberSelected(display.row.address, display.row.agentRunId)" class="org-execution-row relative flex min-h-7 w-full items-center rounded-md text-left text-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500" :class="isMemberSelected(display.row.address, display.row.agentRunId) ? 'is-selected text-indigo-900' : 'text-gray-600 hover:bg-gray-50'" :title="`${display.row.address} · ${display.row.agentRunId}`" :style="rowStyle(display.row.depth)" :aria-label="agentRowLabel(display.row)" :aria-level="display.row.depth + 1" :data-test="`agent-org-task-agent-row-${display.row.agentRunId}`" :data-agent-run-id="display.row.agentRunId" :data-status="display.row.status" role="treeitem">
-          <WorkspaceHierarchyBranches :depth="display.row.depth" :continuing-ancestor-depths="display.continuingAncestorDepths" :has-following-sibling="display.hasFollowingSibling" />
-          <span class="ml-2 mr-1 h-3.5 w-3.5 flex-none" aria-hidden="true" />
-          <!-- A task Agent shows the same solid status dot and initials as a member; no visible
-               "Started by" line. The starter stays in the accessible label. -->
-          <StatusDot class="mr-1.5 flex-none" :status="display.row.status" />
-          <span class="mr-1.5 inline-flex h-4 w-4 flex-none items-center justify-center rounded-full bg-gray-200 text-[0.5625rem] font-semibold text-gray-600" data-test="agent-org-task-agent-avatar">{{ initials(display.row.address) }}</span>
-          <span class="truncate">{{ label(display.row.address) }}</span>
-        </button>
-        <DelegatedStopButton class="absolute right-1 top-1/2 -translate-y-1/2" :root="orgRoot" :reference="{ agentRunId: display.row.agentRunId }" :name="label(display.row.address)" />
-      </div>
-      <!-- autobyteus-278: a run this Org delegated to another node: the shared delegated row (node, title, Retry). -->
+      <!-- A run this Org delegated, here or on another node (SR-084): the shared delegated row, as in every view (FU-031). -->
       <WorkspaceTransientExecutionRow
-        v-else-if="display.row.kind === 'remote'"
-        :row="display.row.transient"
-        :team-status="display.row.teamStatus ?? undefined"
-        :is-selected="display.row.transient.agentRunId !== null && isMemberSelected(display.row.openAddress, display.row.openAgentRunId)"
-        :has-children="display.row.transient.hasChildren"
-        :expanded="display.row.transient.teamRunIdForNode ? (state.isAgentOrgTaskTeamExpanded?.(run.rootRunId, display.row.transient.teamRunIdForNode) ?? true) : false"
+        v-else
+        :row="display.transient!"
+        :team-status="display.teamStatus ?? undefined"
+        :is-selected="display.transient!.agentRunId !== null && isMemberSelected(display.row.address, display.transient!.agentRunId)"
+        :has-children="display.transient!.hasChildren"
+        :expanded="display.expanded"
         :continuing-ancestor-depths="[...display.continuingAncestorDepths]"
         :has-following-sibling="display.hasFollowingSibling"
         :stop-root="orgRoot"
-        @select="actions.onInspectAgentOrgExecution?.(run, display.row.openAgentRunId, display.row.openAddress)"
-        @toggle="(row) => row.teamRunIdForNode && state.toggleAgentOrgTaskTeam?.(run.rootRunId, row.teamRunIdForNode)"
+        @select="openDelegated(display.tree)"
+        @toggle="state.toggleAgentOrgTaskTeam?.(run.rootRunId, display.tree.key)"
       />
-      <div v-else class="relative">
-        <button type="button" @click="selectTaskTeam(display.row)" class="org-execution-row relative flex min-h-7 w-full items-center rounded-md text-left text-sm text-gray-600 hover:bg-gray-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500" :title="`${display.row.address} · ${display.row.teamRunId}`" :aria-label="taskTeamRowLabel(display.row)" :aria-expanded="display.row.hasChildren ? display.row.expanded : undefined" :style="rowStyle(display.row.depth)" :aria-level="display.row.depth + 1" :data-test="`agent-org-task-team-row-${display.row.teamRunId}`" role="treeitem">
-          <WorkspaceHierarchyBranches :depth="display.row.depth" :continuing-ancestor-depths="display.continuingAncestorDepths" :has-following-sibling="display.hasFollowingSibling" />
-          <Icon v-if="display.row.hasChildren" icon="heroicons:chevron-down-20-solid" class="ml-2 mr-1 h-3.5 w-3.5 flex-none text-gray-400" :class="display.row.expanded ? '' : '-rotate-90'" :data-test="`agent-org-task-team-disclosure-${display.row.teamRunId}`" aria-hidden="true" />
-          <span v-else class="ml-2 mr-1 h-3.5 w-3.5 flex-none" aria-hidden="true" />
-          <TeamAggregateStatusDot class="mr-1.5 flex-none" :status="display.row.status" />
-          <!-- Teams share the people-group identity, in the tree's slate. -->
-          <Icon icon="heroicons:user-group-20-solid" class="mr-1.5 h-4 w-4 flex-none text-slate-500" data-team-icon="temporary-task-team" />
-          <span class="truncate font-semibold">{{ label(display.row.address) }}</span>
-        </button>
-        <DelegatedStopButton class="absolute right-1 top-1/2 -translate-y-1/2" :root="orgRoot" :reference="{ teamRunId: display.row.teamRunId }" :name="label(display.row.address)" />
-      </div>
     </template>
   </TransitionGroup>
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, watch } from 'vue'
 import { Icon } from '@iconify/vue'
 import { memberDisplayName } from '~/utils/collaboration/memberDisplayName'
 import StatusDot from '~/components/workspace/common/StatusDot.vue'
 import TeamAggregateStatusDot from './TeamAggregateStatusDot.vue'
 import WorkspaceHierarchyBranches from './WorkspaceHierarchyBranches.vue'
-import DelegatedStopButton from './DelegatedStopButton.vue'
 import WorkspaceTransientExecutionRow from './WorkspaceTransientExecutionRow.vue'
 import type { DelegatedRoot } from '~/services/runConfigEditing/delegatedLaunchSelectionClient'
 import type { RunListSectionActions, RunListSectionState } from '~/components/runList/runListSectionContracts'
 import { useLocalization } from '~/composables/useLocalization'
 import type { AgentOrgRunHistoryItem } from '~/stores/runHistoryTypes'
-import type { AgentStatus } from '~/types/agent/AgentStatus'
+import { AgentStatus } from '~/types/agent/AgentStatus'
 import type { TeamStatus } from '~/utils/workspaceTeamAggregateStatus'
 import { useLeavingTreeRows } from './useLeavingTreeRows'
-import { projectAgentOrgHistoryRows, type AgentOrgHistoryAgentRow, type AgentOrgHistoryDelegator, type AgentOrgHistoryTaskAgentRow, type AgentOrgHistoryTaskTeamRow, type AgentOrgHistoryTeamRow } from '~/utils/agentOrgHistoryRows'
+import type { RunTreeRowDto } from '@autobyteus/collaboration-stream-contracts'
+import type { RunHistoryTransientExecutionRow } from '~/stores/runHistoryTypes'
+import { useRunTreeStore } from '~/stores/runTreeStore'
+import { useRunStatusStore } from '~/stores/runStatusStore'
+import { isTeamRow, runTreeDisplayRows } from '~/utils/runTree/runTreeDisplayRows'
+import { resolveTeamStatus } from '~/utils/workspaceTeamAggregateStatus'
 
 const props = defineProps<{
   run: AgentOrgRunHistoryItem
@@ -120,33 +99,65 @@ const isMemberSelected = (address: string, agentRunId?: string) => props.state.i
 const isTeamExpanded = (address: string) => props.state.isAgentOrgTeamExpanded?.(props.run.rootRunId, address) ?? false
 const label = memberDisplayName
 const initials = (address: string) => label(address).split(/\s+/).slice(0, 2).map((part) => part[0]?.toUpperCase()).join('')
-const startedBy = (delegator: AgentOrgHistoryDelegator) =>
-  t('workspace.members.started_by', { name: delegator.address ? label(delegator.address) : delegator.agentRunId })
 const agentStatusLabelKey = (status: AgentStatus) => `workspace.history.hierarchy.status.${status}`
 const teamStatusLabelKey = (status: TeamStatus) => `workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.team_status_${status}`
-const agentRowLabel = (row: AgentOrgHistoryAgentRow | AgentOrgHistoryTaskAgentRow) => {
-  const status = t(agentStatusLabelKey(row.status))
-  const starter = 'delegatedBy' in row && row.delegatedBy ? `, ${startedBy(row.delegatedBy)}` : ''
-  return `${label(row.address)}, ${status}${starter}, ${row.address}, ${row.agentRunId}`
-}
-const taskTeamRowLabel = (row: AgentOrgHistoryTaskTeamRow) =>
-  `${label(row.address)}. ${t(teamStatusLabelKey(row.status))}${row.delegatedBy ? `, ${startedBy(row.delegatedBy)}` : ''}, ${row.address}, ${row.teamRunId}`
-const teamRowLabel = (row: AgentOrgHistoryTeamRow) => `${label(row.address)}. ${t(teamStatusLabelKey(row.status))}`
+const agentRowLabel = (row: OrgAgentRow) => `${label(row.address)}, ${t(agentStatusLabelKey(row.status))}, ${row.address}, ${row.agentRunId}`
+const teamRowLabel = (row: OrgTeamRow) => `${label(row.address)}. ${t(teamStatusLabelKey(row.status))}`
 const rowStyle = (depth: number) => ({ paddingLeft: `calc((${depth} + 1) * 0.875rem)` })
-const rows = computed(() => projectAgentOrgHistoryRows({
-  run: props.run,
-  context: props.state.agentOrgContextFor?.(props.run.rootRunId) ?? null,
-  isTeamExpanded,
-  isTaskTeamExpanded: (teamRunId) => props.state.isAgentOrgTaskTeamExpanded?.(props.run.rootRunId, teamRunId) ?? true,
+
+// The Org run's tree, built on the server (autobyteus-461 SR-084): its open view's stream feeds it, else it is read while
+// the Org is expanded, and read again when its rows change. Its own agents and mounted teams show as the Org's rows.
+const trees = useRunTreeStore()
+const runStatus = useRunStatusStore()
+const treeRef = computed(() => ({ kind: 'agent_org' as const, runId: props.run.rootRunId }))
+watch(() => props.run.rootRunId, (_id, _previous, onCleanup) => onCleanup(trees.hold(treeRef.value)), { immediate: true })
+
+type OrgAgentRow = Readonly<{ key: string; kind: 'agent'; address: string; agentRunId: string; status: AgentStatus; depth: number }>
+type OrgTeamRow = Readonly<{ key: string; kind: 'team'; address: string; teamRunId: string; status: TeamStatus; depth: number }>
+type OrgDisplayRow = Readonly<{
+  row: OrgAgentRow | OrgTeamRow | Readonly<{ key: string; kind: 'delegated'; address: string }>
+  tree: RunTreeRowDto
+  transient: RunHistoryTransientExecutionRow | null
+  teamStatus: TeamStatus | null
+  expanded: boolean
+  continuingAncestorDepths: readonly number[]
+  hasFollowingSibling: boolean
+}>
+const statusOf = (id: string): AgentStatus => (runStatus.statusOf(id) ?? AgentStatus.Offline) as AgentStatus
+/** An Org's own row (its agents, its mounted teams and their members) opens in the Org; any other row is a run it delegated. */
+const isOwn = (row: RunTreeRowDto) => row.openTarget?.runKind === 'agent_org' || row.kind === 'org_agent' || row.kind === 'org_team'
+/** A mounted team folds by its address (the Org's own state); a delegated row by its key, expanded unless the user folded it. */
+const isExpanded = (row: RunTreeRowDto) => row.kind === 'org_team' ? isTeamExpanded(row.address ?? '')
+  : props.state.isAgentOrgTaskTeamExpanded?.(props.run.rootRunId, row.key) ?? true
+const rows = computed<OrgDisplayRow[]>(() => runTreeDisplayRows({
+  rows: trees.rowsOf(treeRef.value), rootKey: null, topRunId: props.run.rootRunId, isExpanded,
+  statusOf: (row, id) => row.kind === 'team' || row.kind === 'peer_team' ? runStatus.runStateOf({ kind: 'agent_team', runId: id })?.status ?? null : runStatus.statusOf(id),
+}).map((display) => {
+  const tree = display.tree
+  const base = { tree, expanded: isExpanded(tree), continuingAncestorDepths: display.continuingAncestorDepths, hasFollowingSibling: display.hasFollowingSibling }
+  if (tree.kind === 'org_team') {
+    // An Org's mounted team is one of its own parts: its status is its members', as the Org's own stream reports them.
+    const status = resolveTeamStatus(tree.statusIds.map(statusOf), true)
+    return { ...base, row: { key: tree.key, kind: 'team', address: tree.address ?? '', teamRunId: tree.key.slice('org_team:'.length), status, depth: display.row.depth },
+      transient: null, teamStatus: null }
+  }
+  if (isOwn(tree)) {
+    return { ...base, row: { key: tree.key, kind: 'agent', address: tree.address ?? '', agentRunId: tree.openTarget!.agentRunId,
+      status: statusOf(tree.statusIds[0]!), depth: display.row.depth }, transient: null, teamStatus: null }
+  }
+  return { ...base, row: { key: tree.key, kind: 'delegated', address: tree.address ?? '' }, transient: display.row, teamStatus: display.teamStatus }
 }))
 const selectTeam = (address: string) => {
   props.state.toggleAgentOrgTeam?.(props.run.rootRunId, address)
   return props.actions.onSelectAgentOrgMember?.(props.run, address)
 }
 const orgRoot = computed<DelegatedRoot>(() => ({ rootKind: 'AGENT_ORG', rootRunId: props.run.rootRunId }))
-const selectTaskTeam = (row: AgentOrgHistoryTaskTeamRow) => {
-  if (row.hasChildren) props.state.toggleAgentOrgTaskTeam?.(props.run.rootRunId, row.teamRunId)
-  return props.actions.onInspectAgentOrgExecution?.(props.run, row.coordinatorAgentRunId, row.coordinatorAddress)
+/** A delegated row opens where the server says (SR-084): a team row at its coordinator; a team row also folds. */
+const openDelegated = (tree: RunTreeRowDto) => {
+  const target = tree.openTarget
+  if (!target) return
+  // A team row's address is the team's, not its coordinator's: the target alone names the agent.
+  return props.actions.onInspectAgentOrgExecution?.(props.run, target.agentRunId, isTeamRow(tree) ? '' : tree.address ?? '')
 }
 </script>
 

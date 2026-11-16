@@ -31,7 +31,7 @@ const activeContextStoreMock: any = reactive({
   activeAgentContext: null as MockAgentContext | null,
   get activeWorkspaceTarget() {
     const context = this.activeAgentContext
-    return context ? { kind: 'standalone_agent', context, access: 'live' } : null
+    return context ? { kind: 'standalone_agent', context, access: 'live', browse: { kind: 'run', runId: context.state.runId } } : null
   },
   submissionPending: false,
   currentStatus: AgentStatus.Idle,

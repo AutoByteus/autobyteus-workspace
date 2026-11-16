@@ -1,13 +1,14 @@
+import { noWorkGuard } from "../../helpers/no-delegations.js";
 import { describe, expect, it, vi } from "vitest";
 import { agentOrgExecutionTreeDtoSchema } from "@autobyteus/collaboration-stream-contracts";
 import { AgentOrgRunService } from "../../../src/agent-org-execution/services/agent-org-run-service.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
-import { testAgentOrgExecutionTree, testOrgAgentCopySource, testOrgAgentNode, testOrgLaunchConfiguration, testOrgTeamNode } from "../../fixtures/current-agent-org-run-fixtures.js";
+import { testAgentOrgExecutionTree, testOrgAgentNode, testOrgTeamNode } from "../../fixtures/current-agent-org-run-fixtures.js";
 
 /**
  * autobyteus-348 (contract §6): the pending runtime switch is server state and is not on the wire. The Org tree the settings read
  * and the Save result return as JSON is parsed by the web with the strict Org tree schema, so a pending configured Agent (direct,
- * and in a mounted Team) and a pending delegated copy must come out of the service in exactly that shape.
+ * and in a mounted Team) must come out of the service in exactly that shape.
  */
 const pending = { switchId: "switch-1",
   from: { runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK, llmModelIdentifier: "haiku", llmConfig: null, platformAgentRunId: "claude-session" } };
@@ -20,20 +21,16 @@ const pendingTree = () => {
       testOrgAgentNode("/team/worker", "worker"),
     ] }),
   ] });
-  const copy = { address: "/helper", agentRunId: "copy", platformAgentRunId: null, startedAt: "2026-11-01T00:00:00.000Z", delegatorAgentRunId: "direct",
-    source: testOrgAgentCopySource("helper", testOrgLaunchConfiguration()),
-    userLaunchSelection: { runtimeKind: RuntimeKind.CODEX_APP_SERVER, llmModelIdentifier: "gpt-5", llmConfig: null, selectedAt: "2026-11-01T00:00:00.000Z" },
-    pendingRuntimeSwitch: pending };
-  return { ...base, rootOrg: { ...base.rootOrg, taskExecutions: [copy] } } as never;
+  return base as never;
 };
 
-const serviceFor = (tree: unknown) => new AgentOrgRunService({ manager: {
+const serviceFor = (tree: unknown) => new AgentOrgRunService({ workGuard: noWorkGuard(), manager: {
   getRunConfig: vi.fn().mockResolvedValue({ orgRunId: "org", executionTree: tree, isActive: false, editability: { editable: true, reason: null } }),
   updateStoppedRunConfig: vi.fn().mockResolvedValue({ success: true, outcome: "UPDATED", message: "ok", canonical: tree, isActive: false,
     editability: { editable: true, reason: null }, fieldErrors: [] }),
 } } as never);
 
-describe("the Org tree on the wire while members and copies have a pending runtime switch", () => {
+describe("the Org tree on the wire while members have a pending runtime switch", () => {
   it("the stored tree really holds the pending fields (the case is not vacuous)", () => {
     const tree = pendingTree() as any;
     expect(tree.rootOrg.members[0].pendingRuntimeSwitch).toEqual(pending);
@@ -49,8 +46,6 @@ describe("the Org tree on the wire while members and copies have a pending runti
     const members = (executionTree as any).rootOrg.members;
     expect(members[0]).toMatchObject({ address: "/direct", platformAgentRunId: null });
     expect(members[1].members.map((member: any) => member.address)).toEqual(["/team/lead", "/team/worker"]);
-    // The copy keeps the user's choice (with its runtime), which is wire data.
-    expect((executionTree as any).rootOrg.taskExecutions[0].userLaunchSelection).toMatchObject({ runtimeKind: RuntimeKind.CODEX_APP_SERVER });
   });
 
   it("the Save result's canonical tree is the same wire shape", async () => {
@@ -62,7 +57,7 @@ describe("the Org tree on the wire while members and copies have a pending runti
   });
 
   it("a result without a tree stays without one", async () => {
-    const service = new AgentOrgRunService({ manager: { updateStoppedRunConfig: vi.fn().mockResolvedValue({ success: false, outcome: "NOT_FOUND",
+    const service = new AgentOrgRunService({ workGuard: noWorkGuard(), manager: { updateStoppedRunConfig: vi.fn().mockResolvedValue({ success: false, outcome: "NOT_FOUND",
       message: "x", canonical: null, isActive: false, editability: { editable: false, reason: "UNAVAILABLE" }, fieldErrors: [] }) } } as never);
     await expect(service.updateStoppedRunConfig({ orgRunId: "org" } as never)).resolves.toMatchObject({ canonical: null });
   });

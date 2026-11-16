@@ -418,7 +418,7 @@ const CONSTRUCTION_OBLIGATIONS: readonly ConstructionObligation[] = [
     symbol: "AgentTeamRunManager",
     moduleSuffix: "autobyteus-server-ts/src/agent-team-execution/services/agent-team-run-manager.ts",
     kind: "new",
-    requiredInputs: ["memoryDir", "flatTeamExecutionFactory", "taskExecutionIdentity", "modelSelectionValidator", "memberExecutionContextBuilder"].map((path) => ({
+    requiredInputs: ["memoryDir", "flatTeamExecutionFactory", "modelSelectionValidator", "memberExecutionContextBuilder"].map((path) => ({
       kind: "object-property" as const,
       argumentIndex: 0,
       path,
@@ -2938,7 +2938,6 @@ describe("application framework architecture boundaries", () => {
       "agentToolMcpRunSessionDeactivator:",
       "flatTeamExecutionFactory,",
       "bindProcessAgentRunService(agentRunService)",
-      "bindProcessTeamRunService(teamRunService)",
     ]) {
       expect(generalSupervisor).toContain(requiredConstruction);
     }
@@ -2951,7 +2950,6 @@ describe("application framework architecture boundaries", () => {
     expect(publicAgentRun).not.toContain("AgentRunManager");
     expect(publicTeamRun).toContain("getStudioTeamRunService");
     expect(publicTeamRun).toContain("getStudioRunModelConfigService");
-    expect(publicTeamRun).not.toMatch(/\bgetTeamRunService\b/);
 
     const publicAgentHistory = readServerSource("api/graphql/types/run-history.ts");
     const publicTeamHistory = readServerSource("api/graphql/types/team-run-history.ts");
@@ -3011,7 +3009,6 @@ describe("application framework architecture boundaries", () => {
       "autobyteus-server-ts/src/agent-org-definition/services/agent-org-definition-service.ts",
       "autobyteus-server-ts/src/agent-packages/services/agent-package-service.ts",
       "autobyteus-server-ts/src/agent-team-definition/services/agent-team-definition-service.ts",
-      "autobyteus-server-ts/src/agent-team-execution/services/member-team-context-builder.ts",
       "autobyteus-server-ts/src/agent-team-execution/services/team-run-service.ts",
       "autobyteus-server-ts/src/built-in-agents/built-in-agent-bootstrapper.ts",
       "autobyteus-server-ts/src/run-history/services/agent-run-history-catalog-service.ts",
@@ -3034,7 +3031,7 @@ describe("application framework architecture boundaries", () => {
         if (!bindings || !ts.isNamedImports(bindings)) continue;
         for (const binding of bindings.elements) {
           const exported = binding.propertyName?.text ?? binding.name.text;
-          if (exported === "getAgentRunService" || exported === "getTeamRunService") {
+          if (exported === "getAgentRunService") {
             imported.push(`${normalizePath(relative(REPOSITORY_ROOT, file))}:${exported}`);
           }
         }
@@ -3047,8 +3044,8 @@ describe("application framework architecture boundaries", () => {
       "autobyteus-server-ts/src/compositions/model-routing-composition.ts:getAgentRunService",
       // Process startup root (autobyteus-349): one stage removes empty never-started runs through the run service bound in buildStudioServer.
       "autobyteus-server-ts/src/server-runtime.ts:getAgentRunService",
+      // The standalone agent stream handler's default run service: the process's, bound at startup.
       "autobyteus-server-ts/src/services/agent-streaming/agent-stream-handler.ts:getAgentRunService",
-      "autobyteus-server-ts/src/services/agent-streaming/agent-team-stream-handler.ts:getTeamRunService",
     ].sort());
   });
 

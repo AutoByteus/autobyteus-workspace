@@ -6,6 +6,7 @@ import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import type { graphql as graphqlFn, GraphQLSchema } from "graphql";
 import { initializePrisma, rootPrismaClient, shutdownPrisma } from "repository_prisma";
 import { buildGraphqlSchema } from "../../../src/api/graphql/schema.js";
+import { configureE2eStudioApplicationApiServices } from "../helpers/studio-application-api-services.js";
 import { createTokenUsageUpdatedPayload } from "../../../src/agent-execution/domain/agent-run-token-usage.js";
 import { createCurrentTokenUsageTestHarness } from "../../helpers/token-usage-run-record-fixtures.js";
 import { configureTokenUsageCapability } from "../../../src/token-usage/providers/token-usage-capability.js";
@@ -188,11 +189,14 @@ const buildEvent = (input: {
 describe("token usage unit-price GraphQL hydration", () => {
   let schema: GraphQLSchema;
   let graphql: typeof graphqlFn;
+  let studioServices: { close(): void } | undefined;
 
   beforeAll(async () => {
     await shutdownPrisma();
     await initializePrisma({ datasourceUrl: process.env.DATABASE_URL });
     configureTokenUsageCapability({ kind: "READY" });
+    // The run/team summaries add the runs delegated from them (autobyteus-461 REQ-009), read through the Studio services.
+    studioServices = configureE2eStudioApplicationApiServices();
     schema = await buildGraphqlSchema();
     const require = createRequire(import.meta.url);
     const typeGraphqlRoot = path.dirname(require.resolve("type-graphql"));
@@ -202,6 +206,7 @@ describe("token usage unit-price GraphQL hydration", () => {
   });
 
   afterAll(async () => {
+    studioServices?.close();
     const runIds = Array.from(createdRunIds);
     if (runIds.length > 0) {
       await rootPrismaClient.tokenUsageRunRecord.deleteMany({ where: { runId: { in: runIds } } });

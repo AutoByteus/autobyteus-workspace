@@ -8,6 +8,8 @@ const state = reactive({
   context: null as any,
   error: null as string | null,
   target: null as any,
+  /** What the Org has selected (its own target, before any delegated run's binding). */
+  selected: null as any,
 })
 const inspect = vi.fn().mockResolvedValue(undefined)
 const push = vi.fn().mockResolvedValue(undefined)
@@ -34,6 +36,10 @@ vi.mock('~/stores/activeContextStore', () => ({
     agentOrgErrorFor: () => state.error,
   }),
 }))
+const orgStore = vi.hoisted(() => ({ selectRouteAgent: vi.fn(), picked: null as string | null, selectedRowKey: (_id: string): string | null => orgStore.picked }))
+const treeRows = reactive({ rows: [] as unknown[] })
+vi.mock('~/stores/agentOrgContextsStore', () => ({ useAgentOrgContextsStore: () => orgStore }))
+vi.mock('~/stores/runTreeStore', () => ({ useRunTreeStore: () => ({ rowsOf: () => treeRows.rows }) }))
 vi.mock('~/stores/workspaceCenterViewStore', () => ({
   useWorkspaceCenterViewStore: () => center,
 }))
@@ -42,6 +48,7 @@ const context = (phase: 'live' | 'reopen_required' | 'historical' = 'live') => (
   phase,
   error: phase === 'reopen_required' ? 'Sequence gap' : null,
   executionTree: { rootOrg: { orgDefinitionId: 'org-def', orgRunId: 'org-run' } },
+  selectedTarget: () => state.selected,
 })
 const directTarget = {
   kind: 'agent_org_direct_agent', access: 'live',
@@ -80,12 +87,36 @@ describe('AgentOrgWorkspaceView', () => {
   afterEach(async () => { await localizationRuntime.setPreference('en') })
   beforeEach(() => {
     vi.clearAllMocks()
+    orgStore.picked = null
     state.context = context()
     state.error = null
     state.target = directTarget
+    state.selected = null
     route.query.orgRunId = 'org-run'
     route.query.mode = 'active'
+    delete (route.query as Record<string, unknown>).agentRunId
+    delete (route.query as Record<string, unknown>).memberAddress
+    treeRows.rows = []
     center.mode = 'chat'
+  })
+
+  it('CR-461-102: the route\'s agent goes to the Org\'s selection, a delegated run again once the Org\'s tree lists it', async () => {
+    state.context = { ...context(), index: { agents: new Map([['agent-run', { address: '/writer' }]]) } }
+    Object.assign(route.query, { agentRunId: 'delegated-agent', memberAddress: '/helper' })
+    const wrapper = mountSubject()
+    expect(orgStore.selectRouteAgent).toHaveBeenCalledWith('org-run', 'delegated-agent', '/helper')
+    orgStore.selectRouteAgent.mockClear()
+    treeRows.rows = [{ key: 'agent:delegated-agent' }]
+    await flushPromises()
+    expect(orgStore.selectRouteAgent).toHaveBeenCalledWith('org-run', 'delegated-agent', '/helper')
+    // One of the Org's own agents is not selected again by a tree change.
+    Object.assign(route.query, { agentRunId: 'agent-run', memberAddress: '/writer' })
+    await flushPromises()
+    orgStore.selectRouteAgent.mockClear()
+    treeRows.rows = [{ key: 'agent:delegated-agent' }, { key: 'agent:other' }]
+    await flushPromises()
+    expect(orgStore.selectRouteAgent).not.toHaveBeenCalled()
+    wrapper.unmount()
   })
 
   it.each([directTarget, mountedTeamTarget])('exposes stopped configured $kind Settings and existing + semantics', async target => {
@@ -118,6 +149,28 @@ describe('AgentOrgWorkspaceView', () => {
     await flushPromises()
     expect(wrapper.find('[data-test="whole-org-run-config"]').exists()).toBe(true)
     expect(center.mode).toBe('config')
+    state.target = null
+    await flushPromises()
+    expect(center.mode).toBe('chat')
+    wrapper.unmount()
+  })
+
+  it('CR-461-095 (D-IMP-1), AFS-002: Settings stay open while a run the Org delegated opens as its own run (its row picked, not yet bound)', async () => {
+    const wrapper = mountSubject()
+    await wrapper.get('[data-test="org-edit"]').trigger('click')
+    expect(center.mode).toBe('config')
+    // The copy's tree row is picked in the Org (the store's pick, SR-084: the Org's own selection is cleared); its own
+    // run's binding has not come yet, so there is no target for a moment.
+    state.selected = null
+    orgStore.picked = 'agent:copy-run'
+    state.target = null
+    await flushPromises()
+    expect(center.mode).toBe('config')
+    state.target = { ...directTarget, kind: 'agent_org_task_agent', address: '/helper', context: { state: { runId: 'copy-run' } } }
+    await flushPromises()
+    expect(center.mode).toBe('config')
+    // Nothing picked or selected any more: they close.
+    orgStore.picked = null
     state.target = null
     await flushPromises()
     expect(center.mode).toBe('chat')

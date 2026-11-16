@@ -1,0 +1,16 @@
+# commit 49f3db1047
+$ node scripts/typecheck.mjs
+[typecheck] production errors: 0; test-file errors: 1012 in 316 files (baseline 1012 in 316 files)
+[typecheck] PASS
+$ pnpm test:unit
+     × reports changes in a real skill folder, and a deleted folder as that folder 1215ms
+{"protocol":"autobyteus.embedded-server.platform-fatal.v1","code":"APP_DATA_STARTUP_GATE_FAILED","summary":"Failed to run app data migrations: Error: migration state store unavailable","logPath":"/tmp/server-runtime-gate/logs/server.log"}
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+ FAIL  tests/unit/skill-update-notices/skill-folder-watcher.test.ts > SkillFolderWatcher > reports changes in a real skill folder, and a deleted folder as that folder
+ Test Files  1 failed | 968 passed | 5 skipped (974)
+      Tests  1 failed | 7949 passed | 9 skipped (7959)
+
+# The one failure is the skill folder watcher's real-folder timing test (src/skill-update-notices unchanged since 3228eff74b: yes). Alone:
+$ npx vitest run --no-watch tests/unit/skill-update-notices/skill-folder-watcher.test.ts
+ Test Files  1 passed (1)
+      Tests  7 passed (7)

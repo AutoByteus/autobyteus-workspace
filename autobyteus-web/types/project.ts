@@ -37,12 +37,25 @@ export type TaskRootStatus = 'running' | 'initializing' | 'idle' | 'error' | 'of
  */
 export interface TaskRootView {
   kind: 'agent' | 'team'
-  /** The address it was delegated to (its display name); null for assignments recorded before it was kept. */
+  /** The address it was delegated to; null for assignments recorded before it was kept. */
   recipientAddress: string | null
+  /** Its name (autobyteus-461 SR-091): its slot, from the server, as its row and its own view name it. */
+  displayName: string | null
   /** The agent run, or the team's coordinator: the run that opens it. */
   ingressAgentRunId: string
   teamRunId: string | null
-  hostRoot: { kind: 'agent' | 'agent_team' | 'agent_org'; runId: string }
+  /** The run that delegated it (one hop), for display. */
+  delegatingRun: { kind: 'agent' | 'agent_team' | 'agent_org'; runId: string }
+  /**
+   * The run at the top of its tree, whose view lists its row (SR-080, DS-11): the Task page opens this run's view with
+   * the worker's row selected, as base opened its host. Null when the server does not know it (the card does not open).
+   */
+  topRun: { kind: 'agent' | 'agent_team' | 'agent_org'; runId: string } | null
+  /**
+   * Where the worker opens, as its tree's row opens (autobyteus-461 SR-086 G-F1): its agent run, or its team run at its
+   * coordinator; a peer's run names its node. Null is a row error (the card does not open).
+   */
+  openTarget: { runKind: 'agent' | 'agent_team'; runId: string; agentRunId: string; nodeId?: string | null } | null
   start: 'starting' | 'started' | 'failed'
   startError: { code: string; message: string } | null
   closed: boolean

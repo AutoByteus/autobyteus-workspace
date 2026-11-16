@@ -1,5 +1,6 @@
 import { isDeepStrictEqual } from "node:util";
 import { applyRuntimeSelection, type RuntimeSelection } from "../domain/runtime-selection-rule.js";
+import { SETTINGS_LAUNCH_SOURCE } from "../../agent-collaboration/domain/launch-configuration-source.js";
 import type { AgentRunMetadataStore } from "../store/agent-run-metadata-store.js";
 import type { AgentRunMetadata } from "../store/agent-run-metadata-types.js";
 
@@ -18,21 +19,24 @@ export const buildRuntimeSwitchMetadata = (input: {
   switchId: string;
 }): AgentRunMetadata => {
   const { metadata } = input;
-  const { pendingRuntimeSwitch: _pending, ...rest } = metadata;
-  const next = applyRuntimeSelection(
-    {
-      binding: {
-        runtimeKind: metadata.runtimeKind,
-        llmModelIdentifier: metadata.llmModelIdentifier,
-        llmConfig: metadata.llmConfig ?? null,
-        platformAgentRunId: metadata.platformAgentRunId,
-      },
-      ...(metadata.pendingRuntimeSwitch ? { pendingRuntimeSwitch: metadata.pendingRuntimeSwitch } : {}),
+  const { pendingRuntimeSwitch: _pending, launchSource, ...rest } = metadata;
+  const before = {
+    binding: {
+      runtimeKind: metadata.runtimeKind,
+      llmModelIdentifier: metadata.llmModelIdentifier,
+      llmConfig: metadata.llmConfig ?? null,
+      platformAgentRunId: metadata.platformAgentRunId,
     },
-    input.selection,
-    input.switchId,
-  );
-  return { ...rest, ...next.binding, ...(next.pendingRuntimeSwitch ? { pendingRuntimeSwitch: next.pendingRuntimeSwitch } : {}) };
+    ...(metadata.pendingRuntimeSwitch ? { pendingRuntimeSwitch: metadata.pendingRuntimeSwitch } : {}),
+  };
+  const next = applyRuntimeSelection(before, input.selection, input.switchId);
+  return {
+    ...rest,
+    // An edit becomes the run's own launch, recorded as one (design V-11): the source it had described the launch it replaces.
+    ...(isDeepStrictEqual(next, before) ? (launchSource ? { launchSource } : {}) : { launchSource: SETTINGS_LAUNCH_SOURCE }),
+    ...next.binding,
+    ...(next.pendingRuntimeSwitch ? { pendingRuntimeSwitch: next.pendingRuntimeSwitch } : {}),
+  };
 };
 
 export const commitAgentRunRuntimeSwitch = async (input: {

@@ -1,17 +1,12 @@
 import type { TeamRunExecutionTreeLocationService, LocatedTeamAgentExecution } from "../../../run-history/services/team-run-execution-tree-location-service.js";
 import type { AgentOrgExecutionTreeLocationService, LocatedAgentOrgAgentExecution } from "../../../agent-org-execution/services/agent-org-execution-tree-location-service.js";
-import type { StandaloneRootLocationService, LocatedStandaloneRootAgentExecution } from "../../../standalone-agent-run-root/services/standalone-root-location-service.js";
+import { DelegatedChildLocations, type LocatedStandaloneRootAgentExecution } from "../delegation/delegated-child-locations.js";
 import type { AgentLaunchConfiguration } from "../../../agent-team-execution/domain/team-run-config.js";
 import type { RootSubjectKind } from "../domain/root-execution-identity.js";
-import type { TaskExecution } from "../../../run-history/domain/run-execution-tree-shared-records.js";
-import {
-  copyExecutionSource,
-  taskExecutionListsOf,
-  type CollaboratorExecutionSource,
-} from "../../collaborators/collaborator-source-projector.js";
+import type { DelegationIndex } from "../../delegation/delegation-index.js";
+import type { CollaboratorExecutionSource } from "../../collaborators/collaborator-source-projector.js";
 import { createStoredTeamRunExecutionTreeLocationService } from "../../../run-history/services/team-run-execution-tree-location-service.js";
 import { AgentOrgExecutionTreeLocationService as StoredAgentOrgExecutionTreeLocationService } from "../../../agent-org-execution/services/agent-org-execution-tree-location-service.js";
-import { StandaloneRootLocationService as StoredStandaloneRootLocationService } from "../../../standalone-agent-run-root/services/standalone-root-location-service.js";
 
 /** A team-family location tagged with its root TeamRun. */
 export type LocatedTeamCollaborationAgentExecution = Readonly<LocatedTeamAgentExecution & { rootSubjectKind: "agent_team"; rootRunId: string }>;
@@ -28,30 +23,12 @@ type Family = "findAgent" | "findAgentSync" | "listAgents";
 export const tagTeamAgentExecution = (item: LocatedTeamAgentExecution): LocatedTeamCollaborationAgentExecution =>
   Object.freeze({ ...item, rootSubjectKind: "agent_team", rootRunId: item.rootTeamRunId });
 
-/** Every task-execution list of the located tree: the lists its delegated copies are recorded in. */
-const taskExecutionListsOfLocatedTree = (location: LocatedCollaborationAgentExecution): readonly (readonly TaskExecution[])[] => {
-  switch (location.rootSubjectKind) {
-    case "agent_team":
-      return taskExecutionListsOf({ taskExecutions: location.tree.rootTeam.taskExecutions });
-    case "agent_org":
-      return taskExecutionListsOf({
-        taskExecutions: location.tree.rootOrg.taskExecutions,
-        teams: location.tree.rootOrg.members.flatMap((member) => "teamRunId" in member ? [member] : []),
-      });
-    case "agent":
-      return taskExecutionListsOf(location.tree);
-  }
-};
-
 /**
- * The definition and started launch a located execution runs with, decided by its execution kind: a
- * configured member's placement, or a delegated copy's own recorded source (never the placement at its
- * address). Reads only the located tree; null when the execution has neither.
+ * The definition and launch a located execution runs with: an agent run's own recorded source, or a team or
+ * organization member's configured placement. Reads only the located files; null when the execution has neither.
  */
 export const locatedExecutionSource = (location: LocatedCollaborationAgentExecution): CollaboratorExecutionSource | null =>
-  location.executionKind === "configured"
-    ? location.configuredPlacement
-    : copyExecutionSource(taskExecutionListsOfLocatedTree(location), location.agentRunId);
+  location.rootSubjectKind === "agent" ? location.source : location.configuredPlacement;
 
 /** The launch settings a located execution runs with (see `locatedExecutionSource`). */
 export const locatedLaunchConfiguration = (location: LocatedCollaborationAgentExecution): AgentLaunchConfiguration | null =>
@@ -62,7 +39,7 @@ export class CollaborationExecutionLocationService {
   constructor(private readonly input: Readonly<{
     teams: Pick<TeamRunExecutionTreeLocationService, Family>;
     orgs: Pick<AgentOrgExecutionTreeLocationService, Family>;
-    agents: Pick<StandaloneRootLocationService, Family>;
+    agents: Pick<DelegatedChildLocations, Family>;
   }>) {}
   async findAgent(input: Input): Promise<LocatedCollaborationAgentExecution | null> {
     switch (input.rootSubjectKind) {
@@ -116,8 +93,26 @@ export class CollaborationExecutionLocationService {
 
 export const createStoredCollaborationExecutionLocationService = (
   memoryDir: string,
+  tree: Pick<DelegationIndex, "childrenOf">,
 ): CollaborationExecutionLocationService => new CollaborationExecutionLocationService({
   teams: createStoredTeamRunExecutionTreeLocationService(memoryDir),
   orgs: new StoredAgentOrgExecutionTreeLocationService({ memoryDir }),
-  agents: new StoredStandaloneRootLocationService({ memoryDir }),
+  agents: new DelegatedChildLocations({ memoryDir, teams: createStoredTeamRunExecutionTreeLocationService(memoryDir), tree }),
 });
+
+/**
+ * A lookup by an agent run's ID alone, in the stored team and Org families. A delegated run is never found under
+ * another run by its ID alone (each is the run it is; the agent-root family answers only a lookup that names its
+ * root), so that family has nothing to add here (the token display fields' lookup).
+ */
+export const createStoredRunMemberLocations = (memoryDir: string) => {
+  const teams = createStoredTeamRunExecutionTreeLocationService(memoryDir);
+  const orgs = new StoredAgentOrgExecutionTreeLocationService({ memoryDir });
+  return Object.freeze({
+    findAgent: async (input: Readonly<{ agentRunId: string }>): Promise<LocatedCollaborationAgentExecution | null> => {
+      const [team, org] = await Promise.all([teams.findAgent(input), orgs.findAgent(input)]);
+      if (team && org) throw new Error("AgentRun lookup is ambiguous across collaboration root families.");
+      return team ? tagTeamAgentExecution(team) : org;
+    },
+  });
+};

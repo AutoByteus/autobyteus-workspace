@@ -16,6 +16,7 @@ import { startStudioE2eRuntimeServer } from "../helpers/studio-runtime-test-serv
 import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
 import { until } from "../helpers/agy-runtime-error-fixture.js";
 import { flattenE2eConfiguredAgentExecutions } from "../helpers/team-run-metadata-helpers.js";
+import { delegatedRunsTree } from "../helpers/run-tree-delegated.js";
 
 /**
  * Skills added to or removed from a running agent's definition on Antigravity (autobyteus-460), through the real Studio
@@ -375,11 +376,11 @@ suite("Skills added to or removed from a running agent's definition on Antigravi
 
     // A standalone Manager delegates to the worker agent: a delegated copy of the same definition.
     const manager = await standalone(managerId);
-    const collaboration = async () => (await graphql("query($id:String!){agentRunCollaboration(runId:$id)}", { id: manager.runId }))
-      .agentRunCollaboration?.root_agent?.execution_tree ?? null;
+    // autobyteus-461 SR-084: the delegated runs come from the run's tree (its view carries its own parts only).
+    const collaboration = async () => delegatedRunsTree(graphql, "agent", manager.runId);
+    // autobyteus-461 rule 2: a delegated run is read by its own run (the delegator's member read serves peer runs only).
     const copyConversation = async (copy: { agentRunId: string; address: string }) => (await graphql(
-      "query($h:String!,$a:String!,$r:String!){agentRunCollaborationMemberProjection(hostRunId:$h,memberAddress:$a,agentRunId:$r){conversation}}",
-      { h: manager.runId, a: copy.address, r: copy.agentRunId })).agentRunCollaborationMemberProjection?.conversation;
+      "query($id:String!){getRunProjection(runId:$id){conversation}}", { id: copy.agentRunId })).getRunProjection?.conversation;
     await manager.call(callTool("delegate_task", { recipient_address: `/${segment(workerName)}`, description: "ECHO_INPUT first task" }));
     let copy: { agentRunId: string; address: string } | undefined;
     await until(async () => {

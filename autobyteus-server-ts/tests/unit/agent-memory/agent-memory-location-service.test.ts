@@ -2,62 +2,35 @@ import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import type { TeamRunExecutionTreeSnapshot } from "../../../src/agent-team-execution/domain/team-run-execution-tree.js";
 import { AgentMemoryLocationService } from "../../../src/agent-memory/services/agent-memory-location-service.js";
 import { AgentMemoryLayout } from "../../../src/agent-memory/store/agent-memory-layout.js";
 import { TeamRunExecutionTreeStore } from "../../../src/run-history/store/team-run-execution-tree-store.js";
-import { addTaskExecutionToTree } from "../../../src/agent-team-execution/services/team-run-execution-tree-mutator.js";
 import { TeamRunExecutionTreeLocationService } from "../../../src/run-history/services/team-run-execution-tree-location-service.js";
 import { RootRunPackageReadinessIndex, resetRootRunPackageReadinessIndex } from "../../../src/run-history/services/root-run-package-readiness-index.js";
 import { AgentOrgRunExecutionTreeStore } from "../../../src/run-history/store/agent-org-run-execution-tree-store.js";
 import { AgentOrgCommunicationMessagesStore } from "../../../src/agent-org-execution/persistence/agent-org-communication-messages-store.js";
-import { address, testAgentNode, testAgentTeamNode, testExecutionTree, writeCurrentTeamRunPackage } from "../../fixtures/current-team-run-fixtures.js";
-import { testAgentCopySource, testCatalogTeamCopy } from "../../fixtures/current-team-run-fixtures.js";
+import { testAgentNode, testExecutionTree, writeCurrentTeamRunPackage } from "../../fixtures/current-team-run-fixtures.js";
 import { testAgentOrgExecutionTree, testOrgAgentNode, testOrgTeamNode } from "../../fixtures/current-agent-org-run-fixtures.js";
-import { openEveryOwnFileUnder } from "../../fixtures/open-delegated-run-sources.js";
 
 const STORED_ONLY_MANAGER = { getManagedTeamRun: () => null, listManagedTeamRunIds: () => [] };
-
-const withTaskAgent = (tree: TeamRunExecutionTreeSnapshot): TeamRunExecutionTreeSnapshot => ({
-  ...tree,
-  rootTeam: {
-    ...tree.rootTeam,
-    taskExecutions: [{
-      address: address("/writer"),
-      agentRunId: "task-writer-run",
-      platformAgentRunId: null,
-      delegatorAgentRunId: "writer-run",
-      startedAt: "2026-08-15T00:01:00.000Z",
-      source: testAgentCopySource("writer"),
-    }],
-  },
-});
 
 describe("AgentMemoryLocationService current V1 tree", () => {
   let memoryDir: string;
   let layout: AgentMemoryLayout;
 
   beforeEach(async () => {
-    memoryDir = await fs.mkdtemp(path.join(os.tmpdir(), "agent-memory-location-current-")); openEveryOwnFileUnder(memoryDir);
+    memoryDir = await fs.mkdtemp(path.join(os.tmpdir(), "agent-memory-location-current-"));
     layout = new AgentMemoryLayout(memoryDir);
-    const baseTree = withTaskAgent(testExecutionTree({
+    // A team run and a team run one of its members delegated to: each is its own root (autobyteus-461).
+    const tree = testExecutionTree({
       rootTeamRunId: "root-team-run",
       rootTeamDefinitionId: "classroom",
       coordinatorAddress: "/writer",
-      children: [testAgentNode("/writer", { agentRunId: "writer-run" })],
-    }));
-    const tree = addTaskExecutionToTree({
-      tree: baseTree,
-      execution: testCatalogTeamCopy({
-        node: testAgentTeamNode({
-          address: "/ReviewSquad",
-          coordinatorAddress: "/ReviewSquad/reviewer",
-          teamRunId: "review-team-run",
-          children: [testAgentNode("/ReviewSquad/reviewer", { agentRunId: "reviewer-run" })],
-        }),
-        delegatorAgentRunId: "writer-run", startedAt: "2026-08-15T00:02:00.000Z",
-      }),
+      children: [testAgentNode("/writer", { agentRunId: "writer-run" }), testAgentNode("/editor", { agentRunId: "editor-run" })],
     });
+    await writeCurrentTeamRunPackage(layout.getTeamDirPath({ rootTeamRunId: "review-team-run", ancestorTeamRunIds: [] }), testExecutionTree({
+      rootTeamRunId: "review-team-run", coordinatorAddress: "/reviewer", children: [testAgentNode("/reviewer", { agentRunId: "reviewer-run" })],
+    }));
     await writeCurrentTeamRunPackage(
       layout.getTeamDirPath({ rootTeamRunId: "root-team-run", ancestorTeamRunIds: [] }),
       tree,
@@ -69,101 +42,43 @@ describe("AgentMemoryLocationService current V1 tree", () => {
     await fs.rm(memoryDir, { recursive: true, force: true });
   });
 
-  it("derives configured and task Agent memory from exact root, physical Team ancestry, and AgentRun IDs", async () => {
+  it("derives each member's memory from its own root and AgentRun ID", async () => {
     const service = new TeamRunExecutionTreeLocationService({ memoryDir, manager: STORED_ONLY_MANAGER });
-    const locations = await service.listAgents({ rootTeamRunId: "root-team-run" });
-
-    expect(locations.map((item) => ({
-      address: item.memberAddress,
-      run: item.agentRunId,
-      ancestors: item.ancestorTeamRunIds,
-      configured: item.configuredPlacement !== null,
-      memoryDir: item.memoryDir,
+    expect((await service.listAgents({ rootTeamRunId: "root-team-run" })).map((item) => ({
+      address: item.memberAddress, run: item.agentRunId, ancestors: item.ancestorTeamRunIds, memoryDir: item.memoryDir,
     }))).toEqual([
-      {
-        address: "/writer",
-        run: "writer-run",
-        ancestors: [],
-        configured: true,
-        memoryDir: path.join(memoryDir, "agent_teams", "root-team-run", "writer-run"),
-      },
-      {
-        address: "/writer",
-        run: "task-writer-run",
-        ancestors: [],
-        configured: true,
-        memoryDir: path.join(memoryDir, "agents", "task-writer-run"),
-      },
-      {
-        address: "/ReviewSquad/reviewer",
-        run: "reviewer-run",
-        ancestors: ["review-team-run"],
-        configured: false,
-        memoryDir: path.join(memoryDir, "agent_teams", "review-team-run", "reviewer-run"),
-      },
+      { address: "/writer", run: "writer-run", ancestors: [], memoryDir: path.join(memoryDir, "agent_teams", "root-team-run", "writer-run") },
+      { address: "/editor", run: "editor-run", ancestors: [], memoryDir: path.join(memoryDir, "agent_teams", "root-team-run", "editor-run") },
     ]);
   });
 
-  it("resolves only one exact current address/run match while retaining its configured launch placement", async () => {
+  it("resolves only one exact current address/run match", async () => {
     const service = new AgentMemoryLocationService({ memoryDir });
-
-    await expect(service.resolveTeamMemberLocation({
-      teamRunId: "root-team-run",
-      memberAddress: "/ReviewSquad/reviewer",
-      agentRunId: "reviewer-run",
-    })).resolves.toMatchObject({
-      memberAddress: "/ReviewSquad/reviewer",
-      agentRunId: "reviewer-run",
-      ancestorTeamRunIds: ["review-team-run"],
-    });
-    await expect(service.resolveTeamMemberLocation({
-      teamRunId: "root-team-run",
-      memberAddress: "/writer",
-    })).resolves.toBeNull();
-    await expect(service.resolveTeamMemberLocation({
-      teamRunId: "root-team-run",
-      memberAddress: "/writer",
-      agentRunId: "missing",
-    })).resolves.toBeNull();
+    await expect(service.resolveTeamMemberLocation({ teamRunId: "root-team-run", memberAddress: "/editor", agentRunId: "editor-run" }))
+      .resolves.toMatchObject({ memberAddress: "/editor", agentRunId: "editor-run", ancestorTeamRunIds: [] });
+    await expect(service.resolveTeamMemberLocation({ teamRunId: "root-team-run", memberAddress: "/writer", agentRunId: "missing" }))
+      .resolves.toBeNull();
   });
 
   it("reads only the requested root's tree when the team run ID is a stored root (REQ-005)", async () => {
-    await writeCurrentTeamRunPackage(
-      layout.getTeamDirPath({ rootTeamRunId: "other-root", ancestorTeamRunIds: [] }),
-      testExecutionTree({
-        rootTeamRunId: "other-root",
-        rootTeamDefinitionId: "classroom",
-        coordinatorAddress: "/writer",
-        children: [testAgentNode("/writer", { agentRunId: "other-writer-run" })],
-      }),
-    );
     const store = new TeamRunExecutionTreeStore();
     const read = vi.spyOn(store, "read");
     const service = new AgentMemoryLocationService({
       memoryDir,
       locationService: new TeamRunExecutionTreeLocationService({ memoryDir, manager: STORED_ONLY_MANAGER, store }),
     });
-
-    await expect(service.resolveTeamMemberLocation({ teamRunId: "root-team-run", agentRunId: "task-writer-run" }))
-      .resolves.toMatchObject({
-        kind: "team_member",
-        rootTeamRunId: "root-team-run",
-        agentRunId: "task-writer-run",
-        memoryDir: path.join(memoryDir, "agents", "task-writer-run"),
-      });
+    await expect(service.resolveTeamMemberLocation({ teamRunId: "root-team-run", agentRunId: "writer-run" }))
+      .resolves.toMatchObject({ kind: "team_member", rootTeamRunId: "root-team-run", agentRunId: "writer-run",
+        memoryDir: path.join(memoryDir, "agent_teams", "root-team-run", "writer-run") });
     expect(read.mock.calls.map(([, rootTeamRunId]) => rootTeamRunId)).toEqual(["root-team-run"]);
   });
 
-  it("still resolves a nested team run ID by searching every root", async () => {
+  it("resolves a delegated team run's member in its own root, never in the delegator's", async () => {
     const service = new AgentMemoryLocationService({ memoryDir });
     await expect(service.resolveTeamMemberLocation({ teamRunId: "review-team-run", agentRunId: "reviewer-run" }))
-      .resolves.toMatchObject({
-        rootTeamRunId: "root-team-run",
-        ancestorTeamRunIds: ["review-team-run"],
-        agentRunId: "reviewer-run",
-      });
-    await expect(service.resolveTeamMemberLocation({ teamRunId: "unknown-team-run", agentRunId: "reviewer-run" }))
-      .resolves.toBeNull();
+      .resolves.toMatchObject({ rootTeamRunId: "review-team-run", ancestorTeamRunIds: [], agentRunId: "reviewer-run",
+        memoryDir: path.join(memoryDir, "agent_teams", "review-team-run", "reviewer-run") });
+    await expect(service.resolveTeamMemberLocation({ teamRunId: "root-team-run", agentRunId: "reviewer-run" })).resolves.toBeNull();
   });
 
   it("does not resolve members of a stored root that the package readiness index did not admit", async () => {

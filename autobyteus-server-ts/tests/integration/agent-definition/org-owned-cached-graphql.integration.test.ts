@@ -77,9 +77,9 @@ describe("Org-owned Agent exact lookup through the hosted definition catalog and
     await owned.create(new AgentDefinition({ id: "unreferenced", name: "Unreferenced", description: "Not a mounted reference", instructions: "Not exposed" }));
     definitions = createBundleBackedDefinitionServices({ appConfig: config, bundleService });
     const unused = new Proxy({}, { get: (_target, key) => { throw new Error(`Unexpected unrelated service operation ${String(key)}`); } });
-    registration = configureStudioApplicationApiServices({ ...definitions, bundleService,
+    registration = configureStudioApplicationApiServices({ runViewChildren: {} as never, delegatedRunAgents: {} as never, runTree: {} as never, runViewStreams: {} as never, ...definitions, bundleService,
       agentOrgDefinitionService: unused, agentRunService: unused, teamRunService: unused, agentOrgRunService: unused,
-      definitionAdmissionService: unused, collaborationRootHistoryService: unused, runModelConfigService: unused, delegatedLaunchSelectionService: unused,
+      definitionAdmissionService: unused, collaborationRootHistoryService: unused, runModelConfigService: unused,
       capabilityService: unused, packageQueries: unused, packageCommands: unused,
     } as never);
     schema = await buildSchema({ resolvers: [AgentDefinitionResolver], validate: false });

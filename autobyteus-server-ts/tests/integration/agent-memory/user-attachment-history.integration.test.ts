@@ -1,3 +1,4 @@
+import { noDelegations } from "../../helpers/no-delegations.js";
 import { writeAttachmentSidecars, writeAttachmentAgentMetadata } from "../../fixtures/current-attachment-package-fixtures.js";
 import "reflect-metadata";
 import fs from "node:fs/promises";
@@ -19,7 +20,7 @@ import { ContextFileType } from "autobyteus-ts/agent/message/context-file-type.j
 import { registerContextFileRoutes } from "../../../src/api/rest/context-files.js";
 import { AgentOrgRunExecutionTreeStore } from "../../../src/run-history/store/agent-org-run-execution-tree-store.js";
 import { TeamRunExecutionTreeStore } from "../../../src/run-history/store/team-run-execution-tree-store.js";
-import { testAgentOrgExecutionTree, testOrgAgentCopySource, testOrgAgentNode, testOrgTeamCopySource, testOrgTeamNode } from "../../fixtures/current-agent-org-run-fixtures.js";
+import { testAgentOrgExecutionTree, testOrgAgentNode, testOrgTeamNode } from "../../fixtures/current-agent-org-run-fixtures.js";
 import { testExecutionTree, testAgentNode } from "../../fixtures/current-team-run-fixtures.js";
 import { AgentMemoryLayout } from "../../../src/agent-memory/store/agent-memory-layout.js";
 import { createStoredCollaborationExecutionLocationService } from "../../../src/agent-collaboration/execution/services/collaboration-execution-location-service.js";
@@ -36,7 +37,6 @@ import { LocalMemoryRunViewProjectionProvider } from "../../../src/run-history/p
 import { toCodexUserInput } from "../../../src/agent-execution/backends/codex/thread/codex-user-input-mapper.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { recordAcceptedAttachmentMessage } from "../../fixtures/accepted-attachment-message.js";
-import { openEveryOwnFileUnder } from "../../fixtures/open-delegated-run-sources.js";
 
 let app: ReturnType<typeof fastify>, memoryDir: string, normalizer: AgentRunProviderInputNormalizer;
 let memoryView: AgentMemoryView, pageView: EventMonitorActiveTracePageObject;
@@ -47,28 +47,28 @@ class ReadSurface {
 }
 beforeEach(async () => {
   config.root = await fs.mkdtemp(path.join(os.tmpdir(), "attachment-history-"));
-  memoryDir = path.join(config.root, "memory"); openEveryOwnFileUnder(memoryDir);
+  memoryDir = path.join(config.root, "memory");
   const layout = new AgentMemoryLayout(memoryDir);
   const direct = testOrgAgentNode("/same", "direct");
   const lead = testOrgAgentNode("/team/lead", "lead");
   const team = testOrgTeamNode({ address: "/team", teamRunId: "team", coordinatorAddress: lead.address, members: [lead] });
   const tree = structuredClone(testAgentOrgExecutionTree({ orgRunId: "org", members: [direct, team] })) as any;
-  tree.rootOrg.taskExecutions = [
-    { address: direct.address, agentRunId: "repeat", platformAgentRunId: null, delegatorAgentRunId: "direct", startedAt: "2026-09-01T00:00:01.000Z",
-      source: testOrgAgentCopySource(direct.agentDefinitionId) },
-    { address: "/team", teamRunId: "task-team", members: [{ address: lead.address, agentRunId: "task-lead", platformAgentRunId: null }], taskExecutions: [], delegatorAgentRunId: "direct", startedAt: "2026-09-01T00:00:01.000Z",
-      source: testOrgTeamCopySource({ teamDefinitionId: team.teamDefinitionId, coordinatorAddress: lead.address, memberAddresses: [lead.address] }) },
-  ];
   await new AgentOrgRunExecutionTreeStore().write(layout.getOrgDirPath("org"), tree);
-  await new TeamRunExecutionTreeStore().write(layout.getTeamDirPath({ rootTeamRunId: "standalone-team", ancestorTeamRunIds: [] }),
-    testExecutionTree({ rootTeamRunId: "standalone-team", coordinatorAddress: "/lead", children: [testAgentNode("/lead", { agentRunId: "standalone-lead" })] }));
+  // The runs the org delegated to are runs of their own (autobyteus-461): an agent run `repeat` and a team run
+  // `task-team` rooted at `/`, each holding its own files.
+  for (const [teamRunId, agentRunId] of [["standalone-team", "standalone-lead"], ["task-team", "task-lead"]]) {
+    const teamDir = layout.getTeamDirPath({ rootTeamRunId: teamRunId, ancestorTeamRunIds: [] });
+    await new TeamRunExecutionTreeStore().write(teamDir,
+      testExecutionTree({ rootTeamRunId: teamRunId, coordinatorAddress: "/lead", children: [testAgentNode("/lead", { agentRunId })] }));
+    writeAttachmentSidecars(teamDir, "team");
+  }
   writeAttachmentSidecars(layout.getOrgDirPath("org"), "org");
-  writeAttachmentSidecars(layout.getTeamDirPath({rootTeamRunId: "standalone-team", ancestorTeamRunIds: []}), "team");
   writeAttachmentAgentMetadata(memoryDir, "standalone");
+  writeAttachmentAgentMetadata(memoryDir, "repeat");
   writeAttachmentAgentMetadata(memoryDir, "isolated");
   normalizer = new AgentRunProviderInputNormalizer(new ContextFileLocalPathResolver({
     layout: new ContextFileLayout({ appDataDir: config.root, memoryDir }),
-    ownerResolver: new ContextFileOwnerResolver({ memoryDir, locations: createStoredCollaborationExecutionLocationService(memoryDir) }),
+    ownerResolver: new ContextFileOwnerResolver({ memoryDir, locations: createStoredCollaborationExecutionLocationService(memoryDir, noDelegations()) }),
     baseUrl: "http://app.test",
   }));
   app = fastify(); await app.register(multipart); await app.register(registerContextFileRoutes, { prefix: "/rest" });
@@ -77,14 +77,16 @@ afterEach(async () => { await app.close(); await fs.rm(config.root, { recursive:
 
 const targets = [
   { id: "direct", draftOwner: { kind: "org_member_draft", orgRunId: "org", agentRunId: "direct" }, finalOwner: { kind: "org_member_final", orgRunId: "org", agentRunId: "direct" } },
-  ...["repeat", "lead", "task-lead"].map(id => ({ id, draftOwner: { kind: "org_member_draft", orgRunId: "org", agentRunId: id }, finalOwner: { kind: "org_member_final", orgRunId: "org", agentRunId: id } })),
+  { id: "lead", draftOwner: { kind: "org_member_draft", orgRunId: "org", agentRunId: "lead" }, finalOwner: { kind: "org_member_final", orgRunId: "org", agentRunId: "lead" } },
+  { id: "repeat", draftOwner: { kind: "agent_draft", draftRunId: "draft-repeat" }, finalOwner: { kind: "agent_final", runId: "repeat" } },
+  { id: "task-lead", draftOwner: { kind: "team_member_draft", teamDraftId: "draft-task-team", memberAddress: "/lead" }, finalOwner: { kind: "team_member_final", teamRunId: "task-team", agentRunId: "task-lead" } },
   { id: "standalone", draftOwner: { kind: "agent_draft", draftRunId: "draft" }, finalOwner: { kind: "agent_final", runId: "standalone" } },
   { id: "standalone-lead", draftOwner: { kind: "team_member_draft", teamDraftId: "draft-team", memberAddress: "/lead" }, finalOwner: { kind: "team_member_final", teamRunId: "standalone-team", agentRunId: "standalone-lead" } },
 ];
 
 describe("accepted user attachment filesystem -> record -> cold/page GraphQL -> exact Open", () => {
   it.each([RuntimeKind.AUTOBYTEUS, RuntimeKind.CODEX_APP_SERVER, RuntimeKind.CLAUDE_AGENT_SDK])(
-    "%s preserves both partitions for exact configured/task and standalone owners", async runtimeKind => {
+    "%s preserves both partitions for exact org members, delegated runs and standalone owners", async runtimeKind => {
       const schema = await buildSchema({ resolvers: [ReadSurface] });
       const allFixtures = [];
       for (const target of targets) {

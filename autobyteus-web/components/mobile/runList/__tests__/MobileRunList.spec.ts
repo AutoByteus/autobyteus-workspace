@@ -3,7 +3,7 @@ import { flushPromises, mount } from '@vue/test-utils';
 import { computed, ref } from 'vue';
 import { createPinia, setActivePinia } from 'pinia';
 import MobileRunList from '../MobileRunList.vue';
-import type { MobileRunTreeRow } from '~/utils/mobile/mobileRunTreeProjection';
+import type { MobileRunTreeRow } from '~/utils/mobile/mobileRunListRows';
 import { useRunListStore } from '~/stores/runListStore';
 import { createMobileTestRouter } from '~/composables/mobile/__tests__/mobileTestRouter';
 
@@ -20,7 +20,7 @@ describe('MobileRunList', () => {
     const toggle = vi.fn();
     const rows = ref([
       row({ hasChildren: true, expanded: true, fold: { kind: 'run', runId: 'a' } }),
-      row({ key: 'agent:a/team:se', depth: 1, avatar: 'team', name: 'Software Engineering Team', title: '', hasChildren: true, fold: { kind: 'taskTeam', hostRunId: 'a', teamRunId: 'se' }, open: null, lastActivityAt: null }),
+      row({ key: 'agent:a/team:se', depth: 1, avatar: 'team', name: 'Software Engineering Team', title: '', hasChildren: true, fold: { kind: 'treeRow', entry: { kind: 'agent', runId: 'a' } as never, row: { key: 'team:se' } as never }, open: null, lastActivityAt: null }),
       row({ key: 'agent:a/agent:mr', depth: 1, name: 'Market Researcher', title: '', remote: { nodeName: 'office-mac', reachable: false }, lastActivityAt: null }),
     ]);
     const tree = { rows: computed(() => rows.value), openRowKey: computed(() => 'agent:a/agent:mr'), toggle, setTeamExpanded: vi.fn(), toggleTeam: vi.fn(), expandTeamMemberAncestors: vi.fn() };

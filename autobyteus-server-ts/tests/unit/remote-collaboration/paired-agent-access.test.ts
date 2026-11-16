@@ -127,7 +127,7 @@ const agentEvent = (agentRunId: string): TeamRunEvent => ({
 } as never);
 
 describe("TeamPairedAgentAccess (a remote Team)", () => {
-  it("sends its members' output only, and follows the root across a quiet shutdown and a restore", async () => {
+  it("sends its members' output only, and follows the root across a quiet shutdown (each member then offline, CR-461-061) and a restore", async () => {
     let managed: ReturnType<typeof teamRoot> | null = teamRoot(["lead-run", "writer-run"]);
     const lifecycle = new Set<(snapshot: { isActive: boolean; ending: string | null }) => void>();
     const access = new TeamPairedAgentAccess({
@@ -138,7 +138,8 @@ describe("TeamPairedAgentAccess (a remote Team)", () => {
     });
     const frames: string[] = [];
     const onEnded = vi.fn();
-    const observation = await access.observePairedAgents("team-run", (agentRunId) => frames.push(agentRunId), onEnded);
+    const observation = await access.observePairedAgents("team-run", (agentRunId, message) =>
+      frames.push(message.type === "AGENT_STATUS" ? `${agentRunId}:${(message.payload as { status: string }).status}` : agentRunId), onEnded);
     managed!.emit(agentEvent("lead-run"));
     managed!.emit(agentEvent("copy-run"));
     const first = managed!;
@@ -148,7 +149,8 @@ describe("TeamPairedAgentAccess (a remote Team)", () => {
     managed = teamRoot(["lead-run", "writer-run"]);
     lifecycle.forEach((listener) => listener({ isActive: true, ending: null }));
     managed.emit(agentEvent("writer-run"));
-    expect(frames).toEqual(["lead-run", "writer-run"]);
+    // The quiet shutdown reports each member offline (a member whose start failed has no runtime to report it).
+    expect(frames).toEqual(["lead-run", "lead-run:offline", "writer-run:offline", "writer-run"]);
     expect(access.pairedAgentStatuses("team-run")).toEqual([{ agentRunId: "lead-run", status: "running" }]);
     expect(onEnded).not.toHaveBeenCalled();
     observation.close();
@@ -193,6 +195,5 @@ describe("TeamPairedAgentAccess (a remote Team)", () => {
       message_id: "m1", dedupe_key: "d1", content: "status?", input_origin: "user_message", received_at: "2026-10-23T08:00:00.000Z",
       context_file_paths: [], sender_agent_run_id: null, parent_communication_message_id: null,
     } } });
-    expect(teamMemberPresentationOf({ eventSourceType: TeamRunEventSourceType.TASK_EXECUTIONS_CLOSED, taskExecutions: [] })).toBeNull();
   });
 });

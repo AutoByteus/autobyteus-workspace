@@ -1,0 +1,356 @@
+# Case: API-E03 (DRO-1, DRO-2)
+# Commit: bc223a8ae0 (code a54e78ccb7); server dist built from it
+# Environment: ENV-1 macOS 26.5.2, Node v22.23.1, clean env (env -i PATH HOME=<temp> TMPDIR USER), scripted AGY CLI tests/fixtures/agy-failure-cli.mjs (AGY_FAKE_CASE=linked_skills)
+# Date: 2026-11-12
+# Command: cd autobyteus-server-ts && env -i PATH HOME=<temp> TMPDIR USER RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=$PWD/tests/fixtures/agy-failure-cli.mjs DRO_E2E_EVIDENCE_DIR=<dir> pnpm exec vitest run tests/e2e/app-data-migrations/delegated-runs-own-runs-startup.e2e.test.ts --no-watch
+
+ ✓ tests/e2e/app-data-migrations/delegated-runs-own-runs-startup.e2e.test.ts (1 test) 6091ms
+     ✓ DRO-1 converts every stored shape at startup, the converted runs open as runs of their own; DRO-2 a second start changes nothing  6082ms
+      Tests  1 passed (1)
+
+# The test's evidence file:
+{
+ "setup": {
+  "ledgerRowsKept": 35,
+  "releasedFiles": [
+   "ad-hoc-tasks/ad_hoc_task_research/agent_run_resources.json",
+   "agents/autobyteus-daily-assistant/agent-config.json",
+   "agents/autobyteus-daily-assistant/agent.md",
+   "agents/autobyteus-model-router/agent-config.json",
+   "agents/autobyteus-model-router/agent.md",
+   "application-packages/platform/applications/.gitkeep",
+   "memory-search/memory-search.sqlite",
+   "memory/agent_orgs/company_org_9d00/agent_org_communication_messages_active.jsonl",
+   "memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json",
+   "memory/agent_teams/marketing_team_5a00/team_communication_messages_active.jsonl",
+   "memory/agent_teams/marketing_team_5a00/team_run_execution_tree.json",
+   "memory/agent_teams/product_team_e03d/team_communication_messages_active.jsonl",
+   "memory/agent_teams/product_team_e03d/team_run_execution_tree.json",
+   "memory/agent_teams/software_engineering_team_0218/team_communication_messages_active.jsonl",
+   "memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json",
+   "memory/agents/image_maker_33f0/run_metadata.json",
+   "memory/agents/legacy_helper_0001/run_metadata.json",
+   "memory/agents/peer_started_writer_0002/run_metadata.json",
+   "memory/agents/project_task_manager_7c8d/collaboration/collaboration_tree.json",
+   "memory/agents/project_task_manager_7c8d/collaboration/communication_messages_active.jsonl",
+   "memory/agents/project_task_manager_7c8d/run_metadata.json",
+   "memory/run_history_index.json",
+   "memory/team_run_history_index.json",
+   "projects/project_p/tasks/project_task_440e/agent_run_resources.json",
+   "restart-resume/busy-runs.json"
+  ]
+ },
+ "migration": {
+  "migrationId": "20261111_delegated_runs_own_runs_v1",
+  "status": "SUCCEEDED",
+  "summary": "Scanned 14; migrated 14; skipped 0; failed 0.",
+  "errorMessage": null
+ },
+ "runList": {
+  "agentRuns": [
+   "legacy_helper_0001",
+   "project_task_manager_7c8d",
+   "peer_started_writer_0002"
+  ],
+  "teamRuns": [
+   "marketing_team_5a00"
+  ]
+ },
+ "opened": {
+  "project_task_manager_7c8d": "project_task_manager_7c8d",
+  "image_maker_33f0": "image_maker_33f0",
+  "legacy_helper_0001": "legacy_helper_0001",
+  "peer_started_writer_0002": "peer_started_writer_0002",
+  "software_engineering_team_0218": {
+   "isActive": false,
+   "root": "/"
+  },
+  "product_team_e03d": {
+   "isActive": true,
+   "root": "/"
+  },
+  "marketing_team_5a00": {
+   "isActive": false,
+   "root": "/"
+  },
+  "company_org_9d00": {
+   "orgRunId": "company_org_9d00",
+   "isActive": false
+  }
+ },
+ "managerView": {
+  "root_subject_kind": "agent",
+  "root_run_id": "project_task_manager_7c8d",
+  "root_agent": {
+   "base_change_sequence": 0,
+   "live_sequence_id": null,
+   "last_message_change_sequence": null,
+   "is_active": false,
+   "execution_tree": {
+    "subjectKind": "agent",
+    "createdAt": "2026-11-10T09:39:18.439Z",
+    "host": {
+     "address": "/project_task_manager",
+     "agentRunId": "project_task_manager_7c8d",
+     "agentDefinitionId": "project-task-manager"
+    },
+    "taskExecutions": [
+     {
+      "address": "/software_engineering_team",
+      "teamRunId": "software_engineering_team_0218",
+      "members": [
+       {
+        "address": "/solution_designer",
+        "agentRunId": "solution_designer_65a9",
+        "platformAgentRunId": null
+       },
+       {
+        "address": "/code_reviewer",
+        "agentRunId": "code_reviewer_m_3b10",
+        "platformAgentRunId": null
+       },
+       {
+        "address": "/tester",
+        "agentRunId": "tester_m_77",
+        "platformAgentRunId": null
+       }
+      ],
+      "taskExecutions": [],
+      "delegatorAgentRunId": "project_task_manager_7c8d",
+      "startedAt": "2026-11-10T09:39:18.439Z",
+      "source": {
+       "kind": "agent_team",
+       "teamDefinitionId": "software-engineering-team",
+       "coordinatorAddress": "/solution_designer",
+       "members": [
+        {
+         "address": "/solution_designer",
+         "agentDefinitionId": "solution_designer",
+         "launchConfiguration": {
+          "runtimeKind": "autobyteus",
+          "llmModelIdentifier": "haiku",
+          "llmConfig": {
+           "temperature": 0.2
+          },
+          "autoExecuteTools": true,
+          "workspaceRootPath": "/work/x"
+         },
+         "followsTeam": false
+        },
+        {
+         "address": "/code_reviewer",
+         "agentDefinitionId": "code_reviewer",
+         "launchConfiguration": {
+          "runtimeKind": "autobyteus",
+          "llmModelIdentifier": "opus",
+          "llmConfig": {
+           "temperature": 0.2
+          },
+          "autoExecuteTools": true,
+          "workspaceRootPath": "/work/x"
+         },
+         "followsTeam": false
+        },
+        {
+         "address": "/tester",
+         "agentDefinitionId": "tester",
+         "launchConfiguration": {
+          "runtimeKind": "autobyteus",
+          "llmModelIdentifier": "sonnet",
+          "llmConfig": null,
+          "autoExecuteTools": true,
+          "workspaceRootPath": "/work/x"
+         },
+         "followsTeam": true,
+         "launchSource": {
+          "origin": "agent_default",
+          "fallbacks": []
+         }
+        }
+       ],
+       "handoffs": [
+        {
+         "from": "/solution_designer",
+         "to": "/Teacher",
+         "rules": [
+          "When the plan is ready."
+         ]
+        }
+       ],
+       "defaultLaunchConfiguration": {
+        "runtimeKind": "autobyteus",
+        "llmModelIdentifier": "sonnet",
+        "llmConfig": null,
+        "autoExecuteTools": true,
+        "workspaceRootPath": "/work/x"
+       }
+      }
+     }
+    ]
+   },
+   "agent_statuses": [],
+   "agent_input_states": [],
+   "remote_task_executions": [
+    {
+     "kind": "agent_team",
+     "address": "/research_team",
+     "team_run_id": "research_team_77aa",
+     "node_id": "node-b-1f0e",
+     "node_name": "node-b-1f0e",
+     "coordinator_address": "/lead",
+     "members": [
+      {
+       "address": "/lead",
+       "agent_run_id": "lead_0c11"
+      },
+      {
+       "address": "/analyst",
+       "agent_run_id": "analyst_5d20"
+      }
+     ],
+     "delegator_agent_run_id": "project_task_manager_7c8d",
+     "started_at": "2026-11-10T09:39:18.439Z"
+    }
+   ]
+  }
+ },
+ "engineeringView": {
+  "created_at": "2026-11-10T09:39:18.439Z",
+  "archived_at": null,
+  "application_binding": null,
+  "handoffs": [
+   {
+    "from": "/solution_designer",
+    "to": "/Teacher",
+    "rules": [
+     "When the plan is ready."
+    ]
+   }
+  ],
+  "root_team": {
+   "address": "/",
+   "team_definition_id": "software-engineering-team",
+   "team_definition_name": "software-engineering-team",
+   "team_run_id": "software_engineering_team_0218",
+   "coordinator_address": "/solution_designer",
+   "default_launch_configuration": {
+    "runtime_kind": "autobyteus",
+    "llm_model_identifier": "sonnet",
+    "llm_config": null,
+    "auto_execute_tools": true,
+    "workspace_root_path": "/work/x"
+   },
+   "members": [
+    {
+     "kind": "configured_agent",
+     "address": "/solution_designer",
+     "agent_definition_id": "solution_designer",
+     "role": null,
+     "description": null,
+     "agent_run_id": "solution_designer_65a9",
+     "platform_agent_run_id": null,
+     "launch_configuration": {
+      "runtime_kind": "autobyteus",
+      "llm_model_identifier": "haiku",
+      "llm_config": {
+       "temperature": 0.2
+      },
+      "auto_execute_tools": true,
+      "workspace_root_path": "/work/x"
+     }
+    },
+    {
+     "kind": "configured_agent",
+     "address": "/code_reviewer",
+     "agent_definition_id": "code_reviewer",
+     "role": null,
+     "description": null,
+     "agent_run_id": "code_reviewer_m_3b10",
+     "platform_agent_run_id": null,
+     "launch_configuration": {
+      "runtime_kind": "autobyteus",
+      "llm_model_identifier": "opus",
+      "llm_config": {
+       "temperature": 0.2
+      },
+      "auto_execute_tools": true,
+      "workspace_root_path": "/work/x"
+     }
+    },
+    {
+     "kind": "configured_agent",
+     "address": "/tester",
+     "agent_definition_id": "tester",
+     "role": null,
+     "description": null,
+     "agent_run_id": "tester_m_77",
+     "platform_agent_run_id": null,
+     "launch_configuration": {
+      "runtime_kind": "autobyteus",
+      "llm_model_identifier": "sonnet",
+      "llm_config": null,
+      "auto_execute_tools": true,
+      "workspace_root_path": "/work/x"
+     }
+    }
+   ],
+   "task_executions": [
+    {
+     "kind": "task_team",
+     "address": "/product_team",
+     "team_run_id": "product_team_e03d",
+     "members": [
+      {
+       "kind": "task_team_agent",
+       "address": "/product_designer",
+       "agent_run_id": "product_designer_1a2b",
+       "platform_agent_run_id": null
+      }
+     ],
+     "task_executions": [],
+     "delegator_agent_run_id": "solution_designer_65a9",
+     "started_at": "2026-11-10T09:39:18.439Z",
+     "source": {
+      "kind": "agent_team",
+      "team_definition_id": "product-team",
+      "coordinator_address": "/product_designer",
+      "members": [
+       {
+        "address": "/product_designer",
+        "agent_definition_id": "product_designer",
+        "launch_configuration": {
+         "runtime_kind": "autobyteus",
+         "llm_model_identifier": "sonnet",
+         "llm_config": null,
+         "auto_execute_tools": true,
+         "workspace_root_path": "/work/x"
+        },
+        "follows_team": true
+       }
+      ],
+      "handoffs": [],
+      "default_launch_configuration": {
+       "runtime_kind": "autobyteus",
+       "llm_model_identifier": "sonnet",
+       "llm_config": null,
+       "auto_execute_tools": true,
+       "workspace_root_path": "/work/x"
+      }
+     }
+    }
+   ]
+  }
+ },
+ "firstStartWarnings": [
+  "Running Prisma migrations...",
+  "27 migrations found in prisma/migrations",
+  "No pending migrations to apply.",
+  "Database migrations completed successfully.",
+  "(node:9976) ExperimentalWarning: SQLite is an experimental feature and might change at any time",
+  "(Use `node --trace-warnings ...` to show where the warning was created)"
+ ],
+ "secondStart": {
+  "files": 24,
+  "changed": []
+ }
+}

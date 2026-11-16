@@ -238,7 +238,7 @@ describe("AgentRunHistoryCatalogService", () => {
 
   it("keeps a remote run's delegatedFrom back-link when activation adds startedAt (N-10, DEC-112)", async () => {
     const service = await buildService();
-    const delegatedFrom = { nodeId: "srv_peer_a", coordinatingRun: { kind: "agent" as const, runId: "agent_a1" }, delegatorAgentRunId: "agent_a1" };
+    const delegatedFrom = { nodeId: "srv_peer_a", delegatingRun: { kind: "agent" as const, runId: "agent_a1" }, delegatorAgentRunId: "agent_a1" };
     await service.recordPreparedRun({ runId: "run-1", createdAt: "2026-03-26T10:00:00.000Z",
       metadata: buildMetadata("run-1", { memoryDir: path.join(memoryDir, "agents", "run-1"), delegatedFrom }) });
 
@@ -404,7 +404,7 @@ describe("AgentRunHistoryCatalogService", () => {
         if (options.endFails) throw new Error("a child did not stop");
         state.rootRegistered = false;
       });
-      const adHocTasks = { deleteAdHocTasksHostedBy: vi.fn(async () => undefined) };
+      const adHocTasks = { deleteAdHocTasksDelegatedFrom: vi.fn(async () => undefined) };
       const service = new AgentRunHistoryCatalogService(memoryDir, {
         indexStore: indexStore as never,
         agentDefinitionService: { getAgentDefinitionById: vi.fn().mockResolvedValue({ name: "Agent One" }) } as never,
@@ -421,7 +421,7 @@ describe("AgentRunHistoryCatalogService", () => {
       expect(f.endRoot).toHaveBeenCalledWith("run-1");
       expect(f.state.filesPresentWhenEnded).toEqual([true]);
       await expect(fs.access(f.runDir)).rejects.toThrow();
-      expect(f.adHocTasks.deleteAdHocTasksHostedBy).toHaveBeenCalledExactlyOnceWith({ rootSubjectKind: "agent", rootRunId: "run-1" });
+      expect(f.adHocTasks.deleteAdHocTasksDelegatedFrom).toHaveBeenCalledExactlyOnceWith({ rootSubjectKind: "agent", rootRunId: "run-1" });
     });
 
     it("archive ends the root first, then archives", async () => {
@@ -438,7 +438,7 @@ describe("AgentRunHistoryCatalogService", () => {
       });
       await expect(f.service.archiveRun("run-1")).resolves.toMatchObject({ success: false });
       await expect(fs.access(f.childMemory)).resolves.toBeUndefined();
-      expect(f.adHocTasks.deleteAdHocTasksHostedBy).not.toHaveBeenCalled();
+      expect(f.adHocTasks.deleteAdHocTasksDelegatedFrom).not.toHaveBeenCalled();
     });
 
     it("refuses while the host itself is active, without touching the root", async () => {

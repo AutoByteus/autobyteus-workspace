@@ -83,7 +83,7 @@ describe("WorkJournalRunUpdater (DS-001)", () => {
       runSessions: { deactivateForRun: () => 0 },
       runFileChangeService: { attachToRun: () => () => undefined },
       publishedArtifactRelayService: { attachToRun: () => () => undefined },
-      memoryRecorder: recorder,
+      memoryRecorder: recorder, streamSequences: { attachToRun: vi.fn(() => vi.fn()) },
       workJournalUpdater: updater,
       mcpServerInstances: { cleanupMcpServerInstancesForAgent: async () => undefined },
     });
@@ -112,7 +112,7 @@ describe("WorkJournalRunUpdater (DS-001)", () => {
       runSessions: { deactivateForRun: () => 0 },
       runFileChangeService: sidecar("fileChanges"),
       publishedArtifactRelayService: sidecar("artifactRelay"),
-      memoryRecorder: sidecar("memoryRecorder"),
+      memoryRecorder: sidecar("memoryRecorder"), streamSequences: { attachToRun: vi.fn(() => vi.fn()) },
       workJournalUpdater: sidecar("workJournal"),
       mcpServerInstances: { cleanupMcpServerInstancesForAgent: async () => undefined },
     }).attach(createRun({ runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK, memoryDir: null }));

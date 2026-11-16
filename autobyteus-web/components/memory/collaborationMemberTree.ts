@@ -59,6 +59,3 @@ export const buildCollaborationMemberBlocks = (
   visit(root, 0, 'root');
   return blocks.filter((block) => block.group !== null || block.members.length > 0);
 };
-
-export const isTaskMember = (member: CollaborationMemberMemoryTargetSummary): boolean =>
-  member.executionKind !== 'CONFIGURED';

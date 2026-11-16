@@ -1,8 +1,11 @@
+import type { DelegatedWorkGuard } from "./delegated-work-guard.js";
+import { runDisplayNameOf } from "../../agent-collaboration/delegation/collaboration-tree.js";
+import { createAgentRootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
+import type { DelegationIndex } from "../../agent-collaboration/delegation/delegation-index.js";
 import { AgentRunManager } from "../../agent-execution/services/agent-run-manager.js";
 import {
   AgentRunStatusProjectionService,
 } from "../../agent-execution/services/agent-run-status-projection-service.js";
-import { appConfigProvider } from "../../config/app-config-provider.js";
 import {
   RunHistoryAgentGroup,
   RunHistoryIndexRow,
@@ -47,10 +50,16 @@ export class AgentRunHistoryService {
   private readonly statusProjectionService: AgentRunStatusProjectionService;
   private readonly visibility: Pick<InternalAgentVisibility, "hiddenDefinitionIds">;
   private readonly lastActivity: Pick<RunLastActivityReader, "forAgentRun">;
+  private readonly workGuard: Pick<DelegatedWorkGuard, "guard">;
+  private readonly names: Pick<DelegationIndex, "currentTaskOf" | "agentsOf">;
 
   constructor(
     memoryDir: string,
     dependencies: {
+      /** The relationships between runs, from the Task entries (SR-047), and a delegated run's name (SR-091). */
+      tree: Pick<DelegationIndex, "subtreeOf" | "currentTaskOf" | "agentsOf">;
+      /** Archive and delete wait for the runs it delegated to (REQ-007). */
+      workGuard: Pick<DelegatedWorkGuard, "guard">;
       catalogService?: AgentRunHistoryCatalogService;
       metadataStore?: AgentRunMetadataStore;
       statusProjectionService?: AgentRunStatusProjectionService;
@@ -59,9 +68,11 @@ export class AgentRunHistoryService {
       visibility?: Pick<InternalAgentVisibility, "hiddenDefinitionIds">;
       /** A run's last activity, its delegated copies included. */
       lastActivity?: Pick<RunLastActivityReader, "forAgentRun">;
-    } = {},
+    },
   ) {
-    this.lastActivity = dependencies.lastActivity ?? new RunLastActivityReader({ memoryDir });
+    this.workGuard = dependencies.workGuard;
+    this.names = dependencies.tree;
+    this.lastActivity = dependencies.lastActivity ?? new RunLastActivityReader({ memoryDir, tree: dependencies.tree });
     this.visibility = dependencies.visibility ?? getInternalAgentVisibility();
     this.catalogService =
       dependencies.catalogService ?? new AgentRunHistoryCatalogService(memoryDir);
@@ -82,7 +93,7 @@ export class AgentRunHistoryService {
    * The run history the user browses; runs of internal agents are left out while they are hidden (autobyteus-308).
    * `limitPerAgent` keeps the newest runs of each agent in each folder; `null` keeps every run (the Runs view).
    */
-  async listRunHistory(limitPerAgent: number | null = 6): Promise<RunHistoryWorkspaceGroup[]> {
+  async listRunHistory(limitPerAgent: number | null = 6, include: (row: RunHistoryIndexRow) => boolean = () => true): Promise<RunHistoryWorkspaceGroup[]> {
     const [rows, hidden] = await Promise.all([this.catalogService.listCatalogRows(), this.visibility.hiddenDefinitionIds()]);
     const workspaceMap = new Map<string, Map<string, {
       agentDefinitionId: string;
@@ -90,7 +101,7 @@ export class AgentRunHistoryService {
       rows: RunHistoryIndexRow[];
     }>>();
     for (const row of rows) {
-      if (row.archivedAt || hidden.has(row.agentDefinitionId)) {
+      if (row.archivedAt || hidden.has(row.agentDefinitionId) || !include(row)) {
         continue;
       }
       const workspaceRootPath = canonicalizeWorkspaceRootPath(row.workspaceRootPath);
@@ -176,24 +187,24 @@ export class AgentRunHistoryService {
       this.statusProjectionService.getCatalogListStatusProjection(row.runId),
     );
     const terminatedInactive = Boolean(row.terminatedAt) && !projection.isActive;
-    const hasCollaboration = row.hasCollaboration === true;
     return {
       runId: row.runId,
+      displayName: await runDisplayNameOf(this.names, createAgentRootExecutionIdentity(row.runId)),
       summary: row.summary,
       status: terminatedInactive ? "offline" : projection.status,
       isActive: projection.isActive,
       shouldConnectStream: projection.shouldConnectStream,
       statusSource: terminatedInactive ? "TERMINATED_METADATA" : projection.statusSource,
       createdAt: row.createdAt,
-      lastActivityAt: await this.lastActivity.forAgentRun({ runId: row.runId, createdAt: row.createdAt, hasCollaboration }),
+      lastActivityAt: await this.lastActivity.forAgentRun({ runId: row.runId, createdAt: row.createdAt, hasCollaboration: row.hasCollaboration === true }),
       archivedAt: row.archivedAt ?? null,
       terminatedAt: row.terminatedAt ?? null,
-      hasCollaboration,
+      hasCollaboration: row.hasCollaboration === true,
     };
   }
 
   async archiveStoredRun(runId: string): Promise<ArchiveStoredRunResult> {
-    return this.catalogService.archiveRun(runId);
+    return this.workGuard.guard({ rootSubjectKind: "agent", rootRunId: runId.trim() }, "archived", () => this.catalogService.archiveRun(runId));
   }
 
   /**
@@ -232,17 +243,18 @@ export class AgentRunHistoryService {
   }
 
   async deleteStoredRun(runId: string): Promise<DeleteStoredRunResult> {
-    return this.catalogService.deleteRun(runId);
+    return this.workGuard.guard({ rootSubjectKind: "agent", rootRunId: runId.trim() }, "deleted", () => this.catalogService.deleteRun(runId));
   }
 }
 
-let cachedAgentRunHistoryService: AgentRunHistoryService | null = null;
-
+let processService: AgentRunHistoryService | null = null;
+/** The composition root sets the process service it created (SR-047 step 8); the returned function releases it. */
+export const setProcessAgentRunHistoryService = (service: AgentRunHistoryService): (() => void) => {
+  processService = service;
+  return () => { if (processService === service) processService = null; };
+};
+/** The process service; its callers are older lookups (FU-011). */
 export const getAgentRunHistoryService = (): AgentRunHistoryService => {
-  if (!cachedAgentRunHistoryService) {
-    cachedAgentRunHistoryService = new AgentRunHistoryService(
-      appConfigProvider.config.getMemoryDir(),
-    );
-  }
-  return cachedAgentRunHistoryService;
+  if (!processService) throw new Error("AgentRunHistoryService is created by the composition root.");
+  return processService;
 };

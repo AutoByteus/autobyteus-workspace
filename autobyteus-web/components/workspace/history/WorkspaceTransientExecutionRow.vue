@@ -10,6 +10,7 @@
     :data-team-run-id="row.teamRunId"
     :data-member-address="row.memberAddress"
     :data-agent-run-id="row.agentRunId ?? undefined"
+    :data-status="status"
     :data-tree-depth="row.depth"
     :title="identityLabel"
     :aria-label="accessibleLabel"
@@ -177,13 +178,13 @@ import WorkspaceHierarchyBranches from '~/components/workspace/history/Workspace
 import TaskWorkerTaskSummary from '~/components/workspace/history/TaskWorkerTaskSummary.vue';
 import DelegatedStopButton from '~/components/workspace/history/DelegatedStopButton.vue';
 import RemoteNodeChip from '~/components/workspace/remote/RemoteNodeChip.vue';
-import { useRemoteRunsStore } from '~/stores/remoteRunsStore';
 import type { DelegatedReference, DelegatedRoot } from '~/services/runConfigEditing/delegatedLaunchSelectionClient';
 import { useLocalization } from '~/composables/useLocalization';
 import { AgentStatus } from '~/types/agent/AgentStatus';
 import type { RunHistoryTransientExecutionRow } from '~/stores/runHistoryTypes';
 import type { TaskWorkerTask } from '~/types/project';
 import { taskWorkerTaskLabel } from '~/utils/projects/taskText';
+import { useRunStatusStore } from '~/stores/runStatusStore';
 import { useRunHistoryStore } from '~/stores/runHistoryStore';
 import type { TeamStatus } from '~/utils/workspaceTeamAggregateStatus';
 
@@ -227,14 +228,17 @@ const roleLabel = computed(() => t(
 ));
 
 // autobyteus-278: the node that runs this copy; a member of a remote Team shows no chip of its own.
-const remoteRuns = useRemoteRunsStore();
+const runStatus = useRunStatusStore();
 const remote = computed(() => props.row.transientKind === 'task_team_child' ? null : props.row.remote ?? null);
-const remoteInfo = computed(() => remote.value ? remoteRuns.run(remote.value.runId) : null);
+// Its node's answer is its tree row's; a Retry waits for its node's answer (SR-090).
+const remoteInfo = computed(() => remote.value
+  ? { reachable: remote.value.reachable, title: remote.value.title, checking: runStatus.isChecking(remote.value.runId) }
+  : null);
 const stopError = ref(false);
 /** Retry asks the node again ("Checking {node}…"); focus stays on the row. */
 const retryRemote = (): void => {
   stopError.value = false;
-  if (remote.value) remoteRuns.retry(remote.value.runId);
+  if (remote.value) runStatus.retryPeers([remote.value.runId]);
 };
 
 const status = computed(() => props.row.memberKind === 'agent_team'
@@ -296,8 +300,12 @@ const stopReference = computed<DelegatedReference | null>(() => {
   return null;
 });
 
+/**
+ * A row opens its run and reveals what it opens (CR-461-108): a folded team row unfolds, its coordinator shown. Opening
+ * never folds a row (CR-461-104: an agent row's delegated rows stay); only its disclosure button folds it.
+ */
 const activateRow = (): void => {
-  if (props.hasChildren) emit('toggle', props.row);
+  if (props.hasChildren && props.row.memberKind === 'agent_team' && !props.expanded) emit('toggle', props.row);
   emit('select', props.row);
 };
 </script>

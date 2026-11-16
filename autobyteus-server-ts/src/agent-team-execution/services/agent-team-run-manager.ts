@@ -1,3 +1,5 @@
+import type { RunViewStreams } from "../../agent-collaboration/delegation/run-view-stream.js";
+import type { DelegationIndex } from "../../agent-collaboration/delegation/delegation-index.js";
 import { recordRunProjectStart } from "../../agent-execution/domain/run-project-context.js";
 import { isDeepStrictEqual } from "node:util";
 import { AgentMemoryLayout } from "../../agent-memory/store/agent-memory-layout.js";
@@ -15,7 +17,7 @@ import type { RootEventListener } from "./team-run-event-publisher.js";
 import { buildInitialTeamRunExecutionTree, buildTeamRunConfigFromExecutionTree } from "./team-run-execution-tree-builder.js";
 import type { TeamCommunicationMessagesSnapshot } from "../../services/team-communication/team-communication-messages-file.js";
 import { TeamRunPackageCatalog } from "../../run-history/services/team-run-package-catalog.js";
-import type { RunModelSelectionService, RunModelSelectionValidator } from "../../llm-management/services/run-model-selection-service.js";
+import type { RunModelSelectionValidator } from "../../llm-management/services/run-model-selection-service.js";
 import {
   runModelConfigEditability,
   type RunModelConfigUpdateResult,
@@ -27,15 +29,9 @@ import {
   ActiveCollaborationRootDirectory,
   getActiveCollaborationRootDirectory,
 } from "../../agent-collaboration/execution/services/active-collaboration-root-directory.js";
-import type { TaskExecutionIdentityCapabilities } from "../task-delegation/task-execution-identity-capabilities.js";
 import { materializeTeamRoot } from "./team-root-materializer.js";
-import type { TaskExecutionResourcePort } from "../../agent-collaboration/execution/task/task-execution-resource-port.js";
-import { listClosedTaskExecutions } from "../../agent-collaboration/execution/task/task-execution-closure.js";
-import type { TaskExecutionReference } from "../../agent-collaboration/execution/task/task-execution-reference.js";
-import { TeamExecutionIndex } from "./team-execution-index.js";
-import type { DelegatedLaunchModelOptions } from "../../agent-collaboration/collaborators/delegated-launch-selection-command.js";
-import type { DelegatedLaunchChange } from "../../agent-collaboration/domain/delegated-launch-selection.js";
-import { planStoppedTeamLaunchSave, teamDelegatedLaunchModelOptions } from "./team-run-delegated-launch-plan.js";
+import type { RunTaskRecords } from "../../agent-collaboration/execution/task/task-execution-resource-port.js";
+import { planStoppedTeamLaunchSave } from "./team-run-delegated-launch-plan.js";
 import { storedRemoteLinkCheck, type RemoteInboundQuery, type StoredRemoteLinkCheck } from "../../agent-collaboration/execution/remote/remote-run-links.js";
 import { teamRunRemoteLinks } from "../domain/team-run-remote-links.js";
 import type { DelegatedFrom } from "../../run-history/store/agent-run-metadata-types.js";
@@ -50,8 +46,11 @@ export type AgentTeamRunManagerOptions = Readonly<{
   memoryDir: string;
   flatTeamExecutionFactory: FlatTeamExecutionFactory;
   memberExecutionContextBuilder: MemberExecutionContextBuilder;
-  taskExecutionIdentity: TaskExecutionIdentityCapabilities;
-  taskExecutionResources?: TaskExecutionResourcePort;
+  taskRecords: RunTaskRecords;
+  /** The relationships between runs, from the Task entries (SR-047). */
+  delegationIndex: DelegationIndex;
+  /** Each run's view stream (SR-062). */
+  viewStreams: RunViewStreams;
   executionTreeStore?: TeamRunExecutionTreeStore;
   communicationStore?: TeamCommunicationStore;
   activeRootDirectory?: ActiveCollaborationRootDirectory;
@@ -67,8 +66,9 @@ export class AgentTeamRunManager {
   private readonly executionTreeStore: TeamRunExecutionTreeStore;
   private readonly communicationStore: TeamCommunicationStore;
   private readonly packageCatalog: TeamRunPackageCatalog;
-  private readonly taskExecutionIdentity: TaskExecutionIdentityCapabilities;
-  private readonly taskExecutionResources?: TaskExecutionResourcePort;
+  private readonly taskRecords: RunTaskRecords;
+  private readonly delegationIndex: DelegationIndex;
+  private readonly viewStreams: RunViewStreams;
   private readonly modelSelectionValidator: RunModelSelectionValidator;
   private readonly activeRootDirectory: ActiveCollaborationRootDirectory;
   private readonly managedRoots = new Map<string, RootTeamRun>();
@@ -102,11 +102,6 @@ export class AgentTeamRunManager {
     if (!options.memberExecutionContextBuilder) {
       throw new Error("memberExecutionContextBuilder is required.");
     }
-    if (!options.taskExecutionIdentity ||
-        typeof options.taskExecutionIdentity.agentRuns?.allocateForAgentDefinition !== "function" ||
-        typeof options.taskExecutionIdentity.taskTeams?.create !== "function") {
-      throw new Error("taskExecutionIdentity is required.");
-    }
     if (!options.modelSelectionValidator ||
         typeof options.modelSelectionValidator.validate !== "function") {
       throw new Error("modelSelectionValidator is required.");
@@ -116,8 +111,9 @@ export class AgentTeamRunManager {
     this.packageCatalog = new TeamRunPackageCatalog(memoryDir);
     this.factory = options.flatTeamExecutionFactory;
     this.memberExecutionContextBuilder = options.memberExecutionContextBuilder;
-    this.taskExecutionIdentity = options.taskExecutionIdentity;
-    this.taskExecutionResources = options.taskExecutionResources;
+    this.taskRecords = options.taskRecords;
+    this.delegationIndex = options.delegationIndex;
+    this.viewStreams = options.viewStreams;
     this.executionTreeStore = options.executionTreeStore ?? new TeamRunExecutionTreeStore();
     this.communicationStore = options.communicationStore ?? new TeamCommunicationStore();
     this.modelSelectionValidator = options.modelSelectionValidator;
@@ -201,6 +197,12 @@ export class AgentTeamRunManager {
     });
   }
 
+  /** Whether the run's stored package is admitted (base's restore check, SR-078); nothing is read or loaded. */
+  async isCatalogedPackage(rootTeamRunId: string): Promise<boolean> {
+    await this.packageCatalog.awaitReady();
+    return this.packageCatalog.isAdmitted(required(rootTeamRunId, "rootTeamRunId"));
+  }
+
   closeRootAdmission(): void { this.rootAdmissionOpen = false; }
 
   private assertRootAdmissionOpen(): void {
@@ -229,14 +231,7 @@ export class AgentTeamRunManager {
     if (query.kind !== "owner" && this.hasManagedTeamRun(rootTeamRunId)) return "proceed";
     const tree = this.getManagedTeamRun(rootTeamRunId)?.getExecutionTreeSnapshot()
       ?? await this.executionTreeStore.read(this.teamMemoryDir(rootTeamRunId), rootTeamRunId);
-    return storedRemoteLinkCheck(tree ? teamRunRemoteLinks(() => tree) : null, query);
-  }
-
-  /** Closed (Task DONE or CANCELLED) task executions of the given (stored) tree of this root Team. */
-  closedTaskExecutionsFor(rootTeamRunIdInput: string, tree: TeamRunExecutionTreeSnapshot): readonly TaskExecutionReference[] {
-    const index = new TeamExecutionIndex(tree);
-    return listClosedTaskExecutions({ port: this.taskExecutionResources, root: createTeamRootExecutionIdentity(required(rootTeamRunIdInput, "rootTeamRunId")),
-      contains: (reference) => index.getTaskExecution(reference) !== null });
+    return storedRemoteLinkCheck(tree ? teamRunRemoteLinks(() => tree, this.delegationIndex) : null, query);
   }
 
   listActiveTeamRunIds(): string[] {
@@ -256,46 +251,25 @@ export class AgentTeamRunManager {
     });
   }
 
+  /** The check of a stopped Team run's Save without writing (SR-039: a delegator's Settings checks every run first). */
+  async checkStoppedSelections(input: {
+    teamRunId: string;
+    selectionPatches: readonly TeamRunSelectionPatch[];
+  }): Promise<RunModelConfigUpdateResult<TeamRunExecutionTreeSnapshot | null> | null> {
+    return this.planStoppedSelections(required(input.teamRunId, "teamRunId"), input.selectionPatches)
+      .then((plan) => plan.kind === "refused" ? plan.result : null);
+  }
+
+  /** AR-004: one all-or-nothing Save of a stopped Team run's own model settings, in one tree write. */
   async updateStoppedSelections(input: {
     teamRunId: string;
     selectionPatches: readonly TeamRunSelectionPatch[];
   }): Promise<RunModelConfigUpdateResult<TeamRunExecutionTreeSnapshot | null>> {
-    return this.updateStoppedRunLaunchChanges({ teamRunId: input.teamRunId, configuredPatches: input.selectionPatches, delegatedChanges: [] });
-  }
-
-  /**
-   * AR-004: one all-or-nothing Save of a stopped Team run: its configured model settings and the
-   * user model choices of its delegated copies (DS-001), validated together in
-   * one catalog read and written in one tree write.
-   */
-  async updateStoppedRunLaunchChanges(input: {
-    teamRunId: string;
-    configuredPatches: readonly TeamRunSelectionPatch[];
-    delegatedChanges: readonly DelegatedLaunchChange[];
-  }): Promise<RunModelConfigUpdateResult<TeamRunExecutionTreeSnapshot | null>> {
     const teamRunId = required(input.teamRunId, "teamRunId");
     return this.withRootTransition(teamRunId, async () => {
-      const tree = await this.executionTreeStore.read(this.teamMemoryDir(teamRunId), teamRunId);
-      if (!tree) return this.modelConfigUpdateResult("NOT_FOUND", "Team run was not found.", null, false);
-      await this.packageCatalog.awaitReady();
-      if (!this.packageCatalog.isAdmitted(teamRunId)) {
-        return this.modelConfigUpdateResult("NOT_FOUND", "Team run is not an admitted current package.", tree, false);
-      }
-      if (this.hasManagedTeamRun(teamRunId)) {
-        return this.modelConfigUpdateResult(
-          "RUN_ACTIVE",
-          "This team became active through another connected workflow. Stop it, reopen Settings, and try again.",
-          tree,
-          true,
-        );
-      }
-      if (tree.archivedAt) {
-        return this.modelConfigUpdateResult("RUN_ARCHIVED", "Archived Team runs cannot be edited.", tree, false, true);
-      }
-      const plan = await planStoppedTeamLaunchSave({ tree, closed: this.closedTaskExecutionsFor(teamRunId, tree),
-        configuredPatches: input.configuredPatches, delegatedChanges: input.delegatedChanges, validator: this.modelSelectionValidator });
-      if (plan.kind === "refused") return this.modelConfigUpdateResult(plan.outcome, plan.message, tree, false, false, plan.fieldErrors);
-      const { nextTree } = plan;
+      const planned = await this.planStoppedSelections(teamRunId, input.selectionPatches);
+      if (planned.kind === "refused") return planned.result;
+      const { tree, nextTree } = planned;
       if (isDeepStrictEqual(nextTree, tree)) {
         return this.modelConfigUpdateResult("UNCHANGED", "Team model settings are already up to date.", tree, false);
       }
@@ -321,6 +295,26 @@ export class AgentTeamRunManager {
         false,
       );
     });
+  }
+
+  private async planStoppedSelections(teamRunId: string, selectionPatches: readonly TeamRunSelectionPatch[]): Promise<
+    | Readonly<{ kind: "refused"; result: RunModelConfigUpdateResult<TeamRunExecutionTreeSnapshot | null> }>
+    | Readonly<{ kind: "planned"; tree: TeamRunExecutionTreeSnapshot; nextTree: TeamRunExecutionTreeSnapshot }>> {
+    const refused = (result: RunModelConfigUpdateResult<TeamRunExecutionTreeSnapshot | null>) => ({ kind: "refused" as const, result });
+    const tree = await this.executionTreeStore.read(this.teamMemoryDir(teamRunId), teamRunId);
+    if (!tree) return refused(this.modelConfigUpdateResult("NOT_FOUND", "Team run was not found.", null, false));
+    await this.packageCatalog.awaitReady();
+    if (!this.packageCatalog.isAdmitted(teamRunId)) {
+      return refused(this.modelConfigUpdateResult("NOT_FOUND", "Team run is not an admitted current package.", tree, false));
+    }
+    if (this.hasManagedTeamRun(teamRunId)) {
+      return refused(this.modelConfigUpdateResult("RUN_ACTIVE",
+        "This team became active through another connected workflow. Stop it, reopen Settings, and try again.", tree, true));
+    }
+    if (tree.archivedAt) return refused(this.modelConfigUpdateResult("RUN_ARCHIVED", "Archived Team runs cannot be edited.", tree, false, true));
+    const plan = await planStoppedTeamLaunchSave({ tree, configuredPatches: selectionPatches, validator: this.modelSelectionValidator });
+    if (plan.kind === "refused") return refused(this.modelConfigUpdateResult(plan.outcome, plan.message, tree, false, false, plan.fieldErrors));
+    return { kind: "planned", tree, nextTree: plan.nextTree };
   }
 
   getLifecycleSnapshot(rootTeamRunId: string): TeamRunLifecycleSnapshot {
@@ -356,6 +350,22 @@ export class AgentTeamRunManager {
     }
   }
 
+  /**
+   * A closed Task's stop (CR-461-001): `stillClosed` is asked right before the run's gate closes (`terminate` closes it
+   * before its first await); a team run open again is kept. A team run that is not running is `stopped` (nothing runs).
+   */
+  async terminateTeamRunForTaskClosure(teamRunId: string, stillClosed: () => boolean): Promise<"stopped" | "kept_open" | "not_stopped"> {
+    const root = this.getManagedTeamRun(teamRunId);
+    if (!stillClosed()) return "kept_open";
+    if (!root) return "stopped";
+    try {
+      if (!(await root.terminate()).accepted) return "not_stopped";
+    } catch (error) {
+      throw new AgentTeamTerminationError(String(error));
+    }
+    return this.unregister(teamRunId, root, "stopped") || !this.managedRoots.has(teamRunId) ? "stopped" : "not_stopped";
+  }
+
   async stopAllTeamRuns(): Promise<void> {
     const errors: unknown[] = [];
     for (const teamRunId of this.listManagedTeamRunIds()) {
@@ -377,25 +387,13 @@ export class AgentTeamRunManager {
     return {
       factory: this.factory,
       memberExecutionContextBuilder: this.memberExecutionContextBuilder,
-      taskExecutionIdentity: this.taskExecutionIdentity,
-      taskExecutionResources: this.taskExecutionResources,
+      taskRecords: this.taskRecords,
+      delegationIndex: this.delegationIndex,
+      viewStreams: this.viewStreams,
       executionTreeStore: this.executionTreeStore,
       communicationStore: this.communicationStore,
     } as const;
   }
-
-  /** Model options of every editable delegated copy of the run (its current tree). */
-  async delegatedLaunchModelOptions(
-    rootTeamRunIdInput: string,
-    modelOptions: Pick<RunModelSelectionService, "listOptionsMany">,
-  ): Promise<readonly DelegatedLaunchModelOptions[]> {
-    const teamRunId = required(rootTeamRunIdInput, "rootTeamRunId");
-    const tree = this.getManagedTeamRun(teamRunId)?.getExecutionTreeSnapshot()
-      ?? await this.executionTreeStore.read(this.teamMemoryDir(teamRunId), teamRunId);
-    if (!tree) throw new Error(`Team run '${teamRunId}' was not found.`);
-    return teamDelegatedLaunchModelOptions(tree, this.closedTaskExecutionsFor(teamRunId, tree), modelOptions);
-  }
-
 
   private modelConfigUpdateResult(
     outcome: RunModelConfigUpdateResult<TeamRunExecutionTreeSnapshot | null>["outcome"],

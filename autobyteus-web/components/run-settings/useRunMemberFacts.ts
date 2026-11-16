@@ -10,12 +10,14 @@ const UNUSABLE_REASON_KEY: Readonly<Record<MemberLaunchNote['reason'], string>> 
   runtime_unavailable: 'runSettings.members.defaultUnusable.runtime_unavailable',
   model_unavailable: 'runSettings.members.defaultUnusable.model_unavailable',
 }
-const SOURCE_LABEL_KEY: Readonly<Record<RunMemberLaunchSource, string>> = {
+/** The origin text of each source; a Settings edit has none (V-11: the edit is the run's own launch). */
+const SOURCE_LABEL_KEY: Readonly<Record<RunMemberLaunchSource, string | null>> = {
   agent_default: 'runSettings.delegated.source.agent_default',
   team_default: 'runSettings.delegated.source.team_default',
   model_router: 'runSettings.delegated.source.model_router',
   inherited: 'runSettings.delegated.source.inherited',
   configured: 'runSettings.delegated.source.configured',
+  settings: null,
   not_recorded: 'runSettings.delegated.source.notRecorded',
 }
 const LAYER_LABEL_KEY: Readonly<Record<RunMemberLaunchFallback['layer'], string>> = {
@@ -37,7 +39,8 @@ export function useRunMemberFacts(node: () => RunMemberNode) {
   const noteTexts = computed(() => node().launchNotes.map(noteText))
   const sourceLabel = computed(() => {
     const { sourceKey } = node()
-    return sourceKey ? t(SOURCE_LABEL_KEY[sourceKey]) : null
+    const key = sourceKey ? SOURCE_LABEL_KEY[sourceKey] : null
+    return key ? t(key) : null
   })
   /** Opens Model Routing → Decisions at this copy's decision, with its team open (D9). */
   const openDecision = (): void => {

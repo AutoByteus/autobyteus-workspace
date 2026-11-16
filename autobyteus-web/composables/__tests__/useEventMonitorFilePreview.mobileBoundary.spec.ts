@@ -8,7 +8,7 @@ const io = vi.hoisted(() => ({ query: vi.fn() }));
 vi.mock('~/utils/apolloClient', () => ({ getApolloClient: () => io }));
 const phone = vi.hoisted(() => ({ target: null as unknown, openFile: vi.fn(async () => undefined), openNodeFile: vi.fn(async () => undefined), remoteRunIds: new Set<string>() }));
 vi.mock('~/stores/activeContextStore', () => ({ useActiveContextStore: () => ({ get activeWorkspaceTarget() { return phone.target; } }) }));
-vi.mock('~/stores/remoteRunsStore', () => ({ useRemoteRunsStore: () => ({ runOfAgentRun: (id: string) => (phone.remoteRunIds.has(id) ? { nodeName: 'peer' } : null) }) }));
+vi.mock('~/stores/runTreeStore', () => ({ useRunTreeStore: () => ({ peerRunOf: (id: string) => (phone.remoteRunIds.has(id) ? { nodeName: 'peer' } : null) }) }));
 import { useEventMonitorFilePreview } from '../useEventMonitorFilePreview';
 import { useWorkspaceStore } from '~/stores/workspace';
 import { useFileExplorerStore } from '~/stores/fileExplorer';

@@ -1,0 +1,24 @@
+# IMP-21 SR-052 base characterization: delegate_task answers for a member of an application-owned team
+# command: (base worktree 461-base-827f1e68/autobyteus-server-ts) npx vitest run --no-watch tests/unit/agent-team-execution/application-owned-member-delegation.characterization.test.ts
+# commit: 827f1e68dc (detached base worktree; dependencies linked from the branch worktree, same lockfile); macOS, Node v22.23.1; 2026-11-11
+# The test (IMP-21-base-characterization.test.ts.txt) wrote the answers to IMP-21-base-answers.json.
+
+
+ RUN  v4.1.12 /Users/normy/autobyteus_org/autobyteus-worktrees/461-base-827f1e68/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/461-base-827f1e68/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+
+
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+   Start at  23:12:15
+   Duration  4.37s (transform 2.79s, setup 60ms, import 3.80s, tests 57ms, environment 0ms)
+

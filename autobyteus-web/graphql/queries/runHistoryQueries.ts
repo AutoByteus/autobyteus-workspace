@@ -10,6 +10,7 @@ export const ListWorkspaceRunHistory = gql`
         agentName
         runs {
           runId
+          displayName
           summary
           createdAt
           lastActivityAt
@@ -27,6 +28,7 @@ export const ListWorkspaceRunHistory = gql`
         teamDefinitionName
         runs {
           teamRunId
+          displayName
           teamDefinitionId
           teamDefinitionName
           coordinatorAddress
@@ -63,6 +65,7 @@ export const GetWorkspaceRunHistory = gql`
         agentName
         runs {
           runId
+          displayName
           summary
           createdAt
           lastActivityAt
@@ -80,6 +83,7 @@ export const GetWorkspaceRunHistory = gql`
         teamDefinitionName
         runs {
           teamRunId
+          displayName
           teamDefinitionId
           teamDefinitionName
           coordinatorAddress
@@ -231,21 +235,6 @@ export const GetTeamMemberEventMonitorActiveTracePage = gql`
   ${activeTracePageFields}
 `;
 
-/** A standalone run's delegated copy or copy-Team member (its host keeps the run query). */
-export const GetAgentRunCollaborationMemberEventMonitorActiveTracePage = gql`
-  query GetAgentRunCollaborationMemberEventMonitorActiveTracePage(
-    $hostRunId: String!, $memberAddress: String!, $agentRunId: String!, $beforeCursor: String
-  ) {
-    agentRunCollaborationMemberEventMonitorActiveTracePage(
-      hostRunId: $hostRunId, memberAddress: $memberAddress,
-      agentRunId: $agentRunId, beforeCursor: $beforeCursor
-    ) {
-      ...EventMonitorActiveTracePageFields
-    }
-  }
-  ${activeTracePageFields}
-`;
-
 export const GetAgentOrgMemberEventMonitorActiveTracePage = gql`
   query GetAgentOrgMemberEventMonitorActiveTracePage(
     $orgRunId: String!, $memberAddress: String!, $agentRunId: String!, $beforeCursor: String
@@ -264,10 +253,9 @@ export const GetTeamRunResumeConfig = gql`
   query GetTeamRunResumeConfig($teamRunId: String!) {
     getTeamRunResumeConfig(teamRunId: $teamRunId) {
       teamRunId
+      displayName
       isActive
       executionTree
-      closedTaskExecutions
-      remoteTaskExecutions
       modelConfigEditability {
         editable
         reason
@@ -338,6 +326,7 @@ export const GetAgentRunResumeConfig = gql`
   query GetAgentRunResumeConfig($runId: String!) {
     getAgentRunResumeConfig(runId: $runId) {
       runId
+      displayName
       isActive
       metadataConfig {
         agentDefinitionId

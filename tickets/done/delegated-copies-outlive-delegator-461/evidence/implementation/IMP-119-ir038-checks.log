@@ -1,0 +1,28 @@
+# IMP-119 (IR-038): gates and whole suites on the worktree at bac59031c3 (code identical; docs uncommitted)
+## web type gate
+[typecheck] Nuxt app (tsconfig.json): 60 errors, exit 2, 35.7s
+[typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 1.9s
+[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 0.6s
+[typecheck] cross-package tests (tsconfig.cross-package-tests.json): 0 errors, exit 0, 21.1s
+[typecheck] production errors: 0; test-file errors: 87 in 37 files (baseline 87 in 37 files)
+[typecheck] PASS
+## web suite (nuxt)
+ Test Files  749 passed (749)
+      Tests  5613 passed | 2 skipped (5615)
+nuxt exit 0
+## web suite (electron)
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+ Test Files  1 failed | 65 passed | 1 skipped (67)
+      Tests  1 failed | 491 passed | 1 skipped (493)
+electron exit 1
+## PortOwnerInspectorFaults.spec.ts alone (a real-subprocess timing test; electron/ unchanged this round)
+ Test Files  1 passed (1)
+      Tests  11 passed (11)
+## server type gate
+[typecheck] production errors: 0; test-file errors: 1012 in 316 files (baseline 1012 in 316 files)
+[typecheck] PASS
+typecheck exit 0
+## server test:unit
+ Test Files  992 passed | 5 skipped (997)
+      Tests  8117 passed | 9 skipped (8126)
+unit exit 0

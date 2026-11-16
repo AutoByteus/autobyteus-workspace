@@ -25,6 +25,9 @@ const createContext = (runId: string): MockAgentContext => ({
   state: { runId },
 });
 
+/** A delegated child's own team run and member address (a team-copy member), CR-461-106. */
+const CHILD_TEAM = 'child-team'
+const CHILD_MEMBER = '/software_engineering_team/implementation_engineer'
 const activeContextStoreMock = reactive({
   activeAgentContext: createContext('temp-agent-1') as MockAgentContext | null,
   /** A delegated child of a standalone run (Agent copy or Team-copy member), when set. */
@@ -37,23 +40,27 @@ const activeContextStoreMock = reactive({
     const context = this.activeAgentContext;
     if (!context) return null;
     if (this.delegatedChild) {
+      // Its own run (rule 2): an agent run, or a member of its own team run (CR-461-106).
       return {
         kind: this.delegatedChild.kind,
         context,
         access: this.delegatedChild.access,
         host: { hostRunId: this.delegatedChild.hostRunId },
-        address: '/software_engineering_team/implementation_engineer',
+        address: CHILD_MEMBER,
         agentRunId: context.state.runId,
+        browse: this.delegatedChild.kind === 'agent_run_task_agent' ? { kind: 'run', runId: context.state.runId }
+          : { kind: 'teamMember', teamRunId: CHILD_TEAM, memberAddress: CHILD_MEMBER, agentRunId: context.state.runId },
       };
     }
     if (agentSelectionStoreMock.selectedType === 'agent' && agentContextsStoreMock.activeRun === context) {
-      return { kind: 'standalone_agent', context, access: 'live' };
+      return { kind: 'standalone_agent', context, access: 'live', browse: { kind: 'run', runId: context.state.runId } };
     }
     const team = agentTeamContextsStoreMock.activeTeamContext;
     return agentSelectionStoreMock.selectedType === 'team' && team && agentTeamContextsStoreMock.activeExecutionFocusedMemberContext === context
       ? { kind: 'standalone_team_member', context, access: 'live', team: {
         rootRunId: team.view.getRootTeamRunId(), focusedMemberAddress: team.view.getFocusedMemberAddress(),
-      } } : null;
+      }, browse: { kind: 'teamMember', teamRunId: team.view.getRootTeamRunId(), memberAddress: team.view.getFocusedMemberAddress(),
+        agentRunId: context.state.runId } } : null;
   },
   currentContextPaths: [] as ContextAttachment[],
   addContextFilePathForContext: vi.fn(),
@@ -442,10 +449,13 @@ describe('ContextFilePathInputArea', () => {
     const mountComposer = () => mount(withActiveComposerTarget(ContextFilePathInputArea), {
       global: { stubs: { FullScreenImageModal: true } },
     });
+    /** A draft under the delegated child's own run (CR-461-106): its agent run's, or its team run member's. */
     const collaborationDraft = (storedFilename: string, displayName: string, agentRunId = 'child-run') =>
       createUploadedContextAttachment({
         storedFilename,
-        locator: `/rest/drafts/agent-collaborations/host-run/agent-runs/${agentRunId}/context-files/${storedFilename}`,
+        locator: activeContextStoreMock.delegatedChild?.kind === 'agent_run_task_team_member'
+          ? `/rest/drafts/team-runs/${agentRunId === 'child-run' ? CHILD_TEAM : 'sibling-team'}/members/${encodeURIComponent(CHILD_MEMBER)}/context-files/${storedFilename}`
+          : `/rest/drafts/agent-runs/${agentRunId}/context-files/${storedFilename}`,
         displayName,
         phase: 'draft',
         type: displayName.endsWith('.png') ? 'Image' : 'Text',
@@ -506,7 +516,7 @@ describe('ContextFilePathInputArea', () => {
       await input.trigger('change');
       await flushPromises();
       expect(contextFileUploadStoreMock.uploadAttachment).toHaveBeenCalledWith({
-        owner: { kind: 'agent_collaboration_member_draft', hostRunId: 'host-run', agentRunId: 'child-run' },
+        owner: { kind: 'team_member_draft', teamDraftId: CHILD_TEAM, memberAddress: CHILD_MEMBER },
         file,
         signal: expect.any(AbortSignal),
         onProgress: expect.any(Function),

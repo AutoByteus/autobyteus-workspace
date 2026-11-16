@@ -273,6 +273,29 @@ describe('CollaborationParticipantMessages', () => {
     expect(owner.pastParticipantsOf(key)).toEqual([])
   })
 
+  it('autobyteus-461 SR-084: a tree change that removes an agent re-fetches a list naming it, so it stays named (AC-011); others are not asked', async () => {
+    vi.mocked(fetchParticipantMessages)
+      .mockResolvedValueOnce(stored([message('m1', 'host', 'closed-run')]))
+      .mockResolvedValueOnce(stored([message('m1', 'host', 'closed-run')], [{ agentRunId: 'closed-run', address: '/release_notes_writer' }]))
+    const store = useCollaborationParticipantMessagesStore()
+    let holds = true
+    const view = participantMessagesView({ key, isRemote: false,
+      identityOf: (agentRunId) => holds && agentRunId === 'closed-run' ? { kind: 'member', address: '/release_notes_writer', label: 'release notes writer' } as never : null })
+    view.loadMessages()
+    await settle()
+    expect(view.listMessages().map((row) => row.messageId)).toEqual(['m1'])
+    // Its Task closed: the run left the tree (no view rebuild), and its row is named from the server's answer.
+    holds = false
+    store.reloadNamingUnknown('agent', 'hub', () => false)
+    await settle()
+    expect(fetchParticipantMessages).toHaveBeenCalledTimes(2)
+    expect(view.listMessages()).toMatchObject([{ messageId: 'm1', counterpart: { kind: 'past', address: '/release_notes_writer' } }])
+    // A list that names only agents the view holds is not asked again.
+    store.reloadNamingUnknown('agent', 'hub', () => true)
+    await settle()
+    expect(fetchParticipantMessages).toHaveBeenCalledTimes(2)
+  })
+
   it('re-fetches a kept list when the rebuilt view no longer holds an agent it names, so that agent is named again (autobyteus-469 CR-002)', async () => {
     // Loaded while the worker was in the tree: the server named no past participant.
     vi.mocked(fetchParticipantMessages).mockResolvedValueOnce(stored([message('m1', 'host', 'worker')]))

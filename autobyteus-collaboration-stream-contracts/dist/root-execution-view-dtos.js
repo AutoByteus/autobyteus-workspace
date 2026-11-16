@@ -2,46 +2,12 @@ import { z } from "zod";
 import { collaboratorMentionsDtoSchema, nonEmptyStringSchema } from "@autobyteus/agent-presentation-contracts";
 import { agentOrgExecutionEventDtoSchema, agentOrgExecutionViewDtoSchema } from "./agent-org-execution-dtos.js";
 import { agentRunCollaborationEventDtoSchema, agentRunCollaborationViewDtoSchema, } from "./agent-run-collaboration-dtos.js";
+import { runTreeRowDtoSchema } from "./run-tree-dtos.js";
 const addCorrelationIssue = (context, message) => {
     context.addIssue({ code: "custom", message });
 };
 /** The one key of a task execution, `agent:<agentRunId>` or `team:<teamRunId>`, used by the node and the client. */
 export const taskExecutionReferenceKey = (reference) => "agentRunId" in reference ? `agent:${reference.agentRunId}` : `team:${reference.teamRunId}`;
-/**
- * A short, order-independent fingerprint of a root's closed task executions, `<count>:<8 hex digits>` (FNV-1a 32-bit
- * over the code points of the sorted, distinct keys). The node and the client compute it from the same list with this
- * one function, so a run list can tell that a host's closed set changed without reading it (autobyteus-446).
- */
-export const closedTaskExecutionsDigest = (references) => {
-    const keys = [...new Set(references.map(taskExecutionReferenceKey))].sort();
-    let hash = 0x811c9dc5;
-    for (const char of keys.join("\n")) {
-        hash ^= char.codePointAt(0);
-        hash = Math.imul(hash, 0x01000193) >>> 0;
-    }
-    return `${keys.length}:${hash.toString(16).padStart(8, "0")}`;
-};
-/** Each closed reference must identify a task execution node (at any depth), never a configured or member node. */
-const validateClosedTaskExecutions = (closed, holders, label, context) => {
-    const taskExecutionKeys = new Set();
-    const visit = (holder) => {
-        for (const task of holder.taskExecutions ?? []) {
-            taskExecutionKeys.add(taskExecutionReferenceKey(task));
-            if ("teamRunId" in task)
-                visit(task);
-        }
-        for (const member of holder.members ?? []) {
-            if (typeof member === "object" && member !== null && "teamRunId" in member)
-                visit(member);
-        }
-    };
-    holders.forEach(visit);
-    for (const reference of closed) {
-        if (!taskExecutionKeys.has(taskExecutionReferenceKey(reference))) {
-            addCorrelationIssue(context, `${label} closed task execution '${taskExecutionReferenceKey(reference)}' is not a task execution of the execution tree.`);
-        }
-    }
-};
 const positiveSequence = z.number().int().positive();
 export const AgentTeamRootExecutionViewDtoSchema = z.object({
     root_subject_kind: z.literal("agent_team"), root_run_id: nonEmptyStringSchema,
@@ -55,34 +21,11 @@ export const AgentRootExecutionViewDtoSchema = z.object({
     root_subject_kind: z.literal("agent"), root_run_id: nonEmptyStringSchema,
     root_agent: agentRunCollaborationViewDtoSchema,
 }).strict();
+/** An Agent root's view is its host's: the runs it delegated are its tree's rows (SR-084). */
 const validateAgentRootCorrelation = (value, context) => {
-    const view = value.root_agent;
-    if (view.execution_tree.host.agentRunId !== value.root_run_id) {
+    if (value.root_agent.execution_tree.host.agentRunId !== value.root_run_id) {
         addCorrelationIssue(context, "Agent root snapshot host correlation mismatch.");
     }
-    const addresses = new Map([[view.execution_tree.host.agentRunId, view.execution_tree.host.address]]);
-    const childRunIds = new Set();
-    const visit = (nodes) => {
-        for (const node of nodes) {
-            if ("agentRunId" in node) {
-                if (addresses.has(node.agentRunId))
-                    addCorrelationIssue(context, `Agent root AgentRun identity '${node.agentRunId}' is duplicated.`);
-                addresses.set(node.agentRunId, node.address);
-                childRunIds.add(node.agentRunId);
-            }
-            else {
-                visit(node.members);
-                visit(node.taskExecutions);
-            }
-        }
-    };
-    visit(view.execution_tree.taskExecutions);
-    for (const status of view.agent_statuses) {
-        if (!childRunIds.has(status.agent_run_id) || addresses.get(status.agent_run_id) !== status.member_address) {
-            addCorrelationIssue(context, "Agent root status identity mismatch.");
-        }
-    }
-    validateClosedTaskExecutions(view.closed_task_executions, [view.execution_tree], "Agent root", context);
 };
 /** A live view names its live sequence and its latest message sequence (at most its base); a stored view neither. */
 const validateLivePosition = (view, context) => {
@@ -127,49 +70,28 @@ export const RootExecutionViewDtoSchema = z.discriminatedUnion("root_subject_kin
         addressesByRunId.set(agent.agentRunId, agent.address);
         if (scope === "configured")
             addConfiguredAddress(agent.address, "Agent");
+        // The Org's own agents report in its view; a delegated run's agents report through their own runs (SR-083).
         if (active)
             statusRequiredAgentRunIds.add(agent.agentRunId);
     };
-    const addTeam = (team, scope) => {
+    const addTeam = (team) => {
         if (addressesByTeamRunId.has(team.teamRunId))
             addCorrelationIssue(context, `AgentOrg TeamRun identity '${team.teamRunId}' is duplicated.`);
         addressesByTeamRunId.set(team.teamRunId, team.address);
-        if (scope === "configured")
-            addConfiguredAddress(team.address, "Team");
+        addConfiguredAddress(team.address, "Team");
     };
-    const taskIdentities = (tasks, active) => {
-        for (const task of tasks) {
-            if ("agentRunId" in task)
-                addAgent(task, active, "task_execution");
-            else {
-                addTeam(task, "task_execution");
-                memberIdentities(task.members, active, "task_member");
-                taskIdentities(task.taskExecutions, active);
-            }
-        }
-    };
-    const memberIdentities = (members, live, scope) => {
+    const memberIdentities = (members, live) => {
         for (const member of members) {
             if ("agentRunId" in member)
-                addAgent(member, live, scope);
+                addAgent(member, live, "configured");
             else {
-                addTeam(member, scope);
-                memberIdentities(member.members, live, scope);
-                taskIdentities(member.taskExecutions, live);
+                addTeam(member);
+                memberIdentities(member.members, live);
             }
         }
     };
-    const rootLive = value.root_org.is_active;
-    for (const member of value.root_org.execution_tree.rootOrg.members) {
-        if ("agentRunId" in member)
-            addAgent(member, rootLive, "configured");
-        else {
-            addTeam(member, "configured");
-            memberIdentities(member.members, rootLive, "configured");
-            taskIdentities(member.taskExecutions, rootLive);
-        }
-    }
-    taskIdentities(value.root_org.execution_tree.rootOrg.taskExecutions, rootLive);
+    // The Org's own parts; the runs it delegated are its tree's rows (SR-084).
+    memberIdentities(value.root_org.execution_tree.rootOrg.members, value.root_org.is_active);
     const inputIds = new Set();
     for (const input of value.root_org.agent_input_states) {
         if (!statusRequiredAgentRunIds.has(input.agent_run_id) || inputIds.has(input.agent_run_id)) {
@@ -190,8 +112,6 @@ export const RootExecutionViewDtoSchema = z.discriminatedUnion("root_subject_kin
         if (!statusRunIds.has(agentRunId))
             addCorrelationIssue(context, `AgentOrg AgentRun '${agentRunId}' has no status record.`);
     }
-    const rootOrg = value.root_org.execution_tree.rootOrg;
-    validateClosedTaskExecutions(value.root_org.closed_task_executions, [rootOrg], "AgentOrg", context);
 });
 /**
  * One root event, or a batch covering the contiguous root sequences
@@ -201,9 +121,9 @@ export const RootExecutionViewDtoSchema = z.discriminatedUnion("root_subject_kin
 export const RootExecutionEventDtoSchema = z.discriminatedUnion("root_subject_kind", [
     z.object({ root_subject_kind: z.literal("agent_team"), root_run_id: nonEmptyStringSchema, change_sequence: positiveSequence, event: z.unknown() }).strict(),
     z.object({ root_subject_kind: z.literal("agent_org"), root_run_id: nonEmptyStringSchema, change_sequence: positiveSequence, change_sequence_through: positiveSequence.optional(), event: agentOrgExecutionEventDtoSchema }).strict(),
-    z.object({ root_subject_kind: z.literal("agent"), root_run_id: nonEmptyStringSchema, change_sequence: positiveSequence, change_sequence_through: positiveSequence.optional(), event: agentRunCollaborationEventDtoSchema }).strict(),
+    z.object({ root_subject_kind: z.literal("agent"), root_run_id: nonEmptyStringSchema, change_sequence: positiveSequence, event: agentRunCollaborationEventDtoSchema }).strict(),
 ]).superRefine((value, context) => {
-    if (value.root_subject_kind === "agent_team")
+    if (value.root_subject_kind !== "agent_org")
         return;
     const batch = value.event.kind === "agent_presentation_batch";
     if (batch !== (value.change_sequence_through !== undefined)) {
@@ -228,6 +148,9 @@ export const CollaborationStreamServerMessageSchema = z.discriminatedUnion("type
     z.object({ type: z.literal("CONNECTED"), payload: z.object({ root_subject_kind: rootSubjectKind, root_run_id: nonEmptyStringSchema, session_id: nonEmptyStringSchema }).strict() }).strict(),
     z.object({ type: z.literal("ROOT_EXECUTION_VIEW_SNAPSHOT"), payload: RootExecutionViewDtoSchema }).strict(),
     z.object({ type: z.literal("ROOT_EXECUTION_EVENT"), payload: RootExecutionEventDtoSchema }).strict(),
+    /** The view's tree at the snapshot's base (autobyteus-461 SR-084), sent right after it; its changes are `run_tree_changed` events. */
+    z.object({ type: z.literal("RUN_TREE_SNAPSHOT"), payload: z.object({ root_subject_kind: commandRootSubjectKind, root_run_id: nonEmptyStringSchema,
+            base_change_sequence: z.number().int().nonnegative(), rows: z.array(runTreeRowDtoSchema) }).strict() }).strict(),
     z.object({ type: z.literal("ROOT_LIFECYCLE"), payload: z.object({ root_subject_kind: rootSubjectKind, root_run_id: nonEmptyStringSchema, is_active: z.boolean() }).strict() }).strict(),
     z.object({ type: z.literal("AGENT_COMMAND_ACK"), payload: commandAck }).strict(),
     z.object({ type: z.literal("ERROR"), payload: z.object({ code: nonEmptyStringSchema, message: nonEmptyStringSchema }).strict() }).strict(),
@@ -238,7 +161,5 @@ export const CollaborationStreamClientMessageSchema = z.discriminatedUnion("type
     z.object({ type: z.literal("INTERRUPT_GENERATION"), payload: z.object(commandRoot).strict() }).strict(),
     z.object({ type: z.literal("APPROVE_TOOL"), payload: z.object({ ...commandRoot, invocation_id: nonEmptyStringSchema, reason: z.string().nullable() }).strict() }).strict(),
     z.object({ type: z.literal("DENY_TOOL"), payload: z.object({ ...commandRoot, invocation_id: nonEmptyStringSchema, reason: z.string().nullable() }).strict() }).strict(),
-    /** Retry (autobyteus-278): ask the nodes of this root's remote runs for their summaries again. */
-    z.object({ type: z.literal("REFRESH_REMOTE_TASK_EXECUTIONS"), payload: z.object({ root_subject_kind: commandRootSubjectKind, root_run_id: nonEmptyStringSchema }).strict() }).strict(),
 ]);
 //# sourceMappingURL=root-execution-view-dtos.js.map

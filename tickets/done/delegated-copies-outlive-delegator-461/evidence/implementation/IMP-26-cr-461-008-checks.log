@@ -1,0 +1,15 @@
+# IMP-26 CR-461-008 checks
+# commit: a54e78ccb7; macOS, Node v22.23.1; 2026-11-11T23:05Z
+
+== server type gate: node autobyteus-server-ts/scripts/typecheck.mjs
+[typecheck] production errors: 0; test-file errors: 1014 in 318 files (baseline 1014 in 318 files)
+[typecheck] PASS
+== web: codegen:local, then git diff --stat autobyteus-web/generated (empty: committed types match the schema)
+== web type gate
+[typecheck] production errors: 0; test-file errors: 93 in 40 files (baseline 93 in 40 files)
+[typecheck] PASS
+== remaining references (outside tests/e2e and old tickets)
+(none above)
+== server unit suite: (autobyteus-server-ts) pnpm test:unit
+ Test Files  957 passed | 5 skipped (962)
+      Tests  7890 passed | 9 skipped (7899)

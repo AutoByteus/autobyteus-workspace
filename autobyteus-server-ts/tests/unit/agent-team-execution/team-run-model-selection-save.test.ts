@@ -1,3 +1,6 @@
+import { testViewStreams } from "../../helpers/view-streams.js";
+import { NOT_DELEGATED } from "../../helpers/run-collaboration.js";
+import { noDelegations, openTaskRecords } from "../../helpers/no-delegations.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import "reflect-metadata";
 import fs from 'node:fs/promises';
@@ -8,12 +11,13 @@ import { FlatTeamExecutionFactory } from '../../../src/agent-team-execution/loca
 import { MemberExecutionContextBuilder } from '../../../src/agent-team-execution/services/member-team-context-builder.js';
 import { AgentTeamRunManager } from '../../../src/agent-team-execution/services/agent-team-run-manager.js';
 import { RunModelSelectionService } from '../../../src/llm-management/services/run-model-selection-service.js';
-import { createTaskExecutionIdentityCapabilities } from '../../../src/agent-team-execution/task-delegation/task-execution-identity-capabilities.js';
 import { testAgentNode, testExecutionTree } from '../../fixtures/current-team-run-fixtures.js';
 import { StudioRunModelConfigService } from '../../../src/run-history/services/studio-run-model-config-service.js';
 import { AgentTeamRunResolver } from '../../../src/api/graphql/types/agent-team-run.js';
 import { AgentMemoryLayout } from '../../../src/agent-memory/store/agent-memory-layout.js';
 import { TeamRunExecutionTreeStore } from '../../../src/run-history/store/team-run-execution-tree-store.js';
+
+const SETTINGS = { origin: 'settings', fallbacks: [] };
 import { writeAttachmentSidecars } from '../../fixtures/current-attachment-package-fixtures.js';
 const view = (rows: any[]) => ({ offeredModels: rows,
   findExactCurrent: (id: string) => rows.find((row) => row.model_identifier === id) ?? null });
@@ -51,14 +55,13 @@ const harness = async (physicalOutcome = 'committed', readback = 'ok', runtimeKi
   const catalog = { runtimeModelSelectionCatalog: vi.fn(async () => view(['small','equal','large'].map(model_identifier => ({ model_identifier } as any)))) };
   const capacity = { resolveMany: vi.fn(() => ({ small: 128000, equal: 128000, large: 272000 })) };
   const flatTeamExecutionFactory = new FlatTeamExecutionFactory();
-  const memberExecutionContextBuilder = new MemberExecutionContextBuilder({} as any);
+  const memberExecutionContextBuilder = new MemberExecutionContextBuilder({} as any, NOT_DELEGATED);
   const memoryDir = await fs.mkdtemp(path.join(os.tmpdir(), 'model-save-unit-'));
   memoryDirs.push(memoryDir);
   const packageDir = new AgentMemoryLayout(memoryDir).getTeamDirPath({ rootTeamRunId: 'root', ancestorTeamRunIds: [] });
   await new TeamRunExecutionTreeStore().write(packageDir, saved);
   writeAttachmentSidecars(packageDir, 'team');
-  const manager = new AgentTeamRunManager({ memoryDir, flatTeamExecutionFactory, memberExecutionContextBuilder,
-    taskExecutionIdentity: createTaskExecutionIdentityCapabilities({ allocateForAgentDefinition: async () => 'task' }),
+  const manager = new AgentTeamRunManager({ delegationIndex: noDelegations(), viewStreams: testViewStreams(), taskRecords: openTaskRecords(), memoryDir, flatTeamExecutionFactory, memberExecutionContextBuilder,
     executionTreeStore: { read, write } as any, modelSelectionValidator: new RunModelSelectionService(catalog, capacity) });
   return { manager, read, write, capacity, saved: () => saved };
 };
@@ -85,7 +88,8 @@ describe('configured Team model selection Save', () => {
     const patch = { scopeKind: 'CONFIGURED_TEAM' as const, scopeAddress: '/', runtimeKind: RuntimeKind.AUTOBYTEUS, llmModelIdentifier: 'large', llmConfig: null };
     expect((await h.manager.updateStoppedSelections({ teamRunId: 'root', selectionPatches: [patch] })).outcome).toBe('UPDATED');
     expect(h.write).toHaveBeenCalledTimes(1);
-    expect(h.saved()).toEqual({ ...original, rootTeam: { ...original.rootTeam, defaultLaunchConfiguration: { ...original.rootTeam.defaultLaunchConfiguration, llmModelIdentifier: 'large' } } });
+    // The edit is the team's own launch, recorded as the Settings edit (V-11).
+    expect(h.saved()).toEqual({ ...original, rootTeam: { ...original.rootTeam, defaultLaunchSource: SETTINGS, defaultLaunchConfiguration: { ...original.rootTeam.defaultLaunchConfiguration, llmModelIdentifier: 'large' } } });
     expect((await h.manager.updateStoppedSelections({ teamRunId: 'root', selectionPatches: [{ ...patch, llmModelIdentifier: 'small' }] })).outcome).toBe('VALIDATION_FAILED');
     expect(h.write).toHaveBeenCalledTimes(1);
   });
@@ -107,6 +111,7 @@ describe('configured Team model selection Save', () => {
           modelConfigEditability: { editable: true, reason: null },
         })) },
         teamRunService: { updateStoppedSelections: input => h.manager.updateStoppedSelections(input) },
+        launchSaved: () => undefined,
       });
       const response = await AgentTeamRunResolver.prototype.updateStoppedTeamRunSelections.call(
         { runModelConfigService: service } as never,
@@ -125,49 +130,11 @@ describe('configured Team model selection Save', () => {
       });
       expect(h.write).toHaveBeenCalledTimes(1);
       expect(h.saved()).toEqual(physicalOutcome === 'not_committed' ? original : {
-        ...original, rootTeam: { ...original.rootTeam, defaultLaunchConfiguration: {
+        ...original, rootTeam: { ...original.rootTeam, defaultLaunchSource: SETTINGS, defaultLaunchConfiguration: {
           ...original.rootTeam.defaultLaunchConfiguration, llmModelIdentifier: 'large',
         } },
       });
     },
   );
 
-});
-
-describe('stopped Team Save with delegated copies (AR-004)', () => {
-  const withCatalogCopy = (h: Awaited<ReturnType<typeof harness>>) => {
-    const copy = h.saved().rootTeam.taskExecutions[0];
-    copy.source = { kind: 'agent', agentDefinitionId: 'writer', launchConfiguration: { ...h.saved().rootTeam.defaultLaunchConfiguration } };
-    return copy;
-  };
-
-  it('validates configured and delegated changes together and writes them in one tree write', async () => {
-    const h = await harness(); const copy = withCatalogCopy(h); const started = structuredClone(copy.source);
-    const result = await h.manager.updateStoppedRunLaunchChanges({ teamRunId: 'root',
-      configuredPatches: [{ scopeKind: 'CONFIGURED_AGENT', scopeAddress: '/member', runtimeKind: RuntimeKind.AUTOBYTEUS, llmModelIdentifier: 'equal', llmConfig: null }],
-      delegatedChanges: [{ agentRunId: 'retained-task', selection: { runtimeKind: RuntimeKind.AUTOBYTEUS, llmModelIdentifier: 'large', llmConfig: null } }] });
-    expect(result).toMatchObject({ outcome: 'UPDATED', success: true });
-    expect(h.write).toHaveBeenCalledTimes(1);
-    expect(h.saved().rootTeam.members[0].launchConfiguration.llmModelIdentifier).toBe('equal');
-    expect(h.saved().rootTeam.taskExecutions[0]).toMatchObject({ source: started, userLaunchSelection: { llmModelIdentifier: 'large', llmConfig: null } });
-  });
-
-  it('refuses the whole Save when one delegated model is unavailable, writing nothing', async () => {
-    const h = await harness(); withCatalogCopy(h); const original = structuredClone(h.saved());
-    const result = await h.manager.updateStoppedRunLaunchChanges({ teamRunId: 'root',
-      configuredPatches: [{ scopeKind: 'CONFIGURED_AGENT', scopeAddress: '/member', runtimeKind: RuntimeKind.AUTOBYTEUS, llmModelIdentifier: 'equal', llmConfig: null }],
-      delegatedChanges: [{ agentRunId: 'retained-task', selection: { runtimeKind: RuntimeKind.AUTOBYTEUS, llmModelIdentifier: 'not-offered', llmConfig: null } }] });
-    expect(result).toMatchObject({ outcome: 'MODEL_UNAVAILABLE', success: false,
-      message: expect.stringContaining("'not-offered' is not offered by AutoByteus now") });
-    expect(result.message).toMatch(/Refresh the model list and choose again\. Saved settings were not changed\.$/);
-    expect(h.write).not.toHaveBeenCalled(); expect(h.saved()).toEqual(original);
-  });
-
-  it('refuses a delegated change naming a configured member', async () => {
-    const h = await harness(); withCatalogCopy(h);
-    const result = await h.manager.updateStoppedRunLaunchChanges({ teamRunId: 'root', configuredPatches: [],
-      delegatedChanges: [{ agentRunId: 'run-member', selection: { runtimeKind: RuntimeKind.AUTOBYTEUS, llmModelIdentifier: 'equal', llmConfig: null } }] });
-    expect(result).toMatchObject({ outcome: 'VALIDATION_FAILED', fieldErrors: [{ path: 'changes[0]' }] });
-    expect(h.write).not.toHaveBeenCalled();
-  });
 });

@@ -14,6 +14,7 @@ import { startStudioE2eRuntimeServer } from "../helpers/studio-runtime-test-serv
 import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
 import { until } from "../helpers/agy-runtime-error-fixture.js";
 import { grokAcpFixturePath } from "../helpers/grok-fake-cli.js";
+import { readRunTree } from "../helpers/run-tree-delegated.js";
 
 /**
  * Model Routing for delegated work (autobyteus-32) through the real Studio HTTP/GraphQL/WebSocket server, the agents'
@@ -154,7 +155,8 @@ suite("Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch
       await until(async () => { results = calledResults(await conversation()); return results.length > before; }, `tool result for ${content.slice(0, 80)}`, ms);
       return { result: toolResult(results[before]!), elapsedMs: Date.now() - started };
     };
-    const tree = async () => (await graphql(`query($id:String!){agentRunCollaboration(runId:$id)}`, { id: runId })).agentRunCollaboration;
+    // autobyteus-461 SR-084: the delegated runs come from the run's tree (its view carries its own parts only).
+    const tree = async () => readRunTree(graphql, "agent", runId);
     return { runId, calls, tree };
   };
   const delegate = (address: string, description: string) => callTool("delegate_task", { recipient_address: address, description });
@@ -164,8 +166,14 @@ suite("Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch
   const setRouter = (runtimeKind: string, model: string) => graphql(`mutation($r:String!,$m:String!){setModelRouterLaunch(runtimeKind:$r, llmModelIdentifier:$m)}`, { r: runtimeKind, m: model });
   const notesOf = (result: Rec) => (result.launch_notes ?? []) as string[];
   /** A copy's recorded member launches (its `source.members`): what run Settings rows and restore read. */
-  const launchSources = (tree: unknown) => objectsIn(tree).filter((record) => record.launchSource && typeof record.address === "string")
-    .map((record) => ({ address: record.address as string, runtimeKind: record.launchConfiguration?.runtimeKind, model: record.launchConfiguration?.llmModelIdentifier, source: record.launchSource }));
+  /**
+   * The recorded launch sources of the delegated agents (SR-084: from the tree's rows, each with the launch its run recorded):
+   * an Agent copy's, and a Team copy member's own (a member following its team has `ownSource: false`; the team default is
+   * not an agent's source).
+   */
+  const launchSources = (tree: { rows: Rec[] }) => tree.rows.filter((row) => row.parentKey !== null && row.launch?.source && row.launch.ownSource !== false
+      && ["agent", "team_member", "peer_agent", "peer_member"].includes(row.kind))
+    .map((row) => ({ address: row.address as string, runtimeKind: row.launch.runtimeKind, model: row.launch.llmModelIdentifier, source: row.launch.source }));
 
   beforeAll(async () => {
     dataDir = await fs.mkdtemp(path.join(os.tmpdir(), "mr-e2e-"));
@@ -259,10 +267,13 @@ suite("Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch
     expect(notes.some((note) => note.toLowerCase().includes("designer")), "the designer used its default: no line").toBe(false);
     // Team members start when first messaged: the coordinator (the designer, on its default) messages both routed members,
     // and each starts on the router's choice (a Grok session with its --model).
+    // autobyteus-461 (TC-12, A-6): a delegated team is rooted at `/`, so its coordinator names a teammate `/engineer`; the
+    // router's request may name the member under the delegation address.
     const coordinatorRunId = result.target_team_coordinator_agent_run_id as string;
+    evidence["MR-02-addresses"] = requests[0]!.addresses;
     for (const address of requests[0]!.addresses as string[]) {
       const sent = await manager.calls(callTool("send_message_to", { target_agent_run_id: coordinatorRunId,
-        content: callTool("send_message_to", { recipient_address: address, content: "Start on the routed launch. Reply OK." }) }));
+        content: callTool("send_message_to", { recipient_address: `/${address.split("/").at(-1)}`, content: "Start on the routed launch. Reply OK." }) }));
       expect(sent.result, JSON.stringify(sent.result)).toMatchObject({ accepted: true });
     }
     await until(async () => (await grokSessions()).length >= 2, "both routed members started on Grok", 90_000);

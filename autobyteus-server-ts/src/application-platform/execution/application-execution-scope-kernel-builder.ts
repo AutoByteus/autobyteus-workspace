@@ -1,6 +1,7 @@
 import { AgentConversationActivityInspector } from "../../agent-memory/services/agent-conversation-activity-inspector.js";
 import { AgentMemoryLocationService } from "../../agent-memory/services/agent-memory-location-service.js";
 import { AgentRunMemoryRecorder } from "../../agent-memory/services/agent-run-memory-recorder.js";
+import { getAgentStreamSequences } from "../../services/agent-streaming/agent-stream-sequence.js";
 import { WorkJournalRunUpdater } from "../../agent-work-journal/services/work-journal-run-updater.js";
 import { getWorkJournalService } from "../../agent-work-journal/services/work-journal-service.js";
 import { AgentRunActivationRegistry } from "../../agent-execution/runtime/agent-run-activation-registry.js";
@@ -14,7 +15,6 @@ import { AgentRunService } from "../../agent-execution/services/agent-run-servic
 import { StandaloneAgentRunLifecycleService } from "../../agent-execution/services/standalone-agent-run-lifecycle-service.js";
 import { FlatTeamExecutionFactory } from "../../agent-team-execution/local/flat-team-execution-factory.js";
 import { AgentTeamRunManager } from "../../agent-team-execution/services/agent-team-run-manager.js";
-import { createTaskExecutionIdentityCapabilities } from "../../agent-team-execution/task-delegation/task-execution-identity-capabilities.js";
 import { MemberExecutionContextBuilder } from "../../agent-team-execution/services/member-team-context-builder.js";
 import { AgentRunMemoryLocator } from "../../agent-collaboration/execution/services/agent-run-memory-locator.js";
 import { TeamRunIdentityAllocator } from "../../agent-team-execution/services/team-run-identity-allocator.js";
@@ -104,6 +104,7 @@ export const buildApplicationExecutionScopeKernel = (
       runFileChangeService,
       publishedArtifactRelayService: relay,
       memoryRecorder,
+      streamSequences: getAgentStreamSequences(),
       workJournalUpdater: new WorkJournalRunUpdater({ memoryRecorder, journalService: getWorkJournalService() }),
       mcpServerInstances: McpServerInstanceManager.getInstance(),
       runPasses: input.runPasses,
@@ -158,18 +159,18 @@ export const buildApplicationExecutionScopeKernel = (
     const agentRunIdentityAllocator = new AgentRunIdentityAllocator({
       agentDefinitionService: input.agentDefinitionService,
     });
-    const taskExecutionIdentity = createTaskExecutionIdentityCapabilities(
-      agentRunIdentityAllocator,
-    );
     const memberExecutionContextBuilder = new MemberExecutionContextBuilder(
       input.agentTeamDefinitionService,
+      input.delegationIndex,
     );
     const memoryLocator = new AgentRunMemoryLocator({ memoryDir: input.memoryDir });
     const activityInspector = new AgentConversationActivityInspector();
     const teamRunManager = new AgentTeamRunManager({
       memoryDir: input.memoryDir,
-      taskExecutionIdentity,
       modelSelectionValidator: input.modelSelectionValidator,
+      delegationIndex: input.delegationIndex,
+      viewStreams: input.viewStreams,
+      taskRecords: input.taskRecords,
       flatTeamExecutionFactory: new FlatTeamExecutionFactory({
         agentRunManager,
         memoryLocator,

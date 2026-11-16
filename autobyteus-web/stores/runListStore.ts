@@ -1,9 +1,7 @@
 import { defineStore } from 'pinia';
 import { computed, ref, watch } from 'vue';
-import { useAgentContextsStore } from '~/stores/agentContextsStore';
-import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
 import { useRunHistoryStore } from '~/stores/runHistoryStore';
-import { useRunHistoryRetiredRunsStore, withoutRetiredRuns } from '~/stores/runHistoryRetiredRuns';
+import { topLevelRunSources } from '~/stores/topLevelRunSources';
 import { buildRunListEntries, type RunListEntry } from '~/utils/runListProjection';
 
 /** How many runs show before "Show older". */
@@ -16,17 +14,10 @@ export const RUN_LIST_SHOWN = 5;
  */
 export const useRunListStore = defineStore('runList', () => {
   const runHistory = useRunHistoryStore();
-  const agentContexts = useAgentContextsStore();
-  const teamContexts = useAgentTeamContextsStore();
-  const retiredRuns = useRunHistoryRetiredRunsStore();
 
   const entries = computed<RunListEntry[]>(() => {
-    // Runs another window or client archived or deleted leave, as in the navigation projection.
-    const topLevel = withoutRetiredRuns({
-      workspaceGroups: runHistory.workspaceGroups,
-      agentContexts: agentContexts.runs,
-      teamContexts: teamContexts.allTeamRuns ?? [],
-    }, retiredRuns.retiredRunIds);
+    // The navigation projection's top-level runs (CR-461-053): no retired run, no delegated run opened from its view.
+    const topLevel = topLevelRunSources(runHistory.workspaceGroups);
     return buildRunListEntries({
       workspaceGroups: topLevel.workspaceGroups,
       agentContexts: topLevel.agentContexts,

@@ -125,6 +125,8 @@ export class AgentRunProvisioningService {
       preparedExpiresAt: preparedExpiresAt.toISOString(),
       startedAt: null,
       applicationExecutionContext: preparedRun.config.applicationExecutionContext,
+      ...(input.address ? { address: input.address } : {}),
+      ...(input.launchSource ? { launchSource: input.launchSource } : {}),
       ...(input.delegatedFrom ? { delegatedFrom: input.delegatedFrom } : {}),
       ...(input.systemRunOwner ? { systemRunOwner: input.systemRunOwner } : {}),
     };

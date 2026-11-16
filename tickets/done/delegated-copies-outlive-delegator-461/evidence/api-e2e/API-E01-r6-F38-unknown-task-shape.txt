@@ -1,0 +1,22 @@
+# F-38 (TKD-AGY-001 unknown Task key), r6-batchA.log, code 958cb22462
+ FAIL  tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > TKD-AGY-001 Agent root: delegate_task by key in any case (recipient_address and target_agent_run_id) and by long ID, blocked Tasks delegated, 'a deleted Task', Temp tasks (task-keys AC-019, 022, 023, 027; REQ-019, 020)
+AssertionError: expected { delegated: false, …(1) } to deeply equal { error: { …(2) } }
+
+- Expected
++ Received
+
+  {
+-   "error": {
+-     "code": "TASK_DELEGATION_ERROR",
++   "delegated": false,
+    "message": "Task 'existing-copy-keys-0f276b41-10' must identify exactly one current node-local Task (found 0).",
+-   },
+  }
+
+ ❯ tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts:962:21
+    960|     const notFound = (reference: string) => ({ error: { code: "TASK_DE…
+    961|     const unknown = await root.managerCalls(callTool("delegate_task", …
+    962|     expect(unknown).toEqual(notFound(`${k(taskA)}0`));
+       |                     ^
+    963|     const unknownId = `project_task_${randomUUID()}`;
+    964|     expect(await root.managerCalls(callTool("delegate_task", { recipie…

@@ -24,11 +24,11 @@ const runScopedMcpMessage = async (kind: "team" | "org") => {
       agentRunId: "team-live-member", teamInstruction: "You coordinate this team.", deliverInterAgentMessage: deliver })
     : (() => {
       const root = createAgentOrgRootExecutionIdentity("org-live-root");
-      return new MemberExecutionContext({ teamScoped: true, collaborationRole: "team_member", identity: createCollaborationMemberExecutionIdentity({ root,
+      return new MemberExecutionContext({ teamScoped: true, collaborationRole: "team_member", inOrganization: false, identity: createCollaborationMemberExecutionIdentity({ root,
         memberAddress: "/coordinator", agentRunId: "org-live-member" }),
       authoredEnclosingScopeInstruction: "You coordinate this organization.",
       collaboration: new MemberCollaborationContext({ deliverLogicalMessage: deliver }),
-      tasks: { root, delegateToNewCopy: async () => { throw new Error("unused"); }, ownedTaskOf: () => null, assignToExistingCopy: async () => { throw new Error("unused"); },
+      tasks: { root, delegationSource: async () => { throw new Error("unused"); }, ownedTaskOf: () => null,
         submitTaskResult: async () => { throw new Error("unused"); },
         reviewTaskResult: async () => { throw new Error("unused"); } } });
     })();

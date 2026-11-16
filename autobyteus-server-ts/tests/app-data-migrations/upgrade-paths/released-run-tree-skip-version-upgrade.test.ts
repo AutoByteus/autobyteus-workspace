@@ -16,7 +16,7 @@ import {
 import { AGENT_ORG_FLAT_TEAM_FAMILIES_V1_MIGRATION_ID as FAMILY } from "../../../src/app-data-migrations/migrations/agent-org-flat-team-families-v1/agent-org-flat-team-families-v1-app-data-migration.js";
 import { TEAM_CONTEXT_FILE_EXECUTION_LOCATORS_V1_MIGRATION_ID as LOCATORS } from "../../../src/app-data-migrations/migrations/team-context-file-execution-locators-v1/team-context-file-execution-locators-v1-app-data-migration.js";
 import { AGENT_ORG_HISTORY_FIRST_MESSAGE_SUMMARY_V1_MIGRATION_ID as SUMMARY } from "../../../src/app-data-migrations/migrations/agent-org-history-first-message-summary-v1/agent-org-history-first-message-summary-v1-app-data-migration.js";
-import { TeamRunExecutionTreeStore } from "../../../src/run-history/store/team-run-execution-tree-store.js";
+import { DELEGATED_RUNS_OWN_RUNS_V1_MIGRATION_ID } from "../../../src/app-data-migrations/migrations/delegated-runs-own-runs-v1/delegated-runs-own-runs-v1-app-data-migration.js";
 import { TASK_AGENT_OWN_RUN_V1_MIGRATION_ID as TASK_AGENT_OWN_RUN } from "../../../src/app-data-migrations/migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.js";
 import { validateAgentOrgRunExecutionTreePayload } from "../../../src/run-history/store/agent-org-run-execution-tree-schema.js";
 import { RootRunPackageReadinessIndex, resetRootRunPackageReadinessIndex } from "../../../src/run-history/services/root-run-package-readiness-index.js";
@@ -24,7 +24,6 @@ import { AgentOrgRunHistoryIndexStore } from "../../../src/run-history/store/age
 import { testAgentNode, testExecutionTree } from "../../fixtures/current-team-run-fixtures.js";
 import { testOrgAgentNode, testOrgTeamNode } from "../../fixtures/current-agent-org-run-fixtures.js";
 import { toReleasedTeamRunExecutionTreeV2, toReleasedConfiguredNode } from "../../fixtures/released-run-tree-fixtures.js";
-import { openEveryOwnFileUnder } from "../../fixtures/open-delegated-run-sources.js";
 
 /**
  * SR-007 evidence item 3 (unit level): a skip-version install whose ledger is terminal only
@@ -60,7 +59,7 @@ const filename = "ctx_file__image.png";
 
 it("runs 20260901, 20260926 and 20260905 as released on a skip-version install, reads released trees as they are, and repeat startup runs nothing", async () => {
   const { appConfigProvider } = await import("../../../src/config/app-config-provider.js");
-  const root = await fs.mkdtemp(path.join(os.tmpdir(), "released-tree-skip-version-")); roots.push(root); openEveryOwnFileUnder(path.join(root, "memory"));
+  const root = await fs.mkdtemp(path.join(os.tmpdir(), "released-tree-skip-version-")); roots.push(root);
   const memory = path.join(root, "memory"), teams = path.join(root, "data", "agent-teams"), orgs = path.join(root, "data", "agent-orgs");
   await Promise.all([fs.mkdir(teams, { recursive: true }), fs.mkdir(orgs, { recursive: true })]);
   const config = new AppConfig({ appDataDir: root });
@@ -76,7 +75,8 @@ it("runs 20260901, 20260926 and 20260905 as released on a skip-version install, 
   // Team v2 + records with a delegated task Agent, and an old member-address locator for 20260926.
   const teamDir = path.join(memory, "agent_teams", "team-a");
   const base = testExecutionTree({ rootTeamRunId: "team-a", coordinatorAddress: "/worker", createdAt: T0,
-    children: [testAgentNode("/worker", { agentRunId: "configured-run" })] });
+    // A workspace, as every released run has: the slot's launch is what the task agent's own file takes (20261019).
+    children: [testAgentNode("/worker", { agentRunId: "configured-run", workspaceRootPath: "/work/team-a" })] });
   await put(path.join(teamDir, "team_run_execution_tree.json"), toReleasedTeamRunExecutionTreeV2({ ...base, rootTeam: { ...base.rootTeam,
     taskExecutions: [{ address: "/worker", agentRunId: "task-run", platformAgentRunId: null, delegatorAgentRunId: "configured-run", startedAt: T0 }] } }));
   await put(path.join(teamDir, "task_delegation_records.json"), { schemaVersion: 1, rootTeamRunId: "team-a", records: [{
@@ -140,28 +140,23 @@ it("runs 20260901, 20260926 and 20260905 as released on a skip-version install, 
   }
   expect(ids.some((id) => id.includes("delegator"))).toBe(false);
 
-  // (1) 20261017 gave the task agent its own run: the released Team tree keeps everything else and
-  // links the task agent; it never wrote memory, so its own file is written at L1 (SKIPPED_UNMATERIALIZED).
+  // (1) 20261017 gave the task agent its own run and 20261019 completed its own file from the configured `/worker`
+  // slot; 20261111 (autobyteus-461, same start) then made it a run of its own: the released Team tree keeps
+  // everything else and loses its `taskExecutions` list (E9), and the own file holds `delegatedFrom` in place of
+  // `taskAgent` (E6), with its address and launch source (contract §3.2, §3.3).
   expect(await sha(path.join(teamDir, "team_run_execution_tree.json"))).not.toBe(teamTreeHash);
   const rawTeamTree = JSON.parse(await fs.readFile(path.join(teamDir, "team_run_execution_tree.json"), "utf8"));
-  expect(rawTeamTree.rootTeam.taskExecutions).toEqual([{ address: "/worker", agentRunId: "task-run", startedAt: T0 }]);
-  // 20261019_delegated_copy_own_file_complete_v1 (same start, registered last) completed that copy of the configured
-  // `/worker` from its slot and removed `origin`: the own file is in the current shape.
-  expect(results.find((candidate) => candidate.migrationId === DELEGATED_COPY_OWN_FILE_COMPLETE_V1_MIGRATION_ID)?.status).toBe("SUCCEEDED");
+  expect(rawTeamTree.rootTeam).not.toHaveProperty("taskExecutions");
+  for (const id of [DELEGATED_COPY_OWN_FILE_COMPLETE_V1_MIGRATION_ID, DELEGATED_RUNS_OWN_RUNS_V1_MIGRATION_ID]) {
+    expect(results.find((candidate) => candidate.migrationId === id)?.status).toMatch(/^SUCCEEDED/);
+  }
   const slot = rawTeamTree.rootTeam.members[0];
   const own = JSON.parse(await fs.readFile(path.join(memory, "agents", "task-run", "run_metadata.json"), "utf8"));
+  // The old child carries no delegator: its delegating run is the run that recorded it (one hop, E6).
   expect(own).toMatchObject({ runId: "task-run", agentDefinitionId: slot.agentDefinitionId, llmModelIdentifier: slot.launchConfiguration.llmModelIdentifier,
-    runtimeKind: slot.launchConfiguration.runtimeKind,
-    taskAgent: { coordinatingRun: { kind: "agent_team", runId: "team-a" }, address: "/worker", launchSource: { origin: "configured", fallbacks: [] } } });
-  expect("origin" in own.taskAgent).toBe(false);
-  // …and the current store composes today's record from its own file; the old child carries no delegator.
-  const teamTree = (await new TeamRunExecutionTreeStore().read(teamDir, "team-a"))!;
-  expect(teamTree.rootTeam.taskExecutions).toEqual([{ address: "/worker", agentRunId: "task-run", platformAgentRunId: null, startedAt: T0,
-    source: { kind: "agent", agentDefinitionId: slot.agentDefinitionId, launchSource: { origin: "configured", fallbacks: [] },
-      // The slot's launch projected to its 5 current keys (its obsolete `skillAccessMode` is not carried over, AR-002).
-      launchConfiguration: { runtimeKind: slot.launchConfiguration.runtimeKind, llmModelIdentifier: slot.launchConfiguration.llmModelIdentifier,
-        llmConfig: slot.launchConfiguration.llmConfig, autoExecuteTools: slot.launchConfiguration.autoExecuteTools,
-        workspaceRootPath: slot.launchConfiguration.workspaceRootPath } } }]);
+    runtimeKind: slot.launchConfiguration.runtimeKind, address: "/worker", launchSource: { origin: "configured", fallbacks: [] },
+    delegatedFrom: { delegatingRun: { kind: "agent_team", runId: "team-a" } } });
+  expect(own).not.toHaveProperty("taskAgent");
   expect(own.launchConfiguration ?? own).not.toHaveProperty("skillAccessMode");
   // (2) 20260901 produced the Org exactly as released (Org tree V1); the current reader loads it.
   const orgTreeRaw = JSON.parse(await fs.readFile(path.join(memory, "agent_orgs", "org-a", "agent_org_run_execution_tree.json"), "utf8"));
@@ -198,4 +193,5 @@ it("runs 20260901, 20260926 and 20260905 as released on a skip-version install, 
   await new AppDataMigrationRunner(productionRegistry(), repository, { logsDir: path.join(root, "logs") }).runPending();
   expect(await Promise.all(ids.map((id) => repository.getRecord(id)))).toEqual(ledgerBefore);
   expect(await tree(memory)).toEqual(memoryBefore);
-});
+  // The whole production registry runs twice; 20261111 loads the definition catalog on first use.
+}, 30_000);

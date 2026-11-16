@@ -10,6 +10,7 @@ import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { startStudioE2eRuntimeServer } from "../helpers/studio-runtime-test-server.js";
 import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
+import { agentStreamFramesOf } from "../helpers/agent-stream-frames.js";
 
 // Neutral vocabulary on a real runtime path, with no model (autobyteus-331: REQ-001, REQ-004; AC-001, AC-004).
 // The scripted AGY CLI tests/fixtures/agy-failure-cli.mjs makes the agent call the platform's real tools
@@ -98,7 +99,8 @@ suite("Work Journal neutral vocabulary on a real (scripted) runtime", () => {
     socket.on("message", (raw: unknown) => {
       try {
         const parsed = JSON.parse(String(raw)) as { type?: unknown; payload?: unknown };
-        if (typeof parsed.type === "string") messages.push({ type: parsed.type, payload: parsed.payload && typeof parsed.payload === "object" ? parsed.payload as Record<string, unknown> : {} });
+        // autobyteus-461 SR-087: a SEGMENT_CONTENT_BATCH is its items (each a SEGMENT_CONTENT), as the web applies it.
+        messages.push(...agentStreamFramesOf(parsed));
       } catch { /* Ignore only malformed diagnostic transport rows. */ }
     });
     await new Promise<void>((resolve, reject) => { socket.once("open", resolve); socket.once("error", reject); });

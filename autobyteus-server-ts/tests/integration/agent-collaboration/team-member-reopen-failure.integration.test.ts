@@ -93,9 +93,9 @@ const createRun = (identity: CollaborationMemberExecutionIdentity, memberExecuti
 const createMember = (address: string, behavior: Behavior, publishAgentEvent: (...args: unknown[]) => void) => {
   const identity = createCollaborationMemberExecutionIdentity({ root, memberAddress: address, agentRunId: `run${address.replace("/", "-")}` });
   const memberExecutionContext = new MemberExecutionContext({
-    teamScoped: true, collaborationRole: "team_member", identity,
+    teamScoped: true, collaborationRole: "team_member", inOrganization: false, identity,
     collaboration: new MemberCollaborationContext({ deliverLogicalMessage: async () => ({ accepted: true }) }),
-    tasks: { root, delegateToNewCopy: vi.fn(), ownedTaskOf: () => null, assignToExistingCopy: vi.fn(), submitTaskResult: vi.fn(), reviewTaskResult: vi.fn() } as never,
+    tasks: { root, delegationSource: vi.fn(), ownedTaskOf: () => null, submitTaskResult: vi.fn(), reviewTaskResult: vi.fn() } as never,
   });
   const { run, dispatchUserInput } = createRun(identity, memberExecutionContext, behavior);
   const preparation = async ({ runId }: { runId: string }) => ({

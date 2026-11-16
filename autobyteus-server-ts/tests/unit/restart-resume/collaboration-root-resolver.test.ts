@@ -8,7 +8,7 @@ import { StandaloneRootUnavailableError } from "../../../src/standalone-agent-ru
 
 const managers = () => ({
   standaloneRoots: { resolveRoot: vi.fn() },
-  teamRuns: { getManagedTeamRun: vi.fn().mockReturnValue(null), restoreTeamRun: vi.fn() },
+  teamRuns: { getActiveTeamRun: vi.fn().mockReturnValue(null), restoreTeamRun: vi.fn() },
   orgRuns: { getActive: vi.fn().mockReturnValue(null), restore: vi.fn() },
 });
 
@@ -30,7 +30,7 @@ describe("createCollaborationRootResolver", () => {
 
   it("uses an active Team or Org without restoring", async () => {
     const m = managers();
-    m.teamRuns.getManagedTeamRun.mockReturnValue({ live: "team" });
+    m.teamRuns.getActiveTeamRun.mockReturnValue({ live: "team" });
     m.orgRuns.getActive.mockReturnValue({ live: "org" });
     const resolver = createCollaborationRootResolver(m as never);
     await expect(resolver.resolveOrRestore({ rootSubjectKind: "agent_team", rootRunId: "t" })).resolves.toEqual({ kind: "agent_team", root: { live: "team" } });
@@ -61,5 +61,23 @@ describe("createCollaborationRootResolver", () => {
     await expect(resolver.resolveOrRestore({ rootSubjectKind: "agent_org", rootRunId: "o" })).rejects.toThrow("disk full");
     m.standaloneRoots.resolveRoot.mockRejectedValueOnce(new Error("package unreadable"));
     await expect(resolver.resolveOrRestore({ rootSubjectKind: "agent", rootRunId: "a" })).rejects.toThrow("package unreadable");
+  });
+
+  it("CR-461-001: an ending Team or Org is not handed out; restore (which finishes it first) is, and a restore lost to a concurrent one takes the registered root", async () => {
+    const m = managers();
+    const resolver = createCollaborationRootResolver(m as never);
+    m.teamRuns.restoreTeamRun.mockResolvedValueOnce({ restored: "team" });
+    await expect(resolver.resolveOrRestore({ rootSubjectKind: "agent_team", rootRunId: "t" })).resolves.toEqual({ kind: "agent_team", root: { restored: "team" } });
+    expect(m.teamRuns.getActiveTeamRun).toHaveBeenCalledWith("t");
+    m.teamRuns.restoreTeamRun.mockImplementationOnce(async () => {
+      m.teamRuns.getActiveTeamRun.mockReturnValue({ concurrent: "team" });
+      throw new Error("RootTeamRun 't' is already managed.");
+    });
+    await expect(resolver.resolveOrRestore({ rootSubjectKind: "agent_team", rootRunId: "t" })).resolves.toEqual({ kind: "agent_team", root: { concurrent: "team" } });
+    m.orgRuns.restore.mockImplementationOnce(async () => {
+      m.orgRuns.getActive.mockReturnValue({ concurrent: "org" });
+      throw new Error("AgentOrg 'o' is already active.");
+    });
+    await expect(resolver.resolveOrRestore({ rootSubjectKind: "agent_org", rootRunId: "o" })).resolves.toEqual({ kind: "agent_org", root: { concurrent: "org" } });
   });
 });

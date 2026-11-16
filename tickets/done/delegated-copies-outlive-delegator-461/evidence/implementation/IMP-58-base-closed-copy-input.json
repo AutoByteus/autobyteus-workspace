@@ -1,0 +1,25 @@
+{
+  "agentRunView": {
+    "result": {
+      "accepted": false,
+      "code": "RUN_NOT_FOUND",
+      "message": "AgentRun 'code-reviewer-run-1' is not in Agent root 'research-assistant-run'."
+    },
+    "liveBefore": null,
+    "liveAfter": null
+  },
+  "teamView": {
+    "result": {
+      "accepted": false,
+      "code": "RUN_NOT_FOUND",
+      "message": "AgentRun 'code-reviewer-run-1' is not in root 'team-root-collaborators'."
+    }
+  },
+  "agentRunViewClosedNotReleased": {
+    "result": {
+      "accepted": false,
+      "code": "TASK_AGENT_RESOURCE_CLOSED",
+      "message": "Your Task is DONE or CANCELLED, so you can't start new work."
+    }
+  }
+}

@@ -1,7 +1,10 @@
-import type { AgentExecutionStatus } from "@autobyteus/collaboration-stream-contracts";
+import type { RunMessagesFeed } from "../../agent-collaboration/delegation/run-messages-feed.js";
+import type { ClosedTaskFence } from "../../agent-collaboration/execution/task/closed-task-fence.js";
+import type { RootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
+import { acceptWorkPacketIfAllowed } from "../../agent-collaboration/execution/task/task-delegation.js";
 import { mentionViewerOf } from "../../agent-collaboration/collaborators/mention-viewer.js";
-import type { TaskExecutionResourcePort, TaskExecutionStopResult } from "../../agent-collaboration/execution/task/task-execution-resource-port.js";
-import type { TaskExecutionReference } from "../../agent-collaboration/execution/task/task-execution-reference.js";
+import { ASSIGNER_ONLY_REACTIVATION_MESSAGE, type RunTaskRecords } from "../../agent-collaboration/execution/task/task-execution-resource-port.js";
+import { runOwnTaskOf } from "../../agent-collaboration/delegation/run-own-task.js";
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import type { AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
 import { CollaborationContractError } from "../../agent-collaboration/domain/collaboration-contract-error.js";
@@ -23,48 +26,35 @@ import type { RootEventListener, RootLivePosition, RootSnapshotConnection } from
 import { TeamRunEventPublisher } from "../services/team-run-event-publisher.js";
 import { TeamRunMessageDelivery, type ExactTeamAgentMessageInput } from "../services/team-run-message-delivery.js";
 import { TeamRunCollaborators } from "../services/team-run-collaborators.js";
-import { delegateToResolvedTarget } from "../../agent-collaboration/execution/task/task-delegation-target.js";
-import { buildTaskWorkMessageInput } from "../../agent-collaboration/execution/task/task-execution-input.js";
+import { localPlacement } from "../../agent-collaboration/execution/task/task-delegation.js";
+import type { DelegationSource } from "../../agent-collaboration/execution/task/member-task-capability.js";
+import type { DelegationIndex } from "../../agent-collaboration/delegation/delegation-index.js";
 import type { CollaboratorRootPort } from "../../agent-collaboration/collaborators/collaborator-root-port.js";
 import type { CollaboratorAdmission, CollaboratorMention, RootCollaboratorAdmissionResult } from "../../agent-collaboration/collaborators/collaborator-admission.js";
 import type { AvailableCollaborator } from "../../agent-collaboration/collaborators/collaborator-candidate-policy.js";
 import {
-  type AssignToExistingCopyInput,
-  type SpawnTaskInput,
-  type TaskDelegationOutcome,
+  TaskDelegationError,
   type TaskDelegationContext,
 } from "../../agent-collaboration/execution/task/task-delegation-command.js";
 import type { TaskExecutionIdleTimers } from "../../agent-collaboration/execution/task/task-execution-idle-shutdown-schedule.js";
-import { messageLogOwnerOf, REMOTE_RUN_LOG } from "../../run-history/store/task-agent-message-logs.js";
+import { OTHER_RUN_LOG, OWN_RUN_LOG } from "../../run-history/store/message-log-owners.js";
+import { peerRunLinksOf } from "../../agent-collaboration/execution/remote/peer-run-link.js";
 import { RemoteRunLinks, type RemoteInboundMessage, type RemoteInboundWorkPacket } from "../../agent-collaboration/execution/remote/remote-run-links.js";
 import { teamRunRemoteLinks } from "./team-run-remote-links.js";
-import { RemoteTeamIdleShutdown } from "../services/remote-team-idle-shutdown.js";
+import { DelegatedTeamIdleShutdown } from "../services/delegated-team-idle-shutdown.js";
 import type { PreparedLocalExecutionTermination } from "../../agent-collaboration/execution/domain/prepared-local-execution-termination.js";
-import { RemoteDelegation } from "../../agent-collaboration/execution/remote/remote-delegation.js";
 import { RemoteMessageSend } from "../../agent-collaboration/execution/remote/remote-message-send.js";
-import { RemoteRunObservation } from "../../agent-collaboration/execution/remote/remote-run-observation.js";
-import { executeRemoteChildCommand, stopRemoteChild } from "../../agent-collaboration/execution/remote/remote-child-commands.js";
 import type { AgentRunMemoryLocator } from "../../agent-collaboration/execution/services/agent-run-memory-locator.js";
 import type { AgentConversationActivityInspector } from "../../agent-memory/services/agent-conversation-activity-inspector.js";
-import { TeamTaskExecutionService } from "../task-delegation/team-task-execution-service.js";
-import type { TaskExecutionIdentityCapabilities } from "../task-delegation/task-execution-identity-capabilities.js";
 import type { CollaborationAgentPlatformBindingChange } from "../../agent-collaboration/execution/domain/collaboration-agent-platform-binding.js";
 import { TeamAgentPlatformBindingCommitter } from "../services/team-agent-platform-binding-committer.js";
 import type { FrozenTeamRunTerminationScope } from "./frozen-team-run-termination-scope.js";
 import { RootTeamRunMaterializationGate } from "./root-team-run-materialization-gate.js";
-import type {
-  DelegatedLaunchSelectionCommand,
-  DelegatedLaunchUpdateResult,
-  DelegatedStopResult,
-} from "../../agent-collaboration/collaborators/delegated-launch-selection-command.js";
-import type { DelegatedLaunchChange, DelegatedRunReference } from "../../agent-collaboration/domain/delegated-launch-selection.js";
-import type { RunModelSelectionValidator } from "../../llm-management/services/run-model-selection-service.js";
-import { createTeamDelegatedLaunchCommand } from "../services/team-run-delegated-launches.js";
+import { TaskWorkerStatusNotice } from "../../agent-collaboration/execution/task/task-worker-status-notice.js";
 
 export type RootTeamRunPackageSnapshot = Readonly<{
   tree: TeamRunExecutionTreeSnapshot;
-  /** Task executions of `tree` whose Task is DONE or CANCELLED (read at the same point as the tree). */
-  closedTaskExecutions: readonly TaskExecutionReference[];
+  /** Nothing is hosted (autobyteus-461): always empty; a view's children are the runs it delegated to. */
   statuses: readonly TeamAgentStatusSnapshot[];
   inputStates: readonly import("../../agent-collaboration/execution/domain/live-agent-input-snapshot.js").LiveAgentInputSnapshot[];
 }>;
@@ -77,25 +67,25 @@ export type TeamRunExecutionCheckpoint = Readonly<{
 
 type RootLifecycleState = "active" | "persistence_fail_stop" | "terminating" | "terminated";
 
-/** The sole public operation boundary for one rooted Team execution. */
+/**
+ * The sole public operation boundary for one team run (autobyteus-461): its own members, its own log, its gate, its
+ * peer endpoints and its own Stop. A run it delegates to is a run of its own; nothing is hosted.
+ */
 export class RootTeamRun {
   private lifecycle: RootLifecycleState = "active";
   private tree: TeamRunExecutionTreeSnapshot;
   private index: TeamExecutionIndex;
   private readonly teamRunResolver: TeamRunResolver;
-  private readonly taskExecutions: TeamTaskExecutionService;
   private readonly communication: RootCommunicationEngine;
   private readonly platformBindings: TeamAgentPlatformBindingCommitter;
   private readonly materializationGate: RootTeamRunMaterializationGate;
   private readonly collaborators: TeamRunCollaborators;
   private readonly delivery: TeamRunMessageDelivery;
-  private readonly delegatedLaunches: DelegatedLaunchSelectionCommand;
   private readonly remoteLinks: RemoteRunLinks;
   /** autobyteus-278: the live facts of the runs this Team delegated to other nodes (its stream viewers drive it). */
-  readonly remoteChildren: RemoteRunObservation;
-  private readonly remoteDelegation: RemoteDelegation;
-  private readonly remoteIdle: RemoteTeamIdleShutdown | null; // DS-004: only on a Team run a peer started
-  private readonly unsubscribeTaskExecutionEvents: () => void;
+  private readonly delegatedIdle: DelegatedTeamIdleShutdown | null; // DS-7: on every delegated team run (`isDelegated`: its tree has `delegatedFrom`)
+  private readonly workerStatus: TaskWorkerStatusNotice | null; // its Tasks' worker status on the Task side
+  private readonly unsubscribeIdleEvents: () => void;
   private termination: Promise<AgentOperationResult> | null = null;
   private frozenTerminationScope: FrozenTeamRunTerminationScope | null = null;
   private failStopped = false;
@@ -106,8 +96,13 @@ export class RootTeamRun {
     messages: TeamCommunicationMessagesSnapshot;
     persistence: TeamRunPersistenceCoordinator;
     publisher: TeamRunEventPublisher<TeamRunEvent>;
-    taskExecutionIdentity: TaskExecutionIdentityCapabilities;
-    taskExecutionResources?: TaskExecutionResourcePort;
+    /** The node's message feed (SR-072): its committed messages into the views of its runs and the runs above them. */
+    messageFeed: Pick<RunMessagesFeed, "publish">;
+    taskRecords: RunTaskRecords;
+    /** The relationships between runs (the Task entries): its peer children and its own Task (SR-047). */
+    delegationIndex: Pick<DelegationIndex, "peerChildrenOf" | "currentTaskOf" | "collaborationTreeOf">;
+    /** The closed-Task input fence, from the tree and the Task records (DS-15, SR-070). */
+    closedTasks: Pick<ClosedTaskFence, "refusal">;
     memoryLocator?: AgentRunMemoryLocator;
     activityInspector?: AgentConversationActivityInspector;
     taskExecutionIdleShutdown?: Readonly<{ gracePeriodMs?: () => number; timers?: TaskExecutionIdleTimers }>;
@@ -115,62 +110,35 @@ export class RootTeamRun {
     disposeRootSubjects?(): void;
     onTerminated?(ending: TeamRunEnding): void;
   }) {
-    if (!options.taskExecutionIdentity ||
-        typeof options.taskExecutionIdentity.agentRuns?.allocateForAgentDefinition !== "function" ||
-        typeof options.taskExecutionIdentity.taskTeams?.create !== "function") {
-      throw new Error("RootTeamRun task execution identity capabilities are required.");
-    }
     this.tree = options.tree;
     this.index = new TeamExecutionIndex(options.tree);
     this.materializationGate = new RootTeamRunMaterializationGate({
       rootTeamRunId: this.teamRunId,
       canEnter: () => this.isAdmitting(),
     });
-    this.remoteLinks = new RemoteRunLinks(teamRunRemoteLinks(() => this.tree));
-    this.remoteChildren = new RemoteRunObservation({ links: () => this.tree.rootTeam.remoteTaskExecutions ?? [],
-      publish: (event) => options.publisher.publish({ eventSourceType: TeamRunEventSourceType.REMOTE, event }) });
-    const remoteDelegation = new RemoteDelegation({ root: createTeamRootExecutionIdentity(this.teamRunId) });
-    this.remoteDelegation = remoteDelegation;
+    this.remoteLinks = new RemoteRunLinks(teamRunRemoteLinks(() => this.tree, options.delegationIndex));
     this.teamRunResolver = new TeamRunResolver({
       rootTeamRun: options.rootRun,
       getIndex: () => this.index,
     });
-    this.taskExecutions = new TeamTaskExecutionService({
-      rootTeamRunId: this.teamRunId,
-      getTree: () => this.tree,
-      getIndex: () => this.index,
-      remoteLinks: this.remoteLinks,
-      remoteDelegation,
-      onRemoteLinkCommitted: (link) => this.remoteChildren.linkCommitted(link),
-      isRootOpen: () => this.isAdmitting(),
-      authorize: (identity) => this.authorizeCurrentIdentity(identity),
-      requireTeamRun: (teamRunId) => this.requireTeamRun(teamRunId),
-      teamRunResolver: this.teamRunResolver,
-      persistence: options.persistence,
-      enterLifecycleFailStop: () => this.enterLifecycleFailStop(),
-      replaceTree: (tree) => this.replaceTree(tree),
-      publish: (event) => options.publisher.publish(event),
-      taskExecutionIdentity: options.taskExecutionIdentity,
-      memoryLocator: options.memoryLocator, activityInspector: options.activityInspector,
-      retainMessages: (keep) => this.communication.retainMessages(keep),
-      idleShutdown: options.taskExecutionIdleShutdown,
-      taskExecutionResources: options.taskExecutionResources,
-      onLiveLeaseReleased: () => this.remoteIdle?.arm(),
-    });
     this.communication = new RootCommunicationEngine(createTeamCommunicationPort({
       rootTeamRunId: this.teamRunId,
       initial: options.messages,
-      assertDeliveryAllowed: (sender, receiver) => this.taskExecutions.assertMessageScope(sender, receiver),
+      // AR-020: a message to or from a peer run whose Task entry is closed is refused (its node keeps the run).
+      assertDeliveryAllowed: (sender, receiver) => { this.assertPeerEntryOpen(sender); this.assertPeerEntryOpen(receiver); },
       isCurrentAgent: (identity) => this.isCurrentAgent(identity),
-      messageLogOwnerOf: (agentRunId) => this.remoteLinks.has(agentRunId) ? REMOTE_RUN_LOG
-        : messageLogOwnerOf(agentRunId, this.index.getMemoryPlacementForAgent(agentRunId)),
+      messageLogOwnerOf: (agentRunId) => this.remoteLinks.has(agentRunId) || !this.index.getAgent(agentRunId) ? OTHER_RUN_LOG : OWN_RUN_LOG,
       requireContainingTeamRun: (agentRunId) => this.requireContainingTeamRun(agentRunId),
       commitMessageAppend: (append) => options.persistence.commitMessageAppend(append),
       publish: (event) => options.publisher.publish(event),
+      messageFeed: options.messageFeed,
     }));
     this.collaborators = new TeamRunCollaborators({
       admission: options.collaboratorAdmission,
       getTree: () => this.tree,
+      // SR-059, SR-060: what the run reaches by address step 2, from its collaboration tree.
+      reached: async () => [...(await options.delegationIndex.collaborationTreeOf(createTeamRootExecutionIdentity(this.teamRunId)).stepTwo())?.values() ?? []],
+      reachedPlacementAt: (address) => options.delegationIndex.collaborationTreeOf(createTeamRootExecutionIdentity(this.teamRunId)).delegationPlacementAt(address),
     });
     this.delivery = new TeamRunMessageDelivery({
       rootTeamRunId: this.teamRunId,
@@ -179,7 +147,6 @@ export class RootTeamRun {
       communication: this.communication,
       authorizeIdentity: (identity) => this.authorizeIdentity(identity),
       isLiveAgent: (agentRunId) => this.isLiveAgent(agentRunId),
-      withLiveLease: (agentRunId, operation) => this.taskExecutions.withLiveLease(agentRunId, operation),
       remoteLinks: this.remoteLinks,
       remoteSend: new RemoteMessageSend({ engine: () => this.communication, links: this.remoteLinks }),
     });
@@ -190,48 +157,17 @@ export class RootTeamRun {
       replaceTree: (tree) => this.replaceTree(tree),
       enterLifecycleFailStop: () => this.enterLifecycleFailStop(),
     });
-    this.delegatedLaunches = createTeamDelegatedLaunchCommand({
-      taskExecutions: this.taskExecutions,
-      persistence: options.persistence,
-      getTree: () => this.tree,
-      assertAdmitting: () => this.assertAdmitting(),
-      replaceTree: (tree) => this.replaceTree(tree),
-      publish: (event) => options.publisher.publish(event),
-    });
-    this.remoteIdle = this.tree.delegatedFrom ? new RemoteTeamIdleShutdown({ teamRunId: this.teamRunId,
+    this.delegatedIdle = this.tree.delegatedFrom ? new DelegatedTeamIdleShutdown({ teamRunId: this.teamRunId,
       shutDownIfQuiet: () => this.shutDownIfQuiet(), ...options.taskExecutionIdleShutdown }) : null;
-    this.unsubscribeTaskExecutionEvents = options.publisher.subscribe(({ event }) => {
-      this.taskExecutions.onRootEvent(event);
-      this.remoteIdle?.onRootEvent(event);
-    });
+    this.workerStatus = this.tree.delegatedFrom ? new TaskWorkerStatusNotice({ teamRunId: this.teamRunId }, options.taskRecords) : null;
+    this.unsubscribeIdleEvents = options.publisher.subscribe(({ event }) => { this.delegatedIdle?.onRootEvent(event); this.workerStatus?.onTeamEvent(event); });
     this.assertRootCorrelation();
   }
 
-  assertExecutionInputAllowed(agentRunId: string): void {
-    this.assertAdmitting();
-    this.taskExecutions.assertInputAllowed(agentRunId);
-  }
-  releaseTaskExecutions(executions: readonly TaskExecutionReference[]): Promise<readonly TaskExecutionStopResult[]> {
-    return this.taskExecutions.releaseTaskExecutions(executions);
-  }
-  /** A task execution's own live status for the Task side (`offline` once this root stops admitting). */
-  taskExecutionStatus(execution: TaskExecutionReference): AgentExecutionStatus {
-    return this.taskExecutions.taskExecutionStatus(execution);
-  }
-
-  /** DS-002: the user's Stop of one delegated copy and the copies it started. */
-  async stopDelegatedExecution(target: DelegatedRunReference): Promise<DelegatedStopResult> {
-    return await stopRemoteChild(this.remoteLinks, target) ?? this.materializationGate.run(() => this.delegatedLaunches.stop(target));
-  }
-  /** DS-001: the user's model choice for stopped delegated copies of this live run. */
-  updateDelegatedLaunchSelections(
-    changes: readonly DelegatedLaunchChange[],
-    validator: RunModelSelectionValidator,
-  ): Promise<DelegatedLaunchUpdateResult> {
-    return this.materializationGate.run(() => this.delegatedLaunches.update(changes, validator));
-  }
+  /** The user's Stop of a peer child, by its node (DEC-804). A run delegated on this node is stopped as itself. */
 
   get teamRunId(): string { return this.tree.rootTeam.teamRunId; }
+  get rootIdentity(): RootExecutionIdentity { return createTeamRootExecutionIdentity(this.teamRunId); }
   isActive(): boolean { return this.lifecycle === "active" && this.options.rootRun.isActive(); }
   /** Running work only: delegated children count only while initializing or running. */
   hasOpenExecutionWork(): boolean {
@@ -260,9 +196,9 @@ export class RootTeamRun {
     return Object.freeze([...live, ...dormant]);
   }
   getExecutionTreeSnapshot(): TeamRunExecutionTreeSnapshot { return this.tree; }
-  /** Same-root membership for run-ID routing: every agent of the Team (and its copies) and every remote endpoint. */
+  /** Run-ID membership: the team's own members and its peer endpoints. */
   hasAgentExecution(agentRunId: string): boolean {
-    return this.index.getAgent(agentRunId.trim()) !== null || this.remoteLinks.has(agentRunId.trim()) || this.taskExecutions.knowsRunId(agentRunId);
+    return this.index.getAgent(agentRunId.trim()) !== null || this.remoteLinks.has(agentRunId.trim());
   }
   getCommunicationSnapshot(): TeamCommunicationMessagesSnapshot {
     return Object.freeze({ schemaVersion: 1, rootTeamRunId: this.teamRunId, messages: this.communication.getMessages() });
@@ -319,41 +255,36 @@ export class RootTeamRun {
     }
   }
 
-  delegateToNewCopy(context: TaskDelegationContext, input: SpawnTaskInput): Promise<TaskDelegationOutcome> {
+  /**
+   * What this team run answers when one of its agents delegates, in its gate (SR-049): the sender, after its identity
+   * check; this run; this run's own placement (its catalog address map and own refusals, in its
+   * gate again); its view's notice of a peer run. The delegation itself is the tool path's.
+   */
+  delegationSource(context: TaskDelegationContext): Promise<DelegationSource> {
     return this.materializationGate.run(async () => {
       this.authorizeIdentity(context.identity);
-      if (input.node !== undefined) {
-        return this.remoteDelegation.delegate({ ...input, node: input.node }, context, this.taskExecutions);
-      }
-      // DS-001: the work and its Task first, then the placement for that work, then the copy.
-      const work = await this.taskExecutions.prepareNewCopyWork(context, input);
-      return delegateToResolvedTarget(async () => this.delivery.resolveDelegationPlacement(context.identity, input.recipient_address, work.delegation, await this.taskExecutions.newCopyFolder(work)), (placement) =>
-        this.taskExecutions.dispatchNewCopy(context, work, placement));
+      return Object.freeze({ sender: context.identity, senderRun: context.identity.root,
+        resolvePlacement: (address: string, work: Parameters<DelegationSource["resolvePlacement"]>[1], folder: string | null) => this.materializationGate.run(async () =>
+          localPlacement(await this.delivery.resolveDelegationPlacement(context.identity, address, work, folder))),
+      });
     });
   }
-
-  /** `delegate_task` with a copy's own ID: its new Task's work is delivered by this root's exact delivery. */
-  assignToExistingCopy(context: TaskDelegationContext, input: AssignToExistingCopyInput): Promise<TaskDelegationOutcome> {
-    return this.materializationGate.run(async () => {
-      this.authorizeIdentity(context.identity);
-      return this.taskExecutions.assignToExistingCopy(context, input, (targetAgentRunId, content, referenceFiles) =>
-        this.delivery.deliverToRunId(buildTaskWorkMessageInput(context.identity, targetAgentRunId, content, referenceFiles)));
-    });
+  /** The coordinator of this team run, or of a peer team run it delegated to (`send_message_to` guidance); else null. */
+  teamCoordinatorOf(teamRunId: string): string | null {
+    if (teamRunId === this.teamRunId) return this.getCoordinatorAgentRunId();
+    const peer = this.remoteLinks.teamLinkFor(teamRunId);
+    return peer ? peer.members.find((member) => member.address === peer.coordinatorAddress)?.agentRunId ?? null : null;
   }
-  /** The coordinator agent run of this root's Team copy with that team run ID (`send_message_to` guidance); null otherwise. */
-  teamCoordinatorOf(teamRunId: string): string | null { return this.taskExecutions.teamCoordinatorOf(teamRunId); }
-  isDelegatedRun(agentRunId: string): boolean { return this.taskExecutions.isDelegatedRun(agentRunId); } // restart resume's place lookup
-  /** The Task this member works on (`get_project_task`'s read scope), or null; throws on damaged run data. */
-  ownedTaskOf(context: TaskDelegationContext) { return this.taskExecutions.ownedTaskOf(context.identity.agentRunId); }
+  /** The Task this team run works on (`get_project_task`'s read scope), by its own identity; else null. */
+  ownedTaskOf(_context: TaskDelegationContext) { return runOwnTaskOf({ teamRunId: this.teamRunId }, this.options.delegationIndex); }
 
   /** `send_message_to(address)`: delivers to a standing instance; never creates a run. */
   deliverInterAgentMessage(intent: InterAgentMessageDeliveryIntent): Promise<AgentOperationResult> {
-    return this.materializationGate.run(() => this.taskExecutions.withLiveLease(intent.sender.participant.identity.agentRunId, () => this.delivery.deliverToAddress(intent)));
+    return this.materializationGate.run(() => this.delivery.deliverToAddress(intent));
   }
 
   deliverExactAgentMessage(input: ExactTeamAgentMessageInput): Promise<AgentOperationResult> {
-    return this.materializationGate.run(() => this.delivery.deliverExact(input, () => this.taskExecutions.deliverToExactTarget(
-      input.sender.identity.agentRunId, input.targetAgentRunId, () => this.delivery.deliverToRunId(input))));
+    return this.materializationGate.run(() => this.delivery.deliverExact(input, () => this.delivery.deliverToRunId(input)));
   }
 
   /** A message from a linked run on a peer node, admitted by its peer gateway (DS-003). */
@@ -362,6 +293,14 @@ export class RootTeamRun {
   }
 
   /** N-6 for a Team a peer started: the delegator's work packet starts the coordinator with the task notification. */
+  /** DS-2: a message from, and to, another run of this node (CrossRunMessageDelivery: receiver in the gate, sender's own log). */
+  acceptFromRun(input: import("../../agent-collaboration/communication/cross-run-accept-input.js").CrossRunAcceptInput): Promise<AgentOperationResult> { return this.materializationGate.run(() => this.delivery.acceptFromRun(input)); }
+  prepareSendToRun(input: import("../../agent-collaboration/execution/communication/root-communication-engine.js").RunSendInput) { return this.communication.prepareSendToRun(input); }
+  commitSentToRun(message: Parameters<RootCommunicationEngine["commitSentToRun"]>[0]) { return this.communication.commitSentToRun(message); }
+  acceptWorkPacket(packet: import("../../agent-collaboration/execution/task/task-delegation.js").WorkPacket): Promise<AgentOperationResult> {
+    return this.materializationGate.run(() => acceptWorkPacketIfAllowed(packet, // CR-461-003: the Task side first, in the gate
+      () => this.delivery.acceptWorkPacket(packet, this.getCoordinatorAgentRunId(), (message, agentRunId) => this.postMessage(message, agentRunId))));
+  }
   acceptRemoteWorkPacket(input: RemoteInboundWorkPacket): Promise<AgentOperationResult> {
     return this.delivery.acceptRemoteWorkPacket(input, this.getCoordinatorAgentRunId(), (message, agentRunId) => this.postMessage(message, agentRunId));
   }
@@ -370,27 +309,21 @@ export class RootTeamRun {
     agentRunId: string,
     command: TeamMemberExecutionCommand,
   ): Promise<AgentOperationResult> {
-    if (this.isAdmitting() && this.remoteLinks.has(agentRunId)) return executeRemoteChildCommand(this.remoteLinks, agentRunId, command);
     return this.materializationGate.run(async () => {
       const execution = this.index.getAgent(agentRunId);
       if (!execution) {
         return { accepted: false, code: "RUN_NOT_FOUND", message: `AgentRun '${agentRunId}' is not in root '${this.teamRunId}'.` };
       }
+      // DS-15: a delegated team run whose Task is closed takes no input (a message or an approval), as base fenced a copy.
+      const refusal = command.kind === "interrupt" ? null : this.options.closedTasks.refusal(createTeamRootExecutionIdentity(this.teamRunId), Boolean(this.tree.delegatedFrom));
+      if (refusal) return refusal;
       if (command.kind !== "post_message") {
         if (!this.isLiveAgent(agentRunId)) {
           return { accepted: false, code: "RUN_NOT_ACTIVE", message: `AgentRun '${agentRunId}' is shut down in root '${this.teamRunId}'.` };
         }
-        return this.taskExecutions.withLiveLease(agentRunId, async () => {
-          const run = await this.requireContainingTeamRun(agentRunId);
-          this.taskExecutions.assertInputAllowed(agentRunId);
-          return run.executeDirectAgentCommand(agentRunId, command);
-        });
+        return (await this.requireContainingTeamRun(agentRunId)).executeDirectAgentCommand(agentRunId, command);
       }
-      // Operator input wakes a shut-down child exactly like send_message_to.
-      return this.taskExecutions.withLiveLease(agentRunId, async () => {
-        const run = await this.requireContainingTeamRun(agentRunId);
-        return run.executeDirectAgentCommand(agentRunId, command);
-      });
+      return (await this.requireContainingTeamRun(agentRunId)).executeDirectAgentCommand(agentRunId, command);
     });
   }
 
@@ -398,16 +331,25 @@ export class RootTeamRun {
     return this.options.publisher.subscribe(listener);
   }
 
-  openPackageSnapshotConnection(): Promise<RootSnapshotConnection<RootTeamRunPackageSnapshot, TeamRunEvent>> {
+  /**
+   * The run's view snapshot (SR-063): in the view stream's snapshot connection, `atBase` runs in the same synchronous
+   * step as the base (the view's rows and statuses, in memory); then the root's own parts are read consistently, as at
+   * base, and `read` completes the snapshot.
+   */
+  openViewSnapshotConnection<TAtBase, TSnapshot>(
+    atBase: () => TAtBase,
+    read: (own: RootTeamRunPackageSnapshot, atBase: TAtBase) => Promise<TSnapshot> | TSnapshot,
+  ): Promise<RootSnapshotConnection<TSnapshot, TeamRunEvent>> {
     this.assertAdmitting();
-    return this.options.publisher.openSnapshotConnection(() =>
-      this.options.persistence.readConsistent(() => ({
+    return this.options.publisher.openSnapshotConnection(async () => {
+      const rows = atBase();
+      const own = await this.options.persistence.readConsistent(() => ({
         tree: this.tree,
-        closedTaskExecutions: this.taskExecutions.closedTaskExecutions(),
         statuses: this.getLeafAgentStatusSnapshots(),
         inputStates: this.options.rootRun.getInputStateSnapshots(),
-      })),
-    );
+      }));
+      return read(own, rows);
+    });
   }
 
   enterPersistenceFailStop(): void { this.enterFailStop(); }
@@ -418,7 +360,6 @@ export class RootTeamRun {
     this.failStopped = true;
     this.lifecycle = "persistence_fail_stop";
     this.options.persistence.enterRootFailStop();
-    this.taskExecutions.enterRootFailStop();
     this.communication.closeAdmission();
     queueMicrotask(() => {
       void this.terminate().catch((error) => {
@@ -427,12 +368,15 @@ export class RootTeamRun {
     });
   }
 
-  /** DS-004 (peer-started Team): ends quietly, in the gate, when no child work, lease or member is busy (AR-301).
-   * It never interrupts a member, and it ends as a Stop ends (the package is kept). */
+  /**
+   * DS-7 (every delegated Team, DS-004's peer-started one too): ends quietly, in the gate, when its own all-or-nothing
+   * quiescent preparation succeeds, as base's delegated task Team (`tryShutDownRootTaskTeamIfQuiet`): a member starting or
+   * running is not quiet; a member whose start failed (`error`) is, as for an agent run (CR-461-061, F-43, DTL-005). It
+   * never interrupts a member, and it ends as a Stop ends (the package is kept).
+   */
   async shutDownIfQuiet(): Promise<boolean> {
     if (this.termination || !this.isAdmitting()) return false;
     const quiet = await this.materializationGate.run(async () => {
-      if (this.hasOpenExecutionWork() || this.taskExecutions.hasLiveLeases()) return null;
       const prepared = await this.options.rootRun.tryPrepareTerminationIfQuiescent();
       if (prepared) this.lifecycle = "terminating";
       return prepared;
@@ -443,15 +387,14 @@ export class RootTeamRun {
   terminate(quiet: PreparedLocalExecutionTermination | null = null): Promise<AgentOperationResult> {
     if (this.lifecycle === "terminated") return Promise.resolve({ accepted: true });
     if (this.termination) { quiet?.cancel(); return this.termination; }
-    this.remoteIdle?.dispose();
-    this.remoteChildren.dispose();
+    this.delegatedIdle?.dispose();
     this.lifecycle = "terminating";
-    this.taskExecutions.closeExternalAdmission();
     this.communication.closeAdmission();
     void this.materializationGate.closeAndDrain();
     const termination = this.runTermination(quiet);
     this.termination = termination;
     void termination.then((result) => {
+      if (result.accepted) this.workerStatus?.stopped();
       if (!result.accepted && this.termination === termination) this.termination = null;
     }, () => {
       if (this.termination === termination) this.termination = null;
@@ -461,24 +404,30 @@ export class RootTeamRun {
 
   private async runTermination(quiet: PreparedLocalExecutionTermination | null): Promise<AgentOperationResult> {
     await this.materializationGate.closeAndDrain();
-    this.teamRunResolver.closeRegistration();
     // A quiet shutdown (DS-004) fences nothing: every member and child already prepared its quiescent termination.
     const committed = quiet?.commit() ?? null;
     if (!committed) this.frozenTerminationScope ??= this.options.rootRun.freezeForRootTermination();
     const fenced = committed ? { accepted: true } : await this.frozenTerminationScope!.fenceAgentRunsForRootShutdown();
     if (!fenced.accepted) return fenced;
-    // Live children are terminated by the frozen scope; shut-down children own no runtime.
-    await this.taskExecutions.drain();
     await this.options.persistence.drain();
     const result = committed ? await committed.finish() : await this.frozenTerminationScope!.finish();
     if (!result.accepted) return result;
     this.teamRunResolver.clear();
-    this.unsubscribeTaskExecutionEvents();
+    this.unsubscribeIdleEvents();
     this.options.disposeRootSubjects?.();
-    this.options.publisher.clear();
+    // The run's view stream outlives its root (SR-062): its views stay subscribed.
     this.lifecycle = "terminated";
     this.options.onTerminated?.(committed ? "idle_shutdown" : "stopped");
     return { accepted: true };
+  }
+
+  private assertPeerEntryOpen(agentRunId: string): void {
+    const endpoint = this.remoteLinks.endpointFor(agentRunId);
+    if (!endpoint || endpoint.kind === "delegator") return;
+    const execution = endpoint.kind === "delegated_run" ? { agentRunId: endpoint.link.agentRunId } : { teamRunId: endpoint.link.teamRunId };
+    if (!this.options.taskRecords.isOpen(execution)) {
+      throw new TaskDelegationError("TASK_AGENT_RESOURCE_CLOSED", ASSIGNER_ONLY_REACTIVATION_MESSAGE);
+    }
   }
 
   private isAdmitting(): boolean {
@@ -499,22 +448,17 @@ export class RootTeamRun {
   }
 
   /**
-   * Runtime liveness: the containing TeamRun is active and, for a task Agent, its handle is
-   * registered. Configured members are live with their TeamRun (lazy start).
+   * Runtime liveness: a member is live with its active TeamRun (lazy start).
    */
   private isLiveAgent(agentRunId: string): boolean {
     const agent = this.index.getAgent(agentRunId);
-    if (!agent) return false;
-    const containing = this.teamRunResolver.getActive(agent.containingTeamRunId);
-    if (!containing) return false;
-    return agent.executionKind !== "task" || containing.hasLiveDirectTaskExecution({ agentRunId });
+    return !!agent && this.teamRunResolver.getActive(agent.containingTeamRunId) !== null;
   }
 
   private async requireTeamRun(teamRunId: string): Promise<TeamRun> {
-    const indexed = this.index.requireTeam(teamRunId);
+    this.index.requireTeam(teamRunId);
     const active = this.teamRunResolver.getActive(teamRunId);
     if (active) return active;
-    if (indexed.executionKind !== "configured") throw new Error(`Task TeamRun '${teamRunId}' is not active.`);
     return this.teamRunResolver.requireConfigured(teamRunId);
   }
 

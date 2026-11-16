@@ -13,7 +13,8 @@ import { AgentTeamRunManager } from "../../../src/agent-team-execution/services/
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { resetProjectStoreForTests } from "../../../src/projects/stores/project-store.js";
 import { resetProjectServiceForTests } from "../../../src/projects/services/project-service.js";
-import { resetProjectTaskServiceForTests } from "../../../src/projects/services/project-task-service.js";
+import { getProjectTaskService, initializeProjectTaskServiceProcessInstance, releaseProjectTaskServiceProcessInstance } from "../../../src/projects/services/project-task-service.js";
+import { composeTaskSide } from "../../../src/compositions/collaboration-composition.js";
 import { getWorkspaceManager } from "../../../src/workspaces/workspace-manager.js";
 
 // Un-mocked Projects GraphQL boundary: resolver -> ProjectService -> ProjectStore (per-Project folders)
@@ -44,7 +45,16 @@ const resetWorkspaceRegistryForTest = () => {
 const resetProjectsSingletons = () => {
   resetProjectStoreForTests();
   resetProjectServiceForTests();
-  resetProjectTaskServiceForTests();
+  releaseProjectTaskServiceProcessInstance(getProjectTaskService());
+};
+
+/**
+ * The process Task service as the server composes it (autobyteus-461 SR-047 steps 1–2): its agent run resources are loaded
+ * and the delegation tree listens to their changes, which every Task change needs.
+ */
+const composeProjectTaskService = async (appDataDir: string) => {
+  const side = await composeTaskSide({ appDataDir, memoryDir: path.join(appDataDir, "memory") });
+  initializeProjectTaskServiceProcessInstance({ taskExecutionResources: side.resources });
 };
 
 // A fresh node must not inherit feature flags from the developer's shell (e.g. ENABLE_APPLICATIONS=true):
@@ -114,7 +124,7 @@ describe("Projects GraphQL e2e (un-mocked)", () => {
     graphql = (await import(graphqlPath)).graphql as typeof graphqlFn;
   });
 
-  beforeEach(() => {
+  beforeEach(async () => {
     stashedFeatureFlagEnv = stashFeatureFlagEnv();
     appConfigProvider.resetForTests();
     appDataDir = fs.mkdtempSync(path.join(os.tmpdir(), "autobyteus-projects-e2e-"));
@@ -128,6 +138,7 @@ describe("Projects GraphQL e2e (un-mocked)", () => {
     appConfigProvider.config.setCustomAppDataDir(appDataDir);
     resetWorkspaceRegistryForTest();
     resetProjectsSingletons();
+    await composeProjectTaskService(appDataDir);
     initialActiveWorkspaceIds = new Set(workspaceManager.getAllWorkspaces().map((ws) => ws.workspaceId));
     vi.spyOn(AgentRunManager, "getInstance").mockReturnValue({
       listActiveRuns: () => [],
@@ -468,6 +479,7 @@ describe("Projects GraphQL e2e (un-mocked)", () => {
     appConfigProvider.config.setCustomAppDataDir(appDataDir);
     resetWorkspaceRegistryForTest();
     resetProjectsSingletons();
+    await composeProjectTaskService(appDataDir);
 
     const reloaded = await listProjects();
     expect(reloaded).toEqual([
@@ -754,6 +766,7 @@ describe("Projects GraphQL e2e (un-mocked)", () => {
     const releasedBytes = `${JSON.stringify(released, null, 2)}\n`;
     fs.writeFileSync(taskFile(oldTask.taskId), releasedBytes, "utf8");
     resetProjectsSingletons();
+    await composeProjectTaskService(appDataDir);
     expect(await one(p, oldTask.taskId)).toMatchObject({ taskKey: oldTask.taskKey, partOfTaskId: null });
     await update(p, second.taskId, { description: "another Task's save" });
     expect(fs.readFileSync(taskFile(oldTask.taskId), "utf8")).toBe(releasedBytes);
@@ -824,6 +837,7 @@ describe("Projects GraphQL e2e (un-mocked)", () => {
     const releasedBytes = `${JSON.stringify(released, null, 2)}\n`;
     fs.writeFileSync(taskFile(quiet.taskId), releasedBytes, "utf8");
     resetProjectsSingletons();
+    await composeProjectTaskService(appDataDir);
     expect((await listed()).find((t) => t.taskId === quiet.taskId)!.comments).toEqual([]);
     await add(task.taskId, "Another Task's write");
     expect(fs.readFileSync(taskFile(quiet.taskId), "utf8")).toBe(releasedBytes);

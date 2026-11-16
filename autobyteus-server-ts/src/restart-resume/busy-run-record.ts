@@ -31,7 +31,7 @@ export type BusyRunRecordReadResult =
 
 export const busyRunRecordPath = (appDataDir: string): string => path.join(appDataDir, "restart-resume", "busy-runs.json");
 
-const PLACES: readonly string[] = ["host", "member", "delegated"];
+const PLACES: readonly string[] = ["host", "member"];
 const STATUSES: readonly string[] = ["initializing", "running"];
 const nonEmpty = (value: unknown): value is string => typeof value === "string" && value.trim().length > 0;
 

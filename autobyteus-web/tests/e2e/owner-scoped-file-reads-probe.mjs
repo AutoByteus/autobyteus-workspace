@@ -36,6 +36,7 @@ import { spawn, execFileSync } from 'node:child_process';
 import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
 import { attachToBrowserContext, attachToProbeProcess, withNodeCredential } from './fixtures/probe-node-access.mjs';
+import { readRunTree, delegatedNodes } from './fixtures/run-tree.mjs';
 // Every node needs a credential (autobyteus-437): the probe's nodes start with its launch credential, and the probe's
 // own calls and its desktop browser contexts carry it (fixtures/probe-node-access.mjs).
 attachToProbeProcess();
@@ -184,7 +185,8 @@ const config = (workspaceRootPath) => ({ workspaceRootPath, llmModelIdentifier: 
 /** The files a run or member wrote, through its owner's list (asserts the expected count). */
 const filesOf = {
   run: (runId) => gql('query($r:String!){getRunFileChanges(runId:$r){path}}', { r: runId }).then((d) => d.getRunFileChanges),
-  standaloneMember: (s) => gql('query($h:String!,$a:String!,$r:String!){agentRunCollaborationMemberFileChanges(hostRunId:$h,memberAddress:$a,agentRunId:$r){path}}', { h: s.hostRunId, a: s.memberAddress, r: s.agentRunId }).then((d) => d.agentRunCollaborationMemberFileChanges),
+  // autobyteus-461 rule 2: a delegated agent's files are read by its own run.
+  standaloneMember: (s) => gql('query($r:String!){getRunFileChanges(runId:$r){path}}', { r: s.agentRunId }).then((d) => d.getRunFileChanges),
   teamMember: (s) => gql('query($t:String!,$a:String!){getTeamMemberFileChanges(teamRunId:$t,agentRunId:$a){path}}', { t: s.teamRunId, a: s.agentRunId }).then((d) => d.getTeamMemberFileChanges),
   agentOrgMember: (s) => gql('query($o:String!,$m:String!,$a:String!){getAgentOrgMemberFileChanges(orgRunId:$o,memberAddress:$m,agentRunId:$a){path}}', { o: s.orgRunId, m: s.memberAddress, a: s.agentRunId }).then((d) => d.getAgentOrgMemberFileChanges),
 };
@@ -220,7 +222,9 @@ const seed = async () => {
     await until(`${label} file ${name} listed live`, async () => (await listOf(subject)).some((e) => e.path === name), 90000);
     files.push({ label, subject, path: name, absolutePath: fileIn(name), text: `Owner-scoped file of ${label} (${name}) ${randomUUID().slice(0, 8)}` });
   };
+  // autobyteus-461 SR-084: a run's delegated runs are its tree's rows (`runTree`).
   const taskAgentsIn = (tree) => {
+    if (tree?.rows) return delegatedNodes(tree).filter((n) => n.agentRunId).map((n) => ({ agentRunId: n.agentRunId, address: n.address }));
     const out = []; const walk = (v) => { if (Array.isArray(v)) return v.forEach(walk); if (!v || typeof v !== 'object') return;
       const startedAt = v.startedAt ?? v.started_at, agentRunId = v.agentRunId ?? v.agent_run_id;
       if (typeof startedAt === 'string' && agentRunId && !(v.teamRunId ?? v.team_run_id)) out.push({ agentRunId, address: v.address });
@@ -239,7 +243,7 @@ const seed = async () => {
   const toHub = (content) => hubInput.socket.send(JSON.stringify({ type: 'SEND_MESSAGE', payload: { agent_run_id: hub.runId, message_id: randomUUID(), dedupe_key: randomUUID(), content, context_file_paths: [], image_urls: [] } }));
   toHub(writeImage('hub-notes.md'));
   await recorded('standalone run', { kind: 'run', runId: hub.runId }, 'hub-notes.md');
-  const hubTree = async () => (await gql('query($id:String!){agentRunCollaboration(runId:$id)}', { id: hub.runId })).agentRunCollaboration?.root_agent?.execution_tree ?? null;
+  const hubTree = () => readRunTree(gql, 'agent', hub.runId);
   toHub(delegateWriter('copy-notes.md'));
   const copy = await newTaskAgent('copy', hubTree, []);
   await recorded('delegated copy', { kind: 'standaloneMember', hostRunId: hub.runId, memberAddress: copy.address, agentRunId: copy.agentRunId }, 'copy-notes.md');
@@ -260,8 +264,9 @@ const seed = async () => {
   toTeamMember(teamManager.agentRunId, writeImage('team-manager-notes.md'));
   await recorded('team configured member', teamManager, 'team-manager-notes.md');
   toTeamMember(teamManager.agentRunId, delegateWriter('team-task-agent-notes.md'));
-  const teamTask = await newTaskAgent('team task agent', teamTreeOf, []);
-  await recorded('team task agent', { kind: 'teamMember', teamRunId: teamRun.teamRunId, memberAddress: teamTask.address, agentRunId: teamTask.agentRunId }, 'team-task-agent-notes.md');
+  const teamTask = await newTaskAgent('team task agent', () => readRunTree(gql, 'agent_team', teamRun.teamRunId), []);
+  // autobyteus-461 rule 2: a delegated agent run's files are read by its own run (it is not a member of its delegator).
+  await recorded('team task agent', { kind: 'run', runId: teamTask.agentRunId }, 'team-task-agent-notes.md');
 
   // Org run: direct agent and member-team lead files; an org-root and a member-team task agent file.
   const orgRun = (await gql('mutation($input:CreateAgentOrgRunInput!){createAgentOrgRun(input:$input){success message agentOrgRunId}}', { input: { agentOrgDefinitionId: ids.org,
@@ -273,7 +278,7 @@ const seed = async () => {
     if (member.agentRunId) orgMembers[member.address] = member.agentRunId;
     for (const inner of member.members ?? []) if (inner.agentRunId) orgMembers[inner.address] = inner.agentRunId;
   }
-  const orgTreeOf = async () => (await gql('query($id:String!){getAgentOrgRootHistory(orgRunId:$id){org}}', { id: orgRun.agentOrgRunId })).getAgentOrgRootHistory.org;
+  const orgTreeOf = () => readRunTree(gql, 'agent_org', orgRun.agentOrgRunId);
   const orgView = await openSocket('agent-org', orgRun.agentOrgRunId, (f) => f.type === 'ROOT_EXECUTION_VIEW_SNAPSHOT');
   const toOrgMember = (agentRunId, content) => orgView.socket.send(JSON.stringify({ type: 'SEND_MESSAGE', payload: {
     root_subject_kind: 'agent_org', root_run_id: orgRun.agentOrgRunId, target_agent_run_id: agentRunId,
@@ -287,10 +292,10 @@ const seed = async () => {
   await recorded('org member-team member', orgLead, 'org-squad-lead-notes.md');
   toOrgMember(orgManager.agentRunId, delegateWriter('org-task-agent-notes.md'));
   const orgTask = await newTaskAgent('org-root task agent', orgTreeOf, []);
-  await recorded('org-root task agent', { kind: 'agentOrgMember', orgRunId: orgRun.agentOrgRunId, memberAddress: orgTask.address, agentRunId: orgTask.agentRunId }, 'org-task-agent-notes.md');
+  await recorded('org-root task agent', { kind: 'run', runId: orgTask.agentRunId }, 'org-task-agent-notes.md');
   toOrgMember(orgLead.agentRunId, delegateWriter('org-squad-task-agent-notes.md'));
   const squadTask = await newTaskAgent('member-team task agent', orgTreeOf, [orgTask]);
-  await recorded('org member-team task agent', { kind: 'agentOrgMember', orgRunId: orgRun.agentOrgRunId, memberAddress: squadTask.address, agentRunId: squadTask.agentRunId }, 'org-squad-task-agent-notes.md');
+  await recorded('org member-team task agent', { kind: 'run', runId: squadTask.agentRunId }, 'org-squad-task-agent-notes.md');
 
   // Stop every root (the journeys open saved runs).
   const stopped = async (mutation, id) => { const r = Object.values(await gql(mutation, { id }))[0]; assert(r.success, r.message); };
@@ -331,7 +336,8 @@ const contentRoute = (subject, filePath) => {
     case 'run': return `/runs/${e(subject.runId)}/file-change-content?${p}`;
     case 'teamMember': return `/team-runs/${e(subject.teamRunId)}/agent-runs/${e(subject.agentRunId)}/file-change-content?${p}`;
     case 'agentOrgMember': return `/agent-org-runs/${e(subject.orgRunId)}/agent-runs/${e(subject.agentRunId)}/file-change-content?memberAddress=${e(subject.memberAddress)}&${p}`;
-    case 'standaloneMember': return `/agent-collaborations/${e(subject.hostRunId)}/agent-runs/${e(subject.agentRunId)}/file-change-content?memberAddress=${e(subject.memberAddress)}&${p}`;
+    // autobyteus-461 rule 2: a delegated copy's file content is served by its own run's route.
+    case 'standaloneMember': return `/runs/${e(subject.agentRunId)}/file-change-content?${p}`;
   }
   throw new Error(subject.kind);
 };
@@ -340,7 +346,7 @@ const listQuery = (subject) => {
     case 'run': return ['query($r:String!){getRunFileChanges(runId:$r){id path status}}', { r: subject.runId }];
     case 'teamMember': return ['query($t:String!,$a:String!){getTeamMemberFileChanges(teamRunId:$t,agentRunId:$a){id path status}}', { t: subject.teamRunId, a: subject.agentRunId }];
     case 'agentOrgMember': return ['query($o:String!,$m:String!,$a:String!){getAgentOrgMemberFileChanges(orgRunId:$o,memberAddress:$m,agentRunId:$a){id path status}}', { o: subject.orgRunId, m: subject.memberAddress, a: subject.agentRunId }];
-    case 'standaloneMember': return ['query($h:String!,$a:String!,$r:String!){agentRunCollaborationMemberFileChanges(hostRunId:$h,memberAddress:$a,agentRunId:$r){id path status}}', { h: subject.hostRunId, a: subject.memberAddress, r: subject.agentRunId }];
+    case 'standaloneMember': return ['query($r:String!){getRunFileChanges(runId:$r){id path status}}', { r: subject.agentRunId }];
   }
   throw new Error(subject.kind);
 };
@@ -358,10 +364,13 @@ const apiTimings = async () => {
     result[`${file.label} content`] = await timed(() => restRaw(contentRoute(file.subject, file.path)), (r) => assert(r.status === 200 && r.text === file.text, `${file.label} content`, { status: r.status, text: r.text.slice(0, 200) }));
   }
   const copy = setup.files.find((f) => f.subject.kind === 'standaloneMember');
-  result['run-id list of a member (QR-002)'] = await timed(() => gqlRaw('query($r:String!){getRunFileChanges(runId:$r){id}}', { r: copy.subject.agentRunId }),
-    (r) => assert(r.ok && r.body.data.getRunFileChanges.length === 0, 'run-id list of a member is empty', r.body));
-  result['run-id content of a member (QR-002)'] = await timed(() => restRaw(contentRoute({ kind: 'run', runId: copy.subject.agentRunId }, copy.path)),
-    (r) => assert(r.status === 404, 'run-id content of a member is 404', r));
+  // autobyteus-461 rule 2: a delegated copy is its own run, so its run-id list holds its own files (base: a hub member's
+  // run-id list was empty, its files were the hub's).
+  result['run-id list of a delegated run (rule 2)'] = await timed(() => gqlRaw('query($r:String!){getRunFileChanges(runId:$r){id}}', { r: copy.subject.agentRunId }),
+    (r) => assert(r.ok && r.body.data.getRunFileChanges.some((e) => e.id.endsWith(`:${copy.path}`)), 'run-id list of a delegated run has its own file', r.body));
+  // autobyteus-461 rule 2: the copy's content is read by its own run route (base: 404, the hub owned it).
+  result['run-id content of a delegated run (rule 2)'] = await timed(() => restRaw(contentRoute({ kind: 'run', runId: copy.subject.agentRunId }, copy.path)),
+    (r) => assert(r.status === 200 && r.text === copy.text, 'run-id content of a delegated run is its own file', { status: r.status, text: r.text.slice(0, 200) }));
   // Control: a read that still scans every saved team, org and hub tree (team-member context-file owner lookup, FU-A).
   result['control: scanning context-file read (FU-A)'] = await timed(() => restRaw(`/team-runs/${encodeURIComponent(setup.hubRunId)}/agent-runs/unknown_agent_run/context-files/missing.txt`),
     (r) => assert(r.status === 404, 'scanning control answers 404', r));
@@ -611,7 +620,7 @@ const journeys = [
     opened.push(await openArtifact(leadFile));
     for (const label of ['org-root task agent', 'org member-team task agent']) {
       const file = fileOf(label);
-      await page.locator(`[data-test="agent-org-task-agent-row-${file.subject.agentRunId}"]`).click();
+      await page.locator(`[data-test="workspace-team-transient-execution-row"][data-agent-run-id="${file.subject.runId ?? file.subject.agentRunId}"]`).click();
       opened.push(await openArtifact(file));
     }
     await shot('B-003-org-task-agent-file');

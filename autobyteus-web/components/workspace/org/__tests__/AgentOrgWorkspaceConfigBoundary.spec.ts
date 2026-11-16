@@ -38,7 +38,7 @@ vi.mock('~/stores/workspaceCenterViewStore', () => ({
   useWorkspaceCenterViewStore: () => center,
 }))
 vi.mock('~/stores/agentOrgContextsStore', () => ({
-  useAgentOrgContextsStore: () => ({ readRunConfig: readOrg, saveRunConfig: saveOrg, contextFor: () => null }),
+  useAgentOrgContextsStore: () => ({ readRunConfig: readOrg, saveRunConfig: saveOrg, contextFor: () => null, selectedRowKey: () => null }),
 }))
 vi.mock('~/services/runConfigEditing/existingRunModelOptionsClient', () => ({
   loadExistingRunModelOptions: vi.fn().mockResolvedValue({}),
@@ -90,6 +90,7 @@ describe('AgentOrg workspace configuration boundary', () => {
     state.context = {
       phase: 'historical', error: null,
       executionTree: { rootOrg: { orgDefinitionId: 'org-def', orgRunId: 'org-run' } },
+      selectedTarget: () => null,
     }
     readOrg.mockImplementation(async (orgRunId: string) => {
       const tree = structuredClone(taskBearingView().execution_tree)

@@ -172,8 +172,7 @@ describe('RootRunPackageReadinessIndex', () => {
     await writeTeam(memoryDir, 'team-old');
     await writeOrg(memoryDir, 'org-old');
     const logReads = [
-      vi.spyOn(TeamCommunicationStore.prototype, 'read'), vi.spyOn(TeamCommunicationStore.prototype, 'readLog'),
-      vi.spyOn(AgentOrgCommunicationMessagesStore.prototype, 'read'), vi.spyOn(AgentOrgCommunicationMessagesStore.prototype, 'readLog'),
+      vi.spyOn(TeamCommunicationStore.prototype, 'readLog'), vi.spyOn(AgentOrgCommunicationMessagesStore.prototype, 'readLog'),
     ];
     const scan = vi.spyOn(RootRunPackageCurrentValidator.prototype, 'scan');
     const index = new RootRunPackageReadinessIndex(memoryDir);

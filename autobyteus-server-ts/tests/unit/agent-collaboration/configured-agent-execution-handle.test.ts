@@ -22,8 +22,8 @@ import {
 
 const taskCapability = (root: ReturnType<typeof createTeamRootExecutionIdentity>) => ({
   root,
-  delegateToNewCopy: vi.fn(),
-  ownedTaskOf: () => null, assignToExistingCopy: vi.fn(),
+  delegationSource: vi.fn(),
+  ownedTaskOf: () => null,
   submitTaskResult: vi.fn(),
   reviewTaskResult: vi.fn(),
 });
@@ -45,7 +45,7 @@ const build = (
     ancestorTeamRunIds: kind === "agent_team" ? [] : ["mounted-team-run"],
   });
   const memberExecutionContext = new MemberExecutionContext({
-    teamScoped: true, collaborationRole: "team_member",
+    teamScoped: true, collaborationRole: "team_member", inOrganization: false,
     identity,
     authoredEnclosingScopeInstruction: "Stay in scope.",
     collaboration: new MemberCollaborationContext({
@@ -347,6 +347,19 @@ describe("on-demand binding readiness", () => {
     expect(f.prepareNewAgentRun).toHaveBeenCalledTimes(1);
     expect(f.abort).not.toHaveBeenCalled();
     expect(f.releaseExactRun).toHaveBeenCalledWith(f.fakeRun);
+  });
+
+  it("CR-461-061: a kept failed start whose cleanup was confirmed is quiet, so the member's team can idle-shut-down; a quarantined cleanup is not", async () => {
+    const failed = build("agent_org", RuntimeKind.CODEX_APP_SERVER);
+    failed.fakeRun.subscribeToEvents.mockImplementation(() => { throw new Error("publication failed"); });
+    await expect(failed.handle.getOrCreateAgentRun()).rejects.toMatchObject({ indeterminate: true });
+    // The failure is kept (the next input sees it, no retry) but is no longer work in flight.
+    await expect(failed.handle.tryPrepareTerminationIfQuiescent()).resolves.not.toBeNull();
+    const quarantined = build("agent_org", RuntimeKind.CODEX_APP_SERVER);
+    quarantined.commitPlatformBindingChange.mockRejectedValue(new Error("rejected"));
+    quarantined.abort.mockResolvedValue({ kind: "quarantined", error: new Error("cleanup unavailable") } as never);
+    await expect(quarantined.handle.getOrCreateAgentRun()).rejects.toMatchObject({ code: "AGENT_RUN_ACTIVATION_CLEANUP_FAILED" });
+    await expect(quarantined.handle.tryPrepareTerminationIfQuiescent()).resolves.toBeNull();
   });
 
   it("retains cleanup quarantine as nonretryable even on a definite root rejection", async () => {

@@ -54,6 +54,16 @@ export class AgentRunMemoryRecorder implements AgentRunCommandObserver {
     this.enqueue(payload.runId, () => state.accumulator.recordForwardedUserMessage(payload));
   }
 
+  /**
+   * Resolves once every record enqueued for the run so far is written (autobyteus-461 SR-087). Asked from a run listener
+   * subscribed after the recorder's, at a turn's `TURN_COMPLETED`, it covers every record of that turn: the recorder has
+   * already enqueued them, the event's own included. A run the recorder does not record resolves at once: the native
+   * runtime writes a call itself when it settles, before its turn completes.
+   */
+  whenPersisted(runId: string): Promise<void> {
+    return this.states.get(runId)?.queue ?? Promise.resolve();
+  }
+
   async waitForIdle(runId?: string | null): Promise<void> {
     if (runId) {
       await (this.states.get(runId)?.queue ?? Promise.resolve());

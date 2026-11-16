@@ -1,0 +1,24 @@
+# Round 31 (IR-031) checks, on d381f7b17a (server and web), contracts rebuilt
+
+## contracts
+$ pnpm test (collaboration-stream-contracts)  -> # pass 50 / # fail 0
+$ pnpm test (team-stream-contracts)          -> # pass 20 / # fail 0
+$ pnpm test (agent-presentation-contracts)   -> # pass 21 / # fail 1 (runtime-kind full names, AC-005: fails at the branch head without this round's change too)
+
+## server
+$ node scripts/typecheck.mjs -> [typecheck] PASS (production errors: 0; tests at baseline)
+$ npx vitest run tests/unit (after step 4)
+ Test Files  895 passed | 4 skipped (899)
+      Tests  7243 passed | 7 skipped (7250)
+$ pnpm test:integration:prepare && pnpm test:integration (load average 106-149, another workload)
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 5 ⎯⎯⎯⎯⎯⎯⎯
+ Test Files  1 failed | 85 passed | 20 skipped (106)
+      Tests  5 failed | 490 passed | 69 skipped (564)
+  failed: tests/integration/file-explorer/file-system-watcher.integration.test.ts only (5 timing tests); alone at load 16-80: 13/14, then 10/14 (FU-021; nothing it uses changed)
+
+## web
+$ pnpm codegen:check -> autobyteus-web/generated/graphql.ts is current.
+$ pnpm typecheck -> [typecheck] PASS (test files at baseline 90)
+$ npx vitest run
+ Test Files  771 passed (771)
+      Tests  5760 passed | 2 skipped (5762)

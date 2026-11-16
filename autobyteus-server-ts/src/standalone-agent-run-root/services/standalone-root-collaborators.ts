@@ -1,4 +1,4 @@
-import { buildInRunPlacements, type CollaboratorRootPort } from "../../agent-collaboration/collaborators/collaborator-root-port.js";
+import { addressesInUseOf, buildInRunPlacements, type CollaboratorRootPort, type ReachedPlacements } from "../../agent-collaboration/collaborators/collaborator-root-port.js";
 import type { DelegationWork } from "../../model-routing/domain/model-routing-types.js";
 import { type MentionViewer } from "../../agent-collaboration/collaborators/mention-viewer.js";
 import type {
@@ -10,30 +10,31 @@ import type {
 import type { AvailableCollaborator } from "../../agent-collaboration/collaborators/collaborator-candidate-policy.js";
 import { getCollaboratorAdmission } from "../../agent-collaboration/collaborators/collaborator-definition-catalog.js";
 import type { AgentLaunchConfiguration } from "../../agent-team-execution/domain/team-run-config.js";
-import type { StandaloneRootTreeSnapshot } from "../domain/standalone-root-tree.js";
+import type { StandaloneRootHost } from "../domain/standalone-root-host.js";
+import type { AgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
+import type { DelegationPlacement } from "../../agent-collaboration/collaborators/catalog-delegation.js";
 
 /**
- * Catalog facts of one Agent-root tree for one viewer (the focused or sending agent). The
- * host is always in the run, as the run's own agent at its host address; its definition is the
- * viewer's own only when the viewer is the host, so every other agent in the run can mention,
- * list and message the host while the host never offers itself.
+ * Catalog facts of a standalone run for its one agent: the run's own agent at its address, whose definition is its
+ * own (a run never delegates to its own definition, SR-037), and what it reaches by address step 2 (SR-059).
  */
 export const standaloneRootCollaboratorPortFor = (
-  tree: StandaloneRootTreeSnapshot,
+  host: StandaloneRootHost,
   rootLaunchConfiguration: AgentLaunchConfiguration,
   viewerAgentRunId: string,
+  reached: ReachedPlacements,
 ): CollaboratorRootPort => {
-  const hostDefinition = Object.freeze({ kind: "agent" as const, definitionId: tree.host.agentDefinitionId });
-  const ownDefinition = viewerAgentRunId === tree.host.agentRunId ? hostDefinition : null;
+  const hostDefinition = Object.freeze({ kind: "agent" as const, definitionId: host.agentDefinitionId });
+  const ownDefinition = viewerAgentRunId === host.agentRunId ? hostDefinition : null;
   return Object.freeze({
     isApplicationBound: false,
     launchBase: () => Object.freeze({ kind: "inherited" as const, launch: rootLaunchConfiguration }),
     ownDefinition: () => ownDefinition,
-    inRunPlacementsByDefinition: () => buildInRunPlacements({
-      runAgent: { ref: hostDefinition, address: tree.host.address },
-      configured: [],
+    inRunPlacementsByDefinition: async () => buildInRunPlacements({
+      runAgent: { ref: hostDefinition, address: host.address },
+      configured: [], configuredStep: 3, reached: await reached(),
     }),
-    addressesInUse: () => new Set([tree.host.address]),
+    addressesInUse: async () => addressesInUseOf([host.address], await reached()),
   });
 };
 
@@ -47,8 +48,17 @@ export class StandaloneRootCollaborators {
     admission?: CollaboratorAdmission;
     /** The host run's own settings, as saved now; catalog copies snapshot them (REQ-004). */
     inheritedLaunch(): AgentLaunchConfiguration;
-    getTree(): StandaloneRootTreeSnapshot;
+    host: StandaloneRootHost;
+    /** What the run reaches by address step 2 (SR-059). */
+    reached: ReachedPlacements;
+    /** A configured placement step 2 reaches at an address, with its snapshot (SR-059). */
+    reachedPlacementAt(address: AgentTeamAddress): Promise<DelegationPlacement | null>;
   }>) {}
+
+  /** `delegate_task`'s in-run placement: a configured placement the run's address step 2 reaches (SR-059). */
+  reachedPlacementAt(address: AgentTeamAddress): Promise<DelegationPlacement | null> {
+    return this.options.reachedPlacementAt(address);
+  }
 
   /** `@` for the focused agent: each mentioned definition's name, kind, address and presence; adds nothing. */
   resolveMentions(viewerAgentRunId: string, definitions: readonly CollaboratorMention[], viewer: MentionViewer): Promise<CollaboratorAdmissionResult> {
@@ -68,6 +78,6 @@ export class StandaloneRootCollaborators {
 
   /** The root's catalog facts as seen by one agent of the run. */
   portFor(viewerAgentRunId: string): CollaboratorRootPort {
-    return standaloneRootCollaboratorPortFor(this.options.getTree(), this.options.inheritedLaunch(), viewerAgentRunId);
+    return standaloneRootCollaboratorPortFor(this.options.host, this.options.inheritedLaunch(), viewerAgentRunId, this.options.reached);
   }
 }

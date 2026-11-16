@@ -5,31 +5,13 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { TASK_AGENT_OWN_RUN_V1_MIGRATION_ID, TaskAgentOwnRunV1AppDataMigration } from "../../../src/app-data-migrations/migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.js";
 import { DelegatedCopyOwnFileCompleteV1AppDataMigration } from "../../../src/app-data-migrations/migrations/delegated-copy-own-file-complete-v1/delegated-copy-own-file-complete-v1-app-data-migration.js";
 import type { AppDataMigrationRecordSnapshot } from "../../../src/app-data-migrations/domain/app-data-migration-types.js";
-import { AgentOrgRunExecutionTreeStore } from "../../../src/run-history/store/agent-org-run-execution-tree-store.js";
-import { validateAgentOrgRunExecutionTreePayload } from "../../../src/run-history/store/agent-org-run-execution-tree-schema.js";
 import {
   AtomicRunPackageFileCommitWriter,
   type RunPackageFileWriteResult,
 } from "../../../src/app-data-migrations/frozen/server/run-history/store/atomic-run-package-file-commit-writer.js";
-import { TeamRunExecutionTreeStore } from "../../../src/run-history/store/team-run-execution-tree-store.js";
-import { validateTeamRunExecutionTreePayload } from "../../../src/run-history/store/team-run-execution-tree-schema.js";
-import { StandaloneRootPackageStore } from "../../../src/standalone-agent-run-root/persistence/standalone-root-package-store.js";
-import { validateStandaloneRootTreePayload } from "../../../src/standalone-agent-run-root/persistence/standalone-root-tree-schema.js";
-import { TaskAgentMessageLogs } from "../../../src/run-history/store/task-agent-message-logs.js";
-import { MessageLog } from "../../../src/run-history/store/message-log.js";
+import { MessageLog } from "../../../src/app-data-migrations/frozen/server/run-history/store/message-log.js";
 import { convertMessageLogsAsOnStartup } from "../../helpers/append-only-message-log-startup.js";
-import {
-  HUB_MESSAGES,
-  NEW_FOLDERS,
-  OLD_FOLDERS,
-  ORG_MESSAGES,
-  TEAM_RUN_MESSAGES,
-  hubRecords,
-  orgRecords,
-  snapshot,
-  teamRunRecords,
-  writeReleasedDataRoot,
-} from "../../fixtures/app-data-migrations/released-task-agent-layout-fixtures.js";
+import { HUB_MESSAGES, NEW_FOLDERS, OLD_FOLDERS, ORG_MESSAGES, TEAM_RUN_MESSAGES, hubRecords, orgRecords, snapshot, writeReleasedDataRoot } from "../../fixtures/app-data-migrations/released-task-agent-layout-fixtures.js";
 
 /** Design D-8, contract §8, §12.3: the startup migration over faithful released fixtures. */
 
@@ -258,7 +240,7 @@ describe("a stopped start is continued by the next start (F-RERUN, F-RERUN-MSG)"
     expect(own.taskAgent.coordinatingRun).toEqual({ kind: "agent", runId: "hub" });
     const between = { messageId: "m-between", senderAgentRunId: "hub", receiverAgentRunId: "c7-helper", content: "between", messageType: "agent_message",
       referenceFiles: [], createdAt: "2026-10-01T09:00:00.000Z" };
-    await new TaskAgentMessageLogs(memory).append({ kind: "task_agent", agentRunId: "c7-helper" }, between);
+    await new MessageLog(path.join(memory, "agents/c7-helper"), "communication_messages").appendBatch([between]);
 
     expect((await migrate(memory)).status).toBe("SUCCEEDED");
     // The app writes its own log in the append-only layout; own-run merges the coordinating log's messages

@@ -6,6 +6,8 @@ import { spawnSync } from 'node:child_process';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { AgyRuntimeErrorFixture, until } from '../helpers/agy-runtime-error-fixture.js';
 import { readParticipantMessages } from '../../helpers/collaboration-participant-messages.js';
+import { restoreByMemberMessage } from '../helpers/restore-by-member-message.js';
+import { addedRowKeysPerChange, delegatedRunsTree, hasTreeSnapshot, isRunRowKey, treeSnapshotRunsOf } from '../helpers/run-tree-delegated.js';
 
 // TESTING.md's real HTTP/WS server with a scripted CLI; no paid/provider inference.
 // The CLI calls actual scoped MCP tools, not fabricated successful tool events.
@@ -32,6 +34,11 @@ suite('controlled agent drives Org publication through real public boundaries', 
     const checkpoint = async () => (await fixture.graphql(`query($id:String!){getAgentOrgExecutionCheckpoint(orgRunId:$id){changeSequence hasOpenExecutionWork}}`,
       { id: run.rootId })).getAgentOrgExecutionCheckpoint;
     const stream = await fixture.connect(run);
+    // autobyteus-461 SR-084: the Org's delegated copies come from its tree (its view and history carry its own parts only), and
+    // a new copy reaches the open view as a tree change adding its row (key `agent:<id>` / `team:<id>`).
+    const orgCopies = async () => (await delegatedRunsTree((query, variables) => fixture.graphql(query, variables), 'agent_org', run.rootId)).taskExecutions;
+    const addedRunKeys = (frames: any[]) => addedRowKeysPerChange(frames).flat().filter(isRunRowKey);
+    const keyOfCopy = (copy: any) => copy.teamRunId ? `team:${copy.teamRunId}` : `agent:${copy.agentRunId}`;
     const send = async (content: string, extra = {}) => {
       const commandId = randomUUID();
       const before = stream.projected().filter(f => f.type === 'TURN_COMPLETED').length;
@@ -57,15 +64,13 @@ suite('controlled agent drives Org publication through real public boundaries', 
     const helperAddress = '/' + helperName.toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '');
     await call('send_message_to', { recipient_address: helperAddress, content: 'Reply OK.' });
     expect(JSON.stringify((await fixture.projection(run)).conversation)).toContain('COLLABORATION_TARGET_NOT_FOUND');
-    expect((await read()).org.rootOrg.taskExecutions).toEqual([]);
-    expect(stream.frames.some(f => f.type === 'ROOT_EXECUTION_EVENT' && f.payload.event.kind === 'task_execution_started')).toBe(false);
+    expect(await orgCopies()).toEqual([]);
+    expect(addedRunKeys(stream.frames), 'no copy row added').toEqual([]);
     await call('delegate_task', { recipient_address: helperAddress, description: 'Reply OK as a catalog copy.' });
-    const admitted = await read();
-    const helperCopy = admitted.org.rootOrg.taskExecutions.find((c: any) => c.agentDefinitionId === helperId || c.address === helperAddress);
+    const helperCopy = (await orgCopies()).find((c: any) => c.address === helperAddress)!;
     expect(helperCopy).toMatchObject({ address: helperAddress, delegatorAgentRunId: run.runId });
     expect(helperCopy.agentRunId).toMatch(/_[0-9a-f]{32}$/);
-    expect(stream.frames.some(f => f.type === 'ROOT_EXECUTION_EVENT' && f.payload.event.kind === 'task_execution_started'
-      && JSON.stringify(f.payload.event.execution).includes(helperCopy.agentRunId))).toBe(true);
+    await until(() => addedRunKeys(stream.frames).includes(keyOfCopy(helperCopy)), "the copy's row added live to the Org's view");
     const afterAdmission = await checkpoint();
     expect(afterAdmission.changeSequence).toBeGreaterThan(baseline.changeSequence);
     const remaining = (await fixture.graphql(`query($id:String!){collaboratorMentionCandidates(rootSubjectKind:"agent_org",rootRunId:$id){candidates{definitionId}}}`,
@@ -94,16 +99,14 @@ suite('controlled agent drives Org publication through real public boundaries', 
     // The sender is a member of the mounted `/team`: delegating its own mounted Team is refused and starts nothing.
     await call('delegate_task', { recipient_address: '/team', description: 'Reply OK as a separate Team copy.' });
     expect(JSON.stringify((await fixture.projection(run)).conversation)).toContain('COLLABORATION_SELF_TARGET_REJECTED');
-    const tasks = (await read()).org.rootOrg.taskExecutions;
+    const tasks = await orgCopies();
     expect(tasks).toHaveLength(2);
     expect(tasks[0]).toHaveProperty('agentRunId');
     expect(tasks[1]).toHaveProperty('agentRunId');
-    const started = stream.frames.filter(f => f.type === 'ROOT_EXECUTION_EVENT' && f.payload.event.kind === 'task_execution_started');
-    expect(started).toHaveLength(2);
-    for (const task of tasks) {
-      expect(task.delegatorAgentRunId).toBe(run.runId);
-      expect(started.some(f => JSON.stringify(f.payload.event.execution).includes(task.agentRunId ?? task.teamRunId))).toBe(true);
-    }
+    await until(() => tasks.every((task: any) => addedRunKeys(stream.frames).includes(keyOfCopy(task))), 'both copies added live');
+    const started = stream.frames.filter(f => addedRunKeys([f]).length > 0);
+    expect(addedRunKeys(stream.frames), 'two copy rows added, one each').toHaveLength(2);
+    for (const task of tasks) expect(task.delegatorAgentRunId).toBe(run.runId);
     expect(tasks[1].agentRunId).not.toBe(run.tree.rootOrg.members.find((m: any) => m.address === '/direct').agentRunId);
     const sequence = (await checkpoint()).changeSequence;
     expect(sequence).toBeGreaterThanOrEqual(Math.max(...started.map(f => f.payload.change_sequence)));
@@ -116,15 +119,17 @@ suite('controlled agent drives Org publication through real public boundaries', 
     } }));
     await until(() => stream.frames.some(f => f.type === 'AGENT_COMMAND_ACK' && f.payload.command_id === foreignCommand), 'foreign-target negative ACK');
     expect(stream.frames.find(f => f.type === 'AGENT_COMMAND_ACK' && f.payload.command_id === foreignCommand)!.payload.state).not.toBe('accepted');
-    expect((await read()).org.rootOrg.taskExecutions).toEqual(tasks);
+    expect(await orgCopies()).toEqual(tasks);
     expect((await fixture.graphql(`query{getAgentOrgRootHistory(orgRunId:"unknown-owned-root"){root_run_id}}`)).getAgentOrgRootHistory).toBeNull();
 
     stream.socket.close();
     const reconnected = await fixture.connect(run);
     const snapshot = reconnected.frames.find(f => f.type === 'ROOT_EXECUTION_VIEW_SNAPSHOT')!.payload.root_org;
     expect(snapshot.execution_tree.rootOrg).not.toHaveProperty('collaborators');
-    expect(snapshot.execution_tree.rootOrg.taskExecutions.map((c: any) => c.agentRunId)).toContain(helperCopy.agentRunId);
-    expect(snapshot.execution_tree.rootOrg.taskExecutions).toEqual(tasks);
+    // The view's own parts carry no copy; its tree snapshot lists them.
+    expect(JSON.stringify(snapshot.execution_tree)).not.toContain(helperCopy.agentRunId);
+    await until(() => hasTreeSnapshot(reconnected.frames), "the reconnected view's tree snapshot");
+    expect(treeSnapshotRunsOf(reconnected.frames).taskExecutions).toEqual(tasks);
     // autobyteus-358: the snapshot carries no messages; the sender's Team tab loads the message.
     expect(snapshot).not.toHaveProperty('communication_messages');
     expect(await readParticipantMessages((query, variables) => fixture.graphql(query, variables), { rootKind: 'agent_org', rootRunId: run.rootId, agentRunId: communication.senderAgentRunId }))
@@ -134,17 +139,18 @@ suite('controlled agent drives Org publication through real public boundaries', 
     await fixture.terminate(run);
     const stopped = await read();
     expect(stopped.is_active).toBe(false);
+    const copiesAtStop = await orgCopies();
     const treePath = path.join(fixture.dataDir, 'memory', 'agent_orgs', run.rootId, 'agent_org_run_execution_tree.json');
     const bytes = await fs.readFile(treePath);
-    const restore = (await fixture.graphql(`mutation($id:String!){restoreAgentOrgRun(agentOrgRunId:$id){success agentOrgRunId}}`,
-      { id: run.rootId })).restoreAgentOrgRun;
-    expect(restore).toMatchObject({ success: true, agentOrgRunId: run.rootId });
+    // autobyteus-461 CR-461-008: no restore mutation; the user's message to one of the Org's own members restores it.
+    await restoreByMemberMessage({ url: `http://${fixture.url.host}`, gql: (query, variables) => fixture.graphql(query, variables),
+      kind: 'org', runId: run.rootId, memberRunId: run.runId });
     fixture.runs.push(run);
     expect(await fs.readFile(treePath)).toEqual(bytes);
-    expect((await read()).org.rootOrg.taskExecutions).toEqual(stopped.org.rootOrg.taskExecutions);
+    expect(await orgCopies()).toEqual(copiesAtStop);
     expect((await fixture.projection({ ...run, runId: helperCopy.agentRunId, address: helperCopy.address })).conversation).toEqual(beforeStop.conversation);
     await fixture.save('org-publication-chain.json', { run, other, helperCopy, tasks, communication, referenceUrl,
-      baseline, afterAdmission, sequence, frames: stream.frames, reconnectFrames: reconnected.frames, beforeStop, stopped, restore });
+      baseline, afterAdmission, sequence, frames: stream.frames, reconnectFrames: reconnected.frames, beforeStop, stopped, restore: { by: 'member message', active: (await read()).is_active } });
     await fixture.terminate(run);
     await fixture.terminate(other);
   }, 90000);

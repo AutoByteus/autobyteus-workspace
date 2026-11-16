@@ -11,7 +11,7 @@ import { useAgentOrgContextsStore } from '~/stores/agentOrgContextsStore'
 import { useAgentOrgRunStore } from '~/stores/agentOrgRunStore'
 import { useRunHistoryStore } from '~/stores/runHistoryStore'
 import { parseAgentOrgHistoryItems } from '~/stores/runHistoryStoreSupport'
-import { taskBearingView } from '~/services/agentOrgExecution/__tests__/taskBearingOrgFixture'
+import { taskBearingTreeRows, taskBearingView } from '~/services/agentOrgExecution/__tests__/taskBearingOrgFixture'
 import { withOrgRootWorkspace } from '~/test-support/agentOrgApolloFixture'
 import { registerTestWorkspace } from '~/test-support/registeredWorkspaceFixture'
 import { AgentStatus } from '~/types/agent/AgentStatus'
@@ -53,8 +53,7 @@ class Socket {
 const ORG_ROOT = '/org-workspace'
 const historyResponse = () => ({ data: { listCollaborationRootHistory: [{
   root_subject_kind: 'agent_org', root_run_id: 'org-run', created_at: '2026-09-01T00:00:00.000Z', last_activity_at: '2026-09-01T00:00:00.000Z',
-  archived_at: null, is_active: true, summary: 'Keep this exact conversation', org: withOrgRootWorkspace(taskBearingView().execution_tree, ORG_ROOT), closed_task_executions: [],
-}] } })
+  archived_at: null, is_active: true, summary: 'Keep this exact conversation', org: withOrgRootWorkspace(taskBearingView().execution_tree, ORG_ROOT) }] } })
 let wrapper: ReturnType<typeof mount> | undefined
 let stopResult: Promise<void | WorkspaceSelectionOutcome>
 let stopError: unknown
@@ -104,6 +103,9 @@ async function open(address: string) {
   socket.emit({ type: 'ROOT_EXECUTION_VIEW_SNAPSHOT', payload: {
     root_subject_kind: 'agent_org', root_run_id: 'org-run', root_org: taskBearingView(),
   } })
+  // The Org's tree at the view's base, as the server sends it next (SR-084).
+  socket.emit({ type: 'RUN_TREE_SNAPSHOT', payload: { root_subject_kind: 'agent_org', root_run_id: 'org-run',
+    base_change_sequence: taskBearingView().base_change_sequence, rows: taskBearingTreeRows() } })
   await vi.waitFor(() => expect(orgs.contextFor('org-run')?.phase).toBe('live'))
   await flushPromises()
   orgs.select('org-run', address)

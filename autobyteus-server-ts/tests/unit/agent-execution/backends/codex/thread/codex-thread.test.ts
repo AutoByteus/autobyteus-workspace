@@ -93,7 +93,7 @@ const createThread = (
 
 const createMemberExecutionContext = () =>
   new MemberExecutionContext({
-    teamScoped: true, collaborationRole: "team_member",
+    teamScoped: true, collaborationRole: "team_member", inOrganization: false,
     identity: {
       root: createTeamRootExecutionIdentity("team-1"),
       memberAddress: "/ping",

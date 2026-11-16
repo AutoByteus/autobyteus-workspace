@@ -1,0 +1,8 @@
+# commit 07a3a5890e
+$ node scripts/typecheck.mjs
+[typecheck] production errors: 0; test-file errors: 1012 in 316 files (baseline 1012 in 316 files)
+[typecheck] PASS
+$ pnpm test:unit
+{"protocol":"autobyteus.embedded-server.platform-fatal.v1","code":"APP_DATA_STARTUP_GATE_FAILED","summary":"Failed to run app data migrations: Error: migration state store unavailable","logPath":"/tmp/server-runtime-gate/logs/server.log"}
+ Test Files  972 passed | 5 skipped (977)
+      Tests  7966 passed | 9 skipped (7975)

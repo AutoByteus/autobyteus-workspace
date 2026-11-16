@@ -1,0 +1,88 @@
+# F-23 (task-reactivation DONE journeys, r5-batchA.log lines 14190-14276, code 56e4ce773b)
+ FAIL  tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts > Reactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > standalone Agent root: target_kind, refused while DONE, status-only reopen, helper and non-assigner refusals, Agent and Team copy reactivation, DONE cycle, deleted Task, ad hoc TODO
+AssertionError: expected { accepted: true, …(3) } to match object { accepted: false, …(1) }
+(2 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "accepted": false,
+-   "code": "TARGET_AGENT_RUN_NOT_ACTIVE",
++   "accepted": true,
++   "code": "DELIVERED",
+  }
+
+ ❯ rootScenario tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts:518:22
+    516|     // autobyteus-469 DEC-006: a member of a Team copy that left the t…
+    517|     // the Task record, brings the Team back).
+    518|     expect(toMember).toMatchObject({ accepted: false, code: "TARGET_AG…
+       |                      ^
+    519|     expect(toMember.message).toMatch(/No running agent has the run id/…
+    520|     expect(await readBytes(path.join(bDir, "agent_run_resources.json")…
+ ❯ tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts:735:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/13]⎯
+
+ FAIL  tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts > Reactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > Agent Team root: the same journey through the Team stream (TASK_EXECUTIONS_REOPENED); a teammate cannot reactivate
+AssertionError: expected { accepted: true, …(3) } to match object { accepted: false, …(1) }
+(2 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "accepted": false,
+-   "code": "TARGET_AGENT_RUN_NOT_ACTIVE",
++   "accepted": true,
++   "code": "DELIVERED",
+  }
+
+ ❯ rootScenario tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts:518:22
+    516|     // autobyteus-469 DEC-006: a member of a Team copy that left the t…
+    517|     // the Task record, brings the Team back).
+    518|     expect(toMember).toMatchObject({ accepted: false, code: "TARGET_AG…
+       |                      ^
+    519|     expect(toMember.message).toMatch(/No running agent has the run id/…
+    520|     expect(await readBytes(path.join(bDir, "agent_run_resources.json")…
+ ❯ tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts:739:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/13]⎯
+
+ FAIL  tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts > Reactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > Agent Org root: the same journey through the Org stream; an Org member cannot reactivate
+AssertionError: expected { accepted: true, …(3) } to match object { accepted: false, …(1) }
+(2 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "accepted": false,
+-   "code": "TARGET_AGENT_RUN_NOT_ACTIVE",
++   "accepted": true,
++   "code": "DELIVERED",
+  }
+
+ ❯ rootScenario tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts:518:22
+    516|     // autobyteus-469 DEC-006: a member of a Team copy that left the t…
+    517|     // the Task record, brings the Team back).
+    518|     expect(toMember).toMatchObject({ accepted: false, code: "TARGET_AG…
+       |                      ^
+    519|     expect(toMember.message).toMatch(/No running agent has the run id/…
+    520|     expect(await readBytes(path.join(bDir, "agent_run_resources.json")…
+ ❯ tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts:743:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/13]⎯
+
+ FAIL  tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts > Reactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > QR-001: a DONE from another root racing the assigner's reactivating message never leaves a DONE Task with an open entry
+AssertionError: {"accepted":false,"code":"COLLABORATION_ROOT_NOT_ACCEPTING_MESSAGES","message":"This work is stopping or has stopped, so the message or delegation was not sent. tra_worker_e51409_ea486b1ddacd4d8083fd4e491ba091a2 continues with its conversation (its Task is open again) but did not receive this message; send it again."}: expected 'unexpected' not to be 'unexpected' // Object.is equality
+ ❯ tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts:781:52
+    779|           ? `done-after-commit:${message.code}`
+    780|           : message.code === "TASK_AGENT_RESOURCE_CLOSED" && /This Tas…
+    781|       expect(outcome, JSON.stringify(message)).not.toBe("unexpected");
+       |                                                    ^
+    782|       if (outcome === "reactivated-then-done") expect(message.message)…
+    783|       // No runtime process of the worker is left running (each AGY ru…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/13]⎯
+

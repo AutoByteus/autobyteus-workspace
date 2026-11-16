@@ -1,3 +1,5 @@
+import { testViewStreams } from "../../helpers/view-streams.js";
+import { noDelegations, openTaskRecords } from "../../helpers/no-delegations.js";
 import "reflect-metadata";
 import { RootRunPackageReadinessIndex } from "../../../src/run-history/services/root-run-package-readiness-index.js";
 import { createRequire } from "node:module";
@@ -13,7 +15,6 @@ import { AgentRunManager } from "../../../src/agent-execution/services/agent-run
 import { AgentTeamRunManager } from "../../../src/agent-team-execution/services/agent-team-run-manager.js";
 import { AgentRunMetadataStore } from "../../../src/run-history/store/agent-run-metadata-store.js";
 import type { AgentRunMetadata } from "../../../src/run-history/store/agent-run-metadata-types.js";
-import { AgentMemoryLayout } from "../../../src/agent-memory/store/agent-memory-layout.js";
 import { RuntimeMemoryEventAccumulator } from "../../../src/agent-memory/services/runtime-memory-event-accumulator.js";
 import { ExternalRuntimeMemoryWriter } from "../../../src/agent-memory/store/external-runtime-memory-writer.js";
 import {
@@ -40,6 +41,7 @@ vi.mock("../../../src/agent-execution/backends/codex/history/codex-thread-histor
 
 import { buildGraphqlSchema } from "../../../src/api/graphql/schema.js";
 import { configureE2eStudioApplicationApiServices } from "../helpers/studio-application-api-services.js";
+import { setE2eRunHistoryServices } from "../helpers/e2e-run-history-services.js";
 
 const STANDALONE_RUN_ID = "run-codex-toolcalls-graphql";
 const STANDALONE_THREAD_ID = "thread-standalone-toolcalls";
@@ -162,6 +164,7 @@ describe("Run projection tool-call GraphQL e2e", () => {
   let workspaceRootPath: string;
   let memoryDir: string;
   let closeStudioServices: (() => void) | null = null;
+  let releaseRunHistory: (() => void) | null = null;
   let ownedAgentRunManager: AgentRunManager | null = null;
   let ownedAgentTeamRunManager: AgentTeamRunManager | null = null;
 
@@ -194,18 +197,16 @@ describe("Run projection tool-call GraphQL e2e", () => {
     try {
       AgentTeamRunManager.getInstance();
     } catch {
-      ownedAgentTeamRunManager = AgentTeamRunManager.initializeProcessInstance({
+      ownedAgentTeamRunManager = AgentTeamRunManager.initializeProcessInstance({ delegationIndex: noDelegations(), viewStreams: testViewStreams(), taskRecords: openTaskRecords(),
         memoryDir,
         flatTeamExecutionFactory: {} as never,
         memberExecutionContextBuilder: {} as never,
-        taskExecutionIdentity: {
-          agentRuns: { allocateForAgentDefinition: () => "unused-agent-run" },
-          taskTeams: { create: () => "unused-task-team" },
-        } as never,
         modelSelectionValidator: { validate: () => undefined } as never,
       });
     }
     closeStudioServices = configureE2eStudioApplicationApiServices().close;
+    // The history readers, as the composition root sets them (autobyteus-461 SR-047 step 8).
+    releaseRunHistory = setE2eRunHistoryServices({ memoryDir });
     schema = await buildGraphqlSchema();
 
     const require = createRequire(import.meta.url);
@@ -239,6 +240,7 @@ describe("Run projection tool-call GraphQL e2e", () => {
   });
 
   afterAll(async () => {
+    releaseRunHistory?.();
     closeStudioServices?.();
     if (ownedAgentTeamRunManager) {
       AgentTeamRunManager.releaseProcessInstance(ownedAgentTeamRunManager);

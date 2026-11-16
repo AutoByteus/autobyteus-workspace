@@ -8,9 +8,11 @@ import type { FastifyInstance } from "fastify";
 import WebSocket from "ws";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
+import { projectionByOwnRun } from "../helpers/own-run-reads.js";
 import { startStudioE2eRuntimeServer } from "../helpers/studio-runtime-test-server.js";
 import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
 import { until } from "../helpers/agy-runtime-error-fixture.js";
+import { delegatedRunsTree, removedRowKeysPerChange } from "../helpers/run-tree-delegated.js";
 
 // task-agent-several-tasks (autobyteus-275) through the real Studio HTTP/WebSocket server, the Manager's scoped MCP session,
 // Project/Task services, a standalone Agent root, exact delivery, closure publication and the AGY runtime with real CLI
@@ -117,10 +119,11 @@ suite("A task agent with several Tasks: parts on one copy, sub-work ownership, g
     const raw = await fs.readFile(resourcesFile(taskId), "utf8").catch(() => "");
     return raw ? (JSON.parse(raw).agentRunResources as any[]).filter((entry) => keyOf(entry.agentRun) === key) : [];
   };
-  const closedFrame = (frame: Frame) => frame.type === "ROOT_EXECUTION_EVENT" && frame.payload.event?.kind === "task_executions_closed";
-  /** How many closure frames named the copy since a mark (each frame names the copies it closed). */
-  const closuresOf = (key: string, from: number) => root.frames.slice(from).filter(closedFrame)
-    .filter((frame) => (frame.payload.event.task_executions as any[]).some((ref) => keyOf(ref) === key)).length;
+  /**
+   * How many tree changes removed the copy's row since a mark (autobyteus-461 SR-084: a closed Task's copy leaves the tree,
+   * and the view tells it as a tree change; row keys are `agent:<id>` / `team:<id>`, as `keyOf`).
+   */
+  const closuresOf = (key: string, from: number) => removedRowKeysPerChange(root.frames.slice(from)).filter((removed) => removed.includes(key)).length;
   const conversationText = async (runId: string, address: string) => JSON.stringify(await root.conversationOf(runId, address));
   const nodeOf = async (predicate: (node: Record<string, any>) => boolean, label: string) => {
     let node: Record<string, any> | undefined;
@@ -161,8 +164,8 @@ suite("A task agent with several Tasks: parts on one copy, sub-work ownership, g
     const view = await connect("agent-collaboration", rootId, (frames) => frames.some((f) => f.type === "ROOT_EXECUTION_VIEW_SNAPSHOT"));
     const conversationOf = async (runId: string, address: string) => runId === rootId
       ? (await graphql(`query($id:String!){getRunProjection(runId:$id){conversation}}`, { id: runId })).getRunProjection?.conversation
-      : (await graphql(`query($h:String!,$a:String!,$r:String!){agentRunCollaborationMemberProjection(hostRunId:$h,memberAddress:$a,agentRunId:$r){conversation}}`,
-        { h: rootId, a: address, r: runId })).agentRunCollaborationMemberProjection?.conversation;
+      // Any other agent is in a run this root delegated to: read by its own run (autobyteus-461 rule 2).
+      : (await projectionByOwnRun(graphql, path.join(dataDir, "memory"), runId))?.conversation;
     const calls = async (content: string) => {
       const before = calledResults(await conversationOf(rootId, "/")).length;
       sendE2eSendMessageCommand(input.socket, { agent_run_id: rootId, content });
@@ -170,7 +173,8 @@ suite("A task agent with several Tasks: parts on one copy, sub-work ownership, g
       await until(async () => { results = calledResults(await conversationOf(rootId, "/")); return results.length > before; }, `Manager tool result for ${content.slice(0, 120)}`, 90_000);
       return toolResult(results[before]!);
     };
-    const tree = async () => (await graphql(`query($id:String!){agentRunCollaboration(runId:$id)}`, { id: rootId })).agentRunCollaboration?.root_agent?.execution_tree ?? null;
+    // autobyteus-461 SR-084: the root's delegated runs, from its tree (its view carries its own parts only).
+    const tree = async () => delegatedRunsTree(graphql, "agent", rootId);
     root = { rootId, frames: view.frames, calls, conversationOf, tree };
   }, 120000);
 

@@ -51,8 +51,8 @@ for (const placement of placements) describe(`${placement} configured first work
     expect(f.root.getCommunicationSnapshot().messages[0]).toMatchObject({
       senderAgentRunId: f.ids[1], receiverAgentRunId: f.ids[0], referenceFiles, content: "Review this note",
     });
-    const tree = f.root.getExecutionTreeSnapshot() as { rootTeam?: { taskExecutions: unknown[] }; rootOrg?: { taskExecutions: unknown[] } };
-    expect((tree.rootTeam ?? tree.rootOrg)!.taskExecutions).toEqual([]);
+    // A run holds its own parts only (autobyteus-461): first work adds nothing to its tree.
+    expect(JSON.stringify(f.root.getExecutionTreeSnapshot())).not.toContain("taskExecutions");
   });
 
   it("preserves fresh zero-work laziness and targeted first input", async () => {

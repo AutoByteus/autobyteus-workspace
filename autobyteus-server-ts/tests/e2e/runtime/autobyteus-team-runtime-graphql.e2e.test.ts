@@ -842,20 +842,7 @@ describeAutoByteusTeamRuntime("AutoByteus team current GraphQL runtime e2e", () 
       }>(terminateMutation, { teamRunId });
       expect(terminateResult.terminateAgentTeamRun.success).toBe(true);
 
-      const restoreMutation = `
-        mutation RestoreAgentTeamRun($teamRunId: String!) {
-          restoreAgentTeamRun(teamRunId: $teamRunId) {
-            success
-            message
-            teamRunId
-          }
-        }
-      `;
-      const restoreResult = await execGraphql<{
-        restoreAgentTeamRun: { success: boolean; message: string; teamRunId: string | null };
-      }>(restoreMutation, { teamRunId });
-      expect(restoreResult.restoreAgentTeamRun.success).toBe(true);
-      expect(restoreResult.restoreAgentTeamRun.teamRunId).toBe(teamRunId);
+      // The stopped team's view serves it from its stored file; the next message to one of its members on it restores the run (autobyteus-461 CR-461-008).
 
       const restoreToken = `TEAM_RESTORE_${randomUUID().replace(/-/g, "_")}`;
       const restoreStartIndex = streamMessages.length;
@@ -1043,15 +1030,6 @@ describeAutoByteusTeamRuntime("AutoByteus team current GraphQL runtime e2e", () 
         }
       }
     `;
-    const restoreMutation = `
-      mutation RestoreAgentTeamRun($teamRunId: String!) {
-        restoreAgentTeamRun(teamRunId: $teamRunId) {
-          success
-          message
-          teamRunId
-        }
-      }
-    `;
 
     try {
       const targetRelativePath = `team-terminate-${randomUUID().replace(/-/g, "_")}.txt`;
@@ -1082,11 +1060,7 @@ describeAutoByteusTeamRuntime("AutoByteus team current GraphQL runtime e2e", () 
         code: "ENOENT",
       });
 
-      const restoreResult = await execGraphql<{
-        restoreAgentTeamRun: { success: boolean; message: string; teamRunId: string | null };
-      }>(restoreMutation, { teamRunId });
-      expect(restoreResult.restoreAgentTeamRun.success).toBe(true);
-      expect(restoreResult.restoreAgentTeamRun.teamRunId).toBe(teamRunId);
+      // The stopped team's view serves it from its stored file; the next message to one of its members on it restores the run (autobyteus-461 CR-461-008).
 
       const followUpToken = `TEAM_TERMINATE_FOLLOWUP_${randomUUID().replace(/-/g, "_")}`;
       const followUpStartIndex = messages.length;
@@ -1206,15 +1180,6 @@ describeAutoByteusTeamRuntime("AutoByteus team current GraphQL runtime e2e", () 
         terminateAgentTeamRun(teamRunId: $teamRunId) {
           success
           message
-        }
-      }
-    `;
-    const restoreMutation = `
-      mutation RestoreAgentTeamRun($teamRunId: String!) {
-        restoreAgentTeamRun(teamRunId: $teamRunId) {
-          success
-          message
-          teamRunId
         }
       }
     `;
@@ -1339,11 +1304,7 @@ describeAutoByteusTeamRuntime("AutoByteus team current GraphQL runtime e2e", () 
         await expectTerminatedProjection(member, [member.firstToken]);
       }
 
-      const restoreResult = await execGraphql<{
-        restoreAgentTeamRun: { success: boolean; message: string; teamRunId: string | null };
-      }>(restoreMutation, { teamRunId });
-      expect(restoreResult.restoreAgentTeamRun.success).toBe(true);
-      expect(restoreResult.restoreAgentTeamRun.teamRunId).toBe(teamRunId);
+      // The stopped team's view serves it from its stored file; the next message to one of its members on it restores the run (autobyteus-461 CR-461-008).
 
       for (const member of members) {
         const startIndex = streamMessages.length;

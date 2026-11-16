@@ -1,0 +1,13 @@
+# CR-461-076: the project-manager probe (node autobyteus-web/tests/e2e/project-manager-ux-probe.mjs; its own data root, ports and Chrome; scripted AGY CLI, no provider)
+## 1. PMU-003 at a2b01c4180 (before the fix): Fail
+Fail Timed out: coordinator conversation opened
+center: Select an agent or start a new one.
+warning: [delegatedRuns] Could not open delegated run 'agent_team:docs_review_team_pmuagent_6e26_5d7cb3cd59984de6ad30e3b590eb295c'. Error: Active Team 'docs_review_team_pmuagent_6e26_5d7cb3cd59984de6ad30e3b590eb295c' requires workspace activation.
+    at hydrateCurrentTeamRunContext (http://127.0.0.1:50132/_nuxt/services/runHydration/teamRunContextHydrationService.ts:172:11)
+    at async openTeamR
+## 2. PMU-003, PMU-018, PMU-019 at 0b6da706b9 (server rebuilt by codegen:local after 2818701556)
+PMU-003 Pass 
+PMU-018 Pass 
+PMU-019 Fail Timed out: nested task Team member row
+PMU-019 rows: [{"address": "/docs_review_team_pmustripmore_bf4b", "agent": "", "depth": "0"}, {"address": "/reviewer", "agent": "release_notes_writer_pmu", "depth": "1"}, {"address": "/editor", "agent": "fact_checker_pmustripmor", "depth": "1"}]
+# PMU-019 looks for data-member-address="${recipientAddress}/editor" (base's hosted address); under TC-12 and P8 a delegated team's member rows carry its own run's address (/editor). The probe's selector, not the product (flagged for API/E2E).

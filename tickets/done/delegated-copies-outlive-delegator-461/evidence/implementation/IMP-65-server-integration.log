@@ -1,0 +1,47 @@
+# commit c8166c2685; load: load averages: 15.89 19.00 19.89
+# pnpm test:integration:prepare && pnpm test:integration
+prepare exit 0
+     × AC-006: a 50-file burst is coalesced into a bounded number of publications 15175ms
+     × AC-012: a root renamed away keeps its definitions and reports FOLDER_MISSING; restoring it resumes watching 7559ms
+     × emits add + modify + delete events 8083ms
+     × returns one idle event stream without stopping other subscribers 8079ms
+     × emits move/rename event 1454ms
+     × emits folder creation and deletion events 8075ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 6 ⎯⎯⎯⎯⎯⎯⎯
+ FAIL  tests/integration/agent-package-definitions/package-auto-refresh.integration.test.ts > package auto-refresh: the next delegation sees current definitions > AC-006: a 50-file burst is coalesced into a bounded number of publications
+ FAIL  tests/integration/agent-package-definitions/package-auto-refresh.integration.test.ts > package auto-refresh: the next delegation sees current definitions > AC-012: a root renamed away keeps its definitions and reports FOLDER_MISSING; restoring it resumes watching
+ FAIL  tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits add + modify + delete events
+ FAIL  tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > returns one idle event stream without stopping other subscribers
+ FAIL  tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits folder creation and deletion events
+ FAIL  tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits move/rename event
+ Test Files  2 failed | 84 passed | 20 skipped (106)
+      Tests  6 failed | 477 passed | 69 skipped (552)
+# branch commits touching the two files or their src since 3228eff74b: 1
+# the two failed files alone; load: load averages: 36.11 23.30 21.09
+# (the first attempt passed a non-existent integration config and did not start; rerun with the suite's own command)
+     × AC-012: a root renamed away keeps its definitions and reports FOLDER_MISSING; restoring it resumes watching 11337ms
+     × emits add + modify + delete events 8060ms
+     × emits move/rename event 3029ms
+     × respects root .gitignore files 8078ms
+     × captures rapid changes without dropping events 8076ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 5 ⎯⎯⎯⎯⎯⎯⎯
+ Test Files  2 failed (2)
+      Tests  5 failed | 24 passed (29)
+# control, back to back: the two files at base 827f1e68dc (its worktree, after test:integration:prepare), then on the branch; fseventsd busy; load: load averages: 18.25 20.42 20.29
+## base
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+ Test Files  1 failed | 1 passed (2)
+      Tests  4 failed | 25 passed (29)
+## branch c8166c2685
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 5 ⎯⎯⎯⎯⎯⎯⎯
+ Test Files  1 failed | 1 passed (2)
+      Tests  5 failed | 24 passed (29)
+## base, the watcher file alone again
+     × returns one idle event stream without stopping other subscribers 8078ms
+     × respects nested .gitignore files 8075ms
+      Tests  2 failed | 12 passed (14)
+# Reading: base's prepare stopped at the application SDKs (its own node_modules are links), but its watcher runtime runs
+# from src (12 of 14 pass). Base and the branch fail the same way at the same moment: 8-second waits for file events,
+# a different set each run, with fseventsd at ~150% CPU. The branch changes neither watcher's src; its only change in
+# these files is a test fake's signature (ef31136ad1). IMP-60 (07a3a5890e) and IMP-56 passed them alone.
+# Every other integration file passes: 84 files, 477 tests.

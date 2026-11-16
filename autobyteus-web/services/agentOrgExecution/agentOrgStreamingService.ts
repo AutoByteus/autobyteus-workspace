@@ -14,6 +14,7 @@ import { buildAuthenticatedWebSocketUrl } from '~/utils/remoteAccess/websocketAu
 import { GetAgentOrgExecutionCheckpoint } from '~/graphql/queries/runHistoryQueries'
 import { getApolloClient } from '~/utils/apolloClient'
 import { stageAgentOrgExecutionContext } from './agentOrgContextHydration'
+import { useRunTreeStore } from '~/stores/runTreeStore'
 import { useCollaborationParticipantMessagesStore } from '~/services/collaborationMessages/collaborationParticipantMessages'
 import { AgentOrgExecutionContext } from './agentOrgExecutionContext'
 import type { CollaboratorMentionDto } from '~/utils/collaborators/collaboratorMentionText'
@@ -144,21 +145,11 @@ export class AgentOrgStreamingService {
     if (generation === null) {
       const view = await readAgentOrgRunInspection(this.options.orgRunId)
       if (!this.ownsOperation(null)) return
+      // A stopped Org's stream continues (autobyteus-461 SR-045): its stored-mode snapshot is a new base, with no checkpoint.
       if (!view.is_active) {
         this.recoveryCheckpoint = null
-        this.recoveryFocus = null
-        const staged = await stageAgentOrgExecutionContext({
-          source: 'inspection', orgRunId: this.options.orgRunId, view, focus: this.context?.selection ?? null,
-          isCurrent: () => this.ownsOperation(null),
-        })
-        if (!this.ownsOperation(null)) return
-        const candidate = shallowReactive(staged.context)
-        candidate.setActive(false)
-        candidate.select(this.context?.selection ?? null)
-        this.options.publish(candidate, staged.commit)
-        this.context = candidate
-        this.options.onInactive?.()
-        this.disconnect()
+        this.recoveryFocus = this.context?.selection ?? null
+        this.openSocket()
         return
       }
     }
@@ -177,10 +168,13 @@ export class AgentOrgStreamingService {
     this.openSocket()
   }
 
+  private get treeRef() { return { kind: 'agent_org' as const, runId: this.options.orgRunId } }
+
   disconnect(): void {
     this.released = true
     this.reconnect.dispose()
     this.closeSocket('AgentOrg context released')
+    useRunTreeStore().streamEnded(this.treeRef)
     this.context = null
     this.recoveryCheckpoint = null
     this.recoveryFocus = null
@@ -189,7 +183,7 @@ export class AgentOrgStreamingService {
   }
 
   isReady(): boolean {
-    return !this.released && this.streamPhase === 'ready' && this.context?.phase === 'live'
+    return !this.released && this.streamPhase === 'ready' && this.context?.phase !== 'reopen_required'
       && this.socket?.readyState === WebSocket.OPEN
   }
 
@@ -208,7 +202,7 @@ export class AgentOrgStreamingService {
     attachments: readonly ContextFilePath[]; messageId: string; dedupeKey: string;
     mentions?: readonly CollaboratorMentionDto[] }>): Promise<void> {
     const context = this.requireReadyContext()
-    if (!context.index.requireAgent(input.agentRunId).live) throw new Error('AgentOrg send target is not live.')
+    context.index.requireAgent(input.agentRunId)
     return this.command({ type: 'SEND_MESSAGE', payload: {
       ...this.commandRoot(input.agentRunId), content: input.content,
       context_file_paths: input.attachments.map(attachmentLocator), image_urls: [],
@@ -227,15 +221,6 @@ export class AgentOrgStreamingService {
     } })
   }
 
-  /** Retry (autobyteus-278): the Org asks the nodes of its remote runs again; the answers arrive as events;
-   * `false` when the stream is not ready. */
-  refreshRemote(): boolean {
-    if (!this.isReady()) return false
-    this.socket!.send(JSON.stringify({ type: 'REFRESH_REMOTE_TASK_EXECUTIONS',
-      payload: { root_subject_kind: 'agent_org', root_run_id: this.options.orgRunId } } satisfies CollaborationStreamClientMessage))
-    return true
-  }
-
   private commandRoot(targetAgentRunId: string) {
     return {
       root_subject_kind: 'agent_org' as const,
@@ -246,14 +231,12 @@ export class AgentOrgStreamingService {
   }
 
   private requireReadyContext(): AgentOrgExecutionContext {
-    if (!this.socket || this.socket.readyState !== WebSocket.OPEN
-      || this.streamPhase !== 'ready' || this.context?.phase !== 'live') {
-      throw new Error('AgentOrg interaction stream is not ready.')
-    }
-    return this.context
+    // Ready is the stream's own: open, with its snapshot applied, the Org active or stopped (autobyteus-461 SR-045).
+    if (!this.isReady()) throw new Error('AgentOrg interaction stream is not ready.')
+    return this.context!
   }
 
-  private async command(message: Exclude<CollaborationStreamClientMessage, { type: 'REFRESH_REMOTE_TASK_EXECUTIONS' }>): Promise<void> {
+  private async command(message: CollaborationStreamClientMessage): Promise<void> {
     this.requireReadyContext()
     const socket = this.socket!
     return new Promise<void>((resolve, reject) => {
@@ -300,9 +283,8 @@ export class AgentOrgStreamingService {
       return
     }
     if (message.type === 'ROOT_EXECUTION_VIEW_SNAPSHOT') {
-      if (this.streamPhase !== 'awaiting_snapshot') {
-        throw new Error('AgentOrg snapshot arrived before CONNECTED or after the snapshot barrier.')
-      }
+      // After the barrier, a snapshot is in-band: the Org started or stopped, a new sequence base (SR-046).
+      if (this.streamPhase !== 'awaiting_snapshot' && this.streamPhase !== 'ready') throw new Error('AgentOrg snapshot arrived before CONNECTED.')
       if (message.payload.root_subject_kind !== 'agent_org') {
         throw new Error('AgentOrg stream supplied a non-Org snapshot.')
       }
@@ -329,34 +311,33 @@ export class AgentOrgStreamingService {
       this.recoveryFocus = null
       this.streamPhase = 'ready'
       this.reconnect.connected()
-      if (candidate.isActive) this.settleReadiness()
-      else {
-        this.options.onInactive?.()
-        this.disconnect()
-      }
+      this.settleReadiness()
       return
     }
     if (!this.context || this.streamPhase !== 'ready') {
       throw new Error('AgentOrg stream event arrived before the snapshot barrier.')
+    }
+    if (message.type === 'RUN_TREE_SNAPSHOT') {
+      // The Org's tree at the view's base (SR-084), after each snapshot; its changes follow as numbered events.
+      if (message.payload.root_subject_kind !== 'agent_org' || message.payload.base_change_sequence !== this.context.changeSequence) {
+        throw new Error('AgentOrg run tree snapshot is not at the view\'s base.')
+      }
+      useRunTreeStore().streamSnapshot(this.treeRef, message.payload.rows)
+      return
     }
     if (message.type === 'ROOT_EXECUTION_EVENT') {
       if (message.payload.root_subject_kind !== 'agent_org') {
         throw new Error('AgentOrg stream supplied a non-Org event.')
       }
       const { change_sequence: first, change_sequence_through: through } = message.payload
-      const application = this.context.applyEvent(first, message.payload.event, through)
-      // Applied, or a single checkpoint event seen: the Team tab's lists are consistent through it (SR-004).
-      if (application === 'applied' || through === undefined) {
-        useCollaborationParticipantMessagesStore().advance('agent_org', this.options.orgRunId, this.context.view.live_sequence_id, through ?? first)
-      }
-      if (application === 'checkpoint_required') await this.reopenOwned(generation)
+      this.context.applyEvent(first, message.payload.event, through)
+      // The Team tab's lists are consistent through it (SR-004).
+      useCollaborationParticipantMessagesStore().advance('agent_org', this.options.orgRunId, this.context.view.live_sequence_id, through ?? first)
       return
     }
+    // The Org's own lifecycle updates the view; the stream continues (autobyteus-461 SR-045).
     this.context.setActive(message.payload.is_active)
-    if (!message.payload.is_active) {
-      this.options.onInactive?.()
-      this.disconnect()
-    }
+    if (!message.payload.is_active) this.options.onInactive?.()
   }
 
   private async processFrame(generation: StreamGeneration, raw: string): Promise<void> {
@@ -428,6 +409,8 @@ export class AgentOrgStreamingService {
   /** A loss, or a failed attempt before the snapshot: the scheduler waits and attempts again. */
   private recoveryFailed(detail: string): void {
     if (this.released) return
+    // Meanwhile the Org's tree is read, as a listed run's is (SR-084).
+    useRunTreeStore().streamEnded(this.treeRef)
     this.lastFailureDetail = detail
     this.reconnect.connectionLost()
   }

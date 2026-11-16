@@ -4,7 +4,7 @@ const apollo = vi.hoisted(() => ({ query: vi.fn() }))
 vi.mock('~/utils/apolloClient', () => ({ getApolloClient: () => apollo }))
 
 import { loadExistingRunModelOptions } from '../existingRunModelOptionsClient'
-import { loadDelegatedLaunchModelOptions } from '../delegatedLaunchSelectionClient'
+import { loadDelegatedRunOptions } from '../delegatedLaunchSelectionClient'
 import { mergeReloadedOptions, optionsStateOfAnswer } from '../existingRunModelOptionsState'
 
 /** SR-004 (CR-004): the server says whether a scope's model list could be read; only that flag decides. */
@@ -69,10 +69,11 @@ describe('the options clients', () => {
     await expect(loadExistingRunModelOptions({ kind: 'agent', runId: 'r' } as never)).rejects.toThrow('Model options unavailable.')
   })
 
-  it('map the delegated copies by the same flag, keyed by where the choice is recorded', async () => {
-    apollo.query.mockResolvedValueOnce({ data: { delegatedLaunchModelOptions: [
-      { ...readable, scope: 'agent', agentRunId: 'a1', teamRunId: null }, { ...unreadable, scope: 'team', agentRunId: null, teamRunId: 't1' }] } })
-    const options = await loadDelegatedLaunchModelOptions({ rootKind: 'AGENT_TEAM', rootRunId: 'root' })
+  it('map each delegated run\'s own options by the same flag, keyed by where the choice is recorded (SR-065)', async () => {
+    apollo.query.mockResolvedValueOnce({ data: { agentRunModelOptions: readable } })
+    apollo.query.mockResolvedValueOnce({ data: { teamRunModelOptions: [{ ...unreadable, scopeAddress: '/' }] } })
+    const { options } = await loadDelegatedRunOptions(new Map<any, any>([['agent:a1', { kind: 'agent', agentRunId: 'a1' }],
+      ['team:t1', { kind: 'team', teamRunId: 't1', followerAddresses: [] }]]))
     expect(options['agent:a1']!.status).toBe('ready')
     expect(options['team:t1']).toEqual(unavailable)
   })

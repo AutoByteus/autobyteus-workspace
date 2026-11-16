@@ -9,13 +9,15 @@ import { callTool, segment, startCollaborationHarness, type CollaborationHarness
 // Team and org member file-change reads name their owner (run-file-change-owner-scoped-reads REQ-002..REQ-006, REQ-008,
 // REQ-009; AC-002..AC-005, AC-007..AC-009, AC-011) over the real Studio HTTP/GraphQL server, on roots made by real Team
 // and Org runs (scripted AGY actor, tests/fixtures/agy-failure-cli.mjs; no inference):
+// Since autobyteus-461 a delegated task agent is a run of its own: its files are read by its own run ID (the run-id list
+// and route), and its delegator's team or org refuses it as a member (CR-461-014, CR-461-016).
 // - a Team root: its configured member writes a workspace file (`GENERATE_IMAGE:`), it delegates a task agent that writes
 //   one too, and the other member keeps writing a file (`WRITE_FILE_HOLD:`, a pending file change);
 // - an Org root: its direct agent and the lead of its member team each write a file and each delegate a task agent (an
 //   org-root task agent and a member-team task agent) that writes one; another direct agent keeps writing a file.
 // While the root runs, `getTeamMemberFileChanges` / `getAgentOrgMemberFileChanges` list each member's files from the live
-// record (the pending one included), the owner REST routes serve the bytes of workspace-relative files (task agents too,
-// against their own launch workspace) and answer 409 for the pending file. The run-id surfaces give every member nothing
+// record (the pending one included), the owner REST routes serve the bytes of workspace-relative files and answer 409 for
+// the pending file; a task agent's files come from its own run's list and route (against its own launch workspace). The run-id surfaces give every member nothing
 // (the members' runs are active). An agent named under another owner gets an error (list) or 404 (content). After the
 // root stops, the same lists and bytes come from the saved record and the pending file answers 404 "not available".
 // Members are read live as soon as they write, so a first live read can overlap a run's first file-change event; the
@@ -106,6 +108,25 @@ suite("Team and org member file changes are read through their owner (real HTTP/
   };
 
   /**
+   * A delegated task agent's reads (autobyteus-461): its own run's list and content route serve its files; its delegator
+   * (`owner`) refuses it as a member: an error (list) or 404 (content).
+   */
+  const expectOwnRunReads = async (input: { label: string; running: boolean; members: Member[];
+    ownerList: (member: Member) => Promise<{ data: Rec | null; error: string | null }>; ownerRead: (member: Member, filePath: string) => Promise<Rec> }) => {
+    for (const member of input.members) {
+      const label = `${input.label} ${input.running ? "running" : "stopped"}: ${member.label} (a run of its own)`;
+      let listed: Rec[] = [];
+      await until(async () => (listed = await byRunId(member.agentRunId)).length === member.files.length, `${label}: listed by its run`, 60_000);
+      expect(listed.map((entry) => entry.path).sort(), label).toEqual([...member.files].sort());
+      for (const file of member.files) expect(await runContent(member.agentRunId, file), `${label}: ${file}`).toEqual(served);
+      const ownerList = await input.ownerList(member);
+      expect(ownerList.data, `${label}: delegator's member list`).toBeNull();
+      expect(ownerList.error, `${label}: delegator's member list`).toMatch(/was not found in|is not an agent of/);
+      expect((await input.ownerRead(member, member.files[0]!)).status, `${label}: delegator's member route`).toBe(404);
+    }
+  };
+
+  /**
    * The owner-scoped reads of every member, while the root runs (`running`) or after it stopped. `list` and `read` are
    * the owner's list query and content route; `wrongOwner` reads the same agent under another owner.
    */
@@ -162,8 +183,9 @@ suite("Team and org member file changes are read through their owner (real HTTP/
     await listedLive(teamList, manager, manager.files);
     const taskAgent = await delegatesWriter(root, manager, "team task agent", "team-task-agent.png");
     root.sendTo(mate.agentRunId, `WRITE_FILE_HOLD:${mate.pending}`);
-    const members = [manager, taskAgent, mate];
-    const reads = (running: boolean) => expectOwnerReads({
+    const members = [manager, mate];
+    const teamRead = (member: Member, filePath: string) => content(`/team-runs/${encodeURIComponent(root.rootId)}/agent-runs/${encodeURIComponent(member.agentRunId)}/file-change-content?path=${encodeURIComponent(filePath)}`);
+    const reads = async (running: boolean) => { await expectOwnRunReads({ label: "Team", running, members: [taskAgent], ownerList: teamList, ownerRead: teamRead }); await expectOwnerReads({
       label: "Team", running, members,
       list: teamList,
       read: (member, filePath) => content(`/team-runs/${encodeURIComponent(root.rootId)}/agent-runs/${encodeURIComponent(member.agentRunId)}/file-change-content?path=${encodeURIComponent(filePath)}`),
@@ -171,7 +193,7 @@ suite("Team and org member file changes are read through their owner (real HTTP/
         query(`query($t:String!,$a:String!){getTeamMemberFileChanges(teamRunId:$t,agentRunId:$a){path}}`, { t: other.rootId, a: member.agentRunId }),
         content(`/team-runs/${encodeURIComponent(other.rootId)}/agent-runs/${encodeURIComponent(member.agentRunId)}/file-change-content?path=${encodeURIComponent(member.files[0] ?? member.pending!)}`),
       ],
-    });
+    }); };
     // The member conversation lookup uses the named team only (REQ-004, AC-011): served in its team, an error in another.
     const conversation = (teamRunId: string, agentRunId: string) => query(`query($t:String!,$a:String!){getTeamMemberRunProjection(teamRunId:$t,agentRunId:$a){agentRunId}}`, { t: teamRunId, a: agentRunId });
     const expectConversationLookup = async () => {
@@ -179,6 +201,8 @@ suite("Team and org member file changes are read through their owner (real HTTP/
         expect((await conversation(root.rootId, member.agentRunId)).data?.getTeamMemberRunProjection?.agentRunId, member.label).toBe(member.agentRunId);
         expect((await conversation(other.rootId, member.agentRunId)).error, member.label).toContain(`AgentRun '${member.agentRunId}' was not found in root TeamRun '${other.rootId}'.`);
       }
+      // The task agent is not a member of the team that delegated to it (CR-461-014): read by its own run.
+      expect((await conversation(root.rootId, taskAgent.agentRunId)).error, taskAgent.label).toContain(`AgentRun '${taskAgent.agentRunId}' was not found in root TeamRun '${root.rootId}'.`);
     };
 
     await reads(true);
@@ -207,11 +231,12 @@ suite("Team and org member file changes are read through their owner (real HTTP/
     const squadTaskAgent = await delegatesWriter(root, lead, "member-team task agent", "org-squad-task-agent.png");
     expect([rootTaskAgent.address, squadTaskAgent.address].every(Boolean), "task agents carry their org address").toBe(true);
     root.sendTo(sibling.agentRunId, `WRITE_FILE_HOLD:${sibling.pending}`);
-    const members = [manager, lead, rootTaskAgent, squadTaskAgent, sibling];
+    const members = [manager, lead, sibling];
     const orgRoute = (orgRunId: string, member: Member, filePath: string, address: string | null = member.address) =>
       content(`/agent-org-runs/${encodeURIComponent(orgRunId)}/agent-runs/${encodeURIComponent(member.agentRunId)}/file-change-content?`
         + `${address === null ? "" : `memberAddress=${encodeURIComponent(address)}&`}path=${encodeURIComponent(filePath)}`);
-    const reads = (running: boolean) => expectOwnerReads({
+    const reads = async (running: boolean) => { await expectOwnRunReads({ label: "Org", running, members: [rootTaskAgent, squadTaskAgent],
+      ownerList: orgListOf, ownerRead: (member, filePath) => orgRoute(root.rootId, member, filePath) }); await expectOwnerReads({
       label: "Org", running, members,
       list: orgListOf,
       read: (member, filePath) => orgRoute(root.rootId, member, filePath),
@@ -219,7 +244,7 @@ suite("Team and org member file changes are read through their owner (real HTTP/
         query(orgList, { o: other.rootId, m: member.address, a: member.agentRunId }),
         orgRoute(other.rootId, member, member.files[0] ?? member.pending!),
       ],
-    });
+    }); };
     // The org route needs the member address: missing → 400; another member's address → "not found".
     const expectAddressRules = async () => {
       expect(await orgRoute(root.rootId, manager, manager.files[0]!, null)).toMatchObject({ status: 400, body: JSON.stringify({ detail: "Missing required query parameter: memberAddress" }) });

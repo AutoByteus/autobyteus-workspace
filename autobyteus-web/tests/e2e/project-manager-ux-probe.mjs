@@ -20,6 +20,7 @@ import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
 import { createTaskLocatorCases } from './project-manager-ux-task-locator-cases.mjs';
 import { attachToBrowserContext, attachToProbeProcess, withNodeCredential } from './fixtures/probe-node-access.mjs';
+import { waitRunSocketReady } from './fixtures/run-socket-ready.mjs';
 // Every node needs a credential (autobyteus-437): the probe's nodes start with its launch credential, and the probe's
 // own calls and its desktop browser contexts carry it (fixtures/probe-node-access.mjs).
 attachToProbeProcess();
@@ -183,8 +184,8 @@ const createProject = async (name) => (await gql('mutation($input:CreateProjectI
 const firstLine = (description) => description.split('\n').map((line) => line.trim()).find(Boolean);
 const createTask = async (projectId, description) => (await gql('mutation($input:CreateProjectTaskInput!){createProjectTask(input:$input){taskId}}',
   { input: { projectId, title: firstLine(description), description } })).createProjectTask.taskId;
-const projectTasks = async (projectId) => (await gql('query($id:String!){projectTasks(projectId:$id){taskId taskKey title status root{kind recipientAddress ingressAgentRunId teamRunId start closed status hostRoot{kind runId}}}}', { id: projectId })).projectTasks;
-const tempTasks = async () => (await gql('query{tasksWithoutProject{taskId description status referenceFiles root{kind recipientAddress start closed status}}}')).tasksWithoutProject;
+const projectTasks = async (projectId) => (await gql('query($id:String!){projectTasks(projectId:$id){taskId taskKey title status root{kind recipientAddress ingressAgentRunId teamRunId start closed status hostRoot: delegatingRun{kind runId}}}}', { id: projectId })).projectTasks;
+const tempTasks = async () => (await gql('query{tasksWithoutProject{taskId description status referenceFiles root{kind recipientAddress ingressAgentRunId start closed status}}}')).tasksWithoutProject;
 const createRoot = async (kind, ids) => {
   if (kind === 'agent') {
     const r = (await gql('mutation($input:CreateAgentRunInput!){createAgentRun(input:$input){success message runId}}', { input: { agentDefinitionId: ids.manager, ...config() } })).createAgentRun;
@@ -212,7 +213,10 @@ const sockets = [];
 const managerInput = async (root) => {
   const route = root.kind === 'agent' ? `agent/${root.rootId}` : root.kind === 'team' ? `agent-team/${root.rootId}` : `agent-org/${root.rootId}`;
   const socket = new WebSocket(`${stack.backendUrl.replace(/^http/, 'ws')}/ws/${route}`); sockets.push(socket);
+  const frames = [];
+  socket.on('message', (raw) => { try { frames.push(JSON.parse(String(raw))); } catch { /* not JSON */ } });
   await new Promise((resolve, reject) => { socket.once('open', resolve); socket.once('error', reject); });
+  await waitRunSocketReady(frames, route);
   const send = (content) => socket.send(JSON.stringify({ type: 'SEND_MESSAGE', payload: root.kind === 'org'
     ? { root_subject_kind: 'agent_org', root_run_id: root.rootId, target_agent_run_id: root.managerRunId, command_id: randomUUID(),
       message_id: randomUUID(), dedupe_key: randomUUID(), content, context_file_paths: [], image_urls: [] }
@@ -421,23 +425,31 @@ const teamAndOtherHosts = async () => {
   } finally { /* the runner captures a failing page, then closes it */ }
 };
 
-/** AR-002: a root whose hosting run was deleted from history shows its status but cannot be opened. */
+/** AR-002, revised by autobyteus-461 (REQ-007, TC-3, SR-080): a delegated run whose delegating run was deleted is a run of its own, listed and openable. */
 const deletedHost = async () => {
   const s = await setupAgentRoot();
   const { page, errors, context } = await newPage();
   try {
     assert((await rootOf(s.projectId, s.taskB))?.start === 'started', 'needs PMU-003 (task Team root)');
     assert((await terminate(s.root)).success, 'terminate the Agent run');
+    // autobyteus-461 REQ-001: the task Team outlives its delegator's Stop; it is stopped by its own Stop (and REQ-007 refuses
+    // deleting the host while it works).
+    const taskTeam = await rootOf(s.projectId, s.taskB);
+    const teamStopped = (await gql('mutation($id:String!){terminateAgentTeamRun(teamRunId:$id){success message}}', { id: taskTeam.teamRunId })).terminateAgentTeamRun;
+    assert(teamStopped.success, 'stop the task Team by its own Stop', teamStopped);
     await goto(page, `/projects/${s.projectId}`);
     const listed = await until('terminated host still listed: openable, Offline', async () => { const r = await rootState(page, s.taskB); return r?.state === 'offline' && r.openable === 'true' ? r : null; }, 30000);
     const deleted = (await gql('mutation($id:String!){deleteStoredRun(runId:$id){success message}}', { id: s.root.rootId })).deleteStoredRun;
     assert(deleted.success, 'delete the Agent run', deleted);
     await goto(page, `/projects/${s.projectId}`);
-    const gone = await until('deleted host: not openable', async () => { const r = await rootState(page, s.taskB); return r?.openable === 'false' ? r : null; }, 30000);
-    assert(gone.tag === 'DIV', 'not focusable', gone);
-    await shot(page, 'pmu-004-deleted-host-not-openable');
+    // autobyteus-461 REQ-007 / TC-3 and SR-080: once its delegating run is deleted, the task Team is a run of its own, listed,
+    // so its line stays openable (base's AR-002 hid a hosted copy whose host was deleted) and opens the Team's own view.
+    const own = await until('deleted host: the task Team is a run of its own, openable', async () => { const r = await rootState(page, s.taskB); return r?.openable === 'true' ? r : null; }, 30000);
+    await rootLine(page, s.taskB).click();
+    await until('the task Team opens in its own view', async () => inWorkspace(page) && /You have a new task from/.test(await centerText(page)), 30000);
+    await shot(page, 'pmu-004-deleted-host-team-of-its-own');
     assertNoBrowserErrors(errors);
-    return { listed, gone, errors };
+    return { listed, own, errors };
   } finally { /* the runner captures a failing page, then closes it */ }
 };
 
@@ -739,6 +751,12 @@ const tempReactivationAndChatDeletion = async () => {
     await runRow.locator('[data-test="terminate-agent-run"]').click();
     await until('run inactive', async () => (await gql('query($id:String!){agentRunCollaboration(runId:$id)}', { id: root.rootId })) !== undefined
       && (await runRow.locator('[data-test="terminate-agent-run"]').count()) === 0, 30000);
+    // autobyteus-461 REQ-001 / REQ-007: the chat's delegated copies outlive its Stop, and deleting it is refused while one
+    // works; they are stopped by their own Stop first (K-14: the delete then removes the Temp tasks it assigned).
+    for (const t of [temp, second]) {
+      const copyId = (await tempTasks()).find((x) => x.taskId === t.taskId)?.root?.ingressAgentRunId;
+      if (copyId) await gql('mutation($id:String!){terminateAgentRun(agentRunId:$id){success message}}', { id: copyId });
+    }
     await runRow.hover();
     await runRow.locator('button[title="Delete run permanently"]').click();
     await page.locator('[role="dialog"] button').last().click();
@@ -801,7 +819,7 @@ const orgRootUnhydrated = async () => {
     await line.waitFor({ timeout: 30000 });
     await line.click();
     await until('org worker conversation opened', async () => inWorkspace(page) && /You have a new task from/.test(await centerText(page)), 30000);
-    const workerRow = page.locator(`[data-test="agent-org-task-agent-row-${hosted.ingressAgentRunId}"]`);
+    const workerRow = page.locator(`[data-test="workspace-team-transient-execution-row"][data-agent-run-id="${hosted.ingressAgentRunId}"]`);
     const selected = await until('org worker row selected', () => isSelected(workerRow), 15000).catch(() => false);
     await shot(page, 'pmu-012-org-root-opened-cold');
     assertNoBrowserErrors(errors);
@@ -1370,8 +1388,11 @@ const selectionState = (page) => page.evaluate(() => {
   const pinia = document.querySelector('#__nuxt')?.__vue_app__?.config.globalProperties.$pinia;
   const selection = pinia?._s.get('agentSelection'); const teams = pinia?._s.get('agentTeamContexts');
   const u = new URL(location.href);
+  // The run the window shows (autobyteus-461 rule 2: a delegated run opens as its own run, not as a focus of its root Team).
+  const target = pinia?._s.get('activeContext')?.activeWorkspaceTarget;
   return { route: `${u.pathname}${u.search}`, subject: JSON.stringify(selection?.subject ?? null),
-    focusedMember: teams?.activeExecutionFocusedMemberAddress ?? null, focusedRunId: teams?.focusedMemberContext?.state?.runId ?? null };
+    focusedMember: teams?.activeExecutionFocusedMemberAddress ?? null, focusedRunId: teams?.focusedMemberContext?.state?.runId ?? null,
+    activeRunId: target?.agentRunId ?? target?.context?.state?.runId ?? null };
 });
 /** The visible tree's selected rows and its scroll geometry. */
 const treeSummary = (page) => page.evaluate(() => {
@@ -1610,8 +1631,9 @@ const collapsedStripOtherEntries = async () => {
     const squad = await until('team: task Team started', async () => { const r = await rootOf(projectId, teamTask); return r?.start === 'started' && r.teamRunId ? r : null; }, 60000);
     await openTeamRunFromPanel(page, names, teamRoot);
     await tabList.first().waitFor({ timeout: 60000 });
-    // Task-Team member rows carry the host Team run and the member's address under the task Team.
-    const editorRow = page.locator(`[data-test="workspace-team-transient-execution-row"][data-team-run-id="${teamRoot.rootId}"][data-member-address="${squad.recipientAddress}/editor"][data-agent-run-id]`).first();
+    // Task-Team member rows carry the host Team run and the member's address in its own team (autobyteus-461 TC-12: a delegated
+    // team is rooted at `/`, so the member is `/editor`, not `<task Team address>/editor`).
+    const editorRow = page.locator(`[data-test="workspace-team-transient-execution-row"][data-team-run-id="${teamRoot.rootId}"][data-member-address="/editor"][data-agent-run-id]`).first();
     await until('nested task Team member row', async () => {
       if (await editorRow.count()) return true;
       const closed = page.locator('[data-test="workspace-team-transient-disclosure"][aria-expanded="false"]');
@@ -1625,7 +1647,8 @@ const collapsedStripOtherEntries = async () => {
     });
     const nestedMember = { agentRunId: await editorRow.getAttribute('data-agent-run-id'), address: await editorRow.getAttribute('data-member-address'), depth: await editorRow.getAttribute('data-tree-depth') };
     await editorRow.click();
-    await until('nested member selected', async () => (await selectionState(page)).focusedRunId === nestedMember.agentRunId, 30000);
+    // Rule 2: the nested member opens as its own run (the root Team's focus is left alone).
+    await until('nested member opened', async () => (await selectionState(page)).activeRunId === nestedMember.agentRunId, 30000);
     await collapseLeftPanel(page);
     const nestedOpen = await settledOpenRun(page, 'nested member');
     assert(nestedOpen.nav.stripChatLit === false, 'nested member: Chat not lit', nestedOpen.nav);

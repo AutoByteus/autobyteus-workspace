@@ -12,9 +12,13 @@ const createSubject = () => {
   const metadataService = {
     readMetadata: vi.fn(),
     readMetadataState: vi.fn(),
+    writeMetadata: vi.fn().mockResolvedValue(undefined),
   };
   const historyCatalogService = {
     recordRunSummary: vi.fn().mockResolvedValue(undefined),
+    recordCollaborationPackageCreated: vi.fn().mockResolvedValue(undefined),
+    recordRunTerminated: vi.fn().mockResolvedValue(undefined),
+    getCatalogRow: vi.fn().mockResolvedValue(null),
   };
   const provisioningService = {
     prepareAgentRun: vi.fn().mockResolvedValue({
@@ -153,5 +157,33 @@ describe("AgentRunService create", () => {
       summary: "Publish the video draft.",
     });
     expect(mocks.metadataService.readMetadata).not.toHaveBeenCalled();
+  });
+
+  it("autobyteus-461 contract §3.3: a run that collaborates has its address fixed once, and its history row says so", async () => {
+    const { service, mocks } = createSubject();
+    mocks.metadataService.readMetadata.mockResolvedValueOnce({ runId: "manager", agentDefinitionId: "project-task-manager" });
+    await service.recordCollaborating("manager", "/project_task_manager" as never);
+    expect(mocks.metadataService.writeMetadata).toHaveBeenCalledWith("manager", { runId: "manager", agentDefinitionId: "project-task-manager", address: "/project_task_manager" });
+    expect(mocks.historyCatalogService.recordCollaborationPackageCreated).toHaveBeenCalledWith({ runId: "manager" });
+    // Once fixed, it is not rewritten (a delegated run's address, or an earlier collaboration's).
+    mocks.metadataService.readMetadata.mockResolvedValueOnce({ runId: "manager", address: "/project_task_manager" });
+    await service.recordCollaborating("manager", "/other" as never);
+    expect(mocks.metadataService.writeMetadata).toHaveBeenCalledTimes(1);
+  });
+
+  it("autobyteus-461 DS-5 (model.py stop): a closed Task's run that is not running has its row record the stop, once", async () => {
+    const { service, mocks } = createSubject();
+    mocks.historyCatalogService.getCatalogRow.mockResolvedValueOnce({ runId: "image", terminatedAt: null });
+    await expect(service.stopForTaskClosure("image", () => true)).resolves.toBe("stopped");
+    expect(mocks.historyCatalogService.recordRunTerminated).toHaveBeenCalledWith({ runId: "image" });
+    mocks.historyCatalogService.getCatalogRow.mockResolvedValueOnce({ runId: "image", terminatedAt: "2026-11-11T00:00:00.000Z" });
+    await expect(service.stopForTaskClosure("image", () => true)).resolves.toBe("stopped");
+    expect(mocks.historyCatalogService.recordRunTerminated).toHaveBeenCalledTimes(1);
+  });
+
+  it("CR-461-001: a run whose Task entry is open again when its stop comes keeps running, and nothing is recorded", async () => {
+    const { service, mocks } = createSubject();
+    await expect(service.stopForTaskClosure("image", () => false)).resolves.toBe("kept_open");
+    expect(mocks.historyCatalogService.recordRunTerminated).not.toHaveBeenCalled();
   });
 });

@@ -266,14 +266,14 @@ describe("CodexThreadBootstrapper", () => {
           identity: createCollaborationMemberExecutionIdentity({
             root, memberAddress: "/collaborator", agentRunId: "run-1",
           }),
-          teamScoped: false, collaborationRole: "standalone_agent",
+          teamScoped: false, collaborationRole: "standalone_agent", inOrganization: false,
           collaboration: new MemberCollaborationContext({
             deliverLogicalMessage: async () => ({ accepted: true }),
           }),
           tasks: {
             root,
-            delegateToNewCopy: async () => ({ delegated: false, message: "unused" }),
-            ownedTaskOf: () => null, assignToExistingCopy: async () => ({ delegated: false, message: "unused" }),
+            delegationSource: async () => ({ delegated: false, message: "unused" }),
+            ownedTaskOf: () => null,
           },
         }) : null;
       const { bootstrapper } = createBootstrapper({

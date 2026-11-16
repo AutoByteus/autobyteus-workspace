@@ -1,0 +1,42 @@
+{
+  "listedBefore": [
+    "project_task_manager_924b_765a6d6700b64eb2a9e97b1b0dace170",
+    "project_task_manager_924b_911716e1b9b24b4b98e11f35c560b060"
+  ],
+  "archiveAnswers": [
+    {
+      "op": "ArchiveStoredRun",
+      "variables": {
+        "runId": "project_task_manager_924b_765a6d6700b64eb2a9e97b1b0dace170"
+      },
+      "status": 200,
+      "body": "{\"data\":{\"archiveStoredRun\":{\"success\":true,\"message\":\"Run 'project_task_manager_924b_765a6d6700b64eb2a9e97b1b0dace170' archived.\",\"__typename\":\"ArchiveStoredRunMutationResult\"}}}"
+    },
+    {
+      "op": "ArchiveStoredRun",
+      "variables": {
+        "runId": "project_task_manager_924b_911716e1b9b24b4b98e11f35c560b060"
+      },
+      "status": 200,
+      "body": "{\"data\":{\"archiveStoredRun\":{\"success\":false,\"message\":\"This run can't be archived while a run it delegated to is working (/fact_checker_924b). Try again when it has finished, or stop it first.\",\"__typename\":\"ArchiveStoredRunMutationResult\"}}}"
+    }
+  ],
+  "windowNotices": [
+    "Run archived.",
+    "Archived 1 run. 1 failed."
+  ],
+  "refusals": [
+    "This run can't be archived while a run it delegated to is working (/fact_checker_924b). Try again when it has finished, or stop it first."
+  ],
+  "serverAnswerForLeft": [
+    {
+      "runId": "project_task_manager_924b_911716e1b9b24b4b98e11f35c560b060",
+      "answer": {
+        "archiveStoredRun": {
+          "success": false,
+          "message": "This run can't be archived while a run it delegated to is working (/fact_checker_924b). Try again when it has finished, or stop it first."
+        }
+      }
+    }
+  ]
+}

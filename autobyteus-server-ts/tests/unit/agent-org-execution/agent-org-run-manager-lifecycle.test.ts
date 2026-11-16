@@ -1,3 +1,4 @@
+import { noDelegations, openTaskRecords } from "../../helpers/no-delegations.js";
 import { mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
@@ -53,7 +54,7 @@ describe("AgentOrgRunManager lifecycle", () => {
   it("publishes one complete Org root under the compound identity and unregisters it on termination", async () => {
     const directory = new ActiveCollaborationRootDirectory();
     const build = vi.fn(async (input: { onTerminated?: () => void }) => fakeRun("org-run-1", input.onTerminated));
-    const manager = new AgentOrgRunManager({
+    const manager = new AgentOrgRunManager({ delegationIndex: noDelegations(), taskRecords: openTaskRecords(),
       memoryDir: memoryDir(),
       scopeBuilder: { build } as unknown as AgentOrgExecutionScopeBuilder,
       activeRootDirectory: directory,
@@ -80,7 +81,7 @@ describe("AgentOrgRunManager lifecycle", () => {
       candidates.push(run);
       return run;
     });
-    const manager = new AgentOrgRunManager({
+    const manager = new AgentOrgRunManager({ delegationIndex: noDelegations(), taskRecords: openTaskRecords(),
       memoryDir: memoryDir(),
       scopeBuilder: { build } as unknown as AgentOrgExecutionScopeBuilder,
       activeRootDirectory: directory,
@@ -95,7 +96,7 @@ describe("AgentOrgRunManager lifecycle", () => {
   });
 
   it("admits only unmanaged roots and does not invoke inactive-history work for a managed root", async () => {
-    const manager = new AgentOrgRunManager({
+    const manager = new AgentOrgRunManager({ delegationIndex: noDelegations(), taskRecords: openTaskRecords(),
       memoryDir: memoryDir(),
       scopeBuilder: { build: vi.fn(async (input: { onTerminated?: () => void }) =>
         fakeRun("org-managed", input.onTerminated)) } as unknown as AgentOrgExecutionScopeBuilder,
@@ -118,7 +119,7 @@ describe("AgentOrgRunManager lifecycle", () => {
     let releaseFirst!: () => void;
     const firstGate = new Promise<void>((resolve) => { releaseFirst = resolve; });
     const events: string[] = [];
-    const manager = new AgentOrgRunManager({
+    const manager = new AgentOrgRunManager({ delegationIndex: noDelegations(), taskRecords: openTaskRecords(),
       memoryDir: memoryDir(),
       scopeBuilder: { build: vi.fn() } as unknown as AgentOrgExecutionScopeBuilder,
       activeRootDirectory: new ActiveCollaborationRootDirectory(),
@@ -150,7 +151,7 @@ describe("AgentOrgRunManager lifecycle", () => {
     let releaseBuild!: () => void;
     const buildGate = new Promise<void>((resolve) => { releaseBuild = resolve; });
     const buildStarted = vi.fn();
-    const manager = new AgentOrgRunManager({
+    const manager = new AgentOrgRunManager({ delegationIndex: noDelegations(), taskRecords: openTaskRecords(),
       memoryDir: memoryDir(),
       scopeBuilder: {
         build: vi.fn(async (input: { onTerminated?: () => void }) => {
@@ -175,7 +176,7 @@ describe("AgentOrgRunManager lifecycle", () => {
 
   it("closes new root admission without disturbing the active Org", async () => {
     const build = vi.fn(async (input: { onTerminated?: () => void }) => fakeRun("org-active", input.onTerminated));
-    const manager = new AgentOrgRunManager({
+    const manager = new AgentOrgRunManager({ delegationIndex: noDelegations(), taskRecords: openTaskRecords(),
       memoryDir: memoryDir(),
       scopeBuilder: { build } as unknown as AgentOrgExecutionScopeBuilder,
       activeRootDirectory: new ActiveCollaborationRootDirectory(),

@@ -1,0 +1,47 @@
+API/E2E round 13 (API-REV-013), on CRR-045. Code under test 58cc542572 (HEAD d3e52f5f4b: docs only since).
+Server dist/ rebuilt this round (/tmp/api461/r13-build.log, exit 0); web from source (Nuxt dev). Clean env for every run:
+env -i PATH HOME=<resolved temp> TMPDIR USER. Never the user's app or ~/.autobyteus. Raw logs stay under /tmp/api461/r13*.
+
+Server E2E, full folder (API-E01), RUN_AGY_FAILURE_E2E=1 with the scripted AGY CLI:
+  264 files: 182 passed, 8 failed, 74 skipped (live gates); 853 tests passed, 18 failed.
+  (A typecheck ran during this job; every failing file was rerun alone.)
+  Rerun alone after the stale fixes:
+    project-change-feed 7/7, ad-hoc-task-delegation 3/3, task-copy-idle-lifetime 1/1, stopped-run-model-config-graphql 5/5,
+    agy-skill-update-notice-roots 3/3, runtime-switch-native-built-server 9/9                      Pass
+    remote-delegation-two-server 38/44: RC-31, RC-33, RC-34 (peer live output, F-71), RC-32 (peer status, F-70),
+      RC-35, RC-37 (cascades: they use RC-31's run)                                                Fail
+    runtime-switch-members-extended-built-server: branch failed three ways in three runs (EX-01 attempt outcome; EX-04
+      SESSION_NOT_READY; setup providerModelCatalogSnapshots); base 827f1e68dc 5/5                  Unclassified
+  Rewritten to /ws/run-status and passing in the full run: delegated-team-lazy-member-activation,
+    collaboration-contract-stories (S17), delegator-view-follows-child (+FOLLOW-L RUN_TREE_CHANGED for a listed, not-open
+    delegator in Agent/Team/Org; +FOLLOW-D a stopped delegator's child stays live on the open and a fresh subscription).
+  Typecheck after the round: production 0, tests 1012 in 316 files (baseline).
+
+Web probes (/tmp/api461/r13-web, r13-final, r13-last):
+  stopped-delegator-views     SDV 7/7 Pass (SDV-07: a delegated Team row opens its coordinator in Agent, Team, Org trees)
+  project-manager-ux          25/25 Pass
+  runtime-switch-members      RSM 7/7 Pass
+  projects-left-navigation    9/11: PLN-04 not 461; PLN-09 F-67 (diagnostics: API-r13-F67-PLN-09-archive-diagnostics.json)
+  delegated-launch-defaults   17/29 in the full run; reruns: DLP-004, DCR-001, AFS-001 Pass after probe fixes;
+                              LRL-001…005 Pass (F-64, F-65 resolved); DCP-001/003/005 F-60; DCR-003 F-69; DCR-002 F-68;
+                              AFS-002 Unclear (a later step); DLP-006 retired (round 12); SIR-001/002 as classified
+  SSR (rewritten)             SSR-001, SSR-003 Pass; SSR-002 F-69 (stored: lead ALT -> team model; engineer, unoffered keep);
+                              SSR-004 F-60 (thinking saved xhigh, reopened card shows High); an earlier SSR-002 run hit F-68
+  owner-scoped-file-reads     B-001…B-007 and T-API Pass (seeded)
+  task-closure-tree           15/16: BR-011 "org: conversation after restart" (same step as round 12)
+  remote-runs-in-tree         RTP-01/02/03/06/07 Pass; RTP-04 Fail (F-71 no live answer; F-70 header Offline);
+                              RTP-05 Fail (F-70: the peer row reads offline, so its stop icon is hidden);
+                              RTP-08 (new) Fail: offline at the unasked end, but never live again after Retry and a turn on beta
+  remote-run-title            5/6: RRT-05 F-72 (minor: a peer Team row shows the task message for ~100 ms)
+  API-P04                     65 kinds, 40 identical; peer rows: `open_target` added (SR-083), `launches` on both (F-66
+                              resolved); base-only: the Team view's peer member frames (AGENT_STATUS, SEGMENT_*, TURN_*),
+                              the status poll, StopDelegatedExecution; branch-only: /ws/run-status frames
+  mobile-shell                18/30, then aborted ("the delegated rows on both phones"): F-73 (MSP-02/03/14/17/20: no delegated
+                              rows under a listed run; MSP-05/08/11/16/33/43: a Team run screen does not open; MSP-06 remote row);
+                              MSP-12 Pass (no status poll on any screen). Base probe cannot run (duplicate case IDs at base).
+Live (DeepSeek through AUTOBYTEUS_TEST_VAULT; AIC_ROOT_RUNTIMES=autobyteus), LE-O1 only, two runs:
+  the SR-081 step passes (the copy lead's "/squad/mate" answered "… is no longer an address: your team is addressed from
+  its own root."; nothing reaches the mounted mate); both runs then time out at the mounted lead's teammate delegation
+  (no tool call seen; the model's arguments are not in the server log): Unclassified
+API-F01 fresh-start build: clone at HEAD, pnpm install --frozen-lockfile, build:electron:mac --arm64 (unsigned),
+  Prisma ARM64 and packaged terminal runtime checks incl. the Electron-as-Node spawn probe                Pass

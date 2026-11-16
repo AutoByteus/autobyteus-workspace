@@ -7,13 +7,13 @@ import { ApplicationCapabilityResolver } from './types/application-capability.js
 import { SkillResolver } from './types/skills.js';
 import { AgentRunResolver } from './types/agent-run.js';
 import { AgentTeamRunResolver } from './types/agent-team-run.js';
-import { DelegatedLaunchSelectionResolver } from './types/delegated-launch-selection.js';
 import { WorkspaceResolver } from './types/workspace.js';
 import { AgentDefinitionResolver } from './types/agent-definition.js';
 import { AgentTeamDefinitionResolver } from './types/agent-team-definition.js';
 import { AgentOrgDefinitionResolver } from './types/agent-org-definition.js';
 import { AgentOrgRunResolver } from './types/agent-org-run.js';
 import { AgentRunCollaborationResolver } from './types/agent-run-collaboration.js';
+import { RunTreeResolver } from './types/run-tree.js';
 import { CollaborationParticipantMessagesResolver } from './types/collaboration-participant-messages.js';
 import { TokenUsageStatisticsResolver } from './types/token-usage-stats.js';
 import { TokenUsageAnalyticsResolver } from './types/token-usage-analytics.js';
@@ -61,13 +61,13 @@ export async function buildGraphqlSchema() {
       AgentRunResolver,
       AgentBackgroundTaskViewResolver,
       AgentTeamRunResolver,
-      DelegatedLaunchSelectionResolver,
       WorkspaceResolver,
       AgentDefinitionResolver,
       AgentTeamDefinitionResolver,
       AgentOrgDefinitionResolver,
       AgentOrgRunResolver,
       AgentRunCollaborationResolver,
+      RunTreeResolver,
       CollaborationParticipantMessagesResolver,
       TokenUsageStatisticsResolver,
       TokenUsageAnalyticsResolver,

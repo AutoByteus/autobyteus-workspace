@@ -17,7 +17,6 @@ import {
   testAgentNode,
   testExecutionTree,
 } from "../../../fixtures/current-team-run-fixtures.js";
-import { openEveryOwnFileUnder } from "../../../fixtures/open-delegated-run-sources.js";
 
 const tempDirs: string[] = [];
 afterEach(async () => {
@@ -31,10 +30,10 @@ const writeFile = async (filePath: string): Promise<string> => {
 };
 
 const createNormalizer = async () => {
-  const root = await fs.mkdtemp(path.join(os.tmpdir(), "provider-input-normalizer-")); openEveryOwnFileUnder(root);
+  const root = await fs.mkdtemp(path.join(os.tmpdir(), "provider-input-normalizer-"));
   tempDirs.push(root);
   const appDataDir = path.join(root, "app-data");
-  const memoryDir = path.join(root, "memory"); openEveryOwnFileUnder(memoryDir);
+  const memoryDir = path.join(root, "memory");
   const layout = new ContextFileLayout({ appDataDir, memoryDir });
   const storedFilename = "ctx_token__proof.unknown";
   const rootTeamRunId = "normalizer-root-team";

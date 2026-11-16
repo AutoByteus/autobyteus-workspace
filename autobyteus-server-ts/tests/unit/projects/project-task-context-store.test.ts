@@ -11,6 +11,7 @@ import { ProjectTaskContextDrafts } from "../../../src/projects/services/project
 import { ProjectTaskContextStore } from "../../../src/projects/context/project-task-context-store.js";
 import { ProjectsLayout } from "../../../src/projects/stores/projects-layout.js";
 import { CONTEXT_FILE_DRAFT_TTL_MS } from "../../../src/context-files/domain/context-file-upload-policy.js";
+import { withTaskRunResources } from "../../helpers/task-run-resources.js";
 import { UnsupportedContextFileTypeError } from "../../../src/context-files/domain/context-file-upload-errors.js";
 import { defaultContextFileSizeLimits } from "../../helpers/context-file-size-limits.js";
 const upload = (text = "hello", mimetype = "text/plain", truncated = false): MultipartFile => ({
@@ -24,7 +25,7 @@ describe("Task-owned context transaction", () => {
     store = new ProjectStore(layout);
     context = new ProjectTaskContextStore(layout);
     projects = new ProjectService({store, workspaceLookup: {listRegisteredWorkspaceRootPaths: async () => []}});
-    tasks = new ProjectTaskService({store, contextStore: context});
+    tasks = new ProjectTaskService(withTaskRunResources({store, contextStore: context}));
     drafts = new ProjectTaskContextDrafts({store, contextStore: context});
     projectId = (await projects.createProject({name: "Unit fixture"})).projectId;
   });
@@ -41,7 +42,7 @@ describe("Task-owned context transaction", () => {
     expect(await fs.readFile(file.localPath!, "utf8")).toBe("hello");
     const persisted = (await store.listTasks(projectId))[0]!.contextFiles![0]!;
     expect(Object.keys(persisted).sort()).toEqual(["displayName", "mimeType", "sizeBytes", "storedFilename"]);
-    const reopened = new ProjectTaskService({store: new ProjectStore(new ProjectsLayout(path.join(root, "projects"))), contextStore: context});
+    const reopened = new ProjectTaskService(withTaskRunResources({store: new ProjectStore(new ProjectsLayout(path.join(root, "projects"))), contextStore: context}));
     expect((await reopened.listTasks(projectId))[0]!.contextFiles).toEqual(task.contextFiles);
     await reopened.updateTask({projectId, taskId: task.taskId, status: "DONE"});
     expect(await fs.readFile(file.localPath!, "utf8")).toBe("hello");

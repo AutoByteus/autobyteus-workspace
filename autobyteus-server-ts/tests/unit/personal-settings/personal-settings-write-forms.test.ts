@@ -278,9 +278,9 @@ describe("Orgs", () => {
   const unused = new Proxy({}, { get: (_target, key) => { throw new Error(`Unexpected service operation ${String(key)}`); } });
   /** The Org editor's save through GraphQL: name, description, members and handoffs, the avatar only when it changed. */
   const editorSave = async (extra: Record<string, unknown>) => {
-    const registration = configureStudioApplicationApiServices({ ...definitions, bundleService, agentOrgDefinitionService: orgs,
+    const registration = configureStudioApplicationApiServices({ runViewChildren: {} as never, delegatedRunAgents: {} as never, runTree: {} as never, runViewStreams: {} as never, ...definitions, bundleService, agentOrgDefinitionService: orgs,
       agentRunService: unused, teamRunService: unused, agentOrgRunService: unused, definitionAdmissionService: unused,
-      collaborationRootHistoryService: unused, runModelConfigService: unused, delegatedLaunchSelectionService: unused,
+      collaborationRootHistoryService: unused, runModelConfigService: unused,
       capabilityService: unused, packageQueries: unused, packageCommands: unused } as never);
     try {
       const schema = await buildSchema({ resolvers: [AgentOrgDefinitionResolver], validate: false });

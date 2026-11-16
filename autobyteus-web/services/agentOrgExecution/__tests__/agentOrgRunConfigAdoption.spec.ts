@@ -50,60 +50,28 @@ describe('AgentOrg whole model-only canonical adoption', () => {
       expect(item.entry.context.conversation.messages).toBe(item.messages)
       expect(item.entry.context.contextFilePaths).toBe(item.files)
       const configured = org.index.agents.get(item.entry.agentRunId)
-      if (configured?.kind === 'configured') expect(item.entry.context.config.llmModelIdentifier).toBe(expectedByRunId.get(item.entry.agentRunId))
+      if (configured) expect(item.entry.context.config.llmModelIdentifier).toBe(expectedByRunId.get(item.entry.agentRunId))
     }
   })
 
-  it('adopts a copy\'s saved model choice (an Agent copy, a Team copy and its members) and publishes it (autobyteus-366)', async () => {
+  it('CR-461-088: the Org\'s view and its configuration read are its own tree (rule 2): it adopts the Org\'s own settings', async () => {
     const staged = await stageAgentOrgExecutionContext({ focus: null, source: 'inspection', orgRunId: 'org-run', view: inactiveView() })
     const org = staged.context
-    const next = JSON.parse(JSON.stringify(org.executionTree)) as any
-    const selection = { runtimeKind: 'autobyteus', llmModelIdentifier: 'copy-next', llmConfig: null, selectedAt: '2026-11-02T00:00:00.000Z' }
-    const tasks: any[] = []
-    const visit = (list: any[]) => list.forEach((task) => { tasks.push(task); if (task.taskExecutions) visit(task.taskExecutions) })
-    visit(next.rootOrg.taskExecutions)
-    next.rootOrg.members.forEach((member: any) => member.taskExecutions && visit(member.taskExecutions))
-    const agentCopy = tasks.find((task) => 'agentRunId' in task)
-    const teamCopy = tasks.find((task) => 'teamRunId' in task)
-    expect(agentCopy ?? teamCopy).toBeTruthy()
-    if (agentCopy) agentCopy.userLaunchSelection = selection
-    if (teamCopy) { teamCopy.userTeamLaunchSelection = selection; teamCopy.members[0].userLaunchSelection = selection }
-    expect(org.applyRunConfig(next, false)).toBe(true)
-    expect(JSON.stringify(org.executionTree)).toContain('copy-next')
+    expect(JSON.stringify(org.executionTree)).not.toContain('taskExecutions')
+    const read = JSON.parse(JSON.stringify(org.executionTree)) as any
+    read.rootOrg.defaultLaunchConfiguration.llmModelIdentifier = 'root-next'
+    expect(org.applyRunConfig(read, false)).toBe(true)
+    expect(org.executionTree.rootOrg.defaultLaunchConfiguration.llmModelIdentifier).toBe('root-next')
+    expect(JSON.stringify(org.executionTree)).not.toContain('agent-worker-task')
   })
 
-  it('still refuses a copy\'s identity or launch drift alongside a choice', async () => {
-    const staged = await stageAgentOrgExecutionContext({ focus: null, source: 'inspection', orgRunId: 'org-run', view: inactiveView() })
-    const org = staged.context
-    const copyOf = (tree: any) => {
-      const all: any[] = []
-      const visit = (list: any[]) => list.forEach((task) => { all.push(task); if (task.taskExecutions) visit(task.taskExecutions) })
-      visit(tree.rootOrg.taskExecutions)
-      tree.rootOrg.members.forEach((member: any) => member.taskExecutions && visit(member.taskExecutions))
-      return all[0]
-    }
-    for (const mutate of [
-      (task: any) => { task.address = '/renamed' },
-      (task: any) => { task.startedAt = '2026-01-01T00:00:00.000Z' },
-      (task: any) => { (task.source.launchConfiguration ?? task.source.defaultLaunchConfiguration).llmModelIdentifier = 'started-changed' },
-    ]) {
-      const view = org.view, next = JSON.parse(JSON.stringify(org.executionTree))
-      const task = copyOf(next)
-      task['agentRunId' in task ? 'userLaunchSelection' : 'userTeamLaunchSelection'] = { runtimeKind: 'autobyteus', llmModelIdentifier: 'x', llmConfig: null, selectedAt: 't' }
-      mutate(task)
-      expect(() => org.applyRunConfig(next, false)).toThrow('locked fields')
-      expect(org.view).toBe(view)
-    }
-  })
-
-  it('rejects topology, task, handoff, binding, archive and locked-field drift without partial publication', async () => {
+  it('rejects topology, handoff, binding, archive and locked-field drift without partial publication', async () => {
     const staged = await stageAgentOrgExecutionContext({ focus: null, source: 'inspection', orgRunId: 'org-run', view: inactiveView() })
     const org = staged.context
     for (const mutate of [
       (tree: any) => { tree.archivedAt = '2026-09-17T00:00:00Z' },
       (tree: any) => { tree.applicationBinding = { applicationId: 'app', bindingId: 'binding' } },
       (tree: any) => { tree.handoffs.push({ from: '/director', to: '/team/lead', description: 'changed' }) },
-      (tree: any) => { tree.rootOrg.taskExecutions = [] },
       (tree: any) => { tree.rootOrg.members[0].launchConfiguration.workspaceRootPath = '/other' },
     ]) {
       const view = org.view, index = org.index, next = JSON.parse(JSON.stringify(org.executionTree))

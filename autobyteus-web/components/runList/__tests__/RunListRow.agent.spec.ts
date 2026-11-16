@@ -14,6 +14,12 @@ vi.mock('~/services/agentCollaboration/agentRunCollaborationChildHydration', () 
   hydrateAgentRunCollaborationChild: vi.fn(async () => 'hydrated'),
 }));
 vi.mock('~/stores/runHistoryStore', () => ({ useRunHistoryStore: () => ({ getTeamMemberInspectionAttempt: () => null }) }));
+// The run's tree, as the server builds it (SR-084): read once when the row is first listed.
+const treeReads = vi.hoisted(() => ({ count: 0, answer: null as null | ((runId: string) => unknown) }));
+vi.mock('~/utils/apolloClient', () => ({ getApolloClient: () => ({ query: async ({ variables }: { variables: { runId: string } }) => {
+  treeReads.count += 1;
+  return { data: { runTree: treeReads.answer?.(variables.runId) } };
+} }) }));
 // Every delegated row is on a Task; the composable is what asks for the Task answers (one ask per mount).
 const tasks = vi.hoisted(() => ({ use: vi.fn() }));
 vi.mock('~/composables/projects/useTaskWorkerTasks', () => ({ useTaskWorkerTasks: tasks.use }));
@@ -21,7 +27,8 @@ const TASK = { taskId: 'task-1', projectId: 'project-1', title: 'Ship the releas
 
 import RunListRow from '../RunListRow.vue';
 import { useRunListDisclosure } from '~/composables/useRunListDisclosure';
-import { useAgentRunCollaborationStore } from '~/stores/agentRunCollaborationStore';
+import { useRunTreeStore } from '~/stores/runTreeStore';
+import { multiTeamTree } from '~/test-support/runTreeFixtures';
 import { AgentStatus } from '~/types/agent/AgentStatus';
 import type { RunListSectionActions, RunListSectionState } from '~/components/runList/runListSectionContracts';
 import type { RunListEntry } from '~/utils/runListProjection';
@@ -69,6 +76,8 @@ describe('RunListRow: an Agent run\'s delegated rows (autobyteus-390)', () => {
   beforeEach(() => {
     setActivePinia(createPinia());
     vi.clearAllMocks();
+    treeReads.count = 0;
+    treeReads.answer = (runId) => multiTeamTree(7, runId);
     hydration.read.mockImplementation(async () => multiTeamView());
     tasks.use.mockImplementation(() => ({ taskOf: () => TASK, locate: vi.fn() }));
   });
@@ -96,7 +105,7 @@ describe('RunListRow: an Agent run\'s delegated rows (autobyteus-390)', () => {
     expect(tree(wrapper).exists()).toBe(true);
     expect((tree(wrapper).element as HTMLElement).style.display).toBe('none');
     expect(tree(wrapper).isVisible()).toBe(false);
-    expect(useAgentRunCollaborationStore().taskRows(HOST).length).toBeGreaterThan(0);
+    expect(useRunTreeStore().rowsOf({ kind: 'agent', runId: HOST }).length).toBeGreaterThan(1);
     expect(disclosureButton(wrapper).attributes('aria-expanded')).toBe('false');
     expect(disclosureButton(wrapper).get('[data-icon]').classes()).toContain('-rotate-90');
 
@@ -110,6 +119,7 @@ describe('RunListRow: an Agent run\'s delegated rows (autobyteus-390)', () => {
     expect(tasks.use).toHaveBeenCalledTimes(1);
     expect(disclosureButton(wrapper).attributes('aria-expanded')).toBe('true');
     expect(hydration.read).toHaveBeenCalledTimes(1);
+    expect(treeReads.count).toBe(1);
     wrapper.unmount();
   });
 

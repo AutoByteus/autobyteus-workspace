@@ -1,0 +1,9 @@
+# API-B01 phone, round 9 (f92881dd13); bundle rebuilt (pnpm build:mobile-web, exit 0)
+# Command: cd autobyteus-web && env -i PATH HOME=<temp> TMPDIR USER node tests/e2e/mobile-shell-probe.mjs --output-dir=<dir> --cases=MSP-53,MSP-54,MSP-55
+[mobile-shell] MSP-53 …
+[mobile-shell] MSP-53 Pass
+[mobile-shell] MSP-54 …
+[mobile-shell] MSP-54 Pass
+[mobile-shell] MSP-55 …
+[mobile-shell] MSP-55 Pass
+mobile-shell probe: Pass

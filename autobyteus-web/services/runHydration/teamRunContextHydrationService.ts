@@ -2,9 +2,6 @@ import {
   teamRunExecutionTreeDtoSchema,
   type TeamRunExecutionTreeDto,
 } from '@autobyteus/team-stream-contracts';
-import { closedTaskExecutionsDtoSchema } from '@autobyteus/collaboration-stream-contracts';
-import { remoteTaskExecutionDtoSchema, type RemoteTaskExecutionDto } from '@autobyteus/agent-presentation-contracts';
-import { isRemoteAgentRun } from '~/services/teamExecution/teamRemoteExecutions';
 import { getApolloClient } from '~/utils/apolloClient';
 import {
   GetTeamMemberRunProjection,
@@ -60,8 +57,6 @@ export interface TeamRunHydrationCandidate {
   hydratedContext: AgentTeamContext;
   projectionByAgentRunId: Map<string, TeamMemberRunProjectionPayload | null>;
   memberRunStates: readonly MemberRunStateCommit[];
-  /** autobyteus-278: the runs this Team delegated to other nodes, registered when the candidate commits. */
-  remoteTaskExecutions: readonly RemoteTaskExecutionDto[];
   /** The running Team's live sequence and the base this read is consistent with; null for a stopped Team (SR-006). */
   rebuild: RootContextRebuild;
 }
@@ -74,10 +69,9 @@ export interface TeamRunRecoveryHydrationCandidate extends Omit<TeamRunHydration
 interface ResumeGraphqlData {
   getTeamRunResumeConfig: {
     teamRunId: string;
+    displayName?: string | null;
     isActive: boolean;
     executionTree: unknown;
-    closedTaskExecutions: unknown;
-    remoteTaskExecutions: unknown;
     modelConfigEditability: RunModelConfigEditability;
     liveSequenceId: string | null;
     baseChangeSequence: number;
@@ -210,15 +204,13 @@ const stageProjection = (input: {
 
 const selectInitialAgentRunId = (input: {
   tree: TeamRunExecutionTreeDto;
-  remoteTaskExecutions: readonly RemoteTaskExecutionDto[];
   requestedAgentRunId?: string | null;
   requestedMemberAddress?: AgentTeamAddress | null;
 }): string => {
   const agents = collectAgentExecutionLocations(input.tree);
   const requestedId = input.requestedAgentRunId?.trim() ?? '';
   if (requestedId) {
-    // autobyteus-278: an agent of a run another node runs is focused too; it is read from its node after the commit.
-    if (agents.some((agent) => agent.agentRunId === requestedId) || isRemoteAgentRun(input.remoteTaskExecutions, requestedId)) return requestedId;
+    if (agents.some((agent) => agent.agentRunId === requestedId)) return requestedId;
     throw new Error(`Requested AgentRun '${requestedId}' is not part of this Team execution.`);
   }
   if (input.requestedMemberAddress) {
@@ -266,8 +258,6 @@ const hydrateCurrentTeamRunContext = async (
   const raw = response.data?.getTeamRunResumeConfig;
   if (!raw) throw new Error(`Team resume config payload missing for '${input.teamRunId}'.`);
   const tree = teamRunExecutionTreeDtoSchema.parse(raw.executionTree);
-  const closedTaskExecutions = closedTaskExecutionsDtoSchema.parse(raw.closedTaskExecutions);
-  const remoteTaskExecutions = remoteTaskExecutionDtoSchema.array().parse(raw.remoteTaskExecutions);
   const rebuild = liveRebuildOf(input.teamRunId, raw);
   if (raw.teamRunId !== input.teamRunId || tree.root_team.team_run_id !== input.teamRunId) {
     throw new Error(`Team execution tree root identity mismatch for '${input.teamRunId}'.`);
@@ -284,11 +274,10 @@ const hydrateCurrentTeamRunContext = async (
   const locations = collectAgentExecutionLocations(tree);
   const initialFocusedAgentRunId = selectInitialAgentRunId({
     tree,
-    remoteTaskExecutions,
     requestedAgentRunId: input.agentRunId,
     requestedMemberAddress: input.memberAddress,
   });
-  // The focused member is staged exactly; a remote focused member is read from its node after the commit.
+  // The focused member is staged exactly.
   const focusedLocation = locations.find((agent) => agent.agentRunId === initialFocusedAgentRunId) ?? null;
   const expectedFocusedActivityRevision = useAgentActivityStore().getActivityContentRevision(initialFocusedAgentRunId);
   const focusedState = focusedLocation ? await fetchExactTeamMemberRunState(input.teamRunId, focusedLocation) : null;
@@ -320,17 +309,16 @@ const hydrateCurrentTeamRunContext = async (
     rootTeamRunId: input.teamRunId,
     rootActive: raw.isActive,
     executionTree: tree,
-    closedTaskExecutions,
     configuration: createTeamConfigurationView({ tree, workspaceMetadataByAddress: workspaces }),
     initialFocusedAgentRunId,
     agentContexts: contexts,
-    remoteTaskExecutions,
     createAgentContext: (agentRunId, address, currentTree) => createTeamAgentContext({
       tree: currentTree,
       agentRunId,
       address,
       workspaceMetadata: workspaces.get(address) ?? null,
     }),
+    displayName: raw.displayName ?? null,
   });
   const focus = view.focusAgentForInspection(initialFocusedAgentRunId);
   if (focus.disposition === 'rejected') throw new Error(focus.message);
@@ -346,7 +334,6 @@ const hydrateCurrentTeamRunContext = async (
     projectionByAgentRunId,
     memberRunStates: Object.freeze(memberRunStates),
     hydratedContext: Object.freeze({ view }),
-    remoteTaskExecutions,
     rebuild,
   };
 };

@@ -238,7 +238,7 @@ const {
   archiveAgentRunGroup: (workspaceRootPath, agentDefinitionId) =>
     runHistoryStore.archiveAgentRunGroup(workspaceRootPath, agentDefinitionId),
   archiveTeamRuns: (teamRunIds) => runHistoryStore.archiveTeamRuns(teamRunIds),
-  archiveRun: (runId) => runHistoryStore.archiveRun(runId),
+  archiveRuns: (targets) => runHistoryStore.archiveRuns(targets),
   archiveAgentOrgRuns: (orgRunIds) => runHistoryStore.archiveAgentOrgRuns(orgRunIds),
   onAgentOrgArchived: leaveRemovedAgentOrgRoute,
   addToast: addWorkspaceToast,

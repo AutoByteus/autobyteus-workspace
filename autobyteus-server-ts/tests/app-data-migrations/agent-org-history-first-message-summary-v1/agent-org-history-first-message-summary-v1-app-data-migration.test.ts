@@ -21,7 +21,11 @@ import { AgentOrgRunExecutionTreeStore } from "../../../src/run-history/store/ag
 import { AgentOrgRunHistoryIndexStore } from "../../../src/run-history/store/agent-org-run-history-index-store.js";
 import { AgentOrgRunHistorySummaryWriter } from "../../../src/app-data-migrations/frozen/server/run-history/services/agent-org-run-history-summary-writer.js";
 import { resetRootRunPackageReadinessIndex } from "../../../src/run-history/services/root-run-package-readiness-index.js";
-import { testAgentOrgExecutionTree, testOrgAgentNode, testOrgTeamNode } from "../../fixtures/current-agent-org-run-fixtures.js";
+import { testAgentOrgExecutionTree as currentTestAgentOrgExecutionTree, testOrgAgentNode, testOrgTeamNode } from "../../fixtures/current-agent-org-run-fixtures.js";
+import { toTreeBefore461 } from "../../fixtures/before-461-tree-fixtures.js";
+
+/** The released migrations read the tree shape before autobyteus-461 (`taskExecutions` lists). */
+const testAgentOrgExecutionTree = (...args: Parameters<typeof currentTestAgentOrgExecutionTree>): ReturnType<typeof currentTestAgentOrgExecutionTree> => toTreeBefore461(currentTestAgentOrgExecutionTree(...args));
 
 const roots: string[] = [];
 /** The org message log as released versions wrote it (one JSON file). */

@@ -12,6 +12,7 @@ import { startStudioE2eRuntimeServer } from "../helpers/studio-runtime-test-serv
 import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
 import { flattenE2eConfiguredAgentExecutions } from "../helpers/team-run-metadata-helpers.js";
 import { chooseLiveModel } from "../helpers/live-model-choice.js";
+import { agentStreamFramesOf } from "../helpers/agent-stream-frames.js";
 
 /**
  * Workspace skill links with the real Claude, Codex and Grok CLIs (workspace-skill-collision-fix, REQ-101/102/105).
@@ -148,8 +149,8 @@ describeLive("workspace skill links with real runtimes (REQ-105)", () => {
     socket.on("message", (raw: unknown) => {
       try {
         const parsed = JSON.parse(String(raw)) as { type?: unknown; payload?: unknown };
-        if (typeof parsed.type === "string") messages.push({ type: parsed.type, payload: parsed.payload && typeof parsed.payload
-          === "object" && !Array.isArray(parsed.payload) ? parsed.payload as Record<string, unknown> : {} });
+        // autobyteus-461 SR-087: a SEGMENT_CONTENT_BATCH is its items (each a SEGMENT_CONTENT), as the web applies it.
+        messages.push(...agentStreamFramesOf(parsed));
       } catch { /* diagnostic rows only */ }
     });
     await new Promise<void>((resolve, reject) => { socket.once("open", () => resolve()); socket.once("error", reject); });

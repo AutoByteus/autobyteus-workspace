@@ -8,10 +8,12 @@ import type { FastifyInstance } from "fastify";
 import WebSocket from "ws";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
+import { delegatedConversation } from "../helpers/own-run-reads.js";
 import { startStudioE2eRuntimeServer } from "../helpers/studio-runtime-test-server.js";
 import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
 import { until } from "../helpers/agy-runtime-error-fixture.js";
 import { flattenE2eConfiguredAgentExecutions } from "../helpers/team-run-metadata-helpers.js";
+import { delegatedRunsTree, hasTreeSnapshot, isRunRowKey, removedRowKeysPerChange, treeSnapshotRunsOf } from "../helpers/run-tree-delegated.js";
 
 // `@` → delegate → ad-hoc Task → DONE by task_id alone, through the real Studio HTTP/WebSocket server,
 // scoped MCP agent tools, roots, Project/Task services and the app-data disk layout. Only the external AGY CLI
@@ -218,7 +220,8 @@ suite("@ delegates and every delegated copy is closable by its ad-hoc Task (real
     const viewRoute = kind === "agent" ? "agent-collaboration" : kind === "team" ? "agent-team" : "agent-org";
     const isSnapshot = (frame: Frame) => frame.type === (kind === "team" ? "TEAM_EXECUTION_VIEW_SNAPSHOT" : "ROOT_EXECUTION_VIEW_SNAPSHOT");
     let inputChannel = kind === "agent" ? await connect("agent", rootId, (frames) => frames.some((f) => f.type === "CONNECTED")) : null;
-    const openView = () => connect(viewRoute, rootId, (frames) => frames.some(isSnapshot));
+    // autobyteus-461 SR-084: the view's tree follows its own snapshot as RUN_TREE_SNAPSHOT.
+    const openView = () => connect(viewRoute, rootId, (frames) => frames.some(isSnapshot) && hasTreeSnapshot(frames));
     let view = await openView();
     const send = (content: string, mentions?: Array<{ kind: "agent" | "agent_team"; definition_id: string }>) => {
       const extra = mentions ? { mentions } : {};
@@ -227,17 +230,14 @@ suite("@ delegates and every delegated copy is closable by its ad-hoc Task (real
         command_id: randomUUID(), message_id: randomUUID(), dedupe_key: randomUUID(), content, context_file_paths: [], image_urls: [], ...extra } }));
       else sendE2eSendMessageCommand(kind === "agent" ? inputChannel!.socket : view.socket, { agent_run_id: managerRunId, content, ...extra });
     };
-    const snapshotOf = (frames: Frame[]) => {
-      const payload = frames.find(isSnapshot)!.payload;
-      const body = kind === "agent" ? payload.root_agent : kind === "org" ? payload.root_org : payload;
-      return { tree: body.execution_tree, closed: body.closed_task_executions as Record<string, any>[] };
-    };
-    const liveTree = async () => {
-      if (kind === "agent") return (await graphql(`query($id:String!){agentRunCollaboration(runId:$id)}`, { id: rootId })).agentRunCollaboration?.root_agent?.execution_tree ?? null;
-      if (kind === "team") return (await graphql(`query($id:String!){getTeamRunResumeConfig(teamRunId:$id){executionTree}}`, { id: rootId })).getTeamRunResumeConfig.executionTree;
-      return (await graphql(`query($id:String!){getAgentOrgRootHistory(orgRunId:$id){org}}`, { id: rootId })).getAgentOrgRootHistory.org;
-    };
+    /** The delegated runs in the view's tree snapshot (SR-084; no closed list: a closed Task's stopped copies leave the tree). */
+    const snapshotOf = (frames: Frame[]) => ({ tree: treeSnapshotRunsOf(frames) });
+    // autobyteus-461 SR-084: the root's delegated runs at every depth, from its tree (its view carries its own parts only).
+    const liveTree = async () => delegatedRunsTree(graphql, kind, rootId);
     const conversationOf = async (agentRunId: string, address: string) => {
+      // A run this root (or one of its runs) delegated to is read by its own run (autobyteus-461 rule 2).
+      const ownRead = await delegatedConversation(graphql, path.join(dataDir, "memory"), rootId, agentRunId);
+      if (ownRead) return ownRead;
       if (kind === "agent" && agentRunId === rootId) return (await graphql(`query($id:String!){getRunProjection(runId:$id){conversation}}`,
         { id: agentRunId })).getRunProjection?.conversation;
       if (kind === "agent") return (await graphql(`query($h:String!,$a:String!,$r:String!){agentRunCollaborationMemberProjection(hostRunId:$h,memberAddress:$a,agentRunId:$r){conversation}}`,
@@ -258,9 +258,9 @@ suite("@ delegates and every delegated copy is closable by its ad-hoc Task (real
         `Manager tool result for ${content.slice(0, 120)}`, 60_000);
       return results[before]!;
     };
-    const closedFrame = (frame: Frame) => kind === "team" ? frame.type === "TASK_EXECUTIONS_CLOSED"
-      : frame.type === "ROOT_EXECUTION_EVENT" && frame.payload.event?.kind === "task_executions_closed";
-    const closedRefsOf = (frame: Frame) => kind === "team" ? frame.payload.task_executions : frame.payload.event.task_executions;
+    // A closure as the open view sees it (SR-084): tree changes removing the closed copies' rows (keys as `keyOf`).
+    const removedRunKeys = (frames: Frame[]) => [...new Set(removedRowKeysPerChange(frames).flat().filter(isRunRowKey))].sort();
+    const closedFrame = (frame: Frame) => removedRunKeys([frame]).length > 0;
     const reopenView = async () => { view.socket.close(); view = await openView(); return snapshotOf(view.frames); };
     /** A closed Agent copy's saved conversation, read as the Memory page reads it: it is in no tree (autobyteus-469). */
     const memoryText = async (agentRunId: string) => JSON.stringify((await graphql(
@@ -268,8 +268,8 @@ suite("@ delegates and every delegated copy is closable by its ad-hoc Task (real
     /** autobyteus-469: once stopped, closed copies leave the tree and are listed nowhere in a fresh snapshot. */
     const leftTree = async (out: string[]) => {
       let last: unknown;
-      await until(async () => { const snap = await reopenView(); const inTree = keys(taskNodes(snap.tree)); last = { inTree, closed: keys(snap.closed) };
-        return keys(snap.closed).length === 0 && out.every((key) => !inTree.includes(key)); }, `closed copies left the tree: ${out.join(", ")}`, 30_000)
+      await until(async () => { const snap = await reopenView(); const inTree = keys(taskNodes(snap.tree)); last = { inTree };
+        return out.every((key) => !inTree.includes(key)); }, `closed copies left the tree: ${out.join(", ")}`, 30_000)
         .catch((error) => { throw new Error(`${error}: ${JSON.stringify(last)}`); });
     };
 
@@ -360,7 +360,7 @@ suite("@ delegates and every delegated copy is closable by its ad-hoc Task (real
     // 4. Open copy: messaging it by run ID works before DONE.
     const openMessage = await managerCalls(callTool("send_message_to", { target_agent_run_id: copy.agentRunId, content: "Reply OK." }));
     expect(openMessage).not.toMatch(/TASK_AGENT_RESOURCE_CLOSED|"isError":true/);
-    expect((await reopenView()).closed).toEqual([]);
+    expect(keys(taskNodes((await reopenView()).tree)), "the open copy is in the tree before DONE").toContain(keyOf(copy));
 
     // 5. DONE by task_id alone (AC-004, AC-007): one live closure of exactly the copy and its sub-work, status DONE.
     const doneFrom = view.frames.length;
@@ -368,10 +368,11 @@ suite("@ delegates and every delegated copy is closable by its ad-hoc Task (real
     expect(done).toContain(adHocTaskId!);
     // A Task with no Project has no projectId in its acknowledgement (REQ-001: absent means none).
     expect(done).not.toMatch(/projectId/);
-    await until(() => view.frames.slice(doneFrom).some(closedFrame), "live task_executions_closed", 60_000);
-    const closedPayload = closedRefsOf(view.frames.slice(doneFrom).find(closedFrame)!);
     const adHocRefs = [copy, subCopy].map((node) => node.teamRunId ? { teamRunId: node.teamRunId } : { agentRunId: node.agentRunId });
-    expect(keys(closedPayload)).toEqual(keys(adHocRefs));
+    await until(() => keys(adHocRefs).every((key) => removedRunKeys(view.frames.slice(doneFrom)).includes(key)), "the copy and its sub-work removed live from the tree", 60_000)
+      .catch((error) => { throw new Error(`${error}: removed ${JSON.stringify(removedRunKeys(view.frames.slice(doneFrom)))}`); });
+    const closedPayload = removedRunKeys(view.frames.slice(doneFrom));
+    expect(closedPayload, "exactly the copy and its sub-work").toEqual(keys(adHocRefs));
     expect((await readAdHocTask(adHocTaskId!)).status).toBe("DONE");
     // Fenced: the closed copy cannot receive input by run ID; its conversation is kept.
     const fenced = await managerCalls(callTool("send_message_to", { target_agent_run_id: copy.agentRunId, content: "Are you there?" }));
@@ -383,7 +384,6 @@ suite("@ delegates and every delegated copy is closable by its ad-hoc Task (real
     await managerCalls(callTool("update_task", { task_id: adHocTaskId, status: "DONE" }));
     expect(await adHocTaskIds()).toEqual([...adHocBefore, adHocTaskId!].sort());
     const reopened = await reopenView();
-    expect(keys(reopened.closed)).toEqual([]);
     expect(keys(taskNodes(reopened.tree))).toEqual(keys(nodes).filter((key) => !keys(adHocRefs).includes(key)));
 
     // 6. Messaging never brings anyone in (collaboration-model-contract): `send_message_to` to an outside catalog address is
@@ -467,23 +467,14 @@ suite("@ delegates and every delegated copy is closable by its ad-hoc Task (real
     view.socket.close();
     inputChannel?.socket.close();
     await terminate(kind, rootId);
-    const storedClosed = async (): Promise<Record<string, any>[]> => {
-      if (kind === "agent") return (await graphql(`query($id:String!){agentRunCollaboration(runId:$id)}`, { id: rootId })).agentRunCollaboration.root_agent.closed_task_executions;
-      if (kind === "team") return (await graphql(`query($id:String!){getTeamRunResumeConfig(teamRunId:$id){closedTaskExecutions}}`, { id: rootId })).getTeamRunResumeConfig.closedTaskExecutions;
-      return (await graphql(`query($id:String!){getAgentOrgRootHistory(orgRunId:$id){closed_task_executions}}`, { id: rootId })).getAgentOrgRootHistory.closed_task_executions;
-    };
-    // autobyteus-469: a stored tree holds no closed copy (its closed list is empty), only the open ones.
-    const closedAfterStop = await storedClosed();
-    expect(keys(closedAfterStop)).toEqual([]);
+    // autobyteus-469: a stored tree holds no closed copy, only the open ones (autobyteus-461 SR-084: read from its tree; the
+    // closed list went with the views' delegated parts).
     for (const ref of adHocRefs) expect(keys(taskNodes(await liveTree()))).not.toContain(keyOf(ref));
     expect(taskNodes(await liveTree()).map((node) => node.agentRunId)).toContain(assistantRunId);
 
     // 9. Restore by sending: the open assistant copy still answers by run ID (wake); the closed copy stays closed.
-    // An Org view attaches only to an active Org; the product restores a stopped Org explicitly before its stream.
-    if (kind === "org") {
-      const restored = (await graphql(`mutation($id:String!){restoreAgentOrgRun(agentOrgRunId:$id){success message}}`, { id: rootId })).restoreAgentOrgRun;
-      expect(restored.success, restored.message).toBe(true);
-    }
+    // A stopped Org's view opens from its stored file; the next message to one of its agents on that view restores it
+    // (autobyteus-461 SR-046 … SR-048: there is no Org restore mutation).
     if (kind === "agent") inputChannel = await connect("agent", rootId, (frames) => frames.some((f) => f.type === "CONNECTED"));
     view = await openView();
     active.push({ kind, rootId });
@@ -492,7 +483,6 @@ suite("@ delegates and every delegated copy is closable by its ad-hoc Task (real
     expect(taskNodes(await liveTree()).map((node) => node.agentRunId)).toContain(assistantRunId);
     const stillFenced = await managerCalls(callTool("send_message_to", { target_agent_run_id: copy.agentRunId, content: "Wake up." }));
     expect(stillFenced).toContain("TASK_AGENT_RESOURCE_CLOSED");
-    expect(keys(snapshotOf(view.frames).closed)).toEqual([]);
     for (const ref of adHocRefs) expect(keys(taskNodes(snapshotOf(view.frames).tree))).not.toContain(keyOf(ref));
     view.socket.close();
     inputChannel?.socket.close();
@@ -508,18 +498,43 @@ suite("@ delegates and every delegated copy is closable by its ad-hoc Task (real
     await until(async () => { otherTaskId = (await adHocTaskIds()).find((id) => !otherBefore.includes(id)); return Boolean(otherTaskId); },
       "other root's ad-hoc Task", 60_000);
     const ownTasks = [adHocTaskId!, ...(pendingTaskId ? [pendingTaskId] : [])];
-    await deletePermanently(kind, rootId);
+    // autobyteus-461 REQ-007 / DS-13: the open assistant copy outlives its delegator's Stop (REQ-001) and is idle after its
+    // answer, which counts as working, so deleting the root is refused naming it; its own Stop lets the delete go ahead.
+    const refusedDelete = kind === "agent"
+      ? (await graphql(`mutation($id:String!){deleteStoredRun(runId:$id){success message}}`, { id: rootId })).deleteStoredRun
+      : kind === "team"
+        ? (await graphql(`mutation($id:String!){deleteStoredTeamRun(teamRunId:$id){success message}}`, { id: rootId })).deleteStoredTeamRun
+        : (await graphql(`mutation($id:String!){deleteStoredAgentOrgRun(orgRunId:$id){success message}}`, { id: rootId })).deleteStoredAgentOrgRun;
+    record.refusedDelete = refusedDelete;
+    expect(refusedDelete, JSON.stringify(refusedDelete)).toMatchObject({ success: false, message: expect.stringContaining("a run it delegated to is working") });
+    expect(refusedDelete.message).toContain(assistantAddress);
+    const stoppedAssistant = (await graphql(`mutation($id:String!){terminateAgentRun(agentRunId:$id){success message}}`, { id: assistantRunId })).terminateAgentRun;
+    expect(stoppedAssistant.success, stoppedAssistant.message).toBe(true);
+    // Diagnostics (API-REV-013): every run this root delegated to, whether it is active, before the delete.
+    const delegatedRuns = [...nodes, ...taskNodes(await liveTree())];
+    record.beforeDelete = await Promise.all([...new Map(delegatedRuns.filter((node) => node.agentRunId).map((node) => [node.agentRunId, node])).values()]
+      .map(async (node) => ({ address: node.address, agentRunId: node.agentRunId,
+        active: (await graphql(`query($id:String!){getAgentRunResumeConfig(runId:$id){isActive}}`, { id: node.agentRunId! }).catch((e: Error) => ({ error: e.message }))) })));
+    record.pendingTaskIdAtDelete = pendingTaskId ?? null;
+    await deletePermanently(kind, rootId).catch((error: Error) => { throw new Error(`${error.message}\nbeforeDelete=${JSON.stringify(record.beforeDelete)}`); });
     await until(async () => { const left = await adHocTaskIds(); return ownTasks.every((id) => !left.includes(id)); }, "own ad-hoc Tasks deleted", 30_000);
     expect(await exists(path.join(adHocRoot(), otherTaskId!, "task.json"))).toBe(true);
     expect((await projectTasks(projectId)).map((task) => task.taskId)).toEqual([projectTaskId]);
     otherInput.socket.close();
     await terminate("agent", other.rootId);
+    // autobyteus-461 REQ-001 / REQ-007 (DS-13): the other root's reviewer copy outlives its Stop and, idle, counts as working,
+    // so it is stopped by its own Stop before the delete (as the first root's assistant copy above).
+    const otherTree = await delegatedRunsTree(graphql, "agent", other.rootId);
+    for (const node of taskNodes(otherTree)) {
+      if (node.agentRunId) await graphql(`mutation($id:String!){terminateAgentRun(agentRunId:$id){success message}}`, { id: node.agentRunId });
+      else if (node.teamRunId) await graphql(`mutation($id:String!){terminateAgentTeamRun(teamRunId:$id){success message}}`, { id: node.teamRunId });
+    }
     await deletePermanently("agent", other.rootId);
     await until(async () => !(await adHocTaskIds()).includes(otherTaskId!), "other root's ad-hoc Task deleted with its run", 30_000);
 
     Object.assign(record, { rootId, managerRunId, projectId, projectTaskId, adHocTaskId, copy, subCopy, closedPayload,
       assistantRunId, notFound, storedAdHocTask: stored, delegated, rejectedDelegation, rejected, unknown, createWithoutProject, done, fenced,
-      closedAfterStop, otherTaskId });
+      otherTaskId });
     evidence[kind] = record;
   };
 

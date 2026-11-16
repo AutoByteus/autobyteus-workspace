@@ -44,6 +44,11 @@ export interface RunProjectionConversationEntry {
   /** `inter_agent_message` only: the sender AgentRun and, when its root can resolve it, its address. */
   senderAgentRunId?: string | null;
   senderAddress?: string | null;
+  /**
+   * Server-side only (autobyteus-461 SR-087): the raw trace turn of an agent's own output, by which an agent stream
+   * snapshot keeps or leaves out the entry. The web ignores it.
+   */
+  turnId?: string;
   ts?: number | null;
 }
 

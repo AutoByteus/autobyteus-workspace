@@ -1,0 +1,849 @@
+# Case: API-E02 (§5.1)
+# Commit: bc223a8ae0 (code a54e78ccb7); server dist built from it
+# Environment: ENV-1 macOS 26.5.2, Node v22.23.1, clean env (env -i PATH HOME=<temp> TMPDIR USER), scripted AGY CLI tests/fixtures/agy-failure-cli.mjs (AGY_FAKE_CASE=linked_skills)
+# Date: 2026-11-12
+# Command: cd autobyteus-server-ts && env -i PATH HOME=<temp> TMPDIR USER RUN_AGY_FAILURE_E2E=1 CONTRACT_STORIES_CONTINUE=1 CONTRACT_STORIES_EVIDENCE_DIR=<dir> ANTIGRAVITY_CLI_COMMAND=$PWD/tests/fixtures/agy-failure-cli.mjs pnpm exec vitest run tests/e2e/projects/collaboration-contract-stories.e2e.test.ts --no-watch
+# Run 9. Per state: diffs (differences from the contract model) and known (classified differences, reasons under knownDifferences).
+
+{
+ "report": [
+  {
+   "state": "S0",
+   "cases": [
+    "RUN-1"
+   ],
+   "diffs": [],
+   "known": [
+    "A:memory/agents/project_task_manager_7c8d/run_metadata.json.llmConfig: expected an object, got null",
+    "A:memory/agents/project_task_manager_7c8d/run_metadata.json.preparedAt: not in the contract (\"2026-11-12T01:13:09.614Z\")",
+    "A:memory/agents/project_task_manager_7c8d/run_metadata.json.preparedExpiresAt: not in the contract (\"2026-11-13T01:13:09.614Z\")",
+    "A:memory/agents/project_task_manager_7c8d/run_metadata.json.applicationExecutionContext: not in the contract (null)"
+   ]
+  },
+  {
+   "state": "S1",
+   "cases": [
+    "DL-1"
+   ],
+   "diffs": [],
+   "known": [
+    "A:memory/agents/project_task_manager_7c8d/run_metadata.json.llmConfig: expected an object, got null",
+    "A:memory/agents/project_task_manager_7c8d/run_metadata.json.preparedAt: not in the contract (\"2026-11-12T01:13:09.614Z\")",
+    "A:memory/agents/project_task_manager_7c8d/run_metadata.json.preparedExpiresAt: not in the contract (\"2026-11-13T01:13:09.614Z\")",
+    "A:memory/agents/project_task_manager_7c8d/run_metadata.json.applicationExecutionContext: not in the contract (null)",
+    "A:memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json.schemaVersion: missing",
+    "A:memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json.rootTeam.members[0].launchSource: not in the contract ({\"origin\":\"agent_default\",\"fallbacks\":[]})",
+    "A:memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json.rootTeam.members[1].launchSource: not in the contract ({\"origin\":\"agent_default\",\"fallbacks\":[]})",
+    "A:memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json.rootTeam.members[2].launchSource: not in the contract ({\"origin\":\"agent_default\",\"fallbacks\":[]})",
+    "A:memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json.rootTeam.members[3].launchSource: not in the contract ({\"origin\":\"agent_default\",\"fallbacks\":[]})",
+    "A:memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json.rootTeam.defaultLaunchSource: not in the contract ({\"origin\":\"inherited\",\"fallbacks\":[]})"
+   ]
+  },
+  {
+   "state": "S2",
+   "cases": [
+    "IN-2",
+    "IN-1",
+    "A-4"
+   ],
+   "diffs": [],
+   "known": [
+    "A:memory/agents/project_task_manager_7c8d/run_metadata.json.llmConfig: expected an object, got null",
+    "A:memory/agents/project_task_manager_7c8d/run_metadata.json.preparedAt: not in the contract (\"2026-11-12T01:13:09.614Z\")",
+    "A:memory/agents/project_task_manager_7c8d/run_metadata.json.preparedExpiresAt: not in the contract (\"2026-11-13T01:13:09.614Z\")",
+    "A:memory/agents/project_task_manager_7c8d/run_metadata.json.applicationExecutionContext: not in the contract (null)",
+    "A:memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json.schemaVersion: missing",
+    "A:memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json.rootTeam.members[0].launchSource: not in the contract ({\"origin\":\"agent_default\",\"fallbacks\":[]})",
+    "A:memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json.rootTeam.members[1].launchSource: not in the contract ({\"origin\":\"agent_default\",\"fallbacks\":[]})",
+    "A:memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json.rootTeam.members[2].launchSource: not in the contract ({\"origin\":\"agent_default\",\"fallbacks\":[]})",
+    "A:memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json.rootTeam.members[3].launchSource: not in the contract ({\"origin\":\"agent_default\",\"fallbacks\":[]})",
+    "A:memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json.rootTeam.defaultLaunchSource: not in the contract ({\"origin\":\"inherited\",\"fallbacks\":[]})"
+   ]
+  },
+  {
+   "state": "S3",
+   "cases": [
+    "B-1",
+    "E-3"
+   ],
+   "diffs": [],
+   "known": [
+    "A:memory/agents/project_task_manager_7c8d/run_metadata.json.llmConfig: expected an object, got null",
+    "A:memory/agents/project_task_manager_7c8d/run_metadata.json.preparedAt: not in the contract (\"2026-11-12T01:13:09.614Z\")",
+    "A:memory/agents/project_task_manager_7c8d/run_metadata.json.preparedExpiresAt: not in the contract (\"2026-11-13T01:13:09.614Z\")",
+    "A:memory/agents/project_task_manager_7c8d/run_metadata.json.applicationExecutionContext: not in the contract (null)",
+    "A:memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json.schemaVersion: missing",
+    "A:memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json.rootTeam.members[0].launchSource: not in the contract ({\"origin\":\"agent_default\",\"fallbacks\":[]})",
+    "A:memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json.rootTeam.members[1].launchSource: not in the contract ({\"origin\":\"agent_default\",\"fallbacks\":[]})",
+    "A:memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json.rootTeam.members[2].launchSource: not in the contract ({\"origin\":\"agent_default\",\"fallbacks\":[]})",
+    "A:memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json.rootTeam.members[3].launchSource: not in the contract ({\"origin\":\"agent_default\",\"fallbacks\":[]})",
+    "A:memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json.rootTeam.defaultLaunchSource: not in the contract ({\"origin\":\"inherited\",\"fallbacks\":[]})"
+   ]
+  },
+  {
+   "state": "S4",
+   "cases": [
+    "R-1",
+    "E-2",
+    "C-1"
+   ],
+   "diffs": [],
+   "known": [
+    "A:memory/agents/project_task_manager_7c8d/run_metadata.json.llmConfig: expected an object, got null",
+    "A:memory/agents/project_task_manager_7c8d/run_metadata.json.preparedAt: not in the contract (\"2026-11-12T01:13:09.614Z\")",
+    "A:memory/agents/project_task_manager_7c8d/run_metadata.json.preparedExpiresAt: not in the contract (\"2026-11-13T01:13:09.614Z\")",
+    "A:memory/agents/project_task_manager_7c8d/run_metadata.json.applicationExecutionContext: not in the contract (null)",
+    "A:memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json.schemaVersion: missing",
+    "A:memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json.rootTeam.members[0].launchSource: not in the contract ({\"origin\":\"agent_default\",\"fallbacks\":[]})",
+    "A:memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json.rootTeam.members[1].launchSource: not in the contract ({\"origin\":\"agent_default\",\"fallbacks\":[]})",
+    "A:memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json.rootTeam.members[2].launchSource: not in the contract ({\"origin\":\"agent_default\",\"fallbacks\":[]})",
+    "A:memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json.rootTeam.members[3].launchSource: not in the contract ({\"origin\":\"agent_default\",\"fallbacks\":[]})",
+    "A:memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json.rootTeam.defaultLaunchSource: not in the contract ({\"origin\":\"inherited\",\"fallbacks\":[]})"
+   ]
+  },
+  {
+   "state": "S5",
+   "cases": [
+    "DL-5"
+   ],
+   "diffs": [],
+   "known": [
+    "A:memory/agents/project_task_manager_7c8d/run_metadata.json.llmConfig: expected an object, got null",
+    "A:memory/agents/project_task_manager_7c8d/run_metadata.json.preparedAt: not in the contract (\"2026-11-12T01:13:09.614Z\")",
+    "A:memory/agents/project_task_manager_7c8d/run_metadata.json.preparedExpiresAt: not in the contract (\"2026-11-13T01:13:09.614Z\")",
+    "A:memory/agents/project_task_manager_7c8d/run_metadata.json.applicationExecutionContext: not in the contract (null)",
+    "A:memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json.schemaVersion: missing",
+    "A:memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json.rootTeam.members[0].launchSource: not in the contract ({\"origin\":\"agent_default\",\"fallbacks\":[]})",
+    "A:memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json.rootTeam.members[1].launchSource: not in the contract ({\"origin\":\"agent_default\",\"fallbacks\":[]})",
+    "A:memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json.rootTeam.members[2].launchSource: not in the contract ({\"origin\":\"agent_default\",\"fallbacks\":[]})",
+    "A:memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json.rootTeam.members[3].launchSource: not in the contract ({\"origin\":\"agent_default\",\"fallbacks\":[]})",
+    "A:memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json.rootTeam.defaultLaunchSource: not in the contract ({\"origin\":\"inherited\",\"fallbacks\":[]})",
+    "A:memory/agent_teams/product_team_e03d/team_run_execution_tree.json.schemaVersion: missing",
+    "A:memory/agent_teams/product_team_e03d/team_run_execution_tree.json.rootTeam.members[0].launchSource: not in the contract ({\"origin\":\"agent_default\",\"fallbacks\":[]})",
+    "A:memory/agent_teams/product_team_e03d/team_run_execution_tree.json.rootTeam.members[1].launchSource: not in the contract ({\"origin\":\"agent_default\",\"fallbacks\":[]})",
+    "A:memory/agent_teams/product_team_e03d/team_run_execution_tree.json.rootTeam.defaultLaunchSource: not in the contract ({\"origin\":\"inherited\",\"fallbacks\":[]})"
+   ]
+  },
+  {
+   "state": "S6",
+   "cases": [
+    "DL-5"
+   ],
+   "diffs": [],
+   "known": [
+    "A:memory/agents/project_task_manager_7c8d/run_metadata.json.llmConfig: expected an object, got null",
+    "A:memory/agents/project_task_manager_7c8d/run_metadata.json.preparedAt: not in the contract (\"2026-11-12T01:13:09.614Z\")",
+    "A:memory/agents/project_task_manager_7c8d/run_metadata.json.preparedExpiresAt: not in the contract (\"2026-11-13T01:13:09.614Z\")",
+    "A:memory/agents/project_task_manager_7c8d/run_metadata.json.applicationExecutionContext: not in the contract (null)",
+    "A:memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json.schemaVersion: missing",
+    "A:memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json.rootTeam.members[0].launchSource: not in the contract ({\"origin\":\"agent_default\",\"fallbacks\":[]})",
+    "A:memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json.rootTeam.members[1].launchSource: not in the contract ({\"origin\":\"agent_default\",\"fallbacks\":[]})",
+    "A:memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json.rootTeam.members[2].launchSource: not in the contract ({\"origin\":\"agent_default\",\"fallbacks\":[]})",
+    "A:memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json.rootTeam.members[3].launchSource: not in the contract ({\"origin\":\"agent_default\",\"fallbacks\":[]})",
+    "A:memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json.rootTeam.defaultLaunchSource: not in the contract ({\"origin\":\"inherited\",\"fallbacks\":[]})",
+    "A:memory/agent_teams/product_team_e03d/team_run_execution_tree.json.schemaVersion: missing",
+    "A:memory/agent_teams/product_team_e03d/team_run_execution_tree.json.rootTeam.members[0].launchSource: not in the contract ({\"origin\":\"agent_default\",\"fallbacks\":[]})",
+    "A:memory/agent_teams/product_team_e03d/team_run_execution_tree.json.rootTeam.members[1].launchSource: not in the contract ({\"origin\":\"agent_default\",\"fallbacks\":[]})",
+    "A:memory/agent_teams/product_team_e03d/team_run_execution_tree.json.rootTeam.defaultLaunchSource: not in the contract ({\"origin\":\"inherited\",\"fallbacks\":[]})",
+    "A:memory/agents/image_maker_33f0/run_metadata.json.llmConfig: expected an object, got null",
+    "A:memory/agents/image_maker_33f0/run_metadata.json.preparedAt: not in the contract (\"2026-11-12T01:16:14.085Z\")",
+    "A:memory/agents/image_maker_33f0/run_metadata.json.preparedExpiresAt: not in the contract (\"2026-11-13T01:16:14.085Z\")",
+    "A:memory/agents/image_maker_33f0/run_metadata.json.applicationExecutionContext: not in the contract (null)"
+   ]
+  },
+  {
+   "state": "S7",
+   "cases": [
+    "B-2",
+    "R-3",
+    "R-4",
+    "C-2"
+   ],
+   "diffs": [],
+   "known": [
+    "A:memory/agents/project_task_manager_7c8d/run_metadata.json.llmConfig: expected an object, got null",
+    "A:memory/agents/project_task_manager_7c8d/run_metadata.json.preparedAt: not in the contract (\"2026-11-12T01:13:09.614Z\")",
+    "A:memory/agents/project_task_manager_7c8d/run_metadata.json.preparedExpiresAt: not in the contract (\"2026-11-13T01:13:09.614Z\")",
+    "A:memory/agents/project_task_manager_7c8d/run_metadata.json.applicationExecutionContext: not in the contract (null)",
+    "A:memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json.schemaVersion: missing",
+    "A:memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json.rootTeam.members[0].launchSource: not in the contract ({\"origin\":\"agent_default\",\"fallbacks\":[]})",
+    "A:memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json.rootTeam.members[1].launchSource: not in the contract ({\"origin\":\"agent_default\",\"fallbacks\":[]})",
+    "A:memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json.rootTeam.members[2].launchSource: not in the contract ({\"origin\":\"agent_default\",\"fallbacks\":[]})",
+    "A:memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json.rootTeam.members[3].launchSource: not in the contract ({\"origin\":\"agent_default\",\"fallbacks\":[]})",
+    "A:memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json.rootTeam.defaultLaunchSource: not in the contract ({\"origin\":\"inherited\",\"fallbacks\":[]})",
+    "A:memory/agent_teams/product_team_e03d/team_run_execution_tree.json.schemaVersion: missing",
+    "A:memory/agent_teams/product_team_e03d/team_run_execution_tree.json.rootTeam.members[0].launchSource: not in the contract ({\"origin\":\"agent_default\",\"fallbacks\":[]})",
+    "A:memory/agent_teams/product_team_e03d/team_run_execution_tree.json.rootTeam.members[1].launchSource: not in the contract ({\"origin\":\"agent_default\",\"fallbacks\":[]})",
+    "A:memory/agent_teams/product_team_e03d/team_run_execution_tree.json.rootTeam.defaultLaunchSource: not in the contract ({\"origin\":\"inherited\",\"fallbacks\":[]})",
+    "A:memory/agents/image_maker_33f0/run_metadata.json.llmConfig: expected an object, got null",
+    "A:memory/agents/image_maker_33f0/run_metadata.json.preparedAt: not in the contract (\"2026-11-12T01:16:14.085Z\")",
+    "A:memory/agents/image_maker_33f0/run_metadata.json.preparedExpiresAt: not in the contract (\"2026-11-13T01:16:14.085Z\")",
+    "A:memory/agents/image_maker_33f0/run_metadata.json.applicationExecutionContext: not in the contract (null)"
+   ]
+  },
+  {
+   "state": "S8",
+   "cases": [
+    "T-4"
+   ],
+   "diffs": [],
+   "known": [
+    "A:memory/agents/project_task_manager_7c8d/run_metadata.json.llmConfig: expected an object, got null",
+    "A:memory/agents/project_task_manager_7c8d/run_metadata.json.preparedAt: not in the contract (\"2026-11-12T01:13:09.614Z\")",
+    "A:memory/agents/project_task_manager_7c8d/run_metadata.json.preparedExpiresAt: not in the contract (\"2026-11-13T01:13:09.614Z\")",
+    "A:memory/agents/project_task_manager_7c8d/run_metadata.json.applicationExecutionContext: not in the contract (null)",
+    "A:memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json.schemaVersion: missing",
+    "A:memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json.rootTeam.members[0].launchSource: not in the contract ({\"origin\":\"agent_default\",\"fallbacks\":[]})",
+    "A:memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json.rootTeam.members[1].launchSource: not in the contract ({\"origin\":\"agent_default\",\"fallbacks\":[]})",
+    "A:memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json.rootTeam.members[2].launchSource: not in the contract ({\"origin\":\"agent_default\",\"fallbacks\":[]})",
+    "A:memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json.rootTeam.members[3].launchSource: not in the contract ({\"origin\":\"agent_default\",\"fallbacks\":[]})",
+    "A:memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json.rootTeam.defaultLaunchSource: not in the contract ({\"origin\":\"inherited\",\"fallbacks\":[]})",
+    "A:memory/agent_teams/product_team_e03d/team_run_execution_tree.json.schemaVersion: missing",
+    "A:memory/agent_teams/product_team_e03d/team_run_execution_tree.json.rootTeam.members[0].launchSource: not in the contract ({\"origin\":\"agent_default\",\"fallbacks\":[]})",
+    "A:memory/agent_teams/product_team_e03d/team_run_execution_tree.json.rootTeam.members[1].launchSource: not in the contract ({\"origin\":\"agent_default\",\"fallbacks\":[]})",
+    "A:memory/agent_teams/product_team_e03d/team_run_execution_tree.json.rootTeam.defaultLaunchSource: not in the contract ({\"origin\":\"inherited\",\"fallbacks\":[]})",
+    "A:memory/agents/image_maker_33f0/run_metadata.json.llmConfig: expected an object, got null",
+    "A:memory/agents/image_maker_33f0/run_metadata.json.preparedAt: not in the contract (\"2026-11-12T01:16:14.085Z\")",
+    "A:memory/agents/image_maker_33f0/run_metadata.json.preparedExpiresAt: not in the contract (\"2026-11-13T01:16:14.085Z\")",
+    "A:memory/agents/image_maker_33f0/run_metadata.json.applicationExecutionContext: not in the contract (null)"
+   ]
+  },
+  {
+   "state": "S9",
+   "cases": [
+    "T-4",
+    "R-3"
+   ],
+   "diffs": [],
+   "known": [
+    "A:memory/agents/project_task_manager_7c8d/run_metadata.json.llmConfig: expected an object, got null",
+    "A:memory/agents/project_task_manager_7c8d/run_metadata.json.preparedAt: not in the contract (\"2026-11-12T01:13:09.614Z\")",
+    "A:memory/agents/project_task_manager_7c8d/run_metadata.json.preparedExpiresAt: not in the contract (\"2026-11-13T01:13:09.614Z\")",
+    "A:memory/agents/project_task_manager_7c8d/run_metadata.json.applicationExecutionContext: not in the contract (null)",
+    "A:memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json.schemaVersion: missing",
+    "A:memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json.rootTeam.members[0].launchSource: not in the contract ({\"origin\":\"agent_default\",\"fallbacks\":[]})",
+    "A:memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json.rootTeam.members[1].launchSource: not in the contract ({\"origin\":\"agent_default\",\"fallbacks\":[]})",
+    "A:memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json.rootTeam.members[2].launchSource: not in the contract ({\"origin\":\"agent_default\",\"fallbacks\":[]})",
+    "A:memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json.rootTeam.members[3].launchSource: not in the contract ({\"origin\":\"agent_default\",\"fallbacks\":[]})",
+    "A:memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json.rootTeam.defaultLaunchSource: not in the contract ({\"origin\":\"inherited\",\"fallbacks\":[]})",
+    "A:memory/agent_teams/product_team_e03d/team_run_execution_tree.json.schemaVersion: missing",
+    "A:memory/agent_teams/product_team_e03d/team_run_execution_tree.json.rootTeam.members[0].launchSource: not in the contract ({\"origin\":\"agent_default\",\"fallbacks\":[]})",
+    "A:memory/agent_teams/product_team_e03d/team_run_execution_tree.json.rootTeam.members[1].launchSource: not in the contract ({\"origin\":\"agent_default\",\"fallbacks\":[]})",
+    "A:memory/agent_teams/product_team_e03d/team_run_execution_tree.json.rootTeam.defaultLaunchSource: not in the contract ({\"origin\":\"inherited\",\"fallbacks\":[]})",
+    "A:memory/agents/image_maker_33f0/run_metadata.json.llmConfig: expected an object, got null",
+    "A:memory/agents/image_maker_33f0/run_metadata.json.preparedAt: not in the contract (\"2026-11-12T01:16:14.085Z\")",
+    "A:memory/agents/image_maker_33f0/run_metadata.json.preparedExpiresAt: not in the contract (\"2026-11-13T01:16:14.085Z\")",
+    "A:memory/agents/image_maker_33f0/run_metadata.json.applicationExecutionContext: not in the contract (null)"
+   ]
+  },
+  {
+   "state": "S10",
+   "cases": [
+    "T-1",
+    "R-8"
+   ],
+   "diffs": [
+    "result[0].taskId: missing",
+    "result[0].status: missing",
+    "result[0].task: not in the contract ({\"projectId\":\"project_3e7dd814-3d86-4250-b834-1ae2d9f2fe5e\",\"taskId\":\"demo-1\",\"title\":\"Build the export feature\",\"status)"
+   ],
+   "known": [
+    "A:memory/agents/project_task_manager_7c8d/run_metadata.json.llmConfig: expected an object, got null",
+    "A:memory/agents/project_task_manager_7c8d/run_metadata.json.preparedAt: not in the contract (\"2026-11-12T01:13:09.614Z\")",
+    "A:memory/agents/project_task_manager_7c8d/run_metadata.json.preparedExpiresAt: not in the contract (\"2026-11-13T01:13:09.614Z\")",
+    "A:memory/agents/project_task_manager_7c8d/run_metadata.json.applicationExecutionContext: not in the contract (null)",
+    "A:memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json.schemaVersion: missing",
+    "A:memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json.rootTeam.members[0].launchSource: not in the contract ({\"origin\":\"agent_default\",\"fallbacks\":[]})",
+    "A:memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json.rootTeam.members[1].launchSource: not in the contract ({\"origin\":\"agent_default\",\"fallbacks\":[]})",
+    "A:memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json.rootTeam.members[2].launchSource: not in the contract ({\"origin\":\"agent_default\",\"fallbacks\":[]})",
+    "A:memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json.rootTeam.members[3].launchSource: not in the contract ({\"origin\":\"agent_default\",\"fallbacks\":[]})",
+    "A:memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json.rootTeam.defaultLaunchSource: not in the contract ({\"origin\":\"inherited\",\"fallbacks\":[]})",
+    "A:memory/agent_teams/product_team_e03d/team_run_execution_tree.json.schemaVersion: missing",
+    "A:memory/agent_teams/product_team_e03d/team_run_execution_tree.json.rootTeam.members[0].launchSource: not in the contract ({\"origin\":\"agent_default\",\"fallbacks\":[]})",
+    "A:memory/agent_teams/product_team_e03d/team_run_execution_tree.json.rootTeam.members[1].launchSource: not in the contract ({\"origin\":\"agent_default\",\"fallbacks\":[]})",
+    "A:memory/agent_teams/product_team_e03d/team_run_execution_tree.json.rootTeam.defaultLaunchSource: not in the contract ({\"origin\":\"inherited\",\"fallbacks\":[]})",
+    "A:memory/agents/image_maker_33f0/run_metadata.json.llmConfig: expected an object, got null",
+    "A:memory/agents/image_maker_33f0/run_metadata.json.preparedAt: not in the contract (\"2026-11-12T01:16:14.085Z\")",
+    "A:memory/agents/image_maker_33f0/run_metadata.json.preparedExpiresAt: not in the contract (\"2026-11-13T01:16:14.085Z\")",
+    "A:memory/agents/image_maker_33f0/run_metadata.json.applicationExecutionContext: not in the contract (null)"
+   ]
+  },
+  {
+   "state": "S11",
+   "cases": [
+    "T-2",
+    "R-6"
+   ],
+   "diffs": [
+    "results: expected 1, got 2: [{\"task\":{\"projectId\":\"project_3e7dd814-3d86-4250-b834-1ae2d9f2fe5e\",\"taskId\":\"demo-1\",\"title\":\"Build the export feature\",\"status\":\"IN_PROGRESS\"},\"isError\":false},{\"accepted\":true,\"code\":\"DELIVERED\",\"message\":\"Delivered message to solution_designer_5c6a1317c9d84fc49748f2a6c09572ef. solution_designer_5c6a1317c9d84fc49748f2a6c09572ef continues with its conversation.\",\"target_agent_run_id\":\"solution_designer_5c6a1317c9d84fc49748f2a6c09572ef\",\"isError\":false}]",
+    "result[0].accepted: missing",
+    "result[0].code: missing",
+    "result[0].message: missing",
+    "result[0].target_agent_run_id: missing",
+    "result[0].task: not in the contract ({\"projectId\":\"project_3e7dd814-3d86-4250-b834-1ae2d9f2fe5e\",\"taskId\":\"demo-1\",\"title\":\"Build the export feature\",\"status)"
+   ],
+   "known": [
+    "A:memory/agents/project_task_manager_7c8d/run_metadata.json.llmConfig: expected an object, got null",
+    "A:memory/agents/project_task_manager_7c8d/run_metadata.json.preparedAt: not in the contract (\"2026-11-12T01:13:09.614Z\")",
+    "A:memory/agents/project_task_manager_7c8d/run_metadata.json.preparedExpiresAt: not in the contract (\"2026-11-13T01:13:09.614Z\")",
+    "A:memory/agents/project_task_manager_7c8d/run_metadata.json.applicationExecutionContext: not in the contract (null)",
+    "A:memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json.schemaVersion: missing",
+    "A:memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json.rootTeam.members[0].launchSource: not in the contract ({\"origin\":\"agent_default\",\"fallbacks\":[]})",
+    "A:memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json.rootTeam.members[1].launchSource: not in the contract ({\"origin\":\"agent_default\",\"fallbacks\":[]})",
+    "A:memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json.rootTeam.members[2].launchSource: not in the contract ({\"origin\":\"agent_default\",\"fallbacks\":[]})",
+    "A:memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json.rootTeam.members[3].launchSource: not in the contract ({\"origin\":\"agent_default\",\"fallbacks\":[]})",
+    "A:memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json.rootTeam.defaultLaunchSource: not in the contract ({\"origin\":\"inherited\",\"fallbacks\":[]})",
+    "A:memory/agent_teams/product_team_e03d/team_run_execution_tree.json.schemaVersion: missing",
+    "A:memory/agent_teams/product_team_e03d/team_run_execution_tree.json.rootTeam.members[0].launchSource: not in the contract ({\"origin\":\"agent_default\",\"fallbacks\":[]})",
+    "A:memory/agent_teams/product_team_e03d/team_run_execution_tree.json.rootTeam.members[1].launchSource: not in the contract ({\"origin\":\"agent_default\",\"fallbacks\":[]})",
+    "A:memory/agent_teams/product_team_e03d/team_run_execution_tree.json.rootTeam.defaultLaunchSource: not in the contract ({\"origin\":\"inherited\",\"fallbacks\":[]})",
+    "A:memory/agents/image_maker_33f0/run_metadata.json.llmConfig: expected an object, got null",
+    "A:memory/agents/image_maker_33f0/run_metadata.json.preparedAt: not in the contract (\"2026-11-12T01:16:14.085Z\")",
+    "A:memory/agents/image_maker_33f0/run_metadata.json.preparedExpiresAt: not in the contract (\"2026-11-13T01:16:14.085Z\")",
+    "A:memory/agents/image_maker_33f0/run_metadata.json.applicationExecutionContext: not in the contract (null)"
+   ]
+  },
+  {
+   "state": "S12",
+   "cases": [
+    "DL-7"
+   ],
+   "diffs": [],
+   "known": [
+    "A:memory/agents/project_task_manager_7c8d/run_metadata.json.llmConfig: expected an object, got null",
+    "A:memory/agents/project_task_manager_7c8d/run_metadata.json.preparedAt: not in the contract (\"2026-11-12T01:13:09.614Z\")",
+    "A:memory/agents/project_task_manager_7c8d/run_metadata.json.preparedExpiresAt: not in the contract (\"2026-11-13T01:13:09.614Z\")",
+    "A:memory/agents/project_task_manager_7c8d/run_metadata.json.applicationExecutionContext: not in the contract (null)",
+    "A:memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json.schemaVersion: missing",
+    "A:memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json.rootTeam.members[0].launchSource: not in the contract ({\"origin\":\"agent_default\",\"fallbacks\":[]})",
+    "A:memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json.rootTeam.members[1].launchSource: not in the contract ({\"origin\":\"agent_default\",\"fallbacks\":[]})",
+    "A:memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json.rootTeam.members[2].launchSource: not in the contract ({\"origin\":\"agent_default\",\"fallbacks\":[]})",
+    "A:memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json.rootTeam.members[3].launchSource: not in the contract ({\"origin\":\"agent_default\",\"fallbacks\":[]})",
+    "A:memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json.rootTeam.defaultLaunchSource: not in the contract ({\"origin\":\"inherited\",\"fallbacks\":[]})",
+    "A:memory/agent_teams/product_team_e03d/team_run_execution_tree.json.schemaVersion: missing",
+    "A:memory/agent_teams/product_team_e03d/team_run_execution_tree.json.rootTeam.members[0].launchSource: not in the contract ({\"origin\":\"agent_default\",\"fallbacks\":[]})",
+    "A:memory/agent_teams/product_team_e03d/team_run_execution_tree.json.rootTeam.members[1].launchSource: not in the contract ({\"origin\":\"agent_default\",\"fallbacks\":[]})",
+    "A:memory/agent_teams/product_team_e03d/team_run_execution_tree.json.rootTeam.defaultLaunchSource: not in the contract ({\"origin\":\"inherited\",\"fallbacks\":[]})",
+    "A:memory/agents/image_maker_33f0/run_metadata.json.llmConfig: expected an object, got null",
+    "A:memory/agents/image_maker_33f0/run_metadata.json.preparedAt: not in the contract (\"2026-11-12T01:16:14.085Z\")",
+    "A:memory/agents/image_maker_33f0/run_metadata.json.preparedExpiresAt: not in the contract (\"2026-11-13T01:16:14.085Z\")",
+    "A:memory/agents/image_maker_33f0/run_metadata.json.applicationExecutionContext: not in the contract (null)"
+   ]
+  },
+  {
+   "state": "S13",
+   "cases": [
+    "DL-12"
+   ],
+   "diffs": [],
+   "known": [
+    "A:memory/agents/project_task_manager_7c8d/run_metadata.json.llmConfig: expected an object, got null",
+    "A:memory/agents/project_task_manager_7c8d/run_metadata.json.preparedAt: not in the contract (\"2026-11-12T01:13:09.614Z\")",
+    "A:memory/agents/project_task_manager_7c8d/run_metadata.json.preparedExpiresAt: not in the contract (\"2026-11-13T01:13:09.614Z\")",
+    "A:memory/agents/project_task_manager_7c8d/run_metadata.json.applicationExecutionContext: not in the contract (null)",
+    "A:memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json.schemaVersion: missing",
+    "A:memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json.rootTeam.members[0].launchSource: not in the contract ({\"origin\":\"agent_default\",\"fallbacks\":[]})",
+    "A:memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json.rootTeam.members[1].launchSource: not in the contract ({\"origin\":\"agent_default\",\"fallbacks\":[]})",
+    "A:memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json.rootTeam.members[2].launchSource: not in the contract ({\"origin\":\"agent_default\",\"fallbacks\":[]})",
+    "A:memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json.rootTeam.members[3].launchSource: not in the contract ({\"origin\":\"agent_default\",\"fallbacks\":[]})",
+    "A:memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json.rootTeam.defaultLaunchSource: not in the contract ({\"origin\":\"inherited\",\"fallbacks\":[]})",
+    "A:memory/agent_teams/product_team_e03d/team_run_execution_tree.json.schemaVersion: missing",
+    "A:memory/agent_teams/product_team_e03d/team_run_execution_tree.json.rootTeam.members[0].launchSource: not in the contract ({\"origin\":\"agent_default\",\"fallbacks\":[]})",
+    "A:memory/agent_teams/product_team_e03d/team_run_execution_tree.json.rootTeam.members[1].launchSource: not in the contract ({\"origin\":\"agent_default\",\"fallbacks\":[]})",
+    "A:memory/agent_teams/product_team_e03d/team_run_execution_tree.json.rootTeam.defaultLaunchSource: not in the contract ({\"origin\":\"inherited\",\"fallbacks\":[]})",
+    "A:memory/agents/image_maker_33f0/run_metadata.json.llmConfig: expected an object, got null",
+    "A:memory/agents/image_maker_33f0/run_metadata.json.preparedAt: not in the contract (\"2026-11-12T01:16:14.085Z\")",
+    "A:memory/agents/image_maker_33f0/run_metadata.json.preparedExpiresAt: not in the contract (\"2026-11-13T01:16:14.085Z\")",
+    "A:memory/agents/image_maker_33f0/run_metadata.json.applicationExecutionContext: not in the contract (null)",
+    "A:memory/agents/upscaler_e1a1/run_metadata.json.llmConfig: expected an object, got null",
+    "A:memory/agents/upscaler_e1a1/run_metadata.json.preparedAt: not in the contract (\"2026-11-12T01:19:49.120Z\")",
+    "A:memory/agents/upscaler_e1a1/run_metadata.json.preparedExpiresAt: not in the contract (\"2026-11-13T01:19:49.120Z\")",
+    "A:memory/agents/upscaler_e1a1/run_metadata.json.applicationExecutionContext: not in the contract (null)"
+   ]
+  },
+  {
+   "state": "S14",
+   "cases": [
+    "T-1",
+    "DL-12"
+   ],
+   "diffs": [
+    "result[0].taskId: missing",
+    "result[0].status: missing",
+    "result[0].task: not in the contract ({\"projectId\":\"project_3e7dd814-3d86-4250-b834-1ae2d9f2fe5e\",\"taskId\":\"demo-3\",\"title\":\"Fix the import bug\",\"status\":\"DON)"
+   ],
+   "known": [
+    "A:memory/agents/project_task_manager_7c8d/run_metadata.json.llmConfig: expected an object, got null",
+    "A:memory/agents/project_task_manager_7c8d/run_metadata.json.preparedAt: not in the contract (\"2026-11-12T01:13:09.614Z\")",
+    "A:memory/agents/project_task_manager_7c8d/run_metadata.json.preparedExpiresAt: not in the contract (\"2026-11-13T01:13:09.614Z\")",
+    "A:memory/agents/project_task_manager_7c8d/run_metadata.json.applicationExecutionContext: not in the contract (null)",
+    "A:memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json.schemaVersion: missing",
+    "A:memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json.rootTeam.members[0].launchSource: not in the contract ({\"origin\":\"agent_default\",\"fallbacks\":[]})",
+    "A:memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json.rootTeam.members[1].launchSource: not in the contract ({\"origin\":\"agent_default\",\"fallbacks\":[]})",
+    "A:memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json.rootTeam.members[2].launchSource: not in the contract ({\"origin\":\"agent_default\",\"fallbacks\":[]})",
+    "A:memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json.rootTeam.members[3].launchSource: not in the contract ({\"origin\":\"agent_default\",\"fallbacks\":[]})",
+    "A:memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json.rootTeam.defaultLaunchSource: not in the contract ({\"origin\":\"inherited\",\"fallbacks\":[]})",
+    "A:memory/agent_teams/product_team_e03d/team_run_execution_tree.json.schemaVersion: missing",
+    "A:memory/agent_teams/product_team_e03d/team_run_execution_tree.json.rootTeam.members[0].launchSource: not in the contract ({\"origin\":\"agent_default\",\"fallbacks\":[]})",
+    "A:memory/agent_teams/product_team_e03d/team_run_execution_tree.json.rootTeam.members[1].launchSource: not in the contract ({\"origin\":\"agent_default\",\"fallbacks\":[]})",
+    "A:memory/agent_teams/product_team_e03d/team_run_execution_tree.json.rootTeam.defaultLaunchSource: not in the contract ({\"origin\":\"inherited\",\"fallbacks\":[]})",
+    "A:memory/agents/image_maker_33f0/run_metadata.json.llmConfig: expected an object, got null",
+    "A:memory/agents/image_maker_33f0/run_metadata.json.preparedAt: not in the contract (\"2026-11-12T01:16:14.085Z\")",
+    "A:memory/agents/image_maker_33f0/run_metadata.json.preparedExpiresAt: not in the contract (\"2026-11-13T01:16:14.085Z\")",
+    "A:memory/agents/image_maker_33f0/run_metadata.json.applicationExecutionContext: not in the contract (null)",
+    "A:memory/agents/upscaler_e1a1/run_metadata.json.llmConfig: expected an object, got null",
+    "A:memory/agents/upscaler_e1a1/run_metadata.json.preparedAt: not in the contract (\"2026-11-12T01:19:49.120Z\")",
+    "A:memory/agents/upscaler_e1a1/run_metadata.json.preparedExpiresAt: not in the contract (\"2026-11-13T01:19:49.120Z\")",
+    "A:memory/agents/upscaler_e1a1/run_metadata.json.applicationExecutionContext: not in the contract (null)"
+   ]
+  },
+  {
+   "state": "S15",
+   "cases": [
+    "DL-13"
+   ],
+   "diffs": [],
+   "known": [
+    "A:memory/agents/project_task_manager_7c8d/run_metadata.json.llmConfig: expected an object, got null",
+    "A:memory/agents/project_task_manager_7c8d/run_metadata.json.preparedAt: not in the contract (\"2026-11-12T01:13:09.614Z\")",
+    "A:memory/agents/project_task_manager_7c8d/run_metadata.json.preparedExpiresAt: not in the contract (\"2026-11-13T01:13:09.614Z\")",
+    "A:memory/agents/project_task_manager_7c8d/run_metadata.json.applicationExecutionContext: not in the contract (null)",
+    "A:memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json.schemaVersion: missing",
+    "A:memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json.rootTeam.members[0].launchSource: not in the contract ({\"origin\":\"agent_default\",\"fallbacks\":[]})",
+    "A:memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json.rootTeam.members[1].launchSource: not in the contract ({\"origin\":\"agent_default\",\"fallbacks\":[]})",
+    "A:memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json.rootTeam.members[2].launchSource: not in the contract ({\"origin\":\"agent_default\",\"fallbacks\":[]})",
+    "A:memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json.rootTeam.members[3].launchSource: not in the contract ({\"origin\":\"agent_default\",\"fallbacks\":[]})",
+    "A:memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json.rootTeam.defaultLaunchSource: not in the contract ({\"origin\":\"inherited\",\"fallbacks\":[]})",
+    "A:memory/agent_teams/product_team_e03d/team_run_execution_tree.json.schemaVersion: missing",
+    "A:memory/agent_teams/product_team_e03d/team_run_execution_tree.json.rootTeam.members[0].launchSource: not in the contract ({\"origin\":\"agent_default\",\"fallbacks\":[]})",
+    "A:memory/agent_teams/product_team_e03d/team_run_execution_tree.json.rootTeam.members[1].launchSource: not in the contract ({\"origin\":\"agent_default\",\"fallbacks\":[]})",
+    "A:memory/agent_teams/product_team_e03d/team_run_execution_tree.json.rootTeam.defaultLaunchSource: not in the contract ({\"origin\":\"inherited\",\"fallbacks\":[]})",
+    "A:memory/agents/image_maker_33f0/run_metadata.json.llmConfig: expected an object, got null",
+    "A:memory/agents/image_maker_33f0/run_metadata.json.preparedAt: not in the contract (\"2026-11-12T01:16:14.085Z\")",
+    "A:memory/agents/image_maker_33f0/run_metadata.json.preparedExpiresAt: not in the contract (\"2026-11-13T01:16:14.085Z\")",
+    "A:memory/agents/image_maker_33f0/run_metadata.json.applicationExecutionContext: not in the contract (null)",
+    "A:memory/agents/upscaler_e1a1/run_metadata.json.llmConfig: expected an object, got null",
+    "A:memory/agents/upscaler_e1a1/run_metadata.json.preparedAt: not in the contract (\"2026-11-12T01:19:49.120Z\")",
+    "A:memory/agents/upscaler_e1a1/run_metadata.json.preparedExpiresAt: not in the contract (\"2026-11-13T01:19:49.120Z\")",
+    "A:memory/agents/upscaler_e1a1/run_metadata.json.applicationExecutionContext: not in the contract (null)",
+    "A:memory/agents/image_maker_88e8/run_metadata.json.llmConfig: expected an object, got null",
+    "A:memory/agents/image_maker_88e8/run_metadata.json.preparedAt: not in the contract (\"2026-11-12T01:20:50.634Z\")",
+    "A:memory/agents/image_maker_88e8/run_metadata.json.preparedExpiresAt: not in the contract (\"2026-11-13T01:20:50.634Z\")",
+    "A:memory/agents/image_maker_88e8/run_metadata.json.applicationExecutionContext: not in the contract (null)"
+   ]
+  },
+  {
+   "state": "S16",
+   "cases": [
+    "T-3",
+    "R-9"
+   ],
+   "diffs": [],
+   "known": [
+    "A:memory/agents/project_task_manager_7c8d/run_metadata.json.llmConfig: expected an object, got null",
+    "A:memory/agents/project_task_manager_7c8d/run_metadata.json.preparedAt: not in the contract (\"2026-11-12T01:13:09.614Z\")",
+    "A:memory/agents/project_task_manager_7c8d/run_metadata.json.preparedExpiresAt: not in the contract (\"2026-11-13T01:13:09.614Z\")",
+    "A:memory/agents/project_task_manager_7c8d/run_metadata.json.applicationExecutionContext: not in the contract (null)",
+    "A:memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json.schemaVersion: missing",
+    "A:memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json.rootTeam.members[0].launchSource: not in the contract ({\"origin\":\"agent_default\",\"fallbacks\":[]})",
+    "A:memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json.rootTeam.members[1].launchSource: not in the contract ({\"origin\":\"agent_default\",\"fallbacks\":[]})",
+    "A:memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json.rootTeam.members[2].launchSource: not in the contract ({\"origin\":\"agent_default\",\"fallbacks\":[]})",
+    "A:memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json.rootTeam.members[3].launchSource: not in the contract ({\"origin\":\"agent_default\",\"fallbacks\":[]})",
+    "A:memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json.rootTeam.defaultLaunchSource: not in the contract ({\"origin\":\"inherited\",\"fallbacks\":[]})",
+    "A:memory/agent_teams/product_team_e03d/team_run_execution_tree.json.schemaVersion: missing",
+    "A:memory/agent_teams/product_team_e03d/team_run_execution_tree.json.rootTeam.members[0].launchSource: not in the contract ({\"origin\":\"agent_default\",\"fallbacks\":[]})",
+    "A:memory/agent_teams/product_team_e03d/team_run_execution_tree.json.rootTeam.members[1].launchSource: not in the contract ({\"origin\":\"agent_default\",\"fallbacks\":[]})",
+    "A:memory/agent_teams/product_team_e03d/team_run_execution_tree.json.rootTeam.defaultLaunchSource: not in the contract ({\"origin\":\"inherited\",\"fallbacks\":[]})",
+    "A:memory/agents/image_maker_33f0/run_metadata.json.llmConfig: expected an object, got null",
+    "A:memory/agents/image_maker_33f0/run_metadata.json.preparedAt: not in the contract (\"2026-11-12T01:16:14.085Z\")",
+    "A:memory/agents/image_maker_33f0/run_metadata.json.preparedExpiresAt: not in the contract (\"2026-11-13T01:16:14.085Z\")",
+    "A:memory/agents/image_maker_33f0/run_metadata.json.applicationExecutionContext: not in the contract (null)",
+    "A:memory/agents/upscaler_e1a1/run_metadata.json.llmConfig: expected an object, got null",
+    "A:memory/agents/upscaler_e1a1/run_metadata.json.preparedAt: not in the contract (\"2026-11-12T01:19:49.120Z\")",
+    "A:memory/agents/upscaler_e1a1/run_metadata.json.preparedExpiresAt: not in the contract (\"2026-11-13T01:19:49.120Z\")",
+    "A:memory/agents/upscaler_e1a1/run_metadata.json.applicationExecutionContext: not in the contract (null)",
+    "A:memory/agents/image_maker_88e8/run_metadata.json.llmConfig: expected an object, got null",
+    "A:memory/agents/image_maker_88e8/run_metadata.json.preparedAt: not in the contract (\"2026-11-12T01:20:50.634Z\")",
+    "A:memory/agents/image_maker_88e8/run_metadata.json.preparedExpiresAt: not in the contract (\"2026-11-13T01:20:50.634Z\")",
+    "A:memory/agents/image_maker_88e8/run_metadata.json.applicationExecutionContext: not in the contract (null)"
+   ]
+  },
+  {
+   "state": "S17",
+   "cases": [
+    "DL-9",
+    "DL-10"
+   ],
+   "diffs": [
+    "the step failed: Error: S17: the call returned no run ID for research_team_77aa: {\"delegated\":false,\"message\":\"A saved Task (task_id) can't be given to an agent on another node yet, so nothing was started. Delegate with a description instead.\",\"isError\":false}\n    at Ctx.bindRun (/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copies-outlive-delegator-461/autobyteus-server-ts/tests/e2e/projects/collaboration-contract-stories.e2e.test.ts:379:58)\n    at S17 (/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copies-outlive-delegator-461/autobyteus-server-ts/tests/e2e/projects/collaboration-contract-stories.e2e.test.ts:644:19)\n    at processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at runStory (/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copies-outlive-"
+   ],
+   "known": []
+  },
+  {
+   "state": "S18",
+   "cases": [
+    "R-10"
+   ],
+   "diffs": [
+    "the step failed: Error: research_team_77aa is not bound yet\n    at Ctx.real (/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copies-outlive-delegator-461/autobyteus-server-ts/tests/e2e/projects/collaboration-contract-stories.e2e.test.ts:308:92)\n    at Ctx.conversation (/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copies-outlive-delegator-461/autobyteus-server-ts/tests/e2e/projects/collaboration-contract-stories.e2e.test.ts:330:62)\n    at Ctx.call (/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copies-outlive-delegator-461/autobyteus-server-ts/tests/e2e/projects/collaboration-contract-stories.e2e.test.ts:357:47)\n    at S18 (/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copies-outlive-delegator-461/autobyteus-server-ts/tests/e2e/projects/collaboration-contrac"
+   ],
+   "known": []
+  },
+  {
+   "state": "S19",
+   "cases": [
+    "T-1",
+    "R-8",
+    "R-10"
+   ],
+   "diffs": [
+    "the step failed: Error: research_team_77aa is not bound yet\n    at Ctx.real (/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copies-outlive-delegator-461/autobyteus-server-ts/tests/e2e/projects/collaboration-contract-stories.e2e.test.ts:308:92)\n    at Ctx.conversation (/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copies-outlive-delegator-461/autobyteus-server-ts/tests/e2e/projects/collaboration-contract-stories.e2e.test.ts:330:62)\n    at Ctx.call (/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copies-outlive-delegator-461/autobyteus-server-ts/tests/e2e/projects/collaboration-contract-stories.e2e.test.ts:357:47)\n    at S19 (/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copies-outlive-delegator-461/autobyteus-server-ts/tests/e2e/projects/collaboration-contrac"
+   ],
+   "known": []
+  },
+  {
+   "state": "S20",
+   "cases": [
+    "R-7"
+   ],
+   "diffs": [
+    "A:memory/agents/project_task_manager_7c8d/communication_messages_active.jsonl: expected 7 items, got 6: [{\"messageId\":\"collabmsg_fFBzb0HSLRgGfNIhiqdLfvwfsu2y9tPg\",\"senderAgentRunId\":\"solution_designer_5c6a1317c9d84fc49748f2a6c09572ef\",\"receiverAgentRunId\":\"project_task_manager_7eed7050364642ddb2d47372540e18d8\",\"content\":\"Design approved by the reviewer …\",\"messageType\":\"agent_message\",\"referenceFiles\":[],\"createdAt\":\"2026-11-12T01:14:42.090Z\"},{\"messageId\":\"collabmsg_gjbqpZ-6hmVwK_BXHW1_SVAIIoZUKEvn\",\"senderAgentRunId\":\"project_task_manager_7eed7050364642ddb2d47372540e18d8\",\"receiverAgentRunId\":\"solution_designer_5c6a1317c9d84fc49748f2a6c09572ef\",\"content\":\"Go ahead …\",\"messageType\":\"agent_messa",
+    "B:memory/agent_teams/research_team_77aa/team_run_execution_tree.json: missing (/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/contract-stories-e2e-MnUUkw/story-5.1-B/memory/agent_teams/research_team_77aa/team_run_execution_tree.json)",
+    "B:memory/team_run_history_index.json: expected 1 rows, got 0: ",
+    "B:memory/team_run_history_index.json: no row for research_team_77aa (undefined)",
+    "A:projects/project_8f21/tasks/project_task_7c7c/agent_run_resources.json: missing (/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/contract-stories-e2e-MnUUkw/story-5.1-A/projects/project_3e7dd814-3d86-4250-b834-1ae2d9f2fe5e/tasks/project_task_73290b96-ab15-42c4-8966-b30cf8995348/agent_run_resources.json)",
+    "B:memory/agent_teams/research_team_77aa/lead_0c11/ (memory): the memory folder is missing (/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/contract-stories-e2e-MnUUkw/story-5.1-B/memory/agent_teams/research_team_77aa/lead_0c11/)",
+    "B:memory/agent_teams/research_team_77aa/team_communication_messages_active.jsonl: missing (/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/contract-stories-e2e-MnUUkw/story-5.1-B/memory/agent_teams/research_team_77aa/team_communication_messages_active.jsonl)"
+   ],
+   "known": [
+    "A:memory/agents/project_task_manager_7c8d/run_metadata.json.llmConfig: expected an object, got null",
+    "A:memory/agents/project_task_manager_7c8d/run_metadata.json.preparedAt: not in the contract (\"2026-11-12T01:13:09.614Z\")",
+    "A:memory/agents/project_task_manager_7c8d/run_metadata.json.preparedExpiresAt: not in the contract (\"2026-11-13T01:13:09.614Z\")",
+    "A:memory/agents/project_task_manager_7c8d/run_metadata.json.applicationExecutionContext: not in the contract (null)",
+    "A:memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json.schemaVersion: missing",
+    "A:memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json.rootTeam.members[0].launchSource: not in the contract ({\"origin\":\"agent_default\",\"fallbacks\":[]})",
+    "A:memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json.rootTeam.members[1].launchSource: not in the contract ({\"origin\":\"agent_default\",\"fallbacks\":[]})",
+    "A:memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json.rootTeam.members[2].launchSource: not in the contract ({\"origin\":\"agent_default\",\"fallbacks\":[]})",
+    "A:memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json.rootTeam.members[3].launchSource: not in the contract ({\"origin\":\"agent_default\",\"fallbacks\":[]})",
+    "A:memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json.rootTeam.defaultLaunchSource: not in the contract ({\"origin\":\"inherited\",\"fallbacks\":[]})",
+    "A:memory/agent_teams/product_team_e03d/team_run_execution_tree.json.schemaVersion: missing",
+    "A:memory/agent_teams/product_team_e03d/team_run_execution_tree.json.rootTeam.members[0].launchSource: not in the contract ({\"origin\":\"agent_default\",\"fallbacks\":[]})",
+    "A:memory/agent_teams/product_team_e03d/team_run_execution_tree.json.rootTeam.members[1].launchSource: not in the contract ({\"origin\":\"agent_default\",\"fallbacks\":[]})",
+    "A:memory/agent_teams/product_team_e03d/team_run_execution_tree.json.rootTeam.defaultLaunchSource: not in the contract ({\"origin\":\"inherited\",\"fallbacks\":[]})",
+    "A:memory/agents/image_maker_33f0/run_metadata.json.llmConfig: expected an object, got null",
+    "A:memory/agents/image_maker_33f0/run_metadata.json.preparedAt: not in the contract (\"2026-11-12T01:16:14.085Z\")",
+    "A:memory/agents/image_maker_33f0/run_metadata.json.preparedExpiresAt: not in the contract (\"2026-11-13T01:16:14.085Z\")",
+    "A:memory/agents/image_maker_33f0/run_metadata.json.applicationExecutionContext: not in the contract (null)",
+    "A:memory/agents/upscaler_e1a1/run_metadata.json.llmConfig: expected an object, got null",
+    "A:memory/agents/upscaler_e1a1/run_metadata.json.preparedAt: not in the contract (\"2026-11-12T01:19:49.120Z\")",
+    "A:memory/agents/upscaler_e1a1/run_metadata.json.preparedExpiresAt: not in the contract (\"2026-11-13T01:19:49.120Z\")",
+    "A:memory/agents/upscaler_e1a1/run_metadata.json.applicationExecutionContext: not in the contract (null)",
+    "A:memory/agents/image_maker_88e8/run_metadata.json.llmConfig: expected an object, got null",
+    "A:memory/agents/image_maker_88e8/run_metadata.json.preparedAt: not in the contract (\"2026-11-12T01:20:50.634Z\")",
+    "A:memory/agents/image_maker_88e8/run_metadata.json.preparedExpiresAt: not in the contract (\"2026-11-13T01:20:50.634Z\")",
+    "A:memory/agents/image_maker_88e8/run_metadata.json.applicationExecutionContext: not in the contract (null)",
+    "A:memory/agents/research_agent_9b10/run_metadata.json.llmConfig: expected an object, got null",
+    "A:memory/agents/research_agent_9b10/run_metadata.json.preparedAt: not in the contract (\"2026-11-12T01:21:52.397Z\")",
+    "A:memory/agents/research_agent_9b10/run_metadata.json.preparedExpiresAt: not in the contract (\"2026-11-13T01:21:52.397Z\")",
+    "A:memory/agents/research_agent_9b10/run_metadata.json.applicationExecutionContext: not in the contract (null)"
+   ]
+  },
+  {
+   "state": "S21",
+   "cases": [
+    "IN-7"
+   ],
+   "diffs": [
+    "A:memory/agents/project_task_manager_7c8d/communication_messages_active.jsonl: expected 7 items, got 6: [{\"messageId\":\"collabmsg_fFBzb0HSLRgGfNIhiqdLfvwfsu2y9tPg\",\"senderAgentRunId\":\"solution_designer_5c6a1317c9d84fc49748f2a6c09572ef\",\"receiverAgentRunId\":\"project_task_manager_7eed7050364642ddb2d47372540e18d8\",\"content\":\"Design approved by the reviewer …\",\"messageType\":\"agent_message\",\"referenceFiles\":[],\"createdAt\":\"2026-11-12T01:14:42.090Z\"},{\"messageId\":\"collabmsg_gjbqpZ-6hmVwK_BXHW1_SVAIIoZUKEvn\",\"senderAgentRunId\":\"project_task_manager_7eed7050364642ddb2d47372540e18d8\",\"receiverAgentRunId\":\"solution_designer_5c6a1317c9d84fc49748f2a6c09572ef\",\"content\":\"Go ahead …\",\"messageType\":\"agent_messa",
+    "B:memory/agent_teams/research_team_77aa/team_run_execution_tree.json: missing (/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/contract-stories-e2e-MnUUkw/story-5.1-B/memory/agent_teams/research_team_77aa/team_run_execution_tree.json)",
+    "B:memory/team_run_history_index.json: expected 1 rows, got 0: ",
+    "B:memory/team_run_history_index.json: no row for research_team_77aa (undefined)",
+    "A:projects/project_8f21/tasks/project_task_7c7c/agent_run_resources.json: missing (/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/contract-stories-e2e-MnUUkw/story-5.1-A/projects/project_3e7dd814-3d86-4250-b834-1ae2d9f2fe5e/tasks/project_task_73290b96-ab15-42c4-8966-b30cf8995348/agent_run_resources.json)",
+    "B:memory/agent_teams/research_team_77aa/lead_0c11/ (memory): the memory folder is missing (/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/contract-stories-e2e-MnUUkw/story-5.1-B/memory/agent_teams/research_team_77aa/lead_0c11/)",
+    "B:memory/agent_teams/research_team_77aa/team_communication_messages_active.jsonl: missing (/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/contract-stories-e2e-MnUUkw/story-5.1-B/memory/agent_teams/research_team_77aa/team_communication_messages_active.jsonl)"
+   ],
+   "known": [
+    "A:memory/agents/project_task_manager_7c8d/run_metadata.json.llmConfig: expected an object, got null",
+    "A:memory/agents/project_task_manager_7c8d/run_metadata.json.preparedAt: not in the contract (\"2026-11-12T01:13:09.614Z\")",
+    "A:memory/agents/project_task_manager_7c8d/run_metadata.json.preparedExpiresAt: not in the contract (\"2026-11-13T01:13:09.614Z\")",
+    "A:memory/agents/project_task_manager_7c8d/run_metadata.json.applicationExecutionContext: not in the contract (null)",
+    "A:memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json.schemaVersion: missing",
+    "A:memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json.rootTeam.members[0].launchSource: not in the contract ({\"origin\":\"agent_default\",\"fallbacks\":[]})",
+    "A:memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json.rootTeam.members[1].launchSource: not in the contract ({\"origin\":\"agent_default\",\"fallbacks\":[]})",
+    "A:memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json.rootTeam.members[2].launchSource: not in the contract ({\"origin\":\"agent_default\",\"fallbacks\":[]})",
+    "A:memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json.rootTeam.members[3].launchSource: not in the contract ({\"origin\":\"agent_default\",\"fallbacks\":[]})",
+    "A:memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json.rootTeam.defaultLaunchSource: not in the contract ({\"origin\":\"inherited\",\"fallbacks\":[]})",
+    "A:memory/agent_teams/product_team_e03d/team_run_execution_tree.json.schemaVersion: missing",
+    "A:memory/agent_teams/product_team_e03d/team_run_execution_tree.json.rootTeam.members[0].launchSource: not in the contract ({\"origin\":\"agent_default\",\"fallbacks\":[]})",
+    "A:memory/agent_teams/product_team_e03d/team_run_execution_tree.json.rootTeam.members[1].launchSource: not in the contract ({\"origin\":\"agent_default\",\"fallbacks\":[]})",
+    "A:memory/agent_teams/product_team_e03d/team_run_execution_tree.json.rootTeam.defaultLaunchSource: not in the contract ({\"origin\":\"inherited\",\"fallbacks\":[]})",
+    "A:memory/agents/image_maker_33f0/run_metadata.json.llmConfig: expected an object, got null",
+    "A:memory/agents/image_maker_33f0/run_metadata.json.preparedAt: not in the contract (\"2026-11-12T01:16:14.085Z\")",
+    "A:memory/agents/image_maker_33f0/run_metadata.json.preparedExpiresAt: not in the contract (\"2026-11-13T01:16:14.085Z\")",
+    "A:memory/agents/image_maker_33f0/run_metadata.json.applicationExecutionContext: not in the contract (null)",
+    "A:memory/agents/upscaler_e1a1/run_metadata.json.llmConfig: expected an object, got null",
+    "A:memory/agents/upscaler_e1a1/run_metadata.json.preparedAt: not in the contract (\"2026-11-12T01:19:49.120Z\")",
+    "A:memory/agents/upscaler_e1a1/run_metadata.json.preparedExpiresAt: not in the contract (\"2026-11-13T01:19:49.120Z\")",
+    "A:memory/agents/upscaler_e1a1/run_metadata.json.applicationExecutionContext: not in the contract (null)",
+    "A:memory/agents/image_maker_88e8/run_metadata.json.llmConfig: expected an object, got null",
+    "A:memory/agents/image_maker_88e8/run_metadata.json.preparedAt: not in the contract (\"2026-11-12T01:20:50.634Z\")",
+    "A:memory/agents/image_maker_88e8/run_metadata.json.preparedExpiresAt: not in the contract (\"2026-11-13T01:20:50.634Z\")",
+    "A:memory/agents/image_maker_88e8/run_metadata.json.applicationExecutionContext: not in the contract (null)",
+    "A:memory/agents/research_agent_9b10/run_metadata.json.llmConfig: expected an object, got null",
+    "A:memory/agents/research_agent_9b10/run_metadata.json.preparedAt: not in the contract (\"2026-11-12T01:21:52.397Z\")",
+    "A:memory/agents/research_agent_9b10/run_metadata.json.preparedExpiresAt: not in the contract (\"2026-11-13T01:21:52.397Z\")",
+    "A:memory/agents/research_agent_9b10/run_metadata.json.applicationExecutionContext: not in the contract (null)"
+   ]
+  },
+  {
+   "state": "S22",
+   "cases": [
+    "C-1",
+    "C-3"
+   ],
+   "diffs": [
+    "A:memory/agents/project_task_manager_7c8d/communication_messages_active.jsonl: expected 7 items, got 6: [{\"messageId\":\"collabmsg_fFBzb0HSLRgGfNIhiqdLfvwfsu2y9tPg\",\"senderAgentRunId\":\"solution_designer_5c6a1317c9d84fc49748f2a6c09572ef\",\"receiverAgentRunId\":\"project_task_manager_7eed7050364642ddb2d47372540e18d8\",\"content\":\"Design approved by the reviewer …\",\"messageType\":\"agent_message\",\"referenceFiles\":[],\"createdAt\":\"2026-11-12T01:14:42.090Z\"},{\"messageId\":\"collabmsg_gjbqpZ-6hmVwK_BXHW1_SVAIIoZUKEvn\",\"senderAgentRunId\":\"project_task_manager_7eed7050364642ddb2d47372540e18d8\",\"receiverAgentRunId\":\"solution_designer_5c6a1317c9d84fc49748f2a6c09572ef\",\"content\":\"Go ahead …\",\"messageType\":\"agent_messa",
+    "B:memory/agent_teams/research_team_77aa/team_run_execution_tree.json: missing (/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/contract-stories-e2e-MnUUkw/story-5.1-B/memory/agent_teams/research_team_77aa/team_run_execution_tree.json)",
+    "B:memory/team_run_history_index.json: expected 1 rows, got 0: ",
+    "B:memory/team_run_history_index.json: no row for research_team_77aa (undefined)",
+    "A:projects/project_8f21/tasks/project_task_7c7c/agent_run_resources.json: missing (/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/contract-stories-e2e-MnUUkw/story-5.1-A/projects/project_3e7dd814-3d86-4250-b834-1ae2d9f2fe5e/tasks/project_task_73290b96-ab15-42c4-8966-b30cf8995348/agent_run_resources.json)",
+    "B:memory/agent_teams/research_team_77aa/lead_0c11/ (memory): the memory folder is missing (/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/contract-stories-e2e-MnUUkw/story-5.1-B/memory/agent_teams/research_team_77aa/lead_0c11/)",
+    "B:memory/agent_teams/research_team_77aa/team_communication_messages_active.jsonl: missing (/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/contract-stories-e2e-MnUUkw/story-5.1-B/memory/agent_teams/research_team_77aa/team_communication_messages_active.jsonl)"
+   ],
+   "known": [
+    "A:memory/agents/project_task_manager_7c8d/run_metadata.json.llmConfig: expected an object, got null",
+    "A:memory/agents/project_task_manager_7c8d/run_metadata.json.preparedAt: not in the contract (\"2026-11-12T01:13:09.614Z\")",
+    "A:memory/agents/project_task_manager_7c8d/run_metadata.json.preparedExpiresAt: not in the contract (\"2026-11-13T01:13:09.614Z\")",
+    "A:memory/agents/project_task_manager_7c8d/run_metadata.json.applicationExecutionContext: not in the contract (null)",
+    "A:memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json.schemaVersion: missing",
+    "A:memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json.rootTeam.members[0].launchSource: not in the contract ({\"origin\":\"agent_default\",\"fallbacks\":[]})",
+    "A:memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json.rootTeam.members[1].launchSource: not in the contract ({\"origin\":\"agent_default\",\"fallbacks\":[]})",
+    "A:memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json.rootTeam.members[2].launchSource: not in the contract ({\"origin\":\"agent_default\",\"fallbacks\":[]})",
+    "A:memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json.rootTeam.members[3].launchSource: not in the contract ({\"origin\":\"agent_default\",\"fallbacks\":[]})",
+    "A:memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json.rootTeam.defaultLaunchSource: not in the contract ({\"origin\":\"inherited\",\"fallbacks\":[]})",
+    "A:memory/agent_teams/product_team_e03d/team_run_execution_tree.json.schemaVersion: missing",
+    "A:memory/agent_teams/product_team_e03d/team_run_execution_tree.json.rootTeam.members[0].launchSource: not in the contract ({\"origin\":\"agent_default\",\"fallbacks\":[]})",
+    "A:memory/agent_teams/product_team_e03d/team_run_execution_tree.json.rootTeam.members[1].launchSource: not in the contract ({\"origin\":\"agent_default\",\"fallbacks\":[]})",
+    "A:memory/agent_teams/product_team_e03d/team_run_execution_tree.json.rootTeam.defaultLaunchSource: not in the contract ({\"origin\":\"inherited\",\"fallbacks\":[]})",
+    "A:memory/agents/image_maker_33f0/run_metadata.json.llmConfig: expected an object, got null",
+    "A:memory/agents/image_maker_33f0/run_metadata.json.preparedAt: not in the contract (\"2026-11-12T01:16:14.085Z\")",
+    "A:memory/agents/image_maker_33f0/run_metadata.json.preparedExpiresAt: not in the contract (\"2026-11-13T01:16:14.085Z\")",
+    "A:memory/agents/image_maker_33f0/run_metadata.json.applicationExecutionContext: not in the contract (null)",
+    "A:memory/agents/upscaler_e1a1/run_metadata.json.llmConfig: expected an object, got null",
+    "A:memory/agents/upscaler_e1a1/run_metadata.json.preparedAt: not in the contract (\"2026-11-12T01:19:49.120Z\")",
+    "A:memory/agents/upscaler_e1a1/run_metadata.json.preparedExpiresAt: not in the contract (\"2026-11-13T01:19:49.120Z\")",
+    "A:memory/agents/upscaler_e1a1/run_metadata.json.applicationExecutionContext: not in the contract (null)",
+    "A:memory/agents/image_maker_88e8/run_metadata.json.llmConfig: expected an object, got null",
+    "A:memory/agents/image_maker_88e8/run_metadata.json.preparedAt: not in the contract (\"2026-11-12T01:20:50.634Z\")",
+    "A:memory/agents/image_maker_88e8/run_metadata.json.preparedExpiresAt: not in the contract (\"2026-11-13T01:20:50.634Z\")",
+    "A:memory/agents/image_maker_88e8/run_metadata.json.applicationExecutionContext: not in the contract (null)",
+    "A:memory/agents/research_agent_9b10/run_metadata.json.llmConfig: expected an object, got null",
+    "A:memory/agents/research_agent_9b10/run_metadata.json.preparedAt: not in the contract (\"2026-11-12T01:21:52.397Z\")",
+    "A:memory/agents/research_agent_9b10/run_metadata.json.preparedExpiresAt: not in the contract (\"2026-11-13T01:21:52.397Z\")",
+    "A:memory/agents/research_agent_9b10/run_metadata.json.applicationExecutionContext: not in the contract (null)"
+   ]
+  },
+  {
+   "state": "S23",
+   "cases": [
+    "DL-11"
+   ],
+   "diffs": [
+    "A:memory/agents/project_task_manager_7c8d/communication_messages_active.jsonl: expected 7 items, got 6: [{\"messageId\":\"collabmsg_fFBzb0HSLRgGfNIhiqdLfvwfsu2y9tPg\",\"senderAgentRunId\":\"solution_designer_5c6a1317c9d84fc49748f2a6c09572ef\",\"receiverAgentRunId\":\"project_task_manager_7eed7050364642ddb2d47372540e18d8\",\"content\":\"Design approved by the reviewer …\",\"messageType\":\"agent_message\",\"referenceFiles\":[],\"createdAt\":\"2026-11-12T01:14:42.090Z\"},{\"messageId\":\"collabmsg_gjbqpZ-6hmVwK_BXHW1_SVAIIoZUKEvn\",\"senderAgentRunId\":\"project_task_manager_7eed7050364642ddb2d47372540e18d8\",\"receiverAgentRunId\":\"solution_designer_5c6a1317c9d84fc49748f2a6c09572ef\",\"content\":\"Go ahead …\",\"messageType\":\"agent_messa",
+    "B:memory/agent_teams/research_team_77aa/team_run_execution_tree.json: missing (/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/contract-stories-e2e-MnUUkw/story-5.1-B/memory/agent_teams/research_team_77aa/team_run_execution_tree.json)",
+    "B:memory/team_run_history_index.json: expected 1 rows, got 0: ",
+    "B:memory/team_run_history_index.json: no row for research_team_77aa (undefined)",
+    "A:projects/project_8f21/tasks/project_task_7c7c/agent_run_resources.json: missing (/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/contract-stories-e2e-MnUUkw/story-5.1-A/projects/project_3e7dd814-3d86-4250-b834-1ae2d9f2fe5e/tasks/project_task_73290b96-ab15-42c4-8966-b30cf8995348/agent_run_resources.json)",
+    "B:memory/agent_teams/research_team_77aa/lead_0c11/ (memory): the memory folder is missing (/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/contract-stories-e2e-MnUUkw/story-5.1-B/memory/agent_teams/research_team_77aa/lead_0c11/)",
+    "B:memory/agent_teams/research_team_77aa/team_communication_messages_active.jsonl: missing (/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/contract-stories-e2e-MnUUkw/story-5.1-B/memory/agent_teams/research_team_77aa/team_communication_messages_active.jsonl)"
+   ],
+   "known": [
+    "A:memory/agents/project_task_manager_7c8d/run_metadata.json.llmConfig: expected an object, got null",
+    "A:memory/agents/project_task_manager_7c8d/run_metadata.json.preparedAt: not in the contract (\"2026-11-12T01:13:09.614Z\")",
+    "A:memory/agents/project_task_manager_7c8d/run_metadata.json.preparedExpiresAt: not in the contract (\"2026-11-13T01:13:09.614Z\")",
+    "A:memory/agents/project_task_manager_7c8d/run_metadata.json.applicationExecutionContext: not in the contract (null)",
+    "A:memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json.schemaVersion: missing",
+    "A:memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json.rootTeam.members[0].launchSource: not in the contract ({\"origin\":\"agent_default\",\"fallbacks\":[]})",
+    "A:memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json.rootTeam.members[1].launchSource: not in the contract ({\"origin\":\"agent_default\",\"fallbacks\":[]})",
+    "A:memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json.rootTeam.members[2].launchSource: not in the contract ({\"origin\":\"agent_default\",\"fallbacks\":[]})",
+    "A:memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json.rootTeam.members[3].launchSource: not in the contract ({\"origin\":\"agent_default\",\"fallbacks\":[]})",
+    "A:memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json.rootTeam.defaultLaunchSource: not in the contract ({\"origin\":\"inherited\",\"fallbacks\":[]})",
+    "A:memory/team_run_history_index.json[software_engineering_team_0218].terminatedAt: expected a string like \"2026-11-10T17:00:00.000Z\", got null",
+    "A:memory/agent_teams/product_team_e03d/team_run_execution_tree.json.schemaVersion: missing",
+    "A:memory/agent_teams/product_team_e03d/team_run_execution_tree.json.rootTeam.members[0].launchSource: not in the contract ({\"origin\":\"agent_default\",\"fallbacks\":[]})",
+    "A:memory/agent_teams/product_team_e03d/team_run_execution_tree.json.rootTeam.members[1].launchSource: not in the contract ({\"origin\":\"agent_default\",\"fallbacks\":[]})",
+    "A:memory/agent_teams/product_team_e03d/team_run_execution_tree.json.rootTeam.defaultLaunchSource: not in the contract ({\"origin\":\"inherited\",\"fallbacks\":[]})",
+    "A:memory/agents/image_maker_33f0/run_metadata.json.llmConfig: expected an object, got null",
+    "A:memory/agents/image_maker_33f0/run_metadata.json.preparedAt: not in the contract (\"2026-11-12T01:16:14.085Z\")",
+    "A:memory/agents/image_maker_33f0/run_metadata.json.preparedExpiresAt: not in the contract (\"2026-11-13T01:16:14.085Z\")",
+    "A:memory/agents/image_maker_33f0/run_metadata.json.applicationExecutionContext: not in the contract (null)",
+    "A:memory/agents/upscaler_e1a1/run_metadata.json.llmConfig: expected an object, got null",
+    "A:memory/agents/upscaler_e1a1/run_metadata.json.preparedAt: not in the contract (\"2026-11-12T01:19:49.120Z\")",
+    "A:memory/agents/upscaler_e1a1/run_metadata.json.preparedExpiresAt: not in the contract (\"2026-11-13T01:19:49.120Z\")",
+    "A:memory/agents/upscaler_e1a1/run_metadata.json.applicationExecutionContext: not in the contract (null)",
+    "A:memory/agents/image_maker_88e8/run_metadata.json.llmConfig: expected an object, got null",
+    "A:memory/agents/image_maker_88e8/run_metadata.json.preparedAt: not in the contract (\"2026-11-12T01:20:50.634Z\")",
+    "A:memory/agents/image_maker_88e8/run_metadata.json.preparedExpiresAt: not in the contract (\"2026-11-13T01:20:50.634Z\")",
+    "A:memory/agents/image_maker_88e8/run_metadata.json.applicationExecutionContext: not in the contract (null)",
+    "A:memory/agents/research_agent_9b10/run_metadata.json.llmConfig: expected an object, got null",
+    "A:memory/agents/research_agent_9b10/run_metadata.json.preparedAt: not in the contract (\"2026-11-12T01:21:52.397Z\")",
+    "A:memory/agents/research_agent_9b10/run_metadata.json.preparedExpiresAt: not in the contract (\"2026-11-13T01:21:52.397Z\")",
+    "A:memory/agents/research_agent_9b10/run_metadata.json.applicationExecutionContext: not in the contract (null)",
+    "refusal: expected code TASK_AGENT_RESOURCE_OWNED_SENDER, got {\"delegated\":false,\"message\":\"You are a task agent, so you can't use task_id. Delegate with a description instead; that work is part of your Task.\",\"isError\":false}"
+   ]
+  },
+  {
+   "state": "S24",
+   "cases": [
+    "A-5",
+    "A-6"
+   ],
+   "diffs": [
+    "A:memory/agents/project_task_manager_7c8d/communication_messages_active.jsonl: expected 7 items, got 6: [{\"messageId\":\"collabmsg_fFBzb0HSLRgGfNIhiqdLfvwfsu2y9tPg\",\"senderAgentRunId\":\"solution_designer_5c6a1317c9d84fc49748f2a6c09572ef\",\"receiverAgentRunId\":\"project_task_manager_7eed7050364642ddb2d47372540e18d8\",\"content\":\"Design approved by the reviewer …\",\"messageType\":\"agent_message\",\"referenceFiles\":[],\"createdAt\":\"2026-11-12T01:14:42.090Z\"},{\"messageId\":\"collabmsg_gjbqpZ-6hmVwK_BXHW1_SVAIIoZUKEvn\",\"senderAgentRunId\":\"project_task_manager_7eed7050364642ddb2d47372540e18d8\",\"receiverAgentRunId\":\"solution_designer_5c6a1317c9d84fc49748f2a6c09572ef\",\"content\":\"Go ahead …\",\"messageType\":\"agent_messa",
+    "B:memory/agent_teams/research_team_77aa/team_run_execution_tree.json: missing (/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/contract-stories-e2e-MnUUkw/story-5.1-B/memory/agent_teams/research_team_77aa/team_run_execution_tree.json)",
+    "B:memory/team_run_history_index.json: expected 1 rows, got 0: ",
+    "B:memory/team_run_history_index.json: no row for research_team_77aa (undefined)",
+    "A:projects/project_8f21/tasks/project_task_7c7c/agent_run_resources.json: missing (/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/contract-stories-e2e-MnUUkw/story-5.1-A/projects/project_3e7dd814-3d86-4250-b834-1ae2d9f2fe5e/tasks/project_task_73290b96-ab15-42c4-8966-b30cf8995348/agent_run_resources.json)",
+    "B:memory/agent_teams/research_team_77aa/lead_0c11/ (memory): the memory folder is missing (/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/contract-stories-e2e-MnUUkw/story-5.1-B/memory/agent_teams/research_team_77aa/lead_0c11/)",
+    "B:memory/agent_teams/research_team_77aa/team_communication_messages_active.jsonl: missing (/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/contract-stories-e2e-MnUUkw/story-5.1-B/memory/agent_teams/research_team_77aa/team_communication_messages_active.jsonl)"
+   ],
+   "known": [
+    "A:memory/agents/project_task_manager_7c8d/run_metadata.json.llmConfig: expected an object, got null",
+    "A:memory/agents/project_task_manager_7c8d/run_metadata.json.preparedAt: not in the contract (\"2026-11-12T01:13:09.614Z\")",
+    "A:memory/agents/project_task_manager_7c8d/run_metadata.json.preparedExpiresAt: not in the contract (\"2026-11-13T01:13:09.614Z\")",
+    "A:memory/agents/project_task_manager_7c8d/run_metadata.json.applicationExecutionContext: not in the contract (null)",
+    "A:memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json.schemaVersion: missing",
+    "A:memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json.rootTeam.members[0].launchSource: not in the contract ({\"origin\":\"agent_default\",\"fallbacks\":[]})",
+    "A:memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json.rootTeam.members[1].launchSource: not in the contract ({\"origin\":\"agent_default\",\"fallbacks\":[]})",
+    "A:memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json.rootTeam.members[2].launchSource: not in the contract ({\"origin\":\"agent_default\",\"fallbacks\":[]})",
+    "A:memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json.rootTeam.members[3].launchSource: not in the contract ({\"origin\":\"agent_default\",\"fallbacks\":[]})",
+    "A:memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json.rootTeam.defaultLaunchSource: not in the contract ({\"origin\":\"inherited\",\"fallbacks\":[]})",
+    "A:memory/team_run_history_index.json[software_engineering_team_0218].terminatedAt: expected a string like \"2026-11-10T17:00:00.000Z\", got null",
+    "A:memory/agent_teams/product_team_e03d/team_run_execution_tree.json.schemaVersion: missing",
+    "A:memory/agent_teams/product_team_e03d/team_run_execution_tree.json.rootTeam.members[0].launchSource: not in the contract ({\"origin\":\"agent_default\",\"fallbacks\":[]})",
+    "A:memory/agent_teams/product_team_e03d/team_run_execution_tree.json.rootTeam.members[1].launchSource: not in the contract ({\"origin\":\"agent_default\",\"fallbacks\":[]})",
+    "A:memory/agent_teams/product_team_e03d/team_run_execution_tree.json.rootTeam.defaultLaunchSource: not in the contract ({\"origin\":\"inherited\",\"fallbacks\":[]})",
+    "A:memory/agents/image_maker_33f0/run_metadata.json.llmConfig: expected an object, got null",
+    "A:memory/agents/image_maker_33f0/run_metadata.json.preparedAt: not in the contract (\"2026-11-12T01:16:14.085Z\")",
+    "A:memory/agents/image_maker_33f0/run_metadata.json.preparedExpiresAt: not in the contract (\"2026-11-13T01:16:14.085Z\")",
+    "A:memory/agents/image_maker_33f0/run_metadata.json.applicationExecutionContext: not in the contract (null)",
+    "A:memory/agents/upscaler_e1a1/run_metadata.json.llmConfig: expected an object, got null",
+    "A:memory/agents/upscaler_e1a1/run_metadata.json.preparedAt: not in the contract (\"2026-11-12T01:19:49.120Z\")",
+    "A:memory/agents/upscaler_e1a1/run_metadata.json.preparedExpiresAt: not in the contract (\"2026-11-13T01:19:49.120Z\")",
+    "A:memory/agents/upscaler_e1a1/run_metadata.json.applicationExecutionContext: not in the contract (null)",
+    "A:memory/agents/image_maker_88e8/run_metadata.json.llmConfig: expected an object, got null",
+    "A:memory/agents/image_maker_88e8/run_metadata.json.preparedAt: not in the contract (\"2026-11-12T01:20:50.634Z\")",
+    "A:memory/agents/image_maker_88e8/run_metadata.json.preparedExpiresAt: not in the contract (\"2026-11-13T01:20:50.634Z\")",
+    "A:memory/agents/image_maker_88e8/run_metadata.json.applicationExecutionContext: not in the contract (null)",
+    "A:memory/agents/research_agent_9b10/run_metadata.json.llmConfig: expected an object, got null",
+    "A:memory/agents/research_agent_9b10/run_metadata.json.preparedAt: not in the contract (\"2026-11-12T01:21:52.397Z\")",
+    "A:memory/agents/research_agent_9b10/run_metadata.json.preparedExpiresAt: not in the contract (\"2026-11-13T01:21:52.397Z\")",
+    "A:memory/agents/research_agent_9b10/run_metadata.json.applicationExecutionContext: not in the contract (null)"
+   ]
+  }
+ ],
+ "knownDifferences": [
+  {
+   "pattern": "/team_run_execution_tree\\.json\\.schemaVersion: missing$/",
+   "reason": "The team run file has had no schemaVersion since before autobyteus-461 (base 827f1e68dc reads it tolerantly and writes the current shape without it); the contract's §6 example carries it. The shape is unchanged by this ticket."
+  },
+  {
+   "pattern": "/run_metadata\\.json\\.(preparedAt|preparedExpiresAt|applicationExecutionContext): not in the contract/",
+   "reason": "Contract §3.2: a delegated run's own file is 'the ordinary file of its kind, plus delegatedFrom'. These ordinary run_metadata fields exist since before autobyteus-461 (base 827f1e68dc writes them on every run); the §3.2 example lists the collaboration fields only."
+  },
+  {
+   "pattern": "/ad-hoc-tasks\\/[^/]+\\/task\\.json\\.(projectId: missing|title: missing|referenceFiles: not in the contract|status: expected \"IN_PROGRESS\", got \"TODO\")/",
+   "reason": "REQ-005 keeps the Task rules unchanged and the contract text does not define the ad-hoc task.json; the product keeps base 827f1e68dc's shape ({taskId, description, referenceFiles, status TODO, createdAt, updatedAt}). The model (model.py line 358) writes its own approximation."
+  },
+  {
+   "pattern": "/run_metadata\\.json\\.llmConfig: expected an object, got null$/",
+   "reason": "A launch keeps only the settings its model declares (launch-usability-check.ts canonicalLaunch, before autobyteus-461); the scripted AGY model declares none, so a default launch's llmConfig is stored as null. The model writes an open object."
+  },
+  {
+   "pattern": "/agent_org_run_execution_tree\\.json\\.rootOrg(\\.members\\[\\d+\\])+\\.(role|description|platformAgentRunId|defaultLaunchConfiguration): not in the contract/",
+   "reason": "An org file's members carry the ordinary configured-member fields (role, description, platformAgentRunId; a mounted team's defaultLaunchConfiguration) since before autobyteus-461 (base run-execution-tree-shared-record-schemas.ts); the model's org file lists the collaboration fields only (its team file has them as open values)."
+  },
+  {
+   "pattern": "/^refusal: expected the text \"No agent or agent team you can talk with has the address \\/dev_team\\/[a-z_]+\\. .*got \\{\"accepted\":false,\"code\":\"COLLABORATION_TARGET_NOT_FOUND\",\"message\":\"Collaboration target '\\/dev_team\\/[a-z_]+' is not a member of your team instance '\\/dev_team'\\.\"/",
+   "reason": "Contract §2.3 / C-4: a miss returns COLLABORATION_TARGET_NOT_FOUND 'with today's guidance'. A miss under a mounted team's prefix keeps base 827f1e68dc's text (message-recipient-resolution.ts:74); the model writes one text for every miss."
+  },
+  {
+   "pattern": "/team_run_execution_tree\\.json\\.rootTeam\\.(members\\[\\d+\\]\\.launchSource|defaultLaunchSource): not in the contract/",
+   "reason": "A delegated team run's own file records where each launch came from: design-spec DS-10 (E6 row) and the DelegatedRunStarter ('its resolved launch, address and launchSource') name rootTeam.defaultLaunchSource and the members' launchSource; the contract's §3.2 team example omits them."
+  },
+  {
+   "pattern": "/^result\\[0\\]\\.message: expected \"Delivered message to (\\S+)\\.\", got \"Delivered message to \\1\\. \\1 continues with its conversation\\.\"$/",
+   "reason": "A message that continues a task agent of a reopened Task adds 'X continues with its conversation.' (base 827f1e68dc root-task-execution-lifecycle.ts:301, kept in cross-run-message-delivery.ts:104; the update_task description names it); the model writes the plain delivery text."
+  },
+  {
+   "pattern": "/team_run_history_index\\.json\\[software_engineering_team_0218\\]\\.terminatedAt: expected a string like/",
+   "reason": "The model lets an agent of a stopped run make a call (S23, S24: solution_designer_65a9 while E is stopped). A real agent acts only on input: the test drives the call by the user's message to it on E's view, which restores E (REQ-003, SR-048), so E's row is active (terminatedAt null)."
+  },
+  {
+   "pattern": "/^refusal: expected code [A-Z_]+, got \\{\"delegated\":false,\"message\":/",
+   "reason": "A refused delegate_task returns {delegated:false, message} with no code since before autobyteus-461 (task-delegation-result-contract.ts); the agent sees the message, which is compared in full. The model names the code of the rule that refuses."
+  }
+ ],
+ "bindings": {
+  "student": "student",
+  "tutor": "tutor",
+  "Teacher": "Teacher",
+  "study-group": "study-group",
+  "project-task-manager": "project-task-manager",
+  "image-maker": "image-maker",
+  "research-agent": "research-agent",
+  "upscaler": "upscaler",
+  "release-agent": "release-agent",
+  "solution-designer": "solution-designer",
+  "architecture-reviewer": "architecture-reviewer",
+  "implementation-engineer": "implementation-engineer",
+  "code-reviewer": "code-reviewer",
+  "product-designer": "product-designer",
+  "prototyper": "prototyper",
+  "lead": "lead",
+  "analyst": "analyst",
+  "ceo-agent": "ceo-agent",
+  "cto": "cto",
+  "dev-lead": "dev-lead",
+  "qa": "qa",
+  "software-engineering-team": "software-engineering-team",
+  "product-team": "product-team",
+  "research-team": "research-team",
+  "dev-team": "dev-team",
+  "company-org": "company-org",
+  "node-a-77d2": "srv_ELtaMF50YCbzhF0qNVKFyLN4Q7vDmZVl",
+  "node-b-1f0e": "srv_kwMWUf7XFhCS-KmJhkJ4WjgCaKNMZpTL",
+  "/Users/me/projects/x": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/contract-stories-e2e-MnUUkw/story-5.1-A/workspace",
+  "project_8f21": "project_3e7dd814-3d86-4250-b834-1ae2d9f2fe5e",
+  "project_task_440e": "project_task_0569b400-2e36-4a3a-9158-03e8b6e43c88",
+  "demo-1": "demo-1",
+  "project_task_2b2b": "project_task_6b3c20c0-04cf-47ce-b561-3deed4e1d76e",
+  "demo-2": "demo-2",
+  "project_task_6a6a": "project_task_e8179af6-0290-4f45-b70f-4c1ad46a39c0",
+  "demo-6": "demo-3",
+  "project_task_7c7c": "project_task_73290b96-ab15-42c4-8966-b30cf8995348",
+  "demo-7": "demo-4",
+  "project_task_manager_7c8d": "project_task_manager_7eed7050364642ddb2d47372540e18d8",
+  "software_engineering_team_0218": "software_engineering_team_1b9c16e62f69473488df945f3834ab15",
+  "architecture_reviewer_m_5c20": "architecture_reviewer_066ed052a5754395aec143c401f4cf77",
+  "code_reviewer_m_3b10": "code_reviewer_39a4f2caf82240928cb2c2fc49d8b173",
+  "implementation_engineer_m_7d31": "implementation_engineer_b05fb72334204fb18baa6ebb7aa24718",
+  "solution_designer_65a9": "solution_designer_5c6a1317c9d84fc49748f2a6c09572ef",
+  "collabmsg_A1": "collabmsg_eg-eo1OupUENJWxtYow8_FEqPBP2YWxF",
+  "collabmsg_B1": "collabmsg_fFBzb0HSLRgGfNIhiqdLfvwfsu2y9tPg",
+  "collabmsg_C1": "collabmsg_gjbqpZ-6hmVwK_BXHW1_SVAIIoZUKEvn",
+  "product_team_e03d": "product_team_91942b0eec374c65b468f9ffed74af2f",
+  "product_designer_1a2b": "product_designer_e96a765908c9482197d6c7cb03f0b555",
+  "prototyper_4e11": "prototyper_edef083893034d10a14e4a3dc4654dd5",
+  "image_maker_33f0": "image_maker_a00cfb6a0acd4c60af849791973b5994",
+  "collabmsg_F1": "collabmsg_FFXJyLg9woISFttZHgqHceAov80D9dWz",
+  "collabmsg_E1": "collabmsg_GJoOhY26t5HFdN7Hqn6REY_nQlf8YXHi",
+  "collabmsg_F2": "collabmsg_kN3nY45inylSoc7u4Xtt21KrDjUMpkiQ",
+  "collabmsg_G1": "collabmsg_xIZv7NCMtDfws8qO0QSkZb4pxcvroL0S",
+  "collabmsg_H1": "collabmsg_5G7jPg4HsVM3U8btET923V4i7hGh5eYL",
+  "collabmsg_D1": "collabmsg_7MqtaT6Je0HEtAzvkjAmJBKjmxG_X4d8",
+  "upscaler_e1a1": "upscaler_abc9190f7ba54a9faff2563eca1f82db",
+  "image_maker_88e8": "image_maker_a008058a0ba14852b58387daf8879414",
+  "research_agent_9b10": "research_agent_faaff1a7c3af42f6aea5791b7038d06e"
+ }
+}

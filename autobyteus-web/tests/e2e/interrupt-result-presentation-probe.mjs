@@ -66,7 +66,6 @@ const teamExecutionTree = teamRunExecutionTreeDtoSchema.parse({
       platform_agent_run_id: null,
       launch_configuration: launchConfiguration,
     }],
-    task_executions: [],
   },
 });
 
@@ -199,7 +198,6 @@ const startWsServer = async () => {
           base_change_sequence: 0,
           live_sequence_id: 'live-1', last_message_change_sequence: 0,
           execution_tree: teamExecutionTree,
-          closed_task_executions: [],
           agent_statuses: [{
             agent_run_id: TEAM_MEMBER_RUN_ID,
             member_address: TEAM_MEMBER_ADDRESS,

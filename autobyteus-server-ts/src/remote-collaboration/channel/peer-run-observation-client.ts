@@ -40,6 +40,8 @@ export const openPeerRunObservation = (input: Readonly<{
   path: string;
   targetRoot: RemoteTargetRoot;
   observer: RemoteRunObserver;
+  /** One agent's own stream (SR-088): named in the opening; its frames go to `onAgentStreamFrame` instead. */
+  agentStream?: Readonly<{ agentRunId: string; onFrame(liveSequenceId: string, frame: Readonly<Record<string, unknown>>): void }>;
   openWebSocket?: OpenWebSocket;
   openingTimeoutMs: number;
 }>): RemoteRunObservationStream => {
@@ -70,6 +72,7 @@ export const openPeerRunObservation = (input: Readonly<{
     openingTimer = setTimeout(() => { if (!accepted) end(); }, input.openingTimeoutMs);
     socket.onopen = () => socket?.send(JSON.stringify({
       fromNodeId, toNodeId: peer.nodeId, targetRoot: { kind: input.targetRoot.kind, runId: input.targetRoot.runId },
+      ...(input.agentStream ? { agentRunId: input.agentStream.agentRunId } : {}),
     }));
     socket.onmessage = (event) => {
       if (ended) return;
@@ -82,6 +85,15 @@ export const openPeerRunObservation = (input: Readonly<{
         accepted = true;
         if (openingTimer) clearTimeout(openingTimer);
         openingTimer = null;
+        return;
+      }
+      if (input.agentStream) {
+        // An agent's own frame: its node's number and sequence; the frame itself is read where it is applied.
+        const numbered = value as { agentRunId?: unknown; liveSequenceId?: unknown; frame?: unknown } | null;
+        if (numbered && numbered.agentRunId === input.agentStream.agentRunId && typeof numbered.liveSequenceId === "string"
+          && numbered.frame && typeof numbered.frame === "object" && !Array.isArray(numbered.frame)) {
+          input.agentStream.onFrame(numbered.liveSequenceId, numbered.frame as Record<string, unknown>);
+        } else console.warn(`An agent stream frame from node '${peer.name}' was not readable; it was dropped.`);
         return;
       }
       const frame = remoteObservationFrameOf(value);

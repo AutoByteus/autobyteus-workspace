@@ -19,7 +19,7 @@
         :age="formatRelativeTime(team.lastActivityAt)"
         :is-selected="isSelected(displayRow.row)"
         :has-children="displayRow.hasChildren"
-        :expanded="isRowExpanded(displayRow.row.rowKey)"
+        :expanded="displayRow.expanded"
         :continuing-ancestor-depths="displayRow.continuingAncestorDepths"
         :has-following-sibling="displayRow.hasFollowingSibling"
         @activate="activateStableRow"
@@ -28,10 +28,10 @@
       <WorkspaceTransientExecutionRow
         v-else
         :row="displayRow.row"
-        :team-status="teamStatusOf(displayRow.row)"
+        :team-status="displayRow.teamStatus ?? teamStatusOf(displayRow.row)"
         :is-selected="isSelected(displayRow.row)"
         :has-children="displayRow.hasChildren"
-        :expanded="isRowExpanded(displayRow.row.rowKey)"
+        :expanded="displayRow.expanded"
         :continuing-ancestor-depths="displayRow.continuingAncestorDepths"
         :has-following-sibling="displayRow.hasFollowingSibling"
         :task="taskOf(displayRow.row)"
@@ -45,7 +45,11 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, watch } from 'vue';
+import { useRunTreeStore } from '~/stores/runTreeStore';
+import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
+import { useRunStatusStore } from '~/stores/runStatusStore';
+import { isTeamRow, runTreeDisplayRows } from '~/utils/runTree/runTreeDisplayRows';
 import WorkspaceStableExecutionRow from '~/components/workspace/history/WorkspaceStableExecutionRow.vue';
 import WorkspaceTransientExecutionRow from '~/components/workspace/history/WorkspaceTransientExecutionRow.vue';
 import { useLeavingTreeRows } from '~/components/workspace/history/useLeavingTreeRows';
@@ -64,6 +68,9 @@ import type {
 interface VisibleTeamExecutionRow {
   row: RunHistoryTeamExecutionRow;
   hasChildren: boolean;
+  expanded: boolean;
+  /** A delegated team row's own status (its run's, SR-086 G-A4); null for the Team's own rows. */
+  teamStatus: TeamStatus | null;
   continuingAncestorDepths: number[];
   hasFollowingSibling: boolean;
 }
@@ -89,7 +96,39 @@ const { t } = useLocalization();
 const { onBeforeLeave, onLeaveSettled } = useLeavingTreeRows(
   (tree) => tree.previousElementSibling?.querySelector<HTMLElement>('button') ?? null);
 
-const visibleRows = computed<VisibleTeamExecutionRow[]>(() => {
+// The Team run's tree, built on the server (autobyteus-461 SR-084): its open view's stream feeds it, else it is read while
+// the Team is expanded, and read again when its rows change. Its own members show as the Team's own rows.
+const trees = useRunTreeStore();
+const runStatus = useRunStatusStore();
+const treeRef = computed(() => ({ kind: 'agent_team' as const, runId: props.team.teamRunId }));
+watch(() => props.team.teamRunId, (_id, _previous, onCleanup) => onCleanup(trees.hold(treeRef.value)), { immediate: true });
+
+const ownRowsByAgentRunId = computed(() => new Map(props.team.executionRows.flatMap((row) => row.agentRunId ? [[row.agentRunId, row] as const] : [])));
+
+/** The server's rows under the Team run's own row; a team row starts collapsed, any other row expanded (`isRowExpanded` names the toggled ones). */
+const treeRows = computed<VisibleTeamExecutionRow[]>(() => {
+  const rootKey = `team:${props.team.teamRunId}`;
+  return runTreeDisplayRows({
+    rows: trees.rowsOf(treeRef.value), rootKey, topRunId: props.team.teamRunId,
+    isExpanded: (row) => isTeamRow(row) === props.isRowExpanded(row.key),
+    statusOf: (row, id) => row.kind === 'team' || row.kind === 'peer_team'
+      ? runStatus.runStateOf({ kind: 'agent_team', runId: id })?.status ?? null
+      : runStatus.statusOf(id),
+  }).map((display) => {
+    const own = display.tree.kind === 'team_member' && display.tree.parentKey === rootKey && display.tree.openTarget
+      ? ownRowsByAgentRunId.value.get(display.tree.openTarget.agentRunId) : undefined;
+    const row: RunHistoryTeamExecutionRow = own
+      ? { ...own, rowKey: display.tree.key, depth: display.row.depth, hasChildren: display.row.hasChildren }
+      : display.row;
+    return { row, hasChildren: display.row.hasChildren, expanded: isTeamRow(display.tree) === props.isRowExpanded(display.tree.key),
+      teamStatus: own ? null : display.teamStatus, continuingAncestorDepths: display.continuingAncestorDepths, hasFollowingSibling: display.hasFollowingSibling };
+  });
+});
+
+const visibleRows = computed<VisibleTeamExecutionRow[]>(() => trees.hasTree(treeRef.value) ? treeRows.value : ownRows.value);
+
+/** Until the tree answers: the Team's own members, from its own history. */
+const ownRows = computed<VisibleTeamExecutionRow[]>(() => {
   const uncollapsedRows: Array<Pick<VisibleTeamExecutionRow, 'row' | 'hasChildren'>> = [];
   let collapsedDepth: number | null = null;
 
@@ -114,6 +153,8 @@ const visibleRows = computed<VisibleTeamExecutionRow[]>(() => {
 
   return uncollapsedRows.map((entry, index) => ({
     ...entry,
+    expanded: props.isRowExpanded(entry.row.rowKey),
+    teamStatus: null,
     continuingAncestorDepths: Array.from(
       { length: entry.row.depth },
       (_, depth) => depth,
@@ -125,17 +166,22 @@ const visibleRows = computed<VisibleTeamExecutionRow[]>(() => {
 // Task workers show their current Task's summary; it locates the Task in Projects.
 const { taskOf, locate } = useTaskWorkerTasks(() => visibleRows.value.map((displayRow) => displayRow.row));
 
-const isSelected = (row: RunHistoryTeamExecutionRow): boolean =>
-  props.isTeamSelected
-  && row.agentRunId !== null
-  && row.agentRunId === props.team.focusedAgentRunId;
+/** The selected row: a run the Team delegated, when one is selected under it (SR-084); else its focused member. */
+const teamContexts = useAgentTeamContextsStore();
+const isSelected = (row: RunHistoryTeamExecutionRow): boolean => {
+  if (!props.isTeamSelected) return false;
+  // The row that shows the opened agent (CR-461-108): a delegated Team opened at its coordinator selects the coordinator's row.
+  const delegated = teamContexts.selectedTreeRowOf(props.team.teamRunId);
+  return row.agentRunId !== null && row.agentRunId === (delegated ? delegated.target.agentRunId : props.team.focusedAgentRunId);
+};
 
 /** Derived from the current rows on every render, so member status patches and collapse stay current. */
 const teamStatusOf = (row: RunHistoryTeamExecutionRow): TeamStatus =>
   teamBranchStatus(props.team.executionRows, row, props.team.isActive);
 
+/** A member opens itself; a team row also toggles. A member's delegated rows fold with its disclosure button only. */
 const activateStableRow = (row: RunHistoryStableExecutionRow): void => {
-  if (row.hasChildren) emit('toggle', row);
+  if (row.hasChildren && row.memberKind === 'agent_team') emit('toggle', row);
   if (row.agentRunId) emit('select', row);
 };
 </script>

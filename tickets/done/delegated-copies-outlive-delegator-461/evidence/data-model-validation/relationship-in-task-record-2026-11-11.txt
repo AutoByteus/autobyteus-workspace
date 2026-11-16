@@ -1,0 +1,11 @@
+    54    all entries name the same hostRoot
+    54    assigned entries all name the same assigner
+     2    broughtIn entries whose run records a delegator
+    28    delegated entries whose run records a delegator
+     0    mix of roles
+     2    remote link has a Task entry
+     1    remote link kind agent
+     1    remote link kind team (has members)
+     2  remote links
+   183  runs with Task entries
+    54  runs with more than one entry

@@ -9,7 +9,9 @@ import { spawn, spawnSync, type ChildProcess } from "node:child_process";
 import WebSocket from "ws";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
+import { shownText } from "../helpers/agent-stream-frames.js";
 import { builtServerLaunchEnvironment } from "../helpers/built-server-launch-credential.js";
+import { readRunTree } from "../helpers/run-tree-delegated.js";
 
 // Agent runtime switch to and from the NATIVE runtime and to Grok, the stopped-run settings, a failed attempt and a server
 // restart, on the BUILT server (autobyteus-316: REQ-001, REQ-002, REQ-010, REQ-011, REQ-013, REQ-014; AC-001, AC-002, AC-009,
@@ -34,8 +36,8 @@ import { builtServerLaunchEnvironment } from "../helpers/built-server-launch-cre
 //         session ID returns, the field is cleared), switch again, edit only the model while the switch is pending (the
 //         switch stays), refuse a running run, then the first message makes the switch.
 //   RS-03 a host with a delegated copy: one Save carries the host's own runtime and the copy's model; the copy keeps its
-//         runtime; the delegated copy cannot switch through the stopped-run mutation (REQ-013); it switches through its own
-//         choice (updateDelegatedLaunchSelections, autobyteus-348; see delegated-copy-model-change DCM-009).
+//         runtime when the host switches; the copy, a run of its own, switches its own runtime through its own stopped-run
+//         save (autobyteus-461 SR-064, SR-072 F-27; see delegated-copy-model-change DCM-009).
 //   RS-04 a server restart: a pending switch survives it; a switch that was activated (marker first, no user record yet)
 //         still delivers its notice with the first input after the restart, once (I-11, derived from the raw traces).
 //   RS-05 a failed attempt: the archive step fails after the native candidate wrote its instruction; the previous agent's file
@@ -309,7 +311,10 @@ describe.runIf(ENABLED)("agent runtime switch, native runtime and stopped-run se
     expect(received.indexOf("[System: runtime hand-over]"), "the notice comes first").toBe(0);
     expect(received.indexOf("ECHO_INPUT"), "the user's text follows the notice").toBeGreaterThan(received.indexOf("[System: runtime hand-over]"));
     expect(received).toContain("work_journal_active.md");
-    expect(agyTurn.some((m) => m.type === "SYSTEM_TASK_NOTIFICATION" && m.payload.sender_id === "system.runtime_handover"), "the chat shows the marker").toBe(true);
+    // autobyteus-461 CR-461-116: the stored marker is the notice's one source. A client connected before the switch is shown it
+    // once: in the snapshot the activation sends (its stored part), not also as the numbered live echo.
+    const shownMarkers = (shownText(agyTurn).match(/Agent runtime changed from AutoByteus/g) ?? []).length;
+    expect(shownMarkers, `the chat shows the marker once (frames: ${agyTurn.map((m) => m.type).join(",").slice(0, 600)})`).toBe(1);
     expect(await manifest(runId)).toMatchObject({ segments: [expect.objectContaining({ file_name: "raw_traces_000001.jsonl", boundary_type: "runtime_switch", boundary_key: keyOne, boundary_trace_id: active[0]!.id, runtime_kind: NATIVE, status: "complete" })] });
     // A second message carries no notice (once per switch).
     await talk(runId, "ECHO_INPUT", "antigravity second turn");
@@ -430,7 +435,11 @@ describe.runIf(ENABLED)("agent runtime switch, native runtime and stopped-run se
     const undone = await metadata(runId);
     expect(undone).toMatchObject({ runtimeKind: NATIVE, llmModelIdentifier: nativeModel, platformAgentRunId: original.platformAgentRunId });
     expect(Object.hasOwn(undone, "pendingRuntimeSwitch"), "the undo cleared the pending switch").toBe(false);
-    expect(undone, "the undo restores the metadata as it was").toEqual(original);
+    // autobyteus-461 CR-461-078 (V-11): every Settings save, an undo too, is recorded as the run's own edit (origin "settings").
+    const { launchSource: undoneSource, ...undoneRest } = undone;
+    const { launchSource: _originalSource, ...originalRest } = original;
+    expect(undoneRest, "the undo restores the metadata as it was").toEqual(originalRest);
+    expect(undoneSource, "the undo is recorded as an edit").toEqual({ origin: "settings", fallbacks: [] });
     // Switch again, then edit only the model of the new runtime: the pending switch stays (same time, same previous binding).
     const againSave = await save(runId, AGY, AGY_MODEL);
     expect(againSave, `switch again: ${JSON.stringify(againSave)}`).toMatchObject({ success: true });
@@ -464,7 +473,7 @@ describe.runIf(ENABLED)("agent runtime switch, native runtime and stopped-run se
     expect(activeRecords(runId).filter((record) => record.sender_id === "system.runtime_handover")).toHaveLength(1);
   }, 300_000);
 
-  it("RS-03: a host with a delegated copy saves its own runtime and the copy's model in one Save; the copy keeps its runtime and cannot switch", async () => {
+  it("RS-03: a host with a delegated copy saves its own runtime and the copy's model in one Save; the copy, a run of its own, can switch its own runtime", async () => {
     const hostDefinition = await definition("rs-host");
     const workerName = `rs-worker ${randomUUID().slice(0, 6)}`;
     await gql("mutation($input: CreateAgentDefinitionInput!) { createAgentDefinition(input: $input) { id } }",
@@ -482,27 +491,32 @@ describe.runIf(ENABLED)("agent runtime switch, native runtime and stopped-run se
     const copyBefore = await metadata(copyId);
     expect(copyBefore).toMatchObject({ runtimeKind: AGY });
 
-    // The delegated copy itself offers no runtime choice: a switch is refused and nothing is written (REQ-013).
-    const stopped = (await gql("mutation($input: DelegatedExecutionTargetInput!) { stopDelegatedExecution(input: $input) { success outcome } }", { input: { rootKind: "AGENT", rootRunId: hostId, agentRunId: copyId } })).stopDelegatedExecution;
-    expect(stopped).toMatchObject({ success: true });
-    const copyFile = await fs.readFile(path.join(runDir(copyId), "run_metadata.json"), "utf8");
-    const refused = await save(copyId, NATIVE, nativeModel);
-    expect(refused, JSON.stringify(refused)).toMatchObject({ success: false });
-    expect(await fs.readFile(path.join(runDir(copyId), "run_metadata.json"), "utf8"), "a refused switch of a copy writes nothing").toBe(copyFile);
+    // autobyteus-461 SR-072 F-27 (REQ-002, AR-016): a delegated run is configured like any run, so its own Settings may
+    // switch its runtime (base refused it only because a hosted copy shared its host's runtime). Its Stop is its own
+    // terminate (rule 2, SR-064). The switch is pending until its next input; saving its old runtime back clears it.
+    await terminate(copyId);
+    const switchedCopy = await save(copyId, NATIVE, nativeModel);
+    expect(switchedCopy, JSON.stringify(switchedCopy)).toMatchObject({ success: true, outcome: "UPDATED" });
+    expect(await metadata(copyId)).toMatchObject({ runtimeKind: NATIVE, pendingRuntimeSwitch: { from: expect.objectContaining({ runtimeKind: AGY }) } });
+    const backToAgy = await save(copyId, AGY, AGY_MODEL);
+    expect(backToAgy, JSON.stringify(backToAgy)).toMatchObject({ success: true, outcome: "UPDATED" });
+    expect(await metadata(copyId)).toMatchObject({ runtimeKind: AGY });
 
     await terminate(hostId);
     const hostBefore = await metadata(hostId);
-    const combined = (await gql("mutation($input: UpdateDelegatedLaunchSelectionsInput!) { updateDelegatedLaunchSelections(input: $input) { success outcome message fieldErrors { path message } } }", { input: {
-      rootKind: "AGENT", rootRunId: hostId,
-      changes: [{ agentRunId: copyId, selection: { runtimeKind: AGY, llmModelIdentifier: AGY_ALT, llmConfig: null } }],
-      configuredPatches: [{ scopeKind: "CONFIGURED_AGENT", scopeAddress: "/", runtimeKind: NATIVE, llmModelIdentifier: nativeModel, llmConfig: null }] } })).updateDelegatedLaunchSelections;
-    expect(combined, JSON.stringify(combined)).toMatchObject({ success: true, outcome: "UPDATED" });
+    // The host's Settings Save across the host and its copy, as the editor composes it from each run's own stopped-run save
+    // (SR-064): the host's own patch first, then the copy's, in row order.
+    const hostSaved = await save(hostId, NATIVE, nativeModel);
+    expect(hostSaved, JSON.stringify(hostSaved)).toMatchObject({ success: true, outcome: "UPDATED" });
+    const copySaved = await save(copyId, AGY, AGY_ALT);
+    expect(copySaved, JSON.stringify(copySaved)).toMatchObject({ success: true, outcome: "UPDATED" });
     const hostAfter = await metadata(hostId);
     expect(hostAfter).toMatchObject({ runtimeKind: NATIVE, llmModelIdentifier: nativeModel, platformAgentRunId: null,
       pendingRuntimeSwitch: { from: expect.objectContaining({ runtimeKind: AGY, platformAgentRunId: hostBefore.platformAgentRunId }) } });
-    // The copy keeps its own runtime; only its chosen model is recorded (in the host's stored tree).
-    expect(await metadata(copyId)).toMatchObject({ runtimeKind: AGY });
-    const tree = JSON.stringify((await gql("query($id: String!) { agentRunCollaboration(runId: $id) }", { id: hostId })).agentRunCollaboration ?? {});
+    // The copy keeps its own runtime; its chosen model is recorded in its own file, and the host's view row shows it.
+    expect(await metadata(copyId)).toMatchObject({ runtimeKind: AGY, llmModelIdentifier: AGY_ALT });
+    // autobyteus-461 SR-084: the delegated runs come from the run's tree (its view carries its own parts only).
+    const tree = JSON.stringify(await readRunTree((query, variables) => gql(query, variables), "agent", hostId));
     expect(tree).toContain(AGY_ALT);
     expect(tree).toContain(copyId);
 
@@ -512,7 +526,7 @@ describe.runIf(ENABLED)("agent runtime switch, native runtime and stopped-run se
     expect(activeRecords(hostId)[0]).toMatchObject({ trace_type: "system_task_notification", correlation_id: key });
     expect(await metadata(hostId)).toMatchObject({ runtimeKind: NATIVE });
     expect(await metadata(copyId), "the copy was not touched by the host's switch").toMatchObject({ runtimeKind: AGY });
-    expect(JSON.stringify((await gql("query($id: String!) { agentRunCollaboration(runId: $id) }", { id: hostId })).agentRunCollaboration ?? {})).toContain(copyId);
+    expect(JSON.stringify(await readRunTree((query, variables) => gql(query, variables), "agent", hostId))).toContain(copyId);
   }, 300_000);
 
   it("RS-04: a pending switch survives a server restart; an activated switch whose notice was not yet delivered still delivers it, once, after a restart", async () => {

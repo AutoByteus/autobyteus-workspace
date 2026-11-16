@@ -1,0 +1,11 @@
+# IMP-118 (IR-038): after the phone restore's tree read (MSP-33) and the Org Settings guard (AFS-002); phone bundle rebuilt
+mobile build 0
+MSP done
+DLD done
+CHAIN-DONE
+[mobile-shell] MSP-06 Pass
+[mobile-shell] MSP-33 Pass
+[mobile-shell] MSP-53 Pass
+DCP-002 Pass 
+DCP-003 Pass 
+AFS-002 Pass settingsClosedBy": [],

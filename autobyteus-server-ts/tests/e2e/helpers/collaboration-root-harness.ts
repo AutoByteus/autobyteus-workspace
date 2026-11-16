@@ -11,6 +11,9 @@ import { buildE2eClientCommandIds, sendE2eSendMessageCommand } from "./websocket
 import { until } from "./agy-runtime-error-fixture.js";
 import { findAgyRunCapsule } from "./agy-run-capsule.js";
 import { flattenE2eConfiguredAgentExecutions } from "./team-run-metadata-helpers.js";
+import { restoreByMemberMessage } from "./restore-by-member-message.js";
+import { ownRunOfAgent, projectionByOwnRun } from "./own-run-reads.js";
+import { delegatedRunsTree } from "./run-tree-delegated.js";
 
 /**
  * Drives real Agent, Agent Team and Agent Org roots on a test-owned Studio server with the scripted AGY CLI
@@ -200,25 +203,58 @@ export const startCollaborationHarness = async (label: string) => {
     const isSnapshot = (frame: Frame) => frame.type === (kind === "team" ? "TEAM_EXECUTION_VIEW_SNAPSHOT" : "ROOT_EXECUTION_VIEW_SNAPSHOT");
     const inputChannel = kind === "agent" ? await connect("agent", rootId, (frames) => frames.some((f) => f.type === "CONNECTED")) : null;
     const view = await connect(viewRoute, rootId, (frames) => frames.some(isSnapshot));
-    const sendTo = (agentRunId: string, content: string, mentions?: Mention[]) => {
+    const ownStreams = new Map<string, Promise<WebSocket>>();
+    /**
+     * An agent that is not the root's own is in a run the root (or one of its runs) delegated to. The user reaches it on its
+     * own run's stream (an agent run's input channel, a team run's view), as from that run's own view: autobyteus-461 rule 2
+     * (SR-061), the delegator's view only shows rows. `false`: the agent is the root's own.
+     */
+    const viaOwnRun = async (agentRunId: string, content: string, extra: Rec): Promise<boolean> => {
+      if (agentRunId === rootId || agentRunId === managerRunId || Object.values(members).includes(agentRunId)) return false;
+      const own = await ownRunOfAgent(path.join(dataDir, "memory"), agentRunId);
+      if (!own) return false;
+      const key = own.kind === "agent" ? `agent:${agentRunId}` : `agent_team:${own.teamRunId}`;
+      if (!ownStreams.has(key)) ownStreams.set(key, own.kind === "agent"
+        ? connect("agent", agentRunId, (frames) => frames.some((f) => f.type === "CONNECTED")).then((c) => c.socket)
+        : connect("agent-team", own.teamRunId, (frames) => frames.some((f) => f.type === "TEAM_EXECUTION_VIEW_SNAPSHOT")).then((c) => c.socket));
+      sendE2eSendMessageCommand(await ownStreams.get(key)!, { agent_run_id: agentRunId, content, ...extra });
+      return true;
+    };
+    const sendTo = async (agentRunId: string, content: string, mentions?: Mention[]) => {
       const extra = mentions ? { mentions } : {};
+      if (await viaOwnRun(agentRunId, content, extra)) return;
+      const commandId = randomUUID();
       if (kind === "org") view.socket.send(JSON.stringify({ type: "SEND_MESSAGE", payload: {
         root_subject_kind: "agent_org", root_run_id: rootId, target_agent_run_id: agentRunId,
-        command_id: randomUUID(), message_id: randomUUID(), dedupe_key: randomUUID(), content, context_file_paths: [], image_urls: [], ...extra } }));
+        command_id: commandId, message_id: randomUUID(), dedupe_key: randomUUID(), content, context_file_paths: [], image_urls: [], ...extra } }));
       else if (kind === "agent" && agentRunId !== rootId) view.socket.send(JSON.stringify({ type: "SEND_MESSAGE", payload: {
-        root_subject_kind: "agent", root_run_id: rootId, target_agent_run_id: agentRunId, command_id: randomUUID(),
+        root_subject_kind: "agent", root_run_id: rootId, target_agent_run_id: agentRunId, command_id: commandId,
         content, context_file_paths: [], image_urls: [], ...buildE2eClientCommandIds(), ...extra } }));
-      else sendE2eSendMessageCommand(kind === "agent" ? inputChannel!.socket : view.socket, { agent_run_id: agentRunId, content, ...extra });
+      else {
+        const from = view.frames.length;
+        sendE2eSendMessageCommand(kind === "agent" ? inputChannel!.socket : view.socket, { agent_run_id: agentRunId, content, ...extra });
+        if (kind !== "team") return;
+        // The team view has no command ack: a refused message is an ERROR frame naming the target.
+        await new Promise((resolve) => setTimeout(resolve, 1_500));
+        const refused = view.frames.slice(from).find((f) => f.type === "ERROR" && JSON.stringify(f.payload).includes(agentRunId));
+        if (refused) throw new Error(`The team view refused the message for ${agentRunId}: ${JSON.stringify(refused.payload)}`);
+        return;
+      }
+      // A view command is acknowledged: a refused or failed one fails the step with its code, not as a later timeout.
+      let ack: Frame | undefined;
+      await until(() => (ack = view.frames.find((f) => f.type === "AGENT_COMMAND_ACK" && (f.payload as Rec)?.command_id === commandId)) !== undefined,
+        `the ${kind} view acknowledges the message for ${agentRunId}`);
+      const state = (ack!.payload as Rec).state;
+      if (state !== "accepted") throw new Error(`The ${kind} view ${String(state)} the message for ${agentRunId}: ${JSON.stringify(ack!.payload)}`);
     };
-    const liveTree = async () => {
-      if (kind === "agent") return (await graphql(`query($id:String!){agentRunCollaboration(runId:$id)}`, { id: rootId })).agentRunCollaboration?.root_agent?.execution_tree ?? null;
-      if (kind === "team") return (await graphql(`query($id:String!){getTeamRunResumeConfig(teamRunId:$id){executionTree}}`, { id: rootId })).getTeamRunResumeConfig.executionTree;
-      return (await graphql(`query($id:String!){getAgentOrgRootHistory(orgRunId:$id){org}}`, { id: rootId })).getAgentOrgRootHistory.org;
-    };
+    // autobyteus-461 SR-084: the root's delegated runs at every depth, from its tree (its view carries its own parts only).
+    const liveTree = async () => delegatedRunsTree(graphql, kind, rootId);
     const conversationOf = async (agentRunId: string, address: string) => {
+      // An agent of a run this root delegated to is read through its own run (autobyteus-461 CR-461-014).
+      if (agentRunId !== rootId && agentRunId !== managerRunId && !Object.values(members).includes(agentRunId)) {
+        return (await projectionByOwnRun(graphql, path.join(dataDir, "memory"), agentRunId))?.conversation ?? [];
+      }
       if (kind === "agent" && agentRunId === rootId) return (await graphql(`query($id:String!){getRunProjection(runId:$id){conversation}}`, { id: agentRunId })).getRunProjection?.conversation;
-      if (kind === "agent") return (await graphql(`query($h:String!,$a:String!,$r:String!){agentRunCollaborationMemberProjection(hostRunId:$h,memberAddress:$a,agentRunId:$r){conversation}}`,
-        { h: rootId, a: address, r: agentRunId })).agentRunCollaborationMemberProjection?.conversation;
       if (kind === "team") return (await graphql(`query($id:String!,$a:String!){getTeamMemberRunProjection(teamRunId:$id,agentRunId:$a){conversation}}`, { id: rootId, a: agentRunId })).getTeamMemberRunProjection?.conversation;
       return (await graphql(`query($id:String!,$a:String!,$m:String!){getAgentOrgMemberRunProjection(orgRunId:$id,memberAddress:$m,agentRunId:$a){conversation}}`,
         { id: rootId, a: agentRunId, m: address })).getAgentOrgMemberRunProjection?.conversation;
@@ -226,28 +262,33 @@ export const startCollaborationHarness = async (label: string) => {
     /** One scripted tool call by an agent of the root; returns the tool result it reports. */
     const calls = async (agentRunId: string, address: string, content: string, mentions?: Mention[]): Promise<Rec> => {
       const before = calledResults(await conversationOf(agentRunId, address)).length;
-      sendTo(agentRunId, content, mentions);
+      await sendTo(agentRunId, content, mentions);
       let results: string[] = [];
       await until(async () => { results = calledResults(await conversationOf(agentRunId, address)); return results.length > before; },
         `${kind} ${address} tool result for ${content.slice(0, 110)}`, 60_000)
         .catch(async (error) => { throw new Error(`${error}; the agent's conversation ends: ${JSON.stringify(stringsOf(await conversationOf(agentRunId, address)).slice(-8)).slice(0, 2000)}; raw trace tail:\n${await tracesOf(agentRunId)}`); });
       return toolResult(results[before]!);
     };
+    // The runs delegated from this root at every depth: its view's rows, nested by placement, in base's shapes (rule 1).
     const taskAgents = async () => taskAgentsIn(await liveTree());
     const waitForTaskAgent = async (id: string) => {
-      let found: ReturnType<typeof taskAgentsIn>[number] | undefined;
+      let found: Awaited<ReturnType<typeof taskAgents>>[number] | undefined;
       await until(async () => Boolean(found = (await taskAgents()).find((agent) => agent.agentRunId === id || agent.teamRunId === id)), `${kind}: task agent ${id} recorded`, 60_000);
       return found!;
     };
     return { kind, rootId, managerRunId, members, sendTo, calls, conversationOf, liveTree, taskAgents, waitForTaskAgent, close: () => { view.socket.close(); inputChannel?.socket.close(); } };
   };
-  /** Reopens a stopped root as the app does: the restore mutation of its kind, then its streams. */
+  /**
+   * Reopens a stopped root as the app does, then attaches its streams: a standalone agent run by its restore mutation; a Team
+   * or Org run by the user's message to its Manager on its view stream (autobyteus-461 CR-461-008: no restore mutation).
+   */
   const reopenRoot = async (root: { kind: RootKind; rootId: string; managerRunId: string; members: Record<string, string> }) => {
-    const mutation = root.kind === "agent" ? `mutation($id:String!){restoreAgentRun(agentRunId:$id){success message}}`
-      : root.kind === "team" ? `mutation($id:String!){restoreAgentTeamRun(teamRunId:$id){success message}}`
-        : `mutation($id:String!){restoreAgentOrgRun(agentOrgRunId:$id){success message}}`;
-    const restored = Object.values(await graphql(mutation, { id: root.rootId }))[0] as Rec;
-    expect(restored.success, restored.message).toBe(true);
+    if (root.kind === "agent") {
+      const restored = (await graphql(`mutation($id:String!){restoreAgentRun(agentRunId:$id){success message}}`, { id: root.rootId })).restoreAgentRun as Rec;
+      expect(restored.success, restored.message).toBe(true);
+    } else {
+      await restoreByMemberMessage({ url: `http://${url.host}`, gql: (q, v) => graphql(q, v), kind: root.kind, runId: root.rootId, memberRunId: root.managerRunId });
+    }
     active.push({ kind: root.kind, rootId: root.rootId });
     return attachRoot(root.kind, root.rootId, root.managerRunId, root.members);
   };

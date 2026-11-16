@@ -1,3 +1,4 @@
+import type { RunMessagesFeed } from "../../agent-collaboration/delegation/run-messages-feed.js";
 import type { RootCommunicationPort } from "../../agent-collaboration/execution/communication/root-communication-port.js";
 import type { RootMessageAppend, RootMessageAppendResult } from "../../agent-collaboration/execution/communication/root-message-append.js";
 import { createTeamRootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
@@ -7,7 +8,7 @@ import { TeamRunEventSourceType, type TeamRunEvent } from "../../agent-team-exec
 import type { TeamRun } from "../../agent-team-execution/domain/team-run.js";
 import { buildInterAgentDeliveryInputMessage } from "../../agent-team-execution/services/inter-agent-message-runtime-builders.js";
 import { buildTeamMemberInputEventPayload } from "../../agent-team-execution/services/team-member-input-event-builder.js";
-import { messageLogOwners, type MessageLogOwner } from "../../run-history/store/task-agent-message-logs.js";
+import { messageLogOwners, type MessageLogOwner } from "../../run-history/store/message-log-owners.js";
 import type { TeamCommunicationMessagesSnapshot } from "./team-communication-messages-file.js";
 
 /** The Team root's facts and effects for RootCommunicationEngine. */
@@ -21,6 +22,8 @@ export const createTeamCommunicationPort = (input: Readonly<{
   requireContainingTeamRun(agentRunId: string): Promise<TeamRun>;
   commitMessageAppend(append: RootMessageAppend): Promise<RootMessageAppendResult>;
   publish(event: TeamRunEvent): void;
+  /** The node's message feed (SR-072): each committed message into the views of its runs and the runs above them. */
+  messageFeed: Pick<RunMessagesFeed, "publish">;
 }>): RootCommunicationPort => {
   const port: RootCommunicationPort = {
     root: createTeamRootExecutionIdentity(input.rootTeamRunId),
@@ -59,7 +62,7 @@ export const createTeamCommunicationPort = (input: Readonly<{
     reserveRecipientInput: async (agentRunId, message) => (await input.requireContainingTeamRun(agentRunId)).reserveDirectAgentInput(agentRunId, message),
     logOwnersOf: (message) => messageLogOwners(message, (agentRunId) => input.messageLogOwnerOf(agentRunId)),
     commitMessageAppend: (append) => input.commitMessageAppend(append),
-    publishToRootView: (message) => input.publish({ eventSourceType: TeamRunEventSourceType.COMMUNICATION, payload: message }),
+    publishMessage: (message, senderRun) => input.messageFeed.publish({ message, senderRun, receiverRun: createTeamRootExecutionIdentity(input.rootTeamRunId) }),
     presentRecipientInput: (message, recipientInput) => input.publish({
       eventSourceType: TeamRunEventSourceType.MEMBER_INPUT,
       agentRunId: message.receiverAgentRunId,

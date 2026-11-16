@@ -344,7 +344,10 @@ defineCase('RSM-01', 'Team: switch one member in the stopped Team\'s Settings, m
   await page.locator(sel(`workspace-team-member-${teamRunId}-/worker`)).click(); await settle(page, 2000)
   await sendFromComposer(page, 'ECHO_INPUT')
   await waitFor('marker in the chat', async () => /Agent runtime changed from AutoByteus/.test(await pageText(page)), 180000, 1000)
-  r.liveChat = (await pageText(page)).replace(/\s+/g, ' ').slice(0, 1200)
+  const liveText = await pageText(page)
+  r.liveChat = liveText.replace(/\s+/g, ' ').slice(0, 1200)
+  // autobyteus-461 CR-461-116: how many runtime-change notices the live chat shows (recorded).
+  r.liveMarkerCount = (liveText.match(/Agent runtime changed from/g) ?? []).length
   await shot(page, 'RSM-01-after-switch-live')
   const folder = await findFolder(path.join(dataRoot, 'memory', 'agent_teams', teamRunId), pending.agentRunId)
   const manifest = await readJson(path.join(folder, 'raw_traces_manifest.json'))
@@ -506,7 +509,8 @@ const startStoppedCopy = async (ctx, tag, writerAddress = '/switch_probe_writer'
   const copyDir = () => findFolder(path.join(dataRoot, 'memory', 'agents'), copyId)
   await waitFor('the native copy answered', async () => { const dir = await copyDir(); return dir && (await rawRecords(dir)).some((x) => x.trace_type === 'assistant') }, 120000, 1000)
   await delay(3000)
-  const stopped = (await gql('mutation($input:DelegatedExecutionTargetInput!){stopDelegatedExecution(input:$input){success outcome}}', { input: { rootKind: 'AGENT', rootRunId: hostId, agentRunId: copyId } })).stopDelegatedExecution
+  // autobyteus-461 rule 2: a delegated run is stopped by its own Stop (stopDelegatedExecution is gone).
+  const stopped = (await gql('mutation($id:String!){terminateAgentRun(agentRunId:$id){success message}}', { id: copyId })).terminateAgentRun
   assert(stopped.success, 'the copy did not stop', stopped)
   await gql('mutation($id:String!){terminateAgentRun(agentRunId:$id){success}}', { id: hostId })
   return { hostId, copyId, callHost, copyDir }

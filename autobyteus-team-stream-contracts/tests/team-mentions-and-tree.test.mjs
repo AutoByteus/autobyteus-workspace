@@ -22,10 +22,11 @@ test("the Team tree has no collaborators, and COLLABORATOR_ADDED is no longer a 
     created_at: "t", archived_at: null, application_binding: null, handoffs: [],
     root_team: {
       address: "/", team_definition_id: "se", team_definition_name: "SE", team_run_id: "team-run",
-      coordinator_address: "/lead", default_launch_configuration: launch, members: [], task_executions: [],
+      coordinator_address: "/lead", default_launch_configuration: launch, members: [],
     },
   };
-  assert.deepEqual(teamRunExecutionTreeDtoSchema.parse(tree).root_team.task_executions, []);
+  assert.deepEqual(teamRunExecutionTreeDtoSchema.parse(tree).root_team.members, []);
+  assert.throws(() => teamRunExecutionTreeDtoSchema.parse({ ...tree, root_team: { ...tree.root_team, task_executions: [] } }));
   assert.throws(() => teamRunExecutionTreeDtoSchema.parse({ ...tree, root_team: { ...tree.root_team, collaborators: [] } }));
   assert.throws(() => parseTeamStreamServerMessage({ type: "COLLABORATOR_ADDED", payload: { change_sequence: 2, collaborator: {} } }));
 });

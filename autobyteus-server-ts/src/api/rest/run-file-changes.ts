@@ -15,10 +15,6 @@ import {
   AgentOrgMemberRunViewProjectionService,
   getAgentOrgMemberRunViewProjectionService,
 } from "../../run-history/services/agent-org-member-run-view-projection-service.js";
-import {
-  StandaloneRootMemberViewProjectionService,
-  getStandaloneRootMemberViewProjectionService,
-} from "../../standalone-agent-run-root/services/standalone-root-member-view-projection-service.js";
 import { sendUserFile } from "./user-file-reply.js";
 
 type ContentQuery = { path?: string; memberAddress?: string };
@@ -66,8 +62,8 @@ const sendMemberFileChangeContent = async (
 };
 
 /**
- * File-change content per owner: a standalone run by its run id, or a member inside the team run,
- * org run or hub the path names. Each route reads only its owner.
+ * File-change content per owner: a standalone run by its run id (a run another run delegated to, too), or a member
+ * inside the team run or org run the path names. Each route reads only its owner.
  */
 export async function registerRunFileChangeRoutes(
   app: FastifyInstance,
@@ -75,13 +71,11 @@ export async function registerRunFileChangeRoutes(
     projectionService?: RunFileChangeProjectionService;
     teamMemberViews?: TeamMemberRunViewProjectionService;
     agentOrgMemberViews?: AgentOrgMemberRunViewProjectionService;
-    standaloneRootMemberViews?: StandaloneRootMemberViewProjectionService;
   } = {},
 ): Promise<void> {
   const projectionService = () => options.projectionService ?? getRunFileChangeProjectionService();
   const teamMemberViews = () => options.teamMemberViews ?? getTeamMemberRunViewProjectionService();
   const agentOrgMemberViews = () => options.agentOrgMemberViews ?? getAgentOrgMemberRunViewProjectionService();
-  const standaloneRootMemberViews = () => options.standaloneRootMemberViews ?? getStandaloneRootMemberViewProjectionService();
 
   app.get<{
     Params: { runId: string };
@@ -114,18 +108,5 @@ export async function registerRunFileChangeRoutes(
     const { orgRunId, agentRunId } = request.params;
     return sendMemberFileChangeContent(reply, () =>
       agentOrgMemberViews().resolveFileChangeEntry(orgRunId, memberAddress, agentRunId, rawPath));
-  });
-
-  app.get<{
-    Params: { hostRunId: string; agentRunId: string };
-    Querystring: ContentQuery;
-  }>("/agent-collaborations/:hostRunId/agent-runs/:agentRunId/file-change-content", async (request, reply) => {
-    const rawPath = request.query?.path?.trim();
-    if (!rawPath) return missingQuery(reply, "path");
-    const memberAddress = request.query?.memberAddress?.trim();
-    if (!memberAddress) return missingQuery(reply, "memberAddress");
-    const { hostRunId, agentRunId } = request.params;
-    return sendMemberFileChangeContent(reply, () =>
-      standaloneRootMemberViews().resolveFileChangeEntry(hostRunId, memberAddress, agentRunId, rawPath));
   });
 }

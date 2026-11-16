@@ -1,0 +1,46 @@
+# IMP-120 (IR-039, CR-461-111): AFS-001 with temporary traces (server: rowChanged, view sessions; web: tree reads, view close), before and after the fix. Traces removed after.
+## before: server (backend.log)
+F87TRACE agent view OPEN afs_other_5397_447ee43dc49e433fa484e2a720384001 live=false
+F87TRACE agent view DISCONNECT afs_other_5397_447ee43dc49e433fa484e2a720384001
+F87TRACE agent view OPEN afs_hub_5397_cebbebafac72441c8776c436905fc75f live=false
+F87TRACE agent view afs_hub_5397_cebbebafac72441c8776c436905fc75f change added=1 removed=0 updated=[]
+F87TRACE agent view afs_hub_5397_cebbebafac72441c8776c436905fc75f change added=1 removed=0 updated=[["agent:afs_hub_5397_cebbebafac72441c8776c436905fc75f",null,null]]
+F87TRACE agent view afs_hub_5397_cebbebafac72441c8776c436905fc75f change added=3 removed=0 updated=[]
+F87TRACE agent view lifecycle afs_hub_5397_cebbebafac72441c8776c436905fc75f active=false
+F87TRACE agent view DISCONNECT afs_hub_5397_cebbebafac72441c8776c436905fc75f
+F87TRACE agent view DISCONNECT undefined
+F87TRACE rowChanged agent:afs_alpha_5397_0b366fc35a8847f29a15a41102209b35 chain=["agent:afs_alpha_5397_0b366fc35a8847f29a15a41102209b35","agent:afs_hub_5397_cebbebafac72441c8776c436905fc75f"]
+## before: web (browser console)
+2026-11-16T08:21:13.040Z F87TRACE web streamSnapshot agent:afs_other_5397_447ee43dc49e433fa484e2a720384001
+2026-11-16T08:21:21.307Z F87TRACE web streamSnapshot agent:afs_hub_5397_cebbebafac72441c8776c436905fc75f
+2026-11-16T08:21:35.900Z F87TRACE web streamSnapshot agent_team:afs_pair_5397_e592573d250d475084c80fd4738a5a15
+2026-11-16T08:21:43.111Z F87TRACE web notCurrent afs_hub_5397_cebbebafac72441c8776c436905fc75f same=true rev=true term=true
+2026-11-16T08:21:43.131Z F87TRACE web notCurrent afs_hub_5397_cebbebafac72441c8776c436905fc75f same=true rev=true term=true
+2026-11-16T08:21:43.132Z F87TRACE web view close afs_hub_5397_cebbebafac72441c8776c436905fc75f code=1000 reason= mine=true current=false released=false
+2026-11-16T08:21:43.155Z F87TRACE web notCurrent afs_hub_5397_cebbebafac72441c8776c436905fc75f same=true rev=true term=true
+2026-11-16T08:21:25.727Z F87TRACE web read agent:afs_hub_5397_cebbebafac72441c8776c436905fc75f via=stream
+2026-11-16T08:21:55.606Z F87TRACE web treeRevision bump agent:afs_alpha_5397_0b366fc35a8847f29a15a41102209b35
+2026-11-16T08:21:55.607Z F87TRACE web read agent:afs_hub_5397_cebbebafac72441c8776c436905fc75f via=stream
+AFS-001 Fail AC-001, AC-003, AC-005, D-IMP-1, D-IMP-3: a hub and its copies each show one card; a running copy is locked and stops alone; edits across focus name their agent; Save and Cancel; the next message uses the saved model and runtime — A's card shows the saved model (D-IMP-3)
+Summary: 0 Pass, 1 Fail
+
+## after the fix: server (backend.log)
+F87TRACE agent view OPEN afs_other_d852_b8686fc230bf4728835493784271dbf3 live=false
+F87TRACE agent view DISCONNECT afs_other_d852_b8686fc230bf4728835493784271dbf3
+F87TRACE agent view OPEN afs_hub_d852_5bb85846ebc74f52ba09db69b8359b27 live=false
+F87TRACE agent view afs_hub_d852_5bb85846ebc74f52ba09db69b8359b27 change added=1 removed=0 updated=[]
+F87TRACE agent view afs_hub_d852_5bb85846ebc74f52ba09db69b8359b27 change added=1 removed=0 updated=[["agent:afs_hub_d852_5bb85846ebc74f52ba09db69b8359b27",null,null]]
+F87TRACE agent view afs_hub_d852_5bb85846ebc74f52ba09db69b8359b27 change added=3 removed=0 updated=[]
+F87TRACE agent view lifecycle afs_hub_d852_5bb85846ebc74f52ba09db69b8359b27 active=false
+F87TRACE agent view DISCONNECT afs_hub_d852_5bb85846ebc74f52ba09db69b8359b27
+F87TRACE agent view DISCONNECT undefined
+F87TRACE agent view OPEN afs_hub_d852_5bb85846ebc74f52ba09db69b8359b27 live=false
+F87TRACE rowChanged agent:afs_alpha_d852_f4e6653b188542f497cc90358a72b097 chain=["agent:afs_alpha_d852_f4e6653b188542f497cc90358a72b097","agent:afs_hub_d852_5bb85846ebc74f52ba09db69b8359b27"]
+F87TRACE agent view afs_hub_d852_5bb85846ebc74f52ba09db69b8359b27 change added=0 removed=0 updated=[["agent:afs_alpha_d852_f4e6653b188542f497cc90358a72b097","dlc-alt-model",{"origin":"settings","fallbacks":[]}]]
+F87TRACE rowChanged agent:afs_beta_d852_a7711f1d2ed24c68b3312f71070b8ddb chain=["agent:afs_beta_d852_a7711f1d2ed24c68b3312f71070b8ddb","agent:afs_hub_d852_5bb85846ebc74f52ba09db69b8359b27"]
+F87TRACE agent view afs_hub_d852_5bb85846ebc74f52ba09db69b8359b27 change added=0 removed=0 updated=[["agent:afs_beta_d852_a7711f1d2ed24c68b3312f71070b8ddb","grok-4.7",{"origin":"settings","fallbacks":[]}]]
+F87TRACE agent view OPEN afs_other_d852_b8686fc230bf4728835493784271dbf3 live=true
+F87TRACE agent view DISCONNECT afs_other_d852_b8686fc230bf4728835493784271dbf3
+F87TRACE agent view DISCONNECT afs_hub_d852_5bb85846ebc74f52ba09db69b8359b27
+AFS-001 Pass AC-001, AC-003, AC-005, D-IMP-1, D-IMP-3: a hub and its copies each show one card; a running copy is locked and stops alone; edits across focus name their agent; Save and Cancel; the next message uses the saved model and runtime
+Summary: 1 Pass, 0 Fail

@@ -1,0 +1,24 @@
+# F-40 (list_available_agents own name), r6-batchB.log, code 958cb22462
+ FAIL  tests/e2e/projects/delegated-copy-member-contact-host.e2e.test.ts > Delegated copy members contact the Agent-run host (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > a Team-copy member and an Agent copy reach the existing host by @, list_available_agents and send_message_to; the host never sees itself
+AssertionError: F-40: base listed the run's own name: expected [ '/daily_assistant', …(5) ] to deeply equal [ '/daily_assistant', …(6) ]
+
+- Expected
++ Received
+
+  [
+    "/daily_assistant",
+    "/dcm_manager_280d11",
+    "/dcm_outsider_280d11",
+    "/dcm_solo_280d11",
+-   "/dcm_squad_280d11",
+    "/lead",
+    "/reviewer",
+  ]
+
+ ❯ tests/e2e/projects/delegated-copy-member-contact-host.e2e.test.ts:355:82
+    353|     expect(addresses(reviewerList)).toEqual(expect.arrayContaining(rev…
+    354|     expect(addresses(reviewerList).filter((address) => !reviewerExpect…
+    355|     expect.soft(addresses(reviewerList), "F-40: base listed the run's …
+       |                                                                                  ^
+    356|     const soloExpected = [...addresses(hostList), hostAddress].sort();
+    357|     expect(addresses(soloList)).toEqual(expect.arrayContaining(soloExp…

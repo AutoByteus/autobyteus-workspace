@@ -1,5 +1,5 @@
 import { inject, type InjectionKey } from 'vue'
-import { useRemoteRunsStore } from '~/stores/remoteRunsStore'
+import { useRunTreeStore } from '~/stores/runTreeStore'
 
 /** "This file is on {{node}}, where this run runs." (autobyteus-471 REQ-003). */
 export const FILE_ON_OTHER_NODE_MESSAGE_KEY =
@@ -8,10 +8,10 @@ export const FILE_ON_OTHER_NODE_MESSAGE_KEY =
 /**
  * Where a run's file paths are when another node runs it (autobyteus-471 REQ-003): that node's name, and this window
  * reads none of them; null for a run of this node. The one decision for a conversation's file links and path
- * attachments, on the desktop and on the phone.
+ * attachments, on the desktop and on the phone; the node is its tree row's (autobyteus-461 G-D1).
  */
 export const remoteRunFileNode = (agentRunId: string | null | undefined): string | null =>
-  useRemoteRunsStore().runOfAgentRun(agentRunId)?.nodeName ?? null
+  useRunTreeStore().peerRunOf(agentRunId)?.nodeName ?? null
 
 /**
  * The run view a conversation is shown in (`AgentEventMonitor`), for what a message opens: `refuseRemoteRunPath` shows

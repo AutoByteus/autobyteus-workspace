@@ -1,3 +1,5 @@
+import { messageFeedInto } from "../../helpers/view-streams.js";
+import { noDelegations, openTaskRecords } from "../../helpers/no-delegations.js";
 import type { RootMessageAppend } from "../../../src/agent-collaboration/execution/communication/root-message-append.js";
 import { runAppendDurably } from "../agent-collaboration/helpers/communication-port-double.js";
 import { describe, expect, it, vi } from "vitest";
@@ -5,13 +7,17 @@ import {
   createAgentOrgRootExecutionIdentity,
   createCollaborationMemberExecutionIdentity,
 } from "../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
-import { RootEventPublisher } from "../../../src/agent-collaboration/execution/services/root-event-publisher.js";
+import { RunViewStream } from "../../../src/agent-collaboration/delegation/run-view-stream.js";
 import type { AgentRunInputReservationResult } from "../../../src/agent-execution/input/agent-run-input-contract.js";
 import { AgentOrgRun } from "../../../src/agent-org-execution/domain/agent-org-run.js";
 import type { AgentOrgRunEvent } from "../../../src/agent-org-execution/domain/agent-org-run-event.js";
 import { AgentOrgRunPersistenceCoordinator } from "../../../src/agent-org-execution/services/agent-org-run-persistence-coordinator.js";
 import { testAgentOrgExecutionTree, testOrgAgentNode, testOrgTeamNode } from "../../fixtures/current-agent-org-run-fixtures.js";
-import { isAgentOrgMessageEvent } from "../../../src/agent-org-execution/domain/agent-org-run-event.js";
+import { agentOrgMessageEvent, isAgentOrgMessageEvent } from "../../../src/agent-org-execution/domain/agent-org-run-event.js";
+import { CrossRunMessageDelivery } from "../../../src/agent-collaboration/communication/cross-run-message-delivery.js";
+import { DelegationIndex } from "../../../src/agent-collaboration/delegation/delegation-index.js";
+import { InMemoryTaskExecutionResources } from "../../fixtures/task-execution-resource-fixtures.js";
+import { readerOfAgentRunIds } from "../../helpers/run-agents-reader.js";
 
 type ReservedAgentInput = Extract<AgentRunInputReservationResult, { reserved: true }>;
 
@@ -40,47 +46,12 @@ const createSubject = (options: Readonly<{
     orgRunId,
     members: [direct, secondDirect, team, otherTeam],
   });
-  const firstTask = {
-    address: direct.address,
-    agentRunId: "task-one-run",
-    platformAgentRunId: null,
-    delegatorAgentRunId: "direct-run",
-    startedAt: "2026-09-06T00:00:00.000Z",
-  } as const;
-  const secondTask = {
-    address: mounted.address,
-    agentRunId: "task-two-run",
-    platformAgentRunId: null,
-    delegatorAgentRunId: "direct-run",
-    startedAt: "2026-09-06T00:00:01.000Z",
-  } as const;
-  const taskTeamMember = {
-    address: mounted.address,
-    agentRunId: "task-team-member-run",
-    platformAgentRunId: null,
-  } as const;
-  const secondTaskTeamMember = {
-    address: "/team/second",
-    agentRunId: "task-team-member-two-run",
-    platformAgentRunId: null,
-  } as const;
-  const taskTeam = {
-    address: team.address,
-    teamRunId: "task-team-run",
-    members: [taskTeamMember, secondTaskTeamMember],
-    taskExecutions: [],
-    delegatorAgentRunId: "direct-run",
-    startedAt: "2026-09-06T00:00:02.000Z",
-  } as const;
-  const tree = {
-    ...base,
-    rootOrg: { ...base.rootOrg, taskExecutions: [firstTask, secondTask, taskTeam] },
-  };
+  const tree = base;
   const order: string[] = [];
   const reservations: ReservedAgentInput[] = [];
   const events: AgentOrgRunEvent[] = [];
   const sequences: number[] = [];
-  const publisher = new RootEventPublisher<AgentOrgRunEvent>({ isMessageEvent: isAgentOrgMessageEvent });
+  const publisher = new RunViewStream<AgentOrgRunEvent>({ isMessageEvent: isAgentOrgMessageEvent });
   publisher.subscribe(({ event, changeSequence }) => {
     events.push(event);
     sequences.push(changeSequence);
@@ -102,7 +73,7 @@ const createSubject = (options: Readonly<{
     return value;
   }
   const reserveRootAgentInput = vi.fn(async (agentRunId: string): Promise<AgentRunInputReservationResult> => reservation(agentRunId));
-  const run = new AgentOrgRun({
+  const run = new AgentOrgRun({ delegationIndex: noDelegations(), taskRecords: openTaskRecords(),
     root,
     tree,
     messages: { schemaVersion: 1, subjectKind: "agent_org", orgRunId, messages: [] },
@@ -125,8 +96,7 @@ const createSubject = (options: Readonly<{
     persistence: options.persistence?.(orgRunId) ?? {
       commitMessageAppend: vi.fn(runAppendDurably),
     } as never,
-    publisher,
-    taskExecutionIdentity: {} as never,
+    publisher, messageFeed: messageFeedInto(publisher, agentOrgMessageEvent),
   });
   run.activate();
   const sender = (agentRunId: string, memberAddress: string) => ({
@@ -140,10 +110,6 @@ const createSubject = (options: Readonly<{
     secondDirect,
     mounted,
     secondMounted,
-    firstTask,
-    secondTask,
-    taskTeamMember,
-    secondTaskTeamMember,
     events,
     sequences,
     order,
@@ -228,39 +194,6 @@ describe("AgentOrg committed communication presentation", () => {
       execution: { agentRunId: targetAgentRunId },
       message: { type: "MEMBER_INPUT_MESSAGE" },
     });
-  });
-
-  it.each([
-    ["configured to task", "direct-run", "/director", "task-one-run"],
-    ["task to configured", "task-one-run", "/director", "mounted-run"],
-    ["task to task", "task-one-run", "/director", "task-two-run"],
-    ["configured to task-Team member", "direct-run", "/director", "task-team-member-run"],
-    ["task-Team member to configured", "task-team-member-run", "/team/reviewer", "direct-run"],
-    ["task to task-Team member", "task-one-run", "/director", "task-team-member-run"],
-    ["task-Team member to task", "task-team-member-run", "/team/reviewer", "task-one-run"],
-    ["task-Team member to task-Team member", "task-team-member-run", "/team/reviewer", "task-team-member-two-run"],
-  ])("presents accepted %s delivery once for the exact receiver", async (
-    _label,
-    senderAgentRunId,
-    senderAddress,
-    targetAgentRunId,
-  ) => {
-    const subject = createSubject();
-
-    await expect(subject.run.deliverExactAgentMessage({
-      sender: subject.sender(senderAgentRunId, senderAddress),
-      targetAgentRunId,
-      content: "Task-scoped update.",
-    })).resolves.toMatchObject({ accepted: true, agentRunId: targetAgentRunId });
-
-    expect(subject.order).toEqual(["reservation_commit", "communication", "MEMBER_INPUT_MESSAGE", "release"]);
-    expect(subject.sequences).toEqual([1, 2]);
-    expect(subject.events).toHaveLength(2);
-    expect(subject.events[1]).toMatchObject({ kind: "agent_presentation",
-      execution: { agentRunId: targetAgentRunId }, message: { type: "MEMBER_INPUT_MESSAGE",
-        payload: { content: expect.stringContaining("Task-scoped update."), sender_agent_run_id: senderAgentRunId } } });
-    expect(subject.events[0]?.kind).toBe("communication");
-    expect(subject.run.getCommunicationSnapshot().messages).toHaveLength(1);
   });
 
   it("keeps rejected and pre-durability-failed configured messages out of both presentations", async () => {
@@ -348,13 +281,61 @@ describe("AgentOrg committed communication presentation", () => {
 it("correlates a committed receiver presentation against the retained tree identity rather than runtime liveness", async () => {
   const { AgentInputUserMessage } = await import("autobyteus-ts/agent/message/agent-input-user-message.js");
   const subject = createSubject();
-  const message = { messageId: "committed-before-settlement", senderAgentRunId: "direct-run", receiverAgentRunId: "task-one-run",
+  const message = { messageId: "committed-before-settlement", senderAgentRunId: "direct-run", receiverAgentRunId: "mounted-run",
     content: "Accepted work", messageType: "agent_message", referenceFiles: [], createdAt: "2026-09-06T00:00:59.000Z" };
   // Exercise only the post-commit callback, not a new admission (which would wake a shut-down child).
   const committed = (subject.run as unknown as { delivery: { presentCommittedCommunication(message: unknown, receiverInput: unknown): void } }).delivery;
   expect(() => committed.presentCommittedCommunication(message, new AgentInputUserMessage("Accepted work"))).not.toThrow();
   expect(subject.events).toHaveLength(1);
-  expect(subject.events[0]).toMatchObject({ kind: "agent_presentation", execution: { agentRunId: "task-one-run" },
+  expect(subject.events[0]).toMatchObject({ kind: "agent_presentation", execution: { agentRunId: "mounted-run" },
     message: { type: "MEMBER_INPUT_MESSAGE", payload: { content: "Accepted work" } } });
   expect(subject.reserveRootAgentInput).not.toHaveBeenCalled();
+});
+
+it("a message from a run the Org delegated to is presented and the Org stays up, by run ID and by address (autobyteus-461 CR-461-018)", async () => {
+  const enterPersistenceFailStop = vi.fn();
+  const subject = createSubject({
+    persistence: (orgRunId) => new AgentOrgRunPersistenceCoordinator({
+      orgRunId, orgMemoryDir: "/memory/org-communication", executionTreeStore: {} as never,
+      communicationStore: { appendMessage: vi.fn(async () => ({ outcome: "committed" as const, file: "communication_messages" })) } as never,
+      enterPersistenceFailStop,
+    }),
+  });
+  // The Org's director delegated Task T4 to a copy of a team; its lead messages the director back (contract §5.3 O6/O7).
+  const org = createAgentOrgRootExecutionIdentity("org-communication");
+  const devTeam = { rootSubjectKind: "agent_team" as const, rootRunId: "dev-team-copy" };
+  const tasks = new InMemoryTaskExecutionResources();
+  const tree = new DelegationIndex(() => tasks, readerOfAgentRunIds(async (run) =>
+    run.rootRunId === "dev-team-copy" ? ["dev-lead-run"] : run.rootRunId === "org-communication" ? ["direct-run", "observer-run"] : null));
+  tree.build(); tasks.setEntriesListener(tree); tasks.addTask("T4");
+  await tasks.linkNewTaskExecution({ role: "assigned", taskId: "T4", recipientAddress: "/dev_team",
+    delegatedFrom: { delegatingRun: org, delegatorAgentRunId: "direct-run" }, execution: { teamRunId: "dev-team-copy" }, teamCoordinatorAgentRunId: "dev-lead-run" });
+  await tasks.markStarted({ teamRunId: "dev-team-copy" });
+  const senderLog: string[] = [];
+  let next = 0;
+  const delivery = new CrossRunMessageDelivery({ runFiles: { delegationOfAgent: async () => null }, restorability: { refusal: async () => null }, tree: () => tree, tasks: () => tasks, senderAddress: async () => null,
+    senderRoot: () => ({
+      prepareSendToRun: (input: { senderIdentity: { agentRunId: string }; receiverAgentRunId: string; content: string }) => ({ ok: true as const,
+        message: { messageId: `cross-${++next}`, senderAgentRunId: input.senderIdentity.agentRunId, receiverAgentRunId: input.receiverAgentRunId,
+          content: input.content, messageType: "agent_message", referenceFiles: [], createdAt: "2026-11-12T00:00:00.000Z" } }),
+      commitSentToRun: async (message: { messageId: string }) => { senderLog.push(message.messageId); },
+    }) as never,
+    receiverRoot: async (run) => run.rootRunId === "org-communication" ? subject.run : null,
+  });
+  const sender = createCollaborationMemberExecutionIdentity({ root: devTeam, memberAddress: "/dev_lead", agentRunId: "dev-lead-run" });
+  const send = (shownAs?: string) => delivery.route({ sender, senderDisplayName: "dev_lead", targetAgentRunId: "direct-run",
+    ...(shownAs ? { shownAs } : {}), content: "The release is ready for sign-off.", messageType: "agent_message", referenceFiles: [] });
+
+  await expect(send()).resolves.toMatchObject({ accepted: true, agentRunId: "direct-run", message: "Message delivered." });
+  await expect(send("/director")).resolves.toMatchObject({ accepted: true, agentRunId: "direct-run", message: "Delivered message to /director." });
+
+  // The sender's run records both; the director's input is presented; the Org did not fail-stop.
+  expect(senderLog).toEqual(["cross-1", "cross-2"]);
+  expect(subject.events.filter((event) => event.kind === "agent_presentation")).toEqual([
+    expect.objectContaining({ execution: expect.objectContaining({ agentRunId: "direct-run" }) }),
+    expect.objectContaining({ execution: expect.objectContaining({ agentRunId: "direct-run" }) }),
+  ]);
+  await Promise.resolve();
+  expect(enterPersistenceFailStop).not.toHaveBeenCalled();
+  expect(subject.run.isActive()).toBe(true);
 });

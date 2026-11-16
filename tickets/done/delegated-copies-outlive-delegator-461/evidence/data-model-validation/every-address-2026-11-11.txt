@@ -1,0 +1,110 @@
+  3313    address changes for this send (delegated team prefix dropped)
+     2    delivered today, not reached by this address after: a side without a Task record, 2026-08
+    49    delivered today, not reached by this address after: a side without a Task record, 2026-10
+     2    delivered today, not reached by this address after: both sides have Task records, 2026-10
+  6646  addressed sends
+     1  addressed sends without a stored result
+     1  case: delegated agent -> (not delivered)
+     1  case: delegated agent -> delegated agent (its Task's assigner run)
+    29  case: delegated agent -> delegated agent (other)
+     1  case: delegated agent -> delegated agent_team (other)
+   104  case: delegated agent -> user-started agent (its Task's assigner run)
+     1  case: delegated agent -> user-started agent_org (its Task's assigner run)
+     1  case: delegated agent -> user-started agent_org (other)
+     3  case: delegated agent -> user-started agent_team (its Task's assigner run)
+     7  case: delegated agent -> user-started agent_team (other)
+     7  case: delegated agent_team -> (not delivered)
+     1  case: delegated agent_team -> delegated agent (other)
+     2  case: delegated agent_team -> delegated agent_team (other)
+  3311  case: delegated agent_team -> same run
+   311  case: delegated agent_team -> user-started agent (its Task's assigner run)
+     1  case: delegated agent_team -> user-started agent (other)
+     3  case: delegated agent_team -> user-started agent_team (its Task's assigner run)
+     3  case: delegated agent_team -> user-started agent_team (other)
+     2  case: user-started agent -> delegated agent_team (other)
+    18  case: user-started agent_org -> (not delivered)
+   514  case: user-started agent_org -> same run
+    27  case: user-started agent_team -> (not delivered)
+     4  case: user-started agent_team -> delegated agent (other)
+     2  case: user-started agent_team -> delegated agent_team (other)
+  2237  case: user-started agent_team -> same run
+     0  collision: delegated teams whose member address equals an assigner's standing address
+    53  delivered today: DIFFERENT after [not found]
+  6020  delivered today: same receiver after [1 own team]
+   423  delivered today: same receiver after [2 assigner's run]
+    42  delivered today: same receiver after [3 own run]
+    55  delivered, receiver not found in the logs
+   747  header after: a run the receiver assigned: run ID only
+   167  header after: other runs: run ID only
+   690  header after: receiver's Task assigner run: sender address given
+ 13200  header after: same run: sender address given
+     1  not delivered today (AGENT_RUN_ACTIVATION_FAILED): FOUND after [1 own team]
+    10  not delivered today (COLLABORATION_TARGET_NOT_FOUND): still not found after [not found]
+    27  not delivered today (ERROR): FOUND after [1 own team]
+     1  not delivered today (ERROR): FOUND after [2 assigner's run]
+    11  not delivered today (ERROR): FOUND after [3 own run]
+     1  not delivered today (ERROR): still not found after [not found]
+     1  not delivered today (INVALID_MESSAGE_CONTENT): FOUND after [1 own team]
+     1  not delivered today (INVALID_REFERENCE_FILES): FOUND after [1 own team]
+
+examples (address strings only):
+    /opportunity_scouting_team/deep_researcher -> /deep_researcher
+    /product_team/product_ui_ux_designer -> /product_ui_ux_designer
+    /product_team/prototype_bootstrapper -> /prototype_bootstrapper
+    /product_team/ui_baseline_bootstrapper -> /ui_baseline_bootstrapper
+    /software_engineering_team/api_e2e_engineer -> /api_e2e_engineer
+    /software_engineering_team/architecture_reviewer -> /architecture_reviewer
+    /software_engineering_team/code_reviewer -> /code_reviewer
+    /software_engineering_team/delivery_engineer -> /delivery_engineer
+    /software_engineering_team/implementation_engineer -> /implementation_engineer
+    /software_engineering_team/solution_designer -> /solution_designer
+    both with Task records: delegated agent_team -> delegated agent_team (other) /product_team; one shared Task: True; receiver delegated: True; receiver is a copy reached by address today
+    different: delegated agent -> delegated agent (other) /agent_package_creator -> /agent_package_creator [not found]
+    different: delegated agent -> delegated agent (other) /tutorial_video_producer -> /tutorial_video_producer [not found]
+    different: delegated agent -> delegated agent_team (other) /product_team/product_ui_ux_designer -> /product_team/product_ui_ux_designer [not found]
+    different: delegated agent -> user-started agent_org (other) /product_team/product_prototyper -> /product_team/product_prototyper [not found]
+    different: delegated agent -> user-started agent_team (other) /api_e2e_engineer -> /api_e2e_engineer [not found]
+    different: delegated agent -> user-started agent_team (other) /delivery_engineer -> /delivery_engineer [not found]
+    different: delegated agent -> user-started agent_team (other) /planner -> /planner [not found]
+    different: delegated agent -> user-started agent_team (other) /solution_designer -> /solution_designer [not found]
+    different: delegated agent_team -> delegated agent (other) /agent_package_creator -> /agent_package_creator [not found]
+    different: delegated agent_team -> delegated agent_team (other) /product_team -> /product_team [not found]
+    different: delegated agent_team -> user-started agent (other) /agent_package_creator -> /agent_package_creator [not found]
+    different: delegated agent_team -> user-started agent_team (other) /solution_designer -> /solution_designer [not found]
+    different: user-started agent -> delegated agent_team (other) /product_team -> /product_team [not found]
+    different: user-started agent -> delegated agent_team (other) /software_engineering_team -> /software_engineering_team [not found]
+    different: user-started agent_team -> delegated agent (other) /agent_package_creator -> /agent_package_creator [not found]
+    different: user-started agent_team -> delegated agent (other) /product_prototyper -> /product_prototyper [not found]
+    different: user-started agent_team -> delegated agent (other) /tutorial_video_producer -> /tutorial_video_producer [not found]
+    different: user-started agent_team -> delegated agent_team (other) /product_team -> /product_team [not found]
+    error text: null <tool_use_error>Error: No such tool available: send_message_to<<addr>>
+    error text: null Error executing tool 'send_message_to' (ID: call_00_1grspMgxVpMAHkHlN6Go8475): Error: RootTeamRun 'norths
+    error text: null Error executing tool 'send_message_to' (ID: call_00_AanSyBSiKcF3Cyc4JnDt5064): Error: RootTeamRun 'norths
+    error text: null Error executing tool 'send_message_to' (ID: call_00_CKCSb79sHo2Dl9WBuzyE4690): Error: RootTeamRun 'norths
+    error text: null Error executing tool 'send_message_to' (ID: call_00_F8J9Gpx5KoPB9VRHc0xu1321): Error: RootTeamRun 'norths
+    error text: null Error executing tool 'send_message_to' (ID: call_00_KhcwaUqaBjmcBOxw0yOQ4926): Error: RootTeamRun 'norths
+    error text: null Error executing tool 'send_message_to' (ID: call_00_OGHBduZFVrhnddjdq7pu2964): Error: RootTeamRun 'norths
+    error text: null Error executing tool 'send_message_to' (ID: call_00_caZh1nDgoEGickCQn74D5694): Error: RootTeamRun 'norths
+    error text: null Error executing tool 'send_message_to' (ID: call_00_eS59bSiceN4mZfizGCeX8755): Error: RootTeamRun 'norths
+    error text: null Error executing tool 'send_message_to' (ID: call_00_pwJOuhYOHsPM8OK8Fw1t6099): Error: RootTeamRun 'norths
+    error text: null Error executing tool 'send_message_to' (ID: call_00_sFDDK7dzvDHJfEq4XRHL7698): Error: RootTeamRun 'norths
+    error text: null Error executing tool 'send_message_to' (ID: call_01_f5rARELWOXemkcv7Ctwu2757): Error: RootTeamRun 'norths
+    error text: null Error executing tool 'send_message_to' (ID: call_01_n2l7fQN30a4cAK7dLI9B6996): Error: RootTeamRun 'norths
+    error text: null Internal error
+    error text: null Tool execution failed.
+    error text: null send_message_to requires a non-empty content field.
+    newly found: delegated agent_team -> (not delivered) /project_task_manager
+    newly found: delegated agent_team -> (not delivered) /software_engineering_team/delivery_engineer
+    newly found: delegated agent_team -> (not delivered) /software_engineering_team/solution_designer
+    newly found: user-started agent_org -> (not delivered) /ceo
+    newly found: user-started agent_org -> (not delivered) /chief_of_staff
+    newly found: user-started agent_org -> (not delivered) /cto
+    newly found: user-started agent_org -> (not delivered) /revenue_org
+    newly found: user-started agent_org -> (not delivered) /revenue_org/vp_sales
+    newly found: user-started agent_org -> (not delivered) /software_engineering_team/code_reviewer
+    newly found: user-started agent_team -> (not delivered) /api_e2e_engineer
+    newly found: user-started agent_team -> (not delivered) /architecture_reviewer
+    newly found: user-started agent_team -> (not delivered) /code_reviewer
+    newly found: user-started agent_team -> (not delivered) /delivery_engineer
+    newly found: user-started agent_team -> (not delivered) /implementation_engineer
+    newly found: user-started agent_team -> (not delivered) /planner

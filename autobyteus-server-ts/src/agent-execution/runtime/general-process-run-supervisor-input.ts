@@ -1,3 +1,5 @@
+import type { RunViewStreams } from "../../agent-collaboration/delegation/run-view-stream.js";
+import type { DelegationIndex } from "../../agent-collaboration/delegation/delegation-index.js";
 import type { IntegrationRunAccess } from "../../credential-proxy/integration-run-access.js";
 import type { ProviderRelayAccess } from "../../credential-proxy/provider-relays/provider-relay-access.js";
 import type { RunPassRevocation } from "../../credential-proxy/run-pass-revocation.js";
@@ -10,7 +12,7 @@ import type { ContextFilePathEnvironment } from "../../context-files/domain/cont
 import type { WorkspaceManager } from "../../workspaces/workspace-manager.js";
 import type { RunModelSelectionValidator, RunModelSelectionService } from "../../llm-management/services/run-model-selection-service.js";
 import type { DefinitionAdmissionService } from "../../collaboration-definition-admission/services/definition-admission-service.js";
-import type { TaskExecutionResourcePort } from "../../agent-collaboration/execution/task/task-execution-resource-port.js";
+import type { RunTaskRecords } from "../../agent-collaboration/execution/task/task-execution-resource-port.js";
 import type { RuntimeSwitching } from "../domain/runtime-switch-memory-port.js";
 import type { AgentRunInputPreface } from "../domain/agent-run-input-preface.js";
 import type { AgentRunLifecycleObserver } from "../domain/agent-run-lifecycle-observer.js";
@@ -37,7 +39,11 @@ export type GeneralProcessRunSupervisorInput = Readonly<{
   runPasses: RunPassRevocation | null;
   modelSelectionValidator: RunModelSelectionValidator & Pick<RunModelSelectionService, "listOptions" | "listOptionsMany">;
   /** Neutral Task agent resource port from the host composition, forwarded to every root builder. */
-  taskExecutionResources: TaskExecutionResourcePort;
+  taskRecords: RunTaskRecords;
+  /** The relationships between runs, from the Task entries, built by the composition root (SR-047 step 2). */
+  delegationIndex: DelegationIndex;
+  /** Each run's view stream, from the composition root (SR-062). */
+  viewStreams: RunViewStreams;
   /**
    * Platform notices that ride along with each run's next external input, told when runs are
    * published and released (the host composition owns and closes it). None by default.
@@ -77,7 +83,9 @@ export const requireGeneralProcessRunSupervisorInput = (
     || !input.modelSelectionValidator
     || typeof input.modelSelectionValidator.validate !== "function"
     || typeof input.modelSelectionValidator.listOptions !== "function"
-    || !input.taskExecutionResources
+    || !input.taskRecords
+    || !input.delegationIndex
+    || !input.viewStreams
   ) {
     throw new Error("Complete GeneralProcessRunSupervisor input is required.");
   }

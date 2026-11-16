@@ -12,7 +12,7 @@ const SCREEN_KEYS = ['screen', 'file', 'workspace', 'nodeFile', 'contextFile', '
 const ORG_KEYS = ['rootSubjectKind', 'definitionId', 'orgRunId', 'mode', 'memberAddress', 'agentRunId'] as const;
 /**
  * The open subject's keys: an Org's keys, or `row`, the run list row of an open agent run or Team subject
- * (`MobileRunTreeRow.key`, autobyteus-435 DS-006), which a reload or Android's restore reopens.
+ * (`MobileRunTreeRow.key`, `mobileRunListRows`, autobyteus-435 DS-006), which a reload or Android's restore reopens.
  */
 const SUBJECT_KEYS = [...ORG_KEYS, 'row'] as const;
 

@@ -18,7 +18,7 @@ import { testMemberExecutionContext } from "../../../fixtures/current-team-run-f
 const teamMember = testMemberExecutionContext({
   teamRunId: "team-run", rootTeamRunId: "team-run", teamDefinitionId: "team-def", memberAddress: "/worker", agentRunId: "run-worker",
 });
-const standaloneHost = new MemberExecutionContext({ ...teamMember, teamScoped: false, collaborationRole: "standalone_agent" });
+const standaloneHost = new MemberExecutionContext({ ...teamMember, teamScoped: false, collaborationRole: "standalone_agent", inOrganization: false });
 const TASK_TOOLS = ["create_task", "update_task"];
 
 describe("task tool exposure and schemas across runtimes", () => {

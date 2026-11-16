@@ -12,7 +12,7 @@ const PEER_CALLER: ClientIdentity = { kind: "peer", nodeId: PEER.nodeId };
 
 const startBody = (overrides: Record<string, unknown> = {}) => ({
   fromNodeId: PEER.nodeId, toNodeId: SELF, address: "/publisher",
-  delegator: { agentRunId: "agent_a1" }, coordinatingRun: { kind: "agent", runId: "agent_a1" },
+  delegator: { agentRunId: "agent_a1" }, delegatingRun: { kind: "agent", runId: "agent_a1" },
   task: { text: "Publish the video draft.", title: "Publish the video draft.", taskKey: null, projectId: null, taskId: null }, ...overrides,
 });
 const messageBody = (overrides: Record<string, unknown> = {}) => ({

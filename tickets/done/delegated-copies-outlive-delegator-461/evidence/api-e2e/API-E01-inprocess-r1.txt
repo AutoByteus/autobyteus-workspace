@@ -1,0 +1,49 @@
+# Case: API-E01 in-process suites (r1)
+# Commit: bc223a8ae0 (code a54e78ccb7); server dist built from it
+# Environment: ENV-1 macOS 26.5.2, Node v22.23.1, clean env (env -i PATH HOME=<temp> TMPDIR USER), scripted AGY CLI tests/fixtures/agy-failure-cli.mjs (AGY_FAKE_CASE=linked_skills)
+# Date: 2026-11-12
+# Command: cd autobyteus-server-ts && env -i PATH HOME=<temp> TMPDIR USER pnpm exec vitest run <files> --no-watch
+
+ ❯ tests/e2e/workspaces/archive-run-history-graphql.e2e.test.ts (6 tests | 6 failed) 69ms
+ ✓ tests/e2e/projects/projects-graphql.e2e.test.ts (13 tests) 1929ms
+ ❯ tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts (9 tests | 9 skipped) 11ms
+ ❯ tests/e2e/run-history/run-projection-toolcalls-graphql.e2e.test.ts (6 tests | 6 skipped) 10ms
+ ✓ tests/e2e/token-usage/token-usage-ledger-graphql.e2e.test.ts (4 tests) 174ms
+ ✓ tests/e2e/token-usage/token-usage-unit-prices-graphql.e2e.test.ts (2 tests) 132ms
+ ✓ tests/e2e/token-usage/token-usage-record-restart-graphql.e2e.test.ts (1 test) 4309ms
+ ✓ tests/e2e/token-usage/token-usage-analytics-graphql.e2e.test.ts (5 tests) 163ms
+ ✓ tests/e2e/token-usage/claude-sdk-selected-model-graphql.e2e.test.ts (3 tests) 165ms
+ ✓ tests/e2e/token-usage/token-usage-ledger-provider-semantics.e2e.test.ts (3 tests) 139ms
+ ✓ tests/e2e/token-usage/gemini-native-pricing-graphql.e2e.test.ts (5 tests) 119ms
+ ✓ tests/e2e/token-usage/gpt56-token-usage-accounting-graphql.e2e.test.ts (6 tests) 112ms
+ ✓ tests/e2e/token-usage/agy-token-usage-upgrade-continuation.e2e.test.ts (2 tests) 108ms
+ ✓ tests/e2e/token-usage/astra-fable-token-usage-accounting-graphql.e2e.test.ts (4 tests) 103ms
+ ✓ tests/e2e/token-usage/token-usage-provider-name-snapshot-backfill-startup.e2e.test.ts (3 tests) 82ms
+ ✓ tests/e2e/token-usage/token-usage-model-list.e2e.test.ts (2 tests) 65ms
+ ✓ tests/e2e/token-usage/token-usage-custom-provider-model-value-backfill-startup.e2e.test.ts (2 tests) 46ms
+ FAIL  tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e
+Error: The process AgentOrgRunManager is not initialized.
+ ❯ Function.getInstance src/agent-org-execution/services/agent-org-run-manager.ts:74:31
+ ❯ new AgentOrgMemberRunViewProjectionService src/run-history/services/agent-org-member-run-view-projection-service.ts:64:35
+ ❯ setE2eRunHistoryServices tests/e2e/helpers/e2e-run-history-services.ts:32:54
+ ❯ tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts:298:25
+ FAIL  tests/e2e/run-history/run-projection-toolcalls-graphql.e2e.test.ts > Run projection tool-call GraphQL e2e
+Error: The process AgentOrgRunManager is not initialized.
+ ❯ Function.getInstance src/agent-org-execution/services/agent-org-run-manager.ts:74:31
+ ❯ new AgentOrgMemberRunViewProjectionService src/run-history/services/agent-org-member-run-view-projection-service.ts:64:35
+ ❯ Module.setE2eRunHistoryServices tests/e2e/helpers/e2e-run-history-services.ts:32:54
+ ❯ tests/e2e/run-history/run-projection-toolcalls-graphql.e2e.test.ts:208:25
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 6 ⎯⎯⎯⎯⎯⎯⎯
+ FAIL  tests/e2e/workspaces/archive-run-history-graphql.e2e.test.ts > Archive run history GraphQL e2e > archives inactive agent and team runs and hides them from default history without deleting disk or index data
+ FAIL  tests/e2e/workspaces/archive-run-history-graphql.e2e.test.ts > Archive run history GraphQL e2e > rejects active and unsafe archive IDs without writing archive state or creating files
+ FAIL  tests/e2e/workspaces/archive-run-history-graphql.e2e.test.ts > Archive run history GraphQL e2e > archiveStoredAgentRunGroup (group-header Archive all) > archives every stored run of the agent in that workspace, including runs hidden by the listing cap, and nothing else
+ FAIL  tests/e2e/workspaces/archive-run-history-graphql.e2e.test.ts > Archive run history GraphQL e2e > archiveStoredAgentRunGroup (group-header Archive all) > archives nothing while any run of the group is live, including one hidden by the cap, and archives all after they stop
+ FAIL  tests/e2e/workspaces/archive-run-history-graphql.e2e.test.ts > Archive run history GraphQL e2e > archiveStoredAgentRunGroup (group-header Archive all) > reports a run that started after the running-run check as failed and archives the rest (AC-010)
+ FAIL  tests/e2e/workspaces/archive-run-history-graphql.e2e.test.ts > Archive run history GraphQL e2e > archiveStoredAgentRunGroup (group-header Archive all) > rejects an empty workspace root or agent definition id as a GraphQL error without writing anything
+Error: The process AgentOrgRunManager is not initialized.
+ ❯ Function.getInstance src/agent-org-execution/services/agent-org-run-manager.ts:74:31
+ ❯ new AgentOrgMemberRunViewProjectionService src/run-history/services/agent-org-member-run-view-projection-service.ts:64:35
+ ❯ Module.setE2eRunHistoryServices tests/e2e/helpers/e2e-run-history-services.ts:32:54
+ ❯ tests/e2e/workspaces/archive-run-history-graphql.e2e.test.ts:252:25
+ Test Files  3 failed | 14 passed (17)
+      Tests  6 failed | 55 passed | 15 skipped (76)

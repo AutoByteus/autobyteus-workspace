@@ -30,8 +30,8 @@
 //   MSP-01 AC-001  The same runs and order as the desktop Runs view of the same node; newest 5, "Show older (N)", "Show
 //                  fewer"; ages on top-level rows.
 //   MSP-02 AC-002, AC-002a  The PTM run's tree: the task agent and the task team under it, the team folded with its
-//                  members, the remote rows with their node chip; a Team member's task agent beside the member, as on the
-//                  desktop (DEC-009); second lines: a delegated task agent or task team shows its Task's summary, the same
+//                  members, the remote rows with their node chip; a Team member's task agent nested under the member, as on
+//                  the desktop (autobyteus-461 SR-084; 277's DEC-009 put it beside the member); second lines: a delegated task agent or task team shows its Task's summary, the same
 //                  line as the desktop Runs view; members show their name only (DEC-010); a delegated run stopped on the
 //                  node: its dot follows live while its root is open, and under a root not open it follows within one
 //                  history poll (autobyteus-426 D-09; before it, 277 DEC-013 updated it only once the root was opened).
@@ -174,8 +174,13 @@ import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
 import { attachToBrowserContext, ownerHeaders, ownerSocketUrl, pairNodes, probeNodeEnvironment, redactCredentials } from './fixtures/probe-node-access.mjs';
 import { runLiveReconnectCases } from './mobile-live-reconnect-cases.mjs';
+import { openRunStatus } from './fixtures/run-status-client.mjs';
+import { readRunTree, asTaskExecutions } from './fixtures/run-tree.mjs';
 import { runClosedTaskRowsCases } from './mobile-closed-task-rows-cases.mjs';
 import { runFileOpenCases } from './mobile-file-open-cases.mjs';
+// MSP-56, MSP-57, MSP-58 (autobyteus-461 AC-007, SCN-005, O-1): a stopped delegator's run on the phone (MSP-53…55 before the
+// base merge; those IDs are autobyteus-workspace-6's context-file size cases).
+import { runStoppedDelegatorCases } from './mobile-stopped-delegator-cases.mjs';
 import { runContextFileSizeCases } from './mobile-context-file-size-cases.mjs';
 import { runFileZoomCases } from './mobile-file-zoom-cases.mjs';
 import { runLiveFileRefreshCases } from './mobile-live-file-refresh-cases.mjs';
@@ -213,7 +218,9 @@ const selected = typeof arg('cases') === 'string' ? new Set(arg('cases').split('
   const sources = [probeFile, ...[...readFileSync(probeFile, 'utf8').matchAll(/from '\.\/([\w-]+-cases\.mjs)'/g)].map(m => path.join(path.dirname(probeFile), m[1]))];
   const seen = new Map();
   for (const file of sources) {
-    for (const [, id] of readFileSync(file, 'utf8').matchAll(/runCase\('([A-Z]+-\d+)'/g)) seen.set(id, [...(seen.get(id) ?? []), path.basename(file)]);
+    // `runCase('ID'` and the stopped-delegator module's `journey('ID'` (it runs each through runCase); the base merge of
+    // 1e8b6e5d0a met two modules on MSP-53…55, which the literal-only check did not see (autobyteus-461).
+    for (const [, id] of readFileSync(file, 'utf8').matchAll(/(?:runCase|journey)\('([A-Z]+-\d+)'/g)) seen.set(id, [...(seen.get(id) ?? []), path.basename(file)]);
   }
   const duplicates = [...seen].filter(([, files]) => files.length > 1);
   if (duplicates.length) {
@@ -476,7 +483,8 @@ const setUp = async () => {
   let reviewer = null;
   let memberDelegated = null;
   await waitFor('the reviewer\'s delegation', async () => {
-    const nodes = treeNodes((await alpha.gql('query($id:String!){agentRunCollaboration(runId:$id)}', { id: ptm })).agentRunCollaboration);
+    // autobyteus-461 SR-084: a run's delegated runs are its tree's rows (`runTree`).
+    const nodes = treeNodes(asTaskExecutions(await readRunTree(alpha.gql, 'agent', ptm)));
     reviewer = nodes.find(node => node.address?.endsWith('/reviewer') && node.agentRunId)?.agentRunId ?? null;
     memberDelegated = nodes.find(node => node.address === '/fact_checker' && node.agentRunId)?.agentRunId ?? null;
     stack.ptmTreeNodes = nodes;
@@ -918,7 +926,9 @@ const runCases = async () => {
       [liveOk && !facts.reloaded, 'a delegated run\'s state changes live on the list (its root open)'],
       [unselectedSeen.length >= 2 && unselectedSeen.some(status => status !== unselectedSeen[0]) && unselectedChangeMs !== null && unselectedChangeMs <= 7_000 && unselectedAfterOpen === unselectedSeen[unselectedSeen.length - 1],
         'under a root not open: the dot follows within one poll, without opening the root (autobyteus-426 D-09)'],
-      [Boolean(childRow(teamRows, teamKey, 'changelog helper', 1)) && !leadDelegatedNested, 'a member\'s task agent beside the member, as on the desktop (DEC-009)'],
+      // autobyteus-461 SR-084: a member's task agent is nested under the member that delegated it, on the desktop and the phone
+      // alike (277's DEC-009 put it beside the member).
+      [Boolean(leadDelegatedNested) && !childRow(teamRows, teamKey, 'changelog helper', 1), 'a member\'s task agent nested under the member, as on the desktop (SR-084)'],
       [phoneTitles.writer === 'Write the release notes.' && phoneTitles.squad === 'Review the docs site.', 'a task agent and a task team show their Task\'s summary (DEC-010)'],
       [['writer', 'spare', 'leadDelegated'].every(label => phoneTitles[label] && phoneTitles[label] === desktopLine(label)), 'the same second line as the desktop Runs view'],
       [Object.values(memberTitles).every(title => !title), 'members show one line, their name (DEC-010)'],
@@ -934,14 +944,15 @@ const runCases = async () => {
     const squadKey = `${ptmKey}/team:${stack.squadRun}`;
     await ensureUnfolded(page, squadKey);
     const kinds = [
-      { kind: 'task agent', key: () => `${ptmKey}/agent:${stack.writerRun}`, name: 'release notes writer', parent: 'Project Task Manager', ids: { hostRunId: stack.ptm, memberAddress: '/release_notes_writer', agentRunId: stack.writerRun } },
+      // autobyteus-461 rule 2: a delegated agent run is its own run; its conversation is read by its own run ID.
+      { kind: 'task agent', key: () => `${ptmKey}/agent:${stack.writerRun}`, name: 'release notes writer', parent: 'Project Task Manager', ids: { runId: stack.writerRun } },
       { kind: 'task-team member', key: async () => childRow(await rowsOf(page), squadKey, 'reviewer', 2)?.key, name: 'reviewer', parent: 'docs review team',
         ids: { hostRunId: stack.ptm, memberAddress: '/docs_review_team/reviewer', agentRunId: stack.reviewer, teamRunId: stack.squadRun } },
       { kind: 'Team run (its coordinator)', key: () => `team:${stack.delivery}`, name: 'lead', parent: 'Delivery Team', ids: { teamRunId: stack.delivery, agentRunId: stack.deliveryLead, runId: stack.deliveryLead } },
       { kind: 'Org run (its first member)', key: () => `org:${stack.org}`, name: 'planner', parent: 'Delivery Org', ids: { orgRunId: stack.org, agentRunId: stack.orgPlanner, memberAddress: '/planner', runId: stack.orgPlanner } },
       { kind: 'Org run (first member a Team: its coordinator)', key: () => `org:${stack.reviewOrg}`, name: 'reviewer', parent: '(squad|Review Org)',
         ids: { orgRunId: stack.reviewOrg, agentRunId: stack.reviewOrgCoordinator.agentRunId, memberAddress: stack.reviewOrgCoordinator.address, runId: stack.reviewOrgCoordinator.agentRunId } },
-      { kind: 'Org member', key: () => `org:${stack.org}/agent:${stack.orgPlanner}`, name: 'planner', parent: 'Delivery Org', ids: { orgRunId: stack.org, agentRunId: stack.orgPlanner, memberAddress: '/planner', runId: stack.orgPlanner } },
+      { kind: 'Org member', key: () => `org:${stack.org}/org_agent:${stack.org}:${stack.orgPlanner}`, name: 'planner', parent: 'Delivery Org', ids: { orgRunId: stack.org, agentRunId: stack.orgPlanner, memberAddress: '/planner', runId: stack.orgPlanner } },
     ];
     const results = [];
     const scroller = page.locator(sel('mobile-run-list-scroll'));
@@ -1000,7 +1011,7 @@ const runCases = async () => {
       await openRow(secure.page, `${ptmKey}/agent:${stack.writerRun}`);
       const marker = `PHONE-CONTROL-${randomUUID().slice(0, 6)}`;
       await composerSend(secure.page, `From the phone. Marker ${marker}`);
-      await waitFor('the control message on the node', async () => (control.reached = await storedHas(alpha, { hostRunId: stack.ptm, memberAddress: '/release_notes_writer', agentRunId: stack.writerRun }, marker)), 30_000).catch(() => undefined);
+      await waitFor('the control message on the node', async () => (control.reached = await storedHas(alpha, { runId: stack.writerRun }, marker)), 30_000).catch(() => undefined);
       control.shownOnPhone = ((await runScreen(secure.page)).conversation ?? '').includes(marker);
       await secure.context.close();
     }
@@ -1080,12 +1091,12 @@ const runCases = async () => {
     // An Org entry: Back, then Forward restores the Org target from its keys.
     await page.goBack();
     await page.locator(`${sel('mobile-run-tree')}:visible`).waitFor({ timeout: 20_000 });
-    await openRow(page, `org:${stack.org}/agent:${stack.orgPlanner}`);
+    await openRow(page, `org:${stack.org}/org_agent:${stack.org}:${stack.orgPlanner}`);
     const orgQuery = (await runScreen(page)).query;
     await page.goBack();
     await page.locator(`${sel('mobile-run-tree')}:visible`).waitFor({ timeout: 20_000 });
     const listQuery = await page.evaluate(() => location.search);
-    const orgMarked = await page.locator(rowSel(`org:${stack.org}/agent:${stack.orgPlanner}`)).getAttribute('aria-current');
+    const orgMarked = await page.locator(rowSel(`org:${stack.org}/org_agent:${stack.org}:${stack.orgPlanner}`)).getAttribute('aria-current');
     await page.goForward();
     await waitFor('Forward to the Org entry', async () => { const s = await runScreen(page); return s.state === 'open' && (s.conversation ?? '').includes('ORG-PLANNER'); }, 30_000);
     // A reload of an Org entry: the list (Org screens keep their behavior, autobyteus-435 AC-005-4; an agent or Team
@@ -1114,7 +1125,7 @@ const runCases = async () => {
     // The remote rows know their title and state once their delegating run is opened (278: the node is asked for an opened root).
     await openRow(page, ptmKey);
     await page.locator(sel('mobile-run-back')).first().click();
-    const remoteKey = `${ptmKey}/agent:${stack.remoteAgentRun}`;
+    const remoteKey = `${ptmKey}/peer_agent:${stack.remoteAgentRun}`; // SR-084: a peer run's tree row key
     let row = null;
     await waitFor('the remote row\'s title', async () => (row = (await rowsOf(page)).find(entry => entry.key.endsWith(stack.remoteAgentRun)))?.title === stack.remoteAgentTitle, 30_000).catch(() => undefined);
     assert(row?.chip?.includes(PEER) && row.title === stack.remoteAgentTitle && row.status && row.status !== 'error', 'the remote row: chip, title, state', row);
@@ -1188,7 +1199,7 @@ const runCases = async () => {
     await openRow(page, `org:${stack.org}`);
     await page.locator(sel('mobile-run-back')).first().click();
     await page.locator(`${sel('mobile-run-tree')}:visible`).waitFor();
-    const orgMarked = await page.locator(rowSel(`org:${stack.org}/agent:${stack.orgPlanner}`)).getAttribute('aria-current');
+    const orgMarked = await page.locator(rowSel(`org:${stack.org}/org_agent:${stack.org}:${stack.orgPlanner}`)).getAttribute('aria-current');
     const orgListQuery = await page.evaluate(() => location.search);
     await page.locator(sel('mobile-new-run-button')).click();
     await page.locator(sel('mobile-new-run')).waitFor();
@@ -1558,7 +1569,7 @@ const runCases = async () => {
     // teammate's address keeps the own-team words.
     const SELF = 'is your own address; you can\'t delegate to yourself. Do the work yourself, or delegate it to another agent or agent team.';
     const TEAM = 'is in your own team; you can\'t delegate to it. Talk with it using send_message_to.';
-    const ptmNodes = async () => treeNodes((await alpha.gql('query($id:String!){agentRunCollaboration(runId:$id)}', { id: stack.ptm })).agentRunCollaboration)
+    const ptmNodes = async () => treeNodes(asTaskExecutions(await readRunTree(alpha.gql, 'agent', stack.ptm)))
       .filter(node => node.agentRunId || node.teamRunId).length;
     const leadCall = async (name, args) => {
       const before = calledResults(await stack.leadProjection()).length;
@@ -1892,8 +1903,8 @@ const runCases = async () => {
     assert(onList.length >= 3 && onList.length <= 4, 'a poll every 5 s on the list', onList);
     assert(checksDuringPoll === 0, 'the poll sends no credential check (autobyteus-426 SR-008)', { checksDuringPoll });
     // (The list count depends on whether a listed run qualifies for the read at this point; MSP-20 measures it on a known hub.)
-    assert(statusReadsIn.run === 0 && statusReadsIn.view === 0 && statusReadsIn.hidden === 0,
-      'the delegated rows\' status read rides the list poll only: none on the run screen, a view or while hidden (autobyteus-426 D-09, AC-009c)', statusReadsIn);
+    // autobyteus-461 SR-082: statuses come by run ID on /ws/run-status; the status poll (GetAgentRunCollaborationStatuses) is gone.
+    assert(Object.values(statusReadsIn).every(n => n === 0), 'no status poll on any screen (SR-082: statuses by run ID on /ws/run-status)', statusReadsIn);
     assert(onRun.length === 0 && onView.length === 0 && hidden.length === 0, 'no poll on the run screen, a view or while hidden', { onRun, onView, hidden });
     assert(afterBack[0] && afterBack[0].dt <= 2_500 && afterShown[0] && afterShown[0].dt <= 1_500, 'one read at once when the list or the page comes back', { afterBack, afterShown });
     return { checksDuringPoll, statusReadsIn, onList, onRun, onView, afterBack, hidden, afterShown, backAt, shownAt, bytesPerRead: { min: bytes[0], median: bytes[Math.floor(bytes.length / 2)], max: bytes[bytes.length - 1] }, firstRowsMs, reads: all.length };
@@ -1906,26 +1917,47 @@ const runCases = async () => {
     // children or the run's active state change. A fresh hub run with two delegated children; its children's turns are
     // driven over the hub's collaboration socket, as a second client does (HOLD_TURN keeps a turn running until stopped).
     const STATUS_OP = 'GetAgentRunCollaborationStatuses';
-    const VIEW_OP = 'GetAgentRunCollaboration';
+    // autobyteus-461 SR-084: a listed run's rows are its tree; a change in them (RUN_TREE_CHANGED) re-reads the tree, which
+    // replaced the collaboration view read here.
+    const VIEW_OP = 'GetRunTree';
     const hubDef = (await alpha.gql('mutation($i:CreateAgentDefinitionInput!){createAgentDefinition(input:$i){id}}', { i: { name: 'Status Hub',
       role: 'assistant', description: 'Status Hub (phone probe)', instructions: 'Follow the request.', toolNames: [],
       defaultLaunchConfig: { runtimeKind: 'antigravity_cli', llmModelIdentifier: MODEL, llmConfig: null } } })).createAgentDefinition.id;
     const created = (await alpha.gql('mutation($i:CreateAgentRunInput!){createAgentRun(input:$i){success message runId}}', { i: { agentDefinitionId: hubDef, ...stack.runConfig } })).createAgentRun;
     assert(created.success, created.message);
     const hub = created.runId;
-    const serverStatuses = async () => (await alpha.gql('query($ids:[String!]!){agentRunCollaborationStatuses(runIds:$ids){runId isActive statuses{agentRunId status}}}', { ids: [hub] })).agentRunCollaborationStatuses[0];
-    const serverStatusOf = async id => (await serverStatuses())?.statuses.find(entry => entry.agentRunId === id)?.status ?? null;
+    // autobyteus-461 SR-082, SR-083: the node's own answer is each child's status by its run ID on /ws/run-status (the
+    // status poll is gone); the probe holds its own subscription to each child, as a window holds one.
+    const statusFeed = await openRunStatus(alpha.baseUrl);
+    await statusFeed.subscribe([{ kind: 'agent', runId: hub }]);
+    const subscribedChildren = new Set();
+    const serverStatusOf = async id => {
+      if (!subscribedChildren.has(id)) { subscribedChildren.add(id); await statusFeed.subscribe([{ kind: 'agent', runId: id }]); }
+      return statusFeed.statusOf('agent', id, id);
+    };
     const delegate = async (recipient, marker) => pickId(await stack.agentCall(hub, 'delegate_task', { recipient_address: recipient, description: `Status child. Marker ${marker}.` }), 'target_agent_run_id');
+    const treeFrom = statusFeed.messages.length;
     const childA = await delegate('/changelog_helper', 'D09-A');
     const childB = await delegate('/release_notes_writer', 'D09-B');
+    // A listed run's rows changed: its subscribers are told (RUN_TREE_CHANGED), without opening it.
+    const hubTreeChanged = await statusFeed.waitTreeChanged('agent', hub, treeFrom, 20_000).then(() => true, () => false);
     assert(childA && childB, 'the hub delegated two children', { childA, childB });
     await waitFor('both children idle on the node', async () => ['idle'].includes(String(await serverStatusOf(childA)).toLowerCase())
       && ['idle'].includes(String(await serverStatusOf(childB)).toLowerCase()), 60_000).catch(() => undefined);
     const collab = new PhoneUpstreamWebSocket(ownerSocketUrl(stack.wsUrl(`agent-collaboration/${hub}`)));
     await new Promise((resolve, reject) => { collab.once('open', resolve); collab.once('error', reject); });
     await sleep(800);
-    const toChild = (type, target, content) => { const id = randomUUID();
-      collab.send(JSON.stringify({ type, payload: { root_subject_kind: 'agent', root_run_id: hub, target_agent_run_id: target, command_id: randomUUID(),
+    // autobyteus-461 rule 2: a child's commands go to its own stream (the hub's view no longer carries them).
+    const childSockets = new Map();
+    const toChild = async (type, target, content) => { const id = randomUUID();
+      let socket = childSockets.get(target);
+      if (!socket) {
+        socket = new PhoneUpstreamWebSocket(ownerSocketUrl(stack.wsUrl(`agent/${target}`)));
+        await new Promise((resolve, reject) => { socket.once('open', resolve); socket.once('error', reject); });
+        await sleep(500);
+        childSockets.set(target, socket);
+      }
+      socket.send(JSON.stringify({ type, payload: { agent_run_id: target,
         ...(type === 'SEND_MESSAGE' ? { message_id: id, dedupe_key: `agent_run_input:probe:${id}`, content, context_file_paths: [], image_urls: [] } : {}) } })); };
 
     // The desktop window (the Runs view) with its GraphQL log: operation, response bytes, the status read's run IDs and body.
@@ -1935,6 +1967,8 @@ const runCases = async () => {
       await context.addInitScript(() => localStorage.setItem('autobyteus.localization.preference-mode', 'en'));
       const desktopPage = await context.newPage();
       const net = [];
+      const sockets = [];
+      desktopPage.on('websocket', (ws) => sockets.push({ url: new URL(ws.url()).pathname, at: Date.now() }));
       desktopPage.on('requestfinished', async (request) => {
         if (request.method() !== 'POST' || !request.url().includes('/graphql')) return;
         let op = null; let runIds = null;
@@ -1948,7 +1982,7 @@ const runCases = async () => {
       });
       await desktopPage.goto(stack.frontendUrl, { waitUntil: 'domcontentloaded', timeout: 240_000 });
       await desktopRunsView(desktopPage);
-      return { context, page: desktopPage, net };
+      return { context, page: desktopPage, net, sockets };
     };
     const desktop = await openDesktop();
     const desktopStatus = id => desktop.page.evaluate((agentRunId) => {
@@ -2065,38 +2099,48 @@ const runCases = async () => {
     })();
     await shot(desktop.page, 'MSP-20-desktop-third-child');
     await shot(page, 'MSP-20-phone-third-child');
-    // (6) The run stops: its rows show offline.
+    // (6) The run stops. autobyteus-461 REQ-001: its delegated runs keep working, so its rows keep each child's own status
+    // (the node's answer by run ID), on both surfaces (base showed them offline).
     const stopFrom = Date.now();
     const stopped = (await alpha.gql('mutation($id:String!){terminateAgentRun(agentRunId:$id){success message}}', { id: hub })).terminateAgentRun;
     const stopAt = Date.now();
+    const own = async () => Promise.all([childA, childB, childC].map(async id => String(await serverStatusOf(id)).toLowerCase()));
     let offline = { desktop: null, phone: null };
+    await sleep(1_500);
     while (Date.now() < stopAt + 20_000 && (offline.desktop === null || offline.phone === null)) {
-      if (offline.desktop === null && [childA, childB, childC].every(Boolean) && (await Promise.all([childA, childB, childC].map(desktopStatus))).every(status => status === 'offline')) offline.desktop = Date.now() - stopAt;
-      if (offline.phone === null && (await Promise.all([childA, childB, childC].map(phoneStatus))).every(status => String(status).toLowerCase() === 'offline')) offline.phone = Date.now() - stopAt;
+      const want = await own();
+      if (offline.desktop === null && [childA, childB, childC].every(Boolean) && JSON.stringify(await Promise.all([childA, childB, childC].map(desktopStatus))) === JSON.stringify(want)) offline.desktop = Date.now() - stopAt;
+      if (offline.phone === null && JSON.stringify((await Promise.all([childA, childB, childC].map(phoneStatus))).map(x => String(x).toLowerCase())) === JSON.stringify(want)) offline.phone = Date.now() - stopAt;
       await sleep(200);
     }
     await sleep(6_000);
     const stopOps = { desktop: desktopOps(stopFrom), phone: phoneOps(stopFrom) };
     const stop = { success: stopped.success, desktopOfflineMs: offline.desktop, phoneOfflineMs: offline.phone,
       desktopViewReads: count(stopOps.desktop, VIEW_OP), phoneViewReads: count(stopOps.phone, VIEW_OP),
-      finalDesktop: await Promise.all([childA, childB, childC].map(desktopStatus)), finalPhone: await Promise.all([childA, childB, childC].map(phoneStatus)) };
+      finalNode: await own(), finalDesktop: await Promise.all([childA, childB, childC].map(desktopStatus)), finalPhone: await Promise.all([childA, childB, childC].map(phoneStatus)) };
     await shot(desktop.page, 'MSP-20-desktop-stopped');
     await shot(page, 'MSP-20-phone-stopped');
     collab.close();
+    for (const socket of childSockets.values()) socket.close();
     await desktop.context.close();
-    const ONE_POLL = 7_000; const TWO_POLLS = 12_000;
-    const facts = { hub, childA, childB, childC, quiet, phoneHidden, running, idleAgain, openRun, third, stop };
+    statusFeed.close();
+    // autobyteus-461 SR-082: pushed by run ID, so a change shows within a push budget, not a poll's; no status poll at all.
+    const PUSH = 5_000;
+    const runStatusSockets = { desktop: desktop.sockets.filter(x => x.url === '/ws/run-status').length,
+      phone: phoneSockets.filter(x => x.label === 'phone' && new URL(x.url).pathname === '/ws/run-status').length };
+    const statusPolls = { desktop: count(desktop.net, STATUS_OP), phone: count(phoneNet.filter(entry => entry.label === 'phone'), STATUS_OP) };
+    const facts = { hub, childA, childB, childC, hubTreeChanged, runStatusSockets, statusPolls, quiet, phoneHidden, running, idleAgain, openRun, third, stop };
     const failures = [
-      [quiet.desktopStatusReads >= 2 && quiet.phoneStatusReads >= 2 && quiet.desktopViewReads === 0 && quiet.phoneViewReads === 0, 'no change: a status read on each poll and no view read (AC-009a)'],
-      [quiet.hubInDesktopRead && quiet.hubInPhoneRead, 'the listed hub is in each status read'],
-      [phoneHidden.onRunScreen === 0 && phoneHidden.inBackground === 0 && phoneHidden.firstReadAfterShownMs !== null && phoneHidden.firstReadAfterShownMs <= 6_000, 'the phone sends no status read while its list is hidden or the page is in the background, and reads again once shown (AC-009c)'],
-      [quiet.desktopStatusBytes.every(entry => entry.hubBytes !== null && entry.hubBytes <= 2_048 && (entry.statuses > 10 || entry.bytes <= 2_048)), 'a status read carries only states: the hub\'s answer and any read of ≤ 10 children ≤ 2 KB (AC-009a)'],
-      [running.desktopAfterNodeMs !== null && running.desktopAfterNodeMs <= TWO_POLLS && running.phoneAfterNodeMs !== null && running.phoneAfterNodeMs <= ONE_POLL, 'running shows within ≤ 2 polls on the desktop and one on the phone (AC-009a, AC-009c)'],
-      [idleAgain.desktopAfterNodeMs !== null && idleAgain.desktopAfterNodeMs <= TWO_POLLS && idleAgain.phoneAfterNodeMs !== null && idleAgain.phoneAfterNodeMs <= ONE_POLL, 'idle again shows within ≤ 2 polls on the desktop and one on the phone'],
+      [statusPolls.desktop === 0 && statusPolls.phone === 0, 'no status poll (SR-082)'],
+      [runStatusSockets.desktop >= 1 && runStatusSockets.phone >= 1, 'each window reads statuses on /ws/run-status'],
+      [hubTreeChanged, 'the listed hub, not open, is told its rows changed (RUN_TREE_CHANGED) when it delegates'],
+      [quiet.desktopViewReads === 0 && quiet.phoneViewReads === 0, 'no change: no view read'],
+      [running.desktopAfterNodeMs !== null && running.desktopAfterNodeMs <= PUSH && running.phoneAfterNodeMs !== null && running.phoneAfterNodeMs <= PUSH, 'running shows on the desktop and the phone within the push budget'],
+      [idleAgain.desktopAfterNodeMs !== null && idleAgain.desktopAfterNodeMs <= PUSH && idleAgain.phoneAfterNodeMs !== null && idleAgain.phoneAfterNodeMs <= PUSH, 'idle again shows on both within the push budget'],
       [running.desktopViewReads === 0 && running.phoneViewReads === 0 && idleAgain.desktopViewReads === 0 && idleAgain.phoneViewReads === 0, 'a state change alone causes no view read'],
-      [openRun.statusReads === 0 || openRun.hubInRead === 0, 'the open run is not in the status read (AC-009d)'],
-      [third.desktopAfterNodeMs !== null && third.desktopAfterNodeMs <= ONE_POLL && third.phoneAfterNodeMs !== null && third.phoneAfterNodeMs <= ONE_POLL && third.desktopViewReads === 1 && third.phoneViewReads === 1, 'a third child appears within one poll with one view re-read on each surface (AC-009b)'],
-      [stop.success && stop.desktopOfflineMs !== null && stop.desktopOfflineMs <= ONE_POLL && stop.phoneOfflineMs !== null && stop.phoneOfflineMs <= ONE_POLL, 'after the run stops, its rows show offline within one poll (AC-009b)'],
+      [third.desktopAfterNodeMs !== null && third.desktopAfterNodeMs <= PUSH && third.phoneAfterNodeMs !== null && third.phoneAfterNodeMs <= PUSH && third.desktopViewReads >= 1 && third.desktopViewReads <= 2 && third.phoneViewReads >= 1 && third.phoneViewReads <= 2, 'a third child appears within the push budget, with its view read again on each surface'],
+      [stop.success && stop.finalNode.every(x => x !== 'offline') && stop.desktopOfflineMs !== null && stop.desktopOfflineMs <= PUSH + 1_500 && stop.phoneOfflineMs !== null && stop.phoneOfflineMs <= PUSH + 1_500,
+        'after the run stops, its children keep working and its rows show each child\'s own status (REQ-001)'],
     ].filter(([ok]) => !ok).map(([, label]) => label);
     assert(failures.length === 0, failures.join('; '), facts);
     return facts;
@@ -2270,9 +2314,12 @@ const runCases = async () => {
       command_id: randomUUID(), message_id: randomUUID(), dedupe_key: randomUUID(), context_file_paths: [], image_urls: [],
       content: callTool('delegate_task', { recipient_address: '/changelog_helper', description: `ECHO_INPUT ${marker} The old notes are in [old-notes.txt](${outsidePath}).` }) });
     let task = null;
-    await waitFor('the Org\'s task agent', async () => (task = treeNodes(await orgTree()).find(node => node.agentRunId && /changelog_helper/.test(node.address ?? '')) ?? null) !== null, 60_000);
+    // autobyteus-461 rule 2: the Org's delegated runs are rows of its view, not of its configuration; the run is read by its
+    // own run ID.
+    const orgView = async () => asTaskExecutions(await readRunTree(alpha.gql, 'agent_org', orgRunId));
+    await waitFor('the Org\'s task agent', async () => (task = treeNodes(await orgView()).find(node => node.agentRunId && /changelog_helper/.test(node.address ?? '')) ?? null) !== null, 60_000);
     let echoed = false;
-    await waitFor('the task agent\'s answer naming the file', async () => (echoed = await storedHas(alpha, { orgRunId, memberAddress: task.address, agentRunId: task.agentRunId }, `ECHO:`)), 60_000).catch(() => undefined);
+    await waitFor('the task agent\'s answer naming the file', async () => (echoed = await storedHas(alpha, { runId: task.agentRunId }, `ECHO:`)), 60_000).catch(() => undefined);
     const terminated = (await alpha.gql('mutation($id:String!){terminateAgentOrgRun(agentOrgRunId:$id){success message}}', { id: orgRunId })).terminateAgentOrgRun;
     assert(terminated.success, terminated.message);
     // The phone: the stopped Org's task agent.
@@ -2322,7 +2369,9 @@ const runCases = async () => {
     const backToList = { backs, list: await page.locator(`${sel('mobile-run-list')}:visible`).count() };
     await shot(page, 'MSP-17-after-back');
     const facts = { orgRunId, task, echoed, terminated: terminated.success, taskKey, before, after, backToList };
-    assert(before.links >= 1 && before.composer === 0 && before.status === 0, 'the read-only conversation: the file link, no composer, no status yet', facts);
+    // autobyteus-461 rule 2: an Org's delegated run is its own run, so its conversation keeps its own composer (as on the
+    // desktop); the file link and its read-only opening are what this case checks.
+    assert(before.links >= 1 && before.status === 0, 'the delegated run\'s conversation: the file link, no status yet', facts);
     assert(after.status === 0 && after.composer === 0 && after.urlChanged && after.nodeFile === outsidePath && after.viewer === 1 && after.text,
       'a tap on a file outside the workspace opens it read-only (autobyteus-436); still no composer', facts);
     return facts;
@@ -2471,6 +2520,7 @@ const runCases = async () => {
   await runLiveReconnectCases({ runCase, serverAt, freePort, chromium, executablePath, outputDir, evidence, selected, sleep, waitFor, assert, redact });
   await runClosedTaskRowsCases({ runCase, serverAt, freePort, chromium, executablePath, outputDir, evidence, selected, sleep, waitFor, assert, redact, browser, alpha, stack, desktopRunsView });
   await runFileOpenCases({ runCase, serverAt, freePort, chromium, executablePath, outputDir, evidence, selected, sleep, waitFor, assert, redact, browser, alpha, stack, desktopRunsView });
+  await runStoppedDelegatorCases({ runCase, serverAt, freePort, chromium, executablePath, outputDir, evidence, selected, sleep, waitFor, assert, redact });
   await runLiveFileRefreshCases({ runCase, chromium, executablePath, outputDir, evidence, selected, sleep, waitFor, assert, redact, browser, alpha, stack, desktopRunsView });
   await runHeadingLinksCases({ runCase, chromium, executablePath, outputDir, evidence, selected, sleep, waitFor, assert, redact, browser, alpha, stack, desktopRunsView });
   await runCodeWrapCases({ runCase, chromium, executablePath, outputDir, evidence, selected, sleep, waitFor, assert, redact, browser, alpha, stack, desktopRunsView });

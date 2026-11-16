@@ -1,6 +1,6 @@
-import type { TaskAgentCoordinatingRun } from "../../run-history/store/agent-run-metadata-types.js";
+import type { DelegatingRunRef } from "../../run-history/store/agent-run-metadata-types.js";
 import { NodeIdentityNotMigratedError } from "../../remote-access/services/node-identity-service.js";
-import { parseTaskAgentCoordinatingRun } from "../../run-history/store/task-agent-own-file-schema.js";
+import { parseDelegatingRunRef } from "../../run-history/store/delegated-from-schema.js";
 import {
   isoTimestamp,
   nullableString,
@@ -77,6 +77,9 @@ export type RemoteRunViewHandler = Readonly<{
   projection(request: AgentProjectionRequest, from: PeerNode): Promise<Readonly<{ accepted: true; projection: RemoteAgentProjection }> | PeerHandlerRefusal>;
   command(request: OwnerCommandRequest, from: PeerNode): Promise<Readonly<{ accepted: true }> | PeerHandlerRefusal>;
   observe(opening: RunObservationOpening, from: PeerNode, sink: RunObservationSink): Promise<Readonly<{ accepted: true; observation: PairedAgentObservation }> | PeerHandlerRefusal>;
+  /** autobyteus-461 SR-088: one agent's own stream snapshot, and its numbered frames. */
+  agentStreamSnapshot(request: AgentProjectionRequest, from: PeerNode): Promise<Readonly<{ accepted: true; snapshot: unknown; status: unknown }> | PeerHandlerRefusal>;
+  observeAgentStream(opening: RunObservationOpening & Readonly<{ agentRunId: string }>, from: PeerNode, sink: RunObservationSink): Promise<Readonly<{ accepted: true; observation: PairedAgentObservation }> | PeerHandlerRefusal>;
 }>;
 
 class MalformedRequestError extends Error {}
@@ -84,7 +87,7 @@ class MalformedRequestError extends Error {}
 const field = <T>(read: () => T): T => {
   try { return read(); } catch (error) { throw new MalformedRequestError(error instanceof Error ? error.message : String(error)); }
 };
-const coordinatingRunOf = (value: unknown, label: string): TaskAgentCoordinatingRun => field(() => parseTaskAgentCoordinatingRun(value, label));
+const runRefOf = (value: unknown, label: string): DelegatingRunRef => field(() => parseDelegatingRunRef(value, label));
 const runRef = (value: unknown, label: string) => ({ agentRunId: field(() => requiredString(objectRecord(value, label).agentRunId, `${label}.agentRunId`)) });
 
 const parseEnvelope = (body: Record<string, unknown>): RemoteEnvelope => ({
@@ -100,7 +103,7 @@ const parseStartRequest = (value: unknown): StartDelegatedRunRequest => {
     ...parseEnvelope(body),
     address: field(() => requiredString(body.address, "address")),
     delegator: runRef(body.delegator, "delegator"),
-    coordinatingRun: coordinatingRunOf(body.coordinatingRun, "coordinatingRun"),
+    delegatingRun: runRefOf(body.delegatingRun, "delegatingRun"),
     task: parseStartTask(body.task),
   };
 };
@@ -128,7 +131,7 @@ const parseMessageRequest = (value: unknown): DeliverRemoteMessageRequest => {
     kind: body.kind,
     ...(body.kind === "message" ? { messageId: field(() => requiredString(body.messageId, "messageId")) } : {}),
     sender: runRef(body.sender, "sender"),
-    targetRoot: coordinatingRunOf(body.targetRoot, "targetRoot"),
+    targetRoot: runRefOf(body.targetRoot, "targetRoot"),
     target: runRef(body.target, "target"),
     content: body.content,
     messageType: field(() => requiredString(body.messageType, "messageType")),
@@ -152,7 +155,7 @@ const parseAgentProjectionRequest = (value: unknown): AgentProjectionRequest => 
   const body = field(() => objectRecord(value, "request"));
   return {
     ...parseEnvelope(body),
-    targetRoot: coordinatingRunOf(body.targetRoot, "targetRoot"),
+    targetRoot: runRefOf(body.targetRoot, "targetRoot"),
     agentRunId: field(() => requiredString(body.agentRunId, "agentRunId")),
   };
 };
@@ -174,15 +177,17 @@ const parseOwnerCommandRequest = (value: unknown): OwnerCommandRequest => {
   const body = field(() => objectRecord(value, "request"));
   return {
     ...parseEnvelope(body),
-    targetRoot: coordinatingRunOf(body.targetRoot, "targetRoot"),
+    targetRoot: runRefOf(body.targetRoot, "targetRoot"),
     agentRunId: field(() => requiredString(body.agentRunId, "agentRunId")),
     command: ownerCommandOf(body.command),
   };
 };
 
-const parseObservationOpening = (value: unknown): RunObservationOpening => {
+/** An observation's opening: a run's (statuses and summaries), or one agent's own stream when it names the agent (SR-088). */
+const parseObservationOpening = (value: unknown): RunObservationOpening & Readonly<{ agentRunId?: string }> => {
   const body = field(() => objectRecord(value, "request"));
-  return { ...parseEnvelope(body), targetRoot: coordinatingRunOf(body.targetRoot, "targetRoot") };
+  const opening = { ...parseEnvelope(body), targetRoot: runRefOf(body.targetRoot, "targetRoot") };
+  return body.agentRunId === undefined ? opening : { ...opening, agentRunId: field(() => requiredString(body.agentRunId, "agentRunId")) };
 };
 
 /**
@@ -248,7 +253,14 @@ export class PeerGateway {
    * socket closes when it closes; the frames go to `sink`.
    */
   openRunObservation(body: unknown, caller: ClientIdentity | null, sink: RunObservationSink) {
-    return this.admit(body, caller, parseObservationOpening, (request, peer) => this.dependencies.runViews.observe(request, peer, sink));
+    return this.admit(body, caller, parseObservationOpening, (request, peer) => request.agentRunId === undefined
+      ? this.dependencies.runViews.observe(request, peer, sink)
+      : this.dependencies.runViews.observeAgentStream({ ...request, agentRunId: request.agentRunId }, peer, sink));
+  }
+
+  /** autobyteus-461 SR-088: one agent's own stream snapshot, in a run the caller's delegation started (read-only). */
+  agentStreamSnapshot(body: unknown, caller: ClientIdentity | null) {
+    return this.admit(body, caller, parseAgentProjectionRequest, (request, peer) => this.dependencies.runViews.agentStreamSnapshot(request, peer));
   }
 
   private async admit<TRequest extends RemoteEnvelope, TAccepted extends object>(

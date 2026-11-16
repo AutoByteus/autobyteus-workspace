@@ -4,13 +4,14 @@ import type { RunProjectionConversationEntry } from '~/services/runHydration/run
 import type { RunProjectionActivityEntry } from '~/services/runHydration/runProjectionActivityHydration';
 import type { TeamRunExecutionTreeDto } from '@autobyteus/team-stream-contracts';
 import type { AgentOrgExecutionTree } from '~/types/collaboration/agentOrgExecution';
-import type { TaskExecutionReference } from '~/utils/collaboration/taskExecutionClosure';
 import type { RunTreeWorkspaceNode } from '~/utils/runTreeProjection';
 
 export type RunKnownStatus = 'ACTIVE' | 'IDLE' | 'ERROR' | 'TERMINATED';
 
 export interface RunHistoryItem {
   runId: string;
+  /** The run's name from the server (autobyteus-461 SR-091): a delegated run's slot; null for one nobody delegated (its definition names it). */
+  displayName?: string | null;
   summary: string;
   createdAt: string;
   /** When the run was last active, its delegated work included; `createdAt` before any (server, DS-005). */
@@ -50,8 +51,6 @@ export interface AgentOrgRunHistoryItem {
   isActive: boolean;
   summary: string;
   executionTree: AgentOrgExecutionTree;
-  /** Task executions of `executionTree` whose Task is DONE; the rows leave them out before the Org context hydrates. */
-  closedTaskExecutions: readonly TaskExecutionReference[];
 }
 
 export interface AgentOrgHistoryDefinitionGroup {
@@ -93,6 +92,8 @@ export interface RunMetadataConfigPayload {
 
 export interface RunResumeConfigPayload {
   runId: string;
+  /** The run's name from the server (autobyteus-461 SR-091): a delegated run's slot; null for one nobody delegated (its definition names it). */
+  displayName?: string | null;
   isActive: boolean;
   metadataConfig: RunMetadataConfigPayload;
   modelConfigEditability: RunModelConfigEditability;
@@ -117,6 +118,8 @@ export interface TeamRunMemberHistoryItem {
 
 export interface TeamRunHistoryItem {
   teamRunId: string;
+  /** The run's name from the server (autobyteus-461 SR-091): a delegated run's slot; null for one nobody delegated (its definition names it). */
+  displayName?: string | null;
   teamDefinitionId: string;
   teamDefinitionName: string;
   coordinatorAddress: string;
@@ -140,6 +143,8 @@ export interface TeamRunHistoryDefinitionGroup {
 
 export interface TeamRunResumeConfigPayload {
   teamRunId: string;
+  /** The run's name from the server (autobyteus-461 SR-091): a delegated run's slot; null for one nobody delegated (its definition names it). */
+  displayName?: string | null;
   isActive: boolean;
   executionTree: TeamRunExecutionTreeDto;
   modelConfigEditability: RunModelConfigEditability;
@@ -197,17 +202,26 @@ export interface RunHistoryStableExecutionRow extends RunHistoryTeamExecutionRow
   row: TeamMemberTreeRow;
 }
 
+/**
+ * Where a delegated row opens (autobyteus-461 SR-083): the run's own identity and the agent to focus, as the server
+ * built it (a team its coordinator); a peer run's names its node. A delegated Team's member row opens that Team on that
+ * member. Clients never decide it (FU-024, FU-031).
+ */
+export type RowOpenTarget = Readonly<{ runKind: 'agent' | 'agent_team'; runId: string; agentRunId: string; nodeId?: string }>;
+
 export interface RunHistoryTransientExecutionRow extends RunHistoryTeamExecutionRowBase {
   kind: 'transient_execution';
+  /** Where it opens; null for a row error (a team run whose coordinator is not a member), absent where none was sent. */
+  openTarget?: RowOpenTarget | null;
   transientKind: 'task_agent' | 'task_team' | 'task_team_child';
   currentStatus: AgentStatus | string | null;
   /** Display name of the AgentRun that started a delegated child row; null otherwise. */
   delegatedBy: string | null;
   /**
-   * autobyteus-278: set on a run another node runs (this node's delegation started it): the run and its node's
-   * name. Its reachability and title are the remote runs store's.
+   * autobyteus-278: set on a run another node runs (this node's delegation started it): the run, its node's name, and
+   * what its node last answered (`reachable` and `title` are `null` until it answered), from its tree row's `peer`.
    */
-  remote?: Readonly<{ runId: string; nodeName: string }> | null;
+  remote?: Readonly<{ runId: string; nodeName: string; reachable: boolean | null; title: string | null }> | null;
 }
 
 export type RunHistoryTeamExecutionRow =
@@ -311,6 +325,8 @@ export interface ArchiveStoredAgentOrgRunMutationData {
 export interface RunGroupArchiveOutcome {
   archivedRunIds: string[];
   failedRunIds: string[];
+  /** The server's reasons for the runs it refused, each naming what blocked it (CR-461-087, AC-008). */
+  failureReasons?: string[];
 }
 
 /** Standalone agent group result; non-empty `activeRunIds` means the server archived nothing. */

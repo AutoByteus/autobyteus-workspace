@@ -7,7 +7,7 @@ import { useMobileSubjectRestore } from '../useMobileSubjectRestore';
 import { useMobileRunOpeningStore } from '~/stores/mobileRunOpeningStore';
 import { useAgentRunCollaborationStore } from '~/stores/agentRunCollaborationStore';
 import { useRunHistoryStore } from '~/stores/runHistoryStore';
-import type { MobileRunTreeRow } from '~/utils/mobile/mobileRunTreeProjection';
+import type { MobileRunTreeRow } from '~/utils/mobile/mobileRunListRows';
 import { createMobileTestRouter, withSetup } from './mobileTestRouter';
 
 const rowOf = (key: string): MobileRunTreeRow => ({
@@ -23,15 +23,23 @@ const deferred = () => {
 let pinia: Pinia;
 /**
  * The restore with the real router, navigation and pending-open store. The run tree and the open action are its
- * parameters: the tree lists `listed` once `revealRow` ran for a child row (a top-level row is listed at once).
+ * parameters: the tree lists `listed` once its listed run's tree was read (`ensureTreeOf`, held by `treeRead`) and
+ * `revealRow` ran for a child row (a top-level row is listed at once).
  */
-const start = async (query: Record<string, string>, listed: string[] = []) => {
+const start = async (query: Record<string, string>, listed: string[] = [], treeRead: Promise<void> = Promise.resolve()) => {
   const router = await createMobileTestRouter(query);
   const revealed = new Set<string>();
+  const read = new Set<string>();
   const rows = ref<MobileRunTreeRow[]>([]);
-  const refreshRows = () => { rows.value = listed.filter((key) => !key.includes('/') || revealed.has(key)).map(rowOf); };
+  const refreshRows = () => {
+    rows.value = listed.filter((key) => !key.includes('/') || (revealed.has(key) && read.has(key.slice(0, key.indexOf('/'))))).map(rowOf);
+  };
   refreshRows();
-  const tree = { rows, revealRow: vi.fn((key: string) => { revealed.add(key); refreshRows(); }) };
+  const tree = {
+    rows,
+    revealRow: vi.fn((key: string) => { revealed.add(key); refreshRows(); }),
+    ensureTreeOf: vi.fn(async (key: string) => { await treeRead; if (key.includes('/')) read.add(key.slice(0, key.indexOf('/'))); refreshRows(); }),
+  };
   const store = useMobileRunOpeningStore();
   const opening = { reopen: vi.fn(async (row: MobileRunTreeRow) => { store.commit(row.key); }) };
   const firstCheck = deferred();
@@ -74,6 +82,20 @@ describe('useMobileSubjectRestore', () => {
     await member.settleFirstCheck();
     expect(member.tree.revealRow).toHaveBeenCalledWith('team:t-1/member:writer');
     expect(member.opening.reopen).toHaveBeenCalledWith(expect.objectContaining({ key: 'team:t-1/member:writer' }));
+  });
+
+  // MSP-33 (SR-084): a Team member's row is a row of its Team's tree, which a reload has not read yet when the restore
+  // starts. The restore waits for that read, then reveals and reopens the row; it never shows the list meanwhile.
+  it('a Team member waits for its Team\'s tree to be read, then is revealed and reopened, never the list (MSP-33)', async () => {
+    const read = deferred();
+    const member = await start({ row: 'team:t-1/team_member:t-1:writer', screen: 'run' }, ['team:t-1', 'team:t-1/team_member:t-1:writer'], read.promise);
+    await member.settleFirstCheck();
+    expect(member.tree.ensureTreeOf).toHaveBeenCalledWith('team:t-1/team_member:t-1:writer');
+    expect(member.opening.reopen).not.toHaveBeenCalled();
+    expect(member.query()).toEqual({ row: 'team:t-1/team_member:t-1:writer', screen: 'run' });
+    read.resolve(); await flushPromises();
+    expect(member.opening.reopen).toHaveBeenCalledWith(expect.objectContaining({ key: 'team:t-1/team_member:t-1:writer' }));
+    expect(member.query()).toEqual({ row: 'team:t-1/team_member:t-1:writer', screen: 'run' });
   });
 
   it('a subject no longer in the list after the reads: the list, with no failure to react to (AC-005-1, AC-005-3)', async () => {

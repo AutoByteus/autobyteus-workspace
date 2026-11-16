@@ -5,7 +5,7 @@ import {
 import type { SequencedStreamShape } from "./sequenced-stream-shape.js";
 
 type RootContentItem = Readonly<{
-  root_subject_kind: "agent_org" | "agent";
+  root_subject_kind: "agent_org";
   root_run_id: string;
   member_address: string;
   agent_run_id: string;
@@ -15,12 +15,15 @@ type RootContentItem = Readonly<{
 }>;
 
 const presentationOf = (message: CollaborationStreamServerMessage) => {
-  if (message.type !== "ROOT_EXECUTION_EVENT" || message.payload.root_subject_kind === "agent_team") return null;
+  if (message.type !== "ROOT_EXECUTION_EVENT" || message.payload.root_subject_kind !== "agent_org") return null;
   const { event } = message.payload;
   return event.kind === "agent_presentation" ? { envelope: message.payload, event } : null;
 };
 
-/** Root execution envelope (`/ws/agent-org`, `/ws/agent-collaboration`): one root sequence per event. */
+/**
+ * Root execution envelope (`/ws/agent-org`, `/ws/agent-collaboration`): one root sequence per event. Only an Org's view
+ * carries agent output (its own agents'); an Agent root's view has none to coalesce (SR-086 G-D1).
+ */
 export const rootExecutionEventSequencedShape: SequencedStreamShape<CollaborationStreamServerMessage, RootContentItem> = {
   sequenceOf: (message) => message.type === "ROOT_EXECUTION_EVENT" ? message.payload.change_sequence : null,
   contentOf: (message) => {

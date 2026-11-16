@@ -58,7 +58,6 @@ const tree = (): TeamRunExecutionTreeDto => ({
         }),
       },
     ],
-    task_executions: [],
   },
 })
 

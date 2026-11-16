@@ -1,12 +1,12 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { AgentRunEventType } from "../../../../src/agent-execution/domain/agent-run-event.js";
+import { AgentRunEventType, isAgentRunEvent } from "../../../../src/agent-execution/domain/agent-run-event.js";
+import { AgentStreamSequence } from "../../../../src/services/agent-streaming/agent-stream-sequence.js";
+import { buildRunProjectionBundle } from "../../../../src/run-history/projection/run-projection-utils.js";
 import { AgentRun } from "../../../../src/agent-execution/domain/agent-run.js";
 import { AgentRunConfig } from "../../../../src/agent-execution/domain/agent-run-config.js";
 import { AgentRunContext } from "../../../../src/agent-execution/domain/agent-run-context.js";
 import { AgentStreamHandler } from "../../../../src/services/agent-streaming/agent-stream-handler.js";
-import {
-  getAgentRunEventMessageMapper,
-} from "../../../../src/services/agent-streaming/agent-run-event-message-mapper.js";
+import { getAgentRunEventMessageMapper } from "../../../../src/services/agent-streaming/agent-run-event-message-mapper.js";
 import { AgentStreamBroadcaster } from "../../../../src/services/agent-streaming/agent-stream-broadcaster.js";
 import { AgentSessionManager } from "../../../../src/services/agent-streaming/agent-session-manager.js";
 import {
@@ -34,9 +34,42 @@ const createStatusProjectionService = (projection = buildProjection()) => ({
   getRunStatusProjection: vi.fn().mockResolvedValue(projection),
 });
 
+/**
+ * Each active run's own stream sequence (SR-087), attached to the run's events when the handler first asks for it (the
+ * run's resources attach it at activation), and the run's stored read for the snapshot (empty here).
+ */
+type StreamedRun = { runId: string; subscribeToEvents(listener: (event: unknown) => void): () => void };
+const runsById = new Map<string, StreamedRun>();
+const sequenceByRun = new Map<string, AgentStreamSequence>();
+const sequences = {
+  of: (runId: string): AgentStreamSequence | null => {
+    const run = runsById.get(runId);
+    if (!run) return null;
+    let sequence = sequenceByRun.get(runId);
+    if (!sequence) {
+      const mapper = getAgentRunEventMessageMapper();
+      sequence = new AgentStreamSequence(runId, { storedTurnIds: () => new Set(), whenPersisted: async () => undefined, map: (event) => mapper.map(event) });
+      sequence.recordPredating();
+      const attached = sequence;
+      run.subscribeToEvents((event) => { if (isAgentRunEvent(event)) attached.accept(event); });
+      sequenceByRun.set(runId, sequence);
+    }
+    return sequence;
+  },
+  /** A run's sequence as it is now; in these tests it never ends while a session follows it. */
+  follow: (runId: string, listener: (sequence: AgentStreamSequence | null) => void): (() => void) => {
+    listener(sequences.of(runId));
+    return () => undefined;
+  },
+};
+const readStored = vi.fn(async (runId: string) => buildRunProjectionBundle(runId, [], []));
+const streamed = <T extends StreamedRun>(run: T): T => { runsById.set(run.runId, run); return run; };
+const snapshotsOf = (connection: { send: { mock: { calls: unknown[][] } } }) => connection.send.mock.calls
+  .map(([raw]) => JSON.parse(raw as string)).filter((message) => message.type === ServerMessageType.AGENT_STREAM_SNAPSHOT);
+
 describe("AgentStreamHandler", () => {
-  afterEach(() => vi.useRealTimers());
-  const createActiveRun = (overrides: Record<string, unknown> = {}) => ({
+  afterEach(() => { vi.useRealTimers(); runsById.clear(); sequenceByRun.clear(); });
+  const createActiveRun = (overrides: Record<string, unknown> = {}) => streamed({
     runId: "agent-123",
     runtimeKind: "autobyteus",
     isActive: vi.fn().mockReturnValue(true),
@@ -121,10 +154,10 @@ describe("AgentStreamHandler", () => {
     const handler = new AgentStreamHandler(
       sessionManager,
       agentRunService as any,
-      getAgentRunEventMessageMapper(),
       undefined,
       createCommandCoordinator() as any,
       statusProjectionService as any,
+      null, sequences, readStored,
     );
     const connection = {
       send: vi.fn(),
@@ -163,9 +196,9 @@ describe("AgentStreamHandler", () => {
       new AgentSessionManager(),
       agentRunService as any,
       undefined,
-      undefined,
       createCommandCoordinator() as any,
       statusProjectionService as any,
+      null, sequences, readStored,
     );
 
     const connection = {
@@ -196,10 +229,10 @@ describe("AgentStreamHandler", () => {
     const handler = new AgentStreamHandler(
       new AgentSessionManager(),
       agentRunService as any,
-      getAgentRunEventMessageMapper(),
       undefined,
       createCommandCoordinator({ activeRun }) as any,
       createStatusProjectionService() as any,
+      null, sequences, readStored,
     );
     const connection = {
       send: vi.fn(),
@@ -213,98 +246,57 @@ describe("AgentStreamHandler", () => {
     expect(connection.close).not.toHaveBeenCalled();
   });
 
-  it("maps Codex AgentRunEvents directly to websocket messages for single-agent runs", async () => {
+  it("numbers a run's events as frames after its snapshot (SR-087)", async () => {
     vi.useFakeTimers();
-    const unsubscribe = vi.fn();
-    const activeRun = createActiveRun({
-      runtimeKind: "codex_app_server",
-      subscribeToEvents: vi.fn((listener: (event: unknown) => void) => {
-        listener({
-          runId: "runtime-run-2",
-          eventType: AgentRunEventType.SEGMENT_CONTENT,
-          payload: {
-            id: "item-1",
-            delta: "hello",
-            segment_type: "text",
-          },
-          statusHint: null,
-        });
-        return unsubscribe;
-      }),
-    });
-    const agentRunService = createAgentRunService(activeRun);
-
+    const activeRun = createActiveRun({ runtimeKind: "codex_app_server" });
     const handler = new AgentStreamHandler(
       new AgentSessionManager(),
-      agentRunService as any,
-      getAgentRunEventMessageMapper(),
+      createAgentRunService(activeRun) as any,
       undefined,
       createCommandCoordinator({ activeRun }) as any,
       createStatusProjectionService() as any,
+      null, sequences, readStored,
     );
-    const connection = {
-      send: vi.fn(),
-      close: vi.fn(),
-    };
+    const connection = { send: vi.fn(), close: vi.fn() };
 
-    await handler.connect(connection, "runtime-run-2");
-    await flush();
+    await handler.connect(connection, "agent-123");
+    await vi.waitFor(() => expect(snapshotsOf(connection)).toHaveLength(1));
+    const emit = activeRun.subscribeToEvents.mock.calls[0][0];
+    emit({ runId: "agent-123", eventType: AgentRunEventType.SEGMENT_START,
+      payload: { id: "item-1", turn_id: "turn-1", segment_type: "text" }, statusHint: null });
+    emit({ runId: "agent-123", eventType: AgentRunEventType.SEGMENT_CONTENT,
+      payload: { id: "item-1", turn_id: "turn-1", delta: "hello", segment_type: "text" }, statusHint: null });
     vi.advanceTimersByTime(500);
 
     const messages = connection.send.mock.calls.map(([raw]) => JSON.parse(raw));
-    expect(messages).toContainEqual(expect.objectContaining({
-      type: ServerMessageType.SEGMENT_CONTENT,
-      payload: expect.objectContaining({
-        id: "item-1",
-        delta: "hello",
-        segment_type: "text",
-      }),
-    }));
-    expect(messages).toContainEqual(expect.objectContaining({ type: ServerMessageType.CONNECTED }));
-    expect(messages).toContainEqual(expect.objectContaining({ type: ServerMessageType.AGENT_STATUS }));
+    expect(snapshotsOf(connection)[0].payload).toMatchObject({ base_sequence: 0, turn_frames: [] });
+    expect(messages).toContainEqual(expect.objectContaining({ type: ServerMessageType.SEGMENT_START, sequence: 1 }));
+    // Coalesced content keeps the range of frames it covers.
+    expect(messages).toContainEqual({ type: ServerMessageType.SEGMENT_CONTENT_BATCH, sequence: 2, sequence_through: 2,
+      payload: { items: [{ id: "item-1", turn_id: "turn-1", segment_type: "text", delta: "hello" }] } });
   });
 
-  it("maps turn lifecycle AgentRunEvents directly to websocket messages", async () => {
-    const unsubscribe = vi.fn();
-    const activeRun = createActiveRun({
-      runtimeKind: "codex_app_server",
-      subscribeToEvents: vi.fn((listener: (event: unknown) => void) => {
-        listener({
-          runId: "runtime-run-3",
-          eventType: AgentRunEventType.TURN_COMPLETED,
-          payload: {
-            turnId: "turn-3",
-          },
-          statusHint: "IDLE",
-        });
-        return unsubscribe;
-      }),
-    });
-    const agentRunService = createAgentRunService(activeRun);
-
+  it("gives a turn not yet confirmed at the base from its frames, in the snapshot (SR-087)", async () => {
+    const activeRun = createActiveRun({ runtimeKind: "codex_app_server" });
     const handler = new AgentStreamHandler(
       new AgentSessionManager(),
-      agentRunService as any,
-      getAgentRunEventMessageMapper(),
+      createAgentRunService(activeRun) as any,
       undefined,
       createCommandCoordinator({ activeRun }) as any,
       createStatusProjectionService() as any,
+      null, sequences, readStored,
     );
-    const connection = {
-      send: vi.fn(),
-      close: vi.fn(),
-    };
+    const first = { send: vi.fn(), close: vi.fn() };
+    await handler.connect(first, "agent-123");
+    await vi.waitFor(() => expect(snapshotsOf(first)).toHaveLength(1));
+    const emit = activeRun.subscribeToEvents.mock.calls[0][0];
+    emit({ runId: "agent-123", eventType: AgentRunEventType.TURN_STARTED, payload: { turnId: "turn-3" }, statusHint: "ACTIVE" });
 
-    await handler.connect(connection, "runtime-run-3");
-    await flush();
-
-    const messages = connection.send.mock.calls.map(([raw]) => JSON.parse(raw));
-    expect(messages).toContainEqual(expect.objectContaining({
-      type: ServerMessageType.TURN_COMPLETED,
-      payload: expect.objectContaining({
-        turn_id: "turn-3",
-      }),
-    }));
+    const second = { send: vi.fn(), close: vi.fn() };
+    await handler.connect(second, "agent-123");
+    await vi.waitFor(() => expect(snapshotsOf(second)).toHaveLength(1));
+    expect(snapshotsOf(second)[0].payload).toMatchObject({ base_sequence: 1,
+      turn_frames: [expect.objectContaining({ type: ServerMessageType.TURN_STARTED, sequence: 1, payload: expect.objectContaining({ turn_id: "turn-3" }) })] });
   });
 
   it("registers the websocket connection for run-scoped live message broadcasts", async () => {
@@ -316,10 +308,10 @@ describe("AgentStreamHandler", () => {
     const handler = new AgentStreamHandler(
       sessionManager,
       agentRunService as any,
-      undefined,
       broadcaster,
       createCommandCoordinator({ activeRun }) as any,
       createStatusProjectionService() as any,
+      null, sequences, readStored,
     );
     const connection = {
       send: vi.fn(),
@@ -383,21 +375,21 @@ describe("AgentStreamHandler", () => {
         return { accepted: true };
       }),
     };
-    const activeRun = new AgentRun({ providerInputNormalizer: { normalizeForProvider: (dispatch) => dispatch },
+    const activeRun = streamed(new AgentRun({ providerInputNormalizer: { normalizeForProvider: (dispatch) => dispatch },
       context,
       backend: backend as any,
-    });
+    }));
     const agentRunService = createAgentRunService(activeRun);
     const handler = new AgentStreamHandler(
       sessionManager,
       agentRunService as any,
-      getAgentRunEventMessageMapper(),
       undefined,
       createCommandCoordinator({ activeRun }) as any,
       createStatusProjectionService(buildProjection({
         status: "idle",
         statusPayload: { status: "idle", agent_id: runId },
       })) as any,
+      null, sequences, readStored,
     );
     const connection = {
       send: vi.fn(),
@@ -432,9 +424,9 @@ describe("AgentStreamHandler", () => {
       sessionManager,
       agentRunService as any,
       undefined,
-      undefined,
       commandCoordinator as any,
       createStatusProjectionService() as any,
+      null, sequences, readStored,
     );
 
     const connection = {
@@ -493,7 +485,6 @@ describe("AgentStreamHandler", () => {
       new AgentSessionManager(),
       agentRunService as any,
       undefined,
-      undefined,
       commandCoordinator as any,
       createStatusProjectionService(buildProjection({
         status: "offline",
@@ -503,6 +494,7 @@ describe("AgentStreamHandler", () => {
         statusSource: "PREPARED_IDENTITY",
         statusPayload: { status: "offline", agent_id: "agent-123" },
       })) as any,
+      null, sequences, readStored,
     );
     const connection = {
       send: vi.fn(),
@@ -539,9 +531,9 @@ describe("AgentStreamHandler", () => {
       new AgentSessionManager(),
       agentRunService as any,
       undefined,
-      undefined,
       commandCoordinator as any,
       createStatusProjectionService() as any,
+      null, sequences, readStored,
     );
     const connection = {
       send: vi.fn(),
@@ -582,9 +574,9 @@ describe("AgentStreamHandler", () => {
       new AgentSessionManager(),
       agentRunService as any,
       undefined,
-      undefined,
       commandCoordinator as any,
       createStatusProjectionService() as any,
+      null, sequences, readStored,
     );
     const sessionId = await handler.connect({ send: vi.fn(), close: vi.fn() }, "agent-123");
     agentRunService.getAgentRun.mockReturnValue(null);
@@ -607,12 +599,14 @@ describe("AgentStreamHandler", () => {
       new AgentSessionManager(),
       createAgentRunService(activeRun) as any,
       undefined,
-      undefined,
       createCommandCoordinator() as any,
       createStatusProjectionService() as any,
+      null, sequences, readStored,
     );
     const connection = { send: vi.fn(), close: vi.fn() };
     const sessionId = await handler.connect(connection, "agent-123");
+    // The run's snapshot connection sends its snapshot first (SR-087).
+    await vi.waitFor(() => expect(snapshotsOf(connection)).toHaveLength(1));
     connection.send.mockClear();
 
     await handler.handleMessage(sessionId!, JSON.stringify({
@@ -636,12 +630,14 @@ describe("AgentStreamHandler", () => {
   it("rejects an empty interrupt command id before runtime execution", async () => {
     const activeRun = createActiveRun({ interrupt: vi.fn().mockResolvedValue({ accepted: true }) });
     const handler = new AgentStreamHandler(
-      new AgentSessionManager(), createAgentRunService(activeRun) as any,
-      undefined, undefined, createCommandCoordinator() as any,
+      new AgentSessionManager(), createAgentRunService(activeRun) as any, undefined, createCommandCoordinator() as any,
       createStatusProjectionService() as any,
+      null, sequences, readStored,
     );
     const connection = { send: vi.fn(), close: vi.fn() };
     const sessionId = await handler.connect(connection, "agent-123");
+    // The run's snapshot connection sends its snapshot first (SR-087).
+    await vi.waitFor(() => expect(snapshotsOf(connection)).toHaveLength(1));
     connection.send.mockClear();
 
     await handler.handleMessage(sessionId!, JSON.stringify({
@@ -663,12 +659,14 @@ describe("AgentStreamHandler", () => {
       }),
     });
     const handler = new AgentStreamHandler(
-      new AgentSessionManager(), createAgentRunService(activeRun) as any,
-      undefined, undefined, createCommandCoordinator() as any,
+      new AgentSessionManager(), createAgentRunService(activeRun) as any, undefined, createCommandCoordinator() as any,
       createStatusProjectionService() as any,
+      null, sequences, readStored,
     );
     const connection = { send: vi.fn(), close: vi.fn() };
     const sessionId = await handler.connect(connection, "agent-123");
+    // The run's snapshot connection sends its snapshot first (SR-087).
+    await vi.waitFor(() => expect(snapshotsOf(connection)).toHaveLength(1));
     connection.send.mockClear();
 
     await handler.handleMessage(sessionId!, JSON.stringify({
@@ -692,9 +690,9 @@ describe("AgentStreamHandler", () => {
       sessionManager,
       agentRunService as any,
       undefined,
-      undefined,
       createCommandCoordinator({ activeRun }) as any,
       createStatusProjectionService() as any,
+      null, sequences, readStored,
     );
 
     const connection = {
@@ -722,9 +720,9 @@ describe("AgentStreamHandler", () => {
       new AgentSessionManager(),
       agentRunService as any,
       undefined,
-      undefined,
       commandCoordinator as any,
       createStatusProjectionService() as any,
+      null, sequences, readStored,
     );
 
     await handler.handleMessage("missing", JSON.stringify({ type: ClientMessageType.SEND_MESSAGE }));

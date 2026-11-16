@@ -100,17 +100,18 @@ export const useAgentRunStore = defineStore('agentRun', {
     /**
      * @action sendUserInputAndSubscribe
      * @description Creates a new agent run when needed, then sends the user's message over
-     * WebSocket and keeps the stream connected for live updates.
+     * WebSocket and keeps the stream connected for live updates. `runId` names a loaded run that is not the
+     * selected one: a delegated run, reached by its own run ID from its delegator's view (autobyteus-461 rule 2).
      */
-    async sendUserInputAndSubscribe(): Promise<void> {
+    async sendUserInputAndSubscribe(runIdToSend?: string): Promise<void> {
       const agentContextsStore = useAgentContextsStore();
       const runHistoryStore = useRunHistoryStore();
       const workspaceStore = useWorkspaceStore();
       const contextFileUploadStore = useContextFileUploadStore();
-      const currentAgent = agentContextsStore.activeRun;
+      const currentAgent = runIdToSend ? agentContextsStore.getRun(runIdToSend) : agentContextsStore.activeRun;
 
       if (!currentAgent) {
-        throw new Error('No active agent selected.');
+        throw new Error(runIdToSend ? `Agent run '${runIdToSend}' is not loaded.` : 'No active agent selected.');
       }
 
       const { config, state } = currentAgent;
@@ -295,10 +296,11 @@ export const useAgentRunStore = defineStore('agentRun', {
 
       if (!agent) return null;
 
+      // Every connection starts with the run's own stream snapshot (autobyteus-461 SR-087): it is the catch-up.
       const existing = streamingServices.get(runId);
       if (existing) {
         existing.service.attachContext(agent);
-        // A stream in a loss streak connects only through its catch-up (the Agent Connect Rule).
+        // A stream in a loss streak connects only through its reconnection (the Agent Connect Rule).
         existing.reconnection.requestConnect();
         return existing.service;
       }
@@ -442,9 +444,9 @@ export const useAgentRunStore = defineStore('agentRun', {
         return true;
       }
 
-      let childStop: ReturnType<ReturnType<typeof useAgentRunCollaborationStore>['beginHostTermination']> | undefined;
+      let hostStop: ReturnType<ReturnType<typeof useAgentRunCollaborationStore>['beginHostTermination']> | undefined;
       try {
-        childStop = useAgentRunCollaborationStore().beginHostTermination(runId);
+        hostStop = useAgentRunCollaborationStore().beginHostTermination(runId);
         const client = getApolloClient();
         const { data, errors } = await client.mutate({
           mutation: TerminateAgentRun,
@@ -461,7 +463,7 @@ export const useAgentRunStore = defineStore('agentRun', {
         }
 
         if (!ownsRequest()) return false;
-        childStop.confirm();
+        hostStop.confirm();
         if (context?.config.runtimeKind === 'autobyteus' && state) {
           state.compactionStatus = activities.applyConfirmedNativeTermination(runId,
             [...activityIds, ...activities.getNativeCompactionActivityIds(runId)], state.compactionStatus);
@@ -474,7 +476,7 @@ export const useAgentRunStore = defineStore('agentRun', {
         console.error(`Error terminating run '${runId}':`, error);
         return false;
       } finally {
-        childStop?.finish();
+        hostStop?.finish();
       }
     },
 

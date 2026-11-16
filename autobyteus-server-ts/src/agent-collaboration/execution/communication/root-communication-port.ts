@@ -1,6 +1,6 @@
 import type { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import type { AgentRunInputReservationResult } from "../../../agent-execution/input/agent-run-input-contract.js";
-import type { StoredMessageLogOwner } from "../../../run-history/store/task-agent-message-logs.js";
+import type { StoredMessageLogOwner } from "../../../run-history/store/message-log-owners.js";
 import type {
   CollaborationMemberExecutionIdentity,
   RootExecutionIdentity,
@@ -58,8 +58,11 @@ export interface RootCommunicationPort {
   logOwnersOf(message: CollaborationCommunicationMessage): readonly StoredMessageLogOwner[];
   /** The root persistence coordinator's `commitMessageAppend` (lock, log write, post-durability step). */
   commitMessageAppend(append: RootMessageAppend): Promise<RootMessageAppendResult>;
-  /** The message in the root's view stream (messages between its own agents only). */
-  publishToRootView(message: CollaborationCommunicationMessage): void;
+  /**
+   * The committed message into the views (SR-072): the node's message feed numbers it in the view of this root, of the
+   * sender's run, and of every run above either. Called once per message, at the commit that publishes it.
+   */
+  publishMessage(message: CollaborationCommunicationMessage, senderRun: RootExecutionIdentity): void;
   /** Shows the committed input in the recipient's conversation. */
   presentRecipientInput(message: CollaborationCommunicationMessage, input: AgentInputUserMessage): void;
 }

@@ -30,7 +30,6 @@ export const buildAgentOrgHistoryRow = (input: {
     archived_at: null,
     is_active: false,
     summary: input.summary ?? 'Agent Org run',
-    closed_task_executions: [],
     org: {
       subjectKind: 'agent_org',
       createdAt: '2026-09-03T00:00:00.000Z',
@@ -43,7 +42,6 @@ export const buildAgentOrgHistoryRow = (input: {
         orgDefinitionName: input.definitionName ?? 'Delivery Org',
         orgRunId: input.treeRootRunId ?? input.rootRunId,
         defaultLaunchConfiguration: launchConfiguration,
-        taskExecutions: [],
         members: [{
           address: '/writer',
           agentDefinitionId: 'writer-definition',

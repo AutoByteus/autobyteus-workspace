@@ -9,11 +9,13 @@ import WebSocket from "ws";
 import { create } from "tar";
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
+import { projectionByOwnRun } from "../helpers/own-run-reads.js";
 import { startStudioE2eRuntimeServer } from "../helpers/studio-runtime-test-server.js";
 import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
 import { until } from "../helpers/agy-runtime-error-fixture.js";
 import { headReadRepository, headReadResponse } from "../helpers/github-head-read-stub.js";
 import { flattenE2eConfiguredAgentExecutions } from "../helpers/team-run-metadata-helpers.js";
+import { delegatedRunsTree } from "../helpers/run-tree-delegated.js";
 
 // Skill update notices across run roots at the real server/wire boundary (Studio HTTP/GraphQL/WebSocket, scoped MCP
 // agent tools, run supervisor, idle shutdown, skill catalog and GitHub skill sources). Only the AGY CLI is scripted
@@ -220,10 +222,11 @@ suite("Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shut
       await until(async () => { results = markerTexts(await conversation(), "CALLED:"); return results.length > before; }, `Manager result for ${content.slice(0, 80)}`, 60_000);
       return results[before]!;
     };
-    const tree = async () => (await graphql(`query($id:String!){agentRunCollaboration(runId:$id)}`, { id: runId })).agentRunCollaboration?.root_agent?.execution_tree ?? null;
-    const copyConversation = async (address: string, agentRunId: string) => (await graphql(
-      `query($h:String!,$a:String!,$r:String!){agentRunCollaborationMemberProjection(hostRunId:$h,memberAddress:$a,agentRunId:$r){conversation}}`,
-      { h: runId, a: address, r: agentRunId })).agentRunCollaborationMemberProjection?.conversation;
+    // autobyteus-461 SR-084: the delegated runs come from the run's tree (its view carries its own parts only).
+    const tree = async () => delegatedRunsTree(graphql, "agent", runId);
+    // A copy is a run of its own (autobyteus-461 rule 2): read by its own run, never through the manager.
+    const copyConversation = async (_address: string, agentRunId: string) =>
+      (await projectionByOwnRun(graphql, path.join(dataDir, "memory"), agentRunId))?.conversation;
     /** Delegates `description` to the user agent and returns the new copy once it echoed its first input. */
     const delegateCopy = async (description: string) => {
       const known = new Set(taskNodes(await tree()).map((node) => node.agentRunId));
@@ -333,11 +336,17 @@ suite("Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shut
     const manager = await startManager();
     const copy = await manager.delegateCopy("ECHO_INPUT shutdown first");
     const idleSince = Date.now();
-    // Idle shutdown: the copy goes offline one grace period after its turn.
-    const offline = () => objectsIn(manager.view.frames.map((frame) => frame.payload)).some((record) =>
-      record.agent_run_id === copy.agentRunId && record.message?.type === "AGENT_STATUS" && record.message?.payload?.status === "offline");
+    // Idle shutdown: the copy goes offline one grace period after its turn. autobyteus-461 SR-082: its status is its own,
+    // by its run ID on `/ws/run-status` (the Manager's view no longer carries it).
+    const statusSocket = new WebSocket(`ws://${url.host}/ws/run-status`);
+    const statusFrames: any[] = [];
+    statusSocket.on("message", (raw: unknown) => statusFrames.push(JSON.parse(String(raw))));
+    await new Promise<void>((resolve, reject) => { statusSocket.once("open", () => resolve()); statusSocket.once("error", reject); });
+    statusSocket.send(JSON.stringify({ type: "SUBSCRIBE", payload: { runs: [{ kind: "agent", runId: copy.agentRunId }] } }));
+    const offline = () => statusFrames.some((frame) => (frame.type === "RUN_STATUS_CHANGED" && frame.payload.agentRunId === copy.agentRunId && frame.payload.status === "offline"));
     await until(() => offline(), "copy shut down after idle", GRACE_MS + 45_000);
     const offlineAfterMs = Date.now() - idleSince;
+    statusSocket.close();
     const launchesBefore = await launches();
     await writeSkill("roots-probe", `ROOTS-${randomUUID().slice(0, 4)}`);
     await wait(4_000);

@@ -3,9 +3,9 @@ import { createPinia, setActivePinia } from 'pinia'
 import { mount, type VueWrapper } from '@vue/test-utils'
 import ExistingRunSettings from '../ExistingRunSettings.vue'
 import RunMemberRow from '../RunMemberRow.vue'
-import { teamDelegatedLaunchNodes } from '~/utils/runSettings/delegatedLaunchRows'
+import { treeDelegatedLaunchNodes } from '~/utils/runSettings/delegatedLaunchRows'
+import type { RunTreeRowDto } from '@autobyteus/collaboration-stream-contracts'
 import type { RunMemberNode } from '~/utils/runSettings/runMemberTree'
-import type { TeamRunExecutionTreeDto } from '@autobyteus/team-stream-contracts'
 
 vi.mock('~/composables/chat/useChatModelCatalog', () => ({ useChatModelCatalog: () => ({
   ensureCatalog: vi.fn(), schemaFor: () => null, modelLabel: (_runtimeKind: string, id: string) => id,
@@ -15,35 +15,26 @@ vi.mock('~/composables/chat/useChatModelCatalog', () => ({ useChatModelCatalog: 
  * REQ-007 / AC-010 refined by SR-006; autobyteus-366: a delegated copy's settings show on its own card when it is
  * focused, with the facts its row showed (badge, source, notes); a Team copy's other agents are one switch away.
  */
-const created = '2026-10-12T00:00:00.000Z'
-const claude = { runtime_kind: 'claude_agent_sdk' as const, llm_model_identifier: 'opus', llm_config: null, auto_execute_tools: false, workspace_root_path: '/w' }
-const codex = { ...claude, runtime_kind: 'codex_app_server' as const, llm_model_identifier: 'sol-6.1' }
-const tree: TeamRunExecutionTreeDto = {
-  created_at: created, archived_at: null, application_binding: null, handoffs: [],
-  root_team: {
-    address: '/', team_definition_id: 'pm', team_definition_name: 'PM', team_run_id: 'root', coordinator_address: '/pm',
-    default_launch_configuration: claude, members: [],
-    task_executions: [{
-      kind: 'task_agent', address: '/writer', agent_run_id: 'writer-run', platform_agent_run_id: null, delegator_agent_run_id: 'pm-run', started_at: created,
-      source: { kind: 'agent', agent_definition_id: 'writer', launch_configuration: codex, launch_source: { origin: 'agent_default', fallbacks: [] } },
-    }, {
-      kind: 'task_team', address: '/se', team_run_id: 'se-copy', delegator_agent_run_id: 'pm-run', started_at: created, task_executions: [],
-      members: [
-        { kind: 'task_team_agent', address: '/se/lead', agent_run_id: 'lead-run', platform_agent_run_id: null },
-        { kind: 'task_team_agent', address: '/se/cr', agent_run_id: 'cr-run', platform_agent_run_id: null },
-      ],
-      source: {
-        kind: 'agent_team', team_definition_id: 'se', coordinator_address: '/se/lead', handoffs: [], default_launch_configuration: claude,
-        default_launch_source: { origin: 'inherited', fallbacks: [{ layer: 'team_default', runtime_kind: 'grok_build', llm_model_identifier: 'grok-4', reason: 'runtime_unavailable', detail: 'no grok' }] },
-        members: [
-          { address: '/se/lead', agent_definition_id: 'lead', launch_configuration: claude, follows_team: true },
-          { address: '/se/cr', agent_definition_id: 'cr', launch_configuration: claude, follows_team: true, launch_source: { origin: 'inherited', fallbacks: [{ layer: 'agent_default', runtime_kind: 'codex_app_server', llm_model_identifier: 'sol-6.1', reason: 'runtime_unavailable', detail: 'no codex' }] } },
-        ],
-      },
-    }],
-  },
-}
-const nodes = (): RunMemberNode[] => teamDelegatedLaunchNodes(tree, [], { schemaFor: () => null, sameWorkspace: () => true })
+// The Team run's tree as the server builds it (SR-084): a delegated agent, and a delegated Team with its members, each
+// row with its launch and origin as its run has them.
+const launch = (runtimeKind: string, llmModelIdentifier: string, source: unknown, ownSource = true) => ({ runtimeKind, llmModelIdentifier, llmConfig: null,
+  autoExecuteTools: false, workspaceRootPath: '/w', source, ownSource }) as RunTreeRowDto['launch']
+const teamDefault = { origin: 'inherited', fallbacks: [{ layer: 'team_default', runtimeKind: 'grok_build', llmModelIdentifier: 'grok-4', reason: 'runtime_unavailable', detail: 'no grok' }] }
+const crSource = { origin: 'inherited', fallbacks: [{ layer: 'agent_default', runtimeKind: 'codex_app_server', llmModelIdentifier: 'sol-6.1', reason: 'runtime_unavailable', detail: 'no codex' }] }
+const treeRow = (key: string, parentKey: string, kind: RunTreeRowDto['kind'], address: string, target: RunTreeRowDto['openTarget'], rowLaunch: RunTreeRowDto['launch']): RunTreeRowDto =>
+  ({ key, parentKey, depth: 1, kind, name: address.split('/').at(-1)!, address, openTarget: target, statusIds: [target!.agentRunId], launch: rowLaunch })
+const tree: RunTreeRowDto[] = [
+  { key: 'team:root', parentKey: null, depth: 0, kind: 'team', name: 'PM', address: null, openTarget: { runKind: 'agent_team', runId: 'root', agentRunId: 'pm-run' }, statusIds: ['root'] },
+  treeRow('agent:writer-run', 'team:root', 'agent', '/writer', { runKind: 'agent', runId: 'writer-run', agentRunId: 'writer-run' },
+    launch('codex_app_server', 'sol-6.1', { origin: 'agent_default', fallbacks: [] })),
+  treeRow('team:se-copy', 'team:root', 'team', '/se', { runKind: 'agent_team', runId: 'se-copy', agentRunId: 'lead-run' }, launch('claude_agent_sdk', 'opus', teamDefault)),
+  treeRow('team_member:se-copy:lead-run', 'team:se-copy', 'team_member', '/se/lead', { runKind: 'agent_team', runId: 'se-copy', agentRunId: 'lead-run' },
+    launch('claude_agent_sdk', 'opus', teamDefault, false)),
+  treeRow('team_member:se-copy:cr-run', 'team:se-copy', 'team_member', '/se/cr', { runKind: 'agent_team', runId: 'se-copy', agentRunId: 'cr-run' },
+    launch('claude_agent_sdk', 'opus', crSource)),
+]
+const top = { kind: 'agent_team' as const, runId: 'root' }
+const nodes = (): RunMemberNode[] => treeDelegatedLaunchNodes(tree, top, { schemaFor: () => null, sameWorkspace: () => true })
 const root = { workspace: null, runtimeKind: 'claude_agent_sdk', llmModelIdentifier: 'opus', llmConfig: null, autoExecuteTools: false }
 type Subject = Readonly<{ origin: 'delegated'; subject: RunMemberNode; group: RunMemberNode | null }>
 const copyOf = (rows: readonly RunMemberNode[], key: string): Subject => {
@@ -66,7 +57,7 @@ afterEach(() => { wrapper?.unmount(); wrapper = null })
 
 describe('Settings: a focused delegated copy (SR-006, autobyteus-366)', () => {
   it('shows one card with its badge and source, and no list of copies or switch', () => {
-    wrapper = settings(copyOf(nodes(), '/writer@writer-run'))
+    wrapper = settings(copyOf(nodes(), 'agent:writer-run'))
     expect(wrapper.get('[data-test="run-subject-header"]').text()).toContain('writer')
     expect(wrapper.find('[data-test="run-member-badge"]').exists()).toBe(true)
     expect(card(wrapper).attributes('data-source')).toBe('agent_default')
@@ -78,7 +69,7 @@ describe('Settings: a focused delegated copy (SR-006, autobyteus-366)', () => {
   })
 
   it('a Team copy\'s member shows its own card and note, names its Team, and switches to the Team and its agents', async () => {
-    const subject = copyOf(nodes(), '/se/cr@cr-run')
+    const subject = copyOf(nodes(), 'team_member:se-copy:cr-run')
     wrapper = settings(subject)
     expect(wrapper.find('[data-test="run-subject-group"]').exists()).toBe(true)
     expect(card(wrapper).get('[data-test="run-member-launch-note"]').text()).toContain('no codex')
@@ -88,17 +79,17 @@ describe('Settings: a focused delegated copy (SR-006, autobyteus-366)', () => {
     // Like the run's own Members: the Team's card with its own note once, then its agents (the coordinator with its chip).
     expect(wrapper.get('[data-test="run-subject-header"]').text()).toContain(subject.group!.name)
     expect(card(wrapper).findAll('[data-test="run-member-launch-note"]').map((note) => note.text())).toEqual([expect.stringContaining('no grok')])
-    expect(row(wrapper, '/se/lead@lead-run').text()).toContain('Coordinator')
-    expect(row(wrapper, '/se/cr@cr-run').text()).not.toContain('Coordinator')
-    expect(row(wrapper, '/se/lead@lead-run').find('[data-test="run-member-detail"]').exists()).toBe(false)
-    await row(wrapper, '/se/lead@lead-run').get('[data-test="run-member-toggle"]').trigger('click')
-    const opened = row(wrapper, '/se/lead@lead-run').get('[data-test="run-settings-card-/se/lead@lead-run"]')
+    expect(row(wrapper, 'team_member:se-copy:lead-run').text()).toContain('Coordinator')
+    expect(row(wrapper, 'team_member:se-copy:cr-run').text()).not.toContain('Coordinator')
+    expect(row(wrapper, 'team_member:se-copy:lead-run').find('[data-test="run-member-detail"]').exists()).toBe(false)
+    await row(wrapper, 'team_member:se-copy:lead-run').get('[data-test="run-member-toggle"]').trigger('click')
+    const opened = row(wrapper, 'team_member:se-copy:lead-run').get('[data-test="run-settings-card-team_member:se-copy:lead-run"]')
     expect(opened.findAll('[data-test="run-setting-locked"]').length).toBeGreaterThan(0)
     expect(wrapper.findAll('[data-test="run-member-reset"]')).toHaveLength(0)
   })
 
   it('the switch asks for the group and back', async () => {
-    wrapper = settings(copyOf(nodes(), '/se/lead@lead-run'))
+    wrapper = settings(copyOf(nodes(), 'team_member:se-copy:lead-run'))
     const toGroup = wrapper.get('[data-test="run-settings-switch-group"]')
     expect(toGroup.text()).toBe('Team settings')
     await toGroup.trigger('click')
@@ -107,10 +98,10 @@ describe('Settings: a focused delegated copy (SR-006, autobyteus-366)', () => {
   })
 
   it('edits route to the copy that is shown', async () => {
-    const subject = copyOf(nodes(), '/se/lead@lead-run')
+    const subject = copyOf(nodes(), 'team_member:se-copy:lead-run')
     wrapper = settings(subject, { showGroup: true })
     wrapper.getComponent({ name: 'RunSubjectCard' }).vm.$emit('change', { field: 'thinking', llmConfig: null })
-    expect(wrapper.emitted('change-delegated')).toEqual([['/se@se-copy', { field: 'thinking', llmConfig: null }]])
+    expect(wrapper.emitted('change-delegated')).toEqual([['team:se-copy', { field: 'thinking', llmConfig: null }]])
     expect(wrapper.emitted('change-member')).toBeUndefined()
   })
 })
@@ -130,13 +121,13 @@ describe('RunMemberRow launch note (AC-011)', () => {
 })
 
 describe('Settings: stop and change a copy (SR-007)', () => {
-  const runningRows = (live: readonly string[]) => teamDelegatedLaunchNodes(tree, [], { schemaFor: () => null, sameWorkspace: () => true }, {
-    editable: true, isAgentLive: (id) => live.includes(id), isStopping: () => false, draftOf: () => null,
+  const runningRows = (live: readonly string[]) => treeDelegatedLaunchNodes(tree, top, { schemaFor: () => null, sameWorkspace: () => true }, {
+    editable: true, isAgentLive: (id: string) => live.includes(id), isStopping: () => false, draftOf: () => null,
   })
   const running = (subject: Subject) => settings(subject, { isActive: true, canEdit: false, state: 'read_only', subjectActive: Boolean(subject.subject.delegated?.running) })
 
   it('a running copy\'s header stops that copy, not the run; its model stays locked and says why', async () => {
-    wrapper = running(copyOf(runningRows(['writer-run']), '/writer@writer-run'))
+    wrapper = running(copyOf(runningRows(['writer-run']), 'agent:writer-run'))
     expect(wrapper.get('[data-test="run-subject-status"]').attributes('data-status')).toBe('active')
     expect(wrapper.find('[data-test="existing-run-stop"]').exists()).toBe(false)
     await wrapper.get('[data-test="run-member-stop"]').trigger('click')
@@ -147,14 +138,14 @@ describe('Settings: stop and change a copy (SR-007)', () => {
   })
 
   it('a running Team copy\'s member: the header stops its Team copy (never one member)', async () => {
-    wrapper = running(copyOf(runningRows(['lead-run']), '/se/cr@cr-run'))
+    wrapper = running(copyOf(runningRows(['lead-run']), 'team_member:se-copy:cr-run'))
     expect(wrapper.get('[data-test="run-member-stop"]').attributes('title')).toContain('se')
     await wrapper.get('[data-test="run-member-stop"]').trigger('click')
     expect(wrapper.emitted('stop-delegated')).toEqual([[{ teamRunId: 'se-copy' }]])
   })
 
   it('a stopped copy\'s model is editable while the run runs; approval stays locked, no stop and no hint', () => {
-    wrapper = running(copyOf(runningRows([]), '/writer@writer-run'))
+    wrapper = running(copyOf(runningRows([]), 'agent:writer-run'))
     expect(wrapper.get('[data-test="run-subject-status"]').attributes('data-status')).toBe('stopped')
     expect(card(wrapper).get('[data-test="run-setting-model"]').find('[data-test="run-setting-locked"]').exists()).toBe(false)
     expect(card(wrapper).get('[data-test="run-setting-approval"]').find('[data-test="run-setting-locked"]').exists()).toBe(true)

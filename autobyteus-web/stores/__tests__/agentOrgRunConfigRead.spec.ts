@@ -76,6 +76,15 @@ describe('Org canonical settings read while the Org view refreshes (autobyteus-2
     expect(org.getAgentContext('agent-lead-configured')!.config.workspaceId).toBe('/B')
   })
 
+  it('CR-461-088 (AFS-002): a stopped Org reads its settings: its view and its read carry its own configuration only (rule 2)', async () => {
+    const store = useAgentOrgContextsStore()
+    const org = await stage(false); store.contexts['org-run'] = org
+    expect(JSON.stringify(org.executionTree)).not.toContain('taskExecutions')
+    io.read.mockResolvedValue(canonical(JSON.parse(JSON.stringify(org.executionTree)), false))
+    await expect(store.readRunConfig('org-run')).resolves.toMatchObject({ isActive: false })
+    expect(JSON.stringify(org.executionTree)).not.toContain('taskExecutions')
+  })
+
   it.each(['released', 'binding', 'operation', 'inspection'])('refuses the read when the target changes mid-read (%s)', async change => {
     const store = useAgentOrgContextsStore()
     const org = await stage(true); store.contexts['org-run'] = org

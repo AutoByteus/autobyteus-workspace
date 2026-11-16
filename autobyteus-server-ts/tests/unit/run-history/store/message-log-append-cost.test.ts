@@ -5,7 +5,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import type { CollaborationCommunicationMessage } from "../../../../src/agent-collaboration/execution/communication/collaboration-communication-message.js";
 import { AgentOrgCommunicationMessagesStore } from "../../../../src/agent-org-execution/persistence/agent-org-communication-messages-store.js";
 import { MessageLog } from "../../../../src/run-history/store/message-log.js";
-import { COORDINATING_LOG } from "../../../../src/run-history/store/task-agent-message-logs.js";
+import { OWN_RUN_LOG } from "../../../../src/run-history/store/message-log-owners.js";
 
 /**
  * AC-001 / QR-001 measurement (DEC-001: a synthesized log with the profile of the user's largest org log,
@@ -74,8 +74,8 @@ describe("append cost on a large log (AC-001)", () => {
     const store = new AgentOrgCommunicationMessagesStore();
     const next = message(82, 120 * KB);
     const lineBytes = Buffer.byteLength(`${JSON.stringify(next)}\n`);
-    const large = await measure(() => store.appendMessage(largeDir, "org-large", next, [COORDINATING_LOG]));
-    const empty = await measure(() => store.appendMessage(emptyDir, "org-empty", next, [COORDINATING_LOG]));
+    const large = await measure(() => store.appendMessage(largeDir, "org-large", next, [OWN_RUN_LOG]));
+    const empty = await measure(() => store.appendMessage(emptyDir, "org-empty", next, [OWN_RUN_LOG]));
 
     expect(large.written).toBe(lineBytes);
     expect(empty.written).toBe(lineBytes);

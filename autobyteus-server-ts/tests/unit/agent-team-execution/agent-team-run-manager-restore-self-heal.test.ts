@@ -1,10 +1,12 @@
+import { testViewStreams } from "../../helpers/view-streams.js";
+import { NOT_DELEGATED } from "../../helpers/run-collaboration.js";
+import { noDelegations, openTaskRecords } from "../../helpers/no-delegations.js";
 import { describe, expect, it, vi } from "vitest";
 import type { RootTeamRun } from "../../../src/agent-team-execution/domain/root-team-run.js";
 import { AgentTeamRunManager } from "../../../src/agent-team-execution/services/agent-team-run-manager.js";
 import { FlatTeamExecutionFactory } from "../../../src/agent-team-execution/local/flat-team-execution-factory.js";
 import { MemberExecutionContextBuilder } from "../../../src/agent-team-execution/services/member-team-context-builder.js";
 import { ActiveCollaborationRootDirectory } from "../../../src/agent-collaboration/execution/services/active-collaboration-root-directory.js";
-import { createTaskExecutionIdentityCapabilities } from "../../../src/agent-team-execution/task-delegation/task-execution-identity-capabilities.js";
 
 const materialized = vi.hoisted(() => [] as unknown[]);
 vi.mock("../../../src/run-history/services/team-run-package-catalog.js", () => ({
@@ -36,11 +38,10 @@ vi.mock("../../../src/agent-team-execution/services/team-root-materializer.js", 
   }),
 }));
 
-const createManager = () => new AgentTeamRunManager({
+const createManager = () => new AgentTeamRunManager({ delegationIndex: noDelegations(), viewStreams: testViewStreams(), taskRecords: openTaskRecords(),
   memoryDir: "/tmp/agent-team-run-manager-self-heal",
   flatTeamExecutionFactory: new FlatTeamExecutionFactory(),
-  memberExecutionContextBuilder: new MemberExecutionContextBuilder({ getDefinitionById: async () => null } as never),
-  taskExecutionIdentity: createTaskExecutionIdentityCapabilities({ allocateForAgentDefinition: async () => "task-agent-run" }),
+  memberExecutionContextBuilder: new MemberExecutionContextBuilder({ getDefinitionById: async () => null } as never, NOT_DELEGATED),
   modelSelectionValidator: { validateMany: async () => [], validate: async () => ({ kind: "valid" as const }) } as never,
   activeRootDirectory: new ActiveCollaborationRootDirectory(),
 });

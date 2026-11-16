@@ -20,7 +20,7 @@ export const handleTeamInterruptGenerationCommand = async (input: {
   teamRunId: string;
   payload: Payload;
   sink: AgentStreamServerMessageSink<TeamStreamServerMessage> | null;
-  activeRun: RootTeamRun | null;
+  activeRun: Pick<RootTeamRun, "executeAgentCommand"> | null;
 }): Promise<void> => {
   const agentRunId = parseCommandAgentRunId(input.payload);
   const reject = (code: string, message: string, state: "rejected" | "failed" = "rejected") =>

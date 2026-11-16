@@ -130,6 +130,7 @@
 </template>
 
 <script setup lang="ts">
+import { teamRowFocusOf } from '~/composables/useRunOpening'
 import { computed } from 'vue'
 import { Icon } from '@iconify/vue'
 import StatusDot from '~/components/workspace/common/StatusDot.vue'
@@ -144,6 +145,8 @@ import type { WorkspaceHistoryAvatarBindings } from '~/components/workspace/hist
 import type { RunListSectionActions, RunListSectionState } from '~/components/runList/runListSectionContracts'
 import { useLocalization } from '~/composables/useLocalization'
 import { useAgentRunCollaborationStore } from '~/stores/agentRunCollaborationStore'
+import { useRunTreeStore } from '~/stores/runTreeStore'
+import { useHeldRunStates } from '~/composables/useHeldRunStates'
 import type { RunHistoryTeamExecutionRow } from '~/stores/runHistoryTypes'
 import type { RunTreeRow } from '~/utils/runTreeProjection'
 import type { RunListEntry } from '~/utils/runListProjection'
@@ -184,7 +187,11 @@ const expanded = computed(() => props.entry.kind === 'team'
   ? props.state.isTeamExpanded(props.entry.runId)
   : props.entry.kind === 'org' && (props.state.isAgentOrgRunExpanded?.(props.entry.runId) ?? false))
 const orgTerminationError = computed(() => props.entry.kind === 'org' ? props.state.agentOrgTerminationError?.(props.entry.runId) ?? null : null)
-const hasDelegated = computed(() => props.entry.kind === 'agent' && collaboration.taskRows(props.entry.runId).length > 0)
+// A listed Team run's own status is its root's (SR-086 G-A4): held while it is listed.
+useHeldRunStates(() => props.entry.kind === 'team' ? [{ kind: 'agent_team', runId: props.entry.runId }] : [])
+// The run's tree (SR-084) has rows under its own agent: it delegated runs that are still listed.
+const trees = useRunTreeStore()
+const hasDelegated = computed(() => props.entry.kind === 'agent' && trees.rowsOf({ kind: 'agent', runId: props.entry.runId }).length > 1)
 const disclosureLabel = computed(() => t(props.state.isRunExpanded(props.entry.runId) ? 'runList.collapse' : 'runList.expand', { name: props.entry.name }))
 
 /** Stopped and stored: Archive and Delete are offered. */
@@ -228,9 +235,10 @@ const open = () => {
   if (!expanded.value) props.state.toggleAgentOrgRun?.(entry.runId)
   return props.actions.onOpenAgentOrgRun?.(entry.orgRun)
 }
+// A row opens the agent the server named for it (SR-083): a delegated Team its coordinator, as in every view (FU-031).
 const selectTeamRow = (row: RunHistoryTeamExecutionRow) => {
-  if (props.entry.kind !== 'team' || !row.agentRunId) return
-  return props.actions.onSelectTeamMember({ teamRunId: props.entry.runId, memberAddress: row.memberAddress, agentRunId: row.agentRunId })
+  const focus = props.entry.kind === 'team' ? teamRowFocusOf(props.entry.runId, row) : null
+  if (focus) return props.actions.onSelectTeamMember(focus)
 }
 const stop = () => {
   const entry = props.entry

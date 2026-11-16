@@ -24,6 +24,7 @@ import { CodexAppServerClientManager } from "../../../src/runtime-management/cod
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { AgentRunViewProjectionService } from "../../../src/run-history/services/agent-run-view-projection-service.js";
 import { startAgentToolsMcpTestHost } from "../../helpers/agent-tools-mcp-test-host.js";
+import { getAgentStreamSequences } from "../../../src/services/agent-streaming/agent-stream-sequence.js";
 
 // Live proof that an interrupted Codex automatic compaction is closed as failed (REQ-C01, AC-C01d)
 // through the real AgentRun, Codex backend, app server and memory recorder. As in probe C10, the app
@@ -102,7 +103,7 @@ describeLive("Codex interrupted compaction (live E2E)", () => {
       deepSeekHarnessBackendFactory: unusedBackendFactory,
       activationRegistry: new AgentRunActivationRegistry(new AgentRunResourceManager({
         runSessions: deactivator, runFileChangeService: noopSidecar() as never,
-        publishedArtifactRelayService: noopSidecar() as never, memoryRecorder: recorder, workJournalUpdater: noopSidecar() as never,
+        publishedArtifactRelayService: noopSidecar() as never, memoryRecorder: recorder, streamSequences: getAgentStreamSequences(), workJournalUpdater: noopSidecar() as never,
         mcpServerInstances: { cleanupMcpServerInstancesForAgent: async () => undefined }, runPasses: null })),
       memoryRecorder: recorder,
       providerInputNormalizer: { normalizeForProvider: (dispatch) => dispatch },

@@ -1,5 +1,5 @@
 import type { AgentPresentationMessage, RemoteAgentStatus } from "@autobyteus/agent-presentation-contracts";
-import type { TaskAgentCoordinatingRun } from "../../../run-history/store/agent-run-metadata-types.js";
+import type { DelegatingRunRef } from "../../../run-history/store/agent-run-metadata-types.js";
 import type { RemoteAgentLaunch } from "../../../run-history/domain/run-execution-tree-shared-records.js";
 import type { DelegationWork } from "../../../model-routing/domain/model-routing-types.js";
 
@@ -10,7 +10,7 @@ export type PeerNodeRef = Readonly<{ nodeId: string; name: string }>;
 export type RemoteChannelRefusal = Readonly<{ accepted: false; code: string; message: string }>;
 
 /** The root that receives a message on the other node: a standalone, Team or Org run, by its run ID. */
-export type RemoteTargetRoot = TaskAgentCoordinatingRun;
+export type RemoteTargetRoot = DelegatingRunRef;
 
 /** A member of a Team run the peer started: its address and the run ID the peer allocated. */
 export type RemoteStartedTeamMember = Readonly<{ address: string; agentRunId: string }>;
@@ -48,6 +48,8 @@ export type RemoteRunSummary = RemoteStartedRunRef & Readonly<{
   title: string | null;
   /** Only the run's live agents (an Agent's host, a Team's members); an agent without one is offline. */
   statuses: readonly Readonly<{ agentRunId: string; status: RemoteAgentStatus }>[];
+  /** Each agent's launch, from the run's own file on its node (SR-038). */
+  launches: readonly RemoteAgentLaunch[];
 }>;
 export type RemoteRunSummaries = Readonly<{ accepted: true; runs: readonly RemoteRunSummary[] }> | RemoteChannelRefusal;
 
@@ -78,6 +80,20 @@ export type RemoteRunObserver = Readonly<{
 export type RemoteRunObservationStream = Readonly<{ close(): void }>;
 
 /**
+ * One agent's own stream snapshot on its node (autobyteus-461 SR-088): its stored part, its unconfirmed turns' frames,
+ * its base and sequence (null: a stopped agent), in the `/ws/agent` shape, with the agent's current status message.
+ */
+export type RemoteAgentStreamSnapshotAnswer =
+  | Readonly<{ accepted: true; snapshot: Readonly<Record<string, unknown>>; status: Readonly<Record<string, unknown>> }>
+  | RemoteChannelRefusal;
+/** Receives one agent's own numbered frames, each with the sequence it is numbered in (a new one after a restore). */
+export type RemoteAgentStreamObserver = Readonly<{
+  onFrame(liveSequenceId: string, frame: Readonly<Record<string, unknown>>): void;
+  /** The stream ended without `close()`. Called once. */
+  onEnd(): void;
+}>;
+
+/**
  * The outbound channel to peer nodes, as collaboration roots use it (owned here, implemented by
  * `remote-collaboration`'s `PeerClient`). Roots reach it only through `RemoteRunLinks` and `RemoteDelegation`; it never
  * exposes HTTP.
@@ -93,7 +109,7 @@ export interface RemoteRunChannel {
     /** The target's catalog address on that node. */
     address: string;
     delegatorAgentRunId: string;
-    coordinatingRun: TaskAgentCoordinatingRun;
+    delegatingRun: DelegatingRunRef;
     /** The work and its Task: the peer's Model Router is told it (DS-002). */
     work: DelegationWork;
   }>): Promise<RemoteStartedRun>;
@@ -106,6 +122,10 @@ export interface RemoteRunChannel {
   ownerCommand(nodeId: string, targetRoot: RemoteTargetRoot, agentRunId: string, command: RemoteOwnerCommand): Promise<RemoteDeliveryReceipt>;
   /** autobyteus-278: the run's live output while the stream is open; it never reconnects (DEC-807). */
   observeRun(nodeId: string, targetRoot: RemoteTargetRoot, observer: RemoteRunObserver): RemoteRunObservationStream;
+  /** autobyteus-461 SR-088: one agent's own stream snapshot, by its node's rule (3b). */
+  agentStreamSnapshot(nodeId: string, targetRoot: RemoteTargetRoot, agentRunId: string): Promise<RemoteAgentStreamSnapshotAnswer>;
+  /** autobyteus-461 SR-088: one agent's own numbered frames, following it across restores, while the stream is open. */
+  observeAgentStream(nodeId: string, targetRoot: RemoteTargetRoot, agentRunId: string, observer: RemoteAgentStreamObserver): RemoteRunObservationStream;
 }
 
 let processChannel: RemoteRunChannel | null = null;

@@ -56,6 +56,8 @@ import type { TeamMemberInspectionResult } from '~/services/runOpen/teamMemberIn
 import { getApolloClient } from '~/utils/apolloClient';
 import { GetAgentRunResumeConfig, GetTeamRunResumeConfig } from '~/graphql/queries/runHistoryQueries';
 import { teamRunExecutionTreeDtoSchema } from '@autobyteus/team-stream-contracts';
+import { useRunTreeStore } from '~/stores/runTreeStore';
+import { teamRowsAboveAgent } from '~/utils/runTree/runTreeAgents';
 
 export const useRunHistoryStore = defineStore('runHistory', {
   state: () => ({
@@ -476,6 +478,9 @@ export const useRunHistoryStore = defineStore('runHistory', {
       teamRunId: string,
       agentRunId: string,
     ): string[] {
+      // A run the Team delegated is a row of its tree (SR-084): the team rows above it unfold (CR-461-108).
+      const delegated = teamRowsAboveAgent(useRunTreeStore().rowsOf({ kind: 'agent_team', runId: teamRunId }), agentRunId, `team:${teamRunId}`);
+      if (delegated.length) return delegated;
       if (!this.navigationProjection) this.refreshRunNavigationTopology('lazy-member-ancestry-read');
       const keys = this.navigationProjection?.memberAncestorExecutionKeysByIdentity[
         runHistoryMemberIndexKey(teamRunId, agentRunId)

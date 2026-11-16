@@ -3,7 +3,7 @@ import type {
   AgentRunInputReservation,
   CommittedAgentRunInput,
 } from "../../../agent-execution/input/agent-run-input-contract.js";
-import type { StoredMessageLogOwner } from "../../../run-history/store/task-agent-message-logs.js";
+import type { StoredMessageLogOwner } from "../../../run-history/store/message-log-owners.js";
 import type { CollaborationCommunicationMessage } from "./collaboration-communication-message.js";
 
 /** What `prepare` decided under the root's lock: append to these logs, or append nothing. */
@@ -50,6 +50,8 @@ export type RootMessageAppendControl = Readonly<{
   /** Drops the slot when the coordinator threw before the append finished (fail-stopped root, genuine error). */
   abandon(): void;
   closure(): RootMessageAppendClosure | null;
+  /** The message is in this root's log: delivered, or refused after the durable write (REQ-012, SR-076). */
+  recorded(): boolean;
 }>;
 
 /** The recipient of a same-root or remote-to-local message: its held slot and how its input is shown. */
@@ -93,12 +95,8 @@ export const createRootMessageAppend = (input: Readonly<{
     message: input.message,
     prepare: (): RootMessageAppendPreparation => {
       if (state !== "sealed") throw new Error(`Root message append '${input.message.messageId}' is not sealed.`);
-      const current = input.getMessages();
-      if (!input.isOpen() || current.some((row) => row.messageId === input.message.messageId)) {
-        state = "cancelled";
-        dropSlot();
-        return Object.freeze({ kind: "conflict" as const });
-      }
+      // The Task scope first (CR-461-060, 469 DEC-005): a Task that closed while this message waited for the log is
+      // answered as the closure, even when that closure has already closed the root's admission.
       if (input.receiver) {
         try {
           input.receiver.checkTaskScope();
@@ -110,6 +108,12 @@ export const createRootMessageAppend = (input: Readonly<{
           dropSlot();
           return Object.freeze({ kind: "refused" as const });
         }
+      }
+      const current = input.getMessages();
+      if (!input.isOpen() || current.some((row) => row.messageId === input.message.messageId)) {
+        state = "cancelled";
+        dropSlot();
+        return Object.freeze({ kind: "conflict" as const });
       }
       const logOwners = input.logOwnersOf(input.message);
       next = Object.freeze([...current, input.message]);
@@ -171,5 +175,6 @@ export const createRootMessageAppend = (input: Readonly<{
       dropSlot();
     },
     closure: () => closure,
+    recorded: () => state === "committed" || state === "closed_after_durability",
   });
 };

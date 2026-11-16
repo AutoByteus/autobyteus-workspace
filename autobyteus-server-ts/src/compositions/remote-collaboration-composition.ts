@@ -12,6 +12,7 @@ import { RemoteMessageReceiver, type RemoteRootDirectory } from "../remote-colla
 import { RemoteRunViewProvider } from "../remote-collaboration/inbound/remote-run-view-provider.js";
 import { getAgentRunViewProjectionService } from "../run-history/services/agent-run-view-projection-service.js";
 import { getTeamMemberRunViewProjectionService } from "../run-history/services/team-member-run-view-projection-service.js";
+import { DelegatedRunStarter } from "../agent-collaboration/execution/delegation/delegated-run-starter.js";
 import { RemoteTeamRunStarter } from "../remote-collaboration/inbound/remote-team-run-starter.js";
 import { RemoteCatalogLister } from "../remote-collaboration/inbound/remote-catalog-lister.js";
 import {
@@ -29,6 +30,7 @@ import { getServerSettingsService } from "../services/server-settings-service.js
 import { getStandaloneAgentRunRootManager } from "../standalone-agent-run-root/services/standalone-agent-run-root-manager.js";
 import { createRootExecutionIdentity, type RootSubjectKind } from "../agent-collaboration/execution/domain/root-execution-identity.js";
 import type { CollaborationRootResolver } from "./collaboration-root-resolver.js";
+import { PeerStartedRunLaunches } from "../remote-collaboration/inbound/peer-started-run-launches.js";
 
 /**
  * Binds this node's remote collaboration (CM-10 … CM-12) around the process's run services: the settings,
@@ -38,6 +40,7 @@ import type { CollaborationRootResolver } from "./collaboration-root-resolver.js
  */
 export const composeStudioRemoteCollaboration = (input: Readonly<{
   appDataDir: string;
+  memoryDir: string;
   tempWorkspaceDir: string;
   agentRuns: Pick<AgentRunService, "prepareAgentRun" | "recordRunTitle" | "readRunTitle">;
   teamRuns: Pick<TeamRunService, "storedRemoteLinkCheck" | "createTeamRun" | "terminateTeamRun" | "recordRunTitle"
@@ -69,8 +72,8 @@ export const composeStudioRemoteCollaboration = (input: Readonly<{
     ownNodeId: () => getNodeIdentityService().getNodeId(),
     tempWorkspaceDir: input.tempWorkspaceDir,
     handlers: (services) => ({
-      delegatedRuns: new RemoteDelegationReceiver({ admission: getCollaboratorAdmission, catalogPort: services.catalogPort, agentRuns: input.agentRuns,
-        teams: new RemoteTeamRunStarter({ teamRuns: input.teamRuns }), decisions: peerStartedRunDecisions }),
+      delegatedRuns: ((starter) => new RemoteDelegationReceiver({ admission: getCollaboratorAdmission, catalogPort: services.catalogPort, starter,
+        teams: new RemoteTeamRunStarter({ starter }), decisions: peerStartedRunDecisions }))(new DelegatedRunStarter({ agentRuns: input.agentRuns, teamRuns: input.teamRuns })),
       messages: new RemoteMessageReceiver(roots, {
         // autobyteus-269: an accepted work packet's content is the run's title (a peer never starts an Org).
         recordFirstMessage: (root, content) => root.kind === "agent" ? input.agentRuns.recordRunTitle(root.runId, content)
@@ -81,6 +84,7 @@ export const composeStudioRemoteCollaboration = (input: Readonly<{
       // autobyteus-278: what the peer's owner reads and drives here, for runs its delegation started.
       runViews: new RemoteRunViewProvider(roots, {
         runTitle: (run) => run.kind === "agent" ? input.agentRuns.readRunTitle(run.runId) : input.teamRuns.readRunTitle(run.runId),
+        runLaunches: ((launches) => (run) => launches.of(run))(new PeerStartedRunLaunches(input.memoryDir)),
         agentProjection: async (run, agentRunId) => {
           const projection = run.kind === "agent"
             ? await getAgentRunViewProjectionService().getProjection(agentRunId)

@@ -299,7 +299,7 @@ export const runCodeWrapCases = async (probe) => {
   const talkRun = /target_agent_run_id\W+(\w+)/.exec(JSON.stringify(delegated))?.[1];
   assert(talkRun, 'the task agent of the Markdown message', { delegated });
   await stack.agentCall(host.runId, 'send_message_to', { target_agent_run_id: talkRun, content: text });
-  const taskAgentConversation = async () => JSON.stringify((await alpha.gql('query($h:String!,$m:String!,$a:String!){agentRunCollaborationMemberProjection(hostRunId:$h,memberAddress:$m,agentRunId:$a){conversation}}', { h: host.runId, m: '/release_notes_writer', a: talkRun })).agentRunCollaborationMemberProjection?.conversation ?? []);
+  const taskAgentConversation = async () => JSON.stringify((await alpha.gql('query($a:String!){getRunProjection(runId:$a){conversation}}', { a: talkRun })).getRunProjection?.conversation ?? []);
   await waitFor('the Markdown message in the task agent\'s conversation', async () => (await taskAgentConversation()).includes(`End of ${MARKER}.`), 60_000);
   evidence.codeWrap = { replyRun, host: host.runId, talkRun, file: filePath };
 

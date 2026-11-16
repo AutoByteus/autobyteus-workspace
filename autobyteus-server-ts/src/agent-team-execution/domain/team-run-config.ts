@@ -1,3 +1,4 @@
+import type { LaunchConfigurationSource } from "../../agent-collaboration/domain/launch-configuration-source.js";
 import type { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
 import type { PendingRuntimeSwitch } from "../../run-history/store/agent-run-metadata-types.js";
 import type { TeamBackendKind } from "./team-backend-kind.js";
@@ -36,6 +37,8 @@ export type TeamRunAgentNode = Readonly<{
   workspaceRootPath: string | null;
   /** autobyteus-348: the member's pending agent runtime switch, until its next input makes it real; absent means none. */
   pendingRuntimeSwitch?: PendingRuntimeSwitch;
+  /** autobyteus-461: where a delegated team member's launch came from (recorded at its start; display provenance). */
+  launchSource?: LaunchConfigurationSource;
 }>;
 
 /** A team of a run. Teams are flat: its children are agents. */
@@ -46,12 +49,13 @@ export type TeamRunAgentTeamNode = Readonly<{
   teamRunId: string;
   coordinatorAddress: AgentTeamAddress;
   defaultLaunchConfiguration: AgentLaunchConfiguration;
+  /** How the team's default launch was resolved, when recorded (a delegated team, DS-10 step 4). */
+  defaultLaunchSource?: LaunchConfigurationSource;
   role?: string | null;
   description?: string | null;
   children: readonly TeamRunAgentNode[];
 }>;
 
-export type TeamRunNode = TeamRunAgentNode | TeamRunAgentTeamNode;
 
 export type TeamAgentLaunchSettings = AgentLaunchConfiguration & Readonly<{
   memberAddress: AgentTeamAddress;
@@ -116,6 +120,7 @@ const cloneTeamRunAgentNode = (node: TeamRunAgentNode): TeamRunAgentNode => {
     autoExecuteTools: Boolean(node.autoExecuteTools),
     workspaceRootPath: optional(node.workspaceRootPath),
     ...(node.pendingRuntimeSwitch ? { pendingRuntimeSwitch: structuredClone(node.pendingRuntimeSwitch) } : {}),
+    ...(node.launchSource ? { launchSource: structuredClone(node.launchSource) } : {}),
   });
 };
 
@@ -155,6 +160,7 @@ export const cloneTeamRunAgentTeamNode = (node: TeamRunAgentTeamNode): TeamRunAg
       node.defaultLaunchConfiguration,
       `defaultLaunchConfiguration at '${address}'`,
     ),
+    ...(node.defaultLaunchSource ? { defaultLaunchSource: structuredClone(node.defaultLaunchSource) } : {}),
     ...placement,
     children,
   });

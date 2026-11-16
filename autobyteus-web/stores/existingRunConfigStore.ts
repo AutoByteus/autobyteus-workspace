@@ -4,7 +4,6 @@ import type { WorkspaceSelectionState } from '~/types/workspace/WorkspaceSelecti
 import { createExistingAgentOrgWorkspaceDraft, updateExistingAgentOrgWorkspaceDraft,
   planExistingAgentOrgWorkspacePatches, existingAgentOrgWorkspacesDirty, existingAgentOrgWorkspacesValid } from '~/services/runConfigEditing/existingAgentOrgWorkspaceDraft'
 import type { ExistingRunConfigDraft } from '~/types/agent/ExistingRunConfigDraft'
-import { useAgentRunCollaborationStore } from '~/stores/agentRunCollaborationStore'
 import { defineStore } from 'pinia'
 import { teamRunExecutionTreeDtoSchema } from '@autobyteus/team-stream-contracts'
 import { useRunHistoryStore } from '~/stores/runHistoryStore'
@@ -13,7 +12,6 @@ import { useAgentOrgContextsStore } from '~/stores/agentOrgContextsStore'
 import { parseAgentOrgExecutionTree } from '~/types/collaboration/agentOrgExecution'
 import type { RunResumeConfigPayload, TeamRunResumeConfigPayload } from '~/stores/runHistoryTypes'
 import type {
-  ExistingAgentDelegatedSnapshot,
   ExistingAgentRunSelection,
   ExistingRunModelSelection,
   ExistingRunModelOptionsState,
@@ -170,25 +168,21 @@ export const useExistingRunConfigStore = defineStore('existingRunConfig', {
       if (target.kind === 'team' && current.kind === 'team') return current.teamRunId === target.teamRunId
       return target.kind === 'agent_org' && current.kind === 'agent_org' && current.orgRunId === target.orgRunId
     },
-    async readAgentCanonical(runId: string, fresh = false): Promise<{ payload: RunResumeConfigPayload; delegatedSnapshot: ExistingAgentDelegatedSnapshot | null }> {
+    async readAgentCanonical(runId: string): Promise<{ payload: RunResumeConfigPayload }> {
       const request = this.canonicalLoadRequestId, binding = useWindowNodeContextStore().bindingRevision
       const payload = await useRunHistoryStore().refreshAgentResumeConfig(runId)
       if (request !== this.canonicalLoadRequestId || binding !== useWindowNodeContextStore().bindingRevision) throw new Error('Settings target changed.')
-      const view = payload.isActive ? null : await useAgentRunCollaborationStore().viewFor(runId, { fresh }) // one read per selection (358)
-      const delegatedSnapshot = view ? {
-        execution_tree: view.execution_tree, closed_task_executions: view.closed_task_executions,
-        remote_task_executions: view.remote_task_executions,
-      } : null
-      return { payload, delegatedSnapshot }
+      // The runs it delegated are its tree's rows, with their launches (SR-084): Settings reads them there.
+      return { payload }
     },
-    async loadAgentCanonical(runId: string, fresh = false): Promise<boolean> {
+    async loadAgentCanonical(runId: string): Promise<boolean> {
       const target = { kind: 'agent' as const, runId }
       const requestId = this.beginCanonicalLoad(target), binding = useWindowNodeContextStore().bindingRevision
       const current = () => this.isCurrentLoad(requestId, target) && binding === useWindowNodeContextStore().bindingRevision
       try {
-        const { payload, delegatedSnapshot } = await this.readAgentCanonical(runId, fresh)
+        const { payload } = await this.readAgentCanonical(runId)
         if (!current()) return false
-        this.syncAgentCanonical(payload, delegatedSnapshot)
+        this.syncAgentCanonical(payload)
         return true
       } catch (error) {
         if (!current()) return false
@@ -235,11 +229,8 @@ export const useExistingRunConfigStore = defineStore('existingRunConfig', {
         if (current()) this.loadingCanonical = false
       }
     },
-    syncAgentCanonical(payload: RunResumeConfigPayload, snapshot?: ExistingAgentDelegatedSnapshot | null): void {
+    syncAgentCanonical(payload: RunResumeConfigPayload): void {
       const sameSubject = this.draft?.kind === 'agent' && this.draft.runId === payload.runId
-      // Root-only mutations preserve this exact run's stopped snapshot, never another run's.
-      const delegatedSnapshot = snapshot === undefined
-        ? (sameSubject && this.draft?.kind === 'agent' ? this.draft.delegatedSnapshot : null) : snapshot
       this.draft = {
         kind: 'agent',
         runId: payload.runId,
@@ -247,7 +238,6 @@ export const useExistingRunConfigStore = defineStore('existingRunConfig', {
         editability: { ...payload.modelConfigEditability },
         metadata: cloneExistingRunJsonValue(payload.metadataConfig),
         draftSelection: metadataSelection(payload.metadataConfig),
-        delegatedSnapshot: payload.isActive ? null : cloneExistingRunJsonValue(delegatedSnapshot),
       }
       this.schemaStateByAddress = { '/': loadingSchemaState() }
       this.fieldErrors = []

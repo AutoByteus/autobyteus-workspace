@@ -1,0 +1,147 @@
+# Case: API-B01 phone MSP-37, MSP-38, MSP-39 (API-REV-002, round 2)
+# Commit: f75cf6b96b (code 9f4709571b); server dist and phone bundle built from it
+# Environment: ENV-1/ENV-3 macOS 26.5.2, Node v22.23.1, clean env (env -i PATH HOME=<temp> TMPDIR USER), scripted AGY CLI (AGY_FAKE_CASE=linked_skills)
+# Date: 2026-11-12
+# Command: node tests/e2e/<temporary copy of mobile-shell-probe.mjs with the base's second MSP-32 renamed MSP-90 (FU-016), deleted after> --output-dir=<dir> --cases=MSP-37,MSP-38,MSP-39   (in autobyteus-web; after pnpm build:mobile-web)
+
+{
+ "result": "Fail",
+ "cases": {
+  "MSP-37": {
+   "result": "Pass",
+   "seconds": 25.5,
+   "root": {
+    "kind": "agent",
+    "rootId": "manager_agent_5314_2b7ec9cf740544f28801b046e92e46c1",
+    "worker": "worker_agent_5314_d61d4eceb0d348ab8deabd1a07e45365"
+   },
+   "rootRowStatus": {
+    "listed while stopped": [
+     "offline",
+     "offline",
+     "offline",
+     "offline"
+    ],
+    "after a child command": [
+     "offline",
+     "offline",
+     "offline",
+     "offline",
+     "offline",
+     "offline",
+     "offline",
+     "offline",
+     "offline",
+     "offline"
+    ]
+   },
+   "markerInWorkerRun": true,
+   "rootActiveAfterChild": false,
+   "rootStartedOnOwnMember": true
+  },
+  "MSP-38": {
+   "result": "Fail",
+   "seconds": 38,
+   "error": "Timed out waiting for the worker's row under the team root",
+   "details": {
+    "rows": [
+     {
+      "key": "mobile-run-row-agent:manager_agent_5314_2b7ec9cf740544f28801b046e92e46c1",
+      "depth": "0",
+      "expanded": "true",
+      "name": "Manager agent 5314"
+     },
+     {
+      "key": "mobile-run-row-agent:manager_agent_5314_2b7ec9cf740544f28801b046e92e46c1/agent:worker_agent_5314_d61d4eceb0d348ab8deabd1a07e45365",
+      "depth": "1",
+      "expanded": null,
+      "name": "worker agent 5314"
+     },
+     {
+      "key": "mobile-run-row-org:org_org_be79_864b43adae1642929cc2760bed7ee8a3",
+      "depth": "0",
+      "expanded": "true",
+      "name": "Org org be79"
+     },
+     {
+      "key": "mobile-run-row-org:org_org_be79_864b43adae1642929cc2760bed7ee8a3/agent:manager_org_be79_6165a995e496452a91b6b387424b13e6",
+      "depth": "1",
+      "expanded": null,
+      "name": "manager"
+     },
+     {
+      "key": "mobile-run-row-team:team_team_5398_ac7643d42f734a64b640c5e1a053242b",
+      "depth": "0",
+      "expanded": "true",
+      "name": "Team team 5398"
+     },
+     {
+      "key": "mobile-run-row-team:team_team_5398_ac7643d42f734a64b640c5e1a053242b/agent:manager_team_5398_81067c23c6ca45598a434af51c1f5a73",
+      "depth": "1",
+      "expanded": null,
+      "name": "manager"
+     }
+    ]
+   }
+  },
+  "MSP-39": {
+   "result": "Fail",
+   "seconds": 37.9,
+   "error": "Timed out waiting for the worker's row under the org root",
+   "details": {
+    "rows": [
+     {
+      "key": "mobile-run-row-agent:manager_agent_5314_2b7ec9cf740544f28801b046e92e46c1",
+      "depth": "0",
+      "expanded": "true",
+      "name": "Manager agent 5314"
+     },
+     {
+      "key": "mobile-run-row-agent:manager_agent_5314_2b7ec9cf740544f28801b046e92e46c1/agent:worker_agent_5314_d61d4eceb0d348ab8deabd1a07e45365",
+      "depth": "1",
+      "expanded": null,
+      "name": "worker agent 5314"
+     },
+     {
+      "key": "mobile-run-row-org:org_org_be79_864b43adae1642929cc2760bed7ee8a3",
+      "depth": "0",
+      "expanded": "true",
+      "name": "Org org be79"
+     },
+     {
+      "key": "mobile-run-row-org:org_org_be79_864b43adae1642929cc2760bed7ee8a3/agent:manager_org_be79_6165a995e496452a91b6b387424b13e6",
+      "depth": "1",
+      "expanded": null,
+      "name": "manager"
+     },
+     {
+      "key": "mobile-run-row-team:team_team_5398_ac7643d42f734a64b640c5e1a053242b",
+      "depth": "0",
+      "expanded": "true",
+      "name": "Team team 5398"
+     },
+     {
+      "key": "mobile-run-row-team:team_team_5398_ac7643d42f734a64b640c5e1a053242b/agent:manager_team_5398_81067c23c6ca45598a434af51c1f5a73",
+      "depth": "1",
+      "expanded": null,
+      "name": "manager"
+     }
+    ]
+   }
+  }
+ },
+ "stoppedDelegatorRoots": {
+  "agent": {
+   "rootId": "manager_agent_5314_2b7ec9cf740544f28801b046e92e46c1",
+   "worker": "worker_agent_5314_d61d4eceb0d348ab8deabd1a07e45365"
+  },
+  "team": {
+   "rootId": "team_team_5398_ac7643d42f734a64b640c5e1a053242b",
+   "worker": "worker_team_5398_949d694c06844287b6cb2d8abb507135"
+  },
+  "org": {
+   "rootId": "org_org_be79_864b43adae1642929cc2760bed7ee8a3",
+   "worker": "worker_org_be79_92814a3772b54a4099d98dda9ad0b1f9"
+  }
+ }
+}

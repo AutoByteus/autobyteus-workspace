@@ -3,12 +3,10 @@ import { AgentStatus } from '~/types/agent/AgentStatus';
 import type { AIMessage } from '~/types/conversation';
 import { TeamStreamingService } from '../TeamStreamingService';
 import { useAgentBackgroundTaskStore } from '~/stores/agentBackgroundTaskStore';
-import { isTeamMemberProjectionAuthoritative } from '~/services/runHydration/teamMemberProjectionHydrationService';
 import { useCollaborationParticipantMessagesStore } from '~/services/collaborationMessages/collaborationParticipantMessages';
 import {
   buildTestTeamContext,
   testAgentNode,
-  testDelegation,
 } from '~/test-support/currentTeamTestFixtures';
 
 const { handleBrowserToolExecutionSucceededMock, runHistoryStoreMock, teamContextsStoreMock } = vi.hoisted(() => ({
@@ -31,7 +29,8 @@ vi.mock('~/services/collaborationMessages/participantMessagesQuery', async () =>
 const rootTeamRunId = 'classroom-run';
 const teacherRunId = 'teacher-run';
 const persistentStudentRunId = 'persistent-student-run';
-const taskStudentRunId = 'task-student-run';
+// A third own member (a run a member delegated is its own run, outside the Team: autobyteus-461 rule 2).
+const taskStudentRunId = 'tutor-run';
 
 const createHarness = () => {
   const callbacks = new Map<string, (payload?: any) => void>();
@@ -49,12 +48,8 @@ const createHarness = () => {
     rootChildren: [
       testAgentNode('/Teacher', { agentRunId: teacherRunId, displayName: 'Teacher' }),
       testAgentNode('/Student', { agentRunId: persistentStudentRunId, displayName: 'Student' }),
+      testAgentNode('/Tutor', { agentRunId: taskStudentRunId, displayName: 'Tutor' }),
     ],
-    delegations: [testDelegation({
-      delegatorAgentRunId: teacherRunId,
-      recipientAddress: '/Student',
-      target: { agentRunId: taskStudentRunId },
-    })],
   });
   const recoveryRequired = vi.fn();
   const service = new TeamStreamingService('ws://localhost:8000/ws/agent-team', {
@@ -74,9 +69,8 @@ const emit = (
 const snapshotPayload = (team: ReturnType<typeof buildTestTeamContext>, baseChangeSequence = team.view.getChangeSequence()) => ({
   root_team_run_id: rootTeamRunId,
   base_change_sequence: baseChangeSequence, live_sequence_id: 'live-1', last_message_change_sequence: 0,
-  closed_task_executions: [], execution_tree: team.view.getExecutionTree(),
-  agent_input_states: [], remote_task_executions: [],
-  agent_statuses: team.view.listAgentContextEntries().map((entry) => ({
+  execution_tree: team.view.getExecutionTree(),
+  agent_input_states: [], agent_statuses: team.view.listAgentContextEntries().map((entry) => ({
     agent_run_id: entry.agentRunId,
     member_address: entry.memberAddress,
     status: 'idle',
@@ -120,7 +114,8 @@ describe('TeamStreamingService current AgentRun event dispatch', () => {
     expect(service.isReady).toBe(false);
     emit(callbacks, 'CONNECTED', { session_id: 'team-session-1', root_team_run_id: rootTeamRunId });
     expect(service.isReady).toBe(false);
-    emit(callbacks, 'TEAM_EXECUTION_VIEW_SNAPSHOT', snapshotPayload(team));
+    // A rebuilt view (a newer base): the focused member is reconciled (an unchanged one keeps it, CR-461-082).
+    emit(callbacks, 'TEAM_EXECUTION_VIEW_SNAPSHOT', snapshotPayload(team, team.view.getChangeSequence() + 1));
     expect(service.isReady).toBe(true);
     expect(runHistoryStoreMock.refreshRunNavigationTopology)
       .toHaveBeenCalledWith('team-stream-structure');
@@ -140,24 +135,35 @@ describe('TeamStreamingService current AgentRun event dispatch', () => {
     expect(team.view.isRootTeamActive()).toBe(false);
   });
 
-  it('reconciles a mounted task activation without stealing exact focus', () => {
-    const { callbacks, team } = createHarness();
+  it('a stopped Team\'s first message to its own member settles after the in-band live snapshot, and the composer does not stay pending (autobyteus-461 SR-048)', async () => {
+    const { callbacks, service, team } = createHarness();
     teamContextsStoreMock.getTeamContextById.mockReturnValue(team);
+    // The view of a stopped Team: its stored-mode snapshot and lifecycle.
     admitReady(callbacks, team);
-    vi.clearAllMocks();
+    emit(callbacks, 'TEAM_RUN_LIFECYCLE', { is_active: false });
+    let settled = false;
+    const sending = service.sendMessage('start on this input', teacherRunId, [], [], { messageId: 'message-start', dedupeKey: 'dedupe-start' })
+      .then(() => { settled = true; });
 
-    emit(callbacks, 'TASK_EXECUTION_STARTED', {
-      change_sequence: 1, parent_team_run_id: rootTeamRunId,
-      execution: {
-        kind: 'task_agent', address: '/Student', agent_run_id: 'dynamic-task-run',
-        platform_agent_run_id: null, delegator_agent_run_id: teacherRunId, started_at: '2026-08-14T12:00:00.000Z', source: { kind: 'agent', agent_definition_id: 'Student', launch_configuration: { runtime_kind: 'autobyteus', llm_model_identifier: 'test-model', llm_config: null, auto_execute_tools: false, workspace_root_path: null } } },
+    // The server restores the Team and switches the view to live first: a fresh snapshot with a new sequence base.
+    emit(callbacks, 'TEAM_EXECUTION_VIEW_SNAPSHOT', { ...snapshotPayload(team, 7), live_sequence_id: 'live-2' });
+    emit(callbacks, 'TEAM_RUN_LIFECYCLE', { is_active: true });
+    await Promise.resolve();
+    // A snapshot neither drains nor settles the pending send.
+    expect(settled).toBe(false);
+    expect(service.isReady).toBe(true);
+
+    // Then it posts the message: its echo is an ordinary live event after the snapshot, and settles the send by identity.
+    emit(callbacks, 'MEMBER_INPUT_MESSAGE', {
+      change_sequence: 8, recipient_agent_run_id: teacherRunId, message_id: 'message-start', dedupe_key: 'dedupe-start',
+      content: 'start on this input', input_origin: 'user_message', received_at: '2026-11-11T00:00:00.000Z', context_file_paths: [],
+      sender_agent_run_id: null, parent_communication_message_id: null,
     });
-
-    expect(team.view.hasAgentRun('dynamic-task-run')).toBe(true);
-    expect(isTeamMemberProjectionAuthoritative(team, 'dynamic-task-run')).toBe(false);
-    expect(team.view.getFocusedAgentRunId()).toBe(teacherRunId);
-    expect(runHistoryStoreMock.refreshRunNavigationTopology)
-      .toHaveBeenCalledWith('team-stream-structure');
+    await sending;
+    expect(settled).toBe(true);
+    expect(team.view.isRootTeamActive()).toBe(true);
+    // Nothing is left pending for the member: its next message is admitted.
+    expect(() => service.sendMessage('next input', teacherRunId, [], [], { messageId: 'message-next', dedupeKey: 'dedupe-next' })).not.toThrow();
   });
 
   it('rejects a foreign connected root and cannot admit its snapshot', () => {
@@ -310,7 +316,7 @@ describe('TeamStreamingService current AgentRun event dispatch', () => {
     }));
   });
 
-  it('projects MEMBER_INPUT into the exact task AgentRun without persistent substitution', () => {
+  it('projects MEMBER_INPUT into the exact AgentRun without substitution', () => {
     const { callbacks, team } = createHarness();
     admitReady(callbacks, team);
     const taskStudent = team.view.getAgentContext(taskStudentRunId)!;
@@ -412,8 +418,8 @@ describe('TeamStreamingService current AgentRun event dispatch', () => {
       // The rebuilt view holds the same agents (a view that drops one a list names re-fetches that list, autobyteus-469 CR-002).
       const candidateTeam = buildTestTeamContext({ teamRunId: rootTeamRunId, coordinatorAddress: '/Teacher',
         rootChildren: [testAgentNode('/Teacher', { agentRunId: teacherRunId, displayName: 'Teacher' }),
-          testAgentNode('/Student', { agentRunId: persistentStudentRunId, displayName: 'Student' })],
-        delegations: [testDelegation({ delegatorAgentRunId: teacherRunId, recipientAddress: '/Student', target: { agentRunId: taskStudentRunId } })] });
+          testAgentNode('/Student', { agentRunId: persistentStudentRunId, displayName: 'Student' }),
+          testAgentNode('/Tutor', { agentRunId: taskStudentRunId, displayName: 'Tutor' })] });
       const service = new TeamStreamingService('ws://localhost:8000/ws/agent-team', { wsClient });
       void service.connectCandidate(rootTeamRunId, candidateTeam, snapshot.base_change_sequence as number);
       emit(candidateCallbacks, 'CONNECTED', { session_id: 'candidate-session', root_team_run_id: rootTeamRunId });

@@ -4,9 +4,12 @@ export const TaskRootFields = gql`
   fragment TaskRootFields on TaskRoot {
     kind
     recipientAddress
+    displayName
     ingressAgentRunId
     teamRunId
-    hostRoot { kind runId }
+    delegatingRun { kind runId }
+    topRun { kind runId }
+    openTarget { runKind runId agentRunId nodeId }
     start
     startError { code message }
     closed

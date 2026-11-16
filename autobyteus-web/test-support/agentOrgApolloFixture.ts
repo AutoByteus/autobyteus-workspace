@@ -6,7 +6,6 @@ const FILE_CHANGE_LIST_FIELDS: Record<string, string> = {
   GetRunFileChanges: 'getRunFileChanges',
   GetTeamMemberFileChanges: 'getTeamMemberFileChanges',
   GetAgentOrgMemberFileChanges: 'getAgentOrgMemberFileChanges',
-  GetAgentRunCollaborationMemberFileChanges: 'agentRunCollaborationMemberFileChanges',
 }
 
 // Transport-only control. The caller still executes the installed Apollo query manager,
@@ -47,9 +46,7 @@ export class ControlledOrgApollo {
 }
 export const rootView = (active: boolean) => {
   const view = taskBearingView()
-  view.is_active = active
-  if (!active) view.agent_statuses = []
-  return view
+  return { ...view, is_active: active, agent_statuses: active ? view.agent_statuses : [] }
 }
 export const inspectionData = (active: boolean) => ({ getAgentOrgRunInspection: {
   root_subject_kind: 'agent_org', root_run_id: 'org-run', root_org: rootView(active),
@@ -63,8 +60,7 @@ export const withOrgRootWorkspace = <T extends { rootOrg: { defaultLaunchConfigu
 export const historyData = (active: boolean, workspaceRootPath: string | null = null) => ({ listCollaborationRootHistory: [{
   __typename: 'AgentOrgRootHistoryObject', root_subject_kind: 'agent_org', root_run_id: 'org-run',
   created_at: '2026-09-01T00:00:00.000Z', last_activity_at: '2026-09-01T00:00:00.000Z', archived_at: null, is_active: active,
-  summary: 'Exact retained conversation', closed_task_executions: [],
-  org: workspaceRootPath ? withOrgRootWorkspace(taskBearingView().execution_tree, workspaceRootPath) : taskBearingView().execution_tree,
+  summary: 'Exact retained conversation', org: workspaceRootPath ? withOrgRootWorkspace(taskBearingView().execution_tree, workspaceRootPath) : taskBearingView().execution_tree,
 }] })
 export const memberData = (variables: Operation['variables'], label: string) => ({ getAgentOrgMemberRunProjection: {
   __typename: 'AgentOrgMemberRunProjection', agentRunId: variables.agentRunId, memberAddress: variables.memberAddress,

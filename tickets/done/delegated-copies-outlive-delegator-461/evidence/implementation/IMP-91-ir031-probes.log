@@ -1,0 +1,20 @@
+# Round 31 (IR-031) real-app probes on d381f7b17a, server rebuilt; each probe owns its data root, ports and Chrome; scripted AGY CLI, no provider
+
+$ pnpm -C autobyteus-web test:e2e:stopped-delegator-views --output-dir /tmp/sdv-ir031   (load 30-80)
+SDV-01 Fail stop agent failed: Failed to terminate agent run: AgentTerminationError: AggregateError: AGY_EXACT_STOP_UNCONFIRMED: child IO or captured groups remain active.
+SDV-02 Pass 
+SDV-03 Pass 
+SDV-04 Pass 
+SDV-05 Pass 
+SDV-06 Pass 
+SDV-07 Pass 
+$ ... --cases SDV-01 (alone, load 56)
+SDV-01 Pass
+
+$ node tests/e2e/project-manager-ux-probe.mjs --output-dir /tmp/pmu-ir031
+25 cases, 24 Pass; not Pass: [('PMU-013', 'locator.waitFor: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator(\'[data-testid="project-task-row-project_tas')]
+$ ... --cases PMU-013 (alone, load 8)
+Project manager UX probe: Pass. Evidence: /tmp/pmu13-ir031/evidence.json
+
+$ node tests/e2e/delegated-launch-defaults-probe.mjs --cases LRL-001
+LRL-001 Pass AC-003, QR-005 (Team): opening a stopped six-member Team run loads only the focused member; another member loads when opened; the Team tab asks once for the focused participant

@@ -32,7 +32,7 @@ const answer = (body: unknown, status = 200) => ({ ok: status >= 200 && status <
 const pendingAnswer = () => answer({ code: "NODE_IDENTITY_NOT_MIGRATED", message: "This node's identity is waiting for its data migration." }, 503);
 const peers = { findByName: async (name: string) => (name === "docker" ? PEER : null), peerSecret: async () => "peer-secret-for-tests", findByNodeId: async (id: string) => (id === PEER.nodeId ? PEER : null) };
 const WORK = { text: "Publish the video draft.", task: { taskId: null, taskKey: null, projectId: null, title: "Publish the video draft." } };
-const start = { nodeId: PEER.nodeId, address: "/publisher", delegatorAgentRunId: "agent_a1", coordinatingRun: { kind: "agent" as const, runId: "agent_a1" }, work: WORK };
+const start = { nodeId: PEER.nodeId, address: "/publisher", delegatorAgentRunId: "agent_a1", delegatingRun: { kind: "agent" as const, runId: "agent_a1" }, work: WORK };
 
 const roots: string[] = [];
 afterEach(async () => {
@@ -61,7 +61,7 @@ describe("this node's identity held back", () => {
       delegatedRuns: delegatedRuns as never, messages: { accept: vi.fn() } as never, availableAgents: { list: vi.fn() } as never, runViews: {} as never,
     });
     const response = await gate.startDelegatedRun({ fromNodeId: PEER.nodeId, toNodeId: SELF, address: "/publisher",
-      delegator: { agentRunId: "agent_a1" }, coordinatingRun: { kind: "agent", runId: "agent_a1" }, task: { text: "Publish the video draft.", title: "Publish the video draft.", taskKey: null, projectId: null, taskId: null } },
+      delegator: { agentRunId: "agent_a1" }, delegatingRun: { kind: "agent", runId: "agent_a1" }, task: { text: "Publish the video draft.", title: "Publish the video draft.", taskKey: null, projectId: null, taskId: null } },
     { kind: "peer", nodeId: PEER.nodeId });
     expect(response).toEqual({ status: 503, answer: { accepted: false, code: "NODE_IDENTITY_NOT_MIGRATED",
       message: "This node's identity is waiting for its data migration." } });

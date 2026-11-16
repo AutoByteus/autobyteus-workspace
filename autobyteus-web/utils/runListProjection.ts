@@ -82,7 +82,7 @@ const agentEntries = (sources: RunListSources): RunListEntry[] => {
           ? { ...mergeHistoryRowWithContext(historyRow(stored), context), lastActivityAt: stored.lastActivityAt }
           : historyRow(stored);
         entries.set(run.runId, {
-          kind: 'agent', key: agentRunRowKey(run.runId), runId: run.runId, name: agent.agentName || FALLBACK_AGENT_NAME,
+          kind: 'agent', key: agentRunRowKey(run.runId), runId: run.runId, name: stored.displayName || agent.agentName || FALLBACK_AGENT_NAME,
           lastActivityAt: run.lastActivityAt, isActive: run.isActive, folderRootPath: folderOf(group.workspaceRootPath),
           agentDefinitionId: agent.agentDefinitionId, avatarUrl: avatarOf(agent.agentDefinitionId, agent.agentAvatarUrl), run,
         });
@@ -117,7 +117,7 @@ export const buildRunListEntries = (sources: RunListSources): RunListEntry[] => 
   const teamLastActivity = new Map(sources.workspaceGroups.flatMap((group) => group.teamDefinitions
     .flatMap((definition) => definition.runs.map((run) => [run.teamRunId, run.lastActivityAt] as const))));
   const teams = sources.teamNodes.map<RunListEntry>((team) => ({
-    kind: 'team', key: `team:${team.teamRunId}`, runId: team.teamRunId, name: team.teamDefinitionName,
+    kind: 'team', key: `team:${team.teamRunId}`, runId: team.teamRunId, name: team.rootTeam.displayName || team.teamDefinitionName,
     // The server's last activity; a Team run no read lists yet (just started) keeps its node's time until the next read.
     lastActivityAt: teamLastActivity.get(team.teamRunId) ?? team.lastActivityAt,
     isActive: team.isActive, folderRootPath: folderOf(team.workspaceRootPath), team,

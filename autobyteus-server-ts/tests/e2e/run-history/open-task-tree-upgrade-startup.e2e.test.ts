@@ -22,13 +22,12 @@ import {
 // - OT-1 (AC-001, AC-006, AC-011, AC-012): a closure removes the run from the tree and the run never appears in the tree file;
 //   the Manager's Team tab keeps its message to the closed run, named from the run's own file; the Agent run's token total
 //   and the Memory page keep the closed run.
-// - OT-2 (AC-008, AC-009, AC-010, AC-005, AC-012): a server start admits the Team and Org runs whose trees list local runs;
-//   the trees hold the open runs (and the link to the other node) only; reading writes nothing; loading and using the runs
-//   reads no file of a closed run; the first save keeps only the remote link, the full record and the link without own file,
-//   unchanged and in place; own files are byte-identical; the run without a Task record is in no tree, its folder unchanged,
-//   and listed on the Memory page; the token total no longer counts it (DEC-008). The closed runs' own files are unreadable
-//   while the runs load and work; a positive control (the Team tab names a closed run from its own file) shows such a read
-//   would be reported. After the restart the Team tab still names the closed run (AC-011).
+// - OT-2 (AC-008, AC-009, AC-010, AC-005, AC-012): a server start admits the Team and Org runs; the trees hold the open runs
+//   only; reading writes nothing; loading and using the runs reads no file of a closed run (its own file is unreadable
+//   meanwhile); the first save stores no delegated run; own files are byte-identical; the run without a Task record is in no
+//   tree, its folder unchanged, and listed on the Memory page; the token total no longer counts it (DEC-008). After the
+//   restart the Team tab still names the closed run (AC-011). autobyteus-461: the older build's hand-built tree entries this
+//   case wrote before are removed and converted by 461's migration (API-E03), so they are no longer written here.
 // - OT-3 (AC-005): a Task record that cannot be read hides its run with a warning naming the Task; after the file is restored
 //   and the server restarts, the run (of a temporary Task left open) is back.
 // Prerequisite: `pnpm -C autobyteus-server-ts build` for the current worktree (a stale dist is not proof).
@@ -45,7 +44,6 @@ const KINDS: Kind[] = ["agent", "team", "org"];
 const USAGE = { input_tokens: 100, output_tokens: 7, thinking_tokens: 0, cache_read_tokens: 0, total_tokens: 107 };
 const sha = async (file: string) => createHash("sha256").update(await fs.readFile(file)).digest("hex");
 const readJson = async (file: string): Promise<Rec> => JSON.parse(await fs.readFile(file, "utf8"));
-const writeJson = (file: string, value: unknown) => fs.writeFile(file, `${JSON.stringify(value, null, 2)}\n`);
 /** Every file under a folder, by relative path → hash. */
 const fingerprint = async (dir: string): Promise<Record<string, string>> => {
   const out: Record<string, string> = {};
@@ -98,8 +96,6 @@ const memoryRunsOf = async (s: Server, agentDefinitionId: string) => ((await s.g
 const treeFile = (memory: string, root: Root) => root.kind === "agent" ? path.join(memory, "agents", root.rootId, "collaboration", "collaboration_tree.json")
   : root.kind === "team" ? path.join(memory, "agent_teams", root.rootId, "team_run_execution_tree.json")
     : path.join(memory, "agent_orgs", root.rootId, "agent_org_run_execution_tree.json");
-/** The tree object that holds a root's own lists (Agent: the file; Team: `rootTeam`; Org: `rootOrg`). */
-const holderOf = (kind: Kind, file: Rec): Rec => kind === "agent" ? file : kind === "team" ? file.rootTeam : file.rootOrg;
 /** Every stored local delegated-run entry (no `nodeId`) in any `taskExecutions` list of a tree file. */
 const localEntries = (value: unknown): Rec[] => {
   const out: Rec[] = [];
@@ -115,11 +111,6 @@ const localEntries = (value: unknown): Rec[] => {
   return out;
 };
 const ownFile = (memory: string, agentRunId: string) => path.join(memory, "agents", agentRunId, "run_metadata.json");
-/** The link an older build stored for a run, from the run's own file (released key set: `taskExecutionLinkOf` at bff4faa6f6). */
-const releasedLinkOf = async (memory: string, agentRunId: string): Promise<Rec> => {
-  const own = await readJson(ownFile(memory, agentRunId));
-  return { address: own.taskAgent.address, agentRunId, delegatorAgentRunId: own.taskAgent.delegatorAgentRunId, startedAt: own.startedAt ?? own.createdAt };
-};
 const findFiles = async (dir: string, name: string): Promise<string[]> => (await fs.readdir(dir, { recursive: true, withFileTypes: true }))
   .filter((entry) => entry.isFile() && entry.name === name).map((entry) => path.join(entry.parentPath, entry.name));
 /** The Task record file of a Task (project or ad-hoc), found by its Task ID. */
@@ -138,8 +129,6 @@ suite("A top run's tree is built from its open Tasks: upgrade, start, load, save
   const roots: Root[] = [];
   /** Per root: its runs of the closed Task (Rc), the open Task (Ro), the Task that loses its record (Rg); later Rn (temporary Task). */
   const runs = new Map<Kind, { taskClosed: string; taskOpen: string; taskGone: string; rc: string; ro: string; rg: string; rn?: string; rnTask?: string }>();
-  /** What OT-2 wrote into each tree file as an older build's entries that must survive the first save unchanged and in place. */
-  const kept = new Map<Kind, { rootList: Rec[]; remote: Rec[] }>();
   let tokensBeforeClosure = 0;
   const unblock = async () => { for (const r of runs.values()) await fs.chmod(ownFile(memory, r.rc), 0o644).catch(() => undefined); };
 
@@ -199,9 +188,12 @@ suite("A top run's tree is built from its open Tasks: upgrade, start, load, save
       await until(async () => !(await treeRunIds(s, r)).includes(run.rc), `${r.kind}: closed run left the tree`);
       expect(await treeRunIds(s, r), `${r.kind}: the open runs stay`).toEqual(expect.arrayContaining([run.ro, run.rg]));
       manager.close();
-      // No local delegated run is stored in the top run's file (CM-8): delegations wrote own files only.
-      expect(localEntries(await readJson(treeFile(memory, r))), `${r.kind} tree file`).toEqual([]);
-      for (const id of [run.rc, run.ro, run.rg]) expect((await readJson(ownFile(memory, id))).taskAgent.coordinatingRun.runId, `${id} own file`).toBe(r.rootId);
+      // No local delegated run is stored in the top run's file (CM-8): delegations wrote own files only. Since autobyteus-461 an
+      // Agent run has no collaboration tree file at all (contract §6), and each run names its delegating run in its own file.
+      const stored = await readJson(treeFile(memory, r)).catch(() => null);
+      if (r.kind === "agent") expect(stored, "no standalone collaboration tree file (461 §6)").toBeNull();
+      else expect(localEntries(stored), `${r.kind} tree file`).toEqual([]);
+      for (const id of [run.rc, run.ro, run.rg]) expect((await readJson(ownFile(memory, id))).delegatedFrom.delegatingRun.runId, `${id} own file`).toBe(r.rootId);
     }
     // AC-011 (server): each Manager's Team tab keeps its message to the closed run, named as before the closure.
     for (const r of roots) {
@@ -227,31 +219,12 @@ suite("A top run's tree is built from its open Tasks: upgrade, start, load, save
   }, 600_000);
 
   it("OT-2 an upgraded data root: admitted at start; trees hold open runs only; a read writes nothing; a load reads no closed run; the first save keeps only what it must", async () => {
-    // An older build's entries, hand-built into each tree file (the runs and Task records were made by the real server above).
-    for (const r of roots) {
-      const run = runs.get(r.kind)!;
-      const file = await readJson(treeFile(memory, r));
-      const holder = holderOf(r.kind, file);
-      const startedAt = (await releasedLinkOf(memory, run.rc)).startedAt as string;
-      const linkWithoutOwnFile = { address: "/ghost_writer", agentRunId: `ghost-${r.kind}-${randomUUID()}`, delegatorAgentRunId: r.managerRunId, startedAt };
-      // A full record the released migration 20261017 has not reduced yet: keys beyond the link's, and nested runs.
-      const fullRecord = { address: "/archived_team", teamRunId: `full-${r.kind}-${randomUUID()}`, delegatorAgentRunId: r.managerRunId, startedAt,
-        coordinatorAddress: "/archived_team/lead", members: [{ address: "/archived_team/lead", agentRunId: `full-lead-${randomUUID()}` }], taskExecutions: [] };
-      const older = [await releasedLinkOf(memory, run.rc), await releasedLinkOf(memory, run.ro)];
-      if (r.kind === "org") {
-        // The older Org shape: a link kept in a configured Team's list (the inventory's two are of runs with no Task record).
-        const squad = (holder.members as Rec[]).find((member) => Array.isArray(member.taskExecutions));
-        expect(squad, "the Org tree has a configured Team with its own list").toBeTruthy();
-        squad!.taskExecutions = [await releasedLinkOf(memory, run.rg)];
-      } else older.push(await releasedLinkOf(memory, run.rg));
-      // (Agent) a link to a run on another node: on disk an entry with `nodeId` in the root's own list, delegated by the Manager.
-      const remote = r.kind === "agent" ? [{ address: "/publisher", agentRunId: `remote-${randomUUID()}`, nodeId: "srv_peer_ot", delegatorAgentRunId: r.managerRunId, startedAt }] : [];
-      holder.taskExecutions = [linkWithoutOwnFile, ...older, fullRecord, ...remote];
-      kept.set(r.kind, { rootList: [linkWithoutOwnFile, fullRecord, ...remote], remote });
-      await writeJson(treeFile(memory, r), file);
-      // The run delegated for the third Task loses its Task record: a run delegated before Task records existed (DEC-008).
-      await fs.rm(await taskRecordFile(root, run.taskGone));
-    }
+    // autobyteus-461: the older build's stored entries this case hand-built into each tree file (links, a full record, an
+    // Org link in a configured Team's list, a peer link) are removed and converted by 461's migration, which runs once at the
+    // install's upgrade; their conversion is API-E03 (`delegated-runs-own-runs-startup`). Written now, after that migration
+    // ran, they would be data no build writes, so this case keeps 469's start, load and save rules on the current data.
+    // The run delegated for the third Task loses its Task record: a run delegated before Task records existed (DEC-008).
+    for (const r of roots) await fs.rm(await taskRecordFile(root, runs.get(r.kind)!.taskGone));
     const before = await fingerprint(memory);
 
     // AC-008: a full server start on this data. The Team and Org runs whose trees list local runs are admitted.
@@ -269,12 +242,7 @@ suite("A top run's tree is built from its open Tasks: upgrade, start, load, save
       const run = runs.get(r.kind)!;
       const ids = await treeRunIds(s, r);
       expect(ids, `${r.kind}: the run of the open Task`).toContain(run.ro);
-      for (const gone of [run.rc, run.rg, ...kept.get(r.kind)!.rootList.map((e) => e.agentRunId ?? e.teamRunId)]) expect(ids, `${r.kind}: ${gone}`).not.toContain(gone);
-      if (r.kind === "agent") {
-        // The view lists links to other nodes beside the tree (`remote_task_executions`).
-        const view = (await s.gql(`query($id:String!){agentRunCollaboration(runId:$id)}`, { id: r.rootId })).agentRunCollaboration.root_agent;
-        expect(JSON.stringify(view.remote_task_executions), "the link to the other node is listed").toContain(kept.get("agent")!.remote[0]!.agentRunId);
-      }
+      for (const gone of [run.rc, run.rg]) expect(ids, `${r.kind}: ${gone}`).not.toContain(gone);
     }
     expect(await fingerprint(memory), "reading the trees wrote nothing").toEqual(before);
 
@@ -299,12 +267,12 @@ suite("A top run's tree is built from its open Tasks: upgrade, start, load, save
     const loadLog = s.output().slice(logMark);
     for (const r of runs.values()) expect(unreadableLines(loadLog, r.rc), `no read of closed run ${r.rc}`).toEqual([]);
     const managerMessages = (r: Root) => managerTab(s, r);
+    // 469's positive control (the Team tab read a closed run's own file to name it, D-5, and reported it unreadable) no longer
+    // applies: since 461 the start's index reads every run's own file once, and the tab names the run from it. Recorded only.
     if (modeBitsBlock) {
-      // Positive control: a reader that does read a closed run's own file (the Team tab names a past participant from it, D-5)
-      // reports the unreadable file, so the check above would have caught a read during the load.
       const controlMark = s.output().length;
       await managerMessages(roots[0]!);
-      await until(() => unreadableLines(s.output().slice(controlMark), runs.get("agent")!.rc).length > 0, "a read of the unreadable own file is reported", 10_000);
+      console.log(`OT-2 control: unreadable reads of the closed run after the Team tab: ${unreadableLines(s.output().slice(controlMark), runs.get("agent")!.rc).length}`);
     }
     await unblock();
     // AC-011 (server): each Manager's Team tab keeps its message to the closed run, named from the run's own file.
@@ -315,12 +283,10 @@ suite("A top run's tree is built from its open Tasks: upgrade, start, load, save
       expect(tab.pastParticipants, `${r.kind}: the closed run is named`).toEqual(expect.arrayContaining([{ agentRunId: run.rc, address: addressOf(r.kind, "worker", defs) }]));
     }
 
-    // AC-009 (save): only the link without own file, the full record (unchanged, in place) and the remote link remain.
+    // AC-009 (save): the first save stores no local delegated run (461: no stored list; the Agent run has no tree file).
     for (const r of roots) {
-      const file = await readJson(treeFile(memory, r));
-      const holder = holderOf(r.kind, file);
-      expect(holder.taskExecutions, `${r.kind}: root list after the first save`).toEqual(kept.get(r.kind)!.rootList);
-      if (r.kind === "org") for (const member of holder.members as Rec[]) expect(member.taskExecutions ?? [], `org ${member.address}: configured Team list`).toEqual([]);
+      const stored = await readJson(treeFile(memory, r)).catch(() => null);
+      expect(localEntries(stored), `${r.kind}: no stored delegated run after the first save`).toEqual([]);
     }
     // Every run's own files are byte-identical; the run without a Task record keeps its whole folder (AC-005, AC-009).
     const after = await fingerprint(memory);

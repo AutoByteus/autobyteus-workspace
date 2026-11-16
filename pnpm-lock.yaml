@@ -276,6 +276,9 @@ importers:
       '@autobyteus/agent-presentation-contracts':
         specifier: workspace:*
         version: link:../autobyteus-agent-presentation-contracts
+      '@autobyteus/collaboration-stream-contracts':
+        specifier: workspace:*
+        version: link:../autobyteus-collaboration-stream-contracts
       zod:
         specifier: ^4.3.6
         version: 4.3.6

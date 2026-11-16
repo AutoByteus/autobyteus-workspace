@@ -1,8 +1,6 @@
 import type { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
-import type { DelegatedLaunchChange } from "../../agent-collaboration/domain/delegated-launch-selection.js";
 import type { AgentOrgRunExecutionTreeFile } from "./agent-org-run-execution-tree.js";
 import type { RunModelConfigEditability, RunModelConfigUpdateResult } from "../../run-history/domain/run-model-config.js";
-import type { RunModelOptions } from "../../llm-management/domain/run-model-selection.js";
 
 export type AgentOrgRunSelectionScopeKind =
   | "CONFIGURED_ORG"
@@ -25,11 +23,6 @@ export type AgentOrgRunConfig = Readonly<{
   editability: RunModelConfigEditability;
 }>;
 
-export type AgentOrgRunModelOption = RunModelOptions & Readonly<{
-  scopeKind: AgentOrgRunSelectionScopeKind;
-  scopeAddress: string;
-}>;
-
 export type AgentOrgRunConfigResult = RunModelConfigUpdateResult<AgentOrgRunExecutionTreeFile | null>;
 
 export type TeamWorkspacePatch = Readonly<{
@@ -41,6 +34,4 @@ export type UpdateStoppedAgentOrgRunConfig = Readonly<{
   orgRunId: string;
   selectionPatches: readonly AgentOrgRunSelectionPatch[];
   teamWorkspacePatches: readonly TeamWorkspacePatch[];
-  /** AR-004: user model choices of delegated copies, saved with the rest in one write. */
-  delegatedChanges?: readonly DelegatedLaunchChange[];
 }>;

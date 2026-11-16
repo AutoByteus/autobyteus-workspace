@@ -34,6 +34,7 @@ import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.j
 import { startStudioE2eRuntimeServer } from "../helpers/studio-runtime-test-server.js";
 import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
 import { AUTH_PROBE_TOOL, startAuthRequiredMcpServer, type AuthRequiredMcpServer } from "../helpers/auth-required-mcp-server.js";
+import { agentStreamFramesOf } from "../helpers/agent-stream-frames.js";
 
 type Wire = { type: string; payload: Record<string, unknown> };
 type RuntimeCase = {
@@ -192,9 +193,8 @@ suite("Agents call tools of credential-protected remote MCP servers", () => {
     socket.on("message", (raw: unknown) => {
       try {
         const parsed = JSON.parse(String(raw)) as { type?: unknown; payload?: unknown };
-        if (typeof parsed.type === "string") messages.push({ type: parsed.type,
-          payload: parsed.payload && typeof parsed.payload === "object" && !Array.isArray(parsed.payload)
-            ? parsed.payload as Record<string, unknown> : {} });
+        // autobyteus-461 SR-087: a SEGMENT_CONTENT_BATCH is its items (each a SEGMENT_CONTENT), as the web applies it.
+        messages.push(...agentStreamFramesOf(parsed));
       } catch { /* Ignore malformed diagnostic rows. */ }
     });
     await new Promise<void>((resolve, reject) => { socket.once("open", resolve); socket.once("error", reject); });

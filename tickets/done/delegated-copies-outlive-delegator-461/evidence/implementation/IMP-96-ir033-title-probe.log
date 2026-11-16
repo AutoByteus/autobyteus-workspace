@@ -1,0 +1,7 @@
+IMP-96 — CR-461-093 (F-72): remote-run-title-probe.mjs at fc1da7d71f (server dist built at 6a30ddf41e; nuxt dev from source)
+A temporary trace in buildTeamNodes (reverted) logged every Team row built without its stored title.
+run 0 probe Pass RRT-05 Pass teamRowSeen [{"atMs": 2, "text": "Cut the launch trailer and have it checked. Marker TEAM-TITLE."}] trace hits 0
+run 1 probe Pass RRT-05 Pass teamRowSeen [{"atMs": 6, "text": "Cut the launch trailer and have it checked. Marker TEAM-TITLE."}] trace hits 0
+run 2 probe Pass RRT-05 Pass teamRowSeen [{"atMs": 2, "text": "Cut the launch trailer and have it checked. Marker TEAM-TITLE."}] trace hits 0
+Not reproduced at the new head (3/3 pass; the row shows only its title from 2-6 ms after the send; no row is built
+without its stored title). It failed 2/2 at 58cc542572 (API/E2E). Not pinned to one change of this round.

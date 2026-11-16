@@ -11,6 +11,7 @@ import { rootPrismaClient } from "repository_prisma";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { startStudioE2eRuntimeServer } from "../helpers/studio-runtime-test-server.js";
 import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
+import { agentStreamFramesOf } from "../helpers/agent-stream-frames.js";
 
 // AGY token usage through the real server (REQ-002, AC-002, server side of AC-003). The fake AGY CLI
 // (tests/fixtures/agy-failure-cli.mjs, case usage_report) replays, one per user turn, the 11 turns of a verbatim
@@ -111,9 +112,8 @@ suite("AGY token usage counts cache reads in gross input through the real server
     socket.on("message", (raw: unknown) => {
       try {
         const parsed = JSON.parse(String(raw)) as { type?: unknown; payload?: unknown };
-        if (typeof parsed.type === "string") messages.push({ type: parsed.type,
-          payload: parsed.payload && typeof parsed.payload === "object" && !Array.isArray(parsed.payload)
-            ? parsed.payload as Record<string, unknown> : {} });
+        // autobyteus-461 SR-087: a SEGMENT_CONTENT_BATCH is its items (each a SEGMENT_CONTENT), as the web applies it.
+        messages.push(...agentStreamFramesOf(parsed));
       } catch { /* Ignore only malformed diagnostic transport rows. */ }
     });
     await new Promise<void>((resolve, reject) => { socket!.once("open", resolve); socket!.once("error", reject); });

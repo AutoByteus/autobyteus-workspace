@@ -1,0 +1,570 @@
+{
+  "delegations": {
+    "team": {
+      "delegated": true,
+      "copy": {
+        "kind": "team",
+        "teamRunId": "task-team-1",
+        "teamCoordinatorAgentRunId": "task-team-1-lead"
+      },
+      "taskId": "ad_hoc_task_1"
+    },
+    "agent": {
+      "delegated": true,
+      "copy": {
+        "kind": "agent",
+        "agentRunId": "task-agent-2"
+      },
+      "taskId": "ad_hoc_task_2"
+    }
+  },
+  "addresses": [
+    "/target",
+    "/code_reviewer"
+  ],
+  "snapshot": {
+    "root_org": {
+      "agent_input_states": [],
+      "agent_statuses": [
+        {
+          "agent_run_id": "string",
+          "error_details": null,
+          "error_message": null,
+          "member_address": "string",
+          "recoverableBlock": null,
+          "status": "offline",
+          "tool_name": null,
+          "trigger": null
+        },
+        {
+          "agent_run_id": "string",
+          "error_details": null,
+          "error_message": null,
+          "member_address": "string",
+          "recoverableBlock": null,
+          "status": "running",
+          "tool_name": null,
+          "trigger": null
+        },
+        {
+          "agent_run_id": "string",
+          "error_details": null,
+          "error_message": null,
+          "member_address": "string",
+          "recoverableBlock": null,
+          "status": "offline",
+          "tool_name": null,
+          "trigger": null
+        },
+        {
+          "agent_run_id": "string",
+          "error_details": null,
+          "error_message": null,
+          "member_address": "string",
+          "recoverableBlock": null,
+          "status": "offline",
+          "tool_name": null,
+          "trigger": null
+        },
+        {
+          "agent_run_id": "string",
+          "error_details": null,
+          "error_message": null,
+          "member_address": "string",
+          "recoverableBlock": null,
+          "status": "running",
+          "tool_name": null,
+          "trigger": null
+        },
+        {
+          "agent_run_id": "string",
+          "error_details": null,
+          "error_message": null,
+          "member_address": "string",
+          "recoverableBlock": null,
+          "status": "offline",
+          "tool_name": null,
+          "trigger": null
+        }
+      ],
+      "base_change_sequence": "number",
+      "closed_task_executions": [],
+      "execution_tree": {
+        "applicationBinding": null,
+        "archivedAt": null,
+        "createdAt": "string",
+        "handoffs": [],
+        "rootOrg": {
+          "address": "string",
+          "defaultLaunchConfiguration": {
+            "autoExecuteTools": "boolean",
+            "llmConfig": null,
+            "llmModelIdentifier": "string",
+            "runtimeKind": "string",
+            "workspaceRootPath": "string"
+          },
+          "members": [
+            {
+              "address": "string",
+              "agentDefinitionId": "string",
+              "agentRunId": "string",
+              "description": null,
+              "launchConfiguration": {
+                "autoExecuteTools": "boolean",
+                "llmConfig": null,
+                "llmModelIdentifier": "string",
+                "runtimeKind": "string",
+                "workspaceRootPath": "string"
+              },
+              "platformAgentRunId": null,
+              "role": null
+            },
+            {
+              "address": "string",
+              "coordinatorAddress": "string",
+              "defaultLaunchConfiguration": {
+                "autoExecuteTools": "boolean",
+                "llmConfig": null,
+                "llmModelIdentifier": "string",
+                "runtimeKind": "string",
+                "workspaceRootPath": "string"
+              },
+              "description": null,
+              "members": [
+                {
+                  "address": "string",
+                  "agentDefinitionId": "string",
+                  "agentRunId": "string",
+                  "description": null,
+                  "launchConfiguration": {
+                    "autoExecuteTools": "boolean",
+                    "llmConfig": null,
+                    "llmModelIdentifier": "string",
+                    "runtimeKind": "string",
+                    "workspaceRootPath": "string"
+                  },
+                  "platformAgentRunId": null,
+                  "role": null
+                },
+                {
+                  "address": "string",
+                  "agentDefinitionId": "string",
+                  "agentRunId": "string",
+                  "description": null,
+                  "launchConfiguration": {
+                    "autoExecuteTools": "boolean",
+                    "llmConfig": null,
+                    "llmModelIdentifier": "string",
+                    "runtimeKind": "string",
+                    "workspaceRootPath": "string"
+                  },
+                  "platformAgentRunId": null,
+                  "role": null
+                }
+              ],
+              "role": null,
+              "taskExecutions": [],
+              "teamDefinitionId": "string",
+              "teamRunId": "string"
+            }
+          ],
+          "orgDefinitionId": "string",
+          "orgDefinitionName": "string",
+          "orgRunId": "string",
+          "taskExecutions": [
+            {
+              "address": "string",
+              "delegatorAgentRunId": "string",
+              "members": [
+                {
+                  "address": "string",
+                  "agentRunId": "string",
+                  "platformAgentRunId": null
+                },
+                {
+                  "address": "string",
+                  "agentRunId": "string",
+                  "platformAgentRunId": null
+                }
+              ],
+              "source": {
+                "coordinatorAddress": "string",
+                "defaultLaunchConfiguration": {
+                  "autoExecuteTools": "boolean",
+                  "llmConfig": null,
+                  "llmModelIdentifier": "string",
+                  "runtimeKind": "string",
+                  "workspaceRootPath": "string"
+                },
+                "defaultLaunchSource": {
+                  "fallbacks": [],
+                  "origin": "string"
+                },
+                "handoffs": [],
+                "kind": "agent_team",
+                "members": [
+                  {
+                    "address": "string",
+                    "agentDefinitionId": "string",
+                    "followsTeam": "boolean",
+                    "launchConfiguration": {
+                      "autoExecuteTools": "boolean",
+                      "llmConfig": null,
+                      "llmModelIdentifier": "string",
+                      "runtimeKind": "string",
+                      "workspaceRootPath": "string"
+                    }
+                  },
+                  {
+                    "address": "string",
+                    "agentDefinitionId": "string",
+                    "followsTeam": "boolean",
+                    "launchConfiguration": {
+                      "autoExecuteTools": "boolean",
+                      "llmConfig": null,
+                      "llmModelIdentifier": "string",
+                      "runtimeKind": "string",
+                      "workspaceRootPath": "string"
+                    }
+                  }
+                ],
+                "teamDefinitionId": "string"
+              },
+              "startedAt": "string",
+              "taskExecutions": [],
+              "teamRunId": "string"
+            },
+            {
+              "address": "string",
+              "agentRunId": "string",
+              "delegatorAgentRunId": "string",
+              "platformAgentRunId": null,
+              "source": {
+                "agentDefinitionId": "string",
+                "kind": "agent",
+                "launchConfiguration": {
+                  "autoExecuteTools": "boolean",
+                  "llmConfig": null,
+                  "llmModelIdentifier": "string",
+                  "runtimeKind": "string",
+                  "workspaceRootPath": "string"
+                },
+                "launchSource": {
+                  "fallbacks": [],
+                  "origin": "string"
+                }
+              },
+              "startedAt": "string"
+            }
+          ]
+        },
+        "subjectKind": "agent_org"
+      },
+      "is_active": "boolean",
+      "last_message_change_sequence": "number",
+      "live_sequence_id": "string",
+      "remote_task_executions": []
+    },
+    "root_run_id": "string",
+    "root_subject_kind": "agent_org"
+  },
+  "started": [
+    {
+      "change_sequence": "number",
+      "event": {
+        "execution": {
+          "address": "string",
+          "delegatorAgentRunId": "string",
+          "members": [
+            {
+              "address": "string",
+              "agentRunId": "string",
+              "platformAgentRunId": null
+            },
+            {
+              "address": "string",
+              "agentRunId": "string",
+              "platformAgentRunId": null
+            }
+          ],
+          "source": {
+            "coordinatorAddress": "string",
+            "defaultLaunchConfiguration": {
+              "autoExecuteTools": "boolean",
+              "llmConfig": null,
+              "llmModelIdentifier": "string",
+              "runtimeKind": "string",
+              "workspaceRootPath": "string"
+            },
+            "defaultLaunchSource": {
+              "fallbacks": [],
+              "origin": "string"
+            },
+            "handoffs": [],
+            "kind": "agent_team",
+            "members": [
+              {
+                "address": "string",
+                "agentDefinitionId": "string",
+                "followsTeam": "boolean",
+                "launchConfiguration": {
+                  "autoExecuteTools": "boolean",
+                  "llmConfig": null,
+                  "llmModelIdentifier": "string",
+                  "runtimeKind": "string",
+                  "workspaceRootPath": "string"
+                }
+              },
+              {
+                "address": "string",
+                "agentDefinitionId": "string",
+                "followsTeam": "boolean",
+                "launchConfiguration": {
+                  "autoExecuteTools": "boolean",
+                  "llmConfig": null,
+                  "llmModelIdentifier": "string",
+                  "runtimeKind": "string",
+                  "workspaceRootPath": "string"
+                }
+              }
+            ],
+            "teamDefinitionId": "string"
+          },
+          "startedAt": "string",
+          "taskExecutions": [],
+          "teamRunId": "string"
+        },
+        "host_kind": "root",
+        "host_run_id": "string",
+        "kind": "task_execution_started"
+      },
+      "root_run_id": "string",
+      "root_subject_kind": "agent_org"
+    },
+    {
+      "change_sequence": "number",
+      "event": {
+        "execution": {
+          "address": "string",
+          "agentRunId": "string",
+          "delegatorAgentRunId": "string",
+          "platformAgentRunId": null,
+          "source": {
+            "agentDefinitionId": "string",
+            "kind": "agent",
+            "launchConfiguration": {
+              "autoExecuteTools": "boolean",
+              "llmConfig": null,
+              "llmModelIdentifier": "string",
+              "runtimeKind": "string",
+              "workspaceRootPath": "string"
+            },
+            "launchSource": {
+              "fallbacks": [],
+              "origin": "string"
+            }
+          },
+          "startedAt": "string"
+        },
+        "host_kind": "root",
+        "host_run_id": "string",
+        "kind": "task_execution_started"
+      },
+      "root_run_id": "string",
+      "root_subject_kind": "agent_org"
+    }
+  ],
+  "closed": [
+    {
+      "change_sequence": "number",
+      "event": {
+        "kind": "task_executions_closed",
+        "task_executions": [
+          {
+            "agentRunId": "string"
+          }
+        ]
+      },
+      "root_run_id": "string",
+      "root_subject_kind": "agent_org"
+    }
+  ],
+  "listRow": {
+    "closed_task_executions": [
+      {
+        "agentRunId": "string"
+      }
+    ],
+    "org": {
+      "applicationBinding": null,
+      "archivedAt": null,
+      "createdAt": "string",
+      "handoffs": [],
+      "rootOrg": {
+        "address": "string",
+        "defaultLaunchConfiguration": {
+          "autoExecuteTools": "boolean",
+          "llmConfig": null,
+          "llmModelIdentifier": "string",
+          "runtimeKind": "string",
+          "workspaceRootPath": "string"
+        },
+        "members": [
+          {
+            "address": "string",
+            "agentDefinitionId": "string",
+            "agentRunId": "string",
+            "description": null,
+            "launchConfiguration": {
+              "autoExecuteTools": "boolean",
+              "llmConfig": null,
+              "llmModelIdentifier": "string",
+              "runtimeKind": "string",
+              "workspaceRootPath": "string"
+            },
+            "platformAgentRunId": null,
+            "role": null
+          },
+          {
+            "address": "string",
+            "coordinatorAddress": "string",
+            "defaultLaunchConfiguration": {
+              "autoExecuteTools": "boolean",
+              "llmConfig": null,
+              "llmModelIdentifier": "string",
+              "runtimeKind": "string",
+              "workspaceRootPath": "string"
+            },
+            "description": null,
+            "members": [
+              {
+                "address": "string",
+                "agentDefinitionId": "string",
+                "agentRunId": "string",
+                "description": null,
+                "launchConfiguration": {
+                  "autoExecuteTools": "boolean",
+                  "llmConfig": null,
+                  "llmModelIdentifier": "string",
+                  "runtimeKind": "string",
+                  "workspaceRootPath": "string"
+                },
+                "platformAgentRunId": null,
+                "role": null
+              },
+              {
+                "address": "string",
+                "agentDefinitionId": "string",
+                "agentRunId": "string",
+                "description": null,
+                "launchConfiguration": {
+                  "autoExecuteTools": "boolean",
+                  "llmConfig": null,
+                  "llmModelIdentifier": "string",
+                  "runtimeKind": "string",
+                  "workspaceRootPath": "string"
+                },
+                "platformAgentRunId": null,
+                "role": null
+              }
+            ],
+            "role": null,
+            "taskExecutions": [],
+            "teamDefinitionId": "string",
+            "teamRunId": "string"
+          }
+        ],
+        "orgDefinitionId": "string",
+        "orgDefinitionName": "string",
+        "orgRunId": "string",
+        "taskExecutions": [
+          {
+            "address": "string",
+            "delegatorAgentRunId": "string",
+            "members": [
+              {
+                "address": "string",
+                "agentRunId": "string",
+                "platformAgentRunId": null
+              },
+              {
+                "address": "string",
+                "agentRunId": "string",
+                "platformAgentRunId": null
+              }
+            ],
+            "source": {
+              "coordinatorAddress": "string",
+              "defaultLaunchConfiguration": {
+                "autoExecuteTools": "boolean",
+                "llmConfig": null,
+                "llmModelIdentifier": "string",
+                "runtimeKind": "string",
+                "workspaceRootPath": "string"
+              },
+              "defaultLaunchSource": {
+                "fallbacks": [],
+                "origin": "string"
+              },
+              "handoffs": [],
+              "kind": "agent_team",
+              "members": [
+                {
+                  "address": "string",
+                  "agentDefinitionId": "string",
+                  "followsTeam": "boolean",
+                  "launchConfiguration": {
+                    "autoExecuteTools": "boolean",
+                    "llmConfig": null,
+                    "llmModelIdentifier": "string",
+                    "runtimeKind": "string",
+                    "workspaceRootPath": "string"
+                  }
+                },
+                {
+                  "address": "string",
+                  "agentDefinitionId": "string",
+                  "followsTeam": "boolean",
+                  "launchConfiguration": {
+                    "autoExecuteTools": "boolean",
+                    "llmConfig": null,
+                    "llmModelIdentifier": "string",
+                    "runtimeKind": "string",
+                    "workspaceRootPath": "string"
+                  }
+                }
+              ],
+              "teamDefinitionId": "string"
+            },
+            "startedAt": "string",
+            "taskExecutions": [],
+            "teamRunId": "string"
+          },
+          {
+            "address": "string",
+            "agentRunId": "string",
+            "delegatorAgentRunId": "string",
+            "platformAgentRunId": null,
+            "source": {
+              "agentDefinitionId": "string",
+              "kind": "agent",
+              "launchConfiguration": {
+                "autoExecuteTools": "boolean",
+                "llmConfig": null,
+                "llmModelIdentifier": "string",
+                "runtimeKind": "string",
+                "workspaceRootPath": "string"
+              },
+              "launchSource": {
+                "fallbacks": [],
+                "origin": "string"
+              }
+            },
+            "startedAt": "string"
+          }
+        ]
+      },
+      "subjectKind": "agent_org"
+    }
+  }
+}

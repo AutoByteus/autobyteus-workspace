@@ -26,7 +26,7 @@ const client = (fetchImpl: (url: string, init: RequestInit) => Promise<ReturnTyp
 };
 
 const WORK = { text: "Publish the video draft.", task: { taskId: null, taskKey: null, projectId: null, title: "Publish the video draft." } };
-const start = { nodeId: PEER.nodeId, address: "/publisher", delegatorAgentRunId: "agent_a1", coordinatingRun: { kind: "agent" as const, runId: "agent_a1" }, work: WORK };
+const start = { nodeId: PEER.nodeId, address: "/publisher", delegatorAgentRunId: "agent_a1", delegatingRun: { kind: "agent" as const, runId: "agent_a1" }, work: WORK };
 const message = {
   nodeId: PEER.nodeId, kind: "message" as const, messageId: "collabmsg_1", senderAgentRunId: "agent_a1",
   targetRoot: { kind: "agent" as const, runId: "publisher_7f3" }, targetAgentRunId: "publisher_7f3",
@@ -40,7 +40,7 @@ describe("PeerClient", () => {
     const [url, init] = f.fetch.mock.calls[0]!;
     expect(url).toBe("http://peer:29700/rest/remote/delegated-runs");
     expect(JSON.parse(String(init.body))).toEqual({ fromNodeId: SELF, toNodeId: PEER.nodeId, address: "/publisher",
-      delegator: { agentRunId: "agent_a1" }, coordinatingRun: { kind: "agent", runId: "agent_a1" }, task: { text: "Publish the video draft.", title: "Publish the video draft.", taskKey: null, projectId: null, taskId: null } });
+      delegator: { agentRunId: "agent_a1" }, delegatingRun: { kind: "agent", runId: "agent_a1" }, task: { text: "Publish the video draft.", title: "Publish the video draft.", taskKey: null, projectId: null, taskId: null } });
     const headers = init.headers as Record<string, string>;
     expect(headers["content-type"]).toBe("application/json");
     expect(headers).toMatchObject({ "x-autobyteus-peer-from": SELF, "x-autobyteus-peer-to": PEER.nodeId });
@@ -107,7 +107,7 @@ describe("PeerClient", () => {
     await expect(f.client.deliverMessage({ ...message, targetRoot: { kind: "agent_team", runId: "team_1" }, targetAgentRunId: "lead_1" })).resolves.toEqual({ accepted: true });
     const body = JSON.parse(String(f.fetch.mock.calls[0]![1].body));
     expect(body).toMatchObject({ kind: "message", targetRoot: { kind: "agent_team", runId: "team_1" }, target: { agentRunId: "lead_1" } });
-    expect("coordinatingRun" in body).toBe(false);
+    expect("delegatingRun" in body).toBe(false);
   });
 
   it("autobyteus-261: availability and available agents send only the envelope to their routes", async () => {

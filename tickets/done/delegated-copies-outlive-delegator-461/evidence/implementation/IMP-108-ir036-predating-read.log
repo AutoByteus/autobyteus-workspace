@@ -1,0 +1,11 @@
+IMP-108 — C35-04: the synchronous stored-turn read at activation (readStoredTurnIds), measured on synthetic memories
+Code: server dist built from the tree committed as 6acf35eb4a; macOS, Node 22.23; 2026-11-15
+Command: node /tmp/cr099probe/predating-read.mjs (test-owned temp roots, removed after); 4 traces per turn (user, tool call, tool result, assistant), 5 reads each, median and max
+
+turns=100 traces=400 bytes=172172 turnIds=100 median_ms=1.9 max_ms=6.3
+turns=1000 traces=4000 bytes=1737573 turnIds=1000 median_ms=11.4 max_ms=14.9
+turns=5000 traces=20000 bytes=8755574 turnIds=5000 median_ms=60.4 max_ms=69.3
+turns=20000 traces=80000 bytes=35215574 turnIds=20000 median_ms=265.7 max_ms=288.7
+temp root removed: true
+
+Reading: linear in the active file's size, about 7.5 ms per MB; one blocking read per activation (restore) of a run.

@@ -15,6 +15,7 @@ import { AdHocTasksLayout } from "../../../../src/projects/stores/ad-hoc-tasks-l
 import { createRootExecutionIdentity } from "../../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import { ProjectTaskToolsMcpAdapterProvider } from "../../../../src/agent-tools/mcp/providers/project-task-tools-mcp-adapter-provider.js";
 import { PROJECT_TASK_TOOL_DESCRIPTIONS, buildProjectTaskToolSchema, parseUpdateTaskInput } from "../../../../src/agent-tools/project-tasks/project-task-tool-contract.js";
+import { withTaskRunResources } from "../../../helpers/task-run-resources.js";
 
 /** task-comments: `update_task add_comment`; comments in `list_project_tasks`, `commentCount` in `search_project_tasks`; `partsNotClosed` (REQ-005, REQ-008, REQ-011). */
 const tool = async (name: string, args: Record<string, unknown>) => {
@@ -33,9 +34,9 @@ beforeEach(async () => {
   store = new ProjectStore(layout);
   const changes = { taskChanged() {}, taskRemoved() {}, workerStatusChanged() {}, projectChanged() {}, projectRemoved() {} };
   projects = new ProjectService({ store, changes, workspaceLookup: { listRegisteredWorkspaceRootPaths: async () => [] } });
-  tasks = new ProjectTaskService({ store, changes, contextStore: new ProjectTaskContextStore(layout),
+  tasks = new ProjectTaskService(withTaskRunResources({ store, changes, contextStore: new ProjectTaskContextStore(layout),
     adHocTasks: new AdHocTaskStore(new AdHocTasksLayout(path.join(dir, "ad-hoc-tasks"))),
-    requestRelease: (releases = trackReleases()).request });
+    requestRelease: (releases = trackReleases()).request }));
   await tasks.load();
   vi.spyOn(taskServices, "getProjectTaskService").mockImplementation(() => tasks);
   projectId = (await projects.createProject({ name: "AutoByteus" })).projectId;
@@ -63,7 +64,7 @@ describe("update_task add_comment (AC-001, REQ-005)", () => {
     const bytes = await fs.readFile(layout.taskFile(projectId, await idOfKey(task.taskId)), "utf8");
     expect(await tool("update_task", { task_id: task.taskId, status: "DONE", add_comment: "   " })).toMatchObject({ error: { code: "TASK_COMMENT_INVALID" } });
     expect(await tool("update_task", { task_id: "autobyteus-9", add_comment: "x" })).toMatchObject({ error: { code: "TASK_NOT_FOUND" } });
-    const { taskId: temp } = await tasks.linkNewTaskExecution({ role: "assigned", assignedBy: "manager", recipientAddress: "/w", hostRoot,
+    const { taskId: temp } = await tasks.linkNewTaskExecution({ role: "assigned", delegatedFrom: { delegatingRun: hostRoot, delegatorAgentRunId: "manager" }, recipientAddress: "/w",
       execution: { agentRunId: "temp-worker" }, adHocTask: { description: "Temp", referenceFiles: [] } });
     expect(await tool("update_task", { task_id: temp, add_comment: "x" })).toMatchObject({ error: { code: "TASK_COMMENT_INVALID" } });
     expect(await fs.readFile(layout.taskFile(projectId, await idOfKey(task.taskId)), "utf8")).toBe(bytes);

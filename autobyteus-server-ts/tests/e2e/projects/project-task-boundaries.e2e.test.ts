@@ -16,7 +16,7 @@ import { buildRuntimeAgentToolExposure } from "../../../src/agent-execution/shar
 import type { ScopedAgentToolMcpSessionAuthority } from "../../../src/agent-tools/mcp/agent-tool-mcp-session-authority.js";
 import { ListProjectsTool, ListProjectTasksTool, CreateProjectTool, UpdateProjectTool, CreateTaskTool, UpdateTaskTool, createBoundGetProjectTaskTool } from "../../../src/agent-tools/project-tasks/project-task-native-tools.js";
 import { registerProjectTaskTools } from "../../../src/agent-tools/project-tasks/project-task-native-tools.js";
-import { resetProjectTaskServiceForTests } from "../../../src/projects/services/project-task-service.js";
+import { getProjectTaskService, releaseProjectTaskServiceProcessInstance } from "../../../src/projects/services/project-task-service.js";
 import { resetProjectServiceForTests } from "../../../src/projects/services/project-service.js";
 import { resetProjectStoreForTests } from "../../../src/projects/stores/project-store.js";
 import { resetProjectTaskContextStoreForTests } from "../../../src/projects/context/project-task-context-store.js";
@@ -56,7 +56,12 @@ const titled = (args: Record<string, unknown>): Record<string, unknown> => "proj
   ? { ...args, title: (typeof args.description === "string" && firstLine(args.description)) || "A titled Task" } : args;
 /** A saved context file as agents read it (REQ-013): `{name, path}`; `path` is the saved copy, named by its stored file name. */
 const storedNameOf = (file: { path: string }) => path.basename(file.path);
-const reset = () => { resetProjectTaskServiceForTests(); resetProjectServiceForTests(); resetProjectStoreForTests(); resetProjectTaskContextStoreForTests(); };
+// Reader reconstruction: fresh Project readers and stores. The Project Task service is the composition's (autobyteus-461: it
+// carries the delegation tree as its entries listener, set by the composition root); it is released only with the server.
+const reset = (releaseTaskService = false) => {
+  if (releaseTaskService) releaseProjectTaskServiceProcessInstance(getProjectTaskService());
+  resetProjectServiceForTests(); resetProjectStoreForTests(); resetProjectTaskContextStoreForTests();
+};
 
 describe("Project Task production HTTP boundaries", () => {
   let root: string, origin: string, mcpUrl: string, app: FastifyInstance;
@@ -124,7 +129,7 @@ describe("Project Task production HTTP boundaries", () => {
     root = await fs.mkdtemp(path.join(os.tmpdir(), "project-task-http-e2e-"));
     process.env.AUTOBYTEUS_TEMP_WORKSPACE_DIR = path.join(root, "temp_workspace");
     await fs.writeFile(path.join(root, ".env"), "APP_ENV=test\nAUTOBYTEUS_SERVER_HOST=http://127.0.0.1:8000\n");
-    appConfigProvider.resetForTests(); appConfigProvider.config.setCustomAppDataDir(root); reset();
+    appConfigProvider.resetForTests(); appConfigProvider.config.setCustomAppDataDir(root); reset(true);
     registerProjectTaskTools();
     const started = await startStudioE2eRuntimeServer(); app = started.fastify; origin = started.mainUrl.origin;
     authority = started.agentToolsMcpHost.sessionAuthorities.begin({ scopeIdentity: "project-task-http-test" }).complete({
@@ -159,7 +164,7 @@ describe("Project Task production HTTP boundaries", () => {
     expect((await rpc(one.descriptor.serverUrl, "ping")).status).toBe(404);
   }, 120000);
   afterAll(async () => {
-    authority?.close(); if (app) await app.close(); reset(); appConfigProvider.resetForTests();
+    authority?.close(); if (app) await app.close(); reset(true); appConfigProvider.resetForTests();
     if (originalTemp === undefined) delete process.env.AUTOBYTEUS_TEMP_WORKSPACE_DIR; else process.env.AUTOBYTEUS_TEMP_WORKSPACE_DIR = originalTemp;
     for (const key of Object.keys(process.env)) if (key.startsWith("ENABLE_") || key.startsWith("AUTOBYTEUS_")) delete process.env[key]; Object.assign(process.env, flags);
     if (origin) await expect(fetch(origin, {signal: AbortSignal.timeout(1500)})).rejects.toThrow();
@@ -453,52 +458,6 @@ describe("Project Task production HTTP boundaries", () => {
     expect(await Promise.all(roots.map(snapshot))).toEqual(beforeFolders);
   });
 
-  it("E-007: current Projects/Tasks/context/assignments/history/registry/folders survive metadata/list patches and reader reconstruction", async () => {
-    const workspace = await registerWorkspace("protected-source");
-    // Existing supported full-form creation, NOT a tool-created-only fixture.
-    const old = (await gql<{createProject: Project}>(`mutation($i:CreateProjectInput!){createProject(input:$i){${PROJECT}}}`, {
-      i: {name: "Existing preserved", description: "Saved goal", workspaces: [{workspaceRootPath: workspace.workspaceRootPath, description: "Saved link"}]},
-    })).createProject;
-    const otherId = await createProject("Unrelated preserved");
-    const d = await draft(old.projectId);
-    const file = await (await upload(old.projectId, d.draftId, "existing task context bytes")).json() as FileRef;
-    const task = (await gql<{createProjectTask: Task}>(`mutation($i:CreateProjectTaskInput!){createProjectTask(input:$i){${TASK}}}`, {
-      i: {projectId: old.projectId, title: "Existing assigned task", description: "Existing assigned task", contextDraft: {draftId: d.draftId, storedFilenames: [file.storedFilename]}},
-    })).createProjectTask;
-    // Minimum current-format persisted assignment; no model/run launch needed for preservation.
-    const resources = path.join(root, "projects", old.projectId, "tasks", task.taskId, "agent_run_resources.json");
-    await fs.writeFile(resources, JSON.stringify({taskId: task.taskId, agentRunResources: [{role: "assigned", assignedBy: "fixture-manager",
-      hostRoot: {kind: "agent", runId: "fixture-root"}, agentRun: {kind: "agent", agentRunId: "fixture-worker"},
-      linkedAt: task.createdAt, start: "started", closedAt: null}]}, null, 2));
-    // Opaque preservation sentinel: not inference/history replay certification.
-    const historyDir = path.join(root, "memory", "agents", "fixture-worker");
-    await fs.mkdir(historyDir, {recursive: true}); await fs.writeFile(path.join(historyDir, "raw_traces_active.jsonl"), '{"sentinel":"owned history bytes"}\n');
-    reset();
-    const businessBefore = (await call("list_project_tasks", {project_id: old.projectId})).structuredContent;
-    expect(businessBefore.tasks[0].assignments).toEqual([{kind: "agent", agentRunId: "fixture-worker", assignedBy: "fixture-manager", outcome: "accepted"}]);
-    // A short entry carries no closed assignments (REQ-007); get_project_task has none here, so it leaves the field out.
-    expect(businessBefore.tasks[0]).not.toHaveProperty("closedAssignments");
-    expect((await call("get_project_task", {project_id: old.projectId, task_id: task.taskId})).structuredContent).not.toHaveProperty("closedAssignments");
-    const protectedDirs = [path.join(root, "projects", old.projectId, "tasks"), path.join(root, "projects", otherId), historyDir, workspace.workspaceRootPath];
-    const before = await Promise.all(protectedDirs.map(snapshot));
-    const registry = await fs.readFile(path.join(root, "workspaces.json"), "utf8");
-    const originalRecord = await fs.readFile(path.join(root, "projects", old.projectId, "project.json"), "utf8");
-    expect(await readProject(old.projectId)).toEqual({...old, taskCount: 1, openTaskCount: 1});
-    expect(await fs.readFile(path.join(root, "projects", old.projectId, "project.json"), "utf8")).toBe(originalRecord); // no migration/read rewrite
-    for (const patch of [{name: "Existing renamed"}, {description: ""}, {workspaces: [{workspace_path: workspace.workspaceRootPath}]}, {workspaces: []}]) {
-      await projectCall({project_id: old.projectId, ...patch}); reset();
-      const project = await readProject(old.projectId);
-      expect(project).toMatchObject({projectId: old.projectId, createdAt: old.createdAt, taskCount: 1, openTaskCount: 1});
-      expect(await list(old.projectId)).toEqual([task]);
-      expect((await call("list_project_tasks", {project_id: old.projectId})).structuredContent).toEqual(businessBefore);
-      expect(await (await fetch(`${origin}${task.contextFiles[0]!.locator}`)).text()).toBe("existing task context bytes");
-      expect(await Promise.all(protectedDirs.map(snapshot))).toEqual(before);
-      expect(await fs.readFile(path.join(root, "workspaces.json"), "utf8")).toBe(registry);
-    }
-    expect(Object.keys(JSON.parse(await fs.readFile(path.join(root, "projects", old.projectId, "project.json"), "utf8"))).sort()).toEqual(
-      ["projectId", "name", "description", "createdAt", "updatedAt", "workspaces", "taskKeys"].sort());
-  });
-
   // project-task-tool-context-files: agent-named node-local files copied into a Project Task's saved context
   // through create_task / update_task context_files, over the selected MCP session and the native tool.
   const PNG = Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==", "base64");
@@ -650,8 +609,8 @@ describe("Project Task production HTTP boundaries", () => {
     // A current-format open run resource: DONE + an invalid file must not close it.
     const existingId = await idOf(projectId, existing.taskId);
     const resources = path.join(root, "projects", projectId, "tasks", existingId, "agent_run_resources.json");
-    await fs.writeFile(resources, JSON.stringify({ taskId: existingId, agentRunResources: [{ role: "assigned", assignedBy: "fixture-manager",
-      hostRoot: { kind: "agent", runId: "fixture-root" }, agentRun: { kind: "agent", agentRunId: "fixture-worker" },
+    await fs.writeFile(resources, JSON.stringify({ taskId: existingId, agentRunResources: [{ role: "assigned", recipientAddress: "/worker", 
+      delegatedFrom: { delegatingRun: { kind: "agent_team", runId: "fixture-root" }, delegatorAgentRunId: "fixture-manager" }, agentRun: { kind: "agent", agentRunId: "fixture-worker" },
       linkedAt: new Date().toISOString(), start: "started", closedAt: null }] }, null, 2));
     const expectTaskError = async (args: Record<string, unknown>, code: string, named?: string) => {
       const before = await snapshot(path.join(root, "projects"));
@@ -735,8 +694,8 @@ describe("Project Task production HTTP boundaries", () => {
     // A current-format open run resource on the Task to be cancelled: CANCELLED must close it exactly like DONE.
     const cancelledId = await idOf(projectId, ids.cancelled!);
     const resources = path.join(root, "projects", projectId, "tasks", cancelledId, "agent_run_resources.json");
-    await fs.writeFile(resources, JSON.stringify({ taskId: cancelledId, agentRunResources: [{ role: "assigned", assignedBy: "fixture-manager",
-      hostRoot: { kind: "agent", runId: "fixture-root" }, agentRun: { kind: "agent", agentRunId: "fixture-worker" },
+    await fs.writeFile(resources, JSON.stringify({ taskId: cancelledId, agentRunResources: [{ role: "assigned", recipientAddress: "/worker", 
+      delegatedFrom: { delegatingRun: { kind: "agent_team", runId: "fixture-root" }, delegatorAgentRunId: "fixture-manager" }, agentRun: { kind: "agent", agentRunId: "fixture-worker" },
       linkedAt: new Date().toISOString(), start: "started", closedAt: null }] }, null, 2));
     // An invalid context file with CANCELLED fails first and closes nothing (inputs are checked before closure).
     const missing = path.join(root, "sources", "cancelled-missing.png");
@@ -991,8 +950,8 @@ describe("Project Task production HTTP boundaries", () => {
     expect(await taskCall({ task_id: "parts-tools-14", status: "CANCELLED" })).toMatchObject({ status: "CANCELLED" });
     const runningId = await idOf(projectId, "parts-tools-3");
     const resources = path.join(projectsDir, projectId, "tasks", runningId, "agent_run_resources.json");
-    await fs.writeFile(resources, JSON.stringify({ taskId: runningId, agentRunResources: [{ role: "assigned", assignedBy: "fixture-manager",
-      hostRoot: { kind: "agent", runId: "fixture-root" }, agentRun: { kind: "agent", agentRunId: "fixture-part-worker" },
+    await fs.writeFile(resources, JSON.stringify({ taskId: runningId, agentRunResources: [{ role: "assigned", recipientAddress: "/worker", 
+      delegatedFrom: { delegatingRun: { kind: "agent_team", runId: "fixture-root" }, delegatorAgentRunId: "fixture-manager" }, agentRun: { kind: "agent", agentRunId: "fixture-part-worker" },
       linkedAt: new Date().toISOString(), start: "started", closedAt: null }] }, null, 2));
     const closedBytes = async () => Promise.all(["parts-tools-13", "parts-tools-14"].map(async key => fs.readFile(path.join(projectsDir, projectId, "tasks", await idOf(projectId, key), "task.json"), "utf8")));
     const terminalBefore = await closedBytes();
@@ -1036,8 +995,8 @@ describe("Project Task production HTTP boundaries", () => {
   const openRunFixture = async (projectId: string, reference: string, agentRunId: string) => {
     const taskId = await idOf(projectId, reference);
     const file = path.join(root, "projects", projectId, "tasks", taskId, "agent_run_resources.json");
-    await fs.writeFile(file, JSON.stringify({ taskId, agentRunResources: [{ role: "assigned", assignedBy: "fixture-manager",
-      hostRoot: { kind: "agent", runId: "fixture-root" }, agentRun: { kind: "agent", agentRunId },
+    await fs.writeFile(file, JSON.stringify({ taskId, agentRunResources: [{ role: "assigned", recipientAddress: "/worker", 
+      delegatedFrom: { delegatingRun: { kind: "agent_team", runId: "fixture-root" }, delegatorAgentRunId: "fixture-manager" }, agentRun: { kind: "agent", agentRunId },
       linkedAt: new Date().toISOString(), start: "started", closedAt: null }] }, null, 2));
     return file;
   };
@@ -1241,4 +1200,53 @@ describe("Project Task production HTTP boundaries", () => {
     expect(await snapshot(path.join(root, "projects"))).toEqual(before);
   }, 60000);
 
+  // E-007 runs last: it reads entries written to disk as a restart reads them, by releasing the composed Task service's
+  // process instance, which the server's composition does not rebuild for the cases after it.
+  it("E-007: current Projects/Tasks/context/assignments/history/registry/folders survive metadata/list patches and reader reconstruction", async () => {
+    const workspace = await registerWorkspace("protected-source");
+    // Existing supported full-form creation, NOT a tool-created-only fixture.
+    const old = (await gql<{createProject: Project}>(`mutation($i:CreateProjectInput!){createProject(input:$i){${PROJECT}}}`, {
+      i: {name: "Existing preserved", description: "Saved goal", workspaces: [{workspaceRootPath: workspace.workspaceRootPath, description: "Saved link"}]},
+    })).createProject;
+    const otherId = await createProject("Unrelated preserved");
+    const d = await draft(old.projectId);
+    const file = await (await upload(old.projectId, d.draftId, "existing task context bytes")).json() as FileRef;
+    const task = (await gql<{createProjectTask: Task}>(`mutation($i:CreateProjectTaskInput!){createProjectTask(input:$i){${TASK}}}`, {
+      i: {projectId: old.projectId, title: "Existing assigned task", description: "Existing assigned task", contextDraft: {draftId: d.draftId, storedFilenames: [file.storedFilename]}},
+    })).createProjectTask;
+    // Minimum current-format persisted assignment (autobyteus-461 contract §3.1: `delegatedFrom`); no model/run launch needed for preservation.
+    const resources = path.join(root, "projects", old.projectId, "tasks", task.taskId, "agent_run_resources.json");
+    await fs.writeFile(resources, JSON.stringify({taskId: task.taskId, agentRunResources: [{role: "assigned", recipientAddress: "/worker", 
+      delegatedFrom: { delegatingRun: { kind: "agent_team", runId: "fixture-root" }, delegatorAgentRunId: "fixture-manager" }, agentRun: {kind: "agent", agentRunId: "fixture-worker"},
+      linkedAt: task.createdAt, start: "started", closedAt: null}]}, null, 2));
+    // Opaque preservation sentinel: not inference/history replay certification.
+    const historyDir = path.join(root, "memory", "agents", "fixture-worker");
+    await fs.mkdir(historyDir, {recursive: true}); await fs.writeFile(path.join(historyDir, "raw_traces_active.jsonl"), '{"sentinel":"owned history bytes"}\n');
+    // The composed Task service reads Task entries once, at start (as production does); entries written to disk here are read
+    // as a restart reads them: the process instance is released and built again (autobyteus-461).
+    reset(true);
+    const businessBefore = (await call("list_project_tasks", {project_id: old.projectId})).structuredContent;
+    expect(businessBefore.tasks[0].assignments).toEqual([{kind: "agent", agentRunId: "fixture-worker", assignedBy: "fixture-manager", outcome: "accepted"}]);
+    // A short entry carries no closed assignments (REQ-007); get_project_task has none here, so it leaves the field out.
+    expect(businessBefore.tasks[0]).not.toHaveProperty("closedAssignments");
+    expect((await call("get_project_task", {project_id: old.projectId, task_id: task.taskId})).structuredContent).not.toHaveProperty("closedAssignments");
+    const protectedDirs = [path.join(root, "projects", old.projectId, "tasks"), path.join(root, "projects", otherId), historyDir, workspace.workspaceRootPath];
+    const before = await Promise.all(protectedDirs.map(snapshot));
+    const registry = await fs.readFile(path.join(root, "workspaces.json"), "utf8");
+    const originalRecord = await fs.readFile(path.join(root, "projects", old.projectId, "project.json"), "utf8");
+    expect(await readProject(old.projectId)).toEqual({...old, taskCount: 1, openTaskCount: 1});
+    expect(await fs.readFile(path.join(root, "projects", old.projectId, "project.json"), "utf8")).toBe(originalRecord); // no migration/read rewrite
+    for (const patch of [{name: "Existing renamed"}, {description: ""}, {workspaces: [{workspace_path: workspace.workspaceRootPath}]}, {workspaces: []}]) {
+      await projectCall({project_id: old.projectId, ...patch}); reset();
+      const project = await readProject(old.projectId);
+      expect(project).toMatchObject({projectId: old.projectId, createdAt: old.createdAt, taskCount: 1, openTaskCount: 1});
+      expect(await list(old.projectId)).toEqual([task]);
+      expect((await call("list_project_tasks", {project_id: old.projectId})).structuredContent).toEqual(businessBefore);
+      expect(await (await fetch(`${origin}${task.contextFiles[0]!.locator}`)).text()).toBe("existing task context bytes");
+      expect(await Promise.all(protectedDirs.map(snapshot))).toEqual(before);
+      expect(await fs.readFile(path.join(root, "workspaces.json"), "utf8")).toBe(registry);
+    }
+    expect(Object.keys(JSON.parse(await fs.readFile(path.join(root, "projects", old.projectId, "project.json"), "utf8"))).sort()).toEqual(
+      ["projectId", "name", "description", "createdAt", "updatedAt", "workspaces", "taskKeys"].sort());
+  });
 });

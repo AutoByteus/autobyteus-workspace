@@ -1,6 +1,7 @@
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
+import { runIdentityOf } from "../../../src/agent-collaboration/execution/task/task-execution-resource-port.js";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { trackReleases, type ReleaseTracker } from "../../helpers/project-task-release-tracker.js";
 import { ProjectStore } from "../../../src/projects/stores/project-store.js";
@@ -9,13 +10,13 @@ import { AdHocTasksLayout } from "../../../src/projects/stores/ad-hoc-tasks-layo
 import { AdHocTaskStore } from "../../../src/projects/stores/ad-hoc-task-store.js";
 import { ProjectService } from "../../../src/projects/services/project-service.js";
 import { ProjectTaskService } from "../../../src/projects/services/project-task-service.js";
-import { TaskExecutionResourceService } from "../../../src/projects/services/task-execution-resource-service.js";
 import { TaskExecutionResourceStore } from "../../../src/projects/stores/task-execution-resource-store.js";
 import { ProjectTaskContextStore } from "../../../src/projects/context/project-task-context-store.js";
 import { ProjectChangePublisher } from "../../../src/projects/changes/project-change-publisher.js";
 import { createRootExecutionIdentity } from "../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import type { TaskExecutionReleaseRequest } from "../../../src/agent-collaboration/execution/task/task-execution-resource-port.js";
 import type { TaskExecutionReference } from "../../../src/agent-collaboration/execution/task/task-execution-reference.js";
+import { taskRunResources } from "../../helpers/task-run-resources.js";
 
 const hostRoot = createRootExecutionIdentity({ rootSubjectKind: "agent", rootRunId: "manager-root" });
 const agent: TaskExecutionReference = { agentRunId: "writer" };
@@ -34,15 +35,15 @@ describe("ProjectTaskService.currentTasksOfTaskWorkers", () => {
     const changes = new ProjectChangePublisher();
     projects = new ProjectService({ store, changes, workspaceLookup: { listRegisteredWorkspaceRootPaths: async () => [] } });
     projectId = (await projects.createProject({ name: "Desktop App" })).projectId;
-    const requestRelease = vi.fn<TaskExecutionReleaseRequest>(async (_root, executions) => executions.map((execution) => ({ execution, stopped: true })));
+    const requestRelease = vi.fn<TaskExecutionReleaseRequest>(async (execution) => ({ execution, stopped: true }));
     tasks = new ProjectTaskService({ store, adHocTasks: new AdHocTaskStore(adHocLayout), contextStore: new ProjectTaskContextStore(layout), changes,
-      requestRelease: (releases = trackReleases(requestRelease)).request, taskExecutionResources: new TaskExecutionResourceService(new TaskExecutionResourceStore(layout, adHocLayout)) });
+      requestRelease: (releases = trackReleases(requestRelease)).request, taskExecutionResources: taskRunResources(new TaskExecutionResourceStore(layout, adHocLayout)) });
     await tasks.load();
   });
   afterEach(async () => { await releases.settled(); vi.restoreAllMocks(); await fs.rm(appData, { recursive: true, force: true }); });
 
   const assign = async (taskId: string, execution: TaskExecutionReference) => {
-    await tasks.linkNewTaskExecution({ role: "assigned", taskId, assignedBy: "manager", recipientAddress: "/worker", hostRoot, execution,
+    await tasks.linkNewTaskExecution({ role: "assigned", taskId, delegatedFrom: { delegatingRun: hostRoot, delegatorAgentRunId: "manager" }, recipientAddress: "/worker", execution,
       ...("teamRunId" in execution ? { teamCoordinatorAgentRunId: "lead" } : {}) });
     await tasks.markStarted(execution);
   };
@@ -51,7 +52,7 @@ describe("ProjectTaskService.currentTasksOfTaskWorkers", () => {
   it("answers an agent and a team worker with their Project Task and Temp task, in request order", async () => {
     const taskId = await create("Ship the summary line\nwith details");
     await assign(taskId, agent);
-    const { taskId: tempTaskId } = await tasks.linkNewTaskExecution({ role: "assigned", assignedBy: "manager", recipientAddress: "/review_team", hostRoot,
+    const { taskId: tempTaskId } = await tasks.linkNewTaskExecution({ role: "assigned", delegatedFrom: { delegatingRun: hostRoot, delegatorAgentRunId: "manager" }, recipientAddress: "/review_team",
       execution: team, teamCoordinatorAgentRunId: "lead", adHocTask: { description: "Review it", referenceFiles: [] } });
 
     expect(await tasks.currentTasksOfTaskWorkers([agent, team, { agentRunId: "unknown" }, { teamRunId: "unknown" }])).toEqual([
@@ -69,14 +70,14 @@ describe("ProjectTaskService.currentTasksOfTaskWorkers", () => {
     await tasks.updateTaskById({ taskId: first, status: "DONE" });
     expect(await tasks.currentTasksOfTaskWorkers([team])).toEqual([{ execution: team, task: { taskId: first, projectId, title: "First Task", description: "First Task", status: "DONE" } }]);
 
-    await tasks.assignExistingTaskExecution({ hostRoot, execution: team, teamCoordinatorAgentRunId: "lead", taskId: followUp, assignedBy: "manager" });
+    await tasks.assignExistingTaskExecution({ delegatedFrom: { delegatingRun: hostRoot, delegatorAgentRunId: "manager" }, execution: team, teamCoordinatorAgentRunId: "lead", taskId: followUp });
     expect((await tasks.currentTasksOfTaskWorkers([team]))[0]!.task).toMatchObject({ taskId: followUp, status: "TODO" });
   });
 
   it("answers null for a sub-work copy, which is never its Task's root", async () => {
     const taskId = await create("Root work");
     await assign(taskId, agent);
-    await tasks.linkNewTaskExecution({ role: "delegated", creator: agent, hostRoot, execution: { agentRunId: "sub-work" } });
+    await tasks.linkNewTaskExecution({ role: "subWork", recipientAddress: "/worker", delegatedFrom: { delegatingRun: runIdentityOf(agent), delegatorAgentRunId: "lead" }, execution: { agentRunId: "sub-work" } });
     expect(await tasks.currentTasksOfTaskWorkers([{ agentRunId: "sub-work" }, agent])).toEqual([
       { execution: { agentRunId: "sub-work" }, task: null },
       { execution: agent, task: expect.objectContaining({ taskId }) },

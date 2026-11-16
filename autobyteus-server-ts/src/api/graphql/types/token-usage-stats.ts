@@ -1,3 +1,5 @@
+import { getStudioDelegatedRunAgents } from "../studio-application-api-services.js";
+import { createRootExecutionIdentity } from "../../../agent-collaboration/execution/domain/root-execution-identity.js";
 import { Arg, Field, Float, ObjectType, Query, Resolver } from "type-graphql";
 import { GraphQLSafeInt } from "graphql-scalars";
 import type { TokenUsageRunSummaryPayload } from "../../../agent-execution/domain/agent-run-token-usage.js";
@@ -10,10 +12,6 @@ import type {
 import { TokenUsageRunStore } from "../../../token-usage/providers/token-usage-run-store.js";
 import { TokenUsageStatisticsProvider } from "../../../token-usage/providers/statistics-provider.js";
 import { StandaloneRunTokenUsageSummaryService } from "../../../token-usage/services/standalone-run-token-usage-summary-service.js";
-import { StandaloneRootLocationService } from "../../../standalone-agent-run-root/services/standalone-root-location-service.js";
-import { findStandaloneAgentRunRootManager } from "../../../standalone-agent-run-root/services/standalone-agent-run-root-manager.js";
-import { appConfigProvider } from "../../../config/app-config-provider.js";
-import { ClosedDelegatedRunReader } from "../../../run-history/services/closed-delegated-run-reader.js";
 import { createAgentRootExecutionIdentity } from "../../../agent-collaboration/execution/domain/root-execution-identity.js";
 
 @ObjectType()
@@ -323,24 +321,15 @@ export class TokenUsageStatisticsResolver {
     return toTokenUsageRunSummaryGraphql(await store.getAgentRunSummary(runId));
   }
 
-  /** A standalone run's usage including its delegated copies (REQ-006). */
+  /** A standalone run's usage including the runs delegated from it (REQ-006). */
   @Query(() => TokenUsageRunSummaryGraphql)
   async getStandaloneRunTokenUsageSummary(
     @Arg("runId", () => String) runId: string,
   ): Promise<TokenUsageRunSummaryGraphql> {
-    const locations = new StandaloneRootLocationService({
-      memoryDir: appConfigProvider.config.getMemoryDir(),
-      roots: { getActiveTree: (hostRunId) => findStandaloneAgentRunRootManager()?.getActiveTree(hostRunId) ?? null },
-    });
-    // D-7: the tree's agents and the agents of this run's delegated runs whose Task closed (they left the tree).
-    const closedRuns = new ClosedDelegatedRunReader(appConfigProvider.config.getMemoryDir());
+    // REQ-009: every run delegated from it, one hop at a time and recursively, open and closed (the Task entries).
+    const delegated = getStudioDelegatedRunAgents();
     const service = new StandaloneRunTokenUsageSummaryService({
-      tree: {
-        listChildAgentRunIds: async (hostRunId) => [...new Set([
-          ...(await locations.listAgents({ rootRunId: hostRunId })).map((agent) => agent.agentRunId),
-          ...await closedRuns.agentRunIds(createAgentRootExecutionIdentity(hostRunId)),
-        ])],
-      },
+      tree: { listChildAgentRunIds: async (hostRunId) => [...new Set(await delegated.agentRunIds(createAgentRootExecutionIdentity(hostRunId)))] },
       store: new TokenUsageRunStore(),
     });
     return toTokenUsageRunSummaryGraphql(await service.getSummary(runId));
@@ -350,8 +339,12 @@ export class TokenUsageStatisticsResolver {
   async getTeamRunTokenUsageSummary(
     @Arg("teamRunId", () => String) teamRunId: string,
   ): Promise<TokenUsageRunSummaryGraphql> {
-    const store = new TokenUsageRunStore();
-    return toTokenUsageRunSummaryGraphql(await store.getTeamRunSummary(teamRunId));
+    // REQ-009 (CR-461-004): a team or org run's total includes every run delegated from it, recursively, open and closed.
+    // The ID names a team run or an org run (an org run's agents record it as their root team run); ask for both kinds.
+    const delegated = getStudioDelegatedRunAgents();
+    const agentRunIds = (await Promise.all((["agent_team", "agent_org"] as const).map((rootSubjectKind) =>
+      delegated.agentRunIds(createRootExecutionIdentity({ rootSubjectKind, rootRunId: teamRunId }))))).flat();
+    return toTokenUsageRunSummaryGraphql(await new TokenUsageRunStore().getTeamRunSummary(teamRunId, [...new Set(agentRunIds)]));
   }
 
   @Query(() => TokenUsageRunSummaryGraphql)

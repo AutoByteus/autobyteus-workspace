@@ -45,9 +45,17 @@ export class ProjectTaskContextChangesInput {
 }
 
 @ObjectType()
-export class TaskRootHost {
+export class TaskRootDelegatingRun {
   @Field(() => String) kind!: string;
   @Field(() => String) runId!: string;
+}
+/** Where a Task's worker opens, as its tree's row opens (autobyteus-461 SR-086 G-F1). */
+@ObjectType()
+export class TaskRootOpenTarget {
+  @Field(() => String) runKind!: string;
+  @Field(() => String) runId!: string;
+  @Field(() => String) agentRunId!: string;
+  @Field(() => String, { nullable: true }) nodeId?: string;
 }
 @ObjectType()
 export class TaskRootStartError {
@@ -59,9 +67,14 @@ export class TaskRootStartError {
 export class TaskRoot {
   @Field(() => String) kind!: string;
   @Field(() => String, { nullable: true }) recipientAddress!: string | null;
+  @Field(() => String, { nullable: true }) displayName!: string | null;
   @Field(() => String) ingressAgentRunId!: string;
   @Field(() => String, { nullable: true }) teamRunId!: string | null;
-  @Field(() => TaskRootHost) hostRoot!: TaskRootHost;
+  @Field(() => TaskRootDelegatingRun) delegatingRun!: TaskRootDelegatingRun;
+  /** The run whose view lists its row, the top of its tree (SR-080); null when not known. */
+  @Field(() => TaskRootDelegatingRun, { nullable: true }) topRun!: TaskRootDelegatingRun | null;
+  /** Where the worker opens (G-F1): its agent run, or its team run at its coordinator; null is a row error. */
+  @Field(() => TaskRootOpenTarget, { nullable: true }) openTarget!: TaskRootOpenTarget | null;
   @Field(() => String) start!: string;
   @Field(() => TaskRootStartError, { nullable: true }) startError!: TaskRootStartError | null;
   @Field(() => Boolean) closed!: boolean;

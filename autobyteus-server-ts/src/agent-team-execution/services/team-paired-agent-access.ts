@@ -4,6 +4,7 @@ import type { AgentPresentationEvent } from "../../agent-collaboration/execution
 import { projectAgentPresentationMessage } from "../../agent-collaboration/execution/events/agent-presentation-message-projector.js";
 import {
   notLiveRefusal,
+  pairedAgentStatusFrame,
   remoteOwnerUserMessage,
   type PairedAgentAccess,
   type PairedAgentObservation,
@@ -47,10 +48,12 @@ export const teamMemberPresentationOf = (event: TeamRunEvent): Readonly<{ agentR
 
 /**
  * autobyteus-278 (AR-401): a remote Team, as its node serves the peer's owner. Its own agents are the root's members:
- * their output is on the root publisher, filtered to the members (a copy a member delegated on this node is not
- * sent). A quiet idle shutdown unregisters the root and a restore creates a new one, so the observation follows
+ * their output is on the root publisher, filtered to the members (a run a member delegated to is a run of its own
+ * and is not sent). A quiet idle shutdown unregisters the root and a restore creates a new one, so the observation follows
  * the root through the manager's lifecycle notifications (published at the directory's commit and unregister). A
- * stop of any kind (the lifecycle's `ending: "stopped"`) ends the observation.
+ * quiet idle shutdown reports each member `offline`, as a read of the ended Team does: a member whose start failed has
+ * no runtime to report it, and its follower would keep showing `error` (CR-461-061, DTL-005). A stop of any kind (the
+ * lifecycle's `ending: "stopped"`) ends the observation.
  */
 export class TeamPairedAgentAccess implements PairedAgentAccess {
   constructor(private readonly teamRuns: TeamRuns) {}
@@ -58,11 +61,12 @@ export class TeamPairedAgentAccess implements PairedAgentAccess {
   async observePairedAgents(teamRunId: string, onPresentation: PairedAgentPresentationListener, onEnded: () => void): Promise<PairedAgentObservation> {
     let unsubscribe: (() => void) | null = null;
     let closed = false;
+    let members: ReadonlySet<string> = new Set();
     const attach = (root: RootTeamRun | null): void => {
       unsubscribe?.();
       unsubscribe = null;
       if (closed || !root) return;
-      const members = new Set(peerStartedTeamMembers(root.getExecutionTreeSnapshot()).map((member) => member.agentRunId));
+      members = new Set(peerStartedTeamMembers(root.getExecutionTreeSnapshot()).map((member) => member.agentRunId));
       unsubscribe = root.subscribeToEvents(({ event }) => {
         try {
           const frame = teamMemberPresentationOf(event);
@@ -83,6 +87,7 @@ export class TeamPairedAgentAccess implements PairedAgentAccess {
     // A restore after idle shutdown is a new root: follow it. A stop ends the observation (DS-006).
     const offLifecycle = this.teamRuns.subscribeToLifecycle(teamRunId, (snapshot) => {
       if (snapshot.ending === "stopped") { close(); onEnded(); return; }
+      if (snapshot.ending === "idle_shutdown" && !closed) for (const agentRunId of members) onPresentation(agentRunId, pairedAgentStatusFrame("offline"));
       attach(snapshot.isActive ? this.teamRuns.getManagedTeamRun(teamRunId) : null);
     });
     return Object.freeze({ close });

@@ -219,7 +219,10 @@ const copyInputFor = async (hostId) => {
 const viewFor = async (id) => (await gql('query($id:String!){agentRunCollaboration(runId:$id)}', { id })).agentRunCollaboration.root_agent;
 // autobyteus-358: the hub's view carries no messages; its Team tab loads the host's messages with this query.
 const hostMessagesFor = async (id) => (await gql('query($k:String!,$r:String!,$a:String!){collaborationParticipantMessages(rootKind:$k,rootRunId:$r,agentRunId:$a)}', { k: 'agent', r: id, a: id })).collaborationParticipantMessages.messages;
-const childProjection = async (host, address, run) => (await gql('query($host:String!,$address:String!,$run:String!){agentRunCollaborationMemberProjection(hostRunId:$host,memberAddress:$address,agentRunId:$run){conversation}}', { host, address, run })).agentRunCollaborationMemberProjection.conversation;
+// autobyteus-461 rule 2: a delegated run is read by its own path (the member query serves peer runs only).
+const childProjection = async (_host, _address, run, teamRunId = null) => teamRunId
+  ? (await gql('query($t:String!,$a:String!){getTeamMemberRunProjection(teamRunId:$t,agentRunId:$a){conversation}}', { t: teamRunId, a: run })).getTeamMemberRunProjection?.conversation
+  : (await gql('query($run:String!){getRunProjection(runId:$run){conversation}}', { run })).getRunProjection.conversation;
 const tasksFor = async (id) => (await gql('query($id:String!){projectTasks(projectId:$id){taskId status root {kind teamRunId ingressAgentRunId start status closed}}}', { id })).projectTasks;
 const terminateAgent = async (id) => {
   const r = (await gql('mutation($id:String!){terminateAgentRun(agentRunId:$id){success message}}', { id })).terminateAgentRun;
@@ -275,7 +278,9 @@ const seed = async () => {
   for (const index of [2, 3]) {
     const member = teamRows[index].members[2];
     send(callTool('send_message_to', { target_agent_run_id: member.agentRunId, content: `Persisted marker for copy ${index}` }));
-    await until(`copy ${index} marker persisted`, async () => JSON.stringify(await childProjection(hostId, member.address, member.agentRunId)).includes(`Persisted marker for copy ${index}`), 120000);
+    // autobyteus-461 rule 2: a delegated team's member is read through its own team.
+    await until(`copy ${index} marker persisted`, async () => JSON.stringify((await gql('query($t:String!,$a:String!){getTeamMemberRunProjection(teamRunId:$t,agentRunId:$a){conversation}}',
+      { t: teamRows[index].teamRunId, a: member.agentRunId })).getTeamMemberRunProjection?.conversation ?? null).includes(`Persisted marker for copy ${index}`), 120000);
     markers.push({ index, teamRunId: teamRows[index].teamRunId, taskId: teamRows[index].taskId, ...member, marker: `Persisted marker for copy ${index}` });
   }
 
@@ -494,9 +499,10 @@ const apiTimings = async () => {
   const query = {
     hubView: ['query($id:String!){agentRunCollaboration(runId:$id)}', { id: setup.hostId }],
     hubConversation: ['query($id:String!){getRunProjection(runId:$id){conversation}}', { id: setup.hostId }],
-    copyProjection: ['query($h:String!,$a:String!,$r:String!){agentRunCollaborationMemberProjection(hostRunId:$h,memberAddress:$a,agentRunId:$r){conversation activities}}', { h: setup.hostId, a: marker.address, r: marker.agentRunId }],
+    copyProjection: marker.teamRunId ? ['query($t:String!,$r:String!){getTeamMemberRunProjection(teamRunId:$t,agentRunId:$r){conversation activities}}', { t: marker.teamRunId, r: marker.agentRunId }]
+      : ['query($r:String!){getRunProjection(runId:$r){conversation activities}}', { r: marker.agentRunId }],
     copyArtifactsGeneric: ['query($r:String!){getRunFileChanges(runId:$r){id}}', { r: marker.agentRunId }],
-    copyArtifactsScoped: ['query($h:String!,$a:String!,$r:String!){agentRunCollaborationMemberFileChanges(hostRunId:$h,memberAddress:$a,agentRunId:$r){id}}', { h: setup.hostId, a: marker.address, r: marker.agentRunId }],
+    copyArtifactsScoped: ['query($r:String!){getRunFileChanges(runId:$r){id}}', { r: marker.agentRunId }],
   };
   const result = {};
   for (const [name, [q, v]] of Object.entries(query)) {
@@ -581,7 +587,7 @@ const liveJourneys = async () => {
     const text = `Live opened-copy send ${randomUUID().slice(0, 8)}`;
     await composerSend(text);
     await until('sent message shown', async () => (await page.locator('[data-test="workspace-center-pane"]').innerText()).includes(text), 30000);
-    await until('copy answered and stored', async () => { const c = JSON.stringify(await childProjection(setup.hostId, marker.address, marker.agentRunId)); return c.includes(text) && c.slice(c.indexOf(text)).includes('OK'); }, 120000);
+    await until('copy answered and stored', async () => { const c = JSON.stringify(await childProjection(setup.hostId, marker.address, marker.agentRunId, marker.teamRunId ?? null)); return c.includes(text) && c.slice(c.indexOf(text)).includes('OK'); }, 120000);
     await until('answer shown', async () => { const t = await page.locator('[data-test="workspace-center-pane"]').innerText(); return t.slice(t.indexOf(text)).includes('OK'); }, 30000);
     return { text, state: await storeState(), status: await statusOf(marker.agentRunId), serverStatus: await serverStatusOf(marker.agentRunId) };
   });
@@ -641,7 +647,7 @@ const liveJourneys = async () => {
       if (i === 1) void memberRow(target.agentRunId).click();
       await sleep(300);
     }
-    await until('burst processed (server)', async () => { const c = JSON.stringify(await childProjection(setup.hostId, target.address, target.agentRunId)); return texts.every((t) => c.includes(`ECHO:\\\"${t}`) || c.split(t).length > 2); }, 120000).catch(() => {});
+    await until('burst processed (server)', async () => { const c = JSON.stringify(await childProjection(setup.hostId, target.address, target.agentRunId, target.teamRunId ?? null)); return texts.every((t) => c.includes(`ECHO:\\\"${t}`) || c.split(t).length > 2); }, 120000).catch(() => {});
     await quiet(2000);
     const host = setup.hostId, id = target.agentRunId;
     const hydratedNow = () => page.evaluate(copyLoadedInPage, { host, id });
@@ -667,10 +673,11 @@ const liveJourneys = async () => {
       : Array.from({ length: 60 * 1024 / 6 }, (_, i) => words[i % words.length] + (i % 14 === 13 ? '\n' : ' ')).join('').slice(0, 60 * 1024);
     for (let i = 0; i < 20; i++) {
       toCopy(target.agentRunId, `Large ${i + 1} ECHO_INPUT ${chunk}`);
-      await until(`large turn ${i + 1} stored`, async () => JSON.stringify(await childProjection(setup.hostId, target.address, target.agentRunId)).includes(`Large ${i + 1} ECHO_INPUT`), 60000);
+      await until(`large turn ${i + 1} stored`, async () => JSON.stringify(await childProjection(setup.hostId, target.address, target.agentRunId, target.teamRunId ?? null)).includes(`Large ${i + 1} ECHO_INPUT`), 60000);
     }
     await sleep(3000);
-    const projection = await gqlRaw('query($h:String!,$a:String!,$r:String!){agentRunCollaborationMemberProjection(hostRunId:$h,memberAddress:$a,agentRunId:$r){conversation activities}}', { h: setup.hostId, a: target.address, r: target.agentRunId });
+    const projection = target.teamRunId ? await gqlRaw('query($t:String!,$r:String!){getTeamMemberRunProjection(teamRunId:$t,agentRunId:$r){conversation activities}}', { t: target.teamRunId, r: target.agentRunId })
+      : await gqlRaw('query($r:String!){getRunProjection(runId:$r){conversation activities}}', { r: target.agentRunId });
     await coldOpenWorkspace();
     await runRow().click(); await until('live', async () => (await storeState()).phase === 'live', 120000); await quiet(1500);
     await expandTeam(team.teamRunId);
@@ -826,7 +833,7 @@ const liveJourneys = async () => {
     const text = `Stopped hub send ${randomUUID().slice(0, 8)}`;
     await composerSend(text);
     await until('sent message shown', async () => (await page.locator('[data-test="workspace-center-pane"]').innerText()).includes(text), 30000);
-    await until('woken copy answered and stored', async () => { const c = JSON.stringify(await childProjection(setup.hostId, target.address, target.agentRunId)); return c.includes(text) && c.slice(c.indexOf(text)).includes('OK'); }, 180000);
+    await until('woken copy answered and stored', async () => { const c = JSON.stringify(await childProjection(setup.hostId, target.address, target.agentRunId, target.teamRunId ?? null)); return c.includes(text) && c.slice(c.indexOf(text)).includes('OK'); }, 180000);
     await shot('stopped-hub-send');
     return { text, state: await storeState() };
   });

@@ -1,36 +1,13 @@
-import { projectAgentOrgExecutionTree, projectCollaborationTaskExecution, projectCollaborationSelectionsChanged } from "./collaboration-execution-tree-dto-projection.js";
+import { projectAgentOrgExecutionTree } from "./collaboration-execution-tree-dto-projection.js";
 import {
   RootExecutionEventDtoSchema,
   RootExecutionViewDtoSchema,
   type RootExecutionEventDto,
   type RootExecutionViewDto,
 } from "@autobyteus/collaboration-stream-contracts";
-import type { AgentOrgRun, AgentOrgRunPackageSnapshot } from "../../agent-org-execution/domain/agent-org-run.js";
+import type { AgentOrgRunPackageSnapshot } from "../../agent-org-execution/domain/agent-org-run.js";
 import type { AgentOrgRunEvent } from "../../agent-org-execution/domain/agent-org-run-event.js";
-import type { SequencedRootEvent } from "../../agent-collaboration/execution/services/root-event-publisher.js";
-import { AgentOrgExecutionIndex } from "../../agent-org-execution/services/agent-org-execution-index.js";
-import type { AgentOrgRunExecutionTreeSnapshot } from "../../agent-org-execution/domain/agent-org-run-execution-tree.js";
-import { projectRemoteTaskExecution, projectRemoteTaskExecutionSummary } from "./remote-task-execution-dto-projection.js";
-import type { RemoteTaskExecutionDto } from "@autobyteus/agent-presentation-contracts";
-
-import type { TaskExecutionReference } from "../../agent-collaboration/execution/task/task-execution-reference.js";
-
-const requireStartedExecution = (run: AgentOrgRun, reference: TaskExecutionReference) => {
-  const execution = new AgentOrgExecutionIndex(run.getExecutionTreeSnapshot()).getTaskExecution(reference);
-  if (!execution) throw new Error("Started AgentOrg task execution is not in the current execution tree.");
-  return projectCollaborationTaskExecution(execution.source);
-};
-
-export const projectAgentOrgExecutionView = (
-  run: AgentOrgRun,
-  connection: Readonly<{ snapshot: AgentOrgRunPackageSnapshot; baseChangeSequence: number; liveSequenceId: string;
-    lastMessageChangeSequence: number }>,
-  remoteTaskExecutions: readonly RemoteTaskExecutionDto[],
-): RootExecutionViewDto => projectAgentOrgExecutionSnapshot({
-  orgRunId: run.orgRunId, isActive: run.isActive(), snapshot: connection.snapshot,
-  baseChangeSequence: connection.baseChangeSequence, liveSequenceId: connection.liveSequenceId,
-  lastMessageChangeSequence: connection.lastMessageChangeSequence, remoteTaskExecutions,
-});
+import type { SequencedRootEvent } from "../../agent-collaboration/delegation/run-view-stream.js";
 
 export const projectAgentOrgExecutionSnapshot = (input: Readonly<{
   orgRunId: string;
@@ -39,8 +16,6 @@ export const projectAgentOrgExecutionSnapshot = (input: Readonly<{
   baseChangeSequence: number;
   liveSequenceId: string | null;
   lastMessageChangeSequence: number | null;
-  /** autobyteus-278: the runs this Org delegated to other nodes, with their nodes' names. */
-  remoteTaskExecutions: readonly RemoteTaskExecutionDto[];
 }>): RootExecutionViewDto => {
   const { orgRunId, isActive, snapshot, baseChangeSequence, liveSequenceId, lastMessageChangeSequence } = input;
   return RootExecutionViewDtoSchema.parse({
@@ -52,9 +27,8 @@ export const projectAgentOrgExecutionSnapshot = (input: Readonly<{
     last_message_change_sequence: lastMessageChangeSequence,
     is_active: isActive,
     execution_tree: projectAgentOrgExecutionTree(snapshot.tree),
-    closed_task_executions: snapshot.closedTaskExecutions,
     agent_input_states: snapshot.inputStates,
-    agent_statuses: snapshot.statuses.map((status) => ({
+    agent_statuses: [...snapshot.statuses.map((status) => ({
       member_address: status.execution.memberAddress,
       agent_run_id: status.execution.agentRunId,
       status: status.details.status,
@@ -62,14 +36,14 @@ export const projectAgentOrgExecutionSnapshot = (input: Readonly<{
       tool_name: null,
       error_message: status.details.errorMessage,
       error_details: null, recoverableBlock: status.details.recoverableBlock,
-    })),
-    remote_task_executions: input.remoteTaskExecutions,
+    }))],
   },
   });
 };
 
+/** One event of the Org run's view in base's shapes; its tree's changes are sent by its session (`run_tree_changed`, SR-084). */
 export const projectAgentOrgExecutionEvent = (
-  run: AgentOrgRun,
+  orgRunId: string,
   sequenced: SequencedRootEvent<AgentOrgRunEvent>,
 ): RootExecutionEventDto | null => {
   const source = sequenced.event;
@@ -85,40 +59,13 @@ export const projectAgentOrgExecutionEvent = (
         message: source.message,
       };
       break;
-    // N-402: the one place a remote child's output becomes the stream's `agent_presentation`.
-    case "remote_agent_presentation":
-      event = { kind: "agent_presentation" as const, member_address: source.memberAddress, agent_run_id: source.agentRunId, message: source.message };
-      break;
-    case "remote_task_execution_summary":
-      event = { kind: "remote_task_execution_summary" as const, ...projectRemoteTaskExecutionSummary(source.summary) };
-      break;
-    case "remote_task_execution_started":
-      event = { kind: "remote_task_execution_started" as const, execution: projectRemoteTaskExecution(source.execution) };
-      break;
-    case "task_execution_started":
-      event = {
-        kind: "task_execution_started" as const,
-        host_kind: source.host.hostKind,
-        host_run_id: source.host.hostRunId,
-        execution: requireStartedExecution(run, source.taskExecution),
-      };
-      break;
     case "communication":
       event = { kind: "communication" as const, message: source.message };
-      break;
-    case "delegated_launch_selections_changed":
-      event = projectCollaborationSelectionsChanged(source.selections);
-      break;
-    case "task_executions_closed":
-      event = { kind: "task_executions_closed" as const, task_executions: source.taskExecutions };
-      break;
-    case "task_executions_reopened":
-      event = { kind: "task_executions_reopened" as const, task_executions: source.taskExecutions };
       break;
   }
   return RootExecutionEventDtoSchema.parse({
     root_subject_kind: "agent_org",
-    root_run_id: run.orgRunId,
+    root_run_id: orgRunId,
     change_sequence: sequenced.changeSequence,
     event,
   });

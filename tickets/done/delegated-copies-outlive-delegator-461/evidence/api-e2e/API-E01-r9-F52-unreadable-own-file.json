@@ -1,0 +1,35 @@
+{
+  "case": "F-52 UC-1/UC-2 (R9-A, both pass): the bad run's delegator opens without its row, a warning names it",
+  "evidence": {
+    "running server": {
+      "view:uc_host_cb59d1_745034fdaaea40089fc243dbc000cb7f": "opens",
+      "view:uc_host_cb59d1_f9e0d0e4b126448b8bd20abd1d2a124d": "opens",
+      "view:bad run's delegator": "opens",
+      "badRead": {
+        "error": null,
+        "served": true
+      },
+      "warnings": [
+        "Failed reading run metadata for uc_helper_cb59d1_32e84c7f83f2408e8ab247aa82e802cd: Unterminated string in JSON at position 527 (line 10 column 42)",
+        "Failed reading run metadata for uc_helper_cb59d1_32e84c7f83f2408e8ab247aa82e802cd: Unterminated string in JSON at position 527 (line 10 column 42)",
+        "Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/uc-e2e-3zS9Q9/memory/agents/uc_helper_cb59d1_32e84c7f83f2408e8ab247aa82e802cd/raw_traces_manifest.json"
+      ]
+    },
+    "new server process": {
+      "view:uc_host_cb59d1_745034fdaaea40089fc243dbc000cb7f": "opens",
+      "view:uc_host_cb59d1_f9e0d0e4b126448b8bd20abd1d2a124d": "opens",
+      "view:bad run's delegator": "opens",
+      "badRead": {
+        "error": "[{\"message\":\"Run package 'agent:uc_helper_cb59d1_32e84c7f83f2408e8ab247aa82e802cd' is unavailable.\",\"locations\":[{\"line\":1,\"column\":19}],\"path\":[\"getRunProjection\"]}]",
+        "served": false
+      },
+      "warnings": [
+        "Failed reading run metadata for uc_helper_cb59d1_32e84c7f83f2408e8ab247aa82e802cd: Unterminated string in JSON at position 527 (line 10 column 42)",
+        "Failed reading run metadata for uc_helper_cb59d1_32e84c7f83f2408e8ab247aa82e802cd: Unterminated string in JSON at position 527 (line 10 column 42)",
+        "[20261019_delegated_copy_own_file_complete_v1] delegated copy 'uc_helper_cb59d1_32e84c7f83f2408e8ab247aa82e802cd' is left unchanged and is not loaded (PRESERVED_UNREADABLE): It cannot be read: Unterminated string in JSON at position 527 (line 10 column 42)",
+        "Kept run 'uc_helper_cb59d1_32e84c7f83f2408e8ab247aa82e802cd': its record could not be read: Unterminated string in JSON at position 527 (line 10 column 42)",
+        "Failed reading run metadata for uc_helper_cb59d1_32e84c7f83f2408e8ab247aa82e802cd: Unterminated string in JSON at position 527 (line 10 column 42)"
+      ]
+    }
+  }
+}

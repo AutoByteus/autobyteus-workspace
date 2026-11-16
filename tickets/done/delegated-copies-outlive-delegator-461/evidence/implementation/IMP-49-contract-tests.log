@@ -1,0 +1,16 @@
+# commit c46e5c330b
+$ pnpm -C autobyteus-collaboration-stream-contracts test
+# tests 47
+# pass 47
+# fail 0
+$ pnpm -C autobyteus-team-stream-contracts test
+# tests 19
+# pass 19
+# fail 0
+$ pnpm -C autobyteus-agent-presentation-contracts test
+# tests 22
+# pass 21
+# fail 1
+$ git status --short -- *contracts*/dist
+(end of dist status)
+# The one failure is FU-022 (agent-runtime-names.test.mjs: deepseek_harness has no full name). This package's tests are unchanged since 3228eff74b; the failure is not from this ticket.

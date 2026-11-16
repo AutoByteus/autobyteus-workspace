@@ -7,7 +7,6 @@ import { afterAll, afterEach, beforeAll, describe, expect, it, vi } from "vitest
 import type { graphql as graphqlFn, GraphQLSchema } from "graphql";
 import { buildGraphqlSchema } from "../../../src/api/graphql/schema.js";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
-import { assertAgentTeamAddress } from "../../../src/agent-collaboration/domain/agent-team-address.js";
 import { AgentMemoryLayout } from "../../../src/agent-memory/store/agent-memory-layout.js";
 import { AgentOrgCommunicationMessagesStore } from "../../../src/agent-org-execution/persistence/agent-org-communication-messages-store.js";
 import type { AgentOrgRunExecutionTreeSnapshot } from "../../../src/agent-org-execution/domain/agent-org-run-execution-tree.js";
@@ -23,7 +22,6 @@ import { TeamCommunicationStore } from "../../../src/services/team-communication
 import { testAgentOrgExecutionTree, testOrgAgentNode, testOrgTeamNode } from "../../fixtures/current-agent-org-run-fixtures.js";
 import { address, testAgentNode, testExecutionTree } from "../../fixtures/current-team-run-fixtures.js";
 import { configureMemorySyncCapability } from "../../../src/memory-sync/shared/memory-sync-capability.js";
-import { openEveryOwnFileUnder } from "../../fixtures/open-delegated-run-sources.js";
 
 /**
  * Team and AgentOrg memory explorer + member memory view through the built GraphQL schema
@@ -69,30 +67,11 @@ const writingTeamTree = (rootTeamRunId: string, createdAt: string): TeamRunExecu
     createdAt,
     children: [writer],
   });
-  return {
-    ...base,
-    rootTeam: {
-      ...base.rootTeam,
-      taskExecutions: [{
-        address: address("/writer"),
-        agentRunId: `${rootTeamRunId}-task-writer`,
-        platformAgentRunId: null,
-        delegatorAgentRunId: `${rootTeamRunId}-writer`,
-        startedAt: createdAt,
-        source: {
-          kind: "agent",
-          agentDefinitionId: writer.agentDefinitionId,
-          launchConfiguration: base.rootTeam.defaultLaunchConfiguration,
-        },
-      }],
-    },
-  };
+  // autobyteus-461: a team tree holds its own members only; its delegated runs are runs of their own (contract L1).
+  return base;
 };
 
-/**
- * Org root: `/ceo`, `/engineering/solution_designer` inside the configured team `/engineering`,
- * a delegated `/ceo` task instance, and a task execution of the configured team (its member is a task-team member).
- */
+/** Org root: `/ceo` and `/engineering/solution_designer` inside the configured team `/engineering`. */
 const orgTree = (orgRunId: string, orgDefinitionId: string): AgentOrgRunExecutionTreeSnapshot => {
   const designer = testOrgAgentNode("/engineering/solution_designer", `${orgRunId}-designer`);
   const ceo = testOrgAgentNode("/ceo", `${orgRunId}-ceo`);
@@ -103,38 +82,9 @@ const orgTree = (orgRunId: string, orgDefinitionId: string): AgentOrgRunExecutio
     orgDefinitionName: "Tree Org Name",
     members: [ceo, engineering],
   });
-  return validateAgentOrgRunExecutionTreePayload({
-    ...base,
-    rootOrg: {
-      ...base.rootOrg,
-      taskExecutions: [
-        {
-          address: assertAgentTeamAddress("/ceo"),
-          agentRunId: `${orgRunId}-task-ceo`,
-          platformAgentRunId: null,
-          delegatorAgentRunId: `${orgRunId}-ceo`,
-          startedAt: "2026-09-01T00:01:00.000Z",
-          source: { kind: "agent", agentDefinitionId: ceo.agentDefinitionId, launchConfiguration: ceo.launchConfiguration },
-        },
-        {
-          address: assertAgentTeamAddress("/engineering"),
-          teamRunId: `${orgRunId}-engineering-task`,
-          members: [{ address: assertAgentTeamAddress("/engineering/solution_designer"), agentRunId: `${orgRunId}-task-team-designer`, platformAgentRunId: null }],
-          taskExecutions: [],
-          delegatorAgentRunId: `${orgRunId}-ceo`,
-          startedAt: "2026-09-01T00:02:00.000Z",
-          source: {
-            kind: "agent_team",
-            teamDefinitionId: engineering.teamDefinitionId,
-            coordinatorAddress: designer.address,
-            members: [{ address: designer.address, agentDefinitionId: designer.agentDefinitionId, launchConfiguration: designer.launchConfiguration, followsTeam: true }],
-            handoffs: [],
-            defaultLaunchConfiguration: engineering.defaultLaunchConfiguration,
-          },
-        },
-      ],
-    },
-  }, orgRunId);
+  // autobyteus-461: an org's file holds its own units only. The runs it delegated to are runs of their own (their memory is
+  // at `agents/<id>/` or `agent_teams/<team>/<id>/`), shown under it only in its view, never in its memory entry.
+  return validateAgentOrgRunExecutionTreePayload(base, orgRunId);
 };
 
 const MEMBER_FIELDS = "memberAddress displayName agentRunId agentDefinitionId executionKind startedAt groupPath { teamRunId address displayName kind startedAt } lastUpdatedAt memory { hasRawTraces }";
@@ -173,9 +123,9 @@ describe("Memory collaboration (team + org) GraphQL e2e", () => {
     memoryDir = config.getMemoryDir();
     // autobyteus-469: no Task records are written here and this process composes no Task side; every delegated run under
     // this root counts as open (the tests' Task-side stand-in; which runs are in a tree is not this suite's subject).
-    openEveryOwnFileUnder(memoryDir);
+   
 
-    // Team roots (admitted): two writing-team runs; the second has a task instance with memory.
+    // Team roots (admitted): two writing-team runs. The second delegated a run of its own (its memory below), never its member.
     await writeTeamRoot(memoryDir, writingTeamTree("gql-team-run-1", "2026-08-14T00:00:00.000Z"));
     await writeTeamRoot(memoryDir, writingTeamTree("gql-team-run-2", "2026-08-15T00:00:00.000Z"));
     semantic(teamDir("gql-team-run-1", "gql-team-run-1-writer"), "team one", "2026-08-14T01:00:00.000Z");
@@ -236,7 +186,7 @@ describe("Memory collaboration (team + org) GraphQL e2e", () => {
     query Teams($search: String, $source: MemoryExplorerSourceInput) {
       listAgentTeamsWithMemory(search: $search, source: $source, page: 1, pageSize: 10) {
         total
-        entries { teamDefinitionId teamDefinitionName teamRunCount memberMemoryCount latestMemoryAt memory { hasRawTraces } isTaskTeam startedByAgentName }
+        entries { teamDefinitionId teamDefinitionName teamRunCount memberMemoryCount latestMemoryAt memory { hasRawTraces } }
       }
     }
   `;
@@ -286,19 +236,17 @@ describe("Memory collaboration (team + org) GraphQL e2e", () => {
   it("lists admitted team roots only, grouped by definition, with the catalog name (AC-005, AC-003)", async () => {
     const data = await execGraphql<{ listAgentTeamsWithMemory: { total: number; entries: unknown[] } }>(teamsQuery);
     const { total, entries } = data.listAgentTeamsWithMemory;
-    // Configured roots, plus the task teams their coordinating runs still link (UD-008), tagged.
-    expect(total).toBe(2);
-    expect(entries).toContainEqual({
+    // Admitted roots by definition. A delegated run is a run of its own, not a tagged task team (autobyteus-461, SR-068:
+    // `isTaskTeam` / `startedByAgentName` stay removed); its memory does not count for the delegating team.
+    expect(total).toBe(1);
+    expect(entries).toEqual([{
       teamDefinitionId: "gql-writing-team",
       teamDefinitionName: "Writing Team",
       teamRunCount: 2,
       memberMemoryCount: 1,
-      latestMemoryAt: "2026-08-15T02:00:00Z",
+      latestMemoryAt: "2026-08-15T01:00:00Z",
       memory: { hasRawTraces: true },
-      isTaskTeam: false,
-      startedByAgentName: null,
-    });
-    expect(entries.filter((entry) => (entry as { isTaskTeam: boolean }).isTaskTeam)).toHaveLength(1);
+    }]);
   });
 
   it("lists team runs newest first with display names and each member's own run ID; searches and pages (AC-005, AC-010, AC-011)", async () => {
@@ -310,16 +258,16 @@ describe("Memory collaboration (team + org) GraphQL e2e", () => {
       summary: "second draft",
       workspaceRootPath: "/tmp/gql-two",
       createdAt: "2026-08-15T00:00:00.000Z",
-      lastUpdatedAt: "2026-08-15T02:00:00Z",
+      lastUpdatedAt: "2026-08-15T01:00:00Z",
     });
+    // Its own members only; the run it delegated to is not a member target (autobyteus-461).
     expect(page.entries[0]?.memberTargets).toEqual([
       { memberAddress: "/writer", displayName: "writer", agentRunId: "gql-team-run-2-writer", agentDefinitionId: "agent-writer", executionKind: "CONFIGURED", startedAt: null, groupPath: [], lastUpdatedAt: "2026-08-15T01:00:00Z", memory: { hasRawTraces: true } },
-      { memberAddress: "/writer", displayName: "writer", agentRunId: "gql-team-run-2-task-writer", agentDefinitionId: "agent-writer", executionKind: "TASK_AGENT", startedAt: "2026-08-15T00:00:00.000Z", groupPath: [], lastUpdatedAt: "2026-08-15T02:00:00Z", memory: { hasRawTraces: true } },
     ]);
     const runIds = async (search: string) =>
       (await execGraphql<TeamRunsData>(teamRunsQuery, { id: "gql-writing-team", search, page: 1, pageSize: 10 }))
         .listAgentTeamRunsWithMemory.entries.map((entry) => entry.teamRunId);
-    expect(await runIds("gql-team-run-2-task-writer")).toEqual(["gql-team-run-2"]);
+    expect(await runIds("gql-team-run-2-task-writer")).toEqual([]);
     expect(await runIds("first draft")).toEqual(["gql-team-run-1"]);
     expect(await runIds("zzz-no-match")).toEqual([]);
 
@@ -328,13 +276,13 @@ describe("Memory collaboration (team + org) GraphQL e2e", () => {
     expect(second.listAgentTeamRunsWithMemory.entries.map((entry) => entry.teamRunId)).toEqual(["gql-team-run-1"]);
   });
 
-  it("opens team member memory for a configured member and its task instance; unknown and non-admitted roots return empty views (AC-006, AC-011)", async () => {
+  it("opens team member memory for a configured member; a run it delegated to, unknown and non-admitted roots return empty views (AC-006, AC-011)", async () => {
     const view = (teamRunId: string, agentRunId: string) =>
       execGraphql<ViewData<"getTeamMemberRunMemoryView">>(teamMemberViewQuery, { teamRunId, agentRunId })
         .then((data) => data.getTeamMemberRunMemoryView);
     await expect(view("gql-team-run-2", "gql-team-run-2-writer")).resolves.toMatchObject({ runId: "gql-team-run-2-writer", rawTraces: [{ content: "team two" }] });
-    await expect(view("gql-team-run-2", "gql-team-run-2-task-writer")).resolves.toMatchObject({ rawTraces: [{ content: "team two task" }] });
-    for (const [teamRunId, agentRunId] of [["gql-team-unadmitted", "gql-team-unadmitted-writer"], ["gql-team-missing", "gql-team-run-2-writer"], ["gql-team-run-1", "gql-team-run-2-writer"]]) {
+    // A run the team delegated to is not its member (autobyteus-461): its memory is its own run's.
+    for (const [teamRunId, agentRunId] of [["gql-team-run-2", "gql-team-run-2-task-writer"], ["gql-team-unadmitted", "gql-team-unadmitted-writer"], ["gql-team-missing", "gql-team-run-2-writer"], ["gql-team-run-1", "gql-team-run-2-writer"]]) {
       const empty = await view(teamRunId!, agentRunId!);
       expect(empty.runId).toBe(agentRunId);
       expect(empty.rawTraces ?? null).toBeNull();
@@ -378,27 +326,24 @@ describe("Memory collaboration (team + org) GraphQL e2e", () => {
     expect(search.listAgentOrgsWithMemory.entries.map((entry) => entry.orgDefinitionId)).toEqual(["gql-org-a"]);
   });
 
-  it("lists org runs with address-path labels and own run IDs, includes task-team members under their task group, searches and pages (AC-008, AC-010, AC-011, AC-014)", async () => {
+  it("lists org runs with address-path labels and own run IDs, its own members only, searches and pages (AC-008, AC-010, AC-011, AC-014)", async () => {
     const all = await execGraphql<OrgRunsData>(orgRunsQuery, { id: "gql-org-a", page: 1, pageSize: 10 });
     const page = all.listAgentOrgRunsWithMemory;
     expect(page.entries.map((entry) => entry.orgRunId)).toEqual(["gql-org-a-2", "gql-org-a-1"]);
     expect(page.entries[0]).toMatchObject({ orgDefinitionName: "Alpha Org", summary: null, workspaceRootPath: null, createdAt: "2026-09-02T00:00:00.000Z" });
-    expect(page.entries[1]).toMatchObject({ summary: "first alpha run", workspaceRootPath: "/tmp/alpha", lastUpdatedAt: "2026-09-01T04:00:00Z" });
+    expect(page.entries[1]).toMatchObject({ summary: "first alpha run", workspaceRootPath: "/tmp/alpha", lastUpdatedAt: "2026-09-01T02:00:00Z" });
     expect(page.entries[1]?.memberTargets.map((member) => [member.memberAddress, member.displayName, member.agentRunId, member.executionKind, member.groupPath.map((group) => `${group.kind}:${group.teamRunId}`)])).toEqual([
       ["/ceo", "ceo", "gql-org-a-1-ceo", "CONFIGURED", []],
-      ["/ceo", "ceo", "gql-org-a-1-task-ceo", "TASK_AGENT", []],
       ["/engineering/solution_designer", "engineering/solution_designer", "gql-org-a-1-designer", "CONFIGURED", ["CONFIGURED_TEAM:gql-org-a-1-engineering"]],
-      ["/engineering/solution_designer", "engineering/solution_designer", "gql-org-a-1-task-team-designer", "TASK_TEAM_MEMBER", ["TASK_TEAM:gql-org-a-1-engineering-task"]],
     ]);
-    expect(page.entries[1]?.memberTargets[3]?.groupPath[0]).toMatchObject({ address: "/engineering", displayName: "engineering", startedAt: "2026-09-01T00:02:00.000Z" });
-    expect(page.entries[1]?.memberTargets[1]?.startedAt).toBe("2026-09-01T00:01:00.000Z");
+    expect(page.entries[1]?.memberTargets[1]?.groupPath[0]).toMatchObject({ address: "/engineering", displayName: "engineering" });
     const runIds = async (search: string) =>
       (await execGraphql<OrgRunsData>(orgRunsQuery, { id: "gql-org-a", search, page: 1, pageSize: 10 }))
         .listAgentOrgRunsWithMemory.entries.map((entry) => entry.orgRunId);
     expect(await runIds("engineering/solution")).toEqual(["gql-org-a-1"]);
-    expect(await runIds("gql-org-a-1-task-ceo")).toEqual(["gql-org-a-1"]);
+    expect(await runIds("gql-org-a-1-task-ceo")).toEqual([]);
     expect(await runIds("/tmp/alpha")).toEqual(["gql-org-a-1"]);
-    expect(await runIds("gql-org-a-1-task-team-designer")).toEqual(["gql-org-a-1"]);
+    expect(await runIds("gql-org-a-1-task-team-designer")).toEqual([]);
 
     const second = await execGraphql<OrgRunsData>(orgRunsQuery, { id: "gql-org-a", page: 2, pageSize: 1 });
     expect(second.listAgentOrgRunsWithMemory).toMatchObject({ total: 2, page: 2, totalPages: 2 });
@@ -407,14 +352,12 @@ describe("Memory collaboration (team + org) GraphQL e2e", () => {
     expect(unknown.listAgentOrgRunsWithMemory).toMatchObject({ total: 0, entries: [] });
   });
 
-  it("opens org member memory for a team-hosted member, a task instance and a task-team member; unknown members get an empty view (AC-009, AC-011, AC-014)", async () => {
+  it("opens org member memory for a team-hosted member; runs it delegated to and unknown members get an empty view (AC-009, AC-011, AC-014)", async () => {
     const view = (orgRunId: string, agentRunId: string) =>
       execGraphql<ViewData<"getAgentOrgMemberRunMemoryView">>(orgMemberViewQuery, { orgRunId, agentRunId })
         .then((data) => data.getAgentOrgMemberRunMemoryView);
     await expect(view("gql-org-a-1", "gql-org-a-1-designer")).resolves.toMatchObject({ runId: "gql-org-a-1-designer", rawTraces: [{ content: "org designer" }] });
-    await expect(view("gql-org-a-1", "gql-org-a-1-task-ceo")).resolves.toMatchObject({ rawTraces: [{ content: "org task ceo" }] });
-    await expect(view("gql-org-a-1", "gql-org-a-1-task-team-designer")).resolves.toMatchObject({ runId: "gql-org-a-1-task-team-designer", rawTraces: [{ content: "org task team member" }] });
-    for (const [orgRunId, agentRunId] of [["gql-org-a-1", "missing-run"], ["gql-org-missing", "gql-org-a-1-ceo"]]) {
+    for (const [orgRunId, agentRunId] of [["gql-org-a-1", "gql-org-a-1-task-ceo"], ["gql-org-a-1", "gql-org-a-1-task-team-designer"], ["gql-org-a-1", "missing-run"], ["gql-org-missing", "gql-org-a-1-ceo"]]) {
       const empty = await view(orgRunId!, agentRunId!);
       expect(empty.runId).toBe(agentRunId);
       expect(empty.rawTraces ?? null).toBeNull();
@@ -424,7 +367,7 @@ describe("Memory collaboration (team + org) GraphQL e2e", () => {
   it("serves an imported source: teams list from the import, while the org list is empty (AC-007 alternate)", async () => {
     const importRoot = path.join(memoryDir, "imports", "gql-collab-import");
     fs.mkdirSync(importRoot, { recursive: true });
-    openEveryOwnFileUnder(importRoot);
+   
     fs.writeFileSync(path.join(importRoot, "memory-sync-source.json"), JSON.stringify({
       schemaVersion: 1,
       memorySyncSourceId: "gql-collab-import",

@@ -1,9 +1,10 @@
+import type { RunMessagesFeed } from "../../agent-collaboration/delegation/run-messages-feed.js";
 import {
   ROOT_NOT_ACCEPTING_MESSAGES,
   type RootCommunicationPort,
 } from "../../agent-collaboration/execution/communication/root-communication-port.js";
 import { buildRootCommunicationInputMessage } from "../../agent-collaboration/execution/communication/root-communication-runtime-builder.js";
-import { messageLogOwners, type MessageLogOwner } from "../../run-history/store/task-agent-message-logs.js";
+import { messageLogOwners, type MessageLogOwner } from "../../run-history/store/message-log-owners.js";
 import type { AgentOrgCommunicationMessagesFile } from "../persistence/agent-org-communication-messages.js";
 import type { AgentOrgRunPersistenceCoordinator } from "./agent-org-run-persistence-coordinator.js";
 
@@ -18,7 +19,8 @@ export const createAgentOrgCommunicationPort = (input: Readonly<{
   messageLogOwnerOf(agentRunId: string): MessageLogOwner;
   assertDeliveryAllowed: RootCommunicationPort["assertDeliveryAllowed"];
   reserveRecipientInput: RootCommunicationPort["reserveRecipientInput"];
-  publish(message: AgentOrgCommunicationMessagesFile["messages"][number]): void;
+  /** The node's message feed (SR-072): each committed message into the views of its runs and the runs above them. */
+  messageFeed: Pick<RunMessagesFeed, "publish">;
   presentCommittedMessage: RootCommunicationPort["presentRecipientInput"];
 }>): RootCommunicationPort => {
   const port: RootCommunicationPort = {
@@ -36,7 +38,7 @@ export const createAgentOrgCommunicationPort = (input: Readonly<{
     reserveRecipientInput: (agentRunId, message) => input.reserveRecipientInput(agentRunId, message),
     logOwnersOf: (message) => messageLogOwners(message, (agentRunId) => input.messageLogOwnerOf(agentRunId)),
     commitMessageAppend: (append) => input.persistence.commitMessageAppend(append),
-    publishToRootView: (message) => input.publish(message),
+    publishMessage: (message, senderRun) => input.messageFeed.publish({ message, senderRun, receiverRun: input.root }),
     presentRecipientInput: (message, recipientInput) => input.presentCommittedMessage(message, recipientInput),
   };
   return Object.freeze(port);

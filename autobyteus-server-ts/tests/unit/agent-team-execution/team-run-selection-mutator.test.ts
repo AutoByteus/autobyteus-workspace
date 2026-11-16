@@ -34,6 +34,30 @@ describe('Team run model-config mutator', () => {
     expect(original.rootTeam.members[0].launchConfiguration.llmConfig).toEqual({ effort: 'medium' });
   });
 
+  it('CR-461-089: a Team-level save changes its default only; a member with no source of its own keeps the Team\'s earlier one as its own', () => {
+    const original = tree();
+    original.rootTeam.defaultLaunchSource = { origin: 'configured', fallbacks: [] };
+    original.rootTeam.members.push({ ...original.rootTeam.members[0], address: '/own', agentRunId: 'own-run',
+      launchSource: { origin: 'agent_default', fallbacks: [] } });
+    const targets = resolveTeamRunSelectionTargets(original, [{
+      scopeKind: 'CONFIGURED_TEAM', scopeAddress: '/', runtimeKind: RuntimeKind.AUTOBYTEUS, llmModelIdentifier: 'team-next', llmConfig: null,
+    }]);
+    const updated = applyTeamRunSelectionPatches(original, targets) as any;
+    expect(updated.rootTeam.defaultLaunchConfiguration.llmModelIdentifier).toBe('team-next');
+    expect(updated.rootTeam.defaultLaunchSource).toEqual({ origin: 'settings', fallbacks: [] });
+    // Each member's launch is unchanged, and so is where it came from.
+    expect(updated.rootTeam.members.map((member: any) => [member.address, member.launchConfiguration.llmModelIdentifier, member.launchSource])).toEqual([
+      ['/agent', 'gpt', { origin: 'configured', fallbacks: [] }],
+      ['/own', 'gpt', { origin: 'agent_default', fallbacks: [] }],
+    ]);
+    // A save that leaves the default as it was changes no source.
+    const same = applyTeamRunSelectionPatches(original, resolveTeamRunSelectionTargets(original, [{
+      scopeKind: 'CONFIGURED_TEAM', scopeAddress: '/', runtimeKind: RuntimeKind.CODEX_APP_SERVER, llmModelIdentifier: 'gpt', llmConfig: { effort: 'medium' },
+    }])) as any;
+    expect(same.rootTeam.defaultLaunchSource).toEqual({ origin: 'configured', fallbacks: [] });
+    expect(same.rootTeam.members[0].launchSource).toBeUndefined();
+  });
+
   it('rejects duplicate, missing, and kind-mismatched configured targets', () => {
     const original = tree();
     expect(() => resolveTeamRunSelectionTargets(original, [
@@ -98,5 +122,45 @@ describe('Team run selection saves with an agent runtime (autobyteus-348, REQ-00
     const updated = applyTeamRunSelectionPatches(original, targets);
     expect(updated.rootTeam.defaultLaunchConfiguration).toMatchObject({ runtimeKind: 'claude_agent_sdk', llmModelIdentifier: 'opus' });
     expect(member(updated)).toEqual(member(original));
+  });
+});
+
+describe("a delegated team's recorded launch sources after a settings save (CR-461-078, design V-11)", () => {
+  const agentDefault = { origin: "agent_default", fallbacks: [] };
+  const teamDefault = { origin: "team_default", fallbacks: [] };
+  const delegated = () => {
+    const original = tree();
+    original.rootTeam.defaultLaunchSource = teamDefault;
+    original.rootTeam.members[0].launchSource = agentDefault;
+    return original;
+  };
+  const patch = (scopeKind: string, scopeAddress: string, llmModelIdentifier: string) => ({
+    scopeKind, scopeAddress, runtimeKind: RuntimeKind.CODEX_APP_SERVER, llmModelIdentifier, llmConfig: { effort: "medium" } } as any);
+
+  const settings = { origin: "settings", fallbacks: [] };
+  it("an edited member's launch becomes its own, recorded as the Settings edit; the team's stays", () => {
+    const original = delegated();
+    const updated: any = applyTeamRunSelectionPatches(original, resolveTeamRunSelectionTargets(original, [patch("CONFIGURED_AGENT", "/agent", "gpt-6")]));
+    expect(updated.rootTeam.members[0].launchSource).toEqual(settings);
+    expect(updated.rootTeam.defaultLaunchSource).toEqual(teamDefault);
+    // A member that followed its team (no source of its own) records the edit too: it never shows the team's origin again.
+    const follower = tree();
+    follower.rootTeam.defaultLaunchSource = teamDefault;
+    const edited: any = applyTeamRunSelectionPatches(follower, resolveTeamRunSelectionTargets(follower, [patch("CONFIGURED_AGENT", "/agent", "gpt-6")]));
+    expect(edited.rootTeam.members[0].launchSource).toEqual(settings);
+  });
+
+  it("an edited team launch becomes its own, recorded as the Settings edit; the member's stays", () => {
+    const original = delegated();
+    const updated: any = applyTeamRunSelectionPatches(original, resolveTeamRunSelectionTargets(original, [patch("CONFIGURED_TEAM", "/", "gpt-6")]));
+    expect(updated.rootTeam.defaultLaunchSource).toEqual(settings);
+    expect(updated.rootTeam.members[0].launchSource).toEqual(agentDefault);
+  });
+
+  it("a save of the same selections changes nothing: both sources stay", () => {
+    const original = delegated();
+    const updated = applyTeamRunSelectionPatches(original, resolveTeamRunSelectionTargets(original,
+      [patch("CONFIGURED_TEAM", "/", "gpt"), patch("CONFIGURED_AGENT", "/agent", "gpt")]));
+    expect(updated).toEqual(original);
   });
 });

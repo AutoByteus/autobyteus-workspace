@@ -197,6 +197,11 @@ vi.mock("../../../src/services/published-artifacts/published-artifact-publicatio
 vi.mock("../../../src/agent-execution/runtime/general-process-run-supervisor.js", () => ({
   createGeneralProcessRunSupervisor: mocks.createGeneralProcessRunSupervisor,
 }));
+// Steps 1–2 run for real; steps 4–8 need the run services this test fakes (SR-047, SR-052: the same steps as the studio).
+const composeCollaboration = vi.hoisted(() => vi.fn(async () => ({ release: vi.fn() })));
+vi.mock("../../../src/compositions/collaboration-composition.js", async (importOriginal) => ({
+  ...await importOriginal<typeof import("../../../src/compositions/collaboration-composition.js")>(), composeCollaboration,
+}));
 vi.mock("../../../src/workspaces/workspace-manager.js", () => ({
   getWorkspaceManager: () => mocks.workspaceManager,
 }));
@@ -319,11 +324,18 @@ describe("standalone application host latest-Personal prerequisite lifecycle", (
       providerRelayAccess: null,
       runPasses: null,
       modelSelectionValidator: expect.anything(),
-      taskExecutionResources: expect.objectContaining({ ownerOf: expect.any(Function), linkNewTaskExecution: expect.any(Function) }),
+      taskRecords: expect.objectContaining({ isOpen: expect.any(Function), statusChanged: expect.any(Function) }),
+      delegationIndex: expect.objectContaining({ openChildrenOf: expect.any(Function), parentOf: expect.any(Function) }),
+      // Each run's one view stream, from the composition root (SR-062).
+      viewStreams: expect.objectContaining({ streamOf: expect.any(Function) }),
       platformInputNotices: expect.objectContaining({
         takePreface: expect.any(Function), runPublished: expect.any(Function), runReleased: expect.any(Function),
       }),
     });
+    // SR-052: the application host composes the same steps 4–8 with its run services; it has no peer nodes.
+    expect(composeCollaboration).toHaveBeenCalledWith(expect.objectContaining({ memoryDir: "/tmp/standalone-lifecycle/memory",
+      runs: mocks.createGeneralProcessRunSupervisor.mock.results[0]!.value }));
+    expect((composeCollaboration.mock.calls[0] as unknown as [{ remoteChannel: () => unknown }])[0].remoteChannel()).toBeNull();
     expect(mocks.buildApplicationPlatformRuntime).toHaveBeenCalledWith(expect.objectContaining({
       agentDefinitionService: mocks.hostDefinitionServices.agentDefinitionService,
       agentTeamDefinitionService: mocks.hostDefinitionServices.agentTeamDefinitionService,

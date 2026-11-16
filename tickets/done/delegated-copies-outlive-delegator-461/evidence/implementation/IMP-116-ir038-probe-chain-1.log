@@ -1,0 +1,79 @@
+# IMP-116 (IR-038): first probe chain after CR-461-106 … 110 (server dist and phone bundle rebuilt from the worktree, exit 0)
+# probes own their data roots, ports and Chrome; none touches the user's AutoByteus or ~/.autobyteus
+server build 0
+mobile build 0
+RTP RTP-01 Pass 
+RTP RTP-02 Pass 
+RTP RTP-03 Pass 
+RTP RTP-04 Pass 
+RTP RTP-05 Pass 
+RTP RTP-09 Pass 
+RTP RTP-06 Pass 
+RTP RTP-08 Pass 
+RTP RTP-07 Pass 
+BR BR-001 Pass 
+BR BR-002 Pass 
+BR BR-003 Pass 
+PMU PMU-003 Fail Timed out: coordinator selected
+PMU PMU-012 Pass 
+PMU PMU-016 Pass 
+PMU PMU-018 Fail Timed out: team: worker row selected and in view
+PMU PMU-019 Fail Timed out: nested member selected
+PMU PMU-021 Fail Tab reaches the summary with the indigo-500 ring
+PMU PMU-024 Fail locator.click: Timeout 30000ms exceeded. Call log:   - waiting for locator('[data-test="workspace-team-transient-execution-row"][data-agent-run-id="release_note
+DLD DCP-002 Pass 
+DLD DCP-003 Pass 
+DLD DCP-005 Fail locator.innerText: Timeout 30000ms exceeded. Call log:   - waiting for locator('[data-test="existing-run-settings"] [data-test="run-member-/lead@lead_efd4_63865
+DLD DCR-001 Fail Timed out waiting for catalog copy W
+DLD DCR-002 Fail Settings: CW and CP read "As configured in this run"
+DLD DCR-003 Fail locator.innerText: Timeout 30000ms exceeded. Call log:   - waiting for locator('[data-test="existing-run-settings"] [data-test="run-member-/lead@org3_lead_03f8_
+DLD DLP-003 Fail Agent run: Squad member rows
+DLD DLP-004 Fail Team run: Squad member rows
+DLD DLP-007 Fail Settings: copy A engineer on Grok and copy B engineer on ALT
+DLD AFS-001 Fail the Team copy group view lists its members
+DLD AFS-002 Fail Settings stay open across focus changes inside an Org (D-IMP-1)
+CFR CF-001 Pass 
+CFR CF-002 Fail agent-copy: uploads not under the composer's draft owner
+CFR CF-003 Fail team-copy-member: uploads not under the composer's draft owner
+CFR CF-006 Fail org-task-agent: uploads not under the composer's draft owner
+CFR CF-007 Fail clone not stored under this composer's owner
+CFR CF-008 Fail Timed out: setup on disk
+CFR CF-009 Fail Timed out: upload button disabled while pending
+CFR CF-011 Pass 
+CFR CF-012 Pass 
+CFR CF-004 Fail Timed out: outage file on disk
+CFR CF-005 Fail offline-agent-copy: uploads not under the composer's draft owner
+Composer context-file removal probe: Fail. Evidence: /tmp/r38/cfr/evidence.json
+ ELIFECYCLE  Command failed with exit code 1.
+MSP MSP-02 Fail a member's task agent beside the member, as on the desktop (DEC-009)
+MSP MSP-03 Fail each kind opens its agent's conversation, a message from the phone reaches it, ← keeps the scroll and marks the row
+MSP MSP-05 Fail locator.click: Timeout 30000ms exceeded. Call log:   - waiting for locator('[data-testid="mobile-run-row-org:delivery_org_271b4b02c83744a99aafb1013cdaf251/agent
+MSP MSP-06 Fail a text message from the phone reaches the run on beta and its answer shows live
+MSP MSP-07 Fail locator.getAttribute: Timeout 30000ms exceeded. Call log:   - waiting for locator('[data-testid="mobile-run-row-org:delivery_org_271b4b02c83744a99aafb1013cdaf25
+MSP MSP-33 Fail Timed out waiting for the run screen of agent:project_task_manager_527e1c3025384cd89e46bbd36a209a68/agent:release_notes_writer_163ceb556dc84f4c97ffe56fa0dbf137
+MSP MSP-20 Fail a third child appears within the push budget, with its view read again on each surface
+MSP MSP-22 Fail the agent run attempts with its catch-up read first (AC-004)
+MSP MSP-24 Fail one view re-read per close, none afterwards (QR-002)
+MSP MSP-29 Fail Timed out waiting for row agent:content_creator_2c160c763f404c4a9b047eeac7d1df91/agent:publisher_073d897f287946ff94e1789f35afc76f
+MSP MSP-53 Fail Timed out waiting for the run screen
+MSP MSP-46 Fail locator.waitFor: Timeout 60000ms exceeded. Call log:   - waiting for locator('[data-testid="mobile-run-conversation"]').locator('.inter-agent-content .markdown-
+MSP MSP-52 Fail locator.waitFor: Timeout 60000ms exceeded. Call log:   - waiting for locator('[data-testid="mobile-run-conversation"]').locator('.inter-agent-content .markdown-
+CHAIN-DONE
+
+## PMU rerun after the selection-by-agent change (pmu2)
+PMU-003 Pass 
+PMU-018 Fail Timed out: org: worker row selected and in view
+PMU-019 Fail Timed out: nested member selected
+PMU-024 Fail locator.click: Timeout 30000ms exceeded. Call log:   - waiting for locator('[data-test="workspace-team-transient-execution-row"][data-agent-run-id="release_note
+
+## CFR: where the uploads went (the product) and where the probe looked
+added: agent-runs/release_notes_writer_4bd9_00582615f092446a835499e94558c081/context_files  probe expected: agent-collaborations/manager_4bd9_dd8024c357c54e12bae2ab4c1b53507f/agent-runs/release_notes_writer_4bd9_00582615f092446a835499e94558c081/context_files
+added: team-runs/docs_review_team_4bd9_809b649455e44545aa068a51ee906261/members/%2Freviewer/context_files  probe expected: agent-collaborations/manager_4bd9_dd8024c357c54e12bae2ab4c1b53507f/agent-runs/release_notes_writer_4bd9_e1c4a771be354b40b8320be198076166/context_files
+added: agent-runs/release_notes_writer_4bd9_7a74d5213c314506ba31ddaad76f39f6/context_files  probe expected: agent-org-runs/delivery_org_4bd9_092dca77b7104f4a9237121c62ec17eb/agent-runs/release_notes_writer_4bd9_7a74d5213c314506ba31ddaad76f39f6/context_files
+added: agent-runs/release_notes_writer_4bd9_00582615f092446a835499e94558c081/context_files  probe expected: agent-collaborations/manager_4bd9_dd8024c357c54e12bae2ab4c1b53507f/agent-runs/release_notes_writer_4bd9_00582615f092446a835499e94558c081/context_files
+
+## PMU-018 Org part, diagnostic copy of the probe (deleted after): the Org's delegated pick is not shown
+worker release_notes_writer_pmustrip_990c_0a383d3bb6f3444c8cd37a8051039fa4
+revealed {"agentRunId": null, "test": "agent-org-run-open-delivery_org_pmustrip_990c_8616d683cb244e9b8156a3efbe9ca8b2", "text": "CALL_TOOL:{\"name\":\"delegate_task\",\"arguments\":{\"recipient_address\":\"/worker\",\"ta", "visible": true, "scrollTop": 108, "scrollHeight": 335, "clientHeight": 174, "centreOffset": 0, "focused": true, "selectedRows": 1}
+selected [{"t": "agent-org-run-open-delivery_org_pmustrip_990c_8616d683cb244e9b8156a3efbe9ca8b2", "a": null, "r": null}, {"t": null, "a": null, "r": null}]
+org context selection None

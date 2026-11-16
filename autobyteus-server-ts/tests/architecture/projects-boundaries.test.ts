@@ -67,8 +67,8 @@ describe("projects subsystem boundaries", () => {
     // Only the composition bindings know both sides: the Task resources binding, and the Project run links /
     // run Project context ports it composes (projects-left-navigation, DS-003, DS-005).
     expect(filesImporting(join(SRC, "compositions"), /(^|\/)projects\//).sort()).toEqual([
+      "compositions/collaboration-composition.ts",
       "compositions/project-run-links-composition.ts",
-      "compositions/project-task-execution-resource-composition.ts",
     ]);
     expect(filesImporting(join(SRC, "api", "graphql", "types"), /projects\/services\/project-task-service/))
       .toEqual(["api/graphql/types/project-tasks.ts"]);

@@ -8,25 +8,18 @@ import {
   type CollaborationMessagePlacement,
 } from "../../agent-collaboration/collaborators/message-recipient-resolution.js";
 import type { CollaborationMemberExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
-import type { StandaloneRootExecutionIndex } from "./standalone-root-execution-index.js";
+import type { DelegationPlacement } from "../../agent-collaboration/collaborators/catalog-delegation.js";
+import type { StandaloneRootIndex } from "./standalone-root-index.js";
 import type { StandaloneRootCollaborators } from "./standalone-root-collaborators.js";
-import type { StandaloneRootPlacement } from "./standalone-root-task-execution-adapter.js";
 
-/**
- * Resolves Agent-root addresses by subject (DS-001, DS-002). Called inside the root operation
- * gate. The first catalog delegation creates the run's collaboration package (REQ-008); resolving
- * alone never writes.
- */
+/** Resolves a standalone run's addresses (DS-001, DS-3), in the root's gate; resolving never writes. */
 export class StandaloneRootRecipientResolver {
   constructor(private readonly options: Readonly<{
-    getIndex(): StandaloneRootExecutionIndex;
+    getIndex(): StandaloneRootIndex;
     collaborators: StandaloneRootCollaborators;
   }>) {}
 
-  /**
-   * The one standing instance a message reaches: within the sender's own Team instance first
-   * (REQ-007), then the host; anything else is not found (messaging never creates a run).
-   */
+  /** Contract §2.3 in this run: its own agent (the self refusal) or nothing here (messaging never creates a run). */
   resolveMessageRecipient(sender: CollaborationMemberExecutionIdentity, addressInput: string): CollaborationMessagePlacement {
     return resolveMessageRecipient({
       port: () => this.options.getIndex(),
@@ -35,8 +28,8 @@ export class StandaloneRootRecipientResolver {
     });
   }
 
-  /** CM-1 refusal first, then a catalog copy (an Agent root has no other delegation target). */
-  resolveDelegationPlacement(sender: CollaborationMemberExecutionIdentity, addressInput: string, work: DelegationWork, newCopyFolder: string | null): Promise<StandaloneRootPlacement> {
+  /** CM-1 refusal first, then a configured placement its address step 2 reaches (SR-059), then a catalog copy. */
+  resolveDelegationPlacement(sender: CollaborationMemberExecutionIdentity, addressInput: string, work: DelegationWork, newCopyFolder: string | null): Promise<DelegationPlacement> {
     const address = this.requireAddress(addressInput);
     return resolveDelegationPlacement({
       port: this.options.getIndex(),
@@ -48,7 +41,9 @@ export class StandaloneRootRecipientResolver {
     });
   }
 
-  private resolveInRunDelegationPlacement(address: AgentTeamAddress): StandaloneRootPlacement {
+  private async resolveInRunDelegationPlacement(address: AgentTeamAddress): Promise<DelegationPlacement> {
+    const reached = await this.options.collaborators.reachedPlacementAt(address);
+    if (reached) return reached;
     throw new CollaborationContractError("COLLABORATION_TARGET_NOT_FOUND", delegationTargetUnavailableMessage(address));
   }
 

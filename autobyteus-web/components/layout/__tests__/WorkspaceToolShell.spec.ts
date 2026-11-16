@@ -72,7 +72,7 @@ const setupSelectedB = async () => {
     if (variables.agentRunId) return { data: { getAgentOrgMemberRunProjection: { ...variables, conversation: [], activities: [], hasEarlierActiveTraceEvents: false } } };
     return { data: { getAgentOrgRunInspection: { root_subject_kind: 'agent_org', root_run_id: orgRunId, root_org: view } } };
   });
-  useRunHistoryStore().agentOrgHistory = [{ rootRunId: orgRunId, executionTree: view.execution_tree, closedTaskExecutions: [] }] as any;
+  useRunHistoryStore().agentOrgHistory = [{ rootRunId: orgRunId, executionTree: view.execution_tree }] as any;
   await useWorkspaceHistorySubjectActions().execute({ rootSubjectKind: 'agent_org', rootRunId: orgRunId, action: 'select', memberAddress: '/team/lead' });
   const active = useActiveContextStore(), target = active.activeWorkspaceTarget!;
   expect(target.context.config.workspaceId).toBeNull(); expect(target.context.config.workspaceMetadata).toBeNull();

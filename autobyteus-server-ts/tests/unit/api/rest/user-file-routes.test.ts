@@ -57,7 +57,6 @@ describe("user-file routes F3, F9–F15", () => {
       projectionService: { resolveStandaloneRunEntry: async () => resolvedEntry(currentUrl) } as never,
       teamMemberViews: { resolveFileChangeEntry: async () => resolvedEntry(currentUrl) } as never,
       agentOrgMemberViews: { resolveFileChangeEntry: async () => resolvedEntry(currentUrl) } as never,
-      standaloneRootMemberViews: { resolveFileChangeEntry: async () => resolvedEntry(currentUrl) } as never,
     });
     await registerTeamCommunicationRoutes(app, {
       contentService: { resolveContent: async () => referenceContent(currentUrl) } as never,
@@ -81,7 +80,6 @@ describe("user-file routes F3, F9–F15", () => {
     ["F9 run file change", (name) => `/runs/r1/file-change-content?path=${name}`],
     ["F10 team member file change", (name) => `/team-runs/t1/agent-runs/a1/file-change-content?path=${name}`],
     ["F11 org member file change", (name) => `/agent-org-runs/o1/agent-runs/a1/file-change-content?path=${name}&memberAddress=m`],
-    ["F12 collaboration member file change", (name) => `/agent-collaborations/h1/agent-runs/a1/file-change-content?path=${name}&memberAddress=m`],
     ["F13 team message reference", (name) => `/team-runs/t1/team-communication/messages/m1/references/${name}/content`],
     ["F14 org message reference", (name) => `/agent-org-runs/o1/communication/messages/m1/references/${name}/content`],
     ["F15 collaboration message reference", (name) => `/agent-collaborations/h1/communication/messages/m1/references/${name}/content`],

@@ -1,3 +1,4 @@
+import { noDelegations } from "../../helpers/no-delegations.js";
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
@@ -27,14 +28,13 @@ import {
   testOrgLaunchConfiguration,
   testOrgTeamNode,
 } from "../../fixtures/current-agent-org-run-fixtures.js";
-import { openEveryOwnFileUnder } from "../../fixtures/open-delegated-run-sources.js";
 
 /**
  * Owner-scoped file-change reads of team and org members (REQ-002, REQ-003, REQ-006, REQ-008,
  * REQ-009; AC-002..AC-005, AC-008, AC-009). Real stored trees next to many unrelated saved roots,
  * real location services and the real REST routes: each read reads only the named root's tree
- * (or its live tree while it runs); configured members and task agents (catalog copies) resolve
- * workspace-relative files against their own launch workspace; a pending file of a running owner
+ * (or its live tree while it runs); each member resolves workspace-relative files against its own
+ * launch workspace; a pending file of a running owner
  * answers 409; an agent outside the named owner gets an error (list) or 404 (content).
  */
 const T0 = "2026-10-19T00:00:00.000Z";
@@ -47,7 +47,7 @@ afterEach(async () => {
 });
 
 const tempDir = async (prefix: string) => {
-  const dir = await fs.realpath(await fs.mkdtemp(path.join(os.tmpdir(), prefix))); openEveryOwnFileUnder(dir);
+  const dir = await fs.realpath(await fs.mkdtemp(path.join(os.tmpdir(), prefix)));
   directories.push(dir);
   return dir;
 };
@@ -55,11 +55,6 @@ const tempDir = async (prefix: string) => {
 const entry = (runId: string, filePath: string, status: RunFileChangeEntry["status"] = "available"): RunFileChangeEntry => ({
   id: `${runId}:${filePath}`, runId, path: filePath, type: "file", status, sourceTool: "write_file",
   sourceInvocationId: null, content: null, createdAt: T0, updatedAt: T0,
-});
-
-const catalogCopy = (address: string, agentRunId: string, delegatorAgentRunId: string, workspaceRootPath: string) => ({
-  address, agentRunId, platformAgentRunId: null, delegatorAgentRunId, startedAt: T0,
-  source: { kind: "agent", agentDefinitionId: `definition-${agentRunId}`, launchConfiguration: testOrgLaunchConfiguration(workspaceRootPath) },
 });
 
 /** Each agent's workspace holds `docs/<agentRunId>.md`; its recorded changes name it workspace-relative. */
@@ -106,15 +101,13 @@ describe("team member file-change reads name the team run", () => {
     memoryRoots.push(memoryDir);
     const workspaces = await seedWorkspaces(["team-lead", "team-copy"]);
     const layout = new AgentMemoryLayout(memoryDir);
-    const base = testExecutionTree({
+    // Two members, each on its own workspace (a run one of them delegated to is its own run: autobyteus-461).
+    const tree = validateTeamRunExecutionTreePayload(testExecutionTree({
       rootTeamRunId: "team-1",
       coordinatorAddress: "/lead",
-      children: [testAgentNode("/lead", { agentRunId: "team-lead", workspaceRootPath: workspaces.get("team-lead")! })],
-    });
-    const tree = validateTeamRunExecutionTreePayload({
-      ...base,
-      rootTeam: { ...base.rootTeam, taskExecutions: [catalogCopy("/reviewer", "team-copy", "team-lead", workspaces.get("team-copy")!)] },
-    }, "team-1");
+      children: [testAgentNode("/lead", { agentRunId: "team-lead", workspaceRootPath: workspaces.get("team-lead")! }),
+        testAgentNode("/reviewer", { agentRunId: "team-copy", workspaceRootPath: workspaces.get("team-copy")! })],
+    }), "team-1");
     await writeCurrentTeamRunPackage(layout.getTeamDirPath({ rootTeamRunId: "team-1", ancestorTeamRunIds: [] }), tree);
     for (let index = 0; index < UNRELATED_ROOTS; index += 1) {
       const other = testExecutionTree({
@@ -139,7 +132,7 @@ describe("team member file-change reads name the team run", () => {
     }
     const read = vi.spyOn(store, "read");
     const live = liveChanges();
-    const views = new TeamMemberRunViewProjectionService({
+    const views = new TeamMemberRunViewProjectionService({ tree: noDelegations(), peerRunOf: () => null,
       memoryDir,
       agentRunViewProjectionService: {} as never,
       locations,
@@ -151,7 +144,7 @@ describe("team member file-change reads name the team run", () => {
   it.each([
     ["saved", false],
     ["running", true],
-  ])("serves a configured member's and a task agent's list and files with the team %s (AC-002, AC-003)", async (_label, running) => {
+  ])("serves two members' lists and files with the team %s (AC-002, AC-003)", async (_label, running) => {
     const { views, read, live, workspaces, app } = await setup({ running });
 
     for (const agentRunId of ["team-lead", "team-copy"]) {
@@ -210,23 +203,16 @@ describe("org member file-change reads name the org run and member", () => {
       ...testOrgAgentNode(address, agentRunId),
       launchConfiguration: testOrgLaunchConfiguration(workspaces.get(agentRunId)!),
     });
-    const base = testAgentOrgExecutionTree({
+    // Direct agents and mounted-team members, each on its own workspace.
+    const tree: AgentOrgRunExecutionTreeSnapshot = testAgentOrgExecutionTree({
       orgRunId: "org-1",
       members: [
         node("/director", "org-director"),
-        testOrgTeamNode({ address: "/delivery", teamRunId: "org-team", coordinatorAddress: "/delivery/lead", members: [node("/delivery/lead", "org-lead")] }),
+        node("/analyst", "org-copy"),
+        testOrgTeamNode({ address: "/delivery", teamRunId: "org-team", coordinatorAddress: "/delivery/lead",
+          members: [node("/delivery/lead", "org-lead"), node("/delivery/tester", "org-team-copy")] }),
       ],
     });
-    const tree: AgentOrgRunExecutionTreeSnapshot = validateAgentOrgRunExecutionTreePayload({
-      ...base,
-      rootOrg: {
-        ...base.rootOrg,
-        members: base.rootOrg.members.map((member) => "teamRunId" in member
-          ? { ...member, taskExecutions: [catalogCopy("/delivery/tester", "org-team-copy", "org-lead", workspaces.get("org-team-copy")!)] }
-          : member),
-        taskExecutions: [catalogCopy("/analyst", "org-copy", "org-director", workspaces.get("org-copy")!)],
-      },
-    }, "org-1");
     const writeOrg = async (orgRunId: string, orgTree: AgentOrgRunExecutionTreeSnapshot) => {
       const directory = layout.getOrgDirPath(orgRunId);
       await new AgentOrgRunExecutionTreeStore().write(directory, orgTree);
@@ -256,7 +242,7 @@ describe("org member file-change reads name the org run and member", () => {
     }
     const read = vi.spyOn(store, "read");
     const live = liveChanges();
-    const views = new AgentOrgMemberRunViewProjectionService({
+    const views = new AgentOrgMemberRunViewProjectionService({ tree: noDelegations(), peerRunOf: () => null,
       memoryDir,
       agentRunViewProjectionService: {} as never,
       locations,
@@ -269,7 +255,7 @@ describe("org member file-change reads name the org run and member", () => {
   it.each([
     ["saved", false],
     ["running", true],
-  ])("serves configured members' and task agents' lists and files with the org %s (AC-004, AC-005)", async (_label, running) => {
+  ])("serves direct agents' and mounted-team members' lists and files with the org %s (AC-004, AC-005)", async (_label, running) => {
     const { views, read, live, workspaces, addresses, agentRunIds, app } = await setup({ running });
 
     for (const agentRunId of agentRunIds) {

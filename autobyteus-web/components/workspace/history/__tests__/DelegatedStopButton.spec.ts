@@ -7,7 +7,7 @@ import type { RunHistoryTransientExecutionRow } from '~/stores/runHistoryTypes'
 import { AgentStatus } from '~/types/agent/AgentStatus'
 
 const liveness = vi.hoisted(() => ({ live: new Set<string>() }))
-const client = vi.hoisted(() => ({ stopDelegatedExecution: vi.fn() }))
+const client = vi.hoisted(() => ({ terminateDelegatedRun: vi.fn() }))
 vi.mock('~/services/runConfigEditing/delegatedCopyLiveness', () => ({
   isDelegatedCopyLive: (_root: unknown, reference: { agentRunId?: string; teamRunId?: string }) =>
     liveness.live.has(reference.agentRunId ?? reference.teamRunId ?? ''),
@@ -36,7 +36,7 @@ const stopSelector = '[data-test="workspace-delegated-stop"]'
 beforeEach(() => {
   setActivePinia(createPinia())
   liveness.live.clear()
-  client.stopDelegatedExecution.mockReset()
+  client.terminateDelegatedRun.mockReset()
 })
 
 describe.each(roots.flatMap(rootKind => copies.map(copy => ({ ...copy, rootKind }))))(
@@ -76,7 +76,7 @@ describe.each(roots.flatMap(rootKind => copies.map(copy => ({ ...copy, rootKind 
   it('keeps pending visible, disabled and pulsing, prevents duplicate stops, then hides the stopped copy', async () => {
     liveness.live.add(copy.id)
     let finish!: (value: unknown) => void
-    client.stopDelegatedExecution.mockReturnValue(new Promise((resolve) => { finish = resolve }))
+    client.terminateDelegatedRun.mockReturnValue(new Promise((resolve) => { finish = resolve }))
     const wrapper = mount(WorkspaceTransientExecutionRow, { props: { row: copy.row, stopRoot: root } })
     const button = wrapper.get(stopSelector)
     await button.trigger('click')
@@ -90,8 +90,9 @@ describe.each(roots.flatMap(rootKind => copies.map(copy => ({ ...copy, rootKind 
     await button.trigger('click')
     // The store also rejects a duplicate from another surface while this request is in flight.
     await expect(useDelegatedLaunchDraftStore().stop(root, copy.reference)).resolves.toBe(false)
-    expect(client.stopDelegatedExecution).toHaveBeenCalledExactlyOnceWith(root, copy.reference)
-    finish({ success: true, outcome: 'STOPPED', message: 'Stopped.', notStoppedUnattributed: 0 })
+    // The run is stopped as itself (autobyteus-461 rule 2, SR-066).
+    expect(client.terminateDelegatedRun).toHaveBeenCalledExactlyOnceWith(copy.reference)
+    finish({ success: true, message: 'Stopped.' })
     await flushPromises()
     expect(wrapper.find(stopSelector).exists()).toBe(false)
     expect(wrapper.emitted('select')).toBeUndefined()

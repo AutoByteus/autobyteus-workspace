@@ -88,7 +88,11 @@ export function registerLargeRunsLoadLessCases(h) {
   const teamSend = async (teamRunId, agentRunId, content) => {
     const url = `${env().backendUrl.replace(/^http/, 'ws')}/ws/agent-team/${teamRunId}`
     const ws = new WebSocket(ownerSocketUrl(url)) // the owner's second client carries the credential (autobyteus-437)
+    const frames = []
+    ws.addEventListener('message', (e) => { try { frames.push(JSON.parse(String(e.data))) } catch { /* ignore */ } })
     await new Promise((resolve, reject) => { ws.addEventListener('open', resolve, { once: true }); ws.addEventListener('error', reject, { once: true }) })
+    // The protocol: commands wait for the session, which CONNECTED announces (a send before it is refused SESSION_NOT_READY).
+    await waitFor('Team stream CONNECTED', () => frames.some((frame) => frame.type === 'CONNECTED'), 30000)
     const id = `lrl-${randomUUID()}`
     const ack = new Promise((resolve) => ws.addEventListener('message', (e) => { try { const m = JSON.parse(String(e.data)); if (m.payload?.message_id === id || /SEND_MESSAGE/.test(m.type)) resolve(m) } catch { /* ignore */ } }))
     ws.send(JSON.stringify({ type: 'SEND_MESSAGE', payload: { content, context_file_paths: [], image_urls: [], agent_run_id: agentRunId, message_id: id, dedupe_key: `agent_run_input:lrl:${id}` } }))
@@ -377,6 +381,9 @@ export function registerLargeRunsLoadLessCases(h) {
     })
 
     const desk = await context.newPage()
+    // Every frame the window's sockets receive, from the start (CRR-045: a listener attached later misses the open streams).
+    const deskFrames = []
+    desk.on('websocket', (ws) => ws.on('framereceived', (f) => { deskFrames.push({ at: Date.now(), url: new URL(ws.url()).pathname, text: typeof f.payload === 'string' ? f.payload : f.payload.toString('utf8') }) }))
     try {
       await desk.goto(`${env().frontUrl}/workspace`, { waitUntil: 'domcontentloaded' }); await settle(desk, 2500)
       await openTeamRun(desk, r.teamRunId, r.teamDefinitionId)
@@ -390,26 +397,40 @@ export function registerLargeRunsLoadLessCases(h) {
         { k: 'agent_team', r: r.teamRunId, a: r.members.lead }).then(() => null, (e) => String(e.message))
       // The reason names the damaged file and line (AC-006 "with the reason").
       r.expectedReason = `${path.basename(r.damaged.file)}:line ${r.damaged.line} is not valid JSON`
-      assert(r.serverReason?.includes(r.expectedReason), 'the server refuses the damaged log with the reason', { serverReason: r.serverReason, expected: r.expectedReason })
-      assert(r.teamTabText.includes(r.expectedReason), 'the Team tab shows the reason', { teamTabText: r.teamTabText, expected: r.expectedReason })
+      // CR-461-083: the reason names the damaged file and its line (wording per FU-030).
+      const namesIt = (x) => Boolean(x) && x.includes(path.basename(r.damaged.file)) && x.includes(`line ${r.damaged.line}`)
+      assert(namesIt(r.serverReason), 'the server refuses the damaged log with the reason (file and line)', { serverReason: r.serverReason, expected: r.expectedReason })
+      assert(namesIt(r.teamTabText), 'the Team tab shows the reason (file and line)', { teamTabText: r.teamTabText, expected: r.expectedReason })
       assert(await teamTabRows(desk).count() === 0, 'no partial list', await rowTexts(desk))
       await shot(desk, 'LRL-004-team-tab-unavailable')
 
       // Resume: a message to the stopped run is refused with the reason, and the run stays stopped.
+      // autobyteus-461 rule 2: a stopped Team is restored by the member message on its view stream (base: the
+      // RestoreAgentTeamRun mutation), so the refusal is read from that stream's frames (and any GraphQL answer).
       const restores = [], consoleErrors = []
       desk.on('response', async (res) => { try { const b = res.request().postDataJSON(); if (b?.operationName === 'RestoreAgentTeamRun') restores.push(await res.text()) } catch { /* not JSON */ } })
+      const framesFrom = Date.now()
+      const framesSince = () => deskFrames.filter((f) => f.at >= framesFrom && /not valid JSON|restor|ERROR|error/i.test(f.text)).map((f) => f.text)
       desk.on('console', (m) => { if (m.type() === 'error') consoleErrors.push(m.text()) })
       const resumeText = `Resume please ${t}.`
       await typeAndSend(desk, resumeText)
-      await waitFor('the restore response', async () => restores.length > 0, 60000, 250)
+      const reasonCount = async () => (await desk.locator('body').innerText()).split(r.expectedReason).length - 1
+      const reasonBefore = await reasonCount()
+      // The refusal: in the restore's answer (a stream frame or GraphQL) or shown again in the window; recorded either way.
+      // CR-461-083: the restore refusal names the damaged file and its line ("… (file) is damaged at line N. …").
+      const namesFileAndLine = (x) => x.includes(path.basename(r.damaged.file)) && x.includes(`line ${r.damaged.line}`) && /cannot be restored|damaged/i.test(x)
+      const refusalLines = async () => (await desk.locator('body').innerText()).split('\n').filter((l) => /cannot be restored/i.test(l))
+      r.refusalSeen = await waitFor('the restore refusal', async () => [...restores, ...framesSince()].some(namesFileAndLine) || (await refusalLines()).some(namesFileAndLine), 60000, 250)
+        .then(() => true, () => false)
       await delay(1500)
-      r.restoreResponses = restores.map((x) => x.slice(0, 600))
+      r.userMessageShown = (await desk.locator('main').innerText()).includes(resumeText)
+      r.restoreResponses = [...restores, ...framesSince()].map((x) => x.slice(0, 600))
       r.resumeConsoleErrors = consoleErrors.filter((x) => /sending|restor|JSON/i.test(x)).map((x) => x.slice(0, 300))
       r.activeAfterResume = await teamActive(r.teamRunId)
       r.composerStillHolds = (await desk.locator('main textarea:visible').last().inputValue()) === resumeText
       r.reasonVisibleAfterResume = (await desk.locator('body').innerText()).split(r.teamTabText.slice(-40)).length - 1
       assert(r.activeAfterResume === false, 'the run stays stopped', r.activeAfterResume)
-      assert(r.restoreResponses.some((x) => x.includes(r.expectedReason)), 'the server refuses the resume with the reason', { restoreResponses: r.restoreResponses, expected: r.expectedReason })
+      assert(r.refusalSeen, 'the resume is refused with the reason (AC-006)', { restoreResponses: r.restoreResponses, expected: r.expectedReason, composerStillHolds: r.composerStillHolds, userMessageShown: r.userMessageShown })
       await shot(desk, 'LRL-004-resume-refused')
     } finally { await desk.close() }
 
@@ -452,7 +473,7 @@ export function registerLargeRunsLoadLessCases(h) {
       await phoneUnavailable.waitFor({ timeout: 30000 })
       r.phoneText = (await phoneUnavailable.innerText()).replace(/\s+/g, ' ').trim()
       r.phoneRows = await mobile.locator('[data-testid="mobile-team-message-row"]').count()
-      assert(r.phoneText.includes(r.expectedReason), 'the phone shows the reason', { phoneText: r.phoneText, expected: r.expectedReason })
+      assert(r.phoneText.includes(path.basename(r.damaged.file)) && r.phoneText.includes(`line ${r.damaged.line}`), 'the phone shows the reason (file and line)', { phoneText: r.phoneText, expected: r.expectedReason })
       assert(r.phoneRows === 0, 'the phone shows no partial list', r.phoneRows)
       await mobile.screenshot({ path: path.join(env().outDir, 'LRL-004-phone-unavailable.png') })
     } finally { await phone.close() }
@@ -501,8 +522,10 @@ export function registerLargeRunsLoadLessCases(h) {
       await quiet(watch, 3000)
       r.resumeParticipantOps = countBy(watch.since(resumeMark, [PARTICIPANT_OP]))
       r.afterResume = await assertTabEqualsStored(run, 'after the resume', stored3, [`Running ${t} M1`, `Running ${t} M2`, `Resumed ${t} M3`])
-      assert(r.resumeParticipantOps[`${PARTICIPANT_OP}:${r.focused}`] === 1 && Object.keys(r.resumeParticipantOps).length === 1,
-        'the resume (a new live sequence) reloads the list once', r.resumeParticipantOps)
+      // autobyteus-461 SR-064: the open view stream follows the run through its restore, so the resume may keep the live
+      // sequence (no reload) or start a new one (one reload); either way the list equals the stored log (checked above).
+      assert((r.resumeParticipantOps[`${PARTICIPANT_OP}:${r.focused}`] ?? 0) <= 1 && Object.keys(r.resumeParticipantOps).every((k) => k === `${PARTICIPANT_OP}:${r.focused}`),
+        'the resume reloads at most the focused member\'s list, once', r.resumeParticipantOps)
       await shot(run, 'LRL-005-after-resume')
     } finally { watch.stop(); await run.close() }
     await stopTeamRun(r.teamRunId).catch(() => {})

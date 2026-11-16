@@ -9,8 +9,7 @@ import type {
 import type { MemoryFileStore } from "../store/memory-file-store.js";
 import { AgentRunMetadataStore } from "../../run-history/store/agent-run-metadata-store.js";
 import { AgentRunHistoryCatalogService } from "../../run-history/services/agent-run-history-catalog-service.js";
-import type { AgentRunMetadata, TaskAgentRunMetadata } from "../../run-history/store/agent-run-metadata-types.js";
-import { CoordinatingRunPresence } from "../../run-history/store/coordinating-run-presence.js";
+import type { AgentRunMetadata } from "../../run-history/store/agent-run-metadata-types.js";
 import {
   getInternalAgentVisibility,
   type InternalAgentVisibility,
@@ -33,18 +32,16 @@ const UNATTRIBUTED_DISPLAY_NAME = "Unattributed runs";
 type AgentRunRecord = {
   runId: string;
   metadata: AgentRunMetadata | null;
-  /** A task agent's own facts (G1 hides them from `metadata`); listed under its definition (D-5, AC-013). */
-  taskAgent: TaskAgentRunMetadata | null;
   catalogRow: RunHistoryIndexRow | null;
   memory: MemoryAvailabilityBuildResult;
 };
 
 const definitionOf = (run: AgentRunRecord): string | null =>
-  run.metadata?.agentDefinitionId?.trim() || run.taskAgent?.agentDefinitionId || run.catalogRow?.agentDefinitionId?.trim() || null;
+  run.metadata?.agentDefinitionId?.trim() || run.catalogRow?.agentDefinitionId?.trim() || null;
 const workspaceOf = (run: AgentRunRecord): string | null =>
-  run.metadata?.workspaceRootPath ?? run.taskAgent?.workspaceRootPath ?? run.catalogRow?.workspaceRootPath ?? null;
+  run.metadata?.workspaceRootPath ?? run.catalogRow?.workspaceRootPath ?? null;
 const createdAtOf = (run: AgentRunRecord): string | null =>
-  run.catalogRow?.createdAt ?? run.metadata?.startedAt ?? run.metadata?.preparedAt ?? run.taskAgent?.startedAt ?? null;
+  run.catalogRow?.createdAt ?? run.metadata?.startedAt ?? run.metadata?.preparedAt ?? null;
 
 /** Resolves an agent definition's display name; `null` when the definition can no longer be found. */
 type AgentDefinitionLookup = {
@@ -134,7 +131,6 @@ export class AgentMemoryExplorerService {
   private async buildGroups(): Promise<AgentGroup[]> {
     const [catalogRows, hidden] = await Promise.all([this.readCatalogRowsByRunId(), this.visibility.hiddenDefinitionIds()]);
     const groups = new Map<string, AgentGroup>();
-    const coordinatingRuns = new CoordinatingRunPresence(this.memoryDir);
 
     for (const runId of this.store.listRunDirs()) {
       const memory = this.summaryBuilder.build(runId);
@@ -142,11 +138,8 @@ export class AgentMemoryExplorerService {
         continue;
       }
       const metadata = await this.metadataStore.readMetadata(runId);
-      const taskAgent = metadata ? null : await this.metadataStore.readTaskAgentMetadata(runId);
-      // A detached task agent (its coordinating run deleted) is not listed (contract §4, §10); a closed one is (D-6).
-      if (taskAgent && !await coordinatingRuns.exists(taskAgent.taskAgent.coordinatingRun)) continue;
       const catalogRow = catalogRows.get(runId) ?? null;
-      const run: AgentRunRecord = { runId, metadata, taskAgent, catalogRow, memory };
+      const run: AgentRunRecord = { runId, metadata, catalogRow, memory };
       const agentDefinitionId = definitionOf(run);
       if (agentDefinitionId && hidden.has(agentDefinitionId)) continue;
       const key = agentDefinitionId ? `definition:${agentDefinitionId}` : UNATTRIBUTED_STABLE_ID;
@@ -230,8 +223,8 @@ export class AgentMemoryExplorerService {
       includesMemoryExplorerQuery(run.catalogRow?.agentName, query) ||
       includesMemoryExplorerQuery(run.catalogRow?.summary, query) ||
       includesMemoryExplorerQuery(run.catalogRow?.workspaceRootPath, query) ||
-      includesMemoryExplorerQuery(run.metadata?.agentDefinitionId ?? run.taskAgent?.agentDefinitionId, query) ||
-      includesMemoryExplorerQuery(run.metadata?.workspaceRootPath ?? run.taskAgent?.workspaceRootPath, query)
+      includesMemoryExplorerQuery(run.metadata?.agentDefinitionId, query) ||
+      includesMemoryExplorerQuery(run.metadata?.workspaceRootPath, query)
     );
   }
 
@@ -251,7 +244,7 @@ export class AgentMemoryExplorerService {
   private toRunSummary(run: AgentRunRecord): AgentRunMemorySummary {
     return {
       runId: run.runId,
-      agentDefinitionId: run.metadata?.agentDefinitionId ?? run.taskAgent?.agentDefinitionId ?? run.catalogRow?.agentDefinitionId ?? null,
+      agentDefinitionId: run.metadata?.agentDefinitionId ?? run.catalogRow?.agentDefinitionId ?? null,
       agentName: run.catalogRow?.agentName ?? null,
       summary: run.catalogRow?.summary ?? null,
       workspaceRootPath: workspaceOf(run),

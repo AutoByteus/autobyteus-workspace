@@ -1,0 +1,83 @@
+# Case: API-E02 §5.3 O6/O7 (F-7) diagnostic (API-REV-002, round 2)
+# Commit: f75cf6b96b (code 9f4709571b); server dist and phone bundle built from it
+# Environment: ENV-1 macOS 26.5.2, Node v22.23.1, clean env (env -i PATH HOME=<temp> TMPDIR USER), scripted AGY CLI (AGY_FAKE_CASE=linked_skills)
+# Date: 2026-11-12
+# Command: cd autobyteus-server-ts && env -i PATH HOME=<temp> TMPDIR USER RUN_AGY_FAILURE_E2E=1 CONTRACT_STORIES_CONTINUE=1 CONTRACT_STORIES_EVIDENCE_DIR=<dir> ANTIGRAVITY_CLI_COMMAND=$PWD/tests/fixtures/agy-failure-cli.mjs pnpm exec vitest run tests/e2e/projects/collaboration-contract-stories.e2e.test.ts --no-watch -t "5.3" (CONTRACT_STORIES_LOG_LEVEL=DEBUG)
+# O6/O7/O8 report entries, then node A's log lines for the copy team, the CEO, the Teacher and the view sessions.
+
+[
+ {
+  "state": "O6",
+  "cases": [
+   "B-5"
+  ],
+  "diffs": [
+   "the step failed: Error: O6: no result of send_message_to by dev_lead_9a01; its conversation ends: \\\".\\nWhen you finish, or need something you can't get yourself, tell that agent using send_message_to with recipient_address set to that sender address or target_agent_run_id set to that sender run id (one of them, not both).\\n\\nTask: demo-1 in Project project_713c26d4-fd96-49e7-be99-04caa3a65263\\nIf you have get_project_task, it reads this Task again, including comments added later.\\nDescription:\\n…\",\"media\":null,\"ts\":1794460053.325},{\"kind\":\"message\",\"role\":\"assistant\",\"content\":\"OK\",\"media\":null,\"ts\":1794460053.328},{\"kind\":\"message\",\"role\":\"user\",\"messageId\":\"e2e-64544e05-a5ce-45ec-81ae-51282607ed15\",\"dedupeKey\":\"agent_run_input:e2e:a582a1fb-b23e-4b6f-9a38-65efee807355\",\"content\":\"CALL_TOOL:{\\\"name\\\":\\\"get"
+  ],
+  "known": []
+ },
+ {
+  "state": "O7",
+  "cases": [
+   "B-4"
+  ],
+  "diffs": [
+   "the step failed: Error: O7: no result of send_message_to by dev_lead_9a01; its conversation ends:  it reads this Task again, including comments added later.\\nDescription:\\n…\",\"media\":null,\"ts\":1794460053.325},{\"kind\":\"message\",\"role\":\"assistant\",\"content\":\"OK\",\"media\":null,\"ts\":1794460053.328},{\"kind\":\"message\",\"role\":\"user\",\"messageId\":\"e2e-64544e05-a5ce-45ec-81ae-51282607ed15\",\"dedupeKey\":\"agent_run_input:e2e:a582a1fb-b23e-4b6f-9a38-65efee807355\",\"content\":\"CALL_TOOL:{\\\"name\\\":\\\"get_handoff_rules\\\",\\\"arguments\\\":{}}\",\"media\":null,\"ts\":1794460083.84},{\"kind\":\"message\",\"role\":\"assistant\",\"content\":\"CALLED:{\\\"content\\\":[{\\\"type\\\":\\\"text\\\",\\\"text\\\":\\\"{\\\\\\\"handoffs\\\\\\\":[{\\\\\\\"when\\\\\\\":\\\\\\\"When the release is ready …\\\\\\\",\\\\\\\"recipient_address\\\\\\\":\\\\\\\"/ceo_agent\\\\\\\"}]}\\\"}],\\\"structuredContent\\\":{\\\"handoffs\\\":[{\\"
+  ],
+  "known": []
+ },
+ {
+  "state": "O8",
+  "cases": [
+   "DL-4"
+  ],
+  "diffs": [
+   "A:memory/agent_teams/dev_team_9a9a/team_communication_messages_active.jsonl: expected 2 items, got 0: []"
+  ],
+  "known": [
+   "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[0].role: not in the contract (null)",
+   "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[0].description: not in the contract (null)",
+   "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[0].platformAgentRunId: not in the contract (\"013e5a1e-6588-4a90-a3fe-4c652b35c689\")",
+   "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[1].role: not in the contract (null)",
+   "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[1].description: not in the contract (null)",
+   "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[1].platformAgentRunId: not in the contract (\"99219aa0-a35b-4ce9-b72b-a3e3fc2b8ec8\")",
+   "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[2].role: not in the contract (null)",
+   "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[2].description: not in the contract (null)",
+   "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[2].platformAgentRunId: not in the contract (\"fdab1b81-5e66-4872-afc3-38ea76adb1ac\")",
+   "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[3].members[0].role: not in the contract (null)",
+   "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[3].members[0].description: not in the contract (null)",
+   "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[3].members[0].platformAgentRunId: not in the contract (\"49326fcc-893a-4f73-8359-f23dcefb9e6a\")",
+   "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[3].members[1].role: not in the contract (null)",
+   "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[3].members[1].description: not in the contract (null)",
+   "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[3].members[1].platformAgentRunId: not in the contract (\"40be28f0-0ba5-46f1-9531-50ab747b7bda\")",
+   "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[3].role: not in the contract (null)",
+   "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[3].description: not in the contract (null)",
+   "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json.rootOrg.members[3].defaultLaunchConfiguration: not in the contract ({\"runtimeKind\":\"antigravity_cli\",\"llmModelIdentifier\":\"gemini-3.8-flash-low\",\"llmConfig\":null,\"autoExecuteTools\":true,\"w)",
+   "A:memory/agent_teams/dev_team_9a9a/team_run_execution_tree.json.schemaVersion: missing",
+   "A:memory/agent_teams/dev_team_9a9a/team_run_execution_tree.json.rootTeam.defaultLaunchSource: not in the contract ({\"origin\":\"configured\",\"fallbacks\":[]})",
+   "A:memory/agents/release_agent_66c3/run_metadata.json.llmConfig: expected an object, got null",
+   "A:memory/agents/release_agent_66c3/run_metadata.json.preparedAt: not in the contract (\"2026-11-12T05:11:04.993Z\")",
+   "A:memory/agents/release_agent_66c3/run_metadata.json.preparedExpiresAt: not in the contract (\"2026-11-13T05:11:04.993Z\")",
+   "A:memory/agents/release_agent_66c3/run_metadata.json.applicationExecutionContext: not in the contract (null)"
+  ]
+ }
+]
+
+# node A log excerpt
+231: AGY compaction detection off for run ceo_agent_a3e1275834ad4efcb52d39ffe15febc1: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+251: Created agent session 581ca903-4c6d-48c2-991f-8fccc870f79a for run dev_team_5f40c0cf79d5454aaba777949339d20e
+252: AgentSession 581ca903-4c6d-48c2-991f-8fccc870f79a connected to run dev_team_5f40c0cf79d5454aaba777949339d20e
+253: Agent team websocket attached for team run dev_team_5f40c0cf79d5454aaba777949339d20e
+254: Agent Team WebSocket connected: session=581ca903-4c6d-48c2-991f-8fccc870f79a, run=dev_team_5f40c0cf79d5454aaba777949339d20e
+255: AgentSession 581ca903-4c6d-48c2-991f-8fccc870f79a closed
+257: Created agent session 31a4b7e8-7f81-4c99-81b9-f297495ef2bb for run dev_team_5f40c0cf79d5454aaba777949339d20e
+258: AgentSession 31a4b7e8-7f81-4c99-81b9-f297495ef2bb connected to run dev_team_5f40c0cf79d5454aaba777949339d20e
+259: Agent team websocket attached for team run dev_team_5f40c0cf79d5454aaba777949339d20e
+260: Agent Team WebSocket connected: session=31a4b7e8-7f81-4c99-81b9-f297495ef2bb, run=dev_team_5f40c0cf79d5454aaba777949339d20e
+261: AgentSession 31a4b7e8-7f81-4c99-81b9-f297495ef2bb closed
+263: Created agent session b955ea7c-bac1-40ea-9f23-f758aadc839d for run dev_team_5f40c0cf79d5454aaba777949339d20e
+264: AgentSession b955ea7c-bac1-40ea-9f23-f758aadc839d connected to run dev_team_5f40c0cf79d5454aaba777949339d20e
+265: Agent team websocket attached for team run dev_team_5f40c0cf79d5454aaba777949339d20e
+266: Agent Team WebSocket connected: session=b955ea7c-bac1-40ea-9f23-f758aadc839d, run=dev_team_5f40c0cf79d5454aaba777949339d20e
+270: AGY compaction detection off for run teacher_b736270d4edd41f4b07fd00acc23f5e4: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+271: AgentSession b955ea7c-bac1-40ea-9f23-f758aadc839d closed

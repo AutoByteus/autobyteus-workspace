@@ -24,9 +24,9 @@ describe("MemorySearch (pipeline and search over Work Journals)", () => {
   let activeModel = "fake-model-a";
   let memory: MemorySearch;
   const discovery = () => new MemoryRunDiscovery(memoryDir, {
-    teamLocations: { listAgents: async () => [] }, orgLocations: { listAgents: async () => [] }, taskTeams: { listTaskTeams: async () => [] },
+    teamLocations: { listAgents: async () => [] }, orgLocations: { listAgents: async () => [] },
     agentCatalog: { listCatalogRows: async () => [{ runId: "codex_ddns", agentName: "Codex" }, { runId: "game_bot", agentName: "Game Maker" }] as never },
-    agentMetadata: { readMetadata: async (runId: string) => runId === "codex_ddns" ? { agentDefinitionId: "codex", workspaceRootPath: "/w/mcps" } as never : null, readTaskAgentMetadata: async () => null },
+    agentMetadata: { readMetadata: async (runId: string) => runId === "codex_ddns" ? { agentDefinitionId: "codex", workspaceRootPath: "/w/mcps" } as never : null },
   });
   const create = () => new MemorySearch({
     appDataDir, memoryDir, journals, embeddings: () => fake.index, activeModelId: () => activeModel, discovery: discovery(), quietMs: 30,
@@ -337,7 +337,7 @@ describe("MemorySearch (pipeline and search over Work Journals)", () => {
   });
 
   describe("neutral vocabulary: journals are rendered again after an update, with no migration (AC-008, AC-009)", () => {
-    const calls = (spy: ReturnType<typeof vi.spyOn>) => spy.mock.calls.map((call) => (call as unknown[])[1]);
+    const calls = (spy: ReturnType<typeof vi.spyOn>) => spy.mock.calls.map((call: unknown) => (call as unknown[])[1]);
 
     it("a new renderer revision changes every run's fingerprint: the next pass renders every journal again; an unchanged one renders none", async () => {
       memory.startIndexing();

@@ -1,0 +1,128 @@
+{
+  "RTP-05": [
+    {
+      "result": "Fail",
+      "stopVisible": false,
+      "stoppedOnBeta": false,
+      "rowAfter": {
+        "chip": "beta-node",
+        "title": null,
+        "error": null,
+        "checking": null,
+        "statusDot": true,
+        "name": "beta-node",
+        "ariaLabel": "Temporary task agent, publisher, level 1, offline, Started by lead, /publisher, on beta-node, Task: Publish the draft. Marker REMOTE-AGENT."
+      }
+    },
+    {
+      "result": "Fail",
+      "stopVisible": false,
+      "stoppedOnBeta": false,
+      "rowBeforeStop": null,
+      "rowAfter": {
+        "chip": "beta-node",
+        "title": null,
+        "error": null,
+        "checking": null,
+        "statusDot": true,
+        "name": "beta-node",
+        "ariaLabel": "Temporary task agent, publisher, level 1, offline, Started by lead, /publisher, on beta-node, Task: Publish the draft. Marker REMOTE-AGENT."
+      }
+    }
+  ],
+  "RTP-08": [
+    {
+      "result": "Fail",
+      "before": {
+        "publisher_3f16f639c0c2435092a917b6c6ab93cf": "idle"
+      },
+      "offlineAtEnd": true,
+      "liveAgain": false,
+      "changesAfterRetry": []
+    },
+    {
+      "result": "Fail",
+      "before": {
+        "publisher_90cfef49b13d4ef0bf723f701cbba13c": "offline"
+      },
+      "offlineAtEnd": true,
+      "liveAgain": false,
+      "changesAfterRetry": []
+    }
+  ],
+  "MSP-25": [
+    {
+      "hiddenMs": 14921,
+      "closedWhileHiddenAfterMs": 2919,
+      "whileHidden": {
+        "history": 0,
+        "statuses": 0,
+        "views": 1,
+        "all": [
+          {
+            "op": "GetAgentRunCollaboration",
+            "afterHiddenMs": 2340,
+            "runId": "project_task_manager_81ea3aa17a5f481f9a75211e157e8973",
+            "runIds": null
+          },
+          {
+            "op": "GetTaskWorkerTasks",
+            "afterHiddenMs": 2345,
+            "runId": null,
+            "runIds": null
+          }
+        ]
+      },
+      "rowListedWhenShown": false,
+      "goneAfterShownMs": 0,
+      "firstHistoryReadAfterShownMs": 3
+    },
+    {
+      "hiddenMs": 14927,
+      "closedWhileHiddenAfterMs": 2924,
+      "whileHidden": {
+        "history": 0,
+        "statuses": 0,
+        "views": 1,
+        "all": [
+          {
+            "op": "GetAgentRunCollaboration",
+            "afterHiddenMs": 2347,
+            "runId": "project_task_manager_fc58fcbc41e54386a8589b3ab90e1188",
+            "runIds": null
+          },
+          {
+            "op": "GetTaskWorkerTasks",
+            "afterHiddenMs": 2354,
+            "runId": null,
+            "runIds": null
+          }
+        ]
+      },
+      "rowListedWhenShown": false,
+      "goneAfterShownMs": 2,
+      "firstHistoryReadAfterShownMs": 6
+    }
+  ],
+  "MSP-32": [
+    {
+      "refusedSocketCount": 980,
+      "since": "2026-11-15T03:08:43.410Z",
+      "until": "2026-11-15T03:25:22.488Z"
+    },
+    {
+      "refusedSocketCount": 77
+    }
+  ],
+  "AFS-002 D-IMP-1 settingsClosedBy (3 runs)": [
+    [
+      "Org copy"
+    ],
+    [
+      "Org copy"
+    ],
+    [
+      "Org copy"
+    ]
+  ]
+}

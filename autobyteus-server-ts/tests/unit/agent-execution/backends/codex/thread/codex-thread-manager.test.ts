@@ -42,7 +42,7 @@ const createRunContext = (
       llmConfig: null,
       memberExecutionContext: input.teamRunId
         ? new MemberExecutionContext({
-            teamScoped: true, collaborationRole: "team_member",
+            teamScoped: true, collaborationRole: "team_member", inOrganization: false,
             identity: {
               root: createTeamRootExecutionIdentity(input.teamRunId),
               memberAddress: `/${runId}`,

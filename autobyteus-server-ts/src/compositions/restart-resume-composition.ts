@@ -1,3 +1,4 @@
+import type { ClosedTaskEntryFence } from "../agent-collaboration/execution/task/closed-task-fence.js";
 import type { RootExecutionIdentity } from "../agent-collaboration/execution/domain/root-execution-identity.js";
 import { getActiveCollaborationRootDirectory } from "../agent-collaboration/execution/services/active-collaboration-root-directory.js";
 import { AgentRunManager } from "../agent-execution/services/agent-run-manager.js";
@@ -9,6 +10,7 @@ import type { AgentOrgRunHistoryCatalogService } from "../run-history/services/a
 import { getAgentRunHistoryCatalogService } from "../run-history/services/agent-run-history-catalog-service.js";
 import { getTeamRunHistoryCatalogService } from "../run-history/services/team-run-history-catalog-service.js";
 import type { CollaborationRootResolver } from "./collaboration-root-resolver.js";
+import type { DelegationIndex } from "../agent-collaboration/delegation/delegation-index.js";
 
 export type RestartResume = Readonly<{ recorder: BusyRunRecorder; resumer: RestartResumer }>;
 
@@ -22,6 +24,10 @@ type HistoryRow = Readonly<{ terminatedAt?: string | null; archivedAt?: string |
 export const composeRestartResume = (input: Readonly<{
   appDataDir: string;
   rootResolver: CollaborationRootResolver;
+  /** The relationships between runs (SR-047): a delegated run is resumed through its own root. */
+  tree: Pick<DelegationIndex, "parentOf">;
+  /** DS-15: a run whose Task is closed is not resumed (as base fenced its input). */
+  closedTasks: Pick<ClosedTaskEntryFence, "refusal">;
   orgHistory: Pick<AgentOrgRunHistoryCatalogService, "getCatalogRow">;
 }>): RestartResume => {
   const recordPath = busyRunRecordPath(input.appDataDir);
@@ -37,7 +43,7 @@ export const composeRestartResume = (input: Readonly<{
   return Object.freeze({
     recorder: new BusyRunRecorder({ liveRuns, roots: getActiveCollaborationRootDirectory(), recordPath, version: readReleaseIdentity }),
     resumer: new RestartResumer({
-      recordPath, version: readReleaseIdentity, liveRuns, rootHistory, rootResolver: input.rootResolver,
+      recordPath, version: readReleaseIdentity, liveRuns, rootHistory, rootResolver: input.rootResolver, tree: input.tree, closedTasks: input.closedTasks,
     }),
   });
 };

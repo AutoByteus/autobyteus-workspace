@@ -157,7 +157,7 @@ member agent default -> Team default -> starting run (or the launch form's root)
   server receives ordinary per-member overrides.
 - **Delegated Team copy.** The server resolves each member by
   the same order, with the run root's settings as the last layer. See
-  [Launch configuration of catalog copies](./agent_communication.md#launch-configuration-of-catalog-copies).
+  [Launch configuration of catalog copies](./agent_communication.md#launch-configuration-of-a-delegated-run).
 
 The server's effective Org launch resolution is unchanged. A definition default
 reaches an Org run only through the rows the launch form seeded:

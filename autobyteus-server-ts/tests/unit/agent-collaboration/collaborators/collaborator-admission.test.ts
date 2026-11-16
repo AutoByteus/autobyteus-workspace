@@ -54,10 +54,11 @@ const port = (input: {
   isApplicationBound: input.applicationBound ?? false,
   launchBase: () => ({ kind: "inherited", launch }),
   ownDefinition: () => input.ownAgent ? { kind: "agent", definitionId: input.ownAgent } : { kind: "agent_team", definitionId: "se-team" },
-  inRunPlacementsByDefinition: () => buildInRunPlacements({
+  inRunPlacementsByDefinition: async () => buildInRunPlacements({
     configured: (input.configuredAgents ?? []).map((id) => ({ ref: { kind: "agent" as const, definitionId: id }, address: `/${id}` as never })),
+    configuredStep: 1, reached: [],
   }),
-  addressesInUse: () => new Set(input.addresses ?? ["/coordinator"]),
+  addressesInUse: async () => new Set(input.addresses ?? ["/coordinator"]),
 });
 
 /** Records every step so the order can be asserted. */
@@ -190,6 +191,9 @@ describe("catalog policy and mention resolution", () => {
     await expect(admission.policy.requireAdmissible(port(), { kind: "agent", definitionId: DAILY_ASSISTANT_AGENT_DEFINITION_ID }))
       .resolves.toMatchObject({ kind: "agent", definition: { id: DAILY_ASSISTANT_AGENT_DEFINITION_ID } });
     await expect(admission.catalogDefinitionAt(port(), "/daily_assistant")).resolves.toMatchObject({ kind: "agent" });
+    // Its inverse (SR-072 F-24): the address a definition has in the run's catalog; none in an application-bound run.
+    await expect(admission.catalogAddressOf(port(), { kind: "agent", definitionId: DAILY_ASSISTANT_AGENT_DEFINITION_ID })).resolves.toBe("/daily_assistant");
+    await expect(admission.catalogAddressOf(port({ applicationBound: true }), { kind: "agent", definitionId: DAILY_ASSISTANT_AGENT_DEFINITION_ID })).resolves.toBeNull();
     await expect(admission.resolveMentions(port(), [{ kind: "agent", definitionId: DAILY_ASSISTANT_AGENT_DEFINITION_ID }], other))
       .resolves.toEqual({ admitted: true, launchNotes: [], collaborators: [
         { name: "Daily Assistant", kind: "agent", address: "/daily_assistant", presence: "not_in_run" },
@@ -215,6 +219,17 @@ describe("catalog policy and mention resolution", () => {
     const withCopy = port({ configuredAgents: [DAILY_ASSISTANT_AGENT_DEFINITION_ID] });
     await expect(admission.policy.requireAdmissible(withCopy, { kind: "agent", definitionId: DAILY_ASSISTANT_AGENT_DEFINITION_ID }))
       .rejects.toMatchObject({ code: "COLLABORATOR_MENTION_UNAVAILABLE", message: "Daily Assistant is already in this run." });
+  });
+
+  it("autobyteus-461 SR-037 (DL-11, U7): a team run never delegates to its own definition, also a delegated team rooted at `/`", async () => {
+    const { admission } = harness();
+    const productTeamRun: CollaboratorRootPort = { ...port(), ownDefinition: () => ({ kind: "agent_team", definitionId: "product" }) };
+    // Its own definition has no catalog address in its run, so `delegate_task("/product_team")` is not found (today's text).
+    await expect(admission.catalogDefinitionAt(productTeamRun, "/product_team")).resolves.toBeNull();
+    await expect(admission.policy.requireAdmissible(productTeamRun, { kind: "agent_team", definitionId: "product" }))
+      .rejects.toMatchObject({ code: "COLLABORATOR_MENTION_UNAVAILABLE", message: "Product Team is this run's own definition." });
+    // Another run reaches it as a catalog address.
+    await expect(admission.catalogDefinitionAt(port(), "/product_team")).resolves.toEqual({ kind: "agent_team", definitionId: "product" });
   });
 
   it("derives address segments from names", () => {

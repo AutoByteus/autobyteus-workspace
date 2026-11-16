@@ -22,7 +22,7 @@ export class TeamRunStatePackageLoader {
   async load(input: { teamMemoryDir: string; rootTeamRunId: string }): Promise<TeamRunStatePackageLoadResult> {
     const executionTree = await this.options.executionTreeStore.read(input.teamMemoryDir, input.rootTeamRunId);
     const communicationMessages = executionTree
-      ? await this.options.communicationStore.read(input.teamMemoryDir, executionTree)
+      ? await this.options.communicationStore.readLog(input.teamMemoryDir, input.rootTeamRunId)
       : null;
     if (!executionTree || !communicationMessages) {
       return {

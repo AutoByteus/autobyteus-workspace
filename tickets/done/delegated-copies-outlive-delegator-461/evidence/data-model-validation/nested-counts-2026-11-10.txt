@@ -1,0 +1,15 @@
+     0  busy_runs_record.present
+     0  delegated_agent.has_history_row
+    43  delegated_agent.no_collaboration_tree
+     0  delegated_team.has_history_row
+     1  nested.delegator_in_delegated_agent_run
+    31  nested.delegator_in_delegated_agent_team_run
+    32  nested.depth=1
+     1  nested.first_delegated_run_below_top_is_agent
+    31  nested.first_delegated_run_below_top_is_agent_team
+    32  nested.intermediate_holder_exists
+     5  nested.this_run_kind=agent
+    27  nested.this_run_kind=agent_team
+    29  nested.top_kind=agent
+     3  nested.top_kind=agent_team
+    32  nested.total

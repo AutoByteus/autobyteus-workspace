@@ -1,4 +1,7 @@
-import { remoteChildOf, remoteMemberProjection } from "../../agent-collaboration/execution/remote/remote-child-commands.js";
+import { conversationSenders, receivedSenderAddresses, tracePageSenders } from "./received-sender-addresses.js";
+import type { DelegationIndex } from "../../agent-collaboration/delegation/delegation-index.js";
+import { peerMemberProjection } from "../../agent-collaboration/execution/remote/remote-child-commands.js";
+import type { PeerRunOf } from "../../agent-collaboration/execution/remote/peer-runs.js";
 import { appConfigProvider } from "../../config/app-config-provider.js";
 import { resolveActiveTracePageSenderAddresses } from "../projection/event-monitor-active-trace-page-projection.js";
 import { resolveInterAgentSenderAddresses } from "../projection/run-projection-types.js";
@@ -39,19 +42,27 @@ export interface AgentOrgMemberRunProjection {
 }
 
 export class AgentOrgMemberRunViewProjectionService {
+  private readonly tree: Pick<DelegationIndex, "agentOf" | "collaborationTreeOf">;
+  private readonly peerRunOf: PeerRunOf;
   private readonly agentViews: AgentRunViewProjectionService;
   private readonly locations: AgentOrgExecutionTreeLocationService;
   private readonly tokenUsage: TokenUsageRunStore;
   private readonly injectedFileChanges: RunFileChangeProjectionService | null;
 
   constructor(options: {
+    /** The relationships between runs, from the Task entries (SR-047). */
+    tree: Pick<DelegationIndex, "agentOf" | "collaborationTreeOf">;
+    /** A run on a peer node, by its own identity (SR-066), from the composition. */
+    peerRunOf: PeerRunOf;
     memoryDir?: string;
     agentRunViewProjectionService?: AgentRunViewProjectionService;
     locations?: AgentOrgExecutionTreeLocationService;
     tokenUsage?: TokenUsageRunStore;
     runFileChangeProjectionService?: RunFileChangeProjectionService;
-  } = {}) {
+  }) {
     const memoryDir = options.memoryDir ?? appConfigProvider.config.getMemoryDir();
+    this.tree = options.tree;
+    this.peerRunOf = options.peerRunOf;
     this.agentViews = options.agentRunViewProjectionService ?? new AgentRunViewProjectionService(memoryDir);
     this.locations = options.locations ?? new AgentOrgExecutionTreeLocationService({
       memoryDir,
@@ -66,9 +77,9 @@ export class AgentOrgMemberRunViewProjectionService {
     memberAddress: string,
     agentRunId: string,
   ): Promise<AgentOrgMemberRunProjection> {
-    // N-403: a remote child's conversation is read from its node (autobyteus-278).
-    const remote = remoteChildOf((await this.locations.readTree(orgRunId.trim()))?.rootOrg.remoteTaskExecutions ?? [], agentRunId.trim());
-    if (remote) return await remoteMemberProjection(remote, memberAddress) as AgentOrgMemberRunProjection;
+    // N-403, SR-066: an agent of a peer run is read from its node through the run's handle (autobyteus-278).
+    const peer = this.peerRunOf(agentRunId.trim());
+    if (peer) return await peerMemberProjection(peer, agentRunId.trim(), memberAddress) as AgentOrgMemberRunProjection;
     const location = await this.requireLocation(orgRunId, memberAddress, agentRunId);
     const projection = await this.agentViews.getRequiredProjectionFromMetadata({
       runId: location.agentRunId,
@@ -77,8 +88,7 @@ export class AgentOrgMemberRunViewProjectionService {
     return {
       agentRunId: projection.runId,
       memberAddress: location.memberAddress,
-      conversation: resolveInterAgentSenderAddresses(projection.conversation, (runId) =>
-        new AgentOrgExecutionIndex(location.tree).getAgent(runId)?.address ?? null),
+      conversation: resolveInterAgentSenderAddresses(projection.conversation, await this.senderAddresses(location.tree, conversationSenders(projection.conversation))),
       activities: projection.activities,
       summary: projection.summary,
       lastActivityAt: projection.lastActivityAt,
@@ -99,8 +109,14 @@ export class AgentOrgMemberRunViewProjectionService {
       beforeCursor,
       canonicalSubject: `org:${location.rootRunId}:member:${location.memberAddress}:agent:${location.agentRunId}`,
     });
-    const index = new AgentOrgExecutionIndex(location.tree);
-    return resolveActiveTracePageSenderAddresses(page, (runId) => index.getAgent(runId)?.address ?? null);
+    return resolveActiveTracePageSenderAddresses(page, await this.senderAddresses(location.tree, tracePageSenders(page)));
+  }
+
+  /** The senders' addresses as the member got them (contract §2.5, SR-060). */
+  private senderAddresses(tree: AgentOrgExecutionIndex["tree"], senders: readonly string[]) {
+    const index = new AgentOrgExecutionIndex(tree);
+    return receivedSenderAddresses({ receiverRun: { rootSubjectKind: "agent_org", rootRunId: tree.rootOrg.orgRunId }, tree: this.tree,
+      ownAddressOf: (runId) => index.getAgent(runId)?.address ?? null, senderAgentRunIds: senders });
   }
 
   async getTokenUsageSummary(
@@ -173,6 +189,14 @@ const metadataFor = (location: LocatedAgentOrgAgentExecution): AgentRunMetadata 
   };
 };
 
-let cached: AgentOrgMemberRunViewProjectionService | null = null;
-export const getAgentOrgMemberRunViewProjectionService = (): AgentOrgMemberRunViewProjectionService =>
-  cached ??= new AgentOrgMemberRunViewProjectionService();
+let processService: AgentOrgMemberRunViewProjectionService | null = null;
+/** The composition root sets the process service it created with the tree (SR-047 step 8); the returned function releases it. */
+export const setProcessAgentOrgMemberRunViewProjectionService = (service: AgentOrgMemberRunViewProjectionService): (() => void) => {
+  processService = service;
+  return () => { if (processService === service) processService = null; };
+};
+/** The process service; its callers are older lookups (FU-011). */
+export const getAgentOrgMemberRunViewProjectionService = (): AgentOrgMemberRunViewProjectionService => {
+  if (!processService) throw new Error("AgentOrgMemberRunViewProjectionService is created by the composition root.");
+  return processService;
+};

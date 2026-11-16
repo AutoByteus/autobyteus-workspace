@@ -1,0 +1,6 @@
+# commit 49f3db1047
+$ pnpm test
+# pass 47
+# fail 0
+$ git status --short -- dist
+(end)

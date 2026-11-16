@@ -1,0 +1,13 @@
+# IMP-12 pnpm test:unit on 7a32bb8832
+      Tests  3 failed | 7882 passed | 9 skipped (7894)
+ FAIL  tests/app-data-migrations/append-only-message-logs-v1/append-only-message-logs-v1-app-data-migration.test.ts
+ FAIL  tests/architecture/application-framework-boundaries.test.ts
+ FAIL  tests/architecture/tracked-imports.test.ts
+ Test Files  3 failed | 951 passed | 5 skipped (959)
+EXIT 1
+Error: Test timed out in 5000ms.
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+# Rerun of the three timed-out files alone
+ Test Files  3 passed (3)
+      Tests  35 passed (35)

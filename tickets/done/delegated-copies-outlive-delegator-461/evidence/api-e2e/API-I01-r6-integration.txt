@@ -1,0 +1,8 @@
+# API-I01 server integration, code 958cb22462
+# Command: cd autobyteus-server-ts && env -i PATH HOME=<temp> TMPDIR USER pnpm test:integration:prepare && pnpm test:integration --reporter=verbose
+ Test Files  1 failed | 85 passed | 20 skipped (106)
+      Tests  3 failed | 480 passed | 69 skipped (552)
+   Duration  254.13s (transform 9.42s, setup 2.37s, import 79.48s, tests 162.20s, environment 6ms)
+ FAIL  tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits add + modify + delete events
+ FAIL  tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > returns one idle event stream without stopping other subscribers
+ FAIL  tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits move/rename event

@@ -1,3 +1,5 @@
+import { testViewStreams } from "../../helpers/view-streams.js";
+import { noDelegations, openTaskRecords } from "../../helpers/no-delegations.js";
 import 'reflect-metadata';
 import fs from 'node:fs/promises';
 import os from 'node:os';
@@ -184,9 +186,8 @@ describe('Org-owned Team -> Team-local Agent production reads', () => {
     });
     const prepareNewAgentRun = vi.fn();
     const read = vi.spyOn(f.service, 'getDefinitionById');
-    const builder = new AgentOrgExecutionScopeBuilder({
+    const builder = new AgentOrgExecutionScopeBuilder({ delegationIndex: noDelegations(), viewStreams: testViewStreams(), taskRecords: openTaskRecords(),
       flatTeamExecutionFactory: { beginMaterialization } as never,
-      taskExecutionIdentity: {} as never,
       agentRunManager: { prepareNewAgentRun } as never,
       orgDefinitions: { getDefinitionById: id => f.orgs.getById(id) },
       teamDefinitions: f.service,

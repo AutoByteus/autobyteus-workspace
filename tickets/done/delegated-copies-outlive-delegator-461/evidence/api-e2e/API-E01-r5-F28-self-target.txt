@@ -1,0 +1,39 @@
+# F-28 delegated-team-lazy-member-activation (r5-batchB.log 5737-5774, code 56e4ce773b)
+ FAIL  tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts > Delegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor) > in every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree
+AssertionError: expected [ …(3) ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   "agent: AssertionError: {\"delegated\":false,\"message\":\"'/dtl_squad_bf0229' is not the address of an available agent or agent team. If you have list_available_agents, it shows the addresses you can use.\"}: expected '{\"delegated\":false,\"message\":\"\\'/dtl_…' to contain 'COLLABORATION_SELF_TARGET_REJECTED'
++     at rootScenario (/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copies-outlive-delegator-461/autobyteus-server-ts/tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts:511:64)
++     at processTicksAndRejections (node:internal/process/task_queues:103:5)
++     at async Promise.allSettled (index 0)
++     at /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copies-outlive-delegator-461/autobyteus-server-ts/tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts:599:21
++     at file:///Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copies-outlive-delegator-461/node_modules/.pnpm/@vitest+runner@4.1.12/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20",
++   "team: AssertionError: {\"delegated\":false,\"message\":\"'/dtl_squad_bf0229' is not the address of an available agent or agent team. If you have list_available_agents, it shows the addresses you can use.\"}: expected '{\"delegated\":false,\"message\":\"\\'/dtl_…' to contain 'COLLABORATION_SELF_TARGET_REJECTED'
++     at rootScenario (/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copies-outlive-delegator-461/autobyteus-server-ts/tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts:511:64)
++     at processTicksAndRejections (node:internal/process/task_queues:103:5)
++     at async Promise.allSettled (index 1)
++     at /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copies-outlive-delegator-461/autobyteus-server-ts/tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts:599:21
++     at file:///Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copies-outlive-delegator-461/node_modules/.pnpm/@vitest+runner@4.1.12/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20",
++   "org: Error: Timed out waiting for org: writer error card
++     at Module.until (/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copies-outlive-delegator-461/autobyteus-server-ts/tests/e2e/helpers/agy-runtime-error-fixture.ts:21:9)
++     at rootScenario (/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copies-outlive-delegator-461/autobyteus-server-ts/tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts:493:7)
++     at async Promise.allSettled (index 2)
++     at /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copies-outlive-delegator-461/autobyteus-server-ts/tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts:599:21
++     at file:///Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copies-outlive-delegator-461/node_modules/.pnpm/@vitest+runner@4.1.12/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20",
++ ]
+
+ ❯ tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts:601:22
+    599|     const settled = await Promise.allSettled((["agent", "team", "org"]…
+    600|     const failures = settled.flatMap((result, index) => result.status …
+    601|     expect(failures).toEqual([]);
+       |                      ^
+    602|   }, 600_000);
+    603|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/20]⎯
+

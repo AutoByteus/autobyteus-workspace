@@ -114,6 +114,19 @@ export const useCollaborationParticipantMessagesStore = defineStore('collaborati
   }
 
   /**
+   * A loaded list of the root that names an agent its view no longer holds (`holdsAgent`), and its past participants do
+   * not name, loads again, so that agent is named from the server's answer (autobyteus-469 D-5): it left the tree when its
+   * Task closed. Its rows stay shown while it loads. Called when the root's view is rebuilt, and when its tree loses rows
+   * (`run_tree_changed`, autobyteus-461 SR-084: a closure no longer rebuilds the view).
+   */
+  const reloadNamingUnknown = (rootKind: CollaborationRootKind, rootRunId: string, holdsAgent: (agentRunId: string) => boolean): void => {
+    for (const list of [...lists.values()]) {
+      if (list.key.rootKind === rootKind && list.key.rootRunId === rootRunId && list.state === 'loaded'
+        && namesUnknownAgent(list, holdsAgent)) start(list.key, list.messages, list.pastParticipants)
+    }
+  }
+
+  /**
    * The root's context was rebuilt. Its lists stay, with their loads in flight, when no message could have been
    * missed: the same live sequence, and no message past C; they then hold every message through the base. A kept list
    * that names an agent the rebuilt view no longer holds (`holdsAgent`) and its past participants do not name loads
@@ -127,10 +140,7 @@ export const useCollaborationParticipantMessagesStore = defineStore('collaborati
     if (rebuild.liveSequenceId !== null && kept?.liveSequenceId === rebuild.liveSequenceId
       && rebuild.lastMessageChangeSequence !== null && rebuild.lastMessageChangeSequence <= kept.through) {
       kept.through = rebuild.baseChangeSequence
-      for (const list of [...lists.values()]) {
-        if (list.key.rootKind === rootKind && list.key.rootRunId === rootRunId && list.state === 'loaded'
-          && namesUnknownAgent(list, holdsAgent)) start(list.key, list.messages, list.pastParticipants)
-      }
+      reloadNamingUnknown(rootKind, rootRunId, holdsAgent)
       return
     }
     if (rebuild.liveSequenceId === null) positions.delete(rootKey)
@@ -162,5 +172,13 @@ export const useCollaborationParticipantMessagesStore = defineStore('collaborati
     return list ? Object.freeze({ state: list.state, error: list.error }) : IDLE
   }
 
-  return { load, append, advance, reloadRoot, releaseRoot, messagesOf, pastParticipantsOf, statusOf }
+  /**
+   * The root's view was sent again unchanged (its base and rows; autobyteus-461 CR-461-082): its lists hold every message
+   * through that base, and follow its live sequence from there. Nothing loads.
+   */
+  const adoptRoot = (rootKind: CollaborationRootKind, rootRunId: string, rebuild: RootContextRebuild): void => {
+    if (rebuild.liveSequenceId !== null) positions.set(rootKeyOf(rootKind, rootRunId), { liveSequenceId: rebuild.liveSequenceId, through: rebuild.baseChangeSequence })
+  }
+
+  return { load, append, advance, reloadRoot, reloadNamingUnknown, adoptRoot, releaseRoot, messagesOf, pastParticipantsOf, statusOf }
 })

@@ -49,6 +49,7 @@ import { spawn } from 'node:child_process';
 import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
 import { attachToBrowserContext, attachToProbeProcess, withNodeCredential } from './fixtures/probe-node-access.mjs';
+import { readRunTree, delegatedNodes } from './fixtures/run-tree.mjs';
 // Every node needs a credential (autobyteus-437): the probe's nodes start with its launch credential, and the probe's
 // own calls and its desktop browser contexts carry it (fixtures/probe-node-access.mjs).
 attachToProbeProcess();
@@ -237,10 +238,25 @@ const restoreAgent = async (runId) => {
 };
 const teamIsActive = async (teamRunId) => (await gql('query{listWorkspaceRunHistory{teamDefinitions{runs{teamRunId isActive}}}}'))
   .listWorkspaceRunHistory.flatMap((g) => g.teamDefinitions.flatMap((d) => d.runs)).find((r) => r.teamRunId === teamRunId)?.isActive ?? false;
+/**
+ * A stopped Team is restored as the app does (autobyteus-461 CR-461-008, SR-046 … SR-048: no restore mutation): its view serves
+ * it from its stored file, and the user's message to one of its own members restores it.
+ */
 const restoreTeam = async (teamRunId) => {
   if (await teamIsActive(teamRunId)) return;
-  const r = (await gql('mutation($id:String!){restoreAgentTeamRun(teamRunId:$id){success message}}', { id: teamRunId })).restoreAgentTeamRun;
-  assert(r.success, r.message);
+  const tree = (await gql('query($id:String!){getTeamRunResumeConfig(teamRunId:$id){executionTree}}', { id: teamRunId })).getTeamRunResumeConfig.executionTree;
+  const memberRunId = tree.root_team.members.find((m) => m.agent_run_id)?.agent_run_id;
+  assert(memberRunId, `no member of team ${teamRunId}`);
+  const socket = new WebSocket(`${stack.backendUrl.replace(/^http/, 'ws')}/ws/agent-team/${teamRunId}`);
+  const frames = [];
+  socket.on('message', (raw) => frames.push(JSON.parse(String(raw))));
+  await new Promise((resolve, reject) => { socket.once('open', resolve); socket.once('error', reject); });
+  try {
+    await until('team view snapshot', () => frames.some((f) => f.type === 'TEAM_EXECUTION_VIEW_SNAPSHOT'), 30000);
+    socket.send(JSON.stringify({ type: 'SEND_MESSAGE', payload: { agent_run_id: memberRunId, message_id: `e2e-${randomUUID()}`,
+      dedupe_key: `agent_run_input:e2e:${randomUUID()}`, content: 'Continue.', context_file_paths: [], image_urls: [] } }));
+    await until('team restored by the member message', () => teamIsActive(teamRunId), 60000);
+  } finally { socket.close(); }
 };
 const terminateAgent = (runId) => gql('mutation($id:String!){terminateAgentRun(agentRunId:$id){success message}}', { id: runId });
 const taskNodes = (tree) => {
@@ -255,9 +271,8 @@ const taskNodes = (tree) => {
   };
   visit(tree); return found;
 };
-const storedTree = async (runId) => (await gql('query($id:String!){agentRunCollaboration(runId:$id)}', { id: runId })).agentRunCollaboration?.root_agent?.execution_tree;
-const closedOf = async (runId) => ((await gql('query($id:String!){agentRunCollaboration(runId:$id)}', { id: runId })).agentRunCollaboration?.root_agent?.closed_task_executions ?? [])
-  .map((e) => e.teamRunId ?? e.agentRunId);
+// autobyteus-461 SR-084: an Agent run's delegated runs are its tree's rows (`runTree`); each marked listed for `taskNodes`.
+const storedTree = async (runId) => ({ taskExecutions: delegatedNodes(await readRunTree(gql, 'agent', runId)).map((node) => ({ ...node, startedAt: 'listed' })) });
 const conversationText = async (runId) => JSON.stringify((await gql('query($id:String!){getRunProjection(runId:$id){conversation}}', { id: runId })).getRunProjection?.conversation ?? []);
 const sockets = [];
 /** The run's own input channel (what its composer sends): a user message to the agent. */
@@ -696,9 +711,12 @@ const closureAndReopen = async () => {
     await agentCalls(A, 'update_task', { task_id: s.tasks.P1, status: 'DONE' });
     await until('Team rows left Projects mode', async () => (await teamRow.count()) === 0, 60000);
     assert((await runRowIn(pSection, A).count()) === 1, 'the host run left with its Task');
-    await until('closed in the stored root', async () => (await closedOf(A)).includes(squad.teamRunId), 30000);
-    const memberConversation = (await gql('query($h:String!,$a:String!,$r:String!){agentRunCollaborationMemberProjection(hostRunId:$h,memberAddress:$a,agentRunId:$r){conversation}}',
-      { h: A, a: squad.members[0].address, r: squad.members[0].agentRunId })).agentRunCollaborationMemberProjection?.conversation;
+    // autobyteus-469/461: a delegator's view holds no closed copy (its closed list is empty); the closure is the Task's root's.
+    await until('the Task root is closed', async () => ((await gql('query($id:String!){projectTasks(projectId:$id){taskId root{closed teamRunId}}}', { id: s.projects.P.projectId }))
+      .projectTasks.find((t) => t.taskId === s.tasks.P1)?.root?.closed) === true, 30000);
+    // autobyteus-461 rule 2: a delegated team's member is read through its own team.
+    const memberConversation = (await gql('query($t:String!,$a:String!){getTeamMemberRunProjection(teamRunId:$t,agentRunId:$a){conversation}}',
+      { t: squad.teamRunId, a: squad.members[0].agentRunId })).getTeamMemberRunProjection?.conversation;
     assert(Array.isArray(memberConversation) && memberConversation.length > 0, 'closed member conversation not kept');
     await shot(page, 'PLN-06-after-done');
     await agentCalls(A, 'update_task', { task_id: s.tasks.P1, status: 'IN_PROGRESS' });
@@ -914,12 +932,72 @@ const archiveAndDelete = async () => {
       stopDiag.projectsStopButtonsAfterReload = await pSection.locator(T('terminate-agent-run')).count();
     }
     await until('no running run under P', async () => (await pSection.locator(T('terminate-agent-run')).count()) === 0, 30000);
+    // autobyteus-461 REQ-001 / REQ-007: A's delegated Team outlives A's Stop, and archiving A is refused while it works; the
+    // user stops it by its own Stop first.
+    if (s.runs.squad?.teamRunId) await gql('mutation($id:String!){terminateAgentTeamRun(teamRunId:$id){success message}}', { id: s.runs.squad.teamRunId });
     const group2 = await openAgentGroup(pSection, s.ids.manager);
     await group2.hover();
     await pSection.locator(T(`workspace-agent-group-archive-${s.ids.manager}`)).first().click();
     const dialogText = (await page.locator('[role="dialog"], [role="alertdialog"]').last().innerText().catch(() => '')).replace(/\s+/g, ' ');
+    // Diagnostics (AC-008, CRR-043): which run "Archive all" fails on, and the server's answer for it.
+    const diag = { listedBefore: await listedRunIds(pSection), requests: [], answers: [], consoleErrors: [] };
+    evidence.cases['PLN-09-archive-diagnostics'] = diag;
+    const onRequest = (req) => { try { const b = req.postDataJSON(); if (/archive/i.test(b?.query ?? '')) diag.requests.push({ op: b.operationName ?? null, variables: b.variables ?? null, at: Date.now() }); } catch { /* not JSON */ } };
+    const onResponse = async (res) => { try { const b = res.request().postDataJSON(); if (/archive/i.test(b?.query ?? '')) diag.answers.push({ op: b.operationName ?? null, variables: b.variables ?? null, status: res.status(), body: (await res.text()).slice(0, 1500) }); } catch (e) { diag.answers.push({ unreadable: String(e).slice(0, 200) }); } };
+    const onConsole = (m) => { if (m.type() === 'error' || /archive/i.test(m.text())) diag.consoleErrors.push(m.text().slice(0, 600)); };
+    page.on('request', onRequest); page.on('response', onResponse); page.on('console', onConsole);
     await page.locator('button', { hasText: /^Archive all$/ }).last().click();
-    await until('P group archive done', async () => (await listedRunIds(pSection)).length === 0, 30000);
+    // The window's archive notices while they show (a toast leaves after a few seconds).
+    const notices = new Set();
+    for (const end = Date.now() + 6000; Date.now() < end; await sleep(200)) {
+      for (const line of (await page.locator('body').innerText().catch(() => '')).split('\n')) if (/archiv/i.test(line) && !/^Archive all/.test(line.trim())) notices.add(line.trim());
+    }
+    diag.windowNotices = [...notices];
+    page.off('request', onRequest); page.off('response', onResponse); page.off('console', onConsole);
+    diag.listedAfter = await listedRunIds(pSection);
+    // The server's own answer for each run still listed, asked directly (the same mutation the window sends).
+    diag.serverAnswerForLeft = [];
+    for (const runId of diag.listedAfter) {
+      const answer = await gql('mutation($id:String!){archiveStoredRun(runId:$id){success message}}', { id: runId }).catch((e) => ({ error: String(e.message ?? e).slice(0, 600) }));
+      diag.serverAnswerForLeft.push({ runId, answer });
+    }
+    evidence.cases['PLN-09-after-archive-text'] = (await page.locator('body').innerText()).replace(/\s+/g, ' ').slice(0, 3000);
+    // AC-008 (REQ-007): a refused archive shows its reason. When the server refuses a listed run because a run it delegated
+    // to is working (DS-13), the window must show that reason, naming the working run.
+    const refusals = diag.answers.filter((x) => x.op === 'ArchiveStoredRun').map((x) => { try { return JSON.parse(x.body).data?.archiveStoredRun; } catch { return null; } })
+      .filter((x) => x && !x.success && /delegated to is working/.test(x.message ?? ''));
+    diag.refusals = refusals.map((x) => x.message);
+    for (const refusal of refusals) {
+      const named = /\(([^)]+)\)/.exec(refusal.message)?.[1] ?? refusal.message;
+      assert(diag.windowNotices.some((line) => line.includes(named)), 'AC-008: the refused archive shows its reason, naming the working delegated run', { serverMessage: refusal.message, windowNotices: diag.windowNotices });
+    }
+    if (refusals.length) {
+      // AC-008 "then it succeeds": the runs still listed have their delegated runs stopped by their own Stop (REQ-001: they
+      // outlive their delegator's Stop), then "Archive all" archives them.
+      diag.stoppedDelegated = [];
+      for (const runId of diag.listedAfter) {
+        const view = { taskExecutions: delegatedNodes(await readRunTree(gql, 'agent', runId)) };
+        const rows = JSON.stringify(view).match(/"(agentRunId|teamRunId)":"[^"]+"/g) ?? [];
+        for (const pair of [...new Set(rows)]) {
+          const [, key, id] = /"(agentRunId|teamRunId)":"([^"]+)"/.exec(pair);
+          if (id === runId) continue;
+          const answer = key === 'agentRunId'
+            ? (await gql('mutation($id:String!){terminateAgentRun(agentRunId:$id){success}}', { id })).terminateAgentRun
+            : (await gql('mutation($id:String!){terminateAgentTeamRun(teamRunId:$id){success}}', { id })).terminateAgentTeamRun;
+          diag.stoppedDelegated.push({ id, success: answer?.success ?? null });
+        }
+      }
+      await sleep(2000);
+      const group3 = await openAgentGroup(pSection, s.ids.manager);
+      await group3.hover();
+      await pSection.locator(T(`workspace-agent-group-archive-${s.ids.manager}`)).first().click();
+      await page.locator('button', { hasText: /^Archive all$/ }).last().click();
+    }
+    await until('P group archive done', async () => (await listedRunIds(pSection)).length === 0, 30000).catch(async (error) => {
+      // Record what is left and what the page says (REQ-007's refusal names the working runs).
+      const body = (await page.locator('body').innerText().catch(() => '')).split('\n').filter((l) => /delegat|working|can't|cannot|refus/i.test(l)).slice(0, 8);
+      throw Object.assign(error, { details: { left: await listedRunIds(pSection), dialogText, notices: body } });
+    });
     const ws = await workspaceRunIds();
     assert(ws.includes(outsider), 'Archive all in P archived a run not under P');
     assert(!ws.includes(s.runs.A), 'Archive all left a P run in Workspaces');

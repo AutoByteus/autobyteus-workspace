@@ -1,3 +1,6 @@
+import type { DelegatedFrom } from "../../../../src/run-history/store/agent-run-metadata-types.js";
+import { testViewStreams } from "../../../helpers/view-streams.js";
+import { NOT_DELEGATED } from "../../../helpers/run-collaboration.js";
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
@@ -14,7 +17,6 @@ import { buildInitialTeamRunExecutionTree } from "../../../../src/agent-team-exe
 import { MemberExecutionContextBuilder } from "../../../../src/agent-team-execution/services/member-team-context-builder.js";
 import { materializeTeamRoot } from "../../../../src/agent-team-execution/services/team-root-materializer.js";
 import { buildTeamRunConfigFromExecutionTree } from "../../../../src/agent-team-execution/services/team-run-execution-tree-builder.js";
-import { createTaskExecutionIdentityCapabilities } from "../../../../src/agent-team-execution/task-delegation/task-execution-identity-capabilities.js";
 import { TeamRunExecutionTreeStore } from "../../../../src/run-history/store/team-run-execution-tree-store.js";
 import { TeamCommunicationStore } from "../../../../src/services/team-communication/team-communication-store.js";
 import { TokenUsageCapability } from "../../../../src/token-usage/providers/token-usage-capability.js";
@@ -22,7 +24,7 @@ import { RuntimeKind } from "../../../../src/runtime-management/runtime-kind-enu
 import { testAgentNode, testTeamRunConfig } from "../../../fixtures/current-team-run-fixtures.js";
 import { observeConfiguredHandles } from "../../agent-org-execution/helpers/task-publication-handles.js";
 import { InMemoryTaskExecutionResources } from "../../../fixtures/task-execution-resource-fixtures.js";
-import { bindTestOpenDelegatedRuns } from "../../../fixtures/open-delegated-run-sources.js";
+import { testTaskSide } from "../../../helpers/task-side-binding.js";
 
 /** A Team root (`/coordinator`) with a shared catalog of Code Reviewer, Lead, Designer and Product Team. */
 export const ROOT = "team-root-collaborators";
@@ -53,7 +55,7 @@ export const admission = (runnable = true) => createCollaboratorAdmission({
     : { kind: "model_unavailable" as const }),
 } as unknown as RunModelSelectionValidator, { getRuntimeAvailability: async (runtimeKind) => ({ runtimeKind, enabled: true, reason: null }) });
 
-export const harness = async (options: { runnable?: boolean; withTeammate?: boolean; teammateDefinitionId?: string } = {}) => {
+export const harness = async (options: { runnable?: boolean; withTeammate?: boolean; teammateDefinitionId?: string; delegatedFrom?: DelegatedFrom } = {}) => {
   vi.spyOn(TokenUsageCapability.prototype, "assertCurrentSchemaReady").mockImplementation(() => undefined);
   const handles = observeConfiguredHandles();
   const memoryDir = await fs.mkdtemp(path.join(os.tmpdir(), "team-root-collaborators-")); directories.push(memoryDir);
@@ -61,18 +63,19 @@ export const harness = async (options: { runnable?: boolean; withTeammate?: bool
   let allocation = 0;
   // The root's Task side also answers which delegated runs are in its tree (autobyteus-469 D-1).
   const taskExecutionResources = new InMemoryTaskExecutionResources();
-  bindTestOpenDelegatedRuns(taskExecutionResources);
+  // The node's Task side: the delegation tree over these records, and the delegation the tool path runs (SR-049).
+  const taskSide = testTaskSide(taskExecutionResources);
   const dependencies = {
     factory: new FlatTeamExecutionFactory(),
     memberExecutionContextBuilder: new MemberExecutionContextBuilder({
       getDefinitionById: async (id: string) => (id === "product-team" ? { instructions: "Ship the product UI." } : { instructions: "Root team rules." }),
-    } as never),
-    taskExecutionIdentity: createTaskExecutionIdentityCapabilities({ allocateForAgentDefinition: async (id) => `${id}-run-${++allocation}` }),
+    } as never, NOT_DELEGATED),
     executionTreeStore: new TeamRunExecutionTreeStore(),
     communicationStore: new TeamCommunicationStore(),
     collaboratorAdmission: admission(options.runnable ?? true),
-    // Production always binds the Task side; every delegated copy belongs to a Task.
-    taskExecutionResources,
+    // Production always passes the Task side; every delegated copy belongs to a Task.
+    taskRecords: taskExecutionResources,
+    delegationIndex: taskSide.tree, viewStreams: testViewStreams(),
     onTerminated: vi.fn(),
   };
   const config = testTeamRunConfig({
@@ -84,13 +87,13 @@ export const harness = async (options: { runnable?: boolean; withTeammate?: bool
   });
   const root = await materializeTeamRoot({
     config,
-    tree: buildInitialTeamRunExecutionTree({ config, teamDefinitionName: "SE Team" }),
+    tree: { ...buildInitialTeamRunExecutionTree({ config, teamDefinitionName: "SE Team" }), ...(options.delegatedFrom ? { delegatedFrom: options.delegatedFrom } : {}) },
     messages: Object.freeze({ schemaVersion: 1 as const, rootTeamRunId: ROOT, messages: Object.freeze([]) }),
     teamMemoryDir, mode: "fresh", persistInitialPackage: true, ...dependencies,
   });
   const reopen = async () => {
     const tree = (await dependencies.executionTreeStore.read(teamMemoryDir, ROOT))!;
-    const messages = (await dependencies.communicationStore.read(teamMemoryDir, tree))!;
+    const messages = (await dependencies.communicationStore.readLog(teamMemoryDir, ROOT))!;
     return materializeTeamRoot({
       config: buildTeamRunConfigFromExecutionTree(tree), tree, messages,
       teamMemoryDir, mode: "restore", persistInitialPackage: false, ...dependencies,
@@ -103,7 +106,7 @@ export const harness = async (options: { runnable?: boolean; withTeammate?: bool
     sender: buildDeliveryEndpointForParticipant({ kind: "agent", identity: sender, displayName: sender.memberAddress.split("/").at(-1)! }),
     recipientAddress, content,
   });
-  return { root, handles, reopen, identity, message, dependencies, memoryDir, teamMemoryDir };
+  return { root, handles, reopen, identity, message, dependencies, taskSide, memoryDir, teamMemoryDir };
 };
 
 /** `@` of both catalog definitions by the coordinator: resolves their addresses, adds nothing. */

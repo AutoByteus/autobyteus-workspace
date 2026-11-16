@@ -1,4 +1,3 @@
-import { GraphQLError } from "graphql";
 import { GraphQLJSON } from "graphql-scalars";
 import { Arg, Field, Int, ObjectType, Query, Resolver } from "type-graphql";
 import { isRootSubjectKind } from "../../../agent-collaboration/execution/domain/root-execution-identity.js";
@@ -6,10 +5,7 @@ import { getCollaboratorAdmission } from "../../../agent-collaboration/collabora
 import { getStandaloneAgentRunRootManager } from "../../../standalone-agent-run-root/services/standalone-agent-run-root-manager.js";
 import { getStandaloneRootMemberViewProjectionService } from "../../../standalone-agent-run-root/services/standalone-root-member-view-projection-service.js";
 import { projectAgentCollaborationView } from "../../../services/agent-streaming/agent-collaboration-view-projector.js";
-import { remoteTaskExecutionDtos } from "../../../services/agent-streaming/remote-task-execution-dto-projection.js";
 import { resolveCollaboratorRootPort } from "../services/collaborator-root-port-resolver.js";
-import { EventMonitorActiveTracePageObject } from "./event-monitor-active-trace-page.js";
-import { RunFileChangeEntryObject } from "./run-file-changes.js";
 
 @ObjectType()
 export class CollaboratorMentionCandidateObject {
@@ -39,63 +35,16 @@ export class AgentRunCollaborationMemberProjectionPayload {
   @Field(() => Boolean) hasEarlierActiveTraceEvents!: boolean;
 }
 
-/** At most this many runs per status read (the history poll lists the active standalone runs it shows). */
-export const AGENT_RUN_COLLABORATION_STATUSES_MAX_RUNS = 100;
-
-@ObjectType()
-export class AgentRunChildStatusObject {
-  @Field(() => String) agentRunId!: string;
-  @Field(() => String) memberAddress!: string;
-  @Field(() => String) status!: string;
-  @Field(() => GraphQLJSON, { nullable: true }) recoverableBlock?: unknown | null;
-}
-
-@ObjectType()
-export class AgentRunCollaborationStatusesObject {
-  @Field(() => String) runId!: string;
-  @Field(() => Boolean) isActive!: boolean;
-  @Field(() => [AgentRunChildStatusObject]) statuses!: AgentRunChildStatusObject[];
-  /** The run's closed-set digest (autobyteus-446, -435); the description gives its meaning per state. */
-  @Field(() => String, { nullable: true, description: "The run's closed-set digest (closedTaskExecutionsDigest). Active run: the closed task executions of its root, as its live view. Inactive run: the closed task executions the Task index records as hosted by this run, not filtered by its stored execution tree." })
-  closedTaskExecutionsDigest!: string | null;
-}
-
 @Resolver()
 export class AgentRunCollaborationResolver {
   /**
-   * The children's states of listed standalone runs, for the history poll (autobyteus-426 REQ-009): states and the
-   * closed-set digest (autobyteus-446), never the collaboration view. A run without an active root answers inactive with
-   * no states and no digest. Never restores.
-   */
-  @Query(() => [AgentRunCollaborationStatusesObject])
-  agentRunCollaborationStatuses(@Arg("runIds", () => [String]) runIds: string[]): AgentRunCollaborationStatusesObject[] {
-    if (runIds.length > AGENT_RUN_COLLABORATION_STATUSES_MAX_RUNS) {
-      throw new GraphQLError(`At most ${AGENT_RUN_COLLABORATION_STATUSES_MAX_RUNS} runs per status read.`, {
-        extensions: { code: "BAD_USER_INPUT" },
-      });
-    }
-    return getStandaloneAgentRunRootManager().getAgentStatuses(runIds).map((answer) => ({
-      runId: answer.runId,
-      isActive: answer.isActive,
-      closedTaskExecutionsDigest: answer.closedTaskExecutionsDigest,
-      statuses: answer.statuses.map((status) => ({
-        agentRunId: status.execution.agentRunId,
-        memberAddress: status.execution.memberAddress,
-        status: status.details.status,
-        recoverableBlock: status.details.recoverableBlock,
-      })),
-    }));
-  }
-
-  /**
-   * The Agent-root view of a standalone run: the live root snapshot when one is active, else the
-   * stored package with every child offline. Null when the run has no package. Never restores.
+   * The Agent-root view of a standalone run: the live root snapshot when one is active, else the stored package. Its
+   * tree is `runTree(run)` (SR-084). Null when the run has no package. Never restores.
    */
   @Query(() => GraphQLJSON, { nullable: true })
   async agentRunCollaboration(@Arg("runId", () => String) runId: string): Promise<unknown> {
     const inspection = await getStandaloneAgentRunRootManager().getInspection(runId);
-    return inspection ? projectAgentCollaborationView({ ...inspection,
-      remoteTaskExecutions: await remoteTaskExecutionDtos(inspection.snapshot.tree.remoteTaskExecutions) }) : null;
+    return inspection ? projectAgentCollaborationView(inspection) : null;
   }
 
   @Query(() => AgentRunCollaborationMemberProjectionPayload)
@@ -105,26 +54,6 @@ export class AgentRunCollaborationResolver {
     @Arg("agentRunId", () => String) agentRunId: string,
   ): Promise<AgentRunCollaborationMemberProjectionPayload> {
     return getStandaloneRootMemberViewProjectionService().getProjection(hostRunId, memberAddress, agentRunId);
-  }
-
-  @Query(() => EventMonitorActiveTracePageObject)
-  agentRunCollaborationMemberEventMonitorActiveTracePage(
-    @Arg("hostRunId", () => String) hostRunId: string,
-    @Arg("memberAddress", () => String) memberAddress: string,
-    @Arg("agentRunId", () => String) agentRunId: string,
-    @Arg("beforeCursor", () => String, { nullable: true }) beforeCursor?: string | null,
-  ): Promise<EventMonitorActiveTracePageObject> {
-    return getStandaloneRootMemberViewProjectionService().getActiveTracePage(hostRunId, memberAddress, agentRunId, beforeCursor);
-  }
-
-  /** One child's artifact list, located inside the named hub only (live while the hub runs). */
-  @Query(() => [RunFileChangeEntryObject])
-  agentRunCollaborationMemberFileChanges(
-    @Arg("hostRunId", () => String) hostRunId: string,
-    @Arg("memberAddress", () => String) memberAddress: string,
-    @Arg("agentRunId", () => String) agentRunId: string,
-  ): Promise<RunFileChangeEntryObject[]> {
-    return getStandaloneRootMemberViewProjectionService().getFileChanges(hostRunId, memberAddress, agentRunId);
   }
 
   /**

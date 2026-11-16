@@ -1,3 +1,4 @@
+import { noDelegations, noWorkGuard } from "../../../helpers/no-delegations.js";
 /**
  * `ProjectRunHistoryService` (projects-tree-one-place, autobyteus-353; REQ-001, AC-001, AC-003, AC-005): a Project lists
  * exactly the runs started under it (its `project_runs.json`, joined with the history rows), grouped like a workspace's
@@ -17,7 +18,7 @@ const row = (runId: string, createdAt: string, extra: Partial<RunHistoryIndexRow
   createdAt, archivedAt: null, terminatedAt: null, ...extra,
 });
 
-const agentHistory = (rows: RunHistoryIndexRow[]) => new AgentRunHistoryService("/unused", {
+const agentHistory = (rows: RunHistoryIndexRow[]) => new AgentRunHistoryService("/unused", { tree: noDelegations(), workGuard: noWorkGuard(),
   catalogService: { listCatalogRows: async () => rows } as never,
   statusProjectionService: { getCatalogListStatusProjection: () => ({ status: "offline", isActive: false, shouldConnectStream: false, statusSource: "TEST" }) } as never,
   agentRunManager: {} as never,
@@ -30,7 +31,7 @@ const teamRow = (teamRunId: string): TeamRunIndexRow => ({
 });
 const teamHistory = (rows: TeamRunIndexRow[]) => ({
   listTeamRunHistory: async (include: (row: TeamRunIndexRow) => boolean = () => true) => rows.filter(include).map((r) => ({
-    teamRunId: r.teamRunId, teamDefinitionId: r.teamDefinitionId, teamDefinitionName: r.teamDefinitionName, coordinatorAddress: "/lead",
+    teamRunId: r.teamRunId, displayName: null, teamDefinitionId: r.teamDefinitionId, teamDefinitionName: r.teamDefinitionName, coordinatorAddress: "/lead",
     workspaceRootPath: "/ws", summary: "", createdAt: r.createdAt, lastActivityAt: r.createdAt, archivedAt: null, terminatedAt: null, isActive: false, members: [],
     rootTeam: {} as never,
   })),

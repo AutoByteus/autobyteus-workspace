@@ -1,0 +1,35 @@
+# Case: API-E02 §5.1, API-REV-006 round 6, code 958cb22462; model regenerated (49 states)
+# Command: cd autobyteus-server-ts && env -i PATH HOME=<temp> TMPDIR USER RUN_AGY_FAILURE_E2E=1 CONTRACT_STORIES_CONTINUE=1 CONTRACT_STORIES_EVIDENCE_DIR=<dir> ANTIGRAVITY_CLI_COMMAND=$PWD/tests/fixtures/agy-failure-cli.mjs pnpm exec vitest run tests/e2e/projects/collaboration-contract-stories.e2e.test.ts --no-watch --reporter=verbose
+# Result: 26 of 28 steps match
+S0 ['RUN-1'] match
+S1 ['DL-1'] match
+S2 ['IN-2', 'IN-1', 'A-4'] match
+S3 ['B-1', 'E-3'] match
+S4 ['R-1', 'E-2', 'C-1'] match
+S5 ['DL-5'] match
+S6 ['DL-5'] match
+S7 ['B-2', 'R-3', 'R-4', 'C-2'] match
+S8 ['T-4'] match
+S9 ['T-4', 'R-3'] match
+S10 ['T-1', 'R-8'] match
+S11 ['T-2', 'R-6'] match
+S12 ['DL-7'] match
+S13 ['DL-12'] match
+S14 ['T-1', 'DL-12'] match
+S15 ['DL-13'] match
+S23 ['DL-11'] match
+S24 ['A-5', 'A-6'] match
+S16 ['T-3', 'R-9'] match
+S17 ['DL-9', 'DL-10', 'DL-8'] match
+S18 ['R-10'] match
+S19 ['T-1', 'R-8', 'R-10'] match
+S20 ['R-8', 'R-7'] match
+S21 ['IN-7'] match
+S22 ['C-1', 'C-3'] match
+S25 ['DL-9', 'DL-11'] match
+S26 ['T-5'] DIFF
+    the step failed: AssertionError: expected 'This run can\'t be deleted while a ru…' to contain 'research_agent_1b4e35914b9d42caa9c588…'
+S27 ['T-4', 'T-8', 'R-11'] DIFF
+    A:memory/run_history_index.json[research_agent_9b10].terminatedAt: expected a string like "2026-11-10T20:40:00.000Z", got null
+    A:ad-hoc-tasks/adhoc_task_7c7c/task.json: missing (/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/contract-stories-e2e-HH5Us5/story-5.1-A/ad-hoc-tasks/ad_hoc_task_9cc00cd2-3918-4a56-80b1-faa962bdb019/task.json)
+    A:ad-hoc-tasks/adhoc_task_7c7c/agent_run_resources.json: missing (/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/contract-stories-e2e-HH5Us5/story-5.1-A/ad-hoc-tasks/ad_hoc_task_9cc00cd2-3918-4a56-80b1-faa962bdb019/agent_run_resources.json)

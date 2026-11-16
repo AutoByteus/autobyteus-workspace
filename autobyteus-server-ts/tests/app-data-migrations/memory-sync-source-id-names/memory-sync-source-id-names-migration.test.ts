@@ -77,8 +77,11 @@ afterEach(async () => {
 
 describe("MemorySyncSourceIdNamesMigration (SM-2 … SM-5)", () => {
   it("is registered after every other storage rename but the raw-trace one, required on startup, startup-only, and holds back memory_sync", () => {
-    const last = new AppDataMigrationRegistry().listDefinitions().at(-2)!;
-    expect(last.id).toBe(MEMORY_SYNC_SOURCE_ID_NAMES_MIGRATION_ID);
+    const definitions = new AppDataMigrationRegistry().listDefinitions();
+    const at = definitions.findIndex((definition) => definition.id === MEMORY_SYNC_SOURCE_ID_NAMES_MIGRATION_ID);
+    const last = definitions[at]!;
+    // Of the released migrations only the raw-trace manifest runtime names follow (later ones after every released one, CR-461-048).
+    expect(definitions[at + 1]!.id).toBe("20261030_raw_trace_manifest_runtime_names");
     expect(last).toMatchObject({ requiredOnStartup: true, executionPolicy: "STARTUP_ONLY", holdsBackCapabilities: ["memory_sync"] });
   });
 

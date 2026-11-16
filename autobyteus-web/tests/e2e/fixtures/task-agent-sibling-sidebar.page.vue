@@ -24,6 +24,8 @@ import { useWorkspaceHistoryTreeState } from '~/composables/useWorkspaceHistoryT
 import { AgentStatus } from '~/types/agent/AgentStatus';
 import type { TeamMemberTreeRow } from '~/stores/runHistoryTypes';
 import { buildTestTeamContext, testAgentNode } from '~/test-support/currentTeamTestFixtures';
+import { useRunTreeStore } from '~/stores/runTreeStore';
+import type { RunTreeRowDto } from '@autobyteus/collaboration-stream-contracts';
 import { isTeamMemberProjectionAuthoritative } from '~/services/runHydration/teamMemberProjectionHydrationService';
 
 definePageMeta({ layout: false });
@@ -40,29 +42,33 @@ const retained = mode === 'retained';
 const empty = mode === 'empty';
 const narrow = ref(false);
 const noop = () => {};
-const started = '2026-09-26T08:00:00.000Z';
 const context = buildTestTeamContext({
   teamRunId: ROOT, teamDefinitionId: 'sibling-definition', teamDefinitionName: 'Sibling Team',
   coordinatorAddress: '/Reviewer', focusedAgentRunId: REVIEWER, workspaceRootPath: '/sibling-fixture',
   isActive: !retained,
   rootChildren: [testAgentNode('/Worker', { agentRunId: WORKER, currentStatus: AgentStatus.Idle }),
     testAgentNode('/Reviewer', { agentRunId: REVIEWER, currentStatus: AgentStatus.Idle })],
-  taskExecutions: empty ? [] : [
-    ...[TASK_A, TASK_B].map(agent_run_id => ({ kind: 'task_agent' as const, address: '/Worker' as const,
-      agent_run_id, platform_agent_run_id: null, delegator_agent_run_id: REVIEWER, started_at: started,
-      source: { kind: 'agent' as const, agent_definition_id: 'worker', launch_configuration: { runtime_kind: 'autobyteus' as const, llm_model_identifier: 'test-model', llm_config: null, auto_execute_tools: true, workspace_root_path: null } } })),
-    // A catalog Research Team copy (Teams are flat); its member delegated a task Agent.
-    { kind: 'task_team', address: '/Research', team_run_id: TEAM, delegator_agent_run_id: REVIEWER, started_at: started,
-      source: { kind: 'agent_team', team_definition_id: 'research-definition', coordinator_address: '/Research/Analyst',
-        members: [{ address: '/Research/Analyst', agent_definition_id: 'analyst-definition', launch_configuration: { runtime_kind: 'autobyteus', llm_model_identifier: 'test-model', llm_config: null, auto_execute_tools: true, workspace_root_path: null }, follows_team: true }], handoffs: [],
-        default_launch_configuration: { runtime_kind: 'autobyteus', llm_model_identifier: 'test-model', llm_config: null,
-          auto_execute_tools: true, workspace_root_path: null } },
-      members: [{ kind: 'task_team_agent', address: '/Research/Analyst', agent_run_id: MEMBER, platform_agent_run_id: null }],
-      task_executions: [{ kind: 'task_agent', address: '/Research/Analyst', agent_run_id: NESTED,
-        platform_agent_run_id: null, delegator_agent_run_id: MEMBER, started_at: started,
-        source: { kind: 'agent', agent_definition_id: 'analyst-definition', launch_configuration: { runtime_kind: 'autobyteus', llm_model_identifier: 'test-model', llm_config: null, auto_execute_tools: true, workspace_root_path: null } } }] },
-  ],
 });
+// The runs the Team's members delegated are its tree's rows (autobyteus-461 SR-084): two task Agents of the reviewer,
+// and a catalog Research Team copy whose member delegated a task Agent in turn (Teams are flat).
+const own = (agentRunId: string, address: string): RunTreeRowDto => ({ key: `team_member:${ROOT}:${agentRunId}`, parentKey: `team:${ROOT}`,
+  depth: 1, kind: 'team_member', name: address.slice(1).toLowerCase(), address, openTarget: { runKind: 'agent_team', runId: ROOT, agentRunId }, statusIds: [agentRunId] });
+const delegatedAgent = (agentRunId: string, parentKey: string, depth: number, address: string): RunTreeRowDto => ({ key: `agent:${agentRunId}`, parentKey,
+  depth, kind: 'agent', name: address.split('/').at(-1)!.toLowerCase(), address, openTarget: { runKind: 'agent', runId: agentRunId, agentRunId }, statusIds: [agentRunId] });
+const reviewerKey = `team_member:${ROOT}:${REVIEWER}`;
+useRunTreeStore().streamSnapshot({ kind: 'agent_team', runId: ROOT }, [
+  { key: `team:${ROOT}`, parentKey: null, depth: 0, kind: 'team', name: 'sibling team', address: null,
+    openTarget: { runKind: 'agent_team', runId: ROOT, agentRunId: REVIEWER }, statusIds: [ROOT] },
+  own(WORKER, '/Worker'), own(REVIEWER, '/Reviewer'),
+  ...(empty ? [] : [
+    delegatedAgent(TASK_A, reviewerKey, 2, '/Worker'), delegatedAgent(TASK_B, reviewerKey, 2, '/Worker'),
+    { key: `team:${TEAM}`, parentKey: reviewerKey, depth: 2, kind: 'team', name: 'research', address: '/Research',
+      openTarget: { runKind: 'agent_team', runId: TEAM, agentRunId: MEMBER }, statusIds: [TEAM] } as RunTreeRowDto,
+    { key: `team_member:${TEAM}:${MEMBER}`, parentKey: `team:${TEAM}`, depth: 3, kind: 'team_member', name: 'analyst', address: '/Research/Analyst',
+      openTarget: { runKind: 'agent_team', runId: TEAM, agentRunId: MEMBER }, statusIds: [MEMBER] } as RunTreeRowDto,
+    delegatedAgent(NESTED, `team_member:${TEAM}:${MEMBER}`, 4, '/Research/Analyst'),
+  ]),
+]);
 const teamStore = useAgentTeamContextsStore();
 const selectionStore = useAgentSelectionStore();
 const runHistoryStore = useRunHistoryStore();

@@ -1,0 +1,12 @@
+# Case: API-E02 §5.3, API-REV-005 round 5, code 56e4ce773b; regenerated model
+# Command: as API-E02-r5-contract-stories-5.1.txt, with -t "5.3"
+# Result: 9 of 9 steps match
+O0 ['RUN-3'] match
+O1 ['IN-5', 'A-2'] match
+O2 ['IN-5', 'A-2'] match
+O3 ['IN-6', 'A-3'] match
+O4 ['IN-6', 'C-4'] match
+O5 ['DL-3'] match
+O6 ['B-5'] match
+O7 ['B-4'] match
+O8 ['DL-4'] match

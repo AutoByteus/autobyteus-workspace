@@ -13,23 +13,18 @@ import {
   TASK_AGENT_OWN_RUN_V1_MIGRATION_ID,
   TaskAgentOwnRunV1AppDataMigration,
 } from "../../../src/app-data-migrations/migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.js";
-import { projectTaskExecutionSource } from "../../../src/agent-collaboration/collaborators/collaborator-source-projector.js";
-import { restoreTaskAgentNode } from "../../../src/agent-collaboration/execution/task/task-team-node-restoration.js";
-import type { TaskAgentExecution } from "../../../src/run-history/domain/run-execution-tree-shared-records.js";
 import { hubRecords, orgRecords, teamRunRecords, writeReleasedDataRoot } from "../../fixtures/app-data-migrations/released-task-agent-layout-fixtures.js";
-import { AgentOrgRunExecutionTreeStore } from "../../../src/run-history/store/agent-org-run-execution-tree-store.js";
+import { AgentOrgRunExecutionTreeStore } from "../../../src/app-data-migrations/frozen/server/run-history/store/agent-org-run-execution-tree-store.js";
 import {
   AtomicRunPackageFileCommitWriter,
   type RunPackageFileWriteResult,
 } from "../../../src/app-data-migrations/frozen/server/run-history/store/atomic-run-package-file-commit-writer.js";
-import { TeamRunExecutionTreeStore } from "../../../src/run-history/store/team-run-execution-tree-store.js";
-import { StandaloneRootPackageStore } from "../../../src/standalone-agent-run-root/persistence/standalone-root-package-store.js";
+import { TeamRunExecutionTreeStore } from "../../../src/app-data-migrations/frozen/server/run-history/store/team-run-execution-tree-store.js";
+import { StandaloneRootPackageStore } from "../../../src/app-data-migrations/frozen/server/standalone-agent-run-root/persistence/standalone-root-package-store.js";
 import {
   T0, agentFile, configuredAgent, edit, fallback, launch, link, mountedTeam, otherLaunch, projected, put, readJson,
   releasedAgentOwnFile, releasedTeamOwnTree, slotLaunch, teamFile, writeHub, writeOrgRun, writeTeamRun,
 } from "../../fixtures/app-data-migrations/released-delegated-copy-own-file-fixtures.js";
-import { openEveryOwnFileUnder } from "../../fixtures/open-delegated-run-sources.js";
-import { AtomicRunPackageFileCommitWriter as FrozenWriter } from "../../../src/app-data-migrations/frozen/server/run-history/store/atomic-run-package-file-commit-writer.js";
 
 /**
  * `20261019_delegated_copy_own_file_complete_v1` (design Migration Plan M0–M5, Shape Inventory) over synthesized
@@ -42,7 +37,7 @@ afterEach(async () => {
   await Promise.all(roots.splice(0).map((root) => fs.rm(root, { recursive: true, force: true })));
 });
 const memoryRoot = async (): Promise<string> => {
-  const root = await fs.mkdtemp(path.join(os.tmpdir(), "delegated-copy-own-file-")); openEveryOwnFileUnder(path.join(root, "memory"));
+  const root = await fs.mkdtemp(path.join(os.tmpdir(), "delegated-copy-own-file-"));
   roots.push(root);
   return path.join(root, "memory");
 };
@@ -137,11 +132,14 @@ const seedConvertible = async (memory: string) => {
 const byRunId = <T extends object>(list: readonly T[]): T[] => [...list].sort((a: any, b: any) => (a.agentRunId ?? a.teamRunId).localeCompare(b.agentRunId ?? b.teamRunId));
 
 describe("20261019_delegated_copy_own_file_complete_v1", () => {
-  it("is registered after every run-tree migration (only the Skill Improvement data removal, the autobyteus-290 stored-name renames and the raw-trace manifest runtime names follow), required on startup and startup-only", () => {
+  it("is registered after every released run-tree migration (then the Skill Improvement data removal, the autobyteus-290 stored-name renames, the raw-trace manifest runtime names, and autobyteus-461's conversion), required on startup and startup-only", () => {
     const definitions = new AppDataMigrationRegistry().listDefinitions();
-    expect(definitions.at(-5)).toMatchObject({ id: DELEGATED_COPY_OWN_FILE_COMPLETE_V1_MIGRATION_ID, requiredOnStartup: true, executionPolicy: "STARTUP_ONLY" });
-    expect(definitions.slice(-4).map((definition) => definition.id)).toEqual(["20261020_remove_skill_improvement_data", "20261024_node_identity_file_name", "20261024_memory_sync_source_id_names", "20261030_raw_trace_manifest_runtime_names"]);
-    expect(definitions.findIndex((definition) => definition.id === TASK_AGENT_OWN_RUN_V1_MIGRATION_ID)).toBeLessThan(definitions.length - 5);
+    // Last, after every released migration (CR-461-048), the conversion of every delegated run into a run of its own
+    // (autobyteus-461), which reads this result, and its follow-ups (SR-078).
+    const at = definitions.findIndex((definition) => definition.id === DELEGATED_COPY_OWN_FILE_COMPLETE_V1_MIGRATION_ID);
+    expect(definitions[at]).toMatchObject({ id: DELEGATED_COPY_OWN_FILE_COMPLETE_V1_MIGRATION_ID, requiredOnStartup: true, executionPolicy: "STARTUP_ONLY" });
+    expect(definitions.slice(at + 1).map((definition) => definition.id)).toEqual(["20261020_remove_skill_improvement_data", "20261024_node_identity_file_name", "20261024_memory_sync_source_id_names", "20261030_raw_trace_manifest_runtime_names", "20261111_delegated_runs_own_runs_v1", "20261114_preserved_items_after_task_agent_own_run_v1", "20261114_preserved_items_after_own_file_complete_v1", "20261114_preserved_items_after_append_only_logs_v1", "20261114_preserved_items_after_team_run_execution_tree_v1", "20261114_preserved_items_after_team_run_execution_tree_v2", "20261114_preserved_items_after_org_flat_team_families_v1", "20261114_preserved_items_after_collaborators_to_delegated_runs_v1", "20261114_preserved_items_after_team_run_history_index_v2", "20261114_preserved_items_after_remove_skill_improvement_data"]);
+    expect(definitions.findIndex((definition) => definition.id === TASK_AGENT_OWN_RUN_V1_MIGRATION_ID)).toBeLessThan(at);
   });
 
   it("converts every released shape in one start: catalog copies lose origin, configured-place copies take their slot (AC-005, AC-006, AC-008, AC-011)", async () => {
@@ -380,11 +378,11 @@ describe("20261019_delegated_copy_own_file_complete_v1", () => {
 });
 
 /**
- * Change Sequence step 1.3: the released 10-17 output, then this migration, then the current stores. This is where the
- * 10-17 suite's read-back through the current stores lives now, and the AC-005 restore proof: a copy of a configured
- * place restores with exactly the values restore used before the upgrade (its slot's).
+ * Change Sequence step 1.3: the released 10-17 output, then this migration, read back by the released stores (frozen:
+ * since autobyteus-461 the app reads neither shape; `20261111_delegated_runs_own_runs_v1` converts this result). The
+ * restore proof of AC-005 went with the hosting restore (autobyteus-461: a delegated run restores as its own run).
  */
-describe("20261017_task_agent_own_run_v1 output, then 20261019_delegated_copy_own_file_complete_v1, then the current stores", () => {
+describe("20261017_task_agent_own_run_v1 output, then 20261019_delegated_copy_own_file_complete_v1, read back by the released stores", () => {
   const ownRun = (memory: string) => new TaskAgentOwnRunV1AppDataMigration(memory, { ledger: ledger() }).execute();
   const dataRoot = async () => {
     const memory = await memoryRoot();
@@ -402,7 +400,7 @@ describe("20261017_task_agent_own_run_v1 output, then 20261019_delegated_copy_ow
   const fromSlot = (record: any, slot: any) => ({ ...record, source: { kind: "agent", agentDefinitionId: slot.agentDefinitionId,
     launchConfiguration: projected(slot.launchConfiguration), launchSource: CONFIGURED } });
 
-  it("composes every copy from its own file, and a copy of a configured place restores with its slot's values (AC-001, AC-005)", async () => {
+  it("composes every copy from its own file; a copy of a configured place takes its slot's values (AC-001, AC-005)", async () => {
     const memory = await dataRoot();
     expect((await ownRun(memory)).status).toBe("SUCCEEDED");
     const completed = await migrate(memory);
@@ -425,18 +423,14 @@ describe("20261017_task_agent_own_run_v1 output, then 20261019_delegated_copy_ow
     const rawOrg = await readJson(path.join(orgDir, "agent_org_run_execution_tree.json"));
     const org = orgRecords();
     const orgTree = (await new AgentOrgRunExecutionTreeStore().read(orgDir, "org-o"))!;
-    // The copy under a configured team composes into the root list too; the configured team's list is empty.
-    expect(byRunId(orgTree.rootOrg.taskExecutions)).toEqual(byRunId([org.c5, org.c5team, fromSlot(org.ns, rawOrg.rootOrg.members[0]), org.c6].map(current)));
-    expect((orgTree.rootOrg.members[1] as { taskExecutions: unknown[] }).taskExecutions).toEqual([]);
+    // The released reader keeps each copy in the list it is stored in: the copy under a configured team stays in that
+    // team's list (the 469 app composed it into the root list from the Task records).
+    expect(byRunId(orgTree.rootOrg.taskExecutions)).toEqual(byRunId([org.c5, org.c5team, fromSlot(org.ns, rawOrg.rootOrg.members[0])].map(current)));
+    expect((orgTree.rootOrg.members[1] as { taskExecutions: unknown[] }).taskExecutions).toEqual([org.c6].map(current));
 
-    // Restore projects only the copy's own source; it equals the slot's configured node today's restore used.
-    const c3 = teamTree.rootTeam.taskExecutions.find((task) => "agentRunId" in task && task.agentRunId === team.c3.agentRunId) as TaskAgentExecution;
-    const restored = restoreTaskAgentNode({ source: projectTaskExecutionSource(c3.address, c3.source).node, execution: c3 });
-    expect(projected(restored as never)).toEqual(projected(rawTeam.rootTeam.members[1].launchConfiguration));
-    expect(restored.agentDefinitionId).toBe(rawTeam.rootTeam.members[1].agentDefinitionId);
   });
 
-  it("continues a stopped start: the app loads and saves in between, and the next start completes both migrations (F-RERUN-MSG)", async () => {
+  it("continues a stopped start: the next start completes both migrations (F-RERUN-MSG)", async () => {
     const memory = await dataRoot();
     vi.spyOn(fs, "rename").mockImplementationOnce(async () => { throw new Error("stopped before the move"); });
     expect((await ownRun(memory)).status).toBe("FAILED");
@@ -444,56 +438,12 @@ describe("20261017_task_agent_own_run_v1 output, then 20261019_delegated_copy_ow
     // Same start: the own files present are completed; 10-17 is pending, so the result stays non-terminal.
     const waiting = await new DelegatedCopyOwnFileCompleteV1AppDataMigration(memory, { ledger: ledger("FAILED") }).execute();
     expect(waiting.status).toBe("FAILED");
-    // The app ran in between: it loads and saves the hub's tree through the current store.
-    const store = new StandaloneRootPackageStore();
-    const loaded = (await store.readTree(path.join(memory, "agents/hub/collaboration"), "hub"))!;
-    await store.writeTree(path.join(memory, "agents/hub/collaboration"), loaded);
-
+    // Since autobyteus-461 the app never writes the hub's tree in between (it has no such file).
     expect((await ownRun(memory)).status).toBe("SUCCEEDED");
     expect((await migrate(memory)).status).toBe("SUCCEEDED");
-    // The app's save in between kept the entries whose own file the stopped migration had not written yet (autobyteus-469:
-    // a save never deletes facts stored nowhere else), so the next start completes them all.
-    const stored = (await readJson(path.join(memory, "agents/hub/collaboration/collaboration_tree.json"))).taskExecutions.map((task: any) => task.agentRunId ?? task.teamRunId);
-    const reloaded = (await store.readTree(path.join(memory, "agents/hub/collaboration"), "hub"))!;
+    const reloaded = (await new StandaloneRootPackageStore().readTree(path.join(memory, "agents/hub/collaboration"), "hub"))!;
     expect(reloaded.taskExecutions.map((task) => "agentRunId" in task ? task.agentRunId : task.teamRunId).sort())
       .toEqual(["c1-reviewer", "c2-team-a", "c2-team-b", "c7-helper", "never-ran"]);
-    // Only the copy whose own file the migration wrote after that save is still listed; its next save leaves it out.
-    expect(stored).toEqual(["c1-reviewer"]);
-    await store.writeTree(path.join(memory, "agents/hub/collaboration"), reloaded);
-    expect((await readJson(path.join(memory, "agents/hub/collaboration/collaboration_tree.json"))).taskExecutions).toEqual([]);
     expect((await readJson(agentFile(memory, "c7-helper"))).taskAgent).not.toHaveProperty("origin");
-  });
-});
-
-describe("a save keeps every stored entry that is not a link with an own file (autobyteus-469 D-3 SR-008, AC-009, AR-002)", () => {
-  it("keeps a full Team record whose own file exists with its unmigrated nested run; the next 10-17 start migrates the nested run", async () => {
-    const memory = await memoryRoot();
-    await writeReleasedDataRoot(memory);
-    // A per-run failure of 10-17: c2-team-a gets its own file, but stays a full record in the hub's tree because its
-    // nested c7-helper did not move (AR-002).
-    const stopNested = new (class extends FrozenWriter {
-      override async write(input: Parameters<FrozenWriter["write"]>[0]): Promise<any> {
-        if (input.filePath.includes("c7-helper")) return { outcome: "not_renamed", file: input.file, stage: "rename", cause: new Error("stopped") };
-        return super.write(input);
-      }
-    })();
-    expect((await new TaskAgentOwnRunV1AppDataMigration(memory, { ledger: ledger(), writer: stopNested }).execute()).status).toBe("FAILED");
-    const treeFile = path.join(memory, "agents/hub/collaboration/collaboration_tree.json");
-    const before = (await readJson(treeFile)).taskExecutions as any[];
-    const team = before.find((entry) => entry.teamRunId === "c2-team-a");
-    expect(team.taskExecutions.map((nested: any) => nested.agentRunId)).toEqual(["c7-helper"]);
-    await expect(fs.access(path.join(memory, "agent_teams/c2-team-a/team_run_execution_tree.json"))).resolves.toBeUndefined();
-    await expect(fs.access(path.join(memory, "agents/c7-helper/run_metadata.json"))).rejects.toThrow();
-
-    // The app loads and saves the hub in between: only links whose run has an own file are left out (the other runs'
-    // links); the full record is kept unchanged, nested run included.
-    const store = new StandaloneRootPackageStore();
-    await store.writeTree(path.join(memory, "agents/hub/collaboration"), (await store.readTree(path.join(memory, "agents/hub/collaboration"), "hub"))!);
-    expect((await readJson(treeFile)).taskExecutions).toEqual([team]);
-
-    // The next start's 10-17 still finds the nested run in the kept record and migrates it.
-    const next = await new TaskAgentOwnRunV1AppDataMigration(memory, { ledger: ledger() }).execute();
-    expect(next.status, JSON.stringify(next.summary.details)).not.toBe("FAILED");
-    await expect(fs.access(path.join(memory, "agents/c7-helper/run_metadata.json"))).resolves.toBeUndefined();
   });
 });

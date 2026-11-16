@@ -10,6 +10,7 @@ import {
   IMPROVER_RUNS,
   SERVER_HELPER_RUN,
   USER_RUNS,
+  IMPROVER_TASK_COPY,
   historyIndexWithout,
   historyRow,
   put,
@@ -30,11 +31,14 @@ import { builtServerLaunchEnvironment } from "../helpers/built-server-launch-cre
 //   else is byte-identical, other runs list and open; a second start changes nothing. A v1.4.92-beta.5-era compactor
 //   run, which also carries `launchPurpose: "server_helper"`, survives with its history row (REQ-008).
 // - SID-3 (POSIX non-root only, because the failure is a mode-bit block): a helper run folder that cannot be deleted
-//   leaves startup working; the next start finishes.
+//   leaves startup working; the next start finishes. autobyteus-461 SR-079: meanwhile the improver's delegated copy keeps
+//   its released shape and the reader's follow-up waits; once 20261020 has run, the copy is converted and listed.
 // Prerequisite: pnpm -C autobyteus-server-ts build (current dist; a stale dist is not proof).
 // Run: env -i PATH="$PATH" HOME="$(cd "$(mktemp -d)" && pwd -P)" TMPDIR="$TMPDIR" \
 //   pnpm -C autobyteus-server-ts exec vitest run tests/e2e/app-data-migrations/remove-skill-improvement-data-startup.e2e.test.ts --no-watch
 const MIGRATION_ID = "20261020_remove_skill_improvement_data";
+/** autobyteus-461 SR-079: the reader 20261020's follow-up. */
+const FOLLOW_UP_ID = "20261114_preserved_items_after_remove_skill_improvement_data";
 const RETIRED_KEYS = ["ENABLE_SKILL_IMPROVEMENT", "AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID", "ENABLE_SELF_EVOLUTION"];
 const ENV_KEPT = ["APP_ENV=test", "AUTOBYTEUS_SERVER_HOST=http://127.0.0.1:8000", "UNRELATED_SETTING=kept as is"];
 const modeBitsBlock = process.platform !== "win32" && process.getuid?.() !== 0;
@@ -94,8 +98,8 @@ const studio = async () => {
     expect(body.errors, JSON.stringify(body.errors)).toBeUndefined();
     return body.data;
   };
-  const migration = async () => (await gql("{getAppDataMigrations{migrationId status attempts summary errorMessage logPath}}"))
-    .getAppDataMigrations.find((m: { migrationId: string }) => m.migrationId === MIGRATION_ID);
+  const migration = async (id = MIGRATION_ID) => (await gql("{getAppDataMigrations{migrationId status attempts summary errorMessage logPath}}"))
+    .getAppDataMigrations.find((m: { migrationId: string }) => m.migrationId === id);
   const historyRunIds = async (): Promise<string[]> => {
     const groups = (await gql("{listWorkspaceRunHistory(limitPerAgent:50){agentDefinitions{runs{runId}}}}")).listWorkspaceRunHistory as any[];
     return groups.flatMap((group) => group.agentDefinitions.flatMap((definition: any) => definition.runs.map((run: any) => run.runId as string)));
@@ -149,8 +153,14 @@ describe("Removal of the Skill Improvement feature's data on startup (built Stud
     expect(record, JSON.stringify(record)).toMatchObject({ status: "SUCCEEDED", errorMessage: null, attempts: 1 });
     for (const gone of paths.deleted) expect(await exists(path.join(root, gone)), gone).toBe(false);
     await expectHistoryIndex();
-    // Every file that existed and is not the feature's is byte-identical (the server may add its own new files).
-    const expected = without(before, [...paths.deleted, "memory/run_history_index.json", ".env"]);
+    // Every file that existed and is not the feature's is byte-identical (the server may add its own new files),
+    // except the delegated copy's own file, which autobyteus-461's migration (registered last, CR-461-048) converts
+    // by design (contract E6: `taskAgent` → `delegatedFrom`). The copy itself is kept (F-25).
+    const copyMetadata = `memory/agents/${IMPROVER_TASK_COPY}/run_metadata.json`;
+    const expected = without(before, [...paths.deleted, "memory/run_history_index.json", ".env", copyMetadata]);
+    const converted = JSON.parse(await fs.readFile(path.join(root, copyMetadata), "utf8")) as Record<string, unknown>;
+    expect(converted, JSON.stringify(converted)).toMatchObject({ delegatedFrom: { delegatingRun: { kind: "agent", runId: USER_RUNS[0] } } });
+    expect(converted).not.toHaveProperty("taskAgent");
     const keptNow = (files: Record<string, string>) => Object.fromEntries(Object.entries(files).filter(([rel]) => rel in expected));
     expect(keptNow(await snapshot(root))).toEqual(expected);
     // The settings: the three keys are gone, every other line is kept.
@@ -202,6 +212,13 @@ describe("Removal of the Skill Improvement feature's data on startup (built Stud
     expect(await first.historyRunIds()).toEqual(expect.arrayContaining([USER_RUNS[0], USER_RUNS[1]]));
     expect(await first.openRun(USER_RUNS[1]!)).toMatchObject({ runId: USER_RUNS[1] });
     expect(await exists(path.join(root, "memory", "skill_improvement", "index.json"))).toBe(true);
+    // autobyteus-461 SR-079 (CR-461-074): while 20261020 is not terminal, the improver's delegated copy keeps its released
+    // shape, and the reader's follow-up waits (no completed record).
+    const copyFile = path.join(root, "memory", "agents", IMPROVER_TASK_COPY, "run_metadata.json");
+    const copyFirst = JSON.parse(await fs.readFile(copyFile, "utf8")) as Record<string, unknown>;
+    expect(copyFirst, JSON.stringify(copyFirst)).toHaveProperty("taskAgent");
+    expect(copyFirst).not.toHaveProperty("delegatedFrom");
+    expect((await first.migration(FOLLOW_UP_ID))?.status ?? null, "the follow-up waits").not.toMatch(/^SUCCEEDED/);
     await stop(first.child);
     await fs.chmod(blocked, 0o755);
 
@@ -209,5 +226,12 @@ describe("Removal of the Skill Improvement feature's data on startup (built Stud
     const retried = await second.migration();
     expect(retried, JSON.stringify(retried)).toMatchObject({ status: "SUCCEEDED", attempts: 2 });
     for (const gone of paths.deleted) expect(await exists(path.join(root, gone)), gone).toBe(false);
+    // Once 20261020 has run, the follow-up converts the copy in the same start, and it is listed as a run of its own.
+    expect((await second.migration(FOLLOW_UP_ID))?.status, "the follow-up ran").toMatch(/^SUCCEEDED/);
+    const copyAfter = JSON.parse(await fs.readFile(path.join(root, "memory", "agents", IMPROVER_TASK_COPY, "run_metadata.json"), "utf8")) as Record<string, unknown>;
+    expect(copyAfter, JSON.stringify(copyAfter)).toMatchObject({ delegatedFrom: { delegatingRun: { kind: "agent", runId: USER_RUNS[0] } } });
+    expect(copyAfter).not.toHaveProperty("taskAgent");
+    expect(await second.historyRunIds(), "the converted copy is listed").toContain(IMPROVER_TASK_COPY);
+    expect(await second.openRun(IMPROVER_TASK_COPY), "and opens").toMatchObject({ runId: IMPROVER_TASK_COPY });
   }, 180_000);
 });

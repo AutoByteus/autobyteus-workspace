@@ -1,15 +1,15 @@
 import type { TokenUsageRunSummaryPayload } from "../../agent-execution/domain/agent-run-token-usage.js";
 import type { TokenUsageRunStore } from "../providers/token-usage-run-store.js";
 
-/** The agent runs a standalone run's collaboration tree holds: the live root's tree, else the stored package. */
+/** The agent runs delegated from a standalone run, recursively (the Task entries; each run's agents from its own file). */
 export type StandaloneRunTreeAgentRunIds = Readonly<{
   listChildAgentRunIds(hostRunId: string): Promise<readonly string[]>;
 }>;
 
 /**
- * A standalone run's token usage including its delegated copies (recursively), as a Team run's usage includes its members. It needs
- * no attribution data beyond the run's collaboration tree, so it covers existing runs too; a run
- * without a package is its host alone.
+ * A standalone run's token usage including the runs delegated from it (recursively), as a Team run's usage includes its
+ * members. It needs no attribution data beyond the Task entries, so it covers existing runs too; a run that delegated
+ * nothing is its host alone.
  */
 export class StandaloneRunTokenUsageSummaryService {
   constructor(private readonly deps: Readonly<{

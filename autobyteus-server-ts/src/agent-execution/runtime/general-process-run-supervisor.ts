@@ -1,10 +1,13 @@
-import { DelegatedLaunchSelectionService } from "../../run-history/services/delegated-launch-selection-service.js";
+import { createPeerRunOf } from "../../agent-collaboration/execution/remote/peer-runs.js";
+import { DelegatedWorkGuard } from "../../run-history/services/delegated-work-guard.js";
+import { runOwnStatus } from "../../agent-collaboration/execution/task/task-run-control.js";
 import { AgentMemoryLocationService } from "../../agent-memory/services/agent-memory-location-service.js";
 import { AgentConversationActivityInspector } from "../../agent-memory/services/agent-conversation-activity-inspector.js";
 import type { ScopedAgentToolMcpSessionAuthority } from "../../agent-tools/mcp/agent-tool-mcp-session-authority.js";
 import { AgentRunIdentityAllocator } from "../services/agent-run-identity-allocator.js";
 import { AgentRunManager } from "../services/agent-run-manager.js";
 import { AgentRunMemoryRecorder } from "../../agent-memory/services/agent-run-memory-recorder.js";
+import { getAgentStreamSequences } from "../../services/agent-streaming/agent-stream-sequence.js";
 import { WorkJournalRunUpdater } from "../../agent-work-journal/services/work-journal-run-updater.js";
 import { getWorkJournalService } from "../../agent-work-journal/services/work-journal-service.js";
 import { McpServerInstanceManager } from "autobyteus-ts/tools/mcp/server-instance-manager.js";
@@ -24,7 +27,6 @@ import {
 import { StandaloneAgentRunLifecycleService } from "../services/standalone-agent-run-lifecycle-service.js";
 import { FlatTeamExecutionFactory } from "../../agent-team-execution/local/flat-team-execution-factory.js";
 import { AgentTeamRunManager } from "../../agent-team-execution/services/agent-team-run-manager.js";
-import { createTaskExecutionIdentityCapabilities } from "../../agent-team-execution/task-delegation/task-execution-identity-capabilities.js";
 import { MemberExecutionContextBuilder } from "../../agent-team-execution/services/member-team-context-builder.js";
 import { AgentRunMemoryLocator } from "../../agent-collaboration/execution/services/agent-run-memory-locator.js";
 import { AgentOrgExecutionScopeBuilder } from "../../agent-org-execution/services/agent-org-execution-scope-builder.js";
@@ -32,8 +34,6 @@ import { AgentOrgRunManager } from "../../agent-org-execution/services/agent-org
 import { AgentOrgRunService } from "../../agent-org-execution/services/agent-org-run-service.js";
 import {
   TeamRunService,
-  bindProcessTeamRunService,
-  releaseProcessTeamRunService,
 } from "../../agent-team-execution/services/team-run-service.js";
 import { TeamRunIdentityAllocator } from "../../agent-team-execution/services/team-run-identity-allocator.js";
 import { AgentRunHistoryCatalogService } from "../../run-history/services/agent-run-history-catalog-service.js";
@@ -62,7 +62,7 @@ import {
   bindProcessStandaloneRunCommandPort,
   releaseProcessStandaloneRunCommandPort,
 } from "../services/standalone-run-ports.js";
-import { StandaloneRootLocationService } from "../../standalone-agent-run-root/services/standalone-root-location-service.js";
+import { DelegatedChildLocations } from "../../agent-collaboration/execution/delegation/delegated-child-locations.js";
 import { getRuntimeAvailabilityService } from "../../runtime-management/runtime-availability-service.js";
 import type { CollaboratorAdmission } from "../../agent-collaboration/collaborators/collaborator-admission.js";
 import {
@@ -86,11 +86,12 @@ export class GeneralProcessRunSupervisor {
   readonly teamRunHistoryService: TeamRunHistoryService;
   readonly agentOrgRunHistoryCatalogService: AgentOrgRunHistoryCatalogService;
   readonly collaborationRootHistoryService: CollaborationRootHistoryService;
-  readonly delegatedLaunchSelectionService: DelegatedLaunchSelectionService;
+  /** Archive and delete wait for the runs a run delegated to (REQ-007), by their own statuses (SR-047). */
+  readonly delegatedWorkGuard: DelegatedWorkGuard;
   private readonly agentRunManager: AgentRunManager;
   private readonly agentTeamRunManager: AgentTeamRunManager;
   private readonly agentOrgRunManager: AgentOrgRunManager;
-  private readonly standaloneRootManager: StandaloneAgentRunRootManager;
+  readonly standaloneRootManager: StandaloneAgentRunRootManager;
   private readonly agentToolMcpSessionAuthority: ScopedAgentToolMcpSessionAuthority;
   private readonly collaboratorAdmission: CollaboratorAdmission;
   private readonly runFileChangeService: RunFileChangeService;
@@ -105,10 +106,7 @@ export class GeneralProcessRunSupervisor {
     const collaborationLocations = new CollaborationExecutionLocationService({
       teams: storedTeamLocations,
       orgs: storedOrgLocations,
-      agents: new StandaloneRootLocationService({
-        memoryDir,
-        roots: { getActiveTree: (hostRunId) => standaloneRootManager?.getActiveTree(hostRunId) ?? null },
-      }),
+      agents: new DelegatedChildLocations({ memoryDir, teams: storedTeamLocations, tree: input.delegationIndex }),
     });
     let agentRunManager: AgentRunManager | null = null;
     let standaloneRootManager: StandaloneAgentRunRootManager | null = null;
@@ -118,7 +116,6 @@ export class GeneralProcessRunSupervisor {
     let agentRunService: AgentRunService | null = null;
     let teamRunService: TeamRunService | null = null;
     let agentRunServiceBound = false;
-    let teamRunServiceBound = false;
     // One admission coordinator over the injected definition services (no ambient definition getters).
     const collaboratorAdmission = createCollaboratorAdmission(createCollaboratorDefinitionCatalog({
       agents: input.agentDefinitionService,
@@ -156,6 +153,7 @@ export class GeneralProcessRunSupervisor {
         runFileChangeService,
         publishedArtifactRelayService: createGeneralProcessPublishedArtifactRelayService(),
         memoryRecorder,
+        streamSequences: getAgentStreamSequences(),
         workJournalUpdater: new WorkJournalRunUpdater({ memoryRecorder, journalService: getWorkJournalService() }),
         lifecycleObserver: input.platformInputNotices ?? null,
         mcpServerInstances: McpServerInstanceManager.getInstance(),
@@ -194,12 +192,10 @@ export class GeneralProcessRunSupervisor {
       const agentRunIdentityAllocator = new AgentRunIdentityAllocator({
         agentDefinitionService: input.agentDefinitionService,
       });
-      const taskExecutionIdentity = createTaskExecutionIdentityCapabilities(
-        agentRunIdentityAllocator,
-      );
 
       const memberExecutionContextBuilder = new MemberExecutionContextBuilder(
         input.agentTeamDefinitionService,
+        input.delegationIndex,
       );
       const memoryLocationService = new AgentMemoryLocationService({
         memoryDir,
@@ -216,8 +212,9 @@ export class GeneralProcessRunSupervisor {
       });
       agentTeamRunManager = AgentTeamRunManager.initializeProcessInstance({
         memoryDir,
-        taskExecutionIdentity,
-        taskExecutionResources: input.taskExecutionResources,
+        taskRecords: input.taskRecords,
+        delegationIndex: input.delegationIndex,
+        viewStreams: input.viewStreams,
         modelSelectionValidator: input.modelSelectionValidator,
         flatTeamExecutionFactory,
         memberExecutionContextBuilder,
@@ -225,12 +222,14 @@ export class GeneralProcessRunSupervisor {
       agentOrgRunManager = AgentOrgRunManager.initializeProcessInstance({
         workspaces: workspaceManager,
         memoryDir,
-        taskExecutionResources: input.taskExecutionResources,
+        taskRecords: input.taskRecords,
+        delegationIndex: input.delegationIndex,
         modelSelectionValidator: input.modelSelectionValidator,
         scopeBuilder: new AgentOrgExecutionScopeBuilder({
           flatTeamExecutionFactory,
-          taskExecutionIdentity,
-          taskExecutionResources: input.taskExecutionResources,
+          taskRecords: input.taskRecords,
+          delegationIndex: input.delegationIndex,
+        viewStreams: input.viewStreams,
           orgDefinitions: input.agentOrgDefinitionService,
           teamDefinitions: input.agentTeamDefinitionService,
           agentRunManager: generalAgentRunManager,
@@ -261,29 +260,26 @@ export class GeneralProcessRunSupervisor {
       standaloneRootManager = new StandaloneAgentRunRootManager({
         memoryDir,
         definitions: input.agentDefinitionService,
+        orgInstruction: async (orgDefinitionId) => (await input.agentOrgDefinitionService.getDefinitionById(orgDefinitionId))?.instructions?.trim() || null,
         host: {
           getActiveRun: (hostRunId) => activeAgentRuns.getActiveRun(hostRunId),
           activateHost: (hostRunId, activation) => lifecycleService.activateHost(hostRunId, activation),
           terminateHost: (hostRunId) => lifecycleService.terminateHost(hostRunId),
           readMetadata: (hostRunId) => metadataService.readMetadata(hostRunId),
-          recordCollaborationPackageCreated: (hostRunId) => historyCatalogService.recordCollaborationPackageCreated({ runId: hostRunId }),
         },
-        taskExecutionResources: input.taskExecutionResources,
         rootDependencies: {
-          flatTeamExecutionFactory,
-          taskExecutionIdentity,
-          taskExecutionResources: input.taskExecutionResources,
-          teamDefinitions: input.agentTeamDefinitionService,
+          taskRecords: input.taskRecords,
+          delegationIndex: input.delegationIndex,
+        viewStreams: input.viewStreams,
           agentRunManager: generalAgentRunManager,
-          memoryLocator,
-          activityInspector,
-          workspaceManager,
           collaboratorAdmission,
         },
       });
       bindProcessStandaloneAgentRunRootManager(standaloneRootManager);
       bindProcessStandaloneRunCommandPort(standaloneRootManager);
       standaloneRootManagerBound = true;
+      // A run on a peer node, by its own ID, from the tree (SR-066).
+      const peerRunOf = createPeerRunOf(input.delegationIndex);
       agentRunService = new AgentRunService(memoryDir, {
         agentRunManager,
         metadataService,
@@ -293,6 +289,7 @@ export class GeneralProcessRunSupervisor {
         provisioningService,
         lifecycleService,
         standaloneRuns: standaloneRootManager,
+        peerRunOf,
       });
       const teamRunHistoryCatalogService = new TeamRunHistoryCatalogService(memoryDir, {
         teamRunManager: agentTeamRunManager,
@@ -312,8 +309,13 @@ export class GeneralProcessRunSupervisor {
         teamRunIdentityAllocator: new TeamRunIdentityAllocator(),
         tokenUsageReadiness,
         definitionAdmissionService: input.definitionAdmissionService,
+        peerRunOf,
       });
+      const delegatedWorkGuard = new DelegatedWorkGuard({ tree: input.delegationIndex,
+        statusOf: (child) => runOwnStatus({ agentRuns: agentRunService!, teamRuns: teamRunService! }, child), peerRunOf });
+      this.delegatedWorkGuard = delegatedWorkGuard;
       const agentOrgRunService = new AgentOrgRunService({
+        workGuard: delegatedWorkGuard,
         manager: agentOrgRunManager,
         teamDefinitions: input.agentTeamDefinitionService,
         agentDefinitions: input.agentDefinitionService,
@@ -328,16 +330,7 @@ export class GeneralProcessRunSupervisor {
 
       bindProcessAgentRunService(agentRunService);
       agentRunServiceBound = true;
-      bindProcessTeamRunService(teamRunService);
-      teamRunServiceBound = true;
 
-      this.delegatedLaunchSelectionService = new DelegatedLaunchSelectionService({
-        teams: agentTeamRunManager,
-        orgs: agentOrgRunManager,
-        agents: standaloneRootManager,
-        agentRuns: agentRunService,
-        validator: input.modelSelectionValidator,
-      });
       this.agentRunManager = agentRunManager;
       this.agentTeamRunManager = agentTeamRunManager;
       this.agentOrgRunManager = agentOrgRunManager;
@@ -355,21 +348,22 @@ export class GeneralProcessRunSupervisor {
           metadataService,
         }),
         historyCatalog: historyCatalogService,
+        names: input.delegationIndex,
       });
       this.teamRunHistoryService = new TeamRunHistoryService(memoryDir, {
+        tree: input.delegationIndex,
+        workGuard: delegatedWorkGuard,
         catalogService: teamRunHistoryCatalogService,
         teamRunManager: agentTeamRunManager,
       });
       this.collaborationRootHistoryService = new CollaborationRootHistoryService({
         memoryDir,
+        tree: input.delegationIndex,
         teams: this.teamRunHistoryService,
         orgs: agentOrgRunHistoryCatalogService,
         orgRuns: agentOrgRunManager,
       });
     } catch (error) {
-      if (teamRunServiceBound && teamRunService) {
-        releaseProcessTeamRunService(teamRunService);
-      }
       if (agentRunServiceBound && agentRunService) {
         releaseProcessAgentRunService(agentRunService);
       }
@@ -428,7 +422,6 @@ export class GeneralProcessRunSupervisor {
       errors.push(error);
     }
     try {
-      releaseProcessTeamRunService(this.teamRunService);
       releaseProcessAgentRunService(this.agentRunService);
       AgentOrgRunManager.releaseProcessInstance(this.agentOrgRunManager);
       releaseProcessStandaloneRunCommandPort(this.standaloneRootManager);

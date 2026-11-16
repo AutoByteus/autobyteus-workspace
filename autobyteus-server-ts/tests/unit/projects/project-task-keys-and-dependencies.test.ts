@@ -9,12 +9,12 @@ import { AdHocTasksLayout } from "../../../src/projects/stores/ad-hoc-tasks-layo
 import { AdHocTaskStore } from "../../../src/projects/stores/ad-hoc-task-store.js";
 import { ProjectService } from "../../../src/projects/services/project-service.js";
 import { ProjectTaskService } from "../../../src/projects/services/project-task-service.js";
-import { TaskExecutionResourceService } from "../../../src/projects/services/task-execution-resource-service.js";
 import { TaskExecutionResourceStore } from "../../../src/projects/stores/task-execution-resource-store.js";
 import { ProjectTaskContextStore } from "../../../src/projects/context/project-task-context-store.js";
 import { ProjectChangePublisher } from "../../../src/projects/changes/project-change-publisher.js";
 import type { ProjectChangeMessage } from "../../../src/projects/changes/project-change-messages.js";
 import { createRootExecutionIdentity } from "../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
+import { taskRunResources } from "../../helpers/task-run-resources.js";
 
 const hostRoot = createRootExecutionIdentity({ rootSubjectKind: "agent", rootRunId: "manager-root" });
 
@@ -41,7 +41,7 @@ describe("Project Task keys and dependencies (services)", () => {
     projects = new ProjectService({ store, workspaceLookup: { listRegisteredWorkspaceRootPaths: async () => [] }, changes: publisher, now });
     tasks = new ProjectTaskService({ store, adHocTasks: new AdHocTaskStore(adHocLayout), contextStore: new ProjectTaskContextStore(layout), now,
       requestRelease: (releases = trackReleases()).request,
-      taskExecutionResources: new TaskExecutionResourceService(new TaskExecutionResourceStore(layout, adHocLayout)), changes: publisher });
+      taskExecutionResources: taskRunResources(new TaskExecutionResourceStore(layout, adHocLayout)), changes: publisher });
     publisher.bind({
       readProject: (id) => projects.getProject(id),
       readTask: (location) => tasks.readTaskChangeView(location),
@@ -103,7 +103,7 @@ describe("Project Task keys and dependencies (services)", () => {
 
     it("a Task worker's answer carries no key (task-keys-declutter REQ-004)", async () => {
       const execution = { agentRunId: "temp-worker" };
-      await tasks.linkNewTaskExecution({ role: "assigned", assignedBy: "manager", hostRoot, execution, adHocTask: { description: "Temp", referenceFiles: [] } });
+      await tasks.linkNewTaskExecution({ role: "assigned", recipientAddress: "/worker", delegatedFrom: { delegatingRun: hostRoot, delegatorAgentRunId: "manager" }, execution, adHocTask: { description: "Temp", referenceFiles: [] } });
       const answer = (await tasks.currentTasksOfTaskWorkers([execution]))[0]?.task;
       expect(answer).toMatchObject({ projectId: null, description: "Temp" });
       expect(answer).not.toHaveProperty("taskKey");
@@ -214,7 +214,7 @@ describe("Project Task keys and dependencies (services)", () => {
       const a = await create("A");
       const b = await create("B", [a.taskId]);
       const execution = { agentRunId: "worker" };
-      await expect(tasks.linkNewTaskExecution({ role: "assigned", taskId: b.taskId, assignedBy: "manager", hostRoot, execution })).resolves.toEqual({ taskId: b.taskId });
+      await expect(tasks.linkNewTaskExecution({ role: "assigned", recipientAddress: "/worker", taskId: b.taskId, delegatedFrom: { delegatingRun: hostRoot, delegatorAgentRunId: "manager" }, execution })).resolves.toEqual({ taskId: b.taskId });
       await expect(tasks.updateTaskById({ taskId: b.taskId, status: "IN_PROGRESS" })).resolves.toMatchObject({ status: "IN_PROGRESS" });
       await expect(tasks.updateTaskById({ taskId: b.taskId, status: "DONE" })).resolves.toMatchObject({ status: "DONE" });
       expect((await tasks.listTasks(projectId)).find((t) => t.taskId === a.taskId)?.status).toBe("TODO");

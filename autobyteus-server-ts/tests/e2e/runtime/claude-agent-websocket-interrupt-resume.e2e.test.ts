@@ -36,6 +36,8 @@ import { buildRuntimeAgentToolExposure } from "../../../src/agent-execution/shar
 import { composeSharedCarpenterPrompt } from "../../../src/agent-execution/prompt/carpenter-prompt-composer.js";
 import { AgentStreamHandler } from "../../../src/services/agent-streaming/agent-stream-handler.js";
 import { AgentSessionManager } from "../../../src/services/agent-streaming/agent-session-manager.js";
+import { AgentStreamSequences } from "../../../src/services/agent-streaming/agent-stream-sequence.js";
+import { agentStreamFramesOf } from "../helpers/agent-stream-frames.js";
 import { registerAgentWebsocket } from "../../../src/api/websocket/agent.js";
 import { ClaudeSdkClient, type ClaudeSdkQueryLike } from "../../../src/runtime-management/claude/client/claude-sdk-client.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
@@ -288,12 +290,14 @@ const waitForJsonMessage = (
       } catch {
         return;
       }
-      if (!predicate(parsed)) {
+      // autobyteus-461 SR-087: a SEGMENT_CONTENT_BATCH is its items (each a SEGMENT_CONTENT), as the web applies it.
+      const match = agentStreamFramesOf(parsed).find((frame) => predicate(frame));
+      if (!match) {
         return;
       }
       clearTimeout(timer);
       socket.off("message", onMessage);
-      resolve(parsed);
+      resolve(match);
     };
     socket.on("message", onMessage);
   });
@@ -324,10 +328,12 @@ const waitForAccumulatedSegmentContent = (
       } catch {
         return;
       }
-      if (parsed.type !== "SEGMENT_CONTENT" || typeof parsed.payload?.delta !== "string") {
+      // autobyteus-461 SR-087: a SEGMENT_CONTENT_BATCH is its items (each a SEGMENT_CONTENT).
+      const deltas = agentStreamFramesOf(parsed).filter((frame) => frame.type === "SEGMENT_CONTENT" && typeof frame.payload.delta === "string");
+      if (!deltas.length) {
         return;
       }
-      accumulated += parsed.payload.delta;
+      accumulated += deltas.map((frame) => String(frame.payload.delta)).join("");
       if (!accumulated.includes(expectedText)) {
         return;
       }
@@ -421,13 +427,19 @@ const createClaudeWebSocketHarnessWithSdkClient = async (input: {
     agentRunService: agentRunService as never,
     projectionService: statusProjectionService as never,
   });
+  // Production attaches a stream sequence to every AgentRun as it is prepared (autobyteus-461 SR-089); this hand-built run
+  // gets its own, and its stored read is empty (the run writes no memory here).
+  const sequences = new AgentStreamSequences();
+  onTestFinished(sequences.attachToRun(agentRun, { whenPersisted: async () => undefined }));
   const handler = new AgentStreamHandler(
     new AgentSessionManager(),
     agentRunService as never,
     undefined,
-    undefined,
     commandCoordinator,
     statusProjectionService as never,
+    null,
+    sequences,
+    async (runId) => ({ runId, conversation: [], activities: [], summary: null, lastActivityAt: null, hasEarlierActiveTraceEvents: false }),
   );
   const dummyTeamHandler = {
     connect: async () => null,
@@ -564,7 +576,7 @@ describe("Claude Agent SDK websocket streaming session (fake CLI)", () => {
       const runId = `claude-runtime-error-${id}`;
       const harness = await createClaudeWebSocketHarnessWithSdkClient({ runId, sdkClient, sdkCalls, workspaceRoot: workspace });
       const frames: Array<{ type: string; payload: Record<string, unknown> }> = [];
-      harness.socket.on("message", (raw) => frames.push(JSON.parse(String(raw))));
+      harness.socket.on("message", (raw) => frames.push(...agentStreamFramesOf(JSON.parse(String(raw)))));
       await withHarness(harness, clis, async () => {
         const sessionId = harness.sessionManager.requireRunSession(runId).sessionId;
         const failed = waitForJsonMessage(harness.socket, (frame) => frame.type === "ERROR" && frame.payload?.error_effect === "terminal", "SDK terminal error");

@@ -13,6 +13,7 @@ import { startStudioE2eRuntimeServer } from "../helpers/studio-runtime-test-serv
 import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
 import { until } from "../helpers/agy-runtime-error-fixture.js";
 import { flattenE2eConfiguredAgentExecutions } from "../helpers/team-run-metadata-helpers.js";
+import { delegatedRunsTree } from "../helpers/run-tree-delegated.js";
 
 // project-manager-ux at the real server/wire boundary: the per-node `/ws/projects` change feed and the Task root,
 // through the real Studio HTTP/WebSocket server, scoped MCP, Project/Task services, roots and the publisher.
@@ -33,7 +34,11 @@ const PROJECT_TOOLS = ["list_projects", "list_project_tasks", "create_project", 
 const segment = (name: string) => name.toLowerCase().replace(/[^a-z0-9]+/g, "_").replace(/^_+|_+$/g, "");
 const callTool = (name: string, args: object) => `CALL_TOOL:${JSON.stringify({ name, arguments: args })}`;
 const AD_HOC_ID = /ad_hoc_task_[0-9a-f-]{36}/;
-const ROOT_FIELDS = "kind recipientAddress ingressAgentRunId teamRunId hostRoot { kind runId } start startError { code message } closed status";
+// autobyteus-461 SR-080: a Task root also names its tree's top run (`topRun`), which the feed carries too.
+// autobyteus-461 SR-086 G-F1: a Task root carries where it opens (its node: null for a local root).
+// autobyteus-461 SR-091: a Task root carries its run's one name (`displayName`: a delegated run's slot).
+const slotNameOf = (address: string): string => (address.split("/").filter(Boolean).at(-1) ?? "").replace(/[_-]/g, " ");
+const ROOT_FIELDS = "kind recipientAddress displayName ingressAgentRunId teamRunId delegatingRun { kind runId } topRun { kind runId } openTarget { runKind runId agentRunId nodeId } start startError { code message } closed status";
 const PROJECT_TASKS = `query($id:String!){projectTasks(projectId:$id){taskId projectId taskKey title description status dependsOnTaskIds partOfTaskId comments { id createdAt text } createdAt updatedAt
   contextFiles { storedFilename displayName mimeType sizeBytes locator } root { ${ROOT_FIELDS} }}}`;
 const TASKS_WITHOUT_PROJECT = `query{tasksWithoutProject{taskId description status referenceFiles createdAt updatedAt root { ${ROOT_FIELDS} }}}`;
@@ -260,11 +265,8 @@ suite("Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AG
         command_id: randomUUID(), message_id: randomUUID(), dedupe_key: randomUUID(), content, context_file_paths: [], image_urls: [] } }));
       else sendE2eSendMessageCommand(channel.socket, { agent_run_id: managerRunId, content });
     };
-    const liveTree = async () => {
-      if (kind === "agent") return (await graphql(`query($id:String!){agentRunCollaboration(runId:$id)}`, { id: rootId })).agentRunCollaboration?.root_agent?.execution_tree ?? null;
-      if (kind === "team") return (await graphql(`query($id:String!){getTeamRunResumeConfig(teamRunId:$id){executionTree}}`, { id: rootId })).getTeamRunResumeConfig.executionTree;
-      return (await graphql(`query($id:String!){getAgentOrgRootHistory(orgRunId:$id){org}}`, { id: rootId })).getAgentOrgRootHistory.org;
-    };
+    // autobyteus-461 SR-084: the root's delegated runs at every depth, from its tree (its view carries its own parts only).
+    const liveTree = async () => delegatedRunsTree(graphql, kind, rootId);
     const managerConversation = async () => {
       if (kind === "agent") return (await graphql(`query($id:String!){getRunProjection(runId:$id){conversation}}`, { id: rootId })).getRunProjection?.conversation;
       if (kind === "team") return (await graphql(`query($id:String!,$a:String!){getTeamMemberRunProjection(teamRunId:$id,agentRunId:$a){conversation}}`,
@@ -374,7 +376,9 @@ suite("Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AG
     // A new copy runs in its Task's Project's first linked folder (autobyteus-97): while the agent's link points at a folder that
     // does not exist on this node, the delegation is refused and nothing starts; once the folder exists, it proceeds there.
     const refused = await root.managerCalls(callTool("delegate_task", { recipient_address: workerAddress, task_id: taskKey }));
-    expect(JSON.stringify(refused)).toContain("TASK_PROJECT_FOLDER_UNAVAILABLE");
+    // A refused delegate_task is {delegated: false, message} with no code (contract §2, SR-054).
+    expect(refused).toMatchObject({ delegated: false });
+    expect(String(refused.message)).toContain("Nothing was started.");
     expect(await settledTask(scope, taskId, "refused Task")).toMatchObject({ status: "TODO", root: null });
     await fs.mkdir(path.join(dataDir, "missing #?雪"));
     from = monitor.frames.length;
@@ -384,8 +388,11 @@ suite("Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AG
     const nodes = await root.waitForNodes("worker and its helper", (all) => all.length >= 2);
     const helper = nodes.find((node) => node.agentRunId !== worker)!;
     task = await settledTask(scope, taskId, "delegated Task", (t) => t.root?.status === "idle");
-    expect(task.root).toEqual({ kind: "agent", recipientAddress: workerAddress, ingressAgentRunId: worker, teamRunId: null,
-      hostRoot: { kind: "agent", runId: root.rootId }, start: "started", startError: null, closed: false, status: "idle" });
+    expect(task.root).toEqual({ kind: "agent", recipientAddress: workerAddress, displayName: slotNameOf(workerAddress), ingressAgentRunId: worker, teamRunId: null,
+      // SR-080: the Task root names its tree's top run (here the delegator itself).
+      delegatingRun: { kind: "agent", runId: root.rootId }, topRun: { kind: "agent", runId: root.rootId },
+      // SR-086 G-F1: where the Task's root opens: the worker's own run (a local one: no node).
+      openTarget: { runKind: "agent", runId: worker, agentRunId: worker, nodeId: null }, start: "started", startError: null, closed: false, status: "idle" });
     const rootsSeen = monitor.frames.slice(from).filter((f) => f.type === "task_upserted" && f.task.taskId === taskId && f.task.root)
       .map((f) => f.task.root.ingressAgentRunId);
     expect(new Set(rootsSeen)).toEqual(new Set([worker]));
@@ -441,8 +448,8 @@ suite("Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AG
     const delegated = await root.managerCalls(callTool("delegate_task", { recipient_address: `/${segment(names.worker)}`, task_id: taskId }));
     expect(delegated.delegated, JSON.stringify(delegated)).toBe(true);
     const task = await settledTask(scope, taskId, "catalog copy root", (t) => t.root?.start === "started" && t.root?.status === "idle");
-    expect(task.root).toMatchObject({ kind: "agent", recipientAddress: `/${segment(names.worker)}`, ingressAgentRunId: delegated.target_agent_run_id,
-      startError: null, closed: false, hostRoot: { kind: "agent_team", runId: root.rootId } });
+    expect(task.root).toMatchObject({ kind: "agent", recipientAddress: `/${segment(names.worker)}`, displayName: slotNameOf(`/${segment(names.worker)}`), ingressAgentRunId: delegated.target_agent_run_id,
+      startError: null, closed: false, delegatingRun: { kind: "agent_team", runId: root.rootId } });
     // The Team root refuses its own member: a configured teammate is messaged, not delegated.
     const refused = await root.managerCalls(callTool("delegate_task", { recipient_address: "/manager", description: "Reply OK." }));
     expect(JSON.stringify(refused)).toContain("COLLABORATION_SELF_TARGET_REJECTED");
@@ -452,7 +459,7 @@ suite("Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AG
     expect(teamDelegated.target_kind).toBe("team");
     const teamTask = await settledTask(scope, teamTaskId, "team root", (t) => t.root?.start === "started" && t.root?.status === "idle");
     expect(teamTask.root).toMatchObject({ kind: "team", ingressAgentRunId: teamDelegated.target_team_coordinator_agent_run_id, closed: false,
-      hostRoot: { kind: "agent_team", runId: root.rootId } });
+      delegatingRun: { kind: "agent_team", runId: root.rootId } });
     expect(teamTask.root.teamRunId).toBeTruthy();
     // DONE closes the Team root: Offline.
     await root.managerCalls(callTool("update_task", { task_id: teamTaskId, status: "DONE" }));
@@ -469,8 +476,8 @@ suite("Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AG
     const taskId = await createTask(projectId, "Draft notes.");
     const delegated = await root.managerCalls(callTool("delegate_task", { recipient_address: "/worker", task_id: taskId }));
     const task = await settledTask(scope, taskId, "org root", (t) => t.root?.status === "idle");
-    expect(task.root).toMatchObject({ kind: "agent", recipientAddress: "/worker", ingressAgentRunId: delegated.target_agent_run_id,
-      hostRoot: { kind: "agent_org", runId: root.rootId }, start: "started", closed: false });
+    expect(task.root).toMatchObject({ kind: "agent", recipientAddress: "/worker", displayName: "worker", ingressAgentRunId: delegated.target_agent_run_id,
+      delegatingRun: { kind: "agent_org", runId: root.rootId }, start: "started", closed: false });
     await root.managerCalls(callTool("update_task", { task_id: taskId, status: "DONE" }));
     await settledTask(scope, taskId, "org DONE", (t) => t.root?.closed === true && t.root?.status === "offline");
     root.close();
@@ -488,7 +495,7 @@ suite("Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AG
     let task = await settledTask(scope, taskId, "temp task", (t) => t.root?.status === "idle");
     expect(task).toMatchObject({ status: "TODO", description: "Summarize the meeting.", referenceFiles: [] });
     expect(task.root).toMatchObject({ kind: "agent", ingressAgentRunId: delegated.target_agent_run_id, start: "started", closed: false,
-      hostRoot: { kind: "agent", runId: root.rootId } });
+      delegatingRun: { kind: "agent", runId: root.rootId } });
     // AC-020: DONE moves it; root Offline.
     await root.managerCalls(callTool("update_task", { task_id: taskId, status: "DONE" }));
     task = await settledTask(scope, taskId, "temp DONE", (t) => t.status === "DONE" && t.root?.closed === true);
@@ -505,6 +512,11 @@ suite("Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AG
     await settledTask(scope, secondId, "second temp task");
     root.close();
     await terminate("agent", root.rootId);
+    // SR-072 F-30 (T-5, DS-13): a delegated run with an open Task that is not stopped (idle included) blocks the delete;
+    // the user stops each first, by its own Stop (rule 2).
+    for (const runId of [delegated.target_agent_run_id, second.target_agent_run_id] as string[]) {
+      await graphql(`mutation($id:String!){terminateAgentRun(agentRunId:$id){success message}}`, { id: runId });
+    }
     const deleted = (await graphql(`mutation($id:String!){deleteStoredRun(runId:$id){success message}}`, { id: root.rootId })).deleteStoredRun;
     expect(deleted.success, deleted.message).toBe(true);
     for (const id of [taskId, secondId]) {

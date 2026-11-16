@@ -19,7 +19,7 @@ const tree = (pending?: unknown) => ({
 const plan = async (current: never, runtimeKind: RuntimeKind) => {
   const validateMany = vi.fn(async (inputs: unknown[]) => inputs.map((input: any) => ({ kind: "valid" as const, selection: { llmModelIdentifier: input.selection.llmModelIdentifier, llmConfig: null } })));
   const result = await planStoppedTeamLaunchSave({
-    tree: current, closed: [], delegatedChanges: [], validator: { validate: vi.fn(), validateMany } as never,
+    tree: current, validator: { validate: vi.fn(), validateMany } as never,
     configuredPatches: [{ scopeKind: "CONFIGURED_AGENT", scopeAddress: "/agent", runtimeKind, llmModelIdentifier: "target", llmConfig: null }],
   });
   return { result, context: (validateMany.mock.calls[0]![0] as any[])[0].context };

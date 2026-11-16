@@ -1,0 +1,16 @@
+# IMP-25 stream contract tests
+# command: pnpm test in autobyteus-collaboration-stream-contracts and autobyteus-team-stream-contracts
+# commit: 4a3f221c72; macOS, Node v22.23.1; 2026-11-11T22:31Z
+
+== autobyteus-collaboration-stream-contracts
+# tests 39
+# pass 39
+# fail 0
+== autobyteus-team-stream-contracts
+# tests 19
+# pass 19
+# fail 0
+== tracked dist matches src (build, then git status)
+autobyteus-collaboration-stream-contracts build exit 0
+autobyteus-team-stream-contracts build exit 0
+(no lines above: dist unchanged)

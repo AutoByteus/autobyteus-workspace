@@ -8,6 +8,7 @@ import { useWorkspaceStore } from '~/stores/workspace';
 import { useAgentContextsStore } from '~/stores/agentContextsStore';
 import { useAgentRunStore } from '~/stores/agentRunStore';
 import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
+import { useDelegatedRunsStore } from '~/stores/delegatedRunsStore';
 import { useAgentTeamRunStore } from '~/stores/agentTeamRunStore';
 import { useRunHistoryRetiredRunsStore } from '~/stores/runHistoryRetiredRuns';
 import {
@@ -296,10 +297,13 @@ export const reconcileDiscoveredActiveRuns = async (
   const teamContextsStore = useAgentTeamContextsStore();
   const agentTeamRunStore = useAgentTeamRunStore();
 
+  const delegatedRuns = useDelegatedRunsStore();
   for (const [runId, context] of agentContextsStore.runs.entries()) {
     if (runId.startsWith('temp-') || activeAgentRunIds.has(runId)) {
       continue;
     }
+    // A delegated run opened from its delegator's view keeps its own stream (rule 2, SR-045); the list does not hold it.
+    if (delegatedRuns.ownsAgentRun(runId)) continue;
     // A send to this run awaits server activation; this snapshot may predate it (D-14).
     if (agentRunStore.isActivationPending(runId)) {
       continue;
@@ -351,9 +355,8 @@ export const reconcileDiscoveredActiveRuns = async (
       continue;
     }
 
-    if (agentTeamRunStore.isTeamStreamReady(rootTeamRunId)) {
-      agentTeamRunStore.disconnectTeamStream(rootTeamRunId);
-    }
+    // An open Team's view keeps its stream, which tells its state, active or stopped (autobyteus-461 SR-045).
+    if (agentTeamRunStore.isTeamStreamReady(rootTeamRunId)) continue;
     teamContext.view.setRootTeamActive(false);
     teamContext.view.listAgentContextEntries().forEach(({ agentContext }) => {
       if (agentContext.state.currentStatus !== AgentStatus.Error) {
@@ -372,7 +375,7 @@ export const reconcileDiscoveredActiveRuns = async (
       const streamConnected = agentTeamRunStore.isTeamStreamReady(teamRunId);
       if (!streamReopenRequired) {
         // Retired executions keep their terminal history status even when the root is active.
-        existingTeamContext.view.listLiveAgentContextEntries().forEach(({ agentContext }) => {
+        existingTeamContext.view.listAgentContextEntries().forEach(({ agentContext }) => {
           agentContext.config.isLocked = true;
           applyActiveRuntimePlaceholder(agentContext, {
             preserveExistingLive: true,

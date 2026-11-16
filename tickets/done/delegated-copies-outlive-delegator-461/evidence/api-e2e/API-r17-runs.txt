@@ -1,0 +1,52 @@
+API/E2E round 17 (API-REV-017), on CRR-054. Code under test 568dea0159 (HEAD c41eb7fc1d: docs only since). Server dist/ and the
+phone bundle rebuilt at the start (21:53/21:54, exit 0); web from source. Clean env for every run; never the user's app or
+~/.autobyteus. Raw logs: /tmp/api461/r17.
+
+1. Stale tests (CRR-053), reworked and run:
+  /ws/agent clients: one shared reader (tests/e2e/helpers/agent-stream-frames.ts: a SEGMENT_CONTENT_BATCH taken as its items, the
+    frames after the snapshot, the shown text, waitConnected); hand-built handlers given an AgentStreamSequence and a stored read;
+    team-task-event-current-contract rewritten to RUN_TREE_SNAPSHOT / RUN_TREE_CHANGED (retired events rejected).
+  Full server E2E (RUN_AGY_FAILURE_E2E=1): 266 files: 187 passed, 4 failed, 75 skipped; 870 tests passed, 5 failed. The five, fixed
+    test-side and rerun alone: agy-context-files E2E-CF-005, agy-interrupt-resend (Team), agy-linked-skills E04/E10 (the clients sent
+    before CONNECTED: they now wait for it), agent-command-correlated-status (frames carry `sequence`; the test sets it aside):
+    correlated-status 1/1, linked-skills 10/10, context-files 3/4, interrupt-resend 2/3 (the remaining one each: AGY model discovery
+    timeout on the suite's first case, as on base in round 16).
+  Typecheck: production 0, tests 1012 in 316 files (baseline).
+  Mocked web probes: existing-run-model-config (mock answers GetRunTree; the removed keys gone): fails on its model-picker steps,
+    base drift since round 11 (817bd9950f); interrupt-result-presentation: base drift (GetUpdateChecksCapability, update-notifications
+    and GetTeamMemberFileChanges all exist at base); composer-context-file-removal: tree reads and Org selectors moved; it finds F-80;
+    team-group-icon: B01 (a Team row in the Agent-parent preview stays expanded after a click) not resolved; agent-org-task-team-
+    disclosure: not reworked (its rows have no team-run attribute; its expectations are base's Org-only row semantics, FU-031).
+  Probe items: TS-004 label and the shared row's fold and layout; SDV-01 waits for the Manager's view to load (IMP-111); TS-001 per
+    REQ-001 (the delegated Team outlives its delegator's Stop, turns gray on its own Stop).
+
+2. Rechecks:
+  F-76: CF-005, interrupt-resend, linked E04/E10 Pass (after the clients wait for CONNECTED); the Anthropic team restore Pass in the
+    full run.
+  F-77: SDV-03/06/07 Pass, PMU-012/016 Pass, osfr B-003 Pass (8/8), RTP-04 Pass ×2 (the peer Org row opens)          Resolved
+    PMU-018 still fails (see F-82).
+  F-78: SDV-01 Pass, BR-010 Pass ×2; TS-004/007: TS-004 now reaches "Org task Team gray" after the Org's Stop (REQ-001: stale, as
+    TS-001); TS-007 see below.
+  F-79: BR-001/002 Pass.  CR-461-105 (AC-011): BR-001/002 Pass.
+3. The rest:
+  SDV 7/7, BR-008 … 011 ×2 Pass, osfr 8/8, RSM 7/7, title Pass, PLN 10/11 (PLN-04 not 461)
+  remote-runs-in-tree ×2: RTP-01 … 05, 07, 08, 09 Pass; RTP-06 Fail ×2: with beta stopped, the Team family's peer Agent row never
+    reads "Couldn't reach beta-node" (the standalone and Org families do)                                                  F-81
+  team-status-live: TS-001, TS-002 Pass; TS-003 (a Team run's row busy through its delegated agents) and TS-005/006/007 (a nested
+    delegated Team's row with its outer Team collapsed) Fail on the branch; base 827f1e68dc's own probe 7/7               F-84
+  project-manager-ux 19/25: PMU-003, PMU-018, PMU-019 (a delegated Team opened at its coordinator, from its row or its Task card,
+    is folded: its coordinator's row is hidden; round 14 25/25)                                                           F-82
+    PMU-021 (focus ring), PMU-024                                                                                 Unclassified
+  task-closure-tree 13/16: BR-003 (Org family: the view does not return to the delegating Manager when the open run's row leaves;
+    the Agent family passes; round 15 Pass)                                                                               F-83
+  Composer (composer-context-file-removal CF-006/CF-009): a delegated Org run's composer uploads under an Org member's draft owner,
+    refused "Unable to resolve Org context-file owner '<org>/<task agent>'" (backend log, 4×)                            F-80
+  delegated-launch-defaults 14/29 (LRL-001 … 005 Pass after the Team sends wait for CONNECTED):
+    DCP-002: the copy's lead selected in a Team tree, Settings shows the delegating Team's configuration ("Home Team")    F-86
+    DCP-003/005, DCR-001/002/003, DLP-003/004/007, AFS-001/002                                                    Unclassified
+    SIR-001/002 (not 461, round 13), DLP-006 (retired, round 12)
+  mobile-shell 40 Pass, 15 Fail (ran to the end: the warm-up passes after the node clients wait for CONNECTED): MSP-02, 03, 05,
+    06, 07, 20, 22, 24, 29, 33, 46, 52, 53 Unclassified; MSP-50/51 not 461 (round 11)
+4. Rendered peer checks: RTP-04 Pass ×2 (node label, files "on beta-node", no @ menu, its local control has one).
+5. LE-O1 and LE-A1 … LE-T1: not run (DeepSeek account).
+6. No new wording-only refusal difference.

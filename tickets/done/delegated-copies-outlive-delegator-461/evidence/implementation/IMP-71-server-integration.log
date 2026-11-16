@@ -1,0 +1,22 @@
+# commit a0c3a691dc; load: load averages: 5.96 7.77 11.31
+$ pnpm test:integration:prepare && pnpm test:integration
+prepare exit 0
+     × emits add + modify + delete events 8080ms
+     × emits move/rename event 12068ms
+     × hydrates historical messages through GraphQL and serves reference content through the message-owned REST route 83ms
+     × does not hydrate unmigrated old flat projections through a runtime compatibility fallback 4ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+ FAIL  tests/integration/api/team-communication-api.integration.test.ts > Team communication API integration > hydrates historical messages through GraphQL and serves reference content through the message-owned REST route
+ FAIL  tests/integration/api/team-communication-api.integration.test.ts > Team communication API integration > does not hydrate unmigrated old flat projections through a runtime compatibility fallback
+ FAIL  tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits add + modify + delete events
+ FAIL  tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits move/rename event
+ Test Files  2 failed | 84 passed | 20 skipped (106)
+      Tests  4 failed | 479 passed | 69 skipped (552)
+# team-communication-api: the participant read now always asks for the runs below the root (SR-072), so the test configures the Studio services (none below); then:
+$ npx vitest run --no-watch tests/integration/api/team-communication-api.integration.test.ts
+      Tests  4 passed (4)
+# the file watcher alone; load: load averages: 28.47 30.10 21.53
+     × respects nested .gitignore files 8075ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+      Tests  1 failed | 13 passed (14)
+# the watcher's timing failures as in IMP-65 (base fails the same way at this load; fseventsd busy); the branch changes neither watcher

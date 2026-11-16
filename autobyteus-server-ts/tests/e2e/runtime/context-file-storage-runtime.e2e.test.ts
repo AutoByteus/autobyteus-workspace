@@ -181,8 +181,7 @@ run("Context-file built-process runtime and upgrade", () => {
     expect(hash(await fs.readFile(tracePath))).toBe(hash(after));
     expect(await fs.readFile(path.join(backup, "released.original"), "utf8")).toBe(original);
     await f.gql(`mutation {reloadProviderModelCatalog(providerId:"LMSTUDIO",runtimeKind:"autobyteus"){llmModels{modelIdentifier}}}`);
-    const restored = await f.gql(`mutation($teamRunId:String!){restoreAgentTeamRun(teamRunId:$teamRunId){success message}}`, { teamRunId: owner.teamRunId });
-    expect(restored.restoreAgentTeamRun.success, restored.restoreAgentTeamRun.message).toBe(true);
+    // A stopped run's view serves it from its stored file; the first message to one of its members on that view restores it (autobyteus-461 CR-461-008).
     const fresh = await attachments(owner);
     const delivered = await f.send(`/ws/agent-team/${owner.teamRunId}`, owner.runId, "New exact-target message after duplicate-address restore.", fresh);
     expect(delivered.find(event => event.type === "MEMBER_INPUT_MESSAGE")?.payload.recipient_agent_run_id).toBe(owner.runId);

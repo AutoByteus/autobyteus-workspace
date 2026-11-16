@@ -1,0 +1,8 @@
+# IMP-24 web full spec suite
+# command: (autobyteus-web) npx vitest run --no-watch
+# commit: 296ad69b43; macOS, Node v22.23.1; 2026-11-11T22:47Z
+
+stderr | components/projects/__tests__/TaskParts.spec.ts > TaskPartOfPicker (UXJ-004; VIS-011a–e, QR-004) > removes the parent with its labelled ×, returning focus to the search (TR-007)
+stderr | components/projects/__tests__/TaskKeysAndDependencies.spec.ts > TaskDependencyPicker (UXJ-003, VIS-007–009, QR-004) > removes a chosen Task with its labelled ×, returning focus to the search
+ Test Files  745 passed (745)
+      Tests  5631 passed | 2 skipped (5633)

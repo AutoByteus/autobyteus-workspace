@@ -99,7 +99,7 @@ import { useMobileRunOpening } from '~/composables/mobile/useMobileRunOpening';
 import type { useMobileRunTree } from '~/composables/mobile/useMobileRunTree';
 import { useRunHistoryStore } from '~/stores/runHistoryStore';
 import { useRunListStore } from '~/stores/runListStore';
-import type { MobileRunTreeRow } from '~/utils/mobile/mobileRunTreeProjection';
+import type { MobileRunTreeRow } from '~/utils/mobile/mobileRunListRows';
 
 const props = defineProps<{
   tree: ReturnType<typeof useMobileRunTree>;

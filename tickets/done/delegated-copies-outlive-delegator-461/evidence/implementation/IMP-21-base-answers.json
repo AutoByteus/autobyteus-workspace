@@ -1,0 +1,22 @@
+{
+  "ownAddress": {
+    "error": {
+      "code": "COLLABORATION_SELF_TARGET_REJECTED",
+      "message": "/coordinator is your own address; you can't delegate to yourself. Do the work yourself, or delegate it to another agent or agent team."
+    }
+  },
+  "teammate": {
+    "error": {
+      "code": "COLLABORATION_SELF_TARGET_REJECTED",
+      "message": "/worker is in your own team; you can't delegate to it. Talk with it using send_message_to."
+    }
+  },
+  "catalogAddress": {
+    "delegated": false,
+    "message": "'/code_reviewer' is not the address of an available agent or agent team. If you have list_available_agents, it shows the addresses you can use."
+  },
+  "withTaskId": {
+    "delegated": false,
+    "message": "'/code_reviewer' is not the address of an available agent or agent team. If you have list_available_agents, it shows the addresses you can use."
+  }
+}

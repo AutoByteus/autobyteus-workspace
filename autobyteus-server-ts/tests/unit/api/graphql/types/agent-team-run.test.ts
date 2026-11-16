@@ -4,7 +4,6 @@ import { buildSchema, Query, Resolver } from "type-graphql";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 const mockTeamRunService = vi.hoisted(() => ({
-  restoreTeamRun: vi.fn(),
   createTeamRun: vi.fn(),
   terminateTeamRun: vi.fn(),
 }));
@@ -31,7 +30,6 @@ class TestQueryResolver {
 describe("AgentTeamRunResolver", () => {
   beforeEach(() => {
     vi.restoreAllMocks();
-    mockTeamRunService.restoreTeamRun.mockReset();
     mockTeamRunService.createTeamRun.mockReset();
     mockTeamRunService.terminateTeamRun.mockReset();
     mockRunModelConfigService.updateStoppedTeamRunSelections.mockReset();
@@ -56,22 +54,6 @@ describe("AgentTeamRunResolver", () => {
     await expect(resolver.updateStoppedTeamRunSelections(input))
       .resolves.toMatchObject({ outcome: "RUN_ACTIVE", canonicalExecutionTree: null });
     expect(mockRunModelConfigService.updateStoppedTeamRunSelections).toHaveBeenCalledWith(input);
-  });
-
-  it("routes restore through TeamRunService", async () => {
-    mockTeamRunService.restoreTeamRun.mockResolvedValue({
-      teamRunId: "team-run-1",
-    });
-    const resolver = new AgentTeamRunResolver();
-
-    const result = await resolver.restoreAgentTeamRun("team-run-1");
-
-    expect(result).toEqual({
-      success: true,
-      message: "Agent team run restored successfully.",
-      teamRunId: "team-run-1",
-    });
-    expect(mockTeamRunService.restoreTeamRun).toHaveBeenCalledWith("team-run-1");
   });
 
   it("requires runtimeKind on every full-hierarchy Team and Agent input", async () => {

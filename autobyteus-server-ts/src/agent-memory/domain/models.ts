@@ -103,13 +103,9 @@ export type AgentTeamWithMemorySummary = {
   memberMemoryCount: number;
   latestMemoryAt?: string | null;
   memory: MemoryAvailabilitySummary;
-  /** At least one listed run of the definition is a task team (delegated). */
-  isTaskTeam: boolean;
-  /** The agent that started its task runs, when they share one. */
-  startedByAgentName: string | null;
 };
 
-export type CollaborationMemberExecutionKind = "CONFIGURED" | "TASK_AGENT" | "TASK_TEAM_MEMBER";
+export type CollaborationMemberExecutionKind = "CONFIGURED";
 
 export type CollaborationMemoryGroupKind = "CONFIGURED_TEAM" | "TASK_TEAM";
 
@@ -146,10 +142,6 @@ export type AgentTeamRunMemorySummary = {
   lastUpdatedAt?: string | null;
   memory: MemoryAvailabilitySummary;
   memberTargets: CollaborationMemberMemoryTargetSummary[];
-  /** The run is a task team: delegated by an agent, listed while its coordinating run links it. */
-  isTaskTeam: boolean;
-  /** The agent that started the task team, as recorded. */
-  startedByAgentName: string | null;
 };
 
 export type AgentOrgWithMemorySummary = {

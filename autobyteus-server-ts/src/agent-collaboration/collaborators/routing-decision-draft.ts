@@ -7,9 +7,9 @@ import type {
 import type { LaunchConfigurationSource } from "../domain/launch-configuration-source.js";
 import type { CollaboratorEntryPlan } from "./collaborator-entry-builder.js";
 
-/** A fresh copy's origin as Decisions group it; a fresh copy is never `configured`. */
+/** A fresh copy's origin as Decisions group it; a fresh copy is never `configured` or `settings` (a later edit). */
 const decisionSourceOf = (source: LaunchConfigurationSource): DecisionLaunchSource =>
-  source.origin === "configured" ? "inherited" : source.origin;
+  source.origin === "configured" || source.origin === "settings" ? "inherited" : source.origin;
 
 const agentOf = (address: string, launch: AgentLaunchConfiguration, source: LaunchConfigurationSource): RoutingDecisionAgent => Object.freeze({
   agentAddress: address,

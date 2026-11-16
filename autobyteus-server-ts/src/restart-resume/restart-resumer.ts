@@ -1,8 +1,11 @@
+import type { ClosedTaskEntryFence } from "../agent-collaboration/execution/task/closed-task-fence.js";
 import type { AgentOperationResult } from "../agent-execution/domain/agent-operation-result.js";
 import type { AgentRunManager } from "../agent-execution/services/agent-run-manager.js";
 import type { AgentRunInputOptions } from "../agent-execution/input/agent-run-input-contract.js";
 import type { RootExecutionIdentity } from "../agent-collaboration/execution/domain/root-execution-identity.js";
 import { rootExecutionIdentityKey } from "../agent-collaboration/execution/domain/root-execution-identity.js";
+import type { DelegationIndex } from "../agent-collaboration/delegation/delegation-index.js";
+import { runReferenceOf } from "../agent-collaboration/execution/task/task-execution-resource-port.js";
 import type { CollaborationRootResolver } from "../compositions/collaboration-root-resolver.js";
 import type { StandaloneAgentRunRoot } from "../standalone-agent-run-root/domain/standalone-agent-run-root.js";
 import { readBusyRunRecord, removeBusyRunRecord, type BusyRunEntry } from "./busy-run-record.js";
@@ -33,8 +36,9 @@ const createPostLimiter = (limit: number) => {
 /**
  * Resumes, after an update restart, the runs recorded busy at the last graceful shutdown (autobyteus-285 D3,
  * REQ-002 to REQ-006). The record is deleted before any resume, so nothing is resumed twice; an entry is resumed
- * only when its own release differs from this server's. Per root, its delegated runs are resumed first, then its
- * host and members, whose notice lists the delegated runs that were accepted. Each run is restored without posting,
+ * only when its own release differs from this server's. Every run is its own root (autobyteus-461 DS-9): the roots are
+ * resumed bottom-up along `delegatedFrom` (a delegated run before the run that delegated to it), so a report wakes
+ * nothing twice, and each run's notice lists the resumed runs it delegated to, one hop. Each run is restored without posting,
  * checked again (Stop or archive is refused once it is active, so this check is final), then sent a notice the run
  * admits only as its first input: input that reached it first wins (SR-005). Every failure is logged; it never throws.
  */
@@ -45,6 +49,10 @@ export class RestartResumer {
     liveRuns: Pick<AgentRunManager, "getActiveRun">;
     rootHistory: (root: RootExecutionIdentity) => Promise<RootHistoryState>;
     rootResolver: CollaborationRootResolver;
+    /** Who delegated to whom (the Task entries); `null` when the Task records are not loaded (nothing is related). */
+    tree: Pick<DelegationIndex, "parentOf">;
+    /** DS-15 (SR-070): a run whose Task is closed takes no input, the resume notice included; it is not restored. */
+    closedTasks: Pick<ClosedTaskEntryFence, "refusal">;
     now?: () => Date;
     concurrency?: number;
   }>) {}
@@ -83,23 +91,46 @@ export class RestartResumer {
 
   private async resumeEntries(entries: readonly BusyRunEntry[], version: string): Promise<Outcome[]> {
     const limit = createPostLimiter(this.dependencies.concurrency ?? RESTART_RESUME_CONCURRENCY);
+    const tree = this.dependencies.tree;
+    const parentKeyOf = (root: RootExecutionIdentity): string | null => {
+      const reference = runReferenceOf(root);
+      const parent = reference ? tree.parentOf(reference) : null;
+      return parent ? rootExecutionIdentityKey(parent.delegatingRun) : null;
+    };
     const byRoot = new Map<string, BusyRunEntry[]>();
     for (const entry of entries) {
       const key = rootExecutionIdentityKey(entry.root);
       byRoot.set(key, [...(byRoot.get(key) ?? []), entry]);
     }
+    // Depth along `delegatedFrom` among the roots to resume: a delegated run is deeper than its delegator.
+    const depth = new Map<string, number>();
+    const depthOf = (key: string, root: RootExecutionIdentity, seen = new Set<string>()): number => {
+      const known = depth.get(key);
+      if (known !== undefined) return known;
+      const parentKey = parentKeyOf(root);
+      const parentRoot = parentKey && !seen.has(parentKey) ? byRoot.get(parentKey)?.[0]?.root : undefined;
+      const value = parentKey && parentRoot ? 1 + depthOf(parentKey, parentRoot, new Set([...seen, key])) : 0;
+      depth.set(key, value);
+      return value;
+    };
+    for (const [key, rootEntries] of byRoot) depthOf(key, rootEntries[0]!.root);
     const restartedAt = this.dependencies.now?.() ?? new Date();
-    const perRoot = await Promise.all([...byRoot.values()].map(async (rootEntries) => {
-      // Wave 1: the root's delegated runs. Waiting for them holds no post slot (only `limit` does).
-      const delegated = rootEntries.filter((entry) => entry.place === "delegated");
-      const first = await Promise.all(delegated.map((entry) => limit(() => this.resumeOne(entry, version, restartedAt, []))));
-      const accepted = first.flatMap((outcome) => outcome.kind === "resumed" ? [outcome.displayName] : []);
-      // Wave 2: the host and members, told which delegated runs are working again.
-      const second = await Promise.all(rootEntries.filter((entry) => entry.place !== "delegated")
-        .map((entry) => limit(() => this.resumeOne(entry, version, restartedAt, accepted))));
-      return [...first, ...second];
-    }));
-    return perRoot.flat();
+    // The resumed runs, by the run that delegated to them, for that run's notice.
+    const resumedBy = new Map<string, string[]>();
+    const outcomes: Outcome[] = [];
+    for (const level of [...new Set(depth.values())].sort((a, b) => b - a)) {
+      const roots = [...byRoot.entries()].filter(([key]) => depth.get(key) === level);
+      const results = await Promise.all(roots.map(async ([key, rootEntries]) => {
+        const resumedDelegated = resumedBy.get(key) ?? [];
+        const done = await Promise.all(rootEntries.map((entry) => limit(() => this.resumeOne(entry, version, restartedAt, resumedDelegated))));
+        const parentKey = parentKeyOf(rootEntries[0]!.root);
+        const names = done.flatMap((outcome) => outcome.kind === "resumed" ? [outcome.displayName] : []);
+        if (parentKey && names.length) resumedBy.set(parentKey, [...(resumedBy.get(parentKey) ?? []), ...names]);
+        return done;
+      }));
+      outcomes.push(...results.flat());
+    }
+    return outcomes;
   }
 
   private async resumeOne(entry: BusyRunEntry, version: string, restartedAt: Date, resumedDelegated: readonly string[]): Promise<Outcome> {
@@ -107,12 +138,14 @@ export class RestartResumer {
     try {
       // A cheap pre-filter before restoring; the guards are the re-check after the restore and the first-input rule.
       if (this.dependencies.liveRuns.getActiveRun(entry.agentRunId)) return this.skipped(label, "it is already live (it received new input)");
+      const fenced = await this.dependencies.closedTasks.refusal(entry.root);
+      if (fenced) return this.skipped(label, fenced.code === "TASK_AGENT_RESOURCE_CLOSED" ? "its Task is closed" : "its Task record cannot be read");
       const before = await this.dependencies.rootHistory(entry.root);
       if (before !== "present") return this.skipped(label, describeState(before));
       const resolved = await this.dependencies.rootResolver.resolveOrRestore(entry.root);
       if (!resolved) return this.failed(label, "its root is not on this node");
       if (entry.place === "host" && resolved.kind !== "agent") return this.failed(label, "its root is not a standalone root");
-      // Restore without posting: a host is made ready now; a member or delegated run starts on the notice itself.
+      // Restore without posting: a host is made ready now; a member starts on the notice itself.
       const host = entry.place === "host" && resolved.kind === "agent" ? await resolved.root.ensureHostReady() : null;
       const after = await this.dependencies.rootHistory(entry.root);
       if (after !== "present") return this.skipped(label, `${describeState(after)} (after the restore)`);
@@ -121,8 +154,10 @@ export class RestartResumer {
         lifecycleObserver: restartNoticeLifecycleObserver(() => host ?? this.dependencies.liveRuns.getActiveRun(entry.agentRunId), message.content),
         onlyAsFirstInput: true,
       };
-      const result = resolved.kind === "agent" && host
-        ? postedResult(await resolved.root.postHostUserMessage({ message, postOptions }))
+      // A standalone root has one agent, its host; a Team or Org root posts to its member.
+      const result = resolved.kind === "agent"
+        ? host ? postedResult(await resolved.root.postHostUserMessage({ message, postOptions }))
+          : { accepted: false as const, code: "RUN_NOT_FOUND", message: `AgentRun '${entry.agentRunId}' is not this Agent run's agent.` }
         : await resolved.root.executeAgentCommand(entry.agentRunId, { kind: "post_message", message, postOptions });
       if (result.accepted) {
         console.info(`Restart resume resumed ${label}`);

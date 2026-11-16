@@ -16,7 +16,6 @@ import { getActiveRemoteAccessCredential } from '~/utils/remoteAccess/authorized
 import { buildAuthenticatedWebSocketUrl } from '~/utils/remoteAccess/websocketAuth';
 import { drainPendingInterruptTransportFailures, tryAdmitInterruptCommand } from './interruptCommandAdmission';
 import { TeamToolApprovalTargetTracker } from './TeamToolApprovalTargetTracker';
-import { registerTeamRemoteRuns } from '~/services/teamExecution/teamRemoteRunRegistry';
 import { useRunHistoryStore } from '~/stores/runHistoryStore';
 import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
 import { useTokenUsageMeterStore } from '~/stores/tokenUsageMeterStore';
@@ -28,7 +27,9 @@ import {
 import { toAgentProjectionMessage } from './teamStreamDtoAdapters';
 import type { CollaboratorMentionDto } from '~/utils/collaborators/collaboratorMentionText';
 import type { TeamExecutionEffect } from '~/services/teamExecution/teamExecutionViewModels';
+import { useRunTreeStore } from '~/stores/runTreeStore';
 import { useCollaborationParticipantMessagesStore } from '~/services/collaborationMessages/collaborationParticipantMessages';
+import { treeRowOfAgent } from '~/utils/runTree/runTreeAgents';
 import {
   beginTeamMemberGeneration,
   invalidateTeamMemberProjection,
@@ -129,6 +130,7 @@ export class TeamStreamingService {
   }
 
   disconnect(): void {
+    if (this.teamContext) useRunTreeStore().streamEnded(this.treeRefOf(this.teamContext));
     this.rejectCandidate(new Error('Candidate Team stream was disposed before readiness.'));
     this.drainPendingInterruptCommands('Interrupt was cancelled because the stream disconnected.');
     this.teamSends.drain('Team message admission was interrupted because the stream disconnected.');
@@ -274,7 +276,11 @@ export class TeamStreamingService {
     else this.reconnect.startOver();
   };
 
+  private treeRefOf(context: AgentTeamContext) { return { kind: 'agent_team' as const, runId: context.view.getRootTeamRunId() }; }
+
   private markTransportLost(reason: string | undefined): void {
+    // Meanwhile the Team's tree is read, as a listed run's is (SR-084).
+    if (this.teamContext) useRunTreeStore().streamEnded(this.treeRefOf(this.teamContext));
     if (!this.isReopenRequired) this.phase = 'disconnected';
     this.drainPendingInterruptCommands(reason || 'Interrupt result was lost because the stream disconnected.');
     this.teamSends.drain(reason || 'Team message admission was lost because the stream disconnected.');
@@ -296,13 +302,6 @@ export class TeamStreamingService {
       : { command_type: 'INTERRUPT_GENERATION', command_id: message.payload.command_id, state: message.payload.state, code: message.payload.code, message: message.payload.message, target });
   }
 
-  /** Retry (autobyteus-278): the Team asks the nodes of its remote runs again; the answers arrive on this stream. */
-  refreshRemote(): boolean {
-    if (this.phase !== 'ready') return false;
-    this.wsClient.send(serializeTeamStreamClientMessage({ type: 'REFRESH_REMOTE_TASK_EXECUTIONS', payload: {} }));
-    return true;
-  }
-
   private dispatchMessage(message: TeamStreamServerMessage, context: AgentTeamContext): void {
     if (message.type === 'CONNECTED') {
       if (this.phase !== 'awaiting_connected_root') throw new Error(`Team CONNECTED message is invalid during '${this.phase}'.`);
@@ -311,7 +310,8 @@ export class TeamStreamingService {
       return;
     }
     if (message.type === 'TEAM_EXECUTION_VIEW_SNAPSHOT') {
-      if (this.phase !== 'awaiting_snapshot') throw new Error(`Team snapshot is invalid during '${this.phase}'.`);
+      // After the barrier a snapshot is in-band: the Team started or stopped, a new sequence base (autobyteus-461 SR-046).
+      if (this.phase !== 'awaiting_snapshot' && this.phase !== 'ready') throw new Error(`Team snapshot is invalid during '${this.phase}'.`);
       if (this.expectedBaseChangeSequence !== null
         && message.payload.base_change_sequence !== this.expectedBaseChangeSequence) {
         throw new Error(`TEAM_STREAM_SNAPSHOT_BASE_MISMATCH: Expected ${this.expectedBaseChangeSequence}, received ${message.payload.base_change_sequence}.`);
@@ -320,12 +320,18 @@ export class TeamStreamingService {
       if (result.disposition === 'rejected') throw new Error(`${result.code}: ${result.message}`);
       this.liveSequenceId = message.payload.live_sequence_id;
       this.applyEffects(result.effects, context);
-      // autobyteus-278: the runs this Team delegated to other nodes; Retry asks their nodes again on this stream.
-      registerTeamRemoteRuns(context.view.getRootTeamRunId(), message.payload.remote_task_executions);
       this.phase = 'ready';
       this.expectedBaseChangeSequence = null;
       this.reconnect.connected();
       this.resolveCandidate();
+      return;
+    }
+    if (message.type === 'RUN_TREE_SNAPSHOT') {
+      // The Team's tree at the view's base (SR-084), after each snapshot; its changes follow as numbered messages.
+      if (this.phase !== 'ready' || message.payload.base_change_sequence !== context.view.getChangeSequence()) {
+        throw new Error(`Team run tree snapshot is not at the view's base (during '${this.phase}').`);
+      }
+      useRunTreeStore().streamSnapshot(this.treeRefOf(context), message.payload.rows);
       return;
     }
     if (message.type === 'TEAM_RUN_LIFECYCLE') {
@@ -373,6 +379,8 @@ export class TeamStreamingService {
       } else if (effect.kind === 'reload_collaboration_messages') {
         useCollaborationParticipantMessagesStore().reloadRoot('agent_team', context.view.getRootTeamRunId(), effect.rebuild,
           (agentRunId) => context.view.getMemberAddress(agentRunId) !== null);
+      } else if (effect.kind === 'adopt_collaboration_messages') {
+        useCollaborationParticipantMessagesStore().adoptRoot('agent_team', context.view.getRootTeamRunId(), effect.rebuild);
       } else if (effect.kind === 'invalidate_team_member_projection') {
         effect.agentRunIds.forEach((agentRunId) => {
           invalidateTeamMemberProjection(context, agentRunId);
@@ -387,6 +395,14 @@ export class TeamStreamingService {
             context.view.getRootTeamRunId(),
             context.view.getFocusedAgentRunId(),
           );
+        }
+      } else if (effect.kind === 'apply_run_tree_change') {
+        const ref = this.treeRefOf(context);
+        useRunTreeStore().streamChange(ref, effect.change);
+        // Its Team tab still names an agent that left the tree (its Task closed): from the server's answer.
+        if (effect.change.removed.length) {
+          useCollaborationParticipantMessagesStore().reloadNamingUnknown('agent_team', context.view.getRootTeamRunId(), (agentRunId) =>
+            context.view.getMemberAddress(agentRunId) !== null || treeRowOfAgent(useRunTreeStore().rowsOf(ref), agentRunId) !== null);
         }
       } else if (effect.kind === 'record_team_token_usage') {
         useTokenUsageMeterStore().applyTeamTokenUsage(context.view.getRootTeamRunId(), effect.agentRunId, effect.details);

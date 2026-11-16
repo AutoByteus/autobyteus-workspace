@@ -8,11 +8,13 @@ import type { FastifyInstance } from "fastify";
 import WebSocket from "ws";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
+import { delegatedConversation } from "../helpers/own-run-reads.js";
 import { startStudioE2eRuntimeServer } from "../helpers/studio-runtime-test-server.js";
 import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
 import { until } from "../helpers/agy-runtime-error-fixture.js";
 import { flattenE2eConfiguredAgentExecutions } from "../helpers/team-run-metadata-helpers.js";
 import { ProjectChangeMessageSchema } from "../../../src/projects/changes/project-change-messages.js";
+import { addedRowKeysPerChange, delegatedRunsTree, hasTreeSnapshot, isRunRowKey, removedRowKeysPerChange, treeSnapshotRunsOf } from "../helpers/run-tree-delegated.js";
 
 // Reactivation of a DONE Task's worker (reactivate-done-task-runs AC-001..AC-008, AC-010, AC-012,
 // AC-014, AC-015, QR-001, QR-002) through the real Studio HTTP/WebSocket server, scoped MCP,
@@ -113,14 +115,13 @@ suite("Reactivating a DONE Task's worker by run ID in every root (real HTTP/WS/s
    * autobyteus-469 (a top run's tree is built from its open Tasks): a closed run leaves the root's tree once its stop is
    * confirmed, so a fresh snapshot lists it neither in the tree nor among the closed runs. Waits for that.
    */
-  const leftTree = async (root: { snapshot: () => Promise<{ tree: unknown; closed: Record<string, any>[] }> }, out: string[]) => {
+  const leftTree = async (root: { snapshot: () => Promise<{ tree: unknown }> }, out: string[]) => {
     let last: unknown;
     await until(async () => {
       const s = await root.snapshot();
       const inTree = keys(taskNodes(s.tree).map(refOf));
-      const closed = keys(s.closed ?? []);
-      last = { inTree, closed };
-      return out.every((key) => !inTree.includes(key) && !closed.includes(key));
+      last = { inTree };
+      return out.every((key) => !inTree.includes(key));
     }, `closed runs left the tree: ${out.join(", ")}`, 30_000).catch((error) => { throw new Error(`${error}: ${JSON.stringify(last)}`); });
   };
   /** A closed Agent run's saved conversation, read as the Memory page reads it (its own folder): it is in no tree (469). */
@@ -257,7 +258,14 @@ suite("Reactivating a DONE Task's worker by run ID in every root (real HTTP/WS/s
     const viewRoute = kind === "agent" ? "agent-collaboration" : kind === "team" ? "agent-team" : "agent-org";
     const isSnapshot = (frame: Frame) => frame.type === (kind === "team" ? "TEAM_EXECUTION_VIEW_SNAPSHOT" : "ROOT_EXECUTION_VIEW_SNAPSHOT");
     const inputChannel = kind === "agent" ? await connect("agent", rootId, (frames) => frames.some((f) => f.type === "CONNECTED")) : null;
-    const openView = () => connect(viewRoute, rootId, (frames) => frames.some(isSnapshot));
+    // autobyteus-461 SR-084: the view's tree follows its own snapshot as RUN_TREE_SNAPSHOT. Every view's frames are kept in
+    // opening order, so a row added on one view can be told apart as a run the root's tree held before (a reopening).
+    const viewsOpened: Frame[][] = [];
+    const openView = async () => {
+      const opened = await connect(viewRoute, rootId, (frames) => frames.some(isSnapshot) && hasTreeSnapshot(frames));
+      viewsOpened.push(opened.frames);
+      return opened;
+    };
     const state = { view: await openView() };
     /** What the user's composer sends to one agent of the root (the Manager, or a configured member). */
     const sendTo = (agentRunId: string, content: string) => {
@@ -269,16 +277,15 @@ suite("Reactivating a DONE Task's worker by run ID in every root (real HTTP/WS/s
     const snapshot = async () => {
       state.view.socket.close();
       state.view = await openView();
-      const payload = state.view.frames.find(isSnapshot)!.payload;
-      const body = kind === "agent" ? payload.root_agent : kind === "org" ? payload.root_org : payload;
-      return { tree: body.execution_tree, closed: body.closed_task_executions as Record<string, any>[] };
+      // The delegated runs in the view's tree snapshot (SR-084; no closed list: a closed Task's stopped runs leave the tree).
+      return { tree: treeSnapshotRunsOf(state.view.frames) };
     };
-    const liveTree = async () => {
-      if (kind === "agent") return (await graphql(`query($id:String!){agentRunCollaboration(runId:$id)}`, { id: rootId })).agentRunCollaboration?.root_agent?.execution_tree ?? null;
-      if (kind === "team") return (await graphql(`query($id:String!){getTeamRunResumeConfig(teamRunId:$id){executionTree}}`, { id: rootId })).getTeamRunResumeConfig.executionTree;
-      return (await graphql(`query($id:String!){getAgentOrgRootHistory(orgRunId:$id){org}}`, { id: rootId })).getAgentOrgRootHistory.org;
-    };
+    // autobyteus-461 SR-084: the root's delegated runs at every depth, from its tree (its view carries its own parts only).
+    const liveTree = async () => delegatedRunsTree(graphql, kind, rootId);
     const conversationOf = async (agentRunId: string, address: string) => {
+      // A run this root (or one of its runs) delegated to is read by its own run (autobyteus-461 rule 2).
+      const ownRead = await delegatedConversation(graphql, path.join(dataDir, "memory"), rootId, agentRunId);
+      if (ownRead) return ownRead;
       if (kind === "agent" && agentRunId === rootId) return (await graphql(`query($id:String!){getRunProjection(runId:$id){conversation}}`,
         { id: agentRunId })).getRunProjection?.conversation;
       if (kind === "agent") return (await graphql(`query($h:String!,$a:String!,$r:String!){agentRunCollaborationMemberProjection(hostRunId:$h,memberAddress:$a,agentRunId:$r){conversation}}`,
@@ -305,13 +312,28 @@ suite("Reactivating a DONE Task's worker by run ID in every root (real HTTP/WS/s
         .catch((error) => { throw new Error(`${error.message}; nodes=${JSON.stringify(nodes).slice(0, 2000)}`); });
       return nodes;
     };
-    const closedFrame = (frame: Frame) => kind === "team" ? frame.type === "TASK_EXECUTIONS_CLOSED"
-      : frame.type === "ROOT_EXECUTION_EVENT" && frame.payload.event?.kind === "task_executions_closed";
-    const reopenedFrame = (frame: Frame) => kind === "team" ? frame.type === "TASK_EXECUTIONS_REOPENED"
-      : frame.type === "ROOT_EXECUTION_EVENT" && frame.payload.event?.kind === "task_executions_reopened";
-    // A Team's "reopened" carries records (autobyteus-469 D-8); its references are the records' run IDs.
-    const refsOf = (frame: Frame) => kind === "team" ? (frame.payload.task_executions ?? frame.payload.executions.map((entry: Record<string, any>) => entry.execution.agent_run_id
-      ? { agent_run_id: entry.execution.agent_run_id } : { team_run_id: entry.execution.team_run_id })) : frame.payload.event.task_executions;
+    // autobyteus-461 SR-084: closures and reopenings as the open view sees them, in its tree changes. A closed Task's run leaves
+    // the tree (its row removed); a reactivated one comes back (its row added for a run the root's tree held before; a new
+    // delegation's row is a run seen for the first time). Row keys are `agent:<id>` / `team:<id>`, as `keyOf`.
+    const runKeysIn = (frame: Frame) => frame.type === "RUN_TREE_SNAPSHOT" ? ((frame.payload.rows ?? []) as Record<string, any>[]).map((row) => row.key as string).filter(isRunRowKey)
+      : addedRowKeysPerChange([frame]).flat().filter(isRunRowKey);
+    /** The run keys the root's views showed before `frame` (every earlier view, then this view's earlier frames). */
+    const knownBefore = (frame: Frame) => {
+      const known = new Set<string>();
+      for (const frames of viewsOpened) {
+        const at = frames.indexOf(frame);
+        for (const earlier of at >= 0 ? frames.slice(0, at) : frames) runKeysIn(earlier).forEach((key) => known.add(key));
+        if (at >= 0) break;
+      }
+      return known;
+    };
+    const removedKeys = (frame: Frame) => removedRowKeysPerChange([frame]).flat().filter(isRunRowKey);
+    const reopenedKeys = (frame: Frame) => { const known = knownBefore(frame); return addedRowKeysPerChange([frame]).flat().filter((key) => isRunRowKey(key) && known.has(key)); };
+    const closedFrame = (frame: Frame) => removedKeys(frame).length > 0;
+    const reopenedFrame = (frame: Frame) => reopenedKeys(frame).length > 0;
+    const refOfKey = (key: string) => key.startsWith("team:") ? { teamRunId: key.slice(5) } : { agentRunId: key.slice(key.indexOf(":") + 1) };
+    /** The runs a tree change reopened (when it reopened any), else the runs it removed. */
+    const refsOf = (frame: Frame) => (reopenedFrame(frame) ? reopenedKeys(frame) : removedKeys(frame)).map(refOfKey);
     const close = () => { state.view.socket.close(); inputChannel?.socket.close(); };
     return { kind, rootId, managerRunId, members, state, sendTo, snapshot, liveTree, conversationOf, agentCalls, managerCalls,
       waitForNodes, closedFrame, reopenedFrame, refsOf, close };
@@ -453,7 +475,6 @@ suite("Reactivating a DONE Task's worker by run ID in every root (real HTTP/WS/s
     const helperKeys = keys(helpers.map(refOf));
     const afterReactivation = await root.snapshot();
     // autobyteus-469: the worker is in the tree again, once; its helpers stay out of it.
-    expect(keys(afterReactivation.closed)).toEqual([]);
     expect(taskNodes(afterReactivation.tree).filter((node) => node.agentRunId === worker)).toHaveLength(1);
     for (const key of helperKeys) expect(keys(taskNodes(afterReactivation.tree).map(refOf))).not.toContain(key);
     // Restored with an exact provider-conversation binding: the relaunch resumes an existing conversation.
@@ -500,26 +521,27 @@ suite("Reactivating a DONE Task's worker by run ID in every root (real HTTP/WS/s
     await until(() => view.frames.slice(from).some(root.reopenedFrame), "second reactivation event", 30_000);
     await until(async () => JSON.stringify(await root.conversationOf(worker, workerNode.address)).includes("CYCLE-2"), "worker got the third round", 60_000);
     expect(await statusOf(projectId, taskA)).toBe("TODO");
-    expect(keys((await root.snapshot()).closed)).toEqual([]);
 
-    // 11. AC-002 / AC-007: a Team copy is reactivated as a whole through its coordinator; a member is refused.
+    // 11. AC-002 / AC-007, SR-072 F-23: a Team copy's member is answered as its run. While Task B is DONE the assigner's
+    // message is refused (R-8) with base's Task-side text; after IN_PROGRESS the same message continues the run (R-6),
+    // which reopens the Team as a whole.
     view = root.state.view; from = view.frames.length;
     await root.managerCalls(callTool("update_task", { task_id: taskB, status: "DONE" }));
     await until(() => view.frames.slice(from).some(root.closedFrame), "closure of Task B", 60_000);
-    await root.managerCalls(callTool("update_task", { task_id: taskB, status: "IN_PROGRESS" }));
     const resourcesB = await readBytes(path.join(bDir, "agent_run_resources.json"));
-    const toMember = await root.managerCalls(callTool("send_message_to", { target_agent_run_id: mate, content: "Member?" }));
-    // autobyteus-469 DEC-006: a member of a Team copy that left the tree is not in this run (only its coordinator, named by
-    // the Task record, brings the Team back).
-    expect(toMember).toMatchObject({ accepted: false, code: "TARGET_AGENT_RUN_NOT_ACTIVE" });
-    expect(toMember.message).toMatch(/No running agent has the run id/);
+    const whileDone = await root.managerCalls(callTool("send_message_to", { target_agent_run_id: mate, content: "Member, while DONE?" }));
+    expect(whileDone).toMatchObject({ accepted: false });
+    expect(whileDone.message).toContain("The agent that assigned it can set the Task to TODO or IN_PROGRESS and then message this run id again.");
     expect(await readBytes(path.join(bDir, "agent_run_resources.json"))).toBe(resourcesB);
+    await root.managerCalls(callTool("update_task", { task_id: taskB, status: "IN_PROGRESS" }));
     view = root.state.view; from = view.frames.length;
-    const teamReactivated = await root.managerCalls(callTool("send_message_to", { target_agent_run_id: coordinator, content: "Team, second round. Marker TEAM-REOPEN-5150." }));
-    expect(teamReactivated).toMatchObject({ accepted: true, target_agent_run_id: coordinator });
-    expect(teamReactivated.message).toMatch(new RegExp(`${coordinator} continues with its conversation\\.$`));
+    const toMember = await root.managerCalls(callTool("send_message_to", { target_agent_run_id: mate, content: "Member? Marker MEMBER-REOPEN-5150." }));
+    expect(toMember).toMatchObject({ accepted: true, target_agent_run_id: mate });
+    expect(toMember.message).toMatch(new RegExp(`${mate} continues with its conversation\\.$`));
     await until(() => view.frames.slice(from).some(root.reopenedFrame), "Team copy reopened event", 30_000);
     expect(keys(root.refsOf(view.frames.slice(from).find(root.reopenedFrame)!))).toEqual([`team:${bNode.teamRunId}`]);
+    const teamReactivated = await root.managerCalls(callTool("send_message_to", { target_agent_run_id: coordinator, content: "Team, second round. Marker TEAM-REOPEN-5150." }));
+    expect(teamReactivated).toMatchObject({ accepted: true, target_agent_run_id: coordinator });
     const coordinatorAddress = bNode.members.find((member: any) => member.agentRunId === coordinator)!.address;
     await until(async () => JSON.stringify(await root.conversationOf(coordinator, coordinatorAddress)).includes("TEAM-REOPEN-5150"),
       "coordinator received the message", 60_000);
@@ -527,7 +549,6 @@ suite("Reactivating a DONE Task's worker by run ID in every root (real HTTP/WS/s
     const bAfter = taskNodes(teamAfter.tree).filter((node) => node.teamRunId === bNode.teamRunId);
     expect(bAfter).toHaveLength(1);
     expect(bAfter[0]!.members.map((member: any) => member.agentRunId).sort()).toEqual(bMembersBefore);
-    expect(keys(teamAfter.closed)).not.toContain(`team:${bNode.teamRunId}`);
     expect((await closedAtByKey(bDir))[`team:${bNode.teamRunId}`]).toBeNull();
     record.team = { teamRunId: bNode.teamRunId, coordinator, mate, members: bMembersBefore, toMember, teamReactivated };
 
@@ -537,8 +558,14 @@ suite("Reactivating a DONE Task's worker by run ID in every root (real HTTP/WS/s
       { input: { projectId, taskId: taskB } })).deleteProjectTask).toBe(true);
     view = root.state.view; from = view.frames.length;
     const deleted = await root.managerCalls(callTool("send_message_to", { target_agent_run_id: coordinator, content: "Deleted?" }));
-    expect(deleted).toMatchObject({ accepted: false, code: "TASK_NOT_FOUND" });
-    expect(deleted.message).toMatch(/The Task was deleted, so its task agent cannot continue/);
+    // Base's code and text (REQ-009; CR-461-058/-065): the coordinator and any other member of the team.
+    record.deletedTaskMessage = deleted;
+    expect(deleted, JSON.stringify(deleted)).toMatchObject({ accepted: false, code: "TASK_NOT_FOUND" });
+    expect(String(deleted.message)).toMatch(/The Task was deleted, so its task agent cannot continue/);
+    const deletedMember = await root.managerCalls(callTool("send_message_to", { target_agent_run_id: mate, content: "Deleted, member?" }));
+    record.deletedTaskMemberMessage = deletedMember;
+    expect(deletedMember, JSON.stringify(deletedMember)).toMatchObject({ accepted: false, code: "TASK_NOT_FOUND" });
+    expect(String(deletedMember.message)).toMatch(/The Task was deleted, so its task agent cannot continue/);
     expect(view.frames.slice(from).some(root.reopenedFrame)).toBe(false);
     await leftTree(root, [`team:${bNode.teamRunId}`]);
 
@@ -627,8 +654,8 @@ suite("Reactivating a DONE Task's worker by run ID in every root (real HTTP/WS/s
     const nodesBefore = taskNodes(await root.liveTree()).length;
     view = root.state.view; from = view.frames.length;
     const redelegated = await root.managerCalls(callTool("delegate_task", { recipient_address: workerAddress, task_id: taskC }));
-    expect(redelegated).toEqual({ error: { code: "TASK_AGENT_RESOURCE_CLOSED",
-      message: "The Task is CANCELLED; set it to TODO or IN_PROGRESS before you delegate it." } });
+    // A refused delegate_task answers {delegated: false, message} with no code (contract §2, SR-054).
+    expect(redelegated).toEqual({ delegated: false, message: "The Task is CANCELLED; set it to TODO or IN_PROGRESS before you delegate it." });
     const fenced = await root.managerCalls(callTool("send_message_to", { target_agent_run_id: worker, content: "While cancelled?" }));
     expect(fenced).toMatchObject({ accepted: false, code: "TASK_AGENT_RESOURCE_CLOSED" });
     expect(fenced.message).toMatch(/This Task is CANCELLED\. The agent that assigned it can set the Task to TODO or IN_PROGRESS and then message this run id again\./);
@@ -767,11 +794,13 @@ suite("Reactivating a DONE Task's worker by run ID in every root (real HTTP/WS/s
       // - reactivated and delivered before the DONE;
       // - the DONE first: refused with the reopen-first hint;
       // - the reactivation committed and the DONE then closed the entry before delivery (P-001). The restore was
-      //   stopped (TASK_EXECUTION_RESTORE_FAILED), or the live-input fence refused it (TASK_AGENT_RESOURCE_CLOSED).
-      //   Either way the result says it continues with its conversation but did not receive the message.
+      //   stopped (TASK_EXECUTION_RESTORE_FAILED), or the live-input fence refused it (TASK_AGENT_RESOURCE_CLOSED), or the
+      //   run was already stopping for the DONE (COLLABORATION_ROOT_NOT_ACCEPTING_MESSAGES, base's "This work is stopping or
+      //   has stopped" text; autobyteus-461: the run is its own root). Each result says it continues with its conversation
+      //   but did not receive the message.
       const notReached = /continues with its conversation \(its Task is open again\) but did not receive this message/;
       const outcome = message.accepted ? "reactivated-then-done"
-        : notReached.test(message.message ?? "") && ["TASK_EXECUTION_RESTORE_FAILED", "TASK_AGENT_RESOURCE_CLOSED"].includes(message.code)
+        : notReached.test(message.message ?? "") && ["TASK_EXECUTION_RESTORE_FAILED", "TASK_AGENT_RESOURCE_CLOSED", "COLLABORATION_ROOT_NOT_ACCEPTING_MESSAGES"].includes(message.code)
           ? `done-after-commit:${message.code}`
           : message.code === "TASK_AGENT_RESOURCE_CLOSED" && /This Task is DONE/.test(message.message ?? "") ? "done-first" : "unexpected";
       expect(outcome, JSON.stringify(message)).not.toBe("unexpected");

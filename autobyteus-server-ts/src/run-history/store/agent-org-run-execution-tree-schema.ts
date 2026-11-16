@@ -16,17 +16,11 @@ import {
   parseApplicationBinding,
   parseConfiguredAgent,
   parseConfiguredTeam,
-  collectTaskExecutionRunIds,
   parseLaunchConfiguration,
-  parseRemoteTaskExecutions,
-  parseTaskExecutions,
   requiredArray,
   requiredString,
   requireKeys,
-  validateCopyLayouts,
   validateConfiguredPlacementUniqueness,
-  validateRemoteTaskExecutions,
-  validateTaskExecutionDelegators,
 } from "./run-execution-tree-shared-record-schemas.js";
 
 const parseRootOrg = (value: unknown): RootConfiguredAgentOrgExecutionNode => {
@@ -38,7 +32,6 @@ const parseRootOrg = (value: unknown): RootConfiguredAgentOrgExecutionNode => {
     "orgRunId",
     "defaultLaunchConfiguration",
     "members",
-    "taskExecutions",
   ], "rootOrg");
   if (root.address !== "/") throw new Error("rootOrg.address must be '/'.");
   const members = requiredArray(root.members, "rootOrg.members").map((member, index) => {
@@ -59,8 +52,6 @@ const parseRootOrg = (value: unknown): RootConfiguredAgentOrgExecutionNode => {
     orgRunId: requiredString(root.orgRunId, "rootOrg.orgRunId"),
     defaultLaunchConfiguration: parseLaunchConfiguration(root.defaultLaunchConfiguration, "rootOrg.defaultLaunchConfiguration"),
     members,
-    taskExecutions: parseTaskExecutions(root.taskExecutions, "rootOrg.taskExecutions"),
-    ...parseRemoteTaskExecutions(root.remoteTaskExecutions, "rootOrg.remoteTaskExecutions"),
   };
 };
 
@@ -84,19 +75,11 @@ const validateHandoffEndpoints = (tree: AgentOrgRunExecutionTreeFile): void => {
     const effectiveTarget = agents.has(to) ? to : teams.get(to)!;
     if (from === effectiveTarget) throw new Error(`Handoff '${from}' -> '${to}' resolves back to its source Agent.`);
   }
-  const owners = [
-    tree.rootOrg,
-    ...members.flatMap((member) => "teamRunId" in member ? [member] : []),
-  ];
-  validateTaskExecutionDelegators(agents.values(), owners);
-  validateCopyLayouts(owners);
-  validateRemoteTaskExecutions(new Set([...agents.values(),
-    ...owners.flatMap((owner) => collectTaskExecutionRunIds(owner.taskExecutions))]), tree.rootOrg.remoteTaskExecutions);
 };
 
 /**
  * Reads an AgentOrgRun execution tree tolerantly (REQ-018); see
- * `validateTeamRunExecutionTreePayload`. The result holds only current fields.
+ * `validateTeamRunExecutionTreePayload`. The result holds only current fields (no `taskExecutions`, E9).
  */
 export const validateAgentOrgRunExecutionTreePayload = (
   value: unknown,

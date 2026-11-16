@@ -439,9 +439,8 @@ describe.runIf(ENABLED)("agent runtime switch of Team and Org members on the bui
     expect(ids(active(dir(direct)))).toEqual(nativeDirect);
     expect(segments(dir(direct))).toEqual([]);
 
-    // The stopped Org is restored as the Settings page does it; its members start on their first message.
-    const restored = (await gql("mutation($id: String!) { restoreAgentOrgRun(agentOrgRunId: $id) { success message } }", { id: orgRunId })).restoreAgentOrgRun as Json;
-    expect(restored.success, restored.message).toBe(true);
+    // The stopped Org's view serves it from its stored file; the first message to one of its agents on that view restores it (autobyteus-461 CR-461-008).
+    // Its members start on their first message.
     const keyOf = (address: string, runId: string) => `runtime_switch:${runId}:${orgAgent(pendingTree, address).pendingRuntimeSwitch.switchId}`;
     for (const [address, runId, nativeIds] of [["/direct", direct, nativeDirect], ["/crew/worker", worker, nativeWorker]] as const) {
       await talk(socketPath, runId, "ECHO_INPUT", `${address} antigravity first turn`);

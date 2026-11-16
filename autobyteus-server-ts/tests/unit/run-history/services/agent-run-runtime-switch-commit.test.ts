@@ -37,7 +37,8 @@ describe("the metadata a settings save of a stopped run writes (AC-001)", () => 
       metadata: pending, switchId: AT,
       selection: { runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK, llmModelIdentifier: "sonnet", llmConfig: { effort: "low" } },
     });
-    expect(same).toEqual(stopped());
+    // Back at its original binding; the edits are recorded as the user's (V-11).
+    expect(same).toEqual(stopped({ launchSource: { origin: "settings", fallbacks: [] } as never }));
     const otherModel = buildRuntimeSwitchMetadata({
       metadata: pending, switchId: AT,
       selection: { runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK, llmModelIdentifier: "opus", llmConfig: null },
@@ -49,11 +50,30 @@ describe("the metadata a settings save of a stopped run writes (AC-001)", () => 
   it("the run's own agent runtime is a model-only edit; a pending switch stays", () => {
     const edited = buildRuntimeSwitchMetadata({ metadata: stopped(), switchId: AT,
       selection: { runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK, llmModelIdentifier: "opus", llmConfig: null } });
-    expect(edited).toEqual(stopped({ llmModelIdentifier: "opus", llmConfig: null }));
+    expect(edited).toEqual(stopped({ llmModelIdentifier: "opus", llmConfig: null, launchSource: { origin: "settings", fallbacks: [] } as never }));
     const pending = buildRuntimeSwitchMetadata({ metadata: stopped(), selection: codex, switchId: AT });
     const model = buildRuntimeSwitchMetadata({ metadata: pending, switchId: AT,
       selection: { runtimeKind: RuntimeKind.CODEX_APP_SERVER, llmModelIdentifier: "gpt-6", llmConfig: null } });
     expect(model).toMatchObject({ llmModelIdentifier: "gpt-6", pendingRuntimeSwitch: pending.pendingRuntimeSwitch });
+  });
+});
+
+describe("a run's recorded launch source after a settings save (CR-461-078, design V-11)", () => {
+  const source = { origin: "agent_default" as const, fallbacks: [] };
+  const settings = { origin: "settings", fallbacks: [] };
+  it("an edit becomes the run's own launch, recorded as the Settings edit, for a model edit and for a switch", () => {
+    const edited = buildRuntimeSwitchMetadata({ metadata: stopped({ launchSource: source }), switchId: AT,
+      selection: { runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK, llmModelIdentifier: "opus", llmConfig: null } });
+    expect(edited).toEqual(stopped({ llmModelIdentifier: "opus", llmConfig: null, launchSource: settings as never }));
+    expect(buildRuntimeSwitchMetadata({ metadata: stopped({ launchSource: source }), selection: codex, switchId: AT }).launchSource).toEqual(settings);
+    // A run that had no source (one the user started, or one recorded before sources) records the edit too.
+    expect(buildRuntimeSwitchMetadata({ metadata: stopped(), selection: codex, switchId: AT }).launchSource).toEqual(settings);
+  });
+
+  it("a save of the same selection changes nothing: the source stays", () => {
+    const same = buildRuntimeSwitchMetadata({ metadata: stopped({ launchSource: source }), switchId: AT,
+      selection: { runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK, llmModelIdentifier: "sonnet", llmConfig: { effort: "low" } } });
+    expect(same).toEqual(stopped({ launchSource: source }));
   });
 });
 

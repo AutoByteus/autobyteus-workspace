@@ -306,10 +306,13 @@ describe("RawTraceManifestRuntimeNamesMigration: the frozen table and the regist
     expect(Object.values(OLD_RUNTIME_LABELS).sort()).toEqual([...CURRENT_RUNTIME_VALUES].sort());
   });
 
-  it("is registered last, after both raw-trace layout migrations it names, required on startup and startup-only", () => {
+  it("is the last released migration, after both raw-trace layout migrations it names, required on startup and startup-only", () => {
     const definitions = new AppDataMigrationRegistry().listDefinitions();
     const ids = definitions.map((definition) => definition.id);
-    const last = definitions.at(-1)!;
+    const at = ids.indexOf(RAW_TRACE_MANIFEST_RUNTIME_NAMES_MIGRATION_ID);
+    const last = definitions[at]!;
+    // Only later ones follow it (autobyteus-461 CR-461-048: no new migration runs ahead of a released one).
+    expect(ids.slice(at + 1).filter((id) => id.slice(0, 8) <= RAW_TRACE_MANIFEST_RUNTIME_NAMES_MIGRATION_ID.slice(0, 8))).toEqual([]);
     expect(last).toBeInstanceOf(RawTraceManifestRuntimeNamesMigration);
     expect(last.id).toBe(RAW_TRACE_MANIFEST_RUNTIME_NAMES_MIGRATION_ID);
     expect(last).toMatchObject({ requiredOnStartup: true, executionPolicy: "STARTUP_ONLY" });

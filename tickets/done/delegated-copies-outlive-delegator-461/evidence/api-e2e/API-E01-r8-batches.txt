@@ -1,0 +1,191 @@
+# API-E01 round 8 (API-REV-008): per-batch results, code fdf5ad8380 (docs head 392a1b447d)
+# Command (each batch): cd autobyteus-server-ts && env -i PATH HOME=<new temp> TMPDIR USER RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=$PWD/tests/fixtures/agy-failure-cli.mjs pnpm exec vitest run <files> --no-watch --no-file-parallelism --reporter=verbose
+
+## R8-A
+ ✓ tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-001 standalone Agent root: explicit IDs, every refusal, Team copy A → B → A, Agent copy 
+ ✓ tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-002 Agent Team root: the same journey through the Team stream; a teammate is not the ass
+ ✓ tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-003 Agent Org root: the same journey through the Org stream; an Org member is not the as
+ ✓ tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in on
+ ✓ tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-005 cross-root sender: a team run ID message names the coordinator; another root's copy 
+ ↓ tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-006 AC-009: a copy that never started (a real start failure) is refused as never started
+ ✓ tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-007 AC-009: a copy whose saved conversation is gone is refused before any change 2078ms
+ ✓ tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > TKD-AGY-001 Agent root: delegate_task by key in any case (recipient_address and target_agent_run
+ ↓ tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-008 real model (Claude Agent SDK) copy: after Task A is DONE, its follow-up Task B recal
+ × tests/e2e/app-data-migrations/task-agent-own-run-startup.e2e.test.ts > task agent own run: the built server upgrades a faithful released install at startup > TAU-1 moves every task agent with its bytes, the runs open with their task agents, the Memory page 
+ × tests/e2e/app-data-migrations/task-agent-own-run-startup.e2e.test.ts > task agent own run: the built server upgrades a faithful released install at startup > TAU-2 a run that cannot be moved leaves the app working; a copy preserved by the unfinished step is
+ × tests/e2e/app-data-migrations/task-agent-own-run-startup.e2e.test.ts > task agent own run: the built server upgrades a faithful released install at startup > TAU-3 deleting a migrated hub removes only its folder; its task agents' folders stay with every fil
+ ✓ tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts > Delegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor) > in every root, a delegated copy starts only 
+ ✓ tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts > Delegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor) > Org root: a coordinator that cannot start fa
+ ↓ tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts > Delegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor) > Org root, real Claude Agent SDK members: del
+ ✓ tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts > A Task closing while a teammate message is being saved never fail-stops the root (real HTTP/WS/scoped MCP, Task services and AGY backend, scripted AGY actor) > agent root: Task closure dur
+ ✓ tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts > A Task closing while a teammate message is being saved never fail-stops the root (real HTTP/WS/scoped MCP, Task services and AGY backend, scripted AGY actor) > team root: Task closure duri
+ ✓ tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts > A Task closing while a teammate message is being saved never fail-stops the root (real HTTP/WS/scoped MCP, Task services and AGY backend, scripted AGY actor) > org root: Task closure durin
+ ✓ tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts > Reactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > CLS-E2E-001 standalone Agent root: CANCELLED closes and stops the worker, retry, ref
+ ✓ tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts > Reactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > CLS-E2E-002 Agent Team root: the same CANCELLED journey through the Team stream (TAS
+ ✓ tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts > Reactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > standalone Agent root: target_kind, refused while DONE, status-only reopen, helper a
+ ✓ tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts > Reactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > Agent Team root: the same journey through the Team stream (TASK_EXECUTIONS_REOPENED)
+ ✓ tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts > Reactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > Agent Org root: the same journey through the Org stream; an Org member cannot reacti
+ ✓ tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts > Reactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > QR-001: a DONE from another root racing the assigner's reactivating message never le
+ ↓ tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts > Reactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > real model (Claude Agent SDK) worker: after DONE, reopen and the assigner's message,
+ × tests/e2e/projects/delegator-view-follows-child.e2e.test.ts > A delegator's open view follows a local delegated run across its Stop and restore (CR-461-067; real HTTP/WS/scoped MCP, scripted AGY) > FOLLOW-A / FOLLOW-T, agent delegator: the child's row offli
+ × tests/e2e/projects/delegator-view-follows-child.e2e.test.ts > A delegator's open view follows a local delegated run across its Stop and restore (CR-461-067; real HTTP/WS/scoped MCP, scripted AGY) > FOLLOW-A / FOLLOW-T, team delegator: the child's row offlin
+ × tests/e2e/projects/delegator-view-follows-child.e2e.test.ts > A delegator's open view follows a local delegated run across its Stop and restore (CR-461-067; real HTTP/WS/scoped MCP, scripted AGY) > FOLLOW-A / FOLLOW-T, org delegator: the child's row offline
+ ✓ tests/e2e/projects/team-tab-subtree-messages.e2e.test.ts > The Team tab: one in-view rule over the open subtree, live and read (real HTTP/WS/scoped MCP, scripted AGY actor) > TT-1 / TT-2: a two-hop message in the top run's tab live and after a reload; a mes
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 6 ⎯⎯⎯⎯⎯⎯⎯
+ Test Files  2 failed | 5 passed (7)
+      Tests  6 failed | 19 passed | 4 skipped (29)
+
+## R8-B
+ × tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts > Idle shutdown keeps delegated copies with running background tasks in every root (real HTTP/WS/scoped MCP and AGY monitor, scripted AGY actor) > background copies outlive the grace period and are rele
+ × tests/e2e/app-data-migrations/task-agent-own-run-startup.e2e.test.ts > task agent own run: the built server upgrades a faithful released install at startup > TAU-1 moves every task agent with its bytes, the runs open with their task agents, the Memory page 
+ × tests/e2e/app-data-migrations/task-agent-own-run-startup.e2e.test.ts > task agent own run: the built server upgrades a faithful released install at startup > TAU-2 a run that cannot be moved leaves the app working; a copy preserved by the unfinished step is
+ × tests/e2e/app-data-migrations/task-agent-own-run-startup.e2e.test.ts > task agent own run: the built server upgrades a faithful released install at startup > TAU-3 deleting a migrated hub removes only its folder; its task agents' folders stay with every fil
+ ✓ tests/e2e/projects/closed-run-attachments.e2e.test.ts > AC-007: a closed run's earlier attachments still open (built server, scripted AGY, real restart) > CRA-1 a reference of a message with the closed run opens through the top run (also after a restart); t
+ ↓ tests/e2e/projects/unclean-shutdown-delegated-team-restore.e2e.test.ts > A delegated Team whose coordinator's log was damaged by an unclean shutdown (built server, scripted AGY) > USR-1 AC-005: 1,241 zero bytes after the coordinator's last record; 'continue
+ ↓ tests/e2e/projects/unclean-shutdown-delegated-team-restore.e2e.test.ts > A delegated Team whose coordinator's log was damaged by an unclean shutdown (built server, scripted AGY) > USR-2 AC-005 variant: a torn last record without a newline
+ ↓ tests/e2e/projects/unclean-shutdown-delegated-team-restore.e2e.test.ts > A delegated Team whose coordinator's log was damaged by an unclean shutdown (built server, scripted AGY) > USR-3 AC-005 variant: a torn last record whose newline landed
+ ↓ tests/e2e/projects/unclean-shutdown-delegated-team-restore.e2e.test.ts > A delegated Team whose coordinator's log was damaged by an unclean shutdown (built server, scripted AGY) > USR-4 AC-006: a damaged line before the last record is refused with the Team,
+ ↓ tests/e2e/projects/unclean-shutdown-delegated-team-restore.e2e.test.ts > A delegated Team whose coordinator's log was damaged by an unclean shutdown (built server, scripted AGY) > USR-5 SCN-003: a new server process reads every repaired log fresh; another m
+ ✓ tests/e2e/projects/delegator-view-follows-child.e2e.test.ts > A delegator's open view follows a local delegated run across its Stop and restore (CR-461-067; real HTTP/WS/scoped MCP, scripted AGY) > FOLLOW-A / FOLLOW-T, agent delegator: the child's row offli
+ ✓ tests/e2e/projects/delegator-view-follows-child.e2e.test.ts > A delegator's open view follows a local delegated run across its Stop and restore (CR-461-067; real HTTP/WS/scoped MCP, scripted AGY) > FOLLOW-A / FOLLOW-T, team delegator: the child's row offlin
+ ✓ tests/e2e/projects/delegator-view-follows-child.e2e.test.ts > A delegator's open view follows a local delegated run across its Stop and restore (CR-461-067; real HTTP/WS/scoped MCP, scripted AGY) > FOLLOW-A / FOLLOW-T, org delegator: the child's row offline
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+ Test Files  3 failed | 2 passed (5)
+      Tests  4 failed | 4 passed | 5 skipped (13)
+
+## R8-C
+ × tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts > Idle shutdown keeps delegated copies with running background tasks in every root (real HTTP/WS/scoped MCP and AGY monitor, scripted AGY actor) > background copies outlive the grace period and are rele
+ × tests/e2e/app-data-migrations/task-agent-own-run-startup.e2e.test.ts > task agent own run: the built server upgrades a faithful released install at startup > TAU-1 moves every task agent with its bytes, the runs open with their task agents, the Memory page 
+ × tests/e2e/app-data-migrations/task-agent-own-run-startup.e2e.test.ts > task agent own run: the built server upgrades a faithful released install at startup > TAU-2 a run that cannot be moved leaves the app working; a copy preserved by the unfinished step is
+ ✓ tests/e2e/app-data-migrations/task-agent-own-run-startup.e2e.test.ts > task agent own run: the built server upgrades a faithful released install at startup > TAU-3 deleting a migrated hub removes only its folder; its task agents' folders stay with every fil
+ ✓ tests/e2e/projects/unclean-shutdown-delegated-team-restore.e2e.test.ts > A delegated Team whose coordinator's log was damaged by an unclean shutdown (built server, scripted AGY) > USR-1 AC-005: 1,241 zero bytes after the coordinator's last record; 'continue
+ ✓ tests/e2e/projects/unclean-shutdown-delegated-team-restore.e2e.test.ts > A delegated Team whose coordinator's log was damaged by an unclean shutdown (built server, scripted AGY) > USR-2 AC-005 variant: a torn last record without a newline 229ms
+ ✓ tests/e2e/projects/unclean-shutdown-delegated-team-restore.e2e.test.ts > A delegated Team whose coordinator's log was damaged by an unclean shutdown (built server, scripted AGY) > USR-3 AC-005 variant: a torn last record whose newline landed 228ms
+ × tests/e2e/projects/unclean-shutdown-delegated-team-restore.e2e.test.ts > A delegated Team whose coordinator's log was damaged by an unclean shutdown (built server, scripted AGY) > USR-4 AC-006: a damaged line before the last record is refused with the Team,
+ ✓ tests/e2e/projects/unclean-shutdown-delegated-team-restore.e2e.test.ts > A delegated Team whose coordinator's log was damaged by an unclean shutdown (built server, scripted AGY) > USR-5 SCN-003: a new server process reads every repaired log fresh; another m
+ × tests/e2e/app-data-migrations/collaborators-to-delegated-runs-startup.e2e.test.ts > collaborators → delegated runs: the built server upgrades released app data at startup > converts collaborators of an Agent, Team and Org root, keeps run IDs and memory, ope
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 5 ⎯⎯⎯⎯⎯⎯⎯
+ Test Files  4 failed (4)
+      Tests  5 failed | 5 passed (10)
+
+## R8-D
+ × tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts > TeamRun released-shape production upgrade to the current AgentOrg end state through actual startup > migrates the exact supported cohort, serves history and new work, and remains imm
+ × tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts > TeamRun released-shape production upgrade to the current AgentOrg end state through actual startup > isolates mixed root and token warnings and fails closed on an unreadable history 
+ × tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts > TeamRun released-shape production upgrade to the current AgentOrg end state through actual startup > keeps the server healthy after failed consolidation, admits a new current run, an
+ ✓ tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts > TeamRun released-shape production upgrade to the current AgentOrg end state through actual startup > rejects a legacy/current run-ID overlap before source cleanup while preserving bo
+ × tests/e2e/app-data-migrations/task-agent-own-run-startup.e2e.test.ts > task agent own run: the built server upgrades a faithful released install at startup > TAU-1 moves every task agent with its bytes, the runs open with their task agents, the Memory page 
+ × tests/e2e/app-data-migrations/task-agent-own-run-startup.e2e.test.ts > task agent own run: the built server upgrades a faithful released install at startup > TAU-2 a run that cannot be moved leaves the app working; a copy preserved by the unfinished step is
+ ✓ tests/e2e/app-data-migrations/task-agent-own-run-startup.e2e.test.ts > task agent own run: the built server upgrades a faithful released install at startup > TAU-3 deleting a migrated hub removes only its folder; its task agents' folders stay with every fil
+ ✓ tests/e2e/projects/unclean-shutdown-delegated-team-restore.e2e.test.ts > A delegated Team whose coordinator's log was damaged by an unclean shutdown (built server, scripted AGY) > USR-1 AC-005: 1,241 zero bytes after the coordinator's last record; 'continue
+ ✓ tests/e2e/projects/unclean-shutdown-delegated-team-restore.e2e.test.ts > A delegated Team whose coordinator's log was damaged by an unclean shutdown (built server, scripted AGY) > USR-2 AC-005 variant: a torn last record without a newline 226ms
+ ✓ tests/e2e/projects/unclean-shutdown-delegated-team-restore.e2e.test.ts > A delegated Team whose coordinator's log was damaged by an unclean shutdown (built server, scripted AGY) > USR-3 AC-005 variant: a torn last record whose newline landed 227ms
+ × tests/e2e/projects/unclean-shutdown-delegated-team-restore.e2e.test.ts > A delegated Team whose coordinator's log was damaged by an unclean shutdown (built server, scripted AGY) > USR-4 AC-006: a damaged line before the last record is refused with the Team,
+ ✓ tests/e2e/projects/unclean-shutdown-delegated-team-restore.e2e.test.ts > A delegated Team whose coordinator's log was damaged by an unclean shutdown (built server, scripted AGY) > USR-5 SCN-003: a new server process reads every repaired log fresh; another m
+ × tests/e2e/app-data-migrations/collaborators-to-delegated-runs-startup.e2e.test.ts > collaborators → delegated runs: the built server upgrades released app data at startup > converts collaborators of an Agent, Team and Org root, keeps run IDs and memory, ope
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 7 ⎯⎯⎯⎯⎯⎯⎯
+ Test Files  4 failed (4)
+      Tests  7 failed | 6 passed (13)
+exit 1
+
+## R8-E
+ ✓ tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts > TeamRun released-shape production upgrade to the current AgentOrg end state through actual startup > migrates the exact supported cohort, serves history and new work, and remains imm
+ × tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts > TeamRun released-shape production upgrade to the current AgentOrg end state through actual startup > isolates mixed root and token warnings and fails closed on an unreadable history 
+ × tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts > TeamRun released-shape production upgrade to the current AgentOrg end state through actual startup > keeps the server healthy after failed consolidation, admits a new current run, an
+ ✓ tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts > TeamRun released-shape production upgrade to the current AgentOrg end state through actual startup > rejects a legacy/current run-ID overlap before source cleanup while preserving bo
+ × tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts > Idle shutdown keeps delegated copies with running background tasks in every root (real HTTP/WS/scoped MCP and AGY monitor, scripted AGY actor) > background copies outlive the grace period and are rele
+ × tests/e2e/app-data-migrations/task-agent-own-run-startup.e2e.test.ts > task agent own run: the built server upgrades a faithful released install at startup > TAU-1 moves every task agent with its bytes, the runs open with their task agents, the Memory page 
+ × tests/e2e/app-data-migrations/task-agent-own-run-startup.e2e.test.ts > task agent own run: the built server upgrades a faithful released install at startup > TAU-2 a run that cannot be moved leaves the app working; a copy preserved by the unfinished step is
+ ✓ tests/e2e/app-data-migrations/task-agent-own-run-startup.e2e.test.ts > task agent own run: the built server upgrades a faithful released install at startup > TAU-3 deleting a migrated hub removes only its folder; its task agents' folders stay with every fil
+ × tests/e2e/app-data-migrations/collaborators-to-delegated-runs-startup.e2e.test.ts > collaborators → delegated runs: the built server upgrades released app data at startup > converts collaborators of an Agent, Team and Org root, keeps run IDs and memory, ope
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 6 ⎯⎯⎯⎯⎯⎯⎯
+ Test Files  4 failed (4)
+      Tests  6 failed | 3 passed (9)
+exit 1
+
+## R8-F
+ ✓ tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-01 routing off (the default): a team copy runs as today — 
+ ✓ tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-02 routing on: the router is asked once, for the members w
+ ✓ tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-03 an unusable answer goes back to the router and its corr
+ ✓ tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-04 three delegations at once reach the router one per turn
+ ✓ tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-05 a default on a model blocked by a used-up limit is skip
+ ✓ tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-06 the router set to a signed-out runtime: status SIGNED_O
+ ✓ tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-07 the router's definition, run and workspace are hidden u
+ ✓ tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-08 the router run's agent tools are its template's, withou
+ ✓ tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-09 C-05/CR-005: after the router's CLI dies mid-turn, or i
+ ✓ tests/e2e/projects/delegated-copy-project-folder.e2e.test.ts > A new delegated copy runs in its Task's Project's first linked folder (real HTTP/WS/scoped MCP, scripted AGY) > DCF-01: an Agent copy of a saved Task of P runs in F; the manager stays in G 476ms
+ × tests/e2e/projects/delegated-copy-project-folder.e2e.test.ts > A new delegated copy runs in its Task's Project's first linked folder (real HTTP/WS/scoped MCP, scripted AGY) > DCF-02: a Team copy's default and every member run in F 379ms
+ ✓ tests/e2e/projects/delegated-copy-project-folder.e2e.test.ts > A new delegated copy runs in its Task's Project's first linked folder (real HTTP/WS/scoped MCP, scripted AGY) > DCF-03: a worker of that Task delegates without task_id: the sub-work runs in F, w
+ ✓ tests/e2e/projects/delegated-copy-project-folder.e2e.test.ts > A new delegated copy runs in its Task's Project's first linked folder (real HTTP/WS/scoped MCP, scripted AGY) > DCF-04: a Task of a Project with no link, and a description-only delegation, run i
+ ✓ tests/e2e/projects/delegated-copy-project-folder.e2e.test.ts > A new delegated copy runs in its Task's Project's first linked folder (real HTTP/WS/scoped MCP, scripted AGY) > DCF-05: with links F1 and F2 the copy runs in F1 303ms
+ ✓ tests/e2e/projects/delegated-copy-project-folder.e2e.test.ts > A new delegated copy runs in its Task's Project's first linked folder (real HTTP/WS/scoped MCP, scripted AGY) > DCF-06: a first link that does not exist, or is a file, refuses naming the Project
+ ✓ tests/e2e/projects/delegated-copy-project-folder.e2e.test.ts > A new delegated copy runs in its Task's Project's first linked folder (real HTTP/WS/scoped MCP, scripted AGY) > DCF-07: a Team root's and an Org root's catalog copies, and an Org's configured pl
+ ✓ tests/e2e/projects/delegated-copy-project-folder.e2e.test.ts > Copies keep their folders across a real process restart (built server, scripted AGY) > DCF-08: an existing copy in G given a Task of P stays in G; a copy in F stays in F; after a real restart bo
+ × tests/e2e/app-data-migrations/task-agent-own-run-startup.e2e.test.ts > task agent own run: the built server upgrades a faithful released install at startup > TAU-1 moves every task agent with its bytes, the runs open with their task agents, the Memory page 
+ × tests/e2e/app-data-migrations/task-agent-own-run-startup.e2e.test.ts > task agent own run: the built server upgrades a faithful released install at startup > TAU-2 a run that cannot be moved leaves the app working; a copy preserved by the unfinished step is
+ ✓ tests/e2e/app-data-migrations/task-agent-own-run-startup.e2e.test.ts > task agent own run: the built server upgrades a faithful released install at startup > TAU-3 deleting a migrated hub removes only its folder; its task agents' folders stay with every fil
+ × tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts > Idle shutdown keeps delegated copies with running background tasks in every root (real HTTP/WS/scoped MCP and AGY monitor, scripted AGY actor) > background copies outlive the grace period and are rele
+ × tests/e2e/run-history/open-task-tree-upgrade-startup.e2e.test.ts > A top run's tree is built from its open Tasks: upgrade, start, load, save and restarts (built server, scripted AGY) > OT-1 a closure removes the run from the tree (never stored in the tree f
+ × tests/e2e/run-history/open-task-tree-upgrade-startup.e2e.test.ts > A top run's tree is built from its open Tasks: upgrade, start, load, save and restarts (built server, scripted AGY) > OT-2 an upgraded data root: admitted at start; trees hold open runs only
+ × tests/e2e/run-history/open-task-tree-upgrade-startup.e2e.test.ts > A top run's tree is built from its open Tasks: upgrade, start, load, save and restarts (built server, scripted AGY) > OT-3 a Task record that cannot be read hides its run with a warning nami
+ × tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts > An unreadable delegated run's own file is contained to that run (rule 7; real HTTP/GraphQL, runs made by real Agent roots) > UC-1 the other runs work, the bad run reports that its da
+ ✓ tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts > An unreadable delegated run's own file is contained to that run (rule 7; real HTTP/GraphQL, runs made by real Agent roots) > UC-2 a new server process starts with the unreadable run 
+ × tests/e2e/app-data-migrations/collaborators-to-delegated-runs-startup.e2e.test.ts > collaborators → delegated runs: the built server upgrades released app data at startup > converts collaborators of an Agent, Team and Org root, keeps run IDs and memory, ope
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 9 ⎯⎯⎯⎯⎯⎯⎯
+ Test Files  6 failed | 1 passed (7)
+      Tests  9 failed | 18 passed (27)
+exit 1
+
+## R8-G
+ × tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts > Idle shutdown keeps delegated copies with running background tasks in every root (real HTTP/WS/scoped MCP and AGY monitor, scripted AGY actor) > background copies outlive the grace period and are rele
+ ✓ tests/e2e/app-data-migrations/task-agent-own-run-startup.e2e.test.ts > task agent own run: the built server upgrades a faithful released install at startup > TAU-1 moves every task agent with its bytes, the runs open with their task agents, the Memory page 
+ × tests/e2e/app-data-migrations/task-agent-own-run-startup.e2e.test.ts > task agent own run: the built server upgrades a faithful released install at startup > TAU-2 a run that cannot be moved leaves the app working; a copy preserved by the unfinished step is
+ ✓ tests/e2e/app-data-migrations/task-agent-own-run-startup.e2e.test.ts > task agent own run: the built server upgrades a faithful released install at startup > TAU-3 deleting a migrated hub removes only its folder; its task agents' folders stay with every fil
+ ✓ tests/e2e/projects/delegated-copy-project-folder.e2e.test.ts > A new delegated copy runs in its Task's Project's first linked folder (real HTTP/WS/scoped MCP, scripted AGY) > DCF-01: an Agent copy of a saved Task of P runs in F; the manager stays in G 481ms
+ ✓ tests/e2e/projects/delegated-copy-project-folder.e2e.test.ts > A new delegated copy runs in its Task's Project's first linked folder (real HTTP/WS/scoped MCP, scripted AGY) > DCF-02: a Team copy's default and every member run in F 534ms
+ ✓ tests/e2e/projects/delegated-copy-project-folder.e2e.test.ts > A new delegated copy runs in its Task's Project's first linked folder (real HTTP/WS/scoped MCP, scripted AGY) > DCF-03: a worker of that Task delegates without task_id: the sub-work runs in F, w
+ ✓ tests/e2e/projects/delegated-copy-project-folder.e2e.test.ts > A new delegated copy runs in its Task's Project's first linked folder (real HTTP/WS/scoped MCP, scripted AGY) > DCF-04: a Task of a Project with no link, and a description-only delegation, run i
+ ✓ tests/e2e/projects/delegated-copy-project-folder.e2e.test.ts > A new delegated copy runs in its Task's Project's first linked folder (real HTTP/WS/scoped MCP, scripted AGY) > DCF-05: with links F1 and F2 the copy runs in F1 359ms
+ ✓ tests/e2e/projects/delegated-copy-project-folder.e2e.test.ts > A new delegated copy runs in its Task's Project's first linked folder (real HTTP/WS/scoped MCP, scripted AGY) > DCF-06: a first link that does not exist, or is a file, refuses naming the Project
+ ✓ tests/e2e/projects/delegated-copy-project-folder.e2e.test.ts > A new delegated copy runs in its Task's Project's first linked folder (real HTTP/WS/scoped MCP, scripted AGY) > DCF-07: a Team root's and an Org root's catalog copies, and an Org's configured pl
+ ✓ tests/e2e/projects/delegated-copy-project-folder.e2e.test.ts > Copies keep their folders across a real process restart (built server, scripted AGY) > DCF-08: an existing copy in G given a Task of P stays in G; a copy in F stays in F; after a real restart bo
+ × tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts > An unreadable delegated run's own file is contained to that run (rule 7; real HTTP/GraphQL, runs made by real Agent roots) > UC-1 the other runs work, the bad run reports that its da
+ ✓ tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts > An unreadable delegated run's own file is contained to that run (rule 7; real HTTP/GraphQL, runs made by real Agent roots) > UC-2 a new server process starts with the unreadable run 
+ × tests/e2e/app-data-migrations/collaborators-to-delegated-runs-startup.e2e.test.ts > collaborators → delegated runs: the built server upgrades released app data at startup > converts collaborators of an Agent, Team and Org root, keeps run IDs and memory, ope
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+ Test Files  5 failed | 1 passed (6)
+      Tests  4 failed | 11 passed (15)
+exit 1
+
+## R8-H
+ ✓ tests/e2e/app-data-migrations/collaborators-to-delegated-runs-startup.e2e.test.ts > collaborators → delegated runs: the built server upgrades released app data at startup > converts collaborators of an Agent, Team and Org root, keeps run IDs and memory, ope
+ ✓ tests/e2e/run-history/open-task-tree-upgrade-startup.e2e.test.ts > A top run's tree is built from its open Tasks: upgrade, start, load, save and restarts (built server, scripted AGY) > OT-1 a closure removes the run from the tree (never stored in the tree f
+ ✓ tests/e2e/run-history/open-task-tree-upgrade-startup.e2e.test.ts > A top run's tree is built from its open Tasks: upgrade, start, load, save and restarts (built server, scripted AGY) > OT-2 an upgraded data root: admitted at start; trees hold open runs only
+ ✓ tests/e2e/run-history/open-task-tree-upgrade-startup.e2e.test.ts > A top run's tree is built from its open Tasks: upgrade, start, load, save and restarts (built server, scripted AGY) > OT-3 a Task record that cannot be read hides its run with a warning nami
+ ✓ tests/e2e/projects/delegator-view-follows-child.e2e.test.ts > A delegator's open view follows a local delegated run across its Stop and restore (CR-461-067; real HTTP/WS/scoped MCP, scripted AGY) > FOLLOW-A / FOLLOW-T, agent delegator: the child's row offli
+ ✓ tests/e2e/projects/delegator-view-follows-child.e2e.test.ts > A delegator's open view follows a local delegated run across its Stop and restore (CR-461-067; real HTTP/WS/scoped MCP, scripted AGY) > FOLLOW-A / FOLLOW-T, team delegator: the child's row offlin
+ ✓ tests/e2e/projects/delegator-view-follows-child.e2e.test.ts > A delegator's open view follows a local delegated run across its Stop and restore (CR-461-067; real HTTP/WS/scoped MCP, scripted AGY) > FOLLOW-A / FOLLOW-T, org delegator: the child's row offline
+ Test Files  3 passed (3)
+      Tests  7 passed (7)
+exit 0
+
+## R8-I
+ ✓ tests/e2e/projects/delegator-view-follows-child.e2e.test.ts > A delegator's open view follows a local delegated run across its Stop and restore (CR-461-067; real HTTP/WS/scoped MCP, scripted AGY) > FOLLOW-A / FOLLOW-T, agent delegator: the child's row offli
+ ✓ tests/e2e/projects/delegator-view-follows-child.e2e.test.ts > A delegator's open view follows a local delegated run across its Stop and restore (CR-461-067; real HTTP/WS/scoped MCP, scripted AGY) > FOLLOW-A / FOLLOW-T, team delegator: the child's row offlin
+ ✓ tests/e2e/projects/delegator-view-follows-child.e2e.test.ts > A delegator's open view follows a local delegated run across its Stop and restore (CR-461-067; real HTTP/WS/scoped MCP, scripted AGY) > FOLLOW-A / FOLLOW-T, org delegator: the child's row offline
+ Test Files  1 passed (1)
+      Tests  3 passed (3)
+exit 0
+
+## R8-J
+ × tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts > Idle shutdown keeps delegated copies with running background tasks in every root (real HTTP/WS/scoped MCP and AGY monitor, scripted AGY actor) > background copies outlive the grace period and are rele
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+ Test Files  1 failed (1)
+      Tests  1 failed (1)
+exit 1
+
+## R8-K
+ ✓ tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts > Idle shutdown keeps delegated copies with running background tasks in every root (real HTTP/WS/scoped MCP and AGY monitor, scripted AGY actor) > background copies outlive the grace period and are rele
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+exit 0
+

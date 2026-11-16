@@ -1,11 +1,12 @@
-import type { TaskExecutionResourcePort } from "../../agent-collaboration/execution/task/task-execution-resource-port.js";
+import type { DelegationIndex } from "../../agent-collaboration/delegation/delegation-index.js";
+import type { RunTaskRecords } from "../../agent-collaboration/execution/task/task-execution-resource-port.js";
 import { ROOT_NOT_ACTIVE_MESSAGE } from "../../agent-collaboration/execution/task/task-delegation-command.js";
 import { CollaborationAgentActivationError } from "../../agent-collaboration/execution/domain/configured-agent-execution.js";
 import { RootTaskPersistenceFinalizationIndeterminateError, TaskDelegationError } from "../../agent-collaboration/execution/task/task-delegation-command.js";
 import { MemberCollaborationContext, MemberExecutionContext } from "../../agent-collaboration/execution/domain/member-execution-context.js";
 import { createAgentOrgRootExecutionIdentity, createRootExecutionPhysicalScope } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import type { MemberTaskCapability } from "../../agent-collaboration/execution/task/member-task-capability.js";
-import { RootEventPublisher } from "../../agent-collaboration/execution/services/root-event-publisher.js";
+import type { RunViewStreams } from "../../agent-collaboration/delegation/run-view-stream.js";
 import type { AgentRunManager } from "../../agent-execution/services/agent-run-manager.js";
 import type { AgentConversationActivityInspector } from "../../agent-memory/services/agent-conversation-activity-inspector.js";
 import type { WorkspaceManager } from "../../workspaces/workspace-manager.js";
@@ -14,7 +15,6 @@ import type { AgentOrgDefinitionService } from "../../agent-org-definition/servi
 import type { AgentTeamDefinitionService } from "../../agent-team-definition/services/agent-team-definition-service.js";
 import type { FlatTeamExecutionCallbacks } from "../../agent-team-execution/local/flat-team-execution-callbacks.js";
 import type { FlatTeamExecutionFactory } from "../../agent-team-execution/local/flat-team-execution-factory.js";
-import type { TaskExecutionIdentityCapabilities } from "../../agent-team-execution/task-delegation/task-execution-identity-capabilities.js";
 import { AgentOrgRun } from "../domain/agent-org-run.js";
 import { isAgentOrgMessageEvent, type AgentOrgRunEvent } from "../domain/agent-org-run-event.js";
 import type { ValidatedAgentOrgStatePackage } from "./agent-org-state-package-validator.js";
@@ -35,8 +35,11 @@ import type { AgentOrgRunPersistenceCoordinator } from "./agent-org-run-persiste
 export class AgentOrgExecutionScopeBuilder {
   constructor(private readonly dependencies: Readonly<{
     flatTeamExecutionFactory: FlatTeamExecutionFactory;
-    taskExecutionIdentity: TaskExecutionIdentityCapabilities;
-    taskExecutionResources?: TaskExecutionResourcePort;
+    taskRecords: RunTaskRecords;
+    /** The relationships between runs, from the Task entries (SR-047). */
+    delegationIndex: DelegationIndex;
+    /** Each run's view stream (SR-062). */
+    viewStreams: RunViewStreams;
     orgDefinitions: Pick<AgentOrgDefinitionService, "getDefinitionById">;
     teamDefinitions: Pick<AgentTeamDefinitionService, "getDefinitionById">;
     agentRunManager?: AgentRunManager;
@@ -53,7 +56,8 @@ export class AgentOrgExecutionScopeBuilder {
     onTerminated?(): void;
   }>): Promise<AgentOrgRun> {
     const root = createAgentOrgRootExecutionIdentity(input.state.executionTree.rootOrg.orgRunId);
-    const publisher = new RootEventPublisher<AgentOrgRunEvent>({ isMessageEvent: isAgentOrgMessageEvent });
+    // The run's one view stream, living as long as the process (SR-062, SR-063).
+    const publisher = this.dependencies.viewStreams.streamOf<AgentOrgRunEvent>(root);
     let run: AgentOrgRun | null = null;
     const retainedAgentEvents: Array<Readonly<{
       identity: Parameters<FlatTeamExecutionCallbacks["publishAgentEvent"]>[0];
@@ -61,8 +65,7 @@ export class AgentOrgExecutionScopeBuilder {
     }>> = [];
     const taskCapability: MemberTaskCapability = Object.freeze({
       root,
-      delegateToNewCopy: (caller, command) => this.requireActive(run).delegateToNewCopy({ identity: caller }, command),
-      assignToExistingCopy: (caller, command) => this.requireActive(run).assignToExistingCopy({ identity: caller }, command),
+      delegationSource: (caller) => this.requireActive(run).delegationSource({ identity: caller }),
       ownedTaskOf: (caller) => this.requireActive(run).ownedTaskOf({ identity: caller }),
     });
     // Delegated copies join after launch, so member contexts read the live tree.
@@ -92,6 +95,7 @@ export class AgentOrgExecutionScopeBuilder {
         identity,
         teamScoped: true,
         collaborationRole: scope.role,
+        inOrganization: true,
         authoredEnclosingScopeInstruction: mode === "fresh" ? await this.resolveInstruction(scope.instructionDefinition) : null,
         collaboration: new MemberCollaborationContext({
           outgoingHandoffs: scope.outgoingHandoffs,
@@ -187,8 +191,9 @@ export class AgentOrgExecutionScopeBuilder {
         callbacks,
         persistence: input.persistence,
         publisher,
-        taskExecutionIdentity: this.dependencies.taskExecutionIdentity,
-        taskExecutionResources: this.dependencies.taskExecutionResources,
+        messageFeed: this.dependencies.viewStreams.messages,
+        taskRecords: this.dependencies.taskRecords,
+        delegationIndex: this.dependencies.delegationIndex,
         memoryLocator: this.dependencies.memoryLocator,
         activityInspector: this.dependencies.activityInspector,
         onTerminated: input.onTerminated,

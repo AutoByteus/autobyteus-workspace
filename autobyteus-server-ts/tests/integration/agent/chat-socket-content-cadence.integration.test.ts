@@ -1,7 +1,7 @@
 /**
  * Content cadence on the sequenced chat sockets (autobyteus-139): Team `/ws/agent-team`, Org
  * `/ws/agent-org` and delegated agents `/ws/agent-collaboration`. Real handlers, real
- * RootEventPublisher and real WebSockets; root events are published directly, as a live root would.
+ * RunViewStream and real WebSockets; root events are published directly, as a live root would.
  *
  * Cases (each per socket): AC-001 30-delta burst with identical "running" statuses; AC-002 every
  * root sequence covered exactly once and in order; AC-003 interval change; AC-004 boundaries flush
@@ -18,14 +18,14 @@ import { CollaborationStreamServerMessageSchema } from "@autobyteus/collaboratio
 import { parseTeamStreamServerMessage } from "@autobyteus/team-stream-contracts";
 import { registerAgentWebsocket } from "../../../src/api/websocket/agent.js";
 import { STREAMING_CONTENT_FLUSH_INTERVAL_SETTING_KEY } from "../../../src/config/streaming-content-flush-interval-setting.js";
-import { RootEventPublisher } from "../../../src/agent-collaboration/execution/services/root-event-publisher.js";
+import { RunViewStream } from "../../../src/agent-collaboration/delegation/run-view-stream.js";
+import { RUN_TREE_CHANGED_EVENT } from "../../../src/agent-collaboration/delegation/run-tree-view.js";
 import {
   createAgentOrgRootExecutionIdentity,
   createCollaborationMemberExecutionIdentity,
   createTeamRootExecutionIdentity,
 } from "../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import { AgentOrgStreamHandler } from "../../../src/services/agent-streaming/agent-org-stream-handler.js";
-import { AgentCollaborationStreamHandler } from "../../../src/services/agent-streaming/agent-collaboration-stream-handler.js";
 import { AgentTeamStreamHandler } from "../../../src/services/agent-streaming/agent-team-stream-handler.js";
 import { AgentSessionManager } from "../../../src/services/agent-streaming/agent-session-manager.js";
 import { projectTeamAgentEventMessage } from "../../../src/services/agent-streaming/team-agent-event-websocket-projector.js";
@@ -36,15 +36,14 @@ import { createTeamAgentStatusDetails } from "../../../src/agent-team-execution/
 import { validateTeamRunExecutionTreePayload } from "../../../src/run-history/store/team-run-execution-tree-schema.js";
 import { validateCollaborationCommunicationMessageArray } from "../../../src/agent-collaboration/execution/communication/collaboration-communication-message-schema.js";
 import type { AgentOrgRunEvent } from "../../../src/agent-org-execution/domain/agent-org-run-event.js";
-import type { StandaloneRootEvent } from "../../../src/standalone-agent-run-root/domain/standalone-root-event.js";
-import { emptyStandaloneRootMessages, emptyStandaloneRootTree } from "../../../src/standalone-agent-run-root/domain/standalone-root-tree.js";
 import { testAgentOrgExecutionTree, testOrgAgentNode } from "../../fixtures/current-agent-org-run-fixtures.js";
 import { isTeamRunMessageEvent } from "../../../src/agent-team-execution/domain/team-run-event.js";
 import { isAgentOrgMessageEvent } from "../../../src/agent-org-execution/domain/agent-org-run-event.js";
+import { testViewSources } from "../../helpers/child-rows-feed.js";
 
 type AgentKey = "A" | "B";
 type Frame = Readonly<{ at: number; label: string; first: number | null; through: number | null; texts: readonly string[] }>;
-type Boundary = "segment_end" | "tool" | "error" | "terminal_status" | "token_usage" | "task_event";
+type Boundary = "segment_end" | "tool" | "error" | "terminal_status" | "token_usage" | "root_event";
 
 /** One socket under test: how to open it, publish root events and read its frames. */
 type Scenario = Readonly<{
@@ -97,7 +96,7 @@ const teamAgentEvent = (agentRunId: string, kind: "status" | "start" | "content"
     case "tool": return { eventType: "TOOL_EXECUTION_STARTED", statusHint: "running", details: { invocationId: `tool-${agentRunId}`, toolName: "run_bash", turnId, arguments: {} } };
     case "error": return { eventType: "ERROR", statusHint: "running", details: { code: "TOOL_DIAGNOSTIC", message: "diagnostic", errorScope: "turn", errorEffect: "diagnostic", turnId } } as TeamAgentEvent;
     case "token_usage": return { eventType: "TOKEN_USAGE_UPDATED", statusHint: "running", details: tokenUsageDetails(agentRunId) };
-    case "task_event": throw new Error("A task event is a root event, not an agent event.");
+    case "root_event": throw new Error("A root event is not an agent event.");
   }
 };
 
@@ -113,18 +112,17 @@ const teamScenario: Scenario = {
       rootTeamRunId: "team-run-root",
       messages: validateCollaborationCommunicationMessageArray((json("app-data-migrations/team-run-execution-tree-v1/case-003-nested-task-team", "team_communication_messages.json") as { messages: unknown }).messages),
     });
-    const publisher = new RootEventPublisher<TeamRunEvent>({ isMessageEvent: isTeamRunMessageEvent });
+    const publisher = new RunViewStream<TeamRunEvent>({ isMessageEvent: isTeamRunMessageEvent });
     const root = {
       teamRunId: "team-run-root",
-      openPackageSnapshotConnection: () => publisher.openSnapshotConnection(() => ({ tree, closedTaskExecutions: [], messages, inputStates: [], statuses: [] })),
+      openViewSnapshotConnection: (atBase: () => unknown, read: (own: unknown, rows: unknown) => unknown) => publisher.openSnapshotConnection(() => { const rows = atBase(); return read({ tree, messages, inputStates: [], statuses: [] }, rows) as never; }),
       executeAgentCommand: vi.fn(async () => ({ accepted: true })),
       getExecutionTreeSnapshot: () => tree,
-      remoteChildren: { viewerAttached: () => undefined, viewerDetached: () => undefined, refresh: async () => undefined },
     };
     const handler = new AgentTeamStreamHandler(
       new AgentSessionManager(),
       { resolveActiveTeamRun: vi.fn(async () => root), getActiveTeamRun: vi.fn(() => root), recordRunActivity: vi.fn(async () => undefined) } as never,
-      { getLifecycleSnapshot: () => ({ teamRunId: "team-run-root", isActive: true }), subscribeToLifecycle: () => () => undefined } as never,
+      testViewSources(),
     );
     const bindings = { A: "member-run-a", B: "member-run-b" } as const;
     const execution = (agent: AgentKey) => createTeamAgentExecutionBinding({
@@ -140,8 +138,8 @@ const teamScenario: Scenario = {
         status: (agent, status = "running") => agentEvent(agent, "status", "", status),
         start: (agent) => agentEvent(agent, "start"),
         content: (agent, delta) => agentEvent(agent, "content", delta),
-        boundary: (agent, boundary) => boundary === "task_event"
-          ? publisher.publish({ eventSourceType: TeamRunEventSourceType.TASK_EXECUTIONS_CLOSED, taskExecutions: [{ agentRunId: "task-run-1" }] })
+        boundary: (agent, boundary) => boundary === "root_event"
+          ? publisher.publish(RUN_TREE_CHANGED_EVENT as never)
           : agentEvent(agent, boundary),
         currentSequence: () => publisher.getCurrentChangeSequence(),
         subscribeRoot: (listener) => publisher.subscribe(listener),
@@ -161,16 +159,16 @@ const teamScenario: Scenario = {
   },
 };
 
-/** Org and delegated-agent sockets share the root execution envelope. */
-const rootScenario = (kind: "agent_org" | "agent"): Scenario => ({
-  name: kind === "agent_org" ? "Org /ws/agent-org" : "delegated agents /ws/agent-collaboration",
+/** The Org socket's root execution envelope (an Agent root's view carries no agent output: SR-086 G-D1). */
+const orgScenario: Scenario = {
+  name: "Org /ws/agent-org",
   open: async () => {
-    const rootRunId = kind === "agent_org" ? "org-run-1" : "host-run-1";
+    const rootRunId = "org-run-1";
     const runIds = { A: "agent-run-a", B: "agent-run-b" } as const;
     const execution = (agent: AgentKey) => createCollaborationMemberExecutionIdentity({
       root: createAgentOrgRootExecutionIdentity(rootRunId), memberAddress: `/member-${agent}` as never, agentRunId: runIds[agent],
     });
-    const publisher = new RootEventPublisher<AgentOrgRunEvent & StandaloneRootEvent>({ isMessageEvent: isAgentOrgMessageEvent });
+    const publisher = new RunViewStream<AgentOrgRunEvent>({ isMessageEvent: isAgentOrgMessageEvent });
     const present = (agent: AgentKey, event: TeamAgentEvent) => {
       const team = projectTeamAgentEventMessage(createTeamAgentExecutionBinding({
         root: createTeamRootExecutionIdentity("presentation"), memberAddress: `/member-${agent}`, agentRunId: runIds[agent],
@@ -180,36 +178,27 @@ const rootScenario = (kind: "agent_org" | "agent"): Scenario => ({
     };
     const agentEvent = (agent: AgentKey, eventKind: Parameters<typeof teamAgentEvent>[1], value?: string, status?: "running" | "idle") =>
       present(agent, teamAgentEvent(runIds[agent], eventKind, value, status));
-    let handlers: Parameters<typeof serve>[0];
-    if (kind === "agent_org") {
-      const members = [testOrgAgentNode("/member-A", runIds.A), testOrgAgentNode("/member-B", runIds.B)];
-      const tree = testAgentOrgExecutionTree({ orgRunId: rootRunId, members });
-      const statuses = members.map((member) => ({
-        execution: createCollaborationMemberExecutionIdentity({ root: createAgentOrgRootExecutionIdentity(rootRunId), memberAddress: member.address, agentRunId: member.agentRunId }),
-        details: { status: "idle" as const, trigger: null, errorMessage: null, recoverableBlock: null }, statusHint: "IDLE" as const,
-      }));
-      const snapshot = { tree, closedTaskExecutions: [], messages: { schemaVersion: 1 as const, subjectKind: "agent_org" as const, orgRunId: rootRunId, messages: [] }, statuses, inputStates: [] };
-      const run = { orgRunId: rootRunId, isActive: () => true, getExecutionTreeSnapshot: () => tree, remoteChildren: { viewerAttached: () => undefined, viewerDetached: () => undefined, refresh: async () => undefined },
-        openPackageSnapshotConnection: () => publisher.openSnapshotConnection(() => snapshot),
-        executeAgentCommand: vi.fn(), executeAgentCommandWithExecutionKind: vi.fn() };
-      handlers = { orgHandler: new AgentOrgStreamHandler({ getActive: (id: string) => id === rootRunId ? run : null, recordRunActivity: vi.fn(async () => undefined) } as never) };
-    } else {
-      const tree = emptyStandaloneRootTree({ host: { address: "/assistant" as never, agentRunId: rootRunId, agentDefinitionId: "assistant" }, createdAt: "2026-10-18T00:00:00.000Z" });
-      const snapshot = { tree, closedTaskExecutions: [], messages: emptyStandaloneRootMessages(rootRunId), statuses: [], inputStates: [] };
-      const root = { ensureHostReady: vi.fn(async () => ({ runId: rootRunId })), isHostLive: () => true, getExecutionTreeSnapshot: () => tree, remoteChildren: { viewerAttached: () => undefined, viewerDetached: () => undefined, refresh: async () => undefined },
-        openPackageSnapshotConnection: () => publisher.openSnapshotConnection(() => snapshot as never) };
-      handlers = { collaborationHandler: new AgentCollaborationStreamHandler({ resolveRoot: async () => root as never, getActive: () => root as never }) };
-    }
+    const members = [testOrgAgentNode("/member-A", runIds.A), testOrgAgentNode("/member-B", runIds.B)];
+    const tree = testAgentOrgExecutionTree({ orgRunId: rootRunId, members });
+    const statuses = members.map((member) => ({
+      execution: createCollaborationMemberExecutionIdentity({ root: createAgentOrgRootExecutionIdentity(rootRunId), memberAddress: member.address, agentRunId: member.agentRunId }),
+      details: { status: "idle" as const, trigger: null, errorMessage: null, recoverableBlock: null }, statusHint: "IDLE" as const,
+    }));
+    const snapshot = { tree, messages: { schemaVersion: 1 as const, subjectKind: "agent_org" as const, orgRunId: rootRunId, messages: [] }, statuses, inputStates: [] };
+    const run = { orgRunId: rootRunId, isActive: () => true, getExecutionTreeSnapshot: () => tree,
+      openViewSnapshotConnection: (atBase: () => unknown, read: (own: unknown, rows: unknown) => unknown) => publisher.openSnapshotConnection(() => { const rows = atBase(); return read(snapshot, rows) as never; }),
+      executeAgentCommand: vi.fn(), executeAgentCommandWithExecutionKind: vi.fn() };
+    const handlers = { orgHandler: new AgentOrgStreamHandler({ getActive: (id: string) => id === rootRunId ? run : null, recordRunActivity: vi.fn(async () => undefined) } as never, testViewSources()) };
     const app = await serve(handlers);
     return {
-      url: `${app.baseUrl}/ws/${kind === "agent_org" ? "agent-org" : "agent-collaboration"}/${rootRunId}`,
+      url: `${app.baseUrl}/ws/agent-org/${rootRunId}`,
       close: app.close,
       publish: {
         status: (agent, status = "running") => agentEvent(agent, "status", "", status),
         start: (agent) => agentEvent(agent, "start"),
         content: (agent, delta) => agentEvent(agent, "content", delta),
-        boundary: (agent, boundary) => boundary === "task_event"
-          ? publisher.publish({ kind: "task_executions_closed", taskExecutions: [{ agentRunId: "task-run-1" }] } as never)
+        boundary: (agent, boundary) => boundary === "root_event"
+          ? publisher.publish(RUN_TREE_CHANGED_EVENT as never)
           : agentEvent(agent, boundary),
         currentSequence: () => publisher.getCurrentChangeSequence(),
         subscribeRoot: (listener) => publisher.subscribe(listener),
@@ -218,7 +207,7 @@ const rootScenario = (kind: "agent_org" | "agent"): Scenario => ({
   },
   read: (raw) => {
     const message = CollaborationStreamServerMessageSchema.parse(JSON.parse(raw));
-    if (message.type !== "ROOT_EXECUTION_EVENT" || message.payload.root_subject_kind === "agent_team") {
+    if (message.type !== "ROOT_EXECUTION_EVENT" || message.payload.root_subject_kind !== "agent_org") {
       return { at: Date.now(), label: message.type, first: null, through: null, texts: [] };
     }
     const { change_sequence: first, change_sequence_through: through, event } = message.payload;
@@ -230,20 +219,20 @@ const rootScenario = (kind: "agent_org" | "agent"): Scenario => ({
       : event.message.type === "AGENT_STATUS" ? `AGENT_STATUS:${event.message.payload.status}` : event.message.type;
     return { at: Date.now(), label, first, through: first, texts: [] };
   },
-});
+};
 
 const serve = async (handlers: {
-  teamHandler?: AgentTeamStreamHandler; orgHandler?: AgentOrgStreamHandler; collaborationHandler?: AgentCollaborationStreamHandler;
+  teamHandler?: AgentTeamStreamHandler; orgHandler?: AgentOrgStreamHandler;
 }) => {
   const app = fastify();
   await app.register(websocket);
   const unused = { connect: async () => null, handleMessage: async () => undefined, disconnect: async () => undefined };
-  await registerAgentWebsocket(app, unused as never, (handlers.teamHandler ?? unused) as never, handlers.orgHandler, handlers.collaborationHandler);
+  await registerAgentWebsocket(app, unused as never, (handlers.teamHandler ?? unused) as never, handlers.orgHandler);
   const address = new URL(await app.listen({ port: 0, host: "127.0.0.1" }));
   return { baseUrl: `ws://${address.hostname}:${address.port}`, close: async () => { await app.close(); } };
 };
 
-const scenarios = [teamScenario, rootScenario("agent_org"), rootScenario("agent")];
+const scenarios = [teamScenario, orgScenario];
 const openSockets: Array<() => Promise<void>> = [];
 afterEach(async () => {
   await Promise.all(openSockets.splice(0).map((close) => close()));
@@ -331,7 +320,7 @@ describe.each(scenarios)("content cadence on $name", (scenario) => {
 
   it("delivers pending text before every boundary, immediately and contiguously (AC-004)", async () => {
     const test = await connect(scenario);
-    const boundaries: Boundary[] = ["tool", "error", "token_usage", "task_event", "terminal_status", "segment_end"];
+    const boundaries: Boundary[] = ["tool", "error", "token_usage", "root_event", "terminal_status", "segment_end"];
     test.publish.start("A");
     const openedAt = Date.now();
     boundaries.forEach((boundary, index) => {
@@ -342,7 +331,7 @@ describe.each(scenarios)("content cadence on $name", (scenario) => {
     const live = test.live().slice(1);
     expect(live.map((frame) => frame.label)).toEqual(boundaries.flatMap((boundary) => ["BATCH", ({
       tool: "TOOL_EXECUTION_STARTED", error: "ERROR", token_usage: "TOKEN_USAGE_UPDATED",
-      task_event: scenario === teamScenario ? "TASK_EXECUTIONS_CLOSED" : "task_executions_closed",
+      root_event: scenario === teamScenario ? "RUN_TREE_CHANGED" : "run_tree_changed",
       terminal_status: "AGENT_STATUS:idle", segment_end: "SEGMENT_END",
     } as const)[boundary]]));
     expect(live.filter((frame) => frame.label === "BATCH").map((frame) => frame.texts)).toEqual(boundaries.map((_, index) => [`A:t${index}`]));

@@ -9,14 +9,11 @@ import { AgentOrgCommunicationMessagesStore } from "../../../src/agent-org-execu
 import { AgentOrgRunPersistenceCoordinator } from "../../../src/agent-org-execution/services/agent-org-run-persistence-coordinator.js";
 import type { AgentOrgRunExecutionTreeStore } from "../../../src/run-history/store/agent-org-run-execution-tree-store.js";
 import { MessageLog } from "../../../src/run-history/store/message-log.js";
-import { COORDINATING_LOG } from "../../../src/run-history/store/task-agent-message-logs.js";
+import { OWN_RUN_LOG } from "../../../src/run-history/store/message-log-owners.js";
 import { TeamRunPersistenceCoordinator } from "../../../src/agent-team-execution/services/team-run-persistence-coordinator.js";
-import { emptyStandaloneRootTree } from "../../../src/standalone-agent-run-root/domain/standalone-root-tree.js";
-import { StandaloneRootPackageStore } from "../../../src/standalone-agent-run-root/persistence/standalone-root-package-store.js";
 import { communicationPortDouble } from "./helpers/communication-port-double.js";
 import { StandaloneRootPersistenceCoordinator } from "../../../src/standalone-agent-run-root/services/standalone-root-persistence-coordinator.js";
 import { testAgentOrgExecutionTree, testOrgAgentNode } from "../../fixtures/current-agent-org-run-fixtures.js";
-import { openEveryOwnFileUnder } from "../../fixtures/open-delegated-run-sources.js";
 
 /**
  * The commit path after append-only message logs (REQ-001, REQ-002; AC-002; ARCH-F-002, ARCH-F-004):
@@ -31,7 +28,7 @@ afterEach(async () => {
   vi.restoreAllMocks();
   await Promise.all(roots.splice(0).map((root) => fs.rm(root, { recursive: true, force: true })));
 });
-const tempDir = async () => { const dir = await fs.mkdtemp(path.join(os.tmpdir(), "commit-path-")); roots.push(dir); openEveryOwnFileUnder(dir); return dir; };
+const tempDir = async () => { const dir = await fs.mkdtemp(path.join(os.tmpdir(), "commit-path-")); roots.push(dir); return dir; };
 const message = (messageId: string, second: number, overrides: Partial<CollaborationCommunicationMessage> = {}): CollaborationCommunicationMessage => Object.freeze({
   messageId, senderAgentRunId: "sender", receiverAgentRunId: "receiver", content: messageId, messageType: "agent_message",
   referenceFiles: Object.freeze([]), createdAt: `2026-10-18T10:00:${String(second).padStart(2, "0")}.000Z`, ...overrides,
@@ -74,13 +71,13 @@ describe("RootCommunicationEngine", () => {
 /** Each root's real persistence coordinator, its log store replaced by a spy that always writes durably. */
 const coordinators = {
   standalone: () => {
-    const store = { appendMessage: vi.fn(async () => okWrite) };
+    // The run's own log exists: each message is appended to it (autobyteus-461: the run's log is in its own folder).
+    const store = { appendMessage: vi.fn(async () => okWrite), logExists: vi.fn(async () => true), writeMessages: vi.fn() };
     return { store, coordinator: new StandaloneRootPersistenceCoordinator({
-      hostRunId: "host", collaborationDir: "/memory/agents/host/collaboration", store: store as never, packageExists: true,
+      hostRunId: "host", runDir: "/memory/agents/host", store: store as never,
       getMessages: () => ({ schemaVersion: 1, subjectKind: "agent", hostRunId: "host", messages: [] }),
-      getTree: () => { throw new Error("The package exists."); },
-      onPackageCreated: async () => undefined, enterPersistenceFailStop: vi.fn(),
-    } as never) };
+      enterPersistenceFailStop: vi.fn(),
+    }) };
   },
   org: () => {
     const store = { appendMessage: vi.fn(async () => okWrite) };
@@ -108,7 +105,7 @@ const appendFor = (current: readonly CollaborationCommunicationMessage[], next: 
     isOpen: () => true,
     getMessages: () => current,
     setMessages: (messages) => { committed.messages = messages; },
-    logOwnersOf: () => [COORDINATING_LOG],
+    logOwnersOf: () => [OWN_RUN_LOG],
     publishToRootView: vi.fn(),
     scopeRefusalOf: () => null,
   });
@@ -135,26 +132,6 @@ describe.each(Object.keys(coordinators) as (keyof typeof coordinators)[])("%s co
 });
 
 describe("package-creation retry after the log was written and the tree write failed (ARCH-F-002)", () => {
-  it("standalone: the retried first tree commit rewrites the host's log and succeeds", async () => {
-    const dir = path.join(await tempDir(), "agents", "host", "collaboration");
-    const store = new StandaloneRootPackageStore();
-    const writeTree = store.writeTree.bind(store);
-    vi.spyOn(store, "writeTree").mockImplementationOnce(async () => ({ outcome: "not_committed", file: "execution_tree", stage: "rename", cause: new Error("disk full") }))
-      .mockImplementation(writeTree);
-    const coordinator = new StandaloneRootPersistenceCoordinator({
-      hostRunId: "host", collaborationDir: dir, store, packageExists: false,
-      getMessages: () => ({ schemaVersion: 1, subjectKind: "agent", hostRunId: "host", messages: [message("m1", 1)] }),
-      onPackageCreated: async () => undefined, enterPersistenceFailStop: vi.fn(),
-    });
-    const tree = emptyStandaloneRootTree({ host: { address: "/assistant" as never, agentRunId: "host", agentDefinitionId: "assistant" }, createdAt: "2026-10-18T10:00:00.000Z" });
-    const mutation = () => ({ prepareAgainstCurrent: () => ({ nextTree: tree, commitAfterDurability: vi.fn(), cancelBeforeDurability: vi.fn() }) });
-    await expect(coordinator.commitTreeMutation(mutation())).rejects.toThrow("disk full");
-    expect((await new MessageLog(dir, "communication_messages").read())?.map((entry) => entry.messageId)).toEqual(["m1"]);
-    await expect(coordinator.commitTreeMutation(mutation())).resolves.toBeUndefined();
-    expect((await new MessageLog(dir, "communication_messages").read())?.map((entry) => entry.messageId)).toEqual(["m1"]);
-    expect(await store.readTree(dir, "host")).toEqual(tree);
-  });
-
   it("organization: the retried initial commit rewrites the run's log and succeeds", async () => {
     const dir = path.join(await tempDir(), "agent_orgs", "org");
     let treeWrites = 0;

@@ -22,6 +22,10 @@ class RunHistoryItemObject {
   @Field(() => String)
   runId!: string;
 
+  /** The run's name (SR-091): a delegated run's slot; null for a run nobody delegated, which its definition names. */
+  @Field(() => String, { nullable: true })
+  displayName!: string | null;
+
   @Field(() => String)
   summary!: string;
 
@@ -38,6 +42,7 @@ class RunHistoryItemObject {
   @Field(() => String, { nullable: true })
   terminatedAt?: string | null;
 
+  /** Base's flag (SR-068): the run delegated at least once; its row's stored flag (contract §3.5). */
   @Field(() => Boolean)
   hasCollaboration!: boolean;
 
@@ -91,6 +96,10 @@ class WorkspaceHistoryTeamRunMemberObject {
 class WorkspaceHistoryTeamRunItemObject {
   @Field(() => String)
   teamRunId!: string;
+
+  /** The run's name (SR-091): a delegated run's slot; null for a run nobody delegated, which its definition names. */
+  @Field(() => String, { nullable: true })
+  displayName!: string | null;
 
   @Field(() => String)
   teamDefinitionId!: string;
@@ -222,6 +231,10 @@ class RunResumeConfigPayload {
   @Field(() => String)
   runId!: string;
 
+  /** The run's name (SR-091): a delegated run's slot; null for a run nobody delegated, which its definition names. */
+  @Field(() => String, { nullable: true })
+  displayName!: string | null;
+
   @Field(() => Boolean)
   isActive!: boolean;
 
@@ -288,10 +301,7 @@ export class RunHistoryResolver {
     if (!workspaceRootPath) {
       throw new Error(`Workspace '${workspaceId}' was not found or is not visible for run history.`);
     }
-    return this.workspaceRunHistoryService.getWorkspaceRunHistory(
-      workspaceRootPath,
-      limitPerAgent,
-    );
+    return this.workspaceRunHistoryService.getWorkspaceRunHistory(workspaceRootPath, limitPerAgent);
   }
 
   @Query(() => RunProjectionPayload)

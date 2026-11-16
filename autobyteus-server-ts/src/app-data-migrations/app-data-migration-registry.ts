@@ -40,6 +40,8 @@ import { TaskAgentOwnRunV1AppDataMigration } from "./migrations/task-agent-own-r
 import { CollaboratorsToDelegatedRunsV1AppDataMigration } from "./migrations/collaborators-to-delegated-runs-v1/collaborators-to-delegated-runs-v1-app-data-migration.js";
 import { AppendOnlyMessageLogsV1AppDataMigration } from "./migrations/append-only-message-logs-v1/append-only-message-logs-v1-app-data-migration.js";
 import { RemoveWorkTraceExportsMigration } from "./migrations/remove-work-trace-exports/remove-work-trace-exports-migration.js";
+import { DelegatedRunsOwnRunsV1AppDataMigration } from "./migrations/delegated-runs-own-runs-v1/delegated-runs-own-runs-v1-app-data-migration.js";
+import { createDelegatedRunsPreservedItemsMigrations } from "./migrations/delegated-runs-own-runs-v1/delegated-runs-preserved-items-v1.js";
 import { DelegatedCopyOwnFileCompleteV1AppDataMigration } from "./migrations/delegated-copy-own-file-complete-v1/delegated-copy-own-file-complete-v1-app-data-migration.js";
 import { RemoveSkillImprovementDataMigration } from "./migrations/remove-skill-improvement-data/remove-skill-improvement-data-migration.js";
 import { NodeIdentityFileNameMigration } from "./migrations/node-identity-file-name/node-identity-file-name-migration.js";
@@ -159,6 +161,14 @@ const registeredMigrations = (): AppDataMigrationDefinition[] => {
     new MemorySyncSourceIdNamesMigration(appDataDir, memoryDir),
     // The runtime of each archived raw-trace segment follows the code's RuntimeKind values (autobyteus-343).
     new RawTraceManifestRuntimeNamesMigration(memoryDir),
+    // autobyteus-461: a delegated run becomes a run of its own; with no hold (AR-005). Registered after every released
+    // migration (CR-461-048): data that has not run one yet runs it first, so 20261020 removes the improver's helper
+    // runs before this makes delegated copies runs of their own.
+    new DelegatedRunsOwnRunsV1AppDataMigration(appDataDir, memoryDir, liveDefinitionNames, liveRunHistoryCatalogs, { ledger }),
+    // autobyteus-461 SR-078, SR-079: one follow-up per writer or reader predecessor, each after it and our migration,
+    // converts what that predecessor produces after ours ran (with our migration's builders); a predecessor FAILED or
+    // NOT_RUN holds back only its own.
+    ...createDelegatedRunsPreservedItemsMigrations(appDataDir, memoryDir, liveDefinitionNames, liveRunHistoryCatalogs, ledger),
   ];
 };
 

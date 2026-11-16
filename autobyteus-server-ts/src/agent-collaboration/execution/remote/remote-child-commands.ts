@@ -1,22 +1,8 @@
-import type { AgentOperationResult } from "../../../agent-execution/domain/agent-operation-result.js";
 import type { TeamMemberExecutionCommand } from "../../../agent-team-execution/domain/team-member-execution-command.js";
-import {
-  remoteTaskExecutionRunId,
-  remoteTeamCoordinatorRunId,
-  type RemoteTaskExecution,
-} from "../../../run-history/domain/run-execution-tree-shared-records.js";
-import type { DelegatedStopResult } from "../../collaborators/delegated-launch-selection-command.js";
-import type { DelegatedRunReference } from "../../domain/delegated-launch-selection.js";
-import { REMOTE_REFUSAL, REMOTE_ROOT_REFUSAL_TEXT } from "./remote-refusal-codes.js";
-import {
-  findProcessRemoteRunChannel,
-  type RemoteAgentProjection,
-  type RemoteOwnerCommand,
-  type RemoteRunChannel,
-} from "./remote-run-channel.js";
-import type { RemoteRunLinks } from "./remote-run-links.js";
+import type { RemoteOwnerCommand } from "./remote-run-channel.js";
 import { CollaborationMemberNotFoundError } from "../domain/collaboration-member-not-found-error.js";
-import { remoteAgentAddressOf, remoteChildLinkOf, remoteTargetRootOf } from "./remote-run-observation.js";
+import { peerAgentAddressOf } from "./peer-run-calls.js";
+import type { PeerRun } from "./peer-runs.js";
 
 const textMetadata = (metadata: Record<string, unknown>, key: string): string | null =>
   typeof metadata[key] === "string" && (metadata[key] as string).trim() ? metadata[key] as string : null;
@@ -34,74 +20,7 @@ export const remoteOwnerCommandOf = (command: TeamMemberExecutionCommand): Remot
   return { kind: "post_message", content: command.message.content, messageId, dedupeKey: textMetadata(metadata, "dedupe_key") ?? messageId };
 };
 
-/**
- * A root's command for one of its remote children (`links.has(agentRunId)`): passed to its node through the link
- * (`RemoteRunLinks.ownerCommand`). Roots call it outside their operation gate: a peer call takes up to 20 s.
- */
-export const executeRemoteChildCommand = async (
-  links: RemoteRunLinks,
-  agentRunId: string,
-  command: TeamMemberExecutionCommand,
-): Promise<AgentOperationResult> => {
-  // A remote child's node admits its own input: a first-input-only post (restart resume) cannot be honored there.
-  if (command.kind === "post_message" && command.postOptions?.onlyAsFirstInput) {
-    return { accepted: false, code: "REMOTE_RUN_FIRST_INPUT_UNSUPPORTED", message: "A run on another node is resumed by its own node." };
-  }
-  const owner = remoteOwnerCommandOf(command);
-  if (!owner) return { accepted: false, code: "REMOTE_RUN_COMMAND_UNSUPPORTED", message: "A run on another node approves its own tools." };
-  return links.ownerCommand(agentRunId, owner);
-};
-
-/**
- * The user's Stop of a remote delegated copy (DEC-804): its node ends the whole run (keeping its history). `null`
- * when the reference is not a remote copy (the root's local Stop). A refusal throws, so the window shows it.
- */
-export const stopRemoteChild = async (links: RemoteRunLinks, target: DelegatedRunReference): Promise<DelegatedStopResult | null> => {
-  const link = "agentRunId" in target
-    ? links.agentLinkFor(target.agentRunId)
-    : links.teamLinkFor(target.teamRunId);
-  if (!link) return null;
-  const agentRunId = link.kind === "agent" ? link.agentRunId : remoteTeamCoordinatorRunId(link);
-  const answer = await links.ownerCommand(agentRunId, { kind: "terminate" });
-  if (!answer.accepted) throw new Error(answer.message);
-  return Object.freeze({ outcome: "STOPPED" as const, message: "Stopped on its node.", notStoppedUnattributed: 0 });
-};
-
-/** A remote child of a root: its link, its address under the root, and its stored conversation on its node. */
-export type RemoteChild = Readonly<{
-  link: RemoteTaskExecution;
-  memberAddress: string;
-  readProjection(): Promise<RemoteAgentProjection>;
-}>;
-
-/**
- * N-403: the one check the three member-projection resolvers make first. The agent run is a remote child of the root
- * with these links (an Agent run, or a member of a Team run on another node): its stored conversation is read from
- * its node. `null` for a local child. A refusal throws (the window shows "Couldn't reach {node}.").
- */
-export const remoteChildOf = (
-  links: readonly RemoteTaskExecution[],
-  agentRunId: string,
-  channel: () => RemoteRunChannel | null = findProcessRemoteRunChannel,
-): RemoteChild | null => {
-  const link = remoteChildLinkOf(links, agentRunId);
-  if (!link) return null;
-  return Object.freeze({
-    link,
-    memberAddress: remoteAgentAddressOf(link, agentRunId)!,
-    readProjection: async () => {
-      const current = channel();
-      if (!current) throw new Error(REMOTE_ROOT_REFUSAL_TEXT.off);
-      const answer = await current.agentProjection(link.nodeId, remoteTargetRootOf(link), agentRunId);
-      if (!answer.accepted) {
-        throw Object.assign(new Error(answer.message), { code: answer.code ?? REMOTE_REFUSAL.PEER_UNREACHABLE });
-      }
-      return answer.projection;
-    },
-  });
-};
-
-/** What the member-projection resolvers answer for a remote child (their payload's shape). */
+/** What the member-projection resolvers answer for an agent of a peer run (their payload's shape). */
 export type RemoteMemberProjection = Readonly<{
   agentRunId: string;
   memberAddress: string;
@@ -113,18 +32,20 @@ export type RemoteMemberProjection = Readonly<{
 }>;
 
 /**
- * N-403: a remote child's stored conversation as the three member-projection resolvers answer it. The address the
- * window asked with must be the child's address under the root. Earlier trace pages stay on its node, so the
- * projection never offers them.
+ * N-403, SR-066: an agent of a peer run's stored conversation, read from its node through the run's handle, as the three
+ * member-projection resolvers answer it. The address the window asked with must be the agent's address under its
+ * delegator. Earlier trace pages stay on its node, so the projection never offers them. A refusal throws (the window
+ * shows "Couldn't reach {node}.").
  */
-export const remoteMemberProjection = async (remote: RemoteChild, memberAddress: string | null): Promise<RemoteMemberProjection> => {
-  if (memberAddress !== null && memberAddress.trim() !== remote.memberAddress) {
-    throw new CollaborationMemberNotFoundError(`AgentRun at '${memberAddress}' is not the remote run's agent at '${remote.memberAddress}'.`);
+export const peerMemberProjection = async (peer: PeerRun, agentRunId: string, memberAddress: string | null): Promise<RemoteMemberProjection> => {
+  const address = peerAgentAddressOf(peer.link, agentRunId);
+  if (address === null || (memberAddress !== null && memberAddress.trim() !== address)) {
+    throw new CollaborationMemberNotFoundError(`AgentRun at '${memberAddress ?? agentRunId}' is not an agent of the run on another node.`);
   }
-  const projection = await remote.readProjection();
+  const projection = peer.kind === "agent" ? await peer.readConversation() : await peer.readConversation(agentRunId);
   return Object.freeze({
     agentRunId: projection.agentRunId,
-    memberAddress: remote.memberAddress,
+    memberAddress: address,
     conversation: [...projection.conversation],
     activities: [...projection.activities],
     summary: projection.summary,
@@ -132,6 +53,3 @@ export const remoteMemberProjection = async (remote: RemoteChild, memberAddress:
     hasEarlierActiveTraceEvents: false,
   });
 };
-
-/** The run ID a remote link names, for callers that key remote children by run. */
-export { remoteTaskExecutionRunId };

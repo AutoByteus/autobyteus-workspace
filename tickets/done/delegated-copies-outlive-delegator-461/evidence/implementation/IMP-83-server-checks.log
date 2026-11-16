@@ -1,0 +1,11 @@
+# commit 1eb945e5f7 (CR-461-075 1eb945e5f7); load: 11.21 11.56 12.40
+$ node scripts/typecheck.mjs
+[typecheck] production errors: 0; test-file errors: 1012 in 316 files (baseline 1012 in 316 files)
+[typecheck] PASS
+$ the migration family, architecture and startup tests
+ Test Files  94 passed (94)
+      Tests  754 passed (754)
+$ pnpm test:unit
+exit 0
+ Test Files  987 passed | 5 skipped (992)
+      Tests  8082 passed | 9 skipped (8091)

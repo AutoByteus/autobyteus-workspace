@@ -1,3 +1,5 @@
+import { useRunTreeStore } from '~/stores/runTreeStore';
+import { seedOrgRunTrees } from '~/test-support/runTreeFixtures';
 import { mount } from '@vue/test-utils';
 import { computed, defineComponent, h, nextTick, reactive, ref } from 'vue';
 import { describe, expect, it, vi } from 'vitest';
@@ -29,7 +31,6 @@ const agentOrgDefinitionGroup = (): AgentOrgHistoryDefinitionGroup => {
       archivedAt: null,
       isActive: true,
       summary: 'Deliver current package',
-      closedTaskExecutions: [],
       executionTree: {
         subjectKind: 'agent_org',
         createdAt: '2026-09-03T00:00:00.000Z',
@@ -38,11 +39,11 @@ const agentOrgDefinitionGroup = (): AgentOrgHistoryDefinitionGroup => {
         handoffs: [],
         rootOrg: {
           address: '/', orgDefinitionId: 'org-definition', orgDefinitionName: 'Delivery Org', orgRunId: 'org-run',
-          defaultLaunchConfiguration: launch, taskExecutions: [],
+          defaultLaunchConfiguration: launch,
           members: [{
             address: '/software', teamDefinitionId: 'software-team', role: null, description: null,
             teamRunId: 'mounted-team-run', coordinatorAddress: '/software/implementation',
-            defaultLaunchConfiguration: launch, taskExecutions: [],
+            defaultLaunchConfiguration: launch,
             members: [{
               address: '/software/implementation', agentDefinitionId: 'implementation-agent', role: null,
               description: null, agentRunId: 'implementation-run', platformAgentRunId: null,
@@ -60,6 +61,8 @@ const harness = (active = true, selected = true) => {
   group.runs[0]!.isActive = active;
   const sibling = { ...group.runs[0]!, rootRunId: 'sibling', stableKey: 'sibling' };
   group.runs.push(sibling);
+  // Each Org run's tree as the server builds it (SR-084).
+  seedOrgRunTrees(useRunTreeStore(), group.runs);
   const selectedOrg = ref<{rootRunId: string; focusAddress: string | null; selection: OrgWorkspaceSelection | null} | null>(selected ? { rootRunId: 'org-run', focusAddress: '/software/implementation',
     selection: { kind: 'agent_execution' as const, agentRunId: 'implementation-run' } } : null);
   const draft = reactive({ text: 'Unsaved work', conversation: [{ text: 'Existing message' }] });

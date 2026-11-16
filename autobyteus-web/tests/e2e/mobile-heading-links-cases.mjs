@@ -107,7 +107,7 @@ export const runHeadingLinksCases = async (probe) => {
   const talkRun = /target_agent_run_id\W+(\w+)/.exec(JSON.stringify(delegated))?.[1];
   assert(talkRun, 'the task agent of the Markdown messages', { delegated });
   for (const marker of ['HEADINGS-480-ONE', 'HEADINGS-480-TWO']) await stack.agentCall(host.runId, 'send_message_to', { target_agent_run_id: talkRun, content: answer(marker) });
-  const taskAgentConversation = async () => JSON.stringify((await alpha.gql('query($h:String!,$m:String!,$a:String!){agentRunCollaborationMemberProjection(hostRunId:$h,memberAddress:$m,agentRunId:$a){conversation}}', { h: host.runId, m: '/release_notes_writer', a: talkRun })).agentRunCollaborationMemberProjection?.conversation ?? []);
+  const taskAgentConversation = async () => JSON.stringify((await alpha.gql('query($a:String!){getRunProjection(runId:$a){conversation}}', { a: talkRun })).getRunProjection?.conversation ?? []);
   await waitFor('both Markdown messages in the task agent\'s conversation', async () => { const text = await taskAgentConversation(); return text.includes('HEADINGS-480-ONE') && text.includes('HEADINGS-480-TWO'); }, 60_000);
   evidence.headingLinks = { filesRun, host: host.runId, talkRun, skill: skill.name, contentsEntries: contents.length };
 

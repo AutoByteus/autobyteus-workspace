@@ -6,6 +6,7 @@ import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { ContextFileProcessFixture } from "../helpers/context-file-process-fixture.js";
 import { testAgentNode, testExecutionTree } from "../../fixtures/current-team-run-fixtures.js";
 import { writeAttachmentSidecars } from "../../fixtures/current-attachment-package-fixtures.js";
+import { restoreByMemberMessage } from "../helpers/restore-by-member-message.js";
 
 const run = process.env.RUN_CONTEXT_FILE_PROCESS_E2E === "1" ? describe : describe.skip;
 const ID = "20260926_team_context_file_execution_locators_v1";
@@ -57,8 +58,9 @@ run("Scoped historical attachment recovery through actual startup entrypoints", 
   async function unavailable(id: string) {
     expect((await fetch(f.origin + locator(id))).status).toBe(404);
     await expect(f.gql(`query($id:String!,$agent:String!){getTeamMemberRunProjection(teamRunId:$id,agentRunId:$agent){conversation}}`, { id, agent: `${id}-agent` })).rejects.toThrow();
-    const result = await f.gql(`mutation($id:String!){restoreAgentTeamRun(teamRunId:$id){success message}}`, { id });
-    expect(result.restoreAgentTeamRun.success).toBe(false);
+    // The user's message to its member on its view does not restore it (autobyteus-461 CR-461-008: the product's only restore).
+    await expect(restoreByMemberMessage({ url: f.origin, gql: (query, variables) => f.gql(query, variables), kind: "team", runId: id, memberRunId: `${id}-agent`, timeoutMs: 15_000 })).rejects.toThrow();
+    expect((await f.gql(`query($id:String!){getTeamRunResumeConfig(teamRunId:$id){isActive}}`, { id }).catch(() => null))?.getTeamRunResumeConfig?.isActive ?? false).toBe(false);
   }
 
   async function readableHistory(id: string) {

@@ -18,7 +18,6 @@ import type { AgentOrgExecutionContext } from '~/services/agentOrgExecution/agen
 import { orgMemberLoadTarget, stageAgentOrgExecutionContext } from '~/services/agentOrgExecution/agentOrgContextHydration'
 import { memberLoader } from '~/services/runHydration/memberLoader'
 import { rebuildOfView, useCollaborationParticipantMessagesStore } from '~/services/collaborationMessages/collaborationParticipantMessages'
-import { useRemoteRunsStore, type RemoteRunRetryAdapter } from '~/stores/remoteRunsStore'
 import { AgentOrgStreamingService } from '~/services/agentOrgExecution/agentOrgStreamingService'
 import { acceptLocalSubmission, beginLocalUserSubmission, failLocalSubmission, finalizeLocalSubmissionAttachments, type LocalUserSubmissionHandle } from '~/services/runSubmission/localUserSubmission'
 import { upsertUserMessageByIdentity } from '~/services/agentStreaming/handlers/userMessageProjection'
@@ -30,6 +29,14 @@ import { useAgentOrgRunStore } from '~/stores/agentOrgRunStore'
 import { parseAgentOrgExecutionTree } from '~/types/collaboration/agentOrgExecution'
 import { mentionsPresentInText, toCollaboratorMentionDtos } from '~/utils/collaborators/collaboratorMentionText'
 import { createRandomId } from '~/utils/randomId'
+import { subjectOfTarget } from '~/services/delegatedRuns/delegatedRunSubjects'
+import { useDelegatedRunsStore } from '~/stores/delegatedRunsStore'
+import { useRunTreeStore } from '~/stores/runTreeStore'
+import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore'
+import { teamWorkspaceContextViewOf } from '~/services/teamExecution/teamWorkspaceContextView'
+import type { RunTreeOpenTargetDto, RunTreeRowDto } from '@autobyteus/collaboration-stream-contracts'
+import { treeRowOfAgent } from '~/utils/runTree/runTreeAgents'
+import { isTeamRow } from '~/utils/runTree/runTreeDisplayRows'
 
 const MAX_CONFIG_READ_ATTEMPTS = 3
 
@@ -44,7 +51,9 @@ export const useAgentOrgContextsStore = defineStore('agentOrgContexts', () => {
   const submissions = new Map<string, LocalUserSubmissionHandle>()
   const deferredReleases = new Set<string>()
   const keyFor = (root: string, agent: string) => `${root}\0${agent}`
-  const remoteRuns = useRemoteRunsStore()
+  /** The delegated row the user selected under each Org (SR-084): its key, where it opens, and its address. */
+  /** The delegated row each Org shows, and the Org's own agent that delegated it (the view returns to it when the row leaves). */
+  const selectedRows = ref<Record<string, Readonly<{ key: string; target: RunTreeOpenTargetDto; address: string | null; returnTo: string | null }> | null>>({})
   const report = (id: string, cause: unknown) => {
     errors.value = { ...errors.value, [id]: cause instanceof Error ? cause.message : String(cause) }
   }
@@ -81,8 +90,6 @@ export const useAgentOrgContextsStore = defineStore('agentOrgContexts', () => {
     errors.value = { ...errors.value, [id]: null }
     useCollaborationParticipantMessagesStore().reloadRoot('agent_org', id, rebuildOfView(candidate.view), (agentRunId) => candidate.holdsAgent(agentRunId))
     ensureMemberLoaded(id, selectedAgentRunIdOf(candidate))
-    // autobyteus-278: the runs this Org delegated to other nodes; Retry (the store's rule) acts through this Org.
-    candidate.remoteExecutions.forEach((execution) => remoteRuns.register(execution, remoteRetryAdapter(id)))
     useRunHistoryStore().applyAgentOrgActivity(id, candidate.isActive)
     void useRunHistoryStore().refreshAgentOrgHistoryItem(id)
   }
@@ -92,13 +99,13 @@ export const useAgentOrgContextsStore = defineStore('agentOrgContexts', () => {
     services.delete(id)
     service?.disconnect()
   }
+  /** The Org's own agents stopped; its open view keeps its stream (autobyteus-461 SR-045). */
   const markHistorical = (id: string) => {
     generations.delete(id)
     contexts.value[id]?.setActive(false)
     retainSubmissionExclusion(id, contexts.value[id])
     useRunHistoryStore().applyAgentOrgActivity(id, false)
     void useRunHistoryStore().refreshAgentOrgHistoryItem(id)
-    retireStream(id)
   }
 
   const attach = (orgRunIdInput: string): AgentOrgStreamingService => {
@@ -132,6 +139,7 @@ export const useAgentOrgContextsStore = defineStore('agentOrgContexts', () => {
     useCollaborationParticipantMessagesStore().releaseRoot('agent_org', id)
     const nextErrors = { ...errors.value }; delete nextErrors[id]; errors.value = nextErrors
     const nextFocus = { ...pendingFocus.value }; delete nextFocus[id]; pendingFocus.value = nextFocus
+    const nextRows = { ...selectedRows.value }; delete nextRows[id]; selectedRows.value = nextRows
     deferredReleases.delete(id)
   }
   /** Releases every Org view and stream this page holds: the phone's session ended (autobyteus-435 REQ-010). */
@@ -141,6 +149,7 @@ export const useAgentOrgContextsStore = defineStore('agentOrgContexts', () => {
     if (deferredReleases.has(id)) releaseContext(id)
   }
   const select = (id: string, selection: OrgWorkspaceSelection | string | null): void => {
+    selectedRows.value = { ...selectedRows.value, [id]: null }
     pendingFocus.value = { ...pendingFocus.value, [id]: selection }
     const org = contexts.value[id]
     org?.select(selection)
@@ -150,29 +159,90 @@ export const useAgentOrgContextsStore = defineStore('agentOrgContexts', () => {
     selection && typeof selection === 'object' && selection.kind === 'agent_execution' ? selection.agentRunId : null
   /** The agent the Org shows for its selection: a selected agent, or a selected configured Team's coordinator. */
   const selectedAgentRunIdOf = (org: AgentOrgExecutionContext): string | null => {
-    const selection = org.selection
-    if (selection?.kind === 'agent_execution' && org.index.remoteAgents.has(selection.agentRunId)) return selection.agentRunId
-    return org.index.selectedAgent(selection)?.agentRunId ?? null
+    return org.index.selectedAgent(org.selection)?.agentRunId ?? null
   }
   /**
    * Loads the shown member's stored conversation, activities and files through the member loader unless it is loaded
-   * in the published context (autobyteus-358). A remote member's conversation is read from its node (autobyteus-278).
+   * in the published context (autobyteus-358). The Org reads only its own agents; a run it delegated is its own run.
    */
   const ensureMemberLoaded = (id: string, agentRunId: string | null): boolean => {
     const org = contexts.value[id]
-    if (!org || !agentRunId || !org.getAgentContext(agentRunId) || memberLoader().isHydrated(loaderRoot(id), agentRunId)) return false
+    if (!org || !agentRunId || !org.getAgentContext(agentRunId)) return false
+    if (memberLoader().isHydrated(loaderRoot(id), agentRunId)) return false
     void memberLoader().ensure(loaderRoot(id), agentRunId, () => contexts.value[id] === org ? orgMemberLoadTarget({
       orgRunId: id, context: org, agentRunId, liveToolAuthority: () => org.isActive && services.get(id)?.isReady() === true,
     }) : null).catch((cause) => console.warn(`[agentOrg] Could not load '${agentRunId}' of '${id}'.`, cause))
     return true
   }
-  /** autobyteus-278 (SR-008): this Org's mechanisms for the store's Retry rule. */
-  const remoteRetryAdapter = (id: string): RemoteRunRetryAdapter => Object.freeze({
-    refreshOnStream: () => services.get(id)?.refreshRemote() ?? false,
-    selectedAgent: () => selectedAgentRunId(contexts.value[id]?.selection),
-    isLoaded: (agentRunId: string) => memberLoader().isHydrated(loaderRoot(id), agentRunId),
-    rereadAgent: (agentRunId: string) => ensureMemberLoaded(id, agentRunId),
+  /** The selected delegated row, while it is in the Org's tree; a row that left it returns the view to the Org's own agents. */
+  const selectedRow = (id: string) => {
+    const picked = selectedRows.value[id]
+    return picked && useRunTreeStore().rowsOf({ kind: 'agent_org', runId: id }).some((row) => row.key === picked.key) ? picked : null
+  }
+  const subjectOfSelected = (target: RunTreeOpenTargetDto, address: string | null) =>
+    subjectOfTarget({ runKind: target.runKind as 'agent' | 'agent_team', runId: target.runId, agentRunId: target.agentRunId, nodeId: target.nodeId },
+      address ?? '')
+
+  /**
+   * A tree row's open (SR-084, through `openRunTarget`): an Org's own row selects its agent in the Org; a run it delegated
+   * on this node opens as its own run (rule 2), by its target; a peer's run opens on its own node, not through this view
+   * (SR-086 G-D1). Answers whether it was selected (false for a row error, or while the Org's view is not loaded).
+   */
+  const selectTreeRow = (id: string, row: RunTreeRowDto): boolean => {
+    const target = row.openTarget
+    if (!target || !contexts.value[id]) return false
+    if (target.runKind === 'agent_org') {
+      select(id, { kind: 'agent_execution', agentRunId: target.agentRunId })
+      return true
+    }
+    select(id, null)
+    selectedRows.value = { ...selectedRows.value, [id]: Object.freeze({ key: row.key, target, address: row.address, returnTo: delegatingOrgAgentOf(id, row) }) }
+    useDelegatedRunsStore().ensureOpen(subjectOfSelected(target, row.address))
+    return true
+  }
+  const selectedRowKey = (id: string): string | null => selectedRow(id)?.key ?? null
+  /** The Org's own agent a delegated row hangs under (its nearest Org row above it); null when none does. */
+  const delegatingOrgAgentOf = (id: string, row: RunTreeRowDto): string | null => {
+    const byKey = new Map(useRunTreeStore().rowsOf({ kind: 'agent_org', runId: id }).map((candidate) => [candidate.key, candidate]))
+    for (let above = byKey.get(row.parentKey ?? ''); above; above = byKey.get(above.parentKey ?? '')) {
+      if (above.openTarget?.runKind === 'agent_org' && !isTeamRow(above)) return above.openTarget.agentRunId
+    }
+    return null
+  }
+  // A shown delegated row that left the Org's tree (its Task closed): the view returns to the Org agent that delegated it,
+  // as base's returnToHostWhenUnlisted did (CR-461-109); the Agent family returns to its run's own agent.
+  watch(() => Object.entries(selectedRows.value).map(([id, picked]) => [id, picked?.returnTo ?? null,
+    Boolean(picked) && !selectedRow(id)] as const), (entries) => {
+    for (const [id, returnTo, left] of entries) if (left && returnTo) select(id, { kind: 'agent_execution', agentRunId: returnTo })
   })
+  /**
+   * The agent the route names (CR-461-102): one of the Org's own agents is selected in it; a run the Org delegated, here
+   * or on a peer node, is selected by its tree row and opens as its own run (rule 2). An agent the Org has not got yet
+   * (its view or tree still loading) selects nothing.
+   */
+  const selectRouteAgent = (id: string, agentRunId: string, address: string): void => {
+    const org = contexts.value[id]
+    const own = org?.index.agents.get(agentRunId)
+    if (own) { select(id, address && own.address !== address ? null : { kind: 'agent_execution', agentRunId }); return }
+    const row = treeRowOfAgent(useRunTreeStore().rowsOf({ kind: 'agent_org', runId: id }), agentRunId)
+    if (row && selectedRowKey(id) !== row.key) selectTreeRow(id, row)
+  }
+
+  /** The selected delegated row's own run, as the Org's center view and composer target (rule 2); null while it opens. */
+  const delegatedTargetFor = (id: string): ActiveAgentWorkspaceTarget | null => {
+    const org = contexts.value[id]
+    const picked = selectedRow(id)
+    if (!org || !picked) return null
+    const subject = subjectOfSelected(picked.target, picked.address)
+    const binding = useDelegatedRunsStore().bindingOf(subject)
+    if (!binding) return null
+    const common = { root: Object.freeze({ orgRunId: id }), address: (picked.address ?? '') as never,
+      collaborationMessages: org.delegatedRunMessagesView(subject, picked.address ?? '', picked.target.agentRunId), access: 'live' as const, ...binding }
+    // A peer's run shows as its own agent (its node keeps its team).
+    if (subject.kind === 'agent' || subject.kind === 'peer') return Object.freeze({ ...common, kind: 'agent_org_task_agent' as const })
+    const team = useAgentTeamContextsStore().getTeamContextById(subject.teamRunId)
+    return team ? Object.freeze({ ...common, kind: 'agent_org_task_team_member' as const, team: teamWorkspaceContextViewOf(team) }) : null
+  }
 
   const readInspection = async (id: string, intent?: WorkspaceSelectionIntent): Promise<void> => {
     const generation = Symbol(id)
@@ -187,11 +257,10 @@ export const useAgentOrgContextsStore = defineStore('agentOrgContexts', () => {
       if (!current()) return
       const candidate = shallowReactive(staged.context)
       publish(id, candidate, staged.commit)
-      if (candidate.isActive) {
-        // The coherent server observation permits attachment, not a stale row/mode.
-        candidate.requireReopen('AgentOrg stream is synchronizing.')
-        attach(id)
-      } else retireStream(id)
+      // The open Org's view keeps its stream, active or stopped (autobyteus-461 SR-045); an active one takes input once
+      // its stream is synchronized.
+      if (candidate.isActive) candidate.requireReopen('AgentOrg stream is synchronizing.')
+      attach(id)
     } catch (cause) {
       if (current()) { report(id, cause); throw cause }
     } finally {
@@ -204,7 +273,9 @@ export const useAgentOrgContextsStore = defineStore('agentOrgContexts', () => {
     deferredReleases.delete(id)
     if (operations.value[id]) return Promise.resolve()
     const context = contexts.value[id]
-    if (context?.phase === 'historical' || (context?.phase === 'live' && services.get(id)?.isReady())) return Promise.resolve()
+    // A retained stopped Org is reused; its open view gets its stream (autobyteus-461 SR-045), whose snapshot refreshes it.
+    if (context?.phase === 'historical') { if (!services.has(id)) attach(id); return Promise.resolve() }
+    if (context?.phase === 'live' && services.get(id)?.isReady()) return Promise.resolve()
     const inFlight = inspections.get(id)
     if (inFlight && !intent) return inFlight
     retireStream(id)
@@ -227,13 +298,10 @@ export const useAgentOrgContextsStore = defineStore('agentOrgContexts', () => {
   const accessFor = (id: string, agentRunId: string): 'live' | 'continuable' | 'read_only' => {
     const org = contexts.value[id]
     const agent = org?.index.agents.get(agentRunId)
-    // autobyteus-278: a remote child takes input while the Org's stream is live (its node applies it).
-    if (org?.index.remoteAgents.has(agentRunId) && !operations.value[id] && !submissions.has(keyFor(id, agentRunId))) {
-      return org.phase === 'live' && org.isActive && services.get(id)?.isReady() ? 'live' : 'read_only'
-    }
     if (!org || !agent || operations.value[id] || submissions.has(keyFor(id, agentRunId))) return 'read_only'
-    if (org.phase === 'historical' && !org.isActive && !agent.delegation) return 'continuable'
-    if (org.phase === 'live' && org.isActive && agent.live && services.get(id)?.isReady()) return 'live'
+    const ready = services.get(id)?.isReady() === true
+    if (org.phase === 'historical' && !org.isActive) return 'continuable'
+    if (org.phase === 'live' && org.isActive && ready) return 'live'
     return 'read_only'
   }
 
@@ -255,16 +323,9 @@ export const useAgentOrgContextsStore = defineStore('agentOrgContexts', () => {
     let draftEdited = false
     const stopWatching = watch(() => [context.requirement, context.contextFilePaths], () => { draftEdited = true }, { deep: true, flush: 'sync' })
     try {
-      if (access === 'continuable') {
-        const restored = await useAgentOrgRunStore().restore(id)
-        if (restored !== id) throw new Error('AgentOrg restore root mismatch.')
-        // Restore acceptance is not a ready stream; retain unknown truth on failure.
-        org.requireReopen('AgentOrg restored; stream is synchronizing.')
-        useRunHistoryStore().applyAgentOrgActivity(id, true)
-        void useRunHistoryStore().refreshAgentOrgHistoryItem(id)
-        const service = attach(id)
-        await service.whenReady()
-      }
+      // A stopped Org starts on this first input, sent over its view's stream (autobyteus-461 SR-046); the view continues
+      // live after the stream's in-band snapshot, which keeps this pending send.
+      if (access === 'continuable') await attach(id).whenReady()
       const ready = contexts.value[id]
       if (ready?.getAgentContext(agentRunId) !== context || ready.index.addressOf(agentRunId) !== address) {
         throw new Error('AgentOrg prepared submission identity changed.')
@@ -295,6 +356,8 @@ export const useAgentOrgContextsStore = defineStore('agentOrgContexts', () => {
   }
 
   const activeTargetFor = (id: string): ActiveAgentWorkspaceTarget | null => {
+    // A run this Org delegated on this node: its own run's context, stream and reads (autobyteus-461 rule 2).
+    if (selectedRow(id)) return delegatedTargetFor(id)
     const target = contexts.value[id]?.selectedTarget()
     if (!target || !('address' in target)) return null
     const agentRunId = target.context.state.runId
@@ -361,6 +424,7 @@ export const useAgentOrgContextsStore = defineStore('agentOrgContexts', () => {
   }
   const prepareConfigWorkspaces = async (org: AgentOrgExecutionContext, tree: AgentOrgExecutionTree,
     isCurrent: () => boolean): Promise<ReadonlyMap<string, WorkspaceMetadata | null>> => {
+    // The read carries the Org's own configuration only; its view's rows are its delegated runs' (CR-461-088).
     assertAgentOrgRunConfigChange(org.executionTree, tree)
     const roots = new Set<string>()
     for (const member of tree.rootOrg.members) {
@@ -437,5 +501,5 @@ export const useAgentOrgContextsStore = defineStore('agentOrgContexts', () => {
 
   const contextFor = (id: string): AgentOrgExecutionContext | null => contexts.value[id] ?? null
   const errorFor = (id: string): string | null => errors.value[id] ?? null
-  return { readRunConfig, saveRunConfig, contexts, errors, operations, reconcileRetainedHistory, openForInspection, releaseContext, releaseAll, select, contextFor, errorFor, activeTargetFor, stopAndInspect }
+  return { readRunConfig, saveRunConfig, contexts, errors, operations, reconcileRetainedHistory, openForInspection, releaseContext, releaseAll, select, selectTreeRow, selectedRow, selectedRowKey, selectRouteAgent, contextFor, errorFor, activeTargetFor, stopAndInspect }
 })

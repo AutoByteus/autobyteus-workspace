@@ -8,7 +8,9 @@ import type {
   WorkspaceHistoryWorkspaceNode,
 } from '~/stores/runHistoryTypes';
 import type { RunTreeRow } from '~/utils/runTreeProjection';
+import type { RunArchiveTargets } from '~/stores/runHistoryMutationActions';
 import { escapeHtml } from '~/utils/escapeHtml';
+import { runGroupArchiveSummary } from '~/utils/runGroupArchiveSummary';
 
 type AgentGroupNode = WorkspaceHistoryWorkspaceNode['agents'][number];
 
@@ -40,7 +42,8 @@ export const useWorkspaceHistoryGroupArchive = (params: {
   archiveAgentRunGroup: (workspaceRootPath: string, agentDefinitionId: string) => Promise<AgentRunGroupArchiveOutcome>;
   archiveTeamRuns: (teamRunIds: string[]) => Promise<RunGroupArchiveOutcome>;
   /** One saved Agent run; a Project's agent group archives only the runs listed under that Project (REQ-014). */
-  archiveRun: (runId: string) => Promise<boolean>;
+  /** A group's listed Agent runs, each by its own archive; a refusal keeps its reason (CR-461-087). */
+  archiveRuns: (targets: RunArchiveTargets) => Promise<RunGroupArchiveOutcome>;
   archiveAgentOrgRuns: (orgRunIds: string[]) => Promise<RunGroupArchiveOutcome>;
   onAgentOrgArchived?: (orgRunId: string) => Promise<void> | void;
   addToast: (message: string, type: 'success' | 'error' | 'warning' | 'info') => void;
@@ -136,15 +139,9 @@ export const useWorkspaceHistoryGroupArchive = (params: {
     }
   };
 
-  const reportOutcome = ({ archivedRunIds, failedRunIds }: RunGroupArchiveOutcome): void => {
-    const runs = runCount(archivedRunIds.length);
-    if (failedRunIds.length === 0) {
-      params.addToast(t('workspace.history.groupArchive.archived', { runs }), 'success');
-    } else if (archivedRunIds.length === 0) {
-      params.addToast(t('workspace.history.groupArchive.failed'), 'error');
-    } else {
-      params.addToast(t('workspace.history.groupArchive.archivedWithFailures', { runs, failed: failedRunIds.length }), 'error');
-    }
+  const reportOutcome = (outcome: RunGroupArchiveOutcome): void => {
+    const { message, type } = runGroupArchiveSummary(outcome, t);
+    params.addToast(message, type);
   };
 
   const confirmGroupArchive = async (): Promise<void> => {
@@ -160,12 +157,7 @@ export const useWorkspaceHistoryGroupArchive = (params: {
         return;
       }
       if (target.kind === 'agent_runs') {
-        const outcome: RunGroupArchiveOutcome = { archivedRunIds: [], failedRunIds: [] };
-        for (const runId of target.runIds) {
-          const archived = await params.archiveRun(runId).catch(() => false);
-          (archived ? outcome.archivedRunIds : outcome.failedRunIds).push(runId);
-        }
-        reportOutcome(outcome);
+        reportOutcome(await params.archiveRuns({ agentRunIds: target.runIds, teamRunIds: [], orgRunIds: [] }));
         return;
       }
       if (target.kind === 'team') {

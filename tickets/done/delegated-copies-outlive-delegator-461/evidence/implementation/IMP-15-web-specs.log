@@ -1,0 +1,29 @@
+# IMP-15 web full spec suite (npx vitest run --no-watch), started before the last spec fixes; commit 7a32bb8832 holds them
+      Tests  7 failed | 5631 passed | 2 skipped (5640)
+ FAIL  components/agentInput/__tests__/TeamComposerPublication.spec.ts
+ FAIL  components/workspace/collaboration/__tests__/CollaborationMessagesOrgRoot.integration.spec.ts
+ FAIL  services/agentStreaming/__tests__/TeamStreamingService.spec.ts
+ FAIL  services/collaborators/__tests__/agentSourceSelectors.spec.ts
+ FAIL  stores/__tests__/agentRunCollaborationLazyChildren.spec.ts
+ Test Files  5 failed | 740 passed (745)
+EXIT 1
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 7 ⎯⎯⎯⎯⎯⎯⎯
+
+# Rerun of the five failing files on 7a32bb8832
+ ✓ services/collaborators/__tests__/agentSourceSelectors.spec.ts (10 tests) 11ms
+ ✓ services/agentStreaming/__tests__/TeamStreamingService.spec.ts (16 tests) 359ms
+ ✓ stores/__tests__/agentRunCollaborationLazyChildren.spec.ts (9 tests) 291ms
+ ✓ components/agentInput/__tests__/TeamComposerPublication.spec.ts (4 tests) 394ms
+   ✓ Collaboration messages on a large Agent Org root > projects once and hashes only the displayed preview on mount and on a member switch (42,000 references)  540ms
+   ✓ Collaboration messages on a large Agent Org root > reveals and opens the last reference with the server identity; switching member collapses the list  4414ms
+   × Collaboration messages on a large Agent Org root > applies a live communication message with one projection and identity work bounded by the visible rows 5112ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+ Test Files  1 failed | 4 passed (5)
+      Tests  1 failed | 41 passed (42)
+
+# The Org performance-bound file alone (no other suite running)
+ ✓ components/workspace/collaboration/__tests__/CollaborationMessagesOrgRoot.integration.spec.ts (3 tests) 1745ms
+   ✓ Collaboration messages on a large Agent Org root > reveals and opens the last reference with the server identity; switching member collapses the list  840ms
+   ✓ Collaboration messages on a large Agent Org root > applies a live communication message with one projection and identity work bounded by the visible rows  778ms
+ Test Files  1 passed (1)
+      Tests  3 passed (3)

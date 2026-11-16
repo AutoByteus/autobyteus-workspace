@@ -1,0 +1,20 @@
+# Team tab TT-1/TT-2 (SR-074), r6-batchA.log, code 958cb22462
+ ✓ tests/e2e/projects/team-tab-subtree-messages.e2e.test.ts > The Team tab: one in-view rule over the open subtree, live and read (real HTTP/WS/scoped MCP, scripted AGY actor) > TT-1 / TT-2: a two-hop message in the top run's tab live and after a reload; a message between a run below X and X's delegator in neither 4354ms
+{
+  "tt": {
+    "M": "tab_manager_758548_ab1fdcd0cc85426fa500f102bcd64646",
+    "W": "tab_worker_758548_e8d1f0c870d944a0bccce5b91e74e1b8",
+    "H": "tab_helper_758548_fad33b31580c43848e49a1b5e06c3f4b",
+    "twoHop": "TWO-HOP-97f12c",
+    "outside": "OUTSIDE-W-f6b028",
+    "mLive": 1,
+    "wLiveOutside": 0,
+    "mTab": [
+      "TWO-HOP-97f12c",
+      "OUTSIDE-W-f6b028"
+    ],
+    "wTab": [
+      "TWO-HOP-97f12c"
+    ]
+  }
+}

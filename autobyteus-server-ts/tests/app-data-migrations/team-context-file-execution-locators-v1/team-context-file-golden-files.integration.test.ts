@@ -29,7 +29,8 @@ describe("Team attachment migration: independent source/expected golden files", 
     await fs.writeFile(context, blob);
     const tree = testExecutionTree({ rootTeamRunId: "golden-team", coordinatorAddress: "/worker",
       children: [testAgentNode("/worker", { agentRunId: "exact-worker-run" })] });
-    await fs.writeFile(path.join(team, "team_run_execution_tree.json"), JSON.stringify(tree));
+    // The released tree shape this migration reads (before autobyteus-461 it always had `taskExecutions`).
+    await fs.writeFile(path.join(team, "team_run_execution_tree.json"), JSON.stringify({ ...tree, rootTeam: { ...tree.rootTeam, taskExecutions: [] } }));
     await fs.writeFile(path.join(team, "task_delegation_records.json"), JSON.stringify({ schemaVersion: 1, rootTeamRunId: "golden-team", records: [] }));
     await fs.writeFile(path.join(team, "team_communication_messages.json"), JSON.stringify({ schemaVersion: 1, rootTeamRunId: "golden-team", messages: [] }));
     const source = path.join(agent, "raw_traces_active.jsonl");

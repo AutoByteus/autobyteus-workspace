@@ -1,0 +1,20 @@
+# CR-461-061 (F-43), DTL-005 through the real path: RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=$PWD/tests/fixtures/agy-failure-cli.mjs vitest run tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts --no-watch (scripted AGY CLI; no provider)
+## 1. at 0e1bb399e2 (unfixed): the Org copy is never shut down
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
++   "org: Error: Timed out waiting for org: copy processes gone after the grace period
+      Tests  1 failed | 1 passed | 1 skipped (3)
+## 2. temporary logging (reverted) in RootTeamRun.shutDownIfQuiet, the Team manager and the configured handle: at the grace's fire, the Org's squad answered open work; every other team was quiet
+F43DBG team dtl_squad_two_e94e12_… quiet=true
+F43DBG team dtl_squad_e94e12_… quiet=true
+F43DBG team dtl_squad_two_e94e12_… quiet=true
+F43DBG team dtl_squad_e94e12_… quiet=true
+F43DBG team dtl_squad_e94e12_… open work
+#    hasOpenExecutionWork counts a member in 'error' (base's rule too), so a member whose start failed holds its Team forever. Base's delegated task Team (tryShutDownRootTaskTeamIfQuiet) shut down on its all-or-nothing quiescent preparation alone.
+## 3. fix 1 (shutDownIfQuiet without the open-work check): the copy shuts down; the next step fails: after the restore the Org's fresh view still shows the writer 'error' (printed temporarily by the test, reverted)
+F43DBG statuses org {"lead":"idle","reviewer":"offline","writer":"offline","tester":"offline"} {"lead":"idle","reviewer":"offline","writer":"offline","tester":"offline"}
+F43DBG statuses org {"lead":"idle","reviewer":"idle","writer":"offline","tester":"offline"} {"lead":"idle","reviewer":"idle","writer":"offline","tester":"offline"}
+F43DBG statuses org {"lead":"idle","reviewer":"idle","writer":"error","tester":"offline"} {"lead":"idle","reviewer":"idle","writer":"error","tester":"offline"}
+F43DBG statuses org {"lead":"idle","reviewer":"offline","writer":"error","tester":"offline"} {"lead":"idle","reviewer":"offline","writer":"offline","tester":"offline"}
+#    The Org view's child-status cache keeps the writer's last event 'error': it has no runtime to report 'offline' when its Team ends quietly; base's fresh view read the hosted copy's live statuses.
+## 4. fix 2 (TeamPairedAgentAccess reports each member offline on a quiet shutdown): all roots pass
+      Tests  2 passed | 1 skipped (3)

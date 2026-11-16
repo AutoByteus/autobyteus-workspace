@@ -2,6 +2,7 @@ import { AgentRunMemoryRecorder } from "../../src/agent-memory/services/agent-ru
 import { AgentRunActivationRegistry } from "../../src/agent-execution/runtime/agent-run-activation-registry.js";
 import { AgentRunResourceManager } from "../../src/agent-execution/services/agent-run-resource-manager.js";
 import type { AgentToolMcpRunSessionDeactivator } from "../../src/agent-tools/mcp/agent-tool-mcp-session-authority.js";
+import { getAgentStreamSequences } from "../../src/services/agent-streaming/agent-stream-sequence.js";
 
 export const createAgentRunManagerInfrastructureFixture = (input: Readonly<{
   agentToolMcpRunSessionDeactivator: AgentToolMcpRunSessionDeactivator;
@@ -11,7 +12,7 @@ export const createAgentRunManagerInfrastructureFixture = (input: Readonly<{
     runSessions: input.agentToolMcpRunSessionDeactivator,
     runFileChangeService: { attachToRun: () => () => undefined },
     publishedArtifactRelayService: { attachToRun: () => () => undefined },
-    memoryRecorder,
+    memoryRecorder, streamSequences: getAgentStreamSequences(),
     workJournalUpdater: { attachToRun: () => () => undefined },
     mcpServerInstances: { cleanupMcpServerInstancesForAgent: async () => undefined },
   });

@@ -32,8 +32,9 @@ export const agentOrgCollaboratorPortFor = (tree: AgentOrgRunExecutionTreeSnapsh
     launchBase: () => Object.freeze({ kind: "inherited" as const, launch: tree.rootOrg.defaultLaunchConfiguration }),
     // An Org is never a catalog candidate, so it has no own definition to exclude.
     ownDefinition: () => null,
-    inRunPlacementsByDefinition: () => buildInRunPlacements({ configured }),
-    addressesInUse: () => addresses,
+    // An Org run is never delegated: it works on no Task, so step 2 reaches nothing.
+    inRunPlacementsByDefinition: async () => buildInRunPlacements({ configured, configuredStep: 3, reached: [] }),
+    addressesInUse: async () => addresses,
   });
 };
 

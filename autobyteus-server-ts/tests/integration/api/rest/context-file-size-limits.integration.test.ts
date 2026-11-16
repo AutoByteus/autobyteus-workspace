@@ -38,6 +38,7 @@ vi.mock("../../../../src/projects/services/project-task-context-drafts.js", asyn
 });
 
 import { registerContextFileRoutes } from "../../../../src/api/rest/context-files.js";
+import { noDelegations } from "../../../helpers/no-delegations.js";
 import { registerProjectTaskContextRoutes } from "../../../../src/api/rest/project-task-context-files.js";
 import {
   CONTEXT_FILE_AUDIO_VIDEO_MAX_MB_SETTING_KEY, CONTEXT_FILE_OTHER_MAX_MB_SETTING_KEY,
@@ -102,7 +103,8 @@ describe("context-file upload limits over real HTTP", () => {
     fs.mkdirSync(projectTaskUploads.dir);
     app = fastify();
     await app.register(multipart);
-    await app.register(registerContextFileRoutes, { prefix: "/rest" });
+    // The route takes the node's DelegationIndex (autobyteus-461).
+    await app.register((scope) => registerContextFileRoutes(scope, noDelegations()), { prefix: "/rest" });
     await app.register(registerProjectTaskContextRoutes, { prefix: "/rest" });
     await app.listen({ port: 0 }); port = (app.server.address() as { port: number }).port;
   });

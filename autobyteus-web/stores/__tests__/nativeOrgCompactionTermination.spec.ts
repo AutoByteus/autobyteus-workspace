@@ -61,9 +61,10 @@ const seedMembers = (store: ReturnType<typeof useAgentOrgContextsStore>) => {
   }
   return entries
 }
-it('Org success reconciles every configured/task Agent/Team member before real empty-native projection commit/adoption', async () => {
+it('Org success reconciles every own Agent and Team member before real empty-native projection commit/adoption', async () => {
   const {store,socket}=await open('/director');const entries=seedMembers(store);const activities=useAgentActivityStore()
-  expect(entries.length).toBe(7)
+  // The Org's own agents; a run it delegated is its own and its Stop is its own (autobyteus-461 rule 2).
+  expect(entries.length).toBe(4)
   const beforeStates=entries.map(e=>e.context.state)
   const query=io.query.getMockImplementation()!
   io.query.mockImplementation(async (request:any)=>{

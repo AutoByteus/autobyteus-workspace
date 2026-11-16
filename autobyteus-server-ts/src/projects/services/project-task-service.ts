@@ -21,7 +21,7 @@ import { TaskExecutionResourceService, type TaskAssignmentViews } from "./task-e
 import { TaskExecutionResourceStore } from "../stores/task-execution-resource-store.js";
 import { getProjectChangePublisher, type ProjectChangeMarks } from "../changes/project-change-publisher.js";
 import type { TaskChangeView } from "../changes/project-change-messages.js";
-import { rootWorkerStatus, type TaskWorkerStatusResolver } from "./task-root-view-builder.js";
+import { rootWorkerStatus, type TaskDisplayNameResolver, type TaskTopRunResolver, type TaskWorkerStatusResolver } from "./task-root-view-builder.js";
 import { ProjectTaskViews } from "./project-task-views.js";
 import { TaskRelationWrites, type SuppliedTaskRelations } from "./task-relation-writes.js";
 import { NO_PART_CLOSURE, TaskPartClosure, type PartClosureResult } from "./task-part-closure.js";
@@ -53,6 +53,10 @@ type Dependencies = {
   changes?: ProjectChangeMarks;
   /** A Task root's live status from its hosting root (composition-bound); absent means `offline`. */
   workerStatus?: TaskWorkerStatusResolver;
+  /** The run at the top of a worker's tree, where its row is listed (SR-080, composition-bound); absent means no card opens. */
+  topRun?: TaskTopRunResolver;
+  /** A worker's name, as its row and its own view name it (SR-091, composition-bound); absent means no name. */
+  displayName?: TaskDisplayNameResolver;
   /** Search index cleanup after a committed delete (composition-bound; never throws or waits); absent means no index. */
   searchCleanup?: ProjectTaskSearchCleanup;
 };
@@ -90,7 +94,7 @@ export class ProjectTaskService implements TaskExecutionResourcePort {
   private get relations() { return new TaskRelationWrites(() => this.store, () => this.changes, this.references); }
   /** A part closes through this service's own update, with the cascade off (a part has no parts). */
   private get partClosure() { return new TaskPartClosure(() => this.store, (projectId, taskId, status) => this.update(projectId, taskId, { status }, noContextChange, false)); }
-  private get views() { return new ProjectTaskViews(this.context, this.resources, this.workerStatus); }
+  private get views() { return new ProjectTaskViews(this.context, this.resources, this.workerStatus, this.deps.topRun ?? null, this.deps.displayName ?? null); }
   private get eligibility() { return new TaskAssignmentEligibility(() => this.store, this.adHocTasks, this.resources); }
   private nowIso(): string { return (this.deps.now?.() ?? new Date()).toISOString(); }
 
@@ -196,13 +200,13 @@ export class ProjectTaskService implements TaskExecutionResourcePort {
     return this.views.projectTask(command.projectId, task);
   }
   /**
-   * Permanent run delete: removes the ad-hoc Tasks whose agent runs that root hosted (from the view,
-   * no scan). Best effort: failures are logged and never fail the run delete.
+   * Permanent run delete: removes the ad-hoc Tasks an agent of that run assigned (from the view, no scan). Best effort:
+   * failures are logged and never fail the run delete.
    */
-  async deleteAdHocTasksHostedBy(hostRoot: RootExecutionIdentity): Promise<void> {
+  async deleteAdHocTasksDelegatedFrom(run: RootExecutionIdentity): Promise<void> {
     try {
       await this.resources.load();
-      for (const taskId of this.resources.adHocTaskIdsHostedBy(hostRoot)) {
+      for (const taskId of this.resources.adHocTaskIdsDelegatedFrom(run)) {
         try {
           await this.resources.serialize(taskId, async () => {
             await this.adHocTasks.delete(taskId);
@@ -210,15 +214,23 @@ export class ProjectTaskService implements TaskExecutionResourcePort {
             this.changes.taskRemoved({ projectId: null, taskId });
           });
         } catch (error) {
-          console.warn("AD_HOC_TASK_DELETE_FAILED", { taskId, hostRoot, error: error instanceof Error ? error.message : String(error) });
+          console.warn("AD_HOC_TASK_DELETE_FAILED", { taskId, run, error: error instanceof Error ? error.message : String(error) });
         }
       }
     } catch (error) {
-      console.warn("AD_HOC_TASK_DELETE_FAILED", { hostRoot, error: error instanceof Error ? error.message : String(error) });
+      console.warn("AD_HOC_TASK_DELETE_FAILED", { run, error: error instanceof Error ? error.message : String(error) });
     }
   }
-  /** Removes metadata and context, then drops the Task from its dependents and its parts; its agent run resources stay, so closed work stays closed. */
+  /**
+   * Deletion (contract T-3, `model.py` `delete_task`): the Task's entries are closed and its runs with no other open
+   * Task are asked to stop, then its record, metadata and context go; its runs become runs of their own. Then the Task
+   * is dropped from its dependents and its parts.
+   */
   async deleteTask(command: DeleteProjectTaskCommand): Promise<boolean> {
+    if (!(await this.store.readTask(command.projectId, command.taskId))) return false;
+    const location = { projectId: command.projectId, taskId: command.taskId };
+    await this.closeAndWrite(location, async () => undefined);
+    await this.resources.removeRecord(location);
     if (!(await this.store.deleteTask(command.projectId, command.taskId))) return false;
     this.changes.taskRemoved({ projectId: command.projectId, taskId: command.taskId });
     this.deps.searchCleanup?.forgetTask(command.projectId, command.taskId);
@@ -285,20 +297,10 @@ export class ProjectTaskService implements TaskExecutionResourcePort {
   }
   markStarted(execution: TaskExecutionReference): Promise<void> { return this.resources.markStarted(execution); }
   markFailed(execution: TaskExecutionReference, error: { code: string; message: string }): Promise<void> { return this.resources.markFailed(execution, error); }
-  ownerOf(chain: readonly TaskExecutionReference[]) { return this.resources.ownerOf(chain); }
+  taskIdsWithEntries(): readonly string[] { return this.resources.taskIdsWithEntries(); }
+  entriesOf(taskId: string) { return this.resources.entriesOf(taskId); }
   isOpen(execution: TaskExecutionReference): boolean { return this.resources.isOpen(execution); }
-  closedTaskExecutionsIn(hostRoot: RootExecutionIdentity) { return this.resources.closedTaskExecutionsIn(hostRoot); }
-  closedTaskExecutionOf(hostRoot: RootExecutionIdentity, by: Readonly<{ ingressAgentRunId: string }> | TaskExecutionReference) { return this.resources.closedTaskExecutionOf(hostRoot, by); }
   assertResourceDataReadable(): void { this.resources.assertAllReadable(); }
-  /** Marks the Tasks whose root is one of these task executions; the status is read later. Never throws. */
-  taskExecutionsStatusChanged(_hostRoot: RootExecutionIdentity, references: readonly TaskExecutionReference[]): void {
-    try {
-      for (const reference of references) {
-        const location = this.resources.rootTaskLocationOf(reference);
-        if (location) this.changes.workerStatusChanged(location);
-      }
-    } catch (error) { console.warn("TASK_ROOT_STATUS_MARK_FAILED", error); }
-  }
   /** Advisory: lets the runtime refuse an ineligible sender before it touches any runtime state. */
   async assertReopenable(input: TaskExecutionReopenInput): Promise<void> {
     const location = await this.reopenLocation(input.execution);
@@ -320,7 +322,7 @@ export class ProjectTaskService implements TaskExecutionResourcePort {
     });
   }
   /** Advisory existing-copy eligibility (the design's complete list), before any runtime step. */
-  async assertAssignable(input: Readonly<{ execution: TaskExecutionReference; requestedBy: string; taskId: string }>): Promise<void> {
+  async assertAssignable(input: Readonly<{ execution: TaskExecutionReference; requestedBy: string; taskId: string; ownDelegatorAgentRunId?: string }>): Promise<void> {
     await this.resources.load();
     this.resources.assertAllReadable();
     const { projectId } = await this.references.byId(input.taskId);
@@ -334,7 +336,8 @@ export class ProjectTaskService implements TaskExecutionResourcePort {
     await this.resources.serializeCopyInTask(input.execution, () => input.taskId, async () => {
       this.resources.assertAllReadable();
       const task = await this.eligibility.assertAssignableTask(projectId, input.taskId);
-      this.eligibility.assertCopyAssignable({ execution: input.execution, requestedBy: input.assignedBy, taskId: input.taskId }, task);
+      this.eligibility.assertCopyAssignable({ execution: input.execution, requestedBy: input.delegatedFrom.delegatorAgentRunId, taskId: input.taskId,
+        ...(input.recipientAddress ? { ownDelegatorAgentRunId: input.delegatedFrom.delegatorAgentRunId } : {}) }, task);
       await this.resources.assignExisting({ projectId, taskId: input.taskId }, input);
     });
   }
@@ -358,7 +361,7 @@ export class ProjectTaskService implements TaskExecutionResourcePort {
         written = await write();
       });
     } finally {
-      if (closed) this.release.release(location.taskId, this.resources.releasableByHostRoot(location.taskId));
+      if (closed) this.release.release(location.taskId, this.resources.releasable(location.taskId));
     }
     return written!;
   }
@@ -448,11 +451,10 @@ let singleton: ProjectTaskService | null = null;
 /** The process instance; an uninitialized process (tests, tool-only contexts) gets an unbound instance. */
 export const getProjectTaskService = (): ProjectTaskService => singleton ??= new ProjectTaskService();
 /** Called once by the process composition before any getProjectTaskService(); fails fast otherwise. */
-export const initializeProjectTaskServiceProcessInstance = (deps: Pick<Dependencies, "taskExecutionResources" | "adHocTasks" | "requestRelease" | "workerStatus" | "searchCleanup" | "changes">): ProjectTaskService => {
+export const initializeProjectTaskServiceProcessInstance = (deps: Pick<Dependencies, "taskExecutionResources" | "adHocTasks" | "requestRelease" | "workerStatus" | "topRun" | "displayName" | "searchCleanup" | "changes">): ProjectTaskService => {
   if (singleton) throw new Error("The process ProjectTaskService is already initialized.");
   return singleton = new ProjectTaskService(deps);
 };
 export const releaseProjectTaskServiceProcessInstance = (instance: TaskExecutionResourcePort): void => {
   if (singleton === instance) singleton = null;
 };
-export const resetProjectTaskServiceForTests = (): void => { singleton = null; };

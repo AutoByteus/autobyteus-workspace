@@ -88,7 +88,7 @@ export class CollaboratorAdmission {
       const eligible: AdmissibleCollaboratorDefinition[] = [];
       for (const ref of definitions) eligible.push(await this.checked(() => this.dependencies.policy.requireEligible(port, ref), ref));
       const addresses = await this.dependencies.policy.catalogAddressMap(port);
-      const placements = port.inRunPlacementsByDefinition();
+      const placements = await port.inRunPlacementsByDefinition();
       const collaborators = eligible.map((definition): MentionedCollaborator => {
         // Own team first (SR-011): the focused agent's own team instance is checked by definition before the
         // configured-placement and catalog paths, because a task agent team's members are neither.
@@ -111,6 +111,12 @@ export class CollaboratorAdmission {
   async catalogDefinitionAt(port: CollaboratorRootPort, address: string): Promise<CatalogDefinitionRef | null> {
     if (port.isApplicationBound) return null;
     return (await this.dependencies.policy.catalogAddressMap(port)).definitionFor(address);
+  }
+
+  /** The catalog address `ref` has in this run's catalog (the inverse of `catalogDefinitionAt`); `null` when it has none. */
+  async catalogAddressOf(port: CollaboratorRootPort, ref: CatalogDefinitionRef): Promise<string | null> {
+    if (port.isApplicationBound) return null;
+    return (await this.dependencies.policy.catalogAddressMap(port)).addressFor(ref);
   }
 
   /**

@@ -65,7 +65,7 @@
 import { computed } from 'vue';
 import { Icon } from '@iconify/vue';
 import RemoteNodeChip from '~/components/workspace/remote/RemoteNodeChip.vue';
-import type { MobileRunTreeRow } from '~/utils/mobile/mobileRunTreeProjection';
+import type { MobileRunTreeRow } from '~/utils/mobile/mobileRunListRows';
 import { agentStatusDotClass } from '~/utils/workspaceStatusDotPresentation';
 import { mobileRunStatusLabel } from '~/utils/mobile/mobileRunStatusLabel';
 

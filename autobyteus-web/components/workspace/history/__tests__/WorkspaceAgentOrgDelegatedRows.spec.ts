@@ -1,261 +1,87 @@
 import { mount } from '@vue/test-utils';
-import { defineComponent, h, nextTick, reactive, toRaw } from 'vue';
-import { describe, expect, it, vi } from 'vitest';
+import { createPinia, setActivePinia } from 'pinia';
+import { defineComponent, h, nextTick, reactive } from 'vue';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import WorkspaceAgentOrgHistoryCollection from '../WorkspaceAgentOrgHistoryCollection.vue';
 import type { AgentOrgHistoryDefinitionGroup } from '~/stores/runHistoryTypes';
 import type { WorkspaceHistorySectionState } from '../workspaceHistorySectionContracts';
-import { taskBearingView } from '~/services/agentOrgExecution/__tests__/taskBearingOrgFixture';
-import { useWorkspaceHistoryTreeState } from '~/composables/useWorkspaceHistoryTreeState';
+import { taskBearingTreeRows, taskBearingView } from '~/services/agentOrgExecution/__tests__/taskBearingOrgFixture';
 import { AgentStatus } from '~/types/agent/AgentStatus';
+import { useRunTreeStore } from '~/stores/runTreeStore';
+import { useRunStatusStore } from '~/stores/runStatusStore';
 vi.mock('@iconify/vue', () => ({ Icon: { props: ['icon'], template: '<span :data-icon="icon" />' } }));
 
-/** CR-003 (REQ-013 / AC-017 via REQ-017): Org members tree shows plain names plus who started a delegated child. */
-type OrgTree = ReturnType<typeof taskBearingView>['execution_tree'];
-const mountOrg = (
-  isActive: boolean,
-  mutate: (tree: OrgTree) => OrgTree = (tree) => tree,
-  liveStatuses: Readonly<Record<string, AgentStatus>> | null = null,
-) => {
-  const tree = mutate(structuredClone(taskBearingView().execution_tree) as OrgTree);
+/**
+ * autobyteus-461 SR-084: an Org run's tree from the server. Its own agents and mounted teams are the Org's rows; each run
+ * it delegated is the shared delegated row (FU-031), under the agent that delegated it, opening where the server says.
+ */
+const mountOrg = () => {
+  const tree = structuredClone(taskBearingView().execution_tree);
+  useRunTreeStore().streamSnapshot({ kind: 'agent_org', runId: 'org-run' }, taskBearingTreeRows());
   const group: AgentOrgHistoryDefinitionGroup = {
-    stableKey: 'agent_org_definition:org-definition',
-    definitionId: 'org-definition',
-    name: 'Restored Org',
-    runs: [{
-      stableKey: 'agent_org_run:org-run', rootSubjectKind: 'agent_org', rootRunId: 'org-run',
-      createdAt: tree.createdAt, lastActivityAt: tree.createdAt, archivedAt: null, isActive, summary: 'Delegating Org', executionTree: tree, closedTaskExecutions: [],
-    }],
+    stableKey: 'agent_org_definition:org-definition', definitionId: 'org-definition', name: 'Restored Org',
+    runs: [{ stableKey: 'agent_org_run:org-run', rootSubjectKind: 'agent_org', rootRunId: 'org-run', createdAt: tree.createdAt,
+      lastActivityAt: tree.createdAt, archivedAt: null, isActive: true, summary: 'Delegating Org', executionTree: tree }],
   };
+  const expanded = reactive<Record<string, boolean>>({});
   const state = {
-    isAgentOrgDefinitionExpanded: () => true,
-    isAgentOrgRunExpanded: () => true,
-    isAgentOrgTeamExpanded: () => true,
-    isAgentOrgRunSelected: () => false,
-    isAgentOrgMemberSelected: () => false,
-    isAgentOrgTerminating: () => false,
-    isAgentOrgDeleting: () => false,
-    isAgentOrgArchiving: () => false,
-    agentOrgTerminationError: () => null,
-    // A live Org context as the rows read it (tree, closure facts, agent statuses).
-    agentOrgContextFor: () => liveStatuses && {
-      orgRunId: 'org-run', executionTree: tree, isActive: true, phase: 'live', view: { closed_task_executions: [] },
-      getAgentContext: (agentRunId: string) => ({ state: { currentStatus: liveStatuses[agentRunId] ?? AgentStatus.Offline } }),
-    },
+    isAgentOrgDefinitionExpanded: () => true, isAgentOrgRunExpanded: () => true, isAgentOrgTeamExpanded: () => true,
+    isAgentOrgRunSelected: () => false, isAgentOrgMemberSelected: () => false, isAgentOrgTerminating: () => false,
+    isAgentOrgDeleting: () => false, isAgentOrgArchiving: () => false, agentOrgTerminationError: () => null, agentOrgContextFor: () => null,
+    isAgentOrgTaskTeamExpanded: (_root: string, key: string) => expanded[key] ?? true,
+    toggleAgentOrgTaskTeam: vi.fn((_root: string, key: string) => { expanded[key] = !(expanded[key] ?? true); }),
   } as unknown as WorkspaceHistorySectionState;
-  const avatars = { showOrgAvatar: () => false, getOrgAvatarUrl: () => '', onOrgAvatarError: vi.fn() };
-  const actions = { onInspectAgentOrgExecution: vi.fn() } as never;
-  return mount(defineComponent({
-    setup: () => () => h(WorkspaceAgentOrgHistoryCollection, { workspaceId: 'ws', groups: [group], state, actions, avatars }),
-  }));
-};
-
-describe('Org history delegated rows', () => {
-  it('shows the plain name, keeps the starter in the accessible label only, and uses the member marker for a task Agent', () => {
-    const wrapper = mountOrg(false);
-    expect(wrapper.text()).not.toMatch(/Task:/);
-
-    const agentRow = wrapper.get('[data-test="agent-org-task-agent-row-agent-worker-task"]');
-    expect(agentRow.text()).toContain('worker');
-    expect(wrapper.find('[data-test="agent-org-task-agent-started-by-agent-worker-task"]').exists()).toBe(false);
-    expect(agentRow.text()).not.toContain('Started by');
-    expect(agentRow.attributes('aria-label')).toContain('Started by director');
-    expect(agentRow.find('[data-test="agent-org-task-agent-avatar"]').text()).toBe('W');
-    // A stopped run reports every delegated child with the standard offline status.
-    expect(agentRow.attributes('data-status')).toBe('offline');
-    expect(agentRow.attributes('aria-label')).toContain('offline');
-
-    const teamRow = wrapper.get('[data-test="agent-org-task-team-row-team-task"]');
-    expect(teamRow.text()).toContain('team');
-    expect(wrapper.find('[data-test="agent-org-task-team-started-by-team-task"]').exists()).toBe(false);
-    expect(teamRow.attributes('aria-label')).toContain('Started by director');
-    expect(teamRow.attributes('aria-label')).not.toMatch(/Task:/);
-  });
-
-  it('draws delegated rows in the clean row style: focus ring, and a slate-500 people-group with a semibold name for a Team (delegated-row-clean-style AC-001)', () => {
-    const wrapper = mountOrg(false);
-    const agentRow = wrapper.get('[data-test="agent-org-task-agent-row-agent-worker-task"]');
-    const teamRow = wrapper.get('[data-test="agent-org-task-team-row-team-task"]');
-    for (const row of [agentRow, teamRow]) {
-      expect(row.classes()).toEqual(expect.arrayContaining(['text-gray-600', 'hover:bg-gray-50', 'focus:outline-none', 'focus-visible:ring-2', 'focus-visible:ring-indigo-500']));
-      expect(row.classes()).not.toContain('border-dashed');
-      expect(row.classes()).not.toContain('bg-indigo-50/40');
-    }
-    const icon = teamRow.get('[data-team-icon="temporary-task-team"]');
-    expect(icon.attributes('data-icon')).toBe('heroicons:user-group-20-solid');
-    expect(icon.classes()).toEqual(expect.arrayContaining(['h-4', 'w-4', 'text-slate-500']));
-    expect(teamRow.find('[data-icon="heroicons:bolt-20-solid"]').exists()).toBe(false);
-    expect(wrapper.find('[data-test="agent-org-team-row-team-configured"] [data-icon="heroicons:user-group-20-solid"]').exists()).toBe(true);
-    expect(teamRow.get('.font-semibold').text()).toContain('team');
-  });
-
-  it('uses the same group for a delegated Team copy and a configured Team (restore-team-group-icon AC-001)', () => {
-    const wrapper = mountOrg(false);
-    for (const testId of ['agent-org-task-team-row-team-task', 'agent-org-team-row-team-configured']) {
-      const team = wrapper.get(`[data-test="${testId}"]`);
-      expect(team.findAll('[data-icon="heroicons:user-group-20-solid"]')).toHaveLength(1);
-      expect(team.find('[data-icon="heroicons:bolt-20-solid"]').exists()).toBe(false);
-      expect(team.attributes('aria-expanded')).toBe('true');
-    }
-  });
-
-  // delegated-team-aggregate-status REQ-001/003/005/006/007, AC-001/007/009/010 (Org runs).
-  it('gives every Org Team row exactly one Team status dot before the slate people-group, in its accessible label', () => {
-    const wrapper = mountOrg(true, undefined, {
-      'agent-task-lead': AgentStatus.Running, 'agent-lead-configured': AgentStatus.Idle, 'agent-director': AgentStatus.Error,
-    });
-    const taskTeam = wrapper.get('[data-test="agent-org-task-team-row-team-task"]');
-    const dots = taskTeam.findAll('[data-test="team-aggregate-status-dot"]');
-    expect(dots).toHaveLength(1);
-    expect(dots[0]!.attributes('data-status')).toBe(AgentStatus.Running);
-    expect(dots[0]!.element.nextElementSibling?.getAttribute('data-team-icon')).toBe('temporary-task-team');
-    expect(dots[0]!.get('[aria-hidden="true"]').classes()).toEqual(expect.arrayContaining(['bg-blue-500', 'animate-pulse']));
-    expect(taskTeam.attributes('aria-label')).toMatch(/^team\. .*Running, Started by director/);
-    const configured = wrapper.get('[data-test="agent-org-team-row-team-configured"]');
-    expect(configured.findAll('[data-test="team-aggregate-status-dot"]')).toHaveLength(1);
-    expect(configured.get('[data-test="team-aggregate-status-dot"]').attributes('data-status')).toBe(AgentStatus.Idle);
-    // Agent rows keep their own status; the Org root row has no Team dot.
-    expect(wrapper.get('[data-test="agent-org-agent-row-agent-director"]').attributes('data-status')).toBe(AgentStatus.Error);
-    expect(wrapper.findAll('[data-test="team-aggregate-status-dot"]')).toHaveLength(2);
-    expect(wrapper.get('[data-test="agent-org-run-open-org-run"]').find('[data-test="team-aggregate-status-dot"]').exists()).toBe(false);
-  });
-
-  it('reads every Org Team row gray when the Org run is stopped', () => {
-    const wrapper = mountOrg(false);
-    for (const testId of ['agent-org-task-team-row-team-task', 'agent-org-team-row-team-configured']) {
-      expect(wrapper.get(`[data-test="${testId}"] [data-test="team-aggregate-status-dot"]`).attributes('data-status')).toBe(AgentStatus.Offline);
-    }
-  });
-
-  it('gives task-Team members no spawner line because the Team row carries it', () => {
-    const wrapper = mountOrg(false);
-    for (const member of ['agent-task-lead', 'agent-task-worker']) {
-      const row = wrapper.get(`[data-test="agent-org-task-agent-row-${member}"]`);
-      expect(row.find(`[data-test="agent-org-task-agent-started-by-${member}"]`).exists()).toBe(false);
-      expect(row.attributes('aria-label')).not.toContain('Started by');
-    }
-  });
-
-  it('shows no starter line for children recorded before the delegator was stored (R-14)', () => {
-    const wrapper = mountOrg(false, (tree) => ({
-      ...tree,
-      rootOrg: {
-        ...tree.rootOrg,
-        taskExecutions: tree.rootOrg.taskExecutions.map(({ delegatorAgentRunId: _omit, ...task }) => task),
-      },
-    }) as OrgTree);
-    expect(wrapper.find('[data-test="agent-org-task-agent-started-by-agent-worker-task"]').exists()).toBe(false);
-    expect(wrapper.find('[data-test="agent-org-task-team-started-by-team-task"]').exists()).toBe(false);
-    const agentRow = wrapper.get('[data-test="agent-org-task-agent-row-agent-worker-task"]');
-    expect(agentRow.text()).toContain('worker');
-    expect(agentRow.attributes('aria-label')).not.toContain('Started by');
-  });
-
-  it('falls back to the delegator AgentRun ID when it cannot be resolved in the tree', () => {
-    const wrapper = mountOrg(true, (tree) => ({
-      ...tree,
-      rootOrg: {
-        ...tree.rootOrg,
-        taskExecutions: tree.rootOrg.taskExecutions.map((task, index) => index === 0 ? { ...task, delegatorAgentRunId: 'ghost-run' } : task),
-      },
-    }) as OrgTree);
-    expect(wrapper.get('[data-test="agent-org-task-agent-row-agent-worker-task"]').attributes('aria-label')).toContain('Started by ghost-run');
-  });
-});
-
-/** REQ-001..006 / AC-001..005: delegated Team rows disclose like mounted Team rows, keyed by teamRunId. */
-const mountWithTreeState = () => {
-  const tree = structuredClone(taskBearingView().execution_tree) as OrgTree;
-  const run = {
-    stableKey: 'agent_org_run:org-run', rootSubjectKind: 'agent_org' as const, rootRunId: 'org-run',
-    createdAt: tree.createdAt, lastActivityAt: tree.createdAt, archivedAt: null, isActive: false, summary: 'Delegating Org', executionTree: tree, closedTaskExecutions: [],
-  };
-  const group = reactive<AgentOrgHistoryDefinitionGroup>({ stableKey: 'agent_org_definition:org-definition', definitionId: 'org-definition', name: 'Restored Org', runs: [run] });
-  const history = { selectedRunId: null, selectedTeamRunId: null, workspaceGroups: [], navigationTopologyRevision: 0,
-    getTreeNodes: () => [], getTeamNodes: () => [], getAgentNavigationAncestry: () => null, getTeamNavigationAncestry: () => null,
-    getTeamMemberNavigationAncestorRowKeys: () => [], getAgentOrgNavigationAncestry: () => null };
   const actions = { onInspectAgentOrgExecution: vi.fn(), onSelectAgentOrgMember: vi.fn() };
-  const avatars = { showOrgAvatar: () => false, getOrgAvatarUrl: () => '', onOrgAvatarError: vi.fn() };
-  let treeState!: ReturnType<typeof useWorkspaceHistoryTreeState>;
-  const wrapper = mount(defineComponent({ setup() {
-    treeState = useWorkspaceHistoryTreeState({ runHistoryStore: history as never, selectionStore: { selectedType: null, selectedRunId: null } as never });
-    treeState.toggleAgentOrgDefinition('ws', 'org-definition');
-    treeState.toggleAgentOrgRun('org-run');
-    treeState.toggleAgentOrgTeam('org-run', '/team');
-    const state = { ...treeState, agentOrgContextFor: () => null } as unknown as WorkspaceHistorySectionState;
-    return () => h(WorkspaceAgentOrgHistoryCollection, { workspaceId: 'ws', groups: [group], state, actions: actions as never, avatars });
-  } }));
-  return { wrapper, treeState, actions, run, group };
+  const wrapper = mount(defineComponent({ setup: () => () => h(WorkspaceAgentOrgHistoryCollection, { workspaceId: 'ws', groups: [group], state,
+    actions: actions as never, avatars: { showOrgAvatar: () => false, getOrgAvatarUrl: () => '', onOrgAvatarError: vi.fn() } }) }));
+  return { wrapper, actions, state };
 };
+const delegatedRows = (wrapper: ReturnType<typeof mountOrg>['wrapper']) => wrapper.findAll('[data-test="workspace-team-transient-execution-row"]');
 
-describe('Org history delegated Team disclosure', () => {
-  const taskMembers = ['agent-task-lead', 'agent-task-worker'];
-  const memberVisible = (wrapper: ReturnType<typeof mount>, member: string) =>
-    wrapper.find(`[data-test="agent-org-task-agent-row-${member}"]`).exists();
+describe('Org history delegated rows (SR-084)', () => {
+  beforeEach(() => setActivePinia(createPinia()));
 
-  it('starts expanded with a down chevron and members visible', () => {
-    const { wrapper } = mountWithTreeState();
-    const row = wrapper.get('[data-test="agent-org-task-team-row-team-task"]');
-    const chevron = row.get('[data-test="agent-org-task-team-disclosure-team-task"]');
-    expect(chevron.attributes('data-icon')).toBe('heroicons:chevron-down-20-solid');
-    expect(chevron.classes()).not.toContain('-rotate-90');
-    expect(chevron.attributes('aria-hidden')).toBe('true');
-    expect(row.attributes('aria-expanded')).toBe('true');
-    for (const member of taskMembers) expect(memberVisible(wrapper, member)).toBe(true);
+  it('shows the Org\'s own agents and mounted team, and each delegated run under the agent that delegated it, its starter in the accessible label only', () => {
+    const { wrapper } = mountOrg();
+    expect(wrapper.find('[data-test="agent-org-agent-row-agent-director"]').exists()).toBe(true);
+    expect(wrapper.find('[data-test="agent-org-team-row-team-configured"]').exists()).toBe(true);
+    const [worker, team] = delegatedRows(wrapper);
+    expect(worker!.attributes()).toMatchObject({ 'data-transient-kind': 'task_agent', 'data-agent-run-id': 'agent-worker-task', 'aria-level': '2' });
+    expect(team!.attributes()).toMatchObject({ 'data-transient-kind': 'task_team', 'aria-level': '2' });
+    expect(wrapper.text()).not.toContain('Started by');
+    expect(worker!.attributes('aria-label')).toContain('Started by director');
   });
 
-  it('toggles collapse and still inspects the coordinator on every row click', async () => {
-    const { wrapper, actions, run } = mountWithTreeState();
-    const row = () => wrapper.get('[data-test="agent-org-task-team-row-team-task"]');
-    await row().trigger('click');
-    expect(row().attributes('aria-expanded')).toBe('false');
-    expect(row().get('[data-test="agent-org-task-team-disclosure-team-task"]').classes()).toContain('-rotate-90');
-    for (const member of taskMembers) expect(memberVisible(wrapper, member)).toBe(false);
-    expect(actions.onInspectAgentOrgExecution).toHaveBeenCalledExactlyOnceWith(run, 'agent-task-lead', '/team/lead');
-    expect(actions.onSelectAgentOrgMember).not.toHaveBeenCalled();
-
-    await row().trigger('click');
-    expect(row().attributes('aria-expanded')).toBe('true');
-    for (const member of taskMembers) expect(memberVisible(wrapper, member)).toBe(true);
-    expect(actions.onInspectAgentOrgExecution).toHaveBeenCalledTimes(2);
-  });
-
-  it('keeps the delegated Team state independent of the mounted Team with the same address', async () => {
-    const { wrapper, treeState } = mountWithTreeState();
-    await wrapper.get('[data-test="agent-org-task-team-row-team-task"]').trigger('click');
-    expect(treeState.isAgentOrgTeamExpanded('org-run', '/team')).toBe(true);
-    expect(wrapper.get('[data-test="agent-org-team-row-team-configured"]').attributes('aria-expanded')).toBe('true');
-    expect(wrapper.find('[data-test="agent-org-agent-row-agent-lead-configured"]').exists()).toBe(true);
-
-    await wrapper.get('[data-test="agent-org-team-row-team-configured"]').trigger('click');
+  it('gives the mounted team and a delegated team one Team status dot each; a delegated team\'s is its run\'s own (SR-086 G-A4)', async () => {
+    const { wrapper } = mountOrg();
+    useRunStatusStore().apply({ type: 'RUN_STATUS_SNAPSHOT', payload: { runs: [{ kind: 'agent_team', runId: 'team-task', answer: 'ok', node: null, status: 'running', agents: [] }] } });
     await nextTick();
-    expect(wrapper.find('[data-test="agent-org-agent-row-agent-lead-configured"]').exists()).toBe(false);
-    expect(treeState.isAgentOrgTaskTeamExpanded('org-run', 'team-task')).toBe(false);
-    await wrapper.get('[data-test="agent-org-task-team-row-team-task"]').trigger('click');
-    expect(treeState.isAgentOrgTaskTeamExpanded('org-run', 'team-task')).toBe(true);
-    expect(treeState.isAgentOrgTeamExpanded('org-run', '/team')).toBe(false);
-    for (const member of taskMembers) expect(memberVisible(wrapper, member)).toBe(true);
+    expect(wrapper.get('[data-test="agent-org-team-row-team-configured"]').findAll('[data-test="team-aggregate-status-dot"]')).toHaveLength(1);
+    const team = wrapper.get('[data-test="workspace-team-transient-execution-row"][data-transient-kind="task_team"]');
+    expect(team.get('[data-test="team-aggregate-status-dot"]').attributes('data-status')).toBe(AgentStatus.Running);
   });
 
-  /** API-TTRC-002 (REQ-003 / REQ-005): a live execution-tree update re-projects rows without reopening a collapsed delegated Team. */
-  it('keeps a collapsed delegated Team collapsed when the live execution tree gains a member', async () => {
-    const { wrapper, group } = mountWithTreeState();
-    const row = () => wrapper.get('[data-test="agent-org-task-team-row-team-task"]');
-    await row().trigger('click');
-    expect(row().attributes('aria-expanded')).toBe('false');
-
-    const next = structuredClone(toRaw(group.runs[0]!).executionTree);
-    const taskExecutions = next.rootOrg.taskExecutions.map((task) => ('teamRunId' in task && task.teamRunId === 'team-task'
-      ? { ...task, members: [...task.members, { address: '/team/worker', agentRunId: 'agent-task-worker-late', platformAgentRunId: null }] }
-      : task));
-    group.runs[0] = { ...group.runs[0]!, isActive: true, executionTree: { ...next, rootOrg: { ...next.rootOrg, taskExecutions } } };
+  it('a delegated team starts expanded; its click opens its coordinator without folding it; its chevron folds it (CR-461-108)', async () => {
+    const { wrapper, actions } = mountOrg();
+    const team = () => wrapper.get('[data-test="workspace-team-transient-execution-row"][data-transient-kind="task_team"]');
+    expect(team().attributes('aria-expanded')).toBe('true');
+    expect(wrapper.find('[data-agent-run-id="agent-task-worker"]').exists()).toBe(true);
+    await team().trigger('click');
     await nextTick();
+    expect(team().attributes('aria-expanded')).toBe('true');
+    expect(wrapper.find('[data-agent-run-id="agent-task-worker"]').exists()).toBe(true);
+    await team().get('[data-test="workspace-team-transient-disclosure"]').trigger('click');
+    await nextTick();
+    expect(team().attributes('aria-expanded')).toBe('false');
+    expect(actions.onInspectAgentOrgExecution).toHaveBeenCalledWith(expect.objectContaining({ rootRunId: 'org-run' }), 'agent-task-lead', '');
+    await wrapper.get('[data-agent-run-id="agent-worker-task"]').trigger('click');
+    expect(actions.onInspectAgentOrgExecution).toHaveBeenLastCalledWith(expect.objectContaining({ rootRunId: 'org-run' }), 'agent-worker-task', '/worker');
+  });
 
-    expect(row().attributes('aria-expanded')).toBe('false');
-    expect(memberVisible(wrapper, 'agent-task-worker-late')).toBe(false);
-    for (const member of taskMembers) expect(memberVisible(wrapper, member)).toBe(false);
-
-    await row().trigger('click');
-    expect(row().attributes('aria-expanded')).toBe('true');
-    for (const member of [...taskMembers, 'agent-task-worker-late']) expect(memberVisible(wrapper, member)).toBe(true);
+  it('a delegated row leaves when the tree\'s change removes it', async () => {
+    const { wrapper } = mountOrg();
+    useRunTreeStore().streamChange({ kind: 'agent_org', runId: 'org-run' }, { added: [], removed: ['agent:agent-worker-task'], updated: [] });
+    await nextTick();
+    expect(wrapper.find('[data-agent-run-id="agent-worker-task"]').exists()).toBe(false);
   });
 });

@@ -29,7 +29,7 @@ export const summarizeTeamDraft = (teamContext: AgentTeamContext, draftSummaryPr
     );
     if (message?.type === 'user') return message.text.trim();
   }
-  return `${draftSummaryPrefix}${teamContext.view.getTeamDefinitionName() || 'Team'}`.trim();
+  return `${draftSummaryPrefix}${teamContext.view.getDisplayName() || 'Team'}`.trim();
 };
 
 export const resolveTeamLastActivityAt = (teamContext: AgentTeamContext): string => {
@@ -111,7 +111,8 @@ export const buildTeamNodes = (params: {
       ?? '';
     const rootTeam = rootDisplayRow({
       teamRunId: team.teamRunId,
-      displayName: team.teamDefinitionName || 'Team',
+      // A delegated team run is named after its slot, by the server (SR-091); else its definition's name.
+      displayName: team.displayName || team.teamDefinitionName || 'Team',
       teamDefinitionId: team.teamDefinitionId,
       coordinatorAddress: team.coordinatorAddress,
       summary: team.summary,
@@ -144,7 +145,7 @@ export const buildTeamNodes = (params: {
     const members = flattenTeamRows(children);
     const rootTeam = rootDisplayRow({
       teamRunId,
-      displayName: teamContext.view.getTeamDefinitionName(),
+      displayName: teamContext.view.getDisplayName(),
       teamDefinitionId: teamContext.view.getExecutionTree().root_team.team_definition_id,
       coordinatorAddress: teamContext.view.getExecutionTree().root_team.coordinator_address,
       summary,

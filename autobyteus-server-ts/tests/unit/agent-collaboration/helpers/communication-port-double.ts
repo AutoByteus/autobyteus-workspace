@@ -3,7 +3,7 @@ import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-u
 import type { RootCommunicationPort } from "../../../../src/agent-collaboration/execution/communication/root-communication-port.js";
 import { ROOT_NOT_ACCEPTING_MESSAGES } from "../../../../src/agent-collaboration/execution/communication/root-communication-port.js";
 import type { RootMessageAppend, RootMessageAppendResult } from "../../../../src/agent-collaboration/execution/communication/root-message-append.js";
-import { COORDINATING_LOG } from "../../../../src/run-history/store/task-agent-message-logs.js";
+import { OWN_RUN_LOG } from "../../../../src/run-history/store/message-log-owners.js";
 
 /**
  * A RootCommunicationEngine port double. Its `commitMessageAppend` runs the append the way every root
@@ -33,9 +33,9 @@ export const communicationPortDouble = (root: RootCommunicationPort["root"], ove
   assertDeliveryAllowed: () => undefined,
   buildRecipientInput: () => new AgentInputUserMessage("x"),
   reserveRecipientInput: vi.fn(async (agentRunId: string) => ({ reserved: true as const, reservation: reservationDouble(agentRunId) })),
-  logOwnersOf: () => [COORDINATING_LOG],
+  logOwnersOf: () => [OWN_RUN_LOG],
   commitMessageAppend: vi.fn(runAppendDurably),
-  publishToRootView: vi.fn(),
+  publishMessage: vi.fn(),
   presentRecipientInput: vi.fn(),
   ...overrides,
 });

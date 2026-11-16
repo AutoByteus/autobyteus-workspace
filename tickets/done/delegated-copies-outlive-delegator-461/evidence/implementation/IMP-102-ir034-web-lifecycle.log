@@ -1,0 +1,12 @@
+IMP-102 — CR-461-095 / -096 / -097 in the real app (code 7986b3e3a2; phone bundle built from it)
+AFS-002 (delegated-launch-defaults-probe --cases AFS-002, browser): AFS-002 Pass AC-002, AC-003, REQ-004, D- — every step and the end-of-case D-IMP-1 record
+  (settingsClosedBy empty: focusing the running Org's copy keeps the Org's Settings open; 3/3 Fail in API-REV-014).
+Phone (mobile-shell-probe --cases=MSP-13,MSP-25,MSP-32):
+[mobile-shell] MSP-13 Pass
+[mobile-shell] MSP-25 Pass
+[mobile-shell] MSP-32 Pass
+  MSP-32 after the revocation: {"refused": [], "refusedSockets": [], "socketsOpened": 0} (API-REV-014: 980 refusals with 4401 in 17 minutes)
+  MSP-25 while hidden: {"history": 0, "statuses": 0, "views": 0, "all": [{"op": "GetTaskWorkerTasks", "afterHiddenMs": 2349, "runId": null, "runIds": null}, {"op": "GetTaskWorkerTasks", "afterHiddenMs": 2393, "runId": null, "runIds": null}]}
+  No history, status or view read while hidden (AC-006; API-REV-014 read GetAgentRunCollaboration at 2.34 s). The two
+  GetTaskWorkerTasks reads follow the Task close the case makes while hidden (/ws/projects task_upserted re-reads the Task
+  workers in taskWorkerTaskStore, unchanged since base); flagged for the reviewer.

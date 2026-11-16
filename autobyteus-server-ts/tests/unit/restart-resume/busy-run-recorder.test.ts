@@ -17,7 +17,7 @@ const standalone = (rootRunId: string): RootExecutionIdentity => ({ rootSubjectK
 const team = (rootRunId: string): RootExecutionIdentity => ({ rootSubjectKind: "agent_team", rootRunId });
 
 /** Live runs by id with a status; `places` says which root holds each (absent: no root). */
-const harness = (runs: Record<string, string>, places: Record<string, { root: RootExecutionIdentity; place: "host" | "member" | "delegated" }>) => ({
+const harness = (runs: Record<string, string>, places: Record<string, { root: RootExecutionIdentity; place: "host" | "member" }>) => ({
   liveRuns: {
     listActiveRuns: () => Object.keys(runs),
     getActiveRun: (id: string) => (runs[id] ? { getStatusSnapshot: () => ({ status: runs[id] }) } : null) as never,
@@ -39,7 +39,7 @@ describe("BusyRunRecorder", () => {
       { host: "running", child: "initializing", member: "running", idle: "idle", offline: "offline", app: "running" },
       {
         host: { root: standalone("host"), place: "host" },
-        child: { root: standalone("host"), place: "delegated" },
+        child: { root: standalone("child"), place: "host" },
         member: { root: team("team-1"), place: "member" },
         idle: { root: team("team-1"), place: "member" },
         offline: { root: standalone("off"), place: "host" },
@@ -51,7 +51,7 @@ describe("BusyRunRecorder", () => {
     expect(read.kind).toBe("present");
     expect(read.kind === "present" && read.record.entries).toEqual([
       { root: standalone("host"), agentRunId: "host", place: "host", status: "running", recordedAt: "2026-11-01T10:00:00.000Z", version: "1.0.0" },
-      { root: standalone("host"), agentRunId: "child", place: "delegated", status: "initializing", recordedAt: "2026-11-01T10:00:00.000Z", version: "1.0.0" },
+      { root: standalone("child"), agentRunId: "child", place: "host", status: "initializing", recordedAt: "2026-11-01T10:00:00.000Z", version: "1.0.0" },
       { root: team("team-1"), agentRunId: "member", place: "member", status: "running", recordedAt: "2026-11-01T10:00:00.000Z", version: "1.0.0" },
     ]);
   });

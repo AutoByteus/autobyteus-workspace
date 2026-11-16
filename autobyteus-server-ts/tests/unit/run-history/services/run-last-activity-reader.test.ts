@@ -1,12 +1,13 @@
+import { NO_RUN_PARTS } from "../../../helpers/run-agents-reader.js";
+import { noDelegations } from "../../../helpers/no-delegations.js";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { RunLastActivityReader } from "../../../../src/run-history/services/run-last-activity-reader.js";
-import { StandaloneRootLocationService } from "../../../../src/standalone-agent-run-root/services/standalone-root-location-service.js";
-import { AgentMemoryLayout } from "../../../../src/agent-memory/store/agent-memory-layout.js";
+import { DelegationIndex } from "../../../../src/agent-collaboration/delegation/delegation-index.js";
+import { InMemoryTaskExecutionResources } from "../../../fixtures/task-execution-resource-fixtures.js";
 import { RAW_TRACES_ACTIVE_MEMORY_FILE_NAME } from "autobyteus-ts/memory/store/memory-file-names.js";
-import { getStandaloneRootTreePath } from "../../../../src/standalone-agent-run-root/persistence/standalone-root-tree-path.js";
 
 const CREATED = "2026-01-01T00:00:00.000Z";
 const at = (iso: string) => new Date(iso).getTime() / 1000;
@@ -26,9 +27,8 @@ const reader = (overrides: Partial<ConstructorParameters<typeof RunLastActivityR
   const warn = vi.fn();
   return {
     warn,
-    reader: new RunLastActivityReader({
+    reader: new RunLastActivityReader({ tree: noDelegations(),
       memoryDir,
-      agentLocations: { listAgents: vi.fn(async () => []) },
       teamLocations: { listAgents: vi.fn(async () => []) },
       orgLocations: { listAgents: vi.fn(async () => []) },
       warn,
@@ -53,17 +53,18 @@ describe("RunLastActivityReader (workspace-tree-vs-chooser DS-005, from autobyte
     await expect(reader().reader.forAgentRun({ runId: "run-a", createdAt: CREATED })).resolves.toBe("2026-11-04T10:00:00.000Z");
   });
 
-  it("moves an Agent run whose only new activity is a delegated copy's", async () => {
+  it("moves an Agent run whose only new activity is a run it delegated to (autobyteus-461: from the Task entries, each run's own folder)", async () => {
     traces(agentFolder("host"), "2026-02-01T00:00:00.000Z");
-    const copy = traces(path.join(agentFolder("host"), "collaboration", "agents", "copy-1"), "2026-11-05T08:00:00.000Z");
-    const listAgents = vi.fn(async () => [located(copy)] as never);
-    const { reader: r } = reader({ agentLocations: { listAgents } });
-    await expect(r.forAgentRun({ runId: "host", createdAt: CREATED, hasCollaboration: true })).resolves.toBe("2026-11-05T08:00:00.000Z");
-    expect(listAgents).toHaveBeenCalledWith({ rootRunId: "host" });
-    // Without a collaboration package its copies are not read.
-    listAgents.mockClear();
+    traces(agentFolder("image"), "2026-11-05T08:00:00.000Z");
+    const tasks = new InMemoryTaskExecutionResources();
+    const tree = new DelegationIndex(() => tasks, NO_RUN_PARTS);
+    tree.build(); tasks.setEntriesListener(tree);
+    const r = reader({ tree }).reader;
     await expect(r.forAgentRun({ runId: "host", createdAt: CREATED })).resolves.toBe("2026-02-01T00:00:00.000Z");
-    expect(listAgents).not.toHaveBeenCalled();
+    tasks.addTask("T1");
+    await tasks.linkNewTaskExecution({ role: "assigned", taskId: "T1", recipientAddress: "/image_maker",
+      delegatedFrom: { delegatingRun: { rootSubjectKind: "agent", rootRunId: "host" }, delegatorAgentRunId: "host" }, execution: { agentRunId: "image" } });
+    await expect(r.forAgentRun({ runId: "host", createdAt: CREATED })).resolves.toBe("2026-11-05T08:00:00.000Z");
   });
 
   it("answers a Team run's newest member activity, whatever the member", async () => {
@@ -83,26 +84,12 @@ describe("RunLastActivityReader (workspace-tree-vs-chooser DS-005, from autobyte
     expect(listAgents).toHaveBeenCalledWith({ rootRunId: "org-1" });
   });
 
-  it.each(["agent", "team", "org"] as const)("contains a %s root whose tree cannot be read: logs it and keeps its own time", async (kind) => {
+  it.each(["team", "org"] as const)("contains a %s root whose tree cannot be read: logs it and keeps its own time", async (kind) => {
     const fail = vi.fn(async () => { throw new Error("tree unreadable"); });
-    traces(agentFolder("host"), "2026-02-01T00:00:00.000Z");
-    const { reader: r, warn } = reader({ agentLocations: { listAgents: fail }, teamLocations: { listAgents: fail }, orgLocations: { listAgents: fail } });
-    const result = kind === "agent" ? r.forAgentRun({ runId: "host", createdAt: CREATED, hasCollaboration: true })
-      : kind === "team" ? r.forTeamRun({ teamRunId: "host", createdAt: CREATED }) : r.forOrgRun({ orgRunId: "host", createdAt: CREATED });
-    await expect(result).resolves.toBe(kind === "agent" ? "2026-02-01T00:00:00.000Z" : CREATED);
+    const { reader: r, warn } = reader({ teamLocations: { listAgents: fail }, orgLocations: { listAgents: fail } });
+    const result = kind === "team" ? r.forTeamRun({ teamRunId: "host", createdAt: CREATED }) : r.forOrgRun({ orgRunId: "host", createdAt: CREATED });
+    await expect(result).resolves.toBe(CREATED);
     expect(warn).toHaveBeenCalledWith(expect.stringContaining("'host': tree unreadable"));
-  });
-
-  it("does not fail on a damaged Agent root tree read through the real location service (explicit root throws)", async () => {
-    traces(agentFolder("host"), "2026-02-01T00:00:00.000Z");
-    const collaborationDir = new AgentMemoryLayout(memoryDir).getAgentRunCollaborationDirPath("host");
-    fs.mkdirSync(collaborationDir, { recursive: true });
-    fs.writeFileSync(getStandaloneRootTreePath(collaborationDir), "{ not json");
-    const agentLocations = new StandaloneRootLocationService({ memoryDir, warn: () => undefined });
-    await expect(agentLocations.listAgents({ rootRunId: "host" })).rejects.toThrow();
-    const { reader: r, warn } = reader({ agentLocations });
-    await expect(r.forAgentRun({ runId: "host", createdAt: CREATED, hasCollaboration: true })).resolves.toBe("2026-02-01T00:00:00.000Z");
-    expect(warn).toHaveBeenCalledWith(expect.stringContaining("RUN_LAST_ACTIVITY_TREE_UNREADABLE agent 'host'"));
   });
 
   it("skips a located folder whose memory cannot be read, with a warning, and keeps the others", async () => {

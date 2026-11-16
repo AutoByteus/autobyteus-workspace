@@ -1,4 +1,3 @@
-import { useRemoteRunsStore } from '~/stores/remoteRunsStore';
 import type { WorkspaceSelectionIntent } from '~/stores/agentSelectionStore';
 import type { AgentTeamContext } from '~/types/agent/AgentTeamContext';
 import { useAgentTeamRunStore } from '~/stores/agentTeamRunStore';
@@ -24,37 +23,29 @@ const teamMemberLoadTarget = (team: AgentTeamContext, agentRunId: string): Membe
   const location = team.view.getAgentExecutionLocation(agentRunId);
   if (!agent || agent.state.runId !== agentRunId || !location || location.agentRunId !== agentRunId) return null;
   const configured = teamAgentSourceOf(team.view.getExecutionTree(), agentRunId);
-  // autobyteus-278: an agent of a run another node runs: its conversation is read from its node; its files stay there.
-  const remote = configured ? null : useRemoteRunsStore().runOfAgentRun(agentRunId);
-  if (!configured && !remote) throw new Error(`AgentRun '${agentRunId}' has no configured Team placement.`);
+  if (!configured) throw new Error(`AgentRun '${agentRunId}' has no configured Team placement.`);
   return Object.freeze({
     agent,
     conversationDefaults: {
-      agentDefinitionId: configured?.agent_definition_id ?? '',
+      agentDefinitionId: configured.agent_definition_id,
       agentName: location.memberAddress.split('/').at(-1) ?? location.memberAddress,
-      llmModelIdentifier: configured?.launch_configuration.llm_model_identifier ?? '',
+      llmModelIdentifier: configured.launch_configuration.llm_model_identifier,
     },
-    fetchProjection: async () => {
-      try {
-        const projection = await fetchExactTeamMemberProjection(rootTeamRunId, agentRunId);
-        if (remote) useRemoteRunsStore().markReachable(remote.runId, true);
-        return projection;
-      } catch (cause) {
-        if (remote) useRemoteRunsStore().markReachable(remote.runId, false);
-        throw cause;
-      }
-    },
-    fetchFileChanges: () => remote ? Promise.resolve([]) : fetchRunFileChanges({
+    fetchProjection: () => fetchExactTeamMemberProjection(rootTeamRunId, agentRunId),
+    fetchFileChanges: () => fetchRunFileChanges({
       kind: 'teamMember', teamRunId: rootTeamRunId, memberAddress: location.memberAddress, agentRunId,
     }),
     // Content authority does not supersede currently observed live tool decisions.
     liveToolAuthority: () => team.view.isRootTeamActive() && !team.view.needsStreamRecovery()
-      && team.view.listLiveAgentContextEntries().some((entry) => entry.agentRunId === agentRunId && entry.agentContext === agent)
+      && team.view.listAgentContextEntries().some((entry) => entry.agentRunId === agentRunId && entry.agentContext === agent)
       && useAgentTeamRunStore().isTeamStreamReady(rootTeamRunId),
   });
 };
 
-/** Loads one Team member's stored conversation, activities and files through the member loader, unless loaded. */
+/**
+ * Loads one of the Team's own members' stored conversation, activities and files through the member loader, unless
+ * loaded. A run the Team delegated is not one of them: it is its own run, read as one (autobyteus-461 rule 2).
+ */
 export const ensureAuthoritativeTeamMemberProjection = async (input: {
   team: AgentTeamContext;
   agentRunId: string;

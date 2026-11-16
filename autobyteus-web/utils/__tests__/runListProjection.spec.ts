@@ -19,7 +19,6 @@ const team = (teamRunId: string, lastActivityAt: string, isActive = false) => ({
 });
 const org = (rootRunId: string, createdAt: string, lastActivityAt = createdAt) => ({
   stableKey: rootRunId, rootSubjectKind: 'agent_org', rootRunId, createdAt, lastActivityAt, archivedAt: null, isActive: true, summary: 'Launch',
-  closedTaskExecutions: [],
   executionTree: { rootOrg: { orgDefinitionId: 'org-def', orgDefinitionName: 'Launch Org', members: [], defaultLaunchConfiguration: { workspaceRootPath: '/ws/c/' } } },
 });
 const build = (sources: Partial<RunListSources>) => buildRunListEntries({
@@ -28,6 +27,17 @@ const build = (sources: Partial<RunListSources>) => buildRunListEntries({
 } as RunListSources);
 
 describe('buildRunListEntries (the Runs view, workspace-tree-vs-chooser DS-003, from autobyteus-378)', () => {
+  // autobyteus-461 SR-091 (DS-11): a delegated run standing on its own is named as its row and its own view name it, by the server.
+  it('names a delegated Agent or Team run by the server\'s name (its slot); one the user started by its definition', () => {
+    const entries = build({
+      workspaceGroups: [folder('/ws/a', [{ id: 'writer-def', name: 'Slot Writer 0528', runs: [
+        storedRun('copy', '2026-01-02T00:00:00Z', { displayName: 'writer' }), storedRun('mine', '2026-01-01T00:00:00Z', { displayName: null })] }])] as never,
+      teamNodes: [{ ...team('team-copy', '2026-01-03T00:00:00Z'), rootTeam: { displayName: 'review squad' } }, team('team-mine', '2026-01-04T00:00:00Z')] as never,
+    });
+    expect(Object.fromEntries(entries.map((entry) => [entry.runId, entry.name]))).toEqual({
+      copy: 'writer', mine: 'Slot Writer 0528', 'team-copy': 'review squad', 'team-mine': 'Video Team' });
+  });
+
   it('lists Agent, Team and Org runs of every folder in one list, newest first by last activity', () => {
     const entries = build({
       workspaceGroups: [

@@ -25,7 +25,8 @@ const external = vi.hoisted(() => ({
 }))
 // Surrounding owners provide selection/context inputs, not fake composer/voice behavior.
 vi.mock('~/stores/agentSelectionStore', () => ({ useAgentSelectionStore: () => ({ selectedType: 'team' }) }))
-vi.mock('~/stores/agentTeamContextsStore', () => ({ useAgentTeamContextsStore: () => ({ get activeTeamContext() { return external.team } }) }))
+// The Team's own focus; no run it delegated is selected in its tree (autobyteus-461 SR-084).
+vi.mock('~/stores/agentTeamContextsStore', () => ({ useAgentTeamContextsStore: () => ({ get activeTeamContext() { return external.team }, delegatedFocusOf: () => null }) }))
 vi.mock('~/stores/agentContextsStore', () => ({ useAgentContextsStore: () => ({}) }))
 vi.mock('~/stores/agentRunStore', () => ({ useAgentRunStore: () => ({}) }))
 vi.mock('~/stores/agentTeamRunStore', () => ({ useAgentTeamRunStore: () => ({ sendMessageToFocusedMember: external.send }) }))

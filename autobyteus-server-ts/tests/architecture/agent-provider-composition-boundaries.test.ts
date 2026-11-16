@@ -483,7 +483,6 @@ describe("agent provider composition boundaries", () => {
     const nonOwningLocalFiles = [
       "agent-team-execution/local/flat-team-execution-manager.ts",
       "agent-team-execution/local/registries/configured-agent-execution-registry.ts",
-      "agent-team-execution/local/registries/task-agent-execution-registry.ts",
     ];
     for (const relativePath of nonOwningLocalFiles) {
       expect(read(join(SRC, relativePath)), relativePath).not.toMatch(/AgentToolMcp|agentToolMcp/);
@@ -531,7 +530,7 @@ describe("agent provider composition boundaries", () => {
     ]);
     for (const relativePath of production) {
       const source = read(join(ROOT, relativePath));
-      for (const required of ["memoryDir", "flatTeamExecutionFactory", "taskExecutionIdentity", "modelSelectionValidator", "memberExecutionContextBuilder"]) {
+      for (const required of ["memoryDir", "flatTeamExecutionFactory", "modelSelectionValidator", "memberExecutionContextBuilder"]) {
         expect(source, `${relativePath}:${required}`).toContain(required);
       }
     }
@@ -624,16 +623,6 @@ describe("agent provider composition boundaries", () => {
     }
   }, WHOLE_SOURCE_SCAN_TIMEOUT_MS);
 
-  it("carries one explicit task-identity capability through both subject roots", () => {
-    const teamManager = read(join(SRC, "agent-team-execution/services/agent-team-run-manager.ts"));
-    expect(teamManager).toContain("taskExecutionIdentity");
-    const teamMaterializer = read(join(SRC, "agent-team-execution/services/team-root-materializer.ts"));
-    expect(teamMaterializer).toMatch(/new RootTeamRun\(\{[\s\S]*taskExecutionIdentity/);
-    const orgBuilder = read(join(SRC, "agent-org-execution/services/agent-org-execution-scope-builder.ts"));
-    expect(orgBuilder).toContain("taskExecutionIdentity");
-    const identityOwner = read(join(SRC, "agent-team-execution/task-delegation/task-execution-identity-capabilities.ts"));
-    expect(identityOwner).toContain("new TaskTeamRunIdentityFactory(agentRuns)");
-  });
   it("keeps context translation provider-neutral and all path authority explicit", () => {
     const forbiddenProviderOwners = [
       "agent-customization/processors/prompt/user-input-context-building-processor.ts",
@@ -642,9 +631,6 @@ describe("agent provider composition boundaries", () => {
       "agent-execution/backends/claude/session/claude-session-state-input.ts",
       "agent-execution/backends/claude/session/claude-session.ts",
       "agent-execution/domain/agent-run.ts",
-      "agent-team-execution/task-delegation/team-task-execution-service.ts",
-      "agent-team-execution/task-delegation/team-task-execution-adapter.ts",
-      "agent-team-execution/task-delegation/task-team-run-identity-factory.ts",
     ];
     for (const relativePath of forbiddenProviderOwners) {
       expect(read(join(SRC, relativePath)), relativePath).not.toMatch(

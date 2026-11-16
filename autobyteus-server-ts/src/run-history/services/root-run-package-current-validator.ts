@@ -145,7 +145,6 @@ export class RootRunPackageCurrentValidator {
     }
     const metadataStore = new AgentRunMetadataStore(this.memoryDir);
     const state = await metadataStore.readMetadataState(id);
-    if (state.kind === "missing" && (await metadataStore.readTaskAgentMetadataState(id)).kind !== "missing") return;
     if (state.kind !== "present") {
       this.record(candidate, "agent", id, entry.packagePath,
         state.kind === "unreadable" && isAttemptError(state.error) ? "FAILED_ATTEMPT" : "ROOT_RUN_PACKAGE_CURRENT_VALIDATION_FAILED",
@@ -173,12 +172,6 @@ export class RootRunPackageCurrentValidator {
       this.record(target, "agent_team", rootRunId, entry.packagePath, "ROOT_RUN_PACKAGE_MISSING_TREE", "Execution tree is missing; package preserved.");
       return;
     }
-    try {
-      if (await this.stores.teamTree.isTaskAgentTeamDir(entry.packagePath)) return;
-    } catch (error) {
-      this.record(target, "agent_team", rootRunId, entry.packagePath, isAttemptError(error) ? "FAILED_ATTEMPT" : "ROOT_RUN_PACKAGE_CURRENT_VALIDATION_FAILED", message(error));
-      return;
-    }
     const manifestError = await this.validateManifest(entry.packagePath, requiredTeamFiles, retiredTeamFiles,
       { name: "team_communication_messages", exists: () => this.stores.teamMessages.hasLog(entry.packagePath) });
     if (manifestError) {
@@ -188,7 +181,7 @@ export class RootRunPackageCurrentValidator {
     try {
       // Structure only (autobyteus-358): the log is validated where it is read, not here. The run's own parts only
       // (D-11): it reads no delegated run and asks no Task record, which are loaded after this scan.
-      const executionTree = await this.stores.teamTree.readOwnParts(entry.packagePath, rootRunId);
+      const executionTree = await this.stores.teamTree.read(entry.packagePath, rootRunId);
       if (!executionTree) throw new Error("Team Run V3 tree is required.");
       validateTeamRunExecutionTree(executionTree, rootRunId);
       target.groups.push({ key: packageKey("agent_team", rootRunId), family: "agent_team", id: rootRunId, directory: entry.packagePath });
@@ -215,7 +208,7 @@ export class RootRunPackageCurrentValidator {
     try {
       // Structure only (autobyteus-358): the log is validated where it is read, not here. The run's own parts only
       // (D-11): it reads no delegated run and asks no Task record, which are loaded after this scan.
-      const executionTree = await this.stores.orgTree.readOwnParts(entry.packagePath, rootRunId);
+      const executionTree = await this.stores.orgTree.read(entry.packagePath, rootRunId);
       if (!executionTree) throw new Error("AgentOrg Run V2 tree is required.");
       if (executionTree.rootOrg.orgRunId !== rootRunId) throw new Error(`AgentOrg package '${rootRunId}' has contradictory root IDs.`);
       validateAgentOrgExecutionTree(executionTree);

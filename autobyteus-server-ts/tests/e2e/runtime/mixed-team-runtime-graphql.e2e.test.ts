@@ -949,24 +949,7 @@ Rules:
       JSON.stringify(specialistProjectionBeforeRestore.conversation),
     ).toContain(preRestoreAutoToCodexReplyToken);
 
-    const restoreMutation = `
-        mutation RestoreAgentTeamRun($teamRunId: String!) {
-          restoreAgentTeamRun(teamRunId: $teamRunId) {
-            success
-            message
-            teamRunId
-          }
-        }
-      `;
-    const restoreResult = await execGraphql<{
-      restoreAgentTeamRun: {
-        success: boolean;
-        message: string;
-        teamRunId: string | null;
-      };
-    }>(restoreMutation, { teamRunId });
-    expect(restoreResult.restoreAgentTeamRun.success).toBe(true);
-    expect(restoreResult.restoreAgentTeamRun.teamRunId).toBe(teamRunId);
+    // The stopped team's view serves it from its stored file; the next message to one of its members on it restores the run (autobyteus-461 CR-461-008).
 
     const secondConnection = await openTeamSocket(teamRunId);
     try {

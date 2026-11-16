@@ -6,6 +6,7 @@ import type {
 import type { TokenUsageRunRecord } from "../domain/token-usage-run-record.js";
 import {
   buildStandaloneRunTokenUsageSummaryFromRecords,
+  buildTeamRunTokenUsageSummaryFromRecords,
   buildTokenUsageRunSummaryFromRecords,
 } from "../projections/token-usage-run-aggregate.js";
 import { SqlTokenUsageRunRepository } from "../repositories/sql/token-usage-run-repository.js";
@@ -47,10 +48,13 @@ export class TokenUsageRunStore {
     return buildTokenUsageRunSummaryFromRecords({ runId, records: record ? [record] : [] });
   }
 
-  async getTeamRunSummary(rootTeamRunId: string): Promise<TokenUsageRunSummaryPayload> {
+  /** A team or org run's roll-up over its own records and the given agent runs delegated from it (each record once). */
+  async getTeamRunSummary(rootTeamRunId: string, delegatedAgentRunIds: readonly string[] = []): Promise<TokenUsageRunSummaryPayload> {
     await this.readiness.assertHistoricalReadReady();
-    const records = await this.repository.listByRootTeamRunId(rootTeamRunId);
-    return buildTokenUsageRunSummaryFromRecords({ runId: rootTeamRunId, records });
+    const own = await this.repository.listByRootTeamRunId(rootTeamRunId);
+    const ownIds = new Set(own.map((record) => record.runId));
+    const delegated = delegatedAgentRunIds.length ? await this.repository.listByRunIds(delegatedAgentRunIds.filter((id) => !ownIds.has(id))) : [];
+    return buildTeamRunTokenUsageSummaryFromRecords({ rootTeamRunId, records: [...own, ...delegated] });
   }
 
   /** A standalone run's roll-up over its host and the given child runs (each record once). */

@@ -26,6 +26,8 @@ export interface TeamRunMemberHistoryItem {
 
 export interface TeamRunHistoryItem {
   teamRunId: string;
+  /** The run's name (SR-091): a delegated team run's slot; `null` for one the user started, which its definition names. */
+  displayName: string | null;
   teamDefinitionId: string;
   teamDefinitionName: string;
   coordinatorAddress: string;

@@ -1,0 +1,15 @@
+# commit a047a56127 (CR-461-077 fbe817ff6c, F-59 a047a56127); load: 17-19
+$ (web) the new editor spec with ExistingRunConfigEditor.vue reverted to its prior commit (savedOf absent)
+      Tests  1 failed (1)
+$ (web) the card spec (useTaskRootNavigationTopRun.spec.ts) on the prior useTaskRootNavigation.ts
+   4 failed (the two-hops worker, PMU-003, the own-top worker, F-59)
+$ (web) full spec suite on CR-461-077's tree (before the F-59 change)
+ Test Files  768 passed (768)
+      Tests  5766 passed | 2 skipped (5768)
+$ (web) pnpm codegen:check; pnpm typecheck; npx vitest run --no-watch  (at a047a56127)
+autobyteus-web/generated/graphql.ts is current.
+[typecheck] production errors: 0; test-file errors: 90 in 38 files (baseline 90 in 38 files)
+[typecheck] PASS
+ Test Files  768 passed (768)
+      Tests  5768 passed | 2 skipped (5770)
+exit 0

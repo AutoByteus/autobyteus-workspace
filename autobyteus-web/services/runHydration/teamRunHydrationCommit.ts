@@ -2,19 +2,16 @@ import type { TeamRunHydrationCandidate } from './teamRunContextHydrationService
 import { beginTeamMemberGeneration, markTeamMemberProjectionAuthoritative } from './teamMemberProjectionHydrationService';
 import { useCollaborationParticipantMessagesStore } from '~/services/collaborationMessages/collaborationParticipantMessages';
 import { commitMemberRunStates } from './memberRunStateHydration';
-import { registerTeamRemoteRuns } from '~/services/teamExecution/teamRemoteRunRegistry';
+import { useRunTreeStore } from '~/stores/runTreeStore';
+import { treeRowOfAgent } from '~/utils/runTree/runTreeAgents';
 
-/**
- * Commits every hydrated member's state (activities, then artifacts); throws when activity changed meanwhile. The
- * Team's remote runs join the window's registry (autobyteus-278).
- */
+/** Commits every hydrated member's state (activities, then artifacts); throws when activity changed meanwhile. */
 export const commitTeamRunHydration = (
   candidate: TeamRunHydrationCandidate,
 ): void => {
   if (commitMemberRunStates(candidate.memberRunStates) === 'conflict') {
     throw new Error(`Team activity for '${candidate.teamRunId}' changed before projection commit.`);
   }
-  registerTeamRemoteRuns(candidate.teamRunId, candidate.remoteTaskExecutions);
 };
 
 /**
@@ -30,6 +27,8 @@ export const markCommittedTeamRunHydrationAuthority = (
   candidate.projectionByAgentRunId.forEach((projection, agentRunId) => {
     if (projection) markTeamMemberProjectionAuthoritative(candidate.hydratedContext, agentRunId);
   });
+  // The Team holds its own members and the agents of the runs in its tree (SR-084).
   useCollaborationParticipantMessagesStore().reloadRoot('agent_team', candidate.teamRunId, candidate.rebuild,
-    (agentRunId) => candidate.hydratedContext.view.getMemberAddress(agentRunId) !== null);
+    (agentRunId) => candidate.hydratedContext.view.getMemberAddress(agentRunId) !== null
+      || treeRowOfAgent(useRunTreeStore().rowsOf({ kind: 'agent_team', runId: candidate.teamRunId }), agentRunId) !== null);
 };

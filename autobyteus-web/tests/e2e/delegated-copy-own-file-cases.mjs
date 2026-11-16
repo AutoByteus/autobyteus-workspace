@@ -24,6 +24,7 @@
 import fs from 'node:fs/promises'
 import path from 'node:path'
 import { randomUUID } from 'node:crypto'
+import { delegatedNodes, readRunTree } from './fixtures/run-tree.mjs'
 
 export function registerDelegatedCopyOwnFileCases(h) {
   const { defineCase, assert, waitFor, delay, sel, settle, shot, gql, callTool, objectsIn, pick,
@@ -51,7 +52,6 @@ export function registerDelegatedCopyOwnFileCases(h) {
   }
   const memberProjection = async (teamRunId, agentRunId) => (await gql('query($t:String!,$a:String!){getTeamMemberRunProjection(teamRunId:$t,agentRunId:$a){agentRunId conversation}}', { t: teamRunId, a: agentRunId })).getTeamMemberRunProjection
   /** A copy's record in a tree DTO, by run ID (copies carry `source`). */
-  const recordOf = (tree, runId) => objectsIn(tree).find((r) => (pick(r, 'agentRunId') === runId || pick(r, 'teamRunId') === runId) && pick(r, 'source'))
   /** A configured placement (slot) by address: only the root's `members` tree is searched, never task executions. */
   const configuredAt = (tree, address) => {
     const root = pick(tree, 'rootOrg') ?? pick(tree, 'rootTeam') ?? tree
@@ -95,8 +95,9 @@ export function registerDelegatedCopyOwnFileCases(h) {
     const j = file.json
     const missing = LAUNCH_KEYS.filter((k) => !(k in j))
     assert(missing.length === 0 && j.runtimeKind === AGY && j.llmModelIdentifier === model && typeof j.autoExecuteTools === 'boolean', `${label}: own file holds the full started launch`, { missing, file })
-    assert(j.taskAgent?.address === address && j.taskAgent?.launchSource?.origin === 'configured', `${label}: own file records the configured launch source`, file)
-    assert(!('origin' in j.taskAgent), `${label}: own file has no taskAgent.origin`, file)
+    // autobyteus-461 E6: `address` and `launchSource` are the run's own fields, with `delegatedFrom`; no `taskAgent`.
+    assert(j.address === address && j.launchSource?.origin === 'configured', `${label}: own file records the configured launch source`, file)
+    assert(!('taskAgent' in j) && j.delegatedFrom?.delegatingRun, `${label}: own file names its delegating run, no taskAgent`, file)
   }
   /** The runtime session a Team copy's member recorded (its own tree, by member run ID). */
   const leadSession = (teamRunId, agentRunId) => waitFor('Team copy member session recorded', async () => {
@@ -108,7 +109,12 @@ export function registerDelegatedCopyOwnFileCases(h) {
   const waitLaunches = (label, runId, count) => waitFor(label, async () => { const l = await launches(runId); return l.length >= count ? l : null }, 90000, 1000)
 
   // Settings helpers
-  const rowKey = (address, runId) => `${address}@${runId}`
+  /**
+   * A Team copy's member row in its Settings group view (autobyteus-461 TC-12, SR-084 step 2f): keyed by its own address in the
+   * copy's own view, or by its tree row key (`team_member:<copy>:<agent>`); either names the same row.
+   */
+  const copyMemberRow = (page, teamRunId, address, runId) => page.locator(`[data-test="existing-run-settings"] [data-test="run-member-${address}"], `
+    + `[data-test="existing-run-settings"] [data-test="run-member-team_member:${teamRunId}:${runId}"]`).first()
   /** Any model menu (runtime locked or not): search the model and pick it. */
   const chooseAnyModel = async (page, scope, model) => {
     await scope.locator(sel('chat-model-trigger')).first().click()
@@ -143,6 +149,60 @@ export function registerDelegatedCopyOwnFileCases(h) {
     const ctx = stores.get('agentOrgContexts')?.contextFor(o)?.getAgentContext(a)
     return ctx ? { config: { llmModelIdentifier: ctx.config.llmModelIdentifier }, state: { conversation: { llmModelIdentifier: ctx.state.conversation.llmModelIdentifier, agentName: ctx.state.conversation.agentName } } } : null
   }, [orgRunId, agentRunId]).then(contextFacts)
+  /** A delegated run's own context (autobyteus-461 rule 2: a copy opened from its row is its own run, not an agent of its delegator's view). */
+  const ownContext = (page, agentRunId) => page.evaluate((a) => {
+    const stores = document.querySelector('#__nuxt').__vue_app__.config.globalProperties.$pinia._s
+    const ctx = stores.get('agentContexts')?.getRun(a)
+    return ctx ? { config: { llmModelIdentifier: ctx.config.llmModelIdentifier }, state: { conversation: { llmModelIdentifier: ctx.state.conversation.llmModelIdentifier, agentName: ctx.state.conversation.agentName } } } : null
+  }, agentRunId).then(contextFacts)
+  /**
+   * autobyteus-461 SR-091 (REQ-014): a delegated run has one name everywhere, its slot's (the last segment of its delegation
+   * address), as at base. For a copy opened from its row: its row, its own context, its header, its Task card, its Settings
+   * card and, when the run list lists it, its run-list name. `marker` is a word of its Task's description. A copy delegated by
+   * a run that works on a Task is sub-work of that Task (a described delegation creates no Task of its own:
+   * `TaskDelegation.prepareWork`), so it has no Task card and no Task view (`ownTask: false`).
+   */
+  const namesOf = async (page, agentRunId, marker, rowName) => {
+    // The opened run's header: the Agent surface's title, or (a copy opened in a Team run's tree) the Team surface's member name.
+    const header = await waitFor('copy header', async () => (await page.locator(`${sel('agent-workspace-title')}:visible, [data-testid="team-workspace-surface"] h4:visible`).first()
+      .innerText({ timeout: 1000 }).catch(() => ''))?.trim() || null, 15000, 300).catch(() => null)
+    const surfaceAtRead = await page.evaluate(() => ({ agentSurface: document.querySelectorAll('[data-testid="agent-workspace-surface"]').length, teamSurface: document.querySelectorAll('[data-testid="team-workspace-surface"]').length,
+      titles: document.querySelectorAll('[data-test="agent-workspace-title"]').length, url: location.href }))
+    if (!header) await shot(page, `names-${agentRunId.slice(-6)}-header-read`)
+    const context = (await ownContext(page, agentRunId))?.name ?? null
+    // The Task card, found as a user finds it: the board's search (a description match) leaves its one card.
+    const search = page.locator('[data-testid="temp-tasks-search-input"]:visible, [data-testid="project-tasks-search-input"]:visible').first()
+    let taskCard = null
+    if (await search.isVisible().catch(() => false)) {
+      await search.fill(marker); await settle(page, 800)
+      const cards = (await page.locator('[data-testid="project-task-root-name"]:visible').allInnerTexts()).map((x) => x.trim())
+      taskCard = cards.length === 1 ? cards[0] : cards.length ? `ambiguous: ${cards.join(', ')}` : null
+      await search.fill(''); await settle(page, 300)
+    }
+    const view = await settingsView(page)
+    const settings = await view.locator(sel('run-subject-name')).first().innerText().catch(() => null)
+    await backToConversation(page)
+    const history = (await gql('query{listWorkspaceRunHistory(limitPerAgent: 50){agentDefinitions{runs{runId displayName}}}}')).listWorkspaceRunHistory
+    const listed = objectsIn(history).find((x) => x.runId === agentRunId)
+    // The server's Task view (what the Task page and card read): the Task whose description carries the marker.
+    const tasks = (await gql('query{tasksWithoutProject{taskId description root{displayName ingressAgentRunId}}}')).tasksWithoutProject ?? []
+    const task = tasks.find((x) => x.description?.includes(marker))
+    const names = { row: rowName, context, header: header?.trim() ?? null, taskCard, taskView: task ? (task.root?.displayName ?? null) : 'no Task', settings: settings?.trim() ?? null,
+      runList: listed ? (listed.displayName ?? null) : 'not listed' }
+    // When a page read is empty, what the page showed (for classification).
+    names.surfaceAtRead = surfaceAtRead
+    if (!names.header || !names.taskCard) names.page = await page.evaluate(() => ({ url: location.href,
+      titles: [...document.querySelectorAll('[data-test="agent-workspace-title"]')].map((el) => ({ text: el.textContent?.trim(), visible: el.offsetParent !== null })),
+      settingsOpen: Boolean(document.querySelector('[data-test="existing-run-settings"]')),
+      boardSearch: [...document.querySelectorAll('[data-testid$="tasks-search-input"]')].map((el) => ({ id: el.getAttribute('data-testid'), visible: el.offsetParent !== null })),
+      cards: [...document.querySelectorAll('[data-testid="project-task-root-name"]')].map((el) => el.textContent?.trim()) }))
+    if (!names.taskCard) names.taskDescriptions = tasks.map((x) => x.description?.slice(0, 60))
+    return names
+  }
+  // CR-461-115: a delegated run's header is its slot name alone, in every tree (an Agent run's, a Team's, an Org's).
+  const allNamed = (names, slot, ownTask = true) => names.row === slot && names.context === slot && names.header === slot
+    && (ownTask ? names.taskCard === slot && names.taskView === slot : names.taskCard === null && names.taskView === 'no Task')
+    && names.settings?.toLowerCase() === slot && (names.runList === 'not listed' || names.runList === slot)
   const CONFIGURED_LABEL = 'As configured in this run'
   const configuredRows = (rows, address) => rowsAt(rows, address).filter((r) => !r.member && r.source === 'configured' && r.launch.includes(CONFIGURED_LABEL))
 
@@ -164,8 +224,10 @@ export function registerDelegatedCopyOwnFileCases(h) {
     await typeAndSend(page, callTool('delegate_task', { recipient_address: writerAddress, description: 'Scribe work DCR-001.' }))
     await page.waitForURL(/\/workspace/, { timeout: 180000 })
     r.teamRunId = await waitFor('new team run', async () => (await teamRunIds(r.teamDefinitionId)).find((id) => !before.has(id)), 60000)
-    const w = await waitFor('catalog copy W', async () => objectsIn(await teamTree(r.teamRunId)).find((x) => x.address === writerAddress && pick(x, 'agentRunId') && pick(x, 'source')), 120000, 1500)
-    r.writerCopy = pick(w, 'agentRunId')
+    // autobyteus-461 SR-084: a delegated run is a row of its delegator's tree (the Team's own tree holds its members only).
+    const delegatedOf = async (teamRunId) => delegatedNodes(await readRunTree(gql, 'team', teamRunId))
+    const w = await waitFor('catalog copy W', async () => (await delegatedOf(r.teamRunId)).find((x) => x.address === writerAddress && x.agentRunId), 120000, 1500)
+    r.writerCopy = w.agentRunId
     await openTeamRun(page, r.teamRunId, r.teamDefinitionId)
     await page.locator(sel(`workspace-team-member-${r.teamRunId}-/manager`)).click(); await settle(page, 1500)
     // The slot works too: it gets its own runtime conversation.
@@ -186,9 +248,10 @@ export function registerDelegatedCopyOwnFileCases(h) {
     // AC-002: the own file and the tree record.
     r.c1OwnFile = await waitFor('C1 own file with a session', async () => { const f = await ownFile(r.c1, 'run_metadata.json'); return f.json.platformAgentRunId ? f : null }, 60000, 1000)
     assertAgentOwnFile(r.c1OwnFile, { address: '/worker', model: MODEL }, 'C1')
-    const c1Record = recordOf(await teamTree(r.teamRunId), r.c1)
-    r.c1RecordSource = pick(c1Record, 'source')
-    assert(modelOf(pick(r.c1RecordSource, 'launchConfiguration')) === MODEL && pick(pick(r.c1RecordSource, 'launchSource'), 'origin') === 'configured', 'C1 tree record source', c1Record)
+    // Its row in the tree carries the launch it recorded (configuration and source).
+    const c1Record = await waitFor('C1 in the tree', async () => (await delegatedOf(r.teamRunId)).find((x) => x.agentRunId === r.c1), 60000, 1000)
+    r.c1RecordSource = c1Record.launch
+    assert(r.c1RecordSource?.llmModelIdentifier === MODEL && r.c1RecordSource?.source?.origin === 'configured', 'C1 tree record source', c1Record)
     r.slotSession = pick(configuredAt(await teamTree(r.teamRunId), '/worker'), 'platformAgentRunId')
     r.c1Session = r.c1OwnFile.json.platformAgentRunId
     assert(r.slotSession && r.c1Session && r.slotSession !== r.c1Session, 'slot and copy should have their own sessions', { slot: r.slotSession, c1: r.c1Session })
@@ -208,6 +271,9 @@ export function registerDelegatedCopyOwnFileCases(h) {
 
     // SCN-003: stop the Team run and set /worker to ALT in its Settings.
     await stopRootFromSettings(page)
+    // autobyteus-461 REQ-001: the root's Stop leaves its working copy running; C1 is stopped by its own Stop, so the next
+    // message restores it (rule 2: its own terminate).
+    await gql('mutation($id:String!){terminateAgentRun(agentRunId:$id){success message}}', { id: r.c1 })
     // autobyteus-366: the slot /worker's own Settings (its member row focused in the tree).
     const workerCard = async () => {
       await page.locator(sel(`workspace-team-member-${r.teamRunId}-/worker`)).first().click(); await settle(page, 1500)
@@ -220,7 +286,8 @@ export function registerDelegatedCopyOwnFileCases(h) {
     await saveSettings(page); await saved(page)
     const editedTree = await teamTree(r.teamRunId)
     r.slotAfterEdit = modelOf(pick(configuredAt(editedTree, '/worker'), 'launchConfiguration'))
-    r.c1AfterEdit = modelOf(pick(pick(recordOf(editedTree, r.c1), 'source'), 'launchConfiguration'))
+    // The copy's row keeps the launch C1 recorded (its own run's), whatever the slot's edit.
+    r.c1AfterEdit = (await delegatedOf(r.teamRunId)).find((x) => x.agentRunId === r.c1)?.launch?.llmModelIdentifier ?? null
     assert(r.slotAfterEdit === ALT && r.c1AfterEdit === MODEL, 'slot edited; C1 keeps its snapshot', r)
     r.workerSlotSummary = await cardSummary(await workerCard())
     r.rowsStopped = await delegatedRows(page, { kind: 'team', id: r.teamRunId })
@@ -248,20 +315,30 @@ export function registerDelegatedCopyOwnFileCases(h) {
     r.c2OwnFile = await ownFile(r.c2, 'run_metadata.json')
     assertAgentOwnFile(r.c2OwnFile, { address: '/worker', model: ALT }, 'C2')
 
-    // AC-004: the Team context of each agent (what its conversation runs with), Settings rows, the run view.
+    // AC-004: the context of each agent (what its conversation runs with: a copy's own, the slot's in its Team), Settings rows, the run view.
     await openTeamRun(page, r.teamRunId, r.teamDefinitionId)
     await openSidebarAgent(page, r.c1)
     await openSidebarAgent(page, r.c2)
-    r.contexts = { c1: await teamContext(page, r.teamRunId, r.c1), c2: await teamContext(page, r.teamRunId, r.c2), slot: await teamContext(page, r.teamRunId, r.slotRunId) }
-    assert(r.contexts.c1?.model === MODEL && r.contexts.c2?.model === ALT && r.contexts.slot?.model === ALT
-      && [r.contexts.c1, r.contexts.c2, r.contexts.slot].every((c) => c.name === 'worker'), 'Team contexts: each copy on its own model, the slot on its edit; all named "worker"', r.contexts)
+    r.contexts = { c1: await ownContext(page, r.c1), c2: await ownContext(page, r.c2), slot: await teamContext(page, r.teamRunId, r.slotRunId) }
+    assert(r.contexts.c1?.model === MODEL && r.contexts.c2?.model === ALT && r.contexts.slot?.model === ALT && r.contexts.slot.name === 'worker',
+      'Team contexts: each copy on its own model; the slot on its edit, named "worker"', r.contexts)
+    // SR-091: each copy of /worker is named "worker" everywhere: row, context, header, Task card, Settings, run list.
+    const teamRows = await delegatedOf(r.teamRunId)
+    r.slotNames = {}
+    for (const [key, id, marker] of [['c1', r.c1, 'COPY1-MARKER-DCR1'], ['c2', r.c2, 'COPY2-MARKER-DCR1']]) {
+      await openSidebarAgent(page, id)
+      r.slotNames[key] = await namesOf(page, id, marker, teamRows.find((x) => x.agentRunId === id)?.name ?? null)
+    }
+    // C1 and C2 are delegated by W, which works on its Task: they are sub-work of it, with no Task of their own.
+    assert(allNamed(r.slotNames.c1, 'worker', false) && allNamed(r.slotNames.c2, 'worker', false), 'SR-091: each copy of /worker reads "worker" in its row, context, header, Settings and run list (sub-work: no Task of its own)', r.slotNames)
     await openTeamRun(page, r.teamRunId, r.teamDefinitionId)
     await settingsView(page)
     r.rowsFinal = await delegatedRows(page, { kind: 'team', id: r.teamRunId })
     const finalRows = configuredRows(r.rowsFinal, '/worker')
     assert(finalRows.length === 2 && finalRows.some((x) => x.launch.includes(MODEL_LABEL)) && finalRows.some((x) => x.launch.includes(ALT_LABEL)), 'Settings: one row per copy, each on its own model, both "As configured in this run"', r.rowsFinal)
     await shot(page, 'DCR-001-settings-two-copies-1280', 1280)
-    const c1View = JSON.stringify(await memberProjection(r.teamRunId, r.c1))
+    // autobyteus-461 rule 2: the copy is its own run (its conversation by its own run ID); the slot is the team's member.
+    const c1View = JSON.stringify((await gql('query($id:String!){getRunProjection(runId:$id){runId conversation}}', { id: r.c1 })).getRunProjection)
     const slotView = JSON.stringify(await memberProjection(r.teamRunId, r.slotRunId))
     r.runView = { c1HasOwn: c1View.includes('COPY1-MARKER-DCR1') && c1View.includes('COPY1-RESUME-DCR1'), c1HasSlot: c1View.includes('SLOT-MARKER-DCR1'), slotHasOwn: slotView.includes('SLOT-MARKER-DCR1') }
     assert(r.runView.c1HasOwn && !r.runView.c1HasSlot && r.runView.slotHasOwn, 'run view: the copy shows its own conversation', r.runView)
@@ -322,15 +399,16 @@ export function registerDelegatedCopyOwnFileCases(h) {
     assertAgentOwnFile(r.cwOwnFile, { address: '/writer', model: ALT }, 'CW')
     r.cpOwnFile = await ownFile(r.cp, 'team_run_execution_tree.json')
     const cpTree = r.cpOwnFile.json
-    r.cpLead = r.cpLead ?? objectsIn(cpTree).find((x) => x.address === '/pair/lead' && pick(x, 'agentRunId'))?.agentRunId
+    // autobyteus-461 TC-12 / E6t: a delegated team's own file is rooted at `/` (members `/lead`, `/engineer`), no `followsTeam`.
+    r.cpLead = r.cpLead ?? objectsIn(cpTree).find((x) => x.address === '/lead' && pick(x, 'agentRunId'))?.agentRunId
     r.cpLeadLaunches = await waitLaunches('CP lead started', r.cpLead, 1)
     assert(r.cpLeadLaunches[0][0] === ALT, 'CP lead should start on the Team slot (ALT)', r.cpLeadLaunches)
     r.cpLeadSession = await leadSession(r.cp, r.cpLead)
-    const cpMembers = objectsIn(cpTree).filter((x) => typeof x.address === 'string' && x.address.startsWith('/pair/') && 'followsTeam' in x)
-    r.cpMemberFacts = cpMembers.map((m) => ({ address: m.address, model: modelOf(m.launchConfiguration), followsTeam: m.followsTeam, keys: Object.keys(m.launchConfiguration ?? {}).sort() }))
-    assert(cpMembers.length === 2 && cpMembers.every((m) => m.launchConfiguration && typeof m.followsTeam === 'boolean'), 'CP own tree: every member has its launch and followsTeam', { cpMemberFacts: r.cpMemberFacts, cpTree })
-    assert(cpTree.taskAgent && !('origin' in cpTree.taskAgent) && cpTree.taskAgent.launchSource?.origin === 'configured', 'CP own tree: configured launch source, no taskAgent.origin', cpTree.taskAgent)
-    r.cpOwnTreeExcerpt = { path: r.cpOwnFile.path, taskAgent: cpTree.taskAgent, members: r.cpMemberFacts, handoffs: objectsIn(cpTree).find((x) => Array.isArray(x.handoffs))?.handoffs ?? null }
+    const cpMembers = objectsIn(cpTree).filter((x) => typeof x.address === 'string' && x.address !== '/' && x.launchConfiguration && pick(x, 'agentRunId'))
+    r.cpMemberFacts = cpMembers.map((m) => ({ address: m.address, model: modelOf(m.launchConfiguration), keys: Object.keys(m.launchConfiguration ?? {}).sort() }))
+    assert(cpMembers.length === 2 && cpMembers.every((m) => m.launchConfiguration && !('followsTeam' in m)), 'CP own tree: every member has its own launch (no followsTeam)', { cpMemberFacts: r.cpMemberFacts, cpTree })
+    assert(!('taskAgent' in cpTree) && cpTree.delegatedFrom?.delegatingRun && cpTree.rootTeam?.address === '/', 'CP own tree: rooted at /, names its delegating run, no taskAgent', { delegatedFrom: cpTree.delegatedFrom, root: cpTree.rootTeam?.address })
+    r.cpOwnTreeExcerpt = { path: r.cpOwnFile.path, delegatedFrom: cpTree.delegatedFrom, members: r.cpMemberFacts, handoffs: objectsIn(cpTree).find((x) => Array.isArray(x.handoffs))?.handoffs ?? null }
 
     // AC-004: Settings rows.
     await settingsView(page)
@@ -340,6 +418,9 @@ export function registerDelegatedCopyOwnFileCases(h) {
 
     // SCN-003: stop the Org; set /writer and the /pair Team to MODEL.
     await stopRootFromSettings(page)
+    // autobyteus-461 REQ-001: the Org's Stop leaves its working copies running; each is stopped by its own Stop.
+    await gql('mutation($id:String!){terminateAgentRun(agentRunId:$id){success message}}', { id: r.cw })
+    await gql('mutation($id:String!){terminateAgentTeamRun(teamRunId:$id){success message}}', { id: r.cp })
     // autobyteus-366: /writer from its own Settings; the placed Team /pair from the Org's group view (one Save for both).
     await chooseAnyModel(page, await focusedCard(page, r.slotWriter), MODEL)
     await page.locator(sel('run-settings-switch-group')).click(); await settle(page, 600)
@@ -348,7 +429,9 @@ export function registerDelegatedCopyOwnFileCases(h) {
     const edited = await orgConfigTree(r.orgRunId)
     r.slotsAfterEdit = { writer: modelOf(pick(configuredAt(edited, '/writer'), 'launchConfiguration')), pair: modelOf(pick(configuredAt(edited, '/pair'), 'defaultLaunchConfiguration')),
       pairLead: modelOf(pick(configuredAt(edited, '/pair/lead'), 'launchConfiguration')) }
-    r.copiesAfterEdit = { cw: modelOf(pick(pick(recordOf(edited, r.cw), 'source'), 'launchConfiguration')), cp: modelOf(pick(pick(recordOf(edited, r.cp), 'source'), 'defaultLaunchConfiguration')) }
+    // autobyteus-461 rule 2: the Org's configuration holds no delegated runs; each copy's launch is its own run's.
+    r.copiesAfterEdit = { cw: (await gql('query($id:String!){getAgentRunResumeConfig(runId:$id){metadataConfig{llmModelIdentifier}}}', { id: r.cw })).getAgentRunResumeConfig?.metadataConfig?.llmModelIdentifier ?? null,
+      cp: modelOf(pick(objectsIn(await teamTree(r.cp)).find((x) => x.defaultLaunchConfiguration || x.default_launch_configuration), 'defaultLaunchConfiguration')) }
     assert(r.slotsAfterEdit.writer === MODEL && r.slotsAfterEdit.pair === MODEL && r.copiesAfterEdit.cw === ALT && r.copiesAfterEdit.cp === ALT, 'slots edited; copies keep their snapshots', r)
     r.rowsStopped = await delegatedRows(page, { kind: 'org', id: r.orgRunId })
     assert(configuredRows(r.rowsStopped, '/writer')[0]?.launch.includes(ALT_LABEL) && configuredRows(r.rowsStopped, '/pair')[0]?.launch.includes(ALT_LABEL), 'Settings after the edit: copies still on ALT', r.rowsStopped)
@@ -383,8 +466,9 @@ export function registerDelegatedCopyOwnFileCases(h) {
     assertAgentOwnFile(await ownFile(r.cw2, 'run_metadata.json'), { address: '/writer', model: MODEL }, 'CW2')
     const cp2Tree = (await ownFile(r.cp2, 'team_run_execution_tree.json')).json
     r.cp2Facts = { default: modelOf(objectsIn(cp2Tree).find((x) => x.defaultLaunchConfiguration)?.defaultLaunchConfiguration),
-      lead: objectsIn(cp2Tree).filter((x) => x.address === '/pair/lead' && x.launchConfiguration).map((x) => ({ model: modelOf(x.launchConfiguration), followsTeam: x.followsTeam })) }
-    r.cp2Lead = coordinatorRunIdOf(r.cp2Call) ?? objectsIn(cp2Tree).find((x) => x.address === '/pair/lead' && pick(x, 'agentRunId'))?.agentRunId
+      // TC-12: the copy team's own file is rooted at `/` (its lead is `/lead`); CR-461-089: no `followsTeam`.
+      lead: objectsIn(cp2Tree).filter((x) => x.address === '/lead' && x.launchConfiguration).map((x) => ({ model: modelOf(x.launchConfiguration) })) }
+    r.cp2Lead = coordinatorRunIdOf(r.cp2Call) ?? objectsIn(cp2Tree).find((x) => x.address === '/lead' && pick(x, 'agentRunId'))?.agentRunId
     r.cp2LeadLaunches = await waitLaunches('CP2 lead started', r.cp2Lead, 1)
     assert(r.cp2Facts.default === MODEL && r.cp2Facts.lead[0]?.model === r.slotsAfterEdit.pairLead && r.cp2LeadLaunches[0][0] === r.slotsAfterEdit.pairLead, 'CP2 should start from the edited Team slot', r)
 
@@ -398,13 +482,22 @@ export function registerDelegatedCopyOwnFileCases(h) {
     await backToConversation(page)
     // AC-004: the Org context of each agent copy (opened from its sidebar row) and of the slot.
     for (const id of [r.cw, r.cw2]) {
-      const row = page.locator(sel(`agent-org-task-agent-row-${id}`)).first()
+      const row = page.locator(`${sel('workspace-team-transient-execution-row')}[data-agent-run-id="${id}"]`).first()
       await waitFor(`Org sidebar row ${id}`, async () => row.isVisible().catch(() => false), 60000, 1000)
       await row.click(); await settle(page, 1500)
     }
-    r.contexts = { cw: await orgContext(page, r.orgRunId, r.cw), cw2: await orgContext(page, r.orgRunId, r.cw2), slot: await orgContext(page, r.orgRunId, r.slotWriter) }
-    assert(r.contexts.cw?.model === ALT && r.contexts.cw2?.model === MODEL && r.contexts.slot?.model === MODEL
-      && r.contexts.cw.name === r.contexts.slot.name && r.contexts.cw2.name === r.contexts.slot.name, 'Org contexts: each copy on its own model, the slot on its edit; names as the slot\'s', r.contexts)
+    r.contexts = { cw: await ownContext(page, r.cw), cw2: await ownContext(page, r.cw2), slot: await orgContext(page, r.orgRunId, r.slotWriter) }
+    assert(r.contexts.cw?.model === ALT && r.contexts.cw2?.model === MODEL && r.contexts.slot?.model === MODEL,
+      'Org contexts: each copy on its own model; the slot on its edit', r.contexts)
+    // SR-091: each copy of /writer is named "writer" everywhere: row, context, header, Task card, Settings, run list.
+    const orgRows = delegatedNodes(await readRunTree(gql, 'org', r.orgRunId))
+    r.slotNames = {}
+    for (const [key, id, marker] of [['cw', r.cw, 'CW-MARKER-DCR2'], ['cw2', r.cw2, 'CW2-MARKER-DCR2']]) {
+      const row = page.locator(`${sel('workspace-team-transient-execution-row')}[data-agent-run-id="${id}"]`).first()
+      await row.click(); await settle(page, 1500)
+      r.slotNames[key] = await namesOf(page, id, marker, orgRows.find((x) => x.agentRunId === id)?.name ?? null)
+    }
+    assert(allNamed(r.slotNames.cw, 'writer') && allNamed(r.slotNames.cw2, 'writer'), 'SR-091: each copy of /writer reads "writer" in its row, context, header, Task card, Settings and run list', r.slotNames)
     return r
   })
 
@@ -453,23 +546,24 @@ export function registerDelegatedCopyOwnFileCases(h) {
 
     await selectOrgManager(page)
     const factsOf = async (teamRunId) => Object.fromEntries(objectsIn((await ownFile(teamRunId, 'team_run_execution_tree.json')).json)
-      .filter((x) => typeof x.address === 'string' && 'followsTeam' in x)
+      .filter((x) => typeof x.address === 'string' && x.address !== '/' && x.launchConfiguration && pick(x, 'agentRunId'))
       .map((m) => [m.address, { runtime: m.launchConfiguration.runtimeKind, model: modelOf(m.launchConfiguration), auto: m.launchConfiguration.autoExecuteTools,
-        workspace: m.launchConfiguration.workspaceRootPath, followsTeam: m.followsTeam }]))
+        workspace: m.launchConfiguration.workspaceRootPath, followsTeam: 'followsTeam' in m }]))
     // (a) with auto-approve: the Grok Team copy.
     r.gcpCall = await callFromComposer(page, 'manager → delegate /gpair', 'delegate_task', { recipient_address: '/gpair', description: 'Grok pair copy work GCP-MARKER-DCR3.' })
     r.gcp = delegatedId(r.gcpCall)
     assert(r.gcpCall.includes('"delegated":true') && r.gcp, 'copy of /gpair not delegated', r.gcpCall)
     r.gcpFacts = await factsOf(r.gcp)
-    assert(r.gcpFacts['/gpair/lead']?.followsTeam === true && r.gcpFacts['/gpair/lead'].auto === r.slots.gpairLead.auto && r.gcpFacts['/gpair/lead'].model === r.slots.gpair.model
-      && r.gcpFacts['/gpair/helper']?.followsTeam === false, 'Grok copy: the lead with its own auto-approve follows the Team (its approval kept); the AGY helper does not', r.gcpFacts)
+    // autobyteus-461 F-39 / TC-12: members are addressed from the team's own root and carry their resolved launch; no follow flag.
+    assert(r.gcpFacts['/lead']?.followsTeam === false && r.gcpFacts['/lead'].auto === r.slots.gpairLead.auto && r.gcpFacts['/lead'].model === r.slots.gpair.model
+      && r.gcpFacts['/helper']?.followsTeam === false, 'Grok copy: the lead starts on the Team model with its own auto-approve; the AGY helper on its own', r.gcpFacts)
     // (a) the Team-level choice reaching such a member: the AGY Team copy.
     r.cpCall = await callFromComposer(page, 'manager → delegate /pair', 'delegate_task', { recipient_address: '/pair', description: 'Pair copy work CP-MARKER-DCR3.' })
     r.cp = delegatedId(r.cpCall); r.cpLead = coordinatorRunIdOf(r.cpCall)
     assert(r.cpCall.includes('"delegated":true') && r.cp && r.cpLead, 'copy of /pair not delegated', r.cpCall)
     r.cpFacts = await factsOf(r.cp)
-    assert(r.cpFacts['/pair/lead']?.followsTeam === true && r.cpFacts['/pair/engineer']?.followsTeam === false,
-      'AGY copy: the lead (Team model) follows the Team; the Grok engineer (own default) does not', r.cpFacts)
+    assert(r.cpFacts['/lead']?.model === ALT && r.cpFacts['/engineer'] && /grok/i.test(r.cpFacts['/engineer'].runtime ?? ''),
+      'AGY copy: the lead starts on the Team model; the Grok engineer on its own default', r.cpFacts)
     r.leadFirst = await waitLaunches('CP lead started', r.cpLead, 1)
     assert(r.leadFirst[0][0] === ALT, 'CP lead should start on the Team model', r.leadFirst)
     r.leadSession = await leadSession(r.cp, r.cpLead)
@@ -486,10 +580,16 @@ export function registerDelegatedCopyOwnFileCases(h) {
     await saveSettings(page); await saved(page)
     r.cpRowAfter = await cardSummary(row())
     // A row on a user choice carries no source attribute; read the lead's own row by its key.
-    r.leadRowAfter = await summaryOf(groupRow(page, rowKey('/pair/lead', r.cpLead)))
-    r.engineerRowAfter = await summaryOf(groupRow(page, rowKey('/pair/engineer', objectsIn((await ownFile(r.cp, 'team_run_execution_tree.json')).json).find((x) => x.address === '/pair/engineer' && x.agentRunId)?.agentRunId)))
-    assert(r.cpRowAfter.includes(MODEL_LABEL) && r.leadRowAfter.includes(MODEL_LABEL) && /grok/i.test(r.engineerRowAfter),
-      'Settings: the Team choice reaches the following lead; the engineer keeps its own Grok launch', { team: r.cpRowAfter, lead: r.leadRowAfter, engineer: r.engineerRowAfter })
+    r.leadRowAfter = await summaryOf(copyMemberRow(page, r.cp, '/lead', r.cpLead))
+    r.engineerRowAfter = await summaryOf(copyMemberRow(page, r.cp, '/engineer', objectsIn((await ownFile(r.cp, 'team_run_execution_tree.json')).json).find((x) => x.address === '/engineer' && x.agentRunId)?.agentRunId))
+    // The stored truth beside the rendered rows: the copy team's own file after the team-level Save.
+    const cpOwnAfter = (await ownFile(r.cp, 'team_run_execution_tree.json')).json
+    r.cpStoredAfter = { team: modelOf(pick(objectsIn(cpOwnAfter).find((x) => x.address === '/' && x.defaultLaunchConfiguration), 'defaultLaunchConfiguration')),
+      lead: modelOf(pick(objectsIn(cpOwnAfter).find((x) => x.address === '/lead' && x.launchConfiguration), 'launchConfiguration')),
+      engineer: modelOf(pick(objectsIn(cpOwnAfter).find((x) => x.address === '/engineer' && x.launchConfiguration), 'launchConfiguration')) }
+    // autobyteus-461 F-39 (SR-075): a team-level choice changes the team's default; each member keeps its own saved launch.
+    assert(r.cpRowAfter.includes(MODEL_LABEL) && !r.leadRowAfter.includes(MODEL_LABEL) && /grok/i.test(r.engineerRowAfter),
+      'Settings: the Team choice changes the team default; the lead and the engineer keep their own launches', { team: r.cpRowAfter, lead: r.leadRowAfter, engineer: r.engineerRowAfter, stored: r.cpStoredAfter })
     await shot(page, 'DCR-003-copy-team-model-saved-1280', 1280)
     await backToConversation(page)
     await selectOrgManager(page)
@@ -498,7 +598,7 @@ export function registerDelegatedCopyOwnFileCases(h) {
     assert(r.resumeCall.includes('"accepted":true'), 'message to the CP lead not accepted', r.resumeCall)
     await waitLaunches('CP lead resumed', r.cpLead, from + 1)
     r.leadResumed = (await launches(r.cpLead)).slice(from)
-    assert(r.leadResumed.every(([model, conversation]) => model === MODEL && conversation === r.leadSession), 'the following lead of a configured-place Team copy takes the Team-level choice and resumes its own conversation', { resumed: r.leadResumed, own: r.leadSession })
+    assert(r.leadResumed.every(([model, conversation]) => model === ALT && conversation === r.leadSession), 'the lead keeps its own launch after the Team-level choice (F-39) and resumes its own conversation', { resumed: r.leadResumed, own: r.leadSession })
     return r
   })
 }

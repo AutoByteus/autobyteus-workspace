@@ -1,4 +1,3 @@
-import { projectTaskTeamExecution } from "../../src/agent-collaboration/execution/task/task-execution-tree-projection.js";
 import type { TaskAgentExecutionSource, TaskTeamExecutionSource } from "../../src/run-history/domain/run-execution-tree-shared-records.js";
 import {
   assertAgentTeamAddress,
@@ -110,9 +109,25 @@ export const testCatalogTeamSource = (node: TeamRunAgentTeamNode): TaskTeamExecu
   defaultLaunchConfiguration: node.defaultLaunchConfiguration,
 });
 
-/** A Team copy started from the catalog, as the delegation adapters record it (with its source). */
-export const testCatalogTeamCopy = (input: Omit<Parameters<typeof projectTaskTeamExecution>[0], "source">) =>
-  projectTaskTeamExecution({ ...input, source: testCatalogTeamSource(input.node) });
+/**
+ * A hosted Team copy in a team tree's `taskExecutions` (data only). autobyteus-461 hosts nothing; this builds the
+ * stored list for the readers that still read it until the list is removed from the tree (step 9 cleanup).
+ */
+export const testCatalogTeamCopy = (input: { node: import("../../src/agent-team-execution/domain/team-run-config.js").TeamRunAgentTeamNode;
+  delegatorAgentRunId: string; startedAt: string }) => Object.freeze({
+  address: input.node.address,
+  teamRunId: input.node.teamRunId,
+  members: Object.freeze(input.node.children.map((member) => Object.freeze({ address: member.address, agentRunId: member.agentRunId, platformAgentRunId: member.platformAgentRunId }))),
+  taskExecutions: Object.freeze([]),
+  delegatorAgentRunId: input.delegatorAgentRunId,
+  startedAt: input.startedAt,
+  source: testCatalogTeamSource(input.node),
+});
+
+/** A hosted Agent copy in a team tree's `taskExecutions` (data only; see `testCatalogTeamCopy`). */
+export const projectTaskAgentExecution = <T extends Readonly<{ address: string; agentRunId: string; delegatorAgentRunId: string; startedAt: string; source: unknown }>>(input: T) =>
+  Object.freeze({ address: input.address, agentRunId: input.agentRunId, platformAgentRunId: null, delegatorAgentRunId: input.delegatorAgentRunId,
+    startedAt: input.startedAt, source: input.source }) as never;
 
 export const testTeamRunConfig = (input: {
   children: readonly TeamRunAgentNode[];
@@ -146,7 +161,7 @@ export const testMemberExecutionContext = (input: {
   const rootTeamRunId = input.rootTeamRunId ?? "root-team-run";
   const agentRunId = input.agentRunId ?? `run-${getAgentTeamAddressBasename(memberAddress) ?? "agent"}`;
   return new MemberExecutionContext({
-    teamScoped: true, collaborationRole: "team_member",
+    teamScoped: true, collaborationRole: "team_member", inOrganization: false,
     identity: createCollaborationMemberExecutionIdentity({
       root: createTeamRootExecutionIdentity(rootTeamRunId),
       memberAddress,
@@ -169,13 +184,9 @@ export const testMemberTaskCapability = (
   root: RootTeamRun | null = null,
 ): MemberTaskCapability => Object.freeze({
   root: createTeamRootExecutionIdentity(rootTeamRunId),
-  delegateToNewCopy: async (caller, input) => {
+  delegationSource: async (caller) => {
     if (!root) throw new Error("Test task command capability has no RootTeamRun.");
-    return root.delegateToNewCopy({ identity: caller }, input);
-  },
-  assignToExistingCopy: async (caller, input) => {
-    if (!root) throw new Error("Test task command capability has no RootTeamRun.");
-    return root.assignToExistingCopy({ identity: caller }, input);
+    return root.delegationSource({ identity: caller });
   },
   ownedTaskOf: (caller) => (root ? root.ownedTaskOf({ identity: caller }) : null),
 });

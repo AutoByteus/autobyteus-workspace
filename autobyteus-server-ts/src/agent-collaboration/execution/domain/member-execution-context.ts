@@ -64,6 +64,11 @@ export class MemberExecutionContext {
   readonly teamScoped: boolean;
   /** What the agent is, which decides the collaboration prompt it reads (decided once by the scope owner). */
   readonly collaborationRole: MemberCollaborationRole;
+  /**
+   * Whether the agent can reach an organization's other agents and teams: an agent of an Org run, or of a run working
+   * on a Task an org assigned (its collaboration tree, SR-058, SR-060). A team member then reads the organization line.
+   */
+  readonly inOrganization: boolean;
   readonly authoredEnclosingScopeInstruction: string | null;
   readonly collaboration: MemberCollaborationContext;
   readonly tasks: MemberTaskCapability;
@@ -72,6 +77,7 @@ export class MemberExecutionContext {
     identity: CollaborationMemberExecutionIdentity;
     teamScoped: boolean;
     collaborationRole: MemberCollaborationRole;
+    inOrganization: boolean;
     authoredEnclosingScopeInstruction?: string | null;
     collaboration: MemberCollaborationContext;
     tasks: MemberTaskCapability;
@@ -81,6 +87,8 @@ export class MemberExecutionContext {
     this.teamScoped = input.teamScoped;
     if (!COLLABORATION_ROLES.has(input.collaborationRole)) throw new Error("collaborationRole is required.");
     this.collaborationRole = input.collaborationRole;
+    if (typeof input.inOrganization !== "boolean") throw new Error("inOrganization is required.");
+    this.inOrganization = input.inOrganization;
     this.authoredEnclosingScopeInstruction = optional(input.authoredEnclosingScopeInstruction);
     this.collaboration = new MemberCollaborationContext(input.collaboration);
     this.tasks = requireMemberTaskCapability(input.tasks);

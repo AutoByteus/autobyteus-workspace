@@ -1,3 +1,4 @@
+import { currentTaskOf } from "../../../helpers/delegation-index-of.js";
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
@@ -26,6 +27,7 @@ import {
 } from "../../../../src/agent-tools/project-tasks/project-task-native-tools.js";
 import { ANY_TASK_READ_SCOPE, taskReadScopeOf } from "../../../../src/agent-tools/project-tasks/project-task-read-scope.js";
 import { buildProjectTaskToolSchema } from "../../../../src/agent-tools/project-tasks/project-task-tool-contract.js";
+import { withTaskRunResources } from "../../../helpers/task-run-resources.js";
 
 /**
  * autobyteus-260: `get_project_task` (REQ-014, REQ-015, REQ-016; AC-012–AC-014), short `list_project_tasks` entries
@@ -55,9 +57,9 @@ beforeEach(async () => {
   store = new ProjectStore(layout);
   const changes = { taskChanged() {}, taskRemoved() {}, workerStatusChanged() {}, projectChanged() {}, projectRemoved() {} };
   projects = new ProjectService({ store, changes, workspaceLookup: { listRegisteredWorkspaceRootPaths: async () => [] } });
-  tasks = new ProjectTaskService({ store, changes, contextStore: new ProjectTaskContextStore(layout),
+  tasks = new ProjectTaskService(withTaskRunResources({ store, changes, contextStore: new ProjectTaskContextStore(layout),
     adHocTasks: new AdHocTaskStore(new AdHocTasksLayout(path.join(dir, "ad-hoc-tasks"))),
-    requestRelease: (releases = trackReleases()).request });
+    requestRelease: (releases = trackReleases()).request }));
   await tasks.load();
   vi.spyOn(taskServices, "getProjectTaskService").mockImplementation(() => tasks);
   projectId = (await projects.createProject({ name: "AutoByteus" })).projectId;
@@ -87,10 +89,10 @@ describe("get_project_task (REQ-014, AC-012)", () => {
     await fs.writeFile(source, "brief bytes");
     const a = await create("With files", "Body.", { context_files: [source] });
     const longId = await longIdOf(a.taskId);
-    await tasks.linkNewTaskExecution({ role: "assigned", taskId: longId, assignedBy: "manager", hostRoot, execution: { agentRunId: "earlier" } });
+    await tasks.linkNewTaskExecution({ role: "assigned", recipientAddress: "/worker", taskId: longId, delegatedFrom: { delegatingRun: hostRoot, delegatorAgentRunId: "manager" }, execution: { agentRunId: "earlier" } });
     await tool("update_task", { task_id: a.taskId, status: "DONE" }); await releases.settled();
     await tool("update_task", { task_id: a.taskId, status: "IN_PROGRESS" });
-    await tasks.linkNewTaskExecution({ role: "assigned", taskId: longId, assignedBy: "manager", hostRoot, execution: { agentRunId: "current" } });
+    await tasks.linkNewTaskExecution({ role: "assigned", recipientAddress: "/worker", taskId: longId, delegatedFrom: { delegatingRun: hostRoot, delegatorAgentRunId: "manager" }, execution: { agentRunId: "current" } });
     const read = await tool("get_project_task", { project_id: projectId, task_id: a.taskId });
     expect(read.contextFiles).toEqual([{ name: "brief.md", path: expect.stringContaining("brief.md") }]);
     expect(await fs.readFile(read.contextFiles[0].path, "utf8")).toBe("brief bytes");
@@ -102,7 +104,7 @@ describe("get_project_task (REQ-014, AC-012)", () => {
     await create("Here", "In this Project.");
     const otherProjectId = (await projects.createProject({ name: "Elsewhere" })).projectId;
     const foreign = (await tool("create_task", { project_id: otherProjectId, title: "There", description: "In another Project." })).task;
-    const { taskId: temp } = await tasks.linkNewTaskExecution({ role: "assigned", assignedBy: "manager", recipientAddress: "/w", hostRoot,
+    const { taskId: temp } = await tasks.linkNewTaskExecution({ role: "assigned", delegatedFrom: { delegatingRun: hostRoot, delegatorAgentRunId: "manager" }, recipientAddress: "/w",
       execution: { agentRunId: "temp-worker" }, adHocTask: { description: "Temp", referenceFiles: [] } });
     for (const reference of ["autobyteus-99", foreign.taskId, `${await longIdOf("autobyteus-1")}x`, temp]) {
       const result = await mcp("get_project_task", { project_id: projectId, task_id: reference });
@@ -156,12 +158,12 @@ describe("get_project_task caller scope (REQ-015, AC-013; AR-006, AR-008)", () =
   it("a copy holding two open Tasks reads only its current one, the latest given to it (AR-006)", async () => {
     const a = await create("A", "First Task."), b = await create("B", "Second Task.");
     const copy: TaskExecutionReference = { agentRunId: "copy" };
-    await tasks.linkNewTaskExecution({ role: "assigned", taskId: await longIdOf(a.taskId), assignedBy: "manager", hostRoot, execution: copy });
+    await tasks.linkNewTaskExecution({ role: "assigned", recipientAddress: "/worker", taskId: await longIdOf(a.taskId), delegatedFrom: { delegatingRun: hostRoot, delegatorAgentRunId: "manager" }, execution: copy });
     await tasks.markStarted(copy);
-    await tasks.assignExistingTaskExecution({ hostRoot, execution: copy, taskId: await longIdOf(b.taskId), assignedBy: "manager" });
+    await tasks.assignExistingTaskExecution({ delegatedFrom: { delegatingRun: hostRoot, delegatorAgentRunId: "manager" }, execution: copy, taskId: await longIdOf(b.taskId) });
     expect((await tool("get_project_task", { project_id: projectId, task_id: a.taskId })).status).toBe("TODO"); // A stays open
     // The member's answer is the Task side's own ownerOf for the copy.
-    const worker = member(() => tasks.ownerOf([copy]));
+    const worker = member(() => currentTaskOf(tasks, copy));
     expect((await mcp("get_project_task", { project_id: projectId, task_id: b.taskId }, worker)).structuredContent).toMatchObject({ taskId: b.taskId });
     expect((await mcp("get_project_task", { project_id: projectId, task_id: a.taskId }, worker)).structuredContent)
       .toEqual({ error: { code: "TASK_READ_OUT_OF_SCOPE", message: `You work on ${b.taskId}; you can read only that Task.` } });

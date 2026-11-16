@@ -235,7 +235,6 @@ describe.runIf(ENABLED)("switching back to Antigravity: Org member, delegated co
   const capsuleOf = (dir: string) => path.join(dir, "agy-project");
   const saveOrg = async (orgRunId: string, address: string, runtimeKind: string, llmModelIdentifier: string) => (await gql(`mutation($input: UpdateStoppedAgentOrgRunConfigInput!) { updateStoppedAgentOrgRunConfig(input: $input) { success outcome message fieldErrors { path message } } }`,
     { input: { orgRunId, teamWorkspacePatches: [], selectionPatches: [{ scopeKind: "CONFIGURED_AGENT", scopeAddress: address, runtimeKind, llmModelIdentifier, llmConfig: null }] } })).updateStoppedAgentOrgRunConfig as Json;
-  const restoreOrg = async (orgRunId: string) => { const restored = (await gql("mutation($id: String!) { restoreAgentOrgRun(agentOrgRunId: $id) { success message } }", { id: orgRunId })).restoreAgentOrgRun as Json; expect(restored.success, restored.message).toBe(true); };
   const stopOrg = async (orgRunId: string) => { expect((await gql("mutation($id: String!) { terminateAgentOrgRun(agentOrgRunId: $id) { success } }", { id: orgRunId })).terminateAgentOrgRun.success).toBe(true); };
 
   it("SB-01: an Org member Antigravity -> native -> Antigravity: restart before the third era, a start that fails after the capsule was made, then the retry", async () => {
@@ -264,7 +263,7 @@ describe.runIf(ENABLED)("switching back to Antigravity: Org member, delegated co
     // hop 1: native
     await stopOrg(orgRunId);
     for (const address of ["/direct", "/crew/worker"]) expect(await saveOrg(orgRunId, address, NATIVE, nativeModel), `${address} to native`).toMatchObject({ success: true, outcome: "UPDATED" });
-    await restoreOrg(orgRunId);
+    // The stopped Org's view serves it from its stored file; the first message to one of its agents on that view restores it (autobyteus-461 CR-461-008).
     const key1 = { direct: await pendingKey("/direct", direct), worker: await pendingKey("/crew/worker", worker) };
     await talk(orgStream(orgRunId), direct, "NATIVE-TURN one.", "direct era 2");
     await talk(orgStream(orgRunId), worker, "NATIVE-TURN one.", "worker era 2");
@@ -279,7 +278,7 @@ describe.runIf(ENABLED)("switching back to Antigravity: Org member, delegated co
     expect(key2.direct, "a new switch").not.toBe(key1.direct);
     await stop();
     await launch();
-    await restoreOrg(orgRunId);
+    // The stopped Org's view serves it from its stored file; the first message to one of its agents on that view restores it (autobyteus-461 CR-461-008).
     const stream = orgStream(orgRunId);
 
     // the direct member: the start fails after the Antigravity candidate made its capsule, then is retried
@@ -324,10 +323,11 @@ describe.runIf(ENABLED)("switching back to Antigravity: Org member, delegated co
     await until(() => echoed(copyDir()).length > 0, "the copy answered", 60_000);
     const era1 = ids(active(copyDir()));
     const hop = async (runtimeKind: string, model: string, content: string) => {
-      expect((await gql("mutation($input: DelegatedExecutionTargetInput!) { stopDelegatedExecution(input: $input) { success } }", { input: { rootKind: "AGENT", rootRunId: host.runId, agentRunId: copyId } })).stopDelegatedExecution.success).toBe(true);
+      // The copy is a run of its own: its own Stop and its own stopped-run save (autobyteus-461 rule 2, SR-064).
+      expect((await gql("mutation($id: String!) { terminateAgentRun(agentRunId: $id) { success } }", { id: copyId })).terminateAgentRun.success).toBe(true);
       expect((await gql("mutation($id: String!) { terminateAgentRun(agentRunId: $id) { success } }", { id: host.runId })).terminateAgentRun.success).toBe(true);
-      const update = (await gql("mutation($input: UpdateDelegatedLaunchSelectionsInput!) { updateDelegatedLaunchSelections(input: $input) { success outcome message fieldErrors { path message } } }",
-        { input: { rootKind: "AGENT", rootRunId: host.runId, changes: [{ agentRunId: copyId, selection: { runtimeKind, llmModelIdentifier: model, llmConfig: null } }] } })).updateDelegatedLaunchSelections as Json;
+      const update = (await gql("mutation($input: UpdateStoppedAgentRunSelectionInput!) { updateStoppedAgentRunSelection(input: $input) { success outcome message fieldErrors { path message } } }",
+        { input: { agentRunId: copyId, runtimeKind, llmModelIdentifier: model, llmConfig: null } })).updateStoppedAgentRunSelection as Json;
       expect(update, JSON.stringify(update)).toMatchObject({ success: true, outcome: "UPDATED" });
       await host.call("send_message_to", { target_agent_run_id: copyId, content }, `host wakes the copy with ${runtimeKind}`);
     };

@@ -8,6 +8,7 @@ import type { AgentRunMemoryRecorder } from "../../agent-memory/services/agent-r
 import type { WorkJournalRunUpdater } from "../../agent-work-journal/services/work-journal-run-updater.js";
 import type { ApplicationPublishedArtifactRelayService } from "../../application-orchestration/services/application-published-artifact-relay-service.js";
 import type { RunFileChangeService } from "../../services/run-file-changes/run-file-change-service.js";
+import type { AgentStreamSequences } from "../../services/agent-streaming/agent-stream-sequence.js";
 import type { AgentRunLifecycleObserver } from "../domain/agent-run-lifecycle-observer.js";
 
 export type AgentRunResourceReleaseResult = Readonly<{
@@ -18,6 +19,7 @@ export type AgentRunResourceReleaseResult = Readonly<{
     fileChanges: boolean;
     artifactRelay: boolean;
     memoryRecorder: boolean;
+    streamSequence: boolean;
     workJournal: boolean;
   }>;
   errors: readonly Error[];
@@ -28,6 +30,7 @@ type ResourceRecord = {
   fileChanges: (() => void) | null;
   artifactRelay: (() => void) | null;
   memoryRecorder: (() => void) | null;
+  streamSequence: (() => void) | null;
   workJournal: (() => void) | null;
   /** The run's Agent Tools MCP endpoint sessions. */
   mcpSessionsReleased: boolean;
@@ -56,7 +59,9 @@ export class AgentRunResourceManager {
     runSessions: AgentToolMcpRunSessionDeactivator;
     runFileChangeService: Pick<RunFileChangeService, "attachToRun">;
     publishedArtifactRelayService: Pick<ApplicationPublishedArtifactRelayService, "attachToRun">;
-    memoryRecorder: Pick<AgentRunMemoryRecorder, "attachToRun">;
+    memoryRecorder: Pick<AgentRunMemoryRecorder, "attachToRun" | "whenPersisted">;
+    /** The process's agent stream sequences (SR-087): one per active run, from its activation to its release. */
+    streamSequences: Pick<AgentStreamSequences, "attachToRun">;
     workJournalUpdater: Pick<WorkJournalRunUpdater, "attachToRun">;
     /** Closes the MCP server instances opened for a run (keyed by its runId on every runtime). */
     mcpServerInstances: Pick<McpServerInstanceManager, "cleanupMcpServerInstancesForAgent">;
@@ -75,6 +80,7 @@ export class AgentRunResourceManager {
       fileChanges: null,
       artifactRelay: null,
       memoryRecorder: null,
+      streamSequence: null,
       workJournal: null,
       mcpSessionsReleased: false,
       mcpServersReleased: false,
@@ -85,6 +91,9 @@ export class AgentRunResourceManager {
       record.artifactRelay =
         this.dependencies.publishedArtifactRelayService.attachToRun(run);
       record.memoryRecorder = this.dependencies.memoryRecorder.attachToRun(run);
+      // After the memory recorder (listeners run in subscription order): at a turn's TURN_COMPLETED the recorder has
+      // enqueued the turn's last records, so the sequence's `whenPersisted` covers them (SR-087).
+      record.streamSequence = this.dependencies.streamSequences.attachToRun(run, this.dependencies.memoryRecorder);
       // After the memory recorder: run listeners are called in subscription order, so the recorder
       // has enqueued a turn's last records (e.g. a segment flushed on TURN_COMPLETED) before the
       // journal updater waits for its queue.
@@ -111,6 +120,7 @@ export class AgentRunResourceManager {
       fileChanges: false,
       artifactRelay: false,
       memoryRecorder: false,
+      streamSequence: false,
       workJournal: false,
     };
 
@@ -127,7 +137,7 @@ export class AgentRunResourceManager {
       record.mcpServersReleased = true;
       this.closeMcpServerInstances(runId);
     }
-    for (const key of ["fileChanges", "artifactRelay", "memoryRecorder", "workJournal"] as const) {
+    for (const key of ["fileChanges", "artifactRelay", "memoryRecorder", "streamSequence", "workJournal"] as const) {
       if (!record[key]) continue;
       try {
         record[key]!();
@@ -174,6 +184,7 @@ export class AgentRunResourceManager {
         fileChanges: false,
         artifactRelay: false,
         memoryRecorder: false,
+        streamSequence: false,
         workJournal: false,
       }),
       errors: Object.freeze([]),

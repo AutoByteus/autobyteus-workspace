@@ -1,3 +1,5 @@
+import { testViewStreams } from "../../helpers/view-streams.js";
+import { noDelegations, openTaskRecords } from "../../helpers/no-delegations.js";
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
@@ -8,25 +10,23 @@ import type { AgentRunBackend } from "../../../src/agent-execution/backends/agen
 import type { AgentRunBackendFactory } from "../../../src/agent-execution/backends/agent-run-backend-factory.js";
 import { AgentRunConfig } from "../../../src/agent-execution/domain/agent-run-config.js";
 import { AgentRunContext } from "../../../src/agent-execution/domain/agent-run-context.js";
-import { AgentRunIdentityAllocator } from "../../../src/agent-execution/services/agent-run-identity-allocator.js";
 import { AgentRunManager } from "../../../src/agent-execution/services/agent-run-manager.js";
 import { buildRuntimeAgentToolExposure } from "../../../src/agent-execution/shared/runtime-agent-tool-exposure.js";
 import { FlatTeamExecutionFactory } from "../../../src/agent-team-execution/local/flat-team-execution-factory.js";
 import type { TeamRunAgentNode } from "../../../src/agent-team-execution/domain/team-run-config.js";
 import { AgentTeamRunManager } from "../../../src/agent-team-execution/services/agent-team-run-manager.js";
-import { createTaskExecutionIdentityCapabilities } from "../../../src/agent-team-execution/task-delegation/task-execution-identity-capabilities.js";
 import { AgentRunMemoryLocator } from "../../../src/agent-collaboration/execution/services/agent-run-memory-locator.js";
 import { ActiveCollaborationRootDirectory } from "../../../src/agent-collaboration/execution/services/active-collaboration-root-directory.js";
 import { createAgentToolsMcpHost } from "../../../src/agent-tools/mcp/agent-tools-mcp-host.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { createAgentRunManagerInfrastructureFixture } from "../../fixtures/agent-run-manager-infrastructure-fixtures.js";
+import { getAgentStreamSequences } from "../../../src/services/agent-streaming/agent-stream-sequence.js";
 import { testBackendFactory } from "../../fixtures/agent-run-preparation-fixtures.js";
 import {
   testAgentNode,
   testMemberExecutionContext,
   testTeamRunConfig,
 } from "../../fixtures/current-team-run-fixtures.js";
-import { openEveryOwnFileUnder } from "../../fixtures/open-delegated-run-sources.js";
 
 const loggingConfig = Object.freeze({
   pinoLogLevel: "silent" as const,
@@ -113,7 +113,7 @@ describe("supported Team Agent Tools MCP lifecycle integration", () => {
     const memoryDir = await fs.mkdtemp(
       path.join(os.tmpdir(), "team-agent-tools-lifecycle-"),
     );
-    tempDirs.push(memoryDir); openEveryOwnFileUnder(memoryDir);
+    tempDirs.push(memoryDir);
 
     const host = createAgentToolsMcpHost({ loggingConfig });
     const authority = host.sessionAuthorities.begin({
@@ -186,14 +186,7 @@ describe("supported Team Agent Tools MCP lifecycle integration", () => {
             : { kind: "none" as const }),
         },
       });
-      const taskExecutionIdentity = createTaskExecutionIdentityCapabilities(
-        new AgentRunIdentityAllocator({
-          agentDefinitionService: {
-            getAgentDefinitionById: async (id: string) => ({ id, name: id }) as never,
-          },
-        }),
-      );
-      const teamRunManager = new AgentTeamRunManager({
+      const teamRunManager = new AgentTeamRunManager({ delegationIndex: noDelegations(), viewStreams: testViewStreams(), taskRecords: openTaskRecords(),
         memoryDir,
         flatTeamExecutionFactory: teamExecutionFactory,
         memberExecutionContextBuilder: {
@@ -204,7 +197,6 @@ describe("supported Team Agent Tools MCP lifecycle integration", () => {
             taskCapability,
           })),
         } as never,
-        taskExecutionIdentity,
         activeRootDirectory: new ActiveCollaborationRootDirectory(),
         modelSelectionValidator: {
           validateMany: vi.fn(),
@@ -246,6 +238,9 @@ describe("supported Team Agent Tools MCP lifecycle integration", () => {
       await expect(freshTeam.postMessage(new AgentInputUserMessage("Start lifecycle probe"), memberNode.agentRunId)).resolves.toMatchObject({ accepted: true });
       const currentRun = agentRunManager.getActiveRun(memberNode.agentRunId);
       expect(currentRun).not.toBeNull();
+      // SR-089: a member's AgentRun, started lazily by its first message, has its own stream sequence from activation.
+      const firstSequence = getAgentStreamSequences().of(memberNode.agentRunId);
+      expect(firstSequence).not.toBeNull();
       const firstServerUrl = activate();
 
       await expectMcpStatus(firstServerUrl, 200);
@@ -259,6 +254,7 @@ describe("supported Team Agent Tools MCP lifecycle integration", () => {
         teamRunManager.terminateTeamRun(teamConfig.rootTeam.teamRunId),
       ).resolves.toBe(true);
       expect(agentRunManager.getActiveRun(memberNode.agentRunId)).toBeNull();
+      expect(getAgentStreamSequences().of(memberNode.agentRunId)).toBeNull();
       await expectMcpStatus(firstServerUrl, 404);
 
       const restoredContext = new AgentRunContext({
@@ -278,6 +274,9 @@ describe("supported Team Agent Tools MCP lifecycle integration", () => {
       const restoredRun = agentRunManager.getActiveRun(memberNode.agentRunId);
       expect(restoredRun).not.toBeNull();
       expect(restoredRun).not.toBe(currentRun);
+      // A restore is a new sequence (a new liveSequenceId): its stream's client takes a new snapshot.
+      expect(getAgentStreamSequences().of(memberNode.agentRunId)?.liveSequenceId).toBeDefined();
+      expect(getAgentStreamSequences().of(memberNode.agentRunId)?.liveSequenceId).not.toBe(firstSequence!.liveSequenceId);
       const restoredServerUrl = activate();
       expect(restoredServerUrl).toBe(firstServerUrl);
       await expectMcpStatus(restoredServerUrl, 200);

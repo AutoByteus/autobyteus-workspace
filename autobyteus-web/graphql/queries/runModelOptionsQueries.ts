@@ -27,12 +27,3 @@ export const AgentOrgRunModelOptions = gql`query AgentOrgRunModelOptions($orgRun
     replacements { llmModelIdentifier providerName displayName canonicalName description configSchema recommended }
   }
 }`
-
-/** Model options of every editable delegated copy of a run (agent and Team level). */
-export const DelegatedLaunchModelOptions = gql`query DelegatedLaunchModelOptions($rootKind: String!, $rootRunId: String!) {
-  delegatedLaunchModelOptions(rootKind: $rootKind, rootRunId: $rootRunId) {
-    scope agentRunId teamRunId currentModelIdentifier modelListReadable unavailableReason
-    currentModel { llmModelIdentifier providerName displayName canonicalName description configSchema recommended }
-    replacements { llmModelIdentifier providerName displayName canonicalName description configSchema recommended }
-  }
-}`

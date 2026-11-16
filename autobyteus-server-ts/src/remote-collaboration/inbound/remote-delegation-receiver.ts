@@ -7,7 +7,7 @@ import type { TaskExecutionSource } from "../../run-history/domain/run-execution
 import { decisionRecordsOf, type DelegationWork } from "../../model-routing/domain/model-routing-types.js";
 import type { PeerStartedRunDecisions } from "./peer-started-run-decisions.js";
 import type { CollaboratorRootPort } from "../../agent-collaboration/collaborators/collaborator-root-port.js";
-import type { PrepareAgentRunInput, PrepareAgentRunResult } from "../../agent-execution/services/agent-run-service.js";
+import type { DelegatedRunStarter } from "../../agent-collaboration/execution/delegation/delegated-run-starter.js";
 import type { DelegatedRunHandler, PeerHandlerRefusal } from "../channel/peer-gateway.js";
 import type { PeerNode } from "../domain/peer-node.js";
 import { REMOTE_REFUSAL } from "../domain/remote-refusals.js";
@@ -46,7 +46,8 @@ export class RemoteDelegationReceiver implements DelegatedRunHandler {
   constructor(private readonly dependencies: Readonly<{
     admission(): Admission;
     catalogPort: CollaboratorRootPort;
-    agentRuns: Readonly<{ prepareAgentRun(input: PrepareAgentRunInput): Promise<PrepareAgentRunResult> }>;
+    /** Creates the run, as for a local delegation (autobyteus-461). */
+    starter: Pick<DelegatedRunStarter, "startAgent">;
     teams: Pick<RemoteTeamRunStarter, "start">;
     /** Decision records of a copy resolved while Model Routing is on, written when its work packet arrives. */
     decisions: Pick<PeerStartedRunDecisions, "hold">;
@@ -74,7 +75,7 @@ export class RemoteDelegationReceiver implements DelegatedRunHandler {
     const source = resolved.source;
     const delegatedFrom = {
       nodeId: from.nodeId,
-      coordinatingRun: { kind: request.coordinatingRun.kind, runId: request.coordinatingRun.runId },
+      delegatingRun: { kind: request.delegatingRun.kind, runId: request.delegatingRun.runId },
       delegatorAgentRunId: request.delegator.agentRunId,
     };
     const launches = launchesOf(request.address, source);
@@ -91,21 +92,12 @@ export class RemoteDelegationReceiver implements DelegatedRunHandler {
       hold(started.teamRunId);
       return Object.freeze({ ...started, launches });
     }
-    const launch = source.launchConfiguration;
     // The node catalog port's `defaults_only` base always gives the workspace.
-    if (!launch.workspaceRootPath) throw new Error(`The resolved launch at ${request.address} has no workspace.`);
+    if (!source.launchConfiguration.workspaceRootPath) throw new Error(`The resolved launch at ${request.address} has no workspace.`);
     try {
-      const prepared = await this.dependencies.agentRuns.prepareAgentRun({
-        agentDefinitionId: source.agentDefinitionId,
-        workspaceRootPath: launch.workspaceRootPath,
-        llmModelIdentifier: launch.llmModelIdentifier,
-        llmConfig: launch.llmConfig === null ? null : structuredClone(launch.llmConfig) as Record<string, unknown>,
-        autoExecuteTools: launch.autoExecuteTools,
-        runtimeKind: launch.runtimeKind,
-        delegatedFrom,
-      });
-      hold(prepared.runId);
-      return Object.freeze({ accepted: true as const, kind: "agent" as const, agentRunId: prepared.runId, launches });
+      const { agentRunId } = await this.dependencies.starter.startAgent({ source, address: assertAgentTeamAddress(request.address), delegatedFrom });
+      hold(agentRunId);
+      return Object.freeze({ accepted: true as const, kind: "agent" as const, agentRunId, launches });
     } catch (error) {
       return refuse(REMOTE_REFUSAL.AGENT_CANNOT_RUN, error instanceof Error ? error.message : String(error), { kind: "agent", name: resolved.name });
     }

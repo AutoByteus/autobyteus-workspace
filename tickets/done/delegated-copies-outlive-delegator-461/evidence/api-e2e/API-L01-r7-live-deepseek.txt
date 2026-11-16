@@ -1,0 +1,77 @@
+# Case: API-L01 (AC-001 on a real runtime), API-REV-007 round 7, merged state a529abcbdd
+# Command: as API-L01-r6-live-deepseek.txt
+# Result: Tests 2 passed (2)
+ ✓ tests/e2e/projects/delegated-run-outlives-delegator-live.e2e.test.ts > LIVE-1 an Agent child's real turn finishes after its delegator's Stop 11518ms
+ ✓ tests/e2e/projects/delegated-run-outlives-delegator-live.e2e.test.ts > LIVE-2 a Team child's coordinator's real turn finishes after its delegator's Stop 19125ms
+      Tests  2 passed (2)
+{
+  "agent": {
+    "M": "outlive_manager_52cc89_b0b0f8d0b89949a097057aee018e3397",
+    "worker": "outlive_writer_52cc89_03e89e9494204a0793b5a00704d290ba",
+    "model": "deepseek-v4-flash",
+    "codeword": "OUTLIVE-AGENT-906b4b",
+    "before": {
+      "statuses": [
+        "running"
+      ]
+    },
+    "statuses": [
+      "running"
+    ],
+    "finishedAfterMs": 9886,
+    "answerTail": "United States Coast Guard took over the Lighthouse Service in 1939 and remains responsible for most aids to navigation there.\\n38. The last manned lighthouse in the United States, Boston Light, was automated in 1998 but still has a resident caretaker.\\n39. UNESCO has recognised several lighthouse sites, and the Tower of Hercules was inscribed as a World Heritage Site in 2009.\\n40. Modern aids use LED lanterns, solar power and electronic navigation, yet many historic towers are preserved as museums.\\n\\nOUTLIVE-AGENT-906b4b\"},\"toolResult\":null,\"toolError\":null,\"media\":null,\"ts\":1794601607.045}]}"
+  },
+  "team": {
+    "M": "outlive_manager_52cc89_843608bf4859479b9703cf6ee8b80128",
+    "worker": "outlive_lead_52cc89_5e7369bc1f774d0ca6ec0795af77eef4",
+    "model": "deepseek-v4-flash",
+    "codeword": "OUTLIVE-TEAM-ec9971",
+    "before": {
+      "statuses": [
+        "running",
+        "running"
+      ]
+    },
+    "statuses": [
+      "running",
+      "running",
+      "running",
+      "running",
+      "running",
+      "running",
+      "running",
+      "running",
+      "running",
+      "running",
+      "running",
+      "running",
+      "running",
+      "running",
+      "running",
+      "running",
+      "running",
+      "running",
+      "running",
+      "running",
+      "running",
+      "running",
+      "running",
+      "running",
+      "running",
+      "running",
+      "running",
+      "running",
+      "running",
+      "running",
+      "running",
+      "running",
+      "running",
+      "running",
+      "running",
+      "running",
+      "running"
+    ],
+    "finishedAfterMs": 17551,
+    "answerTail": "rly 1900s, allowed stations to run unattended.\\n37. Automation spread through the 20th century, replacing keepers with electric and electronic systems.\\n38. Boston Light remained the last officially manned US lighthouse, with a resident keeper today.\\n39. Solar panels and LED lamps have replaced older light sources at many modern lighthouses.\\n40. GPS and electronic charting have made lighthouses less critical, and preservation groups now maintain them as heritage sites.\\n\\nOUTLIVE-TEAM-ec9971\",\"message_type\":\"task_result\"},\"toolResult\":null,\"toolError\":null,\"media\":null,\"ts\":1794601626.215}]}"
+  }
+}

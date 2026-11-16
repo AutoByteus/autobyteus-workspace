@@ -1,9 +1,6 @@
-import type { AgentTeamContext } from '~/types/agent/AgentTeamContext';
-import { useRemoteRunsStore } from '~/stores/remoteRunsStore';
 import type {
   RunHistoryStableExecutionRow,
   RunHistoryTeamExecutionRow,
-  RunHistoryTransientExecutionRow,
   TeamMemberTreeRow,
   TeamTreeNode,
 } from './runHistoryTypes';
@@ -29,88 +26,9 @@ const flattenStableRows = (
   row,
 }, ...flattenStableRows(row.children, depth + 1)]);
 
-export const buildRunHistoryTeamExecutionRows = (
-  team: TeamTreeNode,
-  context?: AgentTeamContext | null,
-): RunHistoryTeamExecutionRow[] => {
-  const stableSource = team.rootTeam.children.length > 0 ? team.rootTeam.children : team.members;
-  if (!context) return flattenStableRows(stableSource);
-  const rootTeamRunId = context.view.getRootTeamRunId();
-  if (team.teamRunId !== rootTeamRunId) {
-    throw new Error(`Team history root '${team.teamRunId}' does not match execution root '${rootTeamRunId}'.`);
-  }
-  // The Workspaces tree lists live work only: closed task executions (Task DONE) and their subtrees
-  // leave it, while the shared navigation rows (members panel, running list, token usage) stay complete.
-  const navigationRows = context.view.listNavigationRows().filter((row) => context.view.isTaskExecutionRowListed(row));
-  const rootRowKey = `team:${rootTeamRunId}`;
-  const rootRows = navigationRows.filter((row) => row.key === rootRowKey);
-  const rootRow = rootRows[0];
-  if (
-    rootRows.length !== 1
-    || rootRow?.kind !== 'configured_team'
-    || rootRow.teamRunId !== rootTeamRunId
-    || rootRow.address !== '/'
-    || rootRow.depth !== 0
-    || rootRow.parentKey !== null
-  ) {
-    throw new Error(`Team history execution root '${rootTeamRunId}' is invalid.`);
-  }
-  const navigationByKey = new Map(navigationRows.map((row) => [row.key, row]));
-  const descendantRows = navigationRows.filter((row) => row !== rootRow).map((row) => {
-    const parent = row.parentKey ? navigationByKey.get(row.parentKey) : undefined;
-    // Only sidebar task-Agent leaves are lifted to their parent's level, as its siblings. Shared navigation and real
-    // Team/task-Team containment remain authoritative everywhere else.
-    if (row.kind === 'task_agent'
-      && (parent?.kind === 'configured_agent' || parent?.kind === 'task_team_agent')) {
-      return { ...row, parentKey: parent.parentKey, depth: parent.depth };
-    }
-    return row;
-  });
-  const parentRowKeys = new Set(descendantRows.flatMap((row) => row.parentKey ? [row.parentKey] : []));
-  const stableByKey = new Map(flattenStableRows(stableSource).map((row) => [row.rowKey, row]));
-  const remoteRuns = useRemoteRunsStore();
-  return descendantRows.flatMap((execution): RunHistoryTeamExecutionRow[] => {
-    if (execution.depth < 1) {
-      throw new Error(`Team history descendant '${execution.key}' is outside execution root '${rootTeamRunId}'.`);
-    }
-    const depth = execution.depth - 1;
-    const hasChildren = execution.expandable || parentRowKeys.has(execution.key);
-    const stable = stableByKey.get(execution.key);
-    // Below the root, the only configured rows are the root Team's Agents (Teams are flat).
-    if (execution.kind === 'configured_agent') {
-      if (!stable) {
-        throw new Error(`Configured Team history row '${execution.key}' is absent from root '${rootTeamRunId}'.`);
-      }
-      return [{
-        ...stable,
-        displayName: execution.displayName || stable.displayName,
-        depth,
-        hasChildren: hasChildren || stable.hasChildren,
-      }];
-    }
-    const transientKind = execution.kind === 'task_agent'
-      ? 'task_agent'
-      : execution.kind === 'task_team'
-        ? 'task_team'
-        : 'task_team_child';
-    // autobyteus-278: a run another node runs carries its node.
-    const remoteRun = execution.teamRunId ? remoteRuns.run(execution.teamRunId) : remoteRuns.runOfAgentRun(execution.agentRunId);
-    const transient: RunHistoryTransientExecutionRow = {
-      kind: 'transient_execution',
-      transientKind,
-      rowKey: execution.key,
-      teamRunId: context.view.getRootTeamRunId(),
-      memberAddress: execution.address,
-      agentRunId: execution.agentRunId,
-      teamRunIdForNode: execution.teamRunId,
-      memberKind: execution.agentRunId ? 'agent' : 'agent_team',
-      displayName: execution.displayName,
-      currentStatus: execution.currentStatus,
-      delegatedBy: execution.delegatedBy,
-      depth,
-      hasChildren,
-      remote: remoteRun ? Object.freeze({ runId: remoteRun.runId, nodeName: remoteRun.nodeName }) : null,
-    };
-    return [transient];
-  });
-};
+/**
+ * A Team run's own members as the Workspaces tree shows them (autobyteus-461 SR-084): the runs it delegated are the
+ * server's tree's rows (`runTreeStore`), shown by `WorkspaceTeamExecutionTree`; nothing about them is built here.
+ */
+export const buildRunHistoryTeamExecutionRows = (team: TeamTreeNode): RunHistoryTeamExecutionRow[] =>
+  flattenStableRows(team.rootTeam.children.length > 0 ? team.rootTeam.children : team.members);

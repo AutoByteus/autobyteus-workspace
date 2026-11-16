@@ -214,7 +214,6 @@ describe("REST owner-scoped file-change content routes", () => {
       projectionService: { resolveStandaloneRunEntry: vi.fn() } as never,
       teamMemberViews: views,
       agentOrgMemberViews: views,
-      standaloneRootMemberViews: views,
     });
     return app;
   };
@@ -231,12 +230,6 @@ describe("REST owner-scoped file-change content routes", () => {
       url: "/agent-org-runs/org-1/agent-runs/a-7/file-change-content?memberAddress=%2Fresearch%2Fwriter&path=docs%2Fa.md",
       args: ["org-1", "/research/writer", "a-7", "docs/a.md"],
       withoutMemberAddress: "/agent-org-runs/org-1/agent-runs/a-7/file-change-content?path=docs%2Fa.md",
-    },
-    {
-      name: "delegated copy",
-      url: "/agent-collaborations/hub-1/agent-runs/c-3/file-change-content?memberAddress=%2Freviewer&path=docs%2Fa.md",
-      args: ["hub-1", "/reviewer", "c-3", "docs/a.md"],
-      withoutMemberAddress: "/agent-collaborations/hub-1/agent-runs/c-3/file-change-content?path=docs%2Fa.md",
     },
   ];
 

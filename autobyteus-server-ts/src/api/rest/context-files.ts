@@ -1,3 +1,4 @@
+import type { DelegationIndex } from "../../agent-collaboration/delegation/delegation-index.js";
 import fs from "node:fs";
 import type { FastifyInstance } from "fastify";
 import { lookup as lookupMime } from "mime-types";
@@ -30,14 +31,14 @@ import { createStoredTeamRunExecutionTreeLocationService } from "../../run-histo
 import { appConfigProvider } from "../../config/app-config-provider.js";
 import { AgentOrgExecutionTreeLocationService } from "../../agent-org-execution/services/agent-org-execution-tree-location-service.js";
 import { CollaborationExecutionLocationService } from "../../agent-collaboration/execution/services/collaboration-execution-location-service.js";
-import { StandaloneRootLocationService } from "../../standalone-agent-run-root/services/standalone-root-location-service.js";
+import { DelegatedChildLocations } from "../../agent-collaboration/execution/delegation/delegated-child-locations.js";
 import { sendUserFile, type UserFileContent } from "./user-file-reply.js";
 
 const logger = {
   error: (...args: unknown[]) => console.error(...args),
 };
 
-const buildServices = () => {
+const buildServices = (tree: Pick<DelegationIndex, "childrenOf">) => {
   const config = appConfigProvider.config;
   const memoryDir = config.getMemoryDir();
   const layout = new ContextFileLayout({
@@ -49,7 +50,7 @@ const buildServices = () => {
     locations: new CollaborationExecutionLocationService({
       teams: createStoredTeamRunExecutionTreeLocationService(memoryDir),
       orgs: new AgentOrgExecutionTreeLocationService({ memoryDir }),
-      agents: new StandaloneRootLocationService({ memoryDir }),
+      agents: new DelegatedChildLocations({ memoryDir, teams: createStoredTeamRunExecutionTreeLocationService(memoryDir), tree }),
     }),
   });
   const cleanupService = new ContextFileDraftCleanupService(layout);
@@ -88,8 +89,8 @@ const contextFileContent = (filePath: string): UserFileContent => ({
   body: fs.createReadStream(filePath),
 });
 
-export async function registerContextFileRoutes(app: FastifyInstance): Promise<void> {
-  const { uploadService, finalizationService, readService } = buildServices();
+export async function registerContextFileRoutes(app: FastifyInstance, tree: Pick<DelegationIndex, "childrenOf">): Promise<void> {
+  const { uploadService, finalizationService, readService } = buildServices(tree);
 
   /** The node's current per-type size limits, so a client can refuse an over-limit file before sending it. */
   app.get("/context-files/size-limits", async (_request, reply) => {

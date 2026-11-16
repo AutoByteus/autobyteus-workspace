@@ -23,7 +23,8 @@ const asRawArguments = (value: unknown): Record<string, unknown> =>
 
 export class TaskDelegationToolsMcpAdapterProvider implements AgentToolMcpAdapterProvider {
   constructor(
-    private readonly taskDelegationToolService: TaskDelegationToolService = getTaskDelegationToolService(),
+    /** Read at use: the composition root creates the service after this provider (SR-047 step 8). */
+    private readonly taskDelegationToolService: () => TaskDelegationToolService = getTaskDelegationToolService,
   ) {}
 
   getAdapters(): AgentToolMcpToolAdapter[] {
@@ -48,7 +49,7 @@ export class TaskDelegationToolsMcpAdapterProvider implements AgentToolMcpAdapte
         }
         try {
           const result = await entry.execute(
-            this.taskDelegationToolService,
+            this.taskDelegationToolService(),
             capabilities.taskDelegation,
             entry.parseInput(asRawArguments(rawArguments)),
           );

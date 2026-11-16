@@ -27,4 +27,8 @@ export class FakeSocketClient implements IWebSocketClient {
   open(): void { this.state = ConnectionState.CONNECTED; this.emit('onConnect'); }
   lose(retryable = true): void { this.state = ConnectionState.DISCONNECTED; this.emit('onDisconnect', 'lost', retryable); }
   message(type: string, payload: Record<string, unknown>): void { this.emit('onMessage', JSON.stringify({ type, payload })); }
+  /** A frame of the run's own stream, numbered in its sequence (autobyteus-461 SR-087). */
+  frame(type: string, payload: Record<string, unknown>, sequence: number, through?: number): void {
+    this.emit('onMessage', JSON.stringify({ type, payload, sequence, ...(through === undefined ? {} : { sequence_through: through }) }));
+  }
 }

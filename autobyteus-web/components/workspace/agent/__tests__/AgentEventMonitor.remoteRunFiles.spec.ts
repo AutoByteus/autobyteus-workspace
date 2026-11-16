@@ -15,8 +15,8 @@ import type { Conversation } from '~/types/conversation';
 
 const runtime = vi.hoisted(() => ({ phone: false }));
 vi.mock('~/utils/remoteAccess/mobileRuntime', () => ({ isMobileRemoteAccessRuntime: () => runtime.phone }));
-vi.mock('~/stores/remoteRunsStore', () => ({
-  useRemoteRunsStore: () => ({ runOfAgentRun: (id: string | null | undefined) => (id === 'remote-B' ? { nodeName: 'studio' } : null) }),
+vi.mock('~/stores/runTreeStore', () => ({
+  useRunTreeStore: () => ({ peerRunOf: (id: string | null | undefined) => (id === 'remote-B' ? { nodeName: 'studio' } : null) }),
 }));
 const files = vi.hoisted(() => ({ openFile: vi.fn(), openFilePreview: vi.fn() }));
 vi.mock('~/stores/fileExplorer', () => ({ useFileExplorerStore: () => files }));

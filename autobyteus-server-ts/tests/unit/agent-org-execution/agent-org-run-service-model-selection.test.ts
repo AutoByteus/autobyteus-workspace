@@ -1,3 +1,4 @@
+import { noWorkGuard } from "../../helpers/no-delegations.js";
 import { describe, expect, it, vi } from "vitest";
 import { AgentOrgDefinition, AgentOrgMember } from "../../../src/agent-org-definition/domain/agent-org-definition.js";
 import { AgentTeamDefinition, TeamMember } from "../../../src/agent-team-definition/domain/agent-team-definition.js";
@@ -33,7 +34,7 @@ const harness = (large = false) => {
   let identitySequence = 0;
   const allocate = vi.fn(async (id: string) => `run-${id}-${++identitySequence}`);
   const validator = new RunModelSelectionService(catalog as never, capacity);
-  const service = new AgentOrgRunService({
+  const service = new AgentOrgRunService({ workGuard: noWorkGuard(),
     manager: { create },
     admission: { requireAvailable: async () => ({ definition }) },
     agentDefinitions: { getAgentDefinitionById: async (id: string) => ({ id }) },

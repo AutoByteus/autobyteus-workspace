@@ -1,4 +1,7 @@
-import type { TaskExecutionResourcePort } from "../../agent-collaboration/execution/task/task-execution-resource-port.js";
+import { ClosedTaskFence } from "../../agent-collaboration/execution/task/closed-task-fence.js";
+import type { RunViewStreams } from "../../agent-collaboration/delegation/run-view-stream.js";
+import type { DelegationIndex } from "../../agent-collaboration/delegation/delegation-index.js";
+import type { RunTaskRecords } from "../../agent-collaboration/execution/task/task-execution-resource-port.js";
 import { ROOT_NOT_ACTIVE_MESSAGE } from "../../agent-collaboration/execution/task/task-delegation-command.js";
 import { createRootExecutionPhysicalScope, createTeamRootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import type { CollaboratorAdmission } from "../../agent-collaboration/collaborators/collaborator-admission.js";
@@ -15,7 +18,6 @@ import { TeamRunContext } from "../domain/team-run-context.js";
 import { isTeamRunMessageEvent, type TeamRunEvent } from "../domain/team-run-event.js";
 import type { TeamRunExecutionTreeSnapshot } from "../domain/team-run-execution-tree.js";
 import { TaskDelegationError } from "../../agent-collaboration/execution/task/task-delegation-command.js";
-import type { TaskExecutionIdentityCapabilities } from "../task-delegation/task-execution-identity-capabilities.js";
 import type { MemberExecutionContextBuilder } from "./member-team-context-builder.js";
 import { createTeamFlatExecutionCallbacks } from "./team-flat-execution-callbacks.js";
 import { TeamRunEventPublisher } from "./team-run-event-publisher.js";
@@ -30,8 +32,10 @@ export type TeamRootMaterializationInput = Readonly<{
   persistInitialPackage: boolean;
   factory: FlatTeamExecutionFactory;
   memberExecutionContextBuilder: MemberExecutionContextBuilder;
-  taskExecutionIdentity: TaskExecutionIdentityCapabilities;
-  taskExecutionResources?: TaskExecutionResourcePort;
+  taskRecords: RunTaskRecords;
+  delegationIndex: DelegationIndex;
+  /** Each run's view stream (SR-062). */
+  viewStreams: RunViewStreams;
   executionTreeStore: TeamRunExecutionTreeStore;
   communicationStore: TeamCommunicationStore;
   /** The process admission coordinator unless given. */
@@ -52,8 +56,9 @@ const requireCommitted = async (
 export const materializeTeamRoot = async (
   input: TeamRootMaterializationInput,
 ): Promise<RootTeamRun> => {
-  const publisher = new TeamRunEventPublisher<TeamRunEvent>({ isMessageEvent: isTeamRunMessageEvent });
   const rootIdentity = createTeamRootExecutionIdentity(input.tree.rootTeam.teamRunId);
+  // The run's one view stream, living as long as the process: the root hands its events to it (SR-062, SR-063).
+  const publisher = input.viewStreams.streamOf<TeamRunEvent>(rootIdentity);
   const physicalScope = createRootExecutionPhysicalScope({ root: rootIdentity, ancestorTeamRunIds: [] });
   let root: RootTeamRun | null = null;
   const requireActiveRoot = (): RootTeamRun => {
@@ -64,15 +69,17 @@ export const materializeTeamRoot = async (
   };
   const taskCapability: MemberTaskCapability = Object.freeze({
     root: rootIdentity,
-    delegateToNewCopy: (caller, command) => requireActiveRoot().delegateToNewCopy({ identity: caller }, command),
-    assignToExistingCopy: (caller, command) => requireActiveRoot().assignToExistingCopy({ identity: caller }, command),
+    delegationSource: (caller) => requireActiveRoot().delegationSource({ identity: caller }),
     ownedTaskOf: (caller) => requireActiveRoot().ownedTaskOf({ identity: caller }),
   });
+  // DS-15 (SR-070): a delegated team run whose Task is closed takes no input, as base fenced a copy's every input.
+  const closedTasks = new ClosedTaskFence({ tree: input.delegationIndex, tasks: input.taskRecords });
   const callbacks = createTeamFlatExecutionCallbacks({
-    assertExecutionInputAllowed: (identity) => requireActiveRoot().assertExecutionInputAllowed(identity.agentRunId),
+    // A member takes input while its run is active and its Task, if a Task names it, is open; nothing is hosted.
+    // Damaged Task data fails a delegated team closed (CR-461-051): its own tree says it was delegated.
+    assertExecutionInputAllowed: () => { requireActiveRoot(); closedTasks.assertOpen(rootIdentity, Boolean(input.tree.delegatedFrom)); },
     teamContext: new TeamRunContext({
       physicalScope,
-      teamKind: "configured",
       teamRunId: input.config.rootTeam.teamRunId,
       teamBackendKind: input.config.teamBackendKind,
       teamNode: input.config.rootTeam,
@@ -96,7 +103,6 @@ export const materializeTeamRoot = async (
   });
   const prepared = await input.factory.beginMaterialization({
     physicalScope,
-    teamKind: "configured",
     teamNode: input.config.rootTeam,
     handoffs: input.config.handoffs,
     applicationBinding: input.config.applicationBinding,
@@ -122,8 +128,10 @@ export const materializeTeamRoot = async (
       messages: input.messages,
       persistence,
       publisher,
-      taskExecutionIdentity: input.taskExecutionIdentity,
-      taskExecutionResources: input.taskExecutionResources,
+      messageFeed: input.viewStreams.messages,
+      taskRecords: input.taskRecords,
+      delegationIndex: input.delegationIndex,
+      closedTasks,
       collaboratorAdmission: input.collaboratorAdmission,
       onTerminated: (ending) => { if (root) input.onTerminated(root, ending); },
     });

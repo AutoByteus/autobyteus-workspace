@@ -123,6 +123,16 @@ describe("MessageLog", () => {
     await expect(new MessageLog(dir, "team_communication_messages").read()).rejects.toThrow("ISO-8601");
   });
 
+  it("names the damaged file and line, keeping the reader's detail (CR-461-083)", async () => {
+    const dir = await tempDir();
+    await fs.writeFile(path.join(dir, "team_communication_messages_active.jsonl"), `${JSON.stringify(message("m1", 1))}\nnot json\n`);
+    await expect(new MessageLog(dir, "team_communication_messages").read()).rejects.toMatchObject({ name: "StoredFileDamagedError",
+      what: "message log", fileName: "team_communication_messages_active.jsonl", line: 2,
+      message: "team_communication_messages_active.jsonl:line 2 is not valid JSON." });
+    await fs.writeFile(path.join(dir, "team_communication_messages_active.jsonl"), `${JSON.stringify({ ...message("m1", 1), createdAt: "yesterday" })}\n`);
+    await expect(new MessageLog(dir, "team_communication_messages").read()).rejects.toMatchObject({ name: "StoredFileDamagedError", line: 1 });
+  });
+
   it("seals the active file at the limit; sealed bytes never change; every file stays within limit + one message (AC-003)", async () => {
     const dir = await tempDir();
     const limit = 1000;

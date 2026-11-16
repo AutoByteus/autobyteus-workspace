@@ -1,14 +1,12 @@
+import { NOT_DELEGATED } from "../../helpers/run-collaboration.js";
+import { noDelegations, openTaskRecords } from "../../helpers/no-delegations.js";
 import { describe, expect, it, vi } from "vitest";
 import type { RootTeamRun } from "../../../src/agent-team-execution/domain/root-team-run.js";
 import { AgentTeamRunManager } from "../../../src/agent-team-execution/services/agent-team-run-manager.js";
 import { FlatTeamExecutionFactory } from "../../../src/agent-team-execution/local/flat-team-execution-factory.js";
 import { MemberExecutionContextBuilder } from "../../../src/agent-team-execution/services/member-team-context-builder.js";
 import { ActiveCollaborationRootDirectory } from "../../../src/agent-collaboration/execution/services/active-collaboration-root-directory.js";
-import { createTaskExecutionIdentityCapabilities } from "../../../src/agent-team-execution/task-delegation/task-execution-identity-capabilities.js";
 
-const taskExecutionIdentity = createTaskExecutionIdentityCapabilities({
-  allocateForAgentDefinition: async () => "task-agent-run",
-});
 const modelSelectionValidator = Object.freeze({
   validateMany: async () => [],
   validate: async ({ selection }: { selection: { llmModelIdentifier: string; llmConfig: Record<string, unknown> | null } }) => ({
@@ -20,13 +18,12 @@ const modelSelectionValidator = Object.freeze({
 const flatTeamExecutionFactory = new FlatTeamExecutionFactory();
 const memberExecutionContextBuilder = new MemberExecutionContextBuilder({
   getDefinitionById: async () => null,
-} as never);
+} as never, NOT_DELEGATED);
 
-const createManager = () => new AgentTeamRunManager({
+const createManager = () => new AgentTeamRunManager({ delegationIndex: noDelegations(), taskRecords: openTaskRecords(),
   memoryDir: "/tmp/api-e2e-agent-team-run-manager",
   flatTeamExecutionFactory,
   memberExecutionContextBuilder,
-  taskExecutionIdentity,
   modelSelectionValidator,
   activeRootDirectory: new ActiveCollaborationRootDirectory(),
 });
@@ -59,7 +56,6 @@ describe("AgentTeamRunManager root lifecycle", () => {
         memoryDir: "/tmp/api-e2e-agent-team-run-manager",
         flatTeamExecutionFactory,
         memberExecutionContextBuilder,
-        taskExecutionIdentity,
         modelSelectionValidator,
       };
       if (value === "omitted") delete options.flatTeamExecutionFactory;
@@ -74,7 +70,6 @@ describe("AgentTeamRunManager root lifecycle", () => {
         memoryDir: "/tmp/api-e2e-agent-team-run-manager",
         flatTeamExecutionFactory,
         memberExecutionContextBuilder,
-        taskExecutionIdentity,
         modelSelectionValidator,
       };
       if (value === "omitted") delete options.modelSelectionValidator;
@@ -110,6 +105,18 @@ describe("AgentTeamRunManager root lifecycle", () => {
     await expect(manager.terminateTeamRun("team-run-1")).resolves.toBe(false);
     expect(manager.getManagedTeamRun("team-run-1")).toBe(root);
     expect(manager.getLifecycleSnapshot("team-run-1")).toEqual({ teamRunId: "team-run-1", isActive: true, ending: null });
+  });
+
+  it("CR-461-001: a closure stop asks whether the Task entry is still closed right before the root's terminate; open again keeps it", async () => {
+    const manager = createManager();
+    const root = createRoot();
+    register(manager, root);
+    await expect(manager.terminateTeamRunForTaskClosure("team-run-1", () => false)).resolves.toBe("kept_open");
+    expect(root.terminate).not.toHaveBeenCalled();
+    expect(manager.getManagedTeamRun("team-run-1")).toBe(root);
+    await expect(manager.terminateTeamRunForTaskClosure("team-run-1", () => true)).resolves.toBe("stopped");
+    expect(root.terminate).toHaveBeenCalledTimes(1);
+    await expect(manager.terminateTeamRunForTaskClosure("team-run-1", () => true)).resolves.toBe("stopped");
   });
 
   it("rejects duplicate root registration and makes exact unregister idempotent", () => {

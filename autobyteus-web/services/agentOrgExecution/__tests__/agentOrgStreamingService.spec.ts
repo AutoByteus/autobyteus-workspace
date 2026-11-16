@@ -90,19 +90,19 @@ const snapshot = {
     root_subject_kind: 'agent_org', root_run_id: 'org-run',
     root_org: {
       base_change_sequence: 4, live_sequence_id: 'live-1', last_message_change_sequence: 0, is_active: true,
-      closed_task_executions: [], execution_tree: {
+      execution_tree: {
         subjectKind: 'agent_org', createdAt: '2026-09-01T00:00:00.000Z',
         archivedAt: null, applicationBinding: null, handoffs: [],
         rootOrg: {
           address: '/', orgDefinitionId: 'org-def', orgDefinitionName: 'Org', orgRunId: 'org-run',
-          defaultLaunchConfiguration: launch, taskExecutions: [],
+          defaultLaunchConfiguration: launch,
           members: [{
             address: '/direct', agentDefinitionId: 'agent-def', role: null, description: null,
             agentRunId: 'agent-run', platformAgentRunId: null, launchConfiguration: launch,
           }],
         },
       },
-      agent_input_states: [], remote_task_executions: [], agent_statuses: [{
+      agent_input_states: [], agent_statuses: [{
         member_address: '/direct', agent_run_id: 'agent-run', status: 'idle', trigger: null,
         tool_name: null, error_message: null, error_details: null, recoverableBlock: null,
       }],
@@ -420,53 +420,6 @@ describe('AgentOrgStreamingService', () => {
     expect(advance).toHaveBeenCalledWith('agent_org', 'org-run', 'live-1', 9)
   })
 
-  it('checkpoint-hydrates a fresh task activation instead of publishing a partial context', async () => {
-    const first = candidate()
-    vi.mocked(first.applyEvent).mockReturnValue('checkpoint_required')
-    const second = candidate(null, 5)
-    mocks.hydrate.mockResolvedValueOnce(first).mockResolvedValueOnce(second)
-    mocks.query.mockResolvedValue({
-      data: { getAgentOrgExecutionCheckpoint: {
-        orgRunId: 'org-run', changeSequence: 5, hasOpenExecutionWork: true,
-      } },
-    })
-    const publish = vi.fn()
-    const reportError = vi.fn()
-    const service = new AgentOrgStreamingService({ orgRunId: 'org-run', publish, reportError })
-
-    service.connect()
-    const initialSocket = TestWebSocket.instances[0]!
-    initialSocket.emit(connected)
-    initialSocket.emit(snapshot)
-    await vi.waitFor(() => expect(publish).toHaveBeenCalledWith(first, expect.any(Function)))
-
-    initialSocket.emit({
-      type: 'ROOT_EXECUTION_EVENT',
-      payload: {
-        root_subject_kind: 'agent_org', root_run_id: 'org-run', change_sequence: 5,
-        event: { kind: 'task_execution_started', host_kind: 'root', host_run_id: 'org-run', execution: {
-          address: '/direct', agentRunId: 'agent-task-fresh', platformAgentRunId: null,
-          delegatorAgentRunId: 'agent-run', startedAt: '2026-09-01T00:00:01.000Z',
-          source: { kind: 'agent', agentDefinitionId: 'direct', launchConfiguration: launch },
-        } },
-      },
-    })
-
-    await vi.waitFor(() => expect(TestWebSocket.instances).toHaveLength(2))
-    expect(publish).toHaveBeenCalledTimes(1)
-    const recoverySocket = TestWebSocket.instances[1]!
-    recoverySocket.emit(connected)
-    recoverySocket.emit(snapshot)
-    await vi.waitFor(() => expect(publish).toHaveBeenLastCalledWith(second, expect.any(Function)))
-    // A single event carries no change_sequence_through (only content batches cover a range).
-    expect(first.applyEvent).toHaveBeenCalledWith(5, expect.objectContaining({ kind: 'task_execution_started' }), undefined)
-    // The single checkpoint event was seen and carries no message: the lists are consistent through it (SR-004).
-    expect(advance).toHaveBeenCalledWith('agent_org', 'org-run', 'live-1', 5)
-    expect(first.requireReopen).not.toHaveBeenCalled()
-    expect(reportError).not.toHaveBeenCalled()
-    expect(mocks.query).toHaveBeenCalledTimes(2)
-  })
-
   it('completes a command only from an ACK with the exact command type and target', async () => {
     const context = candidate()
     mocks.hydrate.mockResolvedValue(context)
@@ -581,73 +534,6 @@ describe('AgentOrgStreamingService', () => {
     expect(context.requireReopen).toHaveBeenCalledWith(expect.stringContaining('identity mismatch'))
   })
 
-  it('ignores a queued frame from the retired socket while checkpoint replacement publishes atomically', async () => {
-    const first = candidate()
-    vi.mocked(first.applyEvent).mockReturnValue('checkpoint_required')
-    const second = candidate(null, 6)
-    mocks.hydrate.mockResolvedValueOnce(first).mockResolvedValueOnce(second)
-    let finishCheckpoint!: (value: unknown) => void
-    mocks.query
-      .mockReturnValueOnce(new Promise((resolve) => { finishCheckpoint = resolve }))
-      .mockResolvedValueOnce({ data: { getAgentOrgExecutionCheckpoint: {
-        orgRunId: 'org-run', changeSequence: 6, hasOpenExecutionWork: true,
-      } } })
-    const publish = vi.fn()
-    const reportError = vi.fn()
-    const service = new AgentOrgStreamingService({ orgRunId: 'org-run', publish, reportError })
-
-    service.connect()
-    const initialSocket = TestWebSocket.instances[0]!
-    initialSocket.emit(connected)
-    initialSocket.emit(snapshot)
-    await vi.waitFor(() => expect(publish).toHaveBeenCalledWith(first, expect.any(Function)))
-
-    initialSocket.emit({
-      type: 'ROOT_EXECUTION_EVENT',
-      payload: {
-        root_subject_kind: 'agent_org', root_run_id: 'org-run', change_sequence: 5,
-        event: { kind: 'task_execution_started', host_kind: 'root', host_run_id: 'org-run', execution: {
-          address: '/direct', agentRunId: 'agent-task-fresh', platformAgentRunId: null,
-          delegatorAgentRunId: 'agent-run', startedAt: '2026-09-01T00:00:01.000Z',
-          source: { kind: 'agent', agentDefinitionId: 'direct', launchConfiguration: launch },
-        } },
-      },
-    })
-    await vi.waitFor(() => expect(mocks.query).toHaveBeenCalledTimes(1))
-
-    initialSocket.emit({
-      type: 'ROOT_EXECUTION_EVENT',
-      payload: {
-        root_subject_kind: 'agent_org', root_run_id: 'org-run', change_sequence: 6,
-        event: {
-          kind: 'agent_presentation', member_address: '/direct', agent_run_id: 'agent-task-fresh',
-          message: { type: 'AGENT_STATUS', payload: {
-            status: 'running', trigger: 'task', tool_name: null,
-            error_message: null, error_details: null, recoverableBlock: null,
-          } },
-        },
-      },
-    })
-    finishCheckpoint({ data: { getAgentOrgExecutionCheckpoint: {
-      orgRunId: 'org-run', changeSequence: 6, hasOpenExecutionWork: true,
-    } } })
-
-    await vi.waitFor(() => expect(TestWebSocket.instances).toHaveLength(2))
-    const replacementSocket = TestWebSocket.instances[1]!
-    replacementSocket.emit({
-      type: 'CONNECTED',
-      payload: { root_subject_kind: 'agent_org', root_run_id: 'org-run', session_id: 'session-2' },
-    })
-    replacementSocket.emit(snapshot)
-
-    await vi.waitFor(() => expect(publish).toHaveBeenLastCalledWith(second, expect.any(Function)))
-    expect(replacementSocket.readyState).toBe(TestWebSocket.OPEN)
-    expect(first.requireReopen).not.toHaveBeenCalled()
-    expect(reportError).not.toHaveBeenCalled()
-    expect(mocks.hydrate).toHaveBeenCalledTimes(2)
-    expect(mocks.query).toHaveBeenCalledTimes(2)
-  })
-
   it('does not publish hydration that completes after the AgentOrg context is released', async () => {
     const hydrated = candidate()
     let finishHydration!: (value: AgentOrgExecutionContext) => void
@@ -672,47 +558,6 @@ describe('AgentOrgStreamingService', () => {
     expect(reportError).not.toHaveBeenCalled()
   })
 
-  it('does not reconnect when an activation checkpoint completes after context release', async () => {
-    const first = candidate()
-    vi.mocked(first.applyEvent).mockReturnValue('checkpoint_required')
-    mocks.hydrate.mockResolvedValueOnce(first)
-    let finishCheckpoint!: (value: unknown) => void
-    mocks.query.mockReturnValueOnce(new Promise((resolve) => { finishCheckpoint = resolve }))
-    const publish = vi.fn()
-    const reportError = vi.fn()
-    const service = new AgentOrgStreamingService({ orgRunId: 'org-run', publish, reportError })
-
-    service.connect()
-    const socket = TestWebSocket.instances[0]!
-    socket.emit(connected)
-    socket.emit(snapshot)
-    await vi.waitFor(() => expect(publish).toHaveBeenCalledWith(first, expect.any(Function)))
-
-    socket.emit({
-      type: 'ROOT_EXECUTION_EVENT',
-      payload: {
-        root_subject_kind: 'agent_org', root_run_id: 'org-run', change_sequence: 5,
-        event: { kind: 'task_execution_started', host_kind: 'root', host_run_id: 'org-run', execution: {
-          address: '/direct', agentRunId: 'agent-task-fresh', platformAgentRunId: null,
-          delegatorAgentRunId: 'agent-run', startedAt: '2026-09-01T00:00:01.000Z',
-          source: { kind: 'agent', agentDefinitionId: 'direct', launchConfiguration: launch },
-        } },
-      },
-    })
-    await vi.waitFor(() => expect(mocks.query).toHaveBeenCalledTimes(1))
-
-    service.disconnect()
-    finishCheckpoint({ data: { getAgentOrgExecutionCheckpoint: {
-      orgRunId: 'org-run', changeSequence: 5, hasOpenExecutionWork: true,
-    } } })
-    await new Promise((resolve) => setTimeout(resolve, 0))
-
-    expect(socket.readyState).toBe(TestWebSocket.CLOSED)
-    expect(TestWebSocket.instances).toHaveLength(1)
-    expect(publish).toHaveBeenCalledTimes(1)
-    expect(first.setActive).not.toHaveBeenCalled()
-    expect(reportError).not.toHaveBeenCalled()
-  })
 })
 
 /** autobyteus-434: the Org stream's scheduler adoption (per-owner table): connect, requestRecovery and re-sync. */

@@ -34,6 +34,8 @@ export const PHONE_WEBSOCKET_ROUTES: ReadonlySet<string> = new Set([
   "/ws/agent-org/:orgRunId",
   "/ws/agent-collaboration/:runId",
   "/ws/projects",
+  "/ws/run-status",
+  "/ws/peer-run/:nodeId/:runKind/:runId/:agentRunId",
   "/ws/agent-package-definitions",
   "/ws/file-explorer/:workspaceId",
   "/ws/node-desktop",

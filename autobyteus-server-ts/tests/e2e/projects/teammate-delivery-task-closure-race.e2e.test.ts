@@ -12,11 +12,14 @@ import { StandaloneRootPackageStore } from "../../../src/standalone-agent-run-ro
 import { AgentOrgCommunicationMessagesStore } from "../../../src/agent-org-execution/persistence/agent-org-communication-messages-store.js";
 import { TeamCommunicationStore } from "../../../src/services/team-communication/team-communication-store.js";
 import { RootCommunicationEngine } from "../../../src/agent-collaboration/execution/communication/root-communication-engine.js";
+import { CrossRunMessageDelivery } from "../../../src/agent-collaboration/communication/cross-run-message-delivery.js";
+import { delegatedConversation } from "../helpers/own-run-reads.js";
 import { startStudioE2eRuntimeServer } from "../helpers/studio-runtime-test-server.js";
 import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
 import { readRootMessages, agentRunIdsOfViewTree } from "../../helpers/collaboration-participant-messages.js";
 import { until } from "../helpers/agy-runtime-error-fixture.js";
 import { flattenE2eConfiguredAgentExecutions } from "../helpers/team-run-metadata-helpers.js";
+import { delegatedRunsTree } from "../helpers/run-tree-delegated.js";
 
 // A Task closing while a teammate message is being saved (agent-input-delivery-simplification SR-006 REQ-012, AC-012,
 // DEC-005; DEC-001 = A) through the real Studio HTTP/WebSocket server, scoped MCP agent tools, Task services, roots,
@@ -30,12 +33,15 @@ import { flattenE2eConfiguredAgentExecutions } from "../helpers/team-run-metadat
 // - TDR-001 (closure during the write): the Manager's run-ID message to a copy's lead is written while that copy's
 //   Task is closed. The root does not fail-stop; the Manager gets the readable refusal
 //   `{accepted:false, code:"TASK_AGENT_RESOURCE_CLOSED"}` (DEC-005: the same as a closure found before the save); the
-//   record stays in the message log and the root view; the lead never processes the message.
-// - TDR-002 (closure while waiting behind another write, DEC-005 with the slot dropped): another copy's member is
-//   writing a teammate message; the Manager's message to a second copy waits for the log lock; the second copy's Task
-//   is closed. The Manager gets the same readable refusal; that message is never written; the first is delivered.
+//   record stays in the receiver's log and the sender's, and the Team tab shows it (autobyteus-461 SR-076, as at base); the
+//   lead never processes the message.
+// - TDR-002 (closure while waiting behind another write, DEC-005 with the slot dropped): a write to the second copy's own
+//   log is held (its lead → its mate); the Manager's message to that lead waits for that log's lock (each run has its own
+//   log and lock, autobyteus-461 TC-13); the copy's Task is closed. The Manager gets the same readable refusal; that
+//   message is never written. The held write's own outcome is recorded.
 // - TDR-003 (the root keeps working): later messages are accepted and saved; after root stop and restore the history
-//   reads back exactly (TDR-001's record and the blocking message, not TDR-002's), and messaging continues.
+//   reads back exactly the Team tab's messages (the root's own log and its open subtree's, SR-074; TDR-001's record,
+//   not TDR-002's), and messaging continues.
 // Run: RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=$PWD/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs \
 //   pnpm -C autobyteus-server-ts exec vitest run tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts --no-watch
 // `TEAMMATE_DELIVERY_RACE_E2E_EVIDENCE_DIR` keeps a JSON receipt. The scripted CLI's opt-in `AGY_FAKE_TOOL_LOG` records
@@ -112,6 +118,24 @@ const spyDeliveries = () => {
     }
   };
   restorers.push(() => { proto.deliver = original; });
+  // autobyteus-461: a message to a run this root delegated to is delivered between runs by CrossRunMessageDelivery.route,
+  // not by the sender root's engine; its outcome is recorded the same way.
+  const crossProto = CrossRunMessageDelivery.prototype as any;
+  const crossOriginal = crossProto.route as (...args: any[]) => Promise<unknown>;
+  crossProto.route = async function spiedRoute(this: unknown, input: { content?: string }, ...rest: unknown[]) {
+    const key = String(input?.content ?? "").trim();
+    if (!deliveryStarts.has(key)) deliveryStarts.set(key, Date.now());
+    try {
+      const value = await crossOriginal.call(this, input, ...rest);
+      if (value) deliveryOutcomes.set(key, { resolved: value });
+      return value;
+    } catch (error) {
+      deliveryOutcomes.set(key, { thrown: { name: (error as Error)?.name, code: (error as { code?: unknown })?.code ?? null,
+        message: (error as Error)?.message } });
+      throw error;
+    }
+  };
+  restorers.push(() => { crossProto.route = crossOriginal; });
 };
 const gateStore = (proto: Record<string, any>, method: string) => {
   const original = proto[method] as (...args: any[]) => Promise<unknown>;
@@ -196,7 +220,7 @@ suite("A Task closing while a teammate message is being saved never fail-stops t
    * kept when its sender or receiver is one of `agentRunIds`, unique by `messageId`, in `createdAt` order. An unfinished
    * last line (an append that never returned) is ignored, as the reader does.
    */
-  const savedHistory = async (agentRunIds: ReadonlySet<string>): Promise<Array<Record<string, any>>> => {
+  const savedHistory = async (agentRunIds: ReadonlySet<string>, where?: Map<string, string[]>): Promise<Array<Record<string, any>>> => {
     const byId = new Map<string, Record<string, any>>();
     const visit = async (dir: string): Promise<void> => {
       for (const entry of await fs.readdir(dir, { withFileTypes: true }).catch(() => [])) {
@@ -208,6 +232,7 @@ suite("A Task closing while a teammate message is being saved never fail-stops t
           let message: Record<string, any>; try { message = JSON.parse(line); } catch { continue; }
           if (typeof message.messageId !== "string") continue;
           if (agentRunIds.has(message.senderAgentRunId) || agentRunIds.has(message.receiverAgentRunId)) byId.set(message.messageId, message);
+          if (where) where.set(String(message.content), [...(where.get(String(message.content)) ?? []), path.relative(dataDir, file)]);
         }
       }
     };
@@ -314,23 +339,22 @@ suite("A Task closing while a teammate message is being saved never fail-stops t
       view: await connect(viewRoute, rootId, (frames) => frames.some(isSnapshot)),
     };
     const reconnect = async () => {
-      if (kind === "org") {
-        const restored = (await graphql(`mutation($id:String!){restoreAgentOrgRun(agentOrgRunId:$id){success message}}`, { id: rootId })).restoreAgentOrgRun;
-        expect(restored.success, restored.message).toBe(true);
-      }
+      // A stopped Org's view opens from its stored file; the next message to one of its agents on that view restores it
+      // (autobyteus-461 SR-046 … SR-048: there is no Org restore mutation).
       if (kind === "agent") channels.input = await connect("agent", rootId, (frames) => frames.some((f) => f.type === "CONNECTED"));
       channels.view = await connect(viewRoute, rootId, (frames) => frames.some(isSnapshot));
       active.push({ kind, rootId });
     };
     const closeChannels = () => { channels.view.socket.close(); channels.input?.socket.close(); };
-    /** The root's saved messages as freshly opened Team tabs load them (autobyteus-358: per participant). */
+    /** The root's saved messages as freshly opened Team tabs load them (autobyteus-358: per participant; its own Manager always included,
+     * since an Agent root's tree holds only the runs it delegated to). */
     const snapshotMessages = async (): Promise<string[]> => {
-      const view = await connect(viewRoute, rootId, (frames) => frames.some(isSnapshot));
-      const payload = view.frames.find(isSnapshot)!.payload;
+      // autobyteus-461 SR-084: the participants are the view's tree rows (RUN_TREE_SNAPSHOT follows its own snapshot).
+      const view = await connect(viewRoute, rootId, (frames) => frames.some(isSnapshot) && frames.some((frame) => frame.type === "RUN_TREE_SNAPSHOT"));
+      const rows = view.frames.find((frame) => frame.type === "RUN_TREE_SNAPSHOT")!.payload.rows;
       view.socket.close();
-      const body = kind === "agent" ? payload.root_agent : kind === "org" ? payload.root_org : payload;
       const list = await readRootMessages(graphql, { rootKind: kind === "agent" ? "agent" : kind === "org" ? "agent_org" : "agent_team",
-        rootRunId: rootId, agentRunIds: agentRunIdsOfViewTree(body.execution_tree) });
+        rootRunId: rootId, agentRunIds: [...new Set([managerRunId, ...agentRunIdsOfViewTree(rows)])] });
       return list.map((message) => String(message.content));
     };
     const send = (agentRunId: string, content: string) => {
@@ -339,12 +363,12 @@ suite("A Task closing while a teammate message is being saved never fail-stops t
         command_id: randomUUID(), message_id: randomUUID(), dedupe_key: randomUUID(), content, context_file_paths: [], image_urls: [] } }));
       else sendE2eSendMessageCommand(kind === "agent" ? channels.input!.socket : channels.view.socket, { agent_run_id: agentRunId, content });
     };
-    const liveTree = async () => {
-      if (kind === "agent") return (await graphql(`query($id:String!){agentRunCollaboration(runId:$id)}`, { id: rootId })).agentRunCollaboration?.root_agent?.execution_tree ?? null;
-      if (kind === "team") return (await graphql(`query($id:String!){getTeamRunResumeConfig(teamRunId:$id){executionTree}}`, { id: rootId })).getTeamRunResumeConfig.executionTree;
-      return (await graphql(`query($id:String!){getAgentOrgRootHistory(orgRunId:$id){org}}`, { id: rootId })).getAgentOrgRootHistory.org;
-    };
+    // autobyteus-461 SR-084: the root's delegated runs at every depth, from its tree (its view carries its own parts only).
+    const liveTree = async () => delegatedRunsTree(graphql, kind, rootId);
     const conversationOf = async (agentRunId: string, address: string) => {
+      // A run this root (or one of its runs) delegated to is read by its own run (autobyteus-461 rule 2).
+      const ownRead = await delegatedConversation(graphql, path.join(dataDir, "memory"), rootId, agentRunId);
+      if (ownRead) return ownRead;
       if (kind === "agent" && agentRunId === rootId) return (await graphql(`query($id:String!){getRunProjection(runId:$id){conversation}}`,
         { id: agentRunId })).getRunProjection?.conversation;
       if (kind === "agent") return (await graphql(`query($h:String!,$a:String!,$r:String!){agentRunCollaborationMemberProjection(hostRunId:$h,memberAddress:$a,agentRunId:$r){conversation}}`,
@@ -454,21 +478,33 @@ suite("A Task closing while a teammate message is being saved never fail-stops t
     // DEC-005: the same returned refusal as a closure found before the save, readable by the agent; not a fail-stop.
     expect(delivered1, `${kind} TDR-001 delivery outcome`).toMatchObject({ resolved: { accepted: false, code: "TASK_AGENT_RESOURCE_CLOSED" } });
     expect(outcome1, `${kind} TDR-001 agent-visible outcome`).toMatchObject({ accepted: false, code: "TASK_AGENT_RESOURCE_CLOSED" });
-    await until(async () => contents(await savedHistory(rootAgents())).includes(race1), `${kind}: TDR-001 record saved`, 15_000);
+    // SR-072 (the one accepted difference from base): the receiver re-checks before writing, so a refused message is
+    // never written, and never shown in the Team tab.
+    await wait(3_000);
+    const writtenIn = new Map<string, string[]>();
+    // SR-076 (base, 469 REQ-012): the Task closed during the receiver's durable write: the record is kept in the receiver's
+    // log and, between two runs, in the sender's (the Manager's) too, so the Team tab shows it live and after a reload.
+    await until(async () => { writtenIn.clear(); await savedHistory(rootAgents(), writtenIn); return (writtenIn.get(race1) ?? []).length >= 2; },
+      `${kind}: TDR-001 record in both logs`, 15_000).catch(() => undefined);
+    record.tdr001writtenIn = writtenIn.get(race1) ?? [];
+    const managerDir = kind === "agent" ? `memory/agents/${root.managerRunId}/` : kind === "team" ? `memory/agent_teams/${root.rootId}/` : `memory/agent_orgs/${root.rootId}/`;
+    expect(writtenIn.get(race1) ?? [], `${kind} TDR-001 kept in the sender's log`).toEqual(expect.arrayContaining([expect.stringContaining(managerDir)]));
+    expect(writtenIn.get(race1) ?? [], `${kind} TDR-001 kept in the receiver's log`).toEqual(expect.arrayContaining([expect.stringContaining(`memory/agent_teams/${copyC.teamRunId}/`)]));
     expect(await root.snapshotMessages(), `${kind} TDR-001 record shown in the root view`).toContain(race1);
     await wait(2_000);
     const leadMemoryC = await closedMemberText(copyC.teamRunId, copyC.members.lead.agentRunId);
     expect(JSON.parse(leadMemoryC).rawTraces?.length, `${kind} TDR-001 recipient's saved memory is read`).toBeGreaterThan(0);
     expect(leadMemoryC, `${kind} TDR-001 recipient never processes`).not.toContain(race1);
 
-    // TDR-002 (CR-001): copy A's lead is writing a teammate message; the Manager's message to B waits for the lock;
-    // B's Task closes; then A's write finishes.
+    // TDR-002 (CR-001): a write to B's log is held (B's lead → B's mate); the Manager's message to B's lead waits for B's
+    // log lock; B's Task closes; then the held write finishes. autobyteus-461: each run has its own log and lock (TC-13),
+    // so the waiting happens only behind a write to the receiver's own log (at base, any write to the shared root log).
     const blocker = `BLOCKER-${kind}-${randomUUID().slice(0, 6)}`;
     const raceB = `RACEB-${kind}-${randomUUID().slice(0, 6)}`;
     const gate2 = holdWrite(blocker);
-    const asked = await root.managerCalls(callTool("send_message_to", { target_agent_run_id: copyA.members.lead.agentRunId,
-      content: callTool("send_message_to", { recipient_address: copyA.members.mate.address, content: blocker }) }));
-    expect(asked, `${kind} Manager → A lead ${JSON.stringify(asked)}`).toMatchObject({ accepted: true });
+    const asked = await root.managerCalls(callTool("send_message_to", { target_agent_run_id: copyB.members.lead.agentRunId,
+      content: callTool("send_message_to", { recipient_address: copyB.members.mate.address, content: blocker }) }));
+    expect(asked, `${kind} Manager → B lead ${JSON.stringify(asked)}`).toMatchObject({ accepted: true });
     await Promise.race([gate2.entered, wait(60_000).then(() => { throw new Error(`${kind}: TDR-002 blocking write never started`); })]);
     root.sendToManager(callTool("send_message_to", { target_agent_run_id: copyB.members.lead.agentRunId, content: raceB }));
     await wait(3_000); // the Manager's delivery holds B's slot and waits for the history lock
@@ -482,19 +518,19 @@ suite("A Task closing while a teammate message is being saved never fail-stops t
     mark("tdr002 write released");
     const outcome2 = await awaitToolOutcome(raceB, { targetAgentRunId: copyB.members.lead.agentRunId }, `${kind}: TDR-002 sender outcome`);
     mark("tdr002 sender result");
-    const blockerOutcome = await awaitToolOutcome(blocker, { recipientAddress: copyA.members.mate.address }, `${kind}: A lead's teammate message result`);
+    // B's lead was stopped by the closure mid-turn, so it may never see its own tool result: only the delivery owner's
+    // outcome is recorded.
+    await wait(2_000);
+    const blockerOutcome = deliveryOutcomes.get(blocker) ?? null;
     const delivered2 = deliveryOutcomes.get(raceB);
     record.tdr002 = { agentSaw: outcome2, delivery: delivered2, blockerAgentSaw: blockerOutcome, blockerDelivery: deliveryOutcomes.get(blocker),
-      mateAgentRunId: copyA.members.mate.agentRunId, bDeliveryStartedMsBeforeTaskBClosed: taskBClosedAt - (deliveryStarts.get(raceB) ?? taskBClosedAt) };
+      mateAgentRunId: copyB.members.mate.agentRunId, bDeliveryStartedMsBeforeTaskBClosed: taskBClosedAt - (deliveryStarts.get(raceB) ?? taskBClosedAt) };
     expect(delivered2, `${kind} TDR-002 delivery outcome`).toMatchObject({ resolved: { accepted: false, code: "TASK_AGENT_RESOURCE_CLOSED" } });
     expect(outcome2, `${kind} TDR-002 agent-visible outcome`).toMatchObject({ accepted: false, code: "TASK_AGENT_RESOURCE_CLOSED" });
     // Precondition of the CR-001 case: B's delivery was already in flight (its slot held, waiting for the lock) when B closed.
     expect(deliveryStarts.get(raceB), `${kind} TDR-002 B delivery started before Task B closed`).toBeLessThan(taskBClosedAt);
-    expect(blockerOutcome, `${kind} blocking message`).toMatchObject({ accepted: true, target_agent_run_id: copyA.members.mate.agentRunId });
-    expect(deliveryOutcomes.get(blocker)).toMatchObject({ resolved: { accepted: true } });
-    await root.answered(copyA.members.mate, blocker);
+    // The held write inside B was in progress when B's Task closed (as TDR-001's): its outcome is recorded, not asserted.
     const afterRace = contents(await savedHistory(rootAgents()));
-    expect(afterRace, `${kind} history after the races`).toEqual(expect.arrayContaining([race1, blocker]));
     expect(afterRace).not.toContain(raceB);
     expect(await closedMemberText(copyB.teamRunId, copyB.members.lead.agentRunId)).not.toContain(raceB);
 
@@ -503,8 +539,21 @@ suite("A Task closing while a teammate message is being saved never fail-stops t
     const afterOutcome = await root.managerCalls(callTool("send_message_to", { target_agent_run_id: copyA.members.lead.agentRunId, content: after }));
     expect(afterOutcome, `${kind} after the races ${JSON.stringify(afterOutcome)}`).toMatchObject({ accepted: true });
     await root.answered(copyA.members.lead, after);
-    const beforeStop = contents(await savedHistory(rootAgents()));
-    expect(beforeStop).toEqual(expect.arrayContaining([race1, blocker, after]));
+    // The Team tab of the root (SR-072, SR-074): the root's own log and its open subtree's logs (copy A; B and C closed),
+    // by base's in-view rule. Computed from the saved logs by that rule.
+    const rootDir = kind === "agent" ? `memory/agents/${root.managerRunId}/` : kind === "team" ? `memory/agent_teams/${root.rootId}/` : `memory/agent_orgs/${root.rootId}/`;
+    const openDirs = [rootDir, `memory/agent_teams/${copyA.teamRunId}/`];
+    const treeAgents = new Set([root.managerRunId, ...Object.values(copyA.members).map((member) => member.agentRunId)]);
+    const inView = async () => {
+      const where = new Map<string, string[]>();
+      const saved = await savedHistory(rootAgents(), where);
+      return saved.filter((message) => (where.get(String(message.content)) ?? []).some((file) => openDirs.some((dir) => file.startsWith(dir)))
+        && ((treeAgents.has(message.senderAgentRunId) && treeAgents.has(message.receiverAgentRunId))
+          || message.senderAgentRunId === root.managerRunId || message.receiverAgentRunId === root.managerRunId)).map((message) => String(message.content));
+    };
+    const beforeStop = await inView();
+    expect(beforeStop).toEqual(expect.arrayContaining([race1, after]));
+    expect(beforeStop).not.toContain(raceB);
     expect(await root.snapshotMessages(), `${kind} live snapshot`).toEqual(beforeStop);
     root.closeChannels();
     await terminate(kind, root.rootId);
@@ -514,7 +563,7 @@ suite("A Task closing while a teammate message is being saved never fail-stops t
     const postOutcome = await root.managerCalls(callTool("send_message_to", { target_agent_run_id: copyA.members.lead.agentRunId, content: post }));
     expect(postOutcome, `${kind} after restore ${JSON.stringify(postOutcome)}`).toMatchObject({ accepted: true });
     await root.answered(copyA.members.lead, post);
-    const final = contents(await savedHistory(rootAgents()));
+    const final = await inView();
     expect(final).toEqual([...beforeStop, ...final.slice(beforeStop.length)]);
     expect(final).toContain(post);
     expect(final).not.toContain(raceB);

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { agentOrgFirstMemberAddress } from '~/utils/agentOrgHistoryRows'
+import { agentOrgFirstMemberAddress } from '~/utils/agentOrgFirstMemberAddress'
 
 const run = (members: unknown[]) => ({ executionTree: { rootOrg: { members } } }) as never
 

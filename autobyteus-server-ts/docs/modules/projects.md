@@ -76,9 +76,14 @@ Neither `create_project` nor `update_project` is added automatically either
 - `src/projects/context/project-task-context-store.ts`
 - `src/projects/search/project-task-search-service.ts`: Project Task search (see
   [Project Task Search](#project-task-search)) over the [embedding layer](./embeddings.md)
-- `src/compositions/project-task-execution-resource-composition.ts`: the **single**
-  place where Projects and the collaboration runtime are bound. Its composition
-  step also calls `src/compositions/project-run-links-composition.ts`, the one
+- `src/compositions/collaboration-composition.ts`: the **single** place where
+  Projects and the collaboration runtime meet, in the composition root's order
+  (autobyteus-461 SR-047): `composeTaskSide` loads the Task records, builds the
+  `DelegationIndex` and the run side's `RunTaskRecords` (before the run services);
+  `composeCollaboration` then creates `TaskRunControl`, the Project Task service
+  with it, the delegation and cross-run owners and the views' owners, and passes
+  each to its consumers (no process binding). Its composition step also calls
+  `src/compositions/project-run-links-composition.ts`, the one
   place where run history and run execution are bound to Projects (the
   `ProjectRunLinks` (`startedRunsOf`), `RunProjectStarts` and `RunProjectContextReader` ports; see
   [Runs started under a Project](#runs-started-under-a-project))
@@ -442,36 +447,41 @@ its keys once:
 
 Each Task's `<projectId>/tasks/<taskId>/agent_run_resources.json` (for a Task
 with no Project, `ad-hoc-tasks/<taskId>/agent_run_resources.json`) is the
-**only** record of the task executions (delegated Agent and Team copies) that
-worked on that Task. In code these are *task execution resources*
-(`TaskExecutionResource`, `TaskExecutionResourceService`): the in-memory entry
-calls the copy `execution`, the Team coordinator `teamCoordinatorAgentRunId`,
-and the list `executionResources`. The persisted names below are unchanged and
-only `task-execution-resource-schema.ts` maps them; no migration is involved.
+**only** record of the delegated runs (agent runs and team runs) that worked on
+that Task, and the one record of each delegation (contract §3.1). In code these
+are *task execution resources* (`TaskExecutionResource`,
+`TaskExecutionResourceService`): the in-memory entry calls the run `execution`,
+the Team coordinator `teamCoordinatorAgentRunId`, and the list
+`executionResources`; only `task-execution-resource-schema.ts` maps the persisted
+names. Startup migration `20261111_delegated_runs_own_runs_v1` (autobyteus-461)
+converted the older fields (`hostRoot`, `assignedBy`, role `delegated`).
 
 ```jsonc
 { "taskId": "project_task_…",
   "agentRunResources": [
-    { "role": "assigned", "assignedBy": "<manager agentRunId>", "recipientAddress": "/product_team",
-      "hostRoot": { "kind": "agent", "runId": "…" },
+    { "role": "assigned",
+      "delegatedFrom": { "delegatingRun": { "kind": "agent", "runId": "<manager run>" }, "delegatorAgentRunId": "<manager run>" },
+      "recipientAddress": "/product_team",
       "agentRun": { "kind": "team", "teamRunId": "…", "coordinatorAgentRunId": "…" },
       "linkedAt": "…", "start": "started", "closedAt": null },
-    { "role": "delegated", "hostRoot": { … }, "agentRun": { "kind": "agent", "agentRunId": "…" },
+    { "role": "subWork",
+      "delegatedFrom": { "delegatingRun": { "kind": "agent_team", "runId": "…" }, "delegatorAgentRunId": "…" },
+      "recipientAddress": "/image_maker", "agentRun": { "kind": "agent", "agentRunId": "…" },
       "linkedAt": "…", "start": "failed", "startError": { "code": "…", "message": "…" }, "closedAt": null } ] }
 ```
 
 | Field | Meaning |
 | --- | --- |
-| `role` | `assigned`: a non-owned run's (e.g. the Manager's) `delegate_task(task_id)`, or, for a Task with no Project, the described `delegate_task` that created it. `delegated`: an open owned run's `delegate_task` without a task_id. `broughtIn`: legacy only: an open owned run's `send_message_to` that started a new copy before messaging stopped creating runs. Stored entries stay readable; nothing writes new ones. |
-| `assignedBy` | Present only on `assigned`: the run that made the assignment. |
-| `recipientAddress` | Optional, only on `assigned`: the exact `recipient_address` the work was delegated to. Written for assignments made since project-manager-ux; older entries have none (their root shows its kind). Readers accept both, so existing files are used as they are, with no migration. |
-| `hostRoot` | The top-level run the user started, which hosts this agent run. |
+| `role` | `assigned`: a non-owned run's (e.g. the Manager's) `delegate_task(task_id)`, or, for a Task with no Project, the described `delegate_task` that created it. `subWork`: an open owned run's `delegate_task` without a task_id (formerly `delegated`). `broughtIn`: legacy only: stored entries stay readable; nothing writes new ones. |
+| `delegatedFrom` | `{delegatingRun: {kind, runId}, delegatorAgentRunId}`: the run of the agent that delegated (one hop) and that agent. On an `assigned` entry the delegating run is the Task's assigner. Equal to the delegated run's own `delegatedFrom`. |
+| `recipientAddress` | The address the run was delegated to, a name in the delegator's space; on every entry. |
 | `agentRun` | `{kind: agent, agentRunId}` or `{kind: team, teamRunId, coordinatorAgentRunId}`. |
+| `nodeId`, `members` | A run on a peer node only: the peer, and for a team its members by run ID and their own address (`/lead`). |
 | `linkedAt` | Written **before** any resource is acquired, so DONE always reaches work that is still starting. |
 | `start` | `starting`, then `started` or `failed` (with `startError`). Set once. |
-| `closedAt` | `null` while open. DONE sets it on every open entry. Only a [reactivation](#reactivation) sets it back to `null`, on the copy's last `assigned` entry. |
+| `closedAt` | `null` while open. DONE sets it on every open entry. Only a [reactivation](#reactivation) sets it back to `null`, on the run's last `assigned` entry. |
 
-Each entry is one **assignment period** of one copy for this Task. Entries are
+Each entry is one **assignment period** of one run for this Task. Entries are
 only ever appended, so file order is link order.
 
 Rules for the file:
@@ -505,12 +515,12 @@ every ownership question reads it:
   chain that belongs to a Task, by that copy's current Task (closed sub-work of
   an earlier Task inside a reused Team copy stays closed);
 - a copy is open or closed by its current entry;
-- a root's closed task executions are the copies whose current entry is closed;
-- a root's tree holds its local copies whose current entry is open, whatever their
-  start (`openDelegatedRunsOf`, the run storage's `OpenDelegatedRunSource`, bound by
-  the composition after `load()`; autobyteus-469). No root stores this list; a
-  damaged Task contributes none until it is readable again;
-- DONE or CANCELLED stops only copies whose current Task is the closing Task.
+- a run's children are the runs whose entry names it as `delegatingRun`; a child
+  whose current entry is open is a row of its delegating run's tree, and of each
+  tree above it (the `DelegationIndex`, built from these entries at startup and kept
+  current by every Task change; `RunTreeView` builds the rows; autobyteus-461). No
+  run stores this list; a damaged Task contributes none until it is readable again;
+- DONE or CANCELLED stops only runs whose current Task is the closing Task.
 
 Two open entries for one copy can only come from damaged data: the latest is
 used and `TASK_AGENT_RESOURCE_CONFLICT` is logged.
@@ -519,7 +529,7 @@ used and `TASK_AGENT_RESOURCE_CONFLICT` is logged.
 
 A **Task worker** is a copy that is its current Task's
 [root](#task-roots) (that Task's latest `assigned` entry). Sub-work copies
-(`delegated`, legacy `broughtIn`) and converted unowned runs are no Task's root.
+(`subWork`, legacy `broughtIn`) and converted unowned runs are no Task's root.
 `TaskExecutionResourceService.rootTaskLocationOf(execution)` answers a copy's
 current Task location only when the copy is that Task's root, from the
 in-memory index (no scan of Task files); otherwise null. It never throws.
@@ -847,8 +857,8 @@ autobyteus-97):
   a Task of another Project) and a restart restore it where it was. A different
   folder means a new copy.
 - Remote copies are unaffected: they run in the peer's temp workspace (CM-12).
-- The tree does not change: the copy stays nested under the run that delegated
-  it. Focusing it shows its own folder in Files and Terminal.
+- The new run is shown as a child of the run that delegated to it. Focusing it
+  shows its own folder in Files and Terminal.
 
 ### Assignment and linking
 
@@ -867,18 +877,18 @@ autobyteus-97):
 
 ### Ownership
 
-- **Owned runs.** A Task owns its assigned copies, their configured Team
-  members, and the copies its open owned runs create: `delegated` sub-work (and
-  stored legacy `broughtIn` helpers), even when a copy is physically hosted as a
-  sibling in the enclosing root.
-- **Hosting.** All runs of an assignment are hosted in one root: the top-level
-  run the user started. Two Tasks in the same root stay fully separate.
+- **Owned runs.** A Task owns its assigned runs, their Team members, and the runs
+  its open owned runs create: `subWork` (and stored legacy `broughtIn` helpers).
+- **Runs of their own.** Every run of an assignment is a run of its own, related
+  to the run that delegated to it by its entry's `delegatedFrom` (one hop). Two
+  Tasks of one delegating run stay fully separate.
 - **Workers cannot assign.** A Task-owned run may not call `delegate_task` with
   any `task_id` (`TASK_AGENT_RESOURCE_OWNED_SENDER`). Workers delegate sub-work
   without a task_id.
 - **Address messaging order:** the sender's own Team instance, then run-wide
-  placements; any other address is not found. Messaging never creates a copy
-  (CM-4).
+  placements, then, for a run that works on a Task, the standing agents of the
+  runs that assigned its Tasks (contract §2.3); any other address is not found.
+  Messaging never creates a run (CM-4).
 - **Borrowed, not adopted.** Existing unowned agents are
   borrowed, never adopted. Unowned agents are never checked
   against Task data. Another Task's run is never a shared helper
@@ -892,28 +902,30 @@ both. DONE → CANCELLED and CANCELLED → DONE behave as a repeated DONE.
 
 1. Explicit DONE commits `closedAt` on every open entry of the Task's
    `agent_run_resources.json`, then writes the status to `task.json`.
-2. It then asks each host root to stop exactly the Task's closed runs whose
-   **current Task** is this Task (one request per copy). A copy that has since
-   been given another Task is never stopped or hidden by this Task's DONE, a
-   repeated one included. The root re-checks the copy's current entry before it
-   stops anything, then invokes the exact release on every authority it still
-   holds for each run, whether or not the run looks live. It does not wait for
-   work to become idle.
-3. A closed run receives no input and is never woken or restored while its
-   entry is closed, whatever happened to its stop. This holds after restart.
-   Once its stop is confirmed it leaves the loaded root's tree (a tree built later
-   does not hold it); its own files, conversation and log stay (autobyteus-469).
+2. It then stops each of the Task's closed runs that has no other open Task, by
+   the run's own identity, through its ordinary Stop (`TaskRunControl.stopForTaskClosure`,
+   design DS-5): an agent run's `AgentRunService.stopForTaskClosure`, a team run's
+   `TeamRunService.stopForTaskClosure`. A run that has since been given another
+   Task is never stopped by this Task's DONE, a repeated one included. A run on a
+   peer node is fenced, not stopped (`TASK_AGENT_RESOURCE_FENCED_REMOTE`). The runs
+   it delegated to are not stopped by its Stop: each has its own Task. Where the run's
+   gate closes, the stop asks the Task side again (`isOpen`): a reopen or a new
+   assignment committed while the stop waited keeps the run running and records
+   nothing (`TASK_AGENT_RESOURCE_NOT_CLOSED`, logged).
+3. A closed run receives no input except its assigner's continuation, whatever
+   happened to its stop. This holds after restart. It leaves its delegating run's
+   view (the view lists children with an open entry); its own files,
+   conversation and log stay.
    Only a [reactivation](#reactivation) by the assigning run opens one
    assignment again; a deleted Task's work stays closed.
 
 Stop failures and retries:
 - **Nothing about the stop is persisted (Q-1).** Failures are kept in memory
-  and logged (`TASK_AGENT_RESOURCE_STOP_FAILED`) with taskId, hostRoot, run and
-  error. The platform never reports a stop it did not achieve.
+  and logged (`TASK_AGENT_RESOURCE_STOP_FAILED`) with taskId, run and error. The platform never reports a stop it did not achieve.
 - **Repeating DONE is the retry.** It writes no file change and requests the
   stop again. Already-stopped runs are no-ops; live ones are retried.
-- **No automatic retry.** There is no background retry. Root Stop or a server
-  restart also ends the runs.
+- **No automatic retry.** There is no background retry. The run's own Stop or a
+  server restart also ends it.
 - **If the metadata write fails**, the runs stay closed and the stop is still
   requested. The caller gets the existing "could not be confirmed" error, and
   repeating DONE completes it.
@@ -921,11 +933,11 @@ Stop failures and retries:
 ### Reopen and what DONE or CANCELLED never touches
 
 Reopening to TODO or IN_PROGRESS (from DONE or CANCELLED) starts nothing and does not reopen old runs. A
-later deliberate delegation (to a new copy, or to an existing copy by its ID)
+later deliberate delegation (to a new run, or to an existing run by its ID)
 adds a new open `assigned` entry. DONE never
 deletes outputs, conversations, workspaces, Git worktrees or uploaded
-originals. It never stops the Manager, the root, another Task's runs or
-borrowed runs.
+originals. It never stops the Manager, the run that delegated, another Task's
+runs or borrowed runs.
 
 ### Reactivation
 
@@ -934,41 +946,31 @@ continue with the same worker after DONE or CANCELLED:
 
 1. The agent moves the Task back to TODO or IN_PROGRESS with
    `update_task` (this alone reopens and starts nothing).
-2. The run that assigned the work (the entry's `assignedBy`) sends
-   `send_message_to(target_agent_run_id=<the copy's agent run ID>)`: the Agent
-   copy's `target_agent_run_id`, or a Team copy's
+2. The run that assigned the work (the entry's `delegatedFrom.delegatingRun`)
+   sends `send_message_to(target_agent_run_id=<the run's agent run ID>)`: an
+   agent run's `target_agent_run_id`, or a team run's
    `target_team_coordinator_agent_run_id`.
 
-The root finds a copy that left its tree through the Task records
-(`closedTaskExecutionOf`, by its ingress run ID) and adds it back from its own file
-in the same queue step that commits the reopen (autobyteus-469). A run ID of a
-member that is not a closed Team copy's coordinator is "not in this run".
-
-Reactivation continues the **same** Task and applies only to the copy's current
-Task (its latest assignment). To give the copy a different Task, use
+Reactivation continues the **same** Task and applies only to the run's current
+Task (its latest assignment). To give the run a different Task, use
 [delegate_task with its ID](#follow-up-task-to-an-existing-copy).
 
-The sender's root reactivates exactly that `assigned` entry
-(`RootTaskExecutionLifecycle.deliverToExactTarget`):
+`CrossRunMessageDelivery` reactivates exactly that `assigned` entry (contract §2.2,
+`model.py` `_admit`):
 - **Eligibility** (`ProjectTaskService.assertReopenable`): the target is an
-  assignment's ingress, the sender is its assigner, the copy's latest
-  assignment `started`, and the copy's current Task exists and is not DONE or
+  assignment's entry agent, the sender is its assigner, the run's latest
+  assignment `started`, and its current Task exists and is not DONE or
   CANCELLED.
-- **Runtime step** (on the root's serialized queue): the previous exact release
-  is settled (re-invoked, idempotent) and the released handle or TeamRun is
-  discarded, so restore builds a fresh one; the saved conversation must exist.
-  If another reactivation already reopened the entry, this step is skipped.
-- **Commit** (`ProjectTaskService.reopenAssignment`): under the copy's and then
+- **Commit** (`ProjectTaskService.reopenAssignment`): under the run's and then
   the Task's serialization (DONE or CANCELLED takes only the Task's), every
-  condition is re-checked and `closedAt` of the copy's last entry returns to
-  `null`. `task.json` is never written.
-- The root publishes "task executions reopened" (`task_executions_reopened`,
-  `TASK_EXECUTIONS_REOPENED`); clients list the copy again. Snapshots and stored
-  reads leave it out of `closed_task_executions`.
-- The message then follows the normal wake / restore / deliver path. The
-  accepted result's `message` ends with "<run ID> was reactivated."
+  condition is re-checked and `closedAt` of the run's last entry returns to
+  `null`. `task.json` is never written. The `DelegationIndex` updates in the same
+  change, so the run is a child of its delegating run's view again.
+- The message then follows the cross-run path: the receiver's root re-checks the
+  Task side in its gate, restores the run with its conversation and delivers. The
+  accepted result's `message` ends with "<run ID> continues with its conversation."
 
-Helper entries (`delegated`, legacy `broughtIn`) and the Task's other assignments stay
+Helper entries (`subWork`, legacy `broughtIn`) and the Task's other assignments stay
 closed; the reactivated worker may start new helpers. Refusals change nothing:
 
 | Case | Code | Message says |
@@ -983,10 +985,9 @@ closed; the reactivated worker may start new helpers. Refusals change nothing:
 | Previous stop not confirmed | `TASK_REACTIVATION_STOP_PENDING` | Try again shortly |
 
 If restore fails after the commit, the entry stays open (like any open, offline
-copy whose wake failed) and the rejection says the copy was reactivated but did
-not receive the message. A later DONE or CANCELLED closes, stops and hides the reactivated
-copy again; the cycle can repeat. Existing closed entries are directly usable:
-the file shape is unchanged (no migration).
+run whose wake failed) and the rejection says the run could not be resumed. A
+later DONE or CANCELLED closes and stops the reactivated run again; the cycle can
+repeat.
 
 See [Team delegation](agent_team_execution.md#server-owned-task-delegation),
 [message resolution](agent_communication.md#task-linked-message-scope) and
@@ -1010,45 +1011,39 @@ delegate_task({target_team_run_id: "team_9f…", task_id: "B"})   // an Agent co
 be given Task B only by the run that made its most recent assignment, also while
 its earlier Tasks are open. Its current Task is its newest open one (sub-work it
 starts belongs there); when none is open, its latest one. It is stopped only when
-its last open Task is DONE or CANCELLED. The copy is hosted in the delegator's
-root and is named by its own ID: a Team copy by its team run ID, an Agent copy by
-its agent run ID.
+its last open Task is DONE or CANCELLED. The run is named by its own ID: a team run
+by its team run ID, an agent run by its agent run ID.
 
-**Path** (`RootTaskExecutionLifecycle.assignToExistingCopy`, all three roots):
-1. The root's adapter finds the copy in its tree (`taskExecutionTargetOf`).
-2. The Task side checks eligibility (`ProjectTaskService.assertAssignable`), in
+**Path** (`TaskDelegation.toExistingRun`, the same for every root; design DS-6):
+1. A sender that works on a Task is refused (`TASK_AGENT_RESOURCE_OWNED_SENDER`).
+   Task B is resolved first, so its refusals come before the run's.
+2. The run is found from its Task entries (a peer's run takes no saved Task); its
+   entry agent is its latest entry's.
+3. The Task side checks eligibility (`ProjectTaskService.assertAssignable`), in
    this order of concern: all Task resource data readable; Task B exists, is
-   unique and is not DONE or CANCELLED; the copy's current entry is an
-   `assigned` entry made by the sender; some entry of the copy ever started;
-   B is not the copy's closed current Task (a Task it already holds open is
-   refused by the commit: "already works on this Task"). The copy's other open
-   Tasks are read for the message (`openTaskReferencesOf`, keys, oldest first).
-3. One step of the root's queue (`RootTaskExecutionCommandQueue`, autobyteus-464)
-   resumes and commits. The shared resume step (the one reactivation uses)
-   settles the copy's previous stop, drops its released authority and checks
-   its saved conversation can be restored; a copy that is still open skips it.
-   Then the commit (`assignExistingTaskExecution`) re-checks every condition
-   under the copy's and then B's serialization (lock order: queue, then copy,
-   then Task; DONE takes only the Task's) and **appends** B's `starting`
-   `assigned` entry, with the address of the copy's previous assignment. A
-   DONE's release of the copy runs in the same queue: one that comes first is
-   settled before the commit; one that comes after finds the copy open, stops
-   nothing and publishes no `closed`.
-4. The root publishes the copy as reopened; it is listed again.
-5. The root's exact delivery (the `send_message_to` path) wakes or restores the
-   copy with its conversation and delivers B's description and context files
-   to its ingress (the Agent, or the Team's coordinator) as a message from the
-   delegator (`messageType: "task_assignment"`). The message starts "New Task
-   assigned to you: B." and then, when the copy holds other open Tasks, "Your
-   Task A is still open; name the Task key in each report." (otherwise "Your
-   previous Task is closed; this is the work to do now."). The entry becomes
-   `started`.
+   unique and is not DONE or CANCELLED; the run's current entry is an `assigned`
+   entry made by the sender; some entry of the run ever started; B is not the
+   run's closed current Task (a Task it already holds open is refused by the
+   commit: "already works on this Task"). The run's other open Tasks are read for
+   the message (`openTaskReferencesOf`, keys, oldest first).
+4. The commit (`assignExistingTaskExecution`) re-checks every condition under the
+   run's and then B's serialization and **appends** B's `starting` `assigned`
+   entry with the same `delegatedFrom` and address. The `DelegationIndex` updates
+   in the same change.
+5. B's description and context files go to the run's entry agent as a message
+   from the delegator (`messageType: "task_assignment"`) through
+   `CrossRunMessageDelivery`, which wakes or restores the run with its
+   conversation and writes both runs' logs. The message starts "New Task assigned
+   to you: B." and then, when the run holds other open Tasks, "Your Task A is
+   still open; name the Task key in each report." (otherwise "Your previous Task is
+   closed; this is the work to do now."). The entry becomes `started`, or `failed`
+   when the message was not delivered (the result says how to continue).
 
 **Effect.** B's board root is the copy with its live status; A keeps its own
 status (an open A also shows the copy open). Closing one of the copy's Tasks
-never stops or hides it while another is open; closing its last open Task stops
-it like any DONE (`releasableByHostRoot`: copies with an entry in this Task and
-no open entry left; a repeated DONE re-requests the stop). `list_project_tasks` shows the copy under A's
+never stops it while another is open; closing its last open Task stops it like
+any DONE (runs with an entry in this Task and no open entry left; a repeated DONE
+re-requests the stop). `list_project_tasks` shows the copy under A's
 `closedAssignments` and B's `assignments`.
 
 **Back to an earlier Task (A → B → A).** Once A is reopened (TODO or IN_PROGRESS),
@@ -1099,13 +1094,14 @@ A Task with no Project makes a description-only delegation closable. The user's
    Task with a `failed` assignment until its run is deleted.
    `create_task` never creates one.
 2. **Owned like Project Task work.** The copy, its Team members and its
-   `delegated` sub-work (and stored legacy `broughtIn` helpers) belong to that Task (the message-scope rules
-   above apply). Every entry has the delegator's host root.
+   `subWork` (and stored legacy `broughtIn` helpers) belong to that Task (the message-scope rules
+   above apply). Every entry names its delegating run (`delegatedFrom`).
 3. **DONE or CANCELLED.** `update_task({task_id, status: "DONE"})` (or
    `"CANCELLED"`, when the work turned out not to be needed) runs the same
-   closure as a Project Task: close every open entry, write the status, ask the
-   host root to stop exactly those runs; the run tree hides them live and after
-   reopen or restart, and conversations are kept. Description and status can
+   closure as a Project Task: close every open entry, write the status, stop
+   those runs that have no other open Task through their own Stop; the
+   delegating run's view leaves them out live and after restart, and
+   conversations are kept. Description and status can
    also be patched; there is no other mutation. After the delegator sets the
    status back to TODO or IN_PROGRESS by `task_id`, its message to the copy's
    run ID reactivates the copy exactly as for a Project Task
@@ -1118,9 +1114,9 @@ A Task with no Project makes a description-only delegation closable. The user's
 5. **Retention.** When a run is permanently deleted from history, its delete
    owner (`AgentRunHistoryCatalogService.deleteRun`,
    `TeamRunHistoryService.deleteStoredTeamRun`, `AgentOrgRunService.deleteStoredRun`)
-   calls `ProjectTaskService.deleteAdHocTasksHostedBy(root)` after the delete
+   calls `ProjectTaskService.deleteAdHocTasksDelegatedFrom(run)` after the delete
    committed. It removes the folders of the ad-hoc Tasks whose entries name
-   that root, using the in-memory view; failures are logged and never fail the
+   that run as their delegating run, using the in-memory view; failures are logged and never fail the
    delete. This is the only dependency from run history to Projects.
 6. **No Projects lockout.** Creation, lookup and DONE never touch the Projects
    store, so they keep working while the Projects migration is pending.
@@ -1161,23 +1157,22 @@ A Task's **root** is its latest `assigned` entry: the one agent or team the
 Task was handed to. Each Task view has `root` (null when never assigned):
 `kind` (agent|team), `recipientAddress` (null for older entries),
 `ingressAgentRunId` (the agent, or the team's coordinator), `teamRunId`,
-`hostRoot {kind, runId}`, `start`, `startError`, `closed`, and `status`.
+`delegatingRun {kind, runId}`, `start`, `startError`, `closed`, and `status`.
 
 `status` is the worker's own status (offline, idle, error, initializing,
 running), the one the left panel shows:
 - A closed (Task DONE or CANCELLED) or `failed` root is `offline` without asking anything.
-- Otherwise the hosting root answers through
-  `ActiveRootMessageBoundary.taskExecutionStatus`: the agent's status snapshot,
-  or for a team the shared fold of its members
+- Otherwise the run answers by its own identity (`TaskRunControl.ownStatus`):
+  its agent's status snapshot, or for a team the shared fold of its members
   (`foldTeamAggregateStatus` in `@autobyteus/collaboration-stream-contracts`).
   The web's Workspaces-tree Team rows build on the same fold but show a
   starting member as busy. Here a starting team stays `initializing`. A root that is not active, not admitting, or does
   not know the run answers `offline`. Reading never wakes or starts anything.
-- `RootTaskExecutionLifecycle` forwards every agent status change inside a task
-  execution to `TaskExecutionResourcePort.taskExecutionsStatusChanged` (also after
-  the root stopped admitting), and announces all its task executions when it
-  closes admission or fails. `ProjectTaskService` marks a worker-status change
-  only for a Task whose root is that run.
+- Each delegated run tells the Task side its own status changes
+  (`TaskWorkerStatusNotice` → `RunTaskRecords.statusChanged`, built in
+  `src/projects/services/run-task-records.ts`): an agent run's agent status, a team
+  run's member status, and its stop. It marks a worker-status change only for a
+  Task whose root is that run.
 
 ## Workspace Registration Boundary
 

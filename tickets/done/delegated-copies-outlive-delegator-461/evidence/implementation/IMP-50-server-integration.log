@@ -1,0 +1,53 @@
+# commit 782a9294f8
+$ pnpm test:integration:prepare && pnpm test:integration
+(prepare exit 0)
+     × sends a 30-delta burst with identical running statuses as one batch after the window (AC-001, AC-002) 2072ms
+     × coalesces two interleaved agents into one batch, each agent's text in order (AC-009) 2004ms
+     × lets a boundary from either interleaved agent close the batch first (AC-009, AC-004) 2009ms
+     × delivers pending text before every boundary, immediately and contiguously (AC-004) 2008ms
+     × leaves direct root subscribers unthrottled while the socket holds the text (AC-005) 2008ms
+     × uses a changed interval only for the next newly opened window (AC-003) 2009ms
+     × sends a 30-delta burst with identical running statuses as one batch after the window (AC-001, AC-002) 2011ms
+     × coalesces two interleaved agents into one batch, each agent's text in order (AC-009) 2011ms
+     × lets a boundary from either interleaved agent close the batch first (AC-009, AC-004) 2013ms
+     × delivers pending text before every boundary, immediately and contiguously (AC-004) 2007ms
+     × leaves direct root subscribers unthrottled while the socket holds the text (AC-005) 2008ms
+     × uses a changed interval only for the next newly opened window (AC-003) 2010ms
+     × uses a changed interval only for the next newly opened window (AC-003) 667ms
+     × preserves persistent, task Agent, outer task-Team, and nested task-Team AgentRun targets 2061ms
+     × returns INVALID_TARGET for a stale exact AgentRun without retry or persistent substitution 2014ms
+ FAIL  tests/integration/api/run-file-changes-api.integration.test.ts > Run file changes API integration
+ FAIL  tests/integration/api/run-file-changes-api.integration.test.ts > Run file changes API integration
+⎯⎯⎯⎯⎯⎯ Failed Tests 15 ⎯⎯⎯⎯⎯⎯⎯
+ FAIL  tests/integration/agent/chat-socket-content-cadence.integration.test.ts > content cadence on 'Team /ws/agent-team' > sends a 30-delta burst with identical running statuses as one batch after the window (AC-001, AC-002)
+ FAIL  tests/integration/agent/chat-socket-content-cadence.integration.test.ts > content cadence on 'Org /ws/agent-org' > sends a 30-delta burst with identical running statuses as one batch after the window (AC-001, AC-002)
+ FAIL  tests/integration/agent/chat-socket-content-cadence.integration.test.ts > content cadence on 'Team /ws/agent-team' > coalesces two interleaved agents into one batch, each agent's text in order (AC-009)
+ FAIL  tests/integration/agent/chat-socket-content-cadence.integration.test.ts > content cadence on 'Org /ws/agent-org' > coalesces two interleaved agents into one batch, each agent's text in order (AC-009)
+ FAIL  tests/integration/agent/chat-socket-content-cadence.integration.test.ts > content cadence on 'Team /ws/agent-team' > lets a boundary from either interleaved agent close the batch first (AC-009, AC-004)
+ FAIL  tests/integration/agent/chat-socket-content-cadence.integration.test.ts > content cadence on 'Org /ws/agent-org' > lets a boundary from either interleaved agent close the batch first (AC-009, AC-004)
+ FAIL  tests/integration/agent/chat-socket-content-cadence.integration.test.ts > content cadence on 'Team /ws/agent-team' > delivers pending text before every boundary, immediately and contiguously (AC-004)
+ FAIL  tests/integration/agent/chat-socket-content-cadence.integration.test.ts > content cadence on 'Org /ws/agent-org' > delivers pending text before every boundary, immediately and contiguously (AC-004)
+ FAIL  tests/integration/agent/chat-socket-content-cadence.integration.test.ts > content cadence on 'Team /ws/agent-team' > leaves direct root subscribers unthrottled while the socket holds the text (AC-005)
+ FAIL  tests/integration/agent/chat-socket-content-cadence.integration.test.ts > content cadence on 'Org /ws/agent-org' > leaves direct root subscribers unthrottled while the socket holds the text (AC-005)
+ FAIL  tests/integration/agent/chat-socket-content-cadence.integration.test.ts > content cadence on 'Team /ws/agent-team' > uses a changed interval only for the next newly opened window (AC-003)
+ FAIL  tests/integration/agent/chat-socket-content-cadence.integration.test.ts > content cadence on 'Org /ws/agent-org' > uses a changed interval only for the next newly opened window (AC-003)
+ FAIL  tests/integration/agent/chat-socket-content-cadence.integration.test.ts > content cadence on 'delegated agents /ws/agent-collaborat…' > uses a changed interval only for the next newly opened window (AC-003)
+ FAIL  tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts > Team WebSocket exact AgentRun command integration > preserves persistent, task Agent, outer task-Team, and nested task-Team AgentRun targets
+ FAIL  tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts > Team WebSocket exact AgentRun command integration > returns INVALID_TARGET for a stale exact AgentRun without retry or persistent substitution
+ Test Files  3 failed | 83 passed | 20 skipped (106)
+      Tests  15 failed | 462 passed | 75 skipped (552)
+
+# Rerun after the fixes in c5142b111b (the stale service names and root fakes; events sent as published, inOrderViewDelivery)
+$ pnpm test:integration:prepare && pnpm test:integration
+(prepare exit 0)
+     × delivers through a real AgentRun: an idle run's next input carries the notice in one dispatch 1056598ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+ FAIL  tests/integration/skill-update-notices/skill-update-notice-service.integration.test.ts > SkillUpdateNoticeService (integration) > delivers through a real AgentRun: an idle run's next input carries the notice in one dispatch
+ Test Files  1 failed | 85 passed | 20 skipped (106)
+      Tests  1 failed | 482 passed | 69 skipped (552)
+
+# The one failure (1056 s, under a machine load average of 40-70 from other processes) passed in the first run on 782a9294f8; alone:
+$ npx vitest run --no-watch tests/integration/skill-update-notices/skill-update-notice-service.integration.test.ts
+ Test Files  1 passed (1)
+      Tests  19 passed (19)
+(src/skill-update-notices and its tests are unchanged since 3228eff74b)

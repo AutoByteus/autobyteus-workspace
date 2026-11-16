@@ -1,0 +1,28 @@
+IMP-113 — IR-037 verification with the failing probe cases (real backend, Nuxt dev, Chrome; each probe owns its data root, ports and browser)
+Code: the IR-037 tree (server dist built from it, no traces); 2026-11-15
+Commands: pnpm -C autobyteus-web test:e2e:task-closure-tree --cases BR-001,BR-002; test:e2e:stopped-delegator-views --cases SDV-01,SDV-03,SDV-06,SDV-07; test:e2e:team-status-live --cases TS-004,TS-007
+
+## first verification run
+BR BR-001 Fail Timed out: Team tab message kept
+BR BR-002 Fail Timed out: Team tab message kept
+SDV SDV-01 Pass None
+SDV SDV-03 Pass None
+SDV SDV-06 Pass None
+SDV SDV-07 Pass None
+TS TS-004 Fail Org task Team accessible label lacks the status
+TS TS-007 Fail Timed out: collapsed inner Team busy (locator.evaluate: Timeout 30000ms exceeded.
+Call log:
+  - waiting for locator('[data-test="workspace-team-transient-execution-row"][data-transient-kind="task_team"][data-member-address="/build_crew_tsnestorg_9540"]').first()
+)
+
+
+## BR-001/002 after the Team-tab re-read (below)
+BR-001 Pass None
+BR-002 Pass None
+
+
+## reading
+- SDV-01 (CR-461-103), SDV-03/06/07 (CR-461-102): Pass.
+- BR-001/002: past the leave (CR-461-104), the next step 'Team tab message kept' (autobyteus-469 AC-011) failed: the closed worker left the tree with no view rebuild, so the Manager's Team-tab list could not name it and dropped the row (base re-read such a list on the rebuild, D-5). Fixed (Team-tab re-read on a tree change that removes rows); then Pass.
+- TS-004: past the dot check (data-status restored), it checks base's Org-only label wording 'Team status: Idle'; the Org's delegated rows are now the shared row (FU-031) whose label reads ', idle, ' as the Agent tree's case expects: a stale probe assertion (API/E2E).
+- TS-007: times out on a selector of a nested Org Team row ([data-member-address=...]); not changed here (API/E2E).

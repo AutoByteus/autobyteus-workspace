@@ -65,20 +65,3 @@ export const buildOrgMemberFinalContextFileOwner = (
   agentRunId: normalizeRequiredString(agentRunId, 'agentRunId'),
 });
 
-export const buildAgentCollaborationMemberDraftContextFileOwner = (
-  hostRunId: string,
-  agentRunId: string,
-): DraftContextFileOwnerDescriptor => ({
-  kind: 'agent_collaboration_member_draft',
-  hostRunId: normalizeRequiredString(hostRunId, 'hostRunId'),
-  agentRunId: normalizeRequiredString(agentRunId, 'agentRunId'),
-});
-
-export const buildAgentCollaborationMemberFinalContextFileOwner = (
-  hostRunId: string,
-  agentRunId: string,
-): FinalContextFileOwnerDescriptor => ({
-  kind: 'agent_collaboration_member_final',
-  hostRunId: normalizeRequiredString(hostRunId, 'hostRunId'),
-  agentRunId: normalizeRequiredString(agentRunId, 'agentRunId'),
-});

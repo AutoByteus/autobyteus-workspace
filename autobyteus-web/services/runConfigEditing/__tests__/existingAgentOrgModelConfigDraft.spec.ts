@@ -8,10 +8,10 @@ const launch = (model: string, config: Record<string, unknown> | null = { effort
 const tree = (overrides: Partial<Record<'root'|'direct'|'team'|'nested', ReturnType<typeof launch>>> = {}) => ({
   subjectKind: 'agent_org', createdAt: '2026-09-17T00:00:00Z', archivedAt: null,
   applicationBinding: null, handoffs: [], rootOrg: { address: '/', orgDefinitionId: 'org-def', orgDefinitionName: 'Org', orgRunId: 'org',
-    defaultLaunchConfiguration: overrides.root ?? launch('root'), taskExecutions: [], members: [
+    defaultLaunchConfiguration: overrides.root ?? launch('root'), members: [
       { address: '/direct', agentDefinitionId: 'a', role: 'Direct', description: null, agentRunId: 'direct', platformAgentRunId: null,
         launchConfiguration: overrides.direct ?? launch('root') },
-      { address: '/team', teamDefinitionId: 't', role: 'Team', description: null, teamRunId: 'team', coordinatorAddress: '/team/worker', taskExecutions: [],
+      { address: '/team', teamDefinitionId: 't', role: 'Team', description: null, teamRunId: 'team', coordinatorAddress: '/team/worker',
         defaultLaunchConfiguration: overrides.team ?? launch('root'), members: [
           { address: '/team/worker', agentDefinitionId: 'w', role: 'Worker', description: null, agentRunId: 'worker', platformAgentRunId: null,
             launchConfiguration: overrides.nested ?? launch('root') },

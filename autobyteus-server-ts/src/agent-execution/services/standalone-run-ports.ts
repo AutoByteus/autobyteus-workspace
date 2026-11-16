@@ -4,6 +4,11 @@ import type { AgentRun } from "../domain/agent-run.js";
 import type { AgentOperationResult } from "../domain/agent-operation-result.js";
 import type { AgentRunInputOptions } from "../input/agent-run-input-contract.js";
 import type { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
+import type { ClosedTaskRefusal } from "../../agent-collaboration/execution/task/closed-task-fence.js";
+import type { DelegatedRunRestoreRefusal } from "../../agent-collaboration/execution/task/delegated-run-restorability.js";
+
+/** Input refused where it enters: its Task is closed (DS-15), or the delegated run cannot be restored (CR-461-070). */
+export type RunInputRefusal = ClosedTaskRefusal | DelegatedRunRestoreRefusal;
 import type { StandaloneAgentRunActivationResult } from "./standalone-agent-run-lifecycle-service.js";
 
 /**
@@ -28,8 +33,13 @@ export type StandaloneRootStopResult = Readonly<{
 export type StandaloneRunLifecyclePort = Readonly<{
   /** Create, activate, restore and resolve: the run's root, then its host made ready with its member context. */
   resolveRootAndEnsureHost(runId: string): Promise<StandaloneAgentRunActivationResult | null>;
-  /** Explicit Stop: children, then the host. */
+  /** Explicit Stop: the run's own agent. */
   stopRoot(runId: string): Promise<StandaloneRootStopResult | null>;
+  /**
+   * A closed Task's stop (DS-5, CR-461-001): `stillClosed` is checked where the run's gate closes, so a reopen or a new
+   * assignment committed while the stop waited keeps the run (`kept_open`) and nothing is stopped or recorded.
+   */
+  stopRootForTaskClosure(runId: string, stillClosed: () => boolean): Promise<StandaloneRootStopResult | "kept_open" | null>;
   /** After the run's saved selection changed: a registered (or loading) root follows it; none registered: nothing. */
   refreshInheritedLaunch(runId: string): Promise<void>;
 }>;
@@ -47,10 +57,17 @@ export type StandaloneRunPostInput = Readonly<{
 export type StandaloneRunPostResult =
   | Readonly<{ kind: "posted"; run: AgentRun; post: AgentOperationResult }>
   | Readonly<{ kind: "admission_rejected"; run: AgentRun; admission: Extract<RootCollaboratorAdmissionResult, { admitted: false }> }>
-  | Readonly<{ kind: "admission_failed"; run: AgentRun; message: string }>;
+  | Readonly<{ kind: "admission_failed"; run: AgentRun; message: string }>
+  /** Its Task is closed (DS-15), or the delegated run cannot be restored (CR-461-070): nothing was restored, admitted or posted. */
+  | Readonly<{ kind: "refused"; refusal: RunInputRefusal }>;
 
 export type StandaloneRunCommandPort = Readonly<{
-  /** In the root's gate: host ready, `onActiveRunReady`, mention admission, then the post. */
+  /**
+   * The refusal of input to the run, checked before anything is resolved, restored or shown: the closed-Task fence (DS-15,
+   * SR-070), then whether a delegated run can be restored (CR-461-070); `null` when it takes input (or is not eligible).
+   */
+  inputRefusal(runId: string): Promise<RunInputRefusal | null>;
+  /** In the root's gate: the fence again, host ready, `onActiveRunReady`, mention admission, then the post. */
   postUserMessage(input: StandaloneRunPostInput): Promise<StandaloneRunPostResult | null>;
 }>;
 
