@@ -42,3 +42,29 @@ export const teamCoordinatorFocusOf = (rows: readonly RunTreeRowDto[], teamRunId
     && row.openTarget.agentRunId === coordinator) : undefined
   return member?.address ? Object.freeze({ teamRunId, memberAddress: member.address, agentRunId: coordinator! }) : null
 }
+
+/**
+ * The team rows a tree must unfold to show an agent's row (CR-461-108): every team row above it, below the run's own row
+ * (`ownKey`), the delegated team that holds it as a coordinator or member included. Empty when the tree does not show it.
+ */
+export const teamRowsAboveAgent = (rows: readonly RunTreeRowDto[], agentRunId: string, ownKey: string): string[] => {
+  const byKey = new Map(rows.map((row) => [row.key, row]))
+  const keys: string[] = []
+  for (let above = byKey.get(treeRowOfAgent(rows, agentRunId)?.parentKey ?? ''); above && above.key !== ownKey; above = byKey.get(above.parentKey ?? '')) {
+    if (isTeamRow(above)) keys.unshift(above.key)
+  }
+  return keys
+}
+
+/**
+ * The rows a tree must unfold to show a picked row's agent (CR-461-108): every row above it, outermost first, and the
+ * picked row itself when it is a team row (it opens at its coordinator, shown under it). Empty when the row is not shown.
+ */
+export const rowsToUnfoldFor = (rows: readonly RunTreeRowDto[], pickedKey: string): RunTreeRowDto[] => {
+  const byKey = new Map(rows.map((row) => [row.key, row]))
+  const picked = byKey.get(pickedKey)
+  if (!picked) return []
+  const out = isTeamRow(picked) ? [picked] : []
+  for (let above = byKey.get(picked.parentKey ?? ''); above; above = byKey.get(above.parentKey ?? '')) out.unshift(above)
+  return out
+}

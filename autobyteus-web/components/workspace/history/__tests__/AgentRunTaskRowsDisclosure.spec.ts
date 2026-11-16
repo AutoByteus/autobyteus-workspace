@@ -67,7 +67,7 @@ describe('AgentRunTaskRows independent Team disclosure', () => {
     wrapper.unmount()
   })
 
-  it.each(['click', 'keydown.enter', 'keydown.space'])('Team body %s toggles only that Team and selects its coordinator', async (action) => {
+  it.each(['click', 'keydown.enter', 'keydown.space'])('Team body %s unfolds only that Team and selects its coordinator; opening it again folds nothing (CR-461-108)', async (action) => {
     const wrapper = render(); await flushPromises()
     const store = useAgentRunCollaborationStore()
     await team(wrapper, 2).trigger(action)
@@ -76,7 +76,8 @@ describe('AgentRunTaskRows independent Team disclosure', () => {
     expect(team(wrapper, 1).attributes('aria-expanded')).toBe('false')
     expect(wrapper.emitted('select-run')).toHaveLength(1)
     await team(wrapper, 2).trigger(action)
-    expect(wrapper.findAll('[role="treeitem"]:not([aria-hidden="true"])')).toHaveLength(7)
+    expect(wrapper.findAll('[role="treeitem"]:not([aria-hidden="true"])')).toHaveLength(13)
+    expect(team(wrapper, 2).attributes('aria-expanded')).toBe('true')
     const child = store.childTargetFor('host-run')
     expect(child?.kind).toBe('agent_run_task_team_member')
     expect(child && 'agentRunId' in child ? child.agentRunId : null).toBe(memberId(2, 0))

@@ -28,7 +28,7 @@ beforeEach(() => {
   navigation.isCurrent.mockReturnValue(true); navigation.open.mockResolvedValue({ disposition: 'committed' })
 })
 
-it('explicit Task-root navigation opens its exact Team row at its coordinator, and a repeated open folds nothing (SR-084, G-F1)', async () => {
+it('explicit Task-root navigation opens its exact Team row unfolded at its coordinator, and a repeated open folds nothing (SR-084, G-F1, CR-461-108)', async () => {
   const store = useAgentRunCollaborationStore()
   store.contexts = { 'host-run': shallowReactive(buildMultiTeamContext()) }
   const tree = multiTeamTree()
@@ -43,6 +43,7 @@ it('explicit Task-root navigation opens its exact Team row at its coordinator, a
   expect(store.selectedRowKey('host-run')).toBe(`team:${teamId(5)}`)
   expect(store.selectedChild('host-run')).toBe(memberId(5, 0))
   const teams = tree.rows.filter((row) => row.kind === 'team')
-  expect(teams.map((row) => store.isTreeRowExpanded('host-run', row))).toEqual(Array(7).fill(false))
+  // CR-461-108: the opened Team row is unfolded (its coordinator shown); a repeated open folds nothing; the others stay folded.
+  expect(teams.map((row) => store.isTreeRowExpanded('host-run', row))).toEqual(teams.map((row) => row.key === `team:${teamId(5)}`))
   expect(navigation.push).toHaveBeenCalledWith('/workspace/agent/host-run')
 })

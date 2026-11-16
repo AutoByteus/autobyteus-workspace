@@ -5,8 +5,8 @@ import type { SelectedAgentOrg } from '~/composables/useRunListDisclosure';
 
 /**
  * The Org run the route opens (`rootSubjectKind=agent_org&orgRunId=…`), with its context's focused member and exact
- * selection; null when the route opens no Org. The route query is the Org's only record of being open (E-30), on the
- * desktop and in `/mobile`'s query alike.
+ * selection, or the run it delegated that is open in it (its picked tree row); null when the route opens no Org. The
+ * route query is the Org's only record of being open (E-30), on the desktop and in `/mobile`'s query alike.
  */
 export const useRouteSelectedAgentOrg = () => {
   const route = useRoute() as ReturnType<typeof useRoute> | undefined;
@@ -16,6 +16,8 @@ export const useRouteSelectedAgentOrg = () => {
     const rootRunId = String(route.query.orgRunId || '').trim();
     if (!rootRunId) return null;
     const context = agentOrgContextsStore.contextFor(rootRunId);
-    return { rootRunId, focusAddress: context?.selectedAddress ?? null, selection: context?.selection ?? null };
+    const picked = agentOrgContextsStore.selectedRow(rootRunId);
+    return { rootRunId, focusAddress: context?.selectedAddress ?? null, selection: context?.selection ?? null,
+      delegated: picked ? { rowKey: picked.key, agentRunId: picked.target.agentRunId } : null };
   });
 };

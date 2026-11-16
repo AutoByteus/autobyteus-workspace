@@ -1,6 +1,9 @@
 import { computed, ref, unref, watch, type MaybeRef } from 'vue';
 import type { OrgWorkspaceSelection } from '~/services/agentOrgExecution/agentOrgExecutionViewIndex';
 import type { RunListEntry } from '~/utils/runListProjection';
+import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
+import { useRunTreeStore } from '~/stores/runTreeStore';
+import { isOrgMemberSelected, isOrgRunSelected, unfoldOrgRows } from '~/composables/runHistory/orgTreeSelection';
 
 interface RunHistoryStoreLike {
   selectedRunId: string | null;
@@ -19,7 +22,9 @@ interface SelectionStoreLike {
   selectedRunId: string | null;
 }
 
-export type SelectedAgentOrg = Readonly<{ rootRunId: string; focusAddress: string | null; selection?: OrgWorkspaceSelection | null }>;
+/** The open Org, with its own agent's selection, or the run it delegated that is open in it (`delegated`, by its tree row). */
+export type SelectedAgentOrg = Readonly<{ rootRunId: string; focusAddress: string | null; selection?: OrgWorkspaceSelection | null;
+  delegated?: Readonly<{ rowKey: string; agentRunId: string }> | null }>;
 
 /** What starts unfolded: the desktop folds Org runs and unfolds their delegated Teams; the phone the other way round. */
 export type RunListDefaultExpansion = Readonly<{ orgRuns: boolean; orgTaskTeams: boolean }>;
@@ -82,14 +87,9 @@ export const useRunListDisclosure = (params: {
     set(expandedOrgTaskTeams, pair(rootRunId, teamRunId), !isAgentOrgTaskTeamExpanded(rootRunId, teamRunId));
 
   const selectedAgentOrg = computed(() => (params.selectedAgentOrg ? unref(params.selectedAgentOrg) : null));
-  const isAgentOrgRunSelected = (rootRunId: string): boolean =>
-    selectedAgentOrg.value?.rootRunId === rootRunId && !selectedAgentOrg.value.selection;
-  const isAgentOrgMemberSelected = (rootRunId: string, address: string, agentRunId?: string): boolean => {
-    const selected = selectedAgentOrg.value;
-    if (selected?.rootRunId !== rootRunId) return false;
-    if (agentRunId) return selected.selection?.kind === 'agent_execution' && selected.selection.agentRunId === agentRunId;
-    return selected.selection?.kind === 'configured_team' && selected.focusAddress === address;
-  };
+  const isAgentOrgRunSelected = (rootRunId: string): boolean => isOrgRunSelected(selectedAgentOrg.value, rootRunId);
+  const isAgentOrgMemberSelected = (rootRunId: string, address: string, agentRunId?: string): boolean =>
+    isOrgMemberSelected(selectedAgentOrg.value, rootRunId, address, agentRunId);
 
   /** The open standalone Agent run (the chat's run, else the history store's). */
   const selectedRunId = computed(() => params.selectionStore.selectedType === 'agent' && params.selectionStore.selectedRunId
@@ -101,11 +101,15 @@ export const useRunListDisclosure = (params: {
     const org = selectedAgentOrg.value;
     if (org?.rootRunId) {
       const exact = org.selection;
-      const identity = exact?.kind === 'agent_execution' ? exact.agentRunId : exact?.teamRunId ?? '';
+      const identity = exact?.kind === 'agent_execution' ? exact.agentRunId : exact?.teamRunId ?? org.delegated?.rowKey ?? '';
       return `org:${org.rootRunId}\u0000${org.focusAddress ?? ''}\u0000${identity}`;
     }
     const { selectedType, selectedRunId: runId } = params.selectionStore;
-    if (selectedType === 'team' && runId?.trim()) return `team:${runId.trim()}`;
+    if (selectedType === 'team' && runId?.trim()) {
+      // A run the Team delegated, opened in it, is revealed as well (CR-461-108).
+      const delegated = useAgentTeamContextsStore().delegatedFocusOf(runId.trim());
+      return delegated ? `team:${runId.trim()}\u0000${delegated.agentRunId}` : `team:${runId.trim()}`;
+    }
     if (selectedType === 'agent' && runId?.trim()) return `agent:${runId.trim()}`;
     const teamRunId = params.runHistoryStore.selectedTeamRunId?.trim();
     if (teamRunId) return `team:${teamRunId}`;
@@ -126,6 +130,8 @@ export const useRunListDisclosure = (params: {
     }
     if (entry.kind === 'team') {
       setTeamExpanded(runId, true);
+      // A run the Team delegated (CR-461-108): the team rows above it unfold; pending until the Team's tree shows it.
+      if (focusAddress) return expandTeamMemberAncestors(runId, focusAddress);
       // The focused member's delegated task-Team rows open too; until its row exists the reveal stays pending.
       const focused = entry.team.focusedAgentRunId?.trim();
       if (!focused) return true;
@@ -139,12 +145,16 @@ export const useRunListDisclosure = (params: {
       .map((member) => member.address)
       .find((address) => focusAddress === address || focusAddress.startsWith(`${address}/`));
     if (teamAddress) set(expandedOrgTeams, pair(runId, teamAddress), true);
+    // A run the Org delegated, open in it (CR-461-108): the rows above its row unfold, and a Team row opened at its coordinator.
+    const delegated = selectedAgentOrg.value?.rootRunId === runId ? selectedAgentOrg.value.delegated : null;
+    if (delegated) unfoldOrgRows(runId, delegated.rowKey, (address) => set(expandedOrgTeams, pair(runId, address), true),
+      (key) => set(expandedOrgTaskTeams, pair(runId, key), true));
     return true;
   };
 
   let revealedKey: string | null = null;
   watch(
-    [selectedKey, () => params.runHistoryStore.navigationTopologyRevision, () => params.runListStore.entries],
+    [selectedKey, () => params.runHistoryStore.navigationTopologyRevision, () => params.runListStore.entries, () => useRunTreeStore().trees],
     ([key]) => {
       if (key !== revealedKey && key && reveal(key)) revealedKey = key;
       if (!key) revealedKey = null;

@@ -170,8 +170,9 @@ const { taskOf, locate } = useTaskWorkerTasks(() => visibleRows.value.map((displ
 const teamContexts = useAgentTeamContextsStore();
 const isSelected = (row: RunHistoryTeamExecutionRow): boolean => {
   if (!props.isTeamSelected) return false;
+  // The row that shows the opened agent (CR-461-108): a delegated Team opened at its coordinator selects the coordinator's row.
   const delegated = teamContexts.selectedTreeRowOf(props.team.teamRunId);
-  return delegated ? row.rowKey === delegated.key : row.agentRunId !== null && row.agentRunId === props.team.focusedAgentRunId;
+  return row.agentRunId !== null && row.agentRunId === (delegated ? delegated.target.agentRunId : props.team.focusedAgentRunId);
 };
 
 /** Derived from the current rows on every render, so member status patches and collapse stay current. */

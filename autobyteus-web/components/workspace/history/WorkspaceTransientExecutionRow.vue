@@ -301,11 +301,11 @@ const stopReference = computed<DelegatedReference | null>(() => {
 });
 
 /**
- * A row opens its run; a team row also folds. An agent row's delegated rows fold with its disclosure button only
- * (CR-461-104, as at base and the Team's own rows): opening a worker never hides the runs it delegated.
+ * A row opens its run and reveals what it opens (CR-461-108): a folded team row unfolds, its coordinator shown. Opening
+ * never folds a row (CR-461-104: an agent row's delegated rows stay); only its disclosure button folds it.
  */
 const activateRow = (): void => {
-  if (props.hasChildren && props.row.memberKind === 'agent_team') emit('toggle', props.row);
+  if (props.hasChildren && props.row.memberKind === 'agent_team' && !props.expanded) emit('toggle', props.row);
   emit('select', props.row);
 };
 </script>

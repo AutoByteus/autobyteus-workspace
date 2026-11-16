@@ -61,15 +61,18 @@ describe('Org history delegated rows (SR-084)', () => {
     expect(team.get('[data-test="team-aggregate-status-dot"]').attributes('data-status')).toBe(AgentStatus.Running);
   });
 
-  it('a delegated team starts expanded; its click folds it and opens its coordinator, as the server says', async () => {
+  it('a delegated team starts expanded; its click opens its coordinator without folding it; its chevron folds it (CR-461-108)', async () => {
     const { wrapper, actions } = mountOrg();
     const team = () => wrapper.get('[data-test="workspace-team-transient-execution-row"][data-transient-kind="task_team"]');
     expect(team().attributes('aria-expanded')).toBe('true');
     expect(wrapper.find('[data-agent-run-id="agent-task-worker"]').exists()).toBe(true);
     await team().trigger('click');
     await nextTick();
+    expect(team().attributes('aria-expanded')).toBe('true');
+    expect(wrapper.find('[data-agent-run-id="agent-task-worker"]').exists()).toBe(true);
+    await team().get('[data-test="workspace-team-transient-disclosure"]').trigger('click');
+    await nextTick();
     expect(team().attributes('aria-expanded')).toBe('false');
-    expect(wrapper.find('[data-agent-run-id="agent-task-worker"]').exists()).toBe(false);
     expect(actions.onInspectAgentOrgExecution).toHaveBeenCalledWith(expect.objectContaining({ rootRunId: 'org-run' }), 'agent-task-lead', '');
     await wrapper.get('[data-agent-run-id="agent-worker-task"]').trigger('click');
     expect(actions.onInspectAgentOrgExecution).toHaveBeenLastCalledWith(expect.objectContaining({ rootRunId: 'org-run' }), 'agent-worker-task', '/worker');

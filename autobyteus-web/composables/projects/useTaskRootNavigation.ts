@@ -2,6 +2,7 @@ import { useRouter } from 'vue-router'
 import { useAgentRunCollaborationStore } from '~/stores/agentRunCollaborationStore'
 import { useRunTreeStore, type RunTreeRef } from '~/stores/runTreeStore'
 import type { RunTreeRowDto } from '@autobyteus/collaboration-stream-contracts'
+import { isTeamRow } from '~/utils/runTree/runTreeDisplayRows'
 import { openRunTarget } from '~/composables/useRunOpening'
 import { useAgentSelectionStore } from '~/stores/agentSelectionStore'
 import { useWorkspaceHistorySubjectActions } from '~/composables/useWorkspaceHistorySubjectActions'
@@ -48,6 +49,8 @@ export const useTaskRootNavigation = () => {
       for (let above = byKey.get(row.parentKey ?? ''); above?.parentKey; above = byKey.get(above.parentKey)) {
         if (!collaboration.isTreeRowExpanded(top.runId, above)) collaboration.toggleTreeRow(top.runId, above.key)
       }
+      // A Team worker's own row unfolds too: it opens at its coordinator, shown (CR-461-108).
+      if (isTeamRow(row) && !collaboration.isTreeRowExpanded(top.runId, row)) collaboration.toggleTreeRow(top.runId, row.key)
     })
   }
 

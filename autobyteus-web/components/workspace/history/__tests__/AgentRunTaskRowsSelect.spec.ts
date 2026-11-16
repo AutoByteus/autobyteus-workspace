@@ -4,11 +4,11 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { AgentStatus } from '~/types/agent/AgentStatus'
 
 vi.mock('@iconify/vue', () => ({ Icon: { props: ['icon'], template: '<span :data-icon="icon" />' } }))
-const collaboration = vi.hoisted(() => ({ selectTreeRow: vi.fn(() => true) }))
+const collaboration = vi.hoisted(() => ({ selectTreeRow: vi.fn(() => true), selected: null as string | null, expanded: false }))
 vi.mock('~/stores/agentRunCollaborationStore', () => ({
   useAgentRunCollaborationStore: () => ({
-    ensureStoredView: vi.fn(), selectedRowKey: () => null, isTreeRowExpanded: () => false, toggleTreeRow: vi.fn(),
-    selectTreeRow: collaboration.selectTreeRow,
+    ensureStoredView: vi.fn(), selectedRowKey: () => null, isTreeRowExpanded: () => collaboration.expanded, toggleTreeRow: vi.fn(),
+    selectTreeRow: collaboration.selectTreeRow, selectedChild: () => collaboration.selected,
   }),
 }))
 // Each row's status is its own run's answer, by the ID the server named (SR-083, SR-086 G-A4).
@@ -34,6 +34,8 @@ describe('AgentRunTaskRows selection', () => {
   beforeEach(() => {
     setActivePinia(createPinia())
     vi.clearAllMocks()
+    collaboration.selected = null
+    collaboration.expanded = false
     statuses.agents = {}
     statuses.runs = {}
     // The open view's stream fed the tree (SR-084): the run's own agent and one delegated agent.
@@ -67,5 +69,15 @@ describe('AgentRunTaskRows selection', () => {
     expect(team!.get('[data-test="team-aggregate-status-dot"]').attributes('data-status')).toBe(AgentStatus.Running)
     expect(agent!.find('[data-test="team-aggregate-status-dot"]').exists()).toBe(false)
     expect(agent!.find('[data-test="workspace-transient-status-dot"]').exists()).toBe(true)
+  })
+  // CR-461-108: the row that shows the opened agent is selected; a delegated Team opened at its coordinator marks the coordinator's row, not the Team row.
+  it('marks the opened agent\'s row selected: the coordinator\'s row for a Team opened at it, never the Team row', () => {
+    useRunTreeStore().streamSnapshot({ kind: 'agent', runId: HOST }, [agentRow(HOST, null, 0),
+      ...teamRows('review-team', `agent:${HOST}`, 1, ['review-lead', 'review-dev'])])
+    collaboration.selected = 'review-lead'
+    collaboration.expanded = true
+    const wrapper = mountRows(true)
+    const selected = wrapper.findAll('[data-test="workspace-team-transient-execution-row"]').filter((row) => row.attributes('aria-current') === 'true')
+    expect(selected.map((row) => row.attributes('data-agent-run-id'))).toEqual(['review-lead'])
   })
 })

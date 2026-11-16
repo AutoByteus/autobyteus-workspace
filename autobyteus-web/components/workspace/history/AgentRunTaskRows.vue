@@ -95,8 +95,9 @@ const onRowLeaveSettled = (): void => {
   onLeaveSettled()
   if (leaving.value === 0 && rows.value.length === 0) rendered.value = false
 }
+/** The row that shows the opened agent (CR-461-108): a delegated Team opened at its coordinator selects the coordinator's row. */
 const isSelected = (row: RunHistoryTransientExecutionRow): boolean =>
-  props.runSelected && collaboration.selectedRowKey(props.runId) === row.rowKey
+  props.runSelected && row.agentRunId !== null && collaboration.selectedChild(props.runId) === row.agentRunId
 
 const toggle = (row: RunHistoryTransientExecutionRow): void => collaboration.toggleTreeRow(props.runId, row.rowKey)
 

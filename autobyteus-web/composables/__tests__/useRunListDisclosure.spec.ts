@@ -72,6 +72,25 @@ describe('useRunListDisclosure (DS-004: by run identity, no folder)', () => {
     expect(disclosure.isRowExpanded('team-1', 'team:sub')).toBe(true);
   });
 
+  it('CR-461-108: a run the Team delegated, opened in it, is revealed: the team rows above it unfold once its tree lists it', async () => {
+    const { useRunTreeStore } = await import('~/stores/runTreeStore');
+    const { useAgentTeamContextsStore } = await import('~/stores/agentTeamContextsStore');
+    const entries = reactive([teamEntry('team-1', 'lead', ['lead'])]);
+    const { disclosure, selection, history } = setup(entries as RunListEntry[]);
+    history.getTeamMemberNavigationAncestorRowKeys.mockImplementation((_teamRunId: string, agentRunId: string) => agentRunId === 'sub-lead' ? ['team:sub'] : []);
+    selection.selectedType = 'team'; selection.selectedRunId = 'team-1';
+    await nextTick();
+    expect(disclosure.isRowExpanded('team-1', 'team:sub')).toBe(false);
+    // The Task card or a row selects the delegated Team at its coordinator; the Team's tree lists it.
+    useRunTreeStore().streamSnapshot({ kind: 'agent_team', runId: 'team-1' }, [
+      { key: 'team:team-1', parentKey: null, depth: 0, kind: 'team', name: 't', address: '/t', openTarget: { runKind: 'agent_team', runId: 'team-1', agentRunId: 'lead' }, statusIds: ['team-1'] },
+      { key: 'team:sub', parentKey: 'team:team-1', depth: 1, kind: 'team', name: 'sub', address: '/sub', openTarget: { runKind: 'agent_team', runId: 'sub', agentRunId: 'sub-lead' }, statusIds: ['sub'] },
+    ]);
+    useAgentTeamContextsStore().delegatedRows = { 'team-1': { key: 'team:sub', target: { runKind: 'agent_team', runId: 'sub', agentRunId: 'sub-lead' }, address: '/sub' } };
+    await nextTick();
+    expect(disclosure.isRowExpanded('team-1', 'team:sub')).toBe(true);
+  });
+
   it('opens an open Org run and the configured Team that holds the focused member', async () => {
     const { disclosure, org } = setup([orgEntry('org-1')]);
     org.value = { rootRunId: 'org-1', focusAddress: '/software/implementation', selection: null };
@@ -79,6 +98,28 @@ describe('useRunListDisclosure (DS-004: by run identity, no folder)', () => {
     expect(disclosure.isAgentOrgRunExpanded('org-1')).toBe(true);
     expect(disclosure.isAgentOrgTeamExpanded('org-1', '/software')).toBe(true);
     expect(disclosure.isAgentOrgRunSelected('org-1')).toBe(true);
+  });
+
+  it('CR-461-108: a run the Org delegated, open in it, selects its agent\'s row, not the Org\'s; the rows above it and its Team row unfold', async () => {
+    const { useRunTreeStore } = await import('~/stores/runTreeStore');
+    const target = (runKind: 'agent_org' | 'agent_team', runId: string, agentRunId: string) => ({ runKind, runId, agentRunId });
+    useRunTreeStore().streamSnapshot({ kind: 'agent_org', runId: 'org-1' }, [
+      { key: 'org_agent:manager', parentKey: null, depth: 0, kind: 'org_agent', name: 'm', address: '/manager', openTarget: target('agent_org', 'org-1', 'manager'), statusIds: ['manager'] },
+      { key: 'team:squad', parentKey: 'org_agent:manager', depth: 1, kind: 'team', name: 's', address: '/squad', openTarget: target('agent_team', 'squad', 'squad-lead'), statusIds: ['squad'] },
+      { key: 'team_member:squad:squad-lead', parentKey: 'team:squad', depth: 2, kind: 'team_member', name: 'l', address: '/lead', openTarget: target('agent_team', 'squad', 'squad-lead'), statusIds: ['squad-lead'] },
+    ]);
+    const { disclosure, org } = setup([orgEntry('org-1')]);
+    disclosure.toggleAgentOrgTaskTeam('org-1', 'org_agent:manager');
+    disclosure.toggleAgentOrgTaskTeam('org-1', 'team:squad');
+    expect(disclosure.isAgentOrgTaskTeamExpanded('org-1', 'team:squad')).toBe(false);
+    // The delegated Team, opened from its row or its Task card, opens at its coordinator.
+    org.value = { rootRunId: 'org-1', focusAddress: null, selection: null, delegated: { rowKey: 'team:squad', agentRunId: 'squad-lead' } };
+    await nextTick();
+    expect(disclosure.isAgentOrgRunSelected('org-1')).toBe(false);
+    expect(disclosure.isAgentOrgMemberSelected('org-1', '/lead', 'squad-lead')).toBe(true);
+    expect(disclosure.isAgentOrgMemberSelected('org-1', '/manager', 'manager')).toBe(false);
+    expect(disclosure.isAgentOrgTaskTeamExpanded('org-1', 'org_agent:manager')).toBe(true);
+    expect(disclosure.isAgentOrgTaskTeamExpanded('org-1', 'team:squad')).toBe(true);
   });
 
   it('starts a delegated Org Team expanded and folds it by execution', () => {

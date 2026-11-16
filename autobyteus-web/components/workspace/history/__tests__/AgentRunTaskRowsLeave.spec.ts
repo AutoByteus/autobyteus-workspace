@@ -6,7 +6,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 vi.mock('@iconify/vue', () => ({ Icon: { props: ['icon'], template: '<span :data-icon="icon" />' } }))
 vi.mock('~/stores/agentRunCollaborationStore', () => ({
   useAgentRunCollaborationStore: () => ({
-    ensureStoredView: vi.fn(), selectedRowKey: () => null, isTreeRowExpanded: () => false, toggleTreeRow: vi.fn(), selectTreeRow: vi.fn(() => true),
+    ensureStoredView: vi.fn(), selectedRowKey: () => null, selectedChild: () => null, isTreeRowExpanded: () => false, toggleTreeRow: vi.fn(), selectTreeRow: vi.fn(() => true),
   }),
 }))
 vi.mock('~/stores/runStatusStore', () => ({ useRunStatusStore: () => ({

@@ -2135,7 +2135,7 @@ describe('RunSectionPanel', () => {
   });
 
   /** API-TTRC-003 (REQ-006 / AC-004, design §2): the real panel binds delegated-Team disclosure and inspects the coordinator. */
-  it('toggles a delegated Team row through the panel tree state and inspects its exact coordinator', async () => {
+  it('opens a delegated Team row at its exact coordinator without folding it; its chevron folds it (CR-461-108)', async () => {
     const tree = structuredClone(taskBearingView().execution_tree) as any;
     const orgRun = {
       stableKey: 'agent_org_run:org-run', rootSubjectKind: 'agent_org', rootRunId: 'org-run',
@@ -2180,8 +2180,9 @@ describe('RunSectionPanel', () => {
 
       await row().trigger('click');
       await flushPromises();
-      expect(row().attributes('aria-expanded')).toBe('false');
-      expect(member().exists()).toBe(false);
+      // Opening reveals what it opens: the row stays unfolded, its coordinator shown.
+      expect(row().attributes('aria-expanded')).toBe('true');
+      expect(member().exists()).toBe(true);
       expect(openForInspection).toHaveBeenCalledWith('org-run', expect.anything());
       expect(selectTreeRow).toHaveBeenCalledWith('org-run', expect.objectContaining({ openTarget: expect.objectContaining({ agentRunId: 'agent-task-lead' }) }));
       expect(select).not.toHaveBeenCalled();
@@ -2190,6 +2191,11 @@ describe('RunSectionPanel', () => {
         rootSubjectKind: 'agent_org', orgRunId: 'org-run', agentRunId: 'agent-task-lead',
       }) });
 
+      // Only the chevron folds; a click on the folded row unfolds it again and opens it.
+      await row().get('[data-test="workspace-team-transient-disclosure"]').trigger('click');
+      await flushPromises();
+      expect(row().attributes('aria-expanded')).toBe('false');
+      expect(member().exists()).toBe(false);
       await row().trigger('click');
       await flushPromises();
       expect(row().attributes('aria-expanded')).toBe('true');
