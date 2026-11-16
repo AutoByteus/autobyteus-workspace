@@ -1,6 +1,65 @@
 # API/E2E Test Review Report: autobyteus-461
 
-The latest result is CRR-063, after API-REV-021. It comes first. CRR-061 and CRR-050 follow as history.
+The latest result is CRR-066, after API-REV-022 (the release-smoke triage). It comes first. CRR-063, CRR-061 and CRR-050 follow as history.
+
+## API-REV-022 (CRR-066)
+
+### Review Meta
+- Entry point: proportional test-code review after a successful API/E2E round (round 22, the release-smoke triage), with the failure origin confirmed.
+- Scope:
+  - `40d3a21014`: ten live E2E clients and the new unit check `tests/unit/e2e-helpers/team-stream-clients-wait-for-connected.test.ts`;
+  - `6bed45922b`: `TESTING.md`;
+  - `93ddf380b9`: reports and evidence.
+- No source changed.
+- Result: **Pass**.
+
+### Failure origin: test-owned (API/E2E's F-92), confirmed
+- **The failure:** on the release smoke at `d978347600`, `workspace-skill-links-live` AC-105 got `SESSION_NOT_READY` on Claude, Codex and Grok. The branch fails 2/2 and base passes 2/2.
+- **The protocol is base's and unchanged:**
+  - `api/websocket/agent.ts` `attachRunStream` refuses a command until `connect` resolves, and says "Retry after CONNECTED message".
+  - 461's diff to the file is only the injected Team handler.
+  - 461's Team view sends CONNECTED after its reads (CR-461-101, reviewed), a few ms after the socket opens. The test client sent on `open`, so the timing exposed a client that ignored the protocol.
+- **No product client sends early.** I checked every product WebSocket client of these streams:
+  - `TeamStreamingService`: every command goes through `requireCurrentAgentRun`, which throws unless `phase === 'ready'`, after CONNECTED and the snapshot;
+  - `agentOrgStreamingService`: commands need `isReady()`;
+  - `agentRunCollaborationStreamingService`: phases `awaiting_connected` → `ready`;
+  - the agent stream (`/ws/agent`): its `connect` awaits only the status read, as base did, so its CONNECTED timing is unchanged.
+  - `peer-run-observation-client` opens the remote observation route, not these streams. The application SDKs open no sockets.
+- So the classification stands: a test defect, fixed at the test stage. No source change is needed.
+
+### Changed tests
+- **The ten clients** now wait for the stream's CONNECTED message before sending:
+  - **The eight `waitConnected(messages)` files:** each attaches its capture listener before the `open` wait, so CONNECTED can't be missed.
+  - **The two roundtrip files:** their `waitForStreamConnected` replaces `waitForSocketOpen`, and the listener goes on at construction.
+  - **Missed frames:** a frame in the same chunk as CONNECTED could reach the roundtrip files before their capture listener is attached. Those files assert on no snapshot or tree frame, so nothing they check is lost.
+- **The unit check** is a static rule over `tests/e2e` and `tests/integration`: a file that opens a Team or Org stream and sends a command must have a readiness wait.
+  - It has positive and negative cases, and it is honest that it works per file.
+  - It runs without a live gate, and I ran it: 2/2.
+  - It closes the gap that let gated files keep the bug: round 17 found clients only by running suites.
+- **`TESTING.md`:** one Gates sentence. Search for clients, gated files included, and put rules readable from the source into unit checks. That is a project rule, proportionate to the lesson.
+- **Small, not a finding:** the two roundtrip files each keep a private copy of `waitForStreamConnected`, as they did of `waitForSocketOpen`. Moving them to the shared `waitConnected` would be tidier, but it's pre-existing duplication.
+
+### Checklist
+- Names and intent: clear.
+- Assertions: unchanged.
+- Reuse: the shared helper in eight files.
+- Determinism: improved; the readiness wait replaces a race.
+- No skipped or focused tests.
+- Real triggers: unchanged.
+
+### Follow-up
+- FU-036 (recorded): the Org and agent-collaboration route (`attachRootStream`) silently drops a command sent before `connect` resolves, while the Team route answers `SESSION_NOT_READY`. It's base code, and product clients wait.
+
+### Residual risks (from API/E2E, accepted)
+- Grok wasn't rerun: FU-035, and its other smoke rows are HTTP 429 quota.
+- Eight edited live files weren't run live; their only change is the same wait.
+- The check is per file.
+
+### Result
+- **Pass.** No findings.
+- Recipient: `/software_engineering_team/delivery_engineer`: merge into personal, rerun the smoke, tag the beta.
+
+---
 
 ## API-REV-021 (CRR-063)
 

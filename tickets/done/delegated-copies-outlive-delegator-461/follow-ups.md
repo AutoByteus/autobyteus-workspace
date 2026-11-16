@@ -143,3 +143,16 @@ Withdrawn (not to send): FU-001, FU-003, FU-004, FU-005, FU-008, FU-009, FU-012,
 - **Why it is outside this ticket:** 461 changed neither the Grok backend nor the error path (the two MCP adapters only defer a lookup). Base's own run failed earlier, on its first turn, so base is unproven. The user decided it's a follow-up.
 - **Urgent:** No.
 - **Suggested Task description:** a refused tool call on `grok_build` carries the server's refusal text and guidance to the agent, as the other runtimes do. **Done when:** a live Grok run shows the server's reason for a refused call, with a test.
+
+## FU-036 — The Org stream silently drops a command sent before it is ready; the Team stream answers SESSION_NOT_READY (base)
+
+- **Found by:** Code Reviewer (CRR-066, the failure-origin check of API-REV-022).
+- **What is wrong, where:** `autobyteus-server-ts/src/api/websocket/agent.ts`:
+  - `attachRootStream` (the Org and agent-collaboration streams) attaches its `message` listener only after `connect` resolves, so a command that arrives earlier is dropped with no answer;
+  - `attachRunStream` (agent and Team) answers such a command with `SESSION_NOT_READY` ("Retry after CONNECTED message").
+- **Why it is outside this ticket:**
+  - The code is base's, and 461 didn't change it.
+  - The product clients (`agentOrgStreamingService`, `TeamStreamingService`, `agentRunCollaborationStreamingService`) send only once ready.
+  - 461's later CONNECTED (after the view's reads, CR-461-101) only makes the window a few milliseconds wider for a client that ignores the protocol. API-REV-022's unit check now covers the test clients.
+- **Urgent:** No.
+- **Suggested Task description:** the Org and agent-collaboration streams answer a command sent before CONNECTED with `SESSION_NOT_READY`, as the agent and Team streams do, instead of dropping it. **Done when:** an integration test sends on open to `/ws/agent-org/:id` and receives `SESSION_NOT_READY`.

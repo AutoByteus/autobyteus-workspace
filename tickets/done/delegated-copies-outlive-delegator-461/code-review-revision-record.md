@@ -69,6 +69,7 @@
 | CRR-063 | `api-e2e-test-review-report.md` | Proportional test-code review / API-REV-021 (merged state) | Pass (CRR-062) | Pass | None; two stale comment IDs for delivery |
 | CRR-064 | `code-review-report.md` | Docs review, round 42 (Targeted Delta) / IR-042 (delivery's docs Local Fix) | Pass (CRR-063) | Fail: Local Fix (docs) | CR-461-117, -118 new |
 | CRR-065 | `code-review-report.md` | Docs review, round 43 (Targeted Delta) / IR-043 | Fail (CRR-064) | Pass | CR-461-117, -118 resolved |
+| CRR-066 | `api-e2e-test-review-report.md` | Proportional test-code review + failure origin / API-REV-022 (release smoke) | Pass (CRR-065) | Pass | None; FU-036 recorded |
 
 ## Revision Entries
 
@@ -1939,3 +1940,26 @@ None changed (CR-461-001 … CR-461-005 open as in CRR-003).
 - Material score or classification changes: none
 - Recommended recipient: `/software_engineering_team/delivery_engineer`
 - Remaining risks or uncertainty: delivery's own remaining docs checks (`collaboration_model.md`, `GLOSSARY.md` against AC-015, and the project documents), as its report lists
+
+### CRR-066: Proportional test-code review after API-REV-022 (release-smoke triage): Pass
+- Review entry point and round: successful API/E2E test-code review (round 22), with the failure origin confirmed
+- Review scope: `40d3a21014` (ten live E2E clients and a new unit check), `6bed45922b` (`TESTING.md`), `93ddf380b9` (reports)
+- Triggering role, report path, and finding or scenario IDs: API/E2E Engineer, `api-e2e-execution-coverage-report.md` (API-REV-022; SMOKE-AC105, CONNECT-TIMING, STREAM-WAIT-CHECK; F-92)
+- Relevant solution revision IDs: N/A
+- Relevant architecture-review revision IDs: N/A
+- Relevant implementation revision IDs: N/A (no source change)
+- Relevant API/E2E revision IDs: API-REV-022
+- Relevant delivery revision IDs: the release-smoke failure before tagging (`368b093846`)
+- Prior authoritative result: Pass (CRR-065)
+- Current authoritative result: Pass
+- What changed in the review result and why:
+  - The smoke failure (`SESSION_NOT_READY` on an on-open send) is test-owned. The protocol is base's and unchanged, and every product client of the Team, Org and collaboration streams sends only once ready; I checked each. The agent stream's connect timing is unchanged from base.
+  - The ten clients now wait for CONNECTED.
+  - The static unit check closes the gap that let gated files keep the bug.
+- Supported product scenario / material-premise basis changes: none
+- Prior finding resolution: N/A
+- New or remaining finding IDs: none
+- Follow-ups: FU-036 (the Org and collaboration route silently drops a command sent before it is ready; base)
+- Material score or classification changes: none
+- Recommended recipient: `/software_engineering_team/delivery_engineer`
+- Remaining risks or uncertainty: Grok wasn't rerun (FU-035, and HTTP 429 quota); eight edited live files weren't run live, though their only change is the same wait; the unit check is per file
