@@ -10,7 +10,15 @@
 
 ## Result
 
-`Blocked`: the long-lived docs describe a superseded design of this ticket, and the final run-tree stream contract is not documented. Routed to the implementation engineer (Local Fix, docs part of the change).
+`Updated` (2026-11-17). First pass (2026-11-16) was `Blocked`: the long-lived docs described a superseded design of this ticket and the final run-tree stream contract was not documented. Routed to the implementation engineer (Local Fix); rewritten in IR-042 / IR-043 and reviewed in CRR-064 / CRR-065 (head `16009d96c7`). The code reviewer's round 42 also found names this ticket added and later removed, which delegation's base-versus-branch scan cannot see (`LocalChildFollowers`, `CrossRunAddressResolution`); fixed in `633c0fd3f0`.
+
+### Second-pass check (delivery, 2026-11-17)
+
+- Delegation's scan (identifiers in the base's source, gone from the branch's) rerun: 35 doc lines still cite such names; every one sits in a sentence that names its replacement ("it replaced …", "This replaced …", "Replaced (autobyteus-461)"), checked line by line with context. No line describes removed code as current.
+- The code reviewer's scan (`evidence/code-review/CRR-064-names-in-neither-tree.sh`): only `REMOTE_PEER`, the base's own doc.
+- The run-tree contract is documented: `agent_websocket_streaming_protocol.md` (`run-tree-view.ts`, the tree replacing the views' rows and events) and web `agent_execution_architecture.md` "Run trees (autobyteus-461)".
+- AC-015 (`collaboration_model.md`, `GLOSSARY.md`): proven by delivery's document review (`release-deployment-report.md` Verification).
+- Project documents: `DESIGN.md` no change; `TESTING.md` changed by the ticket (both typechecks for every TypeScript change; Node 22 for suites), consistent with the final change; `RELEASE.md` updated by delivery (`6ec89d2007`): record the shipped migrations in the registry-order test before tagging, the release-time step the data migration guideline's new "Registry order and late predecessors" requires. No report recorded a discrepancy in the three.
 
 ## Docs Updated By Delivery
 
@@ -120,11 +128,9 @@ autobyteus-web/docs/workspace_layout.md:27 | `closedTaskExecutionsDigest`
 autobyteus-web/docs/workspace_layout.md:29 | `closed_task_executions`
 ```
 
-## Not Checked Yet
+## Checked In The Second Pass
 
-- `collaboration_model.md` and `GLOSSARY.md` against the final code (AC-015, document review). Both name no removed identifier, but whether they state the run-tree model was not checked.
-- `DESIGN.md`, `TESTING.md`, `RELEASE.md`: to be checked once the docs are current.
-- `autobyteus-server-ts/docs/design/data_migration_guideline.md` (new registry-order rules): to be checked then.
+- `collaboration_model.md`, `GLOSSARY.md`, `DESIGN.md`, `TESTING.md`, `RELEASE.md`, `data_migration_guideline.md`: see Second-pass check above.
 
 ## Escalation
 
