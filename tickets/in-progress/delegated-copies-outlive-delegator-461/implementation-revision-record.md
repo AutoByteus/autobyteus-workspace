@@ -1447,3 +1447,15 @@ The current code and `implementation-handoff.md` remain authoritative.
 - Not checked here (delivery's, as its report says): `collaboration_model.md` and `GLOSSARY.md` against the final code (AC-015) beyond the `DelegationTree` rename, `DESIGN.md`, `TESTING.md`, `RELEASE.md`, `data_migration_guideline.md`.
 - Classification: Large / High, unchanged. No code, test or build output changed.
 - Next recipient: Code Reviewer (Local Fix on a Large/High package).
+
+### IR-043 — CRR-064's docs Local Fixes (CR-461-117, CR-461-118)
+
+- Triggering role, report path, and round: Code Reviewer CRR-064 (`code-review-report.md`, round 42): Fail, two docs-only Local Fixes; IR-042's run-tree sections and delivery's table lines accurate. Round 43.
+- Triggering finding IDs: CR-461-117, CR-461-118. Large / High unchanged.
+- Prior authoritative result: IR-042 at `db64e3b1b8`.
+- Delta, one commit `633c0fd3f0`, four server docs:
+  - **CR-461-117** (`design/agent_websocket_streaming_protocol.md`): the "Children's output" bullet named `LocalChildFollowers` (removed in SR-083 step 4) and said delegated output is sequenced in the root's stream. Replaced by the final behavior: a view carries no delegated run's output; it is on that run's own stream (rule 2), and the view shows the run only as a tree row.
+  - **CR-461-118** (`modules/agent_communication.md`, `agent_team_execution.md`, `standalone_agent_run_root.md`): `CrossRunAddressResolution` (folded into the run's map, now `CollaborationTree`, in SR-060) replaced by `CollaborationTree.resolve` (called from `SendMessageToDispatcher`). `agent_communication.md` states the order as `collaboration-tree.ts` has it (SR-081): step 2 must apply (`stepTwo()`), then a delegated team's correction of an address under its delegated name (refused with the address to use), before step 2's receiver is looked up; the other two docs follow that order.
+- Validation: the reviewer's scan `evidence/code-review/CRR-064-names-in-neither-tree.sh` (names in neither tree that 461's own history added and removed) now prints only `REMOTE_PEER`, the base's doc and not 461's; delivery's base-versus-branch scan (`/tmp/docscan2.py`) is unchanged (no unexplained line). Both scans are part of my docs check from now on.
+- Classification: Large / High, unchanged. No code changed.
+- Next recipient: Code Reviewer (light docs delta; then delivery; no API/E2E, per CRR-064).
