@@ -26,6 +26,7 @@ The latest coverage investigation and execution coverage report remain authorita
 | API-REV-018 | Code Reviewer, `code-review-report.md` CRR-056, round 18 | IR-038, CR-461-106 … CR-461-110 (code `bac59031c3`), CRR-055, CRR-056 | Fail / 79% | Fail / 87% |
 | API-REV-019 | Code Reviewer, `code-review-report.md` CRR-058, round 19 | IR-039, SR-091, CR-461-111 … CR-461-113 (code `2b20fd0898`), CRR-057, CRR-058 | Fail / 87% | Fail / 92% |
 | API-REV-020 | Code Reviewer, `code-review-report.md` CRR-060, round 20 | IR-040, CR-461-114 … CR-461-116 (code `ac4a39498a`), CRR-059, CRR-060 | Fail / 92% | Pass / 94% |
+| API-REV-021 | Code Reviewer, `code-review-report.md` CRR-062, round 21 | IR-041 (the base merge of `1e8b6e5d0a`, code `339602ff36`), CRR-061, CRR-062 | Pass / 94% | Pass / 95% |
 
 ## Revision Entries
 
@@ -740,4 +741,24 @@ None
   - Grok is not usable on this machine (base too);
   - base's desktop build doesn't start here;
   - the full server folder was not rerun this round.
+
+### API-REV-021: round 21 (CRR-062): the user's two checks on the merged state; Pass
+
+- Triggering role, report path, and round: `/software_engineering_team/code_reviewer`, `code-review-report.md` (CRR-062; code `339602ff36`), API/E2E round 21
+- Triggering finding or case IDs: none. These are the user's two checks (the full server folder; the RRT-05 base comparison) and the merged areas.
+- Why this revision was recorded: the merged state's validation before delivery
+- Coverage decisions or durable test paths changed:
+  - 461's phone stopped-delegator cases renumbered MSP-56 … 58 (the merge met the base's MSP-53 … 55);
+  - the probe's start-up duplicate check also reads `journey('ID'`.
+
+#### Prior Failure Resolution
+
+None open. RRT-05 settled: clean on both bases and on the branch (15/15).
+
+- Canonical artifacts and sections updated: the execution report; the progress log; `evidence/api-e2e/API-r21-runs.txt`.
+- Prior result and confidence: Pass / 94%
+- Current result and confidence: Pass / 95%
+- New or remaining failure IDs: none
+- Recommended owner: the Code Reviewer, for the proportional test-code review, then delivery.
+- Remaining risks, blocked evidence, or untested scope: base's desktop build doesn't start here; Grok is a follow-up (FU-035).
 

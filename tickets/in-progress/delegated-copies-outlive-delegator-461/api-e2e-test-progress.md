@@ -231,4 +231,5 @@
 | 2026-11-16 (round 20) | Build, server (representative) | Completed | Pass after rework | On CRR-060 at `ac4a39498a`: 117 passed; RS-01 stale against CR-461-116, reworked, 9/9; own-run startup 3/3 |
 | 2026-11-16 (round 20) | Web, phone, live | Completed | Pass | RSW-01 (1 notice live, after the previous reply), RSM 7/7, DCR exact headers, phone 53/55, title 2/2 alone; live 5/5 on DeepSeek, Codex, Antigravity, Claude 5/6 (LE-F1 not 461) |
 | 2026-11-16 (round 20) | Desktop (isolated Electron) | Completed | Pass | J1 … J4 and the Org journey; instance stopped and removed |
+| 2026-11-16 (round 21) | Merged state `339602ff36` | Completed | Pass | Full server E2E 886/886; RRT-05 15/15 clean on both bases and on the branch (not a finding); composer 12/12; phone MSP-53 … 58 6/6 after the ID clash fix; both type gates at baseline |
 

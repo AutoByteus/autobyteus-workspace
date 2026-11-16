@@ -1,6 +1,7 @@
 // A stopped delegator's run on the phone (autobyteus-461 SCN-005 / AC-007, REQ-002, REQ-004, SR-045 … SR-048; code review O-1).
 // Cases of `pnpm -C autobyteus-web test:e2e:mobile-shell`, run by `mobile-shell-probe.mjs` after its other cases
-// (`--cases=MSP-53,MSP-54,MSP-55` runs only these). The desktop layout of the same journeys is
+// (`--cases=MSP-56,MSP-57,MSP-58` runs only these; renumbered from MSP-53…55 at the base merge of 1e8b6e5d0a, whose context-file
+// size cases, autobyteus-workspace-6, already use MSP-53…55). The desktop layout of the same journeys is
 // `stopped-delegator-views-probe.mjs` (SDV-01 … SDV-03).
 //
 // Stack (owned by these cases, removed at their end, inside the probe's temp root): eta, one more node from this worktree's
@@ -16,7 +17,7 @@
 //   - the root stays stopped on the node and its row keeps showing stopped for 15 s after that child command (O-1);
 //   - the user opens the root and messages its own member (the Manager): the root starts (agent) or is restored (team,
 //     org) and the Manager's reply shows live.
-//   MSP-53 agent root, MSP-54 team root, MSP-55 org root.
+//   MSP-56 agent root, MSP-57 team root, MSP-58 org root.
 import path from 'node:path';
 import fs from 'node:fs/promises';
 import { randomUUID } from 'node:crypto';
@@ -32,7 +33,7 @@ const RUNNING = new Set(['running', 'initializing', 'idle', 'active']);
  */
 export const runStoppedDelegatorCases = async (probe) => {
   const { runCase, serverAt, freePort, chromium, executablePath, outputDir, evidence, selected, sleep, waitFor, assert, redact } = probe;
-  const ids = ['MSP-53', 'MSP-54', 'MSP-55'];
+  const ids = ['MSP-56', 'MSP-57', 'MSP-58'];
   if (!ids.some((id) => !selected || selected.has(id))) return;
   const shot = (page, name) => page.screenshot({ path: path.join(outputDir, `${name}.png`) }).catch(() => undefined);
   const eta = await serverAt('eta', await freePort(), { AGY_FAKE_CASE: 'linked_skills' });
@@ -274,9 +275,9 @@ export const runStoppedDelegatorCases = async (probe) => {
         `${kind}: the delegated worker is also listed as a top-level run (REQ-002: once)`, out);
       return out;
     });
-    await journey('MSP-53', 'agent');
-    await journey('MSP-54', 'team');
-    await journey('MSP-55', 'org');
+    await journey('MSP-56', 'agent');
+    await journey('MSP-57', 'team');
+    await journey('MSP-58', 'org');
   } finally {
     await phoneBrowser?.close().catch(() => undefined);
     await eta.stop?.().catch(() => undefined);

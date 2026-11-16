@@ -178,7 +178,8 @@ import { openRunStatus } from './fixtures/run-status-client.mjs';
 import { readRunTree, asTaskExecutions } from './fixtures/run-tree.mjs';
 import { runClosedTaskRowsCases } from './mobile-closed-task-rows-cases.mjs';
 import { runFileOpenCases } from './mobile-file-open-cases.mjs';
-// MSP-53, MSP-54, MSP-55 (autobyteus-461 AC-007, SCN-005, O-1): a stopped delegator's run on the phone.
+// MSP-56, MSP-57, MSP-58 (autobyteus-461 AC-007, SCN-005, O-1): a stopped delegator's run on the phone (MSP-53…55 before the
+// base merge; those IDs are autobyteus-workspace-6's context-file size cases).
 import { runStoppedDelegatorCases } from './mobile-stopped-delegator-cases.mjs';
 import { runContextFileSizeCases } from './mobile-context-file-size-cases.mjs';
 import { runFileZoomCases } from './mobile-file-zoom-cases.mjs';
@@ -217,7 +218,9 @@ const selected = typeof arg('cases') === 'string' ? new Set(arg('cases').split('
   const sources = [probeFile, ...[...readFileSync(probeFile, 'utf8').matchAll(/from '\.\/([\w-]+-cases\.mjs)'/g)].map(m => path.join(path.dirname(probeFile), m[1]))];
   const seen = new Map();
   for (const file of sources) {
-    for (const [, id] of readFileSync(file, 'utf8').matchAll(/runCase\('([A-Z]+-\d+)'/g)) seen.set(id, [...(seen.get(id) ?? []), path.basename(file)]);
+    // `runCase('ID'` and the stopped-delegator module's `journey('ID'` (it runs each through runCase); the base merge of
+    // 1e8b6e5d0a met two modules on MSP-53…55, which the literal-only check did not see (autobyteus-461).
+    for (const [, id] of readFileSync(file, 'utf8').matchAll(/(?:runCase|journey)\('([A-Z]+-\d+)'/g)) seen.set(id, [...(seen.get(id) ?? []), path.basename(file)]);
   }
   const duplicates = [...seen].filter(([, files]) => files.length > 1);
   if (duplicates.length) {

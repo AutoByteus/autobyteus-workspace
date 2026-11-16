@@ -1,0 +1,34 @@
+API/E2E round 21 (API-REV-021), on CRR-062: the user's two checks on the merged state. Code under test 339602ff36 (the base
+merge of origin/personal 1e8b6e5d0a; HEAD ed33e2452c: docs only since). Server dist/ and the phone bundle as the Implementation
+Engineer rebuilt them from the merged tree (21:26); web from source. Clean env for every run; never the user's app or
+~/.autobyteus. Raw logs: /tmp/api461/r21.
+
+0. A collision before the hold: this round's first start (21:05, before the reviewer's hold reached me) ran `pnpm build` in
+   autobyteus-server-ts for about a minute and removed its dist/ before it was stopped; nothing else ran. The Implementation
+   Engineer rebuilt dist/ from the merged tree.
+
+1. Full server E2E folder (RUN_AGY_FAILURE_E2E=1, scripted AGY), once, on 339602ff36:
+   268 files: 193 passed, 75 skipped (live gates); 1229 tests: 886 passed, 0 failed, 343 skipped. Duration 4719 s.
+   Typecheck: server production 0, tests 1012 in 316 files (baseline): PASS; web production 0, tests 87 in 37 files (baseline),
+   cross-package tests 0: PASS.
+
+2. RRT-05 base comparison: the identical remote-run-title-probe.mjs, 5 runs each, alternating (base worktree at 1e8b6e5d0a
+   with its own install and build; the old base worktree at 827f1e68dc):
+     current base 1e8b6e5d0a  5/5 Pass  the peer Team row's first text is its title at 10, 7, 2, 6, 3 ms; never the task message
+     branch 339602ff36        5/5 Pass  first text the title at 2, 11, 10, 2, 9 ms; never the task message
+     old base 827f1e68dc      5/5 Pass  first text the title at 18, 3, 2, 7, 11 ms; never the task message
+   Both clean: not a finding (CRR-062's rule). Round 20's single flicker (~100 ms of the task message, then 2/2 clean alone) is
+   a rare timing event: 0 of 5 on the merged branch, 0 of 10 on the two bases.
+
+3. Merged areas
+   composer-context-file-removal-probe: 12/12 (CF-013 size limits, progress and cancel, with the delegated run's own draft
+     folder; CF-014 the Server Settings limits; CF-009 stays retired).
+   Phone: the base's context-file size cases (autobyteus-workspace-6) and 461's stopped-delegator cases both used MSP-53…55; the
+     probe skips a second case with a used ID, so one set could not run, and its start-up check read only literal runCase IDs.
+     461's cases renumbered MSP-56…58; the start-up check now also reads `journey('ID'`. Run --cases=MSP-53…58: the first run
+     stopped in setup (AGY model discovery timeout, environmental); alone: 6/6 Pass (MSP-53/54/55 size limits, MSP-56/57/58
+     stopped delegators).
+
+4. Grok: a follow-up out of 461's scope (the user's decision; FU-035).
+5. No new wording-only refusal difference (FU-030 unchanged).
+6. Cleanup: the base worktree at 1e8b6e5d0a (created for this comparison) removed with `git worktree remove`.
