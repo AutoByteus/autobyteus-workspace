@@ -65,8 +65,9 @@ memory.runFolderMemoryDir(runKey); // the folder of a RUN_FOLDER run, or null
 One `MemoryIndexPipeline` builds and updates the memory index. Steps, in order:
 
 1. **Find runs** (`MemoryRunDiscovery`): every run folder with raw traces under `memory/` (not `work_journal/`,
-   not `imports/`), named from the records of its time: run-history catalog and metadata for standalone runs,
-   team and org execution trees, task teams (`TaskTeamRootMemorySource`), else the folder's name. A run's
+   not `imports/`), named from the records of its time: run-history catalog and metadata for agent runs (delegated
+   or not), team and org execution trees for their members, else the folder's name. A delegated run is a run of its
+   own in the standard folders (autobyteus-461), so no separate task-team source is read. A run's
    `runKey` is its folder relative to the memory folder.
 2. **Journals**: for each run whose raw-trace fingerprint changed (file names, sizes and times, including the old
    `raw_traces_archive/` layout) **and the journal renderer revision** (`WorkJournalService.rendererRevision`, so a new

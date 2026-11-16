@@ -117,23 +117,20 @@ its coordinator. Status, closure recovery, conversations and execution remain
 separate from disclosure. Agent Team and Agent Org roots keep their own policies.
 
 Disclosure and loading are separate. A stored inspection or stream snapshot
-publishes the context from the run's collaboration view alone
-(`buildAgentRunCollaborationContext`): the tree, one Offline child context per
-child, and statuses and input states from the view. No child's conversation,
-activities or artifacts are fetched to draw the rows, so their cost does not grow
-with the number of copies.
+publishes the run's own context from its collaboration view alone
+(`AgentRunCollaborationContext`): the run's own agent and its Team tab's messages.
+The rows of the runs it delegated are the run's tree (`stores/runTreeStore.ts`, see
+[Run trees](#run-trees-autobyteus-461)), drawn with no conversation, activities or
+artifacts fetched, so their cost does not grow with the number of copies.
 
-A child's stored details load on demand (`agentRunCollaborationChildHydration.ts`):
-
-- **When.** When it is selected (row click, Task locate), and again for the
-  selected child after every publication, including the snapshot that follows a
-  new delegation or a settings Save. Unopened children are never loaded;
-  previously opened ones load again when selected again.
-- **What.** One member projection request and one hub-scoped artifact request
-  (`agentRunCollaborationMemberFileChanges`, never the run-id `getRunFileChanges`).
-- **Ownership.** The store is the only owner of in-flight loads, keyed by
-  (published context, child). A load whose context is no longer published, because
-  it was republished or the host is stopping, ends `superseded` and writes nothing.
+A delegated run is a run of its own (rule 2). Selecting its row opens it as its own
+run (`stores/delegatedRunsStore.ts`, `ensureOpen`): its own context, conversation,
+artifacts and stream, read by its own subject (`browse`: `run` for an agent run,
+`teamMember` for a delegated team's member, `peerRun` for a peer's run on its node).
+Unopened runs are never loaded; the view shows nothing of a selected run until its
+own run is open. This replaced the per-child loading inside the delegator's view
+(`buildAgentRunCollaborationContext` with one child context per child, and the
+delegator-scoped `agentRunCollaborationMemberFileChanges`).
   A live event (single or an `agent_presentation_batch`) or a shown local message during
   the fetch retries the load within the same context, at most three attempts. Live
   presentation reaches every child's context, loaded or not. A failure is logged with the host and child
@@ -478,11 +475,10 @@ busy (running or initializing) > error > idle > offline
 with the Agent status colours: busy is a pulsing blue dot, error red, idle
 green, offline gray. Missing or unknown statuses count as offline. When the run
 that contains the Team is not alive, the Team is offline whatever its Agents
-last reported. A Team row counts every Agent row shown under it (its members,
-and Agents and Teams its members delegated, at any depth), whether the
-row is expanded or collapsed. It never counts closed (DONE/CANCELLED) task work
-hidden from the tree, or Agents outside its subtree. Each Agent counts with the
-status its own row shows.
+last reported. A Team run's row, a delegated team included, shows that team run's
+own status, computed on the server by its root from its own agents (autobyteus-461
+SR-086 G-A4) and received on `/ws/run-status`; the client never folds it. An Org's
+mounted Team, one of the Org's own parts, counts its members' statuses.
 
 One web owner holds the rule:
 `resolveTeamStatus(agentStatuses, runAlive): TeamStatus` in
@@ -491,24 +487,24 @@ alive. Otherwise it applies the shared contract fold (`foldTeamAggregateStatus`,
 authority `live`) and maps `initializing` to `running`. `TeamStatus` therefore
 has four values (`running | error | idle | offline`). Agent rows keep their own
 five-state dot, so a starting Agent row stays amber while its Team reads busy.
-No Team row calls the shared fold directly. Each root keeps its own counting
-and passes the counted statuses and its liveness to the rule:
+No Team row calls the shared fold directly. Where the client folds (an Org's
+mounted Team, a group row, a Team run's own rows), it passes the statuses and the
+liveness to the rule:
 
-- Team runs (`workspaceHistoryTeamBranchStatus.ts`): `teamBranchStatus` counts
-  every Agent row beneath an `agent_team` row by depth; in a Team run those are
-  the delegated task-Team rows (Teams are flat, so configured rows are Agents). `teamRunStatus` counts all Agent rows of a run, gated by
-  `TeamTreeNode.isActive`. `teamDefinitionGroupStatus` gives a TEAMS group row the
-  highest status among its listed runs. `WorkspaceTeamExecutionTree` derives
-  these at render time from `executionRows`, so navigation patches stay current.
-- Agent runs (`AgentRunCollaborationContext.listTaskRows`): the walk visits
-  every listed node, collapsed ones included, skips closed subtrees, and sets
-  `AgentRunTaskTreeRow.teamStatus` on Team rows, gated by the host run's
-  `isActive`.
-- Org runs (`agentOrgTeamBranchStatus.ts`): one listed-Agent collector serves a
-  configured mounted Team (`projectAgentOrgTeamBranchStatus`) and a delegated
-  task Team (`projectAgentOrgTaskTeamStatus`). The Org counts as alive
-  only while its status authority is `live`. The Org root row is an Org, not a
-  Team, and keeps its own dot.
+- Team runs (`workspaceHistoryTeamBranchStatus.ts`): `teamRunStatus` is a Team
+  run's row status, its own (`runStatusStore.runStateOf({ kind: 'agent_team' })`;
+  offline until answered); `teamDefinitionGroupStatus` gives a TEAMS group row the
+  highest status among its listed runs; `teamBranchStatus` folds the Agent rows
+  beneath a Team row of a Team run's own execution rows.
+- Delegated Team rows in every tree (Agent, Team and Org runs, the phone): a row of
+  kind `team` or `peer_team` shows its team run's own status the same way, by the
+  run ID the server named in its `statusIds`.
+- Org runs: a mounted Team row folds its members' statuses (`resolveTeamStatus`
+  over the row's `statusIds`), gated by the Org's own liveness. The Org root row is
+  an Org, not a Team, and keeps its own dot.
+
+These replaced the client-side folds over delegated rows
+(`AgentRunCollaborationContext.listTaskRows`, `agentOrgTeamBranchStatus.ts`).
 
 `TeamAggregateStatusDot` draws the status before the unchanged slate
 people-group icon on stable rows (`WorkspaceStableExecutionRow`), transient task
@@ -589,18 +585,20 @@ on a transparent background. Each control keeps its existing transition and
 native button semantics: roots retain native focus, copies their focus-visible
 ring, pending pulse and reduced-motion override. This applies under Agent,
 Team and Org roots (`WorkspaceTransientExecutionRow`,
-`WorkspaceAgentOrgHistoryCollection`). It stops only that copy and the copies it
-started (`delegatedLaunchDraftStore.stop` → `stopDelegatedExecution`). The copy
-stays restorable and the run keeps running. Task-Team child rows have no icon,
+`WorkspaceAgentOrgHistoryCollection`). It stops only that delegated run, as its own
+ordinary Stop (`terminateAgentRun` / `terminateAgentTeamRun`; it replaced
+`stopDelegatedExecution`); the runs it delegated keep working. The copy stays
+restorable and the delegator keeps running. Task-Team child rows have no icon,
 because a Team copy is stopped as a whole. Its Settings row has the same action.
 See [Settings → Existing Run Configuration](./settings.md#existing-run-configuration).
 
 In the AgentOrg Workspaces rows, a delegated task-Team row with children has the
-mounted-Team chevron and `aria-expanded`. It starts expanded, and a row click
-toggles it and inspects the coordinator. Its expansion state is keyed by
-`rootRunId` + `teamRunId` in `useWorkspaceHistoryTreeState`, so it is
-independent of a same-address mounted Team and of sibling delegations.
-`projectAgentOrgHistoryRows` omits a collapsed task Team's descendants.
+mounted-Team chevron and `aria-expanded`. It starts expanded on the desktop; a row
+click expands it (never folds it) and opens its coordinator, and only the chevron
+folds it (CR-461-108). Its expansion state is keyed by `rootRunId` + the row's tree
+key in `useWorkspaceHistoryTreeState`, so it is independent of a same-address
+mounted Team and of sibling delegations. The shared tree rows
+(`runTreeDisplayRows`) omit a folded row's descendants.
 
 `WorkspaceTeamExecutionTree.vue` applies the existing local disclosure state to
 the depth-first execution projection and derives sibling continuation metadata.
@@ -645,18 +643,12 @@ different AgentRun,
 the stream path immediately reconciles that fallback's exact projection before
 its monitor is treated as authoritative.
 
-For a newly delegated child, the root Team stream publishes
-`TASK_EXECUTION_STARTED` before every exact Agent frame. The server's
-registry-owned durability gate retains pre-activation Agent events, drains them
-FIFO after the durable tree write (including synchronous reentrant events), then
-forwards later status, turn, content, tool, and segment events exactly once
-through the unchanged root publisher before assignment work can start. Abort or
-disposal releases neither events nor work. The frontend inserts the child into
-the view's execution tree from that event, then routes all later frames by
-`agent_execution`; an already-selected child therefore advances its
-conversation, Activity, and execution status without refocus or reload, and two
-same-address task runs cannot share updates. Snapshot/reconnect remains the
-recovery path rather than the normal live-update mechanism.
+A newly delegated run reaches an open view as its tree's next change (a numbered
+`RUN_TREE_CHANGED`, see [Run trees](#run-trees-autobyteus-461)); it replaced
+`TASK_EXECUTION_STARTED`. The delegated run is a run of its own: its status comes
+on `/ws/run-status`, and its conversation, Activity and output on its own stream
+once its row is opened, so a selected delegated run advances without refocus or
+reload, and two same-address runs never share updates.
 
 The expanded execution subtree exposes localized `tree` and `treeitem`
 semantics. Every row reports its localized role, name, exact address, level,
@@ -743,33 +735,25 @@ compatible run-id fallback. The frontend must not recreate the removed
 as a routing authority. Idle shutdown does not remove delegated rows; they stay
 in the tree with `offline` status, in active and historical views alike.
 
-Task closure: when a Project Task becomes DONE, its task executions leave the
-Workspaces tree of their host root (standalone Agent, Agent Team or Agent Org),
-together with everything under them. The execution tree itself is never
-filtered, so message participants and history keep their identities. Closure is
-a separate fact beside the tree: the root snapshot and stored reads carry
-`closed_task_executions`, and the live `task_executions_closed` /
-`TASK_EXECUTIONS_CLOSED` event is published before the runs are stopped, so a
-failed stop does not keep them listed. `utils/collaboration/taskExecutionClosure.ts`
-owns the closed-subtree rule; the run-history row builders and
-`AgentRunTaskRows` / `WorkspaceTeamExecutionTree` /
-`WorkspaceAgentOrgHistoryCollection` apply it. Leaving rows use
+Task closure: when a Project Task becomes DONE or CANCELLED, a run whose last open
+Task it was leaves the tree of its delegator and of every run above it, together
+with the rows under it, as the trees' next change (`removed`; see
+[Run trees](#run-trees-autobyteus-461)). The server publishes it before the runs are
+stopped, so a failed stop does not keep them listed. There is no closed set in the
+trees or the stored reads: they replaced `closed_task_executions` and the
+`TASK_EXECUTIONS_CLOSED` / `TASK_EXECUTIONS_REOPENED` events. Leaving rows use
 `useLeavingTreeRows` and `treeRowLeave.css`: a 200 ms ease-out fade and collapse
 while the remaining rows move up, at once under `prefers-reduced-motion`. New
-rows appear without motion. A selected closed run hands selection to the Agent
-run (Agent root), to the delegating Manager (Team root), or to the agent that
-delegated its outermost closed execution (Org root), and keyboard focus
-on a leaving row moves to that row. Messages with closed runs stay in the Team
-tab, and nothing is deleted from disk. Only the Workspaces tree and the main
-view follow closure; other Team surfaces still list closed members.
-Reactivation reverses closure for one execution. After the Task leaves DONE,
-the assigning run messages the execution's run ID. The root then publishes
-`task_executions_reopened` / `TASK_EXECUTIONS_REOPENED`, and
-`removeReopenedTaskExecutions` drops that reference from the closed set. The
-execution is listed again without a manual reload, and its still-closed helpers stay
-hidden. A view that no longer holds the execution (it left the tree when its Task
-closed, autobyteus-469) reloads itself through its checkpoint (Agent run, Org), or
-inserts it from the record the Team's `TASK_EXECUTIONS_REOPENED` carries. Snapshots and stored reads follow the same Task-side view.
+rows appear without motion. A selected run whose row left hands selection to the
+Agent run's own agent (Agent root), to the Team's focused member (Team root), or
+to the Org agent that delegated it (Org root, CR-461-109), and keyboard focus on a
+leaving row moves to that row. Messages with closed runs stay in the Team tab,
+which reads the names of agents that left the tree from the server
+(`reloadNamingUnknown`, autobyteus-469 AC-011), and nothing is deleted from disk.
+Reactivation reverses closure for one run: after the Task leaves DONE, the
+assigning run messages the run's ID, its entry opens again, and its row comes back
+as the trees' next change (`added`), without a manual reload; its own closed
+helpers stay out.
 
 When a single-agent run is terminated successfully, the backend publishes
 `AGENT_STATUS { status: "offline", can_interrupt: false }` to the already-open
@@ -777,36 +761,77 @@ stream before teardown. Frontend live state and history merge logic should treat
 `offline` as the canonical inactive non-error terminal state instead of waiting
 for a socket close or a later history reload to infer that transition.
 
+### Run trees (autobyteus-461)
+
+A view shows its run's own parts; the runs it delegated, at every depth, are the
+rows of its **tree**, built on the server (wire contract and sequencing:
+[Run trees](../../autobyteus-server-ts/docs/design/agent_websocket_streaming_protocol.md#run-trees-autobyteus-461)).
+Every client shows those rows as sent and derives nothing about a run from them.
+
+- **One store.** `stores/runTreeStore.ts` keeps each run's rows by `{kind, runId}`,
+  fed one of two ways:
+  - **stream**: the run's open view sends `RUN_TREE_SNAPSHOT`
+    (`streamSnapshot`) and then each numbered change (`streamChange`, applied with
+    the contracts' `applyRunTreeChange`);
+  - **query**: a run that is shown but not open is read with `runTree(kind, runId)`
+    when first held (`hold(ref)`, which returns its release) and again on
+    `/ws/run-status`'s `RUN_TREE_CHANGED` for it. A read never replaces a tree
+    its view feeds.
+
+  When a view's stream closes, for any reason, its tree is handed to query reads
+  (`streamEnded`, CR-461-111); a view that opens again sends its own snapshot.
+  When the window's node binding changes, every tree is dropped and the held ones
+  are read again.
+- **The view clients** (`agentRunCollaborationStreamingService.ts`,
+  `TeamStreamingService.ts`, `agentOrgStreamingService.ts`) take `RUN_TREE_SNAPSHOT`
+  only at their view snapshot's base and each change at the next number of the
+  view's sequence; another base or a gap reopens the stream. A view whose run
+  stops keeps a stream on the stopped run's view, so its tree stays live (SR-045):
+  a Team or Org view switches to stored mode in-band; an Agent view reconnects when
+  the Stop finishes (CR-461-111).
+- **Statuses** are not in the rows: each row's `statusIds` are held on
+  `/ws/run-status` (`runStatusStore`), an agent by `statusOf`, a team run by
+  `runStateOf`. The phone holds each listed run's tree per run, so a list reload
+  does not read it again (CR-461-112).
+- **Rendering.** `utils/runTree/runTreeDisplayRows.ts` turns the rows into display
+  rows for every surface: the Agent tree (`AgentRunTaskRows`), the Team tree
+  (`WorkspaceTeamExecutionTree`), the Org tree (`AgentOrgRunMemberTree`), the
+  phone (`utils/mobile/mobileRunListRows.ts`) and Settings
+  (`utils/runSettings/delegatedLaunchRows.ts`). A row's name is the server's
+  (`name`; a delegated run's slot, SR-091).
+- **Opening a row** is one path, `openRunTarget(ref, row)`
+  (`composables/useRunOpening.ts`), by the row's `openTarget`: the view's own part
+  is selected in the view; a delegated run opens as its own run
+  (`delegatedRunsStore.ensureOpen`); a peer's run by its own identity on its node.
+  Opening a row reveals what it opens: a Team row expands and selects its
+  coordinator, and only its chevron folds it (CR-461-108).
+
+These replaced the views' child rows (`task_executions`) and `CHILD_RUNS_CHANGED`.
+
 ### Remote Delegated Runs In The Tree
 
 A run that another node runs for this node's delegation (autobyteus-278; server
 mechanics in
 [Remote Collaboration](../../autobyteus-server-ts/docs/modules/remote_collaboration.md#remote-runs-in-the-run-tree))
-is a delegated row under its delegator's root (Agent, Team and Org roots), merged
-with the local copies by start time. A remote Team is listed with its members.
+is a row of its delegator's tree (Agent, Team and Org runs, the phone), a
+`peer_agent` or `peer_team` row, a remote Team with its members as `peer_member`
+rows (see [Run trees](#run-trees-autobyteus-461)).
 
-- **Data.** Each root view carries `remote_task_executions`, and each root
-  registers them in `useRemoteRunsStore`. The store is window-wide, keyed by run
-  and by agent run, and cleared when the window's node binding changes. It holds
-  the node's name, `reachable` (`null` until the node answers), `checking` while
-  Retry waits, the node's title, and the Retry callback of the root that owns the
-  run.
-- **Updates.** The root's stream adds `remote_task_execution_started` (an unknown
-  run reloads the view; a Team stream recovers) and
-  `remote_task_execution_summary`, which carries `reachable`, the title and the
-  live statuses. An agent the summary does not list is `Offline`.
-- **Shared code.** `services/remoteRuns/remoteChildren.ts` (summary statuses, rows,
-  start-time merge) and `remoteAgentContext.ts` (an `AgentContext` with no local
-  definition) are shared by the three roots.
-- **Live output.** A remote agent's output arrives as ordinary `agent_presentation`
-  events of the root and is dispatched to its own context.
-- **Stored conversation.** It is read through the root's member-projection query,
-  which this node's server answers from the run's node. A failed read marks the
-  run unreachable, and that is its only error. Every family opens a remote agent
-  first and reads it after. In a Team, opening the Team on a remote member, selecting
-  one in a mounted Team, and the focused reconcile all focus and commit it, then read
-  it through `readRemoteTeamMember` (`teamRemoteRunRegistry.ts`). Its node being
-  down therefore never fails the selection or sets a Team inspection error.
+- **Data.** The row carries `peer` (`nodeId`, `nodeName`, the node's `title`, and
+  `reachable`, `null` until the node answered) and its `openTarget` with its
+  `nodeId`. `runTreeStore.peerRunOf(agentRunId)` finds a peer run from the shown
+  trees' rows; `useRemoteRun` reads it for a row or a surface.
+- **Status and Retry.** A peer run's state and its agents' statuses come on
+  `/ws/run-status` like every run's (`runStatusStore`: `runStateOf`, `statusOf`).
+  Retry is `runStatusStore.retryPeers(runIds)` (`RETRY_PEERS`): the run shows
+  `Checking <node>…` until its state is told again, whether or not it changed.
+- **Opening.** A peer row opens the run by its own identity
+  (`delegatedRunsStore.ensureOpen`, `services/peerRuns/peerRunStreams.ts`): a stream
+  `/ws/peer-run/:nodeId/:runKind/:runId/:agentRunId` on this node relays the
+  agent's own stream from its node, in the `/ws/agent` protocol (its snapshot,
+  then live frames), into a context with no local definition
+  (`peerAgentContext.ts`). Its browse subject is `peerRun`: its files are read on
+  its node; a message or an interrupt goes to its node.
 - **Row** (`WorkspaceTransientExecutionRow`, `row.remote = {runId, nodeName}`).
   The `RemoteNodeChip` sits between the status dot and the identity. Members of a
   remote Team carry no chip of their own. Under the row:
@@ -818,31 +843,19 @@ with the local copies by start time. A remote Team is listed with its members.
   The aria-label adds "on <node>". Stop terminates the run through its node.
 - **Run view.** One owner, `useRemoteRunView`, used by the agent and Team member
   surfaces (`AgentWorkspaceSurface`, `TeamWorkspaceSurface`), so every family's view
-  of a remote run (standalone, Team, Org) is the same:
+  of a remote run is the same:
   - the header shows the node chip and no ⚙ or ＋;
   - `RemoteRunNotice` (red, Retry) shows while the node is unreachable;
   - the composer's placeholder is `Message <name> on <node>…`, with no context
     files and no @-mentions;
-  - the right panel shows `RemoteRunPanelNote` ("On <node>"): the run's files,
-    terminal and other node-local panels are on that node.
-- **Retry.** One rule, `remoteRunsStore.retry(runId)`, for every family
-  (SR-008):
-  1. it shows `Checking <node>…` and asks the root's stream to fetch the summaries
-     again (`REFRESH_REMOTE_TASK_EXECUTIONS`);
-  2. it reads again the run's selected agent, or, when none of the run's agents is
-     selected, the run's first agent that is not loaded;
-  3. when neither asks anything (no ready stream, nothing started, including a
-     loaded selected agent), `Checking` ends at once; otherwise the node's answer
-     or the read ends it.
+  - the right panel shows `RemoteRunPanelNote` ("On <node>"): the run's terminal
+    and other node-local panels are on that node.
 
-  Each root registers a `RemoteRunRetryAdapter` with only its own mechanisms
-  (`refreshOnStream`, `selectedAgent`, `isLoaded`, `rereadAgent`):
-  - standalone: the collaboration stream, the selected child, the child hydration;
-  - Org: the Org stream, the selected agent execution, the remote agents the Org
-    context has read (`isRemoteAgentLoaded`);
-  - Team: through `teamRemoteRunRegistry`, from its stream snapshot or its stored
-    view (`getTeamRunResumeConfig`): the Team stream, the focused member, the
-    member's authoritative projection.
+These replaced the views' `remote_task_executions` and its events
+(`remote_task_execution_started`, `remote_task_execution_summary`), the
+window-wide `useRemoteRunsStore`, each root's `RemoteRunRetryAdapter`
+(`refreshOnStream`, `rereadAgent`, `teamRemoteRunRegistry`, `readRemoteTeamMember`)
+and `REFRESH_REMOTE_TASK_EXECUTIONS`.
 
 ### Compaction Lifecycle Activity And Center Feed
 
@@ -1425,14 +1438,12 @@ intents. `existingRunConfigStore.discardChanges()` backs Cancel, and
 history lifecycle state may conservatively relock the current target but cannot
 unlock it or supersede the Settings-owned read.
 
-For a stopped standalone Agent, `readAgentCanonical` reads resume metadata and
-`readAgentRunCollaboration` through the existing read-only network client. The
-Settings draft retains only `execution_tree` and `closed_task_executions` as its
-`delegatedSnapshot`; it does not hydrate child conversations or attach a runtime.
-`ExistingRunConfigEditor` builds stopped delegated rows from that snapshot,
-not the cached live collaboration view. Active Agent rows retain their live-view
-owner; Team/Org rows retain their existing canonical tree path. Root-only Agent
-results preserve the same-root snapshot, never another run's snapshot.
+For every run kind, Settings' delegated rows are the run's tree rows
+(`composables/runSettings/useDelegatedRunRows.ts`, the tree held while Settings show
+it), each with the launch its run has now (the row's `launch`); a save's change
+reaches them as the tree's next change. Settings load no delegated run's
+conversation and attach no runtime. This replaced the Agent draft's
+`delegatedSnapshot`.
 
 Delegated Save waits for `reloadCanonical(true)` before announcing success.
 The save lock covers mutation and readback, and same-target refresh preserves
@@ -1786,10 +1797,10 @@ reports actual effects instead of relying on message type alone:
 
 The projector commits those effects once after the handler transaction.
 Duplicate, invalid, final-equal, Activity-only-detail, or other unrepresented
-traffic remains a no-op for unrelated consumers. Team delegated-child
-projection keeps a separate required mutation result: topology changes (for
-example `TASK_EXECUTION_STARTED`) rebuild the cached navigation once, and
-visible display/status changes patch an exact indexed row. This prevents an
+traffic remains a no-op for unrelated consumers. A Team view's tree change
+(`RUN_TREE_CHANGED`) is one effect (`apply_run_tree_change`) that updates the run's
+tree in `runTreeStore`; the cached navigation reads the tree, and visible
+display/status changes patch an exact indexed row. This prevents an
 unfocused stream from multiplying complete Event Monitor and workspace-tree
 projections while preserving the selected stream's progressive rendering.
 

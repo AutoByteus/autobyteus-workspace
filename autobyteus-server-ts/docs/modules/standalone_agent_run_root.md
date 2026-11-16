@@ -140,7 +140,7 @@ memory/agents/<runId>/
 A run it delegated to has the same files in its own folder (an agent run), or is a team run at
 `memory/agent_teams/<teamRunId>/` rooted at `/` with `delegatedFrom` in its tree. There is no
 `collaboration/` folder and no tree file: the run's children are read from the Task entries
-(`DelegationTree`, in memory). A message between two runs is stored in both runs' logs with one
+(`DelegationIndex`, in memory). A message between two runs is stored in both runs' logs with one
 message ID (CM-9); the run's view shows the messages of its own log.
 
 ## Surfaces
@@ -154,17 +154,13 @@ message ID (CM-9); the run's view shows the messages of its own log.
   `COLLABORATOR_ADD_FAILED` and `collaborator_name` (nothing is posted).
 - **View stream** `/ws/agent-collaboration/:runId`: `connect` resolves the root without starting its
   host, then sends the snapshot (`root_subject_kind: "agent"`, `root_agent`; `is_active` is the
-  host's live state; the children are the runs it delegated to, from their Task entries), events
-  and lifecycle. A change to its child rows (a new, reopened or peer delegation; a child whose
-  last open Task closed, or whose Task was deleted) arrives as the unsequenced `CHILD_RUNS_CHANGED`
-  from `ChildRowsFeed`, held while the snapshot is built and sent after it (the same for Team and
-  Org views; see [Live child rows](../design/agent_websocket_streaming_protocol.md#live-child-rows-autobyteus-461)).
-  While someone views the run, `LocalChildObservation` follows its local children: each child's
-  statuses and output are `agent_presentation` (the path a peer child's output takes, with the
-  addresses from the `DelegationTree`); a peer child's summaries are `remote_task_execution_summary`;
-  messages are `communication`. A command to a local child row goes to that child's own
-  run (`DelegatedRunCommands`: a message restores a stopped child, as any message does); a peer
-  child's goes through the root to its node. A run that is not a collaboration run closes the
+  host's live state; the run's own agent only), then `RUN_TREE_SNAPSHOT` (the run's tree at the
+  same base), events and lifecycle. A change to its tree (a run it delegated started, closed,
+  reopened or deleted, at any depth; a row's saved launch or peer answer) arrives as a numbered
+  `run_tree_changed` event (see [Run trees](../design/agent_websocket_streaming_protocol.md#run-trees-autobyteus-461)).
+  Messages are `communication`. A delegated run is a run of its own: its row opens it on its own
+  stream, where its statuses, output and commands are (a message restores a stopped run, as any
+  message does); a peer's run is opened on its node (`/ws/peer-run`). A run that is not a collaboration run closes the
   socket with `4004` and `AGENT_ROOT_UNAVAILABLE`.
 - **GraphQL.** `agentRunCollaboration(runId)` returns the live snapshot or the stopped run's view and
   never restores. The clients' history poll for listed runs that are not open is

@@ -98,16 +98,16 @@ include:
   payload plus `change_sequence` and the member's `agent_run_id`; reply text
   leaves as `SEGMENT_CONTENT_BATCH` (see Segment Contract);
 - Team-only events: `TEAM_COMMUNICATION_MESSAGE` (a message between members, by
-  `sender_agent_run_id` and `receiver_agent_run_id`), `MEMBER_INPUT_MESSAGE` (an
+  `sender_agent_run_id` and `receiver_agent_run_id`) and `MEMBER_INPUT_MESSAGE` (an
   input a member received, by `recipient_agent_run_id` and nullable
-  `sender_agent_run_id`), and `REMOTE_TASK_EXECUTION_SUMMARY` (what the node of a
-  run delegated to another node answered about it);
-- `CHILD_RUNS_CHANGED {run_id, added, removed}`: the Team run's child rows changed
-  (unsequenced; see below);
+  `sender_agent_run_id`);
 - the view: `TEAM_EXECUTION_VIEW_SNAPSHOT` (`root_team_run_id`,
   `base_change_sequence`, `live_sequence_id`, `last_message_change_sequence`,
-  `execution_tree`, `agent_statuses`, `agent_input_states`,
-  `remote_task_executions`; no message log, autobyteus-358);
+  `execution_tree`, `agent_statuses`, `agent_input_states`; no message log,
+  autobyteus-358; the Team's own members only, autobyteus-461);
+- the run's tree: `RUN_TREE_SNAPSHOT {base_change_sequence, rows}` right after the
+  view snapshot, then `RUN_TREE_CHANGED {change_sequence, added, removed, updated}`
+  (see Run trees below);
 - control: `CONNECTED {session_id, root_team_run_id}`, `TEAM_RUN_LIFECYCLE
   {is_active}`, `AGENT_COMMAND_ACK`; and
 - `ERROR`, with nullable `change_sequence` and `agent_run_id`: correlated to one
@@ -116,45 +116,69 @@ include:
 Unknown fields and invalid union combinations are rejected. The browser parses
 the same shared schema before mutating application state.
 
-### Live child rows (autobyteus-461)
+### Run trees (autobyteus-461)
 
-A run's child rows are the runs it delegated to that hold an open Task, one hop
-(`DelegationTree.openChildrenOf`): the snapshot's `task_executions` (runs on this
-node) and `remote_task_executions` (runs on peers). A child whose last open Task
-closes, or whose Task is deleted, leaves the view; a reopened one comes back. There
-is no closed set in the views or the stored reads.
+A view shows its run's own parts only (an agent run's agent, a Team's members, an
+Org's agents and mounted Teams). The runs it delegated, at every depth, are the
+rows of the run's **tree**, built once on the server by `RunTreeView`
+(`agent-collaboration/delegation/run-tree-view.ts`) and shown by every client as
+sent. A delegated run is a run of its own: its row opens it through its own stream
+and commands (rule 2). The tree replaced the views' `task_executions` /
+`remote_task_executions` rows and the `CHILD_RUNS_CHANGED` and
+`REMOTE_TASK_EXECUTION_SUMMARY` events.
 
-- **Source.** Inside each Task change, after updating itself, the `DelegationTree`
-  reports each run X whose open children changed. `ChildRowsFeed`
-  (`agent-collaboration/delegation/child-rows-feed.ts`), the one listener, builds
-  the added rows with the view's own projection and publishes one event on every
-  open view stream of X (`ChildRowsStreams`, where the stream handlers open and close
-  them), whether or not X is active; nothing is started. The composition root
-  creates the streams registry, then the feed, then has the feed follow the tree.
-- **The event.** `CHILD_RUNS_CHANGED {run_id, added, removed}` on the Team stream:
-  `added` holds each new or reopened child's row (`{parent_team_run_id,
-  execution}` for a run on this node, a `RemoteTaskExecutionDto` for a peer's run),
-  `removed` the `{agent_run_id}` / `{team_run_id}` references of the runs that
-  left. The collaboration stream carries the same change as `CHILD_RUNS_CHANGED
-  {root_subject_kind, root_run_id, event: {kind: "child_runs_changed", run_id,
-  added, removed}}` (camelCase rows and references).
-- **Unsequenced.** It carries no `change_sequence`: child-row membership is the
-  tree's, not the run's ordered changes, and a stopped run has no loaded root to
-  own a sequence. The Team client applies it by membership (an added row it holds
-  is skipped, an unknown removed row ignored), in place, never through
-  `team_stream_recovery_required`; pending sends and approvals stay. The Agent and
-  Org clients read the view again unless the change is already in it.
-- **Order against the snapshot.** Each stream session opens on the feed before it
-  reads the tree for its snapshot; events published while the snapshot is built
-  are held and sent right after it, in published order. A change is then either in
-  the snapshot (its event is a no-op) or applied after it.
+- **The rows.** `RunTreeRowDto` (`@autobyteus/collaboration-stream-contracts`,
+  `run-tree-dtos.ts`): `key` (from identities only: kind and run ID, plus the agent
+  run ID for a member row), `parentKey`, `depth`, `kind` (`agent`, `team`,
+  `team_member`, `org_agent`, `org_team`, `peer_agent`, `peer_team`,
+  `peer_member`), `name`, `address`, `openTarget` (the run and the agent to focus;
+  a team's coordinator; a peer's run with its `nodeId`; `null` is a row error,
+  shown and never opened), `statusIds`, and optionally `launch` (the run's launch as
+  it has it now) and `peer` (its node, and the node's last answer). The tree is the
+  run's own parts first, then each delegated run under the agent or member that
+  delegated it, a delegated team with its members. A run is in its delegator's tree
+  while a Task it works on is open; it leaves when its last open Task closes or its
+  Task is deleted, and comes back when reopened.
+- **Statuses are not in the rows.** A row names the agent run IDs whose statuses it
+  shows (`statusIds`); each run's status is its own, on `/ws/run-status`
+  (`RUN_STATUS_SNAPSHOT`, `RUN_STATE_CHANGED`, `RUN_STATUS_CHANGED`).
+- **On an open view's stream.** The session takes its snapshot's base and the
+  tree's delegated rows in one step (`RunTreeView.readAtBase`), then sends the view
+  snapshot and `RUN_TREE_SNAPSHOT` with the same `base_change_sequence`. A change
+  is a notice in the run's one view sequence (`run_tree_changed` in its
+  `RunViewStream`); the session reads the tree again when it sends that notice and
+  sends what changed since the rows it sent last: `added` (in the tree's order),
+  `removed` (keys) and `updated` (a moved parent, a peer's answer, a saved launch).
+  It is numbered like every other frame of the view, so an empty change still
+  counts. The Team stream sends it as `RUN_TREE_CHANGED {change_sequence, …}`; the
+  agent and Org collaboration streams as `ROOT_EXECUTION_EVENT` with `event: {kind:
+  "run_tree_changed", added, removed, updated}`.
+- **Order against the snapshot.** A change after the base comes as a numbered frame
+  after the snapshot, in sequence order; a change at or before the base is already
+  in the tree snapshot. A client applies `RUN_TREE_SNAPSHOT` only at its view
+  snapshot's base and each change at the next number; anything else (another base,
+  a gap) closes the stream to reopen it with a fresh snapshot.
+- **Who publishes.** `ChildRowsFeed` (`agent-collaboration/delegation/child-rows-feed.ts`)
+  follows the `DelegationIndex`: when a run's delegated rows change (a delegated run
+  started, closed, reopened or deleted, at any depth), and when a row's content
+  changes (`rowChanged`: a saved launch, a peer's answer), it publishes
+  `run_tree_changed` on the stream of each run whose tree holds the row
+  (`DelegationIndex.chainOf`), and tells `RunStatusService`, which sends
+  `RUN_TREE_CHANGED {kind, runId}` on `/ws/run-status` to the clients that hold
+  that run.
+- **A listed run that is not open** has no view stream: a client reads its tree
+  with the GraphQL query `runTree(kind, runId)` when it shows it, and again on
+  `/ws/run-status`'s `RUN_TREE_CHANGED` for it.
+- **Applying a change** is the shared `applyRunTreeChange` (the same package): the
+  removed rows dropped, the updated ones replaced in place, the added ones appended,
+  then the rows in display order (each row's children after it).
 
 ### A view's stream lives with the open view (autobyteus-461 SR-045, SR-046, SR-048)
 
-An open view keeps its stream whether its run is active or stopped: a stopped
-delegator's children are runs of their own, so their rows and output stay live,
-and a child row's command goes to the child's own run. No stream restores or starts
-its run to serve a view.
+An open view keeps its stream whether its run is active or stopped: the runs a
+stopped delegator delegated are runs of their own, so its tree stays live and a
+delegated run's row opens that run's own stream. No stream restores or starts its
+run to serve a view.
 
 - **Agent run (collaboration stream).** The snapshot's `is_active` and the
   `ROOT_LIFECYCLE` frame say whether the run's own agent runs; a stopped one is an
@@ -162,14 +186,14 @@ its run to serve a view.
 - **Team and Org runs: two modes, per connection.** While the run is not managed,
   the session serves **stored mode**: a snapshot from the run's own stored file
   through the same projection (its own members offline; a stopped Org carries no
-  statuses), its child rows and its children's output, numbered by the session from
-  the snapshot's base (`live_sequence_id: stored-…`). While the run is managed, it
+  statuses), and its tree's changes, numbered by the session from the snapshot's
+  base (`live_sequence_id: stored-…`). While the run is managed, it
   serves **live mode**: the live root's snapshot and events. The session follows the
   run's registration; each switch sends a fresh snapshot in-band (a new
   `change_sequence` base), then the lifecycle frame (`TEAM_RUN_LIFECYCLE` /
   `ROOT_LIFECYCLE`). Clients take an in-band snapshot as they take the first one.
-- **Commands to a stopped run.** A child row's command goes to the child's own run
-  and leaves the delegator stopped. A message to one of the run's own agents starts
+- **Commands to a stopped run.** A command to a delegated run goes to that run's own
+  stream and leaves the delegator stopped. A message to one of the run's own agents starts
   the run on that first input: a team is restored, its view brought live (snapshot
   sent, live root followed), and only then is the message posted, so the
   `MEMBER_INPUT_MESSAGE` echo that settles the web's send arrives as an ordinary live
@@ -305,9 +329,8 @@ capability.
 
 `INTERRUPT_GENERATION` carries `{command_id,agent_run_id}`.
 `APPROVE_TOOL` / `DENY_TOOL` carry `{invocation_id,agent_run_id,reason}`.
-These controls are active-only and never restore stopped work.
-`REFRESH_REMOTE_TASK_EXECUTIONS {}` asks the nodes of the Team's remote runs for
-their summaries again.
+These controls are active-only and never restore stopped work. A peer run's Retry
+is `RETRY_PEERS` on `/ws/run-status` (it replaced `REFRESH_REMOTE_TASK_EXECUTIONS`).
 
 `AGENT_COMMAND_ACK` for Team interrupt repeats the exact `command_id` and
 `agent_run_id` with `accepted`, or `rejected` / `failed` with a `code` and

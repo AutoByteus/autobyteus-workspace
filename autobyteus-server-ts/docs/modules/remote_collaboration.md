@@ -189,7 +189,7 @@ each offers, then delegates with `delegate_task` without being told an address.
   and their own address, and the coordinator as `teamCoordinatorAgentRunId`), and the work packet is sent to the
   Agent run or the Team's coordinator. A refusal by the peer leaves nothing on this node. The result is a local
   delegation's shape plus `node`. Nothing is stored in the delegating run (autobyteus-461): its peer children
-  are read from the Task entries (`peerRunLinksOf`, through the `DelegationTree`).
+  are read from the Task entries (`peerRunLinksOf`, through the `DelegationIndex`).
 - **Receiving node, an Agent.** The run is an ordinary standalone run; `run_metadata.json` carries
   `delegatedFrom` `{nodeId, delegatingRun, delegatorAgentRunId}`. Its root admits the work packet (link
   check, host made ready, system task notification naming the node), knows the delegator as its back-link
@@ -289,26 +289,25 @@ run's host, or a Team run's members.
   global Node `WebSocket`) requires the first frame to be `{nodeId}` equal to the pinned peer. A refusal, any
   other first frame, a timeout or a close ends the observation once (`onEnd`); A's own `close()` ends it
   silently.
-- **A's owner.** Each root (standalone, Team, Org) owns one `RemoteRunObservation`
-  (`agent-collaboration/execution/remote/remote-run-observation.ts`) over its peer children (`peerRunLinksOf`):
-  - The root's view streams count viewers (`viewerAttached` / `viewerDetached`). Each new viewer gets a summary
-    fetch (one request per node). The first viewer opens one observation per link; the last viewer to leave
-    closes them.
-  - An observation that ends without A closing it gets one summary fetch. There is no reconnect.
-  - `refresh()` (the client's `REFRESH_REMOTE_TASK_EXECUTIONS`, Retry in the window) fetches the summaries again
-    and reopens the ended observations.
-  - A newly linked peer run (`onPeerRunLinked` from `RemoteDelegation`) is observed when the root is being
-    viewed; its row reaches the open views as a `CHILD_RUNS_CHANGED` from `ChildRowsFeed` (autobyteus-461).
-  - The root events are `RemoteRunRootEvent`s: `remote_task_execution_summary` and `remote_agent_presentation`. They are published to the root's view stream only. Only the stream DTO
-    projectors map `remote_agent_presentation` to `agent_presentation`; the Team stream wraps them as source
-    `REMOTE`.
-- **Views and commands on A.** The root views carry `remote_task_executions` (the links, with the node's name): the
-  stream snapshots, `agentRunCollaboration`, the Org inspection and the Team's `getTeamRunResumeConfig`, so a root
-  without a live stream still lists them.
-  The member-projection resolvers (`remoteChildOf`) answer a remote agent's conversation through
-  `agentProjection`. The root's agent commands go to `executeRemoteChildCommand` first. Stop of a remote child
-  goes to `stopRemoteChild`, which terminates a Team through its coordinator. Remote commands run outside the
-  root's operation gate, because a peer call can take up to 20 s.
-- **Phase 1 limits.** Neither node reconnects a stream or pushes a change. A root without a live stream (a
-  stopped delegator) lists its remote runs without a title or status: summaries come only over the root's stream.
-  A remote run's files are not read.
+- **A's rows.** A remote run is a row of its delegating run's tree, and of each tree above it (`peer_agent` /
+  `peer_team`, a team's members as `peer_member`; see
+  [Run trees](../design/agent_websocket_streaming_protocol.md#run-trees-autobyteus-461)). The row comes from the
+  run's Task link (its node, kind, run ID and paired agents) and, once the node answered, the node's last answer
+  (`peer`: title, reachable; `launch`). A newly linked remote run arrives as the tree's next change, like a local one.
+- **A's statuses (`RunStatusService`).** A client holds the runs it shows on `/ws/run-status`. For a held remote run,
+  A asks its node once for its summary (`runSummaries`: title, reachability, statuses, launches) and observes its
+  paired agents' statuses on that node (`openPeerRunObservation`), whether or not the delegating run is open or
+  running. An observation that ends unasked is asked once more and not reopened; a client that newly holds a run
+  whose observation ended asks once more too. `RETRY_PEERS` (the window's Retry) reopens the ended observations and
+  asks again, one call in flight per run. A changed answer changes the run's row in every tree that holds it
+  (`ChildRowsFeed.rowChanged`).
+- **Opening and commands on A.** A remote row opens the run by its own identity (the row's `openTarget` with its
+  `nodeId`): `/ws/peer-run/:nodeId/:runKind/:runId/:agentRunId` relays the agent's own stream from its node
+  (`PeerRunStreamSession`, in the `/ws/agent` protocol). A message, an interrupt or a Stop goes to its node as an
+  owner command; its files are read on its node. Remote calls run outside every root's operation gate, because a peer
+  call can take up to 20 s.
+- **Replaced (autobyteus-461).** The per-root viewer-counted observation (`RemoteRunObservation`), its root events
+  (`RemoteRunRootEvent`: `remote_task_execution_summary`, `remote_agent_presentation`), the views'
+  `remote_task_executions`, `REFRESH_REMOTE_TASK_EXECUTIONS`, and the resolvers and commands that reached a remote run
+  through its delegator (`remoteChildOf`, `executeRemoteChildCommand`, `stopRemoteChild`) are gone: the run tree,
+  `RunStatusService` and `/ws/peer-run` do their work.

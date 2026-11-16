@@ -255,9 +255,9 @@ A run ID that is not a member run of the connected root is refused with
 `TeamRun.executeMemberCommand(...)`. `FlatTeamExecutionManager` dispatches to the
 selected configured Agent. Send may restore the root Team container as part of the
 supported Team follow-up path. Interrupt and tool decisions are active-only and
-must not restore stopped work. A command on a child row (a run the team delegated
-to) goes to that run's own root (`DelegatedRunCommands`), or through the root to a
-peer's node.
+must not restore stopped work. A command to a run the team delegated goes to that
+run's own stream (rule 2: its row opens it as its own run); a peer's run is reached
+on its node (`/ws/peer-run`).
 
 Interrupt acknowledgement is command-correlated. The server echoes the exact
 client `command_id` and execution address with `accepted`, `rejected`, or
@@ -576,7 +576,7 @@ the new run.
 
 A delegated run's life is bound to its Task, never to the run that delegated to it
 (CM-7). Which runs belong to a Task is recorded only on the Task side, in that
-Task's `agent_run_resources.json`; the in-memory `DelegationTree` relates the runs.
+Task's `agent_run_resources.json`; the in-memory `DelegationIndex` relates the runs.
 DONE or CANCELLED stops the Task's runs that have no other open Task, each through
 its own ordinary Stop (`TaskRunControl`); a peer's run is fenced, not stopped. While
 a run's Task is closed it receives no input except its assigner's continuation:

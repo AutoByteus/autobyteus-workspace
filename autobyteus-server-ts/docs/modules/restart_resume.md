@@ -55,7 +55,7 @@ After `recoverAfterListen`, `resumeAfterUpdate()` runs in the background; it nev
 2. Delete it before any resume, so a resume that fails or crashes the server is never repeated.
 3. Keep the entries whose recorded release differs from this server's (both known). The others are dropped with one
    log line.
-4. Roots are resumed bottom-up along `delegatedFrom` (`DelegationTree.parentOf`, one hop): every run is its own root,
+4. Roots are resumed bottom-up along `delegatedFrom` (`DelegationIndex.parentOf`, one hop): every run is its own root,
    and a root's depth is the number of recorded roots above it, so a run delegated to resumes before the run that
    delegated to it. A run's notice lists the resumed runs it delegated to (one hop) that were accepted, whatever its
    place. Without the Task records loaded, every root is at depth 0 and no notice lists any.

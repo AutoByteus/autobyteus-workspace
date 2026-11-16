@@ -253,10 +253,11 @@ Task delegation is a pure spawn. A delegated task Agent or task Team is shown
 as a transient execution row whose starter ("Started by <delegator>") is in the
 accessible label only (see below); there is no
 Tasks surface, task status, submission, review, or task reference file. The
-right-side Team tab shows Messages only. The child's single execution-tree
-write becomes durable, and `TASK_EXECUTION_STARTED` is published, before its
-Agent frames are released, allowing an early-selected child monitor to advance
-without reload or refocus. A child that stays quiet is shut down after the
+right-side Team tab shows Messages only. A delegated run is a run of its own, a row
+of the Team's tree; it arrives as the tree's next change (`RUN_TREE_CHANGED`, see
+[Run trees](agent_execution_architecture.md#run-trees-autobyteus-461); it replaced
+`TASK_EXECUTION_STARTED`), and its conversation and output are on its own stream
+once its row is opened. A child that stays quiet is shut down after the
 server grace period (but not while it has a running background task) and keeps its row with the standard `offline` status;
 sending to it from the composer (or a peer `send_message_to` by run ID) wakes
 it with its conversation. Nothing distinguishes a shut-down child from a
@@ -264,77 +265,63 @@ configured member that has not started other than the row kind.
 
 When the Project Task that a child was delegated for becomes DONE, the child
 (and, for a task Team, its members and nested delegations) leaves the Team's
-Workspaces tree. The rows fade and collapse in 200 ms, or go at once under
-reduced motion. The root Team stream publishes `TASK_EXECUTIONS_CLOSED` before
-the child runs are stopped, so the rows leave even if a stop fails. The view
-snapshot and the Team resume config carry `closed_task_executions` beside the
-unfiltered execution tree, so closed rows stay hidden after reload, restart and
-Task deletion. A selected or focused closed row hands selection and focus to the
-delegating Manager. Messages with closed runs stay in the Team tab, and nothing
-is deleted from disk. Reopening the Task and delegating again shows the new runs
-only. When the delegating agent reactivates a closed child (it reopens the Task,
-then messages the child's run ID), the stream publishes
-`TASK_EXECUTIONS_REOPENED` and the child's rows return without reload; its own
-still-closed helpers stay hidden. Other Team surfaces (the members panel, running list and token usage)
+tree as the tree's next change, published before the child runs are stopped, so
+the rows leave even if a stop fails. The rows fade and collapse in 200 ms, or go
+at once under reduced motion. The tree is built on the server from the open Task
+entries, so closed rows stay out after reload, restart and Task deletion (it
+replaced `closed_task_executions` and its events). A selected or focused closed
+row hands selection and focus to the Team's focused member. Messages with closed
+runs stay in the Team tab, and nothing is deleted from disk. Reopening the Task
+and delegating again shows the new runs only. When the delegating agent
+reactivates a closed child (it reopens the Task, then messages the child's run
+ID), its rows come back as the tree's next change, without reload; its own
+still-closed helpers stay out. Other Team surfaces (the members panel, running list and token usage)
 still list closed members.
 
-## Workspace History Sidebar Task Peers
+## Workspace History Sidebar Delegated Runs
 
-In an expanded Team run, available task Agents appear immediately after their
-corresponding recipient Agent at the same indentation level. They do not require
-opening that Agent, and an Agent has no disclosure solely for delegated task
-Agents. Task rows use the ordinary tree-row style (no dashed box or tint) and
-keep their runtime status and exact-execution selection by mouse, Enter or Space. A task Agent shows the member
+In an expanded Team run, the runs its members delegated are rows of the Team's
+tree, each under the member that delegated it, at any depth (autobyteus-461
+SR-084); a delegated Team is a row with its members under it. They do not require
+opening that member. Rows use the ordinary tree-row style and keep their runtime
+status and selection by mouse, Enter or Space. A delegated Agent shows the member
 marker (solid status dot and initials) centered on its name line; the starter is
-in the accessible label only, not a visible "Started by" line; branch lines run
-straight through member and task rows.
-Repeated tasks at the same address remain separate conversations. Loading,
-failed inspection and retry retain the existing focus-commit behavior.
+in the accessible label only, not a visible "Started by" line. Repeated tasks at
+the same address remain separate runs. A Team row opens at its coordinator, expands
+when opened, and folds only with its chevron (CR-461-108).
 
-This is a sidebar projection, not runtime reparenting.
-`stores/runHistoryTeamExecutionRows.ts` derives effective parent/depth for
-`task_agent` leaves whose source parent is `configured_agent` or
-`task_team_agent`, then recomputes child membership. The history navigation
-index and renderer consume that same topology, so peer selection does not need
-to expand the recipient Agent. Shared Team navigation stays unchanged.
-
-Actual Team/task-Team containers still contain their descendants; collapsing
-the outer Team run hides its contents. Source-owned live/retained availability
-is unchanged: peer placement does not fabricate unavailable history.
-No-context history still shows configured members only. This does not add
-nested configured-Team authoring or change Agent Orgs, delegation, identity, or
-persisted data.
+`stores/runHistoryTeamExecutionRows.ts` lists the Team run's own members; the
+delegated rows come from the tree (`runTreeStore`), so the history navigation and
+the renderer show the same rows. No-context history still shows configured members
+and the tree the server answers for the run. This replaced the sidebar's own peer
+placement of task Agents beside their recipient (`task_team_agent` parents).
 
 A **catalog copy** (`delegate_task` to a listed catalog Agent or Team that is not in the
-run) is an ordinary task row, Offline until its first message. The Team view has no collaborator
-concept: runs that earlier releases recorded as collaborators were converted at startup into
-these rows. Every copy, a catalog copy or a copy of a configured member, carries on its task DTO
-the `source` it started with. The view reads a copy's definition and launch settings only from
-that `source`, by run ID, never from the configured member at its address:
-- the copy's launch and origin as its own run has them, carried on the server's tree row
-  (autobyteus-461 SR-084). `agentSourceSelectors.teamAgentSourceOf` answers only for the root Team's
-  own configured members, by run ID, and returns null for a run the Team delegated. A Team-level
-  choice on a delegated Team changes that Team's default only; each member keeps its own launch
-  (CR-461-089);
-- `source.coordinator_address` for a Team copy's coordinator.
+run) is a delegated run like any other, Offline until its first message. The Team view has no
+collaborator concept: runs that earlier releases recorded as collaborators were converted at
+startup into ordinary delegated runs. Every copy, a catalog copy or a copy of a configured member,
+is a run of its own; what the view shows of it comes from its tree row, never from the configured
+member at its address:
+- its launch and origin as its own run has them (the row's `launch`, SR-084).
+  `agentSourceSelectors.teamAgentSourceOf` answers only for the root Team's own configured
+  members, by run ID, and returns null for a run the Team delegated. A Team-level choice on a
+  delegated Team changes that Team's default only; each member keeps its own launch (CR-461-089);
+- a Team copy's coordinator, from the row's `openTarget`.
 
-A new copy arrives as `TASK_EXECUTION_STARTED`. Rows and tab labels use
-`utils/collaboration/memberDisplayName.ts`. Rows for addresses outside the root Team's configured
-members (catalog copies, their members and copies) use the display-name formatter
-(`readsAsDisplayName`); a configured member and every copy started from it keep the address
-basename. `teamMemberName` in `services/teamExecution/teamExecutionTreeSelectors.ts` is the one
-owner of this rule: the sidebar rows, the member contexts (conversation titles) and the Run
-Settings card of a focused delegated copy (built from `delegatedLaunchRows.ts`) all name a copy
-through it. New copies are always placed at the run's
-top level (CM-1: delegation to the sender's own team is refused on the server); copies already
-stored inside a Team instance keep their recorded host.
+A new copy arrives as the tree's next change, its row under the member that delegated it (CM-1:
+delegation to the sender's own team is refused on the server). A delegated run's name, in its
+row, its own view and Settings, is its slot, from the server (`name`, SR-091). The Team's own
+members and the Team tab's labels use `teamMemberName` in
+`services/teamExecution/teamExecutionTreeSelectors.ts` (`utils/collaboration/memberDisplayName.ts`;
+an address outside the configured members reads as a display name, `readsAsDisplayName`).
 See [Chat](./chat.md#-in-a-live-run-delegation).
 
 ## History, Restore, Stop, And Delete
 
 Team history is backed by the native Team package under
-`memory/agent_teams/<team-run-id>/`. The root contains direct configured
-Agents plus delegated child executions; it has no configured child Team.
+`memory/agent_teams/<team-run-id>/`. The root contains the Team's own configured
+Agents; it has no configured child Team. The runs it delegated are runs of their
+own, each with its own folder (autobyteus-461).
 
 Opening a current or historical run hydrates its stored execution tree and exact
 member projection. Each member's recorded Agent Artifacts

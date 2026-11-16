@@ -228,7 +228,7 @@ communication. A delegated run is never an agent of the run that delegated to it
 **Cross-run path** (`CrossRunMessageDelivery`, design DS-2). A target in another
 run that a Task relates to the sender's run goes from root to root:
 
-1. the receiver's run is found from the Task entries (`DelegationTree.runOfAgent`),
+1. the receiver's run is found from the Task entries (`DelegationIndex.runOfAgent`),
    in memory, also after a restart;
 2. admission: both runs work on one open Task, or one is the assigner of an open
    Task the other works on (contract §2.2). Otherwise the sender's message may be
@@ -475,10 +475,12 @@ startup into ordinary, unowned delegated runs of the same root (migration
   `[Mentioned collaborators]` notes), so stored history displays unchanged.
 - **Task closure (DONE or CANCELLED).** Closing a Task stops its runs that have no
   other open Task, each through its own ordinary Stop (`TaskRunControl`); a peer's
-  run is fenced, not stopped. A delegating run's view lists its children with an
-  open Task entry (`DelegationTree.openChildrenOf`), so a closed run leaves the view
-  and comes back when its assigner continues it; an open view learns either from the
-  unsequenced `CHILD_RUNS_CHANGED`. There is no closed set in the views. The same holds for a Task with no Project: a description-only
+  run is fenced, not stopped. A delegated run is a row of its delegator's tree while
+  it has an open Task entry, so a closed run's row leaves the tree and comes back when
+  its assigner continues it; an open view learns it from the tree's next change
+  (`RUN_TREE_CHANGED`, see
+  [Run trees](../design/agent_websocket_streaming_protocol.md#run-trees-autobyteus-461)).
+  There is no closed set in the trees or the stored reads. The same holds for a Task with no Project: a description-only
   `delegate_task` by an unowned sender returns its `task_id`, and
   `update_task({task_id, status: "DONE"})` (for an agent that selected
   `update_task`) closes it and stops its runs (see
@@ -582,26 +584,27 @@ Team run:
 ### User Model Choice And Stop Of A Delegated Run
 
 A delegated run is an ordinary run: the user stops it and changes its model as for
-any run, in its own view. From the delegating run's view, a child row offers the
-same (`run-history/services/delegated-launch-selection-service.ts`, GraphQL
-`stopDelegatedExecution`, `updateDelegatedLaunchSelections`,
-`delegatedLaunchModelOptions`; design DS-8, SR-039):
+any run, in its own view, or from its delegator's Settings, which show the
+delegator's tree rows, each with the launch its run has now (the row's `launch`).
+Each row is reached as its own run; nothing goes through the delegator (rule 2):
 
-- **Stop.** A child row's Stop is the child's own ordinary Stop
-  (`AgentRunService.terminateAgentRun` / `TeamRunService.terminateTeamRun`); the runs
-  it delegated to keep working. A peer child's Stop goes through the delegating
-  run's live root to its node.
-- **Choice.** A change on a child row is that child's own stopped-run save: an agent
-  child through `AgentRunService.updateStoppedSelection`; a team child's team row as
-  a `CONFIGURED_TEAM` patch at `/` and a member row as a `CONFIGURED_AGENT` patch at
-  its address, through the child team's own stopped save. Another runtime than the
-  run's current one is an agent runtime switch, as for any run. The Save checks
-  everything first (a named child that is running refuses the whole Save with
-  `COPY_RUNNING`; every patch is validated), then writes the delegating run's own
-  settings, then each child in row order. A failure after an earlier write returns
-  `PERSISTENCE_FAILED` with a message naming the runs saved and the one not saved
-  ("Saved: …. Not saved: <name> (<reason>)"); nothing is rolled back. A peer
-  child keeps no launch on this node and is not editable here.
+- **Stop.** A row's Stop is that run's own ordinary Stop (`terminateAgentRun` /
+  `terminateAgentTeamRun`); the runs it delegated keep working. A peer run's Stop is
+  sent to its node.
+- **Choice.** A row's change is that run's own stopped-run save:
+  `updateStoppedAgentRunSelection` for an agent run; for a delegated team,
+  `updateStoppedTeamRunSelections` with a `CONFIGURED_TEAM` patch at `/` (the team's
+  default only) or a `CONFIGURED_AGENT` patch at a member's address. Another runtime
+  than the run's current one is an agent runtime switch, as for any run. A row whose
+  run is running refuses the Save before any write. Settings save the delegator's own
+  settings first, then each changed run in row order; a failure names the runs saved
+  and the one not saved, and nothing is rolled back. A saved launch changes the row in every tree that holds it
+  (`ChildRowsFeed.rowChanged`). A peer run keeps no launch on this node and is not
+  editable here.
+
+These replaced the delegator-side GraphQL operations `stopDelegatedExecution`,
+`updateDelegatedLaunchSelections` and `delegatedLaunchModelOptions` (and their
+`COPY_RUNNING` refusal).
 
 The shared policy, admission (`@` and eligibility), launch resolver, identity
 allocator, entry builder, catalog address map, message-recipient resolution,

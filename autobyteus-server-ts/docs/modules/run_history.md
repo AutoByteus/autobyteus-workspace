@@ -115,7 +115,7 @@ desktop's Runs view orders by it. `RunLastActivityReader` (`src/run-history/serv
 derives it at read time and stores nothing:
 
 - an Agent run: the newest memory file of its own folder (`MemoryRunSummaryBuilder`), and, when it collaborates, of
-  every run delegated from it (`DelegationTree.subtreeOf`, each run's own folders);
+  every run delegated from it (`DelegationIndex.subtreeOf`, each run's own folders);
 - a Team or Org run: the newest over every agent its execution tree locates (`TeamRunExecutionTreeLocationService`,
   `AgentOrgExecutionTreeLocationService`), merged with `mergeMemoryAvailability`;
 - no memory file anywhere: its `createdAt`.
@@ -184,8 +184,8 @@ it never produces a false editable state or a General write.
 `updateStoppedAgentRunSelection` edits the run's **selection**: agent runtime, model and model settings. Its input
 carries `runtimeKind`. The run's own agent runtime is a model-only edit; another agent runtime is an **agent runtime
 switch** (below); the previous agent runtime again, while a switch is pending, is its undo. The Team family
-(`updateStoppedTeamRunSelections`), the Org family (`updateStoppedAgentOrgRunConfig`) and a delegator's child rows
-(`updateDelegatedLaunchSelections`, each child through its own stopped save) edit the same selection with the same rule
+(`updateStoppedTeamRunSelections`), the Org family (`updateStoppedAgentOrgRunConfig`) and a delegated run's row in its
+delegator's Settings (that run's own stopped save, through the same mutations) edit the same selection with the same rule
 (`applyRuntimeSelection`, `run-history/domain/runtime-selection-rule.ts`); see
 [Agent Team Execution](./agent_team_execution.md#agent-runtime-switch-of-a-member) and
 [User Model Choice And Stop Of A Delegated Run](./agent_communication.md#user-model-choice-and-stop-of-a-delegated-run).
@@ -1217,19 +1217,15 @@ excluded and restore fails clearly instead of guessing identity or ownership.
 Termination updates catalog activity only after backend termination succeeds; a
 failed termination preserves the active local state.
 
-## Listed Runs' Children (The History Poll)
+## Listed Runs' Trees
 
-`runCollaborationStatuses(runs: [{ kind, runId }])` (`api/graphql/types/run-collaboration-statuses.ts`;
-autobyteus-461 SR-055 … SR-057) is the clients' poll for the delegated rows of listed runs that are not
-open, for every run kind, at most 100 runs per read (else `BAD_USER_INPUT`). It never reads a view and
-never restores or starts a run. Per run it answers `isActive` (its own root) and its open children, one
-hop, from `RunViewChildren.listed` over the `DelegationTree`:
-
-- a child on this node: its identity (`childRunIdentity`: address, run, a team's members and coordinator,
-  delegator, `startedAt`, definitions; read once per run, never a file per poll), the delegator's address,
-  and its agents' statuses from the child's own root, else `offline`;
-- a child on a peer node: its identity from its Task entry (`peerChildRunIdentity`), its node named from
-  this node's own peer registry, and no statuses: nothing is asked of a peer per poll.
-
-A run's open view builds its child rows from the same identities, so a listed run's rows and its open
-view agree.
+A listed run that is not open has no view stream. Its delegated rows, at every depth, are its tree
+(autobyteus-461 SR-084; see
+[Run trees](../design/agent_websocket_streaming_protocol.md#run-trees-autobyteus-461)): the GraphQL
+query `runTree(kind, runId)` (`api/graphql/types/run-tree.ts`) answers the same rows an open view's
+`RUN_TREE_SNAPSHOT` carries, built by `RunTreeView`. It never reads a view and never restores or starts
+a run. A client reads it when it shows the run and again on `/ws/run-status`'s `RUN_TREE_CHANGED` for
+it; each row's status is its own run's, on `/ws/run-status`. A peer's run is a row from its Task entry
+with its node's last answer; nothing is asked of a peer per read. A listed run's rows and its open view
+therefore agree. This replaced the history poll `runCollaborationStatuses` and its child identities
+(`RunViewChildren.listed`).

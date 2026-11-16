@@ -79,7 +79,7 @@ Neither `create_project` nor `update_project` is added automatically either
 - `src/compositions/collaboration-composition.ts`: the **single** place where
   Projects and the collaboration runtime meet, in the composition root's order
   (autobyteus-461 SR-047): `composeTaskSide` loads the Task records, builds the
-  `DelegationTree` and the run side's `RunTaskRecords` (before the run services);
+  `DelegationIndex` and the run side's `RunTaskRecords` (before the run services);
   `composeCollaboration` then creates `TaskRunControl`, the Project Task service
   with it, the delegation and cross-run owners and the views' owners, and passes
   each to its consumers (no process binding). Its composition step also calls
@@ -516,10 +516,10 @@ every ownership question reads it:
   an earlier Task inside a reused Team copy stays closed);
 - a copy is open or closed by its current entry;
 - a run's children are the runs whose entry names it as `delegatingRun`; a child
-  whose current entry is open is shown in its delegating run's view
-  (`DelegationTree.openChildrenOf`, built from these entries at startup and kept
-  current by every Task change; autobyteus-461). No run stores this list; a damaged
-  Task contributes none until it is readable again;
+  whose current entry is open is a row of its delegating run's tree, and of each
+  tree above it (the `DelegationIndex`, built from these entries at startup and kept
+  current by every Task change; `RunTreeView` builds the rows; autobyteus-461). No
+  run stores this list; a damaged Task contributes none until it is readable again;
 - DONE or CANCELLED stops only runs whose current Task is the closing Task.
 
 Two open entries for one copy can only come from damaged data: the latest is
@@ -964,7 +964,7 @@ Task (its latest assignment). To give the run a different Task, use
 - **Commit** (`ProjectTaskService.reopenAssignment`): under the run's and then
   the Task's serialization (DONE or CANCELLED takes only the Task's), every
   condition is re-checked and `closedAt` of the run's last entry returns to
-  `null`. `task.json` is never written. The `DelegationTree` updates in the same
+  `null`. `task.json` is never written. The `DelegationIndex` updates in the same
   change, so the run is a child of its delegating run's view again.
 - The message then follows the cross-run path: the receiver's root re-checks the
   Task side in its gate, restores the run with its conversation and delivers. The
@@ -1028,7 +1028,7 @@ by its team run ID, an agent run by its agent run ID.
    the message (`openTaskReferencesOf`, keys, oldest first).
 4. The commit (`assignExistingTaskExecution`) re-checks every condition under the
    run's and then B's serialization and **appends** B's `starting` `assigned`
-   entry with the same `delegatedFrom` and address. The `DelegationTree` updates
+   entry with the same `delegatedFrom` and address. The `DelegationIndex` updates
    in the same change.
 5. B's description and context files go to the run's entry agent as a message
    from the delegator (`messageType: "task_assignment"`) through

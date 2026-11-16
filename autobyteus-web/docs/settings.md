@@ -1110,18 +1110,9 @@ different AgentRun,
 the stream path immediately reconciles that fallback's exact projection before
 its monitor is treated as authoritative.
 
-For a newly delegated child, the root Team stream publishes
-`TASK_EXECUTION_STARTED` before every exact Agent frame. The server's
-registry-owned durability gate retains pre-activation Agent events, drains them
-FIFO after the durable tree write (including synchronous reentrant events), then
-forwards later status, turn, content, tool, and segment events exactly once
-through the unchanged root publisher before assignment work can start. Abort or
-disposal releases neither events nor work. The frontend inserts the child into
-the view's execution tree from that event, then routes all later frames by
-`agent_execution`; an already-selected child therefore advances its
-conversation, Activity, and execution status without refocus or reload, and two
-same-address task runs cannot share updates. Snapshot/reconnect remains the
-recovery path rather than the normal live-update mechanism.
+A newly delegated run reaches an open view as its tree's next change, and its
+output is on its own stream once its row is opened (see
+[Run trees](./agent_execution_architecture.md#run-trees-autobyteus-461)).
 
 The expanded execution subtree exposes localized `tree` and `treeitem`
 semantics. Every row reports its localized role, name, exact address, level,
@@ -1197,33 +1188,11 @@ compatible run-id fallback. The frontend must not recreate the removed
 as a routing authority. Idle shutdown does not remove delegated rows; they stay
 in the tree with `offline` status, in active and historical views alike.
 
-Task closure: when a Project Task becomes DONE, its task executions leave the
-Workspaces tree of their host root (standalone Agent, Agent Team or Agent Org),
-together with everything under them. The execution tree itself is never
-filtered, so message participants and history keep their identities. Closure is
-a separate fact beside the tree: the root snapshot and stored reads carry
-`closed_task_executions`, and the live `task_executions_closed` /
-`TASK_EXECUTIONS_CLOSED` event is published before the runs are stopped, so a
-failed stop does not keep them listed. `utils/collaboration/taskExecutionClosure.ts`
-owns the closed-subtree rule; the run-history row builders and
-`AgentRunTaskRows` / `WorkspaceTeamExecutionTree` /
-`WorkspaceAgentOrgHistoryCollection` apply it. Leaving rows use
-`useLeavingTreeRows` and `treeRowLeave.css`: a 200 ms ease-out fade and collapse
-while the remaining rows move up, at once under `prefers-reduced-motion`. New
-rows appear without motion. A selected closed run hands selection to the Agent
-run (Agent root), to the delegating Manager (Team root), or to the agent that
-delegated its outermost closed execution (Org root), and keyboard focus
-on a leaving row moves to that row. Messages with closed runs stay in the Team
-tab, and nothing is deleted from disk. Only the Workspaces tree and the main
-view follow closure; other Team surfaces still list closed members.
-Reactivation reverses closure for one execution. After the Task leaves DONE,
-the assigning run messages the execution's run ID. The root then publishes
-`task_executions_reopened` / `TASK_EXECUTIONS_REOPENED`, and
-`removeReopenedTaskExecutions` drops that reference from the closed set. The
-execution is listed again without a manual reload, and its still-closed helpers stay
-hidden. A view that no longer holds the execution (it left the tree when its Task
-closed, autobyteus-469) reloads itself through its checkpoint (Agent run, Org), or
-inserts it from the record the Team's `TASK_EXECUTIONS_REOPENED` carries. Snapshots and stored reads follow the same Task-side view.
+Task closure: when a Project Task becomes DONE or CANCELLED, a run whose last open
+Task it was leaves its delegator's tree, and every tree above it, as the trees'
+next change; a reactivated run comes back the same way. Selection, focus and the
+leave motion follow the rows (see
+[Agent Execution Architecture](./agent_execution_architecture.md), "Task closure").
 
 When a single-agent run is terminated successfully, the backend publishes
 `AGENT_STATUS { status: "offline", can_interrupt: false }` to the already-open
@@ -1615,9 +1584,11 @@ The saved-run view uses the start surfaces' visual language:
   teams.
 - **Delegated copies**, for Agent, Team and Org runs that have any: reached by
   focusing one in the left tree, never as a list on the run.
-  - **Rows.** The nodes come from `utils/runSettings/delegatedLaunchRows.ts`
-    (`teamDelegatedLaunchNodes`, `collaborationDelegatedLaunchNodes`), which builds
-    `RunMemberNode`s with `runMemberTree.memberNode`. A focused copy is drawn with
+  - **Rows.** The nodes are the run's tree rows (`useDelegatedRunRows`, the tree held
+    while Settings show it), built by `treeDelegatedLaunchNodes` in
+    `utils/runSettings/delegatedLaunchRows.ts` as `RunMemberNode`s with
+    `runMemberTree.memberNode`; a copy started while Settings are open appears as the
+    tree's next change. A focused copy is drawn with
     `RunSubjectCard`; a Team copy's Members with the same `RunMemberRow` as the
     run's own Members.
   - **Card content.** The Delegated copy badge and its source label. A copy whose
@@ -1629,13 +1600,13 @@ The saved-run view uses the start surfaces' visual language:
     - each member shows only its own notes;
     - each member opens to its settings card.
   - These cards are locked while the copy runs and editable while it is stopped
-    (see Editing below). After a Save on a stopped hub the hub's view is read again,
-    so the card shows what was saved.
-  - **Keys and names.** Rows are keyed `<address>@<run ID>`, because one address
-    can hold several copies. A row is named as the sidebar names the copy: in a
-    Team run a catalog copy and its members by display name (`scribe 5083`), a
-    copy of a configured member by its address basename (`code_reviewer`)
-    (`teamMemberName`); in Org and Agent runs every copy by display name.
+    (see Editing below). After a Save the card shows what was saved: the saved
+    launch reaches the tree as its next change, also when the delegator is stopped
+    (CR-461-111).
+  - **Keys and names.** Rows are keyed by the tree row's `key` (`run-member-<key>`),
+    because one address can hold several copies. A copy is named as its tree row
+    names it, its slot from the server (`name`, SR-091); a Team copy's members by
+    their addresses.
   - **Source labels:**
     - Agent default;
     - Team default;
@@ -1649,10 +1620,9 @@ The saved-run view uses the start surfaces' visual language:
       Settings -> Model Routing on Decisions with that decision in focus
       (`?section=model-routing&tab=decisions&decisionRun=<delegator run>&decisionCopy=<copy>&decisionAgent=<agent>`).
       A user's model choice hides both (it is no longer the router's launch).
-  - **Copies another node runs** (`remoteDelegatedLaunchNodes`, from the run's
-    `remote_task_executions` and, for a Team or Org root, `remoteRunsStore`):
-    read-only rows with that node's chip, built from the `launches` the node
-    answered with (runtime, model, source and the router's reason). A copy
+  - **Copies another node runs** (the tree's `peer_agent` / `peer_team` rows):
+    read-only rows with that node's chip, built from the row's `launch`, the node's
+    answer (runtime, model, source and the router's reason). A copy
     without launches (started before nodes reported them) has no row; a
     "View decision" is not offered, since the decision is on that node.
   - **Fallback line.** A skipped default shows "{layer} {model} was not used:
@@ -1666,8 +1636,10 @@ The saved-run view uses the start surfaces' visual language:
   - **Stop.** A running copy (any of its agents not offline) has
     the run's red stop icon in its header; a Team copy's member's header stops its
     Team copy, never that one member. It
-    calls `delegatedLaunchDraftStore.stop` (`stopDelegatedExecution`): the copy and
-    the copies it started stop and stay restorable; the run keeps running. The same
+    calls `delegatedLaunchDraftStore.stop`, the copy's own ordinary Stop
+    (`terminateAgentRun` / `terminateAgentTeamRun`; it replaced
+    `stopDelegatedExecution`): the copy stops and stays restorable, the runs it
+    delegated keep working, and the run keeps running. The same
     action is on the copy's sidebar row (`DelegatedStopButton`), whose enabled
     icon is red at rest, darker red on pale red when hovered, and red again on
     leave, like all sidebar root Stops. Disabled/pending sidebar icons are muted
@@ -1678,23 +1650,23 @@ The saved-run view uses the start surfaces' visual language:
     [Existing Run Configuration](#existing-run-configuration)); a
     Team row edits the Team's choice. While it runs, its model is locked with the
     hint "Stop this copy to change its model." There is no separate reset: the
-    user picks the model again. Model menus list the copy's options
-    (`delegatedLaunchModelOptions`).
-  - **Save.** The changes join the run's Save bar
-    (`delegatedLaunchDraftStore`). On a stopped run they are saved with the run's
-    own changed models in one request (`updateDelegatedLaunchSelections` with
-    `configuredPatches`); a workspace change is saved on its own. A copy woken
-    before Save refuses the Save ("This copy is running. Stop it, then change its
-    model."). Right after Save the rows show the saved choice: Settings reads the
-    run's canonical settings again. A stopped Agent also rereads its collaboration
-    tree and closed-task list into the Settings snapshot; it does not depend on
-    an old live collaboration view. The current editor and expanded rows stay
-    mounted while the accepted model/config and Team followers are refreshed.
-    Save remains pending until that readback completes. A live run also publishes
-    the choice to its views (`DELEGATED_LAUNCH_SELECTIONS_CHANGED` on the Team stream,
-    `delegated_launch_selections_changed` on Org and Agent streams). The Team view
-    records it in place; Org and Agent views reload. Member conversations then
-    show the model the copy runs on.
+    user picks the model again. Model menus list the copy's own options, read by its
+    own run (`AgentRunModelOptions` / `TeamRunModelOptions`; they replaced
+    `delegatedLaunchModelOptions`).
+  - **Save.** The changes join the run's Save bar (`delegatedLaunchDraftStore`).
+    The run's own settings are saved first, then each changed copy by its own
+    stopped-run save, in row order (`updateStoppedAgentRunSelection`, or for a Team
+    copy `updateStoppedTeamRunSelections` with a `CONFIGURED_TEAM` patch at `/` or a
+    `CONFIGURED_AGENT` patch at a member's address; it replaced
+    `updateDelegatedLaunchSelections`). A copy that runs refuses the Save before any
+    write ("This copy is running. Stop it, then change its model."). A failure names
+    the copies saved and the one not saved; nothing is rolled back. Right after Save
+    each saved row shows its run's answer, and the saved launch reaches every tree
+    that holds the row as the tree's next change, so Member conversations then show
+    the model the copy runs on. The current editor and expanded rows stay mounted
+    while the accepted values are read back, and Save remains pending until then.
+    (No separate save event is published; it replaced
+    `DELEGATED_LAUNCH_SELECTIONS_CHANGED` / `delegated_launch_selections_changed`.)
   - **Save recovery.** A rejected or failed write retains the edits for correction
     or retry. If the write succeeds but canonical readback fails, Settings says
     "Settings were saved, but could not be refreshed. Refresh before making more
@@ -1707,8 +1679,6 @@ The saved-run view uses the start surfaces' visual language:
     Cancel before Save writes nothing; repeated edits start from the accepted values.
   - **Closed copies.** Copies whose Task is DONE or CANCELLED, and everything
     under them, are left out.
-  - **Refresh.** For a saved Team or Org run, a copy started while Settings is
-    open appears after Refresh or reopening.
 - **Save bar** only when there are changes: "Unsaved changes · they apply when
   this run resumes · Cancel · Save". Cancel calls
   `existingRunConfigStore.discardChanges()`. Save shows "Saving…", then "Saved.

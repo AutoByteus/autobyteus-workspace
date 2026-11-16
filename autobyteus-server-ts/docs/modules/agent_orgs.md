@@ -272,7 +272,7 @@ The rules are defined in the [Collaboration Model](../design/collaboration_model
   resume. The Org records nothing of it: the delegation is its Task entry
   (`delegatedFrom` naming the org run and the delegating agent, `recipientAddress`),
   see the [Task agent run resources contract](projects.md#saved-id-delegation-and-agent-run-resources).
-  The Org's view shows it as a child row from its Task entry. A delegated team run
+  It is a row of the Org's tree (from its Task entry; see [Run trees](../design/agent_websocket_streaming_protocol.md#run-trees-autobyteus-461)). A delegated team run
   starts only its coordinator; its other members stay Offline until work reaches
   them (see [Root And Agent Lifecycle](./agent_team_execution.md#root-and-agent-lifecycle)).
 - Delegation (see [Agent Communication](./agent_communication.md#delegated-catalog-runs)):

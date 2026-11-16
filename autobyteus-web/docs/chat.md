@@ -499,9 +499,9 @@ target mode.
   note still display the same. When the agent delegates, a
   delegated (task) row appears; it disappears once the agent marks that
   delegation's Task DONE (or CANCELLED) with `update_task` (for example when the user
-  asks it to), live and after reopen. It returns (live, via
-  `task_executions_reopened`) when the agent sets that Task back to TODO or
-  IN_PROGRESS and then messages the copy's run ID, which reactivates it. Notes saved by earlier releases still
+  asks it to), live and after reopen. It returns (live, as the run tree's next
+  change) when the agent sets that Task back to TODO or IN_PROGRESS and then messages
+  the copy's run ID, which reactivates it. Notes saved by earlier releases still
   parse; `UserMessage` strips it and shows each `@Name` as an inline
   chip, and run summaries drop it (`utils/collaborators/collaboratorMentionText.ts`).
   **Only a send with mentions is held** (AR-007,
@@ -523,21 +523,20 @@ target mode.
   checked when it delegates, and the agent gets the reason.
 - **Delegated-run rows.** An agent reaches a listed catalog Agent or Team only with
   `delegate_task` (server: `list_available_agents`, see the server
-  `agent_communication.md`); `send_message_to` never creates a run. Every such copy is an
-  ordinary task row from the run's `taskExecutions` (Offline until its first message), whose
-  task DTO carries `source`, read by `services/collaborators/agentSourceSelectors.ts`. Runs that
-  earlier releases recorded as collaborators were converted at startup into the same kind of
-  row, so the web has no separate collaborator rows, `collaborator_added` event or collaborator
-  list. A new copy arrives as `task_execution_started` (Team: `TASK_EXECUTION_STARTED`), which
-  asks for a fresh view.
+  `agent_communication.md`); `send_message_to` never creates a run. Every such copy is a run
+  of its own, a row of the run's tree (Offline until its first message) with its launch and
+  origin as its run has them (the row's `launch`). Runs that earlier releases recorded as
+  collaborators were converted at startup into ordinary delegated runs, so the web has no
+  separate collaborator rows, `collaborator_added` event or collaborator list. A new copy arrives
+  as the tree's next change ([Run trees](./agent_execution_architecture.md#run-trees-autobyteus-461);
+  it replaced `task_execution_started` / `TASK_EXECUTION_STARTED`).
 - **Delegated-run Artifacts.**
-  - A delegated run's recorded Agent Artifacts load when that run is opened,
-    together with its projection, through the hub-scoped
-    `agentRunCollaborationMemberFileChanges(hostRunId, memberAddress, agentRunId)`.
-    The rows themselves never fetch any run's artifacts.
-  - They are committed with its Activity and conversation in one step. This goes
-    through `services/agentCollaboration/agentRunCollaborationChildHydration.ts`
-    and the shared `services/runHydration/memberRunStateHydration.ts`.
+  - A delegated run's recorded Agent Artifacts load when that run is opened as its
+    own run, together with its projection, by its own subject (`getRunFileChanges`
+    for an agent run, `getTeamMemberFileChanges` for a delegated team's member; a
+    peer's run on its node). The rows themselves never fetch any run's artifacts.
+  - They are committed with its Activity and conversation in one step, as for any
+    run when it opens.
   - Newer live `FILE_CHANGE` rows are kept.
   - An artifact fetch failure fails that run's load, as a projection failure does.
     The failure is logged with the run's identity, and opening the run again
