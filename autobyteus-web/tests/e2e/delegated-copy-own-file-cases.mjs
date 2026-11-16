@@ -199,7 +199,8 @@ export function registerDelegatedCopyOwnFileCases(h) {
     if (!names.taskCard) names.taskDescriptions = tasks.map((x) => x.description?.slice(0, 60))
     return names
   }
-  const allNamed = (names, slot, ownTask = true) => names.row === slot && names.context === slot && (names.header === slot || names.header?.startsWith(`${slot} - `))
+  // CR-461-115: a delegated run's header is its slot name alone, in every tree (an Agent run's, a Team's, an Org's).
+  const allNamed = (names, slot, ownTask = true) => names.row === slot && names.context === slot && names.header === slot
     && (ownTask ? names.taskCard === slot && names.taskView === slot : names.taskCard === null && names.taskView === 'no Task')
     && names.settings?.toLowerCase() === slot && (names.runList === 'not listed' || names.runList === slot)
   const CONFIGURED_LABEL = 'As configured in this run'

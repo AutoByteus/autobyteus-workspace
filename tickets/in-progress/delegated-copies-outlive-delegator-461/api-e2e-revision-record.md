@@ -25,6 +25,7 @@ The latest coverage investigation and execution coverage report remain authorita
 | API-REV-017 | Code Reviewer, `code-review-report.md` CRR-054, round 17 | CR-461-101 … CR-461-105 (code `568dea0159`), CRR-053, CRR-054 | Fail / 71% | Fail / 79% |
 | API-REV-018 | Code Reviewer, `code-review-report.md` CRR-056, round 18 | IR-038, CR-461-106 … CR-461-110 (code `bac59031c3`), CRR-055, CRR-056 | Fail / 79% | Fail / 87% |
 | API-REV-019 | Code Reviewer, `code-review-report.md` CRR-058, round 19 | IR-039, SR-091, CR-461-111 … CR-461-113 (code `2b20fd0898`), CRR-057, CRR-058 | Fail / 87% | Fail / 92% |
+| API-REV-020 | Code Reviewer, `code-review-report.md` CRR-060, round 20 | IR-040, CR-461-114 … CR-461-116 (code `ac4a39498a`), CRR-059, CRR-060 | Fail / 92% | Pass / 94% |
 
 ## Revision Entries
 
@@ -712,4 +713,31 @@ None
   - the branch desktop shows 2 on a user-started run;
   - base's desktop build doesn't start here (a packaging issue in base's build).
 - New finding: F-91 (low). The result stays `Fail` / 92%.
+
+### API-REV-020: round 20 (CRR-060): a confirming rerun; F-90, F-91 and CR-461-115 resolved; Pass
+
+- Triggering role, report path, and round: `/software_engineering_team/code_reviewer`, `code-review-report.md` (CRR-060 at `c48e331924`; code `ac4a39498a`), API/E2E round 20
+- Triggering finding or case IDs: F-90 (CR-461-114), CR-461-115, F-91 (CR-461-116)
+- Why this revision was recorded: the confirming rerun and the regression pass
+- Coverage decisions or durable test paths changed:
+  - the server ran a representative set, agreed with the user;
+  - RS-01, RSW-01, RSM and DCR were updated to the fixes' stated behaviour.
+
+#### Prior Failure Resolution
+
+| Prior ID | Classification | Now | Proven By |
+| --- | --- | --- | --- |
+| F-90 | Local Fix (CR-461-114) | Resolved | LE-T1 live on DeepSeek, Codex, Claude, Antigravity |
+| F-91 | Local Fix (CR-461-116) | Resolved | RSW-01, RSM, desktop J1/J4 |
+| Observation 1 | Local Fix (CR-461-115) | Resolved | DCR-001/002; the desktop Org journey |
+
+- Canonical artifacts and sections updated: the execution report; the progress log; `evidence/api-e2e/API-r20-runs.txt`.
+- Prior result and confidence: Fail / 92%
+- Current result and confidence: Pass / 94%
+- New or remaining failure IDs: none
+- Recommended owner: the Code Reviewer, for the proportional test-code review.
+- Remaining risks, blocked evidence, or untested scope:
+  - Grok is not usable on this machine (base too);
+  - base's desktop build doesn't start here;
+  - the full server folder was not rerun this round.
 

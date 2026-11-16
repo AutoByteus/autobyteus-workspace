@@ -228,4 +228,7 @@
 | 2026-11-16 (round 19) | Web and phone | Completed | Pass | F-87 (AFS-001), F-88 (MSP-24), F-89 (DCR-001/002) resolved; closure 16/16 alone; phone 53/55 |
 | 2026-11-16 (round 19) | Live, five runtimes | Completed | Fail | The live suite reworked; LE-A1/A2/A3 Pass on four runtimes, LE-O1 on three, Antigravity 5/5; **F-90** (LE-T1 on Codex, Claude, DeepSeek; base Pass); Grok fails on base too |
 | 2026-11-16 (round 19) | Desktop (isolated Electron) | Completed | Pass | J1 … J4 across Codex, Claude, Antigravity and DeepSeek; instance stopped and removed |
+| 2026-11-16 (round 20) | Build, server (representative) | Completed | Pass after rework | On CRR-060 at `ac4a39498a`: 117 passed; RS-01 stale against CR-461-116, reworked, 9/9; own-run startup 3/3 |
+| 2026-11-16 (round 20) | Web, phone, live | Completed | Pass | RSW-01 (1 notice live, after the previous reply), RSM 7/7, DCR exact headers, phone 53/55, title 2/2 alone; live 5/5 on DeepSeek, Codex, Antigravity, Claude 5/6 (LE-F1 not 461) |
+| 2026-11-16 (round 20) | Desktop (isolated Electron) | Completed | Pass | J1 … J4 and the Org journey; instance stopped and removed |
 

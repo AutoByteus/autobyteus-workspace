@@ -5,119 +5,92 @@ This report records what ran and the result. The plan is in `api-e2e-coverage-in
 ## Round
 
 - Coverage investigation: `api-e2e-coverage-investigation.md`
-- API/E2E revision record and current revision ID: `api-e2e-revision-record.md` / `API-REV-019`
+- API/E2E revision record and current revision ID: `api-e2e-revision-record.md` / `API-REV-020`
 - Test progress log: `api-e2e-test-progress.md`
-- Round and trigger: round 19, on CRR-058 (code review passed IR-039). Code under test `2b20fd0898` (HEAD `63edb246c4`, docs only since). Server `dist` and the phone bundle rebuilt at the start; web from source; the desktop app built from this worktree.
-- Scope, in CRR-058's order:
-  1. F-87 (AFS-001), F-88 (MSP-24) and F-89 (DCR-001/002 under SR-091) rechecked;
-  2. every area rerun, because SR-091 changes names on the server and in most views;
-  3. LE-O1 and LE-A1 … LE-T1, now that DeepSeek has balance.
-- Added at the user's request:
-  - the live suite on the CLI runtimes (Codex, Claude, Antigravity, Grok), on the user's own logins;
-  - real-user journeys on an isolated Electron instance of this worktree, across runtimes.
-- Prior round reviewed: API-REV-018 (`Fail`: F-87, F-88, F-89; CRR-057 routed them as CR-461-111 … -113).
-- Deviations: none.
-- Evidence: `evidence/api-e2e/API-r19-runs.txt`; raw logs, recordings and screenshots under `/tmp/api461/r19`.
+- Round and trigger: round 20, on CRR-060 (code review passed IR-040), a confirming rerun. Code under test `ac4a39498a` (HEAD `bf6fae4792`, docs only since). Server `dist` and the phone bundle rebuilt at the start; web from source; the desktop app built from this worktree.
+- Scope, in CRR-060's order:
+  1. F-90 (CR-461-114) live on the CLI runtimes, including a copy's copy in a Team tree;
+  2. the Org-tree header (CR-461-115);
+  3. F-91 (CR-461-116): RSW-01 and the desktop switch, with one notice live and its position recorded;
+  4. a regression pass over what the round touched: the agent stream (OST), the live suite, the desktop journeys, and the areas judged affected.
+- Server scope: a representative set rather than the full folder, agreed with the user. The three fixes reach the agent stream and the runtime switch, and tool exposure and delegation; round 19 ran the full folder on `2b20fd0898`.
+- Prior round reviewed: API-REV-019 (`Fail`: F-90; F-91 by the CRR-059 addendum).
+- Deviations: Grok not run (it fails on base too, round 19).
+- Evidence: `evidence/api-e2e/API-r20-runs.txt`; raw logs, recordings and screenshots under `/tmp/api461/r20`.
 
 ## Routing Classification
 
 - Task size: `Large`; Architectural risk: `High`; Input route: `Reviewed`.
-- Result route: `Fail` → Code Reviewer, failure-origin review (F-90).
-- Proportional test-code review decision: `Required`: `dc00f57d64` and this round's test changes, listed below.
+- Result route: `Pass` → Code Reviewer, proportional test-code review.
+- Proportional test-code review decision: `Required` (`dc00f57d64`, `2ecdb8b356`, `8df4a7ee41` and this round's commit).
 
 ## Tested Builds And Environments
 
 | Env ID | Commit Tested | Platform / OS | Runtime, Browser, Or App Build | Other Settings That Matter |
 | --- | --- | --- | --- | --- |
-| ENV-1 | `2b20fd0898` | macOS 26.5.2 (Darwin 25.5.0), arm64 | Server E2E folder, scripted AGY | Clean env per run |
-| ENV-1b | base `827f1e68dc` | as ENV-1 | Base's own suites | Base worktree |
-| ENV-1L | `2b20fd0898` | as ENV-1 | Live: DeepSeek (test vault); Codex, Claude, Antigravity, Grok (the user's logins, approved) | Each server has its own temporary data root |
-| ENV-2 | `2b20fd0898` | as ENV-1 | Probe-owned stacks: built server, Nuxt dev, headless Chrome | Never the user's app or `~/.autobyteus` |
+| ENV-1 | `ac4a39498a` | macOS 26.5.2 (Darwin 25.5.0), arm64 | Server E2E (representative set), scripted AGY | Clean env per run |
+| ENV-1L | `ac4a39498a` | as ENV-1 | Live: DeepSeek (test vault); Codex, Claude, Antigravity (the user's logins, approved) | Each server has its own temporary data root |
+| ENV-2 | `ac4a39498a` | as ENV-1 | Probe-owned stacks: built server, Nuxt dev, headless Chrome | Never the user's app or `~/.autobyteus` |
 | ENV-3 | as ENV-2 | as ENV-1 | Phone shell probe, bundle rebuilt | |
-| ENV-4 | as ENV-2 | as ENV-1 | Two built-server nodes | Tree probe |
-| ENV-5 | as ENV-2 | as ENV-1 | Mocked web probes | |
-| ENV-6 | `2b20fd0898` | as ENV-1 | Isolated Electron instance of this worktree (`isolated-app start --build`), driven like a user | Its own ports and temporary data root; stopped and removed afterwards |
+| ENV-6 | `ac4a39498a` | as ENV-1 | Isolated Electron instance of this worktree, driven like a user | Its own ports and temporary data root; stopped and removed afterwards |
 
 ## Cases
 
 | Case ID | Criteria | Env | Result | Notes |
 | --- | --- | --- | --- | --- |
-| Full server E2E | all | ENV-1 | Pass after reruns | 862 passed, 6 failed:<br>• `project-change-feed` ×5: a stale test (its query lacked the Task root's new `displayName`); fixed, 7/7<br>• `delegated-copy-project-folder`: AGY discovery timeout; 8/8 alone<br>• RC-10: 46/46 alone |
-| F-87 recheck | D-IMP-3 | ENV-2, ENV-6 | Resolved | AFS-001 Pass; desktop J1: after Save, the stopped copy's card shows the saved model |
-| F-88 recheck | AR-028 | ENV-3 | Resolved | MSP-24 Pass (phone 53/55; MSP-50/51 not 461) |
-| F-89 recheck | SR-091 | ENV-2, ENV-6 | Resolved | DCR-001/002 Pass: each copy reads its slot name in its row, own context, header, Settings, run list, and on its Task card and Task view where it has a Task of its own. DCR-001's copies are sub-work of their delegator's Task: no Task of their own, as on `personal`. Desktop: rows, headers and Task cards read the slot names |
-| Web probes | all | ENV-2/4/5 | Pass | SDV 7/7, TS 7/7, PMU 25/25, CFR 10/10, osfr 8/8, tree ×2, title, RSM 7/7, task closure 16/16 alone, mocked probes, PLN 10/11 (PLN-04 not 461), DLD (SIR-001/002, DLP-006 not 461) |
-| Live, Agent root | REQ-001, rule 2 | ENV-1L | Pass | LE-A1/A2/A3 Pass on DeepSeek, Codex, Claude and Antigravity |
-| Live, Team root (LE-T1) | AC-001, AC-006 | ENV-1L, 1b | Fail on 3 runtimes | Antigravity Pass; Codex, Claude, DeepSeek F-90 |
-| Live, Org root (LE-O1) | AC-012, AC-013 | ENV-1L | Pass | Codex, Claude, Antigravity Pass. DeepSeek: the model declined to make the requested call (model behaviour) |
-| Live, Claude LE-F1 / Grok | — | ENV-1L, 1b | Not 461 | LE-F1's stale model is back in Claude's catalog. Grok fails every Agent Tools call, on base too |
-| Desktop J1 (Agent) | rule 2, REQ-001, D-IMP-3, SR-091 | ENV-6 | Pass | Hub (Codex) → worker (Claude) → Settings switch to AutoByteus DeepSeek → resumed |
-| Desktop J2 (Team) | CR-461-108, SR-082 | ENV-6 | Pass | A Team copy on Antigravity: click opens and selects the coordinator, only the chevron folds, each row its own status |
-| Desktop J3 (closure) | AC-001 (closure) | ENV-6 | Pass | DONE by the delegator → the Team copy's rows leave in 9 s |
-| Desktop J4 (restart) | persistence, rule 2 | ENV-6 | Pass | After a restart, the tree, names and the copy's conversation return; one message resumes the copy, its Hub stays stopped |
+| F-90 recheck (CR-461-114) | Scope: no change to what an agent reads | ENV-1L | Resolved | LE-T1 Pass on DeepSeek, Codex, Claude and Antigravity, including a copy's copy in a Team tree; the full live suite is 5/5 on each (Claude 5/6: LE-F1's stale model is back in the catalog, not 461) |
+| CR-461-115 recheck | SR-091 | ENV-2, ENV-6 | Resolved | DCR-001/002 assert the header equals the slot name. On the desktop, the Org copy's header reads "worker" |
+| F-91 recheck (CR-461-116) | — | ENV-1, ENV-2, ENV-6 | Resolved | RSW-01: 1 notice live and 1 after a reload, both after the previous reply. RSM: 1 live. Desktop J1: 1, and J4 after a restart: 1 |
+| Server, representative | stream, switch, delegation | ENV-1 | Pass | 117 passed, 1 failed. RS-01 was stale against CR-461-116 (it expected the removed live echo); reworked to "shown once", 9/9 alone. Own-run startup 3/3 |
+| Web and phone | all | ENV-2/3 | Pass | DLD 26/29 (SIR-001/002, DLP-006 not 461); RSM 7/7; phone 53/55 (MSP-50/51 not 461); run title 2/2 alone after one RRT-05 timing failure (the known ~100 ms window, F-72) |
+| Desktop J1 … J4 and the Org journey | rule 2, REQ-001, D-IMP-3, SR-091, CR-461-108, closure, persistence | ENV-6 | Pass | Hub (Codex) → worker (Claude); a Team copy (Antigravity); closure by the delegator; an Org copy; a restart |
 
 ### Findings
 
-- **Resolved:** F-87, F-88, F-89.
-- **F-90 (new): a catalog Agent copy delegated in a Team root has no `get_handoff_rules`.**
-  - Branch, LE-T1:
-    - Claude: "no tool by that name is available in this session";
-    - Codex: "`get_handoff_rules` was unavailable";
-    - AutoByteus/DeepSeek: "there's no get_handoff_rules tool available to me".
-    - Each reported the blocker to `/coord` instead.
-  - Base `827f1e68dc`, its own Claude LE-T1: Pass. The same copy calls the tool and gets no rules.
-  - The tool's gate is unchanged from base; the run's tool exposure differs. Base hosted the copy as a member of the Team root; 461 makes it a run of its own.
-  - The requirements' scope says: "No change to what an agent reads: tool names, parameters, results and collaboration texts." Every agent's collaboration instructions also tell it to call `get_handoff_rules` when it finishes.
-- **Observations, classified by CRR-059:**
-  - observation 1: an opened copy's header reads "worker" in a Team-root tree (Team surface) and "writer - E997" in an Org tree (Agent surface). Routed as CR-461-115 (Local Fix).
-  - observation 2, now **F-91 (low; addendum on CRR-059)**: after a cross-runtime switch, the live chat shows the "Agent runtime changed" notice twice, with an extra copy after the previous reply.
-    - It happens on a user-started run as well as on a delegated copy.
-    - The identical `runtime-switch-probe` RSW-01 on both trees:
-      - base `827f1e68dc`: 1 notice live, 1 after a reload;
-      - branch: 2 notices live, 1 after a reload.
-    - Base's desktop build doesn't start here: its packaging drops part of `application-sdk-contracts`. That's a base build issue.
-    - Evidence: `API-r19-runs.txt` §7.
-- **Not 461:** SIR-001/002, DLP-006 (retired), MSP-50/51, PLN-04, Grok (base fails the same), Claude LE-F1's precondition, DeepSeek LE-O1's model choice.
+- **Resolved:** F-90, F-91, CR-461-115.
+- **No open findings.**
+- **Surface note (CRR-060):** the live notice now sits after the previous reply, where a reload shows it. Base's live echo was at the reply turn.
+- **Not 461:** SIR-001/002, DLP-006, MSP-50/51, PLN-04, Claude LE-F1's precondition, Grok (base too). Base's desktop build doesn't start here (a base packaging issue, round 19 addendum).
 - **FU-030:** no new wording-only refusal difference.
 
 ## Acceptance-Criteria Proof
 
 | Acceptance-Criteria ID | Critical | Proven By | Result |
 | --- | --- | --- | --- |
-| AC-016 (peers) | Yes | RC-31 … 46, RTP-01 … 09 ×2 | Proven |
-| AC-017 (statuses by run ID) | Yes | RC-45, SDV-01, BR-010, TS-001 … 007, desktop J1/J2 | Proven |
-| REQ-001 | Yes | FOLLOW-D, RC-43/46, TS, live LE-A2/A3, desktop J1/J4 | Proven |
-| Rule 2 (opens by its own path) | Yes | OST, RC-46, SDV, PMU, CFR, DCP-002, live, desktop J1/J2/J4 | Proven |
-| REQ-014 / SR-091 (one tree, one name) | Yes | PMU, TCT, MSP, DCR-001/002, desktop | Proven |
-| D-IMP-3 (a saved copy's card) | Yes | AFS-001, desktop J1 | Proven |
-| Scope: no change to what an agent reads | Yes | live LE-T1, base comparison | Not met (F-90) |
+| AC-016 (peers) | Yes | RC-31 … 46 (two-server suite this round) | Proven |
+| AC-017 (statuses by run ID) | Yes | desktop J1/J2/J4, RSM, round 19's probes | Proven |
+| REQ-001 | Yes | live LE-A2/A3, desktop J1/J4 | Proven |
+| Rule 2 (opens by its own path) | Yes | live, desktop J1/J2/J4/Org, DLD | Proven |
+| REQ-014 / SR-091 (one tree, one name) | Yes | DCR-001/002, desktop rows, headers, Task cards | Proven |
+| D-IMP-3 (a saved copy's card) | Yes | desktop J1, round 19's AFS-001 | Proven |
+| Scope: no change to what an agent reads | Yes | live LE-T1 on four runtimes | Proven |
 
 ## Validation Confidence Scorecard (Mandatory)
 
 | Confidence Category | Final Score | Residual Uncertainty |
 | --- | --- | --- |
-| Requirement and acceptance-criteria proof | 90% | F-90 |
-| Changed-boundary execution directness | 94% | — |
-| Cross-boundary integration realism and mock gap | 93% | Grok not usable on this machine |
-| Environment, configuration, identity, and fixture fidelity | 93% | — |
-| Failure, edge-case, lifecycle, and recovery evidence | 92% | — |
-| User-surface, browser, and desktop-shell confidence | 93% | the two observations |
-| Durable regression coverage quality and relevance | 90% | the live suite's rework is new |
+| Requirement and acceptance-criteria proof | 95% | — |
+| Changed-boundary execution directness | 95% | — |
+| Cross-boundary integration realism and mock gap | 94% | Grok not usable on this machine |
+| Environment, configuration, identity, and fixture fidelity | 94% | base desktop not available for comparison |
+| Failure, edge-case, lifecycle, and recovery evidence | 94% | — |
+| User-surface, browser, and desktop-shell confidence | 95% | — |
+| Durable regression coverage quality and relevance | 92% | the full server folder not rerun this round (representative set) |
 
-- Overall final confidence: 92% (simple average). Every critical acceptance criterion directly proven: `No` (F-90). Target 95% met: `No`.
+- Overall final confidence: 94% (simple average). Every critical acceptance criterion directly proven: `Yes`. Target 95% met: `No` (94%).
 
 ## Broader Validation Decision (Mandatory)
 
-- Decision: `Required` and executed: browser, two nodes, phone, mocked probes, base comparisons, live models on five runtimes, and the desktop app.
+- Decision: `Required` and executed: the representative server set, web, phone, live models on four runtimes, and the desktop app.
 
 ## Desktop Application Validation
 
-- An isolated Electron instance of this worktree build, driven like a user, in four journeys (J1 … J4, above).
-- Effect on any already-running desktop application: `None`. Separate ports and data root; stopped with `isolated-app stop`, data root removed, none of mine listed afterwards.
+- An isolated Electron instance of this worktree build, driven like a user: J1 … J4 and an Org journey (above).
+- Effect on any already-running desktop application: `None`. Separate ports and data root; stopped (forced after the graceful timeout), data root removed, none of mine listed.
 
 ## Persisted-Data Transition Checks
 
-- `Migration Required` (DS-10): the migration suites pass in the full run. A desktop restart (J4) restores the runs, names and conversations.
+- `Migration Required` (DS-10): the own-run startup migration suite passes 3/3. A desktop restart (J4) restores the runs, names and conversation.
 
 ## Compatibility / Legacy Scope Check
 
@@ -126,38 +99,29 @@ This report records what ran and the result. The plan is in `api-e2e-coverage-in
 ## Durable Coverage Changed In The Codebase
 
 - `Yes`:
-  - **server:**
-    - `tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts`, reworked to the 461 rules:
-      - copies from the tree; definitions and delegators from each copy's own file;
-      - own conversations, own team streams and own message logs;
-      - placement as the row's parent; Stop per REQ-001;
-      - refusals by their arguments, or the runtime's tool-exception frame;
-      - refusal steps once the agent is quiet;
-    - `tests/e2e/projects/project-change-feed.e2e.test.ts` selects the Task root's `displayName` and asserts the slot name;
-  - **web:** `tests/e2e/delegated-copy-own-file-cases.mjs`:
-    - DCR-001/002 assert one name everywhere (SR-091);
-    - DCR-001's copies are sub-work with no Task of their own;
-    - the header is read from either surface.
-- Added or updated paths attached for proportional test-code review: `Yes` (with `dc00f57d64`).
+  - `autobyteus-web/tests/e2e/delegated-copy-own-file-cases.mjs`: the header equals the slot name (CR-461-115);
+  - `autobyteus-web/tests/e2e/runtime-switch-probe.mjs`: one live notice, and its position live and after a reload (CR-461-116); the stale hint check also accepts the save bar;
+  - `autobyteus-web/tests/e2e/runtime-switch-members-probe.mjs`: the live notice count recorded;
+  - `autobyteus-server-ts/tests/e2e/runtime/runtime-switch-native-built-server.e2e.test.ts`: RS-01 asserts the marker is shown once (CR-461-116).
+- Added or updated paths attached for proportional test-code review: `Yes`.
 
 ## Dependencies Mocked Or Emulated
 
 | Dependency | Method | Why Real Dependency Was Not Used | Confidence Limitation |
 | --- | --- | --- | --- |
-| Most runs' models | Scripted AGY CLI | Deterministic (TESTING.md) | Covered by the live and desktop runs this round |
-| The server (two probes) | Mocked GraphQL and sockets | The probes' own design | Row semantics only |
+| Most scripted runs' models | Scripted AGY CLI, LM Studio stand-in | Deterministic (TESTING.md) | Covered by the live and desktop runs |
 
 ## Temporary Methods And Cleanup
 
 | Item | Owned By This Run | Cleanup Action | Result |
 | --- | --- | --- | --- |
-| Probe stacks, data roots, homes, nodes | Yes | The probes' `finally`; homes removed by the runner scripts | Removed |
-| Isolated Electron instance `iso-54643-8fe0` | Yes | `isolated-app stop` | Stopped, data root removed |
-| `/tmp/api461/r19` logs, recordings, screenshots | Yes | Kept; extract committed | Kept |
+| Probe stacks, data roots, homes | Yes | The probes' `finally`; homes removed by the runner scripts | Removed |
+| The stopped full server run (switched to the representative set) | Yes | Its vitest, workers and test server stopped | Removed |
+| Isolated Electron instance `iso-51859-6808` | Yes | `isolated-app stop` | Stopped, data root removed |
+| `/tmp/api461/r20` logs, recordings, screenshots | Yes | Kept; extract committed | Kept |
 
 ## Latest Authoritative Result
 
-- Result: `Fail`
-- New findings: F-90; F-91 (low, addendum on CRR-059).
-- Next recipient from `get_handoff_rules`: `/software_engineering_team/code_reviewer` (failure-origin review).
-- Next round: LE-T1 on Codex, Claude and DeepSeek after F-90. The two observations are for the reviewer to classify.
+- Result: `Pass`
+- New findings: none.
+- Next recipient from `get_handoff_rules`: `/software_engineering_team/code_reviewer` (proportional test-code review), then delivery.

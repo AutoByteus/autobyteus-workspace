@@ -9,6 +9,7 @@ import { spawn, spawnSync, type ChildProcess } from "node:child_process";
 import WebSocket from "ws";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
+import { shownText } from "../helpers/agent-stream-frames.js";
 import { builtServerLaunchEnvironment } from "../helpers/built-server-launch-credential.js";
 import { readRunTree } from "../helpers/run-tree-delegated.js";
 
@@ -310,7 +311,10 @@ describe.runIf(ENABLED)("agent runtime switch, native runtime and stopped-run se
     expect(received.indexOf("[System: runtime hand-over]"), "the notice comes first").toBe(0);
     expect(received.indexOf("ECHO_INPUT"), "the user's text follows the notice").toBeGreaterThan(received.indexOf("[System: runtime hand-over]"));
     expect(received).toContain("work_journal_active.md");
-    expect(agyTurn.some((m) => m.type === "SYSTEM_TASK_NOTIFICATION" && m.payload.sender_id === "system.runtime_handover"), "the chat shows the marker").toBe(true);
+    // autobyteus-461 CR-461-116: the stored marker is the notice's one source. A client connected before the switch is shown it
+    // once: in the snapshot the activation sends (its stored part), not also as the numbered live echo.
+    const shownMarkers = (shownText(agyTurn).match(/Agent runtime changed from AutoByteus/g) ?? []).length;
+    expect(shownMarkers, `the chat shows the marker once (frames: ${agyTurn.map((m) => m.type).join(",").slice(0, 600)})`).toBe(1);
     expect(await manifest(runId)).toMatchObject({ segments: [expect.objectContaining({ file_name: "raw_traces_000001.jsonl", boundary_type: "runtime_switch", boundary_key: keyOne, boundary_trace_id: active[0]!.id, runtime_kind: NATIVE, status: "complete" })] });
     // A second message carries no notice (once per switch).
     await talk(runId, "ECHO_INPUT", "antigravity second turn");

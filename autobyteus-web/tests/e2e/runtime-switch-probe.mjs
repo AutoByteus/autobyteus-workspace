@@ -168,8 +168,10 @@ const journey = async (page) => {
   const list = await page.locator(sel(`chat-model-list-${AGY}`)).boundingBox(); const row = await page.locator(sel(`chat-runtime-${AGY}`)).boundingBox()
   if (list && row && list.x > row.x) await page.mouse.move(list.x + 12, Math.min(Math.max(row.y + row.height / 2, list.y + 6), list.y + list.height - 6))
   await option.click(); await settle(page, 800)
-  r.hint = await view.locator(sel('existing-run-runtime-change-hint')).innerText().catch(() => null)
-  assert(r.hint && /next message/i.test(r.hint), 'no runtime-change hint after choosing another runtime', r.hint)
+  r.hint = await view.locator(sel('existing-run-runtime-change-hint')).innerText({ timeout: 2000 }).catch(() => null)
+  // The save bar now says when an edit applies ("… they apply when this run resumes"); the separate hint is gone (base too).
+  r.unsavedBar = await view.locator(sel('existing-run-save-bar')).innerText().catch(() => null)
+  assert((r.hint && /next message/i.test(r.hint)) || /when this run resumes|next message/i.test(r.unsavedBar ?? ''), 'nothing says the switch applies with the next message', { hint: r.hint, bar: r.unsavedBar })
   await shot(page, 'RSW-01-unsaved-switch')
   await page.locator(sel('save-existing-model-config')).click()
   await waitFor('saved', async () => { const bar = await view.locator(sel('existing-run-save-bar')).innerText().catch(() => ''); return /\bSaved\b/.test(bar) && !/Unsaved|Saving/.test(bar) }, 60000, 500)
@@ -184,7 +186,13 @@ const journey = async (page) => {
   await page.locator('[data-testid="agent-workspace-surface"]').waitFor({ timeout: 120000 }); await settle(page, 2500)
   await sendFromComposer(page, 'ECHO_INPUT')
   await waitFor('marker in the chat', async () => /Agent runtime changed from AutoByteus/.test(await pageText(page)), 180000, 1000)
-  r.liveChat = (await pageText(page)).replace(/\s+/g, ' ').slice(0, 1200)
+  const liveText = await pageText(page)
+  r.liveChat = liveText.replace(/\s+/g, ' ').slice(0, 1200)
+  // autobyteus-461 CR-461-116: one notice live (its stored marker is its one source), where a reload shows it.
+  const noticePosition = (text) => { const notice = text.indexOf('Agent runtime changed from'); const sent = text.indexOf('ECHO_INPUT'); return notice < 0 || sent < 0 ? null : notice < sent ? 'before the next message' : 'after the next message' }
+  r.liveMarkerCount = (liveText.match(/Agent runtime changed from/g) ?? []).length
+  r.livePosition = noticePosition(liveText)
+  assert(r.liveMarkerCount === 1, 'the live chat does not show exactly one marker', { count: r.liveMarkerCount, chat: r.liveChat })
   await shot(page, 'RSW-01-after-switch-live')
   step('the chat shows the marker after the first message')
 
@@ -198,6 +206,8 @@ const journey = async (page) => {
   r.reloadedChat = reloaded.replace(/\s+/g, ' ').slice(0, 1600)
   r.markerCount = (reloaded.match(/Agent runtime changed from/g) ?? []).length
   assert(r.markerCount === 1, 'the reloaded chat does not show exactly one marker', r.markerCount)
+  r.reloadPosition = noticePosition(reloaded)
+  assert(r.livePosition === r.reloadPosition, 'the live notice is not where a reload shows it', { live: r.livePosition, reload: r.reloadPosition })
   await shot(page, 'RSW-01-after-reload')
   const settings = await readJson(path.join(runFolder(runId), 'run_metadata.json'))
   assert(settings.runtimeKind === AGY && !('pendingRuntimeSwitch' in settings), 'the switch was not committed', settings)
