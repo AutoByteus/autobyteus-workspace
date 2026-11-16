@@ -260,6 +260,8 @@ A follow-up Task by run ID: `TaskDelegation.toExistingRun` → Task side `assign
   - the list poll `agentRunCollaborationStatuses`, and the child statuses in the history reads;
   - the web's merging of relayed status frames.
 
+**3a. One name for a run, everywhere** (SR-091, CR-461-113, REQ-014). A delegated run is named after its slot, the last segment of its delegation address (`worker`, `writer`), as its row shows it and as at base. The definition's name ("Slot Worker 0528") is not used. A run the user started keeps its definition's name. One server helper, `displayNameOf(run)`, beside `openTargetOf`, gives the name: from the run's own `address` (agent run) or its Task entry's `recipientAddress` (team run). It feeds the `RunTreeView` row's `name`, the run's own view snapshot (its context and header), the Task page's run view, Settings, and the run list's row for a delegated run that stands on its own (DS-11). No client derives a name. Tests: DCR-001/002, a delegated agent and an org copy, where the row, the opened run's header and context, and the Task page show the same slot name.
+
 **3. Clients only display.** Desktop, phone, the Task card and Settings render `RunTreeView` rows and the subscribed statuses. They keep only presentation state: expanded rows, the selection, drafts and layout.
 - **What the frontend loses, named** (the code reviewer's addendum; the user confirmed "we definitely do this"):
   - the four tree builders;

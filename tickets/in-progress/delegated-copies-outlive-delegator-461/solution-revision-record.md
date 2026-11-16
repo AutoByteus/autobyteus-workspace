@@ -1795,3 +1795,11 @@ No architecture review: these follow REQ-006, an approved exception, rule 2 and 
   - architecture review (narrow: a client message on the status connection);
   - then the Implementation Engineer.
 - **ARCH-REV-066 passed SR-090.** Its note is applied: a retry re-opens an ended shared peer observation (DEC-807), and concurrent retries for one peer run are coalesced into one peer call.
+
+### SR-091 — One name for a delegated run everywhere: its slot (answers CR-461-113)
+
+- **Triggering:** CRR-057 (F-89). A delegated copy opened from its row was named after its definition ("Slot Worker 0528"), while its row used the slot ("worker"). Base used the slot for both. Rule 2 and REQ-014 didn't say what a delegated run is called in its own view.
+- **Decision:** one name everywhere, the slot: the last segment of its delegation address, as base and its row did. A run the user started keeps its definition's name. One server helper, `displayNameOf(run)`, feeds the tree row, the run's own view snapshot, the Task page, Settings and the run list. No client derives a name.
+- **Requirements:** REQ-014 is clarified, within the direction (FU-031's "one behavior"). The user is informed.
+- **Next action:** the Implementation Engineer. DCR-001/002 stay as they are (the context matches its row).
+
