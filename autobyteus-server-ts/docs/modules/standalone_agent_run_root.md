@@ -93,8 +93,8 @@ entry, and sends the work packet. Nothing is recorded in this run.
 Agents delegate to the catalog themselves (REQ-004/005/008). `StandaloneRootRecipientResolver`
 resolves `send_message_to(address)` with the shared `MessageRecipientResolution`, inside the
 operation gate: the host's own address (refused as yourself); when that misses, a run that works on a
-Task continues in `CrossRunAddressResolution` with the standing agents of the runs that assigned its
-Tasks (contract §2.3 step 2); any other address is `COLLABORATION_TARGET_NOT_FOUND` and nothing is
+Task continues in its `CollaborationTree` (`resolve`) with the standing agents of the runs that assigned
+its Tasks (contract §2.3 step 2); any other address is `COLLABORATION_TARGET_NOT_FOUND` and nothing is
 created. A message to another run goes by run ID
 through `CrossRunMessageDelivery` (allowed when both runs work on one open Task, or one is the other's
 assigner). `delegate_task(address)` refuses the sender's own address

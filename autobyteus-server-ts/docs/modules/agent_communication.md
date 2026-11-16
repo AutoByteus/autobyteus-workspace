@@ -372,10 +372,17 @@ operation gate. The function only resolves:
 2. **Run-wide standing placements**: a configured placement, or the run's own
    agent (an Agent root's host).
 
-When both miss and the sender's run works on a Task, `CrossRunAddressResolution`
-continues with the standing agents of the runs that assigned its Tasks (contract
-§2.3 step 2), then, for a delegated team, the correction of an address written
-under the name the team was delegated to (refused with the address to use).
+When both miss and the sender's run works on a Task, the sender's `CollaborationTree`
+resolves the address (`CollaborationTree.resolve`, from `SendMessageToDispatcher`), in
+this order:
+1. step 2 must apply: the standing agents of the runs that assigned its Tasks
+   (contract §2.3 step 2, `stepTwo()`); when it does not, the address is not found;
+2. for a delegated team, an address written under the name the team was delegated to,
+   alone or with one of its own members, is refused with the address to use. This
+   comes **before** step 2's receiver is looked up (SR-081): such an address means the
+   team's own teammate, never the assigning run's namesake agent, which stays
+   reachable by run ID;
+3. step 2's receiver for the address.
 
 Any other address is `COLLABORATION_TARGET_NOT_FOUND` ("No agent or agent team
 you can talk with has the address <address>. To answer a message or report your

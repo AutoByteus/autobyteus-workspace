@@ -200,9 +200,10 @@ run to serve a view.
   event (SR-048); the Org stream acknowledges `SEND_MESSAGE` (`AGENT_COMMAND_ACK`).
   An interrupt or a tool approval for an agent of a stopped run is refused
   (`TEAM_RUN_STOPPED` on the team stream, `AGENT_ORG_STOPPED` on the Org stream).
-- **Children's output.** A live root's views share one follower of its local
-  children (`LocalChildFollowers`); their output is sequenced in the root's own
-  stream. A stopped run's view follows them itself.
+- **Delegated runs' output.** A view carries no delegated run's output: each
+  delegated run's statuses, output and commands are on its own stream (rule 2),
+  and the view shows it only as a row of its tree, changed by the tree's
+  changes.
 
 ## Segment Contract
 

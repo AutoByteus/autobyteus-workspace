@@ -525,8 +525,10 @@ The root's message and delegation addressing lives in `services/team-run-message
 (`TeamRunMessageDelivery`), called inside the materialization gate:
 `send_message_to(address)` resolves with the shared `MessageRecipientResolution`
 (the sender's own Team instance first, then run-wide placements); for a delegated
-team, a miss continues with the standing agents of the run that assigned its Task
-(`CrossRunAddressResolution`); anything else is `COLLABORATION_TARGET_NOT_FOUND`
+team, a miss continues in the sender's `CollaborationTree` (`resolve`): an address
+written under the team's delegated name is refused with the address to use first,
+then the standing agents of the run that assigned its Task (see
+[Agent Communication](./agent_communication.md)); anything else is `COLLABORATION_TARGET_NOT_FOUND`
 and nothing is created. `delegate_task(address)` uses the shared
 `resolveDelegationPlacement` (CM-1 refusal, configured placement, then a catalog
 placement). `@` itself adds nothing. `listAvailableAgents(sender)` is read-only and
