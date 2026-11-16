@@ -12,7 +12,7 @@ import { startStudioE2eRuntimeServer } from "../helpers/studio-runtime-test-serv
 import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
 import { flattenE2eConfiguredAgentExecutions } from "../helpers/team-run-metadata-helpers.js";
 import { chooseLiveModel } from "../helpers/live-model-choice.js";
-import { agentStreamFramesOf } from "../helpers/agent-stream-frames.js";
+import { agentStreamFramesOf, waitConnected } from "../helpers/agent-stream-frames.js";
 
 /**
  * Workspace skill links with the real Claude, Codex and Grok CLIs (workspace-skill-collision-fix, REQ-101/102/105).
@@ -154,6 +154,8 @@ describeLive("workspace skill links with real runtimes (REQ-105)", () => {
       } catch { /* diagnostic rows only */ }
     });
     await new Promise<void>((resolve, reject) => { socket.once("open", () => resolve()); socket.once("error", reject); });
+    // The stream takes commands from its CONNECTED message, not from the socket's open (autobyteus-461 release smoke).
+    await waitConnected(messages);
     return { socket, messages };
   };
 

@@ -13,7 +13,7 @@ import { startStudioE2eRuntimeServer } from "../helpers/studio-runtime-test-serv
 import { flattenE2eConfiguredAgentExecutions } from "../helpers/team-run-metadata-helpers.js";
 import { E2E_TEAM_RUN_RESUME_CONFIG_DOCUMENT } from "../helpers/team-run-graphql-documents.js";
 import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
-import { agentStreamFramesOf } from "../helpers/agent-stream-frames.js";
+import { agentStreamFramesOf, waitConnected } from "../helpers/agent-stream-frames.js";
 
 // A Claude team member's background task reaches only that member's execution on the team stream
 // (AC-009), and team terminate marks it stopped (AC-011). Opt-in; uses the local Claude login.
@@ -116,6 +116,8 @@ suite("Claude team member background tasks (live E2E)", () => {
       } catch { /* Ignore malformed rows. */ }
     });
     await new Promise<void>((resolve, reject) => { socket.once("open", resolve); socket.once("error", reject); });
+    // The stream takes commands from its CONNECTED message, not from the socket's open (autobyteus-461 release smoke).
+    await waitConnected(messages);
     const until = async <T>(probe: () => T | undefined, label: string, ms = 180_000): Promise<T> => {
       const deadline = Date.now() + ms;
       while (Date.now() < deadline) { const value = probe(); if (value !== undefined) return value; await wait(250); }

@@ -12,7 +12,7 @@ import { startStudioE2eRuntimeServer } from "../helpers/studio-runtime-test-serv
 import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
 import { flattenE2eConfiguredAgentExecutions } from "../helpers/team-run-metadata-helpers.js";
 import { isE2eTeamCommunicationMessage } from "../helpers/team-communication-message-helpers.js";
-import { agentStreamFramesOf } from "../helpers/agent-stream-frames.js";
+import { agentStreamFramesOf, waitConnected } from "../helpers/agent-stream-frames.js";
 
 // Live Grok Build parity checks through the real Studio server and the host's own `grok` CLI
 // (paid inference on the user's Grok plan). Gated: RUN_GROK_E2E=1 and a working Grok command
@@ -87,6 +87,8 @@ describeLiveGrok("Grok Build live runtime e2e (real grok CLI)", () => {
       } catch { /* Ignore malformed diagnostic rows only. */ }
     });
     await new Promise<void>((resolve, reject) => { socket.once("open", () => resolve()); socket.once("error", reject); });
+    // The stream takes commands from its CONNECTED message, not from the socket's open (autobyteus-461 release smoke).
+    await waitConnected(messages);
     return { socket, messages };
   };
 

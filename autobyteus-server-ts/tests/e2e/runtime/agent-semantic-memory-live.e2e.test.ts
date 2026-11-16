@@ -14,7 +14,7 @@ import { startStudioE2eRuntimeServer } from "../helpers/studio-runtime-test-serv
 import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
 import { flattenE2eConfiguredAgentExecutions } from "../helpers/team-run-metadata-helpers.js";
 import { chooseLiveModel } from "../helpers/live-model-choice.js";
-import { agentStreamFramesOf } from "../helpers/agent-stream-frames.js";
+import { agentStreamFramesOf, waitConnected } from "../helpers/agent-stream-frames.js";
 
 /**
  * Agent semantic memory with real runtimes (agent-semantic-memory, Task autobyteus-12; AC-001..AC-005, REQ-006).
@@ -228,6 +228,8 @@ describeLive("agent semantic memory with real runtimes", () => {
       } catch { /* diagnostic rows only */ }
     });
     await new Promise<void>((resolve, reject) => { socket.once("open", () => resolve()); socket.once("error", reject); });
+    // The stream takes commands from its CONNECTED message, not from the socket's open (autobyteus-461 release smoke).
+    await waitConnected(messages);
     return { socket, messages };
   };
 

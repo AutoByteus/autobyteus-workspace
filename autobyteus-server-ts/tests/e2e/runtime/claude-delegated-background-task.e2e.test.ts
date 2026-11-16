@@ -14,7 +14,7 @@ import { startStudioE2eRuntimeServer } from "../helpers/studio-runtime-test-serv
 import { flattenE2eConfiguredAgentExecutions } from "../helpers/team-run-metadata-helpers.js";
 import { E2E_TEAM_RUN_RESUME_CONFIG_DOCUMENT } from "../helpers/team-run-graphql-documents.js";
 import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
-import { agentStreamFramesOf } from "../helpers/agent-stream-frames.js";
+import { agentStreamFramesOf, waitConnected } from "../helpers/agent-stream-frames.js";
 
 // Hybrid idle shutdown with the grace period set to its 60 s minimum: a delegated Claude agent
 // starts a background Bash task that outlives its turn by more than the grace period, ends its turn,
@@ -142,6 +142,8 @@ suite("Delegated Claude agent background task outlives the idle-shutdown grace p
       } catch { /* Ignore malformed rows. */ }
     });
     await new Promise<void>((resolve, reject) => { socket.once("open", resolve); socket.once("error", reject); });
+    // The stream takes commands from its CONNECTED message, not from the socket's open (autobyteus-461 release smoke).
+    await waitConnected(messages);
     const until = async <T>(probe: () => T | undefined, label: string, ms = 240_000): Promise<T> => {
       const deadline = Date.now() + ms;
       while (Date.now() < deadline) { const value = probe(); if (value !== undefined) return value; await wait(250); }

@@ -32,19 +32,25 @@ const wait = (ms: number): Promise<void> =>
     setTimeout(resolve, ms);
   });
 
-const waitForSocketOpen = (
+/** The stream takes commands from its CONNECTED message, not from the socket's open (autobyteus-461 release smoke). */
+const waitForStreamConnected = (
   socket: WebSocket,
-  timeoutMs = 10_000,
+  timeoutMs = 30_000,
 ): Promise<void> =>
   new Promise((resolve, reject) => {
     const timer = setTimeout(
-      () => reject(new Error("Timed out waiting for websocket open")),
+      () => reject(new Error("Timed out waiting for the stream's CONNECTED message")),
       timeoutMs,
     );
-    socket.once("open", () => {
+    const onMessage = (raw: WebSocket.RawData) => {
+      let type: unknown;
+      try { type = (JSON.parse(String(raw)) as { type?: unknown }).type; } catch { return; }
+      if (type !== "CONNECTED") return;
       clearTimeout(timer);
+      socket.off("message", onMessage);
       resolve();
-    });
+    };
+    socket.on("message", onMessage);
     socket.once("error", (error) => {
       clearTimeout(timer);
       reject(error);
@@ -468,7 +474,7 @@ Rules:
       const teamSocket = new WebSocket(
         `ws://${streamUrl.hostname}:${streamUrl.port}/ws/agent-team/${teamRunId}`,
       );
-      await waitForSocketOpen(teamSocket);
+      await waitForStreamConnected(teamSocket);
       const streamMessages: Array<{
         type: string;
         payload: Record<string, unknown>;
@@ -994,7 +1000,7 @@ Rules:
       const teamSocket = new WebSocket(
         `ws://${streamUrl.hostname}:${streamUrl.port}/ws/agent-team/${teamRunId}`,
       );
-      await waitForSocketOpen(teamSocket);
+      await waitForStreamConnected(teamSocket);
       const streamMessages: Array<{
         type: string;
         payload: Record<string, unknown>;
@@ -1296,7 +1302,7 @@ Rules:
       const teamSocket = new WebSocket(
         `ws://${streamUrl.hostname}:${streamUrl.port}/ws/agent-team/${teamRunId}`,
       );
-      await waitForSocketOpen(teamSocket);
+      await waitForStreamConnected(teamSocket);
 
       const streamMessages: Array<{
         type: string;
@@ -1588,7 +1594,7 @@ Rules:
       const teamSocket = new WebSocket(
         `ws://${streamUrl.hostname}:${streamUrl.port}/ws/agent-team/${teamRunId}`,
       );
-      await waitForSocketOpen(teamSocket);
+      await waitForStreamConnected(teamSocket);
       const streamMessages: Array<{
         type: string;
         payload: Record<string, unknown>;
@@ -1909,7 +1915,7 @@ Rules:
           // ignore malformed rows in test stream capture
         }
       });
-      await waitForSocketOpen(teamSocket);
+      await waitForStreamConnected(teamSocket);
 
       const teamResumeQuery = `
         query TeamResume($teamRunId: String!) {

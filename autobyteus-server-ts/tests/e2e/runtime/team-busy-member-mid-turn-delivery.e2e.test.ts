@@ -16,6 +16,7 @@ import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.
 import { flattenE2eConfiguredAgentExecutions } from "../helpers/team-run-metadata-helpers.js";
 import { E2E_TEAM_RUN_RESUME_CONFIG_DOCUMENT } from "../helpers/team-run-graphql-documents.js";
 import { startStudioE2eRuntimeServer } from "../helpers/studio-runtime-test-server.js";
+import { waitConnected } from "../helpers/agent-stream-frames.js";
 import { buildStandaloneClaudeProcessEnv } from "../../helpers/claude-cli-executable-candidates.js";
 
 // AC-004 / AC-014 (teammate path): a teammate's send_message_to reaches a busy member inside
@@ -189,6 +190,8 @@ const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
         socket.once("open", () => resolve());
         socket.once("error", reject);
       });
+      // The stream takes commands from its CONNECTED message, not from the socket's open (autobyteus-461 release smoke).
+      await waitConnected(stream);
       const waitFor = async (predicate: (message: TeamStreamMessage) => boolean, label: string, timeoutMs = 180_000) => {
         const deadline = Date.now() + timeoutMs;
         while (Date.now() < deadline) {
