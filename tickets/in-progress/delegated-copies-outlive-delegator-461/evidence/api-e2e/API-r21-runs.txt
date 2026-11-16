@@ -32,3 +32,8 @@ Engineer rebuilt them from the merged tree (21:26); web from source. Clean env f
 4. Grok: a follow-up out of 461's scope (the user's decision; FU-035).
 5. No new wording-only refusal difference (FU-030 unchanged).
 6. Cleanup: the base worktree at 1e8b6e5d0a (created for this comparison) removed with `git worktree remove`.
+7. AC-001 on a real runtime, rerun for the Acceptance-Criteria Proof (the delivery engineer's request): delegated-run-outlives-
+   delegator-live on 339602ff36, live DeepSeek (test vault; RUN_DEEPSEEK_E2E=1, scripted delegator): LIVE-1 (an Agent child's real
+   turn finishes after its delegator's Stop) Pass, LIVE-2 (a Team child's coordinator) Pass: Tests 2 passed. The cited pass lines
+   are in API-r21-ac-proof-extract.txt.
+

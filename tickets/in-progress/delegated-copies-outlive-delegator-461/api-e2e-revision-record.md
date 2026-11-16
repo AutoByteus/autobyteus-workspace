@@ -762,3 +762,16 @@ None open. RRT-05 settled: clean on both bases and on the branch (15/15).
 - Recommended owner: the Code Reviewer, for the proportional test-code review, then delivery.
 - Remaining risks, blocked evidence, or untested scope: base's desktop build doesn't start here; Grok is a follow-up (FU-035).
 
+#### Addendum: the Acceptance-Criteria Proof restored (the delivery engineer's request)
+
+- The execution report has its per-criterion table again, AC-001 … AC-017.
+  - Each row gives its cases with their round, the evidence line to look for, and why the pre-merge proof holds after the merge.
+  - New evidence: `API-r21-ac-proof-extract.txt` (round 21's pass lines).
+- AC-001's real-runtime case (LIVE-1/LIVE-2, live DeepSeek) was rerun on `339602ff36`: 2/2 Pass.
+- Recorded below API/E2E level, not findings:
+  - AC-013's approval edge is proven at unit level (the live LIVE-002 needs LM Studio and was not run);
+  - AC-009's restart-notice text is not asserted;
+  - AC-014 had no isolated desktop start on migrated data;
+  - AC-015 is document review.
+- The result is unchanged: `Pass` / 95%.
+
