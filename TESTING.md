@@ -220,7 +220,10 @@ or because Gradle's cache already holds a dependency the runner must download.
   setup code, invite or peer secret in evidence.
 - **Gates.** Live and costly tests stay skipped unless their gate is set. A skip is not a
   pass. Real-provider runs spend the user's credits: run them only when the change needs
-  real-provider proof.
+  real-provider proof. A skipped file never fails, so when a change alters what test clients
+  rely on (a message, its order or its timing), find every client by searching the test
+  folders, gated files included, and update them; a rule that can be read from the source
+  belongs in a unit check (for example `tests/unit/e2e-helpers/`).
 - **Real-provider credentials** come from the test vault: set `AUTOBYTEUS_TEST_VAULT` (see
   [Test vault](#test-vault)).
 - **Local model servers share limited compute.** LM Studio and Ollama run on this machine. Run at
