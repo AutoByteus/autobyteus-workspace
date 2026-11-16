@@ -79,8 +79,6 @@ const createNativeToProjectionHarness = (memoryDir?: string) => {
         developerInstructions: null,
         dynamicTools: [],
       },
-      // autobyteus-460: a context the backend prepares carries its workspace skills; this projection test needs none.
-      workspaceSkills: null,
     }),
   });
   const client = {
