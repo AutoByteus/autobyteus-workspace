@@ -153,9 +153,10 @@ watch(() => context.value?.phase, (phase) => {
   }
 }, { immediate: true })
 // Settings stay open across focus changes, with their unsaved edits (REQ-005); with nothing focused they close. A run
-// the Org delegated opens as its own run (autobyteus-461 rule 2): while it binds, the Org still has it selected but no
-// target yet, and that moment is a focus change, not "nothing focused" (CR-461-095, D-IMP-1).
+// the Org delegated opens as its own run (autobyteus-461 rule 2): while it binds, the Org has its tree row picked but no
+// target yet, and that moment is a focus change, not "nothing focused" (CR-461-095, D-IMP-1; the pick is the store's
+// since SR-084, AFS-002).
 watch(targetIdentity, (nextIdentity, previousIdentity) => {
-  if (previousIdentity && !nextIdentity && !context.value?.selectedTarget()) center.showChat()
+  if (previousIdentity && !nextIdentity && !context.value?.selectedTarget() && !orgContexts.selectedRowKey(orgRunId.value)) center.showChat()
 })
 </script>

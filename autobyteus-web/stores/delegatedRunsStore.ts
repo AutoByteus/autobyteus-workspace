@@ -17,6 +17,7 @@ import { useAgentTeamRunStore } from './agentTeamRunStore'
 import { useWorkspaceStore } from './workspace'
 import { createPeerRunStreams } from '~/services/peerRuns/peerRunStreams'
 import { useWindowNodeContextStore } from './windowNodeContextStore'
+import { createRandomId } from '~/utils/randomId'
 
 /** A delegated run's own parts, as a delegator's view shows it when its row is selected. */
 export type DelegatedRunBinding = Readonly<{
@@ -146,11 +147,11 @@ export const useDelegatedRunsStore = defineStore('delegatedRuns', () => {
     send: async (content: string) => {
       const stream = peers.streamOf(subject)
       if (!stream) throw new Error('This peer run is not open.')
-      const messageId = `peer_msg_${crypto.randomUUID()}`
+      const messageId = `peer_msg_${createRandomId()}`
       await stream.service.sendMessageAwaitingAdmission(content, [], [], { messageId, dedupeKey: messageId })
       stream.context.requirement = ''
     },
-    interrupt: async () => { peers.streamOf(subject)?.service.interruptGeneration(`peer_interrupt_${crypto.randomUUID()}`) },
+    interrupt: async () => { peers.streamOf(subject)?.service.interruptGeneration(`peer_interrupt_${createRandomId()}`) },
     decideTool: async () => undefined,
   })
 

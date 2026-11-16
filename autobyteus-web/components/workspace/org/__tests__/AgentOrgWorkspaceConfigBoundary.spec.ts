@@ -38,7 +38,7 @@ vi.mock('~/stores/workspaceCenterViewStore', () => ({
   useWorkspaceCenterViewStore: () => center,
 }))
 vi.mock('~/stores/agentOrgContextsStore', () => ({
-  useAgentOrgContextsStore: () => ({ readRunConfig: readOrg, saveRunConfig: saveOrg, contextFor: () => null }),
+  useAgentOrgContextsStore: () => ({ readRunConfig: readOrg, saveRunConfig: saveOrg, contextFor: () => null, selectedRowKey: () => null }),
 }))
 vi.mock('~/services/runConfigEditing/existingRunModelOptionsClient', () => ({
   loadExistingRunModelOptions: vi.fn().mockResolvedValue({}),

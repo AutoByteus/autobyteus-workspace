@@ -128,4 +128,24 @@ describe('delegatedRunsStore', () => {
     expect(store.bindingOf(peer)).toMatchObject({ workspaceRootPath: null,
       browse: { kind: 'peerRun', nodeId: 'node-b', runId: 'studio-team', agentRunId: 'studio-mate' } })
   })
+
+  // MSP-06: the phone on its trusted private HTTP pairing is not a secure context, so `crypto.randomUUID` is missing there.
+  it('a message and an interrupt to a peer run are sent without crypto.randomUUID (the phone over plain HTTP)', async () => {
+    const peer = { kind: 'peer' as const, nodeId: 'node-b', runKind: 'agent' as const, runId: 'beta-run', agentRunId: 'beta-run', address: '/beta' }
+    const store = useDelegatedRunsStore()
+    store.ensureOpen(peer)
+    await store.whenOpen(peer)
+    const service = { sendMessageAwaitingAdmission: vi.fn(async () => undefined), interruptGeneration: vi.fn() }
+    Object.assign(peerStreams.opened.get('beta-run')!, { service, context: { requirement: 'hi' } })
+    const randomUUID = globalThis.crypto.randomUUID
+    Object.defineProperty(globalThis.crypto, 'randomUUID', { value: undefined, configurable: true })
+    try {
+      await store.bindingOf(peer)!.interaction.send('hi', [])
+      await store.bindingOf(peer)!.interaction.interrupt()
+    } finally { Object.defineProperty(globalThis.crypto, 'randomUUID', { value: randomUUID, configurable: true }) }
+    const [, , , ids] = service.sendMessageAwaitingAdmission.mock.calls[0] as unknown as [string, unknown, unknown, { messageId: string; dedupeKey: string }]
+    expect(ids.messageId).toMatch(/^peer_msg_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/)
+    expect(ids.dedupeKey).toBe(ids.messageId)
+    expect(service.interruptGeneration).toHaveBeenCalledWith(expect.stringMatching(/^peer_interrupt_/))
+  })
 })
