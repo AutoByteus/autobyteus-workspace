@@ -82,6 +82,10 @@ regexes = [
   # Made-up MCP gateway tokens in the McpGatewayPanel unit test (autobyteus-437):
   # a word plus a run of sequential digits, exactly these two values.
   '''^mcpg_(?:secretvalue1234567890|regenerated0987654321)$''',
+  # The collaboration contract fixture's run ID for its "upscaler" agent
+  # (autobyteus-461, `tests/fixtures/collaboration-contract/contract-states.json`),
+  # a story placeholder in test evidence. Exactly this value.
+  '''^upscaler_55b2$''',
 ]
 
 # File-pin maps in ticket evidence: "path/file.ts": "<sha256>". Scoped to the
