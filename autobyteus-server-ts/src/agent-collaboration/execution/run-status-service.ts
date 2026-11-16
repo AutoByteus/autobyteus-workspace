@@ -52,6 +52,8 @@ export class RunStatusEntry {
   private readonly releases: (() => void)[] = [];
   /** A peer run's observation again, after it ended (Retry, DEC-807 Phase 1); `null` for a local or org run. */
   private observePeer: (() => void) | null = null;
+  /** Whether a peer run's observation is open now (it tells the entry when its node goes away). */
+  private peerObserved: () => boolean = () => false;
   /** A peer run's node; `null` for a local or org run. */
   private peerNodeId: string | null = null;
   /** A peer run's handle; `null` for a local or org run. */
@@ -96,6 +98,15 @@ export class RunStatusEntry {
 
   /** Its node is back: an ended observation is observed again (an open one stays as it is). */
   reobserve(): void { this.observePeer?.(); }
+
+  /**
+   * Another client now shows this run (CR-461-107): a peer run whose observation ended (its run stopped there) has no
+   * way to learn that its node went away since, so its node is asked once for a current answer. It neither observes
+   * again nor brings other runs back (no churn, RTP-09).
+   */
+  refreshEnded(): void {
+    if (this.peer && !this.peerObserved() && !this.closed) void this.askSummary(this.peer, false);
+  }
 
   /** The node a peer run runs on; `null` for a run on this node. */
   get nodeId(): string | null { return this.peerNodeId; }
@@ -232,6 +243,7 @@ export class RunStatusEntry {
       stream = current;
     };
     this.observePeer = observe;
+    this.peerObserved = () => stream !== null;
     this.releases.push(() => { this.observePeer = null; stream?.close(); stream = null; });
     observe();
     void this.askSummary(peer, true);
@@ -303,6 +315,8 @@ export class RunStatusService {
     if (!entry) {
       entry = new RunStatusEntry(Object.freeze({ kind: ref.kind, runId: ref.runId }), this.sources, (nodeId) => this.nodeAnswered(nodeId));
       this.entries.set(key, entry);
+    } else {
+      entry.refreshEnded();
     }
     entry.holders += 1;
     return entry;

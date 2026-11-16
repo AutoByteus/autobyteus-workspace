@@ -226,6 +226,33 @@ describe("RunStatusService (SR-082, SR-083)", () => {
     holder.connection.close();
   });
 
+  it("CR-461-107: a client that newly shows a peer run whose observation ended asks its node again once; a live observation is not asked", async () => {
+    let reachable = true;
+    const h = harness({ peer: ["peer-team"], summary: (runId) => ({ nodeId: "beta", runId, reachable, title: "Studio", statuses: [], launches: [] }) });
+    const first = h.client();
+    await first.connection.subscribe([{ kind: "agent_team", runId: "peer-team" }]);
+    await flush();
+    // A second client while the observation is open: nothing is asked.
+    const asked = h.peerSummary.mock.calls.length;
+    const live = h.client();
+    await live.connection.subscribe([{ kind: "agent_team", runId: "peer-team" }]);
+    expect(h.peerSummary.mock.calls.length).toBe(asked);
+    // Its run stopped on its node: the observation ended, answered reachable (never observed again from there).
+    h.peer.observer()!.onEnd();
+    await flush();
+    expect(h.peer.observe).toHaveBeenCalledTimes(1);
+    // Its node went away since. A client that now shows the run (a reload) asks once, and learns it.
+    reachable = false;
+    const before = h.peerSummary.mock.calls.length;
+    const reloaded = h.client();
+    await reloaded.connection.subscribe([{ kind: "agent_team", runId: "peer-team" }]);
+    await flush(); await flush();
+    expect(h.peerSummary.mock.calls.length).toBe(before + 1);
+    expect(h.peer.observe).toHaveBeenCalledTimes(1);
+    expect(states(reloaded.sent).at(-1)).toMatchObject({ payload: { answer: "unreachable", node: "beta-node" } });
+    for (const client of [first, live, reloaded]) client.connection.close();
+  });
+
   it("RUN_TREE_CHANGED reaches the run's subscribers only", async () => {
     const h = harness({ agents: { org: ["planner"] } });
     const { sent, connection } = h.client();
