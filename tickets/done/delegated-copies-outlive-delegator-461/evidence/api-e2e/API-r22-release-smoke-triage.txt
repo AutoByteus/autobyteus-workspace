@@ -1,0 +1,73 @@
+autobyteus-461 API/E2E round 22: the release smoke failure, triaged and fixed
+=============================================================================
+Requested by: the Delivery Engineer (RELEASE.md Recovery, "Ours"), after `python3 scripts/release_smoke.py` failed on
+`d978347600` (personal with 461 merged as `d5d4fc7c81`). Their logs: /tmp/smoke461-evidence/summary.log, live.log.
+Worktree: ~/autobyteus_org/autobyteus-worktrees/delegated-copies-outlive-delegator-461, branch
+finalize/delegated-copies-outlive-delegator-461, HEAD 368b093846 (test and doc changes of this round on top).
+Raw logs: /tmp/api461/r22 (kept). Paths shortened to ~; no credentials are in these extracts.
+
+What to look for: §1 the failure reproduces on the branch and not on base; §2 why (CONNECTED is a few ms after open
+on the branch, in the same tick on base; a send on open is refused on the branch only); §4 the check flags exactly
+the 10 stale clients at HEAD and none after the fix; §5 the smoke case passes after the fix.
+
+§1 Reproduction (Claude, real HOME for the CLI login, the user's approval; one case)
+  env -i PATH HOME="$HOME" USER LOGNAME TMPDIR RUN_CLAUDE_E2E=1 \
+    pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts --no-watch -t "brand-new team member"
+  branch (368b093846), run 1: × claude > starts a brand-new team member with configured skills on its first message (AC-105) 801ms
+                                → turn errors: {"code":"SESSION_NOT_READY","message":"Session is not ready yet. Retry after CONNECTED message.",...}
+  branch, run 2:              × (same)                                      branch-repro1.log, branch-repro2.log
+  base 827f1e68dc, runs 1-2:  ✓ (5048 ms)                                   base-repro1.log, base-repro2.log
+  (827f1e68dc's stream code, api/websocket/agent.ts and the Team stream handler, is identical to base 1e8b6e5d0a.)
+
+§2 Cause: timing measured with a temporary test (fresh Team runs, 7 each; copied into each tree, run, deleted)
+  base:   connectedMs 0 0 0 0 0 0 0    on-open send errors: []
+  branch: connectedMs 9 1 2 1 2 1 1    on-open send errors: ["SESSION_NOT_READY"]          timing-base.log, timing-branch.log
+  - The protocol (api/websocket/agent.ts, unchanged by 461): a message before the session's connect resolves gets
+    SESSION_NOT_READY ("Retry after CONNECTED message").
+  - 461 (F-76 fix, CR-461-101) sends a Team or Org view's CONNECTED after its reads, right before the snapshot. On base
+    CONNECTED went out in the same tick as the open, so a client that sent on `open` was accepted by luck.
+  - The product client waits: autobyteus-web stores/agentTeamRunStore.ts ensureTeamStreamConnected waits for CONNECTED
+    and the snapshot (isReady) before sendMessage. No product client sends on open.
+  Classification: test-side, from my stage. The test client sent on `open`, against the protocol. Round 17 fixed the
+  scripted clients that did this; its sweep went by running suites, so live-gated files that no run executed kept the
+  bug. workspace-skill-links-live was edited in round 17 for frames only.
+
+§3 Fix (test code only; no product change)
+  The clients wait for CONNECTED after the open (waitConnected from tests/e2e/helpers/agent-stream-frames.ts, or a
+  CONNECTED wait in place of the open wait):
+    tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts           (the smoke's failing file)
+    tests/e2e/runtime/agent-semantic-memory-live.e2e.test.ts
+    tests/e2e/runtime/agy-delegated-background-task.e2e.test.ts
+    tests/e2e/runtime/agy-native-image-multi-artifact-preview.e2e.test.ts
+    tests/e2e/runtime/claude-delegated-background-task.e2e.test.ts
+    tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts     (waitForSocketOpen → waitForStreamConnected)
+    tests/e2e/runtime/claude-team-member-background-task.e2e.test.ts
+    tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts      (waitForSocketOpen → waitForStreamConnected)
+    tests/e2e/runtime/grok-build-live-runtime.e2e.test.ts
+    tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts
+
+§4 The local check that would have caught it (no live gate; runs in every server unit run)
+  tests/unit/e2e-helpers/team-stream-clients-wait-for-connected.test.ts: every source in tests/e2e and
+  tests/integration that opens /ws/agent-team/ or /ws/agent-org/ and sends a command (sendE2eSendMessageCommand,
+  SEND_MESSAGE, INTERRUPT_GENERATION, APPROVE_TOOL, DENY_TOOL) must wait for readiness (waitConnected,
+  waitForStreamConnected, "CONNECTED", a *_VIEW_SNAPSHOT, restoreByMemberMessage). It is file-level; the limit is in its header.
+  After the fix: ✓ 2 tests passed (the same sources)                                    static-check-fixed.log
+  The same rule over HEAD 368b093846 (before the fix), check-head.mjs:
+    HEAD (368b093846): 408 sources scanned; flagged 10:  (exactly the 10 files of §3)  static-check-head.log
+  TESTING.md Gates rule: a skipped file never fails; when a change alters what test clients rely on, find every client
+  by search, gated files included; a rule readable from the source belongs in a unit check.
+
+§5 Reruns after the fix
+  - Live, the smoke's failing case, Claude haiku + Codex gpt-5.6-luna (real HOME):
+      ✓ starts a brand-new team member ... (AC-105) 4863 ms (claude); ✓ ... 9695 ms (codex). 2 passed | 4 skipped   skill-links-fixed1.log
+  - Live, the whole file as the smoke runs it, Claude + Codex: 6 passed (6)                                  skill-links-fixed-full.log
+  - Scripted AGY, agy-native-image-multi-artifact-preview (RUN_AGY_FAILURE_E2E=1, fake AGY CLI): 2 passed (2)  agy-image-fixed.log
+  - Server typecheck (node scripts/typecheck.mjs): production 0; tests 1012 in 316 files = baseline; PASS     server-typecheck.log
+  - Not rerun: Grok (FU-035, the user's decision). Its two other smoke failures are HTTP 429
+    "free-usage-exhausted" on grok-4.7 (the quota, not code); its "brand-new team member" failure was this same
+    SESSION_NOT_READY. The other edited live files change only their open wait (the same helper as §5's pass).
+  - Web: no web file changed; no web typecheck needed.
+
+§6 Cleanup
+  The temporary timing test was removed from both trees (0 copies left). The base worktree 461-base-827f1e68 is from
+  round 21 (kept for comparisons). Live runs used test-owned temp data roots, removed by the suite.

@@ -5,9 +5,15 @@ This report records what ran and the result. The plan is in `api-e2e-coverage-in
 ## Round
 
 - Coverage investigation: `api-e2e-coverage-investigation.md`
-- API/E2E revision record and current revision ID: `api-e2e-revision-record.md` / `API-REV-021`
+- API/E2E revision record and current revision ID: `api-e2e-revision-record.md` / `API-REV-022`
 - Test progress log: `api-e2e-test-progress.md`
-- Round and trigger: round 21, on CRR-062 (the base merge reviewed, Pass). Code under test is `339602ff36`, the merge of `origin/personal` `1e8b6e5d0a`; HEAD `ed33e2452c` has only doc commits since. The server `dist` and the phone bundle are as the Implementation Engineer rebuilt them from the merged tree; web from source.
+- **Round 22 (the release smoke, the Delivery Engineer's request, 2026-11-17):**
+  - Trigger: `python3 scripts/release_smoke.py` failed before tagging on `d978347600`. The failing case was `workspace-skill-links-live` "brand-new team member" on Claude, Codex and Grok, with `SESSION_NOT_READY`.
+  - Done: reproduced; compared with base; classified test-side (from this stage); fixed; the local check added.
+  - Code under test: `368b093846` plus this round's test-only changes. No product file changed.
+  - Evidence: `evidence/api-e2e/API-r22-release-smoke-triage.txt`; raw logs `/tmp/api461/r22`.
+  - The rest of this report is round 21's, which this round does not change. The round-22 cases and finding are marked "r22".
+- Round and trigger (round 21): round 21, on CRR-062 (the base merge reviewed, Pass). Code under test is `339602ff36`, the merge of `origin/personal` `1e8b6e5d0a`; HEAD `ed33e2452c` has only doc commits since. The server `dist` and the phone bundle are as the Implementation Engineer rebuilt them from the merged tree; web from source.
 - Scope, by the user's decision (2026-11-16) and CRR-062:
   1. the full server E2E folder, once, on the merged code;
   2. the RRT-05 base comparison, 5 runs each at the current base `1e8b6e5d0a` and on the branch, plus `827f1e68dc`;
@@ -24,7 +30,7 @@ This report records what ran and the result. The plan is in `api-e2e-coverage-in
 
 - Task size: `Large`; Architectural risk: `High`; Input route: `Reviewed`.
 - Result route: `Pass` → Code Reviewer, proportional test-code review, then delivery (a beta, the user's decision).
-- Proportional test-code review decision: `Required` (`dc00f57d64`, `2ecdb8b356`, `8df4a7ee41`, `67d8ea56bc` and this round's commit).
+- Proportional test-code review decision: `Required` (`dc00f57d64`, `2ecdb8b356`, `8df4a7ee41`, `67d8ea56bc`, round 21's commit, and round 22's test commit).
 
 ## Tested Builds And Environments
 
@@ -45,10 +51,21 @@ This report records what ran and the result. The plan is in `api-e2e-coverage-in
 | Phone MSP-53 … 58 | the base's size limits; AC-007 stopped delegators | ENV-3 | Pass | 6/6 alone, after one environmental AGY discovery timeout in setup. The merge's ID clash was fixed (below) |
 | LIVE-1, LIVE-2 (AC-001, real runtime) | AC-001 | ENV-1 + live DeepSeek | Pass | Rerun on `339602ff36` for the proof table: 2/2 (`delegated-run-outlives-delegator-live`, test vault) |
 | Type gates | — | — | Pass | Server production 0 (tests at baseline); web production 0 (tests at baseline), cross-package 0 |
+| SMOKE-AC105 (r22) | AC-105 of skill links; the stream protocol | ENV-1 + Claude, Codex (the user's CLI logins) | Fail → Pass after the test fix | Before: the branch fails 2/2 and base `827f1e68dc` passes 2/2. After: the case passes 2/2 (Claude, Codex) and the whole file 6/6. Command: `env -i PATH HOME="$HOME" USER LOGNAME TMPDIR RUN_CLAUDE_E2E=1 RUN_CODEX_E2E=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts --no-watch`. Evidence: `API-r22-release-smoke-triage.txt` §1, §5 |
+| CONNECT-TIMING (r22, temporary) | the stream protocol | ENV-1, both trees | Cause shown | Base: CONNECTED in the open's tick (0 ms ×7); the on-open send is accepted. Branch: CONNECTED 1–9 ms after the open; the on-open send gets `SESSION_NOT_READY`. §2 |
+| STREAM-WAIT-CHECK (r22, durable) | the stream protocol | unit run, no gate | Pass | `tests/unit/e2e-helpers/team-stream-clients-wait-for-connected.test.ts` 2/2. The same rule over HEAD before the fix flags exactly the 10 stale files. §4 |
+| AGY image, scripted (r22) | — | ENV-1, fake AGY | Pass | `agy-native-image-multi-artifact-preview` 2/2 with its CONNECTED wait. §5 |
+| Server typecheck (r22) | — | — | Pass | Production 0; tests 1012 in 316 files = baseline |
 
 ### Findings
 
 - **No open findings.**
+- **Round 22, test-side from this stage, fixed: F-92, test clients that send before `CONNECTED`.**
+  - Ten E2E files sent a command on a Team/Org socket's `open`, against the protocol (`api/websocket/agent.ts`: "Retry after CONNECTED message"). Nine are live-gated, and one is a scripted suite that passed by luck.
+  - 461 sends a Team/Org view's `CONNECTED` after its reads (F-76, CR-461-101), so such a send is now always refused. The product client waits (`agentTeamRunStore.ensureTeamStreamConnected`).
+  - Round 17 fixed the scripted clients but found them by running suites, so gated files no run executed kept the bug.
+  - Fixed: the clients wait for `CONNECTED`. The stage that let it through gets a check that runs without gates (STREAM-WAIT-CHECK) and a TESTING.md Gates rule.
+  - Grok's other two smoke failures are HTTP 429 (quota exhausted), not code; Grok is FU-035.
 - **Test-side, fixed this round (from the merge):**
   - the base's phone size-limit cases and 461's stopped-delegator cases both used MSP-53 … 55, and the probe skips a second case with a used ID;
   - 461's cases are renumbered MSP-56 … 58;
@@ -129,6 +146,11 @@ This report records what ran and the result. The plan is in `api-e2e-coverage-in
 ## Durable Coverage Changed In The Codebase
 
 - `Yes`:
+  - Round 22:
+    - new `autobyteus-server-ts/tests/unit/e2e-helpers/team-stream-clients-wait-for-connected.test.ts`;
+    - the clients wait for `CONNECTED` after the open in `autobyteus-server-ts/tests/e2e/runtime/`: `workspace-skill-links-live`, `agent-semantic-memory-live`, `agy-delegated-background-task`, `agy-native-image-multi-artifact-preview`, `claude-delegated-background-task`, `claude-team-inter-agent-roundtrip`, `claude-team-member-background-task`, `codex-team-inter-agent-roundtrip`, `grok-build-live-runtime`, `team-busy-member-mid-turn-delivery` (`.e2e.test.ts`);
+    - `TESTING.md` Gates: find every test client by search, gated files included; a rule readable from the source goes in a unit check.
+  - Round 21:
   - `autobyteus-web/tests/e2e/mobile-stopped-delegator-cases.mjs`: 461's phone cases renumbered MSP-56 … 58;
   - `autobyteus-web/tests/e2e/mobile-shell-probe.mjs`: the start-up duplicate check also reads `journey('ID'`; the case comment updated.
 - Added or updated paths attached for proportional test-code review: `Yes`.
@@ -146,9 +168,11 @@ This report records what ran and the result. The plan is in `api-e2e-coverage-in
 | Probe stacks, data roots, homes | Yes | The probes' `finally`; homes removed by the runner scripts | Removed |
 | Base worktree at `1e8b6e5d0a` | Yes | `git worktree remove` | Removed |
 | `/tmp/api461/r21` logs | Yes | Kept; extract committed | Kept |
+| Temporary timing test (r22), copied into the branch and base worktrees | Yes | Deleted after the runs; 0 copies left | Removed |
+| `/tmp/api461/r22` logs | Yes | Kept; extract committed | Kept |
 
 ## Latest Authoritative Result
 
-- Result: `Pass`
-- New findings: none.
+- Result: `Pass` (round 22). The release smoke case SMOKE-AC105 failed from a test-side defect of this stage (F-92), which is fixed; the case passes 2/2 and its file 6/6.
+- New findings: F-92 (test-side, fixed in this round).
 - Next recipient from `get_handoff_rules`: `/software_engineering_team/code_reviewer` (proportional test-code review), then delivery.

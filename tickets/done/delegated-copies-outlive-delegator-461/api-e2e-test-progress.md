@@ -232,4 +232,4 @@
 | 2026-11-16 (round 20) | Web, phone, live | Completed | Pass | RSW-01 (1 notice live, after the previous reply), RSM 7/7, DCR exact headers, phone 53/55, title 2/2 alone; live 5/5 on DeepSeek, Codex, Antigravity, Claude 5/6 (LE-F1 not 461) |
 | 2026-11-16 (round 20) | Desktop (isolated Electron) | Completed | Pass | J1 … J4 and the Org journey; instance stopped and removed |
 | 2026-11-16 (round 21) | Merged state `339602ff36` | Completed | Pass | Full server E2E 886/886; RRT-05 15/15 clean on both bases and on the branch (not a finding); composer 12/12; phone MSP-53 … 58 6/6 after the ID clash fix; both type gates at baseline |
-
+| 2026-11-17 (round 22) | Release smoke triage | Completed | Pass after test fix | SMOKE-AC105 reproduced (branch 0/2, base 2/2); cause timed (CONNECTED 1–9 ms after open; on-open send refused); F-92 fixed in 10 files; STREAM-WAIT-CHECK 2/2 (flags the 10 at HEAD); live case 2/2 and file 6/6 on Claude and Codex; scripted AGY image 2/2; server typecheck at baseline |

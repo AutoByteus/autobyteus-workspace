@@ -775,3 +775,32 @@ None open. RRT-05 settled: clean on both bases and on the branch (15/15).
   - AC-015 is document review.
 - The result is unchanged: `Pass` / 95%.
 
+
+### API-REV-022: round 22 (the release smoke): F-92, test clients that sent before `CONNECTED`; fixed; Pass
+
+- Triggering role, report path, and round: `/software_engineering_team/delivery_engineer`, `release-deployment-report.md` (the release smoke on `d978347600` failed before tagging; RELEASE.md Recovery "Ours"), API/E2E round 22
+- Triggering finding or case IDs: SMOKE-AC105. `workspace-skill-links-live` "brand-new team member" failed on Claude, Codex and Grok with `SESSION_NOT_READY`.
+- Why this revision was recorded: reproduce the failure, compare with base, classify it, fix it, and add the local check that would have caught it.
+- Result of the triage:
+  - Reproduced: the branch fails 2/2, and base `827f1e68dc` (stream code identical to `1e8b6e5d0a`) passes 2/2.
+  - Cause: the test sent its message on the Team socket's `open`. 461 sends `CONNECTED` after the view's reads, 1–9 ms after the open, and the protocol refuses a command before it. On base `CONNECTED` came in the open's tick, so the early send was accepted by luck.
+  - The product client waits. Origin: this stage's test code (F-92); round 17's sweep ran suites and missed gated files.
+- Coverage decisions or durable test paths changed:
+  - ten `tests/e2e/runtime/` clients wait for `CONNECTED` (the execution report, Durable Coverage);
+  - new unit check `tests/unit/e2e-helpers/team-stream-clients-wait-for-connected.test.ts`. It runs with no gate, and the same rule over HEAD before the fix flags exactly the ten files;
+  - `TESTING.md` Gates rule (commit `docs(testing)`).
+
+#### Prior Failure Resolution
+
+- SMOKE-AC105: passes 2/2 (Claude, Codex) after the fix; the whole file 6/6.
+- Grok is not rerun (FU-035); its two other smoke failures are HTTP 429 quota errors.
+
+- Canonical artifacts and sections updated: the execution report (Round, Cases, Findings, Durable Coverage, Cleanup, Result); the progress log; `evidence/api-e2e/API-r22-release-smoke-triage.txt`.
+- Prior result and confidence: Pass / 95%
+- Current result and confidence: Pass / 95%
+- New or remaining failure IDs: F-92 (fixed in this round)
+- Recommended owner: the Code Reviewer, for the proportional test-code review and to confirm the failure origin; then delivery, which merges, reruns the smoke and tags.
+- Remaining risks, blocked evidence, or untested scope:
+  - Grok (FU-035; its quota was exhausted at the smoke);
+  - the other eight edited live files were not run live; their change is only the open wait, the same helper as the passing case;
+  - the check is file-level (its header states the limit).
