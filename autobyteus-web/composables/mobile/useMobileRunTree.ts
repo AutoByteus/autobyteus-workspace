@@ -1,4 +1,4 @@
-import { computed, watch } from 'vue';
+import { computed, onScopeDispose, watch } from 'vue';
 import type { RunTreeRowDto } from '@autobyteus/collaboration-stream-contracts';
 import { useTaskWorkerTasks } from '~/composables/projects/useTaskWorkerTasks';
 import { useRouteSelectedAgentOrg } from '~/composables/runHistory/useRouteSelectedAgentOrg';
@@ -52,14 +52,19 @@ export function useMobileRunTree() {
   const isEntryExpanded = (entry: RunListEntry) => entry.kind === 'agent' ? disclosure.isRunExpanded(entry.runId)
     : entry.kind === 'team' ? disclosure.isTeamExpanded(entry.runId) : disclosure.isAgentOrgRunExpanded(entry.runId);
   // Each shown run's tree, built on the server (SR-084): an Agent run's while it is listed with delegated work (its
-  // second line and fold need it), a Team's or an Org's while it is unfolded; read again when its rows change.
-  watch(() => runListStore.shownEntries.filter((entry) => entry.kind === 'agent' ? entry.run.hasCollaboration === true : isEntryExpanded(entry))
-    .map((entry) => `${entry.kind}:${entry.runId}`).join('|'), (_key, _previous, onCleanup) => {
-    const releases = runListStore.shownEntries
-      .filter((entry) => entry.kind === 'agent' ? entry.run.hasCollaboration === true : isEntryExpanded(entry))
-      .map((entry) => trees.hold(treeRefOf(entry)));
-    onCleanup(() => releases.forEach((release) => release()));
+  // second line and fold need it), a Team's or an Org's while it is unfolded; read when first shown and again when its
+  // rows change (AR-028). Held per run: a run that stays shown keeps its hold across a list reload, so its tree is not
+  // read again (CR-461-112); only the runs that came are held, and only those that left are released.
+  const treeShown = (entry: RunListEntry): boolean => entry.kind === 'agent' ? entry.run.hasCollaboration === true : isEntryExpanded(entry);
+  const treeHolds = new Map<string, () => void>();
+  watch(() => runListStore.shownEntries.filter(treeShown).map((entry) => entry.key).sort().join('|'), () => {
+    const shown = new Map(runListStore.shownEntries.filter(treeShown).map((entry) => [entry.key, entry]));
+    for (const [key, entry] of shown) if (!treeHolds.has(key)) treeHolds.set(key, trees.hold(treeRefOf(entry)));
+    for (const [key, release] of [...treeHolds]) {
+      if (!shown.has(key)) { release(); treeHolds.delete(key); }
+    }
   }, { immediate: true });
+  onScopeDispose(() => { treeHolds.forEach((release) => release()); treeHolds.clear(); });
 
   /** A tree row folds by its run's disclosure: an Agent run's rows by key; a Team's by key; an Org's mounted team by address. */
   const isTreeRowExpanded = (entry: RunListEntry, row: RunTreeRowDto): boolean => {
