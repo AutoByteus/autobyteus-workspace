@@ -49,7 +49,9 @@ let pinia: Pinia;
 const setup = async () => {
   const router = await createMobileTestRouter();
   const { result } = withSetup(router, () => useMobileRunOpening(disclosure), [pinia]);
-  return { router, opening: result, store: useMobileRunOpeningStore() };
+  // The run's view read (its GraphQL read) is not this composable's: stubbed, and checked where it matters.
+  const inspect = vi.spyOn(useAgentRunCollaborationStore(), 'inspect').mockResolvedValue(undefined);
+  return { router, opening: result, store: useMobileRunOpeningStore(), inspect };
 };
 
 // autobyteus-277 DS-003, AR-001: begin, push the run screen, the shared action (phone shell), then commit or fail.
@@ -138,7 +140,25 @@ describe('useMobileRunOpening', () => {
     expect(store.failure).toEqual({ key });
   });
 
-  it('a tree row whose run view is not loaded selects nothing and fails', async () => {
+  // MSP-53: the phone lists a run it never opened (a stopped delegator); its row reads the run's view first, as the
+  // desktop's rows do when they show, then selects in it. A run whose view is read already is not read again.
+  it('a tree row of a run whose view the phone has not read reads it first, then selects in it', async () => {
+    const { opening, inspect } = await setup();
+    const collaboration = useAgentRunCollaborationStore();
+    const order: string[] = [];
+    inspect.mockImplementation(async () => { order.push('inspect'); });
+    vi.spyOn(collaboration, 'selectTreeRow').mockImplementation(() => { order.push('select'); return true; });
+    const contextFor = vi.spyOn(collaboration, 'contextFor').mockReturnValue(null);
+    await opening.open(row(treeRow(agentEntry, agentRow('worker', 'agent:host', 1)), 'agent:host/agent:worker'));
+    expect(inspect).toHaveBeenCalledWith('host');
+    expect(order).toEqual(['inspect', 'select']);
+    contextFor.mockReturnValue({} as never);
+    inspect.mockClear();
+    await opening.open(row(treeRow(agentEntry, agentRow('worker', 'agent:host', 1)), 'agent:host/agent:worker'));
+    expect(inspect).not.toHaveBeenCalled();
+  });
+
+  it('a tree row whose run view cannot be read selects nothing and fails', async () => {
     const { opening, store } = await setup();
     vi.spyOn(useAgentRunCollaborationStore(), 'selectTreeRow').mockReturnValue(false);
     await opening.open(row(treeRow(agentEntry, agentRow('x', 'agent:host', 1)), 'agent:host/x'));

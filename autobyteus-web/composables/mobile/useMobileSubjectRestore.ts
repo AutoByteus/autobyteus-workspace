@@ -23,9 +23,9 @@ const delegatedHostOf = (key: string): string | null => {
  *    replaces it with the list before the restore decides.
  * 2. It waits for the page's first check (its history read included); a failed history read shows the list with its
  *    connection state (DEC-014).
- * 3. The row's readiness by its kind: a top-level run or Team row is in the history read; a Team member's row is in its
- *    Team's rows (revealed); a delegated row needs its host's view, read once unless published (a failed read: the
- *    list, DEC-014).
+ * 3. The row's readiness by its kind: a top-level run or Team row is in the history read; any other row is a row of its
+ *    listed run's tree, read once unless the window has it (SR-084), and revealed; a delegated row of an Agent run also
+ *    needs its host's view, read once unless published (a failed read: the list, DEC-014).
  * 4. The row found: it reopens with the same shared action as a tap (no navigation). 5. Not found: the subject is gone,
  *    the list. Every exit ends `restoring`; no timer: each wait ends on a read's own settle.
  *
@@ -71,6 +71,9 @@ export function useMobileSubjectRestore(input: {
         if (!isCurrent()) return;
         if (collaboration.errors[host]) return await toList();
       }
+      // A tree row exists once its listed run's tree is read (SR-084): a Team's member, a delegated run (MSP-33).
+      await tree.ensureTreeOf(key);
+      if (!isCurrent()) return;
       tree.revealRow(key);
       const row = tree.rows.value.find((candidate) => candidate.key === key);
       if (!row?.open) return await toList();

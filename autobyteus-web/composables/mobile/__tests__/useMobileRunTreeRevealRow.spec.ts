@@ -85,4 +85,24 @@ describe('useMobileRunTree.revealRow', () => {
     expect(collaboration.isTreeRowExpanded('host', rows[1]!)).toBe(true);
     expect(collaboration.isTreeRowExpanded('host', rows[3]!)).toBe(true);
   });
+
+  it('an Org agent\'s delegated runs show beside it on the phone (DEC-009); a delegated team starts folded; each folds by its toggle', async () => {
+    const orgRun = { rootRunId: 'org-1', isActive: true, summary: '', executionTree: { rootOrg: { orgDefinitionId: 'org-def', members: [{ address: '/manager', agentRunId: 'manager' }] } } };
+    const org = { kind: 'org', key: 'org:org-1', runId: 'org-1', name: 'Org', lastActivityAt: '', isActive: true, folderRootPath: null, orgRun };
+    list.store!.entries = [org]; list.store!.shownEntries = [org];
+    useRunTreeStore().streamSnapshot({ kind: 'agent_org', runId: 'org-1' }, [
+      { ...row('org_agent:org-1:manager', null, 0, 'org_agent'), openTarget: { runKind: 'agent_org', runId: 'org-1', agentRunId: 'manager' } },
+      { ...row('agent:writer', 'org_agent:org-1:manager', 1, 'agent'), openTarget: { runKind: 'agent', runId: 'writer', agentRunId: 'writer' } },
+      { ...row('team:squad', 'org_agent:org-1:manager', 1, 'team'), openTarget: { runKind: 'agent_team', runId: 'squad', agentRunId: 'squad-lead' } },
+      { ...row('team_member:squad:squad-lead', 'team:squad', 2, 'team_member'), openTarget: { runKind: 'agent_team', runId: 'squad', agentRunId: 'squad-lead' } },
+    ]);
+    const tree = await setup();
+    const keys = () => tree.rows.value.map((candidate) => candidate.key);
+    expect(keys()).toEqual(expect.arrayContaining(['org:org-1/agent:writer', 'org:org-1/team:squad']));
+    expect(keys()).not.toContain('org:org-1/team_member:squad:squad-lead');
+    const manager = tree.rows.value.find((candidate) => candidate.key === 'org:org-1/org_agent:org-1:manager')!;
+    expect(manager.expanded).toBe(true);
+    tree.toggle(manager.fold!);
+    expect(keys()).not.toContain('org:org-1/agent:writer');
+  });
 });

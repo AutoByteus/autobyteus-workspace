@@ -8,6 +8,7 @@ import {
   type WorkspaceHistorySubjectAction,
 } from '~/composables/useWorkspaceHistorySubjectActions';
 import { useDelegatedRunsStore } from '~/stores/delegatedRunsStore';
+import { useAgentRunCollaborationStore } from '~/stores/agentRunCollaborationStore';
 import { subjectOfTarget, type DelegatedRunSubject } from '~/services/delegatedRuns/delegatedRunSubjects';
 import { useAgentSelectionStore } from '~/stores/agentSelectionStore';
 import { openRunTarget } from '~/composables/useRunOpening';
@@ -52,6 +53,7 @@ export function useMobileRunOpening(disclosure: {
   const opening = useMobileRunOpeningStore();
   const navigation = useMobileNavigation();
   const delegatedRuns = useDelegatedRunsStore();
+  const collaboration = useAgentRunCollaborationStore();
   /**
    * The run delegated on this node that a row opens (rule 2), by the server's target (SR-084): `null` for a listed run's
    * own agents and members, a peer's run and a run itself.
@@ -95,7 +97,10 @@ export function useMobileRunOpening(disclosure: {
     if (open.kind === 'agentRun') await selection.onOpenAgentRun(open.run);
     else if (open.kind === 'team') await selection.onOpenTeamRun(open.team);
     else if (open.kind === 'treeRow' && open.entry.kind === 'agent') {
-      // The one open path of a tree row (SR-084): where the server says, selected in its run's tree.
+      // The one open path of a tree row (SR-084): where the server says, selected in its run's tree. The run's view is
+      // read first when the phone has not read it (a run the list shows but never opened, a stopped delegator: MSP-53),
+      // as the desktop's rows read it when they show and the phone's restore reads it.
+      if (!collaboration.contextFor(open.entry.runId)) await collaboration.inspect(open.entry.runId);
       if (openRunTarget(treeRefOf(open.entry), open.row)) await selection.onSelectRun(open.entry.run);
     } else if (open.kind === 'treeRow' && open.entry.kind === 'team' && open.row.openTarget) {
       await selection.onSelectTeamMember({ teamRunId: open.entry.runId, memberAddress: open.row.address ?? '', agentRunId: open.row.openTarget.agentRunId });

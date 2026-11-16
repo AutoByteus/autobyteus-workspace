@@ -65,8 +65,10 @@ export function useMobileRunTree() {
   const isTreeRowExpanded = (entry: RunListEntry, row: RunTreeRowDto): boolean => {
     if (entry.kind === 'agent') return collaboration.isTreeRowExpanded(entry.runId, row);
     if (entry.kind === 'team') return isTeamRow(row) === disclosure.isRowExpanded(entry.runId, row.key);
-    return row.kind === 'org_team' ? disclosure.isAgentOrgTeamExpanded(entry.runId, row.address ?? '')
-      : disclosure.isAgentOrgTaskTeamExpanded(entry.runId, row.key);
+    if (row.kind === 'org_team') return disclosure.isAgentOrgTeamExpanded(entry.runId, row.address ?? '');
+    // A delegated team starts folded on the phone; an agent's delegated runs show beside it, as on the desktop (DEC-009):
+    // its row starts unfolded and folds once toggled (the toggle flips the same stored value).
+    return isTeamRow(row) ? disclosure.isAgentOrgTaskTeamExpanded(entry.runId, row.key) : !disclosure.isAgentOrgTaskTeamExpanded(entry.runId, row.key);
   };
   /** Each row's status is its own run's (SR-083, G-A4); an Org's mounted team's is its members', as the Org reports them. */
   const statusOf = (row: RunTreeRowDto, id: string): AgentStatus | string | null => {
@@ -124,6 +126,15 @@ export function useMobileRunTree() {
    * Opens every fold on the path to a row, never closing one (autobyteus-435 DS-006 restore): its run's fold, then each
    * row above it in its run's tree (the server's rows, by their keys). A row whose run is not listed reveals nothing.
    */
+  /**
+   * A tree row's key (`<listed run>/<tree row>`) names a row of its listed run's tree (SR-084), which exists once that tree
+   * is read: read here when the window has none yet (a restore after a reload starts before the list's holds read it).
+   */
+  const ensureTreeOf = async (key: string): Promise<void> => {
+    const slash = key.indexOf('/');
+    const entry = slash > 0 ? runListStore.entries.find((candidate) => candidate.key === key.slice(0, slash)) : null;
+    if (entry && !trees.hasTree(treeRefOf(entry))) await trees.read(treeRefOf(entry));
+  };
   const revealRow = (key: string): void => {
     const slash = key.indexOf('/');
     const entry = runListStore.entries.find((candidate) => candidate.key === (slash < 0 ? key : key.slice(0, slash)));
@@ -143,7 +154,7 @@ export function useMobileRunTree() {
   };
 
   return {
-    rows, openRowKey, openRow, openRowParent, toggle, revealRow,
+    rows, openRowKey, openRow, openRowParent, toggle, revealRow, ensureTreeOf,
     /** The shared disclosure's open actions for the selection actions (Team runs and members open their ancestors). */
     setTeamExpanded: disclosure.setTeamExpanded,
     toggleTeam: disclosure.toggleTeam,
