@@ -705,3 +705,11 @@ None
 - Recommended owner: per the failure-origin review.
 - Remaining risks, blocked evidence, or untested scope: Grok is not usable on this machine (base too); two observations for the reviewer.
 
+#### Addendum on CRR-059
+
+- Observation 2 was compared with base, as CRR-059 asked:
+  - identical `runtime-switch-probe` RSW-01 on both trees: base shows 1 notice live and 1 after a reload; the branch shows 2 live and 1 after a reload;
+  - the branch desktop shows 2 on a user-started run;
+  - base's desktop build doesn't start here (a packaging issue in base's build).
+- New finding: F-91 (low). The result stays `Fail` / 92%.
+

@@ -68,9 +68,15 @@ This report records what ran and the result. The plan is in `api-e2e-coverage-in
   - Base `827f1e68dc`, its own Claude LE-T1: Pass. The same copy calls the tool and gets no rules.
   - The tool's gate is unchanged from base; the run's tool exposure differs. Base hosted the copy as a member of the Team root; 461 makes it a run of its own.
   - The requirements' scope says: "No change to what an agent reads: tool names, parameters, results and collaboration texts." Every agent's collaboration instructions also tell it to call `get_handoff_rules` when it finishes.
-- **Observations, not findings:**
-  - an opened copy's header reads "worker" in a Team-root tree (Team surface) and "writer - E997" in an Org tree (Agent surface);
-  - after a cross-runtime model switch, the "Agent runtime changed" notice shows twice in the copy's conversation (not compared with base).
+- **Observations, classified by CRR-059:**
+  - observation 1: an opened copy's header reads "worker" in a Team-root tree (Team surface) and "writer - E997" in an Org tree (Agent surface). Routed as CR-461-115 (Local Fix).
+  - observation 2, now **F-91 (low; addendum on CRR-059)**: after a cross-runtime switch, the live chat shows the "Agent runtime changed" notice twice, with an extra copy after the previous reply.
+    - It happens on a user-started run as well as on a delegated copy.
+    - The identical `runtime-switch-probe` RSW-01 on both trees:
+      - base `827f1e68dc`: 1 notice live, 1 after a reload;
+      - branch: 2 notices live, 1 after a reload.
+    - Base's desktop build doesn't start here: its packaging drops part of `application-sdk-contracts`. That's a base build issue.
+    - Evidence: `API-r19-runs.txt` §7.
 - **Not 461:** SIR-001/002, DLP-006 (retired), MSP-50/51, PLN-04, Grok (base fails the same), Claude LE-F1's precondition, DeepSeek LE-O1's model choice.
 - **FU-030:** no new wording-only refusal difference.
 
@@ -152,6 +158,6 @@ This report records what ran and the result. The plan is in `api-e2e-coverage-in
 ## Latest Authoritative Result
 
 - Result: `Fail`
-- New findings: F-90.
+- New findings: F-90; F-91 (low, addendum on CRR-059).
 - Next recipient from `get_handoff_rules`: `/software_engineering_team/code_reviewer` (failure-origin review).
 - Next round: LE-T1 on Codex, Claude and DeepSeek after F-90. The two observations are for the reviewer to classify.

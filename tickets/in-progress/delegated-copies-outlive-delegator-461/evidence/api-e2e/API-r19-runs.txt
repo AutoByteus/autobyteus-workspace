@@ -81,3 +81,21 @@ HOME=<resolved temp> TMPDIR USER); never the user's app or ~/.autobyteus. Raw lo
   screenshots /tmp/api461/r19/electron/shots/.
 
 6. No new wording-only refusal difference (FU-030 unchanged).
+
+7. Addendum on CRR-059 (observation 2: the "Agent runtime changed" notice after a cross-runtime switch)
+  Branch desktop (isolated instance iso-56835-b816, from this round's build): a user-started run on Claude (Haiku 5.5), one
+    reply, stopped; in its Settings switched to AutoByteus deepseek-v4-flash and saved; one message: 2 notices in the live
+    chat (one after the earlier reply, one at the reply turn); answered SECOND. Instance stopped, data root removed.
+  Base desktop: not available. Two clean `isolated-app start --build` runs of 827f1e68dc exit before ready: the packaged server
+    lacks @autobyteus/application-sdk-contracts/dist/manifests.js (only index.js is copied; the package's dist is rewritten
+    after the copy). The packaging scripts and the package manifest are identical on the branch, whose build starts. Base build
+    issue, not a 461 difference.
+  Same check on the web stack, the identical runtime-switch-probe RSW-01 on both trees (a stopped standalone run, AutoByteus →
+    Antigravity, scripted models). Its runtime-change hint assertion is stale on both trees (the hint element is gone); it was
+    relaxed identically in both copies for this comparison and reverted afterwards (not committed).
+    Live chat after the switch:  base 827f1e68dc 1 notice;  branch 2 notices (an extra one after the previous reply)
+    After a reload:              base 1;                   branch 1
+    Screenshots: /tmp/api461/r19/obs2/rsw2-base/RSW-01-after-switch-live.png, /tmp/api461/r19/obs2/rsw2-branch/RSW-01-after-switch-live.png
+  F-91 (new, low): after a cross-runtime switch, the live chat shows the runtime-change notice twice (an extra copy after the
+    previous reply); base shows one; after a reload both show one. Seen on a user-started run and on a delegated copy.
+
