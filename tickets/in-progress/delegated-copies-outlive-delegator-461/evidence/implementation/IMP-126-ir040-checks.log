@@ -1,0 +1,24 @@
+# IMP-126 (IR-040): gates and whole suites
+## server type gate (ac4a39498a)
+[typecheck] production errors: 0; test-file errors: 1012 in 316 files (baseline 1012 in 316 files)
+[typecheck] PASS
+## web type gate (6555b34c50)
+[typecheck] production errors: 0; test-file errors: 87 in 37 files (baseline 87 in 37 files)
+[typecheck] PASS
+## web suite (6555b34c50; CR-461-116 is server-only)
+      Tests  5623 passed (5623)
+nuxt exit 0
+      Tests  492 passed | 1 skipped (493)
+electron exit 0
+## server test:unit (ac4a39498a)
+ Test Files  1 failed | 993 passed | 5 skipped (999)
+      Tests  1 failed | 8129 passed | 9 skipped (8139)
+unit exit 1
+ FAIL  tests/unit/skill-update-notices/skill-folder-watcher.test.ts
+## the folder watcher files alone (no watcher code changed this round)
+ first two tries, load average ~30 after the full run: Tests  2 failed | 25 passed (27) ("Test timed out in 5000ms", "Timed out waiting for the monitor")
+ third try, the machine settled (load 7.68 13.51 29.76): Tests  27 passed (27)
+## agent-streaming suites (ac4a39498a): Tests  186 passed (186)
+## final builds: server dist from ac4a39498a's source; phone bundle from 6555b34c50 (no web change after)
+Sanitized built-module/bootstrap smoke passed without DATABASE_URL.
+mobile exit 0
