@@ -44,7 +44,7 @@ const context = (agentRunId: string, address: AgentTeamAddress): AgentContext =>
     llmModelIdentifier: 'provider:model', runtimeKind: 'autobyteus', workspaceId: null, workspaceMetadata: null, autoExecuteTools: false, isLocked: true }, state);
 };
 
-const createStateFixture = (input: { rootActive?: boolean; executionTree?: TeamRunExecutionTreeDto } = {}) => {
+const createStateFixture = (input: { rootActive?: boolean; executionTree?: TeamRunExecutionTreeDto; displayName?: string | null } = {}) => {
   const initialTree = input.executionTree ?? tree();
   const initial = [['teacher-run', '/Teacher'], ['root-student-run', '/Student']] as const;
   const initialContexts = new Map(initial.map(([agentRunId, address]) => [agentRunId, context(agentRunId, address)]));
@@ -54,6 +54,7 @@ const createStateFixture = (input: { rootActive?: boolean; executionTree?: TeamR
     initialFocusedAgentRunId: 'teacher-run',
     agentContexts: initial.map(([agentRunId, memberAddress]) => ({ agentRunId, memberAddress, agentContext: initialContexts.get(agentRunId)! })),
     createAgentContext: (agentRunId, address) => context(agentRunId, address),
+    displayName: input.displayName,
   });
   return { state, initialContexts };
 };
@@ -79,6 +80,12 @@ const expectApplied = (result: ReturnType<ReturnType<typeof createState>['applyM
 
 /** autobyteus-461 SR-084: a Team run's view holds its own members only; the runs it delegated are its tree's rows. */
 describe('TeamExecutionViewState', () => {
+  // autobyteus-461 SR-091: a delegated team run's header names its slot, as its row does, from the server; else its definition.
+  it('is named by the server\'s name for a delegated team run, and by its definition otherwise', () => {
+    expect(createStateFixture({ displayName: 'review squad' }).state.getDisplayName()).toBe('review squad')
+    expect(createStateFixture().state.getDisplayName()).toBe(tree().root_team.team_definition_name)
+  })
+
   it('places each own member in the Team run and keeps one reactive context per member', () => {
     const { state, initialContexts } = createStateFixture();
     expect(state.getAgentExecutionLocation('root-student-run')).toEqual({ agentRunId: 'root-student-run', memberAddress: '/Student', containingTeamRunId: 'root-team-1' });

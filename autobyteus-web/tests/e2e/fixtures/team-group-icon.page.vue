@@ -27,7 +27,7 @@
         <div data-preview="worker-detail"><ProjectTaskWorkers :root="worker" density="detail" /></div>
         <div data-preview="worker-closed"><ProjectTaskWorkers :root="{ ...worker, closed: true }" /></div>
         <div data-preview="worker-failed"><ProjectTaskWorkers :root="{ ...worker, start: 'failed', startError: { code: 'PREVIEW', message: 'No model configured.' } }" density="detail" /></div>
-        <ProjectTaskWorkers :root="{ ...worker, kind: 'agent', recipientAddress: '/release_writer' }" />
+        <ProjectTaskWorkers :root="{ ...worker, kind: 'agent', recipientAddress: '/release_writer', displayName: 'release writer' }" />
       </section>
     </div>
     <div data-preview="memory" class="mt-4 max-w-5xl">
@@ -101,7 +101,7 @@ treeState.toggleAgentOrgDefinition('preview', 'org-definition'); treeState.toggl
 const state = { ...treeState, agentOrgContextFor: () => null, isAgentOrgTerminating: () => false, isAgentOrgDeleting: () => false, isAgentOrgArchiving: () => false, agentOrgTerminationError: () => null } as any;
 const actions = { onInspectAgentOrgExecution: () => inspections.value++, onSelectAgentOrgMember: () => selections.value++ } as any;
 const avatars = { showOrgAvatar: () => false, getOrgAvatarUrl: () => '', onOrgAvatarError: () => {} };
-const worker: TaskRootView = { kind: 'team', recipientAddress: '/software_engineering_team', ingressAgentRunId: 'preview-worker', teamRunId: 'preview-team', delegatingRun: { kind: 'agent', runId: 'preview-host' }, topRun: { kind: 'agent', runId: 'preview-host' }, openTarget: { runKind: 'agent', runId: 'worker-run', agentRunId: 'worker-run' }, start: 'started', startError: null, closed: false, status: 'idle' };
+const worker: TaskRootView = { kind: 'team', recipientAddress: '/software_engineering_team', displayName: 'software engineering team', ingressAgentRunId: 'preview-worker', teamRunId: 'preview-team', delegatingRun: { kind: 'agent', runId: 'preview-host' }, topRun: { kind: 'agent', runId: 'preview-host' }, openTarget: { runKind: 'agent', runId: 'worker-run', agentRunId: 'worker-run' }, start: 'started', startError: null, closed: false, status: 'idle' };
 const memory = { latestMemoryAt: null, hasWorkJournal: true, hasRawTraces: false, hasRawArchive: false };
 const configured: CollaborationMemoryGroup = { teamRunId: 'configured', address: '/review_team', displayName: 'Review Team', kind: 'CONFIGURED_TEAM', startedAt: null };
 const task: CollaborationMemoryGroup = { ...configured, teamRunId: 'task', kind: 'TASK_TEAM' };

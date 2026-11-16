@@ -61,6 +61,22 @@ describe('runContextHydrationService', () => {
     expect(candidate.config).toMatchObject({ agentDefinitionId: 'agent-def', agentDefinitionName: 'Exact Agent' });
   });
 
+  // autobyteus-461 SR-091: a delegated run's context and header are named as its row is, by the server; no client derives it.
+  it('names a delegated run by the server\'s name (its slot); a run nobody delegated by its definition', async () => {
+    const resolveWorkspace = vi.fn().mockResolvedValue({
+      workspaceId: 'workspace-1', workspaceRootPath: '/workspace', displayName: 'workspace', kind: 'filesystem',
+    });
+    const base = mocks.query.getMockImplementation()!;
+    mocks.query.mockImplementation(async (options: { query: any }) => options.query.definitions[0]?.name?.value === 'GetAgentRunResumeConfig'
+      ? { data: { getAgentRunResumeConfig: { ...resumeConfig, displayName: 'worker' } }, errors: [] } : base(options));
+    const delegated = await loadRunContextHydrationCandidate({ runId: 'run-1', fallbackAgentName: null, resolveWorkspaceMetadataByRootPath: resolveWorkspace });
+    expect(delegated.config.agentDefinitionName).toBe('worker');
+    expect(delegated.conversation.agentName).toBe('worker');
+    mocks.query.mockImplementation(base);
+    const mine = await loadRunContextHydrationCandidate({ runId: 'run-1', fallbackAgentName: null, resolveWorkspaceMetadataByRootPath: resolveWorkspace });
+    expect(mine.config.agentDefinitionName).toBe('Exact Agent');
+  });
+
   describe('standalone artifacts (unchanged, AC-006)', () => {
     const resolveWorkspace = vi.fn().mockResolvedValue({
       workspaceId: 'workspace-1', workspaceRootPath: '/workspace', displayName: 'workspace', kind: 'filesystem',

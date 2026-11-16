@@ -69,6 +69,7 @@ export interface TeamRunRecoveryHydrationCandidate extends Omit<TeamRunHydration
 interface ResumeGraphqlData {
   getTeamRunResumeConfig: {
     teamRunId: string;
+    displayName?: string | null;
     isActive: boolean;
     executionTree: unknown;
     modelConfigEditability: RunModelConfigEditability;
@@ -317,6 +318,7 @@ const hydrateCurrentTeamRunContext = async (
       address,
       workspaceMetadata: workspaces.get(address) ?? null,
     }),
+    displayName: raw.displayName ?? null,
   });
   const focus = view.focusAgentForInspection(initialFocusedAgentRunId);
   if (focus.disposition === 'rejected') throw new Error(focus.message);

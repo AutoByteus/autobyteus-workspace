@@ -13,7 +13,7 @@ import TaskRootSection from '../TaskRootSection.vue'
 import type { TaskRootView } from '~/types/project'
 
 const root = (overrides: Partial<TaskRootView> = {}): TaskRootView => ({
-  kind: 'agent', recipientAddress: '/release_writer', ingressAgentRunId: 'worker', teamRunId: null,
+  kind: 'agent', recipientAddress: '/release_writer', displayName: 'release writer', ingressAgentRunId: 'worker', teamRunId: null,
   delegatingRun: { kind: 'agent', runId: 'manager-root' }, topRun: { kind: 'agent', runId: 'manager-root' }, openTarget: { runKind: 'agent', runId: 'worker-run', agentRunId: 'worker-run' }, start: 'started', startError: null, closed: false, status: 'running', ...overrides,
 })
 const listHost = () => { history.workspaceGroups = [{ agentDefinitions: [{ runs: [{ runId: 'manager-root' }] }], teamDefinitions: [] }] }
@@ -69,7 +69,7 @@ describe('ProjectTaskWorkers (the Task root line)', () => {
 
   it('a team root without a recorded address shows its kind; a failed root shows Couldn\'t start with the error on the Task page', () => {
     listHost()
-    const team = mount(ProjectTaskWorkers, { props: { root: root({ kind: 'team', recipientAddress: null, status: 'idle' }) } })
+    const team = mount(ProjectTaskWorkers, { props: { root: root({ kind: 'team', recipientAddress: null, displayName: null, status: 'idle' }) } })
     expect(team.get('[data-testid="project-task-root-name"]').text()).toBe('Team')
     const failed = mount(TaskRootSection, { props: { root: root({ start: 'failed', status: 'offline', startError: { code: 'NO_MODEL', message: 'No model is set.' } }) } })
     expect(failed.get('[data-testid="project-task-root-failed"]').attributes('data-openable')).toBe('false')

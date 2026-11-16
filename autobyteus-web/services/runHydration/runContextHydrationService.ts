@@ -77,7 +77,9 @@ export const loadRunContextHydrationCandidate = async (
   const agentDefinition = agentDefinitionStore.getAgentDefinitionById(
     resumeConfig.metadataConfig.agentDefinitionId,
   );
+  // A delegated run is named after its slot, as its row is (SR-091): the server's name; else its definition's.
   const resolvedAgentName =
+    resumeConfig.displayName ||
     agentDefinition?.name ||
     input.fallbackAgentName ||
     'Agent';

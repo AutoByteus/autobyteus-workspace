@@ -13,7 +13,7 @@ export const teamWorkspaceContextViewOf = (team: AgentTeamContext): TeamWorkspac
   return Object.freeze({
     rootKind: 'agent_team', rootRunId: view.getRootTeamRunId(),
     teamRunId: view.getRootTeamRunId(), teamAddress: parseAgentTeamAddress('/'),
-    teamDefinitionName: view.getTeamDefinitionName(),
+    teamDefinitionName: view.getDisplayName(),
     coordinatorAddress: parseAgentTeamAddress(tree.root_team.coordinator_address),
     focusedMemberAddress: view.getFocusedMemberAddress(),
     focusedAgentRunId: view.getFocusedAgentRunId(), focusedAgentContext: focusedContext,

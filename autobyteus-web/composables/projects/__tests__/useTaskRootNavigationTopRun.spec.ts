@@ -36,7 +36,7 @@ import { multiTeamTree } from '~/test-support/runTreeFixtures'
 import { useTaskRootNavigation } from '../useTaskRootNavigation'
 
 const root = (overrides: Partial<TaskRootView>): TaskRootView => ({
-  kind: 'agent', recipientAddress: '/helper', ingressAgentRunId: 'nested-helper', teamRunId: null,
+  kind: 'agent', recipientAddress: '/helper', displayName: 'helper', ingressAgentRunId: 'nested-helper', teamRunId: null,
   delegatingRun: { kind: 'agent_team', runId: teamId(1) }, topRun: { kind: 'agent', runId: 'host-run' },
   openTarget: { runKind: 'agent', runId: 'nested-helper', agentRunId: 'nested-helper' }, start: 'started', startError: null, closed: false, status: 'running', ...overrides,
 })

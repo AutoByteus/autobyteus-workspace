@@ -5,7 +5,7 @@ import zhCN from '~/localization/messages/zh-CN/projects'
 import type { TaskRootView } from '~/types/project'
 
 const root = (overrides: Partial<TaskRootView> = {}): TaskRootView => ({
-  kind: 'agent', recipientAddress: '/product_team/release_writer', ingressAgentRunId: 'worker', teamRunId: null,
+  kind: 'agent', recipientAddress: '/product_team/release_writer', displayName: 'release writer', ingressAgentRunId: 'worker', teamRunId: null,
   delegatingRun: { kind: 'agent', runId: 'manager-root' }, topRun: { kind: 'agent', runId: 'manager-root' }, openTarget: { runKind: 'agent', runId: 'worker-run', agentRunId: 'worker-run' }, start: 'started', startError: null, closed: false, status: 'running', ...overrides,
 })
 
@@ -31,8 +31,13 @@ describe('presentTaskRoot (AR-002 openable rule, DEC-006 statuses)', () => {
       .toEqual({ name: 'release writer', state: 'failed', muted: false, openable: false, error: 'No model is set.' })
   })
 
+  // autobyteus-461 SR-091: the card names the worker as its row and its own view do, with the server's name.
+  it('names the worker by the server\'s name, never one it derives from the address', () => {
+    expect(presentTaskRoot(root({ recipientAddress: '/product_team/release_writer', displayName: 'writer slot' }), true).name).toBe('writer slot')
+  })
+
   it('an assignment recorded before addresses were kept has no name (the line shows its kind)', () => {
-    expect(presentTaskRoot(root({ recipientAddress: null }), true).name).toBeNull()
+    expect(presentTaskRoot(root({ recipientAddress: null, displayName: null }), true).name).toBeNull()
   })
 })
 

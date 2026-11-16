@@ -34,7 +34,7 @@ it('explicit Task-root navigation opens its exact Team row unfolded at its coord
   const tree = multiTeamTree()
   useRunTreeStore().streamSnapshot({ kind: 'agent', runId: 'host-run' }, tree.rows)
   const root: TaskRootView = {
-    kind: 'team', recipientAddress: '/software_engineering_team', teamRunId: teamId(5), ingressAgentRunId: memberId(5, 0),
+    kind: 'team', recipientAddress: '/software_engineering_team', displayName: 'software engineering team', teamRunId: teamId(5), ingressAgentRunId: memberId(5, 0),
     delegatingRun: { kind: 'agent', runId: 'host-run' }, topRun: { kind: 'agent', runId: 'host-run' },
     openTarget: { runKind: 'agent_team', runId: teamId(5), agentRunId: memberId(5, 0) }, start: 'started', startError: null, closed: false, status: 'running',
   }

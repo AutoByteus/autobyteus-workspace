@@ -114,6 +114,8 @@ type RowInput = Readonly<{
   origin: RowOrigin
   /** A peer's run (read-only): its node's name. */
   remoteNode?: string
+  /** A delegated run's own name, as the server named its row (autobyteus-461 SR-091); a member is named by `nameOf`. */
+  name?: string
 }>
 
 /**
@@ -147,12 +149,12 @@ const builders = (deps: RunMemberTreeDeps, control: DelegatedRowControl, nameOf:
   return {
     agent: (input: RowInput, isCoordinator = false): RunMemberNode => {
       const { values, ...rest } = rowFacts(input)
-      return memberNode({ key: input.key, kind: 'agent', name: nameOf(input.address), agentRunId: input.agentRunId, isCoordinator, values, parentValues: values,
+      return memberNode({ key: input.key, kind: 'agent', name: input.name ?? nameOf(input.address), agentRunId: input.agentRunId, isCoordinator, values, parentValues: values,
         fields: MEMBER_RUN_SETTING_FIELDS, ...rest }, deps)
     },
     team: (input: RowInput, children: readonly RunMemberNode[]): RunMemberNode => {
       const { values, ...rest } = rowFacts(input)
-      return memberNode({ key: input.key, kind: 'team', name: nameOf(input.address), values, parentValues: values,
+      return memberNode({ key: input.key, kind: 'team', name: input.name ?? nameOf(input.address), values, parentValues: values,
         fields: MEMBER_RUN_SETTING_FIELDS, children, ...rest }, deps)
     },
   }
@@ -199,7 +201,7 @@ export const treeDelegatedLaunchNodes = (rows: readonly RunTreeRowDto[], top: Ru
     const remoteNode = row.peer?.nodeName
     if (!isTeamRow(row)) {
       const agentRunId = target?.agentRunId ?? row.statusIds[0]!
-      result.push(build.agent({ key: row.key, address: row.address ?? '', agentRunId, started: launchOf(row.launch), target: `agent:${agentRunId}`,
+      result.push(build.agent({ key: row.key, address: row.address ?? '', name: row.name, agentRunId, started: launchOf(row.launch), target: `agent:${agentRunId}`,
         stop: remoteNode ? null : { agentRunId }, running: live([agentRunId]), remoteNode,
         origin: { source: sourceOf(row.launch?.source), ownNotes: true, badge: 'delegated_copy', decision: locatorOf(delegatorOf(row), row.address ?? '', row.address ?? '') } }))
       continue
@@ -213,7 +215,7 @@ export const treeDelegatedLaunchNodes = (rows: readonly RunTreeRowDto[], top: Ru
         stop: null, running, remoteNode, origin: { source: sourceOf(member.launch?.source), ownNotes: member.launch?.ownSource ?? false,
           decision: locatorOf(delegatorOf(row), row.address ?? '', member.address ?? '') } }, agentRunId === target?.agentRunId)
     })
-    result.push(build.team({ key: row.key, address: row.address ?? '', started: launchOf(row.launch ?? memberRows.find((member) => member.openTarget?.agentRunId === target?.agentRunId)?.launch),
+    result.push(build.team({ key: row.key, address: row.address ?? '', name: row.name, started: launchOf(row.launch ?? memberRows.find((member) => member.openTarget?.agentRunId === target?.agentRunId)?.launch),
       target: `team:${teamRunId}`, stop: remoteNode ? null : { teamRunId }, running, remoteNode,
       origin: { source: sourceOf(row.launch?.source), ownNotes: true, badge: 'delegated_copy', decision: null } }, members))
   }

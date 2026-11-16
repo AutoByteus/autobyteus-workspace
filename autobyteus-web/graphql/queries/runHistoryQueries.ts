@@ -10,6 +10,7 @@ export const ListWorkspaceRunHistory = gql`
         agentName
         runs {
           runId
+          displayName
           summary
           createdAt
           lastActivityAt
@@ -27,6 +28,7 @@ export const ListWorkspaceRunHistory = gql`
         teamDefinitionName
         runs {
           teamRunId
+          displayName
           teamDefinitionId
           teamDefinitionName
           coordinatorAddress
@@ -63,6 +65,7 @@ export const GetWorkspaceRunHistory = gql`
         agentName
         runs {
           runId
+          displayName
           summary
           createdAt
           lastActivityAt
@@ -80,6 +83,7 @@ export const GetWorkspaceRunHistory = gql`
         teamDefinitionName
         runs {
           teamRunId
+          displayName
           teamDefinitionId
           teamDefinitionName
           coordinatorAddress
@@ -249,6 +253,7 @@ export const GetTeamRunResumeConfig = gql`
   query GetTeamRunResumeConfig($teamRunId: String!) {
     getTeamRunResumeConfig(teamRunId: $teamRunId) {
       teamRunId
+      displayName
       isActive
       executionTree
       modelConfigEditability {
@@ -321,6 +326,7 @@ export const GetAgentRunResumeConfig = gql`
   query GetAgentRunResumeConfig($runId: String!) {
     getAgentRunResumeConfig(runId: $runId) {
       runId
+      displayName
       isActive
       metadataConfig {
         agentDefinitionId

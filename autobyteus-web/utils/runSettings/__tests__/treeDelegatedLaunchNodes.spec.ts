@@ -37,6 +37,14 @@ describe('treeDelegatedLaunchNodes (SR-084)', () => {
     expect(delegatedRowsByKey(rows).get('team_member:squad:dev')?.agentRunId).toBe('dev')
   })
 
+  // autobyteus-461 SR-091: a delegated run's row is named as the server named its tree row; its team's members by their addresses.
+  it('names each delegated run as the server named its row; a team\'s member by its address', () => {
+    const named = tree.map((r) => r.key === 'agent:writer' ? { ...r, name: 'release writer' } : r.key === 'team:squad' ? { ...r, name: 'review squad' } : r)
+    const rows = treeDelegatedLaunchNodes(named, top, deps, control())
+    expect(rows.map((node) => node.name)).toEqual(['release writer', 'review squad', 'pub'])
+    expect(rows.find((node) => node.key === 'team:squad')!.children.map((member) => member.name)).toEqual(['lead', 'dev'])
+  })
+
   it('each row shows the launch and origin its run has now: an edit\'s "settings" origin; a member without its own source shows its team\'s', () => {
     const rows = delegatedRowsByKey(treeDelegatedLaunchNodes(tree, top, deps, control()))
     expect(rows.get('team_member:squad:dev')).toMatchObject({ values: { llmModelIdentifier: 'haiku' }, sourceKey: 'settings' })

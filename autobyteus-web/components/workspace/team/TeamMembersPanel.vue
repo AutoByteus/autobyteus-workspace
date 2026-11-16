@@ -131,7 +131,7 @@ const visibleRows = computed(() => allRows.value.filter((row) => {
   return true;
 }));
 const focusedAgentRunId = computed(() => activeTeam.value?.view.getFocusedAgentRunId() ?? null);
-const teamName = computed(() => activeTeam.value?.view.getTeamDefinitionName() || 'this team');
+const teamName = computed(() => activeTeam.value?.view.getDisplayName() || 'this team');
 const isStopPending = computed(() => {
   const rootTeamRunId = activeTeam.value?.view.getRootTeamRunId();
   return rootTeamRunId ? Boolean(teamRunStore.stopPendingTeamIds[rootTeamRunId]) : false;

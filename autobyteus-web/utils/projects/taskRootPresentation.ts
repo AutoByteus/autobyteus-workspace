@@ -1,4 +1,3 @@
-import { memberDisplayName } from '~/utils/collaboration/memberDisplayName'
 import type { RunHistoryWorkspaceGroup, AgentOrgRunHistoryItem } from '~/stores/runHistoryTypes'
 import type { TaskRootStatus, TaskRootView } from '~/types/project'
 
@@ -37,7 +36,7 @@ export interface TaskRootPresentation {
  * and the run whose view lists its row (its tree's top, SR-080) is in the left panel; otherwise no chevron and not focusable.
  */
 export const presentTaskRoot = (root: TaskRootView, topListed: boolean): TaskRootPresentation => ({
-  name: root.recipientAddress ? memberDisplayName(root.recipientAddress) : null,
+  name: root.displayName,
   state: root.start === 'failed' ? 'failed' : root.closed ? 'offline' : root.status,
   muted: root.closed,
   openable: root.start === 'started' && !root.closed && topListed,

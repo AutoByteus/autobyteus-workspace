@@ -22,7 +22,7 @@ export const testTeamWorkspaceContextView = (
     rootRunId: view.getRootTeamRunId(),
     teamRunId: view.getRootTeamRunId(),
     teamAddress: parseAgentTeamAddress('/'),
-    teamDefinitionName: view.getTeamDefinitionName(),
+    teamDefinitionName: view.getDisplayName(),
     coordinatorAddress: parseAgentTeamAddress(view.getExecutionTree().root_team.coordinator_address),
     focusedMemberAddress: memberAddress,
     focusedAgentRunId,

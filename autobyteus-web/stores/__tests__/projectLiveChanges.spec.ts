@@ -9,7 +9,7 @@ import { useProjectStore } from '../projectStore'
 import { useWindowNodeContextStore } from '../windowNodeContextStore'
 import type { Project, ProjectTask, TaskRootView, TaskWithoutProject } from '~/types/project'
 
-const root = (status: TaskRootView['status'] = 'idle'): TaskRootView => ({ kind: 'agent', recipientAddress: '/w', ingressAgentRunId: 'w', teamRunId: null,
+const root = (status: TaskRootView['status'] = 'idle'): TaskRootView => ({ kind: 'agent', recipientAddress: '/w', displayName: 'w', ingressAgentRunId: 'w', teamRunId: null,
   delegatingRun: { kind: 'agent', runId: 'r' }, topRun: { kind: 'agent', runId: 'r' }, openTarget: { runKind: 'agent', runId: 'worker-run', agentRunId: 'worker-run' }, start: 'started', startError: null, closed: false, status })
 const task = (taskId: string, updatedAt: string, status: ProjectTask['status'] = 'TODO'): ProjectTask => ({ taskId, projectId: 'p1', taskKey: `p1-${taskId}`,
   title: `Task ${taskId}`, description: `Task ${taskId}`, status, dependsOnTaskIds: [], partOfTaskId: null, comments: [], contextFiles: [], createdAt: '2026-09-26T00:00:00.000Z', updatedAt, root: root() })

@@ -4,6 +4,7 @@ export const TaskRootFields = gql`
   fragment TaskRootFields on TaskRoot {
     kind
     recipientAddress
+    displayName
     ingressAgentRunId
     teamRunId
     delegatingRun { kind runId }

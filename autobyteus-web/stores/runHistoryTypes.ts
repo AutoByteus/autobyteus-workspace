@@ -10,6 +10,8 @@ export type RunKnownStatus = 'ACTIVE' | 'IDLE' | 'ERROR' | 'TERMINATED';
 
 export interface RunHistoryItem {
   runId: string;
+  /** The run's name from the server (autobyteus-461 SR-091): a delegated run's slot; null for one nobody delegated (its definition names it). */
+  displayName?: string | null;
   summary: string;
   createdAt: string;
   /** When the run was last active, its delegated work included; `createdAt` before any (server, DS-005). */
@@ -90,6 +92,8 @@ export interface RunMetadataConfigPayload {
 
 export interface RunResumeConfigPayload {
   runId: string;
+  /** The run's name from the server (autobyteus-461 SR-091): a delegated run's slot; null for one nobody delegated (its definition names it). */
+  displayName?: string | null;
   isActive: boolean;
   metadataConfig: RunMetadataConfigPayload;
   modelConfigEditability: RunModelConfigEditability;
@@ -114,6 +118,8 @@ export interface TeamRunMemberHistoryItem {
 
 export interface TeamRunHistoryItem {
   teamRunId: string;
+  /** The run's name from the server (autobyteus-461 SR-091): a delegated run's slot; null for one nobody delegated (its definition names it). */
+  displayName?: string | null;
   teamDefinitionId: string;
   teamDefinitionName: string;
   coordinatorAddress: string;
@@ -137,6 +143,8 @@ export interface TeamRunHistoryDefinitionGroup {
 
 export interface TeamRunResumeConfigPayload {
   teamRunId: string;
+  /** The run's name from the server (autobyteus-461 SR-091): a delegated run's slot; null for one nobody delegated (its definition names it). */
+  displayName?: string | null;
   isActive: boolean;
   executionTree: TeamRunExecutionTreeDto;
   modelConfigEditability: RunModelConfigEditability;

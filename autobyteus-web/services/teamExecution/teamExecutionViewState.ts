@@ -27,7 +27,8 @@ type MutationResult = Readonly<{ disposition: 'applied' | 'unchanged' }>
 
 export interface TeamExecutionViewState {
   getRootTeamRunId(): string;
-  getTeamDefinitionName(): string;
+  /** The Team's name (autobyteus-461 SR-091): a delegated team run's slot, from the server; else its definition's. */
+  getDisplayName(): string;
   getExecutionTree(): TeamRunExecutionTreeDto;
   getConfigurationView(): Readonly<TeamRunConfigurationView>;
   getChangeSequence(): number;
@@ -62,6 +63,8 @@ export interface CreateTeamExecutionViewStateInput {
   initialFocusedAgentRunId: string;
   agentContexts: readonly TeamAgentContextEntry[];
   createAgentContext: (agentRunId: string, address: AgentTeamAddress, tree: TeamRunExecutionTreeDto) => AgentContext | null;
+  /** The server's name for the run (SR-091): a delegated team run's slot; null or absent for one the user started. */
+  displayName?: string | null;
 }
 
 const requiredId = (value: string, label: string): string => {
@@ -358,7 +361,7 @@ export const createTeamExecutionViewState = (
 
   return {
     getRootTeamRunId: () => rootTeamRunId,
-    getTeamDefinitionName: () => publication.value.tree.root_team.team_definition_name,
+    getDisplayName: () => input.displayName || publication.value.tree.root_team.team_definition_name,
     getExecutionTree: () => publication.value.tree,
     getConfigurationView: () => input.configuration,
     getChangeSequence: () => publication.value.changeSequence,
