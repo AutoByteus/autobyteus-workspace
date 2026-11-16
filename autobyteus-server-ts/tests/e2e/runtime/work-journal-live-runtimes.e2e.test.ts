@@ -12,6 +12,7 @@ import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { closeLiveServerVault, initializeLiveServerVault, requireLiveCapability } from "../../../../test-support/test-vault/live-server-vault.js";
 import { startStudioE2eRuntimeServer } from "../helpers/studio-runtime-test-server.js";
 import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
+import { agentStreamFramesOf } from "../helpers/agent-stream-frames.js";
 
 // Live Work Journal through the real Studio server and each real runtime (REQ-W1, W4, W6, W7; SCN-W1).
 // Every runtime gets the same small task (a command, a read, a write, an edit). After its turn ends,
@@ -155,9 +156,8 @@ describe("Work Journal on each live runtime", () => {
     socket.on("message", (raw: unknown) => {
       try {
         const parsed = JSON.parse(String(raw)) as { type?: unknown; payload?: unknown };
-        if (typeof parsed.type !== "string") return;
-        messages.push({ type: parsed.type, payload: parsed.payload && typeof parsed.payload === "object"
-          && !Array.isArray(parsed.payload) ? parsed.payload as Record<string, unknown> : {} });
+        // autobyteus-461 SR-087: a SEGMENT_CONTENT_BATCH is its items (each a SEGMENT_CONTENT), as the web applies it.
+        messages.push(...agentStreamFramesOf(parsed));
         if (parsed.type === "TURN_COMPLETED" && memoryDir) input.onTurnCompleted?.(memoryDir);
       } catch { /* Ignore malformed diagnostic rows only. */ }
     });

@@ -425,6 +425,9 @@ const caseAgentRun = async () => {
     // The user's message to the Manager starts it, on the view's stream.
     const streamsBefore = viewSockets.filter((w) => viewUrl(w.url)).length;
     await runRow.click();
+    // As a user does: the Manager's conversation shown (no longer "Loading") before typing (IMP-111: a send while the view
+    // still loaded was dropped in 2 of 4 runs).
+    await until('the Manager\'s view loaded', async () => { const text = await centerText(page); return !/Loading/i.test(text) && text.trim().length > 0; }, 30000);
     await send(page, 'Back to work. Marker MANAGER-START');
     await until('the Manager started', () => isActive(s.root), 60000);
     await until('manager reply', async () => (await centerText(page)).includes('MANAGER-START'), 60000);

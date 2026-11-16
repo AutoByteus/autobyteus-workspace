@@ -28,6 +28,7 @@ import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { closeLiveServerVault, initializeLiveServerVault } from "../../../../test-support/test-vault/live-server-vault.js";
 import { startStudioE2eRuntimeServer } from "./studio-runtime-test-server.js";
 import { sendE2eSendMessageCommand } from "./websocket-command-helpers.js";
+import { agentStreamFramesOf } from "./agent-stream-frames.js";
 
 export type Json = Record<string, unknown>;
 export type LimitFields = {
@@ -412,7 +413,8 @@ export class NativeRuntimeLiveHarness {
     socket.on("message", (raw) => {
       let parsed: { type?: unknown; payload?: unknown };
       try { parsed = JSON.parse(raw.toString()) as { type?: unknown; payload?: unknown }; } catch { return; }
-      if (typeof parsed.type === "string") frames.push({ type: parsed.type, payload: isRecord(parsed.payload) ? parsed.payload : {} });
+      // autobyteus-461 SR-087: a SEGMENT_CONTENT_BATCH is its items (each a SEGMENT_CONTENT), as the web applies it.
+      frames.push(...agentStreamFramesOf(parsed) as WsMessage[]);
     });
     await new Promise<void>((resolve, reject) => { socket.once("open", () => resolve()); socket.once("error", reject); });
     this.sockets.add(socket);

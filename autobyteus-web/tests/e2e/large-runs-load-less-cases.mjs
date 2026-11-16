@@ -88,7 +88,11 @@ export function registerLargeRunsLoadLessCases(h) {
   const teamSend = async (teamRunId, agentRunId, content) => {
     const url = `${env().backendUrl.replace(/^http/, 'ws')}/ws/agent-team/${teamRunId}`
     const ws = new WebSocket(ownerSocketUrl(url)) // the owner's second client carries the credential (autobyteus-437)
+    const frames = []
+    ws.addEventListener('message', (e) => { try { frames.push(JSON.parse(String(e.data))) } catch { /* ignore */ } })
     await new Promise((resolve, reject) => { ws.addEventListener('open', resolve, { once: true }); ws.addEventListener('error', reject, { once: true }) })
+    // The protocol: commands wait for the session, which CONNECTED announces (a send before it is refused SESSION_NOT_READY).
+    await waitFor('Team stream CONNECTED', () => frames.some((frame) => frame.type === 'CONNECTED'), 30000)
     const id = `lrl-${randomUUID()}`
     const ack = new Promise((resolve) => ws.addEventListener('message', (e) => { try { const m = JSON.parse(String(e.data)); if (m.payload?.message_id === id || /SEND_MESSAGE/.test(m.type)) resolve(m) } catch { /* ignore */ } }))
     ws.send(JSON.stringify({ type: 'SEND_MESSAGE', payload: { content, context_file_paths: [], image_urls: [], agent_run_id: agentRunId, message_id: id, dedupe_key: `agent_run_input:lrl:${id}` } }))

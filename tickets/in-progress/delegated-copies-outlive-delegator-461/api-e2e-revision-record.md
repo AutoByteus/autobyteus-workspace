@@ -629,3 +629,27 @@ None
 - New or remaining failure IDs: F-76 (Team and Org `CONNECTED` before the session), F-77 (a delegated run does not open from a Team or Org surface), F-78 (tree statuses), F-79 (leaving rows); the stale stream clients and mocked probes; unclassified DLD, MSP and some PMU, TS and BR cases
 - Recommended owner: per the failure-origin review.
 - Remaining risks, blocked evidence, or untested scope: the rendered peer checks (RTP-04 … 09) not reached; LE-O1 and LE-A1 … LE-T1 (DeepSeek balance).
+
+### API-REV-017: round 17 (CRR-054): the stale tests reworked; F-76 … F-79 resolved; F-80 … F-86 new
+
+- Triggering role, report path, and round: `/software_engineering_team/code_reviewer`, `code-review-report.md` (CRR-054 at `568dea0159`), API/E2E round 17
+- Triggering finding or case IDs: CR-461-101 … -105; CRR-053's stale tests
+- Why this revision was recorded: the rechecks and the stale-test rework
+- Coverage decisions or durable test paths changed: the shared `/ws/agent` reader; the clients' wait for `CONNECTED`; TS-001 per REQ-001; SDV-01's wait; the composer and model-config probes
+
+#### Prior Failure Resolution
+
+| Prior ID | Classification | Now | Proven By |
+| --- | --- | --- | --- |
+| F-76 | Local Fix (CR-461-101) | Resolved | CF-005, interrupt-resend, linked E04/E10, Anthropic team restore |
+| F-77 | Local Fix (CR-461-102) | Resolved | SDV-03/06/07, PMU-012/016, osfr B-003, RTP-04 ×2 |
+| F-78 | Local Fix (CR-461-103) | Resolved | SDV-01, BR-010 ×2 |
+| F-79 | Local Fix (CR-461-104) | Resolved | BR-001/002 |
+| Stale `/ws/agent` clients | API/E2E (CRR-053) | Reworked | full run 870 passed; reruns alone |
+
+- Canonical artifacts and sections updated: the execution report; the progress log; `evidence/api-e2e/API-r17-runs.txt`.
+- Prior result and confidence: Fail / 71%
+- Current result and confidence: Fail / 79%
+- New or remaining failure IDs: F-80, F-81, F-82 (design question), F-83, F-84, F-86; unclassified DLD and MSP cases; two mocked probes unfinished
+- Recommended owner: per the failure-origin review.
+- Remaining risks, blocked evidence, or untested scope: LE-O1 and LE-A1 … LE-T1 (DeepSeek balance).

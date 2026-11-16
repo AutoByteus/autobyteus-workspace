@@ -26,6 +26,7 @@ import {
   type ClaudeCliExecutableCandidate,
 } from "../../helpers/claude-cli-executable-candidates.js";
 import { createTestRunWorkspaceSkills } from "../../fixtures/run-workspace-skills-fixtures.js";
+import { agentStreamFramesOf } from "./agent-stream-frames.js";
 
 export type StreamMessage = { type?: string; payload?: Record<string, unknown> };
 
@@ -169,7 +170,8 @@ export const createClaudeLiveAgentHarness = async (input: {
   const messages: StreamMessage[] = [];
   socket.on("message", (data) => {
     try {
-      messages.push(JSON.parse(data.toString()) as StreamMessage);
+      // autobyteus-461 SR-087: a SEGMENT_CONTENT_BATCH is its items (each a SEGMENT_CONTENT), as the web applies it.
+      messages.push(...agentStreamFramesOf(JSON.parse(data.toString()) as StreamMessage) as unknown as StreamMessage[]);
     } catch {
       // Non-JSON frames are not part of the agent stream contract.
     }

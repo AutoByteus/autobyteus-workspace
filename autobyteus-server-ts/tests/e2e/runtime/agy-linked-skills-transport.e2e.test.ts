@@ -12,6 +12,7 @@ import { DAILY_ASSISTANT_AGENT_DEFINITION_ID } from "../../../src/built-in-agent
 import { startStudioE2eRuntimeServer } from "../helpers/studio-runtime-test-server.js";
 import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
 import { flattenE2eConfiguredAgentExecutions } from "../helpers/team-run-metadata-helpers.js";
+import { agentStreamFramesOf, liveFramesOf, waitConnected } from "../helpers/agent-stream-frames.js";
 
 /**
  * AGY linked skills and always-on auto-approve through the real server (GraphQL, WebSocket, run manager,
@@ -121,11 +122,13 @@ suite("AGY linked skills and always auto-approve through the server (scripted CL
     socket.on("message", (raw: unknown) => {
       try {
         const parsed = JSON.parse(String(raw)) as { type?: unknown; payload?: unknown };
-        if (typeof parsed.type === "string") frames.push({ type: parsed.type,
-          payload: parsed.payload && typeof parsed.payload === "object" ? parsed.payload as Record<string, unknown> : {} });
+        // autobyteus-461 SR-087: a SEGMENT_CONTENT_BATCH is its items (each a SEGMENT_CONTENT), as the web applies it.
+        frames.push(...agentStreamFramesOf(parsed));
       } catch { /* Ignore malformed diagnostic rows only. */ }
     });
     await new Promise<void>((resolve, reject) => { socket.once("open", resolve); socket.once("error", reject); });
+    // The protocol: commands wait for the session, which CONNECTED announces.
+    await waitConnected(frames);
     return { socket, frames };
   };
   const until = async (frames: Frame[], label: string, predicate: (frame: Frame) => boolean, ms = 30_000): Promise<Frame> => {
@@ -148,8 +151,9 @@ suite("AGY linked skills and always auto-approve through the server (scripted CL
     socket.close();
     return frames;
   };
+  /** The skills the turn reported (its live frames: a stopped run's session opens with its stored conversation, SR-087). */
   const reportedSkills = (frames: Frame[]): CapsuleSkill[] => {
-    const text = frames.map((frame) => JSON.stringify(frame.payload)).join("\n");
+    const text = liveFramesOf(frames).map((frame) => JSON.stringify(frame.payload)).join("\n");
     const match = /SKILLS:(\[.*?\])(?:\\n|")/.exec(text);
     if (!match) throw new Error(`No skill report in turn: ${text.slice(-3000)}`);
     return JSON.parse(JSON.parse(`"${match[1]}"`)) as CapsuleSkill[];
@@ -531,9 +535,8 @@ suite("AGY linked skills and always auto-approve through the server (scripted CL
     await wait(200);
     socket.close();
 
-    // The Team socket sends text as SEGMENT_CONTENT_BATCH items, each with its agent_run_id.
-    const designerText = frames.flatMap((f) => f.type === "SEGMENT_CONTENT_BATCH"
-      ? f.payload["items"] as Array<Record<string, unknown>> : [])
+    // The Team socket sends text as SEGMENT_CONTENT_BATCH items, each with its agent_run_id (taken as SEGMENT_CONTENT frames).
+    const designerText = frames.flatMap((f) => f.type === "SEGMENT_CONTENT" ? [f.payload as Record<string, unknown>] : [])
       .filter((item) => item["agent_run_id"] === designerRunId);
     expectPackageSkillLinked(designerText.map((payload) => ({ type: "SEGMENT_CONTENT", payload })), pkg);
     expect(JSON.stringify(frames)).not.toContain("Failed to prepare agent run");

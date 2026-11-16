@@ -137,7 +137,11 @@ export const runLiveReconnectCases = async (probe) => {
     const nodeClient = async (route) => {
       // The other window is the owner's: it carries the probe's credential (autobyteus-437).
       const socket = new NodeWebSocket(ownerSocketUrl(`${wsBase}/ws/${route}`));
+      let connected = false;
+      socket.on('message', (data) => { if (/"type":"CONNECTED"/.test(String(data))) connected = true; });
       await new Promise((resolve, reject) => { socket.once('open', resolve); socket.once('error', reject); });
+      // The protocol: commands wait for the session, which CONNECTED announces (a send before it is refused SESSION_NOT_READY).
+      await waitFor(`${route} CONNECTED`, () => connected, 30000);
       socket.on('message', (data) => {
         for (const match of String(data).matchAll(/REPLY:((?:MK|LONG)-[A-Z]+-\d+)/g)) if (!nodeSeen.has(match[1])) nodeSeen.set(match[1], Date.now());
       });

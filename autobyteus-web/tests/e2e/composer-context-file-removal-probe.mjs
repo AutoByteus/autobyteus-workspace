@@ -39,6 +39,8 @@ import { spawn } from 'node:child_process';
 import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
 import { attachToBrowserContext, attachToProbeProcess, withNodeCredential } from './fixtures/probe-node-access.mjs';
+import { delegatedNodes, readRunTree } from './fixtures/run-tree.mjs';
+import { waitRunSocketReady } from './fixtures/run-socket-ready.mjs';
 // Every node needs a credential (autobyteus-437): the probe's nodes start with its launch credential, and the probe's
 // own calls and its desktop browser contexts carry it (fixtures/probe-node-access.mjs).
 attachToProbeProcess();
@@ -184,7 +186,10 @@ const taskNodes = (tree) => {
 const sockets = [];
 const rootInput = async (route, payload) => {
   const socket = new WebSocket(`${stack.backendUrl.replace(/^http/, 'ws')}/ws/${route}`); sockets.push(socket);
+  const frames = [];
+  socket.on('message', (raw) => { try { frames.push(JSON.parse(String(raw))); } catch { /* not JSON */ } });
   await new Promise((resolve, reject) => { socket.once('open', resolve); socket.once('error', reject); });
+  await waitRunSocketReady(frames, route);
   return { send: (content) => socket.send(JSON.stringify({ type: 'SEND_MESSAGE', payload: payload(content) })), close: () => socket.close() };
 };
 
@@ -214,7 +219,9 @@ const setupWorld = async () => {
   world.agentRoot = agentRun.runId;
   const managerIn = await rootInput(`agent/${agentRun.runId}`, (content) => ({ agent_run_id: agentRun.runId, message_id: `e2e-${randomUUID()}`,
     dedupe_key: `agent_run_input:e2e:${randomUUID()}`, content, context_file_paths: [], image_urls: [] }));
-  const agentTree = async () => (await gql('query($id:String!){agentRunCollaboration(runId:$id)}', { id: agentRun.runId })).agentRunCollaboration?.root_agent?.execution_tree;
+  // autobyteus-461 SR-084: a run's delegated runs are its tree's rows (its view carries its own parts only); each marked listed.
+  const listedOf = async (kind, runId) => ({ taskExecutions: delegatedNodes(await readRunTree(gql, kind, runId)).map((node) => ({ ...node, startedAt: 'listed' })) });
+  const agentTree = async () => listedOf('agent', agentRun.runId);
   managerIn.send(callTool('delegate_task', { recipient_address: `/${segment(names.worker)}`, description: 'Draft the release notes.' }));
   await until('Agent copy delegated', async () => taskNodes(await agentTree()).some((n) => n.agentRunId), 90000);
   managerIn.send(callTool('delegate_task', { recipient_address: `/${segment(names.squad)}`, description: 'Review the docs site.' }));
@@ -252,7 +259,7 @@ const setupWorld = async () => {
   const orgIn = await rootInput(`agent-org/${orgRun.agentOrgRunId}`, (content) => ({ root_subject_kind: 'agent_org', root_run_id: orgRun.agentOrgRunId,
     target_agent_run_id: world.orgManager, command_id: randomUUID(), message_id: randomUUID(), dedupe_key: randomUUID(), content,
     context_file_paths: [], image_urls: [] }));
-  const orgHistory = async () => (await gql('query($id:String!){getAgentOrgRootHistory(orgRunId:$id){org}}', { id: orgRun.agentOrgRunId })).getAgentOrgRootHistory.org;
+  const orgHistory = async () => listedOf('org', orgRun.agentOrgRunId);
   orgIn.send(callTool('delegate_task', { recipient_address: '/worker', description: 'Collect the changelog links.' }));
   world.orgTask = (await until('Org task agent delegated', async () => taskNodes(await orgHistory()).find((n) => n.agentRunId), 90000)).agentRunId;
   orgIn.close();
@@ -634,7 +641,7 @@ const regressions = async () => {
     ownerDir({ kind: 'org_member_draft', orgRunId: world.orgRoot, agentRunId: world.orgManager }));
   await run('org-team-member', (page) => orgMember(page, `[data-test="agent-org-agent-row-${world.orgSquadMember}"]`, `[data-test="agent-org-team-row-${world.orgSquad}"]`),
     ownerDir({ kind: 'org_member_draft', orgRunId: world.orgRoot, agentRunId: world.orgSquadMember }));
-  await run('org-task-agent', (page) => orgMember(page, `[data-test="agent-org-task-agent-row-${world.orgTask}"]`),
+  await run('org-task-agent', (page) => orgMember(page, `[data-test="workspace-team-transient-execution-row"][data-agent-run-id="${world.orgTask}"]`),
     ownerDir({ kind: 'org_member_draft', orgRunId: world.orgRoot, agentRunId: world.orgTask }));
   return out;
 };
@@ -741,7 +748,7 @@ const pendingWithoutUploadOwner = async () => {
     await openWorkspace(page);
     await page.locator(`[data-test="agent-org-definition-${slug(world.names.org)}"]`).click();
     await page.locator(`[data-test="agent-org-run-open-${world.orgRoot}"]`).click();
-    const row = page.locator(`[data-test="agent-org-task-agent-row-${world.orgTask}"]`);
+    const row = page.locator(`[data-test="workspace-team-transient-execution-row"][data-agent-run-id="${world.orgTask}"]`);
     await row.waitFor({ state: 'visible', timeout: 30000 });
     await row.click();
     const tray = centerTray(page);
