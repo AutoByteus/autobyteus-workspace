@@ -134,3 +134,10 @@ Models: claude `haiku`, codex `gpt-5.6-luna`, grok `grok-4.7`. Logs kept at `/tm
 | grok "new run + restore", "different same-named skill" | Quota (RELEASE.md: a runtime that cannot run) | summary table | Wait for Grok's 24 h reset, or the user waives Grok for this release | Open: asked the user |
 
 - No tag. Nothing published.
+
+### Smoke rerun after the fix (2026-11-17)
+
+- Fix: API/E2E round 22 (API-REV-022): test-side, ten live test clients sent on the Team/Org socket before `CONNECTED` (461 sends `CONNECTED` 1–9 ms after the open, CR-461-101; product clients wait). `40d3a21014` (clients wait; static unit check `tests/unit/e2e-helpers/team-stream-clients-wait-for-connected.test.ts`), `6bed45922b` (TESTING.md), review CRR-066 Pass. Committed by API/E2E directly on the finalize branch, linear on `personal` `d5d4fc7c81` (deviation from the guide's ticket-branch merge; the branch is pushed fast-forward with the release commit).
+- Checks on `4155251303`: licensing 0, hygiene 0, Secret Gate `v1.5.13-beta.6..HEAD` PASS, install 0, prebuild 0.
+- `release_smoke.py` on `4155251303`: claude 3/3 PASS, codex 3/3 PASS, antigravity 2/2 PASS, autobyteus 2/2 PASS; **grok 0/3: HTTP 429 `free-usage-exhausted` on grok-4.7** (the quota; the team case now reaches the model). Logs `/tmp/smoke461b-evidence/`.
+- Grok's quota: RELEASE.md treats it as a runtime that cannot run: wait for the rolling 24 h reset, or the user waives Grok for this release. **Not tagged; the user's decision is pending.**
