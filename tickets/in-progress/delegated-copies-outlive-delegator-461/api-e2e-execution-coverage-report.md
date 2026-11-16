@@ -125,3 +125,10 @@ This report records what ran and the result. The plan is in `api-e2e-coverage-in
 - Result: `Pass`
 - New findings: none.
 - Next recipient from `get_handoff_rules`: `/software_engineering_team/code_reviewer` (proportional test-code review), then delivery.
+- **Planned for the next API/E2E round (the user's decision, 2026-11-16):**
+  - the full server E2E folder on the final code (this round ran a representative set);
+  - an RRT-05 base comparison: the identical `remote-run-title-probe`, 5 runs on base `827f1e68dc` and 5 on the branch. It settles whether the ~100 ms task-message flicker on a peer Team row is pre-existing.
+- **Proposed follow-up (the user's decision, 2026-11-16): Grok, out of 461's scope.**
+  - On `grok_build`, a tool call the server refuses reaches the agent only as "Tool execution failed.": `grok-build-tool-projection.ts` falls back to that when Grok's tool result carries no error text. So the server's reason and guidance are lost to the model.
+  - 461 changed neither the Grok backend nor the error path (the two MCP adapters only defer a lookup).
+  - Base's own run failed earlier, on its first turn, so base is unproven.
