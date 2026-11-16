@@ -67,6 +67,7 @@ export class TaskRootStartError {
 export class TaskRoot {
   @Field(() => String) kind!: string;
   @Field(() => String, { nullable: true }) recipientAddress!: string | null;
+  @Field(() => String, { nullable: true }) displayName!: string | null;
   @Field(() => String) ingressAgentRunId!: string;
   @Field(() => String, { nullable: true }) teamRunId!: string | null;
   @Field(() => TaskRootDelegatingRun) delegatingRun!: TaskRootDelegatingRun;

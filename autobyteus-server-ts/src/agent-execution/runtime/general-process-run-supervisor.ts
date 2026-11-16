@@ -348,6 +348,7 @@ export class GeneralProcessRunSupervisor {
           metadataService,
         }),
         historyCatalog: historyCatalogService,
+        names: input.delegationIndex,
       });
       this.teamRunHistoryService = new TeamRunHistoryService(memoryDir, {
         tree: input.delegationIndex,

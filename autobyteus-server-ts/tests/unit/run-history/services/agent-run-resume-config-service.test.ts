@@ -59,7 +59,7 @@ describe("AgentRunResumeConfigService archived-run editability", () => {
     await fs.rm(memoryDir, { recursive: true, force: true });
   });
 
-  const buildServices = () => {
+  const buildServices = (names?: NonNullable<ConstructorParameters<typeof AgentRunResumeConfigService>[1]>["names"]) => {
     const historyCatalog = new AgentRunHistoryCatalogService(memoryDir, {
       metadataStore,
       agentDefinitionService: { getAgentDefinitionById: vi.fn().mockResolvedValue({ name: "Agent One" }) } as never,
@@ -72,6 +72,7 @@ describe("AgentRunResumeConfigService archived-run editability", () => {
       statusProjectionService: {
         getRunStatusProjection: vi.fn(async (runId: string) => ({ isActive: activeRunIds.has(runId) })),
       } as never,
+      names,
     });
     return { historyCatalog, resumeConfigService };
   };
@@ -105,5 +106,17 @@ describe("AgentRunResumeConfigService archived-run editability", () => {
       isActive: true,
       modelConfigEditability: { editable: false, reason: "RUN_ARCHIVED" },
     });
+  });
+
+  // autobyteus-461 SR-091: the opened run's context and header take its name from here, as its row names it.
+  it("names a run a Task delegated after its slot, and leaves a run nobody delegated to its definition", async () => {
+    const names = {
+      currentTaskOf: vi.fn((run: { agentRunId?: string }) => (run.agentRunId === "run-stopped" ? { recipientAddress: "/release_writer" } as never : null)),
+      agentsOf: vi.fn(async () => [{ agentRunId: "run-stopped", address: null, agentDefinitionId: null }]),
+    } as unknown as NonNullable<Parameters<typeof buildServices>[0]>;
+    const { resumeConfigService } = buildServices(names);
+    await expect(resumeConfigService.getAgentRunResumeConfig("run-stopped")).resolves.toMatchObject({ displayName: "release writer" });
+    await expect(resumeConfigService.getAgentRunResumeConfig("run-kept")).resolves.toMatchObject({ displayName: null });
+    await expect(buildServices().resumeConfigService.getAgentRunResumeConfig("run-stopped")).resolves.toMatchObject({ displayName: null });
   });
 });

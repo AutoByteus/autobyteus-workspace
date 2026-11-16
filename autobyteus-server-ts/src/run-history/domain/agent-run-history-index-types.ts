@@ -8,6 +8,8 @@ export type RunHistoryIndexRow = AgentRunHistoryIndexRowRecord;
 
 export interface RunHistoryItem {
   runId: string;
+  /** The run's name (SR-091): a delegated run's slot; `null` for a run nobody delegated, which its definition names. */
+  displayName: string | null;
   summary: string;
   status: AgentApiStatus;
   isActive: boolean;

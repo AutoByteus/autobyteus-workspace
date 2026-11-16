@@ -44,7 +44,8 @@ describe("Task roots: recorded address, reader/writer, and views", () => {
     ] }, "t");
     const resolve = vi.fn(() => "running" as const);
     const root = latestAssignedEntry(file)!;
-    expect(buildTaskRootView(root, resolve, null)).toEqual({ kind: "agent", recipientAddress: "/second", ingressAgentRunId: "second", teamRunId: null,
+    // SR-091: the card names the worker as its row and its own view do, its slot, from the server.
+    expect(buildTaskRootView(root, resolve, null)).toEqual({ kind: "agent", recipientAddress: "/second", displayName: "second", ingressAgentRunId: "second", teamRunId: null,
       delegatingRun: { kind: "agent_team", runId: "team-root" }, topRun: null, openTarget: { runKind: "agent", runId: "second", agentRunId: "second" },
       start: "failed", startError: { code: "NO_MODEL", message: "No model is set." }, closed: false, status: "offline" });
     expect(resolve).not.toHaveBeenCalled();

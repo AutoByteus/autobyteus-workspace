@@ -16,6 +16,10 @@ class TeamRunResumeConfigPayload {
   @Field(() => String)
   teamRunId!: string;
 
+  /** The run's name (SR-091): a delegated run's slot; null for a run nobody delegated, which its definition names. */
+  @Field(() => String, { nullable: true })
+  displayName!: string | null;
+
   @Field(() => Boolean)
   isActive!: boolean;
 
@@ -102,6 +106,7 @@ export class TeamRunHistoryResolver {
     const config = await this.runModelConfigService.getTeamRunResumeConfig(teamRunId);
     return {
       teamRunId: config.teamRunId,
+      displayName: config.displayName,
       isActive: config.isActive,
       // Its own members; the runs it delegated are its tree's rows (`runTree`, SR-084).
       executionTree: projectExecutionTree(config.executionTree),

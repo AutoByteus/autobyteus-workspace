@@ -12,7 +12,8 @@ import { TeamRunHistoryCatalogService, getTeamRunHistoryCatalogService } from ".
 import { TeamRunLiveProjectionService, type TeamRunMemberStatusProjection } from "./team-run-live-projection-service.js";
 import { projectExecutionTree } from "../../services/agent-streaming/team-execution-view-projector.js";
 import { runModelConfigEditability, type RunModelConfigEditability } from "../domain/run-model-config.js";
-import { createRootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
+import { createRootExecutionIdentity, createTeamRootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
+import { runDisplayNameOf } from "../../agent-collaboration/delegation/collaboration-tree.js";
 import { getProjectTaskService, type ProjectTaskService } from "../../projects/services/project-task-service.js";
 import { RunLastActivityReader } from "./run-last-activity-reader.js";
 
@@ -20,6 +21,8 @@ export interface DeleteStoredTeamRunResult { success: boolean; message: string }
 export interface ArchiveStoredTeamRunResult { success: boolean; message: string }
 export interface TeamRunResumeConfig {
   teamRunId: string;
+  /** The run's name (SR-091): a delegated team run's slot; `null` for one the user started, which its definition names. */
+  displayName: string | null;
   isActive: boolean;
   executionTree: TeamRunExecutionTreeSnapshot;
   modelConfigEditability: RunModelConfigEditability;
@@ -42,10 +45,11 @@ export class TeamRunHistoryService {
   private readonly adHocTasks?: Pick<ProjectTaskService, "deleteAdHocTasksDelegatedFrom">;
   private readonly lastActivity: Pick<RunLastActivityReader, "forTeamRun">;
   private readonly workGuard: Pick<DelegatedWorkGuard, "guard">;
+  private readonly names: Pick<DelegationIndex, "currentTaskOf" | "agentsOf">;
 
   constructor(memoryDir: string, options: {
-    /** The relationships between runs, from the Task entries (SR-047). */
-    tree: Pick<DelegationIndex, "subtreeOf">;
+    /** The relationships between runs, from the Task entries (SR-047), and a delegated run's name (SR-091). */
+    tree: Pick<DelegationIndex, "subtreeOf" | "currentTaskOf" | "agentsOf">;
     /** Archive and delete wait for the runs it delegated to (REQ-007). */
     workGuard: Pick<DelegatedWorkGuard, "guard">;
     executionTreeStore?: TeamRunExecutionTreeStore;
@@ -58,6 +62,7 @@ export class TeamRunHistoryService {
     lastActivity?: Pick<RunLastActivityReader, "forTeamRun">;
   }) {
     this.workGuard = options.workGuard;
+    this.names = options.tree;
     this.lastActivity = options.lastActivity ?? new RunLastActivityReader({ memoryDir, tree: options.tree });
     this.adHocTasks = options.adHocTasks;
     this.treeStore = options.executionTreeStore ?? new TeamRunExecutionTreeStore();
@@ -77,7 +82,7 @@ export class TeamRunHistoryService {
       const tree = await this.readTree(row.teamRunId);
       if (!tree) continue;
       const lastActivityAt = await this.lastActivity.forTeamRun({ teamRunId: row.teamRunId, createdAt: row.createdAt });
-      items.push(this.toHistoryItem(row, tree, projection, lastActivityAt));
+      items.push(this.toHistoryItem(row, tree, projection, lastActivityAt, await this.displayNameOf(row.teamRunId)));
     }
     return items.sort((a, b) => b.createdAt.localeCompare(a.createdAt));
   }
@@ -91,6 +96,7 @@ export class TeamRunHistoryService {
     const live = managed?.getLivePosition() ?? null;
     return {
       teamRunId,
+      displayName: await this.displayNameOf(teamRunId),
       isActive,
       liveSequenceId: live?.liveSequenceId ?? null,
       baseChangeSequence: live?.changeSequence ?? 0,
@@ -123,15 +129,22 @@ export class TeamRunHistoryService {
     );
   }
 
+  /** A delegated team run's slot, as its tree row names it (SR-091); `null` for one the user started. */
+  private displayNameOf(teamRunId: string): Promise<string | null> {
+    return runDisplayNameOf(this.names, createTeamRootExecutionIdentity(teamRunId));
+  }
+
   private toHistoryItem(
     row: TeamRunIndexRow,
     tree: TeamRunExecutionTreeSnapshot,
     projection: { isActive: boolean; memberStatusSnapshots: TeamRunMemberStatusProjection[] },
     lastActivityAt: string,
+    displayName: string | null,
   ): TeamRunHistoryItem {
     const members = collectConfiguredAgents(tree.rootTeam.members);
     return {
       teamRunId: row.teamRunId,
+      displayName,
       teamDefinitionId: row.teamDefinitionId,
       teamDefinitionName: row.teamDefinitionName,
       coordinatorAddress: tree.rootTeam.coordinatorAddress,

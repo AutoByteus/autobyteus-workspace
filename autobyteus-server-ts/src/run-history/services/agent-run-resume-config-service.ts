@@ -1,4 +1,7 @@
 import { appConfigProvider } from "../../config/app-config-provider.js";
+import type { DelegationIndex } from "../../agent-collaboration/delegation/delegation-index.js";
+import { runDisplayNameOf } from "../../agent-collaboration/delegation/collaboration-tree.js";
+import { createAgentRootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import {
   AgentRunStatusProjectionService,
   getAgentRunStatusProjectionService,
@@ -22,6 +25,8 @@ export type RunResumeMetadataConfig = AgentRunMetadata & {
 
 export type AgentRunResumeConfig = {
   runId: string;
+  /** The run's name (SR-091): a delegated run's slot; `null` for a run nobody delegated, which its definition names. */
+  displayName: string | null;
   isActive: boolean;
   metadataConfig: RunResumeMetadataConfig;
   modelConfigEditability: RunModelConfigEditability;
@@ -31,12 +36,16 @@ export class AgentRunResumeConfigService {
   private readonly metadataStore: AgentRunMetadataStore;
   private readonly statusProjectionService: AgentRunStatusProjectionService;
   private readonly historyCatalog: AgentRunHistoryCatalogService;
+  private readonly names: Pick<DelegationIndex, "currentTaskOf" | "agentsOf"> | null;
 
   constructor(memoryDir: string, dependencies: {
     metadataStore?: AgentRunMetadataStore;
     statusProjectionService?: AgentRunStatusProjectionService;
     historyCatalog?: AgentRunHistoryCatalogService;
+    /** Where a delegated run's name comes from (SR-091): the node's `DelegationIndex`; none names no run. */
+    names?: Pick<DelegationIndex, "currentTaskOf" | "agentsOf">;
   } = {}) {
+    this.names = dependencies.names ?? null;
     this.metadataStore = dependencies.metadataStore ?? new AgentRunMetadataStore(memoryDir);
     this.statusProjectionService = dependencies.statusProjectionService ?? getAgentRunStatusProjectionService();
     this.historyCatalog = dependencies.historyCatalog ?? new AgentRunHistoryCatalogService(memoryDir);
@@ -59,6 +68,7 @@ export class AgentRunResumeConfigService {
 
     return {
       runId,
+      displayName: this.names ? await runDisplayNameOf(this.names, createAgentRootExecutionIdentity(runId)) : null,
       isActive,
       metadataConfig: {
         ...metadata,

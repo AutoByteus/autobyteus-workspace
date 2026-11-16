@@ -19,6 +19,7 @@ const statusSchema = z.enum(["running", "initializing", "idle", "error", "offlin
 const rootSchema = z.strictObject({
   kind: z.enum(["agent", "team"]),
   recipientAddress: text.nullable(),
+  displayName: text.nullable(),
   ingressAgentRunId: text,
   teamRunId: text.nullable(),
   delegatingRun: z.strictObject({ kind: z.enum(["agent", "agent_team", "agent_org"]), runId: text }),
@@ -69,7 +70,7 @@ export const serializeProjectChangeMessage = (message: ProjectChangeMessage): st
   JSON.stringify(ProjectChangeMessageSchema.parse(message));
 
 const rootWire = (root: TaskRootView | null) => root && {
-  kind: root.kind, recipientAddress: root.recipientAddress, ingressAgentRunId: root.ingressAgentRunId, teamRunId: root.teamRunId,
+  kind: root.kind, recipientAddress: root.recipientAddress, displayName: root.displayName, ingressAgentRunId: root.ingressAgentRunId, teamRunId: root.teamRunId,
   delegatingRun: { kind: root.delegatingRun.kind, runId: root.delegatingRun.runId },
   topRun: root.topRun && { kind: root.topRun.kind, runId: root.topRun.runId },
   openTarget: root.openTarget && { runKind: root.openTarget.runKind, runId: root.openTarget.runId, agentRunId: root.openTarget.agentRunId,

@@ -1,4 +1,5 @@
 import type { TaskExecutionReference } from "../../agent-collaboration/execution/task/task-execution-reference.js";
+import { displayNameOf } from "../../agent-collaboration/delegation/collaboration-tree.js";
 import type { RootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import type { TaskRootStatus, TaskRootView } from "../domain/models.js";
 import type { TaskExecutionResource, TaskExecutionResourceFile } from "../domain/task-execution-resources.js";
@@ -53,6 +54,7 @@ export const buildTaskRootView = (entry: TaskExecutionResource, resolve: TaskWor
   return {
     kind: team ? "team" : "agent",
     recipientAddress: entry.recipientAddress ?? null,
+    displayName: displayNameOf({ delegated: true, address: entry.recipientAddress }),
     ingressAgentRunId: "agentRunId" in entry.execution ? entry.execution.agentRunId : entry.teamCoordinatorAgentRunId!,
     teamRunId: "teamRunId" in entry.execution ? entry.execution.teamRunId : null,
     delegatingRun: { kind: entry.delegatedFrom.delegatingRun.rootSubjectKind, runId: entry.delegatedFrom.delegatingRun.rootRunId },

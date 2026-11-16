@@ -7,6 +7,7 @@ const applicationBinding = Object.freeze({ applicationId: "app-1", bindingId: "b
 const editable = Object.freeze({ editable: true, reason: null });
 const agentResume = Object.freeze({
   runId: "agent-run-1",
+  displayName: null,
   isActive: false,
   metadataConfig: {
     runId: "agent-run-1",
@@ -44,6 +45,7 @@ const baseTree = testExecutionTree({
 const teamTree = Object.freeze({ ...baseTree, applicationBinding });
 const teamResume = Object.freeze({
   teamRunId: "team-run-1",
+  displayName: null,
   isActive: false,
   executionTree: teamTree,
   modelConfigEditability: editable,

@@ -2,7 +2,7 @@ import type { CollaborationLaunchConfigurationSourceDto } from "@autobyteus/coll
 import type { RemoteAgentLaunch } from "../../run-history/domain/run-execution-tree-shared-records.js";
 import { rootExecutionIdentityKey, type RootExecutionIdentity } from "../execution/domain/root-execution-identity.js";
 import { runIdentityOf } from "../execution/task/task-execution-resource-port.js";
-import { openTargetOf, type SubtreeRow } from "./collaboration-tree.js";
+import { displayNameOf, openTargetOf, type SubtreeRow } from "./collaboration-tree.js";
 import { launchSourceDtoOf, type ChildRowProjection, type ChildRowRecord, type RunLaunchRecord } from "./run-tree-records.js";
 import type { DelegationIndex } from "./delegation-index.js";
 
@@ -193,12 +193,12 @@ export class RunTreeView {
     if (record.kind === "agent") {
       const key = runTreeRowKey("agent", record.agentRunId);
       anchor(holder, record.agentRunId, key);
-      return [Object.freeze({ key, parentKey: null, kind: "agent", name: rowNameOf(record.address, record.agentRunId), address: record.address,
+      return [Object.freeze({ key, parentKey: null, kind: "agent", name: displayNameOf({ delegated: true, address: record.address }) ?? record.agentRunId, address: record.address,
         openTarget: openTargetOf({ agentRunId: record.agentRunId }), statusIds: Object.freeze([record.agentRunId]), launch: launchOf(record.launch) })];
     }
     const key = runTreeRowKey("team", record.teamRunId);
     // Its coordinator, by its own address in its own run (TC-12), among the members it lists.
-    const rows: Draft[] = [Object.freeze({ key, parentKey: null, kind: "team", name: rowNameOf(record.address, record.teamRunId), address: record.address,
+    const rows: Draft[] = [Object.freeze({ key, parentKey: null, kind: "team", name: displayNameOf({ delegated: true, address: record.address }) ?? record.teamRunId, address: record.address,
       openTarget: openTargetOf({ teamRunId: record.teamRunId }, record), statusIds: Object.freeze([record.teamRunId]), launch: launchOf(record.launch) })];
     for (const member of record.members) {
       const memberKey = runTreeRowKey("team_member", record.teamRunId, member.agentRunId);
@@ -229,11 +229,11 @@ const peerRows = (record: Extract<ChildRowRecord, { kind: "peer" }>): Draft[] =>
   if (link.kind === "agent") {
     const launch = peerLaunchOf(record.launches, link.address);
     return [Object.freeze({ key: runTreeRowKey("peer_agent", link.agentRunId), parentKey: null, kind: "peer_agent" as const,
-      name: rowNameOf(link.address, link.agentRunId), address: link.address, openTarget,
+      name: displayNameOf({ delegated: true, address: link.address }) ?? link.agentRunId, address: link.address, openTarget,
       statusIds: Object.freeze([link.agentRunId]), peer, ...(launch ? { launch } : {}) })];
   }
   const key = runTreeRowKey("peer_team", link.teamRunId);
-  return [Object.freeze({ key, parentKey: null, kind: "peer_team" as const, name: rowNameOf(link.address, link.teamRunId), address: link.address,
+  return [Object.freeze({ key, parentKey: null, kind: "peer_team" as const, name: displayNameOf({ delegated: true, address: link.address }) ?? link.teamRunId, address: link.address,
     openTarget, statusIds: Object.freeze([link.teamRunId]), peer }),
   ...link.members.map((member) => {
     const launch = peerLaunchOf(record.launches, member.address);

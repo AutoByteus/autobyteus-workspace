@@ -105,8 +105,10 @@ export type TaskRootStatus = "running" | "initializing" | "idle" | "error" | "of
  */
 export interface TaskRootView {
   kind: "agent" | "team";
-  /** The address it was delegated to (its display name); null when recorded before it was kept. */
+  /** The address it was delegated to; null when recorded before it was kept. */
   recipientAddress: string | null;
+  /** Its name (SR-091): its slot, as its row and its own view name it; null when its address was not kept. */
+  displayName: string | null;
   /** The agent run, or the team's coordinator: the run that opens it. */
   ingressAgentRunId: string;
   teamRunId: string | null;

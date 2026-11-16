@@ -22,6 +22,10 @@ class RunHistoryItemObject {
   @Field(() => String)
   runId!: string;
 
+  /** The run's name (SR-091): a delegated run's slot; null for a run nobody delegated, which its definition names. */
+  @Field(() => String, { nullable: true })
+  displayName!: string | null;
+
   @Field(() => String)
   summary!: string;
 
@@ -92,6 +96,10 @@ class WorkspaceHistoryTeamRunMemberObject {
 class WorkspaceHistoryTeamRunItemObject {
   @Field(() => String)
   teamRunId!: string;
+
+  /** The run's name (SR-091): a delegated run's slot; null for a run nobody delegated, which its definition names. */
+  @Field(() => String, { nullable: true })
+  displayName!: string | null;
 
   @Field(() => String)
   teamDefinitionId!: string;
@@ -222,6 +230,10 @@ class RunMetadataConfigObject {
 class RunResumeConfigPayload {
   @Field(() => String)
   runId!: string;
+
+  /** The run's name (SR-091): a delegated run's slot; null for a run nobody delegated, which its definition names. */
+  @Field(() => String, { nullable: true })
+  displayName!: string | null;
 
   @Field(() => Boolean)
   isActive!: boolean;

@@ -24,7 +24,7 @@ const row = {
   terminatedAt: null,
 };
 
-const harness = (input: { storedTree?: typeof tree | null; active?: boolean } = {}) => {
+const harness = (input: { storedTree?: typeof tree | null; active?: boolean; tree?: ReturnType<typeof noDelegations> } = {}) => {
   const catalog = {
     listCatalogRows: vi.fn(async () => [row]),
     getCatalogRow: vi.fn(async (teamRunId: string) => teamRunId === row.teamRunId ? row : null),
@@ -48,7 +48,7 @@ const harness = (input: { storedTree?: typeof tree | null; active?: boolean } = 
     manager,
     live,
     adHocTasks,
-    service: new TeamRunHistoryService("/tmp/memory", { tree: noDelegations(), workGuard: noWorkGuard(),
+    service: new TeamRunHistoryService("/tmp/memory", { tree: input.tree ?? noDelegations(), workGuard: noWorkGuard(),
       catalogService: catalog as never,
       executionTreeStore: treeStore as never,
       teamRunManager: manager as never,
@@ -107,6 +107,7 @@ describe("TeamRunHistoryService current execution tree", () => {
     const active = harness({ active: true });
     await expect(active.service.getTeamRunResumeConfig("team-1")).resolves.toEqual({
       teamRunId: "team-1",
+      displayName: null,
       isActive: true,
       executionTree: tree,
       modelConfigEditability: { editable: false, reason: "RUN_ACTIVE" },
@@ -136,5 +137,16 @@ describe("TeamRunHistoryService current execution tree", () => {
     catalog.deleteTeamRun.mockResolvedValueOnce({ success: false, message: "Team run is active." });
     await expect(service.deleteStoredTeamRun("team-1")).resolves.toEqual({ success: false, message: "Team run is active." });
     expect(adHocTasks.deleteAdHocTasksDelegatedFrom).not.toHaveBeenCalled();
+  });
+});
+
+// autobyteus-461 SR-091: a delegated team run's name is its slot, in its resume config (its own view) and in the list.
+describe("TeamRunHistoryService names (SR-091)", () => {
+  it("names a team run a Task delegated after its entry's recipient address; one the user started has no name of its own", async () => {
+    const delegated = { ...noDelegations(), currentTaskOf: (run: { teamRunId?: string }) => (run.teamRunId === "team-1" ? { recipientAddress: "/review_squad" } as never : null) };
+    const named = harness({ tree: delegated as never });
+    await expect(named.service.getTeamRunResumeConfig("team-1")).resolves.toMatchObject({ displayName: "review squad" });
+    await expect(named.service.listTeamRunHistory()).resolves.toEqual([expect.objectContaining({ teamRunId: "team-1", displayName: "review squad" })]);
+    await expect(harness().service.getTeamRunResumeConfig("team-1")).resolves.toMatchObject({ displayName: null });
   });
 });

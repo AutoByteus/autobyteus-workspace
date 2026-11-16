@@ -1,4 +1,6 @@
 import type { DelegatedWorkGuard } from "./delegated-work-guard.js";
+import { runDisplayNameOf } from "../../agent-collaboration/delegation/collaboration-tree.js";
+import { createAgentRootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import type { DelegationIndex } from "../../agent-collaboration/delegation/delegation-index.js";
 import { AgentRunManager } from "../../agent-execution/services/agent-run-manager.js";
 import {
@@ -49,12 +51,13 @@ export class AgentRunHistoryService {
   private readonly visibility: Pick<InternalAgentVisibility, "hiddenDefinitionIds">;
   private readonly lastActivity: Pick<RunLastActivityReader, "forAgentRun">;
   private readonly workGuard: Pick<DelegatedWorkGuard, "guard">;
+  private readonly names: Pick<DelegationIndex, "currentTaskOf" | "agentsOf">;
 
   constructor(
     memoryDir: string,
     dependencies: {
-      /** The relationships between runs, from the Task entries (SR-047). */
-      tree: Pick<DelegationIndex, "subtreeOf">;
+      /** The relationships between runs, from the Task entries (SR-047), and a delegated run's name (SR-091). */
+      tree: Pick<DelegationIndex, "subtreeOf" | "currentTaskOf" | "agentsOf">;
       /** Archive and delete wait for the runs it delegated to (REQ-007). */
       workGuard: Pick<DelegatedWorkGuard, "guard">;
       catalogService?: AgentRunHistoryCatalogService;
@@ -68,6 +71,7 @@ export class AgentRunHistoryService {
     },
   ) {
     this.workGuard = dependencies.workGuard;
+    this.names = dependencies.tree;
     this.lastActivity = dependencies.lastActivity ?? new RunLastActivityReader({ memoryDir, tree: dependencies.tree });
     this.visibility = dependencies.visibility ?? getInternalAgentVisibility();
     this.catalogService =
@@ -185,6 +189,7 @@ export class AgentRunHistoryService {
     const terminatedInactive = Boolean(row.terminatedAt) && !projection.isActive;
     return {
       runId: row.runId,
+      displayName: await runDisplayNameOf(this.names, createAgentRootExecutionIdentity(row.runId)),
       summary: row.summary,
       status: terminatedInactive ? "offline" : projection.status,
       isActive: projection.isActive,

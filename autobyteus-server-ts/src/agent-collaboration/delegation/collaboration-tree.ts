@@ -80,6 +80,32 @@ export const openTargetOf = (
 };
 
 /**
+ * A run's name, everywhere it is shown (autobyteus-461 SR-091, REQ-014): a delegated run is named after its slot, the last
+ * segment of the address it was delegated to (`/squad/release_writer` → "release writer"), as its row names it and as at
+ * base; `null` for a run nobody delegated, which its definition names. Given the run's own address (an agent run) or its
+ * Task entry's `recipientAddress` (a team run, whose own root is `/`). The tree rows, the run's own resume config (its
+ * context and header), the Task page and the run list take it from here; no client derives a delegated run's name.
+ */
+export const displayNameOf = (run: Readonly<{ delegated: boolean; address: string | null | undefined }>): string | null => {
+  if (!run.delegated) return null;
+  const leaf = (run.address ?? "").split("/").filter(Boolean).at(-1) ?? "";
+  return leaf.replace(/[_-]+/g, " ").replace(/\s+/g, " ").trim() || null;
+};
+
+/**
+ * A run's name on this node (SR-091), read as its tree row reads it: delegated when a Task names it (its current entry);
+ * an agent run's own address (else the address it was delegated to), a team run's entry's `recipientAddress`. `null`
+ * for a run nobody delegated (an Org run never is).
+ */
+export const runDisplayNameOf = async (index: Pick<DelegationIndex, "currentTaskOf" | "agentsOf">, run: RootExecutionIdentity): Promise<string | null> => {
+  if (run.rootSubjectKind === "agent_org") return null;
+  const entry = index.currentTaskOf(run.rootSubjectKind === "agent" ? { agentRunId: run.rootRunId } : { teamRunId: run.rootRunId });
+  if (!entry) return null;
+  const own = run.rootSubjectKind === "agent" ? (await index.agentsOf(run))[0]?.address ?? null : null;
+  return displayNameOf({ delegated: true, address: own ?? entry.recipientAddress });
+};
+
+/**
  * A run's collaboration tree (autobyteus-461 SR-060, SR-061, contract §4): every cross-run answer for one run, derived
  * from the `DelegationIndex` when asked (`delegationIndex.collaborationTreeOf(run)`), never stored. Glossary: the design
  * called it the run's "collaboration map" (`RunCollaborationMap`) until SR-061; it is the tree the user sees under the
