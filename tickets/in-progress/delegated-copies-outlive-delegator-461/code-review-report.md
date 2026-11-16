@@ -1,6 +1,88 @@
 # Code Review Report: autobyteus-461 (delegated runs are runs of their own)
 
-The latest implementation result is round 41 (CRR-062, Pass): the merge of the latest base. It comes first. Round 40 (CRR-060), CRR-059, round 35's full review (CRR-051) and earlier results follow as history, with their finding IDs reused. API/E2E round 20 passed (94%). API/E2E round 21 passed on the merged state (95%; the full server E2E folder, and RRT-05 matching the base). The proportional test-code reviews (CRR-050, CRR-061; the latest, CRR-063, Pass) are in `api-e2e-test-review-report.md`, and the package goes to delivery.
+The latest implementation result is round 43 (CRR-065, Pass): CRR-064's docs fixes. It comes first, then round 42 (CRR-064), round 41 (CRR-062), round 40 (CRR-060), round 35's full review (CRR-051) and earlier results follow as history, with their finding IDs reused. API/E2E round 21 passed on the merged state (95%; the full server E2E folder, and RRT-05 matching the base). The proportional test-code reviews (CRR-050, CRR-061; the latest, CRR-063, Pass) are in `api-e2e-test-review-report.md`.
+
+## Round 43: Review Of IR-043, CRR-064's Docs Fixes (CRR-065)
+
+- Review Entry Point: `Implementation Review` (docs Local Fix). Current Code Review Revision ID: `CRR-065`; Current Review Round: `43`.
+- Review Scope: `Targeted Delta Review` of `db64e3b1b8..f19ba2cee1`: `633c0fd3f0` (four server docs) and the IR-043 record. No non-markdown file changed.
+
+**CR-461-117: Resolved.**
+- The protocol doc's bullet now says a view carries no delegated run's output. That output, with the run's statuses and commands, is on its own stream (rule 2), and the view shows the run as a row of its tree.
+- That matches SR-083's final code.
+
+**CR-461-118: Resolved.**
+- **All three docs** name the sender's `CollaborationTree` (`resolve`), called from `SendMessageToDispatcher`. I confirmed the call at `send-message-to-dispatcher.ts:115`.
+- **`agent_communication.md`** gives the code's order (`collaboration-tree.ts:184-188`):
+  1. step 2 must apply;
+  2. then a delegated team's correction;
+  3. then step 2's receiver.
+  It also states SR-081's reason.
+- **The two short mentions** keep the same order.
+
+**Checks.**
+- I reran the scan. It prints only `REMOTE_PEER`, which is the base's own.
+- The implementer added both scans to its docs check.
+- `MessageRecipientResolution` is the base's module name, so it is correct as left.
+
+**Findings.** None open. **Routing.** `Pass`, to `/software_engineering_team/delivery_engineer`, which continues the docs sync and release (a beta). The Implementation Engineer is informed.
+
+---
+
+## Round 42: Review Of IR-042, The Docs Local Fix (CRR-064)
+
+- Review Entry Point: `Implementation Review` (a delivery-stage docs Local Fix). Current Code Review Revision ID: `CRR-064`; Current Review Round: `42`.
+- Review Scope: `Targeted Delta Review` of `f1f8ffc643..db64e3b1b8`, docs only:
+  - Every non-markdown change since CRR-063 is either evidence or the two comment corrections (MSP-53 → MSP-56, `16e4874dd4`), and both are correct.
+  - `6ec89d2007` changes `RELEASE.md` only.
+- Classification: task_size `Large`, architectural_risk `High`, unchanged.
+
+**What is right.**
+- The new "Run trees" sections in `agent_websocket_streaming_protocol.md` and the web's `agent_execution_architecture.md` match the code:
+  - every identifier they cite exists in the source;
+  - the replaced names are cited only in sentences that say what replaced them.
+- The delivery table's lines are rewritten.
+- Each replaced mechanism is named once, without round history.
+
+**The check's blind spot.** Delivery's method lists backticked names that exist in the base's source but not the branch's. It cannot see a name that 461 itself added and later removed: such a name is in neither tree. I scanned the 38 long-lived docs 461 changed for names absent from both trees, then kept those that 461's history added and removed. That gives four:
+- `CHILD_RUNS_CHANGED`: explained as replaced, fine.
+- `REMOTE_PEER` (`remote_collaboration.md:91`): already in the base's doc (2026-10-23), so not 461's.
+- the two findings below.
+
+**CR-461-117 (Local Fix, docs): `LocalChildFollowers` is described as current.**
+- `autobyteus-server-ts/docs/design/agent_websocket_streaming_protocol.md:203-205` says: "A live root's views share one follower of its local children (`LocalChildFollowers`); their output is sequenced in the root's own stream. A stopped run's view follows them itself."
+- SR-083 step 4 (`445f1ed947`) removed `LocalChildFollowers` and `LocalChildObservation`. A view's snapshot reads its rows only, and a delegated run's output is its own run's stream (rule 2).
+- This is the doc this round brings to the final code, and the bullet states a removed stream behavior as the contract.
+- **Fix:** remove the bullet, or state the final behavior: a view carries rows, and a delegated run's output is read on its own run's stream.
+
+**CR-461-118 (Local Fix, docs): `CrossRunAddressResolution` is described as current, in one place with the wrong order.**
+- **Where it appears:**
+  - `autobyteus-server-ts/docs/modules/agent_communication.md:375-377`;
+  - `agent_team_execution.md:529`;
+  - `standalone_agent_run_root.md:96`.
+- **What replaced it:** SR-060 (`5531101a87`) folded it into the run's collaboration map, now `CollaborationTree` (SR-061). The `send_message_to` dispatcher resolves through the sender's tree (`CollaborationTree.resolve`, step 2 via `stepTwo()`).
+- **The order:** `agent_communication.md` says step 2 comes first, "then, for a delegated team, the correction of an address written under the name the team was delegated to".
+  - The code does the reverse (`collaboration-tree.ts:177-188`, SR-081): the correction comes **before** step 2.
+  - That order is the point of SR-081: such an address means the team's own teammate, never the assigning run's namesake agent.
+  - It's a behavior statement, so the reversed order is the substantive part of this finding.
+- **Fix:**
+  - name `CollaborationTree` (`resolve` / `stepTwo`) in the three places;
+  - state the order as the code has it.
+
+**Candidate gate.**
+- Both findings are promoted. The contract is AC-015: the long-lived docs describe the final code.
+- The trigger is a reader of the module docs, the first place a maintainer looks.
+- The consequence: a removed class looks current, and in CR-461-118 the stated order would mislead a change to address resolution toward the bug SR-081 fixed.
+- Proportionate: these are docs-only edits, and nothing else changes.
+- `REMOTE_PEER` is rejected as 461's: the base already had it.
+
+**Scorecard.** Unchanged from round 40/41 (overall 9.4). Docs aren't scored source. The findings route on AC-015.
+
+**Routing.** `Fail`, a docs-only `Local Fix`. Recipient: `/software_engineering_team/implementation_engineer`.
+- **The check method:** please add the "in neither tree, and 461 added and removed it" scan to the method (`evidence/code-review/CRR-064-names-in-neither-tree.sh` shows one way; today it prints the two findings plus `REMOTE_PEER`, which the base already had).
+- **Next:** I'll review the fix as a light docs delta, and then it returns to delivery. No API/E2E is needed for a docs-only change.
+
+---
 
 ## Round 41: Merge Review Of IR-041, The Base `1e8b6e5d0a` (CRR-062)
 

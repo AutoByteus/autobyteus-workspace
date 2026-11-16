@@ -67,6 +67,8 @@
 | CRR-061 | `api-e2e-test-review-report.md` | Proportional test-code review / API-REV-020 (and the failed rounds 18–19's changes) | Pass (CRR-060) | Pass | None |
 | CRR-062 | `code-review-report.md` | Merge review, round 41 (Targeted Delta) / IR-041, base `1e8b6e5d0a` | Pass (CRR-061) | Pass | None |
 | CRR-063 | `api-e2e-test-review-report.md` | Proportional test-code review / API-REV-021 (merged state) | Pass (CRR-062) | Pass | None; two stale comment IDs for delivery |
+| CRR-064 | `code-review-report.md` | Docs review, round 42 (Targeted Delta) / IR-042 (delivery's docs Local Fix) | Pass (CRR-063) | Fail: Local Fix (docs) | CR-461-117, -118 new |
+| CRR-065 | `code-review-report.md` | Docs review, round 43 (Targeted Delta) / IR-043 | Fail (CRR-064) | Pass | CR-461-117, -118 resolved |
 
 ## Revision Entries
 
@@ -1892,3 +1894,48 @@ None changed (CR-461-001 … CR-461-005 open as in CRR-003).
 - Remaining risks or uncertainty, for delivery:
   - Two comments still cite MSP-53 for the stopped-delegator journey; it is now MSP-56. They are in `autobyteus-web/composables/mobile/useMobileRunOpening.ts:101` and `autobyteus-web/composables/mobile/__tests__/useMobileRunOpening.spec.ts:143`. The fix is comment-only.
   - CRR-061's notes stand: the stale doc line `agent_teams.md:315`, the surface notes, base's desktop build, and the follow-ups. Grok is FU-035.
+
+### CRR-064: Review of IR-042 (delivery's docs Local Fix): Fail, Local Fix (docs)
+- Review entry point and round: implementation review, round 42 (a delivery-stage docs Local Fix)
+- Review scope: Targeted Delta, `f1f8ffc643..db64e3b1b8`: docs only, plus the two comment corrections (MSP-56), which are correct
+- Triggering role, report path, and finding or scenario IDs: Implementation Engineer, `implementation-handoff.md` (IR-042); Delivery, `docs-sync-report.md`
+- Relevant solution revision IDs: SR-060, SR-061, SR-081, SR-083 (the mechanisms the stale lines name)
+- Relevant architecture-review revision IDs: N/A
+- Relevant implementation revision IDs: IR-042
+- Relevant API/E2E revision IDs: N/A
+- Relevant delivery revision IDs: the delivery docs sync (`docs-sync-report.md`)
+- Prior authoritative result: Pass (CRR-063)
+- Current authoritative result: Fail, Local Fix (docs only)
+- What changed in the review result and why:
+  - The new run-tree sections are accurate.
+  - A scan for names that 461 added and later removed found two stale descriptions, which delivery's base-versus-branch method cannot see:
+    - `LocalChildFollowers` in the protocol doc;
+    - `CrossRunAddressResolution` in three module docs, and in `agent_communication.md` with the correction after step 2, where the code (SR-081) puts it before.
+- Supported product scenario / material-premise basis changes: none
+- Prior finding resolution: N/A
+- New or remaining finding IDs: CR-461-117, CR-461-118
+- Material score or classification changes: none (docs only)
+- Recommended recipient: `/software_engineering_team/implementation_engineer`
+- Remaining risks or uncertainty: none beyond the two docs fixes. The fix comes back to me as a light docs delta, then goes to delivery. API/E2E isn't needed.
+
+### CRR-065: Review of IR-043 (CRR-064's docs fixes): Pass
+- Review entry point and round: implementation review, round 43 (docs Local Fix)
+- Review scope: Targeted Delta, `db64e3b1b8..f19ba2cee1` (`633c0fd3f0`: four server docs; no non-markdown change)
+- Triggering role, report path, and finding or scenario IDs: Implementation Engineer, `implementation-handoff.md` (IR-043); CR-461-117, CR-461-118
+- Relevant solution revision IDs: SR-060, SR-061, SR-081, SR-083
+- Relevant architecture-review revision IDs: N/A
+- Relevant implementation revision IDs: IR-043
+- Relevant API/E2E revision IDs: N/A
+- Relevant delivery revision IDs: the delivery docs sync (`docs-sync-report.md`)
+- Prior authoritative result: Fail (CRR-064)
+- Current authoritative result: Pass
+- What changed in the review result and why:
+  - The protocol doc states that a view carries no delegated output.
+  - The three module docs name `CollaborationTree.resolve`, called from `SendMessageToDispatcher`, in the code's order: the correction comes before step 2's receiver (SR-081).
+  - The scan prints only the base's `REMOTE_PEER`.
+- Supported product scenario / material-premise basis changes: none
+- Prior finding resolution: CR-461-117 and CR-461-118 are resolved
+- New or remaining finding IDs: none
+- Material score or classification changes: none
+- Recommended recipient: `/software_engineering_team/delivery_engineer`
+- Remaining risks or uncertainty: delivery's own remaining docs checks (`collaboration_model.md`, `GLOSSARY.md` against AC-015, and the project documents), as its report lists
