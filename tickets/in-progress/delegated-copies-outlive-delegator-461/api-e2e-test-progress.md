@@ -221,3 +221,7 @@
 | 2026-11-15 (round 17) | Full server E2E | Completed | Pass after test fixes | 870 passed, 5 failed: the clients that sent before `CONNECTED` and the `sequence` field; fixed and rerun alone |
 | 2026-11-15 (round 17) | Web batch | Completed | Fail | SDV 7/7, BR ×2 4/4, osfr 8/8, RSM 7/7, title, PLN 10/11, RTP-01 … 05/07 … 09 ×2 (RTP-04's rendered peer checks Pass); **F-81** RTP-06, **F-82** PMU-003/018/019, **F-83** BR-003, **F-80** composer CF-006/009 |
 | 2026-11-16 (round 17) | Reruns, base | Completed | Fail | base TS 7/7 against branch TS-003/005 … 007 (**F-84**); DLD 14/29 (LRL Pass; **F-86** DCP-002); phone 40 Pass / 15 Fail (ran to the end) |
+| 2026-11-16 (round 18) | Build, full server E2E | Completed | Pass after reruns | On CRR-056 at `bac59031c3`: server `dist` and the phone bundle rebuilt; 871 passed, 4 failed; alone: interrupt-resend 3/3, EXC 7/7 (AGY discovery timeout), provider-secret 6/6 (load); DCF-E2E-007 compared with base |
+| 2026-11-16 (round 18) | Web batch | Completed | Fail | SDV 7/7, PMU 25/25, TCT 16/16, BR Pass, osfr 8/8, CFR 10/10, tree ×2 Pass, title, RSM 7/7, PLN 10/11, mocked probes Pass; F-80 … F-83 and F-86 resolved; DLD 23/29, phone 52/55 |
+| 2026-11-16 (round 18) | Reruns, live | Completed | Fail | TS 7/7 (F-84 stale); **F-87** AFS-001; **F-88** MSP-24 (low); **F-89** DCR-001/002 (design question); LE: DeepSeek 402 |
+

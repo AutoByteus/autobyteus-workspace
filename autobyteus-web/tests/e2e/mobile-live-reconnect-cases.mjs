@@ -419,8 +419,10 @@ export const runLiveReconnectCases = async (probe) => {
       assert(Object.values(shownAfterVisible).every(ms => ms !== null && ms <= 5_000), 'within 5 s of visible each phone shows what happened meanwhile (AC-003)', details);
       assert(Object.values(hiddenNext).every(ms => ms !== null && ms <= 1_000), 'the next marker within 1 s (AC-003)', details);
       assert(Object.values(attemptsWhileHidden).every(list => list.length === 0), 'no reconnect attempt of the shown run while hidden and unreachable: no Team socket, no agent catch-up read or socket (AC-004)', details);
-      assert(Object.values(attemptsWithin2sOfVisible).every(list => list.length >= 1), 'an attempt of the shown run within 2 s of visible: the Team socket; the agent catch-up read (AC-004)', details);
-      assert(attemptsWithin2sOfVisible[agentPhone.label].some(entry => entry.read === 'GetRunProjection'), 'the agent run attempts with its catch-up read first (AC-004)', details);
+      assert(Object.values(attemptsWithin2sOfVisible).every(list => list.length >= 1), 'an attempt of the shown run within 2 s of visible: the Team socket; the agent stream (AC-004)', details);
+      // autobyteus-461 SR-087: the agent stream's own snapshot carries what it missed (the separate catch-up read is gone), so the
+      // agent run's attempt is its stream.
+      assert(attemptsWithin2sOfVisible[agentPhone.label].some(entry => entry.socket === '/ws/agent/…'), 'the agent run attempts its stream, whose snapshot catches it up (AC-004, SR-087)', details);
       assert(Object.values(backShownMs).every(ms => ms !== null), 'caught up once the node passes', details);
       return details;
     });

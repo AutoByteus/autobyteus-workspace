@@ -274,7 +274,7 @@ export const runFileOpenCases = async (probe) => {
         const from = Date.now();
         await toList();
         const hostKey = `agent:${run}`;
-        const remoteKey = `${hostKey}/agent:${remoteRun}`;
+        const remoteKey = `${hostKey}/peer_agent:${remoteRun}`; // SR-084: a peer run's tree row key
         const host = page.locator(`[data-testid="mobile-run-row-${hostKey}"]`);
         if ((await host.getAttribute('aria-expanded')) === 'false') await host.locator('[data-testid="mobile-run-toggle"]').click();
         await openRun(remoteKey, 'REMOTE-PATH-450');

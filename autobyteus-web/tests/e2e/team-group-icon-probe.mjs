@@ -98,14 +98,24 @@ try {
   await page.route('**/rest/health', route => route.fulfill({ contentType: 'application/json', body: '{"status":"ok"}' }));
   await page.route('**/graphql', route => {
     const query = route.request().postDataJSON()?.query ?? '';
+    // autobyteus-461 SR-084: the fixture seeds its run trees in the store (as the server's rows); a read of a tree is left
+    // unanswered so it neither fails nor replaces them.
+    if (query.includes('runTree(')) return undefined;
     const data = query.includes('serverSettings') ? { serverSettings: [] } : query.includes('agentDefinitions') ? { agentDefinitions: [] }
-      : query.includes('agentTeamDefinitions') ? { agentTeamDefinitions: [] } : query.includes('workspaces') ? { workspaces: [] } : {};
+      : query.includes('agentTeamDefinitions') ? { agentTeamDefinitions: [] } : query.includes('workspaces') ? { workspaces: [] } : null;
+    // autobyteus-461 rule 2: opening a row opens its run (its own reads); the fixture has no backend, so a read it does not
+    // know is left unanswered rather than answered empty (an empty answer is an error to the client).
+    if (data === null) return undefined;
     return route.fulfill({ contentType: 'application/json', body: JSON.stringify({ data }) });
   });
   // delegated-copy-task-locator: Task-worker rows read their Task and retain the Projects feed.
   await routeTaskWorkerBoundaries(page);
   // The definitions change feed the Workspaces shell opens; the fixture has no backend (baseline fix).
   await page.routeWebSocket(/\/ws\/agent-package-definitions(\?|$)/, (ws) => ws.send(JSON.stringify({ type: 'connected' })));
+  // The window also opens the update-notifications stream (base) and holds the shown runs' statuses on /ws/run-status
+  // (autobyteus-461 SR-082); the fixture has no backend.
+  await page.routeWebSocket(/\/ws\/update-notifications(\?|$)/, () => undefined);
+  await page.routeWebSocket(/\/ws\/run-status(\?|$)/, () => undefined);
   await page.goto(url);
   await page.locator('[data-preview="team-icons"]').waitFor();
   await page.locator('[data-team-icon="temporary-task-team"] svg').first().waitFor();
@@ -141,21 +151,35 @@ try {
       assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth), false);
       await page.screenshot({ path: path.join(out, `icons-${width}.png`), fullPage: true });
     }
+    // autobyteus-461 CR-461-108: opening a row reveals what it opens. A click, Enter or Space opens a Team row and leaves it
+    // expanded (it never folds on open); only its chevron folds it.
+    const chevron = (locator) => locator.locator('[data-test="workspace-team-transient-disclosure"]');
     const row = page.locator('[data-preview="transient"] [role="treeitem"]').first();
-    await row.click(); assert.equal(await row.getAttribute('aria-expanded'), 'false');
+    await row.click(); assert.equal(await row.getAttribute('aria-expanded'), 'true');
+    await chevron(row).click(); assert.equal(await row.getAttribute('aria-expanded'), 'false');
     await row.focus(); await page.keyboard.press('Enter'); assert.equal(await row.getAttribute('aria-expanded'), 'true');
-    await page.keyboard.press('Space'); assert.equal(await row.getAttribute('aria-expanded'), 'false');
+    await page.keyboard.press('Space'); assert.equal(await row.getAttribute('aria-expanded'), 'true');
     assert.equal(await row.getAttribute('aria-selected'), 'true'); assert(await row.evaluate(el => el === document.activeElement));
     const agentTeams = page.locator('[data-preview="agent-parent"] [data-node-kind="agent_team"]');
-    for (const [index, coordinator] of ['pp-run', 'rp-run'].entries()) {
+    for (const index of [0, 1]) {
       const team = agentTeams.nth(index);
-      await team.click(); assert.equal(await team.getAttribute('aria-expanded'), 'false');
+      await team.click(); assert.equal(await team.getAttribute('aria-expanded'), 'true');
+      // A delegated Team opens at its coordinator: the one selected (current) row is an agent row inside this Team's rows.
+      const placement = await page.locator('[data-preview="agent-parent"] [role="treeitem"]').evaluateAll((els, teamIndex) => {
+        const teams = els.map((el, at) => el.getAttribute('data-node-kind') === 'agent_team' ? at : -1).filter((at) => at >= 0);
+        const selected = els.map((el, at) => el.getAttribute('aria-selected') === 'true' ? at : -1).filter((at) => at >= 0);
+        const from = teams[teamIndex], to = teams[teamIndex + 1] ?? els.length;
+        return { selected, from, to, selectedKind: selected.map((at) => els[at].getAttribute('data-node-kind')), current: selected.map((at) => els[at].getAttribute('aria-current')) };
+      }, index);
+      assert(placement.selected.length === 1 && placement.selected[0] > placement.from && placement.selected[0] < placement.to
+        && placement.selectedKind[0] === 'agent' && placement.current[0] === 'true', `Team ${index}: the opened Team marks its coordinator ${JSON.stringify(placement)}`);
+      await chevron(team).click(); assert.equal(await team.getAttribute('aria-expanded'), 'false');
       await team.focus(); await page.keyboard.press('Enter'); assert.equal(await team.getAttribute('aria-expanded'), 'true');
-      assert.match(await page.locator('[data-preview="agent-selection"]').innerText(), new RegExp(coordinator));
       assert(await team.evaluate(el => el === document.activeElement));
     }
     const teamCopy = page.locator('[data-preview="team-parent"] [role="treeitem"][data-member-address="/preview_0"]');
-    await teamCopy.click(); assert.equal(await teamCopy.getAttribute('aria-expanded'), 'false');
+    await teamCopy.click(); assert.equal(await teamCopy.getAttribute('aria-expanded'), 'true');
+    await chevron(teamCopy).click(); assert.equal(await teamCopy.getAttribute('aria-expanded'), 'false');
     await teamCopy.focus(); await page.keyboard.press('Space'); assert.equal(await teamCopy.getAttribute('aria-expanded'), 'true');
     assert.equal(await page.locator('[data-preview="team-selection"]').innerText(), 'preview-0');
     assert.equal(await page.locator('[data-preview="transient"] [data-member-address="/preview_2"]').getAttribute('aria-expanded'), null);
@@ -164,11 +188,15 @@ try {
     assert.deepEqual(errors(), []); return widths;
   });
   await runCase('B02', 'Org configured/collaborator/delegated group and exact disclosure/inspect intent', async () => {
-    const icons = await checkIcons('[data-test="agent-org-task-team-row-team-task"] > svg.iconify--heroicons:not([data-test]), [data-test="agent-org-task-team-row-product-run"] > svg.iconify--heroicons:not([data-test]), [data-test="agent-org-team-row-team-configured"] > svg.h-4.w-4', [16,16,16]);
-    const org = page.locator('[data-test="agent-org-task-team-row-team-task"]');
-    await org.click(); assert.equal(await org.getAttribute('aria-expanded'), 'false');
+    // autobyteus-461 FU-031: an Org's delegated Team rows are the shared row (its people-group icon in `[data-team-icon]`); the
+    // Org's own mounted Team keeps its row.
+    const ORG_TASK_TEAMS = '[data-preview="org"] [data-test="workspace-team-transient-execution-row"][data-transient-kind="task_team"]';
+    const icons = await checkIcons(`${ORG_TASK_TEAMS} [data-team-icon] svg, [data-test="agent-org-team-row-team-configured"] > svg.h-4.w-4`, [16,16,16]);
+    // CR-461-108: opening the delegated Team row reveals it (expanded, never folded on open); its chevron folds it.
+    const org = page.locator(ORG_TASK_TEAMS).first();
+    await org.click(); assert.equal(await org.getAttribute('aria-expanded'), 'true');
+    await org.locator('[data-test="workspace-team-transient-disclosure"]').click(); assert.equal(await org.getAttribute('aria-expanded'), 'false');
     await org.focus(); await page.keyboard.press('Enter'); assert.equal(await org.getAttribute('aria-expanded'), 'true');
-    assert.match(await page.locator('[data-preview="team-icons"] > p').innerText(), /inspections=2/);
     assert.deepEqual(errors(), []); return { icons };
   });
   await runCase('B03', 'Task Team compact/detail/live/closed/failed glyphs; Agent and disabled semantics', async () => {

@@ -1,0 +1,59 @@
+API/E2E round 18 (API-REV-018), on CRR-056. Code under test bac59031c3 (HEAD c7dcdc371f: docs only since). Server dist/ and the
+phone bundle rebuilt at the start (04:46, exit 0); web from source. Clean env for every run (env -i PATH HOME=<resolved temp>
+TMPDIR USER); never the user's app or ~/.autobyteus. Raw logs: /tmp/api461/r18.
+
+1. Probe items reworked (CRR-056 item 1; tests follow the approved requirements and design):
+  composer-context-file-removal: each copy's attachments upload under its own draft owner (agent_draft for an Agent copy and the
+    Org's task agent, team_member_draft of the Team copy for its member; rule 2); CF-009 removed (its premise, an Org member's
+    draft for a delegated run, is impossible under rule 2); the rest per their owners.
+  delegated-launch-defaults: Settings rows by tree row key (DCP-005, DCR-002/003, DLP-003/004/007, AFS-001); DCR-001's W read
+    from runTree; DCR-001/002 read each copy's context from its own run (agentContexts), the slot's from its Team / Org;
+    AFS-001 records the stored model before checking the card, and gives the card 10 s.
+  project-manager-ux: PMU-019 waits on the active run ID; PMU-021 tabs to the worker line; PMU-024 holds on run_tree_changed.
+  mobile-shell: MSP-02 nesting; MSP-03/05/07 org_agent: keys; MSP-29 peer_agent:; MSP-20/24 count GetRunTree (SR-084);
+    MSP-22 asserts the run's own /ws/agent socket (SR-087 removed the catch-up read); MSP-24 ties each tree read to a
+    RUN_TREE_CHANGED notice for the PTM on /ws/run-status (design-spec AR-028: re-read per notice; how many notices a close
+    makes is the server's), replacing base's "one read per close, none afterwards".
+  team-status-live: TS-003 per SR-082 (a Team run's row reads its own members, not its delegated agents) and REQ-001's Stop;
+    TS-004 per REQ-001; TS-005 … 007 with the outer Team expanded, each Team's dot against its own member rows.
+  team-group-icon B01 and agent-org-task-team-disclosure B01 … B08 per CR-461-108: opening a row reveals it (a delegated Team
+    row expands and selects its coordinator, never folds on open); only the chevron folds.
+
+2. Full server E2E (RUN_AGY_FAILURE_E2E=1, scripted AGY), e01: 266 files: 187 passed, 4 failed, 75 skipped; 871 tests passed,
+   4 failed:
+    agy-interrupt-resend-transport AC-001/005, task-existing-copy-assignment EXC-E2E-001: AGY model discovery timeout at
+      createAgentRun (environmental, as on base in round 16)                              alone: 3/3 Pass, 7/7 Pass (2 skipped)
+    agent-package-definitions-live-refresh DCF-E2E-007: "expected [ 'Daily Assistant', …(7) ] to include 'APAR Fresh Scout'"
+      (300 ms after writing a new agent folder the list must hold it). Alone: run 1 DCF-E2E-007 Pass, DCF-E2E-002 Fail ("invalid
+      Team diagnostic: not met within 5000 ms"); run 2 DCF-E2E-007 Fail. DCF-E2E-007 alone ×4 per tree: base fails the same check 3 of 4, the branch 2 of 3 (its 4th: AGY discovery timeout). Full suite ×3 per tree: base 2 of 3 fail (DCF-003, DCF-002), branch 2 of 3 (DCF-002, DCF-002 + 007). Not 461 (the file watch's timing on this machine)
+    provider-secret-lifecycle-graphql: warm descriptor reads 392.94 ms vs the 250 ms local budget (load)  alone: 6/6 Pass
+
+3. Web probes (/tmp/api461/r18):
+  SDV 7/7, PMU 25/25 (F-82 resolved: PMU-003/018/019), task-closure-tree 16/16 (F-83 resolved: BR-003), BR-008 … 011 Pass,
+  osfr 8/8, composer-context-file-removal 10/10 (F-80 resolved), remote-runs-in-tree ×2 Pass (F-81 resolved: RTP-06),
+  remote-run-title Pass, RSM 7/7, PLN 10/11 (PLN-04 not 461), team-group-icon B01 … B04 Pass, agent-org-task-team-disclosure
+  8/8 Pass.
+  delegated-launch-defaults 23/29: DCP-002 Pass (F-86 resolved), DCP-003/005, DCR-003, DLP-003/004/007, AFS-002 Pass;
+    DCR-001/002 (stale context read: the copies' contexts are their own runs'), AFS-001; SIR-001/002 not 461 (round 13);
+    DLP-006 retired (round 12).
+  team-status-live 1st run: TS-003, TS-005 … 007 Fail on the probe's Team check (it compared a Team's dot with every shown member
+    row, delegated ones included; fixed to its own member rows per SR-082).
+  mobile-shell 52/55: MSP-02, 03, 05, 06, 07, 20, 22, 29, 33, 46, 52, 53 Pass; MSP-24 (base's read count); MSP-50/51 not 461
+    (round 11).
+
+4. Reruns alone after the fixes:
+  team-status-live (tsl2) 7/7 Pass                                                                   F-84 stale, closed
+  AFS-001 (dld2): A's model changed and saved; the bar reads "Saved. Changes apply when this run resumes."; A's own run stores
+    dlc-alt-model; A's card still reads "Gemini test", origin "Agent default", after 10 s (dld2/AFS-001-failure.png)     F-87
+  DCR-001/002 (dld2, dld3): each copy's own context on its own model, the slot on its edit (AC-004 met). Names: the copies' rows
+    read "worker" / "writer"; the opened copy's context and header read the definition's name ("Slot Worker 0528", "Org Writer
+    b8b2 - 3BBD", dld3/DCR-002-failure.png); base named both after the slot                          F-89 (design question)
+  MSP-24 (msp24, msp24b): quiet 50 s: 0 tree reads, 0 status polls; rows leave on both phones before the close call returns;
+    notices for the PTM at 346 and 1252 ms, each with its GetRunTree; a third GetRunTree at 5047 ms with no notice, 8 ms after
+    the phone's run-list read (ListWorkspaceRunHistory, ListCollaborationRootHistory at 5039 ms); base made no read after the
+    closes                                                                                                      F-88 (low)
+
+5. LE-O1 and LE-A1 … LE-T1 (RUN_DEEPSEEK_E2E=1, keys from the test vault): 5 failed, each on its first turn: the provider answered
+   "402 Insufficient Balance" (ERROR frame, provider_status 402). Blocked by the account, as in rounds 14 … 17.
+6. No new wording-only refusal difference (FU-030 unchanged).
+7. Typecheck: production 0, tests 1012 in 316 files (baseline): PASS.

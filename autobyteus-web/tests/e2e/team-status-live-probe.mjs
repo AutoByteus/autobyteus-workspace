@@ -535,26 +535,34 @@ const teamRootJourney = async () => {
     out.layoutIdle = await rowLayoutOf(page, 'team', s.team.teamRunId);
     assertRowLayout(out.layoutIdle, 'TS-003 idle row', { stop: true, summary: true });
     await shot(page, 'ts003-team-root-idle');
-    // The Manager stays idle; only the delegated coordinator works → the delegated Team row AND the run row read busy.
+    // The Manager stays idle; only the delegated coordinator works → the delegated Team row reads busy. The run row and its
+    // group keep their own status (autobyteus-461 SR-082, user-approved: each run's status is its own; base counted the
+    // delegated agents in it).
     await collapseTaskTeam(page, 'team', s.team.teamRunId);
     s.input.send(callTool('send_message_to', { target_agent_run_id: s.coordinator.agentRunId, content: 'Second pass. HOLD_TURN' }));
     await waitTeamStatus('delegated Team busy', row, 'running', 60000);
-    await waitTeamStatus('run row busy through delegated agents', runRow, 'running', 60000);
+    await sleep(2000);
     const group = page.locator(`[data-test="workspace-team-definition-row-${slug(s.names.team)}"]`);
     out.busy = { team: await teamDotOf(row), run: await teamDotOf(runRow), group: await teamDotOf(group) };
     assertTeamDot(out.busy.team, 'running', 'delegated Team busy (collapsed)');
-    assertTeamDot(out.busy.run, 'running', 'run row', { icon: false });
-    assertTeamDot(out.busy.group, 'running', 'group row', { icon: false });
+    assertTeamDot(out.busy.run, 'idle', 'run row: its own status, not its delegated agents\'', { icon: false });
+    assertTeamDot(out.busy.group, 'idle', 'group row: its runs\' own status', { icon: false });
     out.layoutBusy = await rowLayoutOf(page, 'team', s.team.teamRunId);
     assertRowLayout(out.layoutBusy, 'TS-003 busy collapsed row', { stop: true, summary: true });
     await shot(page, 'ts003-team-root-busy');
-    // AC-007: the user stops the Team run → every Team row of it gray.
+    // The user stops the Team run: its row is gray; its delegated Team outlives it (autobyteus-461 REQ-001), keeping its own
+    // status and its own Stop, and is gray once stopped by its own Stop (base stopped it with the run, AC-007).
     await runRow.locator('xpath=..').locator('button[aria-label="Terminate team"]').click();
-    await waitTeamStatus('delegated Team gray', row, 'offline', 60000);
     await waitTeamStatus('run row gray', runRow, 'offline', 60000);
+    await sleep(3000);
+    out.afterRunStop = await teamDotOf(row);
+    assert(out.afterRunStop.status !== 'offline', 'the delegated Team went gray with its delegator (REQ-001: it outlives the Stop)', out.afterRunStop);
+    assert((await rowLayoutOf(page, 'team', s.team.teamRunId)).stop, 'the delegated Team lost its own Stop with its delegator');
+    assert((await gql('mutation($id:String!){terminateAgentTeamRun(teamRunId:$id){success message}}', { id: s.team.teamRunId })).terminateAgentTeamRun.success, 'Stop of the delegated Team');
+    await waitTeamStatus('delegated Team gray', row, 'offline', 60000);
     out.stopped = { team: await teamDotOf(row), run: await teamDotOf(runRow) };
     assertTeamDot(out.stopped.team, 'offline', 'stopped delegated Team');
-    await until('per-copy Stop gone after the Team run stops', async () => !(await rowLayoutOf(page, 'team', s.team.teamRunId)).stop, 30000);
+    await until('per-copy Stop gone once the copy stopped', async () => !(await rowLayoutOf(page, 'team', s.team.teamRunId)).stop, 30000);
     out.layoutStopped = await rowLayoutOf(page, 'team', s.team.teamRunId);
     assertRowLayout(out.layoutStopped, 'TS-003 stopped row', { stop: false, summary: true });
     await shot(page, 'ts003-team-root-stopped');
@@ -598,14 +606,19 @@ const orgRootJourney = async () => {
     out.busy = await consistency(page, 'org', s, true, 'org busy');
     assertTeamDot(out.busy.dot, 'running', 'Org task Team busy');
     await shot(page, 'ts004-org-busy');
-    // AC-007: the Org run stops → its Team rows gray.
+    // The Org run stops: its own (Org-internal) Teams are gray; its delegated Team outlives it (autobyteus-461 REQ-001),
+    // keeping its own status and Stop, and is gray once stopped by its own Stop (base stopped it with the Org, AC-007).
     const t = await terminateViaApi(s.root);
     assert(t.success, `Org terminate failed: ${t.message}`);
+    for (let i = 0; i < await configured.count(); i += 1) await waitTeamStatus('Org-internal Team gray after the Org stops', configured.nth(i), 'offline', 60000);
+    await sleep(3000);
+    out.afterOrgStop = await teamDotOf(row);
+    assert(out.afterOrgStop.status !== 'offline', 'the delegated Team went gray with its Org (REQ-001: it outlives the Stop)', out.afterOrgStop);
+    assert((await gql('mutation($id:String!){terminateAgentTeamRun(teamRunId:$id){success message}}', { id: s.team.teamRunId })).terminateAgentTeamRun.success, 'Stop of the delegated Team');
     await waitTeamStatus('Org task Team gray', row, 'offline', 60000);
     out.stopped = await teamDotOf(row);
     assertTeamDot(out.stopped, 'offline', 'stopped Org task Team');
-    for (let i = 0; i < await configured.count(); i += 1) assert((await teamDotOf(configured.nth(i))).status === 'offline', 'Org-internal Team not gray after stop');
-    await until('per-copy Stop gone after the Org stops', async () => !(await rowLayoutOf(page, 'org', s.team.teamRunId)).stop, 30000);
+    await until('per-copy Stop gone once the copy stopped', async () => !(await rowLayoutOf(page, 'org', s.team.teamRunId)).stop, 30000);
     out.layoutStopped = await rowLayoutOf(page, 'org', s.team.teamRunId);
     assertRowLayout(out.layoutStopped, 'TS-004 stopped row', { stop: false, summary: false });
     await shot(page, 'ts004-org-stopped');
@@ -686,10 +699,13 @@ const nestedTaskTeamJourney = (kind) => async () => {
     for (const [role, a] of Object.entries(agents)) result.statuses[role] = await statusOf(a.agentRunId);
     for (const [name, team] of Object.entries({ outer, inner })) {
       result.shown[name] = shownUnder(rows, team);
-      const statuses = []; for (const id of result.shown[name]) statuses.push(await statusOf(id));
+      // autobyteus-461 SR-082 (user-approved): a Team's status is its own members'; a Team its member delegated (shown under
+      // it, SR-084) is a run of its own and does not count.
+      const own = result.shown[name].filter((id) => team.members.some((member) => member.agentRunId === id));
+      const statuses = []; for (const id of own) statuses.push(await statusOf(id));
       result.expected[name] = expectedTeamStatus(statuses, true);
       result.dots[name] = await teamDotOf(teamRow(page, team));
-      assertTeamDot(result.dots[name], result.expected[name], `${where}: ${name} Team against the agent rows shown under it`);
+      assertTeamDot(result.dots[name], result.expected[name], `${where}: ${name} Team against its own member rows`);
     }
     for (const a of Object.values(agents)) assert(await agentRow(page, kind, a.agentRunId).locator(TEAM_DOT).count() === 0, `${where}: an agent row shows a Team dot`);
     const innerIds = [agents.builder.agentRunId, agents.checker.agentRunId];
@@ -707,25 +723,38 @@ const nestedTaskTeamJourney = (kind) => async () => {
     if (kind !== 'team') assert(await runRow.locator(TEAM_DOT).count() === 0, 'the root row shows a Team dot (BEH-006)');
     if (kind === 'team') assert(await page.locator(`[data-test="workspace-team-member-${root.rootId}-/manager"]`).locator(TEAM_DOT).count() === 0, 'a configured Agent row shows a Team dot');
     await shot(page, `ts-nested-${kind}-idle-expanded`);
-    // Only the inner Team's coordinator works, both Teams collapsed: the inner Team turns busy live, with no new request.
-    await setExpanded(page, inner, false); await setExpanded(page, outer, false);
+    // Only the inner Team's coordinator works, the inner Team collapsed under its expanded outer Team (autobyteus-461 SR-084: a
+    // nested delegated Team sits under the member that delegated it, so it is shown while its outer Team is expanded): the
+    // inner Team turns busy live, with no new request.
+    await setExpanded(page, outer, true); await setExpanded(page, inner, false);
     const stopCounting = countRequests(page);
     input.send(callTool('send_message_to', { target_agent_run_id: agents.builder.agentRunId, content: 'Check it again. HOLD_TURN' }));
     await waitTeamStatus('collapsed inner Team busy', teamRow(page, inner), 'running', 60000);
     await sleep(1000);
     out.requestsDuringChange = stopCounting();
-    out.busyCollapsed = { outer: await teamDotOf(teamRow(page, outer)), inner: await teamDotOf(teamRow(page, inner)) };
+    const innerCollapsed = await teamDotOf(teamRow(page, inner));
+    // The outer Team's own dot, read with it collapsed too (it hides its nested Team then).
+    await setExpanded(page, outer, false);
+    out.busyCollapsed = { outer: await teamDotOf(teamRow(page, outer)), inner: innerCollapsed };
+    await setExpanded(page, outer, true);
     assertTeamDot(out.busyCollapsed.inner, 'running', 'collapsed inner Team');
-    if (kind === 'team') { await waitTeamStatus('run row busy', runRow, 'running', 60000); assertTeamDot(await teamDotOf(runRow), 'running', 'Team run row counts all its agents', { icon: false }); }
+    // SR-082 (user-approved): the Team run's own row keeps its own status; its delegated agents do not make it busy.
+    if (kind === 'team') { await sleep(1000); assertTeamDot(await teamDotOf(runRow), 'idle', 'Team run row: its own status, not its delegated agents\'', { icon: false }); }
     await shot(page, `ts-nested-${kind}-busy-collapsed`);
     // Expanded: each dot against the rows shown under it, and the collapsed dots were the same.
     out.busyExpanded = await check(page, 'busy, expanded');
     assert(out.busyExpanded.statuses.builder === 'running' && out.busyExpanded.statuses.reviewer !== 'running', 'only the inner coordinator should be working', out.busyExpanded);
     for (const name of ['outer', 'inner']) assert(out.busyCollapsed[name].status === out.busyExpanded.dots[name].status, `${name} Team dot differs collapsed vs expanded`, out);
     await shot(page, `ts-nested-${kind}-busy-expanded`);
-    // AC-007: the run stops → both Teams gray.
+    // The run stops: its delegated Teams outlive it (autobyteus-461 REQ-001), keeping their own status; each is gray once
+    // stopped by its own Stop (base stopped them with the run, AC-007).
     const t = await terminateViaApi(root);
     assert(t.success, `terminate failed: ${t.message}`);
+    await sleep(3000);
+    await setExpanded(page, outer, true);
+    out.afterRunStop = { outer: await teamDotOf(teamRow(page, outer)), inner: await teamDotOf(teamRow(page, inner)) };
+    for (const name of ['outer', 'inner']) assert(out.afterRunStop[name].status !== 'offline', `the ${name} delegated Team went gray with its delegator (REQ-001)`, out.afterRunStop);
+    for (const team of [inner, outer]) assert((await gql('mutation($id:String!){terminateAgentTeamRun(teamRunId:$id){success message}}', { id: team.teamRunId })).terminateAgentTeamRun.success, `Stop of ${team.address}`);
     await waitTeamStatus('outer Team gray', teamRow(page, outer), 'offline', 60000);
     await waitTeamStatus('inner Team gray', teamRow(page, inner), 'offline', 60000);
     out.stopped = { outer: await teamDotOf(teamRow(page, outer)), inner: await teamDotOf(teamRow(page, inner)) };
@@ -739,10 +768,10 @@ const nestedTaskTeamJourney = (kind) => async () => {
 const CASES = {
   'TS-001': ['Agent run: delegated Team idle → busy while collapsed → busy+error → error after Stop generation → gray when the run stops', agentRootJourney],
   'TS-002': ['TEAMS rows: idle run green, alive unstarted gray with Stop, group = highest run, Stop button → gray, all stopped → gray', teamsSectionJourney],
-  'TS-003': ['Team run: member-delegated Team row and the run row count the delegated agents; Stop → gray', teamRootJourney],
+  'TS-003': ['Team run: member-delegated Team row busy, the run row keeps its own status (SR-082); the delegated Team outlives the Stop (REQ-001), gray on its own Stop', teamRootJourney],
   'TS-004': ['Org run: delegated and Org-internal Team rows, Org root row unchanged; stop → gray', orgRootJourney],
   'TS-005': ['Agent run: a task Team delegated by a task Team member; each Team dot = its shown agents, collapsed or expanded; stop → gray', nestedTaskTeamJourney('agent')],
-  'TS-006': ['Team run: a task Team delegated by a task Team member; each Team dot = its shown agents; run row counts all; stop → gray', nestedTaskTeamJourney('team')],
+  'TS-006': ['Team run: a task Team delegated by a task Team member; each Team dot = its shown agents; the run row keeps its own status (SR-082); stop → gray', nestedTaskTeamJourney('team')],
   'TS-007': ['Org run: a task Team delegated by a member of a delegated Org Team copy; each Team dot = its shown agents; stop → gray', nestedTaskTeamJourney('org')],
 };
 

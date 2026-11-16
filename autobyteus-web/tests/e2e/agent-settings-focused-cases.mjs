@@ -58,7 +58,8 @@ export function registerAgentSettingsFocusedCases(h) {
       group: text('run-subject-group'), switchLabel: text('run-settings-switch-group'), switchPressed: q('run-settings-switch-group')?.getAttribute('aria-pressed') ?? null,
       card: Boolean(card), rootCard: Boolean(q('existing-run-root-card')), hint: Boolean(q('existing-run-copies-hint')),
       list: document.querySelectorAll('[data-test="run-delegated-launches"]').length,
-      memberRows: document.querySelectorAll('[data-test="existing-run-settings"] [data-test^="run-member-/"]').length,
+      // A run's own member rows are keyed by address; a Team copy's members by tree row key (SR-084 step 2f).
+      memberRows: document.querySelectorAll('[data-test="existing-run-settings"] [data-test^="run-member-/"], [data-test="existing-run-settings"] [data-test^="run-member-team_member:"]').length,
       model: (card ?? q('existing-run-root-card'))?.querySelector('[data-test="run-setting-model"]')?.textContent?.replace(/\s+/g, ' ').trim() ?? null,
       modelLocked: Boolean((card ?? q('existing-run-root-card'))?.querySelector('[data-test="run-setting-model"] [data-test="run-setting-locked"]')),
       stopHint: text('run-member-stop-hint'), copyStop: Boolean(q('run-member-stop')), runStop: Boolean(q('existing-run-stop')),
@@ -163,13 +164,14 @@ export function registerAgentSettingsFocusedCases(h) {
     r.aBack = await waitSubject(page, 'A again', 'Alpha')
     assert(r.aBack.model?.includes(ALT_LABEL), 'A\'s edit stayed pending', r.aBack)
     await saveSettings(page); await waitSaved(page)
-    r.aSaved = await facts(page)
-    assert(r.aSaved.model?.includes(ALT_LABEL), 'A\'s card shows the saved model (D-IMP-3)', r.aSaved)
     // autobyteus-461 SR-064: a copy's Settings save is its own run's save; read each copy's own run (base kept the edit as
-    // `userLaunchSelection` in the delegator's tree record).
+    // `userLaunchSelection` in the delegator's tree record). Read before the card's check, so a failure says which side holds what.
     const ownModel = async (runId) => (await ownLaunch(runId))?.llmModelIdentifier ?? null
     r.aStored = await ownModel(r.a)
     r.bStored = await ownModel(r.b)
+    r.aSaved = await waitFor('A\'s card after the save', async () => { const f = await facts(page); return f.model?.includes(ALT_LABEL) ? f : null }, 10000, 300)
+      .catch(async () => facts(page))
+    assert(r.aSaved.model?.includes(ALT_LABEL), 'A\'s card shows the saved model (D-IMP-3)', { card: r.aSaved, aStored: r.aStored, bStored: r.bStored })
     assert(r.aStored === ALT && r.bStored !== ALT, 'Save stored exactly A', { a: r.aStored, b: r.bStored })
     await shot(page, 'AFS-001-saved-card')
 
@@ -302,7 +304,8 @@ export function registerAgentSettingsFocusedCases(h) {
     await page.locator(sel('run-settings-switch-group')).click(); await settle(page, 500)
     r.groupRunning = await facts(page)
     assert(r.groupRunning.rootCard && !r.groupRunning.card && r.groupRunning.memberRows >= 3 && r.groupRunning.list === 0, 'the Org group view', r.groupRunning)
-    r.groupRowsHaveNoCopy = (await page.locator(`${sel('existing-run-settings')} [data-test^="run-member-/"]`).evaluateAll((els) => els.map((e) => e.getAttribute('data-test')))).every((x) => !x.includes(segmentOf(r.names.helper)))
+    // A delegated run's row is keyed by its tree row key (`agent:<id>`, `team:<id>`, SR-084 step 2f): the Org's group view has none.
+    r.groupRowsHaveNoCopy = (await page.locator(`${sel('existing-run-settings')} [data-test^="run-member-agent:"], ${sel('existing-run-settings')} [data-test^="run-member-team:"]`).count()) === 0
     assert(r.groupRowsHaveNoCopy, 'the group view lists no copy', null)
     await shot(page, 'AFS-002-org-group-view')
 

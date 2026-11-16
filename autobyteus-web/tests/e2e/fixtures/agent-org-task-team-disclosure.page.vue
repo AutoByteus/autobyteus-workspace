@@ -18,6 +18,8 @@ import { useWorkspaceHistoryTreeState } from '~/composables/useWorkspaceHistoryT
 import { useAgentSelectionStore } from '~/stores/agentSelectionStore';
 import { useRunHistoryStore } from '~/stores/runHistoryStore';
 import type { AgentOrgHistoryDefinitionGroup, AgentOrgRunHistoryItem } from '~/stores/runHistoryTypes';
+import { useRunTreeStore } from '~/stores/runTreeStore';
+import { seedOrgRunTrees, type RecordedOrgTree } from '~/test-support/runTreeFixtures';
 
 definePageMeta({ layout: false });
 
@@ -81,6 +83,10 @@ const groups = reactive<AgentOrgHistoryDefinitionGroup[]>([{
     archivedAt: null, isActive: false, summary: 'Classroom run', executionTree }],
 }]);
 
+// autobyteus-461 SR-084: the Org's delegated runs are its tree's rows, as the server builds them from the recorded runs.
+const trees = useRunTreeStore();
+seedOrgRunTrees(trees, [{ rootRunId: ROOT, executionTree: executionTree as unknown as RecordedOrgTree }]);
+
 const tree = useWorkspaceHistoryTreeState({ runHistoryStore: useRunHistoryStore(), selectionStore: useAgentSelectionStore() });
 tree.toggleAgentOrgDefinition('ttrc-ws', 'ttrc-org-definition');
 tree.toggleAgentOrgRun(ROOT);
@@ -101,7 +107,6 @@ const actions = {
 } as never;
 const avatars = { showOrgAvatar: () => false, getOrgAvatarUrl: () => '', onOrgAvatarError: noop };
 
-const teamRunIds = ['ssg-task-1', 'reviewers-task-nested', 'ssg-task-2'];
 const probe = {
   /** Emulates a live snapshot: the run becomes active and a new member joins the first delegation. */
   addLateMember: () => {
@@ -109,9 +114,10 @@ const probe = {
     const next = structuredClone(toRaw(run.executionTree)) as any;
     next.rootOrg.taskExecutions[0].members.push(taskMember('/StudentStudyGroup/student_two', 'ssg1-late'));
     groups[0]!.runs[0] = { ...run, isActive: true, executionTree: next };
+    // The Org's open view tells its tree's change (SR-084): the rows as the server builds them now.
+    seedOrgRunTrees(trees, [{ rootRunId: ROOT, executionTree: next as RecordedOrgTree }]);
   },
   state: () => ({
-    taskTeams: Object.fromEntries(teamRunIds.map((id) => [id, tree.isAgentOrgTaskTeamExpanded(ROOT, id)])),
     mountedTeams: { '/StudentStudyGroup': tree.isAgentOrgTeamExpanded(ROOT, '/StudentStudyGroup'), '/Reviewers': tree.isAgentOrgTeamExpanded(ROOT, '/Reviewers') },
     calls: JSON.parse(JSON.stringify(calls)),
   }),

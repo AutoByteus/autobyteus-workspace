@@ -21,6 +21,9 @@ The latest coverage investigation and execution coverage report remain authorita
 | API-REV-013 | Code Reviewer, `code-review-report.md` CRR-045, round 13 | SR-081 … SR-083, CR-461-078 … CR-461-085 (code `58cc542572`), CRR-043 … CRR-045 | Fail / 87% | Fail / 87% |
 | API-REV-014 | Code Reviewer, `code-review-report.md` CRR-047, round 14 | CR-461-086 … CR-461-093 (code `4062c809d2`), CRR-046, CRR-047 | Fail / 87% | Fail / 89% |
 | API-REV-015 | Code Reviewer, `code-review-report.md` CRR-049, round 15 (targeted) | CR-461-094 … CR-461-098 (code `77f24482a8`), CRR-048, CRR-049 | Fail / 89% | Pass / 91% |
+| API-REV-016 | Code Reviewer, `code-review-report.md` CRR-052, round 16 | SR-084 … SR-090 (code `53f0ae2d4e`), CRR-050 … CRR-052 | Pass / 91% | Fail / 71% |
+| API-REV-017 | Code Reviewer, `code-review-report.md` CRR-054, round 17 | CR-461-101 … CR-461-105 (code `568dea0159`), CRR-053, CRR-054 | Fail / 71% | Fail / 79% |
+| API-REV-018 | Code Reviewer, `code-review-report.md` CRR-056, round 18 | IR-038, CR-461-106 … CR-461-110 (code `bac59031c3`), CRR-055, CRR-056 | Fail / 79% | Fail / 87% |
 
 ## Revision Entries
 
@@ -653,3 +656,28 @@ None
 - New or remaining failure IDs: F-80, F-81, F-82 (design question), F-83, F-84, F-86; unclassified DLD and MSP cases; two mocked probes unfinished
 - Recommended owner: per the failure-origin review.
 - Remaining risks, blocked evidence, or untested scope: LE-O1 and LE-A1 … LE-T1 (DeepSeek balance).
+
+### API-REV-018: round 18 (CRR-056): the probe items reworked; F-80 … F-83, F-86 resolved; F-84 stale; F-87 … F-89 new
+
+- Triggering role, report path, and round: `/software_engineering_team/code_reviewer`, `code-review-report.md` (CRR-056 at `7df54669c4`; code `bac59031c3`), API/E2E round 18
+- Triggering finding or case IDs: CRR-055/056's probe items (CFR, DLD, PMU-019/021/024, MSP, TS-003/005 … 007, the two mocked probes per CR-461-108); F-80 … F-83, F-86; the triage's fixes
+- Why this revision was recorded: the rework, the rechecks and the complete rerun
+- Coverage decisions or durable test paths changed: the web probes in the report's "Durable Coverage Changed" (owners per rule 2, tree row keys, `GetRunTree`, CR-461-108's row clicks, MSP-24 per AR-028's notices)
+
+#### Prior Failure Resolution
+
+| Prior ID | Classification | Now | Proven By |
+| --- | --- | --- | --- |
+| F-80 | Local Fix | Resolved | CFR 10/10 |
+| F-81 | Local Fix | Resolved | RTP-06 ×2 |
+| F-82 | Design (CR-461-108) | Resolved | PMU 25/25 |
+| F-83 | Local Fix | Resolved | task-closure-tree 16/16 |
+| F-84 | API/E2E (stale, CRR-055) | Reworked; Pass | TS 7/7 |
+| F-86 | Local Fix | Resolved | DCP-002 |
+
+- Canonical artifacts and sections updated: the execution report; the progress log; `evidence/api-e2e/API-r18-runs.txt`.
+- Prior result and confidence: Fail / 79%
+- Current result and confidence: Fail / 87%
+- New or remaining failure IDs: F-87; F-88 (low); F-89 (design question)
+- Recommended owner: per the failure-origin review.
+- Remaining risks, blocked evidence, or untested scope: LE-O1 and LE-A1 … LE-T1 (DeepSeek: 402 Insufficient Balance on the first turn).

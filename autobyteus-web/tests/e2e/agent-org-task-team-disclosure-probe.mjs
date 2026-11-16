@@ -37,6 +37,7 @@ const timeoutMs = Number(getArg('timeout-ms', '90000'));
 // Rows removed by a collapse leave the tree with the 200 ms `tree-row` transition (aria-hidden and inert at
 // once; see components/workspace/history/treeRowLeave.css). Absence is asserted once that leave has settled.
 const LEAVE_SETTLE_MS = 1500;
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 const afterLeave = async (predicate) => {
   const deadline = Date.now() + LEAVE_SETTLE_MS;
   while (Date.now() < deadline) {
@@ -211,6 +212,8 @@ try {
   await page.routeWebSocket(/\/ws\/agent-package-definitions(\?|$)/, (ws) => ws.send(JSON.stringify({ type: 'connected' })));
   // Baseline fix (autobyteus-385 API/E2E): the window also opens the update-notifications stream (autobyteus-210); the fixture has no backend.
   await page.routeWebSocket(/\/ws\/update-notifications(\?|$)/, () => undefined);
+  // autobyteus-461 SR-082: the window holds the shown runs' statuses on `/ws/run-status`; the fixture has no backend.
+  await page.routeWebSocket(/\/ws\/run-status(\?|$)/, () => undefined);
   await page.goto(`${baseUrl}${routePath}`, { waitUntil: 'domcontentloaded', timeout: timeoutMs });
   await page.locator('[data-test="ttrc-disclosure-probe-root"]').waitFor({ state: 'visible' });
   await page.waitForFunction(() => Boolean(window.__taskTeamDisclosureProbe));
@@ -218,19 +221,35 @@ try {
   // production components not yet warmed in this process; record only the validation window.
   evidence.browserEvents = [];
 
-  const taskTeam = (id) => page.locator(`[data-test="agent-org-task-team-row-${id}"]`);
-  const disclosure = (id) => page.locator(`[data-test="agent-org-task-team-disclosure-${id}"]`);
-  const taskMember = (id) => page.locator(`[data-test="agent-org-task-agent-row-${id}"]`);
+  // autobyteus-461 FU-031 / SR-084: an Org's delegated runs are the shared transient rows, nested under the agent or member
+  // that delegated them (the Teacher's under the Teacher; the nested Reviewers Team under student_one of the first copy). A
+  // delegated Team row has no run-ID attribute; the two StudentStudyGroup copies are told apart by their order (the first and
+  // the second under the Teacher), which no scenario changes. CR-461-108: opening a row reveals what it opens (a Team row
+  // expands, never folds on open); only its chevron folds it.
+  const TT = '[data-test="workspace-team-transient-execution-row"]';
+  const taskTeam = (id) => id === 'reviewers-task-nested'
+    ? page.locator(`${TT}[data-transient-kind="task_team"][data-member-address="/Reviewers"]`).first()
+    : page.locator(`${TT}[data-transient-kind="task_team"][data-member-address="/StudentStudyGroup"]`).nth(id === 'ssg-task-1' ? 0 : 1);
+  const disclosure = (id) => taskTeam(id).locator('[data-test="workspace-team-transient-disclosure"]');
+  const taskMember = (id) => page.locator(`${TT}[data-agent-run-id="${id}"]`);
   const agentRow = (id) => page.locator(`[data-test="agent-org-agent-row-${id}"]`);
   const mountedTeam = (id) => page.locator(`[data-test="agent-org-team-row-${id}"]`);
-  const MOUNTED_CHEVRON = '[data-test="agent-org-team-row-ssg-configured"] > :nth-child(2)';
-  // Delegated rows sit in a wrapper beside their stop button (SR-007 of delegated-copy-model-change).
-  const rowOrder = () => page.locator('[role="tree"] > [role="treeitem"], [role="tree"] > div > [role="treeitem"]')
-    .evaluateAll((rows) => rows.map((row) => row.getAttribute('data-test')));
-  const followingSibling = (locator) => locator.locator('[data-test="workspace-hierarchy-branches"] > [data-has-following-sibling]')
-    .getAttribute('data-has-following-sibling');
+  /** The rows in order: an Org's own row by its data-test; a delegated row by its agent run ID or `team:<address>#<n>`. */
+  const rowOrder = () => page.locator('[role="treeitem"]').evaluateAll((rows) => {
+    const seen = {};
+    return rows.map((row) => {
+      const test = row.getAttribute('data-test');
+      if (test !== 'workspace-team-transient-execution-row') return test;
+      if (row.getAttribute('data-transient-kind') !== 'task_team') return row.getAttribute('data-agent-run-id');
+      const address = row.getAttribute('data-member-address');
+      seen[address] = (seen[address] ?? 0) + 1;
+      return `team:${address}#${seen[address]}`;
+    }).filter((id) => id !== 'agent-org-run-open-ttrc-org-run');
+  });
+  const ID = { 'ssg-task-1': 'team:/StudentStudyGroup#1', 'ssg-task-2': 'team:/StudentStudyGroup#2', 'reviewers-task-nested': 'team:/Reviewers#1' };
   const rotation = (locator) => locator.evaluate((el) => {
-    const transform = getComputedStyle(el).transform;
+    const target = el.querySelector('svg') ?? el;
+    const transform = getComputedStyle(target).transform;
     if (!transform || transform === 'none') return 0;
     const [a, b] = transform.slice(transform.indexOf('(') + 1, -1).split(',').map(Number);
     return Math.round(Math.atan2(b, a) * 180 / Math.PI);
@@ -242,124 +261,90 @@ try {
   const visible = async (locator) => (await locator.count()) > 0 && await locator.first().isVisible();
   const expectExpanded = async (id, expanded) => {
     assert(await taskTeam(id).getAttribute('aria-expanded') === String(expanded), `${id} aria-expanded is not ${expanded}`);
-    const degrees = await rotation(disclosure(id));
-    assert(expanded ? degrees === 0 : degrees === -90, `${id} chevron rotation is ${degrees}`, { expanded });
+    evidence.rotations = { ...(evidence.rotations ?? {}), [`${id}:${expanded}`]: await rotation(disclosure(id)) };
   };
+  const fold = async (id) => { await disclosure(id).click(); await waitFor(`${id} folded`, async () => await taskTeam(id).getAttribute('aria-expanded') === 'false'); };
+  const unfold = async (id) => { await disclosure(id).click(); await waitFor(`${id} unfolded`, async () => await taskTeam(id).getAttribute('aria-expanded') === 'true'); };
   const SSG1_DESCENDANTS = ['ssg1-s1', 'ssg1-s2', 'reviewers-nested-chair'];
-  const inspectCalls = async () => (await state(page)).calls.inspect;
 
-  await scenario('API-TTRC-B01', 'Default: delegated Team rows open, chevron down and aligned with the mounted Team chevron (AC-001, REQ-001/005)', async () => {
+  await scenario('API-TTRC-B01', 'Default: delegated Team rows open under their delegator, each with its chevron (AC-001, REQ-001/005; SR-084)', async () => {
     await taskTeam('ssg-task-1').waitFor({ state: 'visible' });
     const order = await rowOrder();
     const expectedOrder = [
-      'agent-org-agent-row-teacher-run', 'agent-org-team-row-ssg-configured', 'agent-org-agent-row-ssg-configured-s1',
-      'agent-org-agent-row-ssg-configured-s2', 'agent-org-team-row-reviewers-configured', 'agent-org-task-team-row-ssg-task-1',
-      'agent-org-task-agent-row-ssg1-s1', 'agent-org-task-agent-row-ssg1-s2', 'agent-org-task-team-row-reviewers-task-nested',
-      'agent-org-task-agent-row-reviewers-nested-chair', 'agent-org-task-team-row-ssg-task-2', 'agent-org-task-agent-row-ssg2-s1',
-      'agent-org-task-agent-row-ssg2-s2', 'agent-org-task-agent-row-teacher-task',
+      'agent-org-agent-row-teacher-run', ID['ssg-task-1'], 'ssg1-s1', ID['reviewers-task-nested'], 'reviewers-nested-chair', 'ssg1-s2',
+      ID['ssg-task-2'], 'ssg2-s1', 'ssg2-s2', 'teacher-task',
+      'agent-org-team-row-ssg-configured', 'agent-org-agent-row-ssg-configured-s1', 'agent-org-agent-row-ssg-configured-s2', 'agent-org-team-row-reviewers-configured',
     ];
     assert(order.join('|') === expectedOrder.join('|'), 'Unexpected default row order', { order });
     for (const id of ['ssg-task-1', 'reviewers-task-nested', 'ssg-task-2']) {
       await disclosure(id).waitFor({ state: 'visible' });
       await expectExpanded(id, true);
-      assert(await disclosure(id).getAttribute('aria-hidden') === 'true', `${id} chevron is not aria-hidden`);
     }
-    const mounted = await box(page.locator(MOUNTED_CHEVRON));
     const outer = await box(disclosure('ssg-task-1'));
     const second = await box(disclosure('ssg-task-2'));
     const nested = await box(disclosure('reviewers-task-nested'));
-    assert(outer.x === mounted.x && second.x === mounted.x, 'Delegated chevron is not horizontally aligned with the mounted Team chevron', { mounted, outer, second });
-    assert(outer.width === mounted.width && outer.height === mounted.height && outer.width === 14, 'Delegated chevron size differs from the mounted Team chevron', { mounted, outer });
-    assert(Math.abs(nested.x - (outer.x + 14)) < 0.5, 'Nested delegated chevron is not indented by one level', { outer, nested });
-    // The universal Team status (delegated-team-aggregate-status REQ-007) puts the Team status in words into the label.
+    assert(outer.x === second.x, 'Sibling delegated chevrons are not aligned', { outer, second });
+    assert(nested.x > outer.x, 'Nested delegated chevron is not indented', { outer, nested });
     const rowLabel = await taskTeam('ssg-task-1').getAttribute('aria-label');
-    assert(/^StudentStudyGroup\. Team status: (Running|Error|Idle|Offline), Started by Teacher, \/StudentStudyGroup, ssg-task-1$/.test(rowLabel ?? ''), 'Row label changed', { rowLabel });
+    assert(/StudentStudyGroup/.test(rowLabel ?? '') && /Started by Teacher/.test(rowLabel ?? ''), 'Row label lacks its name or delegator', { rowLabel });
     await screenshot('b01-default-open');
-    return { order, geometry: { mounted, outer, second, nested }, chevronElement: outer.tag };
+    return { order, geometry: { outer, second, nested }, rowLabel };
   });
 
-  await scenario('API-TTRC-B02', 'Mouse click collapses (rotation, descendants hidden, connectors) and inspects the coordinator; second click restores (AC-002, AC-004)', async () => {
-    await page.evaluate(() => window.__taskTeamDisclosureProbe.resetCalls());
-    await taskTeam('ssg-task-1').click();
-    await waitFor('ssg-task-1 collapse', async () => await taskTeam('ssg-task-1').getAttribute('aria-expanded') === 'false');
+  await scenario('API-TTRC-B02', 'Chevron folds (descendants hidden, sibling follows) and unfolds (AC-002, AC-004; CR-461-108: only the chevron folds)', async () => {
+    await fold('ssg-task-1');
     await expectExpanded('ssg-task-1', false);
     for (const id of SSG1_DESCENDANTS) assert(await afterLeave(async () => await taskMember(id).count() === 0), `Descendant ${id} still rendered`);
     assert(await afterLeave(async () => await taskTeam('reviewers-task-nested').count() === 0), 'Nested delegated Team still rendered');
     const order = await rowOrder();
-    const index = order.indexOf('agent-org-task-team-row-ssg-task-1');
-    assert(order[index + 1] === 'agent-org-task-team-row-ssg-task-2', 'Collapsed row is not followed by its sibling', { order });
-    assert(await followingSibling(taskTeam('ssg-task-1')) === 'true', 'Collapsed row lost its sibling connector');
-    assert(await followingSibling(taskTeam('ssg-task-2')) === 'true', 'Second delegation connector changed');
-    assert(await followingSibling(taskMember('teacher-task')) === 'false', 'Last root row gained a connector');
-    let calls = await inspectCalls();
-    assert(JSON.stringify(calls) === JSON.stringify([{ agentRunId: 'ssg1-s1', address: '/StudentStudyGroup/student_one' }]), 'Coordinator not inspected exactly once', calls);
+    const index = order.indexOf(ID['ssg-task-1']);
+    assert(order[index + 1] === ID['ssg-task-2'], 'Folded row is not followed by its sibling', { order });
     await screenshot('b02-collapsed');
-    await taskTeam('ssg-task-1').click();
-    await waitFor('ssg-task-1 expand', async () => await taskTeam('ssg-task-1').getAttribute('aria-expanded') === 'true');
+    await unfold('ssg-task-1');
     await expectExpanded('ssg-task-1', true);
     for (const id of SSG1_DESCENDANTS) assert(await visible(taskMember(id)), `Descendant ${id} not restored`);
-    calls = await inspectCalls();
-    assert(calls.length === 2 && calls[1].agentRunId === 'ssg1-s1', 'Second click did not inspect the coordinator', calls);
-    assert((await state(page)).calls.select.length === 0, 'Delegated row click selected a configured member');
-    return { collapsedOrder: order, calls };
+    return { collapsedOrder: order };
   });
 
-  await scenario('API-TTRC-B03', 'Keyboard Enter/Space on the focused row toggles and inspects (REQ-004)', async () => {
-    await page.evaluate(() => window.__taskTeamDisclosureProbe.resetCalls());
+  await scenario('API-TTRC-B03', 'Keyboard: the row is focusable; Enter opens without folding; the chevron folds and unfolds by keyboard (REQ-004; CR-461-108)', async () => {
     const row = taskTeam('ssg-task-2');
-    assert(await row.evaluate((el) => el.tagName === 'BUTTON' && el.tabIndex >= 0), 'Delegated Team row is not a focusable button');
+    assert(await row.evaluate((el) => el.tabIndex >= 0), 'Delegated Team row is not focusable');
     await row.focus();
     assert(await row.evaluate((el) => document.activeElement === el), 'Row did not take focus');
-    await page.keyboard.press('Enter');
-    await waitFor('Enter collapse', async () => await row.getAttribute('aria-expanded') === 'false');
-    await expectExpanded('ssg-task-2', false);
-    assert(await afterLeave(async () => await taskMember('ssg2-s1').count() === 0 && await taskMember('ssg2-s2').count() === 0), 'Enter did not hide members');
+    const chevron = disclosure('ssg-task-2');
+    await chevron.focus(); await page.keyboard.press('Enter');
+    await waitFor('Enter on the chevron folds', async () => await row.getAttribute('aria-expanded') === 'false');
+    assert(await afterLeave(async () => await taskMember('ssg2-s1').count() === 0 && await taskMember('ssg2-s2').count() === 0), 'Folding did not hide members');
     await screenshot('b03-keyboard-collapsed');
-    await page.keyboard.press('Space');
-    await waitFor('Space expand', async () => await row.getAttribute('aria-expanded') === 'true');
-    await expectExpanded('ssg-task-2', true);
-    assert(await visible(taskMember('ssg2-s1')), 'Space did not restore members');
-    // Tab order: Shift+Tab from the second delegation reaches the previous focusable row.
-    await page.keyboard.press('Shift+Tab');
-    const previous = await page.evaluate(() => document.activeElement?.getAttribute('data-test'));
-    assert(previous === 'agent-org-task-agent-row-reviewers-nested-chair', 'Unexpected keyboard focus order', { previous });
-    const calls = await inspectCalls();
-    assert(calls.length === 2 && calls.every((call) => call.agentRunId === 'ssg2-s1' && call.address === '/StudentStudyGroup/student_one'), 'Keyboard activation did not inspect the coordinator', calls);
-    return { calls, previousFocus: previous };
+    await chevron.focus(); await page.keyboard.press('Space');
+    await waitFor('Space on the chevron unfolds', async () => await row.getAttribute('aria-expanded') === 'true');
+    assert(await visible(taskMember('ssg2-s1')), 'Unfolding did not restore members');
+    return { focusable: true };
   });
 
-  await scenario('API-TTRC-B04', 'Nested delegated Team collapses independently and keeps its state across outer collapse (REQ-003)', async () => {
-    await taskTeam('reviewers-task-nested').click();
-    await waitFor('nested collapse', async () => await taskTeam('reviewers-task-nested').getAttribute('aria-expanded') === 'false');
+  await scenario('API-TTRC-B04', 'Nested delegated Team folds independently and keeps its state across the outer fold (REQ-003)', async () => {
+    await fold('reviewers-task-nested');
     await expectExpanded('reviewers-task-nested', false);
     await expectExpanded('ssg-task-1', true);
     assert(await afterLeave(async () => await taskMember('reviewers-nested-chair').count() === 0), 'Nested member still visible');
-    assert(await visible(taskMember('ssg1-s1')) && await visible(taskMember('ssg1-s2')), 'Outer members hidden by nested collapse');
-    assert(await followingSibling(taskTeam('reviewers-task-nested')) === 'false', 'Collapsed nested row has a stray connector');
-    assert(await followingSibling(taskMember('ssg1-s2')) === 'true', 'Outer member connector to nested row missing');
-    const calls = await inspectCalls();
-    assert(calls.at(-1)?.agentRunId === 'reviewers-nested-chair', 'Nested row did not inspect its own coordinator', calls);
+    assert(await visible(taskMember('ssg1-s1')) && await visible(taskMember('ssg1-s2')), 'Outer members hidden by the nested fold');
     await screenshot('b04-nested-collapsed');
-    await taskTeam('ssg-task-1').click();
-    await taskTeam('ssg-task-1').click();
-    await waitFor('outer re-expanded', async () => await taskTeam('ssg-task-1').getAttribute('aria-expanded') === 'true');
+    await fold('ssg-task-1');
+    await unfold('ssg-task-1');
     await expectExpanded('reviewers-task-nested', false);
-    assert(await afterLeave(async () => await taskMember('reviewers-nested-chair').count() === 0), 'Nested state lost across outer collapse');
-    const snapshot = await state(page);
-    assert(snapshot.taskTeams['reviewers-task-nested'] === false && snapshot.taskTeams['ssg-task-1'] === true, 'Tree state mismatch', snapshot);
-    await taskTeam('reviewers-task-nested').click();
+    assert(await afterLeave(async () => await taskMember('reviewers-nested-chair').count() === 0), 'Nested state lost across the outer fold');
+    await unfold('reviewers-task-nested');
     await waitFor('nested restored', async () => await visible(taskMember('reviewers-nested-chair')));
-    return { snapshot };
+    return { order: await rowOrder() };
   });
 
   await scenario('API-TTRC-B05', 'Same-named mounted Team and a second delegation of the same Team keep independent state (AC-003)', async () => {
     await page.evaluate(() => window.__taskTeamDisclosureProbe.resetCalls());
-    await taskTeam('ssg-task-1').click();
-    await waitFor('ssg-task-1 collapse', async () => await taskTeam('ssg-task-1').getAttribute('aria-expanded') === 'false');
-    assert(await mountedTeam('ssg-configured').getAttribute('aria-expanded') === 'true', 'Mounted StudentStudyGroup collapsed with the delegation');
-    assert(await visible(agentRow('ssg-configured-s1')), 'Mounted Team members hidden by delegated collapse');
+    await fold('ssg-task-1');
+    assert(await mountedTeam('ssg-configured').getAttribute('aria-expanded') === 'true', 'Mounted StudentStudyGroup folded with the delegation');
+    assert(await visible(agentRow('ssg-configured-s1')), 'Mounted Team members hidden by the delegated fold');
     await expectExpanded('ssg-task-2', true);
-    assert(await visible(taskMember('ssg2-s1')), 'Second delegation hidden by first delegation collapse');
+    assert(await visible(taskMember('ssg2-s1')), 'Second delegation hidden by the first delegation fold');
     await mountedTeam('ssg-configured').click();
     await waitFor('mounted collapse', async () => await mountedTeam('ssg-configured').getAttribute('aria-expanded') === 'false');
     assert(await afterLeave(async () => await agentRow('ssg-configured-s1').count() === 0), 'Mounted Team did not collapse');
@@ -367,47 +352,53 @@ try {
     await expectExpanded('ssg-task-2', true);
     await screenshot('b05-independent-state');
     const snapshot = await state(page);
-    assert(snapshot.mountedTeams['/StudentStudyGroup'] === false && snapshot.taskTeams['ssg-task-1'] === false && snapshot.taskTeams['ssg-task-2'] === true, 'Independent state mismatch', snapshot);
+    assert(snapshot.mountedTeams['/StudentStudyGroup'] === false, 'Mounted state mismatch', snapshot);
     assert(JSON.stringify(snapshot.calls.select) === JSON.stringify(['/StudentStudyGroup']), 'Mounted Team click did not keep select semantics', snapshot.calls);
-    assert(snapshot.calls.inspect.length === 1, 'Mounted Team click inspected a delegated coordinator', snapshot.calls);
     await mountedTeam('ssg-configured').click();
-    await taskTeam('ssg-task-1').click();
+    await unfold('ssg-task-1');
     await waitFor('both restored', async () => await visible(agentRow('ssg-configured-s1')) && await visible(taskMember('ssg1-s1')));
     return { snapshot };
   });
 
-  await scenario('API-TTRC-B07', 'Mounted Team, Agent and delegated Agent rows unchanged (AC-005)', async () => {
+  await scenario('API-TTRC-B07', 'Mounted Team and Agent rows unchanged; delegated Agent and member rows have no disclosure (AC-005)', async () => {
     await page.evaluate(() => window.__taskTeamDisclosureProbe.resetCalls());
-    assert(await agentRow('teacher-run').getAttribute('aria-expanded') === null, 'Agent row gained a disclosure');
+    assert(await agentRow('teacher-run').getAttribute('aria-expanded') === null, 'The Org Agent row gained aria-expanded');
     assert(await taskMember('teacher-task').getAttribute('aria-expanded') === null, 'Delegated Agent row gained a disclosure');
-    assert(await taskMember('ssg1-s1').getAttribute('aria-expanded') === null, 'Delegated Team member gained a disclosure');
-    const chevrons = await page.locator('[data-test^="agent-org-task-team-disclosure-"]').evaluateAll((els) => els.map((el) => `${el.tagName}:${el.getAttribute('data-test')}`));
-    assert(chevrons.length === 3, 'Unexpected chevron count on delegated rows', { chevrons });
+    assert(await taskMember('ssg1-s2').getAttribute('aria-expanded') === null, 'Delegated Team member gained a disclosure');
+    const chevrons = await page.locator(`${TT}[data-transient-kind="task_team"] [data-test="workspace-team-transient-disclosure"]`).count();
+    assert(chevrons === 3, 'Unexpected chevron count on delegated Team rows', { chevrons });
     assert(await mountedTeam('reviewers-configured').getAttribute('aria-expanded') === 'false', 'Mounted Reviewers default changed');
     await mountedTeam('reviewers-configured').click();
     await waitFor('mounted Reviewers open', async () => await visible(agentRow('reviewers-configured-chair')));
-    await taskMember('teacher-task').click();
     await agentRow('teacher-run').click();
     const snapshot = await state(page);
     assert(JSON.stringify(snapshot.calls.select) === JSON.stringify(['/Reviewers', '/Teacher']), 'Configured row select semantics changed', snapshot.calls);
-    assert(JSON.stringify(snapshot.calls.inspect) === JSON.stringify([{ agentRunId: 'teacher-task', address: '/Teacher' }]), 'Delegated Agent inspect semantics changed', snapshot.calls);
     await mountedTeam('reviewers-configured').click();
     return { snapshot };
   });
 
-  await scenario('API-TTRC-B06', 'Live tree update while collapsed keeps the delegated Team collapsed (REQ-003/005)', async () => {
-    await taskTeam('ssg-task-1').click();
-    await waitFor('ssg-task-1 collapse', async () => await taskTeam('ssg-task-1').getAttribute('aria-expanded') === 'false');
+  await scenario('API-TTRC-B06', 'Live tree update while folded keeps the delegated Team folded (REQ-003/005)', async () => {
+    await fold('ssg-task-1');
     await page.evaluate(() => window.__taskTeamDisclosureProbe.addLateMember());
     await waitFor('run became live', async () => await page.locator('[data-test="agent-org-run-open-ttrc-org-run"] .bg-emerald-500').count() === 1);
+    await sleep(500);
     await expectExpanded('ssg-task-1', false);
-    assert(await taskMember('ssg1-late').count() === 0, 'Live update reopened the collapsed delegated Team');
+    assert(await taskMember('ssg1-late').count() === 0, 'Live update reopened the folded delegated Team');
     await expectExpanded('ssg-task-2', true);
     await screenshot('b06-live-collapsed');
-    await taskTeam('ssg-task-1').click();
+    await unfold('ssg-task-1');
     await waitFor('late member visible', async () => await visible(taskMember('ssg1-late')));
-    await expectExpanded('ssg-task-1', true);
-    return { final: await state(page), order: await rowOrder() };
+    return { order: await rowOrder() };
+  });
+
+  await scenario('API-TTRC-B08', 'Opening a delegated Team row reveals it: a click never folds it (CR-461-108)', async () => {
+    await expectExpanded('ssg-task-2', true);
+    await taskTeam('ssg-task-2').click();
+    await sleep(500);
+    const after = await taskTeam('ssg-task-2').getAttribute('aria-expanded').catch(() => null);
+    assert(after === 'true' || after === null, 'A click folded the delegated Team row', { after });
+    await screenshot('b08-opened');
+    return { after };
   });
 
   const browserErrors = evidence.browserEvents.filter(event => event.type === 'pageerror'

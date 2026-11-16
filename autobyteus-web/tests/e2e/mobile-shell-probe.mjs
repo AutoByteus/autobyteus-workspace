@@ -30,8 +30,8 @@
 //   MSP-01 AC-001  The same runs and order as the desktop Runs view of the same node; newest 5, "Show older (N)", "Show
 //                  fewer"; ages on top-level rows.
 //   MSP-02 AC-002, AC-002a  The PTM run's tree: the task agent and the task team under it, the team folded with its
-//                  members, the remote rows with their node chip; a Team member's task agent beside the member, as on the
-//                  desktop (DEC-009); second lines: a delegated task agent or task team shows its Task's summary, the same
+//                  members, the remote rows with their node chip; a Team member's task agent nested under the member, as on
+//                  the desktop (autobyteus-461 SR-084; 277's DEC-009 put it beside the member); second lines: a delegated task agent or task team shows its Task's summary, the same
 //                  line as the desktop Runs view; members show their name only (DEC-010); a delegated run stopped on the
 //                  node: its dot follows live while its root is open, and under a root not open it follows within one
 //                  history poll (autobyteus-426 D-09; before it, 277 DEC-013 updated it only once the root was opened).
@@ -916,7 +916,9 @@ const runCases = async () => {
       [liveOk && !facts.reloaded, 'a delegated run\'s state changes live on the list (its root open)'],
       [unselectedSeen.length >= 2 && unselectedSeen.some(status => status !== unselectedSeen[0]) && unselectedChangeMs !== null && unselectedChangeMs <= 7_000 && unselectedAfterOpen === unselectedSeen[unselectedSeen.length - 1],
         'under a root not open: the dot follows within one poll, without opening the root (autobyteus-426 D-09)'],
-      [Boolean(childRow(teamRows, teamKey, 'changelog helper', 1)) && !leadDelegatedNested, 'a member\'s task agent beside the member, as on the desktop (DEC-009)'],
+      // autobyteus-461 SR-084: a member's task agent is nested under the member that delegated it, on the desktop and the phone
+      // alike (277's DEC-009 put it beside the member).
+      [Boolean(leadDelegatedNested) && !childRow(teamRows, teamKey, 'changelog helper', 1), 'a member\'s task agent nested under the member, as on the desktop (SR-084)'],
       [phoneTitles.writer === 'Write the release notes.' && phoneTitles.squad === 'Review the docs site.', 'a task agent and a task team show their Task\'s summary (DEC-010)'],
       [['writer', 'spare', 'leadDelegated'].every(label => phoneTitles[label] && phoneTitles[label] === desktopLine(label)), 'the same second line as the desktop Runs view'],
       [Object.values(memberTitles).every(title => !title), 'members show one line, their name (DEC-010)'],
@@ -940,7 +942,7 @@ const runCases = async () => {
       { kind: 'Org run (its first member)', key: () => `org:${stack.org}`, name: 'planner', parent: 'Delivery Org', ids: { orgRunId: stack.org, agentRunId: stack.orgPlanner, memberAddress: '/planner', runId: stack.orgPlanner } },
       { kind: 'Org run (first member a Team: its coordinator)', key: () => `org:${stack.reviewOrg}`, name: 'reviewer', parent: '(squad|Review Org)',
         ids: { orgRunId: stack.reviewOrg, agentRunId: stack.reviewOrgCoordinator.agentRunId, memberAddress: stack.reviewOrgCoordinator.address, runId: stack.reviewOrgCoordinator.agentRunId } },
-      { kind: 'Org member', key: () => `org:${stack.org}/agent:${stack.orgPlanner}`, name: 'planner', parent: 'Delivery Org', ids: { orgRunId: stack.org, agentRunId: stack.orgPlanner, memberAddress: '/planner', runId: stack.orgPlanner } },
+      { kind: 'Org member', key: () => `org:${stack.org}/org_agent:${stack.org}:${stack.orgPlanner}`, name: 'planner', parent: 'Delivery Org', ids: { orgRunId: stack.org, agentRunId: stack.orgPlanner, memberAddress: '/planner', runId: stack.orgPlanner } },
     ];
     const results = [];
     const scroller = page.locator(sel('mobile-run-list-scroll'));
@@ -1079,12 +1081,12 @@ const runCases = async () => {
     // An Org entry: Back, then Forward restores the Org target from its keys.
     await page.goBack();
     await page.locator(`${sel('mobile-run-tree')}:visible`).waitFor({ timeout: 20_000 });
-    await openRow(page, `org:${stack.org}/agent:${stack.orgPlanner}`);
+    await openRow(page, `org:${stack.org}/org_agent:${stack.org}:${stack.orgPlanner}`);
     const orgQuery = (await runScreen(page)).query;
     await page.goBack();
     await page.locator(`${sel('mobile-run-tree')}:visible`).waitFor({ timeout: 20_000 });
     const listQuery = await page.evaluate(() => location.search);
-    const orgMarked = await page.locator(rowSel(`org:${stack.org}/agent:${stack.orgPlanner}`)).getAttribute('aria-current');
+    const orgMarked = await page.locator(rowSel(`org:${stack.org}/org_agent:${stack.org}:${stack.orgPlanner}`)).getAttribute('aria-current');
     await page.goForward();
     await waitFor('Forward to the Org entry', async () => { const s = await runScreen(page); return s.state === 'open' && (s.conversation ?? '').includes('ORG-PLANNER'); }, 30_000);
     // A reload of an Org entry: the list (Org screens keep their behavior, autobyteus-435 AC-005-4; an agent or Team
@@ -1113,7 +1115,7 @@ const runCases = async () => {
     // The remote rows know their title and state once their delegating run is opened (278: the node is asked for an opened root).
     await openRow(page, ptmKey);
     await page.locator(sel('mobile-run-back')).first().click();
-    const remoteKey = `${ptmKey}/agent:${stack.remoteAgentRun}`;
+    const remoteKey = `${ptmKey}/peer_agent:${stack.remoteAgentRun}`; // SR-084: a peer run's tree row key
     let row = null;
     await waitFor('the remote row\'s title', async () => (row = (await rowsOf(page)).find(entry => entry.key.endsWith(stack.remoteAgentRun)))?.title === stack.remoteAgentTitle, 30_000).catch(() => undefined);
     assert(row?.chip?.includes(PEER) && row.title === stack.remoteAgentTitle && row.status && row.status !== 'error', 'the remote row: chip, title, state', row);
@@ -1187,7 +1189,7 @@ const runCases = async () => {
     await openRow(page, `org:${stack.org}`);
     await page.locator(sel('mobile-run-back')).first().click();
     await page.locator(`${sel('mobile-run-tree')}:visible`).waitFor();
-    const orgMarked = await page.locator(rowSel(`org:${stack.org}/agent:${stack.orgPlanner}`)).getAttribute('aria-current');
+    const orgMarked = await page.locator(rowSel(`org:${stack.org}/org_agent:${stack.org}:${stack.orgPlanner}`)).getAttribute('aria-current');
     const orgListQuery = await page.evaluate(() => location.search);
     await page.locator(sel('mobile-new-run-button')).click();
     await page.locator(sel('mobile-new-run')).waitFor();
@@ -1905,7 +1907,9 @@ const runCases = async () => {
     // children or the run's active state change. A fresh hub run with two delegated children; its children's turns are
     // driven over the hub's collaboration socket, as a second client does (HOLD_TURN keeps a turn running until stopped).
     const STATUS_OP = 'GetAgentRunCollaborationStatuses';
-    const VIEW_OP = 'GetAgentRunCollaboration';
+    // autobyteus-461 SR-084: a listed run's rows are its tree; a change in them (RUN_TREE_CHANGED) re-reads the tree, which
+    // replaced the collaboration view read here.
+    const VIEW_OP = 'GetRunTree';
     const hubDef = (await alpha.gql('mutation($i:CreateAgentDefinitionInput!){createAgentDefinition(input:$i){id}}', { i: { name: 'Status Hub',
       role: 'assistant', description: 'Status Hub (phone probe)', instructions: 'Follow the request.', toolNames: [],
       defaultLaunchConfig: { runtimeKind: 'antigravity_cli', llmModelIdentifier: MODEL, llmConfig: null } } })).createAgentDefinition.id;

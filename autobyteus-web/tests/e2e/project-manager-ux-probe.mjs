@@ -1388,8 +1388,11 @@ const selectionState = (page) => page.evaluate(() => {
   const pinia = document.querySelector('#__nuxt')?.__vue_app__?.config.globalProperties.$pinia;
   const selection = pinia?._s.get('agentSelection'); const teams = pinia?._s.get('agentTeamContexts');
   const u = new URL(location.href);
+  // The run the window shows (autobyteus-461 rule 2: a delegated run opens as its own run, not as a focus of its root Team).
+  const target = pinia?._s.get('activeContext')?.activeWorkspaceTarget;
   return { route: `${u.pathname}${u.search}`, subject: JSON.stringify(selection?.subject ?? null),
-    focusedMember: teams?.activeExecutionFocusedMemberAddress ?? null, focusedRunId: teams?.focusedMemberContext?.state?.runId ?? null };
+    focusedMember: teams?.activeExecutionFocusedMemberAddress ?? null, focusedRunId: teams?.focusedMemberContext?.state?.runId ?? null,
+    activeRunId: target?.agentRunId ?? target?.context?.state?.runId ?? null };
 });
 /** The visible tree's selected rows and its scroll geometry. */
 const treeSummary = (page) => page.evaluate(() => {
@@ -1644,7 +1647,8 @@ const collapsedStripOtherEntries = async () => {
     });
     const nestedMember = { agentRunId: await editorRow.getAttribute('data-agent-run-id'), address: await editorRow.getAttribute('data-member-address'), depth: await editorRow.getAttribute('data-tree-depth') };
     await editorRow.click();
-    await until('nested member selected', async () => (await selectionState(page)).focusedRunId === nestedMember.agentRunId, 30000);
+    // Rule 2: the nested member opens as its own run (the root Team's focus is left alone).
+    await until('nested member opened', async () => (await selectionState(page)).activeRunId === nestedMember.agentRunId, 30000);
     await collapseLeftPanel(page);
     const nestedOpen = await settledOpenRun(page, 'nested member');
     assert(nestedOpen.nav.stripChatLit === false, 'nested member: Chat not lit', nestedOpen.nav);

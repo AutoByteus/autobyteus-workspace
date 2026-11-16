@@ -51,6 +51,8 @@ const PHONE_HOST = '192.168.77.30';
 const MODEL = 'gemini-3.8-flash-low';
 const STATUS_OP = 'GetAgentRunCollaborationStatuses';
 const VIEW_OP = 'GetAgentRunCollaboration';
+// autobyteus-461 SR-084: a listed run's rows are its tree; a change (RUN_TREE_CHANGED) re-reads the tree, not the run's view.
+const TREE_OP = 'GetRunTree';
 const HISTORY_OP = 'ListWorkspaceRunHistory';
 
 /**
@@ -97,6 +99,11 @@ export const runClosedTaskRowsCases = async (probe) => {
     try { const body = JSON.parse(request.postData() ?? '{}'); net.push({ at: Date.now(), op: body.operationName ?? null, runId: body.variables?.runId ?? null, runIds: body.variables?.runIds ?? null }); } catch { /* not JSON */ }
   });
   const reads = (net, from, to = Date.now()) => net.filter(entry => entry.at >= from && entry.at <= to);
+  /** Every rows notice a page receives (`RUN_TREE_CHANGED { kind, runId }` on /ws/run-status; autobyteus-461 AR-028): run ID, time. */
+  const recordTreeNotices = (page, notices) => page.on('websocket', (ws) => ws.on('framereceived', ({ payload }) => {
+    if (typeof payload !== 'string' || !payload.includes('RUN_TREE_CHANGED')) return;
+    try { const message = JSON.parse(payload); if (message.type === 'RUN_TREE_CHANGED') notices.push({ at: Date.now(), runId: message.payload?.runId ?? null }); } catch { /* not JSON */ }
+  }));
 
   if (['MSP-24', 'MSP-25', 'MSP-26', 'MSP-34'].some(wants)) {
     const delta = await serverAt('delta', await freePort(), { AGY_FAKE_CASE: 'linked_skills', AUTOBYTEUS_HTTP_ACCESS_LOG_MODE: 'all' });
@@ -175,8 +182,9 @@ export const runClosedTaskRowsCases = async (probe) => {
       const openPhone = async (label) => {
         const context = await phoneBrowser.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true, deviceScaleFactor: 2, locale: 'en-US', timezoneId: 'UTC', ...(paired ? { storageState: paired } : {}) });
         const page = await context.newPage();
-        const phone = { label, context, page, net: [] };
+        const phone = { label, context, page, net: [], notices: [] };
         recordReads(page, phone.net);
+        recordTreeNotices(page, phone.notices);
         watchBrowser(page, label, phoneOrigin, () => currentCase);
         if (!paired) {
           await page.goto(pairing.body.mobileUrl, { waitUntil: 'domcontentloaded', timeout: 120_000 });
@@ -240,7 +248,7 @@ export const runClosedTaskRowsCases = async (probe) => {
         await sleep(50_000);
         const quiet = reads(phoneOther.net, quietFrom);
         const quietCounts = { history: quiet.filter(e => e.op === HISTORY_OP).length, statuses: quiet.filter(e => e.op === STATUS_OP).length,
-          statusesNamingPtm: quiet.filter(e => e.op === STATUS_OP && e.runIds?.includes(ptm)).length, ptmViewReads: quiet.filter(e => e.op === VIEW_OP && e.runId === ptm).length };
+          statusesNamingPtm: quiet.filter(e => e.op === STATUS_OP && e.runIds?.includes(ptm)).length, ptmViewReads: quiet.filter(e => (e.op === VIEW_OP || e.op === TREE_OP) && e.runId === ptm).length };
         const nodeListedBeforeClose = listedOnNode(await viewOnDelta(ptm), writerRun);
         // AC-001, AC-004: the PTM closes Task A, then Task B.
         const gone = watchRows([{ name: 'other-A', phone: phoneOther, id: writerRun }, { name: 'other-B', phone: phoneOther, id: teamRun },
@@ -256,8 +264,13 @@ export const runClosedTaskRowsCases = async (probe) => {
           hostA: after(goneAt['host-A'] && goneAt['host-A'] - closedA), hostB: after(goneAt['host-B'] && goneAt['host-B'] - closedB) };
         const lastGone = Math.max(...Object.values(goneAt).filter(Boolean));
         await sleep(15_000);
-        const viewReadsAfterClose = reads(phoneOther.net, closeFrom, lastGone).filter(e => e.op === VIEW_OP && e.runId === ptm).length;
-        const viewReadsAfterGone = reads(phoneOther.net, lastGone + 1).filter(e => e.op === VIEW_OP && e.runId === ptm).length;
+        // autobyteus-461 AR-028 (design-spec: live changes for a listed run that is not open): the phone reads the PTM's
+        // tree again on each of its rows notices, and at no other time. How many notices a close makes is the server's.
+        const treeReads = reads(phoneOther.net, closeFrom).filter(e => e.op === TREE_OP && e.runId === ptm);
+        const notices = phoneOther.notices.filter(n => n.at >= closeFrom && n.runId === ptm);
+        const viewReadsAfterClose = treeReads.filter(e => e.at <= lastGone).length;
+        const viewReadsAfterGone = treeReads.length - viewReadsAfterClose;
+        const unprompted = treeReads.filter(e => !notices.some(n => n.at <= e.at && e.at - n.at <= 3_000)).map(e => e.at - closeFrom);
         await shot(phoneOther.page, 'MSP-24-phone-other-closed');
         await shot(phoneHost.page, 'MSP-24-phone-host-closed');
         // AC-003: the PTM reopens Task A. On the node a Task set back to TODO keeps its copy closed; the copy reopens
@@ -274,13 +287,17 @@ export const runClosedTaskRowsCases = async (probe) => {
         const reopenMs = { other: backAt['other-A'] && backAt['other-A'] - reactivated, host: backAt['host-A'] && backAt['host-A'] - reactivated };
         await shot(phoneOther.page, 'MSP-24-phone-other-reopened');
         const details = { quiet: { seconds: 50, ...quietCounts }, goneAfterCloseMs: goneMs, viewReadsAfterClose, viewReadsInThe15sAfterGone: viewReadsAfterGone,
+          treeNotices: notices.map(n => n.at - closeFrom), treeReads: treeReads.map(e => e.at - closeFrom), readsWithoutNotice: unprompted,
+          // What the phone read around each tree read with no notice (what made it read), by ms after the first close.
+          opsAroundUnprompted: unprompted.map(ms => reads(phoneOther.net, closeFrom + ms - 3_000, closeFrom + ms + 1_000).map(e => ({ ms: e.at - closeFrom, op: e.op, runId: e.runId }))),
           nodeListedBeforeClose, afterTodoOnly: afterTodo, rowBackAfterReactivationMs: reopenMs, listedOnOtherAtEnd: { writerRun: await listed(phoneOther, writerRun), teamRun: await listed(phoneOther, teamRun) } };
         assert(quietCounts.ptmViewReads === 0, 'no view read of the PTM while nothing changes (AC-005)', details);
         // autobyteus-461 SR-082: statuses by run ID on /ws/run-status; no status poll at all.
         assert(quietCounts.statuses === 0, 'no status poll (SR-082)', details);
         assert(goneMs.otherA !== null && goneMs.otherA <= 10_000 && goneMs.otherB !== null && goneMs.otherB <= 10_000, 'phone-other: both delegated rows leave within 10 s (AC-001)', details);
         assert(goneMs.hostA !== null && goneMs.hostA <= 1_000 && goneMs.hostB !== null && goneMs.hostB <= 1_000, 'phone-host (the PTM open): both rows leave within 1 s (AC-004)', details);
-        assert(viewReadsAfterClose >= 1 && viewReadsAfterClose <= 2 && viewReadsAfterGone === 0, 'one view re-read per close, none afterwards (QR-002)', details);
+        assert(viewReadsAfterClose >= 1 && notices.length >= 1 && treeReads.length <= notices.length && unprompted.length === 0,
+          'the closes are read on their rows notices: each tree read follows a notice for the PTM, none otherwise (AR-028; SR-084: the tree replaced the view read)', details);
         assert(nodeListedBeforeClose, 'before the close the node lists the copy (the check below reads the node)', details);
         assert(afterTodo.phoneHost === afterTodo.phoneOther && afterTodo.phoneOther === afterTodo.nodeListed, 'after TODO alone both phones agree with the node (REQ-002: the same way)', details);
         assert(reopenMs.other !== null && reopenMs.other <= 10_000 && reopenMs.host !== null, 'the reopened copy\'s row returns on both phones, within 10 s on phone-other (AC-003)', details);

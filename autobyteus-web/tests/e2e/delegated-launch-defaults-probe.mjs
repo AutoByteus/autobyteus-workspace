@@ -555,9 +555,13 @@ const delegatedRows = async (page, root) => {
       const label = (own) => copyAddress && !own.startsWith(`${copyAddress}/`) ? `${copyAddress}${own}` : own
       for (const handle of memberRows) {
         const key = (await handle.getAttribute('data-test')).replace('run-member-', '')
-        members.push(await rowFacts(handle, { test: label(key.replace(/@.*$/, '')), member: true,
+        // SR-084 step 2f: a delegated run's row is keyed by its tree row key (`team_member:<team>:<agent>`, `agent:<id>`), a
+        // run's own member by its address; the row's title is the member's name (its own-team address, TC-12).
+        const name = await handle.$eval('[data-test="run-member-toggle"]', (n) => n.getAttribute('title')).catch(() => null)
+        const own = key.startsWith('/') ? key : `/${name}`
+        members.push(await rowFacts(handle, { test: label(own), member: true,
           badge: await handle.$eval('[data-test="run-member-badge"]', (n) => n.textContent.trim()).catch(() => null) }))
-        covered.add(key.replace(/^.*@/, ''))
+        if (!key.startsWith('/')) covered.add(key.split(':').at(-1))
       }
       const teamAddress = copyAddress ?? (members[0]?.test.split('/').slice(0, -1).join('/') || target.address)
       rows.push(await rowFacts(await team.elementHandle(), { test: teamAddress, member: false, badge: 'Delegated copy',
@@ -1616,11 +1620,13 @@ defineCase('DCP-005', 'delegated-copy-model-change REQ-001 (any member), AC-010 
   await openTeamRun(page, r.teamRunId, ids.home)
   await openSettings(page)
   // autobyteus-366: the Team copy's group view (its card and its members' rows), reached from its lead.
-  const teamKey = `${address('pair')}@${r.copyTeamRunId}`
+  const teamKey = `team:${r.copyTeamRunId}`
   const teamCard = await focusedCard(page, r.members.lead, { group: true })
-  const rowOf = (key) => key === teamKey ? teamCard : groupRow(page, key)
-  // autobyteus-461 TC-12: a delegated team is rooted at `/`; its member rows carry their own addresses.
-  const keyOf = (name) => `/${name}@${r.members[name]}`
+  // autobyteus-461 TC-12 and SR-084 step 2f: a member row of the copy is keyed by its own address (the copy's own view) or by
+  // its tree row key (`team_member:<copy>:<agent>`); either names the same row.
+  const memberRowOf = (key) => page.locator(`${sel('existing-run-settings')} [data-test="run-member-${key.own}"], ${sel('existing-run-settings')} [data-test="run-member-${key.tree}"]`).first()
+  const rowOf = (key) => key === teamKey ? teamCard : memberRowOf(key)
+  const keyOf = (name) => ({ own: `/${name}`, tree: `team_member:${r.copyTeamRunId}:${r.members[name]}` })
   await waitFor('the Team copy\'s Settings header has its stop icon', async () => page.locator(sel('run-member-stop')).isVisible().catch(() => false), 60000)
   await page.locator(sel('run-member-stop')).click()
   await waitFor('Team copy stopped (model unlocked)', async () => !(await modelLocked(teamCard)), 60000, 1000)

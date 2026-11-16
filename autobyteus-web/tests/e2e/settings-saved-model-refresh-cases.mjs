@@ -140,22 +140,24 @@ export function registerSavedRefreshCases(h) {
       await stopCopy(p, r.members.lead, { team: true }); await stopCopy(p, membersOf(r.neighbor).lead, { team: true })
       r.neighborBefore = await ownTeam(r.neighborId)
       r.ownBefore = await ownTeam(r.copyId)
-      // autobyteus-461 TC-12: a delegated team is rooted at `/`; its member rows carry their own addresses.
-      const memberKey = n => `/${n}@${r.members[n]}`
+      // autobyteus-461 TC-12 and SR-084 step 2f: a member row of the Team copy is keyed by its own address (the copy's own view)
+      // or by its tree row key (`team_member:<copy>:<agent>`); either names the same row.
+      const copyRow = n => p.locator(`[data-test="existing-run-settings"] [data-test="run-member-/${n}"], `
+        + `[data-test="existing-run-settings"] [data-test="run-member-team_member:${r.copyId}:${r.members[n]}"]`).first()
       // An explicit member choice made before changing the Team must not be overwritten by inheritance (the member's own card).
       r.memberSave = await saveSameView(p, await focusedCard(p, r.members.unoffered), MODEL, MODEL_LABEL)
       // The Team copy's group view: its card and its members' rows.
       const teamCard = await focusedCard(p, r.members.unoffered, { group: true })
-      const engineerBefore = await summary(groupRow(p, memberKey('engineer')))
+      const engineerBefore = await summary(copyRow('engineer'))
       // autobyteus-461 F-39 (SR-075): a team-level Save changes the team's own default only; each member keeps its own launch.
-      const leadBefore = await summary(groupRow(p, memberKey('lead')))
+      const leadBefore = await summary(copyRow('lead'))
       r.teamSave = await saveSameView(p, teamCard, MODEL, MODEL_LABEL)
-      r.leadAfterTeamSave = await summary(groupRow(p, memberKey('lead')))
+      r.leadAfterTeamSave = await summary(copyRow('lead'))
       r.storedAfterTeamSave = await ownTeam(r.copyId)
       assert(r.leadAfterTeamSave === leadBefore, 'a team-level Save changed a member\'s own launch (F-39)', { before: leadBefore, after: r.leadAfterTeamSave, storedBefore: r.ownBefore, storedAfter: r.storedAfterTeamSave })
-      assert(await summary(groupRow(p, memberKey('engineer'))) === engineerBefore, 'Own-default member changed')
+      assert(await summary(copyRow('engineer')) === engineerBefore, 'Own-default member changed')
       r.teamSecond = await saveSameView(p, teamCard, ALT, ALT_LABEL)
-      assert(await summary(groupRow(p, memberKey('lead'))) === leadBefore, 'a second team-level Save changed a member\'s own launch (F-39)')
+      assert(await summary(copyRow('lead')) === leadBefore, 'a second team-level Save changed a member\'s own launch (F-39)')
       r.ownMember = await assertVisible(p, await focusedCard(p, r.members.unoffered), MODEL_LABEL)
       r.ownAfter = await ownTeam(r.copyId)
       assert(r.ownAfter.team?.model === ALT, 'Team canonical differs', r.ownAfter)
