@@ -100,3 +100,37 @@ Deliver `codex/delegated-copies-outlive-delegator-461` (Project Task `autobyteus
 - Repository finalization complete: `No`
 - Unresolved blocker: integration conflicts with `origin/personal` `1e8b6e5d0a` (above)
 - Successful terminal package eligible for return: `No`
+
+## Repository Finalization (second pass)
+
+- Ticket branch `codex/delegated-copies-outlive-delegator-461` at `c8073f6e06`, pushed. Secret Gate: one `generic-api-key` finding in round-1 test evidence (`evidence/api-e2e/API-E02-contract-stories-5.2.txt:234`): the collaboration contract fixture's run ID `upscaler_55b2` (`tests/fixtures/collaboration-contract/contract-states.json`), confirmed by shape and source; the exact value allowlisted for the generic rule (`.gitleaks.toml`, `c8073f6e06`). A first entry aimed at the wrong token on that line was dropped before any push. Then PASS on the range and on the merged state.
+- Merged `--no-ff` from `finalize/delegated-copies-outlive-delegator-461` as `d5d4fc7c81` (first parent `1e8b6e5d0a`, unchanged at the push; tree identical to the ticket branch); pushed `1e8b6e5d0a..d5d4fc7c81`.
+
+## Beta Release (in progress)
+
+- Release decision: `Beta` (the user, 2026-11-16). Version `1.5.13-beta.7` (`scripts/release_versions.py next-beta`).
+- Shipped migrations recorded (RELEASE.md "Cutting The Release"): `RELEASED` in `app-data-migration-registry-order.test.ts` set to the 45 migrations of beta.7 (the 35 of beta.6 plus `20261111_delegated_runs_own_runs_v1` and nine `20261114_*`); 3/3 pass; `d978347600` on the finalize branch, not yet pushed.
+- Checks before tagging on `d978347600`: licensing exit 0; hygiene exit 0; Secret Gate `v1.5.13-beta.6..HEAD` PASS; `pnpm install --frozen-lockfile` exit 0; `pnpm -C autobyteus-server-ts prebuild` exit 0; **`python3 scripts/release_smoke.py`: FAIL**:
+
+| Runtime | Scenario | Result | Reason |
+| --- | --- | --- | --- |
+| claude | new run + restore, linked workspace | PASS | |
+| claude | brand-new team member | FAIL | `SESSION_NOT_READY` ("Session is not ready yet. Retry after CONNECTED message.") |
+| claude | different same-named skill | PASS | |
+| codex | new run + restore, linked workspace | PASS | |
+| codex | brand-new team member | FAIL | `SESSION_NOT_READY` |
+| codex | different same-named skill | PASS | |
+| grok | new run + restore, linked workspace | FAIL | 429 free-usage exhausted (quota) |
+| grok | brand-new team member | FAIL | `SESSION_NOT_READY` |
+| grok | different same-named skill | FAIL | 429 free-usage exhausted (quota) |
+| antigravity | brand-new run / team member, linked workspace | PASS / PASS | |
+| autobyteus | brand-new run / team member, linked workspace | PASS / PASS | |
+
+Models: claude `haiku`, codex `gpt-5.6-luna`, grok `grok-4.7`. Logs kept at `/tmp/smoke461-evidence/`.
+
+| Failed check | Classification | Log lines | Action | Result |
+| --- | --- | --- | --- | --- |
+| `workspace-skill-links-live` "brand-new team member" (claude, codex, grok) | **Ours** (same error on three runtimes before any model call, 807 ms; the test sends on the Team socket before `CONNECTED`, and `api/websocket/agent.ts:53-61` refuses that; 461 rewrote the Team stream session's open, `team-view-session.ts`) | `live.log` 298–322, 446–470, 580–600, 682 | Handed to API/E2E (RELEASE.md Recovery "Ours"): reproduce locally from a fresh start, compare with base `1e8b6e5d0a`, classify, local check | Open |
+| grok "new run + restore", "different same-named skill" | Quota (RELEASE.md: a runtime that cannot run) | summary table | Wait for Grok's 24 h reset, or the user waives Grok for this release | Open: asked the user |
+
+- No tag. Nothing published.
