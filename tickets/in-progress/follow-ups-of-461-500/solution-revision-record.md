@@ -2,6 +2,7 @@
 
 | SR | Date | Kind | Summary | Status after |
 | --- | --- | --- | --- | --- |
+| SR-005 | 2026-11-17 | Design | Delivery 1's design: FU-020 migration with backup and one late-predecessor follow-up; one stream attach; explicit composition for silent lookups and optional collaborators; team-only total; naming rules N1 … N6; refusal style; FU-021 cause reproduced; FU-035 reproduction step | Design `Ready`, Large / High |
 | SR-004 | 2026-11-17 | Requirements | D-5 decided by the user: the Task record's stored names stay (no migration); the code-only rename "task execution" → "delegated run" is done this round; the stored-name part becomes a follow-up | Approved |
 | SR-003 | 2026-11-17 | Requirements (from design investigation) | FU-020's evidence (231 structured links, all in the child's own folder; beta.7 writes none; 111 likely broken today); D-5 reopened: the stored `agentRun` holds team runs, so the approved code-takes-stored-names rename moves a wrong meaning into the code | D-5 `Ready for Approval` (needs the user); the rest stays `Approved` |
 | SR-002 | 2026-11-17 | Requirements | D-8 decided by the user, (b): clean code and data for attachment links, with a migration and a backup; requirements approved | Approved |
@@ -35,3 +36,15 @@
 - **Change:** D-5 and REQ-003 rewritten; AC-001 keeps the schema module's one documented mapping. FU-007's stored-name part recorded in `follow-ups.md`.
 - **Approval:** D-5 by the user. Requirements `Approved` at SR-004.
 - **Next:** the design of delivery 1.
+
+### SR-005
+
+- **Trigger:** requirements approved at SR-004.
+- **Design:** `design-spec.md`. Decisions the Solution Designer made within the direction:
+  - "root" stays where it means a run at the top of its own membership tree (N1);
+  - the team total serves team runs only, since no client asks for an org's;
+  - process getters that throw stay (FU-500-02);
+  - text mentions, closed journals, the search index, logs and the `imports/` mirror are inert residue.
+- **Evidence:** FU-021 reproduced under CPU contention (investigation notes). FU-035 needs a live run, which is the implementation's step 0.
+- **Classification:** `Large`, `High`.
+- **Next:** architecture review.

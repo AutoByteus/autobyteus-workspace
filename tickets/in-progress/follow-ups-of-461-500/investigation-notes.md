@@ -45,3 +45,14 @@ Authorities read for design: `references/architecture-design.md`, `references/de
 
 - 401 `agent_run_resources.json` files in the founder's data. Stored: `{taskId, agentRunResources: [{role, delegatedFrom, recipientAddress, agentRun: {kind: "agent", agentRunId} | {kind: "team", teamRunId, coordinatorAgentRunId}, linkedAt, …}]}`. Code: `executionResources`, `execution: {agentRunId} | {teamRunId}`, `teamCoordinatorAgentRunId` (`projects/stores/task-execution-resource-schema.ts:5-10`, `projects/domain/task-execution-resources.ts:18-45`).
 - **The stored `agentRun` also holds team runs** (`kind: "team"`). Renaming the code to the stored names (D-5 as approved) would give a team run the code name `agentRun`: a wrong meaning moved into the code (Principle 15). See SR-003.
+
+### FU-021: the watcher integration test (Reproduced, 2026-11-17)
+
+- **Setup:** the worktree, after `pnpm test:integration:prepare` (without it, every case fails with "Watcher runtime entrypoint not found"). 10 cores; the machine was already busy (load average 72 to 217 from other processes).
+- **Under 10 extra busy loops** (`for i in $(seq 10); do yes > /dev/null & done`), `npx vitest run tests/integration/file-explorer/file-system-watcher.integration.test.ts` failed in 8 of 8 runs, with 9 or 10 of 14 cases timing out ("Timed out waiting for event", at about 8 s).
+- **Without the extra loops** (machine still busy): 6 of 14 failed the same way.
+- **Temporary diagnostic** (reverted, never committed): the helpers' 8 s and 12 s deadlines raised to 60 s.
+  - "emits file creation event with node metadata" passed under load.
+  - The whole file: 7 of 14 still failed, on the per-test `{ timeout: 15000 }`. "emits move/rename event" failed with `expected [ 'move', 'rename' ] to include 'delete'`: the rename arrived as a delete first (`file-system-watcher.integration.test.ts:270-272`).
+- **What is established:** latency under contention exceeds the tests' fixed deadlines, and batching splits a rename. No lost event was shown, but the run with long waits was cut short by the per-test timeout, so not every case was seen to arrive. The fix proves the rest (design, "FU-021").
+- **Readiness is awaited before acting:** `file-explorer.ts:382-383` (`waitUntilReady`, chokidar `ready`). The batch window is 250 ms (`event-batcher.ts:45`).
