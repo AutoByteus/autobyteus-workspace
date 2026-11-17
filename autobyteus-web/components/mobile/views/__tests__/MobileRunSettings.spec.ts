@@ -7,12 +7,13 @@ import { enableAutoUnmount, flushPromises, mount } from '@vue/test-utils';
 import { defineComponent, h, reactive, ref } from 'vue';
 import { createPinia, setActivePinia } from 'pinia';
 
-const mocks = vi.hoisted(() => ({ store: null as any, stop: { subject: null as any, onStopped: null as any, stop: null as any, pending: null as any, error: null as any } }));
+const mocks = vi.hoisted(() => ({ store: null as any, stop: { subject: null as any, onStopped: null as any, shell: null as any, stop: null as any, pending: null as any, error: null as any } }));
 vi.mock('~/stores/existingRunConfigStore', () => ({ useExistingRunConfigStore: () => mocks.store }));
 vi.mock('~/composables/runSettings/useRunStopAction', () => ({
   useRunStopAction: (subject: any, options: any) => {
     mocks.stop.subject = subject;
     mocks.stop.onStopped = options.onStopped;
+    mocks.stop.shell = options.shell;
     return { pending: mocks.stop.pending, error: mocks.stop.error, label: { value: 'Terminate run' }, stop: mocks.stop.stop };
   },
 }));
@@ -225,6 +226,8 @@ describe('the phone Settings for the open run (autobyteus-458)', () => {
     await flushPromises();
     expect(mocks.store.updateAgentOrgScopeModelConfig).toHaveBeenCalledWith('/research/lead', { ...memberSelection, runtimeKind: 'codex_app_server' });
     expect(mocks.stop.subject.value).toEqual({ kind: 'agent_org', orgRunId: 'org-1' });
+    // CR-001: the stop runs on the phone's shell; the phone keeps its own route (Settings stays open).
+    expect(mocks.stop.shell).toBe('mobile');
   });
 
   it('leaving clears the store (unsaved choices are dropped)', async () => {

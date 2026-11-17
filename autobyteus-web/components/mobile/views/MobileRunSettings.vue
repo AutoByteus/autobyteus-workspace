@@ -141,7 +141,10 @@ const save = async (): Promise<void> => {
   if (await store.save()) emit('back');
 };
 
-/** The stop stops the run the scope belongs to (a member's Team or Org run, as on the desktop), then reads it again. */
+/**
+ * The stop stops the run the scope belongs to (a member's Team or Org run, as on the desktop), then reads it again. On the
+ * phone's shell: an Org stop leaves the route to the phone, so Settings stays open (CR-001).
+ */
 const stopSubject = computed<RunStopSubject | null>(() => {
   const open = scope.value;
   if (!open) return null;
@@ -149,5 +152,5 @@ const stopSubject = computed<RunStopSubject | null>(() => {
   if (open.kind === 'team') return { kind: 'team', teamRunId: open.teamRunId };
   return { kind: 'agent_org', orgRunId: open.orgRunId };
 });
-const stopAction = useRunStopAction(stopSubject, { onStopped: async () => { await store.reloadCanonical(); } });
+const stopAction = useRunStopAction(stopSubject, { shell: 'mobile', onStopped: async () => { await store.reloadCanonical(); } });
 </script>
