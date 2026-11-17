@@ -81,10 +81,10 @@ const view = (): AgentOrgExecutionViewDto => ({
     },
   },
   agent_input_states: [], agent_statuses: [
-    { member_address: '/direct', agent_run_id: 'agent-direct', status: 'idle', trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null },
-    { member_address: '/team/coordinator', agent_run_id: 'agent-coordinator', status: 'idle', trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null },
-    { member_address: '/team/member', agent_run_id: 'agent-member', status: 'idle', trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null },
-    { member_address: '/other/member', agent_run_id: 'agent-other-member', status: 'idle', trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null },
+    { member_address: '/direct', agent_run_id: 'agent-direct', status: 'idle', background_tasks_running: 0, trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null },
+    { member_address: '/team/coordinator', agent_run_id: 'agent-coordinator', status: 'idle', background_tasks_running: 0, trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null },
+    { member_address: '/team/member', agent_run_id: 'agent-member', status: 'idle', background_tasks_running: 0, trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null },
+    { member_address: '/other/member', agent_run_id: 'agent-other-member', status: 'idle', background_tasks_running: 0, trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null },
   ],
 })
 const agentContext = (runId: string, name: string) => new AgentContext({
@@ -144,7 +144,7 @@ describe('AgentOrgExecutionContext', () => {
     context.applyEvent(5, {
       kind: 'agent_presentation', member_address: '/direct', agent_run_id: 'agent-direct',
       message: { type: 'AGENT_STATUS', payload: {
-        status: 'running', trigger: 'user', tool_name: null,
+        status: 'running', background_tasks_running: 0, trigger: 'user', tool_name: null,
         error_message: null, error_details: null, recoverableBlock: null,
       } },
     })

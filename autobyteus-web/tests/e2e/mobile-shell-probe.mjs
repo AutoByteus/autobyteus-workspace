@@ -124,6 +124,9 @@
 //   MSP-36 autobyteus-435 REQ-013  `delegate_task` to the sender's own address, by the agent's real tool call: a standalone
 //                  run and a Team member are refused with the self words and nothing is placed; a teammate's address keeps
 //                  the own-team words.
+//   MSP-59 autobyteus-448 REQ-006, AC-005 (DEC-004)  A run idle with a background task (the scripted AGY CLI's
+//                  `BACKGROUND_STEP`): its row's dot is the active blue (not pulsing), the run screen's second line says
+//                  "Background task running" and its composer offers Send, never Stop; when the task exits both say Idle.
 //   MSP-34, MSP-35 autobyteus-435 REQ-011  A Task closed while its listed host run is stopped: its delegated row leaves
 //                  the phones' lists (MSP-34, delta) and a desktop window's (MSP-35, alpha) within one refresh, with at
 //                  most one view re-read per digest value; set back to TODO, the lists agree with the node:
@@ -2374,6 +2377,37 @@ const runCases = async () => {
     assert(before.links >= 1 && before.status === 0, 'the delegated run\'s conversation: the file link, no status yet', facts);
     assert(after.status === 0 && after.composer === 0 && after.urlChanged && after.nodeFile === outsidePath && after.viewer === 1 && after.text,
       'a tap on a file outside the workspace opens it read-only (autobyteus-436); still no composer', facts);
+    return facts;
+  });
+
+  await runCase('MSP-59', async () => {
+    await toList(page);
+    await showOlder(page);
+    const key = `agent:${stack.plain[1]}`;
+    await openRow(page, key);
+    await composerSend(page, 'Start the docs server. BACKGROUND_STEP:{"seconds":25,"exitCode":0}');
+    // The turn ends with the daemon step open: idle with one background task running.
+    await waitFor('the run screen says Background task running', async () => (await runScreen(page)).subtitle === 'Background task running', 45_000);
+    const headerDot = await page.locator(`${sel('mobile-run-title')} span.rounded-full`).first().getAttribute('class');
+    const stop = await page.locator(`${sel('mobile-run-conversation')} button[aria-label="Stop generation"]`).count();
+    const send = await page.locator(`${sel('mobile-run-conversation')} button[aria-label="Send message"]`).count();
+    await shot(page, 'MSP-59-background-run-screen');
+    await toList(page);
+    const dot = page.locator(`${rowSel(key)} ${sel('mobile-run-status-dot')}`);
+    await waitFor('the row shows background', async () => (await dot.getAttribute('data-status')) === 'background', 20_000);
+    const row = { status: await dot.getAttribute('data-status'), dotClass: await dot.getAttribute('class'),
+      label: await page.locator(rowSel(key)).locator(sel('mobile-run-open')).getAttribute('aria-label').catch(() => null) };
+    await shot(page, 'MSP-59-background-row');
+    // The daemon exits (25 s after it started): idle again, in the row and on the run screen.
+    await waitFor('the row is idle again', async () => (await dot.getAttribute('data-status')) === 'idle', 60_000);
+    await openRow(page, key);
+    const after = (await runScreen(page)).subtitle;
+    await shot(page, 'MSP-59-idle-again');
+    const facts = { headerDot, stop, send, row, after };
+    assert((headerDot ?? '').split(/\s+/).includes('bg-blue-500') && !(headerDot ?? '').includes('animate-pulse'), 'the run screen dot is the active blue, not pulsing', facts);
+    assert(stop === 0 && send >= 1, 'no Stop for "Background task running"; Send is offered', facts);
+    assert(row.status === 'background' && (row.dotClass ?? '').split(/\s+/).includes('bg-blue-500') && !(row.dotClass ?? '').includes('animate-pulse'), 'the row dot is the active blue, not pulsing', facts);
+    assert(after === 'Idle', 'idle again once the task exits', facts);
     return facts;
   });
 

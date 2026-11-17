@@ -253,6 +253,22 @@ describe('AgentUserInputTextArea', () => {
     expect(activeContextStoreMock.send).not.toHaveBeenCalled()
   })
 
+  it('autobyteus-448 DEC-004: an idle agent with background tasks running offers Send, never Stop (the run screen on desktop and phone)', async () => {
+    activeContextStoreMock.currentStatus = AgentStatus.Idle
+    activeContextStoreMock.submissionPending = false
+    const context = createContext('ctx-background', 'is the build done?')
+    ;(context.state as { backgroundTasksRunning?: number }).backgroundTasksRunning = 2
+    selectContext(context)
+
+    const wrapper = mount(withActiveComposerTarget(AgentUserInputTextArea))
+    await nextTick()
+
+    expect(wrapper.find('button[title="Stop generation"]').exists()).toBe(false)
+    const sendButton = wrapper.find('button[title="Send message"]')
+    expect(sendButton.exists()).toBe(true)
+    expect(sendButton.attributes('disabled')).toBeUndefined()
+  })
+
   it('keeps send disabled while a submission is pending without presenting stop', async () => {
     activeContextStoreMock.submissionPending = true
     activeContextStoreMock.currentStatus = AgentStatus.Idle
