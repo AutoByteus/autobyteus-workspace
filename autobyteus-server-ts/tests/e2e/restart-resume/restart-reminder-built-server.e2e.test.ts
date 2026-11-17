@@ -1,0 +1,620 @@
+/**
+ * The restart reminder across real restarts of the BUILT server (autobyteus-448 part 1). Each case runs `dist/app.js`
+ * as its own process on a test-owned data root, drives runs through GraphQL and the agent WebSocket as the desktop app
+ * does, and restarts the node the ways a node ends: a graceful stop (SIGTERM, as the app's quit), a forced kill
+ * (SIGKILL, as a crash), and an update (the first session runs a copy of this build stamped as the previous release,
+ * `dist/release-identity.json`, the only thing the cause rule reads). Inference is scripted: an LM Studio-compatible
+ * server answers each case's turns in order and records exactly what the model received, so the reminder is read where
+ * the agent reads it. The Antigravity case uses the scripted AGY CLI (`tests/fixtures/agy-failure-cli.mjs`).
+ *
+ * Cases:
+ *   RR-01  graceful restart: a native run idle on a running `run_bash(run_in_background)` is in the live record within
+ *          the 2 s check, without `shutdownAt`; the stop adds `shutdownAt`; the next start makes it a pending reminder,
+ *          wakes nothing, and the run's next input carries "reason: a restart" once. An idle run without a background
+ *          task is never recorded or reminded (AC-001, REQ-001..003, REQ-005)
+ *   RR-02  forced kill: the record has no `shutdownAt`; the next input carries "an unexpected stop" (AC-001)
+ *   RR-03  update: the run is woken without any input, with "an update to v<this release>"; its next input carries
+ *          nothing (AC-001, REQ-003)
+ *   RR-04  update with a run mid-turn that also has a background task: one reminder with the interrupted-turn line
+ *          (AC-002)
+ *   RR-05  update, input sent the moment the node answers: exactly one reminder between the wake and the input (AC-004)
+ *   RR-06  Antigravity idle with an open daemon step (its background task): recorded, reminded with its next input
+ *          (AC-003)
+ *
+ *   RR-07  (live) Claude idle with a background Bash command: recorded, reminded with its next input, and it answers
+ *          knowing the command was stopped (AC-003)
+ *   RR-08  (live) Codex idle with a background terminal: recorded at the graceful stop through its background-task
+ *          view, reminded with its next input (AC-003)
+ *
+ * Gate: RUN_RESTART_REMINDER_E2E=1. Prerequisite: `pnpm -C autobyteus-server-ts build` for this worktree. RR-01..06
+ * need no credentials. RR-07/RR-08 also need RUN_RESTART_REMINDER_LIVE_E2E=1, the signed-in `claude` and `codex` CLIs,
+ * and the real HOME, USER and LOGNAME (TESTING.md); Codex gets a throwaway CODEX_HOME with only the login linked
+ * (model gpt-6.1-terra, override RESTART_REMINDER_CODEX_MODEL; Claude haiku, override RESTART_REMINDER_CLAUDE_MODEL).
+ * macOS/Linux. About 5 minutes (live cases a few more). Run (in autobyteus-server-ts):
+ *   env -i PATH="$PATH" HOME="$(cd "$(mktemp -d)" && pwd -P)" TMPDIR="$TMPDIR" USER="$USER" RUN_RESTART_REMINDER_E2E=1 \
+ *     pnpm exec vitest run tests/e2e/restart-resume/restart-reminder-built-server.e2e.test.ts --no-watch
+ * Optional: RESTART_REMINDER_E2E_EVIDENCE_DIR keeps per-case JSON; RESTART_REMINDER_SERVER_DIR runs the cases against
+ * another server build (for example the base build, to see the behavior before this change).
+ */
+import { once } from "node:events";
+import { execFileSync, spawn, type ChildProcess } from "node:child_process";
+import { randomUUID } from "node:crypto";
+import fs from "node:fs/promises";
+import { createServer, type IncomingMessage, type Server, type ServerResponse } from "node:http";
+import os from "node:os";
+import path from "node:path";
+import WebSocket from "ws";
+import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { builtServerLaunchEnvironment } from "../helpers/built-server-launch-credential.js";
+
+const ENABLED = process.env.RUN_RESTART_REMINDER_E2E === "1" && process.platform !== "win32";
+const LIVE = ENABLED && process.env.RUN_RESTART_REMINDER_LIVE_E2E === "1";
+const SERVER_DIR = path.resolve(process.env.RESTART_REMINDER_SERVER_DIR ?? path.resolve(__dirname, "../../.."));
+const EVIDENCE_DIR = process.env.RESTART_REMINDER_E2E_EVIDENCE_DIR?.trim() || null;
+const AGY_CLI = path.resolve(__dirname, "../../fixtures/agy-failure-cli.mjs");
+const HEADER = "[Platform notice — application restarted]";
+const BACKGROUND_LINE = "If you started any background tasks, the restart stopped them.";
+const INTERRUPTED_LINE = "Your previous turn was interrupted";
+const SENDER = "system.restart_resume";
+const PREVIOUS_RELEASE = "0.0.0-previous";
+const MODEL_KEY = "restart-reminder-fixture";
+const NODE = process.execPath;
+
+type Json = Record<string, any>;
+const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+const until = async <T>(probe: () => T | undefined | null | false | Promise<T | undefined | null | false>, label: string, ms = 60_000): Promise<T> => {
+  const deadline = Date.now() + ms;
+  let last: unknown;
+  while (Date.now() < deadline) {
+    try { const value = await probe(); if (value !== undefined && value !== null && value !== false) return value as T; } catch (error) { last = error; }
+    await wait(100);
+  }
+  throw new Error(`Timed out after ${ms} ms waiting for ${label}${last ? ` (${String(last)})` : ""}`);
+};
+const quote = (value: string) => `'${value.replaceAll("'", "'\\''")}'`;
+const tagged = (tag: string) => `${quote(NODE)} -e ${quote("setInterval(()=>{},1000)")} ${tag}`;
+const withTag = (tag: string) => execFileSync("ps", ["-ww", "-A", "-o", "pid=,command="], { encoding: "utf8" })
+  .split("\n").filter((line) => line.includes(tag) && line.trim().split(/\s+/)[1] === NODE).map((line) => Number(line.trim().split(/\s+/)[0]));
+/** A wait whose outcome the case asserts at its end (so a build without the behavior still runs the whole restart). */
+const orNull = <T>(promise: Promise<T>): Promise<T | null> => promise.catch(() => null);
+const readJson = async (file: string): Promise<Json | null> => JSON.parse(await fs.readFile(file, "utf8").catch(() => "null")) as Json | null;
+
+// --- scripted model ---------------------------------------------------------------------------------------------
+
+type ModelRequest = { caseId: string; at: number; lastUser: string; lastRole: string; toolResults: string[] };
+type Reply = { toolCalls?: Array<{ name: string; args: Json }>; text?: string };
+type Step = (request: ModelRequest) => Reply;
+const textOf = (content: unknown): string => typeof content === "string" ? content
+  : Array.isArray(content) ? content.map((part) => typeof part?.text === "string" ? part.text : "").join("\n") : JSON.stringify(content ?? "");
+
+class ScriptedModel {
+  readonly requests: ModelRequest[] = [];
+  private readonly scripts = new Map<string, Step[]>();
+  private server: Server | null = null;
+  origin = "";
+  script(caseId: string, steps: Step[]): void { this.scripts.set(caseId, [...steps]); }
+  of(caseId: string): ModelRequest[] { return this.requests.filter((request) => request.caseId === caseId); }
+  /** Requests whose newest user message carries the reminder (a wake, or an input with the reminder as its preface). */
+  reminded(caseId: string): ModelRequest[] { return this.of(caseId).filter((request) => request.lastRole === "user" && request.lastUser.includes(HEADER)); }
+  async listen(): Promise<void> {
+    this.server = createServer((req, res) => void this.handle(req, res));
+    await new Promise<void>((resolve) => this.server!.listen(0, "127.0.0.1", resolve));
+    const address = this.server.address();
+    this.origin = `http://127.0.0.1:${typeof address === "object" && address ? address.port : 0}`;
+  }
+  async close(): Promise<void> { this.server?.closeAllConnections(); await new Promise<void>((resolve) => this.server ? this.server.close(() => resolve()) : resolve()); }
+  private async handle(req: IncomingMessage, res: ServerResponse): Promise<void> {
+    if (req.method === "GET") {
+      res.setHeader("content-type", "application/json");
+      res.end(JSON.stringify({ models: [{ key: MODEL_KEY, max_context_length: 65536, loaded_instances: [{ config: { context_length: 65536 } }] }] }));
+      return;
+    }
+    let raw = "";
+    for await (const chunk of req) raw += chunk;
+    const body = JSON.parse(raw) as Json;
+    const messages = (Array.isArray(body.messages) ? body.messages : []) as Json[];
+    const lastAssistant = messages.map((message) => message.role).lastIndexOf("assistant");
+    const request: ModelRequest = {
+      caseId: JSON.stringify(messages).match(/CASE:([A-Z0-9-]+)/)?.[1] ?? "unknown", at: Date.now(),
+      lastUser: textOf([...messages].reverse().find((message) => message.role === "user")?.content ?? ""),
+      lastRole: String(messages.at(-1)?.role ?? ""),
+      toolResults: messages.slice(lastAssistant + 1).filter((message) => message.role === "tool").map((message) => textOf(message.content)),
+    };
+    const hasTools = Array.isArray(body.tools) && body.tools.length > 0;
+    if (hasTools) this.requests.push(request);
+    const step = hasTools ? this.scripts.get(request.caseId)?.shift() : undefined;
+    const reply: Reply = step ? step(request) : { text: "OK." };
+    const toolCalls = reply.toolCalls?.map((call, index) => ({ index, id: `call-${randomUUID().slice(0, 12)}`, type: "function",
+      function: { name: call.name, arguments: JSON.stringify(call.args) } }));
+    const delta = toolCalls?.length ? { role: "assistant", tool_calls: toolCalls } : { role: "assistant", content: reply.text ?? "OK." };
+    const chunk = (value: Json, finish: string | null) => ({ id: `fixture-${this.requests.length}`, object: "chat.completion.chunk", created: 1,
+      model: MODEL_KEY, choices: [{ index: 0, delta: value, finish_reason: finish }] });
+    res.writeHead(200, { "content-type": "text/event-stream" });
+    res.end(`data: ${JSON.stringify(chunk(delta, null))}\n\ndata: ${JSON.stringify(chunk({}, toolCalls?.length ? "tool_calls" : "stop"))}\n\ndata: [DONE]\n\n`);
+  }
+}
+const background = (command: string) => ({ name: "run_bash", args: { command, run_in_background: true } });
+const text = (value: string): Step => () => ({ text: value });
+
+// --- the node ---------------------------------------------------------------------------------------------------
+
+type Session = Readonly<{ url: string; gql: <T = any>(query: string, variables?: Json) => Promise<T>; child: ChildProcess; output: () => string }>;
+const children: ChildProcess[] = [];
+
+/** One test node: its data root, and the server build it runs (a restart is a new session on the same root). */
+class TestNode {
+  readonly root: string;
+  constructor(root: string, private readonly env: Record<string, string>) { this.root = root; }
+  static async create(env: Record<string, string>): Promise<TestNode> {
+    const root = await fs.realpath(await fs.mkdtemp(path.join(os.tmpdir(), "restart-reminder-e2e-")));
+    for (const dir of ["home", "db", "workspace"]) await fs.mkdir(path.join(root, dir));
+    await fs.writeFile(path.join(root, ".env"), `AUTOBYTEUS_SERVER_HOST=http://127.0.0.1:8000\nAPP_ENV=test\nLMSTUDIO_HOSTS=${env.LMSTUDIO_HOSTS ?? ""}\n`);
+    return new TestNode(root, env);
+  }
+  get busyRuns(): string { return path.join(this.root, "restart-resume", "busy-runs.json"); }
+  get reminders(): string { return path.join(this.root, "restart-resume", "restart-reminders.json"); }
+  get workspace(): string { return path.join(this.root, "workspace"); }
+
+  async start(serverDir = SERVER_DIR): Promise<Session> {
+    const env: NodeJS.ProcessEnv = Object.fromEntries(["PATH", "USER", "LANG", "TMPDIR", "SHELL"].flatMap((key) => process.env[key] === undefined ? [] : [[key, process.env[key]]]));
+    Object.assign(env, { HOME: path.join(this.root, "home"), DATABASE_URL: `file:${path.join(this.root, "db", "production.db")}`, ...this.env, ...builtServerLaunchEnvironment() });
+    const child = spawn(NODE, [path.join(serverDir, "dist", "app.js"), "--data-dir", this.root, "--host", "127.0.0.1", "--port", "0"],
+      { cwd: serverDir, env, stdio: ["ignore", "pipe", "pipe"] });
+    children.push(child);
+    let output = "";
+    child.stdout!.on("data", (chunk) => { output += String(chunk); });
+    child.stderr!.on("data", (chunk) => { output += String(chunk); });
+    for (const deadline = Date.now() + 180_000; !output.includes("Server listening on 127.0.0.1:0"); await wait(100)) {
+      if (child.exitCode !== null || child.signalCode !== null) throw new Error(`server exited: ${output.slice(-2000)}`);
+      if (Date.now() > deadline) throw new Error(`server not ready in 180 s: ${output.slice(-2000)}`);
+    }
+    let url = "";
+    for (const [, candidate] of output.matchAll(/Server listening at (http:\/\/127\.0\.0\.1:\d+)/g)) {
+      const probe = await fetch(`${candidate}/graphql`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ query: "{__typename}" }) });
+      if (probe.ok) { url = candidate!; break; }
+    }
+    if (!url) throw new Error(`no listener serves GraphQL: ${output.slice(-2000)}`);
+    const gql = async <T = any>(query: string, variables: Json = {}): Promise<T> => {
+      const response = await fetch(`${url}/graphql`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ query, variables }) });
+      const body = await response.json() as { data?: T; errors?: unknown[] };
+      if (!response.ok || !body.data || body.errors?.length) throw new Error(JSON.stringify(body.errors ?? body));
+      return body.data;
+    };
+    return Object.freeze({ url, gql, child, output: () => output });
+  }
+
+  /** Ends a session: SIGTERM is the graceful stop the app's quit sends; SIGKILL leaves no graceful end (a crash). */
+  async stop(session: Session, signal: "SIGTERM" | "SIGKILL"): Promise<void> {
+    if (session.child.exitCode !== null || session.child.signalCode !== null) return;
+    const exited = once(session.child, "exit");
+    session.child.kill(signal);
+    const force = setTimeout(() => session.child.kill("SIGKILL"), 20_000);
+    try { await exited; } finally { clearTimeout(force); }
+  }
+}
+
+/**
+ * The previous release: a copy of this build whose release stamp names another version, inside the server package so
+ * its imports resolve as the build's own (`node_modules` of the package). Everything but the stamp is this build.
+ */
+const previousReleaseOf = async (serverDir: string): Promise<string> => {
+  const dir = path.join(serverDir, `.restart-reminder-e2e-previous-${randomUUID().slice(0, 8)}`);
+  await fs.mkdir(dir);
+  await fs.cp(path.join(serverDir, "dist"), path.join(dir, "dist"), { recursive: true });
+  await fs.copyFile(path.join(serverDir, "package.json"), path.join(dir, "package.json"));
+  // The build's own dependencies and schema (the server runs `pnpm exec prisma migrate deploy` from its package).
+  for (const entry of ["node_modules", "prisma"]) await fs.symlink(path.join(serverDir, entry), path.join(dir, entry));
+  await fs.writeFile(path.join(dir, "dist", "release-identity.json"), `${JSON.stringify({ version: PREVIOUS_RELEASE }, null, 2)}\n`);
+  return dir;
+};
+
+type Channel = { frames: Array<{ type: string; payload: Json; at: number }>; send: (content: string) => void; close: () => void };
+const channelOf = async (session: Session, runId: string): Promise<Channel> => {
+  const socket = new WebSocket(`${session.url.replace(/^http/, "ws")}/ws/agent/${runId}`);
+  const frames: Channel["frames"] = [];
+  socket.on("message", (raw: unknown) => {
+    try { const parsed = JSON.parse(String(raw)) as Json; if (typeof parsed.type === "string") frames.push({ type: parsed.type, payload: parsed.payload ?? {}, at: Date.now() }); } catch { /* ignore */ }
+  });
+  await new Promise<void>((resolve, reject) => { socket.once("open", () => resolve()); socket.once("error", reject); });
+  await until(() => frames.some((frame) => frame.type === "CONNECTED"), "CONNECTED", 30_000);
+  const send = (content: string) => socket.send(JSON.stringify({ type: "SEND_MESSAGE", payload: {
+    agent_run_id: runId, message_id: `e2e-${randomUUID()}`, dedupe_key: `agent_run_input:e2e:${randomUUID()}`, content, context_file_paths: [], image_urls: [] } }));
+  return { frames, send, close: () => socket.terminate() };
+};
+const idleAfter = (channel: Channel, from: number, ms = 60_000) => until(() => channel.frames.slice(from).find((frame) =>
+  frame.type === "AGENT_STATUS" && frame.payload.status === "idle" && channel.frames.slice(from).some((f) => f.type === "TURN_COMPLETED")), "idle after the turn", ms);
+
+describe.skipIf(!ENABLED)("Restart reminder across real restarts of the built server", () => {
+  const model = new ScriptedModel();
+  const cleanups: Array<() => Promise<unknown>> = [];
+  const tags: string[] = [];
+
+  const record = async (caseId: string, value: Json) => {
+    if (!EVIDENCE_DIR) return;
+    await fs.mkdir(EVIDENCE_DIR, { recursive: true });
+    await fs.writeFile(path.join(EVIDENCE_DIR, `${caseId}.json`), JSON.stringify(value, null, 2));
+  };
+  const digest = (caseId: string) => model.of(caseId).map(({ at, lastRole, lastUser, toolResults }) => ({ at, lastRole, lastUser: lastUser.slice(0, 1500), toolResults: toolResults.map((r) => r.slice(0, 400)) }));
+
+  beforeAll(async () => {
+    await fs.access(path.join(SERVER_DIR, "dist", "app.js"));
+    await model.listen();
+  });
+  afterAll(async () => {
+    for (const child of children) if (child.exitCode === null && child.signalCode === null) child.kill("SIGKILL");
+    for (const tag of tags) for (const pid of withTag(tag)) { try { process.kill(pid, "SIGKILL"); } catch { /* gone */ } }
+    for (const cleanup of cleanups.reverse()) await cleanup().catch(() => undefined);
+    await model.close();
+  }, 60_000);
+
+  const newNode = async (env: Record<string, string> = {}) => {
+    const node = await TestNode.create({ LMSTUDIO_HOSTS: model.origin, ...env });
+    cleanups.push(() => fs.rm(node.root, { recursive: true, force: true }));
+    return node;
+  };
+  const nativeRun = async (session: Session, node: TestNode) => {
+    const models = (await session.gql(`mutation{reloadProviderModelCatalog(providerId:"LMSTUDIO",runtimeKind:"autobyteus"){llmModels{modelIdentifier}}}`))
+      .reloadProviderModelCatalog.llmModels.map((entry: Json) => entry.modelIdentifier as string);
+    const modelIdentifier = models.find((id: string) => id.startsWith(MODEL_KEY));
+    expect(modelIdentifier, models.join(", ")).toBeTruthy();
+    const definitionId = (await session.gql(`mutation($input:CreateAgentDefinitionInput!){createAgentDefinition(input:$input){id}}`,
+      { input: { name: `restart-reminder-${randomUUID().slice(0, 8)}`, role: "engineer", description: "restart reminder E2E",
+        instructions: "Run the commands you are asked to run.", toolNames: ["run_bash"], skillNames: [] } })).createAgentDefinition.id;
+    const created = (await session.gql(`mutation($input:CreateAgentRunInput!){createAgentRun(input:$input){success message runId}}`,
+      { input: { agentDefinitionId: definitionId, workspaceRootPath: node.workspace, llmModelIdentifier: modelIdentifier, autoExecuteTools: true, runtimeKind: "autobyteus" } })).createAgentRun;
+    expect(created.success, created.message).toBe(true);
+    return created.runId as string;
+  };
+  const restore = async (session: Session, runId: string) => {
+    const restored = (await session.gql(`mutation($id:String!){restoreAgentRun(agentRunId:$id){success message}}`, { id: runId })).restoreAgentRun;
+    expect(restored.success, restored.message).toBe(true);
+  };
+  /** Starts a native run on its scripted steps (a background command, then idle or a long foreground command). */
+  const busyNativeRun = async (caseId: string, session: Session, node: TestNode, steps: Step[]) => {
+    model.script(caseId, steps);
+    const runId = await nativeRun(session, node);
+    const channel = await channelOf(session, runId);
+    channel.send(`CASE:${caseId} Start the build in the background.`);
+    return { runId, channel };
+  };
+  /**
+   * Precondition of every native case: the background command started (its start result is in the model's second request).
+   * Under heavy machine load a start can miss its deadline (`Command did not start`, FU-003 of autobyteus-333); the run then
+   * has no task, so nothing is recorded, which is correct and not what the case is about.
+   */
+  const expectBackgroundStarted = async (caseId: string) => {
+    const result = await until(() => model.of(caseId)[1]?.toolResults[0], `${caseId}: the background start result`, 60_000);
+    expect(result, `${caseId} precondition: the background command started`).toContain('"status":"running"');
+  };
+  /** The run's live entry once it shows the run idle with its background task (the check runs every 2 s). */
+  const recordEntry = (node: TestNode, runId: string) => until(async () => (await readJson(node.busyRuns))?.entries?.find((entry: Json) =>
+    entry.agentRunId === runId && entry.status === "idle" && entry.backgroundTasks === true) ?? null, `${runId} idle with a task in the busy-run record`, 15_000);
+
+  it("RR-01: graceful restart: recorded live, reminded once with the next input as 'a restart', nothing woken; an idle run without a task gets nothing", async () => {
+    const tag = `RR01_${randomUUID().slice(0, 8)}`;
+    tags.push(tag);
+    const node = await newNode();
+    let session = await node.start();
+    const { runId, channel } = await busyNativeRun("RR-01", session, node, [() => ({ toolCalls: [background(tagged(tag))] }), text("Started."),
+      text("Restarting what I need."), text("Fine.")]);
+    await idleAfter(channel, 0);
+    await expectBackgroundStarted("RR-01");
+    const startedAt = channel.frames.find((frame) => frame.type === "BACKGROUND_TASK_UPDATED" && frame.payload.status === "running")!.at;
+    const live = await orNull(recordEntry(node, runId));
+    const recordedAfterMs = Date.now() - startedAt;
+    const liveRecord = await readJson(node.busyRuns);
+    // A control run: idle with no background task.
+    model.script("RR-01C", [text("Done.")]);
+    const quietRunId = await nativeRun(session, node);
+    const quiet = await channelOf(session, quietRunId);
+    quiet.send("CASE:RR-01C Say done.");
+    await idleAfter(quiet, 0);
+    await wait(2_500);
+    const liveAfterQuiet = await readJson(node.busyRuns);
+
+    await node.stop(session, "SIGTERM");
+    const stopped = await readJson(node.busyRuns);
+    const leftAfterStop = withTag(tag);
+    session = await node.start();
+    const afterTake = { busyRuns: await readJson(node.busyRuns), reminders: await readJson(node.reminders) };
+    await wait(8_000);
+    const requestsBeforeInput = model.of("RR-01").length;
+
+    await restore(session, runId);
+    const next = await channelOf(session, runId);
+    next.send("CASE:RR-01 How is the build going?");
+    const reminded = await until(() => model.of("RR-01").find((request) => request.lastUser.includes("How is the build going?")), "the next input reaches the model", 60_000);
+    await idleAfter(next, 0);
+    const systemNotice = next.frames.find((frame) => frame.type === "SYSTEM_TASK_NOTIFICATION" && frame.payload.sender_id === SENDER) ?? null;
+    const before = next.frames.length;
+    next.send("CASE:RR-01 And now?");
+    const second = await until(() => model.of("RR-01").find((request) => request.lastUser.includes("And now?")), "the second input reaches the model", 60_000);
+    await idleAfter(next, before);
+    await restore(session, quietRunId).catch(() => undefined);
+    const quietNext = await channelOf(session, quietRunId);
+    model.script("RR-01C", [text("Still fine.")]);
+    quietNext.send("CASE:RR-01C Anything new?");
+    const quietReply = await until(() => model.of("RR-01C")[1], "the control run's input", 60_000);
+    const remindersAfter = await readJson(node.reminders);
+    // Recorded, not asserted: the conversation as the app reloads it, and the turn ids the run recorded across the restart.
+    const conversation = ((await session.gql(`query($id:String!){getRunProjection(runId:$id){conversation}}`, { id: runId })).getRunProjection?.conversation ?? [])
+      .map((item: Json) => ({ kind: item.kind, role: item.role ?? null, turnId: item.turnId ?? null, content: String(item.content ?? "").slice(0, 80) }));
+    const traceFile = execFileSync("find", [node.root, "-path", `*${runId}/raw_traces_active.jsonl`], { encoding: "utf8" }).trim().split("\n")[0] ?? "";
+    const traces = traceFile ? (await fs.readFile(traceFile, "utf8")).split("\n").filter(Boolean).map((line) => JSON.parse(line) as Json)
+      .map((trace) => ({ turnId: trace.turn_id ?? null, type: trace.trace_type ?? null, content: String(trace.content ?? "").slice(0, 60) })) : [];
+    await record("RR-01", { runId, quietRunId, live, liveRecord, recordedAfterMs, liveAfterQuiet, stopped, leftAfterStop, afterTake, requestsBeforeInput,
+      systemNotice, remindersAfter, conversation, traces, requests: digest("RR-01"), control: digest("RR-01C") });
+    next.close(); quietNext.close(); channel.close(); quiet.close();
+    await node.stop(session, "SIGTERM");
+
+    // REQ-001 / crash timing: in the live record within one 2 s check, as an idle run with a background task, no shutdownAt.
+    expect(live).toMatchObject({ agentRunId: runId, status: "idle", backgroundTasks: true, place: "host" });
+    expect(liveRecord?.shutdownAt ?? null).toBeNull();
+    expect(recordedAfterMs).toBeLessThanOrEqual(3_000);
+    expect((liveAfterQuiet?.entries ?? []).map((entry: Json) => entry.agentRunId)).toEqual([runId]);
+    // The graceful stop adds shutdownAt; the app quit stops the command.
+    expect(stopped?.shutdownAt).toEqual(expect.any(String));
+    expect(leftAfterStop).toEqual([]);
+    // The take: the record is gone, one pending reminder; nothing is woken.
+    expect(afterTake.busyRuns).toBeNull();
+    expect(afterTake.reminders?.reminders).toEqual([expect.objectContaining({ agentRunId: runId, cause: "restart", interruptedTurn: false })]);
+    expect(requestsBeforeInput).toBe(2);
+    // The next input carries the reminder once.
+    expect(reminded.lastUser).toContain(HEADER);
+    expect(reminded.lastUser).toMatch(/The application restarted at \d{4}-\d\d-\d\d \d\d:\d\d UTC \(reason: a restart\)\./);
+    expect(reminded.lastUser).toContain(BACKGROUND_LINE);
+    expect(reminded.lastUser).not.toContain(INTERRUPTED_LINE);
+    expect(reminded.lastUser).toContain("How is the build going?");
+    expect(systemNotice?.payload.content).toEqual(expect.stringContaining(HEADER));
+    expect(second.lastUser).not.toContain(HEADER);
+    expect(model.reminded("RR-01")).toHaveLength(1);
+    expect(remindersAfter?.reminders ?? []).toEqual([]);
+    // The control run is told nothing.
+    expect(quietReply.lastUser).not.toContain(HEADER);
+  }, 300_000);
+
+  it("RR-02: forced kill: no shutdownAt; the next input carries 'an unexpected stop'", async () => {
+    const tag = `RR02_${randomUUID().slice(0, 8)}`;
+    tags.push(tag);
+    const node = await newNode();
+    let session = await node.start();
+    const { runId, channel } = await busyNativeRun("RR-02", session, node, [() => ({ toolCalls: [background(tagged(tag))] }), text("Started."), text("Checking.")]);
+    await idleAfter(channel, 0);
+    await expectBackgroundStarted("RR-02");
+    await orNull(recordEntry(node, runId));
+    channel.close();
+    await node.stop(session, "SIGKILL");
+    const killed = await readJson(node.busyRuns);
+    await wait(1_000);
+    const leftAfterKill = withTag(tag);
+    session = await node.start();
+    const afterTake = await readJson(node.reminders);
+    await wait(5_000);
+    const requestsBeforeInput = model.of("RR-02").length;
+    await restore(session, runId);
+    const next = await channelOf(session, runId);
+    next.send("CASE:RR-02 How is the build going?");
+    const reminded = await until(() => model.of("RR-02").find((request) => request.lastUser.includes("How is the build going?")), "the next input", 60_000);
+    await idleAfter(next, 0);
+    // Recorded, not asserted: whether the background command outlives the killed node (the reminder says it was stopped).
+    const stillRunningWhenReminded = withTag(tag).map((pid) => execFileSync("ps", ["-o", "pid=,ppid=,pgid=,etime=,command=", "-p", String(pid)], { encoding: "utf8" }).trim());
+    await record("RR-02", { runId, killed, leftAfterKill, stillRunningWhenReminded, afterTake, requestsBeforeInput, requests: digest("RR-02") });
+    next.close();
+    await node.stop(session, "SIGTERM");
+
+    expect(killed?.shutdownAt ?? null).toBeNull();
+    expect(killed?.entries).toEqual([expect.objectContaining({ agentRunId: runId, status: "idle", backgroundTasks: true })]);
+    expect(afterTake?.reminders).toEqual([expect.objectContaining({ agentRunId: runId, cause: "unexpected_stop" })]);
+    expect(requestsBeforeInput).toBe(2);
+    expect(reminded.lastUser).toContain("(reason: an unexpected stop (a crash, a forced quit or a power loss)).");
+    expect(reminded.lastUser).toContain(BACKGROUND_LINE);
+    expect(model.reminded("RR-02")).toHaveLength(1);
+  }, 300_000);
+
+  /** An update restart: the first session runs the previous release; `stepsFor(tag)` scripts the run (tag names its commands). */
+  const updateCase = async (caseId: string, stepsFor: (tag: string) => Step[], midTurn: boolean, inputAtOnce: boolean) => {
+    const tag = `${caseId.replace("-", "")}_${randomUUID().slice(0, 8)}`;
+    tags.push(tag);
+    const previous = await previousReleaseOf(SERVER_DIR);
+    cleanups.push(() => fs.rm(previous, { recursive: true, force: true }));
+    const node = await newNode();
+    let session = await node.start(previous);
+    const { runId, channel } = await busyNativeRun(caseId, session, node, stepsFor(tag));
+    await expectBackgroundStarted(caseId);
+    if (midTurn) await until(() => withTag(`${tag}_FG`).length > 0, "the foreground command runs", 30_000);
+    else await idleAfter(channel, 0);
+    const entry = await orNull(until(async () => {
+      const found = (await readJson(node.busyRuns))?.entries?.find((item: Json) => item.agentRunId === runId);
+      return found && found.backgroundTasks === true && (!midTurn || found.status === "running") ? found : null;
+    }, "the live entry", 15_000));
+    channel.close();
+    await node.stop(session, "SIGTERM");
+    const stopped = await readJson(node.busyRuns);
+    const requestsBeforeRestart = model.of(caseId).length;
+    session = await node.start();
+    let inputSentAt: number | null = null;
+    if (inputAtOnce) {
+      await restore(session, runId).catch(() => undefined);
+      const early = await channelOf(session, runId);
+      inputSentAt = Date.now();
+      early.send(`CASE:${caseId} Status?`);
+      cleanups.push(async () => early.close());
+    }
+    const woken = await orNull(until(() => model.reminded(caseId)[0], "the reminder reaches the model", inputAtOnce ? 90_000 : 45_000));
+    await wait(8_000);
+    const reminders = await readJson(node.reminders);
+    const result = { runId, entry, stopped, requestsBeforeRestart, inputSentAt, reminders, requests: digest(caseId) };
+    return { node, session, runId, woken, result };
+  };
+
+  it("RR-03: update: the idle run is woken with 'an update to' this release, and its next input carries nothing", async () => {
+    const { node, session, runId, woken, result } = await updateCase("RR-03", (tag) => [() => ({ toolCalls: [background(tagged(tag))] }),
+      text("Started."), text("Restarting the build."), text("Fine.")], false, false);
+    const version = (await readJson(path.join(SERVER_DIR, "dist", "release-identity.json")))?.version as string;
+    await restore(session, runId).catch(() => undefined); // woken runs are live already; a run nobody woke is restored as the app does
+    const next = await channelOf(session, runId);
+    next.send("CASE:RR-03 And now?");
+    const after = await until(() => model.of("RR-03").find((request) => request.lastUser.includes("And now?")), "the next input", 60_000);
+    await idleAfter(next, 0);
+    await record("RR-03", { ...result, version, requests: digest("RR-03") });
+    next.close();
+    await node.stop(session, "SIGTERM");
+
+    expect(result.entry).toMatchObject({ status: "idle", backgroundTasks: true, version: PREVIOUS_RELEASE });
+    expect(result.stopped?.shutdownAt).toEqual(expect.any(String));
+    expect(woken?.lastRole).toBe("user");
+    expect(woken?.lastUser.startsWith(HEADER)).toBe(true);
+    expect(woken?.lastUser).toContain(`(reason: an update to v${version.replace(/^v/, "")}).`);
+    expect(woken?.lastUser).toContain(BACKGROUND_LINE);
+    expect(woken?.lastUser).not.toContain(INTERRUPTED_LINE);
+    expect(after.lastUser).not.toContain(HEADER);
+    expect(model.reminded("RR-03")).toHaveLength(1);
+    expect(result.reminders?.reminders ?? []).toEqual([]);
+  }, 300_000);
+
+  it("RR-04: update with a run mid-turn that also has a background task: one reminder with the interrupted-turn line", async () => {
+    const { node, session, woken, result } = await updateCase("RR-04", (tag) => [
+      () => ({ toolCalls: [background(tagged(tag))] }),
+      () => ({ toolCalls: [{ name: "run_bash", args: { command: tagged(`${tag}_FG`), timeout_seconds: 600 } }] }),
+      text("Resuming after the update."),
+    ], true, false);
+    await record("RR-04", result);
+    await node.stop(session, "SIGTERM");
+
+    expect(result.entry).toMatchObject({ status: "running", backgroundTasks: true });
+    expect(woken?.lastUser).toContain(INTERRUPTED_LINE);
+    expect(woken?.lastUser).toContain(BACKGROUND_LINE);
+    expect(woken?.lastUser).toContain("(reason: an update to v");
+    expect(model.reminded("RR-04")).toHaveLength(1);
+  }, 300_000);
+
+  it("RR-05: update with input sent the moment the node answers: exactly one reminder between the wake and the input", async () => {
+    const { node, session, woken, result } = await updateCase("RR-05", (tag) => [() => ({ toolCalls: [background(tagged(tag))] }),
+      text("Started."), text("Answered."), text("Answered again.")], false, true);
+    await wait(5_000);
+    const reminded = model.reminded("RR-05");
+    const carriedBy = !woken ? "none" : woken.lastUser.includes("Status?") ? "input" : "wake";
+    await record("RR-05", { ...result, carriedBy, requests: digest("RR-05") });
+    await node.stop(session, "SIGTERM");
+
+    expect(reminded).toHaveLength(1);
+    expect(model.of("RR-05").slice(2).filter((request) => request.lastUser.includes("Status?")).length).toBe(1);
+    expect(result.reminders?.reminders ?? []).toEqual([]);
+  }, 300_000);
+
+  it("RR-06: Antigravity idle with an open daemon step is recorded and reminded with its next input", async () => {
+    const node = await newNode({ ANTIGRAVITY_CLI_COMMAND: AGY_CLI, AGY_FAKE_CASE: "linked_skills" });
+    let session = await node.start();
+    const definitionId = (await session.gql(`mutation($input:CreateAgentDefinitionInput!){createAgentDefinition(input:$input){id}}`,
+      { input: { name: `restart-reminder-agy-${randomUUID().slice(0, 8)}`, role: "engineer", description: "restart reminder E2E",
+        instructions: "Follow the request.", toolNames: [], skillNames: [] } })).createAgentDefinition.id;
+    const created = (await session.gql(`mutation($input:CreateAgentRunInput!){createAgentRun(input:$input){success message runId}}`,
+      { input: { agentDefinitionId: definitionId, workspaceRootPath: node.workspace, llmModelIdentifier: "gemini-3.8-flash-low", autoExecuteTools: true,
+        runtimeKind: "antigravity_cli" } })).createAgentRun;
+    expect(created.success, created.message).toBe(true);
+    const runId = created.runId as string;
+    const channel = await channelOf(session, runId);
+    channel.send('BACKGROUND_STEP:{"seconds":600}');
+    await idleAfter(channel, 0, 90_000);
+    const entry = await recordEntry(node, runId);
+    channel.close();
+    await node.stop(session, "SIGTERM");
+    session = await node.start();
+    const afterTake = await readJson(node.reminders);
+    await restore(session, runId);
+    const next = await channelOf(session, runId);
+    next.send("ECHO_INPUT what is the status?");
+    // The scripted AGY answers `ECHO:<the exact input it received>`; read it where the app reads the conversation.
+    const echoed = await until(async () => {
+      const conversation = JSON.stringify((await session.gql(`query($id:String!){getRunProjection(runId:$id){conversation}}`, { id: runId })).getRunProjection?.conversation ?? []);
+      const at = conversation.indexOf("ECHO:");
+      return at >= 0 ? conversation.slice(at, at + 3000) : null;
+    }, "the echoed input", 90_000);
+    const remindersAfter = await readJson(node.reminders);
+    await record("RR-06", { runId, entry, afterTake, echoed: echoed.slice(0, 3000), remindersAfter });
+    next.close();
+    await node.stop(session, "SIGTERM");
+
+    expect(entry).toMatchObject({ status: "idle", backgroundTasks: true });
+    expect(afterTake?.reminders).toEqual([expect.objectContaining({ agentRunId: runId, cause: "restart" })]);
+    expect(echoed).toContain("application restarted");
+    expect(echoed).toContain("reason: a restart");
+    expect(echoed).toContain("what is the status?");
+    expect(remindersAfter?.reminders ?? []).toEqual([]);
+  }, 300_000);
+  /** A run of another runtime on the node (live cases); returns its id and channel. */
+  const runtimeRun = async (session: Session, node: TestNode, runtimeKind: string, llmModelIdentifier: string) => {
+    const definitionId = (await session.gql(`mutation($input:CreateAgentDefinitionInput!){createAgentDefinition(input:$input){id}}`,
+      { input: { name: `restart-reminder-${runtimeKind}-${randomUUID().slice(0, 8)}`, role: "engineer", description: "restart reminder E2E",
+        instructions: "Keep replies to one short sentence.", toolNames: [], skillNames: [] } })).createAgentDefinition.id;
+    const created = (await session.gql(`mutation($input:CreateAgentRunInput!){createAgentRun(input:$input){success message runId}}`,
+      { input: { agentDefinitionId: definitionId, workspaceRootPath: node.workspace, llmModelIdentifier, autoExecuteTools: true, runtimeKind } })).createAgentRun;
+    expect(created.success, created.message).toBe(true);
+    return created.runId as string;
+  };
+  /** What the run answered after `question`, read where the app reads the conversation. */
+  const replyAfter = async (session: Session, runId: string, question: string): Promise<string> => {
+    const conversation = JSON.stringify((await session.gql(`query($id:String!){getRunProjection(runId:$id){conversation}}`, { id: runId })).getRunProjection?.conversation ?? []);
+    return conversation.slice(conversation.lastIndexOf(question) + question.length);
+  };
+  /** Starts the run's background command, restarts the node gracefully, and sends the next input. */
+  const liveRestart = async (caseId: string, node: TestNode, runtimeKind: string, modelId: string, startPrompt: string) => {
+    let session = await node.start();
+    const runId = await runtimeRun(session, node, runtimeKind, modelId);
+    const channel = await channelOf(session, runId);
+    channel.send(startPrompt);
+    await idleAfter(channel, 0, 300_000);
+    // Codex publishes no task events (its view is a snapshot); the others announce the running task.
+    const running = channel.frames.find((frame) => frame.type === "BACKGROUND_TASK_UPDATED" && frame.payload.status === "running") ?? null;
+    await wait(3_000);
+    const live = await readJson(node.busyRuns);
+    channel.close();
+    await node.stop(session, "SIGTERM");
+    const stopped = await readJson(node.busyRuns);
+    session = await node.start();
+    const afterTake = await readJson(node.reminders);
+    await restore(session, runId);
+    const next = await channelOf(session, runId);
+    const question = "What happened to the command you started? Answer in one short sentence.";
+    next.send(question);
+    await idleAfter(next, 0, 300_000);
+    const notice = next.frames.find((frame) => frame.type === "SYSTEM_TASK_NOTIFICATION" && frame.payload.sender_id === SENDER) ?? null;
+    const reply = (await replyAfter(session, runId, question)).slice(0, 2000);
+    const remindersAfter = await readJson(node.reminders);
+    const result = { runId, runtimeKind, modelId, runningTask: running?.payload ?? null, live, stopped, afterTake, notice: notice?.payload ?? null, reply, remindersAfter };
+    await record(caseId, result);
+    next.close();
+    await node.stop(session, "SIGTERM");
+    return result;
+  };
+
+  it.skipIf(!LIVE)("RR-07 (live): Claude idle with a background Bash command is recorded and reminded with its next input", async () => {
+    const { resolveClaudeCliExecutableCandidates } = await import("../../helpers/claude-cli-executable-candidates.js");
+    const cli = resolveClaudeCliExecutableCandidates()[0];
+    expect(cli, "a claude CLI").toBeDefined();
+    const realHome = os.userInfo().homedir;
+    const node = await newNode({ HOME: realHome, USER: os.userInfo().username, LOGNAME: os.userInfo().username, CLAUDE_CODE_EXECUTABLE_PATH: cli!.executablePath });
+    const result = await liveRestart("RR-07", node, "claude_agent_sdk", process.env.RESTART_REMINDER_CLAUDE_MODEL?.trim() || "haiku",
+      "Use the Bash tool with run_in_background set to true to run exactly: sleep 600\nDo not wait for it. Reply only STARTED and end your turn.");
+    expect(result.runningTask).not.toBeNull();
+    expect(result.stopped?.entries).toEqual([expect.objectContaining({ agentRunId: result.runId, status: "idle", backgroundTasks: true })]);
+    expect(result.afterTake?.reminders).toEqual([expect.objectContaining({ agentRunId: result.runId, cause: "restart" })]);
+    expect(String(result.notice?.content ?? "")).toContain(HEADER);
+    expect(result.reply).toMatch(/restart|stopp|terminat|kill|no longer/i);
+    expect(result.remindersAfter?.reminders ?? []).toEqual([]);
+  }, 900_000);
+
+  it.skipIf(!LIVE)("RR-08 (live): Codex idle with a background terminal is recorded at the graceful stop and reminded with its next input", async () => {
+    const codexHome = await fs.mkdtemp(path.join(os.tmpdir(), "restart-reminder-codex-home-"));
+    cleanups.push(() => fs.rm(codexHome, { recursive: true, force: true }));
+    await fs.symlink(path.join(os.userInfo().homedir, ".codex", "auth.json"), path.join(codexHome, "auth.json"));
+    await fs.writeFile(path.join(codexHome, "config.toml"), 'model_reasoning_effort = "medium"\n');
+    const node = await newNode({ CODEX_HOME: codexHome, USER: os.userInfo().username, LOGNAME: os.userInfo().username });
+    const result = await liveRestart("RR-08", node, "codex_app_server", process.env.RESTART_REMINDER_CODEX_MODEL?.trim() || "gpt-6.1-terra",
+      "Start the command `sleep 600` so that it keeps running in a background terminal after you reply, and do not wait for it. Then reply only STARTED.");
+    expect(result.live?.entries ?? [], "Codex idle runs are not in the live record (their view is asked only at the graceful stop)").toEqual([]);
+    expect(result.stopped?.entries).toEqual([expect.objectContaining({ agentRunId: result.runId, status: "idle", backgroundTasks: true })]);
+    expect(String(result.notice?.content ?? "")).toContain(HEADER);
+    expect(result.remindersAfter?.reminders ?? []).toEqual([]);
+  }, 900_000);
+});
