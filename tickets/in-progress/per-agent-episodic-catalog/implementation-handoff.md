@@ -15,6 +15,7 @@ Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/per-agent-episodic-c
 - Architecture review revision record: `architecture-review-revision-record.md`
 - Triggering rework report, revision record, or evidence: `code-review-report.md` CRR-002 CR-001 (from `api-e2e-execution-coverage-report.md` API-REV-001: API-09/EC-06, API-15), resolved through SR-003 / ARCH-REV-005
 - Code review: CRR-001 `Pass`; CRR-002 `Design Impact` (CR-001). CF-11 (orphaned `noWorkGuard` doc comment) is fixed in IR-002
+- Code review of IR-002: CRR-003 `Pass` (full re-audit; CR-001 and CF-11 resolved). CF-14 (non-blocking): for package-level diagnostics the `record` label names the tree file while `reason` carries the true code
 
 ## Current Implementation Summary
 
