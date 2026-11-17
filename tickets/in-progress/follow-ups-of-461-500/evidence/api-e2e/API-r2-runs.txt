@@ -58,3 +58,9 @@ refusal of an on-demand AutoByteus model after a restart) stands and is fixed (C
   - team-stream-clients-wait-for-connected.test.ts: RSE-1 sends early on purpose: an explicit, named exemption; a new case
     checks each exempt file exists and still sends early. 3/3.
   - Server typecheck: production 0; tests 1010 in 316 files = baseline.
+
+§6 CR-500-006 (test-code review CRR-005, Local Fix in ODM-1): rerun after the fix: "Tests 1 passed (1)" (/tmp/api500/r2/odm3.log)
+  - step b (host down) now also asserts the start's own "MODEL_IDENTIFIER_NOT_AVAILABLE";
+  - step c (removed agent) now also asserts "AgentDefinition with ID <id> not found";
+  - the lead's Settings options check is unconditional (the team's "/lead" scope is returned and names the model);
+  - the G-5 negatives are kept. Static check 3/3; the test file adds no type error.

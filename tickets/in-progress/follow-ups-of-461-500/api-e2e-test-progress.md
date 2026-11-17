@@ -32,3 +32,4 @@ My progress log while tests run. Read it first when picking the run back up. Row
 | 2026-11-17 21:39 | LE-F1 | Completed | Pass | live Claude with CLAUDE_E2E_STALE_MODEL=claude-sonnet-4-5-20250929 (default stale model is in the catalog) |
 | 2026-11-17 21:39 | G5-001..003, DLP-005, DLP-003/004 | Completed | Pass | 6/6 /tmp/api500/r2/probe |
 | 2026-11-17 21:39 | ROUND 2 | Completed | Pass | 95% |
+| 2026-11-17 21:45 | ODM-1 (CR-500-006) | Completed | Pass | positive assertions; lead options unconditional |

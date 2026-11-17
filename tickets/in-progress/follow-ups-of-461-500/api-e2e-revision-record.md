@@ -53,3 +53,12 @@ None (the first round).
   - the founder's own data (his approval);
   - LM Studio and Ollama emulated;
   - FU-500-09 … 11.
+
+#### Addendum: CR-500-006 (CRR-005, test-code review) fixed
+
+- ODM-1 now asserts the positive answers:
+  - host down: the start's own `MODEL_IDENTIFIER_NOT_AVAILABLE`;
+  - removed agent: "AgentDefinition with ID … not found";
+  - the lead's Settings options: unconditional.
+- Rerun: Pass (`API-r2-runs.txt` §6). The result stays `Pass` / 95%.
+- Optional suggestion not taken: detecting "no composition yet" without the getter's text needs a new query function in `project-task-service.ts` (product code) for tests only; the helper rethrows any other error, so a changed text fails loudly.
