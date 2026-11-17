@@ -1,11 +1,11 @@
 # Implementation Handoff: follow-ups-of-461-500 (delivery 1 + 2)
 
-Status: **IR-001 complete except two items that need a decision** (see "Open: needs a decision"):
-- **FU-035 step 0 (REQ-010, AC-007):** blocked by the Grok plan's usage limit. Nothing was waived.
-- **FU-021 (REQ-008, AC-005):** the SR-013 probe is built, but on this machine it labels most hang-guard failures as
-  product failures, where the investigation points to the OS losing events. AC-005 is not shown.
-
-Everything else is implemented, checked, and ready for source review.
+Status: **IR-001 ready for source review**, with the two items decided at SR-014 (ARCH-REV-007 Pass):
+- **FU-035 step 0 (REQ-010, AC-007), D-14:** not in this round. It runs as IR-002 once Grok's 24-hour usage window
+  resets, with branch A or B and its own code review. Nothing is waived; FU-035 stays open.
+- **FU-021 (REQ-008, AC-005), D-13b:** done. A hang guard whose probe got nothing is ENVIRONMENT; one whose probe got
+  its event is INCONCLUSIVE, never a product failure. AC-005's proof is the API/E2E engineer's: 5 of 5 on Linux
+  inotify (Docker from the worktree), and a quiet macOS when available.
 
 ## Upstream Artifact Package
 
@@ -13,17 +13,18 @@ Everything else is implemented, checked, and ready for source review.
   - ARCH-REV-003 Pass, the combined package.
   - ARCH-REV-005 Pass, G-5 (SR-011 / SR-012).
   - ARCH-REV-006 Pass, the FU-021 probe (SR-013 / D-13).
+  - ARCH-REV-007 Pass, SR-014 (D-13b labels, D-14 FU-035 sequencing).
   - Large / High. The handoff rule for Large / High is the code reviewer.
 - Requirements doc: `tickets/in-progress/follow-ups-of-461-500/requirements-doc.md`. It covers REQ-001 … REQ-016:
   - REQ-003 and REQ-015 were dropped by the user;
-  - status Approved at SR-013.
+  - status Approved (SR-014).
 - Investigation notes: `investigation-notes.md`
-- Solution revision record: `solution-revision-record.md` (SR-001 … SR-013)
+- Solution revision record: `solution-revision-record.md` (SR-001 … SR-014)
 - Design spec: `design-spec.md`:
   - delivery 1 at SR-006 / SR-008;
   - delivery 2 at G-1 … G-4;
   - G-5 at SR-011 / SR-012;
-  - FU-021's environment probe at SR-013.
+  - FU-021's environment probe at SR-013, its labels at SR-014.
 - Supplemental: `source-follow-ups-461.md`, `follow-ups.md` (FU-500-01 … FU-500-07)
 - Design review report and architecture review revision record: `design-review-report.md` and
   `architecture-review-revision-record.md`. Both are the reviewer's, uncommitted in the worktree; I left them as they are.
@@ -33,8 +34,8 @@ Everything else is implemented, checked, and ready for source review.
 - Implementation cycle: `Initial`
 - Implementation revision record: `implementation-revision-record.md`
 - Current implementation revision ID: `IR-001`
-- Related solution revision IDs: SR-006 … SR-013
-- Related architecture-review revision IDs: ARCH-REV-001, ARCH-REV-003, ARCH-REV-005, ARCH-REV-006
+- Related solution revision IDs: SR-006 … SR-014
+- Related architecture-review revision IDs: ARCH-REV-001, ARCH-REV-003, ARCH-REV-005, ARCH-REV-006, ARCH-REV-007
 - Related code-review / API/E2E / delivery revision IDs: `N/A`
 - Branch: `codex/follow-ups-of-461-500` on `d8dbeaa9ba` (autobyteus-508 merged). `origin/personal` has since moved
   8 commits (the beta.8 release records); the Delivery Engineer refreshes the base.
@@ -52,7 +53,7 @@ Commits, oldest first, by the design's Change Sequence:
 | 5b | `a954ae5300`, `461ae7e472` | `20261117_delegated_run_own_attachment_links` and its follow-up after `20261017_task_agent_own_run_v1`; M-7 classification test |
 | 6 | `e2b6928c9e`, `95bdf2af0f` | FU-030: the five collected refusals (DLP-003/004/005, SIR-001, DCP-004); a delegation refusal's next step kept apart from its reason |
 | 7 | `18f9b0c038` | FU-022 (runtime-names test), FU-023 (Nuxt ignore). FU-016 had already shipped in 461 |
-| 7 / FU-021 | `fb52bd332c`, `4277f1945e` | the watcher test asserts outcomes; the SR-013 environment probe; a per-test 60 s guard; named waits; the sentinel's delete is awaited |
+| 7 / FU-021 | `fb52bd332c`, `4277f1945e`, `a4e7f18e6d` | the watcher test asserts outcomes; the SR-013 environment probe; a per-test 60 s guard; named waits; the sentinel's delete is awaited; SR-014's ENVIRONMENT / INCONCLUSIVE labels |
 | G-1 | `d4b632e61b` | the release records the migration order; the order test reads the file |
 | G-3 | `310ba45351` | SIR-002's session names the server helper run |
 | G-2 | `63fa6cf978` | same-ID repair of `20260521_team_run_history_index_v2` |
@@ -60,17 +61,16 @@ Commits, oldest first, by the design's Change Sequence:
 | 9 | `6b4ee1f128` | docs: glossary (Code Names, Known leftovers), collaboration model, module docs, guideline §10 lesson line |
 | size | `1eed3c4aff` | `build-studio-server.ts` 511 → 498 and `configured-agent-execution-handle.ts` 507 → 500 (see Legacy / size check) |
 | G-5 fix | `d8ffc77c8b` | the 8 s model-list budget is `MODEL_LIST_READ_MS` in `read-deadline.ts`; `llm-management` no longer imports `available-agent-runtimes` (found by the full unit run) |
-| 8 | evidence only | FU-035 step 0: blocked (IMP-011) |
+| 8 | evidence only | FU-035 step 0: blocked by the Grok usage limit (IMP-011); IR-002 per D-14 |
 
 ## Routing Classification (Mandatory)
 
 - Task size: `Large`. Architecture risk: `High` (design-spec "Task Size And Architectural Risk", "Delivery 2 classification").
 - Classification: `Confirmed`. Reasons: a persisted-data migration, public contract changes (GraphQL `runId`,
   `execution_tree.agent`, `RUN_MODEL_NOT_OFFERED`), and composition rewiring in two hosts.
-- Selected route: `Code Review`, once the two open items are decided.
-- New design impact:
-  - **FU-021**, the probe's classification (see "Open: needs a decision").
-  - **FU-035** is blocked by an external usage limit. It needs a decision on waiting or deferring, not a design change.
+- Selected route: `Code Review`.
+- New design impact: `None` open. FU-021's classification was raised and decided at SR-014 (D-13b); FU-035's
+  sequencing at D-14.
 
 ## Reviewed Behavior Implementation Trace
 
@@ -84,12 +84,12 @@ Commits, oldest first, by the design's Change Sequence:
 | B-7 | Discovery tools: off refusal from an explicit value | `REMOTE_COLLABORATION_OFF_DISCOVERY`; `PeerDiscoveryAccess` to MCP providers and native tools | Done (3) |
 | B-8 | Team total asks the team kind | `api/graphql/types/token-usage-stats.ts` | Done (4) |
 | B-9 | Refusal texts FR-1 … FR-4 | see "FU-030 texts" | Done for the five collected cases (6) |
-| B-10 | Grok refused tool call | — | **Open:** step 0 blocked by the Grok usage limit (IMP-011) |
+| B-10 | Grok refused tool call | — | **Not in IR-001** (D-14): step 0 blocked by the Grok usage limit (IMP-011); IR-002 |
 | G-1 | The release records the migration order | `scripts/desktop-release.sh` → `pnpm migrations:record-released`; `released-migration-order.json` | Done |
 | G-2 | A late team index v2 keeps every team run with a current tree | `team-run-history-index-v2/existing-team-row-repair.ts` | Done |
 | G-3 | SIR-002's session names the server helper run | `skill-improvement-removal-cases.mjs` | Done |
 | G-5 | A stored model that is no longer offered is refused at start; Settings marks the member | `run-model-selection-service.ts` `storedModelOffer`; `run-model-selection-refusal.ts` `storedModelStartRefusal`; `standalone-agent-run-lifecycle-service.ts` `restoreStarted`; `configured-agent-execution-handle.ts` `prepareActivation`; web `ExistingRunConfigEditor.vue` → `RunMemberRow` | Done; rendered check limited (see Frontend) |
-| FU-021 | The watcher test asserts outcomes; an ENVIRONMENT label when the OS delivers no event | `tests/integration/file-explorer/file-system-watcher.integration.test.ts` | Built; **AC-005 not shown** (IMP-012) |
+| FU-021 | The watcher test asserts outcomes; ENVIRONMENT or INCONCLUSIVE at a hang guard, never a product failure | `tests/integration/file-explorer/file-system-watcher.integration.test.ts` | Done (IMP-012, IMP-013); AC-005's proof is API/E2E's (Linux 5 of 5) |
 
 - Changes stayed within the Scope Guardrail: `Yes`.
 
@@ -118,9 +118,9 @@ I reviewed them: their texts already say what happened and what to do, which `re
 `result-catalogue.test.ts` check. The Save refusal (`run-model-selection-refusal.ts`, "Refresh the model list and choose
 again. Saved settings were not changed.") is kept, because in the Settings it already names the next step.
 
-## Open: needs a decision
+## The two items decided at SR-014
 
-### FU-035 step 0: blocked by the Grok usage limit (REQ-010, AC-007)
+### FU-035 step 0: blocked by the Grok usage limit (REQ-010, AC-007), IR-002 per D-14
 
 - **Probe:** a throwaway live probe, kept as evidence (IMP-011): a real Studio server and the host's `grok` 1.0.88 with
   `grok-4.7`. It records three things:
@@ -138,10 +138,10 @@ again. Saved settings were not changed.") is kept, because in the Settings it al
 - **What this means:** no executor result, snapshot or model reply exists yet, so neither branch A nor branch B can be
   chosen. Per the founder's Grok rule, only his own words waive a Grok case that fails on a usage limit. I waived
   nothing and changed no product code for FU-035.
-- **Needed:** wait for the rolling window and then run step 0 (the probe is ready, and the run takes about 2 minutes),
-  or the founder decides otherwise.
+- **D-14:** step 0 runs after the window resets, as IR-002, with branch A or B and its own code review. The probe is
+  ready, and the run takes about 2 minutes.
 
-### FU-021: the probe labels most hang guards as product failures (REQ-008, AC-005)
+### FU-021: the labels (REQ-008, AC-005), D-13b
 
 - **Built as reviewed** (`4277f1945e`). At a hang guard, a raw `fs.watch` probe runs: a fresh temp dir, one write,
   10 s. No event gives "ENVIRONMENT: …"; an event keeps the product message. There are no retries, no skips and no
@@ -165,15 +165,20 @@ again. Saved settings were not changed.") is kept, because in the Settings it al
 
   All 12 product-labelled failures saw no change at all from the watcher (`changes before the guard: []`). The
   `__pycache__` case alone, right after, passed 1 of 3, so it fails intermittently, not deterministically.
-- **Why this needs a decision:**
-  - The investigation ("FU-021, continued") shows raw `fs.watch` itself missing events on 2 of 8 fresh streams at this
-    load.
-  - So the probe's one fresh stream getting its event does not show that the watcher's stream got its own. A
-    product-labelled failure here does not prove a product fault.
-  - AC-005 ("fails with an ENVIRONMENT message, not as a product failure") is therefore not shown on this machine.
-- **What couldn't be run:** the Solution Designer's proof (5 of 5 alone; 3 runs under 10 busy loops) could not be run
-  as specified. The machine was never quiet: other worktrees' suites kept the load average between 67 and 200, with
-  `fseventsd` at about 150% CPU.
+- **Why the label changed (D-13b):** the investigation ("FU-021, continued") shows raw `fs.watch` itself missing
+  events on 2 of 8 fresh streams at this load. So the probe's fresh stream getting its event does not show that the
+  watcher's stream got its own.
+- **SR-014 implementation** (`a4e7f18e6d`): when the probe gets its event, the case fails with "INCONCLUSIVE: the
+  watcher saw no change; a fresh fs.watch stream did. Under load the OS can drop one stream's events (FU-500-06); rerun
+  where the OS delivers events." The ENVIRONMENT message is unchanged. The case's diagnostics ("Changes before the
+  guard: …") follow on a new line. It still fails: no skip, no retry.
+- **One run after the change** (IMP-013, load 120–190): 7 of 14 failed, 1 ENVIRONMENT and 6 INCONCLUSIVE, with no other
+  failure. Loaded-macOS runs are evidence only.
+- **The proof is API/E2E's** (D-13b): 5 of 5 on Linux inotify, in a Docker container from the worktree after
+  `pnpm test:integration:prepare`, and on a quiet macOS when one is available. This machine was never quiet (load average
+  67–200 from other worktrees' suites, `fseventsd` at about 150% CPU). Note: `design-spec.md` "To prove it" (lines
+  469–471) still says a loaded run "fails only with ENVIRONMENT cases"; D-13b (ENVIRONMENT or INCONCLUSIVE) and AC-005
+  govern, and the Solution Designer is aligning the text.
 
 ## Key decisions taken in implementation (deviations, with reasons)
 
@@ -206,11 +211,13 @@ again. Saved settings were not changed.") is kept, because in the Settings it al
   - the standalone restore throws `AgentRunActivationError(RUN_MODEL_NOT_OFFERED, …)`;
   - the member's `prepareActivation` throws `StoredModelNotOfferedError`.
 - **FU-021 test corrections** beyond the reviewed probe (above): a per-test guard, named waits, the awaited sentinel
-  delete. They are test-only, with the same 60 s ceiling.
+  delete. They are test-only, with the same 60 s ceiling, and kept at SR-014.
 
 ## Known Risks
 
-- **FU-021 and FU-035:** see "Open: needs a decision".
+- **FU-035** stays open until a live run shows the cause (IR-002).
+- **FU-021:** the watcher test still fails on a loaded macOS, now as ENVIRONMENT or INCONCLUSIVE. Whether it passes
+  where the OS delivers events is API/E2E's Linux proof.
 - **M-6 cold:** not strictly cold, because there is no sudo for `purge`. IMP-005 has a first pass of 13.0 s and a warm
   one of 10.5 s over 7523 files / 8.67 GB.
 - **E2E tests and probes touched for text changes, not run by me** (API/E2E):
@@ -227,8 +234,8 @@ again. Saved settings were not changed.") is kept, because in the Settings it al
 - Reviewed root-cause classification: as in the design spec (naming drift; silent process lookups; FU-021 OS event loss per SR-013).
 - Reviewed refactor decision: `Refactor Needed Now` for the composition owners (FU-011 / FU-018). Other owners are
   deferred as FU-500-02.
-- Implementation matched the reviewed assessment: `Yes`, except FU-021's classification premise (see "Open: needs a decision").
-- If challenged, routed as `Design Impact`: `Yes` (FU-021, this handoff).
+- Implementation matched the reviewed assessment: `Yes`. FU-021's classification premise was challenged and revised at SR-014.
+- If challenged, routed as `Design Impact`: `Yes` (FU-021 → SR-014 / D-13b).
 
 ## Legacy / Compatibility Removal Check
 
@@ -285,7 +292,8 @@ again. Saved settings were not changed.") is kept, because in the Settings it al
 | IMP-09 | `python3 -m unittest discover -s scripts/tests` | `d4b632e61b` | macOS | release scripts | G-1 | Pass | console | "Ran 228 tests … OK (skipped=3)" |
 | IMP-10 | focused runs per step (stream not-ready, migration, team index repair, compositions, collaboration texts, G-5 offer) | each step | macOS | as named | B-5, B-3, G-2, B-9, G-5 | Pass | console | `run-stream-not-ready` 9/9; attachment-links 8/8; team-index 4/4; `stored-model-offer` 5/5 |
 | IMP-11 | FU-035 live probe (`RUN_GROK_E2E=1`, vault set) | `6b4ee1f128` | grok 1.0.88, grok-4.7 | Grok projection + executor | B-10 / AC-007 | **Blocked** (usage limit) | `IMP-011-fu035-grok-live-attempt.log`, `IMP-011-fu035-grok-refused-tool-probe.e2e.test.ts.txt` | "subscription:free-usage-exhausted … 609708/600000" |
-| IMP-12 | watcher test, 3 runs, plus the `__pycache__` case alone ×3 | `4277f1945e` | macOS, load 67–118 | FU-021 test + probe | FU-021 / AC-005 | **Fail** (see Open) | `IMP-012-watcher-three-runs-ambient-load.log`, `IMP-012-watcher-run-{1,2,3}.full.log` | "env=1 product=4", "env=3 product=3", "env=2 product=5"; "other=0" |
+| IMP-12 | watcher test, 3 runs, plus the `__pycache__` case alone ×3 | `4277f1945e` | macOS, load 67–118 | FU-021 test + probe | FU-021 / AC-005 | Fail (led to SR-014) | `IMP-012-watcher-three-runs-ambient-load.log`, `IMP-012-watcher-run-{1,2,3}.full.log` | "env=1 product=4", "env=3 product=3", "env=2 product=5"; "other=0" |
+| IMP-13 | watcher test after the D-13b labels, 1 run | `a4e7f18e6d` | macOS, load 120–190 | FU-021 labels | FU-021 / D-13b | Fails as designed under load: labels only | `IMP-013-watcher-sr014-labels.log`, `IMP-013-watcher-sr014.full.log` | "env=1 inconclusive=6 other=0"; no "Timed out waiting for event (hang guard)" line |
 
 - Not run, and why:
   - E2E suites and browser probes are left to API/E2E (see Known Risks).
@@ -319,9 +327,13 @@ again. Saved settings were not changed.") is kept, because in the Settings it al
   start that changes nothing.
 - **FU-036:** a command sent to an org or collaboration stream before it is ready gets `SESSION_NOT_READY`.
 - **FU-030:** the e2e and probe text assertions listed in Known Risks.
-- **FU-021:** the watcher test on a quiet machine.
+- **FU-021 (AC-005, D-13b), required:** after `pnpm test:integration:prepare`, run
+  `tests/integration/file-explorer/file-system-watcher.integration.test.ts` 5 of 5 on Linux (inotify) in a Docker
+  container from the worktree, and on a quiet macOS when one is available. A failure there is labelled ENVIRONMENT or
+  INCONCLUSIVE only when the OS dropped events; loaded-macOS runs (IMP-012, IMP-013) are evidence only.
 
 ## API / E2E / Executable Coverage Investigation And Execution Still Required
 
-The live and real-stack journeys above, and the e2e suites and probes whose texts changed. Also FU-035 once the Grok
-window resets, if the decision is to wait.
+- The live and real-stack journeys above, and the e2e suites and probes whose texts changed.
+- **AC-005's watcher proof** (D-13b): 5 of 5 on Linux inotify (Docker from the worktree) and a quiet macOS when available.
+- FU-035 is not part of this package: IR-002 (D-14) brings it with its own code review.

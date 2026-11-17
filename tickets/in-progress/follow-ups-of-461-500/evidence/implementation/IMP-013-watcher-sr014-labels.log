@@ -1,0 +1,16 @@
+# IMP-013 FU-021 watcher test after SR-014 (D-13b labels), 1 run, loaded macOS (evidence only, not the AC-005 proof)
+# Command: cd autobyteus-server-ts && npx vitest run --no-watch tests/integration/file-explorer/file-system-watcher.integration.test.ts
+# Commit: a4e7f18e6d; macOS Darwin 25.5.0, 10 cores, Node v22; 2026-11-17 ~13:00-13:16 local; load average at the end: 121.60 193.58 179.19
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 7 ⎯⎯⎯⎯⎯⎯⎯
+Tests  7 failed | 7 passed (14)
+env=1 inconclusive=6 other=0
+
+## Failing case => label
+returns one idle event stream without stopping other subscribers  =>  INCONCLUSIVE: the watcher saw no change; a fresh fs.watch stream did. Under load the OS can drop one stream's events (FU-500-06); 
+emits move/rename event  =>  INCONCLUSIVE: the watcher saw no change; a fresh fs.watch stream did. Under load the OS can drop one stream's events (FU-500-06); rerun where the OS delivers events.
+ignores specific folders like .git and their contents  =>  INCONCLUSIVE: the watcher saw no change; a fresh fs.watch stream did. Under load the OS can drop one stream's events (FU-500-06); rerun where
+respects nested .gitignore files  =>  INCONCLUSIVE: the watcher saw no change; a fresh fs.watch stream did. Under load the OS can drop one stream's events (FU-500-06); rerun where the OS delivers even
+respects root .gitignore files  =>  INCONCLUSIVE: the watcher saw no change; a fresh fs.watch stream did. Under load the OS can drop one stream's events (FU-500-06); rerun where the OS delivers events
+treats moves into ignored directories as deletes from the visible tree  =>  ENVIRONMENT: the OS delivered no file event within 10 s (FSEvents under load); this watcher result is not meaningful
+emits delete events even if the in-memory node is missing  =>  INCONCLUSIVE: the watcher saw no change; a fresh fs.watch stream did. Under load the OS can drop one stream's events (FU-500-06); rerun w
