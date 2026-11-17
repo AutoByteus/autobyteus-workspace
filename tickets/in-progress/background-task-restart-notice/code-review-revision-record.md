@@ -9,6 +9,8 @@
 | CRR-003 | `code-review-report.md` | Implementation Review, round 3 (IR-002, DEC-008) | Fail (Requirement Gap) | Pass | CR-001 (resolved) |
 | CRR-004 | `api-e2e-test-review-report.md` | Proportional API/E2E test-code review, round 1 (API-REV-002 Pass) | N/A (first test review) | Pass | None |
 | CRR-005 | `code-review-report.md` | Implementation Review, round 4 (part 2, IR-003) | N/A for part 2 | Fail (Local Fix) | CR-002 |
+| CRR-006 | `code-review-report.md` | Implementation Review, round 5 (part 2, IR-004, CR-002 fix) | Fail (Local Fix) | Pass | CR-002 (resolved) |
+| CRR-007 | `api-e2e-test-review-report.md` | Proportional API/E2E test-code review, round 2 (part 2, API-REV-003 Pass) | Pass (part 1 test review) | Pass | None |
 
 ## Revision Entries
 
@@ -138,3 +140,55 @@ None for part 2.
 - Material score or classification changes: Cleanup Completeness 8.8; others ≥ 9.3
 - Recommended recipient: implementation engineer
 - Remaining risks or uncertainty: `agent-run.ts` at 500 non-empty lines (no room left); Codex idle shows Idle (accepted); FU-006/FU-007 stand.
+
+### CRR-006 — Part 2: CR-002 resolved; Pass
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/background-task-restart-notice/tickets/in-progress/background-task-restart-notice/code-review-report.md` (section "Latest Round: Part 2 …, round 5")
+- Review entry point and round: Implementation Review, round 5
+- Review scope: `Targeted Delta Review` (`75d687f612..ce06c415cc`; one contract package, documents)
+- Triggering role, report path, and finding or scenario IDs: implementation engineer, `implementation-handoff.md` (IR-004); CR-002
+- Relevant solution revision IDs: SR-006
+- Relevant architecture-review revision IDs: ARCH-REV-005
+- Relevant implementation revision IDs: IR-004
+- Relevant API/E2E revision IDs: N/A for part 2
+- Relevant delivery revision IDs: N/A
+- Prior authoritative result: CRR-005 `Fail` (Local Fix)
+- Current authoritative result: `Pass`
+- What changed in the review result and why: the dead exports and their test are removed. The two used exports moved to `remote-agent-status.ts`, `dist/` was rebuilt, and nothing references the removed names or module (reviewer rerun of `rg`). The package exports only its root index. Contract tests, both typechecks and the remote-collaboration unit tests pass (IMP-15).
+- Supported product scenario / material-premise basis changes: none
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| CR-002 | Open (Local Fix) | Resolved | IR-004, `2990b6a8ac` | reviewer `rg -w` per removed name: no matches; `rg remote-task-execution-dtos`: none; `exports` map `.` only; `evidence/IMP-15-*` |
+
+- New or remaining finding IDs: none
+- Material score or classification changes: Cleanup Completeness 8.8 → 9.4; overall 9.34
+- Recommended recipient: API/E2E engineer; then the implementation engineer (informational)
+- Remaining risks or uncertainty: `agent-run.ts` at 500 non-empty lines; Codex idle shows Idle (accepted); FU-006, FU-007.
+
+### CRR-007 — Part 2 test-code review after API/E2E: Pass
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/background-task-restart-notice/tickets/in-progress/background-task-restart-notice/api-e2e-test-review-report.md` (section "Latest Round: Part 2, round 2")
+- Review entry point and round: successful API/E2E test-code review, round 2 (part 2's first)
+- Review scope: `N/A` (test review; `97230cfdce`)
+- Triggering role, report path, and finding or scenario IDs: API/E2E engineer, `api-e2e-execution-coverage-report.md` (API-REV-003 Pass); BTS-01..05, PBS-01
+- Relevant solution revision IDs: SR-006
+- Relevant architecture-review revision IDs: ARCH-REV-005
+- Relevant implementation revision IDs: IR-004
+- Relevant API/E2E revision IDs: API-REV-003
+- Relevant delivery revision IDs: DR-001 (part 1)
+- Prior authoritative result: CRR-004 `Pass` (part 1 test review); CRR-006 `Pass` (part 2 implementation)
+- Current authoritative result: `Pass`
+- What changed in the review result and why: reviewed two new E2E suites and two updated test files. The suites enter through the real server routes, with real background processes and two paired built nodes for the peer route. Strict parsing makes a missing count a failure. The assertions follow the design's example sequence, the Team sum and AC-006. The stale command-status test was rewritten to the required field.
+- Supported product scenario / material-premise basis changes: none
+
+#### Prior Finding Resolution
+
+None.
+
+- New or remaining finding IDs: none (two readability notes)
+- Material score or classification changes: N/A
+- Recommended recipient: delivery engineer
+- Remaining risks or uncertainty: ACP live Not Tested; failed-member Team display unit-level only; Org view status unit-level; FU-006..FU-009.

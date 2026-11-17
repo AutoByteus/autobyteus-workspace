@@ -1,6 +1,71 @@
 # API/E2E Test Review Report
 
-## Review Meta
+## Latest Round: Part 2, round 2 (CRR-007) — Pass
+
+### Review Meta
+
+- Review Round: `2` (part 2; round 1 below is part 1's)
+- Trigger: API/E2E engineer, API-REV-003 Pass (part 2, round 3 of API/E2E), 2026-11-17
+- Basis: `requirements-doc.md` REQ-006, REQ-007, AC-005, AC-006, DEC-004, DEC-005; `design-spec.md` Part 2 (SR-006, example sequence); `code-review-report.md` CRR-006 Pass; IR-004
+- Coverage Investigation / Execution Report / API/E2E Revision Record: `api-e2e-coverage-investigation.md`, `api-e2e-execution-coverage-report.md`, `api-e2e-revision-record.md` (API-REV-003)
+- Final Validation Confidence: 94% (as reported)
+- Code tested: `ce06c415cc` (at `4c93deaa8f`); tests commit `97230cfdce`
+- Prior unresolved test-review findings rechecked: None
+- Project testing guideline(s) applied: `/TESTING.md`, as recorded in the coverage investigation. Checked: clean environment, gates for live runtimes (Claude, Codex) with their sign-ins, scripted runtimes for credential-free runs, test-owned data roots and ports, and servers and sockets stopped in `afterAll`. No conflict.
+- Supported Product Scenario Basis Confirmed: `Yes` (SCN-005, SCN-006)
+
+### Changed Durable Test Scope
+
+| Durable Test Path | Change | Related Scenario / Requirement | Coherent Test Responsibility | Notes |
+| --- | --- | --- | --- | --- |
+| `autobyteus-server-ts/tests/e2e/runtime/background-task-status-count.e2e.test.ts` | Added | REQ-006 (routes 1 and 3, team stream, sum), AC-005 per runtime (native, Team, AGY scripted, Claude live, Codex live), AC-006 | The count on every status route through the real studio server | 314 lines; BTS-01..05 indexed in the header; gates per runtime |
+| `autobyteus-server-ts/tests/e2e/remote-collaboration/peer-background-task-status.e2e.test.ts` | Added | REQ-006 peer route (route 5 / `RemoteRunSummary`) | Two built, paired nodes; the delegator's feed shows the peer run's count | 168 lines; PBS-01 |
+| `autobyteus-server-ts/tests/e2e/agent/agent-command-correlated-status.e2e.test.ts` | Updated | REQ-006 (the required field) | Four exact `AGENT_STATUS` payloads gain `background_tasks_running: 0` | A test this change made untrue, rewritten to the approved behavior (ticket-scope.md); it failed in the E2E suite and passes now |
+| `autobyteus-web/tests/e2e/interrupt-result-presentation-probe.mjs` | Updated | contract shape | The fixture status follows the contract | One field |
+
+- No durable test file changed: `No`
+
+### Proportional Test-Code Checks
+
+| Check | Result | Evidence / Notes |
+| --- | --- | --- |
+| Scenario grouping and names make intent clear | Pass | Case IDs and the header index name the runtime and the route; one file per surface (single node vs peer) |
+| Assertions prove approved requirements | Pass | BTS-01 asserts the design's example sequence: `running:0 → running:1` (the turn wins) `→ idle:1`. It also checks the status before the task event, the feed snapshot and run state, the reconnect snapshot, AC-006 delivery (< 5 s, measured 25 ms), counts 2 → 1 → 0, and the feed's last state `idle:0`. BTS-02 checks per-member counts and the summed Team run state. PBS-01 checks the peer run `idle:1 → idle:0` on the delegator's feed. **Strictness:** every feed message goes through the contract's strict parser, and every stream `AGENT_STATUS` without an integer count fails (`statuses()`). BTS-05 asserts Codex stays 0, which is the design's accepted behavior (R-11), not an incidental detail |
+| Fixtures, setup, helpers reuse | Pass | The shared live harness and `pairNodes`; one scripted model per file; `feed`, `statuses`, `feedAgent` and `path_` helpers |
+| Isolation and determinism for the boundary | Pass | Scripted inference and fixed `sleep N` tasks bound timing; waits are condition-based (`until`). Each case has its own run and workspace. PBS-01 gives each node its own root, ports and HOME, removed in `afterAll`. BTS-02's final Team-state wait tolerates a timeout but is then asserted (`runStates.at(-1)`) |
+| Large files coherent and navigable | Pass | Navigable |
+| No stale, duplicated, disabled-without-reason or compat-only tests | Pass | The one stale test was rewritten; skips are gate-based, with the reason in the header |
+| Coverage agrees with the coverage investigation and execution evidence | Pass | Matches API-REV-003's Cases (BTS-01..05, PBS-01, P2-05) |
+| Callers and fixtures exercise an established scenario | Pass | SCN-005 per runtime; SCN-006 via BTS-01; the peer case is REQ-006's route 5 |
+| Real trigger, no setup real use does not produce | Pass | Runs are created and driven through GraphQL, the agent/team WebSockets and `/ws/run-status`, as the app does. Native tasks are real `run_bash(run_in_background)` processes. The peer delegation is a real `delegate_task` between two built, paired nodes. AGY uses the established scripted CLI (`BACKGROUND_STEP`). Claude and Codex are live |
+
+### Findings
+
+None.
+
+Non-blocking notes, readability only: in `background-task-status-count.e2e.test.ts`, `inOrder` and `path_` (L139-140) are not indented like the surrounding helpers. `open()` attaches the socket to the frames array through a cast; returning `{ frames, socket }` would read more plainly.
+
+### Follow-ups
+
+None added by this review. FU-008 (three web probes failing identically on base) and FU-009 (a pre-existing runtime-list E2E expectation) were recorded by API/E2E; FU-006 and FU-007 stand.
+
+### Latest Authoritative Result
+
+- Result: `Pass`
+- Changed durable test paths reviewed: the four paths above
+- Unresolved finding IDs: None
+- Recommended Recipient: `delivery_engineer`
+- Notes: Part 2 is proven at the server boundary on every route the client reads, across native, Team, Antigravity, Claude live, Codex live and two peer nodes. Desktop, phone and zh-CN were proven by the probes and the isolated app (P2-10). Residual risks:
+  - ACP live is Not Tested.
+  - The failed-member Team display is proven at unit level only, because an `error` member could not be produced live (P2-07a).
+  - The Org view's status access is unit-level.
+  - Codex idle shows Idle, by design.
+
+---
+
+## Earlier Round: Part 1, round 1 (CRR-004) — Pass
+
+### Review Meta
 
 - Review Round: `1`
 - Trigger: API/E2E engineer, API-REV-002 Pass (round 2 of API/E2E; F-1 resolved by DEC-008), 2026-11-17
