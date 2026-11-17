@@ -32,3 +32,27 @@ Your own progress log while tests run. Read it first whenever you pick the run b
 | 2026-11-17 22:05 | API-16 | Completed | Pass | baseline 1012 in 316 files unchanged; `evidence/API-16-server-typecheck.log` |
 | 2026-11-17 22:06 | API-12, API-13 | Completed | Next Round | integration and the whole E2E suite run once on the fixed commit (round ends Fail on API-09) |
 | 2026-11-17 22:10 | — | Completed | Fail | round 1 closed; report, revision record and evidence committed in ba427ab13d; handoff to /code_reviewer for failure-origin review |
+| 2026-11-17 23:30 | — | Checkpoint | | ROUND 2 (CRR-003, code 159286c1c1). Plan: rerun all (src changed in discovery, journal service/store, catalog): build, E2E file (EC-06 extended for IR-002), unit, both typechecks, integration, whole E2E. |
+| 2026-11-17 23:31 | API-00 | Started | | build on 159286c1c1 |
+| 2026-11-17 23:40 | API-00 | Completed | Pass | build on 159286c1c1 |
+| 2026-11-17 23:41 | API-04…API-10 | Started | | round 2 run 1 of the E2E file; round-1 logs moved to `evidence/round1/` |
+| 2026-11-17 23:50 | API-04…API-10 | Completed | Not Tested (interrupted) | round 2 run 1 stopped in EC-05 by an application restart (update to v1.5.13-beta.9); no case result; its temp data dir and HOME removed. `evidence/API-04-10-r2-run1-interrupted.log` |
+| 2026-11-17 23:51 | API-04…API-10 | Started | | round 2 run 2 |
+| 2026-11-18 00:05 | API-04…API-10 | Completed | Fail (test expectation) | round 2 run 2: EC-01…05, EC-07 Pass. EC-06 expected the damaged-metadata standalone run A to stay catalogued by its history row (handoff wording); in real use listCatalogRows offers only admitted rows (agent-run-history-catalog-service.ts:141), so A is left out, which REQ-012 allows with a warning. Test now expects A left out + RUN_FOLDER_DISCOVERY_RECORD_UNREADABLE naming it; evidence captured before assertions. `evidence/API-04-10-r2-run2.log` |
+| 2026-11-18 00:06 | API-04…API-10 | Started | | round 2 run 3 |
+| 2026-11-18 00:15 | API-04…API-10 | Completed | Pass | round 2 run 3: 7/7 pass on 159286c1c1. `evidence/API-04-10-episodic-catalog-e2e.log` |
+| 2026-11-18 00:16 | API-11 | Started | | whole server unit suite |
+| 2026-11-18 00:45 | API-11 | Completed | Pass for this change (1 failure, FU-003) | 8331 passed / 1 failed: agent-package-folder-watcher (no changed file in closure; load-sensitive) |
+| 2026-11-18 00:46 | API-12 | Started | | test:integration:prepare then test:integration |
+| 2026-11-18 01:10 | API-12 | Completed | Pass for this change (8 watcher failures, FU-003) | 498 passed / 8 failed in file-system-watcher (no changed file in closure) and package-auto-refresh (composes no catalog/discovery/journal/run service); rerun alone fails a different set (10): file-event latency at load 70-110. `evidence/API-12-server-integration.log`, `API-12b-watcher-integration-rerun.log` |
+| 2026-11-18 01:11 | API-13 | Started | | whole server E2E suite, clean env, gate RUN_AGY_FAILURE_E2E=1 with the scripted CLI (so the new file and AGY suites run) |
+| 2026-11-18 01:12 | API-13 | Checkpoint | | correction: run as TESTING.md defines `pnpm test:e2e` (clean env, no gates); gated AGY suites stay skipped, the new file already ran gated (API-04…10) |
+| 2026-11-18 02:40 | API-13 | Checkpoint | | whole E2E: 104 passed / 22 failed files (26 tests) / 146 skipped; rerunning the 23 failing file paths alone to find which reproduce |
+| 2026-11-18 03:30 | API-13 | Checkpoint | | rerun alone: 14 files still fail; running the same 14 on the base commit 2b73308ce5 (own worktree ec493-api-e2e-base) to tell change-caused from pre-existing (Rule 9: causes of the start/stop timeouts not found from logs) |
+| 2026-11-18 04:40 | API-13 | Completed | Pass for this change (22 failing files, each explained) | 9 pass alone; 11 fail on base 2b73308ce5 too; 3 (embedding-settings, grok-build-compaction-replay, file-explorer-websocket) pass alone on the branch, embedding-settings 4/4 with temporary ECDIAG timing logs (start pass <=394 ms, stop 0-1 ms; logs removed, src == 159286c1c1). Evidence API-13*.log |
+| 2026-11-18 04:41 | API-16 | Started | | server typecheck with the round-2 test |
+| 2026-11-18 04:50 | API-16 | Completed | Pass | baseline unchanged |
+| 2026-11-18 04:55 | — | Completed | Pass | round 2 closed; base worktree removed; no leftover temp dirs or processes |
+| 2026-11-18 05:00 | API-04…API-10 | Started | | round 2 run 4: EC-06 adds a damaged org tree (O3) to close the org-tree gap (was unit + reading only) |
+| 2026-11-18 05:20 | API-04…API-10 | Completed | Pass | round 2 run 4 (authoritative): 7/7, damaged org tree included; API-16 rerun Pass |
+| 2026-11-18 05:25 | — | Completed | Pass | round 2 closed: Pass, 95%; handoff to /code_reviewer for test-code review |

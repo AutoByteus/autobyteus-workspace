@@ -1,0 +1,19 @@
+# API-13d four branch-only failures, alone, worktree per-agent-episodic-catalog (51a2712742) | Node v22.23.1 | 2026-11-17T22:20:54Z | load 99.92 148.61 159.04
+ ✓ tests/e2e/secret-management/removed-remote-provider-leftover-startup.e2e.test.ts > upgrade start with removed remote AutoByteus provider leftovers > starts normally, keeps other providers working, lists the host key as deletable custom data, and leaves the vault row inert 23099ms
+ ✓ tests/e2e/runtime/grok-build-compaction-replay.e2e.test.ts > Grok Build compaction over GraphQL/WebSocket (recorded Grok 1.0.46 replay) > pairs three automatic compactions and archives one segment per completion (REQ-G1, REQ-G2) 11206ms
+ ✓ tests/e2e/runtime/grok-build-compaction-replay.e2e.test.ts > Grok Build compaction over GraphQL/WebSocket (recorded Grok 1.0.46 replay) > closes an automatic compaction stopped by the user as failed, then pairs the next one (REQ-G3) 970ms
+ ✓ tests/e2e/runtime/grok-build-compaction-replay.e2e.test.ts > Grok Build compaction over GraphQL/WebSocket (recorded Grok 1.0.46 replay) > records a manual /compact as one completed compaction with no start (REQ-G1, REQ-G2, REQ-G4) 658ms
+ × tests/e2e/projects/embedding-settings.e2e.test.ts > Embedding settings over the production GraphQL boundary > answers models and Project indexes in one read-only document: fresh install is Not downloaded and Not indexed (AC-011) 6280ms
+ ✓ tests/e2e/projects/embedding-settings.e2e.test.ts > Embedding settings over the production GraphQL boundary > downloads the active model (Preparing with bytes, not cancellable), then indexes on request 93ms
+ ✓ tests/e2e/projects/embedding-settings.e2e.test.ts > Embedding settings over the production GraphQL boundary > downloads another model ahead, refuses removal while it downloads, cancels it, and refuses removing the active model 25ms
+ ✓ tests/e2e/projects/embedding-settings.e2e.test.ts > Embedding settings over the production GraphQL boundary > switches the active model through the setting, prepares it at once, keeps the old files, and shows the Projects as Not indexed 28ms
+ ✓ tests/e2e/projects/embedding-settings.e2e.test.ts > Embedding settings over the production GraphQL boundary > shows an unavailable model with its reason, and Retry prepares it again at once (AC-012) 18ms
+ ✓ tests/e2e/projects/embedding-settings.e2e.test.ts > Embedding settings over the production GraphQL boundary > indexes a Project a few seconds after Task writes, with no search, once the model is on disk (REQ-011, AC-015) 3111ms
+Config file not found in new data directory: Error: Configuration file not found: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/file-explorer-ws-e2e-appdata-5VhCc1/.env
+ ✓ tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > keeps workspace/search snapshot APIs watcher-free, then leases one real watcher across visible websocket consumers 1843ms
+ ✓ tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > does not leak watcher leases when sockets close before CONNECTED is observed 312ms
+ ✓ tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > survives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy 773ms
+Error: Test timed out in 5000ms.
+ Test Files  1 failed | 3 passed (4)
+      Tests  1 failed | 12 passed (13)
+exit 1

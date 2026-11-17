@@ -19,10 +19,10 @@ The plan: what must be proven, how, the decisions about existing tests, and the 
 - Relevant Delivery Revision IDs: N/A
 - API/E2E Revision Record (created after the first completed result): `api-e2e-revision-record.md`
 - Current API/E2E Revision ID: `API-REV-001` (on completion)
-- Current Investigation Round: 1
-- Trigger: code review CRR-001 Pass (Large / High route), message from `/code_reviewer`
-- Prior Investigation Reviewed: N/A (first round)
-- Latest Authoritative Investigation: this file, round 1
+- Current Investigation Round: 2
+- Trigger: round 1: code review CRR-001 Pass; round 2: CRR-003 Pass of IR-002 (SR-003), resolving round 1's API-09 failure
+- Prior Investigation Reviewed: round 1 (this file, API-REV-001)
+- Latest Authoritative Investigation: this file, round 2
 - Code validated: branch `codex/per-agent-episodic-catalog`, code at `0be36462ef` (HEAD `89f35132ed` adds only ticket docs)
 
 ## Current Requirement And Design Basis
@@ -196,6 +196,12 @@ Execution notes that refined the plan (no change of scope):
 - EC-02's burst: scripted turns finish 7–11 ms after their message, so the test spaces the four turns 2 s apart (inside the 5 s quiet window), as a working run's turns come.
 - EC-05 is the data dir's first `dist/app.js` start (the in-process server runs no app-data migrations); its listing allows only the run-history index migrations' files outside `episodic/`. EC-06 and EC-07 allow no change at all.
 - E's catalog (an agent with no runs left) is correctly not rebuilt once `episodic/` is gone (contract §1: a definition with runs or an existing catalog folder).
+
+## Round 2 Plan (CRR-003, code `159286c1c1`)
+
+- Rerun by impact: IR-002 changes discovery, the journal span read and the catalog owner; every case exercises them, so every case is Rerun (build, the E2E file, unit, server typecheck), plus integration and the whole E2E suite, which were Next Round. Reused: IMP-10 (catalog/discovery units), IMP-12 (web typecheck), IMP-14/15 (AC-010 build over a clone, privacy), all on `159286c1c1`.
+- EC-06 extended for IR-002's outcomes: damaged team tree (warning code now asserted), damaged org tree, damaged standalone `run_metadata.json` (left out with a warning: the readiness index does not admit it, so its history row is not offered), non-JSON journal manifest (`EPISODIC_CATALOG_RUN_LEFT_OUT`).
+- Round 1's Ambiguity (damaged record without a warning) is resolved by IR-002.
 
 ## Investigation Decision
 

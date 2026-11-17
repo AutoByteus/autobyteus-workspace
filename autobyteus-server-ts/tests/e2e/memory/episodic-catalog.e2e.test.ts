@@ -26,10 +26,13 @@ import { callTool, segment, startCollaborationHarness, type CollaborationHarness
 // - EC-05 (AC-007 b, AC-009 at start): a turn whose catalog pass never ran (server stopped inside the 5 s window), a run
 //   folder removed and an agent's only run removed while stopped, a hand-edited catalog: the built server's start brings
 //   exactly those catalogs (and index.md) up to date (the last becomes `0 runs.`) and writes no other catalog file.
-// - EC-06 (AC-006, REQ-008, older manifests, AC-009 damaged record): a start with no episodic/ folder builds every catalog
-//   again, byte for byte as before, with a run without a journal ("no journal yet"), a run whose manifest is the older
-//   shape (runtime once per manifest) listing its files, and a team run whose stored tree is unreadable left out with a
-//   warning naming it; nothing under memory/ outside episodic/ changes (path, size, modification time).
+// - EC-06 (AC-006, REQ-008, older manifests, AC-009 damaged records): a start with no episodic/ folder builds every
+//   catalog again, byte for byte as before, with a run without a journal ("no journal yet"), a run whose manifest is the
+//   older shape (runtime once per manifest) listing its files, and left out, each with a warning naming it: a team run
+//   and an org run whose stored trees are unreadable, a standalone run whose run_metadata.json is unreadable (the readiness index does
+//   not admit it, so its history row is not offered either) (RUN_FOLDER_DISCOVERY_RECORD_UNREADABLE), and a run whose
+//   journal manifest is not JSON (EPISODIC_CATALOG_RUN_LEFT_OUT); nothing under memory/ outside episodic/ changes (path,
+//   size, modification time).
 // - EC-07 (AC-007 a): a restart with no change writes no file under episodic/.
 // Prerequisites: `pnpm -C autobyteus-server-ts build` for the current worktree (EC-05…EC-07 start dist/app.js).
 // Run: env -i PATH="$PATH" HOME="$(cd "$(mktemp -d)" && pwd -P)" TMPDIR="$TMPDIR" RUN_AGY_FAILURE_E2E=1 \
@@ -247,6 +250,8 @@ suite("Episodic catalogs on a real server (real runs of every kind, GraphQL dele
     await new Promise((resolve) => { if (running.exitCode !== null) resolve(null); else running.once("exit", resolve); });
   };
   const episodicLines = () => output.split("\n").filter((line) => /EPISODIC_CATALOG|RUN_FOLDER_DISCOVERY/.test(line));
+  /** The server's warnings with a code, each as printed (`<CODE> { … }`, possibly over several lines). */
+  const warningsOf = (code: string) => [...output.matchAll(new RegExp(`${code} \\{[\\s\\S]*?\\}`, "g"))].map((match) => match[0]);
 
   beforeAll(async () => {
     h = await startCollaborationHarness("episodic-catalog-e2e");
@@ -459,13 +464,17 @@ suite("Episodic catalogs on a real server (real runs of every kind, GraphQL dele
     roots.T3 = await h.startRoot("team", { team: ids.T, manager: ids.H, mate: ids.D });
     runs.T3 = roots.T3.rootId; runs.T3mate = roots.T3.members["/mate"];
     await turn(roots.T3, runs.T3mate);
-    for (const key of ["A2", "A3", "T1", "T2", "T3", "O1", "O2"]) {
+    // An org run whose tree EC-06 damages (D is its writer).
+    roots.O3 = await h.startRoot("org", { org: ids.O });
+    runs.O3 = roots.O3.rootId; runs.O3writer = roots.O3.members["/writer"];
+    await turn(roots.O3, runs.O3writer);
+    for (const key of ["A2", "A3", "T1", "T2", "T3", "O1", "O2", "O3"]) {
       roots[key]!.close();
       await h.terminate(roots[key]!.kind, runs[key]);
     }
     await settled();
     const catD = parseCatalog(await readCatalog(ids.D));
-    for (const runId of [runs.A3, runs.T2mate, runs.O2writer, runs.T3mate]) expect(catD.byRun.has(runId), runId).toBe(true);
+    for (const runId of [runs.A3, runs.T2mate, runs.O2writer, runs.T3mate, runs.O3writer]) expect(catD.byRun.has(runId), runId).toBe(true);
 
     // Archive one agent, team and org run: no catalog file is written.
     const beforeArchive = await catalogFiles();
@@ -611,6 +620,17 @@ suite("Episodic catalogs on a real server (real runs of every kind, GraphQL dele
     const treePath = path.join(memoryDir, "agent_teams", runs.T3, "team_run_execution_tree.json");
     const tree = await fs.readFile(treePath, "utf8");
     await fs.writeFile(treePath, tree.slice(0, Math.floor(tree.length / 2)));
+    // A damaged record: O3's stored org tree cannot be read.
+    const orgTreePath = path.join(memoryDir, "agent_orgs", runs.O3, "agent_org_run_execution_tree.json");
+    const orgTree = await fs.readFile(orgTreePath, "utf8");
+    await fs.writeFile(orgTreePath, orgTree.slice(0, Math.floor(orgTree.length / 2)));
+    // A journal manifest that is not JSON (copy2) and a damaged run_metadata.json (A, a standalone run with a history row).
+    const copy2Manifest = path.join((await runDir(runs.copy2))!, "work_journal", "work_journal_manifest.json");
+    const copy2Text = await fs.readFile(copy2Manifest, "utf8");
+    await fs.writeFile(copy2Manifest, copy2Text.slice(0, Math.floor(copy2Text.length / 2)));
+    const aMetadata = path.join(memoryDir, "agents", runs.A, "run_metadata.json");
+    const aText = await fs.readFile(aMetadata, "utf8");
+    await fs.writeFile(aMetadata, aText.slice(0, Math.floor(aText.length / 2)));
     const memoryBefore = pathSizeMtime(await listing(memoryDir));
 
     const started = await startBuilt();
@@ -618,6 +638,14 @@ suite("Episodic catalogs on a real server (real runs of every kind, GraphQL dele
     await settled(5_000);
     const builtAt = Date.now();
     const after = await catalogFiles();
+    const warnedT3 = warningsOf("RUN_FOLDER_DISCOVERY_RECORD_UNREADABLE").filter((w) => w.includes(`agent_team:${runs.T3}`));
+    const warnedO3 = warningsOf("RUN_FOLDER_DISCOVERY_RECORD_UNREADABLE").filter((w) => w.includes(`agent_org:${runs.O3}`));
+    const leftOutCopy2 = warningsOf("EPISODIC_CATALOG_RUN_LEFT_OUT").filter((w) => w.includes(`agents/${runs.copy2}`));
+    const aWarnings = warningsOf("RUN_FOLDER_DISCOVERY_RECORD_UNREADABLE").filter((w) => w.includes(`agent:${runs.A}`));
+    const outside = diffKeys(memoryBefore, pathSizeMtime(await listing(memoryDir, episodicDir)));
+    evidence.ec06 = { listeningMs: started.listeningAt - started.spawnedAt, builtWithinMs: builtAt - started.spawnedAt, outsideEpisodicChanged: outside,
+      t3Warnings: warnedT3.map((l) => l.slice(0, 600)), o3Warnings: warnedO3.map((l) => l.slice(0, 600)), copy2LeftOut: leftOutCopy2.map((l) => l.slice(0, 600)), aMetadataWarnings: aWarnings.map((l) => l.slice(0, 600)),
+      serverLines: episodicLines().slice(0, 20).map((l) => l.slice(0, 500)), catalogs: Object.fromEntries(Object.entries(after).map(([f, v]) => [f, v.text])) };
     // Every catalog as before, except: O1's manager has no journal yet (start = recorded start), T3's mate is left out.
     // E has no run and, with episodic/ gone, no folder: it gets no catalog (contract §1); every other catalog is back.
     expect(Object.keys(after).sort()).toEqual(Object.keys(before).filter((file) => file !== `${encodeURIComponent(ids.E)}/catalog.md`).sort());
@@ -628,7 +656,10 @@ suite("Episodic catalogs on a real server (real runs of every kind, GraphQL dele
     }
     const nowD = parseCatalog(after[fileOf(ids.D)]!.text);
     const wasD = parseCatalog(before[fileOf(ids.D)]!.text);
-    expect(nowD.entries.map((e) => e.text)).toEqual(wasD.entries.filter((e) => e.runId !== runs.T3mate).map((e) => e.text));
+    // D: T3's mate and O3's writer (damaged trees), A (damaged metadata) and copy2 (unreadable manifest) left out; every
+    // other entry as it was.
+    const leftOut = new Set([runs.T3mate, runs.O3writer, runs.A, runs.copy2]);
+    expect(nowD.entries.map((e) => e.text)).toEqual(wasD.entries.filter((e) => !leftOut.has(e.runId)).map((e) => e.text));
     expect(nowD.byRun.get(runs.copy1)!.lines.filter((l) => l.startsWith("  - ")).length, "older manifest lists its files").toBeGreaterThan(0);
     const nowH = parseCatalog(after[fileOf(ids.H)]!.text);
     const wasH = parseCatalog(before[fileOf(ids.H)]!.text);
@@ -637,14 +668,20 @@ suite("Episodic catalogs on a real server (real runs of every kind, GraphQL dele
     const noJournal = nowH.byRun.get(runs.O1manager)!;
     expect(noJournal.lines.slice(1)).toEqual([`- Workspace: \`${h.workspace}\``, `- Journal: no journal yet (run folder \`${await runDir(runs.O1manager)}\`)`]);
     expect(noJournal.heading).toMatch(new RegExp(`^## \\d{4}-\\d\\d-\\d\\d \\d\\d:\\d\\d UTC · ${runs.O1manager}$`));
-    const warnedT3 = episodicLines().concat(output.split("\n").filter((l) => l.includes(runs.T3))).filter((l) => l.includes(runs.T3));
     // Nothing under memory/ outside episodic/ changed.
-    const outside = diffKeys(memoryBefore, pathSizeMtime(await listing(memoryDir, episodicDir)));
-    evidence.ec06 = { listeningMs: started.listeningAt - started.spawnedAt, builtWithinMs: builtAt - started.spawnedAt, outsideEpisodicChanged: outside,
-      t3Lines: warnedT3.slice(0, 5).map((l) => l.slice(0, 500)), serverLines: episodicLines().slice(0, 10).map((l) => l.slice(0, 500)),
-      catalogs: Object.fromEntries(Object.entries(after).map(([f, v]) => [f, v.text])) };
     expect(outside, "no file under memory/ outside episodic/ changed").toEqual([]);
+    // One warning per discovery instance (the catalog's and memory search's): one or two per start.
     expect(warnedT3.length, `a warning names the damaged run ${runs.T3}: ${JSON.stringify(episodicLines()).slice(0, 1500)}`).toBeGreaterThan(0);
+    expect(warnedT3.length).toBeLessThanOrEqual(2);
+    for (const w of warnedT3) expect(w).toContain("team_run_execution_tree.json");
+    expect(warnedO3.length, `a warning names the damaged org run ${runs.O3}: ${JSON.stringify(episodicLines()).slice(0, 1500)}`).toBeGreaterThan(0);
+    expect(warnedO3.length).toBeLessThanOrEqual(2);
+    for (const w of warnedO3) expect(w).toContain("agent_org_run_execution_tree.json");
+    expect(leftOutCopy2.length, `the unreadable manifest's run is named: ${JSON.stringify(episodicLines()).slice(0, 1500)}`).toBe(1);
+    expect(leftOutCopy2[0]).toContain("is not JSON");
+    expect(aWarnings.length, "a warning names the standalone run whose metadata cannot be read").toBeGreaterThan(0);
+    expect(aWarnings.length).toBeLessThanOrEqual(2);
+    for (const w of aWarnings) expect(w).toContain("run_metadata.json");
   }, 600_000);
 
   it("EC-07: a restart with no change writes no file under episodic/", async () => {

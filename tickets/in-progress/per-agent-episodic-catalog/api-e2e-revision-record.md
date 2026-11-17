@@ -7,6 +7,7 @@ The latest coverage investigation and execution coverage report remain authorita
 | Revision ID | Triggering Role / Report / Round | Related Upstream Revision IDs | Prior Result / Confidence | Current Result / Confidence |
 | --- | --- | --- | --- | --- |
 | API-REV-001 | Code reviewer, `code-review-report.md` CRR-001 Pass, round 1 | SR-002, ARCH-REV-002/004, IR-001, CRR-001 | N/A | `Fail` / 88% |
+| API-REV-002 | Code reviewer, `code-review-report.md` CRR-003 Pass, round 2 | SR-003, ARCH-REV-005, IR-002, CRR-003 | `Fail` / 88% | `Pass` / 95% |
 
 ## Revision Entries
 
@@ -30,3 +31,26 @@ None.
 - New or remaining failure IDs: API-09 (EC-06): AC-009 / REQ-012, no logged warning names a damaged team run (left out correctly, others catalogued)
 - Recommended owner: failure-origin review by `/code_reviewer`; preliminary `Design Impact`
 - Remaining risks, blocked evidence, or untested scope: API-12 (integration) and API-13 (whole E2E) Next Round, on the fixed commit; AC-010's server start on the founder's data is the user's check (TESTING.md forbids a start on real data or a copy); Task-title lookup cost on real data not measured; FU-003 load-sensitive unit tests
+
+### API-REV-002 — Round 2: damaged records left out with warnings; whole suites run
+
+- Triggering role, report path, and round: `/code_reviewer`, `code-review-report.md` (CRR-003 `Pass` of IR-002), round 2
+- Triggering finding or case IDs: API-09 (round 1 failure), API-15 (docs note)
+- Related revision IDs: SR-003; ARCH-REV-005; IR-002; CRR-003
+- Why this revision was recorded: rerun after the fix of round 1's failure
+- Coverage decisions or durable test paths changed: `tests/e2e/memory/episodic-catalog.e2e.test.ts` EC-06 extended (warning codes, damaged org tree, damaged standalone metadata, non-JSON manifest; evidence written before the assertions)
+- Cases added, changed, removed, or rechecked: all rerun (code changed in discovery, journal read, catalog); API-12 and API-13 run for the first time; API-14 Not Tested (no quiet host)
+- Commands, environment, fixture, or broader-validation delta: base comparison in an own worktree at `2b73308ce5` (removed afterwards) for the E2E failures; temporary timing logs in this worktree for `embedding-settings` (removed; `src` identical to `159286c1c1`)
+
+#### Prior Failure Resolution
+
+| Prior Case / Failure Reference | Previous Classification | Current Resolution | Case IDs Now Proving It |
+| --- | --- | --- | --- |
+| API-09 / EC-06: a damaged team record left out without a warning (AC-009, REQ-012) | Design Impact (preliminary); CR-001 in code review | IR-002 (SR-003): discovery logs `RUN_FOLDER_DISCOVERY_RECORD_UNREADABLE` naming the root, record and reason; also for org trees and standalone metadata; an unreadable manifest gives `EPISODIC_CATALOG_RUN_LEFT_OUT` | API-09 (EC-06) |
+
+- Canonical artifacts and sections updated: the coverage investigation (§ Round 2 Plan), the execution report (all), progress log, `follow-ups.md` (FU-003 extended, FU-004 added), `evidence/` (round 1's moved to `evidence/round1/`)
+- Prior result and confidence: `Fail`, 88%
+- Current result and confidence: `Pass`, 95%
+- New or remaining failure IDs: none caused by this change; suite failures on this host recorded as FU-003 and FU-004 with their causes
+- Recommended owner: `/code_reviewer` for proportional test-code review
+- Remaining risks, blocked evidence, or untested scope: AC-010's server start on the founder's data (user, delivery gate); Task-title lookup cost on real data not measured; the history-row branch for damaged `run_metadata.json` is not reached in real use (report API-09 note); docs-sync note (API-15)
