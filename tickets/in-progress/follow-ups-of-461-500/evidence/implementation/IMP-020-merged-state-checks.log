@@ -1,0 +1,35 @@
+# IMP-020 IR-004: checks on the merged state (origin/personal ff13782f36 merged in 39325a1e50, order-test fix bfeea63612)
+# Commit: bfeea63612; macOS Darwin 25.5.0, Node v22; 2026-11-17 22:00-23:00 local; load average 126-150 (other worktrees' suites)
+
+## pnpm -C autobyteus-server-ts typecheck
+[typecheck] production errors: 0; test-file errors: 1010 in 316 files (baseline 1010 in 316 files)
+[typecheck] PASS
+
+## node autobyteus-web/scripts/typecheck.mjs
+[typecheck] production errors: 0; test-file errors: 87 in 37 files (baseline 87 in 37 files)
+[typecheck] PASS
+
+## restart-resume tests (the conflict area)
+ Test Files  8 passed (8) / Tests  58 passed (58)
+
+## cd autobyteus-server-ts && npx vitest run --no-watch tests/unit tests/agent-work-journal tests/app-data-migrations tests/architecture
+⎯⎯⎯⎯⎯⎯ Failed Tests 14 ⎯⎯⎯⎯⎯⎯⎯
+ Test Files  9 failed | 1008 passed | 5 skipped (1022)
+      Tests  14 failed | 8322 passed | 9 skipped (8345)
+   1  FAIL  tests/app-data-migrations/agent-org-flat-team-families-v1/agent-org-token-batch-boundaries.integration.test.ts
+   3  FAIL  tests/app-data-migrations/append-only-message-logs-v1/append-only-message-logs-v1-app-data-migration.test.ts
+   2  FAIL  tests/app-data-migrations/delegated-copy-own-file-complete-v1/delegated-copy-own-file-complete-v1-app-data-migration.test.ts
+   1  FAIL  tests/architecture/app-data-migration-boundaries.test.ts
+   1  FAIL  tests/architecture/tracked-imports.test.ts
+   1  FAIL  tests/unit/agent-memory/agent-memory-explorer-service.test.ts
+   5  FAIL  tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts
+   1  FAIL  tests/unit/projects/project-task-parts.test.ts
+   1  FAIL  tests/unit/skill-update-notices/skill-folder-watcher.test.ts
+Every failure above is a timeout (5-15 s) or the folder-watcher timing case; the non-watcher files rerun:
+- together, alone: "Tests 3 failed | 50 passed (53)" (timeouts again, load 149)
+- the three still failing, with --testTimeout=60000 --hookTimeout=60000: agent-org-token-batch-boundaries 2/2, append-only-message-logs-v1 13/13, tracked-imports 2/2 passed
+
+## cd autobyteus-web && npx vitest run
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+ Test Files  1 failed | 761 passed (762)
+The 2 failures are 5 s timeouts in CollaborationMessagesOrgRoot.integration.spec.ts; alone: "Tests 3 passed (3)".

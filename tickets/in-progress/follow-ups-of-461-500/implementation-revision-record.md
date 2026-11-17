@@ -107,3 +107,25 @@
   - The DLP-005 browser probe was updated, not run (API/E2E).
   - The SCP-E2E-006 restart rerun is API/E2E's.
   - API/E2E's FU-036 e2e file trips the stream-clients guard test (handoff note).
+
+## IR-004 (delivery base refresh)
+
+- **Trigger:** the Delivery Engineer's blocked report (`release-deployment-report.md`, `2f8a463a11`): a Local Fix to merge
+  the latest base. Four conflicts.
+- **Prior result:** IR-003, Pass (CRR-004); API-REV-002 Pass. **Current result:** merged and checked; to the code
+  reviewer's merge review.
+- **Upstream revisions:** CRR-004 … CRR-006, API-REV-002, the delivery report. SR / ARCH-REV: unchanged.
+- **Code delta:**
+  - `39325a1e50`: merge of `origin/personal` `ff13782f36`. Conflicts resolved in `restart-notice.ts`,
+    `restart-resumer.ts`, `docs/modules/restart_resume.md` and `claude-live-agent-harness.ts`: 448's reminder with
+    500's names. Detail in the handoff, "IR-004: base refresh".
+  - `bfeea63612`: three 461-era registration-order tests list FU-020's two migrations after them. They had failed since
+    `a954ae5300`, because my IR-001 runs didn't cover `tests/app-data-migrations`.
+- **508 vs FU-020:** no interaction. 508 changes launch fields in `run_metadata.json` and trees; FU-020's migrations
+  rewrite only raw-trace files and import no launch helper. The migration tests, with 508's cases, pass on the merged
+  tree.
+- **Focused validation:** IMP-20.
+- **Limitations:**
+  - Under load average 126–150, 14 server and 2 web tests timed out in the full runs. All pass alone or with longer
+    timeouts, except the folder-watcher timing cases, which this ticket doesn't touch.
+  - E2E suites were not run on the merge (API/E2E, delivery).

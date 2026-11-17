@@ -1,7 +1,7 @@
 # Implementation Handoff: follow-ups-of-461-500 (delivery 1 + 2)
 
-Status: **IR-003 (G-5 revision, SR-015 / SR-016, ARCH-REV-009; CRR-003 CR-500-003 … CR-500-005) ready for source review.**
-IR-001 and IR-002 are otherwise unchanged (see "IR-003: the G-5 revision" below). Decided earlier at SR-014 (ARCH-REV-007):
+Status: **IR-004 (the delivery base refresh: `origin/personal` `ff13782f36` merged, `39325a1e50`) ready for the code
+reviewer's merge review.** IR-003 passed (CRR-004); see "IR-004: base refresh" below. Decided earlier at SR-014 (ARCH-REV-007):
 - **FU-035 step 0 (REQ-010, AC-007), D-14:** not in this package. It runs as a later implementation round once Grok's
   24-hour usage window resets, with branch A or B and its own code review. Nothing is waived; FU-035 stays open.
 - **FU-021 (REQ-008, AC-005), D-13b:** done. A hang guard whose probe got nothing is ENVIRONMENT; one whose probe got
@@ -34,14 +34,16 @@ IR-001 and IR-002 are otherwise unchanged (see "IR-003: the G-5 revision" below)
 
 - Implementation cycle: `Rework` (CRR-001 Local Fix)
 - Implementation revision record: `implementation-revision-record.md`
-- Current implementation revision ID: `IR-003` (deltas in `implementation-revision-record.md`; IR-001 is the baseline)
+- Current implementation revision ID: `IR-004` (deltas in `implementation-revision-record.md`; IR-001 is the baseline)
 - Related solution revision IDs: SR-006 … SR-014
 - Related architecture-review revision IDs: ARCH-REV-001, ARCH-REV-003, ARCH-REV-005, ARCH-REV-006, ARCH-REV-007
-- Related code-review revision IDs: CRR-001 (CR-500-001, CR-500-002), CRR-002 (Pass), CRR-003 (CR-500-003 … CR-500-005).
-- Related API/E2E revision IDs: API-REV-001 (F-1 … F-3). Delivery: `N/A`.
+- Related code-review revision IDs: CRR-001 (CR-500-001, CR-500-002), CRR-002 (Pass), CRR-003 (CR-500-003 … CR-500-005),
+  CRR-004 (Pass), CRR-005 / CRR-006 (API/E2E test code).
+- Related API/E2E revision IDs: API-REV-001 (F-1 … F-3), API-REV-002 (Pass).
+- Delivery: the Delivery Engineer's blocked report (`release-deployment-report.md`, `2f8a463a11`), a Local Fix to integrate
+  the latest base.
 - Related solution / architecture revisions for IR-003: SR-015, SR-016; ARCH-REV-008, ARCH-REV-009.
-- Branch: `codex/follow-ups-of-461-500` on `d8dbeaa9ba` (autobyteus-508 merged). `origin/personal` has since moved
-  8 commits (the beta.8 release records); the Delivery Engineer refreshes the base.
+- Branch: `codex/follow-ups-of-461-500`, with `origin/personal` `ff13782f36` merged in `39325a1e50` (IR-004).
 
 Commits, oldest first, by the design's Change Sequence:
 
@@ -65,6 +67,8 @@ Commits, oldest first, by the design's Change Sequence:
 | size | `1eed3c4aff` | `build-studio-server.ts` 511 → 498 and `configured-agent-execution-handle.ts` 507 → 500 (see Legacy / size check) |
 | G-5 fix | `d8ffc77c8b` | the 8 s model-list budget is `MODEL_LIST_READ_MS` in `read-deadline.ts`; `llm-management` no longer imports `available-agent-runtimes` (found by the full unit run) |
 | 8 | evidence only | FU-035 step 0: blocked by the Grok usage limit (IMP-011); a later round per D-14 |
+| IR-004 merge | `39325a1e50` | `origin/personal` `ff13782f36` merged (beta.8, beta.9, 448 part 1, 483, 458, 514, 515, 508); 4 conflicts resolved |
+| IR-004 fix | `bfeea63612` | three 461-era registration-order tests list FU-020's two migrations (missed in IR-001) |
 | CRR-003 | `7eb78a701b` | IR-003: G-5 R1 (on-demand AutoByteus models), R2 (definition first), R3 (inherited-layer refusal) |
 | CRR-001 | `7eb6f94b9f` | IR-002: the server's delegated-run code names (no "copy"); the stale coordinator doc line; FU-500-07 in the glossary's Known leftovers |
 
@@ -123,6 +127,37 @@ Not reworded this round: the other `send_message_to` / `delegate_task` results, 
 I reviewed them: their texts already say what happened and what to do, which `refusal-texts-vocabulary.test.ts` and
 `result-catalogue.test.ts` check. The Save refusal (`run-model-selection-refusal.ts`, "Refresh the model list and choose
 again. Saved settings were not changed.") is kept, because in the Settings it already names the next step.
+
+## IR-004: base refresh (delivery Local Fix)
+
+- **Merge:** `git merge --no-ff origin/personal` (`ff13782f36`), commit `39325a1e50`. No rebase.
+- **Conflicts and resolutions** (448's restart reminder and 500's names both hold):
+  - `restart-resume/restart-notice.ts`: 448's doc ("The wake after an update"), with "the resumer (a run's own agent)".
+  - `restart-resume/restart-resumer.ts`: 448's comment ("a member starts on the reminder itself") with 500's
+    `readyAgent` / `ensureAgentReady`. The rest of 448's claim / settle flow auto-merged and already uses `readyAgent`.
+  - `docs/modules/restart_resume.md`: 448's steps (claim, settle), with `ensureAgentReady` / `postAgentUserMessage`, and
+    "standalone runs' agents" in its intro.
+  - `tests/e2e/helpers/claude-live-agent-harness.ts`: both imports (500's `NO_ELIGIBLE_STANDALONE_RUNS`, 483's
+    `lazyAgentStreamSequences`).
+- **Renamed names the base might reintroduce:** none. A grep of the merged tree for `execution_tree.host`,
+  `transient_execution`, `ensureHostReady`, `postHostUserMessage`, `TASK_COPY_NOT_ASSIGNABLE`,
+  `agent_collaboration_member_draft` and a stray `hostRunId` finds only the 461 base-shape test's explanatory comment
+  and the kept `TaskExecutionHostIdentity`.
+- **508's change to the released `20261111` conversion** (`run-file-conversion.ts`, `e0b58997f3`) does not interact
+  with FU-020's migrations.
+  - 508 rewrites launch fields (`runtimeKind`, `llmModelIdentifier`, `llmConfig`, `launchSource`) in
+    `run_metadata.json` and trees.
+  - `20261117_delegated_run_own_attachment_links` and its follow-up read and rewrite only raw-trace files
+    (`raw_traces_active.jsonl`, `raw_traces_{n}.jsonl`) and import no launch helper (frozen `context-file-owner-types`
+    only).
+  - Both still run after every 461 migration. On the merged tree, `tests/app-data-migrations` (with 508's AC-001 …
+    AC-006 cases) passes, after the order-test fix below.
+- **Released order:** unchanged. The Delivery Engineer checked that beta.8 / beta.9 shipped no app-data migration, so
+  `released-migration-order.json` (45 IDs) holds.
+- **Found on the merged tree, not caused by the merge:** three registration-order tests of 461-era migrations
+  (`collaborators-to-delegated-runs-v1`, `delegated-copy-own-file-complete-v1`, `remove-skill-improvement-data`)
+  assert the exact IDs after them, and FU-020 had appended its two. They failed since `a954ae5300`; my IR-001 runs
+  didn't cover `tests/app-data-migrations`. Fixed in `bfeea63612`.
 
 ## IR-003: the G-5 revision (SR-015, SR-016)
 
@@ -341,6 +376,7 @@ again. Saved settings were not changed.") is kept, because in the Settings it al
 | IMP-18 | IR-003: server units `tests/unit tests/agent-work-journal` | `7eb78a701b` (host mocks fixed after the run, rerun Pass) | macOS, load high | all server units | all | Pass, except as noted | console | "Tests 19 failed \| 7551 passed": 14 in `standalone-application-host/*` (mocks lacked `loadOnDemandModel`; fixed, then "Tests 28 passed (28)"); 3 folder-watcher timing (untouched); `project-store-task-keys` (passes alone; timing); 1 in `team-stream-clients-wait-for-connected.test.ts` that names API/E2E's `tests/e2e/agent/run-stream-early-command.e2e.test.ts` (`c0770ea7b0`), see the note below |
 | IMP-19 | IR-003: integration `tests/integration/{agent-execution,agent-collaboration,run-history,agent-team-execution,collaboration-definition-admission}` + `tests/architecture` | `7eb78a701b` | macOS | both start paths' wiring | G-5 | Pass | console | "Test Files 34 passed \| 4 skipped (38)"; "Tests 183 passed \| 35 skipped (218)" |
 | IMP-15 | IR-003: DLP-005 e2e (scripted AGY), `-t "inherited layer"` | `7eb78a701b` | macOS, scripted AGY CLI | the inherited-layer refusal through the real server | CR-500-005, AC-006 | Pass | `IMP-015-dlp005-inherited-refusal-e2e.log` | "Tests 1 passed \| 2 skipped (3)" |
+| IMP-20 | IR-004 on the merged state: server and web type gates; restart-resume tests; `npx vitest run tests/unit tests/agent-work-journal tests/app-data-migrations tests/architecture` (server); `npx vitest run` (web) | `bfeea63612` | macOS, load 126–150 | everything, with the base | all | Pass, except timeouts under load | `IMP-020-merged-state-checks.log` | server type gate "production errors: 0; test-file errors: 1010 in 316 files (baseline 1010 in 316 files)"; web type gate "production errors: 0; test-file errors: 87 in 37 files"; restart-resume 58/58; server "Tests 14 failed \| 8322 passed", all timeouts or folder-watcher timing, the rest pass rerun (with 60 s timeouts for three); web "Tests 2 failed \| 5730 passed", two 5 s timeouts, 3/3 alone |
 | IMP-13 | watcher test after the D-13b labels, 1 run | `a4e7f18e6d` | macOS, load 120–190 | FU-021 labels | FU-021 / D-13b | Fails as designed under load: labels only | `IMP-013-watcher-sr014-labels.log`, `IMP-013-watcher-sr014.full.log` | "env=1 inconclusive=6 other=0"; no "Timed out waiting for event (hang guard)" line |
 
 - Note for API/E2E (IMP-18): `tests/unit/e2e-helpers/team-stream-clients-wait-for-connected.test.ts` fails on API/E2E's
