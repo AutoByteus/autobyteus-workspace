@@ -1,0 +1,14 @@
+# r3 builds on 66908768eb + MSP-66 renumber (uncommitted); 2026-11-17T14:14:06Z
+## pnpm -C autobyteus-server-ts build
+
+AgentFactory (Singleton) initialized.
+(node:5932) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+Built-in agents bootstrap smoke check passed.
+Sanitized built-module/bootstrap smoke passed without DATABASE_URL.
+server exit=0
+## pnpm -C autobyteus-web build:mobile-web
+│
+└  ✨ You can now deploy dist/public to any static hosting!
+Mobile web assets written to /Users/normy/autobyteus_org/autobyteus-worktrees/phone-run-model-runtime-458/autobyteus-web/dist-mobile/public
+mobile exit=0

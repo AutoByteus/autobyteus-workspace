@@ -6,6 +6,7 @@
 | --- | --- | --- | --- | --- |
 | API-REV-001 | Implementation Engineer, `implementation-handoff.md` IR-001 (direct route), round 1 | SR-006, IR-001 | N/A | Fail (F-1) / 89% |
 | API-REV-002 | Implementation Engineer, `implementation-handoff.md` IR-002 (CR-001 from `code-review-report.md` CRR-001), round 2 | CRR-001, IR-002, API-REV-001 | Fail (F-1) / 89% | Pass / 94% |
+| API-REV-003 | Delivery Engineer, `delivery-revision-record.md` DR-001 blocked (merged state with autobyteus-448 part 1 and autobyteus-483: duplicate case ID MSP-59), round 3 | DR-001, CRR-002, API-REV-002 | Pass / 94% | Pass / 94% |
 
 ## Revision Entries
 
@@ -50,3 +51,25 @@ None
 - Current result and confidence: Pass, 94%
 - New or remaining failure IDs: none in scope
 - Recommended owner: Code Reviewer (the test-code review CRR-001 requested)
+
+### API-REV-003 — The merged state: MSP-59 renumbered MSP-66; the full phone probe, localization, web unit and typecheck
+
+- Triggering role, report path, and round: Delivery Engineer, `delivery-revision-record.md` DR-001 (blocked), round 3; merged state `15c1fa5b56` (origin/personal `e16f0b0d55`), branch head `66908768eb`
+- Triggering finding or case IDs: `duplicate case IDs MSP-59 (mobile-background-tasks-cases.mjs, mobile-run-settings-cases.mjs)` (`evidence/delivery/DR1-probe-duplicate-id.log`); the guard stopped every phone probe run
+- Related revision IDs: DR-001, CRR-002, API-REV-002
+- Why this revision was recorded: a rerun on the merged state after a test-only change
+- Coverage decisions or durable test paths changed: this ticket's MSP-59 → MSP-66 in `mobile-run-settings-cases.mjs` (header, ID list, `runCase`, two screenshot names; a note that earlier records name it MSP-59) and the case list in `mobile-shell-probe.mjs` (MSP-60…66). MSP-56…58 are autobyteus-461's, so MSP-66 is the next free ID
+- Cases added, changed, removed, or rechecked: API-01 (full probe; the cases a load-aborted setup skipped ran separately), R3-MERGED (localization guards and catalogs, web unit suite, typecheck). Unchanged and still valid: R-IMP, API-02…05 (this ticket's product code is unchanged since `6ddf9bb8f5`; 483's phone change is the Activity section's background tasks, covered by MSP-47…49 and 59, which pass)
+- Commands, environment, fixture, or broader-validation delta: server build and phone bundle on the merged state; host load average 70–150 (other work on this machine)
+
+#### Prior Failure Resolution
+
+| Failure ID | Cause | Fix | Rechecked By | Result |
+| --- | --- | --- | --- | --- |
+| DR-001 duplicate MSP-59 | 483 and this ticket each added MSP-59 on parallel branches | this ticket's case renumbered MSP-66 | the probe starts and runs every case on the merged state; MSP-59 (483) and MSP-66 Pass | Resolved |
+
+- Canonical artifacts and sections updated: execution report (Round, Cases API-01 and R3-MERGED, AC proof, durable coverage, result), test progress log, evidence `r3-*`
+- Prior result and confidence: Pass, 94%
+- Current result and confidence: Pass, 94%
+- New or remaining failure IDs: none in scope
+- Recommended owner: Delivery Engineer
