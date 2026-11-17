@@ -15,6 +15,7 @@ import type { ClaudeSession } from "../../../src/agent-execution/backends/claude
 import { ClaudeSessionManager } from "../../../src/agent-execution/backends/claude/session/claude-session-manager.js";
 import { buildRuntimeAgentToolExposure } from "../../../src/agent-execution/shared/runtime-agent-tool-exposure.js";
 import { composeSharedCarpenterPrompt } from "../../../src/agent-execution/prompt/carpenter-prompt-composer.js";
+import { CLAUDE_LONG_RUNNING_COMMAND_SECTION } from "../../../src/agent-execution/prompt/long-running-command-sections.js";
 import { AgentStreamHandler } from "../../../src/services/agent-streaming/agent-stream-handler.js";
 import { AgentSessionManager } from "../../../src/services/agent-streaming/agent-session-manager.js";
 import { registerAgentWebsocket } from "../../../src/api/websocket/agent.js";
@@ -80,6 +81,7 @@ const buildRunContext = (
       }),
       carpenterSystemPrompt: composeSharedCarpenterPrompt({
         semanticMemoryPath: null,
+        longRunningCommandSection: CLAUDE_LONG_RUNNING_COMMAND_SECTION,
         agentDefinition: {
           name: "Claude Live E2E Agent",
           description: "Runs shell commands for the user",

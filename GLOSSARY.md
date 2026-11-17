@@ -399,6 +399,13 @@ delegated run, …) are defined in the
   one batch, that background tasks it started have ended
   (`system.background_task_notifier`). Each end is reported once: in the agent's
   own `run_bash` result when it ended during that call, otherwise in a notice.
+- **End reason:** why a background task ended, when its runtime says so
+  (`endReason`, autobyteus-483): `time_limit` (the runtime's time limit stopped
+  it; not a failure of the command), `low_memory` (the runtime stopped it because
+  the computer was low on memory) or `run_ended` (the run or its runtime process
+  ended). Shown with the task's exit code, when there is one, as one line in the
+  Background Tasks panel and the phone's Activity; with neither, the runtime's
+  summary is shown.
 - **Usage limit:** a runtime's or provider's own limit on use (a 5-hour or
   weekly window, a billing period, a money balance), read from the runtime or
   provider. It is not the launch check of whether a runtime is usable.

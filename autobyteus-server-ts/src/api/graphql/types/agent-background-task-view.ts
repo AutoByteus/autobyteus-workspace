@@ -2,8 +2,10 @@ import { Arg, createUnionType, Field, Int, ObjectType, Query, registerEnumType, 
 import { AgentRunManager } from '../../../agent-execution/services/agent-run-manager.js';
 import type { AgentBackgroundTaskView, AgentBackgroundTaskViewStatus } from '../../../agent-execution/domain/agent-background-task-view.js';
 import {
+  AGENT_BACKGROUND_TASK_END_REASONS,
   AGENT_BACKGROUND_TASK_KINDS,
   AGENT_BACKGROUND_TASK_STATUSES,
+  type AgentBackgroundTaskEndReason as AgentBackgroundTaskEndReasonValue,
   type AgentBackgroundTaskKind as AgentBackgroundTaskKindValue,
   type AgentBackgroundTaskStatus as AgentBackgroundTaskStatusValue,
 } from '../../../agent-execution/domain/agent-background-task.js';
@@ -16,6 +18,8 @@ const AgentBackgroundTaskKind = Object.fromEntries(AGENT_BACKGROUND_TASK_KINDS.m
 const AgentBackgroundTaskStatus = Object.fromEntries(AGENT_BACKGROUND_TASK_STATUSES.map((status) => [status, status]));
 registerEnumType(AgentBackgroundTaskKind, { name: 'AgentBackgroundTaskKind' });
 registerEnumType(AgentBackgroundTaskStatus, { name: 'AgentBackgroundTaskStatus' });
+const AgentBackgroundTaskEndReason = Object.fromEntries(AGENT_BACKGROUND_TASK_END_REASONS.map((reason) => [reason, reason]));
+registerEnumType(AgentBackgroundTaskEndReason, { name: 'AgentBackgroundTaskEndReason' });
 
 /** A run's background task as an event-stream runtime knows it now (the domain `AgentBackgroundTask`, autobyteus-473). */
 @ObjectType()
@@ -26,6 +30,8 @@ export class AgentBackgroundTask {
   @Field(() => String, { nullable: true }) command!: string | null;
   @Field(() => AgentBackgroundTaskStatus) status!: AgentBackgroundTaskStatusValue;
   @Field(() => String, { nullable: true }) summary!: string | null;
+  @Field(() => AgentBackgroundTaskEndReason, { nullable: true }) endReason!: AgentBackgroundTaskEndReasonValue | null;
+  @Field(() => Int, { nullable: true }) exitCode!: number | null;
   @Field(() => String) startedAt!: string;
 }
 

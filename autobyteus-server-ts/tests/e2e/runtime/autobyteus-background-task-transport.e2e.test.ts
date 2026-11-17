@@ -320,13 +320,13 @@ describeGated("Native background tasks through the real server (scripted model)"
       expect(notice.at - completed.at).toBeLessThanOrEqual(5_000);
       // Panel contract: running → completed with the exit code; the panel reads the native run as an event stream.
       expect(statusPath(taskFrames(frames, pid))).toEqual(["running", "completed"]);
-      expect(completed.payload).toMatchObject({ task_id: String(pid), kind: "shell", command, summary: "exit code 0" });
+      expect(completed.payload).toMatchObject({ task_id: String(pid), kind: "shell", command, summary: null, end_reason: null, exit_code: 0 });
       const view = await harness.gql<{ agentBackgroundTaskView: { __typename: string; currentTasks: Array<Record<string, unknown>> } }>(
         `query($id: String!) { agentBackgroundTaskView(agentRunId: $id) { __typename
-          ... on AgentBackgroundTaskEventStream { currentTasks: tasks { taskId status summary } } } }`, { id: session.runId });
+          ... on AgentBackgroundTaskEventStream { currentTasks: tasks { taskId status summary exitCode } } } }`, { id: session.runId });
       expect(view.agentBackgroundTaskView.__typename).toBe("AgentBackgroundTaskEventStream");
       // autobyteus-473 AC-004: the ended task stays in the view with its end.
-      expect(view.agentBackgroundTaskView.currentTasks).toContainEqual({ taskId: String(pid), status: "completed", summary: "exit code 0" });
+      expect(view.agentBackgroundTaskView.currentTasks).toContainEqual({ taskId: String(pid), status: "completed", summary: null, exitCode: 0 });
       const systemNotice = await until(() => frames.find((frame) => frame.type === "SYSTEM_TASK_NOTIFICATION" && frame.payload.sender_id === NOTICE_SENDER), "SYSTEM_TASK_NOTIFICATION");
       expect(String(systemNotice.payload.content)).toBe(notice.lastUser.slice(notice.lastUser.indexOf(BACKGROUND_TASK_NOTICE_HEADER)));
 
@@ -370,7 +370,7 @@ describeGated("Native background tasks through the real server (scripted model)"
       // The command ended while the turn ran (the model was still answering).
       expect(failed, "the command ended during the turn").toBeDefined();
       expect(failed!.at).toBeLessThan(turnCompleted.at);
-      expect(failed!.payload.summary).toBe("exit code 3");
+      expect(failed!.payload).toMatchObject({ summary: null, exit_code: 3 });
       const notice = (await requests("BGT-02", 3, 30_000))[2]!;
       expect(notice.at).toBeGreaterThan(turnCompleted.at);
       expect(notice.at - turnCompleted.at).toBeLessThan(5_000);
@@ -455,7 +455,7 @@ describeGated("Native background tasks through the real server (scripted model)"
       expect(survivors).toEqual([]);
       expect(alive(pids.server) || alive(pids.worker)).toBe(false);
       const stopped = taskFrames(frames, Number(startResult.pid)).at(-1)!;
-      expect(stopped.payload).toMatchObject({ status: "stopped", summary: "signal SIGTERM" });
+      expect(stopped.payload).toMatchObject({ status: "stopped", summary: "signal SIGTERM", end_reason: null });
       await wait(5_000);
       expect(model.notices("BGT-04")).toHaveLength(0);
       expect(frames.filter((frame) => frame.at >= from && frame.type === "SYSTEM_TASK_NOTIFICATION")).toHaveLength(0);
@@ -495,7 +495,7 @@ describeGated("Native background tasks through the real server (scripted model)"
       const jobPid = Number(jobs[0]!.pid);
       const notice = (await requests("BGT-05", 3, 30_000))[2]!;
       expect(notice.lastUser).toContain(`- pid ${jobPid} \`(sleep 2; exit 7) & echo started\`: exit code 7 after 2s`);
-      expect(taskFrames(frames, jobPid).at(-1)!.payload).toMatchObject({ status: "failed", summary: "exit code 7" });
+      expect(taskFrames(frames, jobPid).at(-1)!.payload).toMatchObject({ status: "failed", summary: null, exit_code: 7 });
       await idleAfter(frames, notice.at);
 
       const from = Date.now();

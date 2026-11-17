@@ -21,6 +21,8 @@ const payload = buildBackgroundTaskUpdatedPayload({
   command: "rg -n lighthouse docs",
   status: "running",
   summary: null,
+  endReason: null,
+  exitCode: null,
   startedAt: "2026-09-29T16:48:20.000Z",
 });
 const event: AgentRunEvent = { eventType: AgentRunEventType.BACKGROUND_TASK_UPDATED, runId, payload, statusHint: null };
