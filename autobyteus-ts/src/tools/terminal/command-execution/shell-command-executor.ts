@@ -2,6 +2,7 @@ import type { PassThrough } from 'node:stream';
 import type { NonInteractiveShellInvocation } from './non-interactive-shell-resolver.js';
 import type { NativeCommandProcessScope } from './native-command-process-scope.js';
 import type { AnchoredCommandHandle, CommandCompletion, ForegroundDone } from './anchored-command-launcher.js';
+import { COMMAND_END_MARKER_GRACE_MS, COMMAND_START_LIMIT_MS } from './command-deadline.js';
 
 export interface ShellCallOptions {
   /** Limits the foreground part; a timeout stops the whole command group. Null: no limit (background form). */
@@ -37,20 +38,23 @@ export class ShellCommandExecutor {
     const stdout: Buffer[] = [], stderr: Buffer[] = [];
     const onOut = (bytes: Buffer) => stdout.push(bytes);
     const onErr = (bytes: Buffer) => stderr.push(bytes);
-    let handle: AnchoredCommandHandle | undefined, timedOut = false;
+    let handle: AnchoredCommandHandle | undefined, timedOut = false, stoppedByCaller = false;
     let foreground: ForegroundDone | null = null;
     const interrupt = (reason: 'tool-timeout' | 'tool-abort') => {
       if (foreground) return;
       timedOut = true;
+      if (reason === 'tool-abort') stoppedByCaller = true;
       if (handle) void scope.stop(handle, reason);
     };
     const abort = () => interrupt('tool-abort');
     const timeoutMs = options.timeoutSeconds === null ? null : Math.max(1, options.timeoutSeconds) * 1000;
     const timer = timeoutMs === null ? undefined : setTimeout(() => interrupt('tool-timeout'), timeoutMs);
     options.signal?.addEventListener('abort', abort, { once: true });
+    // The start may take the start limit, or the call's own timeout when that is shorter.
+    const startLimitMs = Math.min(COMMAND_START_LIMIT_MS, timeoutMs ?? COMMAND_START_LIMIT_MS);
     let completion: CommandCompletion | null = null;
     try {
-      handle = await scope.start(invocation, Date.now() + Math.min(1500, timeoutMs ?? 1500), h => {
+      handle = await scope.start(invocation, Date.now() + startLimitMs, h => {
         handle = h; h.stdout.on('data', onOut); h.stderr.on('data', onErr);
         void h.foregroundDone.then(done => { foreground = done; });
         if (options.signal?.aborted) abort();
@@ -60,7 +64,7 @@ export class ShellCommandExecutor {
       const settled = await Promise.race([boundary, started.completion]);
       if (settled && foreground) {
         // The wrapper reported its end and exited at once: its stdout marker is still on its way.
-        await Promise.race([boundary, sleep(1000)]);
+        await Promise.race([boundary, sleep(COMMAND_END_MARKER_GRACE_MS)]);
       } else if (settled) {
         completion = settled;
         // The shell exited without the wrapper's boundary: read its output to the end, as before the wrapper.
@@ -70,7 +74,9 @@ export class ShellCommandExecutor {
       }
     } catch (error) {
       // Only the start throws; its own cleanup settled the handle as stopped, which hides why it did not start.
-      completion = { kind: 'failed', reason: 'launch-failure', message: `Command did not start: ${error instanceof Error ? error.message : String(error)}` };
+      // A Stop during the start ends the call as that Stop; otherwise say how long the start was given and why it failed.
+      completion = stoppedByCaller ? { kind: 'interrupted', reason: 'tool-abort' } : { kind: 'failed', reason: 'launch-failure',
+        message: `Command did not start within ${startLimitMs / 1000} s: ${error instanceof Error ? error.message : String(error)}` };
     } finally {
       clearTimeout(timer); options.signal?.removeEventListener('abort', abort);
       if (!foreground) handle?.flushOutput();

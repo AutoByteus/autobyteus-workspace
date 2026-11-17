@@ -14,6 +14,7 @@ import { getBackgroundManager } from '../../../../src/tools/terminal/background-
 import { BackgroundProcessManager } from '../../../../src/tools/terminal/background-process-manager.js';
 import { NonInteractiveShellResolver } from '../../../../src/tools/terminal/command-execution/non-interactive-shell-resolver.js';
 import { TerminalResult, type BackgroundCommandStarted, type BackgroundTaskEnd } from '../../../../src/tools/terminal/types.js';
+import { COMMAND_SCOPE_SHUTDOWN_BUDGET_MS, COMMAND_STOP_LIMIT_MS } from '../../../../src/tools/terminal/command-execution/command-deadline.js';
 
 const suite = process.platform === 'win32' ? describe.skip : describe;
 const contexts: Array<{ workspaceRootPath: string; agentId: string }> = [];
@@ -50,6 +51,7 @@ async function until(check: () => boolean, ms = 3000): Promise<boolean> {
   return check();
 }
 
+// The run-end stops wait until each group is confirmed gone (up to the stop limit on a busy machine).
 afterEach(async () => {
   for (const ctx of contexts.splice(0)) {
     const manager = managerOf(ctx);
@@ -57,7 +59,7 @@ afterEach(async () => {
     await manager.scope.close();
     rmSync(ctx.workspaceRootPath, { recursive: true, force: true });
   }
-});
+}, COMMAND_STOP_LIMIT_MS + COMMAND_SCOPE_SHUTDOWN_BUDGET_MS + 5_000);
 
 suite('run_bash command wrapper: probe cases', () => {
   it('1 plain command, exit 3: output bytes and exit code unchanged', async () => {

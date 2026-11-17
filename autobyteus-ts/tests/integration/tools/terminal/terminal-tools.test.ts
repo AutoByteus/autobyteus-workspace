@@ -5,6 +5,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { registerRunBashTool } from '../../../../src/tools/terminal/tools/run-bash.js';
 import { getBackgroundManager } from '../../../../src/tools/terminal/background-process-context.js';
+import { COMMAND_SCOPE_SHUTDOWN_BUDGET_MS, COMMAND_STOP_LIMIT_MS } from '../../../../src/tools/terminal/command-execution/command-deadline.js';
 import { TerminalResult, type BackgroundCommandStarted } from '../../../../src/tools/terminal/types.js';
 
 const runIntegration = process.platform === 'win32' ? describe.skip : describe;
@@ -12,13 +13,15 @@ const runBashTool = registerRunBashTool();
 const contexts: object[] = [];
 let nextAgent = 0;
 
+// The run-end stops wait until each group is confirmed gone (up to the stop limit on a busy machine), then the
+// scope closes within its shutdown budget.
 afterEach(async () => {
   for (const context of contexts.splice(0)) {
     const manager = getBackgroundManager(context);
     await manager.stopAllForRunEnd();
     await manager.scope.close();
   }
-});
+}, COMMAND_STOP_LIMIT_MS + COMMAND_SCOPE_SHUTDOWN_BUDGET_MS + 5_000);
 
 class MockContext {
   workspaceRootPath: string;

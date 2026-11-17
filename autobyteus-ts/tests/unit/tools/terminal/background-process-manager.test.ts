@@ -6,10 +6,13 @@ import path from 'node:path';
 import { BackgroundProcessManager, backgroundTaskOutcome, type BackgroundTaskState } from '../../../../src/tools/terminal/background-process-manager.js';
 import { BackgroundProcessCleanupStep } from '../../../../src/agent/shutdown-steps/background-process-cleanup-step.js';
 import type { AgentContext } from '../../../../src/agent/context/agent-context.js';
+import { COMMAND_SCOPE_SHUTDOWN_BUDGET_MS, COMMAND_STOP_LIMIT_MS } from '../../../../src/tools/terminal/command-execution/command-deadline.js';
 
 const runPosix = process.platform === 'win32' ? describe.skip : describe;
 const cleanups: Array<() => Promise<unknown>> = [];
-afterEach(async () => { for (const cleanup of cleanups.splice(0).reverse()) await cleanup(); });
+// Each cleanup stops its commands until confirmed gone (up to the stop limit on a busy machine), then closes the scope.
+afterEach(async () => { for (const cleanup of cleanups.splice(0).reverse()) await cleanup(); },
+  COMMAND_STOP_LIMIT_MS + COMMAND_SCOPE_SHUTDOWN_BUDGET_MS + 5_000);
 
 async function fixture() {
   const cwd = await mkdtemp(path.join(os.tmpdir(), 'bg-manager-test-'));

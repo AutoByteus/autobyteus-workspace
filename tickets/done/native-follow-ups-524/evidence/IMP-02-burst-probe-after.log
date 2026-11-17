@@ -1,0 +1,79 @@
+# IMP-02 burst probe AFTER the change (AC-001)
+# Command: node tickets/in-progress/native-follow-ups-524/evidence/run-bash-burst-probe.mjs <worktree> <N> (after pnpm -C autobyteus-ts build)
+# Commit: see each section
+# Environment: macOS (darwin 25.5), 10-core, Node v22.23.1; load average in each section (other processes)
+# Date: 2026-11-17
+
+## Final source 80483cce9d, N=200, load 93-103
+{
+ "calls": 200,
+ "failed": 0,
+ "totalMs": 29376,
+ "stderrKinds": {},
+ "okMsMax": 29244,
+ "failedSample": []
+}
+
+## Final source 80483cce9d, N=60, load 204
+{
+ "calls": 60,
+ "failed": 0,
+ "totalMs": 15463,
+ "stderrKinds": {},
+ "okMsMax": 15453,
+ "failedSample": []
+}
+
+## Final source 80483cce9d, N=200, load 201-203 (beyond the measured envelope, QR-001 is load ~160)
+{
+ "calls": 200,
+ "failed": 104,
+ "totalMs": 61323,
+ "stderrKinds": {
+  "Command did not start within 30 s: Command control deadline exceeded": 104
+ },
+ "okMsMax": 56741,
+ "failedSample": [
+  {
+   "i": 0,
+   "ms": 33329,
+   "exitCode": null,
+   "stdout": "",
+   "stderr": "Command did not start within 30 s: Command control deadline exceeded"
+  },
+  {
+   "i": 1,
+   "ms": 33311,
+   "exitCode": null,
+   "stdout": "",
+   "stderr": "Command did not start within 30 s: Command control deadline exceeded"
+  },
+  {
+   "i": 2,
+   "ms": 33284,
+   "exitCode": null,
+   "stdout": "",
+   "stderr": "Command did not start within 30 s: Command control deadline exceeded"
+  }
+ ]
+}
+
+## First version of the change (limits and caps only, before the Stop-during-start and wording fixes, which do not touch a successful start), load 95-99
+### N=60
+{
+ "calls": 60,
+ "failed": 0,
+ "totalMs": 4773,
+ "stderrKinds": {},
+ "okMsMax": 4725,
+ "failedSample": []
+}
+### N=200
+{
+ "calls": 200,
+ "failed": 0,
+ "totalMs": 19686,
+ "stderrKinds": {},
+ "okMsMax": 19662,
+ "failedSample": []
+}

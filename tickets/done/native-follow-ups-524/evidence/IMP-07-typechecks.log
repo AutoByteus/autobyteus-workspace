@@ -1,0 +1,16 @@
+# IMP-07 typechecks
+# Command: pnpm -C autobyteus-server-ts typecheck; pnpm -C autobyteus-web typecheck
+# Commit: 80483cce9d content
+# Environment: macOS (darwin 25.5), 10-core, Node v22.23.1; 
+# Date: 2026-11-17
+
+## server
+[typecheck] server tests (tsconfig.tests.json): 1012 errors, exit 2, 140.1s
+[typecheck] production errors: 0; test-file errors: 1012 in 316 files (baseline 1012 in 316 files)
+[typecheck] PASS
+## web
+[typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 3.1s
+[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 1.0s
+[typecheck] cross-package tests (tsconfig.cross-package-tests.json): 0 errors, exit 0, 49.7s
+[typecheck] production errors: 0; test-file errors: 87 in 37 files (baseline 87 in 37 files)
+[typecheck] PASS

@@ -1,0 +1,6 @@
+# DEL-03 (autobyteus-524 delivery): the terminal unit tests on the merged state (the folder holding the command-execution tests this ticket added)
+# Command: env -i PATH HOME=<temp> TMPDIR=<temp> pnpm -C autobyteus-ts exec vitest run tests/unit/tools/terminal --no-watch
+# Commit: 08d33082f3; machine load average 54 / 53 / 93 (1/5/15 min) at the start; 2026-11-17
+
+ Test Files  21 passed (21)
+      Tests  143 passed (143)
