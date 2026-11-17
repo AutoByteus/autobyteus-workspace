@@ -13,6 +13,7 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 RELEASE_SCRIPT = REPO_ROOT / "scripts" / "desktop-release.sh"
 RELEASE_VERSIONS_HELPER = REPO_ROOT / "scripts" / "release_versions.py"
 CURATED_NOTES = ".github/release-notes/release-notes.md"
+ORDER_FILE = "autobyteus-server-ts/src/app-data-migrations/released-migration-order.json"
 GIT_ENV = {
     "GIT_AUTHOR_NAME": "release-test",
     "GIT_AUTHOR_EMAIL": "release-test@example.com",
@@ -37,10 +38,25 @@ class DesktopReleaseBetaCommandTest(unittest.TestCase):
         shutil.copy(RELEASE_VERSIONS_HELPER, self.repo / "scripts" / "release_versions.py")
         (self.repo / "autobyteus-web").mkdir()
         self.write_version("1.4.90")
+        # autobyteus-500 G-1: the release records the app-data migration order with the server's recorder; here a stand-in
+        # `pnpm` appends one entry per release, so the test sees which commit holds the file.
+        order = self.repo / ORDER_FILE
+        order.parent.mkdir(parents=True)
+        order.write_text("[]\n", encoding="utf-8")
+        bin_dir = self.tmp / "bin"
+        bin_dir.mkdir()
+        (bin_dir / "pnpm").write_text(
+            "#!/usr/bin/env bash\n"
+            "set -euo pipefail\n"
+            "[[ \"$1\" == -C && \"$3\" == migrations:record-released ]] || { echo \"unexpected pnpm $*\" >&2; exit 2; }\n"
+            f"python3 -c 'import json,sys; p=sys.argv[1]; d=json.load(open(p)); d.append(\"recorded-%d\" % len(d)); open(p,\"w\").write(json.dumps(d))' \"$2/src/app-data-migrations/released-migration-order.json\"\n",
+            encoding="utf-8")
+        (bin_dir / "pnpm").chmod(0o755)
+        self.env["PATH"] = f"{bin_dir}{os.pathsep}{self.env['PATH']}"
         notes = self.repo / CURATED_NOTES
         notes.parent.mkdir(parents=True)
         notes.write_text("## 1.4.90 curated notes\n", encoding="utf-8")
-        self.git(self.repo, "add", "scripts", "autobyteus-web/package.json", CURATED_NOTES)
+        self.git(self.repo, "add", "scripts", "autobyteus-web/package.json", CURATED_NOTES, ORDER_FILE)
         self.git(self.repo, "commit", "-q", "-m", "chore(release): bump workspace release version to 1.4.90")
         for tag in ("v1.4.89", "v1.4.90", "v2026.02.26-personal-desktop-e2e.3", "v1.2.26-rc3"):
             self.git(self.repo, "tag", tag)
@@ -74,10 +90,12 @@ class DesktopReleaseBetaCommandTest(unittest.TestCase):
         self.assertEqual(0, first.returncode, first.stdout + first.stderr)
         self.assertIn("v1.4.91-beta.1", self.origin_tags())
         self.assertEqual("1.4.91-beta.1", self.package_version())
+        # The release commit holds the version and the migration order it ships (G-1, AC-009).
         self.assertEqual(
-            "autobyteus-web/package.json",
-            self.git(self.repo, "show", "--name-only", "--format=", "HEAD"),
+            ["autobyteus-server-ts/src/app-data-migrations/released-migration-order.json", "autobyteus-web/package.json"],
+            sorted(self.git(self.repo, "show", "--name-only", "--format=", "HEAD").splitlines()),
         )
+        self.assertEqual('["recorded-0"]', self.git(self.repo, "show", f"v1.4.91-beta.1:{ORDER_FILE}"))
         self.assertEqual(self.git(self.repo, "rev-parse", "HEAD"), self.git(self.repo, "rev-parse", "origin/personal"))
 
         second = self.release("beta")

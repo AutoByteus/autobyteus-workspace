@@ -183,9 +183,11 @@ run_release() {
   ensure_tag_absent "$tag"
   bump_package_version "$version"
   sync_release_notes_file "$release_notes_file"
+  record_released_migration_order
   commit_tag_and_push "$version" "$branch" "$push_enabled" \
     .github/release-notes/release-notes.md \
-    autobyteus-web/package.json
+    autobyteus-web/package.json \
+    "$RELEASED_MIGRATION_ORDER_FILE"
 }
 
 run_beta() {
@@ -241,7 +243,8 @@ run_beta() {
   local tag="v$version"
   ensure_tag_absent "$tag"
   bump_package_version "$version"
-  commit_tag_and_push "$version" "$branch" "$push_enabled" autobyteus-web/package.json
+  record_released_migration_order
+  commit_tag_and_push "$version" "$branch" "$push_enabled" autobyteus-web/package.json "$RELEASED_MIGRATION_ORDER_FILE"
 }
 
 ensure_on_branch() {
@@ -268,6 +271,14 @@ bump_package_version() {
 }
 
 # Shared release tail: commit the given paths, create the annotated tag and push.
+# autobyteus-500 G-1: the app-data migration order this release ships, recorded in the release commit, so the tag
+# holds it; the order test reads it. Fails, writing nothing, if a released migration moved.
+RELEASED_MIGRATION_ORDER_FILE="autobyteus-server-ts/src/app-data-migrations/released-migration-order.json"
+record_released_migration_order() {
+  require_cmd pnpm
+  pnpm -C "$REPO_ROOT/autobyteus-server-ts" migrations:record-released
+}
+
 commit_tag_and_push() {
   local version="$1"
   local branch="$2"
