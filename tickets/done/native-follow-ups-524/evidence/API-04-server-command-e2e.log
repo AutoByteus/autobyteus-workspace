@@ -1,0 +1,40 @@
+# API-04 (autobyteus-524 API/E2E): server E2E that start, stop and drain native commands (SCN-002, SCN-A3, K-2, K-3)
+# 1) env -i PATH HOME=<temp> TMPDIR RUN_NATIVE_BACKGROUND_TASK_E2E=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/autobyteus-background-task-transport.e2e.test.ts tests/e2e/shutdown tests/e2e/terminal --no-watch
+# 2) env -i ... RUN_BUSY_STOP_NOW_E2E=1 RUN_NATIVE_STANDALONE_SHUTDOWN_E2E=1 TEST_NATIVE_SHUTDOWN_EVIDENCE_DIR=<dir> pnpm -C autobyteus-server-ts exec vitest run tests/e2e/shutdown --no-watch
+# commit 42df66c542 (source 80483cce9d); server and library dist built 23:24 from it; Node v22.23.1; 2026-11-17 23:39-23:44 CET
+
+== run 1
+start 23:39:05 23:39  up 29 days,  9:17, 10 users, load averages: 59.56 122.08 144.40
+ ✓ tests/e2e/runtime/autobyteus-background-task-transport.e2e.test.ts (9 tests) 253202ms
+     ✓ BGT-01: background start, tail, idle wake by one notice, panel and journal; retired tool names skipped (AC-001/003/007/008/011)  23465ms
+     ✓ BGT-02: a command failing while the agent is busy is told in one notice right after the turn (AC-002)  10410ms
+     ✓ BGT-03: three commands ending within 1 s arrive in exactly one notice that also lists the one still running (AC-004)  10107ms
+     ✓ BGT-04: kill <pid> of an `npm run dev` stops everything it started, reported in the kill's own result, no notice (AC-005)  32937ms
+     ✓ BGT-05: & jobs of a foreground call are background tasks; kill, children (DEC-012), disown, Terminate (AC-010)  13285ms
+     ✓ BGT-06: Terminate stops a running background command within 10 s, with no notice, and removes its output (AC-006)  6277ms
+     ✓ BGT-07: Stop during a foreground command leaves the background command running; its notice still arrives (AC-013)  10572ms
+     ✓ BGT-08: a background command killed from outside while the agent is idle is told as a signal in a notice (AC-002)  2708ms
+     ✓ BGT-09: a delegated copy with a running command is not idle-shut-down; the notice wakes it; shut down one grace after quiet (AC-009)  138144ms
+ ✓ tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts (4 tests) 892ms
+     ✓ does not retain PTYs across close-before-connect and repeated open/close churn  561ms
+ ↓ tests/e2e/shutdown/busy-run-stop-now.e2e.test.ts (2 tests | 2 skipped)
+ ↓ tests/e2e/shutdown/native-standalone-host-shutdown.e2e.test.ts (1 test | 1 skipped)
+ Test Files  2 passed | 2 skipped (4)
+      Tests  13 passed | 3 skipped (16)
+EXIT=0 end 23:43:32 23:43  up 29 days,  9:22, 10 users, load averages: 52.19 83.45 121.04
+
+== run 2 (gated shutdown suites)
+start 23:43:49 23:43  up 29 days,  9:22, 10 users, load averages: 52.31 81.39 119.43
+ ✓ tests/e2e/shutdown/busy-run-stop-now.e2e.test.ts (2 tests) 23955ms
+     ✓ server: Terminate and SIGTERM interrupt the busy turn, exit within the bound and leave nothing behind  19759ms
+     ✓ application: an application terminating its busy run interrupts the turn  4195ms
+ ✓ tests/e2e/shutdown/native-standalone-host-shutdown.e2e.test.ts (1 test) 5141ms
+     ✓ stops an ended run's commands at run end and drains the active run's at host close, without touching unrelated resources  5140ms
+ Test Files  2 passed (2)
+      Tests  3 passed (3)
+EXIT=0 end 23:44:20 23:44  up 29 days,  9:23, 10 users, load averages: 43.42 76.53 116.35
+
+== receipts (first 600 chars each)
+{"result":"Pass","error":null,"terminate":{"runId":"busy_stop_bq284_21152_1794955431608_8b6104b365ad4ff4b418a5ea92c97824","result":{"success":true,"message":"Agent run terminated successfully."},"elapsedMs":75,"foregroundGone":true},"shutdown":{"exit":{"code":0,"signal":null,"at":1794955443251},"elapsedMs":4114,"survivors":[],"markedLeft":[]},"history":{"terminatedRun":{"runId":"busy_stop_bq284_21152_1794955431608_8b6104b365ad4ff4b418a5ea92c97824","terminatedAt":"2026-11-17T22:43:58.304Z","isActive":false},"shutdownRun":{"runId":"busy_stop_bq284_21152_1794955431608_a0a7367a58e240a0b04ceae7dec9
+{"result":"Pass","error":null,"applicationTerminate":{"bindingId":"67e8b5b1-c21f-4a16-a2c2-a0187effba65","result":{"binding":{"bindingId":"67e8b5b1-c21f-4a16-a2c2-a0187effba65","applicationId":"bundle-app__7374616e64616c6f6e65__66697874757265","launchRequestId":"busy-1","status":"TERMINATED","executionResourceRef":{"source":"bundle","kind":"AGENT","localId":"worker"},"createdAt":"2026-11-17T22:44:14.158Z","updatedAt":"2026-11-17T22:44:14.752Z","terminatedAt":"2026-11-17T22:44:14.752Z","lastErrorMessage":null,"runtime":{"subject":"AGENT_RUN","agentRunId":"worker_fdab8ee382594b86afff0e3805447937
+{"case":"native-standalone-host-shutdown","date":"2026-11-17T22:44:15.689Z","own":"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/native-standalone-shutdown-RDD7tJ","steps":[{"step":"host IPC","value":{"kind":"ready","url":"http://127.0.0.1:63294","model":"shutdown-fixture:lmstudio@127.0.0.1:63289"},"at":"2026-11-17T22:44:18.202Z"},{"step":"application start","value":{"result":{"bindingId":"2c6e5518-ac76-48a1-826f-53ce15ecb2f2","applicationId":"bundle-app__7374616e64616c6f6e65__66697874757265","launchRequestId":"owned-1","status":"ATTACHED","executionResourceRef":{"source":"bundle","

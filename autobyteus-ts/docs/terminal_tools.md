@@ -147,6 +147,33 @@ claiming success. Host composition still attempts other resource cleanup and
 reports aggregate failure. No port scan grants termination authority; escaped
 untracked daemons, machine crashes and power loss are outside this guarantee.
 
+### Command time limits
+
+The scope's limits are named in one file, `command-execution/command-deadline.ts`, each with what it bounds. They
+were measured on a loaded machine (200 commands starting at once at load ~160: a healthy start took up to 18.4 s and
+one `ps` read several seconds), so a command that would start does start under load.
+
+| Limit | Value | Bounds |
+| --- | --- | --- |
+| Start (`COMMAND_START_LIMIT_MS`) | 30 s, or the call's `timeout_seconds` when that is shorter | launch until START is confirmed (pid, process-group check, START) |
+| Observation (`COMMAND_OBSERVATION_LIMIT_MS`) | 10 s | inspecting a command's group; confirming a finished command's group is empty |
+| Stop (`COMMAND_STOP_LIMIT_MS`) | 30 s | TERM, then KILL if needed, until the group is confirmed gone |
+| Host shutdown (`COMMAND_SCOPE_SHUTDOWN_BUDGET_MS`) | 3 s | the whole scope's close; commands not confirmed by then are `unconfirmed` |
+
+- **No limit of its own for one `ps` or WSL run.** A read is bounded only by the deadline of the step it serves, so a
+  step has one limit, not a second one hidden inside it.
+- **Graces are not limits.** The cancel-gate wait, TERM→KILL (500 ms each) and the stdout end marker (1 s) end by
+  design and are named next to the limits.
+- **A launch that fails outright fails at once** with its own reason; only a start that never completes waits for its
+  limit. A start that does not complete returns `exitCode: null`, no output and stderr
+  `Command did not start within N s: <reason>` (N is the limit applied, 30 or the call's timeout).
+- **A Stop during the start ends the call as that Stop** (`stderr` `tool-abort`, `timedOut: true`), as for a running
+  command, not as a failed start. The call returns once the cleanup stop of the half-started command is confirmed,
+  which on a busy machine takes longer (measured: at most 0.7 s with 10 calls starting at once, 2.8 s with 60, about
+  11 s with 200).
+- **A run end confirms each command's stop for up to 30 s** (in parallel), so an agent stop on a busy machine can take
+  longer than a short caller timeout; the host-close budget is separate and stays 3 s.
+
 Provider-owned Codex/Claude commands retain their provider shutdown owners;
 this native scope is not a replacement for those runtimes. The read-only Codex
 Background Tasks panel is documented in the server's
@@ -158,6 +185,7 @@ Background Tasks panel is documented in the server's
 src/tools/terminal/
 ├── command-execution/
 │   ├── native-command-process-scope.ts   # host lifetime, leases and collective drain
+│   ├── command-deadline.ts               # the scope's named time limits and graces
 │   ├── anchored-command-launcher.ts      # owned anchor/command launch
 │   ├── anchor-control-protocol.ts        # anchor and wrapper control frames
 │   ├── command-wrapper.ts                # the wrapper every run_bash call runs through

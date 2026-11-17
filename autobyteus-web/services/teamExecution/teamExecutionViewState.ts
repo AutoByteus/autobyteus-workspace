@@ -245,7 +245,7 @@ export const createTeamExecutionViewState = (
       const planned = planContextAssociations(payload.execution_tree, nextLocations);
       const plannedContexts = new Map(planned.map((entry) => [entry.agentRunId, entry.agentContext]));
       const statusIds = new Set<string>();
-      const validatedStatuses: Array<{ context: AgentContext; status: AgentStatus; recoverableBlock: import("@autobyteus/agent-presentation-contracts").CompactionRecoveryBlockDto | null }> = [];
+      const validatedStatuses: Array<{ context: AgentContext; status: AgentStatus; backgroundTasksRunning: number; recoverableBlock: import("@autobyteus/agent-presentation-contracts").CompactionRecoveryBlockDto | null }> = [];
       for (const status of payload.agent_statuses) {
         const location = nextLocations.get(status.agent_run_id);
         if (statusIds.has(status.agent_run_id) || location?.memberAddress !== status.member_address) {
@@ -254,7 +254,7 @@ export const createTeamExecutionViewState = (
         const context = publication.value.contexts.get(status.agent_run_id) ?? plannedContexts.get(status.agent_run_id);
         if (!context) throw new Error(`Agent status target '${status.agent_run_id}' is missing.`);
         statusIds.add(status.agent_run_id);
-        validatedStatuses.push({ context, status: status.status as AgentStatus, recoverableBlock: status.recoverableBlock });
+        validatedStatuses.push({ context, status: status.status as AgentStatus, backgroundTasksRunning: status.background_tasks_running, recoverableBlock: status.recoverableBlock });
       }
       // Every own member reports a status.
       const ownIds = new Set(payload.execution_tree.root_team.members.map((member) => member.agent_run_id))
@@ -275,8 +275,9 @@ export const createTeamExecutionViewState = (
         tree: structuredClone(payload.execution_tree), locations: nextLocations,
         contexts: prepareContextAssociations(planned), changeSequence: payload.base_change_sequence,
       };
-      validatedStatuses.forEach(({ context, status, recoverableBlock }) => {
+      validatedStatuses.forEach(({ context, status, backgroundTasksRunning, recoverableBlock }) => {
         context.state.currentStatus = status; context.state.recoverableBlock = recoverableBlock;
+        context.state.backgroundTasksRunning = backgroundTasksRunning;
         if (!inputIds.has(context.state.runId)) {
           context.state.inputProjection = null;
           for (const message of context.conversation.messages) if (message.type === 'user') delete message.pendingInput;

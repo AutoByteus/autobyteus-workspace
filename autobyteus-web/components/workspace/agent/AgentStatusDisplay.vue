@@ -11,18 +11,21 @@ import { useStatusVisuals } from '~/composables/useStatusVisuals';
 
 const props = withDefaults(defineProps<{
   status: string;
+  /** Background tasks the agent has running (autobyteus-448 DEC-004). */
+  backgroundTasksRunning?: number;
   variant?: 'default' | 'compact';
 }>(), {
+  backgroundTasksRunning: 0,
   variant: 'default',
 });
 
-const { status, variant } = toRefs(props);
-const { visuals } = useStatusVisuals(status);
+const { status, backgroundTasksRunning, variant } = toRefs(props);
+const { visuals } = useStatusVisuals(status, backgroundTasksRunning);
 
 const containerClasses = computed(() => {
   return variant.value === 'compact'
-    ? 'flex items-center gap-1.5'
-    : 'flex items-center space-x-2';
+    ? 'flex flex-shrink-0 items-center gap-1.5'
+    : 'flex flex-shrink-0 items-center space-x-2';
 });
 
 const dotClasses = computed(() => {
@@ -35,7 +38,7 @@ const dotClasses = computed(() => {
 
 const textClasses = computed(() => {
   return variant.value === 'compact'
-    ? 'text-xs text-gray-500 font-medium'
-    : 'text-sm text-gray-600 font-medium';
+    ? 'whitespace-nowrap text-xs text-gray-500 font-medium'
+    : 'whitespace-nowrap text-sm text-gray-600 font-medium';
 });
 </script>

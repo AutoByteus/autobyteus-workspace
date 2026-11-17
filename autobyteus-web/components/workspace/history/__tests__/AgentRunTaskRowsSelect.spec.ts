@@ -14,8 +14,8 @@ vi.mock('~/stores/agentRunCollaborationStore', () => ({
 // Each row's status is its own run's answer, by the ID the server named (SR-083, SR-086 G-A4).
 const statuses = vi.hoisted(() => ({ agents: {} as Record<string, string>, runs: {} as Record<string, string> }))
 vi.mock('~/stores/runStatusStore', () => ({ useRunStatusStore: () => ({
-  hold: () => () => undefined, treeRevisionOf: () => 0, isRunLive: () => false, statusOf: (id: string) => statuses.agents[id] ?? null,
-  runStateOf: (ref: { runId: string }) => statuses.runs[ref.runId] ? { answer: 'ok', node: null, status: statuses.runs[ref.runId] } : null,
+  hold: () => () => undefined, treeRevisionOf: () => 0, isRunLive: () => false, statusOf: (id: string) => statuses.agents[id] ?? null, backgroundTasksOf: () => 0,
+  runStateOf: (ref: { runId: string }) => statuses.runs[ref.runId] ? { answer: 'ok', node: null, status: statuses.runs[ref.runId], backgroundTasksRunning: 0 } : null,
 }) }))
 
 import AgentRunTaskRows from '../AgentRunTaskRows.vue'

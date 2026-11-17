@@ -8,6 +8,8 @@ const toolCore = { invocation_id: nonEmptyStringSchema, tool_name: nonEmptyStrin
 const status = {
     recoverableBlock: compactionRecoveryBlockSchema.nullable(),
     status: z.enum(["offline", "initializing", "idle", "running", "error"]),
+    /** Background tasks the agent has running (work beyond its turn; autobyteus-448). */
+    background_tasks_running: z.number().int().nonnegative(),
     trigger: nullableNonEmptyStringSchema,
     tool_name: nullableNonEmptyStringSchema,
     error_message: nullableNonEmptyStringSchema,

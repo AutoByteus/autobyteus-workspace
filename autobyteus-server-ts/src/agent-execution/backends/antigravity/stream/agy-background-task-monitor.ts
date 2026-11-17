@@ -71,9 +71,6 @@ export class AgyBackgroundTaskMonitor {
     this.schedule(0);
   }
 
-  /** Whether any tracked step is still running. */
-  hasRunningTasks(): boolean { return this.running.size > 0; }
-
   /** The tasks running now (an ended task is no longer kept). */
   list(): readonly AgentBackgroundTask[] { return [...this.running.values()]; }
 

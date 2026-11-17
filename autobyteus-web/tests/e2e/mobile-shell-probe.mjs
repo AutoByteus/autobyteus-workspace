@@ -125,6 +125,10 @@
 //   MSP-36 autobyteus-435 REQ-013  `delegate_task` to the sender's own address, by the agent's real tool call: a standalone
 //                  run and a Team member are refused with the self words and nothing is placed; a teammate's address keeps
 //                  the own-team words.
+//   MSP-73 (was MSP-59, then MSP-67: later bases took those IDs) autobyteus-448 REQ-006, AC-005 (DEC-004)  A run idle with a background task (the scripted AGY CLI's
+//                  `BACKGROUND_STEP`): its row's dot is the active blue (not pulsing), the run screen's second line says
+//                  "Background task running" and its composer offers Send, never Stop; the run's Settings screen
+//                  (autobyteus-458) shows the same line and dot; when the task exits both say Idle.
 //   MSP-34, MSP-35 autobyteus-435 REQ-011  A Task closed while its listed host run is stopped: its delegated row leaves
 //                  the phones' lists (MSP-34, delta) and a desktop window's (MSP-35, alpha) within one refresh, with at
 //                  most one view re-read per digest value; set back to TODO, the lists agree with the node:
@@ -156,7 +160,7 @@
 //                  after the limits were raised with no reload, and a stale read of the limits gets the node's 413 as the same
 //                  line; cancel mid-upload leaves no message and no draft, a network drop shows the interrupted line and leaves
 //                  no draft: `mobile-context-file-size-cases.mjs` (its own node eta).
-//   MSP-60…67 autobyteus-458/506/525  The readable phone conversation at 412 and 360 px (body width − 24, 17 px / 1.5, one
+//   MSP-60…66, MSP-74 autobyteus-458/506/525  The readable phone conversation at 412 and 360 px (body width − 24, 17 px / 1.5, one
 //                  avatar and speaker line per turn, composer 8 px above the bottom; another agent's message keeps its arrow
 //                  and type line, as on the desktop); the run list's ⋮ → On this phone → Text size (the whole phone at
 //                  16 × step/17 px, the conversation 15/19/21 px, kept over a reload) and every phone screen at Largest;
@@ -164,6 +168,11 @@
 //                  the run continues on it), a refused Save (the run woken before Save: the node's words in the red card), a
 //                  live idle and a working run (the red stop icon, one tap, the rows open): `mobile-run-settings-cases.mjs`
 //                  (on the paired phone, before MSP-13).
+//   MSP-67…72 autobyteus-522  Settings for every run the phone opens, decided by the run that holds the opened agent: a
+//                  PTM's task team member (the founder's case) and task agent, a Team lead's task agent (its own settings, not
+//                  the lead's), an Org's task agent and task team member (each stop stops that delegated run, not the Org),
+//                  an Org Team member's Save, and a run on beta (one sentence, no rows): `mobile-every-run-settings-cases.mjs`
+//                  (after 458's cases, before MSP-13).
 //
 // Prerequisites: `pnpm -C autobyteus-server-ts build` and `pnpm -C autobyteus-web build:mobile-web` (alpha serves
 // `autobyteus-web/dist/public` at /mobile); Chrome. Run: `pnpm -C autobyteus-web test:e2e:mobile-shell --output-dir=<fresh>`
@@ -197,6 +206,7 @@ import { runBackgroundTaskCases } from './mobile-background-tasks-cases.mjs';
 import { runHeadingLinksCases } from './mobile-heading-links-cases.mjs';
 import { runCodeWrapCases } from './mobile-code-wrap-cases.mjs';
 import { runRunSettingsCases } from './mobile-run-settings-cases.mjs';
+import { runEveryRunSettingsCases } from './mobile-every-run-settings-cases.mjs';
 
 const require = createRequire(import.meta.url);
 const { chromium } = require('playwright-core');
@@ -2388,6 +2398,56 @@ const runCases = async () => {
     return facts;
   });
 
+  await runCase('MSP-73', async () => {
+    await toList(page);
+    await showOlder(page);
+    const key = `agent:${stack.plain[1]}`;
+    await openRow(page, key);
+    await composerSend(page, 'Start the docs server. BACKGROUND_STEP:{"seconds":35,"exitCode":0}');
+    // The turn ends with the daemon step open: idle with one background task running.
+    await waitFor('the run screen says Background task running', async () => (await runScreen(page)).subtitle === 'Background task running', 45_000);
+    const headerDot = await page.locator(`${sel('mobile-run-title')} span.rounded-full`).first().getAttribute('class');
+    const stop = await page.locator(`${sel('mobile-run-conversation')} button[aria-label="Stop generation"]`).count();
+    const send = await page.locator(`${sel('mobile-run-conversation')} button[aria-label="Send message"]`).count();
+    await shot(page, 'MSP-73-background-run-screen');
+    // The run's Settings screen (autobyteus-458) reads the same status line and dot (one builder, mobileRunSubjectLine).
+    await menuOpen(page, 'settings');
+    await page.locator(sel('mobile-run-settings')).waitFor({ timeout: 20_000 });
+    const readSettings = () => page.evaluate(() => {
+      const root = document.querySelector('[data-testid="mobile-run-settings"]');
+      return { status: root?.querySelector('[data-testid="mobile-run-settings-status"]')?.textContent?.trim() ?? null,
+        dotClass: root?.querySelector('[data-testid="mobile-run-settings-subject"] span.rounded-full')?.getAttribute('class') ?? null,
+        runtime: root?.querySelector('[data-testid="mobile-run-runtime-select-value"]')?.textContent?.trim() ?? null,
+        runStop: Boolean(root?.querySelector('[data-testid="mobile-run-settings-stop"]')) };
+    });
+    // The rows load the run's saved selection; a live run then shows its stop icon (autobyteus-458 MSP-63). The status line
+    // does not wait for them.
+    await waitFor('the run\'s settings loaded', async () => (await readSettings()).runStop, 20_000).catch(() => undefined);
+    const settings = await readSettings();
+    await shot(page, 'MSP-73-background-settings');
+    await page.locator(`${sel('mobile-run-settings')} ${sel('mobile-screen-back')}`).click();
+    await page.locator(sel('mobile-run-settings')).waitFor({ state: 'detached', timeout: 10_000 });
+    await toList(page);
+    const dot = page.locator(`${rowSel(key)} ${sel('mobile-run-status-dot')}`);
+    await waitFor('the row shows background', async () => (await dot.getAttribute('data-status')) === 'background', 20_000);
+    const row = { status: await dot.getAttribute('data-status'), dotClass: await dot.getAttribute('class'),
+      label: await page.locator(rowSel(key)).locator(sel('mobile-run-open')).getAttribute('aria-label').catch(() => null) };
+    await shot(page, 'MSP-73-background-row');
+    // The daemon exits (35 s after it started): idle again, in the row and on the run screen.
+    await waitFor('the row is idle again', async () => (await dot.getAttribute('data-status')) === 'idle', 60_000);
+    await openRow(page, key);
+    const after = (await runScreen(page)).subtitle;
+    await shot(page, 'MSP-73-idle-again');
+    const facts = { headerDot, stop, send, settings, row, after };
+    assert((headerDot ?? '').split(/\s+/).includes('bg-blue-500') && !(headerDot ?? '').includes('animate-pulse'), 'the run screen dot is the active blue, not pulsing', facts);
+    assert(stop === 0 && send >= 1, 'no Stop for "Background task running"; Send is offered', facts);
+    assert(row.status === 'background' && (row.dotClass ?? '').split(/\s+/).includes('bg-blue-500') && !(row.dotClass ?? '').includes('animate-pulse'), 'the row dot is the active blue, not pulsing', facts);
+    assert(after === 'Idle', 'idle again once the task exits', facts);
+    assert(settings.status === 'Background task running' && (settings.dotClass ?? '').split(/\s+/).includes('bg-blue-500') && !(settings.dotClass ?? '').includes('animate-pulse'),
+      'the Settings screen says Background task running with the active blue dot, as the run screen does', facts);
+    return facts;
+  });
+
   await runCase('MSP-18', async () => {
     // autobyteus-426 D-02: Phone Access turned off on the node keeps the phone paired; the bar and the banner say so; once
     // it is on again, Check loads the runs without pairing again. Off, then the node stopped: "Can’t reach" (off → unreachable).
@@ -2474,6 +2534,8 @@ const runCases = async () => {
   // MSP-13 revokes this phone.
   await runRunSettingsCases({ runCase, page, stack, alpha, sel, toList, openRow, ensureUnfolded, rowsOf, childRow, menuOpen, runScreen, shot, sendOver, waitFor, sleep, assert, selected, phoneNet,
     openPhone, pairingFor, phoneOrigin });
+  // autobyteus-522: Settings for every run the phone opens (`mobile-every-run-settings-cases.mjs`), before MSP-13 too.
+  await runEveryRunSettingsCases({ runCase, page, stack, alpha, sel, toList, openRow, ensureUnfolded, rowsOf, menuOpen, runScreen, shot, sendOver, waitFor, sleep, assert, selected });
 
   await runCase('MSP-13', async () => {
     // A credential the node does not know (401, REMOTE_ACCESS_AUTH_INVALID: the node's pairing data was reset): the next

@@ -250,7 +250,7 @@ run's host, or a Team run's members.
 - **Requests.** All four go through `PeerGateway` admission (`toNodeId`, switch, registered peer) and then
   `RemoteRunViewProvider`'s link check. They are:
   - `POST /rest/remote/run-summaries` `{runs: [{kind, runId}]}` → `{runs: [{kind, runId, title, statuses:
-    [{agentRunId, status}]}]}`. One request per node covers every run A asks about there. A run B's delegation
+    [{agentRunId, status, backgroundTasksRunning}]}]}` (the count is required, autobyteus-448). One request per node covers every run A asks about there. A run B's delegation
     from A did not start is left out of the answer. `statuses` lists only the live paired agents; one not listed
     is offline. A summary never restores a run.
   - `POST /rest/remote/agent-projection` `{targetRoot, agentRunId}` → `{projection: {agentRunId, conversation,

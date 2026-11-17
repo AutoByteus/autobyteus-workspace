@@ -1,6 +1,6 @@
 // The readable phone conversation, Text size and Settings for a run's runtime and model (autobyteus-506, autobyteus-458).
 // Cases of `pnpm -C autobyteus-web test:e2e:mobile-shell`, run by `mobile-shell-probe.mjs` on its paired phone page
-// (`--cases=MSP-66,MSP-60,MSP-67,MSP-61,MSP-62,MSP-63,MSP-64,MSP-65` runs only these). Every run here is the cases' own, on alpha, on the
+// (`--cases=MSP-66,MSP-60,MSP-74,MSP-61,MSP-62,MSP-63,MSP-64,MSP-65` runs only these). Every run here is the cases' own, on alpha, on the
 // scripted Antigravity runtime (one model) and the scripted Grok Build runtime (`grok-4.7`). MSP-66 was MSP-59 before the merge
 // with autobyteus-483, which took MSP-59 (`mobile-background-tasks-cases.mjs`); earlier 458 records name it MSP-59.
 //
@@ -12,10 +12,10 @@
 //                  list at once (root 16 × step/17 px) with the menu open; Esc closes it (focus back on ⋮); the conversation
 //                  at 21 px; the run's ⋮ has no Text size; after a reload the step applies from the first screen; back to
 //                  Standard.
-//   MSP-67 autobyteus-525 AC-005  Largest at 412 and 360 px: the run list, its menu, the connection sheet, the unpair
+//   MSP-74 autobyteus-525 AC-005  Largest at 412 and 360 px: the run list, its menu, the connection sheet, the unpair
 //                  confirmation, New run and its agent sheet, the conversation, the run's ⋮, Artifacts, Files, a code file
 //                  (17 px), Messages, Activity, Settings, the setup page, a pairing link's page and "Connected to …": no
-//                  sideways scroll, nothing past the edge, no text cut without an ellipsis; screenshots `MSP-67-*.png`.
+//                  sideways scroll, nothing past the edge, no text cut without an ellipsis; screenshots `MSP-74-*.png`.
 //   MSP-61 AC-004  The stopped Team's lead: ⋮ → Settings shows "Stopped · in <Team>"; Runtime → Grok Build clears the model;
 //                  Model → grok-4.7; Save returns to the conversation; the node holds the new selection; Settings again
 //                  shows it; a message from the phone continues the run on it.
@@ -37,7 +37,7 @@ import { randomUUID } from 'node:crypto';
 export const runRunSettingsCases = async (probe) => {
   const { runCase, page, stack, alpha, sel, toList, openRow, ensureUnfolded, rowsOf, childRow, menuOpen, runScreen, shot, sendOver, waitFor, sleep, assert, phoneNet,
     openPhone, pairingFor, phoneOrigin } = probe;
-  const ids = ['MSP-66', 'MSP-60', 'MSP-67', 'MSP-61', 'MSP-62', 'MSP-63', 'MSP-64', 'MSP-65'];
+  const ids = ['MSP-66', 'MSP-60', 'MSP-74', 'MSP-61', 'MSP-62', 'MSP-63', 'MSP-64', 'MSP-65'];
   if (probe.selected && !ids.some(id => probe.selected.has(id))) return;
 
   const gql = (query, variables) => alpha.gql(query, variables);
@@ -314,7 +314,7 @@ export const runRunSettingsCases = async (probe) => {
   });
   const clean = (result) => !result.sideways && result.past.length === 0 && result.cut.length === 0;
 
-  await runCase('MSP-67', async () => {
+  await runCase('MSP-74', async () => {
     // autobyteus-525 AC-005: every phone screen at Largest, 412 and 360 px wide: screenshots for review and the fit check.
     // Not covered here: VNC Viewer (alpha has no node desktop; its controls are rem like every phone screen).
     await chooseTextSize('largest');
@@ -322,7 +322,7 @@ export const runRunSettingsCases = async (probe) => {
     const record = async (target, key) => {
       await sleep(400);
       screens[key] = await fit(target);
-      await shot(target, `MSP-67-${key}`);
+      await shot(target, `MSP-74-${key}`);
     };
     // The topmost screen's ←: an opened file's bar lies over the Files screen's bar.
     const back = async () => { await page.locator(`${sel('mobile-screen-back')}:visible`).last().click(); await sleep(400); };

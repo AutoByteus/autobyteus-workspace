@@ -6,7 +6,7 @@ import { rootExecutionEventSequencedShape } from "../../../../src/services/agent
 import { streamPayloadsEqual } from "../../../../src/services/agent-streaming/websocket-egress/stream-payload-equality.js";
 
 const segment = { segment_id: "segment-1", turn_id: "turn-1", segment_type: "text" as const };
-const runningStatus = { status: "running" as const, trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null };
+const runningStatus = { status: "running" as const, background_tasks_running: 0, trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null };
 
 describe("teamStreamSequencedShape", () => {
   const content = (seq: number, agent: string, delta: string, segmentId = "segment-1") => parseTeamStreamServerMessage({

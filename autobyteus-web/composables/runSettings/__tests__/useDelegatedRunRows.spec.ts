@@ -36,7 +36,7 @@ describe('useDelegatedRunRows (SR-084)', () => {
     expect(rows.rows.value.map((row) => row.key)).toEqual(['agent:copy'])
     expect([...rows.saveTargets.value.keys()]).toEqual(['agent:copy'])
     expect(rows.rows.value[0]!.delegated?.running).toBe(false)
-    runStatus.apply({ type: 'RUN_STATUS_SNAPSHOT', payload: { runs: [{ kind: 'agent', runId: 'copy', answer: 'ok', node: null, status: 'idle', agents: [{ agentRunId: 'copy', status: 'idle' }] }] } })
+    runStatus.apply({ type: 'RUN_STATUS_SNAPSHOT', payload: { runs: [{ kind: 'agent', runId: 'copy', answer: 'ok', node: null, status: 'idle', backgroundTasksRunning: 0, agents: [{ agentRunId: 'copy', status: 'idle', backgroundTasksRunning: 0 }] }] } })
     expect(rows.rows.value[0]!.delegated?.running).toBe(true)
     // Another run: its own tree (not yet answered), never the last one's rows.
     draft.value = { kind: 'team', teamRunId: 'team-2', isActive: false }

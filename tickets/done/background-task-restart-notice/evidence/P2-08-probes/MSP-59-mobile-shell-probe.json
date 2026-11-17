@@ -1,0 +1,85 @@
+{
+  "startedAt": "2026-11-17T17:18:30.660Z",
+  "result": "Pass",
+  "node": "v22.23.1",
+  "servers": {
+    "alpha": {
+      "port": 51931,
+      "nodeId": "srv_rvRV-gQwIXZEKqZQkhMejAg_nD_dBlkC",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    },
+    "beta": {
+      "port": 51932,
+      "nodeId": "srv_Psb-c2kZ7sV-Ng8T06wYpbRWaoKe5o10",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    }
+  },
+  "runs": {
+    "ptm": "project_task_manager_be40f11779dd41bfb569c2d38f29e806",
+    "writerRun": "release_notes_writer_5d1563d2610a449790648c1fe2cfaa11",
+    "squadRun": "docs_review_team_8b7c83bbaa524e1eb12dd4efb35c4d32",
+    "reviewer": "release_notes_writer_5bbeffede76e4fa6be5bbf1ef48876e7",
+    "memberDelegated": "fact_checker_d8fc162ede134191aeb8b1a9998cd217",
+    "remoteAgentRun": "publisher_87abaae87b3640968b3ef194c7282651",
+    "remoteTeamRun": "studio_team_c627b7aef4e64eb086d47ba62ecea69c",
+    "plain": [
+      "fact_checker_dfc60711947a42c18342fd11d4dd1986",
+      "fact_checker_c197947f4e394c79988197c890533d36",
+      "fact_checker_cebcd999a9c04328b884c611b3ff8941"
+    ],
+    "org": "delivery_org_1d5190a2fc4947e895d184929b64010f",
+    "orgPlanner": "release_notes_writer_817794ed65c94334979854eafca77f40",
+    "reviewOrg": "review_org_8701a62d0fcc4249a8f3710b187adfaa",
+    "reviewOrgCoordinator": {
+      "address": "/squad/reviewer",
+      "agentRunId": "release_notes_writer_6f0853e95ad94b1eba36e5d47ab7a15a",
+      "teamRunId": null
+    },
+    "delivery": "delivery_team_c80550bb374d456b96d736c3308d4ef5",
+    "deliveryLead": "fact_checker_d61371e58dcd49388b9b928f1a5c3f22",
+    "deliveryMate": "release_notes_writer_8840be795ee74a3c9f3b6c83728e07e2",
+    "leadDelegated": "changelog_helper_d32d403b9ae44186b384b142da875917",
+    "approver": "approver_0fbff830235b421b854484865831fde1",
+    "taskA": "launch-1f3f01-1",
+    "taskB": "launch-1f3f01-2"
+  },
+  "cases": {
+    "MSP-59": {
+      "result": "Pass",
+      "seconds": 27.7,
+      "headerDot": "h-2.5 w-2.5 flex-shrink-0 rounded-full bg-blue-500",
+      "stop": 0,
+      "send": 1,
+      "row": {
+        "status": "background",
+        "dotClass": "absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full ring-2 bg-blue-500 ring-blue-50",
+        "label": "Fact Checker, Plain run 2. Marker PLAIN-2., Background task running"
+      },
+      "after": "Idle"
+    }
+  },
+  "browserErrors": [],
+  "failedRequests": [],
+  "network": {},
+  "cleanup": {
+    "frontendExited": true,
+    "serversLeft": 0,
+    "rootRemoved": true
+  },
+  "error": null,
+  "summary": {
+    "cases": {
+      "MSP-59": "Pass"
+    },
+    "unknownBrowserErrors": 0
+  },
+  "finishedAt": "2026-11-17T17:20:37.957Z"
+}

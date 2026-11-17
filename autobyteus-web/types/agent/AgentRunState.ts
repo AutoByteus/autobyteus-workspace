@@ -42,6 +42,8 @@ export interface AgentCompactionStatus {
 export class AgentRunState {
   public runId: string;
   public currentStatus: AgentStatus = AgentStatus.Offline;
+  /** Background tasks the agent has running, from its status (autobyteus-448); work beyond its turn. */
+  public backgroundTasksRunning = 0;
   public conversation: Conversation;
   public agent_tool_invocation_counts = new Map<string, number>();
   public recoverableBlock: CompactionRecoveryBlockDto | null = null;

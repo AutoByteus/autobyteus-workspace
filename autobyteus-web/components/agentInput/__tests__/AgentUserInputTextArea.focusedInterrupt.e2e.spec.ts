@@ -185,7 +185,7 @@ describe('focused team member interrupt UI-to-WebSocket e2e', () => {
         trigger: null,
         tool_name: null,
         error_message: null,
-        error_details: null,
+        error_details: null, background_tasks_running: 0,
         recoverableBlock: null,
       })),
     });

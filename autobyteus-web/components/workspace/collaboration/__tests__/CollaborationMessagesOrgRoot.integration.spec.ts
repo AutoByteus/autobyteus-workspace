@@ -35,7 +35,7 @@ const agent = (address: string, agentRunId: string) => ({
   agentRunId, platformAgentRunId: null, launchConfiguration: launch,
 })
 const idle = (member_address: string, agent_run_id: string) => ({
-  member_address, agent_run_id, status: 'idle' as const, trigger: null, tool_name: null,
+  member_address, agent_run_id, status: 'idle' as const, background_tasks_running: 0, trigger: null, tool_name: null,
   error_message: null, error_details: null, recoverableBlock: null,
 })
 const referencePaths = (messageIndex: number) =>

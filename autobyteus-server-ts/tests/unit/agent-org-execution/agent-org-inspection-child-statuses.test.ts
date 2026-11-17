@@ -12,7 +12,7 @@ const tree = testAgentOrgExecutionTree({ orgRunId: "org", members: [testOrgAgent
 const activeInspection = {
   orgRunId: "org", isActive: true, baseChangeSequence: 3, liveSequenceId: "live-1", lastMessageChangeSequence: 2,
   snapshot: { tree, inputStates: [], statuses: [{ execution: { memberAddress: "/ceo", agentRunId: "ceo_run" },
-    details: { status: "idle", trigger: null, errorMessage: null, recoverableBlock: null } }] },
+    details: { status: "idle", backgroundTasksRunning: 0, trigger: null, errorMessage: null, recoverableBlock: null } }] },
 };
 const serviceWith = (inspection = activeInspection) => new AgentOrgRunService({ workGuard: noWorkGuard(),
   manager: { getInspection: vi.fn(async () => inspection) } } as never);

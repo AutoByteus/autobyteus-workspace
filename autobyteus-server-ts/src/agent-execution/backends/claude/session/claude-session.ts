@@ -156,10 +156,6 @@ export class ClaudeSession {
     return this.process.state;
   }
 
-  hasRunningBackgroundTasks(): boolean {
-    return this.taskRegistry.hasRunningTasks();
-  }
-
   listBackgroundTasks(): readonly AgentBackgroundTask[] {
     return this.taskRegistry.list();
   }

@@ -8,6 +8,7 @@ import {
   normalizeAgentApiStatus,
   type AgentApiStatus,
 } from "../../../domain/agent-status-payload.js";
+import type { AgentTurnLifecycleState } from "./agent-turn-lifecycle-state.js";
 import type {
   AgentRunEventTransformer,
   AgentRunEventTransformerInput,
@@ -33,7 +34,7 @@ export class LifecycleStatusEventTransformer implements AgentRunEventTransformer
     for (const event of input.events) {
       if (event.eventType === AgentRunEventType.AGENT_STATUS) {
         state.observeExplicitStatus(normalizeAgentApiStatus(event.payload.status));
-        output.push(this.buildStatusEvent(input.runContext.runId, state.status, state.recoverableBlock));
+        output.push(this.buildStatusEvent(input.runContext.runId, state));
         continue;
       }
 
@@ -44,24 +45,26 @@ export class LifecycleStatusEventTransformer implements AgentRunEventTransformer
         } else {
           state.observeEvent(event);
         }
-        output.push(this.buildStatusEvent(input.runContext.runId, state.status, state.recoverableBlock));
+        output.push(this.buildStatusEvent(input.runContext.runId, state));
         continue;
       }
 
       state.observeEvent(event);
-      output.push(this.buildStatusEvent(input.runContext.runId, state.status, state.recoverableBlock), event);
+      output.push(this.buildStatusEvent(input.runContext.runId, state), event);
     }
     return output;
   }
 
-  buildStatusEvent(runId: string, status: AgentApiStatus, recoverableBlock: import("@autobyteus/agent-presentation-contracts").CompactionRecoveryBlockDto | null = null): AgentRunEvent {
+  buildStatusEvent(runId: string, state: Pick<AgentTurnLifecycleState, "status" | "recoverableBlock" | "backgroundTasksRunning">): AgentRunEvent {
+    const status = state.status;
     return {
       eventType: AgentRunEventType.AGENT_STATUS,
       runId,
       payload: buildAgentStatusPayload({
         status,
+        backgroundTasksRunning: state.backgroundTasksRunning,
         agentId: runId,
-        recoverableBlock,
+        recoverableBlock: state.recoverableBlock,
       }),
       statusHint:
         status === "running"

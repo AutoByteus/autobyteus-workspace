@@ -1,0 +1,27 @@
+{
+"at": "2026-11-17T19:46:42.041Z",
+"hash": "#/chat?id=daily_assistant_127d6f933d0b4c51bfa5a1abda019bac",
+"statusTexts": [
+{
+"text": "Background task running",
+"tag": "SPAN",
+"cls": "whitespace-nowrap text-sm text-gray-600 font-medium"
+}
+],
+"stopButtons": [],
+"sendButtons": [
+"Send message"
+],
+"dots": [
+{
+"status": null,
+"cls": "mr-1.5 inline-flex h-5 w-5 flex-shrink-0 items-center justify-center overflow-hidden round",
+"title": null
+},
+{
+"status": null,
+"cls": "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-blue-500 mr-2",
+"title": null
+}
+]
+}

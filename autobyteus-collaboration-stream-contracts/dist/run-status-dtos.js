@@ -21,17 +21,21 @@ export const runStatusClientMessageSchema = z.discriminatedUnion("type", [
      */
     z.object({ type: z.literal("RETRY_PEERS"), payload: z.object({ runIds: z.array(nonEmptyStringSchema) }).strict() }).strict(),
 ]);
-const agentStatus = z.object({ agentRunId: nonEmptyStringSchema, status: runAgentStatusSchema }).strict();
+/** An agent's status and how many background tasks it has running (work beyond its turn; autobyteus-448). */
+const agentStatus = z.object({ agentRunId: nonEmptyStringSchema, status: runAgentStatusSchema,
+    backgroundTasksRunning: z.number().int().nonnegative() }).strict();
 /** Whether the node could answer for a run (SR-086 G-A2, G-A3): it knows it, it does not, or the run's peer node did not answer. */
 export const runStatusAnswerSchema = z.enum(["ok", "not_found", "unreachable"]);
 /**
  * A run's own state (G-A4): the node's answer, the peer node's name when it did not answer, and the run's own status:
  * an agent run's agent's, a team's or org's from its own agents by the one team status rule. `null` unless answered.
+ * `backgroundTasksRunning`: the sum over its own agents (autobyteus-448); `0` unless answered.
  */
 const runState = {
     answer: runStatusAnswerSchema,
     node: nonEmptyStringSchema.nullable(),
     status: runAgentStatusSchema.nullable(),
+    backgroundTasksRunning: z.number().int().nonnegative(),
 };
 export const runStatusServerMessageSchema = z.discriminatedUnion("type", [
     /** The newly subscribed runs' own states and their agents' current statuses. */

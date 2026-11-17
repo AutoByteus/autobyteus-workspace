@@ -89,7 +89,7 @@ const createErrorBackend = (accepted: boolean): RuntimeFixture => {
         phase: active ? "error" : "idle",
         currentTurn: { kind: "NONE" },
       }),
-      hasRunningBackgroundTasks: () => false,
+      backgroundTaskInspection: { kind: "unsupported" } as const,
       subscribeToSourceEventBatches: () => () => undefined,
       dispatchUserInput: vi.fn(async () => ({ accepted: true as const, turnId: "fixture-turn" })),
       approveToolInvocation: vi.fn(async () => ({ accepted: true as const })),

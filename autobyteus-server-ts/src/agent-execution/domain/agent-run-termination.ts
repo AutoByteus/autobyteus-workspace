@@ -1,4 +1,5 @@
 import type { AgentRunBackend } from "../backends/agent-run-backend.js";
+import { runningBackgroundTaskCount } from "./agent-background-task-count.js";
 import type { AgentRunEventDispatchQueue } from "../events/agent-run-event-dispatch-queue.js";
 import type { AgentTurnLifecycleState } from "../events/processors/lifecycle-status/agent-turn-lifecycle-state.js";
 import type { AgentSegmentLifecycleState } from "../events/processors/segment-lifecycle/agent-segment-lifecycle-state.js";
@@ -15,7 +16,7 @@ import { createPreparedAgentRunTermination, type PreparedAgentRunTermination } f
 
 type AgentRunTerminationOptions = Readonly<{
   runId: string;
-  backend: Pick<AgentRunBackend, "runtimeKind" | "getLifecycleSnapshot" | "hasRunningBackgroundTasks" | "terminate">;
+  backend: Pick<AgentRunBackend, "runtimeKind" | "getLifecycleSnapshot" | "backgroundTaskInspection" | "terminate">;
   dispatchQueue: AgentRunEventDispatchQueue;
   lifecycleState: AgentTurnLifecycleState;
   segmentLifecycleState: AgentSegmentLifecycleState;
@@ -78,7 +79,7 @@ export class AgentRunTermination {
       if (this.options.inputDispatch.active() || this.options.interruptState.hasActiveReservation
         || this.options.lifecycleState.activeTurn.kind !== "NONE" || this.options.lifecycleState.hasPendingCommand
         // Idle shutdown only: a running background task is still work (DONE and root stop do not ask).
-        || this.options.backend.hasRunningBackgroundTasks()
+        || runningBackgroundTaskCount(this.options.backend.backgroundTaskInspection) > 0
         || !this.options.inputAdmissionState.tryQuiesceIfAlreadyQuiescent()) return null;
       return this.createTerminationPreparation();
     });

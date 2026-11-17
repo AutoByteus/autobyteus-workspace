@@ -32,7 +32,7 @@ const snapshot = (
   status: "offline" | "idle" | "running" = "running",
 ) => createTeamAgentStatusSnapshot({
   execution: binding,
-  details: createTeamAgentStatusDetails({ status }),
+  details: createTeamAgentStatusDetails({ status, backgroundTasksRunning: 0 }),
 });
 
 describe("MemberCommandStatusOverlayStore", () => {
@@ -70,11 +70,11 @@ describe("MemberCommandStatusOverlayStore", () => {
 
     expect(store.getMemberStatusSnapshot({
       binding: persistentBinding,
-      fallback: () => ({ status: "offline" }),
+      fallback: () => ({ status: "offline", background_tasks_running: 0 }),
     }).details.status).toBe("offline");
     expect(store.getMemberStatusSnapshot({
       binding: taskBinding,
-      fallback: () => ({ status: "offline" }),
+      fallback: () => ({ status: "offline", background_tasks_running: 0 }),
     }).details.status).toBe("initializing");
 
     expect(store.clearAcceptedLiveStatus(persistentBinding)).toBe(false);

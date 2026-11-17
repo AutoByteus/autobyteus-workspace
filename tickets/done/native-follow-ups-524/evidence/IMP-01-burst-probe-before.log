@@ -1,0 +1,74 @@
+# IMP-01 burst probe BEFORE the change (AC-001 reproduction)
+# Command: node tickets/in-progress/native-follow-ups-524/evidence/run-bash-burst-probe.mjs <worktree> <N> (after pnpm -C autobyteus-ts build)
+# Commit: ff13782f36 (base, unchanged build)
+# Environment: macOS (darwin 25.5), 10-core, Node v22.23.1; load average 100-102 from other processes
+# Date: 2026-11-17
+
+## N=60
+{
+ "calls": 60,
+ "failed": 60,
+ "totalMs": 2208,
+ "stderrKinds": {
+  "Command did not start: Command control deadline exceeded": 45,
+  "Command did not start: Process observation deadline exceeded": 15
+ },
+ "okMsMax": 0,
+ "failedSample": [
+  {
+   "i": 0,
+   "ms": 2193,
+   "exitCode": null,
+   "stdout": "",
+   "stderr": "Command did not start: Command control deadline exceeded"
+  },
+  {
+   "i": 1,
+   "ms": 2179,
+   "exitCode": null,
+   "stdout": "",
+   "stderr": "Command did not start: Command control deadline exceeded"
+  },
+  {
+   "i": 2,
+   "ms": 2173,
+   "exitCode": null,
+   "stdout": "",
+   "stderr": "Command did not start: Command control deadline exceeded"
+  }
+ ]
+}
+## N=200
+{
+ "calls": 200,
+ "failed": 200,
+ "totalMs": 4776,
+ "stderrKinds": {
+  "Command did not start: Command control deadline exceeded": 141,
+  "Command did not start: Process observation deadline exceeded": 59
+ },
+ "okMsMax": 0,
+ "failedSample": [
+  {
+   "i": 0,
+   "ms": 4741,
+   "exitCode": null,
+   "stdout": "",
+   "stderr": "Command did not start: Command control deadline exceeded"
+  },
+  {
+   "i": 1,
+   "ms": 4729,
+   "exitCode": null,
+   "stdout": "",
+   "stderr": "Command did not start: Command control deadline exceeded"
+  },
+  {
+   "i": 2,
+   "ms": 4706,
+   "exitCode": null,
+   "stdout": "",
+   "stderr": "Command did not start: Command control deadline exceeded"
+  }
+ ]
+}

@@ -81,7 +81,7 @@
           v-if="row.coordinator"
           class="rounded-full bg-yellow-200 px-2 py-0.5 text-xs font-bold text-yellow-800"
         >Coord</span>
-        <AgentStatusDisplay v-if="row.agentRunId" :status="row.currentStatus ?? 'offline'" />
+        <AgentStatusDisplay v-if="row.agentRunId" :status="row.currentStatus ?? 'offline'" :background-tasks-running="row.backgroundTasksRunning" />
       </button>
     </div>
 

@@ -24,6 +24,7 @@ const status = (member_address: string, agent_run_id: string) => ({
   member_address,
   agent_run_id,
   status: 'idle' as const,
+  background_tasks_running: 0,
   trigger: null,
   tool_name: null,
   error_message: null,

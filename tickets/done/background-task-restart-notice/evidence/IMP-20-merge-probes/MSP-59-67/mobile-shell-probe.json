@@ -1,0 +1,115 @@
+{
+  "startedAt": "2026-11-17T21:52:49.509Z",
+  "result": "Pass",
+  "node": "v22.23.1",
+  "servers": {
+    "alpha": {
+      "port": 50958,
+      "nodeId": "srv_oIqcJCbAwtwf7cJuiJhcSe5BJ0BnUQ13",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    },
+    "beta": {
+      "port": 50959,
+      "nodeId": "srv_nhW2Gi7kpgW57XNaZYPOP_zlYjrpFoz4",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    }
+  },
+  "runs": {
+    "ptm": "project_task_manager_45164bdd99184477ab0f978bed9441c6",
+    "writerRun": "release_notes_writer_0c55ef45433145bd9fdcd9889778af88",
+    "squadRun": "docs_review_team_fc1d3ae7ae8d4544a250da0e6e8ee62c",
+    "reviewer": "release_notes_writer_2b6b6c73cd794a3e8d72644e3a03a9ad",
+    "memberDelegated": "fact_checker_ff396b9944bc47c086b738d1d8502a8f",
+    "remoteAgentRun": "publisher_34d553f175874fa0b86f11fab273f63c",
+    "remoteTeamRun": "studio_team_f583d3f3368f424692239e4437033034",
+    "plain": [
+      "fact_checker_27ff1690e121478186b4b43175331484",
+      "fact_checker_4a27b559ca344a0dacf92cc359755a89",
+      "fact_checker_38bd2c3e86f04db096cce3a75d076c1e"
+    ],
+    "org": "delivery_org_6eec851f060540119e96fc63d529c719",
+    "orgPlanner": "release_notes_writer_9c0c04ba4a2c417094404c99a237acb2",
+    "reviewOrg": "review_org_cd9bbbe593d9454f88d301fe6bce0efe",
+    "reviewOrgCoordinator": {
+      "address": "/squad/reviewer",
+      "agentRunId": "release_notes_writer_e5976c9f5b0241a1897051ed8df09e73",
+      "teamRunId": null
+    },
+    "delivery": "delivery_team_60f85cb779634059b752a7213467d6d4",
+    "deliveryLead": "fact_checker_c7f82cd64d474a008fc67342ceca6f62",
+    "deliveryMate": "release_notes_writer_ce0ed474464f47819e7aea3d78d22af8",
+    "leadDelegated": "changelog_helper_d404740ed4c341a9ae699644354ec9cf",
+    "approver": "approver_f24c75a88ce649bab449f3b5cc5bc08d",
+    "taskA": "launch-78dc02-1",
+    "taskB": "launch-78dc02-2"
+  },
+  "cases": {
+    "MSP-59": {
+      "result": "Pass",
+      "seconds": 4.4,
+      "endRun": "fact_checker_1a3a76c7180b4d8d96ce9ebf25fcf64e",
+      "task": {
+        "taskId": "fdd15c04-7ac5-471a-9bdc-ab9e962f92d1/task-11",
+        "status": "running",
+        "command": "sleep 120 # background step 11",
+        "summary": null,
+        "startedAt": "2026-11-17T21:54:56.377Z"
+      },
+      "terminated": {
+        "success": true
+      },
+      "listed": [
+        {
+          "status": "running",
+          "text": "sleep 120 # background step 11RunningStarted 09:54 PM",
+          "end": null
+        }
+      ],
+      "ended": [
+        {
+          "status": "stopped",
+          "text": "sleep 120 # background step 11StoppedStopped: the run endedStarted 09:54 PM",
+          "end": "Stopped: the run ended"
+        }
+      ]
+    },
+    "MSP-67": {
+      "result": "Pass",
+      "seconds": 29.6,
+      "headerDot": "h-2.5 w-2.5 flex-shrink-0 rounded-full bg-blue-500",
+      "stop": 0,
+      "send": 1,
+      "row": {
+        "status": "background",
+        "dotClass": "absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full ring-2 bg-blue-500 ring-blue-50",
+        "label": "Fact Checker, Plain run 2. Marker PLAIN-2., Background task running"
+      },
+      "after": "Idle"
+    }
+  },
+  "browserErrors": [],
+  "failedRequests": [],
+  "network": {},
+  "cleanup": {
+    "frontendExited": true,
+    "serversLeft": 0,
+    "rootRemoved": true
+  },
+  "error": null,
+  "summary": {
+    "cases": {
+      "MSP-59": "Pass",
+      "MSP-67": "Pass"
+    },
+    "unknownBrowserErrors": 0
+  },
+  "finishedAt": "2026-11-17T21:55:54.838Z"
+}

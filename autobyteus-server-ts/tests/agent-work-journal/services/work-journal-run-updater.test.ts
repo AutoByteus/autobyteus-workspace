@@ -45,7 +45,7 @@ const createRun = (input: { runtimeKind: RuntimeKind; memoryDir: string | null; 
     inputCapabilities: { activeTurnAppend: "unsupported" },
     getContext: () => context,
     isActive: () => true,
-    hasRunningBackgroundTasks: () => false,
+    backgroundTaskInspection: { kind: "unsupported" } as const,
     getPlatformAgentRunId: () => "platform-run-1",
     getLifecycleSnapshot: () => ({ availability: "active", phase: "idle", currentTurn: { kind: "NONE" } }),
     subscribeToSourceEventBatches: () => () => undefined,

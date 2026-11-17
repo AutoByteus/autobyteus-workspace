@@ -47,7 +47,7 @@ const harness = (subject = TASK, autoExecuteTools = false) => {
   emit('CONNECTED', { session_id: 'session', root_team_run_id: ROOT })
   emit('TEAM_EXECUTION_VIEW_SNAPSHOT', { root_team_run_id: ROOT, base_change_sequence: 0, live_sequence_id: 'live-1', last_message_change_sequence: 0,
     execution_tree: team.view.getExecutionTree(),
-    agent_statuses: team.view.listAgentContextEntries().map(e => ({ agent_run_id: e.agentRunId, member_address: e.memberAddress, status: 'idle', trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null })),
+    agent_statuses: team.view.listAgentContextEntries().map(e => ({ agent_run_id: e.agentRunId, member_address: e.memberAddress, status: 'idle', trigger: null, tool_name: null, error_message: null, error_details: null, background_tasks_running: 0, recoverableBlock: null })),
     agent_input_states: [] }) // recoverableBlock/agent_input_states are required since 6908ccff4
   expect(stream.isReady).toBe(true)
   expect(team.view.getFocusedAgentRunId()).toBe('lead')

@@ -30,6 +30,7 @@ const buildProjection = (
   statusSource: "HISTORICAL_METADATA",
   statusPayload: {
     status: "offline",
+    background_tasks_running: 0,
     agent_id: overrides.runId ?? "run-1",
   },
   command: null,

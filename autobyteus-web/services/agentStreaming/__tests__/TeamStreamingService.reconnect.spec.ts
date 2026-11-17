@@ -38,7 +38,7 @@ describe('TeamStreamingService reconnect scheduling', () => {
     execution_tree: team.view.getExecutionTree(),
     agent_input_states: [], agent_statuses: team.view.listAgentContextEntries().map((entry) => ({
       agent_run_id: entry.agentRunId, member_address: entry.memberAddress, status: 'idle', trigger: null,
-      tool_name: null, error_message: null, error_details: null, recoverableBlock: null,
+      tool_name: null, error_message: null, error_details: null, background_tasks_running: 0, recoverableBlock: null,
     })),
   });
   const synchronize = () => {
@@ -130,7 +130,7 @@ describe('TeamStreamingService reconnect scheduling', () => {
     synchronize();
     wsClient.message('AGENT_STATUS', {
       change_sequence: 2, agent_run_id: teacherRunId, status: 'running', trigger: null, tool_name: null,
-      error_message: null, error_details: null, recoverableBlock: null,
+      error_message: null, error_details: null, background_tasks_running: 0, recoverableBlock: null,
     });
     expect(service.isReopenRequired).toBe(true);
     vi.advanceTimersByTime(120_000);

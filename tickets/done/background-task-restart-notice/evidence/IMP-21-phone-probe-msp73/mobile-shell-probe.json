@@ -1,0 +1,761 @@
+{
+  "startedAt": "2026-11-17T22:55:04.923Z",
+  "result": "Pass",
+  "node": "v22.23.1",
+  "servers": {
+    "alpha": {
+      "port": 49656,
+      "nodeId": "srv_Y-lVHMCza4SnWChd2xAyL8Y8HayuOCu9",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    },
+    "beta": {
+      "port": 49657,
+      "nodeId": "srv_Trd33BT39mIYp6JswwLjaIpVOOOq9M22",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    }
+  },
+  "runs": {
+    "ptm": "project_task_manager_1bb75231fd114727972b8e3ad8d77d8d",
+    "writerRun": "release_notes_writer_a8f4ab4afaba48a0a03683a1eba97e52",
+    "squadRun": "docs_review_team_2cdc8ed3f18a43e0ac57d729e5d4ca5f",
+    "reviewer": "release_notes_writer_9d42643561f94bd6bf508b93dab1974d",
+    "memberDelegated": "fact_checker_d46b55acb1a54d7ebf16a0491083a6a6",
+    "remoteAgentRun": "publisher_548cce672bab4e65a758f90cb0d5d0f3",
+    "remoteTeamRun": "studio_team_58c5db562b2b4d1c92bdab91ff286f86",
+    "plain": [
+      "fact_checker_562acd6dd1944cd69fdda304350476f8",
+      "fact_checker_65b43e9ae25b4399af6a2d1596b42f35",
+      "fact_checker_8380e2715cc74cc5b9a6abbdcdbe3101"
+    ],
+    "org": "delivery_org_4cd39b371282408db63309db9499ff11",
+    "orgPlanner": "release_notes_writer_7aee68c62f124f2cbce2afc048825cdb",
+    "reviewOrg": "review_org_6555b618b8364ac0871b14ec5714d111",
+    "reviewOrgCoordinator": {
+      "address": "/squad/reviewer",
+      "agentRunId": "release_notes_writer_da6d84591d004ca5a66c3606570c2eab",
+      "teamRunId": null
+    },
+    "delivery": "delivery_team_ad8f04ce89824b9a9edbc278444f363d",
+    "deliveryLead": "fact_checker_edb92fba296a4641b2a5a4dbc54c8499",
+    "deliveryMate": "release_notes_writer_153baf96b4a84bfdb5e2732718298542",
+    "leadDelegated": "changelog_helper_bd5e87058c58482ca8450097aaab03f6",
+    "approver": "approver_d69df79da1ed445f865f0a787f6dd8e1",
+    "taskA": "launch-f85ead-1",
+    "taskB": "launch-f85ead-2"
+  },
+  "cases": {
+    "MSP-59": {
+      "result": "Pass",
+      "seconds": 4.1,
+      "endRun": "fact_checker_b37a3528938c4dff935c6e66d604ada9",
+      "task": {
+        "taskId": "d49d46fb-b1cb-4c56-a572-6493de110282/task-11",
+        "status": "running",
+        "command": "sleep 120 # background step 11",
+        "summary": null,
+        "startedAt": "2026-11-17T22:56:54.240Z"
+      },
+      "terminated": {
+        "success": true
+      },
+      "listed": [
+        {
+          "status": "running",
+          "text": "sleep 120 # background step 11RunningStarted 10:56 PM",
+          "end": null
+        }
+      ],
+      "ended": [
+        {
+          "status": "stopped",
+          "text": "sleep 120 # background step 11StoppedStopped: the run endedStarted 10:56 PM",
+          "end": "Stopped: the run ended"
+        }
+      ]
+    },
+    "MSP-73": {
+      "result": "Pass",
+      "seconds": 38.1,
+      "headerDot": "h-2.5 w-2.5 flex-shrink-0 rounded-full bg-blue-500",
+      "stop": 0,
+      "send": 1,
+      "settings": {
+        "status": "Background task running",
+        "dotClass": "h-2.5 w-2.5 flex-shrink-0 rounded-full bg-blue-500",
+        "runtime": "Choose",
+        "runStop": true
+      },
+      "row": {
+        "status": "background",
+        "dotClass": "absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full ring-2 bg-blue-500 ring-blue-50",
+        "label": "Fact Checker, Plain run 2. Marker PLAIN-2., Background task running"
+      },
+      "after": "Idle"
+    },
+    "MSP-63": {
+      "result": "Pass",
+      "seconds": 3.7,
+      "runId": "fact_checker_4435930485f64e52aa1f4db958289fe0",
+      "live": {
+        "open": true,
+        "subject": "Fact CheckerIdle",
+        "status": "Idle",
+        "runtime": "Antigravity CLI",
+        "model": "Gemini test",
+        "runtimeDisabled": true,
+        "saveDisabled": true,
+        "stop": {
+          "label": "Stop run",
+          "title": "Stop run",
+          "text": ""
+        },
+        "error": null
+      },
+      "stopped": {
+        "open": true,
+        "subject": "Fact CheckerStopped",
+        "status": "Stopped",
+        "runtime": "Antigravity CLI",
+        "model": "Gemini test",
+        "runtimeDisabled": false,
+        "saveDisabled": true,
+        "stop": null,
+        "error": null
+      },
+      "nodeAfterStop": false,
+      "saved": {
+        "left": true,
+        "runtimeKind": "grok_build"
+      },
+      "afterStop": [
+        "TerminateAgentRun sent+33 done+119 200",
+        "GetAgentRunResumeConfig sent+125 done+129 200",
+        "ListWorkspaceRunHistory sent+128 done+134 200",
+        "ListCollaborationRootHistory sent+128 done+149 200",
+        "AgentRunModelOptions sent+132 done+236 200",
+        "GetProviderModelCatalogSnapshots sent+318 done+507 200",
+        "RuntimeCurrentModelDescriptors sent+319 done+509 200",
+        "GetProviderModelCatalogSnapshots sent+581 done+749 200",
+        "UpdateStoppedAgentRunSelection sent+676 done+933 200"
+      ],
+      "consoleLines": []
+    },
+    "MSP-67": {
+      "result": "Pass",
+      "seconds": 5.5,
+      "entries": [
+        "artifacts",
+        "files",
+        "messages",
+        "activity",
+        "settings"
+      ],
+      "stop": {
+        "live": {
+          "open": true,
+          "subject": "reviewerIdle · in docs review team",
+          "status": "Idle · in docs review team",
+          "runtime": "Antigravity CLI",
+          "model": "Gemini test",
+          "rows": true,
+          "runtimeDisabled": true,
+          "save": true,
+          "saveDisabled": true,
+          "stop": true,
+          "remote": null,
+          "error": null
+        },
+        "stopped": {
+          "open": true,
+          "subject": "reviewerStopped · in docs review team",
+          "status": "Stopped · in docs review team",
+          "runtime": "Antigravity CLI",
+          "model": "Gemini test",
+          "rows": true,
+          "runtimeDisabled": false,
+          "save": true,
+          "saveDisabled": true,
+          "stop": false,
+          "remote": null,
+          "error": null
+        }
+      },
+      "before": {
+        "ptm": {
+          "isActive": true,
+          "runtimeKind": "antigravity_cli",
+          "model": "gemini-3.8-flash-low"
+        },
+        "team": {
+          "isActive": true,
+          "members": {
+            "/reviewer": {
+              "agentRunId": "release_notes_writer_ee76e630771043bea957635f5c75d3dd",
+              "runtimeKind": "antigravity_cli",
+              "model": "gemini-3.8-flash-low"
+            },
+            "/editor": {
+              "agentRunId": "fact_checker_1a232a5f18d54ff189fb9fb485407559",
+              "runtimeKind": "antigravity_cli",
+              "model": "gemini-3.8-flash-low"
+            }
+          }
+        }
+      },
+      "afterStop": {
+        "ptm": {
+          "isActive": true,
+          "runtimeKind": "antigravity_cli",
+          "model": "gemini-3.8-flash-low"
+        },
+        "team": false
+      },
+      "saved": {
+        "chosen": {
+          "open": true,
+          "subject": "reviewerStopped · in docs review team",
+          "status": "Stopped · in docs review team",
+          "runtime": "Grok Build",
+          "model": "Grok 4.7",
+          "rows": true,
+          "runtimeDisabled": false,
+          "save": true,
+          "saveDisabled": false,
+          "stop": false,
+          "remote": null,
+          "error": null
+        },
+        "back": true
+      },
+      "after": {
+        "/reviewer": {
+          "agentRunId": "release_notes_writer_ee76e630771043bea957635f5c75d3dd",
+          "runtimeKind": "grok_build",
+          "model": "grok-4.7"
+        },
+        "/editor": {
+          "agentRunId": "fact_checker_1a232a5f18d54ff189fb9fb485407559",
+          "runtimeKind": "antigravity_cli",
+          "model": "gemini-3.8-flash-low"
+        }
+      },
+      "again": {
+        "open": true,
+        "subject": "reviewerStopped · in docs review team",
+        "status": "Stopped · in docs review team",
+        "runtime": "Grok Build",
+        "model": "Grok 4.7",
+        "rows": true,
+        "runtimeDisabled": false,
+        "save": true,
+        "saveDisabled": true,
+        "stop": false,
+        "remote": null,
+        "error": null
+      },
+      "continued": {
+        "isActive": true,
+        "reviewer": {
+          "agentRunId": "release_notes_writer_ee76e630771043bea957635f5c75d3dd",
+          "runtimeKind": "grok_build",
+          "model": "grok-4.7"
+        }
+      }
+    },
+    "MSP-68": {
+      "result": "Pass",
+      "seconds": 3.4,
+      "entries": [
+        "artifacts",
+        "files",
+        "activity",
+        "settings"
+      ],
+      "stop": {
+        "live": {
+          "open": true,
+          "subject": "release notes writerIdle · in Project Task Manager",
+          "status": "Idle · in Project Task Manager",
+          "runtime": "Antigravity CLI",
+          "model": "Gemini test",
+          "rows": true,
+          "runtimeDisabled": true,
+          "save": true,
+          "saveDisabled": true,
+          "stop": true,
+          "remote": null,
+          "error": null
+        },
+        "stopped": {
+          "open": true,
+          "subject": "release notes writerStopped · in Project Task Manager",
+          "status": "Stopped · in Project Task Manager",
+          "runtime": "Antigravity CLI",
+          "model": "Gemini test",
+          "rows": true,
+          "runtimeDisabled": false,
+          "save": true,
+          "saveDisabled": true,
+          "stop": false,
+          "remote": null,
+          "error": null
+        }
+      },
+      "before": {
+        "ptm": {
+          "isActive": true,
+          "runtimeKind": "antigravity_cli",
+          "model": "gemini-3.8-flash-low"
+        },
+        "agent": {
+          "isActive": true,
+          "runtimeKind": "antigravity_cli",
+          "model": "gemini-3.8-flash-low"
+        }
+      },
+      "afterStop": {
+        "ptm": {
+          "isActive": true,
+          "runtimeKind": "antigravity_cli",
+          "model": "gemini-3.8-flash-low"
+        },
+        "agent": {
+          "isActive": false,
+          "runtimeKind": "antigravity_cli",
+          "model": "gemini-3.8-flash-low"
+        }
+      },
+      "saved": {
+        "chosen": {
+          "open": true,
+          "subject": "release notes writerStopped · in Project Task Manager",
+          "status": "Stopped · in Project Task Manager",
+          "runtime": "Grok Build",
+          "model": "Grok 4.7",
+          "rows": true,
+          "runtimeDisabled": false,
+          "save": true,
+          "saveDisabled": false,
+          "stop": false,
+          "remote": null,
+          "error": null
+        },
+        "back": true
+      },
+      "after": {
+        "ptm": {
+          "isActive": true,
+          "runtimeKind": "antigravity_cli",
+          "model": "gemini-3.8-flash-low"
+        },
+        "agent": {
+          "isActive": false,
+          "runtimeKind": "grok_build",
+          "model": "grok-4.7"
+        }
+      }
+    },
+    "MSP-69": {
+      "result": "Pass",
+      "seconds": 5.8,
+      "screen": {
+        "name": "changelog helper",
+        "subtitle": "Stopped · in lead"
+      },
+      "before": {
+        "lead": {
+          "agentRunId": "fact_checker_ed74dcb3b4204bcba40b78010a697402",
+          "runtimeKind": "antigravity_cli",
+          "model": "gemini-3.8-flash-low"
+        },
+        "helper": {
+          "isActive": false,
+          "runtimeKind": "antigravity_cli",
+          "model": "gemini-3.8-flash-low"
+        }
+      },
+      "opened": {
+        "open": true,
+        "subject": "changelog helperStopped · in lead",
+        "status": "Stopped · in lead",
+        "runtime": "Antigravity CLI",
+        "model": "Gemini test",
+        "rows": true,
+        "runtimeDisabled": false,
+        "save": true,
+        "saveDisabled": true,
+        "stop": false,
+        "remote": null,
+        "error": null
+      },
+      "saved": {
+        "chosen": {
+          "open": true,
+          "subject": "changelog helperStopped · in lead",
+          "status": "Stopped · in lead",
+          "runtime": "Grok Build",
+          "model": "Grok 4.7",
+          "rows": true,
+          "runtimeDisabled": false,
+          "save": true,
+          "saveDisabled": false,
+          "stop": false,
+          "remote": null,
+          "error": null
+        },
+        "back": true
+      },
+      "after": {
+        "lead": {
+          "agentRunId": "fact_checker_ed74dcb3b4204bcba40b78010a697402",
+          "runtimeKind": "antigravity_cli",
+          "model": "gemini-3.8-flash-low"
+        },
+        "helper": {
+          "isActive": false,
+          "runtimeKind": "grok_build",
+          "model": "grok-4.7"
+        }
+      }
+    },
+    "MSP-70": {
+      "result": "Pass",
+      "seconds": 9.2,
+      "taskAgent": "changelog_helper_5f2ab4cced9b48bb97ef20f652a1ecaf",
+      "taskTeam": "delivery_team_525b5ceac2954c3d9c28e740464a234e",
+      "agentEntries": [
+        "artifacts",
+        "files",
+        "activity",
+        "settings"
+      ],
+      "agentStop": {
+        "live": {
+          "open": true,
+          "subject": "changelog helperIdle",
+          "status": "Idle",
+          "runtime": "Antigravity CLI",
+          "model": "Gemini test",
+          "rows": true,
+          "runtimeDisabled": true,
+          "save": true,
+          "saveDisabled": true,
+          "stop": true,
+          "remote": null,
+          "error": null
+        },
+        "stopped": {
+          "open": true,
+          "subject": "changelog helperStopped",
+          "status": "Stopped",
+          "runtime": "Antigravity CLI",
+          "model": "Gemini test",
+          "rows": true,
+          "runtimeDisabled": false,
+          "save": true,
+          "saveDisabled": true,
+          "stop": false,
+          "remote": null,
+          "error": null
+        }
+      },
+      "orgAfterAgentStop": true,
+      "agentSaved": {
+        "chosen": {
+          "open": true,
+          "subject": "changelog helperStopped",
+          "status": "Stopped",
+          "runtime": "Grok Build",
+          "model": "Grok 4.7",
+          "rows": true,
+          "runtimeDisabled": false,
+          "save": true,
+          "saveDisabled": false,
+          "stop": false,
+          "remote": null,
+          "error": null
+        },
+        "back": true
+      },
+      "afterAgent": {
+        "org": {
+          "isActive": true,
+          "members": {
+            "/planner": {
+              "agentRunId": "release_notes_writer_181349e85c084b71b7b589b906db0474",
+              "runtimeKind": "antigravity_cli",
+              "model": "gemini-3.8-flash-low"
+            },
+            "/squad/reviewer": {
+              "agentRunId": "release_notes_writer_c76810c47682455591bc2b7677a593ce",
+              "runtimeKind": "antigravity_cli",
+              "model": "gemini-3.8-flash-low"
+            },
+            "/squad/editor": {
+              "agentRunId": "fact_checker_2c655c0d3a494d4895736bdf6d576392",
+              "runtimeKind": "antigravity_cli",
+              "model": "gemini-3.8-flash-low"
+            }
+          }
+        },
+        "agent": {
+          "isActive": false,
+          "runtimeKind": "grok_build",
+          "model": "grok-4.7"
+        }
+      },
+      "memberEntries": [
+        "artifacts",
+        "files",
+        "messages",
+        "activity",
+        "settings"
+      ],
+      "memberStop": {
+        "live": {
+          "open": true,
+          "subject": "leadIdle",
+          "status": "Idle",
+          "runtime": "Antigravity CLI",
+          "model": "Gemini test",
+          "rows": true,
+          "runtimeDisabled": true,
+          "save": true,
+          "saveDisabled": true,
+          "stop": true,
+          "remote": null,
+          "error": null
+        },
+        "stopped": {
+          "open": true,
+          "subject": "leadStopped",
+          "status": "Stopped",
+          "runtime": "Antigravity CLI",
+          "model": "Gemini test",
+          "rows": true,
+          "runtimeDisabled": false,
+          "save": true,
+          "saveDisabled": true,
+          "stop": false,
+          "remote": null,
+          "error": null
+        }
+      },
+      "orgAfterTeamStop": true,
+      "memberSaved": {
+        "chosen": {
+          "open": true,
+          "subject": "leadStopped",
+          "status": "Stopped",
+          "runtime": "Grok Build",
+          "model": "Grok 4.7",
+          "rows": true,
+          "runtimeDisabled": false,
+          "save": true,
+          "saveDisabled": false,
+          "stop": false,
+          "remote": null,
+          "error": null
+        },
+        "back": true
+      },
+      "before": {
+        "org": {
+          "/planner": {
+            "agentRunId": "release_notes_writer_181349e85c084b71b7b589b906db0474",
+            "runtimeKind": "antigravity_cli",
+            "model": "gemini-3.8-flash-low"
+          },
+          "/squad/reviewer": {
+            "agentRunId": "release_notes_writer_c76810c47682455591bc2b7677a593ce",
+            "runtimeKind": "antigravity_cli",
+            "model": "gemini-3.8-flash-low"
+          },
+          "/squad/editor": {
+            "agentRunId": "fact_checker_2c655c0d3a494d4895736bdf6d576392",
+            "runtimeKind": "antigravity_cli",
+            "model": "gemini-3.8-flash-low"
+          }
+        },
+        "team": {
+          "/lead": {
+            "agentRunId": "fact_checker_14c46fc1b1174a19988a095c902c61bb",
+            "runtimeKind": "antigravity_cli",
+            "model": "gemini-3.8-flash-low"
+          },
+          "/mate": {
+            "agentRunId": "release_notes_writer_b12eb9e462274e7f876f13698aacd74f",
+            "runtimeKind": "antigravity_cli",
+            "model": "gemini-3.8-flash-low"
+          }
+        }
+      },
+      "after": {
+        "org": {
+          "/planner": {
+            "agentRunId": "release_notes_writer_181349e85c084b71b7b589b906db0474",
+            "runtimeKind": "antigravity_cli",
+            "model": "gemini-3.8-flash-low"
+          },
+          "/squad/reviewer": {
+            "agentRunId": "release_notes_writer_c76810c47682455591bc2b7677a593ce",
+            "runtimeKind": "antigravity_cli",
+            "model": "gemini-3.8-flash-low"
+          },
+          "/squad/editor": {
+            "agentRunId": "fact_checker_2c655c0d3a494d4895736bdf6d576392",
+            "runtimeKind": "antigravity_cli",
+            "model": "gemini-3.8-flash-low"
+          }
+        },
+        "team": {
+          "/lead": {
+            "agentRunId": "fact_checker_14c46fc1b1174a19988a095c902c61bb",
+            "runtimeKind": "grok_build",
+            "model": "grok-4.7"
+          },
+          "/mate": {
+            "agentRunId": "release_notes_writer_b12eb9e462274e7f876f13698aacd74f",
+            "runtimeKind": "antigravity_cli",
+            "model": "gemini-3.8-flash-low"
+          }
+        }
+      }
+    },
+    "MSP-71": {
+      "result": "Pass",
+      "seconds": 1.9,
+      "squadReviewer": "/squad/reviewer",
+      "opened": {
+        "open": true,
+        "subject": "reviewerStopped · in squad",
+        "status": "Stopped · in squad",
+        "runtime": "Antigravity CLI",
+        "model": "Gemini test",
+        "rows": true,
+        "runtimeDisabled": false,
+        "save": true,
+        "saveDisabled": true,
+        "stop": false,
+        "remote": null,
+        "error": null
+      },
+      "saved": {
+        "chosen": {
+          "open": true,
+          "subject": "reviewerStopped · in squad",
+          "status": "Stopped · in squad",
+          "runtime": "Grok Build",
+          "model": "Grok 4.7",
+          "rows": true,
+          "runtimeDisabled": false,
+          "save": true,
+          "saveDisabled": false,
+          "stop": false,
+          "remote": null,
+          "error": null
+        },
+        "back": true
+      },
+      "before": {
+        "/planner": {
+          "agentRunId": "release_notes_writer_181349e85c084b71b7b589b906db0474",
+          "runtimeKind": "antigravity_cli",
+          "model": "gemini-3.8-flash-low"
+        },
+        "/squad/reviewer": {
+          "agentRunId": "release_notes_writer_c76810c47682455591bc2b7677a593ce",
+          "runtimeKind": "antigravity_cli",
+          "model": "gemini-3.8-flash-low"
+        },
+        "/squad/editor": {
+          "agentRunId": "fact_checker_2c655c0d3a494d4895736bdf6d576392",
+          "runtimeKind": "antigravity_cli",
+          "model": "gemini-3.8-flash-low"
+        }
+      },
+      "after": {
+        "/planner": {
+          "agentRunId": "release_notes_writer_181349e85c084b71b7b589b906db0474",
+          "runtimeKind": "antigravity_cli",
+          "model": "gemini-3.8-flash-low"
+        },
+        "/squad/reviewer": {
+          "agentRunId": "release_notes_writer_c76810c47682455591bc2b7677a593ce",
+          "runtimeKind": "grok_build",
+          "model": "grok-4.7"
+        },
+        "/squad/editor": {
+          "agentRunId": "fact_checker_2c655c0d3a494d4895736bdf6d576392",
+          "runtimeKind": "antigravity_cli",
+          "model": "gemini-3.8-flash-low"
+        }
+      }
+    },
+    "MSP-72": {
+      "result": "Pass",
+      "seconds": 1.5,
+      "screen": {
+        "name": "publisher",
+        "subtitle": "Idle · in Project Task Manager",
+        "chip": "beta-node"
+      },
+      "entries": [
+        "artifacts",
+        "files",
+        "activity",
+        "settings"
+      ],
+      "remote": {
+        "open": true,
+        "subject": "publisherIdle · in Project Task Manager",
+        "status": "Idle · in Project Task Manager",
+        "runtime": null,
+        "model": null,
+        "rows": false,
+        "runtimeDisabled": null,
+        "save": false,
+        "saveDisabled": null,
+        "stop": false,
+        "remote": "This run is on beta-node. Its runtime and model can be changed only on that node.",
+        "error": null
+      },
+      "back": {
+        "settings": 0,
+        "screen": "open"
+      }
+    }
+  },
+  "browserErrors": [],
+  "failedRequests": [],
+  "network": {},
+  "cleanup": {
+    "frontendExited": true,
+    "serversLeft": 0,
+    "rootRemoved": true
+  },
+  "error": null,
+  "summary": {
+    "cases": {
+      "MSP-59": "Pass",
+      "MSP-73": "Pass",
+      "MSP-63": "Pass",
+      "MSP-67": "Pass",
+      "MSP-68": "Pass",
+      "MSP-69": "Pass",
+      "MSP-70": "Pass",
+      "MSP-71": "Pass",
+      "MSP-72": "Pass"
+    },
+    "unknownBrowserErrors": 0
+  },
+  "finishedAt": "2026-11-17T22:58:45.700Z"
+}

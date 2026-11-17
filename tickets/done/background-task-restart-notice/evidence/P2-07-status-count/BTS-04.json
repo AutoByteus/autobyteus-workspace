@@ -1,0 +1,31 @@
+{
+  "runId": "bts_claude_e7ed590e_8a035047c604458e9bfdb925f80f5888",
+  "path": [
+    "idle:0",
+    "initializing:0",
+    "running:0",
+    "running:1",
+    "idle:1",
+    "idle:0",
+    "running:0",
+    "idle:0"
+  ],
+  "fed": [
+    {
+      "status": "idle",
+      "count": 1
+    },
+    {
+      "status": "idle",
+      "count": 0
+    },
+    {
+      "status": "running",
+      "count": 0
+    },
+    {
+      "status": "idle",
+      "count": 0
+    }
+  ]
+}
