@@ -379,6 +379,12 @@ providers, or sibling histories. The current product slice does not expose an
 archived-list or unarchive GraphQL/UI path; archived data remains retained on
 disk for future recovery tooling. No migration is introduced.
 
+After a committed permanent delete, the three delete owners (`AgentRunHistoryService`,
+`TeamRunHistoryService` and `AgentOrgRunService`) tell the episodic catalog
+(`runDeleted(root)`), so the run's entries leave its agents' catalogs; a refused or
+failed delete tells it nothing, and archive never does
+([agent_episodic_catalog.md](agent_episodic_catalog.md)).
+
 ## Workspace Registry Interaction
 
 Run history is retained independently of workspace-list visibility. Removing a workspace from Workspaces deletes the workspace registry entry only; it does not delete `memory/run_history_index.json`, `memory/team_run_history_index.json`, standalone metadata or Team package directories, raw traces, artifacts, or generated files.

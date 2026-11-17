@@ -31,8 +31,11 @@ folders (see [agent_memory.md](agent_memory.md)).
 
 ## Format
 
-The exact lines are fixed by the ticket's contract (`episodic-catalog-contract.md` of autobyteus-493); the renderer
-(`rendering/catalog-markdown-renderer.ts`) and its unit tests follow it.
+The exact lines were fixed by the ticket's contract, kept with the archived ticket
+([episodic-catalog-contract.md](../../../tickets/done/per-agent-episodic-catalog/episodic-catalog-contract.md),
+autobyteus-493); the renderer (`rendering/catalog-markdown-renderer.ts`) and its unit tests follow it. Agents and
+skills read these lines, so a change to one is a change of behavior: change the renderer, its tests and this section
+together.
 
 ```md
 # Episodic catalog: solution_designer
@@ -61,8 +64,13 @@ Maintained by the system: do not edit. Each run's Work Journal stays in its run 
 - **Header name:** the newest run's agent name exactly as run-folder discovery reports it (the run-history row's name
   for an agent run, the member address's last part for a team or org member). A catalog whose runs are all gone lists
   `0 runs.` and is named by its decoded folder name, which is the agent definition ID.
-- **index.md:** `- <agent name> · \`<folder>/catalog.md\` · <N> runs · last activity <time> UTC` (or `no activity`),
-  ordered by agent name, then folder name.
+- **Lines:** a title (the Task's title) is written on one line: line breaks become one space and the ends are
+  trimmed. A journal file line is `<name> · <from> – <to> · <size>`, or `<name> · <size>` when its header states no
+  time range. A size under 1,024 bytes reads `<n> B`, under 1 MB `<n> KB` (rounded), else `<n.n> MB`. A run without a
+  recorded workspace has no Workspace line.
+- **index.md:** the title `# Episodic catalogs on this node` and the line `One folder per agent; each holds
+  catalog.md.`, then one line per agent, `- <agent name> · \`<folder>/catalog.md\` · <N> runs · last activity <time>
+  UTC` (or `no activity`), ordered by agent name, then folder name.
 
 ## Privacy
 
@@ -89,9 +97,15 @@ run folders exist and whose are they", shared with memory search. Discovery give
   read (with or without a history row). Not catalogued; discovery logs `RUN_FOLDER_DISCOVERY_RECORD_UNREADABLE { root, record, reason,
   runFolders }`, one line per root and record and reason (`runFolders`: how many run folders it leaves out), at most once
   in a discovery instance's lifetime. The catalog's and memory search's discoveries each log it once per server start;
-  a refresh of that root does not repeat it, and a changed reason logs again. Recorded ID forms are used as they are: runs recorded under an older ID
-form get their own folder. Imported memory (`memory/imports/`) and other nodes are not included; Memory Sync does not
-carry `episodic/`. Archived runs stay listed; deleted runs leave.
+  a refresh of that root does not repeat it, and a changed reason logs again. `record` names the file that would have
+  named the run's definition (the family's tree file, or `run_metadata.json`). When the run package itself is at fault
+  (`ROOT_RUN_PACKAGE_MANIFEST_INVALID`, `…_NOT_DIRECTORY`, `ROOT_RUN_FAMILY_CONFLICT`, `FAILED_ATTEMPT`), `record`
+  still names the tree file although the tree is not the broken record; `reason` starts with the diagnostic's own code,
+  which says what is wrong.
+
+Recorded ID forms are used as they are: runs recorded under an older ID form get their own folder. Imported memory
+(`memory/imports/`) and other nodes are not included; Memory Sync does not carry `episodic/`. Archived runs stay
+listed; deleted runs leave.
 
 ## Keeping It Current
 

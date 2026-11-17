@@ -25,7 +25,7 @@
 - Investigation Notes Reviewed As Context: through the design spec
 - Solution Revision Record Reviewed As Context: SR-003 (design-only)
 - Design Spec Reviewed As Context: `design-spec.md` § SR-003 Revision
-- Supplemental Task Artifacts Reviewed As Context: `episodic-catalog-contract.md`, `follow-ups.md` (FU-003, FU-004)
+- Supplemental Task Artifacts Reviewed As Context: `episodic-catalog-contract.md`, `follow-ups.md` (FU-003, FU-005)
 - Architecture Review Revision Record Reviewed As Context: ARCH-REV-005
 - Implementation Revision Record Reviewed As Context: IR-002
 - Original Code Review Report: `code-review-report.md` (CRR-003 `Pass`)
@@ -73,7 +73,7 @@ The fallback itself predates this ticket (`memory-search/runs/memory-run-discove
 
 ## Follow-ups
 
-- Follow-ups this review added: None (FU-003 and FU-004 from API/E2E noted; unchanged)
+- Follow-ups this review added: None (FU-003 and FU-005 from API/E2E noted; unchanged)
 
 ## Latest Authoritative Result
 
@@ -86,4 +86,4 @@ The fallback itself predates this ticket (`memory-search/runs/memory-run-discove
   - The cost of Task-title lookups on real data is not measured.
   - CF-14: the record label for package-level diagnostics.
   - CF-15: AC-010 timing measured under high load.
-  - FU-003 and FU-004 stay outside the ticket.
+  - FU-003, FU-004 and FU-005 stay outside the ticket.

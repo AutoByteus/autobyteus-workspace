@@ -49,10 +49,10 @@ None.
 | --- | --- | --- | --- |
 | API-09 / EC-06: a damaged team record left out without a warning (AC-009, REQ-012) | Design Impact (preliminary); CR-001 in code review | IR-002 (SR-003): discovery logs `RUN_FOLDER_DISCOVERY_RECORD_UNREADABLE` naming the root, record and reason; also for org trees and standalone metadata; an unreadable manifest gives `EPISODIC_CATALOG_RUN_LEFT_OUT` | API-09 (EC-06) |
 
-- Canonical artifacts and sections updated: the coverage investigation (§ Round 2 Plan), the execution report (all), progress log, `follow-ups.md` (FU-003 extended, FU-004 added), `evidence/` (round 1's moved to `evidence/round1/`)
+- Canonical artifacts and sections updated: the coverage investigation (§ Round 2 Plan), the execution report (all), progress log, `follow-ups.md` (FU-003 extended, FU-005 added), `evidence/` (round 1's moved to `evidence/round1/`)
 - Prior result and confidence: `Fail`, 88%
 - Current result and confidence: `Pass`, 95%
-- New or remaining failure IDs: none caused by this change; suite failures on this host recorded as FU-003 and FU-004 with their causes
+- New or remaining failure IDs: none caused by this change; suite failures on this host recorded as FU-003 and FU-005 with their causes
 - Recommended owner: `/code_reviewer` for proportional test-code review
 - Remaining risks, blocked evidence, or untested scope: AC-010's server start on the founder's data (user, delivery gate); Task-title lookup cost on real data not measured; the history-row branch for damaged `run_metadata.json` is not reached in real use (report API-09 note); docs-sync note (API-15)
 
