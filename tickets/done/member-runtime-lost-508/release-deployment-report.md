@@ -80,19 +80,19 @@ None: no release.
 
 - Bootstrap context source: the Solution Designer's bootstrap (worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/member-runtime-lost-508`, branch `codex/member-runtime-lost-508`, base `origin/personal`) and `RELEASE.md` "Finalization Target"
 - Ticket branch: `codex/member-runtime-lost-508`
-- Ticket branch commit result: (recorded in the record commit below)
-- Ticket branch push result: (recorded in the record commit below)
+- Ticket branch commit result: `Completed`. Final ticket-branch commit `d584f79a5c` (docs sync, handoff summary, release report, archive to `tickets/done/`), on top of the API/E2E commits `e0b58997f3` (code), `4ea7826b87`, `756e31b084` (durable test) and `a7339a8e35`. Only intended paths were staged; the untracked `autobyteus-application-backend-sdk/dist/` and `autobyteus-application-sdk-contracts/dist/` build outputs were not committed.
+- Ticket branch push result: `Completed`. `codex/member-runtime-lost-508` pushed as a new branch. Secret Gate on `origin/personal..codex/member-runtime-lost-508` (6 commits) before the push: PASS.
 - Finalization target remote: `origin`
 - Finalization target branch: `personal`
-- Target advanced after verification / acceptance: (recorded in the record commit below)
+- Target advanced after verification / acceptance: `No`. `origin/personal` was `a8ac226e65` at the start of delivery, after verification and again just before the merge and the push.
 - Delivery-owned edits protected before re-integration: `Not needed`
 - Re-integration before final merge result: `Not needed`
-- Target branch update result: (recorded in the record commit below)
-- Merge into target result: (recorded in the record commit below)
-- Push target branch result: (recorded in the record commit below)
-- User's checkout of the target branch (path `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`): (recorded in the record commit below)
-- Repository finalization status: (recorded in the record commit below)
-- Blocker (if applicable): none so far
+- Target branch update result: `Completed`. `finalize/member-runtime-lost-508` created from `origin/personal` `a8ac226e65`, in the ticket worktree (not the main checkout), as `RELEASE.md` says.
+- Merge into target result: `Completed`. `git merge --no-ff codex/member-runtime-lost-508` → `a188727ba9` (first parent `a8ac226e65`, second `d584f79a5c`); its tree is identical to the ticket branch's. The first attempt used an option `git merge` does not have (`-F`), failed before creating anything, and was repeated with `-m`. Secret Gate on the merged state (7 commits): PASS. `python3 scripts/check_repository_artifact_hygiene.py` on the merged state: passed (95,458 tracked files; longest path 200 characters, within the threshold; no Windows-hostile names in the files added).
+- Push target branch result: `Completed`. `a8ac226e65..a188727ba9  HEAD -> personal`. This record was then pushed as a fast-forward record commit on top of `a188727ba9` (see Final Status).
+- User's checkout of the target branch (path `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`): `Updated to a188727ba9` by `git merge --ff-only origin/personal` (it was on `personal`, no local commits, 7 behind). None of its 46 modified or untracked paths is among the 39 files the update touched (checked before the update), so git kept them as they were; the count was 46 before and after. Nothing was stashed, reset, checked out or committed there. After the record commit below it is brought to that commit the same way.
+- Repository finalization status: `Completed`
+- Blocker (if applicable): none
 
 ## Release / Publication / Deployment
 
@@ -120,11 +120,12 @@ None: no release.
 ## Post-Finalization Cleanup
 
 - Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/member-runtime-lost-508`
-- Worktree cleanup result: (recorded in the record commit below)
-- Worktree prune result: (recorded in the record commit below)
-- Local ticket branch cleanup result: (recorded in the record commit below)
-- Remote branch cleanup result: (recorded in the record commit below)
-- Blocker (if applicable): none so far
+- Worktree cleanup result: performed right after the record commit below was pushed, with `git worktree remove --force` (only untracked build outputs remain in it: `*/dist/`, `node_modules`, `.nuxt`); the result is in the terminal message, since the worktree that holds this file is the one removed
+- Worktree prune result: same step (`git worktree prune`)
+- Local ticket branch cleanup result: same step: local `codex/member-runtime-lost-508` and `finalize/member-runtime-lost-508` deleted after confirming both are contained in `origin/personal`
+- Remote branch cleanup result: `Not required`. `origin/codex/member-runtime-lost-508` is kept, as the repository keeps its other `codex/*` branches; everything on it is in `personal`.
+- The worktree `release-v1.5.13-beta.8`, the stashes and every other worktree are not this ticket's and were left alone.
+- Blocker (if applicable): none
 
 ## Escalation / Reroute (Use Only If Final Handoff Cannot Complete)
 
@@ -152,8 +153,8 @@ None. This repository deploys no hosted service; a rollout is the published imag
 Delivery's own checks (audit, not redo, as `RELEASE.md` sets):
 
 - `git fetch origin personal`; `origin/personal...HEAD` = `0 5` before delivery edits
-- `scripts/check_secrets.sh origin/personal..codex/member-runtime-lost-508` before the first push, and again on the merged state: (results in the record commit below)
-- `python3 scripts/check_repository_artifact_hygiene.py` before the final commit: (result in the record commit below)
+- `scripts/check_secrets.sh origin/personal..codex/member-runtime-lost-508` before the first push (6 commits): PASS; again on the merged state (7 commits): PASS
+- `python3 scripts/check_repository_artifact_hygiene.py` before the final commit and on the merged state: passed both times
 
 ## Rollback Criteria
 
@@ -162,10 +163,10 @@ Delivery's own checks (audit, not redo, as `RELEASE.md` sets):
 ## Final Status
 
 - Verification complete (from the evidence, or the user's check where needed): `Yes`
-- Repository finalization complete: (recorded in the record commit below)
+- Repository finalization complete: `Yes` (merge `a188727ba9` pushed to `origin/personal`; this record is the one later commit, pushed as a fast-forward)
 - Applicable release/deployment/rollout complete or not required: `Yes` (not required)
-- Applicable safe cleanup complete or not required: (recorded in the record commit below)
-- Unresolved blocker: `None`
-- Successful terminal package eligible for return: (recorded in the record commit below)
-- Terminal package sent to the Solution Designer: (recorded in the record commit below)
-- Terminal message/reference: (recorded in the record commit below)
+- Applicable safe cleanup complete or not required: `Yes`, done right after this record is pushed (see Post-Finalization Cleanup); its result is in the terminal message
+- Unresolved blocker: `None`. REQ-004 is an open decision of the founder, not a blocker of this delivery.
+- Successful terminal package eligible for return: `Yes`
+- Terminal package sent to the Solution Designer: `Yes` (sent after the cleanup)
+- Terminal message/reference: the `Delivery Completed` message to `/solution_designer`, which names this report and the archived ticket folder

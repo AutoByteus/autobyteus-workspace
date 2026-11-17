@@ -18,9 +18,9 @@
 - Handoff summary: `tickets/done/member-runtime-lost-508/handoff-summary.md`
 - Release/publication/deployment report: `tickets/done/member-runtime-lost-508/release-deployment-report.md`
 - Integration and post-integration verification: `Already current` with `origin/personal` @ `a8ac226e65` (0 new base commits); no rerun needed (rationale in the report)
-- Verification (evidence judgement or user check) and finalization state: evidence judged `Sufficient`, no user check; finalization state in the release/deployment report (record commit)
-- Terminal return to the Solution Designer: (recorded in the record commit below)
-- Terminal return message/reference: (recorded in the record commit below)
+- Verification (evidence judgement or user check) and finalization state: evidence judged `Sufficient`, no user check; finalized: ticket branch `codex/member-runtime-lost-508` (final commit `d584f79a5c`) merged `--no-ff` into `origin/personal` as `a188727ba9` and pushed; the user's checkout fast-forwarded to it
+- Terminal return to the Solution Designer: `Sent` (after cleanup)
+- Terminal return message/reference: the `Delivery Completed` message to `/solution_designer`
 - Why this baseline or delivery revision was recorded: first completed delivery-stage result
 - Next recipient/action: Solution Designer verifies the package and returns the result to the caller; the founder decides REQ-004's release
 - Remaining blockers, rollback concerns, or untested scope: REQ-004 (release before 461 reaches stable; the founder's word); no live wake of a converted Codex run (by rule); the founder repairs his own converted data (DEC-003); FU-001 open and not urgent
