@@ -1,0 +1,23 @@
+Release smoke check
+runtime     scenario                                                      result  reason
+claude      new run + restore, linked workspace                           PASS
+claude      brand-new team member                                         PASS
+claude      different same-named skill                                    PASS
+codex       new run + restore, linked workspace                           PASS
+codex       brand-new team member                                         PASS
+codex       different same-named skill                                    PASS
+grok        new run + restore, linked workspace                           PASS
+grok        brand-new team member                                         PASS
+grok        different same-named skill                                    PASS
+antigravity brand-new run, linked workspace                               PASS
+antigravity brand-new team member, linked workspace                       PASS
+autobyteus  brand-new run, linked workspace                               PASS
+autobyteus  brand-new team member, linked workspace                       PASS
+other       keeps ordinary native tools and configured skill reads expli  FAIL    failed: AssertionError: expected [ '## Agent Identity', …(5) ] to deeply equal [ '## Agent Identity', …(4) ]
+
+commit    8152ded1d725cdff1493cbcf014dade01b38d356
+models    {"claude": "haiku", "codex": "gpt-5.6-luna", "grok": "grok-4.7"}
+duration  live 206s, antigravity 67s, autobyteus 13s
+result    FAIL
+logs      /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/release-smoke-stbr_bmk
+smoke exit 1

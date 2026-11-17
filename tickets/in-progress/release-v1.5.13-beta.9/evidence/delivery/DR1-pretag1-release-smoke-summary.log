@@ -1,0 +1,24 @@
+Release smoke check
+runtime     scenario                                                      result  reason
+claude      new run + restore, linked workspace                           PASS
+claude      brand-new team member                                         PASS
+claude      different same-named skill                                    PASS
+codex       new run + restore, linked workspace                           PASS
+codex       brand-new team member                                         PASS
+codex       different same-named skill                                    PASS
+grok        new run + restore, linked workspace                           FAIL    skipped: Error: [{"message":"Grok Build model discovery timed out; check the CLI and retry.","locations":[{"line":1,"column":21}],"path":["providerModelCatalogSnapshots"]}]
+grok        brand-new team member                                         FAIL    skipped: Error: [{"message":"Grok Build model discovery timed out; check the CLI and retry.","locations":[{"line":1,"column":21}],"path":["providerModelCatalogSnapshots"]}]
+grok        different same-named skill                                    FAIL    skipped: Error: [{"message":"Grok Build model discovery timed out; check the CLI and retry.","locations":[{"line":1,"column":21}],"path":["providerModelCatalogSnapshots"]}]
+antigravity brand-new run, linked workspace                               PASS
+antigravity brand-new team member, linked workspace                       PASS
+autobyteus  brand-new run, linked workspace                               PASS
+autobyteus  brand-new team member, linked workspace                       PASS
+other       keeps ordinary native tools and configured skill reads expli  FAIL    failed: AssertionError: expected [ '## Agent Identity', …(5) ] to deeply equal [ '## Agent Identity', …(4) ]
+other       agy-linked-skills-transport.e2e.test.ts                       FAIL    Error: Hook timed out in 60000ms.
+
+commit    1c1f6f27cbcfe2e44327a1744b048b4921156042
+models    {"claude": "haiku", "codex": "gpt-5.6-luna"}
+duration  live 224s, antigravity 185s, autobyteus 38s
+result    FAIL
+logs      /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/release-smoke-sb2njdys
+smoke exit 1

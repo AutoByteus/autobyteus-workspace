@@ -29,9 +29,18 @@ Status: **in progress (hold before cutting: the founder's decision on autobyteus
 | Failure | Classification | Log Lines | Action | Result |
 | --- | --- | --- | --- | --- |
 | Antigravity `agy-linked-skills-transport` hook timeout (run 1) | Platform (this machine's load, 85–140) | `Error: Hook timed out in 60000ms.` | one rerun | Pass on run 2 |
-| Grok model discovery / ACP initialize timeouts | Platform-shaped (load), not a usage limit: the founder's standing waiver ("Waive grok if no usage limit anymore") does not cover it | `Grok Build model discovery timed out`; `ACP_REQUEST_TIMEOUT: initialize did not respond in time` | rerun on the final merged state; if it still fails, ask the founder | pending |
+| Grok model discovery / ACP initialize timeouts | Platform-shaped (load), not a usage limit: the founder's standing waiver ("Waive grok if no usage limit anymore") does not cover it | `Grok Build model discovery timed out`; `ACP_REQUEST_TIMEOUT: initialize did not respond in time` | rerun on the final merged state | **Pass 3/3 on the final state (run 3)**; the founder had also waived Grok for this release in his own words (2026-11-17, to delivery): "I will waive for grok because I have no usage limit now". The waiver was not needed. |
 | `configured-skill-on-demand-loading.e2e.test.ts:291` | **Ours**: autobyteus-483 deliberately added "## Long-Running Commands" to every runtime prompt; this e2e still expects the old four sections (identical on both runs) | the assertion above | sent to the Solution Designer as a new change with the local check (the stage that changes a runtime prompt reruns the prompt-section e2e) | **Waived for this release by the founder**, in his words (2026-11-17, relayed by the Solution Designer): "Let's release without a fixing the test and creator follow up follow up we'll fix the stale tests". The fix becomes a follow-up Task through the PM. |
 
 ## Release Notes
 
 - `tickets/done/release-v1.5.13-beta.9/release-notes.md`: the user-action section placed above the generated notes ("What you need to do" first; point (b) checked in code, see the release request's reply).
+
+## Checks Before Tagging — Final (on `8152ded1d7`: `origin/personal` `fc9da63bd2` with autobyteus-514, merged as `a62c905d79`, plus this ticket's documents)
+
+- `pnpm install --frozen-lockfile`, server `prebuild`: pass.
+- Typechecks (new base commits came in): server `production errors: 0; test-file errors: 1012 in 316 files (baseline 1012 in 316 files)`; web `production errors: 0; test-file errors: 87 in 37 files (baseline 87 in 37 files)`.
+- Registry-order test: pass (no migration since beta.8). `check_licensing.py`, `check_repository_artifact_hygiene.py`, `check_secrets.sh v1.5.13-beta.8..HEAD`: pass.
+- `release_smoke.py` (run 3): Claude 3/3, Codex 3/3, Grok 3/3, Antigravity 2/2, AutoByteus 2/2 PASS; the only failure is the waived stale e2e (`configured-skill-on-demand-loading.e2e.test.ts:291`). Models `claude: haiku`, `codex: gpt-5.6-luna`, `grok: grok-4.7`.
+- Evidence: `evidence/delivery/DR1-pretag2-*` (summaries; the full step logs stay in the temp folders the script printed).
+
