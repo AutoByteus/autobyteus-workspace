@@ -28,6 +28,7 @@ import {
 } from "../../helpers/claude-cli-executable-candidates.js";
 import { createTestRunWorkspaceSkills } from "../../fixtures/run-workspace-skills-fixtures.js";
 import { agentStreamFramesOf } from "./agent-stream-frames.js";
+import { lazyAgentStreamSequences } from "../../helpers/agent-stream-sequence-fixture.js";
 
 export type StreamMessage = { type?: string; payload?: Record<string, unknown> };
 
@@ -148,6 +149,9 @@ export const createClaudeLiveAgentHarness = async (input: {
       };
     },
   };
+  // The run's own stream sequence (autobyteus-461 SR-087), attached as the run's resources attach it in the app; without
+  // it the stream refuses the socket (AGENT_STREAM_UNAVAILABLE).
+  const stream = lazyAgentStreamSequences((runId) => (runId === input.runId ? agentRun : null));
   const handler = new AgentStreamHandler(
     new AgentSessionManager(),
     agentRunService as never,
@@ -157,6 +161,9 @@ export const createClaudeLiveAgentHarness = async (input: {
       projectionService: statusProjectionService as never,
     }),
     statusProjectionService as never,
+    null,
+    stream.sequences,
+    stream.readStored,
   );
   const dummyTeamHandler = {
     connect: async () => null,

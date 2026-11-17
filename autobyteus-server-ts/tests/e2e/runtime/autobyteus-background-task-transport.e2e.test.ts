@@ -623,50 +623,67 @@ describeGated("Native background tasks through the real server (scripted model)"
     ]);
     const { session } = await start("BGT-09C", coordinatorSteps, {}, coordinator);
     coordinatorRunId = session.runId;
-    // The root's execution view: statuses and background tasks of the delegated copy (agent_presentation events).
-    const view = new WebSocket(`ws://${harness.url.hostname}:${harness.url.port}/ws/agent-collaboration/${coordinatorRunId}`);
-    const viewFrames: Timed[] = [];
-    view.on("message", (raw: unknown) => {
-      try {
-        const parsed = JSON.parse(String(raw)) as { type?: unknown; payload?: unknown };
-        if (typeof parsed.type === "string") viewFrames.push({ type: parsed.type, payload: isRecord(parsed.payload) ? parsed.payload : {}, at: Date.now() });
-      } catch { /* ignore */ }
-    });
-    await new Promise<void>((resolve, reject) => { view.once("open", () => resolve()); view.once("error", reject); });
-    await until(() => viewFrames.some((frame) => frame.type === "ROOT_EXECUTION_VIEW_SNAPSHOT") || undefined, "root view snapshot", 30_000);
-    type Signal = { agentRunId: string; kind: "status" | "background"; status: string; at: number };
-    const objectsIn = (value: unknown): Json[] => Array.isArray(value) ? value.flatMap(objectsIn)
-      : isRecord(value) ? [value, ...Object.values(value).flatMap(objectsIn)] : [];
-    const signals = (): Signal[] => viewFrames.flatMap((frame) => objectsIn(frame.payload).flatMap((record) => {
-      const message = isRecord(record.message) ? record.message : null;
-      const kind = message?.type === "AGENT_STATUS" ? "status" as const : message?.type === "BACKGROUND_TASK_UPDATED" ? "background" as const : null;
-      const status = isRecord(message?.payload) ? message.payload.status : null;
-      return kind && typeof record.agent_run_id === "string" && typeof status === "string" ? [{ agentRunId: record.agent_run_id, kind, status, at: frame.at }] : [];
-    }));
+    // The copy is watched where its own window watches it: its own stream (`/ws/agent/<id>`), its background-task view and
+    // its run's active state. (Since autobyteus-461 the delegator's collaboration view carries only communication, not
+    // the copy's statuses or tasks.)
+    type Signal = { kind: "status" | "background"; status: string; at: number };
+    const copyFrames: Signal[] = [];
+    let copySocket: WebSocket | null = null;
+    const openCopyStream = async (childRunId: string) => {
+      copySocket = new WebSocket(`ws://${harness.url.hostname}:${harness.url.port}/ws/agent/${childRunId}`);
+      copySocket.on("message", (raw: unknown) => {
+        try {
+          const parsed = JSON.parse(String(raw)) as { type?: unknown; payload?: unknown };
+          const status = isRecord(parsed.payload) ? parsed.payload.status : null;
+          const kind = parsed.type === "AGENT_STATUS" ? "status" as const : parsed.type === "BACKGROUND_TASK_UPDATED" ? "background" as const : null;
+          if (kind && typeof status === "string") copyFrames.push({ kind, status, at: Date.now() });
+        } catch { /* ignore */ }
+      });
+      await new Promise<void>((resolve, reject) => { copySocket!.once("open", () => resolve()); copySocket!.once("error", reject); });
+    };
+    const copyTasks = async (childRunId: string): Promise<Json[]> => {
+      const view = (await harness.gql<{ agentBackgroundTaskView: Json }>(`query($id: String!) { agentBackgroundTaskView(agentRunId: $id) {
+        __typename ... on AgentBackgroundTaskEventStream { currentTasks: tasks { taskId status endReason exitCode } } } }`, { id: childRunId })).agentBackgroundTaskView;
+      return Array.isArray(view.currentTasks) ? view.currentTasks as Json[] : [];
+    };
+    const copyActive = async (childRunId: string): Promise<boolean> => (await harness.gql<{ getAgentRunResumeConfig: { isActive: boolean } }>(
+      "query($id: String!) { getAgentRunResumeConfig(runId: $id) { isActive } }", { id: childRunId })).getAgentRunResumeConfig.isActive;
     try {
       sendE2eSendMessageCommand(session.socket, { content: "CASE:BGT-09C Delegate the build." });
       const childRunId = await until(() => typeof delegated.target_agent_run_id === "string" ? delegated.target_agent_run_id : undefined, "delegation result", 60_000);
       expect(delegated).toMatchObject({ delegated: true, target_kind: "agent" });
-      const of = (kind: Signal["kind"]) => signals().filter((signal) => signal.agentRunId === childRunId && signal.kind === kind);
-      const running = await until(() => of("background").find((signal) => signal.status === "running"), "copy's running task", 60_000);
-      const idle = await until(() => of("status").find((signal) => signal.at >= running.at && signal.status === "idle"), "copy idle", 60_000);
+      await openCopyStream(childRunId);
+      const of = (kind: Signal["kind"]) => copyFrames.filter((signal) => signal.kind === kind);
+      // Running, and the copy idle (its scripted turn ends right after the start): from here the grace period counts.
+      let runningAt = 0;
+      for (const deadline = Date.now() + 60_000; !runningAt && Date.now() < deadline; await wait(250)) {
+        if ((await copyTasks(childRunId)).some((task) => task.status === "running")) runningAt = Date.now();
+      }
+      expect(runningAt, "copy's running task").toBeGreaterThan(0);
+      await until(() => model.of("BGT-09W").length >= 2 || undefined, "copy's start turn ended", 30_000);
+      const idle = { at: Math.max(runningAt, model.of("BGT-09W")[1]!.repliedAt ?? Date.now()) };
       const reportedAt = () => model.of("BGT-09C").find((request) => request.lastUser.includes(report))?.at;
-      const outcome = await until(() => {
-        const offline = of("status").find((signal) => signal.at >= idle.at && signal.status === "offline");
-        if (offline) return { kind: "offline", at: offline.at };
+      let inactiveAt = 0;
+      const outcome = await until(async () => {
         const at = reportedAt();
-        return at ? { kind: "report", at } : undefined;
+        if (at) return { kind: "report", at };
+        if (!inactiveAt && !(await copyActive(childRunId))) inactiveAt = Date.now();
+        return inactiveAt ? { kind: "offline", at: inactiveAt } : undefined;
       }, "report or shutdown", (sleepSeconds + 90) * 1_000, 250);
-      const offline = outcome.kind === "report"
-        ? await until(() => of("status").find((signal) => signal.at > outcome.at && signal.status === "offline"), "copy shut down after quiet", GRACE_MS + 120_000, 250)
-        : null;
-      const before = offline ? of("status").filter((signal) => signal.at <= offline.at && signal !== offline) : [];
+      let offlineAt = 0;
+      if (outcome.kind === "report") {
+        for (const deadline = Date.now() + GRACE_MS + 120_000; !offlineAt && Date.now() < deadline; await wait(250)) {
+          if (!(await copyActive(childRunId))) offlineAt = Date.now();
+        }
+      }
+      const before = of("status").filter((signal) => offlineAt && signal.at <= offlineAt);
       const lastBusy = before.reduce((last, signal, index) => signal.status === "running" || signal.status === "initializing" ? index : last, -1);
       const quietStart = before.slice(lastBusy + 1).find((signal) => signal.status === "idle");
       const result = {
         childRunId, workerAddress, delegated, outcome: outcome.kind, idleToOutcomeMs: outcome.at - idle.at,
-        quietToOfflineMs: offline && quietStart ? offline.at - quietStart.at : null,
+        quietToOfflineMs: offlineAt && quietStart ? offlineAt - quietStart.at : null,
         task: of("background").map((signal) => `${signal.status}@${signal.at - idle.at}`), statuses: of("status").map((signal) => `${signal.status}@${signal.at - idle.at}`),
+        offlineAfterIdleMs: offlineAt ? offlineAt - idle.at : null,
         workerNotices: model.notices("BGT-09W").length, requests: { coordinator: requestDigest("BGT-09C"), worker: requestDigest("BGT-09W") },
       };
       await record("BGT-09", result);
@@ -674,14 +691,14 @@ describeGated("Native background tasks through the real server (scripted model)"
       expect(result.idleToOutcomeMs).toBeGreaterThanOrEqual(GRACE_MS);
       expect(of("background").some((signal) => signal.status === "completed")).toBe(true);
       expect(model.notices("BGT-09W")).toHaveLength(1);
-      expect(result.quietToOfflineMs).not.toBeNull();
+      expect(result.quietToOfflineMs, JSON.stringify(result)).not.toBeNull();
       expect(result.quietToOfflineMs!).toBeGreaterThanOrEqual(GRACE_MS - 2_000);
     } catch (error) {
       if (!evidence["BGT-09"]) await record("BGT-09", { error: String(error), requests: { coordinator: requestDigest("BGT-09C"), worker: requestDigest("BGT-09W") },
-        signals: signals(), frames: frameDigest(viewFrames) });
+        signals: copyFrames });
       throw error;
     } finally {
-      view.close();
+      (copySocket as WebSocket | null)?.close();
       await harness.stopRun(session);
     }
   }, 420_000);
