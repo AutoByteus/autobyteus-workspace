@@ -11,6 +11,8 @@
 | CRR-005 | `code-review-report.md` | Implementation Review, round 4 (part 2, IR-003) | N/A for part 2 | Fail (Local Fix) | CR-002 |
 | CRR-006 | `code-review-report.md` | Implementation Review, round 5 (part 2, IR-004, CR-002 fix) | Fail (Local Fix) | Pass | CR-002 (resolved) |
 | CRR-007 | `api-e2e-test-review-report.md` | Proportional API/E2E test-code review, round 2 (part 2, API-REV-003 Pass) | Pass (part 1 test review) | Pass | None |
+| CRR-008 | `code-review-report.md` | Implementation Review, round 6 (part 2 base integration, IR-005, DR-002) | Pass (CRR-006) | Pass | None |
+| CRR-009 | `api-e2e-test-review-report.md` | Proportional API/E2E test-code review, round 3 (part 2 on the merged base, API-REV-004 Pass) | Pass (CRR-007) | Pass | None |
 
 ## Revision Entries
 
@@ -192,3 +194,53 @@ None.
 - Material score or classification changes: N/A
 - Recommended recipient: delivery engineer
 - Remaining risks or uncertainty: ACP live Not Tested; failed-member Team display unit-level only; Org view status unit-level; FU-006..FU-009.
+
+### CRR-008 — Part 2 base integration reviewed: Pass
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/background-task-restart-notice/tickets/in-progress/background-task-restart-notice/code-review-report.md` (section "Latest Round: Part 2 Base Integration Review, round 6")
+- Review entry point and round: Implementation Review, round 6 (delivery-stage Local Fix)
+- Review scope: `Targeted Delta Review` (`b9caddc57e..a9e5676630`; conflict resolutions and follow-on test doubles via `git show --remerge-diff`)
+- Triggering role, report path, and finding or scenario IDs: implementation engineer, `implementation-handoff.md` "Integration Of The Refreshed Base" (IR-005), from delivery DR-002
+- Relevant solution revision IDs: SR-006
+- Relevant architecture-review revision IDs: ARCH-REV-005
+- Relevant implementation revision IDs: IR-005
+- Relevant API/E2E revision IDs: API-REV-003
+- Relevant delivery revision IDs: DR-002
+- Prior authoritative result: CRR-006 `Pass` (implementation), CRR-007 `Pass` (tests)
+- Current authoritative result: `Pass`
+- What changed in the review result and why: the seven conflicts are resolved correctly. The phone status line is in the base's single builder with part 2's count. The base's exit-code assertion is kept with the derivation. 483's docs are kept with the count, and the dist maps were rebuilt. No removed API is reintroduced by the base. 483's ended tasks are not running, so they are not counted. Evidence IMP-16..20 is green, apart from two load timeouts in untouched files that pass on rerun.
+- Supported product scenario / material-premise basis changes: none
+
+#### Prior Finding Resolution
+
+None.
+
+- New or remaining finding IDs: none
+- Material score or classification changes: none (9.34 carried forward)
+- Recommended recipient: API/E2E engineer; then the implementation engineer (informational)
+- Remaining risks or uncertainty: as in CRR-007; the phone Settings screen with a run idle with tasks is not yet exercised end to end.
+
+### CRR-009 — Part 2 test-code review on the merged base: Pass
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/background-task-restart-notice/tickets/in-progress/background-task-restart-notice/api-e2e-test-review-report.md` (section "Latest Round: Part 2 on the merged base, round 3")
+- Review entry point and round: successful API/E2E test-code review, round 3
+- Review scope: `N/A` (test review; `7815673ef8`)
+- Triggering role, report path, and finding or scenario IDs: API/E2E engineer, `api-e2e-execution-coverage-report.md` (API-REV-004 Pass); BTS-06, MSP-67
+- Relevant solution revision IDs: SR-006
+- Relevant architecture-review revision IDs: ARCH-REV-005
+- Relevant implementation revision IDs: IR-005
+- Relevant API/E2E revision IDs: API-REV-004
+- Relevant delivery revision IDs: DR-002
+- Prior authoritative result: CRR-007 `Pass` (part 2 tests); CRR-008 `Pass` (integration)
+- Current authoritative result: `Pass`
+- What changed in the review result and why: BTS-06 proves the count beside 483's three end paths through real triggers, with each end's reason kept in the stream, the view and the notices. MSP-67 now checks 458's Settings screen for DEC-004. The first draft's timing flake was fixed at its cause (flag file; wait for each notice).
+- Supported product scenario / material-premise basis changes: none
+
+#### Prior Finding Resolution
+
+None.
+
+- New or remaining finding IDs: none
+- Material score or classification changes: N/A
+- Recommended recipient: delivery engineer
+- Remaining risks or uncertainty: unchanged (Team error member and Org status unit-level; ACP live and Linux not run).

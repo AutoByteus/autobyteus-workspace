@@ -1,6 +1,43 @@
 # Code Review Report
 
-## Latest Round: Part 2 Implementation Review, round 5 (CRR-006) — Pass
+## Latest Round: Part 2 Base Integration Review, round 6 (CRR-008) — Pass
+
+- Review Entry Point: `Implementation Review` (delivery-stage Local Fix: base integration, DR-002 → IR-005)
+- Review Scope: `Targeted Delta Review` of `b9caddc57e..a9e5676630`:
+  - `990ff9a3d4` merges `origin/personal` @ `ff13782f36` (71 base commits: autobyteus-483 end reasons and exit codes, 458 phone run settings, 515).
+  - `ca1979b206` gives the test doubles 483's fields.
+  - `a9e5676630` holds documents and evidence.
+  Reviewed through `git show --remerge-diff`: only the conflict resolutions and this ticket's follow-on edits. The base's own changes were reviewed in their tickets.
+- Trigger: implementation engineer, IR-005, from delivery DR-002
+- Delivery revision record reviewed: `delivery-revision-record.md` (DR-002)
+
+Checks:
+- **`MobileRunTargetView.vue` / `MobileRunSettings.vue` / `mobileRunSubjectLine.ts`.**
+  - Part 2's DEC-004 status line now lives in the base's one builder, which both phone surfaces use: `mobileRunActivityLabel` for the text and `agentStatusDotClass(status, count)` for the dot.
+  - Both pass `AgentRunState.backgroundTasksRunning`.
+  - An unreachable run shows only its error, as part 2 had it.
+  - The spec adds the DEC-004 cases (1, 2, running wins, unreachable). It keeps the base's three cases, now through the real translator.
+  - Correct, and the base's single-builder rule (Principle 11) is kept.
+- **`autobyteus-background-tasks.test.ts`.** The base's `[status, summary, exit_code]` assertion is kept, and the removed backend boolean is replaced by `runningBackgroundTaskCount(...)`. Correct.
+- **`agent_execution.md`.** 483's `exitCode` / `end_reason` text is kept, with the boolean wording replaced by the count. Correct.
+- **Contract `dist` maps** rebuilt from the merged source. The contract tests pass (22/14/37).
+- **Semantic interplay with 483.** An ended task, whatever its `endReason`, has a non-`running` status, so it is not counted. No decision was needed.
+- **Removed APIs.** `git grep` at `a9e5676630` finds no backend `hasRunningBackgroundTasks`, `hasRunningTasks`, `.hasRunning()` or `remote-task-execution-dtos` in source. The only remaining `hasRunningBackgroundTasks` is `AgentRun`'s facade (restart recorder). The `remoteTaskExecutions` hits are unrelated stored-link names in frozen migrations.
+- **Sizes.** `agent-run.ts` is unchanged by the merge (500 → 500 non-empty lines). `mobileRunSubjectLine.ts` is 22 lines.
+- **Evidence:**
+  - IMP-16: both typechecks at baseline (1012 / 87); contracts pass.
+  - IMP-17: full server unit `2 failed | 8302 passed`. Both failures are 5 s timeouts under load in files this ticket does not touch (`tracked-imports`, `agent-memory-explorer-service`); the reruns pass (`IMP-17-merge-timeout-reruns.log`). Integration: only `package-auto-refresh` (the known `fs.watch` environment failure).
+  - IMP-18: web `764 files | 5750 tests` pass.
+  - IMP-19: fresh-start desktop build passes.
+  - IMP-20: probes TS-008, MSP-59 (483) and MSP-67 (part 2, renumbered) pass.
+- **Scorecard** carries forward from round 5 (9.34; every category ≥ 9.3). Findings: none.
+- **Result:** `Pass`. Recommended Recipient: API/E2E engineer (`/api_e2e_engineer`) to reconfirm on the merged build:
+  - the base's phone Settings screen with a run idle with a background task;
+  - 483's background-task end paths beside the count;
+  - the part 2 suites (BTS-01..03, PBS-01) and the renumbered MSP-67.
+  Then the proportional test review, then delivery.
+
+## Earlier Round: Part 2 Implementation Review, round 5 (CRR-006) — Pass
 
 - Review Entry Point: `Implementation Review` (part 2)
 - Review Scope: `Targeted Delta Review`. `75d687f612..ce06c415cc`: `2990b6a8ac` touches only `autobyteus-agent-presentation-contracts` (`src/remote-task-execution-dtos.ts` and its test removed; `src/remote-agent-status.ts` + test added; `index.ts` re-export; `dist/` rebuilt). `ce06c415cc` is documents only. No spine, route, shape or consumer change: the removed exports had no users.
