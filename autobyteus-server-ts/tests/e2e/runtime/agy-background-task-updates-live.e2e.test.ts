@@ -24,7 +24,8 @@ const MODEL = "gemini-3.8-flash-high";
 const BACKGROUND_RESULT = { provider_state: "RUNNING",
   output: "Started as a background task; still running when the turn ended." };
 type Wire = { at: number; type: string; payload: Record<string, unknown> };
-type TaskSnapshot = { task_id: string; kind: string; description: string; command: string | null; status: string; summary: string | null; started_at: string };
+type TaskSnapshot = { task_id: string; kind: string; description: string; command: string | null; status: string; summary: string | null;
+  end_reason: string | null; exit_code: number | null; started_at: string };
 const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 const freePort = () => new Promise<number>((resolve, reject) => {
   const server = net.createServer();
@@ -151,7 +152,7 @@ suite("real AGY daemons are shown as background tasks (AC-013)", () => {
     expect(closed?.payload["result"]).toEqual(BACKGROUND_RESULT);
     const running = await run.until(run.taskWith("running"), 10_000);
     expect(running, "running BACKGROUND_TASK_UPDATED").toBeDefined();
-    expect(running!).toMatchObject({ kind: "shell", status: "running", summary: null });
+    expect(running!).toMatchObject({ kind: "shell", status: "running", summary: null, end_reason: null, exit_code: null });
     expect(running!.description).toContain(commandLine.slice(0, 12));
     // REQ-003: the command is the step's command line, identical to the unchanged title.
     expect(running!.command).toBe(running!.description);
@@ -172,6 +173,8 @@ suite("real AGY daemons are shown as background tasks (AC-013)", () => {
       expect(completed, "completed BACKGROUND_TASK_UPDATED").toBeDefined();
       expect(completed!.at - end.at, "completion follows the daemon's own exit").toBeGreaterThanOrEqual(12_000);
       expect(completed!.summary ?? "").toMatch(/exited with code 0/u);
+      // autobyteus-483 AC-006: the exit code is a field; no end reason.
+      expect(completed!).toMatchObject({ end_reason: null, exit_code: 0 });
       expect(completed!).toMatchObject({ kind: "shell", started_at: running.started_at, description: running.description });
       // No new turn was needed: nothing but background-task updates arrived after the turn ended.
       expect(run.messages.slice(inputsBefore).filter((m) => m.type.startsWith("TURN_") || m.type.startsWith("TOOL_"))).toEqual([]);
@@ -191,6 +194,7 @@ suite("real AGY daemons are shown as background tasks (AC-013)", () => {
       evidence.failed = failed ?? null;
       expect(failed, "failed BACKGROUND_TASK_UPDATED").toBeDefined();
       expect(failed!.summary ?? "").toMatch(/exited with code 3/u);
+      expect(failed!).toMatchObject({ end_reason: null, exit_code: 3 });
       expect(run.tasks().map((task) => task.status)).toEqual(["running", "failed"]);
       evidence.result = "Pass";
     } catch (error) {
@@ -214,6 +218,8 @@ suite("real AGY daemons are shown as background tasks (AC-013)", () => {
       evidence.stopped = stopped ?? null;
       expect(stopped, "stopped BACKGROUND_TASK_UPDATED").toBeDefined();
       expect(stopped!.summary).toBeNull();
+      // autobyteus-483 AC-007: AGY stopped with the run, so the task says the run ended.
+      expect(stopped!).toMatchObject({ end_reason: "run_ended", exit_code: null });
       expect(run.tasks().map((task) => task.status)).toEqual(["running", "stopped"]);
       expect(await waitListening(port, false, 10_000), "daemon stopped with AGY").toBe(true);
       evidence.result = "Pass";

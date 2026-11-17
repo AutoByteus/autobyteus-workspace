@@ -528,7 +528,7 @@ describeGated("Native background tasks through the real server (scripted model)"
     const tag = `BGT06_${randomUUID().slice(0, 8)}`;
     cleanupTags.push(tag);
     let startResult: Json = {};
-    const { session } = await start("BGT-06", [
+    const { session, frames } = await start("BGT-06", [
       () => ({ toolCalls: [background(`echo serving; ${tagged(tag)}`)] }),
       (request) => { startResult = resultJson(request.toolResults[0]!); return { text: "Started." }; },
     ]);
@@ -542,6 +542,8 @@ describeGated("Native background tasks through the real server (scripted model)"
     const goneMs = await until(() => processTable().some((row) => row.pgid === pgid) ? undefined : Date.now() - terminatedAt, "process group gone", 10_000);
     expect(withTag(tag)).toEqual([]);
     expect(existsSync(path.dirname(String(startResult.outputFile)))).toBe(false);
+    // autobyteus-483 AC-007: the panel's task says the run's end stopped it (its summary keeps the signal).
+    expect(taskFrames(frames, pid).at(-1)!.payload).toMatchObject({ status: "stopped", end_reason: "run_ended", exit_code: null });
     await wait(5_000);
     expect(model.notices("BGT-06")).toHaveLength(0);
     expect(model.of("BGT-06")).toHaveLength(2);
@@ -591,7 +593,8 @@ describeGated("Native background tasks through the real server (scripted model)"
       process.kill(pid, "SIGTERM");
       const notice = (await requests("BGT-08", 3, 30_000))[2]!;
       expect(notice.lastUser).toMatch(new RegExp(`- pid ${pid} \`echo up; [^\\n]*${tag}\`: killed by SIGTERM after \\d+s`));
-      expect(taskFrames(frames, pid).at(-1)!.payload).toMatchObject({ status: "stopped", summary: "signal SIGTERM" });
+      // autobyteus-483 AC-008: a kill the run did not make carries no end reason; the summary names the signal.
+      expect(taskFrames(frames, pid).at(-1)!.payload).toMatchObject({ status: "stopped", summary: "signal SIGTERM", end_reason: null, exit_code: null });
       expect(withTag(tag)).toEqual([]);
       await idleAfter(frames, notice.at);
       await record("BGT-08", { pid, requests: requestDigest("BGT-08"), frames: frameDigest(frames) });

@@ -113,8 +113,9 @@
 //                  a folder (same file, after MSP-31).
 //   MSP-43 autobyteus-472  Touch zoom (pinch, scroll, double tap) of a PDF and an image in the phone viewer, the page itself
 //                  never zooming, and Download: `mobile-file-zoom-cases.mjs` (on the phone page, right after MSP-16).
-//   MSP-47…49 autobyteus-473  Background tasks: on the phone's Activity (a task started before it opened, its end, a task
-//                  started while open) and on the desktop after a reload: `mobile-background-tasks-cases.mjs` (after MSP-43).
+//   MSP-47…49, MSP-59 autobyteus-473, autobyteus-483  Background tasks: on the phone's Activity (a task started before it
+//                  opened, its end with its end line, a task started while open, a task the run's end stopped) and on the
+//                  desktop after a reload: `mobile-background-tasks-cases.mjs` (after MSP-43).
 //   MSP-33 autobyteus-435 REQ-005  A reload reopens the same subject on the same screen, after "Opening…" and never the
 //                  list first (a phone of its own): an agent run's Activity, a Team run's Messages, a Team member, a delegated
 //                  task agent (its host's rows read first); a row no node lists gives the list. New run → Create run: a
