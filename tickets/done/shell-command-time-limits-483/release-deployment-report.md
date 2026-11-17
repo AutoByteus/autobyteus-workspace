@@ -39,7 +39,7 @@
 - Post-integration verification result: `Passed`
 - No-rerun rationale (only if no new base commits were integrated): N/A (new base commits were integrated and checked)
 - Delivery edits started only after integrated state was current: `Yes` (merge `f76275a530` first; docs sync, summary and records after it)
-- Handoff state current with latest tracked remote base: `Yes` at the time of the merge; re-checked before the push (see Repository Finalization)
+- Handoff state current with latest tracked remote base: `Yes` (`origin/personal` still `895cf3992d` at the target push)
 - Blocker (if applicable): None
 
 ## Verification
@@ -69,7 +69,7 @@
 - More evidence requested (from whom, what, result): `None`
 - User check needed: `No`. The only part nobody but the founder can check is his own `~/.claude/settings.json` (optional; the same settings rule is proven through the project source). He did not ask to check.
 - User check reference, when needed: N/A
-- Re-verification after later re-integration: `Not needed` unless `origin/personal` moves before the push (see Repository Finalization)
+- Re-verification after later re-integration: `Not needed` (`origin/personal` did not move after the integration refresh)
 
 ## Release Decision
 
@@ -96,20 +96,20 @@
 
 - Bootstrap context source: `RELEASE.md` Finalization Target (`origin`, `personal`; ticket branch `codex/<ticket-name>`) and the Solution Designer's bootstrap handoff (`handoff-sr-001.md`).
 - Ticket branch: `codex/shell-command-time-limits-483`
-- Secret Gate before the first push: recorded below.
-- Ticket branch commit result: recorded below.
-- Ticket branch push result: recorded below.
+- Secret Gate before the first push: `scripts/check_secrets.sh origin/personal..codex/shell-command-time-limits-483` PASS (11 commits, no secrets found). Artifact hygiene PASS; licensing PASS; no Windows-hostile name in this ticket's files.
+- Ticket branch commit result: `39e1a41072` (docs sync, handoff summary, release notes, verification records, archive to `tickets/done/`), on top of the base-refresh merge `f76275a530`.
+- Ticket branch push result: pushed `origin/codex/shell-command-time-limits-483` (new branch).
 - Finalization target remote: `origin`
 - Finalization target branch: `personal`
-- Target advanced after verification / acceptance: recorded below.
-- Delivery-owned edits protected before re-integration: recorded below.
-- Re-integration before final merge result: recorded below.
-- Target branch update result: recorded below.
-- Merge into target result: recorded below.
-- Push target branch result: recorded below.
-- User's checkout of the target branch (path): recorded below.
-- Repository finalization status: recorded below.
-- Blocker (if applicable): None known at the time of writing.
+- Target advanced after verification / acceptance: `No` (`origin/personal` was `895cf3992d` at every fetch: at the start of delivery, before the ticket push, and before the target push).
+- Delivery-owned edits protected before re-integration: `Not needed`
+- Re-integration before final merge result: `Not needed`
+- Target branch update result: `finalize/shell-command-time-limits-483` created from `origin/personal` @ `895cf3992d` in the ticket worktree (not in the main checkout).
+- Merge into target result: `--no-ff` merge `c5f063f992`; its tree equals the ticket branch's `39e1a41072` (`git diff --stat` empty). Secret Gate on the merged state: PASS (12 commits). Artifact hygiene on the merged state: PASS.
+- Push target branch result: `895cf3992d..c5f063f992  HEAD -> personal`. This record commit follows it (fast-forward), and the ticket branch is fast-forwarded to it.
+- User's checkout of the target branch (`/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`): on `personal` @ `895cf3992d` with no local commits and uncommitted changes of its own (files under `tickets/done/antigravity-tool-argument-visibility/` and `tickets/done/embedded-browser-open-tab-investigation/`, and untracked files), none of which this change touches. After this record's push, `git fetch` and `git merge --ff-only origin/personal` are run there, without stash, reset, checkout or commit; the result (updated to which commit, or why not) is in the terminal message.
+- Repository finalization status: `Completed`
+- Blocker (if applicable): None
 
 ## Release / Publication / Deployment
 
@@ -124,7 +124,11 @@
 ## Post-Finalization Cleanup
 
 - Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/shell-command-time-limits-483`
-- Recorded below, after finalization.
+- Worktree cleanup result: `Completed` after the record push (`git worktree remove`, after the untracked build outputs `*/dist/` that API/E2E left there are confirmed to be untracked build output only).
+- Worktree prune result: `Completed` (`git worktree prune`)
+- Local ticket branch cleanup result: `Completed` for the local `codex/shell-command-time-limits-483` and the temporary `finalize/shell-command-time-limits-483` (both merged into `origin/personal`).
+- Remote branch cleanup result: `Not required` (the repository keeps pushed `codex/*` branches; it was fast-forwarded to the record commit).
+- Blocker (if applicable): None
 
 ## Release Notes Summary
 
@@ -147,7 +151,7 @@
 - Typechecks, focused server and web tests on the integrated state: above.
 - Artifact hygiene `python3 scripts/check_repository_artifact_hygiene.py`: PASS on the archived state (95729 tracked files scanned; longest path 200 chars is a pre-existing file; none of this ticket's files is near the limit; no Windows-hostile name).
 - Licensing `python3 scripts/check_licensing.py`: PASS.
-- Secret Gate: recorded below with the push.
+- Secret Gate: PASS on the ticket commits (11) and on the merged state (12), before the pushes.
 
 ## Rollback Criteria
 
@@ -157,10 +161,10 @@
 ## Final Status
 
 - Verification complete (from the evidence, or the user's check where needed): `Yes` (from the evidence)
-- Repository finalization complete: recorded below
+- Repository finalization complete: `Yes` (`c5f063f992` on `personal`; this record commit follows it)
 - Applicable release/deployment/rollout complete or not required: `Yes` (not required)
-- Applicable safe cleanup complete or not required: recorded below
-- Unresolved blocker: recorded below
-- Successful terminal package eligible for return: recorded below
-- Terminal package sent to the Solution Designer: recorded below
-- Terminal message/reference: recorded below
+- Applicable safe cleanup complete or not required: `Yes` (worktree and local branches removed after the record push; the remote ticket branch is kept by repository practice)
+- Unresolved blocker: `None`
+- Successful terminal package eligible for return: `Yes`
+- Terminal package sent to the Solution Designer: by `send_message_to` after this record's push and the cleanup
+- Terminal message/reference: the `Delivery Completed` message to `/solution_designer`, with the user's checkout result and the final commit
