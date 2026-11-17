@@ -1,0 +1,12 @@
+# IMP-03 mutation check: each listed workflow mutation must fail test_server_package_release.py
+# Command: sed -i "" <mutation> .github/workflows/release-server-docker.yml; python3 -m unittest scripts/tests/test_server_package_release.py; git checkout -- .github/workflows/release-server-docker.yml
+# Commit: 1b113a8313
+# Environment: macOS 26.5.2, Python 3.9.6
+# Date: 2026-11-17T18:24Z
+
+mutation: s/check_index "${RUNNER_TEMP}\/dry-run-index.json" "dry-run"/true/ => FAILED (failures=9)
+mutation: s/inspect --raw "${VERSION_TAG}"/inspect --raw "${IMAGE_NAME}:${NORMALIZED_TAG}"/ => FAILED (failures=3)
+mutation: s/if \[\[ "${ARCH}" != "${PACKAGE_ARCH}" \]\]; then/if false; then/ => FAILED (failures=1)
+mutation: s/seq 1 120/seq 1 60/ => FAILED (failures=1)
+mutation: s/needs: \[prepare-release, build\]/needs: [prepare-release]/ => FAILED (failures=1)
+workflow restored: yes
