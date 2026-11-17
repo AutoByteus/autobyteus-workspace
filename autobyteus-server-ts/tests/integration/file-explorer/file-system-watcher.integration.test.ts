@@ -1,4 +1,5 @@
 import fs from "node:fs/promises";
+import { watch as fsWatch } from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { describe, expect, it, beforeEach, afterEach } from "vitest";
@@ -19,10 +20,33 @@ const createTempWorkspace = async (): Promise<string> => {
 /**
  * autobyteus-500 FU-021: the tests assert outcomes, not timing. Under CPU contention an event can arrive late and a rename
  * can come as a delete and an add in separate batches, so every wait collects changes until the expected one appears,
- * under one hang guard; a "no event" check uses a sentinel change instead of a quiet window.
+ * under one hang guard; a "no event" check uses a sentinel change instead of a quiet window. The guard is one 60 s budget
+ * per test, shared by its waits, so the environment probe still runs (and labels the failure) before the test timeout.
  */
 const HANG_GUARD_MS = 60_000;
 const TEST_TIMEOUT_MS = 90_000;
+let guardEndsAt = 0;
+const HANG_GUARD_MESSAGE = "Timed out waiting for event (hang guard)";
+
+/**
+ * SR-013 (D-13, ARCH-REV-006): when a wait reaches the hang guard, whether the OS delivers file events at all now. A raw
+ * `fs.watch` on a fresh temp dir, one write, at most 10 s; none of our watcher code. The OS can drop events under load
+ * (FSEvents; investigation notes "FU-021, continued"), and then a watcher result says nothing about the watcher.
+ */
+const ENVIRONMENT_PROBE_MS = 10_000;
+const osDeliversFileEvents = async (): Promise<boolean> => {
+  const dir = await fs.mkdtemp(path.join(os.tmpdir(), "autobyteus-watch-probe-"));
+  try {
+    return await new Promise<boolean>((resolve) => {
+      const watcher = fsWatch(dir, () => { clearTimeout(timer); watcher.close(); resolve(true); });
+      const timer = setTimeout(() => { watcher.close(); resolve(false); }, ENVIRONMENT_PROBE_MS);
+      void fs.writeFile(path.join(dir, "probe.txt"), "probe", "utf-8");
+    });
+  } finally {
+    await fs.rm(dir, { recursive: true, force: true });
+  }
+};
+const ENVIRONMENT_MESSAGE = "ENVIRONMENT: the OS delivered no file event within 10 s (FSEvents under load); this watcher result is not meaningful";
 
 const nextEvent = async (
   events: AsyncGenerator<string, void, void>,
@@ -30,7 +54,7 @@ const nextEvent = async (
 ): Promise<FileSystemChangeEvent> => {
   let timeout: NodeJS.Timeout | null = null;
   const timer = new Promise<never>((_, reject) => {
-    timeout = setTimeout(() => reject(new Error("Timed out waiting for event (hang guard)")), timeoutMs);
+    timeout = setTimeout(() => reject(new Error(HANG_GUARD_MESSAGE)), timeoutMs);
   });
   const next = events.next().then((result) => {
     if (result.done || !result.value) {
@@ -45,16 +69,22 @@ const nextEvent = async (
   }
 };
 
-/** Every change until one matches `expected`, under the hang guard. */
+/** Every change until one matches `expected`, under the test's hang guard. */
 const collectUntil = async (
   events: AsyncGenerator<string, void, void>,
   expected: (change: FileSystemChange) => boolean,
-  timeoutMs = HANG_GUARD_MS,
 ): Promise<FileSystemChange[]> => {
-  const deadline = Date.now() + timeoutMs;
+  const deadline = guardEndsAt;
   const changes: FileSystemChange[] = [];
-  while (!changes.some(expected)) {
-    changes.push(...(await nextEvent(events, Math.max(deadline - Date.now(), 1))).changes);
+  try {
+    while (!changes.some(expected)) {
+      changes.push(...(await nextEvent(events, Math.max(deadline - Date.now(), 1))).changes);
+    }
+  } catch (error) {
+    if (!(error instanceof Error) || error.message !== HANG_GUARD_MESSAGE) throw error;
+    // The case's diagnostics: what arrived before the guard.
+    const seen = JSON.stringify(changes.map((change) => ({ type: change.type, path: pathOf(change) || (change as { path?: string }).path })));
+    throw new Error(`${await osDeliversFileEvents() ? HANG_GUARD_MESSAGE : ENVIRONMENT_MESSAGE}; changes before the guard: ${seen}`);
   }
   return changes;
 };
@@ -78,7 +108,8 @@ const pathOf = (change: FileSystemChange): string => {
 
 /**
  * No change for the ignored path: after `action`, a sentinel file is written in `root` (watched), and every change up to
- * the sentinel's add is checked. The watcher reports in order, so an ignored change would come before it.
+ * the sentinel's add is checked. The watcher reports in order, so an ignored change would come before it. The sentinel is
+ * then removed and its delete awaited, so no late sentinel change reaches a later subscriber.
  */
 const expectNoEventAfterAction = async (
   events: AsyncGenerator<string, void, void>,
@@ -94,17 +125,21 @@ const expectNoEventAfterAction = async (
   await fs.writeFile(path.join(root, sentinel), "sentinel", "utf-8");
   const changes = await collected;
   expect(changes.filter((change) => !isSentinel(change)), "an ignored path reported a change").toEqual([]);
-  await fs.rm(path.join(root, sentinel), { force: true });
+  const sentinelNodeId = (changes.find(isSentinel) as AddChange).node.id;
+  await expectEventAfterAction(events, () => fs.rm(path.join(root, sentinel), { force: true }),
+    (change) => change.type === ChangeType.DELETE && (change as DeleteChange).nodeId === sentinelNodeId);
   if (events.return) {
     void events.return();
   }
 };
 
+const isAddOf = (name: string) => (change: FileSystemChange) =>
+  change.type === ChangeType.ADD && (change as AddChange).node.name === name;
+
 const waitForChange = async (
   events: AsyncGenerator<string, void, void>,
   predicate: (change: FileSystemChange) => boolean,
-  timeoutMs = HANG_GUARD_MS,
-): Promise<FileSystemChange> => (await collectUntil(events, predicate, timeoutMs)).find(predicate)!;
+): Promise<FileSystemChange> => (await collectUntil(events, predicate)).find(predicate)!;
 
 describe("FileSystemWatcher integration", () => {
   let workspace: string;
@@ -115,6 +150,7 @@ describe("FileSystemWatcher integration", () => {
     explorer = new WorkspaceFileExplorer(workspace);
     await explorer.buildWorkspaceDirectoryTree();
     await explorer.startWatcher();
+    guardEndsAt = Date.now() + HANG_GUARD_MS;
   });
 
   afterEach(async () => {
@@ -296,7 +332,6 @@ describe("FileSystemWatcher integration", () => {
       const changePromise = waitForChange(
         stream,
         (change) => change.type === ChangeType.ADD,
-        4000,
       );
 
       await fs.writeFile(filePath, "hello", { encoding: "utf-8" });
@@ -338,7 +373,6 @@ describe("FileSystemWatcher integration", () => {
       const deleteChangePromise = waitForChange(
         stream,
         (change) => change.type === ChangeType.DELETE,
-        12000,
       );
       await fs.rm(folderPath, { recursive: true, force: true });
       const deleteChange = (await deleteChangePromise) as DeleteChange;
@@ -394,10 +428,10 @@ describe("FileSystemWatcher integration", () => {
       }
 
       const projectDir = path.join(workspace, "project");
-      await expectEventAfterAction(stream, () => fs.mkdir(projectDir));
+      await expectEventAfterAction(stream, () => fs.mkdir(projectDir), isAddOf("project"));
 
       const gitignorePath = path.join(projectDir, ".gitignore");
-      await expectEventAfterAction(stream, () => fs.writeFile(gitignorePath, "build/\n*.log\n"));
+      await expectEventAfterAction(stream, () => fs.writeFile(gitignorePath, "build/\n*.log\n"), isAddOf(".gitignore"));
 
       const ignoreStream = explorer.fileWatcher?.events();
       if (!ignoreStream) {
@@ -414,9 +448,9 @@ describe("FileSystemWatcher integration", () => {
       );
 
       const change = await expectEventAfterAction(stream, () =>
-        fs.writeFile(path.join(projectDir, "main.ts"), "main", "utf-8"), (item) => item.type === ChangeType.ADD,
+        fs.writeFile(path.join(projectDir, "main.ts"), "main", "utf-8"), isAddOf("main.ts"),
       );
-      const addChange = change.changes.find((item) => item.type === ChangeType.ADD) as
+      const addChange = change.changes.find(isAddOf("main.ts")) as
         | AddChange
         | undefined;
       expect(addChange?.node.name).toBe("main.ts");
@@ -435,7 +469,7 @@ describe("FileSystemWatcher integration", () => {
       }
 
       await expectEventAfterAction(stream, () =>
-        fs.writeFile(path.join(workspace, ".gitignore"), "*.tmp\nlogs/\n"),
+        fs.writeFile(path.join(workspace, ".gitignore"), "*.tmp\nlogs/\n"), isAddOf(".gitignore"),
       );
 
       const ignoreStream = explorer.fileWatcher?.events();
@@ -494,11 +528,11 @@ describe("FileSystemWatcher integration", () => {
       }
 
       await expectEventAfterAction(stream, () =>
-        fs.writeFile(path.join(workspace, ".gitignore"), "build/\n"),
+        fs.writeFile(path.join(workspace, ".gitignore"), "build/\n"), isAddOf(".gitignore"),
       );
 
       const sourceFile = path.join(workspace, "main.js");
-      await expectEventAfterAction(stream, () => fs.writeFile(sourceFile, "main", "utf-8"));
+      await expectEventAfterAction(stream, () => fs.writeFile(sourceFile, "main", "utf-8"), isAddOf("main.js"));
       const sourceNode = explorer.getTree()?.findNodeByPath("main.js");
       if (!sourceNode || !sourceNode.parent) {
         throw new Error("Source node missing in tree");
@@ -518,7 +552,6 @@ describe("FileSystemWatcher integration", () => {
       const deleteChangePromise = waitForChange(
         ignoreStream2,
         (change) => change.type === ChangeType.DELETE,
-        4000,
       );
       await fs.rename(sourceFile, path.join(buildDir, "main.js"));
       const deleteChange = (await deleteChangePromise) as DeleteChange;
@@ -539,7 +572,7 @@ describe("FileSystemWatcher integration", () => {
       }
 
       const ghostPath = path.join(workspace, "ghost_file.txt");
-      await expectEventAfterAction(stream, () => fs.writeFile(ghostPath, "ghost", "utf-8"));
+      await expectEventAfterAction(stream, () => fs.writeFile(ghostPath, "ghost", "utf-8"), isAddOf("ghost_file.txt"));
 
       await explorer.buildWorkspaceDirectoryTree();
       const node = explorer.getTree()?.findNodeByPath("ghost_file.txt");
@@ -555,7 +588,6 @@ describe("FileSystemWatcher integration", () => {
       const deleteChangePromise = waitForChange(
         stream,
         (change) => change.type === ChangeType.DELETE,
-        4000,
       );
 
       await fs.unlink(ghostPath);
