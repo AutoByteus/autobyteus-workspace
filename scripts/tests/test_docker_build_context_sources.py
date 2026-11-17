@@ -121,8 +121,8 @@ class DockerBuildContextSourcesTest(unittest.TestCase):
             for fragment in expected:
                 self.assertIn(fragment, text, f"Broken retained entrypath: {path}: {fragment}")
         workflow = (root / ".github/workflows/release-server-docker.yml").read_text(encoding="utf-8")
-        self.assertEqual(workflow.count("file: autobyteus-server-ts/docker/Dockerfile.monorepo"), 2)
-        self.assertEqual(workflow.count("context: .\n"), 2)
+        self.assertEqual(workflow.count("file: autobyteus-server-ts/docker/Dockerfile.monorepo"), 1)
+        self.assertEqual(workflow.count("context: .\n"), 1)
 
     def test_retained_entrypaths_use_monorepo_root_context(self) -> None:
         self.assert_retained_entrypaths(REPO_ROOT)
