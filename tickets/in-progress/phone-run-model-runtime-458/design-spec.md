@@ -2,13 +2,13 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: `SR-003`
+- Current solution revision ID: `SR-006`
 - Approved requirements: `requirements-doc.md` SR-003 (the founder, 2026-11-17, through the approved UI/UX specification; DEC-001 and DEC-003 his; DEC-004 the Solution Designer's from the code).
 - Behavior-defining supplement: the Product-owned UI/UX specification `/Users/normy/autobyteus_org/autobyteus-web-design/tickets/done/phone-conversation-readability-506/ui-ux-spec.md` (Approved; VIS-001…VIS-019; `ui-text-inventory.md`); runnable UI reference: `/Users/normy/autobyteus_org/autobyteus-web-design` branch `personal` `fc68a7a4d2` (reference files: `assets/css/phone-conversation.css`, `components/mobile/views/MobileRunSettings.vue`, `components/mobile/runScreen/MobileRunMenu.vue`, `composables/mobile/usePhoneTextSize.ts`, `components/conversation/AIMessage.vue`, `UserMessage.vue`, `components/workspace/agent/AgentConversationFeed.vue`, `EventMonitorBrowseAssistantRow.vue`, `AgentEventMonitor.vue`, `components/agentInput/AgentUserInputTextArea.vue`). The reference is mocked (invented runs, Settings in memory, a scripted refusal); production uses the node's lists and the stopped-run updates the desktop uses.
 - User approval of the design: `Not required` (no visible behavior beyond the approved specification).
 - Design status: `Ready`
 - Authorities read (2026-11-17): `references/architecture-design.md`; `references/design-principles.md` (re-read after the 2026-11-16 update: Principle 11 "one owner for a picture shown in several places", Case 10); `/DESIGN.md` (read in this conversation; rule 11 tests follow the code); `GLOSSARY.md`; `node_access_model.md` (NA-7, §5).
-- Conflicts or discrepancies: none.
+- Conflicts or discrepancies: **one deliberate deviation from the approved specification, by the founder's word** (Task comment 2026-11-17, "CORRECTION BY THE FOUNDER"): another agent's message keeps the arrow and the `agent_message` line on the phone, as on the desktop. The specification's text (decision 6, DC-005, Build notes) and VIS-004 still show them hidden; for this item the founder's correction governs and the product's `InterAgentMessageSegment` stays unchanged. The Product designer's closed ticket is not reopened unless he asks.
 
 ## Current-State Read
 
@@ -30,7 +30,7 @@ Port the approved phone conversation and Settings from the UI reference into the
 
 ## Change Scope (Mandatory)
 
-- In scope: UC-001…UC-005.
+- In scope: UC-001…UC-006 (UC-006: the shared stop's ownership check, `agentRunStore.ts`, `agentTeamRunStore.ts`).
 - Derived consumers: `MobileScreen` gains `'settings'` (readers: `MobilePairedShell`, `MobileRunMenu`, navigation back rules, tests); `useExistingRunConfigStore` gains the phone Settings as a second reader (no change to the store's contract); the shared conversation rows gain phone-only markup (`.conv-speaker`, turn grid) hidden on the desktop.
 - Deliberately left alone: the node; the desktop conversation layout and the desktop inter-agent arrow; the desktop editor; New run; the file viewer, VNC Viewer, run list; iOS.
 - Follow-ups: none found. A note for autobyteus-441 (keep stop and stopped-run updates on the phone's allowed list) goes to the PM with this handoff.
@@ -61,7 +61,7 @@ Port the approved phone conversation and Settings from the UI reference into the
 
 ## Legacy Removal Policy (Mandatory)
 
-- Obsolete paths: on the phone, `InterAgentMessageSegment`'s toggle button and message-type line are not rendered (phone variant); nothing removed on the desktop. Compatibility wrappers: `None`.
+- Obsolete paths: none (`InterAgentMessageSegment` unchanged on desktop and phone, the founder's correction). Compatibility wrappers: `None`.
 
 ## Persisted Data / State Transition Decision (Mandatory)
 
@@ -76,7 +76,7 @@ Port the approved phone conversation and Settings from the UI reference into the
 | DS-003 | ⋮ → Settings on a stopped run → change → Save | Saved on the node; back to the conversation | `MobileRunSettings` → `useExistingRunConfigStore` |
 | DS-004 | Settings on a live run → stop icon | The run stops; rows open | `MobileRunSettings` → `useRunStopAction` |
 
-- DS-001: `MobilePairedShell → MobileRunScreen → AgentEventMonitor (phone runtime: class phone-conversation, --pc-size from usePhoneTextSize) → rows (AIMessage, UserMessage, EventMonitorBrowseAssistantRow, InterAgentMessageSegment phone variant) → phone-conversation.css`.
+- DS-001: `MobilePairedShell → MobileRunScreen → AgentEventMonitor (phone runtime: class phone-conversation, --pc-size from usePhoneTextSize) → rows (AIMessage, UserMessage, EventMonitorBrowseAssistantRow; InterAgentMessageSegment unchanged, inside the full-width column) → phone-conversation.css`.
 - DS-002: `MobileRunMenu Text size step → usePhoneTextSize.set(step) (one phone-wide ref, localStorage) → AgentEventMonitor's --pc-size`.
 - DS-003: `MobileRunMenu "Settings" → navigation.openView('settings') → MobileRunSettings(target) → store.load<Kind>Canonical(run) → MobileRuntimeModelRows (runtime, model, config from the canonical selection) → store.update<Kind>ModelConfig(selection or scope patch) → store.canSave → store.save() → success: navigation.back() | refusal: the store's outcome message in the red card`.
 - DS-004: `MobileRunSettings: run live (canonical isActive) → stop icon → useRunStopAction(subject: agent | team | agent_org).stop() → onStopped: store reloads the canonical → rows enabled`.
@@ -90,7 +90,7 @@ Port the approved phone conversation and Settings from the UI reference into the
 - `phone-conversation.css` (new, `assets/css/`): the phone conversation rules, all under `.phone-conversation` (desktop never gets the class).
 - `MobileRunMenu.vue`: the Settings entry and the Text size block.
 - `useMobileNavigation.ts`: `'settings'` screen and view.
-- `InterAgentMessageSegment`: the phone variant without the toggle and type line (gated by the phone runtime).
+- `InterAgentMessageSegment`: unchanged (the founder's correction: the phone shows it as the desktop does).
 - `AgentUserInputTextArea.vue`: `rounded-b-[11px]` on its root (desktop and phone).
 - Catalogs: `localization/messages/en/mobileSettings.ts`, `localization/messages/zh-CN/mobileSettings.ts` (`mobile.settings.*`, the specification's keys).
 
@@ -119,7 +119,9 @@ Port the approved phone conversation and Settings from the UI reference into the
 
 ## Change Sequence
 
-1. Phone conversation: stylesheet, `.phone-conversation` and `--pc-size` on `AgentEventMonitor`, phone-only speaker line and turn grid in the rows, inter-agent phone variant; composer corner.
+0. First, its own commit (REQ-011, PRE-001 taken in by the PM): in `autobyteus-web/stores/agentRunStore.ts` `terminateRun` (~420-428) and the Team stop in `agentTeamRunStore.ts` (~233), ownership on return = same context and run, and (the start instance is unknown, or it equals the current one); an instance unknown at the start no longer fails the check. Unit tests as AC-009; check the desktop run tree's Terminate and the desktop Settings stop. Then the steps below.
+
+1. Phone conversation: stylesheet, `.phone-conversation` and `--pc-size` on `AgentEventMonitor`, phone-only speaker line and turn grid in the rows (no inter-agent change); composer corner.
 2. Text size composable and the menu block.
 3. Settings: navigation screen, menu entry, `MobileRunSettings` on the store, rows and stop action; catalogs.
 4. Tests: component tests; phone-bundle probe cases (layout measurements at 412 and 360 px, Text size, Settings stopped / refused / live idle / working, Team member); Android emulator journey on an isolated node with scripted runtimes (AC-004, AC-006); desktop unchanged (AC-008).
@@ -131,7 +133,7 @@ Port the approved phone conversation and Settings from the UI reference into the
 
 ## Guidance For Implementation
 
-- Port from the UI reference files named above; the visible values are the specification's (normative), the fixture content is illustrative.
+- Port from the UI reference files named above; the visible values are the specification's (normative), the fixture content is illustrative, **except another agent's message: do not port the reference's hidden arrow and type line; the product's `InterAgentMessageSegment` stays as it is (the founder's correction).**
 - Start from the founder's case: a stopped Team member on an isolated node with two scripted runtimes; and a live idle agent (the node answers `RUN_ACTIVE` to a Save).
 - The node's refusal texts are shown as the node words them (509 decides their translation later).
 - Isolated nodes and scripted runtimes only; no real provider quotas; no secrets in logs.

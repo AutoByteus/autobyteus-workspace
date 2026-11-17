@@ -8,7 +8,7 @@
 
 ## Build
 
-1. Phone conversation (506): 388 px column at 412 px, speaker line per turn, 17 px / 1.5, markdown and card values; inter-agent message without arrow and type line (phone only); composer lower corners (shared) and 8 px below on the phone.
+1. Phone conversation (506): 388 px column at 412 px, speaker line per turn, 17 px / 1.5, markdown and card values; another agent's message **unchanged** (arrow and type line kept, the founder's correction of 2026-11-17, overriding the specification's VIS-004 for this item); composer lower corners (shared) and 8 px below on the phone.
 2. Text size: four steps in the ⋮ menu, phone-wide, `localStorage` `autobyteus.phone.textSize`.
 3. Settings (458): ⋮ entry "Settings"; screen with name and status, New run's Runtime and Model rows, Save → back to the conversation; refusal card; live run → red stop icon, one tap, rows open after.
 4. Translation keys `mobile.settings.*` (English and Chinese).
