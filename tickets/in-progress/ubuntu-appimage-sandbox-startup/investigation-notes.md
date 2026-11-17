@@ -1,7 +1,7 @@
 # Ubuntu AppImage Sandbox Startup — Investigation Notes
 
 ## Investigation Meta
-- Package: `ubuntu-appimage-sandbox-startup`; resumed 2026-10-24; current round **SR-006**.
+- Package: `ubuntu-appimage-sandbox-startup`; resumed 2026-10-24; current round **SR-007** (requirements clarification 2026-11-17); runtime/source observations below remain dated 2026-10-24 unless explicitly stated.
 - Workspace: `/home/ryan-ai/hdd_drive/autobyteus_org/autobyteus-worktrees/ubuntu-appimage-sandbox-startup`.
 - Git branch: `fix/ubuntu-appimage-sandbox-startup`.
 - Resolved base: `origin/personal` at `1138e8fbefadeb3b30fdb88eb4a5a09beaf372ea`, refreshed with `git fetch origin personal` on 2026-10-24.
@@ -119,3 +119,13 @@ Preserve stable BEH/SCN/UC/REQ/AC identities, replace the old fallback assumptio
 
 ## Record Integrity
 Original archived logs and source patch retain whitespace verbatim; full staged diff-check reports historical/raw-evidence whitespace, not product source defects. Current authored Markdown/probe check is run separately. Initial documentation commit attempt had no configured Git identity; retry uses explicit agent-only commit identity without changing global/repository configuration. No remote push performed.
+
+## 2026-11-17 — SR-007: Unattended Upgrade Clarification
+User requires automatic upgrades after opt-in, not automatic checks/downloads followed by repeated Install/admin prompts. Earlier recommendation of ordinary DEB in-app installation does not meet this requirement and is withdrawn as a complete solution. Requirements returned to Draft for feasibility/permission refinement; no package choice or new trust/hosting architecture approved.
+
+Read current upstream LinuxUpdater source (https://raw.githubusercontent.com/electron-userland/electron-builder/master/packages/electron-updater/src/LinuxUpdater.ts): ordinary system-package installation invokes privileged tools through elevation helpers. Upstream master is not our pinned implementation and reading it is not runtime proof.
+Read Ubuntu unattended-update documentation (https://ubuntu.com/server/docs/how-to/software/automatic-updates/): the OS supports unattended package installation; third-party repository origins require explicit configuration. Simply installing a downloaded DEB or adding a repository does not imply unattended updates are authorized. A signed repository plus appropriately scoped OS update policy is a feasibility candidate. A dedicated, narrowly authorized service is another candidate with more security-sensitive ownership. Both need initial admin-authorized setup and security review; no recurring prompt is fundamentally required once the proper unattended authority exists, but no AutoByteus implementation is yet proven. Never solve this with arbitrary passwordless sudo, world-writable system binaries, root GUI, blanket policy changes or unauthenticated package sources.
+
+Installation is not the entire product lifecycle: safe activation/restart, existing agent work, channels, opt-out, integrity verification, concurrent package-manager locks and recovery need coherent evidence before a final recommendation. The standard OS mechanism does not by itself prove Mac-like app timing or successful in-app toggle integration. One-time authorization acceptance/scope is still open; recurring prompt in automatic mode is not acceptable.
+
+No code, host configuration, running app, data or releases changed. Canonical requirement changes are REQ-007/AC-008, BEH-004/SCN-004 and DEC-007; prior source/host matrix remains historical. Task autobyteus-5 read in full on this date. Re-read updated skill SKILL.md and requirements-engineering.md before this refinement; architecture phase and its updated reading gates remain deferred until approved requirements. No completed solution or handoff; continue the user decision conversation.

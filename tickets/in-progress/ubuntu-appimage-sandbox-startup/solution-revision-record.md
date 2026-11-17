@@ -12,6 +12,8 @@
 
 | SR-006 | Requirements + evidence | 2026-10-24 resumed Task and current-release reproduction | Historical approval / API-REV-001 Blocked | Ready for Approval; current design N/A | Retained original IDs; added conditional native install and finalization IDs | Current A/B security/distribution decision pending; no source changes |
 
+| SR-007 | Requirements + evidence | User 2026-11-17 rejects per-update admin prompts | Ready for Approval, no selection | Draft, unattended-update feasibility open | BEH-004, SCN-004, REQ-005/007, AC-006/008, DEC-007 | Assisted-DEB update recommendation withdrawn; no new mechanism approved |
+
 ## SR-001 — Conditional AppImage Fallback Proposal
 
 - Phase/classification: Requirements / Initial Baseline.
@@ -103,3 +105,16 @@
 - Handoff result: **routine approval hold**, no downstream routing. Result context `approval-request-sr006.md`; not a Blocked handoff or Terminal.
 - Gaps: user choice; current-source build, actual capable-host renderer security, representative Ubuntu24, native ARM64, real update/relaunch, finalization/cleanup all still pending. No old or stub Pass promoted.
 - Next action: ask user directly, record exact approval then continue. Do not ask delegator to decide for user.
+
+## SR-007 — Fully Unattended Updates After Opt-In (2026-11-17)
+- Phase/classification: Requirements refinement / Requirement Gap in prior recommendation.
+- Trigger: User rejects administrator involvement on each automatic update; explicitly means unattended upgrades after opt-in, like their desired Mac experience.
+- Prior/current authority: SR-006 Ready for Approval with no selection → SR-007 Draft. No current design; old historical approvals remain inapplicable.
+- Affected: BEH-004, SCN-004, REQ-005/007, AC-006/008, DEC-007; common security/data constraints unchanged.
+- Canonical changes: remove permission for recurring install authorization as an acceptable automatic path; add unattended outcome and real nonroot/no-cached-auth verification, safe activation and opt-out; record initial setup/privileged trust/hosting uncertainties.
+- Evidence: upstream LinuxUpdater elevation handling and Ubuntu documented unattended-upgrades with explicit third-party-origin policy. Read only; no AutoByteus runtime proof or new release/base refresh.
+- Approval: user established desired unattended behavior, not a DEB selection, privileged service, hosted repository or trust policy. Overall requirements are not approved.
+- Supplements: approval-request-sr006.md marked superseded for current readiness; no new behavior-defining supplement.
+- Classification/routing: N/A before completed design; normal requirements conversation, no downstream handoff.
+- Remaining gaps: unattended mechanism feasibility and authorization scope, distribution selection, all actual implementation/validation/finalization. No production changes or security bypass performed.
+- Next action: explain that DEB can participate in an unattended system with preauthorized update infrastructure, but ordinary electron-updater elevation alone does not meet the user's goal; refine before approving/designing.
