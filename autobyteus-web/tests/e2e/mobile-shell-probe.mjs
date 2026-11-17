@@ -125,7 +125,7 @@
 //   MSP-36 autobyteus-435 REQ-013  `delegate_task` to the sender's own address, by the agent's real tool call: a standalone
 //                  run and a Team member are refused with the self words and nothing is placed; a teammate's address keeps
 //                  the own-team words.
-//   MSP-59 autobyteus-448 REQ-006, AC-005 (DEC-004)  A run idle with a background task (the scripted AGY CLI's
+//   MSP-67 autobyteus-448 REQ-006, AC-005 (DEC-004)  A run idle with a background task (the scripted AGY CLI's
 //                  `BACKGROUND_STEP`): its row's dot is the active blue (not pulsing), the run screen's second line says
 //                  "Background task running" and its composer offers Send, never Stop; when the task exits both say Idle.
 //   MSP-34, MSP-35 autobyteus-435 REQ-011  A Task closed while its listed host run is stopped: its delegated row leaves
@@ -2390,7 +2390,7 @@ const runCases = async () => {
     return facts;
   });
 
-  await runCase('MSP-59', async () => {
+  await runCase('MSP-67', async () => {
     await toList(page);
     await showOlder(page);
     const key = `agent:${stack.plain[1]}`;
@@ -2401,18 +2401,18 @@ const runCases = async () => {
     const headerDot = await page.locator(`${sel('mobile-run-title')} span.rounded-full`).first().getAttribute('class');
     const stop = await page.locator(`${sel('mobile-run-conversation')} button[aria-label="Stop generation"]`).count();
     const send = await page.locator(`${sel('mobile-run-conversation')} button[aria-label="Send message"]`).count();
-    await shot(page, 'MSP-59-background-run-screen');
+    await shot(page, 'MSP-67-background-run-screen');
     await toList(page);
     const dot = page.locator(`${rowSel(key)} ${sel('mobile-run-status-dot')}`);
     await waitFor('the row shows background', async () => (await dot.getAttribute('data-status')) === 'background', 20_000);
     const row = { status: await dot.getAttribute('data-status'), dotClass: await dot.getAttribute('class'),
       label: await page.locator(rowSel(key)).locator(sel('mobile-run-open')).getAttribute('aria-label').catch(() => null) };
-    await shot(page, 'MSP-59-background-row');
+    await shot(page, 'MSP-67-background-row');
     // The daemon exits (25 s after it started): idle again, in the row and on the run screen.
     await waitFor('the row is idle again', async () => (await dot.getAttribute('data-status')) === 'idle', 60_000);
     await openRow(page, key);
     const after = (await runScreen(page)).subtitle;
-    await shot(page, 'MSP-59-idle-again');
+    await shot(page, 'MSP-67-idle-again');
     const facts = { headerDot, stop, send, row, after };
     assert((headerDot ?? '').split(/\s+/).includes('bg-blue-500') && !(headerDot ?? '').includes('animate-pulse'), 'the run screen dot is the active blue, not pulsing', facts);
     assert(stop === 0 && send >= 1, 'no Stop for "Background task running"; Send is offered', facts);

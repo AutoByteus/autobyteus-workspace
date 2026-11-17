@@ -18,9 +18,9 @@ All paths below are in `/Users/normy/autobyteus_org/autobyteus-worktrees/backgro
 
 ## Current Implementation Summary
 
-- Implementation cycle: `Local Fix` for part 2 (IR-004, CRR-005 CR-002); IR-003 the part 2 baseline
+- Implementation cycle: `Local Fix` for part 2 (IR-005: integration of the refreshed base, delivery DR-002); IR-004 (CR-002), IR-003 the part 2 baseline
 - Implementation revision record: `implementation-revision-record.md`
-- Current implementation revision ID: `IR-004` (IR-003 baseline)
+- Current implementation revision ID: `IR-005` (IR-003 baseline, IR-004)
 - Related solution revision IDs: `SR-005`, `SR-006`
 - Related architecture-review revision IDs: `ARCH-REV-004` (Fail, revised), `ARCH-REV-005` (Pass)
 - Related code-review revision IDs: `CRR-005` (Fail: CR-002, Local Fix; `code-review-report.md` "Latest Round: Part 2"), `CRR-006` (Pass, round 5: CR-002 resolved; sent on to API/E2E by the code reviewer)
@@ -120,6 +120,28 @@ Deviations from a design principle decided during implementation:
 - No dependency change. Contract packages rebuilt (`dist/` committed).
 - The machine ran another worktree's test suites at the same time (load average up to 187); timing-sensitive failures are classified in the Checks.
 
+## Integration Of The Refreshed Base (IR-005, delivery DR-002)
+
+`origin/personal` @ `ff13782f36` (71 commits past `895cf3992d`, among them autobyteus-483 end reasons and exit codes,
+autobyteus-458 phone run settings, autobyteus-515 native tool search) is merged into the branch: merge `990ff9a3d4`,
+then `ca1979b206` and the probe-ID commit named in the handoff message.
+
+- `MobileRunTargetView.vue`: the base moved the phone's dot and status line into `utils/mobile/mobileRunSubjectLine.ts`,
+  which its new Settings screen (`MobileRunSettings.vue`) uses too. The helper now takes `backgroundTasksRunning` and
+  the translator and builds the line with `mobileRunActivityLabel` and the dot with `agentStatusDotClass(status, count)`,
+  so both phone surfaces show DEC-004's text and active dot; an unreachable run still shows only its error. Both call
+  sites pass the run's `AgentRunState.backgroundTasksRunning`; its spec gains the DEC-004 case.
+- `autobyteus-background-tasks.test.ts`: the base's `[status, summary, exit_code]` assertion kept, with part 2's
+  `runningBackgroundTaskCount(backend.backgroundTaskInspection)` for the removed backend boolean.
+- `agent_execution.md`: 483's `exitCode` / `end_reason: run_ended` text kept, with part 2's count.
+- Contract `dist/` maps rebuilt from the merged source (the three contract packages' tests pass; `dist/` unchanged by a rebuild).
+- No backend-level `hasRunningBackgroundTasks` is left: the base's calls in the backends, `claude-session.ts` and
+  `agent-run-termination.ts` merged onto part 2's removal without a conflict, and `git grep` on the merged tree finds only
+  `AgentRun.hasRunningBackgroundTasks()` (part 1's recorder, over the derivation) and its tests. 483's end reasons need no
+  decision with the count: an ended task (any `endReason`) is not `running`, so it is not counted.
+- Test doubles follow 483's type: background tasks in the part 2 tests and doubles carry `endReason: null, exitCode: null`.
+- The phone probe case of part 2 is renumbered MSP-59 → MSP-67: the base added its own MSP-59 (`mobile-background-tasks-cases.mjs`).
+
 ## Checks Run
 
 Evidence files are in `tickets/in-progress/background-task-restart-notice/evidence/`. Environment: macOS 26 arm64, node 22.23.1; another worktree's suites ran at the same time (load average 70 to 187).
@@ -137,6 +159,11 @@ Evidence files are in `tickets/in-progress/background-task-restart-notice/eviden
 | IMP-13 | `pnpm -C autobyteus-web test:e2e:team-status-live --cases TS-008 --output-dir <fresh>` (built server, Nuxt dev, headless Chrome, scripted AGY `BACKGROUND_STEP`) | `e259944b13` | the desktop list row, the TEAMS run row (one member background, one idle), the header, the composer, the return to Idle | AC-005, AC-006 (desktop) | Pass (the first run failed on the agent run row's dot, fixed in `e259944b13`) | `IMP-13-probe-TS-008/` | `evidence.json` `"status": "background"`, `"agentRowDot": "… bg-blue-500 mr-2"`, `"header": "Background task running"`, `"stop": 0`, `"after": {"header": "Idle"`; `first-run-fail-evidence.json` |
 | IMP-14 | `node autobyteus-web/tests/e2e/mobile-shell-probe.mjs --cases=MSP-59 --output-dir=<fresh>` (production phone bundle, paired node, scripted AGY) | `e259944b13` | the phone row and run screen, the composer, the return to Idle | AC-005, AC-006 (phone) | Pass | `IMP-14-probe-MSP-59/` | `"row": {"status": "background", … "label": "…, Background task running"}`, `"stop": 0`, `"after": "Idle"` |
 | IMP-15 | IR-004: `pnpm -C <pkg> test` for the three contract packages; `pnpm -C autobyteus-server-ts typecheck`; `pnpm -C autobyteus-web typecheck`; `vitest run tests/unit/remote-collaboration` | head | the remaining `remoteAgentStatusSchema` / `RemoteAgentStatus` and every package that builds against the contracts | CR-002 | Pass | `IMP-15-contracts.log`, `IMP-15-server-typecheck.log`, `IMP-15-web-typecheck.log`, `IMP-15-remote-collaboration-unit.log` | `# pass 22`, `# pass 14`, `# pass 37`; both `[typecheck] PASS` at their baselines; `Tests  154 passed (154)`. Search before removal: `rg -w` for each removed name finds only the file and its own test |
+| IMP-16 | IR-005 merged state: both typechecks; the three contract packages' tests | `ca1979b206` | everything that builds against the merged contracts | — | Pass | `IMP-16-merge-server-typecheck.log`, `IMP-16-merge-web-typecheck.log`, `IMP-16-merge-contracts.log` | both `[typecheck] PASS` at their baselines (1012 in 316; 87 in 37); `# pass 22`, `14`, `37`; `dist unchanged after rebuild` |
+| IMP-17 | IR-005: `pnpm -C autobyteus-server-ts test:unit` (full); `vitest run tests/integration/{agent,agent-team-execution,agent-execution,restart-resume,background-task-notices}` | `ca1979b206` | agent execution (483's end reasons with the count), background-task notices, restart-resume, every status route | REQ-006, REQ-007, regression | Pass for this change: unit `2 failed \| 8302 passed`, both time-outs at load 77 to 161 in files nothing here touches (`tracked-imports` passes on rerun; `agent-memory-explorer-service` passes with a 60 s timeout); integration `8 failed \| 171 passed`, all in `package-auto-refresh.integration.test.ts` (the `fs.watch` environment failure of IMP-09) | `IMP-17-merge-server-unit-full.log`, `IMP-17-merge-server-integration.log`, `IMP-17-merge-timeout-reruns.log` | `Tests  2 failed \| 8302 passed`; reruns `1 passed` / `4 passed` |
+| IMP-18 | IR-005: `pnpm -C autobyteus-web test:nuxt run` (full) | `ca1979b206` | status, phone run and run settings (`mobileRunSettingsScope.spec.ts` with the DEC-004 case, `MobileRunSettings.spec.ts`), every status consumer | REQ-006, AC-005/AC-006 (web) | Pass | `IMP-18-merge-web-unit-full.log` | `Test Files  764 passed (764)`, `Tests  5750 passed (5750)` |
+| IMP-19 | Fresh-start build (TESTING.md): `git clone --no-local` at `ca1979b206`, `pnpm install --frozen-lockfile`, `pnpm build:electron:mac -- --arm64` with the job's environment, then "Verify bundled Prisma ARM64" and "Verify packaged terminal runtime ARM64" (with the spawn probe) | `ca1979b206` | the contract `dist/` and every package's build from a clean clone | build | Pass; signing, notarization and other systems not tested (runner only) | `IMP-19-fresh-start-build/` | `install ok`, `build ok`, `verify prisma ok`, `verify terminal runtime ok`, `spawn probe ok`, `exit=0`; node v22.23.1 |
+| IMP-20 | IR-005 probes on the merge: `test:e2e:team-status-live --cases TS-008`; `mobile-shell-probe.mjs --cases=MSP-59,MSP-67` (the base's 483 phone background-task case and part 2's renumbered case) | merge + renumber | desktop rows, Team row, header, composer; the phone row and run screen; 483's run-ended phone Activity | AC-005, AC-006 | Pass | `IMP-20-merge-probes/` | TS-008 `evidence.json` Pass; `mobile-shell-probe.json` MSP-59 and MSP-67 Pass (`"status": "background"`, `"stop": 0`, `"after": "Idle"`) |
 
 - Baseline fix (TESTING.md rule 9): `b2de4f9d1f` — `autobyteus-agent-presentation-contracts/tests/agent-runtime-names.test.mjs` lacked `deepseek_harness` since autobyteus-387; its own commit.
 - Not run, and why: the live Claude case (its live gate and a paid model) and per-runtime checks on an isolated desktop instance; the two-node peer case beyond MSP-59's paired node; the server E2E suite. These are API/E2E's.

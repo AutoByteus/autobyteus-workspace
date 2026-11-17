@@ -88,3 +88,23 @@
 - Local validation and result: IMP-15 (contract tests 22/14/37, both typechecks PASS at baseline, server remote-collaboration unit 154 pass).
 - Next recipient or routing: code reviewer (High risk), per `get_handoff_rules`.
 - Remaining limitations or risks: none new.
+
+### IR-005 — Integration of the refreshed base (delivery DR-002)
+
+- Triggering role, report path, and round: delivery engineer, `delivery-revision-record.md` DR-002 (base refresh blocked by conflicts).
+- Triggering finding IDs: DR-002
+- Classification: Local Fix (integration; no requirement or design change)
+- Prior authoritative result: IR-004 (code review Pass CRR-006/CRR-007; API/E2E Pass API-REV-003)
+- Current authoritative result: `origin/personal` @ `ff13782f36` merged; conflicts resolved; part 2's count on 458's phone surfaces; 483's end reasons and exit codes kept; no backend-level boolean left.
+- Related solution revision IDs: SR-006
+- Related architecture-review revision IDs: ARCH-REV-005
+- Related code-review revision IDs: CRR-005, CRR-006, CRR-007
+- Related API/E2E revision IDs: API-REV-003
+- Related delivery revision IDs: DR-002
+- Why this implementation revision is recorded: delivery cannot finalize until the refreshed base is integrated.
+- Approved behavior or requirement IDs affected: REQ-006 / DEC-004 on the base's new phone Settings screen (same approved behavior).
+- Implementation delta: merge `990ff9a3d4` (phone subject-line helper takes the count and the translator; the native background-task test keeps the base's exit-code assertion with the count; `agent_execution.md` keeps both facts; contract maps rebuilt); `ca1979b206` (doubles carry 483's `endReason`/`exitCode`); part 2's phone probe case renumbered MSP-67.
+- Changed files or areas: listed in the handoff's "Integration Of The Refreshed Base".
+- Local validation and result: IMP-16 to IMP-20 (typechecks, contracts, full server unit, related integration, full web unit, fresh-start desktop build, desktop and phone probes).
+- Next recipient or routing: code reviewer (High risk, Local Fix requested by delivery), per `get_handoff_rules`.
+- Remaining limitations or risks: API/E2E to reconfirm the phone Settings screen and 483's background-task paths live as it needs; the `fs.watch` environment failures and load time-outs recorded in IMP-17.
