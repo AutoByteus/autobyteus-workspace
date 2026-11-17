@@ -1,0 +1,475 @@
+{
+  "startedAt": "2026-11-17T19:44:13.851Z",
+  "result": "Pass",
+  "node": "v22.23.1",
+  "servers": {
+    "beta": {
+      "port": 55879,
+      "nodeId": "srv_emRe8RfZpH54IXR4VwTM7__oi_rqA_bU",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    },
+    "alpha": {
+      "port": 55878,
+      "nodeId": "srv_r77AgXqebKfRvegeg2iRFJadzWApA0Ub",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    }
+  },
+  "runs": {
+    "ptm": "project_task_manager_b8cd5652578c433cb575b00cf5d11440",
+    "writerRun": "release_notes_writer_2290e54d01b64ceeac5b756d8838b3de",
+    "squadRun": "docs_review_team_1ee98167184e444ca386b9aeef246940",
+    "reviewer": "release_notes_writer_82e5ba98cacf4d42a35f1709556cc7be",
+    "memberDelegated": "fact_checker_b62685caeb324eb48dc390f84018b60d",
+    "remoteAgentRun": "publisher_849c45b98e6644f193caf4ced708ba37",
+    "remoteTeamRun": "studio_team_76ebb1e6191d4baba43238176823a8b3",
+    "plain": [
+      "fact_checker_40dccb5973f94edc9c3b446887958912",
+      "fact_checker_9d0064e920fb408aa31328dbe0debe16",
+      "fact_checker_1dd4b1f0f919409bbc3391abddcbfc66"
+    ],
+    "org": "delivery_org_7d87257ab3164ac9b5ddfba141c06236",
+    "orgPlanner": "release_notes_writer_29e8e482297c453188399dd76406d65d",
+    "reviewOrg": "review_org_347475c4290e448784c05a95921f3942",
+    "reviewOrgCoordinator": {
+      "address": "/squad/reviewer",
+      "agentRunId": "release_notes_writer_ff8e66f9d03d4009a871d04110379d37",
+      "teamRunId": null
+    },
+    "delivery": "delivery_team_b2bc18e0d780436eb6218bb16c7273a6",
+    "deliveryLead": "fact_checker_bdf323f5becf4c39b1bd4a3c836cf623",
+    "deliveryMate": "release_notes_writer_faf4021ff1384e37961a6dc45eff314e",
+    "leadDelegated": "changelog_helper_f37de309b5ba48ff94f5d784e00881ac",
+    "approver": "approver_da0a37a4dc794422b0a7673f49c8b66f",
+    "taskA": "launch-b2d7dd-1",
+    "taskB": "launch-b2d7dd-2"
+  },
+  "cases": {
+    "MSP-R522": {
+      "result": "Pass",
+      "seconds": 124,
+      "phone": {
+        "standaloneAgent": {
+          "screen": {
+            "name": "Project Task Manager",
+            "subtitle": "Idle",
+            "chip": null
+          },
+          "entries": [
+            "artifacts",
+            "files",
+            "activity",
+            "settings"
+          ],
+          "settings": {
+            "subject": "Project Task Manager Idle",
+            "body": "Settings Project Task Manager Idle Runtime Antigravity CLI Model Gemini test Save"
+          }
+        },
+        "ptmTaskAgent": {
+          "screen": {
+            "name": "release notes writer",
+            "subtitle": "Idle · in Project Task Manager",
+            "chip": null
+          },
+          "entries": [
+            "artifacts",
+            "files",
+            "activity"
+          ],
+          "settings": null
+        },
+        "ptmTaskTeamMember": {
+          "screen": {
+            "name": "reviewer",
+            "subtitle": "Idle · in docs review team",
+            "chip": null
+          },
+          "entries": [
+            "artifacts",
+            "files",
+            "messages",
+            "activity"
+          ],
+          "settings": null
+        },
+        "peerAgent": {
+          "screen": {
+            "name": "publisher",
+            "subtitle": "Idle · in Project Task Manager",
+            "chip": "beta-node"
+          },
+          "entries": [
+            "artifacts",
+            "files",
+            "activity"
+          ],
+          "settings": null
+        },
+        "teamMember": {
+          "screen": {
+            "name": "lead",
+            "subtitle": "Idle · in Delivery Team",
+            "chip": null
+          },
+          "entries": [
+            "artifacts",
+            "files",
+            "messages",
+            "activity",
+            "settings"
+          ],
+          "settings": {
+            "subject": "lead Idle · in Delivery Team",
+            "body": "Settings lead Idle · in Delivery Team Runtime Antigravity CLI Model Gemini test Save"
+          }
+        },
+        "teamMemberTaskAgent": {
+          "screen": {
+            "name": "changelog helper",
+            "subtitle": "Idle · in lead",
+            "chip": null
+          },
+          "entries": [
+            "artifacts",
+            "files",
+            "messages",
+            "activity",
+            "settings"
+          ],
+          "settings": {
+            "subject": "changelog helper Idle · in lead",
+            "body": "Settings changelog helper Idle · in lead Runtime Antigravity CLI Model Gemini test Save"
+          }
+        },
+        "ptmTaskTeamMemberStopped": {
+          "screen": {
+            "name": "reviewer",
+            "subtitle": "Stopped · in docs review team",
+            "chip": null
+          },
+          "entries": [
+            "artifacts",
+            "files",
+            "messages",
+            "activity"
+          ],
+          "settings": null
+        }
+      },
+      "node": {
+        "ptmTaskAgent": {
+          "live": {
+            "isActive": true,
+            "modelConfigEditability": {
+              "editable": false,
+              "reason": "RUN_ACTIVE"
+            },
+            "metadataConfig": {
+              "runtimeKind": "antigravity_cli",
+              "llmModelIdentifier": "gemini-3.8-flash-low"
+            }
+          },
+          "options": {
+            "current": "gemini-3.8-flash-low",
+            "readable": true,
+            "replacements": 0
+          },
+          "stop": {
+            "success": true,
+            "message": "Agent run terminated successfully."
+          },
+          "stopped": {
+            "isActive": false,
+            "modelConfigEditability": {
+              "editable": true,
+              "reason": null
+            },
+            "metadataConfig": {
+              "runtimeKind": "antigravity_cli",
+              "llmModelIdentifier": "gemini-3.8-flash-low"
+            }
+          },
+          "save": {
+            "success": true,
+            "outcome": "UPDATED",
+            "message": "Agent runtime and model saved. The agent runtime changes when you send your next message.",
+            "isActive": false,
+            "editability": {
+              "editable": true,
+              "reason": null
+            }
+          },
+          "after": {
+            "isActive": false,
+            "modelConfigEditability": {
+              "editable": true,
+              "reason": null
+            },
+            "metadataConfig": {
+              "runtimeKind": "grok_build",
+              "llmModelIdentifier": "grok-4.7"
+            }
+          }
+        },
+        "teamMemberTaskAgent": {
+          "live": {
+            "isActive": true,
+            "modelConfigEditability": {
+              "editable": false,
+              "reason": "RUN_ACTIVE"
+            },
+            "metadataConfig": {
+              "runtimeKind": "antigravity_cli",
+              "llmModelIdentifier": "gemini-3.8-flash-low"
+            }
+          },
+          "options": {
+            "current": "gemini-3.8-flash-low",
+            "readable": true,
+            "replacements": 0
+          },
+          "stop": {
+            "success": true,
+            "message": "Agent run terminated successfully."
+          },
+          "stopped": {
+            "isActive": false,
+            "modelConfigEditability": {
+              "editable": true,
+              "reason": null
+            },
+            "metadataConfig": {
+              "runtimeKind": "antigravity_cli",
+              "llmModelIdentifier": "gemini-3.8-flash-low"
+            }
+          },
+          "save": {
+            "success": true,
+            "outcome": "UPDATED",
+            "message": "Agent runtime and model saved. The agent runtime changes when you send your next message.",
+            "isActive": false,
+            "editability": {
+              "editable": true,
+              "reason": null
+            }
+          },
+          "after": {
+            "isActive": false,
+            "modelConfigEditability": {
+              "editable": true,
+              "reason": null
+            },
+            "metadataConfig": {
+              "runtimeKind": "grok_build",
+              "llmModelIdentifier": "grok-4.7"
+            }
+          }
+        },
+        "orgTaskAgent": {
+          "live": {
+            "isActive": true,
+            "modelConfigEditability": {
+              "editable": false,
+              "reason": "RUN_ACTIVE"
+            },
+            "metadataConfig": {
+              "runtimeKind": "antigravity_cli",
+              "llmModelIdentifier": "gemini-3.8-flash-low"
+            }
+          },
+          "options": {
+            "current": "gemini-3.8-flash-low",
+            "readable": true,
+            "replacements": 0
+          },
+          "stop": {
+            "success": true,
+            "message": "Agent run terminated successfully."
+          },
+          "stopped": {
+            "isActive": false,
+            "modelConfigEditability": {
+              "editable": true,
+              "reason": null
+            },
+            "metadataConfig": {
+              "runtimeKind": "antigravity_cli",
+              "llmModelIdentifier": "gemini-3.8-flash-low"
+            }
+          },
+          "save": {
+            "success": true,
+            "outcome": "UPDATED",
+            "message": "Agent runtime and model saved. The agent runtime changes when you send your next message.",
+            "isActive": false,
+            "editability": {
+              "editable": true,
+              "reason": null
+            }
+          },
+          "after": {
+            "isActive": false,
+            "modelConfigEditability": {
+              "editable": true,
+              "reason": null
+            },
+            "metadataConfig": {
+              "runtimeKind": "grok_build",
+              "llmModelIdentifier": "grok-4.7"
+            }
+          }
+        },
+        "ptmTaskTeam": {
+          "live": {
+            "isActive": true,
+            "editability": {
+              "editable": false,
+              "reason": "RUN_ACTIVE"
+            },
+            "members": [
+              {
+                "address": "/reviewer",
+                "runtime": "antigravity_cli",
+                "model": "gemini-3.8-flash-low"
+              },
+              {
+                "address": "/editor",
+                "runtime": "antigravity_cli",
+                "model": "gemini-3.8-flash-low"
+              }
+            ]
+          },
+          "options": [
+            {
+              "scopeAddress": "/",
+              "currentModelIdentifier": "gemini-3.8-flash-low",
+              "modelListReadable": true
+            },
+            {
+              "scopeAddress": "/reviewer",
+              "currentModelIdentifier": "gemini-3.8-flash-low",
+              "modelListReadable": true
+            },
+            {
+              "scopeAddress": "/editor",
+              "currentModelIdentifier": "gemini-3.8-flash-low",
+              "modelListReadable": true
+            }
+          ],
+          "stop": {
+            "success": true,
+            "message": "Agent team run terminated successfully."
+          },
+          "stopped": {
+            "isActive": false,
+            "editability": {
+              "editable": true,
+              "reason": null
+            },
+            "members": [
+              {
+                "address": "/reviewer",
+                "runtime": "antigravity_cli",
+                "model": "gemini-3.8-flash-low"
+              },
+              {
+                "address": "/editor",
+                "runtime": "antigravity_cli",
+                "model": "gemini-3.8-flash-low"
+              }
+            ]
+          },
+          "save": {
+            "success": true,
+            "outcome": "UPDATED",
+            "message": "Team model settings updated. They will be used when this team resumes.",
+            "isActive": false,
+            "editability": {
+              "editable": true,
+              "reason": null
+            }
+          },
+          "after": {
+            "isActive": false,
+            "editability": {
+              "editable": true,
+              "reason": null
+            },
+            "members": [
+              {
+                "address": "/reviewer",
+                "runtime": "grok_build",
+                "model": "grok-4.7"
+              },
+              {
+                "address": "/editor",
+                "runtime": "antigravity_cli",
+                "model": "gemini-3.8-flash-low"
+              }
+            ]
+          }
+        }
+      },
+      "orgDelegated": {
+        "orgTaskAgent": "changelog_helper_a451bd64d7cc460281462d76d872b690",
+        "orgTaskTeam": null,
+        "rows": [
+          {
+            "kind": "org_agent",
+            "name": "planner",
+            "address": "/planner",
+            "parent": false
+          },
+          {
+            "kind": "agent",
+            "name": "changelog helper",
+            "address": "/changelog_helper",
+            "parent": true
+          },
+          {
+            "kind": "org_team",
+            "name": "squad",
+            "address": "/squad",
+            "parent": false
+          },
+          {
+            "kind": "team_member",
+            "name": "reviewer",
+            "address": "/squad/reviewer",
+            "parent": true
+          },
+          {
+            "kind": "team_member",
+            "name": "editor",
+            "address": "/squad/editor",
+            "parent": true
+          }
+        ]
+      }
+    }
+  },
+  "browserErrors": [],
+  "failedRequests": [],
+  "network": {},
+  "cleanup": {
+    "frontendExited": true,
+    "serversLeft": 0,
+    "rootRemoved": true
+  },
+  "error": null,
+  "summary": {
+    "cases": {
+      "MSP-R522": "Pass"
+    },
+    "unknownBrowserErrors": 0
+  },
+  "finishedAt": "2026-11-17T19:47:41.456Z"
+}
