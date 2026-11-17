@@ -162,3 +162,14 @@ Models: claude `haiku`, codex `gpt-5.6-luna`, grok `grok-4.7`. Logs kept at `/tm
 | Failed run and job | Classification | Log lines | Action | Result |
 | --- | --- | --- | --- | --- |
 | 44001643610 Build macOS ARM64, Build macOS Intel x64 | **Platform (Apple account)**: notarization refused, the same on all 3 attempts of each job: `Error: HTTP status code: 403. A required agreement is missing or has expired. This request requires an in-effect agreement that has not been signed or has expired.` (`@electron/notarize` notarytool). Not our code; the same commit passes once the agreement is in effect | ARM64 02:27:29, 02:36:48, 02:45:55; Intel 02:28:18, 02:35:06, 02:41:58 | The Apple Developer account holder accepts the pending agreement; then `gh run rerun 44001643610 --failed` (only the macOS jobs and the skipped publish) | Waiting for the user |
+- **Recovery (2026-11-17):** the user accepted Apple's pending agreement; `gh run rerun 44001643610 --failed` (attempt 2): Build macOS ARM64 success, Build macOS Intel x64 success, Publish GitHub Release success. No new version was needed (platform failure, same tag).
+- **Release complete:** all four workflows succeeded. 23 assets, `isPrerelease: true`. Order (AC-005 of autobyteus-412): the six `autobyteus-server-*` files at 03:14:01–03:14:17Z, all four `latest*.yml` at 05:02:33Z, after them.
+- Beta notes: the generated notes with `## What you need to do` placed above them (`gh release edit`), from the tickets since `v1.5.13-beta.6` (`git log --merges --first-parent`) that have one: `memory-sync-large-files` (autobyteus-workspace-7) and `delegated-copies-outlive-delegator-461`. The other five tickets (web-typecheck-gate, context-file-large-video-upload, running-agent-config-reload-460, inline-code-wrap, markdown-code-block-wrap) have none.
+- Release/publication result: `Completed` (after a partial first attempt, recovered by rerun).
+
+## Final Status
+
+- Verification complete (from the evidence): `Yes`
+- Repository finalization complete: `Yes` (`d5d4fc7c81`, the release commit `a781007713`, then delivery records)
+- Release complete: `Yes` (`v1.5.13-beta.7`, beta; Grok waived by the user)
+- Cleanup and terminal return: in `delivery-revision-record.md` DR-001 and the terminal message
