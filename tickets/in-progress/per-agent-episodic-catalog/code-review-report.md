@@ -1,6 +1,81 @@
 # Code Review Report
 
-## Latest Round: API/E2E Failure-Origin Review (CRR-002)
+## Latest Round: Implementation Review Round 3 (CRR-005)
+
+- Review Entry Point: `Implementation Review`
+- Current Code Review Revision ID: `CRR-005` (prior: CRR-004 `Fail`, test review TR-001, implementation-owned `Local Fix`)
+- Current Review Round: 3
+- Trigger: IR-003, the TR-001 Local Fix
+- Code reviewed: `1324c3e8f4`; handoff and evidence in `809ba8e697`. Delta: `git diff 63fa073eb8 1324c3e8f4` (three files).
+- Review Scope: `Targeted Delta Review`. The change stays within TR-001's files and behavior: `run-folder-discovery.ts` `agentRuns`, its unit test, and `agent_episodic_catalog.md`. No shared shape, interface or spine owner changes. Every other check and score is carried forward from CRR-003, whose evidence is still valid.
+- Checks not rerun (they ran on `1324c3e8f4`):
+  - IMP-16: discovery, memory search, catalog and journal unit tests, 407 passed.
+  - IMP-17: memory e2e passed.
+  - IMP-18: server and web typechecks at baseline.
+
+### TR-001: resolved
+
+- **Source.** `agentRuns` now takes the definition from the metadata state alone: present → `attributed`; unreadable → `unreadable` (`run_metadata.json`); missing → `unattributed`. The row fallback and its false comment are gone. The row still supplies the name, workspace and created time for admitted runs, and the new comment states why: a row exists only for an admitted run.
+- **Memory search.** The `AGENT` subject's `agentDefinitionId` comes from the same attribution. Because rows exist only for runs with present metadata, `MemoryRun` is unchanged in practice. The test pins the field set and the row-supplied name ("Meta Agent").
+- **Unit test.** The `row_only` case, which faked a row for an unadmitted run, is replaced by the real shape: a row only for the admitted `with_meta`.
+- **Docs.** `agent_episodic_catalog.md` § Which runs now says that a history row never decides the definition, and that unreadable metadata is `unreadable` with or without a row.
+- **Design wording.** The departure from SR-003 decision 1's wording is recorded in the handoff with its reason (unreachable, Core Principle 7). `Pass — deviation recorded, reason holds.`
+
+### Observation
+
+| Candidate ID | Observation | Disposition | Reason |
+| --- | --- | --- | --- |
+| CF-17 | The definition is now `state.metadata.agentDefinitionId.trim()`, not `optional(...)`. A whitespace-only id in present metadata would become `attributed` with `""`, then fail in the layout. | Reject (Technically Possible but Unsupported/Contrived) | `readMetadataState` rejects a falsy id, and only the product writes this file. No supported path writes a blank id. |
+
+## Prior Round: Implementation Review Round 2 (CRR-003)
+
+- Review Entry Point: `Implementation Review`
+- Current Code Review Revision ID: `CRR-003` (prior: CRR-002 `Fail`, `Design Impact`)
+- Current Review Round: 2
+- Trigger: IR-002, which implements SR-003 (passed in ARCH-REV-005, notes N-6 and N-7). It resolves CR-001 and covers API-15 and CF-11.
+- Code reviewed: `159286c1c1`, with docs and evidence in `f621b5864a`. Delta: `git diff 0be36462ef 159286c1c1`. The API/E2E commits `ba427ab13d` and `4e8a8b3263` in between add only tests and docs, and IR-002 does not change the E2E test file.
+- Review Scope: `Full Re-Audit`.
+  - Why: the delta changes a shared data shape (`DiscoveredRun.agentDefinitionId` becomes `attribution`, which memory search also consumes) and a shared interface's result (`readJournalSpans` now returns a three-way result). It also touches the spine owner, `EpisodicCatalog.buildEntries`.
+  - Every structural check was rerun against the changed files. Results for files the delta does not touch are carried forward from CRR-001 (evidence still valid: their code is unchanged).
+- Design basis: design-spec § SR-003 Revision (requirements and contract unchanged at SR-002); `design-review-report.md` ARCH-REV-005.
+- Checks not rerun: no code changed after `159286c1c1`, the commit IMP-10…IMP-15 ran on.
+  - IMP-10: 924 unit tests passed.
+  - IMP-11: memory e2e passed.
+  - IMP-12/13: web and server typechecks at baseline.
+  - IMP-14: on a fresh clone, first start 12.5 s, second start 12.1 s (load average about 119), nothing rewritten, nothing outside `episodic/` changed; 6 `RUN_FOLDER_DISCOVERY_RECORD_UNREADABLE` lines.
+  - IMP-15: 0 of 641 summaries found in any catalog.
+
+### Prior finding CR-001: resolved
+
+- **Team and org.** A member folder that `listAgents` did not locate is now `unreadable` when its root has a readiness diagnostic. The diagnostics are read through two new narrowed collaborators, `Pick<TeamRunPackageCatalog,"getDiagnostics">` and `Pick<AgentOrgRunPackageCatalog,"listDiagnostics">`. They are read *after* the sources (`run-folder-discovery.ts` `discover`, the N-7 order, pinned by the test's `order` assertion). Team `*` covers a failed whole scan; there is no org `*` branch (N-6, which matches `root-run-package-readiness-index.ts:85`).
+- **Standalone.** Discovery now uses `readMetadataState`: present, missing or unreadable (`agent-run-metadata-store.ts:105-132`). A history row naming the definition still attributes the run. Otherwise an unreadable state gives `unreadable`.
+- **Logging.** One `RUN_FOLDER_DISCOVERY_RECORD_UNREADABLE { root, record, reason, runFolders }` per `(root, record, reason)` per discovery instance; a changed reason logs again (tested).
+- **Catalog.** It switches exhaustively on `attribution.kind`, with no `=== null` test. After the switch TypeScript narrows to `attributed`, so `agentDefinitionId` needs no non-null assertion.
+- **Memory search.** `MemoryRun` is unchanged: `subject.agentDefinitionId` comes from the same `definitionId` as before, and the field set is pinned by the new test.
+- **EC-06 itself** is for API/E2E to rerun.
+
+### API-15: resolved in behavior
+
+- `WorkJournalStore.readManifestJournalFileNames` returns `none` only for `ENOENT`. Any other read error, non-JSON content or a missing `files` list is `unreadable`, with a reason.
+- `readJournalSpans` passes that result through. The catalog leaves the run out and logs `EPISODIC_CATALOG_RUN_LEFT_OUT { root, run, reason }`, once per run and reason.
+- A live refresh cannot read a half-written manifest, because `writeManifest` writes atomically (`work-journal-store.ts:126`, `writeAtomically`). An "unreadable" result is therefore a real defect, not a race.
+- The rendering projection `readManifest` is untouched.
+- `agent_episodic_catalog.md` and `agent_work_journal.md` now describe both codes and the three outcomes.
+
+### CF-11: resolved
+
+`noWorkGuard`'s doc comment sits above `noWorkGuard` again (`tests/helpers/no-delegations.ts`).
+
+### Re-audit observations (CRR-003 candidates)
+
+| Candidate ID | Observation | Scenario / Contract | Disposition | Reason |
+| --- | --- | --- | --- | --- |
+| CF-13 | Discovery now depends on two run-history package catalogs | Principle 9 / 16 | Reject | It already depended on run-history (location services, history catalog service, metadata store). The new collaborators are passed in as narrowed `Pick`s, with defaults that construct the real owners, the same as the existing collaborators. No process lookup and no cycle. They read the existing per-memory-folder readiness state. |
+| CF-14 | The `record` label is fixed per family (`team_run_execution_tree.json` / `agent_org_run_execution_tree.json`). For a diagnostic about the package itself (`ROOT_RUN_PACKAGE_MANIFEST_INVALID`, `…_NOT_DIRECTORY`, `ROOT_RUN_FAMILY_CONFLICT`, `FAILED_ATTEMPT`), the label names the tree although the tree is not the broken record | DESIGN.md rule 7 ("names the run and the reason") | Non-blocking note | Rule 7 is still met: the warning names the root and carries the diagnostic's code and reason, `${code}: ${reason}`, which identifies the real cause. The label follows the design's decision. It could read "run package" at a later touch; that would be a wording change in the design. |
+| CF-15 | IMP-14's second start (12.1 s) is no faster than the first (12.5 s), while IR-001's second start was 3.4 s | QR-002 / AC-010 (well under the 2-minute escalation) | Reject (no correctness consequence) | Measured at a load average of about 119 versus 88–115, on a fresh clone. The second start still writes nothing. The delta adds no per-run I/O beyond `readMetadataState`, which replaces `readMetadata`'s same read. If API/E2E measures it, a quieter-host figure would be useful. |
+| CF-16 | The team `*` diagnostic marks every *unlocated* team member folder unreadable, including old-format folders that were `unattributed` before | SR-003 decision 4; DESIGN.md rule 7 | Reject | This is designed and tested. It applies only when the whole scan failed, and then nothing was located. |
+
+## Prior Round: API/E2E Failure-Origin Review (CRR-002), resolved by IR-002 (see CRR-003)
 
 - Review Entry Point: `API/E2E Failure-Origin Review`
 - Current Code Review Revision ID: `CRR-002` (prior: CRR-001 `Pass`)
@@ -180,15 +255,15 @@
 
 | Source File | Before (base) | After | `>500` Hard-Limit Check | `>220` Delta Check | SoC / Ownership Check | Placement Check | Preliminary Classification | Required Action |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `agent-episodic-catalog/services/episodic-catalog.ts` | 0 | 223 | Pass | New file at 223: one owner (lifecycle, queue, passes, writes); cohesive | Pass | Pass | — | — |
-| `agent-memory/services/run-folder-discovery.ts` | 0 (moved from 161) | 216 | Pass | Pass | Pass | Pass | — | — |
+| `agent-episodic-catalog/services/episodic-catalog.ts` | 0 | 247 (CRR-003; 223 at CRR-001) | Pass | New file: one owner (lifecycle, queue, passes, writes, left-out logging); cohesive | Pass | Pass | — | — |
+| `agent-memory/services/run-folder-discovery.ts` | 0 (moved from 161) | 294 (CRR-003; 216 at CRR-001) | Pass | Pass | Pass | Pass | — | — |
 | `compositions/build-studio-server.ts` | 492 | 499 | Pass (under 500) | Pass | Pass | Pass | — | — |
 | `projects/services/project-task-service.ts` | 453 | 467 | Pass | Pass | Pass | Pass | — | — |
 | `agent-execution/runtime/general-process-run-supervisor.ts` | 439 | 441 | Pass | Pass | Pass | Pass | — | — |
 | `standalone-application-host/start-standalone-application-host.ts` | 380 | 391 | Pass | Pass | Pass | Pass | — | — |
 | `memory-search/pipeline/memory-index-pipeline.ts` | 327 | 328 | Pass | Pass | Pass | Pass | — | — |
 | `agent-org-execution/services/agent-org-run-service.ts` | 303 | 308 | Pass | Pass | Pass | Pass | — | — |
-| `agent-work-journal/services/work-journal-service.ts` | 267 | 294 | Pass | Pass | Pass | Pass | — | — |
+| `agent-work-journal/services/work-journal-service.ts` | 267 | 296 (CRR-003) | Pass | Pass | Pass | Pass | — | — |
 | Remaining 18 changed source files | ≤ 275 | ≤ 275 | Pass | Pass | Pass | Pass | — | — |
 
 ## Legacy / Backward-Compatibility Verdict
@@ -235,15 +310,16 @@ No new or reclassified premises beyond the candidate gate above.
 | `5` | `Shared-Structure / Data-Model Tightness and Reusable Owned Structures` | 9.4 | `DiscoveredRun` shared, `MemoryRun` unchanged | `subject.agentDefinitionId` repeats the top-level id for `AGENT` runs (accepted N-1; set from one value) | — |
 | `6` | `Naming Quality and Local Readability` | 9.4 | Domain names match the glossary | CF-11 orphaned comment in a test helper | Move it at next touch |
 | `7` | `API/E2E Readiness` | 9.4 | Tunable timings, clear AC hints, both roots wired | The real-app proof on a clone needs the owner's call against TESTING.md's real-data rule (handoff notes it) | — |
-| `8` | `Runtime Correctness And Behavioral Fidelity` | 8.6 (CRR-002; was 9.4) | Lifecycle checked: requests before start, during a pass, after stop; deletes in order; containment per run and per file; the span fix is verified on real data | CR-001: a damaged team or org record (or a standalone run's damaged metadata without a history row) is left out silently, so REQ-012/AC-009 fails (CF-12). Also, `stop()` may wait one `findRuns()` (CF-10, bounded) | Make "records unreadable" an explicit discovery outcome with one warning naming the run (design revision) |
+| `8` | `Runtime Correctness And Behavioral Fidelity` | 9.4 (CRR-003; CRR-002 8.6) | Lifecycle unchanged and rechecked. REQ-012 is now met for all three families, and for unreadable manifests, through explicit outcomes logged once each. The manifest write is atomic, so there is no false "unreadable" | `stop()` may wait one `findRuns()` (CF-10, bounded). Record label (CF-14, cosmetic) | — |
 | `9` | `No Backward-Compatibility / No Legacy Retention` | 9.6 | No re-exports or version branches | — | — |
 | `10` | `Cleanup Completeness` | 9.5 | The dead public surface of the moved file is removed; old file deleted | — | — |
 
 ## Findings
 
-- **CR-001** (CRR-002, open, `Design Impact`): a damaged team or org run record is left out without the warning REQ-012/AC-009 requires. Details are in § Latest Round above.
+- **CR-001**: resolved in CRR-003 (IR-002 / SR-003). It was opened in CRR-002 as `Design Impact`: a damaged team or org run record was left out without the warning REQ-012/AC-009 requires.
+- No open findings. CF-14 (the record label) is a non-blocking note.
 
-CRR-001 had no blocking findings. CF-11 (orphaned doc comment in `tests/helpers/no-delegations.ts`) is a non-blocking readability note.
+CRR-001 had no blocking findings. CF-11 (resolved in CRR-003) (orphaned doc comment in `tests/helpers/no-delegations.ts`) is a non-blocking readability note.
 
 ## Follow-ups
 
@@ -251,11 +327,11 @@ CRR-001 had no blocking findings. CF-11 (orphaned doc comment in `tests/helpers/
 
 ## Classification
 
-- CRR-002: `Design Impact` (CR-001). CRR-001 was a Pass.
+- CRR-005: N/A (Pass). CRR-004 (test review) TR-001 is resolved. CRR-002 was a `Design Impact` (CR-001, resolved in CRR-003).
 
 ## Recommended Recipient
 
-- CRR-002: Solution Designer (`/solution_designer`), for a design revision. Implementation, source review and API/E2E follow again.
+- CRR-005: API/E2E (primary pass rule), with an informational notice to implementation.
 
 ## Residual Risks
 
@@ -266,12 +342,13 @@ CRR-001 had no blocking findings. CF-11 (orphaned doc comment in `tests/helpers/
 
 ## Latest Authoritative Result
 
-- Review Decision: `Fail` (CRR-002, failure-origin)
-- Review Entry Point: `API/E2E Failure-Origin Review`
-- Supported Product Scenario Gate: `Pass` (EC-06 is a Supported Explicit Edge Scenario under REQ-012/AC-009 and DESIGN.md rule 7)
+- Review Decision: `Pass` (CRR-005, implementation review round 3, Targeted Delta Review: TR-001 resolved). Round 2 (CRR-003, Full Re-Audit) also passed.
+- Review Entry Point: `Implementation Review`
+- Supported Product Scenario Gate: `Pass`
 - Material-Premise Gate: `Pass`
-- Score Summary: CRR-001 scorecard carried; Runtime Correctness lowered to 8.6 by CR-001
-- Failure Origin: a design gap carried into the implementation. Rule-7 containment for damaged run records was not designed for the team and org admission path, so the damaged run is left out silently. It was reasonably detectable in CRR-001 (an earlier review gap).
-- Recommended Recipient: Solution Designer (`Design Impact`)
+- Score Summary: every category ≥ 9.4 (Runtime Correctness back to 9.4); average 9.5
+- Failure Origin: N/A. CRR-002's origin (a design gap) is resolved by SR-003 / IR-002.
+- Recommended Recipient: API/E2E (rerun the discovery unit tests and EC-06; then the proportional test review again)
+- Notes: CF-14 (record label) is non-blocking. CF-15: rerun the AC-010 timing on a quieter host if it is measured again.
 - CRR-001 notes (still valid):
 - Notes: the span-read fix (`0be36462ef`) is within the journal owner's `readJournalSpans` contract and is not a Design Impact (CF-01). The four recorded deviations hold (CF-02…CF-05).
