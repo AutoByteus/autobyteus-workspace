@@ -3,7 +3,8 @@ import type { MemoryRun } from "../domain/memory-search-models.js";
 
 /**
  * A discovered run as the memory index keeps it: the facts memory search stores and shows, without the root, the
- * agent definition and the recorded start (the episodic catalog's), so the stored run rows keep their shape.
+ * attribution and the recorded start (the episodic catalog's), so the stored run rows keep their shape. An AGENT
+ * subject already carries the attributed definition (null otherwise), as discovery sets it.
  */
 export const toMemoryRun = (run: DiscoveredRun): MemoryRun => ({
   runKey: run.runKey,

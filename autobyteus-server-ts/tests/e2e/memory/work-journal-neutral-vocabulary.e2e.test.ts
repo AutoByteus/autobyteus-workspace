@@ -13,6 +13,7 @@ import { MemorySearch, resetMemorySearchForTests } from "../../../src/memory-sea
 import { MemorySearchStore } from "../../../src/memory-search/store/memory-search-store.js";
 import { RunFolderDiscovery } from "../../../src/agent-memory/services/run-folder-discovery.js";
 import { createFakeEmbeddingIndex } from "../../helpers/fake-embedding-model.js";
+import { metadataStateOf } from "../../helpers/memory-search-fixtures.js";
 import { RUNTIME_OF, SYNTHETIC_TRACES, type TraceCase } from "../../agent-work-journal/synthetic-run-traces.js";
 
 /**
@@ -83,9 +84,9 @@ describe("Work Journal neutral vocabulary through the real memory pipeline (auto
       teamLocations: { listAgents: async () => [] }, orgLocations: { listAgents: async () => [] },
       agentCatalog: { listCatalogRows: async () => [] as never },
       agentMetadata: {
-        readMetadata: async (runId: string) => {
+        readMetadataState: async (runId: string) => {
           const runtime = RUNTIMES.find((name) => `${name}_run` === runId);
-          return runtime ? { agentDefinitionId: runtime, runtimeKind: RUNTIME_OF[runtime], workspaceRootPath: "/work/shipping" } as never : null;
+          return metadataStateOf(runtime ? { agentDefinitionId: runtime, runtimeKind: RUNTIME_OF[runtime], workspaceRootPath: "/work/shipping" } : null);
         },
       },
     }),

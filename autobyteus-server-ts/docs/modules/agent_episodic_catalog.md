@@ -75,10 +75,21 @@ message). The title comes from `DelegationIndex.currentTaskOf(run)` (any role: a
 ## Which runs
 
 Runs come from `RunFolderDiscovery` (`src/agent-memory/services/run-folder-discovery.ts`), the one owner of "which
-run folders exist and whose are they", shared with memory search. A run is catalogued under the agent definition its
-records name (`DiscoveredRun.agentDefinitionId`): run metadata or the history row for an agent run (delegated or not),
-the configured placement for a team or org member. A folder no record attributes (old folders without metadata, agent
-root collaboration folders) is not catalogued. Recorded ID forms are used as they are: runs recorded under an older ID
+run folders exist and whose are they", shared with memory search. Discovery gives each run one attribution
+(`DiscoveredRun.attribution`), and the catalog switches on it:
+
+- `attributed`: the agent definition its records name: run metadata or the history row for an agent run (delegated or
+  not; a history row naming the definition attributes the run even when its metadata cannot be read), the configured
+  placement for a team or org member. Only these runs get entries.
+- `unattributed`: no record names an agent (old folders without metadata, agent-root collaboration folders, a team
+  folder no tree lists). Not catalogued, silently.
+- `unreadable`: the record that would name it exists but cannot be read: a team or org root's tree the run-package
+  readiness index did not admit (`team_run_execution_tree.json`, `agent_org_run_execution_tree.json`; a failed scan of
+  every root marks every unlocated team member folder), or an agent run's `run_metadata.json` with no history row naming
+  the definition. Not catalogued; discovery logs `RUN_FOLDER_DISCOVERY_RECORD_UNREADABLE { root, record, reason,
+  runFolders }`, one line per root and record and reason (`runFolders`: how many run folders it leaves out), at most once
+  in a discovery instance's lifetime. The catalog's and memory search's discoveries each log it once per server start;
+  a refresh of that root does not repeat it, and a changed reason logs again. Recorded ID forms are used as they are: runs recorded under an older ID
 form get their own folder. Imported memory (`memory/imports/`) and other nodes are not included; Memory Sync does not
 carry `episodic/`. Archived runs stay listed; deleted runs leave.
 
@@ -100,9 +111,12 @@ and never reads its own files back.
 - **Writes:** `EpisodicCatalogStore` writes a file only when its content differs from the file on disk, as a whole
   (a temporary file renamed over it). A catalog has no "updated" time, so an unchanged catalog is never rewritten, and a
   hand-edited one is rewritten at the next pass that touches it or the next start.
+- **A journal manifest that cannot be read** (present, but not JSON or without a file list): the run is left out and
+  the catalog logs `EPISODIC_CATALOG_RUN_LEFT_OUT { root, run, reason }`, once per run and reason for the catalog's
+  lifetime. A run with no manifest at all is listed with "no journal yet".
 - **Failures** are logged and never reach a run, a journal update or a delete: `EPISODIC_CATALOG_REFRESH_FAILED` (a
-  root or a run whose journal cannot be read; that run is left out), `EPISODIC_CATALOG_WRITE_FAILED`,
-  `EPISODIC_CATALOG_PASS_FAILED`.
+  root, or a run whose Task title or journal headers fail unexpectedly; that run is left out),
+  `EPISODIC_CATALOG_WRITE_FAILED`, `EPISODIC_CATALOG_PASS_FAILED`.
 - **Stop** (`stop()`): unsubscribes and waits for the running pass; waiting requests are dropped, because the next
   start rebuilds everything.
 

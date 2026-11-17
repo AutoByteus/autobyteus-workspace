@@ -18,7 +18,8 @@ const keyOf = (root: RootExecutionIdentity) => `${root.rootSubjectKind}:${root.r
 class FakeNode {
   runs: DiscoveredRun[] = [];
   spans = new Map<string, WorkJournalFileSpan[]>();
-  unreadable = new Set<string>();
+  /** Run folders whose journal manifest cannot be read, with the reason. */
+  unreadable = new Map<string, string>();
   listeners = new Set<WorkJournalChangeListener>();
   calls = { findRuns: 0, findRunsOfRoot: [] as string[], readJournalSpans: [] as string[] };
 
@@ -28,7 +29,7 @@ class FakeNode {
     const memoryDir = path.join(this.memoryDir, rel);
     const run: DiscoveredRun = {
       runKey: rel, runId: path.basename(rel), memoryDir, agentName: "agent", teamName: null, memberName: null, orgName: null,
-      workspace: "/w", runtimeKind: null, subject: { kind: "RUN_FOLDER", runKey: rel }, root, agentDefinitionId: "agent-def",
+      workspace: "/w", runtimeKind: null, subject: { kind: "RUN_FOLDER", runKey: rel }, root, attribution: { kind: "attributed", agentDefinitionId: "agent-def" },
       recordedStartAt: null, ...fields,
     };
     this.runs.push(run);
@@ -56,8 +57,10 @@ class FakeNode {
   readonly journals = {
     readJournalSpans: async (memoryDir: string) => {
       this.calls.readJournalSpans.push(path.relative(this.memoryDir, memoryDir));
-      if (this.unreadable.has(memoryDir)) throw new Error("manifest unreadable");
-      return this.spans.get(memoryDir) ?? null;
+      const reason = this.unreadable.get(memoryDir);
+      if (reason) return { kind: "unreadable", reason } as const;
+      const spans = this.spans.get(memoryDir);
+      return spans ? { kind: "spans", spans } as const : { kind: "none" } as const;
     },
     onJournalChanged: (listener: WorkJournalChangeListener) => { this.listeners.add(listener); return () => { this.listeners.delete(listener); }; },
   };
@@ -112,13 +115,13 @@ describe("EpisodicCatalog", () => {
   });
 
   it("builds every attributed run's catalog at start from one full discovery, with titles once per Task (AC-001, AC-002, AC-007)", async () => {
-    const lead = node.run("agent_teams/team_1/designer_1", teamRoot, { agentName: "designer", agentDefinitionId: "designer-def", recordedStartAt: "2026-11-01T09:00:00Z" });
+    const lead = node.run("agent_teams/team_1/designer_1", teamRoot, { agentName: "designer", attribution: { kind: "attributed", agentDefinitionId: "designer-def" }, recordedStartAt: "2026-11-01T09:00:00Z" });
     node.journal(lead, "2026-11-01 09:01", "2026-11-02 10:00");
-    node.run("agent_teams/team_1/designer_2", teamRoot, { agentName: "designer", agentDefinitionId: "designer-def", recordedStartAt: "2026-11-03T09:00:00Z" });
-    const delegated = node.run("agents/helper_1", agentRoot, { agentName: "Designer", agentDefinitionId: "designer-def" });
+    node.run("agent_teams/team_1/designer_2", teamRoot, { agentName: "designer", attribution: { kind: "attributed", agentDefinitionId: "designer-def" }, recordedStartAt: "2026-11-03T09:00:00Z" });
+    const delegated = node.run("agents/helper_1", agentRoot, { agentName: "Designer", attribution: { kind: "attributed", agentDefinitionId: "designer-def" } });
     node.journal(delegated, "2026-10-01 08:00", "2026-10-01 08:30");
-    node.run("agent_orgs/org_1/reviewer_1", orgRoot, { agentName: "reviewer", agentDefinitionId: "reviewer-def", recordedStartAt: "2026-09-01T00:00:00Z" });
-    node.run("agents/old_1", { rootSubjectKind: "agent", rootRunId: "old_1" }, { agentDefinitionId: null });
+    node.run("agent_orgs/org_1/reviewer_1", orgRoot, { agentName: "reviewer", attribution: { kind: "attributed", agentDefinitionId: "reviewer-def" }, recordedStartAt: "2026-09-01T00:00:00Z" });
+    node.run("agents/old_1", { rootSubjectKind: "agent", rootRunId: "old_1" }, { attribution: { kind: "unattributed" } });
     fs.mkdirSync(episodic("gone-def"), { recursive: true });
 
     await startedPass(create());
@@ -146,12 +149,12 @@ describe("EpisodicCatalog", () => {
   });
 
   it("writes nothing at a start with no changes; after changes made while stopped, rewrites only what changed (AC-007)", async () => {
-    const kept = node.run("agents/kept_1", { rootSubjectKind: "agent", rootRunId: "kept_1" }, { agentDefinitionId: "kept-def" });
+    const kept = node.run("agents/kept_1", { rootSubjectKind: "agent", rootRunId: "kept_1" }, { attribution: { kind: "attributed", agentDefinitionId: "kept-def" } });
     node.journal(kept, "2026-11-01 09:00", "2026-11-01 10:00");
-    const changing = node.run("agent_teams/team_1/a_1", teamRoot, { agentDefinitionId: "changing-def" });
+    const changing = node.run("agent_teams/team_1/a_1", teamRoot, { attribution: { kind: "attributed", agentDefinitionId: "changing-def" } });
     node.journal(changing, "2026-11-01 09:00", "2026-11-01 10:00");
-    node.run("agent_teams/team_1/a_2", teamRoot, { agentDefinitionId: "changing-def" });
-    node.run("agents/lonely_1", { rootSubjectKind: "agent", rootRunId: "lonely_1" }, { agentDefinitionId: "lonely-def", recordedStartAt: "2026-11-01T00:00:00Z" });
+    node.run("agent_teams/team_1/a_2", teamRoot, { attribution: { kind: "attributed", agentDefinitionId: "changing-def" } });
+    node.run("agents/lonely_1", { rootSubjectKind: "agent", rootRunId: "lonely_1" }, { attribution: { kind: "attributed", agentDefinitionId: "lonely-def" }, recordedStartAt: "2026-11-01T00:00:00Z" });
     const first = create();
     await startedPass(first);
     await first.stop();
@@ -208,7 +211,7 @@ describe("EpisodicCatalog", () => {
     node.run("agent_teams/team_1/a_1", teamRoot);
     const other = node.run("agents/helper_1", agentRoot);
     node.journal(other, "2026-11-01 09:00", "2026-11-01 10:00");
-    node.run("agent_orgs/org_1/r_1", orgRoot, { agentDefinitionId: "reviewer-def" });
+    node.run("agent_orgs/org_1/r_1", orgRoot, { attribution: { kind: "attributed", agentDefinitionId: "reviewer-def" } });
     const catalog = create();
     await startedPass(catalog);
     const reviewerBefore = fs.statSync(episodic("reviewer-def", "catalog.md")).mtimeMs;
@@ -231,14 +234,39 @@ describe("EpisodicCatalog", () => {
     expect(read("agent-def", "catalog.md")).toContain("\n0 runs.\n");
   });
 
-  it("leaves out a run whose journal cannot be read, with a warning naming it; the others are catalogued (AC-009)", async () => {
+  it("leaves out a run whose journal manifest cannot be read, warning once per run and reason; the others are catalogued (AC-009, API-15)", async () => {
     const warn = vi.spyOn(console, "warn").mockImplementation(() => undefined);
     const broken = node.run("agent_teams/team_1/broken_1", teamRoot);
     node.run("agent_teams/team_1/fine_1", teamRoot);
-    node.unreadable.add(broken.memoryDir);
-    await startedPass(create());
+    node.unreadable.set(broken.memoryDir, "work_journal_manifest.json is not JSON: Unexpected token");
+    const catalog = create();
+    await startedPass(catalog);
     expect(headings("agent-def", "catalog.md")).toEqual(["## start unknown · fine_1"]);
-    expect(warn).toHaveBeenCalledWith("EPISODIC_CATALOG_REFRESH_FAILED", { root: "agent_team:team_1", run: "agent_teams/team_1/broken_1", error: "manifest unreadable" });
+    const leftOut = ["EPISODIC_CATALOG_RUN_LEFT_OUT",
+      { root: "agent_team:team_1", run: "agent_teams/team_1/broken_1", reason: "work_journal_manifest.json is not JSON: Unexpected token" }];
+    expect(warn.mock.calls).toEqual([leftOut]);
+    // A refresh of the root does not repeat it; a new reason does.
+    node.changed(broken);
+    await passesEnded(2);
+    expect(warn.mock.calls).toEqual([leftOut]);
+    node.unreadable.set(broken.memoryDir, "EACCES: permission denied");
+    node.changed(broken);
+    await passesEnded(3);
+    expect(warn.mock.calls.at(-1)).toEqual(["EPISODIC_CATALOG_RUN_LEFT_OUT",
+      { root: "agent_team:team_1", run: "agent_teams/team_1/broken_1", reason: "EACCES: permission denied" }]);
+    expect(headings("agent-def", "catalog.md")).toEqual(["## start unknown · fine_1"]);
+  });
+
+  it("gives entries only to attributed runs; an unreadable run (discovery warns) and an unattributed one are not read", async () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => undefined);
+    node.run("agent_teams/team_1/fine_1", teamRoot);
+    node.run("agent_teams/team_2/m_1", { rootSubjectKind: "agent_team", rootRunId: "team_2" },
+      { attribution: { kind: "unreadable", record: "team_run_execution_tree.json", reason: "tree unreadable" } });
+    node.run("agents/old_1", { rootSubjectKind: "agent", rootRunId: "old_1" }, { attribution: { kind: "unattributed" } });
+    await startedPass(create());
+    expect(node.calls.readJournalSpans).toEqual(["agent_teams/team_1/fine_1"]);
+    expect(headings("agent-def", "catalog.md")).toEqual(["## start unknown · fine_1"]);
+    expect(warn).not.toHaveBeenCalled();
   });
 
   it("logs a folder it cannot write and keeps following changes (AC-009)", async () => {

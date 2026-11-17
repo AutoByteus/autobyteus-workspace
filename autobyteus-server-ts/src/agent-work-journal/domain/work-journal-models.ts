@@ -72,6 +72,15 @@ export type WorkJournalFileSpan = Readonly<{
   to: string | null;
 }>;
 
+/**
+ * A run's journal files as `readJournalSpans` finds them. `none`: the run has no journal yet (no manifest);
+ * `unreadable`: its manifest exists but cannot be read.
+ */
+export type WorkJournalSpans =
+  | Readonly<{ kind: "none" }>
+  | Readonly<{ kind: "unreadable"; reason: string }>
+  | Readonly<{ kind: "spans"; spans: readonly WorkJournalFileSpan[] }>;
+
 /** Lines `start`…`end` (1-based, inclusive) of one journal file. */
 export type WorkJournalLines = Readonly<{
   journalFile: string;

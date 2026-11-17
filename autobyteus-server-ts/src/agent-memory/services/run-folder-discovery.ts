@@ -12,7 +12,9 @@ import {
   type RootSubjectKind,
 } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import { AgentOrgExecutionTreeLocationService } from "../../agent-org-execution/services/agent-org-execution-tree-location-service.js";
+import { AgentOrgRunPackageCatalog } from "../../run-history/services/agent-org-run-package-catalog.js";
 import { AgentRunHistoryCatalogService } from "../../run-history/services/agent-run-history-catalog-service.js";
+import { TeamRunPackageCatalog } from "../../run-history/services/team-run-package-catalog.js";
 import {
   createStoredTeamRunExecutionTreeLocationService,
   type TeamRunExecutionTreeLocationService,
@@ -20,20 +22,35 @@ import {
 import { openRawTraceRuntimeKind } from "../../run-history/store/agent-run-pending-runtime-switch.js";
 import { AgentRunMetadataStore } from "../../run-history/store/agent-run-metadata-store.js";
 import type { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
-import type { DiscoveredRun } from "../domain/discovered-run.js";
+import type { DiscoveredRun, RunAttribution } from "../domain/discovered-run.js";
 import { AgentMemoryLayout } from "../store/agent-memory-layout.js";
 
 type TeamLocations = Pick<TeamRunExecutionTreeLocationService, "listAgents">;
 type OrgLocations = Pick<AgentOrgExecutionTreeLocationService, "listAgents">;
 type AgentCatalog = Pick<AgentRunHistoryCatalogService, "listCatalogRows">;
-type AgentMetadata = Pick<AgentRunMetadataStore, "readMetadata">;
+type AgentMetadata = Pick<AgentRunMetadataStore, "readMetadataState">;
+type TeamPackages = Pick<TeamRunPackageCatalog, "getDiagnostics">;
+type OrgPackages = Pick<AgentOrgRunPackageCatalog, "listDiagnostics">;
 
 export type RunFolderDiscoveryDependencies = Readonly<{
   teamLocations?: TeamLocations;
   orgLocations?: OrgLocations;
   agentCatalog?: AgentCatalog;
   agentMetadata?: AgentMetadata;
+  /** Why a team root's tree was not admitted (its member folders are then `unreadable`). */
+  teamPackages?: TeamPackages;
+  /** Why an org root's tree was not admitted. */
+  orgPackages?: OrgPackages;
 }>;
+
+/** The record a member folder of each root family is attributed by. */
+const TEAM_TREE_RECORD = "team_run_execution_tree.json";
+const ORG_TREE_RECORD = "agent_org_run_execution_tree.json";
+const RUN_METADATA_RECORD = "run_metadata.json";
+/** The readiness index files a failed scan of every root as this one team root id. */
+const WHOLE_SCAN_ROOT_ID = "*";
+
+type Unreadable = Extract<RunAttribution, { kind: "unreadable" }>;
 
 /** A folder's own name as a readable name: `solution_designer_8a1f…` → `solution designer`. */
 const nameFromFolder = (folderName: string): string =>
@@ -41,6 +58,12 @@ const nameFromFolder = (folderName: string): string =>
 
 const addressName = (address: string): string => getAgentTeamAddressBasename(address as AgentTeamAddress) ?? address;
 const optional = (value: string | null | undefined): string | null => (typeof value === "string" && value.trim() ? value.trim() : null);
+
+/** A member's attribution from its configured placement: a placement names its definition. */
+const attributionOf = (agentDefinitionId: string | null | undefined): RunAttribution => {
+  const id = optional(agentDefinitionId);
+  return id === null ? { kind: "unattributed" } : { kind: "attributed", agentDefinitionId: id };
+};
 
 /** Folders never walked into: a run's own journal and the memory of another node's imports. */
 const SKIPPED_FOLDERS = new Set(["work_journal", "imports"]);
@@ -63,6 +86,8 @@ export class RunFolderDiscovery {
   private readonly memoryDir: string;
   private readonly layout: AgentMemoryLayout;
   private readonly deps: Required<RunFolderDiscoveryDependencies>;
+  /** `(root, record, reason)` already logged by this instance: each is logged once in its lifetime. */
+  private readonly loggedUnreadable = new Set<string>();
 
   constructor(memoryDir: string, deps: RunFolderDiscoveryDependencies = {}) {
     this.memoryDir = path.resolve(memoryDir);
@@ -72,6 +97,8 @@ export class RunFolderDiscovery {
       orgLocations: deps.orgLocations ?? new AgentOrgExecutionTreeLocationService({ memoryDir: this.memoryDir }),
       agentCatalog: deps.agentCatalog ?? new AgentRunHistoryCatalogService(this.memoryDir),
       agentMetadata: deps.agentMetadata ?? new AgentRunMetadataStore(this.memoryDir),
+      teamPackages: deps.teamPackages ?? new TeamRunPackageCatalog(this.memoryDir),
+      orgPackages: deps.orgPackages ?? new AgentOrgRunPackageCatalog(this.memoryDir),
     };
   }
 
@@ -102,19 +129,70 @@ export class RunFolderDiscovery {
     if (!kind || kind === "agent_team") await this.guarded("team runs", async () => (await this.teamMembers(scope)).forEach(add));
     if (!kind || kind === "agent_org") await this.guarded("agent org runs", async () => (await this.orgMembers(scope)).forEach(add));
     if (!kind || kind === "agent") await this.guarded("agent runs", async () => (await this.agentRuns(runFolders, scope)).forEach(add));
-    for (const memoryDir of runFolders) if (!runs.has(memoryDir)) runs.set(memoryDir, this.folderRun(memoryDir));
-    return [...runs.values()].sort((a, b) => a.runKey.localeCompare(b.runKey));
+    // After the team and org sources: they awaited the readiness index whose diagnostics are read here (N-7).
+    const unreadableRoot = this.unreadableRoots(kind);
+    for (const memoryDir of runFolders) if (!runs.has(memoryDir)) runs.set(memoryDir, this.folderRun(memoryDir, unreadableRoot));
+    const found = [...runs.values()].sort((a, b) => a.runKey.localeCompare(b.runKey));
+    this.logUnreadable(found);
+    return found;
   }
 
-  /** A run as the folder says it: no record attributes it. Every walked folder lies in a family, so it has a root. */
-  private folderRun(memoryDir: string): DiscoveredRun {
+  /**
+   * A run as the folder says it: no record attributes it, or the tree of its team or org root could not be read.
+   * Every walked folder lies in a family, so it has a root.
+   */
+  private folderRun(memoryDir: string, unreadableRoot: (root: RootExecutionIdentity) => Unreadable | null): DiscoveredRun {
     const runId = path.basename(memoryDir);
     const runKey = this.runKeyOf(memoryDir);
+    const root = this.rootOf(memoryDir)!;
     return {
       runKey, memoryDir, runId, agentName: nameFromFolder(runId), teamName: null, memberName: null, orgName: null,
       workspace: null, runtimeKind: null, subject: { kind: "RUN_FOLDER", runKey },
-      root: this.rootOf(memoryDir)!, agentDefinitionId: null, recordedStartAt: null,
+      root, attribution: unreadableRoot(root) ?? { kind: "unattributed" }, recordedStartAt: null,
     };
+  }
+
+  /**
+   * Which team and org roots the readiness index left out, and why: their member folders are `unreadable`. A failed
+   * scan of every root is filed as the team root `*` only (the index files no org `*`).
+   */
+  private unreadableRoots(kind: RootSubjectKind | null): (root: RootExecutionIdentity) => Unreadable | null {
+    const teams = !kind || kind === "agent_team" ? this.deps.teamPackages.getDiagnostics() : new Map<string, string>();
+    const orgs = new Map(!kind || kind === "agent_org"
+      ? this.deps.orgPackages.listDiagnostics().map((diagnostic) => [diagnostic.orgRunId, diagnostic.reason] as const) : []);
+    return (root) => {
+      switch (root.rootSubjectKind) {
+        case "agent_team": {
+          const reason = teams.get(root.rootRunId) ?? teams.get(WHOLE_SCAN_ROOT_ID);
+          return reason === undefined ? null : { kind: "unreadable", record: TEAM_TREE_RECORD, reason };
+        }
+        case "agent_org": {
+          const reason = orgs.get(root.rootRunId);
+          return reason === undefined ? null : { kind: "unreadable", record: ORG_TREE_RECORD, reason };
+        }
+        case "agent":
+          return null;
+      }
+    };
+  }
+
+  /** DESIGN.md rule 7: one warning per unreadable record of a root, naming it and how many run folders it leaves out. */
+  private logUnreadable(runs: readonly DiscoveredRun[]): void {
+    const counts = new Map<string, { root: string; record: string; reason: string; runFolders: number }>();
+    for (const run of runs) {
+      if (run.attribution.kind !== "unreadable") continue;
+      const root = `${run.root.rootSubjectKind}:${run.root.rootRunId}`;
+      const { record, reason } = run.attribution;
+      const key = JSON.stringify([root, record, reason]);
+      const count = counts.get(key) ?? { root, record, reason, runFolders: 0 };
+      count.runFolders += 1;
+      counts.set(key, count);
+    }
+    for (const [key, unreadable] of counts) {
+      if (this.loggedUnreadable.has(key)) continue;
+      this.loggedUnreadable.add(key);
+      console.warn("RUN_FOLDER_DISCOVERY_RECORD_UNREADABLE", unreadable);
+    }
   }
 
   private runKeyOf(memoryDir: string): string {
@@ -135,7 +213,7 @@ export class RunFolderDiscovery {
         workspace: launch?.workspaceRootPath ?? null, runtimeKind,
         subject: { kind: "TEAM_MEMBER", teamRunId: member.rootTeamRunId, agentRunId: member.agentRunId },
         root: createTeamRootExecutionIdentity(member.rootTeamRunId),
-        agentDefinitionId: optional(placement?.agentDefinitionId),
+        attribution: attributionOf(placement?.agentDefinitionId),
         recordedStartAt: optional(member.startedAt) ?? optional(member.tree.createdAt),
       };
     });
@@ -155,7 +233,7 @@ export class RunFolderDiscovery {
         workspace: launch?.workspaceRootPath ?? null, runtimeKind,
         subject: { kind: "ORG_MEMBER", orgRunId: member.rootRunId, agentRunId: member.agentRunId },
         root: createAgentOrgRootExecutionIdentity(member.rootRunId),
-        agentDefinitionId: optional(placement?.agentDefinitionId),
+        attribution: attributionOf(placement?.agentDefinitionId),
         recordedStartAt: optional(member.startedAt) ?? optional(member.tree.createdAt),
       };
     });
@@ -169,10 +247,15 @@ export class RunFolderDiscovery {
     for (const entry of entries) {
       const memoryDir = path.join(this.layout.getStandaloneRootDirPath(), entry);
       if (!runFolders.has(memoryDir)) continue;
-      const metadata = await this.deps.agentMetadata.readMetadata(entry).catch(() => null);
+      const state = await this.deps.agentMetadata.readMetadataState(entry);
+      const metadata = state.kind === "present" ? state.metadata : null;
       const row = rows.get(entry) ?? null;
       // One value for the run and its AGENT subject (the Memory page opens the run by it).
       const definitionId = optional(metadata?.agentDefinitionId) ?? optional(row?.agentDefinitionId);
+      // A history row that names the definition still attributes a run whose metadata cannot be read.
+      const attribution: RunAttribution = definitionId !== null ? { kind: "attributed", agentDefinitionId: definitionId }
+        : state.kind === "unreadable" ? { kind: "unreadable", record: RUN_METADATA_RECORD, reason: state.error.message }
+        : { kind: "unattributed" };
       // The journal target: the agent runtime that wrote the open raw-trace file (the previous one while a switch is pending).
       const runtimeKind: RuntimeKind | null = metadata ? openRawTraceRuntimeKind(metadata) ?? null : null;
       runs.push({
@@ -183,7 +266,7 @@ export class RunFolderDiscovery {
         runtimeKind,
         subject: { kind: "AGENT", runId: entry, agentDefinitionId: definitionId },
         root: createAgentRootExecutionIdentity(entry),
-        agentDefinitionId: definitionId,
+        attribution,
         recordedStartAt: optional(metadata?.startedAt) ?? optional(row?.createdAt),
       });
     }

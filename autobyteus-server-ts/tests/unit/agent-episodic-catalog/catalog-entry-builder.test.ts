@@ -9,7 +9,7 @@ const delegatedTeamMember: DiscoveredRun = {
   runKey: "agent_teams/eng_team_1/sub_team_2/writer_77", runId: "writer_77", memoryDir: "/m/agent_teams/eng_team_1/sub_team_2/writer_77",
   agentName: "writer", teamName: "Engineering Team", memberName: "member-name-marker", orgName: null, workspace: "/w/repo",
   runtimeKind: RuntimeKind.CODEX_APP_SERVER, subject: { kind: "TEAM_MEMBER", teamRunId: "eng_team_1", agentRunId: "writer_77" },
-  root: { rootSubjectKind: "agent_team", rootRunId: "eng_team_1" }, agentDefinitionId: "team-local-agent:eng:writer",
+  root: { rootSubjectKind: "agent_team", rootRunId: "eng_team_1" }, attribution: { kind: "attributed", agentDefinitionId: "team-local-agent:eng:writer" },
   recordedStartAt: "2026-11-10T08:00:00.000Z",
 };
 

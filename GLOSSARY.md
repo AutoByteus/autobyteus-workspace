@@ -189,8 +189,10 @@ delegated run, …) are defined in the
   copy of the journals, and not the retired `episodic.jsonl` rows of old run
   folders ([agent_episodic_catalog.md](autobyteus-server-ts/docs/modules/agent_episodic_catalog.md)).
 - **Discovered run:** one run folder as run-folder discovery attributes it from
-  its records: names, workspace, runtime, agent definition, recorded start and
-  root (`DiscoveredRun`). Memory search keeps a memory run of it.
+  its records: names, workspace, runtime, recorded start, root and its
+  attribution (`DiscoveredRun`): attributed to an agent definition, unattributed
+  (no record names one), or unreadable (the record that would name it cannot be
+  read). Memory search keeps a memory run of it.
 - **Memory search:** finding past work in the memory of every run on this
   node, today through their Work Journals: the tool `search_memory` and the
   Memory page's Search. It points to where the work is; it does not answer from

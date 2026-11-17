@@ -7,7 +7,7 @@ import { MemorySearch, MEMORY_INDEX_NOT_BUILT } from "../../../src/memory-search
 import { MemoryIndexPipeline } from "../../../src/memory-search/pipeline/memory-index-pipeline.js";
 import { RunFolderDiscovery } from "../../../src/agent-memory/services/run-folder-discovery.js";
 import { createFakeEmbeddingIndex } from "../../helpers/fake-embedding-model.js";
-import { appendTurns, writeRun } from "../../helpers/memory-search-fixtures.js";
+import { metadataStateOf, appendTurns, writeRun } from "../../helpers/memory-search-fixtures.js";
 
 const until = async (check: () => boolean | Promise<boolean>, ms = 5_000): Promise<void> => {
   for (const deadline = Date.now() + ms; Date.now() < deadline;) {
@@ -26,7 +26,7 @@ describe("MemorySearch (pipeline and search over Work Journals)", () => {
   const discovery = () => new RunFolderDiscovery(memoryDir, {
     teamLocations: { listAgents: async () => [] }, orgLocations: { listAgents: async () => [] },
     agentCatalog: { listCatalogRows: async () => [{ runId: "codex_ddns", agentName: "Codex" }, { runId: "game_bot", agentName: "Game Maker" }] as never },
-    agentMetadata: { readMetadata: async (runId: string) => runId === "codex_ddns" ? { agentDefinitionId: "codex", workspaceRootPath: "/w/mcps" } as never : null },
+    agentMetadata: { readMetadataState: async (runId: string) => metadataStateOf(runId === "codex_ddns" ? { agentDefinitionId: "codex", workspaceRootPath: "/w/mcps" } : null) },
   });
   const create = () => new MemorySearch({
     appDataDir, memoryDir, journals, embeddings: () => fake.index, activeModelId: () => activeModel, discovery: discovery(), quietMs: 30,

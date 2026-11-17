@@ -58,6 +58,8 @@ export class EpisodicCatalog {
   /** Each agent definition's entries by run folder; a definition stays (with no entries) when its runs are gone. */
   private readonly catalogs = new Map<string, Map<string, CatalogEntry>>();
   private readonly pending = new Map<string, RootRequest>();
+  /** Runs this instance has already logged as left out, by run and reason. */
+  private readonly loggedLeftOut = new Set<string>();
   private taskTitles: TaskTitles | null = null;
   private unsubscribe: (() => void) | null = null;
   private timer: NodeJS.Timeout | null = null;
@@ -172,22 +174,45 @@ export class EpisodicCatalog {
     if (!this.stopped) await this.write(affected);
   }
 
-  /** Entries of the attributed runs; a run whose journal or Task cannot be read is left out with a warning (DESIGN.md rule 7). */
+  /**
+   * Entries of the attributed runs (DESIGN.md rule 7 for the rest). Discovery has already logged a run whose records
+   * cannot be read; a run whose journal manifest cannot be read is left out here with a warning, once per reason.
+   */
   private async buildEntries(runs: readonly DiscoveredRun[]): Promise<Array<{ agentDefinitionId: string; entry: CatalogEntry }>> {
     const titles = new Map<string, Promise<string | null>>();
     const built: Array<{ agentDefinitionId: string; entry: CatalogEntry }> = [];
     for (const run of runs) {
       if (this.stopped) break;
-      if (run.agentDefinitionId === null) continue;
+      switch (run.attribution.kind) {
+        case "unattributed":
+        case "unreadable":
+          continue;
+        case "attributed":
+          break;
+      }
+      const { agentDefinitionId } = run.attribution;
       try {
-        const spans = await this.journals.readJournalSpans(run.memoryDir);
+        const journal = await this.journals.readJournalSpans(run.memoryDir);
+        if (journal.kind === "unreadable") {
+          this.runLeftOut(run, journal.reason);
+          continue;
+        }
         const taskTitle = await this.taskTitleOf(run.root, titles);
-        built.push({ agentDefinitionId: run.agentDefinitionId, entry: buildCatalogEntry({ run, spans, taskTitle }) });
+        const spans = journal.kind === "spans" ? journal.spans : null;
+        built.push({ agentDefinitionId, entry: buildCatalogEntry({ run, spans, taskTitle }) });
       } catch (error) {
         console.warn("EPISODIC_CATALOG_REFRESH_FAILED", { root: rootKey(run.root), run: run.runKey, error: message(error) });
       }
     }
     return built;
+  }
+
+  /** EPISODIC_CATALOG_RUN_LEFT_OUT, once per run and reason for this instance (a refresh does not repeat it). */
+  private runLeftOut(run: DiscoveredRun, reason: string): void {
+    const key = JSON.stringify([run.runKey, reason]);
+    if (this.loggedLeftOut.has(key)) return;
+    this.loggedLeftOut.add(key);
+    console.warn("EPISODIC_CATALOG_RUN_LEFT_OUT", { root: rootKey(run.root), run: run.runKey, reason });
   }
 
   /** The title of the root's current Project Task (any role); org roots are not Task executions. Once per Task per pass. */

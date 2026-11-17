@@ -10,6 +10,16 @@ export type MemoryRunSubject =
   | Readonly<{ kind: "RUN_FOLDER"; runKey: string }>;
 
 /**
+ * What a run's records say about its agent definition. `unattributed`: no record names one (old folders without
+ * records, agent-root collaboration folders). `unreadable`: the record that would name it exists but cannot be read
+ * (`record` is its file name); discovery logs it (DESIGN.md rule 7).
+ */
+export type RunAttribution =
+  | Readonly<{ kind: "attributed"; agentDefinitionId: string }>
+  | Readonly<{ kind: "unattributed" }>
+  | Readonly<{ kind: "unreadable"; record: string; reason: string }>;
+
+/**
  * One run folder as run-folder discovery attributes it from its records (names, workspace and runtime as recorded).
  * `runKey` is the folder's path relative to the memory folder, for example `agent_teams/team_x/member_y`.
  */
@@ -27,8 +37,8 @@ export type DiscoveredRun = Readonly<{
   subject: MemoryRunSubject;
   /** The run the folder belongs to at the top: the folder's family and first segment. */
   root: RootExecutionIdentity;
-  /** The agent definition its records name; null when no record names one (the run is not attributed). */
-  agentDefinitionId: string | null;
+  /** Which agent definition the run's records name, or why none is named. */
+  attribution: RunAttribution;
   /** The start its records hold: run metadata or history row for an agent run, the tree's creation for a member. */
   recordedStartAt: string | null;
 }>;

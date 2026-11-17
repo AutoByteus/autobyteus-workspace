@@ -10,6 +10,7 @@ import {
   WORK_JOURNAL_RENDERER_REVISION,
   type WorkJournalChangeListener,
   type WorkJournalFileSpan,
+  type WorkJournalSpans,
   type WorkJournalFileSummary,
   type WorkJournalFileVersion,
   type WorkJournalLines,
@@ -118,16 +119,17 @@ export class WorkJournalService {
   }
 
   /**
-   * The run's journal files in manifest order, each with its path, size and the time range its header states; null when
-   * the run has no journal yet. It reads the file names the manifest lists, also from an entry that must be rendered
-   * again (the file on disk is still the run's journal until then), at most the first 1 KB of each file, and never renders.
+   * The run's journal files in manifest order, each with its path, size and the time range its header states; `none`
+   * when the run has no journal yet, `unreadable` when its manifest cannot be read. It reads the file names the manifest
+   * lists, also from an entry that must be rendered again (the file on disk is still the run's journal until then), at
+   * most the first 1 KB of each file, and never renders.
    */
-  async readJournalSpans(memoryDir: string): Promise<WorkJournalFileSpan[] | null> {
+  async readJournalSpans(memoryDir: string): Promise<WorkJournalSpans> {
     const dir = path.resolve(memoryDir);
-    const journalFiles = await this.store.readManifestJournalFileNames(dir);
-    if (!journalFiles) return null;
+    const manifest = await this.store.readManifestJournalFileNames(dir);
+    if (manifest.kind !== "names") return manifest;
     const spans: WorkJournalFileSpan[] = [];
-    for (const journalFile of journalFiles) {
+    for (const journalFile of manifest.names) {
       const read = await this.store.readJournalFileHead(dir, journalFile, JOURNAL_HEADER_BYTES);
       if (!read) continue;
       const range = readJournalHeaderTimeRange(read.head);
@@ -139,7 +141,7 @@ export class WorkJournalService {
         to: range?.to ?? null,
       });
     }
-    return spans;
+    return { kind: "spans", spans };
   }
 
   /** Where a run's journal file is, to open it with a file tool. */
