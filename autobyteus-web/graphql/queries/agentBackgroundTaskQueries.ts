@@ -11,7 +11,7 @@ export const AgentBackgroundTaskView = gql`
       ... on AgentBackgroundTaskEventStream {
         agentRunId
         # Aliased: both union members have a \`tasks\` field, with different row types.
-        currentTasks: tasks { taskId kind description command status summary startedAt }
+        currentTasks: tasks { taskId kind description command status summary endReason exitCode startedAt }
       }
       ... on AgentBackgroundTaskUnsupported { agentRunId reason }
       ... on AgentBackgroundTaskUnavailable { agentRunId reason }

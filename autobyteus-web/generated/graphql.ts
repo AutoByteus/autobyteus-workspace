@@ -40,12 +40,20 @@ export type AgentBackgroundTask = {
   __typename?: 'AgentBackgroundTask';
   command?: Maybe<Scalars['String']['output']>;
   description: Scalars['String']['output'];
+  endReason?: Maybe<AgentBackgroundTaskEndReason>;
+  exitCode?: Maybe<Scalars['Int']['output']>;
   kind: AgentBackgroundTaskKind;
   startedAt: Scalars['String']['output'];
   status: AgentBackgroundTaskStatus;
   summary?: Maybe<Scalars['String']['output']>;
   taskId: Scalars['String']['output'];
 };
+
+export enum AgentBackgroundTaskEndReason {
+  LowMemory = 'low_memory',
+  RunEnded = 'run_ended',
+  TimeLimit = 'time_limit'
+}
 
 export type AgentBackgroundTaskEventStream = {
   __typename?: 'AgentBackgroundTaskEventStream';
@@ -5434,7 +5442,7 @@ export type AgentBackgroundTaskViewQueryVariables = Exact<{
 }>;
 
 
-export type AgentBackgroundTaskViewQuery = { __typename?: 'Query', agentBackgroundTaskView: { __typename: 'AgentBackgroundTaskEventStream', agentRunId: string, currentTasks: Array<{ __typename?: 'AgentBackgroundTask', taskId: string, kind: AgentBackgroundTaskKind, description: string, command?: string | null, status: AgentBackgroundTaskStatus, summary?: string | null, startedAt: string }> } | { __typename: 'AgentBackgroundTaskSnapshot', agentRunId: string, runInstanceId: string, observedAt: string, tasks: Array<{ __typename?: 'AgentBackgroundTaskViewRow', taskId: string, kind: string, description: string, command?: string | null, status: BackgroundTaskViewStatus, exitCode?: number | null, startedAt: string }> } | { __typename: 'AgentBackgroundTaskUnavailable', agentRunId: string, reason: BackgroundTaskViewReason } | { __typename: 'AgentBackgroundTaskUnsupported', agentRunId: string, reason: BackgroundTaskViewReason } };
+export type AgentBackgroundTaskViewQuery = { __typename?: 'Query', agentBackgroundTaskView: { __typename: 'AgentBackgroundTaskEventStream', agentRunId: string, currentTasks: Array<{ __typename?: 'AgentBackgroundTask', taskId: string, kind: AgentBackgroundTaskKind, description: string, command?: string | null, status: AgentBackgroundTaskStatus, summary?: string | null, endReason?: AgentBackgroundTaskEndReason | null, exitCode?: number | null, startedAt: string }> } | { __typename: 'AgentBackgroundTaskSnapshot', agentRunId: string, runInstanceId: string, observedAt: string, tasks: Array<{ __typename?: 'AgentBackgroundTaskViewRow', taskId: string, kind: string, description: string, command?: string | null, status: BackgroundTaskViewStatus, exitCode?: number | null, startedAt: string }> } | { __typename: 'AgentBackgroundTaskUnavailable', agentRunId: string, reason: BackgroundTaskViewReason } | { __typename: 'AgentBackgroundTaskUnsupported', agentRunId: string, reason: BackgroundTaskViewReason } };
 
 export type GetAgentCustomizationOptionsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -10853,6 +10861,8 @@ export const AgentBackgroundTaskViewDocument = gql`
         command
         status
         summary
+        endReason
+        exitCode
         startedAt
       }
     }

@@ -1,6 +1,6 @@
-import type { BackgroundTaskKind, BackgroundTaskStatus } from '@autobyteus/agent-presentation-contracts';
+import type { BackgroundTaskEndReason, BackgroundTaskKind, BackgroundTaskStatus } from '@autobyteus/agent-presentation-contracts';
 
-export type { BackgroundTaskKind, BackgroundTaskStatus };
+export type { BackgroundTaskEndReason, BackgroundTaskKind, BackgroundTaskStatus };
 
 /**
  * One background task of a run (work a runtime keeps running beyond its turn), as last
@@ -15,6 +15,10 @@ export interface BackgroundTask {
   status: BackgroundTaskStatus;
   /** Final summary the runtime reported; null while running. */
   summary: string | null;
+  /** Why the task ended, when the runtime says so; null while running or when no reason was reported. */
+  endReason: BackgroundTaskEndReason | null;
+  /** The command's exit code, when the runtime reports one; null while running or when there is none. */
+  exitCode: number | null;
   /** ISO-8601 time the runtime first saw the task. */
   startedAt: string;
 }
