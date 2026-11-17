@@ -47,6 +47,11 @@ const osDeliversFileEvents = async (): Promise<boolean> => {
   }
 };
 const ENVIRONMENT_MESSAGE = "ENVIRONMENT: the OS delivered no file event within 10 s (FSEvents under load); this watcher result is not meaningful";
+/**
+ * SR-014 (D-13b): the probe's own stream got its event, but under load the OS can drop one stream's events and not
+ * another's (IMP-012), so this is not a product verdict either. The proof runs where the OS delivers events.
+ */
+const INCONCLUSIVE_MESSAGE = "INCONCLUSIVE: the watcher saw no change; a fresh fs.watch stream did. Under load the OS can drop one stream's events (FU-500-06); rerun where the OS delivers events.";
 
 const nextEvent = async (
   events: AsyncGenerator<string, void, void>,
@@ -84,7 +89,7 @@ const collectUntil = async (
     if (!(error instanceof Error) || error.message !== HANG_GUARD_MESSAGE) throw error;
     // The case's diagnostics: what arrived before the guard.
     const seen = JSON.stringify(changes.map((change) => ({ type: change.type, path: pathOf(change) || (change as { path?: string }).path })));
-    throw new Error(`${await osDeliversFileEvents() ? HANG_GUARD_MESSAGE : ENVIRONMENT_MESSAGE}; changes before the guard: ${seen}`);
+    throw new Error(`${await osDeliversFileEvents() ? INCONCLUSIVE_MESSAGE : ENVIRONMENT_MESSAGE}\nChanges before the guard: ${seen}`);
   }
   return changes;
 };
