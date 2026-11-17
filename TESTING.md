@@ -40,6 +40,7 @@ Run commands from the repository root. `pnpm -C <dir>` runs a package's script.
 | Server typecheck | `src` and the test files (`tests/`, `../test-support/`) under the build type policy, so a test that calls a removed or renamed API fails it. Production files must have no errors; test files may not exceed `typecheck-baseline.json`. A lower count also fails until `pnpm -C autobyteus-server-ts typecheck:update-baseline` shrinks the baseline; the update refuses growth. It builds the shared packages first | `pnpm -C autobyteus-server-ts typecheck` |
 | Docker starter | The starter in the server image (`autobyteus-server-ts/docker/starter/`): package selection, supervision, its socket and command, with fake server packages | `pnpm -C autobyteus-server-ts test:starter` |
 | Docker launcher (offline) | `scripts/public/docker/` bash/PowerShell launcher commands against a fake Docker, with a real `node` client against a real Unix socket where a case needs it; no daemon | `python3 -m unittest discover -s scripts/tests -p 'test_public_docker_launcher_*.py'` |
+| Server Docker Release workflow steps | The workflow's job graph and the `run:` blocks of its steps (publish metadata, disk guard, multi-arch index check, package extraction by digest, wait, upload, `Move beta tag`), run with bash against a fake `docker`, `gh` and `df`; no daemon, network or registry. Timing, native arm64 and the registry are proven only by the build-only run (RELEASE.md) | `python3 -m unittest scripts/tests/test_server_package_release.py scripts/tests/test_release_channel_workflow_steps.py scripts/tests/test_server_docker_cli_latest_defaults.py scripts/tests/test_docker_build_context_sources.py` |
 | Server E2E | Real HTTP/GraphQL/WebSocket boundaries on a test-owned server and database (`tests/e2e/`). A suite that needs a prepared build output names it when it is missing | `pnpm test:e2e`, or one file with `vitest run` as above |
 | Gated runtime suites | Real or scripted runtimes and providers (gates, usually `RUN_*`, in `autobyteus-server-ts/tests/e2e/`) | The gate and command are in the test file |
 | Release smoke | New runs with configured skills start on every runtime, in the user's skill setup | `python3 scripts/release_smoke.py`; see [RELEASE.md](RELEASE.md#release-smoke-check) |
@@ -149,7 +150,10 @@ or because Gradle's cache already holds a dependency the runner must download.
   unsigned command; the empty Gradle home makes Gradle download what the runner downloads). The
   signed `:app:assembleRelease` needs the runner's keystore secrets: record it as not tested.
 - **A change to a build step or gate** also needs the build-only release run on the ticket
-  branch before the merge, as [DESIGN.md](DESIGN.md) rule 12 and RELEASE.md say.
+  branch before the merge, as [DESIGN.md](DESIGN.md) rule 12 and RELEASE.md say. The desktop
+  build's run is `pnpm release:test`; a change to `.github/workflows/release-server-docker.yml` or
+  `autobyteus-server-ts/docker/**` needs the Server Docker Release's own build-only run
+  ([RELEASE.md](RELEASE.md#build-only-release-run)).
 
 ## Environments, credentials and data
 
