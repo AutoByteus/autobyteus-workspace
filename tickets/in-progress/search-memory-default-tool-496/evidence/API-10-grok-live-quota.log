@@ -1,0 +1,356 @@
+# API-10 Grok Build live (paid, host login, grok-4.7): NOT TESTED, provider quota
+# Command: env -i PATH HOME USER LOGNAME TMPDIR SEARCH_MEMORY_LIVE_E2E=grok SEARCH_MEMORY_E2E_EVIDENCE_DIR=<ticket>/evidence/live pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts --no-watch
+# Result: the earlier-run turn completed; the asking turn got ACP_PROMPT_FAILED 429 subscription:free-usage-exhausted (grok-4.7 is the only model offered: `grok models`). Not a product result.
+# Env: macOS Darwin 25.5.0 arm64, Node v22.23.1; date 2026-11-17 06:53
+
+
+ RUN  v4.1.12 /Users/normy/autobyteus_org/autobyteus-worktrees/search-memory-default-tool-496/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/search-memory-default-tool-496/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:85218) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on grok (real server, isolated data)
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/search-memory-default-tool-496/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/search-memory-default-tool-496/autobyteus-server-ts
+Custom app data directory set to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-memory-live-e2e-t804n3
+Updated config file path to /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-memory-live-e2e-t804n3/.env
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on grok (real server, isolated data)
+prisma:info Starting a sqlite pool with 21 connections.
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on grok (real server, isolated data)
+[2026-11-17T05:51:50.327Z] [INFO] [secret-management.vault] Secret vault: application database
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on grok (real server, isolated data)
+Loading environment from: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-memory-live-e2e-t804n3/.env
+◇ injected env (2) from ../../../../../../private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-memory-live-e2e-t804n3/.env // tip: ◈ encrypted .env [www.dotenvx.com]
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/search-memory-default-tool-496/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/search-memory-default-tool-496/autobyteus-server-ts
+APP DATA DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-memory-live-e2e-t804n3
+DB DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-memory-live-e2e-t804n3/db
+LOGS DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-memory-live-e2e-t804n3/logs
+DOWNLOAD DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-memory-live-e2e-t804n3/download
+MEMORY DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-memory-live-e2e-t804n3/memory
+============================================================
+Initialized server settings service with 34 predefined settings
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on grok (real server, isolated data)
+AgentRunManager initialized.
+
+stderr | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on grok (real server, isolated data)
+Node access: local control socket not opened. The node's local control socket path is 117 bytes, longer than the 103 bytes a Unix socket path may have: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-memory-live-e2e-t804n3/node-access/local-control.sock. Use a shorter data folder path.
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on grok (real server, isolated data)
+AgentRunManager initialized.
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on grok (real server, isolated data)
+Loading workspace packages to trigger registration...
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on grok (real server, isolated data)
+Successfully loaded workspace packages.
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on grok (real server, isolated data)
+Creating temp workspace at: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-memory-live-e2e-t804n3/temp_workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-memory-live-e2e-t804n3/temp_workspace.
+Initialized TempWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-memory-live-e2e-t804n3/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on grok (real server, isolated data)
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on grok (real server, isolated data)
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on grok (real server, isolated data)
+Registered required tool unit: Core Tools
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on grok (real server, isolated data)
+Successfully registered tool definition: 'get_project_task'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'search_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on grok (real server, isolated data)
+Registered required tool unit: Project Task Tools
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on grok (real server, isolated data)
+Successfully registered tool definition: 'delegate_task'
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on grok (real server, isolated data)
+Registered required tool unit: Task Delegation Tools
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on grok (real server, isolated data)
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on grok (real server, isolated data)
+Registered required tool unit: Media Tools
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on grok (real server, isolated data)
+Successfully registered tool definition: 'publish_artifacts'
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on grok (real server, isolated data)
+Registered required tool unit: Published Artifact Tools
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on grok (real server, isolated data)
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'list_peer_nodes'
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on grok (real server, isolated data)
+Registered required tool unit: Agent Discovery Tools
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on grok (real server, isolated data)
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on grok (real server, isolated data)
+Registered required tool unit: Agent Communication Tools
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on grok (real server, isolated data)
+Successfully registered tool definition: 'search_memory'
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on grok (real server, isolated data)
+Registered required tool unit: Memory Tools
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on grok (real server, isolated data)
+Successfully registered tool definition: 'list_available_agent_runtimes'
+Successfully registered tool definition: 'submit_launch_choices'
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on grok (real server, isolated data)
+Registered required tool unit: Agent Runtime Tools
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on grok (real server, isolated data)
+Registered required tool unit: Browser Tools
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on grok (real server, isolated data)
+Successfully registered tool definition: 'search_web'
+
+stderr | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on grok (real server, isolated data)
+Overwriting existing tool definition for name: 'search_web'
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on grok (real server, isolated data)
+Registered required tool unit: Search Tools
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on grok (real server, isolated data) > SM-grok: a run of a definition without search_memory finds an earlier run and leaves itself out
+Agent Definition created successfully with ID: search-memory-plain-f3f31b
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on grok (real server, isolated data) > SM-grok: a run of a definition without search_memory finds an earlier run and leaves itself out
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-memory-live-e2e-t804n3/workspace-earlier
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-memory-live-e2e-t804n3/workspace-earlier.
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on grok (real server, isolated data) > SM-grok: a run of a definition without search_memory finds an earlier run and leaves itself out
+Created and registered workspace ID: agent_ws_b687258f41d0faad987db8a9f855aba11edefeba5db0b8b75d4b580c755151a9
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on grok (real server, isolated data) > SM-grok: a run of a definition without search_memory finds an earlier run and leaves itself out
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-memory-live-e2e-t804n3/workspace-earlier
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-memory-live-e2e-t804n3/workspace-earlier.
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on grok (real server, isolated data) > SM-grok: a run of a definition without search_memory finds an earlier run and leaves itself out
+Reusing registered workspace ID: agent_ws_b687258f41d0faad987db8a9f855aba11edefeba5db0b8b75d4b580c755151a9
+
+stderr | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on grok (real server, isolated data) > SM-grok: a run of a definition without search_memory finds an earlier run and leaves itself out
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on grok (real server, isolated data) > SM-grok: a run of a definition without search_memory finds an earlier run and leaves itself out
+Agent websocket attached for run search_memory_plain_f3f31b_22ce872d464d4d7485f23dba236a3ebb
+Created agent session 9f61cef8-4778-49c0-b4f7-f65f624cabcc for run search_memory_plain_f3f31b_22ce872d464d4d7485f23dba236a3ebb
+Agent WebSocket connected: session=9f61cef8-4778-49c0-b4f7-f65f624cabcc, run=search_memory_plain_f3f31b_22ce872d464d4d7485f23dba236a3ebb
+
+stderr | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on grok (real server, isolated data) > SM-grok: a run of a definition without search_memory finds an earlier run and leaves itself out
+
+stderr | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on grok (real server, isolated data) > SM-grok: a run of a definition without search_memory finds an earlier run and leaves itself out
+
+stderr | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on grok (real server, isolated data) > SM-grok: a run of a definition without search_memory finds an earlier run and leaves itself out
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on grok (real server, isolated data) > SM-grok: a run of a definition without search_memory finds an earlier run and leaves itself out
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-memory-live-e2e-t804n3/workspace-asking
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-memory-live-e2e-t804n3/workspace-asking.
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on grok (real server, isolated data) > SM-grok: a run of a definition without search_memory finds an earlier run and leaves itself out
+Created and registered workspace ID: agent_ws_0bb779c017a88bc77b5e4b9671aef643f421f9afb97e71fb138d787bdcb1ab69
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on grok (real server, isolated data) > SM-grok: a run of a definition without search_memory finds an earlier run and leaves itself out
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-memory-live-e2e-t804n3/workspace-asking
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-memory-live-e2e-t804n3/workspace-asking.
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on grok (real server, isolated data) > SM-grok: a run of a definition without search_memory finds an earlier run and leaves itself out
+Reusing registered workspace ID: agent_ws_0bb779c017a88bc77b5e4b9671aef643f421f9afb97e71fb138d787bdcb1ab69
+
+stderr | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on grok (real server, isolated data) > SM-grok: a run of a definition without search_memory finds an earlier run and leaves itself out
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on grok (real server, isolated data) > SM-grok: a run of a definition without search_memory finds an earlier run and leaves itself out
+Agent websocket attached for run search_memory_plain_f3f31b_9eb15d4687fa4b65a040d5a33921ff2c
+Created agent session 663e2da8-5c6f-483b-a1cb-9376b4c5a1f4 for run search_memory_plain_f3f31b_9eb15d4687fa4b65a040d5a33921ff2c
+Agent WebSocket connected: session=663e2da8-5c6f-483b-a1cb-9376b4c5a1f4, run=search_memory_plain_f3f31b_9eb15d4687fa4b65a040d5a33921ff2c
+
+stderr | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on grok (real server, isolated data) > SM-grok: a run of a definition without search_memory finds an earlier run and leaves itself out
+
+stderr | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on grok (real server, isolated data) > SM-grok: a run of a definition without search_memory finds an earlier run and leaves itself out
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on grok (real server, isolated data)
+Closed agent session 663e2da8-5c6f-483b-a1cb-9376b4c5a1f4
+Agent WebSocket disconnected: 663e2da8-5c6f-483b-a1cb-9376b4c5a1f4
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on grok (real server, isolated data)
+Closed agent session 9f61cef8-4778-49c0-b4f7-f65f624cabcc
+Agent WebSocket disconnected: 9f61cef8-4778-49c0-b4f7-f65f624cabcc
+
+ ❯ tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts (3 tests | 1 failed | 2 skipped) 43756ms
+     × SM-grok: a run of a definition without search_memory finds an earlier run and leaves itself out 32797ms
+     ↓ SM-agy-list: the run's Agent Tools MCP tools/list has search_memory once, listed or not
+     ↓ SM-agy-upgrade: a run from before this build, restored, hears the notice once and has the tool
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on grok (real server, isolated data) > SM-grok: a run of a definition without search_memory finds an earlier run and leaves itself out
+AssertionError: runtime errors: expected [ { code: 'ACP_PROMPT_FAILED', …(4) } ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   {
++     "code": "ACP_PROMPT_FAILED",
++     "error_effect": "terminal",
++     "error_scope": "turn",
++     "message": "Rate limited: API error (status 429 Too Many Requests): subscription:free-usage-exhausted: You've used all the included free usage for model grok-4.7 for now. Usage resets over a rolling 24-hour window — tokens (actual/limit): 609708/600000. Upgrade to a Grok subscription for higher limits: https://grok.com/supergrok",
++     "turn_id": "52333cad-d598-4218-a37a-0cab32ba8d9d",
++   },
++ ]
+
+ ❯ send tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts:175:132
+    173|       sendE2eSendMessageCommand(socket, { agent_run_id: runId, content…
+    174|       await until(() => turnsEnded() > ended || frames.filter((frame) …
+    175|       expect(frames.filter((frame) => frame.type === "ERROR").slice(er…
+       |                                                                                                                                    ^
+    176|       await wait(1_500);
+    177|       return (await conversation(runId)).slice(before);
+ ❯ searchThroughAgent tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts:204:21
+ ❯ tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts:268:19
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 2 skipped (3)
+   Start at  06:51:39
+   Duration  54.83s (transform 7.42s, setup 63ms, import 10.10s, tests 43.76s, environment 0ms)
+

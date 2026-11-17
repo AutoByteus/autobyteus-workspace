@@ -1,0 +1,52 @@
+{
+  "runtime": "autobyteus",
+  "codeword": "quokka922298",
+  "cases": {
+    "first search": {
+      "calls": [
+        {
+          "kind": "tool_call",
+          "invocationId": "call_00_ET_cEApWu5YfAFCLygOIuXr3724",
+          "role": null,
+          "turnId": "turn_0001",
+          "content": "",
+          "toolName": "search_memory",
+          "toolArgs": {
+            "query": "quokka922298"
+          },
+          "toolResult": "{\"results\":[{\"agent\":\"search-memory-plain-8219d8\",\"runId\":\"search_memory_plain_8219d8_eae1fd28ff9a471187db7bed1f5f557d\",\"workspace\":\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-memory-live-e2e-lZ9Csm/workspace-earlier\",\"firstDay\":\"2026-11-17\",\"latestDay\":\"2026-11-17\",\"source\":\"search-memory-plain-8219d8 · run search_memory_plain_8219d8_eae1fd28ff9a471187db7bed1f5f557d · 2026-11-17 · work_journal_active.md:5-8\",\"matches\":[{\"journalFile\":\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-memory-live-e2e-lZ9Csm/memory/agents/search_memory_plain_8219d8_eae1fd28ff9a471187db7bed1f5f557d/work_journal/work_journal_active.md\",\"lines\":\"5-8\",\"day\":\"2026-11-17\",\"snippet\":\"[05:48:15] User: For the record: the lighthouse renovation codename is quokka922298. Reply with exactly: NOTED\\n[05:48:17] Search memory \\\"lighthouse renovation codename quokka922298\\\" → ok\\n{\\\"coverage\\\":\\\"Memory index not built yet: ask the user to start it on the Memory page.\\\"}\",\"matchedBy\":\"text\",\"matchedWords\":[\"quokka922298\"]}]}]}",
+          "toolError": null,
+          "media": null,
+          "ts": 1794894503.075
+        }
+      ],
+      "reply": "\nSEARCHED search_memory_plain_8219d8_eae1fd28ff9a471187db7bed1f5f557d"
+    },
+    "second search": {
+      "calls": [
+        {
+          "kind": "tool_call",
+          "invocationId": "call_00_ET_vmUpFIwmG0iP7IZwLn4L6718",
+          "role": null,
+          "turnId": "turn_0002",
+          "content": "",
+          "toolName": "search_memory",
+          "toolArgs": {
+            "query": "quokka922298"
+          },
+          "toolResult": "{\"results\":[{\"agent\":\"search-memory-plain-8219d8\",\"runId\":\"search_memory_plain_8219d8_eae1fd28ff9a471187db7bed1f5f557d\",\"workspace\":\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-memory-live-e2e-lZ9Csm/workspace-earlier\",\"firstDay\":\"2026-11-17\",\"latestDay\":\"2026-11-17\",\"source\":\"search-memory-plain-8219d8 · run search_memory_plain_8219d8_eae1fd28ff9a471187db7bed1f5f557d · 2026-11-17 · work_journal_active.md:5-8\",\"matches\":[{\"journalFile\":\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-memory-live-e2e-lZ9Csm/memory/agents/search_memory_plain_8219d8_eae1fd28ff9a471187db7bed1f5f557d/work_journal/work_journal_active.md\",\"lines\":\"5-8\",\"day\":\"2026-11-17\",\"snippet\":\"[05:48:15] User: For the record: the lighthouse renovation codename is quokka922298. Reply with exactly: NOTED\\n[05:48:17] Search memory \\\"lighthouse renovation codename quokka922298\\\" → ok\\n{\\\"coverage\\\":\\\"Memory index not built yet: ask the user to start it on the Memory page.\\\"}\",\"matchedBy\":\"text\",\"matchedWords\":[\"quokka922298\"]}]}]}",
+          "toolError": null,
+          "media": null,
+          "ts": 1794894526.024
+        }
+      ],
+      "reply": "\nSEARCHED search_memory_plain_8219d8_eae1fd28ff9a471187db7bed1f5f557d"
+    },
+    "runs": {
+      "definitionToolNames": [],
+      "earlier": "search_memory_plain_8219d8_eae1fd28ff9a471187db7bed1f5f557d",
+      "asking": "search_memory_plain_8219d8_8a87d4f32db04ff88c6c86dc4f506a70"
+    }
+  },
+  "model": "deepseek-v4-flash"
+}
