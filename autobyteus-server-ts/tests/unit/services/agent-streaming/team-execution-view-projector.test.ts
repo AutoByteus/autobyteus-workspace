@@ -41,7 +41,7 @@ describe("Team execution view strict projection", () => {
         memberAddress: "/qa/automation/tester",
         agentRunId: "nested-task-agent-run-001",
       }),
-      details: createTeamAgentStatusDetails({ status: "running", trigger: "turn_started" }),
+      details: createTeamAgentStatusDetails({ status: "running", backgroundTasksRunning: 0, trigger: "turn_started" }),
     });
 
     expect(projectTeamAgentStatusSnapshotDto(status)).toEqual({
@@ -83,7 +83,7 @@ describe("Team execution view strict projection", () => {
         payload: {
           eventType: "AGENT_STATUS",
           statusHint: "running",
-          details: createTeamAgentStatusDetails({ status: "running", trigger: "turn_started" }),
+          details: createTeamAgentStatusDetails({ status: "running", backgroundTasksRunning: 0, trigger: "turn_started" }),
         },
       },
     })).toMatchObject({ type: "AGENT_STATUS", payload: { change_sequence: 22 } });

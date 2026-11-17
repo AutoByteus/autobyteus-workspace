@@ -94,6 +94,8 @@ export class StandalonePairedAgentAccess implements PairedAgentAccess {
 
   pairedAgentStatuses(hostRunId: string): readonly PairedAgentStatus[] {
     const run = this.roots.getActive(hostRunId)?.activeHostRun();
-    return run?.isActive() ? [{ agentRunId: hostRunId, status: normalizeAgentApiStatus(run.getStatusSnapshot().status) }] : [];
+    if (!run?.isActive()) return [];
+    const snapshot = run.getStatusSnapshot();
+    return [{ agentRunId: hostRunId, status: normalizeAgentApiStatus(snapshot.status), backgroundTasksRunning: snapshot.background_tasks_running }];
   }
 }

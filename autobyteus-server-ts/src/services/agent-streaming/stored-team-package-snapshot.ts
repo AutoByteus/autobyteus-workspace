@@ -11,6 +11,6 @@ export const storedTeamPackageSnapshot = (tree: TeamRunExecutionTreeSnapshot): R
   return Object.freeze({ tree, inputStates: Object.freeze([]) as readonly [], statuses: Object.freeze(new TeamExecutionIndex(tree).listAgentExecutions()
     .map((agent) => createTeamAgentStatusSnapshot({
       execution: createCollaborationMemberExecutionIdentity({ root, memberAddress: agent.address, agentRunId: agent.agentRunId }),
-      details: createTeamAgentStatusDetails({ status: "offline" }),
+      details: createTeamAgentStatusDetails({ status: "offline", backgroundTasksRunning: 0 }),
     }))) });
 };

@@ -157,7 +157,7 @@ describe("AgentTeamStreamHandler current root stream", () => {
         payload: {
           eventType: "AGENT_STATUS",
           statusHint: "running",
-          details: createTeamAgentStatusDetails({ status: "running", trigger: "turn_started" }),
+          details: createTeamAgentStatusDetails({ status: "running", backgroundTasksRunning: 0, trigger: "turn_started" }),
         },
       },
     });
@@ -386,7 +386,7 @@ describe("AgentTeamStreamHandler current root stream", () => {
         order.push("posted");
         // The run's own event for this input (its echo is one such event): published after the post.
         harness.emit({ changeSequence: 32, event: { eventSourceType: TeamRunEventSourceType.AGENT, execution,
-          payload: { eventType: "AGENT_STATUS", statusHint: "running", details: createTeamAgentStatusDetails({ status: "running", trigger: "turn_started" }) } } });
+          payload: { eventType: "AGENT_STATUS", statusHint: "running", details: createTeamAgentStatusDetails({ status: "running", backgroundTasksRunning: 0, trigger: "turn_started" }) } } });
         return { accepted: true };
       });
       const open = harness.root.openViewSnapshotConnection.getMockImplementation()!;

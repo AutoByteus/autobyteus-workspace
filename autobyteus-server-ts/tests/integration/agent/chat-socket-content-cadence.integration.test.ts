@@ -88,8 +88,8 @@ const tokenUsageDetails = (agentRunId: string): TeamTokenUsageDetails => ({
 const teamAgentEvent = (agentRunId: string, kind: "status" | "start" | "content" | Boundary, value = "", status: "running" | "idle" = "running"): TeamAgentEvent => {
   const segment = { segmentId: segmentId(agentRunId.endsWith("a") ? "A" : "B"), turnId };
   switch (kind) {
-    case "status": return { eventType: "AGENT_STATUS", statusHint: status, details: createTeamAgentStatusDetails({ status, trigger: null }) } as TeamAgentEvent;
-    case "terminal_status": return { eventType: "AGENT_STATUS", statusHint: "idle", details: createTeamAgentStatusDetails({ status: "idle", trigger: null }) } as TeamAgentEvent;
+    case "status": return { eventType: "AGENT_STATUS", statusHint: status, details: createTeamAgentStatusDetails({ status, backgroundTasksRunning: 0, trigger: null }) } as TeamAgentEvent;
+    case "terminal_status": return { eventType: "AGENT_STATUS", statusHint: "idle", details: createTeamAgentStatusDetails({ status: "idle", backgroundTasksRunning: 0, trigger: null }) } as TeamAgentEvent;
     case "start": return { eventType: "SEGMENT_START", statusHint: "running", details: { ...segment, segmentType: "text", metadata: null } };
     case "content": return { eventType: "SEGMENT_CONTENT", statusHint: "running", details: { ...segment, segmentType: "text", delta: value } };
     case "segment_end": return { eventType: "SEGMENT_END", statusHint: "running", details: { ...segment, metadata: null, interrupted: false, reason: null, failed: false, error: null } };

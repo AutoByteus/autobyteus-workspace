@@ -164,7 +164,7 @@ describe("AgentOrgStreamHandler", () => {
       kind: "agent_presentation",
       execution,
       message: { type: "AGENT_STATUS", payload: {
-        status: "running", trigger: "user", tool_name: null,
+        status: "running", background_tasks_running: 0, trigger: "user", tool_name: null,
         error_message: null, error_details: null, recoverableBlock: null,
       } },
     });

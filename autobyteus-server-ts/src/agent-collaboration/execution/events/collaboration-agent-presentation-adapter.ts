@@ -10,7 +10,7 @@ import {
 } from "../../../agent-execution/domain/agent-run-event.js";
 import type { AgentPresentationEvent, AgentPresentationTokenUsageDetails } from "./agent-presentation-event.js";
 import type { CollaborationMemberExecutionIdentity } from "../domain/root-execution-identity.js";
-import { normalizeAgentApiStatus } from "../../../agent-execution/domain/agent-status-payload.js";
+import { backgroundTasksRunningOf, normalizeAgentApiStatus } from "../../../agent-execution/domain/agent-status-payload.js";
 import { isAgentSegmentType } from "../../../agent-execution/domain/agent-segment.js";
 import { resolveAgentRunErrorEvidence } from "../../../agent-execution/domain/agent-run-error-evidence.js";
 import type {
@@ -317,7 +317,8 @@ export class AgentRunPresentationAdapter {
       }
       case AgentRunEventType.AGENT_STATUS:
         return correlated({ eventType: "AGENT_STATUS", details: {
-          status: normalizeAgentApiStatus(p.status), trigger: text(p.trigger),
+          status: normalizeAgentApiStatus(p.status), backgroundTasksRunning: backgroundTasksRunningOf(p.background_tasks_running),
+          trigger: text(p.trigger),
           toolName: text(raw(p, "tool_name", "toolName")), errorMessage: text(raw(p, "error_message", "errorMessage")),
           errorDetails: text(raw(p, "error_details", "errorDetails")),
           recoverableBlock: compactionRecoveryBlockSchema.nullable().parse(p.recoverableBlock ?? null),

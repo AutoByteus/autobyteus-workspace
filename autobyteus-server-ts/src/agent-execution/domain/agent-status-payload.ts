@@ -37,6 +37,10 @@ const normalized = (value: string | null | undefined): string | null => {
   return result || null;
 };
 
+/** A status payload's running background task count: a positive safe integer, else 0. */
+export const backgroundTasksRunningOf = (value: unknown): number =>
+  typeof value === "number" && Number.isSafeInteger(value) && value > 0 ? value : 0;
+
 export const buildAgentStatusPayload = (input: {
   status: unknown;
   /** Required: every producer says how many background tasks the run has running. */
@@ -46,7 +50,7 @@ export const buildAgentStatusPayload = (input: {
   agentName?: string | null;
 }): AgentStatusPayload => ({
   status: normalizeAgentApiStatus(input.status),
-  background_tasks_running: Number.isSafeInteger(input.backgroundTasksRunning) && input.backgroundTasksRunning > 0 ? input.backgroundTasksRunning : 0,
+  background_tasks_running: backgroundTasksRunningOf(input.backgroundTasksRunning),
   recoverableBlock: input.recoverableBlock ?? null,
   ...(normalized(input.agentId) ? { agent_id: normalized(input.agentId)! } : {}),
   ...(normalized(input.agentName) ? { agent_name: normalized(input.agentName)! } : {}),

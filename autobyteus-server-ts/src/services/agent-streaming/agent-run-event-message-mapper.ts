@@ -4,7 +4,7 @@ import {
   type AgentRunEvent,
 } from "../../agent-execution/domain/agent-run-event.js";
 import { ServerMessage, ServerMessageType } from "./models.js";
-import { buildAgentStatusPayload } from "../../agent-execution/domain/agent-status-payload.js";
+import { backgroundTasksRunningOf, buildAgentStatusPayload } from "../../agent-execution/domain/agent-status-payload.js";
 import { serializePayload } from "./payload-serialization.js";
 import { resolveAgentRunErrorEvidence } from "../../agent-execution/domain/agent-run-error-evidence.js";
 import { parseSystemInstructionsSuppliedPayload } from "../../agent-execution/domain/system-instructions-supplied-event.js";
@@ -12,7 +12,7 @@ import { parseSystemInstructionsSuppliedPayload } from "../../agent-execution/do
 const normalizeStatusPayload = (payload: Record<string, unknown>): Record<string, unknown> => {
   return buildAgentStatusPayload({
     status: payload.status,
-    backgroundTasksRunning: typeof payload.background_tasks_running === "number" ? payload.background_tasks_running : 0,
+    backgroundTasksRunning: backgroundTasksRunningOf(payload.background_tasks_running),
     recoverableBlock: compactionRecoveryBlockSchema.nullable().parse(payload.recoverableBlock ?? null),
     agentId: typeof payload.agent_id === "string" ? payload.agent_id : null,
     agentName: typeof payload.agent_name === "string" ? payload.agent_name : null,
