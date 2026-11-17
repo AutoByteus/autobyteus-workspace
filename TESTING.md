@@ -41,7 +41,7 @@ Run commands from the repository root. `pnpm -C <dir>` runs a package's script.
 | Docker starter | The starter in the server image (`autobyteus-server-ts/docker/starter/`): package selection, supervision, its socket and command, with fake server packages | `pnpm -C autobyteus-server-ts test:starter` |
 | Docker launcher (offline) | `scripts/public/docker/` bash/PowerShell launcher commands against a fake Docker, with a real `node` client against a real Unix socket where a case needs it; no daemon | `python3 -m unittest discover -s scripts/tests -p 'test_public_docker_launcher_*.py'` |
 | Server E2E | Real HTTP/GraphQL/WebSocket boundaries on a test-owned server and database (`tests/e2e/`). A suite that needs a prepared build output names it when it is missing | `pnpm test:e2e`, or one file with `vitest run` as above |
-| Gated runtime suites | Real or scripted runtimes and providers (`RUN_*` gates in `autobyteus-server-ts/tests/e2e/`) | The gate and command are in the test file |
+| Gated runtime suites | Real or scripted runtimes and providers (gates, usually `RUN_*`, in `autobyteus-server-ts/tests/e2e/`) | The gate and command are in the test file |
 | Release smoke | New runs with configured skills start on every runtime, in the user's skill setup | `python3 scripts/release_smoke.py`; see [RELEASE.md](RELEASE.md#release-smoke-check) |
 | Core library tests | `autobyteus-ts` runtime, tools, LLM layer (credential-free; live provider tests stay skipped without their gate) | `pnpm -C autobyteus-ts test`; one folder: `pnpm -C autobyteus-ts exec vitest run tests/unit` |
 | Core library MCP integration | The MCP client against the repository's tiny real MCP servers (Python via `uv`, else Node), stdio and HTTP; an opt-in check against a real `uv` server folder | `env -i PATH="$PATH" HOME=<temp> TMPDIR="$TMPDIR" pnpm -C autobyteus-ts exec vitest run tests/integration/tools/mcp`; the opt-in gate is in the file header |
@@ -334,7 +334,8 @@ environment variables: test setups delete inherited `*_API_KEY` variables.
   resolver or setup code (Gemini still takes its mode explicitly).
 - **Live test runs opt in; deterministic runs ignore it.** `autobyteus-ts` Vitest live tests
   also need `RUN_LIVE_PROVIDER_TESTS=1` (without it the setup removes the variable). Server
-  live suites use their `RUN_*` gate. `pnpm test:e2e`, server unit/integration and the default
+  live suites use the gate their file header names (usually a `RUN_*` flag; some take
+  `<NAME>_LIVE_E2E=<runtime>`). `pnpm test:e2e`, server unit/integration and the default
   `pnpm -C autobyteus-ts test` keep their own vaults even with the variable exported.
 - **A missing key is never a pass.** It is reported as a skip with its reason
   (`missing capability <secret id> (test vault <dir>)`), as is a classified provider refusal;
