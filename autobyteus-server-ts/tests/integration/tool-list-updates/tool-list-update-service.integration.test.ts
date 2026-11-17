@@ -15,6 +15,7 @@ import { AgentRunPlatformNotices } from "../../../src/agent-execution/domain/age
 import type { AgentRunInputPreface } from "../../../src/agent-execution/domain/agent-run-input-preface.js";
 import type { AgentRunBackendInputDispatch, AgentRunInputLifecycle } from "../../../src/agent-execution/input/agent-run-input-contract.js";
 import type { AgentRunToolListApplyResult } from "../../../src/agent-execution/backends/agent-run-backend.js";
+import { resolveRuntimeAgentToolExposure } from "../../../src/agent-execution/shared/runtime-agent-tool-exposure.js";
 import {
   SKILL_UPDATE_NOTICE_SENDER_ID,
   TOOL_LIST_UPDATE_NOTICE_SENDER_ID,
@@ -312,6 +313,29 @@ describe("ToolListUpdateService", () => {
     world.service.runPublished(legacy.run, "restore");
     expect((await legacy.send("Hello.")).message.content).toBe("Hello.");
     await vi.waitFor(async () => expect((await readRecord(legacyDir)).toolNames).toEqual(["alpha", "beta"]));
+  });
+
+  it("tells a run restored after the upgrade once that search_memory is now available (autobyteus-496 AC-003)", async () => {
+    const world = await createWorld();
+    const memoryDir = path.join(world.root, "memory", "run-upgraded");
+    mkdirSync(memoryDir, { recursive: true });
+    // Recorded before the upgrade: the definition's own tools, without the platform-given search_memory.
+    await fs.writeFile(path.join(memoryDir, SEEN_TOOL_NAMES_FILE_NAME), JSON.stringify({ version: 1, toolNames: ["alpha"] }));
+    // The restored backend has the tools the shared exposure rule gives it now.
+    const restoredTools = resolveRuntimeAgentToolExposure({ toolNames: ["alpha"] }, null).requestedToolNames;
+    expect(restoredTools).toEqual(["alpha", "search_memory"]);
+    const restored = createAgentRun({
+      runId: "run-upgraded", definitionId: "def", memoryDir, inputPreface: world.service,
+      runtime: createRuntime(restoredTools, "immediate"),
+    });
+    world.service.runPublished(restored.run, "restore");
+
+    const first = (await restored.send("Back again.")).message.content;
+    expect(first).toContain("Your tools changed. Now available: search_memory.");
+    expect(first).not.toContain("No longer available");
+    await restored.endTurn();
+    expect((await restored.send("And again.")).message.content).toBe("And again.");
+    await vi.waitFor(async () => expect((await readRecord(memoryDir)).toolNames).toEqual(["alpha", "search_memory"]));
   });
 
   it("re-reads each tracked run's own definition, skips a missing one, and coalesces a burst of changes", async () => {

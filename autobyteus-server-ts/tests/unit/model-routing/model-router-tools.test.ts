@@ -49,9 +49,9 @@ describe("The Model Router agent's tools per runtime (AC-011)", () => {
     expect(ordinary).not.toHaveProperty("systemRunOwner");
   });
 
-  it("all runtimes: without a member context the requested tools are exactly the template list (no send_message_to, delegate_task, get_handoff_rules)", async () => {
+  it("all runtimes: without a member context the requested tools are the template list plus the platform-given search_memory (no send_message_to, delegate_task, get_handoff_rules)", async () => {
     const exposure = buildRuntimeAgentToolExposure(await templateTools(), null);
-    expect(exposure.requestedToolNames).toEqual(await templateTools());
+    expect(exposure.requestedToolNames).toEqual([...(await templateTools()), "search_memory"]);
     expect(exposure.sendMessageToEnabled).toBe(false);
     expect(exposure.enabledTaskDelegationToolNames).toEqual([]);
     expect(exposure.getHandoffRulesEnabled).toBe(false);

@@ -1,0 +1,98 @@
+{
+  "runtime": "codex",
+  "codeword": "quokka925426",
+  "cases": {
+    "first search": {
+      "calls": [
+        {
+          "kind": "tool_call",
+          "invocationId": "exec-bf91e337-ac3c-4122-8b43-7b52a19b366a",
+          "role": null,
+          "turnId": "01a1e80e-bf36-7c80-b264-67412c11221a",
+          "content": "",
+          "toolName": "search_memory",
+          "toolArgs": {
+            "query": "quokka925426"
+          },
+          "toolResult": {
+            "results": [
+              {
+                "agent": "search-memory-plain-4917b9",
+                "runId": "search_memory_plain_4917b9_629b23fcb45f42ef9c5f78a7b49f4ac4",
+                "workspace": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-memory-live-e2e-axWHco/workspace-earlier",
+                "firstDay": "2026-11-17",
+                "latestDay": "2026-11-17",
+                "source": "search-memory-plain-4917b9 · run search_memory_plain_4917b9_629b23fcb45f42ef9c5f78a7b49f4ac4 · 2026-11-17 · work_journal_active.md:5-6",
+                "matches": [
+                  {
+                    "journalFile": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-memory-live-e2e-axWHco/memory/agents/search_memory_plain_4917b9_629b23fcb45f42ef9c5f78a7b49f4ac4/work_journal/work_journal_active.md",
+                    "lines": "5-6",
+                    "day": "2026-11-17",
+                    "snippet": "[05:50:34] User: For the record: the lighthouse renovation codename is quokka925426. Reply with exactly: NOTED\n[05:50:37] Agent: NOTED",
+                    "matchedBy": "text",
+                    "matchedWords": [
+                      "quokka925426"
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          "toolError": null,
+          "media": null,
+          "ts": 1794894647.01
+        }
+      ],
+      "reply": "SEARCHED search_memory_plain_4917b9_629b23fcb45f42ef9c5f78a7b49f4ac4"
+    },
+    "second search": {
+      "calls": [
+        {
+          "kind": "tool_call",
+          "invocationId": "exec-9c91146b-4794-4f61-88ea-f6f84e6adb81",
+          "role": null,
+          "turnId": "01a1e80f-279d-76c0-805b-c5d4eef69dac",
+          "content": "",
+          "toolName": "search_memory",
+          "toolArgs": {
+            "query": "quokka925426"
+          },
+          "toolResult": {
+            "results": [
+              {
+                "agent": "search-memory-plain-4917b9",
+                "runId": "search_memory_plain_4917b9_629b23fcb45f42ef9c5f78a7b49f4ac4",
+                "workspace": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-memory-live-e2e-axWHco/workspace-earlier",
+                "firstDay": "2026-11-17",
+                "latestDay": "2026-11-17",
+                "source": "search-memory-plain-4917b9 · run search_memory_plain_4917b9_629b23fcb45f42ef9c5f78a7b49f4ac4 · 2026-11-17 · work_journal_active.md:5-6",
+                "matches": [
+                  {
+                    "journalFile": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-memory-live-e2e-axWHco/memory/agents/search_memory_plain_4917b9_629b23fcb45f42ef9c5f78a7b49f4ac4/work_journal/work_journal_active.md",
+                    "lines": "5-6",
+                    "day": "2026-11-17",
+                    "snippet": "[05:50:34] User: For the record: the lighthouse renovation codename is quokka925426. Reply with exactly: NOTED\n[05:50:37] Agent: NOTED",
+                    "matchedBy": "text",
+                    "matchedWords": [
+                      "quokka925426"
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          "toolError": null,
+          "media": null,
+          "ts": 1794894671.725
+        }
+      ],
+      "reply": "SEARCHED search_memory_plain_4917b9_629b23fcb45f42ef9c5f78a7b49f4ac4"
+    },
+    "runs": {
+      "definitionToolNames": [],
+      "earlier": "search_memory_plain_4917b9_629b23fcb45f42ef9c5f78a7b49f4ac4",
+      "asking": "search_memory_plain_4917b9_64fb5aea82e149e8a0bae622cc54a99b"
+    }
+  },
+  "model": "gpt-6.1-terra"
+}
