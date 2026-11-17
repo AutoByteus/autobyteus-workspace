@@ -49,7 +49,7 @@ describe("a closure stop and a follow-up Task delivered while the agent run stop
     expect(first.isActive()).toBe(false);
     // B's assignment commits after the check, while the run stops.
     const assigning = delegation.toExistingRun({ sender: createCollaborationMemberExecutionIdentity({ root: M, memberAddress: "/manager" as never, agentRunId: "manager-run" }),
-      senderRun: M, assign: { copy: run as never, taskId: "task-b" } });
+      senderRun: M, assign: { delegatedRun: run as never, taskId: "task-b" } });
     await flush();
     expect(tasks.entry(run)).toMatchObject({ taskId: "B", open: true });
     expect(roots.size).toBe(0);

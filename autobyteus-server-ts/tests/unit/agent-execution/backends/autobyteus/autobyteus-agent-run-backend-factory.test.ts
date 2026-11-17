@@ -705,7 +705,7 @@ describe("AutoByteusAgentRunBackendFactory", () => {
         resolvePlacement: vi.fn(), peerRunLinked: vi.fn() })),
       ownedTaskOf: () => null,
     });
-    const delegation = { toNewRun: vi.fn(async () => ({ delegated: true as const, copy: { kind: "agent" as const, agentRunId: "run-reviewer" } })), toExistingRun: vi.fn() };
+    const delegation = { toNewRun: vi.fn(async () => ({ delegated: true as const, delegatedRun: { kind: "agent" as const, agentRunId: "run-reviewer" } })), toExistingRun: vi.fn() };
     const releaseToolService = setProcessTaskDelegationToolService(new TaskDelegationToolService({ delegation: delegation as never, remote: { delegate: vi.fn() } as never }));
     const memberExecutionContext = testMemberExecutionContext({
       rootTeamRunId: "team-1",

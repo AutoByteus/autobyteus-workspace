@@ -277,7 +277,7 @@ describe("remote delegation to a shared Agent Team, in process (autobyteus-247)"
   it("AC-301: B creates the Team run with the back-link; A records the Team link; the work packet starts only the coordinator", async () => {
     const { a, b } = await twoNodes();
     const outcome = await a.delegate();
-    expect(outcome).toEqual({ delegated: true, copy: { kind: "team", teamRunId: "studio_team_b", teamCoordinatorAgentRunId: LEAD.agentRunId },
+    expect(outcome).toEqual({ delegated: true, delegatedRun: { kind: "team", teamRunId: "studio_team_b", teamCoordinatorAgentRunId: LEAD.agentRunId },
       node: "docker", taskId: "ad_hoc_task_1" });
 
     // B: an ordinary Team run with `delegatedFrom` on its tree; only the coordinator started, with the task notification.
@@ -336,7 +336,7 @@ describe("remote delegation to a shared Agent Team, in process (autobyteus-247)"
     const root = await a.root();
     a.resources.addTask("task-B");
     await expect(a.taskSide.assign(root, { identity: createCollaborationMemberExecutionIdentity({ root: createAgentRootExecutionIdentity(DELEGATOR),
-      memberAddress: "/assistant" as never, agentRunId: DELEGATOR }) }, { copy: { teamRunId: "studio_team_b" }, taskId: "task-B" }))
+      memberAddress: "/assistant" as never, agentRunId: DELEGATOR }) }, { delegatedRun: { teamRunId: "studio_team_b" }, taskId: "task-B" }))
       .resolves.toEqual({ delegated: false, message: expect.stringContaining("can't be given to an agent on another node") });
     // The closed Task fences it: nothing on A stops a run on B (the Task side logs the fence, task-execution-resource-release.ts).
     a.resources.close("ad_hoc_task_1");
@@ -402,7 +402,7 @@ describe("discovery, then delegation, in process (autobyteus-261 AC-402, AC-408)
     ]);
     const team = (offer as readonly { kind: string; address: string }[]).find((entry) => entry.kind === "agent_team")!;
     await expect(a.delegate({ recipient_address: team.address })).resolves.toMatchObject({ delegated: true,
-      copy: { kind: "team", teamRunId: "studio_team_b" }, node: "docker" });
+      delegatedRun: { kind: "team", teamRunId: "studio_team_b" }, node: "docker" });
     // Listing created nothing on B: the only Team run is the one the delegation started (QR-402).
     expect(b.started).toEqual([LEAD.agentRunId]);
   });

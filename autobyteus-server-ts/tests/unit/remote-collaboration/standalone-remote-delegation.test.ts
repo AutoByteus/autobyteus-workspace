@@ -261,7 +261,7 @@ describe("remote delegation between two standalone runs, in process (slice 1 ste
   it("A delegates to B's shared Agent by its catalog address; B prepares a standalone run with the back-link, A links it, then sends the work packet", async () => {
     const { a, b } = await twoNodes();
     const outcome = await delegate(a);
-    expect(outcome).toEqual({ delegated: true, copy: { kind: "agent", agentRunId: "publisher_r1" }, node: "docker", taskId: "ad_hoc_task_1" });
+    expect(outcome).toEqual({ delegated: true, delegatedRun: { kind: "agent", agentRunId: "publisher_r1" }, node: "docker", taskId: "ad_hoc_task_1" });
 
     // B: an ordinary standalone run with the Agent's default, the temp workspace, auto-approve on (autobyteus-245) and
     // `delegatedFrom`, activated by the packet.
@@ -366,7 +366,7 @@ describe("remote delegation between two standalone runs, in process (slice 1 ste
     expect(b.runOf("publisher_r1").received).toEqual([]);
     const rootA = (await a.manager.resolveRoot(DELEGATOR))!;
     a.resources.addTask("task-B");
-    await expect(a.taskSide.assign(rootA, { identity: agentIdentity(DELEGATOR, "/assistant") }, { copy: { agentRunId: "publisher_r1" }, taskId: "task-B" }))
+    await expect(a.taskSide.assign(rootA, { identity: agentIdentity(DELEGATOR, "/assistant") }, { delegatedRun: { agentRunId: "publisher_r1" }, taskId: "task-B" }))
       .resolves.toEqual({ delegated: false, message: expect.stringContaining("can't be given to an agent on another node") });
     expect(a.resources.assignments).toEqual([]);
     // A message that claims to be from a run B never linked with A's delegator is refused by A's link check.

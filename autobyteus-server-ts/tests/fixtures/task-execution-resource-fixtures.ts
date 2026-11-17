@@ -235,5 +235,5 @@ const entryAgentOf = (entry: Entry): string => "agentRunId" in entry.execution ?
 /** The agent run that receives a delegated copy's work (an Agent copy itself, or a Team copy's coordinator); throws on a failed delegation. */
 export const ingressOfOutcome = (outcome: TaskDelegationOutcome): string => {
   if (!outcome.delegated) throw new Error(`Delegation failed: ${outcome.message}`);
-  return outcome.copy.kind === "agent" ? outcome.copy.agentRunId : outcome.copy.teamCoordinatorAgentRunId;
+  return outcome.delegatedRun.kind === "agent" ? outcome.delegatedRun.agentRunId : outcome.delegatedRun.teamCoordinatorAgentRunId;
 };

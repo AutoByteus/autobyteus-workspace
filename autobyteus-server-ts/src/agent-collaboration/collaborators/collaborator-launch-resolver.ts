@@ -30,7 +30,7 @@ import {
   CollaboratorAddError,
   CollaboratorNoDefaultLaunchError,
   CollaboratorRouterFailedError,
-  type CopyRouterState,
+  type DelegatedRunRouterState,
 } from "./collaborator-errors.js";
 import type { CollaboratorLaunchBase } from "./collaborator-root-port.js";
 
@@ -157,7 +157,7 @@ export class CollaboratorLaunchResolver {
         routerFailure = routerFallback("router_failed", outcome.reason);
       }
     }
-    const routerState: CopyRouterState = !routing ? { kind: "off" } : { kind: "not_active", reason: routerFailure?.detail ?? routing.notActiveReason ?? "" };
+    const routerState: DelegatedRunRouterState = !routing ? { kind: "off" } : { kind: "not_active", reason: routerFailure?.detail ?? routing.notActiveReason ?? "" };
     // A routed launch takes the workspace and auto-approve every candidate takes (§ 3.3), with the model's default settings.
     const context = launchContextOf(base);
 
@@ -321,7 +321,7 @@ const agentSlots = (plans: readonly CollaboratorDefinitionPlan[]): AgentSlot[] =
  * No layer covers an agent of `plan` (`defaults_only`): a complete configured layer that could not be used gives its
  * reason; nothing complete configured is "no default runtime". Both carry why the Model Router did not choose.
  */
-const noUsableLayer = (plan: CollaboratorDefinitionPlan, fallbacks: readonly LaunchConfigurationFallback[], routerState: CopyRouterState): never => {
+const noUsableLayer = (plan: CollaboratorDefinitionPlan, fallbacks: readonly LaunchConfigurationFallback[], routerState: DelegatedRunRouterState): never => {
   for (const fallback of fallbacks) {
     if (fallback.reason === "model_unavailable") {
       // FU-030 (DLP-005): what happened and why (the model check's own words), then what to do.

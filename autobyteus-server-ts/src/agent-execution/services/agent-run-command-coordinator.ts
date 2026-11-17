@@ -48,7 +48,6 @@ export class AgentRunCommandCoordinator {
     overlayStore?: AgentRunCommandStatusOverlayStore;
     projectionService?: AgentRunStatusProjectionService;
     broadcaster?: AgentStreamBroadcaster;
-    /** The owner of eligible standalone runs; defaults to the process port. */
     /** The owner of eligible standalone runs, from the composition (autobyteus-500 FU-011). */
     standaloneRuns: StandaloneRunCommandPort;
   }) {}

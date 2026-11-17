@@ -326,7 +326,7 @@ export class ProjectTaskService implements TaskExecutionResourcePort {
     await this.resources.load();
     this.resources.assertAllReadable();
     const { projectId } = await this.references.byId(input.taskId);
-    this.eligibility.assertCopyAssignable(input, await this.eligibility.assertAssignableTask(projectId, input.taskId));
+    this.eligibility.assertDelegatedRunAssignable(input, await this.eligibility.assertAssignableTask(projectId, input.taskId));
   }
   openTaskReferencesOf(execution: TaskExecutionReference, exceptTaskId: string): Promise<string[]> { return this.eligibility.openTaskReferencesOf(execution, exceptTaskId); }
   /** The existing-copy commit: every condition re-checked under the copy's and then the Task's serialization. */
@@ -336,7 +336,7 @@ export class ProjectTaskService implements TaskExecutionResourcePort {
     await this.resources.serializeDelegatedRunInTask(input.execution, () => input.taskId, async () => {
       this.resources.assertAllReadable();
       const task = await this.eligibility.assertAssignableTask(projectId, input.taskId);
-      this.eligibility.assertCopyAssignable({ execution: input.execution, requestedBy: input.delegatedFrom.delegatorAgentRunId, taskId: input.taskId,
+      this.eligibility.assertDelegatedRunAssignable({ execution: input.execution, requestedBy: input.delegatedFrom.delegatorAgentRunId, taskId: input.taskId,
         ...(input.recipientAddress ? { ownDelegatorAgentRunId: input.delegatedFrom.delegatorAgentRunId } : {}) }, task);
       await this.resources.assignExisting({ projectId, taskId: input.taskId }, input);
     });

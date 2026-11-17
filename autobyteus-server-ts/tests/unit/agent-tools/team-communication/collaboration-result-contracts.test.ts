@@ -80,16 +80,16 @@ describe("collaboration public result contracts", () => {
   });
 
   it("autobyteus-247 REQ-304 / F-001: a remote result names its node, for a task agent team as for a task agent; a local one has none", () => {
-    const remoteTeam = toDelegateTaskResult({ delegated: true, copy: { kind: "team", teamRunId: "studio_team_b", teamCoordinatorAgentRunId: "lead_b1" },
+    const remoteTeam = toDelegateTaskResult({ delegated: true, delegatedRun: { kind: "team", teamRunId: "studio_team_b", teamCoordinatorAgentRunId: "lead_b1" },
       node: "docker", taskId: "ad_hoc_task_1" });
     expect(remoteTeam).toEqual({ delegated: true, target_kind: "team", target_team_run_id: "studio_team_b", target_team_coordinator_agent_run_id: "lead_b1",
       node: "docker", task_id: "ad_hoc_task_1" });
     expect(DelegateTaskResultSchema.parse(remoteTeam)).toEqual(remoteTeam);
-    const localTeam = toDelegateTaskResult({ delegated: true, copy: { kind: "team", teamRunId: "team-copy", teamCoordinatorAgentRunId: "team-copy-lead" } });
+    const localTeam = toDelegateTaskResult({ delegated: true, delegatedRun: { kind: "team", teamRunId: "team-copy", teamCoordinatorAgentRunId: "team-copy-lead" } });
     expect(localTeam).toEqual({ delegated: true, target_kind: "team", target_team_run_id: "team-copy", target_team_coordinator_agent_run_id: "team-copy-lead" });
     expect("node" in localTeam).toBe(false);
     expect(DelegateTaskResultSchema.parse(localTeam)).toEqual(localTeam);
-    const remoteAgent = toDelegateTaskResult({ delegated: true, copy: { kind: "agent", agentRunId: "publisher_r1" }, node: "docker" });
+    const remoteAgent = toDelegateTaskResult({ delegated: true, delegatedRun: { kind: "agent", agentRunId: "publisher_r1" }, node: "docker" });
     expect(remoteAgent).toEqual({ delegated: true, target_kind: "agent", target_agent_run_id: "publisher_r1", node: "docker" });
     expect(() => DelegateTaskResultSchema.parse({ ...remoteTeam, node: " " })).toThrow();
   });

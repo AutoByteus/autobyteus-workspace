@@ -27,6 +27,9 @@ a stored name needs a data migration (DESIGN rule 10), and each is a follow-up:
 - The routing-decision log's `copyAddress` / `copyKind` for a delegated run's decision (FU-500-04).
 - Token usage records' `root_team_run_id` for a team member (FU-500-05).
 
+One visible text also still differs, kept because the run-settings UI/UX spec makes it normative: the Settings copy
+"Delegated copy", "Stop this copy …", "Select a copy …" and "Host run" (FU-500-07).
+
 ## Nodes
 
 - **Node:** one AutoByteus server: the desktop's embedded server, a server on

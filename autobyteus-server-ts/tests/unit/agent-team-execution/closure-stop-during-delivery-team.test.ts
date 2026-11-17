@@ -78,7 +78,7 @@ describe("a closure stop and a follow-up Task delivered while the team run stops
     const stopping = manager.terminateTeamRunForTaskClosure("eng", () => !tasks.isOpen(run));
     await flush();
     const assigning = delegation.toExistingRun({ sender: createCollaborationMemberExecutionIdentity({ root: M, memberAddress: "/manager" as never, agentRunId: "manager-run" }),
-      senderRun: M, assign: { copy: run as never, taskId: "task-b" } });
+      senderRun: M, assign: { delegatedRun: run as never, taskId: "task-b" } });
     await flush();
     expect(restored).toHaveLength(0);
     release();
