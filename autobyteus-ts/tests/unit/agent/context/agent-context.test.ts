@@ -11,6 +11,7 @@ import { LLMProvider } from '../../../../src/llm/providers.js';
 import { LLMConfig } from '../../../../src/llm/utils/llm-config.js';
 import { CompleteResponse, ChunkResponse } from '../../../../src/llm/utils/response-types.js';
 import { LLMUserMessage } from '../../../../src/llm/user-message.js';
+import { AgentToolSearch } from '../../../../src/agent/tool-search/agent-tool-search.js';
 
 class DummyLLM extends BaseLLM {
   protected async _sendMessagesToLLM(_messages: any[]): Promise<CompleteResponse> {
@@ -90,6 +91,7 @@ describe('AgentContext', () => {
     const config = new AgentConfig('name', 'role', 'desc', llm);
     const state = new AgentRuntimeState('agent-4');
     state.toolInstances = { TestTool: { name: 'TestTool' } as any };
+    state.toolSearch = new AgentToolSearch(null, Object.keys(state.toolInstances!));
 
     const context = new AgentContext('agent-4', config, state);
 

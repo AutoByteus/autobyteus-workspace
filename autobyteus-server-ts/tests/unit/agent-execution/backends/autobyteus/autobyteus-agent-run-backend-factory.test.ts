@@ -541,6 +541,8 @@ describe("AutoByteusAgentRunBackendFactory", () => {
       "send_message_to",
       "assign_task_to",
     ]);
+    // Native tool search (autobyteus-515): the base tools are listed, every other tool is searchable.
+    expect(built.agentConfig.listedToolNames).toEqual(["run_bash", "read_file", "edit_file", "write_file"]);
   });
 
   it("routes mixed AutoByteus send_message_to through server delivery and reports rejected delivery", async () => {

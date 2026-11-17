@@ -160,12 +160,18 @@ describe("AutoByteus Anthropic saved settings with a key the model no longer dec
       const raw = init?.body ?? (input instanceof Request ? await input.clone().text() : null);
       const body = JSON.parse(typeof raw === "string" ? raw : new TextDecoder().decode(raw as ArrayBuffer)) as Json;
       anthropicBodies.push(body);
-      const tool = scriptedToolCall && Array.isArray(body.tools)
-        ? (body.tools as Json[]).find((entry) => String(entry.name).includes(scriptedToolCall!.toolNamePart)) : undefined;
-      const block = tool
-        ? { type: "tool_use", id: `toolu_${randomUUID().replace(/-/g, "")}`, name: tool.name, input: scriptedToolCall!.input }
+      // Native tool search: a listed tool is called by its name; a searchable one (named in search_tools' description)
+      // through call_tool with {name, arguments}, as a model does after searching.
+      const tools = Array.isArray(body.tools) ? body.tools as Json[] : [];
+      const listed = scriptedToolCall ? tools.find((entry) => String(entry.name).includes(scriptedToolCall!.toolNamePart)) : undefined;
+      const searchable = Boolean(scriptedToolCall) && !listed && tools.some((entry) => entry.name === "call_tool")
+        && tools.some((entry) => entry.name === "search_tools" && String(entry.description).includes(scriptedToolCall!.toolNamePart));
+      const call = listed ? { name: String(listed.name), input: scriptedToolCall!.input }
+        : searchable ? { name: "call_tool", input: { name: scriptedToolCall!.toolNamePart, arguments: scriptedToolCall!.input } } : null;
+      const block = call
+        ? { type: "tool_use", id: `toolu_${randomUUID().replace(/-/g, "")}`, ...call }
         : { type: "text", text: "OK" };
-      if (tool) scriptedToolCall = null;
+      if (call) scriptedToolCall = null;
       return new Response(cannedStream(String(body.model), block), { status: 200, headers: { "content-type": "text/event-stream" } });
     }) as typeof fetch;
 

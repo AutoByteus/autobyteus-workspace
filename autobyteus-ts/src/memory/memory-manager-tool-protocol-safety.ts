@@ -74,9 +74,10 @@ export function ensureMemoryManagerWorkingContextToolProtocolSafe(
         traceType: 'tool_result',
         content: '',
         sourceEvent,
-        toolName: repair.toolName,
+        // Raw traces record the real tool (DS-003), not the working-context call's name.
+        toolName: repair.rawToolName,
         toolCallId: repair.toolCallId,
-        toolArgs: repair.toolArgs ?? null,
+        toolArgs: repair.rawToolArgs,
         toolResult: null,
         toolError: repair.toolError,
         correlationId,
@@ -111,7 +112,6 @@ function buildCompletedToolResultFactsByIdentity(
     if (interaction.status === ToolInteractionStatus.PENDING || !interaction.turnId) continue;
     facts.set(toolCallIdentityKey({ turnId: interaction.turnId, toolCallId: interaction.toolCallId }), {
       toolCallId: interaction.toolCallId,
-      toolName: interaction.toolName ?? 'unknown_tool',
       toolResult: interaction.result,
       toolError: interaction.error,
       turnId: interaction.turnId,
@@ -130,6 +130,7 @@ function buildToolCallFactsByIdentity(
     facts.set(toolCallIdentityKey({ turnId: interaction.turnId, toolCallId: interaction.toolCallId }), {
       toolCallId: interaction.toolCallId,
       toolName: interaction.toolName ?? 'unknown_tool',
+      toolArgs: interaction.arguments,
       turnId: interaction.turnId,
       rawTraceId: interaction.anchorRawTraceId ?? undefined,
     });

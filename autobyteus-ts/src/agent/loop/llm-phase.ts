@@ -2,12 +2,10 @@ import { CompleteResponse, type ChunkResponse } from '../../llm/utils/response-t
 import type { LlmRequestCapacity } from '../token-budget.js';
 import { BaseLLM } from '../../llm/base.js';
 import { LlmResponseStreamCollector } from './llm-response-stream-collector.js';
-import { ToolSchemaProvider } from '../../tools/usage/providers/tool-schema-provider.js';
 import { LLMRequestAssembler, type RequestPackage } from '../llm-request-assembler.js';
 import { CompactionPreparationError } from '../compaction/compaction-preparation-error.js';
 import { CompactionRuntimeSettingsResolver } from '../../memory/compaction/compaction-runtime-settings.js';
 import { isAgentInterruptionError } from '../interruption/agent-interruption.js';
-import { resolveTurnToolNames } from './llm-phase-tools.js';
 import { LlmCallCompaction } from './llm-phase-compaction.js';
 import { conversationRequestKwargs, conversationRequestOptions } from './conversation-request.js';
 import { resolveLlmRequestCapacity } from '../token-budget.js';
@@ -66,6 +64,8 @@ type LlmCall = {
   callId: string;
   requestCapacity: LlmRequestCapacity | null;
   toolCallsEnabled: boolean;
+  /** The request carries `search_tools`/`call_tool`: a `call_tool` call becomes the real tool's invocation. */
+  toolSearchEnabled: boolean;
   toolSchemas: Array<Record<string, unknown>>;
   compaction: LlmCallCompaction | null;
   assembler: LLMRequestAssembler;
@@ -97,7 +97,9 @@ export class LlmPhase {
     const request = await this.assembleRequest(call, input);
     if (!request) return { kind: 'compaction_blocked' };
 
-    const collector = new LlmResponseStreamCollector({ turnId: turn.turnId, notifier, toolCallsEnabled: call.toolCallsEnabled });
+    const collector = new LlmResponseStreamCollector({
+      turnId: turn.turnId, notifier, toolCallsEnabled: call.toolCallsEnabled, toolSearchEnabled: call.toolSearchEnabled,
+    });
     let settlement: LlmCallSettlement;
     try {
       await collector.consume(this.startStream(call, request), turn.executionScope, (chunk) => call.timing.observeChunk(chunk));
@@ -140,10 +142,11 @@ export class LlmPhase {
         ? automaticCompaction.policy.safetyMarginTokens
         : undefined,
     );
-    const toolNames = resolveTurnToolNames(context);
+    const toolSearch = context.toolSearch;
+    const toolNames = Object.keys(context.toolInstances);
     const toolCallsEnabled = toolNames.length > 0;
     const toolSchemas = toolCallsEnabled
-      ? new ToolSchemaProvider().buildSchema(toolNames, llm.model?.provider ?? null)
+      ? toolSearch.requestToolSchemas(toolNames, llm.model?.provider ?? null)
       : [];
     const compaction = automaticCompaction.kind === 'enabled'
       ? LlmCallCompaction.create({
@@ -176,6 +179,7 @@ export class LlmPhase {
       callId: `${turn.turnId}:llm:${callSequence}`,
       requestCapacity,
       toolCallsEnabled,
+      toolSearchEnabled: toolSearch.enabled,
       toolSchemas,
       compaction,
       assembler,
