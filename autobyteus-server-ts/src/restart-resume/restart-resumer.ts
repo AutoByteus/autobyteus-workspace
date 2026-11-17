@@ -10,11 +10,18 @@ import type { CollaborationRootResolver } from "../compositions/collaboration-ro
 import type { StandaloneAgentRunRoot } from "../standalone-agent-run-root/domain/standalone-agent-run-root.js";
 import { readBusyRunRecord, removeBusyRunRecord, type BusyRunEntry } from "./busy-run-record.js";
 import { buildRestartNotice, restartNoticeLifecycleObserver } from "./restart-notice.js";
+import { restartCauseOf } from "./restart-cause.js";
+import type { PendingRestartReminder } from "./restart-reminder-record.js";
+import type { ClaimedRestartReminder, RestartReminderService } from "./restart-reminder-service.js";
 
 /** A root's stored state, from its history catalog: why a run of that root must not be resumed, or `present`. */
 export type RootHistoryState = "present" | "terminated" | "archived" | "gone";
 
-export type ResumeReport = Readonly<{ recorded: number; notUpdate: number; skipped: number; resumed: number; failed: number }>;
+/** What the take kept for the wake after listening: the entries recorded by another release. */
+export type PreviousSession = Readonly<{ recorded: number; updateEntries: readonly BusyRunEntry[] }>;
+
+/** `reminded`: entries told with their next input (not an update); the others were woken, skipped or failed. */
+export type ResumeReport = Readonly<{ recorded: number; reminded: number; skipped: number; resumed: number; failed: number }>;
 
 /** At most this many resume posts run at once (DEC-002). */
 export const RESTART_RESUME_CONCURRENCY = 3;
@@ -34,13 +41,16 @@ const createPostLimiter = (limit: number) => {
 };
 
 /**
- * Resumes, after an update restart, the runs recorded busy at the last graceful shutdown (autobyteus-285 D3,
- * REQ-002 to REQ-006). The record is deleted before any resume, so nothing is resumed twice; an entry is resumed
- * only when its own release differs from this server's. Every run is its own root (autobyteus-461 DS-9): the roots are
- * resumed bottom-up along `delegatedFrom` (a delegated run before the run that delegated to it), so a report wakes
- * nothing twice, and each run's notice lists the resumed runs it delegated to, one hop. Each run is restored without posting,
- * checked again (Stop or archive is refused once it is active, so this check is final), then sent a notice the run
- * admits only as its first input: input that reached it first wins (SR-005). Every failure is logged; it never throws.
+ * Tells the runs of the previous session that they were restarted (autobyteus-448, extending autobyteus-285 D3).
+ *
+ * `takePreviousSession()` runs right after the server is built, before this session records anything: it reads the
+ * busy-run record, gives every entry its cause (`restartCauseOf`), hands all of them to the reminder service, which
+ * persists them, and only then removes the record; the reminders of runs that must get none are pruned. Each run is
+ * then told exactly once, by whichever comes first: its next input (the reminder rides it), or, for an update entry,
+ * the wake after listening (`resumeAfterRestart`). The wake resumes the roots bottom-up along `delegatedFrom` (a delegated
+ * run before the run that delegated to it, autobyteus-461 DS-9), at most 3 posts at a time; each run is restored
+ * without posting, checked again, then its claimed reminder is posted as an input the run admits only as its first
+ * (input that reached it first already carried the reminder). Every failure is logged; it never throws.
  */
 export class RestartResumer {
   constructor(private readonly dependencies: Readonly<{
@@ -51,45 +61,68 @@ export class RestartResumer {
     rootResolver: CollaborationRootResolver;
     /** Who delegated to whom (the Task entries); `null` when the Task records are not loaded (nothing is related). */
     tree: Pick<DelegationIndex, "parentOf">;
-    /** DS-15 (SR-070): a run whose Task is closed takes no input, the resume notice included; it is not restored. */
+    /** DS-15 (SR-070): a run whose Task is closed takes no input, the reminder included; it is not restored. */
     closedTasks: Pick<ClosedTaskEntryFence, "refusal">;
+    reminders: Pick<RestartReminderService, "add" | "prune" | "claim" | "settleClaim">;
     now?: () => Date;
     concurrency?: number;
   }>) {}
 
-  async resumeAfterUpdate(): Promise<ResumeReport> {
-    const empty = { recorded: 0, notUpdate: 0, skipped: 0, resumed: 0, failed: 0 };
+  async takePreviousSession(): Promise<PreviousSession | null> {
     try {
       const read = await readBusyRunRecord(this.dependencies.recordPath);
-      if (read.kind === "missing") return empty;
-      // Consumed before anything else: a resume that fails or crashes the server is never repeated (REQ-005).
-      try { await removeBusyRunRecord(this.dependencies.recordPath); }
-      catch (error) {
-        console.warn(`Restart resume skipped: the busy-run record could not be removed: ${String(error)}`);
-        return empty;
-      }
+      if (read.kind === "missing") return null;
       if (read.kind === "invalid") {
-        console.warn(`Restart resume: the busy-run record was invalid and was removed: ${read.reason}`);
-        return empty;
+        console.warn(`Restart reminder: the busy-run record was invalid and is removed: ${read.reason}`);
+        await removeBusyRunRecord(this.dependencies.recordPath);
+        return null;
       }
       const current = this.dependencies.version();
-      const entries = read.record.entries;
-      const updated = entries.filter((entry) => entry.version !== null && current !== null && entry.version !== current);
-      const notUpdate = entries.length - updated.length;
-      if (notUpdate) console.info(`Restart resume: ${notUpdate} recorded run(s) not resumed; the restart was not an update`);
-      if (!updated.length || current === null) return { ...empty, recorded: entries.length, notUpdate };
-      const outcomes = await this.resumeEntries(updated, current);
-      const count = (kind: Outcome["kind"]) => outcomes.filter((outcome) => outcome.kind === kind).length;
-      const report = { recorded: entries.length, notUpdate, skipped: count("skipped"), resumed: count("resumed"), failed: count("failed") };
-      console.info(`Restart resume after the update to ${current}: ${report.resumed} resumed, ${report.skipped} skipped, ${report.failed} failed`);
-      return report;
+      const restartedAt = (this.dependencies.now?.() ?? new Date()).toISOString();
+      const { entries, shutdownAt } = read.record;
+      const reminders: PendingRestartReminder[] = entries.map((entry) => Object.freeze({
+        root: entry.root, agentRunId: entry.agentRunId, place: entry.place,
+        cause: restartCauseOf(entry, shutdownAt, current), version: current, restartedAt, interruptedTurn: entry.status !== "idle",
+      }));
+      try { await this.dependencies.reminders.add(reminders); }
+      catch (error) {
+        // R-6: the record stays, but the new session's next change rewrites it; only this log line is certain.
+        console.warn(`Restart reminder: the reminders could not be saved; the busy-run record is kept: ${String(error)}`);
+        return null;
+      }
+      try { await removeBusyRunRecord(this.dependencies.recordPath); }
+      catch (error) { console.warn(`Restart reminder: the busy-run record could not be removed: ${String(error)}`); }
+      // REQ-005: a run whose Task is closed, or whose root is archived, terminated or gone, gets none.
+      await this.dependencies.reminders.prune(async (reminder) =>
+        !(await this.dependencies.closedTasks.refusal(reminder.root)) && await this.dependencies.rootHistory(reminder.root) === "present");
+      const updateEntries = entries.filter((entry) => restartCauseOf(entry, shutdownAt, current) === "update");
+      console.info(`Restart reminder: ${entries.length} run(s) to tell, ${updateEntries.length} woken after the update`);
+      return Object.freeze({ recorded: entries.length, updateEntries });
     } catch (error) {
-      console.warn(`Restart resume failed: ${String(error)}`);
-      return empty;
+      console.warn(`Restart reminder: the previous session could not be taken: ${String(error)}`);
+      return null;
     }
   }
 
-  private async resumeEntries(entries: readonly BusyRunEntry[], version: string): Promise<Outcome[]> {
+  async resumeAfterRestart(previous: PreviousSession | null): Promise<ResumeReport> {
+    const recorded = previous?.recorded ?? 0;
+    const updateEntries = previous?.updateEntries ?? [];
+    const report = { recorded, reminded: recorded - updateEntries.length, skipped: 0, resumed: 0, failed: 0 };
+    const current = this.dependencies.version();
+    if (!updateEntries.length || current === null) return report;
+    try {
+      const outcomes = await this.resumeEntries(updateEntries);
+      const count = (kind: Outcome["kind"]) => outcomes.filter((outcome) => outcome.kind === kind).length;
+      const done = { ...report, skipped: count("skipped"), resumed: count("resumed"), failed: count("failed") };
+      console.info(`Restart resume after the update to ${current}: ${done.resumed} resumed, ${done.skipped} skipped, ${done.failed} failed`);
+      return done;
+    } catch (error) {
+      console.warn(`Restart resume failed: ${String(error)}`);
+      return report;
+    }
+  }
+
+  private async resumeEntries(entries: readonly BusyRunEntry[]): Promise<Outcome[]> {
     const limit = createPostLimiter(this.dependencies.concurrency ?? RESTART_RESUME_CONCURRENCY);
     const tree = this.dependencies.tree;
     const parentKeyOf = (root: RootExecutionIdentity): string | null => {
@@ -114,7 +147,6 @@ export class RestartResumer {
       return value;
     };
     for (const [key, rootEntries] of byRoot) depthOf(key, rootEntries[0]!.root);
-    const restartedAt = this.dependencies.now?.() ?? new Date();
     // The resumed runs, by the run that delegated to them, for that run's notice.
     const resumedBy = new Map<string, string[]>();
     const outcomes: Outcome[] = [];
@@ -122,7 +154,7 @@ export class RestartResumer {
       const roots = [...byRoot.entries()].filter(([key]) => depth.get(key) === level);
       const results = await Promise.all(roots.map(async ([key, rootEntries]) => {
         const resumedDelegated = resumedBy.get(key) ?? [];
-        const done = await Promise.all(rootEntries.map((entry) => limit(() => this.resumeOne(entry, version, restartedAt, resumedDelegated))));
+        const done = await Promise.all(rootEntries.map((entry) => limit(() => this.resumeOne(entry, resumedDelegated))));
         const parentKey = parentKeyOf(rootEntries[0]!.root);
         const names = done.flatMap((outcome) => outcome.kind === "resumed" ? [outcome.displayName] : []);
         if (parentKey && names.length) resumedBy.set(parentKey, [...(resumedBy.get(parentKey) ?? []), ...names]);
@@ -133,8 +165,9 @@ export class RestartResumer {
     return outcomes;
   }
 
-  private async resumeOne(entry: BusyRunEntry, version: string, restartedAt: Date, resumedDelegated: readonly string[]): Promise<Outcome> {
+  private async resumeOne(entry: BusyRunEntry, resumedDelegated: readonly string[]): Promise<Outcome> {
     const label = `${entry.place} run '${entry.agentRunId}' of ${entry.root.rootSubjectKind} '${entry.root.rootRunId}'`;
+    let claim: ClaimedRestartReminder | null = null;
     try {
       // A cheap pre-filter before restoring; the guards are the re-check after the restore and the first-input rule.
       if (this.dependencies.liveRuns.getActiveRun(entry.agentRunId)) return this.skipped(label, "it is already live (it received new input)");
@@ -145,11 +178,14 @@ export class RestartResumer {
       const resolved = await this.dependencies.rootResolver.resolveOrRestore(entry.root);
       if (!resolved) return this.failed(label, "its root is not on this node");
       if (entry.place === "host" && resolved.kind !== "agent") return this.failed(label, "its root is not a standalone root");
-      // Restore without posting: a host is made ready now; a member starts on the notice itself.
+      // Restore without posting: a host is made ready now; a member starts on the reminder itself.
       const host = entry.place === "host" && resolved.kind === "agent" ? await resolved.root.ensureHostReady() : null;
       const after = await this.dependencies.rootHistory(entry.root);
       if (after !== "present") return this.skipped(label, `${describeState(after)} (after the restore)`);
-      const message = buildRestartNotice({ entry, version, restartedAt, resumedDelegated });
+      // Exactly once (REQ-005): input that came first already carried the reminder, so there is none to claim.
+      claim = await this.dependencies.reminders.claim(entry.agentRunId);
+      if (!claim) return this.skipped(label, "its next input carried the reminder");
+      const message = buildRestartNotice({ agentRunId: entry.agentRunId, facts: claim.reminder, resumedDelegated });
       const postOptions: AgentRunInputOptions = {
         lifecycleObserver: restartNoticeLifecycleObserver(() => host ?? this.dependencies.liveRuns.getActiveRun(entry.agentRunId), message.content),
         onlyAsFirstInput: true,
@@ -160,12 +196,16 @@ export class RestartResumer {
           : { accepted: false as const, code: "RUN_NOT_FOUND", message: `AgentRun '${entry.agentRunId}' is not this Agent run's agent.` }
         : await resolved.root.executeAgentCommand(entry.agentRunId, { kind: "post_message", message, postOptions });
       if (result.accepted) {
+        this.dependencies.reminders.settleClaim(claim, "delivered");
         console.info(`Restart resume resumed ${label}`);
         return { kind: "resumed", displayName: result.displayName ? `${result.displayName} (${entry.agentRunId})` : entry.agentRunId };
       }
-      if (result.code === "AGENT_RUN_INPUT_NOT_FIRST") return this.skipped(label, "the run already had input");
+      // Not delivered: pending again, so the run's next input carries it.
+      this.dependencies.reminders.settleClaim(claim, "returned");
+      if (result.code === "AGENT_RUN_INPUT_NOT_FIRST") return this.skipped(label, "the run already had input; its next input carries the reminder");
       return this.failed(label, result.message ?? result.code ?? "not accepted");
     } catch (error) {
+      if (claim) this.dependencies.reminders.settleClaim(claim, "returned");
       return this.failed(label, String(error));
     }
   }

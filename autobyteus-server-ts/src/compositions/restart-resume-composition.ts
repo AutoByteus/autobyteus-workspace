@@ -6,6 +6,7 @@ import { BusyRunRecorder } from "../restart-resume/busy-run-recorder.js";
 import { busyRunRecordPath } from "../restart-resume/busy-run-record.js";
 import { readReleaseIdentity } from "../restart-resume/release-identity.js";
 import { RestartResumer, type RootHistoryState } from "../restart-resume/restart-resumer.js";
+import type { RestartReminderService } from "../restart-resume/restart-reminder-service.js";
 import type { AgentOrgRunHistoryCatalogService } from "../run-history/services/agent-org-run-history-catalog-service.js";
 import { getAgentRunHistoryCatalogService } from "../run-history/services/agent-run-history-catalog-service.js";
 import { getTeamRunHistoryCatalogService } from "../run-history/services/team-run-history-catalog-service.js";
@@ -17,9 +18,10 @@ export type RestartResume = Readonly<{ recorder: BusyRunRecorder; resumer: Resta
 type HistoryRow = Readonly<{ terminatedAt?: string | null; archivedAt?: string | null }> | null;
 
 /**
- * Restart resume around the process's general runs (autobyteus-285): the recorder the shutdown runs first, and the
- * resumer the startup runs after listening. Both read the process `AgentRunManager` (application scopes have their
- * own), the process root directory and the history catalogs; the resumer wakes runs only through their roots.
+ * Restart resume around the process's general runs (autobyteus-285, autobyteus-448): the recorder of this session's
+ * live list, and the resumer that takes the previous session's record at startup and wakes the update entries after
+ * listening. Both read the process `AgentRunManager` (application scopes have their own), the process root directory
+ * and the history catalogs; the resumer wakes runs only through their roots and delivers through the reminder service.
  */
 export const composeRestartResume = (input: Readonly<{
   appDataDir: string;
@@ -29,6 +31,8 @@ export const composeRestartResume = (input: Readonly<{
   /** DS-15: a run whose Task is closed is not resumed (as base fenced its input). */
   closedTasks: Pick<ClosedTaskEntryFence, "refusal">;
   orgHistory: Pick<AgentOrgRunHistoryCatalogService, "getCatalogRow">;
+  /** The pending restart reminders, created early for the notice slot (build-studio-server). */
+  reminders: RestartReminderService;
 }>): RestartResume => {
   const recordPath = busyRunRecordPath(input.appDataDir);
   const liveRuns = AgentRunManager.getInstance();
@@ -44,6 +48,7 @@ export const composeRestartResume = (input: Readonly<{
     recorder: new BusyRunRecorder({ liveRuns, roots: getActiveCollaborationRootDirectory(), recordPath, version: readReleaseIdentity }),
     resumer: new RestartResumer({
       recordPath, version: readReleaseIdentity, liveRuns, rootHistory, rootResolver: input.rootResolver, tree: input.tree, closedTasks: input.closedTasks,
+      reminders: input.reminders,
     }),
   });
 };

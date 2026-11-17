@@ -1,0 +1,37 @@
+# API-15 desktop journey: the restart reminder in the real app (isolated instance of this worktree's build)
+# Instance: AUTOBYTEUS_TEST_VAULT=~/.autobyteus-test/vault pnpm --silent isolated-app start --build -> iso-59065-f2bf
+#           (worktree build of 79d1f803e4 = code d5e9f350cf; macOS 26 arm64; 2026-11-17)
+# Driven with autobyteus-skills/browser-automation attached to controlPort 59065 (__abDemo click/type/press; run-script reads of document.body.innerText)
+# Agent: built-in Daily Assistant, runtime AutoByteus, model gpt-5.4-mini (test vault)
+
+## 1. Start a background build (12:09 UTC)
+User: "Use run_bash with run_in_background set to true to run exactly: sleep 600; echo NIGHTLY_BUILD_DONE -- This is my nightly build. Do not wait for it. Reply STARTED and end your turn."
+Activity → Background Tasks: "1 last-known running · 1 recorded"; process `sleep 600` running.
+<data root>/server-data/restart-resume/busy-runs.json (live, no shutdownAt):
+  {"entries":[{"root":{"rootSubjectKind":"agent","rootRunId":"daily_assistant_6d01…"},"agentRunId":"daily_assistant_6d01…","place":"host","status":"idle","backgroundTasks":true,"recordedAt":"2026-11-17T12:09:12.352Z","version":"1.5.13-beta.8"}]}
+
+## 2. The app's "Restart server" (window.electronAPI.restartServer(), the IPC behind the app's action), 12:10:15-12:10:30 UTC
+Result: {"status":"running",…,"healthCheckStatus":"Healthy"}
+restart-reminders.json: one reminder, "cause": "restart", "interruptedTurn": false; busy-runs.json removed; `sleep 600` gone (0 processes).
+
+## 3. The user's next message: "How is my nightly build going?"
+Conversation (DOM text):
+  [Platform notice — application restarted]
+  The application restarted at 2026-11-17 12:10 UTC (reason: a restart).
+  If you started any background tasks, the restart stopped them. Check what you still need: restart it, or continue your work.
+  run_bash · echo Checking status; test -f …/autobyteus-background-tasks/daily_assistant_6d01…/call-…log && tail -n 20 … || echo 'No log found'
+  The nightly build was stopped by the restart, so it's not currently running. I can restart it if you want.
+Screenshot: 02-after-restart-reminder.png.
+Observed display issue (pre-existing cause, see FU-002): the reminder card is shown twice (above the user's message and at the start of
+the reply) and the first turn's "STARTED" reply is not shown; a page reload (03-after-reload.png) shows the same. The run's memory has the
+reminder once and "STARTED" (run-traces-turn-ids.txt): the input after the restart was recorded as turn_0001 again, and the view groups by turn.
+
+## 4. Full app quit and relaunch (isolated-app restart: the app's process group gets a graceful stop, then the app starts again), 12:14:53-12:15:05 UTC
+Before: the agent restarted the build in the background (busy-runs.json: "status": "idle", "backgroundTasks": true).
+After: restart-reminders.json: "cause": "restart" (the app's quit reached the server's graceful end); `sleep 600` processes: 0.
+Next message "Is the build still running after the app restart?": the conversation shows the reminder "(reason: a restart)" with the input.
+The model call then failed with "API key not provided for OPENAI": the restart was issued without AUTOBYTEUS_TEST_VAULT (tester's setup;
+docs/isolated-app-instances.md: start and restart need it). The reminder's delivery is the subject here; screenshot 04-after-app-relaunch.png.
+
+## Cleanup
+isolated-app stop iso-59065-f2bf: wasRunning true, forced false, dataRootRemoved true, ports released.

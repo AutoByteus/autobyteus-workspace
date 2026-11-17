@@ -192,6 +192,7 @@ async function initializeConfiguredServer(options: ServerOptions, shutdown: Serv
   let app!: FastifyInstance;
   let applicationRuntime!: Awaited<ReturnType<typeof buildStudioServer>>["applicationRuntime"];
   let restartResumer!: Awaited<ReturnType<typeof buildStudioServer>>["restartResume"]["resumer"];
+  let previousSession: Awaited<ReturnType<typeof restartResumer.takePreviousSession>> = null;
   try {
     shutdown.checkpoint();
     const studioServer = await buildStudioServer({ appConfig: config, loggingConfig,
@@ -203,9 +204,13 @@ async function initializeConfiguredServer(options: ServerOptions, shutdown: Serv
     });
     app = studioServer.fastify;
     applicationRuntime = studioServer.applicationRuntime;
-    // The busy runs are recorded first, before the close interrupts anything (autobyteus-285); recording never throws.
     const { recorder } = studioServer.restartResume;
     restartResumer = studioServer.restartResume.resumer;
+    // autobyteus-448: the previous session's record becomes pending restart reminders before this session records
+    // anything; then this session's live record starts, and its final write runs first at shutdown, before the close
+    // interrupts anything. Neither throws.
+    previousSession = await restartResumer.takePreviousSession();
+    recorder.startSession();
     shutdown.setCleanup(async () => { await recorder.record(); await app.close(); });
     prismaInitializationStarted = false;
     vaultInitializationStarted = false;
@@ -228,9 +233,10 @@ async function initializeConfiguredServer(options: ServerOptions, shutdown: Serv
     throw new StartupFailure({ code: "APPLICATION_ORCHESTRATION_RECOVERY_FAILED", summary: `Failed to complete application recovery: ${String(error)}` });
   }
 
-  // After an update restart, the runs that were busy continue (autobyteus-285). In the background: never blocks or fails startup.
+  // After an update restart, the runs that were busy are woken with their reminder (autobyteus-285, autobyteus-448); the
+  // others are told with their next input. In the background: never blocks or fails startup.
   shutdown.checkpoint();
-  void restartResumer.resumeAfterUpdate();
+  void restartResumer.resumeAfterRestart(previousSession);
   await shutdown.stage(() => scheduleStudioBackgroundTasks());
   } catch (error) {
     if (error instanceof StartupCancelled || shutdown.requested) return;

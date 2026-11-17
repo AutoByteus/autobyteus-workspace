@@ -1,0 +1,13 @@
+# API-12 before: RR-01..03 against the base build 4cbf9e7881 (worktree api448-base-4cbf9e7881, stamp 1.5.13-beta.8)
+# Command: env -i PATH HOME=<temp> TMPDIR USER RUN_RESTART_REMINDER_E2E=1 RESTART_REMINDER_SERVER_DIR=<base>/autobyteus-server-ts RESTART_REMINDER_E2E_EVIDENCE_DIR=<dir> pnpm -C autobyteus-server-ts exec vitest run tests/e2e/restart-resume/restart-reminder-built-server.e2e.test.ts -t 'RR-0[123]' --no-watch
+# The failures are the expected before evidence: no live record, no reminder, no wake
+
+     × RR-01: graceful restart: recorded live, reminded once with the next input as 'a restart', nothing woken; an idle run without a task gets nothing 54073ms
+     × RR-02: forced kill: no shutdownAt; the next input carries 'an unexpected stop' 31335ms
+     × RR-03: update: the idle run is woken with 'an update to' this release, and its next input carries nothing 115377ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+AssertionError: expected null to match object { …(4) }
+AssertionError: expected undefined to deeply equal [ ObjectContaining{…} ]
+AssertionError: expected null to match object { status: 'idle', …(2) }
+ Test Files  1 failed (1)
+      Tests  3 failed | 5 skipped (8)

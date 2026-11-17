@@ -1,0 +1,251 @@
+{
+  "runId": "restart_reminder_c4fc56a2_0f6b39af59ce4c0eac22cddf8bd2977e",
+  "quietRunId": "restart_reminder_8d47a02b_89ee676ac44e4dbe8c735da3d07e7735",
+  "live": {
+    "root": {
+      "rootSubjectKind": "agent",
+      "rootRunId": "restart_reminder_c4fc56a2_0f6b39af59ce4c0eac22cddf8bd2977e"
+    },
+    "agentRunId": "restart_reminder_c4fc56a2_0f6b39af59ce4c0eac22cddf8bd2977e",
+    "place": "host",
+    "status": "idle",
+    "backgroundTasks": true,
+    "recordedAt": "2026-11-17T13:14:08.329Z",
+    "version": "1.5.13-beta.8"
+  },
+  "liveRecord": {
+    "entries": [
+      {
+        "root": {
+          "rootSubjectKind": "agent",
+          "rootRunId": "restart_reminder_c4fc56a2_0f6b39af59ce4c0eac22cddf8bd2977e"
+        },
+        "agentRunId": "restart_reminder_c4fc56a2_0f6b39af59ce4c0eac22cddf8bd2977e",
+        "place": "host",
+        "status": "idle",
+        "backgroundTasks": true,
+        "recordedAt": "2026-11-17T13:14:08.329Z",
+        "version": "1.5.13-beta.8"
+      }
+    ]
+  },
+  "recordedAfterMs": 1732,
+  "liveAfterQuiet": {
+    "entries": [
+      {
+        "root": {
+          "rootSubjectKind": "agent",
+          "rootRunId": "restart_reminder_c4fc56a2_0f6b39af59ce4c0eac22cddf8bd2977e"
+        },
+        "agentRunId": "restart_reminder_c4fc56a2_0f6b39af59ce4c0eac22cddf8bd2977e",
+        "place": "host",
+        "status": "idle",
+        "backgroundTasks": true,
+        "recordedAt": "2026-11-17T13:14:08.329Z",
+        "version": "1.5.13-beta.8"
+      }
+    ]
+  },
+  "stopped": {
+    "entries": [
+      {
+        "root": {
+          "rootSubjectKind": "agent",
+          "rootRunId": "restart_reminder_c4fc56a2_0f6b39af59ce4c0eac22cddf8bd2977e"
+        },
+        "agentRunId": "restart_reminder_c4fc56a2_0f6b39af59ce4c0eac22cddf8bd2977e",
+        "place": "host",
+        "status": "idle",
+        "backgroundTasks": true,
+        "recordedAt": "2026-11-17T13:14:11.252Z",
+        "version": "1.5.13-beta.8"
+      }
+    ],
+    "shutdownAt": "2026-11-17T13:14:11.253Z"
+  },
+  "leftAfterStop": [],
+  "afterTake": {
+    "busyRuns": null,
+    "reminders": {
+      "reminders": [
+        {
+          "root": {
+            "rootSubjectKind": "agent",
+            "rootRunId": "restart_reminder_c4fc56a2_0f6b39af59ce4c0eac22cddf8bd2977e"
+          },
+          "agentRunId": "restart_reminder_c4fc56a2_0f6b39af59ce4c0eac22cddf8bd2977e",
+          "place": "host",
+          "cause": "restart",
+          "version": "1.5.13-beta.8",
+          "restartedAt": "2026-11-17T13:14:25.510Z",
+          "interruptedTurn": false
+        }
+      ]
+    }
+  },
+  "requestsBeforeInput": 2,
+  "systemNotice": {
+    "type": "SYSTEM_TASK_NOTIFICATION",
+    "payload": {
+      "sender_id": "system.restart_resume",
+      "content": "[Platform notice — application restarted]\n\nThe application restarted at 2026-11-17 13:14 UTC (reason: a restart).\nIf you started any background tasks, the restart stopped them. Check what you still need: restart it, or continue your work."
+    },
+    "at": 1794921273881
+  },
+  "remindersAfter": null,
+  "conversation": [
+    {
+      "kind": "message",
+      "role": "user",
+      "turnId": null,
+      "content": "CASE:RR-01 Start the build in the background."
+    },
+    {
+      "kind": "message",
+      "role": "assistant",
+      "turnId": "turn_0001",
+      "content": ""
+    },
+    {
+      "kind": "tool_call",
+      "role": null,
+      "turnId": "turn_0001",
+      "content": ""
+    },
+    {
+      "kind": "message",
+      "role": "assistant",
+      "turnId": "turn_0001",
+      "content": "Started."
+    },
+    {
+      "kind": "system_task_notification",
+      "role": null,
+      "turnId": null,
+      "content": "[Platform notice — application restarted]\n\nThe application restarted at 2026-11-"
+    },
+    {
+      "kind": "message",
+      "role": "user",
+      "turnId": null,
+      "content": "CASE:RR-01 How is the build going?"
+    },
+    {
+      "kind": "message",
+      "role": "assistant",
+      "turnId": "turn_0001",
+      "content": "Restarting what I need."
+    },
+    {
+      "kind": "message",
+      "role": "user",
+      "turnId": null,
+      "content": "CASE:RR-01 And now?"
+    },
+    {
+      "kind": "message",
+      "role": "assistant",
+      "turnId": "turn_0002",
+      "content": "Fine."
+    }
+  ],
+  "traces": [
+    {
+      "turnId": null,
+      "type": "system_instruction",
+      "content": "## Agent Identity\n\n- Name: restart-reminder-c4fc56a2\n- Descr"
+    },
+    {
+      "turnId": "turn_0001",
+      "type": "user",
+      "content": "CASE:RR-01 Start the build in the background."
+    },
+    {
+      "turnId": "turn_0001",
+      "type": "assistant",
+      "content": ""
+    },
+    {
+      "turnId": "turn_0001",
+      "type": "tool_call",
+      "content": ""
+    },
+    {
+      "turnId": "turn_0001",
+      "type": "tool_result",
+      "content": ""
+    },
+    {
+      "turnId": "turn_0001",
+      "type": "assistant",
+      "content": "Started."
+    },
+    {
+      "turnId": "turn_0001",
+      "type": "system_task_notification",
+      "content": "[Platform notice — application restarted]\n\nThe application r"
+    },
+    {
+      "turnId": "turn_0001",
+      "type": "user",
+      "content": "CASE:RR-01 How is the build going?"
+    },
+    {
+      "turnId": "turn_0001",
+      "type": "assistant",
+      "content": "Restarting what I need."
+    },
+    {
+      "turnId": "turn_0002",
+      "type": "user",
+      "content": "CASE:RR-01 And now?"
+    },
+    {
+      "turnId": "turn_0002",
+      "type": "assistant",
+      "content": "Fine."
+    }
+  ],
+  "requests": [
+    {
+      "at": 1794921246554,
+      "lastRole": "user",
+      "lastUser": "CASE:RR-01 Start the build in the background.",
+      "toolResults": []
+    },
+    {
+      "at": 1794921246721,
+      "lastRole": "tool",
+      "lastUser": "CASE:RR-01 Start the build in the background.",
+      "toolResults": [
+        "{\"pid\":58961,\"status\":\"running\",\"effectiveCwd\":\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/restart-reminder-e2e-Ixm0bQ/workspace\",\"outputFile\":\"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-background-tasks/restart_reminder_c4fc56a2_0f6b39af59ce4c0eac22cddf8bd2977e/call-1794921246703-58931.log\"}"
+      ]
+    },
+    {
+      "at": 1794921273919,
+      "lastRole": "user",
+      "lastUser": "[Platform notice — application restarted]\n\nThe application restarted at 2026-11-17 13:14 UTC (reason: a restart).\nIf you started any background tasks, the restart stopped them. Check what you still need: restart it, or continue your work.\n\nCASE:RR-01 How is the build going?",
+      "toolResults": []
+    },
+    {
+      "at": 1794921273991,
+      "lastRole": "user",
+      "lastUser": "CASE:RR-01 And now?",
+      "toolResults": []
+    }
+  ],
+  "control": [
+    {
+      "at": 1794921248682,
+      "lastRole": "user",
+      "lastUser": "CASE:RR-01C Say done.",
+      "toolResults": []
+    },
+    {
+      "at": 1794921274231,
+      "lastRole": "user",
+      "lastUser": "CASE:RR-01C Anything new?",
+      "toolResults": []
+    }
+  ]
+}

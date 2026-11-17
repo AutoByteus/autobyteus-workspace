@@ -1,0 +1,16 @@
+# IMP-03 server unit suite
+# Command: pnpm -C autobyteus-server-ts test:unit
+# Commit: d5e9f350cf; macOS Darwin 25.5.0 arm64, node v22.23.1; 2026-11-17T10:22Z
+# Full log not kept; summary and failures below
+exit=1
+ Test Files  1 failed | 1006 passed | 5 skipped (1012)
+      Tests  4 failed | 8237 passed | 9 skipped (8250)
+ FAIL  tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts > AgentPackageFolderWatcher > moves a root to FOLDER_MISSING when it is renamed away and resumes watching when it returns
+ FAIL  tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts > AgentPackageFolderWatcher > re-arms a root whose folder was replaced in place (GitHub update rename swap)
+ FAIL  tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts > AgentPackageFolderWatcher > reports definition changes per folder and ignores skills and other files
+ FAIL  tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts > AgentPackageFolderWatcher > starts a registered root that is missing as FOLDER_MISSING and arms it when it appears
+
+# Cause analysis of the 4 failures (2026-11-17)
+# - All in tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts; failing step: afterEach 'await monitor?.close()' -> 'Hook timed out in 10000ms'.
+# - The file alone, three runs at the same commit: 1 failed / 4 failed / 0 failed of 20. Machine load average at the time: 65.84 78.82 101.88 (uptime).
+# - src/agent-package-definitions imports none of the changed files (grep for restart-resume, agent-run.js, server-runtime: no match). Recorded as FU-001 in follow-ups.md.

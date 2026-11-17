@@ -598,8 +598,8 @@ ID and it continues with its conversation (see [Reactivation](projects.md#reacti
   conversation, as for any run (`CrossRunMessageDelivery`, then the run's own root).
 - **Stop.** The run's own Stop, from its own view or a child row of the delegating
   run's view; the runs it delegated to keep working.
-- **Restart.** Every run is its own root after a restart; busy runs resume
-  bottom-up along `delegatedFrom` (see [Restart Resume](restart_resume.md)).
+- **Restart.** Every run is its own root after a restart; after an update, busy
+  runs are woken bottom-up along `delegatedFrom` (see [Restart Resume](restart_resume.md)).
 
 ## Collaboration And Handoffs
 
