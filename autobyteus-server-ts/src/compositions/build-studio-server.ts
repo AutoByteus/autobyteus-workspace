@@ -1,7 +1,5 @@
 import { createCredentialProxyHost, type CredentialProxyHost } from "../credential-proxy/credential-proxy-host.js";
 import type { StoredModelOfferCheck } from "../llm-management/services/run-model-selection-service.js";
-import type { RemoteRunChannelAccess } from "../agent-collaboration/execution/remote/remote-run-channel.js";
-import type { PeerDiscoveryAccess } from "../agent-collaboration/execution/remote/peer-discovery-channel.js";
 import type { ProviderRelayAccess } from "../credential-proxy/provider-relays/provider-relay-access.js";
 import { setProcessProviderRelayAccess } from "../credential-proxy/provider-relays/provider-relay-process-access.js";
 import type { RunPassRevocation } from "../credential-proxy/run-pass-revocation.js";
@@ -46,10 +44,9 @@ import {
 import type { ScopedAgentToolMcpSessionAuthority } from "../agent-tools/mcp/agent-tool-mcp-session-authority.js";
 import { getGeneralProcessPublishedArtifactPublisher } from "../services/published-artifacts/published-artifact-publication-service.js";
 import { StudioRunModelConfigService } from "../run-history/services/studio-run-model-config-service.js";
-import { composeStudioRemoteCollaboration } from "./remote-collaboration-composition.js";
+import { composeStudioRemoteCollaboration, createLateRemoteCollaborationBinding, type LateRemoteCollaborationBinding } from "./remote-collaboration-composition.js";
 import { createCollaborationRootResolver } from "./collaboration-root-resolver.js";
 import { composeCollaboration, composeTaskSide, type Collaboration, type TaskSide } from "./collaboration-composition.js";
-import type { RemoteCollaborationServices } from "../remote-collaboration/remote-collaboration-services.js";
 import { createAgentStreamHandler } from "../services/agent-streaming/agent-stream-handler.js";
 import { composeRestartResume, type RestartResume } from "./restart-resume-composition.js";
 import { getStandaloneAgentRunRootManager } from "../standalone-agent-run-root/services/standalone-agent-run-root-manager.js";
@@ -202,8 +199,7 @@ const createStudioApplicationServices = (input: {
   providerRelayAccess: ProviderRelayAccess;
   runPasses: RunPassRevocation;
   taskSide: TaskSide;
-  remoteChannel: RemoteRunChannelAccess;
-  peerDiscovery: PeerDiscoveryAccess;
+  remote: LateRemoteCollaborationBinding;
 }) => {
   const applicationRuntime = buildApplicationPlatformRuntime({
     appConfig: input.appConfig, delegationIndex: input.taskSide.tree, viewStreams: input.taskSide.viewStreams, taskRecords: input.taskSide.taskRecords,
@@ -220,8 +216,7 @@ const createStudioApplicationServices = (input: {
     // The studio's application launches get its provider relays and end their passes through the same host.
     providerRelayAccess: input.providerRelayAccess,
     runPasses: input.runPasses,
-    remoteChannel: input.remoteChannel,
-    peerDiscovery: input.peerDiscovery,
+    remoteChannel: input.remote.channel, peerDiscovery: input.remote.discovery,
     modelAvailabilityService: getModelAvailabilityService(),
     llmProviderService: getLlmProviderService(),
     codexClientManager: getCodexAppServerClientManager(),
@@ -311,16 +306,10 @@ export const buildStudioServer = async (input: {
       appDataDir: input.appConfig.getAppDataDir(),
       baseUrl: input.appConfig.getBaseUrl(),
     });
-    // autobyteus-500 FU-011: remote collaboration is composed after the run services it serves, so the tools and roots
-    // composed before it read it on use (a call happens only once the server serves; until then it is a startup error).
-    let composedRemote: RemoteCollaborationServices | null = null;
-    const remote = (): RemoteCollaborationServices => {
-      if (!composedRemote) throw new Error("Remote collaboration is used before the studio composed it.");
-      return composedRemote;
-    };
+    const remote = createLateRemoteCollaborationBinding(); // FU-011: composed below, after the run services; read on use
     agentToolsMcpHost = createAgentToolsMcpHost({
       loggingConfig: input.loggingConfig,
-      peerDiscovery: () => remote().discovery,
+      peerDiscovery: remote.discovery,
     });
     credentialProxyHost = createCredentialProxyHost({ agentDefinitions: hostDefinitionServices.agentDefinitionService });
     // Before it listens: the model catalog and runtime availability read it (discovery waits for the listener).
@@ -370,8 +359,7 @@ export const buildStudioServer = async (input: {
       // then tool list updates, skill notices and background task notices (one notice per input).
       platformInputNotices: new AgentRunPlatformNotices([runtimeHandoverNotices, ...platformNotices.sources]),
       runtimeSwitching: { memory: new RuntimeSwitchRecorder() },
-      remoteChannel: () => remote().client,
-      peerDiscovery: () => remote().discovery,
+      remoteChannel: remote.channel, peerDiscovery: remote.discovery,
     });
     generalProcessAuthority = null;
     // One root resolution for inbound remote messages and restart resume (autobyteus-285 D5).
@@ -386,10 +374,10 @@ export const buildStudioServer = async (input: {
       rootResolver,
     });
     releaseRemoteCollaboration = remoteCollaboration.release;
-    composedRemote = remoteCollaboration.services;
+    remote.bind(remoteCollaboration.services);
     // autobyteus-461 SR-047 steps 4–8: the Task service, delegation and messages between runs, the views' owners, their consumers.
     const currentCollaboration = collaboration = await composeCollaboration({ memoryDir: input.appConfig.getMemoryDir(), taskSide,
-      runs: generalProcessRunSupervisor, rootResolver, activeRoots: getActiveCollaborationRootDirectory(), remoteChannel: () => remote().client });
+      runs: generalProcessRunSupervisor, rootResolver, activeRoots: getActiveCollaborationRootDirectory(), remoteChannel: remote.channel });
     // autobyteus-437: the node access gate (every request needs a credential) and its credential services.
     const currentNodeAccess = nodeAccess = await startNodeAccess({ appDataDir: input.appConfig.getAppDataDir(), remoteCollaboration: remoteCollaboration.services });
     const restartResume = composeRestartResume({ appDataDir: input.appConfig.getAppDataDir(), rootResolver, tree: taskSide.tree, closedTasks: taskSide.closedTasks,
@@ -406,8 +394,7 @@ export const buildStudioServer = async (input: {
       modelSelectionValidator,
       providerRelayAccess: credentialProxyHost.providerRelayAccess,
       runPasses: credentialProxyHost.runPasses,
-      remoteChannel: () => remote().client,
-      peerDiscovery: () => remote().discovery,
+      remote,
     });
     const currentApplicationRuntime = applicationServices.applicationRuntime;
     applicationRuntime = currentApplicationRuntime;

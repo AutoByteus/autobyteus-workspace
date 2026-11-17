@@ -1,5 +1,5 @@
 import { readRunProjectContext } from "../domain/run-project-context.js";
-import { storedModelNotOfferedRefusal } from "../../llm-management/services/run-model-selection-refusal.js";
+import { storedModelStartRefusal } from "../../llm-management/services/run-model-selection-refusal.js";
 import type { StoredModelOfferCheck } from "../../llm-management/services/run-model-selection-service.js";
 import { RootRunPackageReadinessIndex } from "../../run-history/services/root-run-package-readiness-index.js";
 import type { AgentRun } from "../domain/agent-run.js";
@@ -102,12 +102,9 @@ export class StandaloneAgentRunLifecycleService {
 
   /** G-5 (REQ-016): a run whose saved model its runtime no longer offers is refused before its runtime starts. */
   private async refuseStoredModelNotOffered(metadata: AgentRunMetadata): Promise<void> {
-    const offer = await this.storedModels.storedModelOffer({ runtimeKind: metadata.runtimeKind, llmModelIdentifier: metadata.llmModelIdentifier,
-      workspaceRootPath: metadata.workspaceRootPath ?? undefined });
-    if (offer !== "not_offered") return;
-    const agentName = metadata.address?.split("/").at(-1) || metadata.agentDefinitionId;
-    const refusal = storedModelNotOfferedRefusal({ agentName, runtimeKind: metadata.runtimeKind, llmModelIdentifier: metadata.llmModelIdentifier });
-    throw new AgentRunActivationError(refusal.code, refusal.message);
+    const refusal = await storedModelStartRefusal(this.storedModels,
+      { ...metadata, agentName: metadata.address?.split("/").at(-1) || metadata.agentDefinitionId });
+    if (refusal) throw new AgentRunActivationError(refusal.code, refusal.message);
   }
 
   /** The plain command path (helpers and application-owned runs): the live run, else its activation. */

@@ -23,6 +23,25 @@ import { getStandaloneAgentRunRootManager } from "../standalone-agent-run-root/s
 import { createRootExecutionIdentity, type RootSubjectKind } from "../agent-collaboration/execution/domain/root-execution-identity.js";
 import type { CollaborationRootResolver } from "./collaboration-root-resolver.js";
 import { PeerStartedRunLaunches } from "../remote-collaboration/inbound/peer-started-run-launches.js";
+import type { RemoteRunChannelAccess } from "../agent-collaboration/execution/remote/remote-run-channel.js";
+import type { PeerDiscoveryAccess } from "../agent-collaboration/execution/remote/peer-discovery-channel.js";
+
+/**
+ * autobyteus-500 FU-011: the studio composes remote collaboration after the run services it serves, so the tools and
+ * roots composed before it read its peer client and discovery on use, through this binding. A call happens only once the
+ * server serves; one before `bind` is a startup error.
+ */
+export const createLateRemoteCollaborationBinding = () => {
+  let composed: RemoteCollaborationServices | null = null;
+  const read = (): RemoteCollaborationServices => {
+    if (!composed) throw new Error("Remote collaboration is used before the studio composed it.");
+    return composed;
+  };
+  const channel: RemoteRunChannelAccess = () => read().client;
+  const discovery: PeerDiscoveryAccess = () => read().discovery;
+  return Object.freeze({ channel, discovery, bind: (services: RemoteCollaborationServices) => { composed = services; } });
+};
+export type LateRemoteCollaborationBinding = ReturnType<typeof createLateRemoteCollaborationBinding>;
 
 /**
  * Composes this node's remote collaboration (CM-10 … CM-12) around the process's run services: the settings,
@@ -56,7 +75,7 @@ export const composeStudioRemoteCollaboration = (input: Readonly<{
     org: async (orgRunId) => { const found = await resolve("agent_org", orgRunId); return found?.kind === "agent_org" ? found.root : null; },
     runAgents: (kind) => kind === "agent" ? getStandaloneAgentRunRootManager().runAgents : input.teamRuns.runAgents,
   };
-  // autobyteus-32: decisions of copies started for a peer, held until the peer's work packet arrives.
+  // autobyteus-32: decisions of delegated runs started for a peer, held until the peer's work packet arrives.
   const peerStartedRunDecisions = new PeerStartedRunDecisions();
   const services = composeRemoteCollaboration({
     config: { getAppDataDir: () => input.appDataDir },

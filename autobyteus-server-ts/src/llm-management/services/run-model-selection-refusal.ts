@@ -1,6 +1,6 @@
 import { agentRuntimeName } from "@autobyteus/agent-presentation-contracts";
 import type { RunModelConfigUpdateOutcome } from "../../run-history/domain/run-model-config.js";
-import type { RunModelSelectionValidationResult } from "./run-model-selection-service.js";
+import type { RunModelSelectionValidationResult, StoredModelOfferCheck } from "./run-model-selection-service.js";
 
 /** The validation results that mean "this selection cannot be used now", whatever the cause. */
 export type UnavailableModelSelectionResult = Extract<RunModelSelectionValidationResult,
@@ -29,6 +29,17 @@ export const storedModelNotOfferedRefusal = (input: { agentName: string; runtime
   message: `${input.agentName} can't start: its saved model '${input.llmModelIdentifier}' is not offered by `
     + `${agentRuntimeName(input.runtimeKind)} now. Stop it, then choose a runtime and model for ${input.agentName} in Settings.`,
 });
+
+/**
+ * G-5: the refusal for a start whose saved model its runtime no longer offers; null when it may start (offered, or the
+ * list could not be read). Both start paths ask this before the runtime starts.
+ */
+export const storedModelStartRefusal = async (storedModels: StoredModelOfferCheck,
+  input: { agentName: string; runtimeKind: string; llmModelIdentifier: string; workspaceRootPath?: string | null }) => {
+  const { agentName, runtimeKind, llmModelIdentifier } = input;
+  const offer = await storedModels.storedModelOffer({ runtimeKind, llmModelIdentifier, workspaceRootPath: input.workspaceRootPath ?? undefined });
+  return offer === "not_offered" ? storedModelNotOfferedRefusal({ agentName, runtimeKind, llmModelIdentifier }) : null;
+};
 
 /** A member start refused for its saved model: the member path's readiness card shows its code and message. */
 export class StoredModelNotOfferedError extends Error {
