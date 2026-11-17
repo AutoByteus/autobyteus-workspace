@@ -95,3 +95,29 @@ None.
     - FU-008 (three changed probes fail identically on base);
     - FU-009 (E2E failures from base and load);
     - P2-02 watcher failures (`fseventsd`).
+
+### API-REV-004: Part 2 on the merged base (round 4)
+
+- Triggering role, report path, and round: code reviewer, `code-review-report.md` (CRR-008 Pass, round 6), round 4.
+- Triggering finding or case IDs: none. This reconfirms DR-002's Local Fix (IR-005: merge `990ff9a3d4`, `ca1979b206`).
+- Related revision IDs: DR-002, IR-005, CRR-008.
+- Why recorded: the base brought in 483 (task end reasons and exit codes, the count's inputs) and 458 (a phone Settings screen that uses the phone status line).
+- Coverage decisions and durable test paths changed:
+  - BTS-06 added: 483's three ends beside the count.
+  - MSP-67 extended with the Settings screen.
+  - No stale tests found.
+- Cases rechecked:
+  - Rerun: BTS-01..04, BTS-06, PBS-01, MSP-67 / MSP-59 / MSP-63, 483's panel probe, RR-01..09, the server typecheck.
+  - Reused: IMP-16..IMP-20.
+  - Not rerun: Codex (unchanged; RR-08 passed live).
+- Commands, environment, fixture, or broader-validation delta: `dist/` and the phone bundle rebuilt at `a9e5676630`. Load was 70–215.
+- Canonical artifacts and sections updated:
+  - `api-e2e-execution-coverage-report.md` ("Part 2 on the merged base");
+  - `api-e2e-coverage-investigation.md` (round-4 plan);
+  - `api-e2e-test-progress.md`;
+  - `evidence/R4-*`.
+- Prior result and confidence: Pass, 94% (round 3).
+- Current result and confidence: Pass, 94%.
+- New or remaining failure IDs: none.
+- Recommended owner: code reviewer (proportional test-code review).
+- Remaining risks: as round 3 (a Team error member and the Org status access at unit level; ACP; Linux).

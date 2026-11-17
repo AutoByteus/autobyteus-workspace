@@ -64,3 +64,13 @@
 | 2026-11-17 21:00 | P2-07a | Checkpoint | | native provider 400 = turn diagnostic, member idle (no error status reachable by script); reverted; BTS-02 Pass on the restored file |
 | 2026-11-17 21:18 | P2-07a | Completed | Not reachable live | also tried /ws/agent-collaboration directly (tree and messages only; statuses go through the feed's observePairedAgents, read by BTS-01/02, PBS-01); temporary BTS-06 removed; BTS-01/02 Pass on the final file, tsc clean |
 | 2026-11-17 21:25 | P2 | Completed | Pass | report Part 2 and API-REV-003 written; 94% |
+| 2026-11-17 23:10 | R4 | Started | | round 4: part 2 on the merged base (CRR-008); plan R4-R01, R4-01..R4-09; BTS-06 and the MSP-67 Settings check added; building dist at a9e5676630 (load ~150) |
+| 2026-11-17 23:02 | R4-01 | Completed | Pass | BTS-01..03 on the merged build (dist at a9e5676630) |
+| 2026-11-17 23:12 | R4-02 | Completed | Pass | BTS-06 (after two test-draft fixes: flag-driven exit, waits for each notice); count 3→2→1→offline 0 with exit code, SIGTERM, run_ended |
+| 2026-11-17 23:14 | R4-03 | Completed | Pass | BTS-04 live Claude |
+| 2026-11-17 23:17 | R4-04 | Completed | Pass | PBS-01 on two built nodes |
+| 2026-11-17 23:27 | R4-05 | Completed | Pass | phone bundle rebuilt; MSP-67 (+ Settings screen) , MSP-59, MSP-63 |
+| 2026-11-17 23:28 | R4-06 | Completed | Pass | 483 panel probe |
+| 2026-11-17 23:41 | R4-07 | Completed | Pass | RR-01..09; RR-05 (control deadline at load 215) and RR-07 (haiku did not call Bash) on retry |
+| 2026-11-17 23:45 | R4-08 | Completed | Pass | server typecheck at baseline; final BTS file: BTS-01..03, BTS-06 Pass |
+| 2026-11-17 23:50 | R4 | Completed | Pass | report section "Part 2 on the merged base", API-REV-004; 94% |

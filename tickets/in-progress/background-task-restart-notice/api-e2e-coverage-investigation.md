@@ -229,3 +229,33 @@ None.
   - P2-07a was added: a failed Team member and a direct read of the presentation route were tried live. Neither was reachable or meaningful, and the reasons are in the report.
   - P2-13 is Not Tested.
 - Result: Pass, 94%. See `api-e2e-execution-coverage-report.md`, section "Part 2".
+
+# Part 2 on the merged base (round 4, API-REV-004)
+
+## Basis
+
+- Trigger: CRR-008 Pass (targeted delta `b9caddc57e..a9e5676630`). The merge `990ff9a3d4` brings in origin/personal at `ff13782f36` (71 commits: autobyteus-483 end reasons and exit codes, 458 phone run Settings, 515 native tool search). `ca1979b206` adds 483's fields to the test doubles. IR-005 is the implementer's evidence: IMP-16..IMP-20.
+- What the merge touches in my earlier cases:
+  - 483 changes the background-task domain, the native, Claude and AGY task ends, and the background task view. These are the count's inputs, so BTS-01..04, the end paths and RR (whose recorder reads the same tasks) are affected.
+  - 458 adds a phone Settings screen that uses the phone status-line builder.
+  - The contract packages were rebuilt, so the built servers are rebuilt too (PBS-01, RR).
+  - 515 changes what the native requests carry; my scripted model ignores the tool list, and BTS-01 shows the effect.
+
+## Planned cases
+
+| Case | Covers | Surface | Kind | Command | Why |
+| --- | --- | --- | --- | --- | --- |
+| R4-R01 | typechecks, contract tests, server unit, server integration, web unit, fresh-start build, TS-008, MSP-59 (483) | — | Reused | IMP-16..IMP-20 | ran at `ca1979b206`; the only later commit is docs |
+| R4-01 | part 2 on the merge: native, Team, AGY | in-process server | Existing durable | BTS-01..03 | the reviewer asked for them |
+| R4-02 | 483's ends beside the count: exit code, signal, run_ended; the view and the notice keep the end | in-process server, native | Durable (new BTS-06) | BTS-06 | the reviewer asked for it; no case had combined the ends with the count |
+| R4-03 | Claude's ends (483 changed them) with the count | live Claude | Existing durable | BTS-04 | `claude-background-task-end.ts` changed |
+| R4-04 | peer route on the merged build | two built nodes | Existing durable | PBS-01 | contracts rebuilt |
+| R4-05 | phone: run screen, row and the 458 Settings screen | phone probe | Durable (MSP-67 extended) | `mobile-shell-probe.mjs --cases=MSP-67` | the Settings screen had not been exercised end to end |
+| R4-06 | 483's panel shows the end beside part 2's header | browser probe | Existing | `background-tasks-panel-probe.mjs` (483) | the panel and the header read the same tasks |
+| R4-07 | part 1 on the merge | restart suite RR-01..09 | Existing durable | as round 2 | the recorder reads 483's tasks |
+| R4-08 | typecheck of my changed suites | server tests | Existing | `pnpm -C autobyteus-server-ts typecheck` | BTS-06 added |
+| R4-09 | Codex | live Codex | Not rerun | — | the Codex task code did not change in the merge; only `codex-thread-bootstrapper.ts` (515) |
+
+## Round 4 outcome
+
+- Executed as planned. Pass, 94%. See the report section "Part 2 on the merged base".

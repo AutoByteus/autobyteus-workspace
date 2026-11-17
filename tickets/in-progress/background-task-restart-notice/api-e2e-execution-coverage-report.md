@@ -1,6 +1,6 @@
 # API/E2E Execution Coverage Report — Part 1: the restart reminder
 
-> Current round: **Part 2, round 3 (API-REV-003)**, in its own section at the end of this file. Part 1's result below is unchanged and was reproved on the part 2 build (P2-12).
+> Current round: **Part 2 on the merged base, round 4 (API-REV-004)**, the last section of this file. Round 3 (Part 2) stays above it. Part 1's result below is unchanged; it was reproved on the part 2 build (P2-12) and on the merged build (R4-07).
 
 ## Round
 
@@ -340,3 +340,101 @@ Round 2 results replace round 1's for the rerun cases; the rest carry round 1's 
   - Follow-ups FU-008 (three changed probes fail identically on base) and FU-009 (E2E failures from base and load).
   - The reviewer's FU-006 and FU-007 are unchanged.
   - P2-02's watcher failures are environmental, with the cause recorded.
+
+---
+
+# Part 2 on the merged base (round 4)
+
+## Round
+
+- Trigger: CRR-008 Pass, round 6 (targeted delta `b9caddc57e..a9e5676630`). It covers the delivery-stage Local Fix from DR-002 (IR-005):
+  - merge `990ff9a3d4` of origin/personal at `ff13782f36` (autobyteus-483 end reasons and exit codes, 458 phone run Settings, 515 native tool search);
+  - `ca1979b206`: 483's fields in the test doubles.
+- Tested at `a9e5676630` with my two test changes (in the handoff commit). The server `dist/` and the phone bundle were rebuilt at that commit.
+- Prior round: round 3 (API-REV-003, Pass 94%). Rerun by impact; see the plan "Part 2 on the merged base" in `api-e2e-coverage-investigation.md`.
+- Stale tests this change made untrue: none found.
+  - 483's own suites already carry `end_reason` / `exit_code` (merged).
+  - Part 2's assertions read the count, not the task payload.
+- Evidence folder: `evidence/R4-*`.
+
+## Routing Classification
+
+- Task size: `Large`. Architectural risk: `High`. Successful-output route: `Code Review`.
+- Proportional test-code review decision: `Required`:
+  - BTS-06 is new;
+  - MSP-67 is extended with the Settings screen.
+
+## Cases
+
+| Case ID | Covers | Surface | Command Or Steps | Result | Evidence | Look For | Notes |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| R4-R01 | typechecks, contract tests, server unit and integration, web unit, fresh-start build, TS-008, MSP-59 | — | reused IMP-16..IMP-20 (at `ca1979b206`; the later commit is docs) | Pass (as the implementer recorded; integration's `package-auto-refresh` failure is the environmental fs.watch one) | implementer evidence | — | — |
+| R4-01 | part 2 on the merge: native, Team, AGY | in-process server | BTS-01..03 | Pass | `R4-01-status-count/` | as round 3: `running:1 → idle:1`, message delivered at once, counts 2, 1, 0; Team snapshot `idle, 1`; AGY `idle 1 → idle 0` | ran twice (first full run and the final file) |
+| R4-02 | 483's ends beside the count (the reviewer's request) | in-process server, native, real processes | new BTS-06 | Pass | `R4-01-status-count/BTS-06.json` | path `running:1, running:2, running:3, idle:3, idle:2, running:2, idle:2, idle:1, running:1, idle:1, offline:0`; stream ends `failed/exit_code 3/end_reason null`, `stopped/"signal SIGTERM"/null`, `stopped/run_ended`; the view keeps `failed, exitCode 3` and `stopped, signal SIGTERM` beside `running`; notices "exit code 3 after 1s … Still running: …" and "killed by SIGTERM after 3s … Still running: …"; feed `offline 0` | The test's first draft failed twice. Its exit task was on a timer, so under load it could end before the turn; and it checked the notices before they arrived. Fixed: the exit is triggered by a flag file, and the test waits for each notice. Not a product failure |
+| R4-03 | Claude's ends (483 changed them) with the count | live Claude | BTS-04 | Pass | `R4-01-status-count/BTS-04.json` | path `running:1 → idle:1 → idle:0`; feed `idle 1 → idle 0` | — |
+| R4-04 | peer route on the merged build | two built nodes | PBS-01 | Pass | `R4-04-peer/` | peer run `offline:0 → idle:1 → idle:0` | — |
+| R4-05 | phone: run screen, row, and the Settings screen from 458 (the reviewer's request) | phone probe, production phone bundle rebuilt | `mobile-shell-probe.mjs --cases=MSP-67,MSP-59`, then `--cases=MSP-67,MSP-63` | Pass | `R4-05-phone/` (`MSP-67-background-settings.png`) | Settings: `status: "Background task running"`, dot `bg-blue-500` (not pulsing), the stop-run icon of a live run (458); run screen and row as before; `after: "Idle"`; MSP-59 (483's ended task on the phone) Pass; MSP-63 (458 live idle run) Pass | The first MSP-67 run read Settings before its rows had loaded. The status line was already right; the probe now waits for the loaded rows, as 458's cases do |
+| R4-06 | 483's panel shows the ends | browser probe (no backend) | `test:e2e:background-tasks-panel` | Pass | `R4-06-panel/` (`10-end-reasons.png`) | `Background tasks browser probe passed` | the live view behind the panel is BTS-06's |
+| R4-07 | part 1 on the merge | built servers, real restarts; Claude, Codex, OpenAI live | RR-01..09 | Pass | `R4-07-restart-suite/` | all nine pass; RR-05 and RR-07 on retry | Two preconditions were not met: RR-05's command did not start (the known control deadline under load; load was 215). In RR-07, haiku replied "STARTED" without calling Bash, and its own reply says so. Same as round 2 |
+| R4-08 | typecheck with BTS-06 | server | `pnpm -C autobyteus-server-ts typecheck` | Pass | `R4-01-status-count/vitest-results.log` | `production errors: 0; test-file errors: 1012 in 316 files (baseline 1012 in 316 files)`; `[typecheck] PASS` | — |
+| R4-09 | Codex | — | not rerun | Not rerun (still valid) | — | — | the merge changed no Codex task code (only 515's `codex-thread-bootstrapper.ts`); RR-08 ran Codex live on the merge and passed |
+
+## Acceptance-Criteria Proof (delta)
+
+| AC / Requirement | Proven on the merge by | Result |
+| --- | --- | --- |
+| AC-005 (status text, blue dot, no Stop; Idle at the end) | R4-01, R4-03, R4-05: the run screen, the row and the new Settings screen | Proven |
+| AC-006 (a message delivered at once) | R4-01 (BTS-01) | Proven |
+| REQ-006 count on every route | R4-01, R4-02 (stream, feed agent entry and run state, team stream), R4-04 (peer) | Proven |
+| The count with 483's ends (exit code, signal, run_ended) | R4-02 | Proven |
+
+## Validation Confidence Scorecard (Mandatory)
+
+| Category | Final | Supports | Residual |
+| --- | --- | --- | --- |
+| Requirement and AC proof | 95% | every critical AC rerun on the merge; the reviewer's two new checks are proven live | as round 3 (error member, Org access at unit level; ACP) |
+| Changed-boundary directness | 95% | the merged contracts read on the wire; 483's ends read on the stream, view, notice and feed | — |
+| Integration realism / mock gap | 95% | real processes, real signals; Claude, Codex and OpenAI live (RR, BTS-04) | AGY scripted |
+| Environment fidelity | 92% | the merged build, rebuilt `dist/` and phone bundle; fresh-start build by IMP-19 | Linux not run |
+| Failure / lifecycle / recovery | 95% | exit code, signal, run end, restarts and kills (RR) on the merge | — |
+| User surface | 94% | phone run screen, row and Settings; 483's panel | the desktop app not rerun by hand on the merge (TS-008 by IMP-20) |
+| Durable regression coverage | 94% | BTS-06 and the MSP-67 Settings check added | gated suites run only when their gate is set |
+
+- Overall final: 94% (average 94.3). Every critical AC is directly proven, and no category is below 90%.
+- 95% target met: No. The gaps are round 3's, and none is affected by the merge.
+
+## Broader Validation Decision (Mandatory)
+
+- `Required`, executed:
+  - live Claude (BTS-04, RR-07), Codex (RR-08) and OpenAI (RR-09);
+  - the phone probe with the rebuilt production bundle;
+  - two built nodes;
+  - built-server restarts.
+
+## Persisted-Data Transition Checks / Compatibility
+
+- Not Affected; nothing new is stored. No compatibility code was introduced; both ends of the wire are in the same build.
+
+## Durable Coverage Changed In The Codebase
+
+| Path | Change | Cases |
+| --- | --- | --- |
+| `autobyteus-server-ts/tests/e2e/runtime/background-task-status-count.e2e.test.ts` | BTS-06 added: three real tasks, ended by an exit code, an outside SIGTERM and the run's end; the count, the stream payloads, the view, the notices and the feed | R4-02 |
+| `autobyteus-web/tests/e2e/mobile-shell-probe.mjs` | MSP-67 also opens the run's Settings screen (458) while the task runs: the same line and dot; the background step lasts 35 s instead of 25 s to make room | R4-05 |
+
+- Paths attached for proportional test-code review: Yes
+
+## Temporary Methods And Cleanup
+
+- BTS-06 kills its own tagged processes in `finally` and removes its flag file; none were left.
+- The probes stopped their servers and Chrome and removed their data roots.
+- Diagnostics added while fixing BTS-06 were removed.
+- The phone bundle and `dist/` are build outputs (untracked).
+
+## Latest Authoritative Result
+
+- Result: `Pass`
+- Next recipient: code reviewer (proportional test-code review), then delivery.
+- Observed, not raised:
+  - On the phone Settings screen of the probe's stack run, the Runtime row reads "Choose": its saved model is not on the scripted runtime's list. MSP-63's own run reads "Antigravity CLI".
+  - That comes from 458's rows and the probe's data, not part 2.
