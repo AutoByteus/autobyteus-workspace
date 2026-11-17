@@ -3,7 +3,7 @@ import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { WorkJournalService } from "../../../src/agent-work-journal/services/work-journal-service.js";
-import { readJournalEntries } from "../../../src/agent-work-journal/reading/journal-entry-reader.js";
+import { readJournalEntries, readJournalHeaderTimeRange } from "../../../src/agent-work-journal/reading/journal-entry-reader.js";
 import type { WorkJournalChange } from "../../../src/agent-work-journal/domain/work-journal-models.js";
 import { appendActive, makeRunDir, makeTempMemoryRoot, rotateActive, turnRecords, writeActive } from "../raw-trace-folder-fixtures.js";
 
@@ -48,6 +48,21 @@ describe("readJournalEntries", () => {
   it("has no days for a file that records no time", () => {
     const reading = readJournalEntries("# Work Journal — run r\nRuntime Codex · file active (open) · no records · source ../x\nnote\n\n");
     expect(reading).toEqual({ entries: [], lineCount: 4, days: [] });
+  });
+});
+
+describe("readJournalHeaderTimeRange", () => {
+  const header = (range: string) => `# Work Journal — run r\nRuntime Codex · file 000001 (closed) · ${range} · source ../raw_traces_000001.jsonl\nnote\n`;
+
+  it("reads the header's range with the date on both sides, also for a range within one day", () => {
+    expect(readJournalHeaderTimeRange(header("2026-11-17 15:36 – 2026-11-18 02:10 UTC"))).toEqual({ from: "2026-11-17 15:36", to: "2026-11-18 02:10" });
+    expect(readJournalHeaderTimeRange(header("2026-11-18 10:00 – 11:00 UTC"))).toEqual({ from: "2026-11-18 10:00", to: "2026-11-18 11:00" });
+  });
+
+  it("has no range for a file whose records have no time, or a text that is not a journal header", () => {
+    expect(readJournalHeaderTimeRange(header("no records"))).toBeNull();
+    expect(readJournalHeaderTimeRange("")).toBeNull();
+    expect(readJournalHeaderTimeRange("# Work Journal — run r\n[10:00:00] User: 2026-01-01 10:00 – 11:00 UTC\n")).toBeNull();
   });
 });
 
@@ -103,6 +118,68 @@ describe("WorkJournalService reads, notification and unrecorded runtime", () => 
     await service.ensureCurrent(target());
     expect(changes).toHaveLength(2);
     warn.mockRestore();
+  });
+
+  it("reads each manifest file's path, size and header time range without rendering; null without a journal", async () => {
+    const service = new WorkJournalService();
+    expect(await service.readJournalSpans(runDir)).toEqual({ kind: "none" });
+    writeActive(runDir, turnRecords("turn_1", "ls", "a.ts"));
+    rotateActive(runDir);
+    appendActive(runDir, turnRecords("turn_2", "pwd", "/w"));
+    await service.ensureCurrent(target());
+    const journalDir = path.join(runDir, "work_journal");
+    const before = fs.readdirSync(journalDir).map((name) => [name, fs.statSync(path.join(journalDir, name)).mtimeMs]);
+
+    const spans = await service.readJournalSpans(runDir);
+    const expected = ["work_journal_000001.md", "work_journal_active.md"].map((journalFile) => {
+      const filePath = path.join(journalDir, journalFile);
+      const range = /· (\d{4}-\d\d-\d\d \d\d:\d\d) – (?:(\d{4}-\d\d-\d\d) )?(\d\d:\d\d) UTC/.exec(fs.readFileSync(filePath, "utf-8").split("\n")[1]!)!;
+      return { journalFile, path: filePath, sizeBytes: fs.statSync(filePath).size, from: range[1], to: `${range[2] ?? range[1]!.slice(0, 10)} ${range[3]}` };
+    });
+    expect(spans).toEqual({ kind: "spans", spans: expected });
+    // Reading spans writes nothing.
+    expect(fs.readdirSync(journalDir).map((name) => [name, fs.statSync(path.join(journalDir, name)).mtimeMs])).toEqual(before);
+
+    // A file the manifest names that is gone is left out.
+    fs.rmSync(path.join(journalDir, "work_journal_000001.md"));
+    expect(await service.readJournalSpans(runDir)).toMatchObject({ kind: "spans", spans: [{ journalFile: "work_journal_active.md" }] });
+  });
+
+  it("reads the spans of files an older manifest lists, whose entries record no runtime of their own, without rendering them", async () => {
+    // The shape an earlier build wrote (runtime once per manifest): the projection drops such entries so they are
+    // rendered again, but until then the files on disk are the run's journal.
+    const journalDir = path.join(runDir, "work_journal");
+    fs.mkdirSync(journalDir, { recursive: true });
+    const header = "# Work Journal — run run_reading_1\nRuntime Codex App Server · file active (open) · 2026-05-18 16:30 – 18:56 UTC · source ../raw_traces_active.jsonl\nnote\n\n[16:30:20] User: hello\n";
+    fs.writeFileSync(path.join(journalDir, "work_journal_active.md"), header);
+    fs.writeFileSync(manifestPath(runDir), JSON.stringify({ run_id: "run_reading_1", runtime_kind: "codex_app_server", renderer_revision: 2, files: [
+      { journal_file: "work_journal_active.md", source_file: "raw_traces_active.jsonl", source_record_count: 3, state: "open", content_sha256: "a".repeat(64) },
+      { journal_file: "../escape.md", state: "open" },
+    ] }));
+    const service = new WorkJournalService();
+    expect(await service.readJournalSpans(runDir)).toEqual({ kind: "spans", spans: [{ journalFile: "work_journal_active.md", path: path.join(journalDir, "work_journal_active.md"),
+      sizeBytes: Buffer.byteLength(header), from: "2026-05-18 16:30", to: "2026-05-18 18:56" }] });
+    expect(fs.readFileSync(path.join(journalDir, "work_journal_active.md"), "utf-8")).toBe(header);
+    // The full projection still drops the entry, so the next ensureCurrent renders the file again.
+    expect(await service.journalFileVersions(runDir)).toEqual([]);
+  });
+
+  it("tells a manifest that cannot be read from no journal at all (API-15)", async () => {
+    const service = new WorkJournalService();
+    const journalDir = path.join(runDir, "work_journal");
+    fs.mkdirSync(journalDir, { recursive: true });
+    expect(await service.readJournalSpans(runDir)).toEqual({ kind: "none" });
+    fs.writeFileSync(manifestPath(runDir), "{ not json");
+    expect(await service.readJournalSpans(runDir)).toEqual({ kind: "unreadable", reason: expect.stringMatching(/^work_journal_manifest\.json is not JSON: /) });
+    fs.writeFileSync(manifestPath(runDir), JSON.stringify({ run_id: "run_reading_1", renderer_revision: 2 }));
+    expect(await service.readJournalSpans(runDir)).toEqual({ kind: "unreadable", reason: "work_journal_manifest.json lists no files." });
+    fs.rmSync(manifestPath(runDir));
+    fs.mkdirSync(manifestPath(runDir));
+    expect(await service.readJournalSpans(runDir)).toEqual({ kind: "unreadable", reason: expect.stringContaining("EISDIR") });
+    // A manifest that lists no file yet is a journal with no files.
+    fs.rmSync(manifestPath(runDir), { recursive: true });
+    fs.writeFileSync(manifestPath(runDir), JSON.stringify({ run_id: "run_reading_1", renderer_revision: 2, files: [] }));
+    expect(await service.readJournalSpans(runDir)).toEqual({ kind: "spans", spans: [] });
   });
 
   it("lists journal files with versions, sizes, lines and days, and reads lines of manifest files only", async () => {

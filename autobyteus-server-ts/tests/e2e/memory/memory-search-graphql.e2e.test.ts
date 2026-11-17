@@ -8,9 +8,9 @@ import type { graphql as graphqlFn, GraphQLSchema } from "graphql";
 import { buildGraphqlSchema } from "../../../src/api/graphql/schema.js";
 import { WorkJournalService } from "../../../src/agent-work-journal/services/work-journal-service.js";
 import { MemorySearch, resetMemorySearchForTests } from "../../../src/memory-search/memory-search.js";
-import { MemoryRunDiscovery } from "../../../src/memory-search/runs/memory-run-discovery.js";
+import { RunFolderDiscovery } from "../../../src/agent-memory/services/run-folder-discovery.js";
 import { createFakeEmbeddingIndex } from "../../helpers/fake-embedding-model.js";
-import { writeRun } from "../../helpers/memory-search-fixtures.js";
+import { metadataStateOf, writeRun } from "../../helpers/memory-search-fixtures.js";
 
 // The Memory page's memory search API over the real schema, with a memory search over test-owned folders (the
 // embedding model is the deterministic stand-in; nothing is downloaded).
@@ -37,10 +37,10 @@ describe("Memory search GraphQL e2e", () => {
     fake = await createFakeEmbeddingIndex({ filesPresent: true, rootDir: path.join(root, "embeddings") });
     memory = new MemorySearch({
       appDataDir: root, memoryDir, journals: new WorkJournalService(), embeddings: () => fake.index, activeModelId: () => "fake-model-a",
-      discovery: new MemoryRunDiscovery(memoryDir, {
+      discovery: new RunFolderDiscovery(memoryDir, {
         teamLocations: { listAgents: async () => [] }, orgLocations: { listAgents: async () => [] },
         agentCatalog: { listCatalogRows: async () => [{ runId: "codex_ddns", agentName: "Codex" }] as never },
-        agentMetadata: { readMetadata: async () => null },
+        agentMetadata: { readMetadataState: async () => metadataStateOf(null) },
       }),
     });
     resetMemorySearchForTests(memory);

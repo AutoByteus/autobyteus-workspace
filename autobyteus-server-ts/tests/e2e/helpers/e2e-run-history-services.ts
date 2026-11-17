@@ -12,7 +12,7 @@ import {
 import {
   StandaloneRootMemberViewProjectionService, setProcessStandaloneRootMemberViewProjectionService,
 } from "../../../src/standalone-agent-run-root/services/standalone-root-member-view-projection-service.js";
-import { noDelegations, noWorkGuard } from "../../helpers/no-delegations.js";
+import { noDelegations, noWorkGuard, noEpisodicCatalog } from "../../helpers/no-delegations.js";
 
 /**
  * The run-history readers an in-process GraphQL suite needs, created the way the composition root creates them
@@ -28,8 +28,9 @@ export const setE2eRunHistoryServices = (input: Readonly<{
 }>): (() => void) => {
   const tree = input.tree ?? noDelegations();
   const workGuard = noWorkGuard();
-  const agentRunHistoryService = new AgentRunHistoryService(input.memoryDir, { tree, workGuard });
-  const teamRunHistoryService = new TeamRunHistoryService(input.memoryDir, { tree, workGuard });
+  const episodicCatalog = noEpisodicCatalog();
+  const agentRunHistoryService = new AgentRunHistoryService(input.memoryDir, { tree, workGuard, episodicCatalog });
+  const teamRunHistoryService = new TeamRunHistoryService(input.memoryDir, { tree, workGuard, episodicCatalog });
   const releases = [
     setProcessAgentRunHistoryService(agentRunHistoryService),
     setProcessTeamRunHistoryService(teamRunHistoryService),

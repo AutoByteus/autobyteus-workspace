@@ -1,11 +1,11 @@
 import path from "node:path";
+import { RunFolderDiscovery } from "../agent-memory/services/run-folder-discovery.js";
 import { getWorkJournalService, type WorkJournalService } from "../agent-work-journal/services/work-journal-service.js";
 import { appConfigProvider } from "../config/app-config-provider.js";
 import { resolveActiveEmbeddingModel } from "../embeddings/catalog/embedding-model-setting.js";
 import { getEmbeddingIndex, type EmbeddingIndex } from "../embeddings/embedding-index.js";
 import type { MemoryIndexStatus, MemorySearchResult } from "./domain/memory-search-models.js";
 import { MemoryIndexPipeline } from "./pipeline/memory-index-pipeline.js";
-import { MemoryRunDiscovery } from "./runs/memory-run-discovery.js";
 import { MemorySearchService, type MemorySearchOutcome } from "./search/memory-search-service.js";
 import { MEMORY_SEARCH_MAX_LIMIT, resolveMemorySearchDefaultLimit } from "./settings/memory-search-settings.js";
 import { MemorySearchStore } from "./store/memory-search-store.js";
@@ -20,7 +20,7 @@ export type MemorySearchDependencies = Readonly<{
   journals?: WorkJournalService;
   embeddings?: () => EmbeddingIndex;
   activeModelId?: () => string;
-  discovery?: MemoryRunDiscovery;
+  discovery?: RunFolderDiscovery;
   quietMs?: number;
 }>;
 
@@ -46,7 +46,7 @@ export class MemorySearch {
     this.store = new MemorySearchStore(path.join(deps.appDataDir, "memory-search", "memory-search.sqlite"));
     this.pipeline = new MemoryIndexPipeline({
       store: this.store, journals, embeddings,
-      discovery: deps.discovery ?? new MemoryRunDiscovery(deps.memoryDir),
+      discovery: deps.discovery ?? new RunFolderDiscovery(deps.memoryDir),
       activeModelId: deps.activeModelId ?? (() => resolveActiveEmbeddingModel().id),
       quietMs: deps.quietMs,
     });

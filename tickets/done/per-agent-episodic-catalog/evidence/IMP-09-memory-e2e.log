@@ -1,0 +1,10 @@
+# IMP-09 memory e2e files whose imports moved with run-folder discovery
+# command: env -i PATH=$PATH HOME=<temp> TMPDIR=$TMPDIR pnpm -C autobyteus-server-ts exec vitest run tests/e2e/memory/memory-search-graphql.e2e.test.ts tests/e2e/memory/work-journal-neutral-vocabulary.e2e.test.ts tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts --no-watch
+# commit: 0be36462ef
+# environment: macOS, node v22.23.1
+# date: 2026-11-17T17:16:55Z
+ ✓ tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts (9 tests | 7 skipped) 25271ms
+ ✓ tests/e2e/memory/work-journal-neutral-vocabulary.e2e.test.ts (5 tests) 896ms
+ ✓ tests/e2e/memory/memory-search-graphql.e2e.test.ts (2 tests) 115ms
+ Test Files  3 passed (3)
+      Tests  9 passed | 7 skipped (16)

@@ -8,7 +8,7 @@ import { spawnSync } from "node:child_process";
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 import { until } from "../helpers/agy-runtime-error-fixture.js";
 import { callTool, objectsIn, segment, startCollaborationHarness, type CollaborationHarness, type Rec } from "../helpers/collaboration-root-harness.js";
-import { MemoryRunDiscovery } from "../../../src/memory-search/runs/memory-run-discovery.js";
+import { RunFolderDiscovery } from "../../../src/agent-memory/services/run-folder-discovery.js";
 import { LocalMemoryExportScanner } from "../../../src/memory-sync/source/local-memory-export-scanner.js";
 
 /**
@@ -379,7 +379,7 @@ describe("Agent semantic memory at the real server boundary", () => {
       }
       expect(runIds.length).toBeGreaterThan(0);
       for (const runId of runIds) expect(semanticFolders).not.toContain(runId);
-      const discovered = await new MemoryRunDiscovery(memoryDir).findRuns();
+      const discovered = await new RunFolderDiscovery(memoryDir).findRuns();
       expect(discovered.length).toBeGreaterThan(0);
       for (const run of discovered) expect(isInside(path.resolve(run.memoryDir), semanticRoot), run.memoryDir).toBe(false);
       const scanned = await new LocalMemoryExportScanner({ getMemoryDir: () => memoryDir }).scan();

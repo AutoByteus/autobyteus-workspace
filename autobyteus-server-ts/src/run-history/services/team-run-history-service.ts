@@ -1,4 +1,5 @@
 import type { DelegatedWorkGuard } from "./delegated-work-guard.js";
+import type { EpisodicCatalog } from "../../agent-episodic-catalog/services/episodic-catalog.js";
 import type { DelegationIndex } from "../../agent-collaboration/delegation/delegation-index.js";
 import { getAgentTeamAddressBasename } from "../../agent-collaboration/domain/agent-team-address.js";
 import type { ConfiguredAgentExecutionNode, ConfiguredExecutionNode, TeamRunExecutionTreeSnapshot } from "../../agent-team-execution/domain/team-run-execution-tree.js";
@@ -12,7 +13,7 @@ import { TeamRunHistoryCatalogService, getTeamRunHistoryCatalogService } from ".
 import { TeamRunLiveProjectionService, type TeamRunMemberStatusProjection } from "./team-run-live-projection-service.js";
 import { projectExecutionTree } from "../../services/agent-streaming/team-execution-view-projector.js";
 import { runModelConfigEditability, type RunModelConfigEditability } from "../domain/run-model-config.js";
-import { createRootExecutionIdentity, createTeamRootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
+import { createTeamRootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import { runDisplayNameOf } from "../../agent-collaboration/delegation/collaboration-tree.js";
 import { getProjectTaskService, type ProjectTaskService } from "../../projects/services/project-task-service.js";
 import { RunLastActivityReader } from "./run-last-activity-reader.js";
@@ -46,12 +47,15 @@ export class TeamRunHistoryService {
   private readonly lastActivity: Pick<RunLastActivityReader, "forTeamRun">;
   private readonly workGuard: Pick<DelegatedWorkGuard, "guard">;
   private readonly names: Pick<DelegationIndex, "currentTaskOf" | "agentsOf">;
+  private readonly episodicCatalog: Pick<EpisodicCatalog, "runDeleted">;
 
   constructor(memoryDir: string, options: {
     /** The relationships between runs, from the Task entries (SR-047), and a delegated run's name (SR-091). */
     tree: Pick<DelegationIndex, "subtreeOf" | "currentTaskOf" | "agentsOf">;
     /** Archive and delete wait for the runs it delegated to (REQ-007). */
     workGuard: Pick<DelegatedWorkGuard, "guard">;
+    /** Told after a committed delete, so the run's members leave the episodic catalogs. */
+    episodicCatalog: Pick<EpisodicCatalog, "runDeleted">;
     executionTreeStore?: TeamRunExecutionTreeStore;
     catalogService?: TeamRunHistoryCatalogService;
     teamRunManager?: AgentTeamRunManager;
@@ -62,6 +66,7 @@ export class TeamRunHistoryService {
     lastActivity?: Pick<RunLastActivityReader, "forTeamRun">;
   }) {
     this.workGuard = options.workGuard;
+    this.episodicCatalog = options.episodicCatalog;
     this.names = options.tree;
     this.lastActivity = options.lastActivity ?? new RunLastActivityReader({ memoryDir, tree: options.tree });
     this.adHocTasks = options.adHocTasks;
@@ -115,10 +120,12 @@ export class TeamRunHistoryService {
   }
 
   async deleteStoredTeamRun(teamRunId: string): Promise<DeleteStoredTeamRunResult> {
-    const result = await this.workGuard.guard({ rootSubjectKind: "agent_team", rootRunId: teamRunId.trim() }, "deleted", () => this.catalog.deleteTeamRun(teamRunId));
+    const root = createTeamRootExecutionIdentity(teamRunId.trim());
+    const result = await this.workGuard.guard(root, "deleted", () => this.catalog.deleteTeamRun(teamRunId));
+    if (!result.success) return result;
+    this.episodicCatalog.runDeleted(root);
     // After the committed delete, the run's ad-hoc Tasks go too (best effort; never throws).
-    if (result.success) await (this.adHocTasks ?? getProjectTaskService())
-      .deleteAdHocTasksDelegatedFrom(createRootExecutionIdentity({ rootSubjectKind: "agent_team", rootRunId: teamRunId.trim() }));
+    await (this.adHocTasks ?? getProjectTaskService()).deleteAdHocTasksDelegatedFrom(root);
     return result;
   }
 

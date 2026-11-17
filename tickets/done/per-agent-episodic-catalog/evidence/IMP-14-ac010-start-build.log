@@ -1,0 +1,34 @@
+# IMP-14 (IR-002) AC-010 start-build probe on a fresh APFS clone of ~/.autobyteus/server-data/memory, with discovery's unreadable outcomes
+# command: node tickets/in-progress/per-agent-episodic-catalog/probes/ac010-start-build-probe.mjs <clone> <json> 2> <warnings>
+# commit: 159286c1c1 (dist built from it)
+# environment: macOS 26.5.2, node v22.23.1
+# date: 2026-11-17T19:12:35Z
+# load before: 118.78 105.81 87.18
+# load after: 119.57 108.35 89.30
+{
+  "node": "v22.23.1",
+  "memoryDir": "/Users/normy/.autobyteus-test/episodic-ac010-20261117T201203/memory",
+  "filesOutsideEpisodic": 37050,
+  "passes": [
+    {
+      "label": "first start (no episodic folder)",
+      "startReturnedMs": 0.2,
+      "passMs": 12532,
+      "indexWritten": true
+    },
+    {
+      "label": "second start (no changes)",
+      "startReturnedMs": 0.1,
+      "passMs": 12064,
+      "indexWritten": false
+    }
+  ],
+  "catalogs": 124,
+  "indexRows": 124,
+  "catalogedRuns": 3796,
+  "rewrittenAtSecondStart": [],
+  "changedOutsideEpisodic": 0,
+  "changedOutsideSample": []
+}
+# warnings on stderr, by code:
+   6 RUN_FOLDER_DISCOVERY_RECORD_UNREADABLE

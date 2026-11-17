@@ -1,0 +1,82 @@
+# API-13e TEMPORARY DIAGNOSTICS (ECDIAG timing logs in episodic-catalog.ts and run-folder-discovery.ts, not committed) embedding-settings alone | 2026-11-17T22:24:36Z | load 90.46 112.62 140.50
+ECDIAG startPass begin 1794954293564
+ECDIAG discover runFolders 92 0
+ECDIAG discover team done 92
+ECDIAG discover org done 93
+ECDIAG discover agent done 95
+ECDIAG discover diagnostics done 95
+ECDIAG findRuns done 95 0
+ECDIAG entries done 95
+ECDIAG startPass end 98
+ ✓ tests/e2e/projects/embedding-settings.e2e.test.ts > Embedding settings over the production GraphQL boundary > answers models and Project indexes in one read-only document: fresh install is Not downloaded and Not indexed (AC-011) 62ms
+ ✓ tests/e2e/projects/embedding-settings.e2e.test.ts > Embedding settings over the production GraphQL boundary > downloads the active model (Preparing with bytes, not cancellable), then indexes on request 111ms
+ ✓ tests/e2e/projects/embedding-settings.e2e.test.ts > Embedding settings over the production GraphQL boundary > downloads another model ahead, refuses removal while it downloads, cancels it, and refuses removing the active model 24ms
+ ✓ tests/e2e/projects/embedding-settings.e2e.test.ts > Embedding settings over the production GraphQL boundary > switches the active model through the setting, prepares it at once, keeps the old files, and shows the Projects as Not indexed 28ms
+ ✓ tests/e2e/projects/embedding-settings.e2e.test.ts > Embedding settings over the production GraphQL boundary > shows an unavailable model with its reason, and Retry prepares it again at once (AC-012) 18ms
+ ✓ tests/e2e/projects/embedding-settings.e2e.test.ts > Embedding settings over the production GraphQL boundary > indexes a Project a few seconds after Task writes, with no search, once the model is on disk (REQ-011, AC-015) 3062ms
+ECDIAG stop begin; pass running: false
+ECDIAG stop end 1
+      Tests  6 passed (6)
+exit 0
+# API-13e run 2 TEMPORARY DIAGNOSTICS embedding-settings alone | 2026-11-17T22:25:14Z | load 78.83 106.88 137.12
+ECDIAG startPass begin 1794954326964
+ECDIAG discover runFolders 89 0
+ECDIAG discover team done 94
+ECDIAG discover org done 94
+ECDIAG discover agent done 95
+ECDIAG discover diagnostics done 95
+ECDIAG findRuns done 95 0
+ECDIAG entries done 95
+ECDIAG startPass end 98
+ ✓ tests/e2e/projects/embedding-settings.e2e.test.ts > Embedding settings over the production GraphQL boundary > answers models and Project indexes in on… 140ms
+ ✓ tests/e2e/projects/embedding-settings.e2e.test.ts > Embedding settings over the production GraphQL boundary > downloads the active model (Preparing wi… 145ms
+ ✓ tests/e2e/projects/embedding-settings.e2e.test.ts > Embedding settings over the production GraphQL boundary > downloads another model ahead, refuses r… 28ms
+ ✓ tests/e2e/projects/embedding-settings.e2e.test.ts > Embedding settings over the production GraphQL boundary > switches the active model through the se… 29ms
+ ✓ tests/e2e/projects/embedding-settings.e2e.test.ts > Embedding settings over the production GraphQL boundary > shows an unavailable model with its reas… 13ms
+ ✓ tests/e2e/projects/embedding-settings.e2e.test.ts > Embedding settings over the production GraphQL boundary > indexes a Project a few seconds after Ta… 3154ms
+ECDIAG stop begin; pass running: false
+ECDIAG stop end 0
+      Tests  6 passed (6)
+exit 0
+# API-13e run 3 TEMPORARY DIAGNOSTICS embedding-settings alone | 2026-11-17T22:25:44Z | load 74.96 103.21 134.73
+ECDIAG startPass begin 1794954383302
+ECDIAG discover runFolders 354 0
+ECDIAG discover team done 370
+ECDIAG discover org done 370
+ECDIAG discover agent done 371
+ECDIAG discover diagnostics done 371
+ECDIAG findRuns done 371 0
+ECDIAG entries done 372
+ECDIAG startPass end 394
+ ✓ tests/e2e/projects/embedding-settings.e2e.test.ts > Embedding settings over the production GraphQL boundary > answers models and Project indexes in on… 217ms
+ ✓ tests/e2e/projects/embedding-settings.e2e.test.ts > Embedding settings over the production GraphQL boundary > downloads the active model (Preparing wi… 210ms
+ ✓ tests/e2e/projects/embedding-settings.e2e.test.ts > Embedding settings over the production GraphQL boundary > downloads another model ahead, refuses r… 28ms
+ ✓ tests/e2e/projects/embedding-settings.e2e.test.ts > Embedding settings over the production GraphQL boundary > switches the active model through the se… 31ms
+ ✓ tests/e2e/projects/embedding-settings.e2e.test.ts > Embedding settings over the production GraphQL boundary > shows an unavailable model with its reas… 27ms
+ ✓ tests/e2e/projects/embedding-settings.e2e.test.ts > Embedding settings over the production GraphQL boundary > indexes a Project a few seconds after Ta… 3179ms
+ECDIAG stop begin; pass running: false
+ECDIAG stop end 1
+Error: Hook timed out in 10000ms.
+      Tests  6 passed (6)
+exit 1
+# API-13e run 4 TEMPORARY DIAGNOSTICS embedding-settings alone | 2026-11-17T22:26:52Z | load 154.01 117.87 137.72
+ECDIAG startPass begin 1794954451507
+ECDIAG discover runFolders 191 0
+ECDIAG discover team done 198
+ECDIAG discover org done 198
+ECDIAG discover agent done 206
+ECDIAG discover diagnostics done 207
+ECDIAG findRuns done 208 0
+ECDIAG entries done 211
+ECDIAG startPass end 217
+ ✓ tests/e2e/projects/embedding-settings.e2e.test.ts > Embedding settings over the production GraphQL boundary > answers models and Project indexes in on… 198ms
+ ✓ tests/e2e/projects/embedding-settings.e2e.test.ts > Embedding settings over the production GraphQL boundary > downloads the active model (Preparing wi… 152ms
+ ✓ tests/e2e/projects/embedding-settings.e2e.test.ts > Embedding settings over the production GraphQL boundary > downloads another model ahead, refuses r… 25ms
+ ✓ tests/e2e/projects/embedding-settings.e2e.test.ts > Embedding settings over the production GraphQL boundary > switches the active model through the se… 65ms
+ ✓ tests/e2e/projects/embedding-settings.e2e.test.ts > Embedding settings over the production GraphQL boundary > shows an unavailable model with its reas… 21ms
+ ✓ tests/e2e/projects/embedding-settings.e2e.test.ts > Embedding settings over the production GraphQL boundary > indexes a Project a few seconds after Ta… 3146ms
+ECDIAG stop begin; pass running: false
+ECDIAG stop end 0
+Error: Hook timed out in 10000ms.
+      Tests  6 passed (6)
+exit 1

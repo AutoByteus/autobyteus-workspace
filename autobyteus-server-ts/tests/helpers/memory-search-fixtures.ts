@@ -35,3 +35,7 @@ export const writeRun = (memoryDir: string, relPath: string, turns: readonly Tur
 export const appendTurns = (runDir: string, turns: readonly Turn[]): void => {
   fs.appendFileSync(path.join(runDir, "raw_traces_active.jsonl"), turnsToRecords(turns).map((record) => `${JSON.stringify(record)}\n`).join(""), "utf-8");
 };
+
+/** A run metadata store's read state for a discovery fake: the metadata when given, else no metadata file. */
+export const metadataStateOf = (metadata: object | null) =>
+  (metadata ? { kind: "present", metadata } : { kind: "missing" }) as never;
