@@ -68,3 +68,23 @@
 - Local validation and result: IMP-05 to IMP-12 in the handoff.
 - Next recipient or routing: code reviewer (High risk), per `get_handoff_rules`.
 - Remaining limitations or risks: Codex idle with background terminals shows Idle; per-batch count granularity (R-13); live per-runtime validation and the two-node peer case left to API/E2E.
+
+### IR-004 — CR-002: the dead exports of the touched remote-task-execution contract file
+
+- Triggering role, report path, and round: code reviewer, `code-review-report.md` "Latest Round: Part 2" (CRR-005, round 4).
+- Triggering finding IDs: CR-002
+- Classification: Local Fix (Core Principle 7, dead code in a touched file; this ticket, not a follow-up)
+- Prior authoritative result: IR-003 (code review Fail CRR-005, CR-002 only)
+- Current authoritative result: the touched contract file keeps only its used exports; Large / High unchanged.
+- Related solution revision IDs: SR-006
+- Related architecture-review revision IDs: ARCH-REV-005
+- Related code-review revision IDs: CRR-005
+- Related API/E2E revision IDs: N/A
+- Related delivery revision IDs: N/A
+- Why this implementation revision is recorded: CR-002 requires removing the dead exports and resolving FU-005 here.
+- Approved behavior or requirement IDs affected: none (no behavior change).
+- Implementation delta: `autobyteus-agent-presentation-contracts/src/remote-task-execution-dtos.ts` removed; `remoteAgentStatusSchema` and `RemoteAgentStatus` (used by `peer-run-view-answers.ts`, `paired-agent-access.ts`) move to `src/remote-agent-status.ts`; `index.ts` exports it; `tests/remote-task-execution-dtos.test.mjs` replaced by `tests/remote-agent-status.test.mjs`; `dist/` rebuilt (the old `remote-task-execution-dtos.*` removed). FU-005 marked resolved.
+- Changed files or areas: `autobyteus-agent-presentation-contracts/{src,tests,dist}`; `follow-ups.md`; `implementation-handoff.md`.
+- Local validation and result: IMP-15 (contract tests 22/14/37, both typechecks PASS at baseline, server remote-collaboration unit 154 pass).
+- Next recipient or routing: code reviewer (High risk), per `get_handoff_rules`.
+- Remaining limitations or risks: none new.
