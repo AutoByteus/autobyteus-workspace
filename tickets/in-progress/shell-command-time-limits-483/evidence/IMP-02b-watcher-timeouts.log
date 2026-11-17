@@ -1,0 +1,15 @@
+# IMP-02b folder-watcher failures of IMP-02: cause
+# commit: 0f0a234dab (+ uncommitted test fixes); node v22.23.1; 2026-11-17T10:46:48Z
+# Diff touches none of the code these tests exercise:
+  (no changed file under agent-package-definitions, skill-update-notices or skills)
+# Machine load during the runs (other processes):
+11:46  up 28 days, 21:25, 9 users, load averages: 48.30 68.71 94.54
+196.3 /System/Library/Frameworks/Virtualization.framework/Versions/A/XPCServices/com.apple.Virtualization.VirtualMachine.xpc/Contents/MacOS/com.apple.Virtualization.VirtualMachine
+130.3 /System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/FSEvents.framework/Versions/A/Support/fseventsd
+ 80.7 /Applications/Docker.app/Contents/MacOS/com.docker.backend
+ 70.5 /Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python
+# Rerun of the watcher files alone:
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+ FAIL  tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts > AgentPackageFolderWatcher > moves a root to FOLDER_MISSING when it is renamed away and resumes watching when it returns
+ Test Files  1 failed | 1 passed (2)
+      Tests  1 failed | 26 passed (27)
