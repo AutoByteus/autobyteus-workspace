@@ -44,7 +44,9 @@ caller.
   - `listJournalFiles(memoryDir)`: each file's size, line count and days (`[YYYY-MM-DD]` lines);
   - `readJournalSpans(memoryDir)`: each manifest file's path, size and the time range its header
     states (`YYYY-MM-DD HH:MM` on both sides, UTC; `null` for "no records"), reading at most the
-    first 1 KB of each file;
+    first 1 KB of each file. It reads the file names the manifest lists, also from entries an older
+    build wrote that the manifest projection drops (they are rendered again at the next
+    `ensureCurrent`; until then their files are the run's journal);
   - `readJournalFile(memoryDir, file)` and `readJournalLines(memoryDir, file, {start, end})` (at
     most 400 lines, `MAX_JOURNAL_LINES_PER_READ`): only files the manifest names;
   - `journalFilePath(memoryDir, file)`: where the file is, for a file tool.
