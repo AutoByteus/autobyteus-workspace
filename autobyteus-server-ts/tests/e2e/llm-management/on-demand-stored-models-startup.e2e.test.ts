@@ -119,8 +119,9 @@ suite("AutoByteus models loaded on demand across restarts: started, refused only
   };
   const options = async (s: BuiltStudio, runId: string) => (await s.gql(`query($id:String!){agentRunModelOptions(agentRunId:$id){currentModelIdentifier modelListReadable unavailableReason currentModel{llmModelIdentifier}}}`,
     { id: runId })).agentRunModelOptions as Rec;
-  const teamOptions = async (s: BuiltStudio, teamRunId: string, address: string) => ((await s.gql(`query($id:String!){teamRunModelOptions(teamRunId:$id){scopeAddress currentModelIdentifier modelListReadable currentModel{llmModelIdentifier}}}`,
-    { id: teamRunId })).teamRunModelOptions as Rec[]).find((scope) => scope.scopeAddress === address);
+  const teamScopes = async (s: BuiltStudio, teamRunId: string) => (await s.gql(`query($id:String!){teamRunModelOptions(teamRunId:$id){scopeKind scopeAddress currentModelIdentifier modelListReadable currentModel{llmModelIdentifier}}}`,
+    { id: teamRunId })).teamRunModelOptions as Rec[];
+  const teamOptions = async (s: BuiltStudio, teamRunId: string, address: string) => (await teamScopes(s, teamRunId)).find((scope) => scope.scopeAddress === address);
 
   it("ODM-1 LM Studio and Ollama models start after a restart; a host that is down is not a refusal; read and missing is refused; a removed agent gets its own answer", async () => {
     root = await fs.realpath(await fs.mkdtemp(path.join(os.tmpdir(), "on-demand-models-e2e-")));
@@ -179,6 +180,7 @@ suite("AutoByteus models loaded on demand across restarts: started, refused only
     s = server;
     results.restart = {
       lmsOptions: await options(s, lmRun), ollOptions: await options(s, olRun), leadOptions: await teamOptions(s, teamRunId, "/lead"),
+      teamScopes: await teamScopes(s, teamRunId),
       lms: await message(s, `agent/${lmRun}`, lmRun, LMS, "ODM-restart-lms"),
       oll: await message(s, `agent/${olRun}`, olRun, OLL, "ODM-restart-oll"),
       lead: await message(s, `agent-team/${teamRunId}`, memberRun("/lead"), LMS, "ODM-restart-lead"),
@@ -186,7 +188,8 @@ suite("AutoByteus models loaded on demand across restarts: started, refused only
     for (const key of ["lms", "oll", "lead"]) expect(results.restart[key].answered, `restart ${key}: ${JSON.stringify(results.restart[key])}`).toBe(true);
     expect(results.restart.lmsOptions, "LM Studio run: no note").toMatchObject({ modelListReadable: true, currentModel: { llmModelIdentifier: lmsId } });
     expect(results.restart.ollOptions, "Ollama run: no note").toMatchObject({ modelListReadable: true, currentModel: { llmModelIdentifier: ollId } });
-    if (results.restart.leadOptions) expect(results.restart.leadOptions, "lead: no note").toMatchObject({ currentModel: { llmModelIdentifier: lmsId } });
+    expect(results.restart.leadOptions, `lead: no note; scopes ${JSON.stringify(results.restart.teamScopes)}`)
+      .toMatchObject({ modelListReadable: true, currentModel: { llmModelIdentifier: lmsId } });
     await stopAll(s);
     await s.stop();
 
@@ -198,6 +201,8 @@ suite("AutoByteus models loaded on demand across restarts: started, refused only
     results.hostDown = { ollOptions: await options(s, olRun), oll: await message(s, `agent/${olRun}`, olRun, OLL, "ODM-down-oll") };
     console.log(`ODM-1 Ollama host down: ${JSON.stringify(results.hostDown)}`);
     expect(results.hostDown.oll.errorText, "no G-5 refusal while the host is down").not.toContain(G5);
+    // The start's own answer, as without the check (the start path's unchanged MODEL_IDENTIFIER_NOT_AVAILABLE).
+    expect(results.hostDown.oll.errorText, "the start's own failure is answered").toContain("MODEL_IDENTIFIER_NOT_AVAILABLE");
     expect(results.hostDown.oll.answered).toBe(false);
     expect(results.hostDown.ollOptions, "unreadable: no note").toMatchObject({ modelListReadable: false, currentModel: null });
     await stopAll(s);
@@ -228,6 +233,8 @@ suite("AutoByteus models loaded on demand across restarts: started, refused only
     expect(results.missing.retired.answered).toBe(false);
     expect(results.missing.retired.chats).toBe(0);
     expect(results.missing.retired.errorText, "a removed agent gets its own answer, not G-5's").not.toContain(G5);
+    // The member path's own not-found answer (SR-015 R2).
+    expect(results.missing.retired.errorText).toContain(`AgentDefinition with ID ${retired} not found`);
     await stopAll(s);
     await s.stop();
     server = null;
