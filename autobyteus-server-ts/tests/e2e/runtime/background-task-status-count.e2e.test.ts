@@ -13,6 +13,10 @@
  *   BTS-03  Antigravity (scripted CLI, an open daemon step): idle 1, then idle 0 when the step exits
  *   BTS-04  (live) Claude idle with a background Bash command: idle 1, then 0
  *   BTS-05  (live) Codex idle with a background terminal: its view is a snapshot, so the count stays 0 (Idle; design risk)
+ *   BTS-06  native, autobyteus-483's ends beside the count: of three tasks, one exits with code 3, one is killed from
+ *           outside (SIGTERM) and one is stopped by the run's end (run_ended); each end brings the count down (3, 2, 1, 0),
+ *           (each notice's turn reads running with the tasks still running), the stream, the view and the notices keep
+ *           each end's reason, and the feed reads the run offline 0
  *
  * Gate: RUN_BACKGROUND_TASK_STATUS_E2E=1 (BTS-01..03: no credentials; BTS-03 also needs the scripted AGY CLI as the node's
  * CLI: ANTIGRAVITY_CLI_COMMAND=<absolute path to tests/fixtures/agy-failure-cli.mjs> AGY_FAKE_CASE=linked_skills). BTS-04 also needs RUN_CLAUDE_E2E=1 and the
@@ -24,6 +28,7 @@
  */
 import { randomUUID } from "node:crypto";
 import fs from "node:fs/promises";
+import { execFileSync } from "node:child_process";
 import { createServer, type IncomingMessage, type Server, type ServerResponse } from "node:http";
 import os from "node:os";
 import path from "node:path";
@@ -276,6 +281,66 @@ const path_ = (list: Status[]) => list.map((entry) => `${entry.status}:${entry.c
     await record("BTS-03", { runId, path: path_(statuses(frames)), fed: feedAgent(runStatus, runId) });
     expect(path_(statuses(frames))).toEqual(expect.arrayContaining(["idle:1", "idle:0"]));
     expect(feedAgent(runStatus, runId).map((entry) => `${entry.status}:${entry.count}`)).toEqual(expect.arrayContaining(["idle:1", "idle:0"]));
+  }, 300_000);
+
+  it("BTS-06: autobyteus-483's ends beside the count: exit code, signal and the run's end each bring it down", async () => {
+    const tag = `BTS06_${randomUUID().slice(0, 8)}`;
+    // The first task exits with code 3 when the test creates this file (not on a timer, so it is still running at the turn end).
+    const flag = path.join(os.tmpdir(), `${tag}.flag`);
+    const node = (name: string) => `${JSON.stringify(process.execPath)} -e "setInterval(()=>{},1000)" ${tag}_${name}`;
+    const withTag = () => execFileSync("ps", ["-ww", "-A", "-o", "pid=,command="], { encoding: "utf8" }).split("\n")
+      .flatMap((line) => { const match = line.trim().match(/^(\d+)\s+(.*)$/); return match && match[2]!.startsWith(process.execPath) && match[2]!.includes(tag) ? [Number(match[1])] : []; });
+    model.script("BTS-06", [
+      () => ({ toolCalls: [background(`until [ -e ${JSON.stringify(flag)} ]; do sleep 0.2; done; exit 3`), background(`echo b; ${node("B")}`), background(`echo c; ${node("C")}`)] }),
+      text("Started three."),
+    ]);
+    const runId = await createRun(await definition(["run_bash"]), "autobyteus", modelIdentifier);
+    const frames = await agentChannel(runId);
+    const tasks = () => frames.filter((frame) => frame.type === "BACKGROUND_TASK_UPDATED");
+    const lastOf = (match: (command: string) => boolean) => tasks().filter((frame) => match(String(frame.payload.command ?? ""))).at(-1)?.payload;
+    try {
+      sendE2eSendMessageCommand(socketOf(frames), { content: "CASE:BTS-06 Start the three commands in the background." });
+      await until(() => statuses(frames).some((entry) => entry.status === "idle" && entry.count === 3), "idle 3", 90_000);
+      const runStatus = await feed([{ kind: "agent", runId }]);
+      // 1. An exit code (failed, exit_code 3, no end reason).
+      await fs.writeFile(flag, "");
+      await until(() => lastOf((command) => command.includes("exit 3"))?.status === "failed", "the exit-3 task ended", 60_000);
+      const exitNotice = await until(() => model.of("BTS-06").find((request) => /exit code 3/.test(request.lastUser)), "the notice of the exit", 60_000);
+      await until(() => statuses(frames).some((entry) => entry.at > exitNotice.at && entry.status === "idle" && entry.count === 2), "idle 2 after the notice's turn", 90_000);
+      // 2. A signal from outside (stopped, "signal SIGTERM", no end reason).
+      const killed = Number(lastOf((command) => command.includes(`${tag}_B`))!.task_id);
+      process.kill(killed, "SIGTERM");
+      await until(() => lastOf((command) => command.includes(`${tag}_B`))?.status === "stopped", "the killed task ended", 60_000);
+      const killNotice = await until(() => model.of("BTS-06").find((request) => /killed by SIGTERM/.test(request.lastUser)), "the notice of the kill", 60_000);
+      await until(() => statuses(frames).some((entry) => entry.at > killNotice.at && entry.status === "idle" && entry.count === 1), "idle 1 after the notice's turn", 90_000);
+      const notices = [exitNotice.lastUser, killNotice.lastUser];
+      const view = (await harness.gql<{ agentBackgroundTaskView: Json }>(
+        "query($id: String!) { agentBackgroundTaskView(agentRunId: $id) { __typename ... on AgentBackgroundTaskEventStream { tasks { command status summary endReason exitCode } } } }",
+        { id: runId })).agentBackgroundTaskView;
+      // 3. The run's end (stopped, end_reason run_ended).
+      await harness.gql("mutation($id: String!) { terminateAgentRun(agentRunId: $id) { success } }", { id: runId });
+      await until(() => lastOf((command) => command.includes(`${tag}_C`))?.status === "stopped", "the run's end stopped the last task", 30_000);
+      await until(() => feedAgent(runStatus, runId).at(-1)?.status === "offline", "the feed reads the run offline", 30_000);
+      const path = path_(statuses(frames));
+      await record("BTS-06", { runId, path, fed: feedAgent(runStatus, runId), ends: tasks().map((frame) => frame.payload).filter((task) => task.status !== "running"), view, notices, requests: model.of("BTS-06").map((request) => request.lastUser) });
+
+      // Each notice's turn reads running with the tasks still running (2, then 1), then idle with them.
+      expect(inOrder(path, ["idle:3", "idle:2", "running:2", "idle:2", "idle:1", "running:1", "idle:1", "offline:0"]), JSON.stringify(path)).toBe(true);
+      expect(statuses(frames).at(-1)?.count ?? 0).toBe(0);
+      expect(feedAgent(runStatus, runId).at(-1)).toMatchObject({ status: "offline", count: 0 });
+      expect(lastOf((command) => command.includes("exit 3"))).toMatchObject({ status: "failed", exit_code: 3, end_reason: null });
+      expect(lastOf((command) => command.includes(`${tag}_B`))).toMatchObject({ status: "stopped", summary: "signal SIGTERM", end_reason: null, exit_code: null });
+      expect(lastOf((command) => command.includes(`${tag}_C`))).toMatchObject({ status: "stopped", end_reason: "run_ended", exit_code: null });
+      // The view (the panel's source) keeps both earlier ends beside the running one; the notices name each end.
+      expect((view.tasks as Json[]).map((task) => ({ status: task.status, endReason: task.endReason, exitCode: task.exitCode }))).toEqual(expect.arrayContaining([
+        { status: "failed", endReason: null, exitCode: 3 }, { status: "stopped", endReason: null, exitCode: null }, { status: "running", endReason: null, exitCode: null }]));
+      expect(notices.join("\n")).toMatch(/exit code 3/);
+      expect(notices.join("\n")).toMatch(/killed by SIGTERM/);
+      expect(withTag()).toEqual([]);
+    } finally {
+      for (const pid of withTag()) { try { process.kill(pid, "SIGKILL"); } catch { /* gone */ } }
+      await fs.rm(flag, { force: true });
+    }
   }, 300_000);
 
   it.skipIf(!CLAUDE)("BTS-04 (live): Claude idle with a background Bash command reads idle 1, then 0", async () => {
