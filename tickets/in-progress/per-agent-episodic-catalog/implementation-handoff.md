@@ -14,6 +14,7 @@ Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/per-agent-episodic-c
 - Design review report: `design-review-report.md` (ARCH-REV-004, `Pass`)
 - Architecture review revision record: `architecture-review-revision-record.md`
 - Triggering rework report, revision record, or evidence: N/A (initial implementation)
+- Code review: CRR-001 `Pass` (`code-review-report.md`); CF-11 (orphaned `noWorkGuard` doc comment in `tests/helpers/no-delegations.ts`) is non-blocking, to fix at the next touch
 
 ## Current Implementation Summary
 
