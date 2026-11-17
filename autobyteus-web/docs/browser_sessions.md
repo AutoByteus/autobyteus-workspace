@@ -158,8 +158,14 @@ After 2 s of failed attempts the screenshot fails with the typed
 and no artifact is written. Full-page capture runs the same attempts on its
 temporarily enlarged bounds. A view in a minimized or hidden window cannot draw
 even after the resize, so `WorkspaceShellWindow` holds its Browser view only
-while the window is visible and not minimized (see below). The real-Electron
-regression is `electron/browser/__tests__/browser-screenshot-capture.electron.spec.ts`.
+while the window is visible and not minimized (see below). The 2 s limit is
+checked after each attempt answers: a `capturePage()` that Chromium never
+answers is not cut off. That was seen only for an app hidden while the macOS
+screen was already locked, where no window `hide` event fires and the view
+stays attached; the capture then answers when the screen unlocks. The
+real-Electron regression is
+`electron/browser/__tests__/browser-screenshot-capture.electron.spec.ts`; it has
+no app-hidden case, because that outcome depends on the screen lock state.
 
 Tab errors use the tool contract's codes: an unknown `tab_id` fails with
 `browser_tab_not_found`, a closed one with `browser_tab_closed`, and the server
