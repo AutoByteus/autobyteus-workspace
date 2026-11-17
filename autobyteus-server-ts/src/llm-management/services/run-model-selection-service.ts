@@ -1,6 +1,5 @@
 import type { ModelInfo } from "autobyteus-ts/llm/models.js";
-import { AVAILABLE_AGENT_RUNTIMES_STEP_CAPS } from "../../available-agent-runtimes/available-agent-runtimes-service.js";
-import { createReadDeadline, raceDeadline } from "../../runtime-management/read-deadline.js";
+import { MODEL_LIST_READ_MS, createReadDeadline, raceDeadline } from "../../runtime-management/read-deadline.js";
 import type { RunModelConfigFieldError } from "../../run-history/domain/run-model-config.js";
 import type { RunModelChoice, RunModelOptions, RunModelSelection, RunModelSelectionContext, RunModelValidationContext } from "../domain/run-model-selection.js";
 import type { ModelCatalogService, RuntimeModelSelectionCatalog } from "./model-catalog-service.js";
@@ -80,7 +79,7 @@ export class RunModelSelectionService {
    * `list_unreadable`, and the start proceeds as before.
    */
   async storedModelOffer(input: Readonly<{ runtimeKind: string; llmModelIdentifier: string; workspaceRootPath?: string }>): Promise<StoredModelOffer> {
-    const deadline = createReadDeadline(AVAILABLE_AGENT_RUNTIMES_STEP_CAPS.modelsMs);
+    const deadline = createReadDeadline(MODEL_LIST_READ_MS);
     try {
       const catalog = await raceDeadline(this.catalog.runtimeModelSelectionCatalog(input.runtimeKind, input.workspaceRootPath, { deadline }), deadline);
       return catalog.offeredModels.some((model) => model.model_identifier === input.llmModelIdentifier) ? "offered" : "not_offered";

@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { RunModelSelectionService } from "../../../src/llm-management/services/run-model-selection-service.js";
 import { storedModelNotOfferedRefusal } from "../../../src/llm-management/services/run-model-selection-refusal.js";
-import { AVAILABLE_AGENT_RUNTIMES_STEP_CAPS } from "../../../src/available-agent-runtimes/available-agent-runtimes-service.js";
+import { MODEL_LIST_READ_MS } from "../../../src/runtime-management/read-deadline.js";
 
 /**
  * autobyteus-500 G-5 (REQ-016, AC-012): whether a run's stored model is offered by its runtime now, from the runtime's list
@@ -33,7 +33,7 @@ describe("storedModelOffer (G-5)", () => {
     const service = catalogOf(() => new Promise(() => undefined));
     let answer: string | null = null;
     void service.storedModelOffer({ runtimeKind, llmModelIdentifier: "model" }).then((value) => { answer = value; });
-    await vi.advanceTimersByTimeAsync(AVAILABLE_AGENT_RUNTIMES_STEP_CAPS.modelsMs - 1);
+    await vi.advanceTimersByTimeAsync(MODEL_LIST_READ_MS - 1);
     expect(answer).toBeNull();
     await vi.advanceTimersByTimeAsync(1);
     expect(answer).toBe("list_unreadable");
