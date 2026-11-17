@@ -1,0 +1,358 @@
+# Code Review Report: follow-ups-of-461-500 (autobyteus-500)
+
+The latest result is round 3, **CRR-004: Pass** (IR-003, the G-5 revision). It comes first. CRR-003 (the failure-origin review), round 2 (CRR-002) and round 1 (CRR-001) follow as history, with their finding IDs reused.
+
+## Round 3: Review Of IR-003, The G-5 Revision (CRR-004)
+
+- **Scope:**
+  - `Targeted Delta Review` of `cc8dbce099..c22af3b892`. The code is `7eb78a701b`: 13 source files and its tests.
+  - The delta stays within G-5's owners (the availability service, the selection service, the start checks on both paths and the two hosts' wiring) and the inherited-layer refusal.
+  - No other spine changed. The new shape `StoredModelStartChecks` is G-5's own, so a Full Re-Audit isn't needed.
+  - Upstream: SR-015, SR-016; ARCH-REV-008/009 Pass.
+- **CR-500-003: Resolved.**
+  - `ModelAvailabilityService.loadOnDemandModel` loads an on-demand AutoByteus model's provider the way a start does. It shares `loadProviderCatalog` with `ensureModelAvailable`, so there is one load step.
+  - It answers `unreadable` when the provider can't be resolved, the load throws, or any source unit failed (SR-016, AR-003).
+  - `storedModelOffer` runs that load, then the list read, inside the same 8 s race (`run-model-selection-service.ts`). So a model of a provider loaded on demand is `offered` after a restart, and a provider that couldn't be read starts as before. A provider that was read but lacks the model is still a true `not_offered`.
+  - `listOptions` applies the same rule, so Settings shows "unavailable" rather than a false note (the web already maps `modelListReadable: false`).
+  - The deviation (`ensureModelAvailable` keeps base's errors through the shared private step) is recorded, and its reason holds.
+  - `on-demand-stored-model.test.ts` uses the real services over a catalog that lists models only after a load. It covers 14 cases: the three provider kinds, missing models, a host down, two hosts, an unconfigured host, a removed endpoint, the budget, and static and external models unchanged.
+- **CR-500-004: Resolved.**
+  - `storedModelStartRefusal` reads the definition first. A missing definition, or a failed read, returns null, so the path's own not-found answers.
+  - Both hosts pass `{ agentDefinitions, storedModels }` (the supervisor and the application kernel builder). The application scope passes the same definition service its runtime uses (`application-execution-scope-kernel-builder.ts:133,158,180,270`), so G-5 and the start agree on which agents exist.
+  - The tests cover a retired agent on both paths.
+- **CR-500-005: Resolved.**
+  - `inheritedLayerRefusal` (`collaborator-launch-resolver.ts`) reads: "{A} can't be delegated to: it would use this run's model '{m}', which {R} no longer offers. Set a model for {A} in its settings, or change this run's model, then delegate again." That is FR-1 … FR-3.
+  - The verdict carries `modelNoLongerOffered`, so no text is matched.
+  - Other inherited reasons keep their own words, with the same next step.
+  - The resolver test, the DLP-005 e2e (IMP-015, with the scripted AGY CLI) and the probe assert the text, and the FU-030 table has the row.
+- **Checks:** I didn't rerun them; they ran on `7eb78a701b`.
+  - Type gate: production 0, tests at the 1010 baseline.
+  - Units: 7551 passed. The standalone-application-host mocks were fixed and pass 28/28. The remaining failures are folder-watcher timing and load.
+  - Integration and architecture: 183 passed.
+- **For API/E2E:** `team-stream-clients-wait-for-connected.test.ts` flags API/E2E's own FU-036 e2e (`run-stream-early-command.e2e.test.ts`, `c0770ea7b0`), which sends early on purpose. That is test-side and API/E2E's to settle, for example with an explicit exemption in the check.
+- **Sizes:** the member handle is at 499 and `build-studio-server.ts` at 498.
+- **Scorecard:** Runtime Correctness is back to 9.4; every category is at 9.3 or above, and the overall is 9.4.
+- **Findings:** none open.
+- **Routing:** `Pass`, to `/api_e2e_engineer`. The Implementation Engineer is informed.
+
+---
+
+## API/E2E Failure-Origin Review Of API-REV-001 (CRR-003)
+
+- Entry point: `API/E2E Failure-Origin Review`. Code tested: `cc8dbce099`; API/E2E's commits are `c0770ea7b0` and `718a359cab`.
+- Failing scenarios:
+  - F-1: E-002, `remove-built-in-project-task-manager-startup`;
+  - F-2: `delegated-launch-config-defaults` "Agent root: with the root's model retired …", and probe DLP-005;
+  - F-3: SCP-E2E-006, `get-project-task-worker-scope`.
+- Evidence: `evidence/api-e2e/API-r1-runs.txt` §3; `/tmp/api500/r1/scp006-diag2.log`.
+
+### F-3: the origin is G-5. It falsely refuses an AutoByteus run whose model comes from a provider loaded on demand (CR-500-003, Design Impact)
+
+- **The observation is corrected.** API/E2E saw "no answer, no error frame", but the diagnostic run's frames hold one for the mate: `ERROR RUN_MODEL_NOT_OFFERED`, "mate can't start: its saved model 'scope-fixture:lmstudio@127.0.0.1:52905' is not offered by AutoByteus now…" (`scp006-diag2.log`, the frames after the send). The test helper waits for a tool result, so it timed out instead of reporting the error.
+- **The cause, from the code:**
+  - On the AutoByteus runtime, models from dynamic providers (Ollama, LM Studio and custom OpenAI-compatible endpoints) are loaded into `LLMFactory` on demand.
+  - The start path calls `ModelAvailabilityService.ensureModelAvailable`, from `available-llm-construction.ts:14`. That loads the provider's catalog when the model isn't registered (`model-availability-service.ts:52-63`, `ensureProviderModelCatalog`), and only then checks it.
+  - G-5's `storedModelOffer` reads `runtimeModelSelectionCatalog("autobyteus")`, which is `LLMFactory.listAvailableModels()` (`model-catalog-service.ts:205`), with no such load.
+  - After a server restart, the LM Studio model isn't loaded yet, so the read answers `not_offered`, and the member is refused before its runtime would have loaded and used the model. At base it starts: 2/2 with 6/6 tests; the branch fails 0/6.
+- **Scenario:** a supported normal one. A user with Ollama, LM Studio or a custom provider restarts the app and messages an existing run, or restores it. Every such run is refused, with text telling them to choose another model.
+- **Why Design Impact:** design G-5 states "it reads the runtime's list through the same `readCatalog` and answers from `offeredModels` only". For the AutoByteus runtime, that list isn't the authority before its dynamic providers are loaded. The owner of "is this AutoByteus model available" is `ModelAvailabilityService` (load on demand, then check the registration and the configured endpoint). The fix is a design decision:
+  - G-5 asks the availability owner for the AutoByteus runtime;
+  - or the offer check loads the provider catalog first;
+  - and, either way, decide what "unreadable" means when a local host is down.
+  - The 8 s bound and the external CLI runtimes are unaffected: their empty or failed lists already throw and count as `list_unreadable`.
+- **My own review gap:** in CRR-001 I rejected C-7, the AutoByteus runtime with an offline local provider, on the premise "today that start fails anyway". I didn't trace `ensureModelAvailable`'s on-demand load, which makes the start work at base. The premise was wrong, and the consequence is broader than C-7: every dynamic-provider model after a restart, not only an offline host.
+
+### F-1: the origin is G-5 again, the order against a missing agent definition (CR-500-004, Design Impact)
+
+- `restoreStarted` asks G-5 before anything else (`standalone-agent-run-lifecycle-service.ts:322-324`). The missing definition is found only later, in the runtime backend's `prepare()` (`autobyteus-agent-run-backend-factory.ts:297`, "AgentDefinition with ID … not found"). The lifecycle service has no access to the definition.
+- **Result:**
+  - a run of a retired agent (the built-in Project Task Manager, removed by a migration: a supported released scenario, E-002) is answered "can't start: its saved model … is not offered … choose a runtime and model in Settings";
+  - that repair can't help, because the agent no longer exists. Base answers `RUN_NOT_FOUND`.
+- In this fixture the model is also LM Studio's, so CR-500-003 makes the G-5 answer false as well. The ordering question stands on its own, though: a deleted agent whose model is also gone gets the wrong refusal.
+- **Design Impact:** design G-5 placed the check "before `buildConfig`", and making "not found" win needs a rule for which refusal comes first, plus either a definition read in the lifecycle service or the check moved to where the definition is resolved. The member path (`prepareActivation`) needs the same decision for a member whose definition is gone.
+
+### F-2: the origin is the implementation. The inherited-layer delegation refusal lost its next step (CR-500-005, Local Fix)
+
+- **At base:** the refusal for an agent that needs the inherited layer, when the delegator's model is retired, was "{name} cannot be delegated to: '{m}' is not offered by {R} now. Refresh the model list and choose again." Its next step lived in the model check's own detail.
+- **The change:**
+  - FU-030 changed that detail to "'{m}' is no longer offered by {R}." and added a next step only to the agent's own default layer (`noUsableLayer`, `collaborator-launch-resolver.ts:328`);
+  - the inherited path (`:173`, `throw new CollaboratorAddError(plan.name, verdicts.inherited.detail)`) now has no next step;
+  - that is a regression against REQ-007 and FR-3.
+- **The test makes it worse:** the implementation rewrote the test to expect the default-layer text ("its default model cannot be used … Choose another model for … in its settings"), while the test's own title says "today's text, nothing added". The test therefore expects a text this path can't give, and that is wrong for the inherited case anyway: the retired model is the delegator's, not the agent's default.
+- **Required:**
+  - give the inherited-layer refusal a next step that fits it, following FR-1 … FR-4. For example: set a model in {name}'s own settings, or change this run's model;
+  - make the test and probe DLP-005 assert that text;
+  - add the row to the handoff's FU-030 table.
+- **Classification:** Local Fix, because FU-030 owns the wording and its style is decided.
+
+### What passed, kept as evidence
+
+- AC-005: Linux 5/5.
+- AC-006: RSE-1, nothing dropped.
+- AC-008: ALM-1 byte-identical, with backups, the removed route answering 404 and a second start a no-op.
+- AC-010: LTI-1.
+- AC-012's browser cases: G5-001/002/003, where the stored model really is gone.
+- The FU-030 texts DLP-003/004, DCP-004, SIR-002, RC-04/RC-17 and the composer probe.
+- C-6 is measured: 14.3 s plus 12.3 s in the same first start, on 8.66 GB, warm. Accepted as a one-time cost and recorded for the release notes.
+
+### Classification and routing
+
+- **CR-500-003 and CR-500-004:** `Design Impact`, to `/solution_designer`, which revises G-5: the AutoByteus availability source, and the order against a missing definition on both paths.
+- **CR-500-005:** `Local Fix`. It goes to the implementation with the revised package, in the same round.
+- **Next:** after the revision, the implementation round comes to me, then API/E2E reruns F-1 … F-3, LE-F1 and the AutoByteus cases.
+
+---
+
+## Round 2: Targeted Delta Review Of IR-002 (CRR-002)
+
+- Scope:
+  - `Targeted Delta Review` of `941355e258..cc8dbce099`. The code is `7eb6f94b9f` only: 23 server files, all renames within CR-500-001's files and their tests, plus the doc line.
+  - `GLOSSARY.md` changed.
+  - No spine, interface or data shape changed.
+- **CR-500-001: Resolved.**
+  - Every identifier listed is renamed: `DelegatedRunRouterState`, `TaskDelegatedRunPlacementLaunchNotes`, `buildExistingDelegatedRunTaskMessage`, `assertDelegatedRunAssignable`, the parser's schemas, `parseExistingDelegatedRunInput` and `EXISTING_DELEGATED_RUN_TASK_ID`.
+  - The `copy` field is now `delegatedRun` in `AssignToExistingDelegatedRunInput` and `TaskDelegationOutcome`. Both are internal types. The tool result still uses its `target_*` names, so nothing on the wire or in storage changed.
+  - The hosting comment at `message-recipient-resolution.ts:31` is rewritten.
+  - I reran the completion grep (`Copy[A-Z]|[a-z]Copy\b|assertCopy|CopyRouter|copy:` over `src`, migrations excluded). It finds no identifier, only comment wording in modules this ticket doesn't otherwise touch. The implementer recorded those as **FU-500-08**, which is proportionate.
+- **CR-500-002: Resolved.** The stale doc line is gone (`agent-run-command-coordinator.ts:44-53`).
+- **Suggestions:** the glossary now lists FU-500-07's visible "Delegated copy" under Known leftovers. The `CollaboratorAddError` method was not taken, which is fine.
+- **Checks:** I didn't rerun them; they ran on `7eb6f94b9f`.
+  - Type gate: production 0, tests at the 1010 baseline.
+  - Units over the affected folders and `tests/architecture`: 3737 passed.
+- **Scorecard:** as round 1, with Naming 8.8 → 9.4 and Cleanup 9.1 → 9.4. Overall 9.4, and every category is at 9.3 or above.
+- **Findings:** none open.
+- **IDs:** IR-002 is this Local Fix; FU-035's round becomes IR-003 (recorded in the handoff).
+- **Routing:** `Pass`, to `/api_e2e_engineer`. The Implementation Engineer is informed.
+
+---
+
+## Round 1 (CRR-001): Fail, Local Fix (history)
+
+## Review Round Meta
+
+- Review Entry Point: `Implementation Review`
+- Requirements Doc Reviewed As Context: `requirements-doc.md` (Approved, SR-014)
+- Investigation Notes Reviewed As Context: `investigation-notes.md` (as cited by the design)
+- Solution Revision Record Reviewed As Context: `solution-revision-record.md` (SR-001 … SR-014)
+- Design Spec Reviewed As Context: `design-spec.md`: delivery 1 (SR-006/SR-008), delivery 2 (G-1 … G-4), G-5 (SR-011/SR-012), FU-021 (SR-013/SR-014)
+- Supplemental Task Artifacts Reviewed As Context: `follow-ups.md` (FU-500-01 … -07), `source-follow-ups-461.md` (leads)
+- Relevant Solution Revision IDs: SR-006 … SR-014
+- Design Review Report Reviewed As Context: `design-review-report.md` (uncommitted, the reviewer's)
+- Architecture Review Revision Record Reviewed As Context: `architecture-review-revision-record.md`
+- Relevant Architecture Review Revision IDs: ARCH-REV-003, -005, -006, -007
+- Implementation Handoff Reviewed As Context: `implementation-handoff.md` (IR-001)
+- Implementation Revision Record Reviewed As Context: `implementation-revision-record.md`
+- Relevant Implementation Revision IDs: IR-001
+- Code Review Revision Record: `code-review-revision-record.md`
+- Current Code Review Revision ID: `CRR-001`
+- Current Review Round: `1`
+- Review Scope: `Full Review`
+- Trigger: IR-001 ready for source review (Large / High)
+- Prior Review Round Reviewed: N/A
+- Latest Authoritative Round: 1
+- Branch / head: `codex/follow-ups-of-461-500` at `941355e258`. Merge base with `origin/personal` is `9695d310c5`; the handoff's "on `d8dbeaa9ba`" is the 508 line the branch also contains. Diff from the merge base: 466 non-ticket files, +3864 / −2679.
+
+## Routing Classification Review
+
+- Task size: `Large`. Architectural risk: `High`. Both confirmed: a user-data migration with backups, public contract changes (GraphQL `runId`, `execution_tree.agent`, `RUN_MODEL_NOT_OFFERED`, the removed attachment route), and composition rewiring in two hosts.
+- Selected route: `Implementation Review`. Independent source review required: `Yes`.
+
+## Review Scope
+
+- **Changed implementation reviewed, by step:**
+  - names (N2, N3, N5);
+  - FU-036, `api/websocket/agent.ts`;
+  - FU-011 / FU-018, both compositions, the ports, the Task service and the discovery tools;
+  - FU-013, the token resolver;
+  - FU-020, the owner kind's removal and the migration with its follow-up;
+  - FU-030, the texts and `CollaboratorAddError.nextStep`;
+  - FU-022 / FU-023;
+  - FU-021, the watcher test;
+  - G-1, the recorder, `desktop-release.sh` and the order test;
+  - G-2, `existing-team-row-repair.ts`;
+  - G-3;
+  - G-5, the offer check, the refusal helper, both start paths and the web member note;
+  - the two late fixes, `1eed3c4aff` and `d8ffc77c8b`;
+  - docs (`GLOSSARY.md` Code Names).
+- **Explicit exclusions:**
+  - FU-035 (IR-002, D-14);
+  - AC-005's watcher proof (API/E2E, D-13b);
+  - live and probe runs (API/E2E).
+
+## Upstream Behavior And Production-Path Basis Confirmation
+
+- Approved requirements understood: REQ-001 … REQ-016 (REQ-003 and REQ-015 dropped), with D-1 … D-14.
+- Design review: ARCH-REV-003/005/006/007 Pass.
+- Behavior-basis status: `Confirmed`.
+
+| Behavior ID | Status | Implementation path and lifecycle evidence |
+| --- | --- | --- |
+| B-1 | Confirmed | Host kind gone from server and web (`git grep agent_collaboration_member\|DelegatedChildLocations\|agent-collaborations/…/context-files` finds nothing outside migrations). The kept references route (`agent-collaboration-references.ts:34`) serves messages, not attachments. |
+| B-2 | Confirmed | Migration targets are `/rest/runs/{child}/…` and `/rest/team-runs/{team}/agent-runs/{child}/…` (`attachment-link-conversion.ts` `targetOf`), the current routes. A test checks the target resolves through the current layout ("each target is the current code's own link", S-2). |
+| B-3 / B-4 | Confirmed | `delegated-run-own-attachment-links-app-data-migration.ts`: pre-check → frozen transform → backup (`COPYFILE_EXCL`, fsync, kept on retry) → temp + fsync + rename → re-read check. The follow-up has prerequisites `[20261017_task_agent_own_run_v1, ours]`. |
+| B-5 | Confirmed | One `attachRunStream` for the four streams. Listeners are attached at once, `connecting` → `SESSION_NOT_READY`, and an early close disconnects the late session (`agent.ts:45-79`). The handlers are required parameters. |
+| B-6 | Confirmed | `AgentRunService.standaloneRuns` and `TaskExecutionResourceRelease.request` are required. The application scope passes `APPLICATION_HOST_STANDALONE_RUNS` (`application-execution-scope-kernel-builder.ts:287`). |
+| B-7 | Confirmed | Discovery takes `PeerDiscoveryAccess` from the composition. The studio passes its late binding; the application host passes `REMOTE_COLLABORATION_OFF_DISCOVERY` (`start-standalone-application-host.ts:227,277`). |
+| B-8 | Confirmed | `token-usage-stats.ts`: `createTeamRootExecutionIdentity(teamRunId)` only. |
+| B-9 | Confirmed | The FU-030 table in the handoff; outcomes and codes unchanged. A peer's refusal no longer gets this node's next step (`collaborator-errors.ts` `nextStep`). |
+| G-1 | Confirmed | `released-migration-order.json` (45 IDs, beta.7). The recorder refuses a reordering and writes nothing; `desktop-release.sh` commits the file with the version. |
+| G-2 | Confirmed | `repairExistingTeamRows` keeps, rebuilds or removes rows by folder, and every row goes through `TeamRunHistoryIndexStore.writeIndex`. Teams without metadata (`record.skipped`, 461's delegated teams) are no longer silently dropped. |
+| G-5 | Confirmed | `storedModelOffer` reads one runtime's list within `MODEL_LIST_READ_MS` (8 s, raced). An external runtime's empty list throws (`model-catalog-service.ts:186`), so it counts as `list_unreadable`. Both start paths call `storedModelStartRefusal`. |
+| FU-021 | Confirmed | Outcome waits, one 60 s guard per test, ENVIRONMENT / INCONCLUSIVE labels, no skip or retry. The watcher source is unchanged (`src/file-explorer` has no diff). |
+
+## Supported Product Scenario And Reachability Gate
+
+| Scenario ID | Related | Kind | Initiator / goal | Entry | Shape | Forward path | Outcome | Evidence | Validity | Use |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| SC-1 | B-2/B-3 | Operational | First start of the release over the founder-shaped data | startup migration runner | Normal | runner → migration → per-file convert | old attachments open by the run's own link | design M-1…M-10, IMP-005 scan | Supported Normal | Use |
+| SC-2 | B-5 | Contract | A client sends before CONNECTED | `/ws/agent-org`, `/ws/agent-collaboration` | Explicit Edge | attach → `connecting` → refusal | `SESSION_NOT_READY` | D-3, FU-036 | Supported Explicit Edge | Use |
+| SC-3 | AC-001 | Contract | The code's names follow the glossary | source | Normal | — | no "copy" for a delegated run | AC-001, N3, `GLOSSARY.md:17` | Contract | Use |
+| SC-4 | G-5 | User | A user opens a run whose stored model its runtime dropped | Settings / send message | Normal | restore / member activation → offer check | refused with the D-12 text; unreadable list starts | D-12, AC-012 | Supported Normal | Use |
+
+### Candidate Finding And Mechanism Gate
+
+| ID | Observation | Scenario / contract | Disposition | Scope | Reason |
+| --- | --- | --- | --- | --- | --- |
+| C-1 | Server identifiers still name a delegated run "copy" (list in CR-500-001); `task-delegation-tool-input-parsers.ts` is half renamed | SC-3, AC-001, N3, the glossary line this change adds | **Promote** | This ticket | AC-001 names "copy"; the design's N3 rule says "copy goes for a delegated run". The completion grep only checked the design's own list, so these slipped. |
+| C-2 | `agent-run-command-coordinator.ts:51` keeps the old doc line "defaults to the process port" above the new one | engineering contract (truthful docs on a changed parameter; Principle 7/8 cleanup) | **Promote** | This ticket | The fallback it describes was removed by this change, so the line is now false. |
+| C-3 | The delegation refusal text (`… can't be delegated to: {reason}. {nextStep}`) is assembled in two places (`catalog-delegation.ts`, `delegator-catalog.ts`) | Principle 11 | Reject as finding (suggestion) | — | Two copies of a one-line template; a `CollaboratorAddError` method would give it one owner, but it causes no drift today. |
+| C-4 | The glossary says a delegated run is never a "copy" in "UI rows", while visible Settings text keeps "Delegated copy" (FU-500-07) | Principle 15 | Reject as finding (suggestion) | — | FU-500-07 records it. Listing it under the glossary's Known leftovers would keep the glossary truthful. |
+| C-5 | A team member folder holding only archived traces (no top-level raw trace) would not be found by `teamMemberFolders` | SC-1 | Reject | — | No evidence such a folder exists; a run with traces keeps its active file. No supported path produces it. |
+| C-6 | On a normal install, the follow-up migration runs in the same first start (its predecessor succeeded long ago): a second 8.6 GB pre-check pass | SC-1, M-6 | Hold (note for API/E2E) | — | Correct and idempotent, but M-6's "one pass" understates the first-start cost. API/E2E's cold measurement should time both. |
+| C-7 | G-5 on the AutoByteus runtime: a model whose local provider (Ollama, LM Studio) was offline at startup is missing from the list, so it is refused "not offered" | SC-4 | Reject | — | Today that start fails anyway, with an opaque error; the refusal is clearer and its next step works. The design decided this rule (D-12). |
+| C-8 | Standalone restore names the agent by `address`'s last segment, else `agentDefinitionId` | SC-4, FR-1 | Reject | — | Definition IDs are slugs of the agent's name (`file-agent-definition-provider.ts` `slugify`), so the text stays readable. |
+
+## Structural / Design Checks
+
+| Check | Result | Evidence | Required Action |
+| --- | --- | --- | --- |
+| Design health assessment present and preserved | Pass | As the design; FU-021's premise revised upstream (SR-014) | — |
+| Matches approved supplements | Pass | FU-030 table; G-1 … G-5 per design | — |
+| Data-flow spines | Pass | S-1 … S-8 traced as above | — |
+| Ownership boundaries | Pass | Discovery, channel, standalone runs and the Task service's ports are now passed by each host | — |
+| Off-spine concerns | Pass | G-2 repair beside its migration; link conversion and folder listing split from the migration's sequence | — |
+| Capability reuse | Pass | Frozen locator transform and store reused; `read-deadline.ts` owns the budget (`d8ffc77c8b`) | — |
+| Reusable owned structures | Pass | One `storedModelStartRefusal` for both start paths (`1eed3c4aff`) | (C-3 suggestion) |
+| Shared-structure tightness | Pass | `LinkOwnerFolder`, `LinkConversion` and the stream state union are tight | — |
+| Repeated coordination ownership | Pass | One attach function replaces two (FU-036) | — |
+| Empty indirection | Pass | `APPLICATION_HOST_STANDALONE_RUNS` is a host's explicit answer, not a forwarder (design DR-2); the late binding solves a real startup order | — |
+| SoC / file responsibility | Pass | `existing-team-row-repair.ts` keeps the migration at 470 lines | — |
+| Dependency direction | Pass | `llm-management` no longer imports `available-agent-runtimes` (`d8ffc77c8b`) | — |
+| Visible dependencies (P16) | Pass — deviation recorded, reason holds | Studio late binding (`createLateRemoteCollaborationBinding`): everything that can call it is composed before `bind`, but restart resume, the Task side and the routes come after it (`build-studio-server.ts:309-385`). An early read throws; there is no cycle in ownership. The handoff records it. `getProjectTaskService()` now throws before composition. | — |
+| Authoritative boundary | Pass | No caller takes both an owner and its internals in the changed code | — |
+| File placement | Pass | The migration folder follows the guideline layout | — |
+| Flat vs over-split | Pass | — | — |
+| Interface boundary clarity | Pass | Team total names its kind (FU-013); `storedModelOffer` answers a three-valued result | — |
+| Naming (P15) | **Fail** | CR-500-001 | Finish N3 |
+| Duplication | Pass | (C-3 suggestion) | — |
+| Patch-on-patch | Pass | Late fixes are moves, not layers | — |
+| Dead code | **Fail** (minor) | CR-500-002: a stale doc line for the removed fallback | Remove it |
+| Test scenarios clear | Pass | Migration F-1 … F-9, retry, second start, follow-up, predecessor classification; AC-006 both streams; G-5 budget with fake timers; AC-009 cases | — |
+| Test structure | Pass | — | — |
+| No stale tests | Pass | Tests follow FU-011/013/020 (`d4e36d4831`) | — |
+| API/E2E readiness | Pass | After the two fixes | — |
+
+## Source File Size And Structure Audit
+
+| Source File | Before | After | >500 | Notes |
+| --- | --- | --- | --- | --- |
+| `configured-agent-execution-handle.ts` | 493 | 500 | Pass (at the limit) | `1eed3c4aff` moved the G-5 check to the shared helper; one comment joined to its line. The next addition here needs a split. |
+| `build-studio-server.ts` | 488 | 498 | Pass | Late binding moved to `remote-collaboration-composition.ts` |
+| `autobyteus-agent-run-backend-factory.ts` | 484 | 491 | Pass | — |
+| `team-run-history-index-v2-migration.ts` | 478 | 470 | Pass | Repair in its own file |
+| `standalone-agent-run-lifecycle-service.ts` | 448 | 462 | Pass | — |
+| Every other changed source file | — | ≤ 460 | Pass | Scanned all 198 changed source files |
+
+## Legacy / Backward-Compatibility Verdict
+
+| Check | Result | Notes |
+| --- | --- | --- |
+| No compatibility mechanisms | Pass | The old link shape has no reader in current code; only the migration knows it |
+| No legacy retention | Pass | Host kind, route, `DelegatedChildLocations`, MCP singletons and the process `bind/find` lookups removed |
+| Dead code removed | Fail (minor) | CR-500-002 |
+| Persisted-data decision followed | Pass | `Migration Required` (D-8), isolated, frozen helpers only, backup per file |
+| No dual reads / request-time fallback | Pass | — |
+| Migration mechanics match the design | Pass | M-1 … M-9; G-2 same-ID repair per §7 |
+
+## Docs-Impact Verdict
+
+- Docs impact: `Yes`. The glossary, collaboration model and module docs follow the change (`6b4ee1f128`).
+- `RELEASE.md` needs the G-1 line in "Cutting The Release". That's the Delivery Engineer's.
+
+## Review Scorecard
+
+- Overall: **9.3 / 10** (simple average; not the decision rule).
+
+| # | Category | Score | Why | Weak | Improve |
+| --- | --- | --- | --- | --- | --- |
+| 1 | Data-Flow Spine | 9.5 | Each FU's spine is traceable end to end; FU-036's four streams share one attach | — | — |
+| 2 | Ownership & Boundaries | 9.5 | Hosts pass owners; "off" and "not eligible" are explicit values | GraphQL getters stay (FU-500-02, decided) | — |
+| 3 | API / Interface Clarity | 9.4 | Team total names its kind; the offer check is three-valued; the refusal's next step is kept apart | — | — |
+| 4 | SoC & File Placement | 9.3 | Splits keep files under 500 | Member handle at exactly 500 | Split before its next addition |
+| 5 | Shared Structures | 9.3 | One refusal helper for both paths | Refusal template in two places (C-3) | Optional |
+| 6 | Naming & Readability | **8.8** | N2 and N5 are complete | N3 incomplete in server code (CR-500-001) | Finish the rename |
+| 7 | API/E2E Readiness | 9.3 | Tests and evidence ready; probe and e2e text updates listed | — | — |
+| 8 | Runtime Correctness | 9.4 | Migration safe on retry, with backups; G-5 bounded; early stream close handled | — | — |
+| 9 | No Legacy Retention | 9.5 | Clean cut on the attachment owner | — | — |
+| 10 | Cleanup Completeness | 9.1 | Removals are thorough | Stale doc line (CR-500-002) | Remove it |
+
+## Findings
+
+### CR-500-001 (Local Fix): the N3 rename is incomplete in server code
+
+- **Contract:**
+  - AC-001: "No current name in web or server source implies hosting (… 'copy' …)".
+  - Design N3: "copy goes for a delegated run".
+  - This change's own glossary line: "Delegated run (code and UI rows): never a 'copy'".
+- **Still named "copy" for a delegated run:**
+  - `agent-tools/task-delegation/task-delegation-tool-input-parsers.ts`: `EXISTING_COPY_TASK_ID`, `ExistingTeamCopyInputSchema`, `ExistingAgentCopyInputSchema`, `parseExistingCopyInput`, and the `copy:` field of the input it builds. The same file already returns `subject: "existing_delegated_run"`, so the file is half renamed. The `copy` field belongs to `AssignToExistingDelegatedRunInput`; rename it at its type and readers.
+  - `projects/services/task-assignment-eligibility.ts:63` `assertCopyAssignable`, with its callers at `project-task-service.ts:329,339`.
+  - `agent-collaboration/execution/task/task-execution-input.ts:95` `buildExistingCopyTaskMessage`, and its use at `task-delegation.ts:20,392`.
+  - `agent-collaboration/execution/task/task-delegation-command.ts:22` `TaskCopyPlacementLaunchNotes`.
+  - `agent-collaboration/collaborators/collaborator-errors.ts:39` `CopyRouterState`, with its uses in `collaborator-launch-resolver.ts` and `remote-delegation-receiver.ts`.
+  - The present-tense hosting comment at `message-recipient-resolution.ts:31` ("never a task copy hosted by the instance"), which falls under N6.
+- **Problem:** the delegated run keeps two names in code, against the glossary entry this change adds, and the half-renamed parser misleads readers about which is current.
+- **Excluded:**
+  - comments that cite base's behavior ("as base's hosted copy …");
+  - the routing-decision fields (`copyAddress` / `copyKind`, web `decisionCopy`, FU-500-04);
+  - the visible UI copy (FU-500-07);
+  - clipboard and UI-text "copy".
+- **Required action:** rename these names, then rerun the type gate and the affected unit tests. Widen the completion grep beyond the design's list, for example `git grep -E 'Copy[A-Z]|[a-z]Copy\b|assertCopy|CopyRouter' -- autobyteus-server-ts/src`.
+
+### CR-500-002 (Local Fix): a stale doc line for a removed fallback
+
+- **Where:** `agent-execution/services/agent-run-command-coordinator.ts:51`. The old line "The owner of eligible standalone runs; defaults to the process port." sits above the new one.
+- **Problem:** this change removed that default, so the line is false.
+- **Required action:** delete the old line.
+
+## Follow-ups
+
+- Follow-ups this review added: None. C-3 and C-4 are suggestions; C-6 is a note for API/E2E.
+
+## Classification
+
+- `Local Fix` (CR-500-001, CR-500-002). No design or requirement change.
+
+## Recommended Recipient
+
+- `/implementation_engineer`.
+- The fix returns here as a Targeted Delta Review, then goes to API/E2E.
+
+## Residual Risks (for API/E2E and delivery)
+
+- **FU-035:** IR-002, with its own review (D-14).
+- **AC-005:** the watcher proof is API/E2E's: 5 of 5 on Linux inotify (D-13b).
+- **C-6:** time M-6 cold for both passes of the first start (the migration and its follow-up).
+- **Delivery's base refresh:** `origin/personal` has 8 new commits (beta.8). Confirm beta.8 shipped no app-data migration, so `released-migration-order.json` (45 IDs, beta.7) is still the released list. Also add `RELEASE.md`'s G-1 line.
+- **Not run by implementation:** e2e and probe text assertions, the G-5 browser render, the migration on a copy of real data.
+- **Member handle at 500 lines:** the next addition to it needs a split.
+
+## Latest Authoritative Result
+
+- Review Decision: **Fail**
+- Review Entry Point: `Implementation Review`
+- Supported Product Scenario Gate: `Pass`
+- Material-Premise Gate: `Pass`
+- Score Summary: 9.3 overall. Naming 8.8 and Cleanup 9.1 are below 9.2; every other category is at 9.3 or above.
+- Recommended Recipient: `/implementation_engineer`
+- Notes: the architecture holds. The two findings are local and small.
