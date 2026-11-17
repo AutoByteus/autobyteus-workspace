@@ -124,7 +124,7 @@ vi.mock("../../../src/llm-management/services/model-catalog-service.js", () => (
     runtimeModelSelectionCatalog: vi.fn(async () => ({ offeredModels: [], findExactCurrent: () => null })),
   }),
 }));
-vi.mock("../../../src/llm-management/services/model-availability-service.js", () => ({ getModelAvailabilityService: () => ({}) }));
+vi.mock("../../../src/llm-management/services/model-availability-service.js", () => ({ getModelAvailabilityService: () => ({ loadOnDemandModel: async () => "not_on_demand" }) }));
 vi.mock("../../../src/llm-management/llm-providers/services/llm-provider-service.js", () => ({ getLlmProviderService: () => ({}) }));
 vi.mock("../../../src/runtime-management/codex/client/codex-app-server-client-manager.js", () => ({ getCodexAppServerClientManager: () => ({}) }));
 vi.mock("autobyteus-ts/llm/llm-factory.js", () => ({ LLMFactory: { requireCurrentModelIdentifier: vi.fn(async () => undefined) } }));

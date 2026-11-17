@@ -1,4 +1,5 @@
 import type { StoredModelOfferCheck } from "../../../src/llm-management/services/run-model-selection-service.js";
+import type { StoredModelStartChecks } from "../../../src/llm-management/services/run-model-selection-refusal.js";
 import { testActivationManager, testBackendFactory } from "../../fixtures/agent-run-preparation-fixtures.js";
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import { afterEach, describe, expect, it, vi } from "vitest";
@@ -17,7 +18,7 @@ import { configureTokenUsageCapability } from "../../../src/token-usage/provider
 import type { StandaloneRunCommandPort } from "../../../src/agent-execution/services/standalone-run-ports.js";
 import { PreviousRuntimeReleasePendingError } from "../../../src/agent-execution/errors.js";
 import type { RuntimeSwitching } from "../../../src/agent-execution/domain/runtime-switch-memory-port.js";
-import { NO_ELIGIBLE_STANDALONE_RUNS, OFFERED_STORED_MODELS, OFFERED_STORED_MODEL_OFFER } from "../../helpers/explicit-host-collaborators.js";
+import { EXISTING_AGENT_DEFINITIONS, NO_ELIGIBLE_STANDALONE_RUNS, OFFERED_STORED_MODEL_CHECKS, OFFERED_STORED_MODEL_OFFER, OFFERED_STORED_MODELS } from "../../helpers/explicit-host-collaborators.js";
 
 vi.mock("../../../src/run-history/services/root-run-package-readiness-index.js", () => ({
   RootRunPackageReadinessIndex: class { assertAdmitted = async () => undefined; },
@@ -89,6 +90,7 @@ const harness = (input: {
   validateModelConfig?: ReturnType<typeof vi.fn>;
   switching?: RuntimeSwitching | null;
   storedModels?: StoredModelOfferCheck;
+  agentDefinitions?: StoredModelStartChecks["agentDefinitions"];
 }) => {
   const states = [...input.metadataStates];
   const metadataService = {
@@ -110,7 +112,8 @@ const harness = (input: {
     ensureWorkspaceByRootPath: vi.fn(async () => ({ workspaceId: "workspace-1" })),
   };
   const service = new StandaloneAgentRunLifecycleService("/unused", {
-    storedModels: input.storedModels ?? OFFERED_STORED_MODELS,
+    storedModelChecks: { agentDefinitions: input.agentDefinitions ?? EXISTING_AGENT_DEFINITIONS,
+      storedModels: input.storedModels ?? OFFERED_STORED_MODELS },
     metadataService: metadataService as never,
     agentRunManager: agentRunManager as never,
     historyCatalogService: historyCatalogService as never,
@@ -189,7 +192,7 @@ describe("StandaloneAgentRunLifecycleService", () => {
         workspaceManager: {},
         tokenUsageReadiness: {},
         modelSelectionValidator: { validate: vi.fn(), validateMany: vi.fn() },
-        storedModels: OFFERED_STORED_MODELS,
+        storedModelChecks: OFFERED_STORED_MODEL_CHECKS,
       };
       if (value === "omitted") delete deps.modelSelectionValidator;
       else deps.modelSelectionValidator = value;
@@ -332,6 +335,21 @@ describe("StandaloneAgentRunLifecycleService", () => {
     const manager = current.agentRunManager as unknown as Record<"platformPreparation" | "restorePreparation", ReturnType<typeof vi.fn>>;
     expect(manager.platformPreparation).not.toHaveBeenCalled();
     expect(manager.restorePreparation).not.toHaveBeenCalled();
+  });
+
+  it("G-5 R2 (SR-015, F-1 / E-002): the run of a retired agent answers as at base, its own not-found, not the model refusal", async () => {
+    const started = metadata({ platformAgentRunId: CLAUDE_SESSION_ID, startedAt: "2026-08-17T20:05:00.000Z" });
+    const storedModelOffer = vi.fn(async () => "not_offered" as const);
+    const getAgentDefinitionById = vi.fn(async () => null);
+    const current = harness({ metadataStates: [{ kind: "present", metadata: started }], restoredCandidate: candidate(),
+      storedModels: { storedModelOffer }, agentDefinitions: { getAgentDefinitionById } });
+    const manager = current.agentRunManager as unknown as Record<"platformPreparation" | "restorePreparation", ReturnType<typeof vi.fn>>;
+    const notFound = new Error(`Agent definition '${started.agentDefinitionId}' not found.`);
+    manager.platformPreparation.mockRejectedValue(notFound);
+    manager.restorePreparation.mockRejectedValue(notFound);
+    await expect(current.service.activateRunAgent(RUN_ID, HOST)).rejects.toThrow("not found");
+    expect(getAgentDefinitionById).toHaveBeenCalledWith(started.agentDefinitionId);
+    expect(storedModelOffer).not.toHaveBeenCalled();
   });
 
   it.each(["offered", "list_unreadable"] as const)("G-5 (c, d): a stored model that is %s restores as before", async (answer) => {
@@ -837,7 +855,7 @@ describe("StandaloneAgentRunLifecycleService previous runtime release", () => {
       agentToolMcpRunSessionDeactivator: runSessions,
     });
     const service = new StandaloneAgentRunLifecycleService("/unused", {
-      storedModels: OFFERED_STORED_MODELS,
+      storedModelChecks: OFFERED_STORED_MODEL_CHECKS,
       agentRunManager: manager,
       metadataService: { readMetadataState: vi.fn(async () => ({ kind: "present", metadata: started })) } as never,
       historyCatalogService: { recordRunStarted: vi.fn(async (target: AgentRunMetadata) => target) } as never,

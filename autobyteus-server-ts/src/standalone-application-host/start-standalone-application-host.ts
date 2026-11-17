@@ -231,7 +231,7 @@ export const startStandaloneApplicationHost = async (
       workspaceManager, nativeCommandProcessScope: nativeShutdown.scope,
     });
     const modelCatalogService = getModelCatalogService();
-    const modelSelectionValidator = new RunModelSelectionService(modelCatalogService);
+    const modelSelectionValidator = new RunModelSelectionService(modelCatalogService, getModelAvailabilityService());
     const generalAssembly = agentToolsMcpHost.sessionAuthorities.begin({
       scopeIdentity: "general-process",
     });

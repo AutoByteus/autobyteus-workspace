@@ -1,6 +1,5 @@
 import { readRunProjectContext } from "../domain/run-project-context.js";
-import { storedModelStartRefusal } from "../../llm-management/services/run-model-selection-refusal.js";
-import type { StoredModelOfferCheck } from "../../llm-management/services/run-model-selection-service.js";
+import { storedModelStartRefusal, type StoredModelStartChecks } from "../../llm-management/services/run-model-selection-refusal.js";
 import { RootRunPackageReadinessIndex } from "../../run-history/services/root-run-package-readiness-index.js";
 import type { AgentRun } from "../domain/agent-run.js";
 import { AgentRunConfig } from "../domain/agent-run-config.js";
@@ -67,7 +66,7 @@ export class StandaloneAgentRunLifecycleService {
   /** The memory and notice ports of an agent runtime switch; none for runs that cannot switch (application-owned runs). */
   private readonly switching: RuntimeSwitching | null;
 
-  private readonly storedModels: StoredModelOfferCheck;
+  private readonly storedModelChecks: StoredModelStartChecks;
   constructor(
     memoryDir: string,
     deps: {
@@ -78,13 +77,13 @@ export class StandaloneAgentRunLifecycleService {
       tokenUsageReadiness?: Pick<TokenUsageCapability,
         "assertCurrentSchemaReady" | "assertExistingRunRestoreReady">;
       modelSelectionValidator: RunModelSelectionValidator;
-      /** G-5: whether a restored run's stored model is still offered. */
-      storedModels: StoredModelOfferCheck;
+      /** G-5: a restored run's definition, then whether its stored model is still offered. */
+      storedModelChecks: StoredModelStartChecks;
       switching?: RuntimeSwitching | null;
     },
   ) {
-    if (!deps.storedModels) throw new Error("StandaloneAgentRunLifecycleService needs the stored-model check.");
-    this.storedModels = deps.storedModels;
+    if (!deps.storedModelChecks) throw new Error("StandaloneAgentRunLifecycleService needs the stored-model checks.");
+    this.storedModelChecks = deps.storedModelChecks;
     this.switching = deps.switching ?? null;
     this.readiness = new RootRunPackageReadinessIndex(memoryDir);
     this.agentRunManager = deps.agentRunManager ?? AgentRunManager.getInstance();
@@ -102,7 +101,7 @@ export class StandaloneAgentRunLifecycleService {
 
   /** G-5 (REQ-016): a run whose saved model its runtime no longer offers is refused before its runtime starts. */
   private async refuseStoredModelNotOffered(metadata: AgentRunMetadata): Promise<void> {
-    const refusal = await storedModelStartRefusal(this.storedModels,
+    const refusal = await storedModelStartRefusal(this.storedModelChecks,
       { ...metadata, agentName: metadata.address?.split("/").at(-1) || metadata.agentDefinitionId });
     if (refusal) throw new AgentRunActivationError(refusal.code, refusal.message);
   }

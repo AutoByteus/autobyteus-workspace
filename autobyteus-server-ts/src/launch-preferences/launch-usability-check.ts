@@ -28,10 +28,13 @@ export type LaunchVerdict =
   | Readonly<{ usable: "runtime_only"; runtimeKind: string }>
   | Readonly<{ usable: false; reason: LaunchConfigurationFallbackReason; detail: string }>;
 
-/** The inherited launch's model check: usable with its canonical launch, or the reason it is not. */
+/**
+ * The inherited launch's model check: usable with its canonical launch, or the reason it is not; `modelNoLongerOffered`
+ * when its runtime's list no longer has the model (the refusal says so in its own words, autobyteus-500 SR-015 R3).
+ */
 export type InheritedLaunchVerdict =
   | Readonly<{ usable: true; launch: AgentLaunchConfiguration }>
-  | Readonly<{ usable: false; detail: string }>;
+  | Readonly<{ usable: false; modelNoLongerOffered: boolean; detail: string }>;
 
 export type LaunchUsabilityResult = Readonly<{
   /** One per candidate, in order. */
@@ -185,7 +188,8 @@ export class LaunchUsabilityCheck {
     const inherited: InheritedLaunchVerdict | null = !input.inherited ? null
       : inheritedResult?.kind === "valid"
         ? Object.freeze({ usable: true, launch: canonicalLaunch(input.inherited, inheritedResult.selection) })
-        : Object.freeze({ usable: false, detail: invalidModelMessage(input.inherited, inheritedResult) });
+        : Object.freeze({ usable: false, modelNoLongerOffered: inheritedResult?.kind === "model_unavailable",
+          detail: invalidModelMessage(input.inherited, inheritedResult) });
     return Object.freeze({ verdicts: Object.freeze(verdicts as LaunchVerdict[]), inherited });
   }
 

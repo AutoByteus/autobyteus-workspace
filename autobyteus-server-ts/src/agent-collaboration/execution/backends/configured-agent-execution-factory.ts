@@ -1,15 +1,15 @@
 import { ConfiguredAgentExecutionHandle } from "./configured-agent-execution-handle.js";
-import type { StoredModelOfferCheck } from "../../../llm-management/services/run-model-selection-service.js";
+import type { StoredModelStartChecks } from "../../../llm-management/services/run-model-selection-refusal.js";
 
-export type ConfiguredAgentExecutionHandleInput = Omit<ConstructorParameters<typeof ConfiguredAgentExecutionHandle>[0], "storedModels">;
+export type ConfiguredAgentExecutionHandleInput = Omit<ConstructorParameters<typeof ConfiguredAgentExecutionHandle>[0], "storedModelChecks">;
 
-/** Creates a root's member agents, each with the host's stored-model check (G-5), from the composition. */
+/** Creates a root's member agents, each with the host's stored-model checks (G-5), from the composition. */
 export class ConfiguredAgentExecutionFactory {
-  constructor(private readonly dependencies: Readonly<{ storedModels: StoredModelOfferCheck }>) {
-    if (!dependencies?.storedModels) throw new Error("ConfiguredAgentExecutionFactory needs the stored-model check.");
+  constructor(private readonly dependencies: Readonly<{ storedModelChecks: StoredModelStartChecks }>) {
+    if (!dependencies?.storedModelChecks) throw new Error("ConfiguredAgentExecutionFactory needs the stored-model checks.");
   }
 
   create(input: ConfiguredAgentExecutionHandleInput): ConfiguredAgentExecutionHandle {
-    return new ConfiguredAgentExecutionHandle({ ...input, storedModels: this.dependencies.storedModels });
+    return new ConfiguredAgentExecutionHandle({ ...input, storedModelChecks: this.dependencies.storedModelChecks });
   }
 }

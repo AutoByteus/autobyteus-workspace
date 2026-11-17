@@ -1,4 +1,5 @@
 import type { AgentLaunchConfiguration } from "../../agent-team-execution/domain/team-run-config.js";
+import { agentRuntimeName } from "@autobyteus/agent-presentation-contracts";
 import type { DefaultLaunchConfig } from "../../launch-preferences/default-launch-config.js";
 import {
   LaunchModelCheckError,
@@ -170,7 +171,7 @@ export class CollaboratorLaunchResolver {
       }
       const fallbacks = routerFailure ? [...planned.fallbacks, routerFailure] : planned.fallbacks;
       if (!inherited) return noUsableLayer(plan, planned.fallbacks, routerState);
-      if (verdicts.inherited?.usable === false) throw new CollaboratorAddError(plan.name, verdicts.inherited.detail);
+      if (verdicts.inherited?.usable === false) throw inheritedLayerRefusal(plan, inherited, verdicts.inherited);
       return { launch: inherited, source: source("inherited", fallbacks) };
     };
 
@@ -316,6 +317,17 @@ const launchContextOf = (base: CollaboratorLaunchBase): Readonly<{ workspaceRoot
 const agentSlots = (plans: readonly CollaboratorDefinitionPlan[]): AgentSlot[] => plans.flatMap((plan): AgentSlot[] => plan.kind === "agent"
   ? [{ key: plan, address: plan.address, name: plan.name, description: plan.description, role: plan.role }]
   : plan.members.map((member) => ({ key: member, address: member.address, name: member.name, description: member.description, role: member.role })));
+
+/**
+ * FU-030 / SR-015 R3 (DLP-005): an agent that would use its delegating run's model, which can't be used. What happened
+ * and why, then what to do: a model of its own, or another model for the delegating run.
+ */
+const inheritedLayerRefusal = (plan: CollaboratorDefinitionPlan, launch: AgentLaunchConfiguration,
+  verdict: Extract<InheritedLaunchVerdict, { usable: false }>): CollaboratorAddError => new CollaboratorAddError(plan.name,
+  verdict.modelNoLongerOffered
+    ? `it would use this run's model '${launch.llmModelIdentifier}', which ${agentRuntimeName(launch.runtimeKind)} no longer offers`
+    : verdict.detail,
+  undefined, `Set a model for ${plan.name} in its settings, or change this run's model, then delegate again.`);
 
 /**
  * No layer covers an agent of `plan` (`defaults_only`): a complete configured layer that could not be used gives its

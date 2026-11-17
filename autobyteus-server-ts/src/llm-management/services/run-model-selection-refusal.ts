@@ -1,6 +1,7 @@
 import { agentRuntimeName } from "@autobyteus/agent-presentation-contracts";
 import type { RunModelConfigUpdateOutcome } from "../../run-history/domain/run-model-config.js";
 import type { RunModelSelectionValidationResult, StoredModelOfferCheck } from "./run-model-selection-service.js";
+import type { AgentDefinitionService } from "../../agent-definition/services/agent-definition-service.js";
 
 /** The validation results that mean "this selection cannot be used now", whatever the cause. */
 export type UnavailableModelSelectionResult = Extract<RunModelSelectionValidationResult,
@@ -30,14 +31,22 @@ export const storedModelNotOfferedRefusal = (input: { agentName: string; runtime
     + `${agentRuntimeName(input.runtimeKind)} now. Stop it, then choose a runtime and model for ${input.agentName} in Settings.`,
 });
 
+/** G-5's collaborators on both start paths: the run's definition read (SR-015 R2), then the stored-model offer. */
+export type StoredModelStartChecks = Readonly<{
+  agentDefinitions: Pick<AgentDefinitionService, "getAgentDefinitionById">;
+  storedModels: StoredModelOfferCheck;
+}>;
+
 /**
  * G-5: the refusal for a start whose saved model its runtime no longer offers; null when it may start (offered, or the
- * list could not be read). Both start paths ask this before the runtime starts.
+ * list could not be read). Both start paths ask this before the runtime starts. It speaks only for an agent that
+ * exists (SR-015 R2): a missing definition, or a failed read, leaves the path's own answer ("not found") to speak.
  */
-export const storedModelStartRefusal = async (storedModels: StoredModelOfferCheck,
-  input: { agentName: string; runtimeKind: string; llmModelIdentifier: string; workspaceRootPath?: string | null }) => {
+export const storedModelStartRefusal = async (checks: StoredModelStartChecks, input: { agentDefinitionId: string;
+  agentName: string; runtimeKind: string; llmModelIdentifier: string; workspaceRootPath?: string | null }) => {
   const { agentName, runtimeKind, llmModelIdentifier } = input;
-  const offer = await storedModels.storedModelOffer({ runtimeKind, llmModelIdentifier, workspaceRootPath: input.workspaceRootPath ?? undefined });
+  if (!await checks.agentDefinitions.getAgentDefinitionById(input.agentDefinitionId).catch(() => null)) return null;
+  const offer = await checks.storedModels.storedModelOffer({ runtimeKind, llmModelIdentifier, workspaceRootPath: input.workspaceRootPath ?? undefined });
   return offer === "not_offered" ? storedModelNotOfferedRefusal({ agentName, runtimeKind, llmModelIdentifier }) : null;
 };
 

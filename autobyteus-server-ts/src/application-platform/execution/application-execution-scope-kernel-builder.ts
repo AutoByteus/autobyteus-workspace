@@ -176,8 +176,9 @@ export const buildApplicationExecutionScopeKernel = (
       viewStreams: input.viewStreams,
       taskRecords: input.taskRecords,
       flatTeamExecutionFactory: new FlatTeamExecutionFactory({
-        // G-5: the scope's member agents check their stored model before they start.
-        executionFactory: new ConfiguredAgentExecutionFactory({ storedModels: input.modelSelectionValidator }),
+        // G-5: the scope's member agents check their definition, then their stored model, before they start.
+        executionFactory: new ConfiguredAgentExecutionFactory({ storedModelChecks: { agentDefinitions: input.agentDefinitionService,
+          storedModels: input.modelSelectionValidator } }),
         agentRunManager,
         memoryLocator,
         activityInspector,
@@ -266,7 +267,7 @@ const buildRunServices = (
   const lifecycleService = new StandaloneAgentRunLifecycleService(
     input.memoryDir,
     {
-      storedModels: input.modelSelectionValidator,
+      storedModelChecks: { agentDefinitions: input.agentDefinitionService, storedModels: input.modelSelectionValidator },
       agentRunManager: kernel.agentRunManager,
       metadataService,
       historyCatalogService,

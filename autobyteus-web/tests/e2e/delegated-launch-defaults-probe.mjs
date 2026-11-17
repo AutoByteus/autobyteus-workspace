@@ -839,17 +839,18 @@ defineCase('DLP-004', 'AC-010: Team run (New chat) and Org run (Org launch page)
   return r
 })
 
-defineCase('DLP-005', 'AC-006/REQ-004: the root model is retired mid-run; delegation that needs the inherited layer fails in the conversation with today\'s text and adds nothing, an outside message is not found; an own usable default still works', async (page) => {
+defineCase('DLP-005', 'AC-006/REQ-004: the root model is retired mid-run; delegation that needs the inherited layer fails in the conversation with what to do next (FU-030, SR-015 R3) and adds nothing, an outside message is not found; an own usable default still works', async (page) => {
   const r = {}
   await offerAgyModels([MODEL, ALT, RETIRING])
   r.runId = await startManagerChat(page, RETIRING, 'Hello. Marker DLP-005.')
   await waitFor('manager answered', async () => /DLP-005[\s\S]*OK/.test(await conversationText(page)), 60000)
   await offerAgyModels([MODEL, ALT])
-  const reason = unofferedReason(RETIRING)
+  // FU-030 / SR-015 R3 (CR-500-005): the inherited-layer refusal, with its next step.
+  const refusal = (name) => `${name} can't be delegated to: it would use this run's model '${RETIRING}', which ${agentRuntimeName(AGY)} no longer offers. Set a model for ${name} in its settings, or change this run's model, then delegate again.`
   r.plainCall = await callFromComposer(page, 'delegate Plain', 'delegate_task', { recipient_address: address('plain'), description: 'Plain work.' })
-  assert(!r.plainCall.includes('"delegated":true') && r.plainCall.includes(`${names.plain} can't be delegated to: its default model cannot be used: ${reason.replace(/\.$/, '')}. Choose another model for ${names.plain} in its settings`), 'delegation failure text', { call: r.plainCall, reason })
+  assert(!r.plainCall.includes('"delegated":true') && r.plainCall.includes(refusal(names.plain)), 'delegation failure text', { call: r.plainCall, expected: refusal(names.plain) })
   r.squadCall = await callFromComposer(page, 'delegate Squad', 'delegate_task', { recipient_address: address('squad'), description: 'Squad work.' })
-  assert(!r.squadCall.includes('"delegated":true') && r.squadCall.includes(`${names.squad} can't be delegated to: its default model cannot be used: ${reason.replace(/\.$/, '')}. Choose another model for ${names.squad} in its settings`), 'team delegation failure text', r.squadCall)
+  assert(!r.squadCall.includes('"delegated":true') && r.squadCall.includes(refusal(names.squad)), 'team delegation failure text', { call: r.squadCall, expected: refusal(names.squad) })
   r.bringCall = await callFromComposer(page, 'message Unoffered', 'send_message_to', { recipient_address: address('unoffered'), content: 'Help.' })
   assert(r.bringCall.includes('"accepted":false') && r.bringCall.includes('COLLABORATION_TARGET_NOT_FOUND') && r.bringCall.includes('delegate_task'), 'outside message is not found', r.bringCall)
   const tree = await agentTree(r.runId)

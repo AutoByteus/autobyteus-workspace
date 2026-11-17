@@ -19,7 +19,7 @@ import { LLMConfig } from "autobyteus-ts/llm/utils/llm-config.js";
 import { CompleteResponse, ChunkResponse } from "autobyteus-ts/llm/utils/response-types.js";
 import { Message } from "autobyteus-ts/llm/utils/messages.js";
 import { createStandaloneRunRootsFixture } from "../../fixtures/standalone-run-roots-fixture.js";
-import { OFFERED_STORED_MODELS, OFF_DISCOVERY } from "../../helpers/explicit-host-collaborators.js";
+import { OFFERED_STORED_MODEL_CHECKS, OFF_DISCOVERY } from "../../helpers/explicit-host-collaborators.js";
 
 const unavailableBackendFactory: AgentRunBackendFactory = Object.freeze({
   createBackend: () => Promise.reject(new Error("Backend factory is outside this test scenario.")),
@@ -141,7 +141,7 @@ describe("AgentRunService real memory layout integration", () => {
             }
           : null,
     } as any;
-    const lifecycleService = new StandaloneAgentRunLifecycleService(memoryDir, { storedModels: OFFERED_STORED_MODELS,
+    const lifecycleService = new StandaloneAgentRunLifecycleService(memoryDir, { storedModelChecks: OFFERED_STORED_MODEL_CHECKS,
       agentRunManager: manager,
       workspaceManager,
       modelSelectionValidator: {

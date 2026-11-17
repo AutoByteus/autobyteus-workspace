@@ -2,6 +2,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { RunModelSelectionService } from "../../../src/llm-management/services/run-model-selection-service.js";
 import { storedModelNotOfferedRefusal } from "../../../src/llm-management/services/run-model-selection-refusal.js";
 import { MODEL_LIST_READ_MS } from "../../../src/runtime-management/read-deadline.js";
+import { NO_ON_DEMAND_MODELS } from "../../helpers/explicit-host-collaborators.js";
 
 /**
  * autobyteus-500 G-5 (REQ-016, AC-012): whether a run's stored model is offered by its runtime now, from the runtime's list
@@ -9,7 +10,7 @@ import { MODEL_LIST_READ_MS } from "../../../src/runtime-management/read-deadlin
  * `list_unreadable` and the start proceeds as before.
  */
 const catalogOf = (read: (runtimeKind: string, cwd?: string, options?: { deadline?: unknown }) => Promise<unknown>) =>
-  new RunModelSelectionService({ runtimeModelSelectionCatalog: read as never });
+  new RunModelSelectionService({ runtimeModelSelectionCatalog: read as never }, NO_ON_DEMAND_MODELS);
 const offering = (...ids: string[]) => async () => ({ offeredModels: ids.map((model_identifier) => ({ model_identifier })) });
 
 afterEach(() => { vi.useRealTimers(); });

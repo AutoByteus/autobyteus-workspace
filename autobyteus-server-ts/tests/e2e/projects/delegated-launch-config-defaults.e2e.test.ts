@@ -516,21 +516,23 @@ suite("Delegated copies honor agent and team launch defaults in every root (real
     expect(failures).toEqual([]);
   }, 600_000);
 
-  it("Agent root: with the root's model retired, an agent that needs the inherited layer cannot be delegated (today's text, nothing added), and an outside message is not found; a usable own default still starts; a user `@` mention admits nothing (AC-006)", async () => {
+  it("Agent root: with the root's model retired, an agent that needs the inherited layer cannot be delegated (the refusal says what to do, nothing added), and an outside message is not found; a usable own default still starts; a user `@` mention admits nothing (AC-006)", async () => {
     process.env["AGY_FAKE_EXTRA_MODELS"] = `${ALT},${RETIRING}`;
     const root = await startRoot("agent", RETIRING);
     // The root's AGY session starts on the retiring model, then the provider retires it.
     root.sendToManager("Hello. Marker ROOT-STARTED.");
     await until(async () => /ROOT-STARTED[\s\S]*OK/.test(await root.conversationText({ address: "/", agentRunId: root.managerRunId })), "root answered", 60_000);
     process.env["AGY_FAKE_EXTRA_MODELS"] = ALT;
-    const reason = `its default model cannot be used: '${RETIRING}' is no longer offered by ${agentRuntimeName(AGY)}. Choose another model for`;
+    // FU-030 / SR-015 R3 (CR-500-005): the inherited-layer refusal, with its next step.
+    const refusal = (name: string) => `${name} can't be delegated to: it would use this run's model '${RETIRING}', which ${agentRuntimeName(AGY)} `
+      + `no longer offers. Set a model for ${name} in its settings, or change this run's model, then delegate again.`;
     const before = await root.liveTree();
     const delegated = await root.managerCalls(callTool("delegate_task", { recipient_address: `/${segment(names.worker!)}`, description: "Plain work." }));
     expect(delegated.delegated ?? false, JSON.stringify(delegated)).toBe(false);
-    expect(JSON.stringify(delegated)).toContain(`${names.worker} can't be delegated to: ${reason} ${names.worker} in its settings`);
+    expect(JSON.stringify(delegated)).toContain(refusal(names.worker!));
     const team = await root.managerCalls(callTool("delegate_task", { recipient_address: `/${segment(names.squad!)}`, description: "Team work." }));
     expect(team.delegated ?? false, JSON.stringify(team)).toBe(false);
-    expect(JSON.stringify(team)).toContain(`${names.squad} can't be delegated to: ${reason} ${names.squad} in its settings`);
+    expect(JSON.stringify(team)).toContain(refusal(names.squad!));
     // Messaging never brings anyone in: an outside address is not found whatever the root's model, and nothing is added.
     const brought = await root.managerCalls(callTool("send_message_to", { recipient_address: `/${segment(names.unoffered!)}`, content: "Help." }));
     expect(brought, JSON.stringify(brought)).toMatchObject({ accepted: false, code: "COLLABORATION_TARGET_NOT_FOUND" });

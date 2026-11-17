@@ -205,8 +205,9 @@ export class GeneralProcessRunSupervisor {
       const memoryLocator = new AgentRunMemoryLocator({ memoryDir });
       const activityInspector = new AgentConversationActivityInspector();
       const generalAgentRunManager = agentRunManager;
-      // G-5: every member agent of this host's roots checks its stored model before it starts.
-      const executionFactory = new ConfiguredAgentExecutionFactory({ storedModels: input.modelSelectionValidator });
+      // G-5: every agent of this host's roots checks its definition, then its stored model, before it starts.
+      const storedModelChecks = { agentDefinitions: input.agentDefinitionService, storedModels: input.modelSelectionValidator };
+      const executionFactory = new ConfiguredAgentExecutionFactory({ storedModelChecks });
       const flatTeamExecutionFactory = new FlatTeamExecutionFactory({
         executionFactory,
         agentRunManager: generalAgentRunManager,
@@ -254,7 +255,7 @@ export class GeneralProcessRunSupervisor {
         agentRunIdentityAllocator,
       });
       const lifecycleService = new StandaloneAgentRunLifecycleService(memoryDir, {
-        storedModels: input.modelSelectionValidator,
+        storedModelChecks,
         agentRunManager,
         metadataService,
         historyCatalogService,

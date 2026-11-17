@@ -1,4 +1,5 @@
-import type { StoredModelOffer, StoredModelOfferCheck } from "../../src/llm-management/services/run-model-selection-service.js";
+import type { OnDemandModels, StoredModelOffer, StoredModelOfferCheck } from "../../src/llm-management/services/run-model-selection-service.js";
+import type { StoredModelStartChecks } from "../../src/llm-management/services/run-model-selection-refusal.js";
 import { ConfiguredAgentExecutionFactory } from "../../src/agent-collaboration/execution/backends/configured-agent-execution-factory.js";
 import type { RemoteRunChannelAccess } from "../../src/agent-collaboration/execution/remote/remote-run-channel.js";
 import type { PeerDiscoveryAccess } from "../../src/agent-collaboration/execution/remote/peer-discovery-channel.js";
@@ -70,4 +71,12 @@ export const releaseComposedProjectTaskService = (): void => {
 /** G-5: a test whose stored models are all offered (the start proceeds as before the check). */
 export const OFFERED_STORED_MODEL_OFFER = async (): Promise<StoredModelOffer> => "offered";
 export const OFFERED_STORED_MODELS: StoredModelOfferCheck = Object.freeze({ storedModelOffer: OFFERED_STORED_MODEL_OFFER });
-export const OFFERED_MODEL_EXECUTION_FACTORY = new ConfiguredAgentExecutionFactory({ storedModels: OFFERED_STORED_MODELS });
+/** G-5 (SR-015 R2): every run's agent definition exists, so the model check speaks. */
+export const EXISTING_AGENT_DEFINITIONS: StoredModelStartChecks["agentDefinitions"] = Object.freeze({
+  getAgentDefinitionById: async (id: string) => ({ id } as Awaited<ReturnType<StoredModelStartChecks["agentDefinitions"]["getAgentDefinitionById"]>>),
+});
+export const OFFERED_STORED_MODEL_CHECKS: StoredModelStartChecks = Object.freeze({ agentDefinitions: EXISTING_AGENT_DEFINITIONS,
+  storedModels: OFFERED_STORED_MODELS });
+export const OFFERED_MODEL_EXECUTION_FACTORY = new ConfiguredAgentExecutionFactory({ storedModelChecks: OFFERED_STORED_MODEL_CHECKS });
+/** SR-015 R1: no on-demand AutoByteus model in the test (its start reads the runtime's list as before). */
+export const NO_ON_DEMAND_MODELS: OnDemandModels = Object.freeze({ loadOnDemandModel: async () => "not_on_demand" as const });

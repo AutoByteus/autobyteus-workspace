@@ -13,6 +13,7 @@ import { createAgentOrgRootExecutionIdentity } from '../../../src/agent-collabor
 import { testAgentOrgExecutionTree, testOrgAgentNode, testOrgTeamNode } from "../../fixtures/current-agent-org-run-fixtures.js";
 import { AgentOrgCommunicationMessagesStore } from '../../../src/agent-org-execution/persistence/agent-org-communication-messages-store.js';
 import { applyAgentOrgRunSelectionPatches, listAgentOrgRunSelectionScopes, resolveAgentOrgRunSelectionTargets } from '../../../src/agent-org-execution/services/agent-org-run-config-mutator.js';
+import { NO_ON_DEMAND_MODELS } from "../../helpers/explicit-host-collaborators.js";
 
 const view = (rows: any[]) => ({ offeredModels: rows,
   findExactCurrent: (id: string) => rows.find((row) => row.model_identifier === id) ?? null });
@@ -39,7 +40,7 @@ async function setup() {
     'test-model': { kind: 'known', tokens: 100, source: 'provider' }, equal: { kind: 'known', tokens: 100, source: 'provider' },
     larger: { kind: 'known', tokens: 200, source: 'provider' }, smaller: { kind: 'known', tokens: 50, source: 'provider' },
   }) };
-  const validator = new RunModelSelectionService(catalog, capacity);
+  const validator = new RunModelSelectionService(catalog, NO_ON_DEMAND_MODELS, capacity);
   let runActive = true;
   const run = { orgRunId: 'org', rootIdentity: createAgentOrgRootExecutionIdentity('org'), isActive: () => runActive,
     hasAgentExecution: vi.fn(() => false), deliverExactAgentMessage: vi.fn(), terminate: vi.fn(async () => ({ accepted: true })) };

@@ -67,7 +67,7 @@ const mocks = vi.hoisted(() => {
     resolveExactCurrentLlmModel: vi.fn(async () => null),
     runtimeModelSelectionCatalog: vi.fn(async () => ({ offeredModels: [], findExactCurrent: () => null })),
   };
-  const modelAvailabilityService = {};
+  const modelAvailabilityService = { loadOnDemandModel: async () => "not_on_demand" as const };
   const llmProviderService = {};
   const codexClientManager = {};
   return {

@@ -4,7 +4,7 @@ import { StandaloneAgentRunLifecycleService } from "../../../src/agent-execution
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import type { AgentRunMetadata } from "../../../src/run-history/store/agent-run-metadata-types.js";
 import { HOST, buildManager, cleanupDirectories, metadata } from "./helpers/standalone-root-harness.js";
-import { OFFERED_STORED_MODELS } from "../../helpers/explicit-host-collaborators.js";
+import { OFFERED_STORED_MODEL_CHECKS } from "../../helpers/explicit-host-collaborators.js";
 
 vi.mock("../../../src/run-history/services/root-run-package-readiness-index.js", () => ({
   RootRunPackageReadinessIndex: class { assertAdmitted = async () => undefined; },
@@ -51,7 +51,7 @@ describe("the first message after a saved agent runtime switch, through the real
       record: vi.fn(() => { order.push("record"); }),
       discard: vi.fn(() => { order.push("discard"); }),
     };
-    const lifecycle = new StandaloneAgentRunLifecycleService("/unused", { storedModels: OFFERED_STORED_MODELS,
+    const lifecycle = new StandaloneAgentRunLifecycleService("/unused", { storedModelChecks: OFFERED_STORED_MODEL_CHECKS,
       agentRunManager: manager as never,
       metadataService: { readMetadataState: vi.fn(async () => ({ kind: "present" as const, metadata: stored })) } as never,
       historyCatalogService: { recordRunStarted: vi.fn(async (input: AgentRunMetadata & { clearPendingRuntimeSwitch?: boolean }) => {
