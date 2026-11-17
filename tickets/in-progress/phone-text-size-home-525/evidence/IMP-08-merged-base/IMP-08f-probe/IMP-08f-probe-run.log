@@ -1,0 +1,12 @@
+# IMP-08f probe console lines (commit 6abbcc7bef, macOS headless Chrome, 2026-11-18). A first attempt (same command) stopped in stack setup before any case: 'AgyDiscoveryError: Antigravity model discovery timed out' at load average > 100; rerun once:
+[mobile-shell] MSP-73 Pass
+[mobile-shell] MSP-66 Pass
+[mobile-shell] MSP-60 Pass
+[mobile-shell] MSP-74 Pass
+[mobile-shell] MSP-67 Pass
+[mobile-shell] MSP-68 Pass
+[mobile-shell] MSP-69 Pass
+[mobile-shell] MSP-70 Pass
+[mobile-shell] MSP-71 Pass
+[mobile-shell] MSP-72 Pass
+mobile-shell probe: Pass

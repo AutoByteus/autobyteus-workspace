@@ -1,5 +1,7 @@
 # API/E2E Coverage Investigation — phone-text-size-home-525 (autobyteus-525)
 
+> Case ID: the Largest sweep was MSP-67 until the merge with autobyteus-522 (which owns MSP-67…72); it is MSP-74 from IR-003 on. Evidence files of earlier rounds keep their `MSP-67-*` names.
+
 ## Investigation Meta
 
 - Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/phone-text-size-home-525/tickets/in-progress/phone-text-size-home-525/requirements-doc.md` (SR-001)
@@ -42,7 +44,7 @@ One phone-wide Text size (Small/Standard/Large/Largest = 15/17/19/21 px) chosen 
 | --- | --- | --- | --- |
 | BEH-001 control on the home screen, gone from run ⋮; same key | Changed | REQ-001…004, DEC-001/002 | unit specs + MSP-60 (reused) + Android taps (API-08) + upgrade carry-over (API-06) |
 | BEH-002 every phone screen scales; conversation exact px; fixed px follow | Changed | REQ-005…007 | MSP-60/67 (reused) + scaling sweep (API-07) + Android at four steps (API-08) |
-| BEH-003 phone code text follows | Changed | REQ-006, DEC-006 | MSP-67 Monaco 17 px (reused); API-07 four steps |
+| BEH-003 phone code text follows | Changed | REQ-006, DEC-006 | MSP-74 Monaco 17 px (reused); API-07 four steps |
 | BEH-004 desktop unchanged | Preserved | REQ-008 | desktop unit specs (reused IMP-01) + full web unit suite (API-02) + desktop page check (API-09) |
 | AC-006 Standard as today | Preserved | AC-006 ("probe measurement + screenshot comparison with the base") | A/B of base and head bundles on the same node and data (API-05) |
 | `usePhoneTextSize`, run-menu block, `mobile.settings.textSize*`, `--pc-size` | Removed | Legacy Removal Policy | grep (done: only absence assertions remain); full unit suite for stale tests (API-02) |
@@ -112,7 +114,7 @@ One phone-wide Text size (Small/Standard/Large/Largest = 15/17/19/21 px) chosen 
 | `MobileOnThisPhoneMenu.spec.ts` (new), `MobileRunMenu.spec.ts` (new), `MobileRunList.spec.ts` (updated) | menu, run menu without Text size, rem rails | AC-001/002/005, QR-002 | Still Valid | IMP-01 | reuse |
 | `MobileRunMenu.textSize.spec.ts` (removed) | Text size in the run ⋮ | obsolete by REQ-003 | Stale / Remove (done by implementation) | design Removal plan; replaced by `MobileOnThisPhoneMenu.spec.ts`, `MobileRunMenu.spec.ts` | none |
 | `AgentEventMonitor.phoneConversation.spec.ts`, `mobileSettingsCatalog.spec.ts` (updated) | no step wiring; keys moved | REQ-009 | Still Valid | IMP-01 | reuse |
-| `tests/e2e/mobile-run-settings-cases.mjs` MSP-60 (rewritten), MSP-66, MSP-67 (new) | home control, four steps, reload, Largest sweep | AC-001…005, QR-001 | Still Valid | IMP-02 | reuse; MSP-61…65 untouched |
+| `tests/e2e/mobile-run-settings-cases.mjs` MSP-60 (rewritten), MSP-66, MSP-74 (new) | home control, four steps, reload, Largest sweep | AC-001…005, QR-001 | Still Valid | IMP-02 | reuse; MSP-61…65 untouched |
 | other web specs outside the 191 files | — | — | Unclear until run | — | API-02 full suite |
 
 ## Planned Cases
@@ -122,10 +124,10 @@ One phone-wide Text size (Small/Standard/Large/Largest = 15/17/19/21 px) chosen 
 | API-01 | AC-001, 002, 004, 007, 008; QR-002 | unit/component | Reused | IMP-01, IMP-03, IMP-04 | ran on `7c7f3d2e79`; `git diff --name-only 7c7f3d2e79 HEAD` touches only the ticket folder |
 | API-02 | AC-007; stale tests | whole web unit suite | Existing Test | `pnpm -C autobyteus-web test:nuxt --run` | IMP-01 ran 191 related files only; finds tests the change made untrue elsewhere |
 | API-03 | — (TESTING both typechecks) | server typecheck | Existing Test | `pnpm -C autobyteus-server-ts typecheck` | TESTING.md requires both typechecks for a TS change |
-| API-04 | AC-001…006, QR-001, REQ-006/007 | production phone bundle | Reused | IMP-02 (MSP-66, MSP-60, MSP-67) | same commit and bundle (`dist/public` built 22:21 after `7c7f3d2e79`, holds `mobile-on-this-phone`) |
+| API-04 | AC-001…006, QR-001, REQ-006/007 | production phone bundle | Reused | IMP-02 (MSP-66, MSP-60, MSP-74) | same commit and bundle (`dist/public` built 22:21 after `7c7f3d2e79`, holds `mobile-on-this-phone`) |
 | API-05 | AC-006 | phone bundle, base vs head, same node and data | Temporary Probe | held probe stack; host Chrome phone at 412 px, Standard; for each screen: computed font sizes and boxes of every visible text element and a screenshot, on the base bundle and then the head bundle; compare | a pixel/geometry A/B against another build does not belong in the durable probe (it needs a second checkout and build) |
 | API-06 | AC-004 (beta.9 carry-over) | persisted step across the bundle update | Temporary Probe | base bundle: run ⋮ → Text size → Largest; swap to head bundle; reload; root 19.76 px, conversation 21 px, home menu marks Largest | needs the old bundle; one-time upgrade path |
-| API-07 | REQ-005, REQ-006 (SCN-A3) | phone bundle, head | Temporary Probe | same screens at Standard and Largest; every visible text element's font-size ratio must be 21/17 (exceptions: the four preview letters, Monaco by its own rounding, svg); a rendered `text-[11px]` chip measured | the fit check of MSP-67 does not see text that stays small; decides whether a durable assertion is worth adding |
+| API-07 | REQ-005, REQ-006 (SCN-A3) | phone bundle, head | Temporary Probe | same screens at Standard and Largest; every visible text element's font-size ratio must be 21/17 (exceptions: the four preview letters, Monaco by its own rounding, svg); a rendered `text-[11px]` chip measured | the fit check of MSP-74 does not see text that stays small; decides whether a durable assertion is worth adding |
 | API-08 | AC-001, 003, 004, 005; QR-001 | the Android app (WebView) | Journey | own AVD; debug APK; pair with the held stack's emulator link; real taps: ⋮ → each of the four steps; measure root, run name, conversation; screenshots of home and conversation per step; force-stop + launch at Largest: first-screen root | the founder's device; WebView fractional root |
 | API-09 | AC-007 | desktop page | Temporary Probe | `pnpm dev` of the worktree (the held stack has no desktop frontend), desktop page `/` in host Chrome: no `data-phone-text-size`, no On this phone, root 16 px; a stale phone step ignored; Display Large → 112.5 %, Extra large → 125 % | real desktop page start path (plugin 06 desktop branch) |
 | API-10 | REQ-005 (VNC Viewer controls), REQ-007, AC-005 | production phone bundle CSS | Temporary Probe | added during execution: the VNC Viewer bar (exact markup of `MobileScreenBar.vue` + `MobileNodeDesktop.vue` actions, View only and Control) inserted in the real phone page served from `dist/public`, at Standard/Large/Largest × 360/412 px; full-screen button inside the screen, header not wider than the screen, title readable | no node desktop in the probe stacks; reading the bar's classes showed all actions are `flex-shrink-0` (Control mode about 436 px at Largest), so it had to be measured; a durable probe case needs a node desktop (Docker beta image, as autobyteus-432 did) |
@@ -134,7 +136,7 @@ One phone-wide Text size (Small/Standard/Large/Largest = 15/17/19/21 px) chosen 
 
 ## Durable Coverage To Add
 
-None planned at the start; API-07 decides whether a scaling assertion joins MSP-67.
+None planned at the start; API-07 decides whether a scaling assertion joins MSP-74.
 
 ## Durable Coverage To Update
 
@@ -181,7 +183,7 @@ None (the implementation removed `MobileRunMenu.textSize.spec.ts`; recorded abov
 ## Investigation Decision
 
 - Proceed To API/E2E Execution: `Yes`
-- Repository-Resident Durable Coverage Will Be Added / Updated / Removed: `No`. After API-07: every text on 14 screens scaled exactly; a durable Standard-vs-Largest scaling assertion would double MSP-67's run (two full sweeps) for a check that found nothing; kept as the ticket's temporary probe (scripts in `evidence/api-e2e/scripts/`). API-10 belongs in MSP-67 once a node desktop is available to the probe (recommendation for the fix round).
+- Repository-Resident Durable Coverage Will Be Added / Updated / Removed: `No`. After API-07: every text on 14 screens scaled exactly; a durable Standard-vs-Largest scaling assertion would double MSP-74's run (two full sweeps) for a check that found nothing; kept as the ticket's temporary probe (scripts in `evidence/api-e2e/scripts/`). API-10 belongs in MSP-74 once a node desktop is available to the probe (recommendation for the fix round).
 - Reroute Required Before Validation Execution: `No`
 - Recommended Owner If Reroute Required: —
 - Notes: —
