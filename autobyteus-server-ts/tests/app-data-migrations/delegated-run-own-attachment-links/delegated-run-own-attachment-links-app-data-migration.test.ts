@@ -226,6 +226,53 @@ describe("the follow-up after 20261017_task_agent_own_run_v1 (M-7, S-3b)", () =>
   });
 });
 
+/**
+ * Design M-7 (guideline §4): every migration registered before ours, classified by whether, running after ours, it moves
+ * or writes a trace holding a host-scoped link into a scanned folder (writer) or selects items by that shape (reader).
+ */
+const BEFORE_THE_LINK = "shipped before v1.4.92-beta.5, when the link first shipped: it converts only data older than any link and writes none";
+const LATE_PREDECESSORS: Readonly<Record<string, Readonly<{ kind: "writer" | "none"; reason: string }>>> = {
+  ...Object.fromEntries([
+    "20260727_custom_provider_v1_secret_migration", "20260706_remove_global_skill_discovery_mode", "20260517_team_run_metadata_member_tree",
+    "20260814_team_run_execution_tree_v1", "20260823_repair_team_agent_memory_layout", "20260824_team_run_execution_tree_v2",
+    "20260730_token_usage_custom_provider_model_value_backfill", "20260730_token_usage_provider_name_snapshot_backfill", "20260819_token_usage_run_records_v1",
+    "20260901_agent_org_flat_team_families_v1", "20260731_remove_external_runtime_working_context_snapshots", "20260617_raw_trace_rotation_layout",
+    "20260707_raw_trace_active_file_name", "20260926_team_context_file_execution_locators_v1", "20260731_migrate_native_working_context_snapshots_v5",
+    "20260905_agent_org_history_first_message_summary_v1", "20260701_team_communication_projection_addresses", "20260623_remove_self_evolution_run_metadata",
+    "20260521_team_run_history_index_v2", "20260521_run_history_index_v2", "20260803_custom_provider_readable_identity", "20260924_remove_external_messaging_data",
+  ].map((id) => [id, { kind: "none" as const, reason: BEFORE_THE_LINK }])),
+  ...Object.fromEntries([
+    "20261005_projects_per_folder_v1", "20261017_project_task_keys_v1", "20261025_project_task_titles", "20261006_remove_built_in_project_task_manager",
+  ].map((id) => [id, { kind: "none" as const, reason: "Project and Task files only; no run folder or trace" }])),
+  "20261015_collaborators_to_delegated_runs_v1": { kind: "none", reason: "tree JSON only (its doc, lines 52-60)" },
+  "20261017_task_agent_own_run_v1": { kind: "writer", reason: "moves delegated runs' folders, traces included, out of their delegator's (coordinating-run-migration.ts:110-133)" },
+  "20261018_append_only_message_logs_v1": { kind: "none", reason: "message logs only" },
+  "20261019_remove_work_trace_exports": { kind: "none", reason: "deletes work-trace export folders; no trace moves" },
+  "20261019_delegated_copy_own_file_complete_v1": { kind: "none", reason: "own-file metadata only (no rename, copy or raw_traces access; ARCH-REV-001)" },
+  "20261020_remove_skill_improvement_data": { kind: "none", reason: "deletes the removed feature's data; writes no trace" },
+  "20261024_node_identity_file_name": { kind: "none", reason: "the node identity file only" },
+  "20261024_memory_sync_source_id_names": { kind: "none", reason: "memory-sync files and imports/, which is never scanned" },
+  "20261030_raw_trace_manifest_runtime_names": { kind: "none", reason: "the trace manifest's runtime names; no locator" },
+  "20261111_delegated_runs_own_runs_v1": { kind: "none", reason: "message logs (line 228) and run files; no trace moves" },
+  ...Object.fromEntries([
+    "20261114_preserved_items_after_task_agent_own_run_v1", "20261114_preserved_items_after_own_file_complete_v1", "20261114_preserved_items_after_append_only_logs_v1",
+    "20261114_preserved_items_after_team_run_execution_tree_v1", "20261114_preserved_items_after_team_run_execution_tree_v2",
+    "20261114_preserved_items_after_org_flat_team_families_v1", "20261114_preserved_items_after_collaborators_to_delegated_runs_v1",
+    "20261114_preserved_items_after_team_run_history_index_v2", "20261114_preserved_items_after_remove_skill_improvement_data",
+  ].map((id) => [id, { kind: "none" as const, reason: "461's steps on its own items; no trace moves" }])),
+};
+
+describe("every late predecessor of 20261117_delegated_run_own_attachment_links (M-7)", () => {
+  it("every migration registered before ours is classified once; the one writer has the follow-up", () => {
+    const ids = new AppDataMigrationRegistry().listDefinitions().map((definition) => definition.id);
+    expect(Object.keys(LATE_PREDECESSORS).sort()).toEqual(ids.slice(0, ids.indexOf(DELEGATED_RUN_OWN_ATTACHMENT_LINKS_MIGRATION_ID)).sort());
+    const writers = Object.entries(LATE_PREDECESSORS).filter(([, entry]) => entry.kind === "writer").map(([id]) => id);
+    expect(writers).toEqual(["20261017_task_agent_own_run_v1"]);
+    expect(new AppDataMigrationRegistry().getDefinition(DELEGATED_RUN_OWN_ATTACHMENT_LINKS_AFTER_TASK_AGENT_OWN_RUN_MIGRATION_ID)?.prerequisiteMigrationIds)
+      .toContain(writers[0]);
+  });
+});
+
 class InMemoryRecords implements AppDataMigrationRecordRepositoryLike {
   private readonly records = new Map<string, AppDataMigrationRecordSnapshot>();
   async getRecord(migrationId: string) { return this.records.get(migrationId) ?? null; }
