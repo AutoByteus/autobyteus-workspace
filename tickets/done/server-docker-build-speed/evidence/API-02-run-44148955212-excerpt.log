@@ -1,0 +1,88 @@
+# API-02 / API-03 / API-04 / API-07 excerpt: build-only run 44148955212 (default variant)
+# Dispatch: gh workflow run release-server-docker.yml --ref codex/server-docker-build-speed -f build_only=true (2026-11-17T18:32:29Z)
+# Commit: 31dfe3dad0 (headSha in API-02-run-44148955212-jobs.json); URL https://github.com/AutoByteus/autobyteus-workspace/actions/runs/44148955212
+# Full log: gh run view 44148955212 --log (747 KB, 5688 lines; not committed, retrievable from GitHub for the log retention period). Lines below: grep of that log.
+
+== Run result and job timeline (gh run view --json jobs)
+run wall time (createdAt -> last job end): 9m52s
+JOB | Resolve Release Metadata | success | 2026-11-17T18:32:33Z | 2026-11-17T18:32:36Z | 0m03s
+JOB | Build Server Image (linux/amd64) | success | 2026-11-17T18:32:38Z | 2026-11-17T18:40:37Z | 7m59s
+JOB | Build Server Image (linux/arm64) | success | 2026-11-17T18:32:41Z | 2026-11-17T18:40:29Z | 7m48s
+JOB | Publish Server Image | success | 2026-11-17T18:40:39Z | 2026-11-17T18:40:57Z | 0m18s
+JOB | Publish Server Package (linux/amd64) | success | 2026-11-17T18:40:58Z | 2026-11-17T18:42:19Z | 1m21s
+JOB | Publish Server Package (linux/arm64) | success | 2026-11-17T18:40:58Z | 2026-11-17T18:42:21Z | 1m23s
+
+== Runner images per job (API-02: arm64 leg on the native arm runner)
+Resolve Release Metadata	2026-11-17T18:32:33.9852415Z Image: ubuntu-26.04
+Build Server Image (linux/arm64)	2026-11-17T18:32:41.8415211Z Image: ubuntu-24.04-arm
+Build Server Image (linux/amd64)	2026-11-17T18:32:38.7633392Z Image: ubuntu-26.04
+Publish Server Image	2026-11-17T18:40:40.6215622Z Image: ubuntu-26.04
+Publish Server Package (linux/amd64)	2026-11-17T18:40:59.3016252Z Image: ubuntu-26.04
+Publish Server Package (linux/arm64)	2026-11-17T18:40:59.5522738Z Image: ubuntu-26.04
+
+== Plan (prepare-release)
+Resolve Release Metadata	2026-11-17T18:32:34.2482228Z   INPUT_RELEASE_TAG: 
+Resolve Release Metadata	2026-11-17T18:32:34.2483766Z   INPUT_BUILD_ONLY: true
+Resolve Release Metadata	2026-11-17T18:32:34.2810641Z   BUILD_ONLY: true
+Resolve Release Metadata	2026-11-17T18:32:34.2811384Z   RELEASE_REF: codex/server-docker-build-speed
+Resolve Release Metadata	2026-11-17T18:32:34.2813082Z   TAGS: 
+
+== Build legs: platform, disk guard (API-07), pushed digest
+Build Server Image (linux/arm64)	2026-11-17T18:34:58.8446855Z Free disk on /: 98 GB
+Build Server Image (linux/arm64)	2026-11-17T18:35:08.3867359Z   platforms: linux/arm64
+Build Server Image (linux/arm64)	2026-11-17T18:35:08.3869134Z   outputs: type=image,name=***/***-server,push-by-digest=true,name-canonical=true,push=true
+Build Server Image (linux/arm64)	2026-11-17T18:39:22.5554669Z Pushed arm64 image sha256:77fcdb831fe30431e678cc4395515caae604ecf73f76ffb35b034b83da2f998f
+Build Server Image (linux/amd64)	2026-11-17T18:35:10.7158931Z Free disk on /: 79 GB
+Build Server Image (linux/amd64)	2026-11-17T18:35:25.9583166Z   platforms: linux/amd64
+Build Server Image (linux/amd64)	2026-11-17T18:35:25.9584233Z   outputs: type=image,name=***/***-server,push-by-digest=true,name-canonical=true,push=true
+Build Server Image (linux/amd64)	2026-11-17T18:39:50.6419372Z Pushed amd64 image sha256:037c1bc19b83e6258946e89f58aa1e808a53d2764d7dce0b3a1b67f37f91242f
+
+== Publish Server Image: digests downloaded, dry-run index check (API-03, U-001)
+Publish Server Image	2026-11-17T18:40:44.2346725Z Artifact download completed successfully.
+Publish Server Image	2026-11-17T18:40:44.3280080Z Artifact download completed successfully.
+Publish Server Image	2026-11-17T18:40:52.0532634Z   BUILD_ONLY: true
+Publish Server Image	2026-11-17T18:40:52.0533081Z   VERSION_TAG: 
+Publish Server Image	2026-11-17T18:40:52.0533265Z   TAGS: 
+Publish Server Image	2026-11-17T18:40:53.2413896Z The dry-run index lists linux/amd64 sha256:037c1bc19b83e6258946e89f58aa1e808a53d2764d7dce0b3a1b67f37f91242f and linux/arm64 sha256:77fcdb831fe30431e678cc4395515caae604ecf73f76ffb35b034b83da2f998f.
+Publish Server Image	2026-11-17T18:40:53.2533192Z   BUILD_ONLY: true
+Publish Server Image	2026-11-17T18:40:53.2534249Z   TAGS: 
+
+== Package jobs: digest used for extraction, arch check input, files written and signed (API-03)
+Publish Server Package (linux/amd64)	2026-11-17T18:41:01.8979122Z Free disk on /: 88 GB
+Publish Server Package (linux/amd64)	2026-11-17T18:41:01.9066198Z   DIGEST: sha256:037c1bc19b83e6258946e89f58aa1e808a53d2764d7dce0b3a1b67f37f91242f
+Publish Server Package (linux/amd64)	2026-11-17T18:41:01.9066538Z   PLATFORM: linux/amd64
+Publish Server Package (linux/amd64)	2026-11-17T18:41:59.3656875Z   BUILD_ONLY: true
+Publish Server Package (linux/amd64)	2026-11-17T18:41:59.3657391Z   PACKAGE_ARCH: x64
+Publish Server Package (linux/amd64)	2026-11-17T18:42:15.4367460Z Wrote autobyteus-server-1.5.13-beta.9-linux-x64.json: autobyteus-server-1.5.13-beta.9-linux-x64.tar.gz, 150244983 bytes, sha256 21d69bc76e214316a7ed15e81783be2d646cc5fc481c0dadbd26f02ef3ee8b07
+Publish Server Package (linux/amd64)	2026-11-17T18:42:15.4712851Z Signed /home/runner/work/_temp/server-package-assets/autobyteus-server-1.5.13-beta.9-linux-x64.json; the signature verifies with autobyteus-server-ts/docker/server-package-signing-key.pem
+Publish Server Package (linux/amd64)	2026-11-17T18:42:15.4877355Z   PLATFORM: linux/amd64
+Publish Server Package (linux/arm64)	2026-11-17T18:41:02.6370261Z Free disk on /: 88 GB
+Publish Server Package (linux/arm64)	2026-11-17T18:41:02.6461653Z   DIGEST: sha256:77fcdb831fe30431e678cc4395515caae604ecf73f76ffb35b034b83da2f998f
+Publish Server Package (linux/arm64)	2026-11-17T18:41:02.6461903Z   PLATFORM: linux/arm64
+Publish Server Package (linux/arm64)	2026-11-17T18:42:05.2061638Z   BUILD_ONLY: true
+Publish Server Package (linux/arm64)	2026-11-17T18:42:05.2061892Z   PACKAGE_ARCH: arm64
+Publish Server Package (linux/arm64)	2026-11-17T18:42:17.9261115Z Wrote autobyteus-server-1.5.13-beta.9-linux-arm64.json: autobyteus-server-1.5.13-beta.9-linux-arm64.tar.gz, 149433994 bytes, sha256 0a967b4796eff726da7a81c43bb8f8552ccb873959840ddb0adc5e6a01e3077f
+Publish Server Package (linux/arm64)	2026-11-17T18:42:17.9584997Z Signed /home/runner/work/_temp/server-package-assets/autobyteus-server-1.5.13-beta.9-linux-arm64.json; the signature verifies with autobyteus-server-ts/docker/server-package-signing-key.pem
+Publish Server Package (linux/arm64)	2026-11-17T18:42:17.9740423Z   PLATFORM: linux/arm64
+
+== Step conclusions of the publishing steps (API-04)
+Publish Server Image | Create and check the multi-arch image | success
+Publish Server Image | Checkout tags for the beta decision | skipped
+Publish Server Image | Move beta tag | skipped
+Publish Server Package (linux/amd64) | Wait for the GitHub release | skipped
+Publish Server Package (linux/amd64) | Upload the server package to the release | skipped
+Publish Server Package (linux/amd64) | Summarize the build-only server package | success
+Publish Server Package (linux/arm64) | Wait for the GitHub release | skipped
+Publish Server Package (linux/arm64) | Upload the server package to the release | skipped
+Publish Server Package (linux/arm64) | Summarize the build-only server package | success
+
+== Artifacts of the run
+server-image-digest-arm64	186
+server-image-digest-amd64	185
+AutoByteus~autobyteus-workspace~CYQG80.dockerbuild	151559
+AutoByteus~autobyteus-workspace~F6L0A0.dockerbuild	155364
+
+== No layer cache and no emulation (BEH-001): case-insensitive counts in the full logs
+44148955212-full.log: 'exporting to GitHub Actions Cache' = 0, 'type=gha' = 0, 'qemu' = 0
+44047761247-full.log: 'exporting to GitHub Actions Cache' = 2, 'type=gha' = 3, 'qemu' = 14
+(44047761247 is beta.8 on the old workflow; 44148955212 is this build-only run)

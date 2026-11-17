@@ -266,11 +266,30 @@ describe('TeamStreamingService current AgentRun event dispatch', () => {
       command: 'sleep 20 && pnpm build',
       status: 'running',
       summary: null,
+      end_reason: null,
+      exit_code: null,
       started_at: '2026-09-29T16:48:20.000Z',
     });
 
     expect(backgroundTasks.getTasks(teacherRunId).map((task) => [task.taskId, task.status, task.command]))
       .toEqual([['bg-1', 'running', 'sleep 20 && pnpm build']]);
+
+    // autobyteus-483: a member's task carries why it ended through the team stream.
+    emit(callbacks, 'BACKGROUND_TASK_UPDATED', {
+      change_sequence: 2,
+      agent_run_id: teacherRunId,
+      task_id: 'bg-1',
+      kind: 'shell',
+      description: 'Wait for the build',
+      command: 'sleep 20 && pnpm build',
+      status: 'stopped',
+      summary: 'Background command "Wait for the build" was stopped after reaching its background time limit',
+      end_reason: 'time_limit',
+      exit_code: null,
+      started_at: '2026-09-29T16:48:20.000Z',
+    });
+    expect(backgroundTasks.getTasks(teacherRunId).map((task) => [task.status, task.endReason, task.exitCode]))
+      .toEqual([['stopped', 'time_limit', null]]);
     expect(backgroundTasks.getTasks(persistentStudentRunId)).toEqual([]);
     expect(team.view.getAgentContext(teacherRunId)!.state.currentStatus).not.toBe(AgentStatus.Running);
   });

@@ -1,0 +1,10 @@
+# rerun of the timed-out spec, alone; 2026-11-17T15:09:07Z; load 151.56 169.17 143.18
+   ✓ Collaboration messages on a large Agent Org root > reveals and opens the last reference with the server identity; switching member collapses the list  941ms
+   ✓ Collaboration messages on a large Agent Org root > applies a live communication message with one projection and identity work bounded by the visible rows  723ms
+
+ Test Files  1 passed (1)
+      Tests  3 passed (3)
+   Start at  16:09:10
+   Duration  9.49s (transform 3.98s, setup 6.41s, collect 226ms, tests 1.81s, environment 199ms, prepare 228ms)
+
+# exit: 0

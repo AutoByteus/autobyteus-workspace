@@ -1,0 +1,43 @@
+# API-01 server integration suite
+# Command: pnpm -C autobyteus-server-ts test:integration (after test:integration:prepare); commit 79d1f803e4 (code d5e9f350cf); macOS 26 arm64, node 22.23.1; 2026-11-17
+# Result: 13 failures, all in two file-watcher files (file-system-watcher, package-auto-refresh); load average ~72 at the time
+
+Prisma schema loaded from prisma/schema.prisma
+     × AC-001/AC-015(a): a new agent and a new Team written on disk are listed and delegable within 5 s, without Reload 22830ms
+     × AR-001: a Team created before its agent becomes available once the agent appears, and its list is told to reload 54885ms
+⎯⎯⎯⎯⎯⎯ Failed Tests 13 ⎯⎯⎯⎯⎯⎯⎯
+ FAIL  tests/integration/agent-package-definitions/package-auto-refresh.integration.test.ts > package auto-refresh: the next delegation sees current definitions > AC-001/AC-015(a): a new agent and a new Team written on disk are listed and delegable within 5 s, without Reload
+ FAIL  tests/integration/agent-package-definitions/package-auto-refresh.integration.test.ts > package auto-refresh: the next delegation sees current definitions > AC-001/AC-015(a): a new agent and a new Team written on disk are listed and delegable within 5 s, without Reload
+ FAIL  tests/integration/agent-package-definitions/package-auto-refresh.integration.test.ts > package auto-refresh: the next delegation sees current definitions > AC-002/AC-015(b)/QR-004: edits reach every reader; other agents never disappear during the refresh
+ FAIL  tests/integration/agent-package-definitions/package-auto-refresh.integration.test.ts > package auto-refresh: the next delegation sees current definitions > AC-006: a 50-file burst is coalesced into a bounded number of publications
+ FAIL  tests/integration/agent-package-definitions/package-auto-refresh.integration.test.ts > package auto-refresh: the next delegation sees current definitions > CR-001/REQ-015: an unreadable package folder at startup does not block startup or other packages
+ FAIL  tests/integration/agent-package-definitions/package-auto-refresh.integration.test.ts > package auto-refresh: the next delegation sees current definitions > DSN-003: a broken team-local agent keeps its last good version and its Team stays launchable
+Error: Hook timed out in 10000ms.
+ FAIL  tests/integration/agent-package-definitions/package-auto-refresh.integration.test.ts > package auto-refresh: the next delegation sees current definitions > AR-001: a Team created before its agent becomes available once the agent appears, and its list is told to reload
+ FAIL  tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits add + modify + delete events
+ FAIL  tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > returns one idle event stream without stopping other subscribers
+ FAIL  tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits folder creation and deletion events
+ FAIL  tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > respects nested .gitignore files
+ FAIL  tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > respects root .gitignore files
+ FAIL  tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits delete events even if the in-memory node is missing
+Error: Timed out waiting for event
+     26|       reject(new Error("Timed out waiting for event"));
+ FAIL  tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits move/rename event
+ Test Files  2 failed | 86 passed | 20 skipped (108)
+      Tests  13 failed | 493 passed | 69 skipped (575)
+   Duration  512.15s (transform 10.01s, setup 2.76s, import 95.34s, tests 403.17s, environment 6ms)
+exit=1
+
+## Rerun of the two files alone (12:02-12:10)
+ ❯ tests/integration/agent-package-definitions/package-auto-refresh.integration.test.ts (15 tests | 11 failed) 418764ms
+ ❯ tests/integration/file-explorer/file-system-watcher.integration.test.ts (14 tests | 7 failed) 68521ms
+⎯⎯⎯⎯⎯⎯ Failed Tests 18 ⎯⎯⎯⎯⎯⎯⎯
+ ❯ tests/integration/agent-package-definitions/package-auto-refresh.integration.test.ts:148:30
+ ❯ tests/integration/agent-package-definitions/package-auto-refresh.integration.test.ts:133:1
+ ❯ tests/integration/agent-package-definitions/package-auto-refresh.integration.test.ts:262:17
+ Test Files  2 failed (2)
+      Tests  18 failed | 11 passed (29)
+exit=1
+
+## Cause probe: plain fs.watch latency (node /tmp probe, no AutoByteus code) and the top CPU users
+{"at":"2026-11-17T11:11:44.572Z","load":["98.9","163.7","134.3"],"fsWatchLatencyMs":[3874,3226,7256,1192,6205]}

@@ -26,6 +26,7 @@ import remoteCollaborationSettingsMessages from './remoteCollaborationSettings';
 import nodesPageMessages from './nodesPage';
 import remoteRunsMessages from './remoteRuns';
 import mobileNodeDesktopMessages from './mobileNodeDesktop';
+import mobileSettingsMessages from './mobileSettings';
 import embeddingSettingsMessages from './embeddingSettings';
 import agentRuntimesSettingsMessages from './agentRuntimesSettings';
 import modelRoutingSettingsMessages from './modelRoutingSettings';
@@ -74,6 +75,7 @@ const zhCnMessages: TranslationCatalog = {
   ...nodesPageMessages,
   ...remoteRunsMessages,
   ...mobileNodeDesktopMessages,
+  ...mobileSettingsMessages,
   ...embeddingSettingsMessages,
   ...agentRuntimesSettingsMessages,
   ...modelRoutingSettingsMessages,

@@ -33,6 +33,12 @@
       <MobileMessages v-else-if="navigation.screen.value === 'messages'" :target="viewTarget" @back="navigation.back()" />
       <MobileActivity v-else-if="navigation.screen.value === 'activity'" :target="viewTarget" @back="navigation.back()" />
       <MobileNodeDesktop v-else-if="navigation.screen.value === 'desktop'" @back="navigation.back()" />
+      <MobileRunSettings
+        v-else-if="navigation.screen.value === 'settings'"
+        :target="viewTarget"
+        :parent-name="tree.openRowParent.value?.name ?? null"
+        @back="navigation.back()"
+      />
     </template>
     <MobileNewRun v-if="navigation.screen.value === 'new'" @close="navigation.back()" @launched="onLaunched" />
 
@@ -63,6 +69,7 @@ import MobileArtifacts from '~/components/mobile/views/MobileArtifacts.vue';
 import MobileFiles from '~/components/mobile/views/MobileFiles.vue';
 import MobileMessages from '~/components/mobile/views/MobileMessages.vue';
 import MobileNodeDesktop from '~/components/mobile/views/MobileNodeDesktop.vue';
+import MobileRunSettings from '~/components/mobile/views/MobileRunSettings.vue';
 import { useAgentRunCollaborationSync } from '~/composables/agentCollaboration/useAgentRunCollaborationSync';
 import { useMobileNavigation } from '~/composables/mobile/useMobileNavigation';
 import { useMobileRouteRunSync } from '~/composables/mobile/useMobileRouteRunSync';
@@ -175,7 +182,7 @@ const { restoring } = useMobileSubjectRestore({ tree, opening: useMobileRunOpeni
 
 /** A view screen shows the open target; a view whose subject is gone (and is not being reopened) gives the list. */
 const viewTarget = computed(() => activeContext.activeWorkspaceTarget);
-const VIEWS = new Set(['artifacts', 'files', 'messages', 'activity', 'desktop']);
+const VIEWS = new Set(['artifacts', 'files', 'messages', 'activity', 'desktop', 'settings']);
 watch([() => navigation.screen.value, viewTarget, restoring], ([screen, target, isRestoring]) => {
   if (VIEWS.has(screen) && !target && !isRestoring) void navigation.toList();
 }, { immediate: true });

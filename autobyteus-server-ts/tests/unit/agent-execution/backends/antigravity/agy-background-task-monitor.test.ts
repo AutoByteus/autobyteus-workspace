@@ -21,7 +21,7 @@ const setup = () => {
 
 const running: AgentBackgroundTask = {
   taskId: `${conversation}/task-2`, kind: "shell", description: daemon.commandLine, command: daemon.commandLine,
-  status: "running", summary: null, startedAt: STARTED_AT,
+  status: "running", summary: null, endReason: null, exitCode: null, startedAt: STARTED_AT,
 };
 
 beforeEach(() => { vi.useFakeTimers(); });
@@ -76,7 +76,7 @@ describe("AgyBackgroundTaskMonitor (DS-003)", () => {
     scans.push({ settledFiles: ["m.json"], exits: [{ stepIndex: 2, exitCode: 0, summary: "The command exited with code 0." }], problem: null });
     await vi.advanceTimersByTimeAsync(2_000);
 
-    expect(emitted[1]).toEqual([{ ...running, status: "completed", summary: "The command exited with code 0." }]);
+    expect(emitted[1]).toEqual([{ ...running, status: "completed", summary: "The command exited with code 0.", exitCode: 0 }]);
   });
 
   it("marks the task failed for a non-zero exit code (AC-013b)", async () => {
@@ -86,7 +86,7 @@ describe("AgyBackgroundTaskMonitor (DS-003)", () => {
     monitor.track([daemon]);
     await vi.advanceTimersByTimeAsync(0);
 
-    expect(emitted[1]).toEqual([{ ...running, status: "failed", summary: "The command exited with code 3." }]);
+    expect(emitted[1]).toEqual([{ ...running, status: "failed", summary: "The command exited with code 3.", exitCode: 3 }]);
   });
 
   it("stops polling once no task is running", async () => {
@@ -109,7 +109,7 @@ describe("AgyBackgroundTaskMonitor (DS-003)", () => {
     monitor.track([daemon]);
     await vi.advanceTimersByTimeAsync(0);
 
-    expect(emitted.at(-1)).toEqual([{ ...running, status: "completed", summary: "early" }]);
+    expect(emitted.at(-1)).toEqual([{ ...running, status: "completed", summary: "early", exitCode: 0 }]);
     expect([...scanExitMessages.mock.calls[1]![0]]).toEqual(["early.json"]);
   });
 
@@ -124,7 +124,7 @@ describe("AgyBackgroundTaskMonitor (DS-003)", () => {
 
     monitor.stopAll();
 
-    expect(emitted[1]).toEqual([{ ...running, status: "stopped" }]);
+    expect(emitted[1]).toEqual([{ ...running, status: "stopped", endReason: "run_ended" }]);
   });
 
   it("emits nothing after stopAll and ignores later tracking (AC-013c)", async () => {
@@ -137,7 +137,7 @@ describe("AgyBackgroundTaskMonitor (DS-003)", () => {
     monitor.track([{ ...daemon, stepIndex: 9 }]);
     monitor.stopAll();
 
-    expect(emitted).toEqual([[running], [{ ...running, status: "stopped" }]]);
+    expect(emitted).toEqual([[running], [{ ...running, status: "stopped", endReason: "run_ended" }]]);
     expect(scanExitMessages).not.toHaveBeenCalled();
   });
 

@@ -1,0 +1,21 @@
+# IMP-03 local macOS arm64 build — excerpt of IMP-03-mac-build.full.log
+# IMP-03 local macOS arm64 desktop build (unsigned)
+# command: cd autobyteus-web && NO_TIMESTAMP=1 AUTOBYTEUS_BUILD_FLAVOR=personal CSC_IDENTITY_AUTO_DISCOVERY=false pnpm build:electron:mac -- --arm64
+# commit: 365fde4e5b; node v22.23.1; macOS 26.5.2 arm64; 2026-11-17T14:38:13Z
+[guard:web-boundary] Passed.
+[guard:localization-boundary] Passed.
+[audit:localization-literals] Passed with zero unresolved findings.
+[typecheck] production errors: 0; test-file errors: 87 in 37 files (baseline 87 in 37 files)
+[typecheck] PASS
+Removed 127 MB of onnxruntime-web browser builds
+[0;33mRemoving the Claude Agent SDK's platform binaries (Claude runs use the installed claude)...[0m
+Removed 217 MB of Claude Agent SDK platform binaries
+  • building        target=DMG arch=arm64 file=electron-dist/AutoByteus_personal_macos-arm64-1.5.13-beta.8.dmg
+  • building        target=macOS zip arch=arm64 file=electron-dist/AutoByteus_personal_macos-arm64-1.5.13-beta.8.zip
+  • building block map  blockMapFile=electron-dist/AutoByteus_personal_macos-arm64-1.5.13-beta.8.dmg.blockmap
+  • building block map  blockMapFile=electron-dist/AutoByteus_personal_macos-arm64-1.5.13-beta.8.zip.blockmap
+  'autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.5.13-beta.8.dmg.blockmap',
+  'autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.5.13-beta.8.dmg',
+  'autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.5.13-beta.8.zip.blockmap',
+  'autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.5.13-beta.8.zip'
+# exit: 0

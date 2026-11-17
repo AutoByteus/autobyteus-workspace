@@ -99,9 +99,9 @@ class ServerDockerCliLatestDefaultsTest(unittest.TestCase):
 
         workflow = RELEASE_WORKFLOW.read_text(encoding="utf-8")
         self.assertEqual(
-            2,
+            1,
             len(re.findall(r"CLI_INSTALL_CACHE_BUSTER=\$\{\{ github\.run_id \}\}", workflow)),
-            "Both default and zh release builds must bust the CLI install layer cache.",
+            "The one release build step (each architecture, each variant) must bust the CLI install layer cache.",
         )
 
 

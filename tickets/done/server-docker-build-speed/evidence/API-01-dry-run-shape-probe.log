@@ -1,0 +1,65 @@
+# API-01 local probe: imagetools create --dry-run output shape and the workflow's check_index (U-001)
+# Commit under test: 31dfe3dad0 (workflow step 'Create and check the multi-arch image', check_index copied verbatim)
+# Env: macOS, Docker 29.0.1, github.com/docker/buildx v0.29.1-desktop.1 28f6246ff24e2c05095e8741e48c48dcb2d3b4bc
+# Date: 2026-11-17T18:33:57Z
+# Sources: published beta.8 per-arch digests from 'docker buildx imagetools inspect --raw autobyteus/autobyteus-server:1.5.13-beta.8'
+# Probe script:
+#   #!/usr/bin/env bash
+#   # API-01 probe: run `docker buildx imagetools create --dry-run` the way the workflow's
+#   # "Create and check the multi-arch image" step does, against the published beta.8
+#   # per-architecture digests, and apply the step's check_index jq expression.
+#   set -uo pipefail
+#   IMAGE_NAME=autobyteus/autobyteus-server
+#   AMD64_DIGEST="$1"; ARM64_DIGEST="$2"; OUT="$3"
+#   EXPECTED="$(printf 'linux/amd64 %s\nlinux/arm64 %s' "${AMD64_DIGEST}" "${ARM64_DIGEST}")"
+#   check_index() {
+#     local index_file="$1" label="$2" listed
+#     listed="$(jq -r '(.manifests // [])[] | "\(.platform.os)/\(.platform.architecture) \(.digest)"' "${index_file}" | sort)"
+#     if [[ "${listed}" != "${EXPECTED}" ]]; then
+#       echo "::error::The ${label} index does not list exactly linux/amd64 ${AMD64_DIGEST} and linux/arm64 ${ARM64_DIGEST}. It lists: ${listed//$'\n'/, }"
+#       return 1
+#     fi
+#     echo "The ${label} index lists linux/amd64 ${AMD64_DIGEST} and linux/arm64 ${ARM64_DIGEST}."
+#   }
+#   docker buildx imagetools create --dry-run -t "${IMAGE_NAME}:build-only" "${IMAGE_NAME}@${AMD64_DIGEST}" "${IMAGE_NAME}@${ARM64_DIGEST}" > "${OUT}"
+#   echo "imagetools exit: $?"
+#   echo "--- stdout of --dry-run (${OUT}):"; cat "${OUT}"; echo
+#   check_index "${OUT}" "dry-run"; echo "check_index exit: $?"
+
+== Case A: correct digests
+imagetools exit: 0
+--- stdout of --dry-run (dry1.json):
+{
+  "schemaVersion": 2,
+  "mediaType": "application/vnd.oci.image.index.v1+json",
+  "manifests": [
+    {
+      "mediaType": "application/vnd.oci.image.manifest.v1+json",
+      "digest": "sha256:6137bd018bac5582b1947d8749eff5546325e64de8ad48cff6244ba713c6016a",
+      "size": 7862,
+      "platform": {
+        "architecture": "amd64",
+        "os": "linux"
+      }
+    },
+    {
+      "mediaType": "application/vnd.oci.image.manifest.v1+json",
+      "digest": "sha256:b501e3eb678957a2977b0b0eaae41e67712d86e5a9751aa08e9e1ea89cfd38c0",
+      "size": 7862,
+      "platform": {
+        "architecture": "arm64",
+        "os": "linux"
+      }
+    }
+  ]
+}
+
+The dry-run index lists linux/amd64 sha256:6137bd018bac5582b1947d8749eff5546325e64de8ad48cff6244ba713c6016a and linux/arm64 sha256:b501e3eb678957a2977b0b0eaae41e67712d86e5a9751aa08e9e1ea89cfd38c0.
+check_index exit: 0
+
+== Case B: digests swapped (must fail)
+::error::The dry-run index does not list exactly linux/amd64 sha256:b501e3eb678957a2977b0b0eaae41e67712d86e5a9751aa08e9e1ea89cfd38c0 and linux/arm64 sha256:6137bd018bac5582b1947d8749eff5546325e64de8ad48cff6244ba713c6016a. It lists: linux/amd64 sha256:6137bd018bac5582b1947d8749eff5546325e64de8ad48cff6244ba713c6016a, linux/arm64 sha256:b501e3eb678957a2977b0b0eaae41e67712d86e5a9751aa08e9e1ea89cfd38c0
+check_index exit: 1
+
+== Nothing pushed: Docker Hub tag 'build-only' lookup
+HTTP 404

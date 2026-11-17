@@ -526,6 +526,44 @@ describe('agentRunStore', () => {
         expect(runHistoryStoreMock.refreshTreeQuietly).toHaveBeenCalled();
     });
 
+    // autobyteus-458 REQ-011: an input instance unknown when the stop began is not another run.
+    it('terminateRun: a stop that starts with no input instance and learns one before the node answers stops the run', async () => {
+        const store = useAgentRunStore();
+        mockAgentContext.isSubscribed = true;
+        mockAgentContext.state.runId = 'run-1';
+        mockAgentContext.state.inputProjection = null;
+        store.connectToAgentStream('run-1');
+        mutateMock.mockImplementationOnce(async () => {
+            // The interrupt's input-state reaches the run before the node's answer.
+            mockAgentContext.state.inputProjection = { runInstanceId: 'instance-1', revision: 1 };
+            return { data: { terminateAgentRun: { success: true, message: 'ok' } }, errors: [] };
+        });
+
+        const result = await store.terminateRun('run-1');
+
+        expect(result).toBe(true);
+        expect(mockDisconnect).toHaveBeenCalled();
+        expect(runHistoryStoreMock.markRunAsInactive).toHaveBeenCalledWith('run-1');
+    });
+
+    it('terminateRun: a known input instance that changed during the stop is another run: no local teardown', async () => {
+        const store = useAgentRunStore();
+        mockAgentContext.isSubscribed = true;
+        mockAgentContext.state.runId = 'run-1';
+        mockAgentContext.state.inputProjection = { runInstanceId: 'instance-1', revision: 1 };
+        store.connectToAgentStream('run-1');
+        mutateMock.mockImplementationOnce(async () => {
+            mockAgentContext.state.inputProjection = { runInstanceId: 'instance-2', revision: 1 };
+            return { data: { terminateAgentRun: { success: true, message: 'ok' } }, errors: [] };
+        });
+
+        const result = await store.terminateRun('run-1');
+
+        expect(result).toBe(false);
+        expect(mockDisconnect).not.toHaveBeenCalled();
+        expect(runHistoryStoreMock.markRunAsInactive).not.toHaveBeenCalled();
+    });
+
     it('terminateRun should teardown local runtime and skip backend for temp runs', async () => {
         const store = useAgentRunStore();
         mockAgentContext.isSubscribed = true;

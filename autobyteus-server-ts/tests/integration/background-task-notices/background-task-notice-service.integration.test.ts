@@ -92,7 +92,7 @@ const createWorld = (input: { native?: boolean } = {}) => {
   const taskEnded = async (end: BackgroundTaskEnd, reportedByRunBash = false) => {
     if (!reportedByRunBash) store.ends.push(end);
     await emit({ eventType: AgentRunEventType.BACKGROUND_TASK_UPDATED, payload: { task_id: String(end.pid), kind: "shell",
-      description: end.command, command: end.command, status: "completed", summary: "exit code 0", started_at: "2026-11-10T10:00:00.000Z" } });
+      description: end.command, command: end.command, status: "completed", summary: null, end_reason: null, exit_code: 0, started_at: "2026-11-10T10:00:00.000Z" } });
   };
   const sentMessages = () => dispatchUserInput.mock.calls.map((call) => (call[0] as AgentRunBackendInputDispatch).message);
   const endTurn = async () => {

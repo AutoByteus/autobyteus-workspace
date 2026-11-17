@@ -1,0 +1,309 @@
+{
+  "startedAt": "2026-11-17T12:58:01.573Z",
+  "result": "Pass",
+  "node": "v22.23.1",
+  "servers": {
+    "beta": {
+      "port": 52363,
+      "nodeId": "srv_0s483KbpoUJI3W9oiyE9vObVCKSUkI71",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    },
+    "alpha": {
+      "port": 52362,
+      "nodeId": "srv_FswEsJudKacrAZWZ4-FurZj-MbdST0gJ",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    }
+  },
+  "runs": {
+    "ptm": "project_task_manager_756f890f88d04ee8a2e85d72f9391dab",
+    "writerRun": "release_notes_writer_189d6d27791b44ab8c3f7b34f9d1b72d",
+    "squadRun": "docs_review_team_d02dac05865d41cc986d4b3e6ad41da4",
+    "reviewer": "release_notes_writer_49b333f0b1464ed697892b54021990ac",
+    "memberDelegated": "fact_checker_fab9fde488634f6f976a1461abf004dc",
+    "remoteAgentRun": "publisher_3a620df76e804efeaec6301afd955fde",
+    "remoteTeamRun": "studio_team_61e663cdad1e47a2b0b4b2e904644e12",
+    "plain": [
+      "fact_checker_5f40027326404885bb261a0c9e3bd71f",
+      "fact_checker_19b77678b02f4afbb015493fe406e81a",
+      "fact_checker_91173d57193449379d4771bcb50aa125"
+    ],
+    "org": "delivery_org_47bb424f7d204475a051dd313b2f37e6",
+    "orgPlanner": "release_notes_writer_340ce71167384d1d8c1f0420d09b2957",
+    "reviewOrg": "review_org_fb112907137b48e9a451ef47317be669",
+    "reviewOrgCoordinator": {
+      "address": "/squad/reviewer",
+      "agentRunId": "release_notes_writer_4bf3279b512c494e80619099bf4f7958",
+      "teamRunId": null
+    },
+    "delivery": "delivery_team_67ca0c4f25ca4b38a7c91a53fbfa4f2a",
+    "deliveryLead": "fact_checker_4584dc15d97f444693f7d5f82c506638",
+    "deliveryMate": "release_notes_writer_ed9c7251c8404d729cb2c746d86c530b",
+    "leadDelegated": "changelog_helper_409a4916f27f46f5a65b4658d21fa8cb",
+    "approver": "approver_12fdb8a992c14f448ae06afb6af55719",
+    "taskA": "launch-605ba4-1",
+    "taskB": "launch-605ba4-2"
+  },
+  "cases": {
+    "MSP-39": {
+      "result": "Pass",
+      "seconds": 11.2,
+      "results": {
+        "inPlace": {
+          "shownMs": {
+            "desktop": 531,
+            "phone-live": 531
+          },
+          "version": "A-VERSION-2",
+          "reads": {
+            "desktop": 1,
+            "phone": 1
+          }
+        },
+        "atomicSameFolder": {
+          "shownMs": {
+            "desktop": 538,
+            "phone-live": 538
+          },
+          "version": "A-VERSION-3",
+          "reads": {
+            "desktop": 1,
+            "phone": 1
+          }
+        },
+        "atomicOtherFolder": {
+          "shownMs": {
+            "desktop": 715,
+            "phone-live": 709
+          },
+          "version": "A-VERSION-4",
+          "reads": {
+            "desktop": 1,
+            "phone": 1
+          }
+        }
+      },
+      "folderReadsOfLive452": 0
+    },
+    "MSP-40": {
+      "result": "Pass",
+      "seconds": 8.1,
+      "results": {
+        "image": {
+          "shownMs": {
+            "desktop": 542,
+            "phone-live": 542
+          },
+          "desktop": {
+            "image": [
+              80,
+              30
+            ],
+            "pdfRatio": null
+          },
+          "phone": {
+            "image": [
+              80,
+              30
+            ],
+            "pdfRatio": null
+          },
+          "contentReads": {
+            "desktop": 1,
+            "phone": 1
+          }
+        },
+        "pdf": {
+          "shownMs": {
+            "desktop": 578,
+            "phone-live": 581
+          },
+          "desktop": {
+            "image": null,
+            "pdfRatio": 4.1
+          },
+          "phone": {
+            "image": null,
+            "pdfRatio": 4
+          },
+          "contentReads": {
+            "desktop": 1,
+            "phone": 1
+          }
+        },
+        "rootImage": {
+          "shownMs": {
+            "desktop": 540,
+            "phone-live": 540
+          },
+          "desktop": {
+            "image": [
+              60,
+              20
+            ],
+            "pdfRatio": null
+          },
+          "phone": {
+            "image": [
+              60,
+              20
+            ],
+            "pdfRatio": null
+          },
+          "contentReads": {
+            "desktop": 1,
+            "phone": 1
+          }
+        }
+      },
+      "folderReadsOfLive452": 0
+    },
+    "MSP-41": {
+      "result": "Pass",
+      "seconds": 13.5,
+      "editKeptAfterRewrite": true,
+      "readsAfterRewrite": 1,
+      "writes": [
+        "live-452/notes/edit.md"
+      ],
+      "readsAfterSave": 1,
+      "savedToDisk": true,
+      "editorAfterRewrite": "# Edit EDIT-VERSION-1 UNSAVED-452"
+    },
+    "MSP-42": {
+      "result": "Pass",
+      "seconds": 18,
+      "bulk": {
+        "files": 20,
+        "reads": {
+          "desktop": 0,
+          "phone-live": 0
+        },
+        "reportedPaths": {
+          "desktop": 20,
+          "phone-live": 20
+        }
+      },
+      "burst": {
+        "files": 200,
+        "stream": {
+          "desktop": {
+            "frames": 2,
+            "bytes": 20106,
+            "modifyEntries": 400,
+            "uniquePaths": 200,
+            "spreadMs": 1461
+          },
+          "phone-live": {
+            "frames": 2,
+            "bytes": 20106,
+            "modifyEntries": 400,
+            "uniquePaths": 200,
+            "spreadMs": 1461
+          }
+        },
+        "reads": {
+          "desktop": 0,
+          "phone-live": 0
+        }
+      },
+      "sampleFrame": "{\"type\":\"FILE_SYSTEM_CHANGE\",\"payload\":{\"changes\":[{\"type\":\"modify\",\"path\":\"live-452/bulk/b00.md\"},{\"type\":\"modify\",\"path\":\"live-452/bulk/b03.md\"},{\"type\":\"modify\",\"path\":\"live-452/bulk/b02.md\"},{\"type\":\"modify\",\"path\":\"live-452/bulk/b05.md\"},{\"type\":\"modify\",\"path\":\"live-452/bulk/b07.md\"},{\"type\":\"modify\",\"path\":\"live-452/bulk/b09.md\"},{\"type\":\"modify\",\"path\":\"live-452/bulk/b01.md\"},{\"type\":\"modify\",\"path\":\"live-452/bulk/b04.md\"},{\"type\":\"modify\",\"path\":\"live-452/bulk/b10.md\"},{\"type\":\"modify\",\"path\":\"live-452/bulk/b06.md\"},{\"type\":\"modify\",\"path\":\"live-452/bulk/b12.md\"},{\"type\":\"modify\",\"path\":\"live-452/bulk/b11.md\"},{\"type\":\"modify\",\"path\":\"live-452/bulk/b08.md\"},{\"type\":\"modify\",\"path\":\"live-452/bulk/b13.md\"},{\"type\":\"modify\",\"path\":\"live-452/bulk/b14.md\"},{\"type\":\"modify\",\"path\":\"live-452/bulk/b15.md\"},{\"type\":\"modify\",\"path\":\"live-452/bulk/b17.md\"},{\"type\":\"modify\",\"path\":\"live-452/bulk/b16.md\"},{\"type\":\"modify\",\"path\":\"live-452/bulk/b19.md\"},{\"type\":\"modify\",\"path\":\"live-452/bulk/b18.md\"}]}}"
+    }
+  },
+  "browserErrors": [
+    {
+      "case": "live-refresh-setup",
+      "line": "phone-live console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "live-refresh-setup",
+      "line": "phone-live console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "live-refresh-setup",
+      "line": "phone-live console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "live-refresh-setup",
+      "line": "phone-live console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-39",
+      "line": "phone-live console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-40",
+      "line": "phone-live console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-40",
+      "line": "phone-live console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-40",
+      "line": "phone-live console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-40",
+      "line": "phone-live console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-40",
+      "line": "phone-live console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-40",
+      "line": "phone-live console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    }
+  ],
+  "failedRequests": [],
+  "network": {},
+  "cleanup": {
+    "frontendExited": true,
+    "serversLeft": 0,
+    "rootRemoved": true
+  },
+  "error": null,
+  "liveFileRefresh": {
+    "run": "fact_checker_71496db39df04df299aac982533d76c6"
+  },
+  "summary": {
+    "cases": {
+      "MSP-39": "Pass",
+      "MSP-40": "Pass",
+      "MSP-41": "Pass",
+      "MSP-42": "Pass"
+    },
+    "unknownBrowserErrors": 0
+  },
+  "finishedAt": "2026-11-17T13:00:12.973Z"
+}

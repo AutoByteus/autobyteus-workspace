@@ -139,8 +139,10 @@ how to apply them; they do not replace user-approved product requirements.
    - proves it on a fresh start: a clean clone with `pnpm install
      --frozen-lockfile` only, running the gate; and, for a change to a build
      step or gate, the build-only release run on the ticket branch before it
-     is merged (`pnpm release:test --ref <branch>`, RELEASE.md). Local runs
-     and clean clones that built the packages first do not count.
+     is merged (`pnpm release:test --ref <branch>` for the desktop build, the
+     Server Docker Release's own `build_only` run for the server image;
+     RELEASE.md). Local runs and clean clones that built the packages first
+     do not count.
 
    Two releases failed this way: `v1.5.9-beta.14` and `v1.5.11-beta.11`
    (records: `tickets/done/test-and-tooling-hygiene-294/release-deployment-report.md`,

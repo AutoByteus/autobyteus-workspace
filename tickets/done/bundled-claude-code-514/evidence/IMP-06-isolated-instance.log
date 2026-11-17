@@ -1,0 +1,13 @@
+# IMP-06 AC-002/AC-003 on an isolated instance of the IMP-03 build
+# commands: pnpm --silent isolated-app start --from-worktree; in-page GraphQL/WebSocket via browser-automation run-script (control port 53632); Settings > Agent Runtimes
+# commit: 365fde4e5b; instance iso-53632-7cce; installed claude: 2.1.325 (Claude Code); 2026-11-17T14:51:23Z
+## runtimeAvailability(claude_agent_sdk): enabled=true reason=null
+## Claude model catalog (providerModelCatalogSnapshots runtimeKind=claude_agent_sdk): sources=[] errors=None, 13 models:
+['claude-fable-5', 'claude-fable-5-1', 'claude-fable-5-2', 'claude-haiku-4-5-20251001', 'haiku', 'claude-opus-4-6', 'claude-opus-4-7', 'claude-opus-4-8', 'claude-opus-5', 'opus', 'claude-sonnet-4-6', 'claude-sonnet-5', 'sonnet']
+## Claude turn (runtime claude_agent_sdk, model haiku): frames
+claude_514_check_d578da3c8b374e74b594a2607588578a
+['CONNECTED', 'AGENT_STATUS', 'AGENT_STREAM_SNAPSHOT', 'AGENT_INPUT_STATE', 'AGENT_COMMAND_ACK', 'TURN_STARTED', 'SYSTEM_INSTRUCTIONS_SUPPLIED', 'SEGMENT_START', 'SEGMENT_CONTENT_BATCH', 'SEGMENT_END', 'TOKEN_USAGE_UPDATED', 'TURN_COMPLETED']
+## reply (getRunProjection): user 'Reply with exactly: PACKAGED-514-OK' -> assistant 'PACKAGED-514-OK'
+## program the instance started (ps, parent = this worktree's app server, pid 50912):
+57926 50912 /Users/normy/.local/bin/claude --output-format stream-json --verbose --input-format stream-json --model haiku ...
+## Settings > Agent Runtimes, Claude Agent SDK row (AC-003): state=update_available; Installed 2.1.325; Update available (version 2.1.326), Update unavailable while 1 agent is running; Account: Signed in. Screenshot: IMP-06-settings-agent-runtimes.png

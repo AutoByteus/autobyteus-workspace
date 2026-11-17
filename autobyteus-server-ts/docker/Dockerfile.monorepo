@@ -51,12 +51,15 @@ RUN pnpm -C autobyteus-web build:mobile-web
 # carries it as its built-in server package; the release publishes the same folder per architecture.
 # The deploy links the server itself into node_modules/.pnpm/node_modules, pointing back at its
 # workspace folder outside the package; that link is removed (nothing resolves the server by name).
+# The Claude Agent SDK's platform binary package is removed too: Claude runs use the image's
+# installed `claude` (autobyteus-514).
 COPY scripts/server-package ./scripts/server-package
 RUN pnpm --filter autobyteus-server-ts deploy /out/server-package --legacy --prod \
   && cd /out/server-package \
   && rm node_modules/.pnpm/node_modules/autobyteus-server-ts \
   && node_modules/.bin/prisma generate --schema prisma/schema.prisma \
   && node /app/autobyteus-web/scripts/onnxruntime-web-packaging.mjs /out/server-package \
+  && node /app/autobyteus-web/scripts/claude-agent-sdk-binary-packaging.mjs /out/server-package \
   && cp -r /app/autobyteus-web/dist-mobile/public /out/server-package/mobile-web \
   && node /app/scripts/server-package/describe-server-package.mjs package-json \
     --package-dir /out/server-package \
