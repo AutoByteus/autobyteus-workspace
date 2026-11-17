@@ -42,7 +42,10 @@ import type { AgentRunBackendFactory } from "../agent-run-backend-factory.js";
 import { buildAutoByteusManagedCollaborationContext } from "./autobyteus-managed-collaboration-context-builder.js";
 import { composeNativeAutoByteusPrompt } from "../../prompt/carpenter-prompt-composer.js";
 import { getAgentSemanticMemory, type AgentSemanticMemory } from "../../../agent-memory/services/agent-semantic-memory.js";
-import { resolveAutoByteusRuntimeAgentToolExposure } from "./autobyteus-runtime-tool-exposure.js";
+import {
+  AUTOBYTEUS_DEFAULT_TOOL_NAMES,
+  resolveAutoByteusRuntimeAgentToolExposure,
+} from "./autobyteus-runtime-tool-exposure.js";
 import { createAvailableLlm } from "./available-llm-construction.js";
 import type { ApplicationAgentToolCapability } from "../../../application-agent-tools/services/application-agent-tool-capability.js";
 import { resolveApplicationAwareAgentTools } from "./application-agent-tools/application-agent-tool-composer.js";
@@ -479,6 +482,8 @@ export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory 
         null,
         memoryCompaction,
         this.options.nativeCommandProcessScope,
+        // Native policy: the base tools are listed; every other tool is searchable (tool search).
+        AUTOBYTEUS_DEFAULT_TOOL_NAMES,
       ),
     };
   }

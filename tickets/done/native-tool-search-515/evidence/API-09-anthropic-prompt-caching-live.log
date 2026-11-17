@@ -1,0 +1,17 @@
+# API-09 (autobyteus-515 API/E2E): K-2 gated live suite autobyteus-anthropic-prompt-caching-live (real studio server, Anthropic claude-opus-5-5, strict preserved-thinking harness)
+# Command (from autobyteus-server-ts): env -i PATH HOME=<temp> TMPDIR AUTOBYTEUS_TEST_VAULT=~/.autobyteus-test/vault RUN_ANTHROPIC_CACHE_E2E=1 ANTHROPIC_CACHE_E2E_EVIDENCE_DIR=<dir> ./node_modules/.bin/vitest run tests/e2e/runtime/autobyteus-anthropic-prompt-caching-live.e2e.test.ts --no-watch
+# commit 327566836a (source 49867e8dc4); Node v22.23.1; 2026-11-17 ~19:02-19:08 (log times UTC in case-results). Case results: API-09-apc-case-results.json
+
+ ✓ tests/e2e/runtime/autobyteus-anthropic-prompt-caching-live.e2e.test.ts (7 tests) 322544ms
+     ✓ APC-E2E-001: a new turn reads the whole previous history from cache, writes only new input and keeps earlier thinking  154385ms
+     ✓ APC-E2E-002: an interruption note is appended after the history and leaves the top-level system unchanged  31182ms
+     ✓ APC-E2E-005: Stop and reopen a run holding thinking: the first request strips once, is accepted, then append-only  56844ms
+     ✓ APC-E2E-004: a Settings media-model change while a thinking tool_use awaits approval leaves the tools unchanged; the continuation keeps the thinking  59723ms
+     ✓ APC-E2E-008: control — the strict harness accepts the unchanged request and rejects kept thinking under a changed tool  7857ms
+ Test Files  1 passed (1)
+      Tests  7 passed (7)
+
+== APC-E2E-004, -005, -008 details
+APC-E2E-005 pass {"firstAfterRestore":{"index":31,"phase":"T5","status":200,"toolsSha":"c367a5eb327c4713","systemSha":"bbfe326f786ae913","thinkingBlocksInRequest":0,"cache_read":4817,"cache_write":26521},"thinkingInPersistedSnapshot":true}
+APC-E2E-004 pass {"waiting":{"index":37,"phase":"T6","status":200,"toolsSha":"c367a5eb327c4713","systemSha":"bbfe326f786ae913","thinkingBlocksInRequest":5,"cache_read":38432,"cache_write":826},"continuation":{"index":38,"phase":"T6-after-change","status":200,"toolsSha":"c367a5eb327c4713","systemSha":"bbfe326f786ae913","thinkingBlocksInRequest":7,"cache_read":39258,"cache_write":1383},"toolsChanged":false}
+APC-E2E-008 pass {"unchanged":200,"changedTool":400,"changedToolError":"{\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"messages.65.content.0: Invalid `signature` in `thinking` block. The block is bound to a different conversation. Remove the block, or set `thinking.block_binding.prefix_mismatch_behavior` to \\\"d"}

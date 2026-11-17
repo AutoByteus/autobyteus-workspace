@@ -7,6 +7,7 @@ import type { FastifyInstance } from "fastify";
 import WebSocket from "ws";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
+import { closeLiveServerVault, initializeLiveServerVault } from "../../../../test-support/test-vault/live-server-vault.js";
 import { startStudioE2eRuntimeServer } from "../helpers/studio-runtime-test-server.js";
 import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
 
@@ -18,7 +19,8 @@ import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.
 //
 // Gate (spends the provider's credits):
 //   RUN_LIVE_TOOL_LIST_E2E=1 LIVE_TOOL_LIST_RUNTIME=<runtime kind> LIVE_TOOL_LIST_MODEL=<model id>
-// Runtime CLIs need their usual sign-in (see TESTING.md). AutoByteus data is a temp folder only.
+// Runtime CLIs need their usual sign-in (see TESTING.md). The native runtime (`autobyteus`) takes its provider key
+// from the test vault: add AUTOBYTEUS_TEST_VAULT=~/.autobyteus-test/vault. AutoByteus data is a temp folder only.
 // Optional LIVE_TOOL_LIST_EVIDENCE_DIR: writes live-tool-list-<runtime>.json.
 const runtimeKind = process.env.LIVE_TOOL_LIST_RUNTIME ?? "";
 const model = process.env.LIVE_TOOL_LIST_MODEL ?? "";
@@ -87,6 +89,8 @@ suite(`live tool list update on ${runtimeKind || "<runtime>"} (real model, isola
     await fs.mkdir(workspace);
     await fs.writeFile(path.join(dataDir, ".env"), "AUTOBYTEUS_SERVER_HOST=http://localhost:8000\nAPP_ENV=test\n");
     appConfigProvider.config.setCustomAppDataDir(dataDir);
+    // Provider keys come from the test vault when AUTOBYTEUS_TEST_VAULT is set (never from the environment).
+    await initializeLiveServerVault();
     const started = await startStudioE2eRuntimeServer();
     app = started.fastify; url = started.mainUrl;
     const suffix = randomUUID().slice(0, 6);
@@ -120,6 +124,7 @@ suite(`live tool list update on ${runtimeKind || "<runtime>"} (real model, isola
         .catch((error) => String(error));
     }
     if (app) await app.close();
+    await closeLiveServerVault();
     const dir = process.env.LIVE_TOOL_LIST_EVIDENCE_DIR;
     if (dir) {
       await fs.mkdir(dir, { recursive: true });

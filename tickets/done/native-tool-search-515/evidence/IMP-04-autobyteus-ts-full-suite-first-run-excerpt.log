@@ -1,0 +1,45 @@
+# IMP-04 full autobyteus-ts suite, first run (before the test updates)
+# Command: env -u AUTOBYTEUS_TEST_VAULT pnpm -C autobyteus-ts test
+# Commit: working tree on 4cbf9e7881 with the source change of 8065d773e0, before its test updates
+# Environment: macOS (darwin 25.5), Node v22.23.1
+# Date: 2026-11-17
+# Excerpt: summary, failing files, and the terminal failures (FU-003). Full log not committed (2 MB).
+
+   3  FAIL  tests/integration/agent/agent-loop-event-sequence.test.ts
+  10  FAIL  tests/integration/agent/output-limit-recovery-flow.test.ts
+   5  FAIL  tests/integration/agent/provider-native-tool-continuation-flow.test.ts
+   3  FAIL  tests/integration/agent/read-file-media-native-agent-flow.test.ts
+   9  FAIL  tests/integration/agent/runtime/agent-runtime.test.ts
+   9  FAIL  tests/integration/tools/terminal/run-bash-wrapper.test.ts
+   1  FAIL  tests/integration/tools/terminal/terminal-tools.test.ts
+   1  FAIL  tests/unit/agent/agent-replace-tools.test.ts [ tests/unit/agent/agent-replace-tools.test.ts ]
+   1  FAIL  tests/unit/agent/context/agent-context.test.ts
+   1  FAIL  tests/unit/agent/loop/llm-call-throughput.test.ts
+   3  FAIL  tests/unit/agent/loop/llm-phase-memory-compaction-configuration.test.ts
+   6  FAIL  tests/unit/agent/loop/llm-phase-tool-protocol-recovery.test.ts
+   1  FAIL  tests/unit/memory/working-context-tool-protocol-repairer.test.ts
+
+  Snapshots  3 failed
+ Test Files  13 failed | 388 passed | 22 skipped (423)
+      Tests  52 failed | 2386 passed | 99 skipped (2537)
+
+1047: ❯ tests/integration/tools/terminal/run-bash-wrapper.test.ts (26 tests | 9 failed) 54991ms
+1048-     × 10 kill of an & job: its end is reported in the kill's result as a signal 3327ms
+1049-     × 11 plain & job with children: kill <pid> stops that process only; run end stops the rest (DEC-012) 1936ms
+1050-     × 12 bash strict mode with IFS=newline-tab and two jobs reports 3 and 7 1749ms
+1051-     × keeps stdout and stderr bytes identical apart from frames (no trailing newline, lookalike frames) 1377ms
+1052-     × exit N, quoting, cd and pipelines behave as before 1318ms
+1053-     × heredocs keep their content 1168ms
+1054-     × a & b & wait: jobs waited for in the foreground are not tasks 2277ms
+1055-     × user functions named jobs, kill, wait, printf, test, echo do not affect the wrapper 1715ms
+1056-     × a user EXIT trap sees the command's status and may exit with it; the jobs stay tracked 1855ms
+1057-stdout | tests/unit/agent/context/agent-context.test.ts > AgentContext > gets tools and warns when missing
+2303: FAIL  tests/integration/tools/terminal/run-bash-wrapper.test.ts > run_bash command wrapper: R-0 regression list > exit N, quoting, cd and pipelines behave as before
+2304-AssertionError: expected null to be 42 // Object.is equality
+2305-
+2306-- Expected:
+2307-42
+2308-
+2309-+ Received:
+2310-null
+2311-

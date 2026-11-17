@@ -1,0 +1,18 @@
+# IMP-15 mutation check: the DS-003 memory tests fail when the old naming comes back
+# Command: env -u AUTOBYTEUS_TEST_VAULT npx vitest run tests/unit/memory/memory-manager-call-tool-records.test.ts (in autobyteus-ts), once per temporary source mutation, source restored after each
+# Commit: working tree whose source equals 8065d773e0
+# Environment: macOS, Node v22.23.1
+# Date: 2026-11-17
+
+Mutation A: memory-manager.ts ingestToolResults names the working-context result with the real name (canonicalToolName),
+and the repairer's raw recovery trace takes the working-context name (rawToolName = toolName).
+  Result: Tests  9 failed | 3 passed (12)
+  Failing: live path; restart then ingestToolResults; finalizePendingToolCallsForTurn; restore repair; snapshot round trip;
+  OpenAI-compatible chat, Gemini, Anthropic and OpenAI Responses replay.
+
+Mutation B: the repairer names the inserted working-context result from the raw call fact (callFact.toolName first).
+  Result: Tests  2 failed | 10 passed (12)
+  Failing: "repairs a converted call pending approval or running at a restart ..." and
+  "after an interrupted turn, inserts the committed result under the call_tool name ...".
+
+Restored source: git diff of the repairer shows only the intended change (`const toolName = call.name || callFact?.toolName || 'unknown_tool';`).

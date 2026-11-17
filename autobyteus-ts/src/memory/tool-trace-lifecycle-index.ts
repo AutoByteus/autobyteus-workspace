@@ -9,6 +9,7 @@ export type PhysicalToolTraceRecord = {
   toolCallId?: string | null;
   toolName?: string | null;
   toolArgs?: Record<string, unknown> | null;
+  calledThrough?: string | null;
   toolResult?: unknown;
   toolError?: string | null;
 };

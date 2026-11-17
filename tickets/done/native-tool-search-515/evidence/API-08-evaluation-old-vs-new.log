@@ -1,0 +1,101 @@
+# API-08 (autobyteus-515 API/E2E): evaluation old against new (AC-008, AC-009, REQ-008/009)
+# Command: env -i PATH HOME=<temp> TMPDIR AUTOBYTEUS_TEST_VAULT=~/.autobyteus-test/vault node evidence/evaluate-tool-search.mjs <root> <out.json> --agents pm,da --reps 2
+#   old <root> = /Users/normy/autobyteus_org/autobyteus-worktrees/native-tool-search-515-base (4cbf9e7881, dist built there); new <root> = this worktree (dist from 49867e8dc4 source)
+# Model deepseek-v4-flash (default). Node v22.23.1, macOS, 2026-11-17. Full outputs: API-08-evaluation-old-base-4cbf9e7881.json, API-08-evaluation-new-branch.json
+
+== Per task (both reps)
+== old /Users/normy/autobyteus_org/autobyteus-worktrees/native-tool-search-515-base 19:41:12
+{"rep":0,"task":"pm-close","toolSearch":false,"success":true,"requests":5,"firstPromptTokens":7621,"meanPromptTokens":7899}
+{"rep":0,"task":"pm-create","toolSearch":false,"success":true,"requests":4,"firstPromptTokens":7630,"meanPromptTokens":7826}
+{"rep":0,"task":"pm-rename","toolSearch":false,"success":true,"requests":3,"firstPromptTokens":7615,"meanPromptTokens":7692}
+{"rep":0,"task":"pm-start","toolSearch":false,"success":true,"requests":6,"firstPromptTokens":7618,"meanPromptTokens":7960}
+{"rep":0,"task":"pm-report","toolSearch":false,"success":true,"requests":4,"firstPromptTokens":7621,"meanPromptTokens":7805}
+{"rep":0,"task":"pm-delegate","toolSearch":false,"success":true,"requests":5,"firstPromptTokens":7616,"meanPromptTokens":7826}
+{"rep":0,"task":"da-note","toolSearch":false,"success":true,"requests":5,"firstPromptTokens":8251,"meanPromptTokens":8668}
+{"rep":0,"task":"da-image","toolSearch":false,"success":true,"requests":4,"firstPromptTokens":8259,"meanPromptTokens":8506}
+{"rep":0,"task":"da-title","toolSearch":false,"success":true,"requests":5,"firstPromptTokens":8257,"meanPromptTokens":8451}
+{"rep":0,"task":"da-search","toolSearch":false,"success":true,"requests":4,"firstPromptTokens":8257,"meanPromptTokens":8428}
+{"rep":0,"task":"da-speech","toolSearch":false,"success":true,"requests":3,"firstPromptTokens":8257,"meanPromptTokens":8385}
+{"rep":0,"task":"da-download","toolSearch":false,"success":true,"requests":28,"firstPromptTokens":8255,"meanPromptTokens":12552}
+{"rep":1,"task":"pm-close","toolSearch":false,"success":true,"requests":4,"firstPromptTokens":7622,"meanPromptTokens":7784}
+{"rep":1,"task":"pm-create","toolSearch":false,"success":true,"requests":3,"firstPromptTokens":7629,"meanPromptTokens":7733}
+{"rep":1,"task":"pm-rename","toolSearch":false,"success":true,"requests":3,"firstPromptTokens":7614,"meanPromptTokens":7693}
+{"rep":1,"task":"pm-start","toolSearch":false,"success":true,"requests":6,"firstPromptTokens":7619,"meanPromptTokens":7964}
+{"rep":1,"task":"pm-report","toolSearch":false,"success":true,"requests":4,"firstPromptTokens":7622,"meanPromptTokens":7792}
+{"rep":1,"task":"pm-delegate","toolSearch":false,"success":true,"requests":4,"firstPromptTokens":7616,"meanPromptTokens":7848}
+{"rep":1,"task":"da-note","toolSearch":false,"success":true,"requests":2,"firstPromptTokens":8251,"meanPromptTokens":8343}
+{"rep":1,"task":"da-image","toolSearch":false,"success":true,"requests":15,"firstPromptTokens":8259,"meanPromptTokens":9652}
+{"rep":1,"task":"da-title","toolSearch":false,"success":true,"requests":4,"firstPromptTokens":8254,"meanPromptTokens":8397}
+{"rep":1,"task":"da-search","toolSearch":false,"success":true,"requests":4,"firstPromptTokens":8257,"meanPromptTokens":8424}
+{"rep":1,"task":"da-speech","toolSearch":false,"success":true,"requests":4,"firstPromptTokens":8256,"meanPromptTokens":8526}
+{"rep":1,"task":"da-download","toolSearch":false,"success":false,"requests":11,"firstPromptTokens":8255,"meanPromptTokens":9181}
+== old done 19:45:17
+== new /Users/normy/autobyteus_org/autobyteus-worktrees/native-tool-search-515 19:45:17
+{"rep":0,"task":"pm-close","toolSearch":true,"success":true,"requests":4,"firstPromptTokens":2523,"meanPromptTokens":3629}
+{"rep":0,"task":"pm-create","toolSearch":true,"success":true,"requests":5,"firstPromptTokens":2533,"meanPromptTokens":3729}
+{"rep":0,"task":"pm-rename","toolSearch":true,"success":true,"requests":4,"firstPromptTokens":2519,"meanPromptTokens":2958}
+{"rep":0,"task":"pm-start","toolSearch":true,"success":true,"requests":5,"firstPromptTokens":2522,"meanPromptTokens":3856}
+{"rep":0,"task":"pm-report","toolSearch":true,"success":true,"requests":7,"firstPromptTokens":2527,"meanPromptTokens":3519}
+{"rep":0,"task":"pm-delegate","toolSearch":true,"success":true,"requests":6,"firstPromptTokens":2518,"meanPromptTokens":4368}
+{"rep":0,"task":"da-note","toolSearch":true,"success":true,"requests":5,"firstPromptTokens":2529,"meanPromptTokens":2880}
+{"rep":0,"task":"da-image","toolSearch":true,"success":true,"requests":5,"firstPromptTokens":2537,"meanPromptTokens":3124}
+{"rep":0,"task":"da-title","toolSearch":true,"success":true,"requests":4,"firstPromptTokens":2533,"meanPromptTokens":3036}
+{"rep":0,"task":"da-search","toolSearch":true,"success":true,"requests":4,"firstPromptTokens":2534,"meanPromptTokens":2804}
+{"rep":0,"task":"da-speech","toolSearch":true,"success":true,"requests":4,"firstPromptTokens":2536,"meanPromptTokens":3884}
+{"rep":0,"task":"da-download","toolSearch":true,"success":false,"requests":8,"firstPromptTokens":2534,"meanPromptTokens":3673}
+{"rep":1,"task":"pm-close","toolSearch":true,"success":true,"requests":4,"firstPromptTokens":2525,"meanPromptTokens":3674}
+{"rep":1,"task":"pm-create","toolSearch":true,"success":true,"requests":4,"firstPromptTokens":2534,"meanPromptTokens":3260}
+{"rep":1,"task":"pm-rename","toolSearch":true,"success":true,"requests":4,"firstPromptTokens":2518,"meanPromptTokens":3028}
+{"rep":1,"task":"pm-start","toolSearch":true,"success":true,"requests":5,"firstPromptTokens":2524,"meanPromptTokens":3850}
+{"rep":1,"task":"pm-report","toolSearch":true,"success":true,"requests":5,"firstPromptTokens":2525,"meanPromptTokens":3203}
+{"rep":1,"task":"pm-delegate","toolSearch":true,"success":true,"requests":3,"firstPromptTokens":2519,"meanPromptTokens":3593}
+{"rep":1,"task":"da-note","toolSearch":true,"success":true,"requests":4,"firstPromptTokens":2529,"meanPromptTokens":2735}
+{"rep":1,"task":"da-image","toolSearch":true,"success":true,"requests":6,"firstPromptTokens":2537,"meanPromptTokens":3227}
+{"rep":1,"task":"da-title","toolSearch":true,"success":true,"requests":7,"firstPromptTokens":2535,"meanPromptTokens":3327}
+{"rep":1,"task":"da-search","toolSearch":true,"success":true,"requests":4,"firstPromptTokens":2534,"meanPromptTokens":2799}
+{"rep":1,"task":"da-speech","toolSearch":true,"success":true,"requests":3,"firstPromptTokens":2535,"meanPromptTokens":3761}
+{"rep":1,"task":"da-download","toolSearch":true,"success":true,"requests":4,"firstPromptTokens":2534,"meanPromptTokens":2964}
+== new done 19:47:47
+
+== Summary and derived figures
+pm OLD {"tasks":12,"succeeded":12,"meanFirstPromptTokens":7620,"meanPromptTokensPerRequest":7838,"meanCacheReadPerRequest":5898,"meanRequestsPerTask":4.3}
+pm NEW {"tasks":12,"succeeded":12,"meanFirstPromptTokens":2524,"meanPromptTokensPerRequest":3589,"meanCacheReadPerRequest":2699,"meanRequestsPerTask":4.7}
+pm first-request saving 5096 mean-per-request saving 4249
+pm first ranges old 7614 7630 new 2518 2534
+pm min per-conversation first-request saving 5080
+pm success old {"pm-close":"11","pm-create":"11","pm-rename":"11","pm-start":"11","pm-report":"11","pm-delegate":"11"} new {"pm-close":"11","pm-create":"11","pm-rename":"11","pm-start":"11","pm-report":"11","pm-delegate":"11"}
+pm cache old {"meanCacheRead":5898,"meanCacheShareOfPrompt":"0.752"} new {"meanCacheRead":2699,"meanCacheShareOfPrompt":"0.752"}
+da OLD {"tasks":12,"succeeded":11,"meanFirstPromptTokens":8256,"meanPromptTokensPerRequest":10043,"meanCacheReadPerRequest":8759,"meanRequestsPerTask":7.4}
+da NEW {"tasks":12,"succeeded":11,"meanFirstPromptTokens":2534,"meanPromptTokensPerRequest":3211,"meanCacheReadPerRequest":2441,"meanRequestsPerTask":4.8}
+da first-request saving 5722 mean-per-request saving 6832
+da first ranges old 8251 8259 new 2529 2537
+da min per-conversation first-request saving 5714
+da success old {"da-note":"11","da-image":"11","da-title":"11","da-search":"11","da-speech":"11","da-download":"10"} new {"da-note":"11","da-image":"11","da-title":"11","da-search":"11","da-speech":"11","da-download":"01"}
+da cache old {"meanCacheRead":8759,"meanCacheShareOfPrompt":"0.872"} new {"meanCacheRead":2441,"meanCacheShareOfPrompt":"0.760"}
+
+== da-download failures: cause
+# The same script with download_media/read_file arguments logged (temporary copy /tmp/nts515/eval-args.mjs), da-download x4 per build:
+old rep0 success=false download_media({"url":"https://example.com/logo.png","filename":"logo","folder":"downloads"})
+old rep1 success=true download_media({"url":"https://example.com/logo.png","filename":"logo","folder":"downloads"}) | download_media({"filename":"logo.png","folder":"downloads","url":"https://example.com/logo.png"})
+old rep2 success=true download_media({"url":"https://example.com/logo.png","filename":"logo"}) | download_media({"filename":"logo.png","folder":"downloads","url":"https://example.com/logo.png"})
+old rep3 success=false download_media({"url":"https://example.com/logo.png","filename":"logo","folder":"downloads"})
+new rep0 success=false download_media({"url":"https://example.com/logo.png","filename":"logo","folder":"downloads"})
+new rep1 success=false download_media({"url":"https://example.com/logo.png","filename":"logo","folder":"downloads"})
+new rep2 success=false download_media({"url":"https://example.com/logo.png","filename":"logo","folder":"downloads"})
+new rep3 success=false download_media({"url":"https://example.com/logo.png","filename":"logo","folder":"downloads"})
+# download_media's schema: 'filename': 'The desired base name ... The tool will automatically add the correct file extension.' The evaluation's stub wrote <folder>/<filename> as given, so a schema-following call (filename 'logo') left downloads/logo and the state check (downloads/logo.png) failed; old runs passed only when the model retried with 'logo.png'.
+# Fix (evidence/evaluate-tool-search.mjs, marked "API/E2E fix"): the stub adds the URL extension when filename has none, as the real tool does.
+
+== da-download x4 per build with the fixed stub
+old {"rep":0,"task":"da-download","toolSearch":false,"success":true,"requests":19,"firstPromptTokens":8257,"meanPromptTokens":9913}
+old {"rep":1,"task":"da-download","toolSearch":false,"success":true,"requests":25,"firstPromptTokens":8255,"meanPromptTokens":10718}
+old {"rep":2,"task":"da-download","toolSearch":false,"success":true,"requests":14,"firstPromptTokens":8255,"meanPromptTokens":9637}
+old {"rep":3,"task":"da-download","toolSearch":false,"success":true,"requests":18,"firstPromptTokens":8256,"meanPromptTokens":10156}
+new {"rep":0,"task":"da-download","toolSearch":true,"success":true,"requests":11,"firstPromptTokens":2534,"meanPromptTokens":4699}
+new {"rep":1,"task":"da-download","toolSearch":true,"success":true,"requests":17,"firstPromptTokens":2534,"meanPromptTokens":8047}
+new {"rep":2,"task":"da-download","toolSearch":true,"success":true,"requests":4,"firstPromptTokens":2534,"meanPromptTokens":3073}
+new {"rep":3,"task":"da-download","toolSearch":true,"success":true,"requests":4,"firstPromptTokens":2533,"meanPromptTokens":2970}
+
+== Unfixed extra da-download runs (same harness defect; shown for completeness, not used for AC-009)
+# x4 per build before the cause was known (/tmp/nts515/API-08-download.log): old 1110, new 0001 (1 = success)
+# x4 per build run while the stub edit had not been applied yet (edit refused, file unread): old 0000, new 0011

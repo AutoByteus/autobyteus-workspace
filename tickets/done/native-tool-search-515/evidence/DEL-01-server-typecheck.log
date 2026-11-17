@@ -1,0 +1,9 @@
+# DEL-01 (autobyteus-515 delivery): server typecheck on the merged state
+# Command: pnpm -C autobyteus-server-ts typecheck   (run first, while a web typecheck ran at the same time; the web one died at once with exit 1 and empty output, so it was rerun alone: DEL-02)
+# Commit: bf5250aef3 (merge of origin/personal 3722dbb1d8 into the ticket branch); Node v22.23.1, macOS; 2026-11-17
+
+[typecheck] server src (tsconfig.build.json): 0 errors, exit 0, 16.9s
+[typecheck] server tests (tsconfig.tests.json): 1012 errors, exit 2, 58.7s
+[typecheck] production errors: 0; test-file errors: 1012 in 316 files (baseline 1012 in 316 files)
+[typecheck] PASS
+exit 0

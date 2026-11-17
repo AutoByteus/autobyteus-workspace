@@ -28,6 +28,7 @@ import { FileMemoryStore } from '../../../../src/memory/store/file-store.js';
 import { BaseTool, type ToolExecutionOptions } from '../../../../src/tools/base-tool.js';
 import { ParameterSchema, ParameterDefinition, ParameterType } from '../../../../src/utils/parameter-schema.js';
 import type { ChunkResponse } from '../../../../src/llm/utils/response-types.js';
+import { AgentToolSearch } from '../../../../src/agent/tool-search/agent-tool-search.js';
 
 class DummyLLM extends BaseLLM {
   protected async _sendMessagesToLLM(_messages: Message[]): Promise<CompleteResponse> {
@@ -531,6 +532,7 @@ describe('Agent runtime integration', () => {
     const state = new AgentRuntimeState(agentId, null, null);
     state.llmInstance = config.llmInstance;
     state.toolInstances = {};
+    state.toolSearch = new AgentToolSearch(null, Object.keys(state.toolInstances!));
     attachMemory(state);
 
     const context = new AgentContext(agentId, config, state);
@@ -612,6 +614,7 @@ describe('Agent runtime integration', () => {
     const state = new AgentRuntimeState(agentId, null, null);
     state.llmInstance = llm;
     state.toolInstances = {};
+    state.toolSearch = new AgentToolSearch(null, Object.keys(state.toolInstances!));
     attachMemory(state);
 
     const context = new AgentContext(agentId, config, state);
@@ -687,6 +690,7 @@ describe('Agent runtime integration', () => {
     const state = new AgentRuntimeState(agentId, null, null);
     state.llmInstance = llm;
     state.toolInstances = {};
+    state.toolSearch = new AgentToolSearch(null, Object.keys(state.toolInstances!));
     attachMemory(state);
 
     const context = new AgentContext(agentId, config, state);
@@ -868,6 +872,7 @@ describe('Agent runtime integration', () => {
     const state = new AgentRuntimeState(agentId, null, null);
     state.llmInstance = llm;
     state.toolInstances = { [ApprovalTool.getName()]: approvalTool };
+    state.toolSearch = new AgentToolSearch(null, Object.keys(state.toolInstances!));
     attachMemory(state);
 
     const context = new AgentContext(agentId, config, state);
@@ -966,6 +971,7 @@ describe('Agent runtime integration', () => {
     const state = new AgentRuntimeState(agentId, null, null);
     state.llmInstance = llm;
     state.toolInstances = { [ApprovalTool.getName()]: approvalTool };
+    state.toolSearch = new AgentToolSearch(null, Object.keys(state.toolInstances!));
     attachMemory(state);
 
     const context = new AgentContext(agentId, config, state);
@@ -1042,6 +1048,7 @@ describe('Agent runtime integration', () => {
     const state = new AgentRuntimeState(agentId, null, null);
     state.llmInstance = llm;
     state.toolInstances = { [ApprovalTool.getName()]: approvalTool };
+    state.toolSearch = new AgentToolSearch(null, Object.keys(state.toolInstances!));
     attachMemory(state);
 
     const context = new AgentContext(agentId, config, state);
@@ -1161,6 +1168,7 @@ describe('Agent runtime integration', () => {
       [SafeFactTool.getName()]: safeTool,
       [BlockingTool.getName()]: blockingTool
     };
+    state.toolSearch = new AgentToolSearch(null, Object.keys(state.toolInstances));
     attachMemory(state);
 
     const context = new AgentContext(agentId, config, state);
@@ -1243,6 +1251,7 @@ describe('Agent runtime integration', () => {
     const state = new AgentRuntimeState(agentId, null, null);
     state.llmInstance = llm;
     state.toolInstances = { [ExternalResultTool.getName()]: externalTool };
+    state.toolSearch = new AgentToolSearch(null, Object.keys(state.toolInstances!));
     attachMemory(state);
 
     const context = new AgentContext(agentId, config, state);
@@ -1332,6 +1341,7 @@ describe('Agent runtime integration', () => {
     const state = new AgentRuntimeState(agentId, null, null);
     state.llmInstance = llm;
     state.toolInstances = { [ExternalResultTool.getName()]: externalTool };
+    state.toolSearch = new AgentToolSearch(null, Object.keys(state.toolInstances!));
     attachMemory(state);
 
     const context = new AgentContext(agentId, config, state);
@@ -1409,6 +1419,7 @@ describe('Agent runtime integration', () => {
     const state = new AgentRuntimeState(agentId, null, null);
     state.llmInstance = llm;
     state.toolInstances = { [FailingModeExternalResultTool.getName()]: externalTool };
+    state.toolSearch = new AgentToolSearch(null, Object.keys(state.toolInstances!));
     attachMemory(state);
 
     const context = new AgentContext(agentId, config, state);

@@ -1,0 +1,26 @@
+# DEL-04 (autobyteus-515 delivery): gated native background-task transport suite on the merged state
+# Command: env -i PATH HOME=<temp> TMPDIR=<temp> RUN_NATIVE_BACKGROUND_TASK_E2E=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/autobyteus-background-task-transport.e2e.test.ts --no-watch --reporter=verbose
+# Commit: bf5250aef3; machine load average 53-90 and fseventsd at 112% CPU during all three runs
+# Run 1: Tests 1 failed | 8 passed (9); unhandled error 'Background command did not start: Command did not start: Command failed: ps -axo pid=,ppid=,pgid=,stat=,lstart=,comm=' in BGT-01
+# Run 2 (below): BGT-01 failed with 'Command control deadline exceeded' (FU-003's launch deadline under load); BGT-02..BGT-09 passed (BGT-09 failed on both builds in API-06b)
+# Run 3: BGT-01 alone (-t BGT-01): passed
+
+ × tests/e2e/runtime/autobyteus-background-task-transport.e2e.test.ts > Native background tasks through the real server (scripted model) > BGT-01: background start, tail, idle wake by one notice, panel and journal; retired tool names skipped (AC-001/003/007/0
+   → Timed out waiting for BGT-01 idle. Recent frames: AGENT_INPUT_STATE:{"run_instance_id":"99129808-7d97-47ea-8922-9f1d608323e3","revision":2,"entries":[{"sequence":1,"message_id":"e2e-9d1a27e9-8c24-4914-952c-dadc3fe485ac","dedupe_ | AGENT_COMMAND_ACK:{"co
+ ✓ tests/e2e/runtime/autobyteus-background-task-transport.e2e.test.ts > Native background tasks through the real server (scripted model) > BGT-02: a command failing while the agent is busy is told in one notice right after the turn (AC-002) 10548ms
+ ✓ tests/e2e/runtime/autobyteus-background-task-transport.e2e.test.ts > Native background tasks through the real server (scripted model) > BGT-03: three commands ending within 1 s arrive in exactly one notice that also lists the one still running (AC-004) 10
+ ✓ tests/e2e/runtime/autobyteus-background-task-transport.e2e.test.ts > Native background tasks through the real server (scripted model) > BGT-04: kill <pid> of an `npm run dev` stops everything it started, reported in the kill's own result, no notice (AC-00
+ ✓ tests/e2e/runtime/autobyteus-background-task-transport.e2e.test.ts > Native background tasks through the real server (scripted model) > BGT-05: & jobs of a foreground call are background tasks; kill, children (DEC-012), disown, Terminate (AC-010) 14462ms
+ ✓ tests/e2e/runtime/autobyteus-background-task-transport.e2e.test.ts > Native background tasks through the real server (scripted model) > BGT-06: Terminate stops a running background command within 10 s, with no notice, and removes its output (AC-006) 6421m
+ ✓ tests/e2e/runtime/autobyteus-background-task-transport.e2e.test.ts > Native background tasks through the real server (scripted model) > BGT-07: Stop during a foreground command leaves the background command running; its notice still arrives (AC-013) 11179
+ ✓ tests/e2e/runtime/autobyteus-background-task-transport.e2e.test.ts > Native background tasks through the real server (scripted model) > BGT-08: a background command killed from outside while the agent is idle is told as a signal in a notice (AC-002) 2971m
+ ✓ tests/e2e/runtime/autobyteus-background-task-transport.e2e.test.ts > Native background tasks through the real server (scripted model) > BGT-09: a delegated copy with a running command is not idle-shut-down; the notice wakes it; shut down one grace after q
+Error: Timed out waiting for BGT-01 idle. Recent frames: AGENT_INPUT_STATE:{"run_instance_id":"99129808-7d97-47ea-8922-9f1d608323e3","revision":2,"entries":[{"sequence":1,"message_id":"e2e-9d1a27e9-8c24-4914-952c-dadc3fe485ac","dedupe_ | AGENT_COMMAND_ACK:{"co
+Error: tool result is not JSON: Error: Error executing tool 'run_bash' (ID: call-6cb549fb-60f): Error: Background command did not start: Command did not start: Command control deadline exceeded
+ Test Files  1 failed (1)
+      Tests  1 failed | 8 passed (9)
+
+== BGT-01 alone
+ ✓ tests/e2e/runtime/autobyteus-background-task-transport.e2e.test.ts > Native background tasks through the real server (scripted model) > BGT-01: background start, tail, idle wake by one notice, panel and journal; retired tool names skipped (AC-001/003/007/
+ Test Files  1 passed (1)
+      Tests  1 passed | 8 skipped (9)

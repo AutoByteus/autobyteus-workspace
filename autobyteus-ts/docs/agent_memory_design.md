@@ -286,6 +286,16 @@ safe message. Repeated repair converges; an abandoned tool is not assumed to
 have succeeded. Archived raw history is not replayed as new conversation work.
 New-run initialization remains a separate path.
 
+A tool called through tool search (`call_tool`; see
+`tool_schema_and_configuration.md` §4.8) has two records. The raw `tool_call`
+trace holds the real tool: `tool_name`, `tool_args` and `called_through`
+(`"call_tool"`). The working context keeps the call as the model made it, a
+`call_tool` call with `{name, arguments}` and a result named `call_tool`, which
+providers replay. Repair answers the working-context call under its own name and
+writes its raw recovery trace under the real tool. A raw trace without
+`called_through` (a direct call, or any run written before tool search) is read
+as it always was.
+
 Every memory JSONL file (active raw traces, episodic, semantic, archive
 segments) is read with one line rule, `src/memory/store/jsonl-log-file.ts`,
 working on byte offsets, never on decoded strings:
