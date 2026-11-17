@@ -1,0 +1,148 @@
+// IMP-011 FU-035 step 0 probe (throwaway; kept as evidence, not a product test). Commit 1eed3c4aff. Ran from autobyteus-server-ts/tests/e2e/runtime/.
+import "reflect-metadata";
+import fs from "node:fs";
+import fsp from "node:fs/promises";
+import os from "node:os";
+import path from "node:path";
+import { randomUUID } from "node:crypto";
+import { spawnSync } from "node:child_process";
+import type { FastifyInstance } from "fastify";
+import WebSocket from "ws";
+import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
+
+// autobyteus-500 FU-035 step 0 (D-9): a throwaway live probe, not a product test. It records, for one refused
+// `send_message_to` from a Grok agent: (1) the MCP result our executor returned, (2) the raw ACP tool-call snapshot
+// Grok sent, with what the projection made of it, (3) what the model says it saw. Gated like the live Grok e2e.
+const OUT = process.env.FU035_OUT_DIR || "/tmp/r500/fu035";
+const record = (file: string, value: unknown) => {
+  fs.mkdirSync(OUT, { recursive: true });
+  fs.appendFileSync(path.join(OUT, file), `${JSON.stringify(value)}\n`);
+};
+
+vi.mock("../../../src/agent-tools/mcp/agent-tool-mcp-tool-executor.js", async (importOriginal) => {
+  const original = await importOriginal<typeof import("../../../src/agent-tools/mcp/agent-tool-mcp-tool-executor.js")>();
+  class RecordingExecutor extends original.AgentToolMcpToolExecutor {
+    override async executeAgentToolMcpCall(input: Parameters<original.AgentToolMcpToolExecutor["executeAgentToolMcpCall"]>[0]) {
+      try {
+        const result = await super.executeAgentToolMcpCall(input);
+        record("executor.jsonl", { toolName: input.toolName, rawArguments: input.rawArguments, result });
+        return result;
+      } catch (error) {
+        record("executor.jsonl", { toolName: input.toolName, rawArguments: input.rawArguments, thrown: String(error) });
+        throw error;
+      }
+    }
+  }
+  return { ...original, AgentToolMcpToolExecutor: RecordingExecutor };
+});
+
+vi.mock("../../../src/agent-execution/backends/grok/grok-build-tool-projection.js", async (importOriginal) => {
+  const original = await importOriginal<typeof import("../../../src/agent-execution/backends/grok/grok-build-tool-projection.js")>();
+  return {
+    ...original,
+    projectGrokToolCall: (snapshot: Parameters<typeof original.projectGrokToolCall>[0]) => {
+      const projection = original.projectGrokToolCall(snapshot);
+      record("snapshots.jsonl", { snapshot, projection });
+      return projection;
+    },
+  };
+});
+
+const { appConfigProvider } = await import("../../../src/config/app-config-provider.js");
+const { startStudioE2eRuntimeServer } = await import("../helpers/studio-runtime-test-server.js");
+const { sendE2eSendMessageCommand } = await import("../helpers/websocket-command-helpers.js");
+const { agentStreamFramesOf, waitConnected } = await import("../helpers/agent-stream-frames.js");
+
+const grokCommand = process.env.GROK_BUILD_COMMAND?.trim() || "grok";
+const grokReady = spawnSync(grokCommand, ["--version"], { stdio: "ignore" }).status === 0;
+const describeLiveGrok = process.env.RUN_GROK_E2E === "1" && grokReady ? describe : describe.skip;
+const STEP_TIMEOUT_MS = 240_000;
+type WsMessage = { type: string; payload: Record<string, unknown> };
+const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
+describeLiveGrok("FU-035 probe: a Grok agent's refused send_message_to", () => {
+  let dataDir = "";
+  let app: FastifyInstance | null = null;
+  let url: URL;
+  let modelIdentifier = "";
+  const sockets: WebSocket[] = [];
+
+  const graphql = async <T>(query: string, variables?: Record<string, unknown>): Promise<T> => {
+    const response = await fetch(new URL("/graphql", url), { method: "POST", headers: { "content-type": "application/json" },
+      body: JSON.stringify({ query, variables }) });
+    const body = await response.json() as { data?: T; errors?: Array<{ message: string }> };
+    if (!response.ok || !body.data || body.errors?.length) throw new Error(JSON.stringify(body.errors ?? body));
+    return body.data;
+  };
+
+  beforeAll(async () => {
+    dataDir = await fsp.mkdtemp(path.join(os.tmpdir(), "fu035-grok-"));
+    await fsp.writeFile(path.join(dataDir, ".env"), "AUTOBYTEUS_SERVER_HOST=http://localhost:8000\nAPP_ENV=test\n");
+    appConfigProvider.config.setCustomAppDataDir(dataDir);
+    const started = await startStudioE2eRuntimeServer();
+    app = started.fastify;
+    url = started.mainUrl;
+    // Discovery can miss its 8 s budget on a loaded machine: a few tries, recorded.
+    let catalog: { providerModelCatalogSnapshots: Array<{ llmModels: Array<{ modelIdentifier: string }> }> } | null = null;
+    for (let attempt = 1; !catalog && attempt <= 5; attempt += 1) {
+      catalog = await graphql<typeof catalog & object>(
+        "query($r: String) { providerModelCatalogSnapshots(runtimeKind: $r) { llmModels { modelIdentifier } } }", { r: "grok_build" })
+        .catch((error) => { record("run.jsonl", { discoveryAttempt: attempt, error: String(error) }); return null; });
+    }
+    if (!catalog) throw new Error("Grok model discovery failed five times");
+    const models = catalog.providerModelCatalogSnapshots.flatMap((s) => s.llmModels.map((m) => m.modelIdentifier));
+    modelIdentifier = models.includes("grok-4.7") ? "grok-4.7" : models[0]!;
+    record("run.jsonl", { models, modelIdentifier });
+  }, 240_000);
+
+  afterAll(async () => {
+    for (const socket of sockets) if (socket.readyState === WebSocket.OPEN) socket.close();
+    if (app) await app.close();
+    if (dataDir) await fsp.rm(dataDir, { recursive: true, force: true });
+  }, 60_000);
+
+  it("records the executor's result, the raw snapshot and the model's account", async () => {
+    const workspace = await fsp.mkdtemp(path.join(dataDir, "ws-"));
+    const definition = await graphql<{ createAgentDefinition: { id: string } }>(
+      "mutation($input: CreateAgentDefinitionInput!) { createAgentDefinition(input: $input) { id } }",
+      { input: { name: `fu035-probe-${randomUUID()}`, role: "assistant", description: "FU-035 probe",
+        instructions: "You are a concise test agent. Follow the user's steps exactly.", category: "runtime-e2e",
+        toolNames: ["send_message_to"] } });
+    const created = await graphql<{ createAgentRun: { success: boolean; message: string; runId: string | null } }>(
+      "mutation($input: CreateAgentRunInput!) { createAgentRun(input: $input) { success message runId } }",
+      { input: { agentDefinitionId: definition.createAgentDefinition.id, workspaceRootPath: workspace,
+        llmModelIdentifier: modelIdentifier, llmConfig: { reasoning_effort: "low" }, autoExecuteTools: true, runtimeKind: "grok_build" } });
+    expect(created.createAgentRun.success, created.createAgentRun.message).toBe(true);
+    const runId = created.createAgentRun.runId!;
+
+    const socket = new WebSocket(`ws://${url.hostname}:${url.port}/ws/agent/${runId}`);
+    sockets.push(socket);
+    const messages: WsMessage[] = [];
+    socket.on("message", (raw: unknown) => {
+      try { messages.push(...agentStreamFramesOf(JSON.parse(String(raw)))); } catch { /* diagnostic rows */ }
+    });
+    await new Promise<void>((resolve, reject) => { socket.once("open", () => resolve()); socket.once("error", reject); });
+    await waitConnected(messages);
+
+    sendE2eSendMessageCommand(socket, { agent_run_id: runId, content:
+      "Call the AutoByteus tool send_message_to (MCP server autobyteus_agent_tools; find it with search_tool and call it "
+      + "with use_tool) exactly once, with arguments {\"target_agent_run_id\": \"run_fu035_not_reachable\", \"content\": \"hello\"}. "
+      + "Do not retry and do not call any other tool afterwards. Then reply with the line TOOL RESULT TEXT: followed by the "
+      + "exact text the tool returned to you, verbatim, or NO TEXT if the tool returned no text." });
+    const deadline = Date.now() + STEP_TIMEOUT_MS;
+    while (!messages.some((m) => m.type === "TURN_COMPLETED" || m.type === "ERROR")) {
+      if (Date.now() > deadline) break;
+      for (const request of messages.filter((m) => m.type === "TOOL_APPROVAL_REQUESTED")) {
+        if (request.payload.__approved) continue;
+        request.payload.__approved = true;
+        socket.send(JSON.stringify({ type: "APPROVE_TOOL", payload: { invocation_id: request.payload.invocation_id } }));
+      }
+      await wait(200);
+    }
+    const reply = messages.filter((m) => m.type === "SEGMENT_CONTENT").map((m) => String(m.payload.delta ?? "")).join("");
+    record("run.jsonl", { runId, reply, frames: messages.filter((m) => m.type.startsWith("TOOL_") || m.type === "ERROR"
+      || m.type === "TURN_COMPLETED").map((m) => ({ type: m.type, payload: m.payload })) });
+    await graphql("mutation($agentRunId: String!) { terminateAgentRun(agentRunId: $agentRunId) { success } }", { agentRunId: runId })
+      .catch(() => undefined);
+  }, STEP_TIMEOUT_MS + 60_000);
+});

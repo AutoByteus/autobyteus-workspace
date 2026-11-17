@@ -1,0 +1,11 @@
+# IMP-011 FU-035 step 0: live grok_build reproduction attempt (blocked by the Grok usage limit)
+# Command: AUTOBYTEUS_TEST_VAULT=~/.autobyteus-test/vault RUN_GROK_E2E=1 npx vitest run --no-watch tests/e2e/runtime/fu035-grok-refused-tool-probe.e2e.test.ts
+#   (probe source: IMP-011-fu035-grok-refused-tool-probe.e2e.test.ts.txt; a throwaway, not committed as a test)
+# Commit: 1eed3c4aff (branch codex/follow-ups-of-461-500); macOS Darwin 25.5.0, grok 1.0.88 (2fe3608f7398) [stable], model grok-4.7, reasoning effort low
+# Date: 2026-11-17 12:16-12:17 local; machine load average 70-150 (other worktrees' suites)
+# Attempts: 11:49 and 11:56 failed at model discovery (GROK_MODEL_DISCOVERY_TIMEOUT, 5 of 5 tries; the CLI's ACP initialize gave no answer in 40 s at load ~146); 12:16 reached the turn.
+# Result: the turn was refused by Grok before any tool call: no executor result, no tool-call snapshot, no model reply.
+
+## /tmp/r500/fu035/run.jsonl (the probe's record)
+{"models":["grok-4.7"],"modelIdentifier":"grok-4.7"}
+{"runId":"fu035_probe_bd3f87b7_43c0_4e43_bec1_c3b2732c8fbd_945ea10da3fe40bca0a49c8af73f1fa8","reply":"","frames":[{"type":"ERROR","payload":{"code":"ACP_PROMPT_FAILED","message":"Rate limited: API error (status 429 Too Many Requests): subscription:free-usage-exhausted: You've used all the included free usage for model grok-4.7 for now. Usage resets over a rolling 24-hour window — tokens (actual/limit): 609708/600000. Upgrade to a Grok subscription for higher limits: https://grok.com/supergrok","error_scope":"turn","error_effect":"terminal","turn_id":"9b075043-1282-4206-9b67-f672e87c2520"}}]}
