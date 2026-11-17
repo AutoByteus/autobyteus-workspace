@@ -190,11 +190,14 @@ describe("every late predecessor of 20261111_delegated_runs_own_runs_v1 (SR-079)
     for (const id of delegatedTeams) expect(await teamRows()).toContain(id);
     await new RunHistoryIndexV2AppDataMigration(w.memory, names, catalogs).execute();
     for (const id of delegatedAgents) expect(await agentRows()).toContain(id);
+    // autobyteus-500 G-2 (FU-029): the late rebuild keeps a delegated team's row (no metadata file, but its folder and tree);
+    // the follow-up then adds nothing.
     await new TeamRunHistoryIndexV2AppDataMigration(w.memory, names, catalogs).execute();
-    for (const id of delegatedTeams) expect(await teamRows()).not.toContain(id);
+    for (const id of delegatedTeams) expect(await teamRows()).toContain(id);
+    const rowsAfterRebuild = await teamRows();
     const followUp = createDelegatedRunsPreservedItemsMigrations(w.appData, w.memory, names, null, terminalLedger).find((migration) => migration.spec.predecessor === "20260521_team_run_history_index_v2")!;
     await followUp.execute();
-    for (const id of delegatedTeams) expect(await teamRows()).toContain(id);
+    expect((await teamRows()).sort()).toEqual([...rowsAfterRebuild].sort());
   });
 });
 
