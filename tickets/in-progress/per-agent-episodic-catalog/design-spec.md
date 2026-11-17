@@ -2,7 +2,7 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: `SR-002`
+- Current solution revision ID: `SR-003` (design-only revision of SR-002; requirements and contract unchanged)
 - Approved requirements baseline: `requirements-doc.md` at SR-002. SR-001 approved by the Solution Designer within the founder's direction (user informed); SR-002 on the user's direction in the Solution Designer's conversation (2026-11-17: "think from the agent's perspective … remove those redundant ones"), entry decided in DEC-013, user informed
 - Behavior-defining supplements: `episodic-catalog-contract.md` (SR-002): the authority for the files' exact content; the examples in this spec illustrate it, and where they differ the contract wins
 - User approval of the design, when the direction requires it: `Not required`. The founder decided the direction (option A) and dispatched with "design, then build". His separate gates are delivery gates: his approval and a backup before the first build on his own node, and release only on his word.
@@ -10,6 +10,73 @@
 - Canonical investigation-notes path: `/Users/normy/autobyteus_org/autobyteus-worktrees/per-agent-episodic-catalog/tickets/in-progress/per-agent-episodic-catalog/investigation-notes.md`
 - Authorities read (2026-11-17): `references/architecture-design.md`, `references/design-principles.md`, repository `DESIGN.md` (rules 3, 5, 7, 8, 10; Domain vocabulary → `GLOSSARY.md`; Persisted data → Data Migration Guideline, no migration here), `GLOSSARY.md` § Memory
 - Project design-principle conflicts or discrepancies: none
+
+## SR-003 Revision: Unreadable Records Are An Explicit Outcome (CRR-002 CR-001, API-09/EC-06; API-15)
+
+This section governs where it differs from the sections below.
+
+**Problem (investigation INV-C12):** a member folder of a team or org tree that cannot be read falls through to the folder rule with `agentDefinitionId: null`, and the catalog skips it as "never attributed" (`episodic-catalog.ts:181`) with no warning naming the run. That breaks REQ-012 / AC-009 / DESIGN.md rule 7. Two facts collapse into one null (Principle 13, behavior by absence): "the records cannot be read" and "no record names an agent". The same happens to a standalone run whose `run_metadata.json` cannot be read and has no history row naming a definition (`run-folder-discovery.ts:172`). A damaged journal manifest likewise collapses into "no journal yet" (`work-journal-store.ts:84-96`).
+
+**Decisions:**
+
+1. **Discovery's contract: one explicit attribution outcome per run.** `DiscoveredRun.agentDefinitionId` is replaced (clean cut) by:
+
+   ```ts
+   attribution:
+     | Readonly<{ kind: "attributed"; agentDefinitionId: string }>
+     | Readonly<{ kind: "unattributed" }>                                    // no record names an agent (DEC-007): silent
+     | Readonly<{ kind: "unreadable"; record: string; reason: string }>;     // the record that would name it cannot be read: warned
+   ```
+
+   - **Team member folder** that `listAgents` did not locate:
+     - its root has a diagnostic in `TeamRunPackageCatalog.getDiagnostics()` (for its root id, or `*` for a failed whole scan) → `unreadable`, record `team_run_execution_tree.json`, reason = the diagnostic text;
+     - no diagnostic → `unattributed` (as today).
+   - **Org member folder:** the same with `AgentOrgRunPackageCatalog.listDiagnostics()` by root id only, record `agent_org_run_execution_tree.json`. The readiness index files a failed whole scan only under `agent_team`/`*` (`root-run-package-readiness-index.ts:85`), so there is no org `*` case (ARCH-REV-005 N-6).
+   - **Standalone `agents/<id>`:** discovery reads `AgentRunMetadataStore.readMetadataState(id)` instead of `readMetadata(...).catch(() => null)`.
+     - A history row naming a definition → `attributed` (the run stays in the catalog).
+     - Otherwise, state `unreadable` → `unreadable`, record `run_metadata.json`, reason = the error message.
+     - No metadata and no row naming a definition → `unattributed`.
+   - **Memory search mapping unchanged:** `subject`, names and every `MemoryRun` field are derived exactly as today (`AGENT`'s `subject.agentDefinitionId` = the attributed id, else null). The moved discovery test pins it.
+   - **Collaborators:** discovery receives the two package catalogs as constructor collaborators (narrowed `Pick<TeamRunPackageCatalog, "getDiagnostics">`, `Pick<AgentOrgRunPackageCatalog, "listDiagnostics">`), with defaults like its existing location-service collaborators. The location services are unchanged.
+
+2. **Who logs: discovery.** It is the scan that leaves the run out; DESIGN.md rule 7 puts containment at that boundary. It logs `RUN_FOLDER_DISCOVERY_RECORD_UNREADABLE { root, record, reason, runFolders }`: one line per unreadable root (a team or org root names the root and how many member folders it leaves out), and one per unreadable standalone run. The catalog does not log the same fact a second time. It handles every kind explicitly (`switch (run.attribution.kind)`): only `attributed` runs get entries. There is no `=== null` test.
+
+3. **Repeats and code:** a discovery instance logs a given `(root, record, reason)` at most once in its lifetime.
+   - A start logs it once per instance: the catalog's and memory search's, so at most two lines per damaged root per start. Live refreshes of that root do not repeat it; a changed reason logs again. Code: `RUN_FOLDER_DISCOVERY_RECORD_UNREADABLE`.
+   - Memory search's results are unchanged; its passes now carry the rule-7 warning that the history lists still lack (FU-004).
+   - Damaged standalone metadata: `readMetadataState` does not log, so the metadata store's own `Failed reading run metadata` line is no longer reached from discovery. Discovery's line replaces it: still one line per discovery instance.
+
+4. **Coverage:** team trees, org trees, standalone metadata. Old-format team folders with no tree (8 on the founder's node) are admission diagnostics too, so they now log once per start per instance. That is correct under rule 7: data in a shape current code no longer reads.
+
+5. **Journal manifest (API-15): fix the behavior, not just the doc wording.** `WorkJournalService.readJournalSpans(memoryDir)` returns an explicit result:
+
+   ```ts
+   | { kind: "none" }                                  // no manifest file: "no journal yet" (contract §2.2)
+   | { kind: "unreadable"; reason: string }            // manifest present but not readable JSON or not a file list
+   | { kind: "spans"; spans: WorkJournalFileSpan[] }
+   ```
+
+   - `WorkJournalStore` tells an absent manifest (`ENOENT`) apart from an unreadable one.
+   - `unreadable`: the catalog leaves the run out and logs `EPISODIC_CATALOG_RUN_LEFT_OUT { root, run, reason }` (REQ-012), once per run per reason per catalog instance (the same repeat rule).
+   - The contract is unchanged: a left-out run has no entry.
+   - `agent_episodic_catalog.md` names both codes and when each fires.
+
+**Unchanged:** requirements, the contract, the entry fields, the files, the triggers, composition.
+
+**Files touched by SR-003:**
+- `agent-memory/domain/discovered-run.ts`
+- `agent-memory/services/run-folder-discovery.ts`
+- `agent-work-journal/store/work-journal-store.ts`
+- `agent-work-journal/services/work-journal-service.ts` (+ its result type in `domain/work-journal-models.ts`)
+- `agent-episodic-catalog/services/episodic-catalog.ts`
+- `memory-search/runs/memory-run-mapping.ts`
+- `docs/modules/agent_episodic_catalog.md`
+- Tests:
+  - discovery: each outcome for each family, and log-once;
+  - catalog: an unreadable manifest is left out and warned;
+  - EC-06 again at API/E2E.
+
+**Follow-up:** FU-004 (the admission index's own silence for the history lists) stays outside.
 
 ## Current-State Read
 

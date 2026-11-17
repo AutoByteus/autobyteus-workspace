@@ -6,6 +6,7 @@
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | SR-001 | Mixed (Requirements + Design) | Task autobyteus-493 dispatched on the founder's word (2026-11-17) | N/A | N/A | Requirements Approved; Design Ready | BEH-001…006, REQ-001…013, AC-001…012 | Architecture Design Complete, Large / High |
 | SR-002 | Mixed (Requirements + Design) | The user's direction in the Solution Designer's conversation (slimmer entry from the agent's perspective); ARCH-REV-001 (`Fail`) | AR-001…AR-006 | Requirements Approved (SR-001); Design Ready; review Fail | Requirements Approved (SR-002); Design Ready | BEH-003, BEH-004, BEH-006; REQ-002, REQ-003, REQ-004, REQ-006, REQ-007, REQ-009, REQ-010, REQ-012; AC-001…003, AC-005, AC-007…010, AC-013 (new); DEC-003, 004, 005, 007, 011, 012, 013 (new) | Architecture Design Complete, Large / High; back to architecture review |
+| SR-003 | Design | CRR-002 CR-001 (API-09/EC-06), API-15 | CR-001 | Requirements Approved (SR-002); Design Ready; API/E2E Fail | Requirements Approved (SR-002, unchanged); Design Ready | BEH-002, REQ-012, AC-009 (now met for unreadable records and manifests) | Architecture Design Complete, Large / High; to architecture review |
 
 ## Revision Entries
 
@@ -62,3 +63,19 @@
 - Review result (informational): ARCH-REV-002 `Pass` on SR-002 (AR-001…AR-006 resolved); the reviewer handed the package to `/implementation_engineer`. The contract addendum above was written after that review's basis, so it was sent to the architecture reviewer for confirmation and forwarding to implementation (2026-11-17).
 - ARCH-REV-003 (`Fail`, scoped to the contract, AR-007): the agent name is now one rule, the newest run's `agentName` exactly as discovery reports it (contract §2.3), with examples §2.5 and §3 matched (`solution_designer`, `Project Task Manager`). N-5 adopted: file lines write full dates for a same-day header range; `CatalogEntry.startedAt` is nullable. Design spec examples aligned. Resent to the architecture reviewer (2026-11-17).
 - ARCH-REV-004 (informational `Pass`): the contract addendum is confirmed and forwarded to `/implementation_engineer`. The design spec's index.md example was reordered to match contract §3 (order by agent name).
+
+### SR-003 — Unreadable records and manifests are explicit outcomes
+
+- Phase and classification: `Design Impact` (CRR-002 CR-001; API-15).
+- Trigger: API-09/EC-06 failed. A truncated team tree left T3's member out with no log line naming T3. The code reviewer traced it to discovery collapsing "unreadable" into "unattributed" (Principle 13). API-15: the doc said "left out" for an unreadable journal, but the code gave "no journal yet".
+- Prior status: requirements Approved (SR-002); design Ready (ARCH-REV-002/004 Pass); implementation 0be36462ef; API/E2E round 1 Fail.
+- Current status: requirements unchanged (no renewed approval: intended behavior and the contract are unchanged; REQ-012/AC-009 are now realized); design Ready.
+- Design changes (design-spec § SR-003 Revision):
+  - `DiscoveredRun.attribution` (attributed / unattributed / unreadable) replaces `agentDefinitionId`;
+  - discovery reads the package diagnostics and the metadata state, and logs `RUN_FOLDER_DISCOVERY_RECORD_UNREADABLE` once per discovery instance per root and reason;
+  - `readJournalSpans` returns none / unreadable / spans; the catalog leaves an unreadable-manifest run out with `EPISODIC_CATALOG_RUN_LEFT_OUT`;
+  - the memory search mapping is unchanged.
+- Classification: `task_size=Large`, `architectural_risk=High` (unchanged).
+- Follow-ups: FU-004 (admission index silence) remains outside.
+- Next action: architecture review of the SR-003 revision, then implementation, source review and API/E2E.
+- ARCH-REV-005 (informational `Pass` on SR-003): no new findings; package delivered to `/implementation_engineer`. Implementation notes N-6 (no org `*` diagnostic exists, so there is no such branch; the design spec's org bullet was corrected) and N-7 (read the diagnostics after `listAgents` has awaited readiness).

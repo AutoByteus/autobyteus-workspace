@@ -1,0 +1,15 @@
+# IMP-11 (IR-002) memory e2e files using run-folder discovery fakes
+# command: env -i PATH=$PATH HOME=<temp> TMPDIR=$TMPDIR pnpm -C autobyteus-server-ts exec vitest run tests/e2e/memory/memory-search-graphql.e2e.test.ts tests/e2e/memory/work-journal-neutral-vocabulary.e2e.test.ts tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts --no-watch
+# commit: 159286c1c1
+# environment: macOS, node v22.23.1
+# date: 2026-11-17T19:03:29Z
+ ✓ tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts (9 tests | 7 skipped) 4777ms
+ ✓ tests/e2e/memory/work-journal-neutral-vocabulary.e2e.test.ts (5 tests) 2305ms
+     ✓ build: every runtime's converted cases read in their neutral line through the Memory page reader (AC-001…006, AC-010)  491ms
+     ✓ build: the same job reads the same on every runtime: a skill load, a message, a refused message (AC-012 through the pipeline)  479ms
+     ✓ build: the neutral words are what search_memory's API finds (the Journals step feeds the text index) (AC-010)  380ms
+       ✓ the first catch-up pass replaces every journal in place, leaves the raw traces untouched; a second start renders nothing  353ms
+       ✓ Rebuild regenerates a closed file whose manifest already has the current revision; Index now leaves it  490ms
+ ✓ tests/e2e/memory/memory-search-graphql.e2e.test.ts (2 tests) 647ms
+ Test Files  3 passed (3)
+      Tests  9 passed | 7 skipped (16)

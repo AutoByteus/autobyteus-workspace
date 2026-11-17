@@ -1,0 +1,7 @@
+# IMP-10 (IR-002) targeted unit rerun of every area this change touches
+# command: pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-episodic-catalog tests/unit/agent-memory tests/agent-work-journal tests/unit/memory-search tests/unit/run-history tests/unit/agent-org-execution tests/unit/agent-execution/general-process-run-supervisor-ownership.test.ts tests/unit/standalone-application-host tests/unit/projects/ad-hoc-tasks.test.ts tests/unit/api/graphql/types --no-watch
+# commit: 159286c1c1
+# environment: macOS, node v22.23.1; load before: 82.90 68.75 63.73
+# date: 2026-11-17T18:59:06Z
+ Test Files  140 passed | 1 skipped (141)
+      Tests  924 passed | 2 skipped (926)

@@ -7,13 +7,23 @@
 - Upstream Solution Revision Record: `…/per-agent-episodic-catalog/solution-revision-record.md` (SR-001, SR-002)
 - Reviewed Design Spec: `…/per-agent-episodic-catalog/design-spec.md` (SR-002, Ready)
 - Supplemental Task Artifacts Reviewed: `follow-ups.md` (FU-001, FU-002); `handoff-architecture-review.md` (SR-002 section); `episodic-catalog-contract.md` (behavior-defining, SR-002 addendum, reviewed in round 3)
-- Relevant Solution Revision IDs: SR-001, SR-002
+- Relevant Solution Revision IDs: SR-001, SR-002, SR-003
 - Architecture Review Revision Record: `…/per-agent-episodic-catalog/architecture-review-revision-record.md`
-- Current Architecture Review Revision ID: `ARCH-REV-004`
-- Current Review Round: 4
-- Trigger: the contract corrected for AR-007; N-5 adopted in the contract §2.2 and design-spec `CatalogEntry`
-- Prior Review Round Reviewed: 3 (ARCH-REV-003, `Fail`, scoped to the contract)
-- Latest Authoritative Round: 4
+- Current Architecture Review Revision ID: `ARCH-REV-005`
+- Current Review Round: 5
+- Trigger: SR-003, a design-only revision after CRR-002 CR-001 (Design Impact; API-09/EC-06, API-15). The design spec's section "SR-003 Revision" governs. Requirements and the contract are unchanged.
+- Prior Review Round Reviewed: 4 (ARCH-REV-004, `Pass`)
+- Latest Authoritative Round: 5
+- SR-003 evidence opened (implemented branch at `4e8a8b3263`):
+  - `run-history/services/team-run-package-catalog.ts:22-25` (`getDiagnostics`: root id → `code: reason`);
+  - `run-history/services/agent-org-run-package-catalog.ts:22-24` (`listDiagnostics`);
+  - `run-history/services/root-run-package-readiness-index.ts:35-46, 79-97` (shared per-memory-folder state; a whole-scan failure is filed as `agent_team`/`*` and logged at `:88`);
+  - `run-history/store/agent-run-metadata-store.ts:96-126` (`readMetadataState` does not log; `readMetadata` does);
+  - `agent-work-journal/store/work-journal-store.ts:84-96, 100-113` (`readManifestJournalFileNames` returns null for absent and unreadable alike; `writeManifest` is atomic);
+  - `agent-work-journal/services/work-journal-service.ts:125-132` (its only caller);
+  - `agent-episodic-catalog/services/episodic-catalog.ts:175-190` (`agentDefinitionId === null` skip);
+  - `agent-memory/services/run-folder-discovery.ts:28-106, 172`;
+  - `code-review-report.md` CRR-002 CR-001; `follow-ups.md` FU-004.
 - Current-State Evidence Basis: worktree `codex/per-agent-episodic-catalog` at `2b73308ce5`. Round 1 files, re-opened where SR-002 relies on them: `build-studio-server.ts:108-121, 330-376`; `start-standalone-application-host.ts:114-129, 243-279, 316-336`; `general-process-run-supervisor.ts:317, 353`; `collaboration-composition.ts:80-120, 160, 264`; `delegation-index.ts:242-251`; `task-execution-resource-port.ts:16, 62-75`; `project-task-service.ts:113-114, 262-271`; `memory-search/domain/memory-search-models.ts:1-27`; `api/graphql/types/memory-search.ts:5, 179`.
 
 ## Routing Classification Review
@@ -216,17 +226,51 @@ One vocabulary (Principle 15): `Pass`. `runDeleted` has the same meaning as `Del
 
 None.
 
+## SR-003 Delta Review (round 5)
+
+Only the SR-003 delta changes; the verdicts above stand for everything else.
+
+- **Behavior basis:** REQ-012 and AC-009 ("a run's records are damaged → left out with a warning naming it") are approved and unchanged. CRR-002 traced the failure in code and EC-06 reproduced it. The delta realizes approved behavior and adds no new behavior. Confirmed.
+- **Spines:**
+  - DS-003 / DS-004: `findRuns` / `findRunsOfRoot` → per folder an explicit `attribution` → the catalog switches on its kind (`attributed` → entry; `unattributed` → silent, DEC-007; `unreadable` → left out, already warned by discovery).
+  - For each attributed run, `readJournalSpans` returns `none` (no journal yet), `unreadable` (left out, `EPISODIC_CATALOG_RUN_LEFT_OUT`) or `spans`.
+  - One owner warns for each fact: discovery for records, the catalog for the manifest. Pass.
+- **Principle 13 (behavior by absence):** resolved. "Unreadable" and "unattributed" no longer collapse into one `null`, so the outcome REQ-012 names comes from an explicit rule. Pass.
+- **Principle 11 (tightness):** `attribution` replaces `agentDefinitionId` as a clean cut. Memory search's `AGENT.subject.agentDefinitionId` is derived from it (the attributed id, else null), one source. Pass.
+- **Ownership and placement:**
+  - Discovery is the scan that leaves runs out, so it is the boundary DESIGN.md rule 7 names. It reads the reasons the admission index already owns, through narrowed `Pick`s of the two package catalogs; it does not add a second validator.
+  - The journal store keeps manifest parsing. The change is confined to `readManifestJournalFileNames`, whose only caller is `readJournalSpans` (`work-journal-service.ts:127`); `readManifest` and its four callers are untouched.
+  - Pass.
+- **Dependencies:** agent-memory → run-history (package catalogs) follows the existing direction. The collaborators are defaulted exactly as the existing location services and metadata store are. That is not behavior by absence, because each default is the real owner; it matches the existing constructor (`run-folder-discovery.ts:66-71`). Pass.
+- **Log-once state:**
+  - A per-instance set of `(root, record, reason)`, and a per-catalog set of `(run, reason)`. Its purpose: live refreshes of a damaged root would otherwise warn on every journal change. The state is bounded by the number of damaged roots and has no lifecycle beyond the instance.
+  - A changed reason logs again; a start logs again, as the rule-7 operator signal intends.
+  - Proportionate. Pass.
+- **Persisted data:** no change; `Not Affected`. Pass.
+- **Scope:** FU-004 (the admission index's own silence toward the history lists) stays a follow-up, which is correct. The catalog meets REQ-012 within its Change Scope.
+
+### Material premise
+
+#### MP-002 — One run's stored record (team tree, org tree, standalone `run_metadata.json`) or journal manifest cannot be read
+
+- Related approved requirement: REQ-012, AC-009 (explicit), DESIGN.md rule 7.
+- Initiating basis kind: `Contract`. The approved requirement names the damaged-record case explicitly, so it is a `Supported Explicit Edge Scenario` (CRR-002).
+- Forward path: start or refresh → `listAgents` skips the non-admitted root (`team-run-execution-tree-location-service.ts:86`) → the member folder falls to the folder rule → the catalog skip (`episodic-catalog.ts:181`). Reproduced by EC-06 run 9.
+- Reachability: `Reachable`. Consequence: SR-003's machinery is required and proportionate.
+
+#### MP-003 — The whole admission scan fails (`*`)
+
+- Basis: infrastructure failure (`validator.scan()` throws). It is not one run's damaged record, and the index already logs it (`root-run-package-readiness-index.ts:83-89`).
+- Reachability: `Not Reachable` as a supported AC-009 scenario (Principle 6: infrastructure failure is out of scope by default).
+- Consequence: the design's `*` clause adds no machinery beyond one map key and drives no finding. Note N-6 records that it can only match for teams.
+
 ## Review Decision
 
-`Pass`. The design passed in ARCH-REV-002, and its behavior-defining contract (`episodic-catalog-contract.md`) is now internally consistent and agrees with it. The package is ready for implementation.
+`Pass`. SR-003 resolves CRR-002 CR-001 within the approved requirements, and the design stays ready for implementation.
 
 ## Findings
 
-AR-001…AR-006 are resolved (ARCH-REV-002).
-
-AR-007 is resolved (ARCH-REV-004). §2.3 now has one rule: the newest run's `agentName` exactly as `RunFolderDiscovery` reports it (row name, else definition id, else folder-derived name; for members, the address basename), or the decoded definition id when there are no runs. §2.5 and §3 use `solution_designer` and `Project Task Manager`, which match `memory-run-discovery.ts:34, 99, 114, 136`.
-
-No findings are open.
+None open. AR-001…AR-007 are resolved (ARCH-REV-002, ARCH-REV-004). SR-003 raises no new finding.
 
 ## Classification
 
@@ -234,7 +278,7 @@ N/A (Pass).
 
 ## Recommended Recipient
 
-Implementation Engineer (`/implementation_engineer`), with the contract as part of the package; informational notice to the Solution Designer.
+Implementation Engineer (`/implementation_engineer`), for SR-003; informational notice to the Solution Designer.
 
 ## Residual Risks
 
@@ -252,9 +296,14 @@ These are implementation notes, not findings. Each follows from the design's own
   - The design spec's `index.md` example lists `solution_designer` before `Project Task Manager`, against contract §3's order by agent name. The contract wins (design-spec:7), so implement and test the contract's order.
 - **N-3. Start-build time in Node** (AC-010; escalation at 2 minutes).
 - **N-4. The Task title is the root's current Task.** A root that worked on several Tasks shows only one. This is accepted in the design's Risks.
+- **N-6 (SR-003): the `*` whole-scan diagnostic.** The readiness index files a whole-scan failure only as `agent_team` / `*` (`root-run-package-readiness-index.ts:85`), so `AgentOrgRunPackageCatalog.listDiagnostics()` never contains `*`.
+  - Do not write an org `*` branch: it would be dead code.
+  - On such a failure, org member folders become `unattributed`, but the index's own warning (`:88`) still marks the event.
+  - The team `*` mapping is acceptable as designed (MP-003).
+- **N-7 (SR-003): read the diagnostics only after the shared readiness index is ready.** `listAgents` awaits it (`team-run-execution-tree-location-service.ts:81`), and the diagnostics share that per-memory-folder state (`root-run-package-readiness-index.ts`, `states`). So consult them after the team or org source has run, in the same `discover` call, not before.
 
 ## Latest Authoritative Result
 
-- Review Decision: `Pass`
-- Material-Premise Gate: `Pass`
-- Notes: the ARCH-REV-002 design pass stands, and the SR-002 contract addendum is confirmed. The contract is the authority for `CatalogMarkdownRenderer`, `CatalogEntryBuilder` attributes and the store's write rules, and the renderer tests compare against its examples.
+- Review Decision: `Pass` (ARCH-REV-005, SR-003)
+- Material-Premise Gate: `Pass` (MP-002 Reachable, a supported explicit edge; MP-003 Not Reachable, so no machinery depends on it)
+- Notes: SR-003 makes "unreadable" an explicit outcome with one warning owner for each fact (discovery for records, the catalog for manifests). It keeps memory search's mapping and the contract unchanged, and leaves the admission index's own silence to FU-004.

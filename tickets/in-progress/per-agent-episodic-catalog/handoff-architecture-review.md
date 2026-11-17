@@ -77,3 +77,19 @@ Independent architecture review of the package against the approved requirements
 | AR-006 | `folderRun`, `runKeyOf` and `nameFromFolder` become private or unexported; `folderRun` is dropped from the pipeline's `Pick`. | design-spec Removal Plan |
 
 Reviewer suggestions adopted: the header's agent name is the newest run's.
+
+---
+
+## SR-003 resubmission (2026-11-17): design-only revision after CRR-002
+
+- Result: `Architecture Design Complete`, `task_size=Large`, `architectural_risk=High`. Route: handoff rule "Large or High → `/architecture_reviewer`".
+- Trigger: CRR-002 CR-001 (Design Impact). API-09/EC-06 failed: an unreadable team tree left a member out with no warning naming the run. API-15: the docs and the code disagreed on an unreadable journal manifest.
+- Requirements and contract are unchanged (SR-002 approval stands); REQ-012/AC-009 are now realized for these cases.
+- The decisions are in design-spec "SR-003 Revision":
+  1. `DiscoveredRun.attribution` union (attributed / unattributed / unreadable), from the package diagnostics and `readMetadataState`; the memory search mapping is unchanged.
+  2. Discovery logs `RUN_FOLDER_DISCOVERY_RECORD_UNREADABLE`: once per discovery instance per root, record and reason.
+  3. The catalog switches on the kind, with no null test.
+  4. `readJournalSpans` returns none / unreadable / spans. An unreadable manifest leaves the run out, with `EPISODIC_CATALOG_RUN_LEFT_OUT`.
+- Evidence: investigation-notes INV-C12; `code-review-report.md` (CRR-002); `evidence/API-04-10-run9-excerpt.md`.
+- Follow-up FU-004 (the admission index's own silence) stays outside.
+- Next after review: implementation, then source review, then API/E2E.

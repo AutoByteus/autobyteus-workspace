@@ -8,6 +8,7 @@
 | ARCH-REV-002 | Round 2: SR-002 resubmission (2026-11-17) | SR-002 | Fail | Pass | AR-001…AR-006 resolved |
 | ARCH-REV-003 | Round 3: SR-002 contract addendum (`episodic-catalog-contract.md`) | SR-002 | Pass | Fail (scoped to the contract; Requirement Gap) | AR-007 |
 | ARCH-REV-004 | Round 4: contract corrected for AR-007 | SR-002 | Fail | Pass | AR-007 resolved |
+| ARCH-REV-005 | Round 5: SR-003 design-only revision after CRR-002 CR-001 | SR-003 | Pass | Pass | none (notes N-6, N-7) |
 
 ## Revision Entries
 
@@ -100,3 +101,28 @@ None.
 - Material classification changes: none (`Large` / `High`)
 - Recommended recipient: Implementation Engineer; informational notice to the Solution Designer
 - Remaining risks or uncertainty: Node start-build time (AC-010); the order of the design spec's `index.md` example (the contract wins)
+
+### ARCH-REV-005 — SR-003: unreadable records and manifests become an explicit outcome
+
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/per-agent-episodic-catalog/tickets/in-progress/per-agent-episodic-catalog/design-review-report.md`
+- Review round and trigger: round 5; the Solution Designer's SR-003 (design spec, section "SR-003 Revision") after CRR-002 CR-001 (API-09/EC-06; API-15)
+- Triggering role, report path, and finding IDs: Code Reviewer, then the Solution Designer; `code-review-report.md`; CR-001 (code review)
+- Relevant solution revision IDs: SR-003
+- Prior authoritative decision: `Pass` (ARCH-REV-004)
+- Current authoritative decision: `Pass`
+- What changed:
+  - `DiscoveredRun.attribution` (attributed / unattributed / unreadable), from the package diagnostics and `readMetadataState`; discovery warns once per instance per `(root, record, reason)`.
+  - `readJournalSpans` returns none / unreadable / spans; the catalog leaves an unreadable run out with `EPISODIC_CATALOG_RUN_LEFT_OUT`.
+  - The evidence was verified in code (see the report's Meta).
+  - MP-002 (a single damaged record) is Reachable, a supported explicit edge. MP-003 (a whole-scan failure) is Not Reachable as an AC-009 scenario.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| AR-001…AR-007 | Resolved | Resolved (unchanged) | ARCH-REV-002, ARCH-REV-004 | SR-003 does not reopen them |
+
+- New or remaining finding IDs: none. Implementation notes N-6 (no org `*` branch) and N-7 (read diagnostics after readiness).
+- Material classification changes: none (`Large` / `High`)
+- Recommended recipient: Implementation Engineer; informational notice to the Solution Designer
+- Remaining risks or uncertainty: FU-004 (the admission index's silence for the history lists) is outside this ticket

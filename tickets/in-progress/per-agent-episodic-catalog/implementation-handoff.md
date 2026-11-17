@@ -5,30 +5,32 @@ Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/per-agent-episodic-c
 
 ## Upstream Artifact Package
 
-- Upstream review applicability and handoff-rule result: Large / High → independent architecture review selected and passed (ARCH-REV-002; contract addendum ARCH-REV-004); source review next, by `get_handoff_rules`
+- Upstream review applicability and handoff-rule result: Large / High → independent architecture review selected and passed (ARCH-REV-002; contract addendum ARCH-REV-004; SR-003 revision ARCH-REV-005); source review next, by `get_handoff_rules`
 - Requirements doc: `requirements-doc.md` (SR-002, Approved)
 - Investigation notes: `investigation-notes.md`
 - Solution revision record: `solution-revision-record.md`
-- Design spec (required on every route): `design-spec.md` (SR-002, Ready)
+- Design spec (required on every route): `design-spec.md` (SR-003, Ready; its § "SR-003 Revision" governs where it differs)
 - Supplemental task artifacts: `episodic-catalog-contract.md` (SR-002, behavior-defining), `follow-ups.md`
-- Design review report: `design-review-report.md` (ARCH-REV-004, `Pass`)
+- Design review report: `design-review-report.md` (ARCH-REV-005, `Pass`; notes N-6, N-7 applied)
 - Architecture review revision record: `architecture-review-revision-record.md`
-- Triggering rework report, revision record, or evidence: N/A (initial implementation)
-- Code review: CRR-001 `Pass` (`code-review-report.md`); CF-11 (orphaned `noWorkGuard` doc comment in `tests/helpers/no-delegations.ts`) is non-blocking, to fix at the next touch
+- Triggering rework report, revision record, or evidence: `code-review-report.md` CRR-002 CR-001 (from `api-e2e-execution-coverage-report.md` API-REV-001: API-09/EC-06, API-15), resolved through SR-003 / ARCH-REV-005
+- Code review: CRR-001 `Pass`; CRR-002 `Design Impact` (CR-001). CF-11 (orphaned `noWorkGuard` doc comment) is fixed in IR-002
 
 ## Current Implementation Summary
 
 A new server subsystem, `src/agent-episodic-catalog/`, keeps one Markdown catalog per agent definition with runs on the node (`<memory>/episodic/<encoded definition id>/catalog.md`) and the overview `<memory>/episodic/index.md`, rendered exactly as `episodic-catalog-contract.md` gives them. `EpisodicCatalog` builds every catalog in the background at start from one full run-folder discovery, follows journal changes (debounced queue of roots: 5 s quiet, 30 s at most) and committed deletes of agent, team and org runs, and writes only files whose content changed (temporary file + rename). The run-folder discovery moved from memory search to `agent-memory` and reports three more facts (root, agent definition, recorded start); memory search maps it to its unchanged `MemoryRun`. The journal service gained a header-only span read; `ProjectTaskService` gained `taskTitleOf`. Both composition roots create the catalog after steps 1–2, pass it to the three run services, start it after step 8 and stop it at close.
 
-- Implementation cycle: `Initial`
+IR-002 (SR-003) makes "unreadable" an explicit outcome. Discovery gives each run an `attribution`: `attributed`, `unattributed`, or `unreadable(record, reason)`. That covers a team or org root the run-package readiness index did not admit, and a standalone run's unreadable metadata with no history row naming the definition. Discovery logs `RUN_FOLDER_DISCOVERY_RECORD_UNREADABLE` once per root, record and reason per instance. `readJournalSpans` returns `none` / `unreadable` / `spans`; the catalog leaves out a run whose manifest cannot be read and logs `EPISODIC_CATALOG_RUN_LEFT_OUT` once per run and reason.
+
+- Implementation cycle: `Rework`
 - Implementation revision record: `implementation-revision-record.md`
-- Current implementation revision ID: `IR-001`
-- Related solution revision IDs: `SR-002` (with the contract addendum)
-- Related architecture-review revision IDs: `ARCH-REV-002`, `ARCH-REV-004`
-- Related code-review revision IDs: `N/A`
-- Related API/E2E revision IDs: `N/A`
+- Current implementation revision ID: `IR-002`
+- Related solution revision IDs: `SR-002` (with the contract addendum), `SR-003`
+- Related architecture-review revision IDs: `ARCH-REV-002`, `ARCH-REV-004`, `ARCH-REV-005`
+- Related code-review revision IDs: `CRR-001`, `CRR-002`
+- Related API/E2E revision IDs: `API-REV-001`
 - Related delivery revision IDs: `N/A`
-- Triggering finding IDs: `N/A`
+- Triggering finding IDs: CRR-002 CR-001 (CF-12); API-09 / EC-06 (AC-009); API-15; CF-11
 
 ## Routing Classification (Mandatory)
 
@@ -39,14 +41,14 @@ A new server subsystem, `src/agent-episodic-catalog/`, keeps one Markdown catalo
 - Evidence and rationale for confirmation or change: as designed: a new subsystem with a background lifecycle and derived files beside user data, a privacy boundary, the discovery ownership move, wiring in two composition roots and two steps; about 20 source files over seven subsystems.
 - Selected route (`Direct API/E2E`/`Code Review`/`Solution Designer`): `Code Review`
 - Lightweight implementation self-review completed for the direct route: `Not Applicable`
-- New design impact or escalation trigger: `None`. AC-010 measured well under the 2-minute trigger (§ Checks Run, IMP-07); no write in a run folder, no journal rendering, no change to memory search's stored model.
+- New design impact or escalation trigger: `None`. AC-010 measured well under the 2-minute trigger (§ Checks Run, IMP-07 and, for IR-002, IMP-14: 12.5 s); no write in a run folder, no journal rendering, no change to memory search's stored model.
 
 ## Reviewed Behavior Implementation Trace
 
 | Behavior ID | Approved Change / Preserved Outcome | Implemented Production Path / Key Files | Result / Notes |
 | --- | --- | --- | --- |
-| BEH-001 | Folder + catalog per definition (REQ-001…003, REQ-010, REQ-011) | `AgentMemoryLayout.getAgentEpisodicDirPath` (one `definitionFolderName` helper with the semantic folder) → `EpisodicCatalogStore.writeCatalog` → `renderCatalog`; attribution by `DiscoveredRun.agentDefinitionId` (`RunFolderDiscovery`) | Implemented; renderer tests compare against contract §2.5 byte for byte; a definition whose runs are gone keeps a `0 runs.` catalog named by its decoded id (N-2, contract §2.3) |
-| BEH-002 | Entry current ≤ 60 s after a journal change; bursts merged (REQ-005, REQ-012) | `WorkJournalService.onJournalChanged` → `EpisodicCatalog.journalChanged` → `RunFolderDiscovery.rootOf` → queue → pass (`findRunsOfRoot` → `readJournalSpans` → `buildCatalogEntry`) → write-if-changed | Implemented; 5 s quiet / 30 s max wait; unit tests prove one root refresh per burst and the max-wait bound |
+| BEH-001 | Folder + catalog per definition (REQ-001…003, REQ-010, REQ-011) | `AgentMemoryLayout.getAgentEpisodicDirPath` (one `definitionFolderName` helper with the semantic folder) → `EpisodicCatalogStore.writeCatalog` → `renderCatalog`; attribution by `DiscoveredRun.attribution` (`RunFolderDiscovery`; only `attributed` runs get entries, `switch` on the kind) | Implemented; renderer tests compare against contract §2.5 byte for byte; a definition whose runs are gone keeps a `0 runs.` catalog named by its decoded id (N-2, contract §2.3) |
+| BEH-002 | Entry current ≤ 60 s after a journal change; bursts merged (REQ-005, REQ-012) | `WorkJournalService.onJournalChanged` → `EpisodicCatalog.journalChanged` → `RunFolderDiscovery.rootOf` → queue → pass (`findRunsOfRoot` → `readJournalSpans` → `buildCatalogEntry`) → write-if-changed | Implemented; 5 s quiet / 30 s max wait; unit tests prove one root refresh per burst and the max-wait bound. IR-002 (REQ-012, AC-009): an unreadable record → `attribution.kind: "unreadable"`, left out, `RUN_FOLDER_DISCOVERY_RECORD_UNREADABLE` from discovery (once per root/record/reason per instance); an unreadable manifest → left out, `EPISODIC_CATALOG_RUN_LEFT_OUT` (once per run/reason per catalog) |
 | BEH-003 | Delete removes entries ≤ 60 s; archive nothing (REQ-006) | `AgentRunHistoryService.deleteStoredRun`, `TeamRunHistoryService.deleteStoredTeamRun`, `AgentOrgRunService.deleteStoredRun`: after `result.success` → `episodicCatalog.runDeleted(root)` → queued drop → write | Implemented; guards, results and messages unchanged; a refused delete and archive call nothing (unit) |
 | BEH-004 | Background rebuild at start, read-only, no delay (REQ-007, REQ-008, REQ-010) | composition root → `EpisodicCatalog.start({ taskTitles })` → start pass: one `findRuns()` + `listCatalogDefinitionIds()` → spans per attributed run → every catalog + `index.md`, written only when changed | Implemented; `start` returns at once; unit test counts one `findRuns`, no `findRunsOfRoot`, one span read per attributed run; AC-010 probe: second start rewrites nothing, nothing outside `episodic/` changes |
 | BEH-005 | No conversation text; About = Task title only (REQ-004) | `buildCatalogEntry` takes only the `DiscoveredRun`, the spans and the title; title from `DelegationIndex.currentTaskOf(root)` → `ProjectTaskService.taskTitleOf` (title only; null for no Project / gone / unreadable) | Implemented; marker checks in the builder test; the run-history summary is not an input |
@@ -62,8 +64,8 @@ A new server subsystem, `src/agent-episodic-catalog/`, keeps one Markdown catalo
   - `rendering/catalog-markdown-renderer.ts`: `catalog.md` and `index.md` exactly as the contract
   - `store/episodic-catalog-store.ts`: folder listing, write-if-changed with atomic rename
   - `domain/episodic-catalog-models.ts`: `CatalogEntry`, `CatalogJournalFile`, `AgentCatalog`
-- `src/agent-memory/`: `store/agent-memory-layout.ts` (episodic root and folder), `services/run-folder-discovery.ts` (moved from `memory-search/runs/memory-run-discovery.ts`; `findRunsOfRoot`, `rootOf`, three new facts), `domain/discovered-run.ts` (`DiscoveredRun`, `MemoryRunSubject` moved here: N-1)
-- `src/agent-work-journal/`: `readJournalSpans` (service), `readJournalHeaderTimeRange` (reader; replaces the old `HEADER_FIRST_DAY`), `readJournalFileHead` and `readManifestJournalFileNames` (store), `WorkJournalFileSpan` (models)
+- `src/agent-memory/`: `store/agent-memory-layout.ts` (episodic root and folder), `services/run-folder-discovery.ts` (moved from `memory-search/runs/memory-run-discovery.ts`; `findRunsOfRoot`, `rootOf`, three new facts; IR-002: `attribution` from `readMetadataState`, the history row and the package catalogs' diagnostics (`teamPackages` / `orgPackages` collaborators, read after the sources: N-7; team `*` only: N-6), log-once `RUN_FOLDER_DISCOVERY_RECORD_UNREADABLE`), `domain/discovered-run.ts` (`DiscoveredRun`, `RunAttribution`, `MemoryRunSubject` moved here: N-1)
+- `src/agent-work-journal/`: `readJournalSpans` (service), `readJournalHeaderTimeRange` (reader; replaces the old `HEADER_FIRST_DAY`), `readJournalFileHead` and `readManifestJournalFileNames` (store; IR-002: `none` for ENOENT, `unreadable` for any other read error, non-JSON or no file list), `WorkJournalFileSpan`, `WorkJournalSpans` (models)
 - `src/memory-search/`: `runs/memory-run-mapping.ts` (`toMemoryRun`), pipeline and boundary use `RunFolderDiscovery`; `domain/memory-search-models.ts` and `api/graphql/types/memory-search.ts` import `MemoryRunSubject` from `agent-memory` (no re-export)
 - Delete notification: `run-history/services/agent-run-history-service.ts`, `run-history/services/team-run-history-service.ts`, `agent-org-execution/services/agent-org-run-service.ts`
 - `projects/services/project-task-service.ts`: `taskTitleOf`
@@ -129,7 +131,7 @@ A new server subsystem, `src/agent-episodic-catalog/`, keeps one Markdown catalo
 
 ## Checks Run
 
-Code commits: `1bb4a44e83` (steps 1–3), `00bb99fe77` (steps 4–6), `0be36462ef` (span-read fix found by IMP-07). Every check below ran on `0be36462ef` unless its row says otherwise; evidence is in `evidence/`, probes in `probes/`. The host is shared and ran at a load average of 64–173 throughout.
+Code commits: `1bb4a44e83` (steps 1–3), `00bb99fe77` (steps 4–6), `0be36462ef` (span-read fix found by IMP-07); IR-002: `159286c1c1` (SR-003). IMP-01…IMP-09 ran on `0be36462ef` unless the row says otherwise; IMP-10…IMP-15 are IR-002's and ran on `159286c1c1`; evidence is in `evidence/`, probes in `probes/`. The host is shared and ran at a load average of 64–173 throughout.
 
 | Check ID | Command Or Steps | Commit Tested | Environment | Code It Exercises | Behavior / Criteria IDs | Result (`Pass`/`Fail`) | Evidence Files | Look For |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -142,6 +144,12 @@ Code commits: `1bb4a44e83` (steps 1–3), `00bb99fe77` (steps 4–6), `0be36462e
 | IMP-07 | AC-010 probe: `cp -cR ~/.autobyteus/server-data/memory <test folder>` (APFS clone; source only read), then `node probes/ac010-start-build-probe.mjs <clone> <json>` (built `dist/`; two starts) | `0be36462ef` (and before the fix, `00bb99fe77`) | same, load 88–115 | `createEpisodicCatalog`, `RunFolderDiscovery`, `readJournalSpans`, store, renderer | AC-010; AC-006 and AC-007(a) on real data; QR-002, QR-004 | Pass | `IMP-07-ac010-start-build.log` / `.json`; `IMP-07-ac010-start-build-before-span-fix.log` / `.json` | first start `"passMs": 9910`, second start `"passMs": 3381`, `"catalogs": 124`, `"catalogedRuns": 3788`, `"rewrittenAtSecondStart": []`, `"changedOutsideEpisodic": 0` (36,990 files compared) |
 | IMP-08 | `python3 -I probes/imp08-summary-privacy-check.py <clone>`: every run-history summary of ≥ 25 characters searched in all episodic files | `0be36462ef` | same | entry builder, renderer | REQ-004 / AC-003 (supporting) | Pass | `IMP-08-clone-privacy-check.log` | `summaries found in episodic files: 0` (638 checked) |
 | IMP-09 | `env -i PATH HOME=<temp> TMPDIR vitest run` the three e2e files whose imports moved with discovery | `0be36462ef` | same | memory search GraphQL, journal vocabulary, semantic memory e2e | AC-011 (memory search, semantic memory) | Pass | `IMP-09-memory-e2e.log` | `Tests  9 passed \| 7 skipped (16)` (7 are live-gated) |
+| IMP-10 | IR-002 targeted rerun: `vitest run tests/unit/agent-episodic-catalog tests/unit/agent-memory tests/agent-work-journal tests/unit/memory-search tests/unit/run-history tests/unit/agent-org-execution tests/unit/agent-execution/general-process-run-supervisor-ownership.test.ts tests/unit/standalone-application-host tests/unit/projects/ad-hoc-tasks.test.ts tests/unit/api/graphql/types`. New cases: each attribution outcome for each family, the whole-scan `*`, log-once (and again for a new reason, again per instance), diagnostics read after the sources (N-7), memory search's runs unchanged; unreadable manifests (not JSON, no file list, EISDIR) vs none; the catalog leaves an unreadable-manifest run out with one `EPISODIC_CATALOG_RUN_LEFT_OUT` per reason and reads no unattributed/unreadable run | `159286c1c1` | macOS 26.5.2, Node 22.23.1, load 64–83 | discovery attribution, journal spans result, catalog switch, memory search | REQ-012, AC-009, AC-011 (touched areas) | Pass | `IMP-10-targeted-unit-rerun.log` | `Test Files  140 passed \| 1 skipped (141)`, `Tests  924 passed \| 2 skipped (926)` |
+| IMP-11 | the three memory e2e files (their discovery fakes now give `readMetadataState`), `env -i` as IMP-09 | `159286c1c1` | same | memory search GraphQL, journal vocabulary, semantic memory | AC-011 | Pass | `IMP-11-memory-e2e.log` | `Tests  9 passed \| 7 skipped (16)` |
+| IMP-12 | `pnpm -C autobyteus-web typecheck` | `159286c1c1` | same | server source via cross-package tests | — | Pass | `IMP-12-web-typecheck.log` | `production errors: 0; test-file errors: 87 in 37 files (baseline 87 in 37 files)` |
+| IMP-13 | `pnpm -C autobyteus-server-ts typecheck` | `159286c1c1` | same | server `src` and tests | — | Pass | `IMP-13-server-typecheck.log` | `production errors: 0; test-file errors: 1012 in 316 files (baseline 1012 in 316 files)` |
+| IMP-14 | AC-010 probe again on a fresh APFS clone of the founder's memory (the IMP-07 command; stderr kept) | `159286c1c1` | same, load 87–119 | the IR-002 discovery over real records | AC-010, REQ-012 on real data | Pass | `IMP-14-ac010-start-build.log` / `.json`, `IMP-14-ac010-warnings.log` | first start `"passMs": 12532`, second `"passMs": 12064`, `"rewrittenAtSecondStart": []`, `"changedOutsideEpisodic": 0`; `6 RUN_FOLDER_DISCOVERY_RECORD_UNREADABLE` = 3 team roots with `ROOT_RUN_PACKAGE_MISSING_TREE` (9 member folders) × 2 starts (one discovery instance each); no `EPISODIC_CATALOG_RUN_LEFT_OUT` |
+| IMP-15 | privacy check on the IMP-14 clone (`probes/imp08-summary-privacy-check.py`); clone removed afterwards | `159286c1c1` | same | entries | REQ-004 (supporting) | Pass | `IMP-15-clone-privacy-check.log` | `summaries found in episodic files: 0` (641 checked) |
 
 IMP-04 failures, one by one (TESTING.md Rule 9):
 
@@ -153,7 +161,9 @@ IMP-04 failures, one by one (TESTING.md Rule 9):
 - Not run, and why:
   - Server `test:integration` and the whole server E2E suite: left to API/E2E (only `tests/integration/api/run-file-changes-api.integration.test.ts` and four e2e files changed, by adding the no-op catalog to their run services; they compile, IMP-02).
   - A real-app journey on an isolated instance (AC-004, AC-005 live; AC-003 with marker strings; AC-006 listing on a server start): API/E2E. IMP-07 runs the production owners on real data, without a server start or migrations.
-  - Nothing ran against the founder's own memory folder; it was only read by `cp -c` (the clone was removed after IMP-08). The delivery gates (his approval and a backup before the first start on his node; release only on his word) are untouched.
+  - The whole server unit suite was not rerun for IR-002: the rerun plan (TESTING.md "Rerun by impact") covers every file IR-002 changed and every consumer of discovery, the journal span read and the catalog (IMP-10, IMP-11); no shared foundation changed.
+  - EC-06 again: API/E2E (design SR-003 § Tests).
+  - Nothing ran against the founder's own memory folder; it was only read by `cp -c` (the clones were removed after IMP-08 and IMP-15). The delivery gates (his approval and a backup before the first start on his node; release only on his word) are untouched.
 
 ## Frontend Rendered-Result Check (When Applicable)
 
