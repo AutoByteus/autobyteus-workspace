@@ -27,6 +27,7 @@ import {
   getRunFileChangeService,
   releaseProcessRunFileChangeService,
 } from "../../../src/services/run-file-changes/run-file-change-service.js";
+import { NO_PEER_CHANNEL, OFF_DISCOVERY } from "../../helpers/explicit-host-collaborators.js";
 
 /** The RunFileChangeService instance the supervisor wired into run activation (it records FILE_CHANGE events). */
 const wiredRunFileChangeService = (supervisor: GeneralProcessRunSupervisor): unknown => (
@@ -52,6 +53,8 @@ const createSupervisorInput = () => {
   const agentTeamDefinitionService = new AgentTeamDefinitionService({ agentDefinitionService });
   const agentOrgDefinitionService = new AgentOrgDefinitionService(undefined, agentDefinitionService, agentTeamDefinitionService);
   return {
+    remoteChannel: NO_PEER_CHANNEL,
+    peerDiscovery: OFF_DISCOVERY,
     memoryDir: "/tmp/general-process-run-supervisor",
     contextFilePathEnvironment: {
       appDataDir: "/tmp/general-process-run-supervisor/app-data",

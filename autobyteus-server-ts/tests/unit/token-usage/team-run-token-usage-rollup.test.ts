@@ -14,10 +14,11 @@ const roots: string[] = [];
 afterEach(() => { vi.restoreAllMocks(); for (const root of roots.splice(0)) fs.rmSync(root, { recursive: true, force: true }); });
 
 describe("getTeamRunTokenUsageSummary", () => {
-  it.each(["agent_team", "agent_org"] as const)("rolls a %s run up over the runs delegated from it, recursively", async (kind) => {
+  // autobyteus-500 FU-013: the query serves team runs only; an org run's members keep their own query.
+  it.each(["agent_team"] as const)("rolls a %s run up over the runs delegated from it, recursively", async (kind) => {
     const memoryDir = fs.mkdtempSync(path.join(os.tmpdir(), "team-token-rollup-")); roots.push(memoryDir);
     vi.spyOn(appConfigProvider, "config", "get").mockReturnValue({ getMemoryDir: () => memoryDir } as never);
-    const subtree = { "agent_team": [{ agentRunId: "writer" }, { agentRunId: "helper" }], "agent_org": [{ agentRunId: "analyst" }] };
+    const subtree = { "agent_team": [{ agentRunId: "writer" }, { agentRunId: "helper" }] };
     const port = {
       childrenOf: () => [],
       subtreeOf: (run: { rootSubjectKind: string }) => run.rootSubjectKind === kind ? subtree[kind] : [],

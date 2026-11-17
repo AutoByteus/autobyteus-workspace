@@ -66,9 +66,6 @@ export type GeneralProcessRunSupervisorInput = Readonly<{
 export const requireGeneralProcessRunSupervisorInput = (
   input: GeneralProcessRunSupervisorInput | null | undefined,
 ): GeneralProcessRunSupervisorInput => {
-  // autobyteus-500 FU-011: each host passes its own; a missing one is named.
-  if (input && typeof input.remoteChannel !== "function") throw new Error("GeneralProcessRunSupervisor needs its host's remoteChannel.");
-  if (input && typeof input.peerDiscovery !== "function") throw new Error("GeneralProcessRunSupervisor needs its host's peerDiscovery.");
   if (
     !input
     || typeof input.memoryDir !== "string"
@@ -98,5 +95,8 @@ export const requireGeneralProcessRunSupervisorInput = (
   ) {
     throw new Error("Complete GeneralProcessRunSupervisor input is required.");
   }
+  // autobyteus-500 FU-011: each host passes its own; a missing one is named.
+  if (typeof input.remoteChannel !== "function") throw new Error("GeneralProcessRunSupervisor needs its host's remoteChannel.");
+  if (typeof input.peerDiscovery !== "function") throw new Error("GeneralProcessRunSupervisor needs its host's peerDiscovery.");
   return input;
 };

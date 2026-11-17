@@ -168,7 +168,6 @@ export const createAgentProviderFactoryBuilder = (
       requireRecord(input, "execution input");
       requireLeaf(input.agentDefinitionService, "agentDefinitionService");
       requireLeaf(input.agentToolMcpRunSessions, "agentToolMcpRunSessions");
-      requireLeaf(input.peerDiscovery, "peerDiscovery");
       if (!("applicationAgentTools" in input) || input.applicationAgentTools === undefined) {
         throw new Error(
           "Agent provider factory builder applicationAgentTools disposition is required.",
@@ -184,6 +183,7 @@ export const createAgentProviderFactoryBuilder = (
           "Agent provider factory builder providerRelayAccess disposition is required.",
         );
       }
+      requireLeaf(input.peerDiscovery, "peerDiscovery");
       const integrationRunAccess = input.integrationRunAccess;
 
       const codexBootstrapper = new CodexThreadBootstrapper(

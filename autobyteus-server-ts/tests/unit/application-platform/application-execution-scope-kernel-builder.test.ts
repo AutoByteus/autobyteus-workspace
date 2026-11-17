@@ -268,7 +268,6 @@ describe("buildApplicationExecutionScopeKernel construction transaction", () => 
       // Application runs get no integration access in this step.
       integrationRunAccess: null,
       providerRelayAccess: null,
-      remoteChannel: NO_PEER_CHANNEL,
       peerDiscovery: OFF_DISCOVERY,
     });
     expect(harness.complete).toHaveBeenCalledWith({

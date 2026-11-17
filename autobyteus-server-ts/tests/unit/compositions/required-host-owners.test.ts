@@ -14,8 +14,18 @@ import { NO_PEER_CHANNEL, OFF_DISCOVERY } from "../../helpers/explicit-host-coll
  */
 describe("required host owners", () => {
   it("the run supervisor names a missing remoteChannel or peerDiscovery", () => {
-    expect(() => requireGeneralProcessRunSupervisorInput({ peerDiscovery: OFF_DISCOVERY } as never)).toThrow("remoteChannel");
-    expect(() => requireGeneralProcessRunSupervisorInput({ remoteChannel: NO_PEER_CHANNEL } as never)).toThrow("peerDiscovery");
+    const present = {} as never;
+    const complete = {
+      memoryDir: "/tmp/memory", contextFilePathEnvironment: { appDataDir: "/tmp/app", baseUrl: "http://localhost:8000" },
+      agentDefinitionService: present, agentTeamDefinitionService: present, agentOrgDefinitionService: present, definitionAdmissionService: present,
+      workspaceManager: present, agentProviderFactoryBuilder: present, agentToolMcpSessionAuthority: present,
+      integrationRunAccess: null, providerRelayAccess: null, runPasses: null,
+      modelSelectionValidator: { validate: () => undefined, listOptions: () => undefined }, taskRecords: present, delegationIndex: present, viewStreams: present,
+      remoteChannel: NO_PEER_CHANNEL, peerDiscovery: OFF_DISCOVERY,
+    };
+    expect(requireGeneralProcessRunSupervisorInput(complete as never)).toBe(complete);
+    expect(() => requireGeneralProcessRunSupervisorInput({ ...complete, remoteChannel: undefined } as never)).toThrow("remoteChannel");
+    expect(() => requireGeneralProcessRunSupervisorInput({ ...complete, peerDiscovery: undefined } as never)).toThrow("peerDiscovery");
   });
 
   it("the Agent Tools MCP host and its catalog need the host's discovery and adapters", () => {
