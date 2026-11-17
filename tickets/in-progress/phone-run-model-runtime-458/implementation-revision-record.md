@@ -7,6 +7,7 @@ The current code and `implementation-handoff.md` remain authoritative.
 | Revision ID | Triggering Role / Report / Round | Finding IDs | Classification | Related Revision IDs | Result |
 | --- | --- | --- | --- | --- | --- |
 | IR-001 | Solution Designer: Architecture Design Complete (SR-003); the founder's correction (SR-004); the stop prerequisite taken in as step 0 (SR-005, SR-006) | N/A | `Initial Baseline` | SR-003…SR-006 | Built; ready for direct API/E2E |
+| IR-002 | Code reviewer, `code-review-report.md`, CRR-001 (failure-origin review of API-REV-001) | CR-001 (API/E2E F-1) | `Local Fix` | CRR-001, API-REV-001 | Fixed; back to direct API/E2E |
 
 ## Revision Entries
 
@@ -44,3 +45,36 @@ The current code and `implementation-handoff.md` remain authoritative.
   - AC-005's "model not offered" is covered by unit test only.
   - The status line can lag the stop icon in the refused state.
   - FU-001.
+
+### IR-002 — An Org stop from the phone's Settings keeps the phone where it is
+
+- Triggering role, report path, and round: code reviewer, `tickets/in-progress/phone-run-model-runtime-458/code-review-report.md`, CRR-001, a failure-origin review of API/E2E round 1 (`api-e2e-execution-coverage-report.md`, API-REV-001)
+- Triggering finding IDs: CR-001 (API/E2E F-1)
+- Classification: `Local Fix`
+- Prior authoritative result: IR-001, built through `ec5b81f912`. A live Org member's stop from the phone's Settings stopped the Org run, then left Settings for the desktop route ("Unsupported on phone"); 3/3 and MSP-65.
+- Current authoritative result: `6ddf9bb8f5`. The Org stop writes no route on the phone shell, so Settings stays, the rows open and the target resolves. The desktop is unchanged.
+- Related solution revision IDs: N/A
+- Related architecture-review revision IDs: N/A
+- Related code-review revision IDs: CRR-001
+- Related API/E2E revision IDs: API-REV-001
+- Related delivery revision IDs: N/A
+- Why this implementation revision is recorded: the phone's Settings is the first phone caller of the Org stop. `useWorkspaceHistorySubjectActions`' stop wrote `/workspace` (`mode: 'history'`) whenever the route showed that Org. Its shell rule covered open, select and inspect only.
+- Approved behavior or requirement IDs affected: REQ-008 (AC-006, VIS-017)
+- Implementation delta:
+  - `useWorkspaceHistorySubjectActions`: the stop's route write runs only off the phone shell (`setup.shell !== 'mobile'`), the same rule as the other actions. Doc comment updated.
+  - `useRunStopAction`: takes the caller's `shell` and passes it on (the desktop passes none).
+  - `MobileRunSettings`: passes `shell: 'mobile'`.
+  - Tests:
+    - the phone shell's Org stop writes no route, and still stops whether or not its final read fails;
+    - `useRunStopAction` passes the shell, the desktop by default;
+    - Settings uses the phone shell.
+    - The desktop stop test (`/workspace`, history mode) is unchanged and passes.
+- Changed files or areas: `autobyteus-web/composables/useWorkspaceHistorySubjectActions.ts`, `composables/runSettings/useRunStopAction.ts`, `components/mobile/views/MobileRunSettings.vue`, their three specs
+- Local validation and result:
+  - the four new tests fail before the fix and pass after;
+  - related specs pass (49 files, 486 tests);
+  - phone probe MSP-59…65: Pass;
+  - desktop AFS-002 (Org, running and stopped, its Settings): Pass;
+  - guards, typecheck and the full suite: see the handoff's Checks Run.
+- Next recipient or routing: `/api_e2e_engineer` (direct route, Medium / Low unchanged)
+- Remaining limitations or risks: as IR-001. The phone's Org route keeps `mode=active` after a stop; the target resolves either way.

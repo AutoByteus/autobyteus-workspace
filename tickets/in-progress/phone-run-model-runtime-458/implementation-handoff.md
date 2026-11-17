@@ -10,7 +10,10 @@ Commits:
 | `eee06b47ab` | SR-004; stable Settings scope; probe cases MSP-59…64 |
 | `679bf2e4b4` | FU-001 |
 | `ec5b81f912` | Step 0, REQ-011: the shared stop's ownership rule |
-| docs commit | This handoff and the revision record |
+| `075c7274f0` | IR-001 handoff, revision record and check evidence |
+| `cdb3ad0025`, `1054deb132`, `41638611b4` | API/E2E's test commits (round 1, MSP-65) |
+| `6ddf9bb8f5` | IR-002, CR-001: an Org stop from the phone's Settings keeps the phone where it is |
+| docs commit | IR-002 handoff and evidence |
 
 Step 0 is in its own commit as the design asks. It sits after the build in the history, because the PM took it in after the build was done. No commit depends on its order.
 
@@ -27,20 +30,23 @@ Step 0 is in its own commit as the design asks. It sits after the build in the h
   - `handoff-implementation.md`, the Solution Designer's handoff to me.
 - Design review report: `N/A — not applicable` (direct route)
 - Architecture review revision record: `N/A — not applicable`
-- Triggering rework report, revision record, or evidence: N/A (initial handoff). The SR-005 evidence is `evidence/implementation/stop-ownership-diagnostic.json`.
+- Triggering rework report, revision record, or evidence:
+  - `code-review-report.md` / `code-review-revision-record.md` (CRR-001, failure-origin review of API-REV-001): CR-001, Local Fix.
+  - `api-e2e-execution-coverage-report.md` (API-REV-001, F-1), `evidence/api-e2e/api-03b-msp65.log`.
+  - The SR-005 evidence is `evidence/implementation/stop-ownership-diagnostic.json`.
 - The Solution Designer's latest edits to requirements-doc.md, design-spec.md, handoff-implementation.md and solution-revision-record.md are uncommitted in the worktree; they are his files.
 
 ## Current Implementation Summary
 
-- Implementation cycle: `Initial`
+- Implementation cycle: `Rework`
 - Implementation revision record: `tickets/in-progress/phone-run-model-runtime-458/implementation-revision-record.md`
-- Current implementation revision ID: `IR-001`
+- Current implementation revision ID: `IR-002` (IR-001 the baseline)
 - Related solution revision IDs: SR-003, SR-004, SR-005, SR-006
 - Related architecture-review revision IDs: `N/A`
-- Related code-review revision IDs: `N/A`
-- Related API/E2E revision IDs: `N/A`
+- Related code-review revision IDs: `CRR-001`
+- Related API/E2E revision IDs: `API-REV-001`
 - Related delivery revision IDs: `N/A`
-- Triggering finding IDs: `N/A`
+- Triggering finding IDs: `CR-001` (API/E2E F-1)
 
 The phone (phone runtime only, `isMobileRemoteAccessRuntime()`) now has the following.
 
@@ -82,7 +88,7 @@ The phone (phone runtime only, `isMobileRemoteAccessRuntime()`) now has the foll
 | REQ-005 / DS-003 | Settings entry and screen | `MobileRunMenu.vue` (`showSettings`, after Activity); `MobileRunTargetView.vue` (`mobileRunSettingsScope(target) !== null && !remote`); `useMobileNavigation.ts` (`settings` screen); `MobilePairedShell.vue` → `components/mobile/views/MobileRunSettings.vue`; status line from `utils/mobile/mobileRunSubjectLine.ts` (shared with the run screen) | Done. MSP-61: "lead / Stopped · in Delivery Team", Antigravity CLI / Gemini test, Save disabled |
 | REQ-006 / DS-003 | Change and Save a stopped run | `MobileRunSettings.vue` `change()` → `updateAgentModelConfig` / `updateTeamScopeModelConfig` / `updateAgentOrgScopeModelConfig`; `canSave` = a model and `store.canSave`; `save()` → `store.save()` → emit back | Done. MSP-61: Grok Build clears the model ("Choose"); Grok 4.7 enables Save; Save → conversation; the node holds `grok_build`/`grok-4.7`; Settings again shows it; a phone message makes the Team run active on Grok. The scope stays one object per run (`eee06b47ab`) |
 | REQ-007 | Refusal in a red card, screen stays | `refusal` = the store's error feedback (else a failed stop's message) → `mobile-run-settings-error` `role="alert"` | Done. MSP-62: the run woken on the node before Save; the card shows the store's message for that refusal; nothing changed on the node. "Model not offered" covered by unit test only (see Known Risks) |
-| REQ-008 / DS-004 | Live run: stop icon, rows disabled, one tap | `live` = `draft.isActive`; button `mobile-run-settings-stop` (`aria-label`/`title` "Stop run", no text) → `useRunStopAction(stopSubject, { onStopped: reloadCanonical })` | Done. MSP-63 (idle) and MSP-64 (working): the icon; rows and Save disabled; one tap stops; the run is read again ~5 ms after the node answers; rows open; MSP-63 then saves Grok |
+| REQ-008 / DS-004 | Live run: stop icon, rows disabled, one tap | `live` = `draft.isActive`; button `mobile-run-settings-stop` (`aria-label`/`title` "Stop run", no text) → `useRunStopAction(stopSubject, { onStopped: reloadCanonical })` | Done. MSP-63 (idle) and MSP-64 (working): the icon; rows and Save disabled; one tap stops; the run is read again ~5 ms after the node answers; rows open; MSP-63 then saves Grok. IR-002 (CR-001): `useRunStopAction(…, { shell: 'mobile' })` → `useWorkspaceHistorySubjectActions({ shell })`; an Org stop writes no route on the phone shell (as open, select and inspect already did). MSP-65: a live Org member stops its Org; Settings stays at `/mobile/?…&screen=settings` with the rows open. The desktop (no shell) still writes `/workspace` in history mode |
 | REQ-009 | Catalog keys | `localization/messages/{en,zh-CN}/mobileSettings.ts` registered in both `index.ts` | Done. The rows keep New run's own labels ("Runtime", "Model"), so no `mobile.settings.runtime`/`model` keys were added |
 | REQ-010 | No code (DEC-001) | — | — |
 | REQ-011 / UC-006 (step 0) | A stop reports success when the node stopped the run | `utils/runInstanceOwnership.ts` `sameRunInstance(atStart, current)`; `agentRunStore.terminateRun` `ownsRequest`; `agentTeamRunStore.terminateTeamRun` members check | Done. Unit tests (agent, Team) fail before and pass after; desktop DCP-001, DCP-003, AFS-001 pass; MSP-64 passes |
@@ -107,6 +113,7 @@ The phone (phone runtime only, `isMobileRemoteAccessRuntime()`) now has the foll
 2. **The refusal card shows the store's feedback message**, the same text the desktop editor shows for that refusal. For example, after a run is woken: "This run became active through another connected workflow. Stop it, reopen Settings, and try again." A node message the store passes through, such as a model not offered, shows as the node words it.
 3. **No `mobile.settings.runtime`/`model` keys.** The rows are New run's component with its own labels, so Settings and New run name them the same.
 4. **A Team member's stop stops its Team run**, and an Org member's its Org run, as on the desktop.
+5. **On the phone, an Org stop leaves the route as it is** (`mode=active` stays). `activeWorkspaceTarget` resolves the Org from either `mode`, so the Settings target still resolves (MSP-65: rows open, status "Stopped · in Delivery Org"). The phone writes no Org route of its own for a stop.
 
 ## Known Risks
 
@@ -168,6 +175,12 @@ Evidence folder: `tickets/in-progress/phone-run-model-runtime-458/evidence/imple
 | IMP-458-phone-probe-cases | `pnpm -C autobyteus-web build:mobile-web`; `pnpm -C autobyteus-web test:e2e:mobile-shell --output-dir=<fresh> --cases=MSP-59,MSP-60,MSP-61,MSP-62,MSP-63,MSP-64` | ec5b81f912 | probe-owned alpha/beta nodes, scripted Antigravity and Grok Build, phone bundle from the worktree, Chrome | phone conversation, Text size, Settings, stop | AC-001, 002, 004, 005, 006, 009 (phone) | Pass | `IMP-458-phone-probe-cases.log`, `IMP-458-phone-probe-cases.json` | `mobile-shell probe: Pass`; MSP-64 `afterStop`: `GetAgentRunResumeConfig` right after `TerminateAgentRun`; `browserErrors: []` |
 | IMP-458-stop-diagnostic | The SR-005 reproduction (temporary diagnostic, removed) | eee06b47ab + uncommitted | as above | `terminateRun` ownership | AC-006, AC-009 | Fail (the evidence that led to step 0) | `stop-ownership-diagnostic.json` | `instanceBefore: null`, `instanceAfter: "1a8bbca2-…"` |
 | IMP-458-unit-repro | New store tests run before the step-0 fix, then after | ec5b81f912 (before: the same tests on eee06b47ab's stores) | Node, vitest | `terminateRun`, `terminateTeamRun` | AC-009 | Pass after (2 failed before) | this table (focused runs) | "a stop that starts with no input instance…" |
+| IMP-458-r2-guards | `pnpm guard:web-boundary`, `pnpm guard:localization-boundary`, `pnpm audit:localization-literals` | 6ddf9bb8f5 | macOS, Node, clean env | all web sources | AC-007, AC-008 | Pass | `IMP-458-r2-guard-web-boundary.log`, `IMP-458-r2-guard-localization-boundary.log`, `IMP-458-r2-audit-localization-literals.log` | `# exit: 0` (each) |
+| IMP-458-r2-typecheck | `pnpm typecheck` | 6ddf9bb8f5 | same | autobyteus-web | all | Pass | `IMP-458-r2-typecheck.log` | `production errors: 0; test-file errors: 87 in 37 files (baseline 87 in 37 files)` |
+| IMP-458-r2-web-unit | `pnpm exec cross-env NUXT_TEST=true vitest run` | 6ddf9bb8f5 | same | full web suite, with the CR-001 tests | AC-001…009 (unit parts), AC-008 | Pass | `IMP-458-r2-web-unit.log` | `Test Files  760 passed (760)`, `Tests  5704 passed \| 2 skipped (5706)` |
+| IMP-458-r2-phone-probe-cases | `pnpm -C autobyteus-web build:mobile-web`; `pnpm -C autobyteus-web test:e2e:mobile-shell --output-dir=<fresh> --cases=MSP-59,MSP-60,MSP-61,MSP-62,MSP-63,MSP-64,MSP-65` | 6ddf9bb8f5 | as IMP-458-phone-probe-cases | phone conversation, Text size, Settings, agent, Team and Org stops | AC-001, 002, 004, 005, 006, 009; CR-001 | Pass | `IMP-458-r2-phone-probe-cases.log`, `IMP-458-r2-phone-probe-cases.json` | `mobile-shell probe: Pass`; MSP-65 `url` `/mobile/?…&screen=settings`, `stopped.runtimeDisabled: false`, `nodeAfterStop: false`; `browserErrors: []` |
+| IMP-458-r2-desktop-org-stop | `node tests/e2e/delegated-launch-defaults-probe.mjs --cases AFS-002 --output-dir <fresh>` | 6ddf9bb8f5 | as IMP-458-desktop-stops | the desktop Org Settings (running: locks and stops; stopped: edits and saves) | AC-008; CR-001 (desktop unchanged) | Pass | `IMP-458-r2-desktop-org-stop.log` | `Summary: 1 Pass, 0 Fail` |
+| IMP-458-r2-unit-repro | The four CR-001 tests run before the fix, then after | 6ddf9bb8f5 (before: the same tests on 41638611b4) | Node, vitest | `useWorkspaceHistorySubjectActions` stop, `useRunStopAction`, `MobileRunSettings` | CR-001 | Pass after (4 failed before) | this table (focused runs) | "stop stops the Org shown on the phone and writes no route" |
 
 - **Rendered results** were inspected in the probe screenshots (`/tmp/458-probe-13/*.png`; the probe's output folder, not committed).
 - **Not run, and why:**
