@@ -2,15 +2,15 @@
 
 ## Document Status
 
-- Status: `Approved` (SR-002), **except D-5 / REQ-003: `Ready for Approval` (SR-003, reopened; needs the user)**
-- Current solution revision ID: `SR-003`
+- Status: `Approved` (SR-004)
+- Current solution revision ID: `SR-004`
 - Package identifier: `follow-ups-of-461-500`
 - Request / ticket: Project Task `autobyteus-500` in Project `project_a1377344-25db-482a-97cc-ecfdb0fb495a`: "All follow-ups of autobyteus-461 in one Task"
 - Requested by: `/project_task_manager` (run `project_task_manager_7c8dce0c4a8b44f88e776a83809dee03`), at the founder's word (2026-11-17)
 - Requirements owner: Solution Designer (run `solution_designer_65a93db823284ad5b4e87726a5b250a2`)
 - Date: 2026-11-17
 - Approved by and reference: the user decided D-1 and D-8 (2026-11-17, quoted in Open Decisions). The rest was approved by the Solution Designer within the Task's direction, and the user was informed in the conversation (2026-11-17)
-- Exact approved requirements baseline / solution revision: this document at SR-002 (delivery 1)
+- Exact approved requirements baseline / solution revision: this document at SR-004 (delivery 1)
 - Behavior-defining supplements: `source-follow-ups-461.md` (the Task's context file: the follow-up rows FU-*, as leads, not decisions)
 
 ## Problem And Desired Outcome
@@ -46,7 +46,7 @@
 | D-2 | Staging: **delivery 1** = groups 1, 3, 4, 5, 6; **delivery 2** = group 2 | Solution Designer (user informed 2026-11-17) | Decided. Delivery 1 is mostly renames and local fixes, with no data. Delivery 2 depends on D-1 and touches the migration code |
 | D-3 | FU-036: a command sent before a stream is ready | Solution Designer | **Refuse clearly:** the Org and agent-collaboration streams answer `SESSION_NOT_READY`, as the agent and Team streams already do (`api/websocket/agent.ts`, `attachRunStream`). No command is dropped. This is the existing pattern; queueing would add state |
 | D-4 | FU-030's scope and style | Solution Designer | **Scope:** the five collected wordings, plus every refusal on the surfaces they come from: `delegate_task` / `send_message_to` results, archive and delete of a run, a delegated run's Settings save, and delegation launch notes. **Style:** say what happened and why, then what to do next, with the run named by its name (SR-091). Outcomes don't change |
-| D-5 | FU-007: stored and code names differ behind a mapping | **The user** (reopened SR-003) | **Reopened.** As approved at SR-002 (rename the code to the stored names, no migration), the code would call a team run `agentRun`, because the stored `agentRun` holds team runs too (`kind: "team"`): a wrong meaning moved into the code. **Options:** (1) as approved: the code takes the stored names, wrong meaning included; (2) **recommended:** clean code and data, as the user decided for FU-020 (D-8): one clean name in both, `delegated_runs.json` with `delegatedRuns: [{…, run: {kind, …}}]` in place of `agent_run_resources.json`, `agentRunResources` and `agentRun`, and `DelegatedRun…` in the code in place of `TaskExecution…`. The stored names change by a data migration, with a backup first: 401 small files in the founder's data. Shipped in the same release as FU-020's migration |
+| D-5 | FU-007: stored and code names differ behind a mapping | **The user**, 2026-11-17 (SR-004) | **Decided: stored names stay; the code's second name goes.** The Solution Designer recommended not renaming the stored names this round (no bug behind them; the mapping is confined to `task-execution-resource-schema.ts`; a second migration on 401 Task files for a name), and doing the code-only rename "task execution" → "delegated run" now, as its own rename-only commit. The user: "Yeah". So: no data migration for the Task record; the schema module keeps its one mapping, named in its comment and in the glossary as a known leftover; FU-007's stored-name part is a follow-up (`follow-ups.md`). Code types and the shared stream contract say `DelegatedRun…` in place of `TaskExecution…` (with FU-010). Option 1 (the code takes the stored names) is rejected: it would call a team run `agentRun` |
 | D-6 | FU-013: one ID for team and org token totals | Solution Designer | **The query states the run kind**, and the resolver stops guessing. The stored usage field (`root_team_run_id`) is left as it is: renaming it needs a data migration, which isn't worth it for a name. It's recorded as a known leftover in the glossary |
 | D-7 | FU-002: two files over 500 lines | Solution Designer | **Already resolved by 461:** `standalone-agent-run-root.ts` is 323 lines and its manager 429. Nothing to do |
 | D-8 | FU-020: attachments to a delegated child are named through its delegator | **The user**, 2026-11-17 | **Decided: (b), clean code and clean data.** The user: "Basically the code and the data both should be clean … I think the data migration guideline mentioned this." New attachments use the child's own link. The host-scoped owner kind, its route and `DelegatedChildLocations` go. The 425 stored links in 143 message files are rewritten to the child's own link by a data migration (the guideline's current-only runtime: no legacy reader). The founder's rule applies: **a backup before any file is rewritten**. The migration follows `data_migration_guideline.md`, including the new "Registry order and late predecessors" rules. Correction (SR-003, evidence only): beta.7 no longer writes these links (`e19ed3819f`, CR-461-106); the migration converts every link written before it (231 structured links, all in the child's own folder) |
@@ -58,7 +58,7 @@
 | --- | --- | --- |
 | REQ-001 | The web names a delegated run by what it is, a run of its own bound to its Task: no "transient execution" types, kinds or component names. No behavior change | FU-019 |
 | REQ-002 | The server's run runtimes and their helpers are named for one run, not a hosted tree (no "root" meaning a host). The children of a run, local or on a peer, have one name per concept, and so does a delegated run, in code and in public result codes where a code names the old concept. No behavior change. `collaboration_model.md`, `GLOSSARY.md` and the module docs follow | FU-006, FU-010 |
-| REQ-003 | The Task record's names are the same in code and on disk, with no mapping, and each name means one thing (D-5, reopened at SR-003) | FU-007 |
+| REQ-003 | The code has one name for a delegated run ("delegated run", not "task execution"), with no behavior change and no data migration. The Task record's stored names stay, behind the one mapping in its schema module (D-5) | FU-007 (code part; stored part is a follow-up) |
 | REQ-004 | No owner is reached through a process-wide `bind*` / `find*` / `get*` lookup that silently does nothing when unbound. Required owners are passed in, and a missing one fails at composition | FU-011 |
 | REQ-005 | No class decides behavior by whether an optional collaborator was passed in (`AgentRunService`, `TaskExecutionResourceRelease`). Each host states its stop and activation path explicitly | FU-018 |
 | REQ-006 | Token totals are asked for with an explicit run kind (team or org), and no resolver guesses the kind of an ID (D-6) | FU-013 |
@@ -72,7 +72,7 @@
 
 | ID | Requirement | Observable outcome |
 | --- | --- | --- |
-| AC-001 | REQ-001, REQ-002, REQ-003 | No current name in web or server source implies hosting ("transient execution", a "root" that hosts others, "copy", `TaskExecution` for a delegated run); the Task schema module has no name mapping. All tests pass, changed in names only |
+| AC-001 | REQ-001, REQ-002, REQ-003 | No current name in web or server source implies hosting ("transient execution", a "root" that hosts others, "copy", `TaskExecution` for a delegated run); the Task schema module keeps only its one documented mapping (D-5). All tests pass, changed in names only |
 | AC-002 | REQ-004, REQ-005 | A composition with a required owner missing fails at start, with the owner named; no class has an optional collaborator whose absence changes behavior |
 | AC-003 | REQ-006 | A team's and an org's token totals are read through queries that state the kind; there is no kind guessing |
 | AC-004 | REQ-007 | Each refusal of D-4's surfaces is listed with its new text; each says what happened, why and what to do; their outcomes are unchanged (the existing tests' outcome assertions pass) |
