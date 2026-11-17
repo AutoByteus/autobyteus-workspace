@@ -1,0 +1,157 @@
+// API-07b: node screens.mjs chips largest|standard <walks> on the held stack (head bundle); per run with an Activity view: its items and every shown element with the 11 px class, computed px
+{
+ "largest": {
+  "step": "largest",
+  "root": null,
+  "found": [
+   {
+    "run": "Project Task Manager",
+    "items": 0,
+    "small": []
+   },
+   {
+    "run": "release notes writer",
+    "items": 0,
+    "small": []
+   },
+   {
+    "run": "docs review team",
+    "items": 0,
+    "small": []
+   },
+   {
+    "run": "publisher",
+    "items": 0,
+    "small": []
+   },
+   {
+    "run": "studio team",
+    "items": 0,
+    "small": []
+   },
+   {
+    "run": "changelog helper",
+    "items": 0,
+    "small": []
+   },
+   {
+    "run": "Approver",
+    "items": 1,
+    "small": [
+     {
+      "text": "Captured Nov 17, 2026, 9:52:23",
+      "px": 13.5882
+     },
+     {
+      "text": "Available",
+      "px": 13.5882
+     }
+    ],
+    "shot": "largest-activity-6.png"
+   },
+   {
+    "run": "Delivery Team",
+    "items": 1,
+    "small": []
+   },
+   {
+    "run": "Delivery Org",
+    "items": 0,
+    "small": []
+   },
+   {
+    "run": "planner",
+    "items": 0,
+    "small": []
+   },
+   {
+    "run": "squad",
+    "items": 0,
+    "small": []
+   },
+   {
+    "run": "Review Org",
+    "items": 0,
+    "small": []
+   }
+  ],
+  "errors": []
+ },
+ "standard": {
+  "step": "standard",
+  "root": null,
+  "found": [
+   {
+    "run": "Project Task Manager",
+    "items": 0,
+    "small": []
+   },
+   {
+    "run": "release notes writer",
+    "items": 0,
+    "small": []
+   },
+   {
+    "run": "docs review team",
+    "items": 0,
+    "small": []
+   },
+   {
+    "run": "publisher",
+    "items": 0,
+    "small": []
+   },
+   {
+    "run": "studio team",
+    "items": 0,
+    "small": []
+   },
+   {
+    "run": "changelog helper",
+    "items": 0,
+    "small": []
+   },
+   {
+    "run": "Approver",
+    "items": 1,
+    "small": [
+     {
+      "text": "Captured Nov 17, 2026, 9:52:23",
+      "px": 11
+     },
+     {
+      "text": "Available",
+      "px": 11
+     }
+    ],
+    "shot": "standard-activity-6.png"
+   },
+   {
+    "run": "Delivery Team",
+    "items": 1,
+    "small": []
+   },
+   {
+    "run": "Delivery Org",
+    "items": 0,
+    "small": []
+   },
+   {
+    "run": "planner",
+    "items": 0,
+    "small": []
+   },
+   {
+    "run": "squad",
+    "items": 0,
+    "small": []
+   },
+   {
+    "run": "Review Org",
+    "items": 0,
+    "small": []
+   }
+  ],
+  "errors": []
+ }
+}

@@ -1,0 +1,62 @@
+{
+ "log": [
+  {
+   "at": "base, before",
+   "stored": null,
+   "step": null,
+   "root": 16,
+   "runName": 16,
+   "feed": 17,
+   "homeButton": false
+  },
+  {
+   "at": "base, Largest chosen in the run ⋮",
+   "stored": "largest",
+   "step": null,
+   "root": 16,
+   "runName": 16,
+   "feed": 21,
+   "homeButton": false
+  },
+  {
+   "at": "base, run list",
+   "stored": "largest",
+   "step": null,
+   "root": 16,
+   "runName": 15,
+   "feed": null,
+   "homeButton": false
+  },
+  {
+   "at": "head after the update, run list",
+   "stored": "largest",
+   "step": "largest",
+   "root": 19.7647,
+   "runName": 18.5294,
+   "feed": null,
+   "homeButton": true,
+   "firstScreen": {
+    "root": "19.7647px",
+    "step": "largest"
+   }
+  },
+  {
+   "at": "head after the update, conversation",
+   "stored": "largest",
+   "step": "largest",
+   "root": 19.7647,
+   "runName": 19.7647,
+   "feed": 21,
+   "homeButton": true,
+   "pressed": "mobile-text-size-largest"
+  }
+ ],
+ "errors": [
+  "console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+  "console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+  "console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+  "console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+  "console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+  "console: Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+ ]
+}
