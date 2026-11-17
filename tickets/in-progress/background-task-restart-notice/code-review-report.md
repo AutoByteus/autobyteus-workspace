@@ -1,8 +1,28 @@
 # Code Review Report
 
-## Latest Round: API/E2E Failure-Origin Review (round 2, CRR-002)
+## Latest Round: Implementation Review, round 3 (CRR-003) — Pass
 
-This round is the latest authoritative result. The implementation-review content further below is round 1 (CRR-001, Pass) and stands unchanged, except where this section says otherwise.
+- Review Entry Point: `Implementation Review`
+- Review Scope: `Targeted Delta Review`. `cf5ce8d109..b78555d7bb` touches `restart-notice.ts` (one cause-dependent line and two constants), its unit test, one RR-02 assertion in the e2e suite, `restart_resume.md` and `GLOSSARY.md`. `55523ed38e` is documents only. No spine, interface or data-shape change: the cause was already stored on each reminder.
+- Trigger: implementation engineer, IR-002 (DEC-008 change), resolving CR-001 / API/E2E F-1
+- Basis: SR-004 (DEC-008, decided by the user 2026-11-17: option (a), cause-specific wording; stopping the survivors is FU-004), ARCH-REV-003 Pass
+- Relevant Implementation Revision IDs: IR-002
+- Prior Review Round Reviewed: `2` (CRR-002, failure origin, Requirement Gap)
+
+Checks:
+- **CR-001 resolved.** `buildRestartNoticeText` picks the background line by cause. `unexpected_stop` gets `UNEXPECTED_STOP_BACKGROUND_LINE`; `update` and `restart` keep the DEC-003 line unchanged. Checked by evaluating the constant: it is identical to the requirements-doc DEC-008 text (L137). A mid-turn run after an unexpected stop gets the interrupted-turn line plus the DEC-008 line, never the "stopped" line. The unit tests assert the exact lines per cause (`evidence/IMP-04-dec008-rerun.log`: 10 files, 120 tests pass at `b78555d7bb`).
+- **BEH-004** is `Confirmed` again against the revised REQ-002: the reminder no longer claims the tasks were stopped after an unexpected stop.
+- **RR-02 assertion.** The e2e test asserted the old line after a SIGKILL; it now expects the DEC-008 line and not the "stopped" line. Correcting a test this change makes untrue belongs to this ticket (ticket-scope.md). The built-server rerun is for API/E2E; the change goes to the proportional test-code review after it passes.
+- **Not rerunning IMP-01..03 is justified.** Only string content and its selection changed; the type and server surfaces are untouched. IMP-04 reran the typecheck and the affected suites.
+- **Docs** (`restart_resume.md`, `GLOSSARY.md`) state both lines by cause.
+- **Scope.** Stopping a crashed session's surviving command groups is recorded as FU-004 (the Solution Designer's row), per the user's decision.
+- **Scorecard.** Round 1's scorecard carries forward (9.43). Runtime Correctness stays 9.4: the round-2 premise defect was upstream and is now resolved in the approved text. Every category is ≥ 9.3.
+- Findings: none open.
+- Recommended Recipient: API/E2E engineer (`/api_e2e_engineer`): rerun RR-02 on the built server (and the reminder-text assertions of RR-01/RR-03); then the informational notice to the implementation engineer.
+
+## Earlier Round: API/E2E Failure-Origin Review (round 2, CRR-002)
+
+Superseded by round 3 above. The implementation-review content further below is round 1 (CRR-001, Pass).
 
 - Review Entry Point: `API/E2E Failure-Origin Review`
 - Review Scope: `N/A` (failure-origin round)
@@ -238,11 +258,11 @@ Round 1: none.
 
 ## Latest Authoritative Result
 
-- Review Decision: `Fail` (round 2, failure-origin; round 1 implementation review was `Pass`)
-- Review Entry Point: `API/E2E Failure-Origin Review`
-- Supported Product Scenario Gate: `Pass` (SCN-004 is supported; RR-02 reaches it through a real SIGKILL)
-- Material-Premise Gate: `Fail` (the premise "the restart stopped the background tasks" does not hold for an unexpected stop)
-- Score Summary: round 1 scorecard unchanged (9.43); not repeated for a failure-origin round
-- Failure Origin: `Requirement Gap` (CR-001 / F-1)
-- Recommended Recipient: Solution Designer
+- Review Decision: `Pass` (round 3, CRR-003; round 2 was a failure-origin `Requirement Gap`, now resolved by SR-004 / DEC-008 and IR-002)
+- Review Entry Point: `Implementation Review` (targeted delta)
+- Supported Product Scenario Gate: `Pass`
+- Material-Premise Gate: `Pass` (the unexpected-stop line no longer asserts that the tasks were stopped)
+- Score Summary: 9.43 average carried forward; every category ≥ 9.3
+- Failure Origin: N/A (round 2's Requirement Gap resolved)
+- Recommended Recipient: API/E2E engineer
 - Notes: Part 1 implements SR-003 as designed. For API/E2E: AC-001 (before/after on base `4cbf9e7881`; update, graceful restart, kill), AC-002, AC-003 per runtime, AC-004 on an isolated node.
