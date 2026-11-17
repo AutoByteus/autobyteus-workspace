@@ -81,7 +81,7 @@ export function useMobileRunTree() {
     if (row.kind === 'org_team') return resolveTeamStatus(row.statusIds.map((agentRunId) => runStatus.statusOf(agentRunId)), true);
     return runStatus.statusOf(id);
   };
-  const sources = { treeRows: (entry: RunListEntry) => trees.rowsOf(treeRefOf(entry)), statusOf, isTreeRowExpanded };
+  const sources = { treeRows: (entry: RunListEntry) => trees.rowsOf(treeRefOf(entry)), statusOf, backgroundTasksOf: runStatus.treeRowBackgroundTasksOf, isTreeRowExpanded };
 
   // The listed Task workers' current Tasks (the desktop's second line; summaries only, no locating on the phone).
   const { taskOf } = useTaskWorkerTasks(() => runListStore.shownEntries.flatMap((entry) => treeDisplayRowsOf(entry, sources).map((display) => display.row)));

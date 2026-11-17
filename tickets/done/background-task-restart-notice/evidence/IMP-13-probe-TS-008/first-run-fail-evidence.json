@@ -1,0 +1,60 @@
+{
+  "startedAt": "2026-11-17T15:33:24.973Z",
+  "executablePath": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "cases": {
+    "TS-008": {
+      "result": "Fail",
+      "description": "Background tasks: an Agent run and a Team run idle with a background task show \"Background task running\" with the active dot and no Stop; Idle once it exits",
+      "startedAt": "2026-11-17T15:33:56.548Z",
+      "message": "agent row dot: active blue, not pulsing",
+      "details": {
+        "runs": {
+          "agent": "manager_tsbackground_692a_8cd9226c3ba34ee190124dba9ed4d5e2",
+          "team": "delivery_team_tsbackground_692a_643be8a2c374481f9a7738a2317070ee",
+          "worker": "release_notes_writer_tsbackground_692a_3c4d8dda4f6e4051810abb2ed46af6c0"
+        },
+        "teamRow": {
+          "count": 1,
+          "status": "background",
+          "ariaLabel": "Background task running",
+          "title": "Background task running",
+          "dotClass": "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-blue-500",
+          "rowLabel": null,
+          "beforeIcon": null
+        },
+        "agentRowDot": "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-green-500 mr-2",
+        "header": "Background task running",
+        "stop": 0,
+        "send": 1
+      }
+    }
+  },
+  "cleanup": {
+    "browser": "closed",
+    "frontend": {
+      "pid": 20356,
+      "status": "terminated",
+      "exit": "SIGTERM"
+    },
+    "backend": {
+      "pid": 19984,
+      "status": "terminated",
+      "exit": 1
+    },
+    "dataRootRemoved": true
+  },
+  "failures": [
+    {
+      "id": "TS-008",
+      "message": "agent row dot: active blue, not pulsing"
+    }
+  ],
+  "stack": {
+    "backendUrl": "http://127.0.0.1:60377",
+    "frontendUrl": "http://127.0.0.1:60378",
+    "dataRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/team-status-live-imrUmX"
+  },
+  "browserVersion": "157.0.8103.79",
+  "result": "Fail",
+  "finishedAt": "2026-11-17T15:34:40.142Z"
+}

@@ -1,6 +1,7 @@
 import type { CompactionRecoveryBlockDto } from "@autobyteus/agent-presentation-contracts";
 import type { AgentRunStatusHint } from "../../agent-execution/domain/agent-run-event.js";
 import {
+  backgroundTasksRunningOf,
   normalizeAgentApiStatus,
   type AgentApiStatus,
 } from "../../agent-execution/domain/agent-status-payload.js";
@@ -9,6 +10,8 @@ import { TeamRunEventSourceType, type TeamRunEvent } from "./team-run-event.js";
 
 export type TeamAgentStatusDetails = Readonly<{
   status: AgentApiStatus;
+  /** Background tasks the member has running (autobyteus-448); 0 when it has none or its runtime cannot say. */
+  backgroundTasksRunning: number;
   trigger: string | null;
   toolName: string | null;
   errorMessage: string | null;
@@ -34,6 +37,8 @@ export const deriveTeamAgentStatusHint = (status: AgentApiStatus): AgentRunStatu
 
 export const createTeamAgentStatusDetails = (input: {
   status: unknown;
+  /** Required: every producer says how many background tasks the member has running. */
+  backgroundTasksRunning: number;
   trigger?: unknown;
   toolName?: unknown;
   errorMessage?: unknown;
@@ -41,6 +46,7 @@ export const createTeamAgentStatusDetails = (input: {
   recoverableBlock?: CompactionRecoveryBlockDto | null;
 }): TeamAgentStatusDetails => Object.freeze({
   status: normalizeAgentApiStatus(input.status),
+  backgroundTasksRunning: backgroundTasksRunningOf(input.backgroundTasksRunning),
   trigger: nullableText(input.trigger),
   toolName: nullableText(input.toolName),
   errorMessage: nullableText(input.errorMessage),

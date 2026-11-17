@@ -60,6 +60,7 @@ export declare const teamExecutionViewSnapshotPayloadSchema: z.ZodObject<{
             idle: "idle";
             running: "running";
         }>;
+        background_tasks_running: z.ZodNumber;
         trigger: z.ZodNullable<z.ZodString>;
         tool_name: z.ZodNullable<z.ZodString>;
         error_message: z.ZodNullable<z.ZodString>;
@@ -555,6 +556,7 @@ export declare const teamStreamServerMessageSchema: z.ZodDiscriminatedUnion<[z.Z
             idle: "idle";
             running: "running";
         }>;
+        background_tasks_running: z.ZodNumber;
         trigger: z.ZodNullable<z.ZodString>;
         tool_name: z.ZodNullable<z.ZodString>;
         error_message: z.ZodNullable<z.ZodString>;
@@ -1163,6 +1165,7 @@ export declare const teamStreamServerMessageSchema: z.ZodDiscriminatedUnion<[z.Z
                 idle: "idle";
                 running: "running";
             }>;
+            background_tasks_running: z.ZodNumber;
             trigger: z.ZodNullable<z.ZodString>;
             tool_name: z.ZodNullable<z.ZodString>;
             error_message: z.ZodNullable<z.ZodString>;

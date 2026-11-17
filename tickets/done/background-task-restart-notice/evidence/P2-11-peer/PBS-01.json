@@ -1,0 +1,84 @@
+{
+  "delegatorRunId": "delegator_814437_dc624895b5b041fb8f45ff354fc664fe",
+  "peerRunId": "worker_6c1dbd_e3470b3ebb494229afd2e3f0ce6537a4",
+  "called": "CALLED:{\\\"content\\\":[{\\\"type\\\":\\\"text\\\",\\\"text\\\":\\\"{\\\\\\\"delegated\\\\\\\":true,\\\\\\\"target_kind\\\\\\\":\\\\\\\"agent\\\\\\\",\\\\\\\"target_agent_run_id\\\\\\\":\\\\\\\"worker_6c1dbd_e3470b3ebb494229afd2e3f0ce6537a4\\\\\\\",\\\\\\\"node\\\\\\\":\\\\\\\"beta\\\\\\\",\\\\\\\"task_id\\\\\\\":\\\\\\\"ad_hoc_task_561cc640-904d-412f-8d47-6e5fe74c7a15\\\\\\\"}\\\"}],\\\"structuredContent\\\":{\\\"delegated\\\":true,\\\"target_kind\\\":\\\"agent\\\",\\\"target_agent_run_id\\\":\\\"worker_6c1dbd_e3470b3ebb494229afd2e3f0ce6537a4\\\",\\\"node\\\":\\\"beta\\\",\\\"task_id\\\":\\\"ad_hoc_task_561cc640-904d-412f-8d47-6e5fe74c7a15\\\"}}\",\"media\":null,\"ts\":1794943791.506}]",
+  "background": {
+    "agentRunId": "worker_6c1dbd_e3470b3ebb494229afd2e3f0ce6537a4",
+    "status": "idle",
+    "backgroundTasksRunning": 1
+  },
+  "backgroundState": {
+    "answer": "ok",
+    "node": null,
+    "status": "idle",
+    "count": 1
+  },
+  "ended": {
+    "agentRunId": "worker_6c1dbd_e3470b3ebb494229afd2e3f0ce6537a4",
+    "status": "idle",
+    "backgroundTasksRunning": 0
+  },
+  "states": [
+    {
+      "answer": "ok",
+      "node": null,
+      "status": "offline",
+      "count": 0
+    },
+    {
+      "answer": "ok",
+      "node": null,
+      "status": "idle",
+      "count": 1
+    },
+    {
+      "answer": "ok",
+      "node": null,
+      "status": "idle",
+      "count": 0
+    }
+  ],
+  "agents": [
+    {
+      "agentRunId": "worker_6c1dbd_e3470b3ebb494229afd2e3f0ce6537a4",
+      "status": "offline",
+      "backgroundTasksRunning": 0
+    },
+    {
+      "agentRunId": "worker_6c1dbd_e3470b3ebb494229afd2e3f0ce6537a4",
+      "status": "idle",
+      "backgroundTasksRunning": 1
+    },
+    {
+      "agentRunId": "worker_6c1dbd_e3470b3ebb494229afd2e3f0ce6537a4",
+      "status": "idle",
+      "backgroundTasksRunning": 0
+    }
+  ],
+  "messages": [
+    {
+      "type": "RUN_STATUS_SNAPSHOT",
+      "at": 1794943791611
+    },
+    {
+      "type": "RUN_TREE_CHANGED",
+      "at": 1794943791615
+    },
+    {
+      "type": "RUN_STATUS_CHANGED",
+      "at": 1794943791624
+    },
+    {
+      "type": "RUN_STATE_CHANGED",
+      "at": 1794943791624
+    },
+    {
+      "type": "RUN_STATUS_CHANGED",
+      "at": 1794943817526
+    },
+    {
+      "type": "RUN_STATE_CHANGED",
+      "at": 1794943817526
+    }
+  ]
+}

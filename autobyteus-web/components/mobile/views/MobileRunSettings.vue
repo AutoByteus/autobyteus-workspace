@@ -78,7 +78,8 @@ const emit = defineEmits<{ (event: 'back'): void }>();
 const { t } = useLocalization();
 const { displayName, remoteView } = useTargetConversation(() => props.target);
 const subjectLine = computed(() => mobileRunSubjectLine({
-  status: props.target.context.state.currentStatus, unreachable: remoteView.unreachable.value, parentName: props.parentName,
+  status: props.target.context.state.currentStatus, backgroundTasksRunning: props.target.context.state.backgroundTasksRunning,
+  unreachable: remoteView.unreachable.value, parentName: props.parentName, t,
 }));
 
 const store = useExistingRunConfigStore();

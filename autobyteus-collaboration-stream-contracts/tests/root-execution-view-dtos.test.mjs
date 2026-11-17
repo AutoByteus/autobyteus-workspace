@@ -73,6 +73,7 @@ const status = (member_address, agent_run_id) => ({
   member_address,
   agent_run_id,
   status: "idle",
+  background_tasks_running: 0,
   trigger: null,
   tool_name: null,
   error_message: null,
@@ -253,4 +254,16 @@ test("an Org's own agents are correlated by run identity and address", () => {
   const duplicateConfiguredAddress = structuredClone(snapshot);
   duplicateConfiguredAddress.root_org.execution_tree.rootOrg.members.push(configuredAgent("/director", "agent-run-duplicate-configured"));
   assert.throws(() => RootExecutionViewDtoSchema.parse(duplicateConfiguredAddress), /configured address '\/director'.*duplicated/);
+});
+
+test("autobyteus-448: an Org's own agent status carries the required running background task count", () => {
+  const snapshot = orgSnapshot();
+  snapshot.root_org.execution_tree.rootOrg.members.push(configuredAgent("/direct", "agent-run-direct"));
+  snapshot.root_org.agent_statuses.push({ ...status("/direct", "agent-run-direct"), background_tasks_running: 2 });
+  assert.equal(RootExecutionViewDtoSchema.parse(snapshot).root_org.agent_statuses[0].background_tasks_running, 2);
+  const { background_tasks_running: _count, ...withoutCount } = snapshot.root_org.agent_statuses[0];
+  snapshot.root_org.agent_statuses[0] = withoutCount;
+  assert.throws(() => RootExecutionViewDtoSchema.parse(snapshot));
+  snapshot.root_org.agent_statuses[0] = { ...withoutCount, background_tasks_running: -1 };
+  assert.throws(() => RootExecutionViewDtoSchema.parse(snapshot));
 });

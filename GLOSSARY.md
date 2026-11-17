@@ -429,6 +429,13 @@ delegated run, …) are defined in the
   the run's next input. Delivered exactly once.
 - **Busy run** (restart record): a run that was mid-turn or had a running
   background task when the node recorded it (`busy-runs.json`).
+- **Background task running** (status shown): what desktop and phone lists and
+  headers show for an `idle` agent whose run has running background tasks ("N
+  background tasks running" for several; zh-CN "后台任务运行中"), with the active,
+  non-pulsing blue dot and no Stop button (autobyteus-448). It comes from the
+  status's running background task count (`background_tasks_running`); a Team shows
+  its agents' sum, ranked busy > background > error > idle > offline. A run in a turn
+  shows "Running". Codex always counts 0 (its background-task view is a snapshot).
 - **Usage limit:** a runtime's or provider's own limit on use (a 5-hour or
   weekly window, a billing period, a money balance), read from the runtime or
   provider. It is not the launch check of whether a runtime is usable.

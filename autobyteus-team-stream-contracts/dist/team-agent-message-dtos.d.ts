@@ -103,6 +103,7 @@ export declare const teamAgentPayloadSchemas: {
             idle: "idle";
             running: "running";
         }>;
+        background_tasks_running: z.ZodNumber;
         trigger: z.ZodNullable<z.ZodString>;
         tool_name: z.ZodNullable<z.ZodString>;
         error_message: z.ZodNullable<z.ZodString>;

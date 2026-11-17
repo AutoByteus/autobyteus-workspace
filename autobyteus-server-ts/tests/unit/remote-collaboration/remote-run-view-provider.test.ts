@@ -23,7 +23,7 @@ const harness = () => {
     observePairedAgents: vi.fn(async (_runId: string, onPresentation: PairedAgentPresentationListener, onEnded: () => void) => {
       listener = onPresentation; ended = onEnded; return observation; }),
     executeOwnerCommand: vi.fn(async () => ({ accepted: true })),
-    pairedAgentStatuses: vi.fn(() => [{ agentRunId: "lead-run", status: "running" as const }]),
+    pairedAgentStatuses: vi.fn(() => [{ agentRunId: "lead-run", status: "running" as const, backgroundTasksRunning: 0 }]),
   };
   // The run was started by alpha's delegation and pairs with the Team's members.
   const storedLinkCheck = vi.fn(async (root: { runId: string }, query: { kind: string; fromNodeId: string; targetAgentRunId?: string | null }) => {
@@ -62,7 +62,7 @@ describe("RemoteRunViewProvider behind the gateway", () => {
     const f = harness();
     const response = await f.gateway.runSummaries({ ...envelope(), runs: [TEAM, { kind: "agent", runId: "unknown-run" }] }, peerCallerOfBody({ ...envelope(), runs: [TEAM, { kind: "agent", runId: "unknown-run" }] }));
     expect(response).toEqual({ status: 200, answer: { accepted: true, nodeId: SELF,
-      runs: [{ kind: "agent_team", runId: "team-run", title: "Plan the October campaign", statuses: [{ agentRunId: "lead-run", status: "running" }],
+      runs: [{ kind: "agent_team", runId: "team-run", title: "Plan the October campaign", statuses: [{ agentRunId: "lead-run", status: "running", backgroundTasksRunning: 0 }],
         launches: [{ address: "/lead", runtimeKind: "autobyteus", llmModelIdentifier: "sonnet", source: { origin: "team_default", fallbacks: [] } }] }] } });
     expect(f.storedLinkCheck).toHaveBeenCalledWith(TEAM, { kind: "owner", fromNodeId: ALPHA.nodeId, targetAgentRunId: null });
     const other = await f.gateway.runSummaries({ ...envelope(OTHER), runs: [TEAM] }, peerCallerOfBody({ ...envelope(OTHER), runs: [TEAM] }));
@@ -101,7 +101,7 @@ describe("RemoteRunViewProvider behind the gateway", () => {
     const f = harness();
     const order: string[] = [];
     vi.mocked(f.access.observePairedAgents).mockImplementationOnce(async () => { order.push("observe"); return f.observation; });
-    vi.mocked(f.access.pairedAgentStatuses).mockImplementationOnce(() => { order.push("read"); return [{ agentRunId: "lead-run", status: "idle" }]; });
+    vi.mocked(f.access.pairedAgentStatuses).mockImplementationOnce(() => { order.push("read"); return [{ agentRunId: "lead-run", status: "idle", backgroundTasksRunning: 0 }]; });
     const sink = { send: vi.fn(), close: vi.fn() };
     await f.gateway.openRunObservation({ ...envelope(), targetRoot: TEAM }, peerCallerOfBody({ ...envelope(), targetRoot: TEAM }), sink);
     expect(order).toEqual(["observe", "read"]);

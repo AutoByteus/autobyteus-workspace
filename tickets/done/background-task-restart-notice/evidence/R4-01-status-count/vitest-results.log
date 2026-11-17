@@ -1,0 +1,26 @@
+# R4-01..03 background-task-status-count.e2e.test.ts on the merged build (HEAD a9e5676630 + BTS-06; dist from test:integration:prepare at a9e5676630); node 22.23.1; load 70-215
+# BTS-01..03, BTS-06: env -i PATH HOME=<temp> TMPDIR RUN_BACKGROUND_TASK_STATUS_E2E=1 RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<agy-failure-cli.mjs> AGY_FAKE_CASE=linked_skills BACKGROUND_TASK_STATUS_E2E_EVIDENCE_DIR=<dir>
+## first full run (BTS-01..03 Pass; BTS-06 first draft failed: its exit task ran on a timer and could end before the turn under load (idle 3 never seen); then its notice match ran before the notices came. Test fixed: the exit is flag-driven, and each end waits for its notice and the notice's turn)
+     ✓ BTS-01: native: the example sequence on the stream and the feed, a reconnect snapshot, a message delivered at once, counts 2, 1, 0  19796ms
+     ✓ BTS-02: a Team: each member's status carries its own count; the feed's Team run state carries the sum  13952ms
+     ✓ BTS-03: Antigravity: an open daemon step reads idle 1, then idle 0 when it exits  11443ms
+     × BTS-06: autobyteus-483's ends beside the count: exit code, signal and the run's end each bring it down 91061ms
+     ↓ BTS-04 (live): Claude idle with a background Bash command reads idle 1, then 0
+     ↓ BTS-05 (live): Codex idle with a background terminal stays at count 0 (its view is a snapshot)
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+      Tests  1 failed | 3 passed | 2 skipped (6)
+## final file, scripted cases
+ ✓ tests/e2e/runtime/background-task-status-count.e2e.test.ts (6 tests | 2 skipped) 56176ms
+     ✓ BTS-01: native: the example sequence on the stream and the feed, a reconnect snapshot, a message delivered at once, counts 2, 1, 0  18443ms
+     ✓ BTS-02: a Team: each member's status carries its own count; the feed's Team run state carries the sum  11151ms
+     ✓ BTS-03: Antigravity: an open daemon step reads idle 1, then idle 0 when it exits  10323ms
+     ✓ BTS-06: autobyteus-483's ends beside the count: exit code, signal and the run's end each bring it down  6476ms
+      Tests  4 passed | 2 skipped (6)
+## BTS-04 (live Claude, real HOME), final file except the BTS-06 waits
+ ✓ tests/e2e/runtime/background-task-status-count.e2e.test.ts (6 tests | 5 skipped) 57507ms
+     ✓ BTS-04 (live): Claude idle with a background Bash command reads idle 1, then 0  39904ms
+      Tests  1 passed | 5 skipped (6)
+## R4-08 server typecheck with BTS-06
+[typecheck] server tests (tsconfig.tests.json): 1012 errors, exit 2, 27.1s
+[typecheck] production errors: 0; test-file errors: 1012 in 316 files (baseline 1012 in 316 files)
+[typecheck] PASS

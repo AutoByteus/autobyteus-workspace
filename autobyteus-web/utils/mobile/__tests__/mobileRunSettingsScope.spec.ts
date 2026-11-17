@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { mobileRunSettingsScope } from '../mobileRunSettingsScope';
 import { mobileRunSubjectLine } from '../mobileRunSubjectLine';
+import { localizationRuntime } from '~/localization/runtime/localizationRuntime';
 
 const target = (kind: string, browse: object, extra: object = {}) => ({ access: 'live', context: { state: { runId: 'agent-1' } }, workspaceRootPath: null, kind, browse, ...extra }) as never;
 
@@ -39,9 +40,19 @@ describe('mobileRunSettingsScope: the run that holds the opened agent, for every
 });
 
 describe('mobileRunSubjectLine: the run screen\'s and Settings\' status line (one builder)', () => {
+  const line = (input: { status: string; unreachable: boolean; parentName: string | null; backgroundTasksRunning?: number }) =>
+    mobileRunSubjectLine({ backgroundTasksRunning: 0, ...input, t: (key, params) => localizationRuntime.translate(key, params) });
   it('names the parent run, or none; "Not reachable" when the node does not answer', () => {
-    expect(mobileRunSubjectLine({ status: 'idle', unreachable: false, parentName: 'Marketing Team' }).subtitle).toBe('Idle · in Marketing Team');
-    expect(mobileRunSubjectLine({ status: 'offline', unreachable: false, parentName: null }).subtitle).toBe('Stopped');
-    expect(mobileRunSubjectLine({ status: 'idle', unreachable: true, parentName: 'Marketing Team' }).subtitle).toBe('Not reachable');
+    expect(line({ status: 'idle', unreachable: false, parentName: 'Marketing Team' }).subtitle).toBe('Idle · in Marketing Team');
+    expect(line({ status: 'offline', unreachable: false, parentName: null }).subtitle).toBe('Stopped');
+    expect(line({ status: 'idle', unreachable: true, parentName: 'Marketing Team' }).subtitle).toBe('Not reachable');
+  });
+
+  it('autobyteus-448 DEC-004: an idle run with background tasks reads them with the active dot; an unreachable run shows its error only', () => {
+    expect(line({ status: 'idle', backgroundTasksRunning: 1, unreachable: false, parentName: 'Marketing Team' }))
+      .toEqual({ dotClass: 'bg-blue-500', subtitle: 'Background task running · in Marketing Team' });
+    expect(line({ status: 'idle', backgroundTasksRunning: 2, unreachable: false, parentName: null }).subtitle).toBe('2 background tasks running');
+    expect(line({ status: 'running', backgroundTasksRunning: 2, unreachable: false, parentName: null }).subtitle).toBe('Running');
+    expect(line({ status: 'idle', backgroundTasksRunning: 2, unreachable: true, parentName: null })).toEqual({ dotClass: 'bg-red-500', subtitle: 'Not reachable' });
   });
 });

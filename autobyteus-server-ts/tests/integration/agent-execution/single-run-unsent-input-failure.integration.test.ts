@@ -52,7 +52,6 @@ const createRun = (behavior: Behavior) => {
     getPlatformAgentRunId: () => "session-1",
     isActive: () => true,
     getLifecycleSnapshot: () => ({ availability: "active", phase: "idle", currentTurn: { kind: "NONE" } }),
-    hasRunningBackgroundTasks: () => false,
     subscribeToSourceEventBatches: (listener: (events: readonly AgentRunEvent[]) => void | Promise<void>) => {
       listeners.add(listener);
       return () => listeners.delete(listener);

@@ -1,0 +1,68 @@
+[nitro] ℹ Initializing prerenderer
+[nitro] ℹ Prerendering 3 initial routes with crawler
+[nitro]   ├─ /index.html (49ms)
+[nitro]   ├─ /200.html (49ms)
+[nitro]   ├─ /404.html (49ms)
+[nitro] ℹ Prerendered 3 routes in 1.177 seconds
+[nitro] ✔ Generated public dist/renderer
+[nitro] ✔ You can preview this build using npx serve dist/renderer
+│
+▲  HTML content not prerendered because ssr: false was set.
+│
+●  You can read more in https://nuxt.com/docs/getting-started/deployment#static-hosting.
+│
+└  ✨ You can now deploy dist/renderer to any static hosting!
+
+> autobyteus@1.5.13-beta.9 transpile-electron /private/tmp/fresh448-clone/autobyteus-web
+> tsc -p electron/tsconfig.json
+
+Building with environment: production
+Using environment file: .env.production
+Resolved build flavor: personal
+Artifact base name: AutoByteus_personal
+Requested architecture: ARM64
+Updater publish config: [{"provider":"github","owner":"AutoByteus","repo":"autobyteus-workspace"}]
+Generating application icons...
+Generating 16x16 PNG icon...
+Generating 32x32 PNG icon...
+Generating 48x48 PNG icon...
+Generating 64x64 PNG icon...
+Generating 128x128 PNG icon...
+Generating 256x256 PNG icon...
+Generating 512x512 PNG icon...
+Generating 1024x1024 PNG icon...
+Generating Windows ICO icon...
+Generating macOS ICNS icon...
+Icon generation completed successfully
+Starting electron-builder...
+  • electron-builder  version=25.1.8 os=25.5.0
+  • @electron/rebuild already used by electron-builder, please consider to remove excess dependency from devDependencies
+
+To ensure your native dependencies are always matched electron version, simply add script `"postinstall": "electron-builder install-app-deps" to your `package.json`
+  • executing @electron/rebuild  electronVersion=42.11.16 arch=arm64 buildFromSource=false appDir=./
+  • installing native dependencies  arch=arm64
+  • completed installing native dependencies
+  • packaging       platform=darwin arch=arm64 electron=42.11.16 appOutDir=electron-dist/mac-arm64
+
+Normalizing packaged terminal native resources...
+  Normalized execute bits on 3 node-pty spawn-helper file(s)
+  • skipped macOS code signing  reason=identity explicitly is set to null
+  • building        target=DMG arch=arm64 file=electron-dist/AutoByteus_personal_macos-arm64-1.5.13-beta.9.dmg
+  • building        target=macOS zip arch=arm64 file=electron-dist/AutoByteus_personal_macos-arm64-1.5.13-beta.9.zip
+  • Detected arm64 process, HFS+ is unavailable. Creating dmg with APFS - supports Mac OSX 10.12+
+  • building block map  blockMapFile=electron-dist/AutoByteus_personal_macos-arm64-1.5.13-beta.9.zip.blockmap
+  • building block map  blockMapFile=electron-dist/AutoByteus_personal_macos-arm64-1.5.13-beta.9.dmg.blockmap
+Build completed: [
+  '/private/tmp/fresh448-clone/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.5.13-beta.9.zip.blockmap',
+  '/private/tmp/fresh448-clone/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.5.13-beta.9.zip',
+  '/private/tmp/fresh448-clone/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.5.13-beta.9.dmg.blockmap',
+  '/private/tmp/fresh448-clone/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.5.13-beta.9.dmg'
+]
+> cross-env NODE_ENV=production pnpm guard:web-boundary && pnpm guard:localization-boundary && pnpm audit:localization-literals && pnpm typecheck && pnpm prepare-server && pnpm generate:electron && pnpm transpile-electron && tsc -p build/tsconfig.json && node build/dist/build.js --mac -- --arm64
+> autobyteus@1.5.13-beta.9 guard:web-boundary /private/tmp/fresh448-clone/autobyteus-web
+> node ./scripts/guard-web-boundary.mjs
+[guard:web-boundary] Passed.
+> autobyteus@1.5.13-beta.9 guard:localization-boundary /private/tmp/fresh448-clone/autobyteus-web
+> node ./scripts/guard-localization-boundary.mjs
+[guard:localization-boundary] Passed.
+[audit:localization-literals] Passed with zero unresolved findings.

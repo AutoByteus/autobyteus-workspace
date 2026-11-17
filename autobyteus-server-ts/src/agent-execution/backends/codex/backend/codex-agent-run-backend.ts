@@ -127,10 +127,6 @@ export class CodexAgentRunBackend implements AgentRunBackend {
     return this.codexThread.getPlatformAgentRunId() ?? null;
   }
 
-  /** Existing idle policy remains independent of read-only terminal inspection. */
-  hasRunningBackgroundTasks(): boolean {
-    return false;
-  }
 
   getLifecycleSnapshot() {
     return projectCodexAgentLifecycleSnapshot({

@@ -129,7 +129,6 @@ const createAgentRun = (input: {
     getLifecycleSnapshot: () => activeTurn
       ? { availability: "active", phase: "running", currentTurn: { kind: "IDENTIFIED", turnId: activeTurn } }
       : { availability: "active", phase: "idle", currentTurn: { kind: "NONE" } },
-    hasRunningBackgroundTasks: () => false,
     subscribeToSourceEventBatches: (listener: (events: readonly AgentRunEvent[]) => void | Promise<void>) => {
       sourceListeners.add(listener);
       return () => sourceListeners.delete(listener);

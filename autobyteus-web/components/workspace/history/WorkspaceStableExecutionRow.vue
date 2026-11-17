@@ -58,7 +58,7 @@
     <div class="flex min-w-0 flex-1 items-center justify-between py-1 pr-2">
       <div class="flex min-w-0 flex-1 items-center">
         <span class="member-status inline-flex flex-shrink-0 items-center">
-          <StatusDot class="mr-1.5" :status="row.row.currentStatus" />
+          <StatusDot class="mr-1.5" :status="row.row.currentStatus" :background-tasks-running="backgroundTasksRunning" />
         </span>
         <span
           class="mr-1.5 inline-flex h-4 w-4 flex-shrink-0 items-center justify-center overflow-hidden rounded-full bg-gray-200 text-[0.5625rem] font-semibold text-gray-600"
@@ -115,6 +115,8 @@ import { AgentStatus } from '~/types/agent/AgentStatus';
 import type { WorkspaceHistoryAvatarBindings } from '~/components/workspace/history/workspaceHistorySectionContracts';
 import type { RunHistoryStableExecutionRow } from '~/stores/runHistoryTypes';
 import { useRunHistoryStore } from '~/stores/runHistoryStore';
+import { useRunStatusStore } from '~/stores/runStatusStore';
+import { agentActivityLabel } from '~/utils/agentActivityPresentation';
 
 const props = defineProps<{
   row: RunHistoryStableExecutionRow;
@@ -146,7 +148,11 @@ const roleLabel = computed(() => t('workspace.history.hierarchy.role.agent'));
 
 const status = computed(() => props.row.row.currentStatus ?? AgentStatus.Offline);
 
-const statusLabel = computed(() => t(`workspace.history.hierarchy.status.${status.value}`));
+/** The member's running background tasks, as its node answers them (autobyteus-448). */
+const runStatus = useRunStatusStore();
+const backgroundTasksRunning = computed(() => props.row.agentRunId ? runStatus.backgroundTasksOf(props.row.agentRunId) : 0);
+const statusLabel = computed(() => agentActivityLabel({ status: status.value, backgroundTasksRunning: backgroundTasksRunning.value },
+  t, () => t(`workspace.history.hierarchy.status.${status.value}`)));
 
 const identityLabel = computed(() => t('workspace.history.hierarchy.identity', {
   role: roleLabel.value,

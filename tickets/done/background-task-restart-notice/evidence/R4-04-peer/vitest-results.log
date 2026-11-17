@@ -1,0 +1,4 @@
+# R4-04 PBS-01 on two built servers (dist of a9e5676630); env -i … RUN_PEER_BACKGROUND_STATUS_E2E=1
+ ✓ tests/e2e/remote-collaboration/peer-background-task-status.e2e.test.ts (1 test) 57465ms
+     ✓ PBS-01: the delegator's run-status feed shows the peer run idle with 1 running background task, then 0  42308ms
+      Tests  1 passed (1)

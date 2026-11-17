@@ -38,11 +38,11 @@ Higher layers should depend on `CodexThread` state and normalized `AgentRunEvent
 Codex thread status changes update `CodexThread` state first. The normalized
 `AGENT_STATUS` event is then projected from that thread-owned snapshot into the
 server WebSocket contract `{ status: "offline" | "initializing" | "idle" | "running" | "error",
-can_interrupt: boolean }`; raw provider status payloads are not forwarded and
-legacy transition-field names are not emitted.
-Startup thread statuses project as `initializing` with `can_interrupt: false`;
-active generation/tool statuses project as `running`, and only `running`
-snapshots can expose interrupt authority.
+background_tasks_running: number }` (always 0 for Codex: its background-task view is a
+snapshot); raw provider status payloads are not forwarded and legacy transition-field
+names are not emitted.
+Startup thread statuses project as `initializing`; active generation/tool statuses
+project as `running`, and only `running` lets a client interrupt.
 
 Codex token usage follows the same thread-state-first pattern. Raw
 `thread/tokenUsage/updated` notifications are parsed into `CodexThread` usage
@@ -446,8 +446,8 @@ prefix.
 
 | Raw Method | Raw Shape / Guard | Normalized Output | Owner | Decision |
 | --- | --- | --- | --- | --- |
-| `turn/started` | turn lifecycle start | close every active content-bearing reasoning block with ordered `SEGMENT_END(reasoning)` events, then `TURN_STARTED(turnId)` and projected `AGENT_STATUS { status: "running", can_interrupt }` | `codex-turn-event-converter.ts` | Keep |
-| `turn/completed` | turn lifecycle end | when it matches the active turn, close the turn-scoped reasoning block with `SEGMENT_END(reasoning)`, then `TURN_COMPLETED(turnId)` and projected `AGENT_STATUS { status: "idle", can_interrupt: false }`; suppress an explicitly identified stale completion while a different turn is active | `codex-thread-notification-handler.ts`, `codex-turn-event-converter.ts` | Keep; exact stale boundaries have no state or emission effect |
+| `turn/started` | turn lifecycle start | close every active content-bearing reasoning block with ordered `SEGMENT_END(reasoning)` events, then `TURN_STARTED(turnId)` and projected `AGENT_STATUS { status: "running" }` | `codex-turn-event-converter.ts` | Keep |
+| `turn/completed` | turn lifecycle end | when it matches the active turn, close the turn-scoped reasoning block with `SEGMENT_END(reasoning)`, then `TURN_COMPLETED(turnId)` and projected `AGENT_STATUS { status: "idle" }`; suppress an explicitly identified stale completion while a different turn is active | `codex-thread-notification-handler.ts`, `codex-turn-event-converter.ts` | Keep; exact stale boundaries have no state or emission effect |
 | `turn/diff/updated` | supplemental unified diff for a turn | none | `codex-turn-event-converter.ts` | Keep as explicit no-op |
 | `item/started` | `item.type = commandExecution` | `TOOL_EXECUTION_STARTED(run_bash)` with exact stable item `command` and `cwd` arguments when present | `codex-item-event-converter.ts`, `codex-tool-payload-parser.ts` | Keep; projection only, with no command execution or fabricated CWD |
 | `item/completed` | `item.type = commandExecution` | `TOOL_DENIED`, `TOOL_EXECUTION_FAILED`, or `TOOL_EXECUTION_SUCCEEDED(run_bash)` with exact stable item `command` and `cwd` arguments when present; failed completions retain explicit error/message or supported structured result error first, otherwise aggregated output plus valid non-zero exit code, exit-code-only detail, or the generic fallback | `codex-item-event-converter.ts`, `codex-tool-payload-parser.ts` | Keep; future local traces retain CWD and the canonical failure error through existing arguments/result fields without a schema change |
@@ -480,7 +480,7 @@ prefix.
 | `rawResponseItem/completed` | `item.type = context_compaction` or `item.type = compaction` | `COMPACTION_STATUS(kind=provider_compaction_boundary, source_surface=codex.raw_response_compaction_item, status=compacted, rotation_eligible=true)` | `codex-raw-response-event-converter.ts`, `ProviderCompactionBoundaryRecorder` | Keep as completed provider-boundary marker/rotation signal; de-dupe with current item lifecycle and deprecated thread surfaces |
 | `rawResponseItem/completed` | `item.type = compaction_trigger` | none | `codex-raw-response-event-converter.ts` | Keep ignored for storage; trigger is not a completed boundary |
 | `thread/started` | thread lifecycle start | none | `codex-thread-lifecycle-event-converter.ts` | Keep as explicit no-op |
-| `thread/status/changed` | runtime status payload | Codex thread-state side effect plus projected coarse `AGENT_STATUS { status, can_interrupt }`; a matching failed/error status is converted to a turn-terminal `ERROR`, while an explicitly identified stale failed/error status is suppressed when a different turn is active | `codex-thread-notification-handler.ts`, `codex-thread-lifecycle-event-converter.ts` | Keep; stale terminal status cannot settle the active turn |
+| `thread/status/changed` | runtime status payload | Codex thread-state side effect plus projected coarse `AGENT_STATUS { status }`; a matching failed/error status is converted to a turn-terminal `ERROR`, while an explicitly identified stale failed/error status is suppressed when a different turn is active | `codex-thread-notification-handler.ts`, `codex-thread-lifecycle-event-converter.ts` | Keep; stale terminal status cannot settle the active turn |
 | `thread/tokenUsage/updated` | token accounting update | Codex thread-state side effect; `CodexAgentRunBackend` emits ready `TOKEN_USAGE_UPDATED` from the thread snapshot with scoped/idempotent usage metadata | `codex-thread-notification-handler.ts`, `codex-thread-token-usage.ts`, `codex-agent-run-backend.ts` | Keep as thread-owned token state; do not parse raw usage in higher layers |
 | `thread/compacted` | provider-owned context compaction boundary | `COMPACTION_STATUS(kind=provider_compaction_boundary, source_surface=codex.thread_compacted, rotation_eligible=true)` | `codex-thread-lifecycle-event-converter.ts`, `ProviderCompactionBoundaryRecorder` | Keep as storage-only marker/rotation boundary; not semantic compaction |
 | `error` | native turn error with `willRetry === true` and a resolved turn | `ERROR { error_scope: "turn", error_effect: "diagnostic", turn_id }`; preserve active turn/status, reasoning, ordered-tool state, and pending MCP correlation | `codex-thread-notification-handler.ts`, `codex-thread-lifecycle-event-converter.ts` | Keep as visible non-terminal diagnostic; Codex owns retry and later same-turn events remain admissible |

@@ -1,9 +1,12 @@
 import { defineStore } from 'pinia'
 import { watch } from 'vue'
-import type { RunAgentStatus, RunStatusAnswer, RunStatusRunRef, RunStatusServerMessage } from '@autobyteus/collaboration-stream-contracts'
+import type { RunAgentStatus, RunStatusAnswer, RunStatusRunRef, RunStatusServerMessage, RunTreeRowDto } from '@autobyteus/collaboration-stream-contracts'
 
-/** A run's own state (SR-086 G-A2 … G-A4): the node's answer, the peer node when it did not answer, the run's own status. */
-export type RunState = Readonly<{ answer: RunStatusAnswer; node: string | null; status: RunAgentStatus | null }>
+/**
+ * A run's own state (SR-086 G-A2 … G-A4): the node's answer, the peer node when it did not answer, the run's own status,
+ * and the background tasks its own agents have running (autobyteus-448: their sum, from its node).
+ */
+export type RunState = Readonly<{ answer: RunStatusAnswer; node: string | null; status: RunAgentStatus | null; backgroundTasksRunning: number }>
 import { RunStatusFeed } from '~/services/runStatus/runStatusFeed'
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore'
 import { buildAuthenticatedWebSocketUrl } from '~/utils/remoteAccess/websocketAuth'
@@ -20,6 +23,8 @@ export const useRunStatusStore = defineStore('runStatus', {
   state: () => ({
     /** Each agent's status, by its agent run ID. */
     statuses: {} as Record<string, RunAgentStatus>,
+    /** Each agent's running background tasks, by its agent run ID (autobyteus-448); absent is 0. */
+    backgroundTasks: {} as Record<string, number>,
     /** Per held run (`kind:runId`), how many times its rows changed. */
     treeRevision: {} as Record<string, number>,
     /** Per run (`kind:runId`), the agents its answers name. */
@@ -32,6 +37,17 @@ export const useRunStatusStore = defineStore('runStatus', {
   getters: {
     /** An agent's own status; `null` while its run's answer has not come. */
     statusOf: (state) => (agentRunId: string): RunAgentStatus | null => state.statuses[agentRunId] ?? null,
+    /** An agent's running background tasks (autobyteus-448); 0 while its run's answer has not come. */
+    backgroundTasksOf: (state) => (agentRunId: string): number => state.backgroundTasks[agentRunId] ?? 0,
+    /**
+     * A tree row's running background tasks, by the ID the row names (as its status): a Team run's own sum (its run
+     * state, from its node), an Org's mounted Team the sum of its agents', an agent its own.
+     */
+    treeRowBackgroundTasksOf: (state) => (row: Pick<RunTreeRowDto, 'kind' | 'statusIds'>, id: string): number => {
+      if (row.kind === 'team' || row.kind === 'peer_team') return state.runStates[runKeyOf({ kind: 'agent_team', runId: id })]?.backgroundTasksRunning ?? 0
+      if (row.kind === 'org_team') return row.statusIds.reduce((sum, agentRunId) => sum + (state.backgroundTasks[agentRunId] ?? 0), 0)
+      return state.backgroundTasks[id] ?? 0
+    },
     /** Whether the agent runs: any status but offline (not known yet counts as not running). */
     isLive: (state) => (agentRunId: string): boolean => (state.statuses[agentRunId] ?? 'offline') !== 'offline',
     treeRevisionOf: (state) => (ref: Pick<RunStatusRunRef, 'kind' | 'runId'>): number => state.treeRevision[runKeyOf(ref)] ?? 0,
@@ -68,27 +84,30 @@ export const useRunStatusStore = defineStore('runStatus', {
     apply(message: RunStatusServerMessage): void {
       if (message.type === 'RUN_STATUS_SNAPSHOT') {
         const next = { ...this.statuses }
+        const counts = { ...this.backgroundTasks }
         const agents = { ...this.runAgents }
         const states = { ...this.runStates }
         // SR-086 G-A1: the answer replaces each answered run's statuses; an agent no run names any more shows none.
         const answered = new Set(message.payload.runs.map(runKeyOf))
         const namedElsewhere = new Set(Object.entries(agents).flatMap(([key, ids]) => answered.has(key) ? [] : ids))
-        for (const key of answered) for (const agentRunId of agents[key] ?? []) if (!namedElsewhere.has(agentRunId)) delete next[agentRunId]
+        for (const key of answered) for (const agentRunId of agents[key] ?? []) if (!namedElsewhere.has(agentRunId)) { delete next[agentRunId]; delete counts[agentRunId] }
         for (const run of message.payload.runs) {
-          for (const agent of run.agents) next[agent.agentRunId] = agent.status
+          for (const agent of run.agents) { next[agent.agentRunId] = agent.status; counts[agent.agentRunId] = agent.backgroundTasksRunning }
           agents[runKeyOf(run)] = run.agents.map((agent) => agent.agentRunId)
-          states[runKeyOf(run)] = Object.freeze({ answer: run.answer, node: run.node, status: run.status })
+          states[runKeyOf(run)] = Object.freeze({ answer: run.answer, node: run.node, status: run.status, backgroundTasksRunning: run.backgroundTasksRunning })
         }
         this.statuses = next
+        this.backgroundTasks = counts
         this.runAgents = agents
         this.runStates = states
         this.settleChecking(message.payload.runs.map((run) => run.runId))
       } else if (message.type === 'RUN_STATE_CHANGED') {
-        const { answer, node, status } = message.payload
-        this.runStates = { ...this.runStates, [runKeyOf(message.payload)]: Object.freeze({ answer, node, status }) }
+        const { answer, node, status, backgroundTasksRunning } = message.payload
+        this.runStates = { ...this.runStates, [runKeyOf(message.payload)]: Object.freeze({ answer, node, status, backgroundTasksRunning }) }
         this.settleChecking([message.payload.runId])
       } else if (message.type === 'RUN_STATUS_CHANGED') {
         this.statuses = { ...this.statuses, [message.payload.agentRunId]: message.payload.status }
+        this.backgroundTasks = { ...this.backgroundTasks, [message.payload.agentRunId]: message.payload.backgroundTasksRunning }
         const key = runKeyOf(message.payload), named = this.runAgents[key] ?? []
         if (!named.includes(message.payload.agentRunId)) this.runAgents = { ...this.runAgents, [key]: [...named, message.payload.agentRunId] }
       } else {

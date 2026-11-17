@@ -1,0 +1,65 @@
+{
+  "runId": "restart_reminder_58fc9369_69115b9bde3e4604848bf42a63be273c",
+  "entry": {
+    "root": {
+      "rootSubjectKind": "agent",
+      "rootRunId": "restart_reminder_58fc9369_69115b9bde3e4604848bf42a63be273c"
+    },
+    "agentRunId": "restart_reminder_58fc9369_69115b9bde3e4604848bf42a63be273c",
+    "place": "host",
+    "status": "running",
+    "backgroundTasks": true,
+    "recordedAt": "2026-11-17T19:36:19.327Z",
+    "version": "0.0.0-previous"
+  },
+  "stopped": {
+    "entries": [
+      {
+        "root": {
+          "rootSubjectKind": "agent",
+          "rootRunId": "restart_reminder_58fc9369_69115b9bde3e4604848bf42a63be273c"
+        },
+        "agentRunId": "restart_reminder_58fc9369_69115b9bde3e4604848bf42a63be273c",
+        "place": "host",
+        "status": "running",
+        "backgroundTasks": true,
+        "recordedAt": "2026-11-17T19:36:19.410Z",
+        "version": "0.0.0-previous"
+      }
+    ],
+    "shutdownAt": "2026-11-17T19:36:19.410Z"
+  },
+  "requestsBeforeRestart": 3,
+  "inputSentAt": null,
+  "reminders": null,
+  "requests": [
+    {
+      "at": 1794944178670,
+      "lastRole": "user",
+      "lastUser": "CASE:RR-04 Start the build in the background.",
+      "toolResults": []
+    },
+    {
+      "at": 1794944178799,
+      "lastRole": "tool",
+      "lastUser": "CASE:RR-04 Start the build in the background.",
+      "toolResults": [
+        "{\"pid\":19447,\"status\":\"running\",\"effectiveCwd\":\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/restart-reminder-e2e-EcFW2r/workspace\",\"outputFile\":\"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-background-tasks/restart_reminder_58fc9369_69115b9bde3e4604848bf42a63be273c/call-1794944178779-19417.log\"}"
+      ]
+    },
+    {
+      "at": 1794944179556,
+      "lastRole": "tool",
+      "lastUser": "CASE:RR-04 Start the build in the background.",
+      "toolResults": [
+        "{\"exitCode\":null,\"effectiveCwd\":\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/restart-reminder-e2e-EcFW2r/workspace\"}"
+      ]
+    },
+    {
+      "at": 1794944185049,
+      "lastRole": "user",
+      "lastUser": "[Platform notice — application restarted]\n\nThe application restarted at 2026-11-17 19:36 UTC (reason: an update to v1.5.13-beta.8).\nYour previous turn was interrupted; check the results of any tool calls that were running before you repeat them.\nIf you started any background tasks, the restart stopped them. Check what you still need: restart it, or continue your work.",
+      "toolResults": []
+    }
+  ]
+}

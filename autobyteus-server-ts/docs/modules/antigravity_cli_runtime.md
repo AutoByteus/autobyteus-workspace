@@ -324,7 +324,7 @@ running until AGY stops and never produces a false completion. AGY runs no clock
 on a long command: a 35-minute background command, daemon or not, ran to
 completion (`long-command-time-limits-live.e2e.test.ts`). Non-daemon
 background commands keep their turn open and never become background tasks.
-While the monitor holds a running task (`hasRunningTasks()`), a delegated AGY
+While the monitor holds a running task (its view counts one, `runningBackgroundTaskCount`), a delegated AGY
 copy is not idle-shut-down; its terminal snapshot re-arms the copy's grace
 period, because a daemon's exit starts no turn (see
 [Delegated Child Lifecycle](./agent_team_execution.md#delegated-run-lifecycle)).

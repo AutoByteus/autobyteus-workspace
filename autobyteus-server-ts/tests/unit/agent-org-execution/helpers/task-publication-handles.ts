@@ -17,7 +17,7 @@ export const observeConfiguredHandles = (activationFailure?: Error) => {
     let status: AgentApiStatus = "offline";
     /** Whether the handle's AgentRun is active (AR-005 liveness); a shutdown clears only the run. */
     let runActive = true;
-    const snapshot = () => createCollaborationAgentStatusSnapshot({ execution: input.identity, status });
+    const snapshot = () => createCollaborationAgentStatusSnapshot({ execution: input.identity, status, backgroundTasksRunning: 0 });
     const emit = (next: AgentApiStatus) => {
       status = next;
       input.callbacks.publishAgentEvent(input.identity, { kind: "status_overlay", snapshot: snapshot() });

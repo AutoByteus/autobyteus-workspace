@@ -24,7 +24,7 @@ const teamRow = (overrides: Partial<RunHistoryTransientExecutionRow> = {}, remot
   remote: { runId: 'marketing-run', nodeName: 'docker', reachable: null, title: null, ...remote }, ...overrides,
 });
 const stateTold = (runId: string) => useRunStatusStore().apply({ type: 'RUN_STATE_CHANGED',
-  payload: { kind: 'agent_team', runId, answer: 'unreachable', node: 'docker', status: null } });
+  payload: { kind: 'agent_team', runId, answer: 'unreachable', node: 'docker', status: null, backgroundTasksRunning: 0 } });
 
 describe('WorkspaceTransientExecutionRow for a run another node runs', () => {
   beforeEach(() => {
@@ -64,7 +64,7 @@ describe('WorkspaceTransientExecutionRow for a run another node runs', () => {
     const wrapper = mount(WorkspaceTransientExecutionRow, { props: { row: teamRow({}, { reachable: false }), hasChildren: true } });
     await wrapper.get('[data-test="workspace-remote-run-retry"]').trigger('click');
     await wrapper.setProps({ row: teamRow({}, { reachable: true, title: 'Back again' }) });
-    useRunStatusStore().apply({ type: 'RUN_STATE_CHANGED', payload: { kind: 'agent_team', runId: 'marketing-run', answer: 'ok', node: null, status: 'idle' } });
+    useRunStatusStore().apply({ type: 'RUN_STATE_CHANGED', payload: { kind: 'agent_team', runId: 'marketing-run', answer: 'ok', node: null, status: 'idle', backgroundTasksRunning: 0 } });
     await wrapper.vm.$nextTick();
     expect(wrapper.find('[data-test="workspace-remote-run-checking"]').exists()).toBe(false);
     expect(wrapper.find('[data-test="workspace-remote-run-error"]').exists()).toBe(false);

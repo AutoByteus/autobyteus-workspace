@@ -1,0 +1,21 @@
+{
+  "runId": "bts_agy_a3808e58_577f35131f1b440cbd59d5bc75308501",
+  "path": [
+    "idle:0",
+    "initializing:0",
+    "running:0",
+    "running:1",
+    "idle:1",
+    "idle:0"
+  ],
+  "fed": [
+    {
+      "status": "idle",
+      "count": 1
+    },
+    {
+      "status": "idle",
+      "count": 0
+    }
+  ]
+}

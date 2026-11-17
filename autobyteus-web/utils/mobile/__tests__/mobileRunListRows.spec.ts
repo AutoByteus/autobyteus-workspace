@@ -16,7 +16,7 @@ const peer: RunTreeRowDto = { key: 'peer_agent:pub', parentKey: 'agent:host', de
 const tree: RunTreeRowDto[] = [agentRow('host', null, 0), agentRow('writer', 'agent:host', 1), agentRow('helper', 'agent:writer', 2),
   ...teamRows('squad', 'agent:host', 1, ['lead', 'dev']), peer]
 const sources = (expanded: ReadonlySet<string> = new Set()): MobileRunListSources => ({
-  entries: [agentEntry], treeRows: () => tree, statusOf: (row, id) => row.kind === 'team' ? 'running' : id === 'writer' ? 'running' : 'idle',
+  entries: [agentEntry], treeRows: () => tree, statusOf: (row, id) => row.kind === 'team' ? 'running' : id === 'writer' ? 'running' : 'idle', backgroundTasksOf: () => 0,
   isTreeRowExpanded: (_entry, row) => row.kind === 'team' ? expanded.has(row.key) : true, taskSummary: () => null,
   isRunExpanded: () => true, isTeamExpanded: () => true, isAgentOrgRunExpanded: () => true,
 })
@@ -37,6 +37,16 @@ describe('buildMobileRunListRows (SR-084, F-73)', () => {
     expect(folded.find((row) => row.key === 'agent:host/peer_agent:pub')).toMatchObject({ title: 'Publish the draft.', remote: { nodeName: 'beta-node', reachable: false } })
     const open = buildMobileRunListRows(sources(new Set(['team:squad'])))
     expect(open.filter((row) => row.key.startsWith('agent:host/team_member:squad')).map((row) => row.depth)).toEqual([2, 2])
+  })
+
+  it('autobyteus-448: a row carries its run\'s running background tasks; a team row shows its sum by the Team rule', () => {
+    const counted: MobileRunListSources = { ...sources(), statusOf: (row) => row.kind === 'team' ? 'error' : 'idle',
+      backgroundTasksOf: (row, id) => row.kind === 'team' ? 3 : id === 'writer' ? 2 : 0 }
+    const rows = buildMobileRunListRows(counted)
+    expect(rows.find((row) => row.key === 'agent:host/agent:writer')).toMatchObject({ status: 'idle', backgroundTasksRunning: 2 })
+    expect(rows.find((row) => row.key === 'agent:host/agent:helper')).toMatchObject({ status: 'idle', backgroundTasksRunning: 0 })
+    // busy > background > error: an errored team whose agents have background tasks running shows them.
+    expect(rows.find((row) => row.key === 'agent:host/team:squad')).toMatchObject({ status: 'idle', backgroundTasksRunning: 3 })
   })
 
   it('a row opens where the server says: its target\'s agent marks the open row', () => {

@@ -19,7 +19,7 @@ describe('live compaction input projection',()=>{
   expect(handleAgentInputState(snapshot(1,[entry('A','held'),entry('B','queued')]),c)).toBe(true);
   expect(c.conversation.messages.filter((m:any)=>m.type==='user')).toHaveLength(2);
   expect(c.conversation.messages[0]).toMatchObject({messageId:'A',text:'real A',pendingInput:{state:'held'},contextFilePaths:[{locator:'/workspace/plan.md'}]});
-  handleAgentStatus({status:'error',recoverableBlock:block},c);
+  handleAgentStatus({status:'error',background_tasks_running:0,recoverableBlock:block},c);
   expect(c.conversation.messages[1].isComplete).toBe(false);
   expect(resolveAgentPrimaryAction({hasContext:true,status:c.state.currentStatus,submissionPending:false,isUploading:false,hasDraft:true})).toEqual({kind:'send',enabled:true});
   expect(handleAgentInputState(snapshot(1,[]),c)).toBe(false);

@@ -1,0 +1,15 @@
+# P2-03 web unit (full): pnpm -C autobyteus-web test:nuxt run; commit 4c93deaa8f (code ce06c415cc); node 22.23.1; 2026-11-17
+
+stderr | components/mobile/runList/__tests__/MobileRunList.spec.ts
+stdout | components/mobile/runList/__tests__/MobileRunList.spec.ts
+ ✓ components/mobile/runList/__tests__/MobileRunList.spec.ts (8 tests) 374ms
+stderr | components/workspace/history/__tests__/WorkspaceRowsBackgroundTasks.spec.ts
+stdout | components/workspace/history/__tests__/WorkspaceRowsBackgroundTasks.spec.ts
+ ✓ components/workspace/history/__tests__/WorkspaceRowsBackgroundTasks.spec.ts (4 tests) 128ms
+stderr | utils/__tests__/agentActivityPresentation.spec.ts
+stdout | utils/__tests__/agentActivityPresentation.spec.ts
+ ✓ utils/__tests__/agentActivityPresentation.spec.ts (5 tests) 18ms
+ Test Files  757 passed (757)
+      Tests  5692 passed (5692)
+   Duration  831.60s (transform 82.72s, setup 5629.02s, collect 611.91s, tests 211.24s, environment 405.02s, prepare 263.79s)
+exit=0

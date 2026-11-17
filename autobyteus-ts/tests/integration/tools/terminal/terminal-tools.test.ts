@@ -188,7 +188,7 @@ runIntegration('terminal tools integration', () => {
       const kill = await runBashTool.execute(context, { command: `kill ${started.pid}` }) as TerminalResult;
       expect(kill.exitCode).toBe(0);
       expect(kill.backgroundTasksEnded.map((end) => [end.pid, end.outcome])).toEqual([[started.pid, { signal: 'SIGTERM' }]]);
-      expect(getBackgroundManager(context).hasRunning()).toBe(false);
+      expect(getBackgroundManager(context).list().some((s) => !s.end)).toBe(false);
     });
   });
 

@@ -174,7 +174,7 @@ const createAgentRun = (input: { runId: string; agentDefinitionId: string; memor
     getPlatformAgentRunId: () => `platform-${input.runId}`,
     isActive: () => true,
     getLifecycleSnapshot: () => ({ availability: "active", phase: "idle", currentTurn: { kind: "NONE" } }),
-    hasRunningBackgroundTasks: () => false,
+    backgroundTaskInspection: { kind: "unsupported" } as const,
     subscribeToSourceEventBatches: () => () => undefined,
     dispatchUserInput,
     approveToolInvocation: vi.fn(),

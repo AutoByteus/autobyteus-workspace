@@ -122,7 +122,7 @@ const delegatedTeam = (teamRunId: string, under: string, address: string, member
 /** Each run's own state as its node answered it (SR-083, SR-086 G-A4): an agent's status, a team run's own. */
 const answerStatuses = (runs: Record<string, string>, agents: Record<string, string> = {}) => useRunStatusStore().apply({ type: 'RUN_STATUS_SNAPSHOT', payload: {
   runs: Object.entries(runs).map(([runId, status]) => ({ kind: runId.includes('team') ? 'agent_team' : 'agent', runId, answer: 'ok', node: null,
-    status: status as never, agents: Object.entries(agents).map(([agentRunId, agentStatus]) => ({ agentRunId, status: agentStatus as never })) })) } });
+    status: status as never, backgroundTasksRunning: 0, agents: Object.entries(agents).map(([agentRunId, agentStatus]) => ({ agentRunId, status: agentStatus as never, backgroundTasksRunning: 0 })) })) } });
 
 const mountSubject = (options: {
   treeRows?: RunTreeRowDto[];
