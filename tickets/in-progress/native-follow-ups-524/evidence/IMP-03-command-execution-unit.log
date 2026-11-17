@@ -1,0 +1,19 @@
+# IMP-03 command-execution unit tests (AC-002..AC-005 + the Stop-during-start case)
+# Command: env -u AUTOBYTEUS_TEST_VAULT npx vitest run tests/unit/tools/terminal/command-execution (in autobyteus-ts)
+# Commit: 80483cce9d
+# Environment: macOS (darwin 25.5), 10-core, Node v22.23.1; load ~100-200
+# Date: 2026-11-17
+
+Result: Test Files  7 passed (7) / Tests  44 passed (44)
+
+## Same new tests against the OLD source (src stashed, tests kept): they must fail
+   × lets a read slower than 500 ms finish within a longer step deadline, bounded by that deadline 704ms
+   × bounds a default observation by the observation limit, and a WSL kill by the step deadline 1ms
+   × reports unsupported WSL launch without fabricating a PID, exit 0 or a foreground end 8ms
+   × fails a start that never completes after the applied limit, and says how long it was given 1004ms
+   × gives a call with timeout null a start limit of 30000 ms 0ms
+   × gives a call with timeout 60 a start limit of 30000 ms 0ms
+   × gives a call with timeout 10 a start limit of 10000 ms 0ms
+   × uses the named limits as its default deadlines 823ms
+ Test Files  3 failed (3)
+      Tests  8 failed | 18 passed (26)
