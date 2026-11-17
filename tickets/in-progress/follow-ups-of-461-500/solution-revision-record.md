@@ -2,6 +2,7 @@
 
 | SR | Date | Kind | Summary | Status after |
 | --- | --- | --- | --- | --- |
+| SR-011 | 2026-11-17 | Requirements and design (Task comment from the PM) | REQ-016 / AC-012 / D-12: a stored model its runtime no longer offers is marked per member and refused at start with one message; G-5. Base moved: 508 merged `d8dbeaa9ba` (same-ID fix of `20261111_delegated_runs_own_runs_v1`, `run-file-conversion.ts` only, no trace moves: M-7 unchanged) | Approved; G-5 to architecture review |
 | SR-010 | 2026-11-17 | Design Impact (ARCH-REV-002 AR-001) | G-2 revised: legacy-shaped rows are rebuilt in the v2 shape from the row and the current tree, never written back raw; G-1's writer refuses a reordering; REQ-013 / AC-010 reworded (same intent: the team stays listed) | Approved; design `Ready` |
 | SR-009 | 2026-11-17 | Requirements | D-10 decided: FU-028 dropped as not a defect (the user left it to the Solution Designer) | Approved; combined package to architecture review |
 | SR-008 | 2026-11-17 | Requirements and design, delivery 2 (the user: stop implementation, design delivery 2 now) | REQ-012 … REQ-015; G-1 release-recorded order; G-2 same-ID repair of team index v2; G-3 probe data; D-10 (FU-028 not a defect, needs the user); delivery 1 naming additions from the implementation engineer's sizing | Delivery 2 `Ready for Approval` (D-10) |
@@ -103,3 +104,11 @@
 
 - ARCH-REV-002 failed with AR-001; SR-010 resolved it. ARCH-REV-003: **Pass** (`design-review-report.md`). The reviewer sent the combined package to the implementation engineer.
 - Note to the implementation: G-2's validator and writer are the frozen copies (`frozen/server/run-history/store/team-run-history-index-store.ts`).
+
+### SR-011
+
+- **Trigger:** the PM added autobyteus-508 FU-001 to group 4 (Task comment, 2026-11-17).
+- **Decision:** D-12, by the Solution Designer within the direction.
+- **Design:** G-5.
+- **Base check:** 508's change to `20261111_delegated_runs_own_runs_v1` touches `run-file-conversion.ts` only. FU-020's late-predecessor classification ("none") holds. The branch is rebased onto `origin/personal` before implementation continues.
+- **Next:** architecture review of G-5. The rest stays passed (ARCH-REV-003).

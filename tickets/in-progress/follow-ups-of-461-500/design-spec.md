@@ -559,3 +559,39 @@ Dropped (D-10, SR-009): no change. The field is ignored residue in every older s
 - **Size:** `Small` (a test, a release script step, one same-ID repair, one probe fixture).
 - **Risk:** `High`, because the change corrects a released migration that touches user history rows.
 - **Combined package (delivery 1 + 2):** `Large` / `High`.
+
+
+---
+
+# G-5 (SR-011): a stored model its runtime no longer offers (REQ-016, AC-012, D-12; group 4)
+
+- **Current state** (base `origin/personal` `d8dbeaa9ba`, read):
+  - The Settings note exists for the root only (`ExistingRunConfigEditor.vue:28` passes `modelUnavailable('/')`; `:394-405` computes it per address).
+  - Member activation (`configured-agent-execution-handle.ts:429-440` `prepareActivation`) and standalone restore (`standalone-agent-run-lifecycle-service.ts:308-330` `restoreStarted`) start the runtime with the stored pair unchecked. The founder met it as "No conversation found" (508).
+- **The check owner: `RunModelSelectionService`**, with one new method: `storedModelOffer({ runtimeKind, llmModelIdentifier }): Promise<"offered" | "not_offered" | "list_unreadable">`.
+  - It reads the runtime's list through the same `readCatalog` and answers from `offeredModels` only.
+  - `validate()` is not reused: for an unchanged selection it accepts the exact current model even when it is no longer offered (`run-model-selection-service.ts:79-83`, `findExactCurrent`).
+  - It reads only the selected runtime's list (DESIGN.md §5, no unrelated discovery).
+- **The wording owner: `run-model-selection-refusal.ts`**, with one new builder: `storedModelNotOfferedRefusal({ agentName, runtimeKind, llmModelIdentifier })`. Code `RUN_MODEL_NOT_OFFERED`. Text (FR-1 … FR-4): "{Agent} can't start: its saved model '{model}' is not offered by {Runtime} now. Stop it, then choose a runtime and model for {Agent} in Settings."
+- **Both paths apply the same rule (Principle 1, "two paths, one capability"):**
+  - `restoreStarted`: before `buildConfig`.
+  - `prepareActivation`: after `buildAgentRunConfig`, before `planner.begin`.
+
+  Each asks `storedModelOffer`. On `not_offered`, it throws the existing activation error type of its path, with the code and text above:
+  - `AgentRunActivationError` on the standalone path;
+  - the readiness-failure card on the member path, which `:415-425` already turns into `kind: "readiness_failure"`.
+
+  On `offered` or `list_unreadable`, it continues as today.
+- **Collaborators:**
+  - The lifecycle service and the member handle receive `RunModelSelectionService`, or a `Pick<…, "storedModelOffer">`, from their constructors (`options` at `configured-agent-execution-handle.ts:82`).
+  - The supervisor already holds `input.modelSelectionValidator` (`general-process-run-supervisor.ts:120-124`). **To verify:** it is a `RunModelSelectionService`. If not, the composition passes the service beside it.
+  - The application host passes the same service. No optional parameter, no fallback (DR-2).
+- **Web:** `ExistingRunConfigEditor.vue` passes `modelUnavailable` per member address to the member rows (`:members` / the row component). Each member row shows the root's note, using the same component and text.
+- **Spine walk:**
+  - (a) Team member, list read, model missing: Settings note on the member row; the user sends a message; the member activates; refused; the run's view shows the refusal; no runtime is started.
+  - (b) Standalone run, same case: refused at restore.
+  - (c) List unreadable: starts as today.
+  - (d) Model offered: unchanged.
+  - (e) Peer-started run: its node runs the check (same code).
+  - (f) A delegated run's member: path (a).
+- **Classification of this addition:** Medium. The combined package stays `Large` / `High`.
