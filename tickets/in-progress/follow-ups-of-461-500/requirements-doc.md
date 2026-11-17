@@ -2,15 +2,15 @@
 
 ## Document Status
 
-- Status: `Ready for Approval` (one `Needs user` decision: D-8, FU-020)
+- Status: `Approved` (SR-002)
 - Current solution revision ID: `SR-001`
 - Package identifier: `follow-ups-of-461-500`
 - Request / ticket: Project Task `autobyteus-500` in Project `project_a1377344-25db-482a-97cc-ecfdb0fb495a`: "All follow-ups of autobyteus-461 in one Task"
 - Requested by: `/project_task_manager` (run `project_task_manager_7c8dce0c4a8b44f88e776a83809dee03`), at the founder's word (2026-11-17)
 - Requirements owner: Solution Designer (run `solution_designer_65a93db823284ad5b4e87726a5b250a2`)
 - Date: 2026-11-17
-- Approved by and reference: not yet
-- Exact approved requirements baseline / solution revision: not yet
+- Approved by and reference: the user decided D-1 and D-8 (2026-11-17, quoted in Open Decisions). The rest was approved by the Solution Designer within the Task's direction, and the user was informed in the conversation (2026-11-17)
+- Exact approved requirements baseline / solution revision: this document at SR-002 (delivery 1)
 - Behavior-defining supplements: `source-follow-ups-461.md` (the Task's context file: the follow-up rows FU-*, as leads, not decisions)
 
 ## Problem And Desired Outcome
@@ -49,7 +49,7 @@
 | D-5 | FU-007: stored and code names differ behind a mapping | Solution Designer | **Rename the code to the stored names** (`agentRunResources`, `agentRun`, `coordinatorAgentRunId`), so the mapping goes with **no data migration** (the founder's rule). The glossary names the concept once ("delegated run"); code types say `DelegatedRun…` instead of `TaskExecution…` (with FU-010) |
 | D-6 | FU-013: one ID for team and org token totals | Solution Designer | **The query states the run kind**, and the resolver stops guessing. The stored usage field (`root_team_run_id`) is left as it is: renaming it needs a data migration, which isn't worth it for a name. It's recorded as a known leftover in the glossary |
 | D-7 | FU-002: two files over 500 lines | Solution Designer | **Already resolved by 461:** `standalone-agent-run-root.ts` is 323 lines and its manager 429. Nothing to do |
-| D-8 | FU-020: attachments to a delegated child are named through its delegator | `Needs user` | The files already live in the child's own folder; only their **link** names the delegator (`/rest/agent-collaborations/<delegator>/agent-runs/<child>/…`). On the founder's data, 425 such links are stored in 143 message files (84 runs, read-only count). Options: (a) new attachments use the child's own link; old links keep working, resolved by the child's run ID, with no data change. (b) Also rewrite the 425 stored links (a data migration, with a backup and his approval). (c) Leave it: no bug hides behind the name. **Recommendation: (a)** |
+| D-8 | FU-020: attachments to a delegated child are named through its delegator | **The user**, 2026-11-17 | **Decided: (b), clean code and clean data.** The user: "Basically the code and the data both should be clean … I think the data migration guideline mentioned this." New attachments use the child's own link. The host-scoped owner kind, its route and `DelegatedChildLocations` go. The 425 stored links in 143 message files are rewritten to the child's own link by a data migration (the guideline's current-only runtime: no legacy reader). The founder's rule applies: **a backup before any file is rewritten**. The migration follows `data_migration_guideline.md`, including the new "Registry order and late predecessors" rules. Note: these links are written by the delivered 1.5.13-beta.7 too, so the migration must also cover links written between now and its release |
 | D-9 | FU-035: Grok's refused tool call reaches the agent only as "Tool execution failed." | Solution Designer | `Unclear` until reproduced. The text may be lost in our projection (`grok-build-tool-projection.ts:37`, which only affects what we display) or inside the Grok CLI (what the model sees, an external dependency). It is investigated with a live Grok run, under the Grok waiver rule: a usage limit alone is not a failure, only the founder's words decide |
 
 ## Requirements (delivery 1)
@@ -66,7 +66,7 @@
 | REQ-008 | The gates are reliable: `mobile-shell-probe.mjs` has unique case IDs; `file-system-watcher.integration.test.ts` passes under load; `agent-runtime-names.test.mjs` covers every runtime (`deepseek_harness`); the web type gate counts each error once | FU-016, FU-021, FU-022, FU-023 |
 | REQ-009 | A command sent to any stream before it is ready gets `SESSION_NOT_READY`. None is dropped silently (D-3) | FU-036 |
 | REQ-010 | A refused tool call on `grok_build` reaches the agent with the server's reason and guidance, as on the other runtimes (D-9: the cause is investigated first) | FU-035 |
-| REQ-011 | Attachments to a delegated child, per D-8 | FU-020 |
+| REQ-011 | Attachments to a delegated child belong to the child's own run, in code and in stored data: new links name the child's own run, and existing links are converted once, with a backup first (D-8) | FU-020 |
 
 ## Acceptance Criteria (delivery 1)
 
@@ -79,7 +79,7 @@
 | AC-005 | REQ-008 | The four gates pass repeatedly: the probe guard, the watcher test under a loaded full suite, the runtime-names test, the web type gate at its baseline |
 | AC-006 | REQ-009 | An integration test sends on open to `/ws/agent-org/:id` and to the agent-collaboration stream, and receives `SESSION_NOT_READY` |
 | AC-007 | REQ-010 | A live Grok run shows the server's reason for a refused call, with a test (or, if the cause is in the Grok CLI, the founder decides, per D-9) |
-| AC-008 | REQ-011 | Per D-8: under (a), a new attachment's link names the child's own run, and an old stored link still opens its file |
+| AC-008 | REQ-011 | A new attachment's link names the child's own run. After the migration, no stored link names a delegator, every rewritten link opens its file, a backup of each rewritten file exists, and a second start changes nothing |
 
 ## Scope Guardrail
 
