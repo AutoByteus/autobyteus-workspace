@@ -5,6 +5,7 @@
 | Revision ID | Entry Point / Trigger | Prior Result | Current Result | Affected Canonical Artifacts |
 | --- | --- | --- | --- | --- |
 | DR-001 | API/E2E: Pass in round 2 (API-REV-002, 95%), direct route (2026-11-18) | N/A | Blocked at the base refresh: `origin/personal` merges with 6 conflicts (autobyteus-522 and autobyteus-448 landed after this ticket's base); routed to implementation as a Local Fix | `delivery-revision-record.md` |
+| DR-002 | API/E2E: Pass in round 3, the merged-base rerun (API-REV-003, 95%), direct route (2026-11-18) | DR-001 (Blocked at the base refresh) | Delivery Completed: verified from evidence, finalized on `personal`, no release (the founder's word is pending) | `docs-sync-report.md`, `handoff-summary.md`, `release-deployment-report.md`, `release-notes.md` |
 
 ## Revision Entries
 
@@ -34,3 +35,20 @@
 - Why this baseline or delivery revision was recorded: the first delivery round ended at the base refresh. This keeps the integration findings with the ticket instead of in a chat message.
 - Next recipient/action: `/implementation_engineer` merges `origin/personal` into `codex/phone-text-size-home-525`, resolves the six conflicts as above, renumbers the duplicate `MSP-67`, and runs the integration checks: web unit tests for the phone components, localization and stores; both typechecks (web and server) and the web guards; `pnpm -C autobyteus-web build:mobile-web`; the phone probe `test:e2e:mobile-shell` with this ticket's cases, 522's `MSP-67..72` and 448's `MSP-73`, with Largest screenshots of the Settings screen (remote-run text) and of a run row and run screen with a background task running. Then API/E2E reruns what the integration affects on the merged state (the Largest sweep over the screens the base added or changed, and the VNC Viewer, which the merge does not touch). Then delivery starts again from a refreshed base.
 - Remaining blockers, rollback concerns, or untested scope: the integration itself. RSK-002 is now real, and its rule is applied above. Nothing needs the founder.
+
+### DR-002 — Delivery completed without a release
+
+- Delivery round and trigger: second delivery round; API/E2E handoff after the merged-base rerun (API-REV-003, `Pass`, final confidence 95%), requested by DR-001 and carried out by implementation (IR-003: merge `65d67674a9`, probe `6abbcc7bef`) and API/E2E (`8ff33be443`).
+- Triggering upstream report, verification, or evidence: `api-e2e-execution-coverage-report.md` (round 3), `api-e2e-revision-record.md`, `evidence/api-e2e/README.md` and its `r3-*` folders; `implementation-handoff.md` IR-003 (IMP-08a…f).
+- Prior authoritative result: DR-001 (`Blocked` at the base refresh; the integration is now done).
+- Current authoritative result: `Delivery Completed` once finalization is recorded in `release-deployment-report.md`: verified from evidence, docs synced, finalized on `personal`, no release.
+- Docs sync report: `docs-sync-report.md` (Updated: `autobyteus-web/docs/remote_access.md`, `autobyteus-web/docs/content_rendering.md`)
+- Handoff summary: `handoff-summary.md`
+- Release/publication/deployment report: `release-deployment-report.md`
+- Integration and post-integration verification: `origin/personal` moved again to `93f3b9cde8` (22 commits: autobyteus-493, `autobyteus-server-ts` source, tests and docs, `GLOSSARY.md`, archived tickets; no web, `autobyteus-ts`, contract or build-input change). Clean merge `537fba6d9e`. Both typechecks at their baselines (`evidence/DEL-merged-base/DEL-01`, `DEL-02`) and the phone probe `MSP-66, 60, 74, 73` on a rebuilt server and phone bundle of the merged state: `Pass` on the second run (`DEL-04`); the first run stopped in stack setup under host load before any case (`DEL-03`).
+- Verification (evidence judgement or user check) and finalization state: evidence `Sufficient`: every critical acceptance criterion proven directly (`release-deployment-report.md`, Verification). The founder's own view on a phone is not a condition of the merge (his word: release only after it); it gates the release.
+- Terminal return to the Solution Designer: `Not yet eligible` (until the record commit after the push)
+- Terminal return message/reference: see the terminal message
+- Why this baseline or delivery revision was recorded: the first completed delivery result of the ticket.
+- Next recipient/action: the Solution Designer verifies the receipt and returns `Terminal`; a release (beta) waits for the founder's word after he has seen the result on a phone-size page.
+- Remaining blockers, rollback concerns, or untested scope: none blocking. Not tested: a physical phone, the iOS shell, other WebView versions. A release is rolled back by reverting the merge and cutting a new release (RELEASE.md Rollback); this change stores nothing new (`autobyteus.phone.textSize` is unchanged), so there is no data to convert.
