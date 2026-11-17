@@ -129,3 +129,22 @@
   - Under load average 126–150, 14 server and 2 web tests timed out in the full runs. All pass alone or with longer
     timeouts, except the folder-watcher timing cases, which this ticket doesn't touch.
   - E2E suites were not run on the merge (API/E2E, delivery).
+
+## IR-005 (Local Fix for CRR-007)
+
+- **Trigger:** Code Reviewer CRR-007, the IR-004 merge review: Fail, Local Fix CR-500-007.
+  - `build-studio-server.ts` has 502 effective lines on the merged base: base 492, 448 added 4, this ticket 10.
+- **Prior result:** IR-004, merge correct (CRR-007). **Current result:** fixed; back for the recheck.
+- **Upstream revisions:** CRR-007. SR / ARCH-REV / API-REV / DR: unchanged.
+- **Code delta** (`eb741a097e`):
+  - `createStudioPackageServices` moves unchanged to the new `compositions/studio-package-services.ts`; the studio
+    imports it. No line was compressed.
+  - The first attempt moved the application-services helper as well. The architecture tests require
+    `buildApplicationPlatformRuntime({` in `build-studio-server.ts`, so it was reverted.
+- **Focused validation:** IMP-21.
+  - The server type gate passes.
+  - Architecture, composition, restart-resume, application-platform, application-packages and llm-management tests:
+    378/378.
+  - Recount against `ff13782f36`: no changed source file is over 500 (studio 485, handle 499, AutoByteus backend
+    factory 496).
+- **Limitations:** none new.

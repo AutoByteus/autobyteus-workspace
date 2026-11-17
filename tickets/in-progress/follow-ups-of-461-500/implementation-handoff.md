@@ -1,7 +1,7 @@
 # Implementation Handoff: follow-ups-of-461-500 (delivery 1 + 2)
 
-Status: **IR-004 (the delivery base refresh: `origin/personal` `ff13782f36` merged, `39325a1e50`) ready for the code
-reviewer's merge review.** IR-003 passed (CRR-004); see "IR-004: base refresh" below. Decided earlier at SR-014 (ARCH-REV-007):
+Status: **IR-005 (CRR-007 CR-500-007, a Local Fix on IR-004's base refresh) ready for the code reviewer's recheck.**
+IR-004 merged `origin/personal` `ff13782f36` (`39325a1e50`); see "IR-004: base refresh" below. Decided earlier at SR-014 (ARCH-REV-007):
 - **FU-035 step 0 (REQ-010, AC-007), D-14:** not in this package. It runs as a later implementation round once Grok's
   24-hour usage window resets, with branch A or B and its own code review. Nothing is waived; FU-035 stays open.
 - **FU-021 (REQ-008, AC-005), D-13b:** done. A hang guard whose probe got nothing is ENVIRONMENT; one whose probe got
@@ -34,11 +34,11 @@ reviewer's merge review.** IR-003 passed (CRR-004); see "IR-004: base refresh" b
 
 - Implementation cycle: `Rework` (CRR-001 Local Fix)
 - Implementation revision record: `implementation-revision-record.md`
-- Current implementation revision ID: `IR-004` (deltas in `implementation-revision-record.md`; IR-001 is the baseline)
+- Current implementation revision ID: `IR-005` (deltas in `implementation-revision-record.md`; IR-001 is the baseline)
 - Related solution revision IDs: SR-006 … SR-014
 - Related architecture-review revision IDs: ARCH-REV-001, ARCH-REV-003, ARCH-REV-005, ARCH-REV-006, ARCH-REV-007
 - Related code-review revision IDs: CRR-001 (CR-500-001, CR-500-002), CRR-002 (Pass), CRR-003 (CR-500-003 … CR-500-005),
-  CRR-004 (Pass), CRR-005 / CRR-006 (API/E2E test code).
+  CRR-004 (Pass), CRR-005 / CRR-006 (API/E2E test code), CRR-007 (IR-004 merge review: CR-500-007).
 - Related API/E2E revision IDs: API-REV-001 (F-1 … F-3), API-REV-002 (Pass).
 - Delivery: the Delivery Engineer's blocked report (`release-deployment-report.md`, `2f8a463a11`), a Local Fix to integrate
   the latest base.
@@ -68,6 +68,7 @@ Commits, oldest first, by the design's Change Sequence:
 | G-5 fix | `d8ffc77c8b` | the 8 s model-list budget is `MODEL_LIST_READ_MS` in `read-deadline.ts`; `llm-management` no longer imports `available-agent-runtimes` (found by the full unit run) |
 | 8 | evidence only | FU-035 step 0: blocked by the Grok usage limit (IMP-011); a later round per D-14 |
 | IR-004 merge | `39325a1e50` | `origin/personal` `ff13782f36` merged (beta.8, beta.9, 448 part 1, 483, 458, 514, 515, 508); 4 conflicts resolved |
+| IR-005 | `eb741a097e` | CR-500-007: `createStudioPackageServices` moves to `compositions/studio-package-services.ts`; `build-studio-server.ts` 502 → 485 on the merged base |
 | IR-004 fix | `bfeea63612` | three 461-era registration-order tests list FU-020's two migrations (missed in IR-001) |
 | CRR-003 | `7eb78a701b` | IR-003: G-5 R1 (on-demand AutoByteus models), R2 (definition first), R3 (inherited-layer refusal) |
 | CRR-001 | `7eb6f94b9f` | IR-002: the server's delegated-run code names (no "copy"); the stale coordinator doc line; FU-500-07 in the glossary's Known leftovers |
@@ -193,7 +194,8 @@ again. Saved settings were not changed.") is kept, because in the Settings it al
   - `InheritedLaunchVerdict` (false) gains `modelNoLongerOffered`, so the refusal can say it in its own words without
     reading the detail text.
   - The resolver unit test, the DLP-005 e2e and the probe assert it.
-- **Sizes:** `configured-agent-execution-handle.ts` 499, `build-studio-server.ts` 498 (effective lines).
+- **Sizes:** `configured-agent-execution-handle.ts` 499 (effective lines). `build-studio-server.ts` was 498 before the
+  merge and 502 after it; IR-005 brings it to 485.
 
 ## The two items decided at SR-014
 
@@ -332,6 +334,10 @@ again. Saved settings were not changed.") is kept, because in the Settings it al
   - `build-studio-server.ts` had gone to 511 and `configured-agent-execution-handle.ts` to 507. They are now 498 and 500
     (`1eed3c4aff`).
   - No change grew a file that was already over 500.
+  - **Recounted against the merged base `ff13782f36` (IR-005):** no changed source file is over 500. The closest are
+    `configured-agent-execution-handle.ts` (493 → 499), `autobyteus-agent-run-backend-factory.ts` (489 → 496) and
+    `build-studio-server.ts` (492 → 485). After the merge the studio file had 502 (448 added 4, this ticket 10), and
+    IR-004's handoff missed it (CR-500-007).
 
 ## Persisted Data Transition Check
 
@@ -377,6 +383,7 @@ again. Saved settings were not changed.") is kept, because in the Settings it al
 | IMP-19 | IR-003: integration `tests/integration/{agent-execution,agent-collaboration,run-history,agent-team-execution,collaboration-definition-admission}` + `tests/architecture` | `7eb78a701b` | macOS | both start paths' wiring | G-5 | Pass | console | "Test Files 34 passed \| 4 skipped (38)"; "Tests 183 passed \| 35 skipped (218)" |
 | IMP-15 | IR-003: DLP-005 e2e (scripted AGY), `-t "inherited layer"` | `7eb78a701b` | macOS, scripted AGY CLI | the inherited-layer refusal through the real server | CR-500-005, AC-006 | Pass | `IMP-015-dlp005-inherited-refusal-e2e.log` | "Tests 1 passed \| 2 skipped (3)" |
 | IMP-20 | IR-004 on the merged state: server and web type gates; restart-resume tests; `npx vitest run tests/unit tests/agent-work-journal tests/app-data-migrations tests/architecture` (server); `npx vitest run` (web) | `bfeea63612` | macOS, load 126–150 | everything, with the base | all | Pass, except timeouts under load | `IMP-020-merged-state-checks.log` | server type gate "production errors: 0; test-file errors: 1010 in 316 files (baseline 1010 in 316 files)"; web type gate "production errors: 0; test-file errors: 87 in 37 files"; restart-resume 58/58; server "Tests 14 failed \| 8322 passed", all timeouts or folder-watcher timing, the rest pass rerun (with 60 s timeouts for three); web "Tests 2 failed \| 5730 passed", two 5 s timeouts, 3/3 alone |
+| IMP-21 | IR-005: `pnpm -C autobyteus-server-ts typecheck`; `npx vitest run --testTimeout=60000 tests/architecture tests/unit/compositions <restart-resume tests> tests/unit/application-platform tests/unit/application-packages tests/unit/llm-management`; size recount against `ff13782f36` | `eb741a097e` | macOS | the studio composition | CR-500-007 | Pass | console | "production errors: 0; test-file errors: 1010 in 316 files (baseline 1010 in 316 files)"; "Test Files 57 passed (57)", "Tests 378 passed (378)"; `build-studio-server.ts` 485 |
 | IMP-13 | watcher test after the D-13b labels, 1 run | `a4e7f18e6d` | macOS, load 120–190 | FU-021 labels | FU-021 / D-13b | Fails as designed under load: labels only | `IMP-013-watcher-sr014-labels.log`, `IMP-013-watcher-sr014.full.log` | "env=1 inconclusive=6 other=0"; no "Timed out waiting for event (hang guard)" line |
 
 - Note for API/E2E (IMP-18): `tests/unit/e2e-helpers/team-stream-clients-wait-for-connected.test.ts` fails on API/E2E's
