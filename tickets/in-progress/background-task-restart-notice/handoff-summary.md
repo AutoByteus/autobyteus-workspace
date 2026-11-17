@@ -7,7 +7,7 @@
 - Date: `2026-11-17`
 - Classification: `task_size: Medium`, `architectural_risk: High`; route: architecture review (ARCH-REV-002, ARCH-REV-003 for DEC-008), implementation (IR-001, IR-002), code review (CRR-001 Pass; CRR-002 failure origin: Requirement Gap F-1; CRR-003 Pass), API/E2E (API-REV-001 Fail F-1, API-REV-002 Pass, confidence 94%), test-code review (CRR-004 Pass).
 - Current Status: `Part 1 verified from evidence / finalized on personal; no release`
-- Branch: `codex/background-task-restart-notice`, base `origin/personal` @ `4cbf9e7881` at bootstrap and at delivery (no new base commits). Product code final at `b78555d7bb`.
+- Branch: `codex/background-task-restart-notice`, base `origin/personal` @ `4cbf9e7881` at bootstrap and at delivery (no new base commits). Product code final at `b78555d7bb`. Finalized: `--no-ff` merge `e479be4539` pushed to `origin/personal`.
 
 ## Delivery Summary
 

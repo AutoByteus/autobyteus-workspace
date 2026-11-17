@@ -76,7 +76,22 @@
 
 ## Repository Finalization
 
-FINALIZATION
+- Bootstrap context source: `RELEASE.md` Finalization Target (`origin`, `personal`, `codex/<ticket-name>`)
+- Ticket branch: `codex/background-task-restart-notice`
+- Secret Gate before the first push: `scripts/check_secrets.sh origin/personal..HEAD` PASS (16 commits). Artifact hygiene PASS; no Windows-hostile character in this ticket's file names.
+- Ticket branch commit result: `c78a76c73e` (docs sync and delivery records), on top of checkpoint `2a59163acc`
+- Ticket branch push result: pushed `origin/codex/background-task-restart-notice` (new branch)
+- Finalization target remote: `origin`
+- Finalization target branch: `personal`
+- Target advanced after verification / acceptance: `No` (`4cbf9e7881` at every fetch)
+- Delivery-owned edits protected before re-integration: `Not needed`
+- Re-integration before final merge result: `Not needed`
+- Target branch update result: `finalize/background-task-restart-notice` created from `origin/personal` @ `4cbf9e7881`
+- Merge into target result: `--no-ff` merge `e479be4539`; its tree equals the ticket branch's `c78a76c73e`. Secret Gate on the merged state: PASS
+- Push target branch result: `4cbf9e7881..e479be4539  HEAD -> personal`
+- User's checkout of the target branch (`/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`): fast-forwarded with `git merge --ff-only origin/personal` after this record commit's push, when it is on `personal` with no local commits; the result is in the terminal message.
+- After this record's push, the ticket branch is fast-forwarded to the record commit and pushed, so part 2 continues from the finalized state.
+- Repository finalization status: `Completed` (part 1)
 
 ## Release / Publication / Deployment
 
@@ -108,7 +123,9 @@ FINALIZATION
 
 ## Verification Checks
 
-CHECKS
+- Secret Gate on the ticket commits: PASS (16 commits)
+- Secret Gate on the merged state: PASS
+- `python3 scripts/check_repository_artifact_hygiene.py`: PASS
 
 ## Rollback Criteria
 
@@ -116,4 +133,10 @@ CHECKS
 
 ## Final Status
 
-FINAL
+- Verification complete: `Yes` (from the evidence; part 1)
+- Repository finalization complete: `Yes` (`e479be4539` on `personal`; this record commit follows it)
+- Applicable release/deployment/rollout complete or not required: `Yes` (not required)
+- Applicable safe cleanup complete or not required: `Yes`. Not required for part 1: the worktree and ticket branch are kept for part 2 (DEC-007). The temporary finalize branch is deleted after the push; the result is in the terminal message.
+- Unresolved blocker: `None`
+- Successful terminal package eligible for return: `Yes` (part 1)
+- Terminal package sent to the Solution Designer: by `send_message_to` after this record's push
