@@ -12,12 +12,12 @@
     data-test="mobile-run-row"
     :data-depth="row.depth"
   >
-    <span v-for="level in row.depth" :key="level" class="absolute inset-y-0 w-px bg-slate-200" :style="{ left: `${railLeft(level)}px` }" aria-hidden="true" />
+    <span v-for="level in row.depth" :key="level" class="absolute inset-y-0 w-px bg-slate-200" :style="{ left: `${railLeft(level)}rem` }" aria-hidden="true" />
     <button
       type="button"
       class="flex min-w-0 flex-1 items-start gap-3 text-left active:bg-slate-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-blue-500"
       :class="[row.depth === 0 ? 'min-h-[4rem] py-3' : 'min-h-[3.5rem] py-2.5', row.hasChildren ? 'pr-0' : 'pr-4']"
-      :style="{ paddingLeft: `${contentLeft}px` }"
+      :style="{ paddingLeft: `${contentLeft}rem` }"
       :aria-label="accessibleLabel"
       data-testid="mobile-run-open"
       @click="$emit('open', row)"
@@ -72,9 +72,10 @@ import { mobileRunStatusLabel } from '~/utils/mobile/mobileRunStatusLabel';
 const props = defineProps<{ row: MobileRunTreeRow; open: boolean; age: string }>();
 defineEmits<{ (event: 'open', row: MobileRunTreeRow): void; (event: 'toggle', row: MobileRunTreeRow): void }>();
 
-// The rail of level k sits under the avatar's center of its group's row: 34px under a top-level row, 20px deeper.
-const railLeft = (level: number): number => 34 + (level - 1) * 21;
-const contentLeft = computed(() => (props.row.depth === 0 ? 16 : railLeft(props.row.depth) + 9));
+// The rail of level k sits under the avatar's center of its group's row: 34 px under a top-level row, 21 px deeper
+// (at the Standard Text size). In rem, so the rails and indents follow the avatars at every Text size (autobyteus-525).
+const railLeft = (level: number): number => 2.125 + (level - 1) * 1.3125;
+const contentLeft = computed(() => (props.row.depth === 0 ? 1 : railLeft(props.row.depth) + 0.5625));
 const unreachable = computed(() => props.row.remote?.reachable === false);
 const shownStatus = computed(() => (unreachable.value ? 'error' : props.row.status));
 const dotClass = computed(() => agentStatusDotClass(shownStatus.value));

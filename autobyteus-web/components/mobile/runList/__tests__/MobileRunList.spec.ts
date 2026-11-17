@@ -44,6 +44,24 @@ describe('MobileRunList', () => {
     expect(toggle).toHaveBeenCalledTimes(2);
     expect(items[1]!.get('[data-testid="mobile-run-toggle"]').attributes('aria-label')).toBe('Show members of Software Engineering Team');
     expect(items.every((item) => !/Archive|Delete|Stop/.test(item.text()))).toBe(true);
+    // autobyteus-525 REQ-006: the indent and the rails in rem (16/34/43 px at Standard), so they follow the avatars at
+    // every Text size; the header carries the "On this phone" ⋮ at its right.
+    expect(items[0]!.get('[data-testid="mobile-run-open"]').attributes('style')).toBe('padding-left: 1rem;');
+    expect(items[2]!.get('[data-testid="mobile-run-open"]').attributes('style')).toBe('padding-left: 2.6875rem;');
+    expect(items[2]!.get('span[aria-hidden="true"].absolute').attributes('style')).toBe('left: 2.125rem;');
+    expect(wrapper.get('header [data-testid="mobile-on-this-phone-button"]').attributes('aria-label')).toBe('On this phone');
+  });
+
+  it('a row two levels deep has two rails, 1.3125rem apart (21 px at Standard)', async () => {
+    setActivePinia(createPinia());
+    vi.spyOn(useRunListStore(), 'entries', 'get').mockReturnValue([{}] as never);
+    const rows = ref([row({ key: 'agent:a/agent:b/agent:c', depth: 2, name: 'Deep', title: '', lastActivityAt: null })]);
+    const tree = { rows: computed(() => rows.value), openRowKey: computed(() => null), toggle: vi.fn(), setTeamExpanded: vi.fn(), toggleTeam: vi.fn(), expandTeamMemberAncestors: vi.fn() };
+    const wrapper = mount(MobileRunList, { props: { tree: tree as never, nodeName: 'n', connection: 'connected' }, global: { plugins: [await createMobileTestRouter()] } });
+    await flushPromises();
+    const item = wrapper.get('[role="treeitem"]');
+    expect(item.findAll('span.absolute.inset-y-0').map((rail) => rail.attributes('style'))).toEqual(['left: 2.125rem;', 'left: 3.4375rem;']);
+    expect(item.get('[data-testid="mobile-run-open"]').attributes('style')).toBe('padding-left: 4rem;');
   });
 
   it.each([

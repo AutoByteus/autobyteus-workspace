@@ -156,10 +156,11 @@
 //                  after the limits were raised with no reload, and a stale read of the limits gets the node's 413 as the same
 //                  line; cancel mid-upload leaves no message and no draft, a network drop shows the interrupted line and leaves
 //                  no draft: `mobile-context-file-size-cases.mjs` (its own node eta).
-//   MSP-60…66 autobyteus-458/506  The readable phone conversation at 412 and 360 px (body width − 24, 17 px / 1.5, one
+//   MSP-60…67 autobyteus-458/506/525  The readable phone conversation at 412 and 360 px (body width − 24, 17 px / 1.5, one
 //                  avatar and speaker line per turn, composer 8 px above the bottom; another agent's message keeps its arrow
-//                  and type line, as on the desktop); ⋮ → Text size (15/19/21 px, kept over a
-//                  reload); ⋮ → Settings on a stopped Team member (Runtime → Grok Build, its model, Save back, the node holds it,
+//                  and type line, as on the desktop); the run list's ⋮ → On this phone → Text size (the whole phone at
+//                  16 × step/17 px, the conversation 15/19/21 px, kept over a reload) and every phone screen at Largest;
+//                  ⋮ → Settings on a stopped Team member (Runtime → Grok Build, its model, Save back, the node holds it,
 //                  the run continues on it), a refused Save (the run woken before Save: the node's words in the red card), a
 //                  live idle and a working run (the red stop icon, one tap, the rows open): `mobile-run-settings-cases.mjs`
 //                  (on the paired phone, before MSP-13).
@@ -2471,7 +2472,8 @@ const runCases = async () => {
 
   // autobyteus-458 / 506: the readable conversation, Text size and a run's Settings (`mobile-run-settings-cases.mjs`), before
   // MSP-13 revokes this phone.
-  await runRunSettingsCases({ runCase, page, stack, alpha, sel, toList, openRow, ensureUnfolded, rowsOf, childRow, menuOpen, runScreen, shot, sendOver, waitFor, sleep, assert, selected, phoneNet });
+  await runRunSettingsCases({ runCase, page, stack, alpha, sel, toList, openRow, ensureUnfolded, rowsOf, childRow, menuOpen, runScreen, shot, sendOver, waitFor, sleep, assert, selected, phoneNet,
+    openPhone, pairingFor, phoneOrigin });
 
   await runCase('MSP-13', async () => {
     // A credential the node does not know (401, REMOTE_ACCESS_AUTH_INVALID: the node's pairing data was reset): the next
