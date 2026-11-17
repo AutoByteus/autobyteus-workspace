@@ -1,12 +1,12 @@
 # Release Report — release-v1.5.13-beta.9 (autobyteus-519): beta v1.5.13-beta.9
 
-Status: **in progress (hold before cutting: the founder's decision on autobyteus-514 pending).** Nothing bumped, tagged or pushed.
+Status: **in progress: GO (2026-11-17); cutting.**
 
 ## Scope
 
 - Release request (`Release Requested`, Solution Designer; `handoff-release-requested.md`): one beta, v1.5.13-beta.9, from `origin/personal`. The founder's words (2026-11-17): "Let's release one beta version."
 - No validated package: docs sync, the handoff summary and Verify From Evidence do not apply; the release guide's checks are the verification.
-- Content since `v1.5.13-beta.8`: autobyteus-448 part 1 (restart reminder), autobyteus-483 (shell command time limits, background-task end reasons), autobyteus-458 with 506 (phone Settings, Text size, readable conversation, the stop rule); then autobyteus-514 (desktop and Docker packages without the Claude Agent SDK's platform binaries), merged into `personal` during this release: whether beta.9 carries it is the founder's pending decision.
+- Content since `v1.5.13-beta.8`: autobyteus-448 part 1 (restart reminder), autobyteus-483 (shell command time limits, background-task end reasons), autobyteus-458 with 506 (phone Settings, Text size, readable conversation, the stop rule); then autobyteus-514 (desktop and Docker packages without the Claude Agent SDK's platform binaries), merged into `personal` during this release. The founder's decision (2026-11-17, relayed by the Solution Designer): "Yeah of course you to shoot include right because the beta the beta should always be the latest personal branch I believe". beta.9 carries it. 514 was proven by build-only run 44105389247 (five desktop targets) and a packaged macOS Claude turn; a Claude turn on Windows, on Linux and inside a Docker node was not run (stated in the notes).
 
 ## Project Release Guide
 
