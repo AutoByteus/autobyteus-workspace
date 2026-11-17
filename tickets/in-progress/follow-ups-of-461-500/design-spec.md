@@ -135,6 +135,8 @@ The glossary (`GLOSSARY.md`, with `collaboration_model.md` §1) gains:
 - **Known leftover:**
   - The Task record is named `agentRunResources` / `agentRun` on disk and `TaskExecution…` / `executionResources` / `execution` in code, behind one mapping (D-5, FU-500-01).
   - Token usage records keep `root_team_run_id` for a team member (D-6).
+  - The routing-decision log stores `copyAddress` / `copyKind` (FU-500-04).
+  - Each of the three is a follow-up, to be decided later (FU-500-01, FU-500-04, FU-500-05). The glossary lists them under "Known leftovers", so the old names are not taken for current vocabulary.
 
 ## Naming (FU-006, FU-010, FU-019)
 
