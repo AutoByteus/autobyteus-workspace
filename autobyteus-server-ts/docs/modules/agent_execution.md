@@ -422,8 +422,8 @@ active-turn behavior or maintain a second input queue. Terminal command records
 are retained in process for at least 15 minutes.
 
 For inactive historical runs and prepared-new identities, the coordinator
-publishes a command overlay `AGENT_STATUS { status: "initializing",
-can_interrupt: false }` before runtime restore/start work. During an
+publishes a command overlay `AGENT_STATUS { status: "initializing" }` before
+runtime restore/start work. During an
 inactive-start command, runtime readiness remains an internal fact until the
 accepted message has been handed to the runtime. The overlay is replaced only by
 command-correlated post-handoff lifecycle signals: command-start `AGENT_STATUS

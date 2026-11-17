@@ -5,3 +5,10 @@
 - After an unexpected stop, the reminder says some background tasks may still be running but are no longer tracked, and the agent can check them itself.
 - After an update the agent is woken with the reminder. After a restart or an unexpected stop, the reminder comes with the next message you send it. Each agent gets it once.
 - Known issue: in the conversation view, the reminder can show twice after a restart, and the agent's first reply before the restart may be hidden. The agent receives it only once.
+
+## See when an agent is waiting on a background task
+
+- An agent that has finished its turn but still has background tasks running (for example a build or a dev server it started) is no longer shown as "Idle". Lists and headers on the desktop and the phone show "Background task running", or "2 background tasks running" for several, with a steady blue dot. When the tasks end, it shows "Idle" again.
+- The Stop button stays for turns only. You can message such an agent at any time, and the message is delivered at once.
+- A team shows the same status when none of its agents is in a turn and at least one is waiting on background tasks.
+- Codex agents still show "Idle" while their background terminals run.

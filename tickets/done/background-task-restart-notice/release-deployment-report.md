@@ -1,5 +1,126 @@
 # Delivery / Release / Deployment Report
 
+This report covers both deliveries of the ticket. Part 2 (DR-004, the final delivery) comes first; part 1 (DR-001) follows below.
+
+# Part 2 — the status shown (DR-004)
+
+## Release / Publication / Deployment Scope
+
+- Ticket `background-task-restart-notice` (Project Task `autobyteus-448`), part 2 (UC-002), `task_size: Large`, `architectural_risk: High`, reviewed route (`handoff-summary.md`).
+- Scope: base refresh, docs sync, verification from evidence, finalization onto `personal`, archive of the ticket, cleanup. No release.
+
+## Project Release Guide
+
+- Release guide path and revision: `RELEASE.md` at `origin/personal` @ `c0869d58e9` (read after the base refresh).
+- Deviations from the guide and why: `None`
+- Proposed guide fixes: `None`. DR-003's lesson goes to the earliest stage that can catch it, not the release guide: the probe already refuses duplicate case IDs at start, and starting it once after a base merge shows the collision. No new rule is proposed; the check exists.
+
+## Handoff Summary
+
+- Handoff summary artifact: `tickets/done/background-task-restart-notice/handoff-summary.md`
+- Handoff summary status: `Updated` (whole ticket)
+- Delivery revision record: `tickets/done/background-task-restart-notice/delivery-revision-record.md`
+- Current delivery revision ID: `DR-004`
+
+## Initial Delivery Integration Refresh
+
+- Part 2's earlier rounds:
+  - DR-002: merge of `ff13782f36` conflicted; resolved by IR-005 (`990ff9a3d4`).
+  - DR-003: merge of autobyteus-522 (`d61bae54a0`, as `e93d477539`) was clean, but the phone probe's case IDs collided; resolved by IR-006 (`d7fdd7db6f`).
+- This round:
+  - Bootstrap base reference: `895cf3992d` (part 1's record).
+  - Latest tracked remote base reference checked: `origin/personal` @ `c0869d58e9`.
+  - Base advanced since the previous refresh: `Yes` (autobyteus-524, `62b25e435e`: native `run_bash` starts under load; the command scope's limits).
+  - New base commits integrated: `Yes`.
+  - Local checkpoint commit result: `Completed` (`d154f24356`, the reviewer's CRR-010 documents).
+  - Integration method: `Merge` (`96216eb642`), no conflicts. The base touched only autobyteus-ts command execution. Three autobyteus-ts test files changed on both sides, in independent hunks.
+- Post-integration executable checks rerun: `Yes` (`evidence/DEL-R3-post-integration/`):
+  - DEL-01: web typecheck, `production errors: 0; test-file errors: 87 in 37 files (baseline 87 in 37 files)`, PASS.
+  - DEL-02: server typecheck, `1012 in 316 files (baseline 1012 in 316 files)`, PASS.
+  - DEL-03: autobyteus-ts `tsc --noEmit -p tsconfig.build.json`, exit 0.
+  - DEL-04: `env -i … pnpm -C autobyteus-ts exec vitest run tests/unit/tools/terminal tests/integration/tools/terminal tests/integration/agent/tool-approval-flow.test.ts`, `Test Files 28 passed (28)`, `Tests 197 passed (197)`. This is the base's changed area, where the ticket's tests also changed.
+  - The phone probe's start check (duplicate IDs) passes on this state.
+  - The previous refresh's checks on `e93d477539` (autobyteus-522) are in `evidence/DEL-R2-post-integration/`:
+    - web and server typechecks PASS;
+    - phone-run specs 50/50;
+    - IR-006's IMP-21 then ran the nine phone cases on it.
+- Post-integration verification result: `Passed`
+- Delivery edits started only after integrated state was current: `Yes`
+- Handoff state current with latest tracked remote base: `Yes`
+
+## Verification
+
+- Evidence judged: `Sufficient`
+- Evidence relied on:
+  - `api-e2e-execution-coverage-report.md`: rounds 3 and 4 (Acceptance-Criteria Proof and Cases), plus IMP-21.
+  - Final confidence 94%, no category below 90%. The gap to 95% is unit-level proof of a Team member in error and of the Org view's status, and ACP and Linux not run.
+  - I checked the Org route's code. `AgentOrgAgentStatuses.pairedAgentStatuses` reads `getAgentStatusSnapshots()` details and the same presentation frames as the Team route that BTS-02 proves live; dormant agents report `offline` with 0. Unit-level proof is proportionate there.
+  - Mocks: scripted models in BTS-01..03/06, closed by Claude live (BTS-04), Codex live (BTS-05) and a real OpenAI model in the real desktop app (P2-10).
+
+| Acceptance-Criteria ID | Cases And Files Checked | What You Saw | Judgement |
+| --- | --- | --- | --- |
+| AC-005 (critical) | `R4-01-status-count/BTS-01.json`, `BTS-06.json`; `IMP-21-phone-probe-msp73/results.log`, `MSP-73-background-settings.png`; `P2-10-desktop/02-two-tasks.png` | `backgroundTasksRunning: 1` snapshots; BTS-06 ends `end_reason` null ×2 and `run_ended`, with the count stepping down to offline 0; IMP-21 nine cases Pass (MSP-59, MSP-73, MSP-63, MSP-67..72); phone Settings "Background task running" with a blue dot (the red square is 458's stop-run, not the turn Stop); desktop header "2 background tasks running", blue dot | Proven |
+| AC-006 (critical) | `R4-01-status-count/BTS-01.json`; P2-10 README | `"deliveredAfterMs": 24` while a task runs, then the turn runs; real app: Running with Stop at 123 ms | Proven |
+
+- Evidence reference fixed by delivery: the round 4 row R4-05 cited `MSP-73 (was MSP-67)-background-settings.png`, a name IR-006's rename note produced. The file is `R4-05-phone/MSP-67-background-settings.png`; the reference now names it, together with IMP-21's `MSP-73-background-settings.png`.
+- More evidence requested: `None`
+- User check needed: `No`
+- Re-verification after later re-integration: see Repository Finalization
+
+## Release Decision
+
+- Decision: `No release`
+- Decided by: `RELEASE.md` default (the user did not ask for a release). A release is available.
+
+## Docs Sync Result
+
+- Docs sync artifact: `tickets/done/background-task-restart-notice/docs-sync-report.md` (Part 2)
+- Docs sync result: `Updated`:
+  - web `agent_execution_architecture.md` (FU-006), `agent_integration_minimal_bridge.md`;
+  - server `codex_raw_event_mapping.md`, `agent_execution.md`;
+  - `GLOSSARY.md`.
+
+## Ticket State Transition
+
+- Ticket moved to `tickets/done/background-task-restart-notice`: `Yes` (both parts delivered)
+
+## Version / Tag / Release Commit
+
+- None (no release).
+
+## Repository Finalization
+
+FINALIZATION
+
+## Release / Publication / Deployment
+
+- Applicable: `No`
+- Release/publication/deployment result: `Not required`
+- Release notes handoff result: `Not required` (notes for both parts: `release-notes.md`)
+
+## Post-Finalization Cleanup
+
+CLEANUP
+
+## Environment Or Persisted-Data Transition Notes
+
+- Nothing new is stored in part 2. No compatibility code was added, per DESIGN.md rule 9 (no compatibility between software versions), which the design cites for the peer summary field: a peer node runs the same release.
+- Delivery action required: `None`
+
+## Verification Checks
+
+CHECKS
+
+## Rollback Criteria
+
+- Revert the part 2 merge on `personal` (and part 1's `e479be4539` for the whole ticket). Nothing persisted needs converting.
+
+## Final Status
+
+FINAL
+
+# Part 1 — the restart reminder (DR-001)
+
 ## Release / Publication / Deployment Scope
 
 - Ticket `background-task-restart-notice` (Project Task `autobyteus-448`), **part 1: the restart reminder (UC-001)**. `task_size: Medium`, `architectural_risk: High`, reviewed route (`handoff-summary.md`).

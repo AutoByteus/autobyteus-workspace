@@ -7,6 +7,7 @@
 | DR-001 | code reviewer: part 1 ready for delivery after CRR-004 (2026-11-17) | N/A | Part 1 Delivery Completed: verified from evidence, finalized on `personal`, no release; ticket open for part 2 (DEC-007) | `docs-sync-report.md`, `handoff-summary.md`, `release-deployment-report.md`, `release-notes.md` |
 | DR-002 | code reviewer: part 2 ready for delivery after CRR-007 (2026-11-17) | DR-001 (part 1 Delivery Completed) | Blocked: the base refresh conflicts with autobyteus-483 and autobyteus-458; routed to implementation as a Local Fix | `delivery-revision-record.md` |
 | DR-003 | code reviewer: part 2 ready again after IR-005/CRR-008/API-REV-004/CRR-009 (2026-11-17) | DR-002 (Blocked: base conflicts) | Blocked: the merge of autobyteus-522 is clean, but its phone probe case MSP-67 collides with part 2's MSP-67, so the probe refuses to start; routed to implementation as a Local Fix | `delivery-revision-record.md`, `evidence/DEL-R2-post-integration/` |
+| DR-004 | code reviewer: part 2 ready again after IR-006/CRR-010 (2026-11-18) | DR-003 (Blocked: probe case ID collision) | Delivery Completed: part 2 verified from evidence, finalized on `personal`, no release; ticket archived and worktree removed | `docs-sync-report.md`, `handoff-summary.md`, `release-deployment-report.md`, `release-notes.md`, `follow-ups.md`, `evidence/DEL-R3-post-integration/` |
 
 ## Revision Entries
 
@@ -62,3 +63,15 @@
 - Classification: `Local Fix` (test code from this ticket's integration). No product behavior is affected.
 - Next recipient/action: the implementation engineer renames part 2's case to a free ID (next after `MSP-72`) and updates the ticket documents that name it. They rerun the phone probe on the merged state, with part 2's case next to autobyteus-522's `MSP-67`..`MSP-72` and MSP-59/MSP-63. They then return through the applicable review route.
 - Terminal return to the Solution Designer: `Not yet eligible`.
+
+### DR-004 — Part 2 (the status shown) finalized without a release; ticket complete
+
+- Delivery round and trigger: fourth delivery round, part 2; code reviewer handoff after CRR-010 (IR-006, the MSP-73 rename).
+- Prior authoritative result: DR-003 `Blocked`, resolved by IR-006.
+- Current authoritative result: part 2 verified from evidence and finalized on `personal`; docs synced; no release. Both parts are delivered, so the ticket moves to `tickets/done/` and its worktree is removed.
+- Integration and post-integration verification: merged `origin/personal` @ `c0869d58e9` (autobyteus-524) as `96216eb642` with no conflicts; DEL-R3: three typechecks PASS, autobyteus-ts terminal suites 197/197; the probe start check passes.
+- Verification: AC-005 and AC-006 are proven on the merged build. The 94% gaps are low risk and explained (the Org route checked in code). No user check is needed. Delivery fixed one evidence reference in the execution report (R4-05).
+- Docs sync: FU-006 resolved and widened to every live doc that described `can_interrupt`; glossary entry "Background task running".
+- Terminal return to the Solution Designer: `Sent` (whole ticket)
+- Next recipient/action: the Solution Designer verifies the package, sends the follow-ups, and returns the result.
+- Remaining blockers, rollback concerns, or untested scope: none blocking (see `handoff-summary.md` Residual Risks).
