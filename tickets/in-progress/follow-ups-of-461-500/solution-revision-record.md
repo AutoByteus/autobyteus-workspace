@@ -166,3 +166,8 @@
 - **Premise checked:** the Ollama source status carries `successfulHostCount` / `failedHostCount` across hosts (`model-catalog-service.ts:248-256`), not per host.
 - **Change:** R1's unreadable rule is now any failed unit or a failed state, plus the note's same race and the two-host test.
 - **Next:** architecture review.
+
+### Review of SR-015 / SR-016
+
+- ARCH-REV-008 failed with AR-003; SR-016 resolved it. ARCH-REV-009: **Pass** (`design-review-report.md`). The reviewer sent the package to the implementation engineer.
+- Accepted residual risk (D-12): while any host of a provider is down, its host-scoped models are not checked, and their start proceeds as at base. A per-host source status could refine this later; it isn't recorded as a follow-up, because no failure follows from it.
