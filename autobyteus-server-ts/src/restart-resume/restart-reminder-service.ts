@@ -1,7 +1,7 @@
 import { randomUUID } from "node:crypto";
 import type { AgentRun } from "../agent-execution/domain/agent-run.js";
 import type { AgentRunPlatformNoticeSource } from "../agent-execution/domain/agent-run-platform-notices.js";
-import type { AgentRunPreface } from "../agent-execution/domain/agent-run-input-preface.js";
+import type { AgentRunPreface, AgentRunPrefaceContext } from "../agent-execution/domain/agent-run-input-preface.js";
 import { RESTART_RESUME_NOTICE_SENDER_ID } from "../agent-execution/domain/system-task-notification-senders.js";
 import { buildRestartNoticeText } from "./restart-notice.js";
 import {
@@ -80,7 +80,7 @@ export class RestartReminderService implements AgentRunPlatformNoticeSource {
 
   // --- the run's next external input (AgentRunInputPreface): a reminder rides either dispatch kind ---
 
-  async takePreface(run: AgentRun): Promise<AgentRunPreface | null> {
+  async takePreface(run: AgentRun, _context?: AgentRunPrefaceContext): Promise<AgentRunPreface | null> {
     await this.loaded;
     const held = this.held.get(run.runId);
     if (!held || held.state !== "pending") return null;

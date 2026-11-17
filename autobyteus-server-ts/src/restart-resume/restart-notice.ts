@@ -8,7 +8,7 @@ import type { AgentRun } from "../agent-execution/domain/agent-run.js";
 import type { AgentRunInputLifecycleObserver } from "../agent-execution/input/agent-run-input-contract.js";
 import type { RestartCause } from "./restart-cause.js";
 
-export const RESTART_REMINDER_HEADER = "[Platform notice — application restarted]";
+const RESTART_REMINDER_HEADER = "[Platform notice — application restarted]";
 
 /** The facts a restart reminder is built from (stored with a pending reminder; the text is built at delivery). */
 export type RestartReminderFacts = Readonly<{

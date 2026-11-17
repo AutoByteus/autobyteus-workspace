@@ -4,9 +4,9 @@ import type { ActiveCollaborationRootDirectory } from "../agent-collaboration/ex
 import { removeBusyRunRecord, writeBusyRunRecord, type BusyRunEntry } from "./busy-run-record.js";
 
 /** How often the live record is checked for a change (a crash loses at most this much). */
-export const BUSY_RUN_RECORD_INTERVAL_MS = 2_000;
+const BUSY_RUN_RECORD_INTERVAL_MS = 2_000;
 /** The longest the graceful final write waits for the runs that answer only through their background-task view (Codex). */
-export const BACKGROUND_TASK_INSPECTION_BUDGET_MS = 1_000;
+const BACKGROUND_TASK_INSPECTION_BUDGET_MS = 1_000;
 
 type LiveRun = Pick<AgentRun, "getStatusSnapshot" | "hasRunningBackgroundTasks" | "inspectBackgroundTasks">;
 
