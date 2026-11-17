@@ -1,0 +1,47 @@
+{
+  "runId": "restart_reminder_codex_app_server_776a0ff4_c85b32a318904b37982e2c5c988b43af",
+  "runtimeKind": "codex_app_server",
+  "modelId": "gpt-6.1-terra",
+  "runningTask": null,
+  "live": null,
+  "stopped": {
+    "entries": [
+      {
+        "root": {
+          "rootSubjectKind": "agent",
+          "rootRunId": "restart_reminder_codex_app_server_776a0ff4_c85b32a318904b37982e2c5c988b43af"
+        },
+        "agentRunId": "restart_reminder_codex_app_server_776a0ff4_c85b32a318904b37982e2c5c988b43af",
+        "place": "host",
+        "status": "idle",
+        "backgroundTasks": true,
+        "recordedAt": "2026-11-17T11:47:52.203Z",
+        "version": "1.5.13-beta.8"
+      }
+    ],
+    "shutdownAt": "2026-11-17T11:47:52.204Z"
+  },
+  "afterTake": {
+    "reminders": [
+      {
+        "root": {
+          "rootSubjectKind": "agent",
+          "rootRunId": "restart_reminder_codex_app_server_776a0ff4_c85b32a318904b37982e2c5c988b43af"
+        },
+        "agentRunId": "restart_reminder_codex_app_server_776a0ff4_c85b32a318904b37982e2c5c988b43af",
+        "place": "host",
+        "cause": "restart",
+        "version": "1.5.13-beta.8",
+        "restartedAt": "2026-11-17T11:48:04.651Z",
+        "interruptedTurn": false
+      }
+    ]
+  },
+  "notice": {
+    "sender_id": "system.restart_resume",
+    "content": "[Platform notice — application restarted]\n\nThe application restarted at 2026-11-17 11:48 UTC (reason: a restart).\nIf you started any background tasks, the restart stopped them. Check what you still need: restart it, or continue your work.",
+    "turn_id": "01a1e955-f03f-7f32-ad00-868245bac581"
+  },
+  "reply": "\",\"media\":null,\"ts\":1794916085.835},{\"kind\":\"message\",\"role\":\"assistant\",\"turnId\":\"01a1e955-f03f-7f32-ad00-868245bac581\",\"content\":\"The application restart stopped the `sleep 600` command.\",\"media\":null,\"ts\":1794916089.928}]",
+  "remindersAfter": null
+}

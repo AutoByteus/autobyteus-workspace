@@ -1,0 +1,31 @@
+{
+  "runId": "restart_reminder_4aff746e_3782418e9bf74272b301c3ee3d092306",
+  "killed": null,
+  "leftAfterKill": [
+    60246
+  ],
+  "afterTake": null,
+  "requestsBeforeInput": 2,
+  "requests": [
+    {
+      "at": 1794914960820,
+      "lastRole": "user",
+      "lastUser": "CASE:RR-02 Start the build in the background.",
+      "toolResults": []
+    },
+    {
+      "at": 1794914961016,
+      "lastRole": "tool",
+      "lastUser": "CASE:RR-02 Start the build in the background.",
+      "toolResults": [
+        "{\"pid\":60244,\"status\":\"running\",\"effectiveCwd\":\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/restart-reminder-e2e-CIY03r/workspace\",\"outputFile\":\"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-background-tasks/restart_reminder_4aff746e_3782418e9bf74272b301c3ee3d092306/call-1794914960992-60119.log\"}"
+      ]
+    },
+    {
+      "at": 1794914986676,
+      "lastRole": "user",
+      "lastUser": "CASE:RR-02 How is the build going?",
+      "toolResults": []
+    }
+  ]
+}

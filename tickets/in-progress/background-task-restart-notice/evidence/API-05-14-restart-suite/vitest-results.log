@@ -1,0 +1,40 @@
+# API-05..API-11, API-13, API-14: restart-reminder-built-server.e2e.test.ts (built dist of 79d1f803e4 = code d5e9f350cf; node 22.23.1; macOS; load average 80-95 from other work)
+# Command: env -i PATH HOME=<temp> TMPDIR USER RUN_RESTART_REMINDER_E2E=1 [RUN_RESTART_REMINDER_LIVE_E2E=1] RESTART_REMINDER_E2E_EVIDENCE_DIR=<dir> pnpm -C autobyteus-server-ts exec vitest run tests/e2e/restart-resume/restart-reminder-built-server.e2e.test.ts [-t <case>] --no-watch
+# Each case's passing run on the final test code (the JSON beside this file is from that run):
+
+## Full run 12:39-12:44 (RR-01, RR-03, RR-04, RR-05 pass; RR-02 and RR-06 environment: start deadline / AGY discovery timeout under load; RR-07 reply read from the wrong frames, fixed)
+12:39  up 28 days, 22:18, 9 users, load averages: 82.66 85.72 90.01
+     ✓ RR-01: graceful restart: recorded live, reminded once with the next input as 'a restart', nothing woken; an idle run without a task gets nothing  51526ms
+     × RR-02: forced kill: no shutdownAt; the next input carries 'an unexpected stop' 20367ms
+     ✓ RR-03: update: the idle run is woken with 'an update to' this release, and its next input carries nothing  34246ms
+     ✓ RR-04: update with a run mid-turn that also has a background task: one reminder with the interrupted-turn line  34293ms
+     ✓ RR-05: update with input sent the moment the node answers: exactly one reminder between the wake and the input  56388ms
+     × RR-06: Antigravity idle with an open daemon step is recorded and reminded with its next input 23451ms
+     × RR-07 (live): Claude idle with a background Bash command is recorded and reminded with its next input 27315ms
+     ✓ RR-08 (live): Codex idle with a background terminal is recorded at the graceful stop and reminded with its next input  45024ms
+AssertionError: RR-02 precondition: the background command started: expected 'Error: Error executing tool \'run_bas…' to contain '"status":"running"'
+AssertionError: AgyDiscoveryError: Antigravity model discovery timed out; check the CLI and retry.: expected false to be true // Object.is equality
+AssertionError: expected '' to match /restart|stopp|terminat|kill|no longer/i
+12:44  up 28 days, 22:23, 9 users, load averages: 85.89 92.74 92.93
+
+## RR-02/06/07 rerun 12:44
+     × RR-02: forced kill: no shutdownAt; the next input carries 'an unexpected stop' 10895ms
+     ✓ RR-06: Antigravity idle with an open daemon step is recorded and reminded with its next input  35221ms
+     ✓ RR-07 (live): Claude idle with a background Bash command is recorded and reminded with its next input  37428ms
+AssertionError: RR-02 precondition: the background command started: expected 'Error: Error executing tool \'run_bas…' to contain '"status":"running"'
+
+## RR-02 retries (precondition: background start under load), try 3 passed
+     × RR-02: forced kill: no shutdownAt; the next input carries 'an unexpected stop' 11822ms
+     × RR-02: forced kill: no shutdownAt; the next input carries 'an unexpected stop' 6329ms
+ ✓ tests/e2e/restart-resume/restart-reminder-built-server.e2e.test.ts (8 tests | 7 skipped) 17572ms
+     ✓ RR-02: forced kill: no shutdownAt; the next input carries 'an unexpected stop'  17471ms
+
+## RR-08 rerun (reply read from the conversation)
+ ✓ tests/e2e/restart-resume/restart-reminder-built-server.e2e.test.ts (8 tests | 7 skipped) 42172ms
+     ✓ RR-08 (live): Codex idle with a background terminal is recorded at the graceful stop and reminded with its next input  42102ms
+
+## Evidence-only additions, each rerun and passed: RR-01 with the projection and trace turn ids (0 see RR-01.json), RR-02 with the survivors after the kill (RR-02.json)
+ ✓ tests/e2e/restart-resume/restart-reminder-built-server.e2e.test.ts (8 tests | 7 skipped) 53496ms
+     ✓ RR-01: graceful restart: recorded live, reminded once with the next input as 'a restart', nothing woken; an idle run without a task gets nothing  53424ms
+ ✓ tests/e2e/restart-resume/restart-reminder-built-server.e2e.test.ts (8 tests | 7 skipped) 27053ms
+     ✓ RR-02: forced kill: no shutdownAt; the next input carries 'an unexpected stop'  26912ms
