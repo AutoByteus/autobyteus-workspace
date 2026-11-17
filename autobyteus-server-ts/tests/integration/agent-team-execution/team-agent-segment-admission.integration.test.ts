@@ -40,6 +40,7 @@ class SegmentSourceBackend implements AgentRunBackend {
   readonly runtimeKind = RuntimeKind.AUTOBYTEUS;
   readonly inputCapabilities = { activeTurnAppend: "unsupported" } as const;
   readonly compactionRecovery = { kind: "unsupported" } as const;
+  readonly backgroundTaskInspection = { kind: "unsupported" } as const;
   readonly context = new AgentRunContext({
     runId,
     config: new AgentRunConfig({

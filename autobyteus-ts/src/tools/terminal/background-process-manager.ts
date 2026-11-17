@@ -135,8 +135,6 @@ export class BackgroundProcessManager {
   /** The agent's background tasks: running ones and ended ones. */
   list(): BackgroundTaskState[] { return [...this.tasks.values()].map(record => ({ task: record.task, end: record.end })); }
 
-  hasRunning(): boolean { return [...this.tasks.values()].some(record => !record.end); }
-
   onChange(listener: BackgroundTaskChangeListener): () => void {
     this.listeners.add(listener);
     return () => { this.listeners.delete(listener); };

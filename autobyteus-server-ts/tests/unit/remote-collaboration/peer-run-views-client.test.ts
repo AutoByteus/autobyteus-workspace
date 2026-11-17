@@ -42,18 +42,20 @@ const client = (fetchImpl?: (url: string, init: RequestInit) => Promise<ReturnTy
 };
 // The opening reads the peer, this node's ID and the peer secret (signed upgrade) before it opens the socket.
 const flush = async () => { for (let index = 0; index < 10; index += 1) await Promise.resolve(); };
-const statusMessage = { type: "AGENT_STATUS", payload: { status: "running", trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null } };
+const statusMessage = { type: "AGENT_STATUS", payload: { status: "running", background_tasks_running: 0, trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null } };
 
 describe("PeerClient run views (autobyteus-278)", () => {
   it("asks one node for its runs' summaries and reads the answer strictly", async () => {
-    const runs = [{ kind: "agent_team", runId: "team-run", title: "Plan the October campaign", statuses: [{ agentRunId: "lead-run", status: "running" }] }];
+    const runs = [{ kind: "agent_team", runId: "team-run", title: "Plan the October campaign", statuses: [{ agentRunId: "lead-run", status: "running", backgroundTasksRunning: 1 }] }];
     const f = client(async () => answer({ accepted: true, nodeId: PEER.nodeId, runs }));
     // A peer that sends no launches (SR-038) is read with none.
     await expect(f.client.runSummaries(PEER.nodeId, [TEAM])).resolves.toEqual({ accepted: true, runs: runs.map((run) => ({ ...run, launches: [] })) });
     const [url, init] = f.fetch.mock.calls[0]!;
     expect(url).toBe("http://peer:29700/rest/remote/run-summaries");
     expect(JSON.parse(String(init.body))).toEqual({ fromNodeId: SELF, toNodeId: PEER.nodeId, runs: [TEAM] });
-    for (const bad of [{ ...runs[0], statuses: [{ agentRunId: "lead-run", status: "waiting" }] }, { ...runs[0], title: 7 }, { ...runs[0], kind: "agent_org" }]) {
+    for (const bad of [{ ...runs[0], statuses: [{ agentRunId: "lead-run", status: "waiting", backgroundTasksRunning: 0 }] },
+      // autobyteus-448: the count is required, a non-negative integer (a peer of the same release).
+      { ...runs[0], statuses: [{ agentRunId: "lead-run", status: "idle" }] }, { ...runs[0], statuses: [{ agentRunId: "lead-run", status: "idle", backgroundTasksRunning: -1 }] }, { ...runs[0], title: 7 }, { ...runs[0], kind: "agent_org" }]) {
       const g = client(async () => answer({ accepted: true, nodeId: PEER.nodeId, runs: [bad] }));
       await expect(g.client.runSummaries(PEER.nodeId, [TEAM])).resolves.toMatchObject({ accepted: false, code: "PEER_UNREACHABLE" });
     }

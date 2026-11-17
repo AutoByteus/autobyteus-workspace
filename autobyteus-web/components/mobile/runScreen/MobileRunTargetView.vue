@@ -52,17 +52,20 @@ import type { MobileView } from '~/composables/mobile/useMobileNavigation';
 import { useNodeDesktopAvailability } from '~/composables/useNodeDesktopAvailability';
 import { useTargetConversation } from '~/composables/workspace/useTargetConversation';
 import type { ActiveAgentWorkspaceTarget } from '~/types/workspace/activeAgentWorkspaceTarget';
+import { useLocalization } from '~/composables/useLocalization';
 import { mobileRunSubjectLine } from '~/utils/mobile/mobileRunSubjectLine';
 
 const props = defineProps<{ target: ActiveAgentWorkspaceTarget; parentName: string | null }>();
 defineEmits<{ (event: 'back'): void; (event: 'open-view', view: MobileView): void }>();
 
 const { displayName, readOnly, senderNameByAgentRunId, remoteView } = useTargetConversation(() => props.target);
+const { t } = useLocalization();
 const remote = remoteView.remote;
 const unreachable = remoteView.unreachable;
 
 const subjectLine = computed(() => mobileRunSubjectLine({
-  status: props.target.context.state.currentStatus, unreachable: unreachable.value, parentName: props.parentName,
+  status: props.target.context.state.currentStatus, backgroundTasksRunning: props.target.context.state.backgroundTasksRunning,
+  unreachable: unreachable.value, parentName: props.parentName, t,
 }));
 const dotClass = computed(() => subjectLine.value.dotClass);
 const subtitle = computed(() => subjectLine.value.subtitle);

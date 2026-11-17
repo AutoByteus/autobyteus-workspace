@@ -398,19 +398,27 @@ and transport state:
 
 - single-agent and exact leaf-agent status uses `offline`, `initializing`, `idle`, `running`, and `error`;
 - single-agent `AGENT_STATUS` payloads are
-  `{ status: "offline" | "initializing" | "idle" | "running" | "error", can_interrupt: boolean, agent_id?, agent_name? }`;
+  `{ status: "offline" | "initializing" | "idle" | "running" | "error", background_tasks_running: number, recoverableBlock?, agent_id?, agent_name? }`;
+- `background_tasks_running` (autobyteus-448) is kept as `AgentRunState.backgroundTasksRunning`, and per agent and
+  run state in `runStatusStore` from `/ws/run-status`; `utils/agentActivityPresentation.ts` is the one mapping from
+  status and count to text, dot and icon: an `idle` agent with a count above 0 shows "Background task running" /
+  "{count} background tasks running" with the active, non-pulsing dot; a Team row shows its agents' sum by
+  busy > background > error > idle > offline (`teamActivityOf`). The Stop button and the input read the status
+  word only;
 - root team liveness uses `TEAM_RUN_LIFECYCLE { team_run_id, is_active }` and is
   stored as `AgentTeamContext.isActive`;
 - WebSocket connection state is stored separately as `AgentTeamContext.isSubscribed`;
-- team member interrupt authority comes from the selected member's most recent
-  `AGENT_STATUS.can_interrupt` value, never from root liveness; and
+- the Stop button for a team member, as for a single run, comes from the selected
+  member's most recent `AGENT_STATUS.status` (`running` shows Stop,
+  `resolveAgentPrimaryAction` in `services/runSubmission/agentPrimaryAction.ts`),
+  never from root liveness; and
 - legacy transition-field names and detailed runtime
   phases such as `bootstrapping`, `awaiting_llm_response`, or `executing_tool`
   are not part of the frontend WebSocket status contract.
 
 Runtime adapters may still use richer provider/native status internally. The
-server boundary projects those details into the coarse API status and computes
-`can_interrupt` from the runtime-owned active-turn/snapshot source. `isSending`
+server boundary projects those details into the coarse API status from the
+runtime-owned active-turn/snapshot source. `isSending`
 remains a local submit-flight and disabled-input signal only; it must not be
 used to show the stop button or to infer that an interrupt can be accepted.
 When the backend accepts a standalone `SEND_MESSAGE` command for an inactive or
@@ -439,15 +447,14 @@ strict server boundary instead of falling back to another member. Tool approval
 uses the execution address recorded for the invocation rather than current focus.
 
 Run-history refresh, active recovery, and run-open hydration must preserve an
-already-live `initializing/canInterrupt=false` or `running/canInterrupt=true`
-single run or focused team member while that live stream remains authoritative,
-but terminal `offline` or `error` history projections must clear stale
-`canInterrupt` even when a caller asks to preserve live interrupt state. A later live
-`AGENT_STATUS { status: "idle", can_interrupt: false }` likewise revokes the
-browser-visible stop affordance.
+already-live `initializing` or `running` single run or focused team member while
+that live stream remains authoritative, but terminal `offline` or `error` history
+projections replace a stale `running` even when a caller asks to preserve live
+state, which removes the Stop button. A later live `AGENT_STATUS { status: "idle" }`
+likewise removes it.
 
 Standalone run-history termination eligibility is a separate lifecycle fact from
-the displayed five-state health value and from `canInterrupt`. A current local run
+the displayed five-state health value and from the Stop button. A current local run
 in `error` remains active for the existing exact-run Terminate action until
 termination succeeds or an authoritative inactive/offline result settles it. When
 an Error live context overlays a persisted history row, it preserves that row's
@@ -461,7 +468,7 @@ authority.
 Active team recovery and refresh must keep root liveness, transport state, and
 member status separate. `isActive=true` does not imply that any particular
 member is `running` or `initializing`; members keep their own scoped status or
-default to `offline/canInterrupt=false` until an exact `AGENT_STATUS` arrives.
+default to `offline` until an exact `AGENT_STATUS` arrives.
 Frontend reconciliation must never fan root activity out to member rows.
 
 Every Team row in the Workspaces tree shows one universal, presentation-only
@@ -756,7 +763,7 @@ as the trees' next change (`added`), without a manual reload; its own closed
 helpers stay out.
 
 When a single-agent run is terminated successfully, the backend publishes
-`AGENT_STATUS { status: "offline", can_interrupt: false }` to the already-open
+`AGENT_STATUS { status: "offline" }` to the already-open
 stream before teardown. Frontend live state and history merge logic should treat
 `offline` as the canonical inactive non-error terminal state instead of waiting
 for a socket close or a later history reload to infer that transition.
@@ -1838,7 +1845,7 @@ Incoming events are routed based on their `type`:
 | `SEGMENT_END`             | `segmentHandler.handleSegmentEnd`                  | Finalizes transcript segment state/metadata, including interrupted/failed terminalization, and hydrates the matching Activity row without inventing execution success. |
 | `TURN_STARTED`            | inline lifecycle handling                          | Marks a new turn boundary in the protocol; current clients treat it as an observable lifecycle checkpoint. |
 | `TURN_COMPLETED`          | `agentStatusHandler.handleTurnCompleted`           | Marks the current AI message complete for that turn without waiting only for idle inference. |
-| `AGENT_STATUS`            | `agentStatusHandler.handleAgentStatus`             | Updates run/member status (`offline`, `initializing`, `idle`, `running`, or `error`) and backend-owned `can_interrupt`; no legacy transition-field names. Team payloads with explicit task-agent or task-team identity update the transient task execution projection and remove it after terminal cleanup; projection routing must not depend on generated run-id patterns or structural team names alone. |
+| `AGENT_STATUS`            | `agentStatusHandler.handleAgentStatus`             | Updates run/member status (`offline`, `initializing`, `idle`, `running`, or `error`) and its running background task count (`background_tasks_running`); no legacy transition-field names. Team payloads with explicit task-agent or task-team identity update the transient task execution projection and remove it after terminal cleanup; projection routing must not depend on generated run-id patterns or structural team names alone. |
 | `AGENT_COMMAND_ACK`       | command-specific correlation before generic dispatch | Handles the discriminated `SEND_MESSAGE` and `INTERRUPT_GENERATION` arms separately. Send acknowledgements preserve their status/error behavior. Interrupt acknowledgements must match command id plus exact standalone/team-member target; accepted only clears pending correlation, while rejected/failed invoke one store-owned localized toast without lifecycle or transcript mutation. |
 | `TEAM_RUN_LIFECYCLE`      | `teamHandler.handleTeamRunLifecycle`                | Validates `team_run_id` and updates only root `AgentTeamContext.isActive`; subscription and exact member status remain independent. |
 | `COMPACTION_STATUS`       | `agentStatusHandler.handleCompactionStatus`        | Normalizes compaction lifecycle payloads into latest run state plus `kind: 'compaction'` activity rows (`requested`, `started`, `completed`, `failed`, `stopped`). |

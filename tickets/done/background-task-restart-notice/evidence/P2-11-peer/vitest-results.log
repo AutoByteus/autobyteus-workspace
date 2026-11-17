@@ -1,0 +1,9 @@
+# P2-11 peer-background-task-status.e2e.test.ts: two built servers (dist of 4c93deaa8f), paired; scripted AGY
+# Command: env -i PATH HOME=<temp> TMPDIR USER RUN_PEER_BACKGROUND_STATUS_E2E=1 PEER_BACKGROUND_STATUS_E2E_EVIDENCE_DIR=<dir> pnpm -C autobyteus-server-ts exec vitest run tests/e2e/remote-collaboration/peer-background-task-status.e2e.test.ts --no-watch
+# run 1: my order check could never match (fixed); run 2: AGY model discovery timed out under load; run 3:
+ ✓ tests/e2e/remote-collaboration/peer-background-task-status.e2e.test.ts (1 test) 52265ms
+     ✓ PBS-01: the delegator's run-status feed shows the peer run idle with 1 running background task, then 0  46202ms
+
+## after the type fix (final file)
+ ✓ tests/e2e/remote-collaboration/peer-background-task-status.e2e.test.ts (1 test) 59351ms
+     ✓ PBS-01: the delegator's run-status feed shows the peer run idle with 1 running background task, then 0  44306ms

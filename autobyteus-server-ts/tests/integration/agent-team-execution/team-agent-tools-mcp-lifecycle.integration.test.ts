@@ -71,7 +71,7 @@ const createAgentBackend = (input: {
     getContext: () => context,
     isActive: () => active,
     inputCapabilities: { activeTurnAppend: "unsupported" },
-    compactionRecovery: { kind: "unsupported" },
+    compactionRecovery: { kind: "unsupported" }, backgroundTaskInspection: { kind: "unsupported" } as const,
     getPlatformAgentRunId: () => null,
     getLifecycleSnapshot: () => ({
       availability: active ? "active" : "offline",

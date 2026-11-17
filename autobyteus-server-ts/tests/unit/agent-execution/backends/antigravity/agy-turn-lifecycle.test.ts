@@ -10,6 +10,7 @@ const scanAgyTaskExitMessages = vi.hoisted(() => vi.fn());
 vi.mock("../../../../../src/agent-execution/backends/antigravity/stream/agy-task-exit-message-reader.js", () => ({ scanAgyTaskExitMessages }));
 
 import { AgyAgentRunBackend } from "../../../../../src/agent-execution/backends/antigravity/backend/agy-agent-run-backend.js";
+import { runningBackgroundTaskCount } from "../../../../../src/agent-execution/domain/agent-background-task-count.js";
 import { AgentRunEventType, type AgentRunEvent } from "../../../../../src/agent-execution/domain/agent-run-event.js";
 import { RuntimeKind } from "../../../../../src/runtime-management/runtime-kind-enum.js";
 import type { AgyStreamMessage } from "../../../../../src/agent-execution/backends/antigravity/stream/agy-stream-message.js";
@@ -219,11 +220,11 @@ describe("AGY daemon background tasks (REQ-011)", () => {
   it("delivers stopped snapshots before terminate resolves (AR-REC-003, AC-013c)", async () => {
     const run = await startDaemonTurn();
     // The open daemon keeps the run from being idle-quiet (hybrid idle shutdown).
-    expect(run.backend.hasRunningBackgroundTasks()).toBe(true);
+    expect(runningBackgroundTaskCount(run.backend.backgroundTaskInspection)).toBe(1);
 
     await run.backend.terminate();
 
-    expect(run.backend.hasRunningBackgroundTasks()).toBe(false);
+    expect(runningBackgroundTaskCount(run.backend.backgroundTaskInspection)).toBe(0);
     expect(taskUpdates(run.events)).toEqual([
       [`${conversationId}/task-2`, "shell", "running", null],
       [`${conversationId}/task-2`, "shell", "stopped", null],

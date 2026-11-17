@@ -27,6 +27,7 @@ export const projectAgentOrgAgentStatusSnapshots = (input: Readonly<{
     .map((agent) => createCollaborationAgentStatusSnapshot({
       execution: createCollaborationMemberExecutionIdentity({ root: index.root, memberAddress: agent.address, agentRunId: agent.agentRunId }),
       status: "offline",
+      backgroundTasksRunning: 0,
     }));
   return Object.freeze([...live, ...dormant]);
 };

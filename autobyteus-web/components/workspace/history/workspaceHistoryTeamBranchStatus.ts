@@ -2,6 +2,7 @@ import { AgentStatus } from '~/types/agent/AgentStatus';
 import type { RunHistoryTeamExecutionRow, TeamTreeNode } from '~/stores/runHistoryTypes';
 import { resolveTeamStatus, type TeamStatus } from '~/utils/workspaceTeamAggregateStatus';
 import { useRunStatusStore } from '~/stores/runStatusStore';
+import { useAgentContextsStore } from '~/stores/agentContextsStore';
 
 /** The statuses the Agent rows among `rows` show (a Team row counts through its own Agent rows). */
 const agentStatusesOf = (
@@ -44,3 +45,18 @@ export const teamRunStatus = (team: Pick<TeamTreeNode, 'teamRunId'>): TeamStatus
 /** The status of a Team group row: the highest status among its runs. */
 export const teamDefinitionGroupStatus = (runs: readonly TeamTreeNode[]): TeamStatus =>
   resolveTeamStatus(runs.map(teamRunStatus), true);
+
+/** A Team run's running background tasks: its own agents' sum, as its root's node answers it (autobyteus-448). */
+export const teamRunBackgroundTasks = (team: Pick<TeamTreeNode, 'teamRunId'>): number =>
+  useRunStatusStore().runStateOf({ kind: 'agent_team', runId: team.teamRunId })?.backgroundTasksRunning ?? 0;
+
+/** A Team group row's running background tasks: the sum over its runs. */
+export const teamDefinitionGroupBackgroundTasks = (runs: readonly TeamTreeNode[]): number =>
+  runs.reduce((sum, team) => sum + teamRunBackgroundTasks(team), 0);
+
+/**
+ * A listed agent run's running background tasks (autobyteus-448), from where its row's status comes: its live context in
+ * this window (the agent's stream); a run without one shows its stored status and has none to show.
+ */
+export const agentRunBackgroundTasks = (agentRunId: string): number =>
+  useAgentContextsStore().getRun(agentRunId)?.state.backgroundTasksRunning ?? 0;

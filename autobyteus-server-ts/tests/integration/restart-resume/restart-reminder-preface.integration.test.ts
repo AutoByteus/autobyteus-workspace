@@ -37,12 +37,12 @@ const createRun = (reminders: RestartReminderService, background: { running: boo
   const backend = {
     runId: "run-1", runtimeKind: context.config.runtimeKind,
     compactionRecovery: { kind: "unsupported" } as const,
-    backgroundTaskInspection: { kind: "event-stream" } as const,
+    backgroundTaskInspection: { kind: "event-stream" as const, current: () => (background.running
+      ? [{ taskId: "1", kind: "shell" as const, description: "x", command: "x", status: "running" as const, summary: null, endReason: null, exitCode: null, startedAt: "2026-11-17T10:00:00.000Z" }] : []) },
     backgroundTaskNotices: { kind: "unsupported" } as const,
     inputCapabilities: { activeTurnAppend: "unsupported" },
     getContext: () => context, getPlatformAgentRunId: () => "run-1", isActive: () => true,
     getLifecycleSnapshot: () => ({ availability: "active", phase: "idle", currentTurn: { kind: "NONE" } }),
-    hasRunningBackgroundTasks: () => background.running,
     subscribeToSourceEventBatches: () => () => undefined,
     dispatchUserInput, approveToolInvocation: vi.fn(), interrupt: vi.fn(), terminate: vi.fn(),
     applyDefinitionTools: vi.fn(), getToolNames: () => [],

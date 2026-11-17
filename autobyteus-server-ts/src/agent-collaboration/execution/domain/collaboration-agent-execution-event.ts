@@ -2,6 +2,7 @@ import type { CompactionRecoveryBlockDto } from "@autobyteus/agent-presentation-
 import type { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import type { AgentRunEvent, AgentRunStatusHint } from "../../../agent-execution/domain/agent-run-event.js";
 import {
+  backgroundTasksRunningOf,
   normalizeAgentApiStatus,
   type AgentApiStatus,
 } from "../../../agent-execution/domain/agent-status-payload.js";
@@ -12,6 +13,8 @@ import {
 
 export type CollaborationAgentStatusDetails = Readonly<{
   status: AgentApiStatus;
+  /** Background tasks the agent has running (autobyteus-448); 0 when it has none or its runtime cannot say. */
+  backgroundTasksRunning: number;
   trigger: string | null;
   errorMessage: string | null;
   recoverableBlock: CompactionRecoveryBlockDto | null;
@@ -33,6 +36,8 @@ export type CollaborationAgentExecutionEvent =
 export const createCollaborationAgentStatusSnapshot = (input: {
   execution: CollaborationMemberExecutionIdentity;
   status: unknown;
+  /** Required: every producer says how many background tasks the agent has running. */
+  backgroundTasksRunning: number;
   trigger?: string | null;
   errorMessage?: string | null;
   recoverableBlock?: CompactionRecoveryBlockDto | null;
@@ -41,7 +46,8 @@ export const createCollaborationAgentStatusSnapshot = (input: {
   return Object.freeze({
     execution: cloneCollaborationMemberExecutionIdentity(input.execution),
     details: Object.freeze({
-      status, recoverableBlock: input.recoverableBlock ?? null,
+      status, backgroundTasksRunning: backgroundTasksRunningOf(input.backgroundTasksRunning),
+      recoverableBlock: input.recoverableBlock ?? null,
       trigger: input.trigger?.trim() || null,
       errorMessage: input.errorMessage?.trim() || null,
     }),

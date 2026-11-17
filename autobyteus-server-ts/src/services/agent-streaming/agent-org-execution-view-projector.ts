@@ -32,6 +32,7 @@ export const projectAgentOrgExecutionSnapshot = (input: Readonly<{
       member_address: status.execution.memberAddress,
       agent_run_id: status.execution.agentRunId,
       status: status.details.status,
+      background_tasks_running: status.details.backgroundTasksRunning,
       trigger: status.details.trigger,
       tool_name: null,
       error_message: status.details.errorMessage,

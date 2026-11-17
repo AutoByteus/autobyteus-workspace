@@ -42,7 +42,7 @@ export const createMigrationContinuationRuntime = (memoryDir: string, store: Tok
     restored.push(context);
     let active = true, listener: AgentRunSourceEventBatchListener | null = null, ordinal = 0;
     return {
-      runId: context.runId, runtimeKind: context.config.runtimeKind, compactionRecovery: { kind: "unsupported" } as const,
+      runId: context.runId, runtimeKind: context.config.runtimeKind, compactionRecovery: { kind: "unsupported" } as const, backgroundTaskInspection: { kind: "unsupported" } as const,
     inputCapabilities: { activeTurnAppend: "unsupported" },
       getContext: () => context, getPlatformAgentRunId: () => retainedThread, isActive: () => active,
       getLifecycleSnapshot: () => ({ availability: active ? "active" : "offline", phase: active ? "running" : "idle", currentTurn: { kind: "NONE" } }),

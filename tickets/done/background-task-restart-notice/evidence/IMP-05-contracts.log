@@ -1,0 +1,16 @@
+== pnpm -C autobyteus-agent-presentation-contracts test
+# tests 23
+# pass 23
+# fail 0
+exit=0
+== pnpm -C autobyteus-team-stream-contracts test
+# tests 14
+# pass 14
+# fail 0
+exit=0
+== pnpm -C autobyteus-collaboration-stream-contracts test
+# tests 37
+# pass 37
+# fail 0
+exit=0
+dist unchanged after rebuild

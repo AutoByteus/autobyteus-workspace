@@ -1,0 +1,66 @@
+{
+  "startedAt": "2026-11-17T15:43:15.022Z",
+  "executablePath": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "cases": {
+    "TS-008": {
+      "result": "Pass",
+      "description": "Background tasks: an Agent run and a Team run idle with a background task show \"Background task running\" with the active dot and no Stop; Idle once it exits",
+      "startedAt": "2026-11-17T15:43:45.638Z",
+      "details": {
+        "runs": {
+          "agent": "manager_tsbackground_7c36_1b8b45bc929946efaad29f5d0cfa9c25",
+          "team": "delivery_team_tsbackground_7c36_25b7c8b16341440390d7e64d46cfd229",
+          "worker": "release_notes_writer_tsbackground_7c36_406c28cb0f91419899aaa596eb7e5c0a"
+        },
+        "teamRow": {
+          "count": 1,
+          "status": "background",
+          "ariaLabel": "Background task running",
+          "title": "Background task running",
+          "dotClass": "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-blue-500",
+          "rowLabel": null,
+          "beforeIcon": null
+        },
+        "agentRowDot": "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-blue-500 mr-2",
+        "header": "Background task running",
+        "stop": 0,
+        "send": 1,
+        "after": {
+          "header": "Idle",
+          "team": {
+            "count": 1,
+            "status": "idle",
+            "ariaLabel": "Team status: Idle",
+            "title": "Team status: Idle",
+            "dotClass": "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-green-500",
+            "rowLabel": null,
+            "beforeIcon": null
+          }
+        }
+      }
+    }
+  },
+  "cleanup": {
+    "browser": "closed",
+    "frontend": {
+      "pid": 55732,
+      "status": "terminated",
+      "exit": "SIGTERM"
+    },
+    "backend": {
+      "pid": 55305,
+      "status": "terminated",
+      "exit": "SIGKILL"
+    },
+    "dataRootRemoved": true
+  },
+  "failures": [],
+  "stack": {
+    "backendUrl": "http://127.0.0.1:49184",
+    "frontendUrl": "http://127.0.0.1:49185",
+    "dataRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/team-status-live-M3lSts"
+  },
+  "browserVersion": "157.0.8103.79",
+  "result": "Pass",
+  "finishedAt": "2026-11-17T15:45:03.033Z"
+}

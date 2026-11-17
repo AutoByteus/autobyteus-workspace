@@ -52,19 +52,20 @@ describe("AgyBackgroundTaskMonitor (DS-003)", () => {
     expect(stopped.monitor.list()).toEqual([]);
   });
 
-  it("reports a running task from track until its exit, and none after AGY stops, for the idle-shutdown quiet check", async () => {
+  it("lists a running task from track until its exit, and none after AGY stops (the view the running count derives from)", async () => {
+    const running = (monitor: { list(): readonly { status: string }[] }) => monitor.list().filter((task) => task.status === "running").length;
     const { monitor, scans } = setup();
-    expect(monitor.hasRunningTasks()).toBe(false);
+    expect(running(monitor)).toBe(0);
     monitor.track([daemon]);
-    expect(monitor.hasRunningTasks()).toBe(true);
+    expect(running(monitor)).toBe(1);
     scans.push({ settledFiles: ["m.json"], exits: [{ stepIndex: 2, exitCode: 0, summary: "The command exited with code 0." }], problem: null });
     await vi.advanceTimersByTimeAsync(0);
-    expect(monitor.hasRunningTasks()).toBe(false);
+    expect(running(monitor)).toBe(0);
 
     const stopped = setup();
     stopped.monitor.track([daemon]);
     stopped.monitor.stopAll();
-    expect(stopped.monitor.hasRunningTasks()).toBe(false);
+    expect(running(stopped.monitor)).toBe(0);
   });
 
   it("marks the task completed when AGY writes exit code 0, without another turn (AC-013a)", async () => {

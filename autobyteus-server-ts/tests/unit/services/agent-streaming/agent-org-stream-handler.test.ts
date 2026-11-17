@@ -18,7 +18,7 @@ const execution = createCollaborationMemberExecutionIdentity({
 });
 const statuses = [{
   execution,
-  details: { status: "idle" as const, trigger: null, errorMessage: null, recoverableBlock: null },
+  details: { status: "idle" as const, backgroundTasksRunning: 0, trigger: null, errorMessage: null, recoverableBlock: null },
   statusHint: "IDLE" as const,
 }];
 
@@ -38,7 +38,7 @@ const orgPackage = () => {
       memberAddress: member.address,
       agentRunId: member.agentRunId,
     }),
-    details: { status: "idle" as const, trigger: null, errorMessage: null, recoverableBlock: null },
+    details: { status: "idle" as const, backgroundTasksRunning: 0, trigger: null, errorMessage: null, recoverableBlock: null },
     statusHint: "IDLE" as const,
   }));
   return { tree: executionTree, messages, inputStates: [], statuses: [...statuses, ...memberStatuses] };
@@ -164,7 +164,7 @@ describe("AgentOrgStreamHandler", () => {
       kind: "agent_presentation",
       execution,
       message: { type: "AGENT_STATUS", payload: {
-        status: "running", trigger: "user", tool_name: null,
+        status: "running", background_tasks_running: 0, trigger: "user", tool_name: null,
         error_message: null, error_details: null, recoverableBlock: null,
       } },
     });

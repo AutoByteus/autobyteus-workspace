@@ -14,6 +14,8 @@
 // Cases: TS-001 delegated Team under an Agent run; TS-002 TEAMS run and group rows across three runs;
 // TS-003 a Team delegated by a Team run's member; TS-004 delegated and Org-internal Teams under an Org run;
 // TS-005/006/007 a task Team delegated by a task Team member under an Agent, Team and Org run (each dot = its shown agents).
+// TS-008 (autobyteus-448 DEC-004) an Agent run and a Team run idle with a background task (`BACKGROUND_STEP`): the active,
+// not pulsing dot and "Background task running" in the row, the Team row and the header; no Stop; Idle once it exits.
 // TS-001/003/004 also check the delegated Team row's layout: dot → people-group icon → name, the dot centered on the
 // name line, no overlap with the Task summary line or the per-copy Stop icon, and Stop shown only while the copy is live.
 // The probe owns a private data root, free ports, the backend and Nuxt process groups and Chrome, and removes
@@ -50,7 +52,7 @@ const ledger = getArg('ledger-file', getArg('ledger'));
 const executablePath = getArg('browser-executable', process.env.PLAYWRIGHT_CHROME_EXECUTABLE_PATH)
   || ['/Applications/Google Chrome.app/Contents/MacOS/Google Chrome', '/usr/bin/google-chrome', '/usr/bin/chromium', '/usr/bin/chromium-browser']
     .find((candidate) => fs.existsSync(candidate));
-const ALL_CASES = ['TS-001', 'TS-002', 'TS-003', 'TS-004', 'TS-005', 'TS-006', 'TS-007'];
+const ALL_CASES = ['TS-001', 'TS-002', 'TS-003', 'TS-004', 'TS-005', 'TS-006', 'TS-007', 'TS-008'];
 const selectedCases = (getArg('cases') ?? ALL_CASES.join(',')).split(',').map((c) => c.trim()).filter(Boolean);
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -765,6 +767,55 @@ const nestedTaskTeamJourney = (kind) => async () => {
   } finally { input.close(); await context.close(); }
 };
 
+/** TS-008 (autobyteus-448 REQ-006, AC-005, DEC-004): runs idle with a background task show it; a Team shows its member's. */
+const backgroundTaskJourney = async () => {
+  const { ids, names } = await createDefinitions('TsBackground');
+  const agentRoot = await createRoot('agent', ids);
+  const teamRoot = await createRoot('team', ids);
+  const tree = (await gql('query($id:String!){getTeamRunResumeConfig(teamRunId:$id){executionTree}}', { id: teamRoot.rootId })).getTeamRunResumeConfig.executionTree;
+  const workerRunId = tree.root_team.members.find((m) => m.address === '/worker').agent_run_id;
+  const agentInput = await managerInput(agentRoot);
+  const teamInput = await managerInput(teamRoot);
+  const workerInput = await managerInput({ ...teamRoot, managerRunId: workerRunId });
+  const STEP = 'Start the docs server. BACKGROUND_STEP:{"seconds":45,"exitCode":0}';
+  workerInput.send('Hello, what is planned today?'); // answered at once: idle, no background task
+  agentInput.send(STEP); teamInput.send(STEP); // each turn ends with the daemon step open
+  const { page, errors, context } = await newPage();
+  const out = { runs: { agent: agentRoot.rootId, team: teamRoot.rootId, worker: workerRunId } };
+  const BG = { dot: ['bg-blue-500'], label: 'Background task running' };
+  try {
+    await openWorkspace(page);
+    // The Team run row: one member idle with a background task, another idle → the Team shows the background task.
+    await page.locator(`[data-test="workspace-team-definition-row-${slug(names.team)}"]`).click();
+    const teamRow = page.locator(`[data-test="workspace-team-row-${teamRoot.rootId}"]`);
+    await waitTeamStatus('team row background', teamRow, 'background', 60000);
+    out.teamRow = await teamDotOf(teamRow);
+    assert(out.teamRow.ariaLabel === BG.label && out.teamRow.title === BG.label, 'Team row label', out.teamRow);
+    assert(BG.dot.every((c) => (out.teamRow.dotClass ?? '').split(/\s+/).includes(c)) && !(out.teamRow.dotClass ?? '').includes('animate-pulse'), 'Team row dot: active blue, not pulsing', out.teamRow);
+    await shot(page, 'ts008-team-row-background');
+    // The Agent run: its row dot, the header and the composer.
+    await page.locator('[data-test="workspace-agent-row"]', { hasText: names.manager }).click();
+    const runRow = page.locator('[data-test="workspace-agent-run-row"]').first();
+    await runRow.click();
+    const header = page.locator('[title^="Agent Status:"]').first();
+    await until('header Background task running', async () => ((await header.innerText().catch(() => '')).trim() === BG.label ? true : null), 60000);
+    out.agentRowDot = await runRow.locator('span.rounded-full').first().getAttribute('class');
+    out.header = (await header.innerText()).trim();
+    out.stop = await page.locator('button[title="Stop generation"]').count();
+    out.send = await page.locator('button[title="Send message"]').count();
+    assert((out.agentRowDot ?? '').split(/\s+/).includes('bg-blue-500') && !(out.agentRowDot ?? '').includes('animate-pulse'), 'agent row dot: active blue, not pulsing', out);
+    assert(out.stop === 0 && out.send >= 1, 'no Stop for "Background task running"; Send is offered', out);
+    await shot(page, 'ts008-agent-background');
+    // The daemons exit (45 s after they started): Idle in the header and the Team row.
+    await until('header Idle', async () => ((await header.innerText().catch(() => '')).trim() === 'Idle' ? true : null), 90000);
+    await waitTeamStatus('team row idle', teamRow, 'idle', 30000);
+    out.after = { header: (await header.innerText()).trim(), team: await teamDotOf(teamRow) };
+    await shot(page, 'ts008-idle-again');
+    assert(errors.length === 0, 'browser errors', errors);
+    return out;
+  } finally { agentInput.close(); teamInput.close(); workerInput.close(); await context.close(); }
+};
+
 const CASES = {
   'TS-001': ['Agent run: delegated Team idle → busy while collapsed → busy+error → error after Stop generation → gray when the run stops', agentRootJourney],
   'TS-002': ['TEAMS rows: idle run green, alive unstarted gray with Stop, group = highest run, Stop button → gray, all stopped → gray', teamsSectionJourney],
@@ -773,6 +824,7 @@ const CASES = {
   'TS-005': ['Agent run: a task Team delegated by a task Team member; each Team dot = its shown agents, collapsed or expanded; stop → gray', nestedTaskTeamJourney('agent')],
   'TS-006': ['Team run: a task Team delegated by a task Team member; each Team dot = its shown agents; the run row keeps its own status (SR-082); stop → gray', nestedTaskTeamJourney('team')],
   'TS-007': ['Org run: a task Team delegated by a member of a delegated Org Team copy; each Team dot = its shown agents; stop → gray', nestedTaskTeamJourney('org')],
+  'TS-008': ['Background tasks: an Agent run and a Team run idle with a background task show "Background task running" with the active dot and no Stop; Idle once it exits', backgroundTaskJourney],
 };
 
 let result = 'Pass';

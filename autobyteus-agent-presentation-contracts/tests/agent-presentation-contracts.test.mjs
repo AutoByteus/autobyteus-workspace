@@ -120,3 +120,13 @@ test("live token event carries one model call's TPS or null", () => {
   const { output_throughput: _tps, ...withoutTps } = tokenPayload();
   assert.throws(() => agentPresentationMessageSchema.parse({ type: "TOKEN_USAGE_UPDATED", payload: withoutTps }));
 });
+
+test("autobyteus-448: AGENT_STATUS carries the required running background task count, a non-negative integer", () => {
+  const payload = { recoverableBlock: null, status: "idle", background_tasks_running: 2, trigger: null, tool_name: null, error_message: null, error_details: null };
+  assert.equal(agentPresentationMessageSchema.parse({ type: "AGENT_STATUS", payload }).payload.background_tasks_running, 2);
+  const { background_tasks_running: _count, ...withoutCount } = payload;
+  assert.throws(() => agentPresentationMessageSchema.parse({ type: "AGENT_STATUS", payload: withoutCount }));
+  for (const bad of [-1, 1.5, "1", null]) {
+    assert.throws(() => agentPresentationMessageSchema.parse({ type: "AGENT_STATUS", payload: { ...payload, background_tasks_running: bad } }));
+  }
+});

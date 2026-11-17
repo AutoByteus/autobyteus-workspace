@@ -1,0 +1,52 @@
+{
+  "teamRunId": "bts_team_0fc21dcb_b93c01d175e346bcb8ce2e7f9801b6b2",
+  "coordinatorId": "bts_25cdef5f_b65cc5c99447488aa207d5c932c887e7",
+  "workerId": "bts_b1e9bf0c_5fdf298479eb4cdca5272fc3752111ad",
+  "coordinator": [
+    "initializing:0",
+    "running:0",
+    "running:1",
+    "idle:1",
+    "initializing:1",
+    "idle:1",
+    "idle:0"
+  ],
+  "worker": [
+    "initializing:0",
+    "running:0",
+    "idle:0",
+    "initializing:0",
+    "idle:0"
+  ],
+  "snapshot": {
+    "type": "RUN_STATUS_SNAPSHOT",
+    "payload": {
+      "runs": [
+        {
+          "kind": "agent_team",
+          "runId": "bts_team_0fc21dcb_b93c01d175e346bcb8ce2e7f9801b6b2",
+          "answer": "ok",
+          "node": null,
+          "status": "idle",
+          "backgroundTasksRunning": 1,
+          "agents": [
+            {
+              "agentRunId": "bts_25cdef5f_b65cc5c99447488aa207d5c932c887e7",
+              "status": "idle",
+              "backgroundTasksRunning": 1
+            },
+            {
+              "agentRunId": "bts_b1e9bf0c_5fdf298479eb4cdca5272fc3752111ad",
+              "status": "idle",
+              "backgroundTasksRunning": 0
+            }
+          ]
+        }
+      ]
+    },
+    "at": 1794955336984
+  },
+  "runStates": [
+    "idle:0"
+  ]
+}

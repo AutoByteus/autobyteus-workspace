@@ -90,6 +90,7 @@ export const teamRunExecutionTreeDtoSchema: z.ZodType<TeamRunExecutionTreeDto> =
 export const teamAgentStatusDtoSchema = z.object({
   agent_run_id: nonEmptyStringSchema, member_address: agentTeamAddressDtoSchema,
   status: z.enum(["offline", "initializing", "idle", "running", "error"]),
+  background_tasks_running: z.number().int().nonnegative(),
   trigger: nullableNonEmptyStringSchema, tool_name: nullableNonEmptyStringSchema,
   error_message: nullableNonEmptyStringSchema, error_details: nullableNonEmptyStringSchema,
   recoverableBlock: compactionRecoveryBlockSchema.nullable(),

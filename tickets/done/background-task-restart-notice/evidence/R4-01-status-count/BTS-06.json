@@ -1,0 +1,156 @@
+{
+  "runId": "bts_9a31ce8c_186b8fe4272c4e558f3eaf2e8a71ebd5",
+  "path": [
+    "idle:0",
+    "initializing:0",
+    "running:0",
+    "running:1",
+    "running:2",
+    "running:3",
+    "idle:3",
+    "initializing:3",
+    "idle:3",
+    "idle:2",
+    "initializing:2",
+    "running:2",
+    "idle:2",
+    "initializing:2",
+    "idle:2",
+    "idle:1",
+    "initializing:1",
+    "running:1",
+    "idle:1",
+    "initializing:1",
+    "idle:1",
+    "offline:0"
+  ],
+  "fed": [
+    {
+      "status": "idle",
+      "count": 3
+    },
+    {
+      "status": "idle",
+      "count": 2
+    },
+    {
+      "status": "initializing",
+      "count": 2
+    },
+    {
+      "status": "running",
+      "count": 2
+    },
+    {
+      "status": "idle",
+      "count": 2
+    },
+    {
+      "status": "initializing",
+      "count": 2
+    },
+    {
+      "status": "idle",
+      "count": 2
+    },
+    {
+      "status": "idle",
+      "count": 1
+    },
+    {
+      "status": "initializing",
+      "count": 1
+    },
+    {
+      "status": "running",
+      "count": 1
+    },
+    {
+      "status": "idle",
+      "count": 1
+    },
+    {
+      "status": "initializing",
+      "count": 1
+    },
+    {
+      "status": "idle",
+      "count": 1
+    },
+    {
+      "status": "offline",
+      "count": 0
+    }
+  ],
+  "ends": [
+    {
+      "task_id": "13207",
+      "kind": "shell",
+      "description": "until [ -e \"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/BTS06_6ea79116.flag\" ]; do sleep 0.2; done; exit 3",
+      "command": "until [ -e \"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/BTS06_6ea79116.flag\" ]; do sleep 0.2; done; exit 3",
+      "status": "failed",
+      "summary": null,
+      "end_reason": null,
+      "exit_code": 3,
+      "started_at": "2026-11-17T22:42:38.523Z"
+    },
+    {
+      "task_id": "13247",
+      "kind": "shell",
+      "description": "echo b; \"/Users/normy/.hermes/node/bin/node\" -e \"setInterval(()=>{},1000)\" BTS06_6ea79116_B",
+      "command": "echo b; \"/Users/normy/.hermes/node/bin/node\" -e \"setInterval(()=>{},1000)\" BTS06_6ea79116_B",
+      "status": "stopped",
+      "summary": "signal SIGTERM",
+      "end_reason": null,
+      "exit_code": null,
+      "started_at": "2026-11-17T22:42:38.866Z"
+    },
+    {
+      "task_id": "13281",
+      "kind": "shell",
+      "description": "echo c; \"/Users/normy/.hermes/node/bin/node\" -e \"setInterval(()=>{},1000)\" BTS06_6ea79116_C",
+      "command": "echo c; \"/Users/normy/.hermes/node/bin/node\" -e \"setInterval(()=>{},1000)\" BTS06_6ea79116_C",
+      "status": "stopped",
+      "summary": "signal SIGTERM",
+      "end_reason": "run_ended",
+      "exit_code": null,
+      "started_at": "2026-11-17T22:42:38.953Z"
+    }
+  ],
+  "view": {
+    "__typename": "AgentBackgroundTaskEventStream",
+    "tasks": [
+      {
+        "command": "until [ -e \"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/BTS06_6ea79116.flag\" ]; do sleep 0.2; done; exit 3",
+        "status": "failed",
+        "summary": null,
+        "endReason": null,
+        "exitCode": 3
+      },
+      {
+        "command": "echo b; \"/Users/normy/.hermes/node/bin/node\" -e \"setInterval(()=>{},1000)\" BTS06_6ea79116_B",
+        "status": "stopped",
+        "summary": "signal SIGTERM",
+        "endReason": null,
+        "exitCode": null
+      },
+      {
+        "command": "echo c; \"/Users/normy/.hermes/node/bin/node\" -e \"setInterval(()=>{},1000)\" BTS06_6ea79116_C",
+        "status": "running",
+        "summary": null,
+        "endReason": null,
+        "exitCode": null
+      }
+    ]
+  },
+  "notices": [
+    "\"[Platform notice — background tasks finished]\\n\\n- pid 13207 `until [ -e \\\"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/BTS06_6ea79116.flag\\\" ]; do sleep 0.2; done; exit 3`: exit code 3 after 1s. Output: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-background-tasks/bts_9a31ce8c_186b8fe4272c4e558f3eaf2e8a71ebd5/call-1794955358522-13176.log. No output.\\n\\nStill running: pid 13247 `echo b; \\\"/Users/normy/.hermes/node/bin/node\\\" -e \\\"setInterval(()=>{},1000)\\\" BTS06_6ea79116_B` (started 22:42:38 UTC); pid 13281 `echo c; \\\"/Users/normy/.hermes/node/bin/node\\\" -e \\\"setInterval(()=>{},1000)\\\" BTS06_6ea79116_C` (started 22:42:38 UTC)\"",
+    "\"[Platform notice — background tasks finished]\\n\\n- pid 13247 `echo b; \\\"/Users/normy/.hermes/node/bin/node\\\" -e \\\"setInterval(()=>{},1000)\\\" BTS06_6ea79116_B`: killed by SIGTERM after 3s. Output: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-background-tasks/bts_9a31ce8c_186b8fe4272c4e558f3eaf2e8a71ebd5/call-1794955358866-13210.log. Last lines:\\n    b\\n\\nStill running: pid 13281 `echo c; \\\"/Users/normy/.hermes/node/bin/node\\\" -e \\\"setInterval(()=>{},1000)\\\" BTS06_6ea79116_C` (started 22:42:38 UTC)\""
+  ],
+  "requests": [
+    "\"CASE:BTS-06 Start the three commands in the background.\"",
+    "\"CASE:BTS-06 Start the three commands in the background.\"",
+    "\"[Platform notice — background tasks finished]\\n\\n- pid 13207 `until [ -e \\\"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/BTS06_6ea79116.flag\\\" ]; do sleep 0.2; done; exit 3`: exit code 3 after 1s. Output: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-background-tasks/bts_9a31ce8c_186b8fe4272c4e558f3eaf2e8a71ebd5/call-1794955358522-13176.log. No output.\\n\\nStill running: pid 13247 `echo b; \\\"/Users/normy/.hermes/node/bin/node\\\" -e \\\"setInterval(()=>{},1000)\\\" BTS06_6ea79116_B` (started 22:42:38 UTC); pid 13281 `echo c; \\\"/Users/normy/.hermes/node/bin/node\\\" -e \\\"setInterval(()=>{},1000)\\\" BTS06_6ea79116_C` (started 22:42:38 UTC)\"",
+    "\"[Platform notice — background tasks finished]\\n\\n- pid 13247 `echo b; \\\"/Users/normy/.hermes/node/bin/node\\\" -e \\\"setInterval(()=>{},1000)\\\" BTS06_6ea79116_B`: killed by SIGTERM after 3s. Output: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-background-tasks/bts_9a31ce8c_186b8fe4272c4e558f3eaf2e8a71ebd5/call-1794955358866-13210.log. Last lines:\\n    b\\n\\nStill running: pid 13281 `echo c; \\\"/Users/normy/.hermes/node/bin/node\\\" -e \\\"setInterval(()=>{},1000)\\\" BTS06_6ea79116_C` (started 22:42:38 UTC)\""
+  ]
+}

@@ -27,8 +27,8 @@ describe('RunStatusFeed', () => {
     expect(socket.sent.at(-1)).toEqual({ type: 'SUBSCRIBE', payload: { runs: [agent('b')] } })
     releaseA()
     expect(socket.sent).toHaveLength(2)
-    socket.onmessage!({ data: JSON.stringify({ type: 'RUN_STATUS_CHANGED', payload: { ...agent('a'), agentRunId: 'a', status: 'idle' } }) })
-    expect(deliver).toHaveBeenCalledWith({ type: 'RUN_STATUS_CHANGED', payload: { ...agent('a'), agentRunId: 'a', status: 'idle' } })
+    socket.onmessage!({ data: JSON.stringify({ type: 'RUN_STATUS_CHANGED', payload: { ...agent('a'), agentRunId: 'a', status: 'idle', backgroundTasksRunning: 0 } }) })
+    expect(deliver).toHaveBeenCalledWith({ type: 'RUN_STATUS_CHANGED', payload: { ...agent('a'), agentRunId: 'a', status: 'idle', backgroundTasksRunning: 0 } })
     releaseAgain()
     await Promise.resolve()
     expect(socket.sent.at(-1)).toEqual({ type: 'UNSUBSCRIBE', payload: { runs: [agent('a'), agent('b')] } })
@@ -113,7 +113,7 @@ describe('RunStatusFeed lifecycle', () => {
     sockets[0]!.onmessage!({ data: JSON.stringify({ type: 'RUN_TREE_CHANGED', payload: agent('a') }) })
     sockets[0]!.onmessage!({ data: JSON.stringify({ type: 'RUN_TREE_CHANGED', payload: agent('a') }) })
     // A status is no read: it is applied at once.
-    sockets[0]!.onmessage!({ data: JSON.stringify({ type: 'RUN_STATUS_CHANGED', payload: { ...agent('a'), agentRunId: 'a', status: 'idle' } }) })
+    sockets[0]!.onmessage!({ data: JSON.stringify({ type: 'RUN_STATUS_CHANGED', payload: { ...agent('a'), agentRunId: 'a', status: 'idle', backgroundTasksRunning: 0 } }) })
     expect(deliver.mock.calls.map(([message]) => message.type)).toEqual(['RUN_STATUS_CHANGED'])
     sockets[0]!.onclose!({ code: 1006 })
     vi.advanceTimersByTime(60_000)
@@ -149,13 +149,31 @@ describe('RunStatusFeed Retry (SR-090)', () => {
 })
 
 describe('useRunStatusStore', () => {
+  it('autobyteus-448: keeps each agent\'s running background tasks and each run state\'s sum from its node; a tree row reads them by its ID', () => {
+    setActivePinia(createPinia())
+    const store = useRunStatusStore()
+    const team = { kind: 'agent_team' as const, runId: 'squad' }
+    store.apply({ type: 'RUN_STATUS_SNAPSHOT', payload: { runs: [{ ...team, answer: 'ok', node: null, status: 'idle', backgroundTasksRunning: 2,
+      agents: [{ agentRunId: 'lead', status: 'idle', backgroundTasksRunning: 2 }, { agentRunId: 'dev', status: 'idle', backgroundTasksRunning: 0 }] }] } })
+    expect(store.backgroundTasksOf('lead')).toBe(2)
+    expect(store.backgroundTasksOf('unknown')).toBe(0)
+    expect(store.runStateOf(team)).toEqual({ answer: 'ok', node: null, status: 'idle', backgroundTasksRunning: 2 })
+    expect(store.treeRowBackgroundTasksOf({ kind: 'team', statusIds: ['squad'] }, 'squad')).toBe(2)
+    expect(store.treeRowBackgroundTasksOf({ kind: 'org_team', statusIds: ['lead', 'dev'] }, 'org_team:x')).toBe(2)
+    expect(store.treeRowBackgroundTasksOf({ kind: 'team_member', statusIds: ['dev'] }, 'dev')).toBe(0)
+    store.apply({ type: 'RUN_STATUS_CHANGED', payload: { ...team, agentRunId: 'lead', status: 'idle', backgroundTasksRunning: 0 } })
+    store.apply({ type: 'RUN_STATE_CHANGED', payload: { ...team, answer: 'ok', node: null, status: 'idle', backgroundTasksRunning: 0 } })
+    expect(store.backgroundTasksOf('lead')).toBe(0)
+    expect(store.runStateOf(team)?.backgroundTasksRunning).toBe(0)
+  })
+
   it('each agent\'s status is its own run\'s answer; a run\'s rows change bumps its revision', () => {
     setActivePinia(createPinia())
     const store = useRunStatusStore()
     expect(store.isLive('copy')).toBe(false)
-    store.apply({ type: 'RUN_STATUS_SNAPSHOT', payload: { runs: [{ ...agent('copy'), answer: 'ok', node: null, status: null, agents: [{ agentRunId: 'copy', status: 'idle' }] }] } })
+    store.apply({ type: 'RUN_STATUS_SNAPSHOT', payload: { runs: [{ ...agent('copy'), answer: 'ok', node: null, status: null, backgroundTasksRunning: 0, agents: [{ agentRunId: 'copy', status: 'idle', backgroundTasksRunning: 0 }] }] } })
     expect(store.isLive('copy')).toBe(true)
-    store.apply({ type: 'RUN_STATUS_CHANGED', payload: { ...agent('copy'), agentRunId: 'copy', status: 'offline' } })
+    store.apply({ type: 'RUN_STATUS_CHANGED', payload: { ...agent('copy'), agentRunId: 'copy', status: 'offline', backgroundTasksRunning: 0 } })
     expect(store.statusOf('copy')).toBe('offline')
     store.apply({ type: 'RUN_TREE_CHANGED', payload: agent('copy') })
     expect(store.treeRevisionOf(agent('copy'))).toBe(1)
@@ -166,15 +184,15 @@ describe('useRunStatusStore', () => {
     const store = useRunStatusStore()
     const team = { kind: 'agent_team' as const, runId: 'squad' }
     store.apply({ type: 'RUN_STATUS_SNAPSHOT', payload: { runs: [
-      { ...team, answer: 'ok', node: null, status: 'running', agents: [{ agentRunId: 'lead', status: 'running' }, { agentRunId: 'dev', status: 'running' }] },
-      { ...agent('other'), answer: 'ok', node: null, status: 'idle', agents: [{ agentRunId: 'other', status: 'idle' }] },
+      { ...team, answer: 'ok', node: null, status: 'running', backgroundTasksRunning: 0, agents: [{ agentRunId: 'lead', status: 'running', backgroundTasksRunning: 0 }, { agentRunId: 'dev', status: 'running', backgroundTasksRunning: 0 }] },
+      { ...agent('other'), answer: 'ok', node: null, status: 'idle', backgroundTasksRunning: 0, agents: [{ agentRunId: 'other', status: 'idle', backgroundTasksRunning: 0 }] },
     ] } })
     store.apply({ type: 'RUN_STATUS_SNAPSHOT', payload: { runs: [
-      { ...team, answer: 'ok', node: null, status: 'idle', agents: [{ agentRunId: 'lead', status: 'idle' }] },
+      { ...team, answer: 'ok', node: null, status: 'idle', backgroundTasksRunning: 0, agents: [{ agentRunId: 'lead', status: 'idle', backgroundTasksRunning: 0 }] },
     ] } })
     expect(store.statusOf('lead')).toBe('idle')
     expect(store.statusOf('dev')).toBeNull()
-    expect(store.runStateOf(team)).toEqual({ answer: 'ok', node: null, status: 'idle' })
+    expect(store.runStateOf(team)).toEqual({ answer: 'ok', node: null, status: 'idle', backgroundTasksRunning: 0 })
     // A run the answer did not name keeps its own.
     expect(store.statusOf('other')).toBe('idle')
   })
@@ -185,12 +203,12 @@ describe('useRunStatusStore', () => {
     const team = { kind: 'agent_team' as const, runId: 'squad' }
     expect(store.runStateOf(team)).toBeNull()
     store.apply({ type: 'RUN_STATUS_SNAPSHOT', payload: { runs: [
-      { ...team, answer: 'ok', node: null, status: 'running', agents: [{ agentRunId: 'lead', status: 'idle' }, { agentRunId: 'dev', status: 'running' }] },
-      { ...agent('gone'), answer: 'not_found', node: null, status: null, agents: [] },
+      { ...team, answer: 'ok', node: null, status: 'running', backgroundTasksRunning: 0, agents: [{ agentRunId: 'lead', status: 'idle', backgroundTasksRunning: 0 }, { agentRunId: 'dev', status: 'running', backgroundTasksRunning: 0 }] },
+      { ...agent('gone'), answer: 'not_found', node: null, status: null, backgroundTasksRunning: 0, agents: [] },
     ] } })
-    expect(store.runStateOf(team)).toEqual({ answer: 'ok', node: null, status: 'running' })
-    expect(store.runStateOf(agent('gone'))).toEqual({ answer: 'not_found', node: null, status: null })
-    store.apply({ type: 'RUN_STATE_CHANGED', payload: { ...team, answer: 'unreachable', node: 'beta-node', status: null } })
-    expect(store.runStateOf(team)).toEqual({ answer: 'unreachable', node: 'beta-node', status: null })
+    expect(store.runStateOf(team)).toEqual({ answer: 'ok', node: null, status: 'running', backgroundTasksRunning: 0 })
+    expect(store.runStateOf(agent('gone'))).toEqual({ answer: 'not_found', node: null, status: null, backgroundTasksRunning: 0 })
+    store.apply({ type: 'RUN_STATE_CHANGED', payload: { ...team, answer: 'unreachable', node: 'beta-node', status: null, backgroundTasksRunning: 0 } })
+    expect(store.runStateOf(team)).toEqual({ answer: 'unreachable', node: 'beta-node', status: null, backgroundTasksRunning: 0 })
   })
 })

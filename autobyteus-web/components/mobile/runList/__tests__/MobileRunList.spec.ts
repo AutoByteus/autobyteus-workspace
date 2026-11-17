@@ -8,7 +8,7 @@ import { useRunListStore } from '~/stores/runListStore';
 import { createMobileTestRouter } from '~/composables/mobile/__tests__/mobileTestRouter';
 
 const row = (patch: Partial<MobileRunTreeRow>): MobileRunTreeRow => ({
-  key: 'agent:a', depth: 0, avatar: 'agent', name: 'Project Task Manager', title: 'Dispatch the approved Task', status: 'running', remote: null,
+  key: 'agent:a', depth: 0, avatar: 'agent', name: 'Project Task Manager', title: 'Dispatch the approved Task', status: 'running', backgroundTasksRunning: 0, remote: null,
   hasChildren: false, expanded: false, fold: null, open: { kind: 'agentRun', run: { runId: 'a' } as never }, lastActivityAt: '2026-11-06T10:00:00.000Z', ...patch,
 });
 
@@ -90,5 +90,23 @@ describe('MobileRunList', () => {
       await wrapper.get('[data-testid="mobile-node-offline-check"]').trigger('click');
       expect(wrapper.emitted('open-connection')).toHaveLength(1);
     }
+  });
+
+  it('autobyteus-448: a run idle with background tasks running shows the active dot and names them; a running one stays "Running"', async () => {
+    setActivePinia(createPinia());
+    vi.spyOn(useRunListStore(), 'entries', 'get').mockReturnValue([{}] as never);
+    const rows = ref([row({ status: 'idle', backgroundTasksRunning: 2 }), row({ key: 'agent:b', status: 'running', backgroundTasksRunning: 1 })]);
+    const tree = { rows: computed(() => rows.value), openRowKey: computed(() => null), toggle: vi.fn(), setTeamExpanded: vi.fn(), toggleTeam: vi.fn(), expandTeamMemberAncestors: vi.fn() };
+    const router = await createMobileTestRouter();
+    const wrapper = mount(MobileRunList, { props: { tree: tree as never, nodeName: 'AutoByteus Desktop', connection: 'connected' }, global: { plugins: [router] } });
+    await flushPromises();
+    const [idle, running] = wrapper.findAll('[role="treeitem"]');
+    const dot = idle!.get('[data-testid="mobile-run-status-dot"]');
+    expect(dot.attributes('data-status')).toBe('background');
+    expect(dot.classes()).toContain('bg-blue-500');
+    expect(dot.classes()).not.toContain('animate-pulse');
+    expect(idle!.html()).toContain('2 background tasks running');
+    expect(running!.get('[data-testid="mobile-run-status-dot"]').attributes('data-status')).toBe('running');
+    expect(running!.html()).toContain('Running');
   });
 });

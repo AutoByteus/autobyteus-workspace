@@ -42,6 +42,8 @@ export class AgentTurnLifecycleState {
   private anonymousTurnActive = false;
   lastStatus: AgentApiStatus = "idle";
   recoverableBlock: CompactionRecoveryBlockDto | null = null;
+  /** Background tasks the run has running, set by `AgentRun` from its runtime's view (autobyteus-448 part 2). */
+  backgroundTasksRunning = 0;
   private pendingCommand: PendingCommand | null = null;
   private nextCommandToken = 1;
 
@@ -97,6 +99,10 @@ export class AgentTurnLifecycleState {
     this.pendingCommand = null;
     this.retireAndClearActiveTurn();
     this.lastStatus = "offline";
+  }
+
+  observeBackgroundTasksRunning(count: number): void {
+    this.backgroundTasksRunning = count;
   }
 
   reconcileRuntimeSnapshot(snapshot: AgentRuntimeLifecycleSnapshot): void {

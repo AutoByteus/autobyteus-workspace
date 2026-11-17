@@ -36,7 +36,9 @@ export const remoteRunSummariesOf = (answer: Readonly<Record<string, unknown>>):
     const statuses = run.statuses.map((entry: unknown) => {
       const status = record(entry);
       const parsed = remoteAgentStatusSchema.safeParse(status?.status);
-      return status && nonEmpty(status.agentRunId) && parsed.success ? Object.freeze({ agentRunId: status.agentRunId, status: parsed.data }) : null;
+      const count = status?.backgroundTasksRunning;
+      return status && nonEmpty(status.agentRunId) && parsed.success && typeof count === "number" && Number.isSafeInteger(count) && count >= 0
+        ? Object.freeze({ agentRunId: status.agentRunId, status: parsed.data, backgroundTasksRunning: count }) : null;
     });
     if (statuses.some((status) => status === null)) return null;
     const launches = run.launches === undefined ? Object.freeze([]) : remoteAgentLaunchesOf(run.launches);

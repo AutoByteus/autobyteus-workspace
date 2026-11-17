@@ -34,11 +34,19 @@ describe("agent API status and runtime lifecycle projectors", () => {
   it("serializes status without the removed interrupt capability", () => {
     const payload = buildAgentStatusPayload({
       status: "running",
+      backgroundTasksRunning: 0,
       agentId: "run-1",
     });
 
-    expect(payload).toEqual({ status: "running", agent_id: "run-1", recoverableBlock: null });
+    expect(payload).toEqual({ status: "running", background_tasks_running: 0, agent_id: "run-1", recoverableBlock: null });
     expect(payload).not.toHaveProperty("can_interrupt");
+  });
+
+  it("autobyteus-448: carries the running background task count; anything but a positive safe integer is 0", () => {
+    const count = (backgroundTasksRunning: number) =>
+      buildAgentStatusPayload({ status: "idle", backgroundTasksRunning }).background_tasks_running;
+    expect(count(2)).toBe(2);
+    for (const bad of [0, -1, 1.5, Number.NaN, Number.POSITIVE_INFINITY]) expect(count(bad)).toBe(0);
   });
 
   it("projects identified and anonymous Autobyteus turns as current running work", () => {

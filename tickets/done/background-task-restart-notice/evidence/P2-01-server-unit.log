@@ -1,0 +1,20 @@
+# P2-01 server unit (full): pnpm -C autobyteus-server-ts test:unit; commit 4c93deaa8f (code ce06c415cc); node 22.23.1; macOS; 2026-11-17 17:23-17:40; load 46-76
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 5 ⎯⎯⎯⎯⎯⎯⎯
+ FAIL  tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts > AgentPackageFolderWatcher > reports definition changes per folder and ignores skills and other files
+Error: Test timed out in 5000ms.
+ FAIL  tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts > AgentPackageFolderWatcher > moves a root to FOLDER_MISSING when it is renamed away and resumes watching when it returns
+Error: Test timed out in 5000ms.
+ FAIL  tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts > AgentPackageFolderWatcher > starts a registered root that is missing as FOLDER_MISSING and arms it when it appears
+ FAIL  tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts > AgentPackageFolderWatcher catch-up request > checks that the package folder is still there first: a folder renamed away is reported missing, with no coverage repair
+Error: Test timed out in 5000ms.
+ FAIL  tests/unit/runtime-management/antigravity-cli-capability.test.ts > bounded AGY CLI discovery > enables AGY availability using capabilities rather than release text
+Error: Test timed out in 5000ms.
+ Test Files  2 failed | 1006 passed | 5 skipped (1013)
+      Tests  5 failed | 8244 passed | 9 skipped (8258)
+   Duration  992.42s (transform 34.32s, setup 27.69s, import 420.87s, tests 438.14s, environment 919ms)
+exit=1
+
+## antigravity-cli-capability.test.ts rerun alone (17:40)
+      Tests  48 passed (48)
+   Duration  25.99s (transform 1.60s, setup 66ms, import 26ms, tests 25.12s, environment 0ms)

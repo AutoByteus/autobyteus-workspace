@@ -20,6 +20,7 @@ export class AgentOrgAgentStatuses implements Pick<PairedAgentAccess, "observePa
 
   pairedAgentStatuses(orgRunId: string): readonly PairedAgentStatus[] {
     const run = this.orgs.getActive(orgRunId);
-    return run ? run.getAgentStatusSnapshots().map((snapshot) => ({ agentRunId: snapshot.execution.agentRunId, status: snapshot.details.status })) : [];
+    return run ? run.getAgentStatusSnapshots().map((snapshot) => ({ agentRunId: snapshot.execution.agentRunId, status: snapshot.details.status,
+      backgroundTasksRunning: snapshot.details.backgroundTasksRunning })) : [];
   }
 }

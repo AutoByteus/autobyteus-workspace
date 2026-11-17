@@ -63,6 +63,8 @@ export class AgentRunCommandStatusOverlayStore {
   }): AgentRunCommandStatusOverlay {
     const payload = buildAgentStatusPayload({
       status: input.status,
+      // Before the run is active (initializing) or after it failed to start: no run activity yet.
+      backgroundTasksRunning: 0,
       agentId: input.runId,
     });
     const overlay: AgentRunCommandStatusOverlay = {
