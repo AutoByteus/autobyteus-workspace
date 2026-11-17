@@ -178,6 +178,7 @@ describe("AgentTeamStreamHandler current root stream", () => {
           change_sequence: 32,
           agent_run_id: "nested-task-agent-run-001",
           status: "running",
+          background_tasks_running: 0,
           trigger: "turn_started",
           tool_name: null,
           error_message: null,

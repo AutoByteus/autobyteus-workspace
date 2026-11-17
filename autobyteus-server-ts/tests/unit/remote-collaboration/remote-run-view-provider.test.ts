@@ -62,7 +62,7 @@ describe("RemoteRunViewProvider behind the gateway", () => {
     const f = harness();
     const response = await f.gateway.runSummaries({ ...envelope(), runs: [TEAM, { kind: "agent", runId: "unknown-run" }] }, peerCallerOfBody({ ...envelope(), runs: [TEAM, { kind: "agent", runId: "unknown-run" }] }));
     expect(response).toEqual({ status: 200, answer: { accepted: true, nodeId: SELF,
-      runs: [{ kind: "agent_team", runId: "team-run", title: "Plan the October campaign", statuses: [{ agentRunId: "lead-run", status: "running" }],
+      runs: [{ kind: "agent_team", runId: "team-run", title: "Plan the October campaign", statuses: [{ agentRunId: "lead-run", status: "running", backgroundTasksRunning: 0 }],
         launches: [{ address: "/lead", runtimeKind: "autobyteus", llmModelIdentifier: "sonnet", source: { origin: "team_default", fallbacks: [] } }] }] } });
     expect(f.storedLinkCheck).toHaveBeenCalledWith(TEAM, { kind: "owner", fromNodeId: ALPHA.nodeId, targetAgentRunId: null });
     const other = await f.gateway.runSummaries({ ...envelope(OTHER), runs: [TEAM] }, peerCallerOfBody({ ...envelope(OTHER), runs: [TEAM] }));

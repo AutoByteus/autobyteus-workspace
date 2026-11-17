@@ -56,7 +56,7 @@ describe("story 5.3: an Org run's view in base's shapes (rule 3)", () => {
   it("the snapshot: its own parts", () => {
     // A live Org reports its own agents' statuses; its delegated runs' come from those runs (SR-083).
     const own = [["director", "/director"], ["configured-lead", "/target/lead"], ["configured-writer", "/target/writer"]].map(([agentRunId, memberAddress]) => ({
-      execution: { agentRunId, memberAddress }, details: { status: "running", trigger: null, errorMessage: null, recoverableBlock: null } }));
+      execution: { agentRunId, memberAddress }, details: { status: "running", backgroundTasksRunning: 0, trigger: null, errorMessage: null, recoverableBlock: null } }));
     const snapshot = projectAgentOrgExecutionSnapshot({ orgRunId: "org", isActive: true, snapshot: { tree, statuses: own, inputStates: [] } as never,
       baseChangeSequence: 0, liveSequenceId: "live", lastMessageChangeSequence: 0 });
     same(snapshot, org.snapshot);
