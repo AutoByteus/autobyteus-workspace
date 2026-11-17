@@ -260,6 +260,7 @@ export declare const remoteTaskExecutionSummaryDtoSchema: z.ZodObject<{
             idle: "idle";
             running: "running";
         }>;
+        background_tasks_running: z.ZodNumber;
     }, z.core.$strict>>;
     launches: z.ZodOptional<z.ZodArray<z.ZodObject<{
         address: z.ZodString;

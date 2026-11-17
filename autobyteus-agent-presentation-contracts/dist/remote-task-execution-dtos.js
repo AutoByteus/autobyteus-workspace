@@ -78,7 +78,8 @@ export const remoteTaskExecutionSummaryDtoSchema = z.object({
     run_id: nonEmptyStringSchema,
     reachable: z.boolean(),
     title: z.string().nullable(),
-    statuses: z.array(z.object({ agent_run_id: nonEmptyStringSchema, status: remoteAgentStatusSchema }).strict()),
+    statuses: z.array(z.object({ agent_run_id: nonEmptyStringSchema, status: remoteAgentStatusSchema,
+        background_tasks_running: z.number().int().nonnegative() }).strict()),
     launches: z.array(remoteAgentLaunchDtoSchema).optional(),
 }).strict();
 /** The run ID a remote execution names on its node: the Agent run, or the Team run. */

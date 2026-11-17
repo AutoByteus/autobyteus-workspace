@@ -35,9 +35,13 @@ test("a remote execution is an Agent run or a Team run with its mounted members,
 
 test("a summary says whether the node answered, with its title and its agents' statuses", () => {
   const answered = { node_id: "srv_docker", run_id: "marketing-team-run", reachable: true, title: "Plan the October campaign",
-    statuses: [{ agent_run_id: "lead-run", status: "running" }, { agent_run_id: "writer-run", status: "idle" }] };
+    statuses: [{ agent_run_id: "lead-run", status: "running", background_tasks_running: 0 },
+      { agent_run_id: "writer-run", status: "idle", background_tasks_running: 2 }] };
   assert.deepEqual(remoteTaskExecutionSummaryDtoSchema.parse(answered), answered);
   const unreachable = { node_id: "srv_office", run_id: "office-run", reachable: false, title: null, statuses: [] };
   assert.deepEqual(remoteTaskExecutionSummaryDtoSchema.parse(unreachable), unreachable);
-  assert.throws(() => remoteTaskExecutionSummaryDtoSchema.parse({ ...answered, statuses: [{ agent_run_id: "lead-run", status: "waiting" }] }));
+  assert.throws(() => remoteTaskExecutionSummaryDtoSchema.parse({ ...answered, statuses: [{ agent_run_id: "lead-run", status: "waiting", background_tasks_running: 0 }] }));
+  // autobyteus-448: every status says how many background tasks the agent has running.
+  assert.throws(() => remoteTaskExecutionSummaryDtoSchema.parse({ ...answered, statuses: [{ agent_run_id: "lead-run", status: "idle" }] }));
+  assert.throws(() => remoteTaskExecutionSummaryDtoSchema.parse({ ...answered, statuses: [{ agent_run_id: "lead-run", status: "idle", background_tasks_running: -1 }] }));
 });
