@@ -1,0 +1,236 @@
+{
+  "runtimeKind": "autobyteus",
+  "model": "deepseek-v4-flash",
+  "codeword": "OKAPI-5033",
+  "turns": [
+    {
+      "label": "1 call alpha",
+      "content": "Remember this codeword: OKAPI-5033. Call the list_projects tool once, then reply with exactly: DONE-1",
+      "entries": [
+        {
+          "kind": "message",
+          "role": "user",
+          "messageId": "e2e-93e2f17a-179a-49b4-8c65-ad36ddc4fc7d",
+          "dedupeKey": "agent_run_input:e2e:e2e-93e2f17a-179a-49b4-8c65-ad36ddc4fc7d",
+          "content": "Remember this codeword: OKAPI-5033. Call the list_projects tool once, then reply with exactly: DONE-1",
+          "media": null,
+          "ts": 1794943698.644
+        },
+        {
+          "kind": "reasoning",
+          "role": null,
+          "turnId": "turn_0001",
+          "content": "The user wants me to call list_projects once, then reply with exactly \"DONE-1\". I need to find the tool first via search_tools.",
+          "media": null,
+          "ts": 1794943699.785
+        },
+        {
+          "kind": "message",
+          "role": "assistant",
+          "turnId": "turn_0001",
+          "content": "",
+          "media": null,
+          "ts": 1794943699.785
+        },
+        {
+          "kind": "tool_call",
+          "invocationId": "call_00_VsUJJeoKn2YzxC0EUvh87616",
+          "role": null,
+          "turnId": "turn_0001",
+          "content": "",
+          "toolName": "search_tools",
+          "toolArgs": {
+            "query": "list_projects"
+          },
+          "toolResult": "Found 1 tool. Call one with call_tool: {\"name\": \"<tool name>\", \"arguments\": {<its arguments>}}.\n{\"name\":\"list_projects\",\"description\":\"List every Project on the current node with its stable projectId, name, description and workspaces: the folders the Project is linked to (workspaceRootPath, and the link's description when it has one). Check them before creating a Project for a folder: a folder that is a Project's folder, or inside or around one, belongs to that Project. A field with no value is left out. Does not select or change a Project.\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}",
+          "toolError": null,
+          "media": null,
+          "ts": 1794943699.812
+        },
+        {
+          "kind": "message",
+          "role": "assistant",
+          "turnId": "turn_0001",
+          "content": "",
+          "media": null,
+          "ts": 1794943700.924
+        },
+        {
+          "kind": "tool_call",
+          "invocationId": "call_00_ET_5Yv5w7CPwzzO2oz61isH9517",
+          "role": null,
+          "turnId": "turn_0001",
+          "content": "",
+          "toolName": "list_projects",
+          "toolArgs": {},
+          "toolResult": "{\"projects\":[{\"projectId\":\"project_2d929b8f-305f-4731-ade3-22bd2e21fc84\",\"name\":\"Tool List Live 1c71f5\"}]}",
+          "toolError": null,
+          "media": null,
+          "ts": 1794943700.963
+        },
+        {
+          "kind": "message",
+          "role": "assistant",
+          "turnId": "turn_0001",
+          "content": "DONE-1",
+          "media": null,
+          "ts": 1794943701.876
+        }
+      ]
+    },
+    {
+      "label": "2 add beta, call beta",
+      "content": "Call the list_project_tasks tool once with project_id \"project_2d929b8f-305f-4731-ade3-22bd2e21fc84\". Then reply with DONE-2 followed by the codeword from my first message.",
+      "entries": [
+        {
+          "kind": "system_task_notification",
+          "role": null,
+          "senderId": "system.tool_list_update_notifier",
+          "content": "[Platform notice — tools updated]\n\nYour tools changed. Now available: list_project_tasks.",
+          "ts": 1794943707.727
+        },
+        {
+          "kind": "message",
+          "role": "user",
+          "messageId": "e2e-070877ff-1d63-4945-94dc-528034a29e2f",
+          "dedupeKey": "agent_run_input:e2e:e2e-070877ff-1d63-4945-94dc-528034a29e2f",
+          "content": "Call the list_project_tasks tool once with project_id \"project_2d929b8f-305f-4731-ade3-22bd2e21fc84\". Then reply with DONE-2 followed by the codeword from my first message.",
+          "media": null,
+          "ts": 1794943707.728
+        },
+        {
+          "kind": "reasoning",
+          "role": null,
+          "turnId": "turn_0002",
+          "content": "Call list_project_tasks. Now it's announced as available — but I need its schema. It's announced available now, but do I have its definition? I should check if I can call it directly. The notice says \"Now available: list_project_tasks.\" I should search or just call. Let me search to get the schema.",
+          "media": null,
+          "ts": 1794943709.107
+        },
+        {
+          "kind": "message",
+          "role": "assistant",
+          "turnId": "turn_0002",
+          "content": "",
+          "media": null,
+          "ts": 1794943709.107
+        },
+        {
+          "kind": "tool_call",
+          "invocationId": "call_00_jrm6LhnYeUuUe5wrcMP96067",
+          "role": null,
+          "turnId": "turn_0002",
+          "content": "",
+          "toolName": "search_tools",
+          "toolArgs": {
+            "query": "list_project_tasks"
+          },
+          "toolResult": "Found 1 tool. Call one with call_tool: {\"name\": \"<tool name>\", \"arguments\": {<its arguments>}}.\n{\"name\":\"list_project_tasks\",\"description\":\"List the Tasks in the explicit project_id, optionally filtered by exact TODO, IN_PROGRESS, DONE or CANCELLED status (CANCELLED = dropped as not needed). Each Task's taskId is its key (e.g. autobyteus-42): use it as the Task's ID in every tool. Each Task is a short entry: taskId, title, status, the Tasks it depends on (dependsOn, by taskId), the bigger Task it is part of (partOf, a taskId), its parts (parts, by taskId), its number of comments (commentCount) and its open assignments (assignments). A field with no value is left out (for example partOf when the Task is part of no bigger Task). Each assignment names the task agent: {kind: agent, agentRunId} for a task agent, or {kind: team, teamRunId, teamCoordinatorAgentRunId} for a task agent team; plus who assigned it (assignedBy) and whether the work was accepted (outcome); accepted work is not necessarily finished. Give a follow-up Task to a task agent with delegate_task and its target_agent_run_id (agentRunId) or target_team_run_id (teamRunId); talk with it using send_message_to and its run id (agentRunId, or teamCoordinatorAgentRunId for a task agent team). A Task whose assignments can't be read is marked assignmentsUnavailable. A Task's description, comments, context files and closed assignments are not listed; get_project_task, when you have it, reads one Task in full.\",\"parameters\":{\"type\":\"object\",\"properties\":{\"project_id\":{\"description\":\"Explicit Project identity on the current node.\",\"type\":\"string\"},\"status\":{\"description\":\"Optional exact business status filter.\",\"type\":\"string\",\"enum\":[\"TODO\",\"IN_PROGRESS\",\"DONE\",\"CANCELLED\"]}},\"required\":[\"project_id\"],\"additionalProperties\":false}}",
+          "toolError": null,
+          "media": null,
+          "ts": 1794943709.14
+        },
+        {
+          "kind": "message",
+          "role": "assistant",
+          "turnId": "turn_0002",
+          "content": "",
+          "media": null,
+          "ts": 1794943710.361
+        },
+        {
+          "kind": "tool_call",
+          "invocationId": "call_00_ET_IzL2nsVoOtZ3HtXi77i15352",
+          "role": null,
+          "turnId": "turn_0002",
+          "content": "",
+          "toolName": "list_project_tasks",
+          "toolArgs": {
+            "project_id": "project_2d929b8f-305f-4731-ade3-22bd2e21fc84"
+          },
+          "toolResult": "{\"projectId\":\"project_2d929b8f-305f-4731-ade3-22bd2e21fc84\"}",
+          "toolError": null,
+          "media": null,
+          "ts": 1794943710.398
+        },
+        {
+          "kind": "message",
+          "role": "assistant",
+          "turnId": "turn_0002",
+          "content": "DONE-2 OKAPI-5033",
+          "media": null,
+          "ts": 1794943711.325
+        }
+      ]
+    },
+    {
+      "label": "3 remove alpha, try alpha",
+      "content": "Try to call the list_projects tool once. If you do not have it or it fails, do not retry. Then reply with exactly: DONE-3",
+      "entries": [
+        {
+          "kind": "system_task_notification",
+          "role": null,
+          "senderId": "system.tool_list_update_notifier",
+          "content": "[Platform notice — tools updated]\n\nYour tools changed. No longer available: list_projects.",
+          "ts": 1794943716.89
+        },
+        {
+          "kind": "message",
+          "role": "user",
+          "messageId": "e2e-6f4a3069-9430-4a4b-8a93-0d7fab188f37",
+          "dedupeKey": "agent_run_input:e2e:e2e-6f4a3069-9430-4a4b-8a93-0d7fab188f37",
+          "content": "Try to call the list_projects tool once. If you do not have it or it fails, do not retry. Then reply with exactly: DONE-3",
+          "media": null,
+          "ts": 1794943716.89
+        },
+        {
+          "kind": "message",
+          "role": "assistant",
+          "turnId": "turn_0003",
+          "content": "",
+          "media": null,
+          "ts": 1794943718.232
+        },
+        {
+          "kind": "tool_call",
+          "invocationId": "call_00_ET_jl61ws7LQOEINnvb0ayS6121",
+          "role": null,
+          "turnId": "turn_0003",
+          "content": "",
+          "toolName": "search_tools",
+          "toolArgs": {
+            "query": "list_projects"
+          },
+          "toolResult": "Found 3 tools. Call one with call_tool: {\"name\": \"<tool name>\", \"arguments\": {<its arguments>}}.\n{\"name\":\"list_project_tasks\",\"description\":\"List the Tasks in the explicit project_id, optionally filtered by exact TODO, IN_PROGRESS, DONE or CANCELLED status (CANCELLED = dropped as not needed). Each Task's taskId is its key (e.g. autobyteus-42): use it as the Task's ID in every tool. Each Task is a short entry: taskId, title, status, the Tasks it depends on (dependsOn, by taskId), the bigger Task it is part of (partOf, a taskId), its parts (parts, by taskId), its number of comments (commentCount) and its open assignments (assignments). A field with no value is left out (for example partOf when the Task is part of no bigger Task). Each assignment names the task agent: {kind: agent, agentRunId} for a task agent, or {kind: team, teamRunId, teamCoordinatorAgentRunId} for a task agent team; plus who assigned it (assignedBy) and whether the work was accepted (outcome); accepted work is not necessarily finished. Give a follow-up Task to a task agent with delegate_task and its target_agent_run_id (agentRunId) or target_team_run_id (teamRunId); talk with it using send_message_to and its run id (agentRunId, or teamCoordinatorAgentRunId for a task agent team). A Task whose assignments can't be read is marked assignmentsUnavailable. A Task's description, comments, context files and closed assignments are not listed; get_project_task, when you have it, reads one Task in full.\",\"parameters\":{\"type\":\"object\",\"properties\":{\"project_id\":{\"description\":\"Explicit Project identity on the current node.\",\"type\":\"string\"},\"status\":{\"description\":\"Optional exact business status filter.\",\"type\":\"string\",\"enum\":[\"TODO\",\"IN_PROGRESS\",\"DONE\",\"CANCELLED\"]}},\"required\":[\"project_id\"],\"additionalProperties\":false}}\n{\"name\":\"delegate_task\",\"description\":\"Delegate a task to an agent or agent team. Use exactly one mode:\\n(1) recipient_address and description, with optional reference_files: creates a new task agent (or task agent team) that works on the task you describe;\\n(2) recipient_address and task_id: creates a new task agent (or task agent team) for that saved Task (its description and files);\\n(3) exactly one of target_agent_run_id or target_team_run_id, with task_id: gives the saved Task to one of your task agents (or task agent teams), which continues with its conversation; use it for follow-up work that builds on what that task agent already did. This works only when you made its most recent assignment; its other open Tasks stay open, and it is freed when its last Task is closed.\\nWith node in mode (1), the task agent starts on that peer node, from the agent or agent team at recipient_address there; the result also gives node, and you message it by its run id as usual. A saved Task or reference_files can't go to another node.\\nNever supply project_id. Delegating to yourself, a teammate or your own team is refused.\\nThe task description and reference files become the task agent's first message (for a task agent team, its coordinator receives them), together with your run id.\\nIf you are a task agent yourself (another agent delegated your task to you or to your team), task_id is refused, and a delegation with a description returns no task_id: the new task agent's work is part of your Task. Otherwise, a delegation with a description also creates a Task with no Project and returns its task_id.\\nOn success, delegated is true, target_kind is agent or team, and the result names the task agent: target_agent_run_id for a task agent; for a task agent team, target_team_run_id (the team; use it to give the team a later Task) and target_team_coordinator_agent_run_id (its coordinator; talk with the team through this run id). launch_notes, when present, says which agent runs on a different runtime or model than configured. If delegated is false, nothing was created and message says why; correct the problem and delegate again, or report the failure.\",\"parameters\":{\"type\":\"object\",\"properties\":{\"recipient_address\":{\"description\":\"Only for a new task agent: the exact address of an available agent or agent team, beginning with '/'. Every call with an address creates another task agent or task agent team. Omit it when you give a Task to one of your task agents with target_agent_run_id or target_team_run_id.\",\"type\":\"string\"},\"target_team_run_id\":{\"description\":\"One of your task agent teams, by the target_team_run_id an earlier delegation returned (the team's run id, not its coordinator's). Supply only it and task_id.\",\"type\":\"string\"},\"target_agent_run_id\":{\"description\":\"One of your task agents, by the target_agent_run_id an earlier delegation returned. Supply only it and task_id. A task agent team's coordinator's run id is refused: use target_team_run_id for a task agent team.\",\"type\":\"string\"},\"task_id\":{\"description\":\"A saved Project Task's ID on this node: its key (e.g. autobyteus-42), as list_project_tasks shows it; its saved text and files are used. With recipient_address: a new task agent works on the Task. With target_agent_run_id or target_team_run_id: that task agent takes on the Task. Blank, unknown, ambiguous, DONE or CANCELLED Tasks fail.\",\"type\":\"string\"},\"description\":{\"description\":\"Only with recipient_address and without task_id. A complete, ready-to-work task description: objective, context, scope, constraints, what done looks like, expected output and reference guidance.\",\"type\":\"string\"},\"node\":{\"description\":\"Optional, only with recipient_address and description: the name of a peer node registered on this node. The new task agent then runs on that node, and recipient_address is the address of an agent or agent team on that node.\",\"type\":\"string\"},\"reference_files\":{\"description\":\"Optional, only with recipient_address and description; not allowed with task_id, not even as an empty list. Absolute local file paths the task agent should read. Relative paths and URLs are rejected.\",\"type\":\"array\",\"items\":{\"type\":\"string\"}}},\"required\":[],\"additionalProperties\":false}}\n{\"name\":\"search_memory\",\"description\":\"Search the memory of all agent runs on this node (their Work Journals: what each run did, with dates) by words and by meaning, in any language. Use it whenever the user or the task refers to earlier work: \\\"do you remember\\\", \\\"last time\\\", \\\"earlier we\\\", \\\"before\\\", \\\"where is the … we set up\\\", or a decision, setup or file made in a past conversation. Returns up to limit runs (1 to 20; default from the server setting, normally 10), best first. Each result names who (agent, and team or org with member when there is one), runId, workspace, the first and latest day mentioned, a source line to cite, and its matches: journalFile (an absolute path), lines, day, a short snippet and matchedBy. A text match lists the query words it contains (matchedWords); a match without matchedWords was found by meaning. wordsNotFound names query words that occur in no indexed journal (the index follows new turns within about a minute). Results are pointers, not facts: open a run's first match (its newest) at its lines with your file tool before answering, and the second when the first does not answer, before searching again. Answer from the run you read and cite its source. When several runs differ, prefer the latest mention and say so. If what you read does not answer the question, try other words. coverage says how much is indexed while indexing is incomplete; with no index yet, ask the user to start it on the Memory page.\",\"parameters\":{\"type\":\"object\",\"properties\":{\"query\":{\"description\":\"What you are looking for, in your own words, any language: a sentence or a few words.\",\"type\":\"string\"},\"limit\":{\"description\":\"Most runs returned, 1 to 20 (default from the server setting).\",\"type\":\"integer\",\"minimum\":1,\"maximum\":20}},\"required\":[\"query\"],\"additionalProperties\":false}}",
+          "toolError": null,
+          "media": null,
+          "ts": 1794943718.356
+        },
+        {
+          "kind": "reasoning",
+          "role": null,
+          "turnId": "turn_0003",
+          "content": "list_projects is no longer available. Per instructions: try to call once; if not available or fails, do not retry. I searched; it's not there. Should I attempt call_tool with list_projects? That would fail. The instruction says \"Try to call the list_projects tool once. If you do not have it or it fails, do not retry.\" Searching confirms I don't have it. I'll report DONE-3 exactly.",
+          "media": null,
+          "ts": 1794943719.7
+        },
+        {
+          "kind": "message",
+          "role": "assistant",
+          "turnId": "turn_0003",
+          "content": "DONE-3",
+          "media": null,
+          "ts": 1794943719.7
+        }
+      ]
+    }
+  ],
+  "seenToolNames": [
+    "{\n  \"version\": 1,\n  \"toolNames\": [\n    \"delegate_task\",\n    \"edit_file\",\n    \"list_project_tasks\",\n    \"read_file\",\n    \"run_bash\",\n    \"search_memory\",\n    \"send_message_to\",\n    \"write_file\"\n  ]\n}\n"
+  ],
+  "terminate": {
+    "terminateAgentRun": {
+      "success": true,
+      "message": "Agent run terminated successfully."
+    }
+  }
+}

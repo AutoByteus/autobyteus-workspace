@@ -1,0 +1,71 @@
+# API-01 (autobyteus-515 API/E2E): full autobyteus-ts suite, branch vs base, same conditions
+# Command: env -i PATH="$PATH" HOME=<resolved temp> TMPDIR="$TMPDIR" pnpm -C autobyteus-ts test
+# Node v22.23.1, macOS; 2026-11-17; machine load from other processes (VM, fseventsd) noted per run
+# Full logs: /tmp/nts515/API-01-branch.log, /tmp/nts515/API-01-base.log (not committed: ~8k lines each)
+
+== BRANCH (commit 03da73d550, source 49867e8dc4)
+commit 03da73d550 start 2026-11-17 17:22:05 load: 17:22  up 29 days, 3 hrs, 9 users, load averages: 85.20 79.96 88.33
+ FAIL  tests/unit/tools/terminal/run-bash.test.ts > runBash > executes in an explicit absolute cwd outside the workspace
+ FAIL  tests/integration/tools/terminal/run-bash-wrapper.test.ts > run_bash command wrapper: R-0 regression list > heredocs keep their content
+ FAIL  tests/unit/tools/terminal/command-execution/native-command-process-scope.test.ts > NativeCommandProcessScope > retains a fast shell job as a background task and drains it at host close
+ FAIL  tests/unit/tools/terminal/command-execution/native-command-process-scope.test.ts > NativeCommandProcessScope > drains multiple groups collectively while an unrelated scope survives
+ Test Files  3 failed | 398 passed | 28 skipped (429)
+      Tests  4 failed | 2480 passed | 111 skipped (2595)
+EXIT=1 end 2026-11-17 17:24:18 load: 17:24  up 29 days,  3:03, 9 users, load averages: 96.55 91.43 91.99
+
+== BASE (4cbf9e7881, worktree native-tool-search-515-base)
+commit 4cbf9e7881 start 2026-11-17 17:25:10 load: 17:25  up 29 days,  3:03, 9 users, load averages: 89.90 90.06 91.43
+ FAIL  tests/integration/tools/terminal/run-bash-wrapper.test.ts > run_bash command wrapper: R-0 regression list > user functions named jobs, kill, wait, printf, test, echo do not affect the wrapper
+ FAIL  tests/integration/tools/terminal/run-bash-wrapper.test.ts > run_bash command wrapper: R-0 regression list > timeout and Stop apply to the foreground part, stop the whole group and add no wrapper output
+ FAIL  tests/integration/tools/terminal/terminal-tools.test.ts > terminal tools integration > run_bash returns at the foreground end and lists an ordinary & job as a background task
+ FAIL  tests/integration/tools/terminal/terminal-tools.test.ts > terminal tools integration > kill <pid> stops a background command and the kill's result reports how it ended
+ FAIL  tests/unit/tools/terminal/command-execution/native-command-process-scope.test.ts > NativeCommandProcessScope > retains a fast shell job as a background task and drains it at host close
+ FAIL  tests/unit/tools/terminal/command-execution/native-command-process-scope.test.ts > NativeCommandProcessScope > settles forced timeout without RESULT and keeps partial output
+ FAIL  tests/unit/tools/terminal/command-execution/native-command-process-scope.test.ts > NativeCommandProcessScope > forces a TERM-resistant HTTP job, confirms listener release and preserves the call result
+ FAIL  tests/unit/tools/terminal/command-execution/native-command-process-scope.test.ts > NativeCommandProcessScope > returns fast/empty/comment-only/nonzero commands and retires their anchors after the call
+ FAIL  tests/unit/tools/terminal/command-execution/stop-retirement-race.test.ts > explicit stop and retirement serialization > drains after inspection, shares only real stop work (expired=false)
+ Test Files  4 failed | 392 passed | 27 skipped (423)
+      Tests  9 failed | 2427 passed | 103 skipped (2539)
+EXIT=1 end 2026-11-17 17:27:34 load: 17:27  up 29 days,  3:06, 9 users, load averages: 126.09 104.03 96.79
+
+== Failure details (branch)
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/tools/terminal/run-bash.test.ts > runBash > executes in an explicit absolute cwd outside the workspace
+AssertionError: expected null to be +0 // Object.is equality
+
+- Expected:
+0
+
++ Received:
+null
+
+ ❯ tests/unit/tools/terminal/run-bash.test.ts:99:29
+     97|     const result = await runBash(context, 'pwd', outsideRoot);
+     98|
+     99|     expect(result.exitCode).toBe(0);
+       |                             ^
+    100|     expect(fs.realpathSync(result.stdout.trim())).toBe(fs.realpathSync…
+    101|     expect(result.effectiveCwd).toBe(fs.realpathSync(outsideRoot));
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+ FAIL  tests/integration/tools/terminal/run-bash-wrapper.test.ts > run_bash command wrapper: R-0 regression list > heredocs keep their content
+AssertionError: expected '' to be 'line $HOME\n  indented\n' // Object.is equality
+
+- Expected
++ Received
+
+- line $HOME
+-   indented
+-
+
+ ❯ tests/integration/tools/terminal/run-bash-wrapper.test.ts:167:22
+    165|     const ctx = context();
+    166|     const r = await fg(ctx, "cat > h.txt <<'EOF'\nline $HOME\n  indent…
+    167|     expect(r.stdout).toBe('line $HOME\n  indented\n');
+       |                      ^
+    168|   });
+    169|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯

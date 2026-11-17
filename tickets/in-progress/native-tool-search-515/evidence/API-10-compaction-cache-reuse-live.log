@@ -1,0 +1,14 @@
+# API-10 (autobyteus-515 API/E2E): K-2 gated live suite autobyteus-compaction-cache-reuse-live (real studio server; Anthropic claude-opus-5-5 strict harness; Gemini 3.8 Flash Vertex Express)
+# Command (from autobyteus-server-ts): env -i PATH HOME=<temp> TMPDIR AUTOBYTEUS_TEST_VAULT=~/.autobyteus-test/vault RUN_COMPACTION_CACHE_E2E=1 COMPACTION_CACHE_E2E_EVIDENCE_DIR=<dir> ./node_modules/.bin/vitest run tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts --no-watch
+# commit 327566836a (source 49867e8dc4); Node v22.23.1; 2026-11-17
+
+ ✓ tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts (4 tests) 388454ms
+     ✓ CCR-E2E-001: the cached-mode Anthropic model (default Opus 5.5; COMPACTION_CACHE_E2E_ANTHROPIC_MODEL) compacts with a cached summary request (>= 90 % cache read), continues, and meters the call  109502ms
+     ✓ CCR-E2E-002: a Settings image-model change before the compaction turn leaves the tools unchanged: the summary request keeps the thinking and is accepted (strict)  141527ms
+     ✓ CCR-E2E-003: Gemini (transcript summary mode) compacts on its own model, continues, and meters the call  20080ms
+     ✓ CCR-E2E-004: a small configured output limit: the cached summary request carries the fitted raised limit and still reads from the cache (strict)  108881ms
+ Test Files  1 passed (1)
+      Tests  4 passed (4)
+
+== CCR-E2E-002 details (from the suite's case results)
+{"case":"CCR-E2E-002","name":"CCR-E2E-002: a Settings image-model change before the compaction turn leaves the tools unchanged: the summary request keeps the thinking and is accepted (strict)","state":"pass","errors":[],"details":{"settingMessage":"Server setting 'DEFAULT_IMAGE_GENERATION_MODEL' has been updated successfully.","compactionInT3":0,"thinkingBlocksInLastRequestBefore":14,"summaryCalls":[{"index":54,"phase":"CCR2-T4","host":"api.anthropic.com","pathname":"/v1/messages","stream":true,"limits":{"max_tokens":128000},"rewritten":false,"status":200,"stopSignals":["end_turn"],"maxReportedOutputTokens":1287,"responseHasToolCall":false,"responseHasVisibleText":true,"errorBody":null,"usage":{"inputTotal":27639,"cacheRead":26438,"cacheWrite":1197,"output":1287},"strictInjected":true,"thinkingBlocks":14,"cacheShare":0.9565469083541372}],"toolsChanged":false,"compactionFrames":[{"type":"COMPACTION_STATUS","turn_id":"turn_0004","compaction_operation_id":"compaction_operation_mwl2ovj4_1","requested_turn_id":"turn_0003","execution_turn_id":"turn_0004","selected_block_count":20,"raw_trace_count":54,"phase":"started"},{"type":"COMPACTION_STATUS","turn_id":"turn_0004","compaction_operation_id":"compaction_operation_mwl2ovj4_1","requested_turn_id":"turn_0003","execution_turn_id":"turn_0004","selected_block_count":20,"raw_trace_count":54,"compaction_model_identifier":"claude-opus-5-5","summarizer_provider":"ANTHROPIC","compaction_invocation_id":"compaction_compaction_operation_mwl2ov

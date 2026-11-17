@@ -135,7 +135,12 @@ const handlers = (world, workspace) => ({
   dom_snapshot: (a) => json({ title: PAGES[world.tabs[a.tab_id]]?.title ?? '', elements: [{ tag: 'h1', text: PAGES[world.tabs[a.tab_id]]?.title ?? '' }] }),
   run_script: (a) => /title/.test(String(a.javascript)) ? json(PAGES[world.tabs[a.tab_id]]?.title ?? '') : json(null),
   screenshot: () => json({ artifact_path: '/tmp/screenshot.png' }),
-  download_media: (a) => json({ file_path: writeIn(workspace, path.join(String(a.folder ?? 'downloads'), String(a.filename)), 'media') }),
+  // As the real tool: `filename` is a base name; the extension comes from the content type, else the URL (API/E2E fix).
+  download_media: (a) => {
+    const name = String(a.filename);
+    const ext = path.extname(name) ? '' : path.extname(new URL(String(a.url)).pathname);
+    return json({ file_path: writeIn(workspace, path.join(String(a.folder ?? 'downloads'), name + ext), 'media') });
+  },
   generate_image: (a) => json({ file_path: writeIn(workspace, a.output_file_path, 'png') }),
   edit_image: (a) => json({ file_path: writeIn(workspace, a.output_file_path, 'png') }),
   generate_speech: (a) => json({ file_path: writeIn(workspace, a.output_file_path, 'mp3') }),
