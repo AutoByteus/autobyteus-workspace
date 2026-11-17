@@ -2,20 +2,29 @@
 
 ## Scope
 
-After an **update restart**, the agent runs that were mid-turn when the node shut down continue by themselves, each
-told once that the application restarted (autobyteus-285).
+After any restart, every agent run that was mid-turn or waiting for a background task it started is told once, by a
+**restart reminder**, that the application restarted, why, and that any background tasks it started were stopped
+(autobyteus-448, extending autobyteus-285).
 
-- An update restart is a start of a different release on the same data: the desktop's "Install update and restart",
-  automatic updates, a Docker node's in-place update, an image upgrade.
-- Only update restarts resume (the user's decision, DEC-001 = A). A plain quit and relaunch, Restart server, or
-  `docker stop`/start resumes nothing; the record is discarded at the next start.
-- Only busy runs (`initializing` or `running`) are recorded. Idle runs are untouched.
-- Only runs held by a collaboration root are recorded: standalone hosts and Team and Org members. A delegated run is
-  one of these in its own root (autobyteus-461).
-  Application-owned and system-owned runs (the Application platform, the Model Router agent) recover by their owners.
+- **Who is told.** Runs held by a collaboration root (standalone hosts and Team and Org members; a delegated run is one
+  of these in its own root, autobyteus-461) that were `initializing` or `running`, or `idle` with a running background
+  task (`AgentRun.hasRunningBackgroundTasks()`: AutoByteus, Claude and Antigravity report it; Codex is asked through its
+  background-task view at a graceful stop only; Grok Build and DeepSeek (ACP) report none, so their runs are told only
+  when mid-turn). Application-owned and system-owned runs (the Application platform, the Model Router agent) recover by
+  their owners.
+- **The cause** (`restart-cause.ts`): an `update` when the entry was recorded by another release than this server's; a
+  `restart` after any other graceful stop (quit and relaunch, Restart server, `docker stop`/start; the node is not told
+  which); an `unexpected_stop` when the previous session ended without a graceful stop (a crash, a forced quit or a
+  power loss).
+- **How they are told** (the user's DEC-001 B). After an update, the runs are woken: the reminder is posted as their
+  first input. After any other restart, nothing is woken: the reminder rides the run's next input (from the user or
+  another agent), at no cost until then.
+- **Exactly once**, whichever comes first: the wake or the next input. A run whose Task is closed, or whose root is
+  archived, terminated or gone, gets none.
 
-Out of scope: a hard kill or power loss (no record is written; FU-001), showing the user a run that could not resume
-(FU-002), a failed Docker trial that restores a data copy (FU-003), per-node settings (autobyteus-286).
+Out of scope: showing the user a run that could not resume (FU-002 of autobyteus-285), a failed Docker trial that
+restores a data copy (FU-003 of autobyteus-285), per-node settings (autobyteus-286), showing an agent with a running
+background task as such (part 2 of autobyteus-448).
 
 ## TS Source
 
@@ -23,84 +32,120 @@ Out of scope: a hard kill or power loss (no record is written; FU-001), showing 
   `dist/release-identity.json`, written by `scripts/write-release-identity.mjs` in `build:full` from the
   `autobyteus-web` package version (the release version). A server run from `src` has no stamp and never counts a
   restart as an update.
-- `src/restart-resume/busy-run-record.ts` — the record's shape, reader and writer:
-  `<appDataDir>/restart-resume/busy-runs.json` = `{ entries: [{ root, agentRunId, place, status, recordedAt, version }] }`.
-- `src/restart-resume/busy-run-recorder.ts` — `BusyRunRecorder.record()`.
-- `src/restart-resume/restart-resumer.ts` — `RestartResumer.resumeAfterUpdate()`.
-- `src/restart-resume/restart-notice.ts` — `buildRestartNotice(...)`, the only producer of the notice.
-- `src/compositions/restart-resume-composition.ts` — composes both around the process's run services.
+- `src/restart-resume/busy-run-record.ts` — the record's shape, tolerant reader and writer:
+  `<appDataDir>/restart-resume/busy-runs.json` =
+  `{ entries: [{ root, agentRunId, place, status, backgroundTasks, recordedAt, version }], shutdownAt? }`. A record of
+  an earlier release (no `backgroundTasks`, no `shutdownAt`) reads with those defaults.
+- `src/restart-resume/busy-run-recorder.ts` — `BusyRunRecorder`: `startSession()` (the live record) and `record()`
+  (the graceful final write).
+- `src/restart-resume/restart-cause.ts` — `restartCauseOf(entry, shutdownAt, currentVersion)`.
+- `src/restart-resume/restart-resumer.ts` — `RestartResumer`: `takePreviousSession()` at startup and
+  `resumeAfterRestart(previous)` after listening.
+- `src/restart-resume/restart-reminder-record.ts` — `<appDataDir>/restart-resume/restart-reminders.json` =
+  `{ reminders: [{ root, agentRunId, place, cause, version, restartedAt, interruptedTurn }] }` (facts; the text is built at
+  delivery).
+- `src/restart-resume/restart-reminder-service.ts` — `RestartReminderService`, the only owner of the reminders file:
+  the pending reminders and their delivery.
+- `src/restart-resume/restart-notice.ts` — `buildRestartNoticeText(...)` (one text for the wake and the next input) and
+  `buildRestartNotice(...)` (the wake's SYSTEM input).
+- `src/compositions/restart-resume-composition.ts` — composes the recorder and resumer around the process's run
+  services. `build-studio-server.ts` creates the reminder service first and passes it to the notice slot
+  (`AgentRunPlatformNotices`: runtime hand-over, then the restart reminder, then tool list, skill and background task
+  notices) and to this composition.
 - `src/compositions/collaboration-root-resolver.ts` — `CollaborationRootResolver.resolveOrRestore(root)`, the one
   root resolution shared with inbound remote messages: `null` means no such root here; any other failure is thrown.
 - `ActiveCollaborationRootDirectory.placeOf(agentRunId)` — the active root holding a run and its place (`host` or
   `member`), from each root's `hasAgentExecution`. When several roots claim a run, it logs and prefers the host.
 
-## Recording at shutdown
+## The startup order (`server-runtime.ts`)
 
-`server-runtime.ts` makes the shutdown cleanup `record(); app.close()`. The recorder therefore runs inside the 10 s
-shutdown bound and before any `preClose` hook, so before anything is interrupted.
+`buildStudioServer` → `takePreviousSession()` → `recorder.startSession()` → cleanup becomes `record(); app.close()` → …
+listen → `recoverAfterListen` → `resumeAfterRestart(previous)` (in the background) → background tasks.
 
-1. It snapshots the process `AgentRunManager`'s live runs and keeps those `initializing` or `running`.
-2. For each, `placeOf` gives its root and place; a run without a root is not recorded.
-3. Only when there are entries: it merges with a record not yet consumed (entries of runs not recorded now are kept,
-   with their own version) and writes the file atomically.
+The previous session's record is taken before this session records anything, so it is never overwritten; a start that
+fails before the take leaves it for the next start.
 
-It never deletes and never throws. With no busy runs it writes nothing, so a quit right after an update relaunch, before
-the resumer ran, keeps the update's record for the next start.
+## The live record
 
-## Resuming at startup
+While the node runs, every 2 s the recorder lists the runs to tell (above) from the process `AgentRunManager` and
+`placeOf`. It rewrites the record only when the list changed (`recordedAt` is not a change), or removes it when the
+list is empty; a check during a write is skipped. So after a crash the record is at most 2 s old and has no
+`shutdownAt`.
 
-After `recoverAfterListen`, `resumeAfterUpdate()` runs in the background; it never blocks or fails startup.
+At a graceful stop the cleanup runs `record()` first, inside the 10 s shutdown bound and before any `preClose` hook, so
+before anything is interrupted. It stops the checks, waits for a write in progress, adds the idle runs whose runtime
+answers only through its background-task view (Codex; asked at once, at most 1 s in total), and writes the final list
+with `shutdownAt` (or removes the record when nobody is to be told). `record()` does nothing before `startSession()` and
+never throws.
+
+## Taking the previous session
+
+`takePreviousSession()` runs right after the server is built. It never throws.
 
 1. Read the record. Missing: nothing to do. Unreadable or invalid: logged and removed.
-2. Delete it before any resume, so a resume that fails or crashes the server is never repeated.
-3. Keep the entries whose recorded release differs from this server's (both known). The others are dropped with one
-   log line.
-4. Roots are resumed bottom-up along `delegatedFrom` (`DelegationIndex.parentOf`, one hop): every run is its own root,
+2. Give every entry its cause and hand all of them to the reminder service as pending reminders
+   (`interruptedTurn` = the run was mid-turn). The service saves them before `add()` resolves.
+3. Only then remove the record. If the reminders could not be saved, the record is kept and the failure logged; the new
+   session's next change rewrites the record, so that log line is the only certain outcome.
+4. Prune: the pending reminders of runs whose Task is closed, or whose root is archived, terminated or gone, are dropped.
+5. Return the update entries for the wake.
+
+## Delivering a reminder
+
+The reminder service holds each run's reminder as pending, claimed (by the wake) or in flight (as a preface). Only a
+pending reminder can be taken. A newer restart replaces a run's older pending reminder, keeping `interruptedTurn` when
+either had it. Every change is saved, so a reminder survives the next restart until it is delivered.
+
+**The next input.** The service is a source of `AgentRunPlatformNotices`. When a run takes an external input (either
+dispatch kind), the slot asks it after the runtime hand-over; a pending reminder becomes the input's preface (one
+dispatch, one turn), the run publishes it as its system notice and memory records it. Delivered: removed. Returned (the
+dispatch was not forwarded): pending again.
+
+**The wake after an update** (`resumeAfterRestart`, in the background; it never blocks or fails startup):
+
+1. Roots are resumed bottom-up along `delegatedFrom` (`DelegationIndex.parentOf`, one hop): every run is its own root,
    and a root's depth is the number of recorded roots above it, so a run delegated to resumes before the run that
-   delegated to it. A run's notice lists the resumed runs it delegated to (one hop) that were accepted, whatever its
-   place. Without the Task records loaded, every root is at depth 0 and no notice lists any.
-5. At most 3 posts run at once. A root waiting for the runs it delegated to holds no slot.
-6. A cheap pre-filter, before restoring: skip a run that is already live, and a run whose root was stopped on purpose
-   (`terminatedAt`), archived or deleted.
-7. **Restore without posting**, through the root: `resolveOrRestore(root)`; a standalone host is then made ready
-   (`ensureHostReady`); a member starts on the notice itself. Restoring posts no input.
-8. **Re-check after the restore**: the root's history must still show no `terminatedAt` and no archive. This check is
-   final: archiving refuses an active run or root. (Archiving a standalone host whose host is not live ends the root
-   instead; the later post is then refused, and an admitted turn is fenced.) If it fails, nothing is posted, and the
-   idle restored run stops as usual.
-9. **Post a notice the run admits only as its first input** (`onlyAsFirstInput`, below), through the root so its fences
-   apply:
-   - a standalone host: `root.postHostUserMessage({ message, postOptions })` (a host takes no `executeAgentCommand`);
-   - members: `root.executeAgentCommand(id, { kind: "post_message", message, postOptions })`.
-10. A refusal or a failure is logged and the run is not counted as resumed. `AGENT_RUN_INPUT_NOT_FIRST` is logged as
-    "the run already had input": a user's message, another run's `send_message_to` or a peer's message reached
-    the restored run first, and it continues with that.
+   delegated to it. A run's reminder lists the resumed runs it delegated to (one hop) that were accepted, whatever its
+   place. Without the Task records loaded, every root is at depth 0 and no reminder lists any.
+2. At most 3 posts run at once. A root waiting for the runs it delegated to holds no slot.
+3. A cheap pre-filter, before restoring: skip a run that is already live, a run whose Task is closed, and a run whose
+   root was stopped on purpose (`terminatedAt`), archived or deleted.
+4. **Restore without posting**, through the root: `resolveOrRestore(root)`; a standalone host is then made ready
+   (`ensureHostReady`); a member starts on the reminder itself. Restoring posts no input.
+5. **Re-check after the restore**: the root's history must still show no `terminatedAt` and no archive. This check is
+   final: archiving refuses an active run or root.
+6. **Claim the reminder.** None to claim means an input reached the run first and carried it: nothing is posted.
+7. **Post it as an input the run admits only as its first** (`onlyAsFirstInput`), through the root so its fences apply:
+   a standalone host by `root.postHostUserMessage({ message, postOptions })`, a member by
+   `root.executeAgentCommand(id, { kind: "post_message", message, postOptions })`.
+8. Accepted: the claim is settled delivered. Refused (`AGENT_RUN_INPUT_NOT_FIRST`: an input reached the run first while
+   the reminder was claimed) or failed: it is returned, pending again, so the run's next input carries it.
 
 **First input only.** `AgentRunInputOptions.onlyAsFirstInput` is decided in `AgentRunInputAdmissionState.reserve`,
 inside the run's dispatch queue: the input is refused with `AGENT_RUN_INPUT_NOT_FIRST` when this run instance has
-already reserved or admitted any input. A restored run is a new instance, so the notice is admitted unless something
-reached the run first; a message that arrives after the notice is queued after it as usual. There is no window between
-a check and the post. A remote child's node admits its own input, so a first-input-only post to a remote child is
-refused (`REMOTE_RUN_FIRST_INPUT_UNSUPPORTED`); remote children are never recorded here (each node resumes its own runs).
+already reserved or admitted any input. A restored run is a new instance, so the reminder is admitted unless something
+reached the run first. A remote child's node admits its own input, so a first-input-only post to a remote child is
+refused (`REMOTE_RUN_FIRST_INPUT_UNSUPPORTED`); remote children are never recorded here (each node tells its own runs).
 
-A delegated run's resumed turn can message the run that delegated to it before that run's notice. That run then had
-input first, so its notice is refused: it continues with that input and does not get the notice or the list.
+## The reminder
 
-## The notice
-
-A SYSTEM input from `system.restart_resume`, in the shape of the platform's other notices:
+A SYSTEM notice from `system.restart_resume` (DEC-003):
 
 ```
-The application restarted at <time> after an update to <version>.
-Your previous turn was interrupted.
-Tool calls that were running have unknown results; check before repeating any of them.
-These runs you delegated were resumed too and are working: <names>.   (when any were accepted)
+[Platform notice — application restarted]
+
+The application restarted at 2026-11-17 22:20 UTC (reason: an update to v1.5.14).
+Your previous turn was interrupted; check the results of any tool calls that were running before you repeat them.   (mid-turn only)
+If you started any background tasks, the restart stopped them. Check what you still need: restart it, or continue your work.
+These runs you delegated were resumed too and are working: <names>.   (the wake, when any were accepted)
 ```
 
-- `message_id` = `restart-resume:<recordedAt>:<agentRunId>`, `dedupe_key` = `agent_run_input:<agentRunId>:<message_id>`:
-  display and projection keys, not a send guard.
-- Every place shows it the same way: `restartNoticeLifecycleObserver` publishes the run's own
-  `SYSTEM_TASK_NOTIFICATION` when the input is forwarded (as the Model Router does). The sender is in memory's recorded
-  set, so the notice shows live and after a reload, for a host and a member.
-- The member handle composes that observer with its own and publishes no `member_input` for a platform notice (a
-  message carrying a platform preface, read before the post), so a member's window shows it once, as a system notice.
+The reason is `an update to v<version>`, `a restart`, or `an unexpected stop (a crash, a forced quit or a power loss)`.
+
+- The wake's input: `message_id` = `restart-resume:<restartedAt>:<agentRunId>`, `dedupe_key` =
+  `agent_run_input:<agentRunId>:<message_id>`: display and projection keys, not a send guard.
+- Every place shows the wake the same way: `restartNoticeLifecycleObserver` publishes the run's own
+  `SYSTEM_TASK_NOTIFICATION` when the input is forwarded. A reminder that rides an input is published by `AgentRun`
+  when that input is forwarded. The sender is in memory's recorded set, so the reminder shows live and after a reload.
+- The member handle publishes no `member_input` for a platform notice (a message carrying a platform preface, read
+  before the post), so a member's window shows it once, as a system notice.
