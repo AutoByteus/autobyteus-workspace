@@ -448,6 +448,45 @@ describe('agentTeamRunStore current rooted execution contract', () => {
     expect(runHistoryStoreMock.markTeamAsInactive).not.toHaveBeenCalled()
   })
 
+  // autobyteus-458 REQ-011: a member's input instance unknown when the stop began is not another run.
+  it('a stop that starts with no input instance and learns one before the node answers stops the Team', async () => {
+    const team = twoMemberTeam({ teamRunId: 'team-terminate-instance' })
+    setActiveTeam(team)
+    const worker = team.view.getAgentContext('team-terminate-instance-worker-run')!
+    worker.state.inputProjection = null
+    const store = useAgentTeamRunStore()
+    store.connectToTeamStream('team-terminate-instance')
+    mockMutate.mockImplementation(async () => {
+      // The interrupt's input-state reaches the member before the node's answer.
+      worker.state.inputProjection = { runInstanceId: 'instance-1', revision: 1 }
+      return { data: { terminateAgentTeamRun: { success: true, message: 'terminated' } }, errors: [] }
+    })
+
+    expect(await store.terminateTeamRun('team-terminate-instance')).toBe(true)
+
+    expect(team.view.isRootTeamActive()).toBe(false)
+    expect(worker.state.currentStatus).toBe(AgentStatus.Offline)
+    expect(runHistoryStoreMock.markTeamAsInactive).toHaveBeenCalledWith('team-terminate-instance')
+  })
+
+  it('a member whose known input instance changed during the stop is another run: no local stop', async () => {
+    const team = twoMemberTeam({ teamRunId: 'team-terminate-restarted' })
+    setActiveTeam(team)
+    const worker = team.view.getAgentContext('team-terminate-restarted-worker-run')!
+    worker.state.inputProjection = { runInstanceId: 'instance-1', revision: 1 }
+    const store = useAgentTeamRunStore()
+    store.connectToTeamStream('team-terminate-restarted')
+    mockMutate.mockImplementation(async () => {
+      worker.state.inputProjection = { runInstanceId: 'instance-2', revision: 1 }
+      return { data: { terminateAgentTeamRun: { success: true, message: 'terminated' } }, errors: [] }
+    })
+
+    expect(await store.terminateTeamRun('team-terminate-restarted')).toBe(false)
+
+    expect(team.view.isRootTeamActive()).toBe(true)
+    expect(runHistoryStoreMock.markTeamAsInactive).not.toHaveBeenCalled()
+  })
+
   it('deduplicates concurrent Stop requests while the first mutation is pending', async () => {
     const team = twoMemberTeam({ teamRunId: 'team-stop-dedupe' })
     setActiveTeam(team)
