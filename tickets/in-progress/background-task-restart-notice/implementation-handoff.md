@@ -1,149 +1,163 @@
-# Implementation Handoff — Part 1: the restart reminder
+# Implementation Handoff — Part 2: show an agent with a running background task
+
+Part 1 (the restart reminder) was delivered at `895cf3992d` (DR-001); its handoff is in this file at that commit (`git show 895cf3992d:tickets/in-progress/background-task-restart-notice/implementation-handoff.md`).
 
 ## Upstream Artifact Package
 
 All paths below are in `/Users/normy/autobyteus_org/autobyteus-worktrees/background-task-restart-notice/tickets/in-progress/background-task-restart-notice/`.
 
-- Upstream review applicability and handoff-rule result: independent architecture review selected (Medium / High) and passed (ARCH-REV-002); this package goes to code review.
-- Requirements doc: `requirements-doc.md` (Approved; REQ-005 and AC-001/003/004 clarified at SR-003; DEC-008 by the user, SR-004)
+- Upstream review applicability and handoff-rule result: independent architecture review selected (Large / High) and passed (ARCH-REV-005 at SR-006); this package goes to code review.
+- Requirements doc: `requirements-doc.md` (REQ-006, REQ-007, AC-005, AC-006, DEC-004, DEC-005; approved 2026-11-17)
 - Investigation notes: `investigation-notes.md`
-- Solution revision record: `solution-revision-record.md` (SR-003)
-- Design spec: `design-spec.md` (Ready, SR-004, part 1)
-- Supplemental task artifacts: `architecture-design-handoff.md`; no behavior-defining supplements
-- Design review report: `design-review-report.md` (ARCH-REV-002, Pass)
+- Solution revision record: `solution-revision-record.md` (SR-005, SR-006)
+- Design spec: `design-spec.md` "Part 2" (SR-006)
+- Supplemental task artifacts: `architecture-design-handoff.md`
+- Design review report: `design-review-report.md` (ARCH-REV-005, Pass)
 - Architecture review revision record: `architecture-review-revision-record.md`
-- Triggering rework report, revision record, or evidence: `design-review-report.md` ARCH-REV-003 (Pass, SR-004, the user's DEC-008), resolving CRR-002 / API-E2E F-1 (`api-e2e-execution-coverage-report.md`, `api-e2e-revision-record.md` API-REV-001)
+- Triggering rework report: none (first implementation of part 2)
 
 ## Current Implementation Summary
 
-- Implementation cycle: `Rework` (IR-002: DEC-008, the background-task line after an unexpected stop)
+- Implementation cycle: `Initial` for part 2 (IR-003)
 - Implementation revision record: `implementation-revision-record.md`
-- Current implementation revision ID: `IR-002` (IR-001 baseline)
-- Related solution revision IDs: `SR-003`, `SR-004`
-- Related architecture-review revision IDs: `ARCH-REV-002`, `ARCH-REV-003`
-- Related code-review revision IDs: `CRR-001` (Pass), `CRR-002` (DEC-008 routed upstream), `CRR-003` (Pass, round 3; `code-review-report.md`)
-- Related API/E2E revision IDs: `API-REV-001` (Fail: F-1, resolved by DEC-008)
-- Related delivery revision IDs: `N/A`
-- Triggering finding IDs: `F-1` (API/E2E), `CRR-002`
-- Worktree / branch / commits: `/Users/normy/autobyteus_org/autobyteus-worktrees/background-task-restart-notice`, branch `codex/background-task-restart-notice`, base `4cbf9e7881` (origin/personal). Code: `4cbf9e7881..d5e9f350cf` (`8b986307a8` source, `9533765a5e` tests, `7e33d3cab3` and `aa416996c0` docs, `d5e9f350cf` self-review); API/E2E `4cec9abfea`, `cf5ce8d109`; IR-002 `b78555d7bb` (DEC-008: `restart-notice.ts`, its unit test, RR-02's assertion, `restart_resume.md`, `GLOSSARY.md`). The ticket documents and evidence are in the commit named in the handoff message.
+- Current implementation revision ID: `IR-003`
+- Related solution revision IDs: `SR-005`, `SR-006`
+- Related architecture-review revision IDs: `ARCH-REV-004` (Fail, revised), `ARCH-REV-005` (Pass)
+- Related code-review revision IDs: `N/A` for part 2
+- Related API/E2E revision IDs: `N/A` for part 2
+- Related delivery revision IDs: `N/A` for part 2
+- Triggering finding IDs: `N/A`
+- Worktree / branch / commits: `/Users/normy/autobyteus_org/autobyteus-worktrees/background-task-restart-notice`, branch `codex/background-task-restart-notice`, base `895cf3992d`. Part 2 commits: `7743699c71` (server: the count, the derivation, the backend boolean removed), `b2de4f9d1f` (baseline fix, see Checks), `af43dc4dad` (contracts), `c7e112bf7d` (server routes), `87246c55fb` (server test fixtures, run-status sum case), `afc63370b4` (Org view status contract), `38843c46a7` (web), `bffbfad334` and `d8c369436f` (server tests), `92499b84b8` (docs), `a69dee806d` (web tests and probe cases). The ticket documents and evidence are in the commit named in the handoff message.
 
-What part 1 does: while the node runs, the busy-run record is the live list of runs held by a root that are mid-turn or have a running background task (checked every 2 s, written only on change, `shutdownAt` added at a graceful stop). At the next start, right after the server is built, `RestartResumer.takePreviousSession()` gives every entry its cause (update, restart, unexpected stop), hands them to `RestartReminderService` as persisted pending reminders, then removes the record and prunes the runs that must get none. Each reminder is delivered exactly once: by the run's next input (preface) or, for an update entry, by the wake after recovery, which claims it and posts it as the run's first input; a refused or failed wake returns it to pending.
+What part 2 does: `runningBackgroundTaskCount(inspection)` is the one derivation of a run's running background tasks (event-stream views count `current()` tasks that are `running`; Codex `snapshot` and ACP `unsupported` give 0). `AgentRun` sets `AgentTurnLifecycleState.backgroundTasksRunning` from it at the start of each source batch (inside the dispatch queue) and before each status snapshot; `buildAgentStatusPayload` requires the count, so every `AGENT_STATUS` carries `background_tasks_running`. Every status route carries it; `/ws/run-status` answers each agent's count and sums it for a run state on the server. The web maps `{status, count}` through one function (`agentActivityPresentation`): an idle agent with tasks shows "Background task running" / "N background tasks running" with the active, non-pulsing blue dot and `heroicons:arrow-path`; a Team row follows busy > background > error > idle > offline. The Stop button and the input still read the status word only. The backend's `hasRunningBackgroundTasks()` is gone from all six backends; the quiet check and part 1's recorder (`AgentRun.hasRunningBackgroundTasks()`) use the derivation.
 
 ## Routing Classification (Mandatory)
 
-- Task size: `Medium`
+- Task size: `Large`
 - Architecture risk: `High`
-- Design classification section / evidence reference: `design-spec.md` "Task Size And Architectural Risk"
+- Design classification section / evidence reference: `design-spec.md` "Task Size And Architectural Risk (part 2)"
 - Classification confirmed or changed: `Confirmed`
-- Evidence and rationale: one subsystem extended plus a new reminder file pair, an `AgentRun` facade, composition and startup order; a transient record that is now written while the node runs (timer + persistence), a new persisted file, a startup ordering change and a new notice source in every run's input path.
+- Evidence and rationale: server domain, five wire routes in three contract packages (plus the Org view's status DTO, see deviation 1), six backends (removal), the desktop and phone status surfaces, localization.
 - Selected route: `Code Review`
 - Lightweight implementation self-review completed for the direct route: `Not Applicable`
-- New design impact or escalation trigger: `None`. The live record writes only on change (at most one write per 2 s check, none while the list is unchanged); the check is a synchronous walk over in-memory runs.
+- New design impact or escalation trigger: the design's escalation trigger is "a status route found that this inventory misses". Two places the inventory did not name were found and handled inside the design's own rule (deviations 1 and 2 below); neither adds a route kind, an owner or a consumer whose logic reads the count. No consumer's logic reads the count (presentation only).
 
 ## Reviewed Behavior Implementation Trace
 
-| Behavior ID | Approved Change / Preserved Outcome | Implemented Production Path / Key Files | Result / Notes |
+| Behavior / Requirement | Approved Change / Preserved Outcome | Implemented Production Path / Key Files | Result / Notes |
 | --- | --- | --- | --- |
-| BEH-001 | Update restart, mid-turn: woken with the reminder (interrupted turn + background line) | `BusyRunRecorder` (`busy-run-recorder.ts`) → `takePreviousSession()` (`restart-resumer.ts`, cause `update`) → `RestartReminderService.add` → `resumeAfterRestart` → fences, restore, re-check → `claim` → `buildRestartNotice` → post `onlyAsFirstInput` → `settleClaim` | Implemented; 285's order, fences, first-input rule and cap of 3 kept |
-| BEH-002 | Update restart, idle with a background task: woken | recorder records `status: idle`, `backgroundTasks: true` (`AgentRun.hasRunningBackgroundTasks()`; Codex by `inspectBackgroundTasks()` at the graceful stop) → same path as BEH-001 without the interrupted-turn line | Implemented |
-| BEH-003 | Graceful non-update restart: reminder with the next input | `restartCauseOf` → `restart` → pending reminder → `AgentRunPlatformNotices` → `RestartReminderService.takePreface` → preface → `prefaceDelivered` | Implemented (integration test through a real `AgentRun`) |
-| BEH-004 | Crash, kill, power loss: reminder with the next input | live record without `shutdownAt` (≤ 2 s old) → cause `unexpected_stop` → as BEH-003 | Implemented |
+| REQ-006 / DEC-004 (DS-101) | Every status carries the run's running background task count | `agent-background-task-count.ts` → `AgentRun` (`getBackgroundTasksRunning` hook into `dispatchProcessedAgentRunEvents`; `getStatusSnapshot`) → `AgentTurnLifecycleState.observeBackgroundTasksRunning` → `LifecycleStatusEventTransformer.buildStatusEvent` / `dispatchCanonicalStatus` → `buildAgentStatusPayload` (count required) | Implemented; the example sequence is tested per event-stream runtime (Checks IMP-08) |
+| REQ-006 (DS-102) | Each route carries the count; a run state sums its own agents | stream mapper `normalizeStatusPayload`; presentation adapter (live and overlay) and `AgentPresentationStatusDetails`; `CollaborationAgentStatusDetails`; `TeamAgentStatusDetails` → team projector and Org view projector; `PairedAgentStatus` + `pairedAgentStatusFrame(status, count)`; peer channel `RemoteRunSummary.statuses`; `RunStatusService` (`RunAgentAnswer`, run state sum) | Implemented; one normalizer `backgroundTasksRunningOf` |
+| REQ-006 / DEC-004 (DS-103) | Idle + count > 0 → the background text, active dot, no Stop; Team rule | `utils/agentActivityPresentation.ts` (+ `agentActivityLabel`), `workspaceStatusDotPresentation.ts`, `useStatusVisuals.ts`, `teamActivityOf`; `runStatusStore` (`backgroundTasks`, `backgroundTasksOf`, `treeRowBackgroundTasksOf`, run state count); `AgentRunState.backgroundTasksRunning` (live statuses, Team and Org snapshots); desktop header and members panel, list rows, definition groups, tree rows (stable, transient, Org), Team dots; phone rows (`mobileRunListRows`, `MobileRunRow`) and run screen | Implemented; en and zh-CN |
+| REQ-007 / AC-006 / DEC-005 | Messages delivered at once (no change) | the input path is unchanged; `resolveAgentPrimaryAction` reads the status word only | Preserved; tested (server: a message to a run idle with tasks is dispatched at once; web: Send, never Stop) |
+| Codex / ACP | Unchanged (count 0) | `runningBackgroundTaskCount` → 0 for `snapshot` and `unsupported` | Tested |
 
-- Changes stayed within the requirements doc's Scope Guardrail: `Yes`. The standalone application host, runtime backends, the status shown (part 2) and the 338 completion notices are unchanged.
+- Changes stayed within the requirements doc's Scope Guardrail: `Yes`. Task cards (`ProjectTaskWorkers`) keep their own state vocabulary (not a DEC-004 surface); Codex idle runs with background terminals still show Idle (design risk).
 
 ## Implementation Choices Beyond The Design Text
 
-None changes approved behavior, an owner or a boundary. The stale R-7 cells of the Final File Responsibility Mapping were not followed; the spines, interface rows and ordering example were.
+1. **The count is read when the batch runs.** `dispatchProcessedAgentRunEvents` takes `getBackgroundTasksRunning` and calls it inside its queue right after the runtime lifecycle snapshot, so a batch's status events carry the count at the moment it is processed (R-13's per-batch granularity), not the count when it was enqueued.
+2. **One normalizer.** `backgroundTasksRunningOf(value)` (`agent-status-payload.ts`) makes anything but a positive safe integer 0; the builder, the stream mapper, the presentation adapter, the collaboration and team status details and the run-status service use it.
+3. **Each row reads the count from where its status word comes.** Tree rows (delegated runs, Team members in trees, an Org's own rows) and Team run rows read `runStatusStore` (the run-status feed): an agent by its agent run ID, a Team run by its run state, an Org's mounted Team by its agents' sum (`treeRowBackgroundTasksOf`). A listed agent run (desktop list, definition groups, phone top-level row) is not held on the feed; its status comes from its live context in the window, so `agentRunBackgroundTasks` reads that context (0 without one). The header and the members panel read the agent's `AgentRunState.backgroundTasksRunning`. No projection type (`RunTreeRow`, history read models) gained a field.
+4. **A history status keeps the count.** `applyMemberOrHistoryStatusSnapshot` (a stored or history status, which has no count) leaves the agent's count as its stream last told it, and sets 0 only for `offline`. Offline cleanup sets 0.
+5. **Surfaces keep their own words.** `agentActivityLabel(activity, t, ownLabel)` returns the background text for `background` and the surface's existing status wording otherwise (tree rows' lowercase `hierarchy.status.*`, Team dots' `team_status_*`, the phone's "Starting"/"Stopped"). The header (`useStatusVisuals`) now localizes all its words through new `workspace.agentActivity.*` keys; the en words are unchanged.
+6. **`data-status="background"`** on the Team dot and the phone row dot when they show background tasks (the probes and tests read it); it stays the status word otherwise.
+7. **Removal of the per-runtime helpers.** `ClaudeSession.hasRunningBackgroundTasks()`, `ClaudeBackgroundTaskRegistry.hasRunningTasks()`, `AgyBackgroundTaskMonitor.hasRunningTasks()` and autobyteus-ts `BackgroundProcessManager.hasRunning()` had no caller but their own tests after the backend boolean went; they are removed and their tests read the lists instead.
 
-1. **`reminders.claim()` is async** (the interface row shows it synchronous). The service reads its file once, at construction; every operation waits for that read, so a claim can never answer from an empty, not yet loaded service. The resumer awaits it; nothing else changes.
-2. **Time and version format of the reminder.** `The application restarted at 2026-11-17 22:20 UTC (reason: an update to v1.5.14).` DEC-003's sample shows `22:20`; the date and `UTC` are added because the agent does not know the node's time zone or date. A version without a leading `v` gets one, as in the sample.
-3. **The take's prune** drops pending reminders whose Task is closed (`ClosedTaskEntryFence.refusal`) or whose root history is not `present` (archived, terminated, gone): the REQ-005 rule, which the design wrote as "drop gone roots at the take".
-4. **A graceful stop with nobody to tell removes the record** instead of writing an empty list with `shutdownAt`. The next start then has nothing to take, which is what an empty list would give.
-5. **Runs whose status is `offline` or `error` are not recorded**, even with a background task: the record's `status` is one of `initializing`, `running`, `idle` (design shape).
-6. **The take is not wrapped in `shutdown.stage`.** It never throws, runs before the cleanup is installed and before anything listens, and a stop requested meanwhile is handled by the next `checkpoint()` with the record already turned into reminders.
-7. **Saving after a delivery is not awaited by the deliverer** (`prefaceDelivered` and `settleClaim` are synchronous on the port). The reminder leaves the service at once; a failed save is logged. A crash between a delivery and its save tells that run once more at the next start (at least once on a crash, exactly once otherwise).
+Deviations from a design principle decided during implementation:
 
-8. **IR-002 (DEC-008): the background-task line depends on the cause.** `unexpected_stop` gets the user's DEC-008 text word for word (tasks may still be running, untracked; check them with `ps` and the pids given); `update` and `restart` keep the DEC-003 line. No structural change: the cause is already on each pending reminder.
-
-Design-principle deviations decided during implementation: None.
+1. **The Org view's `agent_statuses` (`agentOrgAgentStatusDtoSchema`, collaboration-stream-contracts) carries the count too.** The inventory names the collaboration presentation `AGENT_STATUS` (route 2) but not its snapshot half: the Org view's status list, parsed strictly, which the Org stream projector (`agent-org-execution-view-projector.ts`) fills. Without the field the projector's output fails the schema; with it, an Org's member statuses read the same before and after a reconnect. Treated as part of route 2 (same shape, same owner); not a new route kind.
+2. **The peer summary route (route 5) is the peer channel's `RemoteRunSummary.statuses`,** built from `PairedAgentStatus` (`remote-run-view-provider.ts`) and read strictly by `remoteRunSummariesOf` (`peer-run-view-answers.ts`); it carries `backgroundTasksRunning`. The design's named schema, `remoteTaskExecutionSummaryDtoSchema`, was extended as the design says, but it has no producer or consumer in the repository (FU-005).
+3. **Producers the compiler found beyond the table:** `configured-agent-execution-handle.ts` (a member without a run: `{status: "offline", background_tasks_running: 0}`), `ConfiguredAgentStatusOverlay` (command overlays 0; otherwise the run's payload), `member-command-status-overlay-store.ts` (team member command overlays 0; fallback from the payload), `agent-org-agent-status-snapshot-projector.ts` and the team's dormant/offline snapshots (0), `stored-team-package-snapshot.ts` (0).
 
 ## Key Files Or Areas
 
-- `autobyteus-server-ts/src/restart-resume/`: `busy-run-record.ts` (shape, tolerant reader, `shutdownAt`), `busy-run-recorder.ts` (session ticks, final write, Codex inspection), `restart-cause.ts` (new), `restart-reminder-record.ts` (new), `restart-reminder-service.ts` (new), `restart-resumer.ts` (take, wake with claims), `restart-notice.ts` (DEC-003 text).
-- `autobyteus-server-ts/src/agent-execution/domain/agent-run.ts` (`hasRunningBackgroundTasks()`), `compositions/restart-resume-composition.ts`, `compositions/build-studio-server.ts` (reminder service created before the notice slot; slot order), `server-runtime.ts` (startup order).
-- Tests: `tests/unit/restart-resume/{busy-run-recorder,restart-resumer,restart-notice,restart-reminder-service}.test.ts`, `tests/integration/restart-resume/restart-reminder-preface.integration.test.ts`, `tests/unit/server-runtime-app-data-migration-gate.test.ts`, `tests/unit/agent-collaboration/configured-agent-execution-handle.test.ts`.
-- Docs: `docs/modules/restart_resume.md` (rewritten), `agent_execution.md`, `agent_team_execution.md`, `README.md`; `GLOSSARY.md` (restart reminder, busy run).
+- Server domain: `agent-execution/domain/{agent-background-task-count,agent-status-payload,agent-run,agent-run-termination}.ts`, `events/dispatch-processed-agent-run-events.ts`, `events/processors/lifecycle-status/{agent-turn-lifecycle-state,lifecycle-status-event-transformer}.ts`; `backends/agent-run-backend.ts` and the six backends (boolean removed).
+- Server routes: `services/agent-streaming/{agent-run-event-message-mapper,team-agent-status-websocket-projector,agent-org-execution-view-projector}.ts`; `agent-collaboration/execution/{run-status-service.ts,events/*,domain/collaboration-agent-execution-event.ts,backends/configured-agent-*.ts,remote/{paired-agent-access,peer-run-calls,remote-run-channel,remote-run-observation}.ts}`; `agent-team-execution/{domain/team-agent-status.ts,services/{team-paired-agent-access,member-command-status-overlay-store}.ts,…}`; `agent-org-execution/services/*`; `standalone-agent-run-root/services/standalone-paired-agent-access.ts`; `remote-collaboration/{inbound/remote-run-view-provider,channel/peer-run-view-answers}.ts`.
+- Contracts: agent presentation (`status` block, peer summary statuses), team stream (`teamAgentStatusDtoSchema`), collaboration stream (`run-status-dtos.ts`, `agent-org-execution-dtos.ts`); `dist/` rebuilt.
+- Web: `utils/agentActivityPresentation.ts` (new), `utils/workspaceStatusDotPresentation.ts`, `utils/workspaceTeamAggregateStatus.ts` (`teamActivityOf`), `composables/useStatusVisuals.ts`, `stores/runStatusStore.ts`, `types/agent/AgentRunState.ts`, `services/runStatus/agentRuntimeStatusState.ts`, `services/agentStreaming/{teamStreamDtoAdapters.ts,protocol/messageTypes.ts}`, `services/teamExecution/*`, `services/agentOrgExecution/agentOrgExecutionContext.ts`, status components (StatusDot, AgentStatusDisplay, TeamAggregateStatusDot, workspace rows, run list row, members panel, surfaces), phone (`mobileRunListRows.ts`, `mobileRunStatusLabel.ts`, `MobileRunRow.vue`, `MobileRunTargetView.vue`, `useMobileRunTree.ts`); localization `workspace.agentActivity.*` (en, zh-CN).
+- Docs: `autobyteus-server-ts/docs/modules/{agent_execution,antigravity_cli_runtime,restart_resume,remote_collaboration}.md`, `docs/design/agent_websocket_streaming_protocol.md`, `autobyteus-web/docs/agent_execution_architecture.md`.
 
 ## Important Assumptions
 
-- A server without a release stamp (run from `src`) never counts an update; its previous entries read as `restart` or `unexpected_stop` (design R-5).
+- A run's count is presentation only: nothing decides on it except the quiet check and part 1's recorder, which already decided on the same fact.
+- Peer nodes run the same release (DESIGN.md rule 9): a peer summary or frame without the count is malformed.
 
 ## Known Risks
 
-- R-4, R-5: Codex idle runs with background terminals are recorded only at a graceful stop (their background-task view is asynchronous); ACP runs only when mid-turn (REQ-004).
-- R-6: if the reminders cannot be saved at the take, the record is kept and the failure logged, but the new session's next change rewrites the record, so only the log line is certain (tested).
-- Choice 7: at least once, not exactly once, across a crash right after a delivery.
+- Codex idle with background terminals shows Idle (no live count; design risk).
+- A status event per task start/end adds `AGENT_STATUS` frames, bounded by task changes (design risk).
+- The count follows batches: between a task's start and the runtime's next batch the shown count can lag (R-13).
 
 ## Task Design Health Assessment Implementation Check
 
-- Reviewed change posture: Behavior Change
-- Reviewed root-cause classification: Missing Invariant
-- Reviewed refactor decision: `No Refactor Needed` beyond the extensions
+- Reviewed change posture: Behavior Change + bounded refactor
+- Reviewed root-cause classification: Shared Structure Looseness + Missing Invariant
+- Reviewed refactor decision: remove `AgentRunBackend.hasRunningBackgroundTasks()`; one derivation
 - Implementation matched the reviewed assessment: `Yes`
 - If challenged, routed as `Design Impact`: `N/A`
-- Evidence / notes: the recorder is the only writer of `busy-runs.json`, the resumer its only reader and remover, the reminder service the only owner of `restart-reminders.json`; `restart-resume` imports no runtime backend; the reminder service is created in the composition root and passed to the notice slot and the resumer (Principle 16).
+- Evidence / notes: `grep -rn "hasRunningBackgroundTasks\|hasRunningTasks\|hasRunning()" src` in the server and autobyteus-ts finds only `AgentRun.hasRunningBackgroundTasks()` (the run's facade over the derivation, used by the recorder).
 
 ## Legacy / Compatibility Removal Check
 
-- Backward-compatibility mechanisms introduced: `None` (the tolerant record reader is a generic reader policy: missing `backgroundTasks`/`shutdownAt` read as defaults, tested)
+- Backward-compatibility mechanisms introduced: `None` (strict contracts, required fields; rule 9)
 - Legacy old-behavior retained in scope: `No`
-- Dead code in the touched files and modules removed: `Yes` — the recorder's merge with an unconsumed record, `RestartResumer.resumeAfterUpdate()`, `RestartNoticeInput`, the old notice text, the 285 tests that asserted "a non-update restart notifies nothing" (rewritten to DEC-001 B). New constants without importers are module-private.
-- Dead code found elsewhere, added to `follow-ups.md`: None (FU-001 is an unrelated flaky test, not dead code)
-- Shared structures remain tight: `Yes` (`BusyRunEntry` gains one field; `PendingRestartReminder` holds facts only, the text is built at delivery)
+- Dead code in the touched files and modules removed: `Yes` — the backend boolean in the contract and six backends, the four per-runtime helpers (choice 7), the web's per-status switch tables (now the one mapping).
+- Dead code found elsewhere, added to `follow-ups.md`: FU-005 (an unused contract schema), FU-006 (a stale doc bullet), FU-007 (unmounted running-panel components with their own status colours)
+- Shared structures remain tight: `Yes` (one field per status shape, one word: `backgroundTasksRunning` / `background_tasks_running` by the contract's casing)
 - Canonical shared design guidance was reapplied during implementation: `Yes`
-- Deviations from a design principle decided during implementation: `None`
-- Changed source implementation files stayed within size guardrails: `Yes` — `build-studio-server.ts` 488 → 492, `agent-run.ts` 491 → 493 effective lines; largest delta `restart-reminder-service.ts` +131 (new file); none over 220.
+- Deviations from a design principle decided during implementation: the two route findings above (deviations 1 and 2); no principle is set aside.
+- Changed source implementation files stayed within size guardrails: `Yes` — `agent-run.ts` 465, `configured-agent-execution-handle.ts` 460 effective lines (non-blank, non-comment); no source file's delta over 220 (largest: `utils/agentActivityPresentation.ts`, new, +67; `run-status-service.ts` +41/−27).
 - Notes: none.
 
 ## Persisted Data Transition Check (When Applicable)
 
-- Approved decision: `busy-runs.json` `Directly Usable — No Migration`; `restart-reminders.json` `Not Affected` (new transient state)
-- Design-spec decision reference: "Persisted Data / State Transition Decision"
+- Approved decision: `Not Affected` (the count is live only; an offline run reads 0)
 - Implementation follows the approved decision: `Yes`
-- Direct-use evidence: `restart-reminder-service.test.ts` "readBusyRunRecord … reads a record of the release before autobyteus-448" (mid-turn entries, `backgroundTasks: false`, `shutdownAt: null`; another release → `update`, woken as that release intended). An unreadable reminders file is logged and replaced (tested).
-- Deviation from the reviewed transition decision: `None`
 
 ## Environment Or Dependency Notes
 
-- `pnpm install --frozen-lockfile` and `pnpm -C autobyteus-server-ts prebuild` were run in this worktree. No dependency change.
-- The app restarted once during implementation (an update to 1.5.13-beta.8); the work in progress was on disk and is committed; nothing was lost.
+- No dependency change. Contract packages rebuilt (`dist/` committed).
+- The machine ran another worktree's test suites at the same time (load average up to 187); timing-sensitive failures are classified in the Checks.
 
 ## Checks Run
 
-Evidence files are in `tickets/in-progress/background-task-restart-notice/evidence/`.
+Evidence files are in `tickets/in-progress/background-task-restart-notice/evidence/`. Environment: macOS 26 arm64, node 22.23.1; another worktree's suites ran at the same time (load average 70 to 187).
 
-| Check ID | Command Or Steps | Commit Tested | Environment | Code It Exercises | Behavior / Criteria IDs | Result | Evidence Files | Look For |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| IMP-01 | `pnpm -C autobyteus-server-ts typecheck` | `d5e9f350cf` | macOS 26 arm64, node 22.23.1 | server src and tests | — | Pass | `evidence/IMP-01-server-typecheck.log` | `production errors: 0; test-file errors: 1012 in 316 files (baseline 1012 in 316 files)`, `[typecheck] PASS` |
-| IMP-02 | `pnpm -C autobyteus-server-ts exec vitest run tests/unit/restart-resume tests/integration/restart-resume tests/unit/server-runtime-app-data-migration-gate.test.ts tests/unit/agent-collaboration/configured-agent-execution-handle.test.ts --no-watch` | `d5e9f350cf` | macOS | recorder, record reader, cause rule, reminder record and service, resumer (take, wake, claims), notice text, startup order, preface through a real `AgentRun` and `AgentRunPlatformNotices`, `AgentRun.hasRunningBackgroundTasks()` | BEH-001 to 004; REQ-001 to 005; AC-001 to AC-004 (local level); the exactly-once paths named by the review (input first; wake first with input during the post; NOT_FIRST returned; failed post); MP-002 (nothing written before `startSession()`) | Pass | `evidence/IMP-02-restart-resume-tests.log` | `Test Files  10 passed (10)`, `Tests  119 passed (119)` |
-| IMP-03 | `pnpm -C autobyteus-server-ts test:unit` (full) | `d5e9f350cf` | macOS, machine load average 66 to 102 | all server unit tests | regression | Pass for this change; 4 failures in an unrelated watcher test, cause recorded (FU-001) | `evidence/IMP-03-server-unit-full.log` | `Tests  4 failed | 8237 passed | 9 skipped (8250)`; the 4 are `agent-package-folder-watcher.test.ts` `Hook timed out in 10000ms` (see its cause analysis) |
+| Check ID | Command Or Steps | Commit Tested | Code It Exercises | Behavior / Criteria IDs | Result | Evidence Files | Look For |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| IMP-05 | `pnpm -C <pkg> test` for the agent presentation, team stream and collaboration stream contracts (rebuilds `dist/`) | head | strict schemas with the required count (status block, peer summary statuses, team member status, run-status agent entry and run state, Org view status) | REQ-006 (wire) | Pass | `IMP-05-contracts.log` | `# pass 23`, `# pass 14`, `# pass 37`, `dist unchanged after rebuild` |
+| IMP-06 | `pnpm -C autobyteus-server-ts typecheck` | head | server src and tests | — | Pass | `IMP-06-server-typecheck.log` | `production errors: 0; test-file errors: 1012 in 316 files (baseline 1012 in 316 files)`, `[typecheck] PASS` |
+| IMP-07 | `pnpm -C autobyteus-server-ts test:unit` (full) | `bffbfad334` minus the double fixes | all server unit tests | regression | 7 failures: 6 were doubles/fixtures without the count or the inspection (fixed in `bffbfad334`/`d8c369436f`, rerun in IMP-08); 1 is FU-001 (folder watcher hook timeout under load) | `IMP-07-server-unit-full.log` | `Tests  7 failed \| 8236 passed`; the fixed files: `agent-run-memory-recorder`, `remote-run-observations-route`, `live-e2e-harness` |
+| IMP-08 | `vitest run` of every server unit and integration directory part 2 touches (agent-execution, agent-collaboration, team, org, agent-streaming, remote-collaboration, restart-resume, run-history, standalone root, memory, REST, secret-management; integration agent, agent-team-execution, agent-execution, restart-resume, background-task-notices) | head | the derivation, the lifecycle state, every status producer and route, `RunStatusService` (count and sum), the example sequence through a scripted backend, the scripted Antigravity backend and the native backend with its real process manager, Codex/ACP 0, AC-006 at the `AgentRun` | REQ-006, REQ-007, AC-005 (local), AC-006 | Pass for this change: `Tests  8 failed \| 3777 passed`, all 8 in `package-auto-refresh.integration.test.ts` (the `fs.watch` environment failure of IMP-09, pulled in by the `tests/integration/agent` prefix) | `IMP-08-server-affected-suites.log`, `IMP-08b-new-tests-verbose.log` | `Test Files  1 failed \| 467 passed`; verbose: the six example-sequence cases, the run-status sum case and `agent-websocket.integration.test.ts` ✓, `Tests  29 passed (29)` |
+| IMP-09 | `vitest run tests/integration` (in two parts) and a rerun of the two watcher files alone | `d8c369436f` | server integration | regression | 13 failures, all in `file-system-watcher.integration.test.ts` and `package-auto-refresh.integration.test.ts` (time-outs and late/lost `fs.watch` events), the same 13 part 1's API/E2E recorded on this machine (API-01: `fseventsd` saturated); no watcher, file-explorer or package source changed | `IMP-09a-…`, `IMP-09b-…`, `IMP-09c-watcher-rerun.log` | `Tests  13 failed \| 411 passed` (09b); 09a's 2 `agent-websocket` failures were expected payloads without the count, fixed in `d8c369436f` and passing in IMP-08 |
+| IMP-10 | `pnpm -C autobyteus-web typecheck` | head | web and its cross-package tests | — | Pass | `IMP-10-web-typecheck.log` | `production errors: 0; test-file errors: 87 in 37 files (baseline 87 in 37 files)`, `[typecheck] PASS` |
+| IMP-11 | `pnpm -C autobyteus-web guard:web-boundary`, `guard:localization-boundary`, `audit:localization-literals` | head | boundaries and localization | localization (en, zh-CN) | Pass | `IMP-11-web-guards.log` | `Passed.` twice; the audit exits 0 |
+| IMP-12 | `pnpm -C autobyteus-web test:nuxt run` (full), then the 11 failing files after their fixtures got the count (`d1cf47a298`) | `a69dee806d`, rerun at `d1cf47a298` | the mapping, Team rule, store counts, run state, phone rows, header, the run input (Send, never Stop), every status consumer | REQ-006, AC-005 (web), AC-006 (no Stop) | Pass after fixture fixes: the 79 failures were status fixtures and store doubles without the count (strict parsing at run time), plus one voice-input test that passed on rerun | `IMP-12a-web-unit-full.log`, `IMP-12b-web-unit-rerun.log` | full: `agentActivityPresentation.spec.ts (5 tests)`, `WorkspaceRowsBackgroundTasks.spec.ts (4 tests)`, `MobileRunList.spec.ts (8 tests)` ✓; rerun `Tests  118 passed (118)` |
+| IMP-13 | `pnpm -C autobyteus-web test:e2e:team-status-live --cases TS-008 --output-dir <fresh>` (built server, Nuxt dev, headless Chrome, scripted AGY `BACKGROUND_STEP`) | `e259944b13` | the desktop list row, the TEAMS run row (one member background, one idle), the header, the composer, the return to Idle | AC-005, AC-006 (desktop) | Pass (the first run failed on the agent run row's dot, fixed in `e259944b13`) | `IMP-13-probe-TS-008/` | `evidence.json` `"status": "background"`, `"agentRowDot": "… bg-blue-500 mr-2"`, `"header": "Background task running"`, `"stop": 0`, `"after": {"header": "Idle"`; `first-run-fail-evidence.json` |
+| IMP-14 | `node autobyteus-web/tests/e2e/mobile-shell-probe.mjs --cases=MSP-59 --output-dir=<fresh>` (production phone bundle, paired node, scripted AGY) | `e259944b13` | the phone row and run screen, the composer, the return to Idle | AC-005, AC-006 (phone) | Pass | `IMP-14-probe-MSP-59/` | `"row": {"status": "background", … "label": "…, Background task running"}`, `"stop": 0`, `"after": "Idle"` |
 
-| IMP-04 | `pnpm -C autobyteus-server-ts typecheck`; `pnpm -C autobyteus-server-ts exec vitest run tests/unit/restart-resume tests/integration/restart-resume tests/unit/server-runtime-app-data-migration-gate.test.ts tests/unit/agent-collaboration/configured-agent-execution-handle.test.ts --no-watch` | `b78555d7bb` | macOS | `restart-notice.ts` (cause-specific background-task line) and everything IMP-02 covers | REQ-002 (DEC-008), BEH-004 | Pass | `evidence/IMP-04-dec008-rerun.log` | `[typecheck] PASS`; `Tests  120 passed (120)`; `✓ … DEC-008: a mid-turn run after an unexpected stop gets the interrupted line and the still-running line, never the stopped line` |
-- IR-002 changes only the reminder text: IMP-01 to IMP-03 stay at `d5e9f350cf`; IMP-04 reruns the typecheck and every test that reaches the text. RR-02 of the API/E2E suite asserted the old line after a SIGKILL; its assertion now expects the DEC-008 line (not run here: it needs the built server, API/E2E reruns it).
-- Not run, and why: the live restart E2E on an isolated node (AC-001 before/after on base `4cbf9e7881`, AC-002, AC-003 per runtime, AC-004) and the restart and shutdown E2E fixtures: they need a built isolated instance and a real or scripted model (API/E2E). Server `test:integration` as a whole: only this ticket's integration file was run.
+- Baseline fix (TESTING.md rule 9): `b2de4f9d1f` — `autobyteus-agent-presentation-contracts/tests/agent-runtime-names.test.mjs` lacked `deepseek_harness` since autobyteus-387; its own commit.
+- Not run, and why: the live Claude case (its live gate and a paid model) and per-runtime checks on an isolated desktop instance; the two-node peer case beyond MSP-59's paired node; the server E2E suite. These are API/E2E's.
 
 ## Frontend Rendered-Result Check (When Applicable)
 
-`Not Applicable`: part 1 changes no frontend; the reminder is shown by the existing system-notice card (same sender as before).
+Done with the two probe cases (IMP-13, IMP-14) and their screenshots, which I looked at:
+
+- Desktop (`ts008-agent-background.png`): the header reads "● Background task running" (blue, steady) on one line; the run title truncates. The run's row and the Team run row show the blue dot; the composer offers Send, no Stop. The first render wrapped the header text onto two lines; `e259944b13` keeps it on one line (`whitespace-nowrap`, the status block does not shrink).
+- Phone (`MSP-59-background-run-screen.png`): the run screen's second line reads "Background task running" under the name with the blue dot; Send, no Stop. The row's accessible name ends with "Background task running". `MSP-59-background-row.png` is scrolled past the row (the probe reads the row's attributes).
+- Both return to Idle (green) when the task exits (`ts008-idle-again.png`, `MSP-59-idle-again.png`).
+- Observed, not changed: the desktop Background Tasks panel header reads "Current count unavailable" for the Antigravity run while its task runs (the panel's own inspection, autobyteus-473); API/E2E may want to look.
 
 ## Downstream Coverage Hints / Suggested Scenarios
 
-- AC-001: native agent idle on `run_bash(run_in_background: true, "sleep 600")`; graceful restart on base (no message) vs this build (reminder `reason: a restart` with the next input); the same after a kill (`unexpected stop`) and after an update (woken).
-- AC-002: update restart with a mid-turn agent that also has a background task: one reminder with the interrupted-turn line.
-- AC-003: Claude and Antigravity idle with a background task; Codex at a graceful stop; Grok Build / DeepSeek only when mid-turn.
-- AC-004: after an update, input before the wake (the input carries it, no wake follows); a closed Task and an archived root get none.
-- Crash timing: the record is at most 2 s old (`busy-runs.json` without `shutdownAt` while the node runs).
+- AC-005 per runtime on an isolated node: native `run_bash(run_in_background: true, "sleep 60")` (scripted or live), Claude `Bash(run_in_background)` (live gate), Antigravity daemon (scripted `BACKGROUND_STEP`): desktop and phone list rows and headers show "Background task running" with the active dot and no Stop; back to "Idle" when it ends; a turn in progress still shows "Running".
+- A Team with one member idle with a background task and another idle: the Team row shows the background text; with a failed member too, still the background text (busy > background > error).
+- Reload and reconnect while a task runs: the snapshot carries the count.
+- A peer run (two nodes) idle with a background task: the delegator's tree shows it (paired frame and summary).
+- Codex idle with a background terminal: Idle; ACP: unchanged.
+- zh-CN: "后台任务运行中" / "{count} 个后台任务运行中".
 
 ## API / E2E / Executable Coverage Investigation And Execution Still Required
 
-Yes: AC-001 to AC-004 on an isolated node with real runtimes. The checks above do not substitute for them.
+Yes: AC-005 and AC-006 per runtime on an isolated node, the live Claude case under its gate, and the two-node peer case. The checks above do not substitute for them.

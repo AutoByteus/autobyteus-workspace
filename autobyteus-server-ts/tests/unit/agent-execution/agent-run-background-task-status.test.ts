@@ -36,7 +36,7 @@ const contextOf = (runId: string, runtimeKind: RuntimeKind, runtimeContext: unkn
   runId, config: new AgentRunConfig({ runtimeKind, agentDefinitionId: "def", llmModelIdentifier: "m", autoExecuteTools: false,
     workspaceId: null, llmConfig: null, memoryDir: null }), runtimeContext: runtimeContext as never,
 });
-const runOver = (context: AgentRunContext, backend: unknown) => {
+const runOver = (context: AgentRunContext<unknown>, backend: unknown) => {
   const run = new AgentRun({ providerInputNormalizer: { normalizeForProvider: (dispatch: AgentRunBackendInputDispatch) => dispatch },
     context, backend: backend as never, commandObservers: [] });
   const published: AgentRunEvent[] = [];
@@ -102,7 +102,7 @@ describe("the example sequence through a scripted event-stream backend", () => {
 
   it("a message to a run idle with background tasks is dispatched at once, not held (AC-006, DEC-005)", async () => {
     const context = contextOf("run-msg", RuntimeKind.CLAUDE_AGENT_SDK);
-    const dispatchUserInput = vi.fn(async () => ({ forwarded: true as const, turnId: "turn-2" }));
+    const dispatchUserInput = vi.fn(async (_dispatch: AgentRunBackendInputDispatch) => ({ forwarded: true as const, turnId: "turn-2" }));
     const backend = {
       runId: "run-msg", runtimeKind: context.config.runtimeKind,
       compactionRecovery: { kind: "unsupported" } as const, backgroundTaskNotices: { kind: "unsupported" } as const,

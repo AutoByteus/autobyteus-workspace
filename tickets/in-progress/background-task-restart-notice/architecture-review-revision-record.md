@@ -7,6 +7,8 @@
 | ARCH-REV-001 | Round 1 / Architecture Design Complete, part 1 (Medium, High), 2026-11-17 | SR-001, SR-002 | N/A | Fail (Design Impact; one Requirement Gap) | AR-001, AR-002, AR-003 |
 | ARCH-REV-002 | Round 2 / SR-003 revision for ARCH-REV-001, 2026-11-17 | SR-003 | Fail | Pass | AR-001, AR-002, AR-003 resolved |
 | ARCH-REV-003 | Round 3 / SR-004: DEC-008 reminder wording after an unexpected stop (from CRR-002 / API-E2E F-1), 2026-11-17 | SR-004 | Pass | Pass | None |
+| ARCH-REV-004 | Round 4 / part 2 (status shown), Architecture Design Complete Large / High, 2026-11-17 | SR-005 | Pass (part 1) | Fail (Design Impact) | AR-004 |
+| ARCH-REV-005 | Round 5 / SR-006 revision for ARCH-REV-004 (part 2), 2026-11-17 | SR-006 | Fail | Pass | AR-004 resolved |
 
 ## Revision Entries
 
@@ -73,3 +75,46 @@ None open (AR-001 to AR-003 were resolved in ARCH-REV-002).
 - Material classification changes: None
 - Recommended recipient: implementation engineer (primary); Solution Designer (informational)
 - Remaining risks or uncertainty: R-8 (REQ-002, BEH-001 and UC-001 text still say tasks "were stopped" for every cause; DEC-008 governs the text); R-3 to R-7 as before
+
+### ARCH-REV-004 — Part 2 initial review: the count must reach every status producer
+
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/background-task-restart-notice/tickets/in-progress/background-task-restart-notice/design-review-report.md` (now part 2)
+- Review round and trigger: round 4; `architecture-design-handoff.md` "Round 4 (SR-005) — part 2"
+- Triggering role, report path, and finding IDs: Solution Designer, `design-spec.md` part 2 (SR-005); N/A
+- Relevant solution revision IDs: SR-005
+- Prior authoritative decision: Pass (ARCH-REV-003, part 1)
+- Current authoritative decision: `Fail`, `Design Impact`
+- What changed in the review result: baseline for part 2.
+  - Pass: the one derivation, `AgentRun` as owner, the removal of the backend boolean (native and Claude equivalence checked), the five routes, the server-side sum, the one web mapping, and Stop and input untouched.
+  - Server `AGENT_STATUS` readers checked: none breaks on a count-only status change.
+  - AR-004: `AGENT_STATUS` payloads are built in six places, including the lifecycle-status transformer at every pipeline event and turn end, and snapshots. Strict DTO frames have three more producers. With the count only in `dispatchCanonicalStatus`, the main scenario (task started in a turn, turn ends) still shows "Idle".
+
+#### Prior Finding Resolution
+
+None open (part 1 findings AR-001 to AR-003 resolved in ARCH-REV-002).
+
+- New or remaining finding IDs: AR-004
+- Material classification changes: None
+- Recommended recipient: Solution Designer
+- Remaining risks or uncertainty: R-9 to R-12 in the report
+
+### ARCH-REV-005 — Part 2 re-review: Pass
+
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/background-task-restart-notice/tickets/in-progress/background-task-restart-notice/design-review-report.md`
+- Review round and trigger: round 5; Solution Designer's SR-006 (`architecture-design-handoff.md` "Round 5 (SR-006)")
+- Triggering role, report path, and finding IDs: Solution Designer, `solution-revision-record.md` SR-006; AR-004
+- Relevant solution revision IDs: SR-006
+- Prior authoritative decision: Fail (ARCH-REV-004)
+- Current authoritative decision: `Pass`
+- What changed in the review result: the count lives in the run-owned `AgentTurnLifecycleState`, set by `AgentRun` from the one derivation before each source batch and snapshot. `buildAgentStatusPayload` requires it. Every producer is listed with its count source, and the example sequence covers turn end and reload. The view is checked to update before its event for native, Claude (`publish` sets the view first; `clear` publishes `stopped`) and AGY.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| AR-004 | Open | Resolved | SR-006; design DS-101, "Status Payload Producers And Their Count", "Example Sequence", Ownership | Producer table matches the `buildAgentStatusPayload(` call sites and the three DTO producers found in round 4; the turn-end status now comes from the state holding the count; the snapshot recomputes it |
+
+- New or remaining finding IDs: None
+- Material classification changes: None
+- Recommended recipient: implementation engineer (primary); Solution Designer (informational)
+- Remaining risks or uncertainty: R-9, R-11, R-13 in the report

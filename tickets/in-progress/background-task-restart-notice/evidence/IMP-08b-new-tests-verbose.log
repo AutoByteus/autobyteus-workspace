@@ -1,0 +1,225 @@
+
+ RUN  v4.1.12 /Users/normy/autobyteus_org/autobyteus-worktrees/background-task-restart-notice/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/background-task-restart-notice/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+stdout | tests/unit/agent-execution/agent-run-background-task-status.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:45821) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/unit/agent-execution/agent-run-background-task-status.test.ts > the example sequence through a scripted event-stream backend > running 0 → running 1 → idle 1 (Background task running) → snapshot idle 1 → idle 0 → running 0 (wake); input dispatched at once 268ms
+ ✓ tests/unit/agent-execution/agent-run-background-task-status.test.ts > the example sequence through a scripted event-stream backend > a message to a run idle with background tasks is dispatched at once, not held (AC-006, DEC-005) 1ms
+stderr | tests/unit/agent-execution/agent-run-background-task-status.test.ts > the native backend with its real process manager (event-stream: run_bash background processes) > an idle run's status follows its background process: idle 1 while it runs, idle 0 when it ends; a reload reads the same
+AgentEventStream for 'agent-native': Notifier not available. No events will be streamed.
+
+ ✓ tests/unit/agent-execution/agent-run-background-task-status.test.ts > the example sequence through the scripted Antigravity backend (event-stream: its daemon steps) > turn starts → daemon starts → turn ends (idle 1) → reload (idle 1) → daemon exits (idle 0) → next input (running 0) 2151ms
+ ✓ tests/unit/agent-execution/agent-run-background-task-status.test.ts > the native backend with its real process manager (event-stream: run_bash background processes) > an idle run's status follows its background process: idle 1 while it runs, idle 0 when it ends; a reload reads the same 1623ms
+ ✓ tests/unit/agent-execution/agent-run-background-task-status.test.ts > runtimes without a live view (Codex snapshot, ACP unsupported) are unchanged > codex: every status carries 0, as the quiet check reads it 1ms
+ ✓ tests/unit/agent-execution/agent-run-background-task-status.test.ts > runtimes without a live view (Codex snapshot, ACP unsupported) are unchanged > acp: every status carries 0, as the quiet check reads it 0ms
+stdout | tests/integration/agent/agent-websocket.integration.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:46245) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > connects to an inactive identity without restore, then publishes initializing before slow restore and SEND_MESSAGE ACK
+Agent websocket attached for run agent-e2e
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > connects to an inactive identity without restore, then publishes initializing before slow restore and SEND_MESSAGE ACK
+Created agent session 6bf958f1-4f16-4376-a7ec-b9943a8c5817 for run agent-e2e
+Agent WebSocket connected: session=6bf958f1-4f16-4376-a7ec-b9943a8c5817, run=agent-e2e
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > does not downgrade an already-running standalone send to initializing
+Closed agent session 6bf958f1-4f16-4376-a7ec-b9943a8c5817
+Agent WebSocket disconnected: 6bf958f1-4f16-4376-a7ec-b9943a8c5817
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > does not downgrade an already-running standalone send to initializing
+Agent websocket attached for run agent-e2e
+Created agent session c6868018-5a9f-4c2a-9c62-e528b9b2182b for run agent-e2e
+Agent WebSocket connected: session=c6868018-5a9f-4c2a-9c62-e528b9b2182b, run=agent-e2e
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > activates a prepared identity through SEND_MESSAGE rather than websocket connect
+Closed agent session c6868018-5a9f-4c2a-9c62-e528b9b2182b
+Agent WebSocket disconnected: c6868018-5a9f-4c2a-9c62-e528b9b2182b
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > activates a prepared identity through SEND_MESSAGE rather than websocket connect
+Agent websocket attached for run agent-e2e
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > activates a prepared identity through SEND_MESSAGE rather than websocket connect
+Created agent session b0d19882-52ce-400c-8e0e-277cd3180bfe for run agent-e2e
+Agent WebSocket connected: session=b0d19882-52ce-400c-8e0e-277cd3180bfe, run=agent-e2e
+
+ ✓ tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > connects to an inactive identity without restore, then publishes initializing before slow restore and SEND_MESSAGE ACK 202ms
+ ✓ tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > does not downgrade an already-running standalone send to initializing 20ms
+ ✓ tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > activates a prepared identity through SEND_MESSAGE rather than websocket connect 31ms
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > returns a duplicate ACK for the same in-flight command id and hands a different id to the run's input admission
+Closed agent session b0d19882-52ce-400c-8e0e-277cd3180bfe
+Agent WebSocket disconnected: b0d19882-52ce-400c-8e0e-277cd3180bfe
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > returns a duplicate ACK for the same in-flight command id and hands a different id to the run's input admission
+Agent websocket attached for run agent-e2e
+Created agent session 06483f03-6b39-409f-aa29-a36ad7e4834c for run agent-e2e
+Agent WebSocket connected: session=06483f03-6b39-409f-aa29-a36ad7e4834c, run=agent-e2e
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > publishes error status and failed ACK when prepared activation fails
+Closed agent session 06483f03-6b39-409f-aa29-a36ad7e4834c
+Agent WebSocket disconnected: 06483f03-6b39-409f-aa29-a36ad7e4834c
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > publishes error status and failed ACK when prepared activation fails
+Agent websocket attached for run agent-e2e
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > publishes error status and failed ACK when prepared activation fails
+Created agent session ff38da46-5e65-4676-a109-d64d4b7cdcd8 for run agent-e2e
+Agent WebSocket connected: session=ff38da46-5e65-4676-a109-d64d4b7cdcd8, run=agent-e2e
+
+stderr | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > publishes error status and failed ACK when prepared activation fails
+SEND_MESSAGE command not accepted for agent run agent-e2e: [ACTIVATION_FAILED] Failed to prepare agent run 'agent-e2e'.
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > returns exact same-socket interrupt acknowledgements without publishing lifecycle state
+Closed agent session ff38da46-5e65-4676-a109-d64d4b7cdcd8
+Agent WebSocket disconnected: ff38da46-5e65-4676-a109-d64d4b7cdcd8
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > returns exact same-socket interrupt acknowledgements without publishing lifecycle state
+Agent websocket attached for run agent-interrupt-ack
+Created agent session 59f07c11-9b54-4bc5-ab5f-2dcb3a8634d9 for run agent-interrupt-ack
+Agent WebSocket connected: session=59f07c11-9b54-4bc5-ab5f-2dcb3a8634d9, run=agent-interrupt-ack
+
+stderr | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > returns exact same-socket interrupt acknowledgements without publishing lifecycle state
+INTERRUPT_GENERATION rejected for agent run agent-interrupt-ack: [NO_ACTIVE_TURN] The provider has no active turn to interrupt.
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > keeps non-SEND commands active-only after identity-only connect
+Closed agent session 59f07c11-9b54-4bc5-ab5f-2dcb3a8634d9
+Agent WebSocket disconnected: 59f07c11-9b54-4bc5-ab5f-2dcb3a8634d9
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > keeps non-SEND commands active-only after identity-only connect
+Agent websocket attached for run agent-e2e
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > keeps non-SEND commands active-only after identity-only connect
+Created agent session 05908d43-ffe7-4005-9f21-ba0c6a7f8d3a for run agent-e2e
+Agent WebSocket connected: session=05908d43-ffe7-4005-9f21-ba0c6a7f8d3a, run=agent-e2e
+
+stderr | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > keeps non-SEND commands active-only after identity-only connect
+INTERRUPT_GENERATION rejected for missing agent run agent-e2e.
+
+ ✓ tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > returns a duplicate ACK for the same in-flight command id and hands a different id to the run's input admission 38ms
+ ✓ tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > publishes error status and failed ACK when prepared activation fails 16ms
+ ✓ tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > returns exact same-socket interrupt acknowledgements without publishing lifecycle state 29ms
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > returns SESSION_NOT_READY when command arrives before connect handshake
+Closed agent session 05908d43-ffe7-4005-9f21-ba0c6a7f8d3a
+Agent WebSocket disconnected: 05908d43-ffe7-4005-9f21-ba0c6a7f8d3a
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > returns SESSION_NOT_READY when command arrives before connect handshake
+Agent websocket attached for run any-agent
+
+ ✓ tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > keeps non-SEND commands active-only after identity-only connect 17ms
+ ✓ tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > returns SESSION_NOT_READY when command arrives before connect handshake 16ms
+ ✓ tests/unit/agent-collaboration/execution/run-status-service.test.ts > RunStatusService (SR-082, SR-083) > a local run's own status, and offline when it is not running; one connection serves many runs 5ms
+ ✓ tests/unit/agent-collaboration/execution/run-status-service.test.ts > RunStatusService (SR-082, SR-083) > a run's end sets its agents offline; a status the run's delegator would show is never read (no delegator here at all) 1ms
+ ✓ tests/unit/agent-collaboration/execution/run-status-service.test.ts > RunStatusService (SR-082, SR-083) > a subscription is exact: a change before the synchronous step is in the snapshot, one after it follows it, none is lost or repeated 1ms
+ ✓ tests/unit/agent-collaboration/execution/run-status-service.test.ts > RunStatusService (SR-082, SR-083) > a peer run's status from its handle; its observation is shared and released with the last subscriber 1ms
+ ✓ tests/unit/agent-collaboration/execution/run-status-service.test.ts > RunStatusService (SR-082, SR-083) > CR-461-085: a peer run whose link ended reads offline and its node is asked once (AR-403); Retry observes it again, asks again, and its status follows 2ms
+ ✓ tests/unit/agent-collaboration/execution/run-status-service.test.ts > RunStatusService (SR-082, SR-083) > CR-461-094: a Retry whose node answers brings that node back: every ended observation on it is observed again (its other runs too); another node's waits 6ms
+ ✓ tests/unit/agent-collaboration/execution/run-status-service.test.ts > RunStatusService (SR-082, SR-083) > SR-090: a Retry for a node that stays down settles: its state is told again, unchanged; concurrent Retries make one call 3ms
+ ✓ tests/unit/agent-collaboration/execution/run-status-service.test.ts > RunStatusService (SR-082, SR-083) > SR-090: a Retry for a node that comes back settles with its answer; it opens the ended observation again 1ms
+ ✓ tests/unit/agent-collaboration/execution/run-status-service.test.ts > RunStatusService (SR-082, SR-083) > SR-090: a client retries only the peer runs it holds; a run it does not hold is not asked 2ms
+ ✓ tests/unit/agent-collaboration/execution/run-status-service.test.ts > RunStatusService (SR-082, SR-083) > CR-461-107: a client that newly shows a peer run whose observation ended asks its node again once; a live observation is not asked 6ms
+ ✓ tests/unit/agent-collaboration/execution/run-status-service.test.ts > RunStatusService (SR-082, SR-083) > RUN_TREE_CHANGED reaches the run's subscribers only 1ms
+ ✓ tests/unit/agent-collaboration/execution/run-status-service.test.ts > RunStatusService (SR-082, SR-083) > SR-086 G-A4: a team's and an org's own status is computed by their root's node from their own agents by the one team rule, never by a client 0ms
+ ✓ tests/unit/agent-collaboration/execution/run-status-service.test.ts > RunStatusService (SR-082, SR-083) > autobyteus-448: each agent's background task count is answered and followed; a Team's run state sums its own agents' counts 0ms
+ ✓ tests/unit/agent-collaboration/execution/run-status-service.test.ts > RunStatusService (SR-082, SR-083) > SR-086 G-A2: a run the node does not know is answered not_found, with no status; it is answered when its root registers 2ms
+ ✓ tests/unit/agent-collaboration/execution/run-status-service.test.ts > RunStatusService (SR-082, SR-083) > SR-086 G-A3, G-B2: a peer run's node's answer is kept with its status: unreachable with the node's name; a changed answer tells its trees 8ms
+
+ Test Files  3 passed (3)
+      Tests  29 passed (29)
+   Start at  17:04:39
+   Duration  26.10s (transform 12.73s, setup 274ms, import 19.98s, tests 4.46s, environment 0ms)
+

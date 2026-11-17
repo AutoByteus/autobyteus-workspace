@@ -8,6 +8,8 @@
 | SR-002 | Design | Part 1 design after approval | N/A | Requirements Approved | Design Ready (part 1) | REQ-001-005 | `design-spec.md`; Medium / High |
 | SR-003 | Mixed | ARCH-REV-001 (Fail) | AR-001, AR-002, AR-003 | Design Ready (SR-002) | Design Ready (SR-003) | REQ-005, AC-001, AC-003, AC-004 wording | one delivery path; durable take; wording |
 | SR-004 | Requirements + Design | CRR-002 / API-E2E F-1 | CR-001 | Approved; Design Ready (SR-003) | Approved (user, DEC-008); Design Ready (SR-004) | REQ-002 (wording for unexpected stop), BEH-004 | cause-specific line |
+| SR-005 | Design | Part 2 design (DEC-007), after part 1 delivered | N/A | Part 1 delivered | Design Ready (part 2) | REQ-006, REQ-007, AC-005, AC-006 | Large / High |
+| SR-006 | Design | ARCH-REV-004 (Fail) | AR-004, R-10, R-12 | Design Ready (SR-005) | Design Ready (SR-006) | REQ-006, AC-005 | count in the run-owned lifecycle state; required in the payload builder |
 
 ## Revision Entries
 
@@ -48,3 +50,25 @@
 - Status: resolved. The user decided DEC-008 on 2026-11-17: option (a) with the improved wording (survivors may still run and are no longer tracked; check with `ps` and the pids from the conversation; restart to track, or continue). He declined recording and stopping survivors in this ticket. Requirements `Approved` again at SR-004; design-spec SR-004 (wording only, `restart-notice.ts`); FU-004 stays a follow-up; FU-002 stays a follow-up
 - Route: revised package, still Medium / High → architecture reviewer per the handoff rules; then implementation (text change), code review, API/E2E rerun of RR-02
 - Review result 2026-11-17: ARCH-REV-003 Pass on SR-004; the reviewer routed it to `/implementation_engineer` (informational, no duplicate handoff). Non-blocking R-8 applied: desired outcome, BEH-001, UC-001 and REQ-002 text aligned with DEC-003/DEC-008 (wording only, no behavior change).
+
+### Part 1 delivered — receipt verified (2026-11-17)
+
+- Delivery DR-001 (`/delivery_engineer`): part 1 merged `e479be4539` + record `895cf3992d` on `origin/personal`; ticket head `c78a76c73e` is an ancestor; user checkout and ticket branch at `895cf3992d`; finalize branch deleted; ticket and worktree kept for part 2 (DEC-007).
+- Checked: `evidence/API-R2-restart-suite/RR-02.json` carries the DEC-008 line with survivors listed; coverage report AC-001..AC-004 Pass (RR-01..RR-06); release decision `No release`; user check not needed. Coverage 94% (FU-002 only, kept as a follow-up).
+- Delivery's note: the reminder shows time as `2026-11-17 12:10 UTC` (the DEC-003 sample showed `22:20`); within the approved wording (cause and time are DEC-002 details); told to the user.
+- Next: part 2 design (UC-002, REQ-006/REQ-007, DEC-004/DEC-005).
+
+### SR-005 — Part 2 design (status shown)
+
+- Trigger: part 1 delivered (DR-001); DEC-007
+- Decisions: `AgentRun` owns a run's running-background-task count, derived once from the backend's background-task view (`runningBackgroundTaskCount`), published with every status and republished on change; the duplicate `AgentRunBackend.hasRunningBackgroundTasks()` is removed (ARCH-REV R-3); five status routes carry `backgroundTasksRunning` (agent stream, collaboration presentation, run-status feed with the run-state sum, team stream, peer summary); the web's one mapping `agentActivityPresentation` shows DEC-004's text and active dot; Stop and input unchanged (DEC-005)
+- Classification: Large / High
+- Next action: architecture review
+
+### SR-006 — Part 2 revised for ARCH-REV-004
+
+- AR-004: the count is held by `AgentTurnLifecycleState` (shared by `AgentRun` and `LifecycleStatusEventTransformer`), set by `AgentRun` from `runningBackgroundTaskCount` before each source batch and each snapshot; `buildAgentStatusPayload` requires it; every producer listed with its source (transformer, canonical, snapshot, mapper, overlay 0, metadata fallback 0, presentation adapters, team snapshot, paired frame, run-status service); the separate republish step is dropped (the transformer already emits a status before each `BACKGROUND_TASK_UPDATED`)
+- Example sequence added; R-10 readers listed as harmless; R-12 AGY equivalence checked (monitor `running` holds only running tasks); handoff lines refreshed
+- Intended behavior changed: No
+- Next action: re-review
+- Review result 2026-11-17: ARCH-REV-005 Pass on SR-006 (part 2); the reviewer routed it to `/implementation_engineer` (informational, no duplicate handoff).

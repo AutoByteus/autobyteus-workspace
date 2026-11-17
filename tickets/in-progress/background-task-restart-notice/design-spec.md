@@ -313,3 +313,126 @@ N/A.
 
 - Reproduction to start from: none in code yet; validation reproduces "before" on base `4cbf9e7881` with a native agent idle on `run_bash(run_in_background: true, "sleep 600")` and a graceful restart (no message), then "after".
 - Keep the recorder's `record()` never-throwing and bounded inside the 10 s shutdown budget.
+
+---
+
+# Part 2 — Show an agent with a running background task (SR-005, revised SR-006 for ARCH-REV-004)
+
+## Basis
+
+- Requirements: REQ-006, REQ-007, AC-005, AC-006, DEC-004 (the user: "Background task running", "N background tasks running", styled like an active agent, no Stop for it; a run in a turn shows "Running"), DEC-005 (messages delivered at once: no change). Approved 2026-11-17.
+- Part 1 delivered (DR-001, `895cf3992d`); this round starts from that state. Authorities as above (same date).
+
+## Current-State Read (part 2)
+
+- A run's status is its turn: `AgentRun.dispatchCanonicalStatus()` publishes `AGENT_STATUS` with `buildAgentStatusPayload({ status, agentId, recoverableBlock })` (`agent-run.ts` L525-540; `agent-status-payload.ts` L4-48). Nothing about background tasks travels with it.
+- The same fact is derived twice per backend: `hasRunningBackgroundTasks()` (contract `agent-run-backend.ts` L73; AutoByteus manager `hasRunning()`, Claude registry `hasRunningTasks()`, Antigravity monitor `hasRunningTasks()`; Codex and ACP `false`) and `backgroundTaskInspection.current()` (event-stream runtimes; Codex `snapshot`, ACP `unsupported`). For the three event-stream runtimes the boolean equals "any `current()` task is running" (Claude registry L239-247, AGY monitor L73-76, native backend L110-118, L201-203). Readers of the boolean: idle-shutdown quiet check (`agent-run-termination.ts` L81), part 1's recorder via `AgentRun.hasRunningBackgroundTasks()`.
+- Status reaches the screens by five routes, all carrying only the status word:
+  1. single-agent stream `AGENT_STATUS` (`agent-run-event-message-mapper.ts` L99; egress `AgentStatusTransitionFilter` suppresses exact repeats only, so a changed payload is forwarded);
+  2. collaboration presentation `AGENT_STATUS` (`agent-presentation-contracts` `status` block, strict; server adapter `collaboration-agent-presentation-adapter.ts` L318-319; `AgentPresentationStatusDetails`);
+  3. the per-run status feed `/ws/run-status` (`collaboration-stream-contracts/run-status-dtos.ts`: `agentStatus {agentRunId, status}`, run state `{answer, node, status}` with a team's/org's status folded on the server by `foldTeamAggregateStatus`, `run-status-service.ts` L115-122, L195-205): what the web's run lists, trees and Task cards read (`runStatusStore.ts`);
+  4. team stream `AGENT_STATUS` / `TeamAgentStatusDto` (`team-stream-contracts` `team-execution-view-dtos.ts` L90-96, strict);
+  5. peer-node summaries (`remote-task-execution-dtos.ts` `statuses: [{agent_run_id, status}]`).
+- Web presentation: status words map to text/dot/icon in `useStatusVisuals.ts` (header, `AgentStatusDisplay.vue`) and `workspaceStatusDotPresentation.ts` (dots in trees and the phone run list), Team rows by `resolveTeamStatus` (`workspaceTeamAggregateStatus.ts`), phone header in `MobileRunTargetView.vue`, phone rows `mobileRunListRows.ts`. The Stop button and input handling read the status word (`running`), which this part does not change.
+
+## Intended Change (part 2)
+
+`AgentRun` becomes the one owner of a run's running-background-task count, derived from its backend's background-task view; it publishes the count with every status and republishes the status when the count changes. Every status route carries the count beside the status word; a Team's/Org's run state carries the sum over its own agents (folded on the server). The web shows an idle (not running) agent or Team whose count is above zero as "Background task running" / "N background tasks running", with the active (blue) dot and no Stop; a running one stays "Running". The duplicate backend boolean is removed (one fact, one derivation).
+
+## Task Size And Architectural Risk (part 2)
+
+- Task size: `Large` — server domain + five wire contracts in three contract packages + six backends (removal) + web presentation in the desktop and phone surfaces + localization.
+- Architectural risk: `High` — shared wire contracts change (strict schemas, clean cut, DESIGN.md rule 9), a duplicate fact is removed from the backend contract, every status surface changes presentation.
+- Escalation trigger: a status route found that this inventory misses, or a consumer whose logic (not presentation) reads the count.
+
+## Task Design Health Assessment (part 2)
+
+- Root cause: `Shared Structure Looseness` + `Missing Invariant` — the backend contract derives one fact twice (boolean and view), and status DTOs have no place for work that outlives a turn.
+- Refactor needed now: `Yes`, bounded: remove `AgentRunBackend.hasRunningBackgroundTasks()`; derive the count once (`runningBackgroundTaskCount(inspection)` in `agent-execution/domain`, used by `AgentRun` and the quiet check).
+- Triggers: Derived data (one derivation), Several kinds or forms (five routes and three runtimes kinds: event-stream counts, Codex `snapshot` and ACP `unsupported` give 0, as the quiet check already treats them), Vocabulary (one word: `backgroundTasksRunning`), Legacy cleanup (the removed boolean). Deviations: None.
+
+## Spines (part 2)
+
+| Spine ID | Scope | Start | End | Owner |
+| --- | --- | --- | --- | --- |
+| DS-101 | Primary | every source batch of the run (a task starts or ends, a turn starts or ends, any runtime event) | every `AGENT_STATUS` the run publishes carries the current count | run-owned lifecycle state (`AgentTurnLifecycleState`), set by `AgentRun` from the one derivation |
+| DS-102 | Return-Event | `AGENT_STATUS` | each route's DTO with the count; run-status feed agent entry and run state (sum) | route owners (mapper, presentation adapter, run-status service, team projector, peer summary) |
+| DS-103 | Primary | a web store receives a status | the row/header shows the DEC-004 text and active dot | web presentation owner |
+
+- DS-101 (SR-006): `backend source batch -> AgentRun: lifecycleState.observeBackgroundTasksRunning(runningBackgroundTaskCount(backend.backgroundTaskInspection)) -> dispatchProcessedAgentRunEvents -> LifecycleStatusEventTransformer (status event before each runtime event and at turn end, built from the same lifecycle state) -> buildAgentStatusPayload({status, backgroundTasksRunning: state.backgroundTasksRunning, …})`. `AgentRun.dispatchCanonicalStatus()` and `getStatusSnapshot()` read the same state (the snapshot recomputes the count first, like it reconciles the runtime snapshot). No separate "republish on change": a `BACKGROUND_TASK_UPDATED` event already gets a status event before it from the transformer, now with the new count.
+- DS-102: `AGENT_STATUS -> (1) stream mapper | (2) presentation adapter -> run-status service (agent entry; run state folds status as today and sums counts) | (4) team projector | (5) peer summary`
+- DS-103: `runStatusStore / agent stream state -> agentActivityPresentation({status, backgroundTasksRunning}) -> StatusDot / AgentStatusDisplay / Team row / phone row / phone header`
+
+## Ownership (part 2)
+
+- `runningBackgroundTaskCount(inspection)` (new, `agent-execution/domain/agent-background-task-count.ts`): `event-stream` → `current()` tasks with status `running`; `snapshot`/`unsupported` → 0. The only derivation.
+- `AgentTurnLifecycleState` (run-owned, shared by `AgentRun` and `LifecycleStatusEventTransformer`, `agent-run.ts` L66, L102, L112): holds `backgroundTasksRunning` beside `status`; `AgentRun` sets it from the one derivation before each source batch runs the pipeline and before a snapshot is read.
+- `buildAgentStatusPayload` requires `backgroundTasksRunning: number` (no default), so no producer can leave it out; the type checker finds every producer. `AgentRun.hasRunningBackgroundTasks()` (part 1) becomes `runningBackgroundTaskCount() > 0` through the same function. The quiet check (`agent-run-termination.ts` L81) calls the same function on its backend.
+- Route owners map the count; `run-status-service` sums per run state (server-side, never a client, G-A4).
+- Web: `utils/agentActivityPresentation.ts` (new) is the one mapping from `{status, backgroundTasksRunning}` to `{labelKey, labelParams, dotClass, transientDotClass, iconName}`; `useStatusVisuals.ts` and `workspaceStatusDotPresentation.ts` delegate to it (or are replaced by it where they only map status); Team rows use the run state's count from the feed.
+
+## Status Payload Producers And Their Count (SR-006)
+
+| Producer (file:line at `895cf3992d`) | What it builds | Count source |
+| --- | --- | --- |
+| `LifecycleStatusEventTransformer.buildStatusEvent` (`lifecycle-status-event-transformer.ts` L58-63) | status before each runtime event, at turn end, for explicit statuses | `state.backgroundTasksRunning` (run-owned lifecycle state) |
+| `AgentRun.dispatchCanonicalStatus` (`agent-run.ts` L525-540) | canonical status | same state |
+| `AgentRun.getStatusSnapshot` (`agent-run.ts` L207-210) | snapshot for lists, reconnects, the run-status feed's first read | count recomputed from the derivation, then the state |
+| stream mapper `normalizeStatusPayload` (`agent-run-event-message-mapper.ts` L13) | wire normalization of an `AGENT_STATUS` | the incoming payload's `background_tasks_running` (always present from the producers above) |
+| command status overlay (`agent-run-command-status-overlay-store.ts` L64) | `initializing` / `error` before the run is active | `0` (no run activity yet) |
+| status projection metadata fallback (`agent-run-status-projection-service.ts` L182) | offline/historical run | `0` (an offline run has none); its live branch uses `getStatusSnapshot()` |
+| collaboration presentation adapter, live (`collaboration-agent-presentation-adapter.ts` L318-319) | member `AGENT_STATUS` | the run's payload |
+| collaboration presentation adapter, status overlay (`collaboration-agent-presentation-event-adapter.ts` L76) | overlay snapshot (`initializing`/`error`) | the snapshot details' count (`0` for these overlays) |
+| `team-agent-status.ts` L55-75 (`TeamAgentStatusSnapshot.details`) | team member status snapshot/event | details gain `backgroundTasksRunning`, filled from the member's payload |
+| `pairedAgentStatusFrame(status)` (`paired-agent-access.ts` L13) | a peer-paired agent's status frame | becomes `pairedAgentStatusFrame(status, backgroundTasksRunning)`; `PairedAgentStatus` gains the count; `offline` at run end sends `0` |
+| run-status service (`run-status-service.ts` L35-36, L115-122, L195-205) | agent entry; run state | agent entry from the frame; run state sums its own agents |
+
+## Example Sequence (SR-006): task started in a turn, turn ends, task ends
+
+| Step | Event | Status payload published |
+| --- | --- | --- |
+| 1 | turn starts | `{status: "running", background_tasks_running: 0}` → "Running" |
+| 2 | `run_bash(run_in_background)` starts; `BACKGROUND_TASK_UPDATED (running)` | status event before it: `{running, 1}` → "Running" (the turn wins) |
+| 3 | turn ends (`TURN_COMPLETED`) | `{status: "idle", background_tasks_running: 1}` → "Background task running" (blue, no Stop) |
+| 4 | list reloads / client reconnects | `getStatusSnapshot()` → `{idle, 1}` → same |
+| 5 | task ends; `BACKGROUND_TASK_UPDATED (completed)` | `{idle, 0}` → "Idle" |
+| 6 | 338's notice wakes the run | `{running, 0}` → "Running" |
+
+## AGENT_STATUS Readers Checked (ARCH-REV-004 R-10)
+
+Harmless for a status event that differs only in the count (checked by the reviewer and listed so later stages do not re-check): idle-shutdown re-arm, `TaskWorkerStatusNotice`, command overlay `clear`, the background-task notice service settle, the model router (`model-router-agent.ts` L156), segment-lifecycle and file-change processors, the egress `AgentStatusTransitionFilter` (forwards a changed payload).
+
+## Interfaces And Wire (part 2)
+
+| Route | Field added | Notes |
+| --- | --- | --- |
+| `AgentStatusPayload` (server) / stream `AGENT_STATUS` | `background_tasks_running: number` (integer ≥ 0) | snake case like the payload's other fields |
+| `agent-presentation-contracts` status block / `AgentPresentationStatusDetails` | `background_tasks_running` / `backgroundTasksRunning` | strict schema extended |
+| `collaboration-stream-contracts` `agentStatus` and run state | `backgroundTasksRunning: number` (agent: its own; run state: sum of its own agents; `0` when not answered) | camel case like that contract |
+| `team-stream-contracts` `teamAgentStatusDtoSchema`, live `AGENT_STATUS` | `background_tasks_running` | |
+| `remote-task-execution-dtos` `statuses[]` | `background_tasks_running` | peer node of the same release (rule 9) |
+
+Display rule (DEC-004): `status` is `running`/`initializing` → as today; else `status` is `idle` and count > 0 → "Background task running" (count 1) / "{count} background tasks running", blue dot (not pulsing, so a turn still reads differently), icon `heroicons:arrow-path`; `offline`/`error` → as today (an offline run has 0). Team row: busy > background (sum > 0) > error > idle > offline. Localization keys in `en` and `zh-CN` ("后台任务运行中" / "{count} 个后台任务运行中").
+
+## Removal Plan (part 2)
+
+| Item | Why | Replaced By |
+| --- | --- | --- |
+| `AgentRunBackend.hasRunningBackgroundTasks()` and its six implementations (AutoByteus, Claude, Antigravity, Codex, ACP, test doubles) | duplicate derivation of the view's fact | `runningBackgroundTaskCount(inspection)` |
+| `ClaudeSession.hasRunningBackgroundTasks()`, AGY `hasRunningTasks()`, native `manager.hasRunning()` if then unused | Dead after the removal (check callers). Equivalence checked: native `current()` vs `hasRunning()` and Claude `list()` vs `hasRunningTasks()` (reviewer); AGY monitor keeps only running tasks in `running` (set L64, deleted L107, `list()` returns them, L73-76) so `running.size > 0` equals "a running task in `current()`" (R-12) | — |
+
+## Persisted Data (part 2)
+
+`Not Affected`: the count is live only (an offline run reads 0).
+
+## Change Sequence (part 2)
+
+1. `runningBackgroundTaskCount`; `AgentTurnLifecycleState.backgroundTasksRunning`; `buildAgentStatusPayload` requires the count (the compiler lists every producer; table above); quiet check and part 1 recorder switched; backend boolean removed (tests follow, rule 11).
+2. Contracts: the five routes; server mappers; run-status sum.
+3. Web: `agentActivityPresentation` + stores carry the count; desktop header, trees, Team rows, phone rows and header; localization.
+4. Validation: native, Claude, Antigravity (scripted) idle with a task → desktop and phone lists and headers show the text and dot, and back to "Idle" at the end; a running turn still "Running"; Codex/ACP unchanged; messages delivered at once (AC-006). Desktop and phone probes (TESTING.md).
+
+## Risks (part 2)
+
+- Codex idle with background terminals shows "Idle" (no live count; as the quiet check today).
+- Status republish per task start/end adds `AGENT_STATUS` frames; bounded by task changes.

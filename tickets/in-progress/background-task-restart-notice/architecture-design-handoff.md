@@ -24,11 +24,23 @@ ARCH-REV-001 answered: AR-001 one delivery path through the reminder store (wake
 
 From validation (code review CRR-002, API/E2E F-1, evidence RR-02): after an unexpected stop, native background commands survive the server (a crash runs no cleanup) while the reminder said the restart stopped them. The user decided DEC-008 (2026-11-17): option (a), a cause-specific background-task line for `unexpected_stop` (requirements DEC-008 text; design-spec Concrete Examples). Only `restart-notice.ts` text changes; update and restart wording unchanged. Stopping survivors at the next start stays follow-up FU-004 (the user declined it here). Validation reruns RR-02 with the new line.
 
+## Round 4 (SR-005) — part 2
+
+Part 1 is delivered (DR-001, `895cf3992d`). Part 2 (status shown, REQ-006/REQ-007, DEC-004/DEC-005) is designed in `design-spec.md` section "Part 2 — Show an agent with a running background task (SR-005)". Classification: Large / High. Review focus: the one derivation of the count and the removal of the backend boolean; the five status routes and their strict contracts; the server-side sum in the run state; the web's one presentation mapping; that Stop, input and the quiet check keep their meaning.
+
+## Round 5 (SR-006) — part 2 revised for ARCH-REV-004
+
+AR-004: the count lives in the run-owned lifecycle state the transformer and `AgentRun` share; `buildAgentStatusPayload` requires it; every producer is listed with its count source; example sequence added; R-10 readers listed; R-12 checked. Section "Status Payload Producers And Their Count (SR-006)" in `design-spec.md`.
+
 ## Package
 
-`requirements-doc.md` (Approved), `investigation-notes.md`, `design-spec.md` (Ready, part 1, SR-003), `solution-revision-record.md` (SR-003).
+`requirements-doc.md` (Approved), `investigation-notes.md`, `design-spec.md` (part 1 delivered; part 2 Ready, SR-006), `solution-revision-record.md` (SR-006).
 
-## Review focus
+## Review focus (part 2)
+
+The count's single owner and producer coverage (SR-006 table); the five routes' strict contracts; the server-side sum; the web's one mapping; Stop, input and the quiet check unchanged.
+
+## Review focus (part 1, historical)
 
 1. The live busy-run record (2 s ticks, writes on change) and its crash semantics (no `shutdownAt` = unexpected stop).
 2. Startup order: previous record taken before listen, then the session starts.

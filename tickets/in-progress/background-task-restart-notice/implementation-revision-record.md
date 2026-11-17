@@ -48,3 +48,23 @@
 - Local validation and result: IMP-04 (typecheck PASS; 120 restart-resume, startup order and handle tests pass).
 - Next recipient or routing: code reviewer (High risk), per `get_handoff_rules`.
 - Remaining limitations or risks: stopping a crashed session's surviving command groups at the next start is FU-004 (not this ticket). RR-02 is to be rerun by API/E2E on the built server.
+
+### IR-003 — Part 2: show an agent with a running background task
+
+- Triggering role, report path, and round: architecture reviewer, `design-review-report.md` (ARCH-REV-005, Pass at SR-006), part 2 round 1.
+- Triggering finding IDs: N/A (first implementation of part 2)
+- Classification: new part of the ticket (DEC-007); Large / High
+- Prior authoritative result: IR-002 (part 1 delivered, DR-001 at `895cf3992d`)
+- Current authoritative result: every status carries the running background task count; the web shows an idle agent or Team with tasks as "Background task running" with the active dot and no Stop.
+- Related solution revision IDs: SR-005, SR-006
+- Related architecture-review revision IDs: ARCH-REV-004, ARCH-REV-005
+- Related code-review revision IDs: N/A
+- Related API/E2E revision IDs: N/A
+- Related delivery revision IDs: N/A
+- Why this implementation revision is recorded: part 2 of the ticket (REQ-006, REQ-007; AC-005, AC-006; DEC-004, DEC-005).
+- Approved behavior or requirement IDs affected: REQ-006, REQ-007, AC-005, AC-006.
+- Implementation delta: `runningBackgroundTaskCount` (the one derivation); `AgentTurnLifecycleState.backgroundTasksRunning` set per batch and per snapshot; `buildAgentStatusPayload` requires the count; the backend boolean and four per-runtime helpers removed; the count on every status route (plus the Org view's status DTO and the peer channel's summary, deviations 1 and 2 in the handoff); `RunStatusService` sums per run state; web `agentActivityPresentation`, `teamActivityOf`, store and run-state counts, every status surface on desktop and phone; en and zh-CN; docs.
+- Changed files or areas: listed in the handoff's "Key Files Or Areas".
+- Local validation and result: IMP-05 to IMP-12 in the handoff.
+- Next recipient or routing: code reviewer (High risk), per `get_handoff_rules`.
+- Remaining limitations or risks: Codex idle with background terminals shows Idle; per-batch count granularity (R-13); live per-runtime validation and the two-node peer case left to API/E2E.

@@ -1,0 +1,85 @@
+{
+  "startedAt": "2026-11-17T15:47:20.078Z",
+  "result": "Pass",
+  "node": "v22.23.1",
+  "servers": {
+    "beta": {
+      "port": 50989,
+      "nodeId": "srv_-fnOW9CjZPqXbLGLQZ0uLwOu6Hk_xQaf",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    },
+    "alpha": {
+      "port": 50988,
+      "nodeId": "srv_sZKKVRhFDDY85SjUM4bwXHZc6mTVK95b",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    }
+  },
+  "runs": {
+    "ptm": "project_task_manager_2f5605b93b5e432a8d4393251490b0ca",
+    "writerRun": "release_notes_writer_c0a22bc498bf447b84c89d378ad878c9",
+    "squadRun": "docs_review_team_d4550d6744524ccca3f163de67020ce5",
+    "reviewer": "release_notes_writer_068c7b85e3ba4d9da2350c71237b0fd1",
+    "memberDelegated": "fact_checker_1d8d8569ba21454fb24ffe0e35017aeb",
+    "remoteAgentRun": "publisher_9894b6a4cea940ab8236a2ca8ae69334",
+    "remoteTeamRun": "studio_team_f1e68955ba3b400a814a110817d9e813",
+    "plain": [
+      "fact_checker_d1d62fa67ca442f2a38c02215c39c068",
+      "fact_checker_544077f048594b288266cd2f816d888e",
+      "fact_checker_a280079e981047da8bb33eb467bb2678"
+    ],
+    "org": "delivery_org_a6f8e4a34bd34350b5394066b6801ce8",
+    "orgPlanner": "release_notes_writer_457e1afe42014ff98cbfcb782fe92058",
+    "reviewOrg": "review_org_0090eae04d734d3c8c5987050af9a5e5",
+    "reviewOrgCoordinator": {
+      "address": "/squad/reviewer",
+      "agentRunId": "release_notes_writer_0c2447bebfe44f2fa20027c7e67e103a",
+      "teamRunId": null
+    },
+    "delivery": "delivery_team_605a7dc2d7c1403fb0d99fa398d40669",
+    "deliveryLead": "fact_checker_7b79955439ea4dbaa296ef7086e60108",
+    "deliveryMate": "release_notes_writer_4b94aee9019e4371a38344c64b2ada2e",
+    "leadDelegated": "changelog_helper_bc5d6bcdd23041fea8f4d92f8daa1a9e",
+    "approver": "approver_de54ee89d58e4673a4db7615a0181524",
+    "taskA": "launch-401ff2-1",
+    "taskB": "launch-401ff2-2"
+  },
+  "cases": {
+    "MSP-59": {
+      "result": "Pass",
+      "seconds": 28.7,
+      "headerDot": "h-2.5 w-2.5 flex-shrink-0 rounded-full bg-blue-500",
+      "stop": 0,
+      "send": 1,
+      "row": {
+        "status": "background",
+        "dotClass": "absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full ring-2 bg-blue-500 ring-blue-50",
+        "label": "Fact Checker, Plain run 2. Marker PLAIN-2., Background task running"
+      },
+      "after": "Idle"
+    }
+  },
+  "browserErrors": [],
+  "failedRequests": [],
+  "network": {},
+  "cleanup": {
+    "frontendExited": true,
+    "serversLeft": 0,
+    "rootRemoved": true
+  },
+  "error": null,
+  "summary": {
+    "cases": {
+      "MSP-59": "Pass"
+    },
+    "unknownBrowserErrors": 0
+  },
+  "finishedAt": "2026-11-17T15:49:46.257Z"
+}
