@@ -20,6 +20,7 @@
   - Part 2 base `895cf3992d`.
   - Integrated by merge three times: `990ff9a3d4` (IR-005, `ff13782f36`), `e93d477539` (delivery, autobyteus-522) and `96216eb642` (delivery, autobyteus-524 @ `c0869d58e9`).
   - Product code final at `d7fdd7db6f` (test rename) on top of `a9e5676630`.
+  - Finalized: `--no-ff` merge `694ff9b357` pushed to `origin/personal`.
 
 ## Delivery Summary
 

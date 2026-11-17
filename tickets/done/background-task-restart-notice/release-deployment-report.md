@@ -90,7 +90,19 @@ This report covers both deliveries of the ticket. Part 2 (DR-004, the final deli
 
 ## Repository Finalization
 
-FINALIZATION
+- Bootstrap context source: `RELEASE.md` Finalization Target (`origin`, `personal`, `codex/<ticket-name>`)
+- Ticket branch: `codex/background-task-restart-notice`
+- Secret Gate before the push: `scripts/check_secrets.sh origin/personal..HEAD` PASS (35 commits). Artifact hygiene PASS; no Windows-hostile character in this ticket's file names.
+- Ticket branch commit result: `139644d51a` (docs sync, delivery records, ticket archived)
+- Ticket branch push result: pushed `origin/codex/background-task-restart-notice` (`895cf3992d..139644d51a`)
+- Finalization target remote / branch: `origin` / `personal`
+- Target advanced after verification / acceptance: `No` (`c0869d58e9` at every fetch)
+- Re-integration before final merge result: `Not needed`
+- Target branch update result: `finalize/background-task-restart-notice` created from `origin/personal` @ `c0869d58e9`
+- Merge into target result: `--no-ff` merge `694ff9b357`; its tree equals the ticket branch's `139644d51a`. Secret Gate on the merged state: PASS
+- Push target branch result: `c0869d58e9..694ff9b357  HEAD -> personal`
+- User's checkout of the target branch (`/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`): fast-forwarded with `git merge --ff-only origin/personal` after this record commit's push, when it is on `personal` with no local commits; the result is in the terminal message.
+- Repository finalization status: `Completed`
 
 ## Release / Publication / Deployment
 
@@ -100,7 +112,12 @@ FINALIZATION
 
 ## Post-Finalization Cleanup
 
-CLEANUP
+- Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/background-task-restart-notice`
+- Plan, run after this record commit's push:
+  - `git worktree remove --force` (only untracked build output `*/dist/` remains);
+  - `git worktree prune`;
+  - delete the local branches `codex/background-task-restart-notice` and `finalize/background-task-restart-notice`.
+- Remote branch: `Not required` (the repository keeps pushed `codex/*` branches). The result is reported in the terminal message.
 
 ## Environment Or Persisted-Data Transition Notes
 
@@ -109,7 +126,9 @@ CLEANUP
 
 ## Verification Checks
 
-CHECKS
+- Secret Gate on the ticket commits: PASS (35 commits)
+- Secret Gate on the merged state: PASS
+- `python3 scripts/check_repository_artifact_hygiene.py`: PASS
 
 ## Rollback Criteria
 
@@ -117,7 +136,13 @@ CHECKS
 
 ## Final Status
 
-FINAL
+- Verification complete: `Yes` (from the evidence; both parts)
+- Repository finalization complete: `Yes` (`694ff9b357` on `personal`; this record commit follows it)
+- Applicable release/deployment/rollout complete or not required: `Yes` (not required)
+- Applicable safe cleanup complete or not required: run after this record's push (Post-Finalization Cleanup); result in the terminal message
+- Unresolved blocker: `None`
+- Successful terminal package eligible for return: `Yes`
+- Terminal package sent to the Solution Designer: by `send_message_to` after this record's push
 
 # Part 1 — the restart reminder (DR-001)
 
