@@ -486,7 +486,7 @@ Each new text follows FR-1 … FR-4. The Code Reviewer checks the list against F
 
 # Delivery 2 (SR-008): migration order guard, FU-029, FU-033
 
-Requirements: REQ-012 … REQ-015, AC-009 … AC-011. FU-028 is pending the user's word (D-10). FU-032 was dropped (SR-007).
+Requirements: REQ-012 … REQ-015, AC-009 … AC-011. FU-028 is dropped (D-10). FU-032 was dropped (SR-007).
 
 ## G-1: The released order is recorded by the release (FU-027 option 1, D-11)
 
@@ -526,7 +526,7 @@ Requirements: REQ-012 … REQ-015, AC-009 … AC-011. FU-028 is pending the user
 
 ## G-4: FU-028
 
-If the user agrees (D-10): no change, and the follow-up is closed with his word. If he doesn't, the design returns to him with the only real option: a migration that strips an ignored field from every stored launch.
+Dropped (D-10, SR-009): no change. The field is ignored residue in every older stored launch, and stripping it would be a migration for a representation only.
 
 ## Delivery 2 classification
 

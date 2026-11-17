@@ -2,6 +2,7 @@
 
 | SR | Date | Kind | Summary | Status after |
 | --- | --- | --- | --- | --- |
+| SR-009 | 2026-11-17 | Requirements | D-10 decided: FU-028 dropped as not a defect (the user left it to the Solution Designer) | Approved; combined package to architecture review |
 | SR-008 | 2026-11-17 | Requirements and design, delivery 2 (the user: stop implementation, design delivery 2 now) | REQ-012 … REQ-015; G-1 release-recorded order; G-2 same-ID repair of team index v2; G-3 probe data; D-10 (FU-028 not a defect, needs the user); delivery 1 naming additions from the implementation engineer's sizing | Delivery 2 `Ready for Approval` (D-10) |
 | SR-007 | 2026-11-17 | Requirements (scope reduced by the user) | FU-032 (audit of past migration order) dropped; delivery 2 = order guard, FU-028, FU-029, FU-033 | Approved |
 | SR-006 | 2026-11-17 | Requirements and design (scope reduced by the user) | The user dropped the code-only "task execution" → "delegated run" rename: REQ-003 dropped, all of FU-007 is FU-500-01; the design's N4 rows removed | Approved; design `Ready` |
@@ -80,3 +81,10 @@
 - **Delivery 1 detail (design only, no behavior change):** from the implementation engineer's sizing, N3 now lists every "copy" name. The public code `TASK_COPY_NOT_ASSIGNABLE` is renamed. The stored `copyAddress` / `copyKind` stay (FU-500-04, as D-5). The GraphQL argument `hostRunId` becomes `runId`. `TaskExecutionHostIdentity` is kept.
 - **Delivery 2:** requirements REQ-012 … REQ-015 and design G-1 … G-4. FU-028 is found not to be a defect (D-10, needs the user).
 - **Next:** the user's word on D-10, then architecture review of the combined package.
+
+### SR-009
+
+- **Trigger:** the user, on D-10: "you decide, I think now you have very good understanding of the project".
+- **Decision:** FU-028 is dropped. No current code reads or writes the field, and no migration removes it, so the late writer leaves the same ignored residue as every older file (guideline §3).
+- **Approval:** delivery 2's requirements are approved by the Solution Designer at the user's word. The combined package (delivery 1 at SR-006 plus its SR-008 naming additions, and delivery 2) is `Large` / `High`.
+- **Next:** architecture review of the delivery 2 parts and the SR-008 additions.
