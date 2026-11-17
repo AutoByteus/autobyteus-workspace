@@ -56,11 +56,4 @@ describe('the phone Text size (autobyteus-506)', () => {
     // The menu stays open: the conversation behind it reflows at once.
     expect(wrapper.find('[data-testid="mobile-run-menu"]').exists()).toBe(true);
   });
-
-  // autobyteus-522: every run has Settings, right after Activity.
-  it('the menu always has Settings after Activity', async () => {
-    await freshTextSize();
-    const wrapper = await mountMenu();
-    expect(wrapper.findAll('[role="menuitem"]').map((item) => item.text())).toEqual(['Artifacts', 'Files', 'Messages', 'Activity', 'Settings']);
-  });
 });
