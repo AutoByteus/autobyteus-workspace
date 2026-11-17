@@ -21,6 +21,7 @@ import { afterAll, afterEach, beforeAll, describe, expect, it } from "vitest";
 import type { graphql as graphqlFn, GraphQLSchema } from "graphql";
 import { buildGraphqlSchema } from "../../../src/api/graphql/schema.js";
 import { registerAgentWebsocket } from "../../../src/api/websocket/agent.js";
+import { getAgentStreamHandler } from "../../../src/services/agent-streaming/agent-stream-handler.js";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { getCodexAppServerClientManager } from "../../../src/runtime-management/codex/client/codex-app-server-client-manager.js";
 import { SkillService } from "../../../src/skills/services/skill-service.js";
@@ -721,7 +722,7 @@ const defineRuntimeSuite = (input: {
         handleMessage: async () => {},
         disconnect: async () => {},
       } as unknown as Parameters<typeof registerAgentWebsocket>[2];
-      await registerAgentWebsocket(app, undefined, dummyTeamHandler);
+      await registerAgentWebsocket(app, getAgentStreamHandler(), dummyTeamHandler, {} as never, {} as never);
       const address = await app.listen({ port: 0, host: "127.0.0.1" });
       const url = new URL(address);
       const socket = new WebSocket(`ws://${url.hostname}:${url.port}/ws/agent/${runId}`);

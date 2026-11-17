@@ -304,6 +304,8 @@ const startAgentWsHarness = async (options: {
       handleMessage: async () => {},
       disconnect: async () => {},
     } as any,
+    {} as never,
+    {} as never,
   );
   const address = await app.listen({ port: 0, host: "127.0.0.1" });
   const url = new URL(address);
@@ -733,6 +735,8 @@ describe("Agent websocket backend-owned command lifecycle integration", () => {
         handleMessage: async () => {},
         disconnect: async () => {},
       } as unknown as Parameters<typeof registerAgentWebsocket>[2],
+      {} as never,
+      {} as never,
     );
 
     const address = await app.listen({ port: 0, host: "127.0.0.1" });

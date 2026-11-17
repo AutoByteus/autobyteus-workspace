@@ -384,6 +384,8 @@ const startHarness = async (input: {
       handleMessage: async () => {},
       disconnect: async () => {},
     } as any,
+    {} as never,
+    {} as never,
   );
   const address = await app.listen({ port: 0, host: "127.0.0.1" });
   const url = new URL(address);

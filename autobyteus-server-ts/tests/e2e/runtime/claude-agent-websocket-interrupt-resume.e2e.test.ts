@@ -451,7 +451,7 @@ const createClaudeWebSocketHarnessWithSdkClient = async (input: {
   let socket: WebSocket | undefined;
   try {
     await app.register(websocket);
-    await registerAgentWebsocket(app, handler, dummyTeamHandler);
+    await registerAgentWebsocket(app, handler, dummyTeamHandler, {} as never, {} as never);
     const address = await app.listen({ port: 0, host: "127.0.0.1" });
     const url = new URL(address);
     socket = new WebSocket(`ws://${url.hostname}:${url.port}/ws/agent/${input.runId}`);

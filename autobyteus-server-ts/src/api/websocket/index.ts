@@ -20,6 +20,7 @@ import { AgentCollaborationStreamHandler } from "../../services/agent-streaming/
 import type { StandaloneAgentRunRootManager } from "../../standalone-agent-run-root/services/standalone-agent-run-root-manager.js";
 import { AgentTeamSession, AgentTeamStreamHandler } from "../../services/agent-streaming/agent-team-stream-handler.js";
 import { AgentSessionManager } from "../../services/agent-streaming/agent-session-manager.js";
+import { getAgentStreamHandler } from "../../services/agent-streaming/agent-stream-handler.js";
 import type { RunViewSources } from "../../compositions/run-view-composition.js";
 
 export async function registerWebsocketRoutes(
@@ -48,7 +49,7 @@ export async function registerWebsocketRoutes(
   const { views } = dependencies;
   await registerAgentWebsocket(
     app,
-    undefined,
+    getAgentStreamHandler(),
     new AgentTeamStreamHandler(new AgentSessionManager(AgentTeamSession), dependencies.teamRunService,
       { streams: views.streams, rows: views.rows, registrations: views.registrations, closedTasks: views.closedTasks,
         restorability: views.restorability, readStoredTree: views.readStoredTeamTree }),

@@ -224,6 +224,8 @@ const openAgentApp = async (run: AgentRun) => {
     app,
     streamHandler,
     { connect: async () => null, handleMessage: async () => {}, disconnect: async () => {} } as never,
+    {} as never,
+    {} as never,
   );
   const address = await app.listen({ port: 0, host: "127.0.0.1" });
   const url = new URL(address);
