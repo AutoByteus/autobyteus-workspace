@@ -399,6 +399,15 @@ delegated run, …) are defined in the
   one batch, that background tasks it started have ended
   (`system.background_task_notifier`). Each end is reported once: in the agent's
   own `run_bash` result when it ended during that call, otherwise in a notice.
+- **Restart reminder:** the platform notice a run receives after a restart
+  (`system.restart_resume`) when it was mid-turn or had a running background
+  task: the restart cause (an update, a restart or an unexpected stop), that its
+  turn was interrupted when it was mid-turn, and what became of any background
+  tasks it started (stopped by an update or a restart; possibly still running and
+  no longer tracked after an unexpected stop). Woken with it after an update; otherwise it rides
+  the run's next input. Delivered exactly once.
+- **Busy run** (restart record): a run that was mid-turn or had a running
+  background task when the node recorded it (`busy-runs.json`).
 - **Usage limit:** a runtime's or provider's own limit on use (a 5-hour or
   weekly window, a billing period, a money balance), read from the runtime or
   provider. It is not the launch check of whether a runtime is usable.

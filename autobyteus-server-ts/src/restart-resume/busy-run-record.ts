@@ -8,21 +8,30 @@ import {
 import { atomicWriteJsonFile } from "../run-history/store/atomic-json-file-writer.js";
 
 /**
- * The busy-run record (autobyteus-285): the runs that were mid-turn when the node last shut down gracefully,
- * kept in `<appDataDir>/restart-resume/busy-runs.json` until the next start consumes it. Transient: absence means
- * "nothing to resume". The recorder is its only writer (it never deletes); the resumer is its only reader and deleter.
+ * The busy-run record (autobyteus-285, widened in autobyteus-448): the node's live list of runs to tell after a
+ * restart, the runs that are mid-turn or have a running background task, kept in
+ * `<appDataDir>/restart-resume/busy-runs.json`. The recorder rewrites it while the node runs and adds `shutdownAt` at
+ * a graceful stop; the next start takes it (the resumer, its only reader and deleter). Transient: absence means
+ * "nobody to tell".
  */
 export type BusyRunEntry = Readonly<{
   root: RootExecutionIdentity;
   agentRunId: string;
   place: CollaborationRunPlace;
-  status: "initializing" | "running";
+  /** The run's status when recorded: mid-turn (`initializing`, `running`) or `idle` with a background task. */
+  status: "initializing" | "running" | "idle";
+  /** Whether the run had a running background task when recorded. */
+  backgroundTasks: boolean;
   recordedAt: string;
   /** The release that recorded this entry; `null` when that server had no release stamp. */
   version: string | null;
 }>;
 
-export type BusyRunRecord = Readonly<{ entries: readonly BusyRunEntry[] }>;
+export type BusyRunRecord = Readonly<{
+  entries: readonly BusyRunEntry[];
+  /** When the session that wrote it ended gracefully; `null` while it runs (so after a crash). */
+  shutdownAt: string | null;
+}>;
 
 export type BusyRunRecordReadResult =
   | Readonly<{ kind: "missing" }>
@@ -32,7 +41,7 @@ export type BusyRunRecordReadResult =
 export const busyRunRecordPath = (appDataDir: string): string => path.join(appDataDir, "restart-resume", "busy-runs.json");
 
 const PLACES: readonly string[] = ["host", "member"];
-const STATUSES: readonly string[] = ["initializing", "running"];
+const STATUSES: readonly string[] = ["initializing", "running", "idle"];
 const nonEmpty = (value: unknown): value is string => typeof value === "string" && value.trim().length > 0;
 
 const parseEntry = (value: unknown, index: number): BusyRunEntry => {
@@ -49,17 +58,23 @@ const parseEntry = (value: unknown, index: number): BusyRunEntry => {
   if (!STATUSES.includes(raw.status as string)) fail("invalid status");
   if (!nonEmpty(raw.recordedAt) || Number.isNaN(Date.parse(raw.recordedAt as string))) fail("invalid recordedAt");
   if (raw.version !== null && !nonEmpty(raw.version)) fail("invalid version");
+  if (raw.backgroundTasks !== undefined && typeof raw.backgroundTasks !== "boolean") fail("invalid backgroundTasks");
   return Object.freeze({
     root,
     agentRunId: (raw.agentRunId as string).trim(),
     place: raw.place as CollaborationRunPlace,
     status: raw.status as BusyRunEntry["status"],
+    // Absent in a record of the release before autobyteus-448 (mid-turn runs only).
+    backgroundTasks: raw.backgroundTasks === true,
     recordedAt: raw.recordedAt as string,
     version: raw.version === null ? null : (raw.version as string).trim(),
   });
 };
 
-/** Reads the record. A file that is not a valid record as a whole is `invalid`; nothing in it is used. */
+/**
+ * Reads the record. A file that is not a valid record as a whole is `invalid`; nothing in it is used. Fields a record of
+ * an earlier release lacks read as their default (`backgroundTasks: false`, `shutdownAt: null`).
+ */
 export const readBusyRunRecord = async (filePath: string): Promise<BusyRunRecordReadResult> => {
   let text: string;
   try { text = await fs.readFile(filePath, "utf8"); }
@@ -68,15 +83,17 @@ export const readBusyRunRecord = async (filePath: string): Promise<BusyRunRecord
     return { kind: "invalid", reason: `unreadable: ${String(error)}` };
   }
   try {
-    const parsed = JSON.parse(text) as { entries?: unknown };
+    const parsed = JSON.parse(text) as { entries?: unknown; shutdownAt?: unknown };
     if (!parsed || typeof parsed !== "object" || !Array.isArray(parsed.entries)) throw new Error("no entries list");
-    return { kind: "present", record: Object.freeze({ entries: Object.freeze(parsed.entries.map(parseEntry)) }) };
+    const shutdownAt = parsed.shutdownAt ?? null;
+    if (shutdownAt !== null && (!nonEmpty(shutdownAt) || Number.isNaN(Date.parse(shutdownAt)))) throw new Error("invalid shutdownAt");
+    return { kind: "present", record: Object.freeze({ entries: Object.freeze(parsed.entries.map(parseEntry)), shutdownAt: shutdownAt as string | null }) };
   } catch (error) {
     return { kind: "invalid", reason: error instanceof Error ? error.message : String(error) };
   }
 };
 
 export const writeBusyRunRecord = (filePath: string, record: BusyRunRecord): Promise<void> =>
-  atomicWriteJsonFile(filePath, { entries: record.entries });
+  atomicWriteJsonFile(filePath, { entries: record.entries, ...(record.shutdownAt ? { shutdownAt: record.shutdownAt } : {}) });
 
 export const removeBusyRunRecord = (filePath: string): Promise<void> => fs.rm(filePath, { force: true });

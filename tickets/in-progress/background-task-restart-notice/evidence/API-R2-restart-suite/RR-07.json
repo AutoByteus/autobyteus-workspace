@@ -1,0 +1,70 @@
+{
+  "runId": "restart_reminder_claude_agent_sdk_22c3a741_cc96d059d8614f52a6c8d145feeb63a8",
+  "runtimeKind": "claude_agent_sdk",
+  "modelId": "haiku",
+  "runningTask": {
+    "task_id": "bkbw27dzx",
+    "kind": "shell",
+    "description": "Run sleep 600 in background",
+    "command": null,
+    "status": "running",
+    "summary": null,
+    "started_at": "2026-11-17T13:14:46.324Z"
+  },
+  "live": {
+    "entries": [
+      {
+        "root": {
+          "rootSubjectKind": "agent",
+          "rootRunId": "restart_reminder_claude_agent_sdk_22c3a741_cc96d059d8614f52a6c8d145feeb63a8"
+        },
+        "agentRunId": "restart_reminder_claude_agent_sdk_22c3a741_cc96d059d8614f52a6c8d145feeb63a8",
+        "place": "host",
+        "status": "idle",
+        "backgroundTasks": true,
+        "recordedAt": "2026-11-17T13:14:48.271Z",
+        "version": "1.5.13-beta.8"
+      }
+    ]
+  },
+  "stopped": {
+    "entries": [
+      {
+        "root": {
+          "rootSubjectKind": "agent",
+          "rootRunId": "restart_reminder_claude_agent_sdk_22c3a741_cc96d059d8614f52a6c8d145feeb63a8"
+        },
+        "agentRunId": "restart_reminder_claude_agent_sdk_22c3a741_cc96d059d8614f52a6c8d145feeb63a8",
+        "place": "host",
+        "status": "idle",
+        "backgroundTasks": true,
+        "recordedAt": "2026-11-17T13:14:51.189Z",
+        "version": "1.5.13-beta.8"
+      }
+    ],
+    "shutdownAt": "2026-11-17T13:14:51.190Z"
+  },
+  "afterTake": {
+    "reminders": [
+      {
+        "root": {
+          "rootSubjectKind": "agent",
+          "rootRunId": "restart_reminder_claude_agent_sdk_22c3a741_cc96d059d8614f52a6c8d145feeb63a8"
+        },
+        "agentRunId": "restart_reminder_claude_agent_sdk_22c3a741_cc96d059d8614f52a6c8d145feeb63a8",
+        "place": "host",
+        "cause": "restart",
+        "version": "1.5.13-beta.8",
+        "restartedAt": "2026-11-17T13:15:12.347Z",
+        "interruptedTurn": false
+      }
+    ]
+  },
+  "notice": {
+    "sender_id": "system.restart_resume",
+    "content": "[Platform notice — application restarted]\n\nThe application restarted at 2026-11-17 13:15 UTC (reason: a restart).\nIf you started any background tasks, the restart stopped them. Check what you still need: restart it, or continue your work.",
+    "turn_id": "restart_reminder_claude_agent_sdk_22c3a741_cc96d059d8614f52a6c8d145feeb63a8:turn:5d337a57-3f6e-4f12-8b1b-22367dfdd358"
+  },
+  "reply": "\",\"media\":null,\"ts\":1794921312.801},{\"kind\":\"message\",\"role\":\"assistant\",\"turnId\":\"restart_reminder_claude_agent_sdk_22c3a741_cc96d059d8614f52a6c8d145feeb63a8:turn:5d337a57-3f6e-4f12-8b1b-22367dfdd358\",\"content\":\"The `sleep 600` background task was stopped by the application restart before it finished, so it did not complete.\",\"media\":null,\"ts\":1794921324.885}]",
+  "remindersAfter": null
+}

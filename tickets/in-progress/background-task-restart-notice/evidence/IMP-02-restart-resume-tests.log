@@ -1,0 +1,124 @@
+# IMP-02 restart-resume unit and integration tests, server-runtime startup order, restart notice through the member handle
+# Command: pnpm -C autobyteus-server-ts exec vitest run tests/unit/restart-resume tests/integration/restart-resume tests/unit/server-runtime-app-data-migration-gate.test.ts tests/unit/agent-collaboration/configured-agent-execution-handle.test.ts --no-watch --reporter=verbose
+# Commit: d5e9f350cf; macOS Darwin 25.5.0 arm64, node v22.23.1; 2026-11-17T10:22Z
+ ✓ tests/unit/restart-resume/restart-resumer.test.ts > RestartResumer: the record > does nothing without a record 5ms
+ ✓ tests/unit/restart-resume/restart-resumer.test.ts > RestartResumer: the record > AC-005: logs and removes an unreadable or invalid record, resumes nothing and never throws 11ms
+ ✓ tests/unit/restart-resume/restart-resumer.test.ts > RestartResumer: the record > DEC-001 B: entries of a graceful restart or an unexpected stop become reminders for the next input; nothing is woken 59ms
+ ✓ tests/unit/restart-resume/restart-resumer.test.ts > RestartResumer: the record > DEC-002: a record without shutdownAt (the previous session crashed) gives the cause unexpected_stop; another release gives update 65ms
+ ✓ tests/unit/restart-resume/restart-resumer.test.ts > RestartResumer: the record > a server without a release stamp wakes nothing; its runs are told with their next input 117ms
+ ✓ tests/unit/restart-resume/restart-resumer.test.ts > RestartResumer: the record > REQ-005: the reminders are saved before the record is removed; a crash during the wake loses no reminder and wakes nothing twice 64ms
+ ✓ tests/unit/restart-resume/restart-resumer.test.ts > RestartResumer: the record > R-6: when the reminders cannot be saved, the record is kept and nothing is woken 46ms
+ ✓ tests/unit/restart-resume/restart-resumer.test.ts > RestartResumer: the record > REQ-005: at the take, a run whose Task is closed or whose root is archived, terminated or gone gets no reminder 112ms
+ ✓ tests/unit/restart-resume/restart-resumer.test.ts > RestartResumer: each reminder delivered exactly once (REQ-005, DS-003/DS-004) > input first: the next input carries the reminder, the wake finds nothing to claim and posts nothing 146ms
+ ✓ tests/unit/restart-resume/restart-resumer.test.ts > RestartResumer: each reminder delivered exactly once (REQ-005, DS-003/DS-004) > wake first, input arriving during the post: that input carries none; the refused wake returns it and the next input carries it 396ms
+ ✓ tests/unit/restart-resume/restart-resumer.test.ts > RestartResumer: each reminder delivered exactly once (REQ-005, DS-003/DS-004) > a delivered wake removes the reminder; a failed post returns it 98ms
+ ✓ tests/unit/restart-resume/restart-resumer.test.ts > RestartResumer: restore, re-check, post a first-input-only notice > DS-15: a run whose Task is closed is not restored and gets no notice; the others are resumed 80ms
+ ✓ tests/unit/restart-resume/restart-resumer.test.ts > RestartResumer: restore, re-check, post a first-input-only notice > AC-002: restores each run through its root, then posts one notice that only its first input may be 44ms
+ ✓ tests/unit/restart-resume/restart-resumer.test.ts > RestartResumer: restore, re-check, post a first-input-only notice > D4: every place shows the notice as the run's own system notice once the input is forwarded 126ms
+ ✓ tests/unit/restart-resume/restart-resumer.test.ts > RestartResumer: restore, re-check, post a first-input-only notice > AC-003: the pre-filter skips live runs and runs whose root was stopped on purpose, archived or deleted, restoring nothing 124ms
+ ✓ tests/unit/restart-resume/restart-resumer.test.ts > RestartResumer: restore, re-check, post a first-input-only notice > SR-005: a root stopped or archived while it was being restored gets no notice (the re-check after the restore) 40ms
+ ✓ tests/unit/restart-resume/restart-resumer.test.ts > RestartResumer: restore, re-check, post a first-input-only notice > SR-005 / F-API-001: input that reached the run first wins; the wake is refused, not counted as resumed, and the reminder waits for the next input 60ms
+ ✓ tests/unit/restart-resume/restart-resumer.test.ts > RestartResumer: restore, re-check, post a first-input-only notice > DS-9: resumes a delegated run before the run that delegated to it; its delegator is told only the accepted ones 55ms
+ ✓ tests/unit/restart-resume/restart-resumer.test.ts > RestartResumer: restore, re-check, post a first-input-only notice > DS-9: every resumed member of a Team is told the runs its team run delegated to; a chain resumes deepest first 86ms
+ ✓ tests/unit/restart-resume/restart-resumer.test.ts > RestartResumer: restore, re-check, post a first-input-only notice > DEC-002: runs at most 3 posts at a time 122ms
+ ✓ tests/unit/restart-resume/restart-resumer.test.ts > RestartResumer: restore, re-check, post a first-input-only notice > N-7: three runs with delegated runs under the cap of 3 never deadlock (a waiting delegator holds no slot) 146ms
+ ✓ tests/unit/restart-resume/restart-resumer.test.ts > RestartResumer: restore, re-check, post a first-input-only notice > REQ-006: a failed restore, a root not on this node or a refused post is logged and left stopped; the others continue 37ms
+ ✓ tests/unit/server-runtime-app-data-migration-gate.test.ts > Studio app-data migration startup > builds and listens only after readable identity status SUCCEEDED 536ms
+ ✓ tests/unit/server-runtime-app-data-migration-gate.test.ts > Studio app-data migration startup > builds and listens only after readable identity status SUCCEEDED_WITH_WARNINGS 4ms
+ ✓ tests/unit/server-runtime-app-data-migration-gate.test.ts > Studio app-data migration startup > retains the warning-only policy for an unrelated ordinary migration failure 4ms
+ ✓ tests/unit/server-runtime-app-data-migration-gate.test.ts > Studio app-data migration startup > marks every capability pending before the runner runs and applies its answer before admission is rebuilt 8ms
+ ✓ tests/unit/server-runtime-app-data-migration-gate.test.ts > Studio app-data migration startup > starts with only custom providers held back while the readable identity migration is missing (AC-004) 15ms
+ ✓ tests/unit/server-runtime-app-data-migration-gate.test.ts > Studio app-data migration startup > starts with only custom providers held back while the readable identity migration is running (AC-004) 1ms
+ ✓ tests/unit/server-runtime-app-data-migration-gate.test.ts > Studio app-data migration startup > starts with only custom providers held back while the readable identity migration is failed (AC-004) 1ms
+ ✓ tests/unit/server-runtime-app-data-migration-gate.test.ts > Studio app-data migration startup > blocks a migration runner exception before composition construction and unwinds process resources 5ms
+ ✓ tests/unit/server-runtime-app-data-migration-gate.test.ts > Studio app-data migration startup > uses independent package admission for attachment status MISSING 8ms
+ ✓ tests/unit/server-runtime-app-data-migration-gate.test.ts > Studio app-data migration startup > uses independent package admission for attachment status NOT_RUN 1ms
+ ✓ tests/unit/server-runtime-app-data-migration-gate.test.ts > Studio app-data migration startup > uses independent package admission for attachment status RUNNING 1ms
+ ✓ tests/unit/server-runtime-app-data-migration-gate.test.ts > Studio app-data migration startup > uses independent package admission for attachment status FAILED 1ms
+ ✓ tests/unit/server-runtime-app-data-migration-gate.test.ts > Studio app-data migration startup > uses independent package admission for attachment status SUCCEEDED_WITH_WARNINGS 2ms
+ ✓ tests/unit/server-runtime-app-data-migration-gate.test.ts > Studio app-data migration startup > uses independent package admission for attachment status SUCCEEDED 1ms
+ ✓ tests/unit/server-runtime-app-data-migration-gate.test.ts > Studio app-data migration startup > cancels during prisma without concurrent cleanup or subsequent startup stages 56ms
+ ✓ tests/unit/server-runtime-app-data-migration-gate.test.ts > Studio app-data migration startup > cancels during build without concurrent cleanup or subsequent startup stages 60ms
+ ✓ tests/unit/server-runtime-app-data-migration-gate.test.ts > Studio app-data migration startup > cancels during removeEmpty without concurrent cleanup or subsequent startup stages 87ms
+ ✓ tests/unit/server-runtime-app-data-migration-gate.test.ts > Studio app-data migration startup > cancels during prepare without concurrent cleanup or subsequent startup stages 56ms
+ ✓ tests/unit/server-runtime-app-data-migration-gate.test.ts > Studio app-data migration startup > cancels during listen without concurrent cleanup or subsequent startup stages 53ms
+ ✓ tests/unit/server-runtime-app-data-migration-gate.test.ts > Studio app-data migration startup > cancels during recover without concurrent cleanup or subsequent startup stages 57ms
+ ✓ tests/unit/server-runtime-app-data-migration-gate.test.ts > Studio app-data migration startup > cancels during background without concurrent cleanup or subsequent startup stages 63ms
+ ✓ tests/unit/restart-resume/busy-run-recorder.test.ts > BusyRunRecorder: the live session > AC-001/AC-003: records the runs a root holds that are mid-turn or idle with a background task, nothing else 102ms
+ ✓ tests/unit/restart-resume/busy-run-recorder.test.ts > BusyRunRecorder: the live session > rewrites only when the list changes (recordedAt is not a change), and removes the record when the list is empty 281ms
+ ✓ tests/unit/restart-resume/busy-run-recorder.test.ts > BusyRunRecorder: the live session > MP-002: writes nothing before startSession(), so a failed start leaves the previous record untouched 43ms
+ ✓ tests/unit/restart-resume/busy-run-recorder.test.ts > BusyRunRecorder: the graceful stop > writes the final list with shutdownAt and stops checking; with nobody to tell it removes the record 196ms
+ ✓ tests/unit/restart-resume/busy-run-recorder.test.ts > BusyRunRecorder: the graceful stop > R-2: the final write waits for a check's write in progress, so shutdownAt is never overwritten 69ms
+ ✓ tests/unit/restart-resume/busy-run-recorder.test.ts > BusyRunRecorder: the graceful stop > REQ-004: an idle Codex run is asked through its background-task view at the stop; one that does not answer in time is left out 179ms
+ ✓ tests/unit/restart-resume/busy-run-recorder.test.ts > BusyRunRecorder: the graceful stop > never throws: a failing write is logged 58ms
+ ✓ tests/unit/restart-resume/restart-reminder-service.test.ts > RestartReminderService > persists added reminders and loads them in a new instance (they survive the next restart until delivered) 46ms
+ ✓ tests/unit/restart-resume/restart-reminder-service.test.ts > RestartReminderService > a newer restart replaces a run's older reminder and keeps interruptedTurn when either had it 151ms
+ ✓ tests/unit/restart-resume/restart-reminder-service.test.ts > RestartReminderService > a preface is taken once: delivered removes and saves it, returned makes it pending again (either dispatch kind) 168ms
+ ✓ tests/unit/restart-resume/restart-reminder-service.test.ts > RestartReminderService > a claim excludes the preface until settled; returned is pending again, delivered is gone 128ms
+ ✓ tests/unit/restart-resume/restart-reminder-service.test.ts > RestartReminderService > prune drops the pending reminders a run must not get and saves; a failing check is logged, never thrown 98ms
+ ✓ tests/unit/restart-resume/restart-reminder-service.test.ts > RestartReminderService > an unreadable reminders file is logged and replaced 83ms
+ ✓ tests/unit/restart-resume/restart-reminder-service.test.ts > RestartReminderService > add throws when the reminders cannot be saved (the take then keeps the busy-run record) 34ms
+ ✓ tests/unit/restart-resume/restart-reminder-service.test.ts > restartCauseOf (DEC-002) > update when another release recorded the entry; otherwise restart after a graceful stop, unexpected stop without one 1ms
+ ✓ tests/unit/restart-resume/restart-reminder-service.test.ts > readBusyRunRecord (Directly Usable — No Migration) > reads a record of the release before autobyteus-448 as mid-turn entries without background tasks and without shutdownAt 28ms
+ ✓ tests/integration/restart-resume/restart-reminder-preface.integration.test.ts > restart reminder on the run's next input > rides the next input once, is published as the run's system notice and is removed 85ms
+ ✓ tests/unit/agent-collaboration/configured-agent-execution-handle.test.ts > ConfiguredAgentExecutionHandle > prepares and publishes one root-neutral configured Agent under agent_team 4ms
+ ✓ tests/unit/agent-collaboration/configured-agent-execution-handle.test.ts > ConfiguredAgentExecutionHandle > prepares and publishes one root-neutral configured Agent under agent_org 1ms
+ ✓ tests/unit/agent-collaboration/configured-agent-execution-handle.test.ts > ConfiguredAgentExecutionHandle > aborts a prepared candidate without publishing it 1ms
+ ✓ tests/unit/agent-collaboration/configured-agent-execution-handle.test.ts > ConfiguredAgentExecutionHandle > rejects identity, physical scope, and sender-bound context mismatches 0ms
+ ✓ tests/unit/agent-collaboration/configured-agent-execution-handle.test.ts > accepted task-system input presentation > publishes only genuinely accepted marked input through the shared autobyteus handle 14ms
+ ✓ tests/unit/agent-collaboration/configured-agent-execution-handle.test.ts > accepted task-system input presentation > publishes only genuinely accepted marked input through the shared claude_agent_sdk handle 2ms
+ ✓ tests/unit/agent-collaboration/configured-agent-execution-handle.test.ts > accepted task-system input presentation > publishes only genuinely accepted marked input through the shared codex_app_server handle 2ms
+ ✓ tests/unit/agent-collaboration/configured-agent-execution-handle.test.ts > accepted task-system input presentation > publishes only genuinely accepted marked input through the shared antigravity_cli handle 1ms
+ ✓ tests/unit/agent-collaboration/configured-agent-execution-handle.test.ts > accepted task-system input presentation > publishes only genuinely accepted marked input through the shared grok_build handle 5ms
+ ✓ tests/unit/agent-collaboration/configured-agent-execution-handle.test.ts > accepted task-system input presentation > publishes only genuinely accepted marked input through the shared deepseek_harness handle 2ms
+ ✓ tests/unit/agent-collaboration/configured-agent-execution-handle.test.ts > restart resume input through the handle (autobyteus-285 SR-005) > N-12: a restored member starts on the notice and reserves nothing before it; the options pass through 2ms
+ ✓ tests/unit/agent-collaboration/configured-agent-execution-handle.test.ts > restart resume input through the handle (autobyteus-285 SR-005) > publishes no member_input for a platform notice: the run's own system notice shows it 0ms
+ ✓ tests/unit/agent-collaboration/configured-agent-execution-handle.test.ts > restart resume input through the handle (autobyteus-285 SR-005) > N-14: a normal member input that gains a platform preface inside the run still shows as member_input 0ms
+ ✓ tests/unit/agent-collaboration/configured-agent-execution-handle.test.ts > member start failure: one step for both input entry points > postMessage: a start failure returns AGENT_RUN_ACTIVATION_FAILED naming the cause, shows error and emits exactly one conversation card 1ms
+ ✓ tests/unit/agent-collaboration/configured-agent-execution-handle.test.ts > member start failure: one step for both input entry points > reserveInput: a start failure returns AGENT_RUN_ACTIVATION_FAILED naming the cause, shows error and emits exactly one conversation card 0ms
+ ✓ tests/unit/agent-collaboration/configured-agent-execution-handle.test.ts > member start failure: one step for both input entry points > postMessage: input closed during the start is not accepting input, with no error status and no card 0ms
+ ✓ tests/unit/agent-collaboration/configured-agent-execution-handle.test.ts > member start failure: one step for both input entry points > reserveInput: input closed during the start is not accepting input, with no error status and no card 0ms
+ ✓ tests/unit/agent-collaboration/configured-agent-execution-handle.test.ts > member start failure: one step for both input entry points > postMessage: a closed-input outcome never withdraws an existing error status 0ms
+ ✓ tests/unit/agent-collaboration/configured-agent-execution-handle.test.ts > member start failure: one step for both input entry points > reserveInput: a closed-input outcome never withdraws an existing error status 0ms
+ ✓ tests/unit/agent-collaboration/configured-agent-execution-handle.test.ts > member start failure: one step for both input entry points > postMessage: a failure while the run is live is rethrown 0ms
+ ✓ tests/unit/agent-collaboration/configured-agent-execution-handle.test.ts > member start failure: one step for both input entry points > reserveInput: a failure while the run is live is rethrown 0ms
+ ✓ tests/unit/agent-collaboration/configured-agent-execution-handle.test.ts > member start failure: one step for both input entry points > names the underlying cause when a start fails after its binding was committed durably 0ms
+ ✓ tests/unit/agent-collaboration/configured-agent-execution-handle.test.ts > member start failure: one step for both input entry points > presents readiness_failure as the member's runtime ERROR card through an explicit adapter branch 1ms
+ ✓ tests/unit/agent-collaboration/configured-agent-execution-handle.test.ts > on-demand binding readiness > plans later readiness from the committed binding, not the constructor's null binding 1ms
+ ✓ tests/unit/agent-collaboration/configured-agent-execution-handle.test.ts > on-demand binding readiness > marks publication failure after durability indeterminate and never repeats candidate preparation 1ms
+ ✓ tests/unit/agent-collaboration/configured-agent-execution-handle.test.ts > on-demand binding readiness > CR-461-061: a kept failed start whose cleanup was confirmed is quiet, so the member's team can idle-shut-down; a quarantined cleanup is not 1ms
+ ✓ tests/unit/agent-collaboration/configured-agent-execution-handle.test.ts > on-demand binding readiness > retains cleanup quarantine as nonretryable even on a definite root rejection 0ms
+ ✓ tests/unit/agent-collaboration/configured-agent-execution-handle.test.ts > dead member (stale run) termination > terminates a published run through the AgentRunManager as before 0ms
+ ✓ tests/unit/agent-collaboration/configured-agent-execution-handle.test.ts > dead member (stale run) termination > completes termination of a run the manager no longer publishes and disposes the handle 0ms
+ ✓ tests/unit/agent-collaboration/configured-agent-execution-handle.test.ts > dead member (stale run) termination > completes quiescent termination of a stale run 1ms
+ ✓ tests/unit/agent-collaboration/configured-agent-execution-handle.test.ts > dead member (stale run) termination > accepts the root-shutdown fence for a stale run and never re-activates it afterwards 0ms
+ ✓ tests/unit/agent-collaboration/configured-agent-execution-handle.test.ts > dead member (stale run) termination > fences a published run through the run as before 0ms
+ ✓ tests/unit/agent-collaboration/configured-agent-execution-handle.test.ts > dead member (stale run) termination > surfaces a stale-discovery cleanup failure once, then completes on retry 2ms
+ ✓ tests/unit/agent-collaboration/configured-agent-execution-handle.test.ts > re-activation after the member's runtime died > resumes the persisted external conversation in a fresh-created Org instead of rejecting it 1ms
+ ✓ tests/unit/agent-collaboration/configured-agent-execution-handle.test.ts > re-activation after the member's runtime died > switches to restore after eager (prepared) publication too 0ms
+ ✓ tests/unit/agent-collaboration/configured-agent-execution-handle.test.ts > re-activation after the member's runtime died > retries the previous runtime's release on the next work after it throws once (AC-006) 0ms
+ ✓ tests/unit/agent-collaboration/configured-agent-execution-handle.test.ts > re-activation after the member's runtime died > retries the previous runtime's release on the next work after it is not accepted once (AC-006) 0ms
+ ✓ tests/unit/agent-collaboration/configured-agent-execution-handle.test.ts > re-activation after the member's runtime died > keeps the constructor mode when the first activation fails 0ms
+ ✓ tests/unit/agent-collaboration/configured-agent-execution-handle.test.ts > ConfiguredAgentExecutionHandle user Stop and selection (DS-001, DS-002, AR-001) > interrupts and releases with input open; the next activation restores on the replaced selection 1ms
+ ✓ tests/unit/agent-collaboration/configured-agent-execution-handle.test.ts > ConfiguredAgentExecutionHandle user Stop and selection (DS-001, DS-002, AR-001) > holds an activation behind the fence and runs it afterwards on the new model 6ms
+ ✓ tests/unit/agent-collaboration/configured-agent-execution-handle.test.ts > ConfiguredAgentExecutionHandle activation fence with a failed activation > runs the fenced operation after awaiting a failed, retained activation once (no spin) 0ms
+ ✓ tests/unit/restart-resume/restart-notice.test.ts > buildRestartNoticeText (DEC-003) > update, mid-turn: the cause with the version, the interrupted turn and the background-task reminder 1ms
+ ✓ tests/unit/restart-resume/restart-notice.test.ts > buildRestartNoticeText (DEC-003) > names a restart and an unexpected stop; an idle run gets no interrupted-turn line 1ms
+ ✓ tests/unit/restart-resume/restart-notice.test.ts > buildRestartNoticeText (DEC-003) > lists the accepted runs it delegated to (DS-9, the wake only) 0ms
+ ✓ tests/unit/restart-resume/restart-notice.test.ts > buildRestartNotice (the wake) > is a notice-only SYSTEM input with the named message and dedupe keys 1ms
+ ✓ tests/unit/restart-resume/restart-notice.test.ts > restartNoticeLifecycleObserver (SR-005: one display for every place) > publishes the run's own system notice once the input is forwarded, with its turn 1ms
+ ✓ tests/unit/restart-resume/restart-notice.test.ts > restartNoticeLifecycleObserver (SR-005: one display for every place) > publishes nothing when the run is not there, and never throws for a failed publication 1ms
+ ✓ tests/unit/restart-resume/restart-notice.test.ts > restart notice in a run's memory > records the notice once, as a system notice and never as a user message 8ms
+ ✓ tests/unit/restart-resume/release-identity.test.ts > readReleaseIdentityFrom > reads the stamped version 18ms
+ ✓ tests/unit/restart-resume/release-identity.test.ts > readReleaseIdentityFrom > returns null without a stamp (a server run from src), quietly 7ms
+ ✓ tests/unit/restart-resume/release-identity.test.ts > readReleaseIdentityFrom > returns null and logs for a stamp that is not JSON or has no version 5ms
+ ✓ tests/unit/restart-resume/collaboration-root-resolver.test.ts > createCollaborationRootResolver > resolves each kind through its manager, restoring when it is not active 3ms
+ ✓ tests/unit/restart-resume/collaboration-root-resolver.test.ts > createCollaborationRootResolver > uses an active Team or Org without restoring 1ms
+ ✓ tests/unit/restart-resume/collaboration-root-resolver.test.ts > createCollaborationRootResolver > maps 'no such root' to null: a run that cannot host a root, a missing run, an uncataloged Team or Org 1ms
+ ✓ tests/unit/restart-resume/collaboration-root-resolver.test.ts > createCollaborationRootResolver > throws any other failure as a restore failure (N-8) 1ms
+ ✓ tests/unit/restart-resume/collaboration-root-resolver.test.ts > createCollaborationRootResolver > CR-461-001: an ending Team or Org is not handed out; restore (which finishes it first) is, and a restore lost to a concurrent one takes the registered root 0ms
+ ✓ tests/unit/restart-resume/active-root-place-of.test.ts > ActiveCollaborationRootDirectory.placeOf > tells the standalone host, Team and Org members, and runs no root holds; a delegated run is the host of its own root 2ms
+ ✓ tests/unit/restart-resume/active-root-place-of.test.ts > ActiveCollaborationRootDirectory.placeOf > a Team or Org run named like a host is a member 0ms
+ ✓ tests/unit/restart-resume/active-root-place-of.test.ts > ActiveCollaborationRootDirectory.placeOf > logs when several roots claim a run and prefers the host 1ms
+ Test Files  10 passed (10)
+      Tests  119 passed (119)
