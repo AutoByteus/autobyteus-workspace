@@ -205,7 +205,7 @@ const startWsServer = async () => {
             trigger: null,
             tool_name: null,
             error_message: null,
-            error_details: null,
+            error_details: null, background_tasks_running: 0,
             recoverableBlock: null,
           }],
           agent_input_states: [],

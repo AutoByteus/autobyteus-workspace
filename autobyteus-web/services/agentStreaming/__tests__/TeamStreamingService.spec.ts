@@ -77,7 +77,7 @@ const snapshotPayload = (team: ReturnType<typeof buildTestTeamContext>, baseChan
     trigger: null,
     tool_name: null,
     error_message: null,
-    error_details: null,
+    error_details: null, background_tasks_running: 0,
     recoverableBlock: null,
   })),
 });
@@ -98,7 +98,7 @@ const statusPayload = (changeSequence: number, agentRunId: string, status: strin
   trigger: null,
   tool_name: null,
   error_message: null,
-  error_details: null,
+  error_details: null, background_tasks_running: 0,
     recoverableBlock: null,
 });
 
@@ -287,7 +287,7 @@ describe('TeamStreamingService current AgentRun event dispatch', () => {
       trigger: null,
       tool_name: null,
       error_message: null,
-      error_details: null,
+      error_details: null, background_tasks_running: 0,
     recoverableBlock: null,
     });
 
