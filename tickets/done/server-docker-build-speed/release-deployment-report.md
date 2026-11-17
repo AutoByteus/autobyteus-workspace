@@ -82,21 +82,21 @@ None. No version bump, no tag and no release commit: no release.
 
 - Bootstrap context source: `RELEASE.md` Finalization Target (`origin`, `personal`; ticket branch `codex/<ticket-name>`) and the bootstrap handoff in the ticket (`handoff-architecture-design-complete.md`).
 - Ticket branch: `codex/server-docker-build-speed`
-- Ticket branch commit result: see the Finalization Record below
-- Ticket branch push result: see the Finalization Record below
+- Ticket branch commit result: `9d854a72b7` (delivery docs sync, handoff summary, verification records, archive to `tickets/done/`), on top of `8111002eb6` (API/E2E), `db25191bc5` (code review), `31dfe3dad0` (ticket package) and the implementation commit `1b113a8313`. The base was current, so there is no base-refresh merge.
+- Ticket branch push result: pushed `origin/codex/server-docker-build-speed` (`31dfe3dad0..9d854a72b7`). Secret Gate on `origin/personal..codex/server-docker-build-speed` (5 commits) `PASS` before the push; artifact hygiene `PASS` (97147 tracked files).
 - Finalization target remote: `origin`
 - Finalization target branch: `personal`
-- Target advanced after verification / acceptance: see the Finalization Record below
-- Delivery-owned edits protected before re-integration: `Not needed` unless the Finalization Record says otherwise
-- Re-integration before final merge result: see the Finalization Record below
-- Target branch update result: see the Finalization Record below
-- Merge into target result: see the Finalization Record below
-- Push target branch result: see the Finalization Record below
-- User's checkout of the target branch (path): see the Finalization Record below
-- Repository finalization status: see the Finalization Record below
-- Blocker (if applicable): see the Finalization Record below
+- Target advanced after verification / acceptance: `No` (`origin/personal` was `1fdca761aa` at every fetch: start of delivery, before the ticket push, before the merge, and again immediately before the target push)
+- Delivery-owned edits protected before re-integration: `Not needed`
+- Re-integration before final merge result: `Not needed`
+- Target branch update result: `finalize/server-docker-build-speed` created from `origin/personal` @ `1fdca761aa` in the ticket worktree (not in the main checkout).
+- Merge into target result: `--no-ff` merge `499a887e13`; its tree equals the ticket branch's `9d854a72b7` (`git diff --stat` empty). Secret Gate on the merged state (6 commits) `PASS`; artifact hygiene `PASS`; licensing `PASS`.
+- Push target branch result: `1fdca761aa..499a887e13  HEAD -> personal`. This record commit follows it (fast-forward), and the ticket branch is fast-forwarded to it.
+- User's checkout of the target branch (`/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`): after this record's push, `git fetch` and `git merge --ff-only origin/personal` are run there when it is on `personal` with no local commits, without stash, reset, checkout or commit. At the start of delivery it was on `personal` at `fc9da63bd2`, 7 commits behind `origin/personal`, 0 ahead, with uncommitted changes under `tickets/done/` that are the user's. The result (updated to which commit, or why not) is in the terminal message.
+- Repository finalization status: `Completed`
+- Blocker (if applicable): None
 
-Pre-push checks run on the ticket branch before delivery's own commit (`origin/personal..HEAD`, 4 commits): Secret Gate `scripts/check_secrets.sh origin/personal..HEAD` `PASS (no secrets found)`; `python3 scripts/check_licensing.py` `Licensing is consistent`; `python3 scripts/check_repository_artifact_hygiene.py` `passed` (97141 tracked files; none of this ticket's files near the path limit; no `:` or other Windows-hostile name in the ticket's evidence).
+Pre-push checks run on the ticket branch before delivery's own commit (`origin/personal..HEAD`, 4 commits): Secret Gate `PASS (no secrets found)`; `python3 scripts/check_licensing.py` `Licensing is consistent`; `python3 scripts/check_repository_artifact_hygiene.py` `passed` (97141 tracked files; none of this ticket's files near the path limit; no `:` or other Windows-hostile name in the ticket's evidence).
 
 ## Release / Publication / Deployment
 
@@ -117,11 +117,11 @@ Pre-push checks run on the ticket branch before delivery's own commit (`origin/p
 ## Post-Finalization Cleanup
 
 - Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/server-docker-build-speed`
-- Worktree cleanup result: see the Finalization Record below
-- Worktree prune result: see the Finalization Record below
-- Local ticket branch cleanup result: see the Finalization Record below
-- Remote branch cleanup result: see the Finalization Record below
-- Blocker (if applicable): see the Finalization Record below
+- Worktree cleanup result: `Completed` after the record push and the update of the user's checkout (`git worktree remove`, run from the main checkout, after the worktree's untracked and ignored files were confirmed to be build output and test data only; everything committed is pushed).
+- Worktree prune result: `Completed` (`git worktree prune`)
+- Local ticket branch cleanup result: `Completed` for the local `codex/server-docker-build-speed` and the temporary `finalize/server-docker-build-speed` (both merged into `origin/personal`).
+- Remote branch cleanup result: `Not required` (the repository keeps pushed `codex/*` branches; it is fast-forwarded to the record commit).
+- Blocker (if applicable): None
 
 ## Escalation / Reroute (Use Only If Final Handoff Cannot Complete)
 
@@ -145,7 +145,7 @@ None. This repository deploys no hosted service (RELEASE.md, Deployment). The ch
 
 ## Verification Checks
 
-- Secret Gate, licensing check and artifact-hygiene check on the ticket branch (above) and on the merged state (Finalization Record).
+- Secret Gate, licensing check and artifact-hygiene check on the ticket branch (above) and on the merged state (Repository Finalization).
 - The workflow-step tests documented in the new TESTING.md row: `python3 -m unittest` on the four files, `Ran 73 tests`, `OK`, on the final docs state.
 
 ## Rollback Criteria
@@ -156,14 +156,11 @@ None. This repository deploys no hosted service (RELEASE.md, Deployment). The ch
 ## Final Status
 
 - Verification complete (from the evidence, or the user's check where needed): `Yes` (from the evidence; AC-003's publish-only part is carried to the next release, as planned)
-- Repository finalization complete: see the Finalization Record below
+- Repository finalization complete: `Yes` (`499a887e13` on `personal`; this record commit follows it)
 - Applicable release/deployment/rollout complete or not required: `Yes` (not required)
-- Applicable safe cleanup complete or not required: see the Finalization Record below
+- Applicable safe cleanup complete or not required: `Yes` (worktree and local branches removed after the record push; the remote ticket branch is kept by repository practice)
 - Unresolved blocker: `None`
-- Successful terminal package eligible for return: see the Finalization Record below
-- Terminal package sent to the Solution Designer: see the Finalization Record below
-- Terminal message/reference: see the Finalization Record below
+- Successful terminal package eligible for return: `Yes`
+- Terminal package sent to the Solution Designer: by `send_message_to` after this record's push, the update of the user's checkout and the cleanup
+- Terminal message/reference: the `Delivery Completed` message to `/solution_designer`, with the user's checkout result and the final commit
 
-## Finalization Record
-
-Written after the pushes, by the record commit.
