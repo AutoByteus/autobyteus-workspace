@@ -132,4 +132,4 @@
 - **Trigger:** the implementation engineer's Design Impact on FU-021 (IR-001). Events were missing for over 3 minutes even with outcome assertions.
 - **Investigation (the Solution Designer):** raw chokidar 4.0.3 missed 1 of 5 events within 60 s, and Node's own `fs.watch` missed 2 of 8, with none of our code involved (load average 53 to 68 on 10 cores). SR-005's cause ("late, not lost") was incomplete. It rested on one case with a long wait (the 2026-11-17 note already said not every case was seen to arrive).
 - **Change:** D-13. AC-005's watcher part is met where the OS delivers events. The design adds an environment probe on a hang-guard timeout. FU-500-06 is recorded for the File Explorer's recovery from dropped OS events.
-- **Review:** a test-only design change inside the reviewed package, with no product, contract or persistence change. Recorded here, with no new architecture review round.
+- **Review:** a test-only design change, with no product, contract or persistence change. It is still a revision of a `High` package, so it goes to architecture review, as the handoff rules require.
