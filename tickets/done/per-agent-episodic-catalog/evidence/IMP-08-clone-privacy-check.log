@@ -1,0 +1,7 @@
+# IMP-08 privacy check on the AC-010 clone: no run-history summary (the user's first message) appears in any file under episodic/
+# command: python3 -I tickets/in-progress/per-agent-episodic-catalog/probes/imp08-summary-privacy-check.py <clone>/memory (same script, run inline; prints counts only)
+# commit: 0be36462ef
+# date: 2026-11-17T17:06:07+00:00
+summaries checked (>= 25 chars, first 80 chars each): 638
+episodic text bytes: 2037142
+summaries found in episodic files: 0

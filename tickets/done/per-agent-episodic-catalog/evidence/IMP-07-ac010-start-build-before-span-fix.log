@@ -1,0 +1,32 @@
+# IMP-07 AC-010 start-build probe
+# command: node tickets/in-progress/per-agent-episodic-catalog/probes/ac010-start-build-probe.mjs <APFS clone of ~/.autobyteus/server-data/memory> <json>
+# commit: 00bb99fe77 (dist built from it)
+# environment: macOS 26.5.2, node v22.23.1
+# date: 2026-11-17T16:59:02Z
+# load before: 101.84 90.27 77.55
+# load after: 173.15 120.28 91.16
+{
+  "node": "v22.23.1",
+  "memoryDir": "/Users/normy/.autobyteus-test/episodic-ac010-20261117T175815/memory",
+  "filesOutsideEpisodic": 36990,
+  "passes": [
+    {
+      "label": "first start (no episodic folder)",
+      "startReturnedMs": 0.4,
+      "passMs": 26474,
+      "indexWritten": true
+    },
+    {
+      "label": "second start (no changes)",
+      "startReturnedMs": 0.1,
+      "passMs": 19841,
+      "indexWritten": false
+    }
+  ],
+  "catalogs": 124,
+  "indexRows": 124,
+  "catalogedRuns": 3788,
+  "rewrittenAtSecondStart": [],
+  "changedOutsideEpisodic": 0,
+  "changedOutsideSample": []
+}

@@ -35,7 +35,21 @@ export type JournalReading = Readonly<{
 const ENTRY_START = /^\[(?:\d\d:\d\d:\d\d|--:--:--)\] /;
 const DAY_MARKER = /^\[(\d{4}-\d\d-\d\d)\]$/;
 /** `… · 2026-08-25 10:00 – 11:00 UTC · …` or `… · 2026-08-25 10:00 – 2026-08-26 01:00 UTC · …` */
-const HEADER_FIRST_DAY = / · (\d{4}-\d\d-\d\d) \d\d:\d\d – /;
+const HEADER_TIME_RANGE = / · (\d{4}-\d\d-\d\d) (\d\d:\d\d) – (?:(\d{4}-\d\d-\d\d) )?(\d\d:\d\d) UTC(?: · |$)/;
+
+/** A journal file's time range (UTC), each side `YYYY-MM-DD HH:MM`, the date written out on both sides. */
+export type JournalTimeRange = Readonly<{ from: string; to: string }>;
+
+/**
+ * The time range the header of a journal file states (its second line); null for a file whose records have no
+ * time ("no records"). A range within one day (`2026-08-25 10:00 – 11:00 UTC`) gets its date on both sides.
+ */
+export const readJournalHeaderTimeRange = (markdown: string): JournalTimeRange | null => {
+  const match = HEADER_TIME_RANGE.exec(markdown.split("\n", 2)[1] ?? "");
+  if (!match) return null;
+  const [, fromDay, fromMinute, toDay, toMinute] = match;
+  return { from: `${fromDay} ${fromMinute}`, to: `${toDay ?? fromDay} ${toMinute}` };
+};
 
 const kindOf = (head: string): JournalEntryKind => {
   if (head === "User:" || head.startsWith("User: ") || head.startsWith("Message from ")) return "request";
@@ -54,7 +68,7 @@ export const journalLines = (markdown: string): string[] => {
 
 export const readJournalEntries = (markdown: string): JournalReading => {
   const lines = journalLines(markdown);
-  let day = HEADER_FIRST_DAY.exec(lines[1] ?? "")?.[1] ?? null;
+  let day = readJournalHeaderTimeRange(markdown)?.from.slice(0, 10) ?? null;
   const entries: JournalEntry[] = [];
   const days: Array<{ day: string; line: number }> = [];
   let open: { lineStart: number; lineEnd: number; day: string | null; head: string } | null = null;

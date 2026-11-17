@@ -1,0 +1,6 @@
+# IMP-17 (IR-003) memory e2e files using discovery
+# command: env -i PATH HOME=<temp> TMPDIR pnpm -C autobyteus-server-ts exec vitest run tests/e2e/memory/memory-search-graphql.e2e.test.ts tests/e2e/memory/work-journal-neutral-vocabulary.e2e.test.ts tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts --no-watch
+# commit: 1324c3e8f4
+# date: 2026-11-17T22:47:09Z
+ Test Files  3 passed (3)
+      Tests  9 passed | 7 skipped (16)

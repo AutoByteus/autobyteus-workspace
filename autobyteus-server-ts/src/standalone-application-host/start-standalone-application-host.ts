@@ -65,6 +65,8 @@ import { getCodexAppServerClientManager } from "../runtime-management/codex/clie
 import { LLMFactory } from "autobyteus-ts/llm/llm-factory.js";
 import { createProcessAgentProviderFactoryBuilder } from "../compositions/create-process-agent-provider-factory-builder.js";
 import { composeCollaboration, composeTaskSide, type Collaboration } from "../compositions/collaboration-composition.js";
+import { createEpisodicCatalog, type EpisodicCatalog } from "../agent-episodic-catalog/services/episodic-catalog.js";
+import { getWorkJournalService } from "../agent-work-journal/services/work-journal-service.js";
 import { createCollaborationRootResolver } from "../compositions/collaboration-root-resolver.js";
 import { getActiveCollaborationRootDirectory } from "../agent-collaboration/execution/services/active-collaboration-root-directory.js";
 import { createPlatformNoticeSources, type PlatformNoticeSources } from "../compositions/platform-notice-sources.js";
@@ -202,6 +204,7 @@ export const startStandaloneApplicationHost = async (
     GeneralProcessRunSupervisor | null = null;
   let platformNotices: PlatformNoticeSources | null = null;
   let collaboration: Collaboration | null = null;
+  let episodicCatalog: EpisodicCatalog | null = null;
   let hostDefinitionServices: HostDefinitionServices | null = null;
   try {
     processResources = await initializeStandaloneProcessResources(config);
@@ -241,6 +244,9 @@ export const startStandaloneApplicationHost = async (
     });
     // autobyteus-461 SR-047, SR-052: the same composition steps as the studio. Steps 1–2 here; 4–8 after the run services.
     const taskSide = await composeTaskSide({ appDataDir: processResources.appConfig.getAppDataDir(), memoryDir: processResources.appConfig.getMemoryDir() });
+    // autobyteus-493: the episodic catalogs of this host's own memory folder, as in the studio (started after step 8).
+    const currentEpisodicCatalog = episodicCatalog = createEpisodicCatalog({ memoryDir: processResources.appConfig.getMemoryDir(),
+      journals: getWorkJournalService(), tasks: taskSide.tree });
     platformNotices = createPlatformNoticeSources({
       agentDefinitionService: hostDefinitionServices.agentDefinitionService,
       definitionChanges: hostDefinitionServices.agentDefinitionChanges,
@@ -266,7 +272,7 @@ export const startStandaloneApplicationHost = async (
         modelSelectionValidator,
         taskRecords: taskSide.taskRecords,
         delegationIndex: taskSide.tree, viewStreams: taskSide.viewStreams,
-       
+        episodicCatalog: currentEpisodicCatalog,
         // One notice slot: tool list updates, skill notices, then background task notices (one notice per input).
         platformInputNotices: new AgentRunPlatformNotices(platformNotices.sources),
       });
@@ -276,7 +282,9 @@ export const startStandaloneApplicationHost = async (
         teamRuns: generalProcessRunSupervisor.teamRunService, orgRuns: generalProcessRunSupervisor.agentOrgRunService }),
       activeRoots: getActiveCollaborationRootDirectory(),
       // This host has no peer nodes (ARCH-REV-027: its real equivalent, as at base).
-      remoteChannel: () => null });
+      remoteChannel: () => null,
+      episodicCatalog: currentEpisodicCatalog });
+    currentEpisodicCatalog.start({ taskTitles: collaboration.tasks });
     const applicationRuntime = buildApplicationPlatformRuntime({
       appConfig: processResources.appConfig,
       delegationIndex: taskSide.tree, viewStreams: taskSide.viewStreams,
@@ -321,6 +329,7 @@ export const startStandaloneApplicationHost = async (
         } finally {
           // Platform notices stop first, so none go out while runs stop.
           await platformNotices?.close();
+          await episodicCatalog?.stop();
           // Reverse order: steps 8 … 4, then the run services.
           collaboration?.release();
           try {
@@ -358,6 +367,7 @@ export const startStandaloneApplicationHost = async (
       }
     } finally {
       await platformNotices?.close();
+      await episodicCatalog?.stop();
       collaboration?.release();
       if (processResources) {
         try {

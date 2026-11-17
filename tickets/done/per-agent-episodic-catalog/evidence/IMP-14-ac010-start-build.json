@@ -1,0 +1,25 @@
+{
+  "node": "v22.23.1",
+  "memoryDir": "/Users/normy/.autobyteus-test/episodic-ac010-20261117T201203/memory",
+  "filesOutsideEpisodic": 37050,
+  "passes": [
+    {
+      "label": "first start (no episodic folder)",
+      "startReturnedMs": 0.2,
+      "passMs": 12532,
+      "indexWritten": true
+    },
+    {
+      "label": "second start (no changes)",
+      "startReturnedMs": 0.1,
+      "passMs": 12064,
+      "indexWritten": false
+    }
+  ],
+  "catalogs": 124,
+  "indexRows": 124,
+  "catalogedRuns": 3796,
+  "rewrittenAtSecondStart": [],
+  "changedOutsideEpisodic": 0,
+  "changedOutsideSample": []
+}

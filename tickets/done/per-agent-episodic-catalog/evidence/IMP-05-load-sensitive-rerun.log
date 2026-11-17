@@ -1,0 +1,21 @@
+# IMP-05 load-sensitive unit tests rerun with a longer timeout (cause check for the IMP-04 failures)
+# command: pnpm -C autobyteus-server-ts exec vitest run tests/architecture/tracked-imports.test.ts tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts tests/unit/skill-update-notices/skill-folder-watcher.test.ts tests/unit/compositions/native-command-shutdown.test.ts --no-watch --testTimeout=60000
+# commit: 0be36462ef
+# environment: macOS, node v22.23.1
+# date: 2026-11-17T17:10:47Z
+# load before: 85.32 90.64 90.30
+     × reports definition changes per folder and ignores skills and other files 20780ms
+     × moves a root to FOLDER_MISSING when it is renamed away and resumes watching when it returns 20839ms
+     × re-arms a root whose folder was replaced in place (GitHub update rename swap) 19898ms
+     × starts a registered root that is missing as FOLDER_MISSING and arms it when it appears 6202ms
+     × releases a folder's OS handles when no run uses it any more, and still reports changes once it is watched again (CR-005) 24044ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 5 ⎯⎯⎯⎯⎯⎯⎯
+ FAIL  tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts > AgentPackageFolderWatcher > reports definition changes per folder and ignores skills and other files
+ FAIL  tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts > AgentPackageFolderWatcher > reports definition changes per folder and ignores skills and other files
+ FAIL  tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts > AgentPackageFolderWatcher > re-arms a root whose folder was replaced in place (GitHub update rename swap)
+ FAIL  tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts > AgentPackageFolderWatcher > moves a root to FOLDER_MISSING when it is renamed away and resumes watching when it returns
+ FAIL  tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts > AgentPackageFolderWatcher > starts a registered root that is missing as FOLDER_MISSING and arms it when it appears
+ FAIL  tests/unit/skill-update-notices/skill-folder-watcher.test.ts > SkillFolderWatcher > releases a folder's OS handles when no run uses it any more, and still reports changes once it is watched again (CR-005)
+ Test Files  2 failed | 2 passed (4)
+      Tests  5 failed | 26 passed (31)
+# load after: 82.69 91.05 90.72

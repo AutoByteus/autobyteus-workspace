@@ -1,0 +1,42 @@
+# API-14 rerun of the unit files that failed in API-11, alone | commit 89f35132ed | Node v22.23.1 | 2026-11-17T18:21:19Z | load 65.76 79.93 80.09
+     87|     const rootPath = path.join(base, "pkg");
+     88|     const movedPath = path.join(base, "pkg-moved");
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/5]⎯
+ FAIL  tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts > AgentPackageFolderWatcher > re-arms a root whose folder was replaced in place (GitHub update rename swap)
+Error: Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts:111:3
+    109|   });
+    110|
+    111|   it("re-arms a root whose folder was replaced in place (GitHub update…
+       |   ^
+    112|     const rootPath = path.join(base, "pkg");
+    113|     await fs.mkdir(path.join(rootPath, "agents"), { recursive: true });
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/5]⎯
+ FAIL  tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts > AgentPackageFolderWatcher > re-arms a root whose folder was replaced in place (GitHub update rename swap)
+Error: Hook timed out in 10000ms.
+If this is a long-running hook, pass a timeout value as the last argument or configure it globally with "hookTimeout".
+ ❯ tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts:54:1
+     52| });
+     53|
+     54| afterEach(async () => {
+       | ^
+     55|   vi.useRealTimers();
+     56|   await monitor?.close();
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/5]⎯
+ FAIL  tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts > AgentPackageFolderWatcher > starts a registered root that is missing as FOLDER_MISSING and arms it when it appears
+Error: Timed out waiting for the monitor.
+ ❯ waitFor tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts:44:49
+     42|   const started = Date.now();
+     43|   while (!predicate()) {
+     44|     if (Date.now() - started > timeoutMs) throw new Error("Timed out w…
+       |                                                 ^
+     45|     await new Promise((resolve) => setTimeout(resolve, 25));
+     46|   }
+ ❯ tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts:145:5
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/5]⎯
+ Test Files  1 failed | 1 passed (2)
+      Tests  4 failed | 29 passed (33)
+   Start at  19:21:20
+   Duration  67.64s (transform 1.99s, setup 121ms, import 2.42s, tests 63.70s, environment 0ms)
+exit 1

@@ -1,5 +1,5 @@
 import { testViewStreams } from "../../helpers/view-streams.js";
-import { noDelegations, noWorkGuard, openTaskRecords } from "../../helpers/no-delegations.js";
+import { noDelegations, noWorkGuard, noEpisodicCatalog, openTaskRecords } from "../../helpers/no-delegations.js";
 import { setProcessTeamRunHistoryService, TeamRunHistoryService } from "../../../src/run-history/services/team-run-history-service.js";
 import { setProcessTeamMemberRunViewProjectionService, TeamMemberRunViewProjectionService } from "../../../src/run-history/services/team-member-run-view-projection-service.js";
 import "reflect-metadata";
@@ -172,7 +172,7 @@ describe("Run file changes API integration", () => {
     // creates (SR-047).
     releaseTeamReads = [
       setProcessTeamRunHistoryService(new TeamRunHistoryService(getMemoryDir(), {
-        tree: noDelegations(), workGuard: noWorkGuard(), teamRunManager: ownedTeamRunManager,
+        tree: noDelegations(), workGuard: noWorkGuard(), episodicCatalog: noEpisodicCatalog(), teamRunManager: ownedTeamRunManager,
       })),
       setProcessTeamMemberRunViewProjectionService(new TeamMemberRunViewProjectionService({ memoryDir: getMemoryDir(), tree: noDelegations(), peerRunOf: () => null })),
     ];

@@ -1,6 +1,7 @@
 import { TokenUsageCapability } from "../../token-usage/providers/token-usage-capability.js";
 import { rootRestoreRefusal, unrestorableRoot, type RootRestoreRefusal } from "../../agent-collaboration/execution/services/root-restore-admission.js";
 import type { DelegatedWorkGuard } from "../../run-history/services/delegated-work-guard.js";
+import type { EpisodicCatalog } from "../../agent-episodic-catalog/services/episodic-catalog.js";
 import type { UpdateStoppedAgentOrgRunConfig, TeamWorkspacePatch } from "../domain/agent-org-run-config.js";
 import type { RemoteInboundQuery, StoredRemoteLinkCheck } from "../../agent-collaboration/execution/remote/remote-run-links.js";
 import { listAgentOrgRunSelectionScopes, applyAgentOrgTeamWorkspacePatches, resolveAgentOrgTeamWorkspacePatches } from "./agent-org-run-config-mutator.js";
@@ -64,6 +65,8 @@ export class AgentOrgRunService {
     adHocTasks?: Pick<ProjectTaskService, "deleteAdHocTasksDelegatedFrom">;
     /** Archive and delete wait for the runs it delegated to (REQ-007). */
     workGuard: Pick<DelegatedWorkGuard, "guard">;
+    /** Told after a committed delete, so the run's members leave the episodic catalogs. */
+    episodicCatalog: Pick<EpisodicCatalog, "runDeleted">;
     /** Base's token-usage restore check (SR-078); defaults to the process capability. */
     tokenUsage?: Pick<TokenUsageCapability, "assertExistingRunRestoreReady">;
   }>) {}
@@ -234,10 +237,12 @@ export class AgentOrgRunService {
 
   async deleteStoredRun(orgRunId: string) {
     const normalized = required(orgRunId, "orgRunId");
-    const result = await this.dependencies.workGuard.guard({ rootSubjectKind: "agent_org", rootRunId: normalized }, "deleted", () => this.dependencies.history.deleteStored(normalized));
+    const root = createRootExecutionIdentity({ rootSubjectKind: "agent_org", rootRunId: normalized });
+    const result = await this.dependencies.workGuard.guard(root, "deleted", () => this.dependencies.history.deleteStored(normalized));
+    if (!result.success) return result;
+    this.dependencies.episodicCatalog.runDeleted(root);
     // After the committed delete, the run's ad-hoc Tasks go too (best effort; never throws).
-    if (result.success) await (this.dependencies.adHocTasks ?? getProjectTaskService())
-      .deleteAdHocTasksDelegatedFrom(createRootExecutionIdentity({ rootSubjectKind: "agent_org", rootRunId: normalized }));
+    await (this.dependencies.adHocTasks ?? getProjectTaskService()).deleteAdHocTasksDelegatedFrom(root);
     return result;
   }
 
