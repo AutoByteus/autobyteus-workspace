@@ -15,7 +15,6 @@ The JSON and PNG files are raw outputs; this README is their header. The scripts
 | `upgrade/` | API-06 | `scripts/screens.mjs upgrade upgrade` (base bundle served at start; the script switches to head) | as the walks |
 | `desktop/` | API-09 | `scripts/desktop.mjs desktop` (`pnpm dev` of this worktree, desktop page `/`, 1440×1000) | headless Chrome; no node needed |
 | `API-02-web-unit-full.log`, `API-03-server-typecheck.log` | API-02, API-03 | headers in the files | macOS, Node v22.23.1 |
-
 | `vnc-live/API-11-*` (round 2) | API-11 | `scripts/node-525.mjs vnc-live` (node log `API-11-node.log`, server log) + `scripts/vnc-live.mjs vnc-live` | code `12ecf1bf29`, 2026-11-17/18; this worktree's server with a node desktop (test-owned container `abtest525-desktop`, `autobyteus/autobyteus-server:beta` Xvnc, on 127.0.0.1:5900); host Chrome phone 360/412×800 DPR 2 through the 10.0.2.2 proxy |
 | `vnc-live/API-12-*` (round 2) | API-12 | `scripts/android.mjs pair` (its files renamed `API-12-pairing-*`), `scripts/android-vnc.mjs`, `android-vnc.mjs only360` | own AVD `apie2e525_api35` re-created, `emulator-5650`, WebView 124; 412 CSS px, then 360 CSS px by `wm density 480` (reset after) |
 
