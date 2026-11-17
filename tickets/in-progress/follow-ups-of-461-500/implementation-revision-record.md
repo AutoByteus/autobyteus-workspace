@@ -33,8 +33,8 @@
 - **Prior result:** IR-001, ready for source review. **Current result:** both findings fixed; back to source review
   (Targeted Delta Review).
 - **Upstream revisions:** SR-014, ARCH-REV-007, CRR-001. API-REV / DR: N/A.
-- **ID note:** D-14 named FU-035's round "IR-002". Revision IDs go in round order, so FU-035's step 0 will be the next
-  round after this one (IR-003).
+- **ID note:** D-14 named FU-035's round "IR-002". Revision IDs go in round order, so FU-035's step 0 comes in a later
+  round (IR-003 went to the G-5 revision).
 - **Behavior / requirements:** REQ-001 / REQ-002 (AC-001, N3): code names only. No behavior changes.
 - **Code delta** (`7eb6f94b9f`):
   - **CR-500-001:**
@@ -66,3 +66,44 @@
   - `git grep -nE 'Copy[A-Z]|[a-z]Copy\b|assertCopy|CopyRouter' -- autobyteus-server-ts/src` now finds only the
     released migrations' frozen code and `DelegatedCopyOwnFileCompleteV1AppDataMigration` (a released migration's ID).
 - **Limitations:** e2e files that read the wire result (`target_agent_run_id`) are unaffected; I didn't rerun them.
+
+## IR-003 (G-5 revision for CRR-003)
+
+- **Trigger:**
+  - Code Reviewer CRR-003 (from API/E2E API-REV-001 F-1 … F-3): CR-500-003 and CR-500-004 (Design Impact), CR-500-005
+    (Local Fix).
+  - Solution Designer SR-015 / SR-016; ARCH-REV-009 Pass.
+- **Prior result:** IR-002, Pass (CRR-002). **Current result:** R1–R3 implemented; ready for source review.
+- **Upstream revisions:** SR-015, SR-016; ARCH-REV-008, ARCH-REV-009; CRR-003; API-REV-001. DR: N/A.
+- **Behavior / requirements:** REQ-016 / AC-012 (G-5), REQ-007 (FU-030's inherited-layer text).
+- **Code delta** (`7eb78a701b`):
+  - **R1:**
+    - `model-availability-service.ts`: `loadOnDemandModel`, `OnDemandModelLoad`, the shared private
+      `loadProviderCatalog`.
+    - `run-model-selection-service.ts`: the `OnDemandModels` constructor argument; the load inside the 8 s race in
+      `storedModelOffer` and `listOptions`.
+    - Both hosts pass `getModelAvailabilityService()`.
+  - **R2:**
+    - `run-model-selection-refusal.ts`: `StoredModelStartChecks`, and the definition read first in
+      `storedModelStartRefusal`.
+    - The handle, the factory and the lifecycle service take `storedModelChecks`; the supervisor and the kernel builder
+      build it.
+  - **R3:**
+    - `launch-usability-check.ts`: `modelNoLongerOffered` on an unusable inherited verdict.
+    - `collaborator-launch-resolver.ts`: `inheritedLayerRefusal`.
+  - **Tests:**
+    - New: `on-demand-stored-model.test.ts`.
+    - R2 cases in the lifecycle and handle tests.
+    - Resolver AC-006 / FU-030 text; the DLP-005 e2e and probe.
+    - Helpers `OFFERED_STORED_MODEL_CHECKS`, `EXISTING_AGENT_DEFINITIONS`, `NO_ON_DEMAND_MODELS`; the constructions that
+      follow from them.
+- **Deviations:**
+  - `ensureModelAvailable` shares the load step rather than calling `loadOnDemandModel`, which keeps base's errors at
+    start.
+  - No web change (the client already shows the note only for a readable answer).
+  - Inherited failures other than "no longer offered" keep their words and gain the next step.
+- **Focused validation:** IMP-15 … IMP-19 (handoff "Checks Run").
+- **Limitations:**
+  - The DLP-005 browser probe was updated, not run (API/E2E).
+  - The SCP-E2E-006 restart rerun is API/E2E's.
+  - API/E2E's FU-036 e2e file trips the stream-clients guard test (handoff note).

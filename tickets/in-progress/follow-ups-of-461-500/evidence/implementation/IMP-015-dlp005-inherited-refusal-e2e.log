@@ -1,0 +1,8 @@
+# IMP-015 SR-015 R3 / DLP-005: the inherited-layer refusal through the real Studio server with the scripted AGY CLI
+# Command: cd autobyteus-server-ts && env -i PATH="$PATH" HOME="$HOME" TMPDIR="$TMPDIR" RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=$PWD/tests/fixtures/agy-failure-cli.mjs CODEX_APP_SERVER_COMMAND=/nonexistent/codex npx vitest run --no-watch tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts -t "inherited layer"
+# Commit: 7eb78a701b (code as committed); macOS Darwin 25.5.0, Node v22; 2026-11-17 local
+
+ ✓ tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts (3 tests | 2 skipped) 6335ms
+     ✓ Agent root: with the root's model retired, an agent that needs the inherited layer cannot be delegated (the refusal says what to do, nothing added), and an outside message is not found; a usable own default still starts; a user `@` mention admits nothing (AC-006)  1942ms
+ Test Files  1 passed (1)
+      Tests  1 passed | 2 skipped (3)
