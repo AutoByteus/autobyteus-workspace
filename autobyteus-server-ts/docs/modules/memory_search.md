@@ -147,8 +147,11 @@ The facade adds `coverage`, holds `wordsNotFound` back while the Text step is in
 
 - **Tool `search_memory`** (`src/agent-tools/memory/`): one contract for the native tool and the MCP adapter
   (`memory-tools-mcp-adapter-provider.ts`). Input `{query, limit?}`; argument errors are tool errors
-  (`MEMORY_TOOL_ARGUMENT_INVALID`). The result keeps only fields with a value, lines as `"812-860"`. An agent
-  gets the tool only when its definition selects it.
+  (`MEMORY_TOOL_ARGUMENT_INVALID`). The result keeps only fields with a value, lines as `"812-860"`. Every
+  agent run on every runtime has the tool: the shared tool exposure rule
+  (`src/agent-execution/shared/runtime-agent-tool-exposure.ts`, `PLATFORM_GIVEN_TOOL_NAMES`) adds it whether or not
+  the definition selects it, and a definition that selects it gets it once. A search covers every run on this node
+  (the asking run left out), whichever agent asks.
 - **GraphQL** (`api/graphql/types/memory-search.ts`): `memorySearch(query, limit)`, `memoryIndexStatus`,
   `startMemoryIndexing`, `rebuildMemoryIndex`, and `runFolderWorkJournal(runKey, workJournal)` for a `RUN_FOLDER`
   run. Enum-like fields are upper case strings (`MEANING_INDEX`, `TEXT`, …).

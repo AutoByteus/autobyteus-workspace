@@ -7,6 +7,7 @@ import { resolveAutoByteusAgentTools } from '../../../../../src/agent-execution/
 import { resolveAutoByteusRuntimeAgentToolExposure } from '../../../../../src/agent-execution/backends/autobyteus/autobyteus-runtime-tool-exposure.js';
 import { resolveRuntimeAgentToolExposure } from '../../../../../src/agent-execution/shared/runtime-agent-tool-exposure.js';
 import { registerProjectTaskTools } from '../../../../../src/agent-tools/project-tasks/project-task-native-tools.js';
+import { registerMemoryTools, SearchMemoryTool } from '../../../../../src/agent-tools/memory/memory-native-tools.js';
 
 const removedToolName = ['replace', 'in', 'file'].join('_');
 
@@ -49,11 +50,42 @@ describe('resolveAutoByteusAgentTools', () => {
     expect(agentDefinition.toolNames).toEqual([removedToolName, 'read_file']);
   });
 
-  it('materializes the native foundation baseline through the existing registry', () => {
+  it('materializes the native foundation baseline and the platform-given search_memory through the existing registry', () => {
+    // The server registers the memory tools at every start (startup/agent-tool-loader.ts, "memory").
+    registerMemoryTools();
     const agentDefinition = new AgentDefinition({
       name: 'Native agent',
       description: 'Exercises native default materialization.',
       toolNames: [],
+    });
+    const logger = { warn: vi.fn(), error: vi.fn() };
+
+    const resolution = resolveAutoByteusAgentTools({
+      agentDefinition,
+      runtimeToolExposure: resolveAutoByteusRuntimeAgentToolExposure(agentDefinition),
+      logger,
+    });
+
+    expect(resolution.actualToolNames).toEqual(['run_bash', 'read_file', 'edit_file', 'write_file', 'search_memory']);
+    expect(resolution.tools.map((tool) => tool.definition?.name)).toEqual([
+      'run_bash',
+      'read_file',
+      'edit_file',
+      'write_file',
+      'search_memory',
+    ]);
+    expect(resolution.tools[4]).toBeInstanceOf(SearchMemoryTool);
+    expect(logger.warn).not.toHaveBeenCalled();
+    expect(agentDefinition.toolNames).toEqual([]);
+  });
+
+  it('creates one search_memory instance for a definition that also lists it (autobyteus-496 AC-001)', () => {
+    registerMemoryTools();
+    const agentDefinition = new AgentDefinition({
+      name: 'Explicit memory agent',
+      description: 'Lists search_memory itself.',
+      instructions: 'Search memory when asked.',
+      toolNames: ['search_memory', 'read_file'],
     });
 
     const resolution = resolveAutoByteusAgentTools({
@@ -61,14 +93,8 @@ describe('resolveAutoByteusAgentTools', () => {
       runtimeToolExposure: resolveAutoByteusRuntimeAgentToolExposure(agentDefinition),
     });
 
-    expect(resolution.actualToolNames).toEqual(['run_bash', 'read_file', 'edit_file', 'write_file']);
-    expect(resolution.tools.map((tool) => tool.definition?.name)).toEqual([
-      'run_bash',
-      'read_file',
-      'edit_file',
-      'write_file',
-    ]);
-    expect(agentDefinition.toolNames).toEqual([]);
+    expect(resolution.actualToolNames.filter((name) => name === 'search_memory')).toHaveLength(1);
+    expect(resolution.tools.filter((tool) => tool instanceof SearchMemoryTool)).toHaveLength(1);
   });
 
   const memberContext = (teamScoped: boolean) => ({
