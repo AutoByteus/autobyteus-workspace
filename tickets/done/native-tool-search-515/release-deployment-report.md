@@ -90,19 +90,19 @@ None: no release, no version bump, no tag.
 
 - Bootstrap context source: `RELEASE.md` Finalization Target (`origin`, `personal`; ticket branch `codex/<ticket-name>`; merge `--no-ff` from a `finalize/` branch in the ticket worktree) and the ticket's `handoff-architecture.md`.
 - Ticket branch: `codex/native-tool-search-515`
-- Ticket branch commit result: (filled in after the commit)
-- Ticket branch push result: (filled in after the push)
+- Ticket branch commit result: `b1488c0621` (delivery docs sync, handoff summary, release notes, verification records, archive to `tickets/done/`), on top of the base-refresh merge `bf5250aef3`, the review checkpoint `e63a77ad66`, API/E2E `55cafcfa98`, the test commits `abe5617269`, `e87279514c`, `327566836a`, `7ec93eee7d`, the ticket package `03da73d550` and the implementation commits `8065d773e0`, `49867e8dc4`.
+- Ticket branch push result: `origin/codex/native-tool-search-515` created (new branch). Secret Gate on `origin/personal..codex/native-tool-search-515` (11 commits) `PASS` before the push; artifact hygiene `PASS` (97240 tracked files).
 - Finalization target remote: `origin`
 - Finalization target branch: `personal`
-- Target advanced after verification / acceptance: (filled in)
-- Delivery-owned edits protected before re-integration: (filled in)
-- Re-integration before final merge result: (filled in)
-- Target branch update result: (filled in)
-- Merge into target result: (filled in)
-- Push target branch result: (filled in)
-- User's checkout of the target branch (path): (filled in)
-- Repository finalization status: (filled in)
-- Blocker (if applicable): (filled in)
+- Target advanced after verification / acceptance: `No` (`origin/personal` was `3722dbb1d8` at every fetch: start of delivery, before the Secret Gate, before the ticket push, before the merge, and immediately before the target push)
+- Delivery-owned edits protected before re-integration: `Not needed`
+- Re-integration before final merge result: `Not needed` (the verified state is the merged state)
+- Target branch update result: `finalize/native-tool-search-515` created from `origin/personal` @ `3722dbb1d8` in the ticket worktree (not in the main checkout).
+- Merge into target result: `--no-ff` merge `aff573df37`; its tree equals the ticket branch's `b1488c0621` (`git diff --stat codex/native-tool-search-515 HEAD` empty). Secret Gate on the merged state (12 commits) `PASS`; licensing `PASS`; artifact hygiene `PASS`. (My first merge command failed on `-F -` before changing anything; the second ran from a message file.)
+- Push target branch result: `3722dbb1d8..aff573df37  HEAD -> personal`. This record commit follows it (fast-forward), and the ticket branch is fast-forwarded to it.
+- User's checkout of the target branch (`/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`): at the start of the update it was on `personal` at `3722dbb1d8` (equal to `origin/personal` before the merge), 0 commits ahead, with uncommitted changes under `tickets/done/` (three other tickets) and untracked folders that are the user's. After this record's push, `git fetch` and `git merge --ff-only origin/personal` run there without stash, reset, checkout or commit. The result (updated to which commit, or why not) is in the terminal message.
+- Repository finalization status: `Completed`
+- Blocker (if applicable): None
 
 Pre-push checks run on the ticket branch before delivery's own commit (`origin/personal..HEAD`, 10 commits): Secret Gate `PASS (no secrets found)`; `python3 scripts/check_licensing.py` `Licensing is consistent`; `python3 scripts/check_repository_artifact_hygiene.py` `passed` (97231 tracked files; the evidence files this ticket adds have no `:` or other Windows-hostile character in their names and none is near the 200-character limit).
 
@@ -124,7 +124,10 @@ Pre-push checks run on the ticket branch before delivery's own commit (`origin/p
 
 ## Post-Finalization Cleanup
 
-(filled in after the cleanup)
+- Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/native-tool-search-515`
+- Worktree cleanup result, worktree prune result, local branch cleanup result: run after this record's push and the update of the user's checkout (`git worktree remove` from the main checkout once the worktree's untracked and ignored files are confirmed to be build output and test data only and everything committed is pushed; `git worktree prune`; delete the local `codex/native-tool-search-515` and the temporary `finalize/native-tool-search-515`, both merged into `origin/personal`). The results are in the terminal message.
+- Remote branch cleanup result: `Not required` (the repository keeps pushed `codex/*` branches; it is fast-forwarded to the record commit).
+- Blocker (if applicable): None
 
 ## Escalation / Reroute (Use Only If Final Handoff Cannot Complete)
 
@@ -157,10 +160,10 @@ Revert the merge commit on `personal` (RELEASE.md, Rollback). The change convert
 ## Final Status
 
 - Verification complete (from the evidence, or the user's check where needed): `Yes`
-- Repository finalization complete: (filled in)
+- Repository finalization complete: `Yes`
 - Applicable release/deployment/rollout complete or not required: `Yes` (not required)
-- Applicable safe cleanup complete or not required: (filled in)
-- Unresolved blocker: (filled in)
-- Successful terminal package eligible for return: (filled in)
-- Terminal package sent to the Solution Designer: (filled in)
-- Terminal message/reference: (filled in)
+- Applicable safe cleanup complete or not required: `Yes` after the steps above; the terminal message states the result
+- Unresolved blocker: `None`
+- Successful terminal package eligible for return: `Yes`
+- Terminal package sent to the Solution Designer: `Yes`, after this record's push, the update of the user's checkout and the cleanup
+- Terminal message/reference: the `Delivery Completed` message to `/solution_designer` that follows this record
