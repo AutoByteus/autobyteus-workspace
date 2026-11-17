@@ -24,7 +24,7 @@
         </svg>
         <h3 class="truncate text-xs font-bold text-gray-900 tracking-wider leading-none">{{ $t('workspace.components.progress.BackgroundTaskPanel.title') }}</h3>
       </div>
-      <span class="flex-shrink-0 whitespace-nowrap text-xs text-gray-600 font-medium" data-test="background-tasks-counts">{{ countsLabel }}</span>
+      <span v-if="countsLabel" class="flex-shrink-0 whitespace-nowrap text-xs text-gray-600 font-medium" data-test="background-tasks-counts">{{ countsLabel }}</span>
     </div>
 
     <!-- Content -->
@@ -32,7 +32,10 @@
       <p v-if="snapshotView" class="px-3 pt-3 text-xs text-gray-500" data-test="background-tasks-scope">
         {{ $t('workspace.components.progress.BackgroundTaskPanel.trackedExplanation') }}
       </p>
-      <p v-if="!confirmed" class="px-3 py-3 text-xs text-gray-600" role="status" data-test="background-tasks-availability">
+      <p v-if="mode === 'no-run'" class="p-8 text-center text-gray-700 text-sm" data-test="background-tasks-no-run">
+        {{ $t('workspace.components.progress.BackgroundTaskPanel.noRun') }}
+      </p>
+      <p v-else-if="!confirmed" class="px-3 py-3 text-xs text-gray-600" role="status" data-test="background-tasks-availability">
         {{ availabilityLabel }}
         <span v-if="tasks.length">{{ $t('workspace.components.progress.BackgroundTaskPanel.lastKnown') }}</span>
       </p>
@@ -82,8 +85,8 @@
               >{{ commandOf(task) }}</button>
             </template>
           </div>
-          <p v-if="'exitCode' in task && task.exitCode !== null" class="mt-1 pl-6 text-xs text-gray-600" data-test="background-task-exit">
-            {{ $t('workspace.components.progress.BackgroundTaskPanel.exitCode', { code: task.exitCode }) }}
+          <p v-if="endLineOf(task)" class="mt-1 pl-6 text-xs text-gray-600" data-test="background-task-end">
+            {{ endLineOf(task) }}
           </p>
           <button
             v-if="task.status !== 'running' && task.summary"
@@ -113,6 +116,7 @@ import { Icon } from '@iconify/vue';
 import { useActiveContextStore } from '~/stores/activeContextStore';
 import { useBackgroundTaskPanelView } from '~/composables/useBackgroundTaskPanelView';
 import { useLocalization } from '~/composables/useLocalization';
+import { describeBackgroundTaskEnd } from '~/utils/backgroundTaskEnd';
 import type { BackgroundTaskPanelRow, BackgroundTaskPanelStatus } from '~/types/backgroundTaskView';
 
 const props = defineProps<{
@@ -129,12 +133,24 @@ const { t, resolvedLocale } = useLocalization();
 const currentAgentRunId = computed(() => activeContextStore.activeAgentContext?.state.runId ?? '');
 
 const { tasks, counts, mode, confirmed, snapshotView } = useBackgroundTaskPanelView(currentAgentRunId, computed(() => !props.collapsed));
-const countsLabel = computed(() => confirmed.value
-  ? t('workspace.components.progress.BackgroundTaskPanel.counts', counts.value)
-  : tasks.value.length ? t('workspace.components.progress.BackgroundTaskPanel.recordedCounts', counts.value)
-    : t('workspace.components.progress.BackgroundTaskPanel.unconfirmedCounts'));
+const countsLabel = computed(() => mode.value === 'no-run' ? ''
+  : confirmed.value ? t('workspace.components.progress.BackgroundTaskPanel.counts', counts.value)
+    : tasks.value.length ? t('workspace.components.progress.BackgroundTaskPanel.recordedCounts', counts.value)
+      : t('workspace.components.progress.BackgroundTaskPanel.unconfirmedCounts'));
 const availabilityLabel = computed(() => t(`workspace.components.progress.BackgroundTaskPanel.${mode.value === 'loading' ? 'loading' : 'unavailable'}`));
 const observedTime = (iso: string): string => new Date(iso).toLocaleString(resolvedLocale.value);
+
+/** Why an ended task ended, in one line (`describeBackgroundTaskEnd`); null when the runtime gave neither a reason nor an exit code. */
+const endLineOf = (task: BackgroundTaskPanelRow): string | null => {
+  const end = describeBackgroundTaskEnd(task);
+  if (!end) return null;
+  switch (end.kind) {
+    case 'time_limit': return t('workspace.components.progress.BackgroundTaskPanel.end.timeLimit');
+    case 'low_memory': return t('workspace.components.progress.BackgroundTaskPanel.end.lowMemory');
+    case 'run_ended': return t('workspace.components.progress.BackgroundTaskPanel.end.runEnded');
+    case 'exit_code': return t('workspace.components.progress.BackgroundTaskPanel.exitCode', { code: end.code });
+  }
+};
 
 const descriptionOf = (task: BackgroundTaskPanelRow): string =>
   task.description.trim() || t(snapshotView.value ? 'workspace.components.progress.BackgroundTaskPanel.shellCommand' : 'workspace.components.progress.BackgroundTaskPanel.untitled');

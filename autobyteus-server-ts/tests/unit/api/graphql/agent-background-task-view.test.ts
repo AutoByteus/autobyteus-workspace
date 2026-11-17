@@ -54,7 +54,7 @@ describe('background view GraphQL serialization', () => {
   const source = `query($id: String!) { agentBackgroundTaskView(agentRunId: $id) {
     __typename
     ... on AgentBackgroundTaskSnapshot { agentRunId runInstanceId tasks { taskId status command exitCode } }
-    ... on AgentBackgroundTaskEventStream { agentRunId currentTasks: tasks { taskId kind description command status summary startedAt } }
+    ... on AgentBackgroundTaskEventStream { agentRunId currentTasks: tasks { taskId kind description command status summary endReason exitCode startedAt } }
     ... on AgentBackgroundTaskUnsupported { agentRunId reason }
     ... on AgentBackgroundTaskUnavailable { agentRunId reason }
   } }`;
@@ -77,15 +77,16 @@ describe('background view GraphQL serialization', () => {
 
 // autobyteus-473: an event-stream run's view carries its current tasks, so a viewer that opens the run later sees them.
 describe('event-stream view with current tasks', () => {
-  it('serializes each task with its domain fields (kind and status as enums)', async () => {
+  it('serializes each task with its domain fields (kind, status and end reason as enums)', async () => {
     const tasks = [
-      { taskId: 'bg-1', kind: 'shell', description: 'Run the probe', command: 'pnpm test:e2e', status: 'running', summary: null, startedAt: '2026-11-12T10:00:00.000Z' },
-      { taskId: 'bg-0', kind: 'subagent', description: 'Review', command: null, status: 'failed', summary: 'exit code 1', startedAt: '2026-11-12T09:00:00.000Z' },
+      { taskId: 'bg-1', kind: 'shell', description: 'Run the probe', command: 'pnpm test:e2e', status: 'running', summary: null, endReason: null, exitCode: null, startedAt: '2026-11-12T10:00:00.000Z' },
+      { taskId: 'bg-0', kind: 'shell', description: 'Run the suite', command: null, status: 'failed', summary: null, endReason: null, exitCode: 1, startedAt: '2026-11-12T09:00:00.000Z' },
+      { taskId: 'bg-2', kind: 'shell', description: 'Wait', command: 'bash wait.sh', status: 'stopped', summary: 'Background command "Wait" was stopped after reaching its background time limit', endReason: 'time_limit', exitCode: null, startedAt: '2026-11-12T08:00:00.000Z' },
     ];
     const { run } = fixture(); run.inspectBackgroundTasks.mockResolvedValue({ kind: 'event-stream', agentRunId: 'run-1', tasks });
     const schema = await buildSchema({ resolvers: [AgentBackgroundTaskViewResolver] });
     const result = await graphql({ schema, source: `query($id: String!) { agentBackgroundTaskView(agentRunId: $id) {
-      __typename ... on AgentBackgroundTaskEventStream { agentRunId tasks { taskId kind description command status summary startedAt } } } }`,
+      __typename ... on AgentBackgroundTaskEventStream { agentRunId tasks { taskId kind description command status summary endReason exitCode startedAt } } } }`,
     variableValues: { id: 'run-1' } });
     expect(result.errors).toBeUndefined();
     expect(result.data?.agentBackgroundTaskView).toEqual({ __typename: 'AgentBackgroundTaskEventStream', agentRunId: 'run-1', tasks });

@@ -5,6 +5,7 @@ import {
   composeSharedCarpenterPrompt,
 } from "../../../../src/agent-execution/prompt/carpenter-prompt-composer.js";
 import { renderSemanticMemorySection } from "../../../../src/agent-execution/prompt/carpenter-prompt-sections.js";
+import { CODEX_LONG_RUNNING_COMMAND_SECTION } from "../../../../src/agent-execution/prompt/long-running-command-sections.js";
 import { testMemberExecutionContext } from "../../../fixtures/current-team-run-fixtures.js";
 
 /**
@@ -33,6 +34,10 @@ const operator = () => new AgentDefinition({
 });
 const project = { projectId: "project_abc", name: "Marketing" };
 
+/** The shared composer, as Codex uses it; its "Long-Running Commands" section follows every other one (autobyteus-483). */
+const composeShared = (input: Omit<Parameters<typeof composeSharedCarpenterPrompt>[0], "longRunningCommandSection">) =>
+  composeSharedCarpenterPrompt({ ...input, longRunningCommandSection: CODEX_LONG_RUNNING_COMMAND_SECTION });
+
 const memberContext = () => testMemberExecutionContext({
   rootTeamRunId: "team-run",
   memberAddress: "/computer_use_operator", agentRunId: "run-operator",
@@ -55,14 +60,15 @@ describe("Semantic Memory section (semantic-memory-prompt-contract.md)", () => {
     expect(prompt.split("## Semantic Memory")).toHaveLength(2);
   });
 
-  it("§5.2: enabled team member without a Project (shared composer): the section comes last, with the same folder", () => {
-    const prompt = composeSharedCarpenterPrompt({
+  it("§5.2: enabled team member without a Project (shared composer): the section follows the collaboration sections, with the same folder; only the runtime's Long-Running Commands section comes after it (autobyteus-483)", () => {
+    const prompt = composeShared({
       agentDefinition: operator(), memberExecutionContext: memberContext(), project: null, semanticMemoryPath: FOLDER,
     });
-    const withoutSection = composeSharedCarpenterPrompt({
+    const withoutSection = composeShared({
       agentDefinition: operator(), memberExecutionContext: memberContext(), project: null, semanticMemoryPath: null,
     });
-    expect(prompt).toBe(`${withoutSection}\n\n${renderSemanticMemorySection(FOLDER)}`);
+    const tail = `\n\n${CODEX_LONG_RUNNING_COMMAND_SECTION}`;
+    expect(prompt).toBe(`${withoutSection.slice(0, -tail.length)}\n\n${renderSemanticMemorySection(FOLDER)}${tail}`);
     expect(prompt.indexOf("## Working With Other Agents")).toBeLessThan(prompt.indexOf("## Semantic Memory"));
   });
 
@@ -83,14 +89,14 @@ describe("Semantic Memory section (semantic-memory-prompt-contract.md)", () => {
     );
   });
 
-  it("§5.4: disabled on the shared path: the prompt ends where it ended before", () => {
-    const prompt = composeSharedCarpenterPrompt({ agentDefinition: operator(), project, semanticMemoryPath: null });
-    expect(prompt.endsWith("ask the user before working on another Project.")).toBe(true);
+  it("§5.4: disabled on the shared path: the Project section is followed directly by the Long-Running Commands section", () => {
+    const prompt = composeShared({ agentDefinition: operator(), project, semanticMemoryPath: null });
+    expect(prompt.endsWith(`ask the user before working on another Project.\n\n${CODEX_LONG_RUNNING_COMMAND_SECTION}`)).toBe(true);
   });
 
   it("§6: refuses a relative folder", () => {
     for (const compose of [
-      () => composeSharedCarpenterPrompt({ agentDefinition: operator(), semanticMemoryPath: "memory/semantic/computer-use-operator" }),
+      () => composeShared({ agentDefinition: operator(), semanticMemoryPath: "memory/semantic/computer-use-operator" }),
       () => composeNativeAutoByteusPrompt({
         agentDefinition: operator(), workspaceRootPath: "/tmp/workspace", semanticMemoryPath: "memory/semantic/computer-use-operator",
       }),

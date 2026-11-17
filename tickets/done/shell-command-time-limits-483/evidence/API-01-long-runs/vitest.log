@@ -1,0 +1,734 @@
+# API-01 LCL-LONG: env -i PATH HOME USER LOGNAME TMPDIR SHELL LANG AUTOBYTEUS_TEST_VAULT=~/.autobyteus-test/vault RUN_LONG_COMMAND_LIMITS_E2E=1 LONG_COMMAND_E2E_EVIDENCE_DIR=<this folder> pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts --no-watch --maxConcurrency=12 -t LCL-LONG
+# product commit c77d83ef27; tests as in 48d2a4da58 (+ baseline fix ea86a9affe where named); macOS 26 arm64; Node 22.23.1; 2026-11-17
+
+[1m[30m[46m RUN [49m[39m[22m [36mv4.1.12 [39m[90m/Users/normy/autobyteus_org/autobyteus-worktrees/shell-command-time-limits-483/autobyteus-server-ts[39m
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/shell-command-time-limits-483/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+(node:62639) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/shell-command-time-limits-483/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/shell-command-time-limits-483/autobyteus-server-ts
+Custom app data directory set to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/long-command-limits-UCsOl4
+Updated config file path to /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/long-command-limits-UCsOl4/.env
+
+[90mstdout[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39m[2026-11-17T11:30:16.377Z] [INFO] [secret-management.vault] Secret vault: test vault /Users/normy/.autobyteus-test/vault (read-only)
+
+[90mstdout[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mLoading environment from: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/long-command-limits-UCsOl4/.env
+◇ injected env (2) from ../../../../../../private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/long-command-limits-UCsOl4/.env // tip: ◈ secrets for agents [www.dotenvx.com]
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/shell-command-time-limits-483/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/shell-command-time-limits-483/autobyteus-server-ts
+APP DATA DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/long-command-limits-UCsOl4
+DB DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/long-command-limits-UCsOl4/db
+LOGS DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/long-command-limits-UCsOl4/logs
+DOWNLOAD DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/long-command-limits-UCsOl4/download
+MEMORY DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/long-command-limits-UCsOl4/memory
+============================================================
+Initialized server settings service with 34 predefined settings
+
+[90mstdout[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mAgentRunManager initialized.
+
+[90mstderr[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mNode access: local control socket not opened. The node's local control socket path is 114 bytes, longer than the 103 bytes a Unix socket path may have: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/long-command-limits-UCsOl4/node-access/local-control.sock. Use a shorter data folder path.
+
+[90mstdout[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mLoading workspace packages to trigger registration...
+
+[90mstdout[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mSuccessfully loaded workspace packages.
+
+[90mstdout[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mCreating temp workspace at: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/long-command-limits-UCsOl4/temp_workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/long-command-limits-UCsOl4/temp_workspace.
+Initialized TempWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/long-command-limits-UCsOl4/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+[90mstdout[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mRegistering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+
+[90mstdout[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mSuccessfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+[90mstdout[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mRegistered required tool unit: Core Tools
+
+[90mstdout[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mSuccessfully registered tool definition: 'get_project_task'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'search_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+Successfully registered tool definition: 'delegate_task'
+Registered required tool unit: Project Task Tools
+Registered required tool unit: Task Delegation Tools
+
+[90mstdout[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mSuccessfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+
+[90mstdout[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mRegistered required tool unit: Media Tools
+
+[90mstdout[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mSuccessfully registered tool definition: 'publish_artifacts'
+
+[90mstdout[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mRegistered required tool unit: Published Artifact Tools
+
+[90mstdout[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mSuccessfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'list_peer_nodes'
+
+[90mstdout[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mRegistered required tool unit: Agent Discovery Tools
+
+[90mstdout[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mSuccessfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+
+[90mstdout[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mRegistered required tool unit: Agent Communication Tools
+
+[90mstdout[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mSuccessfully registered tool definition: 'search_memory'
+
+[90mstdout[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mRegistered required tool unit: Memory Tools
+
+[90mstdout[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mSuccessfully registered tool definition: 'list_available_agent_runtimes'
+Successfully registered tool definition: 'submit_launch_choices'
+
+[90mstdout[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mRegistered required tool unit: Agent Runtime Tools
+
+[90mstdout[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mRegistered required tool unit: Browser Tools
+
+[90mstdout[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mSuccessfully registered tool definition: 'search_web'
+
+[90mstderr[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mOverwriting existing tool definition for name: 'search_web'
+
+[90mstdout[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mRegistered required tool unit: Search Tools
+
+[90mstdout[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mAgent Definition created successfully with ID: long-command-external-0a43ec7a-4729-4a41-9156-e71c015a5af2
+
+[90mstdout[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mAgent Definition created successfully with ID: long-command-native-06d63d9b-0f5d-46b1-a6bc-4ffd71607f49
+
+[90mstdout[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)[2m > [22m[2mLCL-LONG-NATIVE-BG: a native background command longer than 30 minutes completes with exit code 0 (AC-002, REQ-008)
+[22m[39mCreating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/long-command-limits-UCsOl4/LCL-LONG-AGY-BG-GSHplb
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/long-command-limits-UCsOl4/LCL-LONG-AGY-BG-GSHplb.
+
+[90mstdout[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)[2m > [22m[2mLCL-LONG-NATIVE-BG: a native background command longer than 30 minutes completes with exit code 0 (AC-002, REQ-008)
+[22m[39mCreating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/long-command-limits-UCsOl4/LCL-LONG-AGY-DAEMON-UA1o20
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/long-command-limits-UCsOl4/LCL-LONG-AGY-DAEMON-UA1o20.
+
+[90mstdout[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)[2m > [22m[2mLCL-LONG-NATIVE-BG: a native background command longer than 30 minutes completes with exit code 0 (AC-002, REQ-008)
+[22m[39mCreating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/long-command-limits-UCsOl4/LCL-LONG-NATIVE-BG-3KVDw0
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/long-command-limits-UCsOl4/LCL-LONG-NATIVE-BG-3KVDw0.
+
+[90mstdout[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)[2m > [22m[2mLCL-LONG-NATIVE-BG: a native background command longer than 30 minutes completes with exit code 0 (AC-002, REQ-008)
+[22m[39mCreated and registered workspace ID: agent_ws_6506ba6856a87a6bbffad9aa9309257a5db4cf9f35c7de83f2881b81e96e29e8
+
+[90mstdout[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)[2m > [22m[2mLCL-LONG-NATIVE-BG: a native background command longer than 30 minutes completes with exit code 0 (AC-002, REQ-008)
+[22m[39mCreated and registered workspace ID: agent_ws_c7e0d7605094aac7e0b0d7d4199618fc8ebd0ce60420d4dc0ee684bd3b96361c
+
+[90mstderr[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)[2m > [22m[2mLCL-LONG-NATIVE-BG: a native background command longer than 30 minutes completes with exit code 0 (AC-002, REQ-008)
+[22m[39m[CodexAppServerClient] stderr: [2m2026-11-17T11:30:18.454820Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m `[features].multi_agent` is deprecated. It still controls the V1 fallback. `[agents].enabled = false` disables subagent tools even when the model selects a subagent version, unless `[features].multi_agent_v2` is enabled.
+[2m2026-11-17T11:30:18.456202Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+
+[90mstdout[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mCreating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/long-command-limits-UCsOl4/LCL-LONG-CLAUDE-BG-m1IYyL
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/long-command-limits-UCsOl4/LCL-LONG-CLAUDE-BG-m1IYyL.
+
+[90mstdout[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mCreating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/long-command-limits-UCsOl4/LCL-LONG-CLAUDE-FG-JNXTcH
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/long-command-limits-UCsOl4/LCL-LONG-CLAUDE-FG-JNXTcH.
+
+[90mstdout[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mCreating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/long-command-limits-UCsOl4/LCL-LONG-CLAUDE-TL-BLfyL9
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/long-command-limits-UCsOl4/LCL-LONG-CLAUDE-TL-BLfyL9.
+
+[90mstdout[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mCreated and registered workspace ID: agent_ws_3b00434bb899886e3275f559b598877c8f3a54a4eab15f8a9eefd7783b002753
+
+[90mstdout[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mCreating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/long-command-limits-UCsOl4/LCL-LONG-CLAUDE-HABIT-YKdqZ8
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/long-command-limits-UCsOl4/LCL-LONG-CLAUDE-HABIT-YKdqZ8.
+
+[90mstdout[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mCreating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/long-command-limits-UCsOl4/LCL-LONG-CODEX-BG-J32nhY
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/long-command-limits-UCsOl4/LCL-LONG-CODEX-BG-J32nhY.
+
+[90mstdout[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mCreated and registered workspace ID: agent_ws_cb91d6ea8ab144c3e93805a015025f8f88487cf87e699ad487408f9a5ddc6068
+
+[90mstdout[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mCreated and registered workspace ID: agent_ws_e20ab883825ccf949f2bbb6795621074a30eaa184c63a5c59abc626834ff1b54
+
+[90mstdout[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mCreated and registered workspace ID: agent_ws_fb5b3e1c69dd3b0246bea2652c87466e74add602d2a7c3c2cfe42991f6985c70
+
+[90mstdout[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mCreated and registered workspace ID: agent_ws_32f5916344660f552dc625b1768e6c0c7aae8df273cbaf206d35a31f6f7988fa
+
+[90mstdout[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mCreated and registered workspace ID: agent_ws_aef67c2693210a74bf3188d95c6779bc5acf203d45c03bbd8bfe8a5d3a1803ee
+
+[90mstdout[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mCreating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/long-command-limits-UCsOl4/LCL-LONG-AGY-BG-GSHplb
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/long-command-limits-UCsOl4/LCL-LONG-AGY-BG-GSHplb.
+
+[90mstdout[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mReusing registered workspace ID: agent_ws_6506ba6856a87a6bbffad9aa9309257a5db4cf9f35c7de83f2881b81e96e29e8
+
+[90mstdout[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mCreating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/long-command-limits-UCsOl4/LCL-LONG-AGY-DAEMON-UA1o20
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/long-command-limits-UCsOl4/LCL-LONG-AGY-DAEMON-UA1o20.
+
+[90mstdout[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mReusing registered workspace ID: agent_ws_c7e0d7605094aac7e0b0d7d4199618fc8ebd0ce60420d4dc0ee684bd3b96361c
+
+[90mstdout[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mCreating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/long-command-limits-UCsOl4/LCL-LONG-NATIVE-BG-3KVDw0
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/long-command-limits-UCsOl4/LCL-LONG-NATIVE-BG-3KVDw0.
+
+[90mstdout[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mReusing registered workspace ID: agent_ws_3b00434bb899886e3275f559b598877c8f3a54a4eab15f8a9eefd7783b002753
+
+[90mstdout[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mMediaStorageService initialized. Media root: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/long-command-limits-UCsOl4/media
+
+[90mstdout[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mAgentRuntimeState initialized for agent_id 'long_command_native_06d63d9b_0f5d_46b1_a6bc_4ffd_c0bed8f9869745b891fdbc1d6ea81a33'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'long_command_native_06d63d9b_0f5d_46b1_a6bc_4ffd_c0bed8f9869745b891fdbc1d6ea81a33': LLM instance 'OpenAILLM' and 7 tools prepared and stored in state.
+AgentContext composed for agent_id 'long_command_native_06d63d9b_0f5d_46b1_a6bc_4ffd_c0bed8f9869745b891fdbc1d6ea81a33'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'long_command_native_06d63d9b_0f5d_46b1_a6bc_4ffd_c0bed8f9869745b891fdbc1d6ea81a33' with config: 'long-command-native-06d63d9b-0f5d-46b1-a6bc-4ffd71607f49'.
+AgentWorker initialized for agent_id 'long_command_native_06d63d9b_0f5d_46b1_a6bc_4ffd_c0bed8f9869745b891fdbc1d6ea81a33'.
+Registered AgentContext for agent_id 'long_command_native_06d63d9b_0f5d_46b1_a6bc_4ffd_c0bed8f9869745b891fdbc1d6ea81a33'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'long_command_native_06d63d9b_0f5d_46b1_a6bc_4ffd_c0bed8f9869745b891fdbc1d6ea81a33'. Context registered.
+Agent facade initialized for agent_id 'long_command_native_06d63d9b_0f5d_46b1_a6bc_4ffd_c0bed8f9869745b891fdbc1d6ea81a33'.
+Agent 'long_command_native_06d63d9b_0f5d_46b1_a6bc_4ffd_c0bed8f9869745b891fdbc1d6ea81a33' created and stored successfully.
+Agent 'long_command_native_06d63d9b_0f5d_46b1_a6bc_4ffd_c0bed8f9869745b891fdbc1d6ea81a33' requesting runtime to start.
+AgentRuntime for 'long_command_native_06d63d9b_0f5d_46b1_a6bc_4ffd_c0bed8f9869745b891fdbc1d6ea81a33': Starting worker.
+AgentWorker 'long_command_native_06d63d9b_0f5d_46b1_a6bc_4ffd_c0bed8f9869745b891fdbc1d6ea81a33': Starting...
+AgentWorker 'long_command_native_06d63d9b_0f5d_46b1_a6bc_4ffd_c0bed8f9869745b891fdbc1d6ea81a33' asyncRun(): Starting.
+Agent 'long_command_native_06d63d9b_0f5d_46b1_a6bc_4ffd_c0bed8f9869745b891fdbc1d6ea81a33': Runtime init completed (event store initialized).
+Agent 'long_command_native_06d63d9b_0f5d_46b1_a6bc_4ffd_c0bed8f9869745b891fdbc1d6ea81a33': Runtime init completed (status deriver initialized).
+Agent 'long_command_native_06d63d9b_0f5d_46b1_a6bc_4ffd_c0bed8f9869745b891fdbc1d6ea81a33': Runtime init completed (AgentEventInbox initialized).
+Agent 'long_command_native_06d63d9b_0f5d_46b1_a6bc_4ffd_c0bed8f9869745b891fdbc1d6ea81a33': Runtime init completed (AgentEventScheduler initialized).
+Waiting for agent 'long_command_native_06d63d9b_0f5d_46b1_a6bc_4ffd_c0bed8f9869745b891fdbc1d6ea81a33' to become idle (timeout: 30s)...
+AgentEventStream (ID: 27c61df1-abd5-40d6-8db2-7dc2345e75ff) initialized for agent_id 'long_command_native_06d63d9b_0f5d_46b1_a6bc_4ffd_c0bed8f9869745b891fdbc1d6ea81a33'. Subscribed to notifier.
+Agent 'long_command_native_06d63d9b_0f5d_46b1_a6bc_4ffd_c0bed8f9869745b891fdbc1d6ea81a33': Starting direct runtime bootstrap lifecycle.
+
+[90mstdout[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mAgentExternalEventNotifier (NotifierID: 05bba435-ac57-4230-8caf-c0cbf46d3040, AgentID: long_command_native_06d63d9b_0f5d_46b1_a6bc_4ffd_c0bed8f9869745b891fdbc1d6ea81a33) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mAgent 'long_command_native_06d63d9b_0f5d_46b1_a6bc_4ffd_c0bed8f9869745b891fdbc1d6ea81a33': Bootstrapper starting direct lifecycle execution.
+Agent 'long_command_native_06d63d9b_0f5d_46b1_a6bc_4ffd_c0bed8f9869745b891fdbc1d6ea81a33': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'long_command_native_06d63d9b_0f5d_46b1_a6bc_4ffd_c0bed8f9869745b891fdbc1d6ea81a33': Executing McpServerPrewarmingStep.
+
+[90mstdout[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mAgent 'long_command_native_06d63d9b_0f5d_46b1_a6bc_4ffd_c0bed8f9869745b891fdbc1d6ea81a33': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'long_command_native_06d63d9b_0f5d_46b1_a6bc_4ffd_c0bed8f9869745b891fdbc1d6ea81a33': Executing SystemPromptProcessingStep.
+Agent 'long_command_native_06d63d9b_0f5d_46b1_a6bc_4ffd_c0bed8f9869745b891fdbc1d6ea81a33': No configured skills. Skipping skill catalog.
+Agent 'long_command_native_06d63d9b_0f5d_46b1_a6bc_4ffd_c0bed8f9869745b891fdbc1d6ea81a33': Final processed system prompt configured and captured. Trace ID: rt_1794915029854_612c93a9-bb5c-4d5c-a73f-9f7de0048016. Final length: 4972.
+
+[90mstdout[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mAgent 'long_command_native_06d63d9b_0f5d_46b1_a6bc_4ffd_c0bed8f9869745b891fdbc1d6ea81a33': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+[90mstdout[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mAgentExternalEventNotifier (NotifierID: 05bba435-ac57-4230-8caf-c0cbf46d3040, AgentID: long_command_native_06d63d9b_0f5d_46b1_a6bc_4ffd_c0bed8f9869745b891fdbc1d6ea81a33) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mAgentWorker 'long_command_native_06d63d9b_0f5d_46b1_a6bc_4ffd_c0bed8f9869745b891fdbc1d6ea81a33' initialized successfully. Entering main event scheduler loop.
+
+[90mstdout[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mAgent 'long_command_native_06d63d9b_0f5d_46b1_a6bc_4ffd_c0bed8f9869745b891fdbc1d6ea81a33' has become idle.
+
+[90mstdout[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mAgentEventStream (ID: 27c61df1-abd5-40d6-8db2-7dc2345e75ff) for 'long_command_native_06d63d9b_0f5d_46b1_a6bc_4ffd_c0bed8f9869745b891fdbc1d6ea81a33': close() called. Unsubscribing all listeners and signaling.
+
+[90mstdout[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mAgentEventStream (ID: bd4d281a-ca36-41f8-aa4b-30a7b9b848fb) initialized for agent_id 'long_command_native_06d63d9b_0f5d_46b1_a6bc_4ffd_c0bed8f9869745b891fdbc1d6ea81a33'. Subscribed to notifier.
+
+[90mstderr[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mMemory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/long-command-limits-UCsOl4/memory/agents/long_command_native_06d63d9b_0f5d_46b1_a6bc_4ffd_c0bed8f9869745b891fdbc1d6ea81a33/raw_traces_manifest.json
+
+[90mstdout[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mCreating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/long-command-limits-UCsOl4/LCL-LONG-CLAUDE-BG-m1IYyL
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/long-command-limits-UCsOl4/LCL-LONG-CLAUDE-BG-m1IYyL.
+
+[90mstdout[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mReusing registered workspace ID: agent_ws_cb91d6ea8ab144c3e93805a015025f8f88487cf87e699ad487408f9a5ddc6068
+
+[90mstderr[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mMemory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/long-command-limits-UCsOl4/memory/agents/long_command_external_0a43ec7a_4729_4a41_9156_e7_ac024ed5ffa64397a01c48bb1eaa9035/raw_traces_manifest.json
+
+[90mstdout[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mCreating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/long-command-limits-UCsOl4/LCL-LONG-CLAUDE-FG-JNXTcH
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/long-command-limits-UCsOl4/LCL-LONG-CLAUDE-FG-JNXTcH.
+
+[90mstdout[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mReusing registered workspace ID: agent_ws_e20ab883825ccf949f2bbb6795621074a30eaa184c63a5c59abc626834ff1b54
+
+[90mstderr[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mMemory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/long-command-limits-UCsOl4/memory/agents/long_command_external_0a43ec7a_4729_4a41_9156_e7_360b02ac0f7b49189de5b10ce7c277b4/raw_traces_manifest.json
+
+[90mstdout[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mCreating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/long-command-limits-UCsOl4/LCL-LONG-CLAUDE-TL-BLfyL9
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/long-command-limits-UCsOl4/LCL-LONG-CLAUDE-TL-BLfyL9.
+
+[90mstdout[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mReusing registered workspace ID: agent_ws_fb5b3e1c69dd3b0246bea2652c87466e74add602d2a7c3c2cfe42991f6985c70
+
+[90mstderr[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mMemory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/long-command-limits-UCsOl4/memory/agents/long_command_external_0a43ec7a_4729_4a41_9156_e7_e7e640a85a03445f8d7170956c43b886/raw_traces_manifest.json
+
+[90mstdout[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mCreating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/long-command-limits-UCsOl4/LCL-LONG-CLAUDE-HABIT-YKdqZ8
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/long-command-limits-UCsOl4/LCL-LONG-CLAUDE-HABIT-YKdqZ8.
+
+[90mstdout[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mReusing registered workspace ID: agent_ws_32f5916344660f552dc625b1768e6c0c7aae8df273cbaf206d35a31f6f7988fa
+
+[90mstderr[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mMemory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/long-command-limits-UCsOl4/memory/agents/long_command_external_0a43ec7a_4729_4a41_9156_e7_e82d2bb3e19d47388857f57eb23b5811/raw_traces_manifest.json
+
+[90mstdout[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mCreating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/long-command-limits-UCsOl4/LCL-LONG-CODEX-BG-J32nhY
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/long-command-limits-UCsOl4/LCL-LONG-CODEX-BG-J32nhY.
+
+[90mstdout[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mReusing registered workspace ID: agent_ws_aef67c2693210a74bf3188d95c6779bc5acf203d45c03bbd8bfe8a5d3a1803ee
+
+[90mstdout[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mAgent websocket attached for run long_command_native_06d63d9b_0f5d_46b1_a6bc_4ffd_c0bed8f9869745b891fdbc1d6ea81a33
+Created agent session 67f2ca13-a033-4bc3-aa4c-a0c75e3a53cf for run long_command_native_06d63d9b_0f5d_46b1_a6bc_4ffd_c0bed8f9869745b891fdbc1d6ea81a33
+Agent WebSocket connected: session=67f2ca13-a033-4bc3-aa4c-a0c75e3a53cf, run=long_command_native_06d63d9b_0f5d_46b1_a6bc_4ffd_c0bed8f9869745b891fdbc1d6ea81a33
+
+[90mstderr[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mMemory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/long-command-limits-UCsOl4/memory/agents/long_command_native_06d63d9b_0f5d_46b1_a6bc_4ffd_c0bed8f9869745b891fdbc1d6ea81a33/raw_traces_manifest.json
+
+[90mstdout[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mAgentExternalEventNotifier (NotifierID: 05bba435-ac57-4230-8caf-c0cbf46d3040, AgentID: long_command_native_06d63d9b_0f5d_46b1_a6bc_4ffd_c0bed8f9869745b891fdbc1d6ea81a33) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mAgentExternalEventNotifier (NotifierID: 05bba435-ac57-4230-8caf-c0cbf46d3040, AgentID: long_command_native_06d63d9b_0f5d_46b1_a6bc_4ffd_c0bed8f9869745b891fdbc1d6ea81a33) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mAgent run 'long_command_native_06d63d9b_0f5d_46b1_a6bc_4ffd_c0bed8f9869745b891fdbc1d6ea81a33': UserInputContextBuildingProcessor completed. Final content length: 231
+
+[90mstdout[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mAgentExternalEventNotifier (NotifierID: 05bba435-ac57-4230-8caf-c0cbf46d3040, AgentID: long_command_native_06d63d9b_0f5d_46b1_a6bc_4ffd_c0bed8f9869745b891fdbc1d6ea81a33) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mAgent websocket attached for run long_command_external_0a43ec7a_4729_4a41_9156_e7_ac024ed5ffa64397a01c48bb1eaa9035
+Created agent session b5c7b75c-4eda-4766-9b3d-157270896852 for run long_command_external_0a43ec7a_4729_4a41_9156_e7_ac024ed5ffa64397a01c48bb1eaa9035
+Agent WebSocket connected: session=b5c7b75c-4eda-4766-9b3d-157270896852, run=long_command_external_0a43ec7a_4729_4a41_9156_e7_ac024ed5ffa64397a01c48bb1eaa9035
+
+[90mstderr[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mMemory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/long-command-limits-UCsOl4/memory/agents/long_command_external_0a43ec7a_4729_4a41_9156_e7_ac024ed5ffa64397a01c48bb1eaa9035/raw_traces_manifest.json
+
+[90mstdout[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mAgent websocket attached for run long_command_external_0a43ec7a_4729_4a41_9156_e7_360b02ac0f7b49189de5b10ce7c277b4
+Created agent session fc0f7718-243e-4f38-b5a5-81ceb7afc2f2 for run long_command_external_0a43ec7a_4729_4a41_9156_e7_360b02ac0f7b49189de5b10ce7c277b4
+Agent WebSocket connected: session=fc0f7718-243e-4f38-b5a5-81ceb7afc2f2, run=long_command_external_0a43ec7a_4729_4a41_9156_e7_360b02ac0f7b49189de5b10ce7c277b4
+
+[90mstderr[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mMemory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/long-command-limits-UCsOl4/memory/agents/long_command_external_0a43ec7a_4729_4a41_9156_e7_360b02ac0f7b49189de5b10ce7c277b4/raw_traces_manifest.json
+
+[90mstdout[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mAgent websocket attached for run long_command_external_0a43ec7a_4729_4a41_9156_e7_e7e640a85a03445f8d7170956c43b886
+Created agent session 60aa82a9-17f8-42e4-86d6-06aa42cfa8c1 for run long_command_external_0a43ec7a_4729_4a41_9156_e7_e7e640a85a03445f8d7170956c43b886
+Agent WebSocket connected: session=60aa82a9-17f8-42e4-86d6-06aa42cfa8c1, run=long_command_external_0a43ec7a_4729_4a41_9156_e7_e7e640a85a03445f8d7170956c43b886
+
+[90mstderr[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mMemory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/long-command-limits-UCsOl4/memory/agents/long_command_external_0a43ec7a_4729_4a41_9156_e7_e7e640a85a03445f8d7170956c43b886/raw_traces_manifest.json
+
+[90mstdout[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mAgent websocket attached for run long_command_external_0a43ec7a_4729_4a41_9156_e7_e82d2bb3e19d47388857f57eb23b5811
+Created agent session 3eed2332-a08e-4212-8519-47d66f1fec07 for run long_command_external_0a43ec7a_4729_4a41_9156_e7_e82d2bb3e19d47388857f57eb23b5811
+Agent WebSocket connected: session=3eed2332-a08e-4212-8519-47d66f1fec07, run=long_command_external_0a43ec7a_4729_4a41_9156_e7_e82d2bb3e19d47388857f57eb23b5811
+
+[90mstderr[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mMemory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/long-command-limits-UCsOl4/memory/agents/long_command_external_0a43ec7a_4729_4a41_9156_e7_e82d2bb3e19d47388857f57eb23b5811/raw_traces_manifest.json
+
+[90mstderr[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39m[CodexAppServerClient] stderr: [2m2026-11-17T11:30:30.821101Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m `[features].multi_agent` is deprecated. It still controls the V1 fallback. `[agents].enabled = false` disables subagent tools even when the model selects a subagent version, unless `[features].multi_agent_v2` is enabled.
+[2m2026-11-17T11:30:30.821162Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+
+[90mstdout[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mLlmStreamingResponseHandler finalized 1 tool invocations.
+AgentExternalEventNotifier (NotifierID: 05bba435-ac57-4230-8caf-c0cbf46d3040, AgentID: long_command_native_06d63d9b_0f5d_46b1_a6bc_4ffd_c0bed8f9869745b891fdbc1d6ea81a33) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mAgentExternalEventNotifier (NotifierID: 05bba435-ac57-4230-8caf-c0cbf46d3040, AgentID: long_command_native_06d63d9b_0f5d_46b1_a6bc_4ffd_c0bed8f9869745b891fdbc1d6ea81a33) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mAgentExternalEventNotifier (NotifierID: 05bba435-ac57-4230-8caf-c0cbf46d3040, AgentID: long_command_native_06d63d9b_0f5d_46b1_a6bc_4ffd_c0bed8f9869745b891fdbc1d6ea81a33) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 05bba435-ac57-4230-8caf-c0cbf46d3040, AgentID: long_command_native_06d63d9b_0f5d_46b1_a6bc_4ffd_c0bed8f9869745b891fdbc1d6ea81a33) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mprisma:info Starting a sqlite pool with 21 connections.
+
+[90mstdout[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mAgentExternalEventNotifier (NotifierID: 05bba435-ac57-4230-8caf-c0cbf46d3040, AgentID: long_command_native_06d63d9b_0f5d_46b1_a6bc_4ffd_c0bed8f9869745b891fdbc1d6ea81a33) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mAgentExternalEventNotifier (NotifierID: 05bba435-ac57-4230-8caf-c0cbf46d3040, AgentID: long_command_native_06d63d9b_0f5d_46b1_a6bc_4ffd_c0bed8f9869745b891fdbc1d6ea81a33) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mAgentExternalEventNotifier (NotifierID: 05bba435-ac57-4230-8caf-c0cbf46d3040, AgentID: long_command_native_06d63d9b_0f5d_46b1_a6bc_4ffd_c0bed8f9869745b891fdbc1d6ea81a33) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 05bba435-ac57-4230-8caf-c0cbf46d3040, AgentID: long_command_native_06d63d9b_0f5d_46b1_a6bc_4ffd_c0bed8f9869745b891fdbc1d6ea81a33) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mAgent run 'long_command_native_06d63d9b_0f5d_46b1_a6bc_4ffd_c0bed8f9869745b891fdbc1d6ea81a33': UserInputContextBuildingProcessor completed. Final content length: 46
+
+[90mstdout[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mAgentExternalEventNotifier (NotifierID: 05bba435-ac57-4230-8caf-c0cbf46d3040, AgentID: long_command_native_06d63d9b_0f5d_46b1_a6bc_4ffd_c0bed8f9869745b891fdbc1d6ea81a33) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mAgentExternalEventNotifier (NotifierID: 05bba435-ac57-4230-8caf-c0cbf46d3040, AgentID: long_command_native_06d63d9b_0f5d_46b1_a6bc_4ffd_c0bed8f9869745b891fdbc1d6ea81a33) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mAgentExternalEventNotifier (NotifierID: 05bba435-ac57-4230-8caf-c0cbf46d3040, AgentID: long_command_native_06d63d9b_0f5d_46b1_a6bc_4ffd_c0bed8f9869745b891fdbc1d6ea81a33) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mAgentExternalEventNotifier (NotifierID: 05bba435-ac57-4230-8caf-c0cbf46d3040, AgentID: long_command_native_06d63d9b_0f5d_46b1_a6bc_4ffd_c0bed8f9869745b891fdbc1d6ea81a33) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mAgent run 'long_command_native_06d63d9b_0f5d_46b1_a6bc_4ffd_c0bed8f9869745b891fdbc1d6ea81a33': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+
+[90mstdout[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mAgentExternalEventNotifier (NotifierID: 05bba435-ac57-4230-8caf-c0cbf46d3040, AgentID: long_command_native_06d63d9b_0f5d_46b1_a6bc_4ffd_c0bed8f9869745b891fdbc1d6ea81a33) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mAgentExternalEventNotifier (NotifierID: 05bba435-ac57-4230-8caf-c0cbf46d3040, AgentID: long_command_native_06d63d9b_0f5d_46b1_a6bc_4ffd_c0bed8f9869745b891fdbc1d6ea81a33) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mAgentExternalEventNotifier (NotifierID: 05bba435-ac57-4230-8caf-c0cbf46d3040, AgentID: long_command_native_06d63d9b_0f5d_46b1_a6bc_4ffd_c0bed8f9869745b891fdbc1d6ea81a33) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mAgentExternalEventNotifier (NotifierID: 05bba435-ac57-4230-8caf-c0cbf46d3040, AgentID: long_command_native_06d63d9b_0f5d_46b1_a6bc_4ffd_c0bed8f9869745b891fdbc1d6ea81a33) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstderr[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mMemory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/long-command-limits-UCsOl4/memory/agents/long_command_external_0a43ec7a_4729_4a41_9156_e7_84b89f8d363f4eb19ad42df090aeacb6/raw_traces_manifest.json
+
+[90mstdout[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mAgent websocket attached for run long_command_external_0a43ec7a_4729_4a41_9156_e7_84b89f8d363f4eb19ad42df090aeacb6
+Created agent session e7d61cce-6859-4a8f-9c03-016de1f9e024 for run long_command_external_0a43ec7a_4729_4a41_9156_e7_84b89f8d363f4eb19ad42df090aeacb6
+Agent WebSocket connected: session=e7d61cce-6859-4a8f-9c03-016de1f9e024, run=long_command_external_0a43ec7a_4729_4a41_9156_e7_84b89f8d363f4eb19ad42df090aeacb6
+
+[90mstderr[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mMemory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/long-command-limits-UCsOl4/memory/agents/long_command_external_0a43ec7a_4729_4a41_9156_e7_84b89f8d363f4eb19ad42df090aeacb6/raw_traces_manifest.json
+
+[90mstderr[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mMemory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/long-command-limits-UCsOl4/memory/agents/long_command_external_0a43ec7a_4729_4a41_9156_e7_0e9248a4f7304ac7babf62c7aa8d3496/raw_traces_manifest.json
+
+[90mstdout[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mAgent websocket attached for run long_command_external_0a43ec7a_4729_4a41_9156_e7_0e9248a4f7304ac7babf62c7aa8d3496
+Created agent session ab37d4af-fbff-4365-b0e7-cf4bd113b3ac for run long_command_external_0a43ec7a_4729_4a41_9156_e7_0e9248a4f7304ac7babf62c7aa8d3496
+Agent WebSocket connected: session=ab37d4af-fbff-4365-b0e7-cf4bd113b3ac, run=long_command_external_0a43ec7a_4729_4a41_9156_e7_0e9248a4f7304ac7babf62c7aa8d3496
+
+[90mstderr[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mMemory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/long-command-limits-UCsOl4/memory/agents/long_command_external_0a43ec7a_4729_4a41_9156_e7_0e9248a4f7304ac7babf62c7aa8d3496/raw_traces_manifest.json
+
+[90mstderr[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mMemory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/long-command-limits-UCsOl4/memory/agents/long_command_external_0a43ec7a_4729_4a41_9156_e7_7357ab3d106848c4959cad0132ca4795/raw_traces_manifest.json
+
+[90mstdout[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mAgent websocket attached for run long_command_external_0a43ec7a_4729_4a41_9156_e7_7357ab3d106848c4959cad0132ca4795
+Created agent session a43290ca-7c98-41a4-93a8-14e67cead01b for run long_command_external_0a43ec7a_4729_4a41_9156_e7_7357ab3d106848c4959cad0132ca4795
+Agent WebSocket connected: session=a43290ca-7c98-41a4-93a8-14e67cead01b, run=long_command_external_0a43ec7a_4729_4a41_9156_e7_7357ab3d106848c4959cad0132ca4795
+
+[90mstderr[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mMemory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/long-command-limits-UCsOl4/memory/agents/long_command_external_0a43ec7a_4729_4a41_9156_e7_7357ab3d106848c4959cad0132ca4795/raw_traces_manifest.json
+
+[90mstdout[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mClosed agent session 60aa82a9-17f8-42e4-86d6-06aa42cfa8c1
+Agent WebSocket disconnected: 60aa82a9-17f8-42e4-86d6-06aa42cfa8c1
+
+[90mstdout[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mClosed agent session fc0f7718-243e-4f38-b5a5-81ceb7afc2f2
+Agent WebSocket disconnected: fc0f7718-243e-4f38-b5a5-81ceb7afc2f2
+
+[90mstdout[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mClosed agent session 3eed2332-a08e-4212-8519-47d66f1fec07
+Agent WebSocket disconnected: 3eed2332-a08e-4212-8519-47d66f1fec07
+
+[90mstdout[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mAgentExternalEventNotifier (NotifierID: 05bba435-ac57-4230-8caf-c0cbf46d3040, AgentID: long_command_native_06d63d9b_0f5d_46b1_a6bc_4ffd_c0bed8f9869745b891fdbc1d6ea81a33) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mAgentExternalEventNotifier (NotifierID: 05bba435-ac57-4230-8caf-c0cbf46d3040, AgentID: long_command_native_06d63d9b_0f5d_46b1_a6bc_4ffd_c0bed8f9869745b891fdbc1d6ea81a33) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mAgent run 'long_command_native_06d63d9b_0f5d_46b1_a6bc_4ffd_c0bed8f9869745b891fdbc1d6ea81a33': UserInputContextBuildingProcessor completed. Final content length: 856
+
+[90mstdout[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mAgentExternalEventNotifier (NotifierID: 05bba435-ac57-4230-8caf-c0cbf46d3040, AgentID: long_command_native_06d63d9b_0f5d_46b1_a6bc_4ffd_c0bed8f9869745b891fdbc1d6ea81a33) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mAgentExternalEventNotifier (NotifierID: 05bba435-ac57-4230-8caf-c0cbf46d3040, AgentID: long_command_native_06d63d9b_0f5d_46b1_a6bc_4ffd_c0bed8f9869745b891fdbc1d6ea81a33) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mAgentExternalEventNotifier (NotifierID: 05bba435-ac57-4230-8caf-c0cbf46d3040, AgentID: long_command_native_06d63d9b_0f5d_46b1_a6bc_4ffd_c0bed8f9869745b891fdbc1d6ea81a33) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mAgent run 'long_command_native_06d63d9b_0f5d_46b1_a6bc_4ffd_c0bed8f9869745b891fdbc1d6ea81a33': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+
+[90mstdout[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mAgentExternalEventNotifier (NotifierID: 05bba435-ac57-4230-8caf-c0cbf46d3040, AgentID: long_command_native_06d63d9b_0f5d_46b1_a6bc_4ffd_c0bed8f9869745b891fdbc1d6ea81a33) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mAgentExternalEventNotifier (NotifierID: 05bba435-ac57-4230-8caf-c0cbf46d3040, AgentID: long_command_native_06d63d9b_0f5d_46b1_a6bc_4ffd_c0bed8f9869745b891fdbc1d6ea81a33) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mAgentExternalEventNotifier (NotifierID: 05bba435-ac57-4230-8caf-c0cbf46d3040, AgentID: long_command_native_06d63d9b_0f5d_46b1_a6bc_4ffd_c0bed8f9869745b891fdbc1d6ea81a33) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mAgentExternalEventNotifier (NotifierID: 05bba435-ac57-4230-8caf-c0cbf46d3040, AgentID: long_command_native_06d63d9b_0f5d_46b1_a6bc_4ffd_c0bed8f9869745b891fdbc1d6ea81a33) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mClosed agent session e7d61cce-6859-4a8f-9c03-016de1f9e024
+Agent WebSocket disconnected: e7d61cce-6859-4a8f-9c03-016de1f9e024
+
+[90mstderr[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39m[CodexSegmentTurnAdmissionRejected] {
+  runtimeKind: [32m'codex_app_server'[39m,
+  runId: [32m'long_command_external_0a43ec7a_4729_4a41_9156_e7_7357ab3d106848c4959cad0132ca4795'[39m,
+  nativeEventName: [32m'item/completed'[39m,
+  reasonCode: [32m'CODEX_SEGMENT_TURN_INACTIVE'[39m,
+  itemType: [32m'commandExecution'[39m,
+  turnId: [32m'01a1e946-1e19-7a41-b868-acbf7a0a28f1'[39m,
+  activeTurnId: [1mnull[22m
+}
+
+[90mstdout[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mClosed agent session a43290ca-7c98-41a4-93a8-14e67cead01b
+Agent WebSocket disconnected: a43290ca-7c98-41a4-93a8-14e67cead01b
+
+[90mstdout[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mClosed agent session 67f2ca13-a033-4bc3-aa4c-a0c75e3a53cf
+Agent WebSocket disconnected: 67f2ca13-a033-4bc3-aa4c-a0c75e3a53cf
+
+[90mstdout[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mClosed agent session ab37d4af-fbff-4365-b0e7-cf4bd113b3ac
+Agent WebSocket disconnected: ab37d4af-fbff-4365-b0e7-cf4bd113b3ac
+
+[90mstdout[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mClosed agent session b5c7b75c-4eda-4766-9b3d-157270896852
+Agent WebSocket disconnected: b5c7b75c-4eda-4766-9b3d-157270896852
+
+[90mstdout[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mRemoving agent 'long_command_native_06d63d9b_0f5d_46b1_a6bc_4ffd_c0bed8f9869745b891fdbc1d6ea81a33'. Attempting graceful shutdown.
+Agent 'long_command_native_06d63d9b_0f5d_46b1_a6bc_4ffd_c0bed8f9869745b891fdbc1d6ea81a33' requesting runtime to stop (timeout: 10s).
+
+[90mstdout[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mAgentExternalEventNotifier (NotifierID: 05bba435-ac57-4230-8caf-c0cbf46d3040, AgentID: long_command_native_06d63d9b_0f5d_46b1_a6bc_4ffd_c0bed8f9869745b891fdbc1d6ea81a33) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mAgentWorker 'long_command_native_06d63d9b_0f5d_46b1_a6bc_4ffd_c0bed8f9869745b891fdbc1d6ea81a33': Stop requested.
+
+[90mstdout[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mAgentExternalEventNotifier (NotifierID: 05bba435-ac57-4230-8caf-c0cbf46d3040, AgentID: long_command_native_06d63d9b_0f5d_46b1_a6bc_4ffd_c0bed8f9869745b891fdbc1d6ea81a33) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mAgentExternalEventNotifier (NotifierID: 05bba435-ac57-4230-8caf-c0cbf46d3040, AgentID: long_command_native_06d63d9b_0f5d_46b1_a6bc_4ffd_c0bed8f9869745b891fdbc1d6ea81a33) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'long_command_native_06d63d9b_0f5d_46b1_a6bc_4ffd_c0bed8f9869745b891fdbc1d6ea81a33' asyncRun() loop has finished.
+AgentWorker 'long_command_native_06d63d9b_0f5d_46b1_a6bc_4ffd_c0bed8f9869745b891fdbc1d6ea81a33': Running shutdown sequence on worker loop.
+
+[90mstdout[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mAgentWorker 'long_command_native_06d63d9b_0f5d_46b1_a6bc_4ffd_c0bed8f9869745b891fdbc1d6ea81a33': Shutdown resource cleanup completed successfully.
+AgentWorker 'long_command_native_06d63d9b_0f5d_46b1_a6bc_4ffd_c0bed8f9869745b891fdbc1d6ea81a33': Shutdown sequence completed.
+
+[90mstdout[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mUnregistered AgentContext for agent_id 'long_command_native_06d63d9b_0f5d_46b1_a6bc_4ffd_c0bed8f9869745b891fdbc1d6ea81a33'.
+AgentRuntime for 'long_command_native_06d63d9b_0f5d_46b1_a6bc_4ffd_c0bed8f9869745b891fdbc1d6ea81a33': Context unregistered.
+
+[90mstdout[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mAgentRuntime for 'long_command_native_06d63d9b_0f5d_46b1_a6bc_4ffd_c0bed8f9869745b891fdbc1d6ea81a33' stop() method completed.
+
+[90mstdout[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mAgentEventStream (ID: bd4d281a-ca36-41f8-aa4b-30a7b9b848fb) for 'long_command_native_06d63d9b_0f5d_46b1_a6bc_4ffd_c0bed8f9869745b891fdbc1d6ea81a33': close() called. Unsubscribing all listeners and signaling.
+
+[90mstdout[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mAgentEventStream (ID: bd4d281a-ca36-41f8-aa4b-30a7b9b848fb) for 'long_command_native_06d63d9b_0f5d_46b1_a6bc_4ffd_c0bed8f9869745b891fdbc1d6ea81a33': close() called. Unsubscribing all listeners and signaling.
+
+[90mstdout[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mAgent Definition with ID long-command-external-0a43ec7a-4729-4a41-9156-e71c015a5af2 deleted successfully.
+
+[90mstdout[2m | tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22m[2mlong shell commands in every runtime (live, autobyteus-483)
+[22m[39mAgent Definition with ID long-command-native-06d63d9b-0f5d-46b1-a6bc-4ffd71607f49 deleted successfully.
+
+ [31m❯[39m tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts [2m([22m[2m12 tests[22m[2m | [22m[31m1 failed[39m[2m | [22m[33m3 skipped[39m[2m)[22m[33m 2212914[2mms[22m[39m
+     [33m[2m✓[22m[39m LCL-LONG-CLAUDE-FG: a foreground command longer than 10 minutes returns its own output (AC-001) [33m 701694[2mms[22m[39m
+     [33m[2m✓[22m[39m LCL-LONG-CLAUDE-BG: a background command longer than 30 minutes completes (AC-002) [33m 2204322[2mms[22m[39m
+     [33m[2m✓[22m[39m LCL-LONG-CLAUDE-TL: a background command past its explicit timeout is stopped at its time limit (AC-005) [33m 341979[2mms[22m[39m
+     [33m[2m✓[22m[39m LCL-LONG-CLAUDE-HABIT: asked to run a ~12-minute suite, the agent starts it once and acts on its end (AC-012) [33m 773857[2mms[22m[39m
+     [33m[2m✓[22m[39m LCL-LONG-CODEX-BG: a Codex command running past its turn for more than 30 minutes is not stopped (AC-002, REQ-008) [33m 2146366[2mms[22m[39m
+[31m     [31m×[31m LCL-LONG-GROK-BG: a Grok background command longer than 30 minutes is not stopped (AC-002, REQ-008)[39m[33m 12083[2mms[22m[39m
+     [33m[2m✓[22m[39m LCL-LONG-AGY-DAEMON: an Antigravity daemon longer than 30 minutes completes with exit code 0 (AC-002, REQ-008) [33m 2135584[2mms[22m[39m
+     [33m[2m✓[22m[39m LCL-LONG-AGY-BG: an Antigravity command past WaitMsBeforeAsync for more than 30 minutes is not stopped (REQ-008) [33m 2188567[2mms[22m[39m
+     [33m[2m✓[22m[39m LCL-LONG-NATIVE-BG: a native background command longer than 30 minutes completes with exit code 0 (AC-002, REQ-008) [33m 2183660[2mms[22m[39m
+     [2m[90m↓[39m[22m LCL-ENV-DEFAULT: with nothing set, Claude Code sees both limits at 7200000 (REQ-001)
+     [2m[90m↓[39m[22m LCL-ENV-SETTINGS: a Claude Code settings env value is kept; the other is filled in (AC-003, ASM-001)
+     [2m[90m↓[39m[22m LCL-ENV-SERVER: a value in the server's environment is kept; the other is filled in (AC-003)
+
+[31m⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 1 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts[2m > [22mlong shell commands in every runtime (live, autobyteus-483)[2m > [22mLCL-LONG-GROK-BG: a Grok background command longer than 30 minutes is not stopped (AC-002, REQ-008)
+[31m[1mError[22m: [{"message":"Grok CLI version or agent mode is unsupported; update to 1.0.41 or later and retry.","locations":[{"line":1,"column":31}],"path":["providerModelCatalogSnapshots"]}][39m
+[36m [2m❯[22m graphql tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts:[2m126:66[22m[39m
+    [90m124|[39m       headers: { "content-type": "application/json" }, body: JSON.stri…
+    [90m125|[39m     const body = await response.json() as { data?: T; errors?: Array<{…
+    [90m126|[39m     if (!response.ok || !body.data || body.errors?.length) throw new E…
+    [90m   |[39m                                                                  [31m^[39m
+    [90m127|[39m     [35mreturn[39m body[33m.[39mdata[33m;[39m
+    [90m128|[39m   }[33m;[39m
+[90m [2m❯[22m pickModel tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts:[2m130:24[22m[39m
+[90m [2m❯[22m tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts:[2m432:21[22m[39m
+[90m [2m❯[22m withEvidence tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts:[2m300:7[22m[39m
+[90m [2m❯[22m tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts:[2m431:5[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[31m1 failed[39m[22m[2m | [22m[1m[32m8 passed[39m[22m[2m | [22m[33m3 skipped[39m[90m (12)[39m
+[2m   Start at [22m 12:29:59
+[2m   Duration [22m 2229.58s[2m (transform 10.99s, setup 71ms, import 15.88s, tests 2212.91s, environment 0ms)[22m
+
+EXIT 1

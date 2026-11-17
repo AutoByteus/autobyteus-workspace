@@ -1,0 +1,14 @@
+# IMP-04 (IR-002, DEC-008) server typecheck and restart-resume tests after the cause-specific background-task line
+# Commands: pnpm -C autobyteus-server-ts typecheck; pnpm -C autobyteus-server-ts exec vitest run tests/unit/restart-resume tests/integration/restart-resume tests/unit/server-runtime-app-data-migration-gate.test.ts tests/unit/agent-collaboration/configured-agent-execution-handle.test.ts --no-watch --reporter=verbose
+# Commit: b78555d7bb; macOS Darwin 25.5.0 arm64, node v22.23.1; 2026-11-17T13:01Z
+[typecheck] server src (tsconfig.build.json): 0 errors, exit 0, 10.4s
+[typecheck] server tests (tsconfig.tests.json): 1012 errors, exit 2, 30.4s
+[typecheck] production errors: 0; test-file errors: 1012 in 316 files (baseline 1012 in 316 files)
+[typecheck] PASS
+ ✓ tests/unit/restart-resume/restart-resumer.test.ts > RestartResumer: the record > DEC-001 B: entries of a graceful restart or an unexpected stop become reminders for the next input; nothing is woken 34ms
+ ✓ tests/unit/restart-resume/restart-resumer.test.ts > RestartResumer: the record > DEC-002: a record without shutdownAt (the previous session crashed) gives the cause unexpected_stop; another release gives update 28ms
+ ✓ tests/unit/restart-resume/restart-reminder-service.test.ts > restartCauseOf (DEC-002) > update when another release recorded the entry; otherwise restart after a graceful stop, unexpected stop without one 1ms
+ ✓ tests/unit/restart-resume/restart-notice.test.ts > buildRestartNoticeText (DEC-003) > names a restart and an unexpected stop; DEC-008: after an unexpected stop the tasks may still be running and untracked; an idle run gets no interrupted-turn line 1ms
+ ✓ tests/unit/restart-resume/restart-notice.test.ts > buildRestartNoticeText (DEC-003) > DEC-008: a mid-turn run after an unexpected stop gets the interrupted line and the still-running line, never the stopped line 0ms
+ Test Files  10 passed (10)
+      Tests  120 passed (120)

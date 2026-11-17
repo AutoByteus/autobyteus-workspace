@@ -2,8 +2,15 @@
 /**
  * Browser dev-path probe: the Activity tab's Background Tasks section.
  * Starts its own Nuxt dev server on a free port (no backend), installs a probe page that renders the
- * production ProgressPanel at right-panel width, and delivers BACKGROUND_TASK_UPDATED messages through
- * the production stream projector. Prerequisite: Google Chrome (or --browser-executable).
+ * production ProgressPanel at right-panel width, answers the panel's background-task view query per run
+ * (an event-stream run, a snapshot run with a polled row, an unsupported run; autobyteus-473), and delivers
+ * BACKGROUND_TASK_UPDATED messages through the production stream projector.
+ * Prerequisite: Google Chrome (or --browser-executable).
+ *
+ *   pnpm -C autobyteus-web test:e2e:background-tasks-panel [--output-dir <new dir>]
+ *
+ * Cases: BT-UI-001..007 the panel and live rows; BT-UI-008 why a task ended (end reasons and exit codes,
+ * autobyteus-483); BT-UI-009 a polled (snapshot) run and an unsupported run; BT-UI-010 no run selected.
  */
 
 import assert from 'node:assert/strict';
@@ -34,6 +41,16 @@ const executablePath = valueAfter(
 const timeoutMs = Number(valueAfter('--timeout-ms', '120000'));
 const RUN = 'browser-claude-run';
 const OTHER_RUN = 'browser-codex-run';
+const UNSUPPORTED_RUN = 'browser-unsupported-run';
+/** The node's answer to `agentBackgroundTaskView` for each run of the probe page. */
+const viewAnswers = {
+  [RUN]: { __typename: 'AgentBackgroundTaskEventStream', agentRunId: RUN, currentTasks: [] },
+  [OTHER_RUN]: {
+    __typename: 'AgentBackgroundTaskSnapshot', agentRunId: OTHER_RUN, runInstanceId: 'probe-instance', observedAt: '2026-11-17T10:00:00.000Z',
+    tasks: [{ __typename: 'AgentBackgroundTaskViewRow', taskId: 'codex-proc-1', kind: 'shell', description: 'node', command: null, status: 'failed', exitCode: 2, startedAt: '2026-11-17T09:59:00.000Z' }],
+  },
+  [UNSUPPORTED_RUN]: { __typename: 'AgentBackgroundTaskUnsupported', agentRunId: UNSUPPORTED_RUN, reason: 'unsupported' },
+};
 
 const evidence = {
   startedAt: new Date().toISOString(),
@@ -102,7 +119,7 @@ const snapshot = (overrides) => ({
   type: 'BACKGROUND_TASK_UPDATED',
   payload: {
     task_id: 'bg-1', kind: 'shell', description: 'sleep 20; echo done > marker', command: null, status: 'running',
-    summary: null, started_at: '2026-09-29T16:48:20.000Z', ...overrides,
+    summary: null, end_reason: null, exit_code: null, started_at: '2026-09-29T16:48:20.000Z', ...overrides,
   },
 });
 
@@ -147,6 +164,19 @@ try {
   }));
   // The app shell polls /rest/health through the Nuxt dev proxy; with no backend that proxy answers 500.
   await page.route('**/rest/health', (route) => route.fulfill({ status: 200, contentType: 'application/json', body: '{"status":"ok"}' }));
+  // The panel reads the selected run's background-task view; every other GraphQL operation gets the empty mock answer.
+  await page.route('**/graphql', (route) => {
+    const body = route.request().postDataJSON?.() ?? null;
+    if (body?.operationName !== 'AgentBackgroundTaskView') {
+      return route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ data: {} }) });
+    }
+    const view = viewAnswers[body.variables?.agentRunId];
+    evidence.viewQueries = (evidence.viewQueries ?? 0) + 1;
+    return route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ data: { agentBackgroundTaskView: view ?? null } }) });
+  });
+  // The app shell opens its node WebSockets (package definitions, update notifications) to the absent backend: the
+  // probe owns them as open sockets that never send anything, so the page reaches no refused connection.
+  await page.routeWebSocket(/^ws:\/\/127\.0\.0\.1:65534\//, () => {});
   page.on('console', (message) => evidence.browserEvents.push({ type: `console:${message.type()}`, text: message.text() }));
   page.on('pageerror', (error) => evidence.browserEvents.push({ type: 'pageerror', text: error.message }));
   await page.goto(`${baseUrl}${routePath}`, { waitUntil: 'domcontentloaded', timeout: timeoutMs });
@@ -159,11 +189,12 @@ try {
   const shot = async (name) => { await page.waitForTimeout(450); await page.screenshot({ path: path.join(outputDir, name) }); };
   const deliver = (runId, message) => page.evaluate(([id, msg]) => { window.__backgroundTasksProbe.deliver(id, msg); }, [runId, message]);
 
-  await record('BT-UI-001', 'To-Do is gone; Background Tasks sits above Activity, collapsed, with 0 counts; Activity expanded by default (AC-001, AC-002)', async () => {
+  await record('BT-UI-001', 'To-Do is gone; Background Tasks sits above Activity, collapsed; expanded it reads the run and shows 0 counts; Activity expanded by default (AC-001, AC-002)', async () => {
     const text = await panel.innerText();
     assert.doesNotMatch(text, /To-Do|to-dos|No to-dos yet/i);
     assert.equal((await header.locator('h3').innerText()).trim(), 'Background Tasks');
-    assert.equal((await counts.innerText()).trim(), '0 running · 0 total');
+    // Collapsed, the section reads nothing yet (autobyteus-473: only the expanded panel reads the run's view).
+    assert.equal((await counts.innerText()).trim(), 'Current count unavailable');
     const headerBox = await header.boundingBox();
     const activityBox = await panel.getByRole('heading', { name: 'Activity' }).boundingBox();
     assert.ok(headerBox.y < activityBox.y, 'Background Tasks must be above Activity');
@@ -172,7 +203,9 @@ try {
     await shot('01-default-collapsed.png');
 
     await header.click();
+    await panel.locator('[data-test="background-tasks-empty"]').waitFor({ state: 'visible', timeout: 5000 });
     assert.equal((await panel.locator('[data-test="background-tasks-empty"]').innerText()).trim(), 'No background tasks');
+    assert.equal((await counts.innerText()).trim(), '0 running · 0 total');
     assert.equal(await panel.getByText('No activity history yet.').isVisible(), false, 'Activity collapses when Background Tasks expands');
     await shot('02-empty-expanded.png');
     return { headerY: headerBox.y, activityY: activityBox.y };
@@ -196,13 +229,14 @@ try {
     const longSummary = `The command exited with code 3.\nOutput:\n${'FAILING line with details '.repeat(30)}`;
     await deliver(RUN, snapshot({ task_id: 'bg-2', kind: 'subagent', description: 'Research lighthouse history', started_at: '2026-09-29T16:49:00.000Z' }));
     await deliver(RUN, snapshot({ task_id: 'bg-3', description: longDescription, started_at: '2026-09-29T16:50:00.000Z' }));
-    await deliver(RUN, snapshot({ status: 'completed', summary: 'Background command completed (exit code 0)' }));
-    await deliver(RUN, snapshot({ task_id: 'bg-3', description: longDescription, started_at: '2026-09-29T16:50:00.000Z', status: 'failed', summary: longSummary }));
+    await deliver(RUN, snapshot({ status: 'completed', summary: 'Background command "sleep 20; echo done > marker" completed (exit code 0)', exit_code: 0 }));
+    await deliver(RUN, snapshot({ task_id: 'bg-3', description: longDescription, started_at: '2026-09-29T16:50:00.000Z', status: 'failed', summary: longSummary, exit_code: 3 }));
     const statuses = await rows.evaluateAll((items) => items.map((item) => item.getAttribute('data-status')));
     assert.deepEqual(statuses, ['failed', 'running', 'completed']);
     assert.equal((await counts.innerText()).trim(), '1 running · 3 total');
-    assert.match(await rows.nth(2).innerText(), /Completed[\s\S]*Background command completed \(exit code 0\)/);
-    const descriptionEl = rows.nth(0).locator('p');
+    assert.match(await rows.nth(2).innerText(), /Completed[\s\S]*Exit code 0[\s\S]*Background command "sleep 20; echo done > marker" completed \(exit code 0\)/);
+    assert.equal((await rows.nth(0).locator('[data-test="background-task-end"]').innerText()).trim(), 'Exit code 3');
+    const descriptionEl = rows.nth(0).locator('p[title]');
     assert.equal(await descriptionEl.getAttribute('title'), longDescription);
     const truncation = await descriptionEl.evaluate((el) => ({ clientWidth: el.clientWidth, scrollWidth: el.scrollWidth }));
     assert.ok(truncation.scrollWidth > truncation.clientWidth, 'long description is truncated');
@@ -232,14 +266,16 @@ try {
     return { collapsedHeight, expandedHeight };
   });
 
-  await record('BT-UI-005', 'Tasks are per run: another run shows its own empty list (AC-009 web side)', async () => {
+  await record('BT-UI-005', 'Tasks are per run: another run shows only its own tasks, and the first run its own again (AC-009 web side)', async () => {
     await page.evaluate((id) => window.__backgroundTasksProbe.select(id), OTHER_RUN);
-    await panel.locator('[data-test="background-tasks-empty"]').waitFor({ state: 'visible', timeout: 5000 });
-    assert.equal((await counts.innerText()).trim(), '0 running · 0 total');
+    await panel.locator('[data-test="background-tasks-scope"]').waitFor({ state: 'visible', timeout: 5000 });
+    assert.equal(await rows.count(), 1);
+    assert.equal((await counts.innerText()).trim(), '0 running · 1 total');
     await page.evaluate((id) => window.__backgroundTasksProbe.select(id), RUN);
-    await rows.first().waitFor({ state: 'visible', timeout: 5000 });
-    assert.equal(await rows.count(), 3);
-    return { otherRunEmpty: true };
+    // Its rows show at once from the stream store ("last-known"); the run's view answer then confirms them.
+    await waitFor('the first run\'s rows again', async () => (await rows.count()) === 3);
+    await waitFor('the confirmed counts', async () => (await counts.innerText()).trim() === '1 running · 3 total');
+    return { otherRunRows: 1 };
   });
 
   await record('BT-UI-006', 'Accordion: expanding Activity collapses Background Tasks; a narrow (320px, drawer-like) right panel keeps a one-line header and rows inside the panel', async () => {
@@ -290,7 +326,7 @@ try {
     await commandButton.waitFor({ state: 'visible', timeout: 5000 });
     assert.equal(await rows.count(), 4, 'follow-up snapshot updates the same row');
     assert.equal((await counts.innerText()).trim(), '2 running · 4 total');
-    assert.equal((await row.locator('p').innerText()).trim(), title, 'title stays the description');
+    assert.equal((await row.locator('p[title]').innerText()).trim(), title, 'title stays the description');
     assert.match((await row.locator('[data-test="background-task-kind-line"]').innerText()).replace(/\s+/g, ' '), /^Shell · cd \/Users/);
     assert.equal(await commandButton.getAttribute('title'), command);
     const style = await commandButton.evaluate((el) => {
@@ -331,6 +367,80 @@ try {
     assert.equal(await rows.filter({ hasText: 'Research lighthouse history' }).locator('[data-test="background-task-command"]').count(), 0);
     await shot('09-command-and-agy-rows.png');
     return { style, expanded, overflow };
+  });
+
+  await record('BT-UI-008', 'Why a task ended: one line under each ended task, status chips unchanged, the summary kept (autobyteus-483 REQ-004, AC-005..AC-008)', async () => {
+    const ended = [
+      { task_id: 'bg-10', description: 'Wait for the release workflow', status: 'stopped', end_reason: 'time_limit',
+        summary: 'Background command "Wait for the release workflow" was stopped after reaching its background time limit',
+        line: 'Stopped: it reached its time limit — not a failure of the command', chip: 'Stopped' },
+      { task_id: 'bg-11', description: 'pnpm test', status: 'stopped', end_reason: 'low_memory',
+        summary: 'Background command "pnpm test" was stopped because the system is running low on memory',
+        line: 'Stopped: the computer was low on memory', chip: 'Stopped' },
+      { task_id: 'bg-12', description: 'pnpm dev --port 3000', status: 'stopped', end_reason: 'run_ended', summary: 'signal SIGTERM',
+        line: 'Stopped: the run ended', chip: 'Stopped' },
+      { task_id: 'bg-13', description: 'pnpm lint', status: 'failed', exit_code: 1, line: 'Exit code 1', chip: 'Failed' },
+      { task_id: 'bg-14', description: 'tail -f build.log', status: 'stopped', summary: 'signal SIGTERM', line: null, chip: 'Stopped' },
+    ];
+    for (const [index, task] of ended.entries()) {
+      const { line: _line, chip: _chip, ...payload } = task;
+      await deliver(RUN, snapshot({ ...payload, started_at: `2026-09-29T17:0${index}:00.000Z` }));
+    }
+    const details = [];
+    for (const task of ended) {
+      const row = rows.filter({ hasText: task.description }).first();
+      await row.waitFor({ state: 'visible', timeout: 5000 });
+      const endLines = await row.locator('[data-test="background-task-end"]').allInnerTexts();
+      assert.deepEqual(endLines.map((text) => text.trim()), task.line ? [task.line] : [], `${task.task_id} end line`);
+      assert.match(await row.innerText(), new RegExp(task.chip));
+      if (task.summary) assert.equal((await row.locator('[data-test="background-task-summary"]').innerText()).trim(), task.summary);
+      const lineBox = task.line ? await row.locator('[data-test="background-task-end"]').boundingBox() : null;
+      const rowBox = await row.boundingBox();
+      if (lineBox) assert.ok(lineBox.x + lineBox.width <= rowBox.x + rowBox.width + 0.5, `${task.task_id} end line stays inside its row`);
+      details.push({ taskId: task.task_id, endLines });
+    }
+    await panel.evaluate((el) => { el.querySelector('[data-test="background-tasks-list"]').parentElement.scrollTop = 0; });
+    await shot('10-end-reasons.png');
+    return details;
+  });
+
+  await record('BT-UI-009', 'A polled (snapshot) run shows its exit code line; an unsupported run says inspection is unavailable (autobyteus-473 answers)', async () => {
+    await panel.evaluate((el) => { el.style.width = '380px'; });
+    await page.evaluate((id) => window.__backgroundTasksProbe.select(id), OTHER_RUN);
+    await panel.locator('[data-test="background-tasks-scope"]').waitFor({ state: 'visible', timeout: 5000 });
+    const row = rows.first();
+    assert.equal(await row.getAttribute('data-status'), 'failed');
+    assert.equal((await row.locator('[data-test="background-task-end"]').innerText()).trim(), 'Exit code 2');
+    assert.match(await row.locator('[data-test="background-task-observed"]').innerText(), /codex-pr · observed/);
+    await shot('11-snapshot-run.png');
+
+    await page.evaluate((id) => window.__backgroundTasksProbe.select(id), UNSUPPORTED_RUN);
+    const availability = panel.locator('[data-test="background-tasks-availability"]');
+    await waitFor('the unsupported answer', async () => (await availability.innerText()).includes('unavailable'));
+    assert.equal((await availability.innerText()).trim(), 'Current background-task inspection is unavailable.');
+    assert.equal((await counts.innerText()).trim(), 'Current count unavailable');
+    assert.equal(await rows.count(), 0);
+    await shot('12-unsupported-run.png');
+    return { snapshotRow: 'Exit code 2', unsupported: true };
+  });
+
+  await record('BT-UI-010', 'No run selected: a plain message instead of checking forever, no counts (autobyteus-483 REQ-005, AC-009)', async () => {
+    const queriesBefore = evidence.viewQueries ?? 0;
+    await page.evaluate(() => window.__backgroundTasksProbe.clear());
+    const noRun = panel.locator('[data-test="background-tasks-no-run"]');
+    await noRun.waitFor({ state: 'visible', timeout: 5000 });
+    await page.waitForTimeout(3000);
+    assert.equal((await noRun.innerText()).trim(), 'Select an agent to see its background tasks.');
+    assert.equal(await counts.count(), 0, 'no counts without a run');
+    const text = await panel.innerText();
+    assert.doesNotMatch(text, /Checking|Current count unavailable/);
+    assert.equal(evidence.viewQueries ?? 0, queriesBefore, 'nothing is read without a run');
+    await shot('13-no-run.png');
+
+    await page.evaluate((id) => window.__backgroundTasksProbe.select(id), RUN);
+    await rows.first().waitFor({ state: 'visible', timeout: 5000 });
+    assert.equal(await noRun.count(), 0);
+    return { queriesBefore };
   });
 
   // The probe has no backend: app-shell GraphQL bootstrap queries get an empty mock response and Apollo

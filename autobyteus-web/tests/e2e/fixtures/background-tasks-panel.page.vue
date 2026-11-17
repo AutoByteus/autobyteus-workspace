@@ -3,6 +3,8 @@
     <div class="mb-3 flex gap-2 text-sm">
       <button data-test="select-standalone" type="button" @click="select(STANDALONE_RUN_ID)">Standalone run</button>
       <button data-test="select-other" type="button" @click="select(OTHER_RUN_ID)">Other run</button>
+      <button data-test="select-unsupported" type="button" @click="select(UNSUPPORTED_RUN_ID)">Unsupported run</button>
+      <button data-test="select-none" type="button" @click="clear()">No run</button>
     </div>
     <!-- Right-panel width, as in the desktop workspace layout. -->
     <section data-test="right-panel" class="h-[640px] w-[380px] overflow-hidden rounded border border-gray-200 bg-white">
@@ -26,6 +28,7 @@ import type { ServerMessage } from '~/services/agentStreaming/protocol';
 
 const STANDALONE_RUN_ID = 'browser-claude-run';
 const OTHER_RUN_ID = 'browser-codex-run';
+const UNSUPPORTED_RUN_ID = 'browser-unsupported-run';
 
 const makeContext = (runId: string, runtimeKind: string): AgentContext => {
   const config: AgentRunConfig = {
@@ -45,10 +48,12 @@ const makeContext = (runId: string, runtimeKind: string): AgentContext => {
 const contexts = new Map([
   [STANDALONE_RUN_ID, makeContext(STANDALONE_RUN_ID, 'claude_agent_sdk')],
   [OTHER_RUN_ID, makeContext(OTHER_RUN_ID, 'codex_app_server')],
+  [UNSUPPORTED_RUN_ID, makeContext(UNSUPPORTED_RUN_ID, 'grok_build')],
 ]);
 const agentContextsStore = useAgentContextsStore();
 const selectionStore = useAgentSelectionStore();
 const select = (runId: string) => selectionStore.selectRunWithoutShellNavigation(runId, 'agent');
+const clear = () => selectionStore.clearSelectionWithoutShellNavigation();
 
 onMounted(() => {
   for (const [runId, context] of contexts) agentContextsStore.runs.set(runId, context);
@@ -57,6 +62,7 @@ onMounted(() => {
   globalWindow.__backgroundTasksProbe = {
     ready: true,
     select,
+    clear,
     /** Delivers one server message through the production stream projector for that run. */
     deliver: (runId: string, message: ServerMessage) => {
       const context = contexts.get(runId);

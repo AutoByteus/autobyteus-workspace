@@ -92,15 +92,17 @@ describe("ClaudeSdkClient", () => {
   const stubProcessEnvironment = (values: Record<string, string>): void => {
     for (const [key, value] of Object.entries(values)) vi.stubEnv(key, value);
   };
+  /** The defaults AutoByteus adds to every Claude Code child environment (autobyteus-273, autobyteus-483). */
+  const CHILD_DEFAULTS = { ENABLE_PROMPT_CACHING_1H: "1", BASH_DEFAULT_TIMEOUT_MS: "7200000", BASH_MAX_TIMEOUT_MS: "7200000" };
 
   it.each([
     // cli: the CLI's own sign-in is used, so inherited API keys are removed.
     ["cli", (env: NodeJS.ProcessEnv) => {
       const { ANTHROPIC_API_KEY: _removed, ...kept } = env;
-      return { ...kept, ENABLE_PROMPT_CACHING_1H: "1" };
+      return { ...kept, ...CHILD_DEFAULTS };
     }],
     // auto without an OAuth token: the inherited environment is kept.
-    ["auto", (env: NodeJS.ProcessEnv) => ({ ...env, ENABLE_PROMPT_CACHING_1H: "1" })],
+    ["auto", (env: NodeJS.ProcessEnv) => ({ ...env, ...CHILD_DEFAULTS })],
   ] as const)(
     "does not resolve a vault key for %s and launches with the process environment under the auth policy",
     async (mode, expectedSpawnEnvironment) => {
@@ -141,14 +143,15 @@ describe("ClaudeSdkClient", () => {
     await client.beginStreamingSession({ resolveOptions: () => ({ ...baseOptions(), extraEnvironment }) }).open();
 
     const call = queryFn.mock.calls[0]?.[0] as { options: Record<string, unknown> & { env: Record<string, string> } };
-    expect(call.options.env).toEqual({ ...process.env, ENABLE_PROMPT_CACHING_1H: "1", ...extraEnvironment });
+    expect(call.options.env).toEqual({ ...process.env, ...CHILD_DEFAULTS, ...extraEnvironment });
     expect(call.options).not.toHaveProperty("extraEnvironment");
     expect(process.env.AUTOBYTEUS_GITHUB_API_URL).toBeUndefined();
   });
 
-  it("sets neither v1.4.78 policy variable, so Claude CLI background-task and Bash timeout defaults apply (AC-010)", async () => {
+  it("keeps CLI background tasks on and gives every launch the 2-hour shell time limits (autobyteus-483, AC-004)", async () => {
     vi.stubEnv("CLAUDE_CODE_DISABLE_BACKGROUND_TASKS", undefined);
     vi.stubEnv("BASH_MAX_TIMEOUT_MS", undefined);
+    vi.stubEnv("BASH_DEFAULT_TIMEOUT_MS", undefined);
     const queryFn = vi.fn(() => createMockQuery());
     const client = new ClaudeSdkClient(vi.fn());
     client.setCachedModuleForTesting({ query: queryFn });
@@ -160,13 +163,25 @@ describe("ClaudeSdkClient", () => {
     for (const call of queryFn.mock.calls) {
       const spawnEnv = (call[0] as { options: { env: Record<string, string | undefined> } }).options.env;
       expect(spawnEnv).not.toHaveProperty("CLAUDE_CODE_DISABLE_BACKGROUND_TASKS");
-      expect(spawnEnv).not.toHaveProperty("BASH_MAX_TIMEOUT_MS");
-      expect(spawnEnv).not.toHaveProperty("BASH_DEFAULT_TIMEOUT_MS");
+      expect(spawnEnv).toMatchObject({ BASH_DEFAULT_TIMEOUT_MS: "7200000", BASH_MAX_TIMEOUT_MS: "7200000" });
     }
     expect((queryFn.mock.calls[0]?.[0] as { options: { env: unknown } }).options.env).toEqual({
       ...process.env,
-      ENABLE_PROMPT_CACHING_1H: "1",
+      ...CHILD_DEFAULTS,
     });
+  });
+
+  it("keeps a shell time limit the server's environment sets (autobyteus-483, AC-003)", async () => {
+    vi.stubEnv("BASH_DEFAULT_TIMEOUT_MS", undefined);
+    const queryFn = vi.fn((_input: { options: { env: Record<string, string> } }) => createMockQuery());
+    const client = new ClaudeSdkClient(vi.fn());
+    client.setCachedModuleForTesting({ query: queryFn });
+    stubProcessEnvironment({ CLAUDE_AGENT_SDK_AUTH_MODE: "cli", BASH_MAX_TIMEOUT_MS: "900000" });
+
+    await client.beginStreamingSession({ resolveOptions: () => ({ ...baseOptions() }) }).open();
+
+    expect(queryFn.mock.calls[0]?.[0].options.env)
+      .toMatchObject({ BASH_MAX_TIMEOUT_MS: "900000", BASH_DEFAULT_TIMEOUT_MS: "7200000" });
   });
 
   it("warns once per open when the operator's environment disables CLI background tasks, without overriding it (OBS-2)", async () => {
@@ -218,7 +233,7 @@ describe("ClaudeSdkClient", () => {
     expect(call.options.env).toEqual({
       ...env,
       ANTHROPIC_API_KEY: "synthetic-vault-key",
-      ENABLE_PROMPT_CACHING_1H: "1",
+      ...CHILD_DEFAULTS,
     });
     expect(call.options).toEqual(expect.objectContaining({
       mcpServers: { demo: { transport: "mock" } },
@@ -261,7 +276,7 @@ describe("ClaudeSdkClient", () => {
       CLAUDE_AGENT_SDK_AUTH_MODE: "cli",
       CLAUDE_CODE_OAUTH_TOKEN: "synthetic-oauth",
       KEEP_ME: "preserved",
-      ENABLE_PROMPT_CACHING_1H: "1",
+      ...CHILD_DEFAULTS,
     });
   });
 

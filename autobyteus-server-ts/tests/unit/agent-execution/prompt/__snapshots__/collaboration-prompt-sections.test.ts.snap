@@ -82,7 +82,13 @@ When you finish your work or get stuck, call \`get_handoff_rules\`. Select the s
 - When exposed, use \`read_file\` for file reading, \`edit_file\` for targeted regional changes to an existing file, and \`write_file\` for new files or deliberate whole-file replacement.
 - Before every targeted \`edit_file\` change, use \`read_file\` to read the relevant current content of the original file unless it was read recently and has not changed.
 - Build the regional \`edit_file\` patch from that latest content and preserve unrelated content. If the edit context fails or the file changed, use \`read_file\` again for the affected content, construct a new patch, and retry; do not blindly retry an unchanged patch.
-- Preserve unrelated content and existing changes. Verify important file changes with an appropriate read, diff, parser, test, or project-native check."
+- Preserve unrelated content and existing changes. Verify important file changes with an appropriate read, diff, parser, test, or project-native check.
+
+## Long-Running Commands
+
+- Run a long build or test suite once with \`run_bash\` and \`run_in_background\`. You are told its exit code when it ends; act on that notice. Background commands have no time limit, but they stop when the run ends.
+- A foreground command is killed at its \`timeout_seconds\` (default 30), so give a command you wait on enough time.
+- Do not wait with loops of \`sleep\` or repeated checks, and never start the same command again while it still runs, or a second command that only waits for it."
 `;
 
 exports[`collaboration prompt on the native AutoByteus path > renders the approved text for a member of a task agent team 1`] = `
@@ -163,7 +169,13 @@ When you finish your work or get stuck, call \`get_handoff_rules\`. Select the s
 - When exposed, use \`read_file\` for file reading, \`edit_file\` for targeted regional changes to an existing file, and \`write_file\` for new files or deliberate whole-file replacement.
 - Before every targeted \`edit_file\` change, use \`read_file\` to read the relevant current content of the original file unless it was read recently and has not changed.
 - Build the regional \`edit_file\` patch from that latest content and preserve unrelated content. If the edit context fails or the file changed, use \`read_file\` again for the affected content, construct a new patch, and retry; do not blindly retry an unchanged patch.
-- Preserve unrelated content and existing changes. Verify important file changes with an appropriate read, diff, parser, test, or project-native check."
+- Preserve unrelated content and existing changes. Verify important file changes with an appropriate read, diff, parser, test, or project-native check.
+
+## Long-Running Commands
+
+- Run a long build or test suite once with \`run_bash\` and \`run_in_background\`. You are told its exit code when it ends; act on that notice. Background commands have no time limit, but they stop when the run ends.
+- A foreground command is killed at its \`timeout_seconds\` (default 30), so give a command you wait on enough time.
+- Do not wait with loops of \`sleep\` or repeated checks, and never start the same command again while it still runs, or a second command that only waits for it."
 `;
 
 exports[`collaboration prompt on the native AutoByteus path > renders the approved text for a member of a team without handoff rules 1`] = `
@@ -244,7 +256,13 @@ Use \`send_message_to\` for a purpose: to hand off your work, to ask for input y
 - When exposed, use \`read_file\` for file reading, \`edit_file\` for targeted regional changes to an existing file, and \`write_file\` for new files or deliberate whole-file replacement.
 - Before every targeted \`edit_file\` change, use \`read_file\` to read the relevant current content of the original file unless it was read recently and has not changed.
 - Build the regional \`edit_file\` patch from that latest content and preserve unrelated content. If the edit context fails or the file changed, use \`read_file\` again for the affected content, construct a new patch, and retry; do not blindly retry an unchanged patch.
-- Preserve unrelated content and existing changes. Verify important file changes with an appropriate read, diff, parser, test, or project-native check."
+- Preserve unrelated content and existing changes. Verify important file changes with an appropriate read, diff, parser, test, or project-native check.
+
+## Long-Running Commands
+
+- Run a long build or test suite once with \`run_bash\` and \`run_in_background\`. You are told its exit code when it ends; act on that notice. Background commands have no time limit, but they stop when the run ends.
+- A foreground command is killed at its \`timeout_seconds\` (default 30), so give a command you wait on enough time.
+- Do not wait with loops of \`sleep\` or repeated checks, and never start the same command again while it still runs, or a second command that only waits for it."
 `;
 
 exports[`collaboration prompt on the native AutoByteus path > renders the approved text for a member of a user-started team 1`] = `
@@ -329,7 +347,13 @@ When you finish your work or get stuck, call \`get_handoff_rules\`. Select the s
 - When exposed, use \`read_file\` for file reading, \`edit_file\` for targeted regional changes to an existing file, and \`write_file\` for new files or deliberate whole-file replacement.
 - Before every targeted \`edit_file\` change, use \`read_file\` to read the relevant current content of the original file unless it was read recently and has not changed.
 - Build the regional \`edit_file\` patch from that latest content and preserve unrelated content. If the edit context fails or the file changed, use \`read_file\` again for the affected content, construct a new patch, and retry; do not blindly retry an unchanged patch.
-- Preserve unrelated content and existing changes. Verify important file changes with an appropriate read, diff, parser, test, or project-native check."
+- Preserve unrelated content and existing changes. Verify important file changes with an appropriate read, diff, parser, test, or project-native check.
+
+## Long-Running Commands
+
+- Run a long build or test suite once with \`run_bash\` and \`run_in_background\`. You are told its exit code when it ends; act on that notice. Background commands have no time limit, but they stop when the run ends.
+- A foreground command is killed at its \`timeout_seconds\` (default 30), so give a command you wait on enough time.
+- Do not wait with loops of \`sleep\` or repeated checks, and never start the same command again while it still runs, or a second command that only waits for it."
 `;
 
 exports[`collaboration prompt on the native AutoByteus path > renders the approved text for a member of an organization's team 1`] = `
@@ -414,7 +438,13 @@ When you finish your work or get stuck, call \`get_handoff_rules\`. Select the s
 - When exposed, use \`read_file\` for file reading, \`edit_file\` for targeted regional changes to an existing file, and \`write_file\` for new files or deliberate whole-file replacement.
 - Before every targeted \`edit_file\` change, use \`read_file\` to read the relevant current content of the original file unless it was read recently and has not changed.
 - Build the regional \`edit_file\` patch from that latest content and preserve unrelated content. If the edit context fails or the file changed, use \`read_file\` again for the affected content, construct a new patch, and retry; do not blindly retry an unchanged patch.
-- Preserve unrelated content and existing changes. Verify important file changes with an appropriate read, diff, parser, test, or project-native check."
+- Preserve unrelated content and existing changes. Verify important file changes with an appropriate read, diff, parser, test, or project-native check.
+
+## Long-Running Commands
+
+- Run a long build or test suite once with \`run_bash\` and \`run_in_background\`. You are told its exit code when it ends; act on that notice. Background commands have no time limit, but they stop when the run ends.
+- A foreground command is killed at its \`timeout_seconds\` (default 30), so give a command you wait on enough time.
+- Do not wait with loops of \`sleep\` or repeated checks, and never start the same command again while it still runs, or a second command that only waits for it."
 `;
 
 exports[`collaboration prompt on the native AutoByteus path > renders the approved text for a standalone agent 1`] = `
@@ -461,7 +491,13 @@ On receiving a request, follow your own instructions and skills. Use \`send_mess
 - When exposed, use \`read_file\` for file reading, \`edit_file\` for targeted regional changes to an existing file, and \`write_file\` for new files or deliberate whole-file replacement.
 - Before every targeted \`edit_file\` change, use \`read_file\` to read the relevant current content of the original file unless it was read recently and has not changed.
 - Build the regional \`edit_file\` patch from that latest content and preserve unrelated content. If the edit context fails or the file changed, use \`read_file\` again for the affected content, construct a new patch, and retry; do not blindly retry an unchanged patch.
-- Preserve unrelated content and existing changes. Verify important file changes with an appropriate read, diff, parser, test, or project-native check."
+- Preserve unrelated content and existing changes. Verify important file changes with an appropriate read, diff, parser, test, or project-native check.
+
+## Long-Running Commands
+
+- Run a long build or test suite once with \`run_bash\` and \`run_in_background\`. You are told its exit code when it ends; act on that notice. Background commands have no time limit, but they stop when the run ends.
+- A foreground command is killed at its \`timeout_seconds\` (default 30), so give a command you wait on enough time.
+- Do not wait with loops of \`sleep\` or repeated checks, and never start the same command again while it still runs, or a second command that only waits for it."
 `;
 
 exports[`collaboration prompt on the native AutoByteus path > renders the approved text for a task agent in a Team run 1`] = `
@@ -510,7 +546,13 @@ On receiving a request, follow your own instructions and skills. Use \`send_mess
 - When exposed, use \`read_file\` for file reading, \`edit_file\` for targeted regional changes to an existing file, and \`write_file\` for new files or deliberate whole-file replacement.
 - Before every targeted \`edit_file\` change, use \`read_file\` to read the relevant current content of the original file unless it was read recently and has not changed.
 - Build the regional \`edit_file\` patch from that latest content and preserve unrelated content. If the edit context fails or the file changed, use \`read_file\` again for the affected content, construct a new patch, and retry; do not blindly retry an unchanged patch.
-- Preserve unrelated content and existing changes. Verify important file changes with an appropriate read, diff, parser, test, or project-native check."
+- Preserve unrelated content and existing changes. Verify important file changes with an appropriate read, diff, parser, test, or project-native check.
+
+## Long-Running Commands
+
+- Run a long build or test suite once with \`run_bash\` and \`run_in_background\`. You are told its exit code when it ends; act on that notice. Background commands have no time limit, but they stop when the run ends.
+- A foreground command is killed at its \`timeout_seconds\` (default 30), so give a command you wait on enough time.
+- Do not wait with loops of \`sleep\` or repeated checks, and never start the same command again while it still runs, or a second command that only waits for it."
 `;
 
 exports[`collaboration prompt on the native AutoByteus path > renders the approved text for a task agent in an Agent run 1`] = `
@@ -559,7 +601,13 @@ On receiving a request, follow your own instructions and skills. Use \`send_mess
 - When exposed, use \`read_file\` for file reading, \`edit_file\` for targeted regional changes to an existing file, and \`write_file\` for new files or deliberate whole-file replacement.
 - Before every targeted \`edit_file\` change, use \`read_file\` to read the relevant current content of the original file unless it was read recently and has not changed.
 - Build the regional \`edit_file\` patch from that latest content and preserve unrelated content. If the edit context fails or the file changed, use \`read_file\` again for the affected content, construct a new patch, and retry; do not blindly retry an unchanged patch.
-- Preserve unrelated content and existing changes. Verify important file changes with an appropriate read, diff, parser, test, or project-native check."
+- Preserve unrelated content and existing changes. Verify important file changes with an appropriate read, diff, parser, test, or project-native check.
+
+## Long-Running Commands
+
+- Run a long build or test suite once with \`run_bash\` and \`run_in_background\`. You are told its exit code when it ends; act on that notice. Background commands have no time limit, but they stop when the run ends.
+- A foreground command is killed at its \`timeout_seconds\` (default 30), so give a command you wait on enough time.
+- Do not wait with loops of \`sleep\` or repeated checks, and never start the same command again while it still runs, or a second command that only waits for it."
 `;
 
 exports[`collaboration prompt on the native AutoByteus path > renders the approved text for a task agent in an Org run 1`] = `
@@ -608,7 +656,13 @@ On receiving a request, follow your own instructions and skills. Use \`send_mess
 - When exposed, use \`read_file\` for file reading, \`edit_file\` for targeted regional changes to an existing file, and \`write_file\` for new files or deliberate whole-file replacement.
 - Before every targeted \`edit_file\` change, use \`read_file\` to read the relevant current content of the original file unless it was read recently and has not changed.
 - Build the regional \`edit_file\` patch from that latest content and preserve unrelated content. If the edit context fails or the file changed, use \`read_file\` again for the affected content, construct a new patch, and retry; do not blindly retry an unchanged patch.
-- Preserve unrelated content and existing changes. Verify important file changes with an appropriate read, diff, parser, test, or project-native check."
+- Preserve unrelated content and existing changes. Verify important file changes with an appropriate read, diff, parser, test, or project-native check.
+
+## Long-Running Commands
+
+- Run a long build or test suite once with \`run_bash\` and \`run_in_background\`. You are told its exit code when it ends; act on that notice. Background commands have no time limit, but they stop when the run ends.
+- A foreground command is killed at its \`timeout_seconds\` (default 30), so give a command you wait on enough time.
+- Do not wait with loops of \`sleep\` or repeated checks, and never start the same command again while it still runs, or a second command that only waits for it."
 `;
 
 exports[`collaboration prompt on the native AutoByteus path > renders the approved text for a task agent with handoff rules 1`] = `
@@ -665,7 +719,13 @@ When you finish your work or get stuck, call \`get_handoff_rules\`. Select the s
 - When exposed, use \`read_file\` for file reading, \`edit_file\` for targeted regional changes to an existing file, and \`write_file\` for new files or deliberate whole-file replacement.
 - Before every targeted \`edit_file\` change, use \`read_file\` to read the relevant current content of the original file unless it was read recently and has not changed.
 - Build the regional \`edit_file\` patch from that latest content and preserve unrelated content. If the edit context fails or the file changed, use \`read_file\` again for the affected content, construct a new patch, and retry; do not blindly retry an unchanged patch.
-- Preserve unrelated content and existing changes. Verify important file changes with an appropriate read, diff, parser, test, or project-native check."
+- Preserve unrelated content and existing changes. Verify important file changes with an appropriate read, diff, parser, test, or project-native check.
+
+## Long-Running Commands
+
+- Run a long build or test suite once with \`run_bash\` and \`run_in_background\`. You are told its exit code when it ends; act on that notice. Background commands have no time limit, but they stop when the run ends.
+- A foreground command is killed at its \`timeout_seconds\` (default 30), so give a command you wait on enough time.
+- Do not wait with loops of \`sleep\` or repeated checks, and never start the same command again while it still runs, or a second command that only waits for it."
 `;
 
 exports[`collaboration prompt on the shared (Codex, Claude, ACP, AGY) path > renders the approved text for a direct agent of an organization 1`] = `
@@ -727,7 +787,13 @@ Use \`send_message_to\` for a purpose: to hand off your work, to ask for input y
 
 ### Handoffs
 
-When you finish your work or get stuck, call \`get_handoff_rules\`. Select the single rule whose \`when\` condition most specifically matches your outcome, and message only its \`recipient_address\` with \`send_message_to\`. Don't notify anyone else about the same outcome. If no rule fits and another agent gave you the task, tell that agent using its run id; otherwise finish normally."
+When you finish your work or get stuck, call \`get_handoff_rules\`. Select the single rule whose \`when\` condition most specifically matches your outcome, and message only its \`recipient_address\` with \`send_message_to\`. Don't notify anyone else about the same outcome. If no rule fits and another agent gave you the task, tell that agent using its run id; otherwise finish normally.
+
+## Long-Running Commands
+
+- Start a long build or test suite once with \`exec_command\`. When it outlasts its wait, it keeps running in its session.
+- To wait for it, call \`write_stdin\` on that same session with empty input and a long \`yield_time_ms\`, as often as needed, instead of starting it again.
+- Do not wait with loops of \`sleep\` or short repeated checks, and never start the same command again while it still runs, or a second command that only waits for it."
 `;
 
 exports[`collaboration prompt on the shared (Codex, Claude, ACP, AGY) path > renders the approved text for a member of a task agent team 1`] = `
@@ -785,7 +851,13 @@ Use \`send_message_to\` for a purpose: to hand off your work, to ask for input y
 
 ### Handoffs
 
-When you finish your work or get stuck, call \`get_handoff_rules\`. Select the single rule whose \`when\` condition most specifically matches your outcome, and message only its \`recipient_address\` with \`send_message_to\`. Don't notify anyone else about the same outcome. If no rule fits and another agent gave you the task, tell that agent using its run id; otherwise finish normally."
+When you finish your work or get stuck, call \`get_handoff_rules\`. Select the single rule whose \`when\` condition most specifically matches your outcome, and message only its \`recipient_address\` with \`send_message_to\`. Don't notify anyone else about the same outcome. If no rule fits and another agent gave you the task, tell that agent using its run id; otherwise finish normally.
+
+## Long-Running Commands
+
+- Start a long build or test suite once with \`exec_command\`. When it outlasts its wait, it keeps running in its session.
+- To wait for it, call \`write_stdin\` on that same session with empty input and a long \`yield_time_ms\`, as often as needed, instead of starting it again.
+- Do not wait with loops of \`sleep\` or short repeated checks, and never start the same command again while it still runs, or a second command that only waits for it."
 `;
 
 exports[`collaboration prompt on the shared (Codex, Claude, ACP, AGY) path > renders the approved text for a member of a team without handoff rules 1`] = `
@@ -843,7 +915,13 @@ On receiving a request, follow your own instructions and skills.
 - \`list_available_agents\`, if you have it, shows the agents and agent teams you can work with, with their addresses.
 - If the user mentions agents or agent teams, they are listed at the end of the user's message; follow that note.
 
-Use \`send_message_to\` for a purpose: to hand off your work, to ask for input you need, to follow up with one of your task agents or answer its question, or to reply to the agent that gave you a task. Don't send acknowledgements, status chatter or promises to work."
+Use \`send_message_to\` for a purpose: to hand off your work, to ask for input you need, to follow up with one of your task agents or answer its question, or to reply to the agent that gave you a task. Don't send acknowledgements, status chatter or promises to work.
+
+## Long-Running Commands
+
+- Start a long build or test suite once with \`exec_command\`. When it outlasts its wait, it keeps running in its session.
+- To wait for it, call \`write_stdin\` on that same session with empty input and a long \`yield_time_ms\`, as often as needed, instead of starting it again.
+- Do not wait with loops of \`sleep\` or short repeated checks, and never start the same command again while it still runs, or a second command that only waits for it."
 `;
 
 exports[`collaboration prompt on the shared (Codex, Claude, ACP, AGY) path > renders the approved text for a member of a user-started team 1`] = `
@@ -905,7 +983,13 @@ Use \`send_message_to\` for a purpose: to hand off your work, to ask for input y
 
 ### Handoffs
 
-When you finish your work or get stuck, call \`get_handoff_rules\`. Select the single rule whose \`when\` condition most specifically matches your outcome, and message only its \`recipient_address\` with \`send_message_to\`. Don't notify anyone else about the same outcome. If no rule fits and another agent gave you the task, tell that agent using its run id; otherwise finish normally."
+When you finish your work or get stuck, call \`get_handoff_rules\`. Select the single rule whose \`when\` condition most specifically matches your outcome, and message only its \`recipient_address\` with \`send_message_to\`. Don't notify anyone else about the same outcome. If no rule fits and another agent gave you the task, tell that agent using its run id; otherwise finish normally.
+
+## Long-Running Commands
+
+- Start a long build or test suite once with \`exec_command\`. When it outlasts its wait, it keeps running in its session.
+- To wait for it, call \`write_stdin\` on that same session with empty input and a long \`yield_time_ms\`, as often as needed, instead of starting it again.
+- Do not wait with loops of \`sleep\` or short repeated checks, and never start the same command again while it still runs, or a second command that only waits for it."
 `;
 
 exports[`collaboration prompt on the shared (Codex, Claude, ACP, AGY) path > renders the approved text for a member of an organization's team 1`] = `
@@ -967,7 +1051,13 @@ Use \`send_message_to\` for a purpose: to hand off your work, to ask for input y
 
 ### Handoffs
 
-When you finish your work or get stuck, call \`get_handoff_rules\`. Select the single rule whose \`when\` condition most specifically matches your outcome, and message only its \`recipient_address\` with \`send_message_to\`. Don't notify anyone else about the same outcome. If no rule fits and another agent gave you the task, tell that agent using its run id; otherwise finish normally."
+When you finish your work or get stuck, call \`get_handoff_rules\`. Select the single rule whose \`when\` condition most specifically matches your outcome, and message only its \`recipient_address\` with \`send_message_to\`. Don't notify anyone else about the same outcome. If no rule fits and another agent gave you the task, tell that agent using its run id; otherwise finish normally.
+
+## Long-Running Commands
+
+- Start a long build or test suite once with \`exec_command\`. When it outlasts its wait, it keeps running in its session.
+- To wait for it, call \`write_stdin\` on that same session with empty input and a long \`yield_time_ms\`, as often as needed, instead of starting it again.
+- Do not wait with loops of \`sleep\` or short repeated checks, and never start the same command again while it still runs, or a second command that only waits for it."
 `;
 
 exports[`collaboration prompt on the shared (Codex, Claude, ACP, AGY) path > renders the approved text for a standalone agent 1`] = `
@@ -991,7 +1081,13 @@ You can delegate tasks to other agents and agent teams.
 - \`list_available_agents\`, if you have it, shows the agents and agent teams you can work with, with their addresses.
 - If the user mentions agents or agent teams, they are listed at the end of the user's message; follow that note.
 
-On receiving a request, follow your own instructions and skills. Use \`send_message_to\` for a purpose: to follow up with a task agent, or to answer a question it asks you. Don't send acknowledgements, status chatter or promises to work."
+On receiving a request, follow your own instructions and skills. Use \`send_message_to\` for a purpose: to follow up with a task agent, or to answer a question it asks you. Don't send acknowledgements, status chatter or promises to work.
+
+## Long-Running Commands
+
+- Start a long build or test suite once with \`exec_command\`. When it outlasts its wait, it keeps running in its session.
+- To wait for it, call \`write_stdin\` on that same session with empty input and a long \`yield_time_ms\`, as often as needed, instead of starting it again.
+- Do not wait with loops of \`sleep\` or short repeated checks, and never start the same command again while it still runs, or a second command that only waits for it."
 `;
 
 exports[`collaboration prompt on the shared (Codex, Claude, ACP, AGY) path > renders the approved text for a task agent in a Team run 1`] = `
@@ -1017,7 +1113,13 @@ You can also delegate tasks to other agents and agent teams.
 - \`list_available_agents\`, if you have it, shows the agents and agent teams you can work with, with their addresses.
 - If the user mentions agents or agent teams, they are listed at the end of the user's message; follow that note.
 
-On receiving a request, follow your own instructions and skills. Use \`send_message_to\` for a purpose: to report your result, to ask for input you need, or to follow up with one of your task agents or answer its question. Don't send acknowledgements, status chatter or promises to work."
+On receiving a request, follow your own instructions and skills. Use \`send_message_to\` for a purpose: to report your result, to ask for input you need, or to follow up with one of your task agents or answer its question. Don't send acknowledgements, status chatter or promises to work.
+
+## Long-Running Commands
+
+- Start a long build or test suite once with \`exec_command\`. When it outlasts its wait, it keeps running in its session.
+- To wait for it, call \`write_stdin\` on that same session with empty input and a long \`yield_time_ms\`, as often as needed, instead of starting it again.
+- Do not wait with loops of \`sleep\` or short repeated checks, and never start the same command again while it still runs, or a second command that only waits for it."
 `;
 
 exports[`collaboration prompt on the shared (Codex, Claude, ACP, AGY) path > renders the approved text for a task agent in an Agent run 1`] = `
@@ -1043,7 +1145,13 @@ You can also delegate tasks to other agents and agent teams.
 - \`list_available_agents\`, if you have it, shows the agents and agent teams you can work with, with their addresses.
 - If the user mentions agents or agent teams, they are listed at the end of the user's message; follow that note.
 
-On receiving a request, follow your own instructions and skills. Use \`send_message_to\` for a purpose: to report your result, to ask for input you need, or to follow up with one of your task agents or answer its question. Don't send acknowledgements, status chatter or promises to work."
+On receiving a request, follow your own instructions and skills. Use \`send_message_to\` for a purpose: to report your result, to ask for input you need, or to follow up with one of your task agents or answer its question. Don't send acknowledgements, status chatter or promises to work.
+
+## Long-Running Commands
+
+- Start a long build or test suite once with \`exec_command\`. When it outlasts its wait, it keeps running in its session.
+- To wait for it, call \`write_stdin\` on that same session with empty input and a long \`yield_time_ms\`, as often as needed, instead of starting it again.
+- Do not wait with loops of \`sleep\` or short repeated checks, and never start the same command again while it still runs, or a second command that only waits for it."
 `;
 
 exports[`collaboration prompt on the shared (Codex, Claude, ACP, AGY) path > renders the approved text for a task agent in an Org run 1`] = `
@@ -1069,7 +1177,13 @@ You can also delegate tasks to other agents and agent teams.
 - \`list_available_agents\`, if you have it, shows the agents and agent teams you can work with, with their addresses.
 - If the user mentions agents or agent teams, they are listed at the end of the user's message; follow that note.
 
-On receiving a request, follow your own instructions and skills. Use \`send_message_to\` for a purpose: to report your result, to ask for input you need, or to follow up with one of your task agents or answer its question. Don't send acknowledgements, status chatter or promises to work."
+On receiving a request, follow your own instructions and skills. Use \`send_message_to\` for a purpose: to report your result, to ask for input you need, or to follow up with one of your task agents or answer its question. Don't send acknowledgements, status chatter or promises to work.
+
+## Long-Running Commands
+
+- Start a long build or test suite once with \`exec_command\`. When it outlasts its wait, it keeps running in its session.
+- To wait for it, call \`write_stdin\` on that same session with empty input and a long \`yield_time_ms\`, as often as needed, instead of starting it again.
+- Do not wait with loops of \`sleep\` or short repeated checks, and never start the same command again while it still runs, or a second command that only waits for it."
 `;
 
 exports[`collaboration prompt on the shared (Codex, Claude, ACP, AGY) path > renders the approved text for a task agent with handoff rules 1`] = `
@@ -1103,5 +1217,11 @@ On receiving a request, follow your own instructions and skills. Use \`send_mess
 
 ### Handoffs
 
-When you finish your work or get stuck, call \`get_handoff_rules\`. Select the single rule whose \`when\` condition most specifically matches your outcome, and message only its \`recipient_address\` with \`send_message_to\`. Don't notify anyone else about the same outcome. If no rule fits and another agent gave you the task, tell that agent using its run id; otherwise finish normally."
+When you finish your work or get stuck, call \`get_handoff_rules\`. Select the single rule whose \`when\` condition most specifically matches your outcome, and message only its \`recipient_address\` with \`send_message_to\`. Don't notify anyone else about the same outcome. If no rule fits and another agent gave you the task, tell that agent using its run id; otherwise finish normally.
+
+## Long-Running Commands
+
+- Start a long build or test suite once with \`exec_command\`. When it outlasts its wait, it keeps running in its session.
+- To wait for it, call \`write_stdin\` on that same session with empty input and a long \`yield_time_ms\`, as often as needed, instead of starting it again.
+- Do not wait with loops of \`sleep\` or short repeated checks, and never start the same command again while it still runs, or a second command that only waits for it."
 `;

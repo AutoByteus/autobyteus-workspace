@@ -1,0 +1,16 @@
+# API-05: pnpm -C autobyteus-server-ts build; pnpm -C autobyteus-web build:mobile-web; pnpm -C autobyteus-web test:e2e:mobile-shell --output-dir=<probe> --cases=MSP-47,MSP-48,MSP-49,MSP-59
+# product commit c77d83ef27; tests as in 48d2a4da58 (+ baseline fix ea86a9affe where named); macOS 26 arm64; Node 22.23.1; 2026-11-17
+
+> autobyteus@1.5.13-beta.8 test:e2e:mobile-shell /Users/normy/autobyteus_org/autobyteus-worktrees/shell-command-time-limits-483/autobyteus-web
+> node tests/e2e/mobile-shell-probe.mjs --output-dir=/Users/normy/autobyteus_org/autobyteus-worktrees/shell-command-time-limits-483/tickets/in-progress/shell-command-time-limits-483/evidence/API-05-phone/probe --cases=MSP-47,MSP-48,MSP-49,MSP-59
+
+[mobile-shell] MSP-47 …
+[mobile-shell] MSP-47 Pass
+[mobile-shell] MSP-48 …
+[mobile-shell] MSP-48 Pass
+[mobile-shell] MSP-49 …
+[mobile-shell] MSP-49 Pass
+[mobile-shell] MSP-59 …
+[mobile-shell] MSP-59 Pass
+mobile-shell probe: Pass
+EXIT 0

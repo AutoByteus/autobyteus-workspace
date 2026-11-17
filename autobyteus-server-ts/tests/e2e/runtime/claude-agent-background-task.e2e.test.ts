@@ -33,6 +33,9 @@ type BackgroundTaskSnapshot = {
   command: string | null;
   status: string;
   summary: string | null;
+  /** autobyteus-483: why it ended when Claude Code says so, and its exit code (null while running or unknown). */
+  end_reason: "time_limit" | "low_memory" | "run_ended" | null;
+  exit_code: number | null;
   started_at: string;
 };
 
@@ -61,6 +64,7 @@ const waitForRunningTask = async (harness: ClaudeLiveAgentHarness, fromIndex: nu
   );
   const snapshot = harness.messages[index]!.payload as unknown as BackgroundTaskSnapshot;
   expect(snapshot.summary).toBeNull();
+  expect(snapshot).toMatchObject({ end_reason: null, exit_code: null });
   expect(Number.isNaN(Date.parse(snapshot.started_at))).toBe(false);
   return snapshot;
 };
@@ -164,6 +168,9 @@ describeLiveClaudeRuntime("Claude runtime background tasks (live E2E)", () => {
       const final = latestSnapshotOf(harness, running.task_id)!;
       expect(final).toMatchObject({ task_id: running.task_id, kind: "shell", command: bashCommand, status: "completed", started_at: running.started_at });
       expect(final.summary ?? "").not.toBe("");
+      // autobyteus-483 AC-006: the exit code from Claude's "completed (exit code 0)" summary; no end reason.
+      await waitForCondition(() => latestSnapshotOf(harness, running.task_id)?.exit_code === 0, "completed exit code", 15_000);
+      expect(latestSnapshotOf(harness, running.task_id)).toMatchObject({ end_reason: null, exit_code: 0 });
       expect(statusPath(snapshotsOf(harness, running.task_id))).toEqual(["running", "completed"]);
       // REQ-008: only the background task is listed.
       expect(new Set(taskSnapshots(harness).map((snapshot) => snapshot.task_id))).toEqual(new Set([running.task_id]));
@@ -197,6 +204,8 @@ describeLiveClaudeRuntime("Claude runtime background tasks (live E2E)", () => {
       await waitForTaskStatus(harness, running!.task_id, "failed");
       await waitForCondition(() => (latestSnapshotOf(harness, running!.task_id)?.summary ?? null) !== null, "failed summary", 15_000);
       expect(latestSnapshotOf(harness, running!.task_id)?.summary).toMatch(/exit code 3/u);
+      // autobyteus-483 AC-006: the exit code is a field; a failure has no end reason.
+      expect(latestSnapshotOf(harness, running!.task_id)).toMatchObject({ end_reason: null, exit_code: 3 });
       // REQ-002: the failed entry keeps the command of its Bash call.
       expect(latestSnapshotOf(harness, running!.task_id)?.command ?? "").toMatch(/sleep 3; echo failing; exit 3/u);
       expect(statusPath(snapshotsOf(harness, running!.task_id))).toEqual(["running", "failed"]);
@@ -259,6 +268,8 @@ describeLiveClaudeRuntime("Claude runtime background tasks (live E2E)", () => {
       expect(result.accepted).toBe(true);
       await waitForTaskStatus(harness, running!.task_id, "stopped", 5_000);
       expect(statusPath(snapshotsOf(harness, running!.task_id))).toEqual(["running", "stopped"]);
+      // autobyteus-483 AC-007: a task the run's end stopped says so.
+      expect(latestSnapshotOf(harness, running!.task_id)).toMatchObject({ status: "stopped", end_reason: "run_ended", exit_code: null });
       // REQ-002: the command survives the turn-level Stop and the terminate.
       expect(latestSnapshotOf(harness, running!.task_id)?.command ?? "").toContain(`echo ${marker}`);
       // The interrupted foreground command never became an entry.
@@ -286,6 +297,8 @@ describeLiveClaudeRuntime("Claude runtime background tasks (live E2E)", () => {
       process.kill(pids[0]!, "SIGKILL");
       await waitForTaskStatus(harness, running!.task_id, "stopped", 20_000);
       expect(statusPath(snapshotsOf(harness, running!.task_id))).toEqual(["running", "stopped"]);
+      // autobyteus-483 AC-007: the Claude process ended, so its task ended with the run's process.
+      expect(latestSnapshotOf(harness, running!.task_id)).toMatchObject({ status: "stopped", end_reason: "run_ended", exit_code: null });
       expect(latestSnapshotOf(harness, running!.task_id)?.command ?? "").toContain(`echo ${marker}`);
     },
     LIVE_CLAUDE_TURN_TIMEOUT_MS,

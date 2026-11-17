@@ -9,6 +9,7 @@ test("each runtime kind has its full name (autobyteus-320, AC-005)", () => {
     claude_agent_sdk: "Claude Agent SDK",
     antigravity_cli: "Antigravity CLI",
     grok_build: "Grok Build",
+    deepseek_harness: "DeepSeek Harness",
   });
   for (const [kind, name] of Object.entries(AGENT_RUNTIME_NAMES)) assert.equal(agentRuntimeName(kind), name);
   assert.ok(Object.isFrozen(AGENT_RUNTIME_NAMES));

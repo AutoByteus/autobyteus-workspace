@@ -1,7 +1,8 @@
 /**
- * autobyteus-285 D2 (REQ-001, AC-001): at shutdown the busy runs held by a root are recorded with their place and
- * version; idle runs and runs without a root are not. The recorder writes only with entries, merges with a record not
- * yet consumed, never deletes, and never throws. Temporary data root only.
+ * autobyteus-448 DS-001 (REQ-001, REQ-004): the recorder keeps the live list of runs held by a root that are mid-turn
+ * or have a running background task, rewriting `busy-runs.json` only on change (removing it when empty); nothing is
+ * written before `startSession()`; at a graceful stop the final list (Codex idle runs through their background-task
+ * view, bounded) is written with `shutdownAt`. It never throws. Temporary data root only; short check interval.
  */
 import fs from "node:fs/promises";
 import os from "node:os";
@@ -13,17 +14,37 @@ import type { RootExecutionIdentity } from "../../../src/agent-collaboration/exe
 
 let appDataDir: string;
 let recordPath: string;
+const recorders: BusyRunRecorder[] = [];
 const standalone = (rootRunId: string): RootExecutionIdentity => ({ rootSubjectKind: "agent", rootRunId });
 const team = (rootRunId: string): RootExecutionIdentity => ({ rootSubjectKind: "agent_team", rootRunId });
 
-/** Live runs by id with a status; `places` says which root holds each (absent: no root). */
-const harness = (runs: Record<string, string>, places: Record<string, { root: RootExecutionIdentity; place: "host" | "member" }>) => ({
+type Run = { status: string; background?: boolean; inspect?: () => Promise<unknown> };
+
+/** Live runs by id; `places` says which root holds each (absent: no root). Mutable between checks. */
+const harness = (runs: Record<string, Run>, places: Record<string, { root: RootExecutionIdentity; place: "host" | "member" }>) => ({
   liveRuns: {
     listActiveRuns: () => Object.keys(runs),
-    getActiveRun: (id: string) => (runs[id] ? { getStatusSnapshot: () => ({ status: runs[id] }) } : null) as never,
+    getActiveRun: (id: string) => (runs[id] ? {
+      getStatusSnapshot: () => ({ status: runs[id]!.status }),
+      hasRunningBackgroundTasks: () => runs[id]!.background === true,
+      inspectBackgroundTasks: runs[id]!.inspect ?? (async () => ({ kind: "event-stream", agentRunId: id })),
+    } : null) as never,
   },
   roots: { placeOf: (id: string) => places[id] ?? null },
 });
+
+let clock = 0;
+const recorder = (h: ReturnType<typeof harness>, extra: Partial<ConstructorParameters<typeof BusyRunRecorder>[0]> = {}) => {
+  const created = new BusyRunRecorder({ ...h, recordPath, version: () => "1.0.0", intervalMs: 10,
+    now: () => new Date(Date.UTC(2026, 10, 17, 10, 0, clock++)), ...extra });
+  recorders.push(created);
+  return created;
+};
+const read = async () => {
+  const result = await readBusyRunRecord(recordPath);
+  return result.kind === "present" ? result.record : result.kind;
+};
+const pause = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 beforeEach(async () => {
   appDataDir = await fs.mkdtemp(path.join(os.tmpdir(), "busy-run-recorder-"));
@@ -31,62 +52,115 @@ beforeEach(async () => {
   vi.spyOn(console, "info").mockImplementation(() => undefined);
   vi.spyOn(console, "warn").mockImplementation(() => undefined);
 });
-afterEach(async () => { vi.restoreAllMocks(); await fs.rm(appDataDir, { recursive: true, force: true }); });
+afterEach(async () => {
+  for (const created of recorders.splice(0)) await created.record();
+  vi.restoreAllMocks();
+  await fs.rm(appDataDir, { recursive: true, force: true });
+});
 
-describe("BusyRunRecorder", () => {
-  it("AC-001: records exactly the busy runs a root holds, with place, status and this release", async () => {
+describe("BusyRunRecorder: the live session", () => {
+  it("AC-001/AC-003: records the runs a root holds that are mid-turn or idle with a background task, nothing else", async () => {
     const h = harness(
-      { host: "running", child: "initializing", member: "running", idle: "idle", offline: "offline", app: "running" },
-      {
-        host: { root: standalone("host"), place: "host" },
-        child: { root: standalone("child"), place: "host" },
-        member: { root: team("team-1"), place: "member" },
-        idle: { root: team("team-1"), place: "member" },
-        offline: { root: standalone("off"), place: "host" },
-      },
+      { host: { status: "running" }, child: { status: "initializing", background: true }, waiting: { status: "idle", background: true },
+        idle: { status: "idle" }, offline: { status: "offline", background: true }, app: { status: "running" }, member: { status: "running" } },
+      { host: { root: standalone("host"), place: "host" }, child: { root: standalone("child"), place: "host" },
+        waiting: { root: standalone("waiting"), place: "host" }, idle: { root: team("t"), place: "member" },
+        offline: { root: standalone("off"), place: "host" }, member: { root: team("t"), place: "member" } },
     );
-    await new BusyRunRecorder({ ...h, recordPath, version: () => "1.0.0", now: () => new Date("2026-11-01T10:00:00.000Z") }).record();
-
-    const read = await readBusyRunRecord(recordPath);
-    expect(read.kind).toBe("present");
-    expect(read.kind === "present" && read.record.entries).toEqual([
-      { root: standalone("host"), agentRunId: "host", place: "host", status: "running", recordedAt: "2026-11-01T10:00:00.000Z", version: "1.0.0" },
-      { root: standalone("child"), agentRunId: "child", place: "host", status: "initializing", recordedAt: "2026-11-01T10:00:00.000Z", version: "1.0.0" },
-      { root: team("team-1"), agentRunId: "member", place: "member", status: "running", recordedAt: "2026-11-01T10:00:00.000Z", version: "1.0.0" },
+    recorder(h).startSession();
+    await vi.waitFor(async () => expect(await read()).not.toBe("missing"));
+    const record = await read();
+    expect(record).toMatchObject({ shutdownAt: null });
+    expect(typeof record !== "string" && record.entries.map((e) => [e.agentRunId, e.place, e.status, e.backgroundTasks, e.version])).toEqual([
+      ["child", "host", "initializing", true, "1.0.0"],
+      ["host", "host", "running", false, "1.0.0"],
+      ["member", "member", "running", false, "1.0.0"],
+      ["waiting", "host", "idle", true, "1.0.0"],
     ]);
   });
 
-  it("with no busy runs writes nothing and never removes a record not yet consumed (AR-005)", async () => {
-    const pending: BusyRunEntry = { root: standalone("r"), agentRunId: "r", place: "host", status: "running", recordedAt: "2026-10-31T10:00:00.000Z", version: "0.9.0" };
-    await writeBusyRunRecord(recordPath, { entries: [pending] });
-    await new BusyRunRecorder({ ...harness({ idle: "idle" }, {}), recordPath, version: () => "1.0.0" }).record();
-    const read = await readBusyRunRecord(recordPath);
-    expect(read.kind === "present" && read.record.entries).toEqual([pending]);
+  it("rewrites only when the list changes (recordedAt is not a change), and removes the record when the list is empty", async () => {
+    const runs: Record<string, Run> = { a: { status: "running" } };
+    const h = harness(runs, { a: { root: standalone("a"), place: "host" }, b: { root: standalone("b"), place: "host" } });
+    recorder(h).startSession();
+    await vi.waitFor(async () => expect(await read()).not.toBe("missing"));
+    const first = await read();
+    await pause(80); // several checks, same list
+    expect(await read()).toEqual(first);
+
+    runs.b = { status: "idle", background: true };
+    await vi.waitFor(async () => {
+      const record = await read();
+      expect(typeof record !== "string" && record.entries.map((e) => e.agentRunId)).toEqual(["a", "b"]);
+    });
+    delete runs.a; delete runs.b;
+    await vi.waitFor(async () => expect(await read()).toBe("missing"));
   });
 
-  it("merges: keeps entries of runs not recorded now (with their own version) and replaces the ones recorded again", async () => {
-    const older = (agentRunId: string): BusyRunEntry => ({ root: standalone(agentRunId), agentRunId, place: "host", status: "running", recordedAt: "2026-10-31T10:00:00.000Z", version: "0.9.0" });
-    await writeBusyRunRecord(recordPath, { entries: [older("kept"), older("again")] });
-    const h = harness({ again: "running" }, { again: { root: standalone("again"), place: "host" } });
-    await new BusyRunRecorder({ ...h, recordPath, version: () => "1.0.0", now: () => new Date("2026-11-01T10:00:00.000Z") }).record();
-    const read = await readBusyRunRecord(recordPath);
-    expect(read.kind === "present" && read.record.entries.map((entry) => [entry.agentRunId, entry.version])).toEqual([["kept", "0.9.0"], ["again", "1.0.0"]]);
+  it("MP-002: writes nothing before startSession(), so a failed start leaves the previous record untouched", async () => {
+    const previous: BusyRunEntry = { root: standalone("r"), agentRunId: "r", place: "host", status: "running", backgroundTasks: false,
+      recordedAt: "2026-11-16T10:00:00.000Z", version: "0.9.0" };
+    await writeBusyRunRecord(recordPath, { entries: [previous], shutdownAt: null });
+    const h = harness({ a: { status: "running" } }, { a: { root: standalone("a"), place: "host" } });
+    await recorder(h).record();
+    expect(await read()).toEqual({ entries: [previous], shutdownAt: null });
+  });
+});
+
+describe("BusyRunRecorder: the graceful stop", () => {
+  it("writes the final list with shutdownAt and stops checking; with nobody to tell it removes the record", async () => {
+    const runs: Record<string, Run> = { a: { status: "running" } };
+    const h = harness(runs, { a: { root: standalone("a"), place: "host" } });
+    const live = recorder(h);
+    live.startSession();
+    await vi.waitFor(async () => expect(await read()).not.toBe("missing"));
+    await live.record();
+    const record = await read();
+    expect(typeof record !== "string" && [record.entries.map((e) => e.agentRunId), Number.isNaN(Date.parse(record.shutdownAt ?? ""))]).toEqual([["a"], false]);
+    delete runs.a;
+    await pause(60);
+    expect(await read()).toEqual(record); // no more checks after record()
+
+    const empty = recorder(harness({ idle: { status: "idle" } }, { idle: { root: standalone("idle"), place: "host" } }));
+    empty.startSession();
+    await empty.record();
+    expect(await read()).toBe("missing");
   });
 
-  it("replaces an invalid record, and logs it", async () => {
-    await fs.mkdir(path.dirname(recordPath), { recursive: true });
-    await fs.writeFile(recordPath, "{ broken");
-    const h = harness({ a: "running" }, { a: { root: standalone("a"), place: "host" } });
-    await new BusyRunRecorder({ ...h, recordPath, version: () => null }).record();
-    const read = await readBusyRunRecord(recordPath);
-    expect(read.kind === "present" && read.record.entries.map((entry) => [entry.agentRunId, entry.version])).toEqual([["a", null]]);
-    expect(console.warn).toHaveBeenCalledWith(expect.stringContaining("previous one was invalid"));
+  it("R-2: the final write waits for a check's write in progress, so shutdownAt is never overwritten", async () => {
+    const runs: Record<string, Run> = Object.fromEntries(Array.from({ length: 200 }, (_, i) => [`r${i}`, { status: "running" }]));
+    const places = Object.fromEntries(Object.keys(runs).map((id) => [id, { root: standalone(id), place: "host" as const }]));
+    const live = recorder(harness(runs, places), { intervalMs: 1 });
+    live.startSession();
+    await vi.waitFor(() => expect((live as unknown as { writing: unknown }).writing).not.toBeNull(), { interval: 1 });
+    await live.record();
+    const record = await read();
+    expect(typeof record !== "string" && record.shutdownAt).toEqual(expect.any(String));
+  });
+
+  it("REQ-004: an idle Codex run is asked through its background-task view at the stop; one that does not answer in time is left out", async () => {
+    const running = { kind: "snapshot", agentRunId: "codex", runInstanceId: "i", observedAt: "t",
+      tasks: [{ taskId: "1", kind: "shell", description: "", command: null, status: "running", exitCode: null, startedAt: "t" }] };
+    const h = harness({
+      codex: { status: "idle", inspect: async () => running },
+      done: { status: "idle", inspect: async () => ({ ...running, tasks: [{ ...running.tasks[0], status: "completed" }] }) },
+      slow: { status: "idle", inspect: () => new Promise((resolve) => setTimeout(() => resolve(running), 5_000)) },
+    }, { codex: { root: standalone("codex"), place: "host" }, done: { root: standalone("done"), place: "host" }, slow: { root: standalone("slow"), place: "host" } });
+    const live = recorder(h, { inspectionBudgetMs: 100 });
+    live.startSession();
+    const started = Date.now();
+    await live.record();
+    expect(Date.now() - started).toBeLessThan(1_000);
+    const record = await read();
+    expect(typeof record !== "string" && record.entries.map((e) => [e.agentRunId, e.status, e.backgroundTasks])).toEqual([["codex", "idle", true]]);
   });
 
   it("never throws: a failing write is logged", async () => {
     await fs.writeFile(path.join(appDataDir, "restart-resume"), "a file where the folder should be");
-    const h = harness({ a: "running" }, { a: { root: standalone("a"), place: "host" } });
-    await expect(new BusyRunRecorder({ ...h, recordPath, version: () => "1.0.0" }).record()).resolves.toBeUndefined();
+    const live = recorder(harness({ a: { status: "running" } }, { a: { root: standalone("a"), place: "host" } }));
+    live.startSession();
+    await pause(40);
+    await expect(live.record()).resolves.toBeUndefined();
     expect(console.warn).toHaveBeenCalledWith(expect.stringContaining("could not be recorded"));
   });
 });

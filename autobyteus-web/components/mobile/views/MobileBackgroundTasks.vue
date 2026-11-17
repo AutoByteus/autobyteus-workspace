@@ -28,6 +28,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { useLocalization } from '~/composables/useLocalization';
+import { describeBackgroundTaskEnd } from '~/utils/backgroundTaskEnd';
 import type { BackgroundTaskPanelRow, BackgroundTaskPanelStatus } from '~/types/backgroundTaskView';
 
 /** Rows as the desktop panel shows them (`useBackgroundTaskPanelView`), newest first. */
@@ -59,10 +60,17 @@ const commandOf = (task: BackgroundTaskPanelRow): string | null => {
   return command && command !== titleOf(task) ? command : null;
 };
 
-/** How an ended task ended: the runtime's summary (for example "exit code 1"), or a polled task's exit code. */
+const END_LINE = {
+  time_limit: 'Stopped: it reached its time limit — not a failure of the command',
+  low_memory: 'Stopped: the computer was low on memory',
+  run_ended: 'Stopped: the run ended',
+} as const;
+
+/** How an ended task ended (`describeBackgroundTaskEnd`), else the runtime's summary as it is. */
 const endOf = (task: BackgroundTaskPanelRow): string | null => {
   if (task.status === 'running') return null;
-  if ('exitCode' in task && task.exitCode !== null) return `exit code ${task.exitCode}`;
+  const end = describeBackgroundTaskEnd(task);
+  if (end) return end.kind === 'exit_code' ? `exit code ${end.code}` : END_LINE[end.kind];
   return task.summary?.trim() || null;
 };
 

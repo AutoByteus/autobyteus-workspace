@@ -1,0 +1,945 @@
+{
+  "caseId": "LCL-LONG-NATIVE-BG",
+  "startedAt": "2026-11-17T11:30:17.503Z",
+  "longSeconds": 2100,
+  "model": "gpt-5.4-mini",
+  "firstTurnEnd": "TURN_COMPLETED",
+  "watched": {
+    "pid": 66139,
+    "samples": [
+      {
+        "elapsedS": 5,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": [
+            {
+              "taskId": "66137",
+              "kind": "shell",
+              "description": "bash long-job.sh 2100 native",
+              "command": "bash long-job.sh 2100 native",
+              "status": "running",
+              "summary": null,
+              "endReason": null,
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:33.407Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 65,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": [
+            {
+              "taskId": "66137",
+              "kind": "shell",
+              "description": "bash long-job.sh 2100 native",
+              "command": "bash long-job.sh 2100 native",
+              "status": "running",
+              "summary": null,
+              "endReason": null,
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:33.407Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 125,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": [
+            {
+              "taskId": "66137",
+              "kind": "shell",
+              "description": "bash long-job.sh 2100 native",
+              "command": "bash long-job.sh 2100 native",
+              "status": "running",
+              "summary": null,
+              "endReason": null,
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:33.407Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 185,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": [
+            {
+              "taskId": "66137",
+              "kind": "shell",
+              "description": "bash long-job.sh 2100 native",
+              "command": "bash long-job.sh 2100 native",
+              "status": "running",
+              "summary": null,
+              "endReason": null,
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:33.407Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 245,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": [
+            {
+              "taskId": "66137",
+              "kind": "shell",
+              "description": "bash long-job.sh 2100 native",
+              "command": "bash long-job.sh 2100 native",
+              "status": "running",
+              "summary": null,
+              "endReason": null,
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:33.407Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 305,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": [
+            {
+              "taskId": "66137",
+              "kind": "shell",
+              "description": "bash long-job.sh 2100 native",
+              "command": "bash long-job.sh 2100 native",
+              "status": "running",
+              "summary": null,
+              "endReason": null,
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:33.407Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 365,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": [
+            {
+              "taskId": "66137",
+              "kind": "shell",
+              "description": "bash long-job.sh 2100 native",
+              "command": "bash long-job.sh 2100 native",
+              "status": "running",
+              "summary": null,
+              "endReason": null,
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:33.407Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 425,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": [
+            {
+              "taskId": "66137",
+              "kind": "shell",
+              "description": "bash long-job.sh 2100 native",
+              "command": "bash long-job.sh 2100 native",
+              "status": "running",
+              "summary": null,
+              "endReason": null,
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:33.407Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 485,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": [
+            {
+              "taskId": "66137",
+              "kind": "shell",
+              "description": "bash long-job.sh 2100 native",
+              "command": "bash long-job.sh 2100 native",
+              "status": "running",
+              "summary": null,
+              "endReason": null,
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:33.407Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 545,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": [
+            {
+              "taskId": "66137",
+              "kind": "shell",
+              "description": "bash long-job.sh 2100 native",
+              "command": "bash long-job.sh 2100 native",
+              "status": "running",
+              "summary": null,
+              "endReason": null,
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:33.407Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 605,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": [
+            {
+              "taskId": "66137",
+              "kind": "shell",
+              "description": "bash long-job.sh 2100 native",
+              "command": "bash long-job.sh 2100 native",
+              "status": "running",
+              "summary": null,
+              "endReason": null,
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:33.407Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 665,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": [
+            {
+              "taskId": "66137",
+              "kind": "shell",
+              "description": "bash long-job.sh 2100 native",
+              "command": "bash long-job.sh 2100 native",
+              "status": "running",
+              "summary": null,
+              "endReason": null,
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:33.407Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 725,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": [
+            {
+              "taskId": "66137",
+              "kind": "shell",
+              "description": "bash long-job.sh 2100 native",
+              "command": "bash long-job.sh 2100 native",
+              "status": "running",
+              "summary": null,
+              "endReason": null,
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:33.407Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 785,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": [
+            {
+              "taskId": "66137",
+              "kind": "shell",
+              "description": "bash long-job.sh 2100 native",
+              "command": "bash long-job.sh 2100 native",
+              "status": "running",
+              "summary": null,
+              "endReason": null,
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:33.407Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 845,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": [
+            {
+              "taskId": "66137",
+              "kind": "shell",
+              "description": "bash long-job.sh 2100 native",
+              "command": "bash long-job.sh 2100 native",
+              "status": "running",
+              "summary": null,
+              "endReason": null,
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:33.407Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 905,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": [
+            {
+              "taskId": "66137",
+              "kind": "shell",
+              "description": "bash long-job.sh 2100 native",
+              "command": "bash long-job.sh 2100 native",
+              "status": "running",
+              "summary": null,
+              "endReason": null,
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:33.407Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 965,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": [
+            {
+              "taskId": "66137",
+              "kind": "shell",
+              "description": "bash long-job.sh 2100 native",
+              "command": "bash long-job.sh 2100 native",
+              "status": "running",
+              "summary": null,
+              "endReason": null,
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:33.407Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 1025,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": [
+            {
+              "taskId": "66137",
+              "kind": "shell",
+              "description": "bash long-job.sh 2100 native",
+              "command": "bash long-job.sh 2100 native",
+              "status": "running",
+              "summary": null,
+              "endReason": null,
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:33.407Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 1085,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": [
+            {
+              "taskId": "66137",
+              "kind": "shell",
+              "description": "bash long-job.sh 2100 native",
+              "command": "bash long-job.sh 2100 native",
+              "status": "running",
+              "summary": null,
+              "endReason": null,
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:33.407Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 1146,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": [
+            {
+              "taskId": "66137",
+              "kind": "shell",
+              "description": "bash long-job.sh 2100 native",
+              "command": "bash long-job.sh 2100 native",
+              "status": "running",
+              "summary": null,
+              "endReason": null,
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:33.407Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 1206,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": [
+            {
+              "taskId": "66137",
+              "kind": "shell",
+              "description": "bash long-job.sh 2100 native",
+              "command": "bash long-job.sh 2100 native",
+              "status": "running",
+              "summary": null,
+              "endReason": null,
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:33.407Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 1266,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": [
+            {
+              "taskId": "66137",
+              "kind": "shell",
+              "description": "bash long-job.sh 2100 native",
+              "command": "bash long-job.sh 2100 native",
+              "status": "running",
+              "summary": null,
+              "endReason": null,
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:33.407Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 1326,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": [
+            {
+              "taskId": "66137",
+              "kind": "shell",
+              "description": "bash long-job.sh 2100 native",
+              "command": "bash long-job.sh 2100 native",
+              "status": "running",
+              "summary": null,
+              "endReason": null,
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:33.407Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 1386,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": [
+            {
+              "taskId": "66137",
+              "kind": "shell",
+              "description": "bash long-job.sh 2100 native",
+              "command": "bash long-job.sh 2100 native",
+              "status": "running",
+              "summary": null,
+              "endReason": null,
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:33.407Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 1446,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": [
+            {
+              "taskId": "66137",
+              "kind": "shell",
+              "description": "bash long-job.sh 2100 native",
+              "command": "bash long-job.sh 2100 native",
+              "status": "running",
+              "summary": null,
+              "endReason": null,
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:33.407Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 1506,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": [
+            {
+              "taskId": "66137",
+              "kind": "shell",
+              "description": "bash long-job.sh 2100 native",
+              "command": "bash long-job.sh 2100 native",
+              "status": "running",
+              "summary": null,
+              "endReason": null,
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:33.407Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 1566,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": [
+            {
+              "taskId": "66137",
+              "kind": "shell",
+              "description": "bash long-job.sh 2100 native",
+              "command": "bash long-job.sh 2100 native",
+              "status": "running",
+              "summary": null,
+              "endReason": null,
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:33.407Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 1626,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": [
+            {
+              "taskId": "66137",
+              "kind": "shell",
+              "description": "bash long-job.sh 2100 native",
+              "command": "bash long-job.sh 2100 native",
+              "status": "running",
+              "summary": null,
+              "endReason": null,
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:33.407Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 1686,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": [
+            {
+              "taskId": "66137",
+              "kind": "shell",
+              "description": "bash long-job.sh 2100 native",
+              "command": "bash long-job.sh 2100 native",
+              "status": "running",
+              "summary": null,
+              "endReason": null,
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:33.407Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 1746,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": [
+            {
+              "taskId": "66137",
+              "kind": "shell",
+              "description": "bash long-job.sh 2100 native",
+              "command": "bash long-job.sh 2100 native",
+              "status": "running",
+              "summary": null,
+              "endReason": null,
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:33.407Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 1806,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": [
+            {
+              "taskId": "66137",
+              "kind": "shell",
+              "description": "bash long-job.sh 2100 native",
+              "command": "bash long-job.sh 2100 native",
+              "status": "running",
+              "summary": null,
+              "endReason": null,
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:33.407Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 1866,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": [
+            {
+              "taskId": "66137",
+              "kind": "shell",
+              "description": "bash long-job.sh 2100 native",
+              "command": "bash long-job.sh 2100 native",
+              "status": "running",
+              "summary": null,
+              "endReason": null,
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:33.407Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 1926,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": [
+            {
+              "taskId": "66137",
+              "kind": "shell",
+              "description": "bash long-job.sh 2100 native",
+              "command": "bash long-job.sh 2100 native",
+              "status": "running",
+              "summary": null,
+              "endReason": null,
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:33.407Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 1986,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": [
+            {
+              "taskId": "66137",
+              "kind": "shell",
+              "description": "bash long-job.sh 2100 native",
+              "command": "bash long-job.sh 2100 native",
+              "status": "running",
+              "summary": null,
+              "endReason": null,
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:33.407Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 2046,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": [
+            {
+              "taskId": "66137",
+              "kind": "shell",
+              "description": "bash long-job.sh 2100 native",
+              "command": "bash long-job.sh 2100 native",
+              "status": "running",
+              "summary": null,
+              "endReason": null,
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:33.407Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 2106,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": [
+            {
+              "taskId": "66137",
+              "kind": "shell",
+              "description": "bash long-job.sh 2100 native",
+              "command": "bash long-job.sh 2100 native",
+              "status": "running",
+              "summary": null,
+              "endReason": null,
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:33.407Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 2166,
+        "pidAlive": false,
+        "done": "native finished after 2103s",
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": [
+            {
+              "taskId": "66137",
+              "kind": "shell",
+              "description": "bash long-job.sh 2100 native",
+              "command": "bash long-job.sh 2100 native",
+              "status": "completed",
+              "summary": null,
+              "endReason": null,
+              "exitCode": 0,
+              "startedAt": "2026-11-17T11:30:33.407Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 2171,
+        "pidAlive": false,
+        "done": "native finished after 2103s",
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": [
+            {
+              "taskId": "66137",
+              "kind": "shell",
+              "description": "bash long-job.sh 2100 native",
+              "command": "bash long-job.sh 2100 native",
+              "status": "completed",
+              "summary": null,
+              "endReason": null,
+              "exitCode": 0,
+              "startedAt": "2026-11-17T11:30:33.407Z"
+            }
+          ]
+        }
+      }
+    ],
+    "aliveAfter30Min": true
+  },
+  "ended": {
+    "at": 2106265,
+    "task_id": "66137",
+    "kind": "shell",
+    "description": "bash long-job.sh 2100 native",
+    "command": "bash long-job.sh 2100 native",
+    "status": "completed",
+    "summary": null,
+    "end_reason": null,
+    "exit_code": 0,
+    "started_at": "2026-11-17T11:30:33.407Z"
+  },
+  "notice": {
+    "sender_id": "system.background_task_notifier",
+    "content": "[Platform notice — background tasks finished]\n\n- pid 66137 `bash long-job.sh 2100 native`: exit code 0 after 35m 3s. Output: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-background-tasks/long_command_native_06d63d9b_0f5d_46b1_a6bc_4ffd_c0bed8f9869745b891fdbc1d6ea81a33/call-1794915033407-66061.log. Last lines:\n    native progress 1562s\n    native progress 1592s\n    native progress 1622s\n    native progress 1652s\n    native progress 1682s\n    native progress 1712s\n    native progress 1742s\n    native progress 1772s\n    native progress 1802s\n    native progress 1832s\n    native progress 1862s\n    native progress 1892s\n    native progress 1922s\n    native progress 1952s\n    native progress 1982s\n    native progress 2013s\n    native progress 2043s\n    native progress 2073s\n    native progress 2103s\n    LONG_JOB_DONE native after 2103s"
+  },
+  "runId": "long_command_native_06d63d9b_0f5d_46b1_a6bc_4ffd_c0bed8f9869745b891fdbc1d6ea81a33",
+  "socketEvents": [],
+  "toolCalls": [
+    {
+      "at": 3282,
+      "type": "TOOL_EXECUTION_STARTED",
+      "tool": "run_bash",
+      "invocation": "call_jXz5behe66SsNG5nN2duuzAO",
+      "args": {
+        "command": "bash long-job.sh 2100 native",
+        "run_in_background": true,
+        "timeout_seconds": 30
+      }
+    },
+    {
+      "at": 3379,
+      "type": "TOOL_EXECUTION_SUCCEEDED",
+      "tool": "run_bash",
+      "invocation": "call_jXz5behe66SsNG5nN2duuzAO",
+      "result": "{\"pid\":66137,\"status\":\"running\",\"effectiveCwd\":\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/long-command-limits-UCsOl4/LCL-LONG-NATIVE-BG-3KVDw0\",\"outputFile\":\"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-background-tasks/long_command_native_06d63d9b_0f5d_46b1_a6bc_4ffd_c0bed8f9869745b891fdbc1d6ea81a33/call-1794915033407-66061.log\"}"
+    }
+  ],
+  "tasks": [
+    {
+      "at": 3379,
+      "task_id": "66137",
+      "kind": "shell",
+      "description": "bash long-job.sh 2100 native",
+      "command": "bash long-job.sh 2100 native",
+      "status": "running",
+      "summary": null,
+      "end_reason": null,
+      "exit_code": null,
+      "started_at": "2026-11-17T11:30:33.407Z"
+    },
+    {
+      "at": 2106265,
+      "task_id": "66137",
+      "kind": "shell",
+      "description": "bash long-job.sh 2100 native",
+      "command": "bash long-job.sh 2100 native",
+      "status": "completed",
+      "summary": null,
+      "end_reason": null,
+      "exit_code": 0,
+      "started_at": "2026-11-17T11:30:33.407Z"
+    }
+  ],
+  "notices": [
+    {
+      "at": 2108331,
+      "sender_id": "system.background_task_notifier",
+      "content": "[Platform notice — background tasks finished]\n\n- pid 66137 `bash long-job.sh 2100 native`: exit code 0 after 35m 3s. Output: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-background-tasks/long_command_native_06d63d9b_0f5d_46b1_a6bc_4ffd_c0bed8f9869745b891fdbc1d6ea81a33/call-1794915033407-66061.log. Last lines:\n    native progress 1562s\n    native progress 1592s\n    native progress 1622s\n    native progress 1652s\n    native progress 1682s\n    native progress 1712s\n    native progress 1742s\n    native progress 1772s\n    native progress 1802s\n    native progress 1832s\n    native progress 1862s\n    native progress 1892s\n    native progress 1922s\n    native progress 1952s\n    native progress 1982s\n    native progress 2013s\n    native progress 2043s\n    native progress 2073s\n    native progress 2103s\n    LONG_JOB_DONE native after 2103s"
+    }
+  ],
+  "turns": [
+    {
+      "at": 93,
+      "type": "TURN_STARTED",
+      "payload": "{\"turn_id\":\"turn_0001\"}"
+    },
+    {
+      "at": 4637,
+      "type": "TURN_COMPLETED",
+      "payload": "{\"turn_id\":\"turn_0001\"}"
+    },
+    {
+      "at": 2108331,
+      "type": "TURN_STARTED",
+      "payload": "{\"turn_id\":\"turn_0002\"}"
+    },
+    {
+      "at": 2111157,
+      "type": "TURN_COMPLETED",
+      "payload": "{\"turn_id\":\"turn_0002\"}"
+    }
+  ],
+  "text": "{\"command\":\"bash long-job.sh 2100 native\",\"run_in_background\":true,\"timeout_seconds\":30}STARTED0",
+  "result": "Pass",
+  "endedAt": "2026-11-17T12:06:41.177Z"
+}

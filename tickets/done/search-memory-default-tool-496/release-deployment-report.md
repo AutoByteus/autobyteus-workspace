@@ -150,12 +150,12 @@ Revert the merge on `personal` (RELEASE.md "Rollback"). No release exists to rol
 
 - Verification complete (from the evidence, or the user's check where needed): `Yes` (from the evidence)
 - Repository finalization complete: `Yes` (`1b23ba29e2` on `origin/personal`)
-- Applicable release/deployment/rollout complete or not required: `Yes` (not required: no release)
-- Applicable safe cleanup complete or not required: `Yes` (see Post-Finalization Cleanup; the step's result is stated in the terminal message)
+- Applicable release/deployment/rollout complete or not required: `Yes` (round 1: not required, no release; superseded by round 2: beta `v1.5.13-beta.8`, completed)
+- Applicable safe cleanup complete or not required: `Yes` (round 1: the ticket worktree and its branches were removed, results above)
 - Unresolved blocker: `None`
-- Successful terminal package eligible for return: `Yes`
-- Terminal package sent to the Solution Designer: sent after the cleanup step; see the terminal message
-- Terminal message/reference: the `send_message_to` message to the Solution Designer after this record commit and the cleanup
+- Successful terminal package eligible for return: `Yes` (once, after round 2)
+- Terminal package sent to the Solution Designer: `Not sent in round 1` (held when the user asked for the beta); the single terminal return follows round 2
+- Terminal message/reference: see "Round 2 Final Status"
 
 ## Final Record
 
@@ -192,6 +192,37 @@ API/E2E's own smoke runs under heavy machine load (load average 49–300) failed
   - registry-order test: 3/3 (`RELEASED` unchanged).
 - `python3 scripts/release_smoke.py` on `daa47dc70e` (machine load average about 60; it did not fall below 40 in a 15-minute wait): claude 3/3 PASS, codex 3/3 PASS, antigravity 2/2 PASS, autobyteus 2/2 PASS, no `other` failure; **grok 0/3 FAIL (429 quota), waived by the user**. The tool's own verdict line reads `FAIL` only because of the three Grok rows. Models: claude `haiku`, codex `gpt-5.6-luna`, grok `grok-4.7` (offered, quota exhausted).
 
-### Tag and rollout
+### Round 2 tag and rollout
 
-(Written after the tag: see the section "Round 2 tag and rollout" below.)
+- Before tagging: the delivery records were committed (`62f3b3a17e`); `origin/personal` was still `9695d310c5` (contained in the release branch); Secret Gate `v1.5.13-beta.7..HEAD` (43 commits): PASS; the untracked `*/dist/` build folders (five, left by installs, `test:integration:prepare` and prebuild) were deleted so the tree was clean.
+- Release commit `3b59ef0be1` (`chore(release): bump workspace release version to 1.5.13-beta.8`; only `autobyteus-web/package.json` 1.5.13-beta.7 → 1.5.13-beta.8) and annotated tag `v1.5.13-beta.8`, made by `bash scripts/desktop-release.sh beta --branch finalize/release-v1.5.13-beta.8 --no-push`. Pushed `9695d310c5..3b59ef0be1` to `origin/personal` (fast-forward), then the tag, at 08:33:30Z.
+- Workflows of the tag (four runs, polled together every two minutes with one `gh run list` call each, so the API limit that stopped the beta.7 watchers was not reached):
+
+| Run | Workflow | Result |
+| --- | --- | --- |
+| 44047761183 | Desktop Release | success (completed by 09:14Z) |
+| 44047761208 | Android APK Release | success |
+| 44047761177 | iOS App Store Connect Release | success (TestFlight upload) |
+| 44047761247 | Server Docker Release | success |
+
+- No job failed, so no rerun and no triage entry in round 2's release run. Apple notarization, which refused beta.7's first attempt, passed.
+- Published artifacts checked against RELEASE.md "Watching The Rollout": **23 assets** on `https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.5.13-beta.8`, `isPrerelease: true`, not a draft:
+  - desktop: macOS ARM64 and x64 (`.dmg`, `.zip`, and their blockmaps: 8), Linux x64 and ARM64 AppImages (2), the Windows `.exe` (1), all at 09:04:19Z;
+  - Android: the signed APK and its `.sha256` (2), 08:39:12Z;
+  - server packages: `autobyteus-server-1.5.13-beta.8-linux-{x64,arm64}` `.tar.gz`, `.json`, `.json.sig` (6), 09:10:45Z to 09:12:27Z;
+  - updater files: `latest.yml`, `latest-mac.yml`, `latest-linux.yml`, `latest-linux-arm64.yml` (4), all at 09:12:29Z.
+  - **Order (AC-005 of autobyteus-412):** every `latest*.yml` (09:12:29Z) is newer than all six `autobyteus-server-*` files (last at 09:12:27Z).
+  - Docker Hub: `autobyteus/autobyteus-server:1.5.13-beta.8` exists for `linux/amd64` and `linux/arm64`; `:beta` has the same digest (`sha256:5b1ff64e6a7d…`); `:latest` was not moved (last updated 2026-11-09).
+  - TestFlight: the iOS run succeeded; its upload is what that workflow publishes (RELEASE.md).
+- Beta notes: the generated notes stand alone. None of the three tickets in the release (496, 507, 508) has a `## What you need to do` section, so no `gh release edit` was needed.
+- Release/publication/deployment result: `Completed`.
+- Deviation from the generic steps: none beyond those listed above. Guide fixes proposed: none. The one improvement worth recording is outside this guide: API/E2E's prevention rule in TESTING.md (the tools a run gets) is what stops the failure class that the smoke check caught.
+
+### Round 2 Final Status
+
+- Verification complete: `Yes`
+- Repository finalization complete: `Yes`; the release commit `3b59ef0be1` is on `origin/personal`, tag `v1.5.13-beta.8`
+- Release complete: `Yes` (beta, all four workflows, 23 assets; Grok waived by the user)
+- Safe cleanup: the release worktree and its local branch are removed after this record's commit is pushed (the result is in the terminal message)
+- Unresolved blocker: `None`
+- Terminal package: sent once, after this record and the cleanup (see the terminal message)

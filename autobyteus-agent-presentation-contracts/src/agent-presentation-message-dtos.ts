@@ -27,8 +27,11 @@ const contextPath = z.object({ path: nonEmptyStringSchema, type: nullableNonEmpt
 /** Runtime-neutral background-task vocabulary; runtime-specific task types are mapped by each server backend. */
 export const backgroundTaskKindSchema = z.enum(["shell", "subagent", "monitor", "workflow", "other"]);
 export const backgroundTaskStatusSchema = z.enum(["running", "completed", "failed", "stopped"]);
+/** Why an ended task ended, when its runtime says so: its time limit, low memory, or the end of its run. */
+export const backgroundTaskEndReasonSchema = z.enum(["time_limit", "low_memory", "run_ended"]);
 export type BackgroundTaskKind = z.infer<typeof backgroundTaskKindSchema>;
 export type BackgroundTaskStatus = z.infer<typeof backgroundTaskStatusSchema>;
+export type BackgroundTaskEndReason = z.infer<typeof backgroundTaskEndReasonSchema>;
 
 /** One model call's TPS as its runtime measured it; null when the call has none (DEC-003). */
 const outputThroughput = z.object({
@@ -106,7 +109,7 @@ export const agentPresentationPayloadSchemas = {
   TOOL_EXECUTION_FAILED: z.object({ ...toolCore, arguments: jsonValueSchema.nullable(), error: nonEmptyStringSchema }).strict(),
   TOOL_EXECUTION_INTERRUPTED: z.object({ ...toolCore, arguments: jsonValueSchema.nullable(), reason: nonEmptyStringSchema }).strict(),
   TOOL_LOG: z.object({ log_entry: z.string(), tool_invocation_id: nonEmptyStringSchema, tool_name: nonEmptyStringSchema, turn_id: turnId }).strict(),
-  BACKGROUND_TASK_UPDATED: z.object({ task_id: nonEmptyStringSchema, kind: backgroundTaskKindSchema, description: z.string(), command: z.string().nullable(), status: backgroundTaskStatusSchema, summary: z.string().nullable(), started_at: nonEmptyStringSchema }).strict(),
+  BACKGROUND_TASK_UPDATED: z.object({ task_id: nonEmptyStringSchema, kind: backgroundTaskKindSchema, description: z.string(), command: z.string().nullable(), status: backgroundTaskStatusSchema, summary: z.string().nullable(), end_reason: backgroundTaskEndReasonSchema.nullable(), exit_code: z.number().int().nullable(), started_at: nonEmptyStringSchema }).strict(),
   SYSTEM_TASK_NOTIFICATION: z.object({ sender: z.union([z.object({ kind: z.literal("system") }).strict(), z.object({ kind: z.literal("execution"), identity: executionIdentity }).strict()]), content: z.string() }).strict(),
   ARTIFACT_PERSISTED: z.object({ artifact_id: nonEmptyStringSchema, path: nonEmptyStringSchema, artifact_type: nonEmptyStringSchema, status: z.literal("available"), description: z.string().nullable(), revision_id: nonEmptyStringSchema, created_at: nonEmptyStringSchema, updated_at: nonEmptyStringSchema }).strict(),
   FILE_CHANGE: z.object({ file_change_id: nonEmptyStringSchema, path: nonEmptyStringSchema, file_type: nonEmptyStringSchema, status: nonEmptyStringSchema, source_tool: nonEmptyStringSchema, source_invocation_id: nullableNonEmptyStringSchema, content: z.string().nullable(), created_at: nonEmptyStringSchema, updated_at: nonEmptyStringSchema }).strict(),

@@ -8,7 +8,7 @@ describe("ClaudeSessionEventConverter", () => {
     const converter = new ClaudeSessionEventConverter("run-claude-converter");
     const params = {
       task_id: "bg-1", kind: "shell", description: "Sleep 20", command: "sleep 20 && exit 3", status: "failed",
-      summary: "exit 3", started_at: "2026-09-29T16:48:20.000Z",
+      summary: "exit 3", end_reason: null, exit_code: 3, started_at: "2026-09-29T16:48:20.000Z",
     };
 
     expect(converter.convert({ method: ClaudeSessionEventName.BACKGROUND_TASK_UPDATED, params })).toEqual([{
