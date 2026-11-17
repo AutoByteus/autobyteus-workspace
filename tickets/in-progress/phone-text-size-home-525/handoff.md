@@ -25,7 +25,7 @@ Unit tests (store both sources, steps, the new menu, the run menu without Text s
 ## Risks and coordination
 
 - RSK-001: a phone screen unclean at Largest → fix sizing; a needed redesign → `Design Impact` to the Solution Designer.
-- RSK-002: autobyteus-522 (`/Users/normy/autobyteus_org/autobyteus-worktrees/phone-settings-every-run-522`, not yet merged) edits `MobileRunMenu.vue`, `MobileRunMenu.textSize.spec.ts`, `localization/messages/*/mobileSettings.ts`, `tests/e2e/mobile-shell-probe.mjs`. Whichever merges second rebases and keeps both changes (design-spec Risks). The PM is informed.
+- RSK-002: autobyteus-522 (`/Users/normy/autobyteus_org/autobyteus-worktrees/phone-settings-every-run-522`, not yet merged) edits `MobileRunMenu.vue`, `MobileRunMenu.textSize.spec.ts`, `localization/messages/*/mobileSettings.ts`, `tests/e2e/mobile-shell-probe.mjs`. Whichever merges second rebases and keeps both changes (design-spec Risks). The PM is informed. PM confirmation 2026-11-17: the 522 team (its SD run `solution_designer_529aaf7328ab4ca5a0ba571f7910cbb3`) has the same rule; on this side, if 522 lands on `personal` first, rebase before merging 525; a conflict that needs a founder decision goes to the PM.
 - Follow-ups: FU-001 (desktop fixed-px labels), not for this ticket.
 
 ## Documents
