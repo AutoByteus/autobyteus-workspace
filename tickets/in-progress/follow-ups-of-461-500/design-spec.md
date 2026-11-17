@@ -169,9 +169,15 @@ Rules:
 | `transientKind` (values unchanged: `task_agent`, `task_team`, `task_team_child`) | `delegatedRunKind` | 16 |
 | `WorkspaceTransientExecutionRow.vue` (and its specs) | `WorkspaceDelegatedRunRow.vue` | 19 |
 
+- **Added at SR-008, from the implementation engineer's sizing (code-only unless stated):**
+  - **N3 also covers** `AssignToExistingCopyInput`, `delegatedCopyOf`, `copyTargetOf`, `notACopyOfThisRun`, the parsed subject `existing_copy` (internal, not a tool-schema value: `task-delegation-tool-input-parsers.ts:8,47,51`), `newCopyFolder`, `projectFolderForNewCopy` (and `project-new-copy-folder.ts`), `serializeCopyInTask`; web `isDelegatedCopyLive` (and `delegatedCopyLiveness.ts`), the badge `'delegated_copy'` (web-only: `runMemberTree.ts:50`, `delegatedLaunchRows.ts:206,220`), the i18n keys `workspace.history.copyTask.*` and `runSettings.delegated.copy`. New names say "delegated run". Clipboard "copy" and `copyTeamRun` / `copyOrgRun` (duplicating a config) are other meanings and stay.
+  - **The public result code** `TASK_COPY_NOT_ASSIGNABLE` (`task-delegation-command.ts:66`) becomes `TASK_DELEGATED_RUN_NOT_ASSIGNABLE` (REQ-002; one release, rule 9).
+  - **Stored fields stay:** `copyAddress` / `copyKind` in the routing-decision log (`model-routing/stores/routing-decision-log.ts:25-26,61-88`; web `types/modelRouting.ts`) are stored names. As with the Task record (D-5), they stay in code and on disk this round, named in the glossary as a known leftover: follow-up FU-500-04.
+  - **The GraphQL argument** `agentRunCollaborationMemberProjection(hostRunId, …)` becomes `runId`: it names the run whose view is asked (web query and codegen follow).
+  - **Kept, with reason:** the org's `TaskExecutionHostIdentity.hostRunId` / `hostKind` (`root-execution-identity.ts:31,147-166`, `agent-org-execution-index.ts`, `agent-org-run.ts`) names the org or team run that contains a member agent: containment within one run, not a run holding runs. It is also a `TaskExecution…` name (D-5). It stays, and the completion check excludes it.
 - **Already gone (FU-010's examples):** `RemoteRunRootEvent`, `LocalChildRootEvent`, `delegateToNewCopy` and `COPY_RUNNING` (0 files). `remoteChildren` / `localChildren` stay: a run's children on a peer or here, one concept with two locations.
 - **To verify by the implementation (lesson 2):** `'transient_execution'` is not persisted in the web's browser storage (expanded-row keys). If it is, rule 10's client-side migration applies, and the change returns to design.
-- **Completion check (AC-001):** `git grep -wE` for every old name above returns only migrations, frozen files, `tickets/` and the schema module's one documented mapping.
+- **Completion check (AC-001):** `git grep -wE` for every old name above returns only migrations, frozen files, `tickets/`, the routing-decision log's stored `copyAddress` / `copyKind`, and `TaskExecutionHostIdentity`.
 
 ## Persisted Data / State Transition Decision (Mandatory)
 
@@ -474,3 +480,56 @@ Each new text follows FR-1 … FR-4. The Code Reviewer checks the list against F
 7. FU-022, FU-023, FU-016 and FU-021 gates.
 8. FU-035 step 0, then branch A or B.
 9. Docs: glossary, collaboration model, module docs, guideline §10 lesson line.
+
+
+---
+
+# Delivery 2 (SR-008): migration order guard, FU-029, FU-033
+
+Requirements: REQ-012 … REQ-015, AC-009 … AC-011. FU-028 is pending the user's word (D-10). FU-032 was dropped (SR-007).
+
+## G-1: The released order is recorded by the release (FU-027 option 1, D-11)
+
+- **The record:** `autobyteus-server-ts/src/app-data-migrations/released-migration-order.json`, a JSON list of migration IDs in registry order. It starts as today's `RELEASED` list (beta.7, 45 IDs).
+- **The writer:**
+  - `autobyteus-server-ts/scripts/record-released-migration-order.ts` (run by `pnpm -C autobyteus-server-ts migrations:record-released`) builds `new AppDataMigrationRegistry()`, as the test does, and writes its IDs in order.
+  - `scripts/desktop-release.sh` `run_release` runs it before `commit_tag_and_push` and passes the file among the committed paths. The tag then holds exactly the order it shipped.
+  - `RELEASE.md` (owned by the Delivery Engineer) gets one line in "Cutting The Release" saying the script does it; there is no hand step.
+- **The test** (`app-data-migration-registry-order.test.ts`, rewritten): it reads the file instead of the hand-kept constant, and checks three things:
+  1. the registry starts with the recorded list, in order;
+  2. every later entry is dated after the newest recorded one;
+  3. later entries are in date order.
+  
+  Checks 2 and 3 already exist. Check 1 now comes from the file.
+- **Rule 12:** the release script runs on the release machine, which has the workspace installed. The new step needs only what the server's unit test already needs to build the registry, and the CI gates don't run it. `pnpm release:test --ref <branch>` (already required by delivery 1's FU-023) covers the changed script.
+- **Removed:** the `RELEASED` constant and its comment.
+- **The runner is unchanged.** Late runs are still handled per migration (guideline §4), as D-1 decided.
+
+## G-2: FU-029, a same-ID repair of `20260521_team_run_history_index_v2`
+
+- At `team-run-history-index-v2-migration.ts:443-451`, an existing row whose ID was not rebuilt from `team_run_metadata.json` is:
+  - **kept exactly** (written back unchanged) when `agent_teams/{teamRunId}/` is a directory, with disposition `SKIPPED` and the message "kept: a team run in the current tree shape";
+  - removed as stale only when the directory is gone, as today.
+- The rows are written the way 461's `addRows` writes raw rows (`delegated-runs-own-runs-v1-app-data-migration.ts:291-313`), so a kept row isn't reshaped.
+- **Same ID:** this fixes installations where the migration is pending or failed. Terminal records stay skipped (guideline §7, "Correcting a released migration"). No new migration.
+- 461's follow-up `…_after_team_run_history_index_v2` stays. It then finds the delegated rows already present and adds nothing (idempotent by its own rule).
+- **Fixture:** released-shape data where `team-run-execution-tree-v1` ran (team folders with `team_run_execution_tree.json`, no metadata file) and the index migration runs late. It contains:
+  - a user-started team;
+  - a delegated team;
+  - a row whose folder is deleted.
+
+  Expected: the first two rows are kept byte-equal, the third is removed, and a second start changes nothing.
+
+## G-3: FU-033, the probe's data
+
+`autobyteus-web/tests/e2e/skill-improvement-removal-cases.mjs` SIR-002 names `helper_run_5555` in an improvement session, the same way the server fixture does (`skill-improvement-data-fixtures.ts`). Its expectation (deleted) then matches the migration's rule. The migration is unchanged.
+
+## G-4: FU-028
+
+If the user agrees (D-10): no change, and the follow-up is closed with his word. If he doesn't, the design returns to him with the only real option: a migration that strips an ignored field from every stored launch.
+
+## Delivery 2 classification
+
+- **Size:** `Small` (a test, a release script step, one same-ID repair, one probe fixture).
+- **Risk:** `High`, because the change corrects a released migration that touches user history rows.
+- **Combined package (delivery 1 + 2):** `Large` / `High`.

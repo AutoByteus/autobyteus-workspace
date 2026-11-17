@@ -56,3 +56,24 @@ Authorities read for design: `references/architecture-design.md`, `references/de
   - The whole file: 7 of 14 still failed, on the per-test `{ timeout: 15000 }`. "emits move/rename event" failed with `expected [ 'move', 'rename' ] to include 'delete'`: the rename arrived as a delete first (`file-system-watcher.integration.test.ts:270-272`).
 - **What is established:** latency under contention exceeds the tests' fixed deadlines, and batching splits a rename. No lost event was shown, but the run with long waits was cut short by the per-test timeout, so not every case was seen to arrive. The fix proves the rest (design, "FU-021").
 - **Readiness is awaited before acting:** `file-explorer.ts:382-383` (`waitUntilReady`, chokidar `ready`). The batch window is 250 ms (`event-batcher.ts:45`).
+
+## Delivery 2 investigation (2026-11-17, by reading)
+
+- **FU-027, the guard:**
+  - `tests/unit/app-data-migrations/app-data-migration-registry-order.test.ts:12-74` already checks the released prefix (a hand-kept `RELEASED` list, as of beta.7) and that later entries are in date order, none dated before the newest released one.
+  - The release commit is made by `scripts/desktop-release.sh` `commit_tag_and_push` (lines 271-280: `git add "$@"`, commit, annotated tag).
+  - The test builds the registry with `new AppDataMigrationRegistry()` and no setup (line 63), so a small server script can do the same.
+- **FU-028:**
+  - `skillAccessMode` appears nowhere in current code outside `src/app-data-migrations` (`git grep`).
+  - `20260706_remove_global_skill_discovery_mode` rewrites only the value `GLOBAL_DISCOVERY` to the target mode and keeps the field (`remove-global-skill-discovery-mode-migration.ts:74-80`).
+  - Released migrations still write the field in their frozen shapes (`team-run-execution-tree-v2-app-data-migration.ts:87`); `delegated-copy-own-file-complete-v1/own-file-completion.ts:56` calls it obsolete.
+  - The 461 evidence shows the late writer's value is `"NONE"`, not `GLOBAL_DISCOVERY`.
+  - So the field is ignored residue everywhere; FU-028's premise ("an earlier migration removes it") does not hold.
+- **FU-029:**
+  - `team-run-history-index-v2-migration.ts:125-170` lists only `agent_teams/<id>/team_run_metadata.json` records.
+  - Lines 443-451 drop every existing row whose ID was not indexed ("no metadata directory was found"), although the folder may exist in the current tree shape (`team_run_execution_tree.json`).
+  - 461's follow-up `20261114_preserved_items_after_team_run_history_index_v2` re-adds only delegated team runs' rows (`delegated-runs-own-runs-v1-app-data-migration.ts:291-313`, the `delegatedFrom` condition).
+- **FU-033:**
+  - `autobyteus-web/tests/e2e/skill-improvement-removal-cases.mjs:214-251` creates `helper_run_5555` with `launchPurpose: 'server_helper'` and expects it deleted.
+  - The migration deletes only helpers named in a session and the improver's runs (461's follow-up row).
+  - The server test names it (`tests/app-data-migrations/remove-skill-improvement-data/remove-skill-improvement-data-migration.test.ts:87,187`, fixture `tests/fixtures/app-data-migrations/skill-improvement-data-fixtures.ts:18`).
