@@ -2,19 +2,19 @@
 
 ## Review Round Meta
 
-- Upstream Requirements Doc: `tickets/in-progress/search-memory-default-tool-496/requirements-doc.md` (SR-001, Approved)
+- Upstream Requirements Doc: `tickets/in-progress/search-memory-default-tool-496/requirements-doc.md` (approval basis SR-001; AC-003 clarified at SR-003, intended behavior unchanged)
 - Upstream Investigation Notes: `tickets/in-progress/search-memory-default-tool-496/investigation-notes.md` (SR-002 evidence update)
 - Upstream Solution Revision Record: `tickets/in-progress/search-memory-default-tool-496/solution-revision-record.md` (SR-001, SR-002)
-- Reviewed Design Spec: `tickets/in-progress/search-memory-default-tool-496/design-spec.md` (SR-002)
+- Reviewed Design Spec: `tickets/in-progress/search-memory-default-tool-496/design-spec.md` (SR-003)
 - Supplemental Task Artifacts Reviewed: `follow-ups.md` (FU-001…FU-003), `handoff-architecture-review.md`
-- Relevant Solution Revision IDs: SR-001 (baseline), SR-002 (evidence-only re-base)
+- Relevant Solution Revision IDs: SR-001 (baseline), SR-002 (evidence-only re-base), SR-003 (resolution of ARCH-REV-001)
 - Architecture Review Revision Record: `tickets/in-progress/search-memory-default-tool-496/architecture-review-revision-record.md`
-- Current Architecture Review Revision ID: `ARCH-REV-001`
-- Current Review Round: 1
-- Trigger: `Architecture Design Complete` (SR-001), then the re-base notice (SR-002) before this round finished. Reviewed against the new base.
-- Prior Review Round Reviewed: N/A
-- Latest Authoritative Round: 1
-- Current-State Evidence Basis: worktree `codex/search-memory-default-tool-496` @ `aed5a0502f`, base `origin/personal` @ `a781007713`. The code citations below were read at that commit.
+- Current Architecture Review Revision ID: `ARCH-REV-002`
+- Current Review Round: 2
+- Trigger: the Solution Designer's revision for re-review (SR-003, `a859387cef`) after ARCH-REV-001 `Fail`
+- Prior Review Round Reviewed: 1 (ARCH-REV-001)
+- Latest Authoritative Round: 2
+- Current-State Evidence Basis: worktree `codex/search-memory-default-tool-496` @ `a859387cef`, base `origin/personal` @ `a781007713` (round 1 evidence at `aed5a0502f`; source code unchanged since). Round 2 rechecked AR-001…AR-004, DS-002, DS-004 and the affected verdict rows.
 
 ## Routing Classification Review
 
@@ -49,8 +49,8 @@
 | BEH-001 | System | Pass | Pass | Pass | Confirmed | — |
 | BEH-002 | Contract | Pass | Pass | Pass | Confirmed | — |
 | BEH-003 | Contract | Pass | Pass | Pass | Confirmed | — |
-| BEH-004 | Contract | Pass | Pass | Fail (AR-002: `coverage` is left undecided) | Confirmed (basis); design correction in AR-002 | AR-002 |
-| BEH-005 | System | Pass | Pass | Fail (AR-001: the switch's config readers are missing) | Confirmed (basis); design correction in AR-001 | AR-001 |
+| BEH-004 | Contract | Pass | Pass | Pass (AR-002 resolved: no counts under own scope) | Confirmed | — |
+| BEH-005 | System | Pass | Pass | Pass (AR-001 resolved: both readers mapped; save keeps the key) | Confirmed | — |
 | BEH-006 | System | Pass | Pass | Pass | Confirmed | — |
 
 ## Supplemental Artifact Coherence Verdict
@@ -99,7 +99,8 @@ Composition and lookups (Principle 16): `Pass`. The native holder is created in 
 | --- | --- | --- | --- | --- | --- |
 | `MemorySearchScope` (`node` / `agentDefinition`) | Pass | Pass | Pass | Low | Pass |
 | `MemorySearch.search(…, { scope })` | Pass | Pass | Pass | Low | Pass |
-| `RuntimeAgentToolExposure.memorySearchScope` | Pass | Pass | Pass | Low | Pass (see AR-004 suggestion) |
+| `RuntimeAgentToolExposure.memorySearchScope` (required) | Pass | Pass | Pass | Low | Pass |
+| `buildRuntimeAgentToolExposure(names, ctx, scope)` | Pass | Pass (decides no scope; AR-004) | Pass | Low | Pass |
 | Store `runKeys: readonly string[] \| "all"`, `nearest({ acceptId })` | Pass | Pass | Pass | Low | Pass |
 | `createBoundSearchMemoryTool(readScope)` | Pass | Pass | Pass | Low | Pass |
 
@@ -112,7 +113,7 @@ Empty indirection check: `Pass`. The holder is state with one writer and one rea
 | Default tool for all runtimes | Pass | Pass | N/A | Pass | Shared exposure rule |
 | Live changes and notice | Pass | Pass | N/A | Pass | autobyteus-324 |
 | Bound native tool | Pass | Pass | N/A | Pass | `get_project_task` pattern |
-| Config boolean | Pass | Fail (only part of the pattern was mapped) | N/A | Fail | AR-001 |
+| Config boolean | Pass | Pass | N/A | Pass | AR-001 resolved: both readers mapped |
 
 ## Subsystem / Capability-Area Allocation Verdict
 
@@ -121,7 +122,7 @@ Empty indirection check: `Pass`. The holder is state with one writer and one rea
 | agent-execution | Pass | Pass | Pass | Pass | — |
 | agent-tools/memory, MCP provider | Pass | Pass | Pass | Pass | — |
 | memory-search, embeddings | Pass | Pass | Pass | Pass | — |
-| agent-definition | Pass | Fail | Pass | Fail | AR-001 |
+| agent-definition | Pass | Pass | Pass | Pass | AR-001 resolved |
 
 ## Reusable Owned Structures Verdict
 
@@ -135,12 +136,9 @@ Empty indirection check: `Pass`. The holder is state with one writer and one rea
 | --- | --- | --- | --- | --- | --- | --- |
 | `RuntimeAgentToolExposure.memorySearchScope` | Pass | Pass | Pass | N/A | Pass | Invariant: `null` exactly when the tool is not exposed |
 | `MemoryRun.agentDefinitionId` | Pass | Pass (moved out of the `AGENT` subject) | Pass | N/A | Pass | — |
-| `AgentDefinition.memorySearchEnabled` | Pass | Pass | Pass | N/A | Pass | Readers incomplete: AR-001 |
+| `AgentDefinition.memorySearchEnabled` | Pass | Pass | Pass | N/A | Pass | Readers mapped (AR-001 resolved) |
 
-Derived consumers of a changed structure, each listed with a decision: `Fail` (AR-001). Two consumers are missing:
-
-- `AgentDefinition` is built from config in `agent-definition-node-reader.ts:33-60` and `application-owned-agent-source.ts:74-97`.
-- `cloneRuntimeExposure` in `agent-tool-mcp-session-registry.ts:126-138` copies the exposure into the MCP session, field by field.
+Derived consumers of a changed structure, each listed with a decision: `Pass`. SR-003 adds the two definition readers, `cloneRuntimeExposure`, the save path (`cloneAgent`), `createAgentDefinition` and the two placeholders, each with a decision (AR-001 resolved).
 
 One meaning per word, one name per concept (Principle 15): `Pass`. `MemorySearchScope` is always qualified. `memorySearchEnabled` parallels `semanticMemoryEnabled`. The glossary sentence is planned.
 
@@ -149,8 +147,9 @@ One meaning per word, one name per concept (Principle 15): `Pass`. `MemorySearch
 | File | Responsibility Is Singular And Clear? | Responsibility Matches The Intended Owner/Boundary? | Responsibilities Were Re-Tightened After Shared-Structure Extraction? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
 | The listed files (exposure, native, tools, memory-search, embeddings, GraphQL, template) | Pass | Pass | N/A | Pass | — |
-| Agent-definition files | Pass | Pass | N/A | Fail | Mapping lists `models.ts` and `agent-definition-config.ts` only; the node reader and the application-owned source are missing (AR-001) |
-| `agent-tool-mcp-session-registry.ts` | — | — | — | Fail | Not mapped; the change scope says the MCP side is "unchanged" (AR-001) |
+| Agent-definition files (model, config, node reader, application-owned source) | Pass | Pass | N/A | Pass | AR-001 resolved |
+| `agent-tool-mcp-session-registry.ts` | Pass | Pass | N/A | Pass | Copies the scope as a frozen copy (AR-001 resolved) |
+| Restore-context and Codex-context placeholders | Pass | Pass | N/A | Pass | Pass `null` scope (AR-004) |
 
 ## Subsystem / Folder / File Placement Verdict
 
@@ -177,7 +176,7 @@ One meaning per word, one name per concept (Principle 15): `Pass`. `MemorySearch
 | Area / Stored Subject | Approved Decision | Representative Reader / Semantic / Invariant Evidence Is Sufficient? | Direct Use, Rebuild, Or Migration Choice Is Proportionate? | Migration Safety Is Complete If Required? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
 | `memory-search.sqlite` `runs.record` | Discard or Rebuild (existing `catchUp`) | Pass (`memory-index-pipeline.ts:104, 271`) | Pass | N/A | Pass | Fail-closed until the rewrite. A rollback build reads the moved field as a missing, nullable value. |
-| `agent-config.json` `memorySearchEnabled` | Directly Usable | Pass (`normalizeAgentConfigRecord` is tolerant; merge keeps unknown keys) | Pass | N/A | Pass | Save and read round-trip depends on AR-001 |
+| `agent-config.json` `memorySearchEnabled` | Directly Usable | Pass (`normalizeAgentConfigRecord` is tolerant; merge keeps unknown keys; `updateAgentDefinition` clones the loaded definition, `agent-definition-service.ts:383`) | Pass | N/A | Pass | Read and save round-trip tested through the node reader |
 
 ## Change / Refactor Safety Verdict
 
@@ -189,7 +188,7 @@ One meaning per word, one name per concept (Principle 15): `Pass`. `MemorySearch
 
 | Topic / Area | Example Was Needed? | Example Is Present And Clear? | Bad / Avoided Shape Is Explained When Helpful? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Scope rule, native narrowing, SQL filter, oracle, description | Yes | Pass | Pass | Pass | See AR-003 on the holder write order |
+| Scope rule, native narrowing, SQL filter, oracle, description | Yes | Pass | Pass | Pass | Holder written before `replaceTools` (AR-003 adopted) |
 
 ## Material Premise Validation
 
@@ -211,72 +210,41 @@ None.
 
 ## Review Decision
 
-`Fail` — Design Impact. The architecture is sound: one scope rule, one filter boundary, and a holder for the native instances that are kept. Two small gaps in the inventory have to be closed in the spec before implementation.
+`Pass`. The behavior basis is confirmed. AR-001 and AR-002 are resolved in the canonical spec, the recommendations AR-003 and AR-004 are adopted, and no new finding arose. The design is ready for implementation.
 
 ## Findings
 
-### AR-001: Design Impact, Medium. The switch's config readers and the MCP session copy are missing from the derived-consumer inventory
+None open. Status of the round-1 findings:
 
-- Protects: REQ-005, AC-006, REQ-006, AC-007. For the MCP session copy, also REQ-002 and AC-001.
-- Scope status: `Within Approved Scope`. Changes approved behavior: `No`.
-- Problem, part 1: `AgentDefinition` is built from `agent-config.json` by naming each field:
-  - `agent-definition-node-reader.ts:60` (`semanticMemoryEnabled: config.semanticMemoryEnabled`), used for package, user and built-in agents, including the Model Router template;
-  - `application-owned-agent-source.ts:97`.
-
-  The constructor option is optional (`models.ts:85`), so leaving these files out raises no type error. The definition then always reads `memorySearchEnabled: true`, the switch never works, and the Model Router keeps the tool. That breaks REQ-005, AC-006, REQ-006 and AC-007.
-- Problem, part 2: the design puts the key in the merge filter list (`agent-definition-config.ts:84`). The next app save of such a definition would then delete `false` from the file, because the loaded definition carries `true`. That breaks AC-006's "saving keeps the field".
-- Problem, part 3: the MCP adapter reads the scope from `session.runtimeExposure` (D3). The session stores a field-by-field copy made by `cloneRuntimeExposure` (`agent-tool-mcp-session-registry.ts:126-138`). The change scope says the MCP side is "unchanged" and does not name this copy.
-  - With the field required (`MemorySearchScope | null`), the typecheck catches the omission.
-  - If the field were ever made optional, the scope would silently drop from the session.
-  - `Object.freeze` is shallow, so the nested scope object stays mutable unless it is copied.
-- Evidence: the cited lines at `aed5a0502f`. This is the project's Design Case 3 ("A Reader Of Derived Data Left Out").
-- Required update:
-  1. Add both definition readers to Change Scope and to the Final File Responsibility Mapping, and add a test that reads a real config folder through the node reader (`false` → no tool; save → key kept).
-  2. Add `cloneRuntimeExposure` as a derived consumer that copies the scope.
-  3. State that `memorySearchScope` is a required field.
-- Proportionate: three rows and one test. No structural change.
-- Recipient: Solution Designer.
-
-### AR-002: Design Impact, Low. `coverage` in a scoped search reports node-wide counts, and the design makes no decision on it
-
-- Protects: REQ-003 ("Everything a scoped search reports is derived only from the covered runs … must not reveal whether any … run exists outside its scope"), QR-001.
-- Scope status: `Within Approved Scope`. Changes approved behavior: `No`.
-- Problem: `coverage` is part of the tool result (DS-002). While indexing, it says "the text index covers X of Y journal files" (`memory-search.ts:125`). While the meaning index is incomplete, it says "The meaning index covers X of Y journal files" (`:143`). Both counts are node-wide. An own-scope agent with 8 files that reads "300 of 416" learns that runs outside its scope exist, and how many. The design lists `coverage` but never says how it is scoped.
-- Required update: record one explicit decision for `coverage` under the agent-definition scope. Two simple options:
-  - keep the state messages but drop the counts for agent-definition scope ("Indexing in progress.");
-  - derive the counts from the covered runs.
-
-  Add a test row to AC-003 or AC-004.
-- Proportionate: one sentence in the design and one small branch in the facade.
-- Recipient: Solution Designer.
-
-### AR-003: Recommendation, non-blocking. Write the native holder before `replaceTools`
-
-- In the DS-004 example, `holder.current = exposure` comes after `replaceTools`. Writing it first costs nothing. A narrowing then applies even to a call that starts during the replace, and a newly added instance never sees `null`. If `replaceTools` throws, the run's holder is already ahead, and that fails closed. See MP-001 for why this is not blocking.
-
-### AR-004: Suggestion, non-blocking. Keep `memorySearchScopeOf` the only scope rule
-
-- `buildRuntimeAgentToolExposure` would also decide "node exactly when the names include the tool". After the change, its only direct callers are the two placeholders with `[]`.
-- Let `resolveRuntimeAgentToolExposure` pass the scope into the builder, or let placeholders get `null`. Then a future names-only caller cannot create a node scope by accident. This is the design's own escalation trigger: "any path that builds a search_memory without a scope".
+- AR-001 (Design Impact): **Resolved**.
+  - Change Scope and the file mapping now name `agent-definition-node-reader.ts:59-60`, `application-owned-agent-source.ts:96-97` and `cloneRuntimeExposure` (a frozen copy of the scope).
+  - `memorySearchScope` is a required field.
+  - The save path is verified: `updateAgentDefinition` clones the loaded definition (`agent-definition-service.ts:383` `cloneAgent(existing)`), so a loaded `false` is written back.
+  - A test through the node reader and a save, plus an application-owned read, is in the guidance.
+- AR-002 (Design Impact): **Resolved**.
+  - Under `agentDefinition` scope, DS-002 states that coverage drops both count sentences. Node scope keeps today's text.
+  - AC-003 gains this as a clarification of REQ-003. That is within REQ-003's own wording, so the approval is unchanged.
+  - Per-scope counts were rejected for a stated reason (the pipeline has no per-run step progress). The reason holds.
+- AR-003 (Recommendation): **Adopted**. DS-004 and the example write the holder before `replaceTools`, which fails closed when the call throws.
+- AR-004 (Suggestion): **Adopted**. The builder takes the scope as a parameter and decides none itself. Placeholders pass `null`, and names that contain `search_memory` with a `null` scope throw. `memorySearchScopeOf` is the only scope rule.
 
 ## Classification
 
-`Design Impact` (AR-001, AR-002).
+N/A (Pass).
 
 ## Recommended Recipient
 
-Solution Designer (`/software_engineering_team/solution_designer`).
+Implementation Engineer (`/software_engineering_team/implementation_engineer`). The Solution Designer receives an informational notification.
 
 ## Residual Risks
 
-- Explicit listing means node scope (DEC-002, FU-001). The agent editor's tool picker will now offer `search_memory` to agents that already have it by default. Ticking it widens that agent's search to the whole node, including private runs. This behavior is preserved and the requirements approved it. Suggest adding this point to FU-001 or FU-002 for the founder.
-- Own-definition scope (DEC-001) means one definition used both in a private context (for example a private team) and elsewhere shares its memory across those uses. This is approved; it is worth one line in the FU-001 conversation.
-- `wordsNotFound` counts the asking run under node scope ("as today") but not under own scope, because the asking run is not covered. This is consistent with REQ-002, REQ-003 and AC-005; the docs should say so.
+- FU-001 now records the addendum: ticking `search_memory` in the editor's tool picker widens an agent to node-wide search, and a definition used in both private and non-private contexts shares its memory. It is marked "not yet sent", so the Solution Designer still has to send it to the founder's channel.
 - ASM-001 stays open and is covered by implementation tests. It fails closed, so its risk is less recall, not a leak.
 - RSK-002: own scope finds nothing until the first `catchUp` after the upgrade. Accepted.
+- `wordsNotFound` counts the asking run under node scope only. This is documented (sequence step 6).
 
 ## Latest Authoritative Result
 
-- Review Decision: `Fail`
-- Material-Premise Gate: `Pass` (MP-001 `Not Reachable`; no finding depends on it)
-- Notes: AR-001 and AR-002 block, and both are small edits to the spec. On re-review, only these rows and DS-002/DS-004 need rechecking.
+- Review Decision: `Pass`
+- Material-Premise Gate: `Pass` (MP-001 `Not Reachable`; with AR-003 adopted it is moot)
+- Notes: implementation follows design-spec.md at SR-003. The test list in "Guidance For Implementation" includes the AR-001 and AR-002 tests.
