@@ -9,14 +9,14 @@ const selection = { runtimeKind: "codex_app_server", llmModelIdentifier: "gpt-6.
 
 describe("autobyteus-508 probe: a released userLaunchSelection's runtimeKind", () => {
   it("team member own edit keeps the selected runtime", () => {
-    const raw = { createdAt: "t", handoffs: [], taskAgent: { address: "/job_application_team", coordinatingRun: { kind: "agent", runId: "ptm_1" } },
-      rootTeam: { address: "/job_application_team", teamDefinitionId: "job-application-team", teamRunId: "jat_1", coordinatorAddress: "/job_application_team/job_application_agent",
+    const raw = { createdAt: "t", handoffs: [], taskAgent: { address: "/support_team", coordinatingRun: { kind: "agent", runId: "ptm_1" } },
+      rootTeam: { address: "/support_team", teamDefinitionId: "support-team", teamRunId: "st_1", coordinatorAddress: "/support_team/coordinator",
         defaultLaunchConfiguration: started("claude_agent_sdk", "sonnet"),
         members: [
-          { address: "/job_application_team/job_application_agent", agentDefinitionId: "a", agentRunId: "a1", platformAgentRunId: null, role: null, description: null, launchConfiguration: started("claude_agent_sdk", "sonnet"), followsTeam: true },
-          { address: "/job_application_team/computer_use_operator", agentDefinitionId: "c", agentRunId: "c1", platformAgentRunId: null, role: null, description: null, launchConfiguration: started("claude_agent_sdk", "sonnet"), followsTeam: true, userLaunchSelection: selection },
+          { address: "/support_team/coordinator", agentDefinitionId: "a", agentRunId: "a1", platformAgentRunId: null, role: null, description: null, launchConfiguration: started("claude_agent_sdk", "sonnet"), followsTeam: true },
+          { address: "/support_team/operator", agentDefinitionId: "c", agentRunId: "c1", platformAgentRunId: null, role: null, description: null, launchConfiguration: started("claude_agent_sdk", "sonnet"), followsTeam: true, userLaunchSelection: selection },
         ] } };
-    const out = convertTeamRunFile("jat_1", raw, scan, "Job Application Team") as any;
+    const out = convertTeamRunFile("st_1", raw, scan, "Support Team") as any;
     const operator = out.payload.rootTeam.members[1].launchConfiguration;
     expect([operator.runtimeKind, operator.llmModelIdentifier]).toEqual(["codex_app_server", "gpt-6.1-terra"]);
   });
