@@ -1,0 +1,21 @@
+# IMP-04 AC-001 in the local macOS arm64 app (IMP-03 build)
+# commit: 365fde4e5b; 2026-11-17T14:45:37Z
+## claude-agent-sdk entries in the built app's server/node_modules:
+server/node_modules/.pnpm/node_modules/@anthropic-ai/claude-agent-sdk
+server/node_modules/.pnpm/@anthropic-ai+claude-agent-sdk@0.3.280_@anthropic-ai+sdk@0.132.1_zod@4.3.6__@modelconte_ba12f93b41fd79b682e6258669c811d4
+server/node_modules/.pnpm/@anthropic-ai+claude-agent-sdk@0.3.280_@anthropic-ai+sdk@0.132.1_zod@4.3.6__@modelconte_ba12f93b41fd79b682e6258669c811d4/node_modules/@anthropic-ai/claude-agent-sdk
+server/node_modules/@anthropic-ai/claude-agent-sdk
+## SDK package present:
+0.3.280
+## sizes (built app vs installed /Applications/AutoByteus.app, same version line):
+1.1G	autobyteus-web/electron-dist/mac-arm64/AutoByteus.app
+1.4G	/Applications/AutoByteus.app
+544M	autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server
+785M	/Applications/AutoByteus.app/Contents/Resources/server
+dmg bytes: 370077925
+## Mach-O files mentioning claude in the built app (none expected):
+autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/@anthropic-ai+sdk@0.132.1_zod@4.3.6/node_modules/@anthropic-ai/sdk/bin/cli
+autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node_modules/.bin/anthropic-ai-sdk
+autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/autobyteus-ts@file+autobyteus-ts_@modelcontextprotocol+sdk@1.32.1_zod@4.3.6__ws@8.22.0/node_modules/autobyteus-ts/node_modules/.bin/anthropic-ai-sdk
+autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/@anthropic-ai+claude-agent-sdk@0.3.280_@anthropic-ai+sdk@0.132.1_zod@4.3.6__@modelconte_ba12f93b41fd79b682e6258669c811d4/node_modules/@anthropic-ai/claude-agent-sdk/node_modules/.bin/anthropic-ai-sdk
+autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.bin/anthropic-ai-sdk

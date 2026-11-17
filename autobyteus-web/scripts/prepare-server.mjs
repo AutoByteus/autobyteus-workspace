@@ -6,6 +6,7 @@ import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { resolveWorkspacePackageRoot } from '../../scripts/workspace-package-roots.mjs'
 import { pruneOnnxruntimeWebDist, validateEmbeddingRuntime } from './onnxruntime-web-packaging.mjs'
+import { pruneClaudeAgentSdkBinaries } from './claude-agent-sdk-binary-packaging.mjs'
 import { resolveNpmBefore } from './lib/npm-before.mjs'
 
 const COLORS = {
@@ -504,6 +505,8 @@ async function stageRuntimeBundle() {
   await pruneNativePrebuilds(path.join(stageDir, 'node_modules', 'node-pty', 'prebuilds'))
   warn('\nPruning onnxruntime-web to its Node build...')
   info(`Removed ${Math.round(await pruneOnnxruntimeWebDist(path.join(stageDir, 'node_modules')) / 1e6)} MB of browser builds`)
+  warn('\nRemoving the Claude Agent SDK\'s platform binaries (Claude runs use the installed claude)...')
+  info(`Removed ${Math.round(await pruneClaudeAgentSdkBinaries(stageDir) / 1e6)} MB of Claude Agent SDK platform binaries`)
 
   await rm(localPackageDir, { recursive: true, force: true })
   await assertNoSymlinks(path.join(stageDir, 'node_modules'))

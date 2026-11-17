@@ -1,0 +1,44 @@
+# IMP-08 build-only release run (RELEASE.md), all five desktop targets
+# command: pnpm release:test --ref codex/bundled-claude-code-514  (gh workflow run release-desktop.yml -f publish_release=false)
+# run: https://github.com/AutoByteus/autobyteus-workspace/actions/runs/44105389247 ; ref codex/bundled-claude-code-514 @ 365fde4e5b; 2026-11-17T15:10:26Z
+conclusion: success
+Resolve Release Metadata: success
+Build Windows x64: success
+Build Linux x64: success
+Build Linux ARM64: success
+Build macOS ARM64: success
+Build macOS Intel x64: success
+Publish GitHub Release: skipped
+## Build Windows x64 (job 134117081320)
+Build Electron Windows x64 | Removed 127 MB of browser builds
+Build Electron Windows x64 | Removed 237 MB of Claude Agent SDK platform binaries
+## Build Linux x64 (job 134117081351)
+Build Electron Linux x64 | Removed 127 MB of onnxruntime-web browser builds
+Build Electron Linux x64 | Removed 234 MB of Claude Agent SDK platform binaries
+Verify Linux x64 packaged server startup | Packaged server startup validation passed for /home/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-web/electr
+## Build Linux ARM64 (job 134117081414)
+Build Electron Linux ARM64 | Removed 127 MB of onnxruntime-web browser builds
+Build Electron Linux ARM64 | Removed 233 MB of Claude Agent SDK platform binaries
+Verify Linux ARM64 packaged server startup | Packaged server startup validation passed for /home/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-web/elec
+## Build macOS ARM64 (job 134117081437)
+Build Electron macOS ARM64 | Removed 127 MB of onnxruntime-web browser builds
+Build Electron macOS ARM64 | Removed 217 MB of Claude Agent SDK platform binaries
+Build Electron macOS ARM64 | [macSign] AutoByteus macOS signing policy completed
+## Build macOS Intel x64 (job 134117082273)
+Build Electron macOS Intel x64 | Removed 127 MB of onnxruntime-web browser builds
+Build Electron macOS Intel x64 | Removed 217 MB of Claude Agent SDK platform binaries
+Build Electron macOS Intel x64 | [macSign] AutoByteus macOS signing policy completed
+
+## Uploaded artifact sizes (zip of each job's upload), this run vs the v1.5.13-beta.8 release run 44047761183:
+run 44105389247:
+  macos-arm64: 788 MB
+  macos-x64: 836 MB
+  windows-x64: 273 MB
+  linux-x64: 338 MB
+  linux-arm64: 330 MB
+run 44047761183:
+  macos-x64: 1024 MB
+  windows-x64: 347 MB
+  macos-arm64: 975 MB
+  linux-arm64: 434 MB
+  linux-x64: 443 MB
