@@ -631,7 +631,9 @@ All three points were checked against the code at `718a359cab`.
   `loadOnDemandModel(identifier): Promise<"not_on_demand" | "loaded" | "unreadable">`
 
   - `not_on_demand`: the identifier is neither custom-endpoint nor host-scoped (the parsing already in `resolveDynamicProvider`, `:66-82`).
-  - `unreadable`: the provider can't be resolved for a host-scoped or custom identifier (its host or endpoint isn't configured); or `ensureProviderModelCatalog` throws; or its LLM source status reports no successful unit (`successfulUnitCount === 0` with `failedUnitCount > 0`, or a failed `state`).
+  - `unreadable`: the provider can't be resolved for a host-scoped or custom identifier (its host or endpoint isn't configured); or `ensureProviderModelCatalog` throws; or its LLM source status reports **any failed unit (`failedUnitCount > 0`) or a failed `state`** (SR-016, ARCH-REV-008 AR-003).
+    - The status counts hosts across the provider (`model-catalog-service.ts:248-256`), while identifiers are host-scoped. So with counts only, one failed host means "this model's host may not have been read", and the start proceeds as today.
+    - Per-host detail would refine it later. That's not needed now.
   - `loaded`: otherwise.
 - **`RunModelSelectionService.storedModelOffer`, for `autobyteus`:**
   1. Within the same `MODEL_LIST_READ_MS` race (`raceDeadline`), call `loadOnDemandModel`. `unreadable` or the deadline means `list_unreadable`.
@@ -640,10 +642,11 @@ All three points were checked against the code at `718a359cab`.
   Static providers (cloud models registered at initialization) take step 2 directly. External runtimes are unchanged.
 - **Unreadable when a local host is down:** the start proceeds as at base and fails there with its own error. A run is never told to change a model that may be fine. This is D-12's rule.
 - **One source for the Settings note:**
-  - `RunModelSelectionService.listOptions` (`run-model-selection-service.ts:143-152`) applies the same step 1 for an `autobyteus` current model before reading the catalog. `unreadable` gives `modelListReadable: false` (an existing field), with the existing unreadable text.
+  - `RunModelSelectionService.listOptions` (`run-model-selection-service.ts:143-152`) applies the same step 1, inside the same `MODEL_LIST_READ_MS` race (ARCH-REV-008 note), for an `autobyteus` current model before reading the catalog. `unreadable` gives `modelListReadable: false` (an existing field), with the existing unreadable text.
   - The web's note (`ExistingRunConfigEditor.vue:405`) shows only when `modelListReadable` is true and `currentModel` is absent. Today it shows on an unreadable list too: a false note, now removed for the root and the members.
 - **Tests:**
   - LM Studio and Ollama: present after a load, the host down, and loaded but missing. Each through both start paths and the options read.
+  - Two Ollama hosts, the model's host down and the other up: `list_unreadable`, the start proceeds, and no Settings note (AR-003).
   - A custom endpoint model.
   - The deadline.
   - API/E2E reruns SCP-E2E-006 after a restart.
