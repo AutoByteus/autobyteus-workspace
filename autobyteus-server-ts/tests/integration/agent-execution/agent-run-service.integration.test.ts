@@ -5,7 +5,7 @@ import { AgentRunProvisioningService } from "../../../src/agent-execution/servic
 import { StandaloneAgentRunLifecycleService } from "../../../src/agent-execution/services/standalone-agent-run-lifecycle-service.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import type { AgentRunMetadata } from "../../../src/run-history/store/agent-run-metadata-types.js";
-import { NO_ELIGIBLE_STANDALONE_RUNS } from "../../helpers/explicit-host-collaborators.js";
+import { NO_ELIGIBLE_STANDALONE_RUNS, OFFERED_STORED_MODELS, OFFERED_STORED_MODEL_OFFER } from "../../helpers/explicit-host-collaborators.js";
 
 // Run history here is an in-memory harness, so the file-backed package readiness index cannot
 // see it. Admission is modelled as granted and observed (as in the lifecycle unit tests).
@@ -128,7 +128,7 @@ const createLifecycleService = (
   agentRunManager: object,
   history: ReturnType<typeof createRunHistoryHarness>,
   workspaces: ReturnType<typeof workspaceManager>,
-) => new StandaloneAgentRunLifecycleService(memoryDir, {
+) => new StandaloneAgentRunLifecycleService(memoryDir, { storedModels: OFFERED_STORED_MODELS,
   agentRunManager: agentRunManager as never,
   metadataService: history.metadataService as never,
   historyCatalogService: history.historyCatalogService as never,

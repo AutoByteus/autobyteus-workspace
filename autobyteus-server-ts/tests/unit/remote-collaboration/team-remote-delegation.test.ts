@@ -42,6 +42,7 @@ import { testActivationManager } from "../../fixtures/agent-run-preparation-fixt
 import { testTaskSide } from "../../helpers/task-side-binding.js";
 import { noDelegations } from "../../helpers/no-delegations.js";
 import { InMemoryTaskExecutionResources } from "../../fixtures/task-execution-resource-fixtures.js";
+import { OFFERED_MODEL_EXECUTION_FACTORY } from "../../helpers/explicit-host-collaborators.js";
 
 /**
  * autobyteus-247 in one process (change sequence steps 2 … 5): a standalone run on node A delegates to a shared
@@ -206,7 +207,7 @@ const buildNodeB = async (network: Network, memoryDir?: string, state: RuntimeSt
   let channelB: RemoteRunChannel | null = null;
   const teamManager = new AgentTeamRunManager({ remoteChannel: () => channelB,
     memoryDir: dir,
-    flatTeamExecutionFactory: new FlatTeamExecutionFactory({ agentRunManager: runtimes as never,
+    flatTeamExecutionFactory: new FlatTeamExecutionFactory({ executionFactory: OFFERED_MODEL_EXECUTION_FACTORY, agentRunManager: runtimes as never,
       activityInspector: { inspect: ({ agentRunId }: { agentRunId: string }) => ({ kind: conversations.has(agentRunId) ? "present" : "none" }) } as never,
       memoryLocator: new AgentRunMemoryLocator({ memoryDir: dir }) }),
     memberExecutionContextBuilder: { build: async ({ teamContext, agentNode, taskCapability }: any) => new MemberExecutionContext({

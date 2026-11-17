@@ -8,6 +8,7 @@ import { StandaloneAgentRunLifecycleService } from "../../../src/agent-execution
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import type { AgentRunMetadata } from "../../../src/run-history/store/agent-run-metadata-types.js";
 import { turnRecords } from "../../agent-work-journal/raw-trace-folder-fixtures.js";
+import { OFFERED_STORED_MODELS } from "../../helpers/explicit-host-collaborators.js";
 
 vi.mock("../../../src/run-history/services/root-run-package-readiness-index.js", () => ({
   RootRunPackageReadinessIndex: class { assertAdmitted = async () => undefined; },
@@ -58,7 +59,7 @@ describe("failed attempts of a switch, with the real recorder and files", () => 
       newPreparation: vi.fn(async () => prepareScript.shift()!()),
       restorePreparation: vi.fn(), platformPreparation: vi.fn(),
     });
-    const service = new StandaloneAgentRunLifecycleService("/unused", {
+    const service = new StandaloneAgentRunLifecycleService("/unused", { storedModels: OFFERED_STORED_MODELS,
       agentRunManager: manager as never,
       metadataService: { readMetadataState: vi.fn(async () => ({ kind: "present" as const, metadata: stored })) } as never,
       historyCatalogService: { recordRunStarted: vi.fn(async (input: AgentRunMetadata & { clearPendingRuntimeSwitch?: boolean }) => {

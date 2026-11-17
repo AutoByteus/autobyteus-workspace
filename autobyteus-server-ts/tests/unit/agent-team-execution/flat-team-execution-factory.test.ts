@@ -6,6 +6,7 @@ import {
 } from "../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import { FlatTeamExecutionFactory } from "../../../src/agent-team-execution/local/flat-team-execution-factory.js";
 import { testAgentNode, testAgentTeamNode } from "../../fixtures/current-team-run-fixtures.js";
+import { OFFERED_MODEL_EXECUTION_FACTORY } from "../../helpers/explicit-host-collaborators.js";
 
 const callbacks = Object.freeze({
   buildMemberExecutionContext: vi.fn(),
@@ -37,7 +38,7 @@ describe("FlatTeamExecutionFactory", () => {
   ])("materializes one Agent-only $kind without a public root aggregate or member activation", async ({ root, ancestors, teamNode }) => {
     const physicalScope = createRootExecutionPhysicalScope({ root, ancestorTeamRunIds: ancestors });
     const prepareNewAgentRun = vi.fn();
-    const prepared = await new FlatTeamExecutionFactory({ agentRunManager: { prepareNewAgentRun } as never }).beginMaterialization({
+    const prepared = await new FlatTeamExecutionFactory({ executionFactory: OFFERED_MODEL_EXECUTION_FACTORY, agentRunManager: { prepareNewAgentRun } as never }).beginMaterialization({
       physicalScope,
       teamNode,
       handoffs: [],
@@ -59,7 +60,7 @@ describe("FlatTeamExecutionFactory", () => {
 
   it("rejects an Org-mounted Team scope that omits its physical TeamRun ancestry", async () => {
     const root = createAgentOrgRootExecutionIdentity("org-root-run");
-    await expect(() => new FlatTeamExecutionFactory().beginMaterialization({
+    await expect(() => new FlatTeamExecutionFactory({ executionFactory: OFFERED_MODEL_EXECUTION_FACTORY }).beginMaterialization({
       physicalScope: createRootExecutionPhysicalScope({ root, ancestorTeamRunIds: [] }),
       teamNode: node("/ReviewTeam", "mounted-team-run"),
       handoffs: [],

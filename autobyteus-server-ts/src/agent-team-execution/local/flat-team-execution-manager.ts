@@ -38,6 +38,7 @@ export class FlatTeamExecutionManager {
       memoryLocator: options.memoryLocator,
       activityInspector: options.activityInspector,
       workspaceManager: options.workspaceManager,
+      executionFactory: options.executionFactory,
       callbacks: options.callbacks,
     };
     this.configured = new ConfiguredAgentExecutionRegistry({

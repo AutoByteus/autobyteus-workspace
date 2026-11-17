@@ -1,3 +1,5 @@
+import type { StoredModelOffer, StoredModelOfferCheck } from "../../src/llm-management/services/run-model-selection-service.js";
+import { ConfiguredAgentExecutionFactory } from "../../src/agent-collaboration/execution/backends/configured-agent-execution-factory.js";
 import type { RemoteRunChannelAccess } from "../../src/agent-collaboration/execution/remote/remote-run-channel.js";
 import type { PeerDiscoveryAccess } from "../../src/agent-collaboration/execution/remote/peer-discovery-channel.js";
 import { runIdentityOf, type TaskExecutionReleaseRequest } from "../../src/agent-collaboration/execution/task/task-execution-resource-port.js";
@@ -46,3 +48,8 @@ export const freshProcessTaskService = (): ProjectTaskService => {
   processTaskService = initializeProjectTaskServiceProcessInstance({ ...NO_RUN_SIDE_TASK_PORTS });
   return processTaskService;
 };
+
+/** G-5: a test whose stored models are all offered (the start proceeds as before the check). */
+export const OFFERED_STORED_MODEL_OFFER = async (): Promise<StoredModelOffer> => "offered";
+export const OFFERED_STORED_MODELS: StoredModelOfferCheck = Object.freeze({ storedModelOffer: OFFERED_STORED_MODEL_OFFER });
+export const OFFERED_MODEL_EXECUTION_FACTORY = new ConfiguredAgentExecutionFactory({ storedModels: OFFERED_STORED_MODELS });

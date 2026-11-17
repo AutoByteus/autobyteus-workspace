@@ -1,4 +1,5 @@
 import type { RunViewStreams } from "../../agent-collaboration/delegation/run-view-stream.js";
+import type { StoredModelOfferCheck } from "../../llm-management/services/run-model-selection-service.js";
 import type { PeerDiscoveryAccess } from "../../agent-collaboration/execution/remote/peer-discovery-channel.js";
 import type { RemoteRunChannelAccess } from "../../agent-collaboration/execution/remote/remote-run-channel.js";
 import type { RunTaskRecords } from "../../agent-collaboration/execution/task/task-execution-resource-port.js";
@@ -45,7 +46,7 @@ export type ApplicationExecutionScopeBuildInput = Readonly<{
   workspaceManager: WorkspaceManager;
   bindingReader: ApplicationPublishedArtifactBindingReader;
   artifactDeliverySink: ApplicationPublishedArtifactDeliverySink;
-  modelSelectionValidator: RunModelSelectionValidator;
+  modelSelectionValidator: RunModelSelectionValidator & StoredModelOfferCheck;
   /** The relationships between runs (the Task entries); an application's team roots read their own (SR-047). */
   delegationIndex: DelegationIndex;
   /** Each run's view stream, from the composition root (SR-062). */

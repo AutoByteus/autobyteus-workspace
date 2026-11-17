@@ -26,6 +26,7 @@
         :locked="locked"
         :runtime-locked="runtimeLocked"
         :locked-models-for="lockedModelsFor"
+        :model-unavailable-for="modelUnavailableFor"
         :read-only="readOnly"
         @toggle="toggle"
         @change="(key, change) => emit('change', key, change)"
@@ -49,8 +50,10 @@ const props = withDefaults(defineProps<{
   locked?: RunSettingFlags
   runtimeLocked?: boolean
   lockedModelsFor?: ((key: string) => readonly ChatModelOption[] | null) | null
+  /** G-5 (REQ-016): whether a member's saved model is no longer offered by its runtime; the card shows the note. */
+  modelUnavailableFor?: ((key: string) => boolean) | null
   readOnly?: boolean
-}>(), { title: '', locked: () => ({}), runtimeLocked: false, lockedModelsFor: null, readOnly: false })
+}>(), { title: '', locked: () => ({}), runtimeLocked: false, lockedModelsFor: null, modelUnavailableFor: null, readOnly: false })
 
 const emit = defineEmits<{
   (event: 'stop', reference: NonNullable<RunMemberDelegatedFacts['stop']>): void

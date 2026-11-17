@@ -1,4 +1,5 @@
 import { createPeerRunOf } from "../../agent-collaboration/execution/remote/peer-runs.js";
+import { ConfiguredAgentExecutionFactory } from "../../agent-collaboration/execution/backends/configured-agent-execution-factory.js";
 import { AgentRunCommandCoordinator } from "../services/agent-run-command-coordinator.js";
 import { DelegatedWorkGuard } from "../../run-history/services/delegated-work-guard.js";
 import { runOwnStatus } from "../../agent-collaboration/execution/task/task-run-control.js";
@@ -204,7 +205,10 @@ export class GeneralProcessRunSupervisor {
       const memoryLocator = new AgentRunMemoryLocator({ memoryDir });
       const activityInspector = new AgentConversationActivityInspector();
       const generalAgentRunManager = agentRunManager;
+      // G-5: every member agent of this host's roots checks its stored model before it starts.
+      const executionFactory = new ConfiguredAgentExecutionFactory({ storedModels: input.modelSelectionValidator });
       const flatTeamExecutionFactory = new FlatTeamExecutionFactory({
+        executionFactory,
         agentRunManager: generalAgentRunManager,
         memoryLocator,
         activityInspector,
@@ -228,6 +232,7 @@ export class GeneralProcessRunSupervisor {
         modelSelectionValidator: input.modelSelectionValidator,
         scopeBuilder: new AgentOrgExecutionScopeBuilder({
           flatTeamExecutionFactory,
+          executionFactory,
           taskRecords: input.taskRecords,
           delegationIndex: input.delegationIndex,
           remoteChannel: input.remoteChannel,
@@ -249,6 +254,7 @@ export class GeneralProcessRunSupervisor {
         agentRunIdentityAllocator,
       });
       const lifecycleService = new StandaloneAgentRunLifecycleService(memoryDir, {
+        storedModels: input.modelSelectionValidator,
         agentRunManager,
         metadataService,
         historyCatalogService,

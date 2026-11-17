@@ -13,7 +13,7 @@ import { DelegationIndex } from "../../../src/agent-collaboration/delegation/del
 import { createAgentRootExecutionIdentity, createCollaborationMemberExecutionIdentity, createTeamRootExecutionIdentity } from "../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import { createCollaborationRootResolver } from "../../../src/compositions/collaboration-root-resolver.js";
 import { InMemoryTaskExecutionResources } from "../../fixtures/task-execution-resource-fixtures.js";
-import { NO_PEER_CHANNEL } from "../../helpers/explicit-host-collaborators.js";
+import { NO_PEER_CHANNEL, OFFERED_MODEL_EXECUTION_FACTORY } from "../../helpers/explicit-host-collaborators.js";
 
 /**
  * autobyteus-461 CR-461-001 (residual), team run: DONE(A) closes the team run's last Task and its stop begins; the
@@ -54,7 +54,7 @@ describe("a closure stop and a follow-up Task delivered while the team run stops
     await tasks.markStarted(run);
     const manager = new AgentTeamRunManager({ remoteChannel: NO_PEER_CHANNEL, delegationIndex: noDelegations(), viewStreams: testViewStreams(), taskRecords: openTaskRecords(),
       memoryDir: "/tmp/closure-stop-during-delivery-team",
-      flatTeamExecutionFactory: new FlatTeamExecutionFactory(),
+      flatTeamExecutionFactory: new FlatTeamExecutionFactory({ executionFactory: OFFERED_MODEL_EXECUTION_FACTORY }),
       memberExecutionContextBuilder: new MemberExecutionContextBuilder({ getDefinitionById: async () => null } as never, NOT_DELEGATED),
       modelSelectionValidator: { validateMany: async () => [], validate: async () => ({ kind: "valid" as const }) } as never,
       activeRootDirectory: new ActiveCollaborationRootDirectory(),

@@ -43,7 +43,7 @@ export type GeneralProcessRunSupervisorInput = Readonly<{
   remoteChannel: RemoteRunChannelAccess;
   /** The host's discovery for the discovery tools (autobyteus-500 FU-011). */
   peerDiscovery: PeerDiscoveryAccess;
-  modelSelectionValidator: RunModelSelectionValidator & Pick<RunModelSelectionService, "listOptions" | "listOptionsMany">;
+  modelSelectionValidator: RunModelSelectionValidator & Pick<RunModelSelectionService, "listOptions" | "listOptionsMany" | "storedModelOffer">;
   /** Neutral Task agent resource port from the host composition, forwarded to every root builder. */
   taskRecords: RunTaskRecords;
   /** The relationships between runs, from the Task entries, built by the composition root (SR-047 step 2). */

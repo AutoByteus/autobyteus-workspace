@@ -25,7 +25,7 @@ import { testAgentNode, testTeamRunConfig } from "../../../fixtures/current-team
 import { observeConfiguredHandles } from "../../agent-org-execution/helpers/task-publication-handles.js";
 import { InMemoryTaskExecutionResources } from "../../../fixtures/task-execution-resource-fixtures.js";
 import { testTaskSide } from "../../../helpers/task-side-binding.js";
-import { NO_PEER_CHANNEL } from "../../../helpers/explicit-host-collaborators.js";
+import { NO_PEER_CHANNEL, OFFERED_MODEL_EXECUTION_FACTORY } from "../../../helpers/explicit-host-collaborators.js";
 
 /** A Team root (`/coordinator`) with a shared catalog of Code Reviewer, Lead, Designer and Product Team. */
 export const ROOT = "team-root-collaborators";
@@ -67,7 +67,7 @@ export const harness = async (options: { runnable?: boolean; withTeammate?: bool
   // The node's Task side: the delegation tree over these records, and the delegation the tool path runs (SR-049).
   const taskSide = testTaskSide(taskExecutionResources);
   const dependencies = {
-    factory: new FlatTeamExecutionFactory(),
+    factory: new FlatTeamExecutionFactory({ executionFactory: OFFERED_MODEL_EXECUTION_FACTORY }),
     memberExecutionContextBuilder: new MemberExecutionContextBuilder({
       getDefinitionById: async (id: string) => (id === "product-team" ? { instructions: "Ship the product UI." } : { instructions: "Root team rules." }),
     } as never, NOT_DELEGATED),

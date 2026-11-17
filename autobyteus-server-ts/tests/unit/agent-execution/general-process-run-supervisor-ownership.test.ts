@@ -27,7 +27,7 @@ import {
   getRunFileChangeService,
   releaseProcessRunFileChangeService,
 } from "../../../src/services/run-file-changes/run-file-change-service.js";
-import { NO_PEER_CHANNEL, OFF_DISCOVERY } from "../../helpers/explicit-host-collaborators.js";
+import { NO_PEER_CHANNEL, OFFERED_MODEL_EXECUTION_FACTORY, OFFERED_STORED_MODEL_OFFER, OFF_DISCOVERY } from "../../helpers/explicit-host-collaborators.js";
 
 /** The RunFileChangeService instance the supervisor wired into run activation (it records FILE_CHANGE events). */
 const wiredRunFileChangeService = (supervisor: GeneralProcessRunSupervisor): unknown => (
@@ -73,7 +73,7 @@ const createSupervisorInput = () => {
     integrationRunAccess: null,
     providerRelayAccess: null,
     runPasses: null,
-    modelSelectionValidator: { validate: vi.fn(), validateMany: vi.fn(), listOptions: vi.fn() },
+    modelSelectionValidator: { validate: vi.fn(), validateMany: vi.fn(), listOptions: vi.fn(), listOptionsMany: vi.fn(), storedModelOffer: OFFERED_STORED_MODEL_OFFER },
     taskRecords: { isOpen: vi.fn(() => true), statusChanged: vi.fn() },
     delegationIndex: noDelegations(), viewStreams: testViewStreams(),
   };
@@ -148,9 +148,9 @@ describe("GeneralProcessRunSupervisor ownership", () => {
     const input = createSupervisorInput();
     const conflictingTeamManager = AgentTeamRunManager.initializeProcessInstance({ delegationIndex: noDelegations(), taskRecords: openTaskRecords(),
       memoryDir: "/tmp/general-process-run-supervisor-conflict",
-      flatTeamExecutionFactory: new FlatTeamExecutionFactory(),
+      flatTeamExecutionFactory: new FlatTeamExecutionFactory({ executionFactory: OFFERED_MODEL_EXECUTION_FACTORY }),
       memberExecutionContextBuilder: new MemberExecutionContextBuilder(input.agentTeamDefinitionService, NOT_DELEGATED),
-      modelSelectionValidator: { validate: vi.fn(), validateMany: vi.fn(), listOptions: vi.fn() },
+      modelSelectionValidator: { validate: vi.fn(), validateMany: vi.fn(), listOptions: vi.fn(), listOptionsMany: vi.fn(), storedModelOffer: OFFERED_STORED_MODEL_OFFER },
     });
     try {
       expect(() => new GeneralProcessRunSupervisor(input)).toThrow("already initialized");

@@ -72,6 +72,7 @@
           :node="cardNode"
           :locked="subject.origin === 'member' ? memberLocked : DELEGATED_LOCKED"
           :locked-models="(subject.origin === 'member' ? lockedModelsFor : delegatedLockedModelsFor)?.(cardNode.key) ?? null"
+          :model-unavailable="subject.origin === 'member' ? modelUnavailableFor?.(cardNode.key) ?? false : false"
           @change="subject.origin === 'member' ? emit('change-member', cardNode!.key, $event) : emit('change-delegated', cardNode!.key, $event)"
         />
         <div v-else class="rounded-xl border border-gray-200 bg-white px-4 py-2 shadow-sm" data-test="existing-run-root-card">
@@ -105,6 +106,7 @@
           :nodes="groupRows"
           :locked="groupNode ? DELEGATED_LOCKED : memberLocked"
           :locked-models-for="groupNode ? delegatedLockedModelsFor : lockedModelsFor"
+          :model-unavailable-for="groupNode ? null : modelUnavailableFor"
           read-only
           @change="(key, change) => groupNode ? emit('change-delegated', key, change) : emit('change-member', key, change)"
         />
@@ -175,6 +177,8 @@ const props = withDefaults(defineProps<{
   rootModelUnavailable?: boolean
   members?: readonly RunMemberNode[]
   lockedModelsFor?: ((key: string) => readonly ChatModelOption[] | null) | null
+  /** G-5 (REQ-016): whether a member's saved model is no longer offered by its runtime; the card shows the note. */
+  modelUnavailableFor?: ((key: string) => boolean) | null
   /** The agent to show, and its group. */
   subject?: SettingsSubject
   /** The group's settings show instead of the subject's. */
@@ -197,7 +201,7 @@ const props = withDefaults(defineProps<{
   saveError?: string | null
   /** The draft chooses another agent runtime than the saved one for the Agent, a member or a delegated copy. */
   runtimeChangePending?: boolean
-}>(), { runtimeChangePending: false, rootLockedModels: null, rootModelUnavailable: false, members: () => [], lockedModelsFor: null,
+}>(), { runtimeChangePending: false, rootLockedModels: null, rootModelUnavailable: false, members: () => [], lockedModelsFor: null, modelUnavailableFor: null,
   subject: () => ({ origin: 'none', subject: null, group: 'root' }), showGroup: false, subjectActive: false, copiesHint: false,
   delegatedLockedModelsFor: null, delegatedNotice: null, unsavedNames: () => [], saveError: null })
 

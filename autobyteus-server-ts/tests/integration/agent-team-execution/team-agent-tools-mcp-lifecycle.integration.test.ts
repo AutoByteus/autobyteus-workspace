@@ -27,7 +27,7 @@ import {
   testMemberExecutionContext,
   testTeamRunConfig,
 } from "../../fixtures/current-team-run-fixtures.js";
-import { NO_PEER_CHANNEL, OFF_DISCOVERY } from "../../helpers/explicit-host-collaborators.js";
+import { NO_PEER_CHANNEL, OFFERED_MODEL_EXECUTION_FACTORY, OFF_DISCOVERY } from "../../helpers/explicit-host-collaborators.js";
 
 const loggingConfig = Object.freeze({
   pinoLogLevel: "silent" as const,
@@ -178,7 +178,7 @@ describe("supported Team Agent Tools MCP lifecycle integration", () => {
 
       let currentCycle = 0;
       let hasNativeConversationActivity = false;
-      const teamExecutionFactory = new FlatTeamExecutionFactory({
+      const teamExecutionFactory = new FlatTeamExecutionFactory({ executionFactory: OFFERED_MODEL_EXECUTION_FACTORY,
         agentRunManager,
         memoryLocator: new AgentRunMemoryLocator({ memoryDir }),
         activityInspector: {

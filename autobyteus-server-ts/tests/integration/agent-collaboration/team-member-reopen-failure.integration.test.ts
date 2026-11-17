@@ -18,6 +18,7 @@ import { AgentRunEventType, type AgentRunEvent } from "../../../src/agent-execut
 import { runtimeSessionReopenFailedResult } from "../../../src/agent-execution/backends/shared/runtime-session-reopen.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { testActivationManager } from "../../fixtures/agent-run-preparation-fixtures.js";
+import { OFFERED_STORED_MODELS } from "../../helpers/explicit-host-collaborators.js";
 
 // autobyteus-324 SR-009 / AC-007: a Team member whose runtime session could not be reopened with its
 // new tools. Its direct input is admitted, then the turn start fails: the member's Team stream gets a
@@ -102,7 +103,7 @@ const createMember = (address: string, behavior: Behavior, publishAgentEvent: (.
     runId, runtimeKind: RuntimeKind.CODEX_APP_SERVER, platformAgentRunId: "thread-1",
     commitPublication: () => run, abort: async () => ({ kind: "aborted" as const }),
   });
-  const handle = new ConfiguredAgentExecutionHandle({
+  const handle = new ConfiguredAgentExecutionHandle({ storedModels: OFFERED_STORED_MODELS,
     identity,
     physicalScope: scope,
     memoryPlacement: runPartPlacement(scope),

@@ -1,4 +1,5 @@
 import { createCredentialProxyHost, type CredentialProxyHost } from "../credential-proxy/credential-proxy-host.js";
+import type { StoredModelOfferCheck } from "../llm-management/services/run-model-selection-service.js";
 import type { RemoteRunChannelAccess } from "../agent-collaboration/execution/remote/remote-run-channel.js";
 import type { PeerDiscoveryAccess } from "../agent-collaboration/execution/remote/peer-discovery-channel.js";
 import type { ProviderRelayAccess } from "../credential-proxy/provider-relays/provider-relay-access.js";
@@ -197,7 +198,7 @@ const createStudioApplicationServices = (input: {
   workspaceManager: WorkspaceManager;
   contextFilePathEnvironment: ContextFilePathEnvironment;
   modelCatalogService: ModelCatalogService;
-  modelSelectionValidator: RunModelSelectionValidator;
+  modelSelectionValidator: RunModelSelectionValidator & StoredModelOfferCheck;
   providerRelayAccess: ProviderRelayAccess;
   runPasses: RunPassRevocation;
   taskSide: TaskSide;

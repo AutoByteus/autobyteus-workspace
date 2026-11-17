@@ -1,3 +1,4 @@
+import type { StoredModelOfferCheck } from "../../../src/llm-management/services/run-model-selection-service.js";
 import { testActivationManager } from "../../fixtures/agent-run-preparation-fixtures.js";
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import { SenderType } from "autobyteus-ts/agent/sender-type.js";
@@ -19,6 +20,7 @@ import {
   MemberCollaborationContext,
   MemberExecutionContext,
 } from "../../../src/agent-collaboration/execution/domain/member-execution-context.js";
+import { OFFERED_STORED_MODELS } from "../../helpers/explicit-host-collaborators.js";
 
 const taskCapability = (root: ReturnType<typeof createTeamRootExecutionIdentity>) => ({
   root,
@@ -31,6 +33,7 @@ const taskCapability = (root: ReturnType<typeof createTeamRootExecutionIdentity>
 const build = (
   kind: "agent_team" | "agent_org", runtimeKind = RuntimeKind.AUTOBYTEUS, mode: "fresh" | "restore" = "fresh",
   assertInputAllowed?: () => void,
+  storedModels: StoredModelOfferCheck = OFFERED_STORED_MODELS,
 ) => {
   const root = kind === "agent_team"
     ? createTeamRootExecutionIdentity("root-run")
@@ -92,7 +95,7 @@ const build = (
   const releaseExactRun = vi.fn(async () => { await localFinish(); return { accepted: true }; });
   const publishAgentEvent = vi.fn();
   const commitPlatformBindingChange = vi.fn();
-  const handle = new ConfiguredAgentExecutionHandle({
+  const handle = new ConfiguredAgentExecutionHandle({ storedModels,
     identity,
     physicalScope: scope,
     memoryPlacement: runPartPlacement(scope),
@@ -161,7 +164,7 @@ describe("ConfiguredAgentExecutionHandle", () => {
   it("rejects identity, physical scope, and sender-bound context mismatches", () => {
     const fixture = build("agent_team");
     const otherRoot = createAgentOrgRootExecutionIdentity("root-run");
-    expect(() => new ConfiguredAgentExecutionHandle({
+    expect(() => new ConfiguredAgentExecutionHandle({ storedModels: OFFERED_STORED_MODELS,
       identity: fixture.identity,
       physicalScope: createRootExecutionPhysicalScope({ root: otherRoot, ancestorTeamRunIds: [] }),
       memoryPlacement: runPartPlacement(fixture.scope),
@@ -312,6 +315,25 @@ describe("member start failure: one step for both input entry points", () => {
     f.fakeRun.subscribeToEvents.mockImplementation(() => { throw Object.assign(new Error("publication failed"), { code: "PUBLICATION_FAILED" }); });
     expect(await f.handle.postMessage(work())).toMatchObject({ accepted: false, code: "AGENT_RUN_ACTIVATION_FAILED",
       message: "PUBLICATION_FAILED: Provider binding committed durably but Agent readiness publication failed: publication failed" });
+  });
+
+  it("G-5 (a, f): a member whose saved model its runtime no longer offers is refused with the readiness card; no runtime starts", async () => {
+    const storedModelOffer = vi.fn(async () => "not_offered" as const);
+    const f = build("agent_team", RuntimeKind.CODEX_APP_SERVER, "fresh", undefined, { storedModelOffer });
+    const result = await f.handle.postMessage(work());
+    expect(result).toMatchObject({ accepted: false });
+    expect(storedModelOffer).toHaveBeenCalledWith(expect.objectContaining({ runtimeKind: RuntimeKind.CODEX_APP_SERVER }));
+    expect(f.prepareNewAgentRun).not.toHaveBeenCalled();
+    expect(f.publishAgentEvent).toHaveBeenCalledWith(f.identity, expect.objectContaining({ kind: "readiness_failure",
+      code: "RUN_MODEL_NOT_OFFERED", message: expect.stringContaining("Worker can't start: its saved model") }));
+  });
+
+  it.each(["offered", "list_unreadable"] as const)("G-5 (c, d): a member whose stored model is %s starts as before", async (answer) => {
+    const f = build("agent_team", RuntimeKind.CODEX_APP_SERVER, "fresh", undefined, { storedModelOffer: async () => answer });
+    f.fakeRun.postUserMessage.mockResolvedValue({ accepted: true });
+    f.fakeRun.reserveUserMessage.mockResolvedValue({ kind: "reserved", commit: vi.fn(async () => ({ accepted: true })), cancel: vi.fn() });
+    await f.handle.postMessage(work()).catch(() => undefined);
+    expect(f.prepareNewAgentRun).toHaveBeenCalled();
   });
 
   it("presents readiness_failure as the member's runtime ERROR card through an explicit adapter branch", () => {

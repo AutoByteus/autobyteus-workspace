@@ -19,7 +19,7 @@ import { TeamRunExecutionTreeStore } from '../../../src/run-history/store/team-r
 
 const SETTINGS = { origin: 'settings', fallbacks: [] };
 import { writeAttachmentSidecars } from '../../fixtures/current-attachment-package-fixtures.js';
-import { NO_PEER_CHANNEL } from "../../helpers/explicit-host-collaborators.js";
+import { NO_PEER_CHANNEL, OFFERED_MODEL_EXECUTION_FACTORY } from "../../helpers/explicit-host-collaborators.js";
 const view = (rows: any[]) => ({ offeredModels: rows,
   findExactCurrent: (id: string) => rows.find((row) => row.model_identifier === id) ?? null });
 
@@ -55,7 +55,7 @@ const harness = async (physicalOutcome = 'committed', readback = 'ok', runtimeKi
   });
   const catalog = { runtimeModelSelectionCatalog: vi.fn(async () => view(['small','equal','large'].map(model_identifier => ({ model_identifier } as any)))) };
   const capacity = { resolveMany: vi.fn(() => ({ small: 128000, equal: 128000, large: 272000 })) };
-  const flatTeamExecutionFactory = new FlatTeamExecutionFactory();
+  const flatTeamExecutionFactory = new FlatTeamExecutionFactory({ executionFactory: OFFERED_MODEL_EXECUTION_FACTORY });
   const memberExecutionContextBuilder = new MemberExecutionContextBuilder({} as any, NOT_DELEGATED);
   const memoryDir = await fs.mkdtemp(path.join(os.tmpdir(), 'model-save-unit-'));
   memoryDirs.push(memoryDir);

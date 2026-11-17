@@ -27,6 +27,7 @@
       :locked="flags"
       :runtime-locked="Boolean(flags.model)"
       :locked-models="lockedModels"
+      :model-unavailable="modelUnavailable"
       :test-suffix="testSuffix"
       @change="emit('change', $event)"
     />
@@ -53,9 +54,11 @@ const props = withDefaults(defineProps<{
   /** The section's locks; a row's own locks replace them. */
   locked: RunSettingFlags
   lockedModels?: readonly ChatModelOption[] | null
+  /** G-5 (REQ-016): the member's saved model is no longer offered by its runtime. */
+  modelUnavailable?: boolean
   testId?: string
   testSuffix?: string
-}>(), { lockedModels: null, testId: 'existing-run-subject-card', testSuffix: 'subject' })
+}>(), { lockedModels: null, modelUnavailable: false, testId: 'existing-run-subject-card', testSuffix: 'subject' })
 
 const emit = defineEmits<{ (event: 'change', change: RunMemberSettingChange): void }>()
 

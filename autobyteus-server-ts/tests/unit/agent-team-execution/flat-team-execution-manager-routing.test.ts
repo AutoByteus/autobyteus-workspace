@@ -13,6 +13,7 @@ import {
   testMemberExecutionContext,
   testTeamRunConfig,
 } from "../../fixtures/current-team-run-fixtures.js";
+import { OFFERED_MODEL_EXECUTION_FACTORY } from "../../helpers/explicit-host-collaborators.js";
 
 const teamRunId = "team-focused-command-1";
 const solutionDesignerAddress = address("/solution_designer");
@@ -97,7 +98,7 @@ const createMixedManager = () => {
       abort: async () => ({ kind: "aborted" as const }),
     };
   });
-  const manager = new FlatTeamExecutionManager(context, {
+  const manager = new FlatTeamExecutionManager(context, { executionFactory: OFFERED_MODEL_EXECUTION_FACTORY,
     agentRunManager: testActivationManager({ newPreparation: prepareNewAgentRun }) as never,
     memoryLocator: {
       getMemoryDir: (_placement: unknown, agentRunId: string) => `/tmp/team-manager-member-interrupt/${agentRunId}`,

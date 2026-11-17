@@ -1,3 +1,4 @@
+import type { StoredModelOfferCheck } from "../../../src/llm-management/services/run-model-selection-service.js";
 import { testActivationManager, testBackendFactory } from "../../fixtures/agent-run-preparation-fixtures.js";
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import { afterEach, describe, expect, it, vi } from "vitest";
@@ -16,7 +17,7 @@ import { configureTokenUsageCapability } from "../../../src/token-usage/provider
 import type { StandaloneRunCommandPort } from "../../../src/agent-execution/services/standalone-run-ports.js";
 import { PreviousRuntimeReleasePendingError } from "../../../src/agent-execution/errors.js";
 import type { RuntimeSwitching } from "../../../src/agent-execution/domain/runtime-switch-memory-port.js";
-import { NO_ELIGIBLE_STANDALONE_RUNS } from "../../helpers/explicit-host-collaborators.js";
+import { NO_ELIGIBLE_STANDALONE_RUNS, OFFERED_STORED_MODELS, OFFERED_STORED_MODEL_OFFER } from "../../helpers/explicit-host-collaborators.js";
 
 vi.mock("../../../src/run-history/services/root-run-package-readiness-index.js", () => ({
   RootRunPackageReadinessIndex: class { assertAdmitted = async () => undefined; },
@@ -87,6 +88,7 @@ const harness = (input: {
   commitRunRuntimeSwitch?: ReturnType<typeof vi.fn>;
   validateModelConfig?: ReturnType<typeof vi.fn>;
   switching?: RuntimeSwitching | null;
+  storedModels?: StoredModelOfferCheck;
 }) => {
   const states = [...input.metadataStates];
   const metadataService = {
@@ -108,6 +110,7 @@ const harness = (input: {
     ensureWorkspaceByRootPath: vi.fn(async () => ({ workspaceId: "workspace-1" })),
   };
   const service = new StandaloneAgentRunLifecycleService("/unused", {
+    storedModels: input.storedModels ?? OFFERED_STORED_MODELS,
     metadataService: metadataService as never,
     agentRunManager: agentRunManager as never,
     historyCatalogService: historyCatalogService as never,
@@ -186,6 +189,7 @@ describe("StandaloneAgentRunLifecycleService", () => {
         workspaceManager: {},
         tokenUsageReadiness: {},
         modelSelectionValidator: { validate: vi.fn(), validateMany: vi.fn() },
+        storedModels: OFFERED_STORED_MODELS,
       };
       if (value === "omitted") delete deps.modelSelectionValidator;
       else deps.modelSelectionValidator = value;
@@ -316,6 +320,25 @@ describe("StandaloneAgentRunLifecycleService", () => {
     });
     expect(current.agentRunManager.newPreparation).not.toHaveBeenCalled();
     expect(restoredCandidate.commitPublication).toHaveBeenCalledOnce();
+  });
+
+  it("G-5 (b): a started run whose saved model its runtime no longer offers is refused at restore; nothing starts", async () => {
+    const started = metadata({ platformAgentRunId: CLAUDE_SESSION_ID, startedAt: "2026-08-17T20:05:00.000Z" });
+    const storedModelOffer = vi.fn(async () => "not_offered" as const);
+    const current = harness({ metadataStates: [{ kind: "present", metadata: started }], restoredCandidate: candidate(), storedModels: { storedModelOffer } });
+    await expect(current.service.activateRunAgent(RUN_ID, HOST)).rejects.toMatchObject({ code: "RUN_MODEL_NOT_OFFERED",
+      message: expect.stringContaining("can't start: its saved model") });
+    expect(storedModelOffer).toHaveBeenCalledWith(expect.objectContaining({ runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK }));
+    const manager = current.agentRunManager as unknown as Record<"platformPreparation" | "restorePreparation", ReturnType<typeof vi.fn>>;
+    expect(manager.platformPreparation).not.toHaveBeenCalled();
+    expect(manager.restorePreparation).not.toHaveBeenCalled();
+  });
+
+  it.each(["offered", "list_unreadable"] as const)("G-5 (c, d): a stored model that is %s restores as before", async (answer) => {
+    const started = metadata({ platformAgentRunId: CLAUDE_SESSION_ID, startedAt: "2026-08-17T20:05:00.000Z" });
+    const current = harness({ metadataStates: [{ kind: "present", metadata: started }], restoredCandidate: candidate(),
+      storedModels: { storedModelOffer: async () => answer } });
+    await expect(current.service.activateRunAgent(RUN_ID, HOST)).resolves.toMatchObject({ run: { runId: RUN_ID } });
   });
 
   it.each([null, RUN_ID])("fails closed for an invalid external provider identity %s", async (platformAgentRunId) => {
@@ -814,6 +837,7 @@ describe("StandaloneAgentRunLifecycleService previous runtime release", () => {
       agentToolMcpRunSessionDeactivator: runSessions,
     });
     const service = new StandaloneAgentRunLifecycleService("/unused", {
+      storedModels: OFFERED_STORED_MODELS,
       agentRunManager: manager,
       metadataService: { readMetadataState: vi.fn(async () => ({ kind: "present", metadata: started })) } as never,
       historyCatalogService: { recordRunStarted: vi.fn(async (target: AgentRunMetadata) => target) } as never,

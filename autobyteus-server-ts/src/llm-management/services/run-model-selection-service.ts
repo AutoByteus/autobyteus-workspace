@@ -1,4 +1,6 @@
 import type { ModelInfo } from "autobyteus-ts/llm/models.js";
+import { AVAILABLE_AGENT_RUNTIMES_STEP_CAPS } from "../../available-agent-runtimes/available-agent-runtimes-service.js";
+import { createReadDeadline, raceDeadline } from "../../runtime-management/read-deadline.js";
 import type { RunModelConfigFieldError } from "../../run-history/domain/run-model-config.js";
 import type { RunModelChoice, RunModelOptions, RunModelSelection, RunModelSelectionContext, RunModelValidationContext } from "../domain/run-model-selection.js";
 import type { ModelCatalogService, RuntimeModelSelectionCatalog } from "./model-catalog-service.js";
@@ -59,12 +61,32 @@ const toChoice = (model: ModelInfo): RunModelChoice => ({
   recommended: (model as ModelInfoWithSelectionPresentation).selection_presentation?.recommended ?? false,
 });
 
+/** Whether a stored model is in its runtime's list now (G-5); `list_unreadable` when the list could not be read in time. */
+export type StoredModelOffer = "offered" | "not_offered" | "list_unreadable";
+export type StoredModelOfferCheck = Pick<RunModelSelectionService, "storedModelOffer">;
+
 export class RunModelSelectionService {
   constructor(
     private readonly catalog: Pick<ModelCatalogService, "runtimeModelSelectionCatalog">,
     private readonly nativeCapacity: Pick<NativeModelCapacityService, "resolveMany"> = new NativeModelCapacityService(),
   ) {
     if (!catalog || typeof catalog.runtimeModelSelectionCatalog !== "function") throw new Error("Model catalog is required.");
+  }
+
+  /**
+   * G-5 (REQ-016): whether a run's stored model is offered by its runtime now, from the runtime's list only (`validate()`
+   * accepts an unchanged current model even when it is gone). The read is bounded by the one-runtime model-list budget
+   * (8 s); the whole read races it, as some catalogs ignore the deadline. A deadline or any read error is
+   * `list_unreadable`, and the start proceeds as before.
+   */
+  async storedModelOffer(input: Readonly<{ runtimeKind: string; llmModelIdentifier: string; workspaceRootPath?: string }>): Promise<StoredModelOffer> {
+    const deadline = createReadDeadline(AVAILABLE_AGENT_RUNTIMES_STEP_CAPS.modelsMs);
+    try {
+      const catalog = await raceDeadline(this.catalog.runtimeModelSelectionCatalog(input.runtimeKind, input.workspaceRootPath, { deadline }), deadline);
+      return catalog.offeredModels.some((model) => model.model_identifier === input.llmModelIdentifier) ? "offered" : "not_offered";
+    } catch {
+      return "list_unreadable";
+    }
   }
 
   async validate(input: SelectionInput): Promise<RunModelSelectionValidationResult> {

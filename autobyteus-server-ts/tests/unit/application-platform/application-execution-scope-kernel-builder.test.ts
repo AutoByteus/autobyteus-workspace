@@ -79,7 +79,7 @@ import type {
 } from "../../../src/agent-tools/mcp/agent-tool-mcp-session-authority.js";
 import { buildApplicationExecutionScopeKernel } from "../../../src/application-platform/execution/application-execution-scope-kernel-builder.js";
 import { noDelegations, openTaskRecords } from "../../helpers/no-delegations.js";
-import { NO_PEER_CHANNEL, OFF_DISCOVERY } from "../../helpers/explicit-host-collaborators.js";
+import { NO_PEER_CHANNEL, OFFERED_STORED_MODEL_OFFER, OFF_DISCOVERY } from "../../helpers/explicit-host-collaborators.js";
 
 const createHarness = (input: {
   beginFailure?: Error;
@@ -147,7 +147,7 @@ const createHarness = (input: {
     workspaceManager: {} as never,
     bindingReader: { getBinding: vi.fn(async () => null) },
     artifactDeliverySink: { accept: vi.fn(async () => undefined) },
-    modelSelectionValidator: { validate: vi.fn(), validateMany: vi.fn() },
+    modelSelectionValidator: { validate: vi.fn(), validateMany: vi.fn(), storedModelOffer: OFFERED_STORED_MODEL_OFFER },
     applicationAgentTools,
     providerRelayAccess: null,
     remoteChannel: NO_PEER_CHANNEL,

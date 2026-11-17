@@ -1,4 +1,6 @@
 import { readRunProjectContext, type RunProjectRoot } from "../../../agent-execution/domain/run-project-context.js";
+import { StoredModelNotOfferedError, storedModelNotOfferedRefusal } from "../../../llm-management/services/run-model-selection-refusal.js";
+import type { StoredModelOfferCheck } from "../../../llm-management/services/run-model-selection-service.js";
 import type { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import { readPlatformInputPreface } from "autobyteus-ts/agent/message/platform-input-preface-metadata.js";
 import type { ApplicationExecutionContext } from "../../../application-orchestration/domain/models.js";
@@ -97,6 +99,8 @@ export class ConfiguredAgentExecutionHandle implements RetainedAgentExecutionCon
     runtimeSwitchMemory?: RuntimeSwitchMemory;
     workspaceManager?: Pick<WorkspaceManager, "ensureWorkspaceByRootPath">;
     assertInputAllowed?: () => void;
+    /** G-5: whether the stored model is still offered, checked before each start. */
+    storedModels: StoredModelOfferCheck;
   }) {
     this.identity = cloneCollaborationMemberExecutionIdentity(options.identity);
     this.physicalScope = createRootExecutionPhysicalScope(options.physicalScope);
@@ -431,11 +435,22 @@ export class ConfiguredAgentExecutionHandle implements RetainedAgentExecutionCon
     try {
       const config = await this.buildAgentRunConfig();
       this.assertInputAllowed();
+      await this.refuseStoredModelNotOffered();
       const begun = this.planner.begin(config, this.platformAgentRunId, this.activationMode, this.execution.pendingRuntimeSwitch);
       this.activationOperation = begun.operation;
       this.switchAttempt = begun.switching;
       return await begun.prepare();
     } finally { this.configurationPreparing = false; }
+  }
+
+  /** G-5 (REQ-016): a member whose saved model its runtime no longer offers is refused before its runtime starts. */
+  private async refuseStoredModelNotOffered(): Promise<void> {
+    const { runtimeKind, llmModelIdentifier } = this.execution;
+    const offer = await this.options.storedModels.storedModelOffer({ runtimeKind, llmModelIdentifier,
+      workspaceRootPath: this.execution.workspaceRootPath ?? undefined });
+    if (offer !== "not_offered") return;
+    const agentName = this.identity.memberAddress.split("/").at(-1) || this.identity.agentRunId;
+    throw new StoredModelNotOfferedError(storedModelNotOfferedRefusal({ agentName, runtimeKind, llmModelIdentifier }).message);
   }
 
   private readonly inputFence = () => this.assertInputAllowed();

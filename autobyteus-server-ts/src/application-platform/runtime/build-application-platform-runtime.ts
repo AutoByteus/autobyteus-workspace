@@ -1,4 +1,5 @@
 import type { RunViewStreams } from "../../agent-collaboration/delegation/run-view-stream.js";
+import type { StoredModelOfferCheck } from "../../llm-management/services/run-model-selection-service.js";
 import type { PeerDiscoveryAccess } from "../../agent-collaboration/execution/remote/peer-discovery-channel.js";
 import type { RemoteRunChannelAccess } from "../../agent-collaboration/execution/remote/remote-run-channel.js";
 import type { RunTaskRecords } from "../../agent-collaboration/execution/task/task-execution-resource-port.js";
@@ -68,7 +69,7 @@ export type ApplicationPlatformBuildInput = Readonly<{
   llmProviderService: LlmProviderService;
   codexClientManager: CodexAppServerClientManager;
   requireCurrentModelIdentifier: (modelIdentifier: string) => Promise<void>;
-  modelSelectionValidator: RunModelSelectionValidator;
+  modelSelectionValidator: RunModelSelectionValidator & StoredModelOfferCheck;
   /** The relationships between runs, from the Task entries (SR-047). */
   delegationIndex: DelegationIndex;
   /** Each run's view stream, from the composition root (SR-062). */

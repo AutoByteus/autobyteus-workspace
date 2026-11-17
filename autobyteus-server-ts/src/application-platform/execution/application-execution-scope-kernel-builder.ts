@@ -1,4 +1,5 @@
 import { AgentConversationActivityInspector } from "../../agent-memory/services/agent-conversation-activity-inspector.js";
+import { ConfiguredAgentExecutionFactory } from "../../agent-collaboration/execution/backends/configured-agent-execution-factory.js";
 import { APPLICATION_HOST_STANDALONE_RUNS } from "../../agent-execution/services/standalone-run-ports.js";
 import { AgentMemoryLocationService } from "../../agent-memory/services/agent-memory-location-service.js";
 import { AgentRunMemoryRecorder } from "../../agent-memory/services/agent-run-memory-recorder.js";
@@ -175,6 +176,8 @@ export const buildApplicationExecutionScopeKernel = (
       viewStreams: input.viewStreams,
       taskRecords: input.taskRecords,
       flatTeamExecutionFactory: new FlatTeamExecutionFactory({
+        // G-5: the scope's member agents check their stored model before they start.
+        executionFactory: new ConfiguredAgentExecutionFactory({ storedModels: input.modelSelectionValidator }),
         agentRunManager,
         memoryLocator,
         activityInspector,
@@ -263,6 +266,7 @@ const buildRunServices = (
   const lifecycleService = new StandaloneAgentRunLifecycleService(
     input.memoryDir,
     {
+      storedModels: input.modelSelectionValidator,
       agentRunManager: kernel.agentRunManager,
       metadataService,
       historyCatalogService,

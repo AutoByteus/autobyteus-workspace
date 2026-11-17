@@ -1,4 +1,5 @@
 import type { AgentRunManager } from "../../../agent-execution/services/agent-run-manager.js";
+import type { ConfiguredAgentExecutionFactory } from "../../../agent-collaboration/execution/backends/configured-agent-execution-factory.js";
 import type { AgentTeamAddress } from "../../../agent-collaboration/domain/agent-team-address.js";
 import type { TeamRunContext } from "../../domain/team-run-context.js";
 import type { FlatTeamExecutionContext, FlatTeamMemberExecutionContext } from "../flat-team-execution-context.js";
@@ -24,6 +25,7 @@ export class ConfiguredAgentExecutionRegistry implements ConfiguredMemberRegistr
     memoryLocator?: AgentRunMemoryLocator;
     activityInspector?: AgentConversationActivityInspector;
     workspaceManager?: Pick<WorkspaceManager, "ensureWorkspaceByRootPath">;
+    executionFactory: ConfiguredAgentExecutionFactory;
     callbacks: FlatTeamExecutionCallbacks;
   }) {}
 
@@ -54,6 +56,7 @@ export class ConfiguredAgentExecutionRegistry implements ConfiguredMemberRegistr
       memoryLocator: this.options.memoryLocator,
       activityInspector: this.options.activityInspector,
       workspaceManager: this.options.workspaceManager,
+      executionFactory: this.options.executionFactory,
       callbacks: this.options.callbacks,
     });
     this.handles.set(context.address, handle);
