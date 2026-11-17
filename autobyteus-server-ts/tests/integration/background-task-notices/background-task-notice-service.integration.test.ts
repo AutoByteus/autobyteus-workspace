@@ -55,7 +55,7 @@ const createWorld = (input: { native?: boolean } = {}) => {
     runtimeKind: context.config.runtimeKind,
     compactionRecovery: { kind: "unsupported" } as const,
     backgroundTaskInspection: { kind: "event-stream" as const, current: () => store.running.map((task) => ({ taskId: String(task.pid), kind: "shell" as const,
-      description: task.command, command: task.command, status: "running" as const, summary: null, startedAt: task.startedAt })) },
+      description: task.command, command: task.command, status: "running" as const, summary: null, endReason: null, exitCode: null, startedAt: task.startedAt })) },
     backgroundTaskNotices: input.native === false ? { kind: "unsupported" } as const : {
       kind: "platform" as const,
       takeUnreportedEnds: () => store.ends.splice(0),

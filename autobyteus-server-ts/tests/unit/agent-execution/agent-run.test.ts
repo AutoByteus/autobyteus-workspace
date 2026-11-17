@@ -74,7 +74,7 @@ const createHarness = (options: {
     getLifecycleSnapshot: () => snapshot,
     // The quiet check counts the running tasks of the runtime's background-task view (autobyteus-448 part 2).
     backgroundTaskInspection: { kind: "event-stream" as const, current: vi.fn(() => (options.runningBackgroundTasks
-      ? [{ taskId: "t1", kind: "shell", description: "build", command: "make", status: "running", summary: null, startedAt: "2026-11-17T10:00:00.000Z" }]
+      ? [{ taskId: "t1", kind: "shell", description: "build", command: "make", status: "running", summary: null, endReason: null, exitCode: null, startedAt: "2026-11-17T10:00:00.000Z" }]
       : []) as never) },
     subscribeToSourceEventBatches: vi.fn().mockImplementation(
       (next: (events: readonly AgentRunEvent[]) => void | Promise<void>) => {
