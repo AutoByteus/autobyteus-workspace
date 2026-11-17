@@ -44,6 +44,15 @@ try {
   await gql('mutation($input:CreateWorkspaceInput!){createWorkspace(input:$input){workspaceId}}', { input: { rootPath: ws } }).catch(() => undefined);
   const run = (await gql('mutation($i:CreateAgentRunInput!){createAgentRun(input:$i){success message runId}}', { i: { agentDefinitionId: def, workspaceRootPath: ws, autoExecuteTools: true, ...agy } })).createAgentRun;
   if (!run.success) throw new Error(`run: ${run.message}`);
+  // A message to the run (round 3), so its conversation has text for the device check (API-08): the run's agent stream,
+  // as a desktop window sends it, with this node's owner credential in the socket URL.
+  if (process.env.SAY) {
+    const ws = new WebSocket(`ws://127.0.0.1:${port}/ws/agent/${run.runId}?access_token=${encodeURIComponent(owner)}`);
+    await new Promise((r, j) => { ws.onopen = r; ws.onerror = () => j(new Error('agent socket')); }); await sleep(400);
+    ws.send(JSON.stringify({ type: 'SEND_MESSAGE', payload: { message_id: crypto.randomUUID(), dedupe_key: `agent_run_input:api525:${crypto.randomUUID()}`, context_file_paths: [], image_urls: [], agent_run_id: run.runId, content: process.env.SAY } }));
+    let seen = false; for (let i = 0; i < 60 && !seen; i++) { await sleep(1000); seen = JSON.stringify(await gql('query($id:String!){getRunProjection(runId:$id){conversation}}', { id: run.runId }).catch(() => ({}))).includes(process.env.SAY.slice(0, 20)); }
+    ws.close(); log(`message to the run: ${seen ? 'in its conversation' : 'NOT seen'}`);
+  }
   const status = await (await fetch(`${base}/rest/remote-access/status`)).json();
   log(`run ${run.runId}; status fields ${Object.keys(status).sort().join(',')}`);
   if ((await rest('PUT', '/remote-access/settings', { phoneAccessEnabled: true })).status !== 200) throw new Error('Phone Access');

@@ -5,9 +5,9 @@
 ## Round
 
 - Coverage investigation (the plan; it lists the upstream documents): `/Users/normy/autobyteus_org/autobyteus-worktrees/phone-text-size-home-525/tickets/in-progress/phone-text-size-home-525/api-e2e-coverage-investigation.md`
-- API/E2E revision record and current revision ID: `api-e2e-revision-record.md`, `API-REV-002`
+- API/E2E revision record and current revision ID: `api-e2e-revision-record.md`, `API-REV-003`
 - Test progress log: `api-e2e-test-progress.md`
-- Round and trigger: round 2; implementation handoff IR-002 (SR-002, DEC-008, code `12ecf1bf29`) after round 1's API-10 Fail and CRR-001 (CR-001, Design Impact). Round 1: IR-001, code `7c7f3d2e79`
+- Round and trigger: **round 3 — merged-base rerun** (delivery DR-001 → IR-003: merge of `origin/personal` `3f19d41aa7` at `65d67674a9`, probe update `6abbcc7bef`, HEAD `9b47cb9ab6`); every case rerun on the merged state (shared foundations changed: `autobyteus-ts`, contract packages; investigation's Round 3 Plan). Round 2: implementation handoff IR-002 (SR-002, DEC-008, code `12ecf1bf29`) after round 1's API-10 Fail and CRR-001 (CR-001, Design Impact). Round 1: IR-001, code `7c7f3d2e79`
 - Prior round reviewed: round 1 (API-REV-001, Fail on API-10). Rerun by impact: only `MobileNodeDesktop.vue` and its spec changed; API-10 rechecked first; API-02…09 still valid (none reaches the VNC Viewer); see the investigation's Round 2 Plan
 - Deviations from the investigation's plan, and why:
   - API-10 added during execution: VNC Viewer was the one REQ-005 screen nobody had seen; reading its bar showed a likely overflow, so it was measured (no node desktop is available to the probe stacks).
@@ -36,9 +36,27 @@
 
 | ENV-7 | round 2: `12ecf1bf29` (HEAD `6bb8049339`) | macOS, Node v22.23.1 | this worktree's server (`autobyteus-server-ts/dist/app.js`, unchanged by the branch) as a node with a node desktop: `AUTOBYTEUS_STARTER_SOCKET` set (non-existent path; the starter client is used only for node updates), viewers bridged to 127.0.0.1:5900 = test-owned container `abtest525-desktop` (`autobyteus/autobyteus-server:beta`, its Xvnc 1920×1080, Xfce; published on loopback only; port 5900 was free, no macOS screen sharing); own launch credential; scripted AGY run "Desktop Helper"; phone bundle rebuilt at `12ecf1bf29` | `scripts/node-525.mjs` |
 | ENV-8 | round 2 | macOS, headless Chrome | host phone on ENV-7 through the 10.0.2.2 proxy, paired with the node's link | 360×800 and 412×800, DPR 2, en-US (and zh-CN for one layout) |
-| ENV-9 | round 2 | Android 15 emulator, own AVD `apie2e525_api35` re-created, `emulator-5650`, WebView Chrome/124.0.6367.219 (font `system-ui` = Roboto) | debug APK of this branch (`API-00-apk-build.log`; no Android change since) | paired with ENV-7; 412 CSS px (density 420) and 360 CSS px (`wm density 480`, reset after) |
+| ENV-9 | round 2 (round 3: same AVD re-created again) | Android 15 emulator, own AVD `apie2e525_api35` re-created, `emulator-5650`, WebView Chrome/124.0.6367.219 (font `system-ui` = Roboto) | debug APK of this branch (`API-00-apk-build.log`; no Android change since) | paired with ENV-7; 412 CSS px (density 420) and 360 CSS px (`wm density 480`, reset after) |
+| ENV-10 | round 3: merged `9b47cb9ab6` (product code `65d67674a9`) | macOS, Node v22.23.1, headless Chrome | held probe stack (`--hold`) of the merged worktree; alpha serves the merged phone bundle (`dist/public` built by IMP-08e) or, switched, the new base bundle (`3f19d41aa7`, built in a separate worktree); host phone through the 10.0.2.2 proxy, paired with the stack's own link | 412×915 DPR 2, en-US, UTC; host load ~45–90 |
+| ENV-11 | round 3 | as ENV-7/ENV-9 | node-525 of the merged worktree (server `dist` built by IMP-08e), run "Desktop Helper" with one message; container `abtest525-desktop` again; own AVD again | — |
 
 ## Cases
+
+Round 3 (merged-base rerun) results first; the rows after them are rounds 1–2 on `7c7f3d2e79` / `12ecf1bf29`, kept as the earlier record.
+
+| Case ID | Criteria | Boundary / Surface | Command Or Steps | Env | Result | Evidence Files | Look For | Notes |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| API-01…04 (r3) | AC-001…008 | unit, typechecks, guards, builds, phone probe | Reused: IMP-08a (full web suite), IMP-08b/c (web and server typechecks), IMP-08d (guards), IMP-08e (`build:mobile-web`, server build), IMP-08f (probe MSP-66, 60, 74, 67…72, 73) | — | Pass | (implementation handoff Checks Run, IMP-08) | — | on the merged state; IMP-08a: 767 files, 5768 tests; IMP-08f: MSP-74 40 screens clean, Monaco 17 px, 522's remote-run Settings and 448's background-task row/run screen at Largest |
+| API-05 (r3) | AC-006 (amended) | merged head vs new base `3f19d41aa7`, Standard, same node | as round 1 (`screens.mjs walk base-standard` / `head-standard-2`, `compare.mjs same`, `pixeldiff.py`) | ENV-10 | Pass | `r3-walks/API-05-same.json`, `r3-walks/API-05-pixels.json`, `r3-walks/API-05-diff-*.png`, `r3-walks/base-standard-*`, `r3-walks/head-standard-2-*` | `"screens": 14, "matched": 218, "diffs": 1`: the one is `mobile-run-age\|span\|5m#1: y 528→70` (an age label re-matched to another row as ages advanced); run menu: only the removed Text size block; pixels: 0 on 10 screens; run list x 346…386 (⋮, ages); connection sheet / unpair also Delivery Org's dot, a running run's `bg-blue-500 animate-pulse` caught at another phase (same colour on the run list in all three walks) | the merged screens (522, 448) render at Standard as on the new base |
+| API-06 (r3) | AC-004 | stored step across the update from the new base | as round 1 (`screens.mjs upgrade`) | ENV-10 | Pass | `r3-upgrade/API-06-upgrade.json`, `r3-upgrade/API-06-*.png` | base: `"stored": "largest", "root": 16, "feed": 21`; merged head: `"root": 19.7647, "runName": 18.5294`, `"firstScreen": {"root": "19.7647px", "step": "largest"}`, conversation `"feed": 21`, `"pressed": "mobile-text-size-largest"` | — |
+| API-07 (r3) | REQ-005, REQ-006 | merged head, Standard vs Largest | as round 1 (walks, `compare.mjs scale`, `chips`) | ENV-10 | Pass | `r3-walks/API-07-scale.json`, `r3-walks/head-largest-*.png`, `r3-walks/API-07b-*` | `"screens": 15, "matched": 241, "diffs": 0`; unmatched only age labels and rows pushed below the fold at Largest; Approver's chips `px 11` → `13.5882` | — |
+| API-08 (r3) | AC-001, 003, 004, 005; QR-001 | the Android app | as round 1 (`android.mjs pair`, `steps`, `restart`) on node-525 | ENV-11 | Pass | `r3-android/API-08-android.jsonl`, `r3-android/API-08-*-{1-home-menu,2-home,3-conversation}.png`, `r3-android/API-08-restart.mp4`, `r3-android/API-08-restart-frames.png`, `r3-android/API-08-restart-run-list.png` | root 16 / 14.1176 / 17.8824 / 19.7647, run name 15 / 13.2353 / 16.7647 / 18.5294, feed 17 / 15 / 19 / 21, menu open and step pressed after each tap, `sideways: false`; restart `"firstScreen": {"shown": true, "root": "19.7647px", "step": "largest"}`; the recording's frames: splash, "Connecting to…", "Connected to…", then the run list at Largest (its last frame equals the after-restart screenshot) | — |
+| API-09 (r3) | AC-007 | desktop page | as round 1 (`desktop.mjs`) | ENV-5 (merged worktree) | Pass | `r3-desktop/API-09-desktop.json`, `r3-desktop/API-09-*.png` | `16px`, `16px` (stale phone step), `18px` (`112.5%`), `20px` (`125%`); `phoneAttr: null`, `onThisPhone: 0` | — |
+| API-10 (r3) | AC-005, REQ-007 | — | not rerun: superseded by API-11/12 (the real component) | — | — | — | — | the VNC Viewer files are unchanged by the merge |
+| API-11 (r3) | AC-005, REQ-005, REQ-007, AC-006 (amended) | real VNC Viewer, live node desktop, host Chrome | as round 2 | ENV-11, ENV-8 | Pass | `r3-vnc-live/API-11-vnc-live.json`, `r3-vnc-live/API-11-*.png`, `r3-vnc-live/API-11-node.log` | 16 of 16 `viewFits/controlFits true`, canvas `1920×1080`; 360 Largest `fullRight 355.1`, Clipboard right `340.3`; keyboard focus `mobile-node-desktop-keyboard-input`; clipboard sheet `0…360`; zh-CN `fits true` | only noVNC's `requires a secure context (TLS)` console line (18×) |
+| API-12 (r3) | AC-005, REQ-007 | the Android app, live node desktop | as round 2 (`android-vnc.mjs`) | ENV-11 | Pass | `r3-vnc-live/API-12-android-vnc.jsonl`, `r3-vnc-live/API-12-*.png` | 412 Control `fits true`, full screen right `407.3`, Clipboard right `392.4`; 360 Control `fits true`, `355.1`, `340.2`; Clipboard sheet `0…360` | density reset to 420 after |
+
+Rounds 1–2:
 
 | Case ID | Criteria | Boundary / Surface | Command Or Steps | Env | Result | Evidence Files | Look For | Notes |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -60,14 +78,14 @@
 
 | Acceptance-Criteria ID | Critical | Proven By Case IDs | Result | For A User-Only Part |
 | --- | --- | --- | --- | --- |
-| AC-001 | Yes | API-01, API-04, API-08 | Proven | — |
-| AC-002 | Yes | API-01, API-04, API-05 (run-menu diff: only the Text size block) | Proven | — |
-| AC-003 | Yes | API-04, API-07, API-08 | Proven | — |
-| AC-004 | Yes | API-01, API-04, API-06, API-08 (restart) | Proven | — |
-| AC-005 | Yes | API-04 (MSP-74: 34 screens), API-07, API-08, API-10 (round 2, IMP-05), API-11, API-12 | Proven (round 1's API-10 failure resolved by DEC-008) | — |
-| AC-006 (amended SR-002) | Yes | API-04, API-05; the VNC Viewer's Control-mode change at Standard: API-11 (Standard layouts), IMP-05 | Proven | — |
-| AC-007 | Yes | API-01, API-02, API-09 | Proven | — |
-| AC-008 | No | API-01 | Proven | — |
+| AC-001 | Yes | API-01, API-04, API-08 | Proven (rerun on the merged state in round 3) | — |
+| AC-002 | Yes | API-01, API-04, API-05 (run-menu diff: only the Text size block) | Proven (rerun on the merged state in round 3) | — |
+| AC-003 | Yes | API-04, API-07, API-08 | Proven (rerun on the merged state in round 3) | — |
+| AC-004 | Yes | API-01, API-04, API-06, API-08 (restart) | Proven (rerun on the merged state in round 3) | — |
+| AC-005 | Yes | round 3: API-01…04 (IMP-08f, MSP-74: 40 screens), API-07, API-08, API-11, API-12 (r3); earlier rounds as recorded | Proven on the merged state (round 1's API-10 failure resolved by DEC-008) | — |
+| AC-006 (amended SR-002) | Yes | round 3: API-05 (r3) against `3f19d41aa7`, API-11 (r3) Standard layouts | Proven on the merged state | — |
+| AC-007 | Yes | API-01, API-02, API-09 | Proven (rerun on the merged state in round 3) | — |
+| AC-008 | No | API-01 | Proven (rerun on the merged state in round 3) | — |
 | The founder's view of the result (DEC-001, DEC-004) | No | — | Only The User Can Check | his taste on his phone before release (Task); the evidence screenshots are ready for him |
 
 ## Validation Confidence Scorecard (Mandatory)
@@ -83,7 +101,7 @@
 | Durable regression coverage quality and relevance | 90% | 93% | MSP-60/66/67; new specs; `MobileNodeDesktop.spec.ts` pins the two rows' order; full suite green | no durable rendered check of the VNC Viewer (the package probe has no node desktop) | a node-desktop case in the phone probe (recommendation) |
 
 - Overall post-repository confidence: 84% (round 1)
-- Overall final confidence: 95% (round 2; round 1 was 82%)
+- Overall final confidence: 95% (round 3 on the merged state, same scores as round 2: every case rerun and passing; round 1 was 82%)
 - Calculation method: simple average of the seven categories (666 / 7 = 95.1)
 - Every critical acceptance criterion directly proven, apart from parts only the user can check: `Yes`
 - Any final applicable category below `90%`: `No`
@@ -146,6 +164,7 @@ Recommendation for the fix round: add the VNC Viewer bar at Largest (Control mod
 | round 2: container `abtest525-desktop` (`--rm`, loopback 5900) | Yes | `docker stop` | removed; port 5900 free again; the other `autobyteus-server-*` containers (not mine) untouched |
 | round 2: AVD `apie2e525_api35` re-created, `emulator-5650`, `wm density 480` | Yes | `wm density reset`, `adb forward --remove-all`, `adb emu kill`, `avdmanager delete avd` | deleted |
 | round 2: `/tmp/abtest525`, `/tmp/abtest525v` (pairing links, copied storage) | Yes | deleted | gone; never in evidence |
+| round 3: held stack (`/tmp/abtest525/hold`), `dist/public` symlink, base worktree `3f19d41aa7`, `pnpm dev`, node-525, container, AVD, `/tmp/abtest525*` | Yes | SIGINT to my own hold (matched by its output folder); link removed and head bundle moved back; `git worktree remove`; process group stop; `/tmp/abtest525v/stop`; `docker stop`; `adb emu kill`, `avdmanager delete avd`; deleted | hold `{'frontendExited': True, 'serversLeft': 0, 'rootRemoved': True}`; node `temp root removed: true`, no process left; no `abtest525` container; port 5900 free; AVD deleted |
 | Evidence secret scan | Yes | grep `own_`/`mra_`/`mhub_` 20+, `pairing=`, `access_token=` with a value | no match |
 
 ## Preliminary Classification (On `Fail`)
@@ -158,7 +177,7 @@ Round 2: not applicable (`Pass`). Round 1's classification, kept for the record:
 
 ## Latest Authoritative Result
 
-- Result: `Pass` (round 2, API-REV-002)
+- Result: `Pass` (round 3, merged-base rerun, API-REV-003; round 2 API-REV-002 Pass)
 - Criteria not proven, or parts only the user can check: the founder's own view of the result on his phone before release (DEC-001, DEC-004, DEC-008: "revisit on the founder's word")
 - Preliminary classification and recommended owner (on `Fail`): —
 - Next recipient from `get_handoff_rules`: `/delivery_engineer` (direct route, `Medium` / `Low`; test-code review `Not Required — direct low-risk route`; no durable test code changed by API/E2E)

@@ -6,6 +6,7 @@
 | --- | --- | --- | --- | --- |
 | API-REV-001 | implementation engineer, `implementation-handoff.md`, round 1 | SR-001, IR-001 | N/A | Fail / 82% |
 | API-REV-002 | implementation engineer, `implementation-handoff.md` (IR-002), round 2 | SR-002 (DEC-008), CRR-001 (CR-001), IR-002 | Fail / 82% | Pass / 95% |
+| API-REV-003 | implementation engineer, `implementation-handoff.md` (IR-003), merged-base rerun requested by delivery DR-001 | DR-001, IR-003 | Pass / 95% | Pass / 95% |
 
 ## Revision Entries
 
@@ -53,3 +54,24 @@ None.
 - New or remaining failure IDs: None
 - Recommended owner: delivery engineer
 - Remaining risks, blocked evidence, or untested scope: the founder's own view before release; no durable rendered VNC Viewer check (the package probe has no node desktop)
+
+### API-REV-003 — Merged-base rerun (origin/personal `3f19d41aa7`): every case passes on the merged state
+
+- Triggering role, report path, and round: implementation engineer, `implementation-handoff.md` (IR-003: merge `65d67674a9`, probe `6abbcc7bef`, docs `9b47cb9ab6`), after delivery DR-001; round 3
+- Triggering finding or case IDs: DR-001 (base refresh conflicts with autobyteus-522 and autobyteus-448; MSP-67 renamed MSP-74)
+- Related revision IDs: DR-001, IR-003
+- Why recorded: rerun on the merged state before delivery starts again
+- Coverage decisions or durable test paths changed: none by API/E2E; the probe's MSP-74 (renamed, and widened by the implementation to 522/448 screens) reused through IMP-08f
+- Cases added, changed, removed, or rechecked: all rerun on the merged state (TESTING.md rule 4: `autobyteus-ts` and contract packages changed): API-01…04 reused IMP-08a…f; API-05/06 against the new base `3f19d41aa7`; API-07; API-08; API-09; API-11; API-12. API-10 not rerun (superseded by API-11/12; VNC Viewer files unchanged)
+- Commands, environment, fixture, or broader-validation delta: new base bundle; host phone pairs with the held stack's own link (`screens.mjs pair`); node-525 sends one message to its run (`SAY`), so the device check has a conversation
+
+#### Prior Failure Resolution
+
+None (round 2 passed).
+
+- Canonical artifacts and sections updated: investigation (Meta, Round 3 Plan), report (Round, ENV-10/11, round-3 Cases, AC proof, confidence, cleanup, result), progress log, evidence README
+- Prior result and confidence: Pass, 95%
+- Current result and confidence: Pass, 95%
+- New or remaining failure IDs: None
+- Recommended owner: delivery engineer
+- Remaining risks, blocked evidence, or untested scope: the founder's own view before release; no durable rendered VNC Viewer check

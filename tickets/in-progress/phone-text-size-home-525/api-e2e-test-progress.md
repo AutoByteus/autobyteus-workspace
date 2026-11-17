@@ -26,3 +26,18 @@
 | 23:58 | API-11 | Completed | Pass | 16/16 live layouts fit; keyboard focus; clipboard sheet 360 wide; zh-CN fits |
 | 23:58 | API-12 | Started | | emulator booted again (apie2e525_api35, 5650); VNC Viewer at Largest on the device |
 | 00:01 | API-12 | Completed | Pass | device Largest 412 and 360 (density 480), View only and Control fit; clipboard sheet 360; cleanup done |
+| 00:29 | — | Checkpoint | | round 3 (merged-base rerun, IR-003, HEAD 9b47cb9ab6): plan written; building the new base bundle 3f19d41aa7 |
+| 00:32 | API-07 | Started | | round 3: head walks Standard, Largest on the held stack |
+| 00:36 | API-07 | Completed | Pass | round 3: 241 matched texts scale 21/17; chip 11→13.59 |
+| 00:36 | API-05 | Started | | round 3: base 3f19d41aa7 vs merged head, Standard |
+| 00:39 | API-05 | Completed | Pass | round 3: 218/219 same (1 age label re-matched); pixels: ⋮, ages, pulsing running dot, removed Text size |
+| 00:39 | API-06 | Started | | round 3: base 3f19d41aa7 → merged head |
+| 00:39 | API-06 | Completed | Pass | round 3: stored largest carried over; first screen 19.76 px |
+| 00:40 | API-09 | Started | | round 3: pnpm dev of the merged worktree |
+| 00:42 | API-09 | Completed | Pass | round 3: 16/18/20 px; stale phone step ignored; dev server stopped |
+| 00:42 | API-08 | Started | | round 3: node-525 (run with a message), emulator-5650, container abtest525-desktop |
+| 00:45 | API-08 | Completed | Pass | round 3: four steps exact; restart first screen 19.76 px; last frame = Largest |
+| 00:45 | API-11 | Started | | round 3 |
+| 00:46 | API-11 | Completed | Pass | round 3: 16/16 fit; keyboard; clipboard 360; zh fits |
+| 00:46 | API-12 | Started | | round 3 |
+| 00:47 | API-12 | Completed | Pass | round 3: device Largest 412/360 fit; cleanup done |

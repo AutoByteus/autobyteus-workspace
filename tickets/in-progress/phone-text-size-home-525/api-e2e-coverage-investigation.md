@@ -18,8 +18,9 @@
 - Delivery Revision Record (delivery re-entry only): N/A
 - Relevant Delivery Revision IDs: N/A
 - API/E2E Revision Record (created after the first completed result): `…/phone-text-size-home-525/api-e2e-revision-record.md`
-- Current API/E2E Revision ID: `API-REV-002`
-- Current Investigation Round: 2
+- Current API/E2E Revision ID: `API-REV-003`
+- Current Investigation Round: 3 (merged-base rerun)
+- Delivery Revision Record (delivery re-entry): `…/phone-text-size-home-525/delivery-revision-record.md`; Relevant Delivery Revision IDs: DR-001
 - Trigger: round 1 — implementation handoff IR-001; round 2 — IR-002 (SR-002, DEC-008, after API-10 Fail and CRR-001 CR-001), code `12ecf1bf29`
 - Code Review Report (failure-origin review of API-10): `…/phone-text-size-home-525/code-review-report.md` (CRR-001)
 - Prior Investigation Reviewed: round 1 (this file)
@@ -179,6 +180,25 @@ None (the implementation removed `MobileRunMenu.textSize.spec.ts`; recorded abov
 | API-10 | AC-005, REQ-007 (DEC-008) | bar markup in the production phone page | Reused | IMP-05 (`12ecf1bf29` markup, same method as round 1's API-10, plus zh-CN and Small) | same method, current markup; superseded in strength by API-11/12 |
 | API-11 | AC-005, REQ-005 (VNC Viewer controls and clipboard), REQ-007, AC-006 (amended) | the real VNC Viewer connected to a live node desktop, host Chrome as a phone | Temporary Probe | `node-525.mjs` (this worktree's server with `AUTOBYTEUS_STARTER_SOCKET` set, so it offers its node desktop at 127.0.0.1:5900; the test-owned container `abtest525-desktop` from `autobyteus/autobyteus-server:beta` provides Xvnc there, published on loopback only) + `vnc-live.mjs`: pair through the node's link; 360/412 × Small/Standard/Large/Largest × View only/Control; Keyboard and Clipboard at Largest 360; zh-CN at Largest 360 | the reconstruction could not run the component's state (connect, Control); a probe-durable case would need a node desktop in the package probe (recommendation) |
 | API-12 | AC-005, REQ-007 | the Android app (WebView, Roboto) on the same node | Journey | own AVD again; pair; real taps: home ⋮ → Largest, run ⋮ → VNC Viewer → Control; at 412 CSS px and at 360 CSS px (`wm density 480`); Clipboard sheet | the founder's device and its fonts |
+
+## Round 3 Plan (merged-base rerun, IR-003; DR-001)
+
+- Trigger: delivery's DR-001 (base refresh conflicts) → IR-003: merge of `origin/personal` `3f19d41aa7` (autobyteus-522, autobyteus-448 part 2, autobyteus-524) at `65d67674a9`; probe update `6abbcc7bef` (MSP-67 → MSP-74; MSP-74 also covers 522's remote-run Settings and 448's background-task row and run screen at Largest).
+- Validated commit before: `12ecf1bf29`. `git diff --name-only 12ecf1bf29 HEAD`: 230+ paths from the base (web components, services, utils, stores, localization, server, `autobyteus-ts`, the contract packages `autobyteus-{agent-presentation,collaboration-stream,team-stream}-contracts`) and the ticket's conflict resolutions (`MobileRunMenu.vue`, its spec, `mobileSettings.ts`, the probe).
+- Rerun by impact (TESTING.md § Choosing the path, rule 4): `autobyteus-ts` and the contract packages are shared foundations, so every case is **Rerun** on the merged state. Not changed by the merge: `MobileNodeDesktop.vue`, `MobileScreenBar.vue`, `autobyteus-server-ts/src/node-desktop/` (the VNC Viewer cases are rerun anyway under rule 4).
+- Fresh-start build: `git diff --name-only 3f19d41aa7...HEAD` (the ticket's own changes against the new base) holds no build-input path: not needed.
+- AC-006's base is now `3f19d41aa7` (built in a separate worktree).
+
+| Case ID | Criteria | Kind | Planned Command Or Steps | Why |
+| --- | --- | --- | --- | --- |
+| API-01, API-02, API-03, API-04 | as before | Reused | IMP-08a (full web suite), IMP-08b/c (both typechecks), IMP-08d (guards), IMP-08e (builds), IMP-08f (probe MSP-66, 60, 74, 67…72, 73) | ran on the merged state (`65d67674a9`; probe `6abbcc7bef`) |
+| API-05 | AC-006 | Temporary Probe | as round 1, base = `3f19d41aa7` bundle, head = merged bundle, on one held stack | Standard vs the new base on the merged screens |
+| API-06 | AC-004 | Temporary Probe | as round 1 with the new base bundle | the step stored by the base page carries over |
+| API-07 | REQ-005/006 | Temporary Probe | as round 1 on the merged bundle (walk + chips) | every text scales on the merged screens |
+| API-08 | AC-001/003/004/005, QR-001 | Journey | as round 1 (own AVD, four steps by real taps, restart), on node-525 (run with a message) | the device on the merged state |
+| API-09 | AC-007 | Temporary Probe | as round 1 (`pnpm dev`, desktop page) | desktop unchanged on the merged state |
+| API-11 | AC-005, REQ-007 | Temporary Probe | as round 2 (node-525 + container `abtest525-desktop`, 16 layouts, Keyboard, Clipboard, zh-CN) | rule 4 |
+| API-12 | AC-005, REQ-007 | Journey | as round 2 (the app at Largest, 412 and 360 CSS px) | rule 4 |
 
 ## Investigation Decision
 

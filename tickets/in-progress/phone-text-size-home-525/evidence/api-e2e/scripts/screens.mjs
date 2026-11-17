@@ -16,7 +16,7 @@ import { execFileSync } from 'node:child_process'; import { createRequire } from
 const require = createRequire('/Users/normy/autobyteus_org/autobyteus-worktrees/phone-text-size-home-525/autobyteus-web/package.json');
 const { chromium } = require('playwright-core');
 const hold = JSON.parse(fs.readFileSync(process.env.HOLD, 'utf8'));
-const storage = JSON.parse(fs.readFileSync(process.env.STORAGE, 'utf8'));
+const storage = fs.existsSync(process.env.STORAGE) ? JSON.parse(fs.readFileSync(process.env.STORAGE, 'utf8')) : {};
 const PORT = hold.alphaPort; const ORIGIN = `http://10.0.2.2:${PORT}`;
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 const sel = id => `[data-testid="${id}"]`;
@@ -247,7 +247,19 @@ const chips = async (step, outDir) => {
   return { step, root: null, found, errors: errors.filter(e => !/401/.test(e)).slice(0, 20) };
 };
 
+const pairHost = async () => {
+  // Round 3: the host phone pairs through the held stack's own link (http://10.0.2.2:<port>, single use, 5 minutes) and
+  // keeps the phone's storage for the walks (STORAGE file; not evidence).
+  const { context, page } = await phone({ paired: false });
+  await page.goto(hold.links.emulator, { waitUntil: 'domcontentloaded', timeout: 120_000 });
+  await page.locator(sel('mobile-pair-button')).click({ timeout: 60_000 });
+  await page.locator(`${sel('mobile-run-tree')}:visible`).waitFor({ timeout: 90_000 });
+  fs.writeFileSync(process.env.STORAGE, await page.evaluate(() => JSON.stringify(Object.fromEntries(Object.entries(localStorage)))));
+  await context.close();
+  return { paired: true };
+};
+
 try {
-  const r = cmd === 'walk' ? await walk(args[0], args[1], args[2]) : cmd === 'upgrade' ? await upgrade(args[0]) : cmd === 'chips' ? await chips(args[0], args[1]) : (() => { throw new Error(`unknown ${cmd}`); })();
-  console.log(JSON.stringify(cmd === 'walk' ? { label: r.label, screens: Object.keys(r.screens), skipped: r.skipped, errors: r.errors.slice(0, 10) } : r, null, 1));
+  const r = cmd === 'walk' ? await walk(args[0], args[1], args[2]) : cmd === 'upgrade' ? await upgrade(args[0]) : cmd === 'chips' ? await chips(args[0], args[1]) : cmd === 'pair' ? await pairHost() : (() => { throw new Error(`unknown ${cmd}`); })();
+  console.log(JSON.stringify(cmd === 'walk' && r.screens ? { label: r.label, screens: Object.keys(r.screens), skipped: r.skipped, errors: r.errors.slice(0, 10) } : r, null, 1));
 } finally { await browser.close(); proxy.close(); }
