@@ -330,8 +330,10 @@ describe("append-only message logs: the built server converts a faithful release
     }
     // An unknown reference stays "not found", as before.
     expect((await fetchText(first, `agent-org-runs/org-o/communication/messages/m9/references/${"0".repeat(64)}/content`)).status).toBe(404);
-    // A context-file link of a migrated task agent (through its hub) still opens.
-    expect(await fetchText(first, "agent-collaborations/hub/agent-runs/c1-reviewer/context-files/ctx_notes__notes.txt")).toEqual({ status: 200, text: "context bytes" });
+    // A context file of a migrated task agent opens by its own run's link; the route through its hub is gone
+    // (autobyteus-500 FU-020: the host-scoped owner kind and its route are removed).
+    expect(await fetchText(first, "runs/c1-reviewer/context-files/ctx_notes__notes.txt")).toEqual({ status: 200, text: "context bytes" });
+    expect((await fetchText(first, "agent-collaborations/hub/agent-runs/c1-reviewer/context-files/ctx_notes__notes.txt")).status).toBe(404);
     await first.stop();
 
     // A second start changes no message-log file.

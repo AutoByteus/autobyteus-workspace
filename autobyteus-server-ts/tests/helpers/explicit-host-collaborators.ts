@@ -7,6 +7,7 @@ import { REMOTE_COLLABORATION_OFF_DISCOVERY } from "../../src/agent-tools/agent-
 import type { ProjectTaskSearchCleanup } from "../../src/projects/search/project-task-search-service.js";
 import {
   initializeProjectTaskServiceProcessInstance,
+  getProjectTaskService,
   releaseProjectTaskServiceProcessInstance,
   type ProjectTaskService,
 } from "../../src/projects/services/project-task-service.js";
@@ -47,6 +48,23 @@ export const freshProcessTaskService = (): ProjectTaskService => {
   if (processTaskService) releaseProjectTaskServiceProcessInstance(processTaskService);
   processTaskService = initializeProjectTaskServiceProcessInstance({ ...NO_RUN_SIDE_TASK_PORTS });
   return processTaskService;
+};
+
+/**
+ * Releases the process Task service a composition (a test server's `composeCollaboration`) or a test made, if there is one.
+ * Before a composition there is none: the process getter throws (FU-011), so a reset that runs before a server starts has
+ * nothing to release.
+ */
+export const releaseComposedProjectTaskService = (): void => {
+  let composed: ProjectTaskService;
+  try {
+    composed = getProjectTaskService();
+  } catch (error) {
+    if (error instanceof Error && error.message.includes("is created by the composition")) return;
+    throw error;
+  }
+  releaseProjectTaskServiceProcessInstance(composed);
+  if (processTaskService === composed) processTaskService = null;
 };
 
 /** G-5: a test whose stored models are all offered (the start proceeds as before the check). */

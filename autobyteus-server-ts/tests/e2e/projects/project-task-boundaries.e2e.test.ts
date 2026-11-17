@@ -16,7 +16,7 @@ import { buildRuntimeAgentToolExposure } from "../../../src/agent-execution/shar
 import type { ScopedAgentToolMcpSessionAuthority } from "../../../src/agent-tools/mcp/agent-tool-mcp-session-authority.js";
 import { ListProjectsTool, ListProjectTasksTool, CreateProjectTool, UpdateProjectTool, CreateTaskTool, UpdateTaskTool, createBoundGetProjectTaskTool } from "../../../src/agent-tools/project-tasks/project-task-native-tools.js";
 import { registerProjectTaskTools } from "../../../src/agent-tools/project-tasks/project-task-native-tools.js";
-import { getProjectTaskService, releaseProjectTaskServiceProcessInstance } from "../../../src/projects/services/project-task-service.js";
+import { releaseComposedProjectTaskService } from "../../helpers/explicit-host-collaborators.js";
 import { resetProjectServiceForTests } from "../../../src/projects/services/project-service.js";
 import { resetProjectStoreForTests } from "../../../src/projects/stores/project-store.js";
 import { resetProjectTaskContextStoreForTests } from "../../../src/projects/context/project-task-context-store.js";
@@ -59,7 +59,7 @@ const storedNameOf = (file: { path: string }) => path.basename(file.path);
 // Reader reconstruction: fresh Project readers and stores. The Project Task service is the composition's (autobyteus-461: it
 // carries the delegation tree as its entries listener, set by the composition root); it is released only with the server.
 const reset = (releaseTaskService = false) => {
-  if (releaseTaskService) releaseProjectTaskServiceProcessInstance(getProjectTaskService());
+  if (releaseTaskService) releaseComposedProjectTaskService();
   resetProjectServiceForTests(); resetProjectStoreForTests(); resetProjectTaskContextStoreForTests();
 };
 

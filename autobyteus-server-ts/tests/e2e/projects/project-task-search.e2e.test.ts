@@ -11,7 +11,7 @@ import { buildRuntimeAgentToolExposure } from "../../../src/agent-execution/shar
 import type { ScopedAgentToolMcpSessionAuthority } from "../../../src/agent-tools/mcp/agent-tool-mcp-session-authority.js";
 import { registerProjectTaskTools } from "../../../src/agent-tools/project-tasks/project-task-native-tools.js";
 import { resetEmbeddingIndexForTests } from "../../../src/embeddings/embedding-index.js";
-import { getProjectTaskService, releaseProjectTaskServiceProcessInstance } from "../../../src/projects/services/project-task-service.js";
+import { releaseComposedProjectTaskService } from "../../helpers/explicit-host-collaborators.js";
 import { resetProjectServiceForTests } from "../../../src/projects/services/project-service.js";
 import { resetProjectStoreForTests } from "../../../src/projects/stores/project-store.js";
 import { resetProjectTaskContextStoreForTests } from "../../../src/projects/context/project-task-context-store.js";
@@ -20,7 +20,7 @@ import { createFakeEmbeddingIndex } from "../../helpers/fake-embedding-model.js"
 // Real Studio HTTP (GraphQL), the real composition (search service, delete hooks) and the default MCP host, over
 // test-owned files. Only the embedding model is a deterministic stand-in (tests/helpers/fake-embedding-model.ts),
 // so no model is downloaded; the gated integration suite covers the real models.
-const reset = () => { releaseProjectTaskServiceProcessInstance(getProjectTaskService()); resetProjectServiceForTests(); resetProjectStoreForTests(); resetProjectTaskContextStoreForTests(); };
+const reset = () => { releaseComposedProjectTaskService();resetProjectServiceForTests(); resetProjectStoreForTests(); resetProjectTaskContextStoreForTests(); };
 const SEARCH = "query($p:String!,$q:String!){searchProjectTasks(projectId:$p,query:$q){matches{taskId match} meaningSearch{state phase done total reason}}}";
 type SearchResult = { matches: Array<{ taskId: string; match: string }>; meaningSearch: { state: string; phase: string | null; done: number | null; total: number | null; reason: string | null } };
 

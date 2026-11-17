@@ -72,6 +72,9 @@
 //   WVC-001..WVC-004 (workspace-tree-vs-chooser AC-002, AC-005, AC-009, AC-011, AC-012): the run section's views and the chat
 //           chooser's Remove; opt-in (they archive runs and remove folders), see workspace-views-chooser-cases.mjs.
 //           Alone: pnpm -C autobyteus-web test:e2e:workspace-views-chooser
+//   G5-001..G5-003 (autobyteus-500 G-5, AC-012): a stored model its runtime no longer offers: the Settings note on the
+//           member, the RUN_MODEL_NOT_OFFERED refusal with no runtime started, and an unreadable list that starts as before;
+//           see stored-model-not-offered-cases.mjs.
 //   LRL-001..LRL-005 (large-runs-load-less AC-002, AC-003, AC-006): Team and Org runs load only the focused member; the
 //           Team tab's live merge and reconnect; a damaged message log on desktop and phone; see
 //           large-runs-load-less-cases.mjs. Alone: pnpm -C autobyteus-web test:e2e:large-runs-load-less
@@ -102,6 +105,7 @@ import { registerAgentSettingsFocusedCases } from './agent-settings-focused-case
 import { registerLargeRunsLoadLessCases } from './large-runs-load-less-cases.mjs'
 import { registerWorkspaceViewsChooserCases } from './workspace-views-chooser-cases.mjs'
 import { registerRunExpandMotionLiveCases } from './run-expand-motion-live-cases.mjs'
+import { registerStoredModelNotOfferedCases } from './stored-model-not-offered-cases.mjs'
 import { agentRuntimeName } from '@autobyteus/agent-presentation-contracts'
 import { spawn } from 'node:child_process'
 import { createWriteStream, existsSync } from 'node:fs'
@@ -199,6 +203,13 @@ const startBackend = async (label) => {
 }
 /** What `agy models` offers from now on (the scripted CLI reads it on every catalog request). */
 const offerAgyModels = (ids) => fs.writeFile(agyModelsFile, ids.map((id) => `${id}\t${{ [MODEL]: MODEL_LABEL, [ALT]: ALT_LABEL, [RETIRING]: RETIRING_LABEL }[id]}\n`).join(''))
+/** `agy models` from now on: `normal`, `hang` (slower than the server's 8 s list budget) or `fail` (exits 1 at once). */
+const setAgyModelsMode = async (mode) => {
+  for (const marker of ['hang', 'fail']) await fs.rm(`${agyModelsFile}.${marker}`, { force: true })
+  if (mode !== 'normal') await fs.writeFile(`${agyModelsFile}.${mode}`, '')
+}
+/** Each `agy models` read so far (its epoch second). */
+const agyModelsReads = async () => (await fs.readFile(`${agyModelsFile}.reads`, 'utf8').catch(() => '')).trim().split('\n').filter(Boolean)
 /** AGY launches of one run so far, with their `--model`. */
 const agyLaunchesOf = async (runId) => (await fs.readFile(argvLog, 'utf8').catch(() => '')).trim().split('\n').filter(Boolean).map((line) => JSON.parse(line))
   .filter((entry) => entry.cwd.includes(`/${runId}/`)).map((entry) => entry.argv.includes('--model') ? entry.argv[entry.argv.indexOf('--model') + 1] : null)
@@ -590,8 +601,9 @@ const assertSquadRows = (rows, label) => {
   const squad = address('squad')
   const team = rowsAt(rows, squad).find((row) => !row.member && row.badge === 'Delegated copy')
   assert(team && team.source === 'inherited' && team.fallbacks.length === 1 && team.fallbacks[0].includes(TEAM_NOT_OFFERED)
-    // FU-030: the product's reason reads "… is not offered by <runtime> now. Refresh the model list …" (base: "… is not available on …").
-    && /not available|not offered/.test(team.fallbacks[0]) && team.launch.includes(MODEL_LABEL), `${label}: Squad Team row`, { team, rows })
+    // FU-030 (autobyteus-500, DLP-004): the row says what was not used and why: "… was not used: '<m>' is no longer offered by <runtime>."
+    && team.fallbacks[0].includes(`was not used: '${TEAM_NOT_OFFERED}' is no longer offered by ${agentRuntimeName(AGY)}.`)
+    && team.launch.includes(MODEL_LABEL), `${label}: Squad Team row`, { team, rows })
   const member = (name) => rowsAt(rows, `${squad}/${name}`).find((row) => row.member)
   const m = Object.fromEntries(['lead', 'engineer', 'reviewer', 'offline', 'unoffered', 'badsettings', 'incomplete'].map((name) => [name, member(name)]))
   assert(Object.values(m).every(Boolean), `${label}: Squad member rows`, { m, rows })
@@ -607,8 +619,8 @@ const assertSquadRows = (rows, label) => {
   assert(m.lead.source === 'inherited' && m.lead.launch.includes(MODEL_LABEL) && m.lead.fallbacks.length === 0, `${label}: lead row (the Team's source, no repeated note)`, m.lead)
   const own = (row, pattern) => row.source === 'inherited' && row.launch.includes(MODEL_LABEL) && row.fallbacks.length === 1 && pattern.test(row.fallbacks[0])
   assert(own(m.offline, /gpt-5\.5.*is not available/), `${label}: offline row (Codex unavailable)`, m.offline)
-  // FU-030 (DLP-004): the reason's wording is the product's "not offered" (base: "not available").
-  assert(own(m.unoffered, new RegExp(`${NOT_OFFERED}.*not (available|offered)`)), `${label}: unoffered row (model not offered)`, m.unoffered)
+  // FU-030 (autobyteus-500, DLP-004): "… was not used: '<m>' is no longer offered by <runtime>."
+  assert(own(m.unoffered, new RegExp(`was not used: '${NOT_OFFERED}' is no longer offered by ${agentRuntimeName(AGY)}\\.`)), `${label}: unoffered row (model not offered)`, m.unoffered)
   assert(own(m.badsettings, /settings are invalid/), `${label}: badsettings row (settings invalid)`, m.badsettings)
   assert(own(m.incomplete, /names no model/), `${label}: incomplete row (incomplete default)`, m.incomplete)
 }
@@ -1558,7 +1570,7 @@ defineCase('DCP-004', 'delegated-copy-model-change AC-011, AC-005 (UI): the dele
   r.refusal = await waitFor('the Save is refused', async () => {
     const text = await page.locator(sel('existing-run-settings')).innerText().catch(() => '')
     // FU-030 (autobyteus-500): "<name> is running, so its settings can't be saved now. Stop it, then save again."
-    return /is running, so its settings can't be saved now\. Stop it, then save again\./.test(text) && !/^\s*Saved\./.test(await saveBarText(page)) ? text.match(/[^\n]*is running\. Stop it[^\n]*/)[0] : null
+    return /is running, so its settings can't be saved now\. Stop it, then save again\./.test(text) && !/^\s*Saved\./.test(await saveBarText(page)) ? text.match(/[^\n]*is running, so its settings can't be saved now\. Stop it[^\n]*/)[0] : null
   }, 60000, 1000)
   r.barAfterRefusal = await saveBarText(page)
   r.storedAfterRefusal = await ownAgentLaunch(r.copyRunId)
@@ -1719,6 +1731,9 @@ registerAgentSettingsFocusedCases({ defineCase, assert, waitFor, delay, sel, set
   conversationText, openSettings, backToConversation, openSidebarAgent, openTeamRun, expandWorkspaces, saveSettings, saveBarText,
   agentTree, teamTree, teamRunIds, objectsIn, pick, agyLaunchesOf, offerAgyModels, AGY, GROK, GROK_MODEL, MODEL, ALT, RETIRING, MODEL_LABEL, ALT_LABEL, RETIRING_LABEL,
   env: () => ({ frontUrl }) })
+registerStoredModelNotOfferedCases({ defineCase, assert, waitFor, delay, sel, settle, shot, gql, typeAndSend, conversationText, openSettings,
+  backToConversation, openAgentRun, openTeamRun, agyLaunchesOf, offerAgyModels, setAgyModelsMode, agyModelsReads, AGY, MODEL, ALT, RETIRING, ids, names,
+  env: () => ({ frontUrl, workspace }) })
 // Opt-in: RXM cases stop their run and switch the run section's view.
 if (onlyCases?.some(id => id.startsWith('RXM-'))) registerRunExpandMotionLiveCases({ defineCase, assert, waitFor, delay, sel, settle, shot, gql,
   newChatFor, chooseModel, typeAndSend, callFromComposer, callTool, AGY, MODEL, ids, names, address, env: () => ({ frontUrl }) })
@@ -1744,7 +1759,11 @@ try {
   agyModelsFile = path.join(toolsDir, 'agy-models.tsv')
   await offerAgyModels([MODEL, ALT])
   const agy = path.join(toolsDir, 'agy')
-  await fs.writeFile(agy, `#!/bin/sh\nif [ "$1" = "models" ]; then cat "${agyModelsFile}"; exit 0; fi\nexec "${process.execPath}" "${path.join(serverDir, 'tests/fixtures/agy-failure-cli.mjs')}" "$@"\n`, { mode: 0o755 })
+  // `agy models` logs each read; a `.hang` marker makes it slower than the server's 8 s budget, a `.fail` marker fails it
+  // at once (a signed-out CLI): an unreadable list (G5-003).
+  await fs.writeFile(agy, `#!/bin/sh\nif [ "$1" = "models" ]; then\n  date +%s >> "${agyModelsFile}.reads"\n`
+    + `  if [ -f "${agyModelsFile}.hang" ]; then sleep 30; fi\n  if [ -f "${agyModelsFile}.fail" ]; then echo "not signed in" >&2; exit 1; fi\n`
+    + `  cat "${agyModelsFile}"; exit 0\nfi\nexec "${process.execPath}" "${path.join(serverDir, 'tests/fixtures/agy-failure-cli.mjs')}" "$@"\n`, { mode: 0o755 })
   const grok = path.join(toolsDir, 'grok')
   await fs.writeFile(grok, `#!/bin/sh\nexec "${process.execPath}" "${path.join(serverDir, 'tests/fixtures/grok-acp/fake-grok-cli.mjs')}" "$@"\n`, { mode: 0o755 })
   dbUrl = pathToFileURL(path.join(dataRoot, 'db', 'probe.db')).href

@@ -677,7 +677,9 @@ suite("A delegated copy's model changed by the user: stop, choose, resume (real 
       from = (await agyLaunches()).length;
       const failed = await messageCopy(root, copyRunId, "Next paragraph.");
       expect(failed.accepted ?? false, JSON.stringify(failed)).toBe(false);
-      expect(JSON.stringify(failed)).toMatch(/AGY_MODEL_UNAVAILABLE/);
+      // autobyteus-500 G-5 (REQ-016, D-12): a saved model its runtime no longer offers is refused before the runtime starts,
+      // with the agent, model, runtime and repair named (before, AGY itself refused: AGY_MODEL_UNAVAILABLE).
+      expect(String(failed.message ?? JSON.stringify(failed))).toMatch(new RegExp(`can't start: its saved model '${ALT2}' is not offered by Antigravity CLI now\\. Stop it, then choose a runtime and model for \\S+ in Settings\\.`));
       expect(await launchesOf(copyRunId, from)).toEqual([]);
       expect(JSON.stringify(await root.conversationOf(copyRunId, delegated.target_agent_address ?? ""))).toContain("Marker WAKE");
       // The user chooses another model; the next message resumes the same conversation on it.
