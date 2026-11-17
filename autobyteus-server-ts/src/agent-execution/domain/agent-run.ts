@@ -191,6 +191,9 @@ export class AgentRun {
     return notices.kind === "platform" ? notices.listRunning() : [];
   }
 
+  /** True while the runtime reports a running background task (false for runtimes that report none). */
+  hasRunningBackgroundTasks(): boolean { return this.backend.hasRunningBackgroundTasks(); }
+
   async inspectBackgroundTasks(): Promise<AgentBackgroundTaskView> {
     const inspection = this.backend.backgroundTaskInspection;
     if (inspection.kind === 'unsupported') return { kind: 'unsupported', agentRunId: this.runId, reason: 'unsupported' };

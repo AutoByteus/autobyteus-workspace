@@ -6,23 +6,44 @@ import { RESTART_RESUME_NOTICE_SENDER_ID } from "../agent-execution/domain/syste
 import { AgentRunEventType } from "../agent-execution/domain/agent-run-event.js";
 import type { AgentRun } from "../agent-execution/domain/agent-run.js";
 import type { AgentRunInputLifecycleObserver } from "../agent-execution/input/agent-run-input-contract.js";
-import type { BusyRunEntry } from "./busy-run-record.js";
+import type { RestartCause } from "./restart-cause.js";
 
-export type RestartNoticeInput = Readonly<{
-  entry: BusyRunEntry;
-  /** The release this server runs (the update's target). */
-  version: string;
-  restartedAt: Date;
-  /** The resumed runs this run's root delegated to, one hop (their Task entries name it as `delegatingRun`, DS-9). */
-  resumedDelegated: readonly string[];
+export const RESTART_REMINDER_HEADER = "[Platform notice — application restarted]";
+
+/** The facts a restart reminder is built from (stored with a pending reminder; the text is built at delivery). */
+export type RestartReminderFacts = Readonly<{
+  cause: RestartCause;
+  /** The release this server runs (the update's target); `null` without a release stamp. */
+  version: string | null;
+  /** ISO time the server took the previous session's record. */
+  restartedAt: string;
+  /** The run was mid-turn when recorded. */
+  interruptedTurn: boolean;
 }>;
 
-export const buildRestartNoticeText = (input: RestartNoticeInput): string => {
+const reasonOf = (facts: RestartReminderFacts): string => {
+  if (facts.cause === "update") return `an update to ${facts.version && !facts.version.startsWith("v") ? `v${facts.version}` : facts.version ?? "a new version"}`;
+  return facts.cause === "restart" ? "a restart" : "an unexpected stop (a crash, a forced quit or a power loss)";
+};
+
+/** `2026-11-17 22:20 UTC`: the agent knows no time zone of the node. */
+const timeOf = (iso: string): string => `${iso.slice(0, 10)} ${iso.slice(11, 16)} UTC`;
+
+/**
+ * The restart reminder (autobyteus-448 DEC-003): the cause, the interrupted turn when the run was mid-turn, and the
+ * reminder that the restart stopped any background tasks it started. One text for the wake after an update and for
+ * the preface of the run's next input; the wake adds the delegated runs that were resumed too.
+ */
+export const buildRestartNoticeText = (input: RestartReminderFacts & Readonly<{ resumedDelegated: readonly string[] }>): string => {
   const lines = [
-    `The application restarted at ${input.restartedAt.toISOString()} after an update to ${input.version}.`,
-    "Your previous turn was interrupted.",
-    "Tool calls that were running have unknown results; check before repeating any of them.",
+    RESTART_REMINDER_HEADER,
+    "",
+    `The application restarted at ${timeOf(input.restartedAt)} (reason: ${reasonOf(input)}).`,
   ];
+  if (input.interruptedTurn) {
+    lines.push("Your previous turn was interrupted; check the results of any tool calls that were running before you repeat them.");
+  }
+  lines.push("If you started any background tasks, the restart stopped them. Check what you still need: restart it, or continue your work.");
   if (input.resumedDelegated.length) {
     lines.push(`These runs you delegated were resumed too and are working: ${input.resumedDelegated.join(", ")}.`);
   }
@@ -30,17 +51,21 @@ export const buildRestartNoticeText = (input: RestartNoticeInput): string => {
 };
 
 /**
- * The only producer of the restart notice (autobyteus-285 D4): a SYSTEM input from `system.restart_resume`, in the
- * shape of the platform's other notices. The native runtime emits no notification for it; the resumer (host) or the
- * member presentation shows it as a system notice. `message_id` / `dedupe_key` are display and projection keys only.
+ * The wake after an update (autobyteus-285 D4): a SYSTEM input from `system.restart_resume`, in the shape of the
+ * platform's other notices. The native runtime emits no notification for it; the resumer (host) or the member
+ * presentation shows it as a system notice. `message_id` / `dedupe_key` are display and projection keys only.
  */
-export const buildRestartNotice = (input: RestartNoticeInput): AgentInputUserMessage => {
-  const text = buildRestartNoticeText(input);
-  const messageId = `restart-resume:${input.entry.recordedAt}:${input.entry.agentRunId}`;
+export const buildRestartNotice = (input: Readonly<{
+  agentRunId: string;
+  facts: RestartReminderFacts;
+  resumedDelegated: readonly string[];
+}>): AgentInputUserMessage => {
+  const text = buildRestartNoticeText({ ...input.facts, resumedDelegated: input.resumedDelegated });
+  const messageId = `restart-resume:${input.facts.restartedAt}:${input.agentRunId}`;
   return new AgentInputUserMessage(text, SenderType.SYSTEM, null, {
     sender_id: RESTART_RESUME_NOTICE_SENDER_ID,
     message_id: messageId,
-    dedupe_key: `agent_run_input:${input.entry.agentRunId}:${messageId}`,
+    dedupe_key: `agent_run_input:${input.agentRunId}:${messageId}`,
     [SYSTEM_TASK_NOTIFICATION_SUPPRESSION_METADATA_KEY]: true,
     ...platformInputPrefaceMetadata({ content: text, senderId: RESTART_RESUME_NOTICE_SENDER_ID, originalContent: null }),
   });
