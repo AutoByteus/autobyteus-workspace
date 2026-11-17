@@ -182,7 +182,7 @@ const orgScenario: Scenario = {
     const tree = testAgentOrgExecutionTree({ orgRunId: rootRunId, members });
     const statuses = members.map((member) => ({
       execution: createCollaborationMemberExecutionIdentity({ root: createAgentOrgRootExecutionIdentity(rootRunId), memberAddress: member.address, agentRunId: member.agentRunId }),
-      details: { status: "idle" as const, trigger: null, errorMessage: null, recoverableBlock: null }, statusHint: "IDLE" as const,
+      details: { status: "idle" as const, backgroundTasksRunning: 0, trigger: null, errorMessage: null, recoverableBlock: null }, statusHint: "IDLE" as const,
     }));
     const snapshot = { tree, messages: { schemaVersion: 1 as const, subjectKind: "agent_org" as const, orgRunId: rootRunId, messages: [] }, statuses, inputStates: [] };
     const run = { orgRunId: rootRunId, isActive: () => true, getExecutionTreeSnapshot: () => tree,
