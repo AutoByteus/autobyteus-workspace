@@ -2,6 +2,7 @@
 
 | SR | Date | Kind | Summary | Status after |
 | --- | --- | --- | --- | --- |
+| SR-015 | 2026-11-17 | Design Impact (CRR-003: CR-500-003, CR-500-004; with the Local Fix CR-500-005) | G-5 revision: on-demand AutoByteus models loaded by `ModelAvailabilityService.loadOnDemandModel` before the check and the options read, under the deadline; G-5 skipped when the agent's definition is missing; the inherited-layer refusal's next step | Approved; design `Ready` |
 | SR-014 | 2026-11-17 | Decisions on IR-001 | D-14: FU-035 step 0 waits for Grok's usage window, as a later round; the rest goes to code review. D-13b: a timeout is labeled ENVIRONMENT or INCONCLUSIVE, never product; AC-005's watcher proof runs on Linux (inotify) and a quiet macOS | Approved |
 | SR-013 | 2026-11-17 | Design Impact (the implementation engineer's IR-001, FU-021) | Cause completed: the OS loses file events under load (Reproduced with raw chokidar and Node `fs.watch`); the test classifies a timeout with an environment probe; AC-005's watcher part reworded (D-13); FU-500-06 | Approved; design `Ready` |
 | SR-012 | 2026-11-17 | Design Impact (ARCH-REV-004 AR-002) | G-5's catalog read is bounded by the existing 8 s model-list budget; a deadline or read error answers `list_unreadable` (start proceeds); per-start CLI discovery cost stated; slow-catalog test | Approved; design `Ready` |
@@ -150,3 +151,10 @@
 ### Review of SR-014
 
 - ARCH-REV-007: **Pass** (`design-review-report.md`). The proof lines are aligned with D-13b and AC-005 (the gate is Linux inotify plus a quiet macOS; loaded runs are labeled ENVIRONMENT or INCONCLUSIVE).
+
+### SR-015
+
+- **Trigger:** API/E2E round 1 failed. The code reviewer's CRR-003 found two Design Impacts in G-5 and one Local Fix in FU-030.
+- **My miss:** G-5 took "the runtime's list" as the authority for every runtime. For AutoByteus, the authority is `ModelAvailabilityService`'s on-demand load. G-5 also didn't place itself relative to the definition's resolution. Both are lesson 2 (the premise "offered models answer availability" was not read for every runtime kind; Principle 1, "several kinds").
+- **Change:** design "G-5 revision (SR-015)" R1 … R3. Intended behavior is unchanged: D-12 already said "refuse only when the list was read and lacks the model".
+- **Next:** architecture review. Then the implementation, the code reviewer, and the API/E2E rerun of F-1 … F-3, LE-F1 and the local-provider cases after a restart.

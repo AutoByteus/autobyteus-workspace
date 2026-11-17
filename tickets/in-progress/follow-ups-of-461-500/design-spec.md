@@ -614,3 +614,57 @@ Dropped (D-10, SR-009): no change. The field is ignored residue in every older s
   - (e) Peer-started run: its node runs the check (same code).
   - (f) A delegated run's member: path (a).
 - **Classification of this addition:** Medium. The combined package stays `Large` / `High`.
+
+
+## G-5 revision (SR-015): CRR-003 CR-500-003, CR-500-004, CR-500-005
+
+All three points were checked against the code at `718a359cab`.
+
+### R1: an AutoByteus model that loads on demand (CR-500-003)
+
+- **Premise read:**
+  - On the AutoByteus runtime, Ollama, LM Studio and custom OpenAI-compatible models are registered in `LLMFactory` only when their provider's catalog is loaded. The start path loads it (`ModelAvailabilityService.ensureModelAvailable`, `model-availability-service.ts:52-63`, from `available-llm-construction.ts:14`).
+  - G-5 read `LLMFactory.listAvailableModels()` without that load, so after a restart it called a working model "not offered".
+  - A failed local discovery doesn't throw from `ensureProviderModelCatalog`. It reports through the snapshot's `sources[]` (`ModelSourceStatus`: `state`, `successfulUnitCount`, `failedUnitCount`; `llm-providers/domain/models.ts:29-45`; Ollama throws inside `prepare` only when every host failed, `model-catalog-service.ts:244-259`).
+- **The owner of on-demand loading stays `ModelAvailabilityService`.** It gets one public method, used by `ensureModelAvailable` itself and by G-5:
+
+  `loadOnDemandModel(identifier): Promise<"not_on_demand" | "loaded" | "unreadable">`
+
+  - `not_on_demand`: the identifier is neither custom-endpoint nor host-scoped (the parsing already in `resolveDynamicProvider`, `:66-82`).
+  - `unreadable`: the provider can't be resolved for a host-scoped or custom identifier (its host or endpoint isn't configured); or `ensureProviderModelCatalog` throws; or its LLM source status reports no successful unit (`successfulUnitCount === 0` with `failedUnitCount > 0`, or a failed `state`).
+  - `loaded`: otherwise.
+- **`RunModelSelectionService.storedModelOffer`, for `autobyteus`:**
+  1. Within the same `MODEL_LIST_READ_MS` race (`raceDeadline`), call `loadOnDemandModel`. `unreadable` or the deadline means `list_unreadable`.
+  2. Otherwise read `LLMFactory`'s list as before: present means `offered`, absent means `not_offered`.
+
+  Static providers (cloud models registered at initialization) take step 2 directly. External runtimes are unchanged.
+- **Unreadable when a local host is down:** the start proceeds as at base and fails there with its own error. A run is never told to change a model that may be fine. This is D-12's rule.
+- **One source for the Settings note:**
+  - `RunModelSelectionService.listOptions` (`run-model-selection-service.ts:143-152`) applies the same step 1 for an `autobyteus` current model before reading the catalog. `unreadable` gives `modelListReadable: false` (an existing field), with the existing unreadable text.
+  - The web's note (`ExistingRunConfigEditor.vue:405`) shows only when `modelListReadable` is true and `currentModel` is absent. Today it shows on an unreadable list too: a false note, now removed for the root and the members.
+- **Tests:**
+  - LM Studio and Ollama: present after a load, the host down, and loaded but missing. Each through both start paths and the options read.
+  - A custom endpoint model.
+  - The deadline.
+  - API/E2E reruns SCP-E2E-006 after a restart.
+
+### R2: the agent's own "not found" answers first (CR-500-004)
+
+- **Premise read:** the AutoByteus backend resolves the definition in `prepare()` (`autobyteus-agent-run-backend-factory.ts:286-298`). G-5 sat before it on both paths (`standalone-agent-run-lifecycle-service.ts:105`, `configured-agent-execution-handle.ts:438`).
+- **Rule:** G-5 speaks only for an agent that exists. Both paths ask for the run's definition before G-5:
+  - the lifecycle service: `metadata.agentDefinitionId`, through `Pick<AgentDefinitionService, "getAgentDefinitionById">` passed in from the composition;
+  - the member handle: its member's definition ID, through the same `Pick` in its `options`.
+
+  When the definition is missing, G-5 is skipped, and the path continues to its existing not-found answer (base: `RUN_NOT_FOUND` / the backend's `AgentCreationError`).
+- This is an explicit precondition of the model refusal, not a second "not found" owner: the existing owner still answers. A failed definition read also skips G-5, and the backend reports it as today.
+- **Test:** the run of a retired agent (F-1, E-002) answers as at base, on both paths.
+
+### R3: the inherited-layer refusal's next step (CR-500-005, Local Fix)
+
+- At `collaborator-launch-resolver.ts:173` (a delegated agent that would use its delegating run's model, which is no longer offered), the text follows FR-1 … FR-4: "{Agent} can't be delegated to: it would use this run's model '{model}', which {Runtime} no longer offers. Set a model for {Agent} in its settings, or change this run's model, then delegate again."
+- The model detail keeps the existing "is not offered by {Runtime} now" wording (`modelNotOfferedText`).
+- Test DLP-005 and the probe follow. A row is added to the handoff's FU-030 table.
+
+### Classification
+
+Unchanged: G-5 is Medium, and the package stays `Large` / `High`.
