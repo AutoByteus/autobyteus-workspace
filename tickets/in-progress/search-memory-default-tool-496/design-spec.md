@@ -2,7 +2,7 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: `SR-001`
+- Current solution revision ID: `SR-002` (evidence-only re-base; requirements basis SR-001 unchanged)
 - Approved requirements baseline: `requirements-doc.md` at SR-001, approved by the Solution Designer within the founder's direction (user informed: conversation message and the message to `/project_task_manager`, 2026-11-16)
 - Behavior-defining supplements: none
 - User approval of the design: `Not required` (the founder: "do it now"; choices within the direction are the team's)
@@ -47,7 +47,7 @@
 | Code read | IN-011 | Native keeps the instance by name | Native tool reads scope from run-owned current exposure (D4) | — |
 | Code read | `autobyteus-agent-run-backend-factory.ts:171-262, 316, 486-512` | Create and restore both go through `buildAgentConfig`, then `createBackendFromAgent` | One place to create the per-run exposure holder | — |
 | Code read | IN-007 | Caps and `hasChunk` are node-wide | Filter inside the SQL and inside `nearest` (D6) | — |
-| Code read | IN-006, `run-execution-tree-shared-records.ts:36-44`, `agent-org-execution-tree-location-service.ts:22,141`, `task-team-root-memory-source.ts:22` | Definition ID available for every attributed kind | `MemoryRun.agentDefinitionId` (D5) | ASM-001 |
+| Code read | IN-006, `run-execution-tree-shared-records.ts:36-44`, `team-run-execution-tree-location-service.ts:20,186`, `agent-org-execution-tree-location-service.ts:21`, `agent-run-metadata-types.ts:8` (after the re-base onto `a781007713`) | Definition ID available for every attributed kind | `MemoryRun.agentDefinitionId` (D5) | ASM-001 |
 | Code read | IN-013 | The standalone host has its own definition services | Resolve scope where the definition is already loaded, never via a global lookup in the tool (D1) | — |
 | Code read | `agent-definition-config.ts:43-91` | `internal`/`semanticMemoryEnabled` pattern; merge filter list | `memorySearchEnabled` the same way (D7) | — |
 | Measurement | PR-001, PR-002 | Private runs reachable today; description ≈1,400 characters | REQ-002/003/007 | — |
@@ -110,7 +110,7 @@ None.
 - Change posture: `Feature` (with a privacy boundary)
 - Current design issue found: `No`. The shared exposure rule is the right single owner for "which tools a run has". The memory search facade is the right single owner for "which runs a search covers".
 - Structural triggers that fire:
-  - *Several kinds or forms* (Principle 1): two entry forms (native tool, MCP adapter) and every run kind (standalone, team member, Org member, task-team member, delegated copy, folder-only). Response: one scope resolved in the exposure rule and one filter in `MemorySearch`. Both forms only read the scope. Discovery derives the definition ID per kind, each in its existing branch; folder-only runs get `null`.
+  - *Several kinds or forms* (Principle 1): two entry forms (native tool, MCP adapter) and every run kind (agent run, delegated or not; team member; Org member; folder-only). Response: one scope resolved in the exposure rule and one filter in `MemorySearch`. Both forms only read the scope. Discovery derives the definition ID per kind, each in its existing branch; folder-only runs get `null`.
   - *Persisted-data transition* (Principle 5): the `MemoryRun` JSON record gains `agentDefinitionId`. Decision below.
   - *Derived data* (Principle 11): the exposure feeds equality, the MCP session and the notice. Each is listed in Change Scope. The definition ID was stored on `AGENT` subjects only. It moves to the run, so one record holds the fact once.
   - *Behavior by absence* (Principle 13): a scope must never be inferred from a missing value. `MemorySearch.search` takes a required `scope`. A record without a definition ID is excluded by an explicit rule ("covered = recorded definition ID equals the scope's"), and that rule is tested.
@@ -128,7 +128,7 @@ None.
 
 ## Terminology
 
-- **Memory search scope:** which runs one search covers. `node` means every run on this node. `agentDefinition` means the runs of one agent definition: standalone, team member, Org member, task-team member and delegated copies whose recorded definition ID equals it. In both, the asking run is left out. GLOSSARY "Memory search" gains one sentence: "An agent's own `search_memory` covers its own definition's runs unless its definition selects the tool, which covers the whole node."
+- **Memory search scope:** which runs one search covers. `node` means every run on this node. `agentDefinition` means the runs of one agent definition: agent runs (delegated or not), team members and Org members whose recorded definition ID equals it. In both, the asking run is left out. GLOSSARY "Memory search" gains one sentence: "An agent's own `search_memory` covers its own definition's runs unless its definition selects the tool, which covers the whole node."
 - **Platform-given tool:** a tool the shared exposure rule adds without a `toolNames` entry (the collaboration tools before; now `search_memory`).
 
 ## Legacy Removal Policy (Mandatory)
@@ -417,7 +417,7 @@ N/A.
   - the native backend narrowing on `applyDefinitionTools` (AC-009);
   - MCP adapter reading the session scope;
   - memory search own vs node, `wordsNotFound`, caps (AC-004: inject a small cap or use a fixture where B dominates);
-  - discovery sets `agentDefinitionId` for standalone, team member, Org member, task-team member (ASM-001);
+  - discovery sets `agentDefinitionId` for an agent run, a delegated run, a team member and an Org member (ASM-001);
   - config read/write/merge (AC-006);
   - the Model Router template (AC-007);
   - description length ≤ 900 (AC-008).

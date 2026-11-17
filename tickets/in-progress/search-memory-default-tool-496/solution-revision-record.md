@@ -5,6 +5,7 @@
 | Revision ID | Phase | Trigger / Report / Round | Finding IDs | Prior Status | Current Status | Affected Behavior / Requirement IDs | Result |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | SR-001 | Mixed (Requirements + Design) | Initial baseline: Task autobyteus-496 and the founder's decision comment | N/A | N/A | Requirements Approved; Design Ready | BEH-001–006, REQ-001–008, AC-001–010 | Architecture Design Complete; Medium / High; to architecture review |
+| SR-002 | Evidence | User: re-base the worktree on the updated remote (2026-11-17) | N/A | Requirements Approved; Design Ready | Unchanged | None (evidence: IN-006, ASM-001) | Re-based onto `a781007713`; design unchanged |
 
 ## Revision Entries
 
@@ -29,4 +30,24 @@
 - Handoff: `Architecture Design Complete` → `/software_engineering_team/architecture_reviewer` (rule: Large or High); result file `handoff-architecture-review.md`
 - Downstream impact: independent architecture review before implementation
 - Remaining gaps: ASM-001 (verified by implementation tests); FU-001 awaits the founder
+- Next action: architecture review
+
+### SR-002: re-base onto the updated remote
+
+- Phase and classification: `Refinement` (evidence only)
+- Trigger: the user asked to base the worktree on the latest remote (2026-11-17)
+- Triggering finding IDs: N/A
+- Prior status: requirements `Approved` (SR-001); design `Ready`
+- Current status: unchanged
+- IDs affected: none in intended behavior. IN-006 and the design's run-kind wording changed: since autobyteus-461 (`c079a394a3`), a delegated run is an ordinary agent run and memory-search discovery reads no task-team source, so own scope covers agent runs (delegated or not), team members and Org members.
+- Scenario-basis changes: none
+- Why recorded: the ticket branch moved from base `1e8b6e5d0a` to `a781007713` (551 commits; the rebase was clean). Of the design-cited files, only `memory-run-discovery.ts` and `memory_search.md` changed. The callers of the exposure rule are unchanged.
+- Sections changed: investigation-notes Meta, Source Log and IN-006; design-spec revision line, Evidence row, Several-kinds trigger, Terminology, Guidance tests; handoff base
+- Supplements: none
+- Intended behavior changed: `No`
+- Approval impact: none; SR-001 approval still applies (evidence-only)
+- Design/review basis invalidated: no. The architecture reviewer is told about the new base and the changed run kinds.
+- Classification: unchanged (`Medium` / `High`)
+- Handoff: informational message to `/software_engineering_team/architecture_reviewer` (review continues on the new base)
+- Remaining gaps: ASM-001 as before
 - Next action: architecture review

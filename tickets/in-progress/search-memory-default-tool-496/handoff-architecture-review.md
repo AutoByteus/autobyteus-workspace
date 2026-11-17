@@ -1,9 +1,9 @@
 # Handoff: Architecture Design Complete: search-memory-default-tool-496
 
 - Package: `search-memory-default-tool-496`; Project Task `autobyteus-496` (Project `project_a1377344-25db-482a-97cc-ecfdb0fb495a`), requested by `/project_task_manager` for the founder
-- Status: `Architecture Design Complete`, SR-001; requirements `Approved` (Solution Designer within the direction, user and PM informed)
+- Status: `Architecture Design Complete`, SR-002 (re-base only; design and requirements as SR-001); requirements `Approved` (Solution Designer within the direction, user and PM informed)
 - Classification: `task_size=Medium`, `architectural_risk=High` → independent architecture review (handoff rule: Large or High)
-- Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/search-memory-default-tool-496`, branch `codex/search-memory-default-tool-496`, base `origin/personal` @ `1e8b6e5d0a`; finalization target `origin/personal`
+- Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/search-memory-default-tool-496`, branch `codex/search-memory-default-tool-496`, base `origin/personal` @ `a781007713` (re-based 2026-11-17 from `1e8b6e5d0a`, SR-002); finalization target `origin/personal`
 - Ticket folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/search-memory-default-tool-496/tickets/in-progress/search-memory-default-tool-496/`
 
 ## Original request (summary)

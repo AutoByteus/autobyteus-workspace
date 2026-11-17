@@ -7,11 +7,11 @@
 - Workspace root: `/Users/normy/autobyteus_org/autobyteus-worktrees/search-memory-default-tool-496`
 - Repository mode: `Git`
 - Task worktree / branch: the path above, branch `codex/search-memory-default-tool-496`
-- Resolved base remote / branch / revision: `origin/personal` @ `1e8b6e5d0abb4ec7f64f7939725e08c94dacfbdc` (fetched 2026-11-16)
+- Resolved base remote / branch / revision: `origin/personal` @ `a7810077133792474acdc9cb5f1bd89996eac75e` (fetched 2026-11-17; rebased from `1e8b6e5d0a`, SR-002)
 - Finalization target remote / branch: `origin` / `personal` (RELEASE.md)
 - Bootstrap result: worktree created from the fresh `origin/personal`
 - Bootstrap blocker: none
-- Current solution revision ID: `SR-001`
+- Current solution revision ID: `SR-002`
 - Authorities read: requirements gate `references/requirements-engineering.md`, `references/finding-the-cause.md`, `references/ticket-scope.md` (2026-11-16); for design, see design-spec.md
 - Investigation status: complete for requirements and design
 
@@ -37,6 +37,7 @@
 | 2026-11-16 | Code | `src/agent-tools/mcp/agent-tool-mcp-session.ts`, `autobyteus-agent-run-backend.ts` `applyDefinitionTools`, `autobyteus-ts/src/agent/agent.ts` `replaceTools` | Running runs, native kept instances | IN-011 | — |
 | 2026-11-16 | Code | `src/embeddings/embedding-index.ts` `nearest` | Meaning filter | IN-007 | — |
 | 2026-11-16 | Code | `src/standalone-application-host/start-standalone-application-host.ts` | Definition service per host | IN-013 | — |
+| 2026-11-17 | Command | `git rebase origin/personal` (551 commits, to `a781007713`); `git diff 1e8b6e5d0a origin/personal` over every design-cited file | Re-base on the updated remote | Only `memory-run-discovery.ts` and `memory_search.md` changed (`c079a394a3`, autobyteus-461: task-team source and task-agent metadata removed; delegated runs are agent runs). Exposure callers unchanged (same 12 files). | IN-006 updated; design unchanged |
 
 ## Relevant Existing Behavior And Supported Product Paths
 
@@ -58,7 +59,7 @@
 | IN-003 | `docs/modules/tool_list_updates.md` | On a definition change: native `Agent.replaceTools` (live), Claude/AGY session replace (live), Codex/Grok reopen at next turn. A seen-tool-names record per run; a restored run whose tools differ hears "Your tools changed. Now available: …" with its first input. | REQ-008 needs no new delivery path | Exposure equality must include the scope so a scope-only change is applied |
 | IN-004 | Package configs | `search_memory` listed in: `autobyteus-agents/agents/{project-task-manager,deep-researcher,agent-package-creator}`, `agent-teams/marketing-team/agents/marketing-content-creator`, `agent-teams/article-writing-team/agents/article-writer` (5 of 106 public configs, excluding a ticket eval copy); 0 of 57 private; 0 built-in | Existing node-wide users to preserve | — |
 | IN-005 | `memory-tool-manifest.ts`, `memory-native-tools.ts`, MCP adapter | Native tool: `askingRunId = this.agentId`; MCP: `session.owner.runId`. Both call `getMemorySearch().search` with no scope | — | Both entry forms gain a scope |
-| IN-006 | `memory-search-models.ts` `MemoryRun` | The run record holds names, workspace, runtime, subject; the definition ID only on `AGENT` subjects. Discovery has the definition ID for every attributed kind: `metadata.agentDefinitionId` / task metadata / catalog row (agents), `configuredPlacement.agentDefinitionId` (team and Org members), `member.agentDefinitionId` (task teams); folder-only runs have none | Own scope is possible | Add `agentDefinitionId` to `MemoryRun`; records are rewritten by every full/catchUp pass (`findRunsStep` upserts all) and by a full find when a new run appears |
+| IN-006 | `memory-search-models.ts` `MemoryRun` | The run record holds names, workspace, runtime, subject; the definition ID only on `AGENT` subjects. Discovery has the definition ID for every attributed kind: `metadata.agentDefinitionId` / catalog row (agent runs, delegated or not: since autobyteus-461 a delegated run is an ordinary agent run, and discovery reads no task-team source), `configuredPlacement.agentDefinitionId` (team and Org members); folder-only runs have none | Own scope is possible | Add `agentDefinitionId` to `MemoryRun`; records are rewritten by every full/catchUp pass (`findRunsStep` upserts all) and by a full find when a new run appears |
 | IN-007 | `memory-search-service.ts`, `memory-search-store.ts`, `embedding-index.ts` | Text: `textCandidates(fts, 4000)` over all chunks, then filter. Meaning: `nearest(collection, query, {limit: 300})` sorts all fresh vectors then slices. `hasChunk` checks the whole index. | A filter applied after the caps drops own runs; `wordsNotFound` leaks | The scope filter goes inside the SQL queries and inside `nearest` before the slice |
 | IN-008 | `memory-tool-contract.ts` | Description ≈1,400 characters (1,504 source characters including quotes), plus a 2-parameter schema | Cost per call ≈ 330 + 60 tokens | Trim to ≤ 900, scope-neutral |
 | IN-009 | `agent_memory.md` § Semantic Memory; reflection skill | Semantic memory is per definition, opt-in (`semanticMemoryEnabled` in agent-config.json or a personal setting); off by default; adds a prompt section when on. The reflection skill writes `<semantic memory>/reflections/`, else `<workspace>/reflections/`. 4 public agents enable it. | The PM's premise "already reaches agents without package configuration" holds only through the personal setting | DEC-007: unchanged; FU-003 |
