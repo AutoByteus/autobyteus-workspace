@@ -168,7 +168,7 @@ const sendJson = (socket, message) => socket.send(JSON.stringify(message));
 const sendTeamJson = (socket, message) => sendJson(socket, parseTeamStreamServerMessage(message));
 const agentStatus = (status) => ({
   type: 'AGENT_STATUS',
-  payload: { status, agent_id: 'browser-agent-run', recoverableBlock: null },
+  payload: { status, agent_id: 'browser-agent-run', recoverableBlock: null, background_tasks_running: 0 },
 });
 
 const startWsServer = async () => {
