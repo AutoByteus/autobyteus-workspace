@@ -22,13 +22,8 @@ import { registerMobileWebStaticRoutes } from "../api/static/mobile-web.js";
 import { registerRestRoutes } from "../api/rest/index.js";
 import { registerWebsocketRoutes } from "../api/websocket/index.js";
 import { registerGraphql } from "../api/graphql/index.js";
-import { ApplicationPackageRootSettingsStore } from "../application-packages/stores/application-package-root-settings-store.js";
-import { ApplicationPackageRegistryStore } from "../application-packages/stores/application-package-registry-store.js";
-import { BuiltInApplicationPackageMaterializer } from "../application-packages/services/built-in-application-package-materializer.js";
 import { ApplicationPackageRegistryService } from "../application-packages/services/application-package-registry-service.js";
 import { ApplicationPackageCommandService } from "../application-packages/services/application-package-command-service.js";
-import { FileApplicationBundleProvider } from "../application-bundles/providers/file-application-bundle-provider.js";
-import { ApplicationBundleService } from "../application-bundles/services/application-bundle-service.js";
 import { ApplicationCapabilityService } from "../application-capability/services/application-capability-service.js";
 import { buildApplicationPlatformRuntime } from "../application-platform/runtime/build-application-platform-runtime.js";
 import type { ApplicationPlatformRuntime } from "../application-platform/runtime/application-platform-runtime.js";
@@ -44,6 +39,7 @@ import {
 import type { ScopedAgentToolMcpSessionAuthority } from "../agent-tools/mcp/agent-tool-mcp-session-authority.js";
 import { getGeneralProcessPublishedArtifactPublisher } from "../services/published-artifacts/published-artifact-publication-service.js";
 import { StudioRunModelConfigService } from "../run-history/services/studio-run-model-config-service.js";
+import { createStudioPackageServices } from "./studio-package-services.js";
 import { composeStudioRemoteCollaboration, createLateRemoteCollaborationBinding, type LateRemoteCollaborationBinding } from "./remote-collaboration-composition.js";
 import { createCollaborationRootResolver } from "./collaboration-root-resolver.js";
 import { composeCollaboration, composeTaskSide, type Collaboration, type TaskSide } from "./collaboration-composition.js";
@@ -172,20 +168,6 @@ const closeStudioProcessResources = async (input: {
       }
     }
   }
-};
-
-const createStudioPackageServices = (appConfig: AppConfig) => {
-  const packageRegistryService = new ApplicationPackageRegistryService({
-    rootSettingsStore: new ApplicationPackageRootSettingsStore(appConfig),
-    registryStore: new ApplicationPackageRegistryStore(appConfig),
-    builtInMaterializer: new BuiltInApplicationPackageMaterializer(appConfig),
-  });
-  const bundleProvider = new FileApplicationBundleProvider();
-  const bundleService = new ApplicationBundleService({
-    provider: bundleProvider,
-    packageRegistryService,
-  });
-  return { packageRegistryService, bundleProvider, bundleService };
 };
 
 const createStudioApplicationServices = (input: {
