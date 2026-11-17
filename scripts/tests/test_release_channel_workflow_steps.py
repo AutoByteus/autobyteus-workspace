@@ -5,6 +5,7 @@ exercise the exact shell that CI runs:
 
 - desktop "Resolve release metadata": which tags publish as GitHub pre-releases;
 - desktop and Android "Resolve release notes mode": pre-release tags use generated notes;
+- Docker "Resolve publish metadata": the run mode, the tags and the version tag it publishes;
 - Docker "Move beta tag": `:beta` only moves forward (fake `docker`, sandbox origin);
 - Android "Resolve release metadata": the versionCode it computes, or its refusal,
   matches `release_versions.py android-version-code`, which `desktop-release.sh`
@@ -257,6 +258,103 @@ class AndroidVersionCodeStepTest(unittest.TestCase):
         self.assertEqual("10050001", self.helper_code("1.5.0-beta.1"))
 
 
+def read_multiline_outputs(path: Path) -> Dict[str, str]:
+    """Reads GITHUB_OUTPUT with `key=value` and `key<<EOF` ... `EOF` entries."""
+    outputs: Dict[str, str] = {}
+    lines = iter(path.read_text(encoding="utf-8").splitlines())
+    for line in lines:
+        if "<<" in line and "=" not in line:
+            key, marker = line.split("<<", 1)
+            body = []
+            for body_line in lines:
+                if body_line == marker:
+                    break
+                body.append(body_line)
+            outputs[key] = "\n".join(body)
+        elif "=" in line:
+            key, value = line.split("=", 1)
+            outputs[key] = value
+    return outputs
+
+
+class DockerPublishMetadataStepTest(unittest.TestCase):
+    """Runs the Server Docker "Resolve publish metadata" step for each event and input form."""
+
+    def setUp(self) -> None:
+        self.tmp = Path(tempfile.mkdtemp(prefix="docker-meta-"))
+        self.addCleanup(shutil.rmtree, self.tmp, True)
+        self.step = extract_step(DOCKER_WORKFLOW, "Resolve publish metadata")
+
+    def resolve(self, *, event: str, ref: str, ref_name: str, release_tag: str = "", release_ref: str = "",
+                publish_zh: str = "false", build_only: str = "false") -> subprocess.CompletedProcess:
+        self.output = self.tmp / "output.txt"
+        self.output.write_text("", encoding="utf-8")
+        env = {
+            **os.environ, "GITHUB_EVENT_NAME": event, "GITHUB_REF": ref, "GITHUB_REF_NAME": ref_name,
+            "GITHUB_OUTPUT": str(self.output), "DEFAULT_IMAGE_NAME": IMAGE,
+            "INPUT_RELEASE_TAG": release_tag, "INPUT_RELEASE_REF": release_ref, "INPUT_IMAGE_NAME": "",
+            "INPUT_PUBLISH_ZH": publish_zh, "INPUT_BUILD_ONLY": build_only,
+        }
+        return run_bash(substitute_expressions(self.step["run"], {}), self.tmp, env)
+
+    def outputs(self, **kwargs: str) -> Dict[str, str]:
+        result = self.resolve(**kwargs)
+        self.assertEqual(0, result.returncode, result.stdout + result.stderr)
+        return read_multiline_outputs(self.output)
+
+    def test_version_tag_is_the_first_published_tag_of_each_variant(self) -> None:
+        cases = {
+            "default stable": ({"event": "push", "ref": "refs/tags/v1.5.14", "ref_name": "v1.5.14"},
+                               [f"{IMAGE}:1.5.14", f"{IMAGE}:latest"]),
+            "default beta": ({"event": "push", "ref": "refs/tags/v1.5.14-beta.1", "ref_name": "v1.5.14-beta.1"},
+                             [f"{IMAGE}:1.5.14-beta.1"]),
+            "zh stable": ({"event": "workflow_dispatch", "ref": "refs/heads/personal", "ref_name": "personal",
+                           "release_tag": "v1.5.12", "publish_zh": "true"},
+                          [f"{IMAGE}:1.5.12-zh", f"{IMAGE}:latest-zh"]),
+            "zh beta": ({"event": "workflow_dispatch", "ref": "refs/heads/personal", "ref_name": "personal",
+                         "release_tag": "v1.5.12-beta.3", "publish_zh": "true"},
+                        [f"{IMAGE}:1.5.12-beta.3-zh"]),
+        }
+        for name, (kwargs, tags) in cases.items():
+            with self.subTest(case=name):
+                outputs = self.outputs(**kwargs)
+                self.assertEqual("false", outputs["build_only"])
+                self.assertEqual(tags, outputs["tags"].splitlines())
+                self.assertEqual(tags[0], outputs["version_tag"])
+
+    def test_build_only_run_publishes_nothing_and_builds_the_dispatched_ref(self) -> None:
+        outputs = self.outputs(event="workflow_dispatch", ref="refs/heads/codex/x", ref_name="codex/x",
+                               build_only="true")
+        self.assertEqual("true", outputs["build_only"])
+        for key in ("release_tag", "normalized_tag", "version_tag", "tags", "build_variant"):
+            self.assertEqual("", outputs[key], key)
+        self.assertEqual("codex/x", outputs["release_ref"])
+        self.assertEqual("default", outputs["variant_label"])
+        zh = self.outputs(event="workflow_dispatch", ref="refs/heads/codex/x", ref_name="codex/x",
+                          release_ref="0123abc", publish_zh="true", build_only="true")
+        self.assertEqual(("0123abc", "zh", "", ""), (zh["release_ref"], zh["build_variant"], zh["tags"], zh["version_tag"]))
+
+    def test_build_only_refuses_a_release_tag(self) -> None:
+        result = self.resolve(event="workflow_dispatch", ref="refs/heads/personal", ref_name="personal",
+                              release_tag="v1.5.14", build_only="true")
+        self.assertNotEqual(0, result.returncode)
+        self.assertIn("A build-only run publishes nothing; omit release_tag.", result.stdout)
+        self.assertEqual("", self.output.read_text(encoding="utf-8"))
+
+    def test_a_dispatch_without_build_only_still_needs_a_release_tag(self) -> None:
+        result = self.resolve(event="workflow_dispatch", ref="refs/heads/personal", ref_name="personal")
+        self.assertNotEqual(0, result.returncode)
+        self.assertIn("release_tag is required", result.stdout)
+
+    def test_build_only_runs_never_share_a_release_concurrency_group(self) -> None:
+        workflow = DOCKER_WORKFLOW.read_text(encoding="utf-8")
+        self.assertIn(
+            "group: ${{ github.event.inputs.build_only == 'true' && format('server-docker-build-only-{0}', github.run_id)"
+            " || format('server-docker-release-{0}', github.event.inputs.release_tag || github.ref_name) }}",
+            workflow,
+        )
+
+
 class DockerMoveBetaTagStepTest(unittest.TestCase):
     """Runs the "Move beta tag" step in a clone of a sandbox origin with a fake docker."""
 
@@ -326,8 +424,22 @@ class DockerMoveBetaTagStepTest(unittest.TestCase):
             return []
         return self.docker_log.read_text(encoding="utf-8").splitlines()
 
-    def test_step_runs_only_for_the_default_variant(self) -> None:
-        self.assertEqual("${{ needs.prepare-release.outputs.build_variant == '' }}", self.step["if"])
+    def test_step_runs_only_for_the_default_variant_and_never_in_a_build_only_run(self) -> None:
+        self.assertEqual(
+            "${{ needs.prepare-release.outputs.build_variant == '' && needs.prepare-release.outputs.build_only != 'true' }}",
+            self.step["if"],
+        )
+
+    def test_step_runs_after_both_architectures_in_the_job_that_pushed_the_tags(self) -> None:
+        workflow = DOCKER_WORKFLOW.read_text(encoding="utf-8")
+        job = workflow[workflow.index("  publish-image:"):workflow.index("  publish-server-package:")]
+        self.assertIn("needs: [prepare-release, build]", job)
+        self.assertIn("- name: Move beta tag", job)
+        # Its checkout has the full commit history for `git fetch --tags` and `git show`.
+        checkout = job[job.index("- name: Checkout tags for the beta decision"):job.index("- name: Move beta tag")]
+        self.assertIn(f"if: {self.step['if']}", checkout)
+        self.assertIn("fetch-depth: 0", checkout)
+        self.assertIn("filter: tree:0", checkout)
 
     def test_newest_beta_moves_beta_to_its_version_image(self) -> None:
         self.push_tag("v1.4.91-beta.1")

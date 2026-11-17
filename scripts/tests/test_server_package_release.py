@@ -366,6 +366,7 @@ class PackageJobTest(unittest.TestCase):
     """Runs the package job's steps with fake docker and gh, as CI runs them."""
 
     JOB = "publish-server-package"
+    DIGEST = "sha256:" + "a" * 64
 
     def setUp(self) -> None:
         self.tmp = Path(tempfile.mkdtemp(prefix="server-package-job-"))
@@ -433,19 +434,42 @@ exec "{real_tar}" "${{args[@]}}"
     def test_job_runs_for_the_default_variant_only_and_alone_may_write_contents(self) -> None:
         job = self.job_text()
         self.assertIn("if: ${{ needs.prepare-release.outputs.build_variant == '' }}", job)
-        self.assertIn("needs: [prepare-release, build-and-push]", job)
-        self.assertIn("platform: [linux/amd64, linux/arm64]", job)
+        self.assertIn("needs: [prepare-release, publish-image]", job)
+        for platform, arch, package_arch in (("linux/amd64", "amd64", "x64"), ("linux/arm64", "arm64", "arm64")):
+            self.assertIn(f"- platform: {platform}\n            arch: {arch}\n            package_arch: {package_arch}\n", job)
         self.assertRegex(self.workflow, r"(?m)^permissions:\n  contents: read$")
         self.assertEqual(1, self.workflow.count("contents: write"))
         self.assertIn("    permissions:\n      contents: write", job)
         self.assertIn("SERVER_PACKAGE_SIGNING_KEY: ${{ secrets.SERVER_PACKAGE_SIGNING_KEY }}", job)
 
-    def test_steps_publish_the_images_package_signed_in_upload_order(self) -> None:
-        image = "autobyteus/autobyteus-server:1.5.12"
-        result = self.run_step("Extract the built-in server package", {"IMAGE": image, "PLATFORM": "linux/arm64"})
+    def test_job_extracts_from_the_digest_publish_image_checked(self) -> None:
+        job = self.job_text()
+        self.assertIn("DIGEST: ${{ needs.publish-image.outputs[format('{0}_digest', matrix.arch)] }}", job)
+        self.assertNotIn("download-artifact", job)
+        self.assertNotIn("normalized_tag }}:", job)
+        # Only the two folders the package steps read are checked out.
+        self.assertIn("sparse-checkout: |\n            scripts/server-package\n            autobyteus-server-ts/docker\n", job)
+
+    def test_wait_and_upload_run_only_when_publishing(self) -> None:
+        publishing = "${{ needs.prepare-release.outputs.build_only != 'true' }}"
+        self.assertEqual(publishing, extract_step(WORKFLOW, "Wait for the GitHub release")["if"])
+        self.assertEqual(publishing, extract_step(WORKFLOW, "Upload the server package to the release")["if"])
+        self.assertEqual("${{ needs.prepare-release.outputs.build_only == 'true' }}",
+                         extract_step(WORKFLOW, "Summarize the build-only server package")["if"])
+
+    def extract(self) -> None:
+        result = self.run_step("Extract the built-in server package",
+                               {"IMAGE_NAME": "autobyteus/autobyteus-server", "DIGEST": self.DIGEST, "PLATFORM": "linux/arm64"})
         self.assertEqual(0, result.returncode, result.stderr)
-        result = self.run_step("Archive, describe and sign the server package",
-                               {"NORMALIZED_TAG": "1.5.12", "SERVER_PACKAGE_SIGNING_KEY": self.private_key})
+
+    def package(self, **env: str) -> subprocess.CompletedProcess:
+        return self.run_step("Archive, describe and sign the server package",
+                             {"BUILD_ONLY": "false", "NORMALIZED_TAG": "1.5.12", "PACKAGE_ARCH": ARCH,
+                              "SERVER_PACKAGE_SIGNING_KEY": self.private_key, **env})
+
+    def test_steps_publish_the_images_package_signed_in_upload_order(self) -> None:
+        self.extract()
+        result = self.package()
         self.assertEqual(0, result.returncode, result.stderr)
         self.assertNotIn("PRIVATE KEY", result.stdout + result.stderr)
         asset_base = self.outputs.read_text(encoding="utf-8").split("asset_base=", 1)[1].strip()
@@ -453,12 +477,13 @@ exec "{real_tar}" "${{args[@]}}"
         release_env = {"GH_TOKEN": "t", "GH_REPO": "AutoByteus/autobyteus-workspace", "RELEASE_TAG": "v1.5.12"}
         result = self.run_step("Wait for the GitHub release", {**release_env, "FAKE_RELEASE_AFTER": "3"})
         self.assertEqual(0, result.returncode, result.stderr)
-        result = self.run_step("Upload the server package to the release", {**release_env, "ASSET_BASE": asset_base})
+        result = self.run_step("Upload the server package to the release",
+                               {**release_env, "ASSET_BASE": asset_base, "PLATFORM": "linux/arm64"})
         self.assertEqual(0, result.returncode, result.stderr)
 
         calls = self.calls.read_text(encoding="utf-8").splitlines()
         self.assertEqual([
-            f"docker create --platform linux/arm64 --name server-package-source {image}",
+            f"docker create --platform linux/arm64 --name server-package-source autobyteus/autobyteus-server@{self.DIGEST}",
             f"docker cp server-package-source:/opt/autobyteus/server-package {self.runner_temp}/server-package",
             "docker rm server-package-source",
         ], calls[:3])
@@ -478,13 +503,246 @@ exec "{real_tar}" "${{args[@]}}"
         unpacked.mkdir()
         subprocess.run(["tar", "-xzf", str(archive), "-C", str(unpacked)], check=True)
         self.assertEqual(tree(self.image_package), tree(unpacked))
-        self.assertIn(f"`{name}.json.sig`", self.summary.read_text(encoding="utf-8"))
+        summary = self.summary.read_text(encoding="utf-8")
+        self.assertIn("### Server package (linux/arm64)", summary)
+        self.assertIn(f"`{name}.json.sig`", summary)
 
-    def test_a_release_that_never_appears_fails_the_job(self) -> None:
+    def test_a_package_of_another_architecture_is_refused(self) -> None:
+        self.extract()
+        other = "x64" if ARCH == "arm64" else "arm64"
+        result = self.package(PACKAGE_ARCH=other)
+        self.assertNotEqual(0, result.returncode)
+        self.assertIn(f"The image's server package is for '{ARCH}', not '{other}'", result.stdout)
+        self.assertEqual([], list((self.runner_temp / "server-package-assets").iterdir()))
+        self.assertEqual("", self.outputs.read_text(encoding="utf-8") if self.outputs.exists() else "")
+
+    def test_build_only_signs_the_package_under_its_own_version_and_uploads_nothing(self) -> None:
+        self.extract()
+        result = self.package(BUILD_ONLY="true", NORMALIZED_TAG="")
+        self.assertEqual(0, result.returncode, result.stderr)
+        asset_base = self.outputs.read_text(encoding="utf-8").split("asset_base=", 1)[1].strip()
+        name = f"autobyteus-server-1.5.12-linux-{ARCH}"
+        self.assertTrue(asset_base.endswith(name))
+        self.assertTrue(verify(self.public_key, Path(f"{asset_base}.json"), Path(f"{asset_base}.json.sig")))
+        result = self.run_step("Summarize the build-only server package", {"ASSET_BASE": asset_base, "PLATFORM": "linux/arm64"})
+        self.assertEqual(0, result.returncode, result.stderr)
+        archive = Path(f"{asset_base}.tar.gz")
+        summary = self.summary.read_text(encoding="utf-8")
+        self.assertIn("### Server package (linux/arm64), build only: not uploaded", summary)
+        for suffix in (".tar.gz", ".json", ".json.sig"):
+            self.assertIn(f"- `{name}{suffix}`", summary)
+        self.assertIn(f"Archive SHA-256: `{hashlib.sha256(archive.read_bytes()).hexdigest()}`, size: {archive.stat().st_size} bytes",
+                      summary)
+        self.assertFalse(any(call.startswith("gh ") for call in self.calls.read_text(encoding="utf-8").splitlines()))
+
+    def test_a_release_that_never_appears_fails_the_job_after_60_minutes(self) -> None:
         result = self.run_step("Wait for the GitHub release", {"GH_TOKEN": "t", "GH_REPO": "r", "RELEASE_TAG": "v1.5.12",
                                                                "FAKE_RELEASE_AFTER": "999"})
         self.assertNotEqual(0, result.returncode)
-        self.assertIn("did not appear within 30 minutes", result.stdout)
+        self.assertIn("The GitHub release v1.5.12 did not appear within 60 minutes", result.stdout)
+        # 120 polls 30 seconds apart.
+        self.assertEqual("120", (self.tmp / "views").read_text(encoding="utf-8").strip())
+        self.assertIn("sleep 30", extract_step(WORKFLOW, "Wait for the GitHub release")["run"])
+
+
+def job_section(workflow: str, job: str) -> str:
+    """The text of one top-level job, up to the next one."""
+    start = workflow.index(f"\n  {job}:\n")
+    following = re.search(r"\n  [a-z][a-z-]*:\n", workflow[start + 1:])
+    return workflow[start:start + 1 + following.start()] if following else workflow[start:]
+
+
+class BuildJobTest(unittest.TestCase):
+    """Each architecture builds on its own runner and is pushed untagged, by digest."""
+
+    def setUp(self) -> None:
+        self.workflow = WORKFLOW.read_text(encoding="utf-8")
+        self.job = job_section(self.workflow, "build")
+
+    def test_each_architecture_builds_natively_and_pushes_by_digest(self) -> None:
+        self.assertIn("runs-on: ${{ matrix.runner }}", self.job)
+        self.assertIn("fail-fast: false", self.job)
+        self.assertIn("- platform: linux/amd64\n            arch: amd64\n            runner: ubuntu-latest\n", self.job)
+        self.assertIn("- platform: linux/arm64\n            arch: arm64\n            runner: ubuntu-24.04-arm\n", self.job)
+        self.assertIn("platforms: ${{ matrix.platform }}", self.job)
+        self.assertIn("outputs: type=image,name=${{ needs.prepare-release.outputs.image_name }},"
+                      "push-by-digest=true,name-canonical=true,push=true", self.job)
+        self.assertIn("provenance: false", self.job)
+        self.assertIn("sbom: false", self.job)
+        self.assertIn("name: server-image-digest-${{ matrix.arch }}", self.job)
+        self.assertIn("overwrite: true", self.job)
+        self.assertIn("fetch-depth: 1", self.job)
+
+    def test_no_tag_emulation_or_layer_cache(self) -> None:
+        self.assertNotIn("tags:", self.job)
+        self.assertNotIn("push: true", self.job)
+        for retired in ("setup-qemu-action", "type=gha", "cache-from", "cache-to", "build-and-push:"):
+            self.assertNotIn(retired, self.workflow)
+
+
+class DiskGuardStepTest(unittest.TestCase):
+    """The build and package jobs clean the runner's disk only when it has less than 30 GB free."""
+
+    STEP = "- name: Free runner disk space when low"
+
+    def setUp(self) -> None:
+        self.tmp = Path(tempfile.mkdtemp(prefix="disk-guard-"))
+        self.addCleanup(shutil.rmtree, self.tmp, True)
+        bin_dir = self.tmp / "bin"
+        bin_dir.mkdir()
+        self.calls = self.tmp / "calls.txt"
+        write_executable(bin_dir / "df", f"""#!/usr/bin/env bash
+echo "df $*" >> "{self.calls}"
+if [[ "$1" == -BG ]]; then printf ' Avail\\n  %sG\\n' "$FAKE_FREE_GB"; fi
+""")
+        for tool in ("sudo", "docker"):
+            write_executable(bin_dir / tool, f'#!/usr/bin/env bash\necho "{tool} $*" >> "{self.calls}"\n')
+        self.path = f"{bin_dir}{os.pathsep}{os.environ['PATH']}"
+
+    def test_both_jobs_have_the_same_step(self) -> None:
+        workflow = WORKFLOW.read_text(encoding="utf-8")
+        copies = [block.split("\n      - name:", 1)[0] for block in workflow.split(self.STEP)[1:]]
+        self.assertEqual(2, len(copies))
+        self.assertEqual(copies[0], copies[1])
+        self.assertIn(self.STEP, job_section(workflow, "build"))
+        self.assertIn(self.STEP, job_section(workflow, "publish-server-package"))
+
+    def run_guard(self, free_gb: str) -> list:
+        self.calls.write_text("", encoding="utf-8")
+        step = extract_step(WORKFLOW, "Free runner disk space when low")
+        result = run_bash(substitute_expressions(step["run"], {}), self.tmp, {"PATH": self.path, "FAKE_FREE_GB": free_gb})
+        self.assertEqual(0, result.returncode, result.stdout + result.stderr)
+        self.assertIn(f"Free disk on /: {free_gb} GB", result.stdout)
+        return self.calls.read_text(encoding="utf-8").splitlines()
+
+    def test_cleans_only_below_30_gb(self) -> None:
+        self.assertEqual(["df -BG --output=avail /"], self.run_guard("79"))
+        self.assertEqual(["df -BG --output=avail /"], self.run_guard("30"))
+        calls = self.run_guard("29")
+        self.assertEqual("sudo rm -rf", calls[1][:len("sudo rm -rf")])
+        self.assertEqual(["docker system prune -af", "df -h /"], calls[2:])
+
+
+def index_json(entries) -> str:
+    """An OCI image index listing (architecture, digest) entries for linux."""
+    return json.dumps({
+        "schemaVersion": 2,
+        "mediaType": "application/vnd.oci.image.index.v1+json",
+        "manifests": [{"mediaType": "application/vnd.oci.image.manifest.v1+json", "digest": digest, "size": 1234,
+                       "platform": {"architecture": arch, "os": "linux"}} for arch, digest in entries],
+    }, indent=2)
+
+
+class PublishImageStepTest(unittest.TestCase):
+    """Runs "Create and check the multi-arch image" with a fake docker that returns given indexes."""
+
+    IMAGE = "autobyteus/autobyteus-server"
+    AMD64 = "sha256:" + "a" * 64
+    ARM64 = "sha256:" + "b" * 64
+    OTHER = "sha256:" + "c" * 64
+
+    def setUp(self) -> None:
+        self.tmp = Path(tempfile.mkdtemp(prefix="publish-image-"))
+        self.addCleanup(shutil.rmtree, self.tmp, True)
+        self.runner_temp = self.tmp / "runner"
+        (self.runner_temp / "digests").mkdir(parents=True)
+        (self.runner_temp / "digests" / "amd64").write_text(self.AMD64 + "\n", encoding="utf-8")
+        (self.runner_temp / "digests" / "arm64").write_text(self.ARM64 + "\n", encoding="utf-8")
+        bin_dir = self.tmp / "bin"
+        bin_dir.mkdir()
+        self.calls = self.tmp / "calls.txt"
+        self.dry_run_index = self.tmp / "dry-run.json"
+        self.pushed_index = self.tmp / "pushed.json"
+        write_executable(bin_dir / "docker", f"""#!/usr/bin/env bash
+echo "docker $*" >> "{self.calls}"
+case "$*" in
+  "buildx imagetools create --dry-run "*) cat "{self.dry_run_index}" ;;
+  "buildx imagetools inspect --raw "*) cat "{self.pushed_index}" ;;
+esac
+""")
+        self.path = f"{bin_dir}{os.pathsep}{os.environ['PATH']}"
+        self.outputs = self.tmp / "outputs.txt"
+        good = index_json([("amd64", self.AMD64), ("arm64", self.ARM64)])
+        self.dry_run_index.write_text(good, encoding="utf-8")
+        self.pushed_index.write_text(good, encoding="utf-8")
+
+    def run_step(self, *, build_only: str, version_tag: str = "", tags: str = "") -> subprocess.CompletedProcess:
+        self.outputs.write_text("", encoding="utf-8")
+        step = extract_step(WORKFLOW, "Create and check the multi-arch image")
+        env = {"PATH": self.path, "RUNNER_TEMP": str(self.runner_temp), "GITHUB_OUTPUT": str(self.outputs),
+               "BUILD_ONLY": build_only, "IMAGE_NAME": self.IMAGE, "VERSION_TAG": version_tag, "TAGS": tags}
+        return run_bash(substitute_expressions(step["run"], {}), self.tmp, env)
+
+    def docker_calls(self) -> list:
+        return self.calls.read_text(encoding="utf-8").splitlines() if self.calls.exists() else []
+
+    def sources(self) -> str:
+        return f"{self.IMAGE}@{self.AMD64} {self.IMAGE}@{self.ARM64}"
+
+    def assert_checked_outputs(self) -> None:
+        self.assertEqual(f"amd64_digest={self.AMD64}\narm64_digest={self.ARM64}\n", self.outputs.read_text(encoding="utf-8"))
+
+    def test_job_needs_both_architectures_and_outputs_the_checked_digests(self) -> None:
+        job = job_section(WORKFLOW.read_text(encoding="utf-8"), "publish-image")
+        self.assertIn("needs: [prepare-release, build]", job)
+        self.assertIn("amd64_digest: ${{ steps.index.outputs.amd64_digest }}", job)
+        self.assertIn("arm64_digest: ${{ steps.index.outputs.arm64_digest }}", job)
+        self.assertIn("pattern: server-image-digest-*", job)
+        self.assertIn("merge-multiple: true", job)
+        self.assertIn("VERSION_TAG: ${{ needs.prepare-release.outputs.version_tag }}", job)
+
+    def test_build_only_checks_the_dry_run_index_and_pushes_nothing(self) -> None:
+        result = self.run_step(build_only="true")
+        self.assertEqual(0, result.returncode, result.stdout + result.stderr)
+        self.assertEqual([f"docker buildx imagetools create --dry-run -t {self.IMAGE}:build-only {self.sources()}"],
+                         self.docker_calls())
+        self.assertIn("The dry-run index lists linux/amd64", result.stdout)
+        self.assert_checked_outputs()
+
+    def test_publish_pushes_every_tag_then_checks_the_version_tag(self) -> None:
+        tags = f"{self.IMAGE}:1.5.14\n{self.IMAGE}:latest"
+        result = self.run_step(build_only="false", version_tag=f"{self.IMAGE}:1.5.14", tags=tags)
+        self.assertEqual(0, result.returncode, result.stdout + result.stderr)
+        self.assertEqual([
+            f"docker buildx imagetools create --dry-run -t {self.IMAGE}:1.5.14 {self.sources()}",
+            f"docker buildx imagetools create -t {self.IMAGE}:1.5.14 -t {self.IMAGE}:latest {self.sources()}",
+            f"docker buildx imagetools inspect --raw {self.IMAGE}:1.5.14",
+        ], self.docker_calls())
+        self.assert_checked_outputs()
+
+    def test_a_zh_republish_checks_its_own_version_tag(self) -> None:
+        result = self.run_step(build_only="false", version_tag=f"{self.IMAGE}:1.5.12-zh",
+                               tags=f"{self.IMAGE}:1.5.12-zh\n{self.IMAGE}:latest-zh")
+        self.assertEqual(0, result.returncode, result.stdout + result.stderr)
+        self.assertEqual(f"docker buildx imagetools inspect --raw {self.IMAGE}:1.5.12-zh", self.docker_calls()[-1])
+        self.assert_checked_outputs()
+
+    def test_a_wrong_dry_run_index_fails_before_any_tag_is_pushed(self) -> None:
+        cases = {
+            "swapped": [("amd64", self.ARM64), ("arm64", self.AMD64)],
+            "missing arm64": [("amd64", self.AMD64)],
+            "another digest": [("amd64", self.AMD64), ("arm64", self.OTHER)],
+            "an extra entry": [("amd64", self.AMD64), ("arm64", self.ARM64), ("arm64", self.OTHER)],
+        }
+        for name, entries in cases.items():
+            for build_only in ("true", "false"):
+                with self.subTest(case=name, build_only=build_only):
+                    self.calls.write_text("", encoding="utf-8")
+                    self.dry_run_index.write_text(index_json(entries), encoding="utf-8")
+                    result = self.run_step(build_only=build_only, version_tag=f"{self.IMAGE}:1.5.14",
+                                           tags=f"{self.IMAGE}:1.5.14")
+                    self.assertNotEqual(0, result.returncode)
+                    self.assertIn("The dry-run index does not list exactly", result.stdout)
+                    self.assertEqual(1, len(self.docker_calls()))
+                    self.assertIn("--dry-run", self.docker_calls()[0])
+                    self.assertEqual("", self.outputs.read_text(encoding="utf-8"))
+
+    def test_a_wrong_pushed_index_fails_and_outputs_no_digest(self) -> None:
+        self.pushed_index.write_text(index_json([("amd64", self.AMD64), ("arm64", self.OTHER)]), encoding="utf-8")
+        result = self.run_step(build_only="false", version_tag=f"{self.IMAGE}:1.5.14", tags=f"{self.IMAGE}:1.5.14")
+        self.assertNotEqual(0, result.returncode)
+        self.assertIn(f"The pushed {self.IMAGE}:1.5.14 index does not list exactly", result.stdout)
+        self.assertEqual("", self.outputs.read_text(encoding="utf-8"))
 
 
 def tree(root: Path) -> dict:
