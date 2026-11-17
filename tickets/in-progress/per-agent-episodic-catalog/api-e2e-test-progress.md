@@ -56,3 +56,11 @@ Your own progress log while tests run. Read it first whenever you pick the run b
 | 2026-11-18 05:00 | API-04…API-10 | Started | | round 2 run 4: EC-06 adds a damaged org tree (O3) to close the org-tree gap (was unit + reading only) |
 | 2026-11-18 05:20 | API-04…API-10 | Completed | Pass | round 2 run 4 (authoritative): 7/7, damaged org tree included; API-16 rerun Pass |
 | 2026-11-18 05:25 | — | Completed | Pass | round 2 closed: Pass, 95%; handoff to /code_reviewer for test-code review |
+| 2026-11-18 06:30 | — | Checkpoint | | ROUND 3 (CRR-005, code 1324c3e8f4; delta: agentRuns attribution from metadata only). Rerun: build, E2E file (EC-06 title/comment updated), search-memory-tool + architecture boundaries units, server typecheck. Reused: IMP-16/17/18. Still valid: rest of unit, integration, whole E2E (discovery reached only through the catalog background pass; delta changes attribution values, not flow). Round-2 authoritative files moved to evidence/round2/ |
+| 2026-11-18 06:31 | API-00 | Started | | build on 1324c3e8f4 |
+| 2026-11-18 06:45 | API-00 | Completed | Pass | build on 1324c3e8f4 |
+| 2026-11-18 06:46 | API-04…API-10 | Started | | round 3 run 1 |
+| 2026-11-18 06:55 | API-04…API-10 | Completed | Pass | round 3: 7/7 on 1324c3e8f4 |
+| 2026-11-18 06:56 | API-17 | Started | | discovery-touching units outside IMP-16 + discovery unit |
+| 2026-11-18 07:10 | API-17, API-16 | Completed | Pass | 34/34 units; typecheck at baseline |
+| 2026-11-18 07:15 | — | Completed | Pass | round 3 closed: Pass, 95%; handoff to /code_reviewer |

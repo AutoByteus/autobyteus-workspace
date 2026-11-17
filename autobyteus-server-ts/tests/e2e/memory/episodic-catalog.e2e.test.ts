@@ -604,7 +604,7 @@ suite("Episodic catalogs on a real server (real runs of every kind, GraphQL dele
     expect(outside.filter((file) => !/^(team_)?run_history_index\.json(\.backup-[0-9TZ-]+)?$/.test(file)), "nothing under memory/ outside episodic/ changed but the index migrations' files").toEqual([]);
   }, 600_000);
 
-  it("EC-06: a start with no episodic/ rebuilds every catalog as it was, with a run without a journal, an older manifest and a damaged team record; nothing outside episodic/ changes", async () => {
+  it("EC-06: a start with no episodic/ rebuilds every catalog as it was, with a run without a journal and an older manifest; damaged team and org trees, damaged run metadata and a non-JSON manifest are left out with a warning naming each; nothing outside episodic/ changes", async () => {
     await stopBuilt();
     const before = await catalogFiles();
     await fs.rm(episodicDir, { recursive: true });
@@ -646,7 +646,8 @@ suite("Episodic catalogs on a real server (real runs of every kind, GraphQL dele
     evidence.ec06 = { listeningMs: started.listeningAt - started.spawnedAt, builtWithinMs: builtAt - started.spawnedAt, outsideEpisodicChanged: outside,
       t3Warnings: warnedT3.map((l) => l.slice(0, 600)), o3Warnings: warnedO3.map((l) => l.slice(0, 600)), copy2LeftOut: leftOutCopy2.map((l) => l.slice(0, 600)), aMetadataWarnings: aWarnings.map((l) => l.slice(0, 600)),
       serverLines: episodicLines().slice(0, 20).map((l) => l.slice(0, 500)), catalogs: Object.fromEntries(Object.entries(after).map(([f, v]) => [f, v.text])) };
-    // Every catalog as before, except: O1's manager has no journal yet (start = recorded start), T3's mate is left out.
+    // Every catalog as before, except: O1's manager has no journal yet (start = recorded start); T3's mate, O3's writer, A
+    // and copy2 are left out (D's catalog, checked below).
     // E has no run and, with episodic/ gone, no folder: it gets no catalog (contract §1); every other catalog is back.
     expect(Object.keys(after).sort()).toEqual(Object.keys(before).filter((file) => file !== `${encodeURIComponent(ids.E)}/catalog.md`).sort());
     const fileOf = (id: string) => `${encodeURIComponent(id)}/catalog.md`;

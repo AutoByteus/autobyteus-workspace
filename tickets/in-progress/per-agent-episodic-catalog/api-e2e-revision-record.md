@@ -8,6 +8,7 @@ The latest coverage investigation and execution coverage report remain authorita
 | --- | --- | --- | --- | --- |
 | API-REV-001 | Code reviewer, `code-review-report.md` CRR-001 Pass, round 1 | SR-002, ARCH-REV-002/004, IR-001, CRR-001 | N/A | `Fail` / 88% |
 | API-REV-002 | Code reviewer, `code-review-report.md` CRR-003 Pass, round 2 | SR-003, ARCH-REV-005, IR-002, CRR-003 | `Fail` / 88% | `Pass` / 95% |
+| API-REV-003 | Code reviewer, `code-review-report.md` CRR-005 Pass (after test review CRR-004 TR-001), round 3 | IR-003, CRR-004, CRR-005 | `Pass` / 95% | `Pass` / 95% |
 
 ## Revision Entries
 
@@ -54,3 +55,26 @@ None.
 - New or remaining failure IDs: none caused by this change; suite failures on this host recorded as FU-003 and FU-004 with their causes
 - Recommended owner: `/code_reviewer` for proportional test-code review
 - Remaining risks, blocked evidence, or untested scope: AC-010's server start on the founder's data (user, delivery gate); Task-title lookup cost on real data not measured; the history-row branch for damaged `run_metadata.json` is not reached in real use (report API-09 note); docs-sync note (API-15)
+
+### API-REV-003 — Round 3: definition from metadata alone (TR-001)
+
+- Triggering role, report path, and round: `/code_reviewer`, `code-review-report.md` (CRR-005 `Pass` of IR-003, resolving TR-001 of `api-e2e-test-review-report.md`), round 3
+- Triggering finding or case IDs: TR-001
+- Related revision IDs: IR-003; CRR-004, CRR-005
+- Why this revision was recorded: rerun after a source change in discovery
+- Coverage decisions or durable test paths changed: `tests/e2e/memory/episodic-catalog.e2e.test.ts`: EC-06's `it` title and one comment now name the full damage set (the test review's non-blocking note); no assertion changed
+- Cases added, changed, removed, or rechecked: rerun API-00, API-04…API-10, API-16; new API-17; reused IMP-16/17/18; the rest Still valid (plan in the report's Round section)
+- Commands, environment, fixture, or broader-validation delta: none
+
+#### Prior Failure Resolution
+
+| Prior Case / Failure Reference | Previous Classification | Current Resolution | Case IDs Now Proving It |
+| --- | --- | --- | --- |
+| TR-001 (test review): unreachable history-row attribution branch shown by EC-06 | Local Fix (implementation) | IR-003 removed the branch; EC-06's observed outcome (run A left out with a `run_metadata.json` warning) unchanged | API-09, API-17 |
+
+- Canonical artifacts and sections updated: the execution report (Round, Cases, AC proof, result notes), the investigation (§ Round 3 Plan), progress log, `evidence/` (round 2's authoritative E2E files moved to `evidence/round2/`)
+- Prior result and confidence: `Pass`, 95%
+- Current result and confidence: `Pass`, 95%
+- New or remaining failure IDs: none
+- Recommended owner: `/code_reviewer` for proportional test-code review
+- Remaining risks, blocked evidence, or untested scope: as API-REV-002, without the history-row note and the docs-sync note (both resolved by IR-003)

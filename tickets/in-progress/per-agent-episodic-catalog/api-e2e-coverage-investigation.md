@@ -19,10 +19,10 @@ The plan: what must be proven, how, the decisions about existing tests, and the 
 - Relevant Delivery Revision IDs: N/A
 - API/E2E Revision Record (created after the first completed result): `api-e2e-revision-record.md`
 - Current API/E2E Revision ID: `API-REV-001` (on completion)
-- Current Investigation Round: 2
-- Trigger: round 1: code review CRR-001 Pass; round 2: CRR-003 Pass of IR-002 (SR-003), resolving round 1's API-09 failure
+- Current Investigation Round: 3
+- Trigger: round 1: code review CRR-001 Pass; round 2: CRR-003 Pass of IR-002 (SR-003), resolving round 1's API-09 failure; round 3: CRR-005 Pass of IR-003 (TR-001: a standalone run's definition from its metadata alone)
 - Prior Investigation Reviewed: round 1 (this file, API-REV-001)
-- Latest Authoritative Investigation: this file, round 2
+- Latest Authoritative Investigation: this file, round 3
 - Code validated: branch `codex/per-agent-episodic-catalog`, code at `0be36462ef` (HEAD `89f35132ed` adds only ticket docs)
 
 ## Current Requirement And Design Basis
@@ -202,6 +202,10 @@ Execution notes that refined the plan (no change of scope):
 - Rerun by impact: IR-002 changes discovery, the journal span read and the catalog owner; every case exercises them, so every case is Rerun (build, the E2E file, unit, server typecheck), plus integration and the whole E2E suite, which were Next Round. Reused: IMP-10 (catalog/discovery units), IMP-12 (web typecheck), IMP-14/15 (AC-010 build over a clone, privacy), all on `159286c1c1`.
 - EC-06 extended for IR-002's outcomes: damaged team tree (warning code now asserted), damaged org tree, damaged standalone `run_metadata.json` (left out with a warning: the readiness index does not admit it, so its history row is not offered), non-JSON journal manifest (`EPISODIC_CATALOG_RUN_LEFT_OUT`).
 - Round 1's Ambiguity (damaged record without a warning) is resolved by IR-002.
+
+## Round 3 Plan (CRR-005, code `1324c3e8f4`)
+
+- Delta: `agentRuns` in `run-folder-discovery.ts` only (plus its unit test and the module doc). Rerun: build, the E2E file (EC-06 asserts run A's outcome; title and one comment updated), the server typecheck, and API-17 (unit files outside IMP-16's scope that reach discovery). Reused: IMP-16, IMP-17, IMP-18. Still valid: the rest of the unit, integration and whole E2E suites (they never construct discovery, or reach it only through the catalog's background pass without reading its output; the delta changes attribution values, not I/O or flow).
 
 ## Investigation Decision
 
