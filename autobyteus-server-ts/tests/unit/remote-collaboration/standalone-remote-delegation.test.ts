@@ -281,7 +281,7 @@ describe("remote delegation between two standalone runs, in process (slice 1 ste
     expect(a.resources.entry({ agentRunId: "publisher_r1" })).toMatchObject({ taskId: "ad_hoc_task_1", role: "assigned", start: "started", open: true,
       nodeId: B_ID, recipientAddress: "/publisher",
       delegatedFrom: { delegatingRun: { rootSubjectKind: "agent", rootRunId: DELEGATOR }, delegatorAgentRunId: DELEGATOR } });
-    await expect(fs.access(path.join(new AgentMemoryLayout(a.memoryDir).getAgentRunCollaborationDirPath(DELEGATOR), "collaboration_tree.json"))).rejects.toThrow();
+    await expect(fs.access(path.join(path.join(a.memoryDir, "agents", DELEGATOR, "collaboration"), "collaboration_tree.json"))).rejects.toThrow();
     // autobyteus-278, SR-084: A's run tree lists it as a peer row under the delegator, never among the local copies.
     const runTree = new RunTreeView({ tree: a.taskSide.tree, ownTreeOf: async () => ({ kind: "agent", agentRunId: DELEGATOR, address: "/assistant" }),
       projection: createChildRowProjection({ memoryDir: a.memoryDir, tree: a.taskSide.tree, channel: () => null, peerSummaryOf: () => null }) });
@@ -356,7 +356,7 @@ describe("remote delegation between two standalone runs, in process (slice 1 ste
     expect(b.metadata.size).toBe(0);
     expect(a.resources.entries.size).toBe(0);
     expect(a.resources.adHocTaskIds()).toEqual([]);
-    await expect(fs.access(new AgentMemoryLayout(a.memoryDir).getAgentRunCollaborationDirPath(DELEGATOR))).rejects.toThrow();
+    await expect(fs.access(path.join(a.memoryDir, "agents", DELEGATOR, "collaboration"))).rejects.toThrow();
   });
 
   it("refuses files on a follow-up, a saved Task for the remote run, and messages from a run that is not linked (AC-107, AC-108, AR-003)", async () => {

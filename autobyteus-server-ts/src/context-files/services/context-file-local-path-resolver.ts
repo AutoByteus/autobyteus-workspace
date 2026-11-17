@@ -14,8 +14,6 @@ const TEAM_MEMBER_FINAL_ROUTE =
   /^\/rest\/team-runs\/([^/]+)\/agent-runs\/([^/]+)\/context-files\/([^/?#]+)$/;
 const ORG_MEMBER_FINAL_ROUTE =
   /^\/rest\/agent-org-runs\/([^/]+)\/agent-runs\/([^/]+)\/context-files\/([^/?#]+)$/;
-const AGENT_COLLABORATION_MEMBER_FINAL_ROUTE =
-  /^\/rest\/agent-collaborations\/([^/]+)\/agent-runs\/([^/]+)\/context-files\/([^/?#]+)$/;
 
 const isLoopbackHostname = (hostname: string): boolean =>
   hostname === "localhost" || hostname === "127.0.0.1" || hostname === "::1";
@@ -102,15 +100,6 @@ export class ContextFileLocalPathResolver {
         orgRunId: decodePathSegment(orgMatch[1]),
         agentRunId: decodePathSegment(orgMatch[2]),
       }, decodePathSegment(orgMatch[3]));
-    }
-
-    const collaborationMatch = pathname.match(AGENT_COLLABORATION_MEMBER_FINAL_ROUTE);
-    if (collaborationMatch?.[1] && collaborationMatch?.[2] && collaborationMatch?.[3]) {
-      return this.resolveExistingFinalPath({
-        kind: "agent_collaboration_member_final",
-        hostRunId: decodePathSegment(collaborationMatch[1]),
-        agentRunId: decodePathSegment(collaborationMatch[2]),
-      }, decodePathSegment(collaborationMatch[3]));
     }
 
     return null;

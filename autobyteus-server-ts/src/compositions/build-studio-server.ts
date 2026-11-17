@@ -479,7 +479,7 @@ export const buildStudioServer = async (input: {
         async (restApp) => registerRestRoutes(restApp, {
           lifecycleReadiness: currentApplicationRuntime.lifecycle,
           application: currentApplicationRuntime.rest,
-          nodeAccess: currentNodeAccess, delegationIndex: taskSide.tree, remoteCollaboration: remoteCollaboration.services,
+          nodeAccess: currentNodeAccess, remoteCollaboration: remoteCollaboration.services,
         }),
         { prefix: "/rest" },
       );

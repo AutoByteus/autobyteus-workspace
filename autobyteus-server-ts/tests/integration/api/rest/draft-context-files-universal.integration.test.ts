@@ -38,22 +38,18 @@ const DRAFT_OWNERS: { [K in DraftOwnerKind]: Extract<ContextFileDraftOwnerDescri
   agent_draft: { kind: "agent_draft", draftRunId: "draft-agent" },
   team_member_draft: { kind: "team_member_draft", teamDraftId: "draft-team", memberAddress: "/C/D" as never },
   org_member_draft: { kind: "org_member_draft", orgRunId: "org", agentRunId: "configured-direct" },
-  agent_collaboration_member_draft: { kind: "agent_collaboration_member_draft", hostRunId: "host", agentRunId: "child" },
 };
 
 /** A well-formed locator whose owner does not exist (only kinds with a validated owner). */
 const ABSENT_OWNER_LOCATORS = [
   "/rest/drafts/agent-org-runs/org/agent-runs/unknown/context-files/ctx_a__b.txt",
   "/rest/drafts/agent-org-runs/missing-org/agent-runs/configured-direct/context-files/ctx_a__b.txt",
-  "/rest/drafts/agent-collaborations/host/agent-runs/unknown/context-files/ctx_a__b.txt",
-  "/rest/drafts/agent-collaborations/missing-host/agent-runs/child/context-files/ctx_a__b.txt",
 ];
 
 const INVALID_LOCATORS = [
   "/rest/drafts/agent-runs/x/context-files/%2E%2E%2Fsecret.txt",
   "/rest/drafts/team-runs/draft-team/members/no-root/context-files/ctx_a__b.txt",
   "/rest/drafts/agent-org-runs/org/agent-runs/%20padded/context-files/ctx_a__b.txt",
-  "/rest/drafts/agent-collaborations/host/agent-runs/a%2Fb/context-files/ctx_a__b.txt",
   "/rest/drafts/agent-runs/..%2Fagent-runs%2Fvictim/context-files/ctx_a__b.txt",
   "/rest/drafts/agent-runs/%2E%2E/context-files/ctx_a__b.txt",
   "/rest/drafts/agent-runs/..%2F..%2Fx/context-files/ctx_a__b.txt",
@@ -162,7 +158,7 @@ beforeEach(async () => {
   layout = new ContextFileLayout({ appDataDir: config.root, memoryDir });
   app = fastify();
   await app.register(multipart);
-  await app.register((scope) => registerContextFileRoutes(scope, tree), { prefix: "/rest" });
+  await app.register((scope) => registerContextFileRoutes(scope), { prefix: "/rest" });
 });
 
 afterEach(async () => {
@@ -188,7 +184,7 @@ describe("universal draft context-file read and delete", () => {
   });
 
   it("deletes only the addressed draft and ignores a query string", async () => {
-    const owner = DRAFT_OWNERS.agent_collaboration_member_draft;
+    const owner = DRAFT_OWNERS.org_member_draft;
     const removed = await upload(owner, "remove");
     const kept = await upload(owner, "keep");
     const otherOwner = await upload(DRAFT_OWNERS.agent_draft, "other owner");
@@ -302,7 +298,7 @@ describe("malformed and traversal owner IDs and stored filenames", () => {
   it("leaves malformed locators unresolved for the runtime with the real layout", async () => {
     const memoryDir = path.join(config.root, "memory");
     const local = new ContextFileLocalPathResolver({ layout, baseUrl: "http://app.test", ownerResolver: new ContextFileOwnerResolver({
-      memoryDir, locations: createStoredCollaborationExecutionLocationService(memoryDir, noDelegations()),
+      memoryDir, locations: createStoredCollaborationExecutionLocationService(memoryDir),
     }) });
     await writeSentinels();
     const existing = await upload(DRAFT_OWNERS.agent_draft, "existing draft");

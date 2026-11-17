@@ -61,7 +61,6 @@ import {
 } from "../../standalone-agent-run-root/services/standalone-agent-run-root-manager.js";
 import {
 } from "../services/standalone-run-ports.js";
-import { DelegatedChildLocations } from "../../agent-collaboration/execution/delegation/delegated-child-locations.js";
 import { getRuntimeAvailabilityService } from "../../runtime-management/runtime-availability-service.js";
 import type { CollaboratorAdmission } from "../../agent-collaboration/collaborators/collaborator-admission.js";
 import {
@@ -107,7 +106,6 @@ export class GeneralProcessRunSupervisor {
     const collaborationLocations = new CollaborationExecutionLocationService({
       teams: storedTeamLocations,
       orgs: storedOrgLocations,
-      agents: new DelegatedChildLocations({ memoryDir, teams: storedTeamLocations, tree: input.delegationIndex }),
     });
     let agentRunManager: AgentRunManager | null = null;
     let standaloneRootManager: StandaloneAgentRunRootManager | null = null;

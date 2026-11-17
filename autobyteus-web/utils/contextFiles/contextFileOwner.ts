@@ -3,13 +3,11 @@ export type DraftContextFileOwnerDescriptor =
   | { kind: 'team_member_draft'; teamDraftId: string; memberAddress: string }
   | { kind: 'org_member_draft'; orgRunId: string; agentRunId: string }
   /** A task child of a standalone run's collaboration root. */
-  | { kind: 'agent_collaboration_member_draft'; hostRunId: string; agentRunId: string };
 
 export type FinalContextFileOwnerDescriptor =
   | { kind: 'agent_final'; runId: string }
   | { kind: 'team_member_final'; teamRunId: string; agentRunId: string }
   | { kind: 'org_member_final'; orgRunId: string; agentRunId: string }
-  | { kind: 'agent_collaboration_member_final'; hostRunId: string; agentRunId: string };
 
 const normalizeRequiredString = (value: string, fieldName: string): string => {
   const normalized = value.trim();

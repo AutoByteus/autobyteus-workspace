@@ -295,7 +295,7 @@ describe("remote delegation to a shared Agent Team, in process (autobyteus-247)"
     expect(a.resources.entry({ teamRunId: "studio_team_b" })).toMatchObject({ taskId: "ad_hoc_task_1", start: "started", open: true,
       nodeId: B_ID, recipientAddress: "/studio_team", teamCoordinatorAgentRunId: LEAD.agentRunId,
       members: [{ address: LEAD.address, agentRunId: LEAD.agentRunId }, { address: WRITER.address, agentRunId: WRITER.agentRunId }] });
-    await expect(fs.access(path.join(new AgentMemoryLayout(a.dir).getAgentRunCollaborationDirPath(DELEGATOR), "collaboration_tree.json"))).rejects.toThrow();
+    await expect(fs.access(path.join(path.join(a.dir, "agents", DELEGATOR, "collaboration"), "collaboration_tree.json"))).rejects.toThrow();
     // G-6: the team run ID's guidance names the coordinator; it is read from the Task entry above.
   });
 
