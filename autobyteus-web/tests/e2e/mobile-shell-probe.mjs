@@ -155,6 +155,13 @@
 //                  after the limits were raised with no reload, and a stale read of the limits gets the node's 413 as the same
 //                  line; cancel mid-upload leaves no message and no draft, a network drop shows the interrupted line and leaves
 //                  no draft: `mobile-context-file-size-cases.mjs` (its own node eta).
+//   MSP-59…64 autobyteus-458/506  The readable phone conversation at 412 and 360 px (body width − 24, 17 px / 1.5, one
+//                  avatar and speaker line per turn, composer 8 px above the bottom; another agent's message keeps its arrow
+//                  and type line, as on the desktop); ⋮ → Text size (15/19/21 px, kept over a
+//                  reload); ⋮ → Settings on a stopped Team member (Runtime → Grok Build, its model, Save back, the node holds it,
+//                  the run continues on it), a refused Save (the run woken before Save: the node's words in the red card), a
+//                  live idle and a working run (the red stop icon, one tap, the rows open): `mobile-run-settings-cases.mjs`
+//                  (on the paired phone, before MSP-13).
 //
 // Prerequisites: `pnpm -C autobyteus-server-ts build` and `pnpm -C autobyteus-web build:mobile-web` (alpha serves
 // `autobyteus-web/dist/public` at /mobile); Chrome. Run: `pnpm -C autobyteus-web test:e2e:mobile-shell --output-dir=<fresh>`
@@ -187,6 +194,7 @@ import { runLiveFileRefreshCases } from './mobile-live-file-refresh-cases.mjs';
 import { runBackgroundTaskCases } from './mobile-background-tasks-cases.mjs';
 import { runHeadingLinksCases } from './mobile-heading-links-cases.mjs';
 import { runCodeWrapCases } from './mobile-code-wrap-cases.mjs';
+import { runRunSettingsCases } from './mobile-run-settings-cases.mjs';
 
 const require = createRequire(import.meta.url);
 const { chromium } = require('playwright-core');
@@ -2458,6 +2466,10 @@ const runCases = async () => {
     assert(failures.length === 0, failures.join('; '), facts);
     return facts;
   });
+
+  // autobyteus-458 / 506: the readable conversation, Text size and a run's Settings (`mobile-run-settings-cases.mjs`), before
+  // MSP-13 revokes this phone.
+  await runRunSettingsCases({ runCase, page, stack, alpha, sel, toList, openRow, ensureUnfolded, rowsOf, childRow, menuOpen, runScreen, shot, sendOver, waitFor, sleep, assert, selected, phoneNet });
 
   await runCase('MSP-13', async () => {
     // A credential the node does not know (401, REMOTE_ACCESS_AUTH_INVALID: the node's pairing data was reset): the next

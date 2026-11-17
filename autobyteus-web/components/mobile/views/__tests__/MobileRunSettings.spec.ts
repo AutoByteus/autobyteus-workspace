@@ -120,6 +120,42 @@ describe('the phone Settings for the open run (autobyteus-458)', () => {
     expect(wrapper.emitted('back')).toHaveLength(1);
   });
 
+  it('REQ-006 a Save that rebuilds the open run\'s context reads the run again only for another run; Save returns to the conversation', async () => {
+    mocks.store = makeStore(agentDraft());
+    const target: any = agentTarget();
+    // As the store does: a Save patches the run's context; a load during the Save discards the Save's result.
+    mocks.store.save = vi.fn(async () => {
+      const loadsBefore = mocks.store.loadAgentCanonical.mock.calls.length;
+      target.context.state = { ...target.context.state };
+      await flushPromises();
+      return mocks.store.loadAgentCanonical.mock.calls.length === loadsBefore;
+    });
+    const wrapper = await mountSettings(target);
+    rows(wrapper).vm.$emit('update:llmModelIdentifier', 'gpt-5.6');
+    mocks.store.canSave = true;
+    await flushPromises();
+    await wrapper.get('[data-testid="mobile-run-settings-save"]').trigger('click');
+    await flushPromises();
+    expect(mocks.store.loadAgentCanonical).toHaveBeenCalledTimes(1);
+    expect(wrapper.emitted('back')).toHaveLength(1);
+
+    await wrapper.setProps({ target: { ...target, context: contextOf('run-b', 'offline') } });
+    await flushPromises();
+    expect(mocks.store.loadAgentCanonical).toHaveBeenLastCalledWith('run-b');
+  });
+
+  it('REQ-008 the stop subject stays the same while the open run\'s context changes (a failed stop keeps its message)', async () => {
+    mocks.store = makeStore(agentDraft(true));
+    const target: any = agentTarget('running');
+    await mountSettings(target);
+    const subject = mocks.stop.subject.value;
+    expect(subject).toEqual({ kind: 'agent', runId: 'run-a' });
+    target.context.state = { ...target.context.state, currentStatus: 'offline' };
+    await flushPromises();
+    expect(mocks.stop.subject.value).toBe(subject);
+    expect(mocks.store.loadAgentCanonical).toHaveBeenCalledTimes(1);
+  });
+
   it('REQ-007 a refused Save shows the node\'s message in a red card; the screen stays', async () => {
     mocks.store = makeStore(agentDraft());
     mocks.store.save = vi.fn(async () => {

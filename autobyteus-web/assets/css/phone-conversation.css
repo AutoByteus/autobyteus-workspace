@@ -1,6 +1,7 @@
 /* The phone's conversation (autobyteus-506, built in autobyteus-458): the event monitor inside the phone runtime gets
    `.phone-conversation` and `--pc-size` (the Text size step); the desktop never gets the class. Layout numbers are for a
-   412 px wide phone: 12 px side margin, text column 388 px (the width minus 24 px). */
+   412 px wide phone: 12 px side margin, text column 388 px (the width minus 24 px). Another agent's message is the
+   desktop's, unchanged (its arrow and message-type line; the founder's correction, autobyteus-458 SR-004). */
 
 /* The speaker name above a turn exists for the phone only; the desktop never shows it. */
 .conv-speaker { display: none; }
@@ -76,14 +77,9 @@
 .phone-conversation .conv-feed .mb-4 { margin-bottom: 0.7em; } /* TextSegment's spacing */
 .phone-conversation .conv-feed .error-segment { margin: 0.6em 0; padding: 0.7em 0.8em; }
 .phone-conversation .conv-feed .system-task-notification { margin-bottom: 0.7em; }
-.phone-conversation .conv-feed .inter-agent-message { padding-left: 0; padding-right: 0; }
 .phone-conversation .conv-feed .think-segment { margin: 0.4em 0; }
 .phone-conversation .conv-feed .think-content { padding: 0.7em 0.8em; font-size: 0.95em; }
 .phone-conversation .conv-feed .media-segment-container { margin: 0.6em 0; }
 
 /* tool cards span the column and are at least 44 px tall to tap */
 .phone-conversation .conv-feed .my-2 > .rounded-lg > .select-none { min-height: 44px; }
-
-/* a message from another agent is shown as it is: no arrow, no message-type line (the desktop component keeps them) */
-.phone-conversation .conv-feed .inter-agent-message [data-testid="inter-agent-toggle"],
-.phone-conversation .conv-feed .inter-agent-message [data-testid="inter-agent-details"] { display: none; }

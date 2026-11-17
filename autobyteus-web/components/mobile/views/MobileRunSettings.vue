@@ -65,7 +65,7 @@ import { useLocalization } from '~/composables/useLocalization';
 import { useExistingRunConfigStore } from '~/stores/existingRunConfigStore';
 import type { ExistingAgentRunSelection } from '~/types/agent/ExistingRunModelConfigDraft';
 import type { ActiveAgentWorkspaceTarget } from '~/types/workspace/activeAgentWorkspaceTarget';
-import { mobileRunSettingsScope } from '~/utils/mobile/mobileRunSettingsScope';
+import { mobileRunSettingsScope, type MobileRunSettingsScope } from '~/utils/mobile/mobileRunSettingsScope';
 import { mobileRunSubjectLine } from '~/utils/mobile/mobileRunSubjectLine';
 
 const props = defineProps<{ target: ActiveAgentWorkspaceTarget; parentName: string | null }>();
@@ -79,9 +79,17 @@ const subjectLine = computed(() => mobileRunSubjectLine({
 
 const store = useExistingRunConfigStore();
 const draft = computed(() => store.draft);
-const scope = computed(() => mobileRunSettingsScope(props.target));
+/**
+ * The open run's scope, the same object while it is the same run and member: a Save or a stop changes the open run's
+ * context, which rebuilds an equal scope; a new one would read the run again (discarding the Save's own result) and
+ * would count as another stop subject (hiding a failed stop's message).
+ */
+const scope = computed<MobileRunSettingsScope | null>((previous) => {
+  const next = mobileRunSettingsScope(props.target);
+  return previous && next && JSON.stringify(previous) === JSON.stringify(next) ? previous : next;
+});
 
-// The run's saved settings are read from the node each time the screen opens (and when the open run changes).
+// The run's saved settings are read from the node each time the screen opens and when another run is opened.
 watch(scope, (current) => {
   if (!current) { store.clear(); return; }
   if (current.kind === 'agent') void store.loadAgentCanonical(current.runId);
