@@ -1,0 +1,18 @@
+# E2E-09 — attempted durable case: AC-004 app hidden (Cmd-H) added to autobyteus-web/electron/browser/__tests__/browser-screenshot-capture.electron.spec.ts, run once, then reverted
+# Command: pnpm -C autobyteus-web test:electron browser/__tests__/browser-screenshot-capture.electron.spec.ts --run (with the added case; working tree on 927079c6cd code)
+# Environment: macOS arm64, Electron 42.11.16; macOS screen LOCKED at run time (ioreg CGSSessionScreenIsLocked=Yes)
+# Date: 2026-11-17
+# Outcome: the original 7 cases pass under the lock; the added app-hidden case does not answer (app.hide() while locked emits no window hide event, the view stays attached), as E2E-08. Because the result depends on the screen lock state (agents run this suite while the user is away), the case was not kept as durable coverage.
+
+RESULT {"electron":"42.11.16","cases":[{"id":"AC-002","ok":true,"ms":319,"size":{"width":2560,"height":1800},"tabId":"5d9f26"},{"id":"AC-001","ok":true,"ms":172,"size":{"width":2560,"height":1800},"tabId":"5d9f26"},{"id":"AC-005","ok":true,"ms":602,"size":{"width":2560,"height":8000},"tabId":"5d9f26","boundsBefore":{"x":0,"y":0,"width":1280,"height":900},"boundsAfter":{"x":0,"y":0,"width":1280,"height":900}},{"id":"AC-003","ok":true,"ms":143,"size":{"width":810,"height":1800},"tabId":"2e6dab","viewportBefore":[980,2176],"viewportAfter":[980,2176]},{"id":"AC-004","ok":true,"ms":190,"size":{"width":2560,"height":1800},"tabId":"145dba","attachedWhileShown":true,"attachedWhileMinimized":false},{"id":"AC-004-restored","ok":true,"ms":82,"size":{"width":2560,"height":1800},"tabId":"145dba","attachedAfterRestore":true},{"id":"AC-004-app-hidden","ok":false,"ms":8002,"error":{"code":null,"message":"no answer within 8 s (harness guard)"},"attachedWhileAppHidden":true},{"id":"AC-004-app-shown","ok":true,"ms":46,"size":{"width":2560,"height":1800},"tabId":"145dba","attachedAfterAppShown":true}]}
+   ✓ Screenshot of tabs not shown on screen, in real Electron (autobyteus-507) > runs in the Electron version the package pins 1ms
+   ✓ Screenshot of tabs not shown on screen, in real Electron (autobyteus-507) > AC-002: captures a fresh tab that was never shown, right after it loaded 1ms
+   ✓ Screenshot of tabs not shown on screen, in real Electron (autobyteus-507) > AC-001: captures a tab not shown right after it navigated 0ms
+   ✓ Screenshot of tabs not shown on screen, in real Electron (autobyteus-507) > AC-005: captures the full page of a tab not shown right after navigation and restores its bounds 0ms
+   ✓ Screenshot of tabs not shown on screen, in real Electron (autobyteus-507) > AC-003: captures the founder's emulated mobile tab and keeps its emulated viewport 0ms
+   ✓ Screenshot of tabs not shown on screen, in real Electron (autobyteus-507) > AC-004: captures a tab of a minimized window; the window does not hold the view while minimized 0ms
+   ✓ Screenshot of tabs not shown on screen, in real Electron (autobyteus-507) > AC-004: shows the view again after restore and captures it 0ms
+   × Screenshot of tabs not shown on screen, in real Electron (autobyteus-507) > AC-004: captures a tab of a hidden app (Cmd-H); the window does not hold the view while hidden 6ms
+   ✓ Screenshot of tabs not shown on screen, in real Electron (autobyteus-507) > AC-004: shows the view again when the app is shown and captures it 0ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+      Tests  1 failed | 8 passed (9)

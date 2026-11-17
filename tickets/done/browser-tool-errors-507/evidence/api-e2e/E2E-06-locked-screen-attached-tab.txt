@@ -1,0 +1,25 @@
+# E2E-06 — tab attached to a visible, not minimized window while the screen is locked (user away)
+# Command (from autobyteus-web): node evidence/api-e2e/E2E-06-occluded_probe.mjs <electron source dir> <label>
+#   after: source autobyteus-web/electron at 927079c6cd (worktree); base: git archive e4f4b3e176 autobyteus-web/electron
+# Environment: macOS Darwin 25.5.0 arm64, pinned Electron 42.11.16 (autobyteus-web/node_modules), no isolated-instance flags; screen locked by macOS at 08:18:00 (ioreg CGSSessionScreenIsLocked=Yes before and after each run)
+# Date: 2026-11-17
+
+"CGSSessionScreenIsLocked"=Yes
+## after (927079c6cd), run 2
+label=after-927079c6cd exit=0 sourceDir=/Users/normy/autobyteus_org/autobyteus-worktrees/browser-tool-errors-507/autobyteus-web/electron
+electron=42.11.16 at=2026-11-17T07:19:18.394Z
+{"id":"idle-attached","windowVisible":true,"minimized":false,"attached":true,"pageVisibility":"hidden","ok":true,"ms":235,"size":{"width":2560,"height":1800}}
+{"id":"after-navigate-1","windowVisible":true,"minimized":false,"attached":true,"pageVisibility":"hidden","ok":true,"ms":159,"size":{"width":2560,"height":1800}}
+{"id":"after-navigate-2","windowVisible":true,"minimized":false,"attached":true,"pageVisibility":"hidden","ok":true,"ms":177,"size":{"width":2560,"height":1800}}
+{"id":"after-navigate-3","windowVisible":true,"minimized":false,"attached":true,"pageVisibility":"hidden","ok":true,"ms":158,"size":{"width":2560,"height":1800}}
+{"id":"founder-emulated","windowVisible":true,"minimized":false,"attached":true,"pageVisibility":"hidden","ok":true,"ms":236,"size":{"width":810,"height":1800}}
+
+## base (e4f4b3e176), run 2
+label=base-e4f4b3e176 exit=0 sourceDir=/tmp/ae507/base-electron/autobyteus-web/electron
+electron=42.11.16 at=2026-11-17T07:19:35.612Z
+{"id":"idle-attached","windowVisible":true,"minimized":false,"attached":true,"pageVisibility":"hidden","ok":false,"ms":1,"error":{"code":null,"message":"UnknownVizError"}}
+{"id":"after-navigate-1","windowVisible":true,"minimized":false,"attached":true,"pageVisibility":"hidden","ok":false,"ms":0,"error":{"code":null,"message":"UnknownVizError"}}
+{"id":"after-navigate-2","windowVisible":true,"minimized":false,"attached":true,"pageVisibility":"hidden","ok":false,"ms":0,"error":{"code":null,"message":"UnknownVizError"}}
+{"id":"after-navigate-3","windowVisible":true,"minimized":false,"attached":true,"pageVisibility":"hidden","ok":false,"ms":0,"error":{"code":null,"message":"UnknownVizError"}}
+{"id":"founder-emulated","windowVisible":true,"minimized":false,"attached":true,"pageVisibility":"hidden","ok":false,"ms":0,"error":{"code":null,"message":"UnknownVizError"}}
+"CGSSessionScreenIsLocked"=Yes

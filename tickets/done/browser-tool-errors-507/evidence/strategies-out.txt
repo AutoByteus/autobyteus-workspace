@@ -1,0 +1,36 @@
+{"rep":0,"name":"plain","sit":"detached-fresh","ok":false,"ms":4059,"errs":["Current display surface not available for capture"]}
+{"rep":0,"name":"plain","sit":"detached-navigate","ok":true,"ms":214,"tries":3,"errs":["UnknownVizError"]}
+{"rep":0,"name":"plain","sit":"shown-navigate","ok":true,"ms":106,"tries":2,"errs":["UnknownVizError"]}
+{"rep":0,"name":"invalidate","sit":"detached-fresh","ok":false,"ms":4078,"errs":["Current display surface not available for capture"]}
+{"rep":0,"name":"invalidate","sit":"detached-navigate","ok":true,"ms":114,"tries":2,"errs":["UnknownVizError"]}
+{"rep":0,"name":"invalidate","sit":"shown-navigate","ok":true,"ms":107,"tries":2,"errs":["UnknownVizError"]}
+{"rep":0,"name":"stayHidden","sit":"detached-fresh","ok":false,"ms":4062,"errs":["Current display surface not available for capture"]}
+{"rep":0,"name":"stayHidden","sit":"detached-navigate","ok":true,"ms":111,"tries":2,"errs":["UnknownVizError"]}
+{"rep":0,"name":"stayHidden","sit":"shown-navigate","ok":true,"ms":107,"tries":2,"errs":["UnknownVizError"]}
+{"rep":0,"name":"nudge","sit":"detached-fresh","ok":true,"ms":216,"tries":3,"errs":["UnknownVizError"]}
+{"rep":0,"name":"nudge","sit":"detached-navigate","ok":true,"ms":111,"tries":2,"errs":["UnknownVizError"]}
+{"rep":0,"name":"nudge","sit":"shown-navigate","ok":true,"ms":110,"tries":2,"errs":["UnknownVizError"]}
+{"rep":1,"name":"plain","sit":"detached-fresh","ok":false,"ms":4040,"errs":["Current display surface not available for capture"]}
+{"rep":1,"name":"plain","sit":"detached-navigate","ok":true,"ms":110,"tries":2,"errs":["UnknownVizError"]}
+{"rep":1,"name":"plain","sit":"shown-navigate","ok":true,"ms":107,"tries":2,"errs":["UnknownVizError"]}
+{"rep":1,"name":"invalidate","sit":"detached-fresh","ok":false,"ms":4039,"errs":["Current display surface not available for capture"]}
+{"rep":1,"name":"invalidate","sit":"detached-navigate","ok":true,"ms":212,"tries":3,"errs":["UnknownVizError"]}
+{"rep":1,"name":"invalidate","sit":"shown-navigate","ok":true,"ms":108,"tries":2,"errs":["UnknownVizError"]}
+{"rep":1,"name":"stayHidden","sit":"detached-fresh","ok":false,"ms":4045,"errs":["Current display surface not available for capture"]}
+{"rep":1,"name":"stayHidden","sit":"detached-navigate","ok":true,"ms":113,"tries":2,"errs":["UnknownVizError"]}
+{"rep":1,"name":"stayHidden","sit":"shown-navigate","ok":true,"ms":109,"tries":2,"errs":["UnknownVizError"]}
+{"rep":1,"name":"nudge","sit":"detached-fresh","ok":true,"ms":217,"tries":3,"errs":["UnknownVizError"]}
+{"rep":1,"name":"nudge","sit":"detached-navigate","ok":true,"ms":225,"tries":3,"errs":["UnknownVizError"]}
+{"rep":1,"name":"nudge","sit":"shown-navigate","ok":true,"ms":111,"tries":2,"errs":["UnknownVizError"]}
+{"rep":2,"name":"plain","sit":"detached-fresh","ok":false,"ms":4061,"errs":["Current display surface not available for capture"]}
+{"rep":2,"name":"plain","sit":"detached-navigate","ok":true,"ms":112,"tries":2,"errs":["UnknownVizError"]}
+{"rep":2,"name":"plain","sit":"shown-navigate","ok":true,"ms":107,"tries":2,"errs":["UnknownVizError"]}
+{"rep":2,"name":"invalidate","sit":"detached-fresh","ok":false,"ms":4046,"errs":["Current display surface not available for capture"]}
+{"rep":2,"name":"invalidate","sit":"detached-navigate","ok":true,"ms":111,"tries":2,"errs":["UnknownVizError"]}
+{"rep":2,"name":"invalidate","sit":"shown-navigate","ok":true,"ms":106,"tries":2,"errs":["UnknownVizError"]}
+{"rep":2,"name":"stayHidden","sit":"detached-fresh","ok":false,"ms":4071,"errs":["Current display surface not available for capture"]}
+{"rep":2,"name":"stayHidden","sit":"detached-navigate","ok":true,"ms":111,"tries":2,"errs":["UnknownVizError"]}
+{"rep":2,"name":"stayHidden","sit":"shown-navigate","ok":true,"ms":107,"tries":2,"errs":["UnknownVizError"]}
+{"rep":2,"name":"nudge","sit":"detached-fresh","ok":true,"ms":222,"tries":3,"errs":["UnknownVizError"]}
+{"rep":2,"name":"nudge","sit":"detached-navigate","ok":true,"ms":112,"tries":2,"errs":["UnknownVizError"]}
+{"rep":2,"name":"nudge","sit":"shown-navigate","ok":true,"ms":109,"tries":2,"errs":["UnknownVizError"]}

@@ -1,0 +1,31 @@
+# E2E-B1 — baseline: the same journeys on the released app (founder version), to show they reach the defect under the isolated-launch flags
+# Env: isolated instance iso-58364-b826 of installed /Applications/AutoByteus.app 1.5.13-beta.7 (pnpm --silent isolated-app start), own data root; agent "Screenshot Probe 507" (same definition, claude_agent_sdk, claude-haiku-5-5, auto-approve) created via GraphQL from the instance window; message /tmp/ae507/msg-b01.txt sent 07:42:25.236Z, window moved to #/agents 1.5 s later (as E2E-01)
+# Date: 2026-11-17 (local time below)
+
+## Message
+Validation journey B1-01. Steps:
+1. open_tab with url http://127.0.0.1:49198/p/b01-founder
+2. set_device_emulation with tab_id from step 1, mode mobile, width 412, height 915, device_scale_factor 2
+3. screenshot with tab_id from step 1
+4. screenshot with tab_id pending
+5. close_tab with tab_id from step 1
+6. screenshot with tab_id from step 1
+
+## Run trace tool calls/results
+08:42:30.016 seq=2 tool_call open_tab args={"url": "http://127.0.0.1:49198/p/b01-founder"}
+08:42:30.168 seq=3 tool_result open_tab TOOL_EXECUTION_SUCCEEDED result={"tab_id": "9514b6", "status": "opened", "url": "http://127.0.0.1:49198/p/b01-founder", "title": "b01-founder"} error=null
+08:42:32.769 seq=4 tool_call set_device_emulation args={"tab_id": "9514b6", "mode": "mobile", "width": 412, "height": 915, "device_scale_factor": 2}
+08:42:32.823 seq=5 tool_result set_device_emulation TOOL_EXECUTION_SUCCEEDED result={"tab_id": "9514b6", "mode": "mobile", "profile": {"width": 412, "height": 915, "device_scale_factor": 2}} error=null
+08:42:34.439 seq=6 tool_call screenshot args={"tab_id": "9514b6"}
+08:42:34.462 seq=7 tool_result screenshot TOOL_EXECUTION_FAILED result=null error="{\"error\":{\"code\":\"browser_navigation_failed\",\"message\":\"UnknownVizError\"}}"
+08:42:36.005 seq=8 tool_call screenshot args={"tab_id": "pending"}
+08:42:36.033 seq=9 tool_result screenshot TOOL_EXECUTION_FAILED result=null error="{\"error\":{\"code\":\"browser_bridge_unavailable\",\"message\":\"Browser session 'pending' was not found.\"}}"
+08:42:37.523 seq=10 tool_call close_tab args={"tab_id": "9514b6"}
+08:42:37.533 seq=11 tool_result close_tab TOOL_EXECUTION_SUCCEEDED result={"tab_id": "9514b6", "status": "closed"} error=null
+08:42:39.114 seq=12 tool_call screenshot args={"tab_id": "9514b6"}
+08:42:39.124 seq=13 tool_result screenshot TOOL_EXECUTION_FAILED result=null error="{\"error\":{\"code\":\"browser_bridge_unavailable\",\"message\":\"Browser session '9514b6' has already been closed.\"}}"
+
+## Page events
+{"page": "b01-founder", "kind": "load", "w": 1280, "h": 900, "vis": "hidden", "t": 117, "server_time": "08:42:30.161"}
+{"page": "b01-founder", "kind": "visibilitychange", "w": 412, "h": 915, "vis": "hidden", "t": 4411, "server_time": "08:42:34.450"}
+{"page": "b01-founder", "kind": "visibilitychange", "w": 412, "h": 915, "vis": "visible", "t": 4410, "server_time": "08:42:34.450"}

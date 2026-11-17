@@ -1,0 +1,87 @@
+# E2E-03 — window minimized / app hidden with the agent tab shown in the Browser panel (real app)
+# Env: worktree isolated instance iso-49942-c50c (build of baf0439559, code 927079c6cd); agent tab 0386db attached in the open Browser panel; same claude_agent_sdk run
+# Window state changed through macOS accessibility on the instance process only (pid 44218): AXMinimized of its window (= Window > Minimize), visible of the process (= Hide AutoByteus / Cmd-H)
+# Date: 2026-11-17 (local time below). Note: CDP control commands (send.sh run-script) flip every tab page visible/hidden for ~0.5 s (harness effect, e.g. 08:30:28.57-08:30:29.05); none were sent between navigate and screenshot.
+
+## E2E-03 run 1 — app hidden (08:25:02) while the macOS screen was locked (locked 08:18:00 .. unlocked ~08:26:00)
+Validation journey E2E-03 (app hidden). Steps:
+1. navigate_to with tab_id 0386db, url http://127.0.0.1:49198/p/e03-hidden-app
+2. screenshot with tab_id 0386db
+08:25:16.717 seq=2 tool_call navigate_to args={"tab_id": "0386db", "url": "http://127.0.0.1:49198/p/e03-hidden-app"}
+08:25:16.776 seq=3 tool_result navigate_to TOOL_EXECUTION_SUCCEEDED result={"tab_id": "0386db", "status": "navigated", "url": "http://127.0.0.1:49198/p/e03-hidden-app"} error=null
+08:25:17.971 seq=4 tool_call screenshot args={"tab_id": "0386db"}
+08:26:00.848 seq=5 tool_result screenshot TOOL_EXECUTION_SUCCEEDED result={"tab_id": "0386db", "artifact_path": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-Suz2eM/browser-artifacts/0386db-1794900360427.png", "mime_type": "image/png"} error=null
+{"page": "e02-b", "kind": "visibilitychange", "w": 450, "h": 604, "vis": "hidden", "t": 1120584, "server_time": "08:25:03.232"}
+{"page": "e01-founder", "kind": "visibilitychange", "w": 412, "h": 915, "vis": "visible", "t": 1404972, "server_time": "08:25:13.698"}
+{"page": "e02-b", "kind": "visibilitychange", "w": 450, "h": 604, "vis": "visible", "t": 1131053, "server_time": "08:25:13.681"}
+{"page": "e02-a-third", "kind": "visibilitychange", "w": 405, "h": 900, "vis": "visible", "t": 801502, "server_time": "08:25:13.713"}
+{"page": "e02-b", "kind": "visibilitychange", "w": 450, "h": 604, "vis": "hidden", "t": 1131679, "server_time": "08:25:14.296"}
+{"page": "e02-a-third", "kind": "visibilitychange", "w": 405, "h": 900, "vis": "hidden", "t": 802090, "server_time": "08:25:14.297"}
+{"page": "e01-founder", "kind": "visibilitychange", "w": 412, "h": 915, "vis": "hidden", "t": 1405579, "server_time": "08:25:14.298"}
+{"page": "e03-hidden-app", "kind": "load", "w": 450, "h": 604, "vis": "hidden", "t": 19, "server_time": "08:25:16.763"}
+{"page": "e03-hidden-app", "kind": "visibilitychange", "w": 450, "h": 604, "vis": "visible", "t": 1245, "server_time": "08:25:17.988"}
+{"page": "e03-hidden-app", "kind": "visibilitychange", "w": 450, "h": 604, "vis": "hidden", "t": 1245, "server_time": "08:25:17.988"}
+{"page": "e03-hidden-app", "kind": "visibilitychange", "w": 450, "h": 604, "vis": "visible", "t": 1348, "server_time": "08:25:18.090"}
+Observation: screenshot answered after 42.9 s (08:25:17.971 -> 08:26:00.848), at the moment the screen was unlocked and the app shown again (instance log 07:26:00.768Z renderer websocket re-attached). Unbounded wait; see E2E-08.
+
+## E2E-03a — window minimized (08:30:25), screen unlocked
+Validation journey E2E-03a (window minimized). Steps:
+1. navigate_to with tab_id 0386db, url http://127.0.0.1:49198/p/e03a-minimized
+2. screenshot with tab_id 0386db
+08:30:31.064 seq=2 tool_call navigate_to args={"tab_id": "0386db", "url": "http://127.0.0.1:49198/p/e03a-minimized"}
+08:30:31.104 seq=3 tool_result navigate_to TOOL_EXECUTION_SUCCEEDED result={"tab_id": "0386db", "status": "navigated", "url": "http://127.0.0.1:49198/p/e03a-minimized"} error=null
+08:30:32.759 seq=4 tool_call screenshot args={"tab_id": "0386db"}
+08:30:32.916 seq=5 tool_result screenshot TOOL_EXECUTION_SUCCEEDED result={"tab_id": "0386db", "artifact_path": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-Suz2eM/browser-artifacts/0386db-1794900632911.png", "mime_type": "image/png"} error=null
+{"page": "e03-hidden-app", "kind": "visibilitychange", "w": 450, "h": 604, "vis": "hidden", "t": 309554, "server_time": "08:30:26.358"}
+{"page": "e02-a-third", "kind": "visibilitychange", "w": 405, "h": 900, "vis": "visible", "t": 1116328, "server_time": "08:30:28.577"}
+{"page": "e01-founder", "kind": "visibilitychange", "w": 412, "h": 915, "vis": "visible", "t": 1719816, "server_time": "08:30:28.575"}
+{"page": "e03-hidden-app", "kind": "visibilitychange", "w": 450, "h": 604, "vis": "visible", "t": 311786, "server_time": "08:30:28.574"}
+{"page": "e03-hidden-app", "kind": "visibilitychange", "w": 450, "h": 604, "vis": "hidden", "t": 312268, "server_time": "08:30:29.049"}
+{"page": "e02-a-third", "kind": "visibilitychange", "w": 405, "h": 900, "vis": "hidden", "t": 1116805, "server_time": "08:30:29.051"}
+{"page": "e01-founder", "kind": "visibilitychange", "w": 412, "h": 915, "vis": "hidden", "t": 1720294, "server_time": "08:30:29.052"}
+{"page": "e03a-minimized", "kind": "load", "w": 450, "h": 604, "vis": "hidden", "t": 14, "server_time": "08:30:31.094"}
+{"page": "e03a-minimized", "kind": "visibilitychange", "w": 450, "h": 604, "vis": "visible", "t": 1691, "server_time": "08:30:32.772"}
+{"page": "e03a-minimized", "kind": "visibilitychange", "w": 450, "h": 604, "vis": "hidden", "t": 1692, "server_time": "08:30:32.772"}
+{"page": "e03a-minimized", "kind": "visibilitychange", "w": 451, "h": 604, "vis": "visible", "t": 1794, "server_time": "08:30:32.873"}
+{"page": "e03a-minimized", "kind": "resize", "w": 451, "h": 604, "vis": "visible", "t": 1794, "server_time": "08:30:32.874"}
+{"page": "e03a-minimized", "kind": "resize", "w": 450, "h": 604, "vis": "visible", "t": 1800, "server_time": "08:30:32.879"}
+{"page": "e03a-minimized", "kind": "visibilitychange", "w": 450, "h": 604, "vis": "hidden", "t": 1807, "server_time": "08:30:32.912"}
+
+## E2E-03a restore — window un-minimized (08:33:49), then screenshot
+Validation journey E2E-03a restore check. Steps:
+1. screenshot with tab_id 0386db
+08:33:55.549 seq=2 tool_call screenshot args={"tab_id": "0386db"}
+08:33:55.610 seq=3 tool_result screenshot TOOL_EXECUTION_SUCCEEDED result={"tab_id": "0386db", "artifact_path": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-Suz2eM/browser-artifacts/0386db-1794900835600.png", "mime_type": "image/png"} error=null
+{"page": "e03a-minimized", "kind": "visibilitychange", "w": 450, "h": 604, "vis": "visible", "t": 199479, "server_time": "08:33:50.625"}
+{"page": "e02-a-third", "kind": "visibilitychange", "w": 405, "h": 900, "vis": "visible", "t": 1321081, "server_time": "08:33:53.327"}
+{"page": "e01-founder", "kind": "visibilitychange", "w": 412, "h": 915, "vis": "visible", "t": 1924565, "server_time": "08:33:53.327"}
+{"page": "e02-a-third", "kind": "visibilitychange", "w": 405, "h": 900, "vis": "hidden", "t": 1321496, "server_time": "08:33:53.744"}
+{"page": "e01-founder", "kind": "visibilitychange", "w": 412, "h": 915, "vis": "hidden", "t": 1924986, "server_time": "08:33:53.745"}
+
+## E2E-03b — app hidden (08:37:18), screen unlocked
+Validation journey E2E-03b (app hidden, screen unlocked). Steps:
+1. navigate_to with tab_id 0386db, url http://127.0.0.1:49198/p/e03b-hidden-app
+2. screenshot with tab_id 0386db
+08:37:25.362 seq=2 tool_call navigate_to args={"tab_id": "0386db", "url": "http://127.0.0.1:49198/p/e03b-hidden-app"}
+08:37:25.407 seq=3 tool_result navigate_to TOOL_EXECUTION_SUCCEEDED result={"tab_id": "0386db", "status": "navigated", "url": "http://127.0.0.1:49198/p/e03b-hidden-app"} error=null
+08:37:27.042 seq=4 tool_call screenshot args={"tab_id": "0386db"}
+08:37:27.207 seq=5 tool_result screenshot TOOL_EXECUTION_SUCCEEDED result={"tab_id": "0386db", "artifact_path": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-Suz2eM/browser-artifacts/0386db-1794901047201.png", "mime_type": "image/png"} error=null
+{"page": "e03a-minimized", "kind": "visibilitychange", "w": 450, "h": 604, "vis": "hidden", "t": 408269, "server_time": "08:37:19.376"}
+{"page": "e03a-minimized", "kind": "visibilitychange", "w": 450, "h": 604, "vis": "visible", "t": 411165, "server_time": "08:37:22.253"}
+{"page": "e01-founder", "kind": "visibilitychange", "w": 412, "h": 915, "vis": "visible", "t": 2133503, "server_time": "08:37:22.269"}
+{"page": "e02-a-third", "kind": "visibilitychange", "w": 405, "h": 900, "vis": "visible", "t": 1530020, "server_time": "08:37:22.270"}
+{"page": "e03a-minimized", "kind": "visibilitychange", "w": 450, "h": 604, "vis": "hidden", "t": 411745, "server_time": "08:37:22.832"}
+{"page": "e02-a-third", "kind": "visibilitychange", "w": 405, "h": 900, "vis": "hidden", "t": 1530582, "server_time": "08:37:22.832"}
+{"page": "e01-founder", "kind": "visibilitychange", "w": 412, "h": 915, "vis": "hidden", "t": 2134072, "server_time": "08:37:22.835"}
+{"page": "e03b-hidden-app", "kind": "load", "w": 450, "h": 604, "vis": "hidden", "t": 18, "server_time": "08:37:25.400"}
+{"page": "e03b-hidden-app", "kind": "visibilitychange", "w": 450, "h": 604, "vis": "visible", "t": 1669, "server_time": "08:37:27.051"}
+{"page": "e03b-hidden-app", "kind": "visibilitychange", "w": 450, "h": 604, "vis": "hidden", "t": 1670, "server_time": "08:37:27.052"}
+{"page": "e03b-hidden-app", "kind": "visibilitychange", "w": 451, "h": 604, "vis": "visible", "t": 1772, "server_time": "08:37:27.155"}
+{"page": "e03b-hidden-app", "kind": "resize", "w": 451, "h": 604, "vis": "visible", "t": 1773, "server_time": "08:37:27.159"}
+{"page": "e03b-hidden-app", "kind": "resize", "w": 450, "h": 604, "vis": "visible", "t": 1784, "server_time": "08:37:27.167"}
+{"page": "e03b-hidden-app", "kind": "visibilitychange", "w": 450, "h": 604, "vis": "hidden", "t": 1793, "server_time": "08:37:27.201"}
+
+## Artifacts
+E2E-03-run1-artifact-hidden-locked.png:   pixelWidth: 900   pixelHeight: 1208 
+E2E-03a-artifact-minimized.png:   pixelWidth: 900   pixelHeight: 1208 
+E2E-03b-artifact-app-hidden.png:   pixelWidth: 900   pixelHeight: 1208 

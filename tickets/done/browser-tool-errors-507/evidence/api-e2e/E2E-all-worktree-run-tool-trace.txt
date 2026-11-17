@@ -1,0 +1,49 @@
+## /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-Suz2eM/server-data/memory/agents/screenshot_probe_507_c5c963718ef748e29e9dc377d076b28b/raw_traces_active.jsonl
+08:01:48.703 seq=2 tool_call open_tab args={"url": "http://127.0.0.1:49198/p/e01-founder"}
+08:01:48.855 seq=3 tool_result open_tab TOOL_EXECUTION_SUCCEEDED result={"tab_id": "9c38d2", "status": "opened", "url": "http://127.0.0.1:49198/p/e01-founder", "title": "e01-founder"} error=null
+08:01:50.898 seq=4 tool_call set_device_emulation args={"tab_id": "9c38d2", "mode": "mobile", "width": 412, "height": 915, "device_scale_factor": 2}
+08:01:50.934 seq=5 tool_result set_device_emulation TOOL_EXECUTION_SUCCEEDED result={"tab_id": "9c38d2", "mode": "mobile", "profile": {"width": 412, "height": 915, "device_scale_factor": 2}} error=null
+08:01:52.321 seq=6 tool_call screenshot args={"tab_id": "9c38d2"}
+08:01:52.569 seq=7 tool_result screenshot TOOL_EXECUTION_SUCCEEDED result={"tab_id": "9c38d2", "artifact_path": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-Suz2eM/browser-artifacts/9c38d2-1794898912565.png", "mime_type": "image/png"} error=null
+08:06:20.882 seq=2 tool_call open_tab args={"url": "http://127.0.0.1:49198/p/e02-a"}
+08:06:21.103 seq=3 tool_result open_tab TOOL_EXECUTION_SUCCEEDED result={"tab_id": "de9ec9", "status": "opened", "url": "http://127.0.0.1:49198/p/e02-a", "title": "e02-a"} error=null
+08:06:22.614 seq=4 tool_call open_tab args={"url": "http://127.0.0.1:49198/p/e02-b"}
+08:06:22.731 seq=5 tool_result open_tab TOOL_EXECUTION_SUCCEEDED result={"tab_id": "0386db", "status": "opened", "url": "http://127.0.0.1:49198/p/e02-b", "title": "e02-b"} error=null
+08:06:24.269 seq=6 tool_call navigate_to args={"tab_id": "de9ec9", "url": "http://127.0.0.1:49198/p/e02-a-next"}
+08:06:24.296 seq=7 tool_result navigate_to TOOL_EXECUTION_SUCCEEDED result={"tab_id": "de9ec9", "status": "navigated", "url": "http://127.0.0.1:49198/p/e02-a-next"} error=null
+08:06:25.964 seq=8 tool_call set_device_emulation args={"tab_id": "de9ec9", "mode": "mobile", "width": 412, "height": 915, "device_scale_factor": 2}
+08:06:25.991 seq=9 tool_result set_device_emulation TOOL_EXECUTION_SUCCEEDED result={"tab_id": "de9ec9", "mode": "mobile", "profile": {"width": 412, "height": 915, "device_scale_factor": 2}} error=null
+08:06:27.442 seq=10 tool_call screenshot args={"tab_id": "de9ec9"}
+08:06:27.612 seq=11 tool_result screenshot TOOL_EXECUTION_SUCCEEDED result={"tab_id": "de9ec9", "artifact_path": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-Suz2eM/browser-artifacts/de9ec9-1794899187604.png", "mime_type": "image/png"} error=null
+08:06:29.188 seq=12 tool_call screenshot args={"tab_id": "de9ec9", "full_page": true}
+08:06:29.341 seq=13 tool_result screenshot TOOL_EXECUTION_SUCCEEDED result={"tab_id": "de9ec9", "artifact_path": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-Suz2eM/browser-artifacts/de9ec9-1794899189335.png", "mime_type": "image/png"} error=null
+08:11:52.191 seq=2 tool_call navigate_to args={"tab_id": "de9ec9", "url": "http://127.0.0.1:49198/p/e02-a-third"}
+08:11:52.233 seq=3 tool_result navigate_to TOOL_EXECUTION_SUCCEEDED result={"tab_id": "de9ec9", "status": "navigated", "url": "http://127.0.0.1:49198/p/e02-a-third"} error=null
+08:11:53.668 seq=4 tool_call screenshot args={"tab_id": "de9ec9"}
+08:11:53.834 seq=5 tool_result screenshot TOOL_EXECUTION_SUCCEEDED result={"tab_id": "de9ec9", "artifact_path": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-Suz2eM/browser-artifacts/de9ec9-1794899513829.png", "mime_type": "image/png"} error=null
+08:11:55.375 seq=6 tool_call screenshot args={"tab_id": "0386db"}
+08:11:55.424 seq=7 tool_result screenshot TOOL_EXECUTION_SUCCEEDED result={"tab_id": "0386db", "artifact_path": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-Suz2eM/browser-artifacts/0386db-1794899515417.png", "mime_type": "image/png"} error=null
+08:20:16.190 seq=2 tool_call screenshot args={"tab_id": "pending"}
+08:20:16.225 seq=3 tool_result screenshot TOOL_EXECUTION_FAILED result=null error="{\"error\":{\"code\":\"browser_tab_not_found\",\"message\":\"Browser session 'pending' was not found.\"}}"
+08:20:17.760 seq=4 tool_call open_tab args={"url": "http://127.0.0.1:49198/p/e05-closing"}
+08:20:17.875 seq=5 tool_result open_tab TOOL_EXECUTION_SUCCEEDED result={"tab_id": "32c4e6", "status": "opened", "url": "http://127.0.0.1:49198/p/e05-closing", "title": "e05-closing"} error=null
+08:20:19.382 seq=6 tool_call close_tab args={"tab_id": "32c4e6"}
+08:20:19.436 seq=7 tool_result close_tab TOOL_EXECUTION_SUCCEEDED result={"tab_id": "32c4e6", "status": "closed"} error=null
+08:20:20.970 seq=8 tool_call screenshot args={"tab_id": "32c4e6"}
+08:20:21.039 seq=9 tool_result screenshot TOOL_EXECUTION_FAILED result=null error="{\"error\":{\"code\":\"browser_tab_closed\",\"message\":\"Browser session '32c4e6' has already been closed.\"}}"
+08:20:22.737 seq=10 tool_call navigate_to args={"tab_id": "32c4e6", "url": "http://127.0.0.1:49198/p/e05-after-close"}
+08:20:22.779 seq=11 tool_result navigate_to TOOL_EXECUTION_FAILED result=null error="{\"error\":{\"code\":\"browser_tab_closed\",\"message\":\"Browser session '32c4e6' has already been closed.\"}}"
+08:25:16.717 seq=2 tool_call navigate_to args={"tab_id": "0386db", "url": "http://127.0.0.1:49198/p/e03-hidden-app"}
+08:25:16.776 seq=3 tool_result navigate_to TOOL_EXECUTION_SUCCEEDED result={"tab_id": "0386db", "status": "navigated", "url": "http://127.0.0.1:49198/p/e03-hidden-app"} error=null
+08:25:17.971 seq=4 tool_call screenshot args={"tab_id": "0386db"}
+08:26:00.848 seq=5 tool_result screenshot TOOL_EXECUTION_SUCCEEDED result={"tab_id": "0386db", "artifact_path": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-Suz2eM/browser-artifacts/0386db-1794900360427.png", "mime_type": "image/png"} error=null
+08:30:31.064 seq=2 tool_call navigate_to args={"tab_id": "0386db", "url": "http://127.0.0.1:49198/p/e03a-minimized"}
+08:30:31.104 seq=3 tool_result navigate_to TOOL_EXECUTION_SUCCEEDED result={"tab_id": "0386db", "status": "navigated", "url": "http://127.0.0.1:49198/p/e03a-minimized"} error=null
+08:30:32.759 seq=4 tool_call screenshot args={"tab_id": "0386db"}
+08:30:32.916 seq=5 tool_result screenshot TOOL_EXECUTION_SUCCEEDED result={"tab_id": "0386db", "artifact_path": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-Suz2eM/browser-artifacts/0386db-1794900632911.png", "mime_type": "image/png"} error=null
+08:33:55.549 seq=2 tool_call screenshot args={"tab_id": "0386db"}
+08:33:55.610 seq=3 tool_result screenshot TOOL_EXECUTION_SUCCEEDED result={"tab_id": "0386db", "artifact_path": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-Suz2eM/browser-artifacts/0386db-1794900835600.png", "mime_type": "image/png"} error=null
+08:37:25.362 seq=2 tool_call navigate_to args={"tab_id": "0386db", "url": "http://127.0.0.1:49198/p/e03b-hidden-app"}
+08:37:25.407 seq=3 tool_result navigate_to TOOL_EXECUTION_SUCCEEDED result={"tab_id": "0386db", "status": "navigated", "url": "http://127.0.0.1:49198/p/e03b-hidden-app"} error=null
+08:37:27.042 seq=4 tool_call screenshot args={"tab_id": "0386db"}
+08:37:27.207 seq=5 tool_result screenshot TOOL_EXECUTION_SUCCEEDED result={"tab_id": "0386db", "artifact_path": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-Suz2eM/browser-artifacts/0386db-1794901047201.png", "mime_type": "image/png"} error=null
