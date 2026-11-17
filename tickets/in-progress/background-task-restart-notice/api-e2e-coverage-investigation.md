@@ -1,5 +1,7 @@
 # API/E2E Coverage Investigation — Part 1: the restart reminder
 
+> Rename note (implementation, IR-006, delivery DR-003): part 2's phone probe case is now **MSP-73** (it was MSP-59, then MSP-67; autobyteus-483 and autobyteus-522 took those IDs on later bases). Rows below that say MSP-67 for part 2's case mean MSP-73; evidence file names keep the ID they were recorded under.
+
 ## Investigation Meta
 
 - Requirements Doc: `requirements-doc.md` (Approved; SR-003 clarifications)
@@ -250,7 +252,7 @@ None.
 | R4-02 | 483's ends beside the count: exit code, signal, run_ended; the view and the notice keep the end | in-process server, native | Durable (new BTS-06) | BTS-06 | the reviewer asked for it; no case had combined the ends with the count |
 | R4-03 | Claude's ends (483 changed them) with the count | live Claude | Existing durable | BTS-04 | `claude-background-task-end.ts` changed |
 | R4-04 | peer route on the merged build | two built nodes | Existing durable | PBS-01 | contracts rebuilt |
-| R4-05 | phone: run screen, row and the 458 Settings screen | phone probe | Durable (MSP-67 extended) | `mobile-shell-probe.mjs --cases=MSP-67` | the Settings screen had not been exercised end to end |
+| R4-05 | phone: run screen, row and the 458 Settings screen | phone probe | Durable (MSP-73 (was MSP-67) extended) | `mobile-shell-probe.mjs --cases=MSP-73` | the Settings screen had not been exercised end to end |
 | R4-06 | 483's panel shows the end beside part 2's header | browser probe | Existing | `background-tasks-panel-probe.mjs` (483) | the panel and the header read the same tasks |
 | R4-07 | part 1 on the merge | restart suite RR-01..09 | Existing durable | as round 2 | the recorder reads 483's tasks |
 | R4-08 | typecheck of my changed suites | server tests | Existing | `pnpm -C autobyteus-server-ts typecheck` | BTS-06 added |

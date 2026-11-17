@@ -1,5 +1,7 @@
 # API/E2E Test Review Report
 
+> Rename note (implementation, IR-006, delivery DR-003): part 2's phone probe case is now **MSP-73** (it was MSP-59, then MSP-67; autobyteus-483 and autobyteus-522 took those IDs on later bases). Rows below that say MSP-67 for part 2's case mean MSP-73; evidence file names keep the ID they were recorded under.
+
 ## Latest Round: Part 2 on the merged base, round 3 (CRR-009) — Pass
 
 ### Review Meta
@@ -18,7 +20,7 @@
 | Durable Test Path | Change | Related Scenario / Requirement | Coherent Test Responsibility | Notes |
 | --- | --- | --- | --- | --- |
 | `autobyteus-server-ts/tests/e2e/runtime/background-task-status-count.e2e.test.ts` | Updated: BTS-06 added | REQ-006 beside 483's ends; AC-005 | Three real native tasks end three ways (exit code 3, outside SIGTERM, run end). The count falls 3 → 2 → 1 → offline 0, and each end keeps its reason in the stream, the view and the notices | Same file and helpers as BTS-01..05; header index updated |
-| `autobyteus-web/tests/e2e/mobile-shell-probe.mjs` | Updated: MSP-67 extended | AC-005 on the base's phone Settings screen (458) | While the task runs, ⋮ → Settings shows "Background task running" with the steady blue dot, as the run screen does | Step lengthened from 25 s to 35 s to fit the extra screen; the assertion is added to the existing facts |
+| `autobyteus-web/tests/e2e/mobile-shell-probe.mjs` | Updated: MSP-73 (was MSP-67) extended | AC-005 on the base's phone Settings screen (458) | While the task runs, ⋮ → Settings shows "Background task running" with the steady blue dot, as the run screen does | Step lengthened from 25 s to 35 s to fit the extra screen; the assertion is added to the existing facts |
 
 - No durable test file changed: `No`
 
@@ -26,13 +28,13 @@
 
 | Check | Result | Evidence / Notes |
 | --- | --- | --- |
-| Scenario grouping and names clear | Pass | BTS-06 is named by what it proves; the MSP-67 header line mentions the Settings screen |
+| Scenario grouping and names clear | Pass | BTS-06 is named by what it proves; the MSP-73 (was MSP-67) header line mentions the Settings screen |
 | Assertions prove approved requirements | Pass | **Count path:** `idle:3 → idle:2 → running:2 → idle:2 → idle:1 → running:1 → idle:1 → offline:0`; each notice's turn reads `running` with the tasks still running (the turn wins), and the run end gives offline 0. **Per end:** `failed`/`exit_code 3`/no reason; `stopped`/`signal SIGTERM`/no reason; `stopped`/`run_ended`. **Also:** the view keeps both ended tasks beside the running one; the notices name each end; no process is left. **Phone:** the Settings line and dot equal the run screen's (DEC-004) |
 | Fixtures/helpers reuse | Pass | Reuses the file's `statuses`, `feed`, `feedAgent`, `path_`, `inOrder` and scripted model. `withTag` is local to BTS-06; the same idea lives in other suites, each with its own process-table needs |
 | Isolation and determinism | Pass | The exit is driven by a flag file the test writes, not a timer, so the task cannot end before the turn does (the first draft's flake, fixed at its cause). Each step waits for its notice and the notice's turn. The `finally` kills tagged processes and removes the flag. The probe's optional wait for 458's rows is tolerant (`.catch`); the status assertion does not depend on it |
 | Large files coherent | Pass | — |
 | No stale or compat-only tests | Pass | — |
-| Coverage agrees with the evidence | Pass | `evidence/R4-01-status-count/BTS-06.json`, `R4-05-phone/results.log` and the MSP-67 screenshot, as the execution report lists them |
+| Coverage agrees with the evidence | Pass | `evidence/R4-01-status-count/BTS-06.json`, `R4-05-phone/results.log` and the MSP-73 (was MSP-67) screenshot, as the execution report lists them |
 | Callers exercise an established scenario | Pass | Ends of an agent's background commands are SCN-001/002 events. The outside SIGTERM matches 338's BGT-08 (a supported kill from outside). The run end is the user's Terminate |
 | Real trigger, no setup real use does not produce | Pass | The agent's own `run_bash(run_in_background)` calls, a real signal, and the real `terminateAgentRun`. The flag file only decides when the agent's own command exits (as part 1's release file did). The phone runs the production bundle and opens Settings through ⋮ |
 

@@ -1,5 +1,7 @@
 # API/E2E Execution Coverage Report — Part 1: the restart reminder
 
+> Rename note (implementation, IR-006, delivery DR-003): part 2's phone probe case is now **MSP-73** (it was MSP-59, then MSP-67; autobyteus-483 and autobyteus-522 took those IDs on later bases). Rows below that say MSP-67 for part 2's case mean MSP-73; evidence file names keep the ID they were recorded under.
+
 > Current round: **Part 2 on the merged base, round 4 (API-REV-004)**, the last section of this file. Round 3 (Part 2) stays above it. Part 1's result below is unchanged; it was reproved on the part 2 build (P2-12) and on the merged build (R4-07).
 
 ## Round
@@ -362,7 +364,7 @@ Round 2 results replace round 1's for the rerun cases; the rest carry round 1's 
 - Task size: `Large`. Architectural risk: `High`. Successful-output route: `Code Review`.
 - Proportional test-code review decision: `Required`:
   - BTS-06 is new;
-  - MSP-67 is extended with the Settings screen.
+  - MSP-73 (was MSP-67) is extended with the Settings screen.
 
 ## Cases
 
@@ -373,7 +375,7 @@ Round 2 results replace round 1's for the rerun cases; the rest carry round 1's 
 | R4-02 | 483's ends beside the count (the reviewer's request) | in-process server, native, real processes | new BTS-06 | Pass | `R4-01-status-count/BTS-06.json` | path `running:1, running:2, running:3, idle:3, idle:2, running:2, idle:2, idle:1, running:1, idle:1, offline:0`; stream ends `failed/exit_code 3/end_reason null`, `stopped/"signal SIGTERM"/null`, `stopped/run_ended`; the view keeps `failed, exitCode 3` and `stopped, signal SIGTERM` beside `running`; notices "exit code 3 after 1s … Still running: …" and "killed by SIGTERM after 3s … Still running: …"; feed `offline 0` | The test's first draft failed twice. Its exit task was on a timer, so under load it could end before the turn; and it checked the notices before they arrived. Fixed: the exit is triggered by a flag file, and the test waits for each notice. Not a product failure |
 | R4-03 | Claude's ends (483 changed them) with the count | live Claude | BTS-04 | Pass | `R4-01-status-count/BTS-04.json` | path `running:1 → idle:1 → idle:0`; feed `idle 1 → idle 0` | — |
 | R4-04 | peer route on the merged build | two built nodes | PBS-01 | Pass | `R4-04-peer/` | peer run `offline:0 → idle:1 → idle:0` | — |
-| R4-05 | phone: run screen, row, and the Settings screen from 458 (the reviewer's request) | phone probe, production phone bundle rebuilt | `mobile-shell-probe.mjs --cases=MSP-67,MSP-59`, then `--cases=MSP-67,MSP-63` | Pass | `R4-05-phone/` (`MSP-67-background-settings.png`) | Settings: `status: "Background task running"`, dot `bg-blue-500` (not pulsing), the stop-run icon of a live run (458); run screen and row as before; `after: "Idle"`; MSP-59 (483's ended task on the phone) Pass; MSP-63 (458 live idle run) Pass | The first MSP-67 run read Settings before its rows had loaded. The status line was already right; the probe now waits for the loaded rows, as 458's cases do |
+| R4-05 | phone: run screen, row, and the Settings screen from 458 (the reviewer's request) | phone probe, production phone bundle rebuilt | `mobile-shell-probe.mjs --cases=MSP-73,MSP-59`, then `--cases=MSP-73,MSP-63` | Pass | `R4-05-phone/` (`MSP-73 (was MSP-67)-background-settings.png`) | Settings: `status: "Background task running"`, dot `bg-blue-500` (not pulsing), the stop-run icon of a live run (458); run screen and row as before; `after: "Idle"`; MSP-59 (483's ended task on the phone) Pass; MSP-63 (458 live idle run) Pass | The first MSP-73 (was MSP-67) run read Settings before its rows had loaded. The status line was already right; the probe now waits for the loaded rows, as 458's cases do |
 | R4-06 | 483's panel shows the ends | browser probe (no backend) | `test:e2e:background-tasks-panel` | Pass | `R4-06-panel/` (`10-end-reasons.png`) | `Background tasks browser probe passed` | the live view behind the panel is BTS-06's |
 | R4-07 | part 1 on the merge | built servers, real restarts; Claude, Codex, OpenAI live | RR-01..09 | Pass | `R4-07-restart-suite/` | all nine pass; RR-05 and RR-07 on retry | Two preconditions were not met: RR-05's command did not start (the known control deadline under load; load was 215). In RR-07, haiku replied "STARTED" without calling Bash, and its own reply says so. Same as round 2 |
 | R4-08 | typecheck with BTS-06 | server | `pnpm -C autobyteus-server-ts typecheck` | Pass | `R4-01-status-count/vitest-results.log` | `production errors: 0; test-file errors: 1012 in 316 files (baseline 1012 in 316 files)`; `[typecheck] PASS` | — |
@@ -398,7 +400,7 @@ Round 2 results replace round 1's for the rerun cases; the rest carry round 1's 
 | Environment fidelity | 92% | the merged build, rebuilt `dist/` and phone bundle; fresh-start build by IMP-19 | Linux not run |
 | Failure / lifecycle / recovery | 95% | exit code, signal, run end, restarts and kills (RR) on the merge | — |
 | User surface | 94% | phone run screen, row and Settings; 483's panel | the desktop app not rerun by hand on the merge (TS-008 by IMP-20) |
-| Durable regression coverage | 94% | BTS-06 and the MSP-67 Settings check added | gated suites run only when their gate is set |
+| Durable regression coverage | 94% | BTS-06 and the MSP-73 (was MSP-67) Settings check added | gated suites run only when their gate is set |
 
 - Overall final: 94% (average 94.3). Every critical AC is directly proven, and no category is below 90%.
 - 95% target met: No. The gaps are round 3's, and none is affected by the merge.
@@ -420,7 +422,7 @@ Round 2 results replace round 1's for the rerun cases; the rest carry round 1's 
 | Path | Change | Cases |
 | --- | --- | --- |
 | `autobyteus-server-ts/tests/e2e/runtime/background-task-status-count.e2e.test.ts` | BTS-06 added: three real tasks, ended by an exit code, an outside SIGTERM and the run's end; the count, the stream payloads, the view, the notices and the feed | R4-02 |
-| `autobyteus-web/tests/e2e/mobile-shell-probe.mjs` | MSP-67 also opens the run's Settings screen (458) while the task runs: the same line and dot; the background step lasts 35 s instead of 25 s to make room | R4-05 |
+| `autobyteus-web/tests/e2e/mobile-shell-probe.mjs` | MSP-73 (was MSP-67) also opens the run's Settings screen (458) while the task runs: the same line and dot; the background step lasts 35 s instead of 25 s to make room | R4-05 |
 
 - Paths attached for proportional test-code review: Yes
 

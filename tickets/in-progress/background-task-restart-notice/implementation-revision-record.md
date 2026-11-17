@@ -108,3 +108,23 @@
 - Local validation and result: IMP-16 to IMP-20 (typechecks, contracts, full server unit, related integration, full web unit, fresh-start desktop build, desktop and phone probes).
 - Next recipient or routing: code reviewer (High risk, Local Fix requested by delivery), per `get_handoff_rules`.
 - Remaining limitations or risks: API/E2E to reconfirm the phone Settings screen and 483's background-task paths live as it needs; the `fs.watch` environment failures and load time-outs recorded in IMP-17.
+
+### IR-006 — Phone probe case ID collision after the next base refresh (delivery DR-003)
+
+- Triggering role, report path, and round: delivery engineer, `delivery-revision-record.md` DR-003 (`evidence/DEL-R2-post-integration/DEL-04-phone-probe-start-check.log`).
+- Triggering finding IDs: DR-003 (DEL-04)
+- Classification: Local Fix (test code only; no product change)
+- Prior authoritative result: IR-005 (CRR-008, API-REV-004, CRR-009 Pass)
+- Current authoritative result: part 2's phone probe case is MSP-73; the phone probe starts and its part 2, 522, 483 and 458 cases pass on the merged base.
+- Related solution revision IDs: SR-006
+- Related architecture-review revision IDs: ARCH-REV-005
+- Related code-review revision IDs: CRR-008, CRR-009
+- Related API/E2E revision IDs: API-REV-004
+- Related delivery revision IDs: DR-002, DR-003
+- Why this implementation revision is recorded: autobyteus-522 added MSP-67..MSP-72, and the probe refuses to start while an ID is used twice.
+- Approved behavior or requirement IDs affected: none.
+- Implementation delta: `mobile-shell-probe.mjs`: `runCase('MSP-73')`, its header comment (with the earlier IDs) and its four screenshot names (`d7fdd7db6f`); rename notes in the handoff and the API/E2E coverage, execution and test-review reports.
+- Changed files or areas: `autobyteus-web/tests/e2e/mobile-shell-probe.mjs`; ticket documents.
+- Local validation and result: IMP-21 (nine phone cases Pass on fresh server and phone builds).
+- Next recipient or routing: code reviewer (Local Fix requested by delivery, High risk), per `get_handoff_rules`.
+- Remaining limitations or risks: a later base can take MSP-73; starting the probe with any one case runs the duplicate-ID check.

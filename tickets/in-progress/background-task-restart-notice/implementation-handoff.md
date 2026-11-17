@@ -18,9 +18,9 @@ All paths below are in `/Users/normy/autobyteus_org/autobyteus-worktrees/backgro
 
 ## Current Implementation Summary
 
-- Implementation cycle: `Local Fix` for part 2 (IR-005: integration of the refreshed base, delivery DR-002); IR-004 (CR-002), IR-003 the part 2 baseline
+- Implementation cycle: `Local Fix` for part 2 (IR-006: phone probe case renamed MSP-73, delivery DR-003); IR-005 (base integration, DR-002), IR-004 (CR-002), IR-003 the part 2 baseline
 - Implementation revision record: `implementation-revision-record.md`
-- Current implementation revision ID: `IR-005` (IR-003 baseline, IR-004)
+- Current implementation revision ID: `IR-006` (IR-003 baseline, IR-004, IR-005)
 - Related solution revision IDs: `SR-005`, `SR-006`
 - Related architecture-review revision IDs: `ARCH-REV-004` (Fail, revised), `ARCH-REV-005` (Pass)
 - Related code-review revision IDs: `CRR-005` (Fail: CR-002, Local Fix; `code-review-report.md` "Latest Round: Part 2"), `CRR-006` (Pass, round 5: CR-002 resolved; sent on to API/E2E by the code reviewer), `CRR-007` (Pass), `CRR-008` (Pass, round 6: the base integration IR-005, no findings; sent on to API/E2E by the code reviewer)
@@ -141,6 +141,7 @@ then `ca1979b206` and the probe-ID commit named in the handoff message.
   decision with the count: an ended task (any `endReason`) is not `running`, so it is not counted.
 - Test doubles follow 483's type: background tasks in the part 2 tests and doubles carry `endReason: null, exitCode: null`.
 - The phone probe case of part 2 is renumbered MSP-59 → MSP-67: the base added its own MSP-59 (`mobile-background-tasks-cases.mjs`).
+- IR-006 (delivery DR-003): autobyteus-522 (base `d61bae54a0`, merged by delivery as `e93d477539`) added MSP-67..MSP-72 (`mobile-every-run-settings-cases.mjs`), so part 2's case is now **MSP-73** (`d7fdd7db6f`): its `runCase`, header comment and screenshot names. Rows and evidence that say MSP-59 or MSP-67 for part 2's case were recorded under those IDs and mean MSP-73 now; the API/E2E coverage, execution and test-review reports carry the same rename note.
 
 ## Checks Run
 
@@ -164,6 +165,7 @@ Evidence files are in `tickets/in-progress/background-task-restart-notice/eviden
 | IMP-18 | IR-005: `pnpm -C autobyteus-web test:nuxt run` (full) | `ca1979b206` | status, phone run and run settings (`mobileRunSettingsScope.spec.ts` with the DEC-004 case, `MobileRunSettings.spec.ts`), every status consumer | REQ-006, AC-005/AC-006 (web) | Pass | `IMP-18-merge-web-unit-full.log` | `Test Files  764 passed (764)`, `Tests  5750 passed (5750)` |
 | IMP-19 | Fresh-start build (TESTING.md): `git clone --no-local` at `ca1979b206`, `pnpm install --frozen-lockfile`, `pnpm build:electron:mac -- --arm64` with the job's environment, then "Verify bundled Prisma ARM64" and "Verify packaged terminal runtime ARM64" (with the spawn probe) | `ca1979b206` | the contract `dist/` and every package's build from a clean clone | build | Pass; signing, notarization and other systems not tested (runner only) | `IMP-19-fresh-start-build/` | `install ok`, `build ok`, `verify prisma ok`, `verify terminal runtime ok`, `spawn probe ok`, `exit=0`; node v22.23.1 |
 | IMP-20 | IR-005 probes on the merge: `test:e2e:team-status-live --cases TS-008`; `mobile-shell-probe.mjs --cases=MSP-59,MSP-67` (the base's 483 phone background-task case and part 2's renumbered case) | merge + renumber | desktop rows, Team row, header, composer; the phone row and run screen; 483's run-ended phone Activity | AC-005, AC-006 | Pass | `IMP-20-merge-probes/` | TS-008 `evidence.json` Pass; `mobile-shell-probe.json` MSP-59 and MSP-67 Pass (`"status": "background"`, `"stop": 0`, `"after": "Idle"`) |
+| IMP-21 | IR-006: `pnpm -C autobyteus-server-ts build`, `pnpm -C autobyteus-web build:mobile-web`, then `node autobyteus-web/tests/e2e/mobile-shell-probe.mjs --cases=MSP-73,MSP-67,MSP-68,MSP-69,MSP-70,MSP-71,MSP-72,MSP-59,MSP-63 --output-dir=<fresh>` | `d7fdd7db6f` (base `d61bae54a0` merged as `e93d477539`) | part 2's phone case with the Settings screen (MSP-73), autobyteus-522's every-run Settings (MSP-67..72), 483's run-ended Activity (MSP-59), 458's Settings (MSP-63); the probe's start check (no duplicate IDs) | AC-005, AC-006 (phone) | Pass | `IMP-21-phone-probe-msp73/` | `results.log`: nine `Pass`, `mobile-shell probe: Pass`; `mobile-shell-probe.json` MSP-73 `"status": "background"`, settings `"Background task running"`, `"stop": 0`, `"after": "Idle"` |
 
 - Baseline fix (TESTING.md rule 9): `b2de4f9d1f` — `autobyteus-agent-presentation-contracts/tests/agent-runtime-names.test.mjs` lacked `deepseek_harness` since autobyteus-387; its own commit.
 - Not run, and why: the live Claude case (its live gate and a paid model) and per-runtime checks on an isolated desktop instance; the two-node peer case beyond MSP-59's paired node; the server E2E suite. These are API/E2E's.
