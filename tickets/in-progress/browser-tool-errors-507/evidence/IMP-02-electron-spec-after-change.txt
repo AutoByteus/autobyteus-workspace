@@ -1,0 +1,21 @@
+# IMP-02
+# Command: pnpm -C autobyteus-web test:electron browser/__tests__/browser-screenshot-capture.electron.spec.ts --run
+# Commit: 927079c6cd
+# Environment: macOS (Darwin 25.5.0, arm64), Electron 42.11.16, Node 22.23.1, machine load average 130-240 during runs
+# Date: 2026-11-17
+
+
+> autobyteus@1.5.13-beta.7 test:electron /Users/normy/autobyteus_org/autobyteus-worktrees/browser-tool-errors-507/autobyteus-web
+> vitest --config ./electron/vitest.config.ts browser/__tests__/browser-screenshot-capture.electron.spec.ts --run
+
+
+ RUN  v3.2.7 /Users/normy/autobyteus_org/autobyteus-worktrees/browser-tool-errors-507/autobyteus-web/electron
+
+RESULT {"electron":"42.11.16","cases":[{"id":"AC-002","ok":true,"ms":352,"size":{"width":2560,"height":1800},"tabId":"49ad39"},{"id":"AC-001","ok":true,"ms":164,"size":{"width":2560,"height":1800},"tabId":"49ad39"},{"id":"AC-005","ok":true,"ms":550,"size":{"width":2560,"height":8000},"tabId":"49ad39","boundsBefore":{"x":0,"y":0,"width":1280,"height":900},"boundsAfter":{"x":0,"y":0,"width":1280,"height":900}},{"id":"AC-003","ok":true,"ms":140,"size":{"width":810,"height":1800},"tabId":"4667dc","viewportBefore":[980,2176],"viewportAfter":[980,2176]},{"id":"AC-004","ok":true,"ms":165,"size":{"width":2560,"height":1800},"tabId":"1b90cf","attachedWhileShown":true,"attachedWhileMinimized":false},{"id":"AC-004-restored","ok":true,"ms":60,"size":{"width":2560,"height":1800},"tabId":"1b90cf","attachedAfterRestore":true}]}
+ ✓ browser/__tests__/browser-screenshot-capture.electron.spec.ts (7 tests) 6046ms
+
+ Test Files  1 passed (1)
+      Tests  7 passed (7)
+   Start at  07:46:09
+   Duration  6.66s (transform 30ms, setup 0ms, collect 326ms, tests 6.05s, environment 0ms, prepare 64ms)
+
