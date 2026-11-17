@@ -463,7 +463,11 @@ Each new text follows FR-1 … FR-4. The Code Reviewer checks the list against F
     - **No retries, no skip, no longer waits.** The guard stays at 60 s.
     - The rewrite already committed (`fb52bd332c`) stays.
 
-  - **To prove it:** the file passes 5 of 5 runs alone and 3 of 3 runs under 10 busy loops (`yes > /dev/null`), after `pnpm test:integration:prepare`. Commands are in the investigation notes.
+  - **To prove it (restated at SR-013, ARCH-REV-006):** after `pnpm test:integration:prepare`:
+    - on a machine whose OS delivers file events (the raw `fs.watch` probe gets its event), the file passes 5 of 5 runs alone;
+    - under load (10 busy loops, `yes > /dev/null`), each of 3 runs either passes, or fails only with ENVIRONMENT cases, never a product failure.
+
+    Commands are in the investigation notes.
 
 ## Spine Walks Per Case (lesson 1)
 
