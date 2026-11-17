@@ -1,6 +1,6 @@
 # Release Report — release-v1.5.13-beta.9 (autobyteus-519): beta v1.5.13-beta.9
 
-Status: **in progress: GO (2026-11-17); cutting.**
+Status: **Completed: beta v1.5.13-beta.9 published (4/4 workflows, 23/23 assets).**
 
 ## Scope
 
@@ -53,7 +53,31 @@ Status: **in progress: GO (2026-11-17); cutting.**
 | Failed Run And Job | Classification | Log Lines That Show The Cause | Action | Result |
 | --- | --- | --- | --- | --- |
 | Desktop `44123354947` attempt 1, Build macOS ARM64 and Build macOS Intel x64: `cancelled` at 16:30:03Z | Platform (GitHub runner capacity) | check-run annotations: `The job was not acquired by Runner of type hosted even after multiple attempts`; `Due to capacity constraints, jobs targeting macOS arm64 runners may experience longer queue times.` No step ran. | `gh run rerun 44123354947 --failed` (16:38Z), after the user asked "Did you look at the Mac OS job": delivery's poll had stopped only on `failure` and missed `cancelled` (records 2026-11-17-R8 in the reflections; the poll now stops on any non-success) | attempt 2: both macOS builds success at 17:02Z (signing and notarization passed: the Apple agreement is in effect) |
-| Desktop attempt 2, Publish GitHub Release, "Wait for the server packages" | Not a failure of its own: the Server Docker Release had not published the six server packages within the 60-minute wait | `##[error]The server packages of v1.5.13-beta.9 did not appear within 60 minutes; missing: autobyteus-server-1.5.13-beta.9-linux-x64.tar.gz …` (18:06Z) | RELEASE.md Recovery "The server packages are missing": when all six are on the release, `gh run rerun 44123354947 --failed` (only the publish job) | pending |
-| Server Docker `44123354990`, Build and push default multi-arch image, in progress since 16:16Z (beta.6 53 min, beta.7 53 min, beta.8 32 min for the whole job) | Under investigation: GitHub's runners are at normal speed today (Desktop Linux x64 6 min vs 7, Windows 15 vs 18, Android 3 vs 3); the lockfile is unchanged; the only change to the image build is autobyteus-514's `claude-agent-sdk-binary-packaging.mjs` step (a full walk of the server package's `node_modules`, run per architecture, arm64 under QEMU; not run inside Docker by 514's validation) | the step log is available only when the job ends | waiting; FU-002 (sent ahead to the Solution Designer at the founder's word) | pending |
+| Desktop attempt 2, Publish GitHub Release, "Wait for the server packages" | Not a failure of its own: the Server Docker Release had not published the six server packages within the 60-minute wait | `##[error]The server packages of v1.5.13-beta.9 did not appear within 60 minutes; missing: autobyteus-server-1.5.13-beta.9-linux-x64.tar.gz …` (18:06Z) | RELEASE.md Recovery "The server packages are missing": when all six were on the release (19:19Z), `gh run rerun 44123354947 --failed` (only the publish job, attempt 3) | success; `latest*.yml` at 19:21:56Z, after the six server packages |
+| Server Docker `44123354990`, Build and push default multi-arch image, in progress since 16:16Z (beta.6 53 min, beta.7 53 min, beta.8 32 min for the whole job) | Under investigation: GitHub's runners are at normal speed today (Desktop Linux x64 6 min vs 7, Windows 15 vs 18, Android 3 vs 3); the lockfile is unchanged; the only change to the image build is autobyteus-514's `claude-agent-sdk-binary-packaging.mjs` step (a full walk of the server package's `node_modules`, run per architecture, arm64 under QEMU; not run inside Docker by 514's validation) | the step log is available only when the job ends | the user's screenshot of the live log showed it on `#45 [linux/arm64 runtime 2/16] RUN apt-get update && apt-get install …`; the job log after cancelling: no output from `16:41:43Z` to the cancel at `18:11Z` (a hang, not 514's step, which took ~2 s: `Removed 233 MB of Claude Agent SDK platform binaries`). Classified Platform (apt-get hung under QEMU or a stalled Debian download). `gh run cancel 44123354990`, then `gh run rerun 44123354990 --failed` | attempt 2 success (job 18:12–19:12Z; the same apt-get step 274 s); both server package jobs success |
 
 - Android APK Release: success. iOS App Store Connect Release: success.
+
+### Final Results
+
+- All four workflows **succeeded**: iOS App Store Connect Release `44123355591` (attempt 1, TestFlight upload), Android APK Release `44123355184` (attempt 1), Server Docker Release `44123354990` (attempt 2), Desktop Release `44123354947` (attempt 3: macOS rebuilt in attempt 2; publish in attempt 3). No failure was ours; the tag was never moved.
+- GitHub release `v1.5.13-beta.9`: `isPrerelease: true`, not a draft, **23 assets** (`evidence/delivery/DR1-release-asset-order.tsv`); GitHub "Latest" stays `v1.5.12`. Order: the six `autobyteus-server-*` files by 19:19:37Z, all four `latest*.yml` from 19:21:56Z.
+- Docker Hub: `autobyteus/autobyteus-server:1.5.13-beta.9` and `:beta` at `sha256:60e6d6e7f290…`; `:latest` unchanged at `sha256:2d8affe595e0…` (1.5.12).
+- Notes: GitHub's generated notes with the release ticket's `## What you need to do` / `## Good to know` above them (`gh release edit --notes-file`; `evidence/delivery/DR1-published-beta-notes.md`). None of the four tickets had its own user-action section.
+- Apple: both macOS builds signed and notarized in attempt 2: the developer agreement is in effect.
+- Point (b) observed live: this delivery's own run, mid-turn when the desktop updated, received at 19:26Z "The application restarted at 2026-11-17 19:26 UTC (reason: an update to v1.5.13-beta.9). Your previous turn was interrupted; … If you started any background tasks, the restart stopped them. …", as the notes say for a mid-turn agent.
+- Release/publication result: `Completed` (a partial release from about 16:30Z to 19:22Z: installers, APK and TestFlight were out; desktops were offered the update only after the publish rerun).
+
+### Docker build time (FU-002)
+
+- Attempt 2's log: the image was built in about 27 min; `#109 exporting to GitHub Actions Cache` took 1653.7 s (27.5 min); arm64 under QEMU: `build:mobile-web` 521 s, server `build` 453 s, `pnpm install` 305 s, runtime `apt-get` 274 s (`evidence/delivery/DR1-docker-attempt2-timings.log`; attempt 1's hang: `DR1-docker-attempt1-hang-excerpt.log`).
+- autobyteus-520, merged into `personal` during this release (`499a887e13`), already builds each architecture on its own native runner and exports no GitHub Actions cache; it does not add a time limit to the runtime `apt-get`. FU-002 keeps that remainder; it ships with the next release.
+
+## Follow-ups
+
+- `follow-ups.md`: FU-001 (the stale 483 prompt-section e2e, the founder's follow-up), FU-002 (Docker build time; mostly done by autobyteus-520). The Solution Designer sends them through the PM.
+
+## Final Status
+
+- Verification (the guide's checks before tagging, with the founder's waivers): `Yes`. Repository finalization: `Yes` (`personal` at the release commit `1fdca761aa`, then this record). Release: `Completed`. Blocker: `None`. Cleanup: after this record is pushed (the terminal message reports it).
+
