@@ -1,0 +1,108 @@
+{
+  "startedAt": "2026-11-17T11:49:19.221Z",
+  "result": "Fail",
+  "node": "v22.23.1",
+  "servers": {
+    "alpha": {
+      "port": 56457,
+      "nodeId": "srv_Q6AHXD6470BsVwpRXUPcYXCsqJh9EQ5u",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    },
+    "beta": {
+      "port": 56458,
+      "nodeId": "srv_cIBMQBViOaLGu98BjnUDMeURKYvyX27S",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    }
+  },
+  "runs": {
+    "ptm": "project_task_manager_e95509a8d6e94869adb49ff6fc72fc90",
+    "writerRun": "release_notes_writer_3469158470364dc0b9f8f5c47bcbd693",
+    "squadRun": "docs_review_team_c7fe8bef92ae472a9e5488bb4c5c4d1b",
+    "reviewer": "release_notes_writer_b12890f3bc6844a5be624d67d3641f19",
+    "memberDelegated": "fact_checker_2fdac01945cc47c99d431a448775c69d",
+    "remoteAgentRun": "publisher_d550dafb11ff441ebb6d30c59aaace8e",
+    "remoteTeamRun": "studio_team_7ee44eaf0df14d259e01d5fc12a2e078",
+    "plain": [
+      "fact_checker_8b48fdce1645431ebf2343aee8655236",
+      "fact_checker_8ccc984160a64704ba47aa67ca939a6a",
+      "fact_checker_a242556eddbe4958a21cf06866bf0ce7"
+    ],
+    "org": "delivery_org_96dd00d7ce784166b45c6419bd0043f3",
+    "orgPlanner": "release_notes_writer_06e05750144c47988a88dcd0dff5f146",
+    "reviewOrg": "review_org_297aab547ea344819951f127a24f96e5",
+    "reviewOrgCoordinator": {
+      "address": "/squad/reviewer",
+      "agentRunId": "release_notes_writer_fc8d0f7faf044d8ea9d110c3abbe2912",
+      "teamRunId": null
+    },
+    "delivery": "delivery_team_748947d9112844dda9a94474732df0fc",
+    "deliveryLead": "fact_checker_20e7ce6bb045408795252bf17dd6e255",
+    "deliveryMate": "release_notes_writer_fe7cc09ff65d418d9ded6233f8eb5b27",
+    "leadDelegated": "changelog_helper_c8e5979d7c4844a49c6b7c51f9c0f9a9",
+    "approver": "approver_264865c4d5814ac39b1de04361099b24",
+    "taskA": "launch-ffe158-1",
+    "taskB": "launch-ffe158-2"
+  },
+  "cases": {
+    "MSP-65": {
+      "result": "Fail",
+      "seconds": 26.6,
+      "error": "REQ-008 after the stop the phone stays on Settings with the rows open",
+      "details": {
+        "orgRunId": "delivery_org_486f1983aadb49edb2a949703b3f722b",
+        "live": {
+          "open": true,
+          "subject": "plannerRunning · in Delivery Org",
+          "status": "Running · in Delivery Org",
+          "runtime": "Antigravity CLI",
+          "model": "Gemini test",
+          "runtimeDisabled": true,
+          "saveDisabled": true,
+          "stop": {
+            "label": "Stop run",
+            "title": "Stop run",
+            "text": ""
+          },
+          "error": null
+        },
+        "stopped": {
+          "open": false,
+          "subject": null,
+          "status": null,
+          "runtime": null,
+          "model": null,
+          "runtimeDisabled": null,
+          "saveDisabled": null,
+          "stop": null,
+          "error": null
+        },
+        "url": "/mobile/?unsupported=desktopWorkspace",
+        "nodeAfterStop": false
+      }
+    }
+  },
+  "browserErrors": [],
+  "failedRequests": [],
+  "network": {},
+  "cleanup": {
+    "frontendExited": true,
+    "serversLeft": 0,
+    "rootRemoved": true
+  },
+  "error": null,
+  "summary": {
+    "cases": {
+      "MSP-65": "Fail"
+    },
+    "unknownBrowserErrors": 0
+  },
+  "finishedAt": "2026-11-17T11:50:53.844Z"
+}

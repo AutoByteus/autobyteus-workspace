@@ -1,0 +1,17 @@
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+
+> autobyteus@1.5.13-beta.8 test:e2e:mobile-shell /Users/normy/autobyteus_org/autobyteus-worktrees/phone-run-model-runtime-458/autobyteus-web
+> node tests/e2e/mobile-shell-probe.mjs --output-dir=/Users/normy/autobyteus_org/autobyteus-worktrees/phone-run-model-runtime-458/tickets/in-progress/phone-run-model-runtime-458/evidence/api-e2e/r2-api-01b-rest --cases=MSP-13,MSP-53,MSP-54,MSP-55,MSP-32
+
+[mobile-shell] MSP-13 …
+[mobile-shell] MSP-13 Pass
+[mobile-shell] MSP-53 …
+[mobile-shell] MSP-53 Pass
+[mobile-shell] MSP-54 …
+[mobile-shell] MSP-54 Pass
+[mobile-shell] MSP-55 …
+[mobile-shell] MSP-55 Pass
+[mobile-shell] MSP-32 …
+[mobile-shell] MSP-32 Pass
+mobile-shell probe: Pass
+exit=0

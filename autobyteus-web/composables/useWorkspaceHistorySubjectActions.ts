@@ -31,8 +31,9 @@ export const agentOrgRouteQuery = (
 })
 
 /**
- * Org open, select, inspect and stop from the run lists. On the desktop shell it navigates to the Org; on the phone
- * shell it opens and selects only, and reports the outcome: the phone writes its own route (`useMobileNavigation`).
+ * Org open, select, inspect and stop from the run lists and Settings. On the desktop shell it navigates to the Org (a
+ * stop keeps the Org shown, in history mode); on the phone shell it never writes the route and reports the outcome: the
+ * phone writes its own route (`useMobileNavigation`), and the Org's target resolves in either mode.
  */
 export const useWorkspaceHistorySubjectActions = (setup: { shell?: WorkspaceHistoryShell } = {}) => {
   const route = useRoute()
@@ -60,7 +61,7 @@ export const useWorkspaceHistorySubjectActions = (setup: { shell?: WorkspaceHist
     if (command.action === 'stop') {
       try { await orgContexts.stopAndInspect(run.rootRunId) }
       finally {
-        if (orgContexts.contextFor(run.rootRunId)?.phase === 'historical'
+        if (setup.shell !== 'mobile' && orgContexts.contextFor(run.rootRunId)?.phase === 'historical'
           && route.query.rootSubjectKind === 'agent_org' && String(route.query.orgRunId || '') === run.rootRunId) {
           await router.replace({ path: '/workspace', query: { ...route.query, mode: 'history' } })
         }

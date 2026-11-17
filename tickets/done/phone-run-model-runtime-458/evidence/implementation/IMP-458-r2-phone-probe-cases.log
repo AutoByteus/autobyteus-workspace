@@ -1,0 +1,27 @@
+# id: IMP-458-r2-phone-probe-cases
+# command: pnpm -C autobyteus-web build:mobile-web; pnpm -C autobyteus-web test:e2e:mobile-shell --output-dir=/tmp/458-probe-14 --cases=MSP-59,MSP-60,MSP-61,MSP-62,MSP-63,MSP-64,MSP-65
+# commit: 6ddf9bb8f5
+# env: clean env -i PATH HOME=<fresh temp> TMPDIR; probe-owned alpha/beta nodes, scripted Antigravity and Grok Build; no provider keys
+# date: 2026-11-17T12:00Z
+
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+
+> autobyteus@1.5.13-beta.8 test:e2e:mobile-shell /Users/normy/autobyteus_org/autobyteus-worktrees/phone-run-model-runtime-458/autobyteus-web
+> node tests/e2e/mobile-shell-probe.mjs --output-dir=/tmp/458-probe-14 --cases=MSP-59,MSP-60,MSP-61,MSP-62,MSP-63,MSP-64,MSP-65
+
+[mobile-shell] MSP-59 …
+[mobile-shell] MSP-59 Pass
+[mobile-shell] MSP-60 …
+[mobile-shell] MSP-60 Pass
+[mobile-shell] MSP-61 …
+[mobile-shell] MSP-61 Pass
+[mobile-shell] MSP-62 …
+[mobile-shell] MSP-62 Pass
+[mobile-shell] MSP-63 …
+[mobile-shell] MSP-63 Pass
+[mobile-shell] MSP-64 …
+[mobile-shell] MSP-64 Pass
+[mobile-shell] MSP-65 …
+[mobile-shell] MSP-65 Pass
+mobile-shell probe: Pass
+# exit: 0

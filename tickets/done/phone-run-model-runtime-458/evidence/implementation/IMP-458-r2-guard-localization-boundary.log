@@ -1,0 +1,13 @@
+# id: IMP-458-r2-guard-localization-boundary
+# command: pnpm guard:localization-boundary
+# commit: 6ddf9bb8f5 (code)
+# env: clean env -i PATH HOME=<fresh temp> TMPDIR; isolated, no provider keys
+# date: 2026-11-17T12:05Z
+
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.1.tgz
+
+> autobyteus@1.5.13-beta.8 guard:localization-boundary /Users/normy/autobyteus_org/autobyteus-worktrees/phone-run-model-runtime-458/autobyteus-web
+> node ./scripts/guard-localization-boundary.mjs
+
+[guard:localization-boundary] Passed.
+# exit: 0

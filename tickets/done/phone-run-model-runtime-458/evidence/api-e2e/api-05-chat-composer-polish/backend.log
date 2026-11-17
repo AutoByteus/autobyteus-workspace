@@ -1,0 +1,336 @@
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/phone-run-model-runtime-458/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-polish-H6qxWJ/server-data
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-polish-H6qxWJ/server-data/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-polish-H6qxWJ/server-data/.env
+◇ injected env (0) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-polish-H6qxWJ/server-data/.env // tip: ◈ secrets for agents [www.dotenvx.com]
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:53475
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/phone-run-model-runtime-458/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:53475
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/phone-run-model-runtime-458/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-polish-H6qxWJ/server-data
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-polish-H6qxWJ/server-data/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-polish-H6qxWJ/server-data/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-polish-H6qxWJ/server-data/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-polish-H6qxWJ/server-data/memory
+============================================================
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Using Prisma engine overrides from bundled: /Users/normy/autobyteus_org/autobyteus-worktrees/phone-run-model-runtime-458/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines (query=libquery_engine-darwin-arm64.dylib.node, schema=schema-engine-darwin-arm64)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "probe.db" at "file:/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-polish-H6qxWJ/server-data/db/probe.db"
+
+27 migrations found in prisma/migrations
+
+
+No pending migrations to apply.
+┌─────────────────────────────────────────────────────────┐
+│  Update available 5.22.0 -> 8.0.0-rc.34                 │
+│                                                         │
+│  This is a major update - please follow the guide at    │
+│  https://pris.ly/d/major-version-upgrade                │
+│                                                         │
+│  Run the following to update                            │
+│    npm i --save-dev prisma@latest                       │
+│    npm i @prisma/client@latest                          │
+└─────────────────────────────────────────────────────────┘
+Database migrations completed successfully.
+(node:98097) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:info Starting a sqlite pool with 21 connections.
+[2026-11-17T11:38:40.600Z] [INFO] [secret-management.vault] Secret vault: application database
+Initialized server settings service with 34 predefined settings
+AgentRunManager initialized.
+Node access: local control socket not opened. The node's local control socket path is 119 bytes, longer than the 103 bytes a Unix socket path may have: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-polish-H6qxWJ/server-data/node-access/local-control.sock. Use a shorter data folder path.
+AgentRunManager initialized.
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-polish-H6qxWJ/server-data/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-polish-H6qxWJ/server-data/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-polish-H6qxWJ/server-data/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'get_project_task'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'search_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Project Task Tools
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'list_peer_nodes'
+Registered required tool unit: Agent Discovery Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Successfully registered tool definition: 'list_available_agent_runtimes'
+Successfully registered tool definition: 'submit_launch_choices'
+Registered required tool unit: Agent Runtime Tools
+Registered required tool unit: Browser Tools
+Successfully registered tool definition: 'publish_artifacts'
+Registered required tool unit: Published Artifact Tools
+Successfully registered tool definition: 'search_memory'
+Registered required tool unit: Memory Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+{"level":30,"time":1794915521008,"pid":98097,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:53511"}
+{"level":30,"time":1794915521038,"pid":98097,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:53475"}
+[2026-11-17T11:38:41.038Z] [INFO] [server.runtime] Server listening on 127.0.0.1:53475
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+Background task 'Memory Hub Staging Sweep' completed successfully.
+Background task 'Memory Search' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 0 MCP server configs into cache.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Pre-loaded 33 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 3 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-polish-H6qxWJ/workspaces/alpha-notes
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-polish-H6qxWJ/workspaces/alpha-notes.
+Created and registered workspace ID: agent_ws_3e22165e2ad2373b4581cd25c054df497c9411f965f421e4e85857d7e58f2a4e
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-polish-H6qxWJ/workspaces/autobyteus_mcps
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-polish-H6qxWJ/workspaces/autobyteus_mcps.
+Created and registered workspace ID: agent_ws_8cfe8edaf01f1acae77338b4bbbdd4c629fefaaf05f6961bf484923e5c308d7b
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-polish-H6qxWJ/workspaces/MCPS-tools
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-polish-H6qxWJ/workspaces/MCPS-tools.
+Created and registered workspace ID: agent_ws_e33cb0a567dae7398dc6a6e0bc6a0f52f781ff7742cc667d84e76e5ccf8b1733
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-polish-H6qxWJ/workspaces/beta-site
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-polish-H6qxWJ/workspaces/beta-site.
+Created and registered workspace ID: agent_ws_54fc4960ce233c1ae99753bdea29e5cee93e4b0792055429629de2df9c098489
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-polish-H6qxWJ/workspaces/gamma-api
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-polish-H6qxWJ/workspaces/gamma-api.
+Created and registered workspace ID: agent_ws_50c943e545df5c5be304b2c5dae868d62c34c327c81b18c454bcb1bbce8e63f9
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-polish-H6qxWJ/workspaces/delta-infra
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-polish-H6qxWJ/workspaces/delta-infra.
+Created and registered workspace ID: agent_ws_a919503bc2b14608d9ab042e3ee771cdacab67b8ed5799558d758a77dc75f3e9
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-polish-H6qxWJ/workspaces/epsilon-docs
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-polish-H6qxWJ/workspaces/epsilon-docs.
+Created and registered workspace ID: agent_ws_9daf399df5d1f6e4b5250a3b971ddb65bb0210d6a1c7ba46894ba636dcaefdbe
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-polish-H6qxWJ/workspaces/zeta-mobile
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-polish-H6qxWJ/workspaces/zeta-mobile.
+Created and registered workspace ID: agent_ws_1a9a0554788eceeaa04d860b6a352ff3c7b6d9c51d7f1fb7c2e40fbe9c8c14bf
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-polish-H6qxWJ/workspaces/eta-data
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-polish-H6qxWJ/workspaces/eta-data.
+Created and registered workspace ID: agent_ws_ff6660b8d5ac992e3f433a53c5de7e0f6609b570343120f398cc6d93e4398f3b
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-polish-H6qxWJ/workspaces/theta-ml
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-polish-H6qxWJ/workspaces/theta-ml.
+Created and registered workspace ID: agent_ws_4b00c63555e2a879a701d3d6bdcdf5bcdd4ca25bd91c0718a7fd202b026168a0
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-polish-H6qxWJ/workspaces/iota-web
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-polish-H6qxWJ/workspaces/iota-web.
+Created and registered workspace ID: agent_ws_e30753dfe83c04bb5f62414aea5a6d107a5cde92917e7a27b64baea191d89f48
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-polish-H6qxWJ/workspaces/kappa-cli
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-polish-H6qxWJ/workspaces/kappa-cli.
+Created and registered workspace ID: agent_ws_1cbd1a14069ec5df18d7c3503c5943d00cb4835f787fa92e1e8d808e145bfcc9
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-polish-H6qxWJ/workspaces/nested-dir/lambda-sdk
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-polish-H6qxWJ/workspaces/nested-dir/lambda-sdk.
+Created and registered workspace ID: agent_ws_3f96f272d283819885095a3090ae795d042d265e6261d8e8900fc3041b6aa3f8
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-polish-H6qxWJ/workspaces/notes
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-polish-H6qxWJ/workspaces/notes.
+Created and registered workspace ID: agent_ws_9aec0a61dabbaa96ea9f26a75ad0866643b4eb1400a23bf305135e27eeef94b7
+Resolved configured temp workspace root to TempWorkspace.
+Agent websocket attached for run daily_assistant_862be7ca797c4a45bd7b60f2e621423e
+Created agent session c77dc76c-1419-4ac7-a5b7-5b76a98d6062 for run daily_assistant_862be7ca797c4a45bd7b60f2e621423e
+Agent WebSocket connected: session=c77dc76c-1419-4ac7-a5b7-5b76a98d6062, run=daily_assistant_862be7ca797c4a45bd7b60f2e621423e
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-polish-H6qxWJ/server-data/memory/agents/daily_assistant_862be7ca797c4a45bd7b60f2e621423e/raw_traces_manifest.json
+Resolved configured temp workspace root to TempWorkspace.
+Tool 'close_tab' defined in agent definition 'Daily Assistant' not found in registry. Skipping.
+Tool 'dom_snapshot' defined in agent definition 'Daily Assistant' not found in registry. Skipping.
+Tool 'list_tabs' defined in agent definition 'Daily Assistant' not found in registry. Skipping.
+Tool 'navigate_to' defined in agent definition 'Daily Assistant' not found in registry. Skipping.
+Tool 'open_tab' defined in agent definition 'Daily Assistant' not found in registry. Skipping.
+Tool 'run_script' defined in agent definition 'Daily Assistant' not found in registry. Skipping.
+Tool 'screenshot' defined in agent definition 'Daily Assistant' not found in registry. Skipping.
+MediaStorageService initialized. Media root: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-polish-H6qxWJ/server-data/media
+AgentRuntimeState initialized for agent_id 'daily_assistant_862be7ca797c4a45bd7b60f2e621423e'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'daily_assistant_862be7ca797c4a45bd7b60f2e621423e': LLM instance 'AnthropicLLM' and 14 tools prepared and stored in state.
+AgentContext composed for agent_id 'daily_assistant_862be7ca797c4a45bd7b60f2e621423e'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'daily_assistant_862be7ca797c4a45bd7b60f2e621423e' with config: 'Daily Assistant'.
+AgentWorker initialized for agent_id 'daily_assistant_862be7ca797c4a45bd7b60f2e621423e'.
+Registered AgentContext for agent_id 'daily_assistant_862be7ca797c4a45bd7b60f2e621423e'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'daily_assistant_862be7ca797c4a45bd7b60f2e621423e'. Context registered.
+Agent facade initialized for agent_id 'daily_assistant_862be7ca797c4a45bd7b60f2e621423e'.
+Agent 'daily_assistant_862be7ca797c4a45bd7b60f2e621423e' created and stored successfully.
+Agent 'daily_assistant_862be7ca797c4a45bd7b60f2e621423e' requesting runtime to start.
+AgentRuntime for 'daily_assistant_862be7ca797c4a45bd7b60f2e621423e': Starting worker.
+AgentWorker 'daily_assistant_862be7ca797c4a45bd7b60f2e621423e': Starting...
+AgentWorker 'daily_assistant_862be7ca797c4a45bd7b60f2e621423e' asyncRun(): Starting.
+Agent 'daily_assistant_862be7ca797c4a45bd7b60f2e621423e': Runtime init completed (event store initialized).
+Agent 'daily_assistant_862be7ca797c4a45bd7b60f2e621423e': Runtime init completed (status deriver initialized).
+Agent 'daily_assistant_862be7ca797c4a45bd7b60f2e621423e': Runtime init completed (AgentEventInbox initialized).
+Agent 'daily_assistant_862be7ca797c4a45bd7b60f2e621423e': Runtime init completed (AgentEventScheduler initialized).
+Waiting for agent 'daily_assistant_862be7ca797c4a45bd7b60f2e621423e' to become idle (timeout: 30s)...
+AgentEventStream (ID: ecd7501c-6ab7-481b-8135-ce81cb31da9a) initialized for agent_id 'daily_assistant_862be7ca797c4a45bd7b60f2e621423e'. Subscribed to notifier.
+Agent 'daily_assistant_862be7ca797c4a45bd7b60f2e621423e': Starting direct runtime bootstrap lifecycle.
+AgentExternalEventNotifier (NotifierID: a560eca6-8103-41eb-98e7-592bc63685ca, AgentID: daily_assistant_862be7ca797c4a45bd7b60f2e621423e) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent 'daily_assistant_862be7ca797c4a45bd7b60f2e621423e': Bootstrapper starting direct lifecycle execution.
+Agent 'daily_assistant_862be7ca797c4a45bd7b60f2e621423e': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'daily_assistant_862be7ca797c4a45bd7b60f2e621423e': Executing McpServerPrewarmingStep.
+Agent 'daily_assistant_862be7ca797c4a45bd7b60f2e621423e': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'daily_assistant_862be7ca797c4a45bd7b60f2e621423e': Executing SystemPromptProcessingStep.
+Agent 'daily_assistant_862be7ca797c4a45bd7b60f2e621423e': No configured skills. Skipping skill catalog.
+Agent 'daily_assistant_862be7ca797c4a45bd7b60f2e621423e': Final processed system prompt configured and captured. Trace ID: rt_1794915540548_b22d7c19-979e-463b-8c6a-ea2c73cdb1aa. Final length: 5950.
+Agent 'daily_assistant_862be7ca797c4a45bd7b60f2e621423e': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+AgentExternalEventNotifier (NotifierID: a560eca6-8103-41eb-98e7-592bc63685ca, AgentID: daily_assistant_862be7ca797c4a45bd7b60f2e621423e) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'daily_assistant_862be7ca797c4a45bd7b60f2e621423e' initialized successfully. Entering main event scheduler loop.
+Agent 'daily_assistant_862be7ca797c4a45bd7b60f2e621423e' has become idle.
+AgentEventStream (ID: ecd7501c-6ab7-481b-8135-ce81cb31da9a) for 'daily_assistant_862be7ca797c4a45bd7b60f2e621423e': close() called. Unsubscribing all listeners and signaling.
+AgentEventStream (ID: c3308e2e-b8b6-4c6b-9c27-c903bda65284) initialized for agent_id 'daily_assistant_862be7ca797c4a45bd7b60f2e621423e'. Subscribed to notifier.
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-polish-H6qxWJ/server-data/memory/agents/daily_assistant_862be7ca797c4a45bd7b60f2e621423e/raw_traces_manifest.json
+AgentExternalEventNotifier (NotifierID: a560eca6-8103-41eb-98e7-592bc63685ca, AgentID: daily_assistant_862be7ca797c4a45bd7b60f2e621423e) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: a560eca6-8103-41eb-98e7-592bc63685ca, AgentID: daily_assistant_862be7ca797c4a45bd7b60f2e621423e) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent run 'daily_assistant_862be7ca797c4a45bd7b60f2e621423e': UserInputContextBuildingProcessor completed. Final content length: 47
+AgentExternalEventNotifier (NotifierID: a560eca6-8103-41eb-98e7-592bc63685ca, AgentID: daily_assistant_862be7ca797c4a45bd7b60f2e621423e) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: a560eca6-8103-41eb-98e7-592bc63685ca, AgentID: daily_assistant_862be7ca797c4a45bd7b60f2e621423e) emitted agent_error_output_generation. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: a560eca6-8103-41eb-98e7-592bc63685ca, AgentID: daily_assistant_862be7ca797c4a45bd7b60f2e621423e) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: a560eca6-8103-41eb-98e7-592bc63685ca, AgentID: daily_assistant_862be7ca797c4a45bd7b60f2e621423e) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: a560eca6-8103-41eb-98e7-592bc63685ca, AgentID: daily_assistant_862be7ca797c4a45bd7b60f2e621423e) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: a560eca6-8103-41eb-98e7-592bc63685ca, AgentID: daily_assistant_862be7ca797c4a45bd7b60f2e621423e) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: a560eca6-8103-41eb-98e7-592bc63685ca, AgentID: daily_assistant_862be7ca797c4a45bd7b60f2e621423e) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-polish-H6qxWJ/server-data/memory/agents/daily_assistant_862be7ca797c4a45bd7b60f2e621423e/raw_traces_manifest.json
+Removing agent 'daily_assistant_862be7ca797c4a45bd7b60f2e621423e'. Attempting graceful shutdown.
+Agent 'daily_assistant_862be7ca797c4a45bd7b60f2e621423e' requesting runtime to stop (timeout: 10s).
+AgentExternalEventNotifier (NotifierID: a560eca6-8103-41eb-98e7-592bc63685ca, AgentID: daily_assistant_862be7ca797c4a45bd7b60f2e621423e) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'daily_assistant_862be7ca797c4a45bd7b60f2e621423e': Stop requested.
+AgentExternalEventNotifier (NotifierID: a560eca6-8103-41eb-98e7-592bc63685ca, AgentID: daily_assistant_862be7ca797c4a45bd7b60f2e621423e) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: a560eca6-8103-41eb-98e7-592bc63685ca, AgentID: daily_assistant_862be7ca797c4a45bd7b60f2e621423e) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'daily_assistant_862be7ca797c4a45bd7b60f2e621423e' asyncRun() loop has finished.
+AgentWorker 'daily_assistant_862be7ca797c4a45bd7b60f2e621423e': Running shutdown sequence on worker loop.
+AgentWorker 'daily_assistant_862be7ca797c4a45bd7b60f2e621423e': Shutdown resource cleanup completed successfully.
+AgentWorker 'daily_assistant_862be7ca797c4a45bd7b60f2e621423e': Shutdown sequence completed.
+Unregistered AgentContext for agent_id 'daily_assistant_862be7ca797c4a45bd7b60f2e621423e'.
+AgentRuntime for 'daily_assistant_862be7ca797c4a45bd7b60f2e621423e': Context unregistered.
+AgentRuntime for 'daily_assistant_862be7ca797c4a45bd7b60f2e621423e' stop() method completed.
+AgentEventStream (ID: c3308e2e-b8b6-4c6b-9c27-c903bda65284) for 'daily_assistant_862be7ca797c4a45bd7b60f2e621423e': close() called. Unsubscribing all listeners and signaling.
+AgentEventStream (ID: c3308e2e-b8b6-4c6b-9c27-c903bda65284) for 'daily_assistant_862be7ca797c4a45bd7b60f2e621423e': close() called. Unsubscribing all listeners and signaling.
+Closed agent session c77dc76c-1419-4ac7-a5b7-5b76a98d6062
+Agent WebSocket disconnected: c77dc76c-1419-4ac7-a5b7-5b76a98d6062
+Resolved configured temp workspace root to TempWorkspace.
+Agent websocket attached for run daily_assistant_5db649599f8f478cad0461cf8983a3af
+Created agent session 3f26c334-e901-4fcc-9f23-6007dd912c89 for run daily_assistant_5db649599f8f478cad0461cf8983a3af
+Agent WebSocket connected: session=3f26c334-e901-4fcc-9f23-6007dd912c89, run=daily_assistant_5db649599f8f478cad0461cf8983a3af
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-polish-H6qxWJ/server-data/memory/agents/daily_assistant_5db649599f8f478cad0461cf8983a3af/raw_traces_manifest.json
+Resolved configured temp workspace root to TempWorkspace.
+Tool 'close_tab' defined in agent definition 'Daily Assistant' not found in registry. Skipping.
+Tool 'dom_snapshot' defined in agent definition 'Daily Assistant' not found in registry. Skipping.
+Tool 'list_tabs' defined in agent definition 'Daily Assistant' not found in registry. Skipping.
+Tool 'navigate_to' defined in agent definition 'Daily Assistant' not found in registry. Skipping.
+Tool 'open_tab' defined in agent definition 'Daily Assistant' not found in registry. Skipping.
+Tool 'run_script' defined in agent definition 'Daily Assistant' not found in registry. Skipping.
+Tool 'screenshot' defined in agent definition 'Daily Assistant' not found in registry. Skipping.
+MediaStorageService initialized. Media root: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-polish-H6qxWJ/server-data/media
+AgentRuntimeState initialized for agent_id 'daily_assistant_5db649599f8f478cad0461cf8983a3af'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'daily_assistant_5db649599f8f478cad0461cf8983a3af': LLM instance 'AnthropicLLM' and 14 tools prepared and stored in state.
+AgentContext composed for agent_id 'daily_assistant_5db649599f8f478cad0461cf8983a3af'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'daily_assistant_5db649599f8f478cad0461cf8983a3af' with config: 'Daily Assistant'.
+AgentWorker initialized for agent_id 'daily_assistant_5db649599f8f478cad0461cf8983a3af'.
+Registered AgentContext for agent_id 'daily_assistant_5db649599f8f478cad0461cf8983a3af'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'daily_assistant_5db649599f8f478cad0461cf8983a3af'. Context registered.
+Agent facade initialized for agent_id 'daily_assistant_5db649599f8f478cad0461cf8983a3af'.
+Agent 'daily_assistant_5db649599f8f478cad0461cf8983a3af' created and stored successfully.
+Agent 'daily_assistant_5db649599f8f478cad0461cf8983a3af' requesting runtime to start.
+AgentRuntime for 'daily_assistant_5db649599f8f478cad0461cf8983a3af': Starting worker.
+AgentWorker 'daily_assistant_5db649599f8f478cad0461cf8983a3af': Starting...
+AgentWorker 'daily_assistant_5db649599f8f478cad0461cf8983a3af' asyncRun(): Starting.
+Agent 'daily_assistant_5db649599f8f478cad0461cf8983a3af': Runtime init completed (event store initialized).
+Agent 'daily_assistant_5db649599f8f478cad0461cf8983a3af': Runtime init completed (status deriver initialized).
+Agent 'daily_assistant_5db649599f8f478cad0461cf8983a3af': Runtime init completed (AgentEventInbox initialized).
+Agent 'daily_assistant_5db649599f8f478cad0461cf8983a3af': Runtime init completed (AgentEventScheduler initialized).
+Waiting for agent 'daily_assistant_5db649599f8f478cad0461cf8983a3af' to become idle (timeout: 30s)...
+AgentEventStream (ID: 5d005deb-d73f-48e9-a319-d71d132c7bca) initialized for agent_id 'daily_assistant_5db649599f8f478cad0461cf8983a3af'. Subscribed to notifier.
+Agent 'daily_assistant_5db649599f8f478cad0461cf8983a3af': Starting direct runtime bootstrap lifecycle.
+AgentExternalEventNotifier (NotifierID: 28b89bf9-ecb3-4542-b49a-adf20e8a79f8, AgentID: daily_assistant_5db649599f8f478cad0461cf8983a3af) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent 'daily_assistant_5db649599f8f478cad0461cf8983a3af': Bootstrapper starting direct lifecycle execution.
+Agent 'daily_assistant_5db649599f8f478cad0461cf8983a3af': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'daily_assistant_5db649599f8f478cad0461cf8983a3af': Executing McpServerPrewarmingStep.
+Agent 'daily_assistant_5db649599f8f478cad0461cf8983a3af': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'daily_assistant_5db649599f8f478cad0461cf8983a3af': Executing SystemPromptProcessingStep.
+Agent 'daily_assistant_5db649599f8f478cad0461cf8983a3af': No configured skills. Skipping skill catalog.
+Agent 'daily_assistant_5db649599f8f478cad0461cf8983a3af': Final processed system prompt configured and captured. Trace ID: rt_1794915543532_5778dee6-e35c-4f59-8ee9-261c7e8abea0. Final length: 5950.
+Agent 'daily_assistant_5db649599f8f478cad0461cf8983a3af': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+AgentExternalEventNotifier (NotifierID: 28b89bf9-ecb3-4542-b49a-adf20e8a79f8, AgentID: daily_assistant_5db649599f8f478cad0461cf8983a3af) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'daily_assistant_5db649599f8f478cad0461cf8983a3af' initialized successfully. Entering main event scheduler loop.
+Agent 'daily_assistant_5db649599f8f478cad0461cf8983a3af' has become idle.
+AgentEventStream (ID: 5d005deb-d73f-48e9-a319-d71d132c7bca) for 'daily_assistant_5db649599f8f478cad0461cf8983a3af': close() called. Unsubscribing all listeners and signaling.
+AgentEventStream (ID: bbaad285-1874-4b11-b377-9af8cd14c80b) initialized for agent_id 'daily_assistant_5db649599f8f478cad0461cf8983a3af'. Subscribed to notifier.
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-polish-H6qxWJ/server-data/memory/agents/daily_assistant_5db649599f8f478cad0461cf8983a3af/raw_traces_manifest.json
+AgentExternalEventNotifier (NotifierID: 28b89bf9-ecb3-4542-b49a-adf20e8a79f8, AgentID: daily_assistant_5db649599f8f478cad0461cf8983a3af) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 28b89bf9-ecb3-4542-b49a-adf20e8a79f8, AgentID: daily_assistant_5db649599f8f478cad0461cf8983a3af) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent run 'daily_assistant_5db649599f8f478cad0461cf8983a3af': UserInputContextBuildingProcessor completed. Final content length: 47
+Agent 'daily_assistant_5db649599f8f478cad0461cf8983a3af' requesting runtime interrupt.
+AgentExternalEventNotifier (NotifierID: 28b89bf9-ecb3-4542-b49a-adf20e8a79f8, AgentID: daily_assistant_5db649599f8f478cad0461cf8983a3af) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 28b89bf9-ecb3-4542-b49a-adf20e8a79f8, AgentID: daily_assistant_5db649599f8f478cad0461cf8983a3af) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 28b89bf9-ecb3-4542-b49a-adf20e8a79f8, AgentID: daily_assistant_5db649599f8f478cad0461cf8983a3af) emitted agent_turn_interrupted. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 28b89bf9-ecb3-4542-b49a-adf20e8a79f8, AgentID: daily_assistant_5db649599f8f478cad0461cf8983a3af) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 28b89bf9-ecb3-4542-b49a-adf20e8a79f8, AgentID: daily_assistant_5db649599f8f478cad0461cf8983a3af) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Removing agent 'daily_assistant_5db649599f8f478cad0461cf8983a3af'. Attempting graceful shutdown.
+Agent 'daily_assistant_5db649599f8f478cad0461cf8983a3af' requesting runtime to stop (timeout: 10s).
+AgentExternalEventNotifier (NotifierID: 28b89bf9-ecb3-4542-b49a-adf20e8a79f8, AgentID: daily_assistant_5db649599f8f478cad0461cf8983a3af) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'daily_assistant_5db649599f8f478cad0461cf8983a3af': Stop requested.
+AgentExternalEventNotifier (NotifierID: 28b89bf9-ecb3-4542-b49a-adf20e8a79f8, AgentID: daily_assistant_5db649599f8f478cad0461cf8983a3af) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 28b89bf9-ecb3-4542-b49a-adf20e8a79f8, AgentID: daily_assistant_5db649599f8f478cad0461cf8983a3af) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'daily_assistant_5db649599f8f478cad0461cf8983a3af' asyncRun() loop has finished.
+AgentWorker 'daily_assistant_5db649599f8f478cad0461cf8983a3af': Running shutdown sequence on worker loop.
+AgentWorker 'daily_assistant_5db649599f8f478cad0461cf8983a3af': Shutdown resource cleanup completed successfully.
+AgentWorker 'daily_assistant_5db649599f8f478cad0461cf8983a3af': Shutdown sequence completed.
+Unregistered AgentContext for agent_id 'daily_assistant_5db649599f8f478cad0461cf8983a3af'.
+AgentRuntime for 'daily_assistant_5db649599f8f478cad0461cf8983a3af': Context unregistered.
+AgentRuntime for 'daily_assistant_5db649599f8f478cad0461cf8983a3af' stop() method completed.
+AgentEventStream (ID: bbaad285-1874-4b11-b377-9af8cd14c80b) for 'daily_assistant_5db649599f8f478cad0461cf8983a3af': close() called. Unsubscribing all listeners and signaling.
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-polish-H6qxWJ/server-data/memory/agents/daily_assistant_5db649599f8f478cad0461cf8983a3af/raw_traces_manifest.json
+AgentEventStream (ID: bbaad285-1874-4b11-b377-9af8cd14c80b) for 'daily_assistant_5db649599f8f478cad0461cf8983a3af': close() called. Unsubscribing all listeners and signaling.
+Closed agent session 3f26c334-e901-4fcc-9f23-6007dd912c89
+Agent WebSocket disconnected: 3f26c334-e901-4fcc-9f23-6007dd912c89
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-polish-H6qxWJ/server-data/memory/agents/daily_assistant_5db649599f8f478cad0461cf8983a3af/raw_traces_manifest.json

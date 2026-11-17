@@ -1,0 +1,15 @@
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+
+> autobyteus@1.5.13-beta.8 test:e2e:chat-composer-polish /Users/normy/autobyteus_org/autobyteus-worktrees/phone-run-model-runtime-458/autobyteus-web
+> node tests/e2e/chat-composer-polish-probe.mjs --output-dir /Users/normy/autobyteus_org/autobyteus-worktrees/phone-run-model-runtime-458/tickets/in-progress/phone-run-model-runtime-458/evidence/api-e2e/api-05-chat-composer-polish
+
+T01 Pass AutoByteus-runtime Claude row with a thinking switch: merged menu at desktop width; untouched = On at the default effort (autobyteus-9 AC-003), then Off, High, Off, Medium, Off→Medium (A-1)
+T02 Pass Launch a chat at High: the created run records thinking_enabled:true + reasoning_effort:high (AC-001)
+T03 Pass Launch Off → recorded Off → ⚙ run settings: choosing an effort turns Thinking on → save keeps effort (AC-010)
+T04 Pass A model without an on/off switch keeps the per-parameter thinking menu (AC-006)
+T08 Pass Claude Agent SDK runtime: the effort-only thinking menu on the real Claude CLI catalog: no Off/On choice, nothing written until a level is chosen (autobyteus-9 AC-005, AC-006)
+T09 Pass Every AutoByteus-runtime Claude row on the real catalog: switch rows (Opus 5, Sonnet 5, Sonnet 5.5, Haiku 5.5) default to On with an Off choice; always-on rows (Fable 5, Fable 5.1, Opus 5.5) offer effort only (autobyteus-9 AC-002, AC-003)
+T05 Pass Workspace search at desktop width with 14 workspaces: focus, filter, path, empty state, keys, IME guard, Escape, reset (AC-007, AC-008)
+T06 Pass Layout at 1440×1000 and 1280×700: pt-[14vh] pb-10; no overlap/clipping; menus inside viewport (AC-009)
+T07 Pass Narrow bottom sheet (413×738): merged thinking list and workspace search still work
+chat-composer-polish exit=0

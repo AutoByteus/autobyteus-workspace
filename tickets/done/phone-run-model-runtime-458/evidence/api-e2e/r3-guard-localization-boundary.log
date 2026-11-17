@@ -1,0 +1,7 @@
+# pnpm guard:localization-boundary on 66908768eb (+ MSP-66 renumber); 2026-11-17T14:15:19Z
+
+> autobyteus@1.5.13-beta.8 guard:localization-boundary /Users/normy/autobyteus_org/autobyteus-worktrees/phone-run-model-runtime-458/autobyteus-web
+> node ./scripts/guard-localization-boundary.mjs
+
+[guard:localization-boundary] Passed.
+# exit: 0
