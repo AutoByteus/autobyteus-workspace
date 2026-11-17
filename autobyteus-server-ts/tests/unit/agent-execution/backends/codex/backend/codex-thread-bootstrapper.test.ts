@@ -408,7 +408,7 @@ describe("CodexThreadBootstrapper", () => {
         expect(runContext.runtimeContext.codexThreadConfig.appServerConfig).not.toHaveProperty("sandbox_workspace_write");
         expect(runContext.runtimeContext.codexThreadConfig.baseInstructions).toContain("## Semantic Memory");
         // autobyteus-483 AC-011: Codex's own Long-Running Commands section ends the instructions.
-        expect(runContext.runtimeContext.codexThreadConfig.baseInstructions.endsWith(`\n\n${CODEX_LONG_RUNNING_COMMAND_SECTION}`)).toBe(true);
+        expect(runContext.runtimeContext.codexThreadConfig.baseInstructions?.endsWith(`\n\n${CODEX_LONG_RUNNING_COMMAND_SECTION}`)).toBe(true);
       }
     });
 
