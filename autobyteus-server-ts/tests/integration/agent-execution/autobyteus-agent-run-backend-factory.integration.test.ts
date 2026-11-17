@@ -13,6 +13,8 @@ import { Message } from "autobyteus-ts/llm/utils/messages.js";
 import { AgentDefinition } from "../../../src/agent-definition/domain/models.js";
 import { AutoByteusAgentRunBackendFactory } from "../../../src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.js";
 import { AgentRunConfig } from "../../../src/agent-execution/domain/agent-run-config.js";
+import { PLATFORM_GIVEN_TOOL_NAMES } from "../../../src/agent-execution/shared/runtime-agent-tool-exposure.js";
+import { registerMemoryTools } from "../../../src/agent-tools/memory/memory-native-tools.js";
 import { AgentRunContext } from "../../../src/agent-execution/domain/agent-run-context.js";
 import type { AutoByteusAgentRunBackend } from "../../../src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend.js";
 import { registerTools } from "autobyteus-ts/tools/register-tools.js";
@@ -65,6 +67,9 @@ describe("AutoByteusAgentRunBackendFactory integration", () => {
   beforeEach(async () => {
     defaultToolRegistry.clear();
     registerTools();
+    // The server registers the memory tools at every start (startup/agent-tool-loader.ts, "memory"); without them the
+    // platform-given search_memory would be missing here only.
+    registerMemoryTools();
     previousMemoryDir = process.env.AUTOBYTEUS_MEMORY_DIR;
     memoryDir = await fs.mkdtemp(path.join(os.tmpdir(), "autobyteus-backend-memory-"));
     workspaceDir = await fs.mkdtemp(path.join(os.tmpdir(), "autobyteus-backend-workspace-"));
@@ -143,6 +148,7 @@ describe("AutoByteusAgentRunBackendFactory integration", () => {
       "read_file",
       "edit_file",
       "write_file",
+      ...PLATFORM_GIVEN_TOOL_NAMES,
     ]);
     expect(persistedAgentDefinition.toolNames).toEqual([]);
     expect(agentFactory.getAgent(runId)?.context.state.memoryManager
@@ -241,6 +247,7 @@ describe("AutoByteusAgentRunBackendFactory integration", () => {
       "read_file",
       "edit_file",
       "write_file",
+      ...PLATFORM_GIVEN_TOOL_NAMES,
     ]);
     expect(persistedAgentDefinition.toolNames).toEqual([]);
     expect(agentFactory.getAgent(runId)?.context.state.memoryManager

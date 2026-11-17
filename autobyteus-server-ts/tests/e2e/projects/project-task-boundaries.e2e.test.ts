@@ -12,7 +12,7 @@ import type { FastifyInstance } from "fastify";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { startStudioE2eRuntimeServer } from "../helpers/studio-runtime-test-server.js";
 import { buildAgentRunMessageSenderContext } from "../../../src/agent-communication/domain/agent-run-message-sender.js";
-import { buildRuntimeAgentToolExposure } from "../../../src/agent-execution/shared/runtime-agent-tool-exposure.js";
+import { buildRuntimeAgentToolExposure, PLATFORM_GIVEN_TOOL_NAMES } from "../../../src/agent-execution/shared/runtime-agent-tool-exposure.js";
 import type { ScopedAgentToolMcpSessionAuthority } from "../../../src/agent-tools/mcp/agent-tool-mcp-session-authority.js";
 import { ListProjectsTool, ListProjectTasksTool, CreateProjectTool, UpdateProjectTool, CreateTaskTool, UpdateTaskTool, createBoundGetProjectTaskTool } from "../../../src/agent-tools/project-tasks/project-task-native-tools.js";
 import { registerProjectTaskTools } from "../../../src/agent-tools/project-tasks/project-task-native-tools.js";
@@ -27,6 +27,9 @@ import { resetProjectTaskContextStoreForTests } from "../../../src/projects/cont
 // No model request, Manager package or interactive same-window node switching is represented.
 // A Project mutation call goes to update_project when project_id is present, otherwise to create_project.
 const names = ["list_projects", "list_project_tasks", "get_project_task", "create_project", "update_project", "create_task", "update_task"];
+// Every session also has the tools the platform gives every run (autobyteus-496: search_memory), after the selected ones.
+const platform = [...PLATFORM_GIVEN_TOOL_NAMES];
+const sessionTools = [...names, ...platform];
 const projectTool = (args: unknown) => typeof args === "object" && args !== null && Object.hasOwn(args, "project_id") ? "update_project" : "create_project";
 const FILES = "storedFilename displayName mimeType sizeBytes locator";
 const TASK = `taskId projectId title description status createdAt updatedAt contextFiles { ${FILES} }`;
@@ -137,17 +140,17 @@ describe("Project Task production HTTP boundaries", () => {
       assertExecutionCapabilitiesReady: () => undefined,
     });
     const activate = (runId: string, selected: string[]) => authority.runSessions.activateForRun({ owner: { runId }, sender: buildAgentRunMessageSenderContext({ senderRunId: runId, senderName: runId }), runtimeExposure: buildRuntimeAgentToolExposure(selected) });
-    // Every run gets a session; an unselected run's list is empty.
-    expect(activate("unselected", []).descriptor.enabledTools).toEqual([]);
+    // Every run gets a session; an unselected run's list holds only the platform-given tools.
+    expect(activate("unselected", []).descriptor.enabledTools).toEqual(platform);
     // task-tool-split AC-007: a configuration that still lists the removed name gets no task tool and no launch error.
-    expect(activate("legacy-task-tool-name", ["create_or_update_task"]).descriptor.enabledTools).toEqual([]);
+    expect(activate("legacy-task-tool-name", ["create_or_update_task"]).descriptor.enabledTools).toEqual(platform);
     const selected = activate("selected", names); expect(selected.kind).toBe("active");
     if (selected.kind !== "active") throw new Error("Selected session absent"); mcpUrl = selected.descriptor.serverUrl;
-    expect(selected.descriptor.enabledTools).toEqual(names);
+    expect(selected.descriptor.enabledTools).toEqual(sessionTools);
     const one = activate("read-only", ["list_projects"]);
     if (one.kind !== "active") throw new Error("Read-only session absent");
     const listed = await rpc(one.descriptor.serverUrl, "tools/list");
-    expect(listed.body.result.tools.map((t: { name: string }) => t.name)).toEqual(["list_projects"]);
+    expect(listed.body.result.tools.map((t: { name: string }) => t.name)).toEqual(["list_projects", ...platform]);
     for (const name of ["create_task", "update_task"]) {
       expect((await rpc(one.descriptor.serverUrl, "tools/call", { name, arguments: {} })).body.error).toBeDefined();
     }
@@ -180,7 +183,7 @@ describe("Project Task production HTTP boundaries", () => {
     const catalog = await call("list_projects", {});
     expect(catalog.structuredContent).toEqual(JSON.parse(await new ListProjectsTool().execute(null, {})));
     expect((await rpc(mcpUrl, "initialize")).body.result.serverInfo.name).toBe("autobyteus_agent_tools");
-    expect((await rpc(mcpUrl, "tools/list")).body.result.tools.map((t: { name: string }) => t.name)).toEqual(names);
+    expect((await rpc(mcpUrl, "tools/list")).body.result.tools.map((t: { name: string }) => t.name)).toEqual(sessionTools);
     expect((await rpc(mcpUrl, "tools/call", { name: "create_or_update_task", arguments: { project_id: projectId, description: "old name" } })).body.error).toBeDefined();
     expect(await list(projectId)).toEqual([]);
     const createdResult = await call("create_task", { project_id: projectId, title: "  Hello HTTP  ", description: "  hello HTTP  " });
@@ -293,9 +296,9 @@ describe("Project Task production HTTP boundaries", () => {
         sender: buildAgentRunMessageSenderContext({ senderRunId: "collision", senderName: "collision" }),
         runtimeExposure: buildRuntimeAgentToolExposure([name]) });
       expect(selected.kind).toBe("active"); if (selected.kind !== "active") throw new Error("Missing collision session");
-      expect(selected.descriptor.enabledTools).toEqual([name]);
+      expect(selected.descriptor.enabledTools).toEqual([name, ...platform]);
       const listed = await rpc(selected.descriptor.serverUrl, "tools/list");
-      expect(listed.body.result.tools.map((t: {name: string}) => t.name)).toEqual([name]);
+      expect(listed.body.result.tools.map((t: {name: string}) => t.name)).toEqual([name, ...platform]);
       const args = name === "list_projects" ? {} : {...(target ? {project_id: target} : {}), name: `Protected mutation ${name}`};
       const result = await rpc(selected.descriptor.serverUrl, "tools/call", { name, arguments: args });
       expect(result.body.error).toBeUndefined(); expect(result.body.result.isError).not.toBe(true);
@@ -482,7 +485,7 @@ describe("Project Task production HTTP boundaries", () => {
   it("CTX-E2E-001: context_files create/patch over MCP and native are saved, readable through GraphQL/REST/list and outlive their sources (AC-001..004, 006, 009, 011)", async () => {
     // AC-011: one optional additive string array on each task tool.
     const tools = (await rpc(mcpUrl, "tools/list")).body.result.tools as Array<{ name: string; description: string; inputSchema: { properties: Record<string, any>; required?: string[] } }>;
-    expect(tools.map(t => t.name)).toEqual(names);
+    expect(tools.map(t => t.name)).toEqual(sessionTools);
     for (const [name, keys] of [["create_task", ["context_files", "depends_on", "description", "part_of", "project_id", "title"]], ["update_task", ["add_comment", "context_files", "depends_on", "description", "part_of", "status", "task_id", "title"]]] as const) {
       const taskTool = tools.find(t => t.name === name)!;
       expect(taskTool.inputSchema.properties.context_files).toMatchObject({ type: "array", items: { type: "string" } });
@@ -1004,7 +1007,7 @@ describe("Project Task production HTTP boundaries", () => {
   it("CMT-API-001: update_task add_comment by key / any case / long ID appends numbered comments, never the description; DONE + comment is one write; blank, wrong-shape and unknown are refused with nothing written; list_project_tasks shows the texts (task-comments AC-001, AC-005, AC-008)", async () => {
     // REQ-005 / REQ-010: one optional string on update_task only; no new tool in the selected session.
     const tools = (await rpc(mcpUrl, "tools/list")).body.result.tools as Array<{ name: string; description: string; inputSchema: { properties: Record<string, any>; required?: string[] } }>;
-    expect(tools.map(t => t.name)).toEqual(names);
+    expect(tools.map(t => t.name)).toEqual(sessionTools);
     const update = tools.find(t => t.name === "update_task")!;
     expect(update.inputSchema.properties.add_comment).toMatchObject({ type: "string" });
     expect(update.inputSchema.required ?? []).not.toContain("add_comment");
