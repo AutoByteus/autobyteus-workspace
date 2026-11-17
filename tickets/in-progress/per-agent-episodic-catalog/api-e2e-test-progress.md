@@ -29,3 +29,6 @@ Your own progress log while tests run. Read it first whenever you pick the run b
 | 2026-11-17 21:46 | API-04…API-10 | Started | | run 9 |
 | 2026-11-17 22:00 | API-04…API-10 | Completed | Fail (EC-06 only) | run 9 (authoritative): EC-01…EC-05, EC-07 Pass; EC-06 fails only on the damaged-run warning. `evidence/API-04-10-episodic-catalog-e2e.log` |
 | 2026-11-17 22:01 | API-16 | Started | | server typecheck with the new test file |
+| 2026-11-17 22:05 | API-16 | Completed | Pass | baseline 1012 in 316 files unchanged; `evidence/API-16-server-typecheck.log` |
+| 2026-11-17 22:06 | API-12, API-13 | Completed | Next Round | integration and the whole E2E suite run once on the fixed commit (round ends Fail on API-09) |
+| 2026-11-17 22:10 | — | Completed | Fail | round 1 closed; report, revision record and evidence committed in ba427ab13d; handoff to /code_reviewer for failure-origin review |
