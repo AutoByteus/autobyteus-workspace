@@ -1,0 +1,246 @@
+{
+  "startedAt": "2026-11-17T20:11:11.351Z",
+  "result": "Fail",
+  "node": "v22.23.1",
+  "servers": {
+    "alpha": {
+      "port": 60991,
+      "nodeId": "srv_ZeDHBKvZVEZq2IkVBVMb6I05zuHntyfv",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    },
+    "beta": {
+      "port": 60992,
+      "nodeId": "srv_ASZPbER3fpCyEyf4Rx0hBCDCSui8TZ1H",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    }
+  },
+  "runs": {
+    "ptm": "project_task_manager_a15f3905cd214c828dc331c8ae058d87",
+    "writerRun": "release_notes_writer_c71f0bb4c4b4463cad085a0f8d7be6d2",
+    "squadRun": "docs_review_team_bd9f860aac364effa8d2b97509cc2093",
+    "reviewer": "release_notes_writer_b7059bf7943d4ae9a9fed9f8542d64ad",
+    "memberDelegated": "fact_checker_0979045d172047258136757d1be8129a",
+    "remoteAgentRun": "publisher_07473a5a93a644a2af007463597f4597",
+    "remoteTeamRun": "studio_team_548876199c0d46e5a974d72959742bd3",
+    "plain": [
+      "fact_checker_5a8839c19d9d424a9d2c02a48553a8ff",
+      "fact_checker_42be3a83276249a09dcfc541c16d6716",
+      "fact_checker_2b2e2d7463f14e579c599ed83a8c7fc0"
+    ],
+    "org": "delivery_org_e5a5b8f5630c497e95ee7c1d2754e347",
+    "orgPlanner": "release_notes_writer_80dc969ac98f47539a31e0cf5ce3e150",
+    "reviewOrg": "review_org_71e7f3759e994261a9119be9a11c7328",
+    "reviewOrgCoordinator": {
+      "address": "/squad/reviewer",
+      "agentRunId": "release_notes_writer_62e72f2a2c464afd83d1149802f4e457",
+      "teamRunId": null
+    },
+    "delivery": "delivery_team_a83e10db71724f2b9a2283a4b46a0ddf",
+    "deliveryLead": "fact_checker_17a30663b26e47fba59d4d6057fcbfd2",
+    "deliveryMate": "release_notes_writer_7502664d5bb749d5ad1d9db28660384c",
+    "leadDelegated": "changelog_helper_810d87f79cfe474da7b4ae5c4b1430ab",
+    "approver": "approver_987e9843736b4b3cb3e4b2793c7d2756",
+    "taskA": "launch-5f8113-1",
+    "taskB": "launch-5f8113-2"
+  },
+  "cases": {
+    "MSP-67": {
+      "result": "Fail",
+      "seconds": 3.8,
+      "error": "no Settings in the ⋮ menu of this run",
+      "details": null
+    },
+    "MSP-68": {
+      "result": "Fail",
+      "seconds": 2.4,
+      "error": "no Settings in the ⋮ menu of this run",
+      "details": null
+    },
+    "MSP-69": {
+      "result": "Fail",
+      "seconds": 6.1,
+      "error": "REQ-005 Save changes the task agent run",
+      "details": {
+        "screen": {
+          "name": "changelog helper",
+          "subtitle": "Stopped · in lead"
+        },
+        "before": {
+          "lead": {
+            "agentRunId": "fact_checker_8fc46865b5f0446d94a8763942624f32",
+            "runtimeKind": "antigravity_cli",
+            "model": "gemini-3.8-flash-low"
+          },
+          "helper": {
+            "isActive": false,
+            "runtimeKind": "antigravity_cli",
+            "model": "gemini-3.8-flash-low"
+          }
+        },
+        "opened": {
+          "open": true,
+          "subject": "changelog helperStopped · in lead",
+          "status": "Stopped · in lead",
+          "runtime": "Antigravity CLI",
+          "model": "Gemini test",
+          "rows": true,
+          "runtimeDisabled": false,
+          "save": true,
+          "saveDisabled": true,
+          "stop": false,
+          "remote": null,
+          "error": null
+        },
+        "saved": {
+          "chosen": {
+            "open": true,
+            "subject": "changelog helperStopped · in lead",
+            "status": "Stopped · in lead",
+            "runtime": "Grok Build",
+            "model": "Grok 4.7",
+            "rows": true,
+            "runtimeDisabled": false,
+            "save": true,
+            "saveDisabled": false,
+            "stop": false,
+            "remote": null,
+            "error": null
+          },
+          "back": true
+        },
+        "after": {
+          "lead": {
+            "agentRunId": "fact_checker_8fc46865b5f0446d94a8763942624f32",
+            "runtimeKind": "grok_build",
+            "model": "grok-4.7"
+          },
+          "helper": {
+            "isActive": false,
+            "runtimeKind": "antigravity_cli",
+            "model": "gemini-3.8-flash-low"
+          }
+        }
+      }
+    },
+    "MSP-70": {
+      "result": "Fail",
+      "seconds": 191.3,
+      "error": "the Org's planner delegated a task agent and a Team",
+      "details": {
+        "rows": [
+          "org_agent:planner:own",
+          "agent:changelog helper:child",
+          "org_team:squad:own",
+          "team_member:reviewer:child",
+          "team_member:editor:child"
+        ],
+        "plannerCalls": []
+      }
+    },
+    "MSP-71": {
+      "result": "Pass",
+      "seconds": 2.1,
+      "squadReviewer": "/squad/reviewer",
+      "opened": {
+        "open": true,
+        "subject": "reviewerStopped · in squad",
+        "status": "Stopped · in squad",
+        "runtime": "Antigravity CLI",
+        "model": "Gemini test",
+        "rows": true,
+        "runtimeDisabled": false,
+        "save": true,
+        "saveDisabled": true,
+        "stop": false,
+        "remote": null,
+        "error": null
+      },
+      "saved": {
+        "chosen": {
+          "open": true,
+          "subject": "reviewerStopped · in squad",
+          "status": "Stopped · in squad",
+          "runtime": "Grok Build",
+          "model": "Grok 4.7",
+          "rows": true,
+          "runtimeDisabled": false,
+          "save": true,
+          "saveDisabled": false,
+          "stop": false,
+          "remote": null,
+          "error": null
+        },
+        "back": true
+      },
+      "before": {
+        "/planner": {
+          "agentRunId": "release_notes_writer_e301d6492de249a0bf13e878cf4547ab",
+          "runtimeKind": "antigravity_cli",
+          "model": "gemini-3.8-flash-low"
+        },
+        "/squad/reviewer": {
+          "agentRunId": "release_notes_writer_ae8577f8794f4e4197a987f7b38e887c",
+          "runtimeKind": "antigravity_cli",
+          "model": "gemini-3.8-flash-low"
+        },
+        "/squad/editor": {
+          "agentRunId": "fact_checker_efc2a9a035a44cfda6beac295f4adc90",
+          "runtimeKind": "antigravity_cli",
+          "model": "gemini-3.8-flash-low"
+        }
+      },
+      "after": {
+        "/planner": {
+          "agentRunId": "release_notes_writer_e301d6492de249a0bf13e878cf4547ab",
+          "runtimeKind": "antigravity_cli",
+          "model": "gemini-3.8-flash-low"
+        },
+        "/squad/reviewer": {
+          "agentRunId": "release_notes_writer_ae8577f8794f4e4197a987f7b38e887c",
+          "runtimeKind": "grok_build",
+          "model": "grok-4.7"
+        },
+        "/squad/editor": {
+          "agentRunId": "fact_checker_efc2a9a035a44cfda6beac295f4adc90",
+          "runtimeKind": "antigravity_cli",
+          "model": "gemini-3.8-flash-low"
+        }
+      }
+    },
+    "MSP-72": {
+      "result": "Fail",
+      "seconds": 1.2,
+      "error": "no Settings in the ⋮ menu of this run",
+      "details": null
+    }
+  },
+  "browserErrors": [],
+  "failedRequests": [],
+  "network": {},
+  "cleanup": {
+    "frontendExited": true,
+    "serversLeft": 0,
+    "rootRemoved": true
+  },
+  "error": null,
+  "summary": {
+    "cases": {
+      "MSP-67": "Fail",
+      "MSP-68": "Fail",
+      "MSP-69": "Fail",
+      "MSP-70": "Fail",
+      "MSP-71": "Pass",
+      "MSP-72": "Fail"
+    },
+    "unknownBrowserErrors": 0
+  },
+  "finishedAt": "2026-11-17T20:16:10.164Z"
+}

@@ -1,7 +1,7 @@
 <template>
   <!-- The ⋮ menu (UIS-003, VIS-006, 026): the open agent's views; Messages only for a member of a Team or Org; VNC Viewer
-       only when the paired node has a node desktop and the run is on that node (autobyteus-407); Settings for a run whose
-       runtime and model the phone can change (autobyteus-458); below them the phone-wide Text size (autobyteus-506). -->
+       only when the paired node has a node desktop and the run is on that node (autobyteus-407); Settings for every run
+       (autobyteus-458, autobyteus-522); below them the phone-wide Text size (autobyteus-506). -->
   <div class="relative flex-shrink-0">
     <button
       ref="buttonRef"
@@ -59,7 +59,7 @@ import type { MobileView } from '~/composables/mobile/useMobileNavigation';
 import { PHONE_TEXT_SIZE_STEPS, usePhoneTextSize } from '~/composables/mobile/usePhoneTextSize';
 import { useLocalization } from '~/composables/useLocalization';
 
-const props = defineProps<{ showMessages: boolean; showDesktop: boolean; showSettings: boolean }>();
+const props = defineProps<{ showMessages: boolean; showDesktop: boolean }>();
 const emit = defineEmits<{ (event: 'open-view', view: MobileView): void }>();
 
 const VIEWS: readonly { id: MobileView; label: string; icon: string }[] = [
@@ -71,10 +71,11 @@ const VIEWS: readonly { id: MobileView; label: string; icon: string }[] = [
 ];
 const { t } = useLocalization();
 const textSize = usePhoneTextSize();
-/** Artifacts, Files, Messages, Activity, Settings, VNC Viewer: each when it applies. */
+/** Artifacts, Files, Messages, Activity, Settings, VNC Viewer: Messages and VNC Viewer when they apply; Settings for every
+ *  run (autobyteus-522). */
 const views = computed(() => VIEWS.flatMap((view) => {
   if ((view.id === 'messages' && !props.showMessages) || (view.id === 'desktop' && !props.showDesktop)) return [];
-  if (view.id !== 'activity' || !props.showSettings) return [view];
+  if (view.id !== 'activity') return [view];
   return [view, { id: 'settings' as const, label: t('mobile.settings.menuEntry'), icon: 'heroicons:cog-6-tooth-20-solid' }];
 }));
 const open = ref(false);
