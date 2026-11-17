@@ -1,4 +1,5 @@
 import { TeamContextFileExecutionLocatorsV1AppDataMigration } from "./migrations/team-context-file-execution-locators-v1/team-context-file-execution-locators-v1-app-data-migration.js";
+import { createDelegatedRunOwnAttachmentLinksMigrations } from "./migrations/delegated-run-own-attachment-links/delegated-run-own-attachment-links-app-data-migration.js";
 import path from "node:path";
 import { appConfigProvider } from "../config/app-config-provider.js";
 import { getSecretVaultRuntime } from "../secret-management/secret-vault-runtime.js";
@@ -169,6 +170,9 @@ const registeredMigrations = (): AppDataMigrationDefinition[] => {
     // converts what that predecessor produces after ours ran (with our migration's builders); a predecessor FAILED or
     // NOT_RUN holds back only its own.
     ...createDelegatedRunsPreservedItemsMigrations(appDataDir, memoryDir, liveDefinitionNames, liveRunHistoryCatalogs, ledger),
+    // autobyteus-500 FU-020: a delegated run's stored attachment links name its own run (a backup of each file first),
+    // then its follow-up after 20261017_task_agent_own_run_v1, the one later writer of a scanned folder (M-7).
+    ...createDelegatedRunOwnAttachmentLinksMigrations(appDataDir, memoryDir),
   ];
 };
 
