@@ -45,6 +45,8 @@ Rerun plan by impact (TESTING.md "Rerun by impact"; validated commit `927079c6cd
 | Isolated-instance journeys (E2E-01..E2E-05, E2E-B1), lock/hide probes (E2E-06..E2E-10) | `baf0439559` / `927079c6cd` | no web, Electron or browser-tool file changed in the base; only server agent-tool exposure and migration code (outside the browser path) | Still valid | — (not rerun: the electron-dist build they used was not rebuilt, and nothing they exercise changed) |
 | `electron-dist/` rebuild | — | no planned case uses it | Not needed | — |
 
+Second refresh (before finalization): `git fetch origin personal` found one more base commit, `1182915f78` (`docs(member-runtime-lost-508): replace private team names and run IDs with neutral labels`), which changes four files under `tickets/done/member-runtime-lost-508/` only (three documents and one probe test file inside the ticket folder). Merged as `00ed8b3ef0` (no conflicts). No rerun: no source, test or doc outside `tickets/` changed, and no typecheck or test configuration includes `tickets/` (`grep -n -i tickets` over the server, web and Electron tsconfig and vitest configs: no match). The ticket's own change against the new base is the same 12 files outside `tickets/` (`git diff --name-only origin/personal HEAD`).
+
 The Fresh-start build (TESTING.md) does not apply: no build input changed (`git diff --name-only e4f4b3e176...codex/browser-tool-errors-507` touches no lockfile, `package.json`, tsconfig, script, workflow or contract package).
 
 ## Verification
