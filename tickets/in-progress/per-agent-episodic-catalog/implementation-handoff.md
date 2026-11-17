@@ -25,13 +25,15 @@ IR-002 (SR-003) makes "unreadable" an explicit outcome. Discovery gives each run
 
 - Implementation cycle: `Rework`
 - Implementation revision record: `implementation-revision-record.md`
-- Current implementation revision ID: `IR-002`
+- Current implementation revision ID: `IR-003` (Local Fix CRR-004 TR-001, on top of IR-002)
 - Related solution revision IDs: `SR-002` (with the contract addendum), `SR-003`
 - Related architecture-review revision IDs: `ARCH-REV-002`, `ARCH-REV-004`, `ARCH-REV-005`
-- Related code-review revision IDs: `CRR-001`, `CRR-002`
-- Related API/E2E revision IDs: `API-REV-001`
+- Related code-review revision IDs: `CRR-001`, `CRR-002`, `CRR-003`, `CRR-004`
+- Related API/E2E revision IDs: `API-REV-001`, `API-REV-002`
 - Related delivery revision IDs: `N/A`
-- Triggering finding IDs: CRR-002 CR-001 (CF-12); API-09 / EC-06 (AC-009); API-15; CF-11
+- Triggering finding IDs: CRR-002 CR-001 (CF-12); API-09 / EC-06 (AC-009); API-15; CF-11; IR-003: CRR-004 TR-001
+
+IR-003 (CRR-004 TR-001): an agent run's definition now comes from its metadata alone. The history-row fallback could never decide anything: the history lists only admitted runs, an agent run is admitted only with present metadata, and present metadata always names the definition. **Departure from SR-003 decision 1's wording** ("a history row naming a definition → attributed"): the row never attributes the run. Reason: unreachable, Core Principle 7 (dead code in touched files). Observable behavior and memory search's `MemoryRun` do not change; EC-06 already shows the real outcome.
 
 ## Routing Classification (Mandatory)
 
@@ -65,7 +67,7 @@ IR-002 (SR-003) makes "unreadable" an explicit outcome. Discovery gives each run
   - `rendering/catalog-markdown-renderer.ts`: `catalog.md` and `index.md` exactly as the contract
   - `store/episodic-catalog-store.ts`: folder listing, write-if-changed with atomic rename
   - `domain/episodic-catalog-models.ts`: `CatalogEntry`, `CatalogJournalFile`, `AgentCatalog`
-- `src/agent-memory/`: `store/agent-memory-layout.ts` (episodic root and folder), `services/run-folder-discovery.ts` (moved from `memory-search/runs/memory-run-discovery.ts`; `findRunsOfRoot`, `rootOf`, three new facts; IR-002: `attribution` from `readMetadataState`, the history row and the package catalogs' diagnostics (`teamPackages` / `orgPackages` collaborators, read after the sources: N-7; team `*` only: N-6), log-once `RUN_FOLDER_DISCOVERY_RECORD_UNREADABLE`), `domain/discovered-run.ts` (`DiscoveredRun`, `RunAttribution`, `MemoryRunSubject` moved here: N-1)
+- `src/agent-memory/`: `store/agent-memory-layout.ts` (episodic root and folder), `services/run-folder-discovery.ts` (moved from `memory-search/runs/memory-run-discovery.ts`; `findRunsOfRoot`, `rootOf`, three new facts; IR-002: `attribution` from `readMetadataState`, the history row and the package catalogs' diagnostics (`teamPackages` / `orgPackages` collaborators, read after the sources: N-7; team `*` only: N-6), log-once `RUN_FOLDER_DISCOVERY_RECORD_UNREADABLE`; IR-003: the definition from the metadata alone, the history row only for name, workspace and creation), `domain/discovered-run.ts` (`DiscoveredRun`, `RunAttribution`, `MemoryRunSubject` moved here: N-1)
 - `src/agent-work-journal/`: `readJournalSpans` (service), `readJournalHeaderTimeRange` (reader; replaces the old `HEADER_FIRST_DAY`), `readJournalFileHead` and `readManifestJournalFileNames` (store; IR-002: `none` for ENOENT, `unreadable` for any other read error, non-JSON or no file list), `WorkJournalFileSpan`, `WorkJournalSpans` (models)
 - `src/memory-search/`: `runs/memory-run-mapping.ts` (`toMemoryRun`), pipeline and boundary use `RunFolderDiscovery`; `domain/memory-search-models.ts` and `api/graphql/types/memory-search.ts` import `MemoryRunSubject` from `agent-memory` (no re-export)
 - Delete notification: `run-history/services/agent-run-history-service.ts`, `run-history/services/team-run-history-service.ts`, `agent-org-execution/services/agent-org-run-service.ts`
@@ -151,6 +153,9 @@ Code commits: `1bb4a44e83` (steps 1–3), `00bb99fe77` (steps 4–6), `0be36462e
 | IMP-13 | `pnpm -C autobyteus-server-ts typecheck` | `159286c1c1` | same | server `src` and tests | — | Pass | `IMP-13-server-typecheck.log` | `production errors: 0; test-file errors: 1012 in 316 files (baseline 1012 in 316 files)` |
 | IMP-14 | AC-010 probe again on a fresh APFS clone of the founder's memory (the IMP-07 command; stderr kept) | `159286c1c1` | same, load 87–119 | the IR-002 discovery over real records | AC-010, REQ-012 on real data | Pass | `IMP-14-ac010-start-build.log` / `.json`, `IMP-14-ac010-warnings.log` | first start `"passMs": 12532`, second `"passMs": 12064`, `"rewrittenAtSecondStart": []`, `"changedOutsideEpisodic": 0`; `6 RUN_FOLDER_DISCOVERY_RECORD_UNREADABLE` = 3 team roots with `ROOT_RUN_PACKAGE_MISSING_TREE` (9 member folders) × 2 starts (one discovery instance each); no `EPISODIC_CATALOG_RUN_LEFT_OUT` |
 | IMP-15 | privacy check on the IMP-14 clone (`probes/imp08-summary-privacy-check.py`); clone removed afterwards | `159286c1c1` | same | entries | REQ-004 (supporting) | Pass | `IMP-15-clone-privacy-check.log` | `summaries found in episodic files: 0` (641 checked) |
+| IMP-16 | IR-003: `vitest run tests/unit/agent-memory tests/unit/memory-search tests/unit/agent-episodic-catalog tests/agent-work-journal` | `1324c3e8f4` | macOS 26.5.2, Node 22.23.1 | discovery (definition from metadata only), memory search, catalog, journal | REQ-012, AC-009, AC-011 (touched areas) | Pass | `IMP-16-discovery-unit.log` | `Tests  407 passed \| 2 skipped (409)` |
+| IMP-17 | IR-003: the three memory e2e files, `env -i` as IMP-09 | `1324c3e8f4` | same | memory search over discovery | AC-011 | Pass | `IMP-17-memory-e2e.log` | `Tests  9 passed \| 7 skipped (16)` |
+| IMP-18 | IR-003: `pnpm -C autobyteus-server-ts typecheck`; `pnpm -C autobyteus-web typecheck` | `1324c3e8f4` | same | server `src`, tests, cross-package tests | — | Pass | `IMP-18-typechecks.log` | `test-file errors: 1012 in 316 files (baseline 1012 in 316 files)`; `87 in 37 files (baseline 87 in 37 files)` |
 
 IMP-04 failures, one by one (TESTING.md Rule 9):
 

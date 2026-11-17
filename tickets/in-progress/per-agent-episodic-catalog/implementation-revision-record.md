@@ -8,6 +8,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 | --- | --- | --- | --- | --- | --- |
 | IR-001 | Architecture reviewer, `design-review-report.md`, ARCH-REV-002 pass and ARCH-REV-004 (contract addendum) | N/A | `Initial Baseline` | SR-002, ARCH-REV-002, ARCH-REV-004 | Implemented design steps 1–6 and the AC-010 measurement of step 7; ready for code review |
 | IR-002 | Architecture reviewer, `design-review-report.md` ARCH-REV-005 (SR-003, after CRR-002) | CRR-002 CR-001 (CF-12); API-REV-001 API-09/EC-06, API-15; CF-11 | `Design Impact` (resolved by SR-003) | SR-003, ARCH-REV-005, CRR-002, API-REV-001 | Unreadable records and manifests are explicit outcomes with one warning each; ready for code review |
+| IR-003 | Code reviewer, `api-e2e-test-review-report.md` / `code-review-report.md` CRR-004 (post-API/E2E test review) | TR-001 | `Local Fix` | SR-003, CRR-004, API-REV-002 | The unreachable history-row fallback for an agent run's definition is removed; ready for code review |
 
 ## Revision Entries
 
@@ -59,3 +60,30 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 - Local validation and result: `implementation-handoff.md` § Checks Run IMP-10…IMP-15. On the founder's data (clone): 3 team roots with a missing tree (9 member folders) are now named once per discovery instance; start 12.5 s; nothing outside `episodic/` changed
 - Next recipient or routing: Code Reviewer (Large / High), by `get_handoff_rules`
 - Remaining limitations or risks: the run-package readiness index's own silence toward the history lists stays FU-004. A start logs a damaged root once per discovery instance: the catalog's and memory search's, so up to two lines per start (design decision 3)
+
+### IR-003 — An agent run's definition comes from its metadata alone (CRR-004 TR-001)
+
+- Triggering role, report path, and round: code reviewer (`/code_reviewer`), CRR-004 (post-API/E2E test-code review), `api-e2e-test-review-report.md`, `code-review-report.md`
+- Triggering finding IDs: TR-001
+- Classification: `Local Fix`
+- Prior authoritative result: IR-002 (CRR-003 Pass; API/E2E round 2 Pass; CRR-004 Fail on TR-001)
+- Current authoritative result: fixed; checks IMP-16…IMP-18 pass
+- Related solution revision IDs: SR-003 (this departs from decision 1's wording; see below)
+- Related architecture-review revision IDs: N/A
+- Related code-review revision IDs: CRR-004
+- Related API/E2E revision IDs: API-REV-002
+- Related delivery revision IDs: N/A
+- Why this implementation revision is recorded: `agentRuns` attributed an agent run by its history row when its metadata was missing or unreadable. That branch can never decide anything:
+  - `listCatalogRows` keeps admitted runs only (`agent-run-history-catalog-service.ts:141`);
+  - an agent run is admitted only when `readMetadataState` is `present` (`root-run-package-current-validator.ts:146-154`);
+  - present metadata always names `agentDefinitionId` (`agent-run-metadata-store.ts:118-127`).
+
+  EC-06 shows the real outcome (a run with a row and damaged metadata is `unreadable` and warned). IR-002 had turned this dead fallback into stated behavior in a comment, the module doc and a unit case.
+- Departure from SR-003 decision 1's wording ("a history row naming a definition → attributed"): the row never decides the definition. Reason: the case is unreachable (Core Principle 7, dead code in touched files). Observable behavior and memory search's `MemoryRun` are unchanged.
+- Approved behavior or requirement IDs affected: none (no observable change); REQ-012 / AC-009 as proven by EC-06
+- Implementation delta: the definition comes from the metadata alone. Present → `attributed`; unreadable → `unreadable` (`run_metadata.json`); missing → `unattributed`. The row still gives an admitted run's name, workspace and creation time. The `row_only` unit case is replaced by the real shape: a row offered only for the admitted run. `agent_episodic_catalog.md` § Which runs is corrected.
+- Commits: `1324c3e8f4`
+- Changed files or areas: `agent-memory/services/run-folder-discovery.ts`, `tests/unit/agent-memory/run-folder-discovery.test.ts`, `docs/modules/agent_episodic_catalog.md`
+- Local validation and result: IMP-16 (407 passed), IMP-17 (memory e2e pass), IMP-18 (both typechecks at baseline)
+- Next recipient or routing: Code Reviewer (Large / High), by `get_handoff_rules`; then API/E2E (discovery unit tests and EC-06; the E2E file needs no change)
+- Remaining limitations or risks: none new
