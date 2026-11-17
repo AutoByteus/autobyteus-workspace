@@ -849,8 +849,16 @@ through `allowedTools` according to the configured tool exposure. Claude Code
 tool names can change between Claude Code releases. The CLI that actually runs
 is resolved by `resolveClaudeCodeExecutablePath()`: an explicit
 `CLAUDE_CODE_EXECUTABLE_PATH` / `CLAUDE_CODE_PATH` / `CLAUDE_CLI_PATH` override
-first, then `claude` on `PATH`. It is therefore not necessarily the CLI bundled
-with the pinned SDK. Re-verify both lists against the CLI in use whenever the SDK
+first, then `claude` on `PATH`. It is therefore not necessarily the version the
+pinned SDK was built with, and the SDK's own platform binary is never used: every
+`query` passes this path (sessions, model catalog and usage), and the desktop
+builds and the Docker server package no longer ship the SDK's
+`@anthropic-ai/claude-agent-sdk-<platform>` packages (about 200 MB each; the SDK
+package itself stays, and the build fails when it is missing; see
+[Electron Packaging](../../../autobyteus-web/docs/electron_packaging.md)). A user
+without an installed Claude Code sees Claude as not available. A future SDK that
+looks up its binary even when a path is passed would fail with its own "Native CLI
+binary … not found" error. Re-verify both lists against the CLI in use whenever the SDK
 version changes and whenever the resolved Claude Code CLI is updated. Sessions
 created before this policy keep any earlier agent-type listing in their
 persisted transcript history. On resume, the tool list itself is still
