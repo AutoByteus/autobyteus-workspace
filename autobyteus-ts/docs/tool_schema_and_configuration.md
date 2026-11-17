@@ -254,12 +254,15 @@ const createUser = tool({
 2.  **Decorator**: Registers the schema as a `ToolDefinition`.
 3.  **Registry**: Stores it in `ToolRegistry`.
 4.  **Provider schema path**:
-    - `LlmPhase` asks `ToolSchemaProvider` to build schemas only when the current
-      turn has configured tools, and passes the same condition to
-      `LlmStreamingResponseHandler` as its explicit tool-call gate.
+    - `LlmPhase` asks the agent's tool search (`AgentToolSearch`, section 4.8)
+      for the request's tool definitions only when the agent has tools, and
+      passes the same condition to `LlmStreamingResponseHandler` as its explicit
+      tool-call gate.
     - `ToolSchemaProvider` resolves the provider-aware native schema formatter:
       Anthropic, Gemini, or the OpenAI-compatible function-tool envelope used by
-      the remaining supported provider paths.
+      the remaining supported provider paths. `buildSchema` formats registered
+      tools by name; `formatDefinitions` formats given definitions (the agent's
+      own `search_tools` and `call_tool`) with the same formatter choice.
     - `LlmPhase` supplies the resulting array through the provider request's
       native `tools` field. With zero tools it sends no schema field.
 5.  **LLM**: Receives provider-native tool metadata. Tool definitions are not
@@ -289,9 +292,12 @@ use the function-tool envelope:
 ```
 
 Before the schema is returned, `normalizeOpenAiToolParameters(...)` recursively
-closes JSON object schemas by setting `additionalProperties: false`. This
-applies to the top-level `parameters` object and nested object schemas produced
-from `ParameterSchema`.
+closes JSON object schemas that declare their `properties` by setting
+`additionalProperties: false`. This applies to the top-level `parameters` object
+and nested object schemas produced from `ParameterSchema`. An object that
+declares no properties (an `OBJECT` parameter without an `objectSchema`, such as
+`call_tool`'s `arguments`) is free-form and stays open: closing it would allow
+only `{}`.
 
 Strict function tools remain intentionally gated off by default. Current
 `ParameterSchema` optional fields remain optional by being omitted from
@@ -340,6 +346,43 @@ the provider adapter that owns request legality. Do not add prompt examples,
 text-call syntax formatters, per-tool manifest overrides, or a parallel schema
 registry. `write_file` and `edit_file` live streaming is a response-display
 projection and does not change their authoritative provider-native schemas.
+
+### 4.8 Tool Search: Listed And Searchable Tools
+
+_Files_: `src/agent/tool-search/agent-tool-search.ts`, `search-tools-tool.ts`,
+`call-tool.ts`
+
+An agent's requests do not have to carry every tool it has. `AgentConfig.listedToolNames`
+names its **listed** tools; every other tool is **searchable** (see `GLOSSARY.md`).
+The server sets it for native runs to the base tools (`run_bash`, `read_file`,
+`edit_file`, `write_file`). `null` (the library default) lists every tool, as before.
+
+- **The request's tools.** The agent factory creates one `AgentToolSearch` per agent,
+  from the listed names and the agent's tools at creation. When the agent starts with
+  at least one searchable tool, every request carries the listed tools it has (in
+  `listedToolNames` order), then `search_tools` and `call_tool`, and nothing else. The
+  set is the same for the whole run: a search, a found tool's call, and tools added to
+  or removed from the agent (`Agent.replaceTools`) change only what search finds, so
+  the provider's cached prefix and prefix-bound reasoning stay valid. `search_tools`'
+  description names the searchable tools as they were when the agent was created; a
+  tool added later is announced by the tools-updated notice and is searchable too.
+- **Search.** `search_tools({query})` runs in process over the agent's current
+  searchable tools: exact names in the query return those tools; otherwise words are
+  matched against names, argument names and descriptions. At most 5 results, each
+  with its full definition in the OpenAI function form (`{name, description,
+  parameters}`), appended to the conversation as the tool result.
+- **Call.** The model calls a found tool with `call_tool({name, arguments})`. When the
+  stream ends, `LlmStreamingResponseHandler` turns a `call_tool` call whose arguments
+  are exactly `{name, arguments}` into that tool's invocation, with the same id and
+  `calledThrough: 'call_tool'`. From then on it is that tool: argument validation,
+  approval, external results, lifecycle events, the segment's END metadata and the
+  result name the real tool. Any other `call_tool` call stays a `call_tool` invocation,
+  and the `call_tool` tool answers with how to call it.
+- **Memory.** Raw traces (run history, Work Journal, memory search) record the real
+  tool, with `called_through` on the `tool_call` trace. The working context sent back to
+  the model keeps the call as the model made it: a `call_tool` call and a result named
+  `call_tool`, on every provider. The model's form is derived only by the call-tool
+  contract (`toModelToolCall`).
 
 ---
 

@@ -10,6 +10,7 @@ import type { AgentEventStore } from '../events/event-store.js';
 import type { AgentStatusDeriver } from '../status/status-deriver.js';
 import type { AgentStatusManager } from '../status/manager.js';
 import type { MemoryManager } from '../../memory/memory-manager.js';
+import type { AgentToolSearch } from '../tool-search/agent-tool-search.js';
 
 export class AgentContext {
   agentId: string;
@@ -117,8 +118,17 @@ export class AgentContext {
     return this.state.memoryManager;
   }
 
+  /** The agent's tool search; the agent factory sets it, so a missing one is a construction error. */
+  get toolSearch(): AgentToolSearch {
+    if (!this.state.toolSearch) {
+      throw new Error(`Agent '${this.agentId}' has no tool search; the agent factory sets it.`);
+    }
+    return this.state.toolSearch;
+  }
+
+  /** One of the agent's tools, or its own `search_tools`/`call_tool`. */
   getTool(toolName: string): BaseTool | undefined {
-    const tool = this.toolInstances[toolName];
+    const tool = this.toolInstances[toolName] ?? this.toolSearch.getRuntimeTool(toolName);
     if (!tool) {
       console.warn(
         `Tool '${toolName}' not found in AgentContext.state.toolInstances for agent '${this.agentId}'. Available tools: ${Object.keys(this.toolInstances)}`

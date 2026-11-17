@@ -1,0 +1,50 @@
+# IMP-11 evaluation script smoke (evaluate-tool-search.mjs), two tasks, new (--listed base) and every tool listed (--listed all)
+# Command: AUTOBYTEUS_TEST_VAULT=~/.autobyteus-test/vault node evidence/evaluate-tool-search.mjs <worktree> <out> --listed base|all --tasks pm-close,da-title
+# Commit: 8065d773e0 (autobyteus-ts and server dist built from it) + the script as committed with this evidence (agent-scoped event subscriptions)
+# Environment: macOS, Node v22.23.1, deepseek-v4-flash, test vault
+# Date: 2026-11-17
+# A smoke of the script, not the AC-008/AC-009 evaluation (left to API/E2E).
+
+## --listed base
+{
+ "pm": {
+  "tasks": 1,
+  "succeeded": 1,
+  "meanFirstPromptTokens": 2523,
+  "meanPromptTokensPerRequest": 3644,
+  "meanCacheReadPerRequest": 2592,
+  "meanRequestsPerTask": 4
+ },
+ "da": {
+  "tasks": 1,
+  "succeeded": 1,
+  "meanFirstPromptTokens": 2535,
+  "meanPromptTokensPerRequest": 3345,
+  "meanCacheReadPerRequest": 2743,
+  "meanRequestsPerTask": 7
+ }
+}
+{"task": "pm-close", "toolSearch": true, "success": true, "requests": 4, "firstPromptTokens": 2523, "meanPromptTokens": 3644, "toolsCalled": ["get_project_task", "update_task"], "usages": [{"prompt": 2523, "cacheRead": 0}, {"prompt": 3870, "cacheRead": 2560}, {"prompt": 4023, "cacheRead": 3840}, {"prompt": 4158, "cacheRead": 3968}]}
+{"task": "da-title", "toolSearch": true, "success": true, "requests": 7, "firstPromptTokens": 2535, "meanPromptTokens": 3345, "toolsCalled": ["open_tab", "run_script", "run_bash", "write_file", "read_file"], "usages": [{"prompt": 2535, "cacheRead": 0}, {"prompt": 3172, "cacheRead": 2560}, {"prompt": 3269, "cacheRead": 3072}, {"prompt": 3374, "cacheRead": 3200}, {"prompt": 3546, "cacheRead": 3328}, {"prompt": 3713, "cacheRead": 3456}, {"prompt": 3809, "cacheRead": 3584}]}
+
+## --listed all
+{
+ "pm": {
+  "tasks": 1,
+  "succeeded": 1,
+  "meanFirstPromptTokens": 7621,
+  "meanPromptTokensPerRequest": 7801,
+  "meanCacheReadPerRequest": 5760,
+  "meanRequestsPerTask": 4
+ },
+ "da": {
+  "tasks": 1,
+  "succeeded": 1,
+  "meanFirstPromptTokens": 8268,
+  "meanPromptTokensPerRequest": 8411,
+  "meanCacheReadPerRequest": 6208,
+  "meanRequestsPerTask": 4
+ }
+}
+{"task": "pm-close", "toolSearch": false, "success": true, "requests": 4, "firstPromptTokens": 7621, "meanPromptTokens": 7801, "toolsCalled": ["list_projects", "get_project_task", "update_task"], "usages": [{"prompt": 7621, "cacheRead": 0}, {"prompt": 7704, "cacheRead": 7552}, {"prompt": 7866, "cacheRead": 7680}, {"prompt": 8014, "cacheRead": 7808}]}
+{"task": "da-title", "toolSearch": false, "success": true, "requests": 4, "firstPromptTokens": 8268, "meanPromptTokens": 8411, "toolsCalled": ["open_tab", "run_script", "write_file"], "usages": [{"prompt": 8268, "cacheRead": 0}, {"prompt": 8351, "cacheRead": 8192}, {"prompt": 8434, "cacheRead": 8192}, {"prompt": 8589, "cacheRead": 8448}]}

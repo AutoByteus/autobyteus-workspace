@@ -39,6 +39,7 @@ import { ToolOrigin } from '../../../src/tools/tool-origin.js';
 import { ToolDefinition } from '../../../src/tools/registry/tool-definition.js';
 import { defaultToolRegistry } from '../../../src/tools/registry/tool-registry.js';
 import { providerApiKeyResolver } from '../../unit/provider-api-key-resolver-test-helpers.js';
+import { AgentToolSearch } from '../../../src/agent/tool-search/agent-tool-search.js';
 
 const LIMIT = 128;
 const usage = (outputTokens = LIMIT) =>
@@ -114,6 +115,7 @@ const startAgent = async (llm: BaseLLM, tempDir: string) => {
   state.memoryManager = memoryManager;
   state.llmInstance = llm;
   state.toolInstances = registerWeatherTool();
+  state.toolSearch = new AgentToolSearch(null, Object.keys(state.toolInstances!));
   const config = new AgentConfig(
     'OutputLimitRecovery', 'tester', 'Output-limit recovery integration test', llm, null,
     Object.values(state.toolInstances), true, [new MemoryIngestInputProcessor()], null, [],

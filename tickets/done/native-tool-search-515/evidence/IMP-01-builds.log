@@ -1,0 +1,16 @@
+# IMP-01 builds
+# Command: pnpm -C autobyteus-ts build; pnpm -C autobyteus-server-ts build
+# Commit: working tree whose source equals 8065d773e0 (built after the last source edit)
+# Environment: macOS (darwin 25.5), Node v22.23.1; machine load average 85-116 from other processes during the full-suite runs
+# Date: 2026-11-17
+
+## autobyteus-ts
+> autobyteus-ts@1.0.0 build /Users/normy/autobyteus_org/autobyteus-worktrees/native-tool-search-515/autobyteus-ts
+> node ./scripts/clean-dist.mjs && tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs
+
+[verify:runtime-deps] OK
+## server
+(node:92800) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+Built-in agents bootstrap smoke check passed.
+Sanitized built-module/bootstrap smoke passed without DATABASE_URL.

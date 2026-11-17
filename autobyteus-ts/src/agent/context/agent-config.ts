@@ -62,6 +62,11 @@ export class AgentConfig {
     memoryDir: string | null = null,
     memoryCompaction: MemoryCompactionConfiguration = DEFAULT_MEMORY_COMPACTION_CONFIGURATION,
     public nativeCommandProcessScope?: NativeCommandProcessScope,
+    /**
+     * The tools whose definitions every request carries (listed tools); the agent's other tools
+     * are searchable (`search_tools` + `call_tool`). `null` lists every tool.
+     */
+    public listedToolNames: readonly string[] | null = null,
   ) {
     this.name = name;
     this.role = role;
@@ -109,6 +114,7 @@ export class AgentConfig {
       this.memoryDir ?? null,
       copyMemoryCompactionConfiguration(this.memoryCompaction),
       this.nativeCommandProcessScope,
+      this.listedToolNames === null ? null : [...this.listedToolNames],
     );
   }
 

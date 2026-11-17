@@ -418,6 +418,20 @@ delegated run, …) are defined in the
 - **Usage limit:** a runtime's or provider's own limit on use (a 5-hour or
   weekly window, a billing period, a money balance), read from the runtime or
   provider. It is not the launch check of whether a runtime is usable.
+- **Listed tool:** on the AutoByteus runtime, a tool whose full definition
+  every request of a run carries: the native base tools (`run_bash`,
+  `read_file`, `edit_file`, `write_file`; `AgentConfig.listedToolNames`) and the
+  runtime's own `search_tools` and `call_tool`.
+- **Searchable tool:** on the AutoByteus runtime, a tool an agent has whose
+  definition its requests do not carry: every tool that is not listed. The agent
+  finds it with `search_tools` (the result holds its full definition) and calls
+  it with `call_tool`; from then on the call is that tool's (approval, events,
+  the run's history), and only the conversation sent back to the model keeps
+  the `call_tool` form (raw trace field `called_through`).
+- **Tool search:** on the AutoByteus runtime, `search_tools` + `call_tool`
+  (`AgentToolSearch`). The external runtimes' own searches keep their names:
+  `ToolSearch` (Claude Agent SDK), `tool_search` (Codex), `search_tool` (Grok
+  Build).
 
 ## Agent Definitions
 

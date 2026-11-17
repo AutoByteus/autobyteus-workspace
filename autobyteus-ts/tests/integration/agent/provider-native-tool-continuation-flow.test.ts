@@ -37,6 +37,7 @@ import { ToolDefinition } from '../../../src/tools/registry/tool-definition.js';
 import { defaultToolRegistry } from '../../../src/tools/registry/tool-registry.js';
 import type { BaseTool } from '../../../src/tools/base-tool.js';
 import type { ProviderNativeToolCallContext } from '../../../src/llm/utils/tool-call-delta.js';
+import { AgentToolSearch } from '../../../src/agent/tool-search/agent-tool-search.js';
 
 const originalEnv = { ...process.env };
 
@@ -378,6 +379,7 @@ describe('provider-native tool continuation integration flow', () => {
         runtimeState.memoryManager = memoryManager;
         runtimeState.llmInstance = llm;
         runtimeState.toolInstances = registerIntegrationTools();
+        runtimeState.toolSearch = new AgentToolSearch(null, Object.keys(runtimeState.toolInstances!));
         const config = new AgentConfig(
           `NativeContinuation${providerCase.name}`,
           'integration tester',

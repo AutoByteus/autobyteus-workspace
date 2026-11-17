@@ -1,0 +1,9 @@
+# API-14 (autobyteus-515 API/E2E): web tool card for a call made through call_tool (AC-003 user surface)
+# Command: env -i PATH HOME=<temp> TMPDIR pnpm -C autobyteus-web test:nuxt --run services/agentStreaming/handlers/__tests__/segmentHandler.spec.ts ; then pnpm -C autobyteus-web typecheck
+# New case: 'names a native call_tool card after the found tool, with its real arguments, at end (autobyteus-515)': START tool_name call_tool -> CONTENT with the call_tool {name, arguments} JSON -> END metadata tool_name update_task + real arguments => card toolName update_task, arguments {task_id, status}
+# The END metadata it feeds is what the real server sends (API-04: segment END tool_name list_projects / list_project_tasks). 2026-11-17, Node v22.23.1
+ ✓ services/agentStreaming/handlers/__tests__/segmentHandler.spec.ts (23 tests) 13ms
+ Test Files  1 passed (1)
+      Tests  23 passed (23)
+[typecheck] production errors: 0; test-file errors: 87 in 37 files (baseline 87 in 37 files)
+[typecheck] PASS

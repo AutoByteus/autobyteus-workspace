@@ -11,6 +11,11 @@ export class ToolInvocation {
    * A marked invocation is never executed: `arguments` is only the `{}` history placeholder.
    */
   readonly argumentsParseError: string | null;
+  /**
+   * The declared tool the model called when it is not this one: `'call_tool'` for a searchable
+   * tool called through it (`name`/`arguments` are then the real tool's); `null` for a direct call.
+   */
+  readonly calledThrough: string | null;
 
   constructor(
     name: string,
@@ -18,7 +23,7 @@ export class ToolInvocation {
     id: string,
     turnId?: string,
     nativeToolCallContext?: ProviderNativeToolCallContext,
-    options: { argumentsParseError?: string | null } = {}
+    options: { argumentsParseError?: string | null; calledThrough?: string | null } = {}
   ) {
     if (!id) {
       throw new Error('ToolInvocation requires a non-empty id.');
@@ -36,6 +41,7 @@ export class ToolInvocation {
     this.turnId = turnId;
     this.nativeToolCallContext = nativeToolCallContext;
     this.argumentsParseError = options.argumentsParseError ?? null;
+    this.calledThrough = options.calledThrough ?? null;
   }
 
   isValid(): boolean {
@@ -47,6 +53,7 @@ export class ToolInvocation {
     const nativeContextSegment = this.nativeToolCallContext
       ? `, nativeToolCallContext=${JSON.stringify(this.nativeToolCallContext)}`
       : '';
-    return `ToolInvocation(id='${this.id}', name='${this.name}', arguments=${JSON.stringify(this.arguments)}${turnSegment}${nativeContextSegment})`;
+    const calledThroughSegment = this.calledThrough ? `, calledThrough='${this.calledThrough}'` : '';
+    return `ToolInvocation(id='${this.id}', name='${this.name}', arguments=${JSON.stringify(this.arguments)}${turnSegment}${calledThroughSegment}${nativeContextSegment})`;
   }
 }

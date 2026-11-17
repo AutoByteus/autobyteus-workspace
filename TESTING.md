@@ -81,7 +81,7 @@ closes the remaining confidence gap.
 | Behavior against real model or search providers | A gated live suite, or an isolated instance, with the [test vault](#test-vault) |
 | Launch profile, isolation or packaged-launch mechanics | Packaged Electron harness |
 | The node's request gate, node credentials, the MCP gateway token, or the shared server test harness (`autobyteus-server-ts/tests/setup/`, `tests/e2e/helpers/`, `test-support/`) | The whole server E2E suite (`pnpm test:e2e`): each suite reaches its node its own way, so a subset proves only the ways it uses |
-| The tools a run gets: the shared exposure rule (`autobyteus-server-ts/src/agent-execution/shared/runtime-agent-tool-exposure.ts`), the native default tools, the automatic collaboration tools, or the tool units a host registers at start | The whole server unit suite, the whole `test:integration` and the whole server E2E suite (`pnpm test:e2e`), plus a search of the gated suites for exact tool lists (`toolInstances`, `enabledTools`, `tools/list`, `requestedToolNames`): tests in every layer assert a run's exact tool list, so the unit suite and a chosen set of integration files miss the rest. A test that asserts a run's exact tool list and is not about the platform-given tools spreads `PLATFORM_GIVEN_TOOL_NAMES` instead of naming them, and registers the tool units a server start registers |
+| The tools a run gets: the shared exposure rule (`autobyteus-server-ts/src/agent-execution/shared/runtime-agent-tool-exposure.ts`), the native default tools, the automatic collaboration tools, or the tool units a host registers at start | The whole server unit suite, the whole `test:integration` and the whole server E2E suite (`pnpm test:e2e`), plus a search of the gated suites for exact tool lists (`toolInstances`, `enabledTools`, `tools/list`, `requestedToolNames`): tests in every layer assert a run's exact tool list, so the unit suite and a chosen set of integration files miss the rest. On the native runtime the tools a run *has* and the tools a provider request *carries* differ (tool search, GLOSSARY "Listed tool"): a request holds the base tools plus `search_tools` and `call_tool`, so a test that asserts a native request's `tools` asserts that set, and a test that needs another tool reaches it through search and `call_tool`. A test that asserts a run's exact tool list and is not about the platform-given tools spreads `PLATFORM_GIVEN_TOOL_NAMES` instead of naming them, and registers the tool units a server start registers |
 
 **Both typechecks, whatever the change touches.** A change to TypeScript in any workspace package runs `pnpm -C autobyteus-web typecheck` and `pnpm -C autobyteus-server-ts typecheck`, not only the typecheck of the package it changed. Each reads beyond its own package: the web typecheck, which the desktop build runs, compiles the server's source and server test fixtures through its cross-package tests, and the server typecheck builds and reads `autobyteus-ts` and the shared packages. A server-only change that a web test calls passes the server typecheck and still stops every desktop build.
 
@@ -177,6 +177,12 @@ or because Gradle's cache already holds a dependency the runner must download.
 - **One heavy run at a time.** Do not run server `test:unit`, an E2E folder, a build or a
   probe alongside another of them, in any worktree: they compete for CPU, and timing
   assertions then fail for reasons that are not in the code under test.
+- **File watching on a busy Mac.** Folder-watcher tests, and any test of a server that starts or
+  closes folder watchers, depend on macOS FSEvents. When `fseventsd` is busy (high CPU in `ps`),
+  watch events arrive seconds late or never, and closing a recursive `fs.watch` blocks Node's main
+  thread for seconds, so those tests time out for a reason outside the code. Before diagnosing such
+  a timeout, check `fseventsd` and measure: the time from writing a file in a watched temp folder to
+  its event, and how long `close()` of that watcher blocks.
 - **Green server suites.** Server `test:unit`, `test:integration` and `typecheck` are kept
   passing. Every failure there is a real failure: find its cause and fix or report it
   (Rule 9). Run `test:integration:prepare` once per worktree and after changing server or

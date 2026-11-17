@@ -1,6 +1,7 @@
 import { SegmentEvent, SegmentEventType, SegmentType } from '../segments/segment-events.js';
 import { WriteFileContentStreamer, EditFileContentStreamer } from '../api-tool-call/file-content-streamer.js';
 import { ToolInvocation } from '../../tool-invocation.js';
+import { toCalledToolInvocation } from '../../tool-search/call-tool.js';
 import { ChunkResponse } from '../../../llm/utils/response-types.js';
 import type {
   ProviderNativeToolCallContext,
@@ -26,6 +27,7 @@ export class LlmStreamingResponseHandler {
   private turnId: string;
   private segmentIdPrefix: string;
   private readonly toolCallsEnabled: boolean;
+  private readonly toolSearchEnabled: boolean;
   private textSegmentId: string | null = null;
   private activeTools: Map<number, ToolCallState> = new Map();
   private allEvents: SegmentEvent[] = [];
@@ -38,6 +40,8 @@ export class LlmStreamingResponseHandler {
     turnId: string;
     segmentIdPrefix?: string;
     toolCallsEnabled: boolean;
+    /** The request carried `search_tools`/`call_tool`: a well-formed `call_tool` call becomes the real tool's invocation. */
+    toolSearchEnabled?: boolean;
   }) {
     if (!options.turnId) {
       throw new Error('LlmStreamingResponseHandler requires turnId.');
@@ -47,6 +51,7 @@ export class LlmStreamingResponseHandler {
     this.turnId = options.turnId;
     this.segmentIdPrefix = options.segmentIdPrefix ?? `turn_${randomUUID().replace(/-/g, '')}:`;
     this.toolCallsEnabled = options.toolCallsEnabled;
+    this.toolSearchEnabled = options.toolSearchEnabled ?? false;
   }
 
   private generateId(): string {
@@ -110,7 +115,7 @@ export class LlmStreamingResponseHandler {
       console.warn(`Native tool call ${state.segmentId} for ${state.name} has unusable arguments: ${argumentsParseError}`);
     }
 
-    return new ToolInvocation(
+    const invocation = new ToolInvocation(
       state.name,
       parsedArgs,
       state.segmentId,
@@ -118,6 +123,9 @@ export class LlmStreamingResponseHandler {
       state.nativeToolCallContext,
       { argumentsParseError }
     );
+    // A searchable tool called through call_tool is that tool from here on: approval, execution,
+    // events and results see the real tool; only memory keeps the model's call_tool form.
+    return this.toolSearchEnabled ? toCalledToolInvocation(invocation) ?? invocation : invocation;
   }
 
   feed(chunk: ChunkResponse): SegmentEvent[] {
@@ -325,7 +333,7 @@ export class LlmStreamingResponseHandler {
           turn_id: this.turnId,
           payload: {
             metadata: {
-              tool_name: state.name,
+              tool_name: invocation?.name ?? state.name,
               arguments: invocation?.arguments ?? {},
               ...(state.nativeToolCallContext
                 ? { native_tool_call_context: state.nativeToolCallContext }

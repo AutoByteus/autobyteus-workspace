@@ -25,6 +25,7 @@ import { MemoryType } from '../../../../src/memory/models/memory-types.js';
 import { CompactionPolicy } from '../../../../src/memory/policies/compaction-policy.js';
 import { FileMemoryStore } from '../../../../src/memory/store/file-store.js';
 import { createEnabledMemoryCompactionConfiguration } from '../../../../src/memory/compaction/memory-compaction-configuration.js';
+import { AgentToolSearch } from '../../../../src/agent/tool-search/agent-tool-search.js';
 
 class ObservedUsageLeafLLM extends BaseLLM {
   constructor(
@@ -90,6 +91,7 @@ describe('LlmPhase disabled automatic compaction', () => {
       state.llmInstance = llm;
       state.memoryManager = memoryManager;
       state.toolInstances = {};
+      state.toolSearch = new AgentToolSearch(null, Object.keys(state.toolInstances!));
       const notifyAgentCompactionStatus = vi.fn();
       state.statusManagerRef = {
         notifier: { notifyAgentCompactionStatus },
@@ -191,6 +193,7 @@ describe('LlmPhase compaction threshold report', () => {
       state.llmInstance = llm;
       state.memoryManager = memoryManager;
       state.toolInstances = {};
+      state.toolSearch = new AgentToolSearch(null, Object.keys(state.toolInstances!));
       state.statusManagerRef = { notifier: { notifyAgentCompactionStatus: vi.fn() } } as any;
       const context = new AgentContext('enabled-leaf', new AgentConfig('leaf', 'compactor', 'one-shot leaf', llm), state);
       const turn = new AgentTurn('turn-enabled');
