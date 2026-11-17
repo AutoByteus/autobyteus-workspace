@@ -142,3 +142,34 @@ Models: claude `haiku`, codex `gpt-5.6-luna`, grok `grok-4.7`. Logs kept at `/tm
 - `release_smoke.py` on `4155251303`: claude 3/3 PASS, codex 3/3 PASS, antigravity 2/2 PASS, autobyteus 2/2 PASS; **grok 0/3: HTTP 429 `free-usage-exhausted` on grok-4.7** (the quota; the team case now reaches the model). Logs `/tmp/smoke461b-evidence/`.
 - Grok's quota: RELEASE.md treats it as a runtime that cannot run: wait for the rolling 24 h reset, or the user waives Grok for this release. **Not tagged; the user's decision is pending.**
 - **Grok waived for this release by the user (2026-11-17, "Waive grok").** Reason: Grok's free quota is exhausted (HTTP 429 on all three cases); the four other runtimes pass every case on the commit to be tagged. Grok's own coverage remains follow-up FU-035.
+
+### Tag and rollout (2026-11-17)
+
+- Release commit `a781007713` (`chore(release): bump workspace release version to 1.5.13-beta.7`, `autobyteus-web/package.json` 1.5.13-beta.7), annotated tag `v1.5.13-beta.7`, made by `scripts/desktop-release.sh beta --branch finalize/delegated-copies-outlive-delegator-461 --no-push` after deleting the untracked `*/dist/` folders. `origin/personal` was `d5d4fc7c81` (a fast-forward); pushed `d5d4fc7c81..a781007713`, then the tag.
+- Workflows of the tag (watched together):
+
+| Run | Workflow | Result |
+| --- | --- | --- |
+| 44001643616 | Android APK Release | success |
+| 44001643442 | iOS App Store Connect Release | success (TestFlight upload) |
+| 44001643374 | Server Docker Release | success (image, both server packages) |
+| 44001643610 | Desktop Release | **failure**: Build macOS ARM64 and Build macOS Intel x64 failed; Windows x64, Linux x64, Linux ARM64 succeeded; Publish GitHub Release skipped |
+
+- The watchers exhausted the GitHub API hourly limit (4 parallel `gh run watch`); results were read once after the reset. Lesson: watch with a slower interval (`gh run watch --interval 60`).
+- Assets now: 8 of 23 (six server package files, the APK and its `.sha256`); `isPrerelease: true`. No desktop binaries and no `latest*.yml`, so no desktop is offered beta.7. Docker `1.5.13-beta.7` is published (and `:beta` moves to the newest tag).
+- **Partial release.**
+
+| Failed run and job | Classification | Log lines | Action | Result |
+| --- | --- | --- | --- | --- |
+| 44001643610 Build macOS ARM64, Build macOS Intel x64 | **Platform (Apple account)**: notarization refused, the same on all 3 attempts of each job: `Error: HTTP status code: 403. A required agreement is missing or has expired. This request requires an in-effect agreement that has not been signed or has expired.` (`@electron/notarize` notarytool). Not our code; the same commit passes once the agreement is in effect | ARM64 02:27:29, 02:36:48, 02:45:55; Intel 02:28:18, 02:35:06, 02:41:58 | The Apple Developer account holder accepts the pending agreement; then `gh run rerun 44001643610 --failed` (only the macOS jobs and the skipped publish) | Waiting for the user |
+- **Recovery (2026-11-17):** the user accepted Apple's pending agreement; `gh run rerun 44001643610 --failed` (attempt 2): Build macOS ARM64 success, Build macOS Intel x64 success, Publish GitHub Release success. No new version was needed (platform failure, same tag).
+- **Release complete:** all four workflows succeeded. 23 assets, `isPrerelease: true`. Order (AC-005 of autobyteus-412): the six `autobyteus-server-*` files at 03:14:01–03:14:17Z, all four `latest*.yml` at 05:02:33Z, after them.
+- Beta notes: the generated notes with `## What you need to do` placed above them (`gh release edit`), from the tickets since `v1.5.13-beta.6` (`git log --merges --first-parent`) that have one: `memory-sync-large-files` (autobyteus-workspace-7) and `delegated-copies-outlive-delegator-461`. The other five tickets (web-typecheck-gate, context-file-large-video-upload, running-agent-config-reload-460, inline-code-wrap, markdown-code-block-wrap) have none.
+- Release/publication result: `Completed` (after a partial first attempt, recovered by rerun).
+
+## Final Status
+
+- Verification complete (from the evidence): `Yes`
+- Repository finalization complete: `Yes` (`d5d4fc7c81`, the release commit `a781007713`, then delivery records)
+- Release complete: `Yes` (`v1.5.13-beta.7`, beta; Grok waived by the user)
+- Cleanup and terminal return: in `delivery-revision-record.md` DR-001 and the terminal message
