@@ -2,8 +2,8 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: `SR-005` (this design, on requirements SR-004).
-- Approved requirements: `requirements-doc.md` at SR-004. D-1, D-5 and D-8 were decided by the user (2026-11-17); the rest was decided by the Solution Designer within the Task's direction, and the user was informed.
+- Current solution revision ID: `SR-006` (this design, on requirements SR-006).
+- Approved requirements: `requirements-doc.md` at SR-006. D-1, D-5 and D-8 were decided by the user (2026-11-17); the rest was decided by the Solution Designer within the Task's direction, and the user was informed.
 - Behavior-defining supplements: `source-follow-ups-461.md` (leads, not decisions).
 - User approval of the design: `Not required`. The Task doesn't ask for it, and the release happens only on the founder's word.
 - Design status: `Ready`.
@@ -40,7 +40,7 @@
 - **Task size: `Large`.**
   - A persisted-data migration with a late-predecessor follow-up.
   - Removal of an owner kind and a REST route on the server and web.
-  - A rename across about 120 server files, 40 web files and one shared contracts package.
+  - A rename across about 90 server files and 40 web files.
   - Composition changes in two entry points (the studio server and the standalone application host).
 - **Architectural risk: `High`.**
   - Persistence: the migration rewrites user trace files, after backing them up.
@@ -92,7 +92,7 @@
   - `raw_traces_manifest.json` stays valid, because record counts are unchanged.
   - The run-history indexes don't hold links.
 - **Deliberately left alone:**
-  - The Task record's stored names (D-5, follow-up FU-500-01).
+  - The Task record's names, stored and in code: `TaskExecution…`, `executionResources`, the schema module's mapping (D-5, follow-up FU-500-01).
   - "Root" names that mean a run at the top of its own membership tree (Naming, rule N1).
   - The `agent-collaborations/:runId/communication/...` references route: it serves a run's own messages, not attachments.
   - Process getters that throw when unset (`getAgentRunService`, `getCollaboratorAdmission`, `getStandaloneAgentRunRootManager`, `getRunFileChangeService`, `getProcessRemoteCollaboration` in GraphQL resolvers). They fail loudly, and the GraphQL resolvers are created by the framework (Principle 16, "framework edge"). Recorded as follow-up FU-500-02.
@@ -133,10 +133,10 @@ The glossary (`GLOSSARY.md`, with `collaboration_model.md` §1) gains:
 - **Root (in code names):** a run at the top of its own membership tree: an Agent run, a Team run above its sub-teams, or an Org run. Every delegated run is a root of its own (CM-7). A root never holds another run.
 - **A run's agent (standalone run):** the one agent of a standalone Agent run. Replaces "host" in code.
 - **Known leftover:**
-  - The Task record's stored names are `agentRunResources` / `agentRun`; code says `delegatedRuns` / `run` (D-5, FU-500-01).
+  - The Task record is named `agentRunResources` / `agentRun` on disk and `TaskExecution…` / `executionResources` / `execution` in code, behind one mapping (D-5, FU-500-01).
   - Token usage records keep `root_team_run_id` for a team member (D-6).
 
-## Naming (FU-006, FU-010, FU-019, FU-007 code part)
+## Naming (FU-006, FU-010, FU-019)
 
 Rules:
 
@@ -145,7 +145,7 @@ Rules:
   - Renaming about 50 more types would add a large diff and no clarity.
 - **N2 "host":** goes from code that means the standalone run's agent or the run itself.
 - **N3 "copy":** goes for a delegated run.
-- **N4 "task execution":** becomes "delegated run" (D-5).
+- **N4 "task execution":** stays this round (D-5, SR-006: dropped by the user; FU-500-01).
 - **N5 "transient execution":** becomes "delegated run" in the web.
 - **N6:** stale comments that say a run hosts others are rewritten. `AgentMemoryLayout.getAgentRunCollaborationDirPath` (`agent-memory-layout.ts:100-103`, "child memory inside the host run directory"): **to verify** whether anything still writes or reads `agents/{run}/collaboration/`.
   - If nothing does, it is dead code and is removed, with the `"agent"` case of `getRootExecutionDirPath`.
@@ -161,13 +161,6 @@ Rules:
 | `hostRunId` (server and web) | `agentRunId` where it names an agent run; `runId` in the web's `AgentRunCollaborationContext` | 67 / 39 |
 | `PairedAgentAccess`, `PairedAgentObservation`, `TeamPairedAgentAccess`, `StandalonePairedAgentAccess`, `pairedAgents` | `RunAgentAccess`, `RunAgentObservation`, `TeamRunAgentAccess`, `StandaloneRunAgentAccess`, `runAgents`: a run's own agents, observed or commanded for a peer's owner or a local view | 12 / 9 / 3 / 3 / 11 |
 | `DelegatedCopy…`, `assignToExistingCopy` | `DelegatedRun…`, `assignToExistingDelegatedRun` | 2 / 1 |
-| `TaskExecutionReference` | `DelegatedRunReference` | 30 |
-| `taskExecutionReferenceKey` (`@autobyteus/collaboration-stream-contracts`) | `delegatedRunReferenceKey` | 5 + package |
-| `TaskExecutionResource` | `TaskDelegatedRun` | 4 |
-| `TaskExecutionResourceFile` (`executionResources`, `execution`, `teamCoordinatorAgentRunId`) | `TaskDelegatedRunFile` (`delegatedRuns`, `run`, `coordinatorAgentRunId`) | 6 |
-| `TaskExecutionResourceService` / `…Store` / `…Port` / `…ReleaseRequest` / `TaskExecutionResourceRelease` | `TaskDelegatedRunService` / `…Store` / `…Port` / `…ReleaseRequest` / `TaskDelegatedRunRelease` | 11 / 20 / 8 / 14 / 1 |
-| `TaskExecutionOwner`, `TaskExecutionIdleTimers`, `TaskExecutionSource`, `linkNewTaskExecution` | `DelegatedRunOwner`, `DelegatedRunIdleTimers`, `DelegatedRunSource`, `linkNewDelegatedRun` | 7 / 7 / 5 / 48 |
-| files `task-execution-*.ts` | `task-delegated-run-*.ts` / `delegated-run-*.ts`, matching the type | — |
 
 | Old (web) | New | Files |
 | --- | --- | --- |
@@ -177,7 +170,6 @@ Rules:
 | `WorkspaceTransientExecutionRow.vue` (and its specs) | `WorkspaceDelegatedRunRow.vue` | 19 |
 
 - **Already gone (FU-010's examples):** `RemoteRunRootEvent`, `LocalChildRootEvent`, `delegateToNewCopy` and `COPY_RUNNING` (0 files). `remoteChildren` / `localChildren` stay: a run's children on a peer or here, one concept with two locations.
-- **The stored Task record:** `task-execution-resource-schema.ts` (renamed with the rest) keeps the one mapping, `agentRunResources` ↔ `delegatedRuns` and `agentRun` ↔ `run`, and says so in its comment and the glossary (D-5). `coordinatorAgentRunId` is now the same in code and on disk.
 - **To verify by the implementation (lesson 2):** `'transient_execution'` is not persisted in the web's browser storage (expanded-row keys). If it is, rule 10's client-side migration applies, and the change returns to design.
 - **Completion check (AC-001):** `git grep -wE` for every old name above returns only migrations, frozen files, `tickets/` and the schema module's one documented mapping.
 
@@ -306,7 +298,7 @@ The host is not checked: the probe shows it can be any ancestor (111 of 231). Ow
 | S-2 | Open an old attachment | Conversation hydration → link → REST → resolver → file | `ContextFileOwnerResolver` | The converted link must resolve |
 | S-3 / S-3b | Migration and follow-up | Startup runner → migration → backup → atomic write | `AppDataMigrationRunner` → our definition | Data conversion |
 | S-4 | Early stream command | Socket open → attach → message before `connect` resolves → `SESSION_NOT_READY` | the attach function | FU-036 |
-| S-5 | Task closure stop | `update_task` DONE → `ProjectTaskService` → `TaskDelegatedRunRelease` → request → `AgentRunService.stopForTaskClosure` → `standaloneRuns` port | the composition's port | FU-018 |
+| S-5 | Task closure stop | `update_task` DONE → `ProjectTaskService` → `TaskExecutionResourceRelease` → request → `AgentRunService.stopForTaskClosure` → `standaloneRuns` port | the composition's port | FU-018 |
 | S-6 | Peer discovery tool | Agent tool call → MCP provider → contract → `PeerDiscoveryChannel` | the provider's injected channel | FU-011 |
 | S-7 | Team total | Meter → `getTeamRunTokenUsageSummary` → delegation tree (`agent_team`) → store | the resolver | FU-013 |
 | S-8 | Refusal | Tool or endpoint → refusal builder → result text | each refusal's owner | FU-030 |
@@ -335,7 +327,7 @@ S-3b is the same definition, gated by its prerequisites.
 - An error is logged, as today.
 
 **S-5 (studio):**
-`ProjectTaskService.update` DONE → `TaskDelegatedRunRelease.release` → `request(run)` (required) → `AgentRunService.stopForTaskClosure` → `standaloneRuns.stopRootForTaskClosure`. The studio's port is the root manager.
+`ProjectTaskService.update` DONE → `TaskExecutionResourceRelease.release` → `request(run)` (required) → `AgentRunService.stopForTaskClosure` → `standaloneRuns.stopRootForTaskClosure`. The studio's port is the root manager.
 
 In the application host, the port is `ApplicationHostStandaloneRuns` (DR-2): it answers "not eligible" (`null`) for every run, by its contract. `AgentRunService`'s existing non-eligible branch then stops the run directly. Behavior is unchanged; only the rule is now explicit.
 
@@ -399,7 +391,7 @@ To verify by the implementation: who calls `getAgentRunCommandCoordinator()` (`a
 - `AgentRunService.standaloneRuns: StandaloneRunLifecyclePort`.
 - The application host (`application-execution-scope-kernel-builder.ts:271`) passes `APPLICATION_HOST_STANDALONE_RUNS`. It implements `StandaloneRunLifecyclePort` and `StandaloneRunCommandPort` with "not eligible" answers (`null`), as its process hosts no eligible runs (the existing comment at `agent-run-service.ts:110-112`).
 - One constant, one rule, documented. Not an empty layer: it is the explicit answer of a host that has no standalone roots (Principle 13).
-- `TaskDelegatedRunRelease(request)` and `ProjectTaskService`'s `requestRelease`, `workerStatus`, `topRun`, `displayName` and `searchCleanup` are required. Tests construct them with fakes (rule 11).
+- `TaskExecutionResourceRelease(request)` and `ProjectTaskService`'s `requestRelease`, `workerStatus`, `topRun`, `displayName` and `searchCleanup` are required. Tests construct them with fakes (rule 11).
 
 **Fired triggers:** Hidden dependency (16), Behavior by absence (13), Several kinds or forms (1: studio and application host traced separately), Persisted-data transition (5), Vocabulary drift (15), Legacy cleanup (8).
 
@@ -473,7 +465,7 @@ Each new text follows FR-1 … FR-4. The Code Reviewer checks the list against F
 
 ## Change Sequence (commits)
 
-1. Rename-only commits: server N2/N3/N4, contracts package, web N5. No behavior change; the whole suite passes.
+1. Rename-only commits: server N2/N3, web N5. No behavior change; the whole suite passes.
 2. FU-036 attach.
 3. FU-011 and FU-018 composition.
 4. FU-013.

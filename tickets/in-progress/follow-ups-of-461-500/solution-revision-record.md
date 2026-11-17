@@ -2,6 +2,7 @@
 
 | SR | Date | Kind | Summary | Status after |
 | --- | --- | --- | --- | --- |
+| SR-006 | 2026-11-17 | Requirements and design (scope reduced by the user) | The user dropped the code-only "task execution" → "delegated run" rename: REQ-003 dropped, all of FU-007 is FU-500-01; the design's N4 rows removed | Approved; design `Ready` |
 | SR-005 | 2026-11-17 | Design | Delivery 1's design: FU-020 migration with backup and one late-predecessor follow-up; one stream attach; explicit composition for silent lookups and optional collaborators; team-only total; naming rules N1 … N6; refusal style; FU-021 cause reproduced; FU-035 reproduction step | Design `Ready`, Large / High |
 | SR-004 | 2026-11-17 | Requirements | D-5 decided by the user: the Task record's stored names stay (no migration); the code-only rename "task execution" → "delegated run" is done this round; the stored-name part becomes a follow-up | Approved |
 | SR-003 | 2026-11-17 | Requirements (from design investigation) | FU-020's evidence (231 structured links, all in the child's own folder; beta.7 writes none; 111 likely broken today); D-5 reopened: the stored `agentRun` holds team runs, so the approved code-takes-stored-names rename moves a wrong meaning into the code | D-5 `Ready for Approval` (needs the user); the rest stays `Approved` |
@@ -48,3 +49,10 @@
 - **Evidence:** FU-021 reproduced under CPU contention (investigation notes). FU-035 needs a live run, which is the implementation's step 0.
 - **Classification:** `Large`, `High`.
 - **Next:** architecture review.
+
+### SR-006
+
+- **Trigger:** the user, on the scope summary: "i guess we could drop this as well" (the code-only rename of the Task record's names).
+- **Change:** REQ-003 dropped; D-5 now "no change this round"; AC-001 no longer covers `TaskExecution…`; the design's N4 rename rows and change-sequence step removed; FU-500-01 covers stored and code names.
+- **Approval:** the user. **Classification:** unchanged (`Large`, `High`: the migration, the route removal, the composition changes).
+- **Next:** the architecture reviewer is told of the reduced scope.
