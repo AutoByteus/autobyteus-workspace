@@ -56,3 +56,8 @@ Status: **DR-002 Delivery Completed (no release).** DR-001 (blocked at the post-
 ## Release Notes
 
 - `tickets/done/phone-run-model-runtime-458/release-notes.md` (written by delivery).
+
+## Path Check Before The Final Commit
+
+- `python3 scripts/check_repository_artifact_hygiene.py` failed on two round-3 evidence files named with `:` (`r3-audit:localization-literals.log`, `r3-guard:localization-boundary.log`). Delivery renamed them (`:` → `-`, `git mv`) and updated their references in `api-e2e-execution-coverage-report.md` and `api-e2e-test-progress.md`; the check passes. The rule is only in `RELEASE.md`; the earlier stage's document (`TESTING.md`, owned by API/E2E) lacks it: FU-004.
+
