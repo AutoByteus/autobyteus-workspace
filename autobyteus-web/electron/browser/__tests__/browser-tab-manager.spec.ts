@@ -288,7 +288,7 @@ describe("BrowserTabManager", () => {
 
     await expect(
       manager.readPage({ tab_id: closedSessionIds[0]!, cleaning_mode: "thorough" }),
-    ).rejects.toThrowError(/was not found/);
+    ).rejects.toMatchObject({ code: "browser_tab_not_found", message: expect.stringMatching(/was not found/) });
 
     try {
       await manager.readPage({
@@ -297,7 +297,7 @@ describe("BrowserTabManager", () => {
       });
     } catch (error) {
       expect(error).toBeInstanceOf(BrowserTabError);
-      expect((error as BrowserTabError).code).toBe("browser_session_closed");
+      expect((error as BrowserTabError).code).toBe("browser_tab_closed");
       return;
     }
 

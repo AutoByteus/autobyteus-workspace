@@ -155,8 +155,8 @@ export type CloseBrowserResult = {
 }
 
 export type BrowserTabErrorCode =
-  | 'browser_session_closed'
-  | 'browser_session_not_found'
+  | 'browser_tab_closed'
+  | 'browser_tab_not_found'
   | 'browser_navigation_failed'
   | 'browser_popup_session_mismatch'
   | 'browser_page_read_failed'

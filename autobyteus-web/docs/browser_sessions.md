@@ -138,12 +138,32 @@ The renderer does not own:
 
 `BrowserTabPageOperations` owns screenshot capture and
 `BrowserScreenshotArtifactWriter` owns artifact persistence. A screenshot is
-successful only when Electron returns a non-empty PNG buffer. Empty capture
-buffers fail with the typed `browser_screenshot_failed` browser error before an
-artifact path is returned; the writer independently rejects empty buffers
-before creating a directory or file. Non-empty captures retain the existing
+successful only when Electron returns a non-empty PNG buffer. The writer
+independently rejects empty buffers before creating a directory or file.
+Non-empty captures retain the existing
 `{ tab_id, artifact_path, mime_type: 'image/png' }` result shape. This boundary
 prevents a false-success zero-byte artifact from becoming invalid LLM media.
+
+Capturing a tab that is not shown on screen: Chromium copies only a frame the
+tab has drawn, and a tab not shown (never focused in the Browser panel, not the
+active tab, or in a minimized or hidden window) stops drawing, so the first
+capture after its page loaded or navigated is rejected (`UnknownVizError`, or
+`Current display surface not available for capture` for a tab never drawn).
+`BrowserTabPageOperations` therefore treats a rejected or empty capture as one
+failed attempt: it resizes the view 1 px wider and back to its current
+`viewportBounds` (which makes Chromium draw a frame; moving the view does not),
+waits 100 ms and captures again. A capture that succeeds at once is not touched.
+After 2 s of failed attempts the screenshot fails with the typed
+`browser_screenshot_failed` browser error, whose message names the last reason,
+and no artifact is written. Full-page capture runs the same attempts on its
+temporarily enlarged bounds. A view in a minimized or hidden window cannot draw
+even after the resize, so `WorkspaceShellWindow` holds its Browser view only
+while the window is visible and not minimized (see below). The real-Electron
+regression is `electron/browser/__tests__/browser-screenshot-capture.electron.spec.ts`.
+
+Tab errors use the tool contract's codes: an unknown `tab_id` fails with
+`browser_tab_not_found`, a closed one with `browser_tab_closed`, and the server
+passes these and `browser_screenshot_failed` through to the agent unchanged.
 
 ## Shell Lease Model
 
@@ -251,7 +271,7 @@ Its device metrics are separate from native presentation bounds:
 - In desktop mode, the native `WebContentsView` uses the full Browser host rectangle.
 - In mobile mode, Electron main computes a centered finite device presentation rectangle from the host rectangle and profile size. If the host is smaller than the profile, the presentation is fit-scaled while the emulated CSS/device metrics remain unchanged.
 - `hostBounds` records the available Browser host rectangle; `viewportBounds` records the actual native `WebContentsView` presentation bounds.
-- `WorkspaceShellWindow` attaches or detaches the selected Browser view, but must not overwrite the Browser session manager's computed presentation bounds.
+- `WorkspaceShellWindow` attaches or detaches the selected Browser view, but must not overwrite the Browser session manager's computed presentation bounds. It holds the view only while its window is visible and not minimized: on `minimize`/`hide` it detaches the view and on `restore`/`show` it attaches the selected view again, so tabs of a minimized or hidden window stay capturable.
 
 Resizing the Browser panel or switching tabs must not overwrite a tab's `deviceEmulation` state.
 
