@@ -141,7 +141,9 @@ and commands (rule 2). The tree replaced the views' `task_executions` /
   Task is deleted, and comes back when reopened.
 - **Statuses are not in the rows.** A row names the agent run IDs whose statuses it
   shows (`statusIds`); each run's status is its own, on `/ws/run-status`
-  (`RUN_STATUS_SNAPSHOT`, `RUN_STATE_CHANGED`, `RUN_STATUS_CHANGED`).
+  (`RUN_STATUS_SNAPSHOT`, `RUN_STATE_CHANGED`, `RUN_STATUS_CHANGED`). Each agent
+  entry carries its running background task count (`backgroundTasksRunning`); a
+  run state carries the sum over its own agents (autobyteus-448).
 - **On an open view's stream.** The session takes its snapshot's base and the
   tree's delegated rows in one step (`RunTreeView.readAtBase`), then sends the view
   snapshot and `RUN_TREE_SNAPSHOT` with the same `base_change_sequence`. A change

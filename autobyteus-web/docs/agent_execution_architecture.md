@@ -398,7 +398,13 @@ and transport state:
 
 - single-agent and exact leaf-agent status uses `offline`, `initializing`, `idle`, `running`, and `error`;
 - single-agent `AGENT_STATUS` payloads are
-  `{ status: "offline" | "initializing" | "idle" | "running" | "error", can_interrupt: boolean, agent_id?, agent_name? }`;
+  `{ status: "offline" | "initializing" | "idle" | "running" | "error", background_tasks_running: number, recoverableBlock?, agent_id?, agent_name? }`;
+- `background_tasks_running` (autobyteus-448) is kept as `AgentRunState.backgroundTasksRunning`, and per agent and
+  run state in `runStatusStore` from `/ws/run-status`; `utils/agentActivityPresentation.ts` is the one mapping from
+  status and count to text, dot and icon: an `idle` agent with a count above 0 shows "Background task running" /
+  "{count} background tasks running" with the active, non-pulsing dot; a Team row shows its agents' sum by
+  busy > background > error > idle > offline (`teamActivityOf`). The Stop button and the input read the status
+  word only;
 - root team liveness uses `TEAM_RUN_LIFECYCLE { team_run_id, is_active }` and is
   stored as `AgentTeamContext.isActive`;
 - WebSocket connection state is stored separately as `AgentTeamContext.isSubscribed`;

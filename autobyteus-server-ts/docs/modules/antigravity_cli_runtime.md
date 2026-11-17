@@ -319,7 +319,7 @@ still running becomes `stopped`, and those snapshots are delivered before the
 stop resolves. An unreadable or changed message format therefore leaves a task
 running until AGY stops and never produces a false completion. Non-daemon
 background commands keep their turn open and never become background tasks.
-While the monitor holds a running task (`hasRunningTasks()`), a delegated AGY
+While the monitor holds a running task (its view counts one, `runningBackgroundTaskCount`), a delegated AGY
 copy is not idle-shut-down; its terminal snapshot re-arms the copy's grace
 period, because a daemon's exit starts no turn (see
 [Delegated Child Lifecycle](./agent_team_execution.md#delegated-run-lifecycle)).

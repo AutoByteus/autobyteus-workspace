@@ -867,7 +867,7 @@ pump, and exit detection. There is no idle timer in the session itself. Run
 terminate/close (standalone or team) and server shutdown close the process,
 which stops its background tasks. A delegated copy is not idle-shut-down while
 `ClaudeBackgroundTaskRegistry` shows a running background task
-(`hasRunningBackgroundTasks()`), so the task can finish and the agent can report
+(its `backgroundTaskInspection` counts one, `runningBackgroundTaskCount`), so the task can finish and the agent can report
 back; see [Delegated Child Lifecycle](./agent_team_execution.md#delegated-run-lifecycle). An unexpected exit fails the active turn with a turn-terminal `ERROR`
 carrying stderr diagnostics, and the next input reopens the session with
 `resume`. Claude CLI defaults apply: AutoByteus sets no background-task or Bash
@@ -962,7 +962,7 @@ end (exit code, signal, or an unknown end) and whether the end was reported.
   `running`, then `completed` for exit code 0, `failed` for another exit code or
   an unknown end, `stopped` for a signal; `summary` `exit code N` / `signal X`).
   Its `backgroundTaskInspection` is `event-stream`, so the Background Tasks panel
-  shows the rows, and `hasRunningBackgroundTasks()` is true while one runs, so a
+  shows the rows, and `runningBackgroundTaskCount` counts it while it runs, so a
   delegated copy is not idle-shut-down meanwhile (see
   [Agent Team Execution](./agent_team_execution.md)).
 - **Capability.** `AgentRunBackend.backgroundTaskNotices` is `platform` for the
@@ -996,6 +996,36 @@ end (exit code, signal, or an unknown end) and whether the end was reported.
   running, no longer tracked: nothing stops them at the next start. Either
   way the restart reminder tells the run ([Restart Resume](restart_resume.md)).
 
+### A run's status carries its running background tasks
+
+autobyteus-448 part 2 (REQ-006, DEC-004). `runningBackgroundTaskCount(inspection)`
+(`agent-execution/domain/agent-background-task-count.ts`) is the one derivation of
+how many background tasks a run has running: an `event-stream` view (AutoByteus,
+Claude, Antigravity) counts its `current()` tasks that are `running`; a `snapshot`
+view (Codex) and an `unsupported` one (ACP) count 0. The backend has no other
+answer to it (`AgentRunBackend.hasRunningBackgroundTasks()` is gone): the idle
+quiet check and `AgentRun.hasRunningBackgroundTasks()` (the restart recorder) use it.
+
+`AgentRun` sets `AgentTurnLifecycleState.backgroundTasksRunning` from it at the
+start of each source batch (inside the dispatch queue, so the count is read when the
+batch runs) and before each `getStatusSnapshot()`. `buildAgentStatusPayload` requires
+the count, so every `AGENT_STATUS` carries `background_tasks_running` (a positive
+safe integer, else 0). A `BACKGROUND_TASK_UPDATED` already gets a status event
+before it, so a task's start or end republishes the status with the new count; no
+separate republish exists. An offline run, a command overlay (`initializing`,
+`error`) and a stored run's status carry 0.
+
+The count travels on every status route: the agent stream's `AGENT_STATUS`; the
+collaboration presentation `AGENT_STATUS` and the Org view's `agent_statuses`
+(`background_tasks_running`); the Team stream's `AGENT_STATUS` and
+`TeamAgentStatusDto`; a paired agent's status frame and the peer summary statuses
+(`backgroundTasksRunning`); and `/ws/run-status`, whose agent entries carry their own
+count and whose run state carries the sum over the run's own agents
+(`RunStatusService`, never a client). The web shows an idle agent with a count above
+0 as "Background task running" / "N background tasks running" with the active dot;
+the Stop button and the input read the status word only, so messages are delivered
+at once (AC-006).
+
 ### Read-only Codex background-task inspection
 
 `agentBackgroundTaskView(agentRunId)` inspects an already published, active run.
@@ -1022,8 +1052,8 @@ Reload re-reads the live runtime without another model turn. Unsupported,
 inactive, failed or incomplete inspection is distinct from an empty successful
 snapshot. The panel retains last-known rows only for the same selection and
 labels their running count unconfirmed until recovery. No process stop button,
-new kill authority, idle timer change or change to `hasRunningBackgroundTasks`
-is introduced. Claude/Antigravity continue through their existing event-stream
+new kill authority, idle timer change or change to the running background task
+count is introduced (a `snapshot` view counts 0, see below). Claude/Antigravity continue through their existing event-stream
 view and `BACKGROUND_TASK_UPDATED` behavior.
 
 An event-stream run answers the view with its current tasks (autobyteus-473):
