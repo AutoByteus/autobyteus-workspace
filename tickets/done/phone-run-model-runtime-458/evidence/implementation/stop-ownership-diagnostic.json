@@ -1,0 +1,125 @@
+{
+  "header": {
+    "id": "IMP-458-STOP-DIAG",
+    "command": "env -i PATH=$PATH HOME=<fresh temp> TMPDIR=$TMPDIR pnpm -C autobyteus-web test:e2e:mobile-shell --cases=MSP-63,MSP-64 (with a temporary diagnostic in mobile-run-settings-cases.mjs comparing terminateRun's ownership facts before and 1.5 s after the stop tap)",
+    "commit": "36091eee0a + uncommitted round-2 changes (stable Settings scope)",
+    "env": "isolated alpha/beta nodes of the probe, scripted Antigravity runtime, phone bundle built from the worktree",
+    "date": "2026-11-17"
+  },
+  "cases": {
+    "MSP-63": {
+      "result": "Pass",
+      "seconds": 9.3,
+      "runId": "fact_checker_6e4d5f0a023542dc956eb3c12718973d",
+      "live": {
+        "open": true,
+        "subject": "Fact CheckerIdle",
+        "status": "Idle",
+        "runtime": "Antigravity CLI",
+        "model": "Gemini test",
+        "runtimeDisabled": true,
+        "saveDisabled": true,
+        "stop": {
+          "label": "Stop run",
+          "title": "Stop run",
+          "text": ""
+        },
+        "error": null
+      },
+      "stopped": {
+        "open": true,
+        "subject": "Fact CheckerStopped",
+        "status": "Stopped",
+        "runtime": "Antigravity CLI",
+        "model": "Gemini test",
+        "runtimeDisabled": false,
+        "saveDisabled": true,
+        "stop": null,
+        "error": null
+      },
+      "nodeAfterStop": false,
+      "saved": {
+        "left": true,
+        "runtimeKind": "grok_build"
+      },
+      "afterStop": [
+        "TerminateAgentRun sent+81 done+224 200",
+        "GetAgentRunResumeConfig sent+232 done+245 200",
+        "ListWorkspaceRunHistory sent+244 done+260 200",
+        "ListCollaborationRootHistory sent+244 done+268 200",
+        "AgentRunModelOptions sent+257 done+404 200",
+        "GetProviderModelCatalogSnapshots sent+1752 done+1997 200",
+        "RuntimeCurrentModelDescriptors sent+1752 done+2067 200",
+        "GetProviderModelCatalogSnapshots sent+2084 done+2355 200",
+        "UpdateStoppedAgentRunSelection sent+2231 done+2489 200"
+      ],
+      "consoleLines": [],
+      "diag": {
+        "sameContext": true,
+        "sameState": true,
+        "instanceBefore": null,
+        "instanceAfter": null,
+        "bindingBefore": 1,
+        "bindingAfter": 1,
+        "events": [
+          "18052 ws.close agent/fact_checker_6e4d5f0a023542dc956eb3c12718973d?access_token=\u2026"
+        ]
+      }
+    },
+    "MSP-64": {
+      "result": "Fail",
+      "seconds": 65.8,
+      "error": "AC-006 one tap stops the run; the rows open",
+      "details": {
+        "runId": "fact_checker_9eff2d3e197a450ba6b6c4d3c3f07ed3",
+        "live": {
+          "open": true,
+          "subject": "Fact CheckerRunning",
+          "status": "Running",
+          "runtime": "Antigravity CLI",
+          "model": "Gemini test",
+          "runtimeDisabled": true,
+          "saveDisabled": true,
+          "stop": {
+            "label": "Stop run",
+            "title": "Stop run",
+            "text": ""
+          },
+          "error": null
+        },
+        "stopped": {
+          "open": true,
+          "subject": "Fact CheckerStopped",
+          "status": "Stopped",
+          "runtime": "Antigravity CLI",
+          "model": "Gemini test",
+          "runtimeDisabled": true,
+          "saveDisabled": true,
+          "stop": {
+            "label": "Stop run",
+            "title": "Stop run",
+            "text": ""
+          },
+          "error": "Couldn't terminate this run. Try again."
+        },
+        "nodeAfterStop": false,
+        "saved": null,
+        "afterStop": [
+          "TerminateAgentRun sent+68 done+232 200"
+        ],
+        "consoleLines": [
+          "warning: Failed to stop the run from its settings: Error: The run did not stop.\n    at Object.stop (http://192.168.77.10:53221/mobile/_nuxt/DAH_jO2K.js:2:131195)"
+        ],
+        "diag": {
+          "sameContext": true,
+          "sameState": true,
+          "instanceBefore": null,
+          "instanceAfter": "1a8bbca2-a220-42a5-b8df-078c79088525",
+          "bindingBefore": 1,
+          "bindingAfter": 1,
+          "events": []
+        }
+      }
+    }
+  }
+}

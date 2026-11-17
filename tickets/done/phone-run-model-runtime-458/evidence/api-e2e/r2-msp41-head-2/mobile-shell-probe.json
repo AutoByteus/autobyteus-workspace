@@ -1,0 +1,37 @@
+{
+  "startedAt": "2026-11-17T13:06:05.902Z",
+  "result": "Fail",
+  "node": "v22.23.1",
+  "servers": {
+    "alpha": {
+      "port": 53844,
+      "nodeId": "srv_neyuJfDAMUiIaIJxmgMS9x4lTR-Zvo0M",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    },
+    "beta": {
+      "port": 53845,
+      "nodeId": "srv_yI-fJPaW13Am-w0W70NnbkjFrV6VhRmo",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    }
+  },
+  "runs": {},
+  "cases": {},
+  "browserErrors": [],
+  "failedRequests": [],
+  "network": {},
+  "cleanup": {
+    "frontendExited": true,
+    "serversLeft": 0,
+    "rootRemoved": true
+  },
+  "error": "Error: AgyDiscoveryError: Antigravity model discovery timed out; check the CLI and retry.\n    at assert (file:///Users/normy/autobyteus_org/autobyteus-worktrees/phone-run-model-runtime-458/autobyteus-web/tests/e2e/mobile-shell-probe.mjs:248:87)\n    at createAgentRun (file:///Users/normy/autobyteus_org/autobyteus-worktrees/phone-run-model-runtime-458/autobyteus-web/tests/e2e/mobile-shell-probe.mjs:401:5)\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async setUp (file:///Users/normy/autobyteus_org/autobyteus-worktrees/phone-run-model-runtime-458/autobyteus-web/tests/e2e/mobile-shell-probe.mjs:418:19)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/phone-run-model-runtime-458/autobyteus-web/tests/e2e/mobile-shell-probe.mjs:2572:3",
+  "finishedAt": "2026-11-17T13:06:38.125Z"
+}

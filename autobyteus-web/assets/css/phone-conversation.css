@@ -1,0 +1,85 @@
+/* The phone's conversation (autobyteus-506, built in autobyteus-458): the event monitor inside the phone runtime gets
+   `.phone-conversation` and `--pc-size` (the Text size step); the desktop never gets the class. Layout numbers are for a
+   412 px wide phone: 12 px side margin, text column 388 px (the width minus 24 px). Another agent's message is the
+   desktop's, unchanged (its arrow and message-type line; the founder's correction, autobyteus-458 SR-004). */
+
+/* The speaker name above a turn exists for the phone only; the desktop never shows it. */
+.conv-speaker { display: none; }
+
+.phone-conversation {
+  --pc-lh: 1.5;
+  --pc-gap: 12px; /* the side margin of everything in the conversation and the composer */
+  padding: 0 0 8px;
+  gap: 8px;
+}
+.phone-conversation.phone-conversation > .shrink-0 { padding: 0 var(--pc-gap); }
+
+/* ---- rows ---- */
+.phone-conversation .conv-feed { font-size: var(--pc-size); line-height: var(--pc-lh); }
+.phone-conversation .conv-row { padding: 10px var(--pc-gap); }
+.phone-conversation .conv-row + .conv-row[data-speaker="user"] { padding-top: 14px; }
+
+/* ---- the turn: avatar, name and body ---- */
+.phone-conversation .conv-turn.conv-turn { display: grid; padding-right: 0; gap: 0; }
+.phone-conversation .conv-body.conv-body { padding-top: 0; min-width: 0; }
+.phone-conversation .conv-speaker { display: none; font-size: 0.8125rem; line-height: 1.25rem; font-weight: 600; color: #475569; }
+
+/* a small avatar and the name once per speaker, then the text across the full width */
+.phone-conversation .conv-turn.conv-turn { grid-template-columns: 22px minmax(0, 1fr); column-gap: 8px; row-gap: 4px; }
+.phone-conversation .conv-avatar.conv-avatar { width: 22px; height: 22px; font-size: 0.5625rem; grid-column: 1; grid-row: 1; align-self: center; }
+.phone-conversation .conv-avatar svg { width: 20px; height: 20px; }
+.phone-conversation .conv-speaker { display: block; grid-column: 2; grid-row: 1; align-self: center; }
+.phone-conversation .conv-body.conv-body { grid-column: 1 / -1; grid-row: 2; }
+.phone-conversation [data-speaker="agent"] + [data-speaker="agent"] .conv-avatar,
+.phone-conversation [data-speaker="agent"] + [data-speaker="agent"] .conv-speaker { display: none; }
+.phone-conversation [data-speaker="agent"] + [data-speaker="agent"] .conv-body.conv-body { grid-row: 1; }
+
+
+/* ---- text (the user's message and every Tailwind text size inside the feed scale with the chosen size) ---- */
+.phone-conversation .conv-feed .leading-6 { line-height: var(--pc-lh); }
+.phone-conversation .conv-feed .text-xs { font-size: 0.8em; line-height: 1.4; }
+.phone-conversation .conv-feed .text-sm { font-size: 0.9em; line-height: 1.45; }
+.phone-conversation .conv-feed .text-\[0\.9375rem\] { font-size: 0.95em; }
+.phone-conversation .conv-feed .text-\[0\.6875rem\] { font-size: 0.75em; }
+.phone-conversation .conv-feed .leading-7 { line-height: var(--pc-lh); }
+
+/* ---- markdown ---- */
+.phone-conversation .conv-feed .markdown-body { font-size: 1em; line-height: var(--pc-lh); }
+.phone-conversation .conv-feed .markdown-body p,
+.phone-conversation .conv-feed .markdown-body li > p { margin: 0 0 0.6em; }
+.phone-conversation .conv-feed .markdown-body > :first-child { margin-top: 0; }
+.phone-conversation .conv-feed .markdown-body > :last-child { margin-bottom: 0; }
+.phone-conversation .conv-feed .markdown-body h1 { font-size: 1.4em; line-height: 1.25; margin: 0.9em 0 0.4em; }
+.phone-conversation .conv-feed .markdown-body h2 { font-size: 1.25em; line-height: 1.3; margin: 0.9em 0 0.35em; }
+.phone-conversation .conv-feed .markdown-body h3,
+.phone-conversation .conv-feed .markdown-body h4 { font-size: 1.1em; line-height: 1.35; margin: 0.8em 0 0.3em; }
+.phone-conversation .conv-feed .markdown-body ul,
+.phone-conversation .conv-feed .markdown-body ol { margin: 0.4em 0 0.6em; padding-left: 1.3em; padding-inline-start: 1.3em; }
+.phone-conversation .conv-feed .markdown-body li { margin: 0.2em 0; padding-left: 0.15em; padding-inline-start: 0.15em; }
+.phone-conversation .conv-feed .markdown-body li > ul,
+.phone-conversation .conv-feed .markdown-body li > ol { margin: 0.15em 0; }
+.phone-conversation .conv-feed .markdown-body blockquote { margin: 0.7em 0; padding-left: 0.8em; }
+.phone-conversation .conv-feed .markdown-body hr { margin: 1em 0; }
+
+/* code: the block spans the whole column; its type is a little smaller than the text */
+.phone-conversation .conv-feed .markdown-body pre,
+.phone-conversation .conv-feed .markdown-body pre[class*="language-"] { margin: 0.6em 0; padding: 0.65em 0.75em; border-radius: 8px; font-size: 0.82em; line-height: 1.5; }
+.phone-conversation .conv-feed .markdown-body code[class*="language-"] { font-size: inherit; line-height: inherit; }
+.phone-conversation .conv-feed .markdown-body :not(pre) > code { font-size: 0.88em; }
+
+/* tables: the box spans the column and scrolls sideways; the cells are tighter */
+.phone-conversation .conv-feed .markdown-body table { font-size: 0.9em; margin: 0.6em 0; }
+.phone-conversation .conv-feed .markdown-body th,
+.phone-conversation .conv-feed .markdown-body td { padding: 0.45em 0.6em; }
+.phone-conversation .conv-feed .markdown-body .markdown-table-scroll { margin: 0.6em 0; }
+
+/* ---- the other segments ---- */
+.phone-conversation .conv-feed .mb-4 { margin-bottom: 0.7em; } /* TextSegment's spacing */
+.phone-conversation .conv-feed .error-segment { margin: 0.6em 0; padding: 0.7em 0.8em; }
+.phone-conversation .conv-feed .system-task-notification { margin-bottom: 0.7em; }
+.phone-conversation .conv-feed .think-segment { margin: 0.4em 0; }
+.phone-conversation .conv-feed .think-content { padding: 0.7em 0.8em; font-size: 0.95em; }
+.phone-conversation .conv-feed .media-segment-container { margin: 0.6em 0; }
+
+/* tool cards span the column and are at least 44 px tall to tap */
+.phone-conversation .conv-feed .my-2 > .rounded-lg > .select-none { min-height: 44px; }

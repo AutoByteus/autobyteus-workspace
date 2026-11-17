@@ -1,0 +1,15 @@
+{"tag":"closed-1","teamRunId":"delivery_team_3a2dcddccc9e4d4ea7620cd1daff0fdf","activeBeforeStop":true,"conversationShown":null,"nodeActiveAfterStop":false,"stopMs":4239,"toastsAfterStop":[]}
+PASS closed-1: the Team stopped on the node and the window shows no stop failure
+{"tag":"closed-2","teamRunId":"delivery_team_9501f81ba00547dbb3089bf5a7e16d8f","activeBeforeStop":true,"conversationShown":null,"nodeActiveAfterStop":false,"stopMs":3165,"toastsAfterStop":[]}
+PASS closed-2: the Team stopped on the node and the window shows no stop failure
+{"tag":"closed-3","teamRunId":"delivery_team_b89f01336d68464798c2b03e62031bbd","activeBeforeStop":true,"conversationShown":null,"nodeActiveAfterStop":false,"stopMs":4216,"toastsAfterStop":[]}
+PASS closed-3: the Team stopped on the node and the window shows no stop failure
+AC-003 desktop composer: {"areaRadius":["11px","11px"],"boxRadius":"12px","boxBorder":"1px"}
+{"tag":"open-1","teamRunId":"delivery_team_e8f4f7df10504ef9955b701da281dc05","activeBeforeStop":true,"conversationShown":"STOP-458-open-1","nodeActiveAfterStop":false,"stopMs":3154,"toastsAfterStop":[]}
+PASS open-1: the Team stopped on the node and the window shows no stop failure
+{"tag":"open-2","teamRunId":"delivery_team_c4bfe7690434440b8b5c8f0be5ed746b","activeBeforeStop":true,"conversationShown":"STOP-458-open-2","nodeActiveAfterStop":false,"stopMs":4253,"toastsAfterStop":[]}
+PASS open-2: the Team stopped on the node and the window shows no stop failure
+{"tag":"open-3","teamRunId":"delivery_team_2bc32a1367bf46a29302232e3537d8e0","activeBeforeStop":true,"conversationShown":"STOP-458-open-3","nodeActiveAfterStop":false,"stopMs":3168,"toastsAfterStop":[]}
+PASS open-3: the Team stopped on the node and the window shows no stop failure
+console (stop/terminate warnings and errors): []
+result Pass

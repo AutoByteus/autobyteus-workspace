@@ -1,5 +1,12 @@
 <template>
-  <div class="flex h-full min-h-0 flex-col gap-3 overflow-hidden overscroll-none p-4" data-testid="agent-event-monitor">
+  <!-- On the phone (autobyteus-506): the phone conversation layout at the chosen Text size; the desktop keeps its own. -->
+  <div
+    class="flex h-full min-h-0 flex-col gap-3 overflow-hidden overscroll-none p-4"
+    :class="{ 'phone-conversation': phoneTextSize }"
+    :style="phoneTextSize ? { '--pc-size': `${phoneTextSize.px.value}px` } : undefined"
+    :data-text-size="phoneTextSize?.step.value"
+    data-testid="agent-event-monitor"
+  >
     <AgentConversationFeed
       class="min-h-0 flex-1"
       :conversation="conversation"
@@ -47,6 +54,8 @@ import { computed, onBeforeUnmount, provide, ref, toRef } from 'vue';
 import { useWorkspaceToolReveal } from '~/composables/layout/useWorkspaceToolReveal';
 import { useMobileNavigation } from '~/composables/mobile/useMobileNavigation';
 import { isMobileRemoteAccessRuntime } from '~/utils/remoteAccess/mobileRuntime';
+import { usePhoneTextSize } from '~/composables/mobile/usePhoneTextSize';
+import '~/assets/css/phone-conversation.css';
 import type { Conversation } from '~/types/conversation';
 import AgentUserInputForm from '~/components/agentInput/AgentUserInputForm.vue';
 import CollaboratorAddFailureNotice from '~/components/agentInput/CollaboratorAddFailureNotice.vue';
@@ -85,6 +94,8 @@ const filePreviewStatus = ref('');
 const revealTool = useWorkspaceToolReveal();
 // Taken in setup: it reads the route through inject, which the lazily created opener cannot (autobyteus-427).
 const mobileNavigation = isMobileRemoteAccessRuntime() ? useMobileNavigation() : null;
+/** The phone's conversation size (phone-wide); none on the desktop. */
+const phoneTextSize = isMobileRemoteAccessRuntime() ? usePhoneTextSize() : null;
 let isLive = true;
 onBeforeUnmount(() => { isLive = false; });
 const browse = useEventMonitorActiveTraceBrowse({

@@ -1,0 +1,11 @@
+# id: IMP-458-r2-desktop-org-stop
+# command: node tests/e2e/delegated-launch-defaults-probe.mjs --cases AFS-002 --output-dir /tmp/458-desktop-org-stop (in autobyteus-web)
+# commit: 6ddf9bb8f5
+# env: clean env -i PATH HOME=<fresh temp> TMPDIR; probe-owned isolated server, scripted AGY and Grok; desktop nuxt dev from the worktree; no provider keys
+# date: 2026-11-17T12:03Z
+
+(node:3993) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+AFS-002 Pass AC-002, AC-003, REQ-004, D-IMP-2: an Org's direct agent, placed Team member and copy each show one card; "Organization settings"; a stopped Org's member and copy edit and save; the next message uses the saved model
+Summary: 1 Pass, 0 Fail
+# exit: 0
