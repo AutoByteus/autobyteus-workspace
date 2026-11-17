@@ -1,0 +1,4 @@
+minimized A stayHidden #0: FAILED (UnknownVizError,HANG>2s)
+minimized B detach #0: ok after 1 tries 22 ms () reattached: true
+minimized A stayHidden #1: FAILED (UnknownVizError,HANG>2s)
+minimized B detach #1: ok after 1 tries 14 ms () reattached: true

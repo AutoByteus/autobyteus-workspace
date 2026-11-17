@@ -130,3 +130,54 @@ export const writeReleasedWorld = async (world: World): Promise<void> => {
   await put(at.teamIndex(), [{ teamRunId: MARKETING, teamDefinitionId: "marketing-team", teamDefinitionName: "Marketing", workspaceRootPath: "/work/x",
     summary: "", createdAt: T0, archivedAt: null, terminatedAt: null }]);
 };
+
+/**
+ * autobyteus-508: Settings edits that name another agent runtime (autobyteus-348), as released. A copy keeps the launch it
+ * started with; the edit (`userLaunchSelection`) holds the chosen runtime, model and settings beside it. A save that
+ * switched the runtime nulled the session and recorded a pending switch `from` the started binding; the copy's next input
+ * made the switch real (a new session, no pending switch).
+ */
+export const MEMBER_EDIT_TEAM = "support_team_a100";
+export const TEAM_EDIT_TEAM = "review_team_b200";
+export const PENDING_SWITCH_TEAM = "outreach_team_c300";
+export const SWITCHED_AGENT = "summarizer_d400";
+export const PENDING_SWITCH_AGENT = "summarizer_e500";
+/** The runtime and model every started copy below ran on, and the edit that names another runtime. */
+export const startedOn = (runtimeKind = "claude_agent_sdk", model = "sonnet") => ({ ...launch(model), runtimeKind });
+export const runtimeEdit = (runtimeKind = "codex_app_server", model = "gpt-6.1-terra") =>
+  ({ runtimeKind, llmModelIdentifier: model, llmConfig: { reasoning_effort: "high" }, selectedAt: T0 });
+/** A switch the save recorded and no input has made real yet. */
+export const pendingSwitch = { switchId: "switch_7a01", from: { runtimeKind: "claude_agent_sdk", llmModelIdentifier: "sonnet", llmConfig: null,
+  platformAgentRunId: "claude_session_7a02" } };
+
+/** A delegated team whose member `/operator` follows the team (no team edit) and has its own edit naming another runtime. */
+export const releasedMemberEditTeam = (teamRunId: string, address: string): Json => releasedTeamOwnFile(teamRunId, address, [
+  teamMember(`${address}/coordinator`, `coordinator_${teamRunId}`, { launchConfiguration: startedOn(), followsTeam: true }),
+  teamMember(`${address}/operator`, `operator_${teamRunId}`, { launchConfiguration: startedOn(), followsTeam: true,
+    platformAgentRunId: "codex_thread_7a03", userLaunchSelection: runtimeEdit() }),
+], { coordinatingRun: { kind: "agent", runId: M }, delegatorAgentRunId: M, address });
+
+/** The runs above beside the main scenario (`writeReleasedWorld`), each delegated by the manager M. */
+export const writeReleasedRuntimeEdits = async (world: World): Promise<void> => {
+  const at = paths(world);
+  const delegated = (address: string, extra: Json = {}): Json => ({ coordinatingRun: { kind: "agent", runId: M }, delegatorAgentRunId: M, address, ...extra });
+  // A member's own edit, already made real (it ran on the new runtime).
+  await put(at.teamFile(MEMBER_EDIT_TEAM), releasedMemberEditTeam(MEMBER_EDIT_TEAM, "/support_team"));
+  // A team-level edit naming another runtime: a follower takes it; a member's own edit (another runtime) wins; one member has no edit.
+  await put(at.teamFile(TEAM_EDIT_TEAM), releasedTeamOwnFile(TEAM_EDIT_TEAM, "/review_team", [
+    teamMember("/review_team/lead", "lead_b201", { launchConfiguration: startedOn(), followsTeam: true }),
+    teamMember("/review_team/checker", "checker_b202", { launchConfiguration: startedOn(), followsTeam: false, launchSource: agentSource,
+      userLaunchSelection: runtimeEdit("autobyteus", "opus") }),
+    teamMember("/review_team/scribe", "scribe_b203", { launchConfiguration: startedOn(), followsTeam: false, launchSource: agentSource }),
+  ], delegated("/review_team", { launchSource: { origin: "team_default", fallbacks: [] }, userLaunchSelection: runtimeEdit() })));
+  // A member's own edit whose switch is still pending.
+  await put(at.teamFile(PENDING_SWITCH_TEAM), releasedTeamOwnFile(PENDING_SWITCH_TEAM, "/outreach_team", [
+    teamMember("/outreach_team/operator", "operator_c301", { launchConfiguration: startedOn(), followsTeam: true,
+      userLaunchSelection: runtimeEdit(), pendingRuntimeSwitch: pendingSwitch }),
+  ], delegated("/outreach_team")));
+  // A delegated agent run's edit, already made real; and one whose switch is still pending.
+  await put(at.agentFile(SWITCHED_AGENT), agentMetadata(SWITCHED_AGENT, "summarizer", { runtimeKind: "claude_agent_sdk",
+    platformAgentRunId: "codex_thread_7a04", taskAgent: delegated("/summarizer", { launchSource: agentSource, userLaunchSelection: runtimeEdit() }) }));
+  await put(at.agentFile(PENDING_SWITCH_AGENT), agentMetadata(PENDING_SWITCH_AGENT, "summarizer", { runtimeKind: "claude_agent_sdk",
+    taskAgent: delegated("/summarizer", { userLaunchSelection: runtimeEdit(), pendingRuntimeSwitch: pendingSwitch }) }));
+};

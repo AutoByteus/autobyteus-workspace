@@ -1,0 +1,31 @@
+# E2E-01 — founder sequence, tab never shown (user left the run view)
+# Steps: worktree isolated instance iso-49942-c50c (build of baf0439559, code 927079c6cd, Electron 42.11.16, macOS arm64); agent "Screenshot Probe 507" on claude_agent_sdk (claude-haiku-5-5, auto-approve) via the chat UI; message /tmp/ae507/msg-e01.txt sent 07:01:34.943Z, window moved to #/agents 1.5 s later
+# Tool path: Claude Agent SDK -> node agent-tools MCP -> server browser tool -> browser bridge -> BrowserTabManager
+# Date: 2026-11-17 (local time below)
+
+## Message
+Validation journey E2E-01. Steps:
+1. open_tab with url http://127.0.0.1:49198/p/e01-founder
+2. set_device_emulation with tab_id from step 1, mode mobile, width 412, height 915, device_scale_factor 2
+3. screenshot with tab_id from step 1
+
+## Run trace tool calls/results (raw_traces_active.jsonl of run screenshot_probe_507_c5c963718ef748e29e9dc377d076b28b)
+08:01:48.703 seq=2 tool_call open_tab args={"url": "http://127.0.0.1:49198/p/e01-founder"}
+08:01:48.855 seq=3 tool_result open_tab TOOL_EXECUTION_SUCCEEDED result={"tab_id": "9c38d2", "status": "opened", "url": "http://127.0.0.1:49198/p/e01-founder", "title": "e01-founder"} error=null
+08:01:50.898 seq=4 tool_call set_device_emulation args={"tab_id": "9c38d2", "mode": "mobile", "width": 412, "height": 915, "device_scale_factor": 2}
+08:01:50.934 seq=5 tool_result set_device_emulation TOOL_EXECUTION_SUCCEEDED result={"tab_id": "9c38d2", "mode": "mobile", "profile": {"width": 412, "height": 915, "device_scale_factor": 2}} error=null
+08:01:52.321 seq=6 tool_call screenshot args={"tab_id": "9c38d2"}
+08:01:52.569 seq=7 tool_result screenshot TOOL_EXECUTION_SUCCEEDED result={"tab_id": "9c38d2", "artifact_path": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-Suz2eM/browser-artifacts/9c38d2-1794898912565.png", "mime_type": "image/png"} error=null
+
+## Page event log (page reports itself via sendBeacon; vis = document.visibilityState)
+{"page": "e01-founder", "kind": "load", "w": 1280, "h": 900, "vis": "hidden", "t": 119, "server_time": "08:01:48.850"}
+{"page": "e01-founder", "kind": "visibilitychange", "w": 412, "h": 915, "vis": "visible", "t": 3600, "server_time": "08:01:52.331"}
+{"page": "e01-founder", "kind": "visibilitychange", "w": 412, "h": 915, "vis": "hidden", "t": 3601, "server_time": "08:01:52.332"}
+{"page": "e01-founder", "kind": "visibilitychange", "w": 412, "h": 915, "vis": "visible", "t": 3704, "server_time": "08:01:52.434"}
+{"page": "e01-founder", "kind": "resize", "w": 412, "h": 915, "vis": "visible", "t": 3705, "server_time": "08:01:52.434"}
+{"page": "e01-founder", "kind": "visibilitychange", "w": 412, "h": 915, "vis": "hidden", "t": 3803, "server_time": "08:01:52.566"}
+
+## Artifact
+  pixelWidth: 810
+  pixelHeight: 1800
+size bytes: 209581

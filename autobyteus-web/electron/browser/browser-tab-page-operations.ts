@@ -20,6 +20,10 @@ import {
 
 const MAX_FULL_PAGE_DIMENSION = 4000
 const FULL_PAGE_CAPTURE_SETTLE_MS = 60
+// A tab not shown on screen has no drawn frame to copy after its page loaded or navigated; a failed capture
+// is retried after a resize nudge makes it draw, up to this bound (docs/browser_sessions.md).
+const CAPTURE_DEADLINE_MS = 2000
+const CAPTURE_RETRY_INTERVAL_MS = 100
 const READ_PAGE_SCRIPT = "document.documentElement?.outerHTML ?? ''"
 
 type BrowserScreenshotBoundsHooks = {
@@ -30,6 +34,13 @@ const sleep = async (ms: number): Promise<void> => {
   await new Promise((resolve) => setTimeout(resolve, ms))
 }
 
+// Resizing the view by 1 px and back makes Chromium draw a new frame; moving it or invalidate() does not.
+const nudgeViewToDraw = (session: BrowserTabRecord): void => {
+  const bounds = session.viewportBounds
+  session.view.setBounds({ ...bounds, width: bounds.width + 1 })
+  session.view.setBounds(bounds)
+}
+
 export class BrowserTabPageOperations {
   constructor(private readonly screenshotWriter: BrowserScreenshotArtifactWriter) {}
 
@@ -38,14 +49,7 @@ export class BrowserTabPageOperations {
     fullPage: boolean,
     boundsHooks?: BrowserScreenshotBoundsHooks,
   ): Promise<CaptureBrowserScreenshotResult> {
-    const image = await this.captureSessionPage(session, fullPage, boundsHooks)
-    const png = image.toPNG()
-    if (!png.length) {
-      throw new BrowserTabError(
-        'browser_screenshot_failed',
-        'Browser screenshot produced no image bytes.',
-      )
-    }
+    const png = await this.captureSessionPage(session, fullPage, boundsHooks)
     const artifactPath = await this.screenshotWriter.write(png, session.id)
 
     return {
@@ -159,13 +163,37 @@ export class BrowserTabPageOperations {
     }
   }
 
+  private async captureDrawnFrame(session: BrowserTabRecord): Promise<Buffer> {
+    const startedAt = Date.now()
+    for (;;) {
+      let reason: string
+      try {
+        const png = (await session.view.webContents.capturePage()).toPNG()
+        if (png.length) {
+          return png
+        }
+        reason = 'empty image'
+      } catch (error) {
+        reason = error instanceof Error ? error.message : String(error)
+      }
+      if (Date.now() - startedAt >= CAPTURE_DEADLINE_MS) {
+        throw new BrowserTabError(
+          'browser_screenshot_failed',
+          `The tab did not draw a frame to capture within ${CAPTURE_DEADLINE_MS / 1000} s (${reason}).`,
+        )
+      }
+      nudgeViewToDraw(session)
+      await sleep(CAPTURE_RETRY_INTERVAL_MS)
+    }
+  }
+
   private async captureSessionPage(
     session: BrowserTabRecord,
     fullPage: boolean,
     boundsHooks?: BrowserScreenshotBoundsHooks,
-  ) {
+  ): Promise<Buffer> {
     if (!fullPage) {
-      return session.view.webContents.capturePage()
+      return this.captureDrawnFrame(session)
     }
 
     const originalBounds = { ...session.viewportBounds }
@@ -205,7 +233,7 @@ export class BrowserTabPageOperations {
     }
 
     try {
-      return await session.view.webContents.capturePage()
+      return await this.captureDrawnFrame(session)
     } finally {
       if (nextWidth !== originalBounds.width || nextHeight !== originalBounds.height) {
         session.viewportBounds = originalBounds

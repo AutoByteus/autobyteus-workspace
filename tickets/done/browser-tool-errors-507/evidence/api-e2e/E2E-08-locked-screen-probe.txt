@@ -1,0 +1,34 @@
+# E2E-08 — screenshots while the macOS screen is locked (user away): detached tabs never shown, a tab attached to a visible window, and the app hidden while locked
+# Command (from autobyteus-web): node evidence/api-e2e/E2E-08-lock_probe.mjs <electron source dir> <label>; after = worktree autobyteus-web/electron (927079c6cd), base = git archive e4f4b3e176. Started by a watcher that waited for macOS to lock the screen by itself (idle lock), never locked by the validation.
+# Environment: macOS Darwin 25.5.0 arm64, pinned Electron 42.11.16, no isolated-instance flags; each case records ioreg CGSSessionScreenIsLocked at capture time (locked=true)
+# Date: 2026-11-17
+
+lock detected: 2026-11-17 08:46:06 (loop iteration 69)
+"CGSSessionScreenLockedTime"=1794901863
+"CGSSessionScreenIsLocked"=Yes
+## after (927079c6cd)
+label=after-927079c6cd exit=0 sourceDir=/Users/normy/autobyteus_org/autobyteus-worktrees/browser-tool-errors-507/autobyteus-web/electron
+electron=42.11.16 at=2026-11-17T07:46:40.261Z
+{"id":"detached-fresh","locked":true,"page":"hidden","ok":true,"ms":325,"size":{"width":2560,"height":1800}}
+{"id":"detached-after-navigate","locked":true,"page":"hidden","ok":true,"ms":166,"size":{"width":2560,"height":1800}}
+{"id":"detached-founder-emulated","locked":true,"page":"hidden","ok":true,"ms":143,"size":{"width":810,"height":1800}}
+{"id":"attached-after-navigate","locked":true,"page":"hidden","attached":true,"ok":true,"ms":189,"size":{"width":2560,"height":1800}}
+{"id":"app-hidden-after-navigate","locked":true,"page":"hidden","attached":true,"windowVisible":false,"ok":false,"ms":8002,"error":{"code":null,"message":"no answer within 8 s (harness guard)"}}
+## base (e4f4b3e176)
+label=base-e4f4b3e176 exit=0 sourceDir=/tmp/ae507/base-electron/autobyteus-web/electron
+electron=42.11.16 at=2026-11-17T07:46:44.846Z
+{"id":"detached-fresh","locked":true,"page":"hidden","ok":false,"ms":0,"error":{"code":null,"message":"Current display surface not available for capture"}}
+{"id":"detached-after-navigate","locked":true,"page":"hidden","ok":false,"ms":6,"error":{"code":null,"message":"UnknownVizError"}}
+{"id":"detached-founder-emulated","locked":true,"page":"hidden","ok":false,"ms":2,"error":{"code":null,"message":"UnknownVizError"}}
+{"id":"attached-after-navigate","locked":true,"page":"hidden","attached":true,"ok":false,"ms":0,"error":{"code":null,"message":"UnknownVizError"}}
+{"id":"app-hidden-after-navigate","locked":true,"page":"hidden","attached":true,"windowVisible":false,"ok":false,"ms":0,"error":{"code":null,"message":"UnknownVizError"}}
+## after (927079c6cd) run 2
+label=after-927079c6cd-run2 exit=0 sourceDir=/Users/normy/autobyteus_org/autobyteus-worktrees/browser-tool-errors-507/autobyteus-web/electron
+electron=42.11.16 at=2026-11-17T07:46:59.428Z
+{"id":"detached-fresh","locked":true,"page":"hidden","ok":true,"ms":302,"size":{"width":2560,"height":1800}}
+{"id":"detached-after-navigate","locked":true,"page":"hidden","ok":true,"ms":168,"size":{"width":2560,"height":1800}}
+{"id":"detached-founder-emulated","locked":true,"page":"hidden","ok":true,"ms":139,"size":{"width":810,"height":1800}}
+{"id":"attached-after-navigate","locked":true,"page":"hidden","attached":true,"ok":true,"ms":182,"size":{"width":2560,"height":1800}}
+{"id":"app-hidden-after-navigate","locked":true,"page":"hidden","attached":true,"windowVisible":false,"ok":false,"ms":8002,"error":{"code":null,"message":"no answer within 8 s (harness guard)"}}
+end: 08:47:01
+"CGSSessionScreenIsLocked"=Yes

@@ -310,7 +310,7 @@ export class BrowserTabManager extends EventEmitter {
     const normalizedId = typeof browserSessionId === 'string' ? browserSessionId.trim() : ''
     if (!normalizedId) {
       throw new BrowserTabError(
-        'browser_session_not_found',
+        'browser_tab_not_found',
         'tab_id is required.',
       )
     }
@@ -322,13 +322,13 @@ export class BrowserTabManager extends EventEmitter {
 
     if (this.closedSessionIds.has(normalizedId)) {
       throw new BrowserTabError(
-        'browser_session_closed',
+        'browser_tab_closed',
         `Browser session '${normalizedId}' has already been closed.`,
       )
     }
 
     throw new BrowserTabError(
-      'browser_session_not_found',
+      'browser_tab_not_found',
       `Browser session '${normalizedId}' was not found.`,
     )
   }

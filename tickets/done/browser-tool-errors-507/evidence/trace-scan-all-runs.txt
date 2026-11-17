@@ -1,0 +1,257 @@
+== outcomes per tool
+('close_tab', 'fail') 6
+('close_tab', 'ok') 654
+('dom_snapshot', 'fail') 18
+('dom_snapshot', 'ok') 899
+('list_tabs', 'fail') 1
+('list_tabs', 'ok') 633
+('navigate_to', 'fail') 43
+('navigate_to', 'ok') 2152
+('open_tab', 'fail') 83
+('open_tab', 'ok') 1473
+('read_page', 'fail') 1
+('read_page', 'ok') 205
+('run_script', 'fail') 729
+('run_script', 'ok') 18415
+('screenshot', 'fail') 255
+('screenshot', 'ok') 3967
+('set_device_emulation', 'fail') 2
+('set_device_emulation', 'ok') 141
+
+== error texts (top 40)
+144 run_script Script failed to execute, this normally means an error was thrown. Check the renderer console for the error.
+109 run_script {
+  "error": {
+    "code": "browser_javascript_execution_failed",
+    "message": "Script failed to execute, this normally means an error was thrown. Check the r
+64 screenshot {
+  "error": {
+    "code": "browser_navigation_failed",
+    "message": "UnknownVizError"
+  }
+}
+59 run_script Uncaught Error: An object could not be cloned.
+47 screenshot {"error":{"code":"browser_navigation_failed","message":"UnknownVizError"}}
+46 run_script An object could not be cloned.
+38 screenshot UnknownVizError
+34 run_script The operation timed out.
+32 run_script {"error":{"code":"browser_javascript_execution_failed","message":"Script failed to execute, this normally means an error was thrown. Check the renderer console 
+27 screenshot Error executing tool screenshot: Page.screenshot: Timeout 30000ms exceeded.
+Call log:
+  - taking page screenshot
+  - waiting for fonts to load...
+  - fonts load
+25 run_script Error executing tool run_script: Page.evaluate: SyntaxError: await is only valid in async functions and the top level bodies of modules
+    at eval (<anonymous>
+21 screenshot Current display surface not available for capture
+18 screenshot {
+  "error": {
+    "code": "browser_bridge_unavailable",
+    "message": "Browser screenshot produced no image bytes."
+  }
+}
+14 run_script fetch failed
+13 run_script Tool execution failed.
+8 dom_snapshot dom_snapshot requires max_elements to be between 1 and 2000.
+7 open_tab Error executing tool open_tab: Invalid URL format: about:blank
+7 run_script {
+  "error": {
+    "code": "browser_javascript_execution_failed",
+    "message": "Cannot read properties of undefined (reading 'click')"
+  }
+}
+6 screenshot {"error":{"code":"browser_navigation_failed","message":"Current display surface not available for capture"}}
+6 run_script {"error":{"code":"browser_javascript_execution_failed","message":"Cannot read properties of null (reading 'click')"}}
+5 run_script The user doesn't want to proceed with this tool use. The tool use was rejected (eg. if it was a file edit, the new_string was NOT written to the file). STOP wha
+5 open_tab Dynamic tool 'open_tab' is unavailable.
+5 screenshot Error executing tool screenshot: Page.screenshot: Target crashed 
+Call log:
+  - taking page screenshot
+5 run_script Error executing tool run_script: Page.evaluate: Target crashed
+5 screenshot calling "tools/call": Internal error
+5 navigate_to Error executing tool navigate_to: Page.goto: Target page, context or browser has been closed
+5 run_script Error executing tool run_script: Page.evaluate: SyntaxError: missing ) after argument list
+    at eval (<anonymous>)
+    at UtilityScript.evaluate (<anonymous>:
+4 run_script {
+  "error": {
+    "code": "browser_javascript_execution_failed",
+    "message": "Uncaught Error: An object could not be cloned."
+  }
+}
+4 run_script {
+  "error": {
+    "code": "browser_javascript_execution_failed",
+    "message": "Cannot read properties of null (reading 'click')"
+  }
+}
+4 run_script Failed to fetch
+4 run_script Error executing tool run_script: Tab has no previous navigation. Call navigate_to first.
+4 dom_snapshot Error executing tool dom_snapshot: Tab has no previous navigation. Call navigate_to first.
+4 run_script Cannot read properties of undefined (reading 'click')
+4 run_script {"error":{"code":"browser_javascript_execution_failed","message":"Cannot read properties of undefined (reading 'click')"}}
+4 open_tab Failed to load 'http://127.0.0.1:3002/' (-102): ERR_CONNECTION_REFUSED
+3 open_tab Error executing tool open_tab: BrowserType.connect_over_cdp: Timeout 180000ms exceeded.
+Call log:
+  - <ws preparing> retrieving websocket url from http://localh
+3 run_script Error executing tool run_script: Page.evaluate: TypeError: Cannot read properties of undefined (reading 'trim')
+    at eval (eval at evaluate (:291:30), <anonym
+3 screenshot Tool execution failed.
+2 run_script {
+  "error": {
+    "code": "browser_javascript_execution_failed",
+    "message": "Cannot read properties of null (reading 'querySelector')"
+  }
+}
+2 run_script {
+  "error": {
+    "code": "browser_javascript_execution_failed",
+    "message": "Cannot read properties of null (reading 'querySelectorAll')"
+  }
+}
+
+== screenshot by month
+('2026-04', 'ok') 3
+('2026-05', 'fail') 13
+('2026-05', 'ok') 265
+('2026-06', 'fail') 18
+('2026-06', 'ok') 835
+('2026-07', 'fail') 25
+('2026-07', 'ok') 460
+('2026-08', 'fail') 46
+('2026-08', 'ok') 524
+('2026-09', 'fail') 16
+('2026-09', 'ok') 507
+('2026-10', 'fail') 98
+('2026-10', 'ok') 1008
+('2026-11', 'fail') 39
+('2026-11', 'ok') 365
+
+== screenshot context (emulation on tab, full_page, outcome)
+('desktop', 'full_page', 'fail') 39
+('desktop', 'full_page', 'ok') 584
+('desktop', 'viewport', 'fail') 186
+('desktop', 'viewport', 'ok') 3041
+('mobile_emulated', 'full_page', 'fail') 1
+('mobile_emulated', 'full_page', 'ok') 4
+('mobile_emulated', 'viewport', 'fail') 29
+('mobile_emulated', 'viewport', 'ok') 338
+
+== files with screenshot failures (ok, fail)
+83 23 /agent_orgs/autobyteus_org_197705caccfd4d2abefd0552ce44a561/product_team_bfe0223811e64280abe2c7cce0ba95b6/product_ui_ux_designer_7c5b22b105584140bb57ad0d2169efb2/raw_traces_000002.jsonl
+134 14 /agent_orgs/autobyteus_org_197705caccfd4d2abefd0552ce44a561/product_team_bfe0223811e64280abe2c7cce0ba95b6/product_ui_ux_designer_7c5b22b105584140bb57ad0d2169efb2/raw_traces_active.jsonl
+54 9 /agent_teams/product_team_f4c754df20bf4af0adb9563f9b2e28da/product_ui_ux_designer_6ed6962b6cab4337bd683b3b652952b1/raw_traces_active.jsonl
+21 9 /agent_teams/software_engineering_team_e5add709e631447ba760ab434dc1d7a4/solution_designer_becb88510c5b40e2bf4fd6cfdf2f4294/raw_traces_000003.jsonl
+44 8 /agent_teams/team_software-engineering-team_36cd04cf/api_e2e_engineer_7a52be060fdd9214/raw_traces_active.jsonl
+9 5 /agent_teams/software_engineering_team_65fd0a85522f4192b9eebee8a58fc7a8/implementation_engineer_b9e79583f6a9492eb727fa3c53665a25/raw_traces_000001.jsonl
+5 5 /agent_teams/software_engineering_team_c384fdf2026f4e53b80167cb0c9e5dfd/implementation_engineer_56af349637f74160addd40653253f005/raw_traces_000001.jsonl
+32 5 /agent_teams/product_team_99a3e19ea090429c9da2bf87e37d7aee/product_ui_ux_designer_fd8bc13f7b2346b3b7c969a1e6ca0cd6/raw_traces_active.jsonl
+47 4 /imports/docker-node-1/agent_teams/marketing_team_94a61bec30b94a63abafe11ce41a8dce/computer_use_operator_c3cd0090dd5144afbce4f54ad49a89e5/raw_traces_000001.jsonl
+6 4 /agent_teams/article_writing_team_76bd12701ef9416092e44d70b60b812f/article_writer_eac8be64700d4c3597b085356eb5fcfd/raw_traces_active.jsonl
+111 4 /agent_teams/product_team_9bdbc85721724c2b83e73471b800bb15/product_ui_ux_designer_3cebbd3c0cf74d4c876c9e9a88197fd8/raw_traces_active.jsonl
+32 4 /agent_teams/product_team_290aa848c58646ee8378520dcc8694a0/product_ui_ux_designer_a360719ee6d7424e82638cf84b35eaba/raw_traces_active.jsonl
+5 4 /agent_teams/product_team_c8fdef05e7ab49c3a21ae36a70cff50d/ui_baseline_bootstrapper_4fb79199eb204b7f866530771e4c7ea5/raw_traces_active.jsonl
+10 3 /agents/daily_assistant_9784d6c45cd842cda664941b24206a81/raw_traces_active.jsonl
+13 3 /imports/docker-node-1/agent_teams/marketing_team_94a61bec30b94a63abafe11ce41a8dce/computer_use_operator_c3cd0090dd5144afbce4f54ad49a89e5/raw_traces_000006.jsonl
+1 3 /imports/docker-node-1/agent_teams/software_development_department_71b4437ade9940c4912d2d7a39ea7186/product_design_prototyping_team_a0be14b2952e41799a01bc7b2795c26c/prototype_bootstrapper_6445f74344b7491aa4e4a31f621f4c70/raw_traces_000001.jsonl
+2 3 /imports/docker-node-1/agent_teams/software_development_department_d2b93633ad6b4d969e6e0d776dda7721/product_design_prototyping_team_31bff2ebb9c0486dbdd38b835609a177/product_prototyper_32f0b05629874df1b1fe3baa585775bc/raw_traces_000006.jsonl
+3 3 /agent_teams/software_engineering_team_a364be9c70654196896fcfbdfc7291b8/implementation_engineer_886ac5b13d1c4399b951c56cb0aefd5e/raw_traces_000001.jsonl
+3 3 /agent_teams/software_engineering_team_c384fdf2026f4e53b80167cb0c9e5dfd/api_e2e_engineer_ab08d4d038234909825171a31f1ccb20/raw_traces_active.jsonl
+4 3 /agent_teams/software_engineering_team_c384fdf2026f4e53b80167cb0c9e5dfd/implementation_engineer_56af349637f74160addd40653253f005/raw_traces_active.jsonl
+4 3 /agent_teams/software_engineering_team_dfd262862a3e4a66b044794c1713eaf1/api_e2e_engineer_c483b76da55a417893e354752a8fdc45/raw_traces_000002.jsonl
+0 2 /agent_orgs/autobyteus_org_197705caccfd4d2abefd0552ce44a561/product_team_bfe0223811e64280abe2c7cce0ba95b6/ui_baseline_bootstrapper_1146781785eb473a8336611e43fd8ddb/raw_traces_active.jsonl
+0 2 /agent_orgs/autobyteus_org_0f9ad59847f74321990153e42624b4ce/product_team_e03d82a6020f44d688bce946757ce054/product_prototyper_1be6b7192b8b40b2b1c1167143416482/raw_traces_active.jsonl
+0 2 /agent_orgs/autobyteus_org_65f4b092ad6e4d43932715d920ee5ea1/software_engineering_team_f13340be72d04b75bfe9a56952aeeab1/implementation_engineer_1f43e17a98ae4f619758800431ce70b9/raw_traces_active.jsonl
+1 2 /agent_orgs/autobyteus_org_65f4b092ad6e4d43932715d920ee5ea1/product_team_4f4d69590f7c4741b83dd5dc334c2934/product_prototyper_45ae9bc1d82843a4b63707be2ec239b3/raw_traces_active.jsonl
+7 2 /agent_orgs/software_development_department_75403d5130584669869fdd59725f6b3e/software_engineering_team_3e746e3211f34fb39aad3979b4751e04/api_e2e_engineer_450b25f17f2245fe89b9c52cd17038ae/raw_traces_000019.jsonl
+8 2 /agents/daily_assistant_2a39c68eb96443ada6f5af9f4f81acef/raw_traces_000005.jsonl
+5 2 /agents/product_prototyper_5e5dfa42520d455a80e1a7e86ef41dc3/raw_traces_active.jsonl
+2 2 /agents/ce141b25-446f-466d-87d1-cb439739df55/raw_traces_active.jsonl
+0 2 /agents/daily_assistant_feb311e786054ec1acd79eae16d785f9/raw_traces_000001.jsonl
+8 2 /agents/resume_designer_ee51dc6eca704d5d852f6fb51381109d/raw_traces_active.jsonl
+21 2 /imports/docker-node-1/agent_teams/marketing_team_9284209a6a2a4945a3320f7b48f2b292/computer_use_operator_ed86dd48637b4a1fb9812c06ec0196fc/raw_traces_000001.jsonl
+6 2 /imports/docker-node-1/agent_teams/marketing_team_20e51f53d2964db9b81194f8746ca7fe/linkedin_marketer_f75f6e37a65342699bc05934a98672bf/raw_traces_000003.jsonl
+0 2 /imports/docker-node-1/agent_teams/marketing_team_17621f4388b8404b93fed82bda622d87/x_marketer_dc7c611e2a3d4dbd916f0cebaff1eaff/raw_traces_000005.jsonl
+8 2 /imports/docker-node-1/agent_teams/marketing_team_9f209bc14ed44288b5f4fad6ce212cfc/linkedin_marketer_d94327bd09c24c819ec082e06577c534/raw_traces_000003.jsonl
+3 2 /imports/docker-node-1/agent_teams/marketing_team_9f209bc14ed44288b5f4fad6ce212cfc/linkedin_marketer_d94327bd09c24c819ec082e06577c534/raw_traces_000001.jsonl
+1 2 /imports/docker-node-1/agent_teams/marketing_team_9f209bc14ed44288b5f4fad6ce212cfc/x_marketer_d23f353b8cb046708b56782d94c27ef1/raw_traces_active.jsonl
+1 2 /imports/docker-node-1/agent_teams/marketing_team_9f209bc14ed44288b5f4fad6ce212cfc/x_marketer_d23f353b8cb046708b56782d94c27ef1/raw_traces.jsonl
+0 2 /imports/docker-node-1/agent_teams/software_development_department_644a2f0d9ee84a458ee6bbd9d586ac62/product_design_prototyping_team_25c38a2da10b448fb11f8da48d20b802/product_prototyper_5c27fc8ddfbe451fba52cac4dc9c1176/raw_traces_000010.jsonl
+5 2 /imports/docker-node-1/agent_teams/software_development_department_644a2f0d9ee84a458ee6bbd9d586ac62/product_design_prototyping_team_25c38a2da10b448fb11f8da48d20b802/product_prototyper_5c27fc8ddfbe451fba52cac4dc9c1176/raw_traces_000007.jsonl
+3 2 /imports/docker-node-1/agent_teams/software_development_department_d2b93633ad6b4d969e6e0d776dda7721/product_design_prototyping_team_31bff2ebb9c0486dbdd38b835609a177/product_prototyper_32f0b05629874df1b1fe3baa585775bc/raw_traces_000003.jsonl
+5 2 /agent_teams/software_engineering_team_73d7eea58c94493b96e8c7076afa564b/implementation_engineer_864a410e7b0040048e032461f14cb778/raw_traces_000004.jsonl
+7 2 /agent_teams/software_engineering_team_55c14a7c4f06466eabfc94da3d9e757a/implementation_engineer_64b3c6d9719f49f38d049b6a666fd567/raw_traces_000001.jsonl
+6 2 /agent_teams/software_engineering_team_b3a81cb7e6b3415187e70ab775987913/api_e2e_engineer_f80d9a8a318e4f588077e2e51c61ccbd/raw_traces_active.jsonl
+24 2 /agent_teams/product_team_2e60411ce9ff4d6f8537812323012fdf/product_ui_ux_designer_08171b735f2a40d78ad7b5ab23126f8c/raw_traces_active.jsonl
+0 2 /agent_teams/software_engineering_team_a364be9c70654196896fcfbdfc7291b8/implementation_engineer_886ac5b13d1c4399b951c56cb0aefd5e/raw_traces_000002.jsonl
+1 2 /agent_teams/team_software-engineering-team_5f2eec12/api_e2e_engineer_92c413e36aa9eb19/raw_traces_active.jsonl
+1 2 /agent_teams/software_engineering_team_32c3915864c24c459c1f37e4bae08ac8/api_e2e_engineer_023adeb0e507489f9c589ed9d71961e7/raw_traces_active.jsonl
+2 2 /agent_teams/team_software-engineering-team_6751920c/api_e2e_engineer_7b82af7d5cb53f5c/raw_traces_active.jsonl
+8 2 /agent_teams/software_engineering_team_9075ca1c7ef2426b8251e0c42f333223/implementation_engineer_1d5d765b3d464cdf932b358b75bccbb7/raw_traces_000001.jsonl
+34 2 /agent_teams/team_software-engineering-team_c6000665/api_e2e_engineer_3855a0ad7c41f5a0/raw_traces_active.jsonl
+16 2 /agent_teams/software_engineering_team_1e5954f7e46d4c7c92e8a69325c3d90e/implementation_engineer_31698f199dad4612834b9e8df260b317/raw_traces_000001.jsonl
+0 2 /agent_teams/software_engineering_team_7ba8ebf5a164417e94f8cf33ce819899/api_e2e_engineer_6cd0cc6875984f2a97174bb9d6281eee/raw_traces_000039.jsonl
+6 2 /agent_teams/product_team_b6c6a7919cdf4df1a0e28c907cb13c19/ui_baseline_bootstrapper_e845a8f1c2084bd58832b86e96702c0e/raw_traces_active.jsonl
+0 2 /agent_teams/team_software-engineering-team_47836b71/api_e2e_engineer_3be673eef020af5d/raw_traces_active.jsonl
+0 2 /agent_teams/product_team_b622eeee720f41d18073dbd374fea33f/ui_baseline_bootstrapper_6ad2aea9c2274132af4a83d42f8dee25/raw_traces_active.jsonl
+3 2 /agent_teams/product_team_1dea39c6b6204a4a9c153a352daa460e/product_ui_ux_designer_c409f6b103144ff7b0659f1ad09b293a/raw_traces_active.jsonl
+2 2 /agent_teams/software_engineering_team_915e4b79d07545dcb15945824cf92e41/implementation_engineer_66d418bbff2b41eb9b0ceb4e4b149576/raw_traces_active.jsonl
+0 1 /agent_orgs/autobyteus_org_197705caccfd4d2abefd0552ce44a561/software_engineering_team_ba4c001a4d6e42ae897e6d0f396d9097/implementation_engineer_246a8817d4734589a065b8da83b86f1b/raw_traces_active.jsonl
+0 1 /agent_orgs/autobyteus_org_197705caccfd4d2abefd0552ce44a561/product_team_bfe0223811e64280abe2c7cce0ba95b6/product_ui_ux_designer_7c5b22b105584140bb57ad0d2169efb2/raw_traces_000001.jsonl
+14 1 /agent_orgs/autobyteus_org_0f9ad59847f74321990153e42624b4ce/software_engineering_team_cd23bd773d6b4b4c9e9e1eeb110ee470/implementation_engineer_a590e11b3b474f6483962c929f601ae8/raw_traces_active.jsonl
+2 1 /agent_orgs/autobyteus_org_43842b499c304f6bb94441f36014bf0c/product_team_71765c24cc334cf0aa2ad351624fe4b5/product_prototyper_410a9c22c6b94c34a134db73b55f54dd/raw_traces_active.jsonl
+10 1 /agents/codex_08590bc528fa4338b0fd0cde6063d391/raw_traces_000001.jsonl
+1 1 /agents/daily_assistant_general_agent_4052/raw_traces_active.jsonl
+2 1 /agents/daily_assistant_6ec782a2e9b449739ea9859ee3aa9259/raw_traces_active.jsonl
+2 1 /agents/daily_assistant_general_agent_5405/raw_traces_active.jsonl
+0 1 /agents/daily_assistant_0800660cc2864a9c98976e7eaf9d997d/raw_traces_active.jsonl
+0 1 /agents/daily_assistant_1d9a4112db55467ea52b85e9b1c34af3/raw_traces_000002.jsonl
+1 1 /agents/codex_2bf062a8369245d98bce907dd7bfa465/raw_traces_000001.jsonl
+7 1 /agents/daily_assistant_b2c1cd14f5304d6a8dab124548c73b0b/raw_traces_active.jsonl
+0 1 /agents/daily_assistant_9cb68840c1774af981528b6e43dad129/raw_traces_active.jsonl
+18 1 /agents/daily_assistant_feb311e786054ec1acd79eae16d785f9/raw_traces_active.jsonl
+0 1 /imports/docker-node-1/agents/codex_1f93842e37614fd48aecc257f00cb85e/raw_traces_000001.jsonl
+10 1 /imports/docker-node-1/agents/codex_0777b3f617044bf3af7087d0408ec187/raw_traces_000001.jsonl
+52 1 /imports/docker-node-1/agents/codex_0777b3f617044bf3af7087d0408ec187/raw_traces_000002.jsonl
+23 1 /imports/docker-node-1/agent_teams/marketing_team_94a61bec30b94a63abafe11ce41a8dce/computer_use_operator_c3cd0090dd5144afbce4f54ad49a89e5/raw_traces_000002.jsonl
+2 1 /imports/docker-node-1/agent_teams/software_development_department_eadcb92704314c3cba0854663b3dcbb3/requirements_engineering_team_263fe4c023e6404ea76863f4acd7342c/prototype_bootstrapper_d520fda122574e52aeb08b8c02a4370c/raw_traces_000012.jsonl
+1 1 /imports/docker-node-1/agent_teams/software_development_department_eadcb92704314c3cba0854663b3dcbb3/requirements_engineering_team_263fe4c023e6404ea76863f4acd7342c/prototype_bootstrapper_d520fda122574e52aeb08b8c02a4370c/raw_traces_000004.jsonl
+1 1 /imports/docker-node-1/agent_teams/software_development_department_eadcb92704314c3cba0854663b3dcbb3/prototype_bootstrapper_d520fda122574e52aeb08b8c02a4370c/raw_traces_000004.jsonl
+9 1 /imports/docker-node-1/agent_teams/marketing_team_0786c73dee5a434090665b5cd1a1bb91/linkedin_marketer_d135d1227edb45bb983d360fd4e83a87/raw_traces_000002.jsonl
+2 1 /imports/docker-node-1/agent_teams/software_development_department_d2b93633ad6b4d969e6e0d776dda7721/software_engineering_team_570be46d520142849ac61785be03dca1/api_e2e_engineer_d23a092db04042b69d944416be75d3b9/raw_traces_000050.jsonl
+25 1 /agent_teams/product_team_ed7febe31c59448ba2d2794a2ab6bee3/product_ui_ux_designer_d50f45957e0a45e4b7f23f1ce4e70a55/raw_traces_active.jsonl
+4 1 /agent_teams/software_engineering_team_f52e9abb9087479e94dd677300ebc829/solution_designer_c1cf88985b7f4756866d21a1165599c0/raw_traces_000004.jsonl
+1 1 /agent_teams/software_engineering_team_f52e9abb9087479e94dd677300ebc829/implementation_engineer_a13cd2164075468b81e0be066f77d2af/raw_traces_000011.jsonl
+2 1 /agent_teams/software_engineering_team_f52e9abb9087479e94dd677300ebc829/implementation_engineer_a13cd2164075468b81e0be066f77d2af/raw_traces_000010.jsonl
+6 1 /agent_teams/software_engineering_team_f52e9abb9087479e94dd677300ebc829/api_e2e_engineer_b27ab4bc0917401987f4ea5fc4c72f9e/raw_traces_000010.jsonl
+0 1 /agent_teams/software_engineering_team_d1ca164bbc0348acbf3357ca4c78c122/implementation_engineer_8eeba3bee82d4d939e77a0382844991f/raw_traces_active.jsonl
+0 1 /agent_teams/software_engineering_team_76937775d2b14cdca68e05a3372c5651/solution_designer_ba8af54d8eb84343b2554e18c7464eae/raw_traces_active.jsonl
+0 1 /agent_teams/team_software-engineering-team_0049e625/api_e2e_engineer_694522afe6a97640/raw_traces_active.jsonl
+4 1 /agent_teams/software_engineering_team_9b6d1ec946e4474e935f7b1804444b71/implementation_engineer_1b4b3fa3c9a4497cab046400834e25be/raw_traces_000001.jsonl
+1 1 /agent_teams/software_engineering_team_cca00c1c2ea04599ab3f980b587a9073/api_e2e_engineer_6823e11d66d34ae29e2fb20e96d659f2/raw_traces_000008.jsonl
+4 1 /agent_teams/software_engineering_team_cca00c1c2ea04599ab3f980b587a9073/api_e2e_engineer_6823e11d66d34ae29e2fb20e96d659f2/raw_traces_000006.jsonl
+0 1 /agent_teams/software_engineering_team_d19f9284643b44178d2a608e9d0e0951/api_e2e_engineer_3216aac016ed41e6a36534061f00e9c1/raw_traces_000001.jsonl
+3 1 /agent_teams/software_engineering_team_d19f9284643b44178d2a608e9d0e0951/implementation_engineer_76bae8e1b95e4adaaf196def590a64a5/raw_traces_000003.jsonl
+0 1 /agent_teams/software_engineering_team_77b802d66d4e43fdb25d784cf4d27317/implementation_engineer_fe776973701f420c8a21f8eb2a0ccc19/raw_traces_active.jsonl
+17 1 /agent_teams/software_engineering_team_2e127b81083243db9a866f8c3c7cdf54/implementation_engineer_3541e27bd8b74dc29f567503035bf510/raw_traces_active.jsonl
+6 1 /agent_teams/software_engineering_team_05adf8f38e4b4ed1802251c8b346d606/api_e2e_engineer_dc84655931e542e683240d5c817ea164/raw_traces_active.jsonl
+3 1 /agent_teams/team_software-engineering-team_bf675026/api_e2e_engineer_fa33aa9ebeb142d0/raw_traces_active.jsonl
+4 1 /agent_teams/software_engineering_team_2dc498a64aa845a6b21b97d08d502a50/api_e2e_engineer_450d6a969c794df1a645c7942b627354/raw_traces_000003.jsonl
+2 1 /agent_teams/software_engineering_team_842188724b884b62adaa0decfd93278b/implementation_engineer_f54d90f354554c45bf4f180a2f4f9dca/raw_traces_000001.jsonl
+7 1 /agent_teams/software_engineering_team_8728209cf99e46cabf104b5e707a3287/implementation_engineer_53e6421e189a4fdca6d4b5e4f4abf6a7/raw_traces_000005.jsonl
+6 1 /agent_teams/software_engineering_team_8728209cf99e46cabf104b5e707a3287/implementation_engineer_53e6421e189a4fdca6d4b5e4f4abf6a7/raw_traces_000002.jsonl
+4 1 /agent_teams/software_engineering_team_e9b4d186c81249078a30c44def4f4078/implementation_engineer_75b3cc4433a44812b954e2893ce1b731/raw_traces_000001.jsonl
+5 1 /agent_teams/team_software-engineering-team_068bd34b/api_e2e_engineer_089d9e8d62cab8a6/raw_traces_active.jsonl
+1 1 /agent_teams/software_engineering_team_b682f0f22551453eb08a112dd2e212f8/solution_designer_dccad26200694c37a92f8e56819c1654/raw_traces_active.jsonl
+5 1 /agent_teams/software_engineering_team_b682f0f22551453eb08a112dd2e212f8/solution_designer_dccad26200694c37a92f8e56819c1654/raw_traces_000002.jsonl
+8 1 /agent_teams/software_engineering_team_e4b7ee1b5b9a4f7e9f0d3bfcd6ad0f58/api_e2e_engineer_8f6ca9f96bee47b0a6800e585a9132e2/raw_traces_000020.jsonl
+1 1 /agent_teams/software_engineering_team_ac1ca45270184f35bfc2ff7a207d8ebc/implementation_engineer_cff13b845904456181adc8be25b399e0/raw_traces_active.jsonl
+0 1 /agent_teams/software_engineering_team_e49dc9fe604746ce8e909bd5fe7c81f1/implementation_engineer_91b60843b15d4406afce1700fc9d4e36/raw_traces_000001.jsonl
+0 1 /agent_teams/product_team_622a907b658842b896f4ce49debe44ce/product_ui_ux_designer_d4d609a6593f488bb2d57a2014b4bab5/raw_traces_active.jsonl
+0 1 /agent_teams/product_team_622a907b658842b896f4ce49debe44ce/ui_baseline_bootstrapper_337f199f23b844ae82a35e1145ebd940/raw_traces_active.jsonl
+3 1 /agent_teams/software_engineering_team_5b6a2c9a26b54de5bfeae5d2bcac33e3/implementation_engineer_a7f5e2be8c3b44908ab815293968d1ef/raw_traces_000002.jsonl
+15 1 /agent_teams/software_engineering_team_3977f22ab3aa43819f31c2178d788cb6/implementation_engineer_d3af871d45d64626a059e3fa18ce1dca/raw_traces_000005.jsonl
+7 1 /agent_teams/software_engineering_team_3977f22ab3aa43819f31c2178d788cb6/implementation_engineer_d3af871d45d64626a059e3fa18ce1dca/raw_traces_000001.jsonl
+19 1 /agent_teams/product_team_23cb5d62494f4d0591a3e1ed1b2ef328/product_ui_ux_designer_655bc5ebb00a4caf9c9719c3fa4ff5b4/raw_traces_active.jsonl
+9 1 /agent_teams/software_engineering_team_ef169f0759454650b9b046a556503165/implementation_engineer_f99e4571cabe4594901921e1ef680124/raw_traces_active.jsonl
+0 1 /agent_teams/software_engineering_team_47e5e68d42ff4e45885b688ff0e3f86e/implementation_engineer_c1c683116035454bac8bdadf4d054b81/raw_traces_active.jsonl

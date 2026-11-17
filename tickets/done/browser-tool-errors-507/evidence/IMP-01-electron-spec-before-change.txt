@@ -1,0 +1,183 @@
+# IMP-01
+# Command: pnpm -C autobyteus-web test:electron browser/__tests__/browser-screenshot-capture.electron.spec.ts --run (new spec against the unchanged product code)
+# Commit: 466c58b20e (base product code) + the new spec file only
+# Environment: macOS (Darwin 25.5.0, arm64), Electron 42.11.16, Node 22.23.1, machine load average 130-240 during runs
+# Date: 2026-11-17
+
+
+> autobyteus@1.5.13-beta.7 test:electron /Users/normy/autobyteus_org/autobyteus-worktrees/browser-tool-errors-507/autobyteus-web
+> vitest --config ./electron/vitest.config.ts browser/__tests__/browser-screenshot-capture.electron.spec.ts --run
+
+▲ [WARNING] Cannot find base config file "./.nuxt/tsconfig.json" [tsconfig.json]
+
+    tsconfig.json:2:13:
+      2 │   "extends": "./.nuxt/tsconfig.json",
+        ╵              ~~~~~~~~~~~~~~~~~~~~~~~
+
+
+ RUN  v3.2.7 /Users/normy/autobyteus_org/autobyteus-worktrees/browser-tool-errors-507/autobyteus-web/electron
+
+RESULT {"electron":"42.11.16","cases":[{"id":"AC-002","ok":false,"ms":1,"error":{"code":null,"message":"Current display surface not available for capture"}},{"id":"AC-001","ok":false,"ms":13,"error":{"code":null,"message":"UnknownVizError"}},{"id":"AC-005","ok":false,"ms":66,"error":{"code":null,"message":"UnknownVizError"},"boundsBefore":{"x":0,"y":0,"width":1280,"height":900},"boundsAfter":{"x":0,"y":0,"width":1280,"height":900}},{"id":"AC-003","ok":false,"ms":4,"error":{"code":null,"message":"UnknownVizError"},"viewportBefore":[980,2176],"viewportAfter":[980,2176]},{"id":"AC-004","ok":false,"ms":0,"error":{"code":null,"message":"UnknownVizError"},"attachedWhileShown":true,"attachedWhileMinimized":true},{"id":"AC-004-restored","ok":true,"ms":149,"size":{"width":2560,"height":1800},"tabId":"1d399d","attachedAfterRestore":true}]}
+ ❯ browser/__tests__/browser-screenshot-capture.electron.spec.ts (7 tests | 5 failed) 85537ms
+   ✓ Screenshot of tabs not shown on screen, in real Electron (autobyteus-507) > runs in the Electron version the package pins 1ms
+   × Screenshot of tabs not shown on screen, in real Electron (autobyteus-507) > AC-002: captures a fresh tab that was never shown, right after it loaded 7ms
+     → expected { id: 'AC-002', ok: false, …(1) } to deeply equal { id: 'AC-002', ok: true, …(1) }
+   × Screenshot of tabs not shown on screen, in real Electron (autobyteus-507) > AC-001: captures a tab not shown right after it navigated 1ms
+     → expected { id: 'AC-001', ok: false, …(1) } to deeply equal { id: 'AC-001', ok: true, …(1) }
+   × Screenshot of tabs not shown on screen, in real Electron (autobyteus-507) > AC-005: captures the full page of a tab not shown right after navigation and restores its bounds 1ms
+     → expected { id: 'AC-005', ok: false, …(1) } to deeply equal { id: 'AC-005', ok: true, …(1) }
+   × Screenshot of tabs not shown on screen, in real Electron (autobyteus-507) > AC-003: captures the founder's emulated mobile tab and keeps its emulated viewport 5ms
+     → expected { id: 'AC-003', ok: false, …(1) } to deeply equal { id: 'AC-003', ok: true, …(1) }
+   × Screenshot of tabs not shown on screen, in real Electron (autobyteus-507) > AC-004: captures a tab of a minimized window; the window does not hold the view while minimized 2ms
+     → expected { id: 'AC-004', ok: false, …(1) } to deeply equal { id: 'AC-004', ok: true, …(1) }
+   ✓ Screenshot of tabs not shown on screen, in real Electron (autobyteus-507) > AC-004: shows the view again after restore and captures it 0ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 5 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  browser/__tests__/browser-screenshot-capture.electron.spec.ts > Screenshot of tabs not shown on screen, in real Electron (autobyteus-507) > AC-002: captures a fresh tab that was never shown, right after it loaded
+AssertionError: expected { id: 'AC-002', ok: false, …(1) } to deeply equal { id: 'AC-002', ok: true, …(1) }
+
+- Expected
++ Received
+
+  {
+-   "error": undefined,
++   "error": {
++     "code": null,
++     "message": "Current display surface not available for capture",
++   },
+    "id": "AC-002",
+-   "ok": true,
++   "ok": false,
+  }
+
+ ❯ expectCaptured browser/__tests__/browser-screenshot-capture.electron.spec.ts:160:54
+    158|   const expectCaptured = (id: string): CaseResult => {
+    159|     const entry = byId(id)
+    160|     expect({ id, ok: entry.ok, error: entry.error }).toEqual({ id, ok:…
+       |                                                      ^
+    161|     expect(entry.size!.width).toBeGreaterThan(0)
+    162|     expect(entry.size!.height).toBeGreaterThan(0)
+ ❯ browser/__tests__/browser-screenshot-capture.electron.spec.ts:210:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/5]⎯
+
+ FAIL  browser/__tests__/browser-screenshot-capture.electron.spec.ts > Screenshot of tabs not shown on screen, in real Electron (autobyteus-507) > AC-001: captures a tab not shown right after it navigated
+AssertionError: expected { id: 'AC-001', ok: false, …(1) } to deeply equal { id: 'AC-001', ok: true, …(1) }
+
+- Expected
++ Received
+
+  {
+-   "error": undefined,
++   "error": {
++     "code": null,
++     "message": "UnknownVizError",
++   },
+    "id": "AC-001",
+-   "ok": true,
++   "ok": false,
+  }
+
+ ❯ expectCaptured browser/__tests__/browser-screenshot-capture.electron.spec.ts:160:54
+    158|   const expectCaptured = (id: string): CaseResult => {
+    159|     const entry = byId(id)
+    160|     expect({ id, ok: entry.ok, error: entry.error }).toEqual({ id, ok:…
+       |                                                      ^
+    161|     expect(entry.size!.width).toBeGreaterThan(0)
+    162|     expect(entry.size!.height).toBeGreaterThan(0)
+ ❯ browser/__tests__/browser-screenshot-capture.electron.spec.ts:214:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/5]⎯
+
+ FAIL  browser/__tests__/browser-screenshot-capture.electron.spec.ts > Screenshot of tabs not shown on screen, in real Electron (autobyteus-507) > AC-005: captures the full page of a tab not shown right after navigation and restores its bounds
+AssertionError: expected { id: 'AC-005', ok: false, …(1) } to deeply equal { id: 'AC-005', ok: true, …(1) }
+
+- Expected
++ Received
+
+  {
+-   "error": undefined,
++   "error": {
++     "code": null,
++     "message": "UnknownVizError",
++   },
+    "id": "AC-005",
+-   "ok": true,
++   "ok": false,
+  }
+
+ ❯ expectCaptured browser/__tests__/browser-screenshot-capture.electron.spec.ts:160:54
+    158|   const expectCaptured = (id: string): CaseResult => {
+    159|     const entry = byId(id)
+    160|     expect({ id, ok: entry.ok, error: entry.error }).toEqual({ id, ok:…
+       |                                                      ^
+    161|     expect(entry.size!.width).toBeGreaterThan(0)
+    162|     expect(entry.size!.height).toBeGreaterThan(0)
+ ❯ browser/__tests__/browser-screenshot-capture.electron.spec.ts:218:19
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/5]⎯
+
+ FAIL  browser/__tests__/browser-screenshot-capture.electron.spec.ts > Screenshot of tabs not shown on screen, in real Electron (autobyteus-507) > AC-003: captures the founder's emulated mobile tab and keeps its emulated viewport
+AssertionError: expected { id: 'AC-003', ok: false, …(1) } to deeply equal { id: 'AC-003', ok: true, …(1) }
+
+- Expected
++ Received
+
+  {
+-   "error": undefined,
++   "error": {
++     "code": null,
++     "message": "UnknownVizError",
++   },
+    "id": "AC-003",
+-   "ok": true,
++   "ok": false,
+  }
+
+ ❯ expectCaptured browser/__tests__/browser-screenshot-capture.electron.spec.ts:160:54
+    158|   const expectCaptured = (id: string): CaseResult => {
+    159|     const entry = byId(id)
+    160|     expect({ id, ok: entry.ok, error: entry.error }).toEqual({ id, ok:…
+       |                                                      ^
+    161|     expect(entry.size!.width).toBeGreaterThan(0)
+    162|     expect(entry.size!.height).toBeGreaterThan(0)
+ ❯ browser/__tests__/browser-screenshot-capture.electron.spec.ts:223:19
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/5]⎯
+
+ FAIL  browser/__tests__/browser-screenshot-capture.electron.spec.ts > Screenshot of tabs not shown on screen, in real Electron (autobyteus-507) > AC-004: captures a tab of a minimized window; the window does not hold the view while minimized
+AssertionError: expected { id: 'AC-004', ok: false, …(1) } to deeply equal { id: 'AC-004', ok: true, …(1) }
+
+- Expected
++ Received
+
+  {
+-   "error": undefined,
++   "error": {
++     "code": null,
++     "message": "UnknownVizError",
++   },
+    "id": "AC-004",
+-   "ok": true,
++   "ok": false,
+  }
+
+ ❯ expectCaptured browser/__tests__/browser-screenshot-capture.electron.spec.ts:160:54
+    158|   const expectCaptured = (id: string): CaseResult => {
+    159|     const entry = byId(id)
+    160|     expect({ id, ok: entry.ok, error: entry.error }).toEqual({ id, ok:…
+       |                                                      ^
+    161|     expect(entry.size!.width).toBeGreaterThan(0)
+    162|     expect(entry.size!.height).toBeGreaterThan(0)
+ ❯ browser/__tests__/browser-screenshot-capture.electron.spec.ts:228:19
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/5]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  5 failed | 2 passed (7)
+   Start at  07:33:34
+   Duration  87.84s (transform 166ms, setup 0ms, collect 1.42s, tests 85.54s, environment 0ms, prepare 143ms)
+
+ ELIFECYCLE  Command failed with exit code 1.

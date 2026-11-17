@@ -1,0 +1,15 @@
+# E2E-10 — AC-006 against real Chromium: screenshot of a tab whose renderer crashed (webContents.forcefullyCrashRenderer) must fail bounded with browser_screenshot_failed + reason, no artifact
+# Command (from autobyteus-web): node evidence/api-e2e/E2E-10-crash_probe.mjs <electron source dir> <label>; after = worktree autobyteus-web/electron (927079c6cd), base = git archive e4f4b3e176
+# Environment: macOS arm64, pinned Electron 42.11.16, no isolated flags; filesBefore/filesAfter = files in the probe screenshot folder
+# Date: 2026-11-17
+# Note: on the base the desktop already threw browser_screenshot_failed for an empty image, but the base server did not know that code and turned it into browser_bridge_unavailable (requirements BEH-003); the server pass-through is IMP-04.
+
+label=after-927079c6cd exit=0 sourceDir=/Users/normy/autobyteus_org/autobyteus-worktrees/browser-tool-errors-507/autobyteus-web/electron
+electron=42.11.16 at=2026-11-17T07:50:35.736Z
+{"id":"detached-crashed","renderProcessGone":"killed","filesBefore":0,"filesAfter":0,"ok":false,"ms":2035,"error":{"code":"browser_screenshot_failed","message":"The tab did not draw a frame to capture within 2 s (empty image)."}}
+{"id":"detached-crashed-emulated","renderProcessGone":"killed","filesBefore":0,"filesAfter":0,"ok":false,"ms":2034,"error":{"code":"browser_screenshot_failed","message":"The tab did not draw a frame to capture within 2 s (empty image)."}}
+
+label=base-e4f4b3e176 exit=0 sourceDir=/tmp/ae507/base-electron/autobyteus-web/electron
+electron=42.11.16 at=2026-11-17T07:50:36.704Z
+{"id":"detached-crashed","renderProcessGone":"killed","filesBefore":0,"filesAfter":0,"ok":false,"ms":0,"error":{"code":"browser_screenshot_failed","message":"Browser screenshot produced no image bytes."}}
+{"id":"detached-crashed-emulated","renderProcessGone":"killed","filesBefore":0,"filesAfter":0,"ok":false,"ms":0,"error":{"code":"browser_screenshot_failed","message":"Browser screenshot produced no image bytes."}}

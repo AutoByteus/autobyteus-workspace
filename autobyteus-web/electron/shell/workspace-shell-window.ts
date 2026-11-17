@@ -60,6 +60,14 @@ export class WorkspaceShellWindow {
 
     void this.browserWindow.loadURL(options.startUrl);
 
+    // A view in a minimized or hidden window cannot draw, so its tab cannot be captured; the window holds
+    // the view only while it is shown.
+    const reapplyBrowserProjection = () => this.applyBrowserProjection();
+    this.browserWindow.on('minimize', reapplyBrowserProjection);
+    this.browserWindow.on('restore', reapplyBrowserProjection);
+    this.browserWindow.on('hide', reapplyBrowserProjection);
+    this.browserWindow.on('show', reapplyBrowserProjection);
+
     this.browserWindow.on('closed', () => {
       this.detachAttachedBrowserView();
       this.desiredBrowserView = null;
@@ -110,7 +118,7 @@ export class WorkspaceShellWindow {
       return;
     }
 
-    const nextView = this.desiredBrowserView;
+    const nextView = this.isShowing() ? this.desiredBrowserView : null;
     const nextBounds = this.browserBounds;
 
     if (!nextView || !nextBounds) {
@@ -123,6 +131,10 @@ export class WorkspaceShellWindow {
       this.browserWindow.contentView.addChildView(nextView);
       this.attachedBrowserView = nextView;
     }
+  }
+
+  private isShowing(): boolean {
+    return this.browserWindow.isVisible() && !this.browserWindow.isMinimized();
   }
 
   private detachAttachedBrowserView(): void {

@@ -1,0 +1,16 @@
+# E2E-07 — tab attached to a shown window, then the macOS app hidden (app.hide = Cmd-H), navigate -> screenshot, then app shown again
+# Command (from autobyteus-web): node evidence/api-e2e/E2E-07-apphide_probe.mjs <electron source dir> <label>; after = worktree autobyteus-web/electron (927079c6cd), base = git archive e4f4b3e176
+# Environment: macOS arm64, pinned Electron 42.11.16, no isolated-instance flags, screen unlocked
+# Date: 2026-11-17
+
+label=after-927079c6cd exit=0 sourceDir=/Users/normy/autobyteus_org/autobyteus-worktrees/browser-tool-errors-507/autobyteus-web/electron
+electron=42.11.16 at=2026-11-17T07:40:58.517Z
+{"id":"shown","events":"","appHidden":false,"windowVisible":true,"minimized":false,"attached":true,"pageVisibility":"visible","ok":true,"ms":78,"size":{"width":2560,"height":1800}}
+{"id":"app-hidden-after-navigate","events":"blur,hide","appHidden":true,"windowVisible":false,"minimized":false,"attached":false,"pageVisibility":"hidden","ok":true,"ms":188,"size":{"width":2560,"height":1800}}
+{"id":"after-app-show","events":"blur,hide,focus,show","appHidden":false,"windowVisible":true,"minimized":false,"attached":true,"pageVisibility":"visible","ok":true,"ms":49,"size":{"width":2560,"height":1800}}
+
+label=base-e4f4b3e176 exit=0 sourceDir=/tmp/ae507/base-electron/autobyteus-web/electron
+electron=42.11.16 at=2026-11-17T07:41:15.843Z
+{"id":"shown","events":"","appHidden":false,"windowVisible":true,"minimized":false,"attached":true,"pageVisibility":"visible","ok":true,"ms":79,"size":{"width":2560,"height":1800}}
+{"id":"app-hidden-after-navigate","events":"blur,hide","appHidden":true,"windowVisible":false,"minimized":false,"attached":true,"pageVisibility":"hidden","ok":false,"ms":1,"error":{"code":null,"message":"UnknownVizError"}}
+{"id":"after-app-show","events":"blur,hide,focus,show","appHidden":false,"windowVisible":true,"minimized":false,"attached":true,"pageVisibility":"visible","ok":true,"ms":56,"size":{"width":2560,"height":1800}}

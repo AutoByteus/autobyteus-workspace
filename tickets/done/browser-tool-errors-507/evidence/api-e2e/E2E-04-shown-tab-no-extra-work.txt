@@ -1,0 +1,35 @@
+# E2E-04 — tab B (0386db) shown in the Browser panel: screenshot returns at once, page sees nothing
+# Steps: worktree isolated instance iso-49942-c50c (build of baf0439559, code 927079c6cd, Electron 42.11.16, macOS arm64); same run; Browser panel opened by a real click on its Browser button at 08:11:30 (e02-b, tab 0386db, became visible 450x604, see page log); message /tmp/ae507/msg-e02b.txt sent 07:11:50.111Z
+# Date: 2026-11-17 (local time below)
+
+## Message
+Validation journey E2E-02b and E2E-04. Steps:
+1. navigate_to with tab_id de9ec9, url http://127.0.0.1:49198/p/e02-a-third
+2. screenshot with tab_id de9ec9
+3. screenshot with tab_id 0386db
+
+## Run trace tool calls/results
+08:11:52.191 seq=2 tool_call navigate_to args={"tab_id": "de9ec9", "url": "http://127.0.0.1:49198/p/e02-a-third"}
+08:11:52.233 seq=3 tool_result navigate_to TOOL_EXECUTION_SUCCEEDED result={"tab_id": "de9ec9", "status": "navigated", "url": "http://127.0.0.1:49198/p/e02-a-third"} error=null
+08:11:53.668 seq=4 tool_call screenshot args={"tab_id": "de9ec9"}
+08:11:53.834 seq=5 tool_result screenshot TOOL_EXECUTION_SUCCEEDED result={"tab_id": "de9ec9", "artifact_path": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-Suz2eM/browser-artifacts/de9ec9-1794899513829.png", "mime_type": "image/png"} error=null
+08:11:55.375 seq=6 tool_call screenshot args={"tab_id": "0386db"}
+08:11:55.424 seq=7 tool_result screenshot TOOL_EXECUTION_SUCCEEDED result={"tab_id": "0386db", "artifact_path": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-Suz2eM/browser-artifacts/0386db-1794899515417.png", "mime_type": "image/png"} error=null
+
+## Page events
+All e02-b events in the whole run (none after 08:11:30.787 = no resize/visibility change around its 08:11:55 screenshot):
+{"page": "e02-b", "kind": "load", "w": 1280, "h": 900, "vis": "hidden", "t": 101, "server_time": "08:06:22.728"}
+{"page": "e02-b", "kind": "visibilitychange", "w": 1280, "h": 900, "vis": "visible", "t": 256128, "server_time": "08:10:38.758"}
+{"page": "e02-b", "kind": "visibilitychange", "w": 1280, "h": 900, "vis": "hidden", "t": 256308, "server_time": "08:10:38.932"}
+{"page": "e02-b", "kind": "visibilitychange", "w": 1280, "h": 900, "vis": "visible", "t": 288853, "server_time": "08:11:11.483"}
+{"page": "e02-b", "kind": "visibilitychange", "w": 1280, "h": 900, "vis": "hidden", "t": 290943, "server_time": "08:11:13.568"}
+{"page": "e02-b", "kind": "visibilitychange", "w": 1280, "h": 900, "vis": "visible", "t": 291371, "server_time": "08:11:13.999"}
+{"page": "e02-b", "kind": "visibilitychange", "w": 1280, "h": 900, "vis": "hidden", "t": 291527, "server_time": "08:11:14.151"}
+{"page": "e02-b", "kind": "visibilitychange", "w": 1280, "h": 900, "vis": "visible", "t": 300265, "server_time": "08:11:22.889"}
+{"page": "e02-b", "kind": "visibilitychange", "w": 1280, "h": 900, "vis": "hidden", "t": 300329, "server_time": "08:11:22.953"}
+{"page": "e02-b", "kind": "visibilitychange", "w": 450, "h": 604, "vis": "visible", "t": 308155, "server_time": "08:11:30.787"}
+{"page": "e02-b", "kind": "resize", "w": 450, "h": 604, "vis": "visible", "t": 308155, "server_time": "08:11:30.787"}
+
+## Artifact
+  pixelWidth: 900
+  pixelHeight: 1208

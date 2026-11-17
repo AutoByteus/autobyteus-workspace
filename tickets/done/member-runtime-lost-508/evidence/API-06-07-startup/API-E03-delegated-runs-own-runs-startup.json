@@ -1,0 +1,514 @@
+{
+  "dro3": {
+    "pAfterStart": {
+      "teamRunId": "product_team_e03d",
+      "isActive": false
+    },
+    "logLines": [
+      "Restart resume could not resume host run 'image_maker_33f0' of agent 'image_maker_33f0': WorkspacePathRefusedError: No folder exists at the workspace path. (/work/x)",
+      "Restart resume skipped member run 'product_designer_1a2b' of agent_team 'product_team_e03d': its Task is closed",
+      "Restart resume could not resume host run 'project_task_manager_7c8d' of agent 'project_task_manager_7c8d': StoredFileDamagedError: communication_messages_active.jsonl:line 1.senderAgentRunId must be a non-empty trimmed string.",
+      "Restart resume after the update to 1.5.13-beta.7: 0 resumed, 1 skipped, 2 failed"
+    ]
+  },
+  "setup": {
+    "ledgerRowsKept": 44,
+    "releasedFiles": [
+      "ad-hoc-tasks/ad_hoc_task_research/agent_run_resources.json",
+      "agents/autobyteus-daily-assistant/agent-config.json",
+      "agents/autobyteus-daily-assistant/agent.md",
+      "agents/autobyteus-model-router/agent-config.json",
+      "agents/autobyteus-model-router/agent.md",
+      "application-packages/platform/applications/.gitkeep",
+      "memory-search/memory-search.sqlite",
+      "memory/agent_orgs/company_org_9d00/agent_org_communication_messages_active.jsonl",
+      "memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json",
+      "memory/agent_teams/marketing_team_5a00/team_communication_messages_active.jsonl",
+      "memory/agent_teams/marketing_team_5a00/team_run_execution_tree.json",
+      "memory/agent_teams/product_team_e03d/team_communication_messages_active.jsonl",
+      "memory/agent_teams/product_team_e03d/team_run_execution_tree.json",
+      "memory/agent_teams/software_engineering_team_0218/team_communication_messages_active.jsonl",
+      "memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json",
+      "memory/agents/image_maker_33f0/run_metadata.json",
+      "memory/agents/legacy_helper_0001/run_metadata.json",
+      "memory/agents/peer_started_writer_0002/run_metadata.json",
+      "memory/agents/project_task_manager_7c8d/collaboration/collaboration_tree.json",
+      "memory/agents/project_task_manager_7c8d/collaboration/communication_messages_active.jsonl",
+      "memory/agents/project_task_manager_7c8d/run_metadata.json",
+      "memory/run_history_index.json",
+      "memory/team_run_history_index.json",
+      "projects/project_p/tasks/project_task_440e/agent_run_resources.json",
+      "restart-resume/busy-runs.json"
+    ]
+  },
+  "migration": {
+    "migrationId": "20261111_delegated_runs_own_runs_v1",
+    "status": "SUCCEEDED",
+    "summary": "Scanned 14; migrated 14; skipped 0; failed 0.",
+    "errorMessage": null
+  },
+  "runList": {
+    "agentRuns": [
+      "legacy_helper_0001",
+      "project_task_manager_7c8d",
+      "peer_started_writer_0002"
+    ],
+    "teamRuns": [
+      "marketing_team_5a00"
+    ],
+    "history": [
+      {
+        "workspaceRootPath": "/work/x",
+        "agentDefinitions": [
+          {
+            "agentDefinitionId": "helper",
+            "runs": [
+              {
+                "runId": "legacy_helper_0001",
+                "isActive": false
+              }
+            ]
+          },
+          {
+            "agentDefinitionId": "project-task-manager",
+            "runs": [
+              {
+                "runId": "project_task_manager_7c8d",
+                "isActive": false
+              }
+            ]
+          },
+          {
+            "agentDefinitionId": "writer",
+            "runs": [
+              {
+                "runId": "peer_started_writer_0002",
+                "isActive": false
+              }
+            ]
+          }
+        ],
+        "teamDefinitions": [
+          {
+            "teamDefinitionId": "marketing-team",
+            "runs": [
+              {
+                "teamRunId": "marketing_team_5a00"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "opened": {
+    "project_task_manager_7c8d": "project_task_manager_7c8d",
+    "image_maker_33f0": "image_maker_33f0",
+    "legacy_helper_0001": "legacy_helper_0001",
+    "peer_started_writer_0002": "peer_started_writer_0002",
+    "software_engineering_team_0218": {
+      "isActive": false,
+      "root": "/"
+    },
+    "product_team_e03d": {
+      "isActive": true,
+      "root": "/"
+    },
+    "marketing_team_5a00": {
+      "isActive": false,
+      "root": "/"
+    },
+    "company_org_9d00": {
+      "orgRunId": "company_org_9d00",
+      "isActive": false
+    }
+  },
+  "managerView": {
+    "taskExecutions": [
+      {
+        "teamRunId": "software_engineering_team_0218",
+        "coordinatorAgentRunId": "solution_designer_65a9",
+        "address": "/software_engineering_team",
+        "name": "software engineering team",
+        "kind": "team",
+        "startedAt": "listed",
+        "delegatorAgentRunId": "project_task_manager_7c8d",
+        "launch": {
+          "runtimeKind": "autobyteus",
+          "llmModelIdentifier": "sonnet",
+          "llmConfig": null,
+          "autoExecuteTools": true,
+          "workspaceRootPath": "/work/x",
+          "source": null,
+          "ownSource": true
+        },
+        "members": [
+          {
+            "address": "/solution_designer",
+            "agentRunId": "solution_designer_65a9",
+            "launch": {
+              "runtimeKind": "autobyteus",
+              "llmModelIdentifier": "haiku",
+              "llmConfig": {
+                "temperature": 0.2
+              },
+              "autoExecuteTools": true,
+              "workspaceRootPath": "/work/x",
+              "source": {
+                "origin": "settings",
+                "fallbacks": []
+              },
+              "ownSource": true
+            }
+          },
+          {
+            "address": "/code_reviewer",
+            "agentRunId": "code_reviewer_m_3b10",
+            "launch": {
+              "runtimeKind": "autobyteus",
+              "llmModelIdentifier": "opus",
+              "llmConfig": {
+                "temperature": 0.2
+              },
+              "autoExecuteTools": true,
+              "workspaceRootPath": "/work/x",
+              "source": {
+                "origin": "settings",
+                "fallbacks": []
+              },
+              "ownSource": true
+            }
+          },
+          {
+            "address": "/tester",
+            "agentRunId": "tester_m_77",
+            "launch": {
+              "runtimeKind": "autobyteus",
+              "llmModelIdentifier": "sonnet",
+              "llmConfig": null,
+              "autoExecuteTools": true,
+              "workspaceRootPath": "/work/x",
+              "source": {
+                "origin": "agent_default",
+                "fallbacks": []
+              },
+              "ownSource": true
+            }
+          }
+        ],
+        "taskExecutions": [
+          {
+            "teamRunId": "product_team_e03d",
+            "coordinatorAgentRunId": "product_designer_1a2b",
+            "address": "/product_team",
+            "name": "product team",
+            "kind": "team",
+            "startedAt": "listed",
+            "delegatorAgentRunId": "solution_designer_65a9",
+            "launch": {
+              "runtimeKind": "autobyteus",
+              "llmModelIdentifier": "sonnet",
+              "llmConfig": null,
+              "autoExecuteTools": true,
+              "workspaceRootPath": "/work/x",
+              "source": null,
+              "ownSource": true
+            },
+            "members": [
+              {
+                "address": "/product_designer",
+                "agentRunId": "product_designer_1a2b",
+                "launch": {
+                  "runtimeKind": "autobyteus",
+                  "llmModelIdentifier": "sonnet",
+                  "llmConfig": null,
+                  "autoExecuteTools": true,
+                  "workspaceRootPath": "/work/x",
+                  "source": null,
+                  "ownSource": false
+                }
+              }
+            ],
+            "taskExecutions": [
+              {
+                "agentRunId": "image_maker_33f0",
+                "address": "/image_maker",
+                "name": "image maker",
+                "kind": "agent",
+                "startedAt": "listed",
+                "delegatorAgentRunId": "product_designer_1a2b",
+                "launch": {
+                  "runtimeKind": "autobyteus",
+                  "llmModelIdentifier": "sonnet",
+                  "llmConfig": null,
+                  "autoExecuteTools": true,
+                  "workspaceRootPath": "/work/x",
+                  "source": {
+                    "origin": "agent_default",
+                    "fallbacks": []
+                  },
+                  "ownSource": true
+                },
+                "members": [],
+                "taskExecutions": []
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "teamRunId": "research_team_77aa",
+        "coordinatorAgentRunId": "lead_0c11",
+        "address": "/research_team",
+        "name": "research team",
+        "kind": "peer_team",
+        "startedAt": "listed",
+        "delegatorAgentRunId": "project_task_manager_7c8d",
+        "nodeId": "node-b-1f0e",
+        "nodeName": "node-b-1f0e",
+        "launch": null,
+        "members": [
+          {
+            "address": "/lead",
+            "agentRunId": "lead_0c11",
+            "launch": null
+          },
+          {
+            "address": "/analyst",
+            "agentRunId": "analyst_5d20",
+            "launch": null
+          }
+        ],
+        "taskExecutions": []
+      }
+    ]
+  },
+  "engineeringView": {
+    "taskExecutions": [
+      {
+        "teamRunId": "product_team_e03d",
+        "coordinatorAgentRunId": "product_designer_1a2b",
+        "address": "/product_team",
+        "name": "product team",
+        "kind": "team",
+        "startedAt": "listed",
+        "delegatorAgentRunId": "solution_designer_65a9",
+        "launch": {
+          "runtimeKind": "autobyteus",
+          "llmModelIdentifier": "sonnet",
+          "llmConfig": null,
+          "autoExecuteTools": true,
+          "workspaceRootPath": "/work/x",
+          "source": null,
+          "ownSource": true
+        },
+        "members": [
+          {
+            "address": "/product_designer",
+            "agentRunId": "product_designer_1a2b",
+            "launch": {
+              "runtimeKind": "autobyteus",
+              "llmModelIdentifier": "sonnet",
+              "llmConfig": null,
+              "autoExecuteTools": true,
+              "workspaceRootPath": "/work/x",
+              "source": null,
+              "ownSource": false
+            }
+          }
+        ],
+        "taskExecutions": [
+          {
+            "agentRunId": "image_maker_33f0",
+            "address": "/image_maker",
+            "name": "image maker",
+            "kind": "agent",
+            "startedAt": "listed",
+            "delegatorAgentRunId": "product_designer_1a2b",
+            "launch": {
+              "runtimeKind": "autobyteus",
+              "llmModelIdentifier": "sonnet",
+              "llmConfig": null,
+              "autoExecuteTools": true,
+              "workspaceRootPath": "/work/x",
+              "source": {
+                "origin": "agent_default",
+                "fallbacks": []
+              },
+              "ownSource": true
+            },
+            "members": [],
+            "taskExecutions": []
+          }
+        ]
+      }
+    ]
+  },
+  "firstStartWarnings": [
+    "Running Prisma migrations...",
+    "27 migrations found in prisma/migrations",
+    "No pending migrations to apply.",
+    "Database migrations completed successfully.",
+    "(node:25521) ExperimentalWarning: SQLite is an experimental feature and might change at any time",
+    "(Use `node --trace-warnings ...` to show where the warning was created)"
+  ],
+  "secondStart": {
+    "files": 24,
+    "changed": []
+  },
+  "dro4": {
+    "migration": {
+      "migrationId": "20261111_delegated_runs_own_runs_v1",
+      "status": "SUCCEEDED",
+      "summary": "Scanned 24; migrated 24; skipped 0; failed 0.",
+      "errorMessage": null
+    },
+    "managerRows": {
+      "support_team_a100": {
+        "address": "/support_team",
+        "launch": {
+          "runtimeKind": "autobyteus",
+          "llmModelIdentifier": "sonnet",
+          "llmConfig": null,
+          "source": null,
+          "ownSource": true
+        },
+        "members": {
+          "/coordinator": {
+            "runtimeKind": "claude_agent_sdk",
+            "llmModelIdentifier": "sonnet",
+            "llmConfig": null,
+            "source": null,
+            "ownSource": false
+          },
+          "/operator": {
+            "runtimeKind": "codex_app_server",
+            "llmModelIdentifier": "gpt-6.1-terra",
+            "llmConfig": {
+              "reasoning_effort": "high"
+            },
+            "source": {
+              "origin": "settings",
+              "fallbacks": []
+            },
+            "ownSource": true
+          }
+        }
+      },
+      "review_team_b200": {
+        "address": "/review_team",
+        "launch": {
+          "runtimeKind": "autobyteus",
+          "llmModelIdentifier": "sonnet",
+          "llmConfig": null,
+          "source": null,
+          "ownSource": true
+        },
+        "members": {
+          "/lead": {
+            "runtimeKind": "codex_app_server",
+            "llmModelIdentifier": "gpt-6.1-terra",
+            "llmConfig": {
+              "reasoning_effort": "high"
+            },
+            "source": {
+              "origin": "settings",
+              "fallbacks": []
+            },
+            "ownSource": true
+          },
+          "/checker": {
+            "runtimeKind": "autobyteus",
+            "llmModelIdentifier": "opus",
+            "llmConfig": {
+              "reasoning_effort": "high"
+            },
+            "source": {
+              "origin": "settings",
+              "fallbacks": []
+            },
+            "ownSource": true
+          },
+          "/scribe": {
+            "runtimeKind": "claude_agent_sdk",
+            "llmModelIdentifier": "sonnet",
+            "llmConfig": null,
+            "source": {
+              "origin": "agent_default",
+              "fallbacks": []
+            },
+            "ownSource": true
+          }
+        }
+      },
+      "outreach_team_c300": {
+        "address": "/outreach_team",
+        "launch": {
+          "runtimeKind": "autobyteus",
+          "llmModelIdentifier": "sonnet",
+          "llmConfig": null,
+          "source": null,
+          "ownSource": true
+        },
+        "members": {
+          "/operator": {
+            "runtimeKind": "codex_app_server",
+            "llmModelIdentifier": "gpt-6.1-terra",
+            "llmConfig": {
+              "reasoning_effort": "high"
+            },
+            "source": {
+              "origin": "settings",
+              "fallbacks": []
+            },
+            "ownSource": true
+          }
+        }
+      },
+      "summarizer_d400": {
+        "address": "/summarizer",
+        "launch": {
+          "runtimeKind": "codex_app_server",
+          "llmModelIdentifier": "gpt-6.1-terra",
+          "llmConfig": {
+            "reasoning_effort": "high"
+          },
+          "source": {
+            "origin": "settings",
+            "fallbacks": []
+          },
+          "ownSource": true
+        },
+        "members": {}
+      },
+      "summarizer_e500": {
+        "address": "/summarizer",
+        "launch": {
+          "runtimeKind": "codex_app_server",
+          "llmModelIdentifier": "gpt-6.1-terra",
+          "llmConfig": {
+            "reasoning_effort": "high"
+          },
+          "source": {
+            "origin": "settings",
+            "fallbacks": []
+          },
+          "ownSource": true
+        },
+        "members": {}
+      }
+    },
+    "firstStartWarnings": [
+      "Running Prisma migrations...",
+      "27 migrations found in prisma/migrations",
+      "No pending migrations to apply.",
+      "Database migrations completed successfully.",
+      "(node:26706) ExperimentalWarning: SQLite is an experimental feature and might change at any time",
+      "(Use `node --trace-warnings ...` to show where the warning was created)"
+    ],
+    "secondStart": {
+      "files": 37,
+      "changed": []
+    }
+  }
+}
