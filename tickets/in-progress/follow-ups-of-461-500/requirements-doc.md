@@ -40,7 +40,7 @@
 
 | ID | Decision | Owner | Status |
 | --- | --- | --- | --- |
-| D-1 | FU-027's scope (the migration runner's order and late-run rules) | `Needs user` | asked 2026-11-17 |
+| D-1 | FU-027's scope (the migration runner's order and late-run rules) | **The user**, 2026-11-17 | **Decided: option 1, guards only.** The user: "I feel like a simple guard would be enough … a guard which protects the current order so somebody can only put it in as the latest … being enough for migration." So: the released order is protected (learned from the latest release tag, not a hand-kept list), and a new migration can only be appended as the latest (its ID's date later than the last entry's), by test. The runner is unchanged. Late-running migrations stay handled per migration, by the guideline's rule (461's follow-up pattern). FU-028 and FU-029 are fixed individually. The minimum supported upgrade version (option 3) is not taken. |
 | D-2 | Staging of the six groups into deliveries | Solution Designer (user informed) | proposed 2026-11-17 |
 
 (The behavior, scenario, requirement and acceptance tables are written group by group as investigation completes.)
