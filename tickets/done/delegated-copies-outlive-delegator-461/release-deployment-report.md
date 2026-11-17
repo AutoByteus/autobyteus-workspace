@@ -141,3 +141,4 @@ Models: claude `haiku`, codex `gpt-5.6-luna`, grok `grok-4.7`. Logs kept at `/tm
 - Checks on `4155251303`: licensing 0, hygiene 0, Secret Gate `v1.5.13-beta.6..HEAD` PASS, install 0, prebuild 0.
 - `release_smoke.py` on `4155251303`: claude 3/3 PASS, codex 3/3 PASS, antigravity 2/2 PASS, autobyteus 2/2 PASS; **grok 0/3: HTTP 429 `free-usage-exhausted` on grok-4.7** (the quota; the team case now reaches the model). Logs `/tmp/smoke461b-evidence/`.
 - Grok's quota: RELEASE.md treats it as a runtime that cannot run: wait for the rolling 24 h reset, or the user waives Grok for this release. **Not tagged; the user's decision is pending.**
+- **Grok waived for this release by the user (2026-11-17, "Waive grok").** Reason: Grok's free quota is exhausted (HTTP 429 on all three cases); the four other runtimes pass every case on the commit to be tagged. Grok's own coverage remains follow-up FU-035.
