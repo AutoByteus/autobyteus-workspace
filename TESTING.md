@@ -173,6 +173,12 @@ or because Gradle's cache already holds a dependency the runner must download.
 - **One heavy run at a time.** Do not run server `test:unit`, an E2E folder, a build or a
   probe alongside another of them, in any worktree: they compete for CPU, and timing
   assertions then fail for reasons that are not in the code under test.
+- **File watching on a busy Mac.** Folder-watcher tests, and any test of a server that starts or
+  closes folder watchers, depend on macOS FSEvents. When `fseventsd` is busy (high CPU in `ps`),
+  watch events arrive seconds late or never, and closing a recursive `fs.watch` blocks Node's main
+  thread for seconds, so those tests time out for a reason outside the code. Before diagnosing such
+  a timeout, check `fseventsd` and measure: the time from writing a file in a watched temp folder to
+  its event, and how long `close()` of that watcher blocks.
 - **Green server suites.** Server `test:unit`, `test:integration` and `typecheck` are kept
   passing. Every failure there is a real failure: find its cause and fix or report it
   (Rule 9). Run `test:integration:prepare` once per worktree and after changing server or
