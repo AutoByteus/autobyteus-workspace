@@ -31,14 +31,14 @@
 - Delivery round and trigger: round 2; the user's message of 2026-11-17: "If everything is good please Release beta version. And I waive for grok, because I have no more usage limits."
 - Triggering upstream report, verification, or evidence: the release smoke check on `a8ac226e65` (our stale native tool-list test, plus Grok's quota); API/E2E `API-REV-002` (`Pass`, 95%): reproduced (API-11), three stale tests fixed, the prevention rule added to TESTING.md.
 - Prior authoritative result: DR-001 (finalized, no release)
-- Current authoritative result: see the release/deployment report, "Round 2 tag and rollout" (written after the tag)
+- Current authoritative result: `Delivery Completed` with beta `v1.5.13-beta.8` released: release commit `3b59ef0be1` on `origin/personal`, annotated tag `v1.5.13-beta.8`; all four workflows succeeded (Desktop 44047761183, Android 44047761208, iOS 44047761177, Server Docker 44047761247); 23 assets, pre-release; the six server packages precede every `latest*.yml`; Docker `1.5.13-beta.8` (amd64, arm64) and `:beta` published, `:latest` not moved. Grok waived by the user. See the release/deployment report, "Round 2 tag and rollout".
 - Docs sync report: `docs-sync-report.md` (round 1, `Updated`). Round 2 changed `TESTING.md` through API/E2E (`8af6082a52`, "Choosing the path": the tools a run gets), which delivery checked; no further docs impact from the release.
 - Handoff summary: `handoff-summary.md` (round 1; the release outcome is in the report)
 - Release/publication/deployment report: `release-deployment-report.md`, "Round 2"
 - Integration and post-integration verification: `origin/personal` advanced to `9695d310c5` (tickets 507, 508); merged as `daa47dc70e`. On that state: licensing, hygiene, Secret Gate (`v1.5.13-beta.7..HEAD`), prebuild, both typechecks at baseline, registry-order test, and the smoke check (claude 3/3, codex 3/3, antigravity 2/2, autobyteus 2/2; Grok waived) (`evidence/DEL-02-beta8-pre-tag-checks.log`).
 - Verification (evidence judgement or user check) and finalization state: unchanged from DR-001 for the ticket's own criteria (no code of the ticket changed in round 2; only three tests and TESTING.md). Finalization of the ticket was complete in DR-001. The release is cut from the finalize branch `finalize/release-v1.5.13-beta.8`.
-- Terminal return to the Solution Designer: `Not yet eligible` until the release is complete
-- Terminal return message/reference: pending
+- Terminal return to the Solution Designer: `Sent` after this record's commit was pushed and the release worktree and branch were removed (the terminal message is the reference)
+- Terminal return message/reference: the `send_message_to` to the Solution Designer, which carries the paths of the archived ticket's delivery documents and the release outcome
 - Why this revision was recorded: a release request after finalization, and a failure of ours that surfaced before the tag
-- Next recipient/action: tag, push, watch the four release workflows, record the outcome; then the terminal return to the Solution Designer
+- Next recipient/action: Solution Designer verifies the receipt and returns the result to the Project Task Manager (`autobyteus-496`), with FU-001 … FU-006 from `follow-ups.md`
 - Remaining blockers, rollback concerns, or untested scope: Grok live (waived); the beta also carries tickets 507 and 508 by design.
