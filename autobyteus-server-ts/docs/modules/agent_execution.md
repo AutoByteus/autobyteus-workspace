@@ -991,8 +991,10 @@ end (exit code, signal, or an unknown end) and whether the end was reported.
   idle shutdown end the native agent; its `BackgroundProcessCleanupStep` stops
   the run's commands through the host scope and removes their output files.
   Stop (interrupt) leaves background tasks running; their notices still
-  arrive. After an app restart the commands are gone (autobyteus-448 tells the
-  idle agents).
+  arrive. An update or restart stops the commands at the app's graceful stop.
+  After an unexpected stop (crash, forced quit, power loss) they may keep
+  running, no longer tracked: nothing stops them at the next start. Either
+  way the restart reminder tells the run ([Restart Resume](restart_resume.md)).
 
 ### Read-only Codex background-task inspection
 
