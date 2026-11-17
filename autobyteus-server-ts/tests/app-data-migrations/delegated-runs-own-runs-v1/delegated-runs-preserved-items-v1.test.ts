@@ -17,7 +17,10 @@ import type {
   AppDataMigrationRecordRepositoryLike,
   AppDataMigrationRecordSnapshot,
 } from "../../../src/app-data-migrations/domain/app-data-migration-types.js";
-import { I, M, exists, paths, put, readJson, releasedTeamOwnFile, writeReleasedWorld, type World } from "../../fixtures/app-data-migrations/released-delegation-shape-fixtures.js";
+import {
+  I, M, exists, paths, put, readJson, releasedMemberEditTeam, releasedTeamOwnFile, runtimeEdit, writeReleasedWorld, type World,
+} from "../../fixtures/app-data-migrations/released-delegation-shape-fixtures.js";
+import { validateTeamRunExecutionTreePayload } from "../../../src/run-history/store/team-run-execution-tree-schema.js";
 
 /**
  * autobyteus-461 SR-078 (DS-10, "After the predecessor finishes the item"): one follow-up per predecessor converts the
@@ -91,6 +94,20 @@ describe("the follow-ups of 20261111_delegated_runs_own_runs_v1 (SR-078)", () =>
     const after = await snapshot(w.appData);
     await expect(followUp(w, AFTER_17).execute()).resolves.toMatchObject({ status: "SUCCEEDED", summary: { migratedCount: 0 } });
     expect(await snapshot(w.appData)).toEqual(after);
+  });
+
+  it("after 20261017 finishes a copy with a Settings edit naming another runtime: the follow-up applies the edit whole, as ours does (autobyteus-508 AC-006)", async () => {
+    const w = await world();
+    await writeReleasedWorld(w);
+    await main(w).execute();
+    await put(paths(w).teamFile("late_edited_team"), releasedMemberEditTeam("late_edited_team", "/late_edited_team"));
+    await expect(followUp(w, AFTER_17).execute()).resolves.toMatchObject({ status: "SUCCEEDED" });
+    const own = await readJson(paths(w).teamFile("late_edited_team"));
+    expect(own).not.toHaveProperty("taskAgent");
+    expect(own.rootTeam.members[1]).toMatchObject({ address: "/operator", launchSource: { origin: "settings", fallbacks: [] },
+      launchConfiguration: { runtimeKind: "codex_app_server", llmModelIdentifier: "gpt-6.1-terra", llmConfig: runtimeEdit().llmConfig } });
+    expect(own.rootTeam.members[1]).not.toHaveProperty("userLaunchSelection");
+    expect(() => validateTeamRunExecutionTreePayload(own, "late_edited_team")).not.toThrow();
   });
 
   it("after 20261019 completes an own file our migration preserved: it is converted and listed", async () => {
