@@ -39,7 +39,7 @@ export async function recordAcceptedAttachmentMessage(input: {
     return { forwarded: true, turnId };
   });
   const backend: AgentRunBackend = {
-    runId: input.id, runtimeKind: input.runtimeKind, compactionRecovery: { kind: "unsupported" } as const,
+    runId: input.id, runtimeKind: input.runtimeKind, compactionRecovery: { kind: "unsupported" } as const, backgroundTaskInspection: { kind: "unsupported" } as const,
     inputCapabilities: { activeTurnAppend: "unsupported" },
     getContext: () => context, isActive: () => true, getPlatformAgentRunId: () => "platform",
     getLifecycleSnapshot: () => ({ availability: "active", phase: "idle", currentTurn: { kind: "NONE" } }),

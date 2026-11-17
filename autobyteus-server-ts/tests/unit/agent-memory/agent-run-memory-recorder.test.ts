@@ -49,7 +49,7 @@ const createRun = (input: {
   const backend: AgentRunBackend = {
     runId: "run-1",
     runtimeKind: input.runtimeKind,
-    compactionRecovery: { kind: "unsupported" } as const,
+    compactionRecovery: { kind: "unsupported" } as const, backgroundTaskInspection: { kind: "unsupported" } as const,
     inputCapabilities: { activeTurnAppend: "unsupported" },
     getContext: () => context,
     isActive: () => true,
