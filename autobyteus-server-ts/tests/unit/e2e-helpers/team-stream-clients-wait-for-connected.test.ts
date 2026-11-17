@@ -24,6 +24,15 @@ const sendsBeforeStreamReady = (source: string): string | null => {
   return READINESS_WAIT.test(source) ? null : "opens a Team or Org stream and sends a command without waiting for CONNECTED";
 };
 
+/**
+ * Sources that send before readiness on purpose, each to prove the stream's answer to an early command, with why. Each
+ * must still send early (checked below), so an exemption is removed with the behavior it covers.
+ */
+const SENDS_EARLY_ON_PURPOSE: Readonly<Record<string, string>> = {
+  "tests/e2e/agent/run-stream-early-command.e2e.test.ts":
+    "autobyteus-500 FU-036 RSE-1: a command sent on open is refused SESSION_NOT_READY or acknowledged, never dropped",
+};
+
 const serverRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../..");
 const testSources = (dir: string): string[] => readdirSync(path.join(serverRoot, dir), { recursive: true, withFileTypes: true })
   .filter((entry) => entry.isFile() && /\.(?:ts|mjs)$/.test(entry.name))
@@ -48,9 +57,16 @@ describe("Team and Org stream test clients wait for CONNECTED before sending", (
     const sources = [...testSources("tests/e2e"), ...testSources("tests/integration")];
     expect(sources.length).toBeGreaterThan(100);
     const offending = sources.flatMap((file) => {
+      if (file in SENDS_EARLY_ON_PURPOSE) return [];
       const reason = sendsBeforeStreamReady(readFileSync(path.join(serverRoot, file), "utf8"));
       return reason ? [`${file}: ${reason}`] : [];
     });
     expect(offending).toEqual([]);
+  });
+
+  it("each source exempted for sending early on purpose exists and still sends early", () => {
+    for (const file of Object.keys(SENDS_EARLY_ON_PURPOSE)) {
+      expect(sendsBeforeStreamReady(readFileSync(path.join(serverRoot, file), "utf8")), `${file}: remove its exemption`).not.toBeNull();
+    }
   });
 });
