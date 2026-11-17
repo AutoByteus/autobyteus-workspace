@@ -15,7 +15,9 @@
 //   MSP-74 autobyteus-525 AC-005  Largest at 412 and 360 px: the run list, its menu, the connection sheet, the unpair
 //                  confirmation, New run and its agent sheet, the conversation, the run's ⋮, Artifacts, Files, a code file
 //                  (17 px), Messages, Activity, Settings, the setup page, a pairing link's page and "Connected to …": no
-//                  sideways scroll, nothing past the edge, no text cut without an ellipsis; screenshots `MSP-74-*.png`.
+//                  sideways scroll, nothing past the edge, no text cut without an ellipsis; screenshots `MSP-74-*.png`. Also
+//                  the screens the merged base added: a remote run's Settings (autobyteus-522) and a run idle with a
+//                  background task, its row and run screen (autobyteus-448; a plain run of the stack, 150 s task).
 //   MSP-61 AC-004  The stopped Team's lead: ⋮ → Settings shows "Stopped · in <Team>"; Runtime → Grok Build clears the model;
 //                  Model → grok-4.7; Save returns to the conversation; the node holds the new selection; Settings again
 //                  shows it; a message from the phone continues the run on it.
@@ -395,13 +397,53 @@ export const runRunSettingsCases = async (probe) => {
         if (await unpaired.page.locator(sel('mobile-post-pair-checking')).count()) await record(unpaired.page, `${width}-connected-to`);
         await unpaired.context.close();
       }
+      // The screens the merged base added (autobyteus-522, autobyteus-448), at Largest, 412 and 360 px: the Settings of a run
+      // on another node (the sentence naming its node, MSP-72's run) and a run idle with a background task (its row and its
+      // run screen say "Background task running"; a plain run of the stack, not MSP-73's).
+      const ptmKey = `agent:${stack.ptm}`;
+      const showOlder = async () => {
+        const fold = page.locator(sel('mobile-run-list-show-older'));
+        if ((await fold.count()) && (await fold.innerText()).startsWith('Show older')) await fold.click();
+      };
+      const backgroundKey = `agent:${stack.plain[2]}`;
+      await page.setViewportSize({ width: 412, height: 915 });
+      await backToList();
+      await showOlder();
+      await openRow(page, backgroundKey);
+      const box = page.locator(`${sel('mobile-run-conversation')} textarea`).last();
+      const send = page.locator(`${sel('mobile-run-conversation')} button[aria-label="Send message"]`).last();
+      await waitFor('Send enabled', async () => {
+        if (!(await box.inputValue().catch(() => ''))) await box.fill('Start the docs server. BACKGROUND_STEP:{"seconds":150,"exitCode":0}').catch(() => undefined);
+        return (await send.count()) > 0 && await send.isEnabled();
+      }, 20_000);
+      await send.click();
+      await waitFor('the run screen says Background task running', async () => (await runScreen(page)).subtitle === 'Background task running', 45_000);
+      for (const [width, height] of [[412, 915], [360, 780]]) {
+        await page.setViewportSize({ width, height });
+        await backToList();
+        await showOlder();
+        await page.locator(`${sel(`mobile-run-row-${backgroundKey}`)} [data-status="background"]`).waitFor({ timeout: 20_000 });
+        await page.locator(sel(`mobile-run-row-${backgroundKey}`)).scrollIntoViewIfNeeded();
+        await record(page, `${width}-background-row`);
+        await openRow(page, backgroundKey);
+        await record(page, `${width}-background-run-screen`);
+        await backToList();
+        await ensureUnfolded(page, ptmKey);
+        const publisher = childRow(await rowsOf(page), ptmKey, 'publisher', 1);
+        assert(publisher, 'the PTM\'s publisher row (a run on beta)', await rowsOf(page));
+        await openRow(page, publisher.key);
+        await menuOpen(page, 'settings');
+        await page.locator(sel('mobile-run-settings-remote')).waitFor({ timeout: 20_000 });
+        await record(page, `${width}-remote-run-settings`);
+        await back();
+      }
     } finally {
       await page.setViewportSize({ width: 390, height: 844 });
       await chooseTextSize('standard').catch((error) => { cleanup = error.message.split('\n')[0]; });
     }
     const details = { monacoPx: monaco, cleanup, screens };
     const unclean = Object.entries(screens).filter(([, result]) => !clean(result)).map(([key]) => key);
-    assert(Object.keys(screens).length >= 30, 'AC-005 every listed phone screen was reached at both widths', details);
+    assert(Object.keys(screens).length >= 36, 'AC-005 every listed phone screen was reached at both widths', details);
     assert(unclean.length === 0, `AC-005 at Largest no sideways scroll, nothing past the edge, no text cut without an ellipsis: ${unclean.join(', ')}`, details);
     assert(monaco === 17, 'REQ-006 the file viewer\'s code text is 17 px at Largest', details);
     assert(cleanup === null, 'back to Standard after the sweep', details);
