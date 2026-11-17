@@ -2,8 +2,8 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: `SR-001`
-- Approved requirements baseline: `requirements-doc.md` at SR-001, approved by the Solution Designer within the Task's direction (user informed 2026-11-17)
+- Current solution revision ID: `SR-002` (SR-001 baseline; SR-002 adds the VNC Viewer Control-mode bar layout after CRR-001 CR-001)
+- Approved requirements baseline: `requirements-doc.md` at SR-002 (DEC-008, AC-006 amended), approved by the Solution Designer within the Task's direction (user informed 2026-11-17)
 - Behavior-defining supplements: None
 - User approval of the design: `Not required` (the Task leaves the small design to the team; the founder sees the result on a phone-size page before release)
 - Design status: `Ready`
@@ -46,8 +46,9 @@ Make the phone Text size the source of the app's font metrics on the phone (root
 
 - In scope: UC-001, UC-002, UC-003. Areas: the app font-size owner (store, presets/steps, plugin), the phone run list header and its new menu, the run's ⋮ menu (removal), the phone conversation stylesheet and event monitor wiring, the run row geometry, a phone-only stylesheet for fixed-px text, popup widths, en/zh-CN catalogs, unit tests, the phone probe case MSP-60 and new Largest screenshot cases.
 - Derived consumers of `resolvedMetrics` (Principle 11): `MonacoEditor.vue` — follows (phone editor px); `Terminal.vue` — not on the phone, unchanged; `DisplaySettingsManager.vue` — desktop only, unchanged; `applyAppFontSizeToDocument` — writes the phone metrics on the phone.
-- Deliberately left alone: the desktop Display font size and every desktop screen; the shared desktop components' `text-[11px]` classes themselves (FU-001); images/PDF/VNC picture zoom; the run row's one-line ellipsis (DEC-004); the run's other menu entries and 522's Settings change; phone strings that are still literal English (autobyteus-509).
-- Follow-ups: FU-001.
+- VNC Viewer Control-mode bar (SR-002, DEC-008): Keyboard and Clipboard move from the top bar to the status row, at every step; see "VNC Viewer Control-Mode Bar (SR-002)" below.
+- Deliberately left alone: the desktop Display font size and every desktop screen; the VNC full-screen strip; the shared desktop components' `text-[11px]` classes themselves (FU-001); images/PDF/VNC picture zoom; the run row's one-line ellipsis (DEC-004); the run's other menu entries and 522's Settings change; phone strings that are still literal English (autobyteus-509).
+- Follow-ups: FU-001. FU-002 is folded into this ticket by SR-002.
 
 ## Relevant Behavior And Production-Path Map (Mandatory)
 
@@ -285,6 +286,15 @@ N/A.
 4. Fixed px: run-row rem geometry; `phone-text-size.css`; popup max widths.
 5. Rendered check of every phone screen (REQ-005 list) at Largest at 360 and 412 px, plus Standard against the base (AC-006); fix sizing issues found (rem conversions, wrapping, max widths). A screen needing a redesign → `Design Impact`.
 6. Probe: rewrite MSP-60 (home control, four steps measured: root font size and feed px, persistence after reload, run menu without Text size); add Largest screenshot cases; Android emulator at four steps on the home screen and the conversation (Task).
+
+## VNC Viewer Control-Mode Bar (SR-002)
+
+- Evidence: CRR-001 CR-001 (`code-review-report.md` C-02, C-03), `evidence/api-e2e/vnc/API-10-vnc-bar.json`; source `autobyteus-web/components/mobile/views/MobileNodeDesktop.vue` l.11–59 (top-bar actions), l.62–74 (status row), l.181 (`barButtonClass`); `MobileScreenBar.vue` l.4–15. The four Control-mode actions need ≈ 21.75 rem; a 360 px phone has 18.2 rem at Largest. No sizing-only fix exists.
+- Decision (DEC-008): in Control mode, while connected, Keyboard and Clipboard render at the right end of the status row (after the status text, which is `min-w-0 flex-1 truncate` and gives way with an ellipsis), not in the top bar. The top bar keeps back, title, the Fit button (View only, zoomed), the Control/View only switch and full screen. Same layout at every step. The Connect offer button (shown only while not connected) and Keyboard/Clipboard (only while connected in Control) never appear together.
+- Shape: the two buttons keep their test ids (`mobile-node-desktop-keyboard`, `mobile-node-desktop-clipboard-open`), labels and handlers; they use a row-sized class (h-9, `px-3`, `text-sm font-medium`, the bar buttons' colours; tap target ≥ 36 px as today's bar buttons). Status row `gap-2` stays. No new component: the block moves inside `MobileNodeDesktop.vue`.
+- Expected widths (Largest, root 19.76 px, en): top bar ≈ back 59 + Control ≈ 97 + full screen 59 + paddings ≈ 225 px, leaving ≈ 115 px for "VNC Viewer" at 360 px; status row ≈ dot + Keyboard ≈ 106 + Clipboard ≈ 115 + paddings, leaving ≈ 55–60 px for the status text at 360 px (ellipsis; at 412 px ≈ 110 px). zh-CN labels are shorter.
+- Verification: API-10 rerun at the four steps × 360/412, both modes, en and zh-CN: full-screen button inside the screen, title not cut to its padding, no overlap; the status text may shorten with an ellipsis. Unit: `MobileNodeDesktop.spec.ts` asserts Keyboard/Clipboard are in the status row in Control mode. A live node desktop check when available.
+- Files: `autobyteus-web/components/mobile/views/MobileNodeDesktop.vue` (Modify), `components/mobile/views/__tests__/MobileNodeDesktop.spec.ts` (Modify), the API-10 probe script.
 
 ## Key Tradeoffs
 

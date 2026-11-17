@@ -11,7 +11,7 @@
 - Finalization target remote / branch: `origin/personal`
 - Bootstrap result: worktree created from the freshly fetched `origin/personal`
 - Bootstrap blocker: None
-- Current solution revision ID: `SR-001`
+- Current solution revision ID: `SR-002`
 - Authorities read (requirements reading gate; file and date): `references/requirements-engineering.md`, `references/ticket-scope.md`, `references/finding-the-cause.md` (2026-11-17); repository `AGENTS.md`, `TESTING.md` (phone and Android emulator sections)
 - Investigation status: Complete for requirements and architecture
 
@@ -144,6 +144,14 @@
 - The conversation's size: `--pc-size` set inline by `AgentEventMonitor` from `usePhoneTextSize().px`. With the root at 16 × step/17 px, `1.0625rem` equals the step px exactly, so the conversation can follow the root and the monitor no longer needs its own wiring.
 - Fixed px on phone screens that must follow: `MobileRunRow` rails/padding (inline px); `text-[11px]` in `CompactionStatusRow` and `SystemInstructionActivityItem` (shared with the desktop, which must not change); Monaco font px. Intentional px that stay: the "A" preview buttons (each shows its own step), the VNC picture (a remote screen image), images/PDFs (pinch zoom).
 - `phone-conversation.css` avatar 22 px: decorative; stays unless the rendered check shows a problem at Largest.
+
+### SR-002 — VNC Viewer Control-mode bar (2026-11-17)
+
+- Source: CRR-001 CR-001 / API-10 (`code-review-report.md` C-02…C-04; `evidence/api-e2e/vnc/API-10-vnc-bar.json`, Measured by API/E2E on the head phone bundle with the bar markup copied from source).
+- Read: `MobileNodeDesktop.vue` l.11–59 top-bar actions (all `flex-shrink-0`), l.62–74 status row (`min-w-0 flex-1 truncate` status text; Connect offer only while not connected), l.181 `barButtonClass`; labels en "Keyboard"/"Clipboard"/"Control", zh-CN "键盘"/"剪贴板"/"控制" (`localization/messages/*/mobileNodeDesktop.ts`); Control status text "Connected · Control" / "已连接 · 控制".
+- Measured (API/E2E): full-screen button right edge 403.5 px at 360/Large, 442.8 px at 360 and 412/Largest; 363.7 px at 360/Standard on the same markup as the base (FU-002).
+- Calculated: actions need ≈ 21.75 rem; budget 18.2 rem (360) / 20.85 rem (412) at Largest; sizing levers recover ≈ 70 of ≈ 83 px at 360 — not enough (Read/calculated, CRR-001).
+- Implication: a layout change (DEC-008), not sizing.
 
 ## Requirement Implications
 

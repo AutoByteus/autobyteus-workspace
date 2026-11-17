@@ -35,3 +35,13 @@ Unit tests (store both sources, steps, the new menu, the run menu without Text s
 ## Route record
 
 - `get_handoff_rules` 2026-11-17: the rule for `Architecture Design Complete` with Small/Medium and Low risk → `/implementation_engineer`. Sent there.
+
+## SR-002 (2026-11-17) — revision after API-10 / CRR-001
+
+- Result: `Architecture Design Complete` (revised), still `Medium` / `Low` → `/implementation_engineer` (direct route).
+- Trigger: API/E2E round 1 Fail on API-10; failure-origin review CRR-001 (CR-001, Design Impact), `code-review-report.md`, commit `f9c35a7233`.
+- Change: DEC-008 — on the phone VNC Viewer in Control mode, Keyboard and Clipboard move from the top bar to the right end of the status row, at every step; the status text shortens with an ellipsis. AC-006 amended for this screen; FU-002 folded in. Details: design-spec "VNC Viewer Control-Mode Bar (SR-002)".
+- Approval: Solution Designer within the direction; user informed 2026-11-17.
+- Expected next: implementation in `MobileNodeDesktop.vue` (+ spec); then API/E2E reruns API-10 at the four steps × 360/412, both modes, en and zh-CN (live node desktop when available).
+- For delivery (docs sync): `autobyteus-web/docs/remote_access.md:26` still names `usePhoneTextSize`.
+- Route: `get_handoff_rules` → Small/Medium + Low rule → `/implementation_engineer`.

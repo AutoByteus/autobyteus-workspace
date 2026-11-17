@@ -3,14 +3,14 @@
 ## Document Status
 
 - Status: `Approved`
-- Current solution revision ID: `SR-001`
+- Current solution revision ID: `SR-002`
 - Package identifier: `phone-text-size-home-525`
 - Request / ticket: autobyteus-525 (Project `project_a1377344-25db-482a-97cc-ecfdb0fb495a`)
 - Requested by: `/project_task_manager` (run `project_task_manager_7c8dce0c4a8b44f88e776a83809dee03`), carrying the founder's words of 2026-11-17
 - Requirements owner: Solution Designer (software engineering team copy, run `solution_designer_c3a8302c63ea42e1a077547eaa960a4b`)
 - Date: 2026-11-17
-- Approved by and reference: `Solution Designer within the direction (user informed)`; reference: SR-001 and the message to the user in the Solution Designer's conversation, 2026-11-17
-- Exact approved requirements baseline / solution revision: this document at SR-001
+- Approved by and reference: `Solution Designer within the direction (user informed)`; reference: SR-001 and the message to the user in the Solution Designer's conversation, 2026-11-17; SR-002 (DEC-008, AC-006 amended) likewise, user informed 2026-11-17
+- Exact approved requirements baseline / solution revision: this document at SR-002
 - Behavior-defining supplements and their approved versions: None
 
 ## Problem And Desired Outcome
@@ -84,7 +84,7 @@ None.
 | REQ-004 | The choice is one phone-wide value kept on the phone under the same storage key and values; an existing choice carries over and the default is Standard. | BEH-001 | Must | Task; data continuity | N/A | Task |
 | REQ-005 | Every phone screen scales its text and the sizes built on it in proportion to the step: factor = step px ÷ 17 (Small 0.882, Standard 1, Large 1.118, Largest 1.235). The conversation stays at exactly 15/17/19/21 px. Screens: the run list (header, rows, fold, banners, empty/error/loading states, the + button), the run screen (bar, menu, composer), Artifacts, Files and the opened file, Messages, Activity (with background tasks), Settings, VNC Viewer controls and clipboard, New run and its sheets, the connection sheet, the unpair confirmation, the pairing/setup screens, the "Connected to…" screen. | BEH-002 | Must | The founder: "apply to the whole app" | N/A (CSS rem scaling; rendered check in AC-005) | Task; DEC-003, DEC-007 |
 | REQ-006 | Elements that use fixed pixel sizes on phone screens follow the step too: run-row nesting rails and indents stay aligned with the avatars; small fixed-pixel labels (status chips in the conversation and Activity) scale; code and text shown in the phone file viewer scale. Exceptions: images, PDFs and the VNC picture (pinch zoom), and the four Text size preview letters (each shows its own step). | BEH-002, BEH-003 | Must | Task: "fix the screens that use fixed pixel sizes" | N/A | DEC-005, DEC-006 |
-| REQ-007 | At Largest on a 360 px and a 412 px wide phone, no phone screen cuts text off without an ellipsis, overlaps, or scrolls sideways (except content that already scrolls sideways by design: code blocks, tables, file content without wrap). Run names and subtitles keep one line and shorten with an ellipsis. Menus and sheets fit the screen width. | BEH-002 | Must | Task | Rendered check (RSK-001) | DEC-004 |
+| REQ-007 | At Largest on a 360 px and a 412 px wide phone, no phone screen cuts text off without an ellipsis, overlaps, or scrolls sideways (except content that already scrolls sideways by design: code blocks, tables, file content without wrap). Run names and subtitles keep one line and shorten with an ellipsis. Menus and sheets fit the screen width. The VNC Viewer's top bar in Control mode holds the back button, the title, the Control/View only switch and full screen; Keyboard and Clipboard sit at the right end of the status row under it, at every step (DEC-008). | BEH-002 | Must | Task | Rendered check (RSK-001) | DEC-004 |
 | REQ-008 | Desktop: nothing changes — its sizes, its Display font size setting, its editor and terminal sizes. | BEH-004 | Must | Task: "Phone only" | N/A | Task |
 | REQ-009 | New visible strings use translation keys (en and zh-CN). | — | Must | autobyteus-509 follows | N/A | Task |
 
@@ -97,7 +97,7 @@ None.
 | AC-003 | REQ-005 | BEH-002 / SCN-002 | Largest chosen on the home screen, then a run opened | The conversation's text is 21 px; the run list, bars, menus, Files, Activity, Messages, Settings, sheets and setup screens are proportionally larger (root 16 × 21/17 px) | Small: 15 px conversation, everything else smaller | Phone probe measures the root and the feed sizes at the four steps; emulator screenshots |
 | AC-004 | REQ-004 | BEH-001 / SCN-001 | A step chosen; the page reloaded / the Android app restarted | The same step is marked and applied on every screen from the first paint; a phone that had chosen a step in beta.9 keeps it | Storage unavailable: the choice applies until the page closes | Unit + probe reload |
 | AC-005 | REQ-006, REQ-007 | BEH-002, BEH-003 / SCN-002 | Largest, phone widths 360 and 412 px | Every screen listed in REQ-005: no unintended cut-off, overlap or sideways scroll; run-row rails align with the avatars at every step; status chips and phone file-viewer code text scale; menus/sheets fit the width | — | Rendered screenshots of every phone screen at Largest (probe) reviewed; emulator check |
-| AC-006 | REQ-005 | BEH-002 / SCN-002 | Standard (default) | Every phone screen measures as today (root 16 px; conversation 17 px; code 14 px) | — | Probe measurement + screenshot comparison with the base |
+| AC-006 | REQ-005 | BEH-002 / SCN-002 | Standard (default) | Every phone screen measures as today (root 16 px; conversation 17 px; code 14 px), except the VNC Viewer in Control mode, whose Keyboard and Clipboard move to the status row (DEC-008, SR-002) | — | Probe measurement + screenshot comparison with the base |
 | AC-007 | REQ-008 | BEH-004 / SCN-003 | Desktop app, any Display font size | Root size, editor and terminal sizes as today; no phone control | — | Existing desktop unit tests unchanged and passing |
 | AC-008 | REQ-009 | — | Source | The heading and the header button's label come from translation keys present in en and zh-CN | — | Unit + localization checks |
 
@@ -158,6 +158,7 @@ None.
 | DEC-004 | Run names/subtitles at Largest: wrap or shorten? | Readability vs. list density | Today one line with ellipsis; the Task allows "wrap or shorten cleanly" | Keep one line with ellipsis at every step: the list stays scannable, Standard stays identical, the full text is in the row's label and in the run. The founder sees it on the phone-size page and can ask for two lines. Decided. | Solution Designer | Decided |
 | DEC-005 | Shared desktop components with fixed px text shown on phone screens | Desktop must not change | Change them to rem (changes desktop at its Large preset) or scale them only on the phone | Phone-only scaling; desktop untouched. Decided. | Solution Designer | Decided |
 | DEC-006 | Does code in the phone file viewer follow? | "Every screen" | Monaco is px-only | Follow the step (14 px × factor, rounded); images/PDFs/VNC keep pinch zoom. Decided. | Solution Designer | Decided |
+| DEC-008 | How does the VNC Viewer's Control-mode bar fit at Large/Largest? (SR-002, from CRR-001 CR-001) | The bar's four actions cannot fit a 360/412 px phone at Largest by sizing alone (needs ≈ 21.75 rem; 18.2 rem available at 360); it is already 4 px over at Standard on 360 px (FU-002) | (a) icon-only buttons, labels as aria-label; (b) Keyboard and Clipboard to the status row below the bar; (c) an overflow menu; (d) a second bar row; each at every step or only at larger steps | (b) at every step. The status row exists, sits right under the bar, and its status text is the one flexible element; in Control mode that text repeats what the dot and the Control switch already show, so it can give way (ellipsis). Keyboard and Clipboard keep their words (clearer than icons, nothing hidden behind a menu, one tap as today). One layout at every step avoids a step-dependent screen and also fixes today's Standard overflow on 360 px (FU-002 folded in); the cost is that the Standard bar changes, so AC-006 is amended for this screen. The full-screen strip is unchanged. Revisit on the founder's word when he sees it. | Solution Designer | Decided |
 | DEC-007 | Does Small shrink the whole phone? | One setting | Consequence of one phone-wide setting | Yes: one setting means one effect; Small makes everything a little smaller. Decided. | Solution Designer | Decided |
 
 ## Traceability
