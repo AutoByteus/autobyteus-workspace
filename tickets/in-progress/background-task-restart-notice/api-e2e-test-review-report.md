@@ -2,7 +2,24 @@
 
 > Rename note (implementation, IR-006, delivery DR-003): part 2's phone probe case is now **MSP-73** (it was MSP-59, then MSP-67; autobyteus-483 and autobyteus-522 took those IDs on later bases). Rows below that say MSP-67 for part 2's case mean MSP-73; evidence file names keep the ID they were recorded under.
 
-## Latest Round: Part 2 on the merged base, round 3 (CRR-009) — Pass
+## Latest Round: Phone case renumbered after the DR-003 base merge, round 4 (CRR-010) — Pass
+
+- Trigger: implementation engineer, IR-006 (a test-only Local Fix from delivery DR-003). Delivery merged base `d61bae54a0` (autobyteus-522) as `e93d477539`. autobyteus-522 added MSP-67..MSP-72 (`mobile-every-run-settings-cases.mjs`), which collided with part 2's MSP-67, so the phone probe refused to start (DEL-04).
+- Reviewed: `38f278aeae..d2a3982f3e`. `d7fdd7db6f` touches `autobyteus-web/tests/e2e/mobile-shell-probe.mjs` only; `d2a3982f3e` holds documents and evidence.
+- Change: part 2's case is now `MSP-73` (its `runCase`, its header line recording the earlier IDs MSP-59 and MSP-67, and its four screenshot names). The case body and assertions are unchanged. autobyteus-522's own MSP-67..72 header line and cases are untouched.
+- Checks:
+
+| Check | Result | Evidence / Notes |
+| --- | --- | --- |
+| The new ID is unique and the collision is gone | Pass | `git grep MSP-73` (without `tickets`) finds only part 2's case; `MSP-67` now appears only in autobyteus-522's file |
+| No behavior or assertion changed | Pass | The diff is the ID, the header comment and the screenshot names only |
+| Executed | Pass | `evidence/IMP-21-phone-probe-msp73/results.log`: MSP-59, MSP-73, MSP-63, MSP-67..72 Pass; `mobile-shell probe: Pass` (the start check passes) |
+| Documents | Pass | The handoff and the API/E2E documents carry a rename note, so their `--cases=` commands work. Records and earlier evidence names are left as they were recorded. The note the implementer added at the top of this report is accurate |
+
+- Findings: none. Follow-ups: none added.
+- Result: `Pass`. Recommended Recipient: `delivery_engineer` (delivery runs again on the merged base).
+
+## Earlier Round: Part 2 on the merged base, round 3 (CRR-009) — Pass
 
 ### Review Meta
 
