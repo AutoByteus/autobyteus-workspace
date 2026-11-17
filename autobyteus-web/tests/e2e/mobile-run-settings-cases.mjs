@@ -17,6 +17,9 @@
 //   MSP-63 AC-006  A live idle agent: the red stop icon ("Stop run"), the rows and Save disabled; one tap stops it; the rows
 //                  open; a change saves.
 //   MSP-64 AC-006  A working agent (a turn held open): the stop icon; one tap stops it; the rows open.
+//   MSP-65 REQ-008 A live Org member (the Org's planner, a run of the case's own): the stop icon; one tap stops the Org run;
+//                  the phone stays on Settings with the rows open (no desktop route, no "Unsupported on phone"). Added by
+//                  API/E2E (autobyteus-458 round 1, F-1).
 import { randomUUID } from 'node:crypto';
 
 /**
@@ -26,7 +29,7 @@ import { randomUUID } from 'node:crypto';
  */
 export const runRunSettingsCases = async (probe) => {
   const { runCase, page, stack, alpha, sel, toList, openRow, ensureUnfolded, rowsOf, childRow, menuOpen, runScreen, shot, sendOver, waitFor, sleep, assert, phoneNet } = probe;
-  const ids = ['MSP-59', 'MSP-60', 'MSP-61', 'MSP-62', 'MSP-63', 'MSP-64'];
+  const ids = ['MSP-59', 'MSP-60', 'MSP-61', 'MSP-62', 'MSP-63', 'MSP-64', 'MSP-65'];
   if (probe.selected && !ids.some(id => probe.selected.has(id))) return;
 
   const gql = (query, variables) => alpha.gql(query, variables);
@@ -326,4 +329,44 @@ export const runRunSettingsCases = async (probe) => {
   });
   await liveCase('MSP-63', 'SETTINGS-458-IDLE a short answer, please.', 'idle');
   await liveCase('MSP-64', 'SETTINGS-458-WORK HOLD_TURN', 'working');
+
+  await runCase('MSP-65', async () => {
+    // The case's own Delivery Org run (the stack's Org runs serve later cases), its planner woken to a held turn.
+    const created = (await gql('mutation($i:CreateAgentOrgRunInput!){createAgentOrgRun(input:$i){success message agentOrgRunId}}',
+      { i: { agentOrgDefinitionId: stack.ids.org, rootConfiguration: stack.runConfig, agentOverrides: [], teamOverrides: [] } })).createAgentOrgRun;
+    assert(created.success, created.message);
+    const orgRunId = created.agentOrgRunId;
+    const orgConfig = async () => (await gql('query($id:String!){getAgentOrgRunConfig(orgRunId:$id){isActive executionTree}}', { id: orgRunId })).getAgentOrgRunConfig;
+    const planner = (await orgConfig()).executionTree.rootOrg.members.find((member) => member.address === '/planner')?.agentRunId;
+    assert(planner, 'the Org\'s planner');
+    await sendOver(stack.wsUrl(`agent-org/${orgRunId}`), { root_subject_kind: 'agent_org', root_run_id: orgRunId, target_agent_run_id: planner,
+      command_id: randomUUID(), message_id: randomUUID(), dedupe_key: randomUUID(), content: 'SETTINGS-458-ORG HOLD_TURN', context_file_paths: [], image_urls: [] });
+    await waitFor('the Org run live on the node', async () => (await orgConfig()).isActive === true, 60_000);
+    const orgKey = `org:${orgRunId}`;
+    await backToList();
+    await waitFor('the Org run on the phone', async () => (await page.locator(sel(`mobile-run-row-${orgKey}`)).count()) > 0, 30_000);
+    await ensureUnfolded(page, orgKey);
+    let key = null;
+    await waitFor('the planner\'s row under the Org run', async () => Boolean(key = childRow(await rowsOf(page), orgKey, 'planner', 1)?.key), 20_000).catch(() => undefined);
+    assert(key, 'the planner\'s row under the Org run', await rowsOf(page));
+    await openRow(page, key);
+    await page.locator(sel('mobile-run-conversation')).waitFor({ timeout: 20_000 });
+    await openSettings();
+    await waitFor('the stop icon', async () => Boolean((await settingsState()).stop), 20_000).catch(() => undefined);
+    const live = await settingsState();
+    await shot(page, 'MSP-65-settings-org-member-live');
+    await page.locator(sel('mobile-run-settings-stop')).click();
+    await waitFor('the Org run stopped on the node', async () => (await orgConfig()).isActive === false, 60_000).catch(() => undefined);
+    await waitFor('the rows open', async () => { const s = await settingsState(); return !s.stop && s.runtimeDisabled === false; }, 20_000).catch(() => undefined);
+    const stopped = await settingsState();
+    const url = page.url().replace(/pairing=[^&]+/, 'pairing=…');
+    const nodeAfterStop = (await orgConfig()).isActive;
+    await shot(page, 'MSP-65-settings-org-member-after-stop');
+    if (stopped.open) await page.goBack();
+    const details = { orgRunId, live, stopped, url: new URL(url).pathname + new URL(url).search, nodeAfterStop };
+    assert(live.stop?.label === 'Stop run' && live.subject?.startsWith('planner') && /in Delivery Org$/.test(live.status ?? ''), 'REQ-008 the live Org member: the stop icon', details);
+    assert(nodeAfterStop === false, 'REQ-008 one tap stops the Org run', details);
+    assert(!/unsupported=/.test(url) && stopped.open && !stopped.stop && stopped.runtimeDisabled === false, 'REQ-008 after the stop the phone stays on Settings with the rows open', details);
+    return details;
+  });
 };

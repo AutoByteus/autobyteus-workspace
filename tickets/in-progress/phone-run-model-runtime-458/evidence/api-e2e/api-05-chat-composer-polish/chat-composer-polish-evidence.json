@@ -1,0 +1,560 @@
+{
+  "startedAt": "2026-11-17T11:38:35.803Z",
+  "cases": {
+    "T01": {
+      "title": "AutoByteus-runtime Claude row with a thinking switch: merged menu at desktop width; untouched = On at the default effort (autobyteus-9 AC-003), then Off, High, Off, Medium, Off→Medium (A-1)",
+      "result": "Pass",
+      "ms": 5663,
+      "details": {
+        "model": "claude-sonnet-5-5",
+        "effortLevels": [
+          "low",
+          "medium",
+          "high",
+          "xhigh",
+          "max"
+        ],
+        "defaultEffort": "high",
+        "initial": {
+          "trigger": "High",
+          "bulb": {
+            "muted": false,
+            "color": "rgb(128, 128, 128)"
+          },
+          "draft": {
+            "thinking_enabled": true,
+            "reasoning_effort": "high"
+          }
+        },
+        "openFocus": "chat-thinking-option-primary-off",
+        "onMenu": {
+          "ids": [
+            "off",
+            "low",
+            "medium",
+            "high",
+            "xhigh",
+            "max"
+          ],
+          "box": {
+            "x": 1040.5,
+            "y": 360,
+            "w": 176,
+            "h": 221.5,
+            "bottom": 581.5,
+            "right": 1216.5
+          },
+          "position": "absolute"
+        },
+        "off": {
+          "trigger": "Off",
+          "bulb": {
+            "muted": true,
+            "color": "rgb(179, 179, 179)"
+          },
+          "draft": {
+            "thinking_enabled": false,
+            "reasoning_effort": "high"
+          }
+        },
+        "high": {
+          "trigger": "High",
+          "bulb": {
+            "muted": false,
+            "color": "rgb(77, 77, 77)"
+          },
+          "draft": {
+            "thinking_enabled": true,
+            "reasoning_effort": "high"
+          }
+        },
+        "offAgain": {
+          "trigger": "Off",
+          "bulb": {
+            "muted": true,
+            "color": "rgb(179, 179, 179)"
+          },
+          "draft": {
+            "thinking_enabled": false,
+            "reasoning_effort": "high"
+          }
+        },
+        "medium": {
+          "trigger": "Medium",
+          "draft": {
+            "thinking_enabled": true,
+            "reasoning_effort": "medium"
+          }
+        },
+        "storedOffMedium": {
+          "thinking_enabled": false,
+          "reasoning_effort": "medium"
+        },
+        "repick": {
+          "trigger": "Medium",
+          "draft": {
+            "thinking_enabled": true,
+            "reasoning_effort": "medium"
+          }
+        }
+      }
+    },
+    "T02": {
+      "title": "Launch a chat at High: the created run records thinking_enabled:true + reasoning_effort:high (AC-001)",
+      "result": "Pass",
+      "ms": 3087,
+      "details": {
+        "runId": "daily_assistant_862be7ca797c4a45bd7b60f2e621423e",
+        "draft": {
+          "thinking_enabled": true,
+          "reasoning_effort": "high"
+        },
+        "recorded": {
+          "thinking_enabled": true,
+          "reasoning_effort": "high"
+        },
+        "runtimeReplied": true
+      }
+    },
+    "T03": {
+      "title": "Launch Off → recorded Off → ⚙ run settings: choosing an effort turns Thinking on → save keeps effort (AC-010)",
+      "result": "Pass",
+      "ms": 5219,
+      "details": {
+        "runId": "daily_assistant_5db649599f8f478cad0461cf8983a3af",
+        "recordedOff": {
+          "thinking_enabled": false,
+          "reasoning_effort": "high"
+        },
+        "offRendered": {
+          "trigger": "Off"
+        },
+        "before": "high",
+        "target": "high",
+        "after": {
+          "trigger": "High",
+          "saveEnabled": true
+        },
+        "saved": {
+          "thinking_enabled": true,
+          "reasoning_effort": "high"
+        }
+      }
+    },
+    "T04": {
+      "title": "A model without an on/off switch keeps the per-parameter thinking menu (AC-006)",
+      "result": "Pass",
+      "ms": 3654,
+      "details": {
+        "runtimeKind": "codex_app_server",
+        "model": "gpt-5.5",
+        "keys": [
+          "reasoning_effort",
+          "service_tier"
+        ],
+        "before": {
+          "trigger": "Medium",
+          "draft": {
+            "reasoning_effort": "medium"
+          }
+        },
+        "items": [
+          "chat-thinking-option-reasoning_effort-low",
+          "chat-thinking-option-reasoning_effort-medium",
+          "chat-thinking-option-reasoning_effort-high",
+          "chat-thinking-option-reasoning_effort-xhigh"
+        ],
+        "after": {
+          "trigger": "Low",
+          "draft": {
+            "reasoning_effort": "low"
+          },
+          "picked": "low"
+        }
+      }
+    },
+    "T08": {
+      "title": "Claude Agent SDK runtime: the effort-only thinking menu on the real Claude CLI catalog: no Off/On choice, nothing written until a level is chosen (autobyteus-9 AC-005, AC-006)",
+      "result": "Pass",
+      "ms": 3433,
+      "details": {
+        "model": "fable",
+        "levels": [
+          "low",
+          "medium",
+          "high",
+          "xhigh",
+          "max"
+        ],
+        "before": {
+          "trigger": "Default",
+          "draft": null
+        },
+        "items": [
+          {
+            "test": "chat-thinking-option-reasoning_effort-low",
+            "label": "Low",
+            "checked": "false"
+          },
+          {
+            "test": "chat-thinking-option-reasoning_effort-medium",
+            "label": "Medium",
+            "checked": "false"
+          },
+          {
+            "test": "chat-thinking-option-reasoning_effort-high",
+            "label": "High",
+            "checked": "false"
+          },
+          {
+            "test": "chat-thinking-option-reasoning_effort-xhigh",
+            "label": "Xhigh",
+            "checked": "false"
+          },
+          {
+            "test": "chat-thinking-option-reasoning_effort-max",
+            "label": "Max",
+            "checked": "false"
+          }
+        ],
+        "after": {
+          "trigger": "High",
+          "draft": {
+            "reasoning_effort": "high"
+          }
+        }
+      }
+    },
+    "T09": {
+      "title": "Every AutoByteus-runtime Claude row on the real catalog: switch rows (Opus 5, Sonnet 5, Sonnet 5.5, Haiku 5.5) default to On with an Off choice; always-on rows (Fable 5, Fable 5.1, Opus 5.5) offer effort only (autobyteus-9 AC-002, AC-003)",
+      "result": "Pass",
+      "ms": 20398,
+      "details": {
+        "claude-opus-5": {
+          "switchRow": true,
+          "effortDefault": "high",
+          "shown": {
+            "trigger": "High",
+            "draft": {
+              "thinking_enabled": true,
+              "reasoning_effort": "high"
+            }
+          },
+          "checked": [
+            "high"
+          ],
+          "items": [
+            "primary-off",
+            "primary-low",
+            "primary-medium",
+            "primary-high",
+            "primary-xhigh",
+            "primary-max"
+          ]
+        },
+        "claude-sonnet-5": {
+          "switchRow": true,
+          "effortDefault": "high",
+          "shown": {
+            "trigger": "High",
+            "draft": {
+              "thinking_enabled": true,
+              "reasoning_effort": "high"
+            }
+          },
+          "checked": [
+            "high"
+          ],
+          "items": [
+            "primary-off",
+            "primary-low",
+            "primary-medium",
+            "primary-high",
+            "primary-xhigh",
+            "primary-max"
+          ]
+        },
+        "claude-sonnet-5-5": {
+          "switchRow": true,
+          "effortDefault": "high",
+          "shown": {
+            "trigger": "High",
+            "draft": {
+              "thinking_enabled": true,
+              "reasoning_effort": "high"
+            }
+          },
+          "checked": [
+            "high"
+          ],
+          "items": [
+            "primary-off",
+            "primary-low",
+            "primary-medium",
+            "primary-high",
+            "primary-xhigh",
+            "primary-max"
+          ]
+        },
+        "claude-haiku-5-5": {
+          "switchRow": true,
+          "effortDefault": "medium",
+          "shown": {
+            "trigger": "Medium",
+            "draft": {
+              "thinking_enabled": true,
+              "reasoning_effort": "medium"
+            }
+          },
+          "checked": [
+            "medium"
+          ],
+          "items": [
+            "primary-off",
+            "primary-low",
+            "primary-medium",
+            "primary-high",
+            "primary-xhigh",
+            "primary-max"
+          ]
+        },
+        "claude-fable-5": {
+          "switchRow": false,
+          "effortDefault": "high",
+          "shown": {
+            "trigger": "High",
+            "draft": {
+              "reasoning_effort": "high"
+            }
+          },
+          "checked": [
+            "high"
+          ],
+          "items": [
+            "reasoning_effort-low",
+            "reasoning_effort-medium",
+            "reasoning_effort-high",
+            "reasoning_effort-xhigh",
+            "reasoning_effort-max"
+          ]
+        },
+        "claude-fable-5-1": {
+          "switchRow": false,
+          "effortDefault": "high",
+          "shown": {
+            "trigger": "High",
+            "draft": {
+              "reasoning_effort": "high"
+            }
+          },
+          "checked": [
+            "high"
+          ],
+          "items": [
+            "reasoning_effort-low",
+            "reasoning_effort-medium",
+            "reasoning_effort-high",
+            "reasoning_effort-xhigh",
+            "reasoning_effort-max"
+          ]
+        },
+        "claude-opus-5-5": {
+          "switchRow": false,
+          "effortDefault": "medium",
+          "shown": {
+            "trigger": "Medium",
+            "draft": {
+              "reasoning_effort": "medium"
+            }
+          },
+          "checked": [
+            "medium"
+          ],
+          "items": [
+            "reasoning_effort-low",
+            "reasoning_effort-medium",
+            "reasoning_effort-high",
+            "reasoning_effort-xhigh",
+            "reasoning_effort-max"
+          ]
+        }
+      }
+    },
+    "T05": {
+      "title": "Workspace search at desktop width with 14 workspaces: focus, filter, path, empty state, keys, IME guard, Escape, reset (AC-007, AC-008)",
+      "result": "Pass",
+      "ms": 2519,
+      "details": {
+        "initialSelection": "Temp workspace",
+        "open": {
+          "position": "absolute",
+          "box": {
+            "x": 506.5,
+            "y": 161.5,
+            "w": 384,
+            "h": 420,
+            "right": 890.5,
+            "bottom": 581.5
+          },
+          "scrolls": true,
+          "inputInListbox": false,
+          "placeholder": "Search workspaces",
+          "ariaLabel": "Search workspaces",
+          "options": 15
+        },
+        "mcps": [
+          "MCPS-tools",
+          "autobyteus_mcps"
+        ],
+        "byPath": [
+          "lambda-sdk"
+        ],
+        "empty": "No workspaces match “zzz”",
+        "notesOrder": [
+          "alpha-notes",
+          "notes"
+        ],
+        "keys": {
+          "k1": "chat-workspace-option-agent_ws_3e22165e2ad2373b4581cd25c054df497c9411f965f421e4e85857d7e58f2a4e",
+          "k2": "chat-workspace-option-agent_ws_9aec0a61dabbaa96ea9f26a75ad0866643b4eb1400a23bf305135e27eeef94b7",
+          "k3": "chat-workspace-option-agent_ws_3e22165e2ad2373b4581cd25c054df497c9411f965f421e4e85857d7e58f2a4e",
+          "k4": "chat-workspace-search"
+        },
+        "picked": "notes",
+        "hint": null,
+        "reopenedQuery": "",
+        "afterEscape": "notes",
+        "enterPick": "gamma-api",
+        "folderForm": true
+      }
+    },
+    "T06": {
+      "title": "Layout at 1440×1000 and 1280×700: pt-[14vh] pb-10; no overlap/clipping; menus inside viewport (AC-009)",
+      "result": "Pass",
+      "ms": 6337,
+      "details": {
+        "1440x1000": {
+          "thinkingTriggerSettledMs": 2,
+          "paddingTop": 140,
+          "paddingBottom": 40,
+          "composerTop": 521.5,
+          "blockCenterMinusAreaCenter": 32,
+          "noOverlap": true,
+          "inside": true,
+          "overflow": false,
+          "wsBox": {
+            "x": 506.5,
+            "y": 218.5,
+            "right": 890.5,
+            "bottom": 638.5
+          },
+          "thBox": {
+            "x": 1040.5,
+            "y": 417,
+            "w": 176,
+            "h": 221.5,
+            "bottom": 638.5,
+            "right": 1216.5
+          }
+        },
+        "1280x700": {
+          "thinkingTriggerSettledMs": 2,
+          "paddingTop": 98,
+          "paddingBottom": 40,
+          "composerTop": 350.5,
+          "blockCenterMinusAreaCenter": 11,
+          "noOverlap": true,
+          "inside": true,
+          "overflow": false,
+          "wsBox": {
+            "x": 426.5,
+            "y": 47.5,
+            "right": 810.5,
+            "bottom": 467.5
+          },
+          "thBox": {
+            "x": 960.5,
+            "y": 246,
+            "w": 176,
+            "h": 221.5,
+            "bottom": 467.5,
+            "right": 1136.5
+          }
+        }
+      }
+    },
+    "T07": {
+      "title": "Narrow bottom sheet (413×738): merged thinking list and workspace search still work",
+      "result": "Pass",
+      "ms": 5021,
+      "details": {
+        "thinking": {
+          "position": "fixed",
+          "ids": [
+            "off",
+            "low",
+            "medium",
+            "high",
+            "xhigh",
+            "max"
+          ],
+          "box": {
+            "x": 8,
+            "y": 508.5,
+            "w": 397,
+            "h": 221.5,
+            "bottom": 730,
+            "right": 405
+          }
+        },
+        "names": [
+          "kappa-cli"
+        ]
+      }
+    }
+  },
+  "processes": [
+    {
+      "label": "backend",
+      "pid": 98097
+    },
+    {
+      "label": "frontend",
+      "pid": 99823
+    }
+  ],
+  "cleanup": [
+    {
+      "pid": 99823,
+      "stop": "SIGTERM"
+    },
+    {
+      "pid": 98097,
+      "stop": "SIGKILL"
+    },
+    {
+      "removed": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-polish-H6qxWJ"
+    }
+  ],
+  "ownedRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-polish-H6qxWJ",
+  "backendUrl": "http://127.0.0.1:53475",
+  "frontUrl": "http://127.0.0.1:53476",
+  "workspaces": {
+    "alpha-notes": "agent_ws_3e22165e2ad2373b4581cd25c054df497c9411f965f421e4e85857d7e58f2a4e",
+    "autobyteus_mcps": "agent_ws_8cfe8edaf01f1acae77338b4bbbdd4c629fefaaf05f6961bf484923e5c308d7b",
+    "MCPS-tools": "agent_ws_e33cb0a567dae7398dc6a6e0bc6a0f52f781ff7742cc667d84e76e5ccf8b1733",
+    "beta-site": "agent_ws_54fc4960ce233c1ae99753bdea29e5cee93e4b0792055429629de2df9c098489",
+    "gamma-api": "agent_ws_50c943e545df5c5be304b2c5dae868d62c34c327c81b18c454bcb1bbce8e63f9",
+    "delta-infra": "agent_ws_a919503bc2b14608d9ab042e3ee771cdacab67b8ed5799558d758a77dc75f3e9",
+    "epsilon-docs": "agent_ws_9daf399df5d1f6e4b5250a3b971ddb65bb0210d6a1c7ba46894ba636dcaefdbe",
+    "zeta-mobile": "agent_ws_1a9a0554788eceeaa04d860b6a352ff3c7b6d9c51d7f1fb7c2e40fbe9c8c14bf",
+    "eta-data": "agent_ws_ff6660b8d5ac992e3f433a53c5de7e0f6609b570343120f398cc6d93e4398f3b",
+    "theta-ml": "agent_ws_4b00c63555e2a879a701d3d6bdcdf5bcdd4ca25bd91c0718a7fd202b026168a0",
+    "iota-web": "agent_ws_e30753dfe83c04bb5f62414aea5a6d107a5cde92917e7a27b64baea191d89f48",
+    "kappa-cli": "agent_ws_1cbd1a14069ec5df18d7c3503c5943d00cb4835f787fa92e1e8d808e145bfcc9",
+    "lambda-sdk": "agent_ws_3f96f272d283819885095a3090ae795d042d265e6261d8e8900fc3041b6aa3f8",
+    "notes": "agent_ws_9aec0a61dabbaa96ea9f26a75ad0866643b4eb1400a23bf305135e27eeef94b7"
+  },
+  "browserErrors": [],
+  "completedAt": "2026-11-17T11:40:13.490Z"
+}
