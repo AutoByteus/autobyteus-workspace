@@ -25,9 +25,13 @@
  *          knowing the command was stopped (AC-003)
  *   RR-08  (live) Codex idle with a background terminal: recorded at the graceful stop through its background-task
  *          view, reminded with its next input (AC-003)
+ *   RR-09  (live) a native agent on a real model, killed while its background build runs: the build outlives the
+ *          node, the reminder says it may still be running and is untracked (DEC-008), and the agent checks before
+ *          answering (OpenAI gpt-5.4-mini from the test vault, override RESTART_REMINDER_NATIVE_MODEL)
  *
  * Gate: RUN_RESTART_REMINDER_E2E=1. Prerequisite: `pnpm -C autobyteus-server-ts build` for this worktree. RR-01..06
- * need no credentials. RR-07/RR-08 also need RUN_RESTART_REMINDER_LIVE_E2E=1, the signed-in `claude` and `codex` CLIs,
+ * need no credentials. RR-07..RR-09 also need RUN_RESTART_REMINDER_LIVE_E2E=1; RR-09 the test vault (AUTOBYTEUS_TEST_VAULT,
+ * TESTING.md#test-vault; the built server reads it); RR-07/RR-08 the signed-in `claude` and `codex` CLIs,
  * and the real HOME, USER and LOGNAME (TESTING.md); Codex gets a throwaway CODEX_HOME with only the login linked
  * (model gpt-6.1-terra, override RESTART_REMINDER_CODEX_MODEL; Claude haiku, override RESTART_REMINDER_CLAUDE_MODEL).
  * macOS/Linux. About 5 minutes (live cases a few more). Run (in autobyteus-server-ts):
@@ -46,6 +50,7 @@ import path from "node:path";
 import WebSocket from "ws";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { builtServerLaunchEnvironment } from "../helpers/built-server-launch-credential.js";
+import { capturedTestVaultSetting } from "../../../../test-support/test-vault/test-vault-selection.js";
 
 const ENABLED = process.env.RUN_RESTART_REMINDER_E2E === "1" && process.platform !== "win32";
 const LIVE = ENABLED && process.env.RUN_RESTART_REMINDER_LIVE_E2E === "1";
@@ -619,5 +624,55 @@ describe.skipIf(!ENABLED)("Restart reminder across real restarts of the built se
     expect(result.stopped?.entries).toEqual([expect.objectContaining({ agentRunId: result.runId, status: "idle", backgroundTasks: true })]);
     expect(String(result.notice?.content ?? "")).toContain(HEADER);
     expect(result.remindersAfter?.reminders ?? []).toEqual([]);
+  }, 900_000);
+  it.skipIf(!LIVE || !capturedTestVaultSetting())("RR-09 (live): a native agent killed while its build runs is told the build may still run untracked, and checks it", async () => {
+    const tag = `NIGHTLY_${randomUUID().slice(0, 8)}`;
+    const groupsOf = () => execFileSync("ps", ["-ww", "-A", "-o", "pgid=,command="], { encoding: "utf8" }).split("\n")
+      .filter((line) => line.includes(tag) && !line.includes("ps -ww")).map((line) => Number(line.trim().split(/\s+/)[0]));
+    cleanups.push(async () => { for (const pgid of new Set(groupsOf())) { try { process.kill(-pgid, "SIGKILL"); } catch { /* gone */ } } });
+    const node = await newNode({ AUTOBYTEUS_TEST_VAULT: path.resolve(capturedTestVaultSetting()!.replace(/^~(?=\/)/, os.userInfo().homedir)) });
+    let session = await node.start();
+    const modelName = process.env.RESTART_REMINDER_NATIVE_MODEL?.trim() || "gpt-5.4-mini";
+    const models = (await session.gql(`mutation{ensureProviderModelCatalog(providerId:"OPENAI",runtimeKind:"autobyteus"){llmModels{modelIdentifier value}}}`))
+      .ensureProviderModelCatalog.llmModels as Json[];
+    const modelIdentifier = String(models.find((entry) => entry.value === modelName || entry.modelIdentifier === modelName)?.modelIdentifier ?? "");
+    expect(modelIdentifier, models.map((entry) => entry.value).join(", ")).not.toBe("");
+    const definitionId = (await session.gql(`mutation($input:CreateAgentDefinitionInput!){createAgentDefinition(input:$input){id}}`,
+      { input: { name: `restart-reminder-native-live-${randomUUID().slice(0, 8)}`, role: "engineer", description: "restart reminder E2E",
+        instructions: "You are a build assistant. Use run_bash for shell work. Keep replies short.", toolNames: ["run_bash"], skillNames: [] } })).createAgentDefinition.id;
+    const created = (await session.gql(`mutation($input:CreateAgentRunInput!){createAgentRun(input:$input){success message runId}}`,
+      { input: { agentDefinitionId: definitionId, workspaceRootPath: node.workspace, llmModelIdentifier: modelIdentifier, autoExecuteTools: true, runtimeKind: "autobyteus" } })).createAgentRun;
+    expect(created.success, created.message).toBe(true);
+    const runId = created.runId as string;
+    const channel = await channelOf(session, runId);
+    channel.send(`Start my nightly build in the background with run_bash (run_in_background): \`sleep 600; echo ${tag}\`. Do not wait for it; reply STARTED.`);
+    await idleAfter(channel, 0, 300_000);
+    const entry = await orNull(recordEntry(node, runId));
+    channel.close();
+    await node.stop(session, "SIGKILL");
+    await wait(1_000);
+    const survivorsAfterKill = groupsOf();
+    session = await node.start();
+    await restore(session, runId);
+    const next = await channelOf(session, runId);
+    const question = "Is my nightly build still running?";
+    next.send(question);
+    await idleAfter(next, 0, 300_000);
+    const notice = next.frames.find((frame) => frame.type === "SYSTEM_TASK_NOTIFICATION" && frame.payload.sender_id === SENDER) ?? null;
+    const checks = next.frames.filter((frame) => frame.type === "TOOL_EXECUTION_STARTED").map((frame) => String((frame.payload.arguments as Json | undefined)?.command ?? ""));
+    const reply = (await replyAfter(session, runId, question)).slice(0, 3000);
+    const answer = [...reply.matchAll(/"role":"assistant"[^}]*?"content":"((?:[^"\\]|\\.)*)"/g)].map((match) => match[1]).filter(Boolean).join(" | ");
+    const survivorsWhenAnswered = groupsOf();
+    await record("RR-09", { runId, modelIdentifier, entry, survivorsAfterKill, notice: notice?.payload ?? null, checks, answer, survivorsWhenAnswered });
+    next.close();
+    await node.stop(session, "SIGTERM");
+
+    expect(entry).toMatchObject({ status: "idle", backgroundTasks: true });
+    expect(survivorsAfterKill.length, "the build outlives the killed node").toBeGreaterThan(0);
+    expect(String(notice?.payload.content ?? "")).toContain(UNEXPECTED_STOP_LINE);
+    expect(checks.some((command) => /\bps\b|pgrep|kill -0|\/proc\//.test(command)), `the agent checks the build: ${JSON.stringify(checks)}`).toBe(true);
+    // The build is running (it outlived the node): the answer says so and does not claim it stopped.
+    expect(answer).toMatch(/running/i);
+    expect(answer).not.toMatch(/\bnot (currently )?running|isn.t running|was stopped|stopped by the restart/i);
   }, 900_000);
 });
