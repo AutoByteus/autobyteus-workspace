@@ -1,0 +1,336 @@
+{
+  "startedAt": "2026-11-17T17:29:59.993Z",
+  "platform": "darwin-arm64",
+  "node": "v22.23.1",
+  "browserExecutable": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "fixturePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/api448-p2base-895cf3992d/autobyteus-web/tests/e2e/fixtures/agent-org-draft-retention.page.vue",
+  "scenarios": {},
+  "uploadRequests": [],
+  "otherRequests": [
+    {
+      "method": "GET",
+      "url": "/ws/agent-package-definitions",
+      "receivedAt": "2026-11-17T17:30:15.169Z"
+    },
+    {
+      "method": "GET",
+      "url": "/ws/update-notifications",
+      "receivedAt": "2026-11-17T17:30:15.180Z"
+    },
+    {
+      "method": "POST",
+      "url": "/graphql",
+      "operationName": "GetApplicationsCapability",
+      "receivedAt": "2026-11-17T17:30:15.568Z"
+    },
+    {
+      "method": "POST",
+      "url": "/graphql",
+      "operationName": "ListWorkspaceRunHistory",
+      "receivedAt": "2026-11-17T17:30:15.570Z"
+    },
+    {
+      "method": "POST",
+      "url": "/graphql",
+      "operationName": "ListCollaborationRootHistory",
+      "receivedAt": "2026-11-17T17:30:15.570Z"
+    },
+    {
+      "method": "POST",
+      "url": "/graphql",
+      "operationName": "GetAllWorkspaces",
+      "receivedAt": "2026-11-17T17:30:15.571Z"
+    },
+    {
+      "method": "POST",
+      "url": "/graphql",
+      "operationName": "GetAgentDefinitions",
+      "receivedAt": "2026-11-17T17:30:15.576Z"
+    },
+    {
+      "method": "POST",
+      "url": "/graphql",
+      "operationName": "GetAgentTeamDefinitions",
+      "receivedAt": "2026-11-17T17:30:15.577Z"
+    },
+    {
+      "method": "POST",
+      "url": "/graphql",
+      "operationName": "GetAgentOrgDefinitions",
+      "receivedAt": "2026-11-17T17:30:15.577Z"
+    }
+  ],
+  "browserEvents": [
+    {
+      "type": "console:debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "type": "console:debug",
+      "text": "[vite] connected."
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to load resource: the server responded with a status of 504 (Outdated Optimize Dep)"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:58482/_nuxt/node_modules/.cache/vite/client/deps/prismjs_components_prism-markup.js?v=f3335bd4 net::ERR_ABORTED"
+    },
+    {
+      "type": "console:warning",
+      "text": "[Vue Router warn]: uncaught error during route navigation:"
+    },
+    {
+      "type": "console:error",
+      "text": "TypeError: Failed to fetch dynamically imported module: http://127.0.0.1:58482/_nuxt/pages/api-e2e-agent-org-draft-retention.vue?t=1794936605913"
+    },
+    {
+      "type": "console:error",
+      "text": "[nuxt] error caught during app initialization H3Error: Failed to fetch dynamically imported module: http://127.0.0.1:58482/_nuxt/pages/api-e2e-agent-org-draft-retention.vue?t=1794936605913"
+    },
+    {
+      "type": "console:warning",
+      "text": "[Vue Router warn]: Unexpected error when starting the router: TypeError: Failed to fetch dynamically imported module: http://127.0.0.1:58482/_nuxt/pages/api-e2e-agent-org-draft-retention.vue?t=1794936605913"
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Initializing server config"
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Not in Electron environment. Skipping server initialization."
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to load resource: the server responded with a status of 504 (Outdated Optimize Dep)"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:58482/_nuxt/node_modules/.cache/vite/client/deps/prismjs_components_prism-css.js?v=29d9cfac net::ERR_ABORTED"
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to load resource: the server responded with a status of 504 (Outdated Optimize Dep)"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:58482/_nuxt/node_modules/.cache/vite/client/deps/prismjs_components_prism-clike.js?v=074d1b76 net::ERR_ABORTED"
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to load resource: the server responded with a status of 504 (Outdated Optimize Dep)"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:58482/_nuxt/node_modules/.cache/vite/client/deps/prismjs_components_prism-typescript.js?v=fc520625 net::ERR_ABORTED"
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to load resource: the server responded with a status of 504 (Outdated Optimize Dep)"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:58482/_nuxt/node_modules/.cache/vite/client/deps/prismjs_components_prism-javascript.js?v=d1a77bf6 net::ERR_ABORTED"
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to load resource: the server responded with a status of 504 (Outdated Optimize Dep)"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:58482/_nuxt/node_modules/.cache/vite/client/deps/prismjs_components_prism-markdown.js?v=7df904de net::ERR_ABORTED"
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to load resource: the server responded with a status of 504 (Outdated Optimize Dep)"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:58482/_nuxt/node_modules/.cache/vite/client/deps/prismjs_components_prism-markup-templating.js?v=08c4bac1 net::ERR_ABORTED"
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to load resource: the server responded with a status of 504 (Outdated Optimize Dep)"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:58482/_nuxt/node_modules/.cache/vite/client/deps/prismjs_components_prism-python.js?v=494345a3 net::ERR_ABORTED"
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to load resource: the server responded with a status of 504 (Outdated Optimize Dep)"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:58482/_nuxt/node_modules/.cache/vite/client/deps/prismjs_components_prism-ruby.js?v=7db9eef1 net::ERR_ABORTED"
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to load resource: the server responded with a status of 504 (Outdated Optimize Dep)"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:58482/_nuxt/node_modules/.cache/vite/client/deps/prismjs_components_prism-php.js?v=f8e34444 net::ERR_ABORTED"
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to load resource: the server responded with a status of 504 (Outdated Optimize Dep)"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:58482/_nuxt/node_modules/.cache/vite/client/deps/prismjs_components_prism-jsx.js?v=566825b6 net::ERR_ABORTED"
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to load resource: the server responded with a status of 504 (Outdated Optimize Dep)"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:58482/_nuxt/node_modules/.cache/vite/client/deps/prismjs_components_prism-json.js?v=58e17069 net::ERR_ABORTED"
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to load resource: the server responded with a status of 504 (Outdated Optimize Dep)"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:58482/_nuxt/node_modules/.cache/vite/client/deps/prismjs_components_prism-css.js?v=29d9cfac net::ERR_ABORTED"
+    },
+    {
+      "type": "console:error",
+      "text": "[nuxt] error caught during app initialization H3Error: Failed to fetch dynamically imported module: http://127.0.0.1:58482/_nuxt/pages/api-e2e-agent-org-draft-retention.vue?t=1794936605913"
+    },
+    {
+      "type": "console:info",
+      "text": "<Suspense> is an experimental feature and its API will likely change."
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:58482/_nuxt/node_modules/.cache/vite/client/deps/prismjs_components_prism-javascript.js?v=d1a77bf6 net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:58482/_nuxt/node_modules/.cache/vite/client/deps/prismjs_components_prism-python.js?v=494345a3 net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:58482/_nuxt/node_modules/.cache/vite/client/deps/prismjs_components_prism-ruby.js?v=7db9eef1 net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:58482/_nuxt/node_modules/.cache/vite/client/deps/prismjs_components_prism-json.js?v=58e17069 net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:58482/_nuxt/node_modules/.cache/vite/client/deps/prismjs_components_prism-markup.js?v=f3335bd4 net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:58482/_nuxt/node_modules/.cache/vite/client/deps/chunk-NDGI76CP.js?v=338d99c7 net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:58482/_nuxt/node_modules/.cache/vite/client/deps/prismjs_components_prism-markdown.js?v=7df904de net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:58482/_nuxt/node_modules/.cache/vite/client/deps/prismjs_components_prism-markup-templating.js?v=08c4bac1 net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:58482/_nuxt/node_modules/.cache/vite/client/deps/prismjs_components_prism-clike.js?v=074d1b76 net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:58482/_nuxt/node_modules/.cache/vite/client/deps/prismjs_components_prism-php.js?v=f8e34444 net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:58482/_nuxt/node_modules/.cache/vite/client/deps/prismjs_components_prism-jsx.js?v=566825b6 net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:58482/_nuxt/node_modules/.cache/vite/client/deps/prismjs_components_prism-typescript.js?v=fc520625 net::ERR_ABORTED"
+    },
+    {
+      "type": "console:debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "type": "console:debug",
+      "text": "[vite] connected."
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Initializing server config"
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Not in Electron environment. Skipping server initialization."
+    },
+    {
+      "type": "console:info",
+      "text": "<Suspense> is an experimental feature and its API will likely change."
+    },
+    {
+      "type": "console:error",
+      "text": "WebSocket connection to 'ws://127.0.0.1:58481/ws/agent-package-definitions' failed: Error during WebSocket handshake: Unexpected response code: 404"
+    },
+    {
+      "type": "console:error",
+      "text": "WebSocket connection to 'ws://127.0.0.1:58481/ws/update-notifications' failed: Error during WebSocket handshake: Unexpected response code: 404"
+    },
+    {
+      "type": "console:warning",
+      "text": "[Vue warn]: Invalid vnode type when creating vnode: undefined. \n  at <ApiE2eAgentOrgDraftRetention onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< undefined > > \n  at <RouteProvider key=\"/api-e2e-agent-org-draft-retention\" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /api-e2e-agent-org-draft-retention?probeSurface=or…memberAddress=/director&agentRunId=org-a-director, hash: , query: Object, name: api-e2e-agent-org-draft-retention, path: /api-e2e-agent-org-draft-retention}  ... > \n  at <RouterView name=undefined route=undefined > \n  at <NuxtPage> \n  at <Default ref=Ref< undefined > > \n  at <AsyncComponentWrapper ref=Ref< undefined > > \n  at <LayoutLoader key=\"default\" layoutProps= {ref: RefImpl} name=\"default\" > \n  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key=\"default\" name=\"default\"  ... > \n  at <NuxtLayout key=3 > \n  at <AppLocalizationGate> \n  at <App key=4 > \n  at <NuxtRoot>"
+    },
+    {
+      "type": "console:error",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22listWorkspaceRunHistory%22%2C%22%7B%5Cn%20%20%5C%22agentDefinitions%5C%22%3A%20%5B%5D%5Cn%7D%22%5D%7D"
+    },
+    {
+      "type": "console:error",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22listCollaborationRootHistory%22%2C%22%7B%7D%22%5D%7D"
+    },
+    {
+      "type": "console:log",
+      "text": "Download the Apollo DevTools for a better development experience: %s https://chrome.google.com/webstore/detail/apollo-client-developer-t/jdkknkkbebbapilgoeccciglkfbmbnfm"
+    }
+  ],
+  "cleanup": {
+    "browserContext": "closed",
+    "browser": "closed",
+    "nuxt": {
+      "status": "terminated",
+      "pid": 64870,
+      "exitCode": null,
+      "signalCode": null,
+      "finalExitCode": 0,
+      "finalSignalCode": null
+    },
+    "restServer": "closed",
+    "nuxtLog": "closed",
+    "installedFixture": "removed"
+  },
+  "failures": [
+    {
+      "id": "HARNESS",
+      "description": "Run Agent Org draft-retention browser probe",
+      "message": "locator.waitFor: Timeout 90000ms exceeded.\nCall log:\n  - waiting for locator('[data-test=\"agent-org-draft-retention-probe\"]') to be visible\n    2 × waiting for\" http://127.0.0.1:58482/api-e2e-agent-org-draft-retention?probeSurface=org&rootSubjectKind=agent_org&mode=history&orgRunId=org-a&memberAddress=%2Fdirector&agentRunId=org-a-director\" navigation to finish...\n      - navigated to \"http://127.0.0.1:58482/api-e2e-agent-org-draft-retention?probeSurface=org&rootSubjectKind=agent_org&mode=history&orgRunId=org-a&memberAddress=%2Fdirector&agentRunId=org-a-director\"\n",
+      "stack": "locator.waitFor: Timeout 90000ms exceeded.\nCall log:\n  - waiting for locator('[data-test=\"agent-org-draft-retention-probe\"]') to be visible\n    2 × waiting for\" http://127.0.0.1:58482/api-e2e-agent-org-draft-retention?probeSurface=org&rootSubjectKind=agent_org&mode=history&orgRunId=org-a&memberAddress=%2Fdirector&agentRunId=org-a-director\" navigation to finish...\n      - navigated to \"http://127.0.0.1:58482/api-e2e-agent-org-draft-retention?probeSurface=org&rootSubjectKind=agent_org&mode=history&orgRunId=org-a&memberAddress=%2Fdirector&agentRunId=org-a-director\"\n\n    at /Users/normy/autobyteus_org/autobyteus-worktrees/api448-p2base-895cf3992d/autobyteus-web/tests/e2e/agent-org-draft-retention-probe.mjs:303:71"
+    }
+  ],
+  "restBaseUrl": "http://127.0.0.1:58481",
+  "port": 58482,
+  "baseUrl": "http://127.0.0.1:58482",
+  "result": "Fail",
+  "finishedAt": "2026-11-17T17:31:42.470Z",
+  "artifacts": {
+    "evidencePath": "/tmp/api448c/base-probe-agent-org-draft-retention-1794936599/evidence.json",
+    "nuxtLogPath": "/tmp/api448c/base-probe-agent-org-draft-retention-1794936599/nuxt.log",
+    "orgScreenshotPath": "/tmp/api448c/base-probe-agent-org-draft-retention-1794936599/org-cross-root-retention.png",
+    "parityScreenshotPath": "/tmp/api448c/base-probe-agent-org-draft-retention-1794936599/agent-team-parity.png",
+    "narrowScreenshotPath": "/tmp/api448c/base-probe-agent-org-draft-retention-1794936599/org-return-narrow.png"
+  }
+}

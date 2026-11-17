@@ -1,0 +1,17 @@
+# P2-12 part 1 restart suite on the part 2 build (dist of 4c93deaa8f): RUN_RESTART_REMINDER_E2E=1 RUN_RESTART_REMINDER_LIVE_E2E=1 + test vault
+20:30  up 29 days,  6:09, 10 users, load averages: 47.63 75.59 83.21
+     × RR-01: graceful restart: recorded live, reminded once with the next input as 'a restart', nothing woken; an idle run without a task gets nothing 11397ms
+     ✓ RR-02: forced kill: no shutdownAt; the next input carries 'an unexpected stop'  25227ms
+     ✓ RR-03: update: the idle run is woken with 'an update to' this release, and its next input carries nothing  36615ms
+     × RR-04: update with a run mid-turn that also has a background task: one reminder with the interrupted-turn line 12176ms
+     ✓ RR-05: update with input sent the moment the node answers: exactly one reminder between the wake and the input  41182ms
+     ✓ RR-06: Antigravity idle with an open daemon step is recorded and reminded with its next input  14610ms
+     ✓ RR-07 (live): Claude idle with a background Bash command is recorded and reminded with its next input  54927ms
+     ✓ RR-08 (live): Codex idle with a background terminal is recorded at the graceful stop and reminded with its next input  40340ms
+     ✓ RR-09 (live): a native agent killed while its build runs is told the build may still run untracked, and checks it  23760ms
+AssertionError: RR-01 precondition: the background command started: expected 'Error: Error executing tool \'run_bas…' to contain '"status":"running"'
+AssertionError: RR-04 precondition: the background command started: expected 'Error: Error executing tool \'run_bas…' to contain '"status":"running"'
+## RR-01 + RR-04 retry (start deadline under load in the full run)
+ ✓ tests/e2e/restart-resume/restart-reminder-built-server.e2e.test.ts (9 tests | 7 skipped) 80270ms
+     ✓ RR-01: graceful restart: recorded live, reminded once with the next input as 'a restart', nothing woken; an idle run without a task gets nothing  56742ms
+     ✓ RR-04: update with a run mid-turn that also has a background task: one reminder with the interrupted-turn line  23167ms

@@ -163,7 +163,7 @@ None.
 | --- | --- | --- | --- | --- |
 | Grok Build / DeepSeek (ACP) live | `dsh` not installed; ACP reports no background tasks by construction | low: same mid-turn path | No | — |
 | Power loss | not reproducible; a SIGKILL is the same "no graceful end" for the record | low | No | — |
-| Part 2 (status shown, AC-005/006) | not built yet (DEC-007) | — | No | next round |
+| Part 2 (status shown, AC-005/006) | built (IR-003/IR-004); see the Part 2 section | BTS-01..05, PBS-01, TS-008, MSP-59, P2-10 | Yes | round 3 (API-REV-003) |
 
 ## Ambiguities Or Reroute Triggers
 
@@ -183,3 +183,49 @@ None.
 - Rerun: RR-01..08 (every case builds a reminder through the changed function), API-03 DRO (its update wake builds one), both typechecks.
 - Still valid: API-04 (delivers no reminder), API-12 (base unchanged), API-15 (only the restart text, unchanged, reproved by RR-01/07/08).
 - New: API-18 (RR-09), the reviewer's optional live check: a native agent on a real model after a kill reacts to the DEC-008 line.
+
+# Part 2 — Show an agent with a running background task (round 3, API-REV-003)
+
+## Basis
+
+- Trigger: code reviewer, CRR-006 Pass (part 2: CRR-005 full review, round 5 CR-002 fix). Code `895cf3992d..ce06c415cc`.
+- Requirements: REQ-006, REQ-007, AC-005, AC-006, DEC-004 (wording and styling), DEC-005 (delivered at once). Design `design-spec.md` "Part 2" (SR-006), the example sequence (SR-006) and the display rule. Implementation handoff (IR-003/IR-004), its Checks IMP-05..IMP-15 and Downstream Coverage Hints.
+- What must be proven: every status route (stream, collaboration presentation and the Org view's status list, `/ws/run-status` per agent and summed per run state, team stream, peer summary) carries `background_tasks_running`; the web shows an idle agent with tasks as "Background task running" / "N background tasks running" with a steady blue dot and no Stop, a turn as "Running", back to Idle at the end; Team row busy > background > error > idle > offline; zh-CN; snapshots on reload/reconnect; Codex idle with a background terminal stays Idle, ACP unchanged; a message is delivered at once.
+
+## Real-use scenarios
+
+- SCN-005, SCN-006 (designer). Added: RU-05 a user reloads the window or the client reconnects while a task runs; RU-06 a second background task (the count text); RU-07 a Team with members in different states; RU-08 the user's language is Chinese; RU-09 a delegator on another node watching its peer run.
+
+## Changed surfaces
+
+- Contracts (three packages, strict schemas: a required field on every status shape): build input → fresh-start build proof.
+- Server domain and five routes; six backends (boolean removed; part 1's recorder now reads the derivation → part 1's restart suite reruns).
+- Web desktop and phone status surfaces, localization.
+- What test clients rely on changed (`AGENT_STATUS` gained a required field): searched every test folder, gated files included: the probes that build status frames (`background-agent-renderer-contention.page.vue`, `agent-org-draft-retention.page.vue`, `interrupt-result-presentation-probe.mjs`) carry the count; the server E2E files that read statuses compare status words only (e.g. `delegated-team-lazy-member-activation` maps `{status}` before `toEqual`); the web unit fixtures were updated by the implementation (IMP-12).
+
+## Planned Cases (part 2)
+
+| Case ID | Criteria | Boundary / Surface | Kind | Planned Command Or Steps | Why |
+| --- | --- | --- | --- | --- | --- |
+| P2-R01 | wire schemas | contract packages, both typechecks, remote-collaboration units | Reused | IMP-15 | ran at the final code (after CR-002) |
+| P2-01 | regression | server unit (full) | Existing Test | `pnpm -C autobyteus-server-ts test:unit` | IMP-07 was before the fixture fixes; IMP-08 a subset |
+| P2-02 | regression | server integration (full) | Existing Test | `test:integration:prepare`, `test:integration` | IMP-09 before `2990b6a8ac` |
+| P2-03 | regression, AC-005/006 (web) | web unit (full) | Existing Test | `pnpm -C autobyteus-web test:nuxt run` | IMP-12 before the web fix `e259944b13` |
+| P2-04 | localization, boundaries | web guards | Existing Test | `guard:web-boundary`, `guard:localization-boundary`, `audit:localization-literals` | cheap; after the last web commit |
+| P2-05 | regression | server E2E suite | Existing Test | `pnpm test:e2e` | requested; every status route changed |
+| P2-06 | build input | fresh clone, frozen install, the desktop release job's build | Existing Test | TESTING.md "Fresh-start build" (macOS arm64) | contract packages changed |
+| P2-07 | REQ-006 per route and runtime, AC-006, RU-05/06/07 | in-process server, real routes, strict feed parsing | Durable | new `tests/e2e/runtime/background-task-status-count.e2e.test.ts`: BTS-01 native sequence, feed, reconnect, message at once, counts 2/1/0; BTS-02 Team sum; BTS-03 Antigravity; BTS-04 Claude (live); BTS-05 Codex (live, count 0) | no test drives the count through the real routes per runtime |
+| P2-08 | AC-005 desktop and phone | browser probe and phone probe (changed by this ticket) | Existing Test | `test:e2e:team-status-live --cases TS-008`; `mobile-shell-probe.mjs --cases=MSP-59` | rerun at the final code |
+| P2-09 | probes this ticket changed | `interrupt-result-presentation-probe`, the renderer-contention and Org draft-retention probes | Existing Test | their package scripts | their fixtures and probes changed |
+| P2-10 | AC-005/006 user journey, RU-05/06/08 | isolated desktop instance, native agent on a real model | Journey | list row and header "Background task running", steady blue dot, no Stop; a message while the task runs (header "Running", then back); two tasks "2 background tasks running"; reload; zh-CN; Idle at the end; the Background Tasks panel header (the implementer's "Current count unavailable" note) | the real app |
+| P2-11 | RU-09 peer | two built nodes paired, delegation to the peer, the peer run idle with a task | Durable or Journey | decided after reading the two-node suite | the peer summary route |
+| P2-12 | part 1 regression | restart suite RR-01..09 | Existing Test | as round 2 | the recorder now reads the derivation |
+| P2-13 | ACP unchanged | — | Not runnable live | — | `dsh` not installed; ACP reports `unsupported` → 0 (unit) |
+
+## Part 2 outcome (round 3)
+
+- Executed as planned, with these differences:
+  - P2-11 became durable (PBS-01).
+  - P2-07a was added: a failed Team member and a direct read of the presentation route were tried live. Neither was reachable or meaningful, and the reasons are in the report.
+  - P2-13 is Not Tested.
+- Result: Pass, 94%. See `api-e2e-execution-coverage-report.md`, section "Part 2".

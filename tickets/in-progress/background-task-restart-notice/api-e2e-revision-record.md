@@ -52,3 +52,46 @@ None.
 - New or remaining failure IDs: none
 - Recommended owner: code reviewer (proportional test-code review)
 - Remaining risks, blocked evidence, or untested scope: FU-002; FU-004; ACP live (dsh not installed); API-01 watcher files environmental (saturated `fseventsd`)
+
+### API-REV-003: Part 2, show an agent with a running background task (round 3)
+
+- Triggering role, report path, and round: code reviewer, `code-review-report.md` (CRR-006 Pass, Large/High), round 3.
+- Triggering finding or case IDs: none (new behavior: REQ-006, REQ-007, AC-005, AC-006, DEC-004, DEC-005).
+- Related revision IDs: SR-006, IR-003/IR-004 (code `895cf3992d..ce06c415cc`), CR-002, CRR-005, CRR-006.
+- Why recorded: part 2 is new, so this is a full round for it. Part 1 was rerun by impact, because its recorder now reads the same count derivation.
+- Coverage decisions and durable test paths changed:
+  - New `tests/e2e/runtime/background-task-status-count.e2e.test.ts` (BTS-01..05).
+  - New `tests/e2e/remote-collaboration/peer-background-task-status.e2e.test.ts` (PBS-01).
+  - Stale tests this ticket made untrue, rewritten: `agent-command-correlated-status.e2e.test.ts` (four exact payloads) and the `interrupt-result-presentation-probe.mjs` status fixture.
+  - Tried and reverted (P2-07a), with the reasons recorded:
+    - A failed Team member: a native provider 400 is a turn diagnostic, so the member returns to idle.
+    - A direct read of `/ws/agent-collaboration`: it carries only the tree and messages; statuses reach the client through the run-status feed.
+- Cases rechecked:
+  - P2-01..P2-12 and P2-17.
+  - P2-12 is part 1's RR-01..09 on the part 2 build.
+- Commands, environment, fixture, or broader-validation delta:
+  - A fresh-start build, because contract packages changed.
+  - An isolated desktop instance with a real model.
+  - Two paired built servers.
+  - The full server E2E suite, compared with base `4cbf9e7881` and `895cf3992d` in temporary worktrees.
+- Canonical artifacts and sections updated:
+  - `api-e2e-execution-coverage-report.md` (Part 2 section).
+  - `api-e2e-coverage-investigation.md` (Part 2 plan).
+  - `api-e2e-test-progress.md`.
+  - `follow-ups.md` (FU-008, FU-009).
+  - `evidence/P2-*`.
+- Prior result and confidence: N/A for part 2. Part 1 stays Pass, 94%.
+- Current result and confidence: Pass, 94%. Every category is ≥ 92%, and every critical AC is directly proven.
+- New or remaining failure IDs: none.
+- Recommended owner: code reviewer (proportional test-code review).
+- Remaining risks, blocked evidence, or untested scope:
+  - Proven only at unit or component level:
+    - a Team error member live (P2-07a);
+    - the Org view's status access.
+  - Not tested:
+    - ACP live (`dsh` not installed);
+    - Linux desktop and amd64.
+  - Pre-existing or environmental failures:
+    - FU-008 (three changed probes fail identically on base);
+    - FU-009 (E2E failures from base and load);
+    - P2-02 watcher failures (`fseventsd`).

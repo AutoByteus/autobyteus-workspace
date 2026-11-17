@@ -35,3 +35,32 @@
 | 2026-11-17 14:20 | API-03, API-17 | Completed | Pass | DRO 3/3; server typecheck 1012 = baseline; web typecheck 87 = baseline |
 | 2026-11-17 14:20 | API-01 | Checkpoint | | fs.watch still [853,5360,7124,timeout>20000,5178] at load 85: watcher files not retried |
 | 2026-11-17 14:22 | round 2 | Completed | Pass | report, revision record API-REV-002, investigation round-2 plan written |
+| 2026-11-17 17:23 | part 2 | Started | | part 2 validation at 4c93deaa8f (code ce06c415cc); P2-01 server unit full started |
+| 2026-11-17 17:41 | P2-01 | Completed | Pass for this change | 8244 passed, 5 failed: 4 folder-watcher (FU-001, fseventsd), 1 AGY capability spawn timed out at 5 s under load (passes alone 48/48; no changed code imported) |
+| 2026-11-17 17:41 | P2-02 | Started | | prepare + server test:integration |
+| 2026-11-17 17:51 | P2-02 | Completed | Fail (environment) | 86 files pass; 13 failures only in the two file-watcher files; probe fsWatchLatencyMs":["timeout>20000",240,2981,2631,5441] |
+| 2026-11-17 17:51 | P2-03 | Started | | web test:nuxt run (full) |
+| 2026-11-17 18:06 | P2-03 | Completed | Pass | 757 files, 5692 tests |
+| 2026-11-17 18:06 | P2-04 | Completed | Pass | guards |
+| 2026-11-17 18:06 | P2-07 | Started | | BTS-01..03 scripted |
+| 2026-11-17 18:15 | P2-08 | Started | | TS-008 desktop probe |
+| 2026-11-17 18:17 | P2-08 | Checkpoint | | TS-008 Pass; building the phone bundle for MSP-59 |
+| 2026-11-17 18:20 | P2-08 | Completed | Pass | TS-008 Pass; MSP-59 Pass (phone bundle rebuilt) |
+| 2026-11-17 18:20 | P2-09 | Started | | changed probes: interrupt-result-presentation, background-contention, agent-org-draft-retention |
+| 2026-11-17 18:28 | P2-09 | Checkpoint | | all three changed probes failed (harness/fixture errors); base worktree api448-p2base-895cf3992d to compare |
+| 2026-11-17 18:32 | P2-09 | Completed | Fail (pre-existing) | identical failures on base 895cf3992d for all three; FU-008 |
+| 2026-11-17 18:32 | P2-05 | Started | | pnpm test:e2e (server E2E, full), log /tmp/api448c/P2-05.log |
+| 2026-11-17 19:38 | P2-05 | Checkpoint | | 9 files still fail alone; built-server stops: head stop-probe 1.2/3.3/19 s (exit 0); building pre-ticket base 4cbf9e7881 to compare |
+| 2026-11-17 19:53 | P2-05 | Completed | Pass for this change | 110 pass; 1 stale assertion this ticket made untrue fixed (correlated-status) and passing; 4 pass alone (load); rest identical on base 4cbf9e7881 or load (FU-009) |
+| 2026-11-17 19:53 | P2-06 | Started | | fresh clone /tmp/api448c/fresh at 4c93deaa8f; frozen install; release checks; build:electron:mac arm64; verify steps |
+| 2026-11-17 20:23 | P2-06 | Completed | Pass | fresh clone: frozen install, hygiene, licensing, mac arm64 build (typecheck+guards inside), prisma and terminal verify steps all 0; server image linux/arm64 built from fresh context; amd64 and signing Not Tested |
+| 2026-11-17 20:27 | API-17p2 | Checkpoint | | app restarted (update to 1.5.13-beta.9) during the server typecheck; no process survived; rerun |
+| 2026-11-17 20:30 | API-17p2 | Completed | Pass | after fixing 4 type errors in the peer suite; PBS-01 rerun Pass on the final file |
+| 2026-11-17 20:30 | P2-12 | Started | | restart suite RR-01..09 on dist of 4c93deaa8f |
+| 2026-11-17 20:36 | P2-12 | Completed | Pass | RR-01..09 pass on the part 2 build (RR-01/04 on retry: start deadline under load) |
+| 2026-11-17 20:36 | P2-10 | Started | | isolated-app start --build with the test vault |
+| 2026-11-17 20:52 | P2-10 | Completed | Pass | header/dot/no Stop, Running during a turn, 2-count, reload, zh-CN wording, Idle at the end; panel note read; evidence P2-10-desktop/ |
+| 2026-11-17 20:56 | P2-07a | Started | | a failed Team member live: BTS-02 with a third member whose model answers 400 |
+| 2026-11-17 21:00 | P2-07a | Checkpoint | | native provider 400 = turn diagnostic, member idle (no error status reachable by script); reverted; BTS-02 Pass on the restored file |
+| 2026-11-17 21:18 | P2-07a | Completed | Not reachable live | also tried /ws/agent-collaboration directly (tree and messages only; statuses go through the feed's observePairedAgents, read by BTS-01/02, PBS-01); temporary BTS-06 removed; BTS-01/02 Pass on the final file, tsc clean |
+| 2026-11-17 21:25 | P2 | Completed | Pass | report Part 2 and API-REV-003 written; 94% |
