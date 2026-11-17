@@ -8,6 +8,8 @@
 | CRR-004 | `code-review-report.md` | Implementation Review, round 3 (Targeted Delta) / IR-003 (SR-015, SR-016) | Fail (CRR-003) | Pass | CR-500-003 … -005 resolved |
 | CRR-005 | `api-e2e-test-review-report.md` | Proportional test-code review / API-REV-002 (c0770ea7b0, a7e76ca248) | Pass (CRR-004) | Fail: Local Fix (API/E2E) | CR-500-006 new |
 | CRR-006 | `api-e2e-test-review-report.md` | Proportional test-code recheck / CR-500-006 fix (73bfba186c) | Fail (CRR-005) | Pass | CR-500-006 resolved |
+| CRR-007 | `code-review-report.md` | Merge review, round 4 (Targeted Delta) / IR-004, base `ff13782f36` | Pass (CRR-006) | Fail: Local Fix | CR-500-007 new |
+| CRR-008 | `code-review-report.md` | Recheck, round 5 (Targeted Delta) / IR-005 | Fail (CRR-007) | Pass | CR-500-007 resolved |
 
 ### CRR-001: Implementation review of IR-001: Fail, Local Fix
 
@@ -192,3 +194,52 @@
   - `origin/personal` moved 8 commits (beta.8): confirm no new app-data migration shipped, so `released-migration-order.json` (beta.7) stays the released list, and add `RELEASE.md`'s G-1 line;
   - the member handle is at 499 lines;
   - FU-500-01 … FU-500-11 in `follow-ups.md`.
+
+### CRR-007: Merge review of IR-004 (the base `ff13782f36`): Fail, Local Fix
+
+- Review entry point and round: implementation review, round 4 (the delivery base refresh)
+- Review scope: Targeted Delta, `642737b97a..a462aa6fe7`: the merge `39325a1e50`, and `bfeea63612`
+- Triggering role, report path, and finding or scenario IDs: Implementation Engineer, `implementation-handoff.md` (IR-004, IMP-020); Delivery, `release-deployment-report.md`
+- Relevant solution revision IDs: SR-016 (unchanged)
+- Relevant architecture-review revision IDs: N/A
+- Relevant implementation revision IDs: IR-004
+- Relevant API/E2E revision IDs: API-REV-002
+- Relevant delivery revision IDs: the base-integration block (`2f8a463a11`)
+- Prior authoritative result: Pass (CRR-006)
+- Current authoritative result: Fail, Local Fix
+- What changed in the review result and why:
+  - The remerge diff shows only the four conflict files, each keeping both sides (448's wording with 500's names).
+  - The base adds no migration, brings back no removed name, and 515's tool search uses the agents' own tools.
+  - The order-test fix is correct.
+  - On the merged base, `build-studio-server.ts` is at 502 effective lines: the new base has 492 and this ticket adds 10.
+- Supported product scenario / material-premise basis changes: none
+- Prior finding resolution: N/A (all earlier findings stay resolved)
+- New or remaining finding IDs: CR-500-007
+- Material score or classification changes: SoC & File Placement is below 9.2 until the move
+- Recommended recipient: `/implementation_engineer`
+- Remaining risks or uncertainty: the merged state's e2e and `release:test` are delivery's and API/E2E's
+
+### CRR-008: Recheck of IR-005 (CR-500-007): Pass
+
+- Review entry point and round: implementation review, round 5 (the delivery base refresh's Local Fix)
+- Review scope: Targeted Delta, `a462aa6fe7..460b12a673` (code `eb741a097e`)
+- Triggering role, report path, and finding or scenario IDs: Implementation Engineer, `implementation-handoff.md` (IR-005); CR-500-007
+- Relevant solution revision IDs: SR-016 (unchanged)
+- Relevant architecture-review revision IDs: N/A
+- Relevant implementation revision IDs: IR-005
+- Relevant API/E2E revision IDs: API-REV-002
+- Relevant delivery revision IDs: the base-integration block (`2f8a463a11`)
+- Prior authoritative result: Fail (CRR-007)
+- Current authoritative result: Pass
+- What changed in the review result and why: `createStudioPackageServices` moved unchanged to its own file, so `build-studio-server.ts` is at 485 effective lines. This ticket's own wiring stays, because the architecture tests require it in that file.
+- Supported product scenario / material-premise basis changes: none
+- Prior finding resolution:
+
+| Finding | Status | Evidence |
+| --- | --- | --- |
+| CR-500-007 | Resolved | `eb741a097e`; 485 lines; no changed file over 500 against `ff13782f36` |
+
+- New or remaining finding IDs: none
+- Material score or classification changes: SoC & File Placement back to 9.3; overall 9.4
+- Recommended recipient: `/delivery_engineer`
+- Remaining risks or uncertainty: the merged state's e2e suites and `release:test` are delivery's; the residual risks are as in CRR-006

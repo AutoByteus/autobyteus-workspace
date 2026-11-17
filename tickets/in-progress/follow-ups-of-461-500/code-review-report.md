@@ -1,6 +1,55 @@
 # Code Review Report: follow-ups-of-461-500 (autobyteus-500)
 
-The latest result is round 3, **CRR-004: Pass** (IR-003, the G-5 revision). It comes first. CRR-003 (the failure-origin review), round 2 (CRR-002) and round 1 (CRR-001) follow as history, with their finding IDs reused.
+The latest result is round 5, **CRR-008: Pass** (IR-005, CR-500-007's fix on the merged state). It comes first, then round 4 (CRR-007), round 3 (CRR-004), CRR-003 (the failure-origin review), round 2 (CRR-002) and round 1 (CRR-001) follow as history, with their finding IDs reused. The test reviews CRR-005 and CRR-006 are in `api-e2e-test-review-report.md`.
+
+## Round 5: Recheck Of IR-005 (CRR-008)
+
+- **Scope:** `Targeted Delta Review` of `a462aa6fe7..460b12a673`. The code is `eb741a097e`.
+- **CR-500-007: Resolved.**
+  - `createStudioPackageServices` moves unchanged to `compositions/studio-package-services.ts`, with the six imports only it used. Every removed line appears unchanged in the new file.
+  - `build-studio-server.ts` is at 485 effective lines.
+  - The package registry and bundle services are a coherent concern of their own.
+- **Why that function and not this ticket's wiring:** this ticket's own wiring (`createStudioApplicationServices`, with the remote and G-5 inputs) can't move. The architecture tests require `buildApplicationPlatformRuntime({` in `build-studio-server.ts`. So a split of another owned concern is the right response under the size rule ("a split only if that is not possible").
+- **Recount against `ff13782f36`:** no changed source file is over 500. The member handle is at 499, the AutoByteus backend factory at 496 and the studio composition at 485.
+- **Checks:** I didn't rerun them; they ran on `eb741a097e`.
+  - Type gate: production 0, tests at the 1010 baseline.
+  - Architecture, compositions, restart resume, application platform, application packages and llm-management: 378/378.
+- **Scorecard:** as round 3, with SoC & File Placement back to 9.3. Overall 9.4.
+- **Findings:** none open.
+- **Routing:** `Pass`. The package was already through API/E2E (API-REV-002) and the test review (CRR-006), and this round is the delivery base refresh, so it goes back to `/delivery_engineer`. Delivery runs the merged state's checks (`pnpm release:test --ref <branch>`, and the e2e suites as delivery and API/E2E decide).
+
+---
+
+## Round 4: Merge Review Of IR-004, The Base `ff13782f36` (CRR-007)
+
+- **Scope:** `Targeted Delta Review` of `642737b97a..a462aa6fe7`:
+  - the merge `39325a1e50` (parents `2f8a463a11` and `ff13782f36`, no rebase; `origin/personal` is an ancestor);
+  - `bfeea63612`, a test fix.
+- **Method:** `git show --remerge-diff 39325a1e50` shows only the four conflict files beyond git's automatic merge. `git diff 9695d310c5 ff13782f36` covers the base's changes (beta.8 and beta.9, plus 448 part 1, 483, 458, 514, 515 and 508).
+- **The conflict resolutions: correct.**
+  - `restart-notice.ts` and `restart_resume.md`: 448's wording ("The wake after an update", claim and settle) with 500's names ("a run's own agent", `ensureAgentReady` / `postAgentUserMessage`).
+  - `restart-resumer.ts`: 448's comment with 500's `readyAgent` / `ensureAgentReady`. 448's claim and settle flow below it auto-merged on `readyAgent`.
+  - `claude-live-agent-harness.ts`: both imports.
+- **The base against this ticket:**
+  - No app-data migration in the base (`src/app-data-migrations` is unchanged between the two bases), so `released-migration-order.json` (beta.7) stays the released list.
+  - No name this ticket removed comes back: the completion grep over server source and the hosting names finds nothing.
+  - 515's tool search finds and calls the tools the agent already holds, so the discovery tools are still built by 500's resolver with the host's `PeerDiscoveryAccess`.
+  - 508's `run-file-conversion` rewrites launch fields, not traces, so FU-020's migrations don't interact with it, as the handoff shows.
+- **`bfeea63612`: correct.** Three 461-era registration-order tests list the exact IDs after them, and FU-020's two migrations are now among them. They had failed since `a954ae5300`, because IR-001's runs didn't include `tests/app-data-migrations`. That was the implementation's coverage gap, now closed.
+- **CR-500-007 (Local Fix): `build-studio-server.ts` is over 500 lines on the merged base.**
+  - It has 502 effective lines. The new base has 492; this ticket adds 10; 448 grew the base from 488 to 492.
+  - The rule: the change takes the file over 500 on the base it merges into, so the excess is this ticket's.
+  - The handoff's size line ("498") predates the merge.
+  - **Required:** move part of this ticket's wiring into an owned file, for example the G-5 or `storedModelChecks` assembly, or more of the remote binding's use, into `remote-collaboration-composition.ts` or a G-5 composition helper. Don't compress lines. Then recount every changed file against `ff13782f36`. The member handle is at 499 and the AutoByteus backend factory at 496, both under the limit.
+- **Checks:** I didn't rerun IMP-020, which ran on the merged tree.
+  - Type gates: server production 0 and tests at 1010; web at its baseline.
+  - Restart resume: 58/58.
+  - Server units, work journal, app-data migrations and architecture: 8322 passed. Fourteen load timeouts, the non-watcher ones pass on rerun.
+  - Web: 5730 passed, with two load timeouts that pass alone.
+- **Findings:** CR-500-007.
+- **Routing:** `Fail`, Local Fix, to `/implementation_engineer`. After the move, a quick recheck here. Then delivery's merged-state checks (`pnpm release:test --ref <branch>`, and the e2e suites as delivery and API/E2E decide).
+
+---
 
 ## Round 3: Review Of IR-003, The G-5 Revision (CRR-004)
 
