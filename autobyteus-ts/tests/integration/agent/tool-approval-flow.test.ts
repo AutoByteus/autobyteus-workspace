@@ -23,6 +23,7 @@ import { registerReadFileTool } from '../../../src/tools/file/read-file.js';
 import { registerEditFileTool } from '../../../src/tools/file/edit-file.js';
 import { registerRunBashTool } from '../../../src/tools/terminal/tools/run-bash.js';
 import { TerminalResult } from '../../../src/tools/terminal/types.js';
+import { COMMAND_STOP_LIMIT_MS } from '../../../src/tools/terminal/command-execution/command-deadline.js';
 import { detectNodePtyRuntimeAvailable } from '../tools/terminal/pty-runtime.js';
 
 const nodePtyAvailable = await detectNodePtyRuntimeAvailable();
@@ -175,10 +176,13 @@ describe('Tool approval integration flow', () => {
     previousMemoryDir = process.env.AUTOBYTEUS_MEMORY_DIR;
   });
 
+  // Run end stops the run's commands until each group is confirmed gone: on a busy machine that may take up to the
+  // stop limit, so the worker loop gets that long to end.
+  const AGENT_STOP_SECONDS = COMMAND_STOP_LIMIT_MS / 1000 + 5;
   afterEach(async () => {
     try {
       if (fixture) {
-        await fixture.agent.stop(2);
+        await fixture.agent.stop(AGENT_STOP_SECONDS);
         await fixture.llm.cleanup();
         await fs.rm(fixture.workspaceDir, { recursive: true, force: true });
         await fs.rm(fixture.memoryDir, { recursive: true, force: true });
@@ -196,7 +200,7 @@ describe('Tool approval integration flow', () => {
         delete process.env.AUTOBYTEUS_MEMORY_DIR;
       }
     }
-  });
+  }, (AGENT_STOP_SECONDS + 10) * 1000);
 
   it('executes write_file after approval', async () => {
     const writeTool = registerWriteFileTool();

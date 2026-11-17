@@ -1,0 +1,39 @@
+# IMP-04 full autobyteus-ts suite
+# Command: env -u AUTOBYTEUS_TEST_VAULT pnpm -C autobyteus-ts test
+# Commit: see each section
+# Environment: macOS (darwin 25.5), 10-core, Node v22.23.1; load in each section
+# Date: 2026-11-17
+
+## Final source 80483cce9d, load 183 -> 113
+ Test Files  1 failed | 405 passed | 23 skipped (429)
+      Tests  1 failed | 2496 passed | 107 skipped (2604)
+20: FAIL  tests/unit/tools/terminal/command-execution/native-command-process-scope.test.ts > NativeCommandProcessScope > drains multiple groups collectively while an unrelated scope survives
+21-AssertionError: expected false to be true // Object.is equality
+22-
+23-- Expected
+
+## Old source (src stashed, new tests kept), load 92 -> 157: for comparison
+ Test Files  7 failed | 399 passed | 23 skipped (429)
+      Tests  12 failed | 2484 passed | 107 skipped (2603)
+   1  FAIL  tests/integration/agent/tool-approval-flow.test.ts
+   1  FAIL  tests/integration/llm/api/lmstudio-llm.test.ts
+   1  FAIL  tests/integration/tools/terminal/run-bash-wrapper.test.ts
+   1  FAIL  tests/unit/tools/terminal/command-execution/call-output-lifetime.test.ts
+   1  FAIL  tests/unit/tools/terminal/command-execution/native-command-process-scope.test.ts
+   2  FAIL  tests/unit/tools/terminal/command-execution/process-group-observer.test.ts
+   5  FAIL  tests/unit/tools/terminal/command-execution/shell-command-executor.test.ts
+
+## First version of the change (before the cleanup-hook timeouts and the Stop-during-start fix), load 102-108
+ Test Files  2 failed | 404 passed | 23 skipped (429)
+      Tests  3 failed | 2492 passed | 108 skipped (2603)
+ FAIL  tests/integration/tools/terminal/terminal-tools.test.ts > terminal tools integration > run_bash run_in_background starts in an explicit external cwd and its output is readable with tail
+ FAIL  tests/unit/tools/terminal/command-execution/native-command-process-scope.test.ts > NativeCommandProcessScope > host stop is not a tool timeout and duplicate close shares the promise
+ FAIL  tests/unit/tools/terminal/command-execution/native-command-process-scope.test.ts > NativeCommandProcessScope > drains multiple groups collectively while an unrelated scope survives
+
+## Second version (hook timeouts in terminal-tools only), load 193-242
+ Test Files  4 failed | 402 passed | 23 skipped (429)
+      Tests  4 failed | 2492 passed | 107 skipped (2603)
+ FAIL  tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes run_bash after approval
+ FAIL  tests/integration/llm/api/lmstudio-llm.test.ts > LMStudioLLM Integration > should stream reasoning from a reasoning-capable text model
+ FAIL  tests/integration/tools/terminal/run-bash-wrapper.test.ts > run_bash command wrapper: R-0 regression list > timeout and Stop apply to the foreground part, stop the whole group and add no wrapper output
+ FAIL  tests/unit/tools/terminal/command-execution/native-command-process-scope.test.ts > NativeCommandProcessScope > retains a fast shell job as a background task and drains it at host close

@@ -1,0 +1,18 @@
+# DEL-03 (autobyteus-515 delivery): relevant checks on the merged state
+# Commands (clean env: env -i PATH HOME=<temp> TMPDIR=<temp>):
+#   pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-execution/backends/autobyteus tests/unit/agent-execution/prompt --no-watch
+#   pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/autobyteus-native-tool-search.e2e.test.ts --no-watch
+# Commit: bf5250aef3; the unit run covers autobyteus-agent-run-backend-factory.test.ts, which both the ticket and the base changed
+
+# post-integration check on merged HEAD bf5250aef3 (base origin/personal 3722dbb1d8); Tue Nov 17 20:45:32 CET 2026
+ Test Files  13 passed (13)
+      Tests  162 passed (162)
+   Start at  20:45:36
+   Duration  32.14s (transform 12.36s, setup 579ms, import 25.99s, tests 2.92s, environment 1ms)
+=== E2E
+ ✓ tests/e2e/runtime/autobyteus-native-tool-search.e2e.test.ts (1 test) 77589ms
+     ✓ NTS-E2E-001…005: search and call a found tool with approval, restore, add and remove a tool; history names the real tools  8002ms
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+   Start at  20:46:09
+   Duration  93.07s (transform 11.62s, setup 65ms, import 14.82s, tests 77.59s, environment 0ms)

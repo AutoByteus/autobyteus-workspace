@@ -1,0 +1,1057 @@
+{
+  "model": "deepseek-v4-flash",
+  "listed": "base",
+  "root": "/Users/normy/autobyteus_org/autobyteus-worktrees/native-tool-search-515",
+  "summary": {
+    "pm": {
+      "tasks": 12,
+      "succeeded": 12,
+      "meanFirstPromptTokens": 2524,
+      "meanPromptTokensPerRequest": 3589,
+      "meanCacheReadPerRequest": 2699,
+      "meanRequestsPerTask": 4.7
+    },
+    "da": {
+      "tasks": 12,
+      "succeeded": 11,
+      "meanFirstPromptTokens": 2534,
+      "meanPromptTokensPerRequest": 3211,
+      "meanCacheReadPerRequest": 2441,
+      "meanRequestsPerTask": 4.8
+    }
+  },
+  "results": [
+    {
+      "rep": 0,
+      "model": "deepseek-v4-flash",
+      "listed": "base",
+      "root": "/Users/normy/autobyteus_org/autobyteus-worktrees/native-tool-search-515",
+      "agent": "pm",
+      "task": "pm-close",
+      "toolSearch": true,
+      "success": true,
+      "finished": true,
+      "seconds": 5,
+      "requests": 4,
+      "firstPromptTokens": 2523,
+      "meanPromptTokens": 3629,
+      "usages": [
+        {
+          "prompt": 2523,
+          "cacheRead": 0
+        },
+        {
+          "prompt": 3866,
+          "cacheRead": 2560
+        },
+        {
+          "prompt": 3991,
+          "cacheRead": 3840
+        },
+        {
+          "prompt": 4134,
+          "cacheRead": 3968
+        }
+      ],
+      "toolsCalled": [
+        "get_project_task",
+        "update_task"
+      ],
+      "errors": []
+    },
+    {
+      "rep": 0,
+      "model": "deepseek-v4-flash",
+      "listed": "base",
+      "root": "/Users/normy/autobyteus_org/autobyteus-worktrees/native-tool-search-515",
+      "agent": "pm",
+      "task": "pm-create",
+      "toolSearch": true,
+      "success": true,
+      "finished": true,
+      "seconds": 6,
+      "requests": 5,
+      "firstPromptTokens": 2533,
+      "meanPromptTokens": 3729,
+      "usages": [
+        {
+          "prompt": 2533,
+          "cacheRead": 0
+        },
+        {
+          "prompt": 3817,
+          "cacheRead": 2560
+        },
+        {
+          "prompt": 3911,
+          "cacheRead": 3712
+        },
+        {
+          "prompt": 4114,
+          "cacheRead": 3840
+        },
+        {
+          "prompt": 4269,
+          "cacheRead": 4096
+        }
+      ],
+      "toolsCalled": [
+        "list_projects",
+        "search_project_tasks",
+        "create_task"
+      ],
+      "errors": []
+    },
+    {
+      "rep": 0,
+      "model": "deepseek-v4-flash",
+      "listed": "base",
+      "root": "/Users/normy/autobyteus_org/autobyteus-worktrees/native-tool-search-515",
+      "agent": "pm",
+      "task": "pm-rename",
+      "toolSearch": true,
+      "success": true,
+      "finished": true,
+      "seconds": 4,
+      "requests": 4,
+      "firstPromptTokens": 2519,
+      "meanPromptTokens": 2958,
+      "usages": [
+        {
+          "prompt": 2519,
+          "cacheRead": 0
+        },
+        {
+          "prompt": 3006,
+          "cacheRead": 2560
+        },
+        {
+          "prompt": 3100,
+          "cacheRead": 2944
+        },
+        {
+          "prompt": 3208,
+          "cacheRead": 3072
+        }
+      ],
+      "toolsCalled": [
+        "list_projects",
+        "update_project"
+      ],
+      "errors": []
+    },
+    {
+      "rep": 0,
+      "model": "deepseek-v4-flash",
+      "listed": "base",
+      "root": "/Users/normy/autobyteus_org/autobyteus-worktrees/native-tool-search-515",
+      "agent": "pm",
+      "task": "pm-start",
+      "toolSearch": true,
+      "success": true,
+      "finished": true,
+      "seconds": 6,
+      "requests": 5,
+      "firstPromptTokens": 2522,
+      "meanPromptTokens": 3856,
+      "usages": [
+        {
+          "prompt": 2522,
+          "cacheRead": 0
+        },
+        {
+          "prompt": 4018,
+          "cacheRead": 2560
+        },
+        {
+          "prompt": 4112,
+          "cacheRead": 3968
+        },
+        {
+          "prompt": 4238,
+          "cacheRead": 4096
+        },
+        {
+          "prompt": 4390,
+          "cacheRead": 4224
+        }
+      ],
+      "toolsCalled": [
+        "list_projects",
+        "search_project_tasks",
+        "update_task"
+      ],
+      "errors": []
+    },
+    {
+      "rep": 0,
+      "model": "deepseek-v4-flash",
+      "listed": "base",
+      "root": "/Users/normy/autobyteus_org/autobyteus-worktrees/native-tool-search-515",
+      "agent": "pm",
+      "task": "pm-report",
+      "toolSearch": true,
+      "success": true,
+      "finished": true,
+      "seconds": 8,
+      "requests": 7,
+      "firstPromptTokens": 2527,
+      "meanPromptTokens": 3519,
+      "usages": [
+        {
+          "prompt": 2527,
+          "cacheRead": 0
+        },
+        {
+          "prompt": 3264,
+          "cacheRead": 2560
+        },
+        {
+          "prompt": 3358,
+          "cacheRead": 3200
+        },
+        {
+          "prompt": 3511,
+          "cacheRead": 3328
+        },
+        {
+          "prompt": 3843,
+          "cacheRead": 3584
+        },
+        {
+          "prompt": 4012,
+          "cacheRead": 3840
+        },
+        {
+          "prompt": 4118,
+          "cacheRead": 3968
+        }
+      ],
+      "toolsCalled": [
+        "run_bash",
+        "list_projects",
+        "list_project_tasks",
+        "read_file",
+        "write_file",
+        "read_file"
+      ],
+      "errors": [
+        "Error executing tool 'run_bash' (ID: call_01_ET_8r0iquQf3s7xhN97wFkA4319): Error: run_bash is not available in this run; use the other tools.",
+        "Error executing tool 'read_file' (ID: call_00_WWYFqtuStmaAxjJThfQw1122): Error: ENOENT: no such file or directory, open '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/eval-pm-report-kY6f5H/open-tasks.md'"
+      ]
+    },
+    {
+      "rep": 0,
+      "model": "deepseek-v4-flash",
+      "listed": "base",
+      "root": "/Users/normy/autobyteus_org/autobyteus-worktrees/native-tool-search-515",
+      "agent": "pm",
+      "task": "pm-delegate",
+      "toolSearch": true,
+      "success": true,
+      "finished": true,
+      "seconds": 7,
+      "requests": 6,
+      "firstPromptTokens": 2518,
+      "meanPromptTokens": 4368,
+      "usages": [
+        {
+          "prompt": 2518,
+          "cacheRead": 0
+        },
+        {
+          "prompt": 4001,
+          "cacheRead": 2560
+        },
+        {
+          "prompt": 4762,
+          "cacheRead": 4096
+        },
+        {
+          "prompt": 4856,
+          "cacheRead": 4608
+        },
+        {
+          "prompt": 4978,
+          "cacheRead": 4736
+        },
+        {
+          "prompt": 5093,
+          "cacheRead": 4864
+        }
+      ],
+      "toolsCalled": [
+        "list_available_agents",
+        "list_projects",
+        "get_project_task",
+        "delegate_task"
+      ],
+      "errors": []
+    },
+    {
+      "rep": 0,
+      "model": "deepseek-v4-flash",
+      "listed": "base",
+      "root": "/Users/normy/autobyteus_org/autobyteus-worktrees/native-tool-search-515",
+      "agent": "da",
+      "task": "da-note",
+      "toolSearch": true,
+      "success": true,
+      "finished": true,
+      "seconds": 5,
+      "requests": 5,
+      "firstPromptTokens": 2529,
+      "meanPromptTokens": 2880,
+      "usages": [
+        {
+          "prompt": 2529,
+          "cacheRead": 0
+        },
+        {
+          "prompt": 2658,
+          "cacheRead": 2432
+        },
+        {
+          "prompt": 2919,
+          "cacheRead": 2688
+        },
+        {
+          "prompt": 3097,
+          "cacheRead": 2944
+        },
+        {
+          "prompt": 3195,
+          "cacheRead": 2944
+        }
+      ],
+      "toolsCalled": [
+        "run_bash",
+        "read_file",
+        "write_file",
+        "read_file"
+      ],
+      "errors": [
+        "Error executing tool 'run_bash' (ID: call_00_ET_78fRdYWARXqcZanfzJA01869): Error: run_bash is not available in this run; use the other tools.",
+        "Error executing tool 'read_file' (ID: call_00_C4Mpc6ptwXS4eYFrTki28526): Error: ENOENT: no such file or directory, open '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/eval-da-note-0KSTbu/notes/today.md'"
+      ]
+    },
+    {
+      "rep": 0,
+      "model": "deepseek-v4-flash",
+      "listed": "base",
+      "root": "/Users/normy/autobyteus_org/autobyteus-worktrees/native-tool-search-515",
+      "agent": "da",
+      "task": "da-image",
+      "toolSearch": true,
+      "success": true,
+      "finished": true,
+      "seconds": 7,
+      "requests": 5,
+      "firstPromptTokens": 2537,
+      "meanPromptTokens": 3124,
+      "usages": [
+        {
+          "prompt": 2537,
+          "cacheRead": 0
+        },
+        {
+          "prompt": 3032,
+          "cacheRead": 2560
+        },
+        {
+          "prompt": 3227,
+          "cacheRead": 3072
+        },
+        {
+          "prompt": 3321,
+          "cacheRead": 3072
+        },
+        {
+          "prompt": 3503,
+          "cacheRead": 3328
+        }
+      ],
+      "toolsCalled": [
+        "generate_image",
+        "read_file",
+        "run_bash"
+      ],
+      "errors": [
+        "Error executing tool 'run_bash' (ID: call_00_aMxhqMWAoftm0tx0aOO91885): Error: run_bash is not available in this run; use the other tools."
+      ]
+    },
+    {
+      "rep": 0,
+      "model": "deepseek-v4-flash",
+      "listed": "base",
+      "root": "/Users/normy/autobyteus_org/autobyteus-worktrees/native-tool-search-515",
+      "agent": "da",
+      "task": "da-title",
+      "toolSearch": true,
+      "success": true,
+      "finished": true,
+      "seconds": 5,
+      "requests": 4,
+      "firstPromptTokens": 2533,
+      "meanPromptTokens": 3036,
+      "usages": [
+        {
+          "prompt": 2533,
+          "cacheRead": 0
+        },
+        {
+          "prompt": 3078,
+          "cacheRead": 2560
+        },
+        {
+          "prompt": 3183,
+          "cacheRead": 2944
+        },
+        {
+          "prompt": 3349,
+          "cacheRead": 3200
+        }
+      ],
+      "toolsCalled": [
+        "open_tab",
+        "write_file"
+      ],
+      "errors": []
+    },
+    {
+      "rep": 0,
+      "model": "deepseek-v4-flash",
+      "listed": "base",
+      "root": "/Users/normy/autobyteus_org/autobyteus-worktrees/native-tool-search-515",
+      "agent": "da",
+      "task": "da-search",
+      "toolSearch": true,
+      "success": true,
+      "finished": true,
+      "seconds": 4,
+      "requests": 4,
+      "firstPromptTokens": 2534,
+      "meanPromptTokens": 2804,
+      "usages": [
+        {
+          "prompt": 2534,
+          "cacheRead": 0
+        },
+        {
+          "prompt": 2735,
+          "cacheRead": 2560
+        },
+        {
+          "prompt": 2870,
+          "cacheRead": 2688
+        },
+        {
+          "prompt": 3077,
+          "cacheRead": 2816
+        }
+      ],
+      "toolsCalled": [
+        "search_web",
+        "write_file"
+      ],
+      "errors": []
+    },
+    {
+      "rep": 0,
+      "model": "deepseek-v4-flash",
+      "listed": "base",
+      "root": "/Users/normy/autobyteus_org/autobyteus-worktrees/native-tool-search-515",
+      "agent": "da",
+      "task": "da-speech",
+      "toolSearch": true,
+      "success": true,
+      "finished": true,
+      "seconds": 4,
+      "requests": 4,
+      "firstPromptTokens": 2536,
+      "meanPromptTokens": 3884,
+      "usages": [
+        {
+          "prompt": 2536,
+          "cacheRead": 0
+        },
+        {
+          "prompt": 4200,
+          "cacheRead": 2560
+        },
+        {
+          "prompt": 4341,
+          "cacheRead": 4096
+        },
+        {
+          "prompt": 4460,
+          "cacheRead": 4224
+        }
+      ],
+      "toolsCalled": [
+        "generate_speech",
+        "run_bash"
+      ],
+      "errors": [
+        "Error executing tool 'run_bash' (ID: call_00_ET_vskCjyyB0wJDcMl4yM3t3149): Error: run_bash is not available in this run; use the other tools."
+      ]
+    },
+    {
+      "rep": 0,
+      "model": "deepseek-v4-flash",
+      "listed": "base",
+      "root": "/Users/normy/autobyteus_org/autobyteus-worktrees/native-tool-search-515",
+      "agent": "da",
+      "task": "da-download",
+      "toolSearch": true,
+      "success": false,
+      "finished": true,
+      "seconds": 16,
+      "requests": 8,
+      "firstPromptTokens": 2534,
+      "meanPromptTokens": 3673,
+      "usages": [
+        {
+          "prompt": 2534,
+          "cacheRead": 0
+        },
+        {
+          "prompt": 2985,
+          "cacheRead": 2560
+        },
+        {
+          "prompt": 3185,
+          "cacheRead": 2944
+        },
+        {
+          "prompt": 3364,
+          "cacheRead": 3200
+        },
+        {
+          "prompt": 3621,
+          "cacheRead": 3456
+        },
+        {
+          "prompt": 4377,
+          "cacheRead": 3968
+        },
+        {
+          "prompt": 4459,
+          "cacheRead": 4224
+        },
+        {
+          "prompt": 4857,
+          "cacheRead": 4608
+        }
+      ],
+      "toolsCalled": [
+        "run_bash",
+        "download_media",
+        "read_file",
+        "read_url",
+        "read_url"
+      ],
+      "errors": [
+        "Error executing tool 'run_bash' (ID: call_01_3B7C75D7dUTJjw3ZtFIK9759): Error: run_bash is not available in this run; use the other tools."
+      ]
+    },
+    {
+      "rep": 1,
+      "model": "deepseek-v4-flash",
+      "listed": "base",
+      "root": "/Users/normy/autobyteus_org/autobyteus-worktrees/native-tool-search-515",
+      "agent": "pm",
+      "task": "pm-close",
+      "toolSearch": true,
+      "success": true,
+      "finished": true,
+      "seconds": 5,
+      "requests": 4,
+      "firstPromptTokens": 2525,
+      "meanPromptTokens": 3674,
+      "usages": [
+        {
+          "prompt": 2525,
+          "cacheRead": 0
+        },
+        {
+          "prompt": 3868,
+          "cacheRead": 2560
+        },
+        {
+          "prompt": 4084,
+          "cacheRead": 3840
+        },
+        {
+          "prompt": 4219,
+          "cacheRead": 3968
+        }
+      ],
+      "toolsCalled": [
+        "get_project_task",
+        "update_task"
+      ],
+      "errors": []
+    },
+    {
+      "rep": 1,
+      "model": "deepseek-v4-flash",
+      "listed": "base",
+      "root": "/Users/normy/autobyteus_org/autobyteus-worktrees/native-tool-search-515",
+      "agent": "pm",
+      "task": "pm-create",
+      "toolSearch": true,
+      "success": true,
+      "finished": true,
+      "seconds": 4,
+      "requests": 4,
+      "firstPromptTokens": 2534,
+      "meanPromptTokens": 3260,
+      "usages": [
+        {
+          "prompt": 2534,
+          "cacheRead": 0
+        },
+        {
+          "prompt": 3358,
+          "cacheRead": 2560
+        },
+        {
+          "prompt": 3452,
+          "cacheRead": 3200
+        },
+        {
+          "prompt": 3696,
+          "cacheRead": 3328
+        }
+      ],
+      "toolsCalled": [
+        "list_projects",
+        "create_task"
+      ],
+      "errors": []
+    },
+    {
+      "rep": 1,
+      "model": "deepseek-v4-flash",
+      "listed": "base",
+      "root": "/Users/normy/autobyteus_org/autobyteus-worktrees/native-tool-search-515",
+      "agent": "pm",
+      "task": "pm-rename",
+      "toolSearch": true,
+      "success": true,
+      "finished": true,
+      "seconds": 5,
+      "requests": 4,
+      "firstPromptTokens": 2518,
+      "meanPromptTokens": 3028,
+      "usages": [
+        {
+          "prompt": 2518,
+          "cacheRead": 0
+        },
+        {
+          "prompt": 3095,
+          "cacheRead": 2560
+        },
+        {
+          "prompt": 3189,
+          "cacheRead": 2944
+        },
+        {
+          "prompt": 3309,
+          "cacheRead": 3072
+        }
+      ],
+      "toolsCalled": [
+        "run_bash",
+        "list_projects",
+        "update_project"
+      ],
+      "errors": [
+        "Error executing tool 'run_bash' (ID: call_01_ET_yyCsNfYfez2ss2aaSnQE0379): Error: run_bash is not available in this run; use the other tools."
+      ]
+    },
+    {
+      "rep": 1,
+      "model": "deepseek-v4-flash",
+      "listed": "base",
+      "root": "/Users/normy/autobyteus_org/autobyteus-worktrees/native-tool-search-515",
+      "agent": "pm",
+      "task": "pm-start",
+      "toolSearch": true,
+      "success": true,
+      "finished": true,
+      "seconds": 6,
+      "requests": 5,
+      "firstPromptTokens": 2524,
+      "meanPromptTokens": 3850,
+      "usages": [
+        {
+          "prompt": 2524,
+          "cacheRead": 0
+        },
+        {
+          "prompt": 4020,
+          "cacheRead": 2560
+        },
+        {
+          "prompt": 4114,
+          "cacheRead": 3968
+        },
+        {
+          "prompt": 4235,
+          "cacheRead": 4096
+        },
+        {
+          "prompt": 4358,
+          "cacheRead": 4224
+        }
+      ],
+      "toolsCalled": [
+        "list_projects",
+        "search_project_tasks",
+        "update_task"
+      ],
+      "errors": []
+    },
+    {
+      "rep": 1,
+      "model": "deepseek-v4-flash",
+      "listed": "base",
+      "root": "/Users/normy/autobyteus_org/autobyteus-worktrees/native-tool-search-515",
+      "agent": "pm",
+      "task": "pm-report",
+      "toolSearch": true,
+      "success": true,
+      "finished": true,
+      "seconds": 6,
+      "requests": 5,
+      "firstPromptTokens": 2525,
+      "meanPromptTokens": 3203,
+      "usages": [
+        {
+          "prompt": 2525,
+          "cacheRead": 0
+        },
+        {
+          "prompt": 3166,
+          "cacheRead": 2560
+        },
+        {
+          "prompt": 3260,
+          "cacheRead": 3072
+        },
+        {
+          "prompt": 3413,
+          "cacheRead": 3200
+        },
+        {
+          "prompt": 3653,
+          "cacheRead": 3456
+        }
+      ],
+      "toolsCalled": [
+        "list_projects",
+        "list_project_tasks",
+        "write_file"
+      ],
+      "errors": []
+    },
+    {
+      "rep": 1,
+      "model": "deepseek-v4-flash",
+      "listed": "base",
+      "root": "/Users/normy/autobyteus_org/autobyteus-worktrees/native-tool-search-515",
+      "agent": "pm",
+      "task": "pm-delegate",
+      "toolSearch": true,
+      "success": true,
+      "finished": true,
+      "seconds": 4,
+      "requests": 3,
+      "firstPromptTokens": 2519,
+      "meanPromptTokens": 3593,
+      "usages": [
+        {
+          "prompt": 2519,
+          "cacheRead": 0
+        },
+        {
+          "prompt": 3930,
+          "cacheRead": 2560
+        },
+        {
+          "prompt": 4329,
+          "cacheRead": 4096
+        }
+      ],
+      "toolsCalled": [
+        "delegate_task"
+      ],
+      "errors": []
+    },
+    {
+      "rep": 1,
+      "model": "deepseek-v4-flash",
+      "listed": "base",
+      "root": "/Users/normy/autobyteus_org/autobyteus-worktrees/native-tool-search-515",
+      "agent": "da",
+      "task": "da-note",
+      "toolSearch": true,
+      "success": true,
+      "finished": true,
+      "seconds": 5,
+      "requests": 4,
+      "firstPromptTokens": 2529,
+      "meanPromptTokens": 2735,
+      "usages": [
+        {
+          "prompt": 2529,
+          "cacheRead": 0
+        },
+        {
+          "prompt": 2657,
+          "cacheRead": 2432
+        },
+        {
+          "prompt": 2828,
+          "cacheRead": 2688
+        },
+        {
+          "prompt": 2926,
+          "cacheRead": 2688
+        }
+      ],
+      "toolsCalled": [
+        "run_bash",
+        "write_file",
+        "read_file"
+      ],
+      "errors": [
+        "Error executing tool 'run_bash' (ID: call_00_ET_RbopSAw2qa1ZHk2w6e0q0746): Error: run_bash is not available in this run; use the other tools."
+      ]
+    },
+    {
+      "rep": 1,
+      "model": "deepseek-v4-flash",
+      "listed": "base",
+      "root": "/Users/normy/autobyteus_org/autobyteus-worktrees/native-tool-search-515",
+      "agent": "da",
+      "task": "da-image",
+      "toolSearch": true,
+      "success": true,
+      "finished": true,
+      "seconds": 7,
+      "requests": 6,
+      "firstPromptTokens": 2537,
+      "meanPromptTokens": 3227,
+      "usages": [
+        {
+          "prompt": 2537,
+          "cacheRead": 0
+        },
+        {
+          "prompt": 3036,
+          "cacheRead": 2560
+        },
+        {
+          "prompt": 3232,
+          "cacheRead": 3072
+        },
+        {
+          "prompt": 3326,
+          "cacheRead": 3072
+        },
+        {
+          "prompt": 3533,
+          "cacheRead": 3328
+        },
+        {
+          "prompt": 3697,
+          "cacheRead": 3456
+        }
+      ],
+      "toolsCalled": [
+        "generate_image",
+        "read_file",
+        "run_bash",
+        "run_bash"
+      ],
+      "errors": [
+        "Error executing tool 'run_bash' (ID: call_00_nc0AF7kWfqytul3GuQ197454): Error: run_bash is not available in this run; use the other tools.",
+        "Error executing tool 'run_bash' (ID: call_00_ET_68WaD3pv3w8rHXv04oqL9203): Error: run_bash is not available in this run; use the other tools."
+      ]
+    },
+    {
+      "rep": 1,
+      "model": "deepseek-v4-flash",
+      "listed": "base",
+      "root": "/Users/normy/autobyteus_org/autobyteus-worktrees/native-tool-search-515",
+      "agent": "da",
+      "task": "da-title",
+      "toolSearch": true,
+      "success": true,
+      "finished": true,
+      "seconds": 9,
+      "requests": 7,
+      "firstPromptTokens": 2535,
+      "meanPromptTokens": 3327,
+      "usages": [
+        {
+          "prompt": 2535,
+          "cacheRead": 0
+        },
+        {
+          "prompt": 3171,
+          "cacheRead": 2560
+        },
+        {
+          "prompt": 3268,
+          "cacheRead": 3072
+        },
+        {
+          "prompt": 3364,
+          "cacheRead": 3200
+        },
+        {
+          "prompt": 3521,
+          "cacheRead": 3328
+        },
+        {
+          "prompt": 3667,
+          "cacheRead": 3456
+        },
+        {
+          "prompt": 3763,
+          "cacheRead": 3584
+        }
+      ],
+      "toolsCalled": [
+        "open_tab",
+        "run_script",
+        "write_file",
+        "run_bash",
+        "read_file"
+      ],
+      "errors": [
+        "Error executing tool 'run_bash' (ID: call_00_ET_C7IYYwcc2TCm24b1tvst5345): Error: run_bash is not available in this run; use the other tools."
+      ]
+    },
+    {
+      "rep": 1,
+      "model": "deepseek-v4-flash",
+      "listed": "base",
+      "root": "/Users/normy/autobyteus_org/autobyteus-worktrees/native-tool-search-515",
+      "agent": "da",
+      "task": "da-search",
+      "toolSearch": true,
+      "success": true,
+      "finished": true,
+      "seconds": 4,
+      "requests": 4,
+      "firstPromptTokens": 2534,
+      "meanPromptTokens": 2799,
+      "usages": [
+        {
+          "prompt": 2534,
+          "cacheRead": 0
+        },
+        {
+          "prompt": 2735,
+          "cacheRead": 2560
+        },
+        {
+          "prompt": 2870,
+          "cacheRead": 2688
+        },
+        {
+          "prompt": 3055,
+          "cacheRead": 2816
+        }
+      ],
+      "toolsCalled": [
+        "search_web",
+        "write_file"
+      ],
+      "errors": []
+    },
+    {
+      "rep": 1,
+      "model": "deepseek-v4-flash",
+      "listed": "base",
+      "root": "/Users/normy/autobyteus_org/autobyteus-worktrees/native-tool-search-515",
+      "agent": "da",
+      "task": "da-speech",
+      "toolSearch": true,
+      "success": true,
+      "finished": true,
+      "seconds": 4,
+      "requests": 3,
+      "firstPromptTokens": 2535,
+      "meanPromptTokens": 3761,
+      "usages": [
+        {
+          "prompt": 2535,
+          "cacheRead": 0
+        },
+        {
+          "prompt": 4290,
+          "cacheRead": 2560
+        },
+        {
+          "prompt": 4457,
+          "cacheRead": 4224
+        }
+      ],
+      "toolsCalled": [
+        "run_bash",
+        "generate_speech"
+      ],
+      "errors": [
+        "Error executing tool 'run_bash' (ID: call_01_ET_KvnxuKuVOa1puPlWUT621466): Error: run_bash is not available in this run; use the other tools."
+      ]
+    },
+    {
+      "rep": 1,
+      "model": "deepseek-v4-flash",
+      "listed": "base",
+      "root": "/Users/normy/autobyteus_org/autobyteus-worktrees/native-tool-search-515",
+      "agent": "da",
+      "task": "da-download",
+      "toolSearch": true,
+      "success": true,
+      "finished": true,
+      "seconds": 5,
+      "requests": 4,
+      "firstPromptTokens": 2534,
+      "meanPromptTokens": 2964,
+      "usages": [
+        {
+          "prompt": 2534,
+          "cacheRead": 0
+        },
+        {
+          "prompt": 2976,
+          "cacheRead": 2560
+        },
+        {
+          "prompt": 3121,
+          "cacheRead": 2944
+        },
+        {
+          "prompt": 3225,
+          "cacheRead": 3072
+        }
+      ],
+      "toolsCalled": [
+        "run_bash",
+        "download_media",
+        "read_file"
+      ],
+      "errors": [
+        "Error executing tool 'run_bash' (ID: call_00_eYEVwJ3hzgRFKgQEcgGy2314): Error: run_bash is not available in this run; use the other tools."
+      ]
+    }
+  ]
+}

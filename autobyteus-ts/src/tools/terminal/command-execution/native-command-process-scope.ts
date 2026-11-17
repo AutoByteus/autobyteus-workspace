@@ -1,4 +1,7 @@
-import { beforeDeadline } from './command-deadline.js';
+import {
+  beforeDeadline, COMMAND_CANCEL_GATE_GRACE_MS, COMMAND_OBSERVATION_LIMIT_MS, COMMAND_SCOPE_SHUTDOWN_BUDGET_MS,
+  COMMAND_START_LIMIT_MS, COMMAND_STOP_LIMIT_MS, COMMAND_TERM_GRACE_MS,
+} from './command-deadline.js';
 import { AnchoredCommandLauncher, AnchoredCommandHandle, type StopReason } from './anchored-command-launcher.js';
 import { ProcessGroupObserver } from './process-group-observer.js';
 import { type NonInteractiveShellInvocation } from './non-interactive-shell-resolver.js';
@@ -20,7 +23,7 @@ export class NativeCommandProcessScope {
   get size(): number { return this.leases.size; }
   /** True while the command's group is still owned (not yet confirmed gone). */
   holds(handle: AnchoredCommandHandle): boolean { return this.leases.has(handle); }
-  async start(invocation: NonInteractiveShellInvocation, deadline = Date.now() + 1500,
+  async start(invocation: NonInteractiveShellInvocation, deadline = Date.now() + COMMAND_START_LIMIT_MS,
     attach?: (handle: AnchoredCommandHandle) => void): Promise<AnchoredCommandHandle> {
     if (!this.isOpen) throw new Error('Native command scope is shutting down');
     const handle = this.launcher.launch(invocation);
@@ -35,7 +38,8 @@ export class NativeCommandProcessScope {
     try {
       const pid = await beforeDeadline(handle.ready, deadline);
       const group = await this.observer.establish(invocation.processTarget, pid, deadline);
-      if (!this.isOpen || handle.stopReason) throw new Error('Command launch cancelled by shutdown');
+      if (!this.isOpen || handle.stopReason)
+        throw new Error(`Command launch cancelled ${this.isOpen ? `(${handle.stopReason})` : 'by shutdown'}`);
       handle.group = group;
       handle.start(); // no await between final admission check and START
       await beforeDeadline(handle.started, deadline);
@@ -45,14 +49,14 @@ export class NativeCommandProcessScope {
       throw error;
     }
   }
-  async members(handle: AnchoredCommandHandle, deadline = Date.now() + 500): Promise<ObservedProcess[]> {
+  async members(handle: AnchoredCommandHandle, deadline = Date.now() + COMMAND_OBSERVATION_LIMIT_MS): Promise<ObservedProcess[]> {
     if (this.retired.has(handle)) return [];
     if (!this.leases.has(handle) || !handle.group) throw new Error('Command group is not verified');
     const rows = await this.observer.snapshot(handle.group.target, deadline);
     if (!this.observer.matches(handle.group, rows) || handle.anchorExited) throw new Error('Command anchor identity lost');
     return rows.filter(p => p.processGroupId === handle.group!.anchor.pid && p.pid !== handle.group!.anchor.pid);
   }
-  stop(handle: AnchoredCommandHandle, reason: StopReason, deadline = Date.now() + 3000): Promise<CommandStopOutcome> {
+  stop(handle: AnchoredCommandHandle, reason: StopReason, deadline = Date.now() + COMMAND_STOP_LIMIT_MS): Promise<CommandStopOutcome> {
     handle.noteStopRequested(reason);
     if (this.retired.has(handle)) return Promise.resolve({ outcome: 'already-exited' });
     if (!this.leases.has(handle)) return Promise.resolve({ outcome: 'unconfirmed', reason: 'Command lease does not belong to this scope' });
@@ -78,7 +82,7 @@ export class NativeCommandProcessScope {
     try {
       if (!handle.startCommitted) {
         handle.cancelGate();
-        try { await beforeDeadline(handle.exited, Math.min(deadline, Date.now() + 500)); }
+        try { await beforeDeadline(handle.exited, Math.min(deadline, Date.now() + COMMAND_CANCEL_GATE_GRACE_MS)); }
         catch {
           if (!handle.anchorExited) handle.child.kill('SIGKILL');
           await beforeDeadline(handle.exited, deadline);
@@ -89,7 +93,7 @@ export class NativeCommandProcessScope {
       const group = handle.group!;
       await this.members(handle, deadline);
       await this.observer.signal(group, 'TERM', deadline, () => !handle.anchorExited);
-      await sleep(Math.max(0, Math.min(500, deadline - Date.now())));
+      await sleep(Math.max(0, Math.min(COMMAND_TERM_GRACE_MS, deadline - Date.now())));
       const members = await this.members(handle, deadline);
       if (!members.length) {
         handle.release();
@@ -113,7 +117,7 @@ export class NativeCommandProcessScope {
     if (!this.isOpen || this.operations.has(handle) || !handle.completed || handle.stopReason) return;
     const operation = (async (): Promise<CommandStopOutcome> => {
       try {
-        const deadline = Date.now() + 500;
+        const deadline = Date.now() + COMMAND_OBSERVATION_LIMIT_MS;
         if ((await this.members(handle, deadline)).length) return { outcome: 'unconfirmed', reason: 'Group still active' };
         if (!this.isOpen || handle.stopReason) return { outcome: 'unconfirmed', reason: 'Stop owns retirement' };
         handle.release();
@@ -131,7 +135,7 @@ export class NativeCommandProcessScope {
   close(): Promise<NativeCommandCloseReport> {
     if (this.closePromise) return this.closePromise;
     this.state = 'closing'; clearInterval(this.timer);
-    const deadline = Date.now() + 3000;
+    const deadline = Date.now() + COMMAND_SCOPE_SHUTDOWN_BUDGET_MS;
     for (const handle of this.leases) handle.noteStopRequested('host-shutdown');
     this.closePromise = (async () => {
       try {

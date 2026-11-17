@@ -317,6 +317,9 @@ fi
 echo -e "\n${YELLOW}Pruning onnxruntime-web to its Node build and checking the embedding runtime...${NC}"
 node "$WEB_ROOT/scripts/onnxruntime-web-packaging.mjs" "$TARGET_DIR"
 
+echo -e "\n${YELLOW}Removing the Claude Agent SDK's platform binaries (Claude runs use the installed claude)...${NC}"
+node "$WEB_ROOT/scripts/claude-agent-sdk-binary-packaging.mjs" "$TARGET_DIR"
+
 if [ -d "$SERVER_REPO_DIR/download" ]; then
   mkdir -p "$TARGET_DIR/download"
   cp -R "$SERVER_REPO_DIR/download/." "$TARGET_DIR/download/"

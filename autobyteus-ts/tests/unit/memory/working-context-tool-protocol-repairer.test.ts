@@ -44,7 +44,8 @@ describe('repairWorkingContextToolProtocol', () => {
         source: 'synthetic_interrupted',
         toolResult: null,
         toolError: SYNTHETIC_TOOL_RESULT_ERROR('tool_call_missing', 'call_missing'),
-        toolArgs: { id: 'call_missing' },
+        rawToolName: 'tool_call_missing',
+        rawToolArgs: { id: 'call_missing' },
       }),
     ]);
     expect(repaired.messages.map((message) => message.role)).toEqual([
@@ -84,7 +85,6 @@ describe('repairWorkingContextToolProtocol', () => {
       completedToolResultsByIdentity: new Map([
         [toolCallIdentityKey({ turnId: 'turn_1', toolCallId: 'call_A' }), {
           toolCallId: 'call_A',
-          toolName: 'tool_call_A',
           toolResult: 'SAFE_FACT',
           toolError: null,
           turnId: 'turn_1',

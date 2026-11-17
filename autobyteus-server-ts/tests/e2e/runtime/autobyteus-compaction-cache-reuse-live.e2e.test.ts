@@ -19,9 +19,10 @@
  *                input; the summary is accepted (compaction completed); the turn continues on the compacted context; the
  *                Token Meter feed has the `autobyteus_compaction` call with the provider's cache read, and the run summary
  *                equals the provider usage (AC-001 live, AC-002, AC-007, QR-001)
- *   CCR-E2E-002  Opus 5.5 (strict): Settings → default image model changes the tools after the thinking tool cycles and
- *                before the compaction turn; the summary request carries no thinking and the new tools, and is accepted
- *                (no 400); the turn continues (AC-006, REQ-006)
+ *   CCR-E2E-002  Opus 5.5 (strict): Settings → default image model changed after the thinking tool cycles and before
+ *                the compaction turn leaves the request tools unchanged (native tool search, autobyteus-515: generate_image
+ *                is searchable, its definition is not in `tools`); the summary request keeps the thinking and the same
+ *                tools, and is accepted (no 400); the turn continues (AC-006, REQ-006)
  *   CCR-E2E-003  Gemini (Vertex Express): Gemini's catalog mode is the transcript summary (REQ-002), so compaction goes
  *                straight to the transcript request on the agent's own model and succeeds; the run continues, the meter
  *                has the compaction call (AC-008); every agent request carries the agent's own system prompt and every
@@ -283,7 +284,7 @@ describeLive("AutoByteus native compaction on the agent's own model with a cache
     await harness.stopRun(session);
   }, CASE_TIMEOUT_MS);
 
-  it("CCR-E2E-002: tools changed in Settings before the compaction turn: the summary request carries no thinking and is accepted (strict)", async (testContext) => {
+  it("CCR-E2E-002: a Settings image-model change before the compaction turn leaves the tools unchanged: the summary request keeps the thinking and is accepted (strict)", async (testContext) => {
     await requireKey(testContext, "ANTHROPIC_API_KEY");
     const session = await runToPendingCompaction("CCR2");
     const t3Summaries = harness.callsOf("CCR2-T3").filter((call) => summaryRequestMode(call.body) !== null);
@@ -301,17 +302,17 @@ describeLive("AutoByteus native compaction on the agent's own model with a cache
       compactionFrames: statuses.map((frame) => ({ type: frame.type, ...frame.payload })),
       agentCalls: agentCalls.map((call) => harness.summarize(call)),
     });
-    expect(t3Summaries.length, "compaction stayed pending through T3 (the tools change happens before it runs)").toBe(0);
+    expect(t3Summaries.length, "compaction stayed pending through T3 (the setting change happens before it runs)").toBe(0);
     expect(thinkingBlocks(lastT3.body), "the history held thinking before the change").toBeGreaterThan(0);
     turnOk("T4", t4);
     expect(summaryCalls.length, "a summary request was sent").toBeGreaterThan(0);
     for (const call of summaryCalls) {
       expect(call.status, String(call.errorBody)).toBe(200);
       expectStrictWhenThinking(call);
-      expect(thinkingBlocks(call.body), `summary call ${call.index}: prefix-bound reasoning removed before the fork`).toBe(0);
-      expect(JSON.stringify(call.body.tools)).toContain(CHANGED_IMAGE_MODEL);
+      expect(JSON.stringify(call.body.tools), "generate_image is searchable: its schema is not in the tools").not.toContain(CHANGED_IMAGE_MODEL);
     }
-    expect(JSON.stringify(summaryCalls[0]!.body.tools), "tools changed by the setting").not.toBe(JSON.stringify(lastT3.body.tools));
+    expect(JSON.stringify(summaryCalls[0]!.body.tools), "the setting left the tools unchanged").toBe(JSON.stringify(lastT3.body.tools));
+    expect(thinkingBlocks(summaryCalls[0]!.body), "the prefix is unchanged, so the thinking is kept").toBeGreaterThan(0);
     expect(statuses.some((frame) => frame.payload.phase === "completed"), "compaction completed").toBe(true);
     harness.assertAccepted(agentCalls, "T4 agent calls");
     assertNoInstructionEcho(agentCalls.filter((call) => call.index > summaryCalls[0]!.index), "CCR-E2E-002");

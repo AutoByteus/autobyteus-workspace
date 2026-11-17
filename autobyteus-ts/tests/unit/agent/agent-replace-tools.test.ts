@@ -4,7 +4,6 @@ import { AgentRuntime } from '../../../src/agent/runtime/agent-runtime.js';
 import { AgentRuntimeState } from '../../../src/agent/context/agent-runtime-state.js';
 import { AgentConfig } from '../../../src/agent/context/agent-config.js';
 import { AgentContext } from '../../../src/agent/context/agent-context.js';
-import { resolveTurnToolNames } from '../../../src/agent/loop/llm-phase-tools.js';
 import { BaseTool } from '../../../src/tools/base-tool.js';
 
 class NamedTool extends BaseTool {
@@ -38,19 +37,18 @@ describe('Agent.replaceTools', () => {
 
     expect(context.state.toolInstances).toEqual({ open_tab: browser, get_project_task: added });
     expect(context.state.toolInstances!.open_tab).toBe(browser);
-    expect(resolveTurnToolNames(context).sort()).toEqual(['get_project_task', 'open_tab']);
     expect(removed.cleanup).toHaveBeenCalledOnce();
     expect(browserRebuilt.cleanup).toHaveBeenCalledOnce();
     expect(browser.cleanup).not.toHaveBeenCalled();
     expect(added.cleanup).not.toHaveBeenCalled();
   });
 
-  it('removes every tool: the next LLM call lists none, not the configured tools', async () => {
+  it('removes every tool: the agent then has none, not the configured tools', async () => {
     const tool = new NamedTool('read_file');
     const { agent, context } = makeAgent([tool]);
     await agent.replaceTools([]);
     expect(context.state.toolInstances).toEqual({});
-    expect(resolveTurnToolNames(context)).toEqual([]);
+    expect(context.toolInstances).toEqual({});
     expect(tool.cleanup).toHaveBeenCalledOnce();
   });
 });

@@ -70,4 +70,21 @@ describe('OpenAiJsonSchemaFormatter', () => {
     expect(output.function.parameters.required).not.toContain('metadata');
     expect(output.function.strict).toBeUndefined();
   });
+
+  it('leaves an object that declares no properties open: closing it would allow only {}', () => {
+    const schema = new ParameterSchema([new ParameterDefinition({
+      name: 'arguments',
+      type: ParameterType.OBJECT,
+      description: 'Any arguments.',
+      required: true,
+    })]);
+    const toolDef = new ToolDefinition('FreeForm', 'Takes any arguments.', ToolOrigin.LOCAL, 'general', () => schema, () => null, {
+      toolClass: DummyComplexTool,
+    });
+
+    const parameters = new OpenAiJsonSchemaFormatter().provide(toolDef).function.parameters;
+
+    expect(parameters.additionalProperties).toBe(false);
+    expect(parameters.properties.arguments).toEqual({ type: 'object', description: 'Any arguments.' });
+  });
 });

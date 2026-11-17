@@ -1,0 +1,38 @@
+# API-03 (autobyteus-515 API/E2E): whole server integration suite
+# Commands: pnpm -C autobyteus-server-ts test:integration:prepare; env -i PATH HOME=<temp> TMPDIR pnpm -C autobyteus-server-ts test:integration
+# Commit 03da73d550 (+ uncommitted API-04 test file, not in tests/integration); Node v22.23.1, macOS; 2026-11-17 17:37-17:44
+# Full log: /tmp/nts515/API-03.log (not committed)
+
+2026-11-17 17:36:47 17:36  up 29 days,  3:15, 9 users, load averages: 59.55 71.54 83.83
+PREPARED 17:37:22
+ FAIL  tests/integration/agent-package-definitions/package-auto-refresh.integration.test.ts > package auto-refresh: the next delegation sees current definitions > AC-001/AC-015(a): a new agent and a new Team written on disk are listed and delegable within 5 s, without Reload
+ FAIL  tests/integration/agent-package-definitions/package-auto-refresh.integration.test.ts > package auto-refresh: the next delegation sees current definitions > AC-002/AC-015(b)/QR-004: edits reach every reader; other agents never disappear during the refresh
+ FAIL  tests/integration/agent-package-definitions/package-auto-refresh.integration.test.ts > package auto-refresh: the next delegation sees current definitions > AC-007: skill edits inside a package produce no reload and no notification
+ FAIL  tests/integration/agent-package-definitions/package-auto-refresh.integration.test.ts > package auto-refresh: the next delegation sees current definitions > CR-001/REQ-015: an unreadable package folder at startup does not block startup or other packages
+ FAIL  tests/integration/agent-package-definitions/package-auto-refresh.integration.test.ts > package auto-refresh: the next delegation sees current definitions > DSN-003: a broken team-local agent keeps its last good version and its Team stays launchable
+ FAIL  tests/integration/api/studio-server-http-contract.integration.test.ts > Studio server HTTP contract > answers MCP gateway preflights for a configured origin and rejects foreign and unlisted localhost origins
+ FAIL  tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits add + modify + delete events
+ FAIL  tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > returns one idle event stream without stopping other subscribers
+ FAIL  tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits move/rename event
+ FAIL  tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits file creation event with node metadata
+ FAIL  tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits folder creation and deletion events
+ FAIL  tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > respects nested .gitignore files
+ FAIL  tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > captures rapid changes without dropping events
+ FAIL  tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits delete events even if the in-memory node is missing
+ Test Files  3 failed | 84 passed | 20 skipped (107)
+      Tests  14 failed | 491 passed | 69 skipped (574)
+   Duration  435.09s (transform 13.20s, setup 2.60s, import 101.41s, tests 320.30s, environment 6ms)
+EXIT=1 2026-11-17 17:44:39 17:44  up 29 days,  3:23, 9 users, load averages: 50.57 54.54 69.42
+
+== failure kinds
+   1      26|       reject(new Error("Timed out waiting for event"));
+   1 Error: Hook timed out in 10000ms.
+   1 Error: Test timed out in 5000ms.
+   1 Error: Timed out waiting for event
+
+== studio-server-http-contract alone, branch (17:44): × MCP gateway preflight case 28382ms, 'Test timed out in 5000ms' + 'Hook timed out in 10000ms'; 3 others pass
+== same file alone, base 4cbf9e7881 (17:45): × 'serves GraphQL at POST /graphql' 8480ms 'Test timed out in 5000ms'; the MCP preflight case passes in 18ms
+
+== cause probe API-03-fswatch-main-thread-block-probe.mjs at 17:46 (fseventsd 124.9 % CPU, load 45):
+{"rows":[{"startMs":0,"closeMs":209},{"startMs":0,"closeMs":1831},{"startMs":0,"closeMs":1431},{"startMs":1,"closeMs":325},{"startMs":0,"closeMs":52},{"startMs":0,"closeMs":0}],"maxEventLoopStallMs":1826}
+Reading: closing a recursive fs.watch blocks the Node main thread up to 1.8 s; watch events arrive 2.5-5.5 s late or never (API-02). The studio server and these suites start and close folder watchers, so their requests and hooks stall past the 5 s / 10 s limits. Server src diff of this ticket: one argument in autobyteus-agent-run-backend-factory.ts; no watcher, CORS or MCP gateway code.

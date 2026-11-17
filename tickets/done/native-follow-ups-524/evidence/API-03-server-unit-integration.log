@@ -1,0 +1,43 @@
+# API-03 (autobyteus-524 API/E2E): whole server test:unit and test:integration (AC-006; autobyteus-ts is a shared foundation)
+# Commands: env -i PATH HOME=<temp> TMPDIR pnpm -C autobyteus-server-ts test:unit ; pnpm -C autobyteus-server-ts test:integration:prepare ; env -i ... test:integration
+# commit 42df66c542 (source 80483cce9d); Node v22.23.1; 2026-11-17 22:42-23:37 CET; full logs not committed (/tmp/524/API-03-*.log)
+
+== unit
+start 22:42:40 22:42  up 29 days,  8:21, 10 users, load averages: 128.36 122.18 126.91
+ FAIL  tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts > AgentPackageFolderWatcher > reports definition changes per folder and ignores skills and other files
+ FAIL  tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts > AgentPackageFolderWatcher > reports definition changes per folder and ignores skills and other files
+ FAIL  tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts > AgentPackageFolderWatcher > re-arms a root whose folder was replaced in place (GitHub update rename swap)
+ FAIL  tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts > AgentPackageFolderWatcher > moves a root to FOLDER_MISSING when it is renamed away and resumes watching when it returns
+ FAIL  tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts > AgentPackageFolderWatcher > re-arms a root whose folder was replaced in place (GitHub update rename swap)
+ FAIL  tests/unit/skill-update-notices/skill-folder-watcher.test.ts > SkillFolderWatcher > releases a folder's OS handles when no run uses it any more, and still reports changes once it is watched again (CR-005)
+ Test Files  2 failed | 1007 passed | 5 skipped (1014)
+      Tests  4 failed | 8293 passed | 9 skipped (8306)
+EXIT=1 end 23:24:29 23:24  up 29 days,  9:03, 10 users, load averages: 85.19 111.98 140.44
+
+== integration
+start 23:24:29 23:24  up 29 days,  9:03, 10 users, load averages: 85.19 111.98 140.44
+ FAIL  tests/integration/agent-package-definitions/package-auto-refresh.integration.test.ts > package auto-refresh: the next delegation sees current definitions > AC-001/AC-015(a): a new agent and a new Team written on disk are listed and delegable within 5 s, without Reload
+ FAIL  tests/integration/agent-package-definitions/package-auto-refresh.integration.test.ts > package auto-refresh: the next delegation sees current definitions > AC-002/AC-015(b)/QR-004: edits reach every reader; other agents never disappear during the refresh
+ FAIL  tests/integration/agent-package-definitions/package-auto-refresh.integration.test.ts > package auto-refresh: the next delegation sees current definitions > AC-003/AC-015(c): a deleted agent or Team is gone and delegation gets the existing not-found result
+ FAIL  tests/integration/agent-package-definitions/package-auto-refresh.integration.test.ts > package auto-refresh: the next delegation sees current definitions > AC-004: a broken edit keeps the last good agent usable with an issue; fixing it clears the issue
+ FAIL  tests/integration/agent-package-definitions/package-auto-refresh.integration.test.ts > package auto-refresh: the next delegation sees current definitions > AC-005: a new invalid Team is unavailable with a diagnostic and other Teams are unaffected
+ FAIL  tests/integration/agent-package-definitions/package-auto-refresh.integration.test.ts > package auto-refresh: the next delegation sees current definitions > AC-006: a 50-file burst is coalesced into a bounded number of publications
+ FAIL  tests/integration/agent-package-definitions/package-auto-refresh.integration.test.ts > package auto-refresh: the next delegation sees current definitions > AC-007: skill edits inside a package produce no reload and no notification
+ FAIL  tests/integration/agent-package-definitions/package-auto-refresh.integration.test.ts > package auto-refresh: the next delegation sees current definitions > AC-011: an imported root is watched; a removed root is released and its later edits are ignored
+ FAIL  tests/integration/agent-package-definitions/package-auto-refresh.integration.test.ts > package auto-refresh: the next delegation sees current definitions > AC-012: a root renamed away keeps its definitions and reports FOLDER_MISSING; restoring it resumes watching
+ FAIL  tests/integration/agent-package-definitions/package-auto-refresh.integration.test.ts > package auto-refresh: the next delegation sees current definitions > AC-006: a 50-file burst is coalesced into a bounded number of publications
+ FAIL  tests/integration/agent-package-definitions/package-auto-refresh.integration.test.ts > package auto-refresh: the next delegation sees current definitions > AC-012: a root renamed away keeps its definitions and reports FOLDER_MISSING; restoring it resumes watching
+ FAIL  tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits add + modify + delete events
+ FAIL  tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > returns one idle event stream without stopping other subscribers
+ FAIL  tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits move/rename event
+ FAIL  tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits folder creation and deletion events
+ FAIL  tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > respects nested .gitignore files
+ FAIL  tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > respects root .gitignore files
+ FAIL  tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > captures rapid changes without dropping events
+ Test Files  2 failed | 86 passed | 20 skipped (108)
+      Tests  16 failed | 490 passed | 69 skipped (575)
+EXIT=1 end 23:37:17 23:37  up 29 days,  9:16, 10 users, load averages: 94.23 150.82 156.30
+
+== cause of the failures: watch-event latency (API-03-fswatch-latency-probe.mjs, 23:38, fseventsd 163.5 % CPU in ps)
+{"latenciesMs":[9801,null,null,7685,null]}
+Every failure is in a folder or file-system watcher test (agent-package-folder-watcher, skill-folder-watcher, package-auto-refresh, file-system-watcher); none imports the command scope. Same failures and cause on the base build in autobyteus-515 (API-02/API-03 there); TESTING.md 'File watching on a busy Mac'.

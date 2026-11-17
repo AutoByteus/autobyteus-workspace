@@ -1,0 +1,90 @@
+# API-01 cause probe: evidence/API-01-run-bash-start-deadline-probe.mjs <root> <N>, N concurrent run_bash calls via the built runBash
+# env -i PATH HOME=<temp> TMPDIR; Node v22.23.1; 2026-11-17 17:27; load averages 116-125 (other processes)
+# Branch root: native-tool-search-515 (dist from 49867e8dc4 source); base root: native-tool-search-515-base (4cbf9e7881)
+{
+  "root": "/Users/normy/autobyteus_org/autobyteus-worktrees/native-tool-search-515",
+  "calls": 5,
+  "failed": 0,
+  "totalMs": 299,
+  "failedSample": [],
+  "stderrKinds": {},
+  "okMsMax": 289
+}
+{
+  "root": "/Users/normy/autobyteus_org/autobyteus-worktrees/native-tool-search-515",
+  "calls": 60,
+  "failed": 30,
+  "totalMs": 2847,
+  "failedSample": [
+    {
+      "i": 0,
+      "ms": 1663,
+      "exitCode": null,
+      "stdout": "",
+      "stderr": "Command did not start: Command control deadline exceeded"
+    },
+    {
+      "i": 1,
+      "ms": 1977,
+      "exitCode": null,
+      "stdout": "",
+      "stderr": "Command did not start: Command control deadline exceeded"
+    },
+    {
+      "i": 2,
+      "ms": 1657,
+      "exitCode": null,
+      "stdout": "",
+      "stderr": "Command did not start: Command control deadline exceeded"
+    }
+  ],
+  "stderrKinds": {
+    "Command did not start: Command control deadline exceeded": 26,
+    "Command did not start: Command failed: ps -axo pid=,ppid=,pgid=,stat=,lstart=,comm=": 1,
+    "Command did not start: Malformed process identity observation": 3
+  },
+  "okMsMax": 2688
+}
+{
+  "root": "/Users/normy/autobyteus_org/autobyteus-worktrees/native-tool-search-515-base",
+  "calls": 5,
+  "failed": 0,
+  "totalMs": 178,
+  "failedSample": [],
+  "stderrKinds": {},
+  "okMsMax": 165
+}
+{
+  "root": "/Users/normy/autobyteus_org/autobyteus-worktrees/native-tool-search-515-base",
+  "calls": 60,
+  "failed": 60,
+  "totalMs": 2134,
+  "failedSample": [
+    {
+      "i": 0,
+      "ms": 2095,
+      "exitCode": null,
+      "stdout": "",
+      "stderr": "Command did not start: Command control deadline exceeded"
+    },
+    {
+      "i": 1,
+      "ms": 2090,
+      "exitCode": null,
+      "stdout": "",
+      "stderr": "Command did not start: Command control deadline exceeded"
+    },
+    {
+      "i": 2,
+      "ms": 2089,
+      "exitCode": null,
+      "stdout": "",
+      "stderr": "Command did not start: Command control deadline exceeded"
+    }
+  ],
+  "stderrKinds": {
+    "Command did not start: Command control deadline exceeded": 50,
+    "Command did not start: Process observation deadline exceeded": 10
+  },
+  "okMsMax": 0
+}

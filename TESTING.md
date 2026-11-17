@@ -40,6 +40,7 @@ Run commands from the repository root. `pnpm -C <dir>` runs a package's script.
 | Server typecheck | `src` and the test files (`tests/`, `../test-support/`) under the build type policy, so a test that calls a removed or renamed API fails it. Production files must have no errors; test files may not exceed `typecheck-baseline.json`. A lower count also fails until `pnpm -C autobyteus-server-ts typecheck:update-baseline` shrinks the baseline; the update refuses growth. It builds the shared packages first | `pnpm -C autobyteus-server-ts typecheck` |
 | Docker starter | The starter in the server image (`autobyteus-server-ts/docker/starter/`): package selection, supervision, its socket and command, with fake server packages | `pnpm -C autobyteus-server-ts test:starter` |
 | Docker launcher (offline) | `scripts/public/docker/` bash/PowerShell launcher commands against a fake Docker, with a real `node` client against a real Unix socket where a case needs it; no daemon | `python3 -m unittest discover -s scripts/tests -p 'test_public_docker_launcher_*.py'` |
+| Server Docker Release workflow steps | The workflow's job graph and the `run:` blocks of its steps (publish metadata, disk guard, multi-arch index check, package extraction by digest, wait, upload, `Move beta tag`), run with bash against a fake `docker`, `gh` and `df`; no daemon, network or registry. Timing, native arm64 and the registry are proven only by the build-only run (RELEASE.md) | `python3 -m unittest scripts/tests/test_server_package_release.py scripts/tests/test_release_channel_workflow_steps.py scripts/tests/test_server_docker_cli_latest_defaults.py scripts/tests/test_docker_build_context_sources.py` |
 | Server E2E | Real HTTP/GraphQL/WebSocket boundaries on a test-owned server and database (`tests/e2e/`). A suite that needs a prepared build output names it when it is missing | `pnpm test:e2e`, or one file with `vitest run` as above |
 | Gated runtime suites | Real or scripted runtimes and providers (gates, usually `RUN_*`, in `autobyteus-server-ts/tests/e2e/`) | The gate and command are in the test file |
 | Release smoke | New runs with configured skills start on every runtime, in the user's skill setup | `python3 scripts/release_smoke.py`; see [RELEASE.md](RELEASE.md#release-smoke-check) |
@@ -80,7 +81,7 @@ closes the remaining confidence gap.
 | Behavior against real model or search providers | A gated live suite, or an isolated instance, with the [test vault](#test-vault) |
 | Launch profile, isolation or packaged-launch mechanics | Packaged Electron harness |
 | The node's request gate, node credentials, the MCP gateway token, or the shared server test harness (`autobyteus-server-ts/tests/setup/`, `tests/e2e/helpers/`, `test-support/`) | The whole server E2E suite (`pnpm test:e2e`): each suite reaches its node its own way, so a subset proves only the ways it uses |
-| The tools a run gets: the shared exposure rule (`autobyteus-server-ts/src/agent-execution/shared/runtime-agent-tool-exposure.ts`), the native default tools, the automatic collaboration tools, or the tool units a host registers at start | The whole server unit suite, the whole `test:integration` and the whole server E2E suite (`pnpm test:e2e`), plus a search of the gated suites for exact tool lists (`toolInstances`, `enabledTools`, `tools/list`, `requestedToolNames`): tests in every layer assert a run's exact tool list, so the unit suite and a chosen set of integration files miss the rest. A test that asserts a run's exact tool list and is not about the platform-given tools spreads `PLATFORM_GIVEN_TOOL_NAMES` instead of naming them, and registers the tool units a server start registers |
+| The tools a run gets: the shared exposure rule (`autobyteus-server-ts/src/agent-execution/shared/runtime-agent-tool-exposure.ts`), the native default tools, the automatic collaboration tools, or the tool units a host registers at start | The whole server unit suite, the whole `test:integration` and the whole server E2E suite (`pnpm test:e2e`), plus a search of the gated suites for exact tool lists (`toolInstances`, `enabledTools`, `tools/list`, `requestedToolNames`): tests in every layer assert a run's exact tool list, so the unit suite and a chosen set of integration files miss the rest. On the native runtime the tools a run *has* and the tools a provider request *carries* differ (tool search, GLOSSARY "Listed tool"): a request holds the base tools plus `search_tools` and `call_tool`, so a test that asserts a native request's `tools` asserts that set, and a test that needs another tool reaches it through search and `call_tool`. A test that asserts a run's exact tool list and is not about the platform-given tools spreads `PLATFORM_GIVEN_TOOL_NAMES` instead of naming them, and registers the tool units a server start registers |
 
 **Both typechecks, whatever the change touches.** A change to TypeScript in any workspace package runs `pnpm -C autobyteus-web typecheck` and `pnpm -C autobyteus-server-ts typecheck`, not only the typecheck of the package it changed. Each reads beyond its own package: the web typecheck, which the desktop build runs, compiles the server's source and server test fixtures through its cross-package tests, and the server typecheck builds and reads `autobyteus-ts` and the shared packages. A server-only change that a web test calls passes the server typecheck and still stops every desktop build.
 
@@ -149,7 +150,10 @@ or because Gradle's cache already holds a dependency the runner must download.
   unsigned command; the empty Gradle home makes Gradle download what the runner downloads). The
   signed `:app:assembleRelease` needs the runner's keystore secrets: record it as not tested.
 - **A change to a build step or gate** also needs the build-only release run on the ticket
-  branch before the merge, as [DESIGN.md](DESIGN.md) rule 12 and RELEASE.md say.
+  branch before the merge, as [DESIGN.md](DESIGN.md) rule 12 and RELEASE.md say. The desktop
+  build's run is `pnpm release:test`; a change to `.github/workflows/release-server-docker.yml` or
+  `autobyteus-server-ts/docker/**` needs the Server Docker Release's own build-only run
+  ([RELEASE.md](RELEASE.md#build-only-release-run)).
 
 ## Environments, credentials and data
 
@@ -173,6 +177,12 @@ or because Gradle's cache already holds a dependency the runner must download.
 - **One heavy run at a time.** Do not run server `test:unit`, an E2E folder, a build or a
   probe alongside another of them, in any worktree: they compete for CPU, and timing
   assertions then fail for reasons that are not in the code under test.
+- **File watching on a busy Mac.** Folder-watcher tests, and any test of a server that starts or
+  closes folder watchers, depend on macOS FSEvents. When `fseventsd` is busy (high CPU in `ps`),
+  watch events arrive seconds late or never, and closing a recursive `fs.watch` blocks Node's main
+  thread for seconds, so those tests time out for a reason outside the code. Before diagnosing such
+  a timeout, check `fseventsd` and measure: the time from writing a file in a watched temp folder to
+  its event, and how long `close()` of that watcher blocks.
 - **Green server suites.** Server `test:unit`, `test:integration` and `typecheck` are kept
   passing. Every failure there is a real failure: find its cause and fix or report it
   (Rule 9). Run `test:integration:prepare` once per worktree and after changing server or

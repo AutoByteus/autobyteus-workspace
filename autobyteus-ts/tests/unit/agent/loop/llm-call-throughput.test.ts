@@ -19,6 +19,7 @@ import { buildLlmTokenUsageObservation } from '../../../../src/llm/utils/llm-tok
 import { ChunkResponse, CompleteResponse } from '../../../../src/llm/utils/response-types.js';
 import { MemoryManager } from '../../../../src/memory/memory-manager.js';
 import { FileMemoryStore } from '../../../../src/memory/store/file-store.js';
+import { AgentToolSearch } from '../../../../src/agent/tool-search/agent-tool-search.js';
 
 const usage = (outputTokens: number, reasoningOutputTokens?: number | null) => buildLlmTokenUsageObservation({
   inputTokens: 1000, outputTokens, totalTokens: 1000 + outputTokens, reasoningOutputTokens, rawUsage: null,
@@ -114,6 +115,7 @@ describe('LlmPhase reports each call TPS with its usage', () => {
       state.llmInstance = llm;
       state.memoryManager = new MemoryManager({ store: new FileMemoryStore(tempDir, 'tps-agent') });
       state.toolInstances = {};
+      state.toolSearch = new AgentToolSearch(null, Object.keys(state.toolInstances!));
       state.statusManagerRef = { notifier: { notifyAgentCompactionStatus: vi.fn() } } as any;
       const context = new AgentContext('tps-agent', new AgentConfig('tps', 'writer', 'single call', llm), state);
       const turn = new AgentTurn('turn-tps');

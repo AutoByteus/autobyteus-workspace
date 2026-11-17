@@ -5026,6 +5026,7 @@ exports[`agent loop golden event sequences > malformed tool call is rejected, th
           {
             "arguments": {},
             "argumentsParseError": "Unexpected token 'B', "{"city": Berlin}" is not valid JSON",
+            "calledThrough": null,
             "id": "call_bad",
             "name": "get_weather",
             "turnId": "turn_0001",
@@ -5756,6 +5757,7 @@ exports[`agent loop golden event sequences > one tool cycle 1`] = `
               "city": "Berlin",
             },
             "argumentsParseError": null,
+            "calledThrough": null,
             "id": "call_1",
             "name": "get_weather",
             "turnId": "turn_0001",
@@ -7389,6 +7391,7 @@ System note: your previous response hit the output limit of 256 tokens while gâ€
               "city": "Berlin",
             },
             "argumentsParseError": null,
+            "calledThrough": null,
             "id": "call_ok",
             "name": "get_weather",
             "turnId": "turn_0001",

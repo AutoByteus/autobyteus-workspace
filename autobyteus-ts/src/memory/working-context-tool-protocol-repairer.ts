@@ -29,28 +29,35 @@ export const AGENT_INTERRUPTED_TOOL_RESULT_CONTENT = [
 
 export type CompletedToolResultFact = {
   toolCallId: string;
-  toolName: string;
   toolResult: unknown;
   toolError: string | null;
   turnId: string | null;
   rawTraceId?: string;
 };
 
+/** A tool call as raw traces record it: the real tool's name and arguments. */
 export type ToolCallFact = {
   toolCallId: string;
   toolName: string;
+  toolArgs: Record<string, unknown> | null;
   turnId: string | null;
   rawTraceId?: string;
 };
 
+/**
+ * One inserted tool result. It carries two names (DS-003): `toolName`, the working-context call's
+ * (the model's form, e.g. `call_tool`), for the inserted working-context result; and
+ * `rawToolName`/`rawToolArgs`, the real tool from the raw call, for the raw recovery trace.
+ */
 export type InterruptedToolResultRepair = {
   toolCallId: string;
   toolName: string;
+  rawToolName: string;
+  rawToolArgs: Record<string, unknown> | null;
   turnId: string | null;
   source: 'synthetic_interrupted' | 'raw_completed_result';
   toolResult: unknown;
   toolError: string | null;
-  toolArgs?: Record<string, unknown> | null;
 };
 
 export type WorkingContextToolProtocolRepairResult = {
@@ -175,13 +182,17 @@ function buildInsertedToolResultMessage(
   const callFact = identityKey
     ? options.toolCallFactsByIdentity?.get(identityKey) ?? null
     : null;
-  const toolName = completed?.toolName || call.name || callFact?.toolName || 'unknown_tool';
+  // The inserted result answers the working-context call, so it takes that call's name; the raw
+  // recovery trace records the real tool, from the raw call (they differ for a call through call_tool).
+  const toolName = call.name || callFact?.toolName || 'unknown_tool';
+  const rawToolName = callFact?.toolName || toolName;
+  const rawToolArgs = callFact ? callFact.toolArgs : call.arguments ?? null;
   const turnId = completed?.turnId ?? assistantTurnId ?? callFact?.turnId ?? options.fallbackTurnId ?? null;
   const source = completed ? 'raw_completed_result' : 'synthetic_interrupted';
   const toolResult = completed
     ? completed.toolResult
     : null;
-  const toolError = completed ? completed.toolError : SYNTHETIC_TOOL_RESULT_ERROR(toolName, callId);
+  const toolError = completed ? completed.toolError : SYNTHETIC_TOOL_RESULT_ERROR(rawToolName, callId);
   const message = new Message(MessageRole.TOOL, {
     content: null,
     tool_payload: new ToolResultPayload(callId, toolName, toolResult, toolError),
@@ -194,7 +205,7 @@ function buildInsertedToolResultMessage(
 
   return {
     message,
-    repair: { toolCallId: callId, toolName, turnId, source, toolResult, toolError, toolArgs: call.arguments ?? null },
+    repair: { toolCallId: callId, toolName, rawToolName, rawToolArgs, turnId, source, toolResult, toolError },
   };
 }
 

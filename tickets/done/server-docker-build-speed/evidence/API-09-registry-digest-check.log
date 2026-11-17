@@ -1,0 +1,20 @@
+# API-09 registry check of the digests the build-only runs pushed and checked
+# Commands: docker buildx imagetools inspect --raw IMAGE@<digest> | jq; docker buildx imagetools inspect IMAGE@<digest> --format '{{json .Image}}' | jq
+# Env: macOS, github.com/docker/buildx v0.29.1-desktop.1, anonymous public pull; date 2026-11-17T18:46:24Z; commit under test 31dfe3dad0
+# Each digest must be a single-platform image manifest whose config os/architecture is the leg's platform.
+
+== run 44148955212 leg linux/amd64: autobyteus/autobyteus-server@sha256:037c1bc19b83e6258946e89f58aa1e808a53d2764d7dce0b3a1b67f37f91242f
+manifest: {"mediaType":"application/vnd.oci.image.manifest.v1+json","layers":40}
+config:   {"os":"linux","architecture":"amd64","variant":null,"created":"2026-11-17T18:38:44.751234406Z"}
+== run 44148955212 leg linux/arm64: autobyteus/autobyteus-server@sha256:77fcdb831fe30431e678cc4395515caae604ecf73f76ffb35b034b83da2f998f
+manifest: {"mediaType":"application/vnd.oci.image.manifest.v1+json","layers":40}
+config:   {"os":"linux","architecture":"arm64","variant":null,"created":"2026-11-17T18:38:27.184327761Z"}
+== run 44149091734 leg linux/amd64: autobyteus/autobyteus-server@sha256:1ea9e6f9f653e162bc3329965c8303e09fe92ed90ac6e0e76e1772f36609d44f
+manifest: {"mediaType":"application/vnd.oci.image.manifest.v1+json","layers":40}
+config:   {"os":"linux","architecture":"amd64","variant":null,"created":"2026-11-17T18:39:04.001767556Z"}
+== run 44149091734 leg linux/arm64: autobyteus/autobyteus-server@sha256:71fab2115fb61ce78ae7b2dc014339f866089ae9531e66d8f8453b19cd57b962
+manifest: {"mediaType":"application/vnd.oci.image.manifest.v1+json","layers":40}
+config:   {"os":"linux","architecture":"arm64","variant":null,"created":"2026-11-17T18:39:00.812073453Z"}
+
+== Reference: beta.8 amd64 manifest (old workflow) layer count
+{"mediaType":"application/vnd.oci.image.manifest.v1+json","layers":40}
