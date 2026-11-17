@@ -1,7 +1,7 @@
 # Handoff: Architecture Design Complete: search-memory-default-tool-496
 
 - Package: `search-memory-default-tool-496`; Project Task `autobyteus-496` (Project `project_a1377344-25db-482a-97cc-ecfdb0fb495a`), requested by `/project_task_manager` for the founder
-- Status: `Architecture Design Complete`, SR-002 (re-base only; design and requirements as SR-001); requirements `Approved` (Solution Designer within the direction, user and PM informed)
+- Status: `Architecture Design Complete`, SR-003 (resolves ARCH-REV-001: AR-001, AR-002; adopts AR-003, AR-004); requirements `Approved` (Solution Designer within the direction, user and PM informed)
 - Classification: `task_size=Medium`, `architectural_risk=High` → independent architecture review (handoff rule: Large or High)
 - Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/search-memory-default-tool-496`, branch `codex/search-memory-default-tool-496`, base `origin/personal` @ `a781007713` (re-based 2026-11-17 from `1e8b6e5d0a`, SR-002); finalization target `origin/personal`
 - Ticket folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/search-memory-default-tool-496/tickets/in-progress/search-memory-default-tool-496/`
@@ -44,3 +44,11 @@ The founder: make `search_memory` a default tool for every agent, built into the
 ## Route record
 
 - `get_handoff_rules` → rule "Large or High" → `/software_engineering_team/architecture_reviewer`
+
+## Revision for re-review (SR-003)
+
+- AR-001: the definition readers (`agent-definition-node-reader.ts`, `application-owned-agent-source.ts`) pass `memorySearchEnabled`. `cloneRuntimeExposure` copies `memorySearchScope` (frozen). The field is required. Save keeps the key, via `cloneAgent`. A node-reader + save test is in the guidance. See design-spec Change Scope § Derived consumers and Final File mapping.
+- AR-002: under own scope, `coverage` has no node-wide counts; node scope is unchanged (design DS-002 narrative; requirements AC-003 clarified).
+- AR-003: holder written before `replaceTools` (DS-004, Concrete Examples).
+- AR-004: the builder takes the scope; `memorySearchScopeOf` is the only rule; invariant enforced (Interface mapping).
+- Residual risks from the report: the picker widening and the shared-definition note are added to FU-001; the `wordsNotFound` asking-run note is added to the docs in sequence step 6.

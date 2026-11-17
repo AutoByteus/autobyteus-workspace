@@ -3,7 +3,7 @@
 ## Document Status
 
 - Status: `Approved`
-- Current solution revision ID: `SR-001`
+- Current solution revision ID: `SR-003` (AC-003 clarified within REQ-003; approval basis SR-001 unchanged)
 - Package identifier: `search-memory-default-tool-496`
 - Request / ticket: Project Task `autobyteus-496` (Project `project_a1377344-25db-482a-97cc-ecfdb0fb495a`): memory search (`search_memory`) as a default tool the platform gives to every agent
 - Requested by: `/project_task_manager` (run `project_task_manager_7c8dce0c4a8b44f88e776a83809dee03`), carrying the founder's direction and decision of 2026-11-16
@@ -104,7 +104,7 @@ None.
 | --- | --- | --- | --- | --- | --- | --- |
 | AC-001 | REQ-001 | BEH-001, SCN-001 | A definition with no `search_memory` in `toolNames` and no switch; a run is created on each runtime | The run's tool exposure contains `search_memory`. Native: the agent's tool instances include it. MCP runtimes: `tools/list` of the run's Agent Tools session includes it. | — | Server unit tests of the exposure rule and native resolver; MCP catalog/session test |
 | AC-002 | REQ-002 | BEH-002, SCN-001, SCN-003 | Indexed runs of definitions A and B (standalone, team member, delegated copy) with matching text; a run of A searches | Only runs of definition A appear (not the asking run). Runs of B and folder-only runs never appear. | A record without a definition ID is excluded | Memory search unit tests with a temp index |
-| AC-003 | REQ-003 | BEH-004, SCN-003 | A word occurs only in B's journals; A's run searches for it | A's result has no runs, `wordsNotFound` names the word, and `note` says it is not found. Same for meaning matches: B's cards are never matched. | — | Unit tests (text and meaning) |
+| AC-003 | REQ-003 | BEH-004, SCN-003 | A word occurs only in B's journals; A's run searches for it | A's result has no runs, `wordsNotFound` names the word, and `note` says it is not found. Same for meaning matches: B's cards are never matched. While the index or the meaning index is being built, A's `coverage` contains no counts of journal files (SR-003 clarification). | — | Unit tests (text and meaning) |
 | AC-004 | REQ-003 | SCN-003 | More than 4,000 matching chunks / 300 nearer cards belong to B; A has one match | A's match is returned | — | Unit test with a small candidate cap or a crowding fixture |
 | AC-005 | REQ-004 | BEH-003, SCN-004 | A definition lists `search_memory` | It searches all runs, as today (the existing tests stay green); the result names the node scope | — | Existing memory tool tests plus a scope assertion |
 | AC-006 | REQ-005 | BEH-005, SCN-005 | `memorySearchEnabled: false` in agent-config.json | No `search_memory` in the exposure or tool list. With the tool also listed explicitly, it is present with node scope. Saving the definition in the app keeps the field; a definition without the field has no new key written. | — | Config read/write and update unit tests |

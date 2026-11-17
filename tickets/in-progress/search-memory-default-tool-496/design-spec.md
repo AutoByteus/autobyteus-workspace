@@ -2,7 +2,7 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: `SR-002` (evidence-only re-base; requirements basis SR-001 unchanged)
+- Current solution revision ID: `SR-003` (Design Impact ARCH-REV-001: AR-001, AR-002 resolved; AR-003, AR-004 adopted). Requirements basis SR-001; AC-003 clarified, intended behavior unchanged.
 - Approved requirements baseline: `requirements-doc.md` at SR-001, approved by the Solution Designer within the founder's direction (user informed: conversation message and the message to `/project_task_manager`, 2026-11-16)
 - Behavior-defining supplements: none
 - User approval of the design: `Not required` (the founder: "do it now"; choices within the direction are the team's)
@@ -29,7 +29,7 @@
 ## Task Size And Architectural Risk (Mandatory)
 
 - Task size: `Medium`
-- Size rationale: about 16 production files across existing owners: the shared exposure rule; the native exposure, resolver, factory and backend; the memory tool contract, manifest, native tool and MCP adapter; the memory-search domain, discovery, service, store and facade; `EmbeddingIndex.nearest`; the agent definition model and config; the Model Router template; the GraphQL memory-search mapping. Plus their tests and three docs. No new subsystem, no new runtime owner, no migration.
+- Size rationale: about 21 production files across existing owners (SR-003 added the two definition readers, the MCP session copy and the two placeholders, all small edits): the shared exposure rule; the native exposure, resolver, factory and backend; the memory tool contract, manifest, native tool and MCP adapter; the memory-search domain, discovery, service, store and facade; `EmbeddingIndex.nearest`; the agent definition model and config; the Model Router template; the GraphQL memory-search mapping. Plus their tests and three docs. No new subsystem, no new runtime owner, no migration.
 - Architectural risk: `High`
 - Risk rationale:
   - a new privacy boundary (who may see which runs) on a tool every agent gets;
@@ -68,13 +68,20 @@ Both entry forms (native tool, MCP adapter) read the run's current scope at call
   - the memory tool entry forms (native, MCP) and the tool contract text;
   - the memory-search boundary, discovery, service and store;
   - the `EmbeddingIndex.nearest` filter option;
-  - the agent definition model and `agent-config.json` field;
+  - the agent definition model, its two config readers and the `agent-config.json` field;
+  - the MCP session record's exposure copy;
   - the Model Router template;
   - the GraphQL memory-search subject mapping (field moved, output unchanged);
   - docs `memory_search.md`, `agent_tools_mcp_server.md`, `agent_definition.md`, `GLOSSARY.md` (Memory search entry).
 - Derived consumers (`RuntimeAgentToolExposure` and `MemoryRun` change):
   - `isSameRuntimeAgentToolExposure`: include the scope, so a scope-only change applies.
   - MCP catalog / `enabledTools`: unchanged (names drive them).
+  - MCP session copy `cloneRuntimeExposure` (`agent-tool-mcp-session-registry.ts:126-138`): copies the exposure field by field into the session the adapter reads. It must copy `memorySearchScope`, as a fresh frozen object (`Object.freeze({...scope})`), because the session's freeze is shallow. The field is required on `RuntimeAgentToolExposure` (`MemorySearchScope | null`, not optional), so any copy that leaves it out fails the typecheck (AR-001).
+- Derived consumers (`AgentDefinition.memorySearchEnabled` added):
+  - `agent-definition-node-reader.ts:59-60` (package, user and built-in agents, including the Model Router template) and `application-owned-agent-source.ts:96-97` (application-owned agents) build `AgentDefinition` by naming each config field. Both pass `memorySearchEnabled: config.memorySearchEnabled`, as they pass `internal` and `semanticMemoryEnabled`. Without this the switch is never read (AR-001).
+  - `normalizeAgentConfigRecord` / `buildAgentConfigRecord` / `mergeAgentConfigRecord` (`agent-definition-config.ts`): read `value?.memorySearchEnabled !== false`; write the key only when false; the key is in the merge filter list, so it is rewritten from the definition.
+  - In-app save: `updateAgentDefinition` clones the loaded definition (`agent-definition-edits.ts` `cloneAgent`) and patches only the edited fields, so a loaded `false` survives a save and is written back. Not a GraphQL field and not a personal setting (FU-002).
+  - `createAgentDefinition` (`agent-definition-service.ts:199`): a new definition gets the default (on).
   - Seen-tool-names notice: unchanged (names only; a scope change makes no notice).
   - `toRuntimeAgentToolNameSet`: unchanged.
   - GraphQL `MemorySearchRunSubject` output: unchanged shape (`agentDefinitionId` now read from the run).
@@ -176,9 +183,9 @@ None.
 | Spine ID | Short Narrative | Main Domain Subject Nodes | Governing Owner | Key Off-Spine Concerns |
 | --- | --- | --- | --- | --- |
 | DS-001 | Each backend already loads the run's definition and resolves its exposure. The rule adds `search_memory` and decides its scope from the same definition: listed means node, else on unless switched off, scoped to the definition. Native builds a bound tool that reads the run's current exposure; MCP enables the existing adapter by name. | Definition, exposure, tool | Shared exposure rule | Native exposure holder |
-| DS-002 | Both entry forms parse the arguments, take the asking run and the scope from the run's current exposure, and call the facade. The facade passes the scope to the service and composes `coverage`/`note` from the scoped outcome. The tool result names the scope. | Query, scope, runs, matches | `MemorySearch` | Secret masking (unchanged) |
+| DS-002 | Both entry forms parse the arguments, take the asking run and the scope from the run's current exposure, and call the facade. The facade passes the scope to the service and composes `coverage`/`note` from the scoped outcome. Under `agentDefinition` scope, `coverage` carries no node-wide counts: the two count sentences (`memory-search.ts:125`, `:143`) become "Indexing in progress." and "The meaning index is being built."; the other coverage sentences name no runs or counts and stay. Node scope keeps today's text (AR-002). The tool result names the scope. | Query, scope, runs, matches | `MemorySearch` | Secret masking (unchanged) |
 | DS-003 | The service turns the scope into the set of covered run keys from the stored run records, minus the asking run. It queries text candidates, meaning neighbours and per-term existence restricted to that set, then orders as today. An empty set returns no results, and every term counts as not found. | Run-key set | `MemorySearchService` | Store, embedding index |
-| DS-004 | A definition save signals; the service calls `applyDefinitionTools`. The exposure differs, by names or by scope only. MCP backends replace the session; native replaces tools and writes the new exposure into the run's holder, which the kept tool reads on its next call. | Exposure | Each backend | Seen-names notice (names only) |
+| DS-004 | A definition save signals; the service calls `applyDefinitionTools`. The exposure differs, by names or by scope only. MCP backends replace the session; native writes the new exposure into the run's holder first, then replaces the tools, so a narrowing applies to any call from then on and a newly added instance never reads `null` (AR-003). If `replaceTools` throws, the holder is already the newer exposure, which fails closed for a narrowing. | Exposure | Each backend | Seen-names notice (names only) |
 
 ## Spine Actors / Main-Line Nodes
 
@@ -259,9 +266,9 @@ DS-003, parent `MemorySearchService`:
 | --- | --- | --- | --- | --- |
 | `type MemorySearchScope = { kind: "node" } \| { kind: "agentDefinition"; agentDefinitionId: string }` | Memory search | Which runs a search covers | Explicit kind + definition ID | `memory-search/domain/memory-search-models.ts` |
 | `MemorySearch.search(query, { limit?, askingRunId?, scope })` | Memory search | Search within scope | `scope` required | GraphQL and evaluation pass `{kind:"node"}` |
-| `RuntimeAgentToolExposure.memorySearchScope: MemorySearchScope \| null` | Tool exposure | The run's scope; `null` iff `search_memory` is not in `requestedToolNames` | — | Included in `isSameRuntimeAgentToolExposure` |
+| `RuntimeAgentToolExposure.memorySearchScope: MemorySearchScope \| null` (required field) | Tool exposure | The run's scope; `null` iff `search_memory` is not in `requestedToolNames` | — | Included in `isSameRuntimeAgentToolExposure`; copied by `cloneRuntimeExposure` |
 | `resolveRuntimeAgentToolExposure(definition: Pick<AgentDefinition,"id"\|"toolNames"\|"memorySearchEnabled">, ctx, platformToolNames?: readonly string[])` | Tool exposure | Names + scope from the definition | Definition | Native passes `AUTOBYTEUS_DEFAULT_TOOL_NAMES`; `resolveAutoByteusRuntimeAgentToolExposure` becomes a one-line call or is inlined |
-| `buildRuntimeAgentToolExposure(names, ctx)` | Tool exposure | Names-only exposure (placeholders) | — | Scope `node` iff names include the tool, else `null` (placeholders pass `[]`) |
+| `buildRuntimeAgentToolExposure(names, ctx, memorySearchScope: MemorySearchScope \| null)` | Tool exposure | Assembles the exposure; adds `search_memory` to the names when the scope is non-null | — | Decides no scope itself (AR-004): `memorySearchScopeOf` is the only scope rule. `resolveRuntimeAgentToolExposure` passes its result; the two placeholders pass `[]` and `null`. Names containing `search_memory` with a `null` scope throw (invariant). |
 | `executeSearchMemoryTool(raw, askingRunId, scope)` | Memory tool | Parse, search, shape result incl. `scope` | Run ID + scope | `scope` required; the result's `scope` is `"your runs"` or `"all runs on this node"` |
 | `createBoundSearchMemoryTool(readScope: () => MemorySearchScope \| null)` | Native tool | Tool instance reading the run's current scope | — | A `null` scope at call time is a tool error `MEMORY_SEARCH_UNAVAILABLE` (cannot normally happen; loud, not a fallback) |
 | `MemorySearchStore.textCandidates(fts, limit, runKeys)`, `hasChunk(phrase, runKeys)` | Index store | SQL restricted to keys | `runKeys: readonly string[] \| "all"` | `f.run_key IN (SELECT value FROM json_each(?))` |
@@ -340,7 +347,7 @@ See Final mapping (no extraction changed it).
 | `src/agent-tools/memory/memory-native-tools.ts` | agent-tools | Native tool | `createBoundSearchMemoryTool(readScope)`; the registry class stays for listing | Existing | — |
 | `src/agent-tools/mcp/providers/memory-tools-mcp-adapter-provider.ts` | agent-tools | MCP entry | Scope from `session.runtimeExposure.memorySearchScope` | Existing | — |
 | `src/memory-search/domain/memory-search-models.ts` | memory-search | Domain | `MemorySearchScope`; `MemoryRun.agentDefinitionId`; `AGENT` subject without it; `MemorySearchRunResult.agentDefinitionId` (for GraphQL) | Existing | — |
-| `src/memory-search/memory-search.ts` | memory-search | Facade | Required `scope` passed to the service | Existing | — |
+| `src/memory-search/memory-search.ts` | memory-search | Facade | Required `scope` passed to the service; `coverage` without counts under `agentDefinition` scope (AR-002) | Existing | — |
 | `src/memory-search/search/memory-search-service.ts` | memory-search | Search sequence | Covered-key set; filtered queries; empty-set path | Existing | — |
 | `src/memory-search/store/memory-search-store.ts` | memory-search | SQL | `runKeys` filter on `textCandidates`, `hasChunk` | Existing | — |
 | `src/memory-search/runs/memory-run-discovery.ts` | memory-search | Run records | `agentDefinitionId` per kind | Existing | — |
@@ -348,6 +355,9 @@ See Final mapping (no extraction changed it).
 | `src/embeddings/embedding-index.ts` | embeddings | Nearest | `acceptId` predicate before sort and slice | Existing | — |
 | `src/api/graphql/types/memory-search.ts` | api | GraphQL | Passes node scope; subject `agentDefinitionId` from the run result | Existing | — |
 | `src/agent-definition/domain/models.ts`, `providers/agent-definition-config.ts` | agent-definition | Model/config | `memorySearchEnabled` (default true; written only when false; in the merge filter list) | Existing | — |
+| `src/agent-definition/providers/agent-definition-node-reader.ts`, `providers/application-owned-agent-source.ts` | agent-definition | Definition readers | Pass `memorySearchEnabled` from the normalized config (AR-001) | Existing | — |
+| `src/agent-tools/mcp/agent-tool-mcp-session-registry.ts` | agent-tools/mcp | Session record | `cloneRuntimeExposure` copies `memorySearchScope` (frozen copy) (AR-001) | Existing | — |
+| `src/agent-execution/services/agent-run-restore-context-factory.ts`, `backends/codex/backend/codex-agent-run-context.ts` | agent-execution | Placeholders | Pass `null` scope to the builder (AR-004) | Existing | — |
 | `src/built-in-agents/templates/model-router/agent-config.json` | built-in-agents | Template | `"memorySearchEnabled": false` | Existing | — |
 
 All MCP-runtime backends (Claude, Codex, AGY, ACP) need no source change beyond what the shared resolver signature requires: they already pass the definition.
@@ -369,7 +379,7 @@ N/A: no new folders.
 | Topic | Good Example | Bad / Avoided Shape | Why The Example Matters |
 | --- | --- | --- | --- |
 | Scope rule | `memorySearchScopeOf(d) = d.toolNames.includes("search_memory") ? {kind:"node"} : d.memorySearchEnabled === false ? null : {kind:"agentDefinition", agentDefinitionId: d.id}` | Each backend appending `"search_memory"` | One rule, all runtimes |
-| Native narrowing | Holder `{current}`; backend `applyDefinitionTools`: `replaceTools(...)`, then `holder.current = exposure`; tool `_execute` reads `readScope()` | Scope captured in the tool constructor | Kept instances otherwise keep node scope |
+| Native narrowing | Holder `{current}`; backend `applyDefinitionTools`: `holder.current = exposure`, then `replaceTools(...)` (AR-003); tool `_execute` reads `readScope()` | Scope captured in the tool constructor | Kept instances otherwise keep node scope |
 | Filtering | `SELECT … WHERE chunk_text MATCH ? AND f.run_key IN (SELECT value FROM json_each(?)) ORDER BY bm25 LIMIT ?` | `textCandidates(…).filter(scope)` | The cap would drop own runs |
 | Oracle | `wordsNotFound = terms.filter(t => !store.hasChunk(phrase(t), keys))` | `hasChunk` over the whole index | Reveals words in private runs |
 | Description (≤ 900) | "Search the Work Journals of earlier agent runs (what each run did, with dates) by words and by meaning, in any language. Use it when the user or the task refers to earlier work: \"last time\", \"do you remember\", a decision, setup or file from a past conversation. Returns up to limit runs (1 to ${MEMORY_SEARCH_MAX_LIMIT}; default from the server setting, normally 10), best first: who, runId, workspace, days, a source line to cite, and matches (journalFile, lines, day, snippet; matchedWords for a text match). scope names the runs searched. Results are pointers, not facts: read a match's lines with your file tool before you answer, and cite its source. wordsNotFound names query words in no searched journal; coverage says when indexing is incomplete; with no index yet, ask the user to start it on the Memory page." | Two descriptions per scope | A scope change must not change the tool definition |
@@ -393,7 +403,7 @@ N/A.
 3. Tool contract text, manifest `scope` param and result field, MCP adapter reading the session exposure, native bound tool.
 4. Exposure rule: `memorySearchScopeOf`, default name, equality; native resolver special case; native holder in factory and backend.
 5. Agent definition `memorySearchEnabled` (model, config read/write, merge filter); Model Router template.
-6. Docs: `memory_search.md` (Entry Points, Public Boundary, scope), `agent_tools_mcp_server.md` (effective set), `agent_definition.md` (field), `GLOSSARY.md`.
+6. Docs: `memory_search.md` (Entry Points, Public Boundary, scope; `coverage` under own scope has no counts; `wordsNotFound` counts the asking run under node scope only, since own scope does not cover it), `agent_tools_mcp_server.md` (effective set), `agent_definition.md` (field), `GLOSSARY.md`.
 
 ## Key Tradeoffs
 
@@ -418,7 +428,10 @@ N/A.
   - MCP adapter reading the session scope;
   - memory search own vs node, `wordsNotFound`, caps (AC-004: inject a small cap or use a fixture where B dominates);
   - discovery sets `agentDefinitionId` for an agent run, a delegated run, a team member and an Org member (ASM-001);
-  - config read/write/merge (AC-006);
+  - config read/write/merge (AC-006), and one test that reads a real config folder through `agent-definition-node-reader` (`memorySearchEnabled: false` → definition off → exposure without `search_memory`), saves the definition through `updateAgentDefinition` with another field edited, and finds the key still `false` in the file. Same read for an application-owned agent;
+  - `cloneRuntimeExposure` keeps `memorySearchScope` (activate and `replaceForRun`), and the MCP adapter's search runs with that scope;
+  - `coverage` under `agentDefinition` scope while building and while the meaning index is incomplete: no numbers in the text (AC-003);
+  - the builder throws on `search_memory` in names with a `null` scope; placeholders produce `null`;
   - the Model Router template (AC-007);
   - description length ≤ 900 (AC-008).
 - Run on Node 22 (TESTING.md). Run `pnpm -C autobyteus-server-ts typecheck` and `pnpm -C autobyteus-web typecheck`.

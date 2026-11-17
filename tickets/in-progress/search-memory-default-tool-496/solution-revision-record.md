@@ -6,6 +6,7 @@
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | SR-001 | Mixed (Requirements + Design) | Initial baseline: Task autobyteus-496 and the founder's decision comment | N/A | N/A | Requirements Approved; Design Ready | BEH-001–006, REQ-001–008, AC-001–010 | Architecture Design Complete; Medium / High; to architecture review |
 | SR-002 | Evidence | User: re-base the worktree on the updated remote (2026-11-17) | N/A | Requirements Approved; Design Ready | Unchanged | None (evidence: IN-006, ASM-001) | Re-based onto `a781007713`; design unchanged |
+| SR-003 | Design | Architecture review ARCH-REV-001: Fail (Design Impact) | AR-001, AR-002 (blocking); AR-003, AR-004 (adopted) | Design Ready (Failed review) | Design Ready | REQ-003, REQ-005, REQ-006; AC-003 (clarified), AC-006, AC-007 | Readers, session copy and coverage decided; back to architecture review |
 
 ## Revision Entries
 
@@ -51,3 +52,26 @@
 - Handoff: informational message to `/software_engineering_team/architecture_reviewer` (review continues on the new base)
 - Remaining gaps: ASM-001 as before
 - Next action: architecture review
+
+### SR-003: architecture review ARCH-REV-001 findings resolved
+
+- Phase and classification: `Design Impact`
+- Trigger: `/software_engineering_team/architecture_reviewer`, `design-review-report.md` ARCH-REV-001 (round 1, Fail)
+- Triggering finding IDs: AR-001 (Medium), AR-002 (Low); recommendations AR-003, AR-004
+- Prior status: requirements `Approved`; design `Ready`, review Fail
+- Current status: requirements `Approved` (SR-001 basis); design `Ready` for re-review
+- IDs affected: REQ-005/AC-006, REQ-006/AC-007 (the switch's readers), REQ-002/AC-001 (MCP session copy), REQ-003/AC-003 (coverage)
+- Scenario-basis changes: none
+- Resolution, each verified in the code at `aed5a0502f`:
+  - AR-001: the definition readers `agent-definition-node-reader.ts:59-60` and `application-owned-agent-source.ts:96-97` pass `memorySearchEnabled`. `cloneRuntimeExposure` (`agent-tool-mcp-session-registry.ts:126-138`) copies `memorySearchScope` as a frozen copy. `memorySearchScope` is a required field. Saving keeps the key, verified through `cloneAgent` in `agent-definition-edits.ts`. A node-reader + save test was added to the guidance.
+  - AR-002: under `agentDefinition` scope, `coverage` drops the node-wide counts ("Indexing in progress.", "The meaning index is being built."). Node scope is unchanged. Per-scope counts were rejected: the pipeline has no per-run step progress, so they would need new state for a transient message.
+  - AR-003: the native holder is written before `replaceTools`.
+  - AR-004: `buildRuntimeAgentToolExposure` takes the scope as a parameter. `memorySearchScopeOf` is the only scope rule; the placeholders pass `null`; names with `search_memory` and a `null` scope throw.
+- Sections changed: design-spec revision line, Change Scope derived consumers, size rationale, DS-002 and DS-004 narratives, Interface mapping (exposure field, builder), Final File mapping (+4 rows), Concrete Examples (native narrowing), sequence step 6 (docs), Guidance tests. requirements-doc AC-003 gains the coverage outcome. follow-ups FU-001 addendum (picker widening; shared definition), from the review's residual risks.
+- Intended behavior changed: `No`. The AC-003 sentence states what REQ-003 already requires ("everything a scoped search reports is derived only from the covered runs").
+- Approval impact: none; the SR-001 approval applies
+- Design/review basis invalidated: ARCH-REV-001 rows for AR-001, AR-002 and DS-002/DS-004, to be rechecked
+- Classification: unchanged, `Medium` / `High`
+- Handoff: `Architecture Design Complete` (revised) → `/software_engineering_team/architecture_reviewer` (rule: Large or High)
+- Remaining gaps: ASM-001 (tests); FU-001 addendum to be sent with the result
+- Next action: architecture re-review
