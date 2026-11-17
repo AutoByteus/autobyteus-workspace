@@ -130,7 +130,8 @@ describe("AcpAgentRunBackendFactory", () => {
     const enabled = createFactory(fixturePath("prompt"), { semanticMemory: { memoryDir, enabled: true } });
     backends.push(await enabled.factory.beginPreparation({ kind: "new", config: config(), runId: "run-1" }).prepare() as AcpAgentRunBackend);
     const rules = enabled.recorded().find((message) => message.method === "session/new").params._meta.rules as string;
-    expect(rules.endsWith(`## Semantic Memory\n\nYour semantic memory is the folder \`${folder}\`. It belongs to you and is shared by all your runs, in every Project and team. Write the reusable knowledge you learn there as documents; how you organize them is up to you and your skills.`)).toBe(true);
+    // The section follows every shared section; only the agent's Long-Running Commands section comes after it (autobyteus-483).
+    expect(rules.endsWith(`## Semantic Memory\n\nYour semantic memory is the folder \`${folder}\`. It belongs to you and is shared by all your runs, in every Project and team. Write the reusable knowledge you learn there as documents; how you organize them is up to you and your skills.\n\n${grokBuildSessionProfile.longRunningCommandSection}`)).toBe(true);
     expect(fs.statSync(folder).isDirectory()).toBe(true);
 
     const otherMemoryDir = tempDir("acp-semantic-memory-off-");
