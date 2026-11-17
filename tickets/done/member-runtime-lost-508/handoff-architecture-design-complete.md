@@ -8,7 +8,7 @@
 
 ## Original request
 
-The founder's report: after upgrading node 8001 to v1.5.13-beta.7 (carries autobyteus-461), the Job Application Team's Computer Use Operator, which he had switched to Codex App Server + gpt-6.1-terra, shows Claude Agent SDK + gpt-6.1-terra ("Inherited from the run") and cannot start. Find the cause and fix it. Hard rules: his data is private (read-only, counts and structure only, nothing copied off the node, no writes without his approval and a backup), release only on his word.
+The founder's report: after upgrading node 8001 to v1.5.13-beta.7 (carries autobyteus-461), the Computer Use Operator of one of his private teams, which he had switched to Codex App Server + gpt-6.1-terra, shows Claude Agent SDK + gpt-6.1-terra ("Inherited from the run") and cannot start. Find the cause and fix it. Hard rules: his data is private (read-only, counts and structure only, nothing copied off the node, no writes without his approval and a backup), release only on his word.
 
 ## Cause (Read + Reproduced + Measured)
 
