@@ -146,3 +146,7 @@
 - **D-14 (FU-035):** sequencing only. The rest goes to code review. Step 0 runs after Grok's 24-hour window resets, as IR-002. Nothing is waived: only the founder's own words could waive it.
 - **D-13b (FU-021):** IMP-012 shows that the SR-013 probe can't prove a product fault under load (the OS drops events per stream). A timeout is labeled ENVIRONMENT or INCONCLUSIVE. The proof runs where the OS delivers events reliably: Linux inotify in Docker, and a quiet macOS.
 - **Review:** test-labeling and proof-location changes only, inside SR-013's reviewed shape. They still go to architecture review, as the handoff rules require for a `High` package. The implementation makes the one message change in parallel.
+
+### Review of SR-014
+
+- ARCH-REV-007: **Pass** (`design-review-report.md`). The proof lines are aligned with D-13b and AC-005 (the gate is Linux inotify plus a quiet macOS; loaded runs are labeled ENVIRONMENT or INCONCLUSIVE).

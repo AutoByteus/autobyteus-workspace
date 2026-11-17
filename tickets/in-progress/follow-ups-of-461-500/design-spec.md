@@ -466,9 +466,9 @@ Each new text follows FR-1 … FR-4. The Code Reviewer checks the list against F
       - **The proof moves:** the API/E2E engineer runs the file 5 of 5 on Linux (inotify), in a Docker container from the worktree after `pnpm test:integration:prepare`, and on a quiet macOS when one is available. Loaded-macOS runs are evidence only.
     - The rewrite already committed (`fb52bd332c`) stays.
 
-  - **To prove it (restated at SR-013, ARCH-REV-006):** after `pnpm test:integration:prepare`:
-    - on a machine whose OS delivers file events (the raw `fs.watch` probe gets its event), the file passes 5 of 5 runs alone;
-    - under load (10 busy loops, `yes > /dev/null`), each of 3 runs either passes, or fails only with ENVIRONMENT cases, never a product failure.
+  - **To prove it (restated at SR-014, ARCH-REV-007; supersedes SR-013's wording):** after `pnpm test:integration:prepare`:
+    - **The gate:** 5 of 5 runs on Linux (inotify, a Docker container from the worktree), plus 5 of 5 on a quiet macOS when one is available (AC-005, D-13b).
+    - **Evidence only:** on a loaded macOS (for example 10 busy loops, `yes > /dev/null`), every failing case is labeled ENVIRONMENT or INCONCLUSIVE, never a product failure, with no assertion failure and no test timeout.
 
     Commands are in the investigation notes.
 
