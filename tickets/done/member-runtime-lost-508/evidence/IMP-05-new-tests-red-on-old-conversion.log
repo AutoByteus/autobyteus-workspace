@@ -1,0 +1,356 @@
+# IMP-05 (expected red: the tests of e0b58997f3 against the conversion before the fix)
+# steps: git show 298bd7a60a:autobyteus-server-ts/src/app-data-migrations/migrations/delegated-runs-own-runs-v1/run-file-conversion.ts > autobyteus-server-ts/src/app-data-migrations/migrations/delegated-runs-own-runs-v1/run-file-conversion.ts; pnpm -C autobyteus-server-ts exec vitest run tests/app-data-migrations/delegated-runs-own-runs-v1/ --no-watch; git checkout -- autobyteus-server-ts/src/app-data-migrations/migrations/delegated-runs-own-runs-v1/run-file-conversion.ts
+# commit: tests e0b58997f3, run-file-conversion.ts from 298bd7a60a
+# environment: macOS 26.5.2, Node v22.23.1, pnpm 10.28.2
+# date: 2026-11-17T07:29Z
+
+
+ RUN  v4.1.12 /Users/normy/autobyteus_org/autobyteus-worktrees/member-runtime-lost-508/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/member-runtime-lost-508/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+(node:74365) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ❯ tests/app-data-migrations/delegated-runs-own-runs-v1/delegated-runs-own-runs-v1-app-data-migration.test.ts (16 tests | 5 failed) 3483ms
+     × converts the main scenario to the contract's shapes (§13.2 E1 … E4, E6 … E10) 213ms
+       × a member's own edit: its runtime, model and settings, and the Settings source (AC-001) 305ms
+       × a team-level edit reaches a follower whole; a member's own edit wins with its runtime; an unedited member stays (AC-002) 260ms
+       × a delegated agent run's edit: its runtime, model and settings, and the Settings source; it loads (AC-003) 287ms
+       × a pending switch stays beside the new runtime, from the started binding, for the next input to make real (AC-005) 258ms
+(node:74390) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ❯ tests/app-data-migrations/delegated-runs-own-runs-v1/delegated-runs-preserved-items-v1.test.ts (6 tests | 1 failed) 1102ms
+     × after 20261017 finishes a copy with a Settings edit naming another runtime: the follow-up applies the edit whole, as ours does (autobyteus-508 AC-006) 216ms
+(node:74403) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 6 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/app-data-migrations/delegated-runs-own-runs-v1/delegated-runs-own-runs-v1-app-data-migration.test.ts > 20261111_delegated_runs_own_runs_v1 > converts the main scenario to the contract's shapes (§13.2 E1 … E4, E6 … E10)
+AssertionError: expected [ Array(3) ] to deeply equal [ Array(3) ]
+
+- Expected
++ Received
+
+@@ -4,26 +4,20 @@
+      "autobyteus",
+      "haiku",
+      {
+        "temperature": 0.2,
+      },
+-     {
+-       "fallbacks": [],
+-       "origin": "settings",
+-     },
++     null,
+    ],
+    [
+      "/code_reviewer",
+      "autobyteus",
+      "opus",
+      {
+        "temperature": 0.2,
+-     },
+-     {
+-       "fallbacks": [],
+-       "origin": "settings",
+      },
++     null,
+    ],
+    [
+      "/tester",
+      "autobyteus",
+      "sonnet",
+
+ ❯ tests/app-data-migrations/delegated-runs-own-runs-v1/delegated-runs-own-runs-v1-app-data-migration.test.ts:125:8
+    123|     expect(engineering.rootTeam.members.map((member: any) => [member.a…
+    124|       member.launchConfiguration.llmModelIdentifier, member.launchConf…
+    125|       .toEqual([
+       |        ^
+    126|         // followsTeam: the team-level edit is its own launch now.
+    127|         ["/solution_designer", "autobyteus", "haiku", { temperature: 0…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/6]⎯
+
+ FAIL  tests/app-data-migrations/delegated-runs-own-runs-v1/delegated-runs-own-runs-v1-app-data-migration.test.ts > 20261111_delegated_runs_own_runs_v1 > a Settings edit that names another agent runtime (autobyteus-508) > a member's own edit: its runtime, model and settings, and the Settings source (AC-001)
+AssertionError: expected [ [ '/coordinator', …(4) ], …(1) ] to deeply equal [ [ '/coordinator', …(4) ], …(1) ]
+
+- Expected
++ Received
+
+@@ -6,16 +6,13 @@
+      null,
+      null,
+    ],
+    [
+      "/operator",
+-     "codex_app_server",
++     "claude_agent_sdk",
+      "gpt-6.1-terra",
+      {
+        "reasoning_effort": "high",
+      },
+-     {
+-       "fallbacks": [],
+-       "origin": "settings",
+-     },
++     null,
+    ],
+  ]
+
+ ❯ tests/app-data-migrations/delegated-runs-own-runs-v1/delegated-runs-own-runs-v1-app-data-migration.test.ts:354:51
+    352|       const { at } = await converted();
+    353|       const team = await readJson(at.teamFile(MEMBER_EDIT_TEAM));
+    354|       expect(team.rootTeam.members.map(launchOf)).toEqual([
+       |                                                   ^
+    355|         ["/coordinator", "claude_agent_sdk", "sonnet", null, null],
+    356|         ["/operator", ...EDITED, SETTINGS_SOURCE],
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/6]⎯
+
+ FAIL  tests/app-data-migrations/delegated-runs-own-runs-v1/delegated-runs-own-runs-v1-app-data-migration.test.ts > 20261111_delegated_runs_own_runs_v1 > a Settings edit that names another agent runtime (autobyteus-508) > a team-level edit reaches a follower whole; a member's own edit wins with its runtime; an unedited member stays (AC-002)
+AssertionError: expected [ [ '/lead', …(4) ], …(2) ] to deeply equal [ [ '/lead', …(4) ], …(2) ]
+
+- Expected
++ Received
+
+@@ -1,29 +1,23 @@
+  [
+    [
+      "/lead",
+-     "codex_app_server",
++     "claude_agent_sdk",
+      "gpt-6.1-terra",
+      {
+        "reasoning_effort": "high",
+      },
+-     {
+-       "fallbacks": [],
+-       "origin": "settings",
+-     },
++     null,
+    ],
+    [
+      "/checker",
+-     "autobyteus",
++     "claude_agent_sdk",
+      "opus",
+      {
+        "reasoning_effort": "high",
+      },
+-     {
+-       "fallbacks": [],
+-       "origin": "settings",
+-     },
++     null,
+    ],
+    [
+      "/scribe",
+      "claude_agent_sdk",
+      "sonnet",
+
+ ❯ tests/app-data-migrations/delegated-runs-own-runs-v1/delegated-runs-own-runs-v1-app-data-migration.test.ts:373:51
+    371|       const { at } = await converted();
+    372|       const team = await readJson(at.teamFile(TEAM_EDIT_TEAM));
+    373|       expect(team.rootTeam.members.map(launchOf)).toEqual([
+       |                                                   ^
+    374|         ["/lead", ...EDITED, SETTINGS_SOURCE],
+    375|         ["/checker", "autobyteus", "opus", runtimeEdit().llmConfig, SE…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/6]⎯
+
+ FAIL  tests/app-data-migrations/delegated-runs-own-runs-v1/delegated-runs-own-runs-v1-app-data-migration.test.ts > 20261111_delegated_runs_own_runs_v1 > a Settings edit that names another agent runtime (autobyteus-508) > a delegated agent run's edit: its runtime, model and settings, and the Settings source; it loads (AC-003)
+AssertionError: expected { runId: 'summarizer_d400', …(11) } to match object { address: '/summarizer', …(6) }
+(6 matching properties omitted from actual)
+
+- Expected
++ Received
+
+@@ -5,16 +5,12 @@
+        "kind": "agent",
+        "runId": "project_task_manager_7c8d",
+      },
+      "delegatorAgentRunId": "project_task_manager_7c8d",
+    },
+-   "launchSource": {
+-     "fallbacks": [],
+-     "origin": "settings",
+-   },
+    "llmConfig": {
+      "reasoning_effort": "high",
+    },
+    "llmModelIdentifier": "gpt-6.1-terra",
+    "platformAgentRunId": "codex_thread_7a04",
+-   "runtimeKind": "codex_app_server",
++   "runtimeKind": "claude_agent_sdk",
+  }
+
+ ❯ tests/app-data-migrations/delegated-runs-own-runs-v1/delegated-runs-own-runs-v1-app-data-migration.test.ts:389:20
+    387|       const file = await readJson(at.agentFile(SWITCHED_AGENT));
+    388|       expect(file).not.toHaveProperty("taskAgent");
+    389|       expect(file).toMatchObject({ address: "/summarizer", runtimeKind…
+       |                    ^
+    390|         llmConfig: runtimeEdit().llmConfig, platformAgentRunId: "codex…
+    391|       expect(await new AgentRunMetadataStore(w.memory).readMetadataSta…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/6]⎯
+
+ FAIL  tests/app-data-migrations/delegated-runs-own-runs-v1/delegated-runs-own-runs-v1-app-data-migration.test.ts > 20261111_delegated_runs_own_runs_v1 > a Settings edit that names another agent runtime (autobyteus-508) > a pending switch stays beside the new runtime, from the started binding, for the next input to make real (AC-005)
+AssertionError: expected [ '/operator', …(4) ] to deeply equal [ '/operator', …(4) ]
+
+- Expected
++ Received
+
+  [
+    "/operator",
+-   "codex_app_server",
++   "claude_agent_sdk",
+    "gpt-6.1-terra",
+    {
+      "reasoning_effort": "high",
+    },
+-   {
+-     "fallbacks": [],
+-     "origin": "settings",
+-   },
++   null,
+  ]
+
+ ❯ tests/app-data-migrations/delegated-runs-own-runs-v1/delegated-runs-own-runs-v1-app-data-migration.test.ts:398:34
+    396|       const { w, at } = await converted();
+    397|       const operator = (await readJson(at.teamFile(PENDING_SWITCH_TEAM…
+    398|       expect(launchOf(operator)).toEqual(["/operator", ...EDITED, SETT…
+       |                                  ^
+    399|       expect(operator).toMatchObject({ platformAgentRunId: null, pendi…
+    400|       expect(validateTeamRunExecutionTreePayload(await readJson(at.tea…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/6]⎯
+
+ FAIL  tests/app-data-migrations/delegated-runs-own-runs-v1/delegated-runs-preserved-items-v1.test.ts > the follow-ups of 20261111_delegated_runs_own_runs_v1 (SR-078) > after 20261017 finishes a copy with a Settings edit naming another runtime: the follow-up applies the edit whole, as ours does (autobyteus-508 AC-006)
+AssertionError: expected { address: '/operator', …(6) } to match object { address: '/operator', …(2) }
+(7 matching properties omitted from actual)
+
+- Expected
++ Received
+
+@@ -3,12 +3,8 @@
+    "launchConfiguration": {
+      "llmConfig": {
+        "reasoning_effort": "high",
+      },
+      "llmModelIdentifier": "gpt-6.1-terra",
+-     "runtimeKind": "codex_app_server",
+-   },
+-   "launchSource": {
+-     "fallbacks": [],
+-     "origin": "settings",
++     "runtimeKind": "claude_agent_sdk",
+    },
+  }
+
+ ❯ tests/app-data-migrations/delegated-runs-own-runs-v1/delegated-runs-preserved-items-v1.test.ts:107:37
+    105|     const own = await readJson(paths(w).teamFile("late_edited_team"));
+    106|     expect(own).not.toHaveProperty("taskAgent");
+    107|     expect(own.rootTeam.members[1]).toMatchObject({ address: "/operato…
+       |                                     ^
+    108|       launchConfiguration: { runtimeKind: "codex_app_server", llmModel…
+    109|     expect(own.rootTeam.members[1]).not.toHaveProperty("userLaunchSele…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/6]⎯
+
+
+ Test Files  2 failed | 1 passed (3)
+      Tests  6 failed | 20 passed (26)
+   Start at  08:29:45
+   Duration  8.59s (transform 1.42s, setup 116ms, import 2.28s, tests 5.20s, environment 0ms)
+
+# exit: 1

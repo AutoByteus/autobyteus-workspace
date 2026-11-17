@@ -6,7 +6,10 @@ import { DatabaseSync } from "node:sqlite";
 import { spawnSync } from "node:child_process";
 import { afterAll, describe, expect, it } from "vitest";
 import { DELEGATED_RUNS_OWN_RUNS_V1_MIGRATION_ID } from "../../../src/app-data-migrations/migrations/delegated-runs-own-runs-v1/delegated-runs-own-runs-v1-app-data-migration.js";
-import { E, I, LEGACY, M, MARKETING, ORG, P, PEER_STARTED, RESEARCH, T0, T1, T2, exists, paths, readJson, writeReleasedWorld } from "../../fixtures/app-data-migrations/released-delegation-shape-fixtures.js";
+import {
+  E, I, LEGACY, M, MARKETING, MEMBER_EDIT_TEAM, ORG, P, PEER_STARTED, PENDING_SWITCH_AGENT, PENDING_SWITCH_TEAM, RESEARCH, SWITCHED_AGENT, T0, T1, T2,
+  TEAM_EDIT_TEAM, exists, paths, pendingSwitch, put, readJson, runtimeEdit, writeReleasedRuntimeEdits, writeReleasedWorld,
+} from "../../fixtures/app-data-migrations/released-delegation-shape-fixtures.js";
 import { RootRunPackageCurrentValidator } from "../../../src/run-history/services/root-run-package-current-validator.js";
 import { killBuiltStudios, startBuiltStudio, type BuiltStudio } from "../helpers/built-studio-roots.js";
 import { delegatedRunsTree } from "../helpers/run-tree-delegated.js";
@@ -22,6 +25,11 @@ import { delegatedRunsTree } from "../helpers/run-tree-delegated.js";
 //   no restore; the in-memory DelegationIndex built from the converted Task entries gives the manager one hop (E, not P or
 //   I); the team E file rooted at `/` with its handoff to `/Teacher` kept loads; nothing is started.
 // - DRO-2: a second start changes no file (QR-003) and records nothing new.
+// - DRO-4 (autobyteus-508): released Settings edits that name another agent runtime (`writeReleasedRuntimeEdits`), each run
+//   assigned by the manager through its own Task: after the upgrade start, the manager's tree (the rows Settings shows) gives
+//   each edited run or member the runtime, model and settings the user chose with the Settings source as its own (not the
+//   team's "Inherited from the run"); an unedited member keeps its recorded source; a pending switch stays beside the new
+//   runtime; a second start changes nothing.
 // Not here: messaging a converted run needs a usable model for its stored runtime (`autobyteus` with a model the fixture
 // names, no provider); the contract stories (API-E02) prove messaging, waking and closing of delegated runs on this build.
 // Prerequisite: `pnpm -C autobyteus-server-ts build` for the current worktree.
@@ -236,4 +244,95 @@ suite("delegated runs own runs: the built server upgrades released app data at s
     evidence.secondStart = { files: Object.keys(after).length, changed };
     expect(changed).toEqual([]);
   }, 900_000);
+
+  it("DRO-4 (autobyteus-508): a Settings edit that names another agent runtime keeps that runtime, model and settings as the run's own Settings edit", async () => {
+    const { root, at } = await preparedWorld("runtime-edits");
+    const world = { appData: root, memory: path.join(root, "memory") };
+    await writeReleasedRuntimeEdits(world);
+    const teams = [MEMBER_EDIT_TEAM, TEAM_EDIT_TEAM, PENDING_SWITCH_TEAM];
+    for (const run of teams) await fs.writeFile(path.join(path.dirname(at.teamFile(run)), "team_communication_messages_active.jsonl"), "");
+    // Each run was assigned by the manager through its own Task, as a Project Task Manager delegates (released shape).
+    const assigned = (taskId: string, address: string, agentRun: Json) => put(at.taskRecord(taskId), { taskId, agentRunResources: [
+      { role: "assigned", assignedBy: M, recipientAddress: address, hostRoot: { kind: "agent", runId: M }, agentRun, linkedAt: T0, start: "started", closedAt: null }] });
+    await assigned("task_508_a", "/support_team", { kind: "team", teamRunId: MEMBER_EDIT_TEAM, coordinatorAgentRunId: `coordinator_${MEMBER_EDIT_TEAM}` });
+    await assigned("task_508_b", "/review_team", { kind: "team", teamRunId: TEAM_EDIT_TEAM, coordinatorAgentRunId: "lead_b201" });
+    await assigned("task_508_c", "/outreach_team", { kind: "team", teamRunId: PENDING_SWITCH_TEAM, coordinatorAgentRunId: "operator_c301" });
+    await assigned("task_508_d", "/summarizer", { kind: "agent", agentRunId: SWITCHED_AGENT });
+    await assigned("task_508_e", "/summarizer", { kind: "agent", agentRunId: PENDING_SWITCH_AGENT });
+
+    const SETTINGS = { origin: "settings", fallbacks: [] };
+    const EDITED = { runtimeKind: "codex_app_server", llmModelIdentifier: "gpt-6.1-terra", llmConfig: runtimeEdit().llmConfig };
+    /** A row's launch as Settings shows it: runtime, model, settings, source, and whether the source is the row's own. */
+    const shown = (launch: Json | null) => launch && { runtimeKind: launch.runtimeKind, llmModelIdentifier: launch.llmModelIdentifier,
+      llmConfig: launch.llmConfig, source: launch.source, ownSource: launch.ownSource };
+    const recordOf = (records: Json[], id: string): Json | null => {
+      for (const record of records) {
+        if (record.teamRunId === id || record.agentRunId === id) return record;
+        const nested = recordOf(record.taskExecutions ?? [], id);
+        if (nested) return nested;
+      }
+      return null;
+    };
+    const membersOf = (record: Json | null) => Object.fromEntries((record?.members ?? []).map((member: Json) => [member.address, shown(member.launch)]));
+
+    let server: BuiltStudio = await studio(root);
+    try {
+      const row = ((await server.gql("{getAppDataMigrations{migrationId status summary errorMessage}}")).getAppDataMigrations as Json[]).find((entry) => entry.migrationId === ID);
+      evidence.dro4 = { migration: row };
+      expect(row?.status, JSON.stringify(row)).toBe("SUCCEEDED");
+      expect(row?.errorMessage ?? null).toBeNull();
+
+      const tree = (await delegatedRunsTree(server.gql, "agent", M)).taskExecutions as Json[];
+      const seen = Object.fromEntries([...teams, SWITCHED_AGENT, PENDING_SWITCH_AGENT].map((id) => {
+        const record = recordOf(tree, id);
+        return [id, record && { address: record.address, launch: shown(record.launch), members: membersOf(record) }];
+      }));
+      evidence.dro4.managerRows = seen;
+      // AC-001: the member's own edit, already made real on the new runtime; the coordinator follows a team with no edit.
+      expect(seen[MEMBER_EDIT_TEAM]?.members, JSON.stringify(seen)).toEqual({
+        "/coordinator": { runtimeKind: "claude_agent_sdk", llmModelIdentifier: "sonnet", llmConfig: null, source: null, ownSource: false },
+        "/operator": { ...EDITED, source: SETTINGS, ownSource: true },
+      });
+      // AC-002: a follower takes the team's edit whole; a member's own edit wins with its own runtime; an unedited member keeps its source.
+      expect(seen[TEAM_EDIT_TEAM]?.members, JSON.stringify(seen)).toEqual({
+        "/lead": { ...EDITED, source: SETTINGS, ownSource: true },
+        "/checker": { runtimeKind: "autobyteus", llmModelIdentifier: "opus", llmConfig: runtimeEdit().llmConfig, source: SETTINGS, ownSource: true },
+        "/scribe": { runtimeKind: "claude_agent_sdk", llmModelIdentifier: "sonnet", llmConfig: null, source: { origin: "agent_default", fallbacks: [] }, ownSource: true },
+      });
+      // AC-005: the member whose switch is still pending shows the new runtime.
+      expect(seen[PENDING_SWITCH_TEAM]?.members, JSON.stringify(seen)).toEqual({ "/operator": { ...EDITED, source: SETTINGS, ownSource: true } });
+      // AC-003, AC-005: the delegated agent runs, made real and pending.
+      for (const run of [SWITCHED_AGENT, PENDING_SWITCH_AGENT]) {
+        expect(seen[run]?.launch, `${run}: ${JSON.stringify(seen)}`).toEqual({ ...EDITED, source: SETTINGS, ownSource: true });
+      }
+      // The pending switches stay, from the started binding, for the next input to make real; the runs stay stopped.
+      expect((await readJson(at.teamFile(PENDING_SWITCH_TEAM))).rootTeam.members[0]).toMatchObject({ platformAgentRunId: null, pendingRuntimeSwitch: pendingSwitch });
+      expect(await readJson(at.agentFile(PENDING_SWITCH_AGENT))).toMatchObject({ platformAgentRunId: null, pendingRuntimeSwitch: pendingSwitch });
+      for (const run of teams) {
+        const resume = (await server.gql(`query($id:String!){getTeamRunResumeConfig(teamRunId:$id){teamRunId isActive}}`, { id: run })).getTeamRunResumeConfig;
+        expect(resume, `team run ${run} opens and stays stopped`).toMatchObject({ teamRunId: run, isActive: false });
+      }
+      for (const run of [SWITCHED_AGENT, PENDING_SWITCH_AGENT]) {
+        const projection = (await server.gql(`query($id:String!){getRunProjection(runId:$id){runId}}`, { id: run })).getRunProjection;
+        expect(projection?.runId, `agent run ${run} opens`).toBe(run);
+      }
+    } finally {
+      await server.stop();
+      evidence.dro4 = { ...evidence.dro4, firstStartWarnings: server.output().split("\n").filter((line) => /warn|admit|ROOT_RUN_PACKAGE|migration/i.test(line)).slice(0, 80) };
+    }
+
+    // A second start changes nothing.
+    const before = await snapshot(root);
+    server = await studio(root);
+    try {
+      const again = ((await server.gql("{getAppDataMigrations{migrationId status}}")).getAppDataMigrations as Json[]).find((entry) => entry.migrationId === ID);
+      expect(again?.status).toBe("SUCCEEDED");
+    } finally {
+      await server.stop();
+    }
+    const after = await snapshot(root);
+    const changed = Object.keys({ ...before, ...after }).filter((file) => before[file] !== after[file]);
+    evidence.dro4.secondStart = { files: Object.keys(after).length, changed };
+    expect(changed).toEqual([]);
+  }, 600_000);
 });

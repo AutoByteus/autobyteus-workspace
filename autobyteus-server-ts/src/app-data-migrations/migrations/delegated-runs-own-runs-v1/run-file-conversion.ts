@@ -28,10 +28,28 @@ export const renamedPeerOrigin = (delegatedFrom: unknown): RawRecord | null => {
 };
 
 /**
+ * The source a converted Settings edit records: the one a live Settings save records (`settings`). Written here, not
+ * imported from application code (data migration guideline, "Sealed migration area").
+ */
+const SETTINGS_EDIT_SOURCE = Object.freeze({ origin: "settings", fallbacks: [] });
+
+/**
+ * A released Settings edit (`userLaunchSelection`) applied to a launch as one unit, as the released rule did
+ * (autobyteus-348, autobyteus-508): the edit's agent runtime when it names one, else the started runtime; its model;
+ * its model settings.
+ */
+const withEdit = (launch: RawRecord, edit: RawRecord): RawRecord => ({
+  ...launch,
+  ...(text(edit.runtimeKind) ? { runtimeKind: edit.runtimeKind } : {}),
+  llmModelIdentifier: edit.llmModelIdentifier,
+  llmConfig: edit.llmConfig ?? null,
+});
+
+/**
  * Step 4 for a delegated agent run's `run_metadata.json` (contract §2.2, §13.2 E6): `taskAgent` goes; `address` and
- * `launchSource` become the run's own fields; a Settings edit (`userLaunchSelection`) becomes the run's own launch, and
- * the edited run's `launchSource` is dropped; a pending runtime switch moves to the top level; the run's own
- * `delegatedFrom` is written. A file a predecessor did not finish (`20261017_…`, `20261019_…`) is left as it is.
+ * `launchSource` become the run's own fields; a Settings edit (`userLaunchSelection`) becomes the run's own launch
+ * (`withEdit`) and the edited run records the Settings source; a pending runtime switch moves to the top level; the run's
+ * own `delegatedFrom` is written. A file a predecessor did not finish (`20261017_…`, `20261019_…`) is left as it is.
  */
 export const convertAgentRunFile = (runId: string, raw: RawRecord, scan: ReleasedDelegationScan): RunFileConversion => {
   if (!isRecord(raw.taskAgent)) {
@@ -50,19 +68,15 @@ export const convertAgentRunFile = (runId: string, raw: RawRecord, scan: Release
   const delegatedFrom = originOf(runId, taskAgent, scan);
   if (!delegatedFrom) return { kind: "preserved", reason: "taskAgent.coordinatingRun is missing" };
   const { taskAgent: _removed, ...own } = raw;
-  const selection = isRecord(taskAgent.userLaunchSelection) ? taskAgent.userLaunchSelection : null;
+  const edit = isRecord(taskAgent.userLaunchSelection) ? taskAgent.userLaunchSelection : null;
   return { kind: "converted", payload: {
-    ...own,
+    ...(edit ? withEdit(own, edit) : own),
     address: taskAgent.address,
-    ...(selection ? { llmModelIdentifier: selection.llmModelIdentifier, llmConfig: selection.llmConfig ?? null }
-      : isRecord(taskAgent.launchSource) ? { launchSource: taskAgent.launchSource } : {}),
+    ...(edit ? { launchSource: SETTINGS_EDIT_SOURCE } : isRecord(taskAgent.launchSource) ? { launchSource: taskAgent.launchSource } : {}),
     ...(isRecord(taskAgent.pendingRuntimeSwitch) && raw.pendingRuntimeSwitch === undefined ? { pendingRuntimeSwitch: taskAgent.pendingRuntimeSwitch } : {}),
     delegatedFrom,
   } };
 };
-
-const withSelection = (launch: unknown, selection: RawRecord): unknown => isRecord(launch)
-  ? { ...launch, llmModelIdentifier: selection.llmModelIdentifier, llmConfig: selection.llmConfig ?? null } : launch;
 
 /** An address under the team's former root (`/software_engineering_team/x`) at the team's own root (`/x`); others unchanged. */
 const rebased = (address: unknown, prefix: string): unknown => typeof address !== "string" || prefix === "/" ? address
@@ -75,7 +89,8 @@ const rebased = (address: unknown, prefix: string): unknown => typeof address !=
  * (it is resolved when sent). `taskAgent` goes; `delegatedFrom` is written beside `rootTeam`;
  * `rootTeam.teamDefinitionName` is the definition's name, else its ID; the team's `launchSource` becomes
  * `rootTeam.defaultLaunchSource`. A team-level Settings edit becomes the own launch of every member that follows the
- * team, a member's edit that member's own launch (and drops its `launchSource`); then `followsTeam` and the edits go.
+ * team, a member's edit that member's own launch (`withEdit`), and each edited member records the Settings source; an
+ * unedited member keeps its recorded `launchSource`; then `followsTeam` and the edits go.
  * Two members that would share an address, or a file a predecessor did not finish, leave the file as it is.
  */
 export const convertTeamRunFile = (runId: string, raw: RawRecord, scan: ReleasedDelegationScan, teamDefinitionName: string): RunFileConversion => {
@@ -95,14 +110,15 @@ export const convertTeamRunFile = (runId: string, raw: RawRecord, scan: Released
   const delegatedFrom = originOf(runId, taskAgent, scan);
   if (!delegatedFrom) return { kind: "preserved", reason: "taskAgent.coordinatingRun is missing" };
   const prefix = typeof rootTeam.address === "string" ? rootTeam.address : "/";
-  const teamSelection = isRecord(taskAgent.userLaunchSelection) ? taskAgent.userLaunchSelection : null;
+  const teamEdit = isRecord(taskAgent.userLaunchSelection) ? taskAgent.userLaunchSelection : null;
   const members = rootTeam.members.map((value) => {
     if (!isRecord(value)) return value;
     const { followsTeam, userLaunchSelection, launchSource, ...member } = value;
-    const own = isRecord(userLaunchSelection) ? userLaunchSelection : followsTeam === true ? teamSelection : null;
+    const edit = isRecord(userLaunchSelection) ? userLaunchSelection : followsTeam === true ? teamEdit : null;
     const at = { ...member, address: rebased(member.address, prefix) };
-    return own ? { ...at, launchConfiguration: withSelection(member.launchConfiguration, own) }
-      : { ...at, ...(launchSource !== undefined ? { launchSource } : {}) };
+    if (!edit) return { ...at, ...(launchSource !== undefined ? { launchSource } : {}) };
+    const launch = member.launchConfiguration;
+    return { ...at, launchConfiguration: isRecord(launch) ? withEdit(launch, edit) : launch, launchSource: SETTINGS_EDIT_SOURCE };
   });
   const addresses = members.map((member) => isRecord(member) ? member.address : null);
   if (new Set(addresses).size !== addresses.length || addresses.includes("/")) {
@@ -122,7 +138,7 @@ export const convertTeamRunFile = (runId: string, raw: RawRecord, scan: Released
       address: "/",
       coordinatorAddress: rebased(team.coordinatorAddress, prefix),
       teamDefinitionName: typeof team.teamDefinitionName === "string" ? team.teamDefinitionName : teamDefinitionName,
-      ...(!teamSelection && isRecord(taskAgent.launchSource) && team.defaultLaunchSource === undefined ? { defaultLaunchSource: taskAgent.launchSource } : {}),
+      ...(!teamEdit && isRecord(taskAgent.launchSource) && team.defaultLaunchSource === undefined ? { defaultLaunchSource: taskAgent.launchSource } : {}),
       members,
     },
     delegatedFrom,

@@ -583,7 +583,16 @@ Standalone agent persisted files:
   `launchSource` moved up), the standalone `collaboration_tree.json` and the trees'
   `taskExecutions` lists were removed (peer links moved to their Task entries), a
   delegated team was rebased to `/`, and a user-started run's log moved up out of
-  `collaboration/`. A run it cannot convert is left intact and reported.
+  `collaboration/`. A Settings edit a user had saved on a delegated run
+  (`userLaunchSelection`; a team-level edit reaches each member that followed the
+  team) became that run's own launch as one unit: the edit's agent runtime when it
+  names one (else the runtime the run started with), its model and its model
+  settings. An edited run or member records the Settings source
+  (`{ origin: "settings", fallbacks: [] }`), the source a live Settings save
+  records, so it is not shown as inherited from the run; an unedited member keeps
+  its recorded source (autobyteus-508 corrected the first version of this
+  conversion, which dropped the runtime). A run it cannot convert is left intact
+  and reported.
 - runtime memory artifacts: all runtimes can have `memory/agents/<runId>/raw_traces_active.jsonl`; native AutoByteus runs additionally own `working_context_snapshot.json`, while new Codex/Claude recording does not create or update that snapshot
 - rotated raw-trace segments after native compaction or provider-boundary rotation: `memory/agents/<runId>/raw_traces_manifest.json` plus direct `memory/agents/<runId>/raw_traces_<zero-padded-index>.jsonl` files
 

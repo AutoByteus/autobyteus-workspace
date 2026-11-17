@@ -296,7 +296,11 @@ or because Gradle's cache already holds a dependency the runner must download.
   test-made records with the released structure, covering each shape that exists, older
   ones included; the target is what the new build makes of it. Learn the structure by
   reading real user data (read-only) or what a released build wrote, and check that the
-  synthesized records have the same keys and shapes. Never copy real data into a test, and
+  synthesized records have the same keys and shapes. When the conversion carries a value the
+  released build combined from several fields (a saved edit of runtime, model and settings),
+  one record changes every one of those fields from the value it started with, so a field the
+  conversion drops shows as a difference; the runtime is read back where the user sees it (for
+  example the server's row data). Never copy real data into a test, and
   never run a migration, startup or conversion on real user data or a copy of it; use a
   test-owned data root, and never wake a converted run against real runtime sessions.
   Prove the conversion, that nothing is lost, and that a second start changes nothing.
