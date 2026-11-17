@@ -36,10 +36,10 @@ export const AgentRootExecutionViewDtoSchema = z.object({
   root_agent: agentRunCollaborationViewDtoSchema,
 }).strict();
 
-/** An Agent root's view is its host's: the runs it delegated are its tree's rows (SR-084). */
+/** An Agent root's view is its own agent's: the runs it delegated are its tree's rows (SR-084). */
 const validateAgentRootCorrelation = (value: AgentRootExecutionViewDto, context: z.RefinementCtx): void => {
-  if (value.root_agent.execution_tree.host.agentRunId !== value.root_run_id) {
-    addCorrelationIssue(context, "Agent root snapshot host correlation mismatch.");
+  if (value.root_agent.execution_tree.agent.agentRunId !== value.root_run_id) {
+    addCorrelationIssue(context, "Agent root snapshot agent correlation mismatch.");
   }
 };
 

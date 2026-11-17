@@ -14,7 +14,7 @@ import RunMemberRow from '../RunMemberRow.vue'
 const values = { workspace: null, runtimeKind: 'codex_app_server', llmModelIdentifier: 'gpt-sol', llmConfig: null, autoExecuteTools: true }
 const node = (overrides: Partial<RunMemberNode>): RunMemberNode => ({
   key: '/se/ie@ie-run', kind: 'agent', name: 'ie', isCoordinator: false, values, parentValues: values, fields: ['model'],
-  customized: {}, customizedOptionKeys: [], modelRequired: false, children: [], launchNotes: [], badge: 'delegated_copy', ...overrides,
+  customized: {}, customizedOptionKeys: [], modelRequired: false, children: [], launchNotes: [], badge: 'delegated_run', ...overrides,
 })
 
 describe('RunMemberRow with Model Routing (autobyteus-32)', () => {

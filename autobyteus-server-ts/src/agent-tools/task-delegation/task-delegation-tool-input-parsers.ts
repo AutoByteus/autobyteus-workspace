@@ -1,11 +1,11 @@
 import { z } from "zod";
-import type { AssignToExistingCopyInput, SpawnTaskInput } from "../../agent-collaboration/execution/task/task-delegation-command.js";
+import type { AssignToExistingDelegatedRunInput, SpawnTaskInput } from "../../agent-collaboration/execution/task/task-delegation-command.js";
 import { CollaborationContractError } from "../../agent-collaboration/domain/collaboration-contract-error.js";
 
 /** `delegate_task` input by subject: a new copy from an address, or an existing copy by its own ID. */
 export type DelegateTaskToolInput =
   | Readonly<{ subject: "new_copy"; input: SpawnTaskInput }>
-  | Readonly<{ subject: "existing_copy"; input: AssignToExistingCopyInput }>;
+  | Readonly<{ subject: "existing_delegated_run"; input: AssignToExistingDelegatedRunInput }>;
 
 const nonEmptyString = (fieldName: string) =>
   z.string({ error: `${fieldName} is required` }).trim().min(1, `${fieldName} is required`);
@@ -44,11 +44,11 @@ const parseExistingCopyInput = (rawArguments: Record<string, unknown>): Delegate
   if (Object.hasOwn(rawArguments, "target_team_run_id")) {
     const result = ExistingTeamCopyInputSchema.safeParse(rawArguments);
     if (!result.success) throw new Error(`Invalid delegate_task input: ${parseZodIssues(result.error)}`);
-    return { subject: "existing_copy", input: { copy: { teamRunId: result.data.target_team_run_id }, taskId: result.data.task_id } };
+    return { subject: "existing_delegated_run", input: { copy: { teamRunId: result.data.target_team_run_id }, taskId: result.data.task_id } };
   }
   const result = ExistingAgentCopyInputSchema.safeParse(rawArguments);
   if (!result.success) throw new Error(`Invalid delegate_task input: ${parseZodIssues(result.error)}`);
-  return { subject: "existing_copy", input: { copy: { agentRunId: result.data.target_agent_run_id }, taskId: result.data.task_id } };
+  return { subject: "existing_delegated_run", input: { copy: { agentRunId: result.data.target_agent_run_id }, taskId: result.data.task_id } };
 };
 
 export const parseDelegateTaskInput = (

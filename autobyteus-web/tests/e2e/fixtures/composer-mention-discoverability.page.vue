@@ -56,7 +56,7 @@ const workspaceTarget = computed(() => {
   const base = { context: ctx.value, access: current.value === 'read-only' ? 'read_only' : 'live', address: '/researcher', agentRunId: ctx.value.state.runId };
   if (current.value === 'team') return { ...base, kind: 'standalone_team_member', team: { rootRunId: 'probe-team-root', focusedMemberAddress: '/researcher' } };
   const mapping = { org: 'agent_org_direct_agent', 'org-team': 'agent_org_team_member', 'agent-task': 'agent_run_task_agent', 'agent-team-task': 'agent_run_task_team_member', 'org-task': 'agent_org_task_agent', 'org-team-task': 'agent_org_task_team_member' };
-  if (current.value in mapping) return { ...base, kind: mapping[current.value], host: { hostRunId: 'probe-agent-root' }, root: { orgRunId: 'probe-org-root' } };
+  if (current.value in mapping) return { ...base, kind: mapping[current.value], viewRun: { runId: 'probe-agent-root' }, root: { orgRunId: 'probe-org-root' } };
   return { ...base, kind: 'standalone_agent' };
 });
 const sends = reactive<Array<Record<string, unknown>>>([]);

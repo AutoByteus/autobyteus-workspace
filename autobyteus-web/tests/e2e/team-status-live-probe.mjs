@@ -279,7 +279,7 @@ const openRoot = async (page, root, names) => {
   return runRow;
 };
 const TEAM_DOT = '[data-test="team-aggregate-status-dot"]';
-const TASK_TEAM_ROW = '[data-test="workspace-team-transient-execution-row"][data-transient-kind="task_team"]';
+const TASK_TEAM_ROW = '[data-test="workspace-team-transient-execution-row"][data-delegated-run-kind="task_team"]';
 const taskTeamRow = (page, kind, teamRunId) => page.locator(TASK_TEAM_ROW).first();
 const agentRow = (page, kind, agentRunId) => page.locator(kind === 'org' ? `[data-test="workspace-team-transient-execution-row"][data-agent-run-id="${agentRunId}"], [data-test="agent-org-agent-row-${agentRunId}"]`
   : `[data-test="workspace-team-transient-execution-row"][data-agent-run-id="${agentRunId}"]`).first();

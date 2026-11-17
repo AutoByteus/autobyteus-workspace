@@ -5,7 +5,7 @@ import type { CollaborationCommunicationMessage } from "../../agent-collaboratio
  * The one agent of a standalone run (autobyteus-461): the run itself. Its address is its own (`run_metadata.address`,
  * else derived from its definition, contract §3.3). Nothing is hosted: a run it delegated to is a run of its own.
  */
-export type StandaloneRootHost = Readonly<{
+export type StandaloneRunAgent = Readonly<{
   address: AgentTeamAddress;
   agentRunId: string;
   agentDefinitionId: string;
@@ -15,9 +15,9 @@ export type StandaloneRootHost = Readonly<{
 export type StandaloneRootMessagesFile = Readonly<{
   schemaVersion: 1;
   subjectKind: "agent";
-  hostRunId: string;
+  agentRunId: string;
   messages: readonly CollaborationCommunicationMessage[];
 }>;
 
-export const emptyStandaloneRootMessages = (hostRunId: string): StandaloneRootMessagesFile =>
-  Object.freeze({ schemaVersion: 1, subjectKind: "agent", hostRunId, messages: Object.freeze([]) });
+export const emptyStandaloneRootMessages = (agentRunId: string): StandaloneRootMessagesFile =>
+  Object.freeze({ schemaVersion: 1, subjectKind: "agent", agentRunId, messages: Object.freeze([]) });

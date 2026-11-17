@@ -341,8 +341,8 @@ const openRoot = async (page, root, names, { requireTaskTree = true } = {}) => {
 };
 const rowSelector = (kind, ref) => {
   // autobyteus-461 SR-084: an Org's delegated rows are the same tree rows as in every other view.
-  // Transient rows expose no node Team run ID; each probe root has exactly one task Team.
-  return ref.teamRunId ? '[data-test="workspace-team-transient-execution-row"][data-transient-kind="task_team"]'
+  // Delegated-run rows expose no node Team run ID; each probe root has exactly one task Team.
+  return ref.teamRunId ? '[data-test="workspace-team-transient-execution-row"][data-delegated-run-kind="task_team"]'
     : `[data-test="workspace-team-transient-execution-row"][data-agent-run-id="${ref.agentRunId}"]`;
 };
 /** Per-frame sampler: effective opacity, height, aria-hidden/inert, tree-row classes, focused element. One at a time. */
@@ -547,7 +547,7 @@ const lastRows = async () => {
 /** Records any closed row that appears at any time, from document start. */
 const watchClosed = (ids) => `(() => { const ids = ${JSON.stringify(ids)}; window.__closedSeen = [];
   const check = () => { for (const id of ids) if (document.querySelector('[data-agent-run-id="' + id + '"], [data-test$="-row-' + id + '"]')) window.__closedSeen.push(id);
-    if (document.querySelector('[data-transient-kind="task_team"]')) window.__closedSeen.push('task_team-row'); };
+    if (document.querySelector('[data-delegated-run-kind="task_team"]')) window.__closedSeen.push('task_team-row'); };
   new MutationObserver(check).observe(document, { subtree: true, childList: true, attributes: true }); })();`;
 const closedIdsOf = (r) => [...r.aRefs.map((x) => x.agentRunId ?? x.teamRunId), r.bRef?.teamRunId, ...r.bMembers].filter(Boolean);
 /** AC-004 + AC-010: after reload, and after a real backend restart + reload, closed rows never render. */

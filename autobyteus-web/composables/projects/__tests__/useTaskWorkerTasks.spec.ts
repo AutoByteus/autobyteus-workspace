@@ -10,12 +10,12 @@ vi.mock('~/utils/mobileFeatureGates', () => ({ isFeatureAvailableInRuntime: (fea
 import { taskWorkerRefOf, useTaskWorkerTasks } from '../useTaskWorkerTasks'
 import { useTaskWorkerTaskStore } from '~/stores/taskWorkerTaskStore'
 import { useTaskLocatorStore } from '~/stores/taskLocatorStore'
-import type { RunHistoryTeamExecutionRow, RunHistoryTransientExecutionRow } from '~/stores/runHistoryTypes'
+import type { RunHistoryTeamExecutionRow, RunHistoryDelegatedRunRow } from '~/stores/runHistoryTypes'
 import type { TaskWorkerTask } from '~/types/project'
 
-const transient = (transientKind: RunHistoryTransientExecutionRow['transientKind'], ids: { agentRunId?: string; teamRunIdForNode?: string }): RunHistoryTransientExecutionRow => ({
-  kind: 'transient_execution', transientKind, teamRunId: 'host', memberAddress: '/x', agentRunId: ids.agentRunId ?? null,
-  teamRunIdForNode: ids.teamRunIdForNode ?? null, rowKey: `${transientKind}:${ids.agentRunId ?? ids.teamRunIdForNode}`, memberKind: 'agent',
+const transient = (delegatedRunKind: RunHistoryDelegatedRunRow['delegatedRunKind'], ids: { agentRunId?: string; teamRunIdForNode?: string }): RunHistoryDelegatedRunRow => ({
+  kind: 'delegated_run', delegatedRunKind, teamRunId: 'host', memberAddress: '/x', agentRunId: ids.agentRunId ?? null,
+  teamRunIdForNode: ids.teamRunIdForNode ?? null, rowKey: `${delegatedRunKind}:${ids.agentRunId ?? ids.teamRunIdForNode}`, memberKind: 'agent',
   displayName: 'copy', depth: 1, hasChildren: false, currentStatus: null, delegatedBy: null,
 })
 const agentRow = transient('task_agent', { agentRunId: 'a1' })

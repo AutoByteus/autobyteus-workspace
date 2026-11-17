@@ -11,7 +11,7 @@ import type { StandaloneRootEvent } from "../../standalone-agent-run-root/domain
 
 /** Agent-root view (root kind `agent`) on the collaboration-stream contracts. */
 export const projectAgentCollaborationView = (input: Readonly<{
-  hostRunId: string;
+  agentRunId: string;
   isActive: boolean;
   snapshot: StandaloneRootPackageSnapshot;
   baseChangeSequence: number;
@@ -19,19 +19,19 @@ export const projectAgentCollaborationView = (input: Readonly<{
   lastMessageChangeSequence: number | null;
 }>): RootExecutionViewDto => RootExecutionViewDtoSchema.parse({
   root_subject_kind: "agent",
-  root_run_id: input.hostRunId,
+  root_run_id: input.agentRunId,
   root_agent: {
     base_change_sequence: input.baseChangeSequence,
     live_sequence_id: input.liveSequenceId,
     last_message_change_sequence: input.lastMessageChangeSequence,
     is_active: input.isActive,
-    execution_tree: projectAgentCollaborationTree({ host: input.snapshot.host, createdAt: input.snapshot.createdAt }),
+    execution_tree: projectAgentCollaborationTree({ agent: input.snapshot.agent, createdAt: input.snapshot.createdAt }),
   },
 });
 
 /** One event of the run's view in base's shapes; its tree's changes are sent by its session (`run_tree_changed`, SR-084). */
 export const projectAgentCollaborationEvent = (
-  hostRunId: string,
+  agentRunId: string,
   sequenced: SequencedRootEvent<StandaloneRootEvent>,
 ): RootExecutionEventDto | null => {
   const source = sequenced.event;
@@ -45,7 +45,7 @@ export const projectAgentCollaborationEvent = (
   }
   return RootExecutionEventDtoSchema.parse({
     root_subject_kind: "agent",
-    root_run_id: hostRunId,
+    root_run_id: agentRunId,
     change_sequence: sequenced.changeSequence,
     event,
   });

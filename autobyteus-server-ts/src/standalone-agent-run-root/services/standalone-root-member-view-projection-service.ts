@@ -36,13 +36,13 @@ export class StandaloneRootMemberViewProjectionService {
     this.peerRunOf = options.peerRunOf;
   }
 
-  async getProjection(hostRunId: string, memberAddress: string, agentRunId: string): Promise<StandaloneRootMemberRunProjection> {
-    const host = required(hostRunId, "hostRunId");
+  async getProjection(runId: string, memberAddress: string, agentRunId: string): Promise<StandaloneRootMemberRunProjection> {
+    const delegator = required(runId, "runId");
     const run = required(agentRunId, "agentRunId");
     // SR-066: an agent of a peer run, by its own identity, through the run's handle.
     const peer = this.peerRunOf(run);
     if (!peer) {
-      throw new CollaborationMemberNotFoundError(`AgentRun '${run}' is not a run Agent run '${host}' delegated to a peer node.`);
+      throw new CollaborationMemberNotFoundError(`AgentRun '${run}' is not a run Agent run '${delegator}' delegated to a peer node.`);
     }
     return await peerMemberProjection(peer, run, required(memberAddress, "memberAddress")) as StandaloneRootMemberRunProjection;
   }

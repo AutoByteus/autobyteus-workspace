@@ -263,7 +263,7 @@ describe('activeContextStore interrupt routing', () => {
     // Once the worker's run is open, it is the target, with its own draft.
     const worker = createAgentContext('worker-run');
     opening.mockReturnValue(false);
-    childTarget.mockReturnValue({ kind: 'agent_run_task_agent', host: { hostRunId: 'manager-run' }, address: '/worker', agentRunId: 'worker-run',
+    childTarget.mockReturnValue({ kind: 'agent_run_task_agent', viewRun: { runId: 'manager-run' }, address: '/worker', agentRunId: 'worker-run',
       access: 'live', context: worker, workspaceRootPath: null, browse: { kind: 'run', runId: 'worker-run' },
       interaction: { send: vi.fn(), interrupt: vi.fn(), decideTool: vi.fn() } } as never);
     reselect();

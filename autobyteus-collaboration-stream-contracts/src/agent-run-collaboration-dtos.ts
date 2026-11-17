@@ -6,20 +6,20 @@ import { runTreeChangedEventDtoSchema } from "./run-tree-dtos.js";
 const timestamp = nonEmptyStringSchema;
 
 /**
- * The collaboration package of one standalone Agent run (root kind `agent`): its host Agent. The runs it delegated are
+ * The collaboration package of one standalone Agent run (root kind `agent`): its own agent. The runs it delegated are
  * its tree's rows (`RUN_TREE_SNAPSHOT`, autobyteus-461 SR-084).
  */
 export const agentRunCollaborationTreeDtoSchema = z.object({
   subjectKind: z.literal("agent"),
   createdAt: timestamp,
-  host: z.object({
+  agent: z.object({
     address: agentAddressSchema,
     agentRunId: nonEmptyStringSchema,
     agentDefinitionId: nonEmptyStringSchema,
   }).strict(),
 }).strict();
 
-/** The host's view; the host reports on its own Agent stream, its delegated runs on `/ws/run-status` (SR-083). */
+/** The run's view; its agent reports on its own Agent stream, its delegated runs on `/ws/run-status` (SR-083). */
 export const agentRunCollaborationViewDtoSchema = z.object({
   base_change_sequence: z.number().int().nonnegative(),
   /** The live sequence `base_change_sequence` counts in (one per root event publisher); null for a stored view. */
@@ -31,7 +31,7 @@ export const agentRunCollaborationViewDtoSchema = z.object({
 }).strict();
 
 /**
- * The Agent root view's events: its messages and its tree's changes. Its host presents on its own Agent stream, and each
+ * The Agent root view's events: its messages and its tree's changes. Its agent presents on its own Agent stream, and each
  * run it delegated on its own (rule 2; a peer's run through `/ws/peer-run`, SR-086 G-D1).
  */
 export const agentRunCollaborationEventDtoSchema = z.discriminatedUnion("kind", [

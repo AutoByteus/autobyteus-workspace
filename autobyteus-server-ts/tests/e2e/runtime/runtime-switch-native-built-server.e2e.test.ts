@@ -474,11 +474,11 @@ describe.runIf(ENABLED)("agent runtime switch, native runtime and stopped-run se
   }, 300_000);
 
   it("RS-03: a host with a delegated copy saves its own runtime and the copy's model in one Save; the copy, a run of its own, can switch its own runtime", async () => {
-    const hostDefinition = await definition("rs-host");
+    const agentDefinition = await definition("rs-host");
     const workerName = `rs-worker ${randomUUID().slice(0, 6)}`;
     await gql("mutation($input: CreateAgentDefinitionInput!) { createAgentDefinition(input: $input) { id } }",
       { input: { name: workerName, role: "assistant", description: "delegated copy", instructions: "Reply briefly.", category: "runtime-e2e", toolNames: [] } });
-    const hostId = await createRun(hostDefinition, AGY, AGY_MODEL);
+    const hostId = await createRun(agentDefinition, AGY, AGY_MODEL);
     const call = `CALL_TOOL:${JSON.stringify({ name: "delegate_task", arguments: { recipient_address: `/${workerName.toLowerCase().replace(/[^a-z0-9]+/g, "_").replace(/^_+|_+$/g, "")}`, description: "Draft the notes." } })}`;
     await talk(hostId, call, "host delegates");
     const reply = activeRecords(hostId).filter((record) => record.trace_type === "assistant" && String(record.content).startsWith("CALLED:")).at(-1)!;

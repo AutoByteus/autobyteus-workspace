@@ -10,7 +10,7 @@ const isExistingFolder = (folder: string): Promise<boolean> =>
  * link (the copy inherits the top-level run's folder). Links are not checked when saved, so a first link that is not an
  * existing folder on this node refuses the delegation here, before anything starts; it never falls back.
  */
-export const projectFolderForNewCopy = async (store: Pick<ProjectStore, "readProject">, projectId: string): Promise<string | null> => {
+export const projectFolderForNewDelegatedRun = async (store: Pick<ProjectStore, "readProject">, projectId: string): Promise<string | null> => {
   const project = await store.readProject(projectId);
   if (!project) throw new ProjectError("PROJECT_NOT_FOUND", `Project '${projectId}' was not found.`);
   const folder = project.workspaces[0]?.workspaceRootPath ?? null;

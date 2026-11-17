@@ -7,7 +7,7 @@ import {
 } from "../../agent-collaboration/collaborators/message-recipient-resolution.js";
 import type { InstanceDefinitions, MentionViewerIndexPort } from "../../agent-collaboration/collaborators/mention-viewer.js";
 import type { DelegationSourceIndexPort } from "../../agent-collaboration/collaborators/catalog-delegation.js";
-import type { StandaloneRootHost } from "../domain/standalone-root-host.js";
+import type { StandaloneRunAgent } from "../domain/standalone-run-agent.js";
 
 /**
  * A standalone run's addresses (contract §2.3): its one agent at its own address. It has no team, so an address
@@ -15,16 +15,16 @@ import type { StandaloneRootHost } from "../domain/standalone-root-host.js";
  * collaboration tree).
  */
 export class StandaloneRootIndex implements MessageRecipientIndexPort, MentionViewerIndexPort, DelegationSourceIndexPort {
-  constructor(private readonly host: StandaloneRootHost) {}
+  constructor(private readonly agent: StandaloneRunAgent) {}
 
   teamInstancesOf(): readonly SenderTeamInstance[] { return Object.freeze([]); }
   memberOfInstance(): CollaborationMessagePlacement | null { return null; }
   getMessagePlacement(address: AgentTeamAddress): CollaborationMessagePlacement | null {
-    return address === this.host.address ? messagePlacement("agent", address, { agentRunId: this.host.agentRunId, address }) : null;
+    return address === this.agent.address ? messagePlacement("agent", address, { agentRunId: this.agent.agentRunId, address }) : null;
   }
   /** Only the run's own address is its own. */
-  isOwnTeamAddress(_senderAgentRunId: string, address: AgentTeamAddress): boolean { return address === this.host.address; }
+  isOwnTeamAddress(_senderAgentRunId: string, address: AgentTeamAddress): boolean { return address === this.agent.address; }
   instanceDefinitionsOf(): InstanceDefinitions | null { return null; }
-  agentAddressOf(agentRunId: string): AgentTeamAddress | null { return agentRunId === this.host.agentRunId ? this.host.address : null; }
-  isHost(agentRunId: string): boolean { return agentRunId === this.host.agentRunId; }
+  agentAddressOf(agentRunId: string): AgentTeamAddress | null { return agentRunId === this.agent.agentRunId ? this.agent.address : null; }
+  isRunAgent(agentRunId: string): boolean { return agentRunId === this.agent.agentRunId; }
 }

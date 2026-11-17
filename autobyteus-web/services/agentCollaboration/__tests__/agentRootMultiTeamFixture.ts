@@ -9,12 +9,12 @@ export const memberNames = ['solution_designer', 'architecture_reviewer', 'imple
  * The view of a manager run that delegated seven Team copies (autobyteus-461 SR-084): its host only; its tree is
  * `multiTeamTree` (`test-support/runTreeFixtures`).
  */
-export const multiTeamView = (_count = 7, hostRunId = 'host-run') => {
+export const multiTeamView = (_count = 7, runId = 'host-run') => {
   const view = agentRootView()
   view.execution_tree = { subjectKind: 'agent', createdAt: created,
-    host: { address: '/project_task_manager', agentRunId: hostRunId, agentDefinitionId: 'manager' } }
+    agent: { address: '/project_task_manager', agentRunId: runId, agentDefinitionId: 'manager' } }
   return view
 }
 
 export const buildMultiTeamContext = (view = multiTeamView()) =>
-  new AgentRunCollaborationContext({ hostRunId: view.execution_tree.host.agentRunId, view })
+  new AgentRunCollaborationContext({ runId: view.execution_tree.agent.agentRunId, view })

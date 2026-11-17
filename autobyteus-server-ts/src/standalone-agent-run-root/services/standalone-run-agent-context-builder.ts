@@ -16,24 +16,24 @@ import type { DelegationIndex } from "../../agent-collaboration/delegation/deleg
 
 
 /**
- * Builds the host member context of an eligible standalone run; its root passes it to the host's
+ * Builds the agent member context of an eligible standalone run; its root passes it to the agent's
  * activation. Its role, and an org copy's handoff rules and instruction, come from the run's collaboration tree. Tool calls resolve the run's active root at call time, so a root that is replaced
  * (after a fail-stop) or stopped answers for itself.
  */
-export class StandaloneHostMemberContextBuilder {
+export class StandaloneRunAgentContextBuilder {
   constructor(private readonly options: Readonly<{
     definitions: Pick<AgentDefinitionService, "getAgentDefinitionById">;
     /** The run's collaboration tree: a task agent when delegated, and what an org copy inherits (SR-058, SR-060). */
     tree: Pick<DelegationIndex, "collaborationTreeOf">;
     orgInstruction(orgDefinitionId: string): Promise<string | null>;
-    getActiveRoot(hostRunId: string): StandaloneAgentRunRoot | null;
-    readStoredHostAddress(hostRunId: string): Promise<AgentTeamAddress | null>;
+    getActiveRoot(agentRunId: string): StandaloneAgentRunRoot | null;
+    readStoredAgentAddress(agentRunId: string): Promise<AgentTeamAddress | null>;
   }>) {}
 
-  /** The host address: the package's (stable once created), else derived from the definition name. */
-  async resolveHostAddress(metadata: AgentRunMetadata): Promise<AgentTeamAddress> {
-    const stored = this.options.getActiveRoot(metadata.runId)?.hostAddress
-      ?? await this.options.readStoredHostAddress(metadata.runId);
+  /** The agent's address: the package's (stable once created), else derived from the definition name. */
+  async resolveAgentAddress(metadata: AgentRunMetadata): Promise<AgentTeamAddress> {
+    const stored = this.options.getActiveRoot(metadata.runId)?.agentAddress
+      ?? await this.options.readStoredAgentAddress(metadata.runId);
     if (stored) return stored;
     const definition = await this.options.definitions.getAgentDefinitionById(metadata.agentDefinitionId).catch(() => null);
     return createAgentTeamAddress([collaboratorSegmentForName(definition?.name ?? metadata.agentDefinitionId)]);
@@ -43,7 +43,7 @@ export class StandaloneHostMemberContextBuilder {
     const root = createAgentRootExecutionIdentity(metadata.runId);
     const identity = createCollaborationMemberExecutionIdentity({
       root,
-      memberAddress: await this.resolveHostAddress(metadata),
+      memberAddress: await this.resolveAgentAddress(metadata),
       agentRunId: metadata.runId,
     });
     // SR-058: a delegated run's agent is a task agent; a copy of an org's configured agent keeps its rules and instruction.

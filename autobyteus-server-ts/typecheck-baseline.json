@@ -260,7 +260,7 @@
   "tests/unit/projects/project-task-keys-and-dependencies.test.ts": 1,
   "tests/unit/projects/task-execution-resource-reactivation.test.ts": 1,
   "tests/unit/projects/task-execution-several-open-tasks.test.ts": 1,
-  "tests/unit/remote-collaboration/paired-agent-access.test.ts": 2,
+  "tests/unit/remote-collaboration/run-agent-access.test.ts": 2,
   "tests/unit/remote-collaboration/peer-gateway.test.ts": 1,
   "tests/unit/remote-collaboration/remote-message-receiver.test.ts": 2,
   "tests/unit/remote-collaboration/remote-message-view-sequence.test.ts": 2,

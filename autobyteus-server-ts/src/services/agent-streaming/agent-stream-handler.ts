@@ -501,7 +501,7 @@ export const getAgentStreamHandler = (): AgentStreamHandler => {
       getAgentStreamBroadcaster(),
       getAgentRunCommandCoordinator(),
       getAgentRunStatusProjectionService(),
-      { registrations: getActiveCollaborationRootDirectory(), roots: { getActive: (hostRunId) => getStandaloneAgentRunRootManager().getActive(hostRunId) } },
+      { registrations: getActiveCollaborationRootDirectory(), roots: { getActive: (agentRunId) => getStandaloneAgentRunRootManager().getActive(agentRunId) } },
     );
   }
   return cachedAgentStreamHandler;

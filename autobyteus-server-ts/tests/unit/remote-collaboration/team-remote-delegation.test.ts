@@ -109,10 +109,10 @@ const buildNodeA = async (network: Network, memoryDir?: string, metadata = new M
     memoryDir: dir, activeRootDirectory: new ActiveCollaborationRootDirectory(),
     definitions: { getAgentDefinitionById: async (id) => new AgentDefinition({ id, name: "Assistant", description: "x", instructions: "x" }) },
     orgInstruction: async () => null,
-    host: {
+    agentServices: {
       getActiveRun: () => (hostActive ? host as never : null),
-      activateHost: vi.fn(async () => { hostActive = true; return { run: host as never, metadata: metadata.get(DELEGATOR)! }; }),
-      terminateHost: vi.fn(async () => { hostActive = false; return { outcome: "terminated" as const, runtimeKind: null }; }),
+      activateRunAgent: vi.fn(async () => { hostActive = true; return { run: host as never, metadata: metadata.get(DELEGATOR)! }; }),
+      terminateRunAgent: vi.fn(async () => { hostActive = false; return { outcome: "terminated" as const, runtimeKind: null }; }),
       readMetadata: async (runId) => metadata.get(runId) ?? null,
     },
     rootDependencies: {
@@ -419,7 +419,7 @@ describe("DS-004: a peer-started Team root's quiet idle shutdown (AR-301)", () =
     const { b, root } = await started();
     // autobyteus-278 F-004: a peer's observation follows the Team across its idle shutdown; it does not end.
     const onEnded = vi.fn();
-    const observation = await b.teamRuns.pairedAgents.observePairedAgents("studio_team_b", () => undefined, onEnded);
+    const observation = await b.teamRuns.runAgents.observeRunAgents("studio_team_b", () => undefined, onEnded);
     await vi.advanceTimersByTimeAsync(grace() - 50);
     expect(root.isActive()).toBe(true);
     await vi.advanceTimersByTimeAsync(100);

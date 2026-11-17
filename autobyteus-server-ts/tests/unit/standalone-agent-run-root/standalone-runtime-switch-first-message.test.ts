@@ -22,7 +22,7 @@ const PENDING = {
 };
 
 describe("the first message after a saved agent runtime switch, through the real root and host handle", () => {
-  it("builds the host member context, then the lifecycle makes the switch with it: fresh session, marker, commit without the pending field", async () => {
+  it("builds the agent member context, then the lifecycle makes the switch with it: fresh session, marker, commit without the pending field", async () => {
     const f = await buildManager();
     f.host.crash();
     const pending: AgentRunMetadata = metadata(f.memoryDir, { runtimeKind: RuntimeKind.CODEX_APP_SERVER, llmModelIdentifier: "gpt-5", platformAgentRunId: null, pendingRuntimeSwitch: PENDING });
@@ -64,13 +64,13 @@ describe("the first message after a saved agent runtime switch, through the real
       modelSelectionValidator: { validate: vi.fn() } as never,
       switching: { memory },
     });
-    f.restores.mockImplementation(async (hostRunId, input) => {
+    f.restores.mockImplementation(async (agentRunId, input) => {
       f.contexts.push(input.memberExecutionContext!);
-      const result = await lifecycle.activateHost(hostRunId, input);
+      const result = await lifecycle.activateRunAgent(agentRunId, input);
       return result as never;
     });
 
-    const root = (await f.manager.resolveRootAndEnsureHost(HOST))!;
+    const root = (await f.manager.resolveRootAndEnsureAgent(HOST))!;
 
     expect(root).toBeTruthy();
     expect(f.contexts[0]?.identity).toMatchObject({ agentRunId: HOST, memberAddress: "/research_assistant" });

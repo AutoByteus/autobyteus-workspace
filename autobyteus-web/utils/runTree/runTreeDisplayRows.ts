@@ -1,12 +1,12 @@
 import type { RunTreeRowDto } from '@autobyteus/collaboration-stream-contracts'
-import type { RunHistoryTransientExecutionRow } from '~/stores/runHistoryTypes'
+import type { RunHistoryDelegatedRunRow } from '~/stores/runHistoryTypes'
 import { AgentStatus } from '~/types/agent/AgentStatus'
 import type { TeamStatus } from '~/utils/workspaceTeamAggregateStatus'
 
 /** A tree row as the Workspaces row component shows it, with the guide lines that connect it to its siblings. */
 export type RunTreeDisplayRow = Readonly<{
   tree: RunTreeRowDto
-  row: RunHistoryTransientExecutionRow
+  row: RunHistoryDelegatedRunRow
   /** A team row's own status (its run's, computed by its root, SR-086 G-A4); null for an agent row. */
   teamStatus: TeamStatus | null
   continuingAncestorDepths: number[]
@@ -60,9 +60,9 @@ export const runTreeDisplayRows = (input: Readonly<{
     const team = isTeamRow(tree)
     const target = tree.openTarget
     const status = tree.statusIds[0] ? input.statusOf(tree, tree.statusIds[0]) : null
-    const row: RunHistoryTransientExecutionRow = {
-      kind: 'transient_execution',
-      transientKind: team ? 'task_team' : MEMBER_KINDS.has(tree.kind) ? 'task_team_child' : 'task_agent',
+    const row: RunHistoryDelegatedRunRow = {
+      kind: 'delegated_run',
+      delegatedRunKind: team ? 'task_team' : MEMBER_KINDS.has(tree.kind) ? 'task_team_child' : 'task_agent',
       rowKey: tree.key,
       teamRunId: input.topRunId,
       memberAddress: tree.address ?? '',

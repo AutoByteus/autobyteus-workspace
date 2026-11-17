@@ -6,7 +6,7 @@ import { openPeerRunObservation } from "../../../../src/remote-collaboration/cha
 import type { PeerNode } from "../../../../src/remote-collaboration/domain/peer-node.js";
 import type { RemoteRootDirectory } from "../../../../src/remote-collaboration/inbound/remote-message-receiver.js";
 import { RemoteRunViewProvider } from "../../../../src/remote-collaboration/inbound/remote-run-view-provider.js";
-import type { PairedAgentAccess, PairedAgentPresentationListener } from "../../../../src/agent-collaboration/execution/remote/paired-agent-access.js";
+import type { RunAgentAccess, RunAgentPresentationListener } from "../../../../src/agent-collaboration/execution/remote/run-agent-access.js";
 
 const services = vi.hoisted(() => ({ current: null as unknown }));
 vi.mock("../../../../src/remote-collaboration/remote-collaboration-services.js", () => ({
@@ -38,18 +38,18 @@ afterEach(async () => { await app?.close(); app = null; services.current = null;
 
 /** B: a real gateway and provider over a live Agent run whose subscription emits a frame synchronously. */
 const startNodeB = async () => {
-  let emit: PairedAgentPresentationListener | null = null;
+  let emit: RunAgentPresentationListener | null = null;
   const observation = { close: vi.fn() };
-  const access: PairedAgentAccess = {
-    observePairedAgents: vi.fn(async (_runId: string, onPresentation: PairedAgentPresentationListener) => {
+  const access: RunAgentAccess = {
+    observeRunAgents: vi.fn(async (_runId: string, onPresentation: RunAgentPresentationListener) => {
       onPresentation("publisher-run", inputState);
       emit = onPresentation;
       return observation;
     }),
     executeOwnerCommand: vi.fn(async () => ({ accepted: true })),
-    pairedAgentStatuses: () => [],
+    runAgentStatuses: () => [],
   };
-  const roots = { storedLinkCheck: async () => "proceed" as const, pairedAgents: () => access } as unknown as RemoteRootDirectory;
+  const roots = { storedLinkCheck: async () => "proceed" as const, runAgents: () => access } as unknown as RemoteRootDirectory;
   const provider = new RemoteRunViewProvider(roots, { runTitle: async () => null, runLaunches: async () => [], agentProjection: async () => { throw new Error("unused"); } });
   services.current = { gateway: new PeerGateway({
     ownNodeId: async () => SELF, capability: { isEnabled: () => true },

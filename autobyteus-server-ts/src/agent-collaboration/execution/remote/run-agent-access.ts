@@ -3,32 +3,32 @@ import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-u
 import type { AgentOperationResult } from "../../../agent-execution/domain/agent-operation-result.js";
 import type { RemoteOwnerCommand } from "./remote-run-channel.js";
 
-/** One presentation message of one of the run's own agents (an Agent's host, a Team's members). */
-export type PairedAgentPresentationListener = (agentRunId: string, message: AgentPresentationMessage) => void;
-export type PairedAgentObservation = Readonly<{ close(): void }>;
+/** One presentation message of one of the run's own agents (an Agent run's own agent, a Team's members). */
+export type RunAgentPresentationListener = (agentRunId: string, message: AgentPresentationMessage) => void;
+export type RunAgentObservation = Readonly<{ close(): void }>;
 /** The node whose owner sends a command, by this node's name for it (the peer's registered name). */
 export type RemoteOwner = Readonly<{ nodeName: string }>;
-export type PairedAgentStatus = Readonly<{ agentRunId: string; status: RemoteAgentStatus }>;
+export type RunAgentStatusEntry = Readonly<{ agentRunId: string; status: RemoteAgentStatus }>;
 /** A paired agent's status as a presentation message: its current status when followed, or `offline` when its run ends. */
-export const pairedAgentStatusFrame = (status: string): AgentPresentationMessage => ({ type: "AGENT_STATUS", payload: {
+export const runAgentStatusFrame = (status: string): AgentPresentationMessage => ({ type: "AGENT_STATUS", payload: {
   status, trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null,
 } } as AgentPresentationMessage);
 
 /**
  * autobyteus-278 (AR-401): a run a peer started, as the node that runs it serves the peer's owner. Each root kind's
- * manager offers it from where that kind keeps its agents (a standalone run's host, a Team root's members); only
+ * manager offers it from where that kind keeps its agents (a standalone run's own agent, a Team root's members); only
  * the agents the back-link pairs with are observed or commanded. The link check precedes every call.
  */
-export type PairedAgentAccess = Readonly<{
+export type RunAgentAccess = Readonly<{
   /**
-   * Follows the run across host restores or root restores (idle shutdown) until closed, or until the run ends by stop,
+   * Follows the run across agent restores or root restores (idle shutdown) until closed, or until the run ends by stop,
    * terminate or delete through any path: then `onEnded` runs once and the observation is closed (DS-006). `null` when
    * there is no such run.
    */
-  observePairedAgents(runId: string, onPresentation: PairedAgentPresentationListener, onEnded: () => void): Promise<PairedAgentObservation | null>;
+  observeRunAgents(runId: string, onPresentation: RunAgentPresentationListener, onEnded: () => void): Promise<RunAgentObservation | null>;
   executeOwnerCommand(runId: string, agentRunId: string, command: RemoteOwnerCommand, owner: RemoteOwner): Promise<AgentOperationResult>;
   /** The live statuses of the paired agents; an agent that is not live is not listed (offline). */
-  pairedAgentStatuses(runId: string): readonly PairedAgentStatus[];
+  runAgentStatuses(runId: string): readonly RunAgentStatusEntry[];
 }>;
 
 /**

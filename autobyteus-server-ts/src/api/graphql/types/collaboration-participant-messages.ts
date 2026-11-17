@@ -25,7 +25,7 @@ const readRunRecords = async (rootKind: CollaborationRootKind, rootRunId: string
     case "agent": {
       // A standalone run's one agent is the run itself; every other agent of its messages is of another run.
       const records = await getStandaloneAgentRunRootManager().getCollaborationRecordsSnapshot(rootRunId);
-      return { messages: records.messages.messages, isOwnAgent: (id) => id === records.host.agentRunId };
+      return { messages: records.messages.messages, isOwnAgent: (id) => id === records.agent.agentRunId };
     }
     case "agent_team": {
       const records = await getTeamCommunicationProjectionService().getCollaborationRecordsSnapshot(rootRunId);

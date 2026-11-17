@@ -1,7 +1,7 @@
 import { mount } from '@vue/test-utils'
 import { createPinia, setActivePinia } from 'pinia'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import type { RunHistoryTeamExecutionRow, RunHistoryTransientExecutionRow, TeamTreeNode } from '~/stores/runHistoryTypes'
+import type { RunHistoryTeamExecutionRow, RunHistoryDelegatedRunRow, TeamTreeNode } from '~/stores/runHistoryTypes'
 import type { TaskWorkerRef, TaskWorkerTask } from '~/types/project'
 import { AgentStatus } from '~/types/agent/AgentStatus'
 
@@ -19,11 +19,11 @@ import { useTaskLocatorStore } from '~/stores/taskLocatorStore'
 import { useRunTreeStore } from '~/stores/runTreeStore'
 import type { RunTreeRowDto } from '@autobyteus/collaboration-stream-contracts'
 
-const transient = (transientKind: RunHistoryTransientExecutionRow['transientKind'], id: string, depth = 0): RunHistoryTransientExecutionRow => ({
-  kind: 'transient_execution', transientKind, rowKey: `${transientKind}:${id}`, teamRunId: 'host-run', memberAddress: `/${id}`,
-  agentRunId: transientKind === 'task_team' ? null : id, teamRunIdForNode: transientKind === 'task_team' ? id : null,
-  memberKind: transientKind === 'task_team' ? 'agent_team' : 'agent', displayName: id, currentStatus: AgentStatus.Idle,
-  delegatedBy: null, depth, hasChildren: transientKind === 'task_team',
+const transient = (delegatedRunKind: RunHistoryDelegatedRunRow['delegatedRunKind'], id: string, depth = 0): RunHistoryDelegatedRunRow => ({
+  kind: 'delegated_run', delegatedRunKind, rowKey: `${delegatedRunKind}:${id}`, teamRunId: 'host-run', memberAddress: `/${id}`,
+  agentRunId: delegatedRunKind === 'task_team' ? null : id, teamRunIdForNode: delegatedRunKind === 'task_team' ? id : null,
+  memberKind: delegatedRunKind === 'task_team' ? 'agent_team' : 'agent', displayName: id, currentStatus: AgentStatus.Idle,
+  delegatedBy: null, depth, hasChildren: delegatedRunKind === 'task_team',
 })
 const workerRow = transient('task_agent', 'writer-run')
 const teamCopyRow = transient('task_team', 'review-team')

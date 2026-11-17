@@ -29,6 +29,6 @@ export function useAgentRunCollaborationSync(): void {
   })
 
   watch(() => host.value && `${host.value.runId}:${host.value.running}:${useWindowNodeContextStore().bindingRevision}`, () => {
-    if (host.value) collaboration.syncHost(host.value.runId, host.value.running)
+    if (host.value) collaboration.syncRun(host.value.runId, host.value.running)
   }, { immediate: true })
 }

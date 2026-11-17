@@ -74,7 +74,7 @@ export type RemoteRunLinksOptions = Readonly<{
   peerRuns(): readonly PeerRunLink[];
   /**
    * Receiving node: the back-link of a root a peer delegated to (`delegatedFrom`) and the local agents it pairs
-   * with (a standalone root's host; every member of a Team root); `null` otherwise.
+   * with (a standalone run's own agent; every member of a Team root); `null` otherwise.
    */
   backLink?: Readonly<{ pairedAgentRunIds(): readonly string[]; delegatedFrom: PeerDelegatedFrom }> | null;
   channel?(): RemoteRunChannel | null;

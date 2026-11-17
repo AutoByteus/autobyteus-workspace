@@ -1501,7 +1501,7 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     const liveSeen = opened.liveSince(beforeLive, "RC31-LIVE-ANSWER");
 
     // DS-003: the stored conversation of the remote agent, read through alpha.
-    const projected = JSON.stringify((await alpha.gql(`query($h:String!,$a:String!,$r:String!){agentRunCollaborationMemberProjection(hostRunId:$h,memberAddress:$a,agentRunId:$r){conversation}}`,
+    const projected = JSON.stringify((await alpha.gql(`query($h:String!,$a:String!,$r:String!){agentRunCollaborationMemberProjection(runId:$h,memberAddress:$a,agentRunId:$r){conversation}}`,
       { h: delegator.runId, a: "/publisher", r: r9 })).agentRunCollaborationMemberProjection?.conversation ?? null);
     expect(projected).toContain("TREE-PACKET");
     expect(projected).toContain("LIVE-FROM-BETA-OWNER");
@@ -1520,7 +1520,7 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
       `the owner's heading, then the message: ${JSON.stringify(ownerEntries[0]!.content)}`).toBe(true);
     const ownerEntry = ownerEntries[0];
     await until(() => opened.liveSince(beforeOwner, "RC31-OWNER-ANSWER"), "the owner's answer live on alpha's /ws/peer-run", 15_000);
-    const reread = JSON.stringify((await alpha.gql(`query($h:String!,$a:String!,$r:String!){agentRunCollaborationMemberProjection(hostRunId:$h,memberAddress:$a,agentRunId:$r){conversation}}`,
+    const reread = JSON.stringify((await alpha.gql(`query($h:String!,$a:String!,$r:String!){agentRunCollaborationMemberProjection(runId:$h,memberAddress:$a,agentRunId:$r){conversation}}`,
       { h: delegator.runId, a: "/publisher", r: r9 })).agentRunCollaborationMemberProjection?.conversation ?? null);
     expect(reread.split("OWNER-FROM-ALPHA").length - 1, "N-405: one user message in alpha's view of it").toBe(1);
     const logsAfter = await Promise.all([alpha, beta].map(async (node) => (await walkFiles(node.memory)).filter((file) => /communication_messages.*\.jsonl$/.test(file)).map((file) => fs.readFileSync(file, "utf8")).join("\n")));
@@ -1679,7 +1679,7 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     const interrupted = await ackOf(soloView, rootCommand(soloView, soloRoot, "INTERRUPT_GENERATION", a1));
     expect(interrupted, JSON.stringify(interrupted)).toMatchObject({ command_type: "INTERRUPT_GENERATION", state: "accepted" });
     // The stored conversation, read through alpha with the delegator stopped.
-    const stored = JSON.stringify((await alpha.gql(`query($h:String!,$a:String!,$r:String!){agentRunCollaborationMemberProjection(hostRunId:$h,memberAddress:$a,agentRunId:$r){conversation}}`,
+    const stored = JSON.stringify((await alpha.gql(`query($h:String!,$a:String!,$r:String!){agentRunCollaborationMemberProjection(runId:$h,memberAddress:$a,agentRunId:$r){conversation}}`,
       { h: solo.runId, a: "/publisher", r: a1 })).agentRunCollaborationMemberProjection?.conversation ?? null);
     expect(stored).toContain("A16-OWNER-SOLO");
     // The owner's message to the peer Team's coordinator.
@@ -2419,7 +2419,7 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
       expect(unreachableRow.peer, JSON.stringify(unreachableRow)).toMatchObject({ nodeName: LABEL.beta });
       expect((unreachableRow.peer as Rec).reachable, "not reachable (false, or no answer yet)").not.toBe(true);
       const projectionStarted = Date.now();
-      const read = await alpha.gqlRaw(`query($h:String!,$a:String!,$r:String!){agentRunCollaborationMemberProjection(hostRunId:$h,memberAddress:$a,agentRunId:$r){conversation}}`,
+      const read = await alpha.gqlRaw(`query($h:String!,$a:String!,$r:String!){agentRunCollaborationMemberProjection(runId:$h,memberAddress:$a,agentRunId:$r){conversation}}`,
         { h: delegatorId, a: "/publisher", r: r9 });
       projectionError = { errors: read.errors?.map((error) => error.message), data: read.data, elapsedMs: Date.now() - projectionStarted };
       expect(Date.now() - projectionStarted, "the read answers within the bound").toBeLessThan(25_000);

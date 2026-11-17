@@ -2,32 +2,32 @@ import { localizationRuntime } from '~/localization/runtime/localizationRuntime'
 import { mount } from '@vue/test-utils';
 import { createPinia, setActivePinia } from 'pinia';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import WorkspaceTransientExecutionRow from '../WorkspaceTransientExecutionRow.vue';
-import type { RunHistoryTransientExecutionRow } from '~/stores/runHistoryTypes';
+import WorkspaceDelegatedRunRow from '../WorkspaceDelegatedRunRow.vue';
+import type { RunHistoryDelegatedRunRow } from '~/stores/runHistoryTypes';
 import type { TaskWorkerTask } from '~/types/project';
 import { AgentStatus } from '~/types/agent/AgentStatus';
 
 vi.mock('@iconify/vue', () => ({ Icon: { props: ['icon'], template: '<span :data-icon="icon" />' } }));
 
-const row = (overrides: Partial<RunHistoryTransientExecutionRow> = {}): RunHistoryTransientExecutionRow => ({
-  kind: 'transient_execution', transientKind: 'task_agent', rowKey: 'agent:worker-run', teamRunId: 'host-run',
+const row = (overrides: Partial<RunHistoryDelegatedRunRow> = {}): RunHistoryDelegatedRunRow => ({
+  kind: 'delegated_run', delegatedRunKind: 'task_agent', rowKey: 'agent:worker-run', teamRunId: 'host-run',
   memberAddress: '/release_notes_writer', agentRunId: 'worker-run', teamRunIdForNode: null, memberKind: 'agent',
   displayName: 'release notes writer', currentStatus: AgentStatus.Idle, delegatedBy: null, depth: 0, hasChildren: false,
   ...overrides,
 });
 const teamRow = () => row({
-  transientKind: 'task_team', rowKey: 'team:review-team', agentRunId: null, teamRunIdForNode: 'review-team',
+  delegatedRunKind: 'task_team', rowKey: 'team:review-team', agentRunId: null, teamRunIdForNode: 'review-team',
   memberAddress: '/docs_review_team', memberKind: 'agent_team', displayName: 'docs review team', currentStatus: null, hasChildren: true,
 });
 // A Temp task (no key): the summary layout and names below are the same for Project Tasks, which add the key first.
 const task: TaskWorkerTask = { taskId: 'task-1', projectId: null, title: null, description: 'Ship the summary line\nwith details', status: 'IN_PROGRESS' };
 // A Project Task's line is its title, not its description's first line (autobyteus-260 REQ-006).
 const projectTask: TaskWorkerTask = { ...task, projectId: 'p1', title: 'Release the desktop app' };
-const mountRow = (props: Record<string, unknown>) => mount(WorkspaceTransientExecutionRow, { props: { row: row(), ...props } as any });
+const mountRow = (props: Record<string, unknown>) => mount(WorkspaceDelegatedRunRow, { props: { row: row(), ...props } as any });
 const summary = (wrapper: ReturnType<typeof mountRow>) => wrapper.get('[data-test="workspace-task-worker-task-summary"]');
 
 /** delegated-copy-task-locator REQ-001..003, REQ-010, QR-003. */
-describe('WorkspaceTransientExecutionRow Task summary', () => {
+describe('WorkspaceDelegatedRunRow Task summary', () => {
   beforeEach(() => { setActivePinia(createPinia()); });
   afterEach(async () => { await localizationRuntime.setPreference('en'); });
 
@@ -57,12 +57,12 @@ describe('WorkspaceTransientExecutionRow Task summary', () => {
   });
 
   it('keeps one line without a Task, and moves the elbow and chevron to the name line with one', () => {
-    const plain = mount(WorkspaceTransientExecutionRow, { props: { row: teamRow(), hasChildren: true } });
+    const plain = mount(WorkspaceDelegatedRunRow, { props: { row: teamRow(), hasChildren: true } });
     expect(plain.find('[data-test="workspace-task-worker-task-summary"]').exists()).toBe(false);
     expect(plain.get('.hierarchy-current-branch').classes()).not.toContain('anchor-name-line');
     expect(plain.get('[data-test="workspace-team-transient-disclosure"]').classes()).not.toContain('self-start');
 
-    const withTask = mount(WorkspaceTransientExecutionRow, { props: { row: teamRow(), hasChildren: true, task } });
+    const withTask = mount(WorkspaceDelegatedRunRow, { props: { row: teamRow(), hasChildren: true, task } });
     expect(withTask.get('.hierarchy-current-branch').classes()).toContain('anchor-name-line');
     expect(withTask.get('[data-test="workspace-team-transient-disclosure"]').classes()).toEqual(expect.arrayContaining(['mt-[0.4375rem]', 'self-start']));
     // Regular weight even on a semibold team row.
@@ -70,7 +70,7 @@ describe('WorkspaceTransientExecutionRow Task summary', () => {
   });
 
   it('click, Enter or Space on the summary locates the Task and never opens, selects or toggles the row (AC-004, AC-014)', async () => {
-    const wrapper = mount(WorkspaceTransientExecutionRow, { props: { row: teamRow(), hasChildren: true, task } });
+    const wrapper = mount(WorkspaceDelegatedRunRow, { props: { row: teamRow(), hasChildren: true, task } });
     const button = summary(wrapper);
     await button.trigger('click');
     await button.trigger('keydown', { key: 'Enter' });

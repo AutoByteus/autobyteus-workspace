@@ -21,7 +21,7 @@ import { computed } from 'vue'
 import { Icon } from '@iconify/vue'
 import { useLocalization } from '~/composables/useLocalization'
 import { useDelegatedLaunchDraftStore } from '~/stores/delegatedLaunchDraftStore'
-import { isDelegatedCopyLive } from '~/services/runConfigEditing/delegatedCopyLiveness'
+import { isDelegatedRunLive } from '~/services/runConfigEditing/delegatedRunLiveness'
 import type { DelegatedReference, DelegatedRoot } from '~/services/runConfigEditing/delegatedLaunchSelectionClient'
 
 /** DS-002: stops one delegated copy (and the copies it started) of a live run; it stays restorable. */
@@ -30,7 +30,7 @@ const props = defineProps<{ root: DelegatedRoot; reference: DelegatedReference; 
 const { t } = useLocalization()
 const store = useDelegatedLaunchDraftStore()
 const stopping = computed(() => store.isStopping(props.root, props.reference))
-const visible = computed(() => stopping.value || isDelegatedCopyLive(props.root, props.reference))
+const visible = computed(() => stopping.value || isDelegatedRunLive(props.root, props.reference))
 const STOP_LABEL_KEY = { idle: 'runSettings.delegated.stop', stopping: 'runSettings.delegated.stopping' } as const
 const label = computed(() => t(STOP_LABEL_KEY[stopping.value ? 'stopping' : 'idle'], { name: props.name }))
 // autobyteus-278: the row shows when a stop failed (a remote copy's node did not answer).

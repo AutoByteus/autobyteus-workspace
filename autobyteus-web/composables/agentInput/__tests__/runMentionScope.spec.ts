@@ -10,10 +10,10 @@ describe('resolveRunMentionScope', () => {
   })
 
   it('a task child of an Agent run asks for its own candidates, under the host root (REQ-001)', () => {
-    expect(resolveRunMentionScope({ ...core, kind: 'agent_run_task_team_member', host: { hostRunId: 'pm-run' },
+    expect(resolveRunMentionScope({ ...core, kind: 'agent_run_task_team_member', viewRun: { runId: 'pm-run' },
       address: '/software_engineering_team/code_reviewer', agentRunId: 'reviewer-run' } as never))
       .toEqual({ rootKind: 'agent', rootRunId: 'pm-run', focusedAgentRunId: 'reviewer-run', focusedName: 'code reviewer' })
-    expect(resolveRunMentionScope({ ...core, kind: 'agent_run_task_agent', host: { hostRunId: 'pm-run' },
+    expect(resolveRunMentionScope({ ...core, kind: 'agent_run_task_agent', viewRun: { runId: 'pm-run' },
       address: '/code_reviewer', agentRunId: 'reviewer-copy' } as never))
       .toMatchObject({ rootKind: 'agent', rootRunId: 'pm-run', focusedAgentRunId: 'reviewer-copy' })
   })

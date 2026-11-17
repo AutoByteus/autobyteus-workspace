@@ -28,7 +28,7 @@ import { NO_PART_CLOSURE, TaskPartClosure, type PartClosureResult } from "./task
 import { TaskAssignmentEligibility, terminalAssignment } from "./task-assignment-eligibility.js";
 import { TaskReferences } from "./task-references.js";
 import { readDelegatedTaskIdentity } from "./task-identity-reader.js";
-import { projectFolderForNewCopy } from "./project-new-copy-folder.js";
+import { projectFolderForNewDelegatedRun } from "./project-new-delegated-run-folder.js";
 import { bestEffortContextCleanup, TaskContextOwnership } from "./task-context-ownership.js";
 import type { ProjectTaskSearchCleanup } from "../search/project-task-search-service.js";
 import { resolveContextFileSizeLimits } from "../../config/context-file-size-limit-settings.js";
@@ -281,7 +281,7 @@ export class ProjectTaskService implements TaskExecutionResourcePort {
     return { taskId: task.taskId, taskReference: task.taskKey, projectId, title: task.title, description: task.description, comments: task.comments.map((comment) => comment.text), referenceFiles };
   }
   describeTask(taskId: string) { return readDelegatedTaskIdentity(this.references, this.adHocTasks, taskId); }
-  projectFolderForNewCopy(projectId: string): Promise<string | null> { return projectFolderForNewCopy(this.store, projectId); }
+  projectFolderForNewDelegatedRun(projectId: string): Promise<string | null> { return projectFolderForNewDelegatedRun(this.store, projectId); }
   async linkNewTaskExecution(input: NewTaskExecutionLinkInput): Promise<{ taskId: string }> {
     if (input.role !== "assigned") return { taskId: await this.resources.linkInherited(input) };
     if (input.adHocTask) return { taskId: await this.linkAdHocTask(input, input.adHocTask) };
@@ -314,7 +314,7 @@ export class ProjectTaskService implements TaskExecutionResourcePort {
   async reopenAssignment(input: TaskExecutionReopenInput): Promise<TaskExecutionReopenResult> {
     await this.reopenLocation(input.execution);
     // The copy's current Task is read under the copy's ordering (an assignment of the copy cannot move it meanwhile).
-    return this.resources.serializeCopyInTask(input.execution, () => this.resources.locationOf(input.execution)?.taskId ?? "", async () => {
+    return this.resources.serializeDelegatedRunInTask(input.execution, () => this.resources.locationOf(input.execution)?.taskId ?? "", async () => {
       const location = await this.reopenLocation(input.execution);
       this.resources.assertReopenable(location, input.execution, input.requestedBy);
       await this.eligibility.assertReopenTaskNotTerminal(location, input.execution);
@@ -333,7 +333,7 @@ export class ProjectTaskService implements TaskExecutionResourcePort {
   async assignExistingTaskExecution(input: ExistingTaskExecutionAssignInput): Promise<void> {
     await this.resources.load();
     const { projectId } = await this.references.byId(input.taskId);
-    await this.resources.serializeCopyInTask(input.execution, () => input.taskId, async () => {
+    await this.resources.serializeDelegatedRunInTask(input.execution, () => input.taskId, async () => {
       this.resources.assertAllReadable();
       const task = await this.eligibility.assertAssignableTask(projectId, input.taskId);
       this.eligibility.assertCopyAssignable({ execution: input.execution, requestedBy: input.delegatedFrom.delegatorAgentRunId, taskId: input.taskId,

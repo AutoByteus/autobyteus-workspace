@@ -121,7 +121,7 @@ describe("model calls, context readings and revisions in the run fold (D-4, D-6,
     } });
     const child = fold(null, resolver.resolve(grokPayload)).record!;
     expect(child.latestPromptTokens).toBe(2_160n);
-    const summary = buildStandaloneRunTokenUsageSummaryFromRecords({ hostRunId: "codex-run", records: [host, child] });
+    const summary = buildStandaloneRunTokenUsageSummaryFromRecords({ agentRunId: "codex-run", records: [host, child] });
     expect(summary.revision).toBe(3);
     expect(summary.usage_report_count).toBe(3);
     expect(summary.latest_prompt_tokens).toBe(92_942);

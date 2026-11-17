@@ -10,7 +10,7 @@ import type {
 import type { AvailableCollaborator } from "../../agent-collaboration/collaborators/collaborator-candidate-policy.js";
 import { getCollaboratorAdmission } from "../../agent-collaboration/collaborators/collaborator-definition-catalog.js";
 import type { AgentLaunchConfiguration } from "../../agent-team-execution/domain/team-run-config.js";
-import type { StandaloneRootHost } from "../domain/standalone-root-host.js";
+import type { StandaloneRunAgent } from "../domain/standalone-run-agent.js";
 import type { AgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
 import type { DelegationPlacement } from "../../agent-collaboration/collaborators/catalog-delegation.js";
 
@@ -19,22 +19,22 @@ import type { DelegationPlacement } from "../../agent-collaboration/collaborator
  * own (a run never delegates to its own definition, SR-037), and what it reaches by address step 2 (SR-059).
  */
 export const standaloneRootCollaboratorPortFor = (
-  host: StandaloneRootHost,
+  agent: StandaloneRunAgent,
   rootLaunchConfiguration: AgentLaunchConfiguration,
   viewerAgentRunId: string,
   reached: ReachedPlacements,
 ): CollaboratorRootPort => {
-  const hostDefinition = Object.freeze({ kind: "agent" as const, definitionId: host.agentDefinitionId });
-  const ownDefinition = viewerAgentRunId === host.agentRunId ? hostDefinition : null;
+  const agentDefinition = Object.freeze({ kind: "agent" as const, definitionId: agent.agentDefinitionId });
+  const ownDefinition = viewerAgentRunId === agent.agentRunId ? agentDefinition : null;
   return Object.freeze({
     isApplicationBound: false,
     launchBase: () => Object.freeze({ kind: "inherited" as const, launch: rootLaunchConfiguration }),
     ownDefinition: () => ownDefinition,
     inRunPlacementsByDefinition: async () => buildInRunPlacements({
-      runAgent: { ref: hostDefinition, address: host.address },
+      runAgent: { ref: agentDefinition, address: agent.address },
       configured: [], configuredStep: 3, reached: await reached(),
     }),
-    addressesInUse: async () => addressesInUseOf([host.address], await reached()),
+    addressesInUse: async () => addressesInUseOf([agent.address], await reached()),
   });
 };
 
@@ -46,9 +46,9 @@ export const standaloneRootCollaboratorPortFor = (
 export class StandaloneRootCollaborators {
   constructor(private readonly options: Readonly<{
     admission?: CollaboratorAdmission;
-    /** The host run's own settings, as saved now; catalog copies snapshot them (REQ-004). */
+    /** The run's own settings, as saved now; catalog copies snapshot them (REQ-004). */
     inheritedLaunch(): AgentLaunchConfiguration;
-    host: StandaloneRootHost;
+    agent: StandaloneRunAgent;
     /** What the run reaches by address step 2 (SR-059). */
     reached: ReachedPlacements;
     /** A configured placement step 2 reaches at an address, with its snapshot (SR-059). */
@@ -78,6 +78,6 @@ export class StandaloneRootCollaborators {
 
   /** The root's catalog facts as seen by one agent of the run. */
   portFor(viewerAgentRunId: string): CollaboratorRootPort {
-    return standaloneRootCollaboratorPortFor(this.options.host, this.options.inheritedLaunch(), viewerAgentRunId, this.options.reached);
+    return standaloneRootCollaboratorPortFor(this.options.agent, this.options.inheritedLaunch(), viewerAgentRunId, this.options.reached);
   }
 }

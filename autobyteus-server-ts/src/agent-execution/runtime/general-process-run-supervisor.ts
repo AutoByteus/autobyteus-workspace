@@ -261,11 +261,11 @@ export class GeneralProcessRunSupervisor {
         memoryDir,
         definitions: input.agentDefinitionService,
         orgInstruction: async (orgDefinitionId) => (await input.agentOrgDefinitionService.getDefinitionById(orgDefinitionId))?.instructions?.trim() || null,
-        host: {
-          getActiveRun: (hostRunId) => activeAgentRuns.getActiveRun(hostRunId),
-          activateHost: (hostRunId, activation) => lifecycleService.activateHost(hostRunId, activation),
-          terminateHost: (hostRunId) => lifecycleService.terminateHost(hostRunId),
-          readMetadata: (hostRunId) => metadataService.readMetadata(hostRunId),
+        agentServices: {
+          getActiveRun: (agentRunId) => activeAgentRuns.getActiveRun(agentRunId),
+          activateRunAgent: (agentRunId, activation) => lifecycleService.activateRunAgent(agentRunId, activation),
+          terminateRunAgent: (agentRunId) => lifecycleService.terminateRunAgent(agentRunId),
+          readMetadata: (agentRunId) => metadataService.readMetadata(agentRunId),
         },
         rootDependencies: {
           taskRecords: input.taskRecords,

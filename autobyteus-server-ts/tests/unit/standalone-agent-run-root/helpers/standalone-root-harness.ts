@@ -111,10 +111,10 @@ export const buildManager = async (taskExecutionResources: InMemoryTaskExecution
     activeRootDirectory: directory,
     definitions: { getAgentDefinitionById: (id) => catalog.getAgentDefinition(id) },
     orgInstruction: async () => null,
-    host: {
+    agentServices: {
       getActiveRun: () => (host.run.isActive() ? host.run as never : null),
-      activateHost: restores,
-      terminateHost: vi.fn(async () => {
+      activateRunAgent: restores,
+      terminateRunAgent: vi.fn(async () => {
         await heldTermination;
         const wasActive = host.run.isActive();
         host.crash();
@@ -124,10 +124,10 @@ export const buildManager = async (taskExecutionResources: InMemoryTaskExecution
     },
     rootDependencies: { taskRecords: taskExecutionResources, delegationIndex, viewStreams: testViewStreams(), collaboratorAdmission: createCollaboratorAdmission(catalog, runnable, allAvailable) },
   });
-  const hostIdentity = createCollaborationMemberExecutionIdentity({
+  const agentIdentity = createCollaborationMemberExecutionIdentity({
     root: createAgentRootExecutionIdentity(HOST), memberAddress: "/research_assistant", agentRunId: HOST,
   });
-  return { manager, memoryDir, host, restores, contexts, directory, hostIdentity, store: new StandaloneRootPackageStore(),
+  return { manager, memoryDir, host, restores, contexts, directory, agentIdentity, store: new StandaloneRootPackageStore(),
     setMetadata: (extra: Partial<AgentRunMetadata>) => { currentMetadata = metadata(memoryDir, extra); },
     /** Holds the agent's next termination until the returned release is called. */
     holdTermination: () => { let release!: () => void; heldTermination = new Promise((resolve) => { release = resolve; }); return () => { heldTermination = null; release(); }; } };

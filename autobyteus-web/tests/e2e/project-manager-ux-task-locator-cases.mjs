@@ -85,7 +85,7 @@ export const createTaskLocatorCases = (h) => {
   const ROW = '[data-test="workspace-team-transient-execution-row"]';
   const agentRow = (page, runId) => page.locator(`${ROW}[data-agent-run-id="${runId}"]:visible`);
   /** A task Team copy row of a host Agent run's tree (its row carries the copy's address, not its team run ID). */
-  const teamRow = (page, hostRunId, teamName) => page.locator(`[data-test="workspace-agent-run-task-tree"][data-run-id="${hostRunId}"] ${ROW}[data-transient-kind="task_team"][data-member-address="/${segment(teamName)}"]:visible`);
+  const teamRow = (page, runId, teamName) => page.locator(`[data-test="workspace-agent-run-task-tree"][data-run-id="${runId}"] ${ROW}[data-delegated-run-kind="task_team"][data-member-address="/${segment(teamName)}"]:visible`);
   const addressRow = (page, address) => page.locator(`${ROW}[data-member-address="${address}"]:visible`);
   const summaryIn = (row) => row.locator('[data-test="workspace-task-worker-task-summary"]');
   // task-keys-declutter (REQ-002): the tree shows only the Task summary, never a Task key.
@@ -183,14 +183,14 @@ export const createTaskLocatorCases = (h) => {
     const subWork = addressRow(page, `/${segment(s.names.verifier)}`);
     await expandRow(agentRow(page, s.workers.agent));
     await until('sub-work copy row shown', async () => (await subWork.count()) === 1, 60000);
-    const tempRow = page.locator(`${ROW}[data-member-address="/${segment(s.names.helper)}"][data-transient-kind="task_agent"]:visible`).first();
+    const tempRow = page.locator(`${ROW}[data-member-address="/${segment(s.names.helper)}"][data-delegated-run-kind="task_agent"]:visible`).first();
     s.workers.temp ??= await tempRow.getAttribute('data-agent-run-id');
     const subWorkRunId = await subWork.getAttribute('data-agent-run-id');
     await until('Temp copy summary', async () => (await summaryIn(agentRow(page, s.workers.temp)).count()) === 1, 15000);
     await sleep(1000);
 
     const listed = await page.locator(`[data-test="workspace-agent-run-task-tree"][data-run-id="${s.agentRoot.rootId}"] ${ROW}`).evaluateAll((es) => es.map((e) => ({
-      kind: e.getAttribute('data-transient-kind'), address: e.getAttribute('data-member-address'), agentRunId: e.getAttribute('data-agent-run-id'),
+      kind: e.getAttribute('data-delegated-run-kind'), address: e.getAttribute('data-member-address'), agentRunId: e.getAttribute('data-agent-run-id'),
       height: Math.round(e.getBoundingClientRect().height),
       summary: e.querySelector('[data-test="workspace-task-worker-task-summary"]')?.textContent ?? null,
       label: e.getAttribute('aria-label') })));
@@ -271,7 +271,7 @@ export const createTaskLocatorCases = (h) => {
     const { page, errors } = await newPage({ width: 1440, height: 900 });
     const details = {};
     await openHostRun(page, s);
-    if (!s.workers.temp) s.workers.temp = await page.locator(`${ROW}[data-member-address="/${segment(s.names.helper)}"][data-transient-kind="task_agent"]:visible`).first().getAttribute('data-agent-run-id');
+    if (!s.workers.temp) s.workers.temp = await page.locator(`${ROW}[data-member-address="/${segment(s.names.helper)}"][data-delegated-run-kind="task_agent"]:visible`).first().getAttribute('data-agent-run-id');
     // A manual pick of the other Project first, so the locate has to switch it; then the panel shows another tab.
     await showProjectsTab(page);
     await pickerSelect(page).selectOption(`project:${s.projectB}`);
@@ -461,7 +461,7 @@ export const createTaskLocatorCases = (h) => {
     for (const viewport of [{ width: 1440, height: 900 }, { width: 900, height: 800 }]) {
       const { page, errors } = await newPage(viewport);
       await openHostRun(page, s);
-      if (!s.workers.temp) s.workers.temp = await page.locator(`${ROW}[data-member-address="/${segment(s.names.helper)}"][data-transient-kind="task_agent"]:visible`).first().getAttribute('data-agent-run-id');
+      if (!s.workers.temp) s.workers.temp = await page.locator(`${ROW}[data-member-address="/${segment(s.names.helper)}"][data-delegated-run-kind="task_agent"]:visible`).first().getAttribute('data-agent-run-id');
       await navTo(page, 'Agents');
       await until('on the Agents page', async () => new URL(page.url()).pathname.startsWith('/agents'), 15000);
       await summaryIn(agentRow(page, s.workers.temp)).waitFor({ timeout: 15000 });

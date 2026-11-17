@@ -216,7 +216,7 @@ const emit = defineEmits<{
 const presentation = useRunSettingsPresentation()
 const { t } = useLocalization()
 const BADGE_KEY: Readonly<Record<NonNullable<RunMemberNode['badge']>, string>> = {
-  delegated_copy: 'runSettings.delegated.copy',
+  delegated_run: 'runSettings.delegated.delegatedRun',
 }
 const { noteTexts, sourceLabel, openDecision } = useRunMemberFacts(() => props.node)
 /** A copy Team: collapsed, it counts the notes below it; expanded, it shows its own notes once. */

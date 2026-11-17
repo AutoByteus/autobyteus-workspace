@@ -439,7 +439,7 @@ the Projects tab does (`isFeatureAvailableInRuntime('projects')`).
   the Task in Projects and never opens, selects or toggles the row; a row click
   still opens the copy. `aria-current` / `aria-selected` stay on the row, whose
   accessible name adds "Task: …"; the Task line's tooltip and accessible name are
-  "Show Task in Projects: …" (`workspace.history.copyTask.*`).
+  "Show Task in Projects: …" (`workspace.history.delegatedRunTask.*`).
 - **Locate** (`stores/taskLocatorStore.ts`): one request at a time, advanced
   `pending` → `revealed` → `visible` → done by the surface that owns each step.
   `locate` saves the picker choice for the Task's Project or Temp tasks (as a

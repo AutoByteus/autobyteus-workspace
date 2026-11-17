@@ -336,7 +336,7 @@ const ownerDir = (owner) => {
   if (owner.kind === 'agent_draft') return path.join(draftRoot(), 'agent-runs', owner.draftRunId, 'context_files');
   if (owner.kind === 'team_member_draft') return path.join(draftRoot(), 'team-runs', owner.teamDraftId, 'members', encodeURIComponent(owner.memberAddress), 'context_files');
   if (owner.kind === 'org_member_draft') return path.join(draftRoot(), 'agent-org-runs', owner.orgRunId, 'agent-runs', owner.agentRunId, 'context_files');
-  return path.join(draftRoot(), 'agent-collaborations', owner.hostRunId, 'agent-runs', owner.agentRunId, 'context_files');
+  return path.join(draftRoot(), 'agent-collaborations', owner.runId, 'agent-runs', owner.agentRunId, 'context_files');
 };
 /**
  * A delegated run's composer drafts under its own run (autobyteus-461 rule 2, CR-461-106): an Agent copy's under its agent run,
@@ -355,7 +355,7 @@ const universalRoutes = async () => {
     { kind: 'agent_draft', draftRunId: world.agentRoot },
     { kind: 'team_member_draft', teamDraftId: world.teamRoot, memberAddress: '/squad/reviewer' },
     { kind: 'org_member_draft', orgRunId: world.orgRoot, agentRunId: world.orgManager },
-    { kind: 'agent_collaboration_member_draft', hostRunId: world.agentRoot, agentRunId: world.agentCopy },
+    { kind: 'agent_collaboration_member_draft', runId: world.agentRoot, agentRunId: world.agentCopy },
   ];
   const perKind = [];
   for (const owner of owners) {
@@ -534,7 +534,7 @@ const childRow = (page, agentRunId) => page.locator(`[data-test="workspace-team-
 const openAgentCopy = async (page) => { await openAgentRoot(page); await childRow(page, world.agentCopy).click(); await centerTray(page).waitFor({ timeout: 30000 }); };
 const openTeamCopyMember = async (page, agentRunId = world.teamCopyCoordinator.agentRunId) => {
   await openAgentRoot(page);
-  const teamRow = page.locator('[data-test="workspace-team-transient-execution-row"][data-transient-kind="task_team"]').first();
+  const teamRow = page.locator('[data-test="workspace-team-transient-execution-row"][data-delegated-run-kind="task_team"]').first();
   await teamRow.waitFor({ state: 'visible', timeout: 30000 });
   if ((await teamRow.getAttribute('aria-expanded')) === 'false') await teamRow.locator('[data-test="workspace-team-transient-disclosure"]').click();
   await childRow(page, agentRunId).waitFor({ state: 'visible', timeout: 30000 });

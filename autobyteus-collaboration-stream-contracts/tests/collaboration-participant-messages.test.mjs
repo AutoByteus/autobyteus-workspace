@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { collaborationParticipantMessagesDtoSchema, collaborationRootKindSchema } from "../dist/index.js";
 
 const message = (overrides = {}) => ({
-  messageId: "m1", senderAgentRunId: "writer-run", receiverAgentRunId: "host-run", content: "done",
+  messageId: "m1", senderAgentRunId: "writer-run", receiverAgentRunId: "agent-run", content: "done",
   messageType: "agent_message", referenceFiles: ["/tmp/report.md"], createdAt: "2026-11-01T00:00:00.000Z", ...overrides,
 });
 

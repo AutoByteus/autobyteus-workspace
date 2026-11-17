@@ -11,9 +11,9 @@ import { isFeatureAvailableInRuntime } from '~/utils/mobileFeatureGates'
  * `@`-involved units, which are no Task's root.
  */
 export const taskWorkerRefOf = (row: RunHistoryTeamExecutionRow): TaskWorkerRef | null => {
-  if (row.kind !== 'transient_execution') return null
-  if (row.transientKind === 'task_agent' && row.agentRunId) return { kind: 'agent', agentRunId: row.agentRunId }
-  if (row.transientKind === 'task_team' && row.teamRunIdForNode) return { kind: 'team', teamRunId: row.teamRunIdForNode }
+  if (row.kind !== 'delegated_run') return null
+  if (row.delegatedRunKind === 'task_agent' && row.agentRunId) return { kind: 'agent', agentRunId: row.agentRunId }
+  if (row.delegatedRunKind === 'task_team' && row.teamRunIdForNode) return { kind: 'team', teamRunId: row.teamRunIdForNode }
   return null
 }
 

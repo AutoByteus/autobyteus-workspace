@@ -313,7 +313,7 @@ const T = (id) => `[data-test="${id}"]`;
 const sectionOf = (page, projectKey) => page.locator(`section:has(> ${T('project-row')}[data-project-id="${s.projects[projectKey].projectId}"])`);
 const runRowIn = (scope, runId) => scope.locator(`${T('workspace-agent-run-row')}[data-run-id="${runId}"]`);
 const copyRowIn = (scope, agentRunId) => scope.locator(`${T('workspace-team-transient-execution-row')}[data-agent-run-id="${agentRunId}"]`);
-const teamCopyRowIn = (scope, address) => scope.locator(`${T('workspace-team-transient-execution-row')}[data-transient-kind="task_team"][data-member-address="${address}"]`);
+const teamCopyRowIn = (scope, address) => scope.locator(`${T('workspace-team-transient-execution-row')}[data-delegated-run-kind="task_team"][data-member-address="${address}"]`);
 const centerText = (page) => page.locator(T('workspace-center-pane')).innerText().catch(() => '');
 const gotoWorkspace = async (page) => {
   await page.goto(`${stack.frontendUrl}/workspace`, { waitUntil: 'networkidle', timeout: 120000 });

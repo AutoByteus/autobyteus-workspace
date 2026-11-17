@@ -34,7 +34,7 @@ for (const rootKind of ["agent_org"]) {
   });
 }
 
-test("an Agent root view carries no presentation frames: its host and each run it delegated present on their own streams (SR-086 G-D1)", () => {
+test("an Agent root view carries no presentation frames: its agent and each run it delegated present on their own streams (SR-086 G-D1)", () => {
   assert.throws(() => RootExecutionEventDtoSchema.parse(envelope("agent", { change_sequence_through: 21, event: batchEvent })));
   assert.throws(() => RootExecutionEventDtoSchema.parse(envelope("agent", { event: { kind: "agent_presentation", ...item("agent-a", "x") } })));
 });

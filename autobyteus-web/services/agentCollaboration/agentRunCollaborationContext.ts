@@ -26,16 +26,16 @@ export type AgentRunCollaborationEventApplication = 'applied'
  * peer's run through `/ws/peer-run`). Who is under the run is its tree's rows (`runTreeStore`), and only them.
  */
 export class AgentRunCollaborationContext {
-  readonly hostRunId: string
+  readonly runId: string
   view: AgentRunCollaborationViewDto
   phase: AgentRunCollaborationPhase
   error: string | null = null
   private nextChangeSequence: number
 
-  constructor(input: Readonly<{ hostRunId: string; view: AgentRunCollaborationViewDto }>) {
-    this.hostRunId = input.hostRunId
-    if (input.view.execution_tree.host.agentRunId !== input.hostRunId) {
-      throw new Error(`Agent collaboration view correlation mismatch for '${input.hostRunId}'.`)
+  constructor(input: Readonly<{ runId: string; view: AgentRunCollaborationViewDto }>) {
+    this.runId = input.runId
+    if (input.view.execution_tree.agent.agentRunId !== input.runId) {
+      throw new Error(`Agent collaboration view correlation mismatch for '${input.runId}'.`)
     }
     this.view = structuredClone(input.view)
     this.nextChangeSequence = input.view.base_change_sequence + 1
@@ -48,7 +48,7 @@ export class AgentRunCollaborationContext {
 
   /** The rows under the run, as its tree has them now. */
   private treeRows(): readonly RunTreeRowDto[] {
-    return useRunTreeStore().rowsOf({ kind: 'agent', runId: this.hostRunId })
+    return useRunTreeStore().rowsOf({ kind: 'agent', runId: this.runId })
   }
 
   /** Whether the run delegated any run that is in its tree (its Team tab shows once it has). */
@@ -56,7 +56,7 @@ export class AgentRunCollaborationContext {
 
   /** The view holds this agent: the host, or an agent of a run in its tree (the Team tab names it from there). */
   holdsAgent(agentRunId: string): boolean {
-    return agentRunId === this.hostRunId || treeRowOfAgent(this.treeRows(), agentRunId) !== null
+    return agentRunId === this.runId || treeRowOfAgent(this.treeRows(), agentRunId) !== null
   }
 
   /** Applies one root event. */
@@ -69,13 +69,13 @@ export class AgentRunCollaborationContext {
     }
     if (event.kind === 'run_tree_changed') {
       // The run's tree (SR-084): numbered in the view's sequence, applied to the rows its tree snapshot gave.
-      useRunTreeStore().streamChange({ kind: 'agent', runId: this.hostRunId }, event)
+      useRunTreeStore().streamChange({ kind: 'agent', runId: this.runId }, event)
       // Its Team tab still names an agent that left the tree (its Task closed): from the server's answer.
-      if (event.removed.length) useCollaborationParticipantMessagesStore().reloadNamingUnknown('agent', this.hostRunId, (id) => this.holdsAgent(id))
+      if (event.removed.length) useCollaborationParticipantMessagesStore().reloadNamingUnknown('agent', this.runId, (id) => this.holdsAgent(id))
     } else {
       // The Team tab's lists own the messages (autobyteus-358); the view holds none.
       this.assertMessageCorrelated(event.message)
-      useCollaborationParticipantMessagesStore().append('agent', this.hostRunId, event.message)
+      useCollaborationParticipantMessagesStore().append('agent', this.runId, event.message)
     }
     this.nextChangeSequence = following
     return 'applied'
@@ -96,20 +96,20 @@ export class AgentRunCollaborationContext {
    * its own run's log (rule 2); a peer's run keeps its messages on its node (AR-004).
    */
   messagesView(focusedAgentRunId: string): CollaborationMessagesContextView {
-    const row = focusedAgentRunId === this.hostRunId ? null : treeRowOfAgent(this.treeRows(), focusedAgentRunId)
-    const focusedMemberAddress = row ? row.address : focusedAgentRunId === this.hostRunId ? this.view.execution_tree.host.address : null
+    const row = focusedAgentRunId === this.runId ? null : treeRowOfAgent(this.treeRows(), focusedAgentRunId)
+    const focusedMemberAddress = row ? row.address : focusedAgentRunId === this.runId ? this.view.execution_tree.agent.address : null
     if (!focusedMemberAddress) throw new Error(`AgentRun '${focusedAgentRunId}' is not in this run.`)
-    const subject = row ? delegatedSubjectOfRow(row, this.hostRunId) : null
+    const subject = row ? delegatedSubjectOfRow(row, this.runId) : null
     const key: ParticipantMessagesKey = subject ? delegatedRunMessagesKey(subject)
-      : Object.freeze({ rootKind: 'agent', rootRunId: this.hostRunId, agentRunId: focusedAgentRunId })
+      : Object.freeze({ rootKind: 'agent', rootRunId: this.runId, agentRunId: focusedAgentRunId })
     return Object.freeze({
-      rootKind: 'agent', rootRunId: this.hostRunId, focusedAgentRunId, focusedMemberAddress,
-      memberIdentityByAgentRunId: () => Object.freeze(Object.fromEntries([this.hostRunId,
+      rootKind: 'agent', rootRunId: this.runId, focusedAgentRunId, focusedMemberAddress,
+      memberIdentityByAgentRunId: () => Object.freeze(Object.fromEntries([this.runId,
         ...this.treeRows().flatMap((candidate) => candidate.openTarget && !isTeamRow(candidate) ? [candidate.openTarget.agentRunId] : [])]
         .flatMap((agentRunId) => { const identity = this.identityOf(agentRunId); return identity ? [[agentRunId, identity]] : [] }))),
       ...participantMessagesView({ key, isRemote: Boolean(row?.peer), identityOf: (agentRunId) => this.identityOf(agentRunId) }),
       referenceContentPath: (messageId: string, referenceId: string) =>
-        `agent-collaborations/${encodeURIComponent(this.hostRunId)}/communication/messages/${encodeURIComponent(messageId)}/references/${encodeURIComponent(referenceId)}/content`,
+        `agent-collaborations/${encodeURIComponent(this.runId)}/communication/messages/${encodeURIComponent(messageId)}/references/${encodeURIComponent(referenceId)}/content`,
     })
   }
 
@@ -118,11 +118,11 @@ export class AgentRunCollaborationContext {
    * tree in the shared lowercase row format (VIS-004/009/012), with the run it belongs to; null when the tree has none.
    */
   private identityOf(agentRunId: string): CollaborationMessageMemberIdentity | null {
-    if (agentRunId === this.hostRunId) {
-      const address = this.view.execution_tree.host.address
+    if (agentRunId === this.runId) {
+      const address = this.view.execution_tree.agent.address
       return Object.freeze({ kind: 'configured', address, label: memberTitleName(address) })
     }
-    return treeAgentIdentity(this.treeRows(), agentRunId, this.hostRunId)
+    return treeAgentIdentity(this.treeRows(), agentRunId, this.runId)
   }
 
   private assertMessageCorrelated(message: AgentOrgCommunicationMessageDto): void {

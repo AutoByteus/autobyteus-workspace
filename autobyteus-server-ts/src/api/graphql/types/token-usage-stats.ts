@@ -329,7 +329,7 @@ export class TokenUsageStatisticsResolver {
     // REQ-009: every run delegated from it, one hop at a time and recursively, open and closed (the Task entries).
     const delegated = getStudioDelegatedRunAgents();
     const service = new StandaloneRunTokenUsageSummaryService({
-      tree: { listChildAgentRunIds: async (hostRunId) => [...new Set(await delegated.agentRunIds(createAgentRootExecutionIdentity(hostRunId)))] },
+      tree: { listChildAgentRunIds: async (agentRunId) => [...new Set(await delegated.agentRunIds(createAgentRootExecutionIdentity(agentRunId)))] },
       store: new TokenUsageRunStore(),
     });
     return toTokenUsageRunSummaryGraphql(await service.getSummary(runId));

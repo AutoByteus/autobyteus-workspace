@@ -39,14 +39,14 @@ const mocks = vi.hoisted(() => {
     stopForTaskClosure: vi.fn(async (_agentRunId: string, stillClosed: () => boolean) => (stillClosed() ? "stopped" : "kept_open")),
   };
   const teamRunService = {
-    pairedAgents: {}, getActiveTeamRun: vi.fn(() => null), restoreTeamRun: vi.fn(), resolveManagedTeamRun: vi.fn(),
+    runAgents: {}, getActiveTeamRun: vi.fn(() => null), restoreTeamRun: vi.fn(), resolveManagedTeamRun: vi.fn(),
     terminateTeamRun: vi.fn(), createTeamRun: vi.fn(), stopForTaskClosure: vi.fn(),
   };
   const generalProcessRunSupervisor = {
     agentRunService,
     teamRunService,
     agentOrgRunService: { getActive: vi.fn(() => null), restore: vi.fn() },
-    standaloneRootManager: { pairedAgents: {}, resolveRoot: vi.fn(async (runId: string) => (runId === "child-run" ? childRoot : null)) },
+    standaloneRootManager: { runAgents: {}, resolveRoot: vi.fn(async (runId: string) => (runId === "child-run" ? childRoot : null)) },
     teamRunHistoryService: {},
     delegatedWorkGuard: { guard: (_run: unknown, _action: unknown, perform: () => Promise<unknown>) => perform() },
     close: vi.fn(async () => undefined),

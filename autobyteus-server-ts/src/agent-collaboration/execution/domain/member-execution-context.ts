@@ -58,7 +58,7 @@ export class MemberExecutionContext {
   readonly identity: CollaborationMemberExecutionIdentity;
   /**
    * Whether the member belongs to a Team: a member of a Team or Org root (configured or task)
-   * or of a task Team in any root. The Agent-root host and a task Agent directly under an
+   * or of a task Team in any root. A standalone run's agent and a task Agent directly under an
    * Agent root are not; they get no `get_handoff_rules`.
    */
   readonly teamScoped: boolean;

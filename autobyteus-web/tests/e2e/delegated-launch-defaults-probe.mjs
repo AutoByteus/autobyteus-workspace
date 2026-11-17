@@ -1399,9 +1399,9 @@ defineCase('DCP-002', 'delegated-copy-model-change AC-002/003, IR-002 (Team root
   assert(JSON.stringify(await agyLaunchesOf(r.copyMembers.lead)) === JSON.stringify([ALT]), 'copy lead did not start on the Team default (ALT)', await agyLaunchesOf(r.copyMembers.lead))
   await openTeamRun(page, r.teamRunId, ids.home)
   // Earlier SSR cases retain stopped copies with the same label; bind to this root and Team address.
-  const teamSidebarRow = page.locator(`${sel('workspace-team-transient-execution-row')}[data-team-run-id="${r.teamRunId}"][data-transient-kind="task_team"][data-member-address="${address('pair')}"]`)
+  const teamSidebarRow = page.locator(`${sel('workspace-team-transient-execution-row')}[data-team-run-id="${r.teamRunId}"][data-delegated-run-kind="task_team"][data-member-address="${address('pair')}"]`)
   await waitFor('one exact Team copy sidebar row', async () => await teamSidebarRow.count() === 1, 60000)
-  r.sidebarTarget = await teamSidebarRow.evaluate(el => ({ rootRunId: el.dataset.teamRunId, address: el.dataset.memberAddress, kind: el.dataset.transientKind }))
+  r.sidebarTarget = await teamSidebarRow.evaluate(el => ({ rootRunId: el.dataset.teamRunId, address: el.dataset.memberAddress, kind: el.dataset.delegatedRunKind }))
   const parentStop = page.locator(sel(`workspace-team-row-${r.teamRunId}`)).locator('xpath=..').getByRole('button', { name: 'Terminate team', exact: true })
   r.paint = await sidebarPaint(page, 'DCP-002', teamSidebarRow, parentStop)
   await openTeamRun(page, r.teamRunId, ids.home)

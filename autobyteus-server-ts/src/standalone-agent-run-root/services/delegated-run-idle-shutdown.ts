@@ -13,7 +13,7 @@ import { resolveTaskExecutionIdleShutdownGraceMs } from "../../config/task-execu
  * The idle schedule of a delegated agent run, local or started by a peer (autobyteus-461 DS-7, AC-013; it is
  * `isDelegated`): the run's own idle shutdown, never the user Stop. It watches the run's agent status: idle, offline or error arms the grace timer (the delegated copies'
  * schedule and grace setting); running or initializing cancels it; a background task that ends re-arms it.
- * When it fires, the root runs `shutDownIfQuiet` inside its gate: the host shuts down only when it is quiet and
+ * When it fires, the root runs `shutDownIfQuiet` inside its gate: the agent shuts down only when it is quiet and
  * the root's own children have no open work. The next inbound message restores it with its conversation.
  */
 export class DelegatedRunIdleShutdown {
@@ -23,7 +23,7 @@ export class DelegatedRunIdleShutdown {
   private disposed = false;
 
   constructor(private readonly options: Readonly<{
-    hostRunId: string;
+    agentRunId: string;
     agentRunManager: Pick<AgentRunManager, "tryPrepareAgentRunTerminationIfQuiescent">;
     /** Runs the fire-time check in the root's gate (no root-mediated input interleaves). */
     runInGate(operation: () => Promise<void>): Promise<void>;
@@ -33,13 +33,13 @@ export class DelegatedRunIdleShutdown {
     this.schedule = new TaskExecutionIdleShutdownSchedule({
       gracePeriodMs: options.gracePeriodMs ?? (() => resolveTaskExecutionIdleShutdownGraceMs()),
       onFire: () => { void options.runInGate(() => this.shutDownIfQuiet()).catch((error: unknown) => {
-        console.error(`Agent run '${options.hostRunId}' idle shutdown failed:`, error);
+        console.error(`Agent run '${options.agentRunId}' idle shutdown failed:`, error);
       }); },
       timers: options.timers,
     });
   }
 
-  /** Follows the host's status from now on (idempotent per run instance); a fresh host starts the schedule. */
+  /** Follows the agent's status from now on (idempotent per run instance); a fresh agent starts the schedule. */
   watch(run: AgentRun): void {
     if (this.disposed || this.watched === run) return;
     this.unsubscribe?.();
@@ -72,8 +72,8 @@ export class DelegatedRunIdleShutdown {
     // Not quiet: a later idle, offline or error status re-arms the schedule.
     if (!prepared) return;
     const result = await prepared.commit().finish();
-    if (!result.accepted) console.warn(`Agent run '${this.options.hostRunId}' idle shutdown was not accepted: ${result.message ?? result.code ?? ""}`);
+    if (!result.accepted) console.warn(`Agent run '${this.options.agentRunId}' idle shutdown was not accepted: ${result.message ?? result.code ?? ""}`);
   }
 
-  private get reference() { return { agentRunId: this.options.hostRunId }; }
+  private get reference() { return { agentRunId: this.options.agentRunId }; }
 }

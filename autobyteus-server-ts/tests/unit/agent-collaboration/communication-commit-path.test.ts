@@ -74,8 +74,8 @@ const coordinators = {
     // The run's own log exists: each message is appended to it (autobyteus-461: the run's log is in its own folder).
     const store = { appendMessage: vi.fn(async () => okWrite), logExists: vi.fn(async () => true), writeMessages: vi.fn() };
     return { store, coordinator: new StandaloneRootPersistenceCoordinator({
-      hostRunId: "host", runDir: "/memory/agents/host", store: store as never,
-      getMessages: () => ({ schemaVersion: 1, subjectKind: "agent", hostRunId: "host", messages: [] }),
+      agentRunId: "host", runDir: "/memory/agents/host", store: store as never,
+      getMessages: () => ({ schemaVersion: 1, subjectKind: "agent", agentRunId: "host", messages: [] }),
       enterPersistenceFailStop: vi.fn(),
     }) };
   },

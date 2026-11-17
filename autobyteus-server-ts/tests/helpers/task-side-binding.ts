@@ -2,7 +2,7 @@ import { NO_RUN_PARTS } from "./run-agents-reader.js";
 import { DelegationIndex } from "../../src/agent-collaboration/delegation/delegation-index.js";
 import { TaskDelegation } from "../../src/agent-collaboration/execution/task/task-delegation.js";
 import type { DelegationRefusal, DelegationSource } from "../../src/agent-collaboration/execution/task/member-task-capability.js";
-import type { AssignToExistingCopyInput, SpawnTaskInput, TaskDelegationContext, TaskDelegationOutcome } from "../../src/agent-collaboration/execution/task/task-delegation-command.js";
+import type { AssignToExistingDelegatedRunInput, SpawnTaskInput, TaskDelegationContext, TaskDelegationOutcome } from "../../src/agent-collaboration/execution/task/task-delegation-command.js";
 import { RemoteDelegation } from "../../src/agent-collaboration/execution/remote/remote-delegation.js";
 import type { InMemoryTaskExecutionResources } from "../fixtures/task-execution-resource-fixtures.js";
 import { resolveRemoteRunChannel, type RemoteRunChannel } from "../../src/agent-collaboration/execution/remote/remote-run-channel.js";
@@ -42,7 +42,7 @@ export const testTaskSide = (tasks: InMemoryTaskExecutionResources, channel?: ()
       return delegation.toNewRun({ sender: source.sender, senderRun: source.senderRun, spawn: input,
         resolvePlacement: (work, folder) => source.resolvePlacement(input.recipient_address, work, folder) });
     },
-    assign: async (root: DelegatingRoot, context: TaskDelegationContext, input: AssignToExistingCopyInput): Promise<TaskDelegationOutcome> => {
+    assign: async (root: DelegatingRoot, context: TaskDelegationContext, input: AssignToExistingDelegatedRunInput): Promise<TaskDelegationOutcome> => {
       const source = await sourceOf(root, context);
       if (!("sender" in source)) return source;
       return delegation.toExistingRun({ sender: source.sender, senderRun: source.senderRun, assign: input });

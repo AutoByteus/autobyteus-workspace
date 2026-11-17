@@ -124,7 +124,7 @@ export class AgentRunCommandCoordinator {
 
   /**
    * An eligible standalone run is activated, resolves its mentions (adds nothing) and posts inside its root's
-   * gate; any other run posts directly to its command-ready AgentRun (it hosts no delegated copies).
+   * gate; any other run posts directly to its command-ready AgentRun (it has no standalone run root).
    */
   private async post(record: AgentRunCommandRecord, input: AgentRunCommandCoordinatorInput): Promise<StandaloneRunPostResult> {
     const message = this.withCommandMetadata(input.message, record);

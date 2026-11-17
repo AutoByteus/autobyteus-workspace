@@ -224,12 +224,12 @@ describe.runIf(ENABLED)("a registered Agent root follows the saved edit of its s
   it("SRE-01..03: copies delegated from the registered root after a saved edit of the crashed host carry the saved launch; a runtime change is pending on the host and inherited; a live host refuses the edit", async () => {
     const workspace = path.join(runtimeRoot, "workspace");
     await fs.mkdir(workspace, { recursive: true });
-    const hostDefinition = await agentDefinition("sre-host");
+    const delegatorDefinition = await agentDefinition("sre-host");
     const writer = await agentDefinition("sre-writer");
     // a copy cannot delegate to its own team (the writer's), so the copies it starts later come from another definition
     const helper = await agentDefinition("sre-helper");
     const created = (await gql("mutation($input: CreateAgentRunInput!) { createAgentRun(input: $input) { success message runId } }",
-      { input: { agentDefinitionId: hostDefinition.id, ...launchOf(AGY, AGY_MODEL, workspace), runtimeKind: AGY } })).createAgentRun as Json;
+      { input: { agentDefinitionId: delegatorDefinition.id, ...launchOf(AGY, AGY_MODEL, workspace), runtimeKind: AGY } })).createAgentRun as Json;
     expect(created.success, created.message).toBe(true);
     const hostId = created.runId as string;
     const hostDir = () => findDir(memory("agents"), hostId)!;

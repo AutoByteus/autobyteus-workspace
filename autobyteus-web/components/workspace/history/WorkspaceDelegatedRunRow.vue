@@ -4,9 +4,9 @@
     :class="rowClasses"
     :style="rowStyle"
     data-test="workspace-team-transient-execution-row"
-    data-row-kind="transient_execution"
+    data-row-kind="delegated_run"
     :data-node-kind="row.memberKind"
-    :data-transient-kind="row.transientKind"
+    :data-delegated-run-kind="row.delegatedRunKind"
     :data-team-run-id="row.teamRunId"
     :data-member-address="row.memberAddress"
     :data-agent-run-id="row.agentRunId ?? undefined"
@@ -181,7 +181,7 @@ import RemoteNodeChip from '~/components/workspace/remote/RemoteNodeChip.vue';
 import type { DelegatedReference, DelegatedRoot } from '~/services/runConfigEditing/delegatedLaunchSelectionClient';
 import { useLocalization } from '~/composables/useLocalization';
 import { AgentStatus } from '~/types/agent/AgentStatus';
-import type { RunHistoryTransientExecutionRow } from '~/stores/runHistoryTypes';
+import type { RunHistoryDelegatedRunRow } from '~/stores/runHistoryTypes';
 import type { TaskWorkerTask } from '~/types/project';
 import { taskWorkerTaskLabel } from '~/utils/projects/taskText';
 import { useRunStatusStore } from '~/stores/runStatusStore';
@@ -189,7 +189,7 @@ import { useRunHistoryStore } from '~/stores/runHistoryStore';
 import type { TeamStatus } from '~/utils/workspaceTeamAggregateStatus';
 
 const props = withDefaults(defineProps<{
-  row: RunHistoryTransientExecutionRow;
+  row: RunHistoryDelegatedRunRow;
   /** The Team status of a Team row; agent rows show their own status. */
   teamStatus?: TeamStatus;
   isSelected?: boolean;
@@ -213,8 +213,8 @@ const props = withDefaults(defineProps<{
 });
 
 const emit = defineEmits<{
-  (e: 'select', row: RunHistoryTransientExecutionRow): void;
-  (e: 'toggle', row: RunHistoryTransientExecutionRow): void;
+  (e: 'select', row: RunHistoryDelegatedRunRow): void;
+  (e: 'toggle', row: RunHistoryDelegatedRunRow): void;
   (e: 'locate-task', task: TaskWorkerTask): void;
 }>();
 
@@ -229,7 +229,7 @@ const roleLabel = computed(() => t(
 
 // autobyteus-278: the node that runs this copy; a member of a remote Team shows no chip of its own.
 const runStatus = useRunStatusStore();
-const remote = computed(() => props.row.transientKind === 'task_team_child' ? null : props.row.remote ?? null);
+const remote = computed(() => props.row.delegatedRunKind === 'task_team_child' ? null : props.row.remote ?? null);
 // Its node's answer is its tree row's; a Retry waits for its node's answer (SR-090).
 const remoteInfo = computed(() => remote.value
   ? { reachable: remote.value.reachable, title: remote.value.title, checking: runStatus.isChecking(remote.value.runId) }
@@ -273,7 +273,7 @@ const accessibleLabel = computed(() => {
   });
   const withNode = remote.value ? `${label}, ${t('remote.row.accessible', { node: remote.value.nodeName })}` : label;
   return props.task
-    ? `${withNode}, ${t('workspace.history.copyTask.accessible', { title: taskWorkerTaskLabel(props.task) })}`
+    ? `${withNode}, ${t('workspace.history.delegatedRunTask.accessible', { title: taskWorkerTaskLabel(props.task) })}`
     : withNode;
 });
 
@@ -295,8 +295,8 @@ const rowClasses = computed(() => ({
 
 /** A copy itself (an Agent or a whole Team), never one member of a Team copy. */
 const stopReference = computed<DelegatedReference | null>(() => {
-  if (props.row.transientKind === 'task_agent' && props.row.agentRunId) return { agentRunId: props.row.agentRunId };
-  if (props.row.transientKind === 'task_team' && props.row.teamRunIdForNode) return { teamRunId: props.row.teamRunIdForNode };
+  if (props.row.delegatedRunKind === 'task_agent' && props.row.agentRunId) return { agentRunId: props.row.agentRunId };
+  if (props.row.delegatedRunKind === 'task_team' && props.row.teamRunIdForNode) return { teamRunId: props.row.teamRunIdForNode };
   return null;
 });
 

@@ -260,9 +260,9 @@ describe.runIf(ENABLED)("LIVE agent runtime switch of members and a copy between
 
   it.runIf(COPY_ENABLED)("LV-03: a delegated copy (started by a scripted host), Claude -> Codex -> Claude", async () => {
     const workspace = path.join(runtimeRoot, "workspace");
-    const hostDefinition = await agentDefinition("live-host");
+    const delegatorDefinition = await agentDefinition("live-host");
     const created = (await gql("mutation($input: CreateAgentRunInput!) { createAgentRun(input: $input) { success message runId } }",
-      { input: { agentDefinitionId: hostDefinition.id, ...launchOf(AGY, AGY_MODEL, workspace), runtimeKind: AGY } })).createAgentRun as Json;
+      { input: { agentDefinitionId: delegatorDefinition.id, ...launchOf(AGY, AGY_MODEL, workspace), runtimeKind: AGY } })).createAgentRun as Json;
     expect(created.success, created.message).toBe(true);
     const hostId = created.runId as string;
     const call = async (name: string, args: Json, label: string): Promise<Json> => {

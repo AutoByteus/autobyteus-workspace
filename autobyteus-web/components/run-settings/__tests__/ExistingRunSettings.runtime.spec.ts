@@ -75,7 +75,7 @@ describe('ExistingRunSettings: the group view (autobyteus-348, autobyteus-366)',
 describe('ExistingRunSettings: a hub, and the save bar (autobyteus-366)', () => {
   it('a hub with open copies says where their settings are, and lists none', () => {
     const wrapper = mountSettings('agent', { subject: { origin: 'root', subject: 'root', group: null }, copiesHint: true })
-    expect(wrapper.get('[data-test="existing-run-copies-hint"]').text()).toBe('runSettings.subject.selectCopyHint')
+    expect(wrapper.get('[data-test="existing-run-copies-hint"]').text()).toBe('runSettings.subject.selectDelegatedRunHint')
     expect(wrapper.find('[data-test="run-settings-switch"]').exists()).toBe(false)
     expect(mountSettings('agent').find('[data-test="existing-run-copies-hint"]').exists()).toBe(false)
   })

@@ -43,7 +43,7 @@ export const resolveRunMentionScope = (target: ActiveAgentWorkspaceTarget | null
     case 'agent_run_task_team_member':
       return Object.freeze({
         rootKind: 'agent',
-        rootRunId: target.host.hostRunId,
+        rootRunId: target.viewRun.runId,
         focusedAgentRunId: target.agentRunId,
         focusedName: memberNameOfAddress(target.address),
       })

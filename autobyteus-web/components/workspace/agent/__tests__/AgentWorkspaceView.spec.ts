@@ -108,7 +108,7 @@ describe('AgentWorkspaceView (the chat run view, D-17)', () => {
     const host = buildTarget('run-1', 'hello')
     const context = host.context
     context.config = { ...context.config, agentDefinitionId: 'computer-use', agentDefinitionName: 'computer use agent' }
-    mocks.target = { ...host, kind: 'agent_run_task_agent', host: { hostRunId: 'host-run' } }
+    mocks.target = { ...host, kind: 'agent_run_task_agent', viewRun: { runId: 'host-run' } }
     const wrapper = mountView()
     expect(wrapper.get('[data-test="agent-workspace-title"]').text()).toBe('computer use agent')
     const monitor = wrapper.getComponent({ name: 'AgentEventMonitor' })
@@ -126,7 +126,7 @@ describe('AgentWorkspaceView (the chat run view, D-17)', () => {
   it('CR-001: ＋ on a task team’s member copies that member agent', async () => {
     const host = buildTarget('run-1', 'hello')
     host.context.config = { ...host.context.config, agentDefinitionId: 'reviewer-def', agentDefinitionName: 'reviewer' }
-    mocks.target = { ...host, kind: 'agent_run_task_team_member', host: { hostRunId: 'host-run' } }
+    mocks.target = { ...host, kind: 'agent_run_task_team_member', viewRun: { runId: 'host-run' } }
     const wrapper = mountView()
     await wrapper.get('[data-test="new-agent"]').trigger('click')
     await flushPromises()

@@ -208,7 +208,7 @@ export const runHeadingLinksCases = async (probe) => {
     /** The task agent's row sits under its host's row: unfold the host with its disclosure, then open the row. */
     const openDesktopTaskAgent = async (hostRun, run) => {
       await openDesktopRun(hostRun);
-      const row = deskPage.locator(`[data-transient-kind="task_agent"][data-agent-run-id="${run}"]:visible`).first();
+      const row = deskPage.locator(`[data-delegated-run-kind="task_agent"][data-agent-run-id="${run}"]:visible`).first();
       for (let round = 0; round < 5 && !(await row.count()); round += 1) {
         await deskPage.locator(`[data-test="run-list-row"][data-run-id="${hostRun}"] [data-test="run-list-disclosure"]`).first().click().catch(() => undefined);
         await sleep(800);

@@ -228,8 +228,8 @@ try {
   // expands, never folds on open); only its chevron folds it.
   const TT = '[data-test="workspace-team-transient-execution-row"]';
   const taskTeam = (id) => id === 'reviewers-task-nested'
-    ? page.locator(`${TT}[data-transient-kind="task_team"][data-member-address="/Reviewers"]`).first()
-    : page.locator(`${TT}[data-transient-kind="task_team"][data-member-address="/StudentStudyGroup"]`).nth(id === 'ssg-task-1' ? 0 : 1);
+    ? page.locator(`${TT}[data-delegated-run-kind="task_team"][data-member-address="/Reviewers"]`).first()
+    : page.locator(`${TT}[data-delegated-run-kind="task_team"][data-member-address="/StudentStudyGroup"]`).nth(id === 'ssg-task-1' ? 0 : 1);
   const disclosure = (id) => taskTeam(id).locator('[data-test="workspace-team-transient-disclosure"]');
   const taskMember = (id) => page.locator(`${TT}[data-agent-run-id="${id}"]`);
   const agentRow = (id) => page.locator(`[data-test="agent-org-agent-row-${id}"]`);
@@ -240,7 +240,7 @@ try {
     return rows.map((row) => {
       const test = row.getAttribute('data-test');
       if (test !== 'workspace-team-transient-execution-row') return test;
-      if (row.getAttribute('data-transient-kind') !== 'task_team') return row.getAttribute('data-agent-run-id');
+      if (row.getAttribute('data-delegated-run-kind') !== 'task_team') return row.getAttribute('data-agent-run-id');
       const address = row.getAttribute('data-member-address');
       seen[address] = (seen[address] ?? 0) + 1;
       return `team:${address}#${seen[address]}`;
@@ -365,7 +365,7 @@ try {
     assert(await agentRow('teacher-run').getAttribute('aria-expanded') === null, 'The Org Agent row gained aria-expanded');
     assert(await taskMember('teacher-task').getAttribute('aria-expanded') === null, 'Delegated Agent row gained a disclosure');
     assert(await taskMember('ssg1-s2').getAttribute('aria-expanded') === null, 'Delegated Team member gained a disclosure');
-    const chevrons = await page.locator(`${TT}[data-transient-kind="task_team"] [data-test="workspace-team-transient-disclosure"]`).count();
+    const chevrons = await page.locator(`${TT}[data-delegated-run-kind="task_team"] [data-test="workspace-team-transient-disclosure"]`).count();
     assert(chevrons === 3, 'Unexpected chevron count on delegated Team rows', { chevrons });
     assert(await mountedTeam('reviewers-configured').getAttribute('aria-expanded') === 'false', 'Mounted Reviewers default changed');
     await mountedTeam('reviewers-configured').click();

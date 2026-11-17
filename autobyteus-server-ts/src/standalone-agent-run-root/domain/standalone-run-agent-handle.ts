@@ -2,39 +2,39 @@ import type { MemberExecutionContext } from "../../agent-collaboration/execution
 import type { AgentRun } from "../../agent-execution/domain/agent-run.js";
 import type {
   StandaloneAgentRunActivationResult,
-  StandaloneHostActivationInput,
+  StandaloneRunAgentActivationInput,
 } from "../../agent-execution/services/standalone-agent-run-lifecycle-service.js";
-import type { StandaloneHostTerminationResult } from "../../agent-execution/services/standalone-run-ports.js";
+import type { StandaloneRunAgentTerminationResult } from "../../agent-execution/services/standalone-run-ports.js";
 
 /** The standalone activation mechanics (the lifecycle service, the only writer of `run_metadata.json`). */
-export type StandaloneHostActivationBackend = Readonly<{
-  getActiveRun(hostRunId: string): AgentRun | null;
-  activateHost(hostRunId: string, input: StandaloneHostActivationInput): Promise<StandaloneAgentRunActivationResult>;
-  terminateHost(hostRunId: string): Promise<StandaloneHostTerminationResult>;
+export type StandaloneRunAgentActivationBackend = Readonly<{
+  getActiveRun(agentRunId: string): AgentRun | null;
+  activateRunAgent(agentRunId: string, input: StandaloneRunAgentActivationInput): Promise<StandaloneAgentRunActivationResult>;
+  terminateRunAgent(agentRunId: string): Promise<StandaloneRunAgentTerminationResult>;
 }>;
 
-export type StandaloneHostReadiness = "offline" | "activating" | "live";
+export type StandaloneRunAgentReadiness = "offline" | "activating" | "live";
 
 /**
- * The root-owned handle of a standalone run's own agent. Every root path to the host (user
+ * The root-owned handle of a standalone run's own agent. Every root path to the agent (user
  * command, child message, stream connect, create and restore) goes through `ensureReady`: a
- * live host is returned as is; a prepared, stopped or crashed one is activated or restored
+ * live agent is returned as is; a prepared, stopped or crashed one is activated or restored
  * with the root-built member context in one attempt that concurrent callers join.
  */
-export class StandaloneHostAgentHandle {
+export class StandaloneRunAgentHandle {
   private activation: Promise<AgentRun> | null = null;
 
   constructor(private readonly options: Readonly<{
-    hostRunId: string;
-    backend: StandaloneHostActivationBackend;
+    agentRunId: string;
+    backend: StandaloneRunAgentActivationBackend;
     buildMemberExecutionContext(): Promise<MemberExecutionContext>;
   }>) {}
 
-  get hostRunId(): string { return this.options.hostRunId; }
+  get agentRunId(): string { return this.options.agentRunId; }
 
-  getActiveRun(): AgentRun | null { return this.options.backend.getActiveRun(this.hostRunId); }
+  getActiveRun(): AgentRun | null { return this.options.backend.getActiveRun(this.agentRunId); }
 
-  get readiness(): StandaloneHostReadiness {
+  get readiness(): StandaloneRunAgentReadiness {
     if (this.getActiveRun()?.isActive()) return "live";
     return this.activation ? "activating" : "offline";
   }
@@ -49,14 +49,14 @@ export class StandaloneHostAgentHandle {
     return attempt;
   }
 
-  /** Stops the host after any in-flight activation settles (so a starting host is not left running). */
-  async terminate(): Promise<StandaloneHostTerminationResult> {
+  /** Stops the agent after any in-flight activation settles (so a starting agent is not left running). */
+  async terminate(): Promise<StandaloneRunAgentTerminationResult> {
     await this.activation?.catch(() => undefined);
-    return this.options.backend.terminateHost(this.hostRunId);
+    return this.options.backend.terminateRunAgent(this.agentRunId);
   }
 
   private async activateOnce(): Promise<AgentRun> {
     const memberExecutionContext = await this.options.buildMemberExecutionContext();
-    return (await this.options.backend.activateHost(this.hostRunId, { memberExecutionContext })).run;
+    return (await this.options.backend.activateRunAgent(this.agentRunId, { memberExecutionContext })).run;
   }
 }

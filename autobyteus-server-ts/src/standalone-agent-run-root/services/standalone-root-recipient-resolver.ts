@@ -29,13 +29,13 @@ export class StandaloneRootRecipientResolver {
   }
 
   /** CM-1 refusal first, then a configured placement its address step 2 reaches (SR-059), then a catalog copy. */
-  resolveDelegationPlacement(sender: CollaborationMemberExecutionIdentity, addressInput: string, work: DelegationWork, newCopyFolder: string | null): Promise<DelegationPlacement> {
+  resolveDelegationPlacement(sender: CollaborationMemberExecutionIdentity, addressInput: string, work: DelegationWork, newDelegatedRunFolder: string | null): Promise<DelegationPlacement> {
     const address = this.requireAddress(addressInput);
     return resolveDelegationPlacement({
       port: this.options.getIndex(),
       senderAgentRunId: sender.agentRunId,
       address,
-      newCopyFolder,
+      newDelegatedRunFolder,
       resolveInRun: () => this.resolveInRunDelegationPlacement(address),
       catalogSource: (workspaceRootPath) => this.options.collaborators.catalogTaskSource({ address, senderRunId: sender.agentRunId, work, workspaceRootPath }),
     });

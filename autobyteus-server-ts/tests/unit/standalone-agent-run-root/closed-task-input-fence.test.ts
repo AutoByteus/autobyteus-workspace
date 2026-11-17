@@ -59,7 +59,7 @@ describe("DS-15: the user's message to a closed delegated agent run", () => {
     const f = await delegatedHost();
     const root = (await f.manager.resolveRoot(HOST))!;
     f.tasks.close("T1");
-    await expect(root.postHostUserMessage({ message: new AgentInputUserMessage("Are you there?"), postOptions: {}, onActiveRunReady: f.onActiveRunReady })).resolves.toEqual(refused);
+    await expect(root.postAgentUserMessage({ message: new AgentInputUserMessage("Are you there?"), postOptions: {}, onActiveRunReady: f.onActiveRunReady })).resolves.toEqual(refused);
     expect(f.restores).not.toHaveBeenCalled();
     expect(f.onActiveRunReady).not.toHaveBeenCalled();
   });
@@ -128,7 +128,7 @@ describe("DS-15: the user's message to a closed delegated agent run", () => {
     const root = (await f.manager.resolveRoot(HOST))!;
     f.tasks.deleteTask("T1");
     f.tasks.damaged.add("T1");
-    await expect(root.postHostUserMessage({ message: new AgentInputUserMessage("Are you there?"), postOptions: {}, onActiveRunReady: f.onActiveRunReady }))
+    await expect(root.postAgentUserMessage({ message: new AgentInputUserMessage("Are you there?"), postOptions: {}, onActiveRunReady: f.onActiveRunReady }))
       .resolves.toMatchObject({ kind: "refused", refusal: { code: "TASK_AGENT_RESOURCES_UNAVAILABLE" } });
     expect(f.onActiveRunReady).not.toHaveBeenCalled();
   });

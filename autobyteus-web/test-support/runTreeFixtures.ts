@@ -25,10 +25,10 @@ export const teamRows = (teamRunId: string, parentKey: string, depth: number, me
 ]
 
 /** `multiTeamView`'s tree: the run's own agent and `count` delegated Team copies of six members, each at its coordinator. */
-export const multiTeamTree = (count = 7, hostRunId = 'host-run'): RunTreeDto => ({
-  kind: 'agent', runId: hostRunId,
-  rows: [agentRow(hostRunId, null, 0, 'project task manager'), ...Array.from({ length: count }, (_, copy) =>
-    teamRows(teamId(copy), `agent:${hostRunId}`, 1, memberNames.map((_name, member) => memberId(copy, member)),
+export const multiTeamTree = (count = 7, runId = 'host-run'): RunTreeDto => ({
+  kind: 'agent', runId: runId,
+  rows: [agentRow(runId, null, 0, 'project task manager'), ...Array.from({ length: count }, (_, copy) =>
+    teamRows(teamId(copy), `agent:${runId}`, 1, memberNames.map((_name, member) => memberId(copy, member)),
       memberId(copy, memberNames.indexOf('solution_designer')))).flat()],
 })
 
@@ -148,13 +148,13 @@ const rowLaunchOf = (launch: Readonly<{ runtimeKind: string; llmModelIdentifier:
  * whose fixtures hold an agent run's view: its own agent, then each run it delegated under the agent or member that
  * delegated it, each with its launch and origin as its record has them.
  */
-export const agentRunTreeRows = (hostRunId: string, tasks: readonly CollaborationTask[]): RunTreeRowDto[] => {
-  const rows: RunTreeRowDto[] = [agentRow(hostRunId, null, 0)]
-  const anchors = new Map<string, Readonly<{ key: string; depth: number }>>([[hostRunId, { key: `agent:${hostRunId}`, depth: 0 }]])
+export const agentRunTreeRows = (runId: string, tasks: readonly CollaborationTask[]): RunTreeRowDto[] => {
+  const rows: RunTreeRowDto[] = [agentRow(runId, null, 0)]
+  const anchors = new Map<string, Readonly<{ key: string; depth: number }>>([[runId, { key: `agent:${runId}`, depth: 0 }]])
   const nameOf = (address: string) => address.split('/').filter(Boolean).at(-1)?.replace(/[_-]+/g, ' ') ?? address
   const visit = (list: readonly CollaborationTask[]) => {
     for (const task of list) {
-      const anchor = (task.delegatorAgentRunId && anchors.get(task.delegatorAgentRunId)) || anchors.get(hostRunId)!
+      const anchor = (task.delegatorAgentRunId && anchors.get(task.delegatorAgentRunId)) || anchors.get(runId)!
       if ('agentRunId' in task) {
         const row: RunTreeRowDto = { key: `agent:${task.agentRunId}`, parentKey: anchor.key, depth: anchor.depth + 1, kind: 'agent', name: nameOf(task.address),
           address: task.address, openTarget: { runKind: 'agent', runId: task.agentRunId, agentRunId: task.agentRunId }, statusIds: [task.agentRunId],
@@ -212,6 +212,6 @@ export const peerTeamRows = (teamRunId: string, parentKey: string | null, member
 
 /** Seeds an agent run's tree with these peer rows, as its open view's stream would feed it. */
 export const seedPeerRows = (trees: Readonly<{ streamSnapshot(ref: Readonly<{ kind: 'agent'; runId: string }>, rows: readonly RunTreeRowDto[]): void }>,
-  hostRunId: string, rows: readonly RunTreeRowDto[]): void => {
-  trees.streamSnapshot({ kind: 'agent', runId: hostRunId }, [agentRow(hostRunId, null, 0), ...rows])
+  runId: string, rows: readonly RunTreeRowDto[]): void => {
+  trees.streamSnapshot({ kind: 'agent', runId: runId }, [agentRow(runId, null, 0), ...rows])
 }

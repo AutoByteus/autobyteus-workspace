@@ -835,7 +835,7 @@ Task goes to the copy by `target_team_run_id` / `target_agent_run_id`.
 ### Folder of a new copy
 
 A new **local** copy runs in a folder chosen by its Task's Project
-(`projects/services/project-new-copy-folder.ts`, `projectFolderForNewCopy`;
+(`projects/services/project-new-delegated-run-folder.ts`, `projectFolderForNewDelegatedRun`;
 autobyteus-97):
 
 - **The Task belongs to a Project with a linked folder:** the copy runs in the

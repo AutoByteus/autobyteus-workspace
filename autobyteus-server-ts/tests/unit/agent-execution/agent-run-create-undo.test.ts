@@ -20,7 +20,7 @@ vi.mock("../../../src/agent-definition/services/agent-definition-service.js", ()
 const RUN_ID = "support_agent_00000000000000000000000000000349";
 let memoryDir: string;
 let catalog: AgentRunHistoryCatalogService;
-let activateHost: ReturnType<typeof vi.fn>;
+let activateRunAgent: ReturnType<typeof vi.fn>;
 
 const buildService = () => {
   const agentRunManager = { hasActiveRun: vi.fn().mockReturnValue(false), getActiveRun: vi.fn().mockReturnValue(null) };
@@ -37,7 +37,7 @@ const buildService = () => {
   });
   const lifecycleService = Object.assign(
     Object.create(StandaloneAgentRunLifecycleService.prototype) as StandaloneAgentRunLifecycleService,
-    { activateHost },
+    { activateRunAgent },
   );
   return new AgentRunService(memoryDir, {
     agentRunManager: agentRunManager as never,
@@ -66,7 +66,7 @@ beforeEach(async () => {
     agentRunManager: { hasActiveRun: vi.fn().mockReturnValue(false) } as never,
     collaborationRoots: { hasRoot: vi.fn().mockReturnValue(false), endRoot: vi.fn(async () => undefined) },
   });
-  activateHost = vi.fn();
+  activateRunAgent = vi.fn();
 });
 
 afterEach(async () => {
@@ -77,7 +77,7 @@ afterEach(async () => {
 describe("createAgentRun on a temporary data root", () => {
   it("AC-001: a failed activation leaves no history row and no run folder; the caller gets the activation error", async () => {
     const activationError = new Error("AgentRun activation admission is closed for process shutdown.");
-    activateHost.mockImplementation(async () => {
+    activateRunAgent.mockImplementation(async () => {
       expect(await exists(path.join(memoryDir, "agents", RUN_ID, "run_metadata.json"))).toBe(true); // it was prepared
       throw activationError;
     });
@@ -91,7 +91,7 @@ describe("createAgentRun on a temporary data root", () => {
   it("AC-002: a run whose start was committed before activation failed is kept, and the refusal is logged", async () => {
     const warn = vi.spyOn(console, "warn").mockImplementation(() => undefined);
     const activationError = new Error("runtime failed after start");
-    activateHost.mockImplementation(async (runId: string) => {
+    activateRunAgent.mockImplementation(async (runId: string) => {
       await catalog.recordRunStarted({ runId, platformAgentRunId: "thread-1", startedAt: "2026-10-31T10:01:00.000Z" });
       throw activationError;
     });

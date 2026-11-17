@@ -644,7 +644,7 @@ const caseRunningTeamRow = async () => {
     try {
       await openRoot(page, root, names);
       const teamRow = kind === 'org'
-        ? page.locator('[data-test="workspace-team-transient-execution-row"][data-transient-kind="task_team"]').first()
+        ? page.locator('[data-test="workspace-team-transient-execution-row"][data-delegated-run-kind="task_team"]').first()
         : page.locator(`[data-test="workspace-team-transient-execution-row"][data-node-kind="agent_team"][data-member-address="/${segment(names.squad)}"]`).first();
       await until(`${kind}: the delegated Team's row`, async () => {
         if (await teamRow.isVisible().catch(() => false)) return true;

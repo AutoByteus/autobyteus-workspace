@@ -70,7 +70,7 @@ const selectRunningHub = async () => {
   const store = useAgentRunCollaborationStore()
   await store.inspect(HOST)
   store.contextFor(HOST)!.messagesView(HOST).loadMessages()
-  store.syncHost(HOST, true)
+  store.syncRun(HOST, true)
   await snapshot(Socket.instances[0]!, 4)
   return store
 }

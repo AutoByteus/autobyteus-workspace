@@ -25,5 +25,5 @@ const props = withDefaults(defineProps<{ task: TaskWorkerTask; selected?: boolea
 const emit = defineEmits<{ (e: 'locate'): void }>();
 const { t } = useLocalization();
 const label = computed(() => taskWorkerTaskLabel(props.task));
-const locateLabel = computed(() => t('workspace.history.copyTask.locate', { title: label.value }));
+const locateLabel = computed(() => t('workspace.history.delegatedRunTask.locate', { title: label.value }));
 </script>

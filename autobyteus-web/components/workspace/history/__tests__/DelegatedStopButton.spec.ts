@@ -1,15 +1,15 @@
 import { flushPromises, mount } from '@vue/test-utils'
 import { createPinia, setActivePinia } from 'pinia'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import WorkspaceTransientExecutionRow from '../WorkspaceTransientExecutionRow.vue'
+import WorkspaceDelegatedRunRow from '../WorkspaceDelegatedRunRow.vue'
 import { useDelegatedLaunchDraftStore } from '~/stores/delegatedLaunchDraftStore'
-import type { RunHistoryTransientExecutionRow } from '~/stores/runHistoryTypes'
+import type { RunHistoryDelegatedRunRow } from '~/stores/runHistoryTypes'
 import { AgentStatus } from '~/types/agent/AgentStatus'
 
 const liveness = vi.hoisted(() => ({ live: new Set<string>() }))
 const client = vi.hoisted(() => ({ terminateDelegatedRun: vi.fn() }))
-vi.mock('~/services/runConfigEditing/delegatedCopyLiveness', () => ({
-  isDelegatedCopyLive: (_root: unknown, reference: { agentRunId?: string; teamRunId?: string }) =>
+vi.mock('~/services/runConfigEditing/delegatedRunLiveness', () => ({
+  isDelegatedRunLive: (_root: unknown, reference: { agentRunId?: string; teamRunId?: string }) =>
     liveness.live.has(reference.agentRunId ?? reference.teamRunId ?? ''),
 }))
 vi.mock('~/services/runConfigEditing/delegatedLaunchSelectionClient', async (importOriginal) => ({
@@ -19,15 +19,15 @@ vi.mock('@iconify/vue', () => ({ Icon: { props: ['icon'], template: '<span :data
 
 /** BEH-001..003: shared sidebar Stop styling and preserved per-copy interaction. CSS rendering is checked separately. */
 const roots = ['AGENT', 'AGENT_TEAM', 'AGENT_ORG'] as const
-const row = (overrides: Partial<RunHistoryTransientExecutionRow> = {}): RunHistoryTransientExecutionRow => ({
-  kind: 'transient_execution', transientKind: 'task_agent', rowKey: 'agent:worker-run', teamRunId: 'root',
+const row = (overrides: Partial<RunHistoryDelegatedRunRow> = {}): RunHistoryDelegatedRunRow => ({
+  kind: 'delegated_run', delegatedRunKind: 'task_agent', rowKey: 'agent:worker-run', teamRunId: 'root',
   memberAddress: '/writer', agentRunId: 'worker-run', teamRunIdForNode: null, memberKind: 'agent',
   displayName: 'writer', currentStatus: AgentStatus.Running, delegatedBy: 'pm', depth: 0, hasChildren: false, ...overrides,
 })
 const copies = [
   { kind: 'Agent', id: 'worker-run', reference: { agentRunId: 'worker-run' }, row: row() },
   { kind: 'Team', id: 'review-team', reference: { teamRunId: 'review-team' }, row: row({
-    transientKind: 'task_team', agentRunId: null, teamRunIdForNode: 'review-team', memberKind: 'agent_team',
+    delegatedRunKind: 'task_team', agentRunId: null, teamRunIdForNode: 'review-team', memberKind: 'agent_team',
     rowKey: 'team:review-team', displayName: 'reviewers',
   }) },
 ]
@@ -44,7 +44,7 @@ describe.each(roots.flatMap(rootKind => copies.map(copy => ({ ...copy, rootKind 
   const root = { rootKind: copy.rootKind, rootRunId: 'root' }
   it.each([false, true])('uses red enabled and muted disabled tokens, retaining focus and semantics (selected=%s)', (isSelected) => {
     liveness.live.add(copy.id)
-    const wrapper = mount(WorkspaceTransientExecutionRow, { props: { row: copy.row, stopRoot: root, isSelected } })
+    const wrapper = mount(WorkspaceDelegatedRunRow, { props: { row: copy.row, stopRoot: root, isSelected } })
     const button = wrapper.get(stopSelector)
     expect(button.classes()).toEqual(expect.arrayContaining([
       'text-red-500', 'disabled:text-gray-400', 'disabled:hover:text-gray-400', 'disabled:hover:bg-transparent', 'transition-colors', 'hover:bg-red-50', 'hover:text-red-600',
@@ -62,7 +62,7 @@ describe.each(roots.flatMap(rootKind => copies.map(copy => ({ ...copy, rootKind 
   it('stops exactly this copy without selecting or toggling its row; activation keys are contained', async () => {
     liveness.live.add(copy.id)
     const stop = vi.spyOn(useDelegatedLaunchDraftStore(), 'stop').mockResolvedValue(true)
-    const wrapper = mount(WorkspaceTransientExecutionRow, { props: { row: copy.row, stopRoot: root, hasChildren: true } })
+    const wrapper = mount(WorkspaceDelegatedRunRow, { props: { row: copy.row, stopRoot: root, hasChildren: true } })
     const button = wrapper.get(stopSelector)
     await button.trigger('keydown', { key: 'Enter' })
     await button.trigger('keydown', { key: ' ' })
@@ -77,7 +77,7 @@ describe.each(roots.flatMap(rootKind => copies.map(copy => ({ ...copy, rootKind 
     liveness.live.add(copy.id)
     let finish!: (value: unknown) => void
     client.terminateDelegatedRun.mockReturnValue(new Promise((resolve) => { finish = resolve }))
-    const wrapper = mount(WorkspaceTransientExecutionRow, { props: { row: copy.row, stopRoot: root } })
+    const wrapper = mount(WorkspaceDelegatedRunRow, { props: { row: copy.row, stopRoot: root } })
     const button = wrapper.get(stopSelector)
     await button.trigger('click')
     liveness.live.delete(copy.id)
@@ -100,10 +100,10 @@ describe.each(roots.flatMap(rootKind => copies.map(copy => ({ ...copy, rootKind 
   })
 
   it('does not offer Stop without a live copy or a root', () => {
-    const stopped = mount(WorkspaceTransientExecutionRow, { props: { row: copy.row, stopRoot: root } })
+    const stopped = mount(WorkspaceDelegatedRunRow, { props: { row: copy.row, stopRoot: root } })
     expect(stopped.find(stopSelector).exists()).toBe(false)
     liveness.live.add(copy.id)
-    const noRoot = mount(WorkspaceTransientExecutionRow, { props: { row: copy.row } })
+    const noRoot = mount(WorkspaceDelegatedRunRow, { props: { row: copy.row } })
     expect(noRoot.find(stopSelector).exists()).toBe(false)
   })
 })
@@ -112,8 +112,8 @@ const root = { rootKind: 'AGENT_TEAM' as const, rootRunId: 'root' }
 describe('Team copy member rows', () => {
   it('never offers an individual member Stop in place of the whole Team', () => {
     liveness.live.add('member-run')
-    const member = mount(WorkspaceTransientExecutionRow, { props: { stopRoot: root,
-      row: row({ transientKind: 'task_team_child', agentRunId: 'member-run' }),
+    const member = mount(WorkspaceDelegatedRunRow, { props: { stopRoot: root,
+      row: row({ delegatedRunKind: 'task_team_child', agentRunId: 'member-run' }),
     } })
     expect(member.find(stopSelector).exists()).toBe(false)
   })

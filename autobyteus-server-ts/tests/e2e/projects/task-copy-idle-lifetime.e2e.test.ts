@@ -323,7 +323,7 @@ suite("Idle shutdown keeps delegated copies with running background tasks in eve
       if (ownRead) return ownRead;
       if (kind === "agent" && agentRunId === rootId) return (await graphql(`query($id:String!){getRunProjection(runId:$id){conversation}}`,
         { id: agentRunId })).getRunProjection?.conversation;
-      if (kind === "agent") return (await graphql(`query($h:String!,$a:String!,$r:String!){agentRunCollaborationMemberProjection(hostRunId:$h,memberAddress:$a,agentRunId:$r){conversation}}`,
+      if (kind === "agent") return (await graphql(`query($h:String!,$a:String!,$r:String!){agentRunCollaborationMemberProjection(runId:$h,memberAddress:$a,agentRunId:$r){conversation}}`,
         { h: rootId, a: address, r: agentRunId })).agentRunCollaborationMemberProjection?.conversation;
       if (kind === "team") return (await graphql(`query($id:String!,$a:String!){getTeamMemberRunProjection(teamRunId:$id,agentRunId:$a){conversation}}`,
         { id: rootId, a: agentRunId })).getTeamMemberRunProjection?.conversation;

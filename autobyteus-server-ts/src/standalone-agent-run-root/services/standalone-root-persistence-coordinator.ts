@@ -2,11 +2,11 @@ import type { RootMessageAppend, RootMessageAppendResult } from "../../agent-col
 import { RootTaskPersistenceFinalizationIndeterminateError } from "../../agent-collaboration/execution/task/task-delegation-command.js";
 import type { RunPackageFileWriteResult } from "../../run-history/store/atomic-run-package-file-commit-writer.js";
 import type { StandaloneRootPackageStore } from "../persistence/standalone-root-package-store.js";
-import type { StandaloneRootMessagesFile } from "../domain/standalone-root-host.js";
+import type { StandaloneRootMessagesFile } from "../domain/standalone-run-agent.js";
 
 export class StandaloneRootPersistenceFailStoppedError extends Error {
-  constructor(readonly hostRunId: string) {
-    super(`Agent root '${hostRunId}' persistence is fail-stopped pending strict reopen.`);
+  constructor(readonly agentRunId: string) {
+    super(`Agent root '${agentRunId}' persistence is fail-stopped pending strict reopen.`);
     this.name = "StandaloneRootPersistenceFailStoppedError";
   }
 }
@@ -22,7 +22,7 @@ export class StandaloneRootPersistenceCoordinator {
   private created: boolean | null = null;
 
   constructor(private readonly options: Readonly<{
-    hostRunId: string;
+    agentRunId: string;
     runDir: string;
     store: StandaloneRootPackageStore;
     getMessages(): StandaloneRootMessagesFile;
@@ -65,7 +65,7 @@ export class StandaloneRootPersistenceCoordinator {
 
   private withLock<T>(operation: () => Promise<T>): Promise<T> {
     const guarded = () => this.failStopped
-      ? Promise.reject<T>(new StandaloneRootPersistenceFailStoppedError(this.options.hostRunId))
+      ? Promise.reject<T>(new StandaloneRootPersistenceFailStoppedError(this.options.agentRunId))
       : operation();
     const scheduled = this.tail.then(guarded, guarded);
     this.tail = scheduled.then(() => undefined, () => undefined);

@@ -19,7 +19,7 @@
           <template v-if="subjectNode && !showGroup && (groupName || subjectNode.isCoordinator || subjectNode.badge || subjectNode.remoteNode)" #details>
             <span v-if="groupName" class="truncate" data-test="run-subject-group">{{ $t('runSettings.subject.inGroup', { name: groupName }) }}</span>
             <span v-if="subjectNode.isCoordinator" class="flex-shrink-0 rounded-full bg-gray-100 px-1.5 py-px text-[0.6875rem] font-medium text-gray-600">{{ $t('runSettings.members.coordinator') }}</span>
-            <span v-if="subjectNode.badge" class="flex-shrink-0 rounded-full bg-gray-100 px-1.5 py-px text-[0.6875rem] font-medium text-gray-600" data-test="run-member-badge">{{ $t('runSettings.delegated.copy') }}</span>
+            <span v-if="subjectNode.badge" class="flex-shrink-0 rounded-full bg-gray-100 px-1.5 py-px text-[0.6875rem] font-medium text-gray-600" data-test="run-member-badge">{{ $t('runSettings.delegated.delegatedRun') }}</span>
             <RemoteNodeChip v-if="subjectNode.remoteNode" :node-name="subjectNode.remoteNode" />
           </template>
         </RunSubjectHeader>
@@ -86,7 +86,7 @@
           />
         </div>
         <!-- A hub's copies are in the left tree; each shows its own settings when it is selected there (DEC-004). -->
-        <p v-if="copiesHint" class="mt-2 text-xs text-gray-500" data-test="existing-run-copies-hint">{{ $t('runSettings.subject.selectCopyHint') }}</p>
+        <p v-if="copiesHint" class="mt-2 text-xs text-gray-500" data-test="existing-run-copies-hint">{{ $t('runSettings.subject.selectDelegatedRunHint') }}</p>
         <!-- A stopped run's Agent, member or delegated copy can switch its agent runtime; the switch is made by its next message. -->
         <p
           v-if="runtimeChangePending"

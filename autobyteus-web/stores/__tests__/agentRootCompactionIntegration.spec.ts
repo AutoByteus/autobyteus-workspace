@@ -86,7 +86,7 @@ it.each(['false', 'missing', 'transport', 'children-failed-after-inactive', 'hos
     // Not confirmed: the run's agent is not marked stopped; the view's stream continues (SR-045).
     expect(root.isActive).toBe(true); expect(store.errors['host-run']).not.toBe('obsolete callback')
     expect(stream.disconnect).not.toHaveBeenCalled()
-    store.syncHost('host-run', true); expect(io.streams).toHaveLength(1)
+    store.syncRun('host-run', true); expect(io.streams).toHaveLength(1)
   },
 )
 

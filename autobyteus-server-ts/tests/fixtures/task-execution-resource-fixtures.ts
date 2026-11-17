@@ -44,7 +44,7 @@ export class InMemoryTaskExecutionResources implements TaskExecutionResourcePort
   /** Tells the listener of a change made directly in `entries` (a test's own write). */
   changed(taskId: string): void { this.listener?.entriesChanged(taskId); }
 
-  async projectFolderForNewCopy(projectId: string): Promise<string | null> {
+  async projectFolderForNewDelegatedRun(projectId: string): Promise<string | null> {
     const folder = this.projectFolders.get(projectId) ?? null;
     if (folder instanceof Error) throw folder;
     return folder;

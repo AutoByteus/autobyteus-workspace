@@ -38,8 +38,8 @@ const setup = () => {
   const hostReady = new Set<(run: never) => void>();
   let live: ReturnType<typeof fakeRun> | null = null;
   const root = {
-    activeHostRun: () => live as never,
-    onHostReady: (listener: (run: never) => void) => { hostReady.add(listener); return () => hostReady.delete(listener); },
+    activeAgentRun: () => live as never,
+    onAgentReady: (listener: (run: never) => void) => { hostReady.add(listener); return () => hostReady.delete(listener); },
   };
   let registered = false;
   const agentRunService = { getAgentRun: vi.fn(() => live), recordRunActivity: vi.fn() };

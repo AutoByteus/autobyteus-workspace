@@ -5,7 +5,7 @@ import type { ReachedPlacement } from "../delegation/collaboration-tree.js";
 
 /**
  * Where a definition is in the run, in address precedence order (AR-002): the run's own agent
- * (a standalone Agent run's host), then a configured Agent placement or an Org mounted Team.
+ * (a standalone Agent run's own agent), then a configured Agent placement or an Org mounted Team.
  */
 export type InRunPlacementRank = "run_agent" | "configured";
 /**
@@ -44,7 +44,7 @@ export interface CollaboratorRootPort {
   launchBase(): CollaboratorLaunchBase;
   /**
    * The viewer's own definition: never listed, mentioned or brought in. A Team root's own Team;
-   * a standalone Agent root's host definition only when the viewer is the host; null otherwise
+   * a standalone Agent run's own definition only when the viewer is its agent; null otherwise
    * and for an Org root.
    */
   ownDefinition(): CatalogDefinitionRef | null;

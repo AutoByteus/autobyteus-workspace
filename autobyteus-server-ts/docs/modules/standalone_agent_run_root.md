@@ -34,14 +34,14 @@ standalone path (`AgentRunService.resolveCommandReadyAgentRun` and the lifecycle
   root lifecycle (`activating → active → terminating → terminated`, or `fail_stop`) and the public
   API. Delivery, addressing, admission and child commands are in
   `services/standalone-root-message-delivery.ts`.
-- **`StandaloneHostAgentHandle`** (`domain/standalone-host-agent-handle.ts`): the host's single
+- **`StandaloneRunAgentHandle`** (`domain/standalone-run-agent-handle.ts`): the host's single
   execution, like a configured member's handle. `ensureReady()` activates a prepared run,
   restores a stopped or crashed one, or returns the live run; concurrent callers join one attempt.
   Every root path to the host (user command, child message, stream connect) goes through it, so
   host crash recovery works like a configured member's. Its backend is
-  `StandaloneAgentRunLifecycleService.activateHost(runId, {memberExecutionContext})` (the only
-  writer of `run_metadata.json`) and `terminateHost(runId)`. The lifecycle never calls back into
-  the root, so the lock order is always the root gate, then the lifecycle lane. `activateHost` of
+  `StandaloneAgentRunLifecycleService.activateRunAgent(runId, {memberExecutionContext})` (the only
+  writer of `run_metadata.json`) and `terminateRunAgent(runId)`. The lifecycle never calls back into
+  the root, so the lock order is always the root gate, then the lifecycle lane. `activateRunAgent` of
   an eligible run without its root-built member context throws: a bypass is a loud error.
 - **`StandaloneAgentRunRootManager`** (`services/standalone-agent-run-root-manager.ts`): the
   process registry of roots, bound once by the general process run supervisor (no statics).
@@ -57,7 +57,7 @@ standalone path (`AgentRunService.resolveCommandReadyAgentRun` and the lifecycle
   `StandaloneRunCommandPort` (the command coordinator's eligible-run post: host ready,
   `onActiveRunReady` binding the host stream, mention admission, then the post with the caller's
   options unchanged) and `StandaloneRunLifecyclePort` (`AgentRunService`: create, activate,
-  restore and resolve go through `resolveRootAndEnsureHost`; `terminateAgentRun` goes through
+  restore and resolve go through `resolveRootAndEnsureAgent`; `terminateAgentRun` goes through
   `stopRoot`). Interrupt and tool approval act on a live host only and never start it.
   The lifecycle port also carries `refreshInheritedLaunch(runId)`: a saved edit of the stopped
   host (`AgentRunService.updateStoppedSelection`, result `UPDATED`) reaches the registered or
@@ -147,7 +147,7 @@ message ID (CM-9); the run's view shows the messages of its own log.
 
 - **`@` resolution.** A host SEND_MESSAGE with `mentions` on `/ws/agent/:runId` is resolved by the
   root after the host is ready (`AgentRunCommandCoordinator.post` →
-  `StandaloneAgentRunRoot.postHostUserMessage` → `StandaloneRootMessageDelivery.postToHost`); a
+  `StandaloneAgentRunRoot.postAgentUserMessage` → `StandaloneRootMessageDelivery.postToAgent`); a
   child's SEND_MESSAGE with `mentions` on the run's view stream is resolved for the focused child
   (`resolveCollaboratorMentions`). Resolution adds nothing; the posted message carries the note
   steering the agent to `delegate_task`. An ineligible mention rejects the send with
@@ -213,7 +213,7 @@ peer's run in that delegation's Task entry (`nodeId`). See [Remote Collaboration
 ## TS Source
 
 - `src/standalone-agent-run-root/domain/standalone-agent-run-root.ts`
-- `src/standalone-agent-run-root/domain/standalone-host-agent-handle.ts`
+- `src/standalone-agent-run-root/domain/standalone-run-agent-handle.ts`
 - `src/standalone-agent-run-root/services/standalone-agent-run-root-manager.ts`
 - `src/standalone-agent-run-root/services/standalone-root-message-delivery.ts`
 - `src/standalone-agent-run-root/services/standalone-root-builder.ts`

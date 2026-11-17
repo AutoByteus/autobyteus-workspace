@@ -12,7 +12,7 @@ import { agentRow, peerAgentRow, peerTeamRows, seedPeerRows } from '~/test-suppo
 const active = vi.hoisted(() => ({ runId: 'peer-agent-run' }))
 vi.mock('~/stores/activeContextStore', () => ({ useActiveContextStore: () => ({
   get activeWorkspaceTarget() {
-    return { kind: 'agent_run_task_agent', access: 'live', host: { hostRunId: 'host-run' }, context: { state: { runId: active.runId } }, browse: { kind: 'run', runId: active.runId } }
+    return { kind: 'agent_run_task_agent', access: 'live', viewRun: { runId: 'host-run' }, context: { state: { runId: active.runId } }, browse: { kind: 'run', runId: active.runId } }
   },
   send: vi.fn(), interruptGeneration: vi.fn(),
 }) }))

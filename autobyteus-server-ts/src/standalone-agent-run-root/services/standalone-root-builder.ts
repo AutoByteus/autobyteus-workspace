@@ -8,9 +8,9 @@ import type { AgentRunManager } from "../../agent-execution/services/agent-run-m
 import type { AgentLaunchConfiguration } from "../../agent-team-execution/domain/team-run-config.js";
 import type { StandaloneRootPackageStore } from "../persistence/standalone-root-package-store.js";
 import { StandaloneAgentRunRoot } from "../domain/standalone-agent-run-root.js";
-import type { StandaloneHostAgentHandle } from "../domain/standalone-host-agent-handle.js";
+import type { StandaloneRunAgentHandle } from "../domain/standalone-run-agent-handle.js";
 import { isStandaloneRootMessageEvent, type StandaloneRootEvent } from "../domain/standalone-root-event.js";
-import type { StandaloneRootHost, StandaloneRootMessagesFile } from "../domain/standalone-root-host.js";
+import type { StandaloneRunAgent, StandaloneRootMessagesFile } from "../domain/standalone-run-agent.js";
 import { StandaloneRootPersistenceCoordinator } from "./standalone-root-persistence-coordinator.js";
 import type { DelegatedFrom } from "../../run-history/store/agent-run-metadata-types.js";
 import type { RemoteRunChannel } from "../../agent-collaboration/execution/remote/remote-run-channel.js";
@@ -38,11 +38,11 @@ export class StandaloneRootBuilder {
   }
 
   build(input: Readonly<{
-    host: StandaloneRootHost;
+    agent: StandaloneRunAgent;
     createdAt: string;
     messages: StandaloneRootMessagesFile;
     runDir: string;
-    hostHandle: StandaloneHostAgentHandle;
+    agentHandle: StandaloneRunAgentHandle;
     rootLaunchConfiguration: AgentLaunchConfiguration;
     /** The run's own origin (contract §3.2): a delegated run gets its idle shutdown; a peer-started one its back-link. */
     delegatedFrom: DelegatedFrom | null;
@@ -50,20 +50,20 @@ export class StandaloneRootBuilder {
   }>): StandaloneAgentRunRoot {
     let run: StandaloneAgentRunRoot | null = null;
     const persistence = new StandaloneRootPersistenceCoordinator({
-      hostRunId: input.host.agentRunId, runDir: input.runDir, store: this.dependencies.packageStore,
+      agentRunId: input.agent.agentRunId, runDir: input.runDir, store: this.dependencies.packageStore,
       getMessages: () => run?.getCommunicationSnapshot() ?? input.messages,
       enterPersistenceFailStop: () => run?.enterPersistenceFailStop(),
     });
     run = new StandaloneAgentRunRoot({
-      root: createAgentRootExecutionIdentity(input.host.agentRunId),
-      host: input.host,
+      root: createAgentRootExecutionIdentity(input.agent.agentRunId),
+      agent: input.agent,
       createdAt: input.createdAt,
       messages: input.messages,
-      hostHandle: input.hostHandle,
+      agentHandle: input.agentHandle,
       rootLaunchConfiguration: input.rootLaunchConfiguration,
       persistence,
       // The run's one view stream, living as long as the process (SR-062, SR-063).
-      publisher: this.dependencies.viewStreams.streamOf<StandaloneRootEvent>(createAgentRootExecutionIdentity(input.host.agentRunId)),
+      publisher: this.dependencies.viewStreams.streamOf<StandaloneRootEvent>(createAgentRootExecutionIdentity(input.agent.agentRunId)),
       messageFeed: this.dependencies.viewStreams.messages,
       taskRecords: this.dependencies.taskRecords,
       delegationIndex: this.dependencies.delegationIndex,

@@ -31,7 +31,7 @@ export const treeAgentIdentity = (rows: readonly RunTreeRowDto[], agentRunId: st
   if (!row?.address || !target) return null
   const teamRunId = target.runKind === 'agent_team' ? target.runId : null
   return Object.freeze({ kind: 'delegated', address: row.address, label: memberDisplayName(row.address),
-    hostRunId: teamRunId ?? viewRunId, executionRunId: teamRunId ?? agentRunId })
+    runId: teamRunId ?? viewRunId, executionRunId: teamRunId ?? agentRunId })
 }
 
 /** A Team run's own coordinator, from its tree: where the Team shows while a run it delegated is selected under it. */

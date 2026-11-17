@@ -19,7 +19,7 @@ const HOST = { kind: 'agent' as const, runId: 'host-run' }
 /** A host run's view, with its tree as its stream gave it (SR-084). */
 const build = (view = agentRootView()) => {
   useRunTreeStore().streamSnapshot(HOST, agentRootTreeRows())
-  return new AgentRunCollaborationContext({ hostRunId: 'host-run', view })
+  return new AgentRunCollaborationContext({ runId: 'host-run', view })
 }
 const message = (messageId: string, senderAgentRunId: string, receiverAgentRunId: string, content = 'hi') => ({
   messageId, senderAgentRunId, receiverAgentRunId, content, messageType: 'direct_message', referenceFiles: [], createdAt: created,
@@ -57,11 +57,11 @@ describe('AgentRunCollaborationContext', () => {
     await settle()
     expect(host.messagesStatus().state).toBe('loaded')
     expect(host.listMessages()).toMatchObject([{ direction: 'received', counterpart: { label: 'computer use agent', kind: 'delegated',
-      hostRunId: 'host-run', executionRunId: 'cua-run' } }])
+      runId: 'host-run', executionRunId: 'cua-run' } }])
     // REQ-008: the run's own agent reads as its name (VIS-013); the collaborator keeps the lowercase row label above.
     expect(context.messagesView('cua-run').listMessages()).toMatchObject([{ direction: 'sent', counterpart: { label: 'Research Assistant', kind: 'configured' } }])
     // A delegated team's member names its team run.
-    expect(context.messagesView('host-run').memberIdentityByAgentRunId()['pp-run']).toMatchObject({ kind: 'delegated', hostRunId: 'team-run', executionRunId: 'team-run' })
+    expect(context.messagesView('host-run').memberIdentityByAgentRunId()['pp-run']).toMatchObject({ kind: 'delegated', runId: 'team-run', executionRunId: 'team-run' })
     expect(host.referenceContentPath('m1', 'r1')).toBe('agent-collaborations/host-run/communication/messages/m1/references/r1/content')
     expect(() => context.messagesView('stranger')).toThrow('not in this run')
   })

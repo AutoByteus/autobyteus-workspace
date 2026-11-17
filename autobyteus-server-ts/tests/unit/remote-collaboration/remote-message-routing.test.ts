@@ -46,7 +46,7 @@ const standalone = (): Harness => {
   const c = common();
   const root = createAgentRootExecutionIdentity(LEAD);
   const delivery = new StandaloneRootMessageDelivery({ remoteLinks: links(), remoteSend: c.remoteSend, authorizeIdentity: vi.fn(),
-    getIndex: () => ({ isHost: () => false }) } as never);
+    getIndex: () => ({ isRunAgent: () => false }) } as never);
   return { root, ...c, deliverExact: async (target) => {
     const result = await delivery.deliverExact(input(root, target) as never);
     // Not a remote endpoint: the run's own refusal (the router reaches another run's agent).

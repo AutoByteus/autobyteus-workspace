@@ -24,11 +24,11 @@ export const createStandaloneRunRootsFixture = (input: Readonly<{
     activeRootDirectory: new ActiveCollaborationRootDirectory(),
     definitions: { getAgentDefinitionById: async () => null },
     orgInstruction: async () => null,
-    host: {
-      getActiveRun: (hostRunId) => input.agentRunManager.getActiveRun(hostRunId),
-      activateHost: (hostRunId, activation) => input.lifecycleService.activateHost(hostRunId, activation),
-      terminateHost: (hostRunId) => input.lifecycleService.terminateHost(hostRunId),
-      readMetadata: (hostRunId) => metadataService.readMetadata(hostRunId),
+    agentServices: {
+      getActiveRun: (agentRunId) => input.agentRunManager.getActiveRun(agentRunId),
+      activateRunAgent: (agentRunId, activation) => input.lifecycleService.activateRunAgent(agentRunId, activation),
+      terminateRunAgent: (agentRunId) => input.lifecycleService.terminateRunAgent(agentRunId),
+      readMetadata: (agentRunId) => metadataService.readMetadata(agentRunId),
     },
     rootDependencies: { delegationIndex: noDelegations(), viewStreams: testViewStreams(), taskRecords: openTaskRecords(),
       collaboratorAdmission: createCollaboratorAdmission({

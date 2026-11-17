@@ -132,15 +132,15 @@ export const buildTokenUsageRunSummaryFromRecords = (input: {
 };
 
 /**
- * A standalone run's roll-up (REQ-006): the totals cover every given record (the host and its
+ * A standalone run's roll-up (REQ-006): the totals cover every given record (the run's own agent and its
  * delegated copies, including converted collaborators), while the latest prompt, context
- * window, model and run identity stay those of the run's own agent (the host record), so the
+ * window, model and run identity stay those of the run's own agent (its own record), so the
  * context meter keeps describing the agent the user is talking to.
  */
 export const buildStandaloneRunTokenUsageSummaryFromRecords = (input: {
-  hostRunId: string;
+  agentRunId: string;
   records: readonly TokenUsageRunRecord[];
-}): TokenUsageRunSummaryPayload => buildRollUpSummary(input.hostRunId, input.records, (record) => record.runId === input.hostRunId);
+}): TokenUsageRunSummaryPayload => buildRollUpSummary(input.agentRunId, input.records, (record) => record.runId === input.agentRunId);
 
 /**
  * A team or org run's roll-up (REQ-009, CR-461-004): the totals cover its own records and those of every run delegated
@@ -157,19 +157,19 @@ const buildRollUpSummary = (
   isOwn: (record: TokenUsageRunRecord) => boolean,
 ): TokenUsageRunSummaryPayload => {
   const total = buildTokenUsageRunSummaryFromRecords({ runId, records });
-  const host = buildTokenUsageRunSummaryFromRecords({ runId, records: records.filter(isOwn) });
+  const own = buildTokenUsageRunSummaryFromRecords({ runId, records: records.filter(isOwn) });
   return {
     ...total,
-    root_team_run_id: host.root_team_run_id,
-    agent_definition_id: host.agent_definition_id,
-    workspace_id: host.workspace_id,
-    latest_prompt_tokens: host.latest_prompt_tokens,
-    effective_context_window_tokens: host.effective_context_window_tokens,
-    context_window_usage_percent: host.context_window_usage_percent,
-    context_compaction_threshold_tokens: host.context_compaction_threshold_tokens,
-    latest_model_provider: host.latest_model_provider,
-    latest_model_identifier: host.latest_model_identifier,
-    latest_runtime_kind: host.latest_runtime_kind,
-    latest_selected_raw_model_id: host.latest_selected_raw_model_id,
+    root_team_run_id: own.root_team_run_id,
+    agent_definition_id: own.agent_definition_id,
+    workspace_id: own.workspace_id,
+    latest_prompt_tokens: own.latest_prompt_tokens,
+    effective_context_window_tokens: own.effective_context_window_tokens,
+    context_window_usage_percent: own.context_window_usage_percent,
+    context_compaction_threshold_tokens: own.context_compaction_threshold_tokens,
+    latest_model_provider: own.latest_model_provider,
+    latest_model_identifier: own.latest_model_identifier,
+    latest_runtime_kind: own.latest_runtime_kind,
+    latest_selected_raw_model_id: own.latest_selected_raw_model_id,
   };
 };

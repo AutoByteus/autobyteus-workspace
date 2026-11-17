@@ -2,8 +2,8 @@ import { describe, expect, it, vi } from "vitest";
 import { AgentRunEventType, type AgentRunEvent } from "../../../src/agent-execution/domain/agent-run-event.js";
 import { createAgentRootExecutionIdentity, createCollaborationMemberExecutionIdentity, createTeamRootExecutionIdentity }
   from "../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
-import { StandalonePairedAgentAccess } from "../../../src/standalone-agent-run-root/services/standalone-paired-agent-access.js";
-import { TeamPairedAgentAccess, teamMemberPresentationOf } from "../../../src/agent-team-execution/services/team-paired-agent-access.js";
+import { StandaloneRunAgentAccess } from "../../../src/standalone-agent-run-root/services/standalone-run-agent-access.js";
+import { TeamRunAgentAccess, teamMemberPresentationOf } from "../../../src/agent-team-execution/services/team-run-agent-access.js";
 import { TeamRunEventSourceType, type TeamRunEvent } from "../../../src/agent-team-execution/domain/team-run-event.js";
 
 /** autobyteus-278 AR-401: each root kind's own source of a peer-started run's output, commands and readiness. */
@@ -30,17 +30,17 @@ const standalone = () => {
   const hostReady = new Set<(run: unknown) => void>();
   let live: ReturnType<typeof fakeHost> | null = fakeHost("host-run");
   const root = {
-    hostRunId: "host-run", hostAddress: "/researcher", rootIdentity: createAgentRootExecutionIdentity("host-run"),
-    activeHostRun: () => live,
-    onHostReady: (listener: (run: unknown) => void) => { hostReady.add(listener); return () => hostReady.delete(listener); },
-    postHostUserMessage: vi.fn(async () => ({ kind: "posted" as const, run: live, post: { accepted: true } })),
+    agentRunId: "host-run", agentAddress: "/researcher", rootIdentity: createAgentRootExecutionIdentity("host-run"),
+    activeAgentRun: () => live,
+    onAgentReady: (listener: (run: unknown) => void) => { hostReady.add(listener); return () => hostReady.delete(listener); },
+    postAgentUserMessage: vi.fn(async () => ({ kind: "posted" as const, run: live, post: { accepted: true } })),
   };
   const ended = new Set<() => void>();
-  const roots = { resolveRoot: vi.fn(async () => root), getActive: vi.fn(() => root), stopRoot: vi.fn(async () => ({ rootEnded: true, host: { outcome: "terminated" as const, runtimeKind: null } })),
+  const roots = { resolveRoot: vi.fn(async () => root), getActive: vi.fn(() => root), stopRoot: vi.fn(async () => ({ rootEnded: true, agent: { outcome: "terminated" as const, runtimeKind: null } })),
     onRunEnded: (_hostRunId: string, listener: () => void) => { ended.add(listener); return () => ended.delete(listener); } };
   return {
-    root, roots, access: new StandalonePairedAgentAccess(roots as never), hostReady, ended,
-    /** The manager reports the run ended (Stop, terminate or delete by any path), after its host stopped. */
+    root, roots, access: new StandaloneRunAgentAccess(roots as never), hostReady, ended,
+    /** The manager reports the run ended (Stop, terminate or delete by any path), after its agent stopped. */
     end: () => [...ended].forEach((listener) => listener()),
     host: () => live!,
     restore: () => { live = fakeHost("host-run"); hostReady.forEach((listener) => listener(live)); return live; },
@@ -48,12 +48,12 @@ const standalone = () => {
   };
 };
 
-describe("StandalonePairedAgentAccess (a remote Agent)", () => {
-  it("presents the host's events and follows a restored host through the root's host-ready hook", async () => {
+describe("StandaloneRunAgentAccess (a remote Agent)", () => {
+  it("presents the host's events and follows a restored host through the root's agent-ready hook", async () => {
     const f = standalone();
     const frames: [string, string][] = [];
     const onEnded = vi.fn();
-    const observation = (await f.access.observePairedAgents("host-run", (agentRunId, message) => frames.push([agentRunId, message.type]), onEnded))!;
+    const observation = (await f.access.observeRunAgents("host-run", (agentRunId, message) => frames.push([agentRunId, message.type]), onEnded))!;
     f.host().emit(statusEvent("host-run", "running"));
     const first = f.host();
     f.idle();
@@ -74,7 +74,7 @@ describe("StandalonePairedAgentAccess (a remote Agent)", () => {
     const f = standalone();
     const onEnded = vi.fn();
     const frames: string[] = [];
-    const observation = (await f.access.observePairedAgents("host-run", (agentRunId) => frames.push(agentRunId), onEnded))!;
+    const observation = (await f.access.observeRunAgents("host-run", (agentRunId) => frames.push(agentRunId), onEnded))!;
     f.idle();
     const restored = f.restore();
     expect(onEnded).not.toHaveBeenCalled();
@@ -89,10 +89,10 @@ describe("StandalonePairedAgentAccess (a remote Agent)", () => {
     expect(onEnded).toHaveBeenCalledTimes(1);
   });
 
-  it("posts the owner's message as user input under the owner heading, interrupts the host and stops the root", async () => {
+  it("posts the owner's message as user input under the owner heading, interrupts the agent and stops the root", async () => {
     const f = standalone();
     await expect(f.access.executeOwnerCommand("host-run", "host-run", post, OWNER)).resolves.toEqual({ accepted: true });
-    const [{ message }] = f.root.postHostUserMessage.mock.calls[0] as unknown as [{ message: { content: string; metadata: Record<string, unknown> } }];
+    const [{ message }] = f.root.postAgentUserMessage.mock.calls[0] as unknown as [{ message: { content: string; metadata: Record<string, unknown> } }];
     // DS-004a: the mark is a content heading; the IDs pass through unchanged (N-405) and no other metadata is added.
     expect(message.content).toBe('From the owner of node "alpha":\n\nstatus?');
     expect(message.metadata).toEqual({ input_origin: "user_message", message_id: "m1", dedupe_key: "d1" });
@@ -101,9 +101,9 @@ describe("StandalonePairedAgentAccess (a remote Agent)", () => {
     await expect(f.access.executeOwnerCommand("host-run", "host-run", { kind: "terminate" }, OWNER)).resolves.toEqual({ accepted: true });
     expect(f.roots.stopRoot).toHaveBeenCalledWith("host-run");
     await expect(f.access.executeOwnerCommand("host-run", "other-run", post, OWNER)).resolves.toMatchObject({ accepted: false, code: "TARGET_NOT_PERMITTED" });
-    expect(f.access.pairedAgentStatuses("host-run")).toEqual([{ agentRunId: "host-run", status: "idle" }]);
+    expect(f.access.runAgentStatuses("host-run")).toEqual([{ agentRunId: "host-run", status: "idle" }]);
     f.idle();
-    expect(f.access.pairedAgentStatuses("host-run")).toEqual([]);
+    expect(f.access.runAgentStatuses("host-run")).toEqual([]);
     await expect(f.access.executeOwnerCommand("host-run", "host-run", { kind: "interrupt" }, OWNER)).resolves.toMatchObject({ accepted: false, code: "RUN_NOT_ACTIVE" });
   });
 });
@@ -126,11 +126,11 @@ const agentEvent = (agentRunId: string): TeamRunEvent => ({
   payload: { eventType: "TURN_STARTED", details: { turnId: "t1" }, statusHint: null },
 } as never);
 
-describe("TeamPairedAgentAccess (a remote Team)", () => {
+describe("TeamRunAgentAccess (a remote Team)", () => {
   it("sends its members' output only, and follows the root across a quiet shutdown (each member then offline, CR-461-061) and a restore", async () => {
     let managed: ReturnType<typeof teamRoot> | null = teamRoot(["lead-run", "writer-run"]);
     const lifecycle = new Set<(snapshot: { isActive: boolean; ending: string | null }) => void>();
-    const access = new TeamPairedAgentAccess({
+    const access = new TeamRunAgentAccess({
       getManagedTeamRun: () => managed as never,
       resolveManagedTeamRun: async () => managed as never,
       subscribeToLifecycle: (_id, listener) => { lifecycle.add(listener as never); return () => lifecycle.delete(listener as never); },
@@ -138,7 +138,7 @@ describe("TeamPairedAgentAccess (a remote Team)", () => {
     });
     const frames: string[] = [];
     const onEnded = vi.fn();
-    const observation = await access.observePairedAgents("team-run", (agentRunId, message) =>
+    const observation = await access.observeRunAgents("team-run", (agentRunId, message) =>
       frames.push(message.type === "AGENT_STATUS" ? `${agentRunId}:${(message.payload as { status: string }).status}` : agentRunId), onEnded);
     managed!.emit(agentEvent("lead-run"));
     managed!.emit(agentEvent("copy-run"));
@@ -151,7 +151,7 @@ describe("TeamPairedAgentAccess (a remote Team)", () => {
     managed.emit(agentEvent("writer-run"));
     // The quiet shutdown reports each member offline (a member whose start failed has no runtime to report it).
     expect(frames).toEqual(["lead-run", "lead-run:offline", "writer-run:offline", "writer-run"]);
-    expect(access.pairedAgentStatuses("team-run")).toEqual([{ agentRunId: "lead-run", status: "running" }]);
+    expect(access.runAgentStatuses("team-run")).toEqual([{ agentRunId: "lead-run", status: "running" }]);
     expect(onEnded).not.toHaveBeenCalled();
     observation.close();
     expect(lifecycle.size).toBe(0);
@@ -161,11 +161,11 @@ describe("TeamPairedAgentAccess (a remote Team)", () => {
   it("ends when the Team run is stopped by any path (lifecycle ending 'stopped'), but not on idle shutdown (F-004)", async () => {
     const managed = teamRoot(["lead-run"]);
     const lifecycle = new Set<(snapshot: { isActive: boolean; ending: string | null }) => void>();
-    const access = new TeamPairedAgentAccess({ getManagedTeamRun: () => managed as never, resolveManagedTeamRun: async () => managed as never,
+    const access = new TeamRunAgentAccess({ getManagedTeamRun: () => managed as never, resolveManagedTeamRun: async () => managed as never,
       subscribeToLifecycle: (_id, listener) => { lifecycle.add(listener as never); return () => lifecycle.delete(listener as never); },
       terminateTeamRun: vi.fn(async () => true) });
     const onEnded = vi.fn();
-    await access.observePairedAgents("team-run", () => undefined, onEnded);
+    await access.observeRunAgents("team-run", () => undefined, onEnded);
     lifecycle.forEach((listener) => listener({ isActive: false, ending: "stopped" }));
     expect(onEnded).toHaveBeenCalledTimes(1);
     expect(lifecycle.size).toBe(0);
@@ -175,7 +175,7 @@ describe("TeamPairedAgentAccess (a remote Team)", () => {
   it("posts and interrupts through the member command path and terminates the Team run", async () => {
     const managed = teamRoot(["lead-run"]);
     const terminateTeamRun = vi.fn(async () => true);
-    const access = new TeamPairedAgentAccess({ getManagedTeamRun: () => managed as never, resolveManagedTeamRun: async () => managed as never,
+    const access = new TeamRunAgentAccess({ getManagedTeamRun: () => managed as never, resolveManagedTeamRun: async () => managed as never,
       subscribeToLifecycle: () => () => undefined, terminateTeamRun });
     await access.executeOwnerCommand("team-run", "lead-run", post, OWNER);
     expect(managed.executeAgentCommand.mock.calls[0]![0]).toBe("lead-run");

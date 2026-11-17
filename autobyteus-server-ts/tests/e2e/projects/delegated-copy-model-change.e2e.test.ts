@@ -332,7 +332,7 @@ suite("A delegated copy's model changed by the user: stop, choose, resume (real 
       const ownRead = await delegatedConversation(graphql, path.join(dataDir, "memory"), rootId, agentRunId);
       if (ownRead) return ownRead;
       if (agentRunId === managerRunId && kind === "agent") return (await graphql(`query($id:String!){getRunProjection(runId:$id){conversation}}`, { id: agentRunId })).getRunProjection?.conversation;
-      if (kind === "agent") return (await graphql(`query($h:String!,$a:String!,$r:String!){agentRunCollaborationMemberProjection(hostRunId:$h,memberAddress:$a,agentRunId:$r){conversation}}`,
+      if (kind === "agent") return (await graphql(`query($h:String!,$a:String!,$r:String!){agentRunCollaborationMemberProjection(runId:$h,memberAddress:$a,agentRunId:$r){conversation}}`,
         { h: rootId, a: address, r: agentRunId })).agentRunCollaborationMemberProjection?.conversation;
       if (kind === "team") return (await graphql(`query($id:String!,$a:String!){getTeamMemberRunProjection(teamRunId:$id,agentRunId:$a){conversation}}`,
         { id: rootId, a: agentRunId })).getTeamMemberRunProjection?.conversation;

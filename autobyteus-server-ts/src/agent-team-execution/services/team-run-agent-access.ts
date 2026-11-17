@@ -4,14 +4,14 @@ import type { AgentPresentationEvent } from "../../agent-collaboration/execution
 import { projectAgentPresentationMessage } from "../../agent-collaboration/execution/events/agent-presentation-message-projector.js";
 import {
   notLiveRefusal,
-  pairedAgentStatusFrame,
+  runAgentStatusFrame,
   remoteOwnerUserMessage,
-  type PairedAgentAccess,
-  type PairedAgentObservation,
-  type PairedAgentPresentationListener,
-  type PairedAgentStatus,
+  type RunAgentAccess,
+  type RunAgentObservation,
+  type RunAgentPresentationListener,
+  type RunAgentStatusEntry,
   type RemoteOwner,
-} from "../../agent-collaboration/execution/remote/paired-agent-access.js";
+} from "../../agent-collaboration/execution/remote/run-agent-access.js";
 import type { RemoteOwnerCommand } from "../../agent-collaboration/execution/remote/remote-run-channel.js";
 import type { RootTeamRun } from "../domain/root-team-run.js";
 import type { TeamAgentEvent } from "../domain/team-agent-event.js";
@@ -55,10 +55,10 @@ export const teamMemberPresentationOf = (event: TeamRunEvent): Readonly<{ agentR
  * no runtime to report it, and its follower would keep showing `error` (CR-461-061, DTL-005). A stop of any kind (the
  * lifecycle's `ending: "stopped"`) ends the observation.
  */
-export class TeamPairedAgentAccess implements PairedAgentAccess {
+export class TeamRunAgentAccess implements RunAgentAccess {
   constructor(private readonly teamRuns: TeamRuns) {}
 
-  async observePairedAgents(teamRunId: string, onPresentation: PairedAgentPresentationListener, onEnded: () => void): Promise<PairedAgentObservation> {
+  async observeRunAgents(teamRunId: string, onPresentation: RunAgentPresentationListener, onEnded: () => void): Promise<RunAgentObservation> {
     let unsubscribe: (() => void) | null = null;
     let closed = false;
     let members: ReadonlySet<string> = new Set();
@@ -87,7 +87,7 @@ export class TeamPairedAgentAccess implements PairedAgentAccess {
     // A restore after idle shutdown is a new root: follow it. A stop ends the observation (DS-006).
     const offLifecycle = this.teamRuns.subscribeToLifecycle(teamRunId, (snapshot) => {
       if (snapshot.ending === "stopped") { close(); onEnded(); return; }
-      if (snapshot.ending === "idle_shutdown" && !closed) for (const agentRunId of members) onPresentation(agentRunId, pairedAgentStatusFrame("offline"));
+      if (snapshot.ending === "idle_shutdown" && !closed) for (const agentRunId of members) onPresentation(agentRunId, runAgentStatusFrame("offline"));
       attach(snapshot.isActive ? this.teamRuns.getManagedTeamRun(teamRunId) : null);
     });
     return Object.freeze({ close });
@@ -109,7 +109,7 @@ export class TeamPairedAgentAccess implements PairedAgentAccess {
     return root.executeAgentCommand(agentRunId, { kind: "post_message", message: remoteOwnerUserMessage(command, owner) });
   }
 
-  pairedAgentStatuses(teamRunId: string): readonly PairedAgentStatus[] {
+  runAgentStatuses(teamRunId: string): readonly RunAgentStatusEntry[] {
     const root = this.teamRuns.getManagedTeamRun(teamRunId);
     if (!root?.isActive()) return [];
     const members = new Set(peerStartedTeamMembers(root.getExecutionTreeSnapshot()).map((member) => member.agentRunId));

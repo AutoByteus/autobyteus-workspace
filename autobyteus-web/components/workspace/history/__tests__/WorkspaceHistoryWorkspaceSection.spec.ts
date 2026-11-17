@@ -451,7 +451,7 @@ describe('WorkspaceHistoryWorkspaceSection current execution rows', () => {
     useAgentTeamContextsStore().$patch({ delegatedRows: { 'team-run-1': { key: selected.key, target: selected.openTarget!, address: selected.address } } });
     await nextTick();
     const taskRow = wrapper.get('[data-test="workspace-team-transient-execution-row"]');
-    expect(taskRow.attributes('data-transient-kind')).toBe('task_agent');
+    expect(taskRow.attributes('data-delegated-run-kind')).toBe('task_agent');
     expect(taskRow.attributes('data-member-address')).toBe('/worker');
     expect(taskRow.classes()).toContain('is-selected');
     expect(taskRow.attributes()).toMatchObject({ role: 'treeitem', 'aria-level': '2', 'aria-selected': 'true', title: 'Temporary task agent · worker · /worker' });
@@ -518,7 +518,7 @@ describe('WorkspaceHistoryWorkspaceSection current execution rows', () => {
 
     let taskRows = wrapper.findAll('[data-test="workspace-team-transient-execution-row"]');
     expect(taskRows).toHaveLength(1);
-    expect(taskRows[0].attributes('data-transient-kind')).toBe('task_team');
+    expect(taskRows[0].attributes('data-delegated-run-kind')).toBe('task_team');
     await taskRows[0].trigger('click');
     await wrapper.vm.$nextTick();
     // The server's open target: the delegated Team's coordinator (F-56 was base's: it only expanded).
@@ -528,7 +528,7 @@ describe('WorkspaceHistoryWorkspaceSection current execution rows', () => {
     actions.onSelectTeamMember.mockClear();
     taskRows = wrapper.findAll('[data-test="workspace-team-transient-execution-row"]');
     expect(taskRows).toHaveLength(2);
-    expect(taskRows[1].attributes('data-transient-kind')).toBe('task_team_child');
+    expect(taskRows[1].attributes('data-delegated-run-kind')).toBe('task_team_child');
     await taskRows[1].trigger('click');
     expect(actions.onSelectTeamMember).toHaveBeenCalledWith({
       teamRunId: 'team-run-1', memberAddress: '/reviewer', agentRunId: 'reviewer-run',
@@ -546,7 +546,7 @@ describe('WorkspaceHistoryWorkspaceSection current execution rows', () => {
     answerStatuses({ 'task-team-run-1': 'running' });
     await wrapper.vm.$nextTick();
 
-    const taskTeamRow = () => wrapper.get('[data-transient-kind="task_team"]');
+    const taskTeamRow = () => wrapper.get('[data-delegated-run-kind="task_team"]');
     expect(taskTeamRow().attributes('aria-expanded')).toBe('false');
     expect(taskTeamRow().findAll('[data-test="team-aggregate-status-dot"]')).toHaveLength(1);
     expect(taskTeamRow().get('[data-test="team-aggregate-status-dot"]').attributes('data-status')).toBe(AgentStatus.Running);
@@ -592,7 +592,7 @@ describe('WorkspaceHistoryWorkspaceSection current execution rows', () => {
     expect(selectedCoordinator.get('[data-test="workspace-hierarchy-branches"] [data-has-following-sibling]').attributes('data-has-following-sibling'))
       .toBe('false');
 
-    const designRow = wrapper.get('[data-row-kind="transient_execution"][data-member-address="/design"]');
+    const designRow = wrapper.get('[data-row-kind="delegated_run"][data-member-address="/design"]');
     expect(designRow.attributes()).toMatchObject({ role: 'treeitem', 'aria-level': '2', 'aria-expanded': 'false', 'aria-selected': 'false',
       title: 'Temporary task team · design · /design' });
     expect(designRow.find('[data-team-icon="temporary-task-team"]').exists()).toBe(true);

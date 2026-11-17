@@ -32,7 +32,7 @@ describe('AgentWorkspaceSurface title of a delegated run', () => {
   it('a run the Org delegated, opened in the Org, reads its name, as one an Agent run delegated does', () => {
     expect(mountFor({ kind: 'agent_org_task_agent', root: { orgRunId: 'org-run' }, address: '/writer' })
       .get('[data-test="agent-workspace-title"]').text()).toBe('writer')
-    expect(mountFor({ kind: 'agent_run_task_agent', host: { hostRunId: 'manager-run' }, address: '/writer' })
+    expect(mountFor({ kind: 'agent_run_task_agent', viewRun: { runId: 'manager-run' }, address: '/writer' })
       .get('[data-test="agent-workspace-title"]').text()).toBe('writer')
   })
 })

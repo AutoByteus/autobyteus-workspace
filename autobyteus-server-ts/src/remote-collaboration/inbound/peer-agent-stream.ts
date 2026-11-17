@@ -1,4 +1,4 @@
-import type { PairedAgentObservation } from "../../agent-collaboration/execution/remote/paired-agent-access.js";
+import type { RunAgentObservation } from "../../agent-collaboration/execution/remote/run-agent-access.js";
 import type { RemoteAgentProjection } from "../../agent-collaboration/execution/remote/remote-run-channel.js";
 import type { RunProjection } from "../../run-history/projection/run-projection-types.js";
 import type { AgentStreamSequence, AgentStreamSequences } from "../../services/agent-streaming/agent-stream-sequence.js";
@@ -46,7 +46,7 @@ export const observePeerAgentStream = (
   sequences: Pick<AgentStreamSequences, "follow">,
   agentRunId: string,
   send: (frame: PeerAgentStreamFrame) => void,
-): PairedAgentObservation => {
+): RunAgentObservation => {
   let unsubscribe: () => void = () => undefined;
   const attach = (sequence: AgentStreamSequence | null): void => {
     unsubscribe();

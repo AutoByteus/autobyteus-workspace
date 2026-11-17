@@ -57,14 +57,14 @@ export class TokenUsageRunStore {
     return buildTeamRunTokenUsageSummaryFromRecords({ rootTeamRunId, records: [...own, ...delegated] });
   }
 
-  /** A standalone run's roll-up over its host and the given child runs (each record once). */
+  /** A standalone run's roll-up over its own agent and the given child runs (each record once). */
   async getStandaloneRunSummary(input: {
-    hostRunId: string;
+    agentRunId: string;
     childAgentRunIds: readonly string[];
   }): Promise<TokenUsageRunSummaryPayload> {
     await this.readiness.assertHistoricalReadReady();
-    const records = await this.repository.listByRunIds([input.hostRunId, ...input.childAgentRunIds]);
-    return buildStandaloneRunTokenUsageSummaryFromRecords({ hostRunId: input.hostRunId, records });
+    const records = await this.repository.listByRunIds([input.agentRunId, ...input.childAgentRunIds]);
+    return buildStandaloneRunTokenUsageSummaryFromRecords({ agentRunId: input.agentRunId, records });
   }
 
   async getTeamMemberSummary(input: {

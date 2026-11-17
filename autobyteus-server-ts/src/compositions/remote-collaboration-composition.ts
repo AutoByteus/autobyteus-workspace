@@ -44,7 +44,7 @@ export const composeStudioRemoteCollaboration = (input: Readonly<{
   tempWorkspaceDir: string;
   agentRuns: Pick<AgentRunService, "prepareAgentRun" | "recordRunTitle" | "readRunTitle">;
   teamRuns: Pick<TeamRunService, "storedRemoteLinkCheck" | "createTeamRun" | "terminateTeamRun" | "recordRunTitle"
-    | "readRunTitle" | "pairedAgents">;
+    | "readRunTitle" | "runAgents">;
   orgRuns: Pick<AgentOrgRunService, "storedRemoteLinkCheck">;
   /** The node's one root resolution (autobyteus-285 D5); the receivers keep their own "not found" handling. */
   rootResolver: CollaborationRootResolver;
@@ -59,10 +59,10 @@ export const composeStudioRemoteCollaboration = (input: Readonly<{
         case "agent_org": return input.orgRuns.storedRemoteLinkCheck(root.runId, query);
       }
     },
-    standalone: async (hostRunId) => { const found = await resolve("agent", hostRunId); return found?.kind === "agent" ? found.root : null; },
+    standalone: async (agentRunId) => { const found = await resolve("agent", agentRunId); return found?.kind === "agent" ? found.root : null; },
     team: async (teamRunId) => { const found = await resolve("agent_team", teamRunId); return found?.kind === "agent_team" ? found.root : null; },
     org: async (orgRunId) => { const found = await resolve("agent_org", orgRunId); return found?.kind === "agent_org" ? found.root : null; },
-    pairedAgents: (kind) => kind === "agent" ? getStandaloneAgentRunRootManager().pairedAgents : input.teamRuns.pairedAgents,
+    runAgents: (kind) => kind === "agent" ? getStandaloneAgentRunRootManager().runAgents : input.teamRuns.runAgents,
   };
   // autobyteus-32: decisions of copies started for a peer, held until the peer's work packet arrives.
   const peerStartedRunDecisions = new PeerStartedRunDecisions();

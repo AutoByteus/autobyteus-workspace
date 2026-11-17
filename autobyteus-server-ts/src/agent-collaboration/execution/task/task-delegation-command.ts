@@ -13,7 +13,7 @@ export type SpawnTaskInput =
   | Readonly<{ recipient_address: string; description: string; reference_files?: string[]; node?: string; task_id?: never }>;
 
 /** `delegate_task` with a copy's own ID: assigns saved Task `taskId` to that existing copy in the sender's root. */
-export type AssignToExistingCopyInput = Readonly<{ copy: TaskExecutionReference; taskId: string }>;
+export type AssignToExistingDelegatedRunInput = Readonly<{ copy: TaskExecutionReference; taskId: string }>;
 
 /**
  * What dispatch reads from a root's placement: the launch notes of a fresh catalog admission (DS-003).
@@ -26,7 +26,7 @@ export type TaskCopyPlacementLaunchNotes = Readonly<{
 }>;
 
 /** The copy a delegation reached, named for what it is: an Agent copy, or a Team copy and its coordinator. */
-export type DelegatedCopy =
+export type DelegatedRun =
   | Readonly<{ kind: "agent"; agentRunId: string }>
   | Readonly<{ kind: "team"; teamRunId: string; teamCoordinatorAgentRunId: string }>;
 /**
@@ -36,16 +36,16 @@ export type DelegatedCopy =
  * commit, that its work was not delivered) and carries the reason.
  */
 export type TaskDelegationOutcome =
-  | Readonly<{ delegated: true; copy: DelegatedCopy; taskId?: string; launchNotes?: readonly string[]; node?: string }>
+  | Readonly<{ delegated: true; copy: DelegatedRun; taskId?: string; launchNotes?: readonly string[]; node?: string }>
   | Readonly<{ delegated: false; message: string }>;
 
 /** The copy at a target: its reference and ingress (the Agent itself, or the Team's coordinator). */
-export const delegatedCopyOf = (target: Readonly<{ execution: TaskExecutionReference; ingressAgentRunId: string }>): DelegatedCopy =>
+export const delegatedRunOf = (target: Readonly<{ execution: TaskExecutionReference; ingressAgentRunId: string }>): DelegatedRun =>
   "agentRunId" in target.execution
     ? { kind: "agent", agentRunId: target.execution.agentRunId }
     : { kind: "team", teamRunId: target.execution.teamRunId, teamCoordinatorAgentRunId: target.ingressAgentRunId };
 /** The reverse: a delegated copy's reference and ingress. */
-export const copyTargetOf = (copy: DelegatedCopy): Readonly<{ execution: TaskExecutionReference; ingressAgentRunId: string }> =>
+export const delegatedRunTargetOf = (copy: DelegatedRun): Readonly<{ execution: TaskExecutionReference; ingressAgentRunId: string }> =>
   copy.kind === "agent"
     ? { execution: { agentRunId: copy.agentRunId }, ingressAgentRunId: copy.agentRunId }
     : { execution: { teamRunId: copy.teamRunId }, ingressAgentRunId: copy.teamCoordinatorAgentRunId };
@@ -63,7 +63,7 @@ export type TaskDelegationErrorCode =
   | "TASK_EXECUTION_RESTORE_FAILED"
   | "TASK_REACTIVATION_STOP_PENDING"
   | "TASK_EXECUTION_STOPPING"
-  | "TASK_COPY_NOT_ASSIGNABLE";
+  | "TASK_DELEGATED_RUN_NOT_ASSIGNABLE";
 
 /** Refusal text when the root no longer accepts messages or delegations (wording §7.3). */
 export const ROOT_NOT_ACTIVE_MESSAGE = "This work is stopping or has stopped, so the message or delegation was not sent.";

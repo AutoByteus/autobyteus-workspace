@@ -63,14 +63,14 @@ After `recoverAfterListen`, `resumeAfterUpdate()` runs in the background; it nev
 6. A cheap pre-filter, before restoring: skip a run that is already live, and a run whose root was stopped on purpose
    (`terminatedAt`), archived or deleted.
 7. **Restore without posting**, through the root: `resolveOrRestore(root)`; a standalone host is then made ready
-   (`ensureHostReady`); a member starts on the notice itself. Restoring posts no input.
+   (`ensureAgentReady`); a member starts on the notice itself. Restoring posts no input.
 8. **Re-check after the restore**: the root's history must still show no `terminatedAt` and no archive. This check is
    final: archiving refuses an active run or root. (Archiving a standalone host whose host is not live ends the root
    instead; the later post is then refused, and an admitted turn is fenced.) If it fails, nothing is posted, and the
    idle restored run stops as usual.
 9. **Post a notice the run admits only as its first input** (`onlyAsFirstInput`, below), through the root so its fences
    apply:
-   - a standalone host: `root.postHostUserMessage({ message, postOptions })` (a host takes no `executeAgentCommand`);
+   - a standalone host: `root.postAgentUserMessage({ message, postOptions })` (a host takes no `executeAgentCommand`);
    - members: `root.executeAgentCommand(id, { kind: "post_message", message, postOptions })`.
 10. A refusal or a failure is logged and the run is not counted as resumed. `AGENT_RUN_INPUT_NOT_FIRST` is logged as
     "the run already had input": a user's message, another run's `send_message_to` or a peer's message reached

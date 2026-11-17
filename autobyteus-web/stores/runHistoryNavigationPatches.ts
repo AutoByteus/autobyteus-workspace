@@ -93,7 +93,7 @@ const patchStandalone = (
 const patchExecutionRowStatus = (
   row: RunHistoryTeamExecutionRow,
   currentStatus: AgentStatus | string | null,
-): RunHistoryTeamExecutionRow => row.kind === 'transient_execution'
+): RunHistoryTeamExecutionRow => row.kind === 'delegated_run'
   ? { ...row, currentStatus }
   : {
       ...row,

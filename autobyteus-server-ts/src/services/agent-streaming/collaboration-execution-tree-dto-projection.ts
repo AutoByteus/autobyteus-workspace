@@ -1,7 +1,7 @@
 import { agentOrgLaunchConfigurationDtoSchema, type AgentOrgExecutionTreeDto, type AgentRunCollaborationTreeDto } from "@autobyteus/collaboration-stream-contracts";
 import type { AgentLaunchConfiguration } from "../../agent-team-execution/domain/team-run-config.js";
 import type { CollaborationHandoff } from "../../agent-collaboration/domain/collaboration-handoff.js";
-import type { StandaloneRootHost } from "../../standalone-agent-run-root/domain/standalone-root-host.js";
+import type { StandaloneRunAgent } from "../../standalone-agent-run-root/domain/standalone-run-agent.js";
 import type { AgentOrgRunExecutionTreeSnapshot } from "../../agent-org-execution/domain/agent-org-run-execution-tree.js";
 import type { ConfiguredAgentExecutionNode, ConfiguredExecutionNode } from "../../run-history/domain/run-execution-tree-shared-records.js";
 
@@ -26,9 +26,9 @@ const projectConfigured = (member: ConfiguredExecutionNode): AgentOrgExecutionTr
   };
 
 /** A standalone run's view tree: its own agent (the runs it delegated are its tree's rows, SR-084). */
-export const projectAgentCollaborationTree = (input: Readonly<{ host: StandaloneRootHost; createdAt: string }>): AgentRunCollaborationTreeDto => ({
+export const projectAgentCollaborationTree = (input: Readonly<{ agent: StandaloneRunAgent; createdAt: string }>): AgentRunCollaborationTreeDto => ({
   subjectKind: "agent", createdAt: input.createdAt,
-  host: { address: input.host.address, agentRunId: input.host.agentRunId, agentDefinitionId: input.host.agentDefinitionId },
+  agent: { address: input.agent.address, agentRunId: input.agent.agentRunId, agentDefinitionId: input.agent.agentDefinitionId },
 });
 
 /** An Org run's own tree: its agents and mounted teams (the runs it delegated are its tree's rows, SR-084). */

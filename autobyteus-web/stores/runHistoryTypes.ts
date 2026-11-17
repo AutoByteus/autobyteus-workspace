@@ -209,11 +209,11 @@ export interface RunHistoryStableExecutionRow extends RunHistoryTeamExecutionRow
  */
 export type RowOpenTarget = Readonly<{ runKind: 'agent' | 'agent_team'; runId: string; agentRunId: string; nodeId?: string }>;
 
-export interface RunHistoryTransientExecutionRow extends RunHistoryTeamExecutionRowBase {
-  kind: 'transient_execution';
+export interface RunHistoryDelegatedRunRow extends RunHistoryTeamExecutionRowBase {
+  kind: 'delegated_run';
   /** Where it opens; null for a row error (a team run whose coordinator is not a member), absent where none was sent. */
   openTarget?: RowOpenTarget | null;
-  transientKind: 'task_agent' | 'task_team' | 'task_team_child';
+  delegatedRunKind: 'task_agent' | 'task_team' | 'task_team_child';
   currentStatus: AgentStatus | string | null;
   /** Display name of the AgentRun that started a delegated child row; null otherwise. */
   delegatedBy: string | null;
@@ -226,7 +226,7 @@ export interface RunHistoryTransientExecutionRow extends RunHistoryTeamExecution
 
 export type RunHistoryTeamExecutionRow =
   | RunHistoryStableExecutionRow
-  | RunHistoryTransientExecutionRow;
+  | RunHistoryDelegatedRunRow;
 
 export interface TeamTreeNode {
   teamRunId: string;

@@ -397,7 +397,7 @@ const teamAndOtherHosts = async () => {
     await rootLine(page, s.taskB).click();
     const teamRoot = await rootOf(s.projectId, s.taskB);
     await until('coordinator conversation opened', async () => /You have a new task from/.test(await centerText(page)), 30000);
-    const teamRow = page.locator('[data-test="workspace-team-transient-execution-row"][data-transient-kind="task_team"]');
+    const teamRow = page.locator('[data-test="workspace-team-transient-execution-row"][data-delegated-run-kind="task_team"]');
     await until('task Team expanded', async () => (await teamRow.getAttribute('aria-expanded')) === 'true', 15000);
     const coordinatorRow = page.locator(`[data-test="workspace-team-transient-execution-row"][data-agent-run-id="${teamRoot.ingressAgentRunId}"]`);
     await until('coordinator selected', async () => (await coordinatorRow.getAttribute('aria-selected')) === 'true', 15000);

@@ -31,7 +31,7 @@ export const buildRestartNoticeText = (input: RestartNoticeInput): string => {
 
 /**
  * The only producer of the restart notice (autobyteus-285 D4): a SYSTEM input from `system.restart_resume`, in the
- * shape of the platform's other notices. The native runtime emits no notification for it; the resumer (host) or the
+ * shape of the platform's other notices. The native runtime emits no notification for it; the resumer (a run's own agent) or the
  * member presentation shows it as a system notice. `message_id` / `dedupe_key` are display and projection keys only.
  */
 export const buildRestartNotice = (input: RestartNoticeInput): AgentInputUserMessage => {

@@ -164,7 +164,7 @@
               <p>{{ t('workspace.collaboration.identity.address') }}: {{ selectedMessage.counterpart.address }}</p>
               <p>{{ t('workspace.collaboration.identity.agentRun') }}: {{ selectedMessage.counterpartAgentRunId }}</p>
               <template v-if="selectedMessage.counterpart.kind === 'delegated'">
-                <p>{{ t('workspace.collaboration.identity.hostRun') }}: {{ selectedMessage.counterpart.hostRunId }}</p>
+                <p>{{ t('workspace.collaboration.identity.hostRun') }}: {{ selectedMessage.counterpart.runId }}</p>
                 <p>{{ t('workspace.collaboration.identity.executionRun') }}: {{ selectedMessage.counterpart.executionRunId }}</p>
               </template>
             </div>

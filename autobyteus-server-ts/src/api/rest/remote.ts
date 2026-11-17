@@ -3,7 +3,7 @@ import type { ClientIdentity } from "../../node-access/domain/client-identity.js
 import { getClientIdentity, registerOpenSocket } from "../security/node-access-gate.js";
 import { findProcessRemoteCollaboration } from "../../remote-collaboration/remote-collaboration-services.js";
 import type { PeerGatewayResponse } from "../../remote-collaboration/channel/peer-gateway.js";
-import type { PairedAgentObservation } from "../../agent-collaboration/execution/remote/paired-agent-access.js";
+import type { RunAgentObservation } from "../../agent-collaboration/execution/remote/run-agent-access.js";
 
 const UNAVAILABLE = { message: "Remote collaboration is not available on this server." };
 
@@ -57,7 +57,7 @@ export async function registerRemoteCollaborationRoutes(app: FastifyInstance): P
    */
   app.get("/remote/run-observations", { websocket: true }, (connection: unknown, request: FastifyRequest) => {
     const socket = ((connection as { socket?: unknown }).socket ?? connection) as PeerSocket;
-    let observation: PairedAgentObservation | null = null;
+    let observation: RunAgentObservation | null = null;
     let closed = false;
     // Registered under the peer's identity, so removing the peer closes it (NA-11).
     const unregister = registerOpenSocket(request, socket);

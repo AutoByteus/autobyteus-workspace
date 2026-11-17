@@ -145,13 +145,13 @@ export class AgentRunService {
       return result.accepted ? { success: true, message: "Stopped on its node.", route: "runtime", runtimeKind: null }
         : { success: false, message: result.message ?? "The run on another node did not stop.", route: "not_found", runtimeKind: null };
     }
-    // An eligible run's root stops every child first, then its host, even when the host's own
+    // An eligible run's root stops every child first, then its agent, even when the agent's own
     // runtime already died.
     const stopped = await this.standaloneRuns?.stopRoot(runId) ?? null;
     if (stopped) {
-      const { host } = stopped;
-      if (host.outcome === "terminated") return this.terminated(host.runtimeKind);
-      if (host.outcome === "rejected") return this.notFound(host.runtimeKind);
+      const { agent } = stopped;
+      if (agent.outcome === "terminated") return this.terminated(agent.runtimeKind);
+      if (agent.outcome === "rejected") return this.notFound(agent.runtimeKind);
       if (!stopped.rootEnded) return this.notFound(null);
       await this.historyCatalogService.recordRunTerminated({ runId });
       return { success: true, message: "Agent run terminated successfully.", route: "runtime", runtimeKind: null };
@@ -316,7 +316,7 @@ export class AgentRunService {
   async stopForTaskClosure(runId: string, stillClosed: () => boolean): Promise<"stopped" | "kept_open" | "not_stopped"> {
     const stopped = await this.standaloneRuns?.stopRootForTaskClosure(runId, stillClosed) ?? null;
     if (stopped === "kept_open") return "kept_open";
-    if (stopped?.host.outcome === "rejected") return "not_stopped";
+    if (stopped?.agent.outcome === "rejected") return "not_stopped";
     if (!stopped) {
       if (!stillClosed()) return "kept_open";
       if (this.agentRunManager.getActiveRun(runId) && !(await this.agentRunManager.terminateAgentRun(runId))) return "not_stopped";
@@ -358,10 +358,10 @@ export class AgentRunService {
     return this.activate(normalizeRequiredRunId(runId));
   }
 
-  /** An eligible run is activated by its root (with its host member context); any other run directly. */
+  /** An eligible run is activated by its root (with its agent's member context); any other run directly. */
   private async activate(runId: string): Promise<StandaloneAgentRunActivationResult> {
-    const owned = await this.standaloneRuns?.resolveRootAndEnsureHost(runId) ?? null;
-    return owned ?? this.lifecycleService.activateHost(runId, { memberExecutionContext: null });
+    const owned = await this.standaloneRuns?.resolveRootAndEnsureAgent(runId) ?? null;
+    return owned ?? this.lifecycleService.activateRunAgent(runId, { memberExecutionContext: null });
   }
 
   /** Saves a stopped run's selection; a registered root of the run then follows it (FU-008), and a failed follow never fails the saved edit. */

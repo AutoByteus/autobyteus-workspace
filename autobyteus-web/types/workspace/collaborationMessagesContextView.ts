@@ -7,7 +7,7 @@ export type CollaborationMessageMemberIdentity = Readonly<{
 }> & (Readonly<{ kind: 'configured' }> | Readonly<{
   /** A participant inside a delegated child (task Agent or task Team). */
   kind: 'delegated'
-  hostRunId: string
+  runId: string
   executionRunId: string
 }> | Readonly<{
   /** An agent of a delegated run that left the root's tree when its Task closed, named by the server (autobyteus-469). */

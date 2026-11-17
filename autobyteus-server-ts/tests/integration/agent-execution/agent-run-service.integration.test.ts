@@ -145,8 +145,8 @@ const createLifecycleService = (
  */
 const hostMemberContext = (runId: string) => ({ identity: { agentRunId: runId }, teamScoped: false }) as never;
 const standaloneRootPort = (lifecycleService: StandaloneAgentRunLifecycleService) => ({
-  resolveRootAndEnsureHost: vi.fn((runId: string) =>
-    lifecycleService.activateHost(runId, { memberExecutionContext: hostMemberContext(runId) })),
+  resolveRootAndEnsureAgent: vi.fn((runId: string) =>
+    lifecycleService.activateRunAgent(runId, { memberExecutionContext: hostMemberContext(runId) })),
   stopRoot: vi.fn(async () => null),
   stopRootForTaskClosure: vi.fn(async () => null),
   refreshInheritedLaunch: vi.fn(async () => undefined),
