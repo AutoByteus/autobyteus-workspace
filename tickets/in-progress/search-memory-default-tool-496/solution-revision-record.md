@@ -7,6 +7,7 @@
 | SR-001 | Mixed (Requirements + Design) | Initial baseline: Task autobyteus-496 and the founder's decision comment | N/A | N/A | Requirements Approved; Design Ready | BEH-001–006, REQ-001–008, AC-001–010 | Architecture Design Complete; Medium / High; to architecture review |
 | SR-002 | Evidence | User: re-base the worktree on the updated remote (2026-11-17) | N/A | Requirements Approved; Design Ready | Unchanged | None (evidence: IN-006, ASM-001) | Re-based onto `a781007713`; design unchanged |
 | SR-003 | Design | Architecture review ARCH-REV-001: Fail (Design Impact) | AR-001, AR-002 (blocking); AR-003, AR-004 (adopted) | Design Ready (Failed review) | Design Ready | REQ-003, REQ-005, REQ-006; AC-003 (clarified), AC-006, AC-007 | Readers, session copy and coverage decided; back to architecture review |
+| SR-004 | Mixed | The user's change of intended behavior (2026-11-17): simple, no privacy for now | N/A | Requirements Approved (SR-001); Design Ready, review Pass (ARCH-REV-002) | Requirements Approved (SR-004, by the user); Design Ready | All REQ/AC replaced: REQ-001–003, AC-001–004 | Every agent gets the unchanged node-wide tool; Small / Low; direct to implementation |
 
 ## Revision Entries
 
@@ -77,3 +78,21 @@
 - Next action: architecture re-review
 
 Note (2026-11-17, informational, no new SR): architecture review ARCH-REV-002 passed against SR-003 (`design-review-report.md`). The reviewer delivered the implementation handoff to `/software_engineering_team/implementation_engineer`, and the Solution Designer did not forward it again. The FU-001 addendum went to `/project_task_manager` on 2026-11-17.
+
+### SR-004: the user simplifies the ticket: every agent gets the tool, privacy deferred
+
+- Phase and classification: `Requirement Gap` (the user changed intended behavior)
+- Trigger: the user's messages in the Solution Designer's conversation, 2026-11-17. With good embeddings, the agent's own memory will rank first. Search will later cover semantic memory and agent, team and global memory. "In this ticket … simple means that we don't have to care about privacy for now … Simply make each agent able to have this tool because we will try to optimize in the future."
+- Triggering finding IDs: N/A
+- Prior status: requirements `Approved` (SR-001, Solution Designer within direction); design `Ready`, ARCH-REV-002 Pass; implementation in progress
+- Current status: requirements `Approved` (SR-004, by the user); design `Ready` (SR-004)
+- IDs affected: REQ-001 to REQ-008 and AC-001 to AC-010 replaced by REQ-001 to REQ-003 and AC-001 to AC-004. DEC-001 (now node-wide, the user's decision), DEC-003 (no switch), DEC-005 (description unchanged), DEC-006/DEC-008 dropped.
+- Scenario-basis changes: SCN-003 (privacy edge), SCN-004 and SCN-005 removed
+- Sections changed: requirements-doc.md and design-spec.md rewritten for SR-004 (the old versions are in git at `cf29ff1cd8`); follow-ups FU-001 updated, FU-002 reworded, FU-004 added
+- Intended behavior changed: `Yes`
+- Approval: the user, 2026-11-17 (his own words, quoted in requirements-doc.md)
+- Design/review basis invalidated: SR-003 design and its ARCH-REV-002 pass no longer apply. The implementation engineer was told to stop on SR-003 (2026-11-17) before the new package.
+- Classification: `task_size=Small` (one production file, tests, two docs), `architectural_risk=Low` (existing rule, tool and update paths; the privacy effect is the user's accepted decision)
+- Handoff: `Architecture Design Complete` → `/software_engineering_team/implementation_engineer` (rule: Small or Medium and Low); result file `handoff-implementation.md`
+- Remaining gaps: none; FU-001, FU-002, FU-003 and FU-004 go with the result
+- Next action: implementation

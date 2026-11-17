@@ -11,7 +11,7 @@
 - Finalization target remote / branch: `origin` / `personal` (RELEASE.md)
 - Bootstrap result: worktree created from the fresh `origin/personal`
 - Bootstrap blocker: none
-- Current solution revision ID: `SR-002`
+- Current solution revision ID: `SR-004`. The user simplified the ticket; IN-006/IN-007/IN-011/IN-013 and PR-001 now serve the follow-ups FU-001 and FU-004, not this ticket.
 - Authorities read: requirements gate `references/requirements-engineering.md`, `references/finding-the-cause.md`, `references/ticket-scope.md` (2026-11-16); for design, see design-spec.md
 - Investigation status: complete for requirements and design
 
@@ -158,3 +158,9 @@
 ## Notes For Architecture Design
 
 - Realize SCN-001 to SCN-006. Keep the scope decision in the shared exposure rule; carry it to the native tool through run-owned state and to MCP through the session's exposure; filter inside the index queries.
+
+## SR-004 additions (2026-11-17)
+
+- `startup/agent-tool-loader.ts:49`: the memory tools are a required registration unit, so `search_memory` is in the registry for every native run (Read).
+- `memory-search.ts:153-156`: `getMemorySearch()` is lazy and works in every host (Read).
+- `grep -rln "requestedToolNames).toEqual\|requestedToolNames: \["` over `autobyteus-server-ts/tests` finds 7 files that list exact exposure names and will change (Command).
