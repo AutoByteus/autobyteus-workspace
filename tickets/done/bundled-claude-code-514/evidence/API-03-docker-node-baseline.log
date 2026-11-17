@@ -1,0 +1,22 @@
+# API-03 docker node check; image autobyteus/autobyteus-server:beta (sha256:52db87304cc4); server package BUILT-IN (baseline); port 64961; 2026-11-17T15:41:52Z
+## started ab514-test
+## health: {"status":"ok","message":"Server is running"}
+## starter status: {"version":"1.5.12-beta.9","state":"running","server":{"pid":95,"packageVersion":"1.5.12-beta.9","source":"builtIn"},"update":{"state":"idle","targetVersion":null,"step":null,"code":null,"message":null,"startedAt":null,"finishedAt":null,"requestedFrom":null},"updateBlocker":{"code":"NO_PACKAGES_VOLUME","message":"/home/autobyteus/server-packages is not this node's own volume, so an update would be
+## server process:    95 /usr/bin/node /opt/autobyteus/server-package/dist/app.js --host 0.0.0.0 --port 8000 --data-dir /home/autobyteus/data
+## image claude: /usr/bin/claude 2.1.319 (Claude Code) 
+## server package in use, SDK entries:
+@anthropic-ai/claude-agent-sdk
+@anthropic-ai/sdk
+.pnpm/@anthropic-ai+claude-agent-sdk@0.3.280_@anthropic-ai+sdk@0.132.1_zod@4.3.6__@modelconte_ba12f93b41fd79b682e6258669c811d4
+.pnpm/@anthropic-ai+claude-agent-sdk-linux-arm64@0.3.280
+.pnpm/@anthropic-ai+sdk@0.132.1_zod@4.3.6
+.pnpm/node_modules/@anthropic-ai/claude-agent-sdk
+.pnpm/node_modules/@anthropic-ai/claude-agent-sdk-linux-arm64
+.pnpm/node_modules/@anthropic-ai/sdk
+## node key: obtained (not printed)
+## runtimeAvailability(claude_agent_sdk): {"data":{"runtimeAvailability":{"runtimeKind":"claude_agent_sdk","enabled":true,"reason":null}}}
+## checkAgentRuntimes: {"data":{"checkAgentRuntimes":true}}
+## agentRuntimes (claude row):
+[{"runtimeKind": "claude_agent_sdk", "installed": true, "installedVersion": "2.1.319", "updates": {"state": "UPDATE_AVAILABLE", "latestVersion": "2.1.326"}, "account": {"state": "SIGNED_OUT"}, "checkedAt": "2026-11-17T15:42:56.688Z"}]
+## server log tail (errors):
+## removed ab514-test and its volumes

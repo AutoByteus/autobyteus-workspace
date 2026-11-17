@@ -9,7 +9,8 @@ import type { BackgroundTaskPanelRow } from '~/types/backgroundTaskView';
 
 type View = AgentBackgroundTaskViewQuery['agentBackgroundTaskView'];
 type Snapshot = Extract<View, { __typename?: 'AgentBackgroundTaskSnapshot' }>;
-type Mode = 'loading' | 'snapshot' | 'event-stream' | 'unsupported' | 'unavailable';
+/** `no-run`: no agent run is selected, so there is nothing to read (autobyteus-483, REQ-005). */
+type Mode = 'no-run' | 'loading' | 'snapshot' | 'event-stream' | 'unsupported' | 'unavailable';
 
 /** The expanded selected panel is the only refresh owner. Never activates a run or publishes lifecycle events. */
 export const useBackgroundTaskPanelView = (runId: Ref<string>, expanded: Ref<boolean>) => {
@@ -26,7 +27,7 @@ export const useBackgroundTaskPanelView = (runId: Ref<string>, expanded: Ref<boo
   const tasks = computed<BackgroundTaskPanelRow[]>(() => {
     if (snapshot.value && mode.value !== 'event-stream') return snapshot.value.tasks.map(task => ({
       taskId: task.taskId, kind: 'shell', description: task.description, command: null, summary: null,
-      status: task.status, startedAt: task.startedAt, exitCode: task.exitCode ?? null,
+      status: task.status, startedAt: task.startedAt, endReason: null, exitCode: task.exitCode ?? null,
     }));
     return runId.value ? stream.getTasks(runId.value) : [];
   });
@@ -62,7 +63,8 @@ export const useBackgroundTaskPanelView = (runId: Ref<string>, expanded: Ref<boo
             // The tasks the node knows now: a viewer that opened the run after they started sees them (autobyteus-473).
             stream.seedTasks(selected, view.currentTasks.map((task) => ({
               taskId: task.taskId, kind: task.kind, description: task.description, command: task.command ?? null,
-              status: task.status, summary: task.summary ?? null, startedAt: task.startedAt,
+              status: task.status, summary: task.summary ?? null, endReason: task.endReason ?? null,
+              exitCode: task.exitCode ?? null, startedAt: task.startedAt,
             })));
             break;
           case 'AgentBackgroundTaskUnsupported': mode.value = 'unsupported'; break;
@@ -84,7 +86,7 @@ export const useBackgroundTaskPanelView = (runId: Ref<string>, expanded: Ref<boo
   watch([runId, () => node.bindingRevision, expanded], ([selected, revision], previous) => {
     generation++; clearTimer(); controller?.abort(); controller = null; pending = null;
     if (!previous || selected !== previous[0] || revision !== previous[1]) snapshot.value = null;
-    mode.value = 'loading';
+    mode.value = selected ? 'loading' : 'no-run';
     if (expanded.value && selected) void refresh();
   }, { immediate: true, flush: 'sync' });
 

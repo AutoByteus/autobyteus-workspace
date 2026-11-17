@@ -130,6 +130,10 @@ const messages = {
   "workspace.components.progress.BackgroundTaskPanel.status.unknown": "Unknown",
   "workspace.components.progress.BackgroundTaskPanel.observed": "{{id}} · observed {{time}}",
   "workspace.components.progress.BackgroundTaskPanel.exitCode": "Exit code {{code}}",
+  "workspace.components.progress.BackgroundTaskPanel.end.timeLimit": "Stopped: it reached its time limit — not a failure of the command",
+  "workspace.components.progress.BackgroundTaskPanel.end.lowMemory": "Stopped: the computer was low on memory",
+  "workspace.components.progress.BackgroundTaskPanel.end.runEnded": "Stopped: the run ended",
+  "workspace.components.progress.BackgroundTaskPanel.noRun": "Select an agent to see its background tasks.",
   "workspace.components.progress.BackgroundTaskPanel.title":
     "Background Tasks",
   "workspace.components.progress.BackgroundTaskPanel.counts":

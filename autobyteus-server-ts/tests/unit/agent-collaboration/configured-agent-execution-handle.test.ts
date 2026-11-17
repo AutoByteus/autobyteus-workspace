@@ -209,9 +209,9 @@ describe("accepted task-system input presentation", () => {
 
 describe("restart resume input through the handle (autobyteus-285 SR-005)", () => {
   const notice = () => buildRestartNotice({
-    entry: { root: { rootSubjectKind: "agent_team", rootRunId: "root-run" }, agentRunId: "agent-run", place: "member",
-      status: "running", recordedAt: "2026-11-01T09:59:58.000Z", version: "1.0.0" },
-    version: "1.1.0", restartedAt: new Date("2026-11-01T10:00:30.000Z"), resumedDelegated: [],
+    agentRunId: "agent-run",
+    facts: { cause: "update", version: "1.1.0", restartedAt: "2026-11-01T10:00:30.000Z", interruptedTurn: true },
+    resumedDelegated: [],
   });
 
   it("N-12: a restored member starts on the notice and reserves nothing before it; the options pass through", async () => {

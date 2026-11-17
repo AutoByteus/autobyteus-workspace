@@ -1,0 +1,10 @@
+# API-04 busy-run-stop-now E2E: env -i PATH HOME=<temp> TMPDIR RUN_BUSY_STOP_NOW_E2E=1 TEST_BUSY_STOP_EVIDENCE_DIR=<dir> pnpm -C autobyteus-server-ts exec vitest run tests/e2e/shutdown/busy-run-stop-now.e2e.test.ts --no-watch
+# built dist of 79d1f803e4 (code d5e9f350cf); node 22.23.1; 2026-11-17
+
+{"result":"Pass","error":null,"terminate":{"runId":"busy_stop_bq284_80908_1794916334753_569801ded26944c1bf2d0b9c80ec50de","result":{"success":true,"message":"Agent run terminated successfully."},"elapsedMs":111,"foregroundGone":true},"shutdown":{"exit":{"code":0,"signal":null,"at":1794916345357},"elapsedMs":5197,"survivors":[],"markedLeft":[]},"history":{"terminatedRun":{"runId":"busy_stop_bq284_80908_1794916334753_569801ded26944c1bf2d0b9c80ec50de","terminatedAt":"2026-11-17T11:52:19.179Z","isActive":false},"shutdownRun":{"runId":"busy_stop_bq284_80908_1794916334753_adbd64b1dc8e494c87ee0688faa1d8ea","terminatedAt":null,"isActive":false}},"rootRemoved":true}
+{"result":"Pass","error":null,"applicationTerminate":{"bindingId":"1083a826-94e8-4e42-915f-a2527011c7d5","result":{"binding":{"bindingId":"1083a826-94e8-4e42-915f-a2527011c7d5","applicationId":"bundle-app__7374616e64616c6f6e65__66697874757265","launchRequestId":"busy-1","status":"TERMINATED","executionResourceRef":{"source":"bundle","kind":"AGENT","localId":"worker"},"createdAt":"2026-11-17T11:52:39.189Z","updatedAt":"2026-11-17T11:52:39.886Z","terminatedAt":"2026-11-17T11:52:39.886Z","lastErrorMessage":null,"runtime":{"subject":"AGENT_RUN","agentRunId":"worker_620c8bc451f74d57b488fa4622525cd1","definitionId":"bundle-agent__7374616e64616c6f6e65__66697874757265__776f726b6572","members":[]}},"elapsedMs":74},"roundTripMs":82,"foregroundGone":true},"close":{"exitCode":0,"closed":true,"elapsedMs":674},"rootRemoved":true}
+ ✓ tests/e2e/shutdown/busy-run-stop-now.e2e.test.ts (2 tests) 26011ms
+     ✓ server: Terminate and SIGTERM interrupt the busy turn, exit within the bound and leave nothing behind  21524ms
+     ✓ application: an application terminating its busy run interrupts the turn  4486ms
+ Test Files  1 passed (1)
+      Tests  2 passed (2)

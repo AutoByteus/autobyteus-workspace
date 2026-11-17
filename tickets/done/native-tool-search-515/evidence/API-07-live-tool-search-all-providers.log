@@ -1,0 +1,30 @@
+# API-07 (autobyteus-515 API/E2E): gated live suite, native tool search on every provider the test vault reaches (AC-004, AC-006, REQ-005, K-1)
+# Command: env -i PATH HOME=<temp> TMPDIR AUTOBYTEUS_TEST_VAULT=~/.autobyteus-test/vault RUN_LIVE_PROVIDER_TESTS=1 LIVE_TOOL_SEARCH_RECORD=<file> pnpm -C autobyteus-ts exec vitest run tests/integration/agent/native-tool-search-live.test.ts
+#   (8 default models; Gemini in vertexExpress); then the same with GEMINI_MODE=aiStudio LIVE_TOOL_SEARCH_MODELS=gemini-3.8-flash
+# commit 03da73d550 (source 49867e8dc4); Node v22.23.1; 2026-11-17 19:47-19:50. Account identifiers in provider errors redacted.
+
+[live provider skip] provider refused kimi-k3: quota_or_billing_blocked
+ ✓ tests/integration/agent/native-tool-search-live.test.ts (8 tests | 1 skipped) 53844ms
+     ✓ searches for update_task and closes the Task through call_tool, with identical request tools  5202ms
+     ✓ searches for update_task and closes the Task through call_tool, with identical request tools  4295ms
+     ✓ searches for update_task and closes the Task through call_tool, with identical request tools  7902ms
+     ✓ searches for update_task and closes the Task through call_tool, with identical request tools  14810ms
+     ✓ searches for update_task and closes the Task through call_tool, with identical request tools  5974ms
+     ✓ searches for update_task and closes the Task through call_tool, with identical request tools  10474ms
+     ✓ searches for update_task and closes the Task through call_tool, with identical request tools  3024ms
+ Test Files  1 passed (1)
+      Tests  7 passed | 1 skipped (8)
+
+== Record (one line per model): outcome, requests, identicalTools, calls, usages (prompt / cacheRead per request)
+{"model":"deepseek-v4-flash","outcome":"called_correctly","completed":true,"calls":["get_project_task","update_task"],"requests":4,"identicalTools":true,"usages":[{"prompt":871,"cacheRead":640},{"prompt":1185,"cacheRead":896},{"prompt":1314,"cacheRead":1152},{"prompt":1512,"cacheRead":1280}],"errors":[]}
+{"model":"deepseek-v4-pro","outcome":"called_correctly","completed":true,"calls":["update_task"],"requests":3,"identicalTools":true,"usages":[{"prompt":934,"cacheRead":256},{"prompt":1165,"cacheRead":896},{"prompt":1322,"cacheRead":1280}],"errors":[]}
+{"model":"gemini-3.8-flash","outcome":"called_correctly","completed":true,"calls":["update_task"],"requests":3,"identicalTools":true,"usages":[{"prompt":422,"cacheRead":null},{"prompt":720,"cacheRead":null},{"prompt":845,"cacheRead":null}],"errors":[]}
+{"model":"kimi-k3","outcome":"not_called","completed":true,"calls":[],"requests":1,"identicalTools":true,"usages":[],"errors":[{"code":"LLM_PROVIDER_ERROR","message":"429 Your account org-<redacted> <ak-redacted> is suspended due to insufficient balance, please recharge your account or check your plan and billing details"}]}
+{"model":"glm-5.3","outcome":"called_correctly","completed":true,"calls":["update_task"],"requests":3,"identicalTools":true,"usages":[{"prompt":726,"cacheRead":0},{"prompt":1089,"cacheRead":704},{"prompt":1165,"cacheRead":1088}],"errors":[]}
+{"model":"grok-4.7","outcome":"called_correctly","completed":true,"calls":["update_task"],"requests":3,"identicalTools":true,"usages":[{"prompt":1916,"cacheRead":1152},{"prompt":2276,"cacheRead":1152},{"prompt":2407,"cacheRead":2176}],"errors":[]}
+{"model":"gpt-5.4-mini","outcome":"called_correctly","completed":true,"calls":["update_task"],"requests":3,"identicalTools":true,"usages":[{"prompt":402,"cacheRead":0},{"prompt":553,"cacheRead":0},{"prompt":634,"cacheRead":0}],"errors":[]}
+{"model":"claude-sonnet-5-5","outcome":"called_correctly","completed":true,"calls":["update_task"],"requests":3,"identicalTools":true,"usages":[{"prompt":1149,"cacheRead":0},{"prompt":1405,"cacheRead":1145},{"prompt":1562,"cacheRead":1403}],"errors":[]}
+
+== Gemini AI Studio mode
+[live provider skip] provider refused gemini-3.8-flash: invalid_or_missing_credentials
+      Tests  1 skipped (1)

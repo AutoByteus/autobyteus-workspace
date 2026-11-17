@@ -1,0 +1,53 @@
+# API-10 AC-007 / SCN-004: rerun of one failed architecture with the documented command
+# Throwaway branch codex/api520-rerun-probe at 384fe90756 = 31dfe3dad0 + one probe step in the build job:
+#   - name: API-10 probe - fail arm64 on the first attempt
+#     if: ${{ matrix.arch == 'arm64' && github.run_attempt == 1 }}
+#     run: echo ...; exit 1
+# Dispatch: gh workflow run release-server-docker.yml --ref codex/api520-rerun-probe -f build_only=true (18:49:50Z), run 44152041214
+# Recovery: gh run rerun 44152041214 --failed (18:57:35Z, after attempt 1 completed)
+# The branch was deleted after the run; the workflow under test is otherwise byte-identical to 31dfe3dad0.
+# Date 2026-11-17T19:07:55Z
+
+== Attempt 1 jobs (gh api .../actions/runs/44152041214/attempts/1/jobs)
+  Resolve Release Metadata | job id 134282704168 | success | 2026-11-17T18:49:53Z -> 2026-11-17T18:49:57Z
+  Build Server Image (linux/arm64) | job id 134282758563 | failure | 2026-11-17T18:50:01Z -> 2026-11-17T18:52:12Z
+  Build Server Image (linux/amd64) | job id 134282758655 | success | 2026-11-17T18:49:59Z -> 2026-11-17T18:56:50Z
+  Publish Server Package (${{ matrix.platform }}) | job id 134287079952 | skipped | 2026-11-17T18:56:51Z -> 2026-11-17T18:56:51Z
+  Publish Server Image | job id 134287080257 | skipped | 2026-11-17T18:56:51Z -> 2026-11-17T18:56:50Z
+
+== Attempt 2 jobs (gh api .../actions/runs/44152041214/attempts/2/jobs)
+  Build Server Image (linux/arm64) | job id 134287558030 | success | 2026-11-17T18:57:43Z -> 2026-11-17T19:04:47Z
+  Build Server Image (linux/amd64) | job id 134287560224 | success | 2026-11-17T18:49:59Z -> 2026-11-17T18:56:50Z
+  Resolve Release Metadata | job id 134287648215 | success | 2026-11-17T18:49:53Z -> 2026-11-17T18:49:57Z
+  Publish Server Image | job id 134292106138 | success | 2026-11-17T19:04:49Z -> 2026-11-17T19:05:09Z
+  Publish Server Package (linux/arm64) | job id 134292355999 | success | 2026-11-17T19:05:12Z -> 2026-11-17T19:06:52Z
+  Publish Server Package (linux/amd64) | job id 134292358698 | success | 2026-11-17T19:05:12Z -> 2026-11-17T19:06:47Z
+
+Reading: attempt 1 = arm64 failed, amd64 succeeded, Publish Server Image and the package jobs skipped (nothing tagged: AC-005 on a real run).
+Attempt 2 = only the arm64 leg ran again (new start 18:57:43Z); the amd64 leg keeps its attempt-1 times (18:49:59Z -> 18:56:50Z), i.e. not rerun; then Publish Server Image and both package jobs ran and succeeded.
+
+== Attempt 1: the forced failure
+Build Server Image (linux/arm64)	2026-11-17T18:52:10.1497106Z ##[group]Run echo "API-10 probe: failing the arm64 leg on attempt ${GITHUB_RUN_ATTEMPT}"
+Build Server Image (linux/arm64)	2026-11-17T18:52:10.1943549Z API-10 probe: failing the arm64 leg on attempt 1
+Build Server Image (linux/arm64)	2026-11-17T18:52:10.1956836Z ##[error]Process completed with exit code 1.
+
+== Artifacts in the run after attempt 1 (name, id, created)
+  AutoByteus~autobyteus-workspace~NJU5BY.dockerbuild	14360241455	2026-11-17T18:56:42Z
+  server-image-digest-amd64	14358444647	2026-11-17T18:56:40Z
+
+== Attempt 2: digests pushed, artifacts downloaded by Publish Server Image, dry-run check, package extraction
+Build Server Image (linux/arm64)	2026-11-17T19:04:22.7750773Z Pushed arm64 image sha256:7600ca31c2e12f6b9d2e027194ebaf884baced6852f353af8a2683823b550a9c
+Build Server Image (linux/arm64)	2026-11-17T19:04:24.0198798Z Artifact server-image-digest-arm64 has been successfully uploaded! Final size is 185 bytes. Artifact ID is 14360137750
+Build Server Image (linux/amd64)	2026-11-17T18:56:39.2980361Z Pushed amd64 image sha256:c61c0f8d638b3c9c0403f3e00417d9f1f38e382764c856e1c513509fe8ce9ab3
+Build Server Image (linux/amd64)	2026-11-17T18:56:41.0928858Z Artifact server-image-digest-amd64 has been successfully uploaded! Final size is 185 bytes. Artifact ID is 14358444647
+Publish Server Image	2026-11-17T19:04:56.4861750Z Found 4 artifact(s)
+Publish Server Image	2026-11-17T19:04:56.4878697Z - server-image-digest-arm64 (ID: 14360137750, Size: 185, Expected Digest: sha256:d458d2a3b0c85e708cdb73fbcbe342bd254602f43293315d3bb339c719768c7b)
+Publish Server Image	2026-11-17T19:04:56.4880237Z - server-image-digest-amd64 (ID: 14358444647, Size: 185, Expected Digest: sha256:9b329a1b30ed0aba6e35b52c59120220d604455ea8c7c6a6e664a00b40141f00)
+Publish Server Image	2026-11-17T19:05:07.2348667Z The dry-run index lists linux/amd64 sha256:c61c0f8d638b3c9c0403f3e00417d9f1f38e382764c856e1c513509fe8ce9ab3 and linux/arm64 sha256:7600ca31c2e12f6b9d2e027194ebaf884baced6852f353af8a2683823b550a9c.
+Publish Server Package (linux/arm64)	2026-11-17T19:05:16.6116762Z   DIGEST: sha256:7600ca31c2e12f6b9d2e027194ebaf884baced6852f353af8a2683823b550a9c
+Publish Server Package (linux/arm64)	2026-11-17T19:06:48.4647555Z Wrote autobyteus-server-1.5.13-beta.9-linux-arm64.json: autobyteus-server-1.5.13-beta.9-linux-arm64.tar.gz, 149426751 bytes, sha256 5934e15d0c2354ef9889685d7cb8a23d49508b29831592b9daef9edc0caeaa
+Publish Server Package (linux/amd64)	2026-11-17T19:05:20.6117633Z   DIGEST: sha256:c61c0f8d638b3c9c0403f3e00417d9f1f38e382764c856e1c513509fe8ce9ab3
+Publish Server Package (linux/amd64)	2026-11-17T19:06:41.8298987Z Wrote autobyteus-server-1.5.13-beta.9-linux-x64.json: autobyteus-server-1.5.13-beta.9-linux-x64.tar.gz, 150244037 bytes, sha256 38209610c57cf34309f475200a9dcbbe8e7acc6d1168b7732b723f39bd1b4810
+
+Reading: server-image-digest-amd64 downloaded in attempt 2 has ID 14358444647, the artifact attempt 1 uploaded at 18:56:40Z;
+the dry-run index lists the attempt-1 amd64 digest with the attempt-2 arm64 digest, and each package job extracted from its checked digest.

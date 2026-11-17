@@ -1,0 +1,31 @@
+{
+  "runId": "restart_reminder_d8645f10_a5d7fcb2216142cbbdbad9d66d187a1e",
+  "entry": null,
+  "stopped": null,
+  "requestsBeforeRestart": 2,
+  "inputSentAt": null,
+  "reminders": null,
+  "requests": [
+    {
+      "at": 1794915000080,
+      "lastRole": "user",
+      "lastUser": "CASE:RR-03 Start the build in the background.",
+      "toolResults": []
+    },
+    {
+      "at": 1794915004552,
+      "lastRole": "tool",
+      "lastUser": "CASE:RR-03 Start the build in the background.",
+      "toolResults": [
+        "Error: Error executing tool 'run_bash' (ID: call-997d7123-c3a): Error: Background command did not start: Command did not start: Command control deadline exceeded"
+      ]
+    },
+    {
+      "at": 1794915097775,
+      "lastRole": "user",
+      "lastUser": "CASE:RR-03 And now?",
+      "toolResults": []
+    }
+  ],
+  "version": "1.5.13-beta.8"
+}

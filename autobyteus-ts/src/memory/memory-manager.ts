@@ -6,6 +6,7 @@ import { nativeTurnMetadata } from '../llm/provider-native/provider-native-histo
 import { RetainedReasoningPrefixBinding } from './retained-reasoning-prefix-binding.js';
 import { ToolResultEvent } from '../agent/events/agent-events.js';
 import { ToolInvocation } from '../agent/tool-invocation.js';
+import { toModelToolName } from '../agent/tool-search/call-tool.js';
 
 import type { ContextFileReference } from '../agent/message/context-file-reference.js';
 import { RawTraceItem, type RawTraceItemOptions } from './models/raw-trace-item.js';
@@ -323,9 +324,11 @@ export class MemoryManager {
 
     const registrations = normalizeNativeToolResultBatch(events, turnId);
     const sourceEvent = options?.source ?? 'ToolResultEvent';
+    // The raw result names the real tool; the working-context result names the call the model made (DS-003).
     const accepted: Array<{
       registration: (typeof registrations)[number];
       canonicalToolName: string;
+      modelToolName: string;
     }> = [];
     const batchIdentityKeys = new Set<string>();
     for (const registration of registrations) {
@@ -350,10 +353,10 @@ export class MemoryManager {
           `Native tool result '${identity.toolCallId}' in turn '${identity.turnId}' names '${observedToolName}' but the persisted tool call names '${canonicalToolName}'; the batch was rejected.`,
         );
       }
-      accepted.push({ registration, canonicalToolName });
+      accepted.push({ registration, canonicalToolName, modelToolName: toModelToolName(canonicalToolName, group.call.calledThrough ?? null) });
       batchIdentityKeys.add(identityKey);
     }
-    const prepared = accepted.map(({ registration, canonicalToolName }) => ({
+    const prepared = accepted.map(({ registration, canonicalToolName, modelToolName }) => ({
       trace: buildNativeToolResultTrace(
         registration,
         canonicalToolName,
@@ -361,18 +364,18 @@ export class MemoryManager {
         (id) => this.nextSeq(id),
         options?.correlationIdByInvocationId?.get(registration.identity.toolCallId) ?? null,
       ),
-      canonicalToolName,
+      modelToolName,
     }));
     if (prepared.length) this.store.add(prepared.map(({ trace }) => trace));
     prepared.forEach(({ trace }) => this.recordPhysicalToolTrace(trace));
     if (options?.appendToWorkingContext === false) return;
-    for (const { trace, canonicalToolName } of prepared) {
+    for (const { trace, modelToolName } of prepared) {
       this.appendWorkingContextMessage(
         new Message(MessageRole.TOOL, {
           content: null,
           tool_payload: new ToolResultPayload(
             trace.toolCallId!,
-            canonicalToolName,
+            modelToolName,
             trace.toolResult,
             trace.toolError ?? null
           ),

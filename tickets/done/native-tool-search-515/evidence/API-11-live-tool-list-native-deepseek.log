@@ -1,0 +1,21 @@
+# API-11 (autobyteus-515 API/E2E): gated live 324 suite live-tool-list-updates on the native runtime, real DeepSeek V4 Flash, real studio server (SCN-003, AC-005, DS-003 history)
+# Command (from autobyteus-server-ts): env -i PATH HOME=<temp> TMPDIR AUTOBYTEUS_TEST_VAULT=~/.autobyteus-test/vault RUN_LIVE_TOOL_LIST_E2E=1 LIVE_TOOL_LIST_RUNTIME=autobyteus LIVE_TOOL_LIST_MODEL=deepseek-v4-flash LIVE_TOOL_LIST_EVIDENCE_DIR=<dir> ./node_modules/.bin/vitest run tests/e2e/runtime/live-tool-list-updates.e2e.test.ts --no-watch
+# 2026-11-17 ~20:30 CET, Node v22.23.1
+# Run 1 (commit 327566836a, suite unchanged): × 'Timed out waiting for DONE-1': the suite never opened the test vault, so the native run had no provider key (agent_error_output_generation). The suite now opens it (initializeLiveServerVault/closeLiveServerVault, as search-memory-default-tool-live does).
+# Run 2 (with that suite change):
+ ✓ tests/e2e/runtime/live-tool-list-updates.e2e.test.ts (1 test) 35074ms
+     ✓ call alpha; add beta; call beta with the conversation kept; remove alpha; alpha is refused  23298ms
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+
+== History per turn (from API-11-live-tool-list-autobyteus.json)
+TURN 1 call alpha
+  tool_call search_tools {"query":"list_projects"} found: ["list_projects"]
+  tool_call list_projects {} ok=true
+TURN 2 add beta, call beta
+  notice [Platform notice — tools updated] Your tools changed. Now available: list_project_tasks.
+  tool_call search_tools {"query":"list_project_tasks"} found: ["list_project_tasks"]
+  tool_call list_project_tasks {"project_id":"project_2d929b8f-305f-4731-ade3-22bd2e21fc84"} ok=true
+TURN 3 remove alpha, try alpha
+  notice [Platform notice — tools updated] Your tools changed. No longer available: list_projects.
+  tool_call search_tools {"query":"list_projects"} found: ["list_project_tasks","delegate_task","search_memory"]

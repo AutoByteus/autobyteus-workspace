@@ -7,7 +7,7 @@ import { useAgentBackgroundTaskStore } from '~/stores/agentBackgroundTaskStore';
 import BackgroundTaskPanel from '../BackgroundTaskPanel.vue';
 
 const io = vi.hoisted(() => ({ query: vi.fn() }));
-const selection = reactive({ activeAgentContext: { state: { runId: 'run-1' } } });
+const selection = reactive<{ activeAgentContext: { state: { runId: string } } | null }>({ activeAgentContext: { state: { runId: 'run-1' } } });
 const node = reactive({ bindingRevision: 1, waitForBoundBackendReady: async () => true });
 vi.mock('~/stores/activeContextStore', () => ({ useActiveContextStore: () => selection }));
 vi.mock('~/stores/windowNodeContextStore', () => ({ useWindowNodeContextStore: () => node }));
@@ -22,6 +22,7 @@ const snapshot = (id = 'run-1', tasks: unknown[] = [], instance = 'instance-1') 
   data: { agentBackgroundTaskView: { __typename: 'AgentBackgroundTaskSnapshot', agentRunId: id, runInstanceId: instance, observedAt: '2026-10-26T00:00:00Z', tasks } },
 });
 const row = { taskId: 'safe-local-id', kind: 'shell', description: 'bash', command: null, status: 'running', exitCode: null, startedAt: '2026-10-26T00:00:00Z' };
+const streamed = { ...row, summary: null, endReason: null };
 const unavailable = (id = 'run-1') => ({ data: { agentBackgroundTaskView: { __typename: 'AgentBackgroundTaskUnavailable', agentRunId: id, reason: 'inactive' } } });
 const deferred = () => { let resolve!: (value: any) => void; const promise = new Promise<any>(r => { resolve = r; }); return { promise, resolve }; };
 let wrapper: VueWrapper | undefined;
@@ -35,7 +36,7 @@ afterEach(() => { wrapper?.unmount(); wrapper = undefined; vi.useRealTimers(); }
 
 describe('selected background inspection panel', () => {
   it('preserves first-entry and reselected stream rows while loading and inactive, without a snapshot cache', async () => {
-    const store = useAgentBackgroundTaskStore(); store.upsertTask('run-1', { ...row, status: 'running', kind: 'shell', summary: null });
+    const store = useAgentBackgroundTaskStore(); store.upsertTask('run-1', { ...streamed, status: 'running', kind: 'shell' });
     const read = deferred(); io.query.mockReturnValueOnce(read.promise); const panel = show();
     expect(panel.findAll('[data-test="background-task-row"]')).toHaveLength(1);
     expect(panel.get('[data-test="background-tasks-counts"]').text()).toContain('last-known');
@@ -54,11 +55,11 @@ describe('selected background inspection panel', () => {
     expect(panel.get('[data-test="background-tasks-empty"]').text()).toBe('No tracked background commands');
   });
   it('uses successful snapshots exclusively, renders unknown and numeric exit without raw content expansion', async () => {
-    useAgentBackgroundTaskStore().upsertTask('run-1', { ...row, taskId: 'stream', kind: 'shell', status: 'running', summary: 'STREAM_OUTPUT_SECRET', command: 'RAW_SECRET' });
+    useAgentBackgroundTaskStore().upsertTask('run-1', { ...streamed, taskId: 'stream', kind: 'shell', status: 'running', summary: 'STREAM_OUTPUT_SECRET', command: 'RAW_SECRET' });
     io.query.mockResolvedValue(snapshot('run-1', [{ ...row, status: 'unknown', exitCode: -1 }])); const panel = show(); await flushPromises();
     expect(panel.findAll('[data-test="background-task-row"]')).toHaveLength(1);
     expect(panel.get('[data-test="background-task-row"]').attributes('data-status')).toBe('unknown');
-    expect(panel.get('[data-test="background-task-exit"]').text()).toBe('Exit code -1');
+    expect(panel.get('[data-test="background-task-end"]').text()).toBe('Exit code -1');
     expect(panel.find('[data-test="background-task-command"]').exists()).toBe(false);
     expect(panel.html()).not.toContain('SECRET'); expect(panel.html()).not.toMatch(/Stop command/);
     expect(panel.get('[data-test="background-task-observed"]').text()).toContain('safe-loc');
@@ -91,14 +92,14 @@ describe('selected background inspection panel', () => {
   it('selects the existing reactive event store and stops polling for an event-stream capability', async () => {
     io.query.mockResolvedValue({ data: { agentBackgroundTaskView: { __typename: 'AgentBackgroundTaskEventStream', agentRunId: 'run-1', currentTasks: [] } } });
     const panel = show(); await flushPromises(); const store = useAgentBackgroundTaskStore();
-    store.upsertTask('run-1', { ...row, kind: 'shell', status: 'completed', summary: 'recorded outcome' }); await flushPromises();
+    store.upsertTask('run-1', { ...streamed, kind: 'shell', status: 'completed', summary: 'recorded outcome' }); await flushPromises();
     expect(panel.text()).toContain('recorded outcome'); expect(panel.get('[data-test="background-tasks-counts"]').text()).toBe('0 running · 1 total');
     await vi.advanceTimersByTimeAsync(10_000); expect(io.query).toHaveBeenCalledTimes(1);
   });
 
   // autobyteus-473 REQ-003 / AC-003: after a reload (an empty store), the answer brings the tasks the node knows now.
   const eventStream = (currentTasks: unknown[]) => ({ data: { agentBackgroundTaskView: { __typename: 'AgentBackgroundTaskEventStream', agentRunId: 'run-1', currentTasks } } });
-  const known = { taskId: 'bg-1', kind: 'shell', description: 'Run the probe', command: 'pnpm test:e2e', status: 'running', summary: null, startedAt: '2026-11-12T10:00:00.000Z' };
+  const known = { taskId: 'bg-1', kind: 'shell', description: 'Run the probe', command: 'pnpm test:e2e', status: 'running', summary: null, endReason: null, exitCode: null, startedAt: '2026-11-12T10:00:00.000Z' };
   it('shows the tasks a late viewer gets in the answer, as running, from an empty store', async () => {
     io.query.mockResolvedValue(eventStream([known])); const panel = show(); await flushPromises();
     expect(panel.findAll('[data-test="background-task-row"]')).toHaveLength(1);
@@ -108,11 +109,36 @@ describe('selected background inspection panel', () => {
   });
   it('lets a stream event win over an older answer, and an answer finish a task the stream left running (R-1)', async () => {
     const store = useAgentBackgroundTaskStore();
-    store.upsertTask('run-1', { ...known, taskId: 'ended', status: 'completed', summary: 'exit code 0' } as never);
+    store.upsertTask('run-1', { ...known, taskId: 'ended', status: 'completed', exitCode: 0 } as never);
     store.upsertTask('run-1', { ...known, taskId: 'missed' } as never);
-    io.query.mockResolvedValue(eventStream([{ ...known, taskId: 'ended' }, { ...known, taskId: 'missed', status: 'failed', summary: 'exit code 1' }]));
+    io.query.mockResolvedValue(eventStream([{ ...known, taskId: 'ended' }, { ...known, taskId: 'missed', status: 'stopped', summary: 'signal SIGTERM', endReason: 'run_ended' }]));
     show(); await flushPromises();
-    const byId = Object.fromEntries(store.getTasks('run-1').map((task) => [task.taskId, [task.status, task.summary]]));
-    expect(byId).toEqual({ ended: ['completed', 'exit code 0'], missed: ['failed', 'exit code 1'] });
+    const byId = Object.fromEntries(store.getTasks('run-1').map((task) => [task.taskId, [task.status, task.endReason, task.exitCode]]));
+    expect(byId).toEqual({ ended: ['completed', null, 0], missed: ['stopped', 'run_ended', null] });
+  });
+  it('shows a late viewer why a task ended (autobyteus-483)', async () => {
+    io.query.mockResolvedValue(eventStream([{ ...known, status: 'stopped', endReason: 'time_limit', summary: 'stopped' }])); const panel = show(); await flushPromises();
+    expect(panel.get('[data-test="background-task-end"]').text()).toBe('Stopped: it reached its time limit — not a failure of the command');
+  });
+});
+
+describe('no agent run selected (autobyteus-483, REQ-005, AC-009)', () => {
+  it('says to select an agent instead of checking forever, and reads nothing', async () => {
+    selection.activeAgentContext = null;
+    const panel = show(); await flushPromises(); await vi.advanceTimersByTimeAsync(10_000);
+    expect(panel.get('[data-test="background-tasks-no-run"]').text()).toBe('Select an agent to see its background tasks.');
+    expect(panel.find('[data-test="background-tasks-availability"]').exists()).toBe(false);
+    expect(panel.find('[data-test="background-tasks-counts"]').exists()).toBe(false);
+    expect(panel.text()).not.toContain('Checking');
+    expect(panel.text()).not.toContain('Current count unavailable');
+    expect(io.query).not.toHaveBeenCalled();
+  });
+  it('leaves the no-run state when an agent is selected', async () => {
+    selection.activeAgentContext = null;
+    const panel = show(); await flushPromises();
+    io.query.mockResolvedValue(snapshot());
+    selection.activeAgentContext = { state: { runId: 'run-1' } }; await flushPromises();
+    expect(panel.find('[data-test="background-tasks-no-run"]').exists()).toBe(false);
+    expect(panel.get('[data-test="background-tasks-empty"]').text()).toBe('No tracked background commands');
   });
 });

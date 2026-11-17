@@ -164,7 +164,7 @@ describe('RightSideTabs', () => {
 
     useAgentBackgroundTaskStore().upsertTask('run-1', {
       taskId: 'bg-1', kind: 'shell', description: 'sleep 20', command: null, status: 'running',
-      summary: null, startedAt: '2026-09-29T16:48:20.000Z',
+      summary: null, endReason: null, exitCode: null, startedAt: '2026-09-29T16:48:20.000Z',
     });
     await nextTick();
 

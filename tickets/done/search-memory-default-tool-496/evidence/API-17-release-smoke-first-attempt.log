@@ -1,0 +1,39 @@
+# API-17 release smoke on 8af6082a52 (first attempt) and API-17A the AGY suite alone
+# Command: python3 scripts/release_smoke.py; then env -i PATH HOME=<throwaway> TMPDIR RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<abs fixture> pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts --no-watch
+# Env: macOS Darwin 25.5.0 arm64, Node v22.23.1; date 2026-11-17 08:57
+
+Release smoke check
+runtime     scenario                                 result  reason
+claude      new run + restore, linked workspace      PASS
+claude      brand-new team member                    PASS
+claude      different same-named skill               PASS
+codex       new run + restore, linked workspace      PASS
+codex       brand-new team member                    PASS
+codex       different same-named skill               PASS
+grok        new run + restore, linked workspace      FAIL    failed: AssertionError: turn errors: {"code":"ACP_PROMPT_FAILED","message":"Rate limited: API error (status 429 Too Many Requests): subscription:free-usage-exhausted: You've used all the included free usage for model grok-4.7 for now. Usage resets over a rolling 24-hour window — tokens (actual/limit): 60970
+grok        brand-new team member                    FAIL    failed: AssertionError: turn errors: {"code":"ACP_PROMPT_FAILED","message":"Rate limited: API error (status 429 Too Many Requests): subscription:free-usage-exhausted: You've used all the included free usage for model grok-4.7 for now. Usage resets over a rolling 24-hour window — tokens (actual/limit): 60970
+grok        different same-named skill               FAIL    failed: AssertionError: turn errors: {"code":"ACP_PROMPT_FAILED","message":"Rate limited: API error (status 429 Too Many Requests): subscription:free-usage-exhausted: You've used all the included free usage for model grok-4.7 for now. Usage resets over a rolling 24-hour window — tokens (actual/limit): 60970
+antigravity brand-new run, linked workspace          PASS
+antigravity brand-new team member, linked workspace  PASS
+autobyteus  brand-new run, linked workspace          PASS
+autobyteus  brand-new team member, linked workspace  PASS
+other       agy-linked-skills-transport.e2e.test.ts  FAIL    Error: Hook timed out in 60000ms.
+worktree    left unchanged                           FAIL    git status changed:  M tickets/done/search-memory-default-tool-496/follow-ups.md; ?? tickets/done/search-memory-default-tool-496/evidence/API-11-configured-skill-repro.log; ?? tickets/done/search-memory-default-tool-496/evidence/API-12-integration-suite-excerpt.log; ?? tickets/done/search-memory-default-tool-496/evidence/API-13-fixed-files.log; ?? tickets/done/search-memory-default-tool-496/evidence/API-14-server-e2e-excerpt.log
+
+commit    8af6082a523df8039a9492e708b2584ce55dbe3f
+models    {"claude": "haiku", "codex": "gpt-5.6-luna", "grok": "grok-4.7"}
+duration  live 253s, antigravity 129s, autobyteus 16s
+result    FAIL
+logs      /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/release-smoke-2nic6wdo
+
+
+## AGY step timing in the smoke run
+ ❯ tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts (10 tests) 109245ms
+     ✓ E01: Chat (Daily Assistant, all installed skills) starts with a skill holding a local environment and reads it through the link (AC-001, AC-002, AC-006)  29862ms
+Error: Hook timed out in 60000ms.
+
+## API-17A the AGY suite alone
+ ✓ tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts (10 tests) 43290ms
+     ✓ E01: Chat (Daily Assistant, all installed skills) starts with a skill holding a local environment and reads it through the link (AC-001, AC-002, AC-006)  3584ms
+ Test Files  1 passed (1)
+      Tests  10 passed (10)

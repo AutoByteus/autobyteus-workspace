@@ -1,0 +1,52 @@
+# API-02 release run 44105389247 artifacts (commit 365fde4e5b): macOS x64 zip listed on the host (unzip -l); Linux AppImages (unsquashfs -l at the ELF end offset) and the Windows NSIS installer (7z: $PLUGINSDIR/app-64.7z) listed in a throwaway alpine:3.20 container; 2026-11-17
+# API-02 macOS x64 artifact (run 44105389247, commit 365fde4e5b): unzip -l AutoByteus_personal_macos-x64-1.5.13-beta.8.zip | grep @anthropic-ai (top-level entries)
+node_modules/.pnpm/@anthropic-ai+claude-agent-sdk@0.3.280_@anthropic-ai+sdk@0.132.1_zod@4.3.6__@modelconte_ba12f93b41fd79b682e6258669c811d4/
+node_modules/.pnpm/@anthropic-ai+claude-agent-sdk@0.3.280_@anthropic-ai+sdk@0.132.1_zod@4.3.6__@modelconte_ba12f93b41fd79b682e6258669c811d4/node_modules/@anthropic-ai/claude-agent-sdk/
+node_modules/.pnpm/@anthropic-ai+claude-agent-sdk@0.3.280_@anthropic-ai+sdk@0.132.1_zod@4.3.6__@modelconte_ba12f93b41fd79b682e6258669c811d4/node_modules/@anthropic-ai/sdk
+node_modules/.pnpm/@anthropic-ai+sdk@0.132.1_zod@4.3.6/
+node_modules/.pnpm/node_modules/@anthropic-ai/claude-agent-sdk
+node_modules/.pnpm/node_modules/@anthropic-ai/sdk
+## any claude-agent-sdk-<platform> path at all:
+0
+## SDK package.json:
+node_modules/.pnpm/@anthropic-ai+claude-agent-sdk@0.3.280_@anthropic-ai+sdk@0.132.1_zod@4.3.6__@modelconte_ba12f93b41fd79b682e6258669c811d4/node_modules/@anthropic-ai/claude-agent-sdk/package.json
+node_modules/@anthropic-ai/claude-agent-sdk
+node_modules/@anthropic-ai/sdk
+## positive control: same pattern on the installed /Applications/AutoByteus.app (built before this change; read-only listing)
+1.5.13-beta.8
+node_modules/.pnpm/node_modules/@anthropic-ai/claude-agent-sdk-darwin-arm64
+node_modules/.pnpm/@anthropic-ai+claude-agent-sdk-darwin-arm64@0.3.280
+
+Unable to find image 'alpine:3.20' locally
+3.20: Pulling from library/alpine
+3f26bc2dec0b: Pulling fs layer
+3f26bc2dec0b: Download complete
+Digest: sha256:d9e853e87e55526f6b2917df91a2115c36dd7c696a35be12163d44e6e2a4b6bc
+Status: Downloaded newer image for alpine:3.20
+## AutoByteus_personal_linux-x64-1.5.13-beta.8.AppImage (squashfs at offset 188392)
+entries listed: 31226
+claude-agent-sdk-<platform> paths: 0
+node_modules/.pnpm/@anthropic-ai+claude-agent-sdk@0.3.280_@anthropic-ai+sdk@0.132.1_zod@4.3.6__@modelconte_ba12f93b41fd79b682e6258669c811d4
+node_modules/.pnpm/@anthropic-ai+sdk@0.132.1_zod@4.3.6
+node_modules/.pnpm/node_modules/@anthropic-ai/claude-agent-sdk
+node_modules/.pnpm/node_modules/@anthropic-ai/sdk
+node_modules/@anthropic-ai/claude-agent-sdk
+node_modules/@anthropic-ai/sdk
+SDK package.json: 1
+## AutoByteus_personal_linux-arm64-1.5.13-beta.8.AppImage (squashfs at offset 197808)
+entries listed: 31217
+claude-agent-sdk-<platform> paths: 0
+node_modules/.pnpm/@anthropic-ai+claude-agent-sdk@0.3.280_@anthropic-ai+sdk@0.132.1_zod@4.3.6__@modelconte_ba12f93b41fd79b682e6258669c811d4
+node_modules/.pnpm/@anthropic-ai+sdk@0.132.1_zod@4.3.6
+node_modules/.pnpm/node_modules/@anthropic-ai/claude-agent-sdk
+node_modules/.pnpm/node_modules/@anthropic-ai/sdk
+node_modules/@anthropic-ai/claude-agent-sdk
+node_modules/@anthropic-ai/sdk
+SDK package.json: 1
+## AutoByteus_personal_windows-1.5.13-beta.8.exe
+$PLUGINSDIR/app-64.7z
+entries listed: 31112
+claude-agent-sdk-<platform> paths: 0
+resources/server/node_modules/@anthropic-ai/claude-agent-sdk
+resources/server/node_modules/@anthropic-ai/sdk
+resources/server/node_modules/@anthropic-ai/claude-agent-sdk/package.json

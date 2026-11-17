@@ -1,0 +1,34 @@
+{
+  "runId": "restart_reminder_native_live_92ac4118_5d5a803e3bc04953b8ba3988f1fdc0ff",
+  "modelIdentifier": "gpt-5.4-mini",
+  "entry": {
+    "root": {
+      "rootSubjectKind": "agent",
+      "rootRunId": "restart_reminder_native_live_92ac4118_5d5a803e3bc04953b8ba3988f1fdc0ff"
+    },
+    "agentRunId": "restart_reminder_native_live_92ac4118_5d5a803e3bc04953b8ba3988f1fdc0ff",
+    "place": "host",
+    "status": "idle",
+    "backgroundTasks": true,
+    "recordedAt": "2026-11-17T13:11:11.667Z",
+    "version": "1.5.13-beta.8"
+  },
+  "survivorsAfterKill": [
+    55450,
+    55450,
+    55450
+  ],
+  "notice": {
+    "sender_id": "system.restart_resume",
+    "content": "[Platform notice — application restarted]\n\nThe application restarted at 2026-11-17 13:11 UTC (reason: an unexpected stop (a crash, a forced quit or a power loss)).\nIf you started any background tasks, some may still be running: the application stopped unexpectedly and could not stop them, and any that are still running are no longer tracked, so you will not be told when they finish. Check them (for example with `ps` and the pids you were given); stop any you still need and start them again so they are tracked, or continue your work."
+  },
+  "checks": [
+    "ps -p 55484 -o pid=,ppid=,stat=,etime=,command="
+  ],
+  "answer": "Yes — PID 55484 is still running.",
+  "survivorsWhenAnswered": [
+    55450,
+    55450,
+    55450
+  ]
+}

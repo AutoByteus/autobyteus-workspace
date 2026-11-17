@@ -8,6 +8,7 @@ import type { AgentEventInbox } from '../event-inbox/agent-event-inbox.js';
 import type { TurnStartOrigin } from '../event-inbox/agent-event-inbox-entry.js';
 import { BaseLLM } from '../../llm/base.js';
 import type { BaseTool } from '../../tools/base-tool.js';
+import type { AgentToolSearch } from '../tool-search/agent-tool-search.js';
 import type { MemoryManager } from '../../memory/memory-manager.js';
 import type { WorkingContextSnapshotBootstrapOptions } from '../../memory/restore/working-context-snapshot-bootstrapper.js';
 import type { SystemInstructionTraceRecord } from '../../memory/models/system-instruction-trace.js';
@@ -32,6 +33,8 @@ export class AgentRuntimeState {
   currentStatus: AgentStatus;
   llmInstance: BaseLLM | null = null;
   toolInstances: ToolInstances | null = null;
+  /** Which of the agent's tools its requests carry, and its `search_tools`/`call_tool` (set by the agent factory). */
+  toolSearch: AgentToolSearch | null = null;
   agentEventInbox: AgentEventInbox | null = null;
   eventStore: AgentEventStore | null = null;
   statusDeriver: AgentStatusDeriver | null = null;

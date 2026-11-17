@@ -26,6 +26,7 @@ import { AutoByteusAgentRunBackendFactory } from "../../../src/agent-execution/b
 import type { AutoByteusAgentRunBackend } from "../../../src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend.js";
 import type { AgentRunBackendPreparation } from "../../../src/agent-execution/backends/agent-run-backend-preparation.js";
 import { AgentRunConfig } from "../../../src/agent-execution/domain/agent-run-config.js";
+import { PLATFORM_GIVEN_TOOL_NAMES } from "../../../src/agent-execution/shared/runtime-agent-tool-exposure.js";
 import { bootstrapBuiltInAgents } from "../../../src/built-in-agents/built-in-agent-bootstrapper.js";
 import { DAILY_ASSISTANT_AGENT_DEFINITION_ID } from "../../../src/built-in-agents/built-in-agent-registry.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
@@ -280,11 +281,13 @@ describe("Configured skill on-demand loading active native runtime e2e", () => {
     });
     const noReaderContext = noReaderBackend.getContext().runtimeContext as AgentContext;
     expect(noReaderBackend.isActive()).toBe(true);
+    // The native defaults, then the tools the platform gives every run (autobyteus-496: search_memory).
     expect(Object.keys(noReaderContext.toolInstances)).toEqual([
       "run_bash",
       "read_file",
       "edit_file",
       "write_file",
+      ...PLATFORM_GIVEN_TOOL_NAMES,
     ]);
     expect(noReaderContext.processedSystemPrompt.match(/^## .+$/gm)).toEqual([
       "## Agent Identity",
@@ -326,6 +329,7 @@ describe("Configured skill on-demand loading active native runtime e2e", () => {
         "read_file",
         "edit_file",
         "write_file",
+        ...PLATFORM_GIVEN_TOOL_NAMES,
       ]);
       for (const retiredToolName of retiredToolNames) {
         expect(runtimeContext.toolInstances).not.toHaveProperty(retiredToolName);

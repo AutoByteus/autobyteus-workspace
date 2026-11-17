@@ -22,10 +22,15 @@ const mocks = vi.hoisted(() => {
   const credentialProxyHost = {
     listen: vi.fn(async () => "http://127.0.0.1:54322"),
   };
-  // autobyteus-285: the busy-run recorder (first step of the cleanup) and the resumer (after recovery).
+  // autobyteus-285/448: the take of the previous session and this session's recorder (right after the build), its
+  // final write (first step of the cleanup), and the wake (after recovery).
+  const previousSession = { recorded: 1, updateEntries: [] };
   const restartResume = {
-    recorder: { record: vi.fn(async () => undefined) },
-    resumer: { resumeAfterUpdate: vi.fn(async () => ({ recorded: 0, notUpdate: 0, skipped: 0, resumed: 0, failed: 0 })) },
+    recorder: { startSession: vi.fn(), record: vi.fn(async () => undefined) },
+    resumer: {
+      takePreviousSession: vi.fn(async () => previousSession),
+      resumeAfterRestart: vi.fn(async () => ({ recorded: 0, reminded: 0, skipped: 0, resumed: 0, failed: 0 })),
+    },
   };
   return {
     app,
@@ -223,11 +228,16 @@ describe("Studio app-data migration startup", () => {
         .toBeLessThan(mocks.app.listen.mock.invocationCallOrder[0]!);
       expect(mocks.app.listen).toHaveBeenCalledWith({ host: "127.0.0.1", port: 0 });
       expect(mocks.lifecycle.recoverAfterListen).toHaveBeenCalledTimes(1);
-      // autobyteus-285: restart resume starts after recovery, in the background, before the background tasks.
-      expect(mocks.restartResume.resumer.resumeAfterUpdate).toHaveBeenCalledTimes(1);
+      // autobyteus-448: the previous session is taken right after the build, before this session records anything and
+      // before anything can listen; the wake starts after recovery, in the background, before the background tasks.
+      const { resumer, recorder } = mocks.restartResume;
+      expect(mocks.buildStudioServer.mock.invocationCallOrder[0]).toBeLessThan(resumer.takePreviousSession.mock.invocationCallOrder[0]!);
+      expect(resumer.takePreviousSession.mock.invocationCallOrder[0]).toBeLessThan(recorder.startSession.mock.invocationCallOrder[0]!);
+      expect(recorder.startSession.mock.invocationCallOrder[0]).toBeLessThan(mocks.removeEmptyNeverStartedRuns.mock.invocationCallOrder[0]!);
+      expect(resumer.resumeAfterRestart).toHaveBeenCalledExactlyOnceWith(await resumer.takePreviousSession.mock.results[0]!.value);
       expect(mocks.lifecycle.recoverAfterListen.mock.invocationCallOrder[0])
-        .toBeLessThan(mocks.restartResume.resumer.resumeAfterUpdate.mock.invocationCallOrder[0]!);
-      expect(mocks.restartResume.resumer.resumeAfterUpdate.mock.invocationCallOrder[0])
+        .toBeLessThan(resumer.resumeAfterRestart.mock.invocationCallOrder[0]!);
+      expect(resumer.resumeAfterRestart.mock.invocationCallOrder[0])
         .toBeLessThan(mocks.scheduleStudioBackgroundTasks.mock.invocationCallOrder[0]!);
       expect(mocks.restartResume.recorder.record).not.toHaveBeenCalled();
       expect(mocks.scheduleStudioBackgroundTasks).toHaveBeenCalledTimes(1);
@@ -343,7 +353,7 @@ describe("Studio app-data migration startup", () => {
         expect(mocks.restartResume.recorder.record.mock.invocationCallOrder[0])
           .toBeLessThan(mocks.app.close.mock.invocationCallOrder[0]!);
       }
-      if (phase !== 'background') expect(mocks.restartResume.resumer.resumeAfterUpdate).not.toHaveBeenCalled();
+      if (phase !== 'background') expect(mocks.restartResume.resumer.resumeAfterRestart).not.toHaveBeenCalled();
       expect(process.exit).toHaveBeenCalledWith(0);
       expect(mocks.terminateServerProcessTree).toHaveBeenCalledOnce();
       if (phase !== 'background') expect(mocks.scheduleStudioBackgroundTasks).not.toHaveBeenCalled();

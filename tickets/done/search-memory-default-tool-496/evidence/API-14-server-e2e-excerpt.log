@@ -1,0 +1,64 @@
+# API-14 full ungated server E2E, and API-14R the failed files alone
+# Command: env -i PATH HOME=<throwaway> TMPDIR pnpm test:e2e; then vitest run <15 failed files> --no-watch --no-file-parallelism
+# Commit: 8af6082a52
+# Env: macOS Darwin 25.5.0 arm64, Node v22.23.1, release worktree release-v1.5.13-beta.8; date 2026-11-17 08:48
+
+      Tests  1 failed | 6 passed (7)
+      Tests  17 failed | 543 passed | 672 skipped (1232)
+    183|     expect(output).toMatch(/Test Files\s+.*2 passed/);
+ FAIL  tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-002 (AC-001…005, AC-007, REQ-009, REQ-014): an imported package's files on disk reach GraphQL and the feed without Reload
+ FAIL  tests/e2e/agent-team-runs/team-run-config-graphql.e2e.test.ts > TeamRun configuration GraphQL and V2 lifecycle > rejects a 'blank' 'Agent' runtime before workspace or run side effects
+ FAIL  tests/e2e/agent-team-runs/team-run-config-graphql.e2e.test.ts > TeamRun configuration GraphQL and V2 lifecycle > rejects a 'blank' 'Team' runtime before workspace or run side effects
+ FAIL  tests/e2e/agent-team-runs/team-run-config-graphql.e2e.test.ts > TeamRun configuration GraphQL and V2 lifecycle > rejects a 'missing' 'Team' runtime before workspace or run side effects
+ FAIL  tests/e2e/agent-team-runs/team-run-config-graphql.e2e.test.ts > TeamRun configuration GraphQL and V2 lifecycle > rejects a 'unsupported' 'Agent' runtime before workspace or run side effects
+ FAIL  tests/e2e/agent-team-runs/team-run-config-graphql.e2e.test.ts > TeamRun configuration GraphQL and V2 lifecycle > rejects a 'unsupported' 'Team' runtime before workspace or run side effects
+ FAIL  tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts > TeamRun released-shape production upgrade to the current AgentOrg end state through actual startup > migrates the exact supported cohort, serves history and new work, and remains immutable on relaunch
+ FAIL  tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts > TeamRun released-shape production upgrade to the current AgentOrg end state through actual startup > rejects a legacy/current run-ID overlap before source cleanup while preserving both stores
+ FAIL  tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > keeps workspace/search snapshot APIs watcher-free, then leases one real watcher across visible websocket consumers
+ FAIL  tests/e2e/llm-management/gemini-3-8-catalog-http.e2e.test.ts > Gemini 3.8 built-server catalog HTTP E2E
+ FAIL  tests/e2e/llm-management/model-metadata-provenance-graphql.e2e.test.ts > local Gemini model metadata GraphQL E2E
+ FAIL  tests/e2e/llm-management/qwen-configuration-lifecycle-graphql.e2e.test.ts > Qwen configuration GraphQL lifecycle E2E > commits one probed pair durably, compensates failures, restarts, and routes every exact Qwen model
+ FAIL  tests/e2e/node-access/node-access-model.e2e.test.ts > Node access model (NA-1…NA-15): every request needs a key > NAS-01 the launch owner credential opens GraphQL, REST and a WebSocket route
+ FAIL  tests/e2e/personal-settings/package-personal-settings.e2e.test.ts > Personal settings of package definitions at the real server boundary (fake GitHub, real update pipeline)
+ FAIL  tests/e2e/projects/project-task-search-model-unavailable.e2e.test.ts > Project Task search with the real embedding layer when the model host is unreachable
+ FAIL  tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes > accepts each allowed-origin class and refuses near misses (AC-002)
+ FAIL  tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes > refuses a request addressed to a name that is not the node's on every entry form, before any route (416 AC-001)
+ FAIL  tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay)
+ FAIL  tests/e2e/secret-management/provider-secret-lifecycle-graphql.e2e.test.ts > provider and Gemini one-vault GraphQL E2E
+ FAIL  tests/e2e/secret-management/provider-secret-lifecycle-graphql.e2e.test.ts > provider and Gemini one-vault GraphQL E2E > exposes only the approved ordinary-provider and Gemini configuration commands
+ FAIL  tests/e2e/secret-management/provider-secret-lifecycle-graphql.e2e.test.ts > provider and Gemini one-vault GraphQL E2E > saves and replaces a provider key without value readback
+ FAIL  tests/e2e/secret-management/test-vault-selection.e2e.test.ts > test vault selection E2E > the secret-lifecycle suites give the same results with the selector exported (AC-017)
+ FAIL  tests/e2e/tool-management/mcp-http-auth-remote-server.e2e.test.ts > Remote MCP server credentials through the built server > re-registers saved credentials at startup after a restart and keeps sending them
+ Test Files  1 failed | 1 passed (2)
+ Test Files  15 failed | 111 passed | 143 skipped (269)
+⎯⎯⎯⎯⎯⎯ Failed Tests 17 ⎯⎯⎯⎯⎯⎯⎯
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+## failure messages
+   1 AssertionError:   └─ 20260309103000_add_channel_binding_launch_preset/
+   1 AssertionError: expected [ …(20) ] to have a length of 14 but got 20
+   2 Error: Hook timed out in 10000ms.
+   2 Error: TEST_GRAPHQL_REQUEST_FAILED
+   2 Error: TEST_SERVER_EXITED_NONZERO
+   1 Error: TEST_SERVER_STOP_TIMEOUT
+   5 Error: Test timed out in 5000ms.
+   1 Error: Timed out waiting for FILE_SYSTEM_CHANGE for live-added.txt. Seen: 
+   1 Error: invalid Team diagnostic: not met within 5000 ms; last value: []
+
+## API-14R: the 15 failed files, one at a time
+      Tests  5 failed | 84 passed | 2 skipped (91)
+      Tests  7 passed (7)
+    183|     expect(output).toMatch(/Test Files\s+.*2 passed/);
+ FAIL  tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-002 (AC-001…005, AC-007, REQ-009, REQ-014): an imported package's files on disk reach GraphQL and the feed without Reload
+ FAIL  tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts > TeamRun released-shape production upgrade to the current AgentOrg end state through actual startup > migrates the exact supported cohort, serves history and new work, and remains immutable on relaunch
+ FAIL  tests/e2e/llm-management/qwen-configuration-lifecycle-graphql.e2e.test.ts > Qwen configuration GraphQL lifecycle E2E > commits one probed pair durably, compensates failures, restarts, and routes every exact Qwen model
+ FAIL  tests/e2e/node-access/node-access-model.e2e.test.ts > Node access model (NA-1…NA-15): every request needs a key > NAS-01 the launch owner credential opens GraphQL, REST and a WebSocket route
+ FAIL  tests/e2e/secret-management/provider-secret-lifecycle-graphql.e2e.test.ts > provider and Gemini one-vault GraphQL E2E
+ FAIL  tests/e2e/secret-management/test-vault-selection.e2e.test.ts > test vault selection E2E > the secret-lifecycle suites give the same results with the selector exported (AC-017)
+ Test Files  1 failed | 1 passed (2)
+ Test Files  5 failed | 10 passed (15)
+Error: Hook timed out in 10000ms.
+Error: TEST_SERVER_STOP_TIMEOUT
+Error: Test timed out in 5000ms.
+Error: invalid Team diagnostic: not met within 5000 ms; last value: []
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 5 ⎯⎯⎯⎯⎯⎯⎯

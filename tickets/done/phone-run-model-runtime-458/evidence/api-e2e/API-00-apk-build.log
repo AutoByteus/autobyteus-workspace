@@ -1,0 +1,17 @@
+# API-00 debug APK; commit 1054deb132; 2026-11-17T11:18:54Z; ANDROID_HOME=~/Library/Android/sdk ./gradlew :app:assembleDebug
+> Task :app:processDebugResources
+> Task :app:mergeExtDexDebug
+> Task :app:compileDebugKotlin
+> Task :app:compileDebugJavaWithJavac NO-SOURCE
+> Task :app:dexBuilderDebug
+> Task :app:mergeDebugGlobalSynthetics
+> Task :app:processDebugJavaRes
+> Task :app:mergeProjectDexDebug
+> Task :app:mergeDebugJavaResource
+> Task :app:packageDebug
+> Task :app:createDebugApkListingFileRedirect
+> Task :app:assembleDebug
+
+BUILD SUCCESSFUL in 21s
+35 actionable tasks: 35 executed
+exit=0

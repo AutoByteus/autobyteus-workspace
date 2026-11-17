@@ -32,13 +32,19 @@ export class LlmResponseStreamCollector {
   private readonly turnId: string;
   private readonly notifier: AgentExternalEventNotifier | null;
 
-  constructor(options: { turnId: string; notifier: AgentExternalEventNotifier | null; toolCallsEnabled: boolean }) {
+  constructor(options: {
+    turnId: string;
+    notifier: AgentExternalEventNotifier | null;
+    toolCallsEnabled: boolean;
+    toolSearchEnabled: boolean;
+  }) {
     this.turnId = options.turnId;
     this.notifier = options.notifier;
     this.handler = new LlmStreamingResponseHandler({
       onSegmentEvent: (segmentEvent) => this.notifier?.notifyAgentSegmentEvent(segmentEvent.toDict()),
       turnId: options.turnId,
       toolCallsEnabled: options.toolCallsEnabled,
+      toolSearchEnabled: options.toolSearchEnabled,
     });
   }
 

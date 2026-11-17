@@ -31,6 +31,7 @@ import { SYNTHETIC_TOOL_RESULT_ERROR } from '../../../../src/memory/working-cont
 import { BaseTool } from '../../../../src/tools/base-tool.js';
 import { defaultToolRegistry } from '../../../../src/tools/registry/tool-registry.js';
 import { registerToolClass } from '../../../../src/tools/tool-meta.js';
+import { AgentToolSearch } from '../../../../src/agent/tool-search/agent-tool-search.js';
 
 const RECOVERY_TOOL_NAME = 'request_recovery_test_tool';
 
@@ -225,6 +226,7 @@ describe('LlmPhase unified streaming setup', () => {
       state.llmInstance = llm;
       state.memoryManager = memoryManager;
       state.toolInstances = {};
+      state.toolSearch = new AgentToolSearch(null, Object.keys(state.toolInstances!));
       const config = new AgentConfig('agent', 'role', 'description', llm, 'System prompt', []);
       const context = new AgentContext('agent_no_tools', config, state);
       const turn = new AgentTurn('turn_no_tools');
@@ -267,6 +269,7 @@ describe('LlmPhase single request builder', () => {
       state.memoryManager = memoryManager;
       const tool = new RequestRecoveryTestTool();
       state.toolInstances = { [RECOVERY_TOOL_NAME]: tool };
+      state.toolSearch = new AgentToolSearch(null, Object.keys(state.toolInstances!));
       const config = new AgentConfig('agent', 'role', 'description', llm, 'System prompt', [tool]);
       const context = new AgentContext('agent_request_tools', config, state);
       const turn = new AgentTurn('turn_request_tools');
@@ -314,6 +317,7 @@ describe('LlmPhase successful retained-outcome recovery settlement', () => {
       state.memoryManager = memoryManager;
       const tool = new RequestRecoveryTestTool();
       state.toolInstances = { [RECOVERY_TOOL_NAME]: tool };
+      state.toolSearch = new AgentToolSearch(null, Object.keys(state.toolInstances!));
       const config = new AgentConfig('agent', 'role', 'description', llm, 'System prompt', [tool]);
       const context = new AgentContext('agent_tool_recovery', config, state);
       const turn = new AgentTurn('turn_tool_recovery');
@@ -394,6 +398,7 @@ describe('LlmPhase successful retained-outcome recovery settlement', () => {
       const state = new AgentRuntimeState('agent_interruption_recovery');
       state.llmInstance = llm;
       state.memoryManager = memoryManager;
+      state.toolSearch = new AgentToolSearch(null, []);
       const config = new AgentConfig('agent', 'role', 'description', llm, 'System prompt', []);
       const context = new AgentContext('agent_interruption_recovery', config, state);
 
@@ -480,6 +485,7 @@ describe('LlmPhase incomplete native tool-call resume recovery', () => {
       const state = new AgentRuntimeState('agent_resume_repair');
       state.llmInstance = llm;
       state.memoryManager = memoryManager;
+      state.toolSearch = new AgentToolSearch(null, []);
       const turn = new AgentTurn('turn_after_restart');
       state.activeTurn = turn;
       const config = new AgentConfig('agent', 'role', 'description', llm, 'System prompt', []);
@@ -538,6 +544,7 @@ describe('LlmPhase unknown-capability provider recovery', () => {
       const state = new AgentRuntimeState('agent_provider_recovery');
       state.llmInstance = llm;
       state.memoryManager = memoryManager;
+      state.toolSearch = new AgentToolSearch(null, []);
       const config = new AgentConfig('agent', 'role', 'description', llm, 'System prompt', []);
       const context = new AgentContext('agent_provider_recovery', config, state);
 

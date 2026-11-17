@@ -1,0 +1,7 @@
+# IMP-09 the two failing watcher files of IMP-08 alone
+# Command: pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts tests/unit/skill-update-notices/skill-folder-watcher.test.ts --no-watch
+# Commit: 49867e8dc4
+# Environment: macOS (darwin 25.5), Node v22.23.1; machine load average 85-116 from other processes during the full-suite runs
+# Date: 2026-11-17
+
+Result: 7 failed | 20 passed (27): every failure is a 5 s timeout waiting for OS file-watch events. uptime right after: load averages: 84.57 89.35 116.48

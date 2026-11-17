@@ -1,0 +1,56 @@
+{
+  "caseId": "LCL-LONG-CLAUDE-FG",
+  "startedAt": "2026-11-17T11:30:17.498Z",
+  "longSeconds": 2100,
+  "turnEnd": "TURN_COMPLETED",
+  "bashArgs": {
+    "command": "bash long-job.sh 660 fg",
+    "description": "Run long-job.sh with 660 and fg arguments in foreground"
+  },
+  "toolResultType": "TOOL_EXECUTION_SUCCEEDED",
+  "toolResultMs": 669396,
+  "done": "fg finished after 661s",
+  "runId": "long_command_external_0a43ec7a_4729_4a41_9156_e7_360b02ac0f7b49189de5b10ce7c277b4",
+  "socketEvents": [
+    {
+      "at": 688973,
+      "event": "close"
+    }
+  ],
+  "toolCalls": [
+    {
+      "at": 17363,
+      "type": "TOOL_EXECUTION_STARTED",
+      "tool": "Bash",
+      "invocation": "toolu_01Rfsw5V8p8wWt3woHCrfqZq",
+      "args": {
+        "command": "bash long-job.sh 660 fg",
+        "description": "Run long-job.sh with 660 and fg arguments in foreground"
+      }
+    },
+    {
+      "at": 686759,
+      "type": "TOOL_EXECUTION_SUCCEEDED",
+      "tool": "Bash",
+      "invocation": "toolu_01Rfsw5V8p8wWt3woHCrfqZq",
+      "result": "fg started\nfg progress 30s\nfg progress 61s\nfg progress 91s\nfg progress 121s\nfg progress 151s\nfg progress 181s\nfg progress 211s\nfg progress 241s\nfg progress 271s\nfg progress 301s\nfg progress 331s\nfg progress 361s\nfg progress 391s\nfg progress 421s\nfg progress 451s\nfg progress 481s\nfg progress 511s\nfg progress 541s\nfg progress 571s\nfg progress 601s\nfg progress 631s\nfg progress 661s\nLONG_JOB_DONE fg after 661s"
+    }
+  ],
+  "tasks": [],
+  "notices": [],
+  "turns": [
+    {
+      "at": 15,
+      "type": "TURN_STARTED",
+      "payload": "{\"turnId\":\"long_command_external_0a43ec7a_4729_4a41_9156_e7_360b02ac0f7b49189de5b10ce7c277b4:turn:bc93bc98-04bf-4ae8-9990-b0574633ffc7\",\"turn_id\":\"long_command_external_0a43ec7a_4729_4a41_9156_e7_360b02ac0f7b49189de5b10ce7c277b4:turn:bc93bc98-04bf-4ae8-9990-b0574633ffc7\"}"
+    },
+    {
+      "at": 688624,
+      "type": "TURN_COMPLETED",
+      "payload": "{\"turnId\":\"long_command_external_0a43ec7a_4729_4a41_9156_e7_360b02ac0f7b49189de5b10ce7c277b4:turn:bc93bc98-04bf-4ae8-9990-b0574633ffc7\",\"turn_id\":\"long_command_external_0a43ec7a_4729_4a41_9156_e7_360b02ac0f7b49189de5b10ce7c277b4:turn:bc93bc98-04bf-4ae8-9990-b0574633ffc7\"}"
+    }
+  ],
+  "text": "LONG_JOB_DONE fg after 661s",
+  "result": "Pass",
+  "endedAt": "2026-11-17T11:41:59.181Z"
+}

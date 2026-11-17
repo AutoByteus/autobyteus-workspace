@@ -1,0 +1,14 @@
+# API-15 gated codex-agent-tools-empty-list (no model use)
+# Command: env -i PATH HOME=<throwaway> TMPDIR RUN_CODEX_E2E=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/codex-agent-tools-empty-list.e2e.test.ts --no-watch
+# Commit: a8ac226e65
+# Env: macOS Darwin 25.5.0 arm64, Node v22.23.1, release worktree release-v1.5.13-beta.8; date 2026-11-17 08:48
+
+ ✓ tests/e2e/runtime/codex-agent-tools-empty-list.e2e.test.ts (1 test) 9329ms
+     ✓ accepts enabled_tools: [] and connects to the Agent Tools endpoint  9328ms
+      Tests  1 passed (1)
+
+## API-16 typechecks on 8af6082a52
+[typecheck] production errors: 0; test-file errors: 1012 in 316 files (baseline 1012 in 316 files)
+[typecheck] PASS
+[typecheck] production errors: 0; test-file errors: 87 in 37 files (baseline 87 in 37 files)
+[typecheck] PASS

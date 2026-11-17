@@ -422,9 +422,39 @@ One visible text also still differs, kept because the run-settings UI/UX spec ma
   one batch, that background tasks it started have ended
   (`system.background_task_notifier`). Each end is reported once: in the agent's
   own `run_bash` result when it ended during that call, otherwise in a notice.
+- **End reason:** why a background task ended, when its runtime says so
+  (`endReason`, autobyteus-483): `time_limit` (the runtime's time limit stopped
+  it; not a failure of the command), `low_memory` (the runtime stopped it because
+  the computer was low on memory) or `run_ended` (the run or its runtime process
+  ended). Shown with the task's exit code, when there is one, as one line in the
+  Background Tasks panel and the phone's Activity; with neither, the runtime's
+  summary is shown.
+- **Restart reminder:** the platform notice a run receives after a restart
+  (`system.restart_resume`) when it was mid-turn or had a running background
+  task: the restart cause (an update, a restart or an unexpected stop), that its
+  turn was interrupted when it was mid-turn, and what became of any background
+  tasks it started (stopped by an update or a restart; possibly still running and
+  no longer tracked after an unexpected stop). Woken with it after an update; otherwise it rides
+  the run's next input. Delivered exactly once.
+- **Busy run** (restart record): a run that was mid-turn or had a running
+  background task when the node recorded it (`busy-runs.json`).
 - **Usage limit:** a runtime's or provider's own limit on use (a 5-hour or
   weekly window, a billing period, a money balance), read from the runtime or
   provider. It is not the launch check of whether a runtime is usable.
+- **Listed tool:** on the AutoByteus runtime, a tool whose full definition
+  every request of a run carries: the native base tools (`run_bash`,
+  `read_file`, `edit_file`, `write_file`; `AgentConfig.listedToolNames`) and the
+  runtime's own `search_tools` and `call_tool`.
+- **Searchable tool:** on the AutoByteus runtime, a tool an agent has whose
+  definition its requests do not carry: every tool that is not listed. The agent
+  finds it with `search_tools` (the result holds its full definition) and calls
+  it with `call_tool`; from then on the call is that tool's (approval, events,
+  the run's history), and only the conversation sent back to the model keeps
+  the `call_tool` form (raw trace field `called_through`).
+- **Tool search:** on the AutoByteus runtime, `search_tools` + `call_tool`
+  (`AgentToolSearch`). The external runtimes' own searches keep their names:
+  `ToolSearch` (Claude Agent SDK), `tool_search` (Codex), `search_tool` (Grok
+  Build).
 
 ## Agent Definitions
 

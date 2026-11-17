@@ -21,6 +21,8 @@ export type RawTraceItemOptions = {
   toolName?: string | null;
   toolCallId?: string | null;
   toolArgs?: Record<string, unknown> | null;
+  /** On a `tool_call`: the declared tool the model called (`call_tool`) when not `toolName` itself. */
+  calledThrough?: string | null;
   toolResult?: unknown;
   toolError?: string | null;
   correlationId?: string | null;
@@ -42,6 +44,7 @@ export class RawTraceItem implements MemoryItem {
   toolName: string | null;
   toolCallId: string | null;
   toolArgs: Record<string, unknown> | null;
+  calledThrough: string | null;
   toolResult: unknown | undefined;
   toolError: string | null | undefined;
   correlationId: string | null;
@@ -65,6 +68,7 @@ export class RawTraceItem implements MemoryItem {
     this.toolName = options.toolName ?? null;
     this.toolCallId = options.toolCallId ?? null;
     this.toolArgs = options.toolArgs ?? null;
+    this.calledThrough = options.calledThrough ?? null;
     this.toolResult = options.toolResult;
     this.toolError = options.toolError;
     this.correlationId = options.correlationId ?? null;
@@ -95,6 +99,7 @@ export class RawTraceItem implements MemoryItem {
     if (this.toolName) data.tool_name = this.toolName;
     if (this.toolCallId) data.tool_call_id = this.toolCallId;
     if (this.toolArgs) data.tool_args = this.toolArgs;
+    if (this.calledThrough) data.called_through = this.calledThrough;
     if (this.toolResult !== undefined) data.tool_result = this.toolResult;
     if (this.toolError !== undefined) data.tool_error = this.toolError;
     if (this.correlationId) data.correlation_id = this.correlationId;
@@ -121,6 +126,7 @@ export class RawTraceItem implements MemoryItem {
       toolName: typeof data.tool_name === 'string' ? data.tool_name : null,
       toolCallId: typeof data.tool_call_id === 'string' ? data.tool_call_id : null,
       toolArgs: (data.tool_args as Record<string, unknown> | undefined) ?? null,
+      calledThrough: typeof data.called_through === 'string' ? data.called_through : null,
       toolResult: Object.prototype.hasOwnProperty.call(data, 'tool_result') ? data.tool_result : undefined,
       toolError: Object.prototype.hasOwnProperty.call(data, 'tool_error')
         ? typeof data.tool_error === 'string' ? data.tool_error : null

@@ -4,6 +4,7 @@ import type {
   AgentBackgroundTaskKind,
   AgentBackgroundTaskStatus,
 } from "../../../domain/agent-background-task.js";
+import { NO_CLAUDE_TASK_END, readClaudeTaskEnd, type ClaudeTaskEnd } from "./claude-background-task-end.js";
 
 /**
  * How far a completion recorded mid CLI turn has progressed towards the model:
@@ -149,11 +150,13 @@ export class ClaudeBackgroundTaskRegistry {
         this.enterBackground(taskId);
       }
       const terminal = TERMINAL_UPDATE_STATUSES[asString(patch?.status) ?? ""];
-      if (terminal) this.finishTask(taskId, terminal, nonEmpty(asString(patch?.error)));
+      if (terminal) this.finishTask(taskId, terminal, nonEmpty(asString(patch?.error)), NO_CLAUDE_TASK_END);
       return;
     }
     if (subtype === "task_notification") {
-      this.finishTask(taskId, notificationStatus(asString(frame.status)), nonEmpty(asString(frame.summary)));
+      const summary = nonEmpty(asString(frame.summary));
+      const end = readClaudeTaskEnd({ status: asString(frame.status), summary, reason: asString(frame.reason) });
+      this.finishTask(taskId, notificationStatus(asString(frame.status)), summary, end);
       this.recordCompletion(taskId, frame);
     }
     // task_progress is ignored: it changes no snapshot field (QR-002).
@@ -249,7 +252,7 @@ export class ClaudeBackgroundTaskRegistry {
   /** The process closed or exited; its background tasks died with it. */
   clear(): void {
     for (const task of [...this.view.values()]) {
-      if (task.status === "running") this.publish({ ...task, status: "stopped" });
+      if (task.status === "running") this.publish({ ...task, status: "stopped", endReason: "run_ended" });
     }
     this.view.clear();
     this.taskTypes.clear();
@@ -307,22 +310,33 @@ export class ClaudeBackgroundTaskRegistry {
       command: this.commands.get(taskId) ?? null,
       status: "running",
       summary: null,
+      endReason: null,
+      exitCode: null,
       startedAt: this.now().toISOString(),
     });
   }
 
-  /** Foreground tasks are never in the view, so their terminal frames change nothing. */
-  private finishTask(taskId: string, status: AgentBackgroundTaskStatus, summary: string | null): void {
+  /**
+   * Foreground tasks are never in the view, so their terminal frames change nothing. A task a `task_updated` frame
+   * ended first gets the summary, end reason and exit code that its later notification reports, where still null.
+   */
+  private finishTask(taskId: string, status: AgentBackgroundTaskStatus, summary: string | null, end: ClaudeTaskEnd): void {
     const task = this.view.get(taskId);
     if (!task) {
       return;
     }
     if (task.status === "running") {
-      this.publish({ ...task, status, summary });
+      this.publish({ ...task, status, summary, endReason: end.endReason, exitCode: end.exitCode });
       return;
     }
-    if (task.summary === null && summary !== null) {
-      this.publish({ ...task, summary });
+    const filled: AgentBackgroundTask = {
+      ...task,
+      summary: task.summary ?? summary,
+      endReason: task.endReason ?? end.endReason,
+      exitCode: task.exitCode ?? end.exitCode,
+    };
+    if (filled.summary !== task.summary || filled.endReason !== task.endReason || filled.exitCode !== task.exitCode) {
+      this.publish(filled);
     }
   }
 

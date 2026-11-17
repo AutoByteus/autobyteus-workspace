@@ -646,13 +646,13 @@ What it does:
 - Triggers on Git tags (e.g. `v1.2.3`).
 - Runs the licensing release gate `python3 scripts/check_licensing.py` right after checking out the release ref. The release fails before any build if it fails.
 - Checks the system level (`scripts/server-package/check-system-level.mjs`) and takes the base image digest of the run's variant from `system-level.json`. A release ref without `system-level.json` (from before server packages) is refused: re-publish it with that ref's own workflow (`gh workflow run release-server-docker.yml --ref <tag> -f release_tag=<tag>`, plus `-f publish_zh=true` for the `zh` variant; without it, that run publishes the default variant again).
-- Builds `autobyteus-server-ts/docker/Dockerfile.monorepo` for `linux/amd64,linux/arm64` from the repository root. The runtime image contains `/app/LICENSE`, `/app/LICENSING.md` and `/app/NOTICE` and carries the label `org.opencontainers.image.licenses="AGPL-3.0-only"`. The same files and label are declared in the separate `autobyteus-message-gateway/docker/Dockerfile`.
-- For the default variant, publishes the image's built-in server package for each architecture on the GitHub release of the tag. Per architecture (`x64`, `arm64`) it takes `/opt/autobyteus/server-package` out of the pushed image and uploads three files:
+- Builds `autobyteus-server-ts/docker/Dockerfile.monorepo` from the repository root, each architecture natively on its own runner at the same time (`linux/amd64` on `ubuntu-latest`, `linux/arm64` on `ubuntu-24.04-arm`), with no layer cache (a release never reused one). Each architecture's image is pushed untagged, by digest. When both have built, "Publish Server Image" checks that the multi-arch index of those two digests lists exactly `linux/amd64` and `linux/arm64`, pushes the tags, and checks the pushed version tag's index again. When one architecture fails, nothing is tagged; `gh run rerun <run-id> --failed` rebuilds only that architecture and completes the publish (RELEASE.md, Recovery). The runtime image contains `/app/LICENSE`, `/app/LICENSING.md` and `/app/NOTICE` and carries the label `org.opencontainers.image.licenses="AGPL-3.0-only"`. The same files and label are declared in the separate `autobyteus-message-gateway/docker/Dockerfile`.
+- For the default variant, publishes the image's built-in server package for each architecture on the GitHub release of the tag. Per architecture (`x64`, `arm64`) it takes `/opt/autobyteus/server-package` out of the pushed image whose digest the version tag's index lists for that architecture, refuses a package whose `arch` differs, and uploads three files:
   - `autobyteus-server-<version>-linux-<arch>.tar.gz`: the package folder;
   - `autobyteus-server-<version>-linux-<arch>.json`: the package description (`server-package.json` plus the archive's name, SHA-256, size and unpacked size);
   - `autobyteus-server-<version>-linux-<arch>.json.sig`: the base64 Ed25519 signature of the description, made with the `SERVER_PACKAGE_SIGNING_KEY` secret and checked against `server-package-signing-key.pem` before upload.
 
-  The job waits up to 30 minutes for the GitHub release, which the Desktop Release or the Android APK Release workflow creates, whichever gets there first. A manual re-publish replaces the files (archive first, then description, then signature). The `zh` variant publishes no package.
+  The job waits up to 60 minutes for the GitHub release, which the Desktop Release or the Android APK Release workflow creates, whichever gets there first. A manual re-publish replaces the files (archive first, then description, then signature). The `zh` variant publishes no package.
 - Push-tag releases publish only the default runtime image.
 - Stable default releases publish:
   - `<image>:<version>`
@@ -668,6 +668,7 @@ What it does:
     run is re-run.
   - The `zh` variant has no `beta` tag.
 - Manual `workflow_dispatch` runs can publish only the `zh` runtime variant by enabling `publish_zh`.
+- A manual build-only run (`build_only=true`) proves a change to this workflow or to `autobyteus-server-ts/docker/**` before the merge, publishing nothing: `gh workflow run release-server-docker.yml --ref <branch> -f build_only=true`. It builds and pushes both architectures untagged, checks the multi-arch index without pushing a tag, and takes out, describes and signs both server packages under the package's own version, without uploading them. It refuses `release_tag` and runs in its own concurrency group, so it never waits for or blocks a release. Its job and step timings: `gh run view <run-id> --json jobs`.
 - Stable manual `zh` publishes use:
   - `<image>:<version>-zh`
   - `<image>:latest-zh`

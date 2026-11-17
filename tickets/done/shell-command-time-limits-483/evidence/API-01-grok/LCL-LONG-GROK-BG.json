@@ -1,0 +1,435 @@
+{
+  "caseId": "LCL-LONG-GROK-BG",
+  "startedAt": "2026-11-17T13:05:18.816Z",
+  "longSeconds": 2100,
+  "model": "grok-4.7",
+  "firstTurnEnd": "TURN_COMPLETED",
+  "watched": {
+    "pid": 16519,
+    "samples": [
+      {
+        "elapsedS": 4,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskUnsupported",
+          "reason": "unsupported"
+        }
+      },
+      {
+        "elapsedS": 64,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskUnsupported",
+          "reason": "unsupported"
+        }
+      },
+      {
+        "elapsedS": 124,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskUnsupported",
+          "reason": "unsupported"
+        }
+      },
+      {
+        "elapsedS": 184,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskUnsupported",
+          "reason": "unsupported"
+        }
+      },
+      {
+        "elapsedS": 244,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskUnsupported",
+          "reason": "unsupported"
+        }
+      },
+      {
+        "elapsedS": 304,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskUnsupported",
+          "reason": "unsupported"
+        }
+      },
+      {
+        "elapsedS": 364,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskUnsupported",
+          "reason": "unsupported"
+        }
+      },
+      {
+        "elapsedS": 424,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskUnsupported",
+          "reason": "unsupported"
+        }
+      },
+      {
+        "elapsedS": 484,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskUnsupported",
+          "reason": "unsupported"
+        }
+      },
+      {
+        "elapsedS": 545,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskUnsupported",
+          "reason": "unsupported"
+        }
+      },
+      {
+        "elapsedS": 605,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskUnsupported",
+          "reason": "unsupported"
+        }
+      },
+      {
+        "elapsedS": 665,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskUnsupported",
+          "reason": "unsupported"
+        }
+      },
+      {
+        "elapsedS": 725,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskUnsupported",
+          "reason": "unsupported"
+        }
+      },
+      {
+        "elapsedS": 785,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskUnsupported",
+          "reason": "unsupported"
+        }
+      },
+      {
+        "elapsedS": 845,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskUnsupported",
+          "reason": "unsupported"
+        }
+      },
+      {
+        "elapsedS": 905,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskUnsupported",
+          "reason": "unsupported"
+        }
+      },
+      {
+        "elapsedS": 965,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskUnsupported",
+          "reason": "unsupported"
+        }
+      },
+      {
+        "elapsedS": 1025,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskUnsupported",
+          "reason": "unsupported"
+        }
+      },
+      {
+        "elapsedS": 1085,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskUnsupported",
+          "reason": "unsupported"
+        }
+      },
+      {
+        "elapsedS": 1145,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskUnsupported",
+          "reason": "unsupported"
+        }
+      },
+      {
+        "elapsedS": 1205,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskUnsupported",
+          "reason": "unsupported"
+        }
+      },
+      {
+        "elapsedS": 1265,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskUnsupported",
+          "reason": "unsupported"
+        }
+      },
+      {
+        "elapsedS": 1325,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskUnsupported",
+          "reason": "unsupported"
+        }
+      },
+      {
+        "elapsedS": 1385,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskUnsupported",
+          "reason": "unsupported"
+        }
+      },
+      {
+        "elapsedS": 1445,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskUnsupported",
+          "reason": "unsupported"
+        }
+      },
+      {
+        "elapsedS": 1505,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskUnsupported",
+          "reason": "unsupported"
+        }
+      },
+      {
+        "elapsedS": 1565,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskUnsupported",
+          "reason": "unsupported"
+        }
+      },
+      {
+        "elapsedS": 1625,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskUnsupported",
+          "reason": "unsupported"
+        }
+      },
+      {
+        "elapsedS": 1685,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskUnsupported",
+          "reason": "unsupported"
+        }
+      },
+      {
+        "elapsedS": 1745,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskUnsupported",
+          "reason": "unsupported"
+        }
+      },
+      {
+        "elapsedS": 1805,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskUnsupported",
+          "reason": "unsupported"
+        }
+      },
+      {
+        "elapsedS": 1865,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskUnsupported",
+          "reason": "unsupported"
+        }
+      },
+      {
+        "elapsedS": 1926,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskUnsupported",
+          "reason": "unsupported"
+        }
+      },
+      {
+        "elapsedS": 1986,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskUnsupported",
+          "reason": "unsupported"
+        }
+      },
+      {
+        "elapsedS": 2046,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskUnsupported",
+          "reason": "unsupported"
+        }
+      },
+      {
+        "elapsedS": 2106,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskUnsupported",
+          "reason": "unsupported"
+        }
+      },
+      {
+        "elapsedS": 2166,
+        "pidAlive": false,
+        "done": "grok finished after 2104s",
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskUnsupported",
+          "reason": "unsupported"
+        }
+      },
+      {
+        "elapsedS": 2171,
+        "pidAlive": false,
+        "done": "grok finished after 2104s",
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskUnsupported",
+          "reason": "unsupported"
+        }
+      }
+    ],
+    "aliveAfter30Min": true
+  },
+  "runId": "long_command_external_9cdd98c3_2882_4c5c_b69e_61_f924f66df0824edfb4b716f333140e7f",
+  "socketEvents": [
+    {
+      "at": 2230690,
+      "event": "close"
+    }
+  ],
+  "toolCalls": [
+    {
+      "at": 3231,
+      "type": "TOOL_EXECUTION_STARTED",
+      "tool": "run_bash",
+      "invocation": "call-66c68714-e1fa-4cbd-9cd9-04b9c8528f9c-0",
+      "args": {
+        "command": "bash long-job.sh 2100 grok"
+      }
+    },
+    {
+      "at": 3231,
+      "type": "TOOL_EXECUTION_SUCCEEDED",
+      "tool": "run_bash",
+      "invocation": "call-66c68714-e1fa-4cbd-9cd9-04b9c8528f9c-0",
+      "result": "Background task d7fbe8f8-ad21-4136-a88c-246cb5538310 started"
+    }
+  ],
+  "tasks": [],
+  "notices": [],
+  "turns": [
+    {
+      "at": 22,
+      "type": "TURN_STARTED",
+      "payload": "{\"turn_id\":\"a5894699-f153-4f83-a0b8-903da23d5244\"}"
+    },
+    {
+      "at": 4101,
+      "type": "TURN_COMPLETED",
+      "payload": "{\"turn_id\":\"a5894699-f153-4f83-a0b8-903da23d5244\",\"provider_stop_reason\":\"end_turn\"}"
+    }
+  ],
+  "text": "The user wants me to start a long job with block_until_ms 0 and reply only STARTED, then end my turn. I should not wait or check.The user asked me to reply only STARTED and end the turn.STARTED",
+  "result": "Pass",
+  "endedAt": "2026-11-17T13:42:41.551Z"
+}

@@ -1,0 +1,437 @@
+{
+  "caseId": "LCL-LONG-AGY-BG",
+  "startedAt": "2026-11-17T11:30:17.502Z",
+  "longSeconds": 2100,
+  "turnEnd": "TURN_COMPLETED",
+  "watched": {
+    "pid": 66574,
+    "samples": [
+      {
+        "elapsedS": 4,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": []
+        }
+      },
+      {
+        "elapsedS": 64,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": []
+        }
+      },
+      {
+        "elapsedS": 124,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": []
+        }
+      },
+      {
+        "elapsedS": 184,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": []
+        }
+      },
+      {
+        "elapsedS": 244,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": []
+        }
+      },
+      {
+        "elapsedS": 304,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": []
+        }
+      },
+      {
+        "elapsedS": 364,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": []
+        }
+      },
+      {
+        "elapsedS": 424,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": []
+        }
+      },
+      {
+        "elapsedS": 484,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": []
+        }
+      },
+      {
+        "elapsedS": 544,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": []
+        }
+      },
+      {
+        "elapsedS": 604,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": []
+        }
+      },
+      {
+        "elapsedS": 664,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": []
+        }
+      },
+      {
+        "elapsedS": 724,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": []
+        }
+      },
+      {
+        "elapsedS": 784,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": []
+        }
+      },
+      {
+        "elapsedS": 844,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": []
+        }
+      },
+      {
+        "elapsedS": 904,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": []
+        }
+      },
+      {
+        "elapsedS": 964,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": []
+        }
+      },
+      {
+        "elapsedS": 1024,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": []
+        }
+      },
+      {
+        "elapsedS": 1084,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": []
+        }
+      },
+      {
+        "elapsedS": 1144,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": []
+        }
+      },
+      {
+        "elapsedS": 1204,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": []
+        }
+      },
+      {
+        "elapsedS": 1264,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": []
+        }
+      },
+      {
+        "elapsedS": 1324,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": []
+        }
+      },
+      {
+        "elapsedS": 1384,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": []
+        }
+      },
+      {
+        "elapsedS": 1444,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": []
+        }
+      },
+      {
+        "elapsedS": 1504,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": []
+        }
+      },
+      {
+        "elapsedS": 1564,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": []
+        }
+      },
+      {
+        "elapsedS": 1624,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": []
+        }
+      },
+      {
+        "elapsedS": 1684,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": []
+        }
+      },
+      {
+        "elapsedS": 1744,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": []
+        }
+      },
+      {
+        "elapsedS": 1804,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": []
+        }
+      },
+      {
+        "elapsedS": 1864,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": []
+        }
+      },
+      {
+        "elapsedS": 1924,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": []
+        }
+      },
+      {
+        "elapsedS": 1984,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": []
+        }
+      },
+      {
+        "elapsedS": 2044,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": []
+        }
+      },
+      {
+        "elapsedS": 2104,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": []
+        }
+      },
+      {
+        "elapsedS": 2164,
+        "pidAlive": false,
+        "done": "agyb finished after 2103s",
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": []
+        }
+      },
+      {
+        "elapsedS": 2169,
+        "pidAlive": false,
+        "done": "agyb finished after 2103s",
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": []
+        }
+      }
+    ],
+    "aliveAfter30Min": true
+  },
+  "runId": "long_command_external_0a43ec7a_4729_4a41_9156_e7_0e9248a4f7304ac7babf62c7aa8d3496",
+  "socketEvents": [
+    {
+      "at": 2168782,
+      "event": "close"
+    }
+  ],
+  "toolCalls": [
+    {
+      "at": 3251,
+      "type": "TOOL_EXECUTION_STARTED",
+      "tool": "run_command",
+      "invocation": "agy-tool-05e6fcb4-7da9-49b5-abd8-f6a3209cb3bf-2",
+      "args": {
+        "CommandLine": "bash long-job.sh 2100 agyb",
+        "IsDaemon": false,
+        "WaitMsBeforeAsync": 5000,
+        "toolSummary": "Run long job"
+      }
+    },
+    {
+      "at": 2106260,
+      "type": "TOOL_EXECUTION_SUCCEEDED",
+      "tool": "run_command",
+      "invocation": "agy-tool-05e6fcb4-7da9-49b5-abd8-f6a3209cb3bf-2",
+      "result": "{\"provider_state\":\"DONE\",\"output\":\"Command exited with code 0.\\n\\nCommand output:\\nagyb started\\r\\nagyb progress 30s\\r\\nagyb progress 60s\\r\\nagyb progress 90s\\r\\nagyb progress 120s\\r\\nagyb progress 150s\\r\\nagyb progress 180s\\r\\nagyb progress 210s\\r\\nagyb progress 240s\\r\\nagyb progress 270s\\r\\nagyb progress 300s\\r\\nagyb progress 331s\\r\\nagyb progress 361s\\r\\nagyb progress 391s\\r\\nagyb progress 421s\\r\\nagyb progress 451s\\r\\nagyb progress 481s\\r\\nagyb progress 511s\\r\\nagyb progress 541s\\r\\nagyb progress 571s\\r\\nagyb progress 601s\\r\\nagyb progress 631s\\r\\nagyb progress 661s\\r\\nagyb progress 691s\\r\\nagyb progress 721s\\r\\nagyb progress 751s\\r\\nagyb progress 781s\\r\\nagyb progress 811s\\r\\nagyb progress 841s\\r\\nagyb progress 871s\\r\\nagyb progress 901s\\r\\nagyb progress 931s\\r\\nagyb progress 961s\\r\\nagyb progress 991s\\r\\nagyb progress 1021s\\r\\nagyb progress 1051s\\r\\nagyb progress 1081s\\r\\nagyb progress 1111s\\r\\nagyb progress 1141s\\r\\nagyb progress 1171s\\r\\nagyb progress 1201s\\r\\nagyb progress 1231s\\r\\nagyb progress 1261s\\r\\nagyb progress 1291s\\r\\nagyb progress 1321s\\r\\nagyb progress 1351s\\r\\nagyb progress 1381s\\r\\nagyb progress 1411s\\r\\nagyb progress 1442s\\r\\nagyb progress 1472s\\r\\nagyb progress 1502s\\r\\nagyb progress 1532s\\r\\nagyb progress 1562s\\r\\nagyb progress 1592s\\r\\nagyb progress 1622s\\r\\nagyb progress 1652s\\r\\nagyb progress 1682s\\r\\nagyb progress 1712s\\r\\nagyb progress 1742s\\r\\nagyb progress 1772s\\r\\nagyb progress 1802s\\r\\nagyb progress 1832s\\r\\nagyb progress 1862s\\r\\nagyb progre"
+    }
+  ],
+  "tasks": [],
+  "notices": [],
+  "turns": [
+    {
+      "at": 5,
+      "type": "TURN_STARTED",
+      "payload": "{\"turn_id\":\"05e6fcb4-7da9-49b5-abd8-f6a3209cb3bf\"}"
+    },
+    {
+      "at": 2128254,
+      "type": "TURN_COMPLETED",
+      "payload": "{\"turn_id\":\"05e6fcb4-7da9-49b5-abd8-f6a3209cb3bf\",\"provider_status\":\"SUCCESS\"}"
+    }
+  ],
+  "text": "I have started `bash long-job.sh 2100 agyb` in the background and will report its last output line once it finishes.\n`LONG_JOB_DONE agyb after 2103s`\n\nLog: [task-2.log](file:///Users/normy/.gemini/antigravity-cli/brain/81c7b7d1-48bd-4f91-a0cd-e56fae7668e1/.system_generated/tasks/task-2.log)",
+  "result": "Pass",
+  "endedAt": "2026-11-17T12:06:46.080Z"
+}

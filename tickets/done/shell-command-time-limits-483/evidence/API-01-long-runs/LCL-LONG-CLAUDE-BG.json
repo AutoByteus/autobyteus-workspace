@@ -1,0 +1,969 @@
+{
+  "caseId": "LCL-LONG-CLAUDE-BG",
+  "startedAt": "2026-11-17T11:30:17.499Z",
+  "longSeconds": 2100,
+  "watched": {
+    "pid": 75185,
+    "samples": [
+      {
+        "elapsedS": 26,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": [
+            {
+              "taskId": "bx1fra2r1",
+              "kind": "shell",
+              "description": "Start long job script in background",
+              "command": "bash long-job.sh 2100 bg",
+              "status": "running",
+              "summary": null,
+              "endReason": null,
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:54.663Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 86,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": [
+            {
+              "taskId": "bx1fra2r1",
+              "kind": "shell",
+              "description": "Start long job script in background",
+              "command": "bash long-job.sh 2100 bg",
+              "status": "running",
+              "summary": null,
+              "endReason": null,
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:54.663Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 146,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": [
+            {
+              "taskId": "bx1fra2r1",
+              "kind": "shell",
+              "description": "Start long job script in background",
+              "command": "bash long-job.sh 2100 bg",
+              "status": "running",
+              "summary": null,
+              "endReason": null,
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:54.663Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 206,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": [
+            {
+              "taskId": "bx1fra2r1",
+              "kind": "shell",
+              "description": "Start long job script in background",
+              "command": "bash long-job.sh 2100 bg",
+              "status": "running",
+              "summary": null,
+              "endReason": null,
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:54.663Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 266,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": [
+            {
+              "taskId": "bx1fra2r1",
+              "kind": "shell",
+              "description": "Start long job script in background",
+              "command": "bash long-job.sh 2100 bg",
+              "status": "running",
+              "summary": null,
+              "endReason": null,
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:54.663Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 326,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": [
+            {
+              "taskId": "bx1fra2r1",
+              "kind": "shell",
+              "description": "Start long job script in background",
+              "command": "bash long-job.sh 2100 bg",
+              "status": "running",
+              "summary": null,
+              "endReason": null,
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:54.663Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 386,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": [
+            {
+              "taskId": "bx1fra2r1",
+              "kind": "shell",
+              "description": "Start long job script in background",
+              "command": "bash long-job.sh 2100 bg",
+              "status": "running",
+              "summary": null,
+              "endReason": null,
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:54.663Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 446,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": [
+            {
+              "taskId": "bx1fra2r1",
+              "kind": "shell",
+              "description": "Start long job script in background",
+              "command": "bash long-job.sh 2100 bg",
+              "status": "running",
+              "summary": null,
+              "endReason": null,
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:54.663Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 506,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": [
+            {
+              "taskId": "bx1fra2r1",
+              "kind": "shell",
+              "description": "Start long job script in background",
+              "command": "bash long-job.sh 2100 bg",
+              "status": "running",
+              "summary": null,
+              "endReason": null,
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:54.663Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 566,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": [
+            {
+              "taskId": "bx1fra2r1",
+              "kind": "shell",
+              "description": "Start long job script in background",
+              "command": "bash long-job.sh 2100 bg",
+              "status": "running",
+              "summary": null,
+              "endReason": null,
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:54.663Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 626,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": [
+            {
+              "taskId": "bx1fra2r1",
+              "kind": "shell",
+              "description": "Start long job script in background",
+              "command": "bash long-job.sh 2100 bg",
+              "status": "running",
+              "summary": null,
+              "endReason": null,
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:54.663Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 686,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": [
+            {
+              "taskId": "bx1fra2r1",
+              "kind": "shell",
+              "description": "Start long job script in background",
+              "command": "bash long-job.sh 2100 bg",
+              "status": "running",
+              "summary": null,
+              "endReason": null,
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:54.663Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 746,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": [
+            {
+              "taskId": "bx1fra2r1",
+              "kind": "shell",
+              "description": "Start long job script in background",
+              "command": "bash long-job.sh 2100 bg",
+              "status": "running",
+              "summary": null,
+              "endReason": null,
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:54.663Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 806,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": [
+            {
+              "taskId": "bx1fra2r1",
+              "kind": "shell",
+              "description": "Start long job script in background",
+              "command": "bash long-job.sh 2100 bg",
+              "status": "running",
+              "summary": null,
+              "endReason": null,
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:54.663Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 866,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": [
+            {
+              "taskId": "bx1fra2r1",
+              "kind": "shell",
+              "description": "Start long job script in background",
+              "command": "bash long-job.sh 2100 bg",
+              "status": "running",
+              "summary": null,
+              "endReason": null,
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:54.663Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 926,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": [
+            {
+              "taskId": "bx1fra2r1",
+              "kind": "shell",
+              "description": "Start long job script in background",
+              "command": "bash long-job.sh 2100 bg",
+              "status": "running",
+              "summary": null,
+              "endReason": null,
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:54.663Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 986,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": [
+            {
+              "taskId": "bx1fra2r1",
+              "kind": "shell",
+              "description": "Start long job script in background",
+              "command": "bash long-job.sh 2100 bg",
+              "status": "running",
+              "summary": null,
+              "endReason": null,
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:54.663Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 1046,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": [
+            {
+              "taskId": "bx1fra2r1",
+              "kind": "shell",
+              "description": "Start long job script in background",
+              "command": "bash long-job.sh 2100 bg",
+              "status": "running",
+              "summary": null,
+              "endReason": null,
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:54.663Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 1106,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": [
+            {
+              "taskId": "bx1fra2r1",
+              "kind": "shell",
+              "description": "Start long job script in background",
+              "command": "bash long-job.sh 2100 bg",
+              "status": "running",
+              "summary": null,
+              "endReason": null,
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:54.663Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 1166,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": [
+            {
+              "taskId": "bx1fra2r1",
+              "kind": "shell",
+              "description": "Start long job script in background",
+              "command": "bash long-job.sh 2100 bg",
+              "status": "running",
+              "summary": null,
+              "endReason": null,
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:54.663Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 1226,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": [
+            {
+              "taskId": "bx1fra2r1",
+              "kind": "shell",
+              "description": "Start long job script in background",
+              "command": "bash long-job.sh 2100 bg",
+              "status": "running",
+              "summary": null,
+              "endReason": null,
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:54.663Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 1286,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": [
+            {
+              "taskId": "bx1fra2r1",
+              "kind": "shell",
+              "description": "Start long job script in background",
+              "command": "bash long-job.sh 2100 bg",
+              "status": "running",
+              "summary": null,
+              "endReason": null,
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:54.663Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 1346,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": [
+            {
+              "taskId": "bx1fra2r1",
+              "kind": "shell",
+              "description": "Start long job script in background",
+              "command": "bash long-job.sh 2100 bg",
+              "status": "running",
+              "summary": null,
+              "endReason": null,
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:54.663Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 1406,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": [
+            {
+              "taskId": "bx1fra2r1",
+              "kind": "shell",
+              "description": "Start long job script in background",
+              "command": "bash long-job.sh 2100 bg",
+              "status": "running",
+              "summary": null,
+              "endReason": null,
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:54.663Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 1466,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": [
+            {
+              "taskId": "bx1fra2r1",
+              "kind": "shell",
+              "description": "Start long job script in background",
+              "command": "bash long-job.sh 2100 bg",
+              "status": "running",
+              "summary": null,
+              "endReason": null,
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:54.663Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 1526,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": [
+            {
+              "taskId": "bx1fra2r1",
+              "kind": "shell",
+              "description": "Start long job script in background",
+              "command": "bash long-job.sh 2100 bg",
+              "status": "running",
+              "summary": null,
+              "endReason": null,
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:54.663Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 1586,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": [
+            {
+              "taskId": "bx1fra2r1",
+              "kind": "shell",
+              "description": "Start long job script in background",
+              "command": "bash long-job.sh 2100 bg",
+              "status": "running",
+              "summary": null,
+              "endReason": null,
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:54.663Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 1646,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": [
+            {
+              "taskId": "bx1fra2r1",
+              "kind": "shell",
+              "description": "Start long job script in background",
+              "command": "bash long-job.sh 2100 bg",
+              "status": "running",
+              "summary": null,
+              "endReason": null,
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:54.663Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 1707,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": [
+            {
+              "taskId": "bx1fra2r1",
+              "kind": "shell",
+              "description": "Start long job script in background",
+              "command": "bash long-job.sh 2100 bg",
+              "status": "running",
+              "summary": null,
+              "endReason": null,
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:54.663Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 1767,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": [
+            {
+              "taskId": "bx1fra2r1",
+              "kind": "shell",
+              "description": "Start long job script in background",
+              "command": "bash long-job.sh 2100 bg",
+              "status": "running",
+              "summary": null,
+              "endReason": null,
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:54.663Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 1827,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": [
+            {
+              "taskId": "bx1fra2r1",
+              "kind": "shell",
+              "description": "Start long job script in background",
+              "command": "bash long-job.sh 2100 bg",
+              "status": "running",
+              "summary": null,
+              "endReason": null,
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:54.663Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 1887,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": [
+            {
+              "taskId": "bx1fra2r1",
+              "kind": "shell",
+              "description": "Start long job script in background",
+              "command": "bash long-job.sh 2100 bg",
+              "status": "running",
+              "summary": null,
+              "endReason": null,
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:54.663Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 1947,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": [
+            {
+              "taskId": "bx1fra2r1",
+              "kind": "shell",
+              "description": "Start long job script in background",
+              "command": "bash long-job.sh 2100 bg",
+              "status": "running",
+              "summary": null,
+              "endReason": null,
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:54.663Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 2007,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": [
+            {
+              "taskId": "bx1fra2r1",
+              "kind": "shell",
+              "description": "Start long job script in background",
+              "command": "bash long-job.sh 2100 bg",
+              "status": "running",
+              "summary": null,
+              "endReason": null,
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:54.663Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 2067,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": [
+            {
+              "taskId": "bx1fra2r1",
+              "kind": "shell",
+              "description": "Start long job script in background",
+              "command": "bash long-job.sh 2100 bg",
+              "status": "running",
+              "summary": null,
+              "endReason": null,
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:54.663Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 2127,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": [
+            {
+              "taskId": "bx1fra2r1",
+              "kind": "shell",
+              "description": "Start long job script in background",
+              "command": "bash long-job.sh 2100 bg",
+              "status": "running",
+              "summary": null,
+              "endReason": null,
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:54.663Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 2187,
+        "pidAlive": false,
+        "done": "bg finished after 2104s",
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": [
+            {
+              "taskId": "bx1fra2r1",
+              "kind": "shell",
+              "description": "Start long job script in background",
+              "command": "bash long-job.sh 2100 bg",
+              "status": "completed",
+              "summary": "Background command \"Start long job script in background\" completed (exit code 0)",
+              "endReason": null,
+              "exitCode": 0,
+              "startedAt": "2026-11-17T11:30:54.663Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 2192,
+        "pidAlive": false,
+        "done": "bg finished after 2104s",
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": [
+            {
+              "taskId": "bx1fra2r1",
+              "kind": "shell",
+              "description": "Start long job script in background",
+              "command": "bash long-job.sh 2100 bg",
+              "status": "completed",
+              "summary": "Background command \"Start long job script in background\" completed (exit code 0)",
+              "endReason": null,
+              "exitCode": 0,
+              "startedAt": "2026-11-17T11:30:54.663Z"
+            }
+          ]
+        }
+      }
+    ],
+    "aliveAfter30Min": true
+  },
+  "ended": {
+    "at": 2129048,
+    "task_id": "bx1fra2r1",
+    "kind": "shell",
+    "description": "Start long job script in background",
+    "command": "bash long-job.sh 2100 bg",
+    "status": "completed",
+    "summary": "Background command \"Start long job script in background\" completed (exit code 0)",
+    "end_reason": null,
+    "exit_code": 0,
+    "started_at": "2026-11-17T11:30:54.663Z"
+  },
+  "runId": "long_command_external_0a43ec7a_4729_4a41_9156_e7_ac024ed5ffa64397a01c48bb1eaa9035",
+  "socketEvents": [
+    {
+      "at": 2191659,
+      "event": "close"
+    }
+  ],
+  "toolCalls": [
+    {
+      "at": 16466,
+      "type": "TOOL_EXECUTION_STARTED",
+      "tool": "Bash",
+      "invocation": "toolu_01B4hc4FbYJiNKQhjDb7nnLL",
+      "args": {
+        "command": "bash long-job.sh 2100 bg",
+        "description": "Start long job script in background",
+        "run_in_background": true
+      }
+    },
+    {
+      "at": 24488,
+      "type": "TOOL_EXECUTION_SUCCEEDED",
+      "tool": "Bash",
+      "invocation": "toolu_01B4hc4FbYJiNKQhjDb7nnLL",
+      "result": "Command running in background with ID: bx1fra2r1. Output is being written to: /private/tmp/claude-501/-private-var-folders-7w-9r4-s1-s42z3f7c136bpjf0r0000gn-T-long-command-limits-UCsOl4-LCL-LONG-CLAUDE-BG-m1IYyL/804a54db-d292-4aab-bf00-cfac8c4070b3/tasks/bx1fra2r1.output. You will be notified when it completes. To check interim output, use Read on that file path."
+    }
+  ],
+  "tasks": [
+    {
+      "at": 24478,
+      "task_id": "bx1fra2r1",
+      "kind": "shell",
+      "description": "Start long job script in background",
+      "command": null,
+      "status": "running",
+      "summary": null,
+      "end_reason": null,
+      "exit_code": null,
+      "started_at": "2026-11-17T11:30:54.663Z"
+    },
+    {
+      "at": 24478,
+      "task_id": "bx1fra2r1",
+      "kind": "shell",
+      "description": "Start long job script in background",
+      "command": "bash long-job.sh 2100 bg",
+      "status": "running",
+      "summary": null,
+      "end_reason": null,
+      "exit_code": null,
+      "started_at": "2026-11-17T11:30:54.663Z"
+    },
+    {
+      "at": 2129048,
+      "task_id": "bx1fra2r1",
+      "kind": "shell",
+      "description": "Start long job script in background",
+      "command": "bash long-job.sh 2100 bg",
+      "status": "completed",
+      "summary": null,
+      "end_reason": null,
+      "exit_code": null,
+      "started_at": "2026-11-17T11:30:54.663Z"
+    },
+    {
+      "at": 2129048,
+      "task_id": "bx1fra2r1",
+      "kind": "shell",
+      "description": "Start long job script in background",
+      "command": "bash long-job.sh 2100 bg",
+      "status": "completed",
+      "summary": "Background command \"Start long job script in background\" completed (exit code 0)",
+      "end_reason": null,
+      "exit_code": 0,
+      "started_at": "2026-11-17T11:30:54.663Z"
+    }
+  ],
+  "notices": [
+    {
+      "at": 2129128,
+      "sender_id": "system.claude_background_task",
+      "content": "Background task completed: Start long job script in background (completed)",
+      "turn_id": "long_command_external_0a43ec7a_4729_4a41_9156_e7_ac024ed5ffa64397a01c48bb1eaa9035:turn:f674b83d-f8e1-4504-a7f1-fc3aae1d7613"
+    }
+  ],
+  "turns": [
+    {
+      "at": 13,
+      "type": "TURN_STARTED",
+      "payload": "{\"turnId\":\"long_command_external_0a43ec7a_4729_4a41_9156_e7_ac024ed5ffa64397a01c48bb1eaa9035:turn:71e484f1-a6ed-44c0-b7d0-c2c9dfa90228\",\"turn_id\":\"long_command_external_0a43ec7a_4729_4a41_9156_e7_ac024ed5ffa64397a01c48bb1eaa9035:turn:71e484f1-a6ed-44c0-b7d0-c2c9dfa90228\"}"
+    },
+    {
+      "at": 25818,
+      "type": "TURN_COMPLETED",
+      "payload": "{\"turnId\":\"long_command_external_0a43ec7a_4729_4a41_9156_e7_ac024ed5ffa64397a01c48bb1eaa9035:turn:71e484f1-a6ed-44c0-b7d0-c2c9dfa90228\",\"turn_id\":\"long_command_external_0a43ec7a_4729_4a41_9156_e7_ac024ed5ffa64397a01c48bb1eaa9035:turn:71e484f1-a6ed-44c0-b7d0-c2c9dfa90228\"}"
+    },
+    {
+      "at": 2129128,
+      "type": "TURN_STARTED",
+      "payload": "{\"turnId\":\"long_command_external_0a43ec7a_4729_4a41_9156_e7_ac024ed5ffa64397a01c48bb1eaa9035:turn:f674b83d-f8e1-4504-a7f1-fc3aae1d7613\",\"turn_id\":\"long_command_external_0a43ec7a_4729_4a41_9156_e7_ac024ed5ffa64397a01c48bb1eaa9035:turn:f674b83d-f8e1-4504-a7f1-fc3aae1d7613\"}"
+    },
+    {
+      "at": 2131344,
+      "type": "TURN_COMPLETED",
+      "payload": "{\"turnId\":\"long_command_external_0a43ec7a_4729_4a41_9156_e7_ac024ed5ffa64397a01c48bb1eaa9035:turn:f674b83d-f8e1-4504-a7f1-fc3aae1d7613\",\"turn_id\":\"long_command_external_0a43ec7a_4729_4a41_9156_e7_ac024ed5ffa64397a01c48bb1eaa9035:turn:f674b83d-f8e1-4504-a7f1-fc3aae1d7613\"}"
+    }
+  ],
+  "text": "STARTED0",
+  "result": "Pass",
+  "endedAt": "2026-11-17T12:07:01.843Z"
+}

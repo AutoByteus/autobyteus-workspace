@@ -1,0 +1,8 @@
+# IMP-07 the five run_bash-related files of IMP-06 alone
+# Command: env -u AUTOBYTEUS_TEST_VAULT npx vitest run tests/integration/agent/tool-approval-flow.test.ts tests/integration/tools/terminal/run-bash-wrapper.test.ts tests/integration/tools/terminal/terminal-tools.test.ts tests/unit/tools/terminal/command-execution/call-output-lifetime.test.ts tests/unit/tools/terminal/command-execution/stop-retirement-race.test.ts
+# Commit: 49867e8dc4
+# Environment: macOS (darwin 25.5), Node v22.23.1; machine load average 85-116 from other processes during the full-suite runs
+# Date: 2026-11-17
+
+ Test Files  5 passed (5)
+      Tests  48 passed (48)

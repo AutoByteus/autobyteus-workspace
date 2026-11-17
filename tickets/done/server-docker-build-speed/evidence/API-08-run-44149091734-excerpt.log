@@ -1,0 +1,46 @@
+# API-08 excerpt: build-only run 44149091734 (zh variant)
+# Dispatch: gh workflow run release-server-docker.yml --ref codex/server-docker-build-speed -f build_only=true -f publish_zh=true (2026-11-17T18:33:15Z)
+# Commit: 31dfe3dad0; URL https://github.com/AutoByteus/autobyteus-workspace/actions/runs/44149091734
+# Full log: gh run view 44149091734 --log (671 KB; not committed). Lines below: grep of that log (runner-echoed script text removed).
+
+== Job timeline
+run wall time (createdAt -> last job end): 7m36s
+JOB | Resolve Release Metadata | success | 2026-11-17T18:33:19Z | 2026-11-17T18:33:24Z | 0m05s
+JOB | Build Server Image (linux/amd64) | success | 2026-11-17T18:33:27Z | 2026-11-17T18:40:33Z | 7m06s
+JOB | Build Server Image (linux/arm64) | success | 2026-11-17T18:33:29Z | 2026-11-17T18:40:22Z | 6m53s
+JOB | Publish Server Image | success | 2026-11-17T18:40:36Z | 2026-11-17T18:40:51Z | 0m15s
+JOB | Publish Server Package (${{ matrix.platform }}) | skipped | 2026-11-17T18:40:51Z | 2026-11-17T18:40:51Z | 0m00s
+
+== Runner images
+Resolve Release Metadata	2026-11-17T18:33:20.0729190Z Image: ubuntu-26.04
+Build Server Image (linux/arm64)	2026-11-17T18:33:30.0160242Z Image: ubuntu-24.04-arm
+Build Server Image (linux/amd64)	2026-11-17T18:33:28.5374069Z Image: ubuntu-26.04
+Publish Server Image	2026-11-17T18:40:36.8214879Z Image: ubuntu-26.04
+
+== Variant, base image, disk, pushed digests, dry-run check
+Resolve Release Metadata	2026-11-17T18:33:21.5964613Z   BUILD_ONLY: true
+Resolve Release Metadata	2026-11-17T18:33:21.5968716Z   VARIANT_LABEL: zh
+Build Server Image (linux/arm64)	2026-11-17T18:35:52.4700536Z   VARIANT_LABEL: zh
+Build Server Image (linux/arm64)	2026-11-17T18:35:52.5666762Z Free disk on /: 98 GB
+Build Server Image (linux/arm64)	2026-11-17T18:36:04.0408516Z   build-args: BASE_IMAGE_DIGEST=sha256:19d4c0164e5c7006e38a81c0260611cbf26f871f2d3e749d574016676f4f9a67
+Build Server Image (linux/arm64)	2026-11-17T18:36:04.0409231Z   platforms: linux/arm64
+Build Server Image (linux/arm64)	2026-11-17T18:40:01.0487804Z Pushed arm64 image sha256:71fab2115fb61ce78ae7b2dc014339f866089ae9531e66d8f8453b19cd57b962
+Build Server Image (linux/amd64)	2026-11-17T18:36:22.3372687Z   VARIANT_LABEL: zh
+Build Server Image (linux/amd64)	2026-11-17T18:36:22.3851503Z Free disk on /: 83 GB
+Build Server Image (linux/amd64)	2026-11-17T18:36:38.0138820Z   build-args: BASE_IMAGE_DIGEST=sha256:19d4c0164e5c7006e38a81c0260611cbf26f871f2d3e749d574016676f4f9a67
+Build Server Image (linux/amd64)	2026-11-17T18:36:38.0139508Z   platforms: linux/amd64
+Build Server Image (linux/amd64)	2026-11-17T18:40:20.9692993Z Pushed amd64 image sha256:1ea9e6f9f653e162bc3329965c8303e09fe92ed90ac6e0e76e1772f36609d44f
+Publish Server Image	2026-11-17T18:40:47.1471410Z   BUILD_ONLY: true
+Publish Server Image	2026-11-17T18:40:47.1471929Z   VERSION_TAG: 
+Publish Server Image	2026-11-17T18:40:47.8805947Z The dry-run index lists linux/amd64 sha256:1ea9e6f9f653e162bc3329965c8303e09fe92ed90ac6e0e76e1772f36609d44f and linux/arm64 sha256:71fab2115fb61ce78ae7b2dc014339f866089ae9531e66d8f8453b19cd57b962.
+Publish Server Image	2026-11-17T18:40:47.8958409Z   BUILD_ONLY: true
+Publish Server Image	2026-11-17T18:40:47.8959147Z   VARIANT_LABEL: zh
+
+== Publishing steps
+Publish Server Image | Create and check the multi-arch image | success
+Publish Server Image | Checkout tags for the beta decision | skipped
+Publish Server Image | Move beta tag | skipped
+Publish Server Package (${{ matrix.platform }}) | (job) | skipped
+
+== zh base digest in system-level.json at the commit
+sha256:19d4c0164e5c7006e38a81c0260611cbf26f871f2d3e749d574016676f4f9a67

@@ -658,6 +658,28 @@ describe('segmentHandler', () => {
       expect(segment.status).toBe('parsed');
     });
 
+    it('names a native call_tool card after the found tool, with its real arguments, at end (autobyteus-515)', () => {
+      // The native runtime streams a searchable tool's call as call_tool {name, arguments}; its END names the real tool.
+      handleSegmentStart(
+        { id: 'seg-call-tool', turn_id: 'turn-1', segment_type: 'tool_call', metadata: { tool_name: 'call_tool' } },
+        mockContext,
+      );
+      handleSegmentContent(
+        { id: 'seg-call-tool', turn_id: 'turn-1', delta: '{"name":"update_task","arguments":{"task_id":"autobyteus-77","status":"DONE"}}', segment_type: 'tool_call' },
+        mockContext,
+      );
+      handleSegmentEnd(
+        { id: 'seg-call-tool', turn_id: 'turn-1',
+          metadata: { tool_name: 'update_task', arguments: { task_id: 'autobyteus-77', status: 'DONE' } } },
+        mockContext,
+      );
+
+      const segment = findSegmentById(mockContext, 'seg-call-tool') as any;
+      expect(segment.type).toBe('tool_call');
+      expect(segment.toolName).toBe('update_task');
+      expect(segment.arguments).toEqual({ task_id: 'autobyteus-77', status: 'DONE' });
+    });
+
     it('does not downgrade an already-approved tool segment back to parsed on end', () => {
       handleSegmentStart(
         {

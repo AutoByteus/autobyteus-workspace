@@ -32,6 +32,7 @@ import { FileMemoryStore } from '../../../src/memory/store/file-store.js';
 import { registerReadFileTool } from '../../../src/tools/file/read-file.js';
 import type { ToolDefinition } from '../../../src/tools/registry/tool-definition.js';
 import { defaultToolRegistry } from '../../../src/tools/registry/tool-registry.js';
+import { AgentToolSearch } from '../../../src/agent/tool-search/agent-tool-search.js';
 
 const PNG_BYTES = Buffer.from(
   'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR4nGMAAQAABQABDQottAAAAABJRU5ErkJggg==',
@@ -126,6 +127,7 @@ describe('read_file media through a native agent (integration)', () => {
     state.memoryManager = new MemoryManager({ store: new FileMemoryStore(memoryDir, 'read_file_native_agent') });
     state.llmInstance = llm;
     state.toolInstances = { read_file: registerReadFileTool() };
+    state.toolSearch = new AgentToolSearch(null, Object.keys(state.toolInstances!));
     const config = new AgentConfig(
       'ReadFileNativeAgent',
       'integration tester',

@@ -49,6 +49,8 @@ import { createCollaborationRootResolver } from "./collaboration-root-resolver.j
 import { composeCollaboration, composeTaskSide, type Collaboration, type TaskSide } from "./collaboration-composition.js";
 import { createAgentStreamHandler } from "../services/agent-streaming/agent-stream-handler.js";
 import { composeRestartResume, type RestartResume } from "./restart-resume-composition.js";
+import { RestartReminderService } from "../restart-resume/restart-reminder-service.js";
+import { restartReminderRecordPath } from "../restart-resume/restart-reminder-record.js";
 import { getStandaloneAgentRunRootManager } from "../standalone-agent-run-root/services/standalone-agent-run-root-manager.js";
 import {
   createGeneralProcessRunSupervisor,
@@ -336,6 +338,8 @@ export const buildStudioServer = async (input: {
       definitionChanges: hostDefinitionServices.agentDefinitionChanges,
       integrationRunAccess: credentialProxyHost.runAccess,
     });
+    // autobyteus-448: the pending restart reminders, for the notice slot now and the restart resumer below.
+    const restartReminders = new RestartReminderService({ recordPath: restartReminderRecordPath(input.appConfig.getAppDataDir()) });
     const runtimeHandoverNotices = new RuntimeHandoverNoticeService({
       journals: getWorkJournalService(),
       readPending: readPendingRuntimeHandover,
@@ -356,8 +360,8 @@ export const buildStudioServer = async (input: {
       modelSelectionValidator,
       taskRecords: taskSide.taskRecords, delegationIndex: taskSide.tree, viewStreams: taskSide.viewStreams,
       // One notice slot: the agent runtime hand-over first (a pending tool list notice must not delay it by one input),
-      // then tool list updates, skill notices and background task notices (one notice per input).
-      platformInputNotices: new AgentRunPlatformNotices([runtimeHandoverNotices, ...platformNotices.sources]),
+      // then the restart reminder, tool list updates, skill notices and background task notices (one notice per input).
+      platformInputNotices: new AgentRunPlatformNotices([runtimeHandoverNotices, restartReminders, ...platformNotices.sources]),
       runtimeSwitching: { memory: new RuntimeSwitchRecorder() },
       remoteChannel: remote.channel, peerDiscovery: remote.discovery,
     });
@@ -381,7 +385,7 @@ export const buildStudioServer = async (input: {
     // autobyteus-437: the node access gate (every request needs a credential) and its credential services.
     const currentNodeAccess = nodeAccess = await startNodeAccess({ appDataDir: input.appConfig.getAppDataDir(), remoteCollaboration: remoteCollaboration.services });
     const restartResume = composeRestartResume({ appDataDir: input.appConfig.getAppDataDir(), rootResolver, tree: taskSide.tree, closedTasks: taskSide.closedTasks,
-      orgHistory: generalProcessRunSupervisor.agentOrgRunHistoryCatalogService });
+      orgHistory: generalProcessRunSupervisor.agentOrgRunHistoryCatalogService, reminders: restartReminders });
     const applicationServices = createStudioApplicationServices({
       appConfig: input.appConfig, taskSide,
       packages,

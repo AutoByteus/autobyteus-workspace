@@ -1,0 +1,31 @@
+# API-13 fixed files
+# Command: vitest run configured-skill-on-demand-loading.e2e + project-task-boundaries.e2e; vitest run autobyteus-agent-run-backend-factory.integration
+# Commit: 6aa25d9191 content (run before commit)
+# Env: macOS Darwin 25.5.0 arm64, Node v22.23.1, release worktree release-v1.5.13-beta.8; date 2026-11-17 08:48
+
+before fix (project-task-boundaries): AssertionError: expected [ 'search_memory' ] to deeply equal []
+before fix (project-task-boundaries):       Tests  18 skipped (18)
+ ✓ tests/e2e/projects/project-task-boundaries.e2e.test.ts (18 tests) 62968ms
+     ✓ API-MCP: selected default host executes equivalent compact mutations and detailed native reads  1018ms
+     ✓ API-FILES: multipart bytes, saved ownership, typed deltas and Done survive reader reconstruction  4936ms
+     ✓ API-MCP collision: selected protected create_project adapter wins over a configured MCP name  334ms
+     ✓ API-MCP collision: selected protected update_project adapter wins over a configured MCP name  310ms
+     ✓ API-AGG: public registration is not mkdir; failed aggregate save preserves registry and prior records  865ms
+     ✓ E-005: selected HTTP and native Project create/patch save defaults and reject invalid input atomically  2966ms
+     ✓ E-006: path links retain descriptions; lists replace, blanks and [] clear only associations  2631ms
+     ✓ CTX-E2E-001: context_files create/patch over MCP and native are saved, readable through GraphQL/REST/list and outlive their sources (AC-001..004, 006, 009, 011)  759ms
+     ✓ CTX-E2E-002: invalid context_files fail with a path-naming error and change nothing, including no DONE closure (AC-004, 005, 008)  2246ms
+     ✓ CLS-API-001: CANCELLED patch/ack, DONE<->CANCELLED, reopen, list filter, tool schemas, errors, GraphQL enum, open count and stored shape (task-closed-status AC-004, 006, 007, 010, 012)  909ms
+     ✓ TKD-API-001: keys as Task IDs, depends_on by key / any case / long ID, rejected dependencies write nothing, blocked Tasks start, a deleted Project's keys stay unknown (AC-020, 022, 024, 025, 027)  6205ms
+     ✓ POF-API-001: part_of by key / any case / long ID, "" clears, omitted keeps; partOf / parts in numeric key order; refusals write nothing; a parent's DONE / CANCELLED closes its open parts and lists them; reopen, repeats and a part's close never cascade (task-part-of AC-003, 004, 006, 014, 015, 018)  7511ms
+     ✓ CMT-API-001: update_task add_comment by key / any case / long ID appends numbered comments, never the description; DONE + comment is one write; blank, wrong-shape and unknown are refused with nothing written; list_project_tasks shows the texts (task-comments AC-001, AC-005, AC-008)  3469ms
+     ✓ CMT-API-002: a parent's close names the part it could not close (damaged run data) in partsNotClosed, next to closedParts; the field is absent when every part closes (task-comments AC-009, autobyteus-187)  746ms
+     ✓ TTL-API-001: a Task title is required, trimmed and kept whole however long; update_task changes it; refusals write nothing (MCP equals native; GraphQL the same)  4941ms
+     ✓ GET-API-001: get_project_task returns one Task in full by key in any case or long ID; another Project's or an unknown Task is TASK_NOT_FOUND; arguments are checked (MCP equals native)  1131ms
+     ✓ E-007: current Projects/Tasks/context/assignments/history/registry/folders survive metadata/list patches and reader reconstruction  1048ms
+ ✓ tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts (4 tests) 2819ms
+     ✓ keeps ordinary native tools and configured skill reads explicit in the same active run  2133ms
+ Test Files  2 passed (2)
+      Tests  22 passed (22)
+ Test Files  1 passed (1)
+      Tests  4 passed (4)

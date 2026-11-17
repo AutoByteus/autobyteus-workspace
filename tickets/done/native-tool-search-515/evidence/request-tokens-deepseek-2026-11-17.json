@@ -1,0 +1,18 @@
+[
+  {
+    "model": "deepseek-v4-flash",
+    "agent": "project-task-manager",
+    "none": 47,
+    "all": 7536,
+    "usage": 4544,
+    "base": 2415
+  },
+  {
+    "model": "deepseek-v4-flash",
+    "agent": "autobyteus-daily-assistant",
+    "none": 47,
+    "all": 8186,
+    "usage": 3972,
+    "base": 2427
+  }
+]

@@ -1,0 +1,64 @@
+{
+  "runId": "restart_reminder_194a2d57_912e426fdcd2498888099fa779361e24",
+  "entry": {
+    "root": {
+      "rootSubjectKind": "agent",
+      "rootRunId": "restart_reminder_194a2d57_912e426fdcd2498888099fa779361e24"
+    },
+    "agentRunId": "restart_reminder_194a2d57_912e426fdcd2498888099fa779361e24",
+    "place": "host",
+    "status": "idle",
+    "backgroundTasks": true,
+    "recordedAt": "2026-11-17T13:08:46.067Z",
+    "version": "0.0.0-previous"
+  },
+  "stopped": {
+    "entries": [
+      {
+        "root": {
+          "rootSubjectKind": "agent",
+          "rootRunId": "restart_reminder_194a2d57_912e426fdcd2498888099fa779361e24"
+        },
+        "agentRunId": "restart_reminder_194a2d57_912e426fdcd2498888099fa779361e24",
+        "place": "host",
+        "status": "idle",
+        "backgroundTasks": true,
+        "recordedAt": "2026-11-17T13:08:46.081Z",
+        "version": "0.0.0-previous"
+      }
+    ],
+    "shutdownAt": "2026-11-17T13:08:46.081Z"
+  },
+  "requestsBeforeRestart": 2,
+  "inputSentAt": 1794920931985,
+  "reminders": null,
+  "requests": [
+    {
+      "at": 1794920922980,
+      "lastRole": "user",
+      "lastUser": "CASE:RR-05 Start the build in the background.",
+      "toolResults": []
+    },
+    {
+      "at": 1794920924172,
+      "lastRole": "tool",
+      "lastUser": "CASE:RR-05 Start the build in the background.",
+      "toolResults": [
+        "{\"pid\":37672,\"status\":\"running\",\"effectiveCwd\":\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/restart-reminder-e2e-yQRJr7/workspace\",\"outputFile\":\"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-background-tasks/restart_reminder_194a2d57_912e426fdcd2498888099fa779361e24/call-1794920924145-37636.log\"}"
+      ]
+    },
+    {
+      "at": 1794920931858,
+      "lastRole": "user",
+      "lastUser": "[Platform notice — application restarted]\n\nThe application restarted at 2026-11-17 13:08 UTC (reason: an update to v1.5.13-beta.8).\nIf you started any background tasks, the restart stopped them. Check what you still need: restart it, or continue your work.",
+      "toolResults": []
+    },
+    {
+      "at": 1794920932005,
+      "lastRole": "user",
+      "lastUser": "CASE:RR-05 Status?",
+      "toolResults": []
+    }
+  ],
+  "carriedBy": "wake"
+}

@@ -1,0 +1,59 @@
+{
+  "runId": "restart_reminder_bd97921f_abb28962e8384deaad78606599e4ddcf",
+  "quietRunId": "restart_reminder_eabb8c31_410f9d54b0254613912bb88207b9feac",
+  "live": null,
+  "liveRecord": null,
+  "recordedAfterMs": 15107,
+  "liveAfterQuiet": null,
+  "stopped": null,
+  "leftAfterStop": [],
+  "afterTake": {
+    "busyRuns": null,
+    "reminders": null
+  },
+  "requestsBeforeInput": 2,
+  "systemNotice": null,
+  "remindersAfter": null,
+  "requests": [
+    {
+      "at": 1794914908456,
+      "lastRole": "user",
+      "lastUser": "CASE:RR-01 Start the build in the background.",
+      "toolResults": []
+    },
+    {
+      "at": 1794914909226,
+      "lastRole": "tool",
+      "lastUser": "CASE:RR-01 Start the build in the background.",
+      "toolResults": [
+        "{\"pid\":55113,\"status\":\"running\",\"effectiveCwd\":\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/restart-reminder-e2e-S9jMSc/workspace\",\"outputFile\":\"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-background-tasks/restart_reminder_bd97921f_abb28962e8384deaad78606599e4ddcf/call-1794914909206-55083.log\"}"
+      ]
+    },
+    {
+      "at": 1794914952624,
+      "lastRole": "user",
+      "lastUser": "CASE:RR-01 How is the build going?",
+      "toolResults": []
+    },
+    {
+      "at": 1794914952703,
+      "lastRole": "user",
+      "lastUser": "CASE:RR-01 And now?",
+      "toolResults": []
+    }
+  ],
+  "control": [
+    {
+      "at": 1794914924669,
+      "lastRole": "user",
+      "lastUser": "CASE:RR-01C Say done.",
+      "toolResults": []
+    },
+    {
+      "at": 1794914952967,
+      "lastRole": "user",
+      "lastUser": "CASE:RR-01C Anything new?",
+      "toolResults": []
+    }
+  ]
+}

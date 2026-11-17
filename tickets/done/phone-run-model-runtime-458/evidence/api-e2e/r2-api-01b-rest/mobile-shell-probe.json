@@ -1,0 +1,355 @@
+{
+  "startedAt": "2026-11-17T13:28:17.003Z",
+  "result": "Pass",
+  "node": "v22.23.1",
+  "servers": {
+    "alpha": {
+      "port": 58646,
+      "nodeId": "srv_8QzKlnlby_c-S84WeS7HMR4wO3NliRhX",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    },
+    "beta": {
+      "port": 58647,
+      "nodeId": "srv__Ezn6i_8-2JrifFNSX7ZR0gLmEZe5Au-",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    },
+    "eta": {
+      "port": 58962,
+      "nodeId": "srv_7I3wCKgLW-XWz_JIKqeEUZtnqi6fZ7VH",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    }
+  },
+  "runs": {
+    "ptm": "project_task_manager_aade08e250b243bfb4a49f9c57df509d",
+    "writerRun": "release_notes_writer_cdb4163cea7f4e0aa0043c77d0bd7ef7",
+    "squadRun": "docs_review_team_3c4c2390dfff43308aed235da554cda2",
+    "reviewer": "release_notes_writer_9aef7384f03e4aeb81fef55ca01f4bc6",
+    "memberDelegated": "fact_checker_3b1a42d798064ff78690e17fa3ae0a28",
+    "remoteAgentRun": "publisher_ee1762a3608f4b70b99f2d2908fd9a8a",
+    "remoteTeamRun": "studio_team_77b2a3009f0140979c791cc7159edddc",
+    "plain": [
+      "fact_checker_170a922a187d4253b00fe88587f11db7",
+      "fact_checker_ab3255f95a714b68b2b965b62032c9b0",
+      "fact_checker_0bea3ccd6e724b059cdcfee8eb1b92e9"
+    ],
+    "org": "delivery_org_c291e90b3f78449f8db209c333ce71a5",
+    "orgPlanner": "release_notes_writer_f6dd2d50be5e4f839132ded952f41f89",
+    "reviewOrg": "review_org_eb5ec8635e6241c6b5d1bff1b13ad26b",
+    "reviewOrgCoordinator": {
+      "address": "/squad/reviewer",
+      "agentRunId": "release_notes_writer_f15a39aa29744ac1a4724a8fd25a60f7",
+      "teamRunId": null
+    },
+    "delivery": "delivery_team_bd4af132894d4f9096ac7e4882f6c22e",
+    "deliveryLead": "fact_checker_5208bdefd513455f97ef4e9ee3298983",
+    "deliveryMate": "release_notes_writer_69482edfa15644eb940867f1c9367f3f",
+    "leadDelegated": "changelog_helper_5e76dc9da1d544c9aaee160673cf6945",
+    "approver": "approver_b0974b8d108f46a5a4b0d7b879edae3e",
+    "taskA": "launch-efaeb7-1",
+    "taskB": "launch-efaeb7-2"
+  },
+  "cases": {
+    "MSP-13": {
+      "result": "Pass",
+      "seconds": 13,
+      "reads": [
+        {
+          "sentAt": 1794922159632,
+          "at": 1794922159635,
+          "label": "phone-unknown-credential",
+          "case": "MSP-13",
+          "op": "ListWorkspaceRunHistory",
+          "window": null,
+          "runIds": null,
+          "status": 401,
+          "bytes": 123
+        }
+      ],
+      "onPairing": 1,
+      "sessionLeft": null,
+      "revokedAll": 200,
+      "openPhoneAfterCheck": {
+        "pairing": 1,
+        "sessionLeft": null
+      },
+      "revokedShows": {
+        "pairing": true,
+        "list": "other",
+        "bar": null,
+        "sessionLeft": null
+      },
+      "revokedReads": [
+        "PhoneCredentialCheck 403",
+        "ListWorkspaceRunHistory 403",
+        "ListCollaborationRootHistory 403",
+        "GetAllWorkspaces 403",
+        "GetAgentDefinitions 403",
+        "GetAgentTeamDefinitions 403",
+        "GetAgentOrgDefinitions 403"
+      ],
+      "credentialChecks": [
+        "phone-unknown-credential 401",
+        "phone 403",
+        "phone-revoked 403"
+      ]
+    },
+    "MSP-53": {
+      "result": "Pass",
+      "seconds": 0.7,
+      "fileType": "video/mp4",
+      "percentagesSeen": [
+        0,
+        5
+      ],
+      "sendBlockedWhileUploading": true,
+      "uploadStatuses": [
+        200
+      ],
+      "draftSize": 27262976,
+      "finalSize": 27262976,
+      "referenceFilesLine": [
+        "<eta data dir>/memory/agents/size_checker_94cfd4f3ca6744c6a35612be3b8be4c6/context_files/ctx_63bf716d505f__video-26mib.mp4"
+      ],
+      "agentOpenedWholeFileSha256Matches": true,
+      "pathInAgentInput": true
+    },
+    "MSP-54": {
+      "result": "Pass",
+      "seconds": 0.9,
+      "firstPick": {
+        "lines": [
+          "无法附加 big-clip.mp4：文件超过 3 MB 大小限制。",
+          "无法附加 big-spec.pdf：文件超过 1 MB 大小限制。"
+        ],
+        "refusedUploads": 0,
+        "limitReads": 1
+      },
+      "afterRaise": {
+        "uploads": [
+          200
+        ],
+        "lines": []
+      },
+      "staleRead": {
+        "sent": [
+          413
+        ],
+        "refused": [
+          "无法附加 big-clip.mp4：文件超过 3 MB 大小限制。"
+        ]
+      }
+    },
+    "MSP-55": {
+      "result": "Pass",
+      "seconds": 3,
+      "cancelLabel": "取消上传 drop-clip.mp4",
+      "cancelLines": [],
+      "cancelUploadRequests": 1,
+      "dropLines": [
+        "无法附加 drop-clip.mp4：上传中断，请检查网络后重试。"
+      ],
+      "draftFilesAfterDrop": 0,
+      "itemAfterDrop": 0,
+      "sendUsable": true
+    },
+    "MSP-32": {
+      "result": "Pass",
+      "seconds": 0,
+      "since": "2026-11-17T13:29:27.887Z",
+      "until": "2026-11-17T13:29:58.656Z",
+      "refused": [],
+      "refusedSockets": [],
+      "socketsOpened": 0
+    }
+  },
+  "browserErrors": [
+    {
+      "case": "MSP-13",
+      "line": "phone-unknown-credential console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true
+    },
+    {
+      "case": "MSP-13",
+      "line": "phone-unknown-credential console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true
+    },
+    {
+      "case": "MSP-13",
+      "line": "phone-unknown-credential console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true
+    },
+    {
+      "case": "MSP-13",
+      "line": "phone-unknown-credential console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true
+    },
+    {
+      "case": "MSP-13",
+      "line": "phone-unknown-credential console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true
+    },
+    {
+      "case": "MSP-13",
+      "line": "phone-unknown-credential console: Failed to fetch all workspace metadata: ApolloError: Response not successful: Received status code 401\n    at new t (http://192.168.77.10:58646/mobile/_nuxt/Ci_UQYNG.js:84:153)\n    at http://192.168.77.10:58646/mobile/_nuxt/Ci_UQYNG.js:88:80761\n    at d (http://192.168.77.10:58646/mobile/_nuxt/Ci_UQYNG.js:83:8520)\n    at http://192.168.77.10:58646/mobile/_nuxt/Ci_UQYNG.js:83:8435\n    at new Promise (<anonymous>)\n    at Object.then (http://192.168.77.10:58646/mobile/_nuxt/Ci_UQYNG.js:83:8402)\n    at Object.error (http://192.168.77.10:58646/mobile/_nuxt/Ci_UQYNG.js:83:8530)\n    at bO (http://192.168.77.10:58646/mobile/_nuxt/Ci_UQYNG.js:83:1949)\n    at ef (http://192.168.77.10:58646/mobile/_nuxt/Ci_UQYNG.js:83:2318)\n    at t.error (http://192.168.77.10:58646/mobile/_nuxt/Ci_UQYNG.js:83:2891)",
+      "known": true
+    },
+    {
+      "case": "MSP-13",
+      "line": "phone-unknown-credential console: Failed to fetch agent definitions: ApolloError: Response not successful: Received status code 401\n    at new t (http://192.168.77.10:58646/mobile/_nuxt/Ci_UQYNG.js:84:153)\n    at http://192.168.77.10:58646/mobile/_nuxt/Ci_UQYNG.js:88:80761\n    at d (http://192.168.77.10:58646/mobile/_nuxt/Ci_UQYNG.js:83:8520)\n    at http://192.168.77.10:58646/mobile/_nuxt/Ci_UQYNG.js:83:8435\n    at new Promise (<anonymous>)\n    at Object.then (http://192.168.77.10:58646/mobile/_nuxt/Ci_UQYNG.js:83:8402)\n    at Object.error (http://192.168.77.10:58646/mobile/_nuxt/Ci_UQYNG.js:83:8530)\n    at bO (http://192.168.77.10:58646/mobile/_nuxt/Ci_UQYNG.js:83:1949)\n    at ef (http://192.168.77.10:58646/mobile/_nuxt/Ci_UQYNG.js:83:2318)\n    at t.error (http://192.168.77.10:58646/mobile/_nuxt/Ci_UQYNG.js:83:2891)",
+      "known": true
+    },
+    {
+      "case": "MSP-13",
+      "line": "phone-unknown-credential console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true
+    },
+    {
+      "case": "MSP-13",
+      "line": "phone-unknown-credential console: Failed to fetch agent team definitions: ApolloError: Response not successful: Received status code 401\n    at new t (http://192.168.77.10:58646/mobile/_nuxt/Ci_UQYNG.js:84:153)\n    at http://192.168.77.10:58646/mobile/_nuxt/Ci_UQYNG.js:88:80761\n    at d (http://192.168.77.10:58646/mobile/_nuxt/Ci_UQYNG.js:83:8520)\n    at http://192.168.77.10:58646/mobile/_nuxt/Ci_UQYNG.js:83:8435\n    at new Promise (<anonymous>)\n    at Object.then (http://192.168.77.10:58646/mobile/_nuxt/Ci_UQYNG.js:83:8402)\n    at Object.error (http://192.168.77.10:58646/mobile/_nuxt/Ci_UQYNG.js:83:8530)\n    at bO (http://192.168.77.10:58646/mobile/_nuxt/Ci_UQYNG.js:83:1949)\n    at ef (http://192.168.77.10:58646/mobile/_nuxt/Ci_UQYNG.js:83:2318)\n    at t.error (http://192.168.77.10:58646/mobile/_nuxt/Ci_UQYNG.js:83:2891)",
+      "known": true
+    },
+    {
+      "case": "MSP-13",
+      "line": "phone-unknown-credential console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true
+    },
+    {
+      "case": "MSP-13",
+      "line": "phone console: Failed to load resource: the server responded with a status of 403 (Forbidden)",
+      "known": true
+    },
+    {
+      "case": "MSP-13",
+      "line": "phone console: Failed to load resource: the server responded with a status of 403 (Forbidden)",
+      "known": true
+    },
+    {
+      "case": "MSP-13",
+      "line": "phone console: Failed to load resource: the server responded with a status of 403 (Forbidden)",
+      "known": true
+    },
+    {
+      "case": "MSP-13",
+      "line": "phone-revoked console: Failed to load resource: the server responded with a status of 403 (Forbidden)",
+      "known": true
+    },
+    {
+      "case": "MSP-13",
+      "line": "phone-revoked console: Failed to load resource: the server responded with a status of 403 (Forbidden)",
+      "known": true
+    },
+    {
+      "case": "MSP-13",
+      "line": "phone-revoked console: Failed to load resource: the server responded with a status of 403 (Forbidden)",
+      "known": true
+    },
+    {
+      "case": "MSP-13",
+      "line": "phone-revoked console: Failed to load resource: the server responded with a status of 403 (Forbidden)",
+      "known": true
+    },
+    {
+      "case": "MSP-13",
+      "line": "phone-revoked console: Failed to load resource: the server responded with a status of 403 (Forbidden)",
+      "known": true
+    },
+    {
+      "case": "MSP-13",
+      "line": "phone-revoked console: Failed to fetch all workspace metadata: ApolloError: Response not successful: Received status code 403\n    at new t (http://192.168.77.10:58646/mobile/_nuxt/Ci_UQYNG.js:84:153)\n    at http://192.168.77.10:58646/mobile/_nuxt/Ci_UQYNG.js:88:80761\n    at d (http://192.168.77.10:58646/mobile/_nuxt/Ci_UQYNG.js:83:8520)\n    at http://192.168.77.10:58646/mobile/_nuxt/Ci_UQYNG.js:83:8435\n    at new Promise (<anonymous>)\n    at Object.then (http://192.168.77.10:58646/mobile/_nuxt/Ci_UQYNG.js:83:8402)\n    at Object.error (http://192.168.77.10:58646/mobile/_nuxt/Ci_UQYNG.js:83:8530)\n    at bO (http://192.168.77.10:58646/mobile/_nuxt/Ci_UQYNG.js:83:1949)\n    at ef (http://192.168.77.10:58646/mobile/_nuxt/Ci_UQYNG.js:83:2318)\n    at t.error (http://192.168.77.10:58646/mobile/_nuxt/Ci_UQYNG.js:83:2891)",
+      "known": true
+    },
+    {
+      "case": "MSP-13",
+      "line": "phone-revoked console: Failed to load resource: the server responded with a status of 403 (Forbidden)",
+      "known": true
+    },
+    {
+      "case": "MSP-13",
+      "line": "phone-revoked console: Failed to fetch agent definitions: ApolloError: Response not successful: Received status code 403\n    at new t (http://192.168.77.10:58646/mobile/_nuxt/Ci_UQYNG.js:84:153)\n    at http://192.168.77.10:58646/mobile/_nuxt/Ci_UQYNG.js:88:80761\n    at d (http://192.168.77.10:58646/mobile/_nuxt/Ci_UQYNG.js:83:8520)\n    at http://192.168.77.10:58646/mobile/_nuxt/Ci_UQYNG.js:83:8435\n    at new Promise (<anonymous>)\n    at Object.then (http://192.168.77.10:58646/mobile/_nuxt/Ci_UQYNG.js:83:8402)\n    at Object.error (http://192.168.77.10:58646/mobile/_nuxt/Ci_UQYNG.js:83:8530)\n    at bO (http://192.168.77.10:58646/mobile/_nuxt/Ci_UQYNG.js:83:1949)\n    at ef (http://192.168.77.10:58646/mobile/_nuxt/Ci_UQYNG.js:83:2318)\n    at t.error (http://192.168.77.10:58646/mobile/_nuxt/Ci_UQYNG.js:83:2891)",
+      "known": true
+    },
+    {
+      "case": "MSP-13",
+      "line": "phone-revoked console: Failed to load resource: the server responded with a status of 403 (Forbidden)",
+      "known": true
+    },
+    {
+      "case": "MSP-13",
+      "line": "phone-revoked console: Failed to fetch agent team definitions: ApolloError: Response not successful: Received status code 403\n    at new t (http://192.168.77.10:58646/mobile/_nuxt/Ci_UQYNG.js:84:153)\n    at http://192.168.77.10:58646/mobile/_nuxt/Ci_UQYNG.js:88:80761\n    at d (http://192.168.77.10:58646/mobile/_nuxt/Ci_UQYNG.js:83:8520)\n    at http://192.168.77.10:58646/mobile/_nuxt/Ci_UQYNG.js:83:8435\n    at new Promise (<anonymous>)\n    at Object.then (http://192.168.77.10:58646/mobile/_nuxt/Ci_UQYNG.js:83:8402)\n    at Object.error (http://192.168.77.10:58646/mobile/_nuxt/Ci_UQYNG.js:83:8530)\n    at bO (http://192.168.77.10:58646/mobile/_nuxt/Ci_UQYNG.js:83:1949)\n    at ef (http://192.168.77.10:58646/mobile/_nuxt/Ci_UQYNG.js:83:2318)\n    at t.error (http://192.168.77.10:58646/mobile/_nuxt/Ci_UQYNG.js:83:2891)",
+      "known": true
+    },
+    {
+      "case": "size-setup",
+      "line": "phone-eta console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's own favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "size-setup",
+      "line": "phone-eta console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's own favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "size-setup",
+      "line": "phone-eta console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's own favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "size-setup",
+      "line": "phone-eta console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's own favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-54",
+      "line": "phone-eta console: Failed to load resource: the server responded with a status of 413 (Payload Too Large)",
+      "known": true,
+      "cause": "the node's 413 of the stale-limits upload, provoked on purpose"
+    },
+    {
+      "case": "MSP-55",
+      "line": "phone-eta console: Context file upload failed for 'drop-clip.mp4': ContextFileUploadError: Context file upload failed: interrupted\n    at nI (http://192.168.77.40:58989/mobile/_nuxt/Ci_UQYNG.js:1167:2332)\n    at Proxy.uploadAttachment (http://192.168.77.40:58989/mobile/_nuxt/Ci_UQYNG.js:1167:3646)\n    at async http://192.168.77.40:58989/mobile/_nuxt/BS52Tjc5.js:2:5725\n    at async Promise.all (index 0)\n    at async V (http://192.168.77.40:58989/mobile/_nuxt/BS52Tjc5.js:2:5482)\n    at async Me (http://192.168.77.40:58989/mobile/_nuxt/BS52Tjc5.js:2:16280)",
+      "known": true,
+      "cause": "the link reset of the interrupted-upload case, provoked on purpose"
+    },
+    {
+      "case": "MSP-55",
+      "line": "phone-eta console: Failed to load resource: net::ERR_CONNECTION_RESET",
+      "known": true,
+      "cause": "the link reset of the interrupted-upload case, provoked on purpose"
+    }
+  ],
+  "failedRequests": [],
+  "network": {},
+  "cleanup": {
+    "frontendExited": true,
+    "serversLeft": 0,
+    "rootRemoved": true
+  },
+  "error": null,
+  "summary": {
+    "cases": {
+      "MSP-13": "Pass",
+      "MSP-53": "Pass",
+      "MSP-54": "Pass",
+      "MSP-55": "Pass",
+      "MSP-32": "Pass"
+    },
+    "unknownBrowserErrors": 0
+  },
+  "finishedAt": "2026-11-17T13:30:19.699Z"
+}
