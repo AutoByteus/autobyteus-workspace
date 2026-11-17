@@ -23,7 +23,7 @@ const createRun = (active: { value: boolean }) => {
     getPlatformAgentRunId: () => "platform-run-skills",
     isActive: () => active.value,
     getLifecycleSnapshot: () => ({ availability: active.value ? "active" : "offline", phase: "idle", currentTurn: { kind: "NONE" } }),
-    hasRunningBackgroundTasks: () => false,
+    backgroundTaskInspection: { kind: "unsupported" } as const,
     subscribeToSourceEventBatches: () => () => undefined,
     dispatchUserInput: vi.fn(),
     approveToolInvocation: vi.fn(),

@@ -36,7 +36,7 @@ suite('call output lifetime', () => {
       const { call, started } = await manager.run('unused', cwd, { background });
       expect(call.stderr).toContain('ENOENT'); expect(started).toEqual([]);
       for (let n = 0; n < 100 && owned(manager).size; n++) await new Promise(r => setTimeout(r, 20));
-      expect([owned(manager).size, manager.scope.size, manager.hasRunning()]).toEqual([0, 0, false]);
+      expect([owned(manager).size, manager.scope.size, manager.list().some((s) => !s.end)]).toEqual([0, 0, false]);
     } finally { await manager.stopAllForRunEnd(); await manager.scope.close(); await rm(cwd, { recursive: true, force: true }); }
   });
 });

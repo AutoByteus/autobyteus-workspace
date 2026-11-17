@@ -54,7 +54,8 @@ const createWorld = (input: { native?: boolean } = {}) => {
     runId: "run-1",
     runtimeKind: context.config.runtimeKind,
     compactionRecovery: { kind: "unsupported" } as const,
-    backgroundTaskInspection: { kind: "event-stream" } as const,
+    backgroundTaskInspection: { kind: "event-stream" as const, current: () => store.running.map((task) => ({ taskId: String(task.pid), kind: "shell" as const,
+      description: task.command, command: task.command, status: "running" as const, summary: null, startedAt: task.startedAt })) },
     backgroundTaskNotices: input.native === false ? { kind: "unsupported" } as const : {
       kind: "platform" as const,
       takeUnreportedEnds: () => store.ends.splice(0),
@@ -67,7 +68,6 @@ const createWorld = (input: { native?: boolean } = {}) => {
     getLifecycleSnapshot: () => activeTurn
       ? { availability: "active", phase: "running", currentTurn: { kind: "IDENTIFIED", turnId: activeTurn } }
       : { availability: "active", phase: "idle", currentTurn: { kind: "NONE" } },
-    hasRunningBackgroundTasks: () => store.running.length > 0,
     subscribeToSourceEventBatches: (listener: (events: readonly AgentRunEvent[]) => void | Promise<void>) => {
       sourceListeners.add(listener);
       return () => sourceListeners.delete(listener);

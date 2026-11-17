@@ -12,6 +12,7 @@ import { parseSystemInstructionsSuppliedPayload } from "../../agent-execution/do
 const normalizeStatusPayload = (payload: Record<string, unknown>): Record<string, unknown> => {
   return buildAgentStatusPayload({
     status: payload.status,
+    backgroundTasksRunning: typeof payload.background_tasks_running === "number" ? payload.background_tasks_running : 0,
     recoverableBlock: compactionRecoveryBlockSchema.nullable().parse(payload.recoverableBlock ?? null),
     agentId: typeof payload.agent_id === "string" ? payload.agent_id : null,
     agentName: typeof payload.agent_name === "string" ? payload.agent_name : null,

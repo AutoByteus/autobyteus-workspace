@@ -72,7 +72,10 @@ const createHarness = (options: {
     getPlatformAgentRunId: () => "platform-run-1",
     isActive: () => snapshot.availability === "active",
     getLifecycleSnapshot: () => snapshot,
-    hasRunningBackgroundTasks: vi.fn(() => options.runningBackgroundTasks ?? false),
+    // The quiet check counts the running tasks of the runtime's background-task view (autobyteus-448 part 2).
+    backgroundTaskInspection: { kind: "event-stream" as const, current: vi.fn(() => (options.runningBackgroundTasks
+      ? [{ taskId: "t1", kind: "shell", description: "build", command: "make", status: "running", summary: null, startedAt: "2026-11-17T10:00:00.000Z" }]
+      : []) as never) },
     subscribeToSourceEventBatches: vi.fn().mockImplementation(
       (next: (events: readonly AgentRunEvent[]) => void | Promise<void>) => {
         sourceListener = next;
@@ -940,7 +943,7 @@ describe("AgentRun input admission", () => {
     const harness = createHarness({ runningBackgroundTasks: true });
 
     await expect(harness.run.tryPrepareTerminationIfQuiescent()).resolves.toBeNull();
-    expect(harness.backend.hasRunningBackgroundTasks).toHaveBeenCalled();
+    expect(harness.backend.backgroundTaskInspection.current).toHaveBeenCalled();
     await expect(harness.run.postUserMessage(new AgentInputUserMessage("background task finished")))
       .resolves.toMatchObject({ accepted: true });
     expect(harness.backend.terminate).not.toHaveBeenCalled();
@@ -949,7 +952,8 @@ describe("AgentRun input admission", () => {
   it("prepares an idle run once its background task has ended", async () => {
     let running = true;
     const harness = createHarness({ runningBackgroundTasks: true });
-    harness.backend.hasRunningBackgroundTasks.mockImplementation(() => running);
+    const runningTask = harness.backend.backgroundTaskInspection.current();
+    harness.backend.backgroundTaskInspection.current.mockImplementation(() => (running ? runningTask : []) as never);
     await expect(harness.run.tryPrepareTerminationIfQuiescent()).resolves.toBeNull();
     running = false;
     const prepared = await harness.run.tryPrepareTerminationIfQuiescent();
@@ -961,11 +965,11 @@ describe("AgentRun input admission", () => {
     const stopped = createHarness({ runningBackgroundTasks: true });
     await expect(stopped.run.terminate()).resolves.toEqual({ accepted: true });
     expect(stopped.backend.terminate).toHaveBeenCalledOnce();
-    expect(stopped.backend.hasRunningBackgroundTasks).not.toHaveBeenCalled();
+    expect(stopped.backend.terminate).toHaveBeenCalledOnce();
 
     const fenced = createHarness({ runningBackgroundTasks: true });
     await expect(fenced.run.fenceInputAndInterruptForRootShutdown()).resolves.toEqual({ accepted: true });
-    expect(fenced.backend.hasRunningBackgroundTasks).not.toHaveBeenCalled();
+    expect(fenced.backend.terminate).not.toHaveBeenCalled();
   });
 
   it("does not reopen root-fenced admission when an earlier prepared termination is cancelled", async () => {

@@ -197,10 +197,6 @@ export class AutoByteusAgentRunBackend implements AgentRunBackend {
     return this.runId;
   }
 
-  /** True while a `run_bash` background command or `&` job of this run is running. */
-  hasRunningBackgroundTasks(): boolean {
-    return this.backgroundProcesses?.hasRunning() ?? false;
-  }
 
   getLifecycleSnapshot() {
     return projectAutoByteusAgentLifecycleSnapshot({

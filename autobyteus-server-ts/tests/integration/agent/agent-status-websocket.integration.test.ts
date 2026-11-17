@@ -104,9 +104,7 @@ class ScriptedAgentRunBackend implements AgentRunBackend {
     return () => this.sourceListeners.delete(listener);
   }
 
-  hasRunningBackgroundTasks(): boolean {
-    return false;
-  }
+  readonly backgroundTaskInspection = { kind: "unsupported" } as const;
 
   async dispatchUserInput(): Promise<AgentRunBackendInputDispatchResult> {
     throw new Error("dispatchUserInput is not used by this harness.");

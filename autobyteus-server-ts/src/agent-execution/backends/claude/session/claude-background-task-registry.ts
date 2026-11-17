@@ -240,12 +240,6 @@ export class ClaudeBackgroundTaskRegistry {
     return [...this.view.values()];
   }
 
-  /** Whether any background task in the view is still running. */
-  hasRunningTasks(): boolean {
-    for (const task of this.view.values()) if (task.status === "running") return true;
-    return false;
-  }
-
   /** The process closed or exited; its background tasks died with it. */
   clear(): void {
     for (const task of [...this.view.values()]) {

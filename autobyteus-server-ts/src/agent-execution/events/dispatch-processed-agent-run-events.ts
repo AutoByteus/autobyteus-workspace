@@ -17,6 +17,8 @@ export const dispatchProcessedAgentRunEvents = async (input: {
   lifecycleState: AgentTurnLifecycleState;
   segmentLifecycleState: AgentSegmentLifecycleState;
   getRuntimeLifecycleSnapshot: () => AgentRuntimeLifecycleSnapshot;
+  /** The run's running-background-task count now; set on the lifecycle state before the batch's statuses are built. */
+  getBackgroundTasksRunning: () => number;
   onCanonicalEventsDispatched?: (events: readonly AgentRunEvent[]) => void;
   onListenerError?: (error: unknown) => void;
 }): Promise<void> => {
@@ -28,6 +30,7 @@ export const dispatchProcessedAgentRunEvents = async (input: {
     input.runContext.runId,
     async () => {
       const runtimeLifecycleSnapshot = input.getRuntimeLifecycleSnapshot();
+      input.lifecycleState.observeBackgroundTasksRunning(input.getBackgroundTasksRunning());
       const finalEvents = await (input.pipeline ?? getDefaultAgentRunEventPipeline()).process({
         runContext: input.runContext,
         events: input.events,

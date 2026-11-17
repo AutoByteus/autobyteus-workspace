@@ -96,10 +96,6 @@ export class AcpAgentRunBackend implements AgentRunBackend {
   isActive(): boolean { return this.active; }
   getPlatformAgentRunId(): string { return this.input.context.runtimeContext.sessionId; }
 
-  /** ACP reports no background tasks. */
-  hasRunningBackgroundTasks(): boolean {
-    return false;
-  }
 
   getLifecycleSnapshot(): AgentRuntimeLifecycleSnapshot {
     const turnId = this.input.owner.session?.activeTurnId ?? null;

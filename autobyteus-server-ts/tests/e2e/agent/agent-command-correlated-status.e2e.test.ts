@@ -121,9 +121,7 @@ class ScriptedAgentRunBackend implements AgentRunBackend {
     return this.lifecycleSnapshot;
   }
 
-  hasRunningBackgroundTasks(): boolean {
-    return false;
-  }
+  readonly backgroundTaskInspection = { kind: "unsupported" } as const;
 
   subscribeToSourceEventBatches(listener: AgentRunSourceEventBatchListener): () => void {
     this.listeners.add(listener);

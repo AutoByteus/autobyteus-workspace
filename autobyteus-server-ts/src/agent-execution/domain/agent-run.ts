@@ -1,4 +1,5 @@
 import type { AgentBackgroundTaskView } from './agent-background-task-view.js';
+import { runningBackgroundTaskCount } from './agent-background-task-count.js';
 import type { BackgroundTaskEnd, BackgroundTaskStart } from "autobyteus-ts";
 import { AgentRunExecutionAdmissionFence } from "../input/agent-run-execution-admission-fence.js";
 import { randomUUID } from "node:crypto";
@@ -192,7 +193,10 @@ export class AgentRun {
   }
 
   /** True while the runtime reports a running background task (false for runtimes that report none). */
-  hasRunningBackgroundTasks(): boolean { return this.backend.hasRunningBackgroundTasks(); }
+  hasRunningBackgroundTasks(): boolean { return this.runningBackgroundTaskCount() > 0; }
+
+  /** Background tasks the run has running now, from its runtime's background-task view (the one derivation). */
+  private runningBackgroundTaskCount(): number { return runningBackgroundTaskCount(this.backend.backgroundTaskInspection); }
 
   async inspectBackgroundTasks(): Promise<AgentBackgroundTaskView> {
     const inspection = this.backend.backgroundTaskInspection;
@@ -206,7 +210,9 @@ export class AgentRun {
 
   getStatusSnapshot(): AgentStatusPayload {
     this.lifecycleState.reconcileRuntimeSnapshot(this.backend.getLifecycleSnapshot());
-    return buildAgentStatusPayload({ status: this.lifecycleState.status, agentId: this.runId, recoverableBlock: this.lifecycleState.recoverableBlock });
+    this.lifecycleState.observeBackgroundTasksRunning(this.runningBackgroundTaskCount());
+    return buildAgentStatusPayload({ status: this.lifecycleState.status, backgroundTasksRunning: this.lifecycleState.backgroundTasksRunning,
+      agentId: this.runId, recoverableBlock: this.lifecycleState.recoverableBlock });
   }
 
   subscribeToEvents(listener: AgentRunEventListener): () => void {
@@ -337,6 +343,7 @@ export class AgentRun {
       lifecycleState: this.lifecycleState,
       segmentLifecycleState: this.segmentLifecycleState,
       getRuntimeLifecycleSnapshot: () => this.backend.getLifecycleSnapshot(),
+      getBackgroundTasksRunning: () => this.runningBackgroundTaskCount(),
       onCanonicalEventsDispatched: (canonicalEvents) => {
         observeAgentRunInputEvents(canonicalEvents, this.inputAdmissionState, this.interruptState);
         this.reconcileUncertainDispatch();
@@ -529,7 +536,8 @@ export class AgentRun {
       event: {
         eventType: AgentRunEventType.AGENT_STATUS,
         runId: this.runId,
-        payload: buildAgentStatusPayload({ status, agentId: this.runId, recoverableBlock: this.lifecycleState.recoverableBlock }),
+        payload: buildAgentStatusPayload({ status, backgroundTasksRunning: this.lifecycleState.backgroundTasksRunning,
+          agentId: this.runId, recoverableBlock: this.lifecycleState.recoverableBlock }),
         statusHint: agentStatusHint(status),
       },
       onListenerError: (error) => {

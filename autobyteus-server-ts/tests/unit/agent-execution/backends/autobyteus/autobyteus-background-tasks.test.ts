@@ -5,6 +5,7 @@ import path from "node:path";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { getBackgroundManager } from "autobyteus-ts";
 import { AgentRunConfig } from "../../../../../src/agent-execution/domain/agent-run-config.js";
+import { runningBackgroundTaskCount } from "../../../../../src/agent-execution/domain/agent-background-task-count.js";
 import { AgentRunContext } from "../../../../../src/agent-execution/domain/agent-run-context.js";
 import { RuntimeKind } from "../../../../../src/runtime-management/runtime-kind-enum.js";
 import { AgentRunEventType, type AgentRunEvent } from "../../../../../src/agent-execution/domain/agent-run-event.js";
@@ -47,10 +48,10 @@ suite("AutoByteusAgentRunBackend background tasks", () => {
     if (backend.backgroundTaskInspection.kind !== "event-stream") return;
     const current = backend.backgroundTaskInspection.current;
     expect(current()).toEqual([]);
-    expect(backend.hasRunningBackgroundTasks()).toBe(false);
+    expect(runningBackgroundTaskCount(backend.backgroundTaskInspection)).toBe(0);
 
     const { started } = await manager.run("sleep 0.3; exit 3", cwd, { background: true });
-    expect(backend.hasRunningBackgroundTasks()).toBe(true);
+    expect(runningBackgroundTaskCount(backend.backgroundTaskInspection)).toBe(1);
     expect(backend.backgroundTaskNotices.kind).toBe("platform");
     if (backend.backgroundTaskNotices.kind !== "platform") return;
     expect(backend.backgroundTaskNotices.listRunning().map((t) => t.pid)).toEqual([started[0]!.pid]);
@@ -59,7 +60,7 @@ suite("AutoByteusAgentRunBackend background tasks", () => {
 
     const updates = () => events.filter((e) => e.eventType === AgentRunEventType.BACKGROUND_TASK_UPDATED).map((e) => [e.payload.status, e.payload.summary]);
     await vi.waitFor(() => expect(updates()).toEqual([["running", null], ["failed", "exit code 3"]]), { timeout: 5000 });
-    expect(backend.hasRunningBackgroundTasks()).toBe(false);
+    expect(runningBackgroundTaskCount(backend.backgroundTaskInspection)).toBe(0);
     // An ended task stays in the view with its end.
     expect(current().map((t) => [t.status, t.summary])).toEqual([["failed", "exit code 3"]]);
     expect(backend.backgroundTaskNotices.takeUnreportedEnds().map((e) => [e.pid, e.outcome])).toEqual([[started[0]!.pid, { exitCode: 3 }]]);

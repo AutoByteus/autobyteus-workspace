@@ -3,6 +3,8 @@ export type AgentApiStatus = "offline" | "initializing" | "idle" | "running" | "
 
 export type AgentStatusPayload = {
   status: AgentApiStatus;
+  /** Background tasks the run has running (autobyteus-448): work beyond its turn; 0 when it has none or cannot say. */
+  background_tasks_running: number;
   recoverableBlock?: CompactionRecoveryBlockDto | null;
   agent_id?: string;
   agent_name?: string;
@@ -37,11 +39,14 @@ const normalized = (value: string | null | undefined): string | null => {
 
 export const buildAgentStatusPayload = (input: {
   status: unknown;
+  /** Required: every producer says how many background tasks the run has running. */
+  backgroundTasksRunning: number;
   recoverableBlock?: CompactionRecoveryBlockDto | null;
   agentId?: string | null;
   agentName?: string | null;
 }): AgentStatusPayload => ({
   status: normalizeAgentApiStatus(input.status),
+  background_tasks_running: Number.isSafeInteger(input.backgroundTasksRunning) && input.backgroundTasksRunning > 0 ? input.backgroundTasksRunning : 0,
   recoverableBlock: input.recoverableBlock ?? null,
   ...(normalized(input.agentId) ? { agent_id: normalized(input.agentId)! } : {}),
   ...(normalized(input.agentName) ? { agent_name: normalized(input.agentName)! } : {}),

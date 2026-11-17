@@ -88,21 +88,22 @@ describe("ClaudeBackgroundTaskRegistry background-task view (DS-002)", () => {
     expect(registry.list()).toEqual([]);
   });
 
-  it("reports a running background task until its last task ends, for the idle-shutdown quiet check", () => {
+  it("lists a running background task until its last task ends (the view the running count derives from)", () => {
+    const running = (registry: { list(): readonly { status: string }[] }) => registry.list().some((task) => task.status === "running");
     const { registry, feed } = createRegistry();
-    expect(registry.hasRunningTasks()).toBe(false);
+    expect(running(registry)).toBe(false);
     feed(taskStarted("fg", false, { task_type: "local_agent" }));
-    expect(registry.hasRunningTasks()).toBe(false);
+    expect(running(registry)).toBe(false);
     feed(bgChanged([["bg1", "one"], ["bg2", "two"]]), taskStarted("bg1", true), taskStarted("bg2", true));
-    expect(registry.hasRunningTasks()).toBe(true);
+    expect(running(registry)).toBe(true);
     feed(taskUpdated("bg1", { status: "completed", end_time: 1 }), taskNotification("bg1"));
-    expect(registry.hasRunningTasks()).toBe(true);
+    expect(running(registry)).toBe(true);
     feed(taskUpdated("bg2", { status: "failed", end_time: 2 }), taskNotification("bg2", "failed", "exit 1"));
-    expect(registry.hasRunningTasks()).toBe(false);
+    expect(running(registry)).toBe(false);
     feed(bgChanged([["bg3", "three"]]), taskStarted("bg3", true));
-    expect(registry.hasRunningTasks()).toBe(true);
+    expect(running(registry)).toBe(true);
     registry.clear();
-    expect(registry.hasRunningTasks()).toBe(false);
+    expect(running(registry)).toBe(false);
   });
 
   it("never lists foreground tasks, even though they emit the same task frames (REQ-008, AC-010)", () => {

@@ -225,7 +225,7 @@ suite('run_bash command wrapper: R-0 regression list', () => {
     const stopped = await pending;
     expect([stopped.timedOut, stopped.exitCode, stopped.backgroundTasksStarted]).toEqual([true, null, []]);
     expect(stopped.stderr.replace('tool-abort\n', '')).toBe('');
-    expect(managerOf(ctx).hasRunning()).toBe(false);
+    expect(managerOf(ctx).list().some((s) => !s.end)).toBe(false);
   });
 
   it('large output arrives complete', async () => {
@@ -269,9 +269,9 @@ suite('run_bash background tasks', () => {
     const ctx = context();
     const started = await bg(ctx, 'sleep 60');
     const manager = managerOf(ctx);
-    expect(manager.hasRunning()).toBe(true);
+    expect(manager.list().some((s) => !s.end)).toBe(true);
     expect(await manager.stopAllForRunEnd()).toEqual([]);
-    expect(manager.hasRunning()).toBe(false);
+    expect(manager.list().some((s) => !s.end)).toBe(false);
     expect(manager.takeUnreported()).toEqual([]);
     expect(() => readFileSync(started.outputFile)).toThrow();
   });
