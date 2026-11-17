@@ -54,7 +54,7 @@
 //                  with their reason under the field and nothing is registered, an existing folder registers (autobyteus-426
 //                  D-08); Create run opens the new run's Chat; its first message keeps the screen while its id changes; the
 //                  new run tops the list.
-//   MSP-08 AC-007  On the Team's coordinator: ⋮ items in order; Artifacts (one file shown directly), Files (tree, path,
+//   MSP-08 AC-007  On the Team's coordinator: ⋮ items in order (Settings last, autobyteus-458); Artifacts (one file shown directly), Files (tree, path,
 //                  search over the workspace, no filters, an opened file without Attach), Messages (a reference opens the
 //                  file), Activity (its tool calls); a standalone agent: no Messages, empty states; a remote run: "on that
 //                  node" wording.
@@ -1427,14 +1427,15 @@ const runCases = async () => {
     await menuOpen(page, 'files');
     const remoteFiles = (await page.locator(sel('mobile-files-remote')).innerText().catch(() => '')).trim();
     await toList(page);
-    assert(JSON.stringify(items.map(([id]) => id)) === JSON.stringify(['mobile-run-menu-artifacts', 'mobile-run-menu-files', 'mobile-run-menu-messages', 'mobile-run-menu-activity']), 'the member\'s ⋮ items in order', items);
+    // autobyteus-458 UIS-002: Settings follows Activity (the Text size block below the divider is no menu item).
+    assert(JSON.stringify(items.map(([id]) => id)) === JSON.stringify(['mobile-run-menu-artifacts', 'mobile-run-menu-files', 'mobile-run-menu-messages', 'mobile-run-menu-activity', 'mobile-run-menu-settings']), 'the member\'s ⋮ items in order', items);
     assert(artifacts.direct === 1 && artifacts.list === 0 && artifacts.text, 'one artifact shown directly', artifacts);
     assert(['docs', 'src', 'README.md'].every(name => filesTop.some(text => text.includes(name))) && filters === 0 && pathLine.includes('docs'), 'the Files tree, its path line, no filters', { filesTop, filters, pathLine });
     assert(attach === 0, 'an opened file has no Attach', attach);
     assert(searchRows.some(text => text.includes('app.ts')), 'one search over the workspace', searchRows);
     assert(messages.some(text => text.includes('TEAM-NOTE')) && referenceText && stillMessages === 1, 'the Team messages; a reference opens the file and ← closes it', { messages, referenceText, stillMessages });
     assert(activity.length > 0, 'the agent\'s tool calls', activity);
-    assert(!plainItems.includes('Messages') && plainItems.length === 3, 'no Messages for a standalone agent', plainItems);
+    assert(JSON.stringify(plainItems) === JSON.stringify(['Artifacts', 'Files', 'Activity', 'Settings']), 'no Messages for a standalone agent (Settings last, autobyteus-458)', plainItems);
     assert(artifactsEmpty.startsWith('No Artifacts yet') && activityEmpty === 'No activity yet', 'empty states', { artifactsEmpty, activityEmpty });
     assert(remoteArtifacts.includes(PEER) && remoteFiles.includes(PEER), 'a remote run: the files are on that node', { remoteArtifacts, remoteFiles });
     return { items, artifacts, filesTop, filters, pathLine, attach, searchRows, messages, referenceText, activity, plainItems, artifactsEmpty, activityEmpty, remoteArtifacts, remoteFiles };
