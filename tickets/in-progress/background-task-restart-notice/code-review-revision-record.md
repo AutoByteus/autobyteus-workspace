@@ -8,6 +8,7 @@
 | CRR-002 | `code-review-report.md` | API/E2E Failure-Origin Review, round 2 (API-REV-001 F-1) | Pass | Fail (Requirement Gap) | CR-001 |
 | CRR-003 | `code-review-report.md` | Implementation Review, round 3 (IR-002, DEC-008) | Fail (Requirement Gap) | Pass | CR-001 (resolved) |
 | CRR-004 | `api-e2e-test-review-report.md` | Proportional API/E2E test-code review, round 1 (API-REV-002 Pass) | N/A (first test review) | Pass | None |
+| CRR-005 | `code-review-report.md` | Implementation Review, round 4 (part 2, IR-003) | N/A for part 2 | Fail (Local Fix) | CR-002 |
 
 ## Revision Entries
 
@@ -112,3 +113,28 @@ None.
 - Material score or classification changes: N/A
 - Recommended recipient: delivery engineer
 - Remaining risks or uncertainty: FU-002, FU-004, ACP live Not Tested, environmental watcher failures (API-01).
+
+### CRR-005 — Part 2 source review: one Local Fix
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/background-task-restart-notice/tickets/in-progress/background-task-restart-notice/code-review-report.md` (section "Latest Round: Part 2 …")
+- Review entry point and round: Implementation Review, round 4 (part 2's first)
+- Review scope: `Full Review` of part 2 (`895cf3992d..75d687f612`)
+- Triggering role, report path, and finding or scenario IDs: implementation engineer, `implementation-handoff.md` (IR-003); REQ-006, REQ-007, AC-005, AC-006
+- Relevant solution revision IDs: SR-005, SR-006
+- Relevant architecture-review revision IDs: ARCH-REV-004, ARCH-REV-005
+- Relevant implementation revision IDs: IR-003
+- Relevant API/E2E revision IDs: N/A for part 2
+- Relevant delivery revision IDs: DR-001 (part 1's delivery, the base)
+- Prior authoritative result: part 1 complete (CRR-003, CRR-004 Pass)
+- Current authoritative result: `Fail`, `Local Fix`
+- What changed in the review result and why: the part 2 implementation matches SR-006. One derivation feeds a run-owned field that every status producer must supply; five routes carry it; the server sums it; the web has one mapping. The three deviations and the seven choices hold (choice 3 verified: listed live runs are hydrated and their stream connected). CR-002: `remote-task-execution-dtos.ts`, touched by this change, keeps and extends exports nobody uses (only its own test). Per Principle 7 that is this ticket's work, not FU-005.
+- Supported product scenario / material-premise basis changes: none
+
+#### Prior Finding Resolution
+
+None for part 2.
+
+- New or remaining finding IDs: CR-002
+- Material score or classification changes: Cleanup Completeness 8.8; others ≥ 9.3
+- Recommended recipient: implementation engineer
+- Remaining risks or uncertainty: `agent-run.ts` at 500 non-empty lines (no room left); Codex idle shows Idle (accepted); FU-006/FU-007 stand.

@@ -1,6 +1,122 @@
 # Code Review Report
 
-## Latest Round: Implementation Review, round 3 (CRR-003) — Pass
+## Latest Round: Part 2 Implementation Review, round 4 (CRR-005) — Fail (Local Fix)
+
+### Meta
+
+- Review Entry Point: `Implementation Review` (part 2, UC-002: show an agent with a running background task)
+- Requirements: `requirements-doc.md` REQ-006, REQ-007, AC-005, AC-006, DEC-004, DEC-005
+- Design: `design-spec.md` "Part 2" (SR-005, SR-006); `design-review-report.md` ARCH-REV-005 Pass
+- Implementation: `implementation-handoff.md` (IR-003), `implementation-revision-record.md`, `follow-ups.md` (FU-005 to FU-007)
+- Code Review Revision ID: `CRR-005`; Review Round: `4`
+- Review Scope: `Full Review` of part 2 (`895cf3992d..75d687f612`, 212 files: server domain and routes, three contract packages and their `dist/`, six backends, autobyteus-ts manager, web stores/presentation/desktop/phone, localization, docs, tests and probes). Part 1 (rounds 1–3) is unaffected.
+- Task size / risk: `Large` / `High`, confirmed (five wire routes in three strict contract packages, a backend contract method removed from six backends, every status surface).
+- Shared design guidance: the updated `design-principles.md` (The Approach; Principles 7, 11, 13, 16) and the updated report template.
+
+### Behavior basis
+
+| Behavior | Status | Evidence |
+| --- | --- | --- |
+| BEH-005 / REQ-006 / DEC-004 (DS-101..103) | Confirmed | `runningBackgroundTaskCount(inspection)` is the one derivation. `AgentRun` sets `AgentTurnLifecycleState.backgroundTasksRunning` inside the dispatch queue before each batch (`dispatch-processed-agent-run-events.ts`) and before `getStatusSnapshot`. `buildAgentStatusPayload` requires the count, and the transformer and `dispatchCanonicalStatus` read the state. Routes 1–5 carry it (route 5 through `RemoteRunSummary.statuses`, deviation 2). `RunStatusEntry.state` sums the counts per run. On the web, `agentActivityPresentation` and `teamActivityOf` (busy > background > error > idle > offline; offline never shows background). Example sequence tested per event-stream runtime (IMP-08) |
+| BEH-006 / REQ-007 / AC-006 (DEC-005) | Confirmed | input path unchanged; `resolveAgentPrimaryAction` reads the status word; server and web tests; probes `stop: 0` |
+| Codex / ACP | Confirmed | `snapshot`/`unsupported` → 0 |
+
+### Scenario and candidate gate
+
+Scenarios: SCN-005, SCN-006 (Supported Normal, requirements).
+
+| Candidate | Observation | Scenario / Contract | Evidence | Disposition | Scope | Response |
+| --- | --- | --- | --- | --- | --- | --- |
+| C-10 | `remote-task-execution-dtos.ts`, which this change edits, is mostly dead. `remoteTaskExecutionSummaryDtoSchema` (extended here with the count) and its type have no producer or consumer, and neither do `remoteTaskExecutionDtoSchema`, `RemoteTaskExecutionDto`, `remoteAgentLaunchDtoSchema`, `RemoteAgentLaunchDto`, `remoteRowOpenTargetDtoSchema`, `RemoteRowOpenTargetDto`, `remoteTaskExecutionRunIdOf` and `remoteTaskExecutionAgentsOf`. Only `remoteAgentStatusSchema` (`peer-run-view-answers.ts`) and `RemoteAgentStatus` (`paired-agent-access.ts`) have users | Core Principle 7 (dead code in touched files is this ticket); ticket-scope.md "Dead code" | `rg -w <name>` over the repository (`*.ts`, `*.vue`, `*.mjs`, without `node_modules`, `dist`, `tickets`): only the file itself and `tests/remote-task-execution-dtos.test.mjs`. No consumer outside the repository: the package is consumed only via `workspace:*`, and a search of the org folder found only vendored source snapshots in a design worktree | Promote | This ticket | CR-002 |
+| C-11 | A terminated run's `offline` status may carry the last observed count (`terminate()` does not reset it) | DEC-004 display | Every display reads the count only for `idle` (`agentActivityPresentation`), and `teamActivityOf` excludes `offline`. For native, the run-end ends' batches are queued before termination's status (count 0) | Reject | — | No supported scenario shows it |
+| C-12 | A listed agent run's count comes from its live context (choice 3) | REQ-006 lists | Listed active runs are hydrated and their stream connected (`runHistoryLoadActions.ts` L264, L330-346), so the context receives the count. A run not live shows its stored status, with nothing to show | Reject | — | Holds |
+| C-13 | A Team run's stable member rows read the count from the run-status feed while the status word comes from the team context | REQ-006 | Both are live, server-derived; the list that shows the Team run holds it on the feed | Reject | — | Two transports of one server fact, not two derivations |
+| C-14 | `current()` is evaluated per source batch | cost | O(tasks of the run), in-memory | Reject | — | Proportionate |
+| C-15 | FU-006: a stale doc bullet in `autobyteus-web/docs/agent_execution_architecture.md` (touched) | docs | `follow-ups.md` | Reject as a code finding | Follow-up (recorded) | Delivery's docs sync may fix it, since the file is touched |
+| C-16 | FU-007: unmounted running-panel components | Principle 7 elsewhere | files not touched by this change | — | Follow-up (recorded) | Correct placement |
+
+### Structural / design checks
+
+| Check | Result | Evidence | Required Action |
+| --- | --- | --- | --- |
+| Task design health preserved | Pass | the duplicate backend boolean is removed; one derivation | — |
+| Matches behavior-defining artifacts | Pass | DEC-004 wording (en, zh-CN), the dot styles, no Stop | — |
+| Data-flow spine clarity | Pass | DS-101 → DS-102 (five routes) → DS-103 | — |
+| Ownership boundaries | Pass | `AgentRun` owns the count; the server sums for teams and orgs (no client derivation) | — |
+| Off-spine concerns | Pass | `backgroundTasksRunningOf` normalizer, `agentActivityPresentation` mapping | — |
+| Capability reuse | Pass | existing routes extended; the existing team fold kept | — |
+| Reusable owned structures | Pass | one normalizer, one web mapping | — |
+| Shared-structure tightness | Pass | one field per status shape, one word by contract casing | — |
+| Repeated coordination ownership | Pass | the Team rule lives in `teamActivityOf` only | — |
+| Empty indirection | Pass | `AgentRun.hasRunningBackgroundTasks()` is a one-line predicate over the derivation, used by part 1's recorder (existing facade) | — |
+| Separation of concerns / file responsibility | Pass | — | — |
+| Ownership-driven dependency | Pass | — | — |
+| Visible dependencies (P16) | Pass | the count is passed in (`getBackgroundTasksRunning`); the derivation is a pure function; the required field fails at compile time | — |
+| Authoritative Boundary Rule | Pass | consumers read `AgentRun`, not backends | — |
+| File placement | Pass | — | — |
+| Flat-vs-over-split | Pass | — | — |
+| Interface clarity | Pass | `pairedAgentStatusFrame(status, count)`; required builder field | — |
+| Naming / one vocabulary | Pass | `backgroundTasksRunning` / `background_tasks_running` everywhere | — |
+| No unjustified duplication | Pass | the web per-status switch tables were replaced by the one mapping | — |
+| Patch-on-patch control | Pass | `e259944b13` fixes a source mismatch at its cause | — |
+| Dead code removed in touched files (P7) | **Fail** | C-10: the touched contract file keeps (and extends) exports nobody uses | CR-002 |
+| Test scenarios requirement-aligned | Pass | example sequence per runtime, sum case, Team rule, AC-006, probes TS-008 / MSP-59 | — |
+| Test fixtures reusable / coherent | Pass | fixtures carry the required count | — |
+| No stale or compat-only tests | Fail (with CR-002) | `remote-task-execution-dtos.test.mjs` tests only dead exports | remove with CR-002 |
+| API/E2E readiness | Pass after CR-002 | — | — |
+
+### Size audit (changed implementation sources, non-empty lines)
+
+`agent-run.ts` 493 → 500 (at the limit, not over; 465 without comments). `configured-agent-execution-handle.ts` 493 → 494, `claude-session.ts` 495 → 492 (shrank). Every other file is ≤ 445, and no delta exceeds 220 (largest `run-status-service.ts` +41/−27; new `agentActivityPresentation.ts` 67 lines). Result: Pass. Note for the next change: `agent-run.ts` has no room left.
+
+### Legacy / persisted data
+
+No compatibility path (strict schemas, required fields; DESIGN.md rule 9). Persisted data `Not Affected` (the count is live only). Pass.
+
+### Scorecard
+
+- Overall: `9.28/10` (average; not the decision rule)
+
+| # | Category | Score | Why / Weak / Improve |
+| --- | --- | --- | --- |
+| 1 | Data-Flow Spine | 9.5 | One derivation through one run-owned field, read by every producer |
+| 2 | Ownership / Boundaries | 9.5 | Server-owned count and sums; the web only maps |
+| 3 | API / Interface | 9.3 | Required field everywhere. Weak: route 5's named schema was dead (CR-002) |
+| 4 | Separation / Placement | 9.4 | — |
+| 5 | Shared-Structure Tightness | 9.4 | — |
+| 6 | Naming / Readability | 9.3 | — |
+| 7 | API/E2E Readiness | 9.3 | Strong local evidence, desktop and phone probes |
+| 8 | Runtime Correctness | 9.4 | Example sequence, Team rule, AC-006; the count fix in `e259944b13` |
+| 9 | No Backward Compatibility | 9.5 | — |
+| 10 | Cleanup Completeness | 8.8 | The four helpers and the backend boolean were removed, but a touched contract file keeps a set of unused exports and their test (CR-002). Improve: remove them |
+
+### Findings
+
+#### CR-002 — Dead exports in a touched contract file were extended instead of removed
+
+- Candidate C-10 (Promote). Basis: Core Principle 7 (no dead code in touched files; ticket-scope.md: this ticket). The problem it causes: this change spent work keeping a dead schema in step (a new required field, a test), and the next reader of the peer contract finds two "summary" shapes for one concept, only one of which travels (Principle 15 drift).
+- Evidence: the `rg -w` search above. `remoteAgentStatusSchema` and `RemoteAgentStatus` have users; every other export of `autobyteus-agent-presentation-contracts/src/remote-task-execution-dtos.ts` is used only by the file and its own test.
+- Required action:
+  - Remove from that file: `remoteTaskExecutionSummaryDtoSchema`, `RemoteTaskExecutionSummaryDto`, `remoteTaskExecutionDtoSchema`, `RemoteTaskExecutionDto`, `remoteAgentLaunchDtoSchema`, `RemoteAgentLaunchDto`, `remoteRowOpenTargetDtoSchema`, `RemoteRowOpenTargetDto`, `remoteTaskExecutionRunIdOf`, `remoteTaskExecutionAgentsOf`.
+  - Remove or trim `tests/remote-task-execution-dtos.test.mjs` to what remains.
+  - Rebuild and commit `dist/`.
+  - Mark FU-005 as resolved in this ticket (it is no longer a follow-up).
+  - Before deleting, confirm with the compiler and the three contract test suites, plus the server and web typechecks, that nothing reaches them. If something outside the search does (for example a dynamic import), keep that export and record why.
+- Classification: `Local Fix`, implementation-owned. No design revision is needed: deviation 2 already records that route 5 travels on `RemoteRunSummary.statuses`.
+
+### Follow-ups
+
+None added. FU-005 becomes this ticket's work (CR-002); FU-006 and FU-007 stand.
+
+### Result
+
+- Review Decision: `Fail` (one Local Fix)
+- Supported Product Scenario Gate: `Pass`; Material-Premise Gate: `Pass`
+- Recommended Recipient: implementation engineer (`/implementation_engineer`). After the fix, a targeted delta review, then API/E2E for part 2 (AC-005 per runtime on an isolated node including live Claude; the two-node peer case; the server E2E suite).
+
+---
+
+## Earlier Round: Implementation Review, round 3 (CRR-003) — Pass
 
 - Review Entry Point: `Implementation Review`
 - Review Scope: `Targeted Delta Review`. `cf5ce8d109..b78555d7bb` touches `restart-notice.ts` (one cause-dependent line and two constants), its unit test, one RR-02 assertion in the e2e suite, `restart_resume.md` and `GLOSSARY.md`. `55523ed38e` is documents only. No spine, interface or data-shape change: the cause was already stored on each reminder.
