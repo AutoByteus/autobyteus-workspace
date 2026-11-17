@@ -107,14 +107,16 @@ describe('MobileRunScreen', () => {
     expect(router.currentRoute.value.query.screen).toBeUndefined();
   });
 
+  // autobyteus-458: Settings after Activity for a run whose runtime and model the phone changes (an agent run, a Team member);
+  // a delegated copy (a task agent or a task team's member) has none.
   it.each([
-    ['standalone_agent', false], ['agent_run_task_agent', false], ['standalone_team_member', true], ['agent_run_task_team_member', true],
-  ])('the ⋮ menu of a %s offers Messages=%s', async (kind, messages) => {
+    ['standalone_agent', false, true], ['agent_run_task_agent', false, false], ['standalone_team_member', true, true], ['agent_run_task_team_member', true, false],
+  ])('the ⋮ menu of a %s offers Messages=%s, Settings=%s', async (kind, messages, settings) => {
     active.state!.target = targetOf(kind, 'r', 'Agent');
     const { wrapper } = await mountScreen();
     await wrapper.get('[data-testid="mobile-run-menu-button"]').trigger('click');
     const items = wrapper.findAll('[role="menuitem"]').map((item) => item.text());
-    expect(items).toEqual(messages ? ['Artifacts', 'Files', 'Messages', 'Activity'] : ['Artifacts', 'Files', 'Activity']);
+    expect(items).toEqual(['Artifacts', 'Files', ...(messages ? ['Messages'] : []), 'Activity', ...(settings ? ['Settings'] : [])]);
   });
 
   it.each([
@@ -130,7 +132,7 @@ describe('MobileRunScreen', () => {
     const { wrapper } = await mountScreen();
     await wrapper.get('[data-testid="mobile-run-menu-button"]').trigger('click');
     expect(wrapper.find('[data-testid="mobile-run-menu-desktop"]').exists()).toBe(shown);
-    if (shown) expect(wrapper.findAll('[role="menuitem"]').map((item) => item.text())).toEqual(['Artifacts', 'Files', 'Activity', 'VNC Viewer']);
+    if (shown) expect(wrapper.findAll('[role="menuitem"]').map((item) => item.text())).toEqual(['Artifacts', 'Files', 'Activity', 'Settings', 'VNC Viewer']);
   });
 
   it('VNC Viewer opens the desktop screen', async () => {
