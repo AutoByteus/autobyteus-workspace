@@ -15,12 +15,12 @@ The latest docs sync report, handoff summary, and release/publication/deployment
 - Delivery round and trigger: round 1; API/E2E's message after `API-REV-001` (Pass, 94.0%). Route: direct low-risk; `task_size` Small, `architectural_risk` Low; no architecture review, code review or test-code review.
 - Triggering upstream report, verification, or evidence: `api-e2e-execution-coverage-report.md`, `implementation-handoff.md`.
 - Prior authoritative result: N/A
-- Current authoritative result: delivered; see the report's Final Status (merge and record commits are in Repository Finalization).
+- Current authoritative result: delivered. Merge `62b25e435e` on `origin/personal` (from `d61bae54a0`), ticket branch `codex/native-follow-ups-524` pushed; no release.
 - Docs sync report: `docs-sync-report.md` (`Updated`: `autobyteus-ts/docs/terminal_tools.md`).
 - Handoff summary: `handoff-summary.md` (`Updated`).
 - Release/publication/deployment report: `release-deployment-report.md` (no release; repository finalization into `origin/personal`).
 - Integration and post-integration verification: merge of `origin/personal` @ `d61bae54a0` (9 commits, web files only) as `08d33082f3`, no conflict; both typechecks PASS; 21 terminal unit files (143 tests) PASS.
-- Verification (evidence judgement or user check) and finalization state: verified from the evidence by delivery, no user check; AC-001…AC-006 proven, each by its critical evidence file opened; final confidence 94.0% accepted (the gap is environmental: WSL and the exact load of QR-001). Finalization state: see the report.
+- Verification (evidence judgement or user check) and finalization state: verified from the evidence by delivery, no user check; AC-001…AC-006 proven, each by its critical evidence file opened; final confidence 94.0% accepted (the gap is environmental: WSL and the exact load of QR-001). Finalization state: `Completed` (`release-deployment-report.md`, Repository Finalization).
 - Terminal return to the Solution Designer: see the report's Final Status.
 - Terminal return message/reference: see the report's Final Status.
 - Why this baseline or delivery revision was recorded: first delivery of the ticket.
