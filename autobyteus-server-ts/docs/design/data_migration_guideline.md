@@ -277,8 +277,10 @@ These rules are hard rules. A design or review that breaks one fails.
     run the released migration would otherwise meet the new one in a shape no
     released build left it in.
   - `tests/unit/app-data-migrations/app-data-migration-registry-order.test.ts`
-    checks the released prefix and that new entries are appended. Its released
-    set is updated at each release.
+    checks the released prefix and that new entries are appended. The released
+    order is `src/app-data-migrations/released-migration-order.json`, which
+    `scripts/desktop-release.sh` records (`migrations:record-released`) and
+    commits in each release commit (autobyteus-500 G-1).
 - **An earlier migration can run after yours.**
   - The runner continues past a failure. A migration that is `FAILED` and
     retried, or `NOT_RUN` while it waits behind a failed prerequisite, runs on

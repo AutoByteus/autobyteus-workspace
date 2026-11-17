@@ -222,15 +222,17 @@ release run. It refuses `release_tag`; add `-f publish_zh=true` to build the
 
 ## Cutting The Release
 
-Before the script, record the migrations this release ships. In
-`autobyteus-server-ts/tests/unit/app-data-migrations/app-data-migration-registry-order.test.ts`,
-set `RELEASED` to the registry as it will be released, in its order, and name
-the version and its commit in the comment above it. Run that test, and commit
-it on the finalize branch (`test(app-data-migrations): released set as of
-vX.Y.Z[-beta.N]`). The data migration guideline's "Registry order and late
-predecessors" (`autobyteus-server-ts/docs/design/data_migration_guideline.md`)
-makes this list the rule that no new migration runs ahead of a released one.
-A release that adds no migration leaves it unchanged.
+The script records the app-data migrations this release ships: before its
+release commit it runs `pnpm -C autobyteus-server-ts migrations:record-released`,
+which writes the registry's order to
+`autobyteus-server-ts/src/app-data-migrations/released-migration-order.json`,
+and it commits that file with the version bump, so the tag holds it. The
+recorder fails, writing nothing, when a released migration moved; then stop
+and fix the registry before tagging. The registry-order test reads the file:
+no new migration may run ahead of a released one (the data migration
+guideline's "Registry order and late predecessors",
+`autobyteus-server-ts/docs/design/data_migration_guideline.md`). Nobody edits
+the list by hand.
 
 The release script refuses to run unless the worktree is clean, including
 untracked files, so delete the untracked `*/dist/` folders first. Run it on the
