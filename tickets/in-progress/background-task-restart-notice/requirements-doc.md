@@ -9,21 +9,21 @@
 - Requested by: `/project_task_manager` (run `project_task_manager_7c8dce0c4a8b44f88e776a83809dee03`), for the user
 - Requirements owner: Solution Designer
 - Date: 2026-11-17
-- Approved by and reference: `User`, 2026-11-17, in the Solution Designer conversation: DEC-003 (the reminder wording), then "Agreed, as recommended" for DEC-001 (B), DEC-004 (B, with the styling explained) and DEC-005 (at once)
+- Approved by and reference: `User`, 2026-11-17, in the Solution Designer conversation (DEC-008 later the same day: "your previous version with just the improved message is better"): DEC-003 (the reminder wording), then "Agreed, as recommended" for DEC-001 (B), DEC-004 (B, with the styling explained) and DEC-005 (at once)
 - Exact approved requirements baseline: this document at SR-001 (2026-11-17)
 - Behavior-defining supplements: none
 
 ## Problem And Desired Outcome
 
 - Problem: an agent whose turn has ended but that waits for a background task it started looks idle, and after a restart nothing tells it the task was killed, so it waits forever. Restart-resume (285) records only agents that are mid-turn, and resumes them only after an update. After a plain restart or a crash, no agent is told anything.
-- Desired outcome: (part 1) after a restart, every agent that was mid-turn or waiting for a background task gets one clear, friendly message: the application restarted (and why, when known), any background tasks it started were stopped, check what it still needs, restart it, or continue (a short reminder, DEC-003). (part 2) An agent with a running background task is not shown as plain "Idle".
+- Desired outcome: (part 1) after a restart, every agent that was mid-turn or waiting for a background task gets one clear, friendly message: the application restarted (and why, when known), a reminder about any background tasks it started (stopped by an update or restart; possibly still running and no longer tracked after an unexpected stop), check what it still needs, restart it, or continue (a short reminder, DEC-003, DEC-008). (part 2) An agent with a running background task is not shown as plain "Idle".
 - Observable definition of success: on an isolated node, an agent idle with a running background command is restarted with the node; before the change it gets nothing, after it gets the reminder naming the cause, and acts on it.
 
 ## Relevant Current And Desired Behavior
 
 | Behavior ID | Kind | Scenario | Current | Desired | Preserved | Evidence |
 | --- | --- | --- | --- | --- | --- | --- |
-| BEH-001 | Operational | SCN-001 | Update restart, mid-turn: woken, told the turn was interrupted | Same, and the message also names its background tasks that were stopped | Resume order (bottom-up), closed-Task fence, first-input rule, at most 3 at a time | notes |
+| BEH-001 | Operational | SCN-001 | Update restart, mid-turn: woken, told the turn was interrupted | Same, and the reminder also covers any background tasks it started (DEC-003: no task list) | Resume order (bottom-up), closed-Task fence, first-input rule, at most 3 at a time | notes |
 | BEH-002 | Operational | SCN-002 | Update restart, idle with a background task: nothing | Woken with the message | — | recorder L41 |
 | BEH-003 | Operational | SCN-003 | Plain quit/relaunch, Restart server, node stop/start: nothing for anyone | Per DEC-001 | — | 285 AC-004 |
 | BEH-004 | Operational | SCN-004 | Crash, forced kill, power loss: nothing | Per DEC-001 | — | shutdown code |
@@ -36,7 +36,7 @@
 
 | Use-Case ID | Use Case | Scenarios |
 | --- | --- | --- |
-| UC-001 | Tell agents after a restart that it happened, why, and which background tasks were stopped (part 1) | SCN-001 to SCN-004 |
+| UC-001 | Tell agents after a restart that it happened, why, and remind them about the background tasks they started (part 1) | SCN-001 to SCN-004 |
 | UC-002 | Show an agent with a running background task as such (part 2) | SCN-005, SCN-006 |
 
 ### Out Of Scope
@@ -68,7 +68,7 @@ Standard (as the team's template).
 | Requirement ID | Requirement | Behavior IDs | Priority | Rationale | Feasibility Evidence | Source |
 | --- | --- | --- | --- | --- | --- | --- |
 | REQ-001 | At a shutdown, the node keeps which runs were mid-turn or had a background task running (a yes/no per run; no task list is needed, DEC-003) | 001, 002 | Must | Who to tell | runtime coverage table (notes) | Task, DEC-003 |
-| REQ-002 | After a restart, each such run gets one short restart reminder (DEC-003 text): the application restarted and why (DEC-002); if it was mid-turn, that the turn was interrupted; that any background tasks it started were stopped by the restart; check what it still needs, restart it, or continue | 001-004 | Must | The user's words 2026-11-12 and 2026-11-17 | — | DEC-003 |
+| REQ-002 | After a restart, each such run gets one short restart reminder (DEC-003 text): the application restarted and why (DEC-002); if it was mid-turn, that the turn was interrupted; the background-task line by cause: after an update or restart, any background tasks it started were stopped; after an unexpected stop, some may still be running and are no longer tracked (DEC-008); check what it still needs, restart it, or continue | 001-004 | Must | The user's words 2026-11-12 and 2026-11-17 | — | DEC-003 |
 | REQ-003 | After an update restart, each recorded run is woken with the reminder (285's resume path). After any other graceful restart, or an unexpected stop, the reminder is given with the run's next input (from the user or another agent); nothing is woken | 002-004 | Must | Keeps the cost rule of 285 DEC-001; no agent is left without knowing | — | DEC-001 |
 | REQ-004 | Runtimes: a run counts as having a background task when its runtime says so (AutoByteus, Claude, Antigravity; Codex through its background-terminal read); Grok Build and DeepSeek (ACP) report none, so their runs get the reminder only when mid-turn | 001 | Must | Per-runtime facts | notes | DEC-006 |
 | REQ-005 | Each run gets the reminder exactly once per restart, whichever comes first: the wake after an update, or its next input (the reminder rides that input; it starts no extra turn, so 285's first-input rule, which prevents a second turn, is kept). A run whose Task is closed, or whose root is archived, terminated or gone, gets none | 001-004 | Must | Preserved 285 rules; told once | — | 285; ARCH-REV-001 AR-001 |
@@ -117,6 +117,7 @@ Standard (as the team's template).
 | DEC-005 | A message to such an agent: delivered at once or queued until its tasks end? | Today at once | At once lets it work in parallel while the task runs (the point of 338); queuing could hold a message for an hour behind a long build | **Recommend at once** (no change) | User | Decided by the user (2026-11-17, as recommended): **delivered at once** (no change) |
 | DEC-006 | Codex and ACP runtimes | Coverage | Codex: a yes/no from its background-terminal read at shutdown; ACP: nothing to read | As stated in REQ-004 | Solution Designer | Decided |
 | DEC-007 | Order | Task says part 1 first | Part 1 designed, built and merged first; part 2 follows in this ticket as a second round | — | Solution Designer | Decided |
+| DEC-008 | The reminder's background-task line after an **unexpected stop** (CRR-002 / API-E2E F-1) | Measured (RR-02, native, server SIGKILL): the command was still running 13 s after the kill when the reminder said the restart had stopped it. A crash runs no cleanup, so command groups outlive the server (pre-existing). A graceful stop leaves nothing (RR-01) | (a) cause-specific line for `unexpected_stop`: tasks may still be running, check before restarting (the user's own 2026-11-12 words: "check whether your background tasks are still running; if not, restart them"); (b) stop the previous session's surviving command groups at the next start: new lifecycle behavior in the native terminal scope, unknown for Claude/Antigravity/Codex: its own Task | **Recommend (a) now, (b) as a follow-up Task (FU-004)** | User | **Decided by the user (2026-11-17): (a)** with the improved wording below (the agent knows its pids from its conversation and handles the rest; the user declined recording and stopping the survivors in this ticket) |
 
 ### DEC-003 message (the user's direction, 2026-11-17)
 
@@ -129,6 +130,14 @@ If you started any background tasks, the restart stopped them. Check what you st
 ```
 
 Cause variants: "an update to <version>", "a restart", "an unexpected stop (a crash, a forced quit or a power loss)".
+
+After an **unexpected stop** the background-task line is (DEC-008, the user, 2026-11-17):
+
+```
+If you started any background tasks, some may still be running: the application stopped unexpectedly and could not stop them, and any that are still running are no longer tracked, so you will not be told when they finish. Check them (for example with `ps` and the pids you were given); stop any you still need and start them again so they are tracked, or continue your work.
+```
+
+After an update or a restart it stays: "If you started any background tasks, the restart stopped them. Check what you still need: restart it, or continue your work."
 
 ## Traceability
 

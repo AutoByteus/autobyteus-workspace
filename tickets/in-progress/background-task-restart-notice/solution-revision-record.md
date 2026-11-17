@@ -7,6 +7,7 @@
 | SR-001 | Requirements | Initial baseline (Task autobyteus-448 + 481, dispatched 2026-11-17) | N/A | N/A | Approved (user, 2026-11-17) | all | Presented to the user with DEC-001, DEC-003, DEC-004, DEC-005 |
 | SR-002 | Design | Part 1 design after approval | N/A | Requirements Approved | Design Ready (part 1) | REQ-001-005 | `design-spec.md`; Medium / High |
 | SR-003 | Mixed | ARCH-REV-001 (Fail) | AR-001, AR-002, AR-003 | Design Ready (SR-002) | Design Ready (SR-003) | REQ-005, AC-001, AC-003, AC-004 wording | one delivery path; durable take; wording |
+| SR-004 | Requirements + Design | CRR-002 / API-E2E F-1 | CR-001 | Approved; Design Ready (SR-003) | Approved (user, DEC-008); Design Ready (SR-004) | REQ-002 (wording for unexpected stop), BEH-004 | cause-specific line |
 
 ## Revision Entries
 
@@ -38,3 +39,12 @@
 - Intended behavior changed: No (clarifications within the user's approved decisions)
 - Next action: re-review
 - Review result 2026-11-17: ARCH-REV-002 Pass on SR-003; the reviewer routed part 1 to `/implementation_engineer` (informational, no duplicate handoff). Non-blocking text fixes applied after the pass: R-7 (two file-mapping cells now match the spines) and the handoff file's package line; no design change.
+
+### SR-004 (in progress) — Requirement Gap from validation: unexpected stop does not stop background tasks
+
+- Trigger: code review CRR-002 (failure origin of API/E2E F-1), 2026-11-17: RR-02 measured a native background command still alive 13 s after a server SIGKILL while the reminder said the restart had stopped it
+- Classification: `Requirement Gap` (the premise of BEH-004/SCN-004 and the DEC-003 line for `unexpected_stop` is contradicted); the implementation matches the approved text
+- Proposed: DEC-008 (a) a cause-specific line for `unexpected_stop`; (b) orphan cleanup as follow-up FU-004
+- Status: resolved. The user decided DEC-008 on 2026-11-17: option (a) with the improved wording (survivors may still run and are no longer tracked; check with `ps` and the pids from the conversation; restart to track, or continue). He declined recording and stopping survivors in this ticket. Requirements `Approved` again at SR-004; design-spec SR-004 (wording only, `restart-notice.ts`); FU-004 stays a follow-up; FU-002 stays a follow-up
+- Route: revised package, still Medium / High → architecture reviewer per the handoff rules; then implementation (text change), code review, API/E2E rerun of RR-02
+- Review result 2026-11-17: ARCH-REV-003 Pass on SR-004; the reviewer routed it to `/implementation_engineer` (informational, no duplicate handoff). Non-blocking R-8 applied: desired outcome, BEH-001, UC-001 and REQ-002 text aligned with DEC-003/DEC-008 (wording only, no behavior change).

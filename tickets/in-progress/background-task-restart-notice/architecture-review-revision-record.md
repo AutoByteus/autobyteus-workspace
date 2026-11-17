@@ -6,6 +6,7 @@
 | --- | --- | --- | --- | --- | --- |
 | ARCH-REV-001 | Round 1 / Architecture Design Complete, part 1 (Medium, High), 2026-11-17 | SR-001, SR-002 | N/A | Fail (Design Impact; one Requirement Gap) | AR-001, AR-002, AR-003 |
 | ARCH-REV-002 | Round 2 / SR-003 revision for ARCH-REV-001, 2026-11-17 | SR-003 | Fail | Pass | AR-001, AR-002, AR-003 resolved |
+| ARCH-REV-003 | Round 3 / SR-004: DEC-008 reminder wording after an unexpected stop (from CRR-002 / API-E2E F-1), 2026-11-17 | SR-004 | Pass | Pass | None |
 
 ## Revision Entries
 
@@ -53,3 +54,22 @@ None.
 - Material classification changes: None
 - Recommended recipient: implementation engineer (primary); Solution Designer (informational)
 - Remaining risks or uncertainty: R-3 (part 2), R-4, R-5, R-6 (disk failure at the take), R-7 (two stale file-mapping cells)
+
+### ARCH-REV-003 — SR-004 re-review (DEC-008 wording): Pass
+
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/background-task-restart-notice/tickets/in-progress/background-task-restart-notice/design-review-report.md` (section "Round 3 (SR-004) Delta")
+- Review round and trigger: round 3. Validation found a Requirement Gap (code review CRR-002, API/E2E F-1, `evidence/API-05-14-restart-suite/RR-02.json`): after a server SIGKILL a native background command survives while the reminder said it was stopped. The user decided DEC-008 (a): a cause-specific line.
+- Triggering role, report path, and finding IDs: Solution Designer, `solution-revision-record.md` SR-004; CRR-002 / F-1 (not an architecture-review finding)
+- Relevant solution revision IDs: SR-004
+- Prior authoritative decision: Pass (ARCH-REV-002)
+- Current authoritative decision: `Pass`
+- What changed in the review result: the text-only change in `restart-notice.ts` is checked against RR-02. After a server SIGKILL only the server dies and the anchor exits on disconnect, so the background form's shells survive with the command. The pid the agent holds is findable with `ps`, and `kill <pid>` still stops the group. Structure, spines, interfaces and stored shapes are unchanged. FU-004 (stop survivors at the next start) is correctly a follow-up.
+
+#### Prior Finding Resolution
+
+None open (AR-001 to AR-003 were resolved in ARCH-REV-002).
+
+- New or remaining finding IDs: None
+- Material classification changes: None
+- Recommended recipient: implementation engineer (primary); Solution Designer (informational)
+- Remaining risks or uncertainty: R-8 (REQ-002, BEH-001 and UC-001 text still say tasks "were stopped" for every cause; DEC-008 governs the text); R-3 to R-7 as before

@@ -2,19 +2,27 @@
 
 ## Review Round Meta
 
-- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/background-task-restart-notice/tickets/in-progress/background-task-restart-notice/requirements-doc.md` (Approved; REQ-005, AC-001, AC-003, AC-004 and the outcome lines clarified at SR-003 within DEC-001 B / DEC-003)
+- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/background-task-restart-notice/tickets/in-progress/background-task-restart-notice/requirements-doc.md` (Approved at SR-004: DEC-008 added by the user, 2026-11-17; SR-003 clarifications within DEC-001 B / DEC-003)
 - Upstream Investigation Notes: `.../background-task-restart-notice/investigation-notes.md`
-- Upstream Solution Revision Record: `.../background-task-restart-notice/solution-revision-record.md` (SR-003)
-- Reviewed Design Spec: `.../background-task-restart-notice/design-spec.md` (SR-003, `Ready`, part 1)
-- Supplemental Task Artifacts Reviewed: `architecture-design-handoff.md` (Round 2 section); no behavior-defining supplements
-- Relevant Solution Revision IDs: `SR-001` to `SR-003`
+- Upstream Solution Revision Record: `.../background-task-restart-notice/solution-revision-record.md` (SR-004)
+- Reviewed Design Spec: `.../background-task-restart-notice/design-spec.md` (SR-004, `Ready`, part 1)
+- Supplemental Task Artifacts Reviewed: `architecture-design-handoff.md` (Round 3 section), `follow-ups.md` (FU-001, FU-002, FU-004), `evidence/API-05-14-restart-suite/RR-02.json`; no behavior-defining supplements
+- Relevant Solution Revision IDs: `SR-001` to `SR-004`
 - Architecture Review Revision Record: `.../background-task-restart-notice/architecture-review-revision-record.md`
-- Current Architecture Review Revision ID: `ARCH-REV-002`
-- Current Review Round: `2`
-- Trigger: SR-003 revision for ARCH-REV-001, from the Solution Designer, 2026-11-17
-- Prior Review Round Reviewed: `1` (ARCH-REV-001, Fail)
-- Latest Authoritative Round: `2`
+- Current Architecture Review Revision ID: `ARCH-REV-003`
+- Current Review Round: `3`
+- Trigger: SR-004, a Requirement Gap from validation (code review CRR-002 / API-E2E F-1, evidence RR-02) resolved by the user (DEC-008), from the Solution Designer, 2026-11-17
+- Prior Review Round Reviewed: `2` (ARCH-REV-002, Pass)
+- Latest Authoritative Round: `3`
 - Current-State Evidence Basis: worktree `codex/background-task-restart-notice` @ `4cbf9e7881`. The round-1 code reads stand: `server-runtime.ts` startup/cleanup order; `busy-run-recorder.ts`; `busy-run-record.ts` reader; `restart-resumer.ts` L60-171 (live pre-filter L140, `onlyAsFirstInput`, NOT_FIRST L166); `build-studio-server.ts` notice slot and `composeRestartResume`; `restart-resume-composition.ts`; `agent-run.ts` background facades; 285 design D3.6.3 (first-input rule purpose: no duplicate turn).
+
+## Round 3 (SR-004) Delta
+
+- Change: one cause-specific line in the reminder text (`restart-notice.ts`). After `unexpected_stop` the background-task line says tasks may still be running, are no longer tracked, and should be checked with `ps` and the pids from the conversation; stop and restart them to track them again, or continue (DEC-008, the user). The update and restart wording is unchanged. No spine, owner, interface, stored shape or ordering changes: the cause is already a stored fact on each pending reminder, and the text builder already branches on it.
+- Basis: the premise the old line rested on (a restart stops background tasks) is contradicted for a crash by RR-02. The server was SIGKILLed; the native command (pid 18615, group 18285) was still running 13 s later, and its parent 18613 was still alive at reminder time. A graceful stop leaves nothing (RR-01, `leftAfterStop: []`). So the line is now true for each cause.
+- Technical accuracy of the advice: after a server SIGKILL only the server dies. The anchor exits when its IPC channel closes (`posix-command-anchor-script.ts`: `disconnect` → exit), but nothing signals its group. So the shell processes of the 338 background form survive with the command (RR-02 shows the command's parent alive). The pid the agent was given (the background form's trap shell) can therefore be found with `ps`, and `kill <pid>` still forwards TERM to the whole group, as in 338. For a plain `&` job, `kill <pid>` stops that process only (338 DEC-012), unchanged.
+- Scope: stopping survivors at the next start was declined by the user. It is FU-004, correctly a follow-up: the ticket's reminder is correct without it. FU-001 and FU-002 are follow-ups recorded with their evidence.
+- Verdicts: every structural verdict below is unaffected and stands. Basis rows BEH-004 and SCN-004: `Confirmed` with the DEC-008 line. Validation reruns RR-02.
 
 ## Routing Classification Review
 
@@ -141,6 +149,7 @@ Implementation engineer.
 
 ## Residual Risks
 
+- R-8 (text, non-blocking): REQ-002 still says, for every cause, "that any background tasks it started were stopped by the restart". The desired-outcome line, BEH-001 ("names its background tasks") and UC-001 ("which background tasks were stopped") still carry pre-DEC-003/DEC-008 wording. DEC-008 and the design-spec example are the authority for the text. Align these lines so a later reviewer does not read the `unexpected_stop` line as a mismatch.
 - R-3 (for the part 2 design): `hasRunningBackgroundTasks()` (all runtimes) beside 338's native-only `listRunningBackgroundTasks()`; part 2's counts should use one source. The Solution Designer has noted it.
 - R-4, R-5: Codex idle runs only at a graceful stop; ACP only mid-turn; a dev build without a release stamp never counts an update (accepted).
 - R-6: if `reminders.add` fails at the take, the record is kept, but the new session's first tick (2 s later) rewrites `busy-runs.json`, so the kept entries are lost anyway. This only happens on a disk or permission failure (out of scope); the log line is the useful outcome. Implementation should not promise more than that.
@@ -151,4 +160,4 @@ Implementation engineer.
 
 - Review Decision: `Pass`
 - Material-Premise Gate: `Pass`
-- Notes: SR-003 makes the reminder service the single owner of "still to tell". The wake and the next input deliver through it exactly once, and the record cannot be lost around startup. Ready for implementation as Medium / High.
+- Notes: round 3 (SR-004): the DEC-008 wording change is a text-only change in the existing builder and is technically accurate per RR-02; structure unchanged. Earlier: SR-003 makes the reminder service the single owner of "still to tell". The wake and the next input deliver through it exactly once, and the record cannot be lost around startup. Ready for implementation as Medium / High.

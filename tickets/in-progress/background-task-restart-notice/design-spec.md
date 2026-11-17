@@ -2,7 +2,7 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: `SR-003` (answers ARCH-REV-001 AR-001 to AR-003; SR-002 was the first reviewed basis)
+- Current solution revision ID: `SR-004` (DEC-008: cause-specific background-task line after an unexpected stop; SR-003 passed ARCH-REV-002) (answers ARCH-REV-001 AR-001 to AR-003; SR-002 was the first reviewed basis)
 - Approved requirements baseline: `requirements-doc.md` at SR-001, approved by the user on 2026-11-17 (DEC-003 wording; DEC-001 B, DEC-004 B, DEC-005 "Agreed, as recommended").
 - Behavior-defining supplements: none.
 - User approval of the design: `Not required`.
@@ -272,7 +272,7 @@ As above; all new files in `autobyteus-server-ts/src/restart-resume/`.
 | --- | --- |
 | Record during a session | `{"entries":[{"root":{"rootSubjectKind":"agent","rootRunId":"r1"},"agentRunId":"r1","place":"host","status":"idle","backgroundTasks":true,"recordedAt":"…","version":"1.5.14"}]}` (no `shutdownAt`: a crash now reads as an unexpected stop) |
 | Reminder, update, mid-turn | `[Platform notice — application restarted]` / `The application restarted at 22:20 (reason: an update to v1.5.14).` / `Your previous turn was interrupted; check the results of any tool calls that were running before you repeat them.` / `If you started any background tasks, the restart stopped them. Check what you still need: restart it, or continue your work.` (+ the resumed-delegates line when any) |
-| Reminder, unexpected stop, idle | same without the interrupted line; reason `an unexpected stop (a crash, a forced quit or a power loss)` |
+| Reminder, unexpected stop, idle | no interrupted line; reason `an unexpected stop (a crash, a forced quit or a power loss)`; the background-task line is DEC-008's: `If you started any background tasks, some may still be running: the application stopped unexpectedly and could not stop them, and any that are still running are no longer tracked, so you will not be told when they finish. Check them (for example with `ps` and the pids you were given); stop any you still need and start them again so they are tracked, or continue your work.` (a crash runs no cleanup, so native command groups can outlive the server: RR-02) |
 | Ordering (`server-runtime.ts`) | `buildStudioServer` → `takePreviousSession()` → `startSession()` → `setCleanup(record + close)` → … `listen` → `recoverAfterListen` → `resumeAfterRestart()` |
 
 ## Backward-Compatibility Rejection Log (Mandatory)
@@ -304,6 +304,7 @@ N/A.
 ## Risks
 
 - Codex runs idle with background terminals are covered only at a graceful stop, not after a crash.
+- After an unexpected stop, background commands can survive untracked (measured for native, RR-02); the reminder says so (DEC-008) and the agent checks with the pids from its conversation. Stopping survivors at the next start is follow-up FU-004.
 - Part 2 (R-3): `AgentRun.hasRunningBackgroundTasks()` (every runtime) and 338's native `listRunningBackgroundTasks()` coexist; part 2's count will come from one source per run (decided in the part 2 design).
 - ACP runtimes report no background tasks: their runs are reminded only when mid-turn (REQ-004).
 - A dev build without a release stamp never counts an update; an old-release record read by such a build reads as an unexpected stop (harmless wording).

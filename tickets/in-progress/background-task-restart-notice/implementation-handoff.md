@@ -5,27 +5,27 @@
 All paths below are in `/Users/normy/autobyteus_org/autobyteus-worktrees/background-task-restart-notice/tickets/in-progress/background-task-restart-notice/`.
 
 - Upstream review applicability and handoff-rule result: independent architecture review selected (Medium / High) and passed (ARCH-REV-002); this package goes to code review.
-- Requirements doc: `requirements-doc.md` (Approved; REQ-005 and AC-001/003/004 clarified at SR-003)
+- Requirements doc: `requirements-doc.md` (Approved; REQ-005 and AC-001/003/004 clarified at SR-003; DEC-008 by the user, SR-004)
 - Investigation notes: `investigation-notes.md`
 - Solution revision record: `solution-revision-record.md` (SR-003)
-- Design spec: `design-spec.md` (Ready, SR-003, part 1)
+- Design spec: `design-spec.md` (Ready, SR-004, part 1)
 - Supplemental task artifacts: `architecture-design-handoff.md`; no behavior-defining supplements
 - Design review report: `design-review-report.md` (ARCH-REV-002, Pass)
 - Architecture review revision record: `architecture-review-revision-record.md`
-- Triggering rework report, revision record, or evidence: N/A (initial implementation)
+- Triggering rework report, revision record, or evidence: `design-review-report.md` ARCH-REV-003 (Pass, SR-004, the user's DEC-008), resolving CRR-002 / API-E2E F-1 (`api-e2e-execution-coverage-report.md`, `api-e2e-revision-record.md` API-REV-001)
 
 ## Current Implementation Summary
 
-- Implementation cycle: `Initial`
+- Implementation cycle: `Rework` (IR-002: DEC-008, the background-task line after an unexpected stop)
 - Implementation revision record: `implementation-revision-record.md`
-- Current implementation revision ID: `IR-001`
-- Related solution revision IDs: `SR-003`
-- Related architecture-review revision IDs: `ARCH-REV-002`
+- Current implementation revision ID: `IR-002` (IR-001 baseline)
+- Related solution revision IDs: `SR-003`, `SR-004`
+- Related architecture-review revision IDs: `ARCH-REV-002`, `ARCH-REV-003`
 - Related code-review revision IDs: `CRR-001` (Pass, no findings; `code-review-report.md`)
-- Related API/E2E revision IDs: `N/A`
+- Related API/E2E revision IDs: `API-REV-001` (Fail: F-1, resolved by DEC-008)
 - Related delivery revision IDs: `N/A`
-- Triggering finding IDs: `N/A`
-- Worktree / branch / commits: `/Users/normy/autobyteus_org/autobyteus-worktrees/background-task-restart-notice`, branch `codex/background-task-restart-notice`, base `4cbf9e7881` (origin/personal). Code: `4cbf9e7881..d5e9f350cf` (`8b986307a8` source, `9533765a5e` tests, `7e33d3cab3` and `aa416996c0` docs, `d5e9f350cf` self-review). The ticket documents and evidence are in the commit named in the handoff message.
+- Triggering finding IDs: `F-1` (API/E2E), `CRR-002`
+- Worktree / branch / commits: `/Users/normy/autobyteus_org/autobyteus-worktrees/background-task-restart-notice`, branch `codex/background-task-restart-notice`, base `4cbf9e7881` (origin/personal). Code: `4cbf9e7881..d5e9f350cf` (`8b986307a8` source, `9533765a5e` tests, `7e33d3cab3` and `aa416996c0` docs, `d5e9f350cf` self-review); API/E2E `4cec9abfea`, `cf5ce8d109`; IR-002 `b78555d7bb` (DEC-008: `restart-notice.ts`, its unit test, RR-02's assertion, `restart_resume.md`, `GLOSSARY.md`). The ticket documents and evidence are in the commit named in the handoff message.
 
 What part 1 does: while the node runs, the busy-run record is the live list of runs held by a root that are mid-turn or have a running background task (checked every 2 s, written only on change, `shutdownAt` added at a graceful stop). At the next start, right after the server is built, `RestartResumer.takePreviousSession()` gives every entry its cause (update, restart, unexpected stop), hands them to `RestartReminderService` as persisted pending reminders, then removes the record and prunes the runs that must get none. Each reminder is delivered exactly once: by the run's next input (preface) or, for an update entry, by the wake after recovery, which claims it and posts it as the run's first input; a refused or failed wake returns it to pending.
 
@@ -62,6 +62,8 @@ None changes approved behavior, an owner or a boundary. The stale R-7 cells of t
 5. **Runs whose status is `offline` or `error` are not recorded**, even with a background task: the record's `status` is one of `initializing`, `running`, `idle` (design shape).
 6. **The take is not wrapped in `shutdown.stage`.** It never throws, runs before the cleanup is installed and before anything listens, and a stop requested meanwhile is handled by the next `checkpoint()` with the record already turned into reminders.
 7. **Saving after a delivery is not awaited by the deliverer** (`prefaceDelivered` and `settleClaim` are synchronous on the port). The reminder leaves the service at once; a failed save is logged. A crash between a delivery and its save tells that run once more at the next start (at least once on a crash, exactly once otherwise).
+
+8. **IR-002 (DEC-008): the background-task line depends on the cause.** `unexpected_stop` gets the user's DEC-008 text word for word (tasks may still be running, untracked; check them with `ps` and the pids given); `update` and `restart` keep the DEC-003 line. No structural change: the cause is already on each pending reminder.
 
 Design-principle deviations decided during implementation: None.
 
@@ -126,6 +128,8 @@ Evidence files are in `tickets/in-progress/background-task-restart-notice/eviden
 | IMP-02 | `pnpm -C autobyteus-server-ts exec vitest run tests/unit/restart-resume tests/integration/restart-resume tests/unit/server-runtime-app-data-migration-gate.test.ts tests/unit/agent-collaboration/configured-agent-execution-handle.test.ts --no-watch` | `d5e9f350cf` | macOS | recorder, record reader, cause rule, reminder record and service, resumer (take, wake, claims), notice text, startup order, preface through a real `AgentRun` and `AgentRunPlatformNotices`, `AgentRun.hasRunningBackgroundTasks()` | BEH-001 to 004; REQ-001 to 005; AC-001 to AC-004 (local level); the exactly-once paths named by the review (input first; wake first with input during the post; NOT_FIRST returned; failed post); MP-002 (nothing written before `startSession()`) | Pass | `evidence/IMP-02-restart-resume-tests.log` | `Test Files  10 passed (10)`, `Tests  119 passed (119)` |
 | IMP-03 | `pnpm -C autobyteus-server-ts test:unit` (full) | `d5e9f350cf` | macOS, machine load average 66 to 102 | all server unit tests | regression | Pass for this change; 4 failures in an unrelated watcher test, cause recorded (FU-001) | `evidence/IMP-03-server-unit-full.log` | `Tests  4 failed | 8237 passed | 9 skipped (8250)`; the 4 are `agent-package-folder-watcher.test.ts` `Hook timed out in 10000ms` (see its cause analysis) |
 
+| IMP-04 | `pnpm -C autobyteus-server-ts typecheck`; `pnpm -C autobyteus-server-ts exec vitest run tests/unit/restart-resume tests/integration/restart-resume tests/unit/server-runtime-app-data-migration-gate.test.ts tests/unit/agent-collaboration/configured-agent-execution-handle.test.ts --no-watch` | `b78555d7bb` | macOS | `restart-notice.ts` (cause-specific background-task line) and everything IMP-02 covers | REQ-002 (DEC-008), BEH-004 | Pass | `evidence/IMP-04-dec008-rerun.log` | `[typecheck] PASS`; `Tests  120 passed (120)`; `✓ … DEC-008: a mid-turn run after an unexpected stop gets the interrupted line and the still-running line, never the stopped line` |
+- IR-002 changes only the reminder text: IMP-01 to IMP-03 stay at `d5e9f350cf`; IMP-04 reruns the typecheck and every test that reaches the text. RR-02 of the API/E2E suite asserted the old line after a SIGKILL; its assertion now expects the DEC-008 line (not run here: it needs the built server, API/E2E reruns it).
 - Not run, and why: the live restart E2E on an isolated node (AC-001 before/after on base `4cbf9e7881`, AC-002, AC-003 per runtime, AC-004) and the restart and shutdown E2E fixtures: they need a built isolated instance and a real or scripted model (API/E2E). Server `test:integration` as a whole: only this ticket's integration file was run.
 
 ## Frontend Rendered-Result Check (When Applicable)

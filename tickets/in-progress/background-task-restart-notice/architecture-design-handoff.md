@@ -1,7 +1,7 @@
 # Architecture Design Handoff — autobyteus-448 `background-task-restart-notice` (part 1)
 
 - Result: `Architecture Design Complete` (part 1 of 2), `task_size: Medium`, `architectural_risk: High` → independent architecture review
-- From: Solution Designer, 2026-11-17; solution revision `SR-003` (SR-002 reviewed in ARCH-REV-001)
+- From: Solution Designer, 2026-11-17; solution revision `SR-004` (SR-002 reviewed in ARCH-REV-001, SR-003 passed ARCH-REV-002)
 - Project Task: `autobyteus-448` (merged with 481), Project `project_a1377344-25db-482a-97cc-ecfdb0fb495a`; requested by `/project_task_manager` for the user
 - Workspace: worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/background-task-restart-notice`, branch `codex/background-task-restart-notice`, base `origin/personal` @ `4cbf9e78812f0c6d063d243e84ac37a1b2119fe9` (verified current 2026-11-17); finalization target `origin/personal`
 - Ticket folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/background-task-restart-notice/tickets/in-progress/background-task-restart-notice/`
@@ -19,6 +19,10 @@ After any restart (automatic update, plain restart, crash), tell every agent tha
 ## Round 2 (SR-003)
 
 ARCH-REV-001 answered: AR-001 one delivery path through the reminder store (wake claims; input first carries it; exactly once); AR-002 durable take before `setCleanup`, `record()` inert before `startSession()`, waits for an in-flight tick, compares without `recordedAt`; AR-003 requirement text aligned with DEC-003. Details: `solution-revision-record.md` SR-003.
+
+## Round 3 (SR-004)
+
+From validation (code review CRR-002, API/E2E F-1, evidence RR-02): after an unexpected stop, native background commands survive the server (a crash runs no cleanup) while the reminder said the restart stopped them. The user decided DEC-008 (2026-11-17): option (a), a cause-specific background-task line for `unexpected_stop` (requirements DEC-008 text; design-spec Concrete Examples). Only `restart-notice.ts` text changes; update and restart wording unchanged. Stopping survivors at the next start stays follow-up FU-004 (the user declined it here). Validation reruns RR-02 with the new line.
 
 ## Package
 
