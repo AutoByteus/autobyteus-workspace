@@ -21,3 +21,8 @@
 | 23:35 | API-03 | Completed | Pass | production 0; tests 1012 in 316 = baseline |
 | 23:37 | API-10 | Started | | VNC Viewer bar rebuilt in the production phone page at three steps × two widths |
 | 23:39 | API-10 | Completed | Fail | Control mode: full screen right 443 at 412/Largest, 404 at 360/Large, 443 at 360/Largest; View only clean; 360/Standard 4 px over (FU-002) |
+| 23:56 | — | Checkpoint | | round 2 (IR-002, code 12ecf1bf29): phone bundle rebuilt; container abtest525-desktop up (127.0.0.1:5900) |
+| 23:56 | API-11 | Started | | node-525 + live VNC Viewer in host Chrome |
+| 23:58 | API-11 | Completed | Pass | 16/16 live layouts fit; keyboard focus; clipboard sheet 360 wide; zh-CN fits |
+| 23:58 | API-12 | Started | | emulator booted again (apie2e525_api35, 5650); VNC Viewer at Largest on the device |
+| 00:01 | API-12 | Completed | Pass | device Largest 412 and 360 (density 480), View only and Control fit; clipboard sheet 360; cleanup done |

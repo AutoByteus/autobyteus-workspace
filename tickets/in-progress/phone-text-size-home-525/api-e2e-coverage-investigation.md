@@ -16,10 +16,11 @@
 - Delivery Revision Record (delivery re-entry only): N/A
 - Relevant Delivery Revision IDs: N/A
 - API/E2E Revision Record (created after the first completed result): `…/phone-text-size-home-525/api-e2e-revision-record.md`
-- Current API/E2E Revision ID: `API-REV-001`
-- Current Investigation Round: 1
-- Trigger: implementation handoff IR-001 on the direct low-risk route
-- Prior Investigation Reviewed: None (first round)
+- Current API/E2E Revision ID: `API-REV-002`
+- Current Investigation Round: 2
+- Trigger: round 1 — implementation handoff IR-001; round 2 — IR-002 (SR-002, DEC-008, after API-10 Fail and CRR-001 CR-001), code `12ecf1bf29`
+- Code Review Report (failure-origin review of API-10): `…/phone-text-size-home-525/code-review-report.md` (CRR-001)
+- Prior Investigation Reviewed: round 1 (this file)
 - Latest Authoritative Investigation: this file
 
 ## Current Requirement And Design Basis
@@ -163,6 +164,19 @@ None (the implementation removed `MobileRunMenu.textSize.spec.ts`; recorded abov
 | Issue | Classification | Evidence | Recommended Owner |
 | --- | --- | --- | --- |
 | `autobyteus-web/docs/remote_access.md:26` still says Text size uses `usePhoneTextSize` | docs sync (not a validation failure) | grep | delivery engineer |
+
+## Round 2 Plan (IR-002, code `12ecf1bf29`)
+
+- Basis: SR-002 — REQ-007 now says the VNC Viewer's Control-mode bar holds ←, the title, the mode switch and full screen, with Keyboard and Clipboard at the end of the status row at every step (DEC-008); AC-006 amended for that screen. FU-002 is folded into DEC-008.
+- Changed since round 1 (`git diff --name-only 7c7f3d2e79 12ecf1bf29`): `MobileNodeDesktop.vue`, `MobileNodeDesktop.spec.ts`, ticket documents.
+- Rerun by impact: API-10 first (the prior failure). API-02…09 stay **Still valid**: none of them reaches the VNC Viewer (the walks, the device journey, the desktop page and the upgrade never open it), and the unit/typecheck layers for the changed files are rerun by the implementation (IMP-06 `components/mobile`, IMP-07 web typecheck) on `12ecf1bf29`. Server typecheck untouched.
+- The API-10 reconstruction script builds the old markup; the implementation's IMP-05 rebuilt the new markup the same way (32 layouts). Instead of updating the reconstruction, round 2 removes its limitation: the real component on a live node desktop.
+
+| Case ID | Criteria | Boundary / Surface | Kind | Planned Command Or Steps | Why |
+| --- | --- | --- | --- | --- | --- |
+| API-10 | AC-005, REQ-007 (DEC-008) | bar markup in the production phone page | Reused | IMP-05 (`12ecf1bf29` markup, same method as round 1's API-10, plus zh-CN and Small) | same method, current markup; superseded in strength by API-11/12 |
+| API-11 | AC-005, REQ-005 (VNC Viewer controls and clipboard), REQ-007, AC-006 (amended) | the real VNC Viewer connected to a live node desktop, host Chrome as a phone | Temporary Probe | `node-525.mjs` (this worktree's server with `AUTOBYTEUS_STARTER_SOCKET` set, so it offers its node desktop at 127.0.0.1:5900; the test-owned container `abtest525-desktop` from `autobyteus/autobyteus-server:beta` provides Xvnc there, published on loopback only) + `vnc-live.mjs`: pair through the node's link; 360/412 × Small/Standard/Large/Largest × View only/Control; Keyboard and Clipboard at Largest 360; zh-CN at Largest 360 | the reconstruction could not run the component's state (connect, Control); a probe-durable case would need a node desktop in the package probe (recommendation) |
+| API-12 | AC-005, REQ-007 | the Android app (WebView, Roboto) on the same node | Journey | own AVD again; pair; real taps: home ⋮ → Largest, run ⋮ → VNC Viewer → Control; at 412 CSS px and at 360 CSS px (`wm density 480`); Clipboard sheet | the founder's device and its fonts |
 
 ## Investigation Decision
 
