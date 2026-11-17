@@ -225,5 +225,6 @@ describe("SkillFolderWatcher", () => {
     await new Promise((resolve) => setTimeout(resolve, 500));
     if (process.platform === "darwin" && baseline !== null) expect(openDescriptors()).toBeLessThanOrEqual(baseline);
     await watcher.close();
-  });
+    // Real file watches: 3 s of fixed waits plus two change waits of up to 3 s each, more than the 5 s default.
+  }, 15_000);
 });
