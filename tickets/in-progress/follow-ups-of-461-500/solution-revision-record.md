@@ -2,6 +2,7 @@
 
 | SR | Date | Kind | Summary | Status after |
 | --- | --- | --- | --- | --- |
+| SR-014 | 2026-11-17 | Decisions on IR-001 | D-14: FU-035 step 0 waits for Grok's usage window, as a later round; the rest goes to code review. D-13b: a timeout is labeled ENVIRONMENT or INCONCLUSIVE, never product; AC-005's watcher proof runs on Linux (inotify) and a quiet macOS | Approved |
 | SR-013 | 2026-11-17 | Design Impact (the implementation engineer's IR-001, FU-021) | Cause completed: the OS loses file events under load (Reproduced with raw chokidar and Node `fs.watch`); the test classifies a timeout with an environment probe; AC-005's watcher part reworded (D-13); FU-500-06 | Approved; design `Ready` |
 | SR-012 | 2026-11-17 | Design Impact (ARCH-REV-004 AR-002) | G-5's catalog read is bounded by the existing 8 s model-list budget; a deadline or read error answers `list_unreadable` (start proceeds); per-start CLI discovery cost stated; slow-catalog test | Approved; design `Ready` |
 | SR-011 | 2026-11-17 | Requirements and design (Task comment from the PM) | REQ-016 / AC-012 / D-12: a stored model its runtime no longer offers is marked per member and refused at start with one message; G-5. Base moved: 508 merged `d8dbeaa9ba` (same-ID fix of `20261111_delegated_runs_own_runs_v1`, `run-file-conversion.ts` only, no trace moves: M-7 unchanged) | Approved; G-5 to architecture review |
@@ -138,3 +139,10 @@
 
 - ARCH-REV-006: **Pass** (`design-review-report.md`).
 - The stale proof line ("3 of 3 under 10 busy loops") is restated: under load, a run passes or fails only with ENVIRONMENT cases. The reviewer's optional suggestion (a canary during the wait, not after it) is left to the implementation.
+
+### SR-014
+
+- **Trigger:** the implementation engineer's IR-001, with two open items (IMP-011, IMP-012).
+- **D-14 (FU-035):** sequencing only. The rest goes to code review. Step 0 runs after Grok's 24-hour window resets, as IR-002. Nothing is waived: only the founder's own words could waive it.
+- **D-13b (FU-021):** IMP-012 shows that the SR-013 probe can't prove a product fault under load (the OS drops events per stream). A timeout is labeled ENVIRONMENT or INCONCLUSIVE. The proof runs where the OS delivers events reliably: Linux inotify in Docker, and a quiet macOS.
+- **Review:** test-labeling and proof-location changes only, inside SR-013's reviewed shape. They go to the architecture reviewer as an informational note, because D-13b only narrows a message and moves where the proof runs.

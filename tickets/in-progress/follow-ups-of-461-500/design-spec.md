@@ -461,6 +461,9 @@ Each new text follows FR-1 … FR-4. The Code Reviewer checks the list against F
       - If the probe also gets no event, the case fails with "ENVIRONMENT: the OS delivered no file event within 10 s (FSEvents under load); this watcher result is not meaningful", plus the case's own diagnostics.
       - If the probe gets its event, the case fails as a product failure, with the original message.
     - **No retries, no skip, no longer waits.** The guard stays at 60 s.
+    - **SR-014 (D-13b):**
+      - When the probe gets its event, the message is "INCONCLUSIVE: the watcher saw no change; a fresh fs.watch stream did. Under load the OS can drop one stream's events (FU-500-06); rerun where the OS delivers events." It never says "product failure": under load, another stream's event doesn't prove the watcher's stream got its own (IMP-012).
+      - **The proof moves:** the API/E2E engineer runs the file 5 of 5 on Linux (inotify), in a Docker container from the worktree after `pnpm test:integration:prepare`, and on a quiet macOS when one is available. Loaded-macOS runs are evidence only.
     - The rewrite already committed (`fb52bd332c`) stays.
 
   - **To prove it (restated at SR-013, ARCH-REV-006):** after `pnpm test:integration:prepare`:
