@@ -1,0 +1,24 @@
+# IMP-02 pnpm deploy stage (macOS/Linux/Docker shape) + prune CLI
+# commands: pnpm --filter autobyteus-server-ts deploy <tmp>/server-package --legacy --prod; node autobyteus-web/scripts/claude-agent-sdk-binary-packaging.mjs <stage>
+# commit: e16f0b0d55 + uncommitted change (module, callers); node v22.23.1; macOS 26.5.2 arm64; 2026-11-17T14:37:40Z
+## before:
+<stage>/node_modules/.pnpm/node_modules/@anthropic-ai/claude-agent-sdk-darwin-arm64
+<stage>/node_modules/.pnpm/node_modules/@anthropic-ai/claude-agent-sdk
+<stage>/node_modules/.pnpm/@anthropic-ai+claude-agent-sdk@0.3.280_@anthropic-ai+sdk@0.132.1_zod@4.3.6__@modelconte_ba12f93b41fd79b682e6258669c811d4
+<stage>/node_modules/.pnpm/@anthropic-ai+claude-agent-sdk@0.3.280_@anthropic-ai+sdk@0.132.1_zod@4.3.6__@modelconte_ba12f93b41fd79b682e6258669c811d4/node_modules/@anthropic-ai/claude-agent-sdk-darwin-arm64
+<stage>/node_modules/.pnpm/@anthropic-ai+claude-agent-sdk@0.3.280_@anthropic-ai+sdk@0.132.1_zod@4.3.6__@modelconte_ba12f93b41fd79b682e6258669c811d4/node_modules/@anthropic-ai/claude-agent-sdk
+<stage>/node_modules/.pnpm/@anthropic-ai+claude-agent-sdk-darwin-arm64@0.3.280
+<stage>/node_modules/.pnpm/@anthropic-ai+claude-agent-sdk-darwin-arm64@0.3.280/node_modules/@anthropic-ai/claude-agent-sdk-darwin-arm64
+<stage>/node_modules/@anthropic-ai/claude-agent-sdk
+207M	<stage>/node_modules/.pnpm/@anthropic-ai+claude-agent-sdk-darwin-arm64@0.3.280
+stage KB before: 661340
+## prune:
+Removed 217 MB of Claude Agent SDK platform binaries
+## after:
+<stage>/node_modules/.pnpm/node_modules/@anthropic-ai/claude-agent-sdk
+<stage>/node_modules/.pnpm/@anthropic-ai+claude-agent-sdk@0.3.280_@anthropic-ai+sdk@0.132.1_zod@4.3.6__@modelconte_ba12f93b41fd79b682e6258669c811d4
+<stage>/node_modules/.pnpm/@anthropic-ai+claude-agent-sdk@0.3.280_@anthropic-ai+sdk@0.132.1_zod@4.3.6__@modelconte_ba12f93b41fd79b682e6258669c811d4/node_modules/@anthropic-ai/claude-agent-sdk
+<stage>/node_modules/@anthropic-ai/claude-agent-sdk
+stage KB after: 449164
+## SDK still resolves from the stage:
+import ok, query: function
