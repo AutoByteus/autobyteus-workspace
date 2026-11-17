@@ -10,9 +10,9 @@ const freshTextSize = async () => {
   vi.resetModules();
   return import('~/composables/mobile/usePhoneTextSize');
 };
-const mountMenu = async (showSettings = true) => {
+const mountMenu = async () => {
   const { default: MobileRunMenu } = await import('../MobileRunMenu.vue');
-  const wrapper = mount(MobileRunMenu, { props: { showMessages: true, showDesktop: false, showSettings } });
+  const wrapper = mount(MobileRunMenu, { props: { showMessages: true, showDesktop: false } });
   await wrapper.get('[data-testid="mobile-run-menu-button"]').trigger('click');
   return wrapper;
 };
@@ -57,9 +57,10 @@ describe('the phone Text size (autobyteus-506)', () => {
     expect(wrapper.find('[data-testid="mobile-run-menu"]').exists()).toBe(true);
   });
 
-  it('the menu has no Settings entry for a run it does not serve', async () => {
+  // autobyteus-522: every run has Settings, right after Activity.
+  it('the menu always has Settings after Activity', async () => {
     await freshTextSize();
-    const wrapper = await mountMenu(false);
-    expect(wrapper.findAll('[role="menuitem"]').map((item) => item.text())).not.toContain('Settings');
+    const wrapper = await mountMenu();
+    expect(wrapper.findAll('[role="menuitem"]').map((item) => item.text())).toEqual(['Artifacts', 'Files', 'Messages', 'Activity', 'Settings']);
   });
 });

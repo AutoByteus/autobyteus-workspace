@@ -163,6 +163,11 @@
 //                  the run continues on it), a refused Save (the run woken before Save: the node's words in the red card), a
 //                  live idle and a working run (the red stop icon, one tap, the rows open): `mobile-run-settings-cases.mjs`
 //                  (on the paired phone, before MSP-13).
+//   MSP-67…72 autobyteus-522  Settings for every run the phone opens, decided by the run that holds the opened agent: a
+//                  PTM's task team member (the founder's case) and task agent, a Team lead's task agent (its own settings, not
+//                  the lead's), an Org's task agent and task team member (each stop stops that delegated run, not the Org),
+//                  an Org Team member's Save, and a run on beta (one sentence, no rows): `mobile-every-run-settings-cases.mjs`
+//                  (after 458's cases, before MSP-13).
 //
 // Prerequisites: `pnpm -C autobyteus-server-ts build` and `pnpm -C autobyteus-web build:mobile-web` (alpha serves
 // `autobyteus-web/dist/public` at /mobile); Chrome. Run: `pnpm -C autobyteus-web test:e2e:mobile-shell --output-dir=<fresh>`
@@ -196,6 +201,7 @@ import { runBackgroundTaskCases } from './mobile-background-tasks-cases.mjs';
 import { runHeadingLinksCases } from './mobile-heading-links-cases.mjs';
 import { runCodeWrapCases } from './mobile-code-wrap-cases.mjs';
 import { runRunSettingsCases } from './mobile-run-settings-cases.mjs';
+import { runEveryRunSettingsCases } from './mobile-every-run-settings-cases.mjs';
 
 const require = createRequire(import.meta.url);
 const { chromium } = require('playwright-core');
@@ -2472,6 +2478,8 @@ const runCases = async () => {
   // autobyteus-458 / 506: the readable conversation, Text size and a run's Settings (`mobile-run-settings-cases.mjs`), before
   // MSP-13 revokes this phone.
   await runRunSettingsCases({ runCase, page, stack, alpha, sel, toList, openRow, ensureUnfolded, rowsOf, childRow, menuOpen, runScreen, shot, sendOver, waitFor, sleep, assert, selected, phoneNet });
+  // autobyteus-522: Settings for every run the phone opens (`mobile-every-run-settings-cases.mjs`), before MSP-13 too.
+  await runEveryRunSettingsCases({ runCase, page, stack, alpha, sel, toList, openRow, ensureUnfolded, rowsOf, menuOpen, runScreen, shot, sendOver, waitFor, sleep, assert, selected });
 
   await runCase('MSP-13', async () => {
     // A credential the node does not know (401, REMOTE_ACCESS_AUTH_INVALID: the node's pairing data was reset): the next
