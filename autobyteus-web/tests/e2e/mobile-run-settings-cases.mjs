@@ -1,9 +1,10 @@
 // The readable phone conversation, Text size and Settings for a run's runtime and model (autobyteus-506, autobyteus-458).
 // Cases of `pnpm -C autobyteus-web test:e2e:mobile-shell`, run by `mobile-shell-probe.mjs` on its paired phone page
-// (`--cases=MSP-59,MSP-60,MSP-61,MSP-62,MSP-63,MSP-64` runs only these). Every run here is the cases' own, on alpha, on the
-// scripted Antigravity runtime (one model) and the scripted Grok Build runtime (`grok-4.7`).
+// (`--cases=MSP-66,MSP-60,MSP-61,MSP-62,MSP-63,MSP-64,MSP-65` runs only these). Every run here is the cases' own, on alpha, on the
+// scripted Antigravity runtime (one model) and the scripted Grok Build runtime (`grok-4.7`). MSP-66 was MSP-59 before the merge
+// with autobyteus-483, which took MSP-59 (`mobile-background-tasks-cases.mjs`); earlier 458 records name it MSP-59.
 //
-//   MSP-59 AC-001  A Team lead's conversation at 412 and 360 px: each turn's body is the width minus 24 px, starting 12 px
+//   MSP-66 AC-001  A Team lead's conversation at 412 and 360 px: each turn's body is the width minus 24 px, starting 12 px
 //                  from the left; one 22 px avatar and the speaker's name per turn; 17 px text with a 1.5 line height; the
 //                  composer box 8 px above the screen's bottom. The mate's conversation: the lead's message to it keeps
 //                  its arrow, and a tap on the arrow shows its `agent_message` line, as on the desktop (SR-004).
@@ -29,7 +30,7 @@ import { randomUUID } from 'node:crypto';
  */
 export const runRunSettingsCases = async (probe) => {
   const { runCase, page, stack, alpha, sel, toList, openRow, ensureUnfolded, rowsOf, childRow, menuOpen, runScreen, shot, sendOver, waitFor, sleep, assert, phoneNet } = probe;
-  const ids = ['MSP-59', 'MSP-60', 'MSP-61', 'MSP-62', 'MSP-63', 'MSP-64', 'MSP-65'];
+  const ids = ['MSP-66', 'MSP-60', 'MSP-61', 'MSP-62', 'MSP-63', 'MSP-64', 'MSP-65'];
   if (probe.selected && !ids.some(id => probe.selected.has(id))) return;
 
   const gql = (query, variables) => alpha.gql(query, variables);
@@ -153,7 +154,7 @@ export const runRunSettingsCases = async (probe) => {
     await sheet.waitFor({ state: 'detached', timeout: 10_000 }).catch(() => undefined);
   };
 
-  await runCase('MSP-59', async () => {
+  await runCase('MSP-66', async () => {
     await gql('mutation($id:String!){terminateAgentTeamRun(teamRunId:$id){success message}}', { id: team.teamRunId });
     const facts = {};
     for (const [width, height] of [[412, 915], [360, 780]]) {
@@ -161,7 +162,7 @@ export const runRunSettingsCases = async (probe) => {
       await openTeam();
       await sleep(800);
       facts[width] = await layout();
-      await shot(page, `MSP-59-conversation-${width}`);
+      await shot(page, `MSP-66-conversation-${width}`);
     }
     // Another agent's message, on the mate (at 412 px): the desktop's segment, arrow and type line kept (SR-004).
     await page.setViewportSize({ width: 412, height: 915 });
@@ -174,7 +175,7 @@ export const runRunSettingsCases = async (probe) => {
     await toggle.click();
     const typeLine = (await message.locator(sel('inter-agent-details')).textContent({ timeout: 5_000 }).catch(() => null))?.trim() ?? null;
     const messageBox = await message.boundingBox();
-    await shot(page, 'MSP-59-inter-agent-412');
+    await shot(page, 'MSP-66-inter-agent-412');
     facts.interAgent = { arrow, typeLineBefore, typeLine, messageBox };
     await page.setViewportSize({ width: 390, height: 844 });
     const details = facts;

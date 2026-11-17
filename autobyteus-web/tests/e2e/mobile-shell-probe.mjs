@@ -156,7 +156,7 @@
 //                  after the limits were raised with no reload, and a stale read of the limits gets the node's 413 as the same
 //                  line; cancel mid-upload leaves no message and no draft, a network drop shows the interrupted line and leaves
 //                  no draft: `mobile-context-file-size-cases.mjs` (its own node eta).
-//   MSP-59…64 autobyteus-458/506  The readable phone conversation at 412 and 360 px (body width − 24, 17 px / 1.5, one
+//   MSP-60…66 autobyteus-458/506  The readable phone conversation at 412 and 360 px (body width − 24, 17 px / 1.5, one
 //                  avatar and speaker line per turn, composer 8 px above the bottom; another agent's message keeps its arrow
 //                  and type line, as on the desktop); ⋮ → Text size (15/19/21 px, kept over a
 //                  reload); ⋮ → Settings on a stopped Team member (Runtime → Grok Build, its model, Save back, the node holds it,
