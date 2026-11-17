@@ -1,0 +1,6 @@
+# IMP-01 prune unit test (pnpm and flat npm layouts)
+# command: pnpm -C autobyteus-web exec vitest run scripts/__tests__/claudeAgentSdkBinaryPackaging.spec.ts
+# commit: 365fde4e5b; node v22.23.1; 2026-11-17T14:51:46Z
+ ✓ scripts/__tests__/claudeAgentSdkBinaryPackaging.spec.ts (7 tests) 57ms
+ Test Files  1 passed (1)
+      Tests  7 passed (7)
