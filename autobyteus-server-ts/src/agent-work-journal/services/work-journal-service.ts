@@ -119,20 +119,21 @@ export class WorkJournalService {
 
   /**
    * The run's journal files in manifest order, each with its path, size and the time range its header states; null when
-   * the run has no journal yet. Reads at most the first 1 KB of each file and never renders.
+   * the run has no journal yet. It reads the file names the manifest lists, also from an entry that must be rendered
+   * again (the file on disk is still the run's journal until then), at most the first 1 KB of each file, and never renders.
    */
   async readJournalSpans(memoryDir: string): Promise<WorkJournalFileSpan[] | null> {
     const dir = path.resolve(memoryDir);
-    const manifest = await this.store.readManifest(dir);
-    if (!manifest) return null;
+    const journalFiles = await this.store.readManifestJournalFileNames(dir);
+    if (!journalFiles) return null;
     const spans: WorkJournalFileSpan[] = [];
-    for (const file of manifest.files) {
-      const read = await this.store.readJournalFileHead(dir, file.journal_file, JOURNAL_HEADER_BYTES);
+    for (const journalFile of journalFiles) {
+      const read = await this.store.readJournalFileHead(dir, journalFile, JOURNAL_HEADER_BYTES);
       if (!read) continue;
       const range = readJournalHeaderTimeRange(read.head);
       spans.push({
-        journalFile: file.journal_file,
-        path: this.store.filePath(dir, file.journal_file),
+        journalFile,
+        path: this.store.filePath(dir, journalFile),
         sizeBytes: read.sizeBytes,
         from: range?.from ?? null,
         to: range?.to ?? null,

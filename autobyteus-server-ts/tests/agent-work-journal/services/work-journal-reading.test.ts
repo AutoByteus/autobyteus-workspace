@@ -145,6 +145,25 @@ describe("WorkJournalService reads, notification and unrecorded runtime", () => 
     expect((await service.readJournalSpans(runDir))!.map((span) => span.journalFile)).toEqual(["work_journal_active.md"]);
   });
 
+  it("reads the spans of files an older manifest lists, whose entries record no runtime of their own, without rendering them", async () => {
+    // The shape an earlier build wrote (runtime once per manifest): the projection drops such entries so they are
+    // rendered again, but until then the files on disk are the run's journal.
+    const journalDir = path.join(runDir, "work_journal");
+    fs.mkdirSync(journalDir, { recursive: true });
+    const header = "# Work Journal — run run_reading_1\nRuntime Codex App Server · file active (open) · 2026-05-18 16:30 – 18:56 UTC · source ../raw_traces_active.jsonl\nnote\n\n[16:30:20] User: hello\n";
+    fs.writeFileSync(path.join(journalDir, "work_journal_active.md"), header);
+    fs.writeFileSync(manifestPath(runDir), JSON.stringify({ run_id: "run_reading_1", runtime_kind: "codex_app_server", renderer_revision: 2, files: [
+      { journal_file: "work_journal_active.md", source_file: "raw_traces_active.jsonl", source_record_count: 3, state: "open", content_sha256: "a".repeat(64) },
+      { journal_file: "../escape.md", state: "open" },
+    ] }));
+    const service = new WorkJournalService();
+    expect(await service.readJournalSpans(runDir)).toEqual([{ journalFile: "work_journal_active.md", path: path.join(journalDir, "work_journal_active.md"),
+      sizeBytes: Buffer.byteLength(header), from: "2026-05-18 16:30", to: "2026-05-18 18:56" }]);
+    expect(fs.readFileSync(path.join(journalDir, "work_journal_active.md"), "utf-8")).toBe(header);
+    // The full projection still drops the entry, so the next ensureCurrent renders the file again.
+    expect(await service.journalFileVersions(runDir)).toEqual([]);
+  });
+
   it("lists journal files with versions, sizes, lines and days, and reads lines of manifest files only", async () => {
     const service = new WorkJournalService();
     expect(await service.listJournalFiles(runDir)).toBeNull();

@@ -76,6 +76,25 @@ export class WorkJournalStore {
     };
   }
 
+  /**
+   * The journal file names the manifest lists, in its order, whatever else each entry records: a names-only read. An
+   * entry the projection above drops (it must be rendered again) still names a journal file on disk. Null without a
+   * readable manifest.
+   */
+  async readManifestJournalFileNames(memoryDir: string): Promise<string[] | null> {
+    let parsed: unknown;
+    try {
+      parsed = JSON.parse(await fs.readFile(this.manifestPath(memoryDir), "utf-8"));
+    } catch {
+      return null;
+    }
+    const files = asRecord(parsed)?.files;
+    if (!Array.isArray(files)) return null;
+    const names = files.map((file) => asRecord(file)?.journal_file)
+      .filter((name): name is string => typeof name === "string" && JOURNAL_FILE_NAME.test(name));
+    return [...new Set(names)];
+  }
+
   /** The exact manifest shape, nothing more (no generation time, no paths). */
   async writeManifest(memoryDir: string, manifest: WorkJournalManifest): Promise<void> {
     const exact: WorkJournalManifest = {
