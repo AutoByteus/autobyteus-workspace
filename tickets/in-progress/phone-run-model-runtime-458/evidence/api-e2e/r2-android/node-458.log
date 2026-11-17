@@ -1,0 +1,4 @@
+2026-11-17T13:31:13.429Z # autobyteus-458 node; commit 1b53150c63
+2026-11-17T13:31:20.707Z node up on http://127.0.0.1:59331 (emulator: http://10.0.2.2:59331); AGY_FAKE_EXTRA_MODELS = gemini-retiring-458
+2026-11-17T13:31:20.963Z definitions {"checker":"fact-checker","writer":"release-notes-writer","delivery":"delivery-team","squad":"docs-review-team","org":"delivery-org"}; pairing session 201 (link in /tmp/abtest458/pairing-link.txt, not evidence). Control: /tmp/abtest458/restart, /tmp/abtest458/stop
+2026-11-17T14:07:50.503Z node done; temp root removed: true

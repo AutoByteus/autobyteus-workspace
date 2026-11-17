@@ -2,125 +2,144 @@
 
 ## Round
 
-- Coverage investigation: `api-e2e-coverage-investigation.md`
-- API/E2E revision record and current revision ID: `api-e2e-revision-record.md`, `API-REV-001`
-- Test progress log: `api-e2e-test-progress.md`
-- Round and trigger: round 1; Implementation Engineer IR-001 (direct route); code `ec5b81f912`, documents `075c7274f0`, base `origin/personal` @ `3b59ef0be1`. API/E2E commits on top: `cdb3ad0025` (baseline test fix), `1054deb132` (MSP-08), and this round's evidence commit (MSP-65 and the documents).
-- Prior round reviewed: none
+- Coverage investigation (the plan; it lists the upstream documents): `api-e2e-coverage-investigation.md`
+- API/E2E revision record and current revision ID: `api-e2e-revision-record.md`, `API-REV-002`
+- Test progress log (when used): `api-e2e-test-progress.md`
+- Round and trigger: round 2; Implementation Engineer IR-002 (CR-001 Local Fix, from `code-review-report.md` CRR-001 on API-REV-001's F-1); code `6ddf9bb8f5`, documents `1b53150c63`. Round 1: IR-001, code `ec5b81f912`.
+- Prior round reviewed: round 1 (API-REV-001, Fail F-1). F-1 is rechecked first (API-03, MSP-65).
+- Rerun plan (rerun by impact): `git diff --stat 41638611b4 6ddf9bb8f5` changes only `useWorkspaceHistorySubjectActions.ts` (the stop's `/workspace` write runs off the phone shell only), `useRunStopAction.ts` (passes the caller's shell), `MobileRunSettings.vue` (passes `'mobile'`) and their specs. Desktop callers pass no shell (unchanged path). Rerun: the phone bundle, API-01 (full probe, incl. MSP-65), API-03 (Org stops in the app, Save after the stop), API-05's desktop Org-member Settings stop (preserved, requested by CRR-001). Still valid from round 1 (they exercise nothing the fix touches: agent and Team stops, conversation, Text size, refusal): API-02, API-04, API-05's Team stop and composer cases.
 - Deviations from the investigation's plan, and why:
-  - API-02/03/04 used a host node of my own (`scripts/node-458.mjs`) instead of the probe's `--hold` stack: AC-005 needs a restart of the node without a model on the same port and data, which the held stack cannot do.
-  - The emulator's Wi-Fi network had an empty routing table in this cold boot (the app could not reach `10.0.2.2`); Wi-Fi was switched off so the app used the emulator's `eth0` route. Environment only (progress log 11:21).
-  - API-03 found F-1; MSP-65 was added to keep it reproducible (durable coverage).
-- Evidence folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/phone-run-model-runtime-458/tickets/in-progress/phone-run-model-runtime-458/evidence/api-e2e/`
-  - `android/journey.md` (every in-app step's exact command and JSON output), `android/shots/`, `android/node-458.log`, `android/node-458-server.log`
-  - `desktop/desktop-team-stop.log`, `desktop/desktop-team-stop-*.png`, `desktop/desktop-composer-corner.png`
-  - `api-01-mobile-shell*/`, `api-01b-rerun*`, `api-01c-msp08*`, `api-01-copy-shortcut-macos.log`, `api-03b-msp65*`, `api-05-*`, `api-05b-u03-*`, `api-05c-u03-base-sources*`, `API-00-apk-build.log`, `build-mobile-web.log`
-  - `scripts/` (temporary tools: `node-458.mjs`, `api.mjs`, `ph.mjs`, `step.sh`, `desktop-team-stop.mjs`, and 472's `droid.mjs` adapted)
+  - Round 1: API-02/03/04 used a host node of my own (`scripts/node-458.mjs`), not the probe's `--hold` stack: AC-005 needs a node restart without a model on the same port and data. API-03 found F-1; MSP-65 was added.
+  - Round 2: the full probe stopped after MSP-52 on "AgyDiscoveryError: Antigravity model discovery timed out" in the setup of MSP-53…55 (host load average 70–110 from other worktrees' test runs); MSP-53…55 and MSP-32 ran separately. MSP-41 was investigated with 14 extra runs (FU-003). The emulator was restarted with `-gpu host` after "isn't responding" under that load (render thread starved).
+  - Emulator networking: in two of three cold boots the default Wi-Fi network had an empty routing table; Wi-Fi was switched off so the app used `eth0`. Environment only.
+- Evidence folder (absolute path): `/Users/normy/autobyteus_org/autobyteus-worktrees/phone-run-model-runtime-458/tickets/in-progress/phone-run-model-runtime-458/evidence/api-e2e/`
+  - round 2: `r2-api-01-mobile-shell*`, `r2-api-01b-rest*`, `r2-msp41-*`, `r2-android/journey.md` and `r2-android/shots/`, `r2-desktop/desktop-org-stop.log` and screenshots, `r2-build-mobile-web.log`
+  - round 1: `api-01-*`, `api-01b-*`, `api-01c-*`, `api-03b-msp65*`, `api-05*`, `android/`, `desktop/`, `API-00-apk-build.log`, `build-mobile-web.log`
+  - `scripts/` (temporary tools: `node-458.mjs`, `api.mjs`, `ph.mjs`, `step.sh`, `r2-setup.sh`, `r2-org-stop.sh`, `desktop-team-stop.mjs`, `desktop-org-stop.mjs`, and 472's `droid.mjs` adapted)
 
 ## Routing Classification
 
-- Task size: `Medium`; Architectural risk: `Low`; Input route: `Direct`
-- Successful-output route would be: Delivery Engineer (test-code review `Not Required`, direct low-risk route)
-- This round: `Fail` → Code Reviewer, failure-origin review of F-1
+- Task size: `Medium`
+- Architectural risk: `Low`
+- Input route: `Direct Low-Risk`
+- Successful-output route: `Code Review`: CRR-001 routes the round after the fix to the test-code review of the three API/E2E test commits and the new specs ("Then the test review covers the three API/E2E commits and the new specs")
+- Proportional test-code review decision: `Required` (requested by CRR-001) for `cdb3ad0025`, `1054deb132`, `41638611b4` and IR-002's specs
 
 ## Tested Builds And Environments
 
-| Env ID | Commit Tested | Platform / OS | Runtime, Browser, Or App Build | Other Settings That Matter |
+| Env ID | Commit Tested | Platform / OS | Runtime, Browser, Or App Build | Other Settings That Matter (data, identity, locale, viewport) |
 | --- | --- | --- | --- | --- |
-| ENV-1 | product `ec5b81f912`; probes `1054deb132` (+ MSP-65) | macOS 26 arm64, headless Chrome 157 | the phone probe's own alpha/beta nodes (`autobyteus-server-ts/dist`, unchanged by this branch), the phone bundle rebuilt from this worktree (`build-mobile-web.log`, 11:32 local, after the last product commit), scripted AGY and Grok Build | clean env (`env -i`, temp HOME) |
-| ENV-2 | `1054deb132` (product `ec5b81f912`) | own AVD `apie2e458_api35` (android-35 google_apis arm64, Pixel 6: 1080×2400, page 412 CSS px at DPR 2.625), headless, port 5640, 2 GB | debug APK of this branch (`API-00-apk-build.log`); WebView 124.0.6367.219 | `adb root`; Wi-Fi off (see Round); WebView DevTools forwarded to tcp:9458; deleted afterwards |
-| ENV-3 | same | macOS | host node `dist/app.js` on 127.0.0.1 (`10.0.2.2` from the emulator), temp root and HOME, own launch credential; scripted AGY (`gemini-3.8-flash-low`, plus `gemini-retiring-458` until the API-04 restart), scripted Grok Build (`grok-4.7`) | paired by a Phone Access link shared into the app (`ACTION_SEND`) |
-| ENV-4 | same | macOS, headless Chrome 157 | desktop window: `pnpm dev` of this worktree on 5458 against ENV-3's node; the composer probes' own stacks | 1440×1000 |
+| ENV-1 | round 2: `1b53150c63` (code `6ddf9bb8f5`); round 1: `41638611b4` (code `ec5b81f912`) | macOS 26 arm64, headless Chrome 157 | the phone probe's alpha/beta nodes (`autobyteus-server-ts/dist`, unchanged by this branch); the phone bundle rebuilt after the last product commit (`r2-build-mobile-web.log`, `build-mobile-web.log`); scripted AGY and Grok Build | clean env (`env -i`, temp HOME); host load average 70–110 in round 2 |
+| ENV-2 | same | own AVD `apie2e458_api35` (android-35 google_apis arm64, Pixel 6: 1080×2400, page 412 CSS px at DPR 2.625), headless, port 5640, 2 GB; round 2 last boot `-gpu host` | debug APK of this branch (`API-00-apk-build.log`; no Android change since); WebView 124.0.6367.219 | `adb root`; Wi-Fi off where its routes were missing; WebView DevTools on tcp:9458; deleted after each round |
+| ENV-3 | same | macOS | host node `dist/app.js` on 127.0.0.1 (`10.0.2.2` from the emulator), temp root and HOME, own launch credential; scripted AGY (`gemini-3.8-flash-low`; `gemini-retiring-458` until API-04's restart), scripted Grok Build (`grok-4.7`) | paired with a Phone Access link shared into the app (`ACTION_SEND`) |
+| ENV-4 | same | macOS, headless Chrome 157 | desktop window: `pnpm dev` of this worktree on 5458 against ENV-3's node; the composer probes' own stacks | 1440×1000, en |
 
 ## Cases
 
-| Case ID | Criteria | Surface | Steps | Env | Result | Evidence | Key Facts |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| R-IMP | AC-001…009 unit and Chrome parts, AC-009 desktop agent/Org-copy stops | — | the implementation's IMP-458-* (web unit 760 files, typecheck, guards, MSP-59…64, DCP-001/003, AFS-001) | — | Reused (no product change since) | `evidence/implementation/` | — |
-| API-01 | AC-001, 002, 004, 005 (woken run), 006, 008 | phone bundle, Chrome | full `test:e2e:mobile-shell` (clean env); reruns of the failed cases | ENV-1 | **Pass** after two test fixes | `api-01-mobile-shell.log` (60 Pass, 4 Fail), `api-01b-rerun.log`, `api-01c-msp08.log` | MSP-59…64 Pass and every later case unaffected. MSP-08: stale expectation (the menu now ends with Settings, UIS-002; for a Team member and a standalone agent) → updated (`1054deb132`), Pass. MSP-50/51: every desktop copy empty: the cases pressed `Control+C`, which copies nothing in Chrome on macOS (`api-01-copy-shortcut-macos.log`: `Control+C` "" vs `ControlOrMeta+C` text; the cases last passed in a Linux container) → baseline test fix `cdb3ad0025`, Pass. MSP-41 (one extra read after the desktop editor's own save) and an unknown desktop console error in MSP-50 ("Failed to open run … changed before projection commit") did not recur: intermittent, base paths (FU-003) |
-| API-02 | AC-001, 002, 003 (phone), 004, 006 | the Android app | `android/journey.md` API-02: real taps on the paired app | ENV-2, ENV-3 | **Pass** | `android/shots/API-02-*.png` | conversation bodies at x 12, width 388 (412 − 24), 17 px / 25.5, composer 8 px from the bottom, text-area corners 11 px; ⋮: Artifacts, Files, Messages, Activity, Settings + Text size; stopped lead: "Stopped · in Delivery Team", Grok Build → Model "Choose", Save disabled; Grok 4.7 → Save → conversation; node: lead `grok_build`/`grok-4.7`, mate unchanged; reopened Settings shows them; "continue TEAM-458-CONTINUE" typed in the app ran on the scripted Grok (its fixture answer "PINEAPPLE done", Team active); idle agent and working agent (`HOLD_TURN`): red stop icon (`rgb(239,68,68)`, "Stop run", no text), rows and Save disabled; one tap → Stopped, rows open, node `isActive false`, no toast, no red card; the idle one then saved Grok Build / grok-4.7; Text size Large applied at once (19 / 28.5), app force-stopped and relaunched (new process) → still Large, menu shows Large pressed; back to Standard |
-| API-03 | AC-004 (Org), REQ-008 (Org and Team member stop) | the Android app | Org run "Delivery Org" (planner = agent; squad = Team of reviewer, editor) | ENV-2, ENV-3 | **Fail (F-1)**; stopped Org members Pass | `android/shots/API-03-*.png`; `api-03b-msp65.log` | stopped planner ("Stopped · in Delivery Org") and squad's reviewer ("Stopped · in squad"): change + Save → the node holds only that member's new selection; reopen shows it. **Live Org member, one tap on the stop icon: the Org run stops on the node, then the app leaves Settings for `/mobile/?unsupported=desktopWorkspace` ("Unsupported on phone — The desktop workspace isn't on the phone. Your runs are here.")**: reviewer and planner, 2/2 in the app; MSP-65 1/1 in Chrome. Team member (lead) stop from Settings: Stopped, rows open, the screen stays (it took ~60 s: the woken lead sat in "Starting" on the scripted Grok restore before the stop completed — runtime fixture, not this ticket) |
-| API-04 | AC-005 (model not offered) | the Android app + node restart | stopped agent: Model → "Retiring test model"; node restarted without it (offered: []); Save | ENV-2, ENV-3 | **Pass** | `android/shots/API-04-*.png` | red card: "'gemini-retiring-458' is not offered by Antigravity CLI now. Refresh the model list and choose again. Saved settings were not changed."; screen stays; node unchanged (`antigravity_cli`/`gemini-3.8-flash-low`) |
-| API-05 | AC-003 (desktop), AC-008, AC-009 (desktop Team) | desktop window; composer probes | `desktop-team-stop.mjs` (3 rounds with the Team never opened, 3 with its lead's conversation open; Runs view "Terminate team"); `test:e2e:chat-composer-polish`; `test:e2e:chat-composer-menus-open-upward` | ENV-4 | **Pass** for 458's parts | `desktop/desktop-team-stop.log`, `api-05-*.log`, `api-05b-u03-*.log`, `api-05c-u03-base-sources.log` | working Team stopped 6/6 on the node in 3.2–4.3 s, no "Failed to terminate team", no console warning; desktop composer: text area radius 11 px in the 12 px box (`desktop-composer-corner.png`: the lower border continuous); `chat-composer-polish` T01–T07 Pass; `menus-open-upward` U01, U02, U04–U06 Pass, U03 Fail 3/3 — the same failure with the base's versions of every web source this ticket modifies (not this ticket; FU-002) |
-
-## Failures
-
-| ID | What fails | Where | Reproduction | Expected (requirement) | Evidence |
-| --- | --- | --- | --- | --- | --- |
-| F-1 | After the one-tap stop of a **live Org member** (an Org's direct agent or an Org Team member) in phone Settings, the Org run stops on the node but the phone leaves Settings and shows the run list with "Unsupported on phone — The desktop workspace isn't on the phone" (`/mobile/?unsupported=desktopWorkspace`). The rows never open; the user lands on an error banner for an action that succeeded. | `MobileRunSettings.vue` → `useRunStopAction` (`agent_org` subject) → `useWorkspaceHistorySubjectActions().execute({ action: 'stop' })`. Its stop branch (`composables/useWorkspaceHistorySubjectActions.ts` ~60–66), when the current route is that Org (`rootSubjectKind=agent_org&orgRunId=…`, which the phone's Org run screen carries), always runs `router.replace({ path: '/workspace', query: { …route.query, mode: 'history' } })` — whatever the shell (the `shell: 'mobile'` setup only guards the open/select path, and `useRunStopAction` passes none). The phone's feature gate maps `/workspace` to `desktopWorkspace` (`utils/mobileFeatureGates.ts` ~52) | 3/3: in the app with the reviewer and the planner (`android/journey.md` API-03); `test:e2e:mobile-shell --cases=MSP-65` (`api-03b-msp65.log`: `"url":"/mobile/?unsupported=desktopWorkspace"`, `stopped.open: false`, node `isActive false`) | REQ-008 / UXJ-004 / VIS-017: one tap stops the run (for an Org member the Org run, as on the desktop), **then the rows open** on the Settings screen | `android/shots/API-03-7-org-after-stop.png`, `API-03-8-planner-after-stop.png`; MSP-65 screenshots |
-
-- Not failures of this ticket: MSP-08 (stale expectation, fixed), MSP-50/51 (macOS copy shortcut, baseline test fix), MSP-41 and the run-open console error (intermittent, base; FU-003), U03 (base; FU-002), the emulator's Wi-Fi routes (environment).
+| Case ID | Criteria (AC / Requirement IDs) | Boundary / Surface | Command Or Steps | Env | Result | Evidence Files | Look For | Notes |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| R-IMP | AC-001…009 (unit, Chrome parts), CR-001 | — | IMP-458-r2-guards, -typecheck, -web-unit, -phone-probe-cases (MSP-59…65), -desktop-org-stop (AFS-002), -unit-repro (the four CR-001 tests fail before, pass after) | — | Reused (`Pass`) | implementation handoff IR-002 rows | — | ran on `6ddf9bb8f5`, the commit validated; AFS-002 stops the Org through GraphQL, so the desktop Settings stop click is API-05's |
+| API-01 | AC-001, 002, 004, 005 (woken run), 006, 008; CR-001 | phone bundle in Chrome | round 2: `env -i PATH HOME=<temp> TMPDIR pnpm -C autobyteus-web test:e2e:mobile-shell --output-dir=<evidence>/r2-api-01-mobile-shell`; then `--cases=MSP-13,MSP-53,MSP-54,MSP-55,MSP-32` | ENV-1 | `Pass` | `r2-api-01-mobile-shell.log`, `r2-api-01-mobile-shell/mobile-shell-probe.json`, `r2-api-01b-rest.log` | `[mobile-shell] MSP-65 Pass`, MSP-59…64 Pass; 60 Pass in the full run; `r2-api-01b-rest.log`: MSP-13, 53, 54, 55, 32 Pass; `unknownBrowserErrors` 0 | every case passes except MSP-41, intermittent on the base too (FU-003). The full run stopped at MSP-53…55's setup ("Antigravity model discovery timed out", host load), so those ran separately. Round 1: 60 Pass, 4 Fail; MSP-08 (stale: Settings in the menu) fixed `1054deb132`; MSP-50/51 (`Control+C` copies nothing on macOS, `api-01-copy-shortcut-macos.log`) baseline fix `cdb3ad0025` |
+| API-02 | AC-001, 002, 003 (phone), 004, 006 | the Android app | round 1, `android/journey.md` API-02 (real taps): stopped Team lead → ⋮ → Settings → Grok Build → Grok 4.7 → Save → reopen → "continue"; live idle and working agents → stop icon → one tap → Save; Text size Large → force-stop → relaunch | ENV-2, ENV-3 | `Pass` (round 1, still valid) | `android/journey.md`, `android/shots/API-02-*.png` | bodies `[12,388,…]`, `fontSize 17`, `lineHeight 25.5`, `composerGap 8`, corners `11px`; node lead `grok_build`/`grok-4.7`, mate unchanged; "PINEAPPLE done"; stop `rgb(239, 68, 68)` "Stop run"; after the tap `isActive false`, `runtimeDisabled false`, `error null`; Large `19 / 28.5` after the relaunch | the fix does not touch agent or Team stops |
+| API-03 | AC-004 (Org), AC-006, REQ-008 (Org member stop); F-1 | the Android app | round 2, `r2-android/journey.md` API-03 via `scripts/r2-org-stop.sh`: a Delivery Org run; the planner held working (`HOLD_TURN`), then the squad's reviewer idle; each: open in the app → ⋮ → Settings → one tap on the stop icon → node, URL, Settings → Runtime Grok Build, Model Grok 4.7 → Save | ENV-2, ENV-3 | `Pass` (F-1 resolved) | `r2-android/journey.md`, `r2-android/shots/r2-API-03-planner-working-{1,2,3}-*.png`, `r2-API-03-reviewer-idle-{1,2,3}-*.png` | live: `"status":"Running · in Delivery Org"` / `"Idle · in squad"`, stop "Stop run"; after the tap: org `"isActive": false`, URL `…&memberAddress=/planner&screen=settings` (`/squad`), `"status":"Stopped · in Delivery Org"`, `"runtimeDisabled":false`, `"error":null`, toasts `[]`; after Save: `screen=run`, node planner and reviewer `grok_build`/`grok-4.7`, others unchanged | round 1 Fail (F-1: `/mobile/?unsupported=desktopWorkspace` after the Org stop, 2/2 in the app); round 1's stopped-Org-member saves still hold. The first round-2 attempt was disturbed by a script loop and ANR dialogs from the host load (notes in the transcript) |
+| API-04 | AC-005 (model not offered) | the Android app + node restart | round 1, `android/journey.md` API-04: stopped agent → Model "Retiring test model" → node restarted without it → Save | ENV-2, ENV-3 | `Pass` (round 1, still valid) | `android/shots/API-04-3-refused.png` | `"error":"'gemini-retiring-458' is not offered by Antigravity CLI now. Refresh the model list and choose again. Saved settings were not changed."`; node `gemini-3.8-flash-low` | the fix does not touch Save |
+| API-05 | AC-003 (desktop), AC-008, AC-009 (desktop Team); CR-001 desktop preserved | desktop window; composer probes | round 2: `node scripts/desktop-org-stop.mjs <evidence>/r2-desktop` (planner, squad/reviewer: live → Settings → `existing-run-stop` one click). Round 1: `desktop-team-stop.mjs` (6 rounds), `test:e2e:chat-composer-polish`, `test:e2e:chat-composer-menus-open-upward` | ENV-4 | `Pass` | `r2-desktop/desktop-org-stop.log`, `r2-desktop/*.png`; `desktop/desktop-team-stop.log`, `desktop/desktop-composer-corner.png`, `api-05-*.log` | `PASS /planner`, `PASS /squad/reviewer`: URL `/workspace?…&mode=history…`, `settingsOpen: true`, `stopStill: false`, alerts `[]`, toasts `[]`; Team: `PASS closed-1…3`, `PASS open-1…3`; `areaRadius ["11px","11px"]`; composer-polish T01–T07 Pass | menus-open-upward U03 fails at 1024×440, the same with the base's web sources (FU-002) |
 
 ## Acceptance-Criteria Proof
 
-| AC | Proven | Where | Status |
-| --- | --- | --- | --- |
-| AC-001 | Yes | MSP-59 (412, 360 px; the inter-agent arrow and type line), API-02 in the WebView (388 px at 12, 17/25.5, one avatar and name per turn) | Proven |
-| AC-002 | Yes | MSP-60 (each step at once; reload), API-02 (kept across an app restart) | Proven |
-| AC-003 | Yes | API-02 (phone corners 11 px), API-05 (desktop 11 px in the 12 px box, screenshot) | Proven |
-| AC-004 | Yes | MSP-61, API-02 (Team member in the app, "continue" on the new runtime), API-03 (Org direct agent and Org Team member) | Proven |
-| AC-005 | Yes | API-04 (a model not offered after a node restart: the node's words, nothing changed), MSP-62 (a run woken before Save) | Proven |
-| AC-006 | Partly | MSP-63/64 and API-02 (live idle and working agents), API-03 (Team member) — **the Org member's stop fails REQ-008 (F-1)** | **Failed for Org members** |
-| AC-007 | Yes | R-IMP (catalog test, localization guards); no hard-coded text seen on the phone screens | Proven |
-| AC-008 | Yes | full phone probe (all cases pass with the two test fixes), `chat-composer-polish`, `menus-open-upward` except the base U03, desktop conversation unchanged (MSP-50 desktop conversation Pass) | Proven (U03 base, FU-002) |
-| AC-009 | Yes | R-IMP unit tests and DCP-001/003, AFS-001; API-05 working Team stopped 6/6 from the desktop run tree without a false failure; API-02 phone stops without the red card | Proven |
+| Acceptance-Criteria ID | Critical | Proven By Case IDs | Result | For A User-Only Part |
+| --- | --- | --- | --- | --- |
+| AC-001 | Yes | API-01 (MSP-59 at 412 and 360 px), API-02 | `Proven` | — |
+| AC-002 | Yes | API-01 (MSP-60), API-02 (kept across an app restart) | `Proven` | — |
+| AC-003 | No | API-02 (phone), API-05 (desktop) | `Proven` | — |
+| AC-004 | Yes | API-01 (MSP-61), API-02 (Team member, "continue"), API-03 (Org direct agent and Org Team member) | `Proven` | — |
+| AC-005 | Yes | API-04 (not offered after a restart), API-01 (MSP-62, woken run) | `Proven` | — |
+| AC-006 | Yes | API-01 (MSP-63, 64, 65), API-02 (idle, working agent; Team member), API-03 (working Org direct agent, idle Org Team member: stays on Settings, rows open, Save works) | `Proven` | — |
+| AC-007 | No | R-IMP (catalog test, localization guards) | `Proven` | — |
+| AC-008 | Yes | API-01 (full probe), API-05 (desktop composer, Org Settings stop preserved), R-IMP (web suite) | `Proven` | U03 and MSP-41 fail on the base too (FU-002, FU-003) |
+| AC-009 | Yes | R-IMP (unit, DCP-001/003, AFS-001), API-05 (working Team stopped 6/6 from the run tree), API-02 (phone stops without the red card) | `Proven` | — |
 
 ## Validation Confidence Scorecard (Mandatory)
 
-| Confidence Category | Post-Repository Score | Final Score | What Supports It | Residual Uncertainty |
-| --- | --- | --- | --- | --- |
-| Requirement and acceptance-criteria proof | 85% | 80% | AC-001…005, 007…009 proven on real surfaces | AC-006 fails for an Org member (F-1) |
-| Changed-boundary execution directness | 85% | 95% | the app's WebView with real taps, a real node restart, a desktop window | — |
-| Cross-boundary integration realism and mock gap | 85% | 92% | real nodes, real pairing; scripted runtimes by the ticket's rule | scripted runtimes (no provider) |
-| Environment, configuration, identity, and fixture fidelity | 85% | 90% | own AVD, the branch's APK, pairing link | emulator Wi-Fi workaround |
-| Failure, edge-case, lifecycle, and recovery evidence | 85% | 90% | refusal after a restart, woken run, app restart, idle/working/Team/Org stops | F-1 open |
-| User-surface, browser, and desktop-shell confidence | 85% | 85% | screenshots of every state, desktop composer | F-1 lands on an error banner |
-| Durable regression coverage quality and relevance | 88% | 92% | MSP-59…65; MSP-08 and MSP-50/51 repaired | MSP-65 fails until F-1 is fixed |
+| Confidence Category | Post-Repository Score | Final Score | What Supports It (Case IDs) | Residual Uncertainty | What Could Improve It |
+| --- | --- | --- | --- | --- | --- |
+| Requirement and acceptance-criteria proof | 90% | 96% | API-01…05, R-IMP | — | — |
+| Changed-boundary execution directness | 88% | 96% | API-02/03/04 (WebView, real taps), API-05 (desktop window) | — | — |
+| Cross-boundary integration realism and mock gap | 85% | 93% | real nodes, pairing, node restart; scripted runtimes (the ticket's rule) | no provider runtime | a live runtime (out of the ticket's rule) |
+| Environment, configuration, identity, and fixture fidelity | 85% | 92% | own AVD, the branch's APK, pairing link, clean env | emulator networking and GPU workarounds under host load | a quiet host |
+| Failure, edge-case, lifecycle, and recovery evidence | 88% | 95% | refusal after a restart, woken run, app restart, idle/working agent, Team and Org stops | — | — |
+| User-surface, browser, and desktop-shell confidence | 88% | 95% | screenshots of every state; desktop composer and Org stop | — | — |
+| Durable regression coverage quality and relevance | 90% | 94% | MSP-59…65; MSP-08, MSP-50/51 repaired; IR-002 specs | MSP-41 and U03 flaky/failing on the base (FU-002, FU-003) | those follow-ups |
 
-- Overall final confidence: 89% (89.1%, simple average)
-- Every critical acceptance criterion directly proven: `No` (AC-006 for Org members); any applicable category below 90%: `Yes` (requirement proof, user surface)
+- Overall post-repository confidence: 88%
+- Overall final confidence: 94% (94.4%, simple average)
+- Calculation method: simple average of the seven categories
+- Every critical acceptance criterion directly proven, apart from parts only the user can check: `Yes`
+- Any final applicable category below `90%`: `No`
+- Default final confidence target of `95%` met: `No` (94%): the gap is environmental (host load, emulator workarounds) and the base-side flaky checks; no in-scope behavior is unproven
+- Confidence-limiting residual risks: scripted runtimes only (the ticket's rule); MSP-41 (FU-003) and U03 (FU-002) outside this ticket
 
 ## Broader Validation Decision (Mandatory)
 
-- Decision: `Required` (executed): the Android app on an emulator, a node restarted without a model, a desktop window
-- Gap it addressed: the WebView, an app restart, Org members, a "not offered" refusal, the desktop Team stop
+- Decision: `Required` (executed)
+- Execution mode: `Browser` (phone bundle in Chrome, a desktop window) and `Other` (the Android app on an emulator; a node restart)
+- Confidence gap or residual risk it addresses, and the expected gain: the app's WebView, an app restart, Org members, a "not offered" refusal, the desktop Team and Org stops
+- Browser validation needed, and why or why not: yes; the change is UI and routing
+- If `Not Required`: —
+- If `Blocked`: —
 
-## Persisted-Data Transition Checks
+## Desktop Application Validation (When Applicable)
 
-- `Not Affected` (localStorage `autobyteus.phone.textSize` is new; read back after an app restart)
+- Approach executed, and any deviation from the investigation's plan: a `pnpm dev` desktop window against a test node (web-equivalent renderer); no Electron shell change in this ticket
+- Cases proving web-equivalent behavior, and cases proving shell-specific or lifecycle behavior: API-05 (web-equivalent); no shell-specific behavior changed
+- Effect on any already-running desktop application: `None` (the user's AutoByteus and its data were not touched)
+- Behavior not directly proven and its confidence consequence: none
 
 ## Compatibility / Legacy Scope Check
 
-- Backward compatibility introduced or retained: `No`
+- Reviewed requirements/design introduce, tolerate, or ambiguously describe backward compatibility in scope: `No`
+- Compatibility-only or legacy-retention behavior observed in implementation: `No`
+- Durable coverage added or retained only for compatibility-only behavior: `No`
+- If compatibility-related invalid scope was observed, reroute classification used: —
+- Upstream recipient notified: —
 
 ## Durable Coverage Changed In The Codebase
 
-| Path | Change | Commit |
-| --- | --- | --- |
-| `autobyteus-web/tests/e2e/mobile-code-wrap-cases.mjs` | copy with `ControlOrMeta+C` (baseline test fix: MSP-50/51 on macOS) | `cdb3ad0025` |
-| `autobyteus-web/tests/e2e/mobile-shell-probe.mjs` | MSP-08 expects Settings last (Team member and standalone agent) | `1054deb132` |
-| `autobyteus-web/tests/e2e/mobile-run-settings-cases.mjs` | MSP-65: a live Org member's Settings stop stops the Org run and stays on Settings with the rows open (fails today: F-1) | this round's evidence commit |
+- Repository-resident durable coverage added, updated, or removed this round: `No` in round 2; `Yes` in round 1
+
+| Path / Test | Change | Case IDs | For A Removal |
+| --- | --- | --- | --- |
+| `autobyteus-web/tests/e2e/mobile-code-wrap-cases.mjs` (`cdb3ad0025`) | Updated: copy with `ControlOrMeta+C` (baseline fix: MSP-50/51 on macOS) | API-01 | — |
+| `autobyteus-web/tests/e2e/mobile-shell-probe.mjs` (`1054deb132`) | Updated: MSP-08 expects Settings last (Team member, standalone agent) | API-01 | — |
+| `autobyteus-web/tests/e2e/mobile-run-settings-cases.mjs` (`41638611b4`) | Added: MSP-65, a live Org member's Settings stop (stops the Org, stays on Settings, rows open) | API-01, API-03 | — |
+
+- Added or updated paths attached for proportional test-code review: `Yes`
+- Diff or repository evidence supplied for removed paths: none removed
 
 ## Dependencies Mocked Or Emulated
 
-| Dependency | Method | Limitation |
-| --- | --- | --- |
-| A phone | Android 15 emulator | Wi-Fi off (routing) |
-| Model inference | the repository's scripted AGY and Grok Build CLIs | no provider (the ticket's rule) |
+| Dependency | Method | Why Real Dependency Was Not Used | Confidence Limitation |
+| --- | --- | --- | --- |
+| A phone | Android 15 emulator | no device for automated runs | networking/GPU workarounds under host load |
+| Model inference | the repository's scripted AGY and Grok Build CLIs | the ticket's rule (no provider quotas) | no provider-specific behavior |
 
 ## Temporary Methods And Cleanup
 
-| Item | Cleanup | Result |
-| --- | --- | --- |
-| AVD `apie2e458_api35`, emulator-5640, adb forward | `adb emu kill`, `avdmanager delete avd` | deleted; `adb devices` empty; other AVDs untouched |
-| Host node (`node-458.mjs`), its temp root and HOME | `/tmp/abtest458/stop` → SIGTERM, root removed | "temp root removed: true" |
-| `pnpm dev` on 5458, headless Chrome | stopped | port free |
-| Base-sources check of U03 | the base's versions of the 14 modified web sources checked out, probe run, then `git checkout HEAD --` | `git status` clean for `autobyteus-web` |
-| `/tmp/abtest458/state.json` (credential), `pairing-link.txt`; temp HOMEs | deleted | — |
-| Probe-generated video inputs under `api-01-mobile-shell/msp-53-55-files/` | removed from the evidence | — |
-| Evidence secret scan | `own_`/`mra_` 20+ chars, the pairing code, `access_token=` with a value, the credential itself | no match |
+| Item | Owned By This Run | Cleanup Action | Result |
+| --- | --- | --- | --- |
+| AVD `apie2e458_api35`, emulator-5640, adb forward (both rounds) | Yes | `adb emu kill`, `avdmanager delete avd` | deleted; `adb devices` empty; other AVDs untouched |
+| Host node `node-458.mjs` (both rounds), its temp root and HOME | Yes | `/tmp/abtest458/stop` → SIGTERM, root removed | "temp root removed: true" |
+| `pnpm dev` on 5458, headless Chrome | Yes | stopped | port free |
+| Base-sources checks (U03, MSP-41) | Yes | the base's versions of 458's modified web sources checked out, then `git checkout HEAD --` | `git status` clean for `autobyteus-web` |
+| `/tmp/abtest458/state.json` (credential), `pairing-link.txt`, temp HOMEs | Yes | deleted | — |
+| Probe-generated video inputs, MSP-41 rerun screenshots | Yes | removed from the evidence | — |
+| Other worktrees' nodes and scripted CLIs seen during the runs | No | not touched | — |
+| Evidence secret scan | Yes | `own_`/`mra_` 20+ chars, the pairing code, `access_token=` with a value | no match |
 
 ## Latest Authoritative Result
 
-- Result: `Fail` — F-1 (a live Org member's stop in phone Settings leaves for the "Unsupported on phone" list); everything else in scope passes
-- Recommended next owner: Code Reviewer (failure-origin review of F-1); after a fix, rerun: MSP-65, MSP-59…64, the Org stop in the app (API-03), and the full phone probe
+- Result: `Pass` (round 2)
+- Criteria not proven, or parts only the user can check: `None`
+- Preliminary classification and recommended owner (on `Fail`): — (round 1's F-1: `Local Fix`, implementation; resolved by `6ddf9bb8f5`)
+- Next recipient from `get_handoff_rules`: Code Reviewer: the test-code review CRR-001 asks for (the three API/E2E test commits and IR-002's specs)
+- Notes: final confidence 94%; below 95% only through the environment (host load) and the base-side flaky checks (FU-002, FU-003)

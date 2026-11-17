@@ -1,0 +1,680 @@
+{
+  "startedAt": "2026-11-17T12:54:14.940Z",
+  "result": "Pass",
+  "node": "v22.23.1",
+  "servers": {
+    "alpha": {
+      "port": 51655,
+      "nodeId": "srv_z44SUjGdnYdR1IHp1OFEEbDWOqRCsXG4",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    },
+    "beta": {
+      "port": 51656,
+      "nodeId": "srv_HnkLNpv9pxvUFcOci6BWshcUM07niXkt",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    }
+  },
+  "runs": {
+    "ptm": "project_task_manager_9e42f6b4a760441d9ea9ec5e5b913978",
+    "writerRun": "release_notes_writer_3d5432b5d3084b2880ebca88b7300248",
+    "squadRun": "docs_review_team_b5c74837292a454ba3d37c221c3e3622",
+    "reviewer": "release_notes_writer_a8ab453327ec4018b26798fc69e3d0f5",
+    "memberDelegated": "fact_checker_319887cd55404290a1c12ab6d8eef5b3",
+    "remoteAgentRun": "publisher_52a6426f955e4b4ea9abfab1af59b670",
+    "remoteTeamRun": "studio_team_5e86342cded14cada1402a6fb51c54d3",
+    "plain": [
+      "fact_checker_a479ce34d6e14c5d8e49c800c50be9ad",
+      "fact_checker_195220a7a59841d988f3b2d80de00c53",
+      "fact_checker_28ce5049e85c4f749622fbe9b76053dc"
+    ],
+    "org": "delivery_org_e66da06e897d4eae80bba731f9a1eec0",
+    "orgPlanner": "release_notes_writer_d43dc319ac3d426c8ee42c0c073491a7",
+    "reviewOrg": "review_org_e46fe3d9211841b39e184f7fed1a8ed2",
+    "reviewOrgCoordinator": {
+      "address": "/squad/reviewer",
+      "agentRunId": "release_notes_writer_a010272543b745849a2c2304bd9de0c0",
+      "teamRunId": null
+    },
+    "delivery": "delivery_team_f70260f552474bd796c0635b7e20508e",
+    "deliveryLead": "fact_checker_3320246dada043e88ef6137405237f60",
+    "deliveryMate": "release_notes_writer_f5df863ec3ff40d7b9849a2bf9650810",
+    "leadDelegated": "changelog_helper_b1d586ce5c0f43699ecd42141ab2f934",
+    "approver": "approver_208854b95d2140289158a0dec48a2d98",
+    "taskA": "launch-4c3b39-1",
+    "taskB": "launch-4c3b39-2"
+  },
+  "cases": {
+    "MSP-59": {
+      "360": {
+        "width": 360,
+        "height": 780,
+        "phone": true,
+        "textSize": "standard",
+        "fontSize": 17,
+        "lineHeight": 25.5,
+        "bodies": [
+          {
+            "left": 12,
+            "width": 336,
+            "speaker": "user"
+          },
+          {
+            "left": 12,
+            "width": 336,
+            "speaker": "agent"
+          },
+          {
+            "left": 12,
+            "width": 336,
+            "speaker": "user"
+          },
+          {
+            "left": 12,
+            "width": 336,
+            "speaker": "agent"
+          },
+          {
+            "left": 12,
+            "width": 336,
+            "speaker": "user"
+          },
+          {
+            "left": 12,
+            "width": 336,
+            "speaker": "agent"
+          }
+        ],
+        "speakers": [
+          "You",
+          "lead",
+          "You",
+          "lead",
+          "You",
+          "lead"
+        ],
+        "avatars": [
+          22,
+          22,
+          22,
+          22,
+          22,
+          22
+        ],
+        "composerGap": 8
+      },
+      "412": {
+        "width": 412,
+        "height": 915,
+        "phone": true,
+        "textSize": "standard",
+        "fontSize": 17,
+        "lineHeight": 25.5,
+        "bodies": [
+          {
+            "left": 12,
+            "width": 388,
+            "speaker": "user"
+          },
+          {
+            "left": 12,
+            "width": 388,
+            "speaker": "agent"
+          },
+          {
+            "left": 12,
+            "width": 388,
+            "speaker": "user"
+          },
+          {
+            "left": 12,
+            "width": 388,
+            "speaker": "agent"
+          },
+          {
+            "left": 12,
+            "width": 388,
+            "speaker": "user"
+          },
+          {
+            "left": 12,
+            "width": 388,
+            "speaker": "agent"
+          }
+        ],
+        "speakers": [
+          "You",
+          "lead",
+          "You",
+          "lead",
+          "You",
+          "lead"
+        ],
+        "avatars": [
+          22,
+          22,
+          22,
+          22,
+          22,
+          22
+        ],
+        "composerGap": 8
+      },
+      "result": "Pass",
+      "seconds": 5.1,
+      "interAgent": {
+        "arrow": {
+          "visible": true,
+          "box": {
+            "x": 376,
+            "y": 102,
+            "width": 20,
+            "height": 20
+          }
+        },
+        "typeLineBefore": 0,
+        "typeLine": "agent_message",
+        "messageBox": {
+          "x": 12,
+          "y": 100,
+          "width": 388,
+          "height": 72.0625
+        }
+      }
+    },
+    "MSP-60": {
+      "result": "Pass",
+      "seconds": 2.9,
+      "sizes": {
+        "small": 15,
+        "large": 19,
+        "largest": 21
+      },
+      "afterReload": {
+        "fontSize": 21,
+        "textSize": "largest"
+      },
+      "pressed": "true",
+      "standard": 17
+    },
+    "MSP-61": {
+      "result": "Pass",
+      "seconds": 2.9,
+      "before": {
+        "runtimeKind": "antigravity_cli",
+        "model": "gemini-3.8-flash-low"
+      },
+      "opened": {
+        "open": true,
+        "subject": "leadStopped · in Delivery Team",
+        "status": "Stopped · in Delivery Team",
+        "runtime": "Antigravity CLI",
+        "model": "Gemini test",
+        "runtimeDisabled": false,
+        "saveDisabled": true,
+        "stop": null,
+        "error": null
+      },
+      "runtimeChanged": {
+        "open": true,
+        "subject": "leadStopped · in Delivery Team",
+        "status": "Stopped · in Delivery Team",
+        "runtime": "Grok Build",
+        "model": "Choose",
+        "runtimeDisabled": false,
+        "saveDisabled": true,
+        "stop": null,
+        "error": null
+      },
+      "modelChosen": {
+        "open": true,
+        "subject": "leadStopped · in Delivery Team",
+        "status": "Stopped · in Delivery Team",
+        "runtime": "Grok Build",
+        "model": "Grok 4.7",
+        "runtimeDisabled": false,
+        "saveDisabled": false,
+        "stop": null,
+        "error": null
+      },
+      "after": {
+        "runtimeKind": "grok_build",
+        "model": "grok-4.7"
+      },
+      "reopened": {
+        "open": true,
+        "subject": "leadStopped · in Delivery Team",
+        "status": "Stopped · in Delivery Team",
+        "runtime": "Grok Build",
+        "model": "Grok 4.7",
+        "runtimeDisabled": false,
+        "saveDisabled": true,
+        "stop": null,
+        "error": null
+      },
+      "continued": {
+        "active": true,
+        "lead": {
+          "runtimeKind": "grok_build",
+          "model": "grok-4.7"
+        }
+      }
+    },
+    "MSP-62": {
+      "result": "Pass",
+      "seconds": 6,
+      "before": "antigravity_cli",
+      "refused": {
+        "open": true,
+        "subject": "Fact CheckerStopped",
+        "status": "Stopped",
+        "runtime": "Grok Build",
+        "model": "Grok 4.7",
+        "runtimeDisabled": true,
+        "saveDisabled": true,
+        "stop": {
+          "label": "Stop run",
+          "title": "Stop run",
+          "text": ""
+        },
+        "error": "This run became active through another connected workflow. Stop it, reopen Settings, and try again."
+      },
+      "after": "antigravity_cli"
+    },
+    "MSP-63": {
+      "result": "Pass",
+      "seconds": 3.5,
+      "runId": "fact_checker_c42e37cd09ff4d73a2b25cf738cb4452",
+      "live": {
+        "open": true,
+        "subject": "Fact CheckerIdle",
+        "status": "Idle",
+        "runtime": "Antigravity CLI",
+        "model": "Gemini test",
+        "runtimeDisabled": true,
+        "saveDisabled": true,
+        "stop": {
+          "label": "Stop run",
+          "title": "Stop run",
+          "text": ""
+        },
+        "error": null
+      },
+      "stopped": {
+        "open": true,
+        "subject": "Fact CheckerStopped",
+        "status": "Stopped",
+        "runtime": "Antigravity CLI",
+        "model": "Gemini test",
+        "runtimeDisabled": false,
+        "saveDisabled": true,
+        "stop": null,
+        "error": null
+      },
+      "nodeAfterStop": false,
+      "saved": {
+        "left": true,
+        "runtimeKind": "grok_build"
+      },
+      "afterStop": [
+        "TerminateAgentRun sent+34 done+111 200",
+        "GetAgentRunResumeConfig sent+115 done+119 200",
+        "ListWorkspaceRunHistory sent+118 done+123 200",
+        "ListCollaborationRootHistory sent+118 done+125 200",
+        "AgentRunModelOptions sent+123 done+213 200",
+        "RuntimeCurrentModelDescriptors sent+318 done+477 200",
+        "GetProviderModelCatalogSnapshots sent+351 done+493 200",
+        "UpdateStoppedAgentRunSelection sent+418 done+581 200"
+      ],
+      "consoleLines": []
+    },
+    "MSP-64": {
+      "result": "Pass",
+      "seconds": 3,
+      "runId": "fact_checker_7ccd9e8f20374c32ba4e1ceda93d1114",
+      "live": {
+        "open": true,
+        "subject": "Fact CheckerRunning",
+        "status": "Running",
+        "runtime": "Antigravity CLI",
+        "model": "Gemini test",
+        "runtimeDisabled": true,
+        "saveDisabled": true,
+        "stop": {
+          "label": "Stop run",
+          "title": "Stop run",
+          "text": ""
+        },
+        "error": null
+      },
+      "stopped": {
+        "open": true,
+        "subject": "Fact CheckerStopped",
+        "status": "Stopped",
+        "runtime": "Antigravity CLI",
+        "model": "Gemini test",
+        "runtimeDisabled": false,
+        "saveDisabled": true,
+        "stop": null,
+        "error": null
+      },
+      "nodeAfterStop": false,
+      "saved": null,
+      "afterStop": [
+        "TerminateAgentRun sent+34 done+125 200",
+        "GetAgentRunResumeConfig sent+129 done+133 200",
+        "ListWorkspaceRunHistory sent+133 done+139 200",
+        "ListCollaborationRootHistory sent+133 done+142 200",
+        "AgentRunModelOptions sent+136 done+228 200"
+      ],
+      "consoleLines": []
+    },
+    "MSP-65": {
+      "result": "Pass",
+      "seconds": 3.1,
+      "orgRunId": "delivery_org_f1944cab7a934f60b46191400d793001",
+      "live": {
+        "open": true,
+        "subject": "plannerRunning · in Delivery Org",
+        "status": "Running · in Delivery Org",
+        "runtime": "Antigravity CLI",
+        "model": "Gemini test",
+        "runtimeDisabled": true,
+        "saveDisabled": true,
+        "stop": {
+          "label": "Stop run",
+          "title": "Stop run",
+          "text": ""
+        },
+        "error": null
+      },
+      "stopped": {
+        "open": true,
+        "subject": "plannerStopped · in Delivery Org",
+        "status": "Stopped · in Delivery Org",
+        "runtime": "Antigravity CLI",
+        "model": "Gemini test",
+        "runtimeDisabled": false,
+        "saveDisabled": true,
+        "stop": null,
+        "error": null
+      },
+      "url": "/mobile/?rootSubjectKind=agent_org&definitionId=delivery-org&orgRunId=delivery_org_f1944cab7a934f60b46191400d793001&mode=active&memberAddress=/planner&screen=settings",
+      "nodeAfterStop": false
+    },
+    "MSP-39": {
+      "result": "Pass",
+      "seconds": 11,
+      "results": {
+        "inPlace": {
+          "shownMs": {
+            "desktop": 545,
+            "phone-live": 545
+          },
+          "version": "A-VERSION-2",
+          "reads": {
+            "desktop": 1,
+            "phone": 1
+          }
+        },
+        "atomicSameFolder": {
+          "shownMs": {
+            "desktop": 535,
+            "phone-live": 534
+          },
+          "version": "A-VERSION-3",
+          "reads": {
+            "desktop": 1,
+            "phone": 1
+          }
+        },
+        "atomicOtherFolder": {
+          "shownMs": {
+            "desktop": 541,
+            "phone-live": 540
+          },
+          "version": "A-VERSION-4",
+          "reads": {
+            "desktop": 1,
+            "phone": 1
+          }
+        }
+      },
+      "folderReadsOfLive452": 0
+    },
+    "MSP-40": {
+      "result": "Pass",
+      "seconds": 8.8,
+      "results": {
+        "image": {
+          "shownMs": {
+            "desktop": 1036,
+            "phone-live": 490
+          },
+          "desktop": {
+            "image": [
+              80,
+              30
+            ],
+            "pdfRatio": null
+          },
+          "phone": {
+            "image": [
+              80,
+              30
+            ],
+            "pdfRatio": null
+          },
+          "contentReads": {
+            "desktop": 1,
+            "phone": 1
+          }
+        },
+        "pdf": {
+          "shownMs": {
+            "desktop": 817,
+            "phone-live": 815
+          },
+          "desktop": {
+            "image": null,
+            "pdfRatio": 4.1
+          },
+          "phone": {
+            "image": null,
+            "pdfRatio": 4
+          },
+          "contentReads": {
+            "desktop": 1,
+            "phone": 1
+          }
+        },
+        "rootImage": {
+          "shownMs": {
+            "desktop": 552,
+            "phone-live": 552
+          },
+          "desktop": {
+            "image": [
+              60,
+              20
+            ],
+            "pdfRatio": null
+          },
+          "phone": {
+            "image": [
+              60,
+              20
+            ],
+            "pdfRatio": null
+          },
+          "contentReads": {
+            "desktop": 1,
+            "phone": 1
+          }
+        }
+      },
+      "folderReadsOfLive452": 0
+    },
+    "MSP-41": {
+      "result": "Pass",
+      "seconds": 13,
+      "editKeptAfterRewrite": true,
+      "readsAfterRewrite": 1,
+      "writes": [
+        "live-452/notes/edit.md"
+      ],
+      "readsAfterSave": 1,
+      "savedToDisk": true,
+      "editorAfterRewrite": "# Edit EDIT-VERSION-1 UNSAVED-452"
+    },
+    "MSP-42": {
+      "result": "Pass",
+      "seconds": 18,
+      "bulk": {
+        "files": 20,
+        "reads": {
+          "desktop": 0,
+          "phone-live": 0
+        },
+        "reportedPaths": {
+          "desktop": 20,
+          "phone-live": 20
+        }
+      },
+      "burst": {
+        "files": 200,
+        "stream": {
+          "desktop": {
+            "frames": 2,
+            "bytes": 20106,
+            "modifyEntries": 400,
+            "uniquePaths": 200,
+            "spreadMs": 1334
+          },
+          "phone-live": {
+            "frames": 2,
+            "bytes": 20106,
+            "modifyEntries": 400,
+            "uniquePaths": 200,
+            "spreadMs": 1334
+          }
+        },
+        "reads": {
+          "desktop": 0,
+          "phone-live": 0
+        }
+      },
+      "sampleFrame": "{\"type\":\"FILE_SYSTEM_CHANGE\",\"payload\":{\"changes\":[{\"type\":\"modify\",\"path\":\"live-452/bulk/b00.md\"},{\"type\":\"modify\",\"path\":\"live-452/bulk/b02.md\"},{\"type\":\"modify\",\"path\":\"live-452/bulk/b01.md\"},{\"type\":\"modify\",\"path\":\"live-452/bulk/b04.md\"},{\"type\":\"modify\",\"path\":\"live-452/bulk/b05.md\"},{\"type\":\"modify\",\"path\":\"live-452/bulk/b03.md\"},{\"type\":\"modify\",\"path\":\"live-452/bulk/b09.md\"},{\"type\":\"modify\",\"path\":\"live-452/bulk/b06.md\"},{\"type\":\"modify\",\"path\":\"live-452/bulk/b07.md\"},{\"type\":\"modify\",\"path\":\"live-452/bulk/b08.md\"},{\"type\":\"modify\",\"path\":\"live-452/bulk/b11.md\"},{\"type\":\"modify\",\"path\":\"live-452/bulk/b10.md\"},{\"type\":\"modify\",\"path\":\"live-452/bulk/b12.md\"},{\"type\":\"modify\",\"path\":\"live-452/bulk/b16.md\"},{\"type\":\"modify\",\"path\":\"live-452/bulk/b18.md\"},{\"type\":\"modify\",\"path\":\"live-452/bulk/b17.md\"},{\"type\":\"modify\",\"path\":\"live-452/bulk/b19.md\"},{\"type\":\"modify\",\"path\":\"live-452/bulk/b13.md\"},{\"type\":\"modify\",\"path\":\"live-452/bulk/b15.md\"},{\"type\":\"modify\",\"path\":\"live-452/bulk/b14.md\"}]}}"
+    }
+  },
+  "browserErrors": [
+    {
+      "case": "live-refresh-setup",
+      "line": "phone-live console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "live-refresh-setup",
+      "line": "phone-live console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "live-refresh-setup",
+      "line": "phone-live console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "live-refresh-setup",
+      "line": "phone-live console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-39",
+      "line": "phone-live console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-40",
+      "line": "phone-live console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-40",
+      "line": "phone-live console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-40",
+      "line": "phone-live console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-40",
+      "line": "phone-live console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-40",
+      "line": "phone-live console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-40",
+      "line": "phone-live console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    }
+  ],
+  "failedRequests": [
+    {
+      "case": "MSP-60",
+      "label": "phone",
+      "url": "https://api.iconify.design/heroicons.json?icons=bolt-20-solid%2Cchat-bubble-left-20-solid%2Ccog-6-tooth-20-solid%2Cdocument-text-20-solid%2Cfolder-20-solid",
+      "error": "net::ERR_ABORTED"
+    }
+  ],
+  "network": {},
+  "cleanup": {
+    "frontendExited": true,
+    "serversLeft": 0,
+    "rootRemoved": true
+  },
+  "error": null,
+  "liveFileRefresh": {
+    "run": "fact_checker_938db61e03e04ef1b25d7ddce551f433"
+  },
+  "summary": {
+    "cases": {
+      "MSP-59": "Pass",
+      "MSP-60": "Pass",
+      "MSP-61": "Pass",
+      "MSP-62": "Pass",
+      "MSP-63": "Pass",
+      "MSP-64": "Pass",
+      "MSP-65": "Pass",
+      "MSP-39": "Pass",
+      "MSP-40": "Pass",
+      "MSP-41": "Pass",
+      "MSP-42": "Pass"
+    },
+    "unknownBrowserErrors": 0
+  },
+  "finishedAt": "2026-11-17T12:57:48.059Z"
+}
