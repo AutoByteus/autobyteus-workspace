@@ -23,7 +23,7 @@ All paths below are in `/Users/normy/autobyteus_org/autobyteus-worktrees/backgro
 - Current implementation revision ID: `IR-004` (IR-003 baseline)
 - Related solution revision IDs: `SR-005`, `SR-006`
 - Related architecture-review revision IDs: `ARCH-REV-004` (Fail, revised), `ARCH-REV-005` (Pass)
-- Related code-review revision IDs: `CRR-005` (Fail: CR-002, Local Fix; `code-review-report.md` "Latest Round: Part 2")
+- Related code-review revision IDs: `CRR-005` (Fail: CR-002, Local Fix; `code-review-report.md` "Latest Round: Part 2"), `CRR-006` (Pass, round 5: CR-002 resolved; sent on to API/E2E by the code reviewer)
 - Related API/E2E revision IDs: `N/A` for part 2
 - Related delivery revision IDs: `N/A` for part 2
 - Triggering finding IDs: `CR-002`
