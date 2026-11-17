@@ -179,6 +179,18 @@ delegated run, …) are defined in the
 - **Work Journal:** a run's readable Markdown record, rendered from its raw
   traces by the journal service; one file per raw-trace segment
   (`work_journal/`).
+- **Episodic catalog** (of an agent): the system-maintained list of an agent
+  definition's runs on this node, oldest first, pointing to their Work
+  Journals: `<memory>/episodic/<encoded agent definition ID>/catalog.md`, the
+  sibling of the agent's semantic folder with the same name, plus the node
+  overview `<memory>/episodic/index.md`. Each entry (a **catalog entry**) gives
+  the run's start and last activity, run ID, its Project Task's title, its
+  workspace and its journal files; never a quote of a conversation. It is not a
+  copy of the journals, and not the retired `episodic.jsonl` rows of old run
+  folders ([agent_episodic_catalog.md](autobyteus-server-ts/docs/modules/agent_episodic_catalog.md)).
+- **Discovered run:** one run folder as run-folder discovery attributes it from
+  its records: names, workspace, runtime, agent definition, recorded start and
+  root (`DiscoveredRun`). Memory search keeps a memory run of it.
 - **Memory search:** finding past work in the memory of every run on this
   node, today through their Work Journals: the tool `search_memory` and the
   Memory page's Search. It points to where the work is; it does not answer from

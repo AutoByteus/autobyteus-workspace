@@ -43,4 +43,7 @@ export const noDelegations = (): DelegationIndex => {
 export const openTaskRecords = () => ({ isOpen: () => true, unreadable: () => null, statusChanged: () => undefined });
 
 /** An archive and delete guard for a test in which no run delegated: it never refuses, it performs the action. */
+/** The episodic catalogs a run service tells about committed deletes, where a test does not look at them. */
+export const noEpisodicCatalog = () => ({ runDeleted: (_root: unknown) => undefined });
+
 export const noWorkGuard = () => ({ guard: <R>(_run: unknown, _action: unknown, perform: () => Promise<R>) => perform() });

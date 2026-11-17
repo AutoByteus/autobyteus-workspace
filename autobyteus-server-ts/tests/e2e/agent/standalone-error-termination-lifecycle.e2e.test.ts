@@ -1,4 +1,4 @@
-import { noDelegations, noWorkGuard } from "../../helpers/no-delegations.js";
+import { noDelegations, noWorkGuard, noEpisodicCatalog } from "../../helpers/no-delegations.js";
 import "reflect-metadata";
 import os from "node:os";
 import path from "node:path";
@@ -205,7 +205,7 @@ const startHarness = async (terminationAccepted: boolean): Promise<Harness & Run
   const statusProjectionService = new AgentRunStatusProjectionService({
     agentRunManager: manager,
   });
-  const historyService = new AgentRunHistoryService(memoryDir, { tree: noDelegations(), workGuard: noWorkGuard(),
+  const historyService = new AgentRunHistoryService(memoryDir, { tree: noDelegations(), workGuard: noWorkGuard(), episodicCatalog: noEpisodicCatalog(),
     catalogService,
     agentRunManager: manager,
     statusProjectionService,

@@ -1,4 +1,4 @@
-import { noDelegations, noWorkGuard } from "../../helpers/no-delegations.js";
+import { noDelegations, noWorkGuard, noEpisodicCatalog } from "../../helpers/no-delegations.js";
 import "reflect-metadata";
 import fs from "node:fs/promises";
 import os from "node:os";
@@ -313,11 +313,11 @@ describe("Archive run history GraphQL e2e", () => {
         }),
       },
     });
-    harness.services.agentRunHistoryService = new AgentRunHistoryService(memoryDir, { tree: noDelegations(), workGuard: noWorkGuard(),
+    harness.services.agentRunHistoryService = new AgentRunHistoryService(memoryDir, { tree: noDelegations(), workGuard: noWorkGuard(), episodicCatalog: noEpisodicCatalog(),
       catalogService: agentCatalogService,
       metadataStore: agentMetadataStore,
     });
-    harness.services.teamRunHistoryService = new TeamRunHistoryService(memoryDir, { tree: noDelegations(), workGuard: noWorkGuard(),
+    harness.services.teamRunHistoryService = new TeamRunHistoryService(memoryDir, { tree: noDelegations(), workGuard: noWorkGuard(), episodicCatalog: noEpisodicCatalog(),
       executionTreeStore: teamExecutionTreeStore,
       catalogService: teamCatalogService,
       teamRunManager: harness.teamRunManager as any,

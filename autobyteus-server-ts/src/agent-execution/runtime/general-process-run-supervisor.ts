@@ -316,6 +316,7 @@ export class GeneralProcessRunSupervisor {
       this.delegatedWorkGuard = delegatedWorkGuard;
       const agentOrgRunService = new AgentOrgRunService({
         workGuard: delegatedWorkGuard,
+        episodicCatalog: input.episodicCatalog,
         manager: agentOrgRunManager,
         teamDefinitions: input.agentTeamDefinitionService,
         agentDefinitions: input.agentDefinitionService,
@@ -353,6 +354,7 @@ export class GeneralProcessRunSupervisor {
       this.teamRunHistoryService = new TeamRunHistoryService(memoryDir, {
         tree: input.delegationIndex,
         workGuard: delegatedWorkGuard,
+        episodicCatalog: input.episodicCatalog,
         catalogService: teamRunHistoryCatalogService,
         teamRunManager: agentTeamRunManager,
       });

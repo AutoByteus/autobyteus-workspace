@@ -1,7 +1,7 @@
 import { testViewStreams } from "../../helpers/view-streams.js";
 import { NOT_DELEGATED } from "../../helpers/run-collaboration.js";
 import { openTaskRecords } from "../../helpers/no-delegations.js";
-import { noDelegations } from "../../helpers/no-delegations.js";
+import { noDelegations, noEpisodicCatalog } from "../../helpers/no-delegations.js";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import type { AgentProviderFactoryBuilder } from "../../../src/agent-execution/providers/agent-provider-factory-builder.js";
 import { AgentRunManager } from "../../../src/agent-execution/services/agent-run-manager.js";
@@ -72,7 +72,7 @@ const createSupervisorInput = () => {
     runPasses: null,
     modelSelectionValidator: { validate: vi.fn(), validateMany: vi.fn(), listOptions: vi.fn() },
     taskRecords: { isOpen: vi.fn(() => true), statusChanged: vi.fn() },
-    delegationIndex: noDelegations(), viewStreams: testViewStreams(),
+    delegationIndex: noDelegations(), viewStreams: testViewStreams(), episodicCatalog: noEpisodicCatalog(),
   };
 };
 
@@ -201,6 +201,7 @@ describe("GeneralProcessRunSupervisor ownership", () => {
       "memoryDir", "contextFilePathEnvironment", "agentDefinitionService", "agentTeamDefinitionService",
       "agentOrgDefinitionService", "definitionAdmissionService", "workspaceManager", "agentProviderFactoryBuilder",
       "agentToolMcpSessionAuthority", "integrationRunAccess", "providerRelayAccess", "runPasses", "modelSelectionValidator",
+      "episodicCatalog",
     ] as const) {
       const invalid = { ...createSupervisorInput() } as Record<string, unknown>;
       delete invalid[property];

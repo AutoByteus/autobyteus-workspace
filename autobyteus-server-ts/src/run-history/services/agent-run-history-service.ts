@@ -1,4 +1,5 @@
 import type { DelegatedWorkGuard } from "./delegated-work-guard.js";
+import type { EpisodicCatalog } from "../../agent-episodic-catalog/services/episodic-catalog.js";
 import { runDisplayNameOf } from "../../agent-collaboration/delegation/collaboration-tree.js";
 import { createAgentRootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import type { DelegationIndex } from "../../agent-collaboration/delegation/delegation-index.js";
@@ -52,6 +53,7 @@ export class AgentRunHistoryService {
   private readonly lastActivity: Pick<RunLastActivityReader, "forAgentRun">;
   private readonly workGuard: Pick<DelegatedWorkGuard, "guard">;
   private readonly names: Pick<DelegationIndex, "currentTaskOf" | "agentsOf">;
+  private readonly episodicCatalog: Pick<EpisodicCatalog, "runDeleted">;
 
   constructor(
     memoryDir: string,
@@ -60,6 +62,8 @@ export class AgentRunHistoryService {
       tree: Pick<DelegationIndex, "subtreeOf" | "currentTaskOf" | "agentsOf">;
       /** Archive and delete wait for the runs it delegated to (REQ-007). */
       workGuard: Pick<DelegatedWorkGuard, "guard">;
+      /** Told after a committed delete, so the run leaves the episodic catalogs. */
+      episodicCatalog: Pick<EpisodicCatalog, "runDeleted">;
       catalogService?: AgentRunHistoryCatalogService;
       metadataStore?: AgentRunMetadataStore;
       statusProjectionService?: AgentRunStatusProjectionService;
@@ -71,6 +75,7 @@ export class AgentRunHistoryService {
     },
   ) {
     this.workGuard = dependencies.workGuard;
+    this.episodicCatalog = dependencies.episodicCatalog;
     this.names = dependencies.tree;
     this.lastActivity = dependencies.lastActivity ?? new RunLastActivityReader({ memoryDir, tree: dependencies.tree });
     this.visibility = dependencies.visibility ?? getInternalAgentVisibility();
@@ -243,7 +248,10 @@ export class AgentRunHistoryService {
   }
 
   async deleteStoredRun(runId: string): Promise<DeleteStoredRunResult> {
-    return this.workGuard.guard({ rootSubjectKind: "agent", rootRunId: runId.trim() }, "deleted", () => this.catalogService.deleteRun(runId));
+    const root = createAgentRootExecutionIdentity(runId.trim());
+    const result = await this.workGuard.guard(root, "deleted", () => this.catalogService.deleteRun(runId));
+    if (result.success) this.episodicCatalog.runDeleted(root);
+    return result;
   }
 }
 

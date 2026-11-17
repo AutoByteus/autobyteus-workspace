@@ -42,12 +42,15 @@ caller.
   - `journalFileVersions(memoryDir)`: each file's name, state and `content_sha256` from the
     manifest, without reading the files;
   - `listJournalFiles(memoryDir)`: each file's size, line count and days (`[YYYY-MM-DD]` lines);
+  - `readJournalSpans(memoryDir)`: each manifest file's path, size and the time range its header
+    states (`YYYY-MM-DD HH:MM` on both sides, UTC; `null` for "no records"), reading at most the
+    first 1 KB of each file;
   - `readJournalFile(memoryDir, file)` and `readJournalLines(memoryDir, file, {start, end})` (at
     most 400 lines, `MAX_JOURNAL_LINES_PER_READ`): only files the manifest names;
   - `journalFilePath(memoryDir, file)`: where the file is, for a file tool.
 - `reading/journal-entry-reader.ts` (`readJournalEntries`) splits a journal file into entries
-  (request, reply, action, notice, note) with line ranges and days. It reads the format; it does
-  not render it.
+  (request, reply, action, notice, note) with line ranges and days; `readJournalHeaderTimeRange`
+  reads the header's time range. It reads the format; it does not render it.
 - Errors reach the caller. Callers never use the store or the renderer directly, and nothing but
   this service reads raw traces to make a journal.
 
@@ -56,6 +59,8 @@ Consumers today:
 - `WorkJournalRunUpdater` (below) keeps every live run's journal current.
 - Memory search ([memory_search.md](memory_search.md)) makes every run's journal current in its
   Journals step, follows `onJournalChanged`, and reads journal files to index and to show snippets.
+- The episodic catalog ([agent_episodic_catalog.md](agent_episodic_catalog.md)) follows
+  `onJournalChanged` and reads `readJournalSpans`; it never calls `ensureCurrent`.
 - The Memory page reads a run's Work Journal through the memory view (`workJournal` window of 300
   lines, `api/graphql/types/work-journal-view.ts`).
 
