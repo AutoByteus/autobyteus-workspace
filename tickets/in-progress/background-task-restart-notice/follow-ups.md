@@ -1,0 +1,5 @@
+# Follow-ups
+
+| ID | Found by (role, document) | What is wrong, where | Evidence | Why it is outside this ticket | Urgent (`Yes`/`No`) | Suggested Task description | Sent (to, date) |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| FU-001 | Implementation engineer, `implementation-handoff.md` IMP-03 | `autobyteus-server-ts/tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts`: `afterEach` awaits `AgentPackageFolderWatcher.close()` (chokidar), which exceeded the 10 s hook timeout in 1 to 4 of 20 cases per run on this machine | `evidence/IMP-03-server-unit-full.log` (cause analysis at its end): three solo runs at `d5e9f350cf` gave 1, 4 and 0 failures; load average 66 to 102 during the runs | The watcher imports none of this ticket's changed files, and the ticket's behavior does not depend on it | No | Find why `AgentPackageFolderWatcher.close()` can take more than 10 s under heavy machine load (chokidar close, a pending catch-up timer or watch re-arm), and make the close bounded or the test robust to it | |
