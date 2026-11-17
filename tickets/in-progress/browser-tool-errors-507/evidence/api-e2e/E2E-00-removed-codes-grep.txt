@@ -1,0 +1,7 @@
+# E2E-00
+# Command: git grep -n -E "browser_session_(not_found|closed)" -- ':!tickets'
+# Commit: baf0439559
+# Environment: worktree browser-tool-errors-507
+# Date: 2026-11-17 07:54
+
+git grep exit code: 1 (1 = no match)

@@ -1,0 +1,26 @@
+# E2E-05 — error codes as the agent receives them (invented tab id, closed tab)
+# Steps: worktree isolated instance iso-49942-c50c (build of baf0439559, code 927079c6cd); same claude_agent_sdk run; message /tmp/ae507/msg-e05.txt sent 07:20:13.849Z
+# Tool path: Claude Agent SDK -> agent-tools MCP -> server browser tool -> bridge client -> desktop bridge -> BrowserTabManager
+# Date: 2026-11-17 (local time below)
+
+## Message
+Validation journey E2E-05. Steps:
+1. screenshot with tab_id pending
+2. open_tab with url http://127.0.0.1:49198/p/e05-closing
+3. close_tab with tab_id from step 2
+4. screenshot with tab_id from step 2
+5. navigate_to with tab_id from step 2, url http://127.0.0.1:49198/p/e05-after-close
+
+## Run trace tool calls/results (tool_error is the text the agent receives)
+08:20:16.190 seq=2 tool_call screenshot args={"tab_id": "pending"}
+08:20:16.225 seq=3 tool_result screenshot TOOL_EXECUTION_FAILED result=null error="{\"error\":{\"code\":\"browser_tab_not_found\",\"message\":\"Browser session 'pending' was not found.\"}}"
+08:20:17.760 seq=4 tool_call open_tab args={"url": "http://127.0.0.1:49198/p/e05-closing"}
+08:20:17.875 seq=5 tool_result open_tab TOOL_EXECUTION_SUCCEEDED result={"tab_id": "32c4e6", "status": "opened", "url": "http://127.0.0.1:49198/p/e05-closing", "title": "e05-closing"} error=null
+08:20:19.382 seq=6 tool_call close_tab args={"tab_id": "32c4e6"}
+08:20:19.436 seq=7 tool_result close_tab TOOL_EXECUTION_SUCCEEDED result={"tab_id": "32c4e6", "status": "closed"} error=null
+08:20:20.970 seq=8 tool_call screenshot args={"tab_id": "32c4e6"}
+08:20:21.039 seq=9 tool_result screenshot TOOL_EXECUTION_FAILED result=null error="{\"error\":{\"code\":\"browser_tab_closed\",\"message\":\"Browser session '32c4e6' has already been closed.\"}}"
+08:20:22.737 seq=10 tool_call navigate_to args={"tab_id": "32c4e6", "url": "http://127.0.0.1:49198/p/e05-after-close"}
+08:20:22.779 seq=11 tool_result navigate_to TOOL_EXECUTION_FAILED result=null error="{\"error\":{\"code\":\"browser_tab_closed\",\"message\":\"Browser session '32c4e6' has already been closed.\"}}"
+
+[exited with code 0]
