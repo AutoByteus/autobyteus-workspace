@@ -11,13 +11,16 @@ import { useStatusVisuals } from '~/composables/useStatusVisuals';
 
 const props = withDefaults(defineProps<{
   status: string;
+  /** Background tasks the agent has running (autobyteus-448 DEC-004). */
+  backgroundTasksRunning?: number;
   variant?: 'default' | 'compact';
 }>(), {
+  backgroundTasksRunning: 0,
   variant: 'default',
 });
 
-const { status, variant } = toRefs(props);
-const { visuals } = useStatusVisuals(status);
+const { status, backgroundTasksRunning, variant } = toRefs(props);
+const { visuals } = useStatusVisuals(status, backgroundTasksRunning);
 
 const containerClasses = computed(() => {
   return variant.value === 'compact'

@@ -111,6 +111,8 @@ export interface SegmentEndPayload {
 export interface AgentStatusPayload {
   recoverableBlock?: CompactionRecoveryBlockDto | null;
   status: 'offline' | 'initializing' | 'idle' | 'running' | 'error';
+  /** Background tasks the agent has running (autobyteus-448). */
+  background_tasks_running: number;
   trigger?: string | null;
   tool_name?: string | null;
   error_message?: string | null;

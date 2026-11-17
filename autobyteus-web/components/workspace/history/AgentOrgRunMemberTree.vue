@@ -18,7 +18,7 @@
       >
         <WorkspaceHierarchyBranches :depth="display.row.depth" :continuing-ancestor-depths="display.continuingAncestorDepths" :has-following-sibling="display.hasFollowingSibling" />
         <span class="ml-2 mr-1 h-3.5 w-3.5 flex-none" aria-hidden="true" />
-        <StatusDot class="mr-1.5" :status="display.row.status" />
+        <StatusDot class="mr-1.5" :status="display.row.status" :background-tasks-running="display.row.backgroundTasksRunning" />
         <span class="mr-1.5 inline-flex h-4 w-4 items-center justify-center rounded-full bg-gray-200 text-[0.5625rem] font-semibold text-gray-600">{{ initials(display.row.address) }}</span>
         <span class="truncate">{{ label(display.row.address) }}</span>
       </button>
@@ -38,7 +38,7 @@
       >
         <WorkspaceHierarchyBranches :depth="display.row.depth" :continuing-ancestor-depths="display.continuingAncestorDepths" :has-following-sibling="display.hasFollowingSibling" />
         <Icon icon="heroicons:chevron-down-20-solid" class="ml-2 mr-1 h-3.5 w-3.5 text-gray-400" :class="isTeamExpanded(display.row.address) ? '' : '-rotate-90'" />
-        <TeamAggregateStatusDot class="mr-1.5" :status="display.row.status" />
+        <TeamAggregateStatusDot class="mr-1.5" :status="display.row.status" :background-tasks-running="display.row.backgroundTasksRunning" />
         <Icon icon="heroicons:user-group-20-solid" class="mr-1.5 h-4 w-4 text-gray-500" />
         <span class="truncate font-semibold">{{ label(display.row.address) }}</span>
       </button>
@@ -80,7 +80,8 @@ import type { RunHistoryTransientExecutionRow } from '~/stores/runHistoryTypes'
 import { useRunTreeStore } from '~/stores/runTreeStore'
 import { useRunStatusStore } from '~/stores/runStatusStore'
 import { isTeamRow, runTreeDisplayRows } from '~/utils/runTree/runTreeDisplayRows'
-import { resolveTeamStatus } from '~/utils/workspaceTeamAggregateStatus'
+import { resolveTeamStatus, teamActivityOf } from '~/utils/workspaceTeamAggregateStatus'
+import { agentActivityLabel } from '~/utils/agentActivityPresentation'
 
 const props = defineProps<{
   run: AgentOrgRunHistoryItem
@@ -101,8 +102,8 @@ const label = memberDisplayName
 const initials = (address: string) => label(address).split(/\s+/).slice(0, 2).map((part) => part[0]?.toUpperCase()).join('')
 const agentStatusLabelKey = (status: AgentStatus) => `workspace.history.hierarchy.status.${status}`
 const teamStatusLabelKey = (status: TeamStatus) => `workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.team_status_${status}`
-const agentRowLabel = (row: OrgAgentRow) => `${label(row.address)}, ${t(agentStatusLabelKey(row.status))}, ${row.address}, ${row.agentRunId}`
-const teamRowLabel = (row: OrgTeamRow) => `${label(row.address)}. ${t(teamStatusLabelKey(row.status))}`
+const agentRowLabel = (row: OrgAgentRow) => `${label(row.address)}, ${agentActivityLabel(row, t, () => t(agentStatusLabelKey(row.status)))}, ${row.address}, ${row.agentRunId}`
+const teamRowLabel = (row: OrgTeamRow) => `${label(row.address)}. ${agentActivityLabel(teamActivityOf(row.status, row.backgroundTasksRunning), t, () => t(teamStatusLabelKey(row.status)))}`
 const rowStyle = (depth: number) => ({ paddingLeft: `calc((${depth} + 1) * 0.875rem)` })
 
 // The Org run's tree, built on the server (autobyteus-461 SR-084): its open view's stream feeds it, else it is read while
@@ -112,8 +113,9 @@ const runStatus = useRunStatusStore()
 const treeRef = computed(() => ({ kind: 'agent_org' as const, runId: props.run.rootRunId }))
 watch(() => props.run.rootRunId, (_id, _previous, onCleanup) => onCleanup(trees.hold(treeRef.value)), { immediate: true })
 
-type OrgAgentRow = Readonly<{ key: string; kind: 'agent'; address: string; agentRunId: string; status: AgentStatus; depth: number }>
-type OrgTeamRow = Readonly<{ key: string; kind: 'team'; address: string; teamRunId: string; status: TeamStatus; depth: number }>
+/** `backgroundTasksRunning`: the agent's own, or the mounted team's agents' sum (autobyteus-448). */
+type OrgAgentRow = Readonly<{ key: string; kind: 'agent'; address: string; agentRunId: string; status: AgentStatus; backgroundTasksRunning: number; depth: number }>
+type OrgTeamRow = Readonly<{ key: string; kind: 'team'; address: string; teamRunId: string; status: TeamStatus; backgroundTasksRunning: number; depth: number }>
 type OrgDisplayRow = Readonly<{
   row: OrgAgentRow | OrgTeamRow | Readonly<{ key: string; kind: 'delegated'; address: string }>
   tree: RunTreeRowDto
@@ -138,12 +140,14 @@ const rows = computed<OrgDisplayRow[]>(() => runTreeDisplayRows({
   if (tree.kind === 'org_team') {
     // An Org's mounted team is one of its own parts: its status is its members', as the Org's own stream reports them.
     const status = resolveTeamStatus(tree.statusIds.map(statusOf), true)
-    return { ...base, row: { key: tree.key, kind: 'team', address: tree.address ?? '', teamRunId: tree.key.slice('org_team:'.length), status, depth: display.row.depth },
+    return { ...base, row: { key: tree.key, kind: 'team', address: tree.address ?? '', teamRunId: tree.key.slice('org_team:'.length), status,
+      backgroundTasksRunning: runStatus.treeRowBackgroundTasksOf(tree, tree.key), depth: display.row.depth },
       transient: null, teamStatus: null }
   }
   if (isOwn(tree)) {
     return { ...base, row: { key: tree.key, kind: 'agent', address: tree.address ?? '', agentRunId: tree.openTarget!.agentRunId,
-      status: statusOf(tree.statusIds[0]!), depth: display.row.depth }, transient: null, teamStatus: null }
+      status: statusOf(tree.statusIds[0]!), backgroundTasksRunning: runStatus.backgroundTasksOf(tree.statusIds[0]!), depth: display.row.depth },
+      transient: null, teamStatus: null }
   }
   return { ...base, row: { key: tree.key, kind: 'delegated', address: tree.address ?? '' }, transient: display.row, teamStatus: display.teamStatus }
 }))

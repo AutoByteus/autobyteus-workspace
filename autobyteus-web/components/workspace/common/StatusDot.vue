@@ -46,16 +46,19 @@ const transientRingDots = [
 
 const props = withDefaults(defineProps<{
   status?: AgentStatus | string | null;
+  /** Background tasks the agent has running (autobyteus-448): an idle agent with some shows the active dot. */
+  backgroundTasksRunning?: number;
   variant?: WorkspaceStatusDotVariant;
 }>(), {
   status: null,
+  backgroundTasksRunning: 0,
   variant: 'solid',
 });
 
 const dotClass = computed(() => {
   if (props.variant === 'transient') {
-    return agentTransientStatusDotClass(props.status);
+    return agentTransientStatusDotClass(props.status, props.backgroundTasksRunning);
   }
-  return agentStatusDotClass(props.status);
+  return agentStatusDotClass(props.status, props.backgroundTasksRunning);
 });
 </script>

@@ -68,11 +68,13 @@
           class="mr-1.5"
           data-test="workspace-transient-status-dot"
           :status="row.currentStatus"
+          :background-tasks-running="backgroundTasksRunning"
         />
         <TeamAggregateStatusDot
           v-else
           class="mr-1.5"
           :status="teamStatus"
+          :background-tasks-running="backgroundTasksRunning"
         />
       </span>
       <!-- autobyteus-278: a run another node runs carries its node, left of its icon and name. -->
@@ -186,7 +188,8 @@ import type { TaskWorkerTask } from '~/types/project';
 import { taskWorkerTaskLabel } from '~/utils/projects/taskText';
 import { useRunStatusStore } from '~/stores/runStatusStore';
 import { useRunHistoryStore } from '~/stores/runHistoryStore';
-import type { TeamStatus } from '~/utils/workspaceTeamAggregateStatus';
+import { teamActivityOf, type TeamStatus } from '~/utils/workspaceTeamAggregateStatus';
+import { agentActivityLabel } from '~/utils/agentActivityPresentation';
 
 const props = withDefaults(defineProps<{
   row: RunHistoryTransientExecutionRow;
@@ -244,7 +247,16 @@ const retryRemote = (): void => {
 const status = computed(() => props.row.memberKind === 'agent_team'
   ? props.teamStatus
   : props.row.currentStatus || AgentStatus.Offline);
-const statusLabel = computed(() => t(`workspace.history.hierarchy.status.${status.value}`));
+/** Its run's running background tasks (autobyteus-448): an agent's own, a team run's sum, as its node answers them. */
+const backgroundTasksRunning = computed(() => props.row.memberKind === 'agent_team'
+  ? (props.row.teamRunIdForNode ? runStatus.runStateOf({ kind: 'agent_team', runId: props.row.teamRunIdForNode })?.backgroundTasksRunning ?? 0 : 0)
+  : (props.row.agentRunId ? runStatus.backgroundTasksOf(props.row.agentRunId) : 0));
+const statusLabel = computed(() => agentActivityLabel(
+  props.row.memberKind === 'agent_team'
+    ? teamActivityOf(props.teamStatus, backgroundTasksRunning.value)
+    : { status: status.value, backgroundTasksRunning: backgroundTasksRunning.value },
+  t, () => t(`workspace.history.hierarchy.status.${status.value}`),
+));
 const startedByLabel = computed(() => props.row.delegatedBy
   ? t('workspace.members.started_by', { name: props.row.delegatedBy })
   : '');

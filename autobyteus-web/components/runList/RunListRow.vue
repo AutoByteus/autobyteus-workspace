@@ -35,8 +35,8 @@
         @click="open"
       >
         <span class="inline-flex h-5 flex-shrink-0 items-center">
-          <StatusDot v-if="entry.kind === 'agent'" class="mr-1.5" :status="entry.run.currentStatus" />
-          <TeamAggregateStatusDot v-else-if="entry.kind === 'team'" class="mr-1.5" :status="teamRunStatus(entry.team)" />
+          <StatusDot v-if="entry.kind === 'agent'" class="mr-1.5" :status="entry.run.currentStatus" :background-tasks-running="agentRunBackgroundTasks(entry.runId)" />
+          <TeamAggregateStatusDot v-else-if="entry.kind === 'team'" class="mr-1.5" :status="teamRunStatus(entry.team)" :background-tasks-running="teamRunBackgroundTasks(entry.team)" />
           <span v-else class="mr-1.5 h-2 w-2 rounded-full" :class="entry.isActive ? 'bg-emerald-500' : 'bg-gray-300'" :aria-label="t(entry.isActive ? 'workspace.agentOrg.history.running' : 'workspace.agentOrg.history.stopped')" />
         </span>
         <span v-if="entry.kind === 'agent'" class="mr-1.5 inline-flex h-5 w-5 flex-shrink-0 items-center justify-center overflow-hidden rounded-full bg-gray-200 text-[0.625rem] font-semibold text-gray-600" aria-hidden="true">
@@ -139,7 +139,7 @@ import AgentRunTaskRows from '~/components/workspace/history/AgentRunTaskRows.vu
 import WorkspaceTeamExecutionTree from '~/components/workspace/history/WorkspaceTeamExecutionTree.vue'
 import AgentOrgRunMemberTree from '~/components/workspace/history/AgentOrgRunMemberTree.vue'
 import RunListRowActions from '~/components/runList/RunListRowActions.vue'
-import { teamRunStatus } from '~/components/workspace/history/workspaceHistoryTeamBranchStatus'
+import { agentRunBackgroundTasks, teamRunBackgroundTasks, teamRunStatus } from '~/components/workspace/history/workspaceHistoryTeamBranchStatus'
 import { formatRunLabel, formatTeamRunLabel } from '~/components/workspace/history/workspaceHistoryRunLabels'
 import type { WorkspaceHistoryAvatarBindings } from '~/components/workspace/history/workspaceHistorySectionContracts'
 import type { RunListSectionActions, RunListSectionState } from '~/components/runList/runListSectionContracts'

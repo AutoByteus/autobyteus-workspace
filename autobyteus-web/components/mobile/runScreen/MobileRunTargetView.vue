@@ -52,22 +52,26 @@ import type { MobileView } from '~/composables/mobile/useMobileNavigation';
 import { useNodeDesktopAvailability } from '~/composables/useNodeDesktopAvailability';
 import { useTargetConversation } from '~/composables/workspace/useTargetConversation';
 import type { ActiveAgentWorkspaceTarget } from '~/types/workspace/activeAgentWorkspaceTarget';
-import { mobileRunStatusLabel } from '~/utils/mobile/mobileRunStatusLabel';
+import { mobileRunActivityLabel } from '~/utils/mobile/mobileRunStatusLabel';
+import { useLocalization } from '~/composables/useLocalization';
 import { agentStatusDotClass } from '~/utils/workspaceStatusDotPresentation';
 
 const props = defineProps<{ target: ActiveAgentWorkspaceTarget; parentName: string | null }>();
 defineEmits<{ (event: 'back'): void; (event: 'open-view', view: MobileView): void }>();
 
 const { displayName, readOnly, senderNameByAgentRunId, remoteView } = useTargetConversation(() => props.target);
+const { t } = useLocalization();
 const remote = remoteView.remote;
 const unreachable = remoteView.unreachable;
 
 const status = computed(() => (unreachable.value ? 'error' : props.target.context.state.currentStatus));
-const dotClass = computed(() => agentStatusDotClass(status.value));
+/** Background tasks running (autobyteus-448); an unreachable run shows its error dot only. */
+const backgroundTasksRunning = computed(() => (unreachable.value ? 0 : props.target.context.state.backgroundTasksRunning));
+const dotClass = computed(() => agentStatusDotClass(status.value, backgroundTasksRunning.value));
 /** "Idle · in Software Engineering Team"; a top-level run has no "in"; a node that does not answer: "Not reachable". */
 const subtitle = computed(() => {
   if (unreachable.value) return 'Not reachable';
-  const state = mobileRunStatusLabel(props.target.context.state.currentStatus);
+  const state = mobileRunActivityLabel({ status: props.target.context.state.currentStatus, backgroundTasksRunning: backgroundTasksRunning.value }, t);
   return props.parentName ? `${state} · in ${props.parentName}` : state;
 });
 

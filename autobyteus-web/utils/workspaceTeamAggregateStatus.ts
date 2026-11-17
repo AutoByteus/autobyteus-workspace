@@ -1,5 +1,6 @@
 import { foldTeamAggregateStatus as foldSharedTeamAggregateStatus, type TeamStatusAuthority } from '@autobyteus/collaboration-stream-contracts';
 import { AgentStatus } from '~/types/agent/AgentStatus';
+import type { AgentActivity } from '~/utils/agentActivityPresentation';
 
 export type { TeamStatusAuthority };
 
@@ -27,3 +28,13 @@ export const resolveTeamStatus = (
   const highest = foldSharedTeamAggregateStatus(agentStatuses, 'live');
   return (highest === 'initializing' ? AgentStatus.Running : highest) as TeamStatus;
 };
+
+/**
+ * A Team row's activity (autobyteus-448 DEC-004): busy > background > error > idle > offline. A Team that is not busy
+ * and whose own agents have background tasks running (their sum) shows them, even when one of its agents failed.
+ */
+export const teamActivityOf = (status: TeamStatus, backgroundTasksRunning: number): AgentActivity => (
+  status !== AgentStatus.Running && status !== AgentStatus.Offline && backgroundTasksRunning > 0
+    ? { status: AgentStatus.Idle, backgroundTasksRunning }
+    : { status, backgroundTasksRunning: 0 }
+);

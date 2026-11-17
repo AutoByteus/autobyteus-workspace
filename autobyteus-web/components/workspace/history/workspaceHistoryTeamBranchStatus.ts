@@ -44,3 +44,14 @@ export const teamRunStatus = (team: Pick<TeamTreeNode, 'teamRunId'>): TeamStatus
 /** The status of a Team group row: the highest status among its runs. */
 export const teamDefinitionGroupStatus = (runs: readonly TeamTreeNode[]): TeamStatus =>
   resolveTeamStatus(runs.map(teamRunStatus), true);
+
+/** A Team run's running background tasks: its own agents' sum, as its root's node answers it (autobyteus-448). */
+export const teamRunBackgroundTasks = (team: Pick<TeamTreeNode, 'teamRunId'>): number =>
+  useRunStatusStore().runStateOf({ kind: 'agent_team', runId: team.teamRunId })?.backgroundTasksRunning ?? 0;
+
+/** A Team group row's running background tasks: the sum over its runs. */
+export const teamDefinitionGroupBackgroundTasks = (runs: readonly TeamTreeNode[]): number =>
+  runs.reduce((sum, team) => sum + teamRunBackgroundTasks(team), 0);
+
+/** An agent run's running background tasks, as its node answers them (autobyteus-448). */
+export const agentRunBackgroundTasks = (agentRunId: string): number => useRunStatusStore().backgroundTasksOf(agentRunId);
