@@ -284,7 +284,7 @@ describe("GlobalAgentRunMessageRouter", () => {
     const collaborationSender = buildAgentRunMessageSenderContext({ senderRunId: "coder", senderName: "Coder",
       runtimeKind: RuntimeKind.CODEX_APP_SERVER, memberExecutionContext: senderContext });
     await expect(router.deliver({ sender: collaborationSender, targetAgentRunId: "legacy-lead", content: "Hi" })).resolves.toEqual({
-      accepted: false, code: "TASK_AGENT_RESOURCE_CONFLICT", message: "You can't message this agent: it works on a different Task." });
+      accepted: false, code: "TASK_AGENT_RESOURCE_CONFLICT", message: "You can't message legacy-lead: it isn't part of your Task. Only runs that work on the same Task can message each other by run id." });
     expect(crossRun.route).toHaveBeenCalledOnce();
     expect(target.postUserMessage).not.toHaveBeenCalled();
   });

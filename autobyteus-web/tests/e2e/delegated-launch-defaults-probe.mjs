@@ -258,8 +258,11 @@ const address = (key) => `/${segment(names[key])}`
 // Launch notes name runtimes by their display names (autobyteus-320: one list, the contract's agentRuntimeName); kinds stay in launch values.
 /** FU-030: the product's reason for a model the runtime does not offer. Base said "The model '<m>' is not available on <runtime>.";
  * the outcome (the fallback or the refusal) is unchanged, so only the wording is followed here. */
-const unofferedReason = (model) => `'${model}' is not offered by ${agentRuntimeName(AGY)} now. Refresh the model list and choose again.`
-const noteText = ({ name, layer, runtime, model, detail, runsOn, origin, team = false }) => `${name}: its ${layer} default ${runtime ? agentRuntimeName(runtime) : '(no runtime)'} / `
+const unofferedReason = (model) => `'${model}' is no longer offered by ${agentRuntimeName(AGY)}.`
+const noteText = ({ name, layer, runtime, model, detail, runsOn, origin, team = false }) => detail.includes(' is no longer offered by ')
+  // FU-030 (autobyteus-500): a model its runtime no longer offers: what happened, what runs instead, what to do.
+  ? `${name}: ${detail.replace(/\.$/, '')}, so ${team ? 'its members without their own default run on' : 'it runs on'} ${runsOn} (${origin}). Choose another model in ${name}'s settings to change it.`
+  : `${name}: its ${layer} default ${runtime ? agentRuntimeName(runtime) : '(no runtime)'} / `
   + `${model ?? '(no model)'} could not be used (${detail.replace(/\.$/, '')}); ${team ? 'its members without their own default run on' : 'it runs on'} ${runsOn} (${origin}).`
 const squadNotes = () => {
   const runsOn = `${agentRuntimeName(AGY)} / ${MODEL}`
@@ -832,9 +835,9 @@ defineCase('DLP-005', 'AC-006/REQ-004: the root model is retired mid-run; delega
   await offerAgyModels([MODEL, ALT])
   const reason = unofferedReason(RETIRING)
   r.plainCall = await callFromComposer(page, 'delegate Plain', 'delegate_task', { recipient_address: address('plain'), description: 'Plain work.' })
-  assert(!r.plainCall.includes('"delegated":true') && r.plainCall.includes(`${names.plain} cannot be delegated to: ${reason}`), 'delegation failure text', { call: r.plainCall, reason })
+  assert(!r.plainCall.includes('"delegated":true') && r.plainCall.includes(`${names.plain} can't be delegated to: its default model cannot be used: ${reason.replace(/\.$/, '')}. Choose another model for ${names.plain} in its settings`), 'delegation failure text', { call: r.plainCall, reason })
   r.squadCall = await callFromComposer(page, 'delegate Squad', 'delegate_task', { recipient_address: address('squad'), description: 'Squad work.' })
-  assert(!r.squadCall.includes('"delegated":true') && r.squadCall.includes(`${names.squad} cannot be delegated to: ${reason}`), 'team delegation failure text', r.squadCall)
+  assert(!r.squadCall.includes('"delegated":true') && r.squadCall.includes(`${names.squad} can't be delegated to: its default model cannot be used: ${reason.replace(/\.$/, '')}. Choose another model for ${names.squad} in its settings`), 'team delegation failure text', r.squadCall)
   r.bringCall = await callFromComposer(page, 'message Unoffered', 'send_message_to', { recipient_address: address('unoffered'), content: 'Help.' })
   assert(r.bringCall.includes('"accepted":false') && r.bringCall.includes('COLLABORATION_TARGET_NOT_FOUND') && r.bringCall.includes('delegate_task'), 'outside message is not found', r.bringCall)
   const tree = await agentTree(r.runId)
@@ -1554,8 +1557,8 @@ defineCase('DCP-004', 'delegated-copy-model-change AC-011, AC-005 (UI): the dele
   // The refusal is shown at the top of Settings; the edit stays unsaved.
   r.refusal = await waitFor('the Save is refused', async () => {
     const text = await page.locator(sel('existing-run-settings')).innerText().catch(() => '')
-    // FU-030: the product names the run ("<name> is running. Stop it, then save again."); base said "This copy is running…".
-    return /is running\. Stop it, then (save again|change its model)\./.test(text) && !/^\s*Saved\./.test(await saveBarText(page)) ? text.match(/[^\n]*is running\. Stop it[^\n]*/)[0] : null
+    // FU-030 (autobyteus-500): "<name> is running, so its settings can't be saved now. Stop it, then save again."
+    return /is running, so its settings can't be saved now\. Stop it, then save again\./.test(text) && !/^\s*Saved\./.test(await saveBarText(page)) ? text.match(/[^\n]*is running\. Stop it[^\n]*/)[0] : null
   }, 60000, 1000)
   r.barAfterRefusal = await saveBarText(page)
   r.storedAfterRefusal = await ownAgentLaunch(r.copyRunId)

@@ -61,6 +61,9 @@ const canonicalLaunch = (launch: AgentLaunchConfiguration, selection: RunModelSe
 /** The runnability wording for a model check that did not pass (the same for the inherited layer); unavailable kinds use the one refusal wording. */
 export const invalidModelMessage = (launch: AgentLaunchConfiguration, result: RunModelSelectionValidationResult | undefined): string =>
   !result ? "Its model could not be checked."
+    // FU-030 (DLP-003 ... DLP-005): a configured model its runtime dropped is said as it is; the note or the refusal adds
+    // what runs instead and what to do.
+    : result.kind === "model_unavailable" ? `'${launch.llmModelIdentifier}' is no longer offered by ${agentRuntimeName(launch.runtimeKind)}.`
     : isUnavailableModelSelection(result)
       ? runModelSelectionRefusal({ result, llmModelIdentifier: launch.llmModelIdentifier, runtimeKind: launch.runtimeKind,
         savedSettingsUnchanged: false }).message

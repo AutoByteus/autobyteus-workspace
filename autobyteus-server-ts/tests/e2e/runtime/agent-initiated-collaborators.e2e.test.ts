@@ -1183,7 +1183,7 @@ describeLive("Agent-initiated collaborators on real runtimes (SR-005)", () => {
       const delegated = await callTool(pm, "delegate_task", { recipient_address: squad.squadAddress, description: "ping" }, "stale catalog copy", false);
       const delegateText = JSON.stringify(delegated.payload);
       expect(resultRunId(delegated), delegateText.slice(0, 800)).toBeNull();
-      expect(delegateText, "the delegation reason reaches the agent").toMatch(/cannot be delegated to|not available/);
+      expect(delegateText, "the delegation reason reaches the agent").toMatch(/can't be delegated to|not available/);
       expect(await delegatedOf("agent", pmRunId), "no copy started").toEqual([]);
       expect((await runFolders()).filter((name) => name !== pmRunId), "nothing written").toEqual(foldersBefore);
     }, 1_200_000);

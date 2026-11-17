@@ -17,7 +17,7 @@ const CATALOGUE: readonly (readonly [string, string, string])[] = [
   ["M-03", "send_message_to", "send_message_to needs one of recipient_address or target_agent_run_id. To answer a message or report your task result, use send_message_to with target_agent_run_id set to the sender run id."],
   ["M-04", "send_message_to", "'<address>' is not a valid address (<detail>). An address is exact and begins with '/', for example /team/agent. To answer a message or report your task result, use send_message_to with target_agent_run_id set to the sender run id."],
   ["M-05", "send_message_to", "<run id> is a task agent team's run id, and send_message_to talks with agents. To talk with the team, use its coordinator's run id: <coordinator run id>."],
-  ["M-06", "send_message_to", "You can't message this agent: it works on a different Task."],
+  ["M-06", "send_message_to", "You can't message <run>: it isn't part of your Task. Only runs that work on the same Task can message each other by run id."],
   ["M-07", "send_message_to", "This task agent's Task is closed. Only the agent that assigned the Task can continue it: set the Task to TODO or IN_PROGRESS, then message the task agent's run id (for a task agent team, its coordinator's run id)."],
   ["M-08", "send_message_to", "This Task is <status>. The agent that assigned it can set the Task to TODO or IN_PROGRESS and then message this run id again."],
   ["M-09", "send_message_to", "This task agent's current Task is <current task_id> (<status>); setting Task <reopened task_id> to TODO or IN_PROGRESS does not reach it. To have this task agent continue Task <reopened task_id>, call delegate_task with target_agent_run_id \"<run id>\" and task_id \"<reopened task_id>\"."],

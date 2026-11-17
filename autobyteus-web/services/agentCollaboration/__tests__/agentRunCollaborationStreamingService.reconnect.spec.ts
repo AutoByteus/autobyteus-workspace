@@ -104,7 +104,7 @@ describe('AgentRunCollaborationStreamingService reconnect', () => {
     expect(Socket.instances).toHaveLength(2)
   })
 
-  it('does not retry a 4004 close (this run cannot host delegated copies)', async () => {
+  it('does not retry a 4004 close (this run cannot delegate)', async () => {
     service.connect()
     Socket.instances[0]!.lose(4004)
     await vi.advanceTimersByTimeAsync(120_000)

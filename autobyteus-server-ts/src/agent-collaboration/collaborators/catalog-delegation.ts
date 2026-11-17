@@ -114,7 +114,7 @@ export const resolveDelegationPlacement = async (input: Readonly<{
       if (cause instanceof CollaboratorAddError) {
         throw new CollaborationContractError(
           "COLLABORATION_TARGET_NOT_FOUND",
-          `${cause.collaboratorName} cannot be delegated to: ${cause.reason}`,
+          `${cause.collaboratorName} can't be delegated to: ${cause.reason}`,
         );
       }
       throw cause;

@@ -75,9 +75,9 @@ export class AgentRunCollaborationStreamingService {
       // close while the view is not current (its run being stopped, its node changing) is not a loss to recover from.
       if (!this.released) useRunTreeStore().streamEnded(this.treeRef)
       if (!this.options.isCurrent()) return
-      // 4004: this run cannot host delegated copies; a credential refusal: the node refuses this client. Retrying
+      // 4004: this run cannot delegate (application- or system-owned); a credential refusal: the node refuses this client. Retrying
       // cannot help either.
-      const finalClose = event.code === 4004 ? 'This run cannot host delegated copies.'
+      const finalClose = event.code === 4004 ? 'This run has no delegation view: it is application- or system-owned, so it cannot delegate.'
         : isCredentialRefusalClose(event.code, event.reason) ? 'The node refused this connection\'s credential.' : null
       if (!this.intentionalClose && !finalClose) this.recoveryFailed('The Agent collaboration stream closed.')
       else if (finalClose) this.reconnect.startOver()

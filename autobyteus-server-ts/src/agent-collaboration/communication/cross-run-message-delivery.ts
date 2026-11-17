@@ -40,8 +40,9 @@ export type CrossRunMessageInput = Readonly<{
   shownAs?: string;
 }>;
 
-/** The refusal of a message between two runs of different Tasks (contract §2.2), as today. */
-export const OTHER_TASK_REFUSAL = "You can't message this agent: it works on a different Task.";
+/** The refusal of a message between two runs no Task relates (contract §2.2; FU-030 SIR-001), naming the receiver. */
+export const otherTaskRefusal = (receiver: string): string =>
+  `You can't message ${receiver}: it isn't part of your Task. Only runs that work on the same Task can message each other by run id.`;
 /** Base's refusal of the assigner's message to a run whose Task was deleted (`task-assignment-eligibility.ts`, REQ-009). */
 export const DELETED_TASK_REFUSAL = "The Task was deleted, so its task agent cannot continue.";
 const refusal = (code: string, message: string): AgentOperationResult => ({ accepted: false, code, message });
@@ -94,7 +95,7 @@ export class CrossRunMessageDelivery {
     if (receiverReference && tree.tasksOf(receiverReference).some((entry) => entry.nodeId !== undefined)) return null;
     let reactivated: boolean;
     try {
-      reactivated = await this.admit(tree, senderRun, receiverRun, input.sender.agentRunId);
+      reactivated = await this.admit(tree, senderRun, receiverRun, input.sender.agentRunId, input.shownAs ?? input.targetAgentRunId);
     } catch (error) {
       const code = error instanceof TaskDelegationError ? error.code : taskReactivationRejectionCode(error);
       if (code) return refusal(code, errorMessage(error));
@@ -139,7 +140,7 @@ export class CrossRunMessageDelivery {
 
   /** Step 2 (`model.py` `_admit`); `true` when this call reopened the receiver's assignment. Refusals throw. */
   private async admit(tree: Pick<DelegationIndex, "canMessage" | "tasksOf">, senderRun: RootExecutionIdentity, receiverRun: RootExecutionIdentity,
-    senderAgentRunId: string): Promise<boolean> {
+    senderAgentRunId: string, receiverName: string): Promise<boolean> {
     if (tree.canMessage(senderRun, receiverRun)) return false;
     const receiverReference = runReferenceOf(receiverRun);
     const receiverEntries = receiverReference ? [...tree.tasksOf(receiverReference)].sort((a, b) => a.linkedAt.localeCompare(b.linkedAt)) : [];
@@ -160,7 +161,7 @@ export class CrossRunMessageDelivery {
     if (receiverEntries.length && receiverEntries.every((entry) => !entry.open)) {
       throw new TaskDelegationError("TASK_AGENT_RESOURCE_CLOSED", ASSIGNER_ONLY_REACTIVATION_MESSAGE);
     }
-    throw new TaskDelegationError("TASK_AGENT_RESOURCE_CONFLICT", OTHER_TASK_REFUSAL);
+    throw new TaskDelegationError("TASK_AGENT_RESOURCE_CONFLICT", otherTaskRefusal(receiverName));
   }
 
   /** The gate-head re-check reads the authority, the Task side, not the tree (AR-017). A run no Task names is not checked. */

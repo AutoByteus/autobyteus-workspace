@@ -146,7 +146,9 @@ export const useDelegatedLaunchDraftStore = defineStore('delegatedLaunchDraft', 
       try {
         const running = this.changes.filter(({ key }) => rows.running(key)).map(({ key }) => rows.nameOf(key))
         if (running.length) {
-          this.feedback = { kind: 'error', message: `${running.join(', ')} is running. Stop it, then save again.` }
+          // FU-030 (DCP-004): what happened, why, and what to do.
+          const many = running.length > 1
+          this.feedback = { kind: 'error', message: `${running.join(', ')} ${many ? 'are' : 'is'} running, so ${many ? 'their' : 'its'} settings can't be saved now. Stop ${many ? 'them' : 'it'}, then save again.` }
           return false
         }
         const result = await saveDelegatedRuns({ changes: this.changes, targets: this.targets, nameOf: rows.nameOf })

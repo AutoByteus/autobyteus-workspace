@@ -1,6 +1,6 @@
 import { readerOfAgentRunIds } from "../../../helpers/run-agents-reader.js";
 import { describe, expect, it, vi } from "vitest";
-import { CrossRunMessageDelivery, OTHER_TASK_REFUSAL, type CrossRunReceiverRoot } from "../../../../src/agent-collaboration/communication/cross-run-message-delivery.js";
+import { CrossRunMessageDelivery, otherTaskRefusal, type CrossRunReceiverRoot } from "../../../../src/agent-collaboration/communication/cross-run-message-delivery.js";
 import { DelegationIndex } from "../../../../src/agent-collaboration/delegation/delegation-index.js";
 import { createCollaborationMemberExecutionIdentity, rootExecutionIdentityKey, type RootExecutionIdentity } from "../../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import { ASSIGNER_ONLY_REACTIVATION_MESSAGE } from "../../../../src/agent-collaboration/execution/task/task-execution-resource-port.js";
@@ -101,9 +101,9 @@ describe("CrossRunMessageDelivery (DS-2)", () => {
     expect(h.log).toEqual([]);
   });
 
-  it("R-7: runs of different Tasks are refused with today's text; nothing is written", async () => {
+  it("R-7: runs no Task relates are refused, the receiver named (FU-030 SIR-001); nothing is written", async () => {
     const h = await harness();
-    await expect(h.send(P, "pd", "research")).resolves.toEqual({ accepted: false, code: "TASK_AGENT_RESOURCE_CONFLICT", message: OTHER_TASK_REFUSAL });
+    await expect(h.send(P, "pd", "research")).resolves.toEqual({ accepted: false, code: "TASK_AGENT_RESOURCE_CONFLICT", message: expect.stringContaining("it isn't part of your Task") });
     expect(h.log).toEqual([]);
   });
 

@@ -253,7 +253,7 @@ suite("Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/sco
     await root.waitForTaskAgent(firstId);
     await root.waitForTaskAgent(secondId);
     const crossTask = await h.mcpCall(firstId, "send_message_to", { target_agent_run_id: secondId, content: "Hello?" });
-    expect(crossTask.text, JSON.stringify(crossTask)).toContain("You can't message this agent: it works on a different Task.");
+    expect(crossTask.text, JSON.stringify(crossTask)).toContain("it isn't part of your Task. Only runs that work on the same Task can message each other by run id.");
     root.close();
     await h.terminate("agent", root.rootId);
   }, 300_000);

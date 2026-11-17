@@ -72,7 +72,7 @@ export const collaboratorPortOf = async (
 
 const emptyPort = (agentDefinitionId: string): CollaboratorRootPort => Object.freeze({
   isApplicationBound: false,
-  launchBase: () => { throw new Error("This run cannot host delegated copies."); },
+  launchBase: () => { throw new Error("This run cannot delegate: it is application- or system-owned."); },
   ownDefinition: () => Object.freeze({ kind: "agent", definitionId: agentDefinitionId }),
   inRunPlacementsByDefinition: async () => new Map(),
   addressesInUse: async () => new Set<string>(),

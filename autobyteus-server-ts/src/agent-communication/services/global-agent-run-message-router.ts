@@ -12,7 +12,7 @@ import {
   getActiveCollaborationRootDirectory,
 } from "../../agent-collaboration/execution/services/active-collaboration-root-directory.js";
 import { sameRootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
-import { OTHER_TASK_REFUSAL, type CrossRunMessageDelivery } from "../../agent-collaboration/communication/cross-run-message-delivery.js";
+import { otherTaskRefusal, type CrossRunMessageDelivery } from "../../agent-collaboration/communication/cross-run-message-delivery.js";
 import type { DelegationIndex } from "../../agent-collaboration/delegation/delegation-index.js";
 
 export type GlobalAgentRunMessageDeliveryInput = {
@@ -127,7 +127,7 @@ export class GlobalAgentRunMessageRouter {
       return result;
     }
     // R-9 (contract §2.2): another run that no Task relates to the sender's run (a legacy run, a deleted Task's run).
-    if (senderTeam && targetTeam && crossRun) return { accepted: false, code: "TASK_AGENT_RESOURCE_CONFLICT", message: OTHER_TASK_REFUSAL };
+    if (senderTeam && targetTeam && crossRun) return { accepted: false, code: "TASK_AGENT_RESOURCE_CONFLICT", message: otherTaskRefusal(targetAgentRunId) };
 
     const messageId = buildDirectAgentRunMessageId();
     const createdAt = new Date().toISOString();

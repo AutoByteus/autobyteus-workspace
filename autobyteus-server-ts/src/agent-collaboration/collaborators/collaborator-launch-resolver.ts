@@ -323,6 +323,11 @@ const agentSlots = (plans: readonly CollaboratorDefinitionPlan[]): AgentSlot[] =
  */
 const noUsableLayer = (plan: CollaboratorDefinitionPlan, fallbacks: readonly LaunchConfigurationFallback[], routerState: CopyRouterState): never => {
   for (const fallback of fallbacks) {
+    if (fallback.reason === "model_unavailable") {
+      // FU-030 (DLP-005): what happened and why (the model check's own words), then what to do.
+      throw new CollaboratorAddError(plan.name, `its default model cannot be used: ${fallback.detail.replace(/\.$/, "")}. `
+        + `Choose another model for ${plan.name} in its settings, or delegate to another agent.`, routerState);
+    }
     if (fallback.reason !== "incomplete") throw new CollaboratorAddError(plan.name, fallback.detail, routerState);
   }
   throw new CollaboratorNoDefaultLaunchError(plan.name, plan.kind, routerState);

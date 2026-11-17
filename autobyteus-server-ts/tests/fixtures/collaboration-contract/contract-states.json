@@ -22033,7 +22033,7 @@
      "results": [],
      "refused": {
       "code": "TASK_AGENT_RESOURCE_CONFLICT",
-      "message": "You can't message this agent: it works on a different Task."
+      "message": "You can't message image_maker_44a1: it isn't part of your Task. Only runs that work on the same Task can message each other by run id."
      },
      "receiverSees": [],
      "disk": {
