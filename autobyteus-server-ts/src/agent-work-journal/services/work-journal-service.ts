@@ -9,6 +9,7 @@ import {
 import {
   WORK_JOURNAL_RENDERER_REVISION,
   type WorkJournalChangeListener,
+  type WorkJournalFileSpan,
   type WorkJournalFileSummary,
   type WorkJournalFileVersion,
   type WorkJournalLines,
@@ -17,7 +18,7 @@ import {
   type WorkJournalPackage,
   type WorkJournalTarget,
 } from "../domain/work-journal-models.js";
-import { journalLines, readJournalEntries } from "../reading/journal-entry-reader.js";
+import { journalLines, readJournalEntries, readJournalHeaderTimeRange } from "../reading/journal-entry-reader.js";
 import { WorkJournalFileRenderer } from "../rendering/work-journal-file-renderer.js";
 import { WORK_JOURNAL_ACTIVE_FILE_NAME, WorkJournalStore, workJournalFileName } from "../store/work-journal-store.js";
 
@@ -30,6 +31,9 @@ const fileRuntimeKind = (rawFile: RawTraceFileSource, target: WorkJournalTarget)
   rawFile.kind === "segment" ? rawFile.runtimeKind : target.runtimeKind ?? null;
 
 const sha256 = (text: string): string => createHash("sha256").update(text, "utf-8").digest("hex");
+
+/** How much of a journal file `readJournalSpans` reads: its header lines, never its entries. */
+const JOURNAL_HEADER_BYTES = 1024;
 
 /** Most lines one `readJournalLines` call returns. */
 export const MAX_JOURNAL_LINES_PER_READ = 400;
@@ -111,6 +115,30 @@ export class WorkJournalService {
       });
     }
     return summaries;
+  }
+
+  /**
+   * The run's journal files in manifest order, each with its path, size and the time range its header states; null when
+   * the run has no journal yet. Reads at most the first 1 KB of each file and never renders.
+   */
+  async readJournalSpans(memoryDir: string): Promise<WorkJournalFileSpan[] | null> {
+    const dir = path.resolve(memoryDir);
+    const manifest = await this.store.readManifest(dir);
+    if (!manifest) return null;
+    const spans: WorkJournalFileSpan[] = [];
+    for (const file of manifest.files) {
+      const read = await this.store.readJournalFileHead(dir, file.journal_file, JOURNAL_HEADER_BYTES);
+      if (!read) continue;
+      const range = readJournalHeaderTimeRange(read.head);
+      spans.push({
+        journalFile: file.journal_file,
+        path: this.store.filePath(dir, file.journal_file),
+        sizeBytes: read.sizeBytes,
+        from: range?.from ?? null,
+        to: range?.to ?? null,
+      });
+    }
+    return spans;
   }
 
   /** Where a run's journal file is, to open it with a file tool. */

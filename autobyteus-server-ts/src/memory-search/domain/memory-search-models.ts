@@ -1,12 +1,5 @@
+import type { MemoryRunSubject } from "../../agent-memory/domain/discovered-run.js";
 import type { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
-
-/** How the Memory page opens a run: by the subject identity of its memory view (one per run kind). */
-export type MemoryRunSubject =
-  | Readonly<{ kind: "AGENT"; runId: string; agentDefinitionId: string | null }>
-  | Readonly<{ kind: "TEAM_MEMBER"; teamRunId: string; agentRunId: string }>
-  | Readonly<{ kind: "ORG_MEMBER"; orgRunId: string; agentRunId: string }>
-  /** A run folder no record attributes (old-format team folders, agent-root collaboration members). */
-  | Readonly<{ kind: "RUN_FOLDER"; runKey: string }>;
 
 /**
  * One run folder known to the memory index, with its names and runtime as recorded at the time (R-012).

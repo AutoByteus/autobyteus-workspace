@@ -11,7 +11,7 @@ import { WorkJournalService } from "../../../src/agent-work-journal/services/wor
 import { WORK_JOURNAL_RENDERER_REVISION } from "../../../src/agent-work-journal/domain/work-journal-models.js";
 import { MemorySearch, resetMemorySearchForTests } from "../../../src/memory-search/memory-search.js";
 import { MemorySearchStore } from "../../../src/memory-search/store/memory-search-store.js";
-import { MemoryRunDiscovery } from "../../../src/memory-search/runs/memory-run-discovery.js";
+import { RunFolderDiscovery } from "../../../src/agent-memory/services/run-folder-discovery.js";
 import { createFakeEmbeddingIndex } from "../../helpers/fake-embedding-model.js";
 import { RUNTIME_OF, SYNTHETIC_TRACES, type TraceCase } from "../../agent-work-journal/synthetic-run-traces.js";
 
@@ -79,7 +79,7 @@ describe("Work Journal neutral vocabulary through the real memory pipeline (auto
   };
   const create = () => new MemorySearch({
     appDataDir, memoryDir, journals: new WorkJournalService(), embeddings: () => fake.index, activeModelId: () => "fake-model-a", quietMs: 30,
-    discovery: new MemoryRunDiscovery(memoryDir, {
+    discovery: new RunFolderDiscovery(memoryDir, {
       teamLocations: { listAgents: async () => [] }, orgLocations: { listAgents: async () => [] },
       agentCatalog: { listCatalogRows: async () => [] as never },
       agentMetadata: {

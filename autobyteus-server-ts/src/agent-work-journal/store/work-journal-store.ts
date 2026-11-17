@@ -106,6 +106,22 @@ export class WorkJournalStore {
     }
   }
 
+  /** The first `bytes` bytes of a journal file and its size; null when it does not exist. */
+  async readJournalFileHead(memoryDir: string, journalFile: string, bytes: number): Promise<{ head: string; sizeBytes: number } | null> {
+    let handle: fs.FileHandle | null = null;
+    try {
+      handle = await fs.open(this.filePath(memoryDir, journalFile), "r");
+      const { size } = await handle.stat();
+      const buffer = Buffer.alloc(Math.min(bytes, size));
+      const { bytesRead } = await handle.read(buffer, 0, buffer.length, 0);
+      return { head: buffer.subarray(0, bytesRead).toString("utf-8"), sizeBytes: size };
+    } catch {
+      return null;
+    } finally {
+      await handle?.close().catch(() => undefined);
+    }
+  }
+
   async journalFileExists(memoryDir: string, journalFile: string): Promise<boolean> {
     try {
       return (await fs.stat(this.filePath(memoryDir, journalFile))).isFile();

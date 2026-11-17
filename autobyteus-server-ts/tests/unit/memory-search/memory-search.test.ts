@@ -5,7 +5,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { WorkJournalService } from "../../../src/agent-work-journal/services/work-journal-service.js";
 import { MemorySearch, MEMORY_INDEX_NOT_BUILT } from "../../../src/memory-search/memory-search.js";
 import { MemoryIndexPipeline } from "../../../src/memory-search/pipeline/memory-index-pipeline.js";
-import { MemoryRunDiscovery } from "../../../src/memory-search/runs/memory-run-discovery.js";
+import { RunFolderDiscovery } from "../../../src/agent-memory/services/run-folder-discovery.js";
 import { createFakeEmbeddingIndex } from "../../helpers/fake-embedding-model.js";
 import { appendTurns, writeRun } from "../../helpers/memory-search-fixtures.js";
 
@@ -23,7 +23,7 @@ describe("MemorySearch (pipeline and search over Work Journals)", () => {
   let journals: WorkJournalService;
   let activeModel = "fake-model-a";
   let memory: MemorySearch;
-  const discovery = () => new MemoryRunDiscovery(memoryDir, {
+  const discovery = () => new RunFolderDiscovery(memoryDir, {
     teamLocations: { listAgents: async () => [] }, orgLocations: { listAgents: async () => [] },
     agentCatalog: { listCatalogRows: async () => [{ runId: "codex_ddns", agentName: "Codex" }, { runId: "game_bot", agentName: "Game Maker" }] as never },
     agentMetadata: { readMetadata: async (runId: string) => runId === "codex_ddns" ? { agentDefinitionId: "codex", workspaceRootPath: "/w/mcps" } as never : null },
