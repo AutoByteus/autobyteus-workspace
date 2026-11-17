@@ -21,6 +21,13 @@ export type RestartReminderFacts = Readonly<{
   interruptedTurn: boolean;
 }>;
 
+/** After an update or a restart the graceful shutdown stopped every command the run started (DEC-003). */
+const STOPPED_BACKGROUND_LINE = "If you started any background tasks, the restart stopped them. Check what you still need: restart it, or continue your work.";
+/** A crash runs no cleanup: the run's commands may outlive the server, untracked (DEC-008). */
+const UNEXPECTED_STOP_BACKGROUND_LINE = "If you started any background tasks, some may still be running: the application stopped unexpectedly and could not stop "
+  + "them, and any that are still running are no longer tracked, so you will not be told when they finish. Check them (for example "
+  + "with `ps` and the pids you were given); stop any you still need and start them again so they are tracked, or continue your work.";
+
 const reasonOf = (facts: RestartReminderFacts): string => {
   if (facts.cause === "update") return `an update to ${facts.version && !facts.version.startsWith("v") ? `v${facts.version}` : facts.version ?? "a new version"}`;
   return facts.cause === "restart" ? "a restart" : "an unexpected stop (a crash, a forced quit or a power loss)";
@@ -30,8 +37,9 @@ const reasonOf = (facts: RestartReminderFacts): string => {
 const timeOf = (iso: string): string => `${iso.slice(0, 10)} ${iso.slice(11, 16)} UTC`;
 
 /**
- * The restart reminder (autobyteus-448 DEC-003): the cause, the interrupted turn when the run was mid-turn, and the
- * reminder that the restart stopped any background tasks it started. One text for the wake after an update and for
+ * The restart reminder (autobyteus-448 DEC-003, DEC-008): the cause, the interrupted turn when the run was mid-turn,
+ * and the background-task line by cause: stopped by an update or restart; possibly still running and untracked after
+ * an unexpected stop. One text for the wake after an update and for
  * the preface of the run's next input; the wake adds the delegated runs that were resumed too.
  */
 export const buildRestartNoticeText = (input: RestartReminderFacts & Readonly<{ resumedDelegated: readonly string[] }>): string => {
@@ -43,7 +51,7 @@ export const buildRestartNoticeText = (input: RestartReminderFacts & Readonly<{ 
   if (input.interruptedTurn) {
     lines.push("Your previous turn was interrupted; check the results of any tool calls that were running before you repeat them.");
   }
-  lines.push("If you started any background tasks, the restart stopped them. Check what you still need: restart it, or continue your work.");
+  lines.push(input.cause === "unexpected_stop" ? UNEXPECTED_STOP_BACKGROUND_LINE : STOPPED_BACKGROUND_LINE);
   if (input.resumedDelegated.length) {
     lines.push(`These runs you delegated were resumed too and are working: ${input.resumedDelegated.join(", ")}.`);
   }

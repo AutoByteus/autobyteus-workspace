@@ -54,6 +54,8 @@ const EVIDENCE_DIR = process.env.RESTART_REMINDER_E2E_EVIDENCE_DIR?.trim() || nu
 const AGY_CLI = path.resolve(__dirname, "../../fixtures/agy-failure-cli.mjs");
 const HEADER = "[Platform notice — application restarted]";
 const BACKGROUND_LINE = "If you started any background tasks, the restart stopped them.";
+/** DEC-008: after an unexpected stop the tasks may still be running, untracked. */
+const UNEXPECTED_STOP_LINE = "If you started any background tasks, some may still be running: the application stopped unexpectedly and could not stop them";
 const INTERRUPTED_LINE = "Your previous turn was interrupted";
 const SENDER = "system.restart_resume";
 const PREVIOUS_RELEASE = "0.0.0-previous";
@@ -396,7 +398,7 @@ describe.skipIf(!ENABLED)("Restart reminder across real restarts of the built se
     next.send("CASE:RR-02 How is the build going?");
     const reminded = await until(() => model.of("RR-02").find((request) => request.lastUser.includes("How is the build going?")), "the next input", 60_000);
     await idleAfter(next, 0);
-    // Recorded, not asserted: whether the background command outlives the killed node (the reminder says it was stopped).
+    // Recorded, not asserted: whether the background command outlives the killed node (DEC-008: the reminder says it may).
     const stillRunningWhenReminded = withTag(tag).map((pid) => execFileSync("ps", ["-o", "pid=,ppid=,pgid=,etime=,command=", "-p", String(pid)], { encoding: "utf8" }).trim());
     await record("RR-02", { runId, killed, leftAfterKill, stillRunningWhenReminded, afterTake, requestsBeforeInput, requests: digest("RR-02") });
     next.close();
@@ -407,7 +409,8 @@ describe.skipIf(!ENABLED)("Restart reminder across real restarts of the built se
     expect(afterTake?.reminders).toEqual([expect.objectContaining({ agentRunId: runId, cause: "unexpected_stop" })]);
     expect(requestsBeforeInput).toBe(2);
     expect(reminded.lastUser).toContain("(reason: an unexpected stop (a crash, a forced quit or a power loss)).");
-    expect(reminded.lastUser).toContain(BACKGROUND_LINE);
+    expect(reminded.lastUser).toContain(UNEXPECTED_STOP_LINE);
+    expect(reminded.lastUser).not.toContain(BACKGROUND_LINE);
     expect(model.reminded("RR-02")).toHaveLength(1);
   }, 300_000);
 

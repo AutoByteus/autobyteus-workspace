@@ -3,8 +3,9 @@
 ## Scope
 
 After any restart, every agent run that was mid-turn or waiting for a background task it started is told once, by a
-**restart reminder**, that the application restarted, why, and that any background tasks it started were stopped
-(autobyteus-448, extending autobyteus-285).
+**restart reminder**, that the application restarted, why, and what became of any background tasks it started: stopped
+by an update or a restart, possibly still running and no longer tracked after an unexpected stop (autobyteus-448,
+extending autobyteus-285).
 
 - **Who is told.** Runs held by a collaboration root (standalone hosts and Team and Org members; a delegated run is one
   of these in its own root, autobyteus-461) that were `initializing` or `running`, or `idle` with a running background
@@ -141,6 +142,12 @@ These runs you delegated were resumed too and are working: <names>.   (the wake,
 ```
 
 The reason is `an update to v<version>`, `a restart`, or `an unexpected stop (a crash, a forced quit or a power loss)`.
+After an unexpected stop the background-task line is instead (DEC-008; a crash runs no cleanup, so a native command
+group can outlive the server):
+
+```
+If you started any background tasks, some may still be running: the application stopped unexpectedly and could not stop them, and any that are still running are no longer tracked, so you will not be told when they finish. Check them (for example with `ps` and the pids you were given); stop any you still need and start them again so they are tracked, or continue your work.
+```
 
 - The wake's input: `message_id` = `restart-resume:<restartedAt>:<agentRunId>`, `dedupe_key` =
   `agent_run_input:<agentRunId>:<message_id>`: display and projection keys, not a send guard.

@@ -21,6 +21,9 @@ import { AgentRunEventType } from "../../../src/agent-execution/domain/agent-run
 const facts = (overrides: Partial<RestartReminderFacts> = {}): RestartReminderFacts =>
   ({ cause: "update", version: "1.5.14", restartedAt: "2026-11-17T22:20:05.000Z", interruptedTurn: true, ...overrides });
 const BACKGROUND_LINE = "If you started any background tasks, the restart stopped them. Check what you still need: restart it, or continue your work.";
+const UNEXPECTED_STOP_LINE = "If you started any background tasks, some may still be running: the application stopped unexpectedly and could not stop them, "
+  + "and any that are still running are no longer tracked, so you will not be told when they finish. Check them (for example with `ps` and "
+  + "the pids you were given); stop any you still need and start them again so they are tracked, or continue your work.";
 
 describe("buildRestartNoticeText (DEC-003)", () => {
   it("update, mid-turn: the cause with the version, the interrupted turn and the background-task reminder", () => {
@@ -33,12 +36,20 @@ describe("buildRestartNoticeText (DEC-003)", () => {
     ].join("\n"));
   });
 
-  it("names a restart and an unexpected stop; an idle run gets no interrupted-turn line", () => {
+  it("names a restart and an unexpected stop; DEC-008: after an unexpected stop the tasks may still be running and untracked; an idle run gets no interrupted-turn line", () => {
     expect(buildRestartNoticeText({ ...facts({ cause: "restart", interruptedTurn: false }), resumedDelegated: [] }).split("\n").slice(2)).toEqual([
       "The application restarted at 2026-11-17 22:20 UTC (reason: a restart).", BACKGROUND_LINE]);
-    expect(buildRestartNoticeText({ ...facts({ cause: "unexpected_stop", interruptedTurn: false }), resumedDelegated: [] }))
-      .toContain("(reason: an unexpected stop (a crash, a forced quit or a power loss)).");
+    expect(buildRestartNoticeText({ ...facts({ cause: "unexpected_stop", interruptedTurn: false }), resumedDelegated: [] }).split("\n").slice(2)).toEqual([
+      "The application restarted at 2026-11-17 22:20 UTC (reason: an unexpected stop (a crash, a forced quit or a power loss)).", UNEXPECTED_STOP_LINE]);
     expect(buildRestartNoticeText({ ...facts({ version: "v2.0.0" }), resumedDelegated: [] })).toContain("an update to v2.0.0)");
+  });
+
+  it("DEC-008: a mid-turn run after an unexpected stop gets the interrupted line and the still-running line, never the stopped line", () => {
+    const text = buildRestartNoticeText({ ...facts({ cause: "unexpected_stop", interruptedTurn: true }), resumedDelegated: [] });
+    expect(text).toContain("Your previous turn was interrupted;");
+    expect(text.endsWith(UNEXPECTED_STOP_LINE)).toBe(true);
+    expect(text).not.toContain(BACKGROUND_LINE);
+    expect(buildRestartNoticeText({ ...facts({ cause: "restart" }), resumedDelegated: [] })).not.toContain(UNEXPECTED_STOP_LINE);
   });
 
   it("lists the accepted runs it delegated to (DS-9, the wake only)", () => {
