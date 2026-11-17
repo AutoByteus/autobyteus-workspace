@@ -21,7 +21,7 @@ All paths below are in `/Users/normy/autobyteus_org/autobyteus-worktrees/backgro
 - Current implementation revision ID: `IR-002` (IR-001 baseline)
 - Related solution revision IDs: `SR-003`, `SR-004`
 - Related architecture-review revision IDs: `ARCH-REV-002`, `ARCH-REV-003`
-- Related code-review revision IDs: `CRR-001` (Pass, no findings; `code-review-report.md`)
+- Related code-review revision IDs: `CRR-001` (Pass), `CRR-002` (DEC-008 routed upstream), `CRR-003` (Pass, round 3; `code-review-report.md`)
 - Related API/E2E revision IDs: `API-REV-001` (Fail: F-1, resolved by DEC-008)
 - Related delivery revision IDs: `N/A`
 - Triggering finding IDs: `F-1` (API/E2E), `CRR-002`
