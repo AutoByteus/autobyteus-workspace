@@ -1,8 +1,9 @@
 # Implementation Handoff: follow-ups-of-461-500 (delivery 1 + 2)
 
-Status: **IR-001 ready for source review**, with the two items decided at SR-014 (ARCH-REV-007 Pass):
-- **FU-035 step 0 (REQ-010, AC-007), D-14:** not in this round. It runs as IR-002 once Grok's 24-hour usage window
-  resets, with branch A or B and its own code review. Nothing is waived; FU-035 stays open.
+Status: **IR-002 (Local Fix for CRR-001) ready for the Targeted Delta Review.** IR-001's package is otherwise unchanged;
+its two items were decided at SR-014 (ARCH-REV-007 Pass):
+- **FU-035 step 0 (REQ-010, AC-007), D-14:** not in this round. It runs as the next implementation round (IR-003, since
+  IR-002 is this Local Fix) once Grok's 24-hour usage window resets, with branch A or B and its own code review. Nothing is waived; FU-035 stays open.
 - **FU-021 (REQ-008, AC-005), D-13b:** done. A hang guard whose probe got nothing is ENVIRONMENT; one whose probe got
   its event is INCONCLUSIVE, never a product failure. AC-005's proof is the API/E2E engineer's: 5 of 5 on Linux
   inotify (Docker from the worktree), and a quiet macOS when available.
@@ -31,12 +32,12 @@ Status: **IR-001 ready for source review**, with the two items decided at SR-014
 
 ## Current Implementation Summary
 
-- Implementation cycle: `Initial`
+- Implementation cycle: `Rework` (CRR-001 Local Fix)
 - Implementation revision record: `implementation-revision-record.md`
-- Current implementation revision ID: `IR-001`
+- Current implementation revision ID: `IR-002` (delta in `implementation-revision-record.md`; IR-001 is the baseline)
 - Related solution revision IDs: SR-006 … SR-014
 - Related architecture-review revision IDs: ARCH-REV-001, ARCH-REV-003, ARCH-REV-005, ARCH-REV-006, ARCH-REV-007
-- Related code-review / API/E2E / delivery revision IDs: `N/A`
+- Related code-review revision IDs: CRR-001 (CR-500-001, CR-500-002). API/E2E / delivery: `N/A`.
 - Branch: `codex/follow-ups-of-461-500` on `d8dbeaa9ba` (autobyteus-508 merged). `origin/personal` has since moved
   8 commits (the beta.8 release records); the Delivery Engineer refreshes the base.
 
@@ -61,7 +62,8 @@ Commits, oldest first, by the design's Change Sequence:
 | 9 | `6b4ee1f128` | docs: glossary (Code Names, Known leftovers), collaboration model, module docs, guideline §10 lesson line |
 | size | `1eed3c4aff` | `build-studio-server.ts` 511 → 498 and `configured-agent-execution-handle.ts` 507 → 500 (see Legacy / size check) |
 | G-5 fix | `d8ffc77c8b` | the 8 s model-list budget is `MODEL_LIST_READ_MS` in `read-deadline.ts`; `llm-management` no longer imports `available-agent-runtimes` (found by the full unit run) |
-| 8 | evidence only | FU-035 step 0: blocked by the Grok usage limit (IMP-011); IR-002 per D-14 |
+| 8 | evidence only | FU-035 step 0: blocked by the Grok usage limit (IMP-011); a later round per D-14 (IR-003) |
+| CRR-001 | `7eb6f94b9f` | IR-002: the server's delegated-run code names (no "copy"); the stale coordinator doc line; FU-500-07 in the glossary's Known leftovers |
 
 ## Routing Classification (Mandatory)
 
@@ -84,7 +86,7 @@ Commits, oldest first, by the design's Change Sequence:
 | B-7 | Discovery tools: off refusal from an explicit value | `REMOTE_COLLABORATION_OFF_DISCOVERY`; `PeerDiscoveryAccess` to MCP providers and native tools | Done (3) |
 | B-8 | Team total asks the team kind | `api/graphql/types/token-usage-stats.ts` | Done (4) |
 | B-9 | Refusal texts FR-1 … FR-4 | see "FU-030 texts" | Done for the five collected cases (6) |
-| B-10 | Grok refused tool call | — | **Not in IR-001** (D-14): step 0 blocked by the Grok usage limit (IMP-011); IR-002 |
+| B-10 | Grok refused tool call | — | **Not in this package** (D-14): step 0 blocked by the Grok usage limit (IMP-011); IR-003 |
 | G-1 | The release records the migration order | `scripts/desktop-release.sh` → `pnpm migrations:record-released`; `released-migration-order.json` | Done |
 | G-2 | A late team index v2 keeps every team run with a current tree | `team-run-history-index-v2/existing-team-row-repair.ts` | Done |
 | G-3 | SIR-002's session names the server helper run | `skill-improvement-removal-cases.mjs` | Done |
@@ -120,7 +122,7 @@ again. Saved settings were not changed.") is kept, because in the Settings it al
 
 ## The two items decided at SR-014
 
-### FU-035 step 0: blocked by the Grok usage limit (REQ-010, AC-007), IR-002 per D-14
+### FU-035 step 0: blocked by the Grok usage limit (REQ-010, AC-007), IR-003 per D-14
 
 - **Probe:** a throwaway live probe, kept as evidence (IMP-011): a real Studio server and the host's `grok` 1.0.88 with
   `grok-4.7`. It records three things:
@@ -138,7 +140,7 @@ again. Saved settings were not changed.") is kept, because in the Settings it al
 - **What this means:** no executor result, snapshot or model reply exists yet, so neither branch A nor branch B can be
   chosen. Per the founder's Grok rule, only his own words waive a Grok case that fails on a usage limit. I waived
   nothing and changed no product code for FU-035.
-- **D-14:** step 0 runs after the window resets, as IR-002, with branch A or B and its own code review. The probe is
+- **D-14:** step 0 runs after the window resets, as the next round (IR-003; D-14 said IR-002, which became the CRR-001 Local Fix), with branch A or B and its own code review. The probe is
   ready, and the run takes about 2 minutes.
 
 ### FU-021: the labels (REQ-008, AC-005), D-13b
@@ -215,7 +217,7 @@ again. Saved settings were not changed.") is kept, because in the Settings it al
 
 ## Known Risks
 
-- **FU-035** stays open until a live run shows the cause (IR-002).
+- **FU-035** stays open until a live run shows the cause (IR-003).
 - **FU-021:** the watcher test still fails on a loaded macOS, now as ENVIRONMENT or INCONCLUSIVE. Whether it passes
   where the OS delivers events is API/E2E's Linux proof.
 - **M-6 cold:** not strictly cold, because there is no sudo for `purge`. IMP-005 has a first pass of 13.0 s and a warm
@@ -246,7 +248,7 @@ again. Saved settings were not changed.") is kept, because in the Settings it al
   host-scoped owner kind and route, `DelegatedChildLocations`, the MCP catalog / executor singletons, and the
   `findProcessRemoteRunChannel` users.
 - Dead code found elsewhere, added to `follow-ups.md`: None new. FU-500-02 (remaining throwing process getters) was the
-  designer's.
+  designer's. Naming leftovers in comments: FU-500-08 (IR-002).
 - Shared structures remain tight: `Yes`.
 - Canonical shared design guidance reapplied: `Yes`.
 - Deviations from a design principle: `None`.
@@ -293,6 +295,7 @@ again. Saved settings were not changed.") is kept, because in the Settings it al
 | IMP-10 | focused runs per step (stream not-ready, migration, team index repair, compositions, collaboration texts, G-5 offer) | each step | macOS | as named | B-5, B-3, G-2, B-9, G-5 | Pass | console | `run-stream-not-ready` 9/9; attachment-links 8/8; team-index 4/4; `stored-model-offer` 5/5 |
 | IMP-11 | FU-035 live probe (`RUN_GROK_E2E=1`, vault set) | `6b4ee1f128` | grok 1.0.88, grok-4.7 | Grok projection + executor | B-10 / AC-007 | **Blocked** (usage limit) | `IMP-011-fu035-grok-live-attempt.log`, `IMP-011-fu035-grok-refused-tool-probe.e2e.test.ts.txt` | "subscription:free-usage-exhausted … 609708/600000" |
 | IMP-12 | watcher test, 3 runs, plus the `__pycache__` case alone ×3 | `4277f1945e` | macOS, load 67–118 | FU-021 test + probe | FU-021 / AC-005 | Fail (led to SR-014) | `IMP-012-watcher-three-runs-ambient-load.log`, `IMP-012-watcher-run-{1,2,3}.full.log` | "env=1 product=4", "env=3 product=3", "env=2 product=5"; "other=0" |
+| IMP-14 | IR-002: `pnpm -C autobyteus-server-ts typecheck`; units over `tests/unit/{agent-collaboration,remote-collaboration,agent-team-execution,standalone-agent-run-root,agent-tools,services,agent-execution,projects,available-agent-runtimes}` and `tests/architecture` | `7eb6f94b9f` | macOS, Node 22 | the renamed delegation types and their readers | AC-001 (N3), CR-500-001/002 | Pass | console | "production errors: 0; test-file errors: 1010 in 316 files"; "Tests 3737 passed \| 6 skipped (3743)" |
 | IMP-13 | watcher test after the D-13b labels, 1 run | `a4e7f18e6d` | macOS, load 120–190 | FU-021 labels | FU-021 / D-13b | Fails as designed under load: labels only | `IMP-013-watcher-sr014-labels.log`, `IMP-013-watcher-sr014.full.log` | "env=1 inconclusive=6 other=0"; no "Timed out waiting for event (hang guard)" line |
 
 - Not run, and why:
@@ -336,4 +339,4 @@ again. Saved settings were not changed.") is kept, because in the Settings it al
 
 - The live and real-stack journeys above, and the e2e suites and probes whose texts changed.
 - **AC-005's watcher proof** (D-13b): 5 of 5 on Linux inotify (Docker from the worktree) and a quiet macOS when available.
-- FU-035 is not part of this package: IR-002 (D-14) brings it with its own code review.
+- FU-035 is not part of this package: a later round (IR-003, D-14) brings it with its own code review.
