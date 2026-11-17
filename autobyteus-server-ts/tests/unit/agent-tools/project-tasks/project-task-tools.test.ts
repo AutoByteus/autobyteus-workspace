@@ -431,9 +431,12 @@ describe("Project data tools — actual native preparation/execute and selected 
   it("exposes exactly explicit selections to catalog/Claude/native members, never legacy task aliases", () => {
     const catalog = new AgentToolMcpCatalog({providers: [provider]});
     expect(catalog.resolveConfiguredSupportedToolNames(buildRuntimeAgentToolExposure([]))).toEqual([]);
-    const exposure = buildRuntimeAgentToolExposure(["list_projects", "list_project_tasks", "create_project", "update_project", "create_task", "update_task"]);
-    expect(exposure.enabledProjectTaskToolNames).toEqual(exposure.requestedToolNames);
-    expect(catalog.resolveConfiguredSupportedToolNames(exposure)).toEqual(exposure.requestedToolNames);
+    const selected = ["list_projects", "list_project_tasks", "create_project", "update_project", "create_task", "update_task"];
+    const exposure = buildRuntimeAgentToolExposure(selected);
+    // The selection plus the platform-given search_memory (autobyteus-496), which is not a Project tool.
+    expect(exposure.requestedToolNames).toEqual([...selected, "search_memory"]);
+    expect(exposure.enabledProjectTaskToolNames).toEqual(selected);
+    expect(catalog.resolveConfiguredSupportedToolNames(exposure)).toEqual(selected);
     expect(catalog.resolveConfiguredSupportedToolNames(buildRuntimeAgentToolExposure(["list_projects"]))).toEqual(["list_projects"]);
     // Each Project mutation tool alone is exactly that tool.
     for (const name of PROJECT_TOOL_NAMES) {
@@ -441,7 +444,9 @@ describe("Project data tools — actual native preparation/execute and selected 
       expect(mutatorOnly.enabledProjectTaskToolNames).toEqual([name]);
       expect(catalog.resolveConfiguredSupportedToolNames(mutatorOnly)).toEqual([name]);
     }
-    expect(resolveClaudeSessionToolingOptions({runtimeToolExposure: exposure, memberExecutionContext: null, hasMaterializedSkills: false}).agentToolsMcpEnabledToolNames).toEqual(exposure.requestedToolNames);
+    // Without the session's list, Claude falls back to the exposure's tool families (a running Claude run passes its
+    // Agent Tools session's enabledTools, which carry search_memory).
+    expect(resolveClaudeSessionToolingOptions({runtimeToolExposure: exposure, memberExecutionContext: null, hasMaterializedSkills: false}).agentToolsMcpEnabledToolNames).toEqual(selected);
     // The old combined name is not a tool: nothing exposes it and no adapter serves it.
     const old = buildRuntimeAgentToolExposure(["create_or_update_task"]);
     expect(old.enabledProjectTaskToolNames).toEqual([]);

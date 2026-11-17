@@ -13,6 +13,9 @@ import { PublishArtifactsMcpAdapterProvider } from "../../../../src/agent-tools/
 import { ProjectTaskToolsMcpAdapterProvider } from "../../../../src/agent-tools/mcp/providers/project-task-tools-mcp-adapter-provider.js";
 import { SendMessageToMcpAdapterProvider } from "../../../../src/agent-tools/mcp/providers/send-message-to-mcp-adapter-provider.js";
 import { TaskDelegationToolsMcpAdapterProvider } from "../../../../src/agent-tools/mcp/providers/task-delegation-tools-mcp-adapter-provider.js";
+import { MemoryToolsMcpAdapterProvider } from "../../../../src/agent-tools/mcp/providers/memory-tools-mcp-adapter-provider.js";
+import { SearchMemoryTool } from "../../../../src/agent-tools/memory/memory-native-tools.js";
+import { ToolCategory } from "autobyteus-ts/tools/tool-category.js";
 import type { AgentToolMcpToolAdapter } from "../../../../src/agent-tools/mcp/agent-tool-mcp-adapter.js";
 import type { AgentToolMcpToolRouteTable } from "../../../../src/agent-tools/mcp/agent-tool-mcp-tool-route.js";
 
@@ -203,6 +206,16 @@ const buildSession = (input: {
   toolExecutionObserver: null,
 });
 
+/**
+ * Every node registers the native search_memory (startup/agent-tool-loader.ts) and its catalog has the memory
+ * adapter, since every exposure carries the platform-given search_memory (autobyteus-496).
+ */
+const memoryAdapters = (): AgentToolMcpToolAdapter[] => new MemoryToolsMcpAdapterProvider().getAdapters();
+const registerNodeMemoryTool = (registry: FakeToolRegistry): void => registry.register(new ToolDefinition(
+  SearchMemoryTool.getName(), SearchMemoryTool.getDescription(), ToolOrigin.LOCAL, ToolCategory.GENERAL,
+  () => SearchMemoryTool.getArgumentSchema(), () => null, { toolClass: SearchMemoryTool },
+));
+
 describe("AgentToolMcpCatalog configured MCP bridge", () => {
   it("lists every registered static adapter name independent of availability and configured policy", () => {
     const catalog = new AgentToolMcpCatalog({
@@ -288,8 +301,9 @@ describe("AgentToolMcpCatalog configured MCP bridge", () => {
   it("adds selected MCP-origin registry tools to session exposure and tools/list", () => {
     const registry = new FakeToolRegistry();
     registry.register(buildMcpDefinition("db_query", "sqlite"));
+    registerNodeMemoryTool(registry);
     const catalog = new AgentToolMcpCatalog({
-      adapters: [],
+      adapters: memoryAdapters(),
       registry: registry as any,
     });
 
@@ -297,7 +311,7 @@ describe("AgentToolMcpCatalog configured MCP bridge", () => {
       "db_query",
     ]));
 
-    expect(exposure.enabledTools).toEqual(["db_query"]);
+    expect(exposure.enabledTools).toEqual(["db_query", "search_memory"]);
     expect(exposure.configuredMcpToolSources).toEqual([
       { kind: "configured_mcp_tool", registeredToolName: "db_query", mcpServerId: "sqlite" },
     ]);
@@ -309,23 +323,23 @@ describe("AgentToolMcpCatalog configured MCP bridge", () => {
       configuredMcpToolSources: exposure.configuredMcpToolSources,
     }) as any, "2025-03-26");
 
-    expect(tools).toEqual([
-      {
-        name: "db_query",
-        description: "Description for db_query",
-        inputSchema: { type: "object", properties: {}, required: [], additionalProperties: false },
-      },
-    ]);
+    expect(tools[0]).toEqual({
+      name: "db_query",
+      description: "Description for db_query",
+      inputSchema: { type: "object", properties: {}, required: [], additionalProperties: false },
+    });
+    expect(tools.map((tool) => tool.name)).toEqual(["db_query", "search_memory"]);
   });
 
   it("keeps built-in adapter names authoritative when a configured MCP tool collides", () => {
     const registry = new FakeToolRegistry();
     registry.register(buildMcpDefinition("send_message_to", "server-a"));
+    registerNodeMemoryTool(registry);
     const [sendMessageAdapter] = new SendMessageToMcpAdapterProvider(() => ({
       dispatch: async () => ({ accepted: true }),
     } as any)).getAdapters();
     const catalog = new AgentToolMcpCatalog({
-      adapters: [sendMessageAdapter!],
+      adapters: [sendMessageAdapter!, ...memoryAdapters()],
       registry: registry as any,
     });
 
@@ -333,7 +347,7 @@ describe("AgentToolMcpCatalog configured MCP bridge", () => {
       "send_message_to",
     ]));
 
-    expect(exposure.enabledTools).toEqual(["send_message_to"]);
+    expect(exposure.enabledTools).toEqual(["send_message_to", "search_memory"]);
     expect(exposure.configuredMcpToolSources).toEqual([]);
     expect(exposure.diagnostics).toEqual([expect.objectContaining({
       code: "configured_mcp_tool_collision",
@@ -345,8 +359,9 @@ describe("AgentToolMcpCatalog configured MCP bridge", () => {
     const registry = new FakeToolRegistry();
     registry.register(buildMcpDefinition("create_task", "third-party-server"));
     registry.register(buildMcpDefinition("update_task", "third-party-server"));
+    registerNodeMemoryTool(registry);
     const catalog = new AgentToolMcpCatalog({
-      adapters: new ProjectTaskToolsMcpAdapterProvider().getAdapters(),
+      adapters: [...new ProjectTaskToolsMcpAdapterProvider().getAdapters(), ...memoryAdapters()],
       registry: registry as any,
     });
 
@@ -355,7 +370,7 @@ describe("AgentToolMcpCatalog configured MCP bridge", () => {
       "update_task",
     ]));
 
-    expect(exposure.enabledTools).toEqual(["create_task", "update_task"]);
+    expect(exposure.enabledTools).toEqual(["create_task", "update_task", "search_memory"]);
     expect(exposure.configuredMcpToolSources).toEqual([]);
     expect(exposure.diagnostics).toEqual([
       expect.objectContaining({ code: "configured_mcp_tool_collision", registeredToolName: "create_task" }),
@@ -366,7 +381,7 @@ describe("AgentToolMcpCatalog configured MCP bridge", () => {
       toolRoutes: exposure.toolRoutes,
       configuredMcpToolSources: exposure.configuredMcpToolSources,
     }) as any, "2025-03-26");
-    expect(listed.map((tool) => tool.name)).toEqual(["create_task", "update_task"]);
+    expect(listed.map((tool) => tool.name)).toEqual(["create_task", "update_task", "search_memory"]);
     expect(listed.every((tool) => !tool.description.startsWith("Description for"))).toBe(true);
   });
 

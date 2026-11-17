@@ -12,6 +12,7 @@ import type { AcpAgentRunBackend } from "../../../../../src/agent-execution/back
 import { AcpAgentRunContext } from "../../../../../src/agent-execution/backends/acp/backend/acp-agent-run-context.js";
 import { grokBuildSessionProfile } from "../../../../../src/agent-execution/backends/grok/grok-build-session-profile.js";
 import { createAgentToolMcpRunSessionsStub } from "../../../../helpers/agent-tool-mcp-run-sessions-stub.js";
+import { buildRuntimeAgentToolExposure } from "../../../../../src/agent-execution/shared/runtime-agent-tool-exposure.js";
 import { fakeAcpLaunchProfile, fixturePath, fixtureSessionId, makeTestTempDir, readFixture, removeTestTempDirs, waitFor, writeCustomFixture, type FixtureRow } from "./acp-fake-agent-harness.js";
 
 // The Grok reopen sequence (design: "Grok reopen sequence", SR-003/SR-004): end first, then load,
@@ -19,6 +20,8 @@ import { fakeAcpLaunchProfile, fixturePath, fixtureSessionId, makeTestTempDir, r
 // replays recorded fixtures; each spawn takes the next fixture.
 
 const tempDir = makeTestTempDir;
+/** The tools a run of a definition with these names has: the exposure rule adds the platform-given search_memory. */
+const runTools = (...definitionToolNames: string[]): string[] => buildRuntimeAgentToolExposure(definitionToolNames).requestedToolNames;
 afterAll(removeTestTempDirs);
 const backends: AcpAgentRunBackend[] = [];
 afterEach(async () => {
@@ -50,7 +53,8 @@ const createRestoredRun = async (reopenFixtures: string[]) => {
   });
   const skill = { name: "codebook" } as never;
   const cleanupSkills = vi.fn(async () => undefined);
-  const mcpSessions = createAgentToolMcpRunSessionsStub({ enabledTools: () => ["alpha"] });
+  // The session opens with the restored run's exposure, as the real Agent Tools session does.
+  const mcpSessions = createAgentToolMcpRunSessionsStub({ enabledTools: (input) => input.runtimeExposure.requestedToolNames });
   const factory = new AcpAgentRunBackendFactory({
     launchProfile,
     sessionProfile: grokBuildSessionProfile,
@@ -95,8 +99,8 @@ describe("AcpAgentRunBackend tool list reopen (Grok)", () => {
     expect(run.alive()).toHaveLength(1);
 
     expect(await run.backend.applyDefinitionTools(run.definition(["alpha", "beta"])))
-      .toEqual({ kind: "on_next_turn", toolNames: ["alpha", "beta"] });
-    expect(run.backend.getToolNames()).toEqual(["alpha"]);
+      .toEqual({ kind: "on_next_turn", toolNames: runTools("alpha", "beta") });
+    expect(run.backend.getToolNames()).toEqual(runTools("alpha"));
 
     const result = await run.start();
     expect(result).toMatchObject({ forwarded: true, platformAgentRunId: run.sessionId });
@@ -104,7 +108,7 @@ describe("AcpAgentRunBackend tool list reopen (Grok)", () => {
     await waitFor(() => run.processes[0]!.exited !== null);
     expect(run.alive()).toEqual([run.processes[1]]);
     await waitFor(() => run.events.some((event) => event.eventType === AgentRunEventType.TURN_COMPLETED));
-    expect(run.backend.getToolNames()).toEqual(["alpha", "beta"]);
+    expect(run.backend.getToolNames()).toEqual(runTools("alpha", "beta"));
     // The reopen gives the new launch the instructions the run was restored with (re-sent, not recomposed).
     expect(run.launches).toHaveLength(2);
     expect(run.launches[0]!.instructions).toContain("Reviews code");
@@ -146,10 +150,10 @@ describe("AcpAgentRunBackend tool list reopen (Grok)", () => {
       kind: "append_to_active_turn", turnId: "turn-1", message: new AgentInputUserMessage("x"),
     })).toMatchObject({ forwarded: false, code: "UNSUPPORTED_RUNTIME_COMMAND" });
     expect(run.backend.getPlatformAgentRunId()).toBe(run.sessionId);
-    expect(run.backend.getToolNames()).toEqual(["alpha"]);
+    expect(run.backend.getToolNames()).toEqual(runTools("alpha"));
 
     expect(await run.start()).toMatchObject({ forwarded: true });
-    expect(run.backend.getToolNames()).toEqual(["alpha", "beta"]);
+    expect(run.backend.getToolNames()).toEqual(runTools("alpha", "beta"));
     expect(run.alive()).toHaveLength(1);
   });
 
@@ -171,7 +175,7 @@ describe("AcpAgentRunBackend tool list reopen (Grok)", () => {
   it("needs no reopen for a change reverted before the next turn start", async () => {
     const run = await createRestoredRun([fixturePath("load")]);
     await run.backend.applyDefinitionTools(run.definition(["alpha", "beta"]));
-    expect(await run.backend.applyDefinitionTools(run.definition(["alpha"]))).toEqual({ kind: "unchanged", toolNames: ["alpha"] });
+    expect(await run.backend.applyDefinitionTools(run.definition(["alpha"]))).toEqual({ kind: "unchanged", toolNames: runTools("alpha") });
     expect(await run.start()).toMatchObject({ forwarded: true });
     expect(run.processes).toHaveLength(1);
   });
