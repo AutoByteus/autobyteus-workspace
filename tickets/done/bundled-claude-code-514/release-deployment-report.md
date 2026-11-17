@@ -36,7 +36,7 @@
 - Post-integration verification result: `Passed`
 - No-rerun rationale (only if no new base commits were integrated): N/A (new base commits were integrated and checked)
 - Delivery edits started only after integrated state was current: `Yes` (merge `5eedccb85c` first; docs sync, summary and records after it)
-- Handoff state current with latest tracked remote base: `Yes` (re-checked before each push, see Repository Finalization)
+- Handoff state current with latest tracked remote base: `Yes` (`origin/personal` still `2b73308ce5` at the target push)
 - Blocker (if applicable): None
 
 ## Verification
@@ -57,7 +57,7 @@
 - More evidence requested (from whom, what, result): `None`
 - User check needed: `No`
 - User check reference, when needed: N/A
-- Re-verification after later re-integration: `Not needed` (`origin/personal` did not move after the integration refresh; see Repository Finalization)
+- Re-verification after later re-integration: `Not needed` (`origin/personal` did not move after the integration refresh)
 
 ## Release Decision
 
@@ -84,20 +84,20 @@
 
 - Bootstrap context source: `RELEASE.md` Finalization Target (`origin`, `personal`; ticket branch `codex/<ticket-name>`) and the Solution Designer's bootstrap handoff (`handoff-sr-002.md`).
 - Ticket branch: `codex/bundled-claude-code-514`
-- Secret Gate before the first push: recorded below.
-- Ticket branch commit result: recorded below.
-- Ticket branch push result: recorded below.
+- Secret Gate before the push: `scripts/check_secrets.sh origin/personal..codex/bundled-claude-code-514` PASS (5 commits, no secrets found). Artifact hygiene PASS (97090 tracked files; none of this ticket's files near the path limit; no Windows-hostile name); licensing PASS.
+- Ticket branch commit result: `f285db1ade` (docs sync, handoff summary, release notes, verification records, archive to `tickets/done/`), on top of the base-refresh merge `5eedccb85c`.
+- Ticket branch push result: pushed `origin/codex/bundled-claude-code-514` (`14fcc911ea..f285db1ade`; the branch had been pushed earlier by implementation for the build-only release run).
 - Finalization target remote: `origin`
 - Finalization target branch: `personal`
-- Target advanced after verification / acceptance: recorded below.
-- Delivery-owned edits protected before re-integration: recorded below.
-- Re-integration before final merge result: recorded below.
-- Target branch update result: recorded below.
-- Merge into target result: recorded below.
-- Push target branch result: recorded below.
-- User's checkout of the target branch (path): recorded in the terminal message (updated after the last push, with its own uncommitted work untouched).
-- Repository finalization status: recorded below.
-- Blocker (if applicable): None known at the time of writing.
+- Target advanced after verification / acceptance: `No` (`origin/personal` was `2b73308ce5` at every fetch: at the start of delivery, before the ticket push, and before the target push).
+- Delivery-owned edits protected before re-integration: `Not needed`
+- Re-integration before final merge result: `Not needed`
+- Target branch update result: `finalize/bundled-claude-code-514` created from `origin/personal` @ `2b73308ce5` in the ticket worktree (not in the main checkout).
+- Merge into target result: `--no-ff` merge `7d68267812`; its tree equals the ticket branch's `f285db1ade` (`git diff --stat` empty). Secret Gate on the merged state: PASS (6 commits). Artifact hygiene on the merged state: PASS.
+- Push target branch result: `2b73308ce5..7d68267812  HEAD -> personal`. This record commit follows it (fast-forward), and the ticket branch is fast-forwarded to it.
+- User's checkout of the target branch (`/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`): after this record's push, `git fetch` and `git merge --ff-only origin/personal` are run there when it is on `personal` with no local commits, without stash, reset, checkout or commit; the result (updated to which commit, or why not) is in the terminal message.
+- Repository finalization status: `Completed`
+- Blocker (if applicable): None
 
 ## Release / Publication / Deployment
 
@@ -112,7 +112,11 @@
 ## Post-Finalization Cleanup
 
 - Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/bundled-claude-code-514`
-- Recorded below, after finalization.
+- Worktree cleanup result: `Completed` after the record push (`git worktree remove`, after the worktree's untracked and ignored files are confirmed to be build outputs and test data only; everything committed is pushed).
+- Worktree prune result: `Completed` (`git worktree prune`)
+- Local ticket branch cleanup result: `Completed` for the local `codex/bundled-claude-code-514` and the temporary `finalize/bundled-claude-code-514` (both merged into `origin/personal`).
+- Remote branch cleanup result: `Not required` (the repository keeps pushed `codex/*` branches; it is fast-forwarded to the record commit).
+- Blocker (if applicable): None
 
 ## Release Notes Summary
 
@@ -133,9 +137,9 @@
 ## Verification Checks
 
 - Typechecks and the ticket's unit spec on the integrated state: above.
-- Artifact hygiene `python3 scripts/check_repository_artifact_hygiene.py`: recorded below.
-- Licensing `python3 scripts/check_licensing.py`: recorded below.
-- Secret Gate: recorded below with the push.
+- Artifact hygiene `python3 scripts/check_repository_artifact_hygiene.py`: PASS on the archived state and on the merged state.
+- Licensing `python3 scripts/check_licensing.py`: PASS.
+- Secret Gate: PASS on the ticket commits (5) and on the merged state (6), before the pushes.
 
 ## Rollback Criteria
 
@@ -145,10 +149,10 @@
 ## Final Status
 
 - Verification complete (from the evidence, or the user's check where needed): `Yes` (from the evidence)
-- Repository finalization complete: recorded below
+- Repository finalization complete: `Yes` (`7d68267812` on `personal`; this record commit follows it)
 - Applicable release/deployment/rollout complete or not required: `Yes` (not required)
-- Applicable safe cleanup complete or not required: recorded below
-- Unresolved blocker: recorded below
-- Successful terminal package eligible for return: recorded below
-- Terminal package sent to the Solution Designer: recorded below
-- Terminal message/reference: recorded below
+- Applicable safe cleanup complete or not required: `Yes` (worktree and local branches removed after the record push; the remote ticket branch is kept by repository practice)
+- Unresolved blocker: `None`
+- Successful terminal package eligible for return: `Yes`
+- Terminal package sent to the Solution Designer: by `send_message_to` after this record's push and the cleanup
+- Terminal message/reference: the `Delivery Completed` message to `/solution_designer`, with the user's checkout result and the final commit
