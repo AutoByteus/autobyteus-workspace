@@ -229,7 +229,10 @@ export function registerSkillImprovementRemovalCases(h) {
       await fx.put(path.join(memory, 'self_evolution', 'evolution_runs', 'evol_01', 'record.json'), { evolutionRunId: 'evol_01', status: 'completed', requestedAt: T0, evolverRunId: fx.EVOLVER_RUNS[0], errors: [] })
       // F-3 / F-3b / F-4: session folders inside the real runs.
       const session = (dir, name, file) => fx.put(path.join(dir, name, file), { target: { runId: path.basename(dir) }, state: { updatedAt: T0 } })
-      await session(path.join(memory, 'agents', r.runId), 'skill_improvement', 'improver_session.json')
+      // autobyteus-500 G-3 (FU-033): as the server fixture's F-3, the session names the server helper run it launched
+      // (only a session names it), so the migration's real rule deletes it.
+      await fx.session(path.join(memory, 'agents', r.runId), 'skill_improvement', 'improver_session.json',
+        { current: fx.SERVER_HELPER_RUN, prior: [fx.IMPROVER_RUNS[0]] })
       await session(r.memberDir, 'skill_improvement', 'improver_session.json')
       await session(r.leadDir, 'self_evolution', 'evolver_session.json')
       // History rows of the helper runs (and a stale evolver row) appended to the real index.
