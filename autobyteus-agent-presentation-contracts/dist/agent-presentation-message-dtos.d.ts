@@ -13,8 +13,15 @@ export declare const backgroundTaskStatusSchema: z.ZodEnum<{
     failed: "failed";
     stopped: "stopped";
 }>;
+/** Why an ended task ended, when its runtime says so: its time limit, low memory, or the end of its run. */
+export declare const backgroundTaskEndReasonSchema: z.ZodEnum<{
+    time_limit: "time_limit";
+    low_memory: "low_memory";
+    run_ended: "run_ended";
+}>;
 export type BackgroundTaskKind = z.infer<typeof backgroundTaskKindSchema>;
 export type BackgroundTaskStatus = z.infer<typeof backgroundTaskStatusSchema>;
+export type BackgroundTaskEndReason = z.infer<typeof backgroundTaskEndReasonSchema>;
 export declare const agentPresentationPayloadSchemas: {
     readonly SYSTEM_INSTRUCTIONS_SUPPLIED: z.ZodObject<{
         trace_id: z.ZodString;
@@ -517,6 +524,12 @@ export declare const agentPresentationPayloadSchemas: {
             stopped: "stopped";
         }>;
         summary: z.ZodNullable<z.ZodString>;
+        end_reason: z.ZodNullable<z.ZodEnum<{
+            time_limit: "time_limit";
+            low_memory: "low_memory";
+            run_ended: "run_ended";
+        }>>;
+        exit_code: z.ZodNullable<z.ZodNumber>;
         started_at: z.ZodString;
     }, z.core.$strict>;
     readonly SYSTEM_TASK_NOTIFICATION: z.ZodObject<{

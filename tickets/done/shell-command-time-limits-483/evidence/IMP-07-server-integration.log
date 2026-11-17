@@ -1,0 +1,45 @@
+# IMP-07 server integration: background-task notices and run-unsent-input (fixtures changed)
+# command: pnpm -C autobyteus-server-ts test:integration -- tests/integration/background-task-notices tests/integration/agent-execution/single-run-unsent-input-failure.integration.test.ts
+# commit: 0f0a234dab + uncommitted test fixes; node v22.23.1; 2026-11-17T10:49:08Z
+     × AC-001/AC-015(a): a new agent and a new Team written on disk are listed and delegable within 5 s, without Reload 24650ms
+     × AC-002/AC-015(b)/QR-004: edits reach every reader; other agents never disappear during the refresh 19209ms
+     × AC-004: a broken edit keeps the last good agent usable with an issue; fixing it clears the issue 15363ms
+     × AC-005: a new invalid Team is unavailable with a diagnostic and other Teams are unaffected 39758ms
+     × AC-006: a 50-file burst is coalesced into a bounded number of publications 51830ms
+     × AC-012: a root renamed away keeps its definitions and reports FOLDER_MISSING; restoring it resumes watching 17579ms
+     × AR-001: a Team created before its agent becomes available once the agent appears, and its list is told to reload 42254ms
+     × returns one idle event stream without stopping other subscribers 8060ms
+     × emits move/rename event 1337ms
+     × respects nested .gitignore files 8056ms
+ FAIL  tests/integration/api/studio-server-http-contract.integration.test.ts > Studio server HTTP contract
+Error: Hook timed out in 10000ms.
+⎯⎯⎯⎯⎯⎯ Failed Tests 10 ⎯⎯⎯⎯⎯⎯⎯
+ FAIL  tests/integration/agent-package-definitions/package-auto-refresh.integration.test.ts > package auto-refresh: the next delegation sees current definitions > AC-001/AC-015(a): a new agent and a new Team written on disk are listed and delegable within 5 s, without Reload
+AssertionError: expected 14446 to be less than 5000
+ FAIL  tests/integration/agent-package-definitions/package-auto-refresh.integration.test.ts > package auto-refresh: the next delegation sees current definitions > AC-001/AC-015(a): a new agent and a new Team written on disk are listed and delegable within 5 s, without Reload
+ FAIL  tests/integration/agent-package-definitions/package-auto-refresh.integration.test.ts > package auto-refresh: the next delegation sees current definitions > AC-002/AC-015(b)/QR-004: edits reach every reader; other agents never disappear during the refresh
+ FAIL  tests/integration/agent-package-definitions/package-auto-refresh.integration.test.ts > package auto-refresh: the next delegation sees current definitions > AC-004: a broken edit keeps the last good agent usable with an issue; fixing it clears the issue
+ FAIL  tests/integration/agent-package-definitions/package-auto-refresh.integration.test.ts > package auto-refresh: the next delegation sees current definitions > AC-005: a new invalid Team is unavailable with a diagnostic and other Teams are unaffected
+ FAIL  tests/integration/agent-package-definitions/package-auto-refresh.integration.test.ts > package auto-refresh: the next delegation sees current definitions > AC-006: a 50-file burst is coalesced into a bounded number of publications
+ FAIL  tests/integration/agent-package-definitions/package-auto-refresh.integration.test.ts > package auto-refresh: the next delegation sees current definitions > AR-001: a Team created before its agent becomes available once the agent appears, and its list is told to reload
+Error: Hook timed out in 10000ms.
+ FAIL  tests/integration/agent-package-definitions/package-auto-refresh.integration.test.ts > package auto-refresh: the next delegation sees current definitions > AC-012: a root renamed away keeps its definitions and reports FOLDER_MISSING; restoring it resumes watching
+Error: Condition not met within 5000 ms; last value: "FOLDER_MISSING"
+     62|     if (Date.now() - started > timeoutMs) throw new Error(`Condition n…
+ FAIL  tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > returns one idle event stream without stopping other subscribers
+ FAIL  tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > respects nested .gitignore files
+Error: Timed out waiting for event
+     26|       reject(new Error("Timed out waiting for event"));
+ FAIL  tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits move/rename event
+AssertionError: expected [ 'move', 'rename' ] to include 'delete'
+ Test Files  3 failed | 84 passed | 20 skipped (107)
+      Tests  10 failed | 495 passed | 69 skipped (574)
+
+# Note: the script runs the whole integration folder (its file filter is ignored). The two changed fixture files passed (not listed under FAIL).
+# Failures: timeouts only (FS-event watchers, server start hook 10 s, a 5 s preflight test), in code this diff does not touch:
+#   (no changed file in agent-package-definitions, file-explorer, mcp gateway or request gate)
+# Machine load at the time (other processes):
+11:58  up 28 days, 21:37, 9 users, load averages: 79.09 62.33 72.98
+# Rerun alone: studio-server-http-contract.integration.test.ts:
+ FAIL  tests/integration/api/studio-server-http-contract.integration.test.ts > Studio server HTTP contract
+      Tests  4 passed (4)

@@ -26,6 +26,7 @@ import type {
 import type { AgentToolMcpDescriptor } from "../../../../agent-tools/mcp/agent-tool-mcp-session.js";
 import { resolveRuntimeAgentToolExposure, type RuntimeAgentToolExposure } from "../../../shared/runtime-agent-tool-exposure.js";
 import { composeSharedCarpenterPrompt } from "../../../prompt/carpenter-prompt-composer.js";
+import { ANTIGRAVITY_LONG_RUNNING_COMMAND_SECTION } from "../../../prompt/long-running-command-sections.js";
 import { getAgentSemanticMemory, type AgentSemanticMemory } from "../../../../agent-memory/services/agent-semantic-memory.js";
 import { buildAgentRunMessageSenderContext } from "../../../../agent-communication/domain/agent-run-message-sender.js";
 import { getAgentTeamAddressBasename } from "../../../../agent-collaboration/domain/agent-team-address.js";
@@ -61,7 +62,7 @@ export class AgyAgentRunBackendFactory implements AgentRunBackendFactory {
     const bindings = this.skills.resolveConfiguredSkillBindingsForAgent(definition);
     const semanticMemoryPath = await this.semanticMemory.prepareForRun(definition);
     const identity = composeSharedCarpenterPrompt({ agentDefinition: definition, memberExecutionContext: config.memberExecutionContext,
-      project: config.project, semanticMemoryPath });
+      project: config.project, semanticMemoryPath, longRunningCommandSection: ANTIGRAVITY_LONG_RUNNING_COMMAND_SECTION });
     assertAccepting();
     const exposure = resolveRuntimeAgentToolExposure(definition, config.memberExecutionContext);
     const descriptor = this.activateMcp(runId, config, workspacePath, exposure);

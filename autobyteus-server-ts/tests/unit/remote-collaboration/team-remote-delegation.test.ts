@@ -439,7 +439,7 @@ describe("DS-004: a peer-started Team root's quiet idle shutdown (AR-301)", () =
     // The background task ends: the schedule re-arms, and the now-quiet Team shuts down one grace period later.
     b.busy.delete(LEAD.agentRunId);
     b.emit(LEAD.agentRunId, AgentRunEventType.BACKGROUND_TASK_UPDATED, { task_id: "bg-1", kind: "shell", description: "render", command: "make",
-      status: "completed", summary: null, started_at: T0 });
+      status: "completed", summary: null, end_reason: null, exit_code: 0, started_at: T0 });
     await vi.advanceTimersByTimeAsync(grace() + 10);
     expect(root.isActive()).toBe(false);
   });

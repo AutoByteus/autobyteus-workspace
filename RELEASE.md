@@ -187,6 +187,25 @@ gh run list --workflow release-desktop.yml --limit 1
 gh run watch <run-id> --exit-status       # about 25 minutes
 ```
 
+`pnpm release:test` runs only the Desktop Release. A change to
+`.github/workflows/release-server-docker.yml` or `autobyteus-server-ts/docker/**`
+needs the Server Docker Release's own build-only run:
+
+```bash
+gh workflow run release-server-docker.yml --ref <ticket-branch> -f build_only=true
+gh run list --workflow release-server-docker.yml --limit 1
+gh run watch <run-id> --exit-status
+gh run view <run-id> --json jobs          # job and step timings
+```
+
+It builds both architectures as a release does and pushes them untagged, by
+digest; checks the multi-arch index of those two digests without pushing a
+tag; and takes out, describes and signs both server packages. It publishes
+nothing: no Docker Hub tag, no `:beta` or `:latest` move, no GitHub release
+change. It has its own concurrency group, so it never waits for or blocks a
+release run. It refuses `release_tag`; add `-f publish_zh=true` to build the
+`zh` variant (no packages).
+
 - Local builds are never signed. A local build (TESTING.md's Fresh-start
   build, or any test build) is unsigned (`CSC_IDENTITY_AUTO_DISCOVERY=false`);
   signing and notarization need the release runners' secrets and happen only
@@ -281,7 +300,7 @@ Pushing a `v*` tag starts four workflows:
 | Desktop Release | macOS ARM64 and x64 (`.dmg`, `.zip`, blockmaps), Linux x64 and ARM64 AppImages, the Windows `.exe`, and the `latest*.yml` updater metadata, on the GitHub release. The updater metadata goes up last, after the server packages (below) |
 | Android APK Release | The signed APK and its `.sha256`, on the same GitHub release |
 | iOS App Store Connect Release | A TestFlight upload |
-| Server Docker Release | `autobyteus/autobyteus-server:X.Y.Z[-beta.N]`. A stable tag also moves `:latest`; the newest tag, stable or beta, moves `:beta`. Then, on the GitHub release, the signed server package per architecture (`x64`, `arm64`): `autobyteus-server-X.Y.Z[-beta.N]-linux-<arch>.tar.gz`, `.json` and `.json.sig` |
+| Server Docker Release | `autobyteus/autobyteus-server:X.Y.Z[-beta.N]`. A stable tag also moves `:latest`; the newest tag, stable or beta, moves `:beta`. Then, on the GitHub release, the signed server package per architecture (`x64`, `arm64`): `autobyteus-server-X.Y.Z[-beta.N]-linux-<arch>.tar.gz`, `.json` and `.json.sig`. Each architecture builds natively on its own runner (`ubuntu-latest`, `ubuntu-24.04-arm`) at the same time, with no layer cache; nothing is tagged until both have built |
 
 The four runs start independently, with one order between them on the GitHub
 release. A desktop is offered a version as soon as the release has its
@@ -298,7 +317,7 @@ by then (autobyteus-412). So Desktop Release's publish job:
    does not wait;
 3. "Publish the desktop updater files": uploads the four `latest*.yml` files.
 
-The Server Docker Release's package job waits up to 30 minutes for the GitHub
+The Server Docker Release's package job waits up to 60 minutes for the GitHub
 release to exist, then uploads its files. The desktop publish job therefore
 usually finishes after the Server Docker Release, and nothing waits in a
 circle. After the run, the asset times show the order (AC-005 of autobyteus-412):
@@ -378,6 +397,14 @@ run, removed on the user's decision ([`tickets/done/beta-release-v1.5.12-beta.2/
   with `gh run rerun <run-id> --failed`, or republish an existing tag with
   `pnpm release:manual-dispatch vX.Y.Z --ref personal`. Do not dispatch manually
   right after a fresh tag push. The push has already started the workflows.
+- **One Server Docker architecture failed** ("Build Server Image (linux/amd64)"
+  or "(linux/arm64)"): nothing is tagged until both architectures succeed, so
+  no tag, `:beta` move or package exists yet. Triage it (above), then
+  `gh run rerun <server-run-id> --failed`. That reruns only the failed
+  architecture's build job, then "Publish Server Image" and the package jobs;
+  the other architecture's earlier image is used as it is. Do not use "Re-run
+  all jobs": it rebuilds both architectures and re-pushes the version tag with
+  new images.
 - **The server packages are missing** (the desktop job "Publish GitHub Release"
   failed at "Wait for the server packages", whose error names the tag and the
   missing files; no `latest*.yml` is on the release). Triage the Server Docker
@@ -390,13 +417,13 @@ run, removed on the user's decision ([`tickets/done/beta-release-v1.5.12-beta.2/
      publishes the updater files. The build jobs are not rerun.
 
   The same steps recover the combined case. When the Android APK Release
-  fails and the desktop builds take longer than 30 minutes, no workflow has
-  created the GitHub release within the server package job's 30-minute wait,
-  so that job fails first ("did not appear within 30 minutes"). The desktop
-  publish job then creates the release with its binaries and fails after its
-  own 60-minute wait. By then the release exists, so rerunning the Server
-  Docker Release's failed jobs uploads the packages; then rerun the desktop
-  publish job. Recover the Android release on its own, as above.
+  fails, the desktop publish job creates the release with its binaries, about
+  30 minutes after the tag push; the server package job waits up to 60 minutes
+  for it and then uploads. Only when no release exists within that wait does the
+  package job fail ("did not appear within 60 minutes"); the desktop publish job
+  then fails after its own 60-minute wait. Once the release exists, rerunning
+  the Server Docker Release's failed jobs uploads the packages; then rerun the
+  desktop publish job. Recover the Android release on its own, as above.
 
 ## Rollback
 
@@ -498,7 +525,7 @@ What the release workflows build, validate and need.
 - Server Docker tags:
   - stable release tags publish `autobyteus/autobyteus-server:X.Y.Z` and `autobyteus/autobyteus-server:latest`
   - prerelease tags such as `v1.2.7-beta.1` publish `autobyteus/autobyteus-server:1.2.7-beta.1` and never move `:latest`
-  - `autobyteus/autobyteus-server:beta` (default variant only) moves forward only: after the version image is pushed, it points at that image when the tag is the newest recognized release tag, stable or beta (`scripts/release_versions.py is-newest`); re-publishing an older tag leaves it unchanged
+  - `autobyteus/autobyteus-server:beta` (default variant only) moves forward only: after both architectures are built and the version image is pushed, it points at that image when the tag is the newest recognized release tag, stable or beta (`scripts/release_versions.py is-newest`); re-publishing an older tag leaves it unchanged
   - public launcher users follow the beta track with `autobyteus-docker upgrade --all --tag beta` and return with `--tag latest` only once a stable release at least as new as their beta exists (see `autobyteus-server-ts/docker/README.md`)
 - Required GitHub repository secrets for Android APK publish:
   - `ANDROID_KEYSTORE_B64`

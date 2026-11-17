@@ -161,6 +161,13 @@ describe('AgentUserInputTextArea', () => {
     expect(wrapper.find('button[title="Stop generation"]').exists()).toBe(true);
   });
 
+  // autobyteus-506 REQ-004 / VIS-019: the text area's white background follows the composer box's lower corners.
+  it('rounds its lower corners so the composer box border stays continuous', async () => {
+    const wrapper = mount(withActiveComposerTarget(AgentUserInputTextArea))
+    await nextTick()
+    expect(wrapper.find('div.flex.flex-col.bg-white').classes()).toContain('rounded-b-[11px]')
+  })
+
   it('hides the voice button when voice input is not installed', async () => {
     const wrapper = mount(withActiveComposerTarget(AgentUserInputTextArea))
     await nextTick()

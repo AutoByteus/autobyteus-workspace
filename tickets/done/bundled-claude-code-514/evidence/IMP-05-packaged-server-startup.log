@@ -1,0 +1,12 @@
+# IMP-05 packaged server startup of the local macOS arm64 app
+# command: node autobyteus-web/scripts/verify-packaged-server-startup.mjs --server-root <app>/Contents/Resources/server --runtime-executable <app>/Contents/MacOS/AutoByteus
+# commit: 365fde4e5b; 2026-11-17T14:45:51Z
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Pre-loaded 33 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 3 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+Packaged server startup validation passed for /Users/normy/autobyteus_org/autobyteus-worktrees/bundled-claude-code-514/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server
+# exit: 0

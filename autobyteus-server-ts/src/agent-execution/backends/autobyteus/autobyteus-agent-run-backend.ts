@@ -27,7 +27,7 @@ import { AutoByteusStreamEventConverter } from "./events/autobyteus-stream-event
 import { projectAutoByteusAgentLifecycleSnapshot } from "./events/autobyteus-status-projector.js";
 import type { SystemInstructionTraceRecord } from "autobyteus-ts";
 import { PendingSystemInstructionEvent } from "../../events/pending-system-instruction-event.js";
-import { AutoByteusBackgroundTaskReporter, toAgentBackgroundTask } from "./autobyteus-background-task-reporter.js";
+import { AutoByteusBackgroundTaskReporter } from "./autobyteus-background-task-reporter.js";
 
 export type AutoByteusAgentLike = {
   agentId: string;
@@ -109,7 +109,7 @@ export class AutoByteusAgentRunBackend implements AgentRunBackend {
   /** Native background tasks stream as `BACKGROUND_TASK_UPDATED` events (see the reporter); `current()` lists them now. */
   readonly backgroundTaskInspection = {
     kind: 'event-stream',
-    current: () => (this.backgroundProcesses?.list() ?? []).map(toAgentBackgroundTask),
+    current: () => this.backgroundTaskReporter?.list() ?? [],
   } as const;
   /** The run's `BackgroundProcessManager` owns its background tasks; the platform delivers their notices. */
   readonly backgroundTaskNotices: Extract<AgentRunBackgroundTaskNoticesCapability, { kind: "platform" }> = {
@@ -327,6 +327,8 @@ export class AutoByteusAgentRunBackend implements AgentRunBackend {
     });
     this.terminationPromise = (async () => {
       try {
+        // Removing the agent stops its background commands; their ends are the run's end.
+        this.backgroundTaskReporter?.markRunEnding();
         const removed = await Promise.race([
           this.options.removeAgent(this.runId, Math.max(0, deadline - Date.now()) / 1000), timeout,
         ]);

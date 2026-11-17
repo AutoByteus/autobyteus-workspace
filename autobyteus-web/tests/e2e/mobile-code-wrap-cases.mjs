@@ -331,7 +331,8 @@ export const runCodeWrapCases = async (probe) => {
     let copied = selected;
     if (viaClipboard) {
       await page.evaluate(() => navigator.clipboard.writeText('')).catch(() => undefined);
-      await page.keyboard.press('Control+C');
+      // The platform's copy shortcut: Ctrl+C copies nothing in Chrome on macOS (Cmd+C does).
+      await page.keyboard.press('ControlOrMeta+C');
       await sleep(150);
       copied = await page.evaluate(() => navigator.clipboard.readText());
     }

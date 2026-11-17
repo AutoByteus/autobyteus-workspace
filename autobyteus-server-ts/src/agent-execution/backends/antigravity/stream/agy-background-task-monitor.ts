@@ -23,9 +23,9 @@ const DEFAULT_POLL_INTERVAL_MS = 2_000;
 /**
  * Owns the Antigravity background tasks of one run. AGY's stream never reports a daemon's
  * exit, so while any task runs this polls AGY's conversation message files and finishes a
- * task when its exit message appears (exit code 0 -> completed, otherwise failed). When AGY
- * stops, every task still running becomes stopped; an unreadable or unknown message format
- * therefore never produces a false completion.
+ * task when its exit message appears (exit code 0 -> completed, otherwise failed; its exit code
+ * kept). When AGY stops, every task still running becomes stopped because the run ended; an
+ * unreadable or unknown message format therefore never produces a false completion.
  */
 export class AgyBackgroundTaskMonitor {
   private readonly running = new Map<number, AgentBackgroundTask>();
@@ -59,6 +59,8 @@ export class AgyBackgroundTaskMonitor {
         command: step.commandLine,
         status: "running",
         summary: null,
+        endReason: null,
+        exitCode: null,
         startedAt: this.now().toISOString(),
       });
       this.running.set(step.stepIndex, task);
@@ -72,12 +74,12 @@ export class AgyBackgroundTaskMonitor {
   /** The tasks running now (an ended task is no longer kept). */
   list(): readonly AgentBackgroundTask[] { return [...this.running.values()]; }
 
-  /** AGY stopped: every running task becomes stopped and the monitor stays inert. */
+  /** AGY stopped: every running task becomes stopped because the run ended, and the monitor stays inert. */
   stopAll(): void {
     if (this.stopped) return;
     this.stopped = true;
     this.clearTimer();
-    const stopped = [...this.running.values()].map((task) => Object.freeze({ ...task, status: "stopped" as const }));
+    const stopped = [...this.running.values()].map((task) => Object.freeze({ ...task, status: "stopped" as const, endReason: "run_ended" as const }));
     this.running.clear();
     if (stopped.length > 0) this.options.emit(stopped);
   }
@@ -102,7 +104,9 @@ export class AgyBackgroundTaskMonitor {
       const exit = this.exits.get(stepIndex);
       if (!exit) continue;
       this.running.delete(stepIndex);
-      finished.push(Object.freeze({ ...task, status: exit.exitCode === 0 ? "completed" : "failed", summary: exit.summary }));
+      finished.push(Object.freeze({
+        ...task, status: exit.exitCode === 0 ? "completed" : "failed", summary: exit.summary, exitCode: exit.exitCode,
+      }));
     }
     if (finished.length > 0) this.options.emit(finished);
     if (this.running.size > 0 && !this.stopped) this.schedule(this.pollIntervalMs);

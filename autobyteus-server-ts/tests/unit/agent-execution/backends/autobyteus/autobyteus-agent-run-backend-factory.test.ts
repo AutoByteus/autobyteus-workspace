@@ -5,6 +5,7 @@ import { NativeCommandProcessScope } from "autobyteus-ts";
 import { createTeamRootExecutionIdentity, type CollaborationMemberExecutionIdentity } from "../../../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { NATIVE_LONG_RUNNING_COMMAND_SECTION } from "../../../../../src/agent-execution/prompt/long-running-command-sections.js";
 import { onTestFinished } from "vitest";
 import { AgentConfig, CompactionPolicy, LLMFactory } from "autobyteus-ts";
 import { BaseLLM } from "autobyteus-ts/llm/base.js";
@@ -362,6 +363,8 @@ describe("AutoByteusAgentRunBackendFactory", () => {
       "delegate_task",
     ]);
     expect(built.agentConfig.systemPrompt).toContain("## Agent Identity");
+    // autobyteus-483 AC-011: the native Long-Running Commands section ends the prompt.
+    expect(built.agentConfig.systemPrompt.endsWith(`\n\n${NATIVE_LONG_RUNNING_COMMAND_SECTION}`)).toBe(true);
     expect(built.agentConfig.systemPrompt).toContain("## Team Instruction");
     expect(built.agentConfig.systemPrompt).toContain("## AgentTeam Addressing");
     expect(built.agentConfig.systemPrompt).toContain("## Working With Other Agents");
@@ -541,6 +544,8 @@ describe("AutoByteusAgentRunBackendFactory", () => {
       "send_message_to",
       "assign_task_to",
     ]);
+    // Native tool search (autobyteus-515): the base tools are listed, every other tool is searchable.
+    expect(built.agentConfig.listedToolNames).toEqual(["run_bash", "read_file", "edit_file", "write_file"]);
   });
 
   it("routes mixed AutoByteus send_message_to through server delivery and reports rejected delivery", async () => {

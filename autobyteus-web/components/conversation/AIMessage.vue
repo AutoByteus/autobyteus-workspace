@@ -1,7 +1,7 @@
 <template>
   <div>
-    <div class="flex items-start gap-3 pr-8">
-      <div class="h-9 w-9 shrink-0 overflow-hidden rounded-full bg-emerald-50 border border-emerald-200 flex items-center justify-center">
+    <div class="conv-turn flex items-start gap-3 pr-8">
+      <div class="conv-avatar h-9 w-9 shrink-0 overflow-hidden rounded-full bg-emerald-50 border border-emerald-200 flex items-center justify-center">
         <img
           v-if="showAvatarImage"
           :src="avatarUrl"
@@ -12,7 +12,9 @@
         <span v-else class="text-xs font-semibold tracking-wide text-slate-600">{{ avatarInitials }}</span>
       </div>
 
-      <div class="min-w-0 flex-1 pt-0.5">
+      <!-- The phone's speaker line (autobyteus-506); hidden on the desktop. -->
+      <span class="conv-speaker" aria-hidden="true">{{ displayAgentName }}</span>
+      <div class="conv-body min-w-0 flex-1 pt-0.5">
         <span class="sr-only">{{ displayAgentName }}</span>
         <div>
           <template v-for="(segment, segmentIndex) in message.segments" :key="segmentIndex">

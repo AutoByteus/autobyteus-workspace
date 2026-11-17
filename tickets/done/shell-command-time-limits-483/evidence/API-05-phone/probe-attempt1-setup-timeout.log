@@ -1,0 +1,15 @@
+# API-05 attempt 1: same command; setup failed: AGY model discovery timed out (machine load avg ~88)
+# product commit c77d83ef27; tests as in 48d2a4da58 (+ baseline fix ea86a9affe where named); macOS 26 arm64; Node 22.23.1; 2026-11-17
+
+> autobyteus@1.5.13-beta.8 test:e2e:mobile-shell /Users/normy/autobyteus_org/autobyteus-worktrees/shell-command-time-limits-483/autobyteus-web
+> node tests/e2e/mobile-shell-probe.mjs --output-dir=/Users/normy/autobyteus_org/autobyteus-worktrees/shell-command-time-limits-483/tickets/in-progress/shell-command-time-limits-483/evidence/API-05-phone/probe --cases=MSP-47,MSP-48,MSP-49,MSP-59
+
+mobile-shell probe: Fail
+Error: AgyDiscoveryError: Antigravity model discovery timed out; check the CLI and retry.
+    at assert (file:///Users/normy/autobyteus_org/autobyteus-worktrees/shell-command-time-limits-483/autobyteus-web/tests/e2e/mobile-shell-probe.mjs:241:87)
+    at createAgentRun (file:///Users/normy/autobyteus_org/autobyteus-worktrees/shell-command-time-limits-483/autobyteus-web/tests/e2e/mobile-shell-probe.mjs:394:5)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async setUp (file:///Users/normy/autobyteus_org/autobyteus-worktrees/shell-command-time-limits-483/autobyteus-web/tests/e2e/mobile-shell-probe.mjs:411:19)
+    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/shell-command-time-limits-483/autobyteus-web/tests/e2e/mobile-shell-probe.mjs:2560:3
+ ELIFECYCLE  Command failed with exit code 1.
+EXIT 1

@@ -47,6 +47,7 @@ import { findConfiguredAgentByAddress } from '~/services/teamExecution/teamExecu
 import { createWorkspaceMetadata } from '~/utils/workspaceMetadata';
 import { useRightSideTabs } from '~/composables/useRightSideTabs';
 import { mentionsPresentInText, toCollaboratorMentionDtos, type RequestedCollaboratorMention } from '~/utils/collaborators/collaboratorMentionText';
+import { sameRunInstance } from '~/utils/runInstanceOwnership';
 
 const teamStreamingServices = new Map<string, TeamStreamingService>();
 const inputDedupeKey = (rootTeamRunId: string, agentRunId: string, messageId: string) =>
@@ -230,7 +231,7 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
         if ([...members.values()].some((old) => !entries.some((entry) =>
           entry.agentRunId === old.agentRunId && entry.memberAddress === old.memberAddress
           && entry.agentContext === old.agentContext && entry.agentContext.state === old.state
-          && (!old.state.inputProjection?.runInstanceId || old.state.inputProjection.runInstanceId === old.instance)))) return false;
+          && sameRunInstance(old.instance, old.state.inputProjection?.runInstanceId)))) return false;
         for (const { agentRunId, agentContext } of entries) {
           if (agentContext.config.runtimeKind !== 'autobyteus') continue;
           agentContext.state.compactionStatus = activities.applyConfirmedNativeTermination(agentRunId,

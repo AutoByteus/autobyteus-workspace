@@ -19,7 +19,7 @@ enableAutoUnmount(afterEach);
 
 const target = { context: { state: { runId: 'run-1' }, config: { runtimeKind: 'claude_agent_sdk' } } } as never;
 const running = { taskId: 'bg-1', kind: 'shell', description: 'Run the phone probe', command: 'pnpm test:e2e:mobile-shell',
-  status: 'running', summary: null, startedAt: '2026-11-12T10:00:00.000Z' };
+  status: 'running', summary: null, endReason: null, exitCode: null, startedAt: '2026-11-12T10:00:00.000Z' };
 const eventStream = (currentTasks: unknown[]) => ({ data: { agentBackgroundTaskView: { __typename: 'AgentBackgroundTaskEventStream', agentRunId: 'run-1', currentTasks } } });
 
 beforeEach(() => {
@@ -56,7 +56,7 @@ describe('the phone Activity: background tasks (autobyteus-473)', () => {
     io.query.mockResolvedValue(eventStream([running]));
     const wrapper = await open();
     const store = useAgentBackgroundTaskStore();
-    store.upsertTask('run-1', { ...running, status: 'failed', summary: 'exit code 1' } as never);
+    store.upsertTask('run-1', { ...running, status: 'failed', exitCode: 1 } as never);
     store.upsertTask('run-1', { ...running, taskId: 'bg-2', description: 'Build the app', command: 'Build the app', startedAt: '2026-11-12T11:00:00.000Z' } as never);
     await flushPromises();
     const rows = wrapper.findAll('[data-testid="mobile-background-task"]');
@@ -66,6 +66,18 @@ describe('the phone Activity: background tasks (autobyteus-473)', () => {
     expect(rows[0]!.find('[data-testid="mobile-background-task-command"]').exists()).toBe(false);
     expect(rows[1]!.get('[data-testid="mobile-background-task-end"]').text()).toBe('exit code 1');
     expect(rows[1]!.text()).toContain('Failed');
+  });
+
+  it.each([
+    ['time limit (AC-005)', { status: 'stopped', endReason: 'time_limit', summary: 'Background command "x" was stopped after reaching its background time limit' }, 'Stopped: it reached its time limit — not a failure of the command'],
+    ['low memory', { status: 'stopped', endReason: 'low_memory' }, 'Stopped: the computer was low on memory'],
+    ['run end (AC-007)', { status: 'stopped', endReason: 'run_ended', summary: 'signal SIGTERM' }, 'Stopped: the run ended'],
+    ['stop without a cause (AC-008)', { status: 'stopped', summary: 'signal SIGTERM' }, 'signal SIGTERM'],
+  ])('autobyteus-483 says in one line how a task ended: %s', async (_label, end, line) => {
+    io.query.mockResolvedValue(eventStream([{ ...running, ...end }]));
+    const wrapper = await open();
+    expect(wrapper.get('[data-testid="mobile-background-task-end"]').text()).toBe(line);
+    expect(wrapper.get('[data-testid="mobile-background-task"]').text()).toContain('Stopped');
   });
 
   it('REQ-004 shows no section for a runtime that does not report background tasks, nor when there are none', async () => {

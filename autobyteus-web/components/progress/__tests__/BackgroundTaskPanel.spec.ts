@@ -32,7 +32,7 @@ import BackgroundTaskPanel from '../BackgroundTaskPanel.vue';
 
 const task = (overrides: Partial<BackgroundTask> = {}): BackgroundTask => ({
   taskId: 'task-1', kind: 'shell', description: 'sleep 20; echo done > marker', command: null, status: 'running',
-  summary: null, startedAt: '2026-09-29T16:48:20.000Z', ...overrides,
+  summary: null, endReason: null, exitCode: null, startedAt: '2026-09-29T16:48:20.000Z', ...overrides,
 });
 
 const mountPanel = (collapsed = false) => mount(BackgroundTaskPanel, {
@@ -77,6 +77,44 @@ describe('BackgroundTaskPanel', () => {
     store.upsertTask('run-1', task({ taskId: 'new', kind: 'subagent', description: 'Research lighthouses', status: 'completed', summary: 'Wrote it.' }));
     await wrapper.vm.$nextTick();
     expect(wrapper.get('[data-test="background-tasks-counts"]').text()).toBe('0 running · 2 total');
+  });
+
+  describe('end line (autobyteus-483, REQ-004)', () => {
+    const TIME_LIMIT_SUMMARY = 'Background command "Wait for CI" was stopped after reaching its background time limit';
+
+    it.each([
+      ['time limit (AC-005)', { status: 'stopped', endReason: 'time_limit', summary: TIME_LIMIT_SUMMARY }, 'Stopped: it reached its time limit — not a failure of the command'],
+      ['low memory', { status: 'stopped', endReason: 'low_memory' }, 'Stopped: the computer was low on memory'],
+      ['run end (AC-007)', { status: 'stopped', endReason: 'run_ended', summary: 'signal SIGTERM' }, 'Stopped: the run ended'],
+      ['exit code (AC-006)', { status: 'failed', exitCode: 1 }, 'Exit code 1'],
+      ['exit code 0', { status: 'completed', exitCode: 0 }, 'Exit code 0'],
+    ] as const)('shows one line for a %s end, with the status chip unchanged', (_label, overrides, line) => {
+      useAgentBackgroundTaskStore().upsertTask('run-1', task(overrides));
+      const row = mountPanel().get('[data-test="background-task-row"]');
+
+      expect(row.findAll('[data-test="background-task-end"]').map((end) => end.text())).toEqual([line]);
+      expect(row.text()).toContain(overrides.status === 'failed' ? 'Failed' : overrides.status === 'completed' ? 'Completed' : 'Stopped');
+    });
+
+    it('keeps the runtime summary next to the end line', () => {
+      useAgentBackgroundTaskStore().upsertTask('run-1', task({ status: 'stopped', endReason: 'time_limit', summary: TIME_LIMIT_SUMMARY }));
+      const row = mountPanel().get('[data-test="background-task-row"]');
+
+      expect(row.get('[data-test="background-task-summary"]').text()).toBe(TIME_LIMIT_SUMMARY);
+    });
+
+    it('shows only the runtime summary for a stop without a reported cause (AC-008)', () => {
+      useAgentBackgroundTaskStore().upsertTask('run-1', task({ status: 'stopped', summary: 'signal SIGTERM' }));
+      const row = mountPanel().get('[data-test="background-task-row"]');
+
+      expect(row.find('[data-test="background-task-end"]').exists()).toBe(false);
+      expect(row.get('[data-test="background-task-summary"]').text()).toBe('signal SIGTERM');
+    });
+
+    it('shows no end line while a task runs', () => {
+      useAgentBackgroundTaskStore().upsertTask('run-1', task());
+      expect(mountPanel().find('[data-test="background-task-end"]').exists()).toBe(false);
+    });
   });
 
   it('shows the full description on hover and expands a long summary on click', async () => {

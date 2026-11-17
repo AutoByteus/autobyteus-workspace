@@ -1,0 +1,28 @@
+# IMP-06 full autobyteus-ts suite, second run (after the test updates)
+# Command: env -u AUTOBYTEUS_TEST_VAULT pnpm -C autobyteus-ts test
+# Commit: 49867e8dc4
+# Environment: macOS (darwin 25.5), Node v22.23.1; machine load average 85-116 from other processes during the full-suite runs
+# Date: 2026-11-17
+
+Excerpt (full log 2 MB, not committed): failing files and summary
+   2  FAIL  tests/integration/agent/tool-approval-flow.test.ts
+  11  FAIL  tests/integration/tools/terminal/run-bash-wrapper.test.ts
+   1  FAIL  tests/integration/tools/terminal/terminal-tools.test.ts
+   3  FAIL  tests/unit/tools/terminal/command-execution/call-output-lifetime.test.ts
+   3  FAIL  tests/unit/tools/terminal/command-execution/stop-retirement-race.test.ts
+ Test Files  5 failed | 401 passed | 23 skipped (429)
+      Tests  20 failed | 2468 passed | 107 skipped (2595)
+
+251: FAIL  tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes run_bash after approval
+252-AssertionError: expected '' to contain 'approval_ok'
+253-
+254-- Expected
+255-+ Received
+256-
+257-- approval_ok
+258-
+259- ❯ tests/integration/agent/tool-approval-flow.test.ts:428:27
+260-    426|     expect(toolEvent).toBeDefined();
+261-    427|     const result = (toolEvent as { event: ToolResultEvent }).event.res…
+262-    428|     expect(result.stdout).toContain('approval_ok');
+263-       |                           ^

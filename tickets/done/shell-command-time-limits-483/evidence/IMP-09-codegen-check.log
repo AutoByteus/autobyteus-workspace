@@ -1,0 +1,4 @@
+# IMP-09 GraphQL codegen check
+# command: pnpm -C autobyteus-web codegen:check
+# commit: f6cdf0fb15; node v22.23.1; macOS 26.5.2; 2026-11-17T11:01:48Z
+autobyteus-web/generated/graphql.ts is current.

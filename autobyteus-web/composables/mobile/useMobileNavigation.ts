@@ -2,10 +2,11 @@ import { computed } from 'vue';
 import { useRoute, useRouter, type LocationQuery, type LocationQueryRaw } from 'vue-router';
 
 /** The phone's screens (UIS-001…UIS-010); the run list is the entry without a `screen` key. */
-export type MobileScreen = 'list' | 'run' | 'artifacts' | 'files' | 'messages' | 'activity' | 'desktop' | 'new';
-export type MobileView = 'artifacts' | 'files' | 'messages' | 'activity' | 'desktop';
+export type MobileScreen = 'list' | 'run' | 'artifacts' | 'files' | 'messages' | 'activity' | 'desktop' | 'settings' | 'new';
+/** `settings`: the open run's runtime and model (autobyteus-458). */
+export type MobileView = 'artifacts' | 'files' | 'messages' | 'activity' | 'desktop' | 'settings';
 
-const SCREENS: readonly MobileScreen[] = ['run', 'artifacts', 'files', 'messages', 'activity', 'desktop', 'new'];
+const SCREENS: readonly MobileScreen[] = ['run', 'artifacts', 'files', 'messages', 'activity', 'desktop', 'settings', 'new'];
 /** `full=1`: the VNC Viewer's in-page full screen, its own entry, so Back leaves full screen first. */
 const SCREEN_KEYS = ['screen', 'file', 'workspace', 'nodeFile', 'contextFile', 'contextFileName', 'reference', 'message', 'full'] as const;
 /** The Org route keys, built only by `agentOrgRouteQuery`; `activeWorkspaceTarget` resolves the open Org from them. */

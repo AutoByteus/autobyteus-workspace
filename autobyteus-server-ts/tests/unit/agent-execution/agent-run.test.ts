@@ -1313,7 +1313,7 @@ describe("AgentRun input-state publication (agent-input-state-content-cadence)",
 // autobyteus-473 DS-002: an event-stream run answers the background-task view with the tasks its runtime knows now.
 describe("AgentRun background-task view", () => {
   const task = Object.freeze({ taskId: "bg-1", kind: "shell" as const, description: "pnpm build", command: "pnpm build",
-    status: "running" as const, summary: null, startedAt: "2026-11-12T10:00:00.000Z" });
+    status: "running" as const, summary: null, endReason: null, exitCode: null, startedAt: "2026-11-12T10:00:00.000Z" });
 
   it("answers an event-stream run with its current tasks, read when asked", async () => {
     const { backend, run } = createHarness();

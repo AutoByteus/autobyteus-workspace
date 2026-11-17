@@ -8,7 +8,7 @@ import type { AgentInputStateDto, CompactionRecoveryBlockDto, CompactionRecovery
 
 import type { AgentCommandAckPayload } from './agentCommandTypes';
 import type { JsonValue } from '@autobyteus/team-stream-contracts';
-import type { BackgroundTaskKind, BackgroundTaskStatus } from '~/types/backgroundTask';
+import type { BackgroundTaskEndReason, BackgroundTaskKind, BackgroundTaskStatus } from '~/types/backgroundTask';
 export type {
   AgentCommandAckPayload,
   InterruptCommandTarget,
@@ -203,6 +203,8 @@ export interface BackgroundTaskUpdatedPayload {
   command: string | null;
   status: BackgroundTaskStatus;
   summary: string | null;
+  end_reason: BackgroundTaskEndReason | null;
+  exit_code: number | null;
   started_at: string;
 }
 

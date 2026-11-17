@@ -849,8 +849,16 @@ through `allowedTools` according to the configured tool exposure. Claude Code
 tool names can change between Claude Code releases. The CLI that actually runs
 is resolved by `resolveClaudeCodeExecutablePath()`: an explicit
 `CLAUDE_CODE_EXECUTABLE_PATH` / `CLAUDE_CODE_PATH` / `CLAUDE_CLI_PATH` override
-first, then `claude` on `PATH`. It is therefore not necessarily the CLI bundled
-with the pinned SDK. Re-verify both lists against the CLI in use whenever the SDK
+first, then `claude` on `PATH`. It is therefore not necessarily the version the
+pinned SDK was built with, and the SDK's own platform binary is never used: every
+`query` passes this path (sessions, model catalog and usage), and the desktop
+builds and the Docker server package no longer ship the SDK's
+`@anthropic-ai/claude-agent-sdk-<platform>` packages (about 200 MB each; the SDK
+package itself stays, and the build fails when it is missing; see
+[Electron Packaging](../../../autobyteus-web/docs/electron_packaging.md)). A user
+without an installed Claude Code sees Claude as not available. A future SDK that
+looks up its binary even when a path is passed would fail with its own "Native CLI
+binary … not found" error. Re-verify both lists against the CLI in use whenever the SDK
 version changes and whenever the resolved Claude Code CLI is updated. Sessions
 created before this policy keep any earlier agent-type listing in their
 persisted transcript history. On resume, the tool list itself is still
@@ -870,12 +878,32 @@ which stops its background tasks. A delegated copy is not idle-shut-down while
 (its `backgroundTaskInspection` counts one, `runningBackgroundTaskCount`), so the task can finish and the agent can report
 back; see [Delegated Child Lifecycle](./agent_team_execution.md#delegated-run-lifecycle). An unexpected exit fails the active turn with a turn-terminal `ERROR`
 carrying stderr diagnostics, and the next input reopens the session with
-`resume`. Claude CLI defaults apply: AutoByteus sets no background-task or Bash
-timeout environment variables. An operator's own environment still passes through
-unchanged. If the server environment sets `CLAUDE_CODE_DISABLE_BACKGROUND_TASKS`,
-Claude agents cannot run background commands, and a warning is logged at each
-process open. Unset it (and any `BASH_*_TIMEOUT_MS` you did not intend) to get
-the CLI defaults. The intrinsic Agent Tools MCP descriptor alone
+`resume`. **Shell time limits.** AutoByteus gives every Claude Code child
+two-hour shell limits: `buildClaudeSdkSpawnEnvironment` sets
+`BASH_DEFAULT_TIMEOUT_MS` and `BASH_MAX_TIMEOUT_MS` to `7200000`
+(`runtime-management/claude/claude-shell-time-limit-setting.ts`). Claude Code
+(2.1.325) takes its foreground default and maximum from those two variables, its
+background default from the larger of 30 minutes and `BASH_DEFAULT_TIMEOUT_MS`,
+and its background maximum from the larger of 2 hours and `BASH_MAX_TIMEOUT_MS`,
+so all four limits are 2 hours. A value the server environment already defines,
+or the user's Claude Code settings `env` (which Claude Code applies over the
+process value), is kept: AutoByteus only fills in a missing variable, and has no
+setting of its own for it. Claude Code still stops a command at its limit and
+notifies the agent, and a call's own `timeout` still shortens that command's
+limit; the Background Tasks panel then reads "Stopped: it reached its time limit"
+(end reason, below). The other runtimes stop no long command on a clock, so
+AutoByteus changes none of their limits: Codex, Grok, Antigravity (daemon and
+non-daemon) and the native runtime each ran a 35-minute background command to
+completion in the live check
+(`tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts`, gate
+`RUN_LONG_COMMAND_LIMITS_E2E`). Each runtime's system prompt teaches the long-job
+habit in its own tools' terms (see
+[Prompt Engineering](./prompt_engineering.md#long-running-commands-section)). An
+operator's other environment passes through unchanged. If the server environment
+sets `CLAUDE_CODE_DISABLE_BACKGROUND_TASKS`, Claude agents cannot run background
+commands, and a warning is logged at each process open. Unset it (and any
+`BASH_*_TIMEOUT_MS` you did not intend) to get AutoByteus' defaults. The
+intrinsic Agent Tools MCP descriptor alone
 is marked `alwaysLoad: true` so required Team tools are ready on the first
 turn. Tool exposure, the MCP descriptor, system-prompt capture, and the
 selected-model binding are resolved once per process open.
@@ -908,8 +936,15 @@ CLI lists it in `background_tasks_changed`, reports `task_started` with
 `task_updated` (`completed`, `failed`, `killed` → `stopped`) or
 `task_notification` (`completed`, `failed`, `stopped`, with `summary`) finishes
 it; `task_progress` is ignored. When the process closes or exits, running tasks
-become `stopped`. A turn-level Stop leaves them running, because the CLI keeps
-them alive. Raw `task_type` maps to the shared kind: `local_bash` → `shell`,
+become `stopped` with end reason `run_ended`. A turn-level Stop leaves them
+running, because the CLI keeps them alive. The end reason and exit code of an
+ended task come only from the notification (`claude-background-task-end.ts`, the
+one place that knows the CLI's wording, as of 2.1.325): `completed (exit code N)`
+and `failed with exit code N` give the exit code; `stopped after reaching its
+background time limit` gives `time_limit`; `stopped because the system is running
+low on memory` gives `low_memory`; the SDK's `reason: worker_restart` gives
+`run_ended`. Any other wording (a `TaskStop`, a later CLI version) gives neither,
+and the panel shows the CLI's summary. Raw `task_type` maps to the shared kind: `local_bash` → `shell`,
 `local_agent` → `subagent`, `local_workflow` → `workflow`, `monitor_*` →
 `monitor`, anything else → `other`. Every change is emitted as one
 `BACKGROUND_TASK_UPDATED` snapshot.
@@ -940,10 +975,19 @@ AutoByteus does not enable `Monitor` for Claude sessions.
 
 `BACKGROUND_TASK_UPDATED` (`agent-execution/domain/agent-background-task.ts`)
 is the runtime-neutral background-task event: `{task_id, kind, description,
-command, status, summary, started_at}`, a full snapshot of one task applied as an upsert
-by `task_id`. `command` is always present: the exact shell command the task
-runs, or `null` when the runtime does not know one. Claude, Antigravity and the
-native AutoByteus runtime produce it. It usually arrives between
+command, status, summary, end_reason, exit_code, started_at}`, a full snapshot of
+one task applied as an upsert by `task_id`. `command` is always present: the exact
+shell command the task runs, or `null` when the runtime does not know one.
+`end_reason` and `exit_code` (autobyteus-483) are always present too, `null` while
+the task runs and when the runtime reports no cause or no exit code (a clean cut:
+no optional reading). `end_reason` is `time_limit` (the runtime's time limit
+stopped it; not a failure of the command), `low_memory` (the runtime stopped it
+because the computer was low on memory) or `run_ended` (the run or its runtime
+process ended); a stop the runtime gives no cause for, such as the agent's own
+`kill <pid>` or Claude's `TaskStop`, has none and keeps its `summary`. The
+desktop panel and the phone's Activity show one line from them (see
+[Agent Execution Architecture](../../../autobyteus-web/docs/agent_execution_architecture.md)).
+Claude, Antigravity and the native AutoByteus runtime produce it. It usually arrives between
 turns, so it is not turn activity (it is not in `ACTIVITY_EVENT_TYPES` and
 never changes run status), and it is not persisted in memory or run history.
 
@@ -960,8 +1004,13 @@ end (exit code, signal, or an unknown end) and whether the end was reported.
   (`autobyteus-background-task-reporter.ts`) and publishes every start and end
   as `BACKGROUND_TASK_UPDATED` (`taskId` = the pid, `kind: shell`, status
   `running`, then `completed` for exit code 0, `failed` for another exit code or
-  an unknown end, `stopped` for a signal; `summary` `exit code N` / `signal X`).
-  Its `backgroundTaskInspection` is `event-stream`, so the Background Tasks panel
+  an unknown end, `stopped` for a signal). An exit code is the `exitCode` field,
+  not summary text (`summary` stays `null`); a signal or an error end has
+  `summary` `signal X` / the error. Once the backend begins to end the run
+  (`markRunEnding()`, before it stops the run's commands), every end without an
+  exit code is the run's end: `stopped` with `end_reason: run_ended`; the agent's
+  own `kill <pid>` has no reason. Its `backgroundTaskInspection` is
+  `event-stream`, so the Background Tasks panel
   shows the rows, and `runningBackgroundTaskCount` counts it while it runs, so a
   delegated copy is not idle-shut-down meanwhile (see
   [Agent Team Execution](./agent_team_execution.md)).
@@ -1060,7 +1109,7 @@ An event-stream run answers the view with its current tasks (autobyteus-473):
 the `event-stream` inspection's `current()` lists the tasks its runtime knows
 now, and `AgentBackgroundTaskEventStream.tasks` carries them
 (`AgentBackgroundTask`: `taskId`, `kind`, `description`, `command`, `status`,
-`summary`, `startedAt`). A viewer that opens the run, or reloads, after a task
+`summary`, `endReason`, `exitCode`, `startedAt`). A viewer that opens the run, or reloads, after a task
 started therefore sees it at once; later changes still arrive as
 `BACKGROUND_TASK_UPDATED`. Claude lists its registry's view (running and ended
 tasks until the process ends), AutoByteus its `BackgroundProcessManager.list()`

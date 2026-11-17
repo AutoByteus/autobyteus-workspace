@@ -106,6 +106,21 @@ legacy local task tools but does not remove any foundation tool. The existing
 `write_file` trusted-local path, approval, overwrite, and execution contracts
 remain authoritative.
 
+That effective set is what the agent *has*; it is not what every request
+*carries*. The backend passes `AUTOBYTEUS_DEFAULT_TOOL_NAMES` to the agent as its
+`listedToolNames` (the native policy lives in the backend factory, not in the
+library). A native request then holds the full definitions of the four base tools
+plus the library's own `search_tools` and `call_tool`; every other tool the run
+has (configured, collaboration, platform-given, MCP-origin, application tools) is
+*searchable*: the agent finds it with `search_tools` and calls it with
+`call_tool`, and from the call on it is that tool for approval, events and the
+run's history. The request's tool set does not change during the run, so adding
+or removing a tool (a definition edit) changes only what search finds. See
+`autobyteus-ts/docs/tool_schema_and_configuration.md` §4.8 and the
+[Glossary](../../../GLOSSARY.md) terms *Listed tool*, *Searchable tool* and
+*Tool search*. Claude Agent SDK and Codex App Server keep their own tool
+searches; nothing of this applies to them.
+
 Direct native compaction bypasses Agent construction entirely and sends no tool
 schemas to its isolated LLM. The former exact-ID Memory Compactor empty-tool
 exception is removed. It must not be used to infer tool exposure for ordinary

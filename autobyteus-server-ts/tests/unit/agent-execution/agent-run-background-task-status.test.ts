@@ -73,7 +73,7 @@ describe("the example sequence through a scripted event-stream backend", () => {
     const event = (eventType: AgentRunEventType, payload: Record<string, unknown> = {}): AgentRunEvent =>
       ({ eventType, runId: "run-seq", payload: { turn_id: turnId, ...payload }, statusHint: null }) as AgentRunEvent;
     const task = (status: AgentBackgroundTask["status"]): AgentBackgroundTask =>
-      ({ taskId: "t1", kind: "shell", description: "pnpm build", command: "pnpm build", status, summary: null, startedAt: "2026-11-17T10:00:00.000Z" });
+      ({ taskId: "t1", kind: "shell", description: "pnpm build", command: "pnpm build", status, summary: null, endReason: null, exitCode: null, startedAt: "2026-11-17T10:00:00.000Z" });
 
     phase = "running";
     emit([event(AgentRunEventType.TURN_STARTED)]);                                         // 1 turn starts
@@ -107,7 +107,7 @@ describe("the example sequence through a scripted event-stream backend", () => {
       runId: "run-msg", runtimeKind: context.config.runtimeKind,
       compactionRecovery: { kind: "unsupported" } as const, backgroundTaskNotices: { kind: "unsupported" } as const,
       backgroundTaskInspection: { kind: "event-stream" as const, current: () => [{ taskId: "t", kind: "shell" as const, description: "x", command: "x",
-        status: "running" as const, summary: null, startedAt: "2026-11-17T10:00:00.000Z" }] },
+        status: "running" as const, summary: null, endReason: null, exitCode: null, startedAt: "2026-11-17T10:00:00.000Z" }] },
       inputCapabilities: { activeTurnAppend: "supported" },
       getContext: () => context, getPlatformAgentRunId: () => "run-msg", isActive: () => true,
       getLifecycleSnapshot: () => ({ availability: "active", phase: "idle", currentTurn: { kind: "NONE" } }),

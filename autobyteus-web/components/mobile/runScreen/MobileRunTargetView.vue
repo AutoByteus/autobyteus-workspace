@@ -14,7 +14,7 @@
           </span>
         </span>
       </div>
-      <MobileRunMenu :show-messages="showMessages" :show-desktop="showDesktop" @open-view="$emit('open-view', $event)" />
+      <MobileRunMenu :show-messages="showMessages" :show-desktop="showDesktop" :show-settings="showSettings" @open-view="$emit('open-view', $event)" />
     </header>
 
     <div v-if="unreachable" class="min-h-0 flex-1 overflow-y-auto" data-testid="mobile-run-unreachable">
@@ -52,9 +52,9 @@ import type { MobileView } from '~/composables/mobile/useMobileNavigation';
 import { useNodeDesktopAvailability } from '~/composables/useNodeDesktopAvailability';
 import { useTargetConversation } from '~/composables/workspace/useTargetConversation';
 import type { ActiveAgentWorkspaceTarget } from '~/types/workspace/activeAgentWorkspaceTarget';
-import { mobileRunActivityLabel } from '~/utils/mobile/mobileRunStatusLabel';
 import { useLocalization } from '~/composables/useLocalization';
-import { agentStatusDotClass } from '~/utils/workspaceStatusDotPresentation';
+import { mobileRunSubjectLine } from '~/utils/mobile/mobileRunSubjectLine';
+import { mobileRunSettingsScope } from '~/utils/mobile/mobileRunSettingsScope';
 
 const props = defineProps<{ target: ActiveAgentWorkspaceTarget; parentName: string | null }>();
 defineEmits<{ (event: 'back'): void; (event: 'open-view', view: MobileView): void }>();
@@ -64,16 +64,12 @@ const { t } = useLocalization();
 const remote = remoteView.remote;
 const unreachable = remoteView.unreachable;
 
-const status = computed(() => (unreachable.value ? 'error' : props.target.context.state.currentStatus));
-/** Background tasks running (autobyteus-448); an unreachable run shows its error dot only. */
-const backgroundTasksRunning = computed(() => (unreachable.value ? 0 : props.target.context.state.backgroundTasksRunning));
-const dotClass = computed(() => agentStatusDotClass(status.value, backgroundTasksRunning.value));
-/** "Idle · in Software Engineering Team"; a top-level run has no "in"; a node that does not answer: "Not reachable". */
-const subtitle = computed(() => {
-  if (unreachable.value) return 'Not reachable';
-  const state = mobileRunActivityLabel({ status: props.target.context.state.currentStatus, backgroundTasksRunning: backgroundTasksRunning.value }, t);
-  return props.parentName ? `${state} · in ${props.parentName}` : state;
-});
+const subjectLine = computed(() => mobileRunSubjectLine({
+  status: props.target.context.state.currentStatus, backgroundTasksRunning: props.target.context.state.backgroundTasksRunning,
+  unreachable: unreachable.value, parentName: props.parentName, t,
+}));
+const dotClass = computed(() => subjectLine.value.dotClass);
+const subtitle = computed(() => subjectLine.value.subtitle);
 
 /** Messages are the messages among a Team's or an Org's members (spec: members of a team or Org only). */
 const MEMBER_KINDS: ReadonlySet<ActiveAgentWorkspaceTarget['kind']> = new Set([
@@ -84,4 +80,6 @@ const showMessages = computed(() => MEMBER_KINDS.has(props.target.kind));
 /** The paired node's desktop, for a run on that node only: a remote run's screen is on another node (DEC-S3-2). */
 const { availability: desktopAvailability } = useNodeDesktopAvailability();
 const showDesktop = computed(() => desktopAvailability.value === 'available' && !remote.value);
+/** Settings (autobyteus-458): for a run of this node whose runtime and model it can change (`mobileRunSettingsScope`). */
+const showSettings = computed(() => mobileRunSettingsScope(props.target) !== null && !remote.value);
 </script>

@@ -19,6 +19,7 @@ import { AgentRuntime } from '../runtime/agent-runtime.js';
 import { initializeLogging } from '../../utils/logger.js';
 import { generateReadableAgentId } from './agent-id.js';
 import { buildToolInstanceMap } from '../context/agent-tool-instances.js';
+import { AgentToolSearch } from '../tool-search/agent-tool-search.js';
 
 const normalizeExplicitMemoryDir = (value: string | null | undefined): string | null => {
   if (typeof value !== 'string') {
@@ -123,6 +124,7 @@ export class AgentFactory extends Singleton {
     }
     runtimeState.llmInstance = config.llmInstance;
     runtimeState.toolInstances = this.prepareToolInstances(agentId, config);
+    runtimeState.toolSearch = new AgentToolSearch(config.listedToolNames, Object.keys(runtimeState.toolInstances));
 
     console.info(
       `Agent '${agentId}': LLM instance '${config.llmInstance.constructor.name}' and ${Object.keys(runtimeState.toolInstances).length} tools prepared and stored in state.`

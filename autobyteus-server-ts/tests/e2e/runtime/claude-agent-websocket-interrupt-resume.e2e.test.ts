@@ -34,6 +34,7 @@ import { ClaudeSessionManager } from "../../../src/agent-execution/backends/clau
 import type { AgentToolMcpRunSessionAuthority } from "../../../src/agent-tools/mcp/agent-tool-mcp-session-authority.js";
 import { buildRuntimeAgentToolExposure } from "../../../src/agent-execution/shared/runtime-agent-tool-exposure.js";
 import { composeSharedCarpenterPrompt } from "../../../src/agent-execution/prompt/carpenter-prompt-composer.js";
+import { CLAUDE_LONG_RUNNING_COMMAND_SECTION } from "../../../src/agent-execution/prompt/long-running-command-sections.js";
 import { AgentStreamHandler } from "../../../src/services/agent-streaming/agent-stream-handler.js";
 import { AgentSessionManager } from "../../../src/services/agent-streaming/agent-session-manager.js";
 import { AgentStreamSequences } from "../../../src/services/agent-streaming/agent-stream-sequence.js";
@@ -197,6 +198,7 @@ const createClaudeRunContext = (input: {
 }): AgentRunContext<ClaudeAgentRunContext> => {
   const carpenterSystemPrompt = composeSharedCarpenterPrompt({
     semanticMemoryPath: null,
+    longRunningCommandSection: CLAUDE_LONG_RUNNING_COMMAND_SECTION,
     agentDefinition: new AgentDefinition({
       name: "Claude WebSocket E2E Agent",
       description: "Exercises Claude create and resume instruction projection",

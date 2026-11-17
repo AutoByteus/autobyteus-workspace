@@ -46,7 +46,9 @@ function normalizeValue(value: unknown): JsonSchemaValue {
     normalized[key] = normalizeValue(childValue);
   }
 
-  if (isObjectSchema(normalized)) {
+  // An object that declares its properties takes no others. One that declares none is free-form
+  // (any keys, e.g. `call_tool`'s `arguments`): closing it would allow only `{}`.
+  if (isObjectSchema(normalized) && 'properties' in normalized) {
     normalized.additionalProperties = false;
   }
 

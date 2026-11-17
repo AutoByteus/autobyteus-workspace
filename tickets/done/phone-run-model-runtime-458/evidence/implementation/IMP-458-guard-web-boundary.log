@@ -1,0 +1,13 @@
+# id: IMP-458-guard-web-boundary
+# command: pnpm guard:web-boundary
+# commit: ec5b81f912 (code)
+# env: clean env -i PATH HOME=<fresh temp> TMPDIR; isolated, no provider keys
+# date: 2026-11-17T10:18Z
+
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.1.tgz
+
+> autobyteus@1.5.13-beta.8 guard:web-boundary /Users/normy/autobyteus_org/autobyteus-worktrees/phone-run-model-runtime-458/autobyteus-web
+> node ./scripts/guard-web-boundary.mjs
+
+[guard:web-boundary] Passed.
+# exit: 0

@@ -17,6 +17,7 @@ import {
   interpretGrokMcpServerStatus,
 } from "./grok-build-mcp-readiness.js";
 import { projectGrokToolCall } from "./grok-build-tool-projection.js";
+import { GROK_LONG_RUNNING_COMMAND_SECTION } from "../../prompt/long-running-command-sections.js";
 
 const GROK_SESSION_NOTIFICATION_METHOD = "_x.ai/session_notification";
 
@@ -30,6 +31,8 @@ const isRecord = (value: unknown): value is Record<string, unknown> =>
  * `_x.ai/*` traffic.
  */
 export const grokBuildSessionProfile: AcpAgentSessionProfile = Object.freeze({
+  longRunningCommandSection: GROK_LONG_RUNNING_COMMAND_SECTION,
+
   newSessionMeta: (input: Readonly<{ composedPrompt: string; autoExecuteTools: boolean }>) => ({
     rules: input.composedPrompt,
     yoloMode: input.autoExecuteTools,

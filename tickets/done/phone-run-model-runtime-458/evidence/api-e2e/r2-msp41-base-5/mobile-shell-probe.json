@@ -1,0 +1,309 @@
+{
+  "startedAt": "2026-11-17T13:12:03.548Z",
+  "result": "Pass",
+  "node": "v22.23.1",
+  "servers": {
+    "beta": {
+      "port": 55343,
+      "nodeId": "srv_SQE8MFQ8Oj3B0Lku1vT3sL7ihX6DyjOJ",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    },
+    "alpha": {
+      "port": 55342,
+      "nodeId": "srv_z1QEkF8qe3dLo8aEUh-noi4APewZHiX9",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    }
+  },
+  "runs": {
+    "ptm": "project_task_manager_bf2ba572d92a42d0a853f14f162a054e",
+    "writerRun": "release_notes_writer_7844e393058a4010b57a6469dd6fbe57",
+    "squadRun": "docs_review_team_d01a65a2716f41e795bfe0064824aea4",
+    "reviewer": "release_notes_writer_dbda45f1d40f4a2b8d1e511db246cb2c",
+    "memberDelegated": "fact_checker_f0c1fc93b91947a3bd0861aa6e1e0197",
+    "remoteAgentRun": "publisher_b64754f3ef4e4f5aa578c67afdb58a2c",
+    "remoteTeamRun": "studio_team_5de5e0c0e84a4f1d909f37d849266fdf",
+    "plain": [
+      "fact_checker_6812f6ff576e4101ba853dc75aa5881f",
+      "fact_checker_3662264b041b4ce0ad837e4a4bdbc17c",
+      "fact_checker_8bcf8432c34b4cb791e51ffb19b0bd6f"
+    ],
+    "org": "delivery_org_6209010e1faf49f6b3be8e802c9580af",
+    "orgPlanner": "release_notes_writer_7ae318a9b90c4b2dbdf6acbcf9ff3150",
+    "reviewOrg": "review_org_2d9663353b5b4aa480a5bd27803dc977",
+    "reviewOrgCoordinator": {
+      "address": "/squad/reviewer",
+      "agentRunId": "release_notes_writer_3ff7a02c8e4d42e394569c40cdb34920",
+      "teamRunId": null
+    },
+    "delivery": "delivery_team_9f6bcaf60c994085b2d960b6049d1367",
+    "deliveryLead": "fact_checker_241989855a404df8bdbeddc8835831db",
+    "deliveryMate": "release_notes_writer_5988a414f95c4585b4af874c6f55853e",
+    "leadDelegated": "changelog_helper_a7cb23a7242747cd8ded1038d88dfbff",
+    "approver": "approver_a263cc4785c74b948722894ccc0a247e",
+    "taskA": "launch-36025c-1",
+    "taskB": "launch-36025c-2"
+  },
+  "cases": {
+    "MSP-39": {
+      "result": "Pass",
+      "seconds": 11,
+      "results": {
+        "inPlace": {
+          "shownMs": {
+            "desktop": 536,
+            "phone-live": 536
+          },
+          "version": "A-VERSION-2",
+          "reads": {
+            "desktop": 1,
+            "phone": 1
+          }
+        },
+        "atomicSameFolder": {
+          "shownMs": {
+            "desktop": 531,
+            "phone-live": 531
+          },
+          "version": "A-VERSION-3",
+          "reads": {
+            "desktop": 1,
+            "phone": 1
+          }
+        },
+        "atomicOtherFolder": {
+          "shownMs": {
+            "desktop": 557,
+            "phone-live": 557
+          },
+          "version": "A-VERSION-4",
+          "reads": {
+            "desktop": 1,
+            "phone": 1
+          }
+        }
+      },
+      "folderReadsOfLive452": 0
+    },
+    "MSP-40": {
+      "result": "Pass",
+      "seconds": 7.9,
+      "results": {
+        "image": {
+          "shownMs": {
+            "desktop": 532,
+            "phone-live": 532
+          },
+          "desktop": {
+            "image": [
+              80,
+              30
+            ],
+            "pdfRatio": null
+          },
+          "phone": {
+            "image": [
+              80,
+              30
+            ],
+            "pdfRatio": null
+          },
+          "contentReads": {
+            "desktop": 1,
+            "phone": 1
+          }
+        },
+        "pdf": {
+          "shownMs": {
+            "desktop": 648,
+            "phone-live": 649
+          },
+          "desktop": {
+            "image": null,
+            "pdfRatio": 4.1
+          },
+          "phone": {
+            "image": null,
+            "pdfRatio": 4
+          },
+          "contentReads": {
+            "desktop": 1,
+            "phone": 1
+          }
+        },
+        "rootImage": {
+          "shownMs": {
+            "desktop": 537,
+            "phone-live": 537
+          },
+          "desktop": {
+            "image": [
+              60,
+              20
+            ],
+            "pdfRatio": null
+          },
+          "phone": {
+            "image": [
+              60,
+              20
+            ],
+            "pdfRatio": null
+          },
+          "contentReads": {
+            "desktop": 1,
+            "phone": 1
+          }
+        }
+      },
+      "folderReadsOfLive452": 0
+    },
+    "MSP-41": {
+      "result": "Pass",
+      "seconds": 13.4,
+      "editKeptAfterRewrite": true,
+      "readsAfterRewrite": 1,
+      "writes": [
+        "live-452/notes/edit.md"
+      ],
+      "readsAfterSave": 1,
+      "savedToDisk": true,
+      "editorAfterRewrite": "# Edit EDIT-VERSION-1 UNSAVED-452"
+    },
+    "MSP-42": {
+      "result": "Pass",
+      "seconds": 18,
+      "bulk": {
+        "files": 20,
+        "reads": {
+          "desktop": 0,
+          "phone-live": 0
+        },
+        "reportedPaths": {
+          "desktop": 20,
+          "phone-live": 20
+        }
+      },
+      "burst": {
+        "files": 200,
+        "stream": {
+          "desktop": {
+            "frames": 2,
+            "bytes": 20106,
+            "modifyEntries": 400,
+            "uniquePaths": 200,
+            "spreadMs": 1983
+          },
+          "phone-live": {
+            "frames": 2,
+            "bytes": 20106,
+            "modifyEntries": 400,
+            "uniquePaths": 200,
+            "spreadMs": 1982
+          }
+        },
+        "reads": {
+          "desktop": 0,
+          "phone-live": 0
+        }
+      },
+      "sampleFrame": null
+    }
+  },
+  "browserErrors": [
+    {
+      "case": "live-refresh-setup",
+      "line": "phone-live console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "live-refresh-setup",
+      "line": "phone-live console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "live-refresh-setup",
+      "line": "phone-live console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "live-refresh-setup",
+      "line": "phone-live console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-39",
+      "line": "phone-live console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-40",
+      "line": "phone-live console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-40",
+      "line": "phone-live console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-40",
+      "line": "phone-live console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-40",
+      "line": "phone-live console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-40",
+      "line": "phone-live console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-40",
+      "line": "phone-live console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    }
+  ],
+  "failedRequests": [],
+  "network": {},
+  "cleanup": {
+    "frontendExited": true,
+    "serversLeft": 0,
+    "rootRemoved": true
+  },
+  "error": null,
+  "liveFileRefresh": {
+    "run": "fact_checker_7ec8535401de4f03aa63c1df10b7f682"
+  },
+  "summary": {
+    "cases": {
+      "MSP-39": "Pass",
+      "MSP-40": "Pass",
+      "MSP-41": "Pass",
+      "MSP-42": "Pass"
+    },
+    "unknownBrowserErrors": 0
+  },
+  "finishedAt": "2026-11-17T13:15:08.048Z"
+}

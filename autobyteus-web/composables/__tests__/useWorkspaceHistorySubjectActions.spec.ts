@@ -108,6 +108,17 @@ describe('the phone shell', () => {
     expect(mocks.replace).not.toHaveBeenCalled()
   })
 
+  // autobyteus-458 CR-001: the phone's Settings stops a live Org member's Org; the phone stays where it is.
+  it.each([false, true])('stop stops the Org shown on the phone and writes no route (final read fails=%s)', async (fails) => {
+    mocks.route.query = { rootSubjectKind: 'agent_org', orgRunId: 'org-run', mode: 'active', memberAddress: '/team/coordinator', screen: 'settings' }
+    mocks.contexts.stopAndInspect.mockImplementation(async () => { if (fails) throw new Error('final read unavailable') })
+    const pending = useWorkspaceHistorySubjectActions({ shell: 'mobile' }).execute({ rootSubjectKind: 'agent_org', rootRunId: 'org-run', action: 'stop' })
+    if (fails) await expect(pending).rejects.toThrow('final read unavailable'); else expect(await pending).toEqual({ disposition: 'committed' })
+    expect(mocks.contexts.stopAndInspect).toHaveBeenCalledWith('org-run')
+    expect(mocks.replace).not.toHaveBeenCalled()
+    expect(mocks.push).not.toHaveBeenCalled()
+  })
+
   it('a failed open throws before any selection change, as on the desktop', async () => {
     mocks.contexts.openForInspection.mockRejectedValueOnce(new Error('unavailable'))
     await expect(useWorkspaceHistorySubjectActions({ shell: 'mobile' }).execute({ rootSubjectKind: 'agent_org', rootRunId: 'org-run', action: 'open' }))

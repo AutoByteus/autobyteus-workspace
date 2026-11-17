@@ -39,6 +39,7 @@ import {
 import { useToasts } from '~/composables/useToasts';
 import { localizationRuntime } from '~/localization/runtime/localizationRuntime';
 import { createRandomId } from '~/utils/randomId';
+import { sameRunInstance } from '~/utils/runInstanceOwnership';
 
 interface PrepareAgentRunMutationResultPayload {
   prepareAgentRun: {
@@ -425,7 +426,7 @@ export const useAgentRunStore = defineStore('agentRun', {
       const ownsRequest = () => agentContextsStore.getRun(runId) === context
         && context?.state === state && (!state || state.runId === runId) && streamingServices.get(runId)?.service === service
         && useWindowNodeContextStore().bindingRevision === binding
-        && (!state?.inputProjection?.runInstanceId || state.inputProjection.runInstanceId === instance);
+        && sameRunInstance(instance, state?.inputProjection?.runInstanceId);
 
       const teardownLocalRuntime = () => {
         this.clearActivationPending(runId);

@@ -1,0 +1,19 @@
+# API-13 (autobyteus-515 API/E2E): upgrade restore probe (SCN-A1; persisted data Directly Usable — No Migration; REQ-006 after restore)
+# Command: env -i PATH HOME=<temp> TMPDIR AUTOBYTEUS_TEST_VAULT=~/.autobyteus-test/vault node evidence/API-13-upgrade-restore-probe.mjs <base root> <branch root> <model> <out.json>
+#   write phase: base build 4cbf9e7881 dist (every tool listed), new agent, 'Close Task autobyteus-77 ...'; restore phase: branch dist, restoreAgent(same id, same memory folder) with listedToolNames = base tools, then 'Rename the Project ...' and 'Mark Task autobyteus-78 as IN_PROGRESS.'
+# 2026-11-17 ~20:40 CET, Node v22.23.1. Full outputs: API-13-upgrade-restore-<model>.json
+
+== deepseek-v4-flash
+write   {"toolSearchBuild":false,"listedToolNames":null,"success":true,"calls":["get_project_task","list_projects","update_task"],"requests":4,"errors":0}
+restore {"toolSearchBuild":true,"success":{"rename":true,"start":true},"calls":["update_project","get_project_task","update_task"],"requests":6,"identicalTools":true,"firstRequestTools":["run_bash","read_file","edit_file","write_file","search_tools","call_tool"],"errors":0}
+raw traces (c=call, r=result, @=called_through): ["c:get_project_task","r:get_project_task","c:list_projects","r:list_projects","c:update_task","r:update_task","c:search_tools","r:search_tools","c:update_project@call_tool","r:update_project","c:get_project_task","r:get_project_task","c:update_task","r:update_task"]
+
+== gemini-3.8-flash
+write   {"toolSearchBuild":false,"listedToolNames":null,"success":true,"calls":["update_task"],"requests":2,"errors":0}
+restore {"toolSearchBuild":true,"success":{"rename":true,"start":true},"calls":["update_project","update_task"],"requests":5,"identicalTools":true,"firstRequestTools":["run_bash","read_file","edit_file","write_file","search_tools","call_tool"],"errors":0}
+raw traces (c=call, r=result, @=called_through): ["c:update_task","r:update_task","c:search_tools","r:search_tools","c:update_project@call_tool","r:update_project","c:update_task@call_tool","r:update_task"]
+
+== claude-sonnet-5-5
+write   {"toolSearchBuild":false,"listedToolNames":null,"success":true,"calls":["update_task"],"requests":2,"errors":0}
+restore {"toolSearchBuild":true,"success":{"rename":true,"start":true},"calls":["update_project","update_task"],"requests":5,"identicalTools":true,"firstRequestTools":["run_bash","read_file","edit_file","write_file","search_tools","call_tool"],"errors":0}
+raw traces (c=call, r=result, @=called_through): ["c:update_task","r:update_task","c:search_tools","r:search_tools","c:update_project@call_tool","r:update_project","c:update_task","r:update_task"]

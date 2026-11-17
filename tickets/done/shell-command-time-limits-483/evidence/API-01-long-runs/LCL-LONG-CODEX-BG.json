@@ -1,0 +1,789 @@
+{
+  "caseId": "LCL-LONG-CODEX-BG",
+  "startedAt": "2026-11-17T11:30:17.501Z",
+  "longSeconds": 2100,
+  "model": "gpt-6.1-terra",
+  "firstTurnEnd": "TURN_COMPLETED",
+  "watched": {
+    "pid": 73522,
+    "samples": [
+      {
+        "elapsedS": 10,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskSnapshot",
+          "observedAt": "2026-11-17T11:30:58.438Z",
+          "tasks": [
+            {
+              "taskId": "2ea4138b-0e9e-4f9a-bcdb-6bed27d7dc33",
+              "kind": "shell",
+              "description": "bash",
+              "status": "running",
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:54.530Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 70,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskSnapshot",
+          "observedAt": "2026-11-17T11:31:58.440Z",
+          "tasks": [
+            {
+              "taskId": "2ea4138b-0e9e-4f9a-bcdb-6bed27d7dc33",
+              "kind": "shell",
+              "description": "bash",
+              "status": "running",
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:54.530Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 130,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskSnapshot",
+          "observedAt": "2026-11-17T11:32:58.471Z",
+          "tasks": [
+            {
+              "taskId": "2ea4138b-0e9e-4f9a-bcdb-6bed27d7dc33",
+              "kind": "shell",
+              "description": "bash",
+              "status": "running",
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:54.530Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 190,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskSnapshot",
+          "observedAt": "2026-11-17T11:33:58.487Z",
+          "tasks": [
+            {
+              "taskId": "2ea4138b-0e9e-4f9a-bcdb-6bed27d7dc33",
+              "kind": "shell",
+              "description": "bash",
+              "status": "running",
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:54.530Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 250,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskSnapshot",
+          "observedAt": "2026-11-17T11:34:58.494Z",
+          "tasks": [
+            {
+              "taskId": "2ea4138b-0e9e-4f9a-bcdb-6bed27d7dc33",
+              "kind": "shell",
+              "description": "bash",
+              "status": "running",
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:54.530Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 310,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskSnapshot",
+          "observedAt": "2026-11-17T11:35:58.501Z",
+          "tasks": [
+            {
+              "taskId": "2ea4138b-0e9e-4f9a-bcdb-6bed27d7dc33",
+              "kind": "shell",
+              "description": "bash",
+              "status": "running",
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:54.530Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 370,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskSnapshot",
+          "observedAt": "2026-11-17T11:36:58.515Z",
+          "tasks": [
+            {
+              "taskId": "2ea4138b-0e9e-4f9a-bcdb-6bed27d7dc33",
+              "kind": "shell",
+              "description": "bash",
+              "status": "running",
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:54.530Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 430,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskSnapshot",
+          "observedAt": "2026-11-17T11:37:58.530Z",
+          "tasks": [
+            {
+              "taskId": "2ea4138b-0e9e-4f9a-bcdb-6bed27d7dc33",
+              "kind": "shell",
+              "description": "bash",
+              "status": "running",
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:54.530Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 490,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskSnapshot",
+          "observedAt": "2026-11-17T11:38:58.535Z",
+          "tasks": [
+            {
+              "taskId": "2ea4138b-0e9e-4f9a-bcdb-6bed27d7dc33",
+              "kind": "shell",
+              "description": "bash",
+              "status": "running",
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:54.530Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 550,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskSnapshot",
+          "observedAt": "2026-11-17T11:39:58.541Z",
+          "tasks": [
+            {
+              "taskId": "2ea4138b-0e9e-4f9a-bcdb-6bed27d7dc33",
+              "kind": "shell",
+              "description": "bash",
+              "status": "running",
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:54.530Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 610,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskSnapshot",
+          "observedAt": "2026-11-17T11:40:58.549Z",
+          "tasks": [
+            {
+              "taskId": "2ea4138b-0e9e-4f9a-bcdb-6bed27d7dc33",
+              "kind": "shell",
+              "description": "bash",
+              "status": "running",
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:54.530Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 670,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskSnapshot",
+          "observedAt": "2026-11-17T11:41:58.559Z",
+          "tasks": [
+            {
+              "taskId": "2ea4138b-0e9e-4f9a-bcdb-6bed27d7dc33",
+              "kind": "shell",
+              "description": "bash",
+              "status": "running",
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:54.530Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 730,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskSnapshot",
+          "observedAt": "2026-11-17T11:42:58.566Z",
+          "tasks": [
+            {
+              "taskId": "2ea4138b-0e9e-4f9a-bcdb-6bed27d7dc33",
+              "kind": "shell",
+              "description": "bash",
+              "status": "running",
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:54.530Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 790,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskSnapshot",
+          "observedAt": "2026-11-17T11:43:58.574Z",
+          "tasks": [
+            {
+              "taskId": "2ea4138b-0e9e-4f9a-bcdb-6bed27d7dc33",
+              "kind": "shell",
+              "description": "bash",
+              "status": "running",
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:54.530Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 850,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskSnapshot",
+          "observedAt": "2026-11-17T11:44:58.580Z",
+          "tasks": [
+            {
+              "taskId": "2ea4138b-0e9e-4f9a-bcdb-6bed27d7dc33",
+              "kind": "shell",
+              "description": "bash",
+              "status": "running",
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:54.530Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 910,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskSnapshot",
+          "observedAt": "2026-11-17T11:45:58.586Z",
+          "tasks": [
+            {
+              "taskId": "2ea4138b-0e9e-4f9a-bcdb-6bed27d7dc33",
+              "kind": "shell",
+              "description": "bash",
+              "status": "running",
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:54.530Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 970,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskSnapshot",
+          "observedAt": "2026-11-17T11:46:58.592Z",
+          "tasks": [
+            {
+              "taskId": "2ea4138b-0e9e-4f9a-bcdb-6bed27d7dc33",
+              "kind": "shell",
+              "description": "bash",
+              "status": "running",
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:54.530Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 1030,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskSnapshot",
+          "observedAt": "2026-11-17T11:47:58.598Z",
+          "tasks": [
+            {
+              "taskId": "2ea4138b-0e9e-4f9a-bcdb-6bed27d7dc33",
+              "kind": "shell",
+              "description": "bash",
+              "status": "running",
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:54.530Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 1090,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskSnapshot",
+          "observedAt": "2026-11-17T11:48:58.603Z",
+          "tasks": [
+            {
+              "taskId": "2ea4138b-0e9e-4f9a-bcdb-6bed27d7dc33",
+              "kind": "shell",
+              "description": "bash",
+              "status": "running",
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:54.530Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 1150,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskSnapshot",
+          "observedAt": "2026-11-17T11:49:58.632Z",
+          "tasks": [
+            {
+              "taskId": "2ea4138b-0e9e-4f9a-bcdb-6bed27d7dc33",
+              "kind": "shell",
+              "description": "bash",
+              "status": "running",
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:54.530Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 1210,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskSnapshot",
+          "observedAt": "2026-11-17T11:50:58.639Z",
+          "tasks": [
+            {
+              "taskId": "2ea4138b-0e9e-4f9a-bcdb-6bed27d7dc33",
+              "kind": "shell",
+              "description": "bash",
+              "status": "running",
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:54.530Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 1270,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskSnapshot",
+          "observedAt": "2026-11-17T11:51:58.646Z",
+          "tasks": [
+            {
+              "taskId": "2ea4138b-0e9e-4f9a-bcdb-6bed27d7dc33",
+              "kind": "shell",
+              "description": "bash",
+              "status": "running",
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:54.530Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 1330,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskSnapshot",
+          "observedAt": "2026-11-17T11:52:58.652Z",
+          "tasks": [
+            {
+              "taskId": "2ea4138b-0e9e-4f9a-bcdb-6bed27d7dc33",
+              "kind": "shell",
+              "description": "bash",
+              "status": "running",
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:54.530Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 1390,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskSnapshot",
+          "observedAt": "2026-11-17T11:53:58.663Z",
+          "tasks": [
+            {
+              "taskId": "2ea4138b-0e9e-4f9a-bcdb-6bed27d7dc33",
+              "kind": "shell",
+              "description": "bash",
+              "status": "running",
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:54.530Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 1450,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskSnapshot",
+          "observedAt": "2026-11-17T11:54:58.669Z",
+          "tasks": [
+            {
+              "taskId": "2ea4138b-0e9e-4f9a-bcdb-6bed27d7dc33",
+              "kind": "shell",
+              "description": "bash",
+              "status": "running",
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:54.530Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 1510,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskSnapshot",
+          "observedAt": "2026-11-17T11:55:58.691Z",
+          "tasks": [
+            {
+              "taskId": "2ea4138b-0e9e-4f9a-bcdb-6bed27d7dc33",
+              "kind": "shell",
+              "description": "bash",
+              "status": "running",
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:54.530Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 1570,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskSnapshot",
+          "observedAt": "2026-11-17T11:56:58.703Z",
+          "tasks": [
+            {
+              "taskId": "2ea4138b-0e9e-4f9a-bcdb-6bed27d7dc33",
+              "kind": "shell",
+              "description": "bash",
+              "status": "running",
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:54.530Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 1630,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskSnapshot",
+          "observedAt": "2026-11-17T11:57:58.715Z",
+          "tasks": [
+            {
+              "taskId": "2ea4138b-0e9e-4f9a-bcdb-6bed27d7dc33",
+              "kind": "shell",
+              "description": "bash",
+              "status": "running",
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:54.530Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 1690,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskSnapshot",
+          "observedAt": "2026-11-17T11:58:58.728Z",
+          "tasks": [
+            {
+              "taskId": "2ea4138b-0e9e-4f9a-bcdb-6bed27d7dc33",
+              "kind": "shell",
+              "description": "bash",
+              "status": "running",
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:54.530Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 1750,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskSnapshot",
+          "observedAt": "2026-11-17T11:59:58.748Z",
+          "tasks": [
+            {
+              "taskId": "2ea4138b-0e9e-4f9a-bcdb-6bed27d7dc33",
+              "kind": "shell",
+              "description": "bash",
+              "status": "running",
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:54.530Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 1810,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskSnapshot",
+          "observedAt": "2026-11-17T12:00:58.757Z",
+          "tasks": [
+            {
+              "taskId": "2ea4138b-0e9e-4f9a-bcdb-6bed27d7dc33",
+              "kind": "shell",
+              "description": "bash",
+              "status": "running",
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:54.530Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 1870,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskSnapshot",
+          "observedAt": "2026-11-17T12:01:58.782Z",
+          "tasks": [
+            {
+              "taskId": "2ea4138b-0e9e-4f9a-bcdb-6bed27d7dc33",
+              "kind": "shell",
+              "description": "bash",
+              "status": "running",
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:54.530Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 1930,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskSnapshot",
+          "observedAt": "2026-11-17T12:02:58.797Z",
+          "tasks": [
+            {
+              "taskId": "2ea4138b-0e9e-4f9a-bcdb-6bed27d7dc33",
+              "kind": "shell",
+              "description": "bash",
+              "status": "running",
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:54.530Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 1990,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskSnapshot",
+          "observedAt": "2026-11-17T12:03:58.812Z",
+          "tasks": [
+            {
+              "taskId": "2ea4138b-0e9e-4f9a-bcdb-6bed27d7dc33",
+              "kind": "shell",
+              "description": "bash",
+              "status": "running",
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:54.530Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 2050,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskSnapshot",
+          "observedAt": "2026-11-17T12:04:58.816Z",
+          "tasks": [
+            {
+              "taskId": "2ea4138b-0e9e-4f9a-bcdb-6bed27d7dc33",
+              "kind": "shell",
+              "description": "bash",
+              "status": "running",
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:54.530Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 2110,
+        "pidAlive": false,
+        "done": "codex finished after 2103s",
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskSnapshot",
+          "observedAt": "2026-11-17T12:05:58.878Z",
+          "tasks": [
+            {
+              "taskId": "2ea4138b-0e9e-4f9a-bcdb-6bed27d7dc33",
+              "kind": "shell",
+              "description": "bash",
+              "status": "completed",
+              "exitCode": 0,
+              "startedAt": "2026-11-17T11:30:54.530Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 2115,
+        "pidAlive": false,
+        "done": "codex finished after 2103s",
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskSnapshot",
+          "observedAt": "2026-11-17T12:06:03.886Z",
+          "tasks": [
+            {
+              "taskId": "2ea4138b-0e9e-4f9a-bcdb-6bed27d7dc33",
+              "kind": "shell",
+              "description": "bash",
+              "status": "completed",
+              "exitCode": 0,
+              "startedAt": "2026-11-17T11:30:54.530Z"
+            }
+          ]
+        }
+      }
+    ],
+    "aliveAfter30Min": true
+  },
+  "runId": "long_command_external_0a43ec7a_4729_4a41_9156_e7_7357ab3d106848c4959cad0132ca4795",
+  "socketEvents": [
+    {
+      "at": 2115013,
+      "event": "close"
+    }
+  ],
+  "toolCalls": [
+    {
+      "at": 5665,
+      "type": "TOOL_EXECUTION_STARTED",
+      "tool": "run_bash",
+      "invocation": "exec-b8b876f2-ff22-4d24-9fe6-c4aad89edda9",
+      "args": {
+        "command": "/bin/bash -lc 'bash long-job.sh 2100 codex'",
+        "cwd": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/long-command-limits-UCsOl4/LCL-LONG-CODEX-BG-J32nhY"
+      }
+    }
+  ],
+  "tasks": [],
+  "notices": [],
+  "turns": [
+    {
+      "at": 1714,
+      "type": "TURN_STARTED",
+      "payload": "{\"turnId\":\"01a1e946-1e19-7a41-b868-acbf7a0a28f1\",\"turn_id\":\"01a1e946-1e19-7a41-b868-acbf7a0a28f1\"}"
+    },
+    {
+      "at": 9375,
+      "type": "TURN_COMPLETED",
+      "payload": "{\"turnId\":\"01a1e946-1e19-7a41-b868-acbf7a0a28f1\",\"turn_id\":\"01a1e946-1e19-7a41-b868-acbf7a0a28f1\"}"
+    }
+  ],
+  "text": "STARTED",
+  "result": "Pass",
+  "endedAt": "2026-11-17T12:06:03.887Z"
+}

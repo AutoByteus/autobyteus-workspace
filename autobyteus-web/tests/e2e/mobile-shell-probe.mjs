@@ -54,7 +54,7 @@
 //                  with their reason under the field and nothing is registered, an existing folder registers (autobyteus-426
 //                  D-08); Create run opens the new run's Chat; its first message keeps the screen while its id changes; the
 //                  new run tops the list.
-//   MSP-08 AC-007  On the Team's coordinator: ⋮ items in order; Artifacts (one file shown directly), Files (tree, path,
+//   MSP-08 AC-007  On the Team's coordinator: ⋮ items in order (Settings last, autobyteus-458); Artifacts (one file shown directly), Files (tree, path,
 //                  search over the workspace, no filters, an opened file without Attach), Messages (a reference opens the
 //                  file), Activity (its tool calls); a standalone agent: no Messages, empty states; a remote run: "on that
 //                  node" wording.
@@ -113,8 +113,9 @@
 //                  a folder (same file, after MSP-31).
 //   MSP-43 autobyteus-472  Touch zoom (pinch, scroll, double tap) of a PDF and an image in the phone viewer, the page itself
 //                  never zooming, and Download: `mobile-file-zoom-cases.mjs` (on the phone page, right after MSP-16).
-//   MSP-47…49 autobyteus-473  Background tasks: on the phone's Activity (a task started before it opened, its end, a task
-//                  started while open) and on the desktop after a reload: `mobile-background-tasks-cases.mjs` (after MSP-43).
+//   MSP-47…49, MSP-59 autobyteus-473, autobyteus-483  Background tasks: on the phone's Activity (a task started before it
+//                  opened, its end with its end line, a task started while open, a task the run's end stopped) and on the
+//                  desktop after a reload: `mobile-background-tasks-cases.mjs` (after MSP-43).
 //   MSP-33 autobyteus-435 REQ-005  A reload reopens the same subject on the same screen, after "Opening…" and never the
 //                  list first (a phone of its own): an agent run's Activity, a Team run's Messages, a Team member, a delegated
 //                  task agent (its host's rows read first); a row no node lists gives the list. New run → Create run: a
@@ -158,6 +159,13 @@
 //                  after the limits were raised with no reload, and a stale read of the limits gets the node's 413 as the same
 //                  line; cancel mid-upload leaves no message and no draft, a network drop shows the interrupted line and leaves
 //                  no draft: `mobile-context-file-size-cases.mjs` (its own node eta).
+//   MSP-60…66 autobyteus-458/506  The readable phone conversation at 412 and 360 px (body width − 24, 17 px / 1.5, one
+//                  avatar and speaker line per turn, composer 8 px above the bottom; another agent's message keeps its arrow
+//                  and type line, as on the desktop); ⋮ → Text size (15/19/21 px, kept over a
+//                  reload); ⋮ → Settings on a stopped Team member (Runtime → Grok Build, its model, Save back, the node holds it,
+//                  the run continues on it), a refused Save (the run woken before Save: the node's words in the red card), a
+//                  live idle and a working run (the red stop icon, one tap, the rows open): `mobile-run-settings-cases.mjs`
+//                  (on the paired phone, before MSP-13).
 //
 // Prerequisites: `pnpm -C autobyteus-server-ts build` and `pnpm -C autobyteus-web build:mobile-web` (alpha serves
 // `autobyteus-web/dist/public` at /mobile); Chrome. Run: `pnpm -C autobyteus-web test:e2e:mobile-shell --output-dir=<fresh>`
@@ -190,6 +198,7 @@ import { runLiveFileRefreshCases } from './mobile-live-file-refresh-cases.mjs';
 import { runBackgroundTaskCases } from './mobile-background-tasks-cases.mjs';
 import { runHeadingLinksCases } from './mobile-heading-links-cases.mjs';
 import { runCodeWrapCases } from './mobile-code-wrap-cases.mjs';
+import { runRunSettingsCases } from './mobile-run-settings-cases.mjs';
 
 const require = createRequire(import.meta.url);
 const { chromium } = require('playwright-core');
@@ -1422,14 +1431,15 @@ const runCases = async () => {
     await menuOpen(page, 'files');
     const remoteFiles = (await page.locator(sel('mobile-files-remote')).innerText().catch(() => '')).trim();
     await toList(page);
-    assert(JSON.stringify(items.map(([id]) => id)) === JSON.stringify(['mobile-run-menu-artifacts', 'mobile-run-menu-files', 'mobile-run-menu-messages', 'mobile-run-menu-activity']), 'the member\'s ⋮ items in order', items);
+    // autobyteus-458 UIS-002: Settings follows Activity (the Text size block below the divider is no menu item).
+    assert(JSON.stringify(items.map(([id]) => id)) === JSON.stringify(['mobile-run-menu-artifacts', 'mobile-run-menu-files', 'mobile-run-menu-messages', 'mobile-run-menu-activity', 'mobile-run-menu-settings']), 'the member\'s ⋮ items in order', items);
     assert(artifacts.direct === 1 && artifacts.list === 0 && artifacts.text, 'one artifact shown directly', artifacts);
     assert(['docs', 'src', 'README.md'].every(name => filesTop.some(text => text.includes(name))) && filters === 0 && pathLine.includes('docs'), 'the Files tree, its path line, no filters', { filesTop, filters, pathLine });
     assert(attach === 0, 'an opened file has no Attach', attach);
     assert(searchRows.some(text => text.includes('app.ts')), 'one search over the workspace', searchRows);
     assert(messages.some(text => text.includes('TEAM-NOTE')) && referenceText && stillMessages === 1, 'the Team messages; a reference opens the file and ← closes it', { messages, referenceText, stillMessages });
     assert(activity.length > 0, 'the agent\'s tool calls', activity);
-    assert(!plainItems.includes('Messages') && plainItems.length === 3, 'no Messages for a standalone agent', plainItems);
+    assert(JSON.stringify(plainItems) === JSON.stringify(['Artifacts', 'Files', 'Activity', 'Settings']), 'no Messages for a standalone agent (Settings last, autobyteus-458)', plainItems);
     assert(artifactsEmpty.startsWith('No Artifacts yet') && activityEmpty === 'No activity yet', 'empty states', { artifactsEmpty, activityEmpty });
     assert(remoteArtifacts.includes(PEER) && remoteFiles.includes(PEER), 'a remote run: the files are on that node', { remoteArtifacts, remoteFiles });
     return { items, artifacts, filesTop, filters, pathLine, attach, searchRows, messages, referenceText, activity, plainItems, artifactsEmpty, activityEmpty, remoteArtifacts, remoteFiles };
@@ -2492,6 +2502,10 @@ const runCases = async () => {
     assert(failures.length === 0, failures.join('; '), facts);
     return facts;
   });
+
+  // autobyteus-458 / 506: the readable conversation, Text size and a run's Settings (`mobile-run-settings-cases.mjs`), before
+  // MSP-13 revokes this phone.
+  await runRunSettingsCases({ runCase, page, stack, alpha, sel, toList, openRow, ensureUnfolded, rowsOf, childRow, menuOpen, runScreen, shot, sendOver, waitFor, sleep, assert, selected, phoneNet });
 
   await runCase('MSP-13', async () => {
     // A credential the node does not know (401, REMOTE_ACCESS_AUTH_INVALID: the node's pairing data was reset): the next

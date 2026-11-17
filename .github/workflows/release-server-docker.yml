@@ -7,11 +7,11 @@ on:
   workflow_dispatch:
     inputs:
       release_tag:
-        description: "Release tag to publish (example: v1.2.7 or v1.2.7-beta.1)"
+        description: "Release tag to publish (example: v1.2.7 or v1.2.7-beta.1). Omit it with build_only."
         required: false
         type: string
       release_ref:
-        description: "Git ref to build from during manual dispatch (branch, tag, or SHA). Defaults to release_tag when omitted."
+        description: "Git ref to build from during manual dispatch (branch, tag, or SHA). Defaults to release_tag when omitted, or to the dispatched branch with build_only."
         required: false
         type: string
       image_name:
@@ -23,12 +23,18 @@ on:
         required: false
         default: false
         type: boolean
+      build_only:
+        description: "Build and check both architectures and packages; publish nothing"
+        required: false
+        default: false
+        type: boolean
 
 permissions:
   contents: read
 
+# A build-only run has its own group, so it never waits for or blocks a release run.
 concurrency:
-  group: server-docker-release-${{ github.event.inputs.release_tag || github.ref_name || github.run_id }}
+  group: ${{ github.event.inputs.build_only == 'true' && format('server-docker-build-only-{0}', github.run_id) || format('server-docker-release-{0}', github.event.inputs.release_tag || github.ref_name) }}
   cancel-in-progress: false
 
 env:
@@ -39,6 +45,7 @@ jobs:
     name: Resolve Release Metadata
     runs-on: ubuntu-latest
     outputs:
+      build_only: ${{ steps.meta.outputs.build_only }}
       release_tag: ${{ steps.meta.outputs.release_tag }}
       release_ref: ${{ steps.meta.outputs.release_ref }}
       image_name: ${{ steps.meta.outputs.image_name }}
@@ -46,6 +53,7 @@ jobs:
       is_prerelease: ${{ steps.meta.outputs.is_prerelease }}
       variant_label: ${{ steps.meta.outputs.variant_label }}
       build_variant: ${{ steps.meta.outputs.build_variant }}
+      version_tag: ${{ steps.meta.outputs.version_tag }}
       tags: ${{ steps.meta.outputs.tags }}
     steps:
       - name: Resolve publish metadata
@@ -55,10 +63,23 @@ jobs:
           INPUT_RELEASE_REF: ${{ github.event.inputs.release_ref || '' }}
           INPUT_IMAGE_NAME: ${{ github.event.inputs.image_name || '' }}
           INPUT_PUBLISH_ZH: ${{ github.event.inputs.publish_zh || 'false' }}
+          INPUT_BUILD_ONLY: ${{ github.event.inputs.build_only || 'false' }}
         run: |
           set -euo pipefail
 
-          if [[ "${GITHUB_REF}" == refs/tags/* ]]; then
+          BUILD_ONLY="false"
+          if [[ "${GITHUB_EVENT_NAME}" == "workflow_dispatch" && "${INPUT_BUILD_ONLY}" == "true" ]]; then
+            BUILD_ONLY="true"
+          fi
+
+          if [[ "${BUILD_ONLY}" == "true" ]]; then
+            if [[ -n "${INPUT_RELEASE_TAG}" ]]; then
+              echo "::error::A build-only run publishes nothing; omit release_tag."
+              exit 1
+            fi
+            RELEASE_TAG=""
+            RELEASE_REF="${INPUT_RELEASE_REF:-${GITHUB_REF_NAME}}"
+          elif [[ "${GITHUB_REF}" == refs/tags/* ]]; then
             RELEASE_TAG="${GITHUB_REF_NAME}"
             RELEASE_REF="${GITHUB_REF_NAME}"
           else
@@ -70,14 +91,16 @@ jobs:
             fi
           fi
 
-          if [[ -z "${RELEASE_TAG}" ]]; then
-            echo "::error::release_tag is required for manual workflow dispatch."
-            exit 1
-          fi
+          if [[ "${BUILD_ONLY}" != "true" ]]; then
+            if [[ -z "${RELEASE_TAG}" ]]; then
+              echo "::error::release_tag is required for manual workflow dispatch."
+              exit 1
+            fi
 
-          if [[ ! "${RELEASE_TAG}" =~ ^v?[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.]+)?$ ]]; then
-            echo "::error::Invalid release tag '${RELEASE_TAG}'. Expected format like v1.2.7 or v1.2.7-rc1."
-            exit 1
+            if [[ ! "${RELEASE_TAG}" =~ ^v?[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.]+)?$ ]]; then
+              echo "::error::Invalid release tag '${RELEASE_TAG}'. Expected format like v1.2.7 or v1.2.7-rc1."
+              exit 1
+            fi
           fi
 
           IMAGE_NAME="${INPUT_IMAGE_NAME:-$DEFAULT_IMAGE_NAME}"
@@ -98,7 +121,14 @@ jobs:
             LATEST_TAG="latest-zh"
           fi
 
+          # The version tag is the first published tag; a build-only run publishes no tag.
+          VERSION_TAG=""
+          if [[ "${BUILD_ONLY}" != "true" ]]; then
+            VERSION_TAG="${IMAGE_NAME}:${NORMALIZED_TAG}${VERSION_SUFFIX}"
+          fi
+
           {
+            echo "build_only=${BUILD_ONLY}"
             echo "release_tag=${RELEASE_TAG}"
             echo "release_ref=${RELEASE_REF}"
             echo "image_name=${IMAGE_NAME}"
@@ -106,39 +136,70 @@ jobs:
             echo "is_prerelease=${IS_PRERELEASE}"
             echo "variant_label=${VARIANT_LABEL}"
             echo "build_variant=${BUILD_VARIANT}"
+            echo "version_tag=${VERSION_TAG}"
             echo "tags<<EOF"
-            echo "${IMAGE_NAME}:${NORMALIZED_TAG}${VERSION_SUFFIX}"
-            if [[ "${IS_PRERELEASE}" != "true" ]]; then
-              echo "${IMAGE_NAME}:${LATEST_TAG}"
+            if [[ "${BUILD_ONLY}" != "true" ]]; then
+              echo "${VERSION_TAG}"
+              if [[ "${IS_PRERELEASE}" != "true" ]]; then
+                echo "${IMAGE_NAME}:${LATEST_TAG}"
+              fi
             fi
             echo "EOF"
           } >> "${GITHUB_OUTPUT}"
 
       - name: Summarize publish plan
+        env:
+          BUILD_ONLY: ${{ steps.meta.outputs.build_only }}
+          RELEASE_TAG: ${{ steps.meta.outputs.release_tag }}
+          RELEASE_REF: ${{ steps.meta.outputs.release_ref }}
+          IMAGE_NAME: ${{ steps.meta.outputs.image_name }}
+          VARIANT_LABEL: ${{ steps.meta.outputs.variant_label }}
+          IS_PRERELEASE: ${{ steps.meta.outputs.is_prerelease }}
+          TAGS: ${{ steps.meta.outputs.tags }}
         run: |
           {
             echo "### Server Docker publish plan"
             echo ""
-            echo "Release tag: \`${{ steps.meta.outputs.release_tag }}\`"
-            echo "Release ref: \`${{ steps.meta.outputs.release_ref }}\`"
-            echo "Image: \`${{ steps.meta.outputs.image_name }}\`"
-            echo "Variant: \`${{ steps.meta.outputs.variant_label }}\`"
-            echo "Prerelease: \`${{ steps.meta.outputs.is_prerelease }}\`"
-            echo ""
-            echo "Published tags:"
-            echo "${{ steps.meta.outputs.tags }}" | sed 's/^/- `/' | sed 's/$/`/'
+            if [[ "${BUILD_ONLY}" == "true" ]]; then
+              echo "Build only: nothing is published."
+              echo ""
+              echo "Release ref: \`${RELEASE_REF}\`"
+              echo "Image: \`${IMAGE_NAME}\`"
+              echo "Variant: \`${VARIANT_LABEL}\`"
+            else
+              echo "Release tag: \`${RELEASE_TAG}\`"
+              echo "Release ref: \`${RELEASE_REF}\`"
+              echo "Image: \`${IMAGE_NAME}\`"
+              echo "Variant: \`${VARIANT_LABEL}\`"
+              echo "Prerelease: \`${IS_PRERELEASE}\`"
+              echo ""
+              echo "Published tags:"
+              echo "${TAGS}" | sed 's/^/- `/' | sed 's/$/`/'
+            fi
           } >> "${GITHUB_STEP_SUMMARY}"
 
-  build-and-push:
-    name: Build And Push Server Image
+  # Builds one architecture natively on its own runner and pushes it untagged, by digest.
+  # Nothing is tagged here: Publish Server Image tags both digests once both legs succeeded.
+  build:
+    name: Build Server Image (${{ matrix.platform }})
     needs: prepare-release
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.runner }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: linux/amd64
+            arch: amd64
+            runner: ubuntu-latest
+          - platform: linux/arm64
+            arch: arm64
+            runner: ubuntu-24.04-arm
     steps:
       - name: Checkout workspace
         uses: actions/checkout@v4
         with:
           ref: ${{ needs.prepare-release.outputs.release_ref }}
-          fetch-depth: 0
+          fetch-depth: 1
 
       - name: Check licensing consistency
         run: python3 scripts/check_licensing.py
@@ -176,10 +237,16 @@ jobs:
           fi
           echo "base_image_digest=${DIGEST}" >> "${GITHUB_OUTPUT}"
 
-      - name: Free runner disk space
+      # One image of about 2.4 GB needs far less than a runner's usual free disk; clean up
+      # only when a runner image comes with less than 30 GB free.
+      - name: Free runner disk space when low
         run: |
-          set -euxo pipefail
-          df -h /
+          set -euo pipefail
+          FREE_GB="$(df -BG --output=avail / | tail -n 1 | tr -dc '0-9')"
+          echo "Free disk on /: ${FREE_GB} GB"
+          if (( FREE_GB >= 30 )); then
+            exit 0
+          fi
           sudo rm -rf \
             /usr/share/dotnet \
             /usr/local/lib/android \
@@ -188,9 +255,6 @@ jobs:
             /opt/hostedtoolcache/CodeQL || true
           docker system prune -af || true
           df -h /
-
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -201,8 +265,9 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Build and push default multi-arch image
-        if: ${{ needs.prepare-release.outputs.build_variant == '' }}
+      # With provenance and SBOM off, the digest is this architecture's image manifest.
+      - name: Build and push the image
+        id: build
         uses: docker/build-push-action@v6
         with:
           context: .
@@ -210,50 +275,158 @@ jobs:
           build-args: |
             BASE_IMAGE_DIGEST=${{ steps.system_level.outputs.base_image_digest }}
             CLI_INSTALL_CACHE_BUSTER=${{ github.run_id }}
-          platforms: linux/amd64,linux/arm64
-          push: true
+          platforms: ${{ matrix.platform }}
           provenance: false
           sbom: false
-          cache-from: type=gha,scope=release-server-docker-default
-          cache-to: type=gha,mode=max,scope=release-server-docker-default
-          tags: ${{ needs.prepare-release.outputs.tags }}
+          outputs: type=image,name=${{ needs.prepare-release.outputs.image_name }},push-by-digest=true,name-canonical=true,push=true
 
-      - name: Build and push zh multi-arch image
-        if: ${{ needs.prepare-release.outputs.build_variant == 'zh' }}
-        uses: docker/build-push-action@v6
+      - name: Record the image digest
+        env:
+          ARCH: ${{ matrix.arch }}
+          DIGEST: ${{ steps.build.outputs.digest }}
+        run: |
+          set -euo pipefail
+          mkdir -p "${RUNNER_TEMP}/digests"
+          echo "${DIGEST}" > "${RUNNER_TEMP}/digests/${ARCH}"
+          echo "Pushed ${ARCH} image ${DIGEST}"
+
+      # The artifact stays in the run: `gh run rerun --failed` rebuilds only a failed leg, and
+      # Publish Server Image then reads this leg's earlier digest.
+      - name: Upload the image digest
+        uses: actions/upload-artifact@v4
         with:
-          context: .
-          file: autobyteus-server-ts/docker/Dockerfile.monorepo
-          build-args: |
-            BASE_IMAGE_DIGEST=${{ steps.system_level.outputs.base_image_digest }}
-            CLI_INSTALL_CACHE_BUSTER=${{ github.run_id }}
-          platforms: linux/amd64,linux/arm64
-          push: true
-          provenance: false
-          sbom: false
-          cache-from: type=gha,scope=release-server-docker-zh
-          cache-to: type=gha,mode=max,scope=release-server-docker-zh
-          tags: ${{ needs.prepare-release.outputs.tags }}
+          name: server-image-digest-${{ matrix.arch }}
+          path: ${{ runner.temp }}/digests/${{ matrix.arch }}
+          if-no-files-found: error
+          overwrite: true
+          retention-days: 7
+
+  # Makes the multi-arch image from both legs' digests. It checks a dry-run index of exactly
+  # those two digests before pushing any tag, then the pushed version tag again, and hands the
+  # checked digests to the package jobs. A build-only run stops after the dry-run check.
+  publish-image:
+    name: Publish Server Image
+    needs: [prepare-release, build]
+    runs-on: ubuntu-latest
+    outputs:
+      amd64_digest: ${{ steps.index.outputs.amd64_digest }}
+      arm64_digest: ${{ steps.index.outputs.arm64_digest }}
+    steps:
+      - name: Download the image digests
+        uses: actions/download-artifact@v4
+        with:
+          pattern: server-image-digest-*
+          merge-multiple: true
+          path: ${{ runner.temp }}/digests
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Create and check the multi-arch image
+        id: index
+        env:
+          BUILD_ONLY: ${{ needs.prepare-release.outputs.build_only }}
+          IMAGE_NAME: ${{ needs.prepare-release.outputs.image_name }}
+          VERSION_TAG: ${{ needs.prepare-release.outputs.version_tag }}
+          TAGS: ${{ needs.prepare-release.outputs.tags }}
+        run: |
+          set -euo pipefail
+
+          AMD64_DIGEST="$(cat "${RUNNER_TEMP}/digests/amd64")"
+          ARM64_DIGEST="$(cat "${RUNNER_TEMP}/digests/arm64")"
+          SOURCES=("${IMAGE_NAME}@${AMD64_DIGEST}" "${IMAGE_NAME}@${ARM64_DIGEST}")
+          EXPECTED="$(printf 'linux/amd64 %s\nlinux/arm64 %s' "${AMD64_DIGEST}" "${ARM64_DIGEST}")"
+
+          # Fails unless the index lists exactly linux/amd64 -> the amd64 digest and
+          # linux/arm64 -> the arm64 digest.
+          check_index() {
+            local index_file="$1" label="$2" listed
+            listed="$(jq -r '(.manifests // [])[] | "\(.platform.os)/\(.platform.architecture) \(.digest)"' "${index_file}" | sort)"
+            if [[ "${listed}" != "${EXPECTED}" ]]; then
+              echo "::error::The ${label} index does not list exactly linux/amd64 ${AMD64_DIGEST} and linux/arm64 ${ARM64_DIGEST}. It lists: ${listed//$'\n'/, }"
+              exit 1
+            fi
+            echo "The ${label} index lists linux/amd64 ${AMD64_DIGEST} and linux/arm64 ${ARM64_DIGEST}."
+          }
+
+          docker buildx imagetools create --dry-run -t "${VERSION_TAG:-${IMAGE_NAME}:build-only}" "${SOURCES[@]}" \
+            > "${RUNNER_TEMP}/dry-run-index.json"
+          check_index "${RUNNER_TEMP}/dry-run-index.json" "dry-run"
+
+          if [[ "${BUILD_ONLY}" != "true" ]]; then
+            TAG_ARGS=()
+            while IFS= read -r tag; do
+              if [[ -n "${tag}" ]]; then
+                TAG_ARGS+=(-t "${tag}")
+              fi
+            done <<< "${TAGS}"
+            docker buildx imagetools create "${TAG_ARGS[@]}" "${SOURCES[@]}"
+            docker buildx imagetools inspect --raw "${VERSION_TAG}" > "${RUNNER_TEMP}/pushed-index.json"
+            check_index "${RUNNER_TEMP}/pushed-index.json" "pushed ${VERSION_TAG}"
+          fi
+
+          {
+            echo "amd64_digest=${AMD64_DIGEST}"
+            echo "arm64_digest=${ARM64_DIGEST}"
+          } >> "${GITHUB_OUTPUT}"
 
       - name: Publish summary
+        env:
+          BUILD_ONLY: ${{ needs.prepare-release.outputs.build_only }}
+          IMAGE_NAME: ${{ needs.prepare-release.outputs.image_name }}
+          RELEASE_TAG: ${{ needs.prepare-release.outputs.release_tag }}
+          VARIANT_LABEL: ${{ needs.prepare-release.outputs.variant_label }}
+          IS_PRERELEASE: ${{ needs.prepare-release.outputs.is_prerelease }}
+          TAGS: ${{ needs.prepare-release.outputs.tags }}
+          AMD64_DIGEST: ${{ steps.index.outputs.amd64_digest }}
+          ARM64_DIGEST: ${{ steps.index.outputs.arm64_digest }}
         run: |
           {
-            echo "### Server Docker image published"
+            if [[ "${BUILD_ONLY}" == "true" ]]; then
+              echo "### Server Docker image built (build only: nothing published)"
+            else
+              echo "### Server Docker image published"
+            fi
             echo ""
-            echo "Image: \`${{ needs.prepare-release.outputs.image_name }}\`"
-            echo "Release tag: \`${{ needs.prepare-release.outputs.release_tag }}\`"
-            echo "Variant: \`${{ needs.prepare-release.outputs.variant_label }}\`"
-            echo "Prerelease: \`${{ needs.prepare-release.outputs.is_prerelease }}\`"
+            echo "Image: \`${IMAGE_NAME}\`"
+            if [[ "${BUILD_ONLY}" != "true" ]]; then
+              echo "Release tag: \`${RELEASE_TAG}\`"
+            fi
+            echo "Variant: \`${VARIANT_LABEL}\`"
+            if [[ "${BUILD_ONLY}" != "true" ]]; then
+              echo "Prerelease: \`${IS_PRERELEASE}\`"
+            fi
             echo ""
-            echo "Published tags:"
-            echo "${{ needs.prepare-release.outputs.tags }}" | sed 's/^/- `/' | sed 's/$/`/'
+            echo "Checked images:"
+            echo "- \`linux/amd64\`: \`${AMD64_DIGEST}\`"
+            echo "- \`linux/arm64\`: \`${ARM64_DIGEST}\`"
+            if [[ "${BUILD_ONLY}" != "true" ]]; then
+              echo ""
+              echo "Published tags:"
+              echo "${TAGS}" | sed 's/^/- `/' | sed 's/$/`/'
+            fi
           } >> "${GITHUB_STEP_SUMMARY}"
 
+      # Move beta tag needs the tag list and this workflow's revision; only commits are fetched.
+      - name: Checkout tags for the beta decision
+        if: ${{ needs.prepare-release.outputs.build_variant == '' && needs.prepare-release.outputs.build_only != 'true' }}
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          filter: tree:0
+          sparse-checkout: scripts
+
       # Moves the forward-only `beta` tag to the version image just pushed, but only
-      # when this tag is the newest recognized release tag. Deciding after the long
-      # build (with freshly fetched tags) lets a later concurrent release win.
+      # when this tag is the newest recognized release tag. Deciding after both architecture
+      # builds (with freshly fetched tags) lets a later concurrent release win.
       - name: Move beta tag
-        if: ${{ needs.prepare-release.outputs.build_variant == '' }}
+        if: ${{ needs.prepare-release.outputs.build_variant == '' && needs.prepare-release.outputs.build_only != 'true' }}
         env:
           IMAGE_NAME: ${{ needs.prepare-release.outputs.image_name }}
           RELEASE_TAG: ${{ needs.prepare-release.outputs.release_tag }}
@@ -284,12 +457,13 @@ jobs:
             echo "${DECISION}"
           } >> "${GITHUB_STEP_SUMMARY}"
 
-  # Takes the built-in server package out of the pushed image for each architecture, so the
-  # published package is the image's own, then describes, signs and uploads it to the release.
+  # Takes the built-in server package out of the architecture image whose digest Publish Server
+  # Image checked against the version tag's index, so the published package is the image's own,
+  # then describes, signs and uploads it to the release. A build-only run signs it and stops.
   # The zh variant publishes no package: its nodes update from the default variant's packages.
   publish-server-package:
     name: Publish Server Package (${{ matrix.platform }})
-    needs: [prepare-release, build-and-push]
+    needs: [prepare-release, publish-image]
     if: ${{ needs.prepare-release.outputs.build_variant == '' }}
     runs-on: ubuntu-latest
     permissions:
@@ -297,21 +471,39 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        platform: [linux/amd64, linux/arm64]
+        include:
+          - platform: linux/amd64
+            arch: amd64
+            package_arch: x64
+          - platform: linux/arm64
+            arch: arm64
+            package_arch: arm64
     steps:
-      - name: Checkout workspace
+      - name: Checkout the package scripts
         uses: actions/checkout@v4
         with:
           ref: ${{ needs.prepare-release.outputs.release_ref }}
+          fetch-depth: 1
+          filter: blob:none
+          sparse-checkout: |
+            scripts/server-package
+            autobyteus-server-ts/docker
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 22
 
-      - name: Free runner disk space
+      # One image of about 2.4 GB needs far less than a runner's usual free disk; clean up
+      # only when a runner image comes with less than 30 GB free.
+      - name: Free runner disk space when low
         run: |
-          set -euxo pipefail
+          set -euo pipefail
+          FREE_GB="$(df -BG --output=avail / | tail -n 1 | tr -dc '0-9')"
+          echo "Free disk on /: ${FREE_GB} GB"
+          if (( FREE_GB >= 30 )); then
+            exit 0
+          fi
           sudo rm -rf \
             /usr/share/dotnet \
             /usr/local/lib/android \
@@ -323,19 +515,22 @@ jobs:
 
       - name: Extract the built-in server package
         env:
-          IMAGE: ${{ needs.prepare-release.outputs.image_name }}:${{ needs.prepare-release.outputs.normalized_tag }}
+          IMAGE_NAME: ${{ needs.prepare-release.outputs.image_name }}
+          DIGEST: ${{ needs.publish-image.outputs[format('{0}_digest', matrix.arch)] }}
           PLATFORM: ${{ matrix.platform }}
         run: |
           set -euo pipefail
 
-          docker create --platform "${PLATFORM}" --name server-package-source "${IMAGE}" >/dev/null
+          docker create --platform "${PLATFORM}" --name server-package-source "${IMAGE_NAME}@${DIGEST}" >/dev/null
           docker cp server-package-source:/opt/autobyteus/server-package "${RUNNER_TEMP}/server-package"
           docker rm server-package-source >/dev/null
 
       - name: Archive, describe and sign the server package
         id: package
         env:
+          BUILD_ONLY: ${{ needs.prepare-release.outputs.build_only }}
           NORMALIZED_TAG: ${{ needs.prepare-release.outputs.normalized_tag }}
+          PACKAGE_ARCH: ${{ matrix.package_arch }}
           SERVER_PACKAGE_SIGNING_KEY: ${{ secrets.SERVER_PACKAGE_SIGNING_KEY }}
         run: |
           set -euo pipefail
@@ -344,13 +539,23 @@ jobs:
           ASSET_DIR="${RUNNER_TEMP}/server-package-assets"
           mkdir -p "${ASSET_DIR}"
           ARCH="$(node -p 'require(process.argv[1]).arch' "${PACKAGE_DIR}/server-package.json")"
-          ASSET_BASE="${ASSET_DIR}/autobyteus-server-${NORMALIZED_TAG}-linux-${ARCH}"
+          if [[ "${ARCH}" != "${PACKAGE_ARCH}" ]]; then
+            echo "::error::The image's server package is for '${ARCH}', not '${PACKAGE_ARCH}'; nothing was published."
+            exit 1
+          fi
+          # A build-only run has no release tag; the package's own version passes the same check.
+          if [[ "${BUILD_ONLY}" == "true" ]]; then
+            VERSION="$(node -p 'require(process.argv[1]).version' "${PACKAGE_DIR}/server-package.json")"
+          else
+            VERSION="${NORMALIZED_TAG}"
+          fi
+          ASSET_BASE="${ASSET_DIR}/autobyteus-server-${VERSION}-linux-${ARCH}"
 
           tar --sort=name --owner=0 --group=0 --numeric-owner -C "${PACKAGE_DIR}" -cf - . | gzip -n > "${ASSET_BASE}.tar.gz"
           node scripts/server-package/describe-server-package.mjs description \
             --package-dir "${PACKAGE_DIR}" \
             --archive "${ASSET_BASE}.tar.gz" \
-            --version "${NORMALIZED_TAG}" \
+            --version "${VERSION}" \
             --out "${ASSET_BASE}.json"
           node scripts/server-package/sign-server-package.mjs \
             --description "${ASSET_BASE}.json" \
@@ -358,8 +563,10 @@ jobs:
           echo "asset_base=${ASSET_BASE}" >> "${GITHUB_OUTPUT}"
 
       # The Desktop Release or the Android APK Release workflow creates the GitHub release,
-      # whichever gets there first; wait for it (up to 30 minutes).
+      # whichever gets there first; wait for it (up to 60 minutes, as long as the Desktop
+      # Release waits for these files).
       - name: Wait for the GitHub release
+        if: ${{ needs.prepare-release.outputs.build_only != 'true' }}
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
@@ -367,24 +574,26 @@ jobs:
         run: |
           set -euo pipefail
 
-          for _ in $(seq 1 60); do
+          for _ in $(seq 1 120); do
             if gh release view "${RELEASE_TAG}" >/dev/null 2>&1; then
               exit 0
             fi
             sleep 30
           done
-          echo "::error::The GitHub release ${RELEASE_TAG} did not appear within 30 minutes; the server package was not published."
+          echo "::error::The GitHub release ${RELEASE_TAG} did not appear within 60 minutes; the server package was not published."
           exit 1
 
       # Archive first, then the description, then its signature. When a re-publish replaces them
       # (--clobber), a node that reads the new description and signature always finds the new
       # archive; one that read the old pair gets ARCHIVE_MISMATCH once, and a retry succeeds.
       - name: Upload the server package to the release
+        if: ${{ needs.prepare-release.outputs.build_only != 'true' }}
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
           RELEASE_TAG: ${{ needs.prepare-release.outputs.release_tag }}
           ASSET_BASE: ${{ steps.package.outputs.asset_base }}
+          PLATFORM: ${{ matrix.platform }}
         run: |
           set -euo pipefail
 
@@ -392,9 +601,28 @@ jobs:
             gh release upload "${RELEASE_TAG}" "${ASSET_BASE}${suffix}" --clobber
           done
           {
-            echo "### Server package (${{ matrix.platform }})"
+            echo "### Server package (${PLATFORM})"
             echo ""
             for suffix in .tar.gz .json .json.sig; do
               echo "- \`$(basename "${ASSET_BASE}${suffix}")\`"
             done
+          } >> "${GITHUB_STEP_SUMMARY}"
+
+      - name: Summarize the build-only server package
+        if: ${{ needs.prepare-release.outputs.build_only == 'true' }}
+        env:
+          ASSET_BASE: ${{ steps.package.outputs.asset_base }}
+          PLATFORM: ${{ matrix.platform }}
+        run: |
+          set -euo pipefail
+
+          ARCHIVE="$(node -p 'const a = require(process.argv[1]).archive; a.sha256 + " " + a.size' "${ASSET_BASE}.json")"
+          {
+            echo "### Server package (${PLATFORM}), build only: not uploaded"
+            echo ""
+            for suffix in .tar.gz .json .json.sig; do
+              echo "- \`$(basename "${ASSET_BASE}${suffix}")\`"
+            done
+            echo ""
+            echo "Archive SHA-256: \`${ARCHIVE% *}\`, size: ${ARCHIVE#* } bytes"
           } >> "${GITHUB_STEP_SUMMARY}"

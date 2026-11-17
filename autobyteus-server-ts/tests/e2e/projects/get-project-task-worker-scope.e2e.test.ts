@@ -62,7 +62,8 @@ suite("get_project_task worker scope through real roots and runtimes (built serv
   const servers: Array<{ child: ChildProcess; output: () => string }> = [];
   const receipt: Rec = { firstMessages: {}, results: [], nativeRequests: [] };
   /** Every chat request the native runtime sent: the model's tool names, the last message's role and text. */
-  const nativeRequests: Array<{ tools: string[]; lastRole: string; lastText: string; system: string }> = [];
+  // `searchable`: the tools named in search_tools' description (native tool search, autobyteus-515).
+  const nativeRequests: Array<{ tools: string[]; searchable: string; lastRole: string; lastText: string; system: string }> = [];
   let server: Awaited<ReturnType<typeof startServer>>;
   let view: Awaited<ReturnType<typeof openTeam>>;
   let rootRunId = "", managerRunId = "", mateRunId = "", projectId = "", otherProjectId = "", model = "";
@@ -87,7 +88,9 @@ suite("get_project_task worker scope through real roots and runtimes (built serv
       const messages = request.messages as Rec[];
       const last = messages.at(-1) ?? {};
       const lastText = textOf(last.content);
-      nativeRequests.push({ tools: ((request.tools ?? []) as Rec[]).map((tool) => tool.function?.name ?? tool.name), lastRole: last.role,
+      const requestTools = (request.tools ?? []) as Rec[];
+      nativeRequests.push({ tools: requestTools.map((tool) => tool.function?.name ?? tool.name),
+        searchable: String(requestTools.find((tool) => tool.function?.name === "search_tools")?.function?.description ?? ""), lastRole: last.role,
         lastText, system: textOf(messages.find((message) => message.role === "system")?.content).slice(0, 4000) });
       const base = { id: randomUUID(), object: "chat.completion.chunk", created: 1, model: FIXTURE_MODEL };
       const call = last.role === "user" ? /NATIVE_CALL:(\{.*\})/s.exec(lastText) : null;
@@ -374,10 +377,12 @@ suite("get_project_task worker scope through real roots and runtimes (built serv
     const toBare = await delegate({ recipient_address: `/${segment(names.Bare!)}`, description: "Say hello." });
     await firstMessageOf("bare", toBare.target_agent_run_id);
     expect(await toolsOf("bare", toBare.target_agent_run_id)).not.toContain("get_project_task");
-    // The native requests of the native helper and the mate (both list it) offer the model the tool.
+    // The native requests of the native helper and the mate (both list it) offer the model the tool: as a searchable
+    // tool, named in search_tools' description, with search_tools and call_tool listed (native tool search, autobyteus-515).
     const withTool = nativeRequests.filter((request) => request.system.includes(names["Native Helper"]!) || request.system.includes(names.Mate!));
     expect(withTool.length).toBeGreaterThan(0);
-    expect(withTool.every((request) => request.tools.includes("get_project_task"))).toBe(true);
+    expect(withTool.every((request) => request.tools.includes("search_tools") && request.tools.includes("call_tool"))).toBe(true);
+    expect(withTool.every((request) => /Searchable tools: [^.]*\bget_project_task\b/.test(request.searchable))).toBe(true);
   }, 300_000);
 
   it("SCP-E2E-005 AC-015, AR-006: a second saved Task to the existing copy names it and its Project; the copy then reads only that Task", async () => {

@@ -21,6 +21,8 @@ const payload = buildBackgroundTaskUpdatedPayload({
   command: "rg -n lighthouse docs",
   status: "running",
   summary: null,
+  endReason: null,
+  exitCode: null,
   startedAt: "2026-09-29T16:48:20.000Z",
 });
 const event: AgentRunEvent = { eventType: AgentRunEventType.BACKGROUND_TASK_UPDATED, runId, payload, statusHint: null };
@@ -34,7 +36,7 @@ describe("BACKGROUND_TASK_UPDATED collaboration admission", () => {
       eventType: "BACKGROUND_TASK_UPDATED",
       details: {
         taskId: "bg-1", kind: "subagent", description: "Research lighthouses", command: "rg -n lighthouse docs",
-        status: "running", summary: null, startedAt: "2026-09-29T16:48:20.000Z",
+        status: "running", summary: null, endReason: null, exitCode: null, startedAt: "2026-09-29T16:48:20.000Z",
       },
       statusHint: null,
     });

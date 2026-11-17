@@ -5,16 +5,26 @@ const mocks = vi.hoisted(() => ({
   terminateRun: vi.fn(),
   terminateTeamRun: vi.fn(),
   execute: vi.fn(),
+  setups: [] as unknown[],
 }))
 vi.mock('~/composables/useLocalization', () => ({ useLocalization: () => ({ t: (key: string) => key }) }))
 vi.mock('~/stores/agentRunStore', () => ({ useAgentRunStore: () => ({ terminateRun: mocks.terminateRun }) }))
 vi.mock('~/stores/agentTeamRunStore', () => ({ useAgentTeamRunStore: () => ({ terminateTeamRun: mocks.terminateTeamRun }) }))
-vi.mock('~/composables/useWorkspaceHistorySubjectActions', () => ({ useWorkspaceHistorySubjectActions: () => ({ execute: mocks.execute }) }))
+vi.mock('~/composables/useWorkspaceHistorySubjectActions', () => ({
+  useWorkspaceHistorySubjectActions: (setup: unknown) => { mocks.setups.push(setup); return { execute: mocks.execute } },
+}))
 
 import { useRunStopAction, type RunStopSubject } from '../useRunStopAction'
 
 describe('useRunStopAction (REQ-014, DEC-003)', () => {
-  beforeEach(() => vi.clearAllMocks())
+  beforeEach(() => { vi.clearAllMocks(); mocks.setups.length = 0 })
+
+  // autobyteus-458 CR-001: the Org stop's route follows the caller's shell (the phone writes its own route).
+  it('passes the caller\'s shell to the Org stop; the desktop by default', () => {
+    useRunStopAction(ref<RunStopSubject | null>({ kind: 'agent_org', orgRunId: 'org-run' }), { shell: 'mobile' })
+    useRunStopAction(ref<RunStopSubject | null>({ kind: 'agent_org', orgRunId: 'org-run' }))
+    expect(mocks.setups).toEqual([{ shell: 'mobile' }, { shell: undefined }])
+  })
 
   it('uses the tree’s action and wording per run type, then re-reads the run', async () => {
     const onStopped = vi.fn()

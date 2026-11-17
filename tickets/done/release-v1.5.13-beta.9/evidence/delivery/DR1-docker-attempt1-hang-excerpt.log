@@ -1,0 +1,28 @@
+2026-11-17T16:25:49.6121311Z #89 157.4 
+2026-11-17T16:30:58.6533419Z #89 466.5 AgentFactory (Singleton) initialized.
+2026-11-17T16:31:00.0992507Z #89 467.9 (node:339) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+2026-11-17T16:31:00.0993902Z #89 467.9 (Use `node --trace-warnings ...` to show where the warning was created)
+2026-11-17T16:31:00.2417553Z #89 468.1 Built-in agents bootstrap smoke check passed.
+2026-11-17T16:31:00.3876105Z #89 468.2 Sanitized built-module/bootstrap smoke passed without DATABASE_URL.
+2026-11-17T16:31:00.7008333Z #89 DONE 468.5s
+2026-11-17T16:31:00.7008660Z 
+2026-11-17T16:31:00.7009851Z #45 [linux/arm64 runtime  2/16] RUN apt-get update   && apt-get install -y --no-install-recommends git ripgrep curl ca-certificates   && rm -rf /var/lib/apt/lists/*
+2026-11-17T16:31:00.8528490Z #45 ...
+2026-11-17T16:31:00.8528692Z 
+2026-11-17T16:41:18.1770105Z #92 92.65 
+2026-11-17T16:41:19.6979661Z #92 94.17 Removed 127 MB of onnxruntime-web browser builds
+2026-11-17T16:41:30.5514636Z #92 105.0 Embedding runtime validation passed
+2026-11-17T16:41:32.5780681Z #92 107.1 Removed 233 MB of Claude Agent SDK platform binaries
+2026-11-17T16:41:36.1829778Z #92 110.7 Wrote server-package.json: 1.5.13-beta.9 linux-arm64, Node modules 127, system level 1, 63 migrations
+2026-11-17T16:41:37.3630755Z #92 DONE 111.8s
+2026-11-17T16:41:37.3631118Z 
+2026-11-17T16:41:37.3635984Z #45 [linux/arm64 runtime  2/16] RUN apt-get update   && apt-get install -y --no-install-recommends git ripgrep curl ca-certificates   && rm -rf /var/lib/apt/lists/*
+2026-11-17T16:41:39.9016203Z #45 ...
+2026-11-17T16:41:39.9016448Z 
+2026-11-17T16:41:39.9017020Z #93 [linux/arm64 server-package 1/1] COPY --from=builder /out/server-package /
+2026-11-17T16:41:43.2606539Z #93 DONE 3.4s
+2026-11-17T16:41:43.2606746Z 
+2026-11-17T16:41:43.2607851Z #45 [linux/arm64 runtime  2/16] RUN apt-get update   && apt-get install -y --no-install-recommends git ripgrep curl ca-certificates   && rm -rf /var/lib/apt/lists/*
+2026-11-17T18:11:00.1181859Z ##[error]The operation was canceled.
+2026-11-17T18:11:00.1315689Z Post job cleanup.
+2026-11-17T18:11:00.4107610Z ##[group]Removing temp folder /home/runner/work/_temp/docker-actions-toolkit-oGxtDm
