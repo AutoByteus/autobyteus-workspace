@@ -84,6 +84,6 @@
 ## Scope Guardrail
 
 - **In scope (delivery 1):** groups 1, 3, 4, 5, 6 as above.
-- **Delivery 2:** group 2 under D-1: the order guards (FU-027 option 1), FU-028, FU-029, FU-033, and FU-032 limited to an audit that finds the released pairs that touch the same data and fixes the harmful ones by a same-ID repair. **No reordering of released entries:** the user's "protect the current order". Its requirements are written when delivery 2 starts.
+- **Delivery 2:** group 2 under D-1: the order guard (FU-027 option 1), FU-028, FU-029 and FU-033. **No reordering of released entries:** the user's "protect the current order". **FU-032 is dropped by the user** (SR-007): "currently no one has reported any problem yet even they jump from old versions"; many users are new and have no old data. Its requirements are written when delivery 2 starts.
 - **Out of scope:** the withdrawn and done follow-ups listed in the Task; any data migration without the founder's approval and a backup; a release without his word.
 - **Preserved:** every behavior, except where a requirement above says otherwise.

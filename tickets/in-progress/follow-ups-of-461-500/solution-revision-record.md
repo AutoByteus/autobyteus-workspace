@@ -2,6 +2,7 @@
 
 | SR | Date | Kind | Summary | Status after |
 | --- | --- | --- | --- | --- |
+| SR-007 | 2026-11-17 | Requirements (scope reduced by the user) | FU-032 (audit of past migration order) dropped; delivery 2 = order guard, FU-028, FU-029, FU-033 | Approved |
 | SR-006 | 2026-11-17 | Requirements and design (scope reduced by the user) | The user dropped the code-only "task execution" → "delegated run" rename: REQ-003 dropped, all of FU-007 is FU-500-01; the design's N4 rows removed | Approved; design `Ready` |
 | SR-005 | 2026-11-17 | Design | Delivery 1's design: FU-020 migration with backup and one late-predecessor follow-up; one stream attach; explicit composition for silent lookups and optional collaborators; team-only total; naming rules N1 … N6; refusal style; FU-021 cause reproduced; FU-035 reproduction step | Design `Ready`, Large / High |
 | SR-004 | 2026-11-17 | Requirements | D-5 decided by the user: the Task record's stored names stay (no migration); the code-only rename "task execution" → "delegated run" is done this round; the stored-name part becomes a follow-up | Approved |
@@ -65,3 +66,9 @@
   - `delegated_copy_own_file_complete_v1` is classed `none`;
   - `getAgentRunCommandCoordinator()` is called from `agent-stream-handler.ts:86, 502`.
 - Note to the implementation: M-1 matches exact folder depths and never descends into `agents/{run}/collaboration/…`.
+
+### SR-007
+
+- **Trigger:** the user, on FU-032: "A lot of our users are very new users … they don't have any data", then "currently no one has reported any problem yet even they jump from old versions". The Solution Designer recommended dropping it: the guard prevents new order mistakes, FU-029 fixes the only known harm, and the audit only concerns users who jump many old releases.
+- **Change:** the Scope Guardrail's delivery 2 no longer includes FU-032. Dropped with the founder's word, as the Task's "Done when" allows.
+- **Approval:** the user. Delivery 1 is unaffected.
