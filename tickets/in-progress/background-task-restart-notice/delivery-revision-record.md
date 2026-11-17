@@ -6,6 +6,7 @@
 | --- | --- | --- | --- | --- |
 | DR-001 | code reviewer: part 1 ready for delivery after CRR-004 (2026-11-17) | N/A | Part 1 Delivery Completed: verified from evidence, finalized on `personal`, no release; ticket open for part 2 (DEC-007) | `docs-sync-report.md`, `handoff-summary.md`, `release-deployment-report.md`, `release-notes.md` |
 | DR-002 | code reviewer: part 2 ready for delivery after CRR-007 (2026-11-17) | DR-001 (part 1 Delivery Completed) | Blocked: the base refresh conflicts with autobyteus-483 and autobyteus-458; routed to implementation as a Local Fix | `delivery-revision-record.md` |
+| DR-003 | code reviewer: part 2 ready again after IR-005/CRR-008/API-REV-004/CRR-009 (2026-11-17) | DR-002 (Blocked: base conflicts) | Blocked: the merge of autobyteus-522 is clean, but its phone probe case MSP-67 collides with part 2's MSP-67, so the probe refuses to start; routed to implementation as a Local Fix | `delivery-revision-record.md`, `evidence/DEL-R2-post-integration/` |
 
 ## Revision Entries
 
@@ -43,4 +44,21 @@
   - Beyond the conflicts, the base calls the backend method that part 2 removes, `AgentRunBackend.hasRunningBackgroundTasks()`. Its uses are in the six backends, `claude-session.ts`, `agent-run-termination.ts` and several tests (`git grep -l hasRunningBackgroundTasks origin/personal`). They merge without a conflict and then fail the build or tests.
 - Classification: `Local Fix` (code integration of part 2 with the new base). No requirement or design change is expected. Carrying the background-task count into the base's `mobileRunSubjectLine`, and into any other status surface autobyteus-458 added, is part 2's existing DEC-004 behavior.
 - Next recipient/action: the implementation engineer merges `origin/personal`, resolves the conflicts, regenerates the contract `dist/`, and reruns the checks the integration affects (both typechecks, the server and web suites for status and background tasks, a fresh-start build). The change then goes back through the review route that applies.
+- Terminal return to the Solution Designer: `Not yet eligible`.
+
+### DR-003 — Part 2 delivery blocked by a probe case ID collision after the base refresh
+
+- Delivery round and trigger: third delivery round, part 2; code reviewer handoff after CRR-009 (DR-002's integration: IR-005 merge `990ff9a3d4`, CRR-008, API-REV-004 at 94%).
+- Prior authoritative result: DR-002 `Blocked`, now resolved by IR-005.
+- Current authoritative result: `Blocked`, before docs sync and verification.
+- Integration and post-integration verification:
+  - Checkpoint `ea6bfbec9c` (the reviewer's CRR-008/CRR-009 documents).
+  - `origin/personal` moved from `ff13782f36` to `d61bae54a0`: one ticket, autobyteus-522 (`f8221f8b97`, phone Settings in every run's menu).
+  - Merged with no conflicts as `e93d477539`. Four files changed on both sides: `MobileRunTargetView.vue`, `MobileRunSettings.vue`, `mobile-shell-probe.mjs`, `mobileRunSettingsScope.spec.ts`. The hunks are independent, and both phone views pass `backgroundTasksRunning` to `mobileRunSubjectLine`.
+  - DEL-01: web typecheck PASS at baseline (87 in 37 files).
+  - DEL-02: server typecheck PASS at baseline (1012 in 316 files).
+  - DEL-03: phone-run web specs, `Test Files 6 passed (6)`, `Tests 50 passed (50)`.
+  - DEL-04 (`evidence/DEL-R2-post-integration/DEL-04-phone-probe-start-check.log`): `mobile-shell probe: duplicate case IDs MSP-67 (mobile-shell-probe.mjs, mobile-every-run-settings-cases.mjs)`, exit 1. autobyteus-522 added `MSP-67`..`MSP-72` in `mobile-every-run-settings-cases.mjs`. IR-005 had given part 2's background-task phone case the ID `MSP-67` (`a9e5676630`). The probe's start check, a rule from autobyteus-434/461, refuses to run any case while an ID is used twice.
+- Classification: `Local Fix` (test code from this ticket's integration). No product behavior is affected.
+- Next recipient/action: the implementation engineer renames part 2's case to a free ID (next after `MSP-72`) and updates the ticket documents that name it. They rerun the phone probe on the merged state, with part 2's case next to autobyteus-522's `MSP-67`..`MSP-72` and MSP-59/MSP-63. They then return through the applicable review route.
 - Terminal return to the Solution Designer: `Not yet eligible`.
