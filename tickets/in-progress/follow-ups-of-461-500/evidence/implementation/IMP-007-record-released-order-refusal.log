@@ -1,0 +1,147 @@
+
+> autobyteus-server-ts@0.1.1 migrations:record-released /Users/normy/autobyteus_org/autobyteus-worktrees/follow-ups-of-461-500/autobyteus-server-ts
+> RECORD_RELEASED_MIGRATION_ORDER=1 vitest run --no-watch tests/release/record-released-migration-order.test.ts
+
+
+ RUN  v4.1.12 /Users/normy/autobyteus_org/autobyteus-worktrees/follow-ups-of-461-500/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/follow-ups-of-461-500/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+(node:27597) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/release/record-released-migration-order.test.ts > the released app-data migration order > is written from the registry, which must start with the order already recorded
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/follow-ups-of-461-500/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/released-migration-order-MeEGb6
+
+ ❯ tests/release/record-released-migration-order.test.ts (1 test | 1 failed) 8ms
+     × is written from the registry, which must start with the order already recorded 8ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/release/record-released-migration-order.test.ts > the released app-data migration order > is written from the registry, which must start with the order already recorded
+AssertionError: a released migration keeps its place; append new ones after the last. Nothing was written.: expected [ …(45) ] to deeply equal [ …(45) ]
+
+- Expected
++ Received
+
+@@ -1,11 +1,11 @@
+  [
+    "20260727_custom_provider_v1_secret_migration",
+    "20260706_remove_global_skill_discovery_mode",
+    "20260517_team_run_metadata_member_tree",
+-   "20260823_repair_team_agent_memory_layout",
+    "20260814_team_run_execution_tree_v1",
++   "20260823_repair_team_agent_memory_layout",
+    "20260824_team_run_execution_tree_v2",
+    "20260730_token_usage_custom_provider_model_value_backfill",
+    "20260730_token_usage_provider_name_snapshot_backfill",
+    "20260819_token_usage_run_records_v1",
+    "20260901_agent_org_flat_team_families_v1",
+
+ ❯ tests/release/record-released-migration-order.test.ts:27:8
+     25|     const ids = new AppDataMigrationRegistry().listDefinitions().map((…
+     26|     expect(ids.slice(0, recorded.length), "a released migration keeps …
+     27|       .toEqual(recorded);
+       |        ^
+     28|     fs.writeFileSync(RECORD, `${JSON.stringify(ids, null, 2)}\n`);
+     29|     console.log(`Recorded ${ids.length} app-data migrations (${ids.len…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed (1)
+   Start at  10:38:29
+   Duration  2.14s (transform 1.21s, setup 56ms, import 1.52s, tests 8ms, environment 0ms)
+
+ ELIFECYCLE  Command failed with exit code 1.
