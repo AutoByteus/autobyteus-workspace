@@ -26,3 +26,9 @@ My progress log while tests run. Read it first when picking the run back up. Row
 | 2026-11-17 19:44 | G5, TEXT-PROBES | Checkpoint | | probe1: SIR-002 Pass; DLP-005 Fail (inherited-layer text, as DLC); SIR-001 Fail on base too; G5-001/002/003, DLP-003/004, DCP-004 failed on my case or stale probe lines (fixed). probe2 rerun: /tmp/api500/probe2 |
 | 2026-11-17 20:00 | G5-001..003, TEXT-PROBES | Completed | Pass (G5 3/3, DLP-003/004, DCP-004, SIR-002, composer 12/12); DLP-005 Fail (F-2); SIR-001 base-side | probe2/probe3/composer1 |
 | 2026-11-17 20:00 | LE-F1 | Not run | Next Round | its scripted twin (F-2) fails first |
+| 2026-11-17 21:07 | ROUND 2 | Started | | CRR-004 at c22af3b892 (code 7eb78a701b); dist rebuilt; static check exemption for RSE-1 (3/3); new ODM-1 on-demand models e2e: Pass (base: false note after restart) |
+| 2026-11-17 21:07 | F-1, F-2, F-3, G-5 e2e | Started | | batch /tmp/api500/r2/batch.log (8 files, sequential) |
+| 2026-11-17 21:39 | F-1, F-2, F-3, G-5 e2e | Completed | Pass | E-002 4/4, SCP 6/6, DLC F-2 case; DTL batch failure was load (rerun 2/2); DLC 3/3 and ODM-1 in Linux |
+| 2026-11-17 21:39 | LE-F1 | Completed | Pass | live Claude with CLAUDE_E2E_STALE_MODEL=claude-sonnet-4-5-20250929 (default stale model is in the catalog) |
+| 2026-11-17 21:39 | G5-001..003, DLP-005, DLP-003/004 | Completed | Pass | 6/6 /tmp/api500/r2/probe |
+| 2026-11-17 21:39 | ROUND 2 | Completed | Pass | 95% |

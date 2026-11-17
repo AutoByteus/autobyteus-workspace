@@ -25,3 +25,31 @@ None (the first round).
   - LE-F1 live on Claude (Next Round);
   - M-6 cold cache (no sudo);
   - the founder's own data (his approval).
+
+### API-REV-002: round 2 (CRR-004): F-1 … F-3 resolved; on-demand AutoByteus models across restarts; Pass
+
+- Triggering role, report path, and round: `/code_reviewer`, `code-review-report.md` (CRR-004 Pass on IR-003; head `c22af3b892`, code `7eb78a701b`), API/E2E round 2.
+- Triggering finding or case IDs: F-1 (CR-500-004), F-2 (CR-500-005), F-3 (CR-500-003); the reviewer's items 2–5.
+- Why this revision was recorded: the rerun after the fixes.
+- Coverage decisions or durable test paths changed:
+  - added `on-demand-stored-models-startup.e2e.test.ts` (ODM-1);
+  - `team-stream-clients-wait-for-connected.test.ts` exempts RSE-1 by name, and checks that each exemption is still needed.
+
+#### Prior Failure Resolution
+
+- F-1: resolved. E-002 4/4: the retired agent's run gets `RUN_NOT_FOUND`, "AgentDefinition … not found"; ODM-1 shows the same for a member whose definition was removed.
+- F-2: resolved. The DLC case and probe DLP-005 pass with the new next step; LE-F1 passes live on Claude.
+- F-3: resolved. SCP-E2E-006 6/6; ODM-1 starts LM Studio and Ollama models after real restarts.
+- Correction: in round 1 the mate did get a `RUN_MODEL_NOT_OFFERED` ERROR frame (CRR-003); my helper waited for a tool result.
+
+- Canonical artifacts and sections updated: the execution report (Round, Routing, Cases, Findings, AC proof, scorecard, Durable Coverage, Cleanup, Result); the progress log; `evidence/api-e2e/API-r2-runs.txt` and screenshots; `follow-ups.md` (FU-500-11).
+- Prior result and confidence: `Fail` / 86%
+- Current result and confidence: `Pass` / 95%
+- New or remaining failure IDs: none
+- Recommended owner: the Code Reviewer, for the proportional test-code review of `c0770ea7b0` and this round's test commit, then delivery.
+- Remaining risks, blocked evidence, or untested scope:
+  - quiet macOS (Not Tested);
+  - M-6 cold cache;
+  - the founder's own data (his approval);
+  - LM Studio and Ollama emulated;
+  - FU-500-09 … 11.

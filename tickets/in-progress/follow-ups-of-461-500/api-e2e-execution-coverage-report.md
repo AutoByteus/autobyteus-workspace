@@ -5,9 +5,10 @@ This report records what ran and the result. The plan is in `api-e2e-coverage-in
 ## Round
 
 - Coverage investigation: `api-e2e-coverage-investigation.md`
-- API/E2E revision record and current revision ID: `api-e2e-revision-record.md` / `API-REV-001`
+- API/E2E revision record and current revision ID: `api-e2e-revision-record.md` / `API-REV-002`
 - Test progress log: `api-e2e-test-progress.md`
-- Round and trigger: round 1, on CRR-002 (Pass after CRR-001's Local Fix IR-002). Code under test: `cc8dbce099` (merge base `9695d310c5`), plus this round's test-only changes. Server `dist` rebuilt from `cc8dbce099`.
+- **Round 2 (CRR-004 Pass; head `c22af3b892`, code `7eb78a701b`, IR-003):** F-1 … F-3 rerun; AutoByteus models loaded on demand across real restarts (new ODM-1); a retired agent on the member path; G5-001 … 003 and DLP-005 again; LE-F1 live; the static-check exemption for RSE-1. Evidence: `evidence/api-e2e/API-r2-runs.txt`; raw logs `/tmp/api500/r2`. Round 1's text below is kept where round 2 did not change it; the Findings table carries both rounds.
+- Round and trigger (round 1): round 1, on CRR-002 (Pass after CRR-001's Local Fix IR-002). Code under test: `cc8dbce099` (merge base `9695d310c5`), plus this round's test-only changes. Server `dist` rebuilt from `cc8dbce099`.
 - Scope: the code reviewer's list (AC-005 on Linux, FU-020 on real-shaped data and C-6, G-5 with its browser render, FU-036 on the org and collaboration streams, the FU-030 text assertions, G-1/G-2), plus the full server E2E folder (499 files changed, composition rewired) and the touched browser probes.
 - Out of this package: FU-035 / AC-007 (IR-003, D-14).
 - Evidence: `evidence/api-e2e/API-r1-runs.txt` (§1 … §6) and its screenshots; raw logs `/tmp/api500`.
@@ -15,7 +16,8 @@ This report records what ran and the result. The plan is in `api-e2e-coverage-in
 ## Routing Classification
 
 - Task size: `Large`; Architectural risk: `High`; Input route: `Reviewed`.
-- Result route: `Fail` → Code Reviewer, focused failure-origin review.
+- Result route (round 2): `Pass` → Code Reviewer, proportional test-code review (round 1: `Fail` → failure-origin review, CRR-003).
+- Proportional test-code review decision: `Required` (`c0770ea7b0` and round 2's test commit).
 
 ## Tested Builds And Environments
 
@@ -47,7 +49,10 @@ This report records what ran and the result. The plan is in `api-e2e-coverage-in
 | G5-003 | AC-012, D-12 | unreadable list | probe `--cases G5-003` | ENV-3 | Pass | §6; API-r1-G5-003-*.png | no G-5 refusal; AGY's own errors after 23.5 s (hang) and 0.7 s (fail) | AGY needs its list to launch |
 | TEXT-E2E | AC-004 | server texts | DCM, DTL, removed-remote-provider, remote-delegation RC-04/RC-17, collaboration-prompt-wording, contract stories (full run) | ENV-1, 2 | Pass (after stale updates), except F-2 | §3 | RC 46/46; DCM 11/11 | |
 | TEXT-PROBES | AC-004, AC-011 | browser texts | DLP-003, DLP-004, DCP-004, SIR-002, composer probe | ENV-3 | Pass | §6 | "DLP-003 Pass", "DLP-004 Pass", "DCP-004 Pass", "SIR-002 Pass", composer 12/12 | SIR-001 fails on base too (FU-500-10) |
-| LE-F1 (Claude, live) | AC-004 | live refusal text | — | — | Next Round | — | — | Its scripted twin (F-2's path) fails first; run after the fix |
+| LE-F1 (Claude, live) | AC-004 | live refusal text | r2: `RUN_CLAUDE_E2E=1 CLAUDE_E2E_STALE_MODEL=claude-sonnet-4-5-20250929 … -t LE-F1` | ENV-1 + Claude login | Pass | API-r2-runs.txt §4 | "Tests 1 passed" | The default stale model is in Claude's catalog today (precondition) |
+| ODM-1 (r2) | AC-012, SR-015 R1, CR-500-003/004 | on-demand AutoByteus models, real restarts | new `tests/e2e/llm-management/on-demand-stored-models-startup.e2e.test.ts` | ENV-1, 2, B | Pass (base: false note) | API-r2-runs.txt §2 | restart answers + options name the model; host down: "MODEL_IDENTIFIER_NOT_AVAILABLE", no G-5; read and missing: G-5 text, 0 chats; removed agent: "AgentDefinition with ID … not found." | |
+| F-1 … F-3 rerun (r2) | as above | as above | E-002, DLC (F-2 case), SCP-E2E-006; G-5-touched e2e; probes | ENV-1, 2, 3 | Pass | API-r2-runs.txt §1, §3 | E-002 4/4; SCP 6/6; DLC F-2 case ✓; DLP-005 Pass | DTL's batch failure was load (rerun 2/2) |
+| STREAM-CHECK exemption (r2) | — | static check | `team-stream-clients-wait-for-connected.test.ts` | ENV-1 | Pass | §5 | 3/3 | RSE-1 sends early on purpose |
 
 ### Findings
 
@@ -55,7 +60,9 @@ This report records what ran and the result. The plan is in `api-e2e-coverage-in
 | --- | --- | --- | --- | --- | --- |
 | F-1 | Restoring a run whose agent definition was removed (the retired built-in Project Task Manager, E-002) | Refused as before: `RUN_NOT_FOUND`, "AgentDefinition with ID … not found" (preserved behavior) | Refused with G-5's `ACTIVATION_FAILED` text: "… can't start: its saved model '…' is not offered by AutoByteus now. Stop it, then choose a runtime and model … in Settings." — the wrong reason and a repair that cannot help | Pass 1/1 | `Design Impact`: G-5's check runs in `restoreStarted` before `buildConfig` (design G-5), so it answers before the missing definition is found |
 | F-2 | Delegation refusal when the run's own (inherited) model was retired (DLP-005, DLC) | FU-030 DLP-005: "… can't be delegated to: its default model cannot be used: '…' is no longer offered by …. Choose another model for … in its settings, or delegate to another agent." (the updated tests and the handoff's table) | "… can't be delegated to: 'dlc-retiring-model' is no longer offered by Antigravity CLI." — no next step (REQ-007) | (old text) | `Local Fix`: `collaborator-launch-resolver.ts:173` throws `CollaboratorAddError(plan.name, verdicts.inherited.detail)` with no FU-030 wording; only `:328` (own default layer) has it. If the design meant another text for the inherited layer, `Unclear` |
-| F-3 | After a restart with one copy's Task file damaged, the native mate (AutoByteus on emulated LM Studio, on no Task) is sent get_project_task through the team view (SCP-E2E-006) | Answered as on base | No answer at all within 90 s: no model request, no ack, no error or status frame, no server log line naming the mate | Pass 2/2 | `Unclear` origin (a regression on the branch): a command silently not answered, which this ticket set out to remove (REQ-009's "no silent drop") |
+| F-3 | After a restart with one copy's Task file damaged, the native mate (AutoByteus on emulated LM Studio, on no Task) is sent get_project_task through the team view (SCP-E2E-006) | Answered as on base | No answer within 90 s and no model request. Correction (CRR-003): it did get a `RUN_MODEL_NOT_OFFERED` ERROR frame; my helper waited for a tool result and printed only the last frames | Pass 2/2 | Origin (CRR-003): G-5 read the AutoByteus list before the on-demand provider was loaded (CR-500-003) |
+
+- **Round 2: F-1, F-2 and F-3 are resolved** (IR-003: CR-500-004, CR-500-005, CR-500-003). E-002 4/4; the DLC F-2 case and probe DLP-005 pass with "… it would use this run's model '…', which … no longer offers. Set a model for … in its settings, or change this run's model, then delegate again."; SCP-E2E-006 6/6; ODM-1 covers the cause of F-3 directly.
 
 - Stale tests this ticket made untrue, updated (Durable Coverage below) and passing.
 - Not this ticket (fail on the base too): FU-500-09, FU-500-10.
@@ -68,7 +75,7 @@ This report records what ran and the result. The plan is in `api-e2e-coverage-in
 | AC-001 (names) | Yes | FULL-SERVER (renamed contracts in every suite), code review's greps | Proven | No failure traces to a rename |
 | AC-002 (composition) | Yes | FULL-SERVER (both hosts start); IMP-06 units | Proven | The stale harnesses (FU-011) show the getters now refuse before composition |
 | AC-003 (token totals) | Yes | FULL-SERVER (token suites) | Proven | |
-| AC-004 (refusal texts) | Yes | TEXT-E2E, TEXT-PROBES, DLC-INHERITED | Not Proven | F-2 |
+| AC-004 (refusal texts) | Yes | TEXT-E2E, TEXT-PROBES, DLC-INHERITED, LE-F1 | Proven (r2) | F-2 resolved; live on Claude |
 | AC-005 (gates) | Yes | WATCH-LINUX, GATES | Proven (quiet macOS Not Tested) | D-13b: Linux is the gate |
 | AC-006 (not ready) | Yes | NOTREADY-INT, NOTREADY-REAL | Proven | |
 | AC-007 (Grok) | — | — | Out of this package | IR-003 |
@@ -76,21 +83,21 @@ This report records what ran and the result. The plan is in `api-e2e-coverage-in
 | AC-009 (order) | Yes | MIG-UNITS (order test), IMP-07, IMP-09 | Proven | The release-commit part is delivery's |
 | AC-010 (late v2) | Yes | LTI-1, MIG-UNITS | Proven | |
 | AC-011 (SIR-002) | Yes | TEXT-PROBES (SIR-002) | Proven | |
-| AC-012 (stored model) | Yes | G5-001 … G5-003 | Proven for its scenarios; F-1 is its side effect on a retired agent | |
+| AC-012 (stored model) | Yes | G5-001 … G5-003 (r1, r2), ODM-1 (r2), E-002 (r2) | Proven (r2) | Includes on-demand AutoByteus models after restarts and a removed agent on both paths; FU-500-11 is a Settings observation outside it |
 
 ## Validation Confidence Scorecard (Mandatory)
 
 | Confidence Category | Post-Repository Score | Final Score | What Supports It | Residual Uncertainty | What Could Improve It |
 | --- | --- | --- | --- | --- | --- |
-| Requirement and acceptance-criteria proof | 75% | 75% | most ACs proven directly | AC-004 (F-2); F-1, F-3 | the fixes, then a rerun |
-| Changed-boundary execution directness | 90% | 92% | built server, real streams and routes, browser | — | — |
-| Cross-boundary integration realism and mock gap | 85% | 90% | scripted runtimes only at the CLI edge | live models not run this round | LE-F1 next round |
-| Environment, configuration, identity, and fixture fidelity | 70% | 85% | Linux container separated load; base compared | the Mac's load; warm-cache cost only | a quieter machine |
-| Failure, edge-case, lifecycle, and recovery evidence | 80% | 85% | second starts, kept links, early close, unreadable list | F-3 | — |
-| User-surface, browser, and desktop-shell confidence | 40% | 88% | G5 rendered, texts in the browser | no desktop shell (no shell change) | — |
-| Durable regression coverage quality and relevance | 85% | 90% | 2 new E2Es, G5 probe cases, 13 stale tests updated | — | — |
+| Requirement and acceptance-criteria proof | 90% | 96% | r2: every in-package AC proven directly (AC-007 out of the package) | the founder's own data (his approval) | — |
+| Changed-boundary execution directness | 92% | 96% | built server, real streams and routes, real restarts, browser | — | — |
+| Cross-boundary integration realism and mock gap | 90% | 94% | emulated on-demand hosts over real HTTP; LE-F1 live on Claude | LM Studio and Ollama are emulated, not real hosts | a real local model host |
+| Environment, configuration, identity, and fixture fidelity | 85% | 92% | Linux container separated load; base compared; LE-F1's stale model by override | the Mac's load; warm-cache cost only; quiet macOS not available | a quieter machine |
+| Failure, edge-case, lifecycle, and recovery evidence | 90% | 96% | host down, read-and-missing, removed agent on both paths, second starts, early close | — | — |
+| User-surface, browser, and desktop-shell confidence | 88% | 95% | G5 and DLP-005 rendered (r2) | no desktop shell (no shell change) | — |
+| Durable regression coverage quality and relevance | 90% | 95% | ALM-1, RSE-1, ODM-1, G5 probe cases; 13 stale tests updated; the static check's exemption | — | — |
 
-- Overall: 86% (simple average). Every critical AC directly proven: `No` (AC-004). Target met: `No`, and three failures stand.
+- Overall (round 2): 95% (simple average; round 1: 86%). Every critical in-package AC directly proven: `Yes`. No category below 90%. Target met: `Yes`.
 
 ## Broader Validation Decision (Mandatory)
 
@@ -123,7 +130,10 @@ This report records what ran and the result. The plan is in `api-e2e-coverage-in
 | `remote-delegation-two-server` RC-04, RC-17 | Updated | TEXT-E2E | FU-030: the peer's reason only |
 | `delegated-launch-defaults-probe.mjs` DLP-003/004 reason regexes, DCP-004 Save-text match | Updated | TEXT-PROBES | FU-030 texts |
 
-- Not changed: E-002, DLC and SCP-E2E-006's assertions (they state behavior the product breaks: F-1 … F-3).
+| `autobyteus-server-ts/tests/e2e/llm-management/on-demand-stored-models-startup.e2e.test.ts` (r2) | Added | ODM-1 | |
+| `autobyteus-server-ts/tests/unit/e2e-helpers/team-stream-clients-wait-for-connected.test.ts` (r2) | Updated | STREAM-CHECK | a named exemption for RSE-1, which sends early on purpose; a case keeps each exemption current |
+
+- Not changed by me: E-002, DLC and SCP-E2E-006's assertions (they stated the behavior F-1 … F-3 broke; they pass in round 2). The DLP-005 e2e and probe assertions of the new text are the implementation's (IR-003).
 
 ## Dependencies Mocked Or Emulated
 
@@ -136,13 +146,14 @@ This report records what ran and the result. The plan is in `api-e2e-coverage-in
 
 | Item | Owned By This Run | Cleanup Action | Result |
 | --- | --- | --- | --- |
-| Docker containers `api500-watch`, `api500-c2`, `api500-c3` | Yes | `--rm` | Removed |
+| Docker containers `api500-watch`, `api500-c2`, `api500-c3`, `api500-c4` | Yes | `--rm` (c3 was removed by `docker rm -f`) | Removed |
+| Temporary base copy of ODM-1 (r2) | Yes | deleted after the run | Removed |
 | Base worktree `500-base-9695d310` | Yes | kept for the next round's comparisons | Kept |
 | Temporary cost test, E-002 and SCP-006 debug lines | Yes | deleted / reverted | Removed (git diff clean for those) |
 | Synthesized 8.6 GB data, archives | Yes | `rm -rf` | Removed |
 | `/tmp/api500` logs, probe outputs | Yes | kept; extracts committed | Kept |
 
-## Preliminary Classification (On `Fail`)
+## Preliminary Classification (On `Fail`, round 1)
 
 - F-1 `Design Impact` (G-5's check order in the standalone restore path) → Solution Designer, via the Code Reviewer.
 - F-2 `Local Fix` (the inherited-layer refusal path missed FU-030) → Implementation, via the Code Reviewer; `Unclear` if the design meant another text.
@@ -150,5 +161,11 @@ This report records what ran and the result. The plan is in `api-e2e-coverage-in
 
 ## Latest Authoritative Result
 
-- Result: `Fail` (F-1, F-2, F-3). Confidence 86%.
-- Next recipient from `get_handoff_rules`: the Code Reviewer, for focused failure-origin review.
+- Result (round 2): `Pass`. Confidence 95%. F-1 … F-3 resolved; no new finding. Round 1 was `Fail` (86%).
+- Residual risks:
+  - quiet macOS for the watcher (Not Tested; Linux 5 of 5 is the gate);
+  - M-6 cold-cache cost (warm only);
+  - the founder's own data (only he can approve);
+  - on-demand hosts emulated (LM Studio, Ollama);
+  - FU-500-09 … 11 outside this ticket.
+- Next recipient from `get_handoff_rules`: the Code Reviewer, for the proportional test-code review, then delivery.
