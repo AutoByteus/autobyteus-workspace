@@ -106,18 +106,18 @@ None: no release, no version bump, no tag.
 
 - Bootstrap context source: `RELEASE.md` Finalization Target (`origin`, `personal`; ticket branch `codex/<ticket-name>`; merge `--no-ff` from a `finalize/` branch in the ticket worktree) and the ticket's bootstrap (base `origin/personal` @ `2b73308ce5`).
 - Ticket branch: `codex/per-agent-episodic-catalog`
-- Ticket branch commit result: FINAL_COMMIT_PENDING
-- Ticket branch push result: FINAL_PUSH_PENDING
+- Ticket branch commit result: `992372ff77` (delivery docs sync, handoff summary, release notes, follow-ups, verification records, archive to `tickets/done/`), then `ef0987852f` (refresh 2's checks and records), on top of the base-refresh merges `90f1d79d12` and `d177e6a9d9`, the reviewer-documents checkpoint `630449448b`, API/E2E `393cf79297` and the implementation commits up to `1324c3e8f4`.
+- Ticket branch push result: `origin/codex/per-agent-episodic-catalog` created (new branch) at `ef0987852f`. Secret Gate on `origin/personal..codex/per-agent-episodic-catalog` (20 commits) `PASS` before the push; artifact hygiene `PASS` (this ticket's evidence files have no `:` or other Windows-hostile character in their names; the longest is 84 characters).
 - Finalization target remote: `origin`
 - Finalization target branch: `personal`
-- Target advanced after verification / acceptance: FINAL_TARGET_PENDING
-- Delivery-owned edits protected before re-integration: `Not needed`
-- Re-integration before final merge result: FINAL_REINT_PENDING
-- Target branch update result: FINAL_TARGET_UPDATE_PENDING
-- Merge into target result: FINAL_MERGE_PENDING
-- Push target branch result: FINAL_TARGET_PUSH_PENDING
-- User's checkout of the target branch (`/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`): FINAL_CHECKOUT_PENDING
-- Repository finalization status: FINAL_STATUS_PENDING
+- Target advanced after verification / acceptance: `Yes`, once: `c0869d58e9` → `3f19d41aa7` (autobyteus-448 part 2) after the first merged-state verification and before any push. Handled by refresh 2 and a full recheck (`DEL-07…DEL-13`). No further advance at any later fetch: `origin/personal` was `3f19d41aa7` before the ticket's final commit, before the ticket push, before the finalize merge, after the merged-state gates and immediately before the target push.
+- Delivery-owned edits protected before re-integration: `Completed` (committed as `992372ff77` before refresh 2's merge)
+- Re-integration before final merge result: `Completed` (refresh 2, merge `d177e6a9d9`; checks `DEL-07…DEL-13` pass; no docs change was needed by it beyond naming it)
+- Target branch update result: `finalize/per-agent-episodic-catalog` created from `origin/personal` @ `3f19d41aa7` in the ticket worktree (not in the main checkout).
+- Merge into target result: `--no-ff` merge `49d3ea858d`; its tree equals the ticket branch's `ef0987852f` (`git diff --stat codex/per-agent-episodic-catalog HEAD` empty). Secret Gate on the merged state (21 commits) `PASS`; licensing `PASS`; artifact hygiene `PASS` (97972 tracked files).
+- Push target branch result: `3f19d41aa7..49d3ea858d  HEAD -> personal`. This record commit follows it (fast-forward), and the ticket branch is fast-forwarded to it.
+- User's checkout of the target branch (`/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`): `Updated to 49d3ea858d` after the merge push: it was on `personal` at `3f19d41aa7` with no commit the remote lacks, `git fetch` then `git merge --ff-only origin/personal`, no stash, reset, checkout or commit; its 6 uncommitted files (other tickets' `tickets/done/` reports) are untouched. After this record's push the same fast-forward is repeated for the record commit; its result is in the terminal message.
+- Repository finalization status: `Completed`
 - Blocker (if applicable): None
 
 ## Release / Publication / Deployment
@@ -139,9 +139,7 @@ None: no release, no version bump, no tag.
 ## Post-Finalization Cleanup
 
 - Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/per-agent-episodic-catalog`
-- Worktree cleanup result: FINAL_CLEANUP_PENDING
-- Worktree prune result: FINAL_CLEANUP_PENDING
-- Local ticket branch cleanup result: FINAL_CLEANUP_PENDING
+- Worktree cleanup result, worktree prune result, local branch cleanup result: run after this record's push and the second update of the user's checkout (`git worktree remove` from the main checkout once the worktree's untracked and ignored files are confirmed to be build output and test data only and everything committed is pushed; `git worktree prune`; delete the local `codex/per-agent-episodic-catalog` and the temporary `finalize/per-agent-episodic-catalog`, both merged into `origin/personal`). The results are in the terminal message.
 - Remote branch cleanup result: `Not required` (the repository keeps pushed `codex/*` branches)
 - Blocker (if applicable): None
 
@@ -176,10 +174,10 @@ Revert the merge commit on `personal` (RELEASE.md, Rollback). The change convert
 ## Final Status
 
 - Verification complete (from the evidence, or the user's check where needed): `Yes` (AC-010's real-data start is carried to the founder as a deploy gate, not a verification gap)
-- Repository finalization complete: FINAL_YESNO_PENDING
+- Repository finalization complete: `Yes`
 - Applicable release/deployment/rollout complete or not required: `Yes` (not required)
-- Applicable safe cleanup complete or not required: FINAL_YESNO_PENDING
+- Applicable safe cleanup complete or not required: `Yes` after the steps above; the terminal message states the result
 - Unresolved blocker: `None`
-- Successful terminal package eligible for return: FINAL_YESNO_PENDING
-- Terminal package sent to the Solution Designer: FINAL_YESNO_PENDING
-- Terminal message/reference: FINAL_REF_PENDING
+- Successful terminal package eligible for return: `Yes`
+- Terminal package sent to the Solution Designer: `Yes`, after this record's push, the update of the user's checkout and the cleanup
+- Terminal message/reference: the `Delivery Completed` message to `/solution_designer` that follows this record
