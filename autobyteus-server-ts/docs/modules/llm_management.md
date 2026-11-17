@@ -397,7 +397,10 @@ asks Claude Code for the one-hour cache by default.
 - `client/claude-sdk-spawn-environment.ts` (`buildClaudeSdkSpawnEnvironment`)
   composes the Claude Code child environment for every spawn (agent sessions,
   and the model-listing and usage reads that send no message): first the
-  auth-mode policy above, then the one-hour cache default, in every auth mode.
+  auth-mode policy above, then the one-hour cache default, in every auth mode,
+  then the two-hour shell time limits (`BASH_DEFAULT_TIMEOUT_MS` and
+  `BASH_MAX_TIMEOUT_MS` set to `7200000` when the server environment does not
+  define them; see [Agent Execution](./agent_execution.md#runtime-tool-lifecycle-normalization)).
 - The default is `ENABLE_PROMPT_CACHING_1H=1`, added only when the server
   setting `CLAUDE_AGENT_SDK_ONE_HOUR_PROMPT_CACHE` is not `false` (absent means
   on) and the server environment does not already define

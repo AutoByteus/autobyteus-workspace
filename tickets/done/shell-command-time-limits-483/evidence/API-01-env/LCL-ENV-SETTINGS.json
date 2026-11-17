@@ -1,0 +1,51 @@
+{
+  "caseId": "LCL-ENV-SETTINGS",
+  "startedAt": "2026-11-17T11:30:58.592Z",
+  "longSeconds": 2100,
+  "settingsFile": ".claude/settings.json (run workspace, project setting source)",
+  "settings": "{\n  \"env\": {\n    \"BASH_MAX_TIMEOUT_MS\": \"900000\"\n  }\n}",
+  "output": "MAX=900000 DEFAULT=7200000",
+  "runId": "long_command_external_a502eaa4_ee92_4f13_bbfe_81_5ca63d0514b049bc92ef93691e15474c",
+  "socketEvents": [
+    {
+      "at": 8053,
+      "event": "close"
+    }
+  ],
+  "toolCalls": [
+    {
+      "at": 3303,
+      "type": "TOOL_EXECUTION_STARTED",
+      "tool": "Bash",
+      "invocation": "toolu_01PhSHcJDAEejuCQ87YyYHwL",
+      "args": {
+        "command": "echo \"MAX=$BASH_MAX_TIMEOUT_MS DEFAULT=$BASH_DEFAULT_TIMEOUT_MS\"",
+        "description": "Print Bash timeout environment variables"
+      }
+    },
+    {
+      "at": 5827,
+      "type": "TOOL_EXECUTION_SUCCEEDED",
+      "tool": "Bash",
+      "invocation": "toolu_01PhSHcJDAEejuCQ87YyYHwL",
+      "result": "MAX=900000 DEFAULT=7200000"
+    }
+  ],
+  "tasks": [],
+  "notices": [],
+  "turns": [
+    {
+      "at": 116,
+      "type": "TURN_STARTED",
+      "payload": "{\"turnId\":\"long_command_external_a502eaa4_ee92_4f13_bbfe_81_5ca63d0514b049bc92ef93691e15474c:turn:7d8349f4-e98e-477e-b17b-7e14648b69c9\",\"turn_id\":\"long_command_external_a502eaa4_ee92_4f13_bbfe_81_5ca63d0514b049bc92ef93691e15474c:turn:7d8349f4-e98e-477e-b17b-7e14648b69c9\"}"
+    },
+    {
+      "at": 7673,
+      "type": "TURN_COMPLETED",
+      "payload": "{\"turnId\":\"long_command_external_a502eaa4_ee92_4f13_bbfe_81_5ca63d0514b049bc92ef93691e15474c:turn:7d8349f4-e98e-477e-b17b-7e14648b69c9\",\"turn_id\":\"long_command_external_a502eaa4_ee92_4f13_bbfe_81_5ca63d0514b049bc92ef93691e15474c:turn:7d8349f4-e98e-477e-b17b-7e14648b69c9\"}"
+    }
+  ],
+  "text": "MAX=900000 DEFAULT=7200000",
+  "result": "Pass",
+  "endedAt": "2026-11-17T11:31:07.772Z"
+}

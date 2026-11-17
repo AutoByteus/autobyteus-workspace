@@ -1,0 +1,8 @@
+# IMP-10 rerun of the specs fixed after the full runs (IMP-02, IMP-04)
+# commit: fa09807536; node v22.23.1; 2026-11-17T11:10:50Z
+## server
+ Test Files  6 passed (6)
+      Tests  98 passed (98)
+## web
+ Test Files  1 passed (1)
+      Tests  2 passed (2)

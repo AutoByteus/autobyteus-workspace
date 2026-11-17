@@ -17,6 +17,8 @@ export function handleBackgroundTaskUpdated(
     command: payload.command,
     status: payload.status,
     summary: payload.summary,
+    endReason: payload.end_reason,
+    exitCode: payload.exit_code,
     startedAt: payload.started_at,
   });
 }

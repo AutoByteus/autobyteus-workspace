@@ -10,6 +10,8 @@ const task = (overrides: Partial<BackgroundTask> = {}): BackgroundTask => ({
   command: 'sleep 20',
   status: 'running',
   summary: null,
+  endReason: null,
+  exitCode: null,
   startedAt: '2026-09-29T16:48:20.000Z',
   ...overrides,
 });

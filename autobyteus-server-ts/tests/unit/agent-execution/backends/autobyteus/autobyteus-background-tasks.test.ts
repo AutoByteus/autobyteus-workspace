@@ -16,12 +16,23 @@ const task = { pid: 41, command: "pnpm build", effectiveCwd: "/w", outputFile: "
 const end = (outcome: object) => ({ pid: 41, command: "pnpm build", outcome, durationMs: 5, outputFile: "/tmp/x.log", lastLines: "" }) as never;
 
 describe("toAgentBackgroundTask", () => {
-  it("maps a native task to the runtime-neutral vocabulary (panel status and summary)", () => {
-    expect(toAgentBackgroundTask({ task, end: null })).toEqual({ taskId: "41", kind: "shell", description: "pnpm build",
-      command: "pnpm build", status: "running", summary: null, startedAt: task.startedAt });
-    expect([{ exitCode: 0 }, { exitCode: 2 }, { signal: "SIGTERM" }, { error: "lost" }]
-      .map((outcome) => toAgentBackgroundTask({ task, end: end(outcome) })).map((t) => [t.status, t.summary]))
-      .toEqual([["completed", "exit code 0"], ["failed", "exit code 2"], ["stopped", "signal SIGTERM"], ["failed", "lost"]]);
+  const ends = (runEnding: boolean) => [{ exitCode: 0 }, { exitCode: 2 }, { signal: "SIGTERM" }, { error: "lost" }]
+    .map((outcome) => toAgentBackgroundTask({ task, end: end(outcome) }, runEnding))
+    .map((t) => [t.status, t.summary, t.endReason, t.exitCode]);
+
+  it("maps a native task to the runtime-neutral vocabulary (panel status, summary, exit code)", () => {
+    expect(toAgentBackgroundTask({ task, end: null }, false)).toEqual({ taskId: "41", kind: "shell", description: "pnpm build",
+      command: "pnpm build", status: "running", summary: null, endReason: null, exitCode: null, startedAt: task.startedAt });
+    expect(ends(false)).toEqual([
+      ["completed", null, null, 0], ["failed", null, null, 2], ["stopped", "signal SIGTERM", null, null], ["failed", "lost", null, null],
+    ]);
+  });
+
+  it("marks every end without an exit code as the run's end while the run is ending (autobyteus-483, AC-007)", () => {
+    expect(ends(true)).toEqual([
+      ["completed", null, null, 0], ["failed", null, null, 2],
+      ["stopped", "signal SIGTERM", "run_ended", null], ["stopped", "lost", "run_ended", null],
+    ]);
   });
 });
 
@@ -57,13 +68,40 @@ suite("AutoByteusAgentRunBackend background tasks", () => {
     // autobyteus-473: a viewer that opens the run now starts from the task.
     expect(current().map((t) => [t.taskId, t.status, t.command])).toEqual([[String(started[0]!.pid), "running", "sleep 0.3; exit 3"]]);
 
-    const updates = () => events.filter((e) => e.eventType === AgentRunEventType.BACKGROUND_TASK_UPDATED).map((e) => [e.payload.status, e.payload.summary]);
-    await vi.waitFor(() => expect(updates()).toEqual([["running", null], ["failed", "exit code 3"]]), { timeout: 5000 });
+    const updates = () => events.filter((e) => e.eventType === AgentRunEventType.BACKGROUND_TASK_UPDATED)
+      .map((e) => [e.payload.status, e.payload.summary, e.payload.exit_code]);
+    await vi.waitFor(() => expect(updates()).toEqual([["running", null, null], ["failed", null, 3]]), { timeout: 5000 });
     expect(backend.hasRunningBackgroundTasks()).toBe(false);
     // An ended task stays in the view with its end.
-    expect(current().map((t) => [t.status, t.summary])).toEqual([["failed", "exit code 3"]]);
+    expect(current().map((t) => [t.status, t.summary, t.exitCode])).toEqual([["failed", null, 3]]);
     expect(backend.backgroundTaskNotices.takeUnreportedEnds().map((e) => [e.pid, e.outcome])).toEqual([[started[0]!.pid, { exitCode: 3 }]]);
     expect(backend.backgroundTaskNotices.takeUnreportedEnds()).toEqual([]);
+  });
+});
+
+suite("AutoByteusAgentRunBackend run end (autobyteus-483, AC-007)", () => {
+  it("reports a background command stopped by the run's end as stopped with run_ended", async () => {
+    const cwd = fs.mkdtempSync(path.join(os.tmpdir(), "native-bg-end-"));
+    const agentContext = { agentId: `native-bg-end-${process.pid}` };
+    const manager = getBackgroundManager(agentContext);
+    cleanups.push(() => manager.scope.close(), async () => fs.rmSync(cwd, { recursive: true, force: true }));
+    const context = new AgentRunContext({ runId: "agent-3",
+      config: new AgentRunConfig({ runtimeKind: RuntimeKind.AUTOBYTEUS, agentDefinitionId: "def-1", llmModelIdentifier: "model-1", autoExecuteTools: false }), runtimeContext: null });
+    // Removing a native agent stops its background commands (the agent's run-end path).
+    const removeAgent = vi.fn(async () => { await manager.stopAllForRunEnd(); return true; });
+    const backend = new AutoByteusAgentRunBackend(context, {
+      agentId: "agent-3", getCompactionRecovery: () => null, authorizeCompactionRetry: () => "stale",
+      revokeUnusedCompactionRetry: () => "stale", currentStatus: "idle", context: agentContext as never,
+    }, { isActive: () => true, removeAgent, tools: stubAutoByteusRunTools() });
+    const events: AgentRunEvent[] = [];
+    backend.subscribeToSourceEventBatches((batch) => { events.push(...batch); });
+    await manager.run("sleep 30", cwd, { background: true });
+
+    expect(await backend.terminate()).toEqual({ accepted: true });
+
+    const updates = () => events.filter((e) => e.eventType === AgentRunEventType.BACKGROUND_TASK_UPDATED)
+      .map((e) => [e.payload.status, e.payload.end_reason, e.payload.exit_code]);
+    await vi.waitFor(() => expect(updates()).toEqual([["running", null, null], ["stopped", "run_ended", null]]), { timeout: 5000 });
   });
 });
 

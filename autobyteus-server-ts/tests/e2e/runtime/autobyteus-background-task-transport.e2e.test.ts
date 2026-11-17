@@ -320,13 +320,13 @@ describeGated("Native background tasks through the real server (scripted model)"
       expect(notice.at - completed.at).toBeLessThanOrEqual(5_000);
       // Panel contract: running → completed with the exit code; the panel reads the native run as an event stream.
       expect(statusPath(taskFrames(frames, pid))).toEqual(["running", "completed"]);
-      expect(completed.payload).toMatchObject({ task_id: String(pid), kind: "shell", command, summary: "exit code 0" });
+      expect(completed.payload).toMatchObject({ task_id: String(pid), kind: "shell", command, summary: null, end_reason: null, exit_code: 0 });
       const view = await harness.gql<{ agentBackgroundTaskView: { __typename: string; currentTasks: Array<Record<string, unknown>> } }>(
         `query($id: String!) { agentBackgroundTaskView(agentRunId: $id) { __typename
-          ... on AgentBackgroundTaskEventStream { currentTasks: tasks { taskId status summary } } } }`, { id: session.runId });
+          ... on AgentBackgroundTaskEventStream { currentTasks: tasks { taskId status summary exitCode } } } }`, { id: session.runId });
       expect(view.agentBackgroundTaskView.__typename).toBe("AgentBackgroundTaskEventStream");
       // autobyteus-473 AC-004: the ended task stays in the view with its end.
-      expect(view.agentBackgroundTaskView.currentTasks).toContainEqual({ taskId: String(pid), status: "completed", summary: "exit code 0" });
+      expect(view.agentBackgroundTaskView.currentTasks).toContainEqual({ taskId: String(pid), status: "completed", summary: null, exitCode: 0 });
       const systemNotice = await until(() => frames.find((frame) => frame.type === "SYSTEM_TASK_NOTIFICATION" && frame.payload.sender_id === NOTICE_SENDER), "SYSTEM_TASK_NOTIFICATION");
       expect(String(systemNotice.payload.content)).toBe(notice.lastUser.slice(notice.lastUser.indexOf(BACKGROUND_TASK_NOTICE_HEADER)));
 
@@ -370,7 +370,7 @@ describeGated("Native background tasks through the real server (scripted model)"
       // The command ended while the turn ran (the model was still answering).
       expect(failed, "the command ended during the turn").toBeDefined();
       expect(failed!.at).toBeLessThan(turnCompleted.at);
-      expect(failed!.payload.summary).toBe("exit code 3");
+      expect(failed!.payload).toMatchObject({ summary: null, exit_code: 3 });
       const notice = (await requests("BGT-02", 3, 30_000))[2]!;
       expect(notice.at).toBeGreaterThan(turnCompleted.at);
       expect(notice.at - turnCompleted.at).toBeLessThan(5_000);
@@ -455,7 +455,7 @@ describeGated("Native background tasks through the real server (scripted model)"
       expect(survivors).toEqual([]);
       expect(alive(pids.server) || alive(pids.worker)).toBe(false);
       const stopped = taskFrames(frames, Number(startResult.pid)).at(-1)!;
-      expect(stopped.payload).toMatchObject({ status: "stopped", summary: "signal SIGTERM" });
+      expect(stopped.payload).toMatchObject({ status: "stopped", summary: "signal SIGTERM", end_reason: null });
       await wait(5_000);
       expect(model.notices("BGT-04")).toHaveLength(0);
       expect(frames.filter((frame) => frame.at >= from && frame.type === "SYSTEM_TASK_NOTIFICATION")).toHaveLength(0);
@@ -495,7 +495,7 @@ describeGated("Native background tasks through the real server (scripted model)"
       const jobPid = Number(jobs[0]!.pid);
       const notice = (await requests("BGT-05", 3, 30_000))[2]!;
       expect(notice.lastUser).toContain(`- pid ${jobPid} \`(sleep 2; exit 7) & echo started\`: exit code 7 after 2s`);
-      expect(taskFrames(frames, jobPid).at(-1)!.payload).toMatchObject({ status: "failed", summary: "exit code 7" });
+      expect(taskFrames(frames, jobPid).at(-1)!.payload).toMatchObject({ status: "failed", summary: null, exit_code: 7 });
       await idleAfter(frames, notice.at);
 
       const from = Date.now();
@@ -528,7 +528,7 @@ describeGated("Native background tasks through the real server (scripted model)"
     const tag = `BGT06_${randomUUID().slice(0, 8)}`;
     cleanupTags.push(tag);
     let startResult: Json = {};
-    const { session } = await start("BGT-06", [
+    const { session, frames } = await start("BGT-06", [
       () => ({ toolCalls: [background(`echo serving; ${tagged(tag)}`)] }),
       (request) => { startResult = resultJson(request.toolResults[0]!); return { text: "Started." }; },
     ]);
@@ -542,6 +542,8 @@ describeGated("Native background tasks through the real server (scripted model)"
     const goneMs = await until(() => processTable().some((row) => row.pgid === pgid) ? undefined : Date.now() - terminatedAt, "process group gone", 10_000);
     expect(withTag(tag)).toEqual([]);
     expect(existsSync(path.dirname(String(startResult.outputFile)))).toBe(false);
+    // autobyteus-483 AC-007: the panel's task says the run's end stopped it (its summary keeps the signal).
+    expect(taskFrames(frames, pid).at(-1)!.payload).toMatchObject({ status: "stopped", end_reason: "run_ended", exit_code: null });
     await wait(5_000);
     expect(model.notices("BGT-06")).toHaveLength(0);
     expect(model.of("BGT-06")).toHaveLength(2);
@@ -591,7 +593,8 @@ describeGated("Native background tasks through the real server (scripted model)"
       process.kill(pid, "SIGTERM");
       const notice = (await requests("BGT-08", 3, 30_000))[2]!;
       expect(notice.lastUser).toMatch(new RegExp(`- pid ${pid} \`echo up; [^\\n]*${tag}\`: killed by SIGTERM after \\d+s`));
-      expect(taskFrames(frames, pid).at(-1)!.payload).toMatchObject({ status: "stopped", summary: "signal SIGTERM" });
+      // autobyteus-483 AC-008: a kill the run did not make carries no end reason; the summary names the signal.
+      expect(taskFrames(frames, pid).at(-1)!.payload).toMatchObject({ status: "stopped", summary: "signal SIGTERM", end_reason: null, exit_code: null });
       expect(withTag(tag)).toEqual([]);
       await idleAfter(frames, notice.at);
       await record("BGT-08", { pid, requests: requestDigest("BGT-08"), frames: frameDigest(frames) });
@@ -623,50 +626,67 @@ describeGated("Native background tasks through the real server (scripted model)"
     ]);
     const { session } = await start("BGT-09C", coordinatorSteps, {}, coordinator);
     coordinatorRunId = session.runId;
-    // The root's execution view: statuses and background tasks of the delegated copy (agent_presentation events).
-    const view = new WebSocket(`ws://${harness.url.hostname}:${harness.url.port}/ws/agent-collaboration/${coordinatorRunId}`);
-    const viewFrames: Timed[] = [];
-    view.on("message", (raw: unknown) => {
-      try {
-        const parsed = JSON.parse(String(raw)) as { type?: unknown; payload?: unknown };
-        if (typeof parsed.type === "string") viewFrames.push({ type: parsed.type, payload: isRecord(parsed.payload) ? parsed.payload : {}, at: Date.now() });
-      } catch { /* ignore */ }
-    });
-    await new Promise<void>((resolve, reject) => { view.once("open", () => resolve()); view.once("error", reject); });
-    await until(() => viewFrames.some((frame) => frame.type === "ROOT_EXECUTION_VIEW_SNAPSHOT") || undefined, "root view snapshot", 30_000);
-    type Signal = { agentRunId: string; kind: "status" | "background"; status: string; at: number };
-    const objectsIn = (value: unknown): Json[] => Array.isArray(value) ? value.flatMap(objectsIn)
-      : isRecord(value) ? [value, ...Object.values(value).flatMap(objectsIn)] : [];
-    const signals = (): Signal[] => viewFrames.flatMap((frame) => objectsIn(frame.payload).flatMap((record) => {
-      const message = isRecord(record.message) ? record.message : null;
-      const kind = message?.type === "AGENT_STATUS" ? "status" as const : message?.type === "BACKGROUND_TASK_UPDATED" ? "background" as const : null;
-      const status = isRecord(message?.payload) ? message.payload.status : null;
-      return kind && typeof record.agent_run_id === "string" && typeof status === "string" ? [{ agentRunId: record.agent_run_id, kind, status, at: frame.at }] : [];
-    }));
+    // The copy is watched where its own window watches it: its own stream (`/ws/agent/<id>`), its background-task view and
+    // its run's active state. (Since autobyteus-461 the delegator's collaboration view carries only communication, not
+    // the copy's statuses or tasks.)
+    type Signal = { kind: "status" | "background"; status: string; at: number };
+    const copyFrames: Signal[] = [];
+    let copySocket: WebSocket | null = null;
+    const openCopyStream = async (childRunId: string) => {
+      copySocket = new WebSocket(`ws://${harness.url.hostname}:${harness.url.port}/ws/agent/${childRunId}`);
+      copySocket.on("message", (raw: unknown) => {
+        try {
+          const parsed = JSON.parse(String(raw)) as { type?: unknown; payload?: unknown };
+          const status = isRecord(parsed.payload) ? parsed.payload.status : null;
+          const kind = parsed.type === "AGENT_STATUS" ? "status" as const : parsed.type === "BACKGROUND_TASK_UPDATED" ? "background" as const : null;
+          if (kind && typeof status === "string") copyFrames.push({ kind, status, at: Date.now() });
+        } catch { /* ignore */ }
+      });
+      await new Promise<void>((resolve, reject) => { copySocket!.once("open", () => resolve()); copySocket!.once("error", reject); });
+    };
+    const copyTasks = async (childRunId: string): Promise<Json[]> => {
+      const view = (await harness.gql<{ agentBackgroundTaskView: Json }>(`query($id: String!) { agentBackgroundTaskView(agentRunId: $id) {
+        __typename ... on AgentBackgroundTaskEventStream { currentTasks: tasks { taskId status endReason exitCode } } } }`, { id: childRunId })).agentBackgroundTaskView;
+      return Array.isArray(view.currentTasks) ? view.currentTasks as Json[] : [];
+    };
+    const copyActive = async (childRunId: string): Promise<boolean> => (await harness.gql<{ getAgentRunResumeConfig: { isActive: boolean } }>(
+      "query($id: String!) { getAgentRunResumeConfig(runId: $id) { isActive } }", { id: childRunId })).getAgentRunResumeConfig.isActive;
     try {
       sendE2eSendMessageCommand(session.socket, { content: "CASE:BGT-09C Delegate the build." });
       const childRunId = await until(() => typeof delegated.target_agent_run_id === "string" ? delegated.target_agent_run_id : undefined, "delegation result", 60_000);
       expect(delegated).toMatchObject({ delegated: true, target_kind: "agent" });
-      const of = (kind: Signal["kind"]) => signals().filter((signal) => signal.agentRunId === childRunId && signal.kind === kind);
-      const running = await until(() => of("background").find((signal) => signal.status === "running"), "copy's running task", 60_000);
-      const idle = await until(() => of("status").find((signal) => signal.at >= running.at && signal.status === "idle"), "copy idle", 60_000);
+      await openCopyStream(childRunId);
+      const of = (kind: Signal["kind"]) => copyFrames.filter((signal) => signal.kind === kind);
+      // Running, and the copy idle (its scripted turn ends right after the start): from here the grace period counts.
+      let runningAt = 0;
+      for (const deadline = Date.now() + 60_000; !runningAt && Date.now() < deadline; await wait(250)) {
+        if ((await copyTasks(childRunId)).some((task) => task.status === "running")) runningAt = Date.now();
+      }
+      expect(runningAt, "copy's running task").toBeGreaterThan(0);
+      await until(() => model.of("BGT-09W").length >= 2 || undefined, "copy's start turn ended", 30_000);
+      const idle = { at: Math.max(runningAt, model.of("BGT-09W")[1]!.repliedAt ?? Date.now()) };
       const reportedAt = () => model.of("BGT-09C").find((request) => request.lastUser.includes(report))?.at;
-      const outcome = await until(() => {
-        const offline = of("status").find((signal) => signal.at >= idle.at && signal.status === "offline");
-        if (offline) return { kind: "offline", at: offline.at };
+      let inactiveAt = 0;
+      const outcome = await until(async () => {
         const at = reportedAt();
-        return at ? { kind: "report", at } : undefined;
+        if (at) return { kind: "report", at };
+        if (!inactiveAt && !(await copyActive(childRunId))) inactiveAt = Date.now();
+        return inactiveAt ? { kind: "offline", at: inactiveAt } : undefined;
       }, "report or shutdown", (sleepSeconds + 90) * 1_000, 250);
-      const offline = outcome.kind === "report"
-        ? await until(() => of("status").find((signal) => signal.at > outcome.at && signal.status === "offline"), "copy shut down after quiet", GRACE_MS + 120_000, 250)
-        : null;
-      const before = offline ? of("status").filter((signal) => signal.at <= offline.at && signal !== offline) : [];
+      let offlineAt = 0;
+      if (outcome.kind === "report") {
+        for (const deadline = Date.now() + GRACE_MS + 120_000; !offlineAt && Date.now() < deadline; await wait(250)) {
+          if (!(await copyActive(childRunId))) offlineAt = Date.now();
+        }
+      }
+      const before = of("status").filter((signal) => offlineAt && signal.at <= offlineAt);
       const lastBusy = before.reduce((last, signal, index) => signal.status === "running" || signal.status === "initializing" ? index : last, -1);
       const quietStart = before.slice(lastBusy + 1).find((signal) => signal.status === "idle");
       const result = {
         childRunId, workerAddress, delegated, outcome: outcome.kind, idleToOutcomeMs: outcome.at - idle.at,
-        quietToOfflineMs: offline && quietStart ? offline.at - quietStart.at : null,
+        quietToOfflineMs: offlineAt && quietStart ? offlineAt - quietStart.at : null,
         task: of("background").map((signal) => `${signal.status}@${signal.at - idle.at}`), statuses: of("status").map((signal) => `${signal.status}@${signal.at - idle.at}`),
+        offlineAfterIdleMs: offlineAt ? offlineAt - idle.at : null,
         workerNotices: model.notices("BGT-09W").length, requests: { coordinator: requestDigest("BGT-09C"), worker: requestDigest("BGT-09W") },
       };
       await record("BGT-09", result);
@@ -674,14 +694,14 @@ describeGated("Native background tasks through the real server (scripted model)"
       expect(result.idleToOutcomeMs).toBeGreaterThanOrEqual(GRACE_MS);
       expect(of("background").some((signal) => signal.status === "completed")).toBe(true);
       expect(model.notices("BGT-09W")).toHaveLength(1);
-      expect(result.quietToOfflineMs).not.toBeNull();
+      expect(result.quietToOfflineMs, JSON.stringify(result)).not.toBeNull();
       expect(result.quietToOfflineMs!).toBeGreaterThanOrEqual(GRACE_MS - 2_000);
     } catch (error) {
       if (!evidence["BGT-09"]) await record("BGT-09", { error: String(error), requests: { coordinator: requestDigest("BGT-09C"), worker: requestDigest("BGT-09W") },
-        signals: signals(), frames: frameDigest(viewFrames) });
+        signals: copyFrames });
       throw error;
     } finally {
-      view.close();
+      (copySocket as WebSocket | null)?.close();
       await harness.stopRun(session);
     }
   }, 420_000);

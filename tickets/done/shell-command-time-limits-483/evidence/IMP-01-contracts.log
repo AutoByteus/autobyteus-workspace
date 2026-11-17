@@ -1,0 +1,17 @@
+# IMP-01 contract packages
+# command: pnpm -C autobyteus-agent-presentation-contracts test; pnpm -C autobyteus-team-stream-contracts test; pnpm -C autobyteus-collaboration-stream-contracts test
+# commit: f6cdf0fb15; node v22.23.1; macOS 26.5.2; 2026-11-17T10:59:41Z
+## autobyteus-agent-presentation-contracts
+# tests 22
+# pass 22
+# fail 0
+## autobyteus-team-stream-contracts
+# tests 13
+# pass 13
+# fail 0
+## autobyteus-collaboration-stream-contracts
+# tests 36
+# pass 36
+# fail 0
+## dist in sync after rebuild:
+clean

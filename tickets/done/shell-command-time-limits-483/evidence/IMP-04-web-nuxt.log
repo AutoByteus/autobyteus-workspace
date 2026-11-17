@@ -1,0 +1,11 @@
+# IMP-04 web unit and component tests
+# command: pnpm -C autobyteus-web test:nuxt
+# commit: f6cdf0fb15; node v22.23.1; macOS 26.5.2; 2026-11-17T11:02:11Z
+stderr | components/projects/__tests__/TaskParts.spec.ts > TaskPartOfPicker (UXJ-004; VIS-011a–e, QR-004) > removes the parent with its labelled ×, returning focus to the search (TR-007)
+stderr | components/projects/__tests__/TaskKeysAndDependencies.spec.ts > TaskDependencyPicker (UXJ-003, VIS-007–009, QR-004) > removes a chosen Task with its labelled ×, returning focus to the search
+   × Background Tasks panel localization > names the section Background Tasks in English and Simplified Chinese with the same keys 5ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+ FAIL  localization/messages/__tests__/backgroundTaskPanelCatalog.spec.ts > Background Tasks panel localization > names the section Background Tasks in English and Simplified Chinese with the same keys
+ Test Files  1 failed | 755 passed (756)
+      Tests  1 failed | 5696 passed | 2 skipped (5699)
+   Duration  430.03s (transform 45.70s, setup 2911.45s, collect 315.09s, tests 108.84s, environment 204.50s, prepare 127.68s)

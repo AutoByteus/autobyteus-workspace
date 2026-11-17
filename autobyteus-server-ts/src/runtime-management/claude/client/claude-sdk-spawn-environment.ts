@@ -1,4 +1,5 @@
 import { applyClaudeOneHourPromptCacheDefault } from "../claude-prompt-cache-setting.js";
+import { applyClaudeShellTimeLimitDefaults } from "../claude-shell-time-limit-setting.js";
 
 const CLAUDE_AGENT_SDK_AUTH_MODE_ENV_KEY = "CLAUDE_AGENT_SDK_AUTH_MODE";
 const CLAUDE_OAUTH_TOKEN_ENV_KEYS = [
@@ -56,7 +57,10 @@ const applyClaudeSdkAuthPolicy = (
   }
 };
 
-/** Composes the Claude Code child environment: auth-mode policy, then the one-hour prompt cache default. */
+/**
+ * Composes the Claude Code child environment: auth-mode policy, then the one-hour prompt cache default, then the
+ * 2-hour shell time-limit defaults.
+ */
 export const buildClaudeSdkSpawnEnvironment = (
   env: NodeJS.ProcessEnv = process.env,
   apiKeyOverride?: string,
@@ -64,5 +68,6 @@ export const buildClaudeSdkSpawnEnvironment = (
   const spawnEnv: Record<string, string | undefined> = { ...env };
   applyClaudeSdkAuthPolicy(spawnEnv, resolveClaudeSdkAuthMode(env), apiKeyOverride);
   applyClaudeOneHourPromptCacheDefault(spawnEnv);
+  applyClaudeShellTimeLimitDefaults(spawnEnv);
   return spawnEnv;
 };

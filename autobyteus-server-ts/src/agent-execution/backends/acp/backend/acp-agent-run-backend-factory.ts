@@ -155,6 +155,7 @@ export class AcpAgentRunBackendFactory implements AgentRunBackendFactory {
     return composeSharedCarpenterPrompt({
       agentDefinition: prepared.definition, memberExecutionContext: config.memberExecutionContext, project: config.project,
       semanticMemoryPath: prepared.semanticMemoryPath,
+      longRunningCommandSection: this.deps.sessionProfile.longRunningCommandSection,
     });
   }
 

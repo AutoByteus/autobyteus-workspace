@@ -58,6 +58,7 @@ import {
   materializeCodexAgentToolsMcpThreadConfig,
 } from "../agent-tools-mcp/codex-agent-tools-mcp-materializer.js";
 import { composeSharedCarpenterPrompt } from "../../../prompt/carpenter-prompt-composer.js";
+import { CODEX_LONG_RUNNING_COMMAND_SECTION } from "../../../prompt/long-running-command-sections.js";
 
 const logger = {
   warn: (...args: unknown[]) => console.warn(...args),
@@ -215,6 +216,7 @@ export class CodexThreadBootstrapper {
       memberExecutionContext: runContext.config.memberExecutionContext,
       project: runContext.config.project,
       semanticMemoryPath,
+      longRunningCommandSection: CODEX_LONG_RUNNING_COMMAND_SECTION,
     });
     const dynamicToolRegistrations: CodexDynamicToolRegistration[] | null = null;
     const integrationVariables = (await this.integrationRunAccess?.environmentForRun(

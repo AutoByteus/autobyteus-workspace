@@ -130,6 +130,10 @@ const messages = {
   "workspace.components.progress.BackgroundTaskPanel.status.unknown": "未知",
   "workspace.components.progress.BackgroundTaskPanel.observed": "{{id}} · 观测于 {{time}}",
   "workspace.components.progress.BackgroundTaskPanel.exitCode": "退出码 {{code}}",
+  "workspace.components.progress.BackgroundTaskPanel.end.timeLimit": "已停止：达到了时间限制，并非命令本身失败",
+  "workspace.components.progress.BackgroundTaskPanel.end.lowMemory": "已停止：计算机内存不足",
+  "workspace.components.progress.BackgroundTaskPanel.end.runEnded": "已停止：运行已结束",
+  "workspace.components.progress.BackgroundTaskPanel.noRun": "选择一个智能体以查看其后台任务。",
   "workspace.components.progress.BackgroundTaskPanel.title":
     "后台任务",
   "workspace.components.progress.BackgroundTaskPanel.counts":
