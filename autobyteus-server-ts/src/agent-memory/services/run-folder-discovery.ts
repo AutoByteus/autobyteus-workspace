@@ -249,13 +249,15 @@ export class RunFolderDiscovery {
       if (!runFolders.has(memoryDir)) continue;
       const state = await this.deps.agentMetadata.readMetadataState(entry);
       const metadata = state.kind === "present" ? state.metadata : null;
+      // A history row exists only for an admitted run, which has present metadata: its names, workspace and creation.
       const row = rows.get(entry) ?? null;
-      // One value for the run and its AGENT subject (the Memory page opens the run by it).
-      const definitionId = optional(metadata?.agentDefinitionId) ?? optional(row?.agentDefinitionId);
-      // A history row that names the definition still attributes a run whose metadata cannot be read.
-      const attribution: RunAttribution = definitionId !== null ? { kind: "attributed", agentDefinitionId: definitionId }
+      // The definition comes from the run's metadata alone (present metadata always names it).
+      const attribution: RunAttribution = state.kind === "present"
+        ? { kind: "attributed", agentDefinitionId: state.metadata.agentDefinitionId.trim() }
         : state.kind === "unreadable" ? { kind: "unreadable", record: RUN_METADATA_RECORD, reason: state.error.message }
         : { kind: "unattributed" };
+      // One value for the run and its AGENT subject (the Memory page opens the run by it).
+      const definitionId = attribution.kind === "attributed" ? attribution.agentDefinitionId : null;
       // The journal target: the agent runtime that wrote the open raw-trace file (the previous one while a switch is pending).
       const runtimeKind: RuntimeKind | null = metadata ? openRawTraceRuntimeKind(metadata) ?? null : null;
       runs.push({

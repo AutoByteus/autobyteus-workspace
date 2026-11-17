@@ -148,10 +148,11 @@ describe("RunFolderDiscovery", () => {
     const build = (options: { teamDiagnostics?: Record<string, string>; orgDiagnostics?: Record<string, string> } = {}) => {
       const order: string[] = [];
       const discovery = new RunFolderDiscovery(memoryDir, {
-        agentCatalog: { listCatalogRows: async () => [{ runId: "row_only", agentDefinitionId: "row-def", agentName: "Row" }] as never },
+        // As in real use, the history lists only admitted runs: a row exists only for a run whose metadata is present.
+        agentCatalog: { listCatalogRows: async () => [{ runId: "with_meta", agentDefinitionId: "meta-def", agentName: "Meta Agent" }] as never },
         agentMetadata: { readMetadataState: async (runId: string) => (
           runId === "with_meta" ? metadataStateOf({ agentDefinitionId: "meta-def", workspaceRootPath: "/w", runtimeKind: RuntimeKind.CODEX_APP_SERVER })
-          : runId === "row_only" || runId === "broken_meta" ? { kind: "unreadable", error: new Error("Run metadata must be a JSON object.") } as never
+          : runId === "broken_meta" ? { kind: "unreadable", error: new Error("Run metadata must be a JSON object.") } as never
           : metadataStateOf(null)) },
         teamLocations: { listAgents: async () => { order.push("teamLocations"); return [located(path.join(memoryDir, "agent_teams/team_ok/m_1"), "team_ok", "m_1", "team-def")] as never; } },
         orgLocations: { listAgents: async () => { order.push("orgLocations"); return [located(path.join(memoryDir, "agent_orgs/org_ok/m_1"), "org_ok", "m_1", "org-def")] as never; } },
@@ -164,7 +165,7 @@ describe("RunFolderDiscovery", () => {
     const attributions = async (discovery: RunFolderDiscovery) => Object.fromEntries((await discovery.findRuns()).map((run) => [run.runKey, run.attribution]));
 
     beforeEach(() => {
-      for (const rel of ["agents/with_meta", "agents/row_only", "agents/broken_meta", "agents/no_records", "agents/host_1/collaboration/crew/w_1",
+      for (const rel of ["agents/with_meta", "agents/broken_meta", "agents/no_records", "agents/host_1/collaboration/crew/w_1",
         "agent_teams/team_ok/m_1", "agent_teams/team_bad/m_1", "agent_teams/team_bad/sub/m_2", "agent_teams/team_old/m_1",
         "agent_orgs/org_ok/m_1", "agent_orgs/org_bad/team_a/m_1", "agent_orgs/org_plain/m_1"]) writeRun(memoryDir, rel, turn);
     });
@@ -187,8 +188,6 @@ describe("RunFolderDiscovery", () => {
         "agents/broken_meta": unreadable("run_metadata.json", "Run metadata must be a JSON object."),
         "agents/host_1/collaboration/crew/w_1": { kind: "unattributed" },
         "agents/no_records": { kind: "unattributed" },
-        // A history row that names the definition still attributes a run whose metadata cannot be read.
-        "agents/row_only": { kind: "attributed", agentDefinitionId: "row-def" },
         "agents/with_meta": { kind: "attributed", agentDefinitionId: "meta-def" },
       });
       // The diagnostics are read after the sources that await the readiness index (N-7).
@@ -241,8 +240,8 @@ describe("RunFolderDiscovery", () => {
       const runs = new Map((await discovery.findRuns()).map((run) => [run.runKey, toMemoryRun(run)]));
       expect(runs.get("agent_teams/team_bad/m_1")).toMatchObject({ agentName: "m 1", subject: { kind: "RUN_FOLDER", runKey: "agent_teams/team_bad/m_1" } });
       expect(runs.get("agents/broken_meta")!.subject).toEqual({ kind: "AGENT", runId: "broken_meta", agentDefinitionId: null });
-      expect(runs.get("agents/row_only")!.subject).toEqual({ kind: "AGENT", runId: "row_only", agentDefinitionId: "row-def" });
-      expect(Object.keys(runs.get("agents/row_only")!).sort()).toEqual(["agentName", "memberName", "memoryDir", "orgName", "runId", "runKey", "runtimeKind", "subject", "teamName", "workspace"]);
+      expect(runs.get("agents/with_meta")).toMatchObject({ agentName: "Meta Agent", subject: { kind: "AGENT", runId: "with_meta", agentDefinitionId: "meta-def" } });
+      expect(Object.keys(runs.get("agents/with_meta")!).sort()).toEqual(["agentName", "memberName", "memoryDir", "orgName", "runId", "runKey", "runtimeKind", "subject", "teamName", "workspace"]);
     });
   });
 

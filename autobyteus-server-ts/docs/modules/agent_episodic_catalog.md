@@ -78,15 +78,15 @@ Runs come from `RunFolderDiscovery` (`src/agent-memory/services/run-folder-disco
 run folders exist and whose are they", shared with memory search. Discovery gives each run one attribution
 (`DiscoveredRun.attribution`), and the catalog switches on it:
 
-- `attributed`: the agent definition its records name: run metadata or the history row for an agent run (delegated or
-  not; a history row naming the definition attributes the run even when its metadata cannot be read), the configured
-  placement for a team or org member. Only these runs get entries.
+- `attributed`: the agent definition its records name: the run metadata of an agent run (delegated or not), the
+  configured placement of a team or org member. Only these runs get entries. (The run history lists an agent run only
+  when its metadata is present, so a history row never decides the definition.)
 - `unattributed`: no record names an agent (old folders without metadata, agent-root collaboration folders, a team
   folder no tree lists). Not catalogued, silently.
 - `unreadable`: the record that would name it exists but cannot be read: a team or org root's tree the run-package
   readiness index did not admit (`team_run_execution_tree.json`, `agent_org_run_execution_tree.json`; a failed scan of
-  every root marks every unlocated team member folder), or an agent run's `run_metadata.json` with no history row naming
-  the definition. Not catalogued; discovery logs `RUN_FOLDER_DISCOVERY_RECORD_UNREADABLE { root, record, reason,
+  every root marks every unlocated team member folder), or an agent run's `run_metadata.json` that exists but cannot be
+  read (with or without a history row). Not catalogued; discovery logs `RUN_FOLDER_DISCOVERY_RECORD_UNREADABLE { root, record, reason,
   runFolders }`, one line per root and record and reason (`runFolders`: how many run folders it leaves out), at most once
   in a discovery instance's lifetime. The catalog's and memory search's discoveries each log it once per server start;
   a refresh of that root does not repeat it, and a changed reason logs again. Recorded ID forms are used as they are: runs recorded under an older ID
