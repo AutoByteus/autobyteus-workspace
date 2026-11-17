@@ -1,0 +1,294 @@
+# API-02 run 1 (before the harness baseline fix): same command; 12/12 failed AGENT_STREAM_UNAVAILABLE
+# product commit c77d83ef27; tests as in 48d2a4da58 (+ baseline fix ea86a9affe where named); macOS 26 arm64; Node 22.23.1; 2026-11-17
+
+[1m[30m[46m RUN [49m[39m[22m [36mv4.1.12 [39m[90m/Users/normy/autobyteus_org/autobyteus-worktrees/shell-command-time-limits-483/autobyteus-server-ts[39m
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/shell-command-time-limits-483/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-background-task.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:64356) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/runtime/claude-agent-background-task.e2e.test.ts[2m > [22m[2mClaude runtime background tasks (live E2E)[2m > [22m[2mshows a background Bash command as running, then completed with its summary, alongside the unchanged completion notice and Claude-initiated turn (path-claude)
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/shell-command-time-limits-483/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/shell-command-time-limits-483/autobyteus-server-ts
+
+[90mstderr[2m | tests/e2e/runtime/claude-agent-background-task.e2e.test.ts[2m > [22m[2mClaude runtime background tasks (live E2E)[2m > [22m[2mshows a background Bash command as running, then completed with its summary, alongside the unchanged completion notice and Claude-initiated turn (path-claude)
+[22m[39mAgent run 'claude-live-background-task-e278af55-837f-45ae-917d-cce4856083df' has no stream sequence.
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-background-task.e2e.test.ts[2m > [22m[2mClaude runtime background tasks (live E2E)[2m > [22m[2mshows a background Bash command as running, then completed with its summary, alongside the unchanged completion notice and Claude-initiated turn (path-claude)
+[22m[39mAgent websocket attached for run claude-live-background-task-e278af55-837f-45ae-917d-cce4856083df
+Created agent session 274ac47c-ed75-4bb8-8cbb-44ed7d6b198f for run claude-live-background-task-e278af55-837f-45ae-917d-cce4856083df
+Closed agent session 274ac47c-ed75-4bb8-8cbb-44ed7d6b198f
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-background-task.e2e.test.ts[2m > [22m[2mClaude runtime background tasks (live E2E)[2m > [22m[2mshows a background Bash command as running, then completed with its summary, alongside the unchanged completion notice and Claude-initiated turn (sdk-bundled-claude)
+[22m[39mAgent websocket attached for run claude-live-background-task-8c013e4b-e2e1-4a4b-ad06-845ae5b0e915
+Created agent session 959bf2d6-b7d6-48cd-8d16-d0702e2f8432 for run claude-live-background-task-8c013e4b-e2e1-4a4b-ad06-845ae5b0e915
+Closed agent session 959bf2d6-b7d6-48cd-8d16-d0702e2f8432
+
+[90mstderr[2m | tests/e2e/runtime/claude-agent-background-task.e2e.test.ts[2m > [22m[2mClaude runtime background tasks (live E2E)[2m > [22m[2mshows a background Bash command as running, then completed with its summary, alongside the unchanged completion notice and Claude-initiated turn (sdk-bundled-claude)
+[22m[39mAgent run 'claude-live-background-task-8c013e4b-e2e1-4a4b-ad06-845ae5b0e915' has no stream sequence.
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-background-task.e2e.test.ts[2m > [22m[2mClaude runtime background tasks (live E2E)[2m > [22m[2mshows a failing background command as failed with the CLI's exit-code summary (path-claude)
+[22m[39mAgent websocket attached for run claude-live-background-fail-2ecf635a-ed0e-47d5-93cb-c5ecfa851851
+Created agent session 02299f79-d074-4e16-b7d3-ad06f7be7bec for run claude-live-background-fail-2ecf635a-ed0e-47d5-93cb-c5ecfa851851
+Closed agent session 02299f79-d074-4e16-b7d3-ad06f7be7bec
+
+[90mstderr[2m | tests/e2e/runtime/claude-agent-background-task.e2e.test.ts[2m > [22m[2mClaude runtime background tasks (live E2E)[2m > [22m[2mshows a failing background command as failed with the CLI's exit-code summary (path-claude)
+[22m[39mAgent run 'claude-live-background-fail-2ecf635a-ed0e-47d5-93cb-c5ecfa851851' has no stream sequence.
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-background-task.e2e.test.ts[2m > [22m[2mClaude runtime background tasks (live E2E)[2m > [22m[2mshows a failing background command as failed with the CLI's exit-code summary (sdk-bundled-claude)
+[22m[39mAgent websocket attached for run claude-live-background-fail-776a33d6-d206-4b7c-9621-991ef8b6bb32
+Created agent session bf4da55c-5237-4c99-b301-c47b92763a33 for run claude-live-background-fail-776a33d6-d206-4b7c-9621-991ef8b6bb32
+Closed agent session bf4da55c-5237-4c99-b301-c47b92763a33
+
+[90mstderr[2m | tests/e2e/runtime/claude-agent-background-task.e2e.test.ts[2m > [22m[2mClaude runtime background tasks (live E2E)[2m > [22m[2mshows a failing background command as failed with the CLI's exit-code summary (sdk-bundled-claude)
+[22m[39mAgent run 'claude-live-background-fail-776a33d6-d206-4b7c-9621-991ef8b6bb32' has no stream sequence.
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-background-task.e2e.test.ts[2m > [22m[2mClaude runtime background tasks (live E2E)[2m > [22m[2mlists no entry for foreground work: a foreground Bash command emits CLI task frames but stays only a tool call (REQ-008) (path-claude)
+[22m[39mAgent websocket attached for run claude-live-foreground-bash-56e7062f-e48c-4a7b-907f-7a7087e02dac
+Created agent session ce4cf88c-4881-47c4-a8ab-cd0c6a491390 for run claude-live-foreground-bash-56e7062f-e48c-4a7b-907f-7a7087e02dac
+Closed agent session ce4cf88c-4881-47c4-a8ab-cd0c6a491390
+
+[90mstderr[2m | tests/e2e/runtime/claude-agent-background-task.e2e.test.ts[2m > [22m[2mClaude runtime background tasks (live E2E)[2m > [22m[2mlists no entry for foreground work: a foreground Bash command emits CLI task frames but stays only a tool call (REQ-008) (path-claude)
+[22m[39mAgent run 'claude-live-foreground-bash-56e7062f-e48c-4a7b-907f-7a7087e02dac' has no stream sequence.
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-background-task.e2e.test.ts[2m > [22m[2mClaude runtime background tasks (live E2E)[2m > [22m[2mlists no entry for foreground work: a foreground Bash command emits CLI task frames but stays only a tool call (REQ-008) (sdk-bundled-claude)
+[22m[39mAgent websocket attached for run claude-live-foreground-bash-ec9f6209-d0b9-433b-9514-c1131411c7b7
+Created agent session c3aff61f-14d6-45de-895c-99edada56f45 for run claude-live-foreground-bash-ec9f6209-d0b9-433b-9514-c1131411c7b7
+Closed agent session c3aff61f-14d6-45de-895c-99edada56f45
+
+[90mstderr[2m | tests/e2e/runtime/claude-agent-background-task.e2e.test.ts[2m > [22m[2mClaude runtime background tasks (live E2E)[2m > [22m[2mlists no entry for foreground work: a foreground Bash command emits CLI task frames but stays only a tool call (REQ-008) (sdk-bundled-claude)
+[22m[39mAgent run 'claude-live-foreground-bash-ec9f6209-d0b9-433b-9514-c1131411c7b7' has no stream sequence.
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-background-task.e2e.test.ts[2m > [22m[2mClaude runtime background tasks (live E2E)[2m > [22m[2mkeeps the entry running across a turn-level Stop and marks it stopped when the run is terminated (MP-003, AC-011) (path-claude)
+[22m[39mAgent websocket attached for run claude-live-background-stop-terminate-473a76dc-c0b3-4756-b46c-d389be019fa9
+Created agent session 1fc7025f-e71e-4ae0-8a0f-d5616b132c10 for run claude-live-background-stop-terminate-473a76dc-c0b3-4756-b46c-d389be019fa9
+Closed agent session 1fc7025f-e71e-4ae0-8a0f-d5616b132c10
+
+[90mstderr[2m | tests/e2e/runtime/claude-agent-background-task.e2e.test.ts[2m > [22m[2mClaude runtime background tasks (live E2E)[2m > [22m[2mkeeps the entry running across a turn-level Stop and marks it stopped when the run is terminated (MP-003, AC-011) (path-claude)
+[22m[39mAgent run 'claude-live-background-stop-terminate-473a76dc-c0b3-4756-b46c-d389be019fa9' has no stream sequence.
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-background-task.e2e.test.ts[2m > [22m[2mClaude runtime background tasks (live E2E)[2m > [22m[2mkeeps the entry running across a turn-level Stop and marks it stopped when the run is terminated (MP-003, AC-011) (sdk-bundled-claude)
+[22m[39mAgent websocket attached for run claude-live-background-stop-terminate-3ec47c65-dba7-4574-821a-34025f186d2b
+Created agent session 8dcf50c9-ca8f-4bff-a206-254cf43f8333 for run claude-live-background-stop-terminate-3ec47c65-dba7-4574-821a-34025f186d2b
+Closed agent session 8dcf50c9-ca8f-4bff-a206-254cf43f8333
+
+[90mstderr[2m | tests/e2e/runtime/claude-agent-background-task.e2e.test.ts[2m > [22m[2mClaude runtime background tasks (live E2E)[2m > [22m[2mkeeps the entry running across a turn-level Stop and marks it stopped when the run is terminated (MP-003, AC-011) (sdk-bundled-claude)
+[22m[39mAgent run 'claude-live-background-stop-terminate-3ec47c65-dba7-4574-821a-34025f186d2b' has no stream sequence.
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-background-task.e2e.test.ts[2m > [22m[2mClaude runtime background tasks (live E2E)[2m > [22m[2mmarks a running entry stopped when the Claude CLI process dies unexpectedly (AC-011) (path-claude)
+[22m[39mAgent websocket attached for run claude-live-background-crash-8a62fde0-b43e-4391-ab4c-283f7da98db8
+Created agent session 3e21f6be-163d-402a-a8a3-b4f17b15f073 for run claude-live-background-crash-8a62fde0-b43e-4391-ab4c-283f7da98db8
+Closed agent session 3e21f6be-163d-402a-a8a3-b4f17b15f073
+
+[90mstderr[2m | tests/e2e/runtime/claude-agent-background-task.e2e.test.ts[2m > [22m[2mClaude runtime background tasks (live E2E)[2m > [22m[2mmarks a running entry stopped when the Claude CLI process dies unexpectedly (AC-011) (path-claude)
+[22m[39mAgent run 'claude-live-background-crash-8a62fde0-b43e-4391-ab4c-283f7da98db8' has no stream sequence.
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-background-task.e2e.test.ts[2m > [22m[2mClaude runtime background tasks (live E2E)[2m > [22m[2mmarks a running entry stopped when the Claude CLI process dies unexpectedly (AC-011) (sdk-bundled-claude)
+[22m[39mAgent websocket attached for run claude-live-background-crash-85009d8f-fce2-494a-98fe-52b2c2208f23
+Created agent session ec356a01-8b76-41c2-9441-e68e68f638ae for run claude-live-background-crash-85009d8f-fce2-494a-98fe-52b2c2208f23
+Closed agent session ec356a01-8b76-41c2-9441-e68e68f638ae
+
+[90mstderr[2m | tests/e2e/runtime/claude-agent-background-task.e2e.test.ts[2m > [22m[2mClaude runtime background tasks (live E2E)[2m > [22m[2mmarks a running entry stopped when the Claude CLI process dies unexpectedly (AC-011) (sdk-bundled-claude)
+[22m[39mAgent run 'claude-live-background-crash-85009d8f-fce2-494a-98fe-52b2c2208f23' has no stream sequence.
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-background-task.e2e.test.ts[2m > [22m[2mClaude runtime background tasks (live E2E)[2m > [22m[2mshows the command of a foreground Bash the CLI moves to the background after it started (UNK-001) (path-claude)
+[22m[39mAgent websocket attached for run claude-live-auto-background-d3d3d968-88a7-45ab-9afb-595cdda74b76
+Created agent session 0e29cfa8-07f9-4788-9583-8e4798e6ef57 for run claude-live-auto-background-d3d3d968-88a7-45ab-9afb-595cdda74b76
+Closed agent session 0e29cfa8-07f9-4788-9583-8e4798e6ef57
+
+[90mstderr[2m | tests/e2e/runtime/claude-agent-background-task.e2e.test.ts[2m > [22m[2mClaude runtime background tasks (live E2E)[2m > [22m[2mshows the command of a foreground Bash the CLI moves to the background after it started (UNK-001) (path-claude)
+[22m[39mAgent run 'claude-live-auto-background-d3d3d968-88a7-45ab-9afb-595cdda74b76' has no stream sequence.
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-background-task.e2e.test.ts[2m > [22m[2mClaude runtime background tasks (live E2E)[2m > [22m[2mshows the command of a foreground Bash the CLI moves to the background after it started (UNK-001) (sdk-bundled-claude)
+[22m[39mAgent websocket attached for run claude-live-auto-background-bb6bdc61-d9e3-4d01-bf14-6427b3ed46a5
+Created agent session 42782f70-b1e3-4da5-b2f3-cc243b7c8974 for run claude-live-auto-background-bb6bdc61-d9e3-4d01-bf14-6427b3ed46a5
+Closed agent session 42782f70-b1e3-4da5-b2f3-cc243b7c8974
+
+[90mstderr[2m | tests/e2e/runtime/claude-agent-background-task.e2e.test.ts[2m > [22m[2mClaude runtime background tasks (live E2E)[2m > [22m[2mshows the command of a foreground Bash the CLI moves to the background after it started (UNK-001) (sdk-bundled-claude)
+[22m[39mAgent run 'claude-live-auto-background-bb6bdc61-d9e3-4d01-bf14-6427b3ed46a5' has no stream sequence.
+
+ [31m❯[39m tests/e2e/runtime/claude-agent-background-task.e2e.test.ts [2m([22m[2m12 tests[22m[2m | [22m[31m12 failed[39m[2m)[22m[33m 2162109[2mms[22m[39m
+[31m     [31m×[31m shows a background Bash command as running, then completed with its summary, alongside the unchanged completion notice and Claude-initiated turn (path-claude)[39m[33m 180306[2mms[22m[39m
+[31m     [31m×[31m shows a background Bash command as running, then completed with its summary, alongside the unchanged completion notice and Claude-initiated turn (sdk-bundled-claude)[39m[33m 180221[2mms[22m[39m
+[31m     [31m×[31m shows a failing background command as failed with the CLI's exit-code summary (path-claude)[39m[33m 180062[2mms[22m[39m
+[31m     [31m×[31m shows a failing background command as failed with the CLI's exit-code summary (sdk-bundled-claude)[39m[33m 180075[2mms[22m[39m
+[31m     [31m×[31m lists no entry for foreground work: a foreground Bash command emits CLI task frames but stays only a tool call (REQ-008) (path-claude)[39m[33m 180058[2mms[22m[39m
+[31m     [31m×[31m lists no entry for foreground work: a foreground Bash command emits CLI task frames but stays only a tool call (REQ-008) (sdk-bundled-claude)[39m[33m 180025[2mms[22m[39m
+[31m     [31m×[31m keeps the entry running across a turn-level Stop and marks it stopped when the run is terminated (MP-003, AC-011) (path-claude)[39m[33m 180304[2mms[22m[39m
+[31m     [31m×[31m keeps the entry running across a turn-level Stop and marks it stopped when the run is terminated (MP-003, AC-011) (sdk-bundled-claude)[39m[33m 180275[2mms[22m[39m
+[31m     [31m×[31m marks a running entry stopped when the Claude CLI process dies unexpectedly (AC-011) (path-claude)[39m[33m 180200[2mms[22m[39m
+[31m     [31m×[31m marks a running entry stopped when the Claude CLI process dies unexpectedly (AC-011) (sdk-bundled-claude)[39m[33m 180058[2mms[22m[39m
+[31m     [31m×[31m shows the command of a foreground Bash the CLI moves to the background after it started (UNK-001) (path-claude)[39m[33m 180269[2mms[22m[39m
+[31m     [31m×[31m shows the command of a foreground Bash the CLI moves to the background after it started (UNK-001) (sdk-bundled-claude)[39m[33m 180251[2mms[22m[39m
+
+[31m⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 12 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m tests/e2e/runtime/claude-agent-background-task.e2e.test.ts[2m > [22mClaude runtime background tasks (live E2E)[2m > [22mshows a background Bash command as running, then completed with its summary, alongside the unchanged completion notice and Claude-initiated turn (path-claude)
+[41m[1m FAIL [22m[49m tests/e2e/runtime/claude-agent-background-task.e2e.test.ts[2m > [22mClaude runtime background tasks (live E2E)[2m > [22mshows a background Bash command as running, then completed with its summary, alongside the unchanged completion notice and Claude-initiated turn (sdk-bundled-claude)
+[31m[1mError[22m: Timed out waiting for running BACKGROUND_TASK_UPDATED; seen: ERROR[39m
+[36m [2m❯[22m Timeout.poll [as _onTimeout] tests/e2e/helpers/claude-live-agent-harness.ts:[2m214:23[22m[39m
+    [90m212|[39m       [35mif[39m (index [33m>=[39m [34m0[39m) [35mreturn[39m [34mresolve[39m(index)[33m;[39m
+    [90m213|[39m       [35mif[39m ([33mDate[39m[33m.[39m[34mnow[39m() [33m>[39m deadline) {
+    [90m214|[39m         [35mreturn[39m [34mreject[39m([35mnew[39m [33mError[39m(
+    [90m   |[39m                       [31m^[39m
+    [90m215|[39m           `Timed out waiting for ${label}; seen: ${harness.messages.ma…
+    [90m216|[39m         ))[33m;[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/12]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/e2e/runtime/claude-agent-background-task.e2e.test.ts[2m > [22mClaude runtime background tasks (live E2E)[2m > [22mshows a failing background command as failed with the CLI's exit-code summary (path-claude)
+[41m[1m FAIL [22m[49m tests/e2e/runtime/claude-agent-background-task.e2e.test.ts[2m > [22mClaude runtime background tasks (live E2E)[2m > [22mshows a failing background command as failed with the CLI's exit-code summary (sdk-bundled-claude)
+[41m[1m FAIL [22m[49m tests/e2e/runtime/claude-agent-background-task.e2e.test.ts[2m > [22mClaude runtime background tasks (live E2E)[2m > [22mkeeps the entry running across a turn-level Stop and marks it stopped when the run is terminated (MP-003, AC-011) (path-claude)
+[41m[1m FAIL [22m[49m tests/e2e/runtime/claude-agent-background-task.e2e.test.ts[2m > [22mClaude runtime background tasks (live E2E)[2m > [22mkeeps the entry running across a turn-level Stop and marks it stopped when the run is terminated (MP-003, AC-011) (sdk-bundled-claude)
+[31m[1mError[22m: Timed out waiting for TURN_COMPLETED for "Use the Bash tool with run_in_background"; seen: ERROR[39m
+[36m [2m❯[22m Timeout.poll [as _onTimeout] tests/e2e/helpers/claude-live-agent-harness.ts:[2m214:23[22m[39m
+    [90m212|[39m       [35mif[39m (index [33m>=[39m [34m0[39m) [35mreturn[39m [34mresolve[39m(index)[33m;[39m
+    [90m213|[39m       [35mif[39m ([33mDate[39m[33m.[39m[34mnow[39m() [33m>[39m deadline) {
+    [90m214|[39m         [35mreturn[39m [34mreject[39m([35mnew[39m [33mError[39m(
+    [90m   |[39m                       [31m^[39m
+    [90m215|[39m           `Timed out waiting for ${label}; seen: ${harness.messages.ma…
+    [90m216|[39m         ))[33m;[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/12]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/e2e/runtime/claude-agent-background-task.e2e.test.ts[2m > [22mClaude runtime background tasks (live E2E)[2m > [22mlists no entry for foreground work: a foreground Bash command emits CLI task frames but stays only a tool call (REQ-008) (path-claude)
+[41m[1m FAIL [22m[49m tests/e2e/runtime/claude-agent-background-task.e2e.test.ts[2m > [22mClaude runtime background tasks (live E2E)[2m > [22mlists no entry for foreground work: a foreground Bash command emits CLI task frames but stays only a tool call (REQ-008) (sdk-bundled-claude)
+[31m[1mError[22m: Test timed out in 180000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".[39m
+[36m [2m❯[22m tests/e2e/runtime/claude-agent-background-task.e2e.test.ts:[2m218:16[22m[39m
+    [90m216|[39m   )[33m;[39m
+    [90m217|[39m
+    [90m218|[39m   it[33m.[39m[34meach[39m(cases)(
+    [90m   |[39m                [31m^[39m
+    [90m219|[39m     "lists no entry for foreground work: a foreground Bash command emi…
+    [90m220|[39m     [35masync[39m (_label[33m,[39m candidate) [33m=>[39m {
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/12]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/e2e/runtime/claude-agent-background-task.e2e.test.ts[2m > [22mClaude runtime background tasks (live E2E)[2m > [22mmarks a running entry stopped when the Claude CLI process dies unexpectedly (AC-011) (path-claude)
+[41m[1m FAIL [22m[49m tests/e2e/runtime/claude-agent-background-task.e2e.test.ts[2m > [22mClaude runtime background tasks (live E2E)[2m > [22mmarks a running entry stopped when the Claude CLI process dies unexpectedly (AC-011) (sdk-bundled-claude)
+[31m[1mError[22m: Test timed out in 180000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".[39m
+[36m [2m❯[22m tests/e2e/runtime/claude-agent-background-task.e2e.test.ts:[2m282:16[22m[39m
+    [90m280|[39m   )[33m;[39m
+    [90m281|[39m
+    [90m282|[39m   it[33m.[39m[34meach[39m(cases)(
+    [90m   |[39m                [31m^[39m
+    [90m283|[39m     "marks a running entry stopped when the Claude CLI process dies un…
+    [90m284|[39m     [35masync[39m (_label[33m,[39m candidate) [33m=>[39m {
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/12]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/e2e/runtime/claude-agent-background-task.e2e.test.ts[2m > [22mClaude runtime background tasks (live E2E)[2m > [22mshows the command of a foreground Bash the CLI moves to the background after it started (UNK-001) (path-claude)
+[41m[1m FAIL [22m[49m tests/e2e/runtime/claude-agent-background-task.e2e.test.ts[2m > [22mClaude runtime background tasks (live E2E)[2m > [22mshows the command of a foreground Bash the CLI moves to the background after it started (UNK-001) (sdk-bundled-claude)
+[31m[1mError[22m: Timed out waiting for TURN_COMPLETED for "Use the Bash tool in the foreground (do "; seen: ERROR[39m
+[36m [2m❯[22m Timeout.poll [as _onTimeout] tests/e2e/helpers/claude-live-agent-harness.ts:[2m214:23[22m[39m
+    [90m212|[39m       [35mif[39m (index [33m>=[39m [34m0[39m) [35mreturn[39m [34mresolve[39m(index)[33m;[39m
+    [90m213|[39m       [35mif[39m ([33mDate[39m[33m.[39m[34mnow[39m() [33m>[39m deadline) {
+    [90m214|[39m         [35mreturn[39m [34mreject[39m([35mnew[39m [33mError[39m(
+    [90m   |[39m                       [31m^[39m
+    [90m215|[39m           `Timed out waiting for ${label}; seen: ${harness.messages.ma…
+    [90m216|[39m         ))[33m;[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/12]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[31m12 failed[39m[22m[90m (12)[39m
+[2m   Start at [22m 12:46:59
+[2m   Duration [22m 2172.67s[2m (transform 7.22s, setup 74ms, import 9.79s, tests 2162.11s, environment 0ms)[22m
+
+EXIT 1

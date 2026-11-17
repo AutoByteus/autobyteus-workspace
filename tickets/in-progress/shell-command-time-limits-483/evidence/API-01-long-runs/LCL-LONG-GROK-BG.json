@@ -1,0 +1,8 @@
+{
+  "caseId": "LCL-LONG-GROK-BG",
+  "startedAt": "2026-11-17T11:30:17.501Z",
+  "longSeconds": 2100,
+  "result": "Fail",
+  "error": "Error: [{\"message\":\"Grok CLI version or agent mode is unsupported; update to 1.0.41 or later and retry.\",\"locations\":[{\"line\":1,\"column\":31}],\"path\":[\"providerModelCatalogSnapshots\"]}]",
+  "endedAt": "2026-11-17T11:30:29.564Z"
+}
