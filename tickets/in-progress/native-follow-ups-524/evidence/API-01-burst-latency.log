@@ -1,0 +1,15 @@
+# API-01 (autobyteus-524 API/E2E): burst of N concurrent run_bash calls through the built library's runBash on the real OS (AC-001, QR-001, K-1, REQ-002)
+# Command: env -i PATH HOME=<temp> TMPDIR node evidence/API-01-burst-latency-probe.mjs <worktree> <N>; build: pnpm -C autobyteus-ts build at 42df66c542 (source 80483cce9d)
+# Node v22.23.1, macOS 10-core; 2026-11-17 22:38-22:41 CET; loadBefore/loadAfter = 1/5/15-min load averages (other processes + the burst)
+# okMs = whole call time (start + run) of the successful calls
+round 1 N=10 22:38:22 {"calls":10,"failed":0,"totalMs":614,"loadBefore":[106,105,124],"loadAfter":[106,105,124],"okMs":{"p50":531,"p95":602,"max":602},"failureKinds":{}}
+round 1 N=60 22:38:23 {"calls":60,"failed":0,"totalMs":3747,"loadBefore":[106,105,124],"loadAfter":[106,105,124],"okMs":{"p50":3434,"p95":3706,"max":3717},"failureKinds":{}}
+round 1 N=200 22:38:27 {"calls":200,"failed":0,"totalMs":20721,"loadBefore":[106,105,124],"loadAfter":[118,108,124],"okMs":{"p50":19855,"p95":20584,"max":20704},"failureKinds":{}}
+round 2 N=10 22:38:48 {"calls":10,"failed":0,"totalMs":467,"loadBefore":[118,108,124],"loadAfter":[118,108,124],"okMs":{"p50":327,"p95":446,"max":446},"failureKinds":{}}
+round 2 N=60 22:38:48 {"calls":60,"failed":0,"totalMs":6423,"loadBefore":[118,108,124],"loadAfter":[122,109,124],"okMs":{"p50":6152,"p95":6392,"max":6399},"failureKinds":{}}
+round 2 N=200 22:38:55 {"calls":200,"failed":0,"totalMs":35711,"loadBefore":[122,109,124],"loadAfter":[133,113,125],"okMs":{"p50":32847,"p95":34427,"max":35528},"failureKinds":{}}
+round 3 N=10 22:39:31 {"calls":10,"failed":0,"totalMs":1548,"loadBefore":[133,113,125],"loadAfter":[133,113,125],"okMs":{"p50":1137,"p95":1495,"max":1495},"failureKinds":{}}
+round 3 N=60 22:39:32 {"calls":60,"failed":0,"totalMs":10708,"loadBefore":[133,113,125],"loadAfter":[143,116,126],"okMs":{"p50":9972,"p95":10669,"max":10677},"failureKinds":{}}
+round 3 N=200 22:39:43 {"calls":200,"failed":0,"totalMs":25705,"loadBefore":[143,116,126],"loadAfter":[150,120,127],"okMs":{"p50":23391,"p95":25601,"max":25666},"failureKinds":{}}
+round 4 N=200 22:40:21 {"calls":200,"failed":0,"totalMs":15595,"loadBefore":[143,119,127],"loadAfter":[130,118,126],"okMs":{"p50":14549,"p95":15491,"max":15581},"failureKinds":{}}
+round 5 N=200 22:40:36 {"calls":200,"failed":0,"totalMs":27021,"loadBefore":[130,118,126],"loadAfter":[134,120,127],"okMs":{"p50":25327,"p95":26811,"max":26991},"failureKinds":{}}
