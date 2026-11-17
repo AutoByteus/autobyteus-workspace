@@ -98,3 +98,8 @@
 - **Approval impact:** REQ-013's intent is unchanged (a team run that exists stays in history); its wording and AC-010 now state the observable outcome through the current reader. No renewed user approval is needed.
 - **Next:** architecture review, round 3.
 - **Design case:** the mistake was carrying over a premise ("kept exactly, like 461's `addRows`") without reading the reader that consumes the output. This is lesson 2 of the Solution Designer's reflections, recorded there.
+
+### Review of SR-010
+
+- ARCH-REV-002 failed with AR-001; SR-010 resolved it. ARCH-REV-003: **Pass** (`design-review-report.md`). The reviewer sent the combined package to the implementation engineer.
+- Note to the implementation: G-2's validator and writer are the frozen copies (`frozen/server/run-history/store/team-run-history-index-store.ts`).
