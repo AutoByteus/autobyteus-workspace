@@ -120,3 +120,8 @@
 - **Premise checked:** `runtimeModelSelectionCatalog` takes `{ deadline }` (`model-catalog-service.ts:179-190`). The only existing budget for a model-list read is `AVAILABLE_AGENT_RUNTIMES_STEP_CAPS.modelsMs` = 8 s (`available-agent-runtimes-service.ts:41-43`).
 - **Change:** G-5's `storedModelOffer` reads with that deadline, and a deadline or any read error means `list_unreadable`. The cost is stated, and a slow-catalog test is added. Intended behavior is unchanged: D-12 already said a slow or failed catalog never blocks a start.
 - **Next:** architecture review of SR-012.
+
+### Review of SR-011 / SR-012
+
+- ARCH-REV-004 failed with AR-002; SR-012 resolved it. ARCH-REV-005: **Pass** (`design-review-report.md`). The reviewer sent G-5 to the implementation engineer.
+- Note to the implementation: the autobyteus runtime's catalog branch ignores the deadline (`model-catalog-service.ts:206-207`), so `storedModelOffer` races the whole read (`raceDeadline`), as `available-agent-runtimes-service.ts` does.
