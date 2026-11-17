@@ -2,6 +2,7 @@ import { describe, expect, it, vi } from "vitest";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { AgentRunService } from "../../../src/agent-execution/services/agent-run-service.js";
 import { StandaloneAgentRunLifecycleService } from "../../../src/agent-execution/services/standalone-agent-run-lifecycle-service.js";
+import { NO_ELIGIBLE_STANDALONE_RUNS } from "../../helpers/explicit-host-collaborators.js";
 
 const createSubject = () => {
   const runId = "support_agent_00000000000000000000000000000001";
@@ -34,7 +35,7 @@ const createSubject = () => {
     activateRunAgent: vi.fn().mockResolvedValue({ run: activeRun, metadata: {} }),
     },
   );
-  const service = new AgentRunService("/tmp/agent-run-service-test", {
+  const service = new AgentRunService("/tmp/agent-run-service-test", { standaloneRuns: NO_ELIGIBLE_STANDALONE_RUNS,
     agentRunManager: agentRunManager as never,
     metadataService: metadataService as never,
     historyCatalogService: historyCatalogService as never,

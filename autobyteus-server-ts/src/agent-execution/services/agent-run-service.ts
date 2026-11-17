@@ -94,7 +94,7 @@ export class AgentRunService {
   private historyCatalogService: AgentRunHistoryCatalogService;
   private readonly provisioningService: AgentRunProvisioningService;
   private readonly lifecycleService: StandaloneAgentRunLifecycleService;
-  private readonly standaloneRuns: StandaloneRunLifecyclePort | null;
+  private readonly standaloneRuns: StandaloneRunLifecyclePort;
   private readonly peerRunOf: PeerRunOf | null;
 
   constructor(
@@ -108,10 +108,10 @@ export class AgentRunService {
       provisioningService?: AgentRunProvisioningService;
       lifecycleService: StandaloneAgentRunLifecycleService;
       /**
-       * The owner of eligible standalone runs (their `StandaloneAgentRunRoot`s). Absent only in a
-       * process that hosts no eligible runs (application execution scopes run application-owned runs).
+       * The owner of eligible standalone runs (their `StandaloneAgentRunRoot`s); an application execution scope passes
+       * `APPLICATION_HOST_STANDALONE_RUNS`, whose runs are never eligible (autobyteus-500 FU-018).
        */
-      standaloneRuns?: StandaloneRunLifecyclePort;
+      standaloneRuns: StandaloneRunLifecyclePort;
       /** A run on a peer node by its own ID (SR-066): its Stop goes to its node. */
       peerRunOf?: PeerRunOf;
     },
@@ -133,7 +133,8 @@ export class AgentRunService {
       agentRunIdentityAllocator: deps.agentRunIdentityAllocator,
     });
     this.lifecycleService = deps.lifecycleService;
-    this.standaloneRuns = deps.standaloneRuns ?? null;
+    if (!deps.standaloneRuns) throw new Error("standaloneRuns is required.");
+    this.standaloneRuns = deps.standaloneRuns;
     this.peerRunOf = deps.peerRunOf ?? null;
   }
 
@@ -147,7 +148,7 @@ export class AgentRunService {
     }
     // An eligible run's root stops every child first, then its agent, even when the agent's own
     // runtime already died.
-    const stopped = await this.standaloneRuns?.stopRoot(runId) ?? null;
+    const stopped = await this.standaloneRuns.stopRoot(runId);
     if (stopped) {
       const { agent } = stopped;
       if (agent.outcome === "terminated") return this.terminated(agent.runtimeKind);
@@ -314,7 +315,7 @@ export class AgentRunService {
    * assignment committed while the stop waited keeps the run (`kept_open`), with nothing stopped or recorded.
    */
   async stopForTaskClosure(runId: string, stillClosed: () => boolean): Promise<"stopped" | "kept_open" | "not_stopped"> {
-    const stopped = await this.standaloneRuns?.stopRootForTaskClosure(runId, stillClosed) ?? null;
+    const stopped = await this.standaloneRuns.stopRootForTaskClosure(runId, stillClosed);
     if (stopped === "kept_open") return "kept_open";
     if (stopped?.agent.outcome === "rejected") return "not_stopped";
     if (!stopped) {
@@ -360,7 +361,7 @@ export class AgentRunService {
 
   /** An eligible run is activated by its root (with its agent's member context); any other run directly. */
   private async activate(runId: string): Promise<StandaloneAgentRunActivationResult> {
-    const owned = await this.standaloneRuns?.resolveRootAndEnsureAgent(runId) ?? null;
+    const owned = await this.standaloneRuns.resolveRootAndEnsureAgent(runId);
     return owned ?? this.lifecycleService.activateRunAgent(runId, { memberExecutionContext: null });
   }
 
@@ -373,7 +374,7 @@ export class AgentRunService {
   async updateStoppedSelection(input: StoppedRunSelectionInput): Promise<RunModelConfigUpdateResult<AgentRunMetadata | null>> {
     const result = await this.lifecycleService.updateStoppedSelection(input);
     if (result.outcome === "UPDATED") {
-      await this.standaloneRuns?.refreshInheritedLaunch(normalizeRequiredRunId(input.agentRunId)).catch((error) => {
+      await this.standaloneRuns.refreshInheritedLaunch(normalizeRequiredRunId(input.agentRunId)).catch((error) => {
         logger.warn(`Run '${input.agentRunId}' saved its selection but its root could not follow it: ${error instanceof Error ? error.message : String(error)}`);
       });
     }

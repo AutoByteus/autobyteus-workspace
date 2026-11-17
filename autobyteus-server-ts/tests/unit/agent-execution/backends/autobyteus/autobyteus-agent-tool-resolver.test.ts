@@ -8,6 +8,7 @@ import { resolveAutoByteusRuntimeAgentToolExposure } from '../../../../../src/ag
 import { resolveRuntimeAgentToolExposure } from '../../../../../src/agent-execution/shared/runtime-agent-tool-exposure.js';
 import { registerProjectTaskTools } from '../../../../../src/agent-tools/project-tasks/project-task-native-tools.js';
 import { registerMemoryTools, SearchMemoryTool } from '../../../../../src/agent-tools/memory/memory-native-tools.js';
+import { OFF_DISCOVERY } from "../../../../helpers/explicit-host-collaborators.js";
 
 const removedToolName = ['replace', 'in', 'file'].join('_');
 
@@ -34,7 +35,7 @@ describe('resolveAutoByteusAgentTools', () => {
     });
     const logger = { warn: vi.fn(), error: vi.fn() };
 
-    const resolution = resolveAutoByteusAgentTools({
+    const resolution = resolveAutoByteusAgentTools({ peerDiscovery: OFF_DISCOVERY,
       agentDefinition,
       runtimeToolExposure: resolveRuntimeAgentToolExposure(agentDefinition),
       logger,
@@ -60,7 +61,7 @@ describe('resolveAutoByteusAgentTools', () => {
     });
     const logger = { warn: vi.fn(), error: vi.fn() };
 
-    const resolution = resolveAutoByteusAgentTools({
+    const resolution = resolveAutoByteusAgentTools({ peerDiscovery: OFF_DISCOVERY,
       agentDefinition,
       runtimeToolExposure: resolveAutoByteusRuntimeAgentToolExposure(agentDefinition),
       logger,
@@ -88,7 +89,7 @@ describe('resolveAutoByteusAgentTools', () => {
       toolNames: ['search_memory', 'read_file'],
     });
 
-    const resolution = resolveAutoByteusAgentTools({
+    const resolution = resolveAutoByteusAgentTools({ peerDiscovery: OFF_DISCOVERY,
       agentDefinition,
       runtimeToolExposure: resolveAutoByteusRuntimeAgentToolExposure(agentDefinition),
     });
@@ -110,7 +111,7 @@ describe('resolveAutoByteusAgentTools', () => {
     const logger = { warn: vi.fn(), error: vi.fn() };
     // Only the member context's shape is a fixture; exposure, the registry and the Project tools are production.
     const runtimeToolExposure = resolveAutoByteusRuntimeAgentToolExposure(agentDefinition, memberExecutionContext);
-    const resolution = resolveAutoByteusAgentTools({ agentDefinition, runtimeToolExposure, senderRunId: 'member-run', memberExecutionContext, logger });
+    const resolution = resolveAutoByteusAgentTools({ peerDiscovery: OFF_DISCOVERY, agentDefinition, runtimeToolExposure, senderRunId: 'member-run', memberExecutionContext, logger });
     return { runtimeToolExposure, resolution, logger };
   };
 

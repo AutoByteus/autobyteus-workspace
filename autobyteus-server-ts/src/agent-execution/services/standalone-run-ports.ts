@@ -71,17 +71,17 @@ export type StandaloneRunCommandPort = Readonly<{
   postUserMessage(input: StandaloneRunPostInput): Promise<StandaloneRunPostResult | null>;
 }>;
 
-let processCommandPort: StandaloneRunCommandPort | null = null;
-
-export const bindProcessStandaloneRunCommandPort = (port: StandaloneRunCommandPort): void => {
-  if (!port) throw new Error("A process StandaloneRunCommandPort is required.");
-  if (processCommandPort) throw new Error("The process StandaloneRunCommandPort is already initialized.");
-  processCommandPort = port;
-};
-
-export const releaseProcessStandaloneRunCommandPort = (port: StandaloneRunCommandPort): void => {
-  if (processCommandPort === port) processCommandPort = null;
-};
-
-/** The process port, or null in a process that hosts no eligible standalone runs. */
-export const getProcessStandaloneRunCommandPort = (): StandaloneRunCommandPort | null => processCommandPort;
+/**
+ * The standalone runs of a process whose runs are never eligible (an application execution scope: its runs are
+ * application-owned, `standalone-agent-run-eligibility.ts`). Every answer is "not eligible" (`null`), so the run is
+ * stopped, activated and posted to directly, by the same branch an ineligible run takes in the studio. Passed by that
+ * composition (autobyteus-500 FU-018), never decided by a missing collaborator.
+ */
+export const APPLICATION_HOST_STANDALONE_RUNS: StandaloneRunLifecyclePort & StandaloneRunCommandPort = Object.freeze({
+  resolveRootAndEnsureAgent: async () => null,
+  stopRoot: async () => null,
+  stopRootForTaskClosure: async () => null,
+  refreshInheritedLaunch: async () => undefined,
+  inputRefusal: async () => null,
+  postUserMessage: async () => null,
+});

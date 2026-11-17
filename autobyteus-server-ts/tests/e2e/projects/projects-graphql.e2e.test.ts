@@ -16,6 +16,7 @@ import { resetProjectServiceForTests } from "../../../src/projects/services/proj
 import { getProjectTaskService, initializeProjectTaskServiceProcessInstance, releaseProjectTaskServiceProcessInstance } from "../../../src/projects/services/project-task-service.js";
 import { composeTaskSide } from "../../../src/compositions/collaboration-composition.js";
 import { getWorkspaceManager } from "../../../src/workspaces/workspace-manager.js";
+import { NO_RUN_SIDE_TASK_PORTS } from "../../helpers/explicit-host-collaborators.js";
 
 // Un-mocked Projects GraphQL boundary: resolver -> ProjectService -> ProjectStore (per-Project folders)
 // plus the real WorkspaceManager registry (workspaces.json) and real server settings, all in an
@@ -54,7 +55,7 @@ const resetProjectsSingletons = () => {
  */
 const composeProjectTaskService = async (appDataDir: string) => {
   const side = await composeTaskSide({ appDataDir, memoryDir: path.join(appDataDir, "memory") });
-  initializeProjectTaskServiceProcessInstance({ taskExecutionResources: side.resources });
+  initializeProjectTaskServiceProcessInstance({ ...NO_RUN_SIDE_TASK_PORTS, taskExecutionResources: side.resources });
 };
 
 // A fresh node must not inherit feature flags from the developer's shell (e.g. ENABLE_APPLICATIONS=true):

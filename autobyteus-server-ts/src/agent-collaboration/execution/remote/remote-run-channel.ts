@@ -128,22 +128,8 @@ export interface RemoteRunChannel {
   observeAgentStream(nodeId: string, targetRoot: RemoteTargetRoot, agentRunId: string, observer: RemoteAgentStreamObserver): RemoteRunObservationStream;
 }
 
-let processChannel: RemoteRunChannel | null = null;
-
-/** Binds the process's channel once at composition (remote collaboration is composed in the studio server). */
-export const bindProcessRemoteRunChannel = (channel: RemoteRunChannel): void => {
-  if (!channel) throw new Error("A process RemoteRunChannel is required.");
-  if (processChannel) throw new Error("The process RemoteRunChannel is already initialized.");
-  processChannel = channel;
-};
-
-export const releaseProcessRemoteRunChannel = (channel: RemoteRunChannel): void => {
-  if (processChannel === channel) processChannel = null;
-};
-
-/** The process's channel; `null` where remote collaboration is not composed (nothing is ever sent then). */
-export const findProcessRemoteRunChannel = (): RemoteRunChannel | null => processChannel;
-
-/** A root's channel: the one it was given (tests, isolated roots), else the process's channel. */
-export const resolveRemoteRunChannel = (given?: () => RemoteRunChannel | null): RemoteRunChannel | null =>
-  given ? given() : findProcessRemoteRunChannel();
+/**
+ * A host's channel to its peer nodes, as its composition passes it (autobyteus-500 FU-011): the studio's peer client
+ * once remote collaboration is composed; `null` in a host that composes none (nothing is ever sent then).
+ */
+export type RemoteRunChannelAccess = () => RemoteRunChannel | null;

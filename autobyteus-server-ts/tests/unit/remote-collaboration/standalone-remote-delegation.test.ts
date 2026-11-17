@@ -180,7 +180,7 @@ const buildNode = async (input: Readonly<{
     rootDependencies: {
       taskRecords: resources,
       delegationIndex: taskSide.tree, viewStreams: testViewStreams(),
-      remoteRunChannel: () => client,
+      remoteChannel: () => client,
     },
   });
   let prepared = 0;

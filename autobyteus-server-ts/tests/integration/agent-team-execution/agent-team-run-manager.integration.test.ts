@@ -22,6 +22,7 @@ import { TeamRunExecutionTreeStore } from "../../../src/run-history/store/team-r
 import { TeamRunExecutionTreeLocationService } from "../../../src/run-history/services/team-run-execution-tree-location-service.js";
 import type { RunModelSelectionValidator } from "../../../src/llm-management/services/run-model-selection-service.js";
 import { testAgentNode, testTeamRunConfig } from "../../fixtures/current-team-run-fixtures.js";
+import { NO_PEER_CHANNEL } from "../../helpers/explicit-host-collaborators.js";
 
 const tempDirs: string[] = [];
 const createMemoryDir = async (): Promise<string> => {
@@ -424,7 +425,7 @@ describe("AgentTeamRunManager strict current V2 package integration", () => {
       kind: "valid" as const,
       selection,
     }));
-    const manager = new AgentTeamRunManager({ delegationIndex: noDelegations(), viewStreams: testViewStreams(), taskRecords: openTaskRecords(),
+    const manager = new AgentTeamRunManager({ remoteChannel: NO_PEER_CHANNEL, delegationIndex: noDelegations(), viewStreams: testViewStreams(), taskRecords: openTaskRecords(),
       memoryDir,
       flatTeamExecutionFactory: factory.factory,
       memberExecutionContextBuilder: memberExecutionContextBuilder as never,
@@ -504,7 +505,7 @@ describe("AgentTeamRunManager strict current V2 package integration", () => {
       await validationBarrier;
       return { kind: "valid" as const, selection };
     });
-    const manager = new AgentTeamRunManager({ delegationIndex: noDelegations(), viewStreams: testViewStreams(), taskRecords: openTaskRecords(),
+    const manager = new AgentTeamRunManager({ remoteChannel: NO_PEER_CHANNEL, delegationIndex: noDelegations(), viewStreams: testViewStreams(), taskRecords: openTaskRecords(),
       memoryDir,
       flatTeamExecutionFactory: factory.factory,
       memberExecutionContextBuilder: memberExecutionContextBuilder as never,
@@ -564,7 +565,7 @@ describe("AgentTeamRunManager strict current V2 package integration", () => {
       kind: "valid" as const,
       selection,
     }));
-    const manager = new AgentTeamRunManager({ delegationIndex: noDelegations(), viewStreams: testViewStreams(), taskRecords: openTaskRecords(),
+    const manager = new AgentTeamRunManager({ remoteChannel: NO_PEER_CHANNEL, delegationIndex: noDelegations(), viewStreams: testViewStreams(), taskRecords: openTaskRecords(),
       memoryDir,
       flatTeamExecutionFactory: factory.factory,
       memberExecutionContextBuilder: memberExecutionContextBuilder as never,

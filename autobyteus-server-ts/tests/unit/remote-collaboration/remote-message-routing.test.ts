@@ -11,6 +11,7 @@ import type { AgentOperationResult } from "../../../src/agent-execution/domain/a
 import { AgentOrgRunMessageDelivery } from "../../../src/agent-org-execution/services/agent-org-run-message-delivery.js";
 import { TeamRunMessageDelivery } from "../../../src/agent-team-execution/services/team-run-message-delivery.js";
 import { StandaloneRootMessageDelivery } from "../../../src/standalone-agent-run-root/services/standalone-root-message-delivery.js";
+import { NO_PEER_CHANNEL } from "../../helpers/explicit-host-collaborators.js";
 
 /**
  * AR-008: each root's message delivery keeps only the routing decision. A run ID that is a remote endpoint goes
@@ -23,6 +24,7 @@ const REMOTE = "publisher_7f3";
 const LOCAL = "writer_run";
 const links = () => new RemoteRunLinks({
   peerRuns: () => [{ kind: "agent" as const, address: "/publisher" as never, agentRunId: REMOTE, nodeId: "srv_peer_b", delegatorAgentRunId: LEAD, startedAt: "2026-10-20T10:00:00.000Z", open: true }],
+  channel: NO_PEER_CHANNEL,
 });
 
 type Harness = Readonly<{

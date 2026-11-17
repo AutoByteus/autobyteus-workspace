@@ -13,8 +13,9 @@ import {
 } from "../../../src/projects/search/project-task-search-service.js";
 import { createFakeEmbeddingIndex } from "../../helpers/fake-embedding-model.js";
 import { withTaskRunResources } from "../../helpers/task-run-resources.js";
+import { freshProcessTaskService } from "../../helpers/explicit-host-collaborators.js";
 
-const reset = () => { resetProjectServiceForTests(); releaseProjectTaskServiceProcessInstance(getProjectTaskService()); resetProjectStoreForTests(); resetProjectTaskContextStoreForTests(); };
+const reset = () => { resetProjectServiceForTests(); freshProcessTaskService(); resetProjectStoreForTests(); resetProjectTaskContextStoreForTests(); };
 const ids = (result: { matches: Array<{ task: { description: string }; match: string }> }) =>
   result.matches.map(({ task, match }) => `${match}:${task.description}`);
 

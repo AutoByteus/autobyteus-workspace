@@ -16,7 +16,7 @@ import {
   createTeamRootExecutionIdentity,
 } from "../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import { MemberCollaborationContext, MemberExecutionContext } from "../../../src/agent-collaboration/execution/domain/member-execution-context.js";
-import { bindProcessRemoteRunChannel, releaseProcessRemoteRunChannel, type RemoteRunChannel } from "../../../src/agent-collaboration/execution/remote/remote-run-channel.js";
+import type { RemoteRunChannel } from "../../../src/agent-collaboration/execution/remote/remote-run-channel.js";
 import { createCollaboratorAdmission } from "../../../src/agent-collaboration/collaborators/collaborator-definition-catalog.js";
 import { NodeCatalogPort } from "../../../src/agent-collaboration/collaborators/node-catalog-port.js";
 import { AgentRunEventType } from "../../../src/agent-execution/domain/agent-run-event.js";
@@ -57,7 +57,7 @@ afterEach(async () => {
   releases.splice(0).forEach((release) => release());
   vi.useRealTimers();
   vi.restoreAllMocks();
-  channels.splice(0).forEach((channel) => releaseProcessRemoteRunChannel(channel));
+  channels.splice(0);
   await Promise.all(directories.splice(0).map((dir) => fs.rm(dir, { recursive: true, force: true })));
 });
 
@@ -118,7 +118,7 @@ const buildNodeA = async (network: Network, memoryDir?: string, metadata = new M
     rootDependencies: {
       taskRecords: resources,
       delegationIndex: taskSide.tree, viewStreams: testViewStreams(),
-      remoteRunChannel: () => client,
+      remoteChannel: () => client,
     },
   });
   network.set(A_ID, new PeerGateway({
@@ -202,7 +202,9 @@ const buildNodeB = async (network: Network, memoryDir?: string, state: RuntimeSt
     tryPrepareAgentRunTerminationIfQuiescent: async (run: any) => busy.has(run.runId) ? null : termination(run),
     prepareAgentRunTermination: async (run: any) => termination(run),
   });
-  const teamManager = new AgentTeamRunManager({
+  // A Team root on B sends through B's channel, as its composition passes it (autobyteus-500 FU-011).
+  let channelB: RemoteRunChannel | null = null;
+  const teamManager = new AgentTeamRunManager({ remoteChannel: () => channelB,
     memoryDir: dir,
     flatTeamExecutionFactory: new FlatTeamExecutionFactory({ agentRunManager: runtimes as never,
       activityInspector: { inspect: ({ agentRunId }: { agentRunId: string }) => ({ kind: conversations.has(agentRunId) ? "present" : "none" }) } as never,
@@ -233,8 +235,7 @@ const buildNodeB = async (network: Network, memoryDir?: string, state: RuntimeSt
     definitionAdmissionService: { requireAvailable: vi.fn(async () => ({ status: "available", subjectKind: "agent_team", definition: team })) } as never,
   });
   const client = peerClient(B_ID, B_PEERS, network);
-  // A Team root on B sends through the process channel (it is composed per process, not per root).
-  bindProcessRemoteRunChannel(client);
+  channelB = client;
   channels.push(client);
   const catalogPort = new NodeCatalogPort(path.join(dir, "temp_workspace"));
   network.set(B_ID, new PeerGateway({
@@ -355,7 +356,7 @@ describe("remote delegation to a shared Agent Team, in process (autobyteus-247)"
 
     // Both nodes restart (new managers on the same data); A's host is not running.
     const network: Network = new Map();
-    channels.splice(0).forEach((channel) => releaseProcessRemoteRunChannel(channel));
+    channels.splice(0);
     const b2 = await buildNodeB(network, b.dir, b.state);
     const a2 = await buildNodeA(network, a.dir, a.metadata, a.resources);
     a2.setHostActive(true);

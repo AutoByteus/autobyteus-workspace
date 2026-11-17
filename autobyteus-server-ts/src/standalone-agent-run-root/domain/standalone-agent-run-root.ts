@@ -1,4 +1,5 @@
 import type { RunMessagesFeed } from "../../agent-collaboration/delegation/run-messages-feed.js";
+import type { RemoteRunChannelAccess } from "../../agent-collaboration/execution/remote/remote-run-channel.js";
 import { acceptWorkPacketIfAllowed } from "../../agent-collaboration/execution/task/task-delegation.js";
 import type { ClosedTaskFence } from "../../agent-collaboration/execution/task/closed-task-fence.js";
 import { ASSIGNER_ONLY_REACTIVATION_MESSAGE, type TaskExecutionOwner, type RunTaskRecords } from "../../agent-collaboration/execution/task/task-execution-resource-port.js";
@@ -39,7 +40,6 @@ import { peerRunLinksOf } from "../../agent-collaboration/execution/remote/peer-
 import { RemoteRunLinks, type RemoteInboundMessage, type RemoteInboundWorkPacket } from "../../agent-collaboration/execution/remote/remote-run-links.js";
 import { RemoteMessageSend } from "../../agent-collaboration/execution/remote/remote-message-send.js";
 import { peerDelegatedFromOf, type DelegatedFrom } from "../../run-history/store/agent-run-metadata-types.js";
-import type { RemoteRunChannel } from "../../agent-collaboration/execution/remote/remote-run-channel.js";
 import type { AgentRunManager } from "../../agent-execution/services/agent-run-manager.js";
 import { DelegatedRunIdleShutdown } from "../services/delegated-run-idle-shutdown.js";
 import { TaskWorkerStatusNotice } from "../../agent-collaboration/execution/task/task-worker-status-notice.js";
@@ -93,7 +93,8 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
     collaboratorAdmission?: CollaboratorAdmission;
     /** The run's own origin (a delegated run, from its Task entry's delegator; a run a peer started, its back-link). */
     delegatedFrom?: DelegatedFrom | null;
-    remoteRunChannel?: () => RemoteRunChannel | null;
+    /** The host's channel to peer nodes (autobyteus-500 FU-011). */
+    remoteChannel: RemoteRunChannelAccess;
     agentRunManager?: Pick<AgentRunManager, "tryPrepareAgentRunTerminationIfQuiescent">;
     onTerminated?(): void;
   }>) {
@@ -107,7 +108,7 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
     this.operationGate = new RootOperationGate({ rootLabel: `Agent root '${this.agentRunId}'`, canEnter: () => this.isAdmitting() });
     this.remoteLinks = new RemoteRunLinks({ peerRuns: () => peerRunLinksOf(root, options.delegationIndex),
       backLink: ((peer) => peer ? { pairedAgentRunIds: () => [this.agentRunId], delegatedFrom: peer } : null)(peerDelegatedFromOf({ delegatedFrom: options.delegatedFrom })), // AR-016
-      channel: options.remoteRunChannel });
+      channel: options.remoteChannel });
     // DS-7: a delegated run shuts down when quiet; its next message restores it.
     this.delegatedIdle = options.delegatedFrom && options.agentRunManager ? new DelegatedRunIdleShutdown({
       agentRunId: this.agentRunId, agentRunManager: options.agentRunManager,

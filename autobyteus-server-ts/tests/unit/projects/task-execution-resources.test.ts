@@ -14,6 +14,7 @@ import { ProjectTaskContextStore } from "../../../src/projects/context/project-t
 import { createRootExecutionIdentity } from "../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import type { TaskExecutionReleaseRequest } from "../../../src/agent-collaboration/execution/task/task-execution-resource-port.js";
 import { taskRunResources } from "../../helpers/task-run-resources.js";
+import { NO_RUN_SIDE_TASK_PORTS } from "../../helpers/explicit-host-collaborators.js";
 
 const hostRoot = createRootExecutionIdentity({ rootSubjectKind: "agent", rootRunId: "manager-root" });
 const otherRoot = createRootExecutionIdentity({ rootSubjectKind: "agent_team", rootRunId: "team-root" });
@@ -25,7 +26,7 @@ describe("Task agent run resources (SR-023/SR-024)", () => {
   let tasks: ProjectTaskService;
   let releases: ReleaseTracker;
   const boot = async () => {
-    const service = new ProjectTaskService({ store, contextStore: new ProjectTaskContextStore(layout), requestRelease: (releases = trackReleases(release)).request,
+    const service = new ProjectTaskService({ ...NO_RUN_SIDE_TASK_PORTS, store, contextStore: new ProjectTaskContextStore(layout), requestRelease: (releases = trackReleases(release)).request,
       taskExecutionResources: taskRunResources(new TaskExecutionResourceStore(layout)) });
     await service.load();
     return service;

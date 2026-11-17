@@ -11,6 +11,7 @@ import { AgentToolsMcpLocalServer } from "./agent-tools-mcp-local-server.js";
 import { AgentToolsMcpSessionStreams } from "./agent-tools-mcp-session-streams.js";
 import { ConfiguredMcpAgentToolSourceResolver } from "./configured-mcp/configured-mcp-agent-tool-source-resolver.js";
 import { buildDefaultAgentToolMcpAdapterProviders } from "./providers/default-agent-tool-mcp-adapter-providers.js";
+import type { PeerDiscoveryAccess } from "../../agent-collaboration/execution/remote/peer-discovery-channel.js";
 import type { AgentToolMcpSessionAuthorityFactory } from "./agent-tool-mcp-session-authority.js";
 import { createAgentToolMcpSessionAuthorityFactory } from "./scoped-agent-tool-mcp-session-authority.js";
 
@@ -49,9 +50,9 @@ class DefaultAgentToolsMcpHost implements AgentToolsMcpHost {
   private closed = false;
   private closePromise: Promise<void> | null = null;
 
-  constructor(loggingConfig: LoggingConfig) {
+  constructor(loggingConfig: LoggingConfig, peerDiscovery: PeerDiscoveryAccess) {
     const catalog = new AgentToolMcpCatalog({
-      providers: buildDefaultAgentToolMcpAdapterProviders(),
+      providers: buildDefaultAgentToolMcpAdapterProviders({ peerDiscovery }),
       schemaMapper: new AgentToolsMcpSchemaMapper(),
       registry: defaultToolRegistry,
       configuredMcpSourceResolver: new ConfiguredMcpAgentToolSourceResolver({
@@ -116,9 +117,12 @@ class DefaultAgentToolsMcpHost implements AgentToolsMcpHost {
 
 export const createAgentToolsMcpHost = (input: Readonly<{
   loggingConfig: LoggingConfig;
+  /** The host's discovery for the discovery tools (autobyteus-500 FU-011). */
+  peerDiscovery: PeerDiscoveryAccess;
 }>): AgentToolsMcpHost => {
   if (!input?.loggingConfig) {
     throw new Error("Agent Tools MCP host logging configuration is required.");
   }
-  return new DefaultAgentToolsMcpHost(input.loggingConfig);
+  if (!input.peerDiscovery) throw new Error("Agent Tools MCP host peer discovery is required.");
+  return new DefaultAgentToolsMcpHost(input.loggingConfig, input.peerDiscovery);
 };

@@ -1,4 +1,5 @@
 import type { BaseTool } from "autobyteus-ts/tools/base-tool.js";
+import type { PeerDiscoveryAccess } from "../../../agent-collaboration/execution/remote/peer-discovery-channel.js";
 import { ToolConfig } from "autobyteus-ts/tools/tool-config.js";
 import { defaultToolRegistry } from "autobyteus-ts/tools/registry/tool-registry.js";
 import type { AgentDefinition } from "../../../agent-definition/domain/models.js";
@@ -46,6 +47,8 @@ export const resolveAutoByteusAgentTools = (input: {
   senderName?: string | null;
   runtimeKind?: string | null;
   memberExecutionContext?: MemberExecutionContext | null;
+  /** The host's discovery for the discovery tools (autobyteus-500 FU-011). */
+  peerDiscovery: PeerDiscoveryAccess;
   logger?: ToolResolutionLogger | null;
 }): AutoByteusAgentToolResolution => {
   const { agentDefinition, memberExecutionContext = null } = input;
@@ -91,8 +94,8 @@ export const resolveAutoByteusAgentTools = (input: {
         continue;
       }
       tools.push(name.trim() === LIST_AVAILABLE_AGENTS_TOOL_NAME
-        ? createBoundListAvailableAgentsTool(memberExecutionContext)
-        : createBoundListPeerNodesTool(memberExecutionContext));
+        ? createBoundListAvailableAgentsTool(memberExecutionContext, input.peerDiscovery)
+        : createBoundListPeerNodesTool(memberExecutionContext, input.peerDiscovery));
       actualToolNames.push(name);
       continue;
     }

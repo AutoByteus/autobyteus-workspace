@@ -6,6 +6,7 @@ import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.j
 import { CodexThreadEventConverter } from "../../../src/agent-execution/backends/codex/events/codex-thread-event-converter.js";
 import { CodexThreadEventName } from "../../../src/agent-execution/backends/codex/events/codex-thread-event-name.js";
 import { AgentRunEventType } from "../../../src/agent-execution/domain/agent-run-event.js";
+import { NO_ELIGIBLE_STANDALONE_RUNS } from "../../helpers/explicit-host-collaborators.js";
 
 describe("AgentRunService termination", () => {
   const createSubject = (options: { metadata?: Record<string, unknown> | null } = {}) => {
@@ -29,7 +30,7 @@ describe("AgentRunService termination", () => {
       AgentRunProvisioningService.prototype,
     ) as AgentRunProvisioningService;
 
-    const service = new AgentRunService("/tmp/agent-run-service-test", {
+    const service = new AgentRunService("/tmp/agent-run-service-test", { standaloneRuns: NO_ELIGIBLE_STANDALONE_RUNS,
       agentRunManager: agentRunManager as never,
       metadataService: metadataService as never,
       historyCatalogService: historyCatalogService as never,

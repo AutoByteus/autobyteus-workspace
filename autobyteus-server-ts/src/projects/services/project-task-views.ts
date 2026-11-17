@@ -15,8 +15,8 @@ export class ProjectTaskViews {
     private readonly resources: Pick<TaskExecutionResourceService, "latestAssignment">,
     private readonly workerStatus: TaskWorkerStatusResolver,
     /** Where a worker's row is listed (SR-080); null when the tree is not known: no card opens. */
-    private readonly topRun: TaskTopRunResolver | null,
-    private readonly displayName: TaskDisplayNameResolver | null = null,
+    private readonly topRun: TaskTopRunResolver,
+    private readonly displayName: TaskDisplayNameResolver,
   ) {}
 
   async projectTask(projectId: string, task: ProjectTask): Promise<ProjectTaskView> {

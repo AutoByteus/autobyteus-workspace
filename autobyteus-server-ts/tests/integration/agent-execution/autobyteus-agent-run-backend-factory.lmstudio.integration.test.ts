@@ -26,6 +26,7 @@ import { PublishedArtifactSnapshotStore } from "../../../src/services/published-
 import { getWorkspaceManager } from "../../../src/workspaces/workspace-manager.js";
 import { getModelCatalogService } from "../../../src/llm-management/services/model-catalog-service.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
+import { OFF_DISCOVERY } from "../../helpers/explicit-host-collaborators.js";
 
 const unavailableBackendFactory: AgentRunBackendFactory = Object.freeze({
   beginPreparation: () => { throw new Error("Backend factory is outside this test scenario."); },
@@ -199,7 +200,7 @@ runLiveIntegration("AutoByteusAgentRunBackendFactory live LM Studio integration"
     const activeIds = agentFactory.listActiveAgentIds();
     await Promise.all(activeIds.map((id) => agentFactory.removeAgent(id).catch(() => false)));
 
-    backendFactory = new AutoByteusAgentRunBackendFactory({ nativeCommandProcessScope: new NativeCommandProcessScope(),
+    backendFactory = new AutoByteusAgentRunBackendFactory({ peerDiscovery: OFF_DISCOVERY, nativeCommandProcessScope: new NativeCommandProcessScope(),
       agentFactory: agentFactory as any,
       agentDefinitionService: {
         getAgentDefinitionById: async () =>
@@ -475,7 +476,7 @@ runLiveIntegration("AutoByteusAgentRunBackendFactory live LM Studio integration"
       await fsPromises.mkdir(path.dirname(artifactAbsolutePath), { recursive: true });
       await fsPromises.writeFile(artifactAbsolutePath, artifactBody, "utf8");
 
-      const publishBackendFactory = new AutoByteusAgentRunBackendFactory({ nativeCommandProcessScope: new NativeCommandProcessScope(),
+      const publishBackendFactory = new AutoByteusAgentRunBackendFactory({ peerDiscovery: OFF_DISCOVERY, nativeCommandProcessScope: new NativeCommandProcessScope(),
         agentFactory: agentFactory as any,
         agentDefinitionService: {
           getAgentDefinitionById: async () =>

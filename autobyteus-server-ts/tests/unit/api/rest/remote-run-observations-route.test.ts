@@ -8,10 +8,7 @@ import type { RemoteRootDirectory } from "../../../../src/remote-collaboration/i
 import { RemoteRunViewProvider } from "../../../../src/remote-collaboration/inbound/remote-run-view-provider.js";
 import type { RunAgentAccess, RunAgentPresentationListener } from "../../../../src/agent-collaboration/execution/remote/run-agent-access.js";
 
-const services = vi.hoisted(() => ({ current: null as unknown }));
-vi.mock("../../../../src/remote-collaboration/remote-collaboration-services.js", () => ({
-  findProcessRemoteCollaboration: () => services.current,
-}));
+const services = { current: null as unknown };
 
 import { registerRemoteCollaborationRoutes } from "../../../../src/api/rest/remote.js";
 import { signPeerRequest } from "../../../../src/remote-collaboration/channel/peer-request-signature.js";
@@ -60,7 +57,7 @@ const startNodeB = async () => {
   await app.register(websocket);
   // B's gate admits A by its signed upgrade.
   await registerTestNodeAccess(app, { ownNodeId: SELF, peerSecrets: { [ALPHA.nodeId]: PEER_SECRET } });
-  await app.register(async (rest) => registerRemoteCollaborationRoutes(rest), { prefix: "/rest" });
+  await app.register(async (rest) => registerRemoteCollaborationRoutes(rest, services.current as never), { prefix: "/rest" });
   await app.listen({ host: "127.0.0.1", port: 0 });
   const address = app.server.address();
   const port = typeof address === "object" && address ? address.port : 0;

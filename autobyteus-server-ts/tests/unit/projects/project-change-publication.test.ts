@@ -18,6 +18,7 @@ import type { ProjectChangeMessage } from "../../../src/projects/changes/project
 import type { TaskRootStatus } from "../../../src/projects/domain/models.js";
 import { createRootExecutionIdentity } from "../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import { taskRunResources } from "../../helpers/task-run-resources.js";
+import { NO_RUN_SIDE_TASK_PORTS } from "../../helpers/explicit-host-collaborators.js";
 
 const hostRoot = createRootExecutionIdentity({ rootSubjectKind: "agent", rootRunId: "manager-root" });
 const worker = { agentRunId: "worker" };
@@ -33,7 +34,7 @@ describe("Projects change publication (Publication Contract, services)", () => {
   let liveStatus: TaskRootStatus;
   const boot = async () => {
     const resources = taskRunResources(new TaskExecutionResourceStore(layout, adHocLayout));
-    const service = new ProjectTaskService({ store, adHocTasks: new AdHocTaskStore(adHocLayout), contextStore: new ProjectTaskContextStore(layout),
+    const service = new ProjectTaskService({ ...NO_RUN_SIDE_TASK_PORTS, store, adHocTasks: new AdHocTaskStore(adHocLayout), contextStore: new ProjectTaskContextStore(layout),
       requestRelease: (releases = trackReleases()).request,
       taskExecutionResources: resources,
       changes: publisher, workerStatus: () => liveStatus });

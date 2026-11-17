@@ -30,6 +30,7 @@ import { registerTools } from "autobyteus-ts/tools/register-tools.js";
 import fs from "node:fs";
 import os from "node:os";
 import { AgentSemanticMemory } from "../../../../../src/agent-memory/services/agent-semantic-memory.js";
+import { OFF_DISCOVERY } from "../../../../helpers/explicit-host-collaborators.js";
 
 class DummyLLM extends BaseLLM {
   protected async _sendMessagesToLLM(_messages: Message[]): Promise<CompleteResponse> {
@@ -127,7 +128,7 @@ describe("AutoByteusAgentRunBackendFactory", () => {
         new LLMConfig(),
       ),
     );
-    const factory = new AutoByteusAgentRunBackendFactory({ nativeCommandProcessScope: new NativeCommandProcessScope(),
+    const factory = new AutoByteusAgentRunBackendFactory({ peerDiscovery: OFF_DISCOVERY, nativeCommandProcessScope: new NativeCommandProcessScope(),
       agentDefinitionService: {
         getAgentDefinitionById: vi.fn(async () =>
           new AgentDefinition({
@@ -204,7 +205,7 @@ describe("AutoByteusAgentRunBackendFactory", () => {
       content: [{ type: "text" as const, text: "application-state" }],
     }));
     const resolveSelectedRoutes = vi.fn(() => new Map([[applicationToolName, route]]));
-    const factory = new AutoByteusAgentRunBackendFactory({ nativeCommandProcessScope: new NativeCommandProcessScope(),
+    const factory = new AutoByteusAgentRunBackendFactory({ peerDiscovery: OFF_DISCOVERY, nativeCommandProcessScope: new NativeCommandProcessScope(),
       agentDefinitionService: {
         getAgentDefinitionById: vi.fn(async () => new AgentDefinition({
           id: "agent-1",
@@ -287,7 +288,7 @@ describe("AutoByteusAgentRunBackendFactory", () => {
     ] as any);
     vi.spyOn(LLMFactory, "requiresGeminiRuntimeResolver").mockResolvedValue(false);
     const createLLM = vi.spyOn(LLMFactory, "createLLM").mockResolvedValue(llm);
-    const factory = new AutoByteusAgentRunBackendFactory({ nativeCommandProcessScope: new NativeCommandProcessScope() });
+    const factory = new AutoByteusAgentRunBackendFactory({ peerDiscovery: OFF_DISCOVERY, nativeCommandProcessScope: new NativeCommandProcessScope() });
 
     await expect(
       (factory as any).createLLM("dummy-model", { temperature: 0.2 }),
@@ -303,7 +304,7 @@ describe("AutoByteusAgentRunBackendFactory", () => {
   });
 
   it("composes server team prompts, and injects primitive team context", async () => {
-    const factory = new AutoByteusAgentRunBackendFactory({ nativeCommandProcessScope: new NativeCommandProcessScope(),
+    const factory = new AutoByteusAgentRunBackendFactory({ peerDiscovery: OFF_DISCOVERY, nativeCommandProcessScope: new NativeCommandProcessScope(),
       agentDefinitionService: {
         getAgentDefinitionById: vi.fn(async () =>
           new AgentDefinition({
@@ -383,7 +384,7 @@ describe("AutoByteusAgentRunBackendFactory", () => {
   it("tells an agent with semantic memory its folder between the Project and Working Environment sections (REQ-005)", async () => {
     const memoryDir = fs.mkdtempSync(path.join(os.tmpdir(), "autobyteus-semantic-memory-"));
     try {
-      const factory = new AutoByteusAgentRunBackendFactory({ nativeCommandProcessScope: new NativeCommandProcessScope(),
+      const factory = new AutoByteusAgentRunBackendFactory({ peerDiscovery: OFF_DISCOVERY, nativeCommandProcessScope: new NativeCommandProcessScope(),
         agentDefinitionService: { getAgentDefinitionById: vi.fn(async () => new AgentDefinition({
           id: "computer-use-operator", name: "Operator", description: "Operates.", instructions: "Operate.", toolNames: [],
           semanticMemoryEnabled: true,
@@ -409,7 +410,7 @@ describe("AutoByteusAgentRunBackendFactory", () => {
   });
 
   it("advertises the strict filesystem-like logical protocol without a flat roster", async () => {
-    const factory = new AutoByteusAgentRunBackendFactory({ nativeCommandProcessScope: new NativeCommandProcessScope(),
+    const factory = new AutoByteusAgentRunBackendFactory({ peerDiscovery: OFF_DISCOVERY, nativeCommandProcessScope: new NativeCommandProcessScope(),
       agentDefinitionService: {
         getAgentDefinitionById: vi.fn(async () =>
           new AgentDefinition({
@@ -487,7 +488,7 @@ describe("AutoByteusAgentRunBackendFactory", () => {
   });
 
   it("keeps task-management tools for standalone AutoByteus runs without member team context", async () => {
-    const factory = new AutoByteusAgentRunBackendFactory({ nativeCommandProcessScope: new NativeCommandProcessScope(),
+    const factory = new AutoByteusAgentRunBackendFactory({ peerDiscovery: OFF_DISCOVERY, nativeCommandProcessScope: new NativeCommandProcessScope(),
       agentDefinitionService: {
         getAgentDefinitionById: vi.fn(async () =>
           new AgentDefinition({
@@ -553,7 +554,7 @@ describe("AutoByteusAgentRunBackendFactory", () => {
       code: "TARGET_MEMBER_NOT_FOUND",
       message: "Writer is unavailable.",
     });
-    const factory = new AutoByteusAgentRunBackendFactory({ nativeCommandProcessScope: new NativeCommandProcessScope(),
+    const factory = new AutoByteusAgentRunBackendFactory({ peerDiscovery: OFF_DISCOVERY, nativeCommandProcessScope: new NativeCommandProcessScope(),
       agentDefinitionService: {
         getAgentDefinitionById: vi.fn(async () =>
           new AgentDefinition({
@@ -624,7 +625,7 @@ describe("AutoByteusAgentRunBackendFactory", () => {
   });
 
   it("keeps the exact-run send_message_to selector on the canonical Team binding", async () => {
-    const factory = new AutoByteusAgentRunBackendFactory({ nativeCommandProcessScope: new NativeCommandProcessScope(),
+    const factory = new AutoByteusAgentRunBackendFactory({ peerDiscovery: OFF_DISCOVERY, nativeCommandProcessScope: new NativeCommandProcessScope(),
       agentDefinitionService: {
         getAgentDefinitionById: vi.fn(async () =>
           new AgentDefinition({
@@ -713,7 +714,7 @@ describe("AutoByteusAgentRunBackendFactory", () => {
       deliverInterAgentMessage: vi.fn().mockResolvedValue({ accepted: true }),
       taskCapability,
     });
-    const factory = new AutoByteusAgentRunBackendFactory({ nativeCommandProcessScope: new NativeCommandProcessScope(),
+    const factory = new AutoByteusAgentRunBackendFactory({ peerDiscovery: OFF_DISCOVERY, nativeCommandProcessScope: new NativeCommandProcessScope(),
       agentDefinitionService: {
         getAgentDefinitionById: vi.fn(async () =>
           new AgentDefinition({
@@ -797,7 +798,7 @@ describe("AutoByteusAgentRunBackendFactory", () => {
   });
 
   it("enables policy-only compaction: the core summarizer always uses the agent's own model", async () => {
-    const factory = new AutoByteusAgentRunBackendFactory({ nativeCommandProcessScope: new NativeCommandProcessScope(),
+    const factory = new AutoByteusAgentRunBackendFactory({ peerDiscovery: OFF_DISCOVERY, nativeCommandProcessScope: new NativeCommandProcessScope(),
       agentDefinitionService: {
         getAgentDefinitionById: vi.fn(async () =>
           new AgentDefinition({

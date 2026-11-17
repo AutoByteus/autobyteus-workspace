@@ -21,6 +21,7 @@ import { AutoByteusAgentRunBackendFactory } from "../../../../../src/agent-execu
 import { AgentRunConfig } from "../../../../../src/agent-execution/domain/agent-run-config.js";
 import { RuntimeKind } from "../../../../../src/runtime-management/runtime-kind-enum.js";
 import type { IntegrationRunAccess } from "../../../../../src/credential-proxy/integration-run-access.js";
+import { OFF_DISCOVERY } from "../../../../helpers/explicit-host-collaborators.js";
 
 class DummyLLM extends BaseLLM {
   protected async _sendMessagesToLLM(): Promise<CompleteResponse> {
@@ -35,7 +36,7 @@ class DummyLLM extends BaseLLM {
 const API_URL = "http://127.0.0.1:5555/r/rp_test-dummy-pass/github/api";
 
 const createFactory = (integrationRunAccess: IntegrationRunAccess, workspace: string) =>
-  new AutoByteusAgentRunBackendFactory({
+  new AutoByteusAgentRunBackendFactory({ peerDiscovery: OFF_DISCOVERY,
     nativeCommandProcessScope: new NativeCommandProcessScope(),
     agentDefinitionService: {
       getAgentDefinitionById: vi.fn(async (id: string) => new AgentDefinition({ id, name: "Gitter", description: "Uses git.", instructions: "", toolNames: ["run_bash"] })),

@@ -1,4 +1,6 @@
 import type { RunViewStreams } from "../../agent-collaboration/delegation/run-view-stream.js";
+import type { RemoteRunChannelAccess } from "../../agent-collaboration/execution/remote/remote-run-channel.js";
+import type { PeerDiscoveryAccess } from "../../agent-collaboration/execution/remote/peer-discovery-channel.js";
 import type { DelegationIndex } from "../../agent-collaboration/delegation/delegation-index.js";
 import type { IntegrationRunAccess } from "../../credential-proxy/integration-run-access.js";
 import type { ProviderRelayAccess } from "../../credential-proxy/provider-relays/provider-relay-access.js";
@@ -37,6 +39,10 @@ export type GeneralProcessRunSupervisorInput = Readonly<{
   providerRelayAccess: ProviderRelayAccess | null;
   /** Ends a run's pass at release and on a failed activation; from the same proxy host, non-null whenever an access is. */
   runPasses: RunPassRevocation | null;
+  /** The host's channel to peer nodes, for its roots (autobyteus-500 FU-011): the studio's; `() => null` elsewhere. */
+  remoteChannel: RemoteRunChannelAccess;
+  /** The host's discovery for the discovery tools (autobyteus-500 FU-011). */
+  peerDiscovery: PeerDiscoveryAccess;
   modelSelectionValidator: RunModelSelectionValidator & Pick<RunModelSelectionService, "listOptions" | "listOptionsMany">;
   /** Neutral Task agent resource port from the host composition, forwarded to every root builder. */
   taskRecords: RunTaskRecords;
@@ -60,6 +66,9 @@ export type GeneralProcessRunSupervisorInput = Readonly<{
 export const requireGeneralProcessRunSupervisorInput = (
   input: GeneralProcessRunSupervisorInput | null | undefined,
 ): GeneralProcessRunSupervisorInput => {
+  // autobyteus-500 FU-011: each host passes its own; a missing one is named.
+  if (input && typeof input.remoteChannel !== "function") throw new Error("GeneralProcessRunSupervisor needs its host's remoteChannel.");
+  if (input && typeof input.peerDiscovery !== "function") throw new Error("GeneralProcessRunSupervisor needs its host's peerDiscovery.");
   if (
     !input
     || typeof input.memoryDir !== "string"

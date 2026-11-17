@@ -13,6 +13,7 @@ import type { AgentProviderFactoryBuilder } from "../../../src/agent-execution/p
 import { AgentRunManager } from "../../../src/agent-execution/services/agent-run-manager.js";
 import { AgentTeamRunManager } from "../../../src/agent-team-execution/services/agent-team-run-manager.js";
 import { noDelegations, openTaskRecords } from "../../helpers/no-delegations.js";
+import { NO_PEER_CHANNEL, OFF_DISCOVERY } from "../../helpers/explicit-host-collaborators.js";
 
 const createCatalogSnapshot = (applicationId: string) => ({
   applications: [{
@@ -47,7 +48,7 @@ describe("application platform runtime isolation", () => {
       AgentTeamRunManager.prototype,
       "createTeamRun",
     );
-    const agentToolsMcpHost = createAgentToolsMcpHost({
+    const agentToolsMcpHost = createAgentToolsMcpHost({ peerDiscovery: OFF_DISCOVERY,
       loggingConfig: {
         pinoLogLevel: "silent",
         httpAccessLogMode: "off",
@@ -116,6 +117,8 @@ describe("application platform runtime isolation", () => {
         requireCurrentModelIdentifier: vi.fn(async () => undefined),
         modelSelectionValidator: { validate: vi.fn(), validateMany: vi.fn() },
         providerRelayAccess: null,
+        remoteChannel: NO_PEER_CHANNEL,
+        peerDiscovery: OFF_DISCOVERY,
         runPasses: null,
         staticAdapterToolNames: agentToolsMcpHost.staticAdapterToolNames,
         selectedApplicationIds: new Set([applicationId]),
@@ -251,6 +254,8 @@ describe("application platform runtime isolation", () => {
         requireCurrentModelIdentifier: vi.fn(async () => undefined),
         modelSelectionValidator: { validate: vi.fn(), validateMany: vi.fn() },
         providerRelayAccess: null,
+        remoteChannel: NO_PEER_CHANNEL,
+        peerDiscovery: OFF_DISCOVERY,
         runPasses: null,
         staticAdapterToolNames: new Set(),
         selectedApplicationIds: new Set(["app-a"]),

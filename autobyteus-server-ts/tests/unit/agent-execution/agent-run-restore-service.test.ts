@@ -3,6 +3,7 @@ import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.j
 import { AgentRunService } from "../../../src/agent-execution/services/agent-run-service.js";
 import { StandaloneAgentRunLifecycleService } from "../../../src/agent-execution/services/standalone-agent-run-lifecycle-service.js";
 import type { AgentRunMetadata } from "../../../src/run-history/store/agent-run-metadata-types.js";
+import { NO_ELIGIBLE_STANDALONE_RUNS } from "../../helpers/explicit-host-collaborators.js";
 
 const metadata = (): AgentRunMetadata => ({
   runId: "run-1",
@@ -30,7 +31,7 @@ const createSubject = () => {
     activateRunAgent: vi.fn().mockResolvedValue(restored),
     },
   );
-  const service = new AgentRunService("/tmp/agent-run-service-test", {
+  const service = new AgentRunService("/tmp/agent-run-service-test", { standaloneRuns: NO_ELIGIBLE_STANDALONE_RUNS,
     agentRunManager: { getActiveRun: vi.fn().mockReturnValue(null) } as never,
     metadataService: {} as never,
     historyCatalogService: {} as never,

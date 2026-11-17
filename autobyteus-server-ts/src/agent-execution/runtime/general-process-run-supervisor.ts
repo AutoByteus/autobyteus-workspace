@@ -1,4 +1,5 @@
 import { createPeerRunOf } from "../../agent-collaboration/execution/remote/peer-runs.js";
+import { AgentRunCommandCoordinator } from "../services/agent-run-command-coordinator.js";
 import { DelegatedWorkGuard } from "../../run-history/services/delegated-work-guard.js";
 import { runOwnStatus } from "../../agent-collaboration/execution/task/task-run-control.js";
 import { AgentMemoryLocationService } from "../../agent-memory/services/agent-memory-location-service.js";
@@ -59,8 +60,6 @@ import {
   releaseProcessStandaloneAgentRunRootManager,
 } from "../../standalone-agent-run-root/services/standalone-agent-run-root-manager.js";
 import {
-  bindProcessStandaloneRunCommandPort,
-  releaseProcessStandaloneRunCommandPort,
 } from "../services/standalone-run-ports.js";
 import { DelegatedChildLocations } from "../../agent-collaboration/execution/delegation/delegated-child-locations.js";
 import { getRuntimeAvailabilityService } from "../../runtime-management/runtime-availability-service.js";
@@ -92,6 +91,8 @@ export class GeneralProcessRunSupervisor {
   private readonly agentTeamRunManager: AgentTeamRunManager;
   private readonly agentOrgRunManager: AgentOrgRunManager;
   readonly standaloneRootManager: StandaloneAgentRunRootManager;
+  /** Commands of the agent stream; eligible standalone runs go through their root (autobyteus-500 FU-011). */
+  readonly agentRunCommandCoordinator: AgentRunCommandCoordinator;
   private readonly agentToolMcpSessionAuthority: ScopedAgentToolMcpSessionAuthority;
   private readonly collaboratorAdmission: CollaboratorAdmission;
   private readonly runFileChangeService: RunFileChangeService;
@@ -166,6 +167,7 @@ export class GeneralProcessRunSupervisor {
         applicationAgentTools: null,
         integrationRunAccess: input.integrationRunAccess,
         providerRelayAccess: input.providerRelayAccess,
+        peerDiscovery: input.peerDiscovery,
       });
       agentRunManager = AgentRunManager.initializeProcessInstance({
         autoByteusBackendFactory: providerFactories.autoByteus,
@@ -214,6 +216,7 @@ export class GeneralProcessRunSupervisor {
         memoryDir,
         taskRecords: input.taskRecords,
         delegationIndex: input.delegationIndex,
+        remoteChannel: input.remoteChannel,
         viewStreams: input.viewStreams,
         modelSelectionValidator: input.modelSelectionValidator,
         flatTeamExecutionFactory,
@@ -229,7 +232,8 @@ export class GeneralProcessRunSupervisor {
           flatTeamExecutionFactory,
           taskRecords: input.taskRecords,
           delegationIndex: input.delegationIndex,
-        viewStreams: input.viewStreams,
+          remoteChannel: input.remoteChannel,
+          viewStreams: input.viewStreams,
           orgDefinitions: input.agentOrgDefinitionService,
           teamDefinitions: input.agentTeamDefinitionService,
           agentRunManager: generalAgentRunManager,
@@ -270,16 +274,16 @@ export class GeneralProcessRunSupervisor {
         rootDependencies: {
           taskRecords: input.taskRecords,
           delegationIndex: input.delegationIndex,
+          remoteChannel: input.remoteChannel,
         viewStreams: input.viewStreams,
           agentRunManager: generalAgentRunManager,
           collaboratorAdmission,
         },
       });
       bindProcessStandaloneAgentRunRootManager(standaloneRootManager);
-      bindProcessStandaloneRunCommandPort(standaloneRootManager);
       standaloneRootManagerBound = true;
       // A run on a peer node, by its own ID, from the tree (SR-066).
-      const peerRunOf = createPeerRunOf(input.delegationIndex);
+      const peerRunOf = createPeerRunOf(input.delegationIndex, input.remoteChannel);
       agentRunService = new AgentRunService(memoryDir, {
         agentRunManager,
         metadataService,
@@ -335,6 +339,7 @@ export class GeneralProcessRunSupervisor {
       this.agentTeamRunManager = agentTeamRunManager;
       this.agentOrgRunManager = agentOrgRunManager;
       this.standaloneRootManager = standaloneRootManager;
+      this.agentRunCommandCoordinator = new AgentRunCommandCoordinator({ standaloneRuns: standaloneRootManager });
       this.agentRunService = agentRunService;
       this.teamRunService = teamRunService;
       this.agentOrgRunService = agentOrgRunService;
@@ -371,7 +376,6 @@ export class GeneralProcessRunSupervisor {
         AgentOrgRunManager.releaseProcessInstance(agentOrgRunManager);
       }
       if (standaloneRootManagerBound && standaloneRootManager) {
-        releaseProcessStandaloneRunCommandPort(standaloneRootManager);
         releaseProcessStandaloneAgentRunRootManager(standaloneRootManager);
       }
       if (agentTeamRunManager) {
@@ -424,7 +428,6 @@ export class GeneralProcessRunSupervisor {
     try {
       releaseProcessAgentRunService(this.agentRunService);
       AgentOrgRunManager.releaseProcessInstance(this.agentOrgRunManager);
-      releaseProcessStandaloneRunCommandPort(this.standaloneRootManager);
       releaseProcessStandaloneAgentRunRootManager(this.standaloneRootManager);
       AgentTeamRunManager.releaseProcessInstance(this.agentTeamRunManager);
       AgentRunManager.releaseProcessInstance(this.agentRunManager);

@@ -11,7 +11,8 @@ import {
   buildListPeerNodesParameterSchema,
   listPeerNodesFor,
 } from "./list-peer-nodes-contract.js";
-import { agentDiscoveryToolText } from "./agent-discovery-refusal.js";
+import { agentDiscoveryToolText, boundPeerDiscovery } from "./agent-discovery-refusal.js";
+import type { PeerDiscoveryAccess } from "../../agent-collaboration/execution/remote/peer-discovery-channel.js";
 
 const OWNER = "server-owned-agent-discovery";
 
@@ -26,6 +27,8 @@ export class AutoByteusListPeerNodesTool extends BaseTool<unknown, Record<string
   constructor(
     config?: ToolConfig,
     private readonly memberExecutionContext: MemberExecutionContext | null = null,
+    /** The host's discovery; `null` only for an unbound instance, which has no context and is refused first. */
+    private readonly peerDiscovery: PeerDiscoveryAccess | null = null,
   ) { super(config); }
 
   static getName() { return LIST_PEER_NODES_TOOL_NAME; }
@@ -33,7 +36,7 @@ export class AutoByteusListPeerNodesTool extends BaseTool<unknown, Record<string
   static getArgumentSchema() { return buildListPeerNodesParameterSchema(); }
 
   protected async _execute(): Promise<string> {
-    return agentDiscoveryToolText(await listPeerNodesFor(this.memberExecutionContext?.collaboration));
+    return agentDiscoveryToolText(await listPeerNodesFor(this.memberExecutionContext?.collaboration, boundPeerDiscovery(this.memberExecutionContext?.collaboration, this.peerDiscovery, LIST_PEER_NODES_TOOL_NAME)));
   }
 }
 
@@ -55,9 +58,10 @@ export const ensureListPeerNodesToolRegistered = (): ToolDefinition => {
 
 export const createBoundListPeerNodesTool = (
   memberExecutionContext: MemberExecutionContext,
+  peerDiscovery: PeerDiscoveryAccess,
 ): AutoByteusListPeerNodesTool => {
   const definition = ensureListPeerNodesToolRegistered();
-  const tool = new AutoByteusListPeerNodesTool(undefined, memberExecutionContext);
+  const tool = new AutoByteusListPeerNodesTool(undefined, memberExecutionContext, peerDiscovery);
   tool.definition = definition;
   return tool;
 };

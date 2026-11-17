@@ -12,6 +12,7 @@ import { testMemberExecutionContext } from "../../../../fixtures/current-team-ru
 import { AgentRunEventType } from "../../../../../src/agent-execution/domain/agent-run-event.js";
 import { MemberCollaborationContext, MemberExecutionContext } from "../../../../../src/agent-collaboration/execution/domain/member-execution-context.js";
 import { createAgentOrgRootExecutionIdentity, createCollaborationMemberExecutionIdentity } from "../../../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
+import { OFF_DISCOVERY } from "../../../../helpers/explicit-host-collaborators.js";
 
 const runScopedMcpMessage = async (kind: "team" | "org") => {
   const base = await fs.mkdtemp(path.join(os.tmpdir(), "agy-team-mcp-live-"));
@@ -32,7 +33,7 @@ const runScopedMcpMessage = async (kind: "team" | "org") => {
         submitTaskResult: async () => { throw new Error("unused"); },
         reviewTaskResult: async () => { throw new Error("unused"); } } });
     })();
-  const host = createAgentToolsMcpHost({ loggingConfig: {
+  const host = createAgentToolsMcpHost({ peerDiscovery: OFF_DISCOVERY, loggingConfig: {
     pinoLogLevel: "silent", httpAccessLogMode: "off", includeNoisyHttpAccessRoutes: false, scopedLogLevelOverrides: [],
   } });
   const authority = host.sessionAuthorities.begin({ scopeIdentity: "agy-team-live" }).complete({

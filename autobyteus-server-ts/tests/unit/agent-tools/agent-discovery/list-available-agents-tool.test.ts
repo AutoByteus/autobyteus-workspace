@@ -14,11 +14,13 @@ import {
   automaticCollaborationToolNames,
   buildRuntimeAgentToolExposure,
 } from "../../../../src/agent-execution/shared/runtime-agent-tool-exposure.js";
+import { REMOTE_COLLABORATION_OFF_DISCOVERY } from "../../../../src/agent-tools/agent-discovery/agent-discovery-refusal.js";
 import { resolveAutoByteusAgentTools } from "../../../../src/agent-execution/backends/autobyteus/autobyteus-agent-tool-resolver.js";
 import { resolveClaudeSessionToolingOptions } from "../../../../src/agent-execution/backends/claude/session/claude-session-tooling-options.js";
 import { buildClaudeAgentToolsMcpToolName } from "../../../../src/agent-execution/backends/claude/agent-tools-mcp/claude-agent-tools-mcp-tool-name.js";
 import { MemberExecutionContext } from "../../../../src/agent-collaboration/execution/domain/member-execution-context.js";
 import { testMemberExecutionContext } from "../../../fixtures/current-team-run-fixtures.js";
+import { OFF_DISCOVERY } from "../../../helpers/explicit-host-collaborators.js";
 
 const generalAgentConfig = JSON.parse(readFileSync(
   new URL("../../../../src/built-in-agents/templates/daily-assistant/agent-config.json", import.meta.url),
@@ -40,7 +42,7 @@ describe("list_available_agents (REQ-001/002)", () => {
     expect(exposure.sendMessageToEnabled).toBe(true);
     expect(exposure.enabledTaskDelegationToolNames).toContain("delegate_task");
     expect(exposure.getHandoffRulesEnabled).toBe(false);
-    const resolved = resolveAutoByteusAgentTools({
+    const resolved = resolveAutoByteusAgentTools({ peerDiscovery: OFF_DISCOVERY,
       agentDefinition: { name: "Daily Assistant", toolNames: generalAgentConfig.toolNames } as never,
       runtimeToolExposure: exposure,
       senderRunId: "run-general-agent",
@@ -52,7 +54,7 @@ describe("list_available_agents (REQ-001/002)", () => {
       (candidate.constructor as { getName?: () => string }).getName?.() === LIST_AVAILABLE_AGENTS_TOOL_NAME)!;
     expect(JSON.parse(await (tool as unknown as { _execute(): Promise<string> })._execute())).toEqual({ agents: listed });
 
-    const [adapter] = new ListAvailableAgentsMcpAdapterProvider().getAdapters();
+    const [adapter] = new ListAvailableAgentsMcpAdapterProvider(OFF_DISCOVERY).getAdapters();
     const availability = (memberExecutionContext: typeof context | null) => adapter!.isAvailable({
       runtimeExposure: exposure,
       sender: memberExecutionContext ? { memberExecutionContext } as never : null,
@@ -82,7 +84,7 @@ describe("list_available_agents (REQ-001/002)", () => {
       teamScoped: false, collaborationRole: "standalone_agent", inOrganization: false,
     });
     expect(buildRuntimeAgentToolExposure(generalAgentConfig.toolNames, context).listAvailableAgentsEnabled).toBe(true);
-    await expect(listAvailableAgentsFor(context.collaboration)).resolves.toEqual({ agents: [] });
+    await expect(listAvailableAgentsFor(context.collaboration, {}, REMOTE_COLLABORATION_OFF_DISCOVERY)).resolves.toEqual({ agents: [] });
   });
 
   it("is a registry tool for the picker, with the REQ-009 wording", () => {
@@ -102,14 +104,14 @@ describe("list_available_agents (REQ-001/002)", () => {
   });
 
   it("returns { agents: [{name, kind, address, description}] } and rejects a run without a catalog", async () => {
-    await expect(listAvailableAgentsFor(withLister().collaboration)).resolves.toEqual({ agents: listed });
-    await expect(listAvailableAgentsFor(withoutLister().collaboration)).rejects.toMatchObject({ code: "COLLABORATION_CONTEXT_REQUIRED" });
-    await expect(listAvailableAgentsFor(null)).rejects.toMatchObject({ code: "COLLABORATION_CONTEXT_REQUIRED" });
+    await expect(listAvailableAgentsFor(withLister().collaboration, {}, REMOTE_COLLABORATION_OFF_DISCOVERY)).resolves.toEqual({ agents: listed });
+    await expect(listAvailableAgentsFor(withoutLister().collaboration, {}, REMOTE_COLLABORATION_OFF_DISCOVERY)).rejects.toMatchObject({ code: "COLLABORATION_CONTEXT_REQUIRED" });
+    await expect(listAvailableAgentsFor(null, {}, REMOTE_COLLABORATION_OFF_DISCOVERY)).rejects.toMatchObject({ code: "COLLABORATION_CONTEXT_REQUIRED" });
   });
 
   it("binds the AutoByteus tool to the sender's member context, and skips it where nothing can be listed", async () => {
     const logger = { warn: vi.fn(), error: vi.fn() };
-    const resolve = (context: ReturnType<typeof withLister> | null, toolNames: string[]) => resolveAutoByteusAgentTools({
+    const resolve = (context: ReturnType<typeof withLister> | null, toolNames: string[]) => resolveAutoByteusAgentTools({ peerDiscovery: OFF_DISCOVERY,
       agentDefinition: { name: "PM", toolNames } as never,
       runtimeToolExposure: buildRuntimeAgentToolExposure(toolNames, context),
       senderRunId: "run-pm",
@@ -127,7 +129,7 @@ describe("list_available_agents (REQ-001/002)", () => {
   });
 
   it("is an Agent Tools MCP adapter for the other runtimes, available only to a sender that can list", async () => {
-    const [adapter] = new ListAvailableAgentsMcpAdapterProvider().getAdapters();
+    const [adapter] = new ListAvailableAgentsMcpAdapterProvider(OFF_DISCOVERY).getAdapters();
     expect(adapter!.definition).toMatchObject({ name: LIST_AVAILABLE_AGENTS_TOOL_NAME, description: LIST_AVAILABLE_AGENTS_TOOL_DESCRIPTION });
     const availability = (memberExecutionContext: ReturnType<typeof withLister> | null) => adapter!.isAvailable({
       runtimeExposure: buildRuntimeAgentToolExposure([LIST_AVAILABLE_AGENTS_TOOL_NAME]),

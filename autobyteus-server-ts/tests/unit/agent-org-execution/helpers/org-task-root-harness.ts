@@ -23,6 +23,7 @@ import { TokenUsageCapability } from "../../../../src/token-usage/providers/toke
 import { testAgentOrgExecutionTree, testOrgAgentNode, testOrgTeamNode } from "../../../fixtures/current-agent-org-run-fixtures.js";
 import { flushMicrotasks, observeConfiguredHandles } from "./task-publication-handles.js";
 import { agentOrgMessageEvent, isAgentOrgMessageEvent } from "../../../../src/agent-org-execution/domain/agent-org-run-event.js";
+import { NO_PEER_CHANNEL } from "../../../helpers/explicit-host-collaborators.js";
 
 /**
  * A real AgentOrg root (persistence on a temp dir, root agent registry, root team directory) with
@@ -87,7 +88,7 @@ export const buildOrg = async (kind: "agent" | "team") => {
   const clock = manualTimers();
   const inspect = vi.fn(() => ({ kind: "present" as const }));
   let allocation = 0;
-  run = new AgentOrgRun({ root, tree, messages, rootAgents, teams, callbacks, persistence, publisher, messageFeed: messageFeedInto(publisher, agentOrgMessageEvent),
+  run = new AgentOrgRun({ remoteChannel: NO_PEER_CHANNEL, root, tree, messages, rootAgents, teams, callbacks, persistence, publisher, messageFeed: messageFeedInto(publisher, agentOrgMessageEvent),
     activityInspector: { inspect } as never,
     taskExecutionIdleShutdown: { gracePeriodMs: () => 600_000, timers: clock.timers },
     taskRecords: new InMemoryTaskExecutionResources(),

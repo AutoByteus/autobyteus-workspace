@@ -1,4 +1,5 @@
 import { ClosedTaskFence } from "../../agent-collaboration/execution/task/closed-task-fence.js";
+import type { RemoteRunChannelAccess } from "../../agent-collaboration/execution/remote/remote-run-channel.js";
 import type { RunViewStreams } from "../../agent-collaboration/delegation/run-view-stream.js";
 import type { DelegationIndex } from "../../agent-collaboration/delegation/delegation-index.js";
 import type { RunTaskRecords } from "../../agent-collaboration/execution/task/task-execution-resource-port.js";
@@ -34,6 +35,8 @@ export type TeamRootMaterializationInput = Readonly<{
   memberExecutionContextBuilder: MemberExecutionContextBuilder;
   taskRecords: RunTaskRecords;
   delegationIndex: DelegationIndex;
+  /** The host's channel to peer nodes (autobyteus-500 FU-011). */
+  remoteChannel: RemoteRunChannelAccess;
   /** Each run's view stream (SR-062). */
   viewStreams: RunViewStreams;
   executionTreeStore: TeamRunExecutionTreeStore;
@@ -131,6 +134,7 @@ export const materializeTeamRoot = async (
       messageFeed: input.viewStreams.messages,
       taskRecords: input.taskRecords,
       delegationIndex: input.delegationIndex,
+      remoteChannel: input.remoteChannel,
       closedTasks,
       collaboratorAdmission: input.collaboratorAdmission,
       onTerminated: (ending) => { if (root) input.onTerminated(root, ending); },

@@ -16,6 +16,7 @@ import { configureTokenUsageCapability } from "../../../src/token-usage/provider
 import type { StandaloneRunCommandPort } from "../../../src/agent-execution/services/standalone-run-ports.js";
 import { PreviousRuntimeReleasePendingError } from "../../../src/agent-execution/errors.js";
 import type { RuntimeSwitching } from "../../../src/agent-execution/domain/runtime-switch-memory-port.js";
+import { NO_ELIGIBLE_STANDALONE_RUNS } from "../../helpers/explicit-host-collaborators.js";
 
 vi.mock("../../../src/run-history/services/root-run-package-readiness-index.js", () => ({
   RootRunPackageReadinessIndex: class { assertAdmitted = async () => undefined; },
@@ -152,7 +153,7 @@ const exactCommandCoordinator = (
   current: ReturnType<typeof harness>,
   standaloneRuns: StandaloneRunCommandPort = rootCommandPort(current),
 ): AgentRunCommandCoordinator => {
-  const agentRunService = new AgentRunService("/unused", {
+  const agentRunService = new AgentRunService("/unused", { standaloneRuns: NO_ELIGIBLE_STANDALONE_RUNS,
     agentRunManager: current.agentRunManager as never,
     metadataService: current.metadataService as never,
     historyCatalogService: current.historyCatalogService as never,

@@ -79,6 +79,7 @@ import type {
 } from "../../../src/agent-tools/mcp/agent-tool-mcp-session-authority.js";
 import { buildApplicationExecutionScopeKernel } from "../../../src/application-platform/execution/application-execution-scope-kernel-builder.js";
 import { noDelegations, openTaskRecords } from "../../helpers/no-delegations.js";
+import { NO_PEER_CHANNEL, OFF_DISCOVERY } from "../../helpers/explicit-host-collaborators.js";
 
 const createHarness = (input: {
   beginFailure?: Error;
@@ -149,6 +150,8 @@ const createHarness = (input: {
     modelSelectionValidator: { validate: vi.fn(), validateMany: vi.fn() },
     applicationAgentTools,
     providerRelayAccess: null,
+    remoteChannel: NO_PEER_CHANNEL,
+    peerDiscovery: OFF_DISCOVERY,
     runPasses: null,
     delegationIndex: noDelegations(), viewStreams: testViewStreams(),
     taskRecords: openTaskRecords(),
@@ -265,6 +268,8 @@ describe("buildApplicationExecutionScopeKernel construction transaction", () => 
       // Application runs get no integration access in this step.
       integrationRunAccess: null,
       providerRelayAccess: null,
+      remoteChannel: NO_PEER_CHANNEL,
+      peerDiscovery: OFF_DISCOVERY,
     });
     expect(harness.complete).toHaveBeenCalledWith({
       executionCapabilities: {

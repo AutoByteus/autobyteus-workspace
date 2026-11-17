@@ -12,6 +12,7 @@ import { StandaloneAgentRunLifecycleService } from "../../../src/agent-execution
 import { AgentRunHistoryCatalogService } from "../../../src/run-history/services/agent-run-history-catalog-service.js";
 import { AgentRunMetadataService } from "../../../src/run-history/services/agent-run-metadata-service.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
+import { NO_ELIGIBLE_STANDALONE_RUNS } from "../../helpers/explicit-host-collaborators.js";
 
 vi.mock("../../../src/agent-definition/services/agent-definition-service.js", () => ({
   AgentDefinitionService: { getInstance: () => ({ getAgentDefinitionById: vi.fn().mockResolvedValue({ name: "Agent One" }) }) },
@@ -39,7 +40,7 @@ const buildService = () => {
     Object.create(StandaloneAgentRunLifecycleService.prototype) as StandaloneAgentRunLifecycleService,
     { activateRunAgent },
   );
-  return new AgentRunService(memoryDir, {
+  return new AgentRunService(memoryDir, { standaloneRuns: NO_ELIGIBLE_STANDALONE_RUNS,
     agentRunManager: agentRunManager as never,
     metadataService,
     historyCatalogService: catalog,

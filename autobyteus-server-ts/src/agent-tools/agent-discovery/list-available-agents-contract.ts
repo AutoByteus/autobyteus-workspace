@@ -1,8 +1,8 @@
 import { ParameterDefinition, ParameterSchema, ParameterType } from "autobyteus-ts/utils/parameter-schema.js";
 import { availableCollaboratorEntry, type AvailableCollaboratorEntry } from "../../agent-collaboration/collaborators/available-collaborator-entry.js";
 import type { MemberCollaborationContext } from "../../agent-collaboration/execution/domain/member-execution-context.js";
-import { findProcessPeerDiscoveryChannel, type PeerDiscoveryChannel } from "../../agent-collaboration/execution/remote/peer-discovery-channel.js";
-import { isAgentDiscoveryRefusal, remoteCollaborationOff, requireDiscoveryContext, type AgentDiscoveryRefusal } from "./agent-discovery-refusal.js";
+import type { PeerDiscoveryChannel } from "../../agent-collaboration/execution/remote/peer-discovery-channel.js";
+import { isAgentDiscoveryRefusal, requireDiscoveryContext, type AgentDiscoveryRefusal } from "./agent-discovery-refusal.js";
 
 export const LIST_AVAILABLE_AGENTS_TOOL_NAME = "list_available_agents";
 
@@ -26,8 +26,8 @@ export const buildListAvailableAgentsParameterSchema = (): ParameterSchema => ne
  */
 export const listAvailableAgentsFor = async (
   collaboration: MemberCollaborationContext | null | undefined,
-  args: Readonly<Record<string, unknown>> = {},
-  discovery: PeerDiscoveryChannel | null = findProcessPeerDiscoveryChannel(),
+  args: Readonly<Record<string, unknown>>,
+  discovery: PeerDiscoveryChannel,
 ): Promise<ListAvailableAgentsResult | AgentDiscoveryRefusal> => {
   const lister = requireDiscoveryContext(collaboration, LIST_AVAILABLE_AGENTS_TOOL_NAME);
   if (args.node === undefined) {
@@ -37,7 +37,6 @@ export const listAvailableAgentsFor = async (
     return Object.freeze({ accepted: false, code: "VALIDATION_ERROR",
       message: "node must be the name of a peer node registered on this node; leave it out to list this node's agents and agent teams." });
   }
-  if (!discovery) return remoteCollaborationOff();
   const agents = await discovery.listAvailableAgents(args.node.trim());
   return isAgentDiscoveryRefusal(agents) ? agents : Object.freeze({ agents });
 };

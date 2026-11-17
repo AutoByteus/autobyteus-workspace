@@ -24,6 +24,7 @@ import { createAgentOrgRootExecutionIdentity, createCollaborationMemberExecution
 import { testAgentNode, testTeamRunConfig } from '../../fixtures/current-team-run-fixtures.js';
 import { testActivationManager } from '../../fixtures/agent-run-preparation-fixtures.js';
 import { testAgentOrgExecutionTree, testOrgAgentNode, testOrgTeamNode } from '../../fixtures/current-agent-org-run-fixtures.js';
+import { NO_PEER_CHANNEL } from "../../helpers/explicit-host-collaborators.js";
 
 const dirs: string[] = [];
 afterEach(() => { for (const dir of dirs.splice(0)) rmSync(dir, { recursive: true, force: true }); });
@@ -95,14 +96,14 @@ const org = async (f: ReturnType<typeof fixture>) => {
   const persistence = new AgentOrgRunPersistenceCoordinator({ orgRunId: 'org-lazy', orgMemoryDir: f.dir,
     executionTreeStore: new AgentOrgRunExecutionTreeStore(),
     communicationStore: new AgentOrgCommunicationMessagesStore(), enterPersistenceFailStop: vi.fn() });
-  return new AgentOrgExecutionScopeBuilder({ delegationIndex: noDelegations(), viewStreams: testViewStreams(), taskRecords: openTaskRecords(), ...f.dependencies, flatTeamExecutionFactory: f.factory, orgDefinitions: { getDefinitionById: async () => null }, teamDefinitions: { getDefinitionById: async () => null },
+  return new AgentOrgExecutionScopeBuilder({ remoteChannel: NO_PEER_CHANNEL, delegationIndex: noDelegations(), viewStreams: testViewStreams(), taskRecords: openTaskRecords(), ...f.dependencies, flatTeamExecutionFactory: f.factory, orgDefinitions: { getDefinitionById: async () => null }, teamDefinitions: { getDefinitionById: async () => null },
   }).build({ state, persistence, activationMode: 'fresh', persistInitialPackage: true });
 };
 const team = async (f: ReturnType<typeof fixture>, mode: 'fresh' | 'restore') => {
   f.useTeamTree();
   const config = testTeamRunConfig({ rootTeamRunId: 'team-lazy', coordinatorAddress: '/lead', children:
     ['lead', 'unused'].map(id => testAgentNode(`/${id}`, { agentRunId: id, runtimeKind: RuntimeKind.CODEX_APP_SERVER })) });
-  return materializeTeamRoot({ delegationIndex: noDelegations(), viewStreams: testViewStreams(), taskRecords: openTaskRecords(), config, tree: buildInitialTeamRunExecutionTree({ config, teamDefinitionName: 'Lazy Team', createdAt: '2026-09-13T00:00:00.000Z' }),
+  return materializeTeamRoot({ remoteChannel: NO_PEER_CHANNEL, delegationIndex: noDelegations(), viewStreams: testViewStreams(), taskRecords: openTaskRecords(), config, tree: buildInitialTeamRunExecutionTree({ config, teamDefinitionName: 'Lazy Team', createdAt: '2026-09-13T00:00:00.000Z' }),
     messages: { schemaVersion: 1, rootTeamRunId: 'team-lazy', messages: [] },
     mode, persistInitialPackage: true, teamMemoryDir: f.dir, factory: f.factory,
     memberExecutionContextBuilder: new MemberExecutionContextBuilder({ getDefinitionById: async () => null } as never, NOT_DELEGATED), executionTreeStore: new TeamRunExecutionTreeStore(),

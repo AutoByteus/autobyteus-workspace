@@ -45,6 +45,7 @@ import { recordCase } from "../helpers/runtime-error-case-evidence.js";
 import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
 import { startAgentToolsMcpTestHost } from "../../helpers/agent-tools-mcp-test-host.js";
 import { createTestRunWorkspaceSkills } from "../../fixtures/run-workspace-skills-fixtures.js";
+import { NO_ELIGIBLE_STANDALONE_RUNS } from "../../helpers/explicit-host-collaborators.js";
 
 type SdkQueryCall = {
   prompt?: unknown;
@@ -423,7 +424,7 @@ const createClaudeWebSocketHarnessWithSdkClient = async (input: {
       };
     },
   };
-  const commandCoordinator = new AgentRunCommandCoordinator({
+  const commandCoordinator = new AgentRunCommandCoordinator({ standaloneRuns: NO_ELIGIBLE_STANDALONE_RUNS,
     agentRunService: agentRunService as never,
     projectionService: statusProjectionService as never,
   });

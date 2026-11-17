@@ -3,6 +3,7 @@ import { AgentRunEventType, type AgentRunEvent } from "../../../src/agent-execut
 import { AgentRunService } from "../../../src/agent-execution/services/agent-run-service.js";
 import { StandaloneAgentRunLifecycleService } from "../../../src/agent-execution/services/standalone-agent-run-lifecycle-service.js";
 import { AgentRunProvisioningService } from "../../../src/agent-execution/services/agent-run-provisioning-service.js";
+import { NO_ELIGIBLE_STANDALONE_RUNS } from "../../helpers/explicit-host-collaborators.js";
 
 const event = (
   eventType: AgentRunEventType,
@@ -33,7 +34,7 @@ describe("AgentRunService lifecycle observation", () => {
     const provisioningService = Object.create(
       AgentRunProvisioningService.prototype,
     ) as AgentRunProvisioningService;
-    const service = new AgentRunService("/tmp/agent-run-lifecycle-observation", {
+    const service = new AgentRunService("/tmp/agent-run-lifecycle-observation", { standaloneRuns: NO_ELIGIBLE_STANDALONE_RUNS,
       agentRunManager: { getActiveRun: vi.fn(() => activeRun) } as any,
       metadataService: {} as any,
       historyCatalogService: {} as any,

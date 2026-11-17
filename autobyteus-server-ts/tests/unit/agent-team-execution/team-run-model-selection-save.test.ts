@@ -19,6 +19,7 @@ import { TeamRunExecutionTreeStore } from '../../../src/run-history/store/team-r
 
 const SETTINGS = { origin: 'settings', fallbacks: [] };
 import { writeAttachmentSidecars } from '../../fixtures/current-attachment-package-fixtures.js';
+import { NO_PEER_CHANNEL } from "../../helpers/explicit-host-collaborators.js";
 const view = (rows: any[]) => ({ offeredModels: rows,
   findExactCurrent: (id: string) => rows.find((row) => row.model_identifier === id) ?? null });
 
@@ -61,7 +62,7 @@ const harness = async (physicalOutcome = 'committed', readback = 'ok', runtimeKi
   const packageDir = new AgentMemoryLayout(memoryDir).getTeamDirPath({ rootTeamRunId: 'root', ancestorTeamRunIds: [] });
   await new TeamRunExecutionTreeStore().write(packageDir, saved);
   writeAttachmentSidecars(packageDir, 'team');
-  const manager = new AgentTeamRunManager({ delegationIndex: noDelegations(), viewStreams: testViewStreams(), taskRecords: openTaskRecords(), memoryDir, flatTeamExecutionFactory, memberExecutionContextBuilder,
+  const manager = new AgentTeamRunManager({ remoteChannel: NO_PEER_CHANNEL, delegationIndex: noDelegations(), viewStreams: testViewStreams(), taskRecords: openTaskRecords(), memoryDir, flatTeamExecutionFactory, memberExecutionContextBuilder,
     executionTreeStore: { read, write } as any, modelSelectionValidator: new RunModelSelectionService(catalog, capacity) });
   return { manager, read, write, capacity, saved: () => saved };
 };

@@ -1,0 +1,48 @@
+import type { RemoteRunChannelAccess } from "../../src/agent-collaboration/execution/remote/remote-run-channel.js";
+import type { PeerDiscoveryAccess } from "../../src/agent-collaboration/execution/remote/peer-discovery-channel.js";
+import { runIdentityOf, type TaskExecutionReleaseRequest } from "../../src/agent-collaboration/execution/task/task-execution-resource-port.js";
+import { REMOTE_COLLABORATION_OFF_DISCOVERY } from "../../src/agent-tools/agent-discovery/agent-discovery-refusal.js";
+import type { ProjectTaskSearchCleanup } from "../../src/projects/search/project-task-search-service.js";
+import {
+  initializeProjectTaskServiceProcessInstance,
+  releaseProjectTaskServiceProcessInstance,
+  type ProjectTaskService,
+} from "../../src/projects/services/project-task-service.js";
+import type { TaskDisplayNameResolver, TaskTopRunResolver, TaskWorkerStatusResolver } from "../../src/projects/services/task-root-view-builder.js";
+
+/**
+ * The explicit values a test passes where a host would compose its collaborators (autobyteus-500 FU-011, FU-018): a host
+ * without peer nodes, and a Task service whose runs are stopped by nobody. Each is a value the test states, never an
+ * absent collaborator.
+ */
+export const NO_PEER_CHANNEL: RemoteRunChannelAccess = () => null;
+export const OFF_DISCOVERY: PeerDiscoveryAccess = () => REMOTE_COLLABORATION_OFF_DISCOVERY;
+
+/** A Task service's run-side ports for a test with no running roots: no stop is asked, a run is its own top. */
+export const NO_RUN_SIDE_TASK_PORTS: Readonly<{
+  requestRelease: TaskExecutionReleaseRequest;
+  workerStatus: TaskWorkerStatusResolver;
+  topRun: TaskTopRunResolver;
+  displayName: TaskDisplayNameResolver;
+  searchCleanup: ProjectTaskSearchCleanup;
+}> = Object.freeze({
+  requestRelease: () => null,
+  workerStatus: () => null,
+  topRun: runIdentityOf,
+  displayName: () => null,
+  searchCleanup: Object.freeze({ forgetTask: () => undefined, forgetProject: () => undefined }),
+});
+
+/** The standalone runs of a test with no eligible runs: every answer is "not eligible", as an application scope's. */
+export { APPLICATION_HOST_STANDALONE_RUNS as NO_ELIGIBLE_STANDALONE_RUNS } from "../../src/agent-execution/services/standalone-run-ports.js";
+
+let processTaskService: ProjectTaskService | null = null;
+/**
+ * A fresh process Task service for a test that drives the Task tools through the process instance, as the composition
+ * initializes it (`composeCollaboration`), with no running roots. Releases the one this helper made before.
+ */
+export const freshProcessTaskService = (): ProjectTaskService => {
+  if (processTaskService) releaseProjectTaskServiceProcessInstance(processTaskService);
+  processTaskService = initializeProjectTaskServiceProcessInstance({ ...NO_RUN_SIDE_TASK_PORTS });
+  return processTaskService;
+};

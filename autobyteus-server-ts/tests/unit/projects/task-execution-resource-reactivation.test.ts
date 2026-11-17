@@ -16,6 +16,7 @@ import { ProjectTaskContextStore } from "../../../src/projects/context/project-t
 import { reopenTaskExecution, type TaskExecutionResourceFile } from "../../../src/projects/domain/task-execution-resources.js";
 import { createRootExecutionIdentity } from "../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import { taskRunResources } from "../../helpers/task-run-resources.js";
+import { NO_RUN_SIDE_TASK_PORTS } from "../../helpers/explicit-host-collaborators.js";
 
 const hostRoot = createRootExecutionIdentity({ rootSubjectKind: "agent", rootRunId: "manager-root" });
 const worker = { agentRunId: "worker" };
@@ -28,7 +29,7 @@ describe("Task agent run resource reactivation", () => {
   let tasks: ProjectTaskService;
   let releases: ReleaseTracker;
   const boot = async () => {
-    const service = new ProjectTaskService({ store, adHocTasks: new AdHocTaskStore(adHocLayout), contextStore: new ProjectTaskContextStore(layout),
+    const service = new ProjectTaskService({ ...NO_RUN_SIDE_TASK_PORTS, store, adHocTasks: new AdHocTaskStore(adHocLayout), contextStore: new ProjectTaskContextStore(layout),
       requestRelease: (releases = trackReleases()).request,
       taskExecutionResources: taskRunResources(new TaskExecutionResourceStore(layout, adHocLayout)) });
     await service.load();

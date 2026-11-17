@@ -1,4 +1,5 @@
 import type { DelegationIndex } from "../../agent-collaboration/delegation/delegation-index.js";
+import type { RemoteRunChannelAccess } from "../../agent-collaboration/execution/remote/remote-run-channel.js";
 import type { RunTaskRecords } from "../../agent-collaboration/execution/task/task-execution-resource-port.js";
 import { ROOT_NOT_ACTIVE_MESSAGE } from "../../agent-collaboration/execution/task/task-delegation-command.js";
 import { CollaborationAgentActivationError } from "../../agent-collaboration/execution/domain/configured-agent-execution.js";
@@ -38,6 +39,8 @@ export class AgentOrgExecutionScopeBuilder {
     taskRecords: RunTaskRecords;
     /** The relationships between runs, from the Task entries (SR-047). */
     delegationIndex: DelegationIndex;
+    /** The host's channel to peer nodes (autobyteus-500 FU-011). */
+    remoteChannel: RemoteRunChannelAccess;
     /** Each run's view stream (SR-062). */
     viewStreams: RunViewStreams;
     orgDefinitions: Pick<AgentOrgDefinitionService, "getDefinitionById">;
@@ -194,6 +197,7 @@ export class AgentOrgExecutionScopeBuilder {
         messageFeed: this.dependencies.viewStreams.messages,
         taskRecords: this.dependencies.taskRecords,
         delegationIndex: this.dependencies.delegationIndex,
+        remoteChannel: this.dependencies.remoteChannel,
         memoryLocator: this.dependencies.memoryLocator,
         activityInspector: this.dependencies.activityInspector,
         onTerminated: input.onTerminated,

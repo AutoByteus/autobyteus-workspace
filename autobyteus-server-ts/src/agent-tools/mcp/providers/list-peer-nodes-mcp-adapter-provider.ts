@@ -4,6 +4,7 @@ import {
   buildListPeerNodesParameterSchema,
   listPeerNodesFor,
 } from "../../agent-discovery/list-peer-nodes-contract.js";
+import type { PeerDiscoveryAccess } from "../../../agent-collaboration/execution/remote/peer-discovery-channel.js";
 import type { AgentToolMcpAdapterProvider, AgentToolMcpToolAdapter } from "../agent-tool-mcp-adapter.js";
 import { toAgentDiscoveryMcpResult } from "./agent-discovery-mcp-result.js";
 
@@ -12,6 +13,9 @@ import { toAgentDiscoveryMcpResult } from "./agent-discovery-mcp-result.js";
  * (a sender whose member context can list); exposed only when the agent definition selects it.
  */
 export class ListPeerNodesMcpAdapterProvider implements AgentToolMcpAdapterProvider {
+  /** The host's discovery, from its composition (autobyteus-500 FU-011). */
+  constructor(private readonly peerDiscovery: PeerDiscoveryAccess) {}
+
   getAdapters(): AgentToolMcpToolAdapter[] {
     return [{
       definition: {
@@ -22,7 +26,7 @@ export class ListPeerNodesMcpAdapterProvider implements AgentToolMcpAdapterProvi
       configuredMcpCollisionPolicy: "protect_static_adapter" as const,
       isAvailable: ({ sender }) => Boolean(sender?.memberExecutionContext?.collaboration.listAvailableAgents),
       execute: async ({ session }) =>
-        toAgentDiscoveryMcpResult(await listPeerNodesFor(session.sender.memberExecutionContext?.collaboration)),
+        toAgentDiscoveryMcpResult(await listPeerNodesFor(session.sender.memberExecutionContext?.collaboration, this.peerDiscovery())),
     }];
   }
 }

@@ -47,18 +47,18 @@ type Dependencies = {
   createId?: () => string;
   /** The process authority over agent run resources; bound once by the composition. */
   taskExecutionResources?: TaskExecutionResourceService;
-  /** Exact-root stop request; absent means no runtime is asked to stop anything. */
-  requestRelease?: TaskExecutionReleaseRequest;
+  /** The stop request of a closed Task's runs (composition-bound; autobyteus-500 FU-018). */
+  requestRelease: TaskExecutionReleaseRequest;
   /** Told after each committed Task write (the `/ws/projects` feed); defaults to the process publisher. */
   changes?: ProjectChangeMarks;
-  /** A Task root's live status from its hosting root (composition-bound); absent means `offline`. */
-  workerStatus?: TaskWorkerStatusResolver;
-  /** The run at the top of a worker's tree, where its row is listed (SR-080, composition-bound); absent means no card opens. */
-  topRun?: TaskTopRunResolver;
-  /** A worker's name, as its row and its own view name it (SR-091, composition-bound); absent means no name. */
-  displayName?: TaskDisplayNameResolver;
-  /** Search index cleanup after a committed delete (composition-bound; never throws or waits); absent means no index. */
-  searchCleanup?: ProjectTaskSearchCleanup;
+  /** A Task worker's live status from its own run (composition-bound). */
+  workerStatus: TaskWorkerStatusResolver;
+  /** The run at the top of a worker's tree, where its row is listed (SR-080, composition-bound). */
+  topRun: TaskTopRunResolver;
+  /** A worker's name, as its row and its own view name it (SR-091, composition-bound). */
+  displayName: TaskDisplayNameResolver;
+  /** Search index cleanup after a committed delete (composition-bound; never throws or waits). */
+  searchCleanup: ProjectTaskSearchCleanup;
 };
 const compareTasks = (a: Pick<ProjectTask, "taskId" | "updatedAt">, b: Pick<ProjectTask, "taskId" | "updatedAt">): number => b.updatedAt.localeCompare(a.updatedAt) || a.taskId.localeCompare(b.taskId);
 const noContext = (): PreparedTaskContext => ({ files: [], consumed: [] });
@@ -76,7 +76,7 @@ export class ProjectTaskService implements TaskExecutionResourcePort {
   private readonly resources: TaskExecutionResourceService;
   private readonly release: TaskExecutionResourceRelease;
   private readonly adHocTasks: AdHocTaskStore;
-  constructor(private readonly deps: Dependencies = {}) {
+  constructor(private readonly deps: Dependencies) {
     this.adHocTasks = deps.adHocTasks ?? new AdHocTaskStore();
     // Agent run resources live beside the Task metadata in the same layouts.
     this.resources = deps.taskExecutionResources
@@ -86,7 +86,7 @@ export class ProjectTaskService implements TaskExecutionResourcePort {
     this.resources.setCommitListener((location) => this.changes.taskChanged(location));
   }
   private get changes(): ProjectChangeMarks { return this.deps.changes ?? getProjectChangePublisher(); }
-  private get workerStatus(): TaskWorkerStatusResolver { return this.deps.workerStatus ?? (() => null); }
+  private get workerStatus(): TaskWorkerStatusResolver { return this.deps.workerStatus; }
   private get store() { return this.deps.store ?? getProjectStore(); }
   private get context() { return this.deps.contextStore ?? getProjectTaskContextStore(); }
   private get references() { return new TaskReferences(() => this.store); }
@@ -94,7 +94,7 @@ export class ProjectTaskService implements TaskExecutionResourcePort {
   private get relations() { return new TaskRelationWrites(() => this.store, () => this.changes, this.references); }
   /** A part closes through this service's own update, with the cascade off (a part has no parts). */
   private get partClosure() { return new TaskPartClosure(() => this.store, (projectId, taskId, status) => this.update(projectId, taskId, { status }, noContextChange, false)); }
-  private get views() { return new ProjectTaskViews(this.context, this.resources, this.workerStatus, this.deps.topRun ?? null, this.deps.displayName ?? null); }
+  private get views() { return new ProjectTaskViews(this.context, this.resources, this.workerStatus, this.deps.topRun, this.deps.displayName); }
   private get eligibility() { return new TaskAssignmentEligibility(() => this.store, this.adHocTasks, this.resources); }
   private nowIso(): string { return (this.deps.now?.() ?? new Date()).toISOString(); }
 
@@ -233,7 +233,7 @@ export class ProjectTaskService implements TaskExecutionResourcePort {
     await this.resources.removeRecord(location);
     if (!(await this.store.deleteTask(command.projectId, command.taskId))) return false;
     this.changes.taskRemoved({ projectId: command.projectId, taskId: command.taskId });
-    this.deps.searchCleanup?.forgetTask(command.projectId, command.taskId);
+    this.deps.searchCleanup.forgetTask(command.projectId, command.taskId);
     await this.relations.removeDeleted(command.projectId, command.taskId);
     return true;
   }
@@ -448,10 +448,13 @@ export class ProjectTaskService implements TaskExecutionResourcePort {
 }
 
 let singleton: ProjectTaskService | null = null;
-/** The process instance; an uninitialized process (tests, tool-only contexts) gets an unbound instance. */
-export const getProjectTaskService = (): ProjectTaskService => singleton ??= new ProjectTaskService();
+/** The process instance, initialized by the composition (`composeCollaboration`, both hosts); it throws before (FU-011). */
+export const getProjectTaskService = (): ProjectTaskService => {
+  if (!singleton) throw new Error("The process ProjectTaskService is created by the composition (composeCollaboration).");
+  return singleton;
+};
 /** Called once by the process composition before any getProjectTaskService(); fails fast otherwise. */
-export const initializeProjectTaskServiceProcessInstance = (deps: Pick<Dependencies, "taskExecutionResources" | "adHocTasks" | "requestRelease" | "workerStatus" | "topRun" | "displayName" | "searchCleanup" | "changes">): ProjectTaskService => {
+export const initializeProjectTaskServiceProcessInstance = (deps: Pick<Dependencies, "taskExecutionResources" | "adHocTasks" | "workerStatus" | "topRun" | "displayName" | "searchCleanup" | "changes"> & Required<Pick<Dependencies, "requestRelease">>): ProjectTaskService => {
   if (singleton) throw new Error("The process ProjectTaskService is already initialized.");
   return singleton = new ProjectTaskService(deps);
 };

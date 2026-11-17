@@ -1,4 +1,5 @@
 import type { NativeCommandProcessScope } from "autobyteus-ts";
+import type { PeerDiscoveryAccess } from "../../agent-collaboration/execution/remote/peer-discovery-channel.js";
 import type { AgentDefinitionService } from "../../agent-definition/services/agent-definition-service.js";
 import type { SkillService } from "../../skills/services/skill-service.js";
 import type { WorkspaceManager } from "../../workspaces/workspace-manager.js";
@@ -70,6 +71,8 @@ export interface AgentProviderFactoryBuilder {
     integrationRunAccess: IntegrationRunAccess | null;
     /** The runs' provider relays (`null`: this host runs no credential proxy, so relay runtimes are refused). */
     providerRelayAccess: ProviderRelayAccess | null;
+    /** The host's discovery for the discovery tools (autobyteus-500 FU-011). */
+    peerDiscovery: PeerDiscoveryAccess;
   }>): AgentProviderFactorySet;
 }
 
@@ -160,10 +163,12 @@ export const createAgentProviderFactoryBuilder = (
       applicationAgentTools: ApplicationAgentToolCapability | null;
       integrationRunAccess: IntegrationRunAccess | null;
       providerRelayAccess: ProviderRelayAccess | null;
+      peerDiscovery: PeerDiscoveryAccess;
     }>): AgentProviderFactorySet => {
       requireRecord(input, "execution input");
       requireLeaf(input.agentDefinitionService, "agentDefinitionService");
       requireLeaf(input.agentToolMcpRunSessions, "agentToolMcpRunSessions");
+      requireLeaf(input.peerDiscovery, "peerDiscovery");
       if (!("applicationAgentTools" in input) || input.applicationAgentTools === undefined) {
         throw new Error(
           "Agent provider factory builder applicationAgentTools disposition is required.",
@@ -208,6 +213,7 @@ export const createAgentProviderFactoryBuilder = (
           waitForIdle: process.autoByteus.waitForIdle,
           applicationAgentTools: input.applicationAgentTools,
           integrationRunAccess,
+          peerDiscovery: input.peerDiscovery,
         }),
         codex: new CodexAgentRunBackendFactory(
           process.codex.threadManager,

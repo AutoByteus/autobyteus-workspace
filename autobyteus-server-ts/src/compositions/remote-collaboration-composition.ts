@@ -3,10 +3,6 @@ import { PeerStartedRunDecisions } from "../remote-collaboration/inbound/peer-st
 import type { AgentRunService } from "../agent-execution/services/agent-run-service.js";
 import type { AgentOrgRunService } from "../agent-org-execution/services/agent-org-run-service.js";
 import type { TeamRunService } from "../agent-team-execution/services/team-run-service.js";
-import {
-  bindProcessRemoteRunChannel,
-  releaseProcessRemoteRunChannel,
-} from "../agent-collaboration/execution/remote/remote-run-channel.js";
 import { RemoteDelegationReceiver } from "../remote-collaboration/inbound/remote-delegation-receiver.js";
 import { RemoteMessageReceiver, type RemoteRootDirectory } from "../remote-collaboration/inbound/remote-message-receiver.js";
 import { RemoteRunViewProvider } from "../remote-collaboration/inbound/remote-run-view-provider.js";
@@ -15,10 +11,6 @@ import { getTeamMemberRunViewProjectionService } from "../run-history/services/t
 import { DelegatedRunStarter } from "../agent-collaboration/execution/delegation/delegated-run-starter.js";
 import { RemoteTeamRunStarter } from "../remote-collaboration/inbound/remote-team-run-starter.js";
 import { RemoteCatalogLister } from "../remote-collaboration/inbound/remote-catalog-lister.js";
-import {
-  bindProcessPeerDiscoveryChannel,
-  releaseProcessPeerDiscoveryChannel,
-} from "../agent-collaboration/execution/remote/peer-discovery-channel.js";
 import {
   bindProcessRemoteCollaboration,
   composeRemoteCollaboration,
@@ -33,8 +25,8 @@ import type { CollaborationRootResolver } from "./collaboration-root-resolver.js
 import { PeerStartedRunLaunches } from "../remote-collaboration/inbound/peer-started-run-launches.js";
 
 /**
- * Binds this node's remote collaboration (CM-10 … CM-12) around the process's run services: the settings,
- * the peer client as the roots' `RemoteRunChannel`, and the peer gateway behind `/rest/remote/*`. Inbound
+ * Composes this node's remote collaboration (CM-10 … CM-12) around the process's run services: the settings,
+ * the peer client (the roots' `RemoteRunChannel`), the discovery, and the peer gateway behind `/rest/remote/*`. Inbound
  * messages reach roots only through their managers' public resolve / restore APIs. Returns the services (the node
  * access gate takes the peer verifier and the peer revocations from them) and its release.
  */
@@ -99,14 +91,8 @@ export const composeStudioRemoteCollaboration = (input: Readonly<{
     }),
   });
   bindProcessRemoteCollaboration(services);
-  const release = () => {
-    releaseProcessPeerDiscoveryChannel(services.discovery);
-    releaseProcessRemoteRunChannel(services.client);
-    releaseProcessRemoteCollaboration(services);
-  };
-  try {
-    bindProcessRemoteRunChannel(services.client);
-    bindProcessPeerDiscoveryChannel(services.discovery);
-  } catch (error) { release(); throw error; }
+  // The process binding serves only the GraphQL resolvers (framework edge, FU-500-02); the roots, the discovery tools
+  // and the routes get the services from the composition (autobyteus-500 FU-011).
+  const release = () => releaseProcessRemoteCollaboration(services);
   return Object.freeze({ services, release });
 };

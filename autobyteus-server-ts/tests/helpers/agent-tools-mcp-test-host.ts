@@ -4,6 +4,7 @@ import { createAgentToolsMcpHost } from "../../src/agent-tools/mcp/agent-tools-m
 import type { AgentToolMcpDescriptor } from "../../src/agent-tools/mcp/agent-tool-mcp-session.js";
 import type { AgentToolMcpRunSessionAuthority } from "../../src/agent-tools/mcp/agent-tool-mcp-session-authority.js";
 import type { PublishedArtifactPublisher } from "../../src/services/published-artifacts/published-artifact-publisher.js";
+import { OFF_DISCOVERY } from "./explicit-host-collaborators.js";
 
 const silentLoggingConfig = {
   pinoLogLevel: "silent" as const,
@@ -24,7 +25,7 @@ export const startAgentToolsMcpTestHost = async (input: Readonly<{
   runSessions: AgentToolMcpRunSessionAuthority;
   close: () => Promise<void>;
 }>> => {
-  const host = createAgentToolsMcpHost({ loggingConfig: silentLoggingConfig });
+  const host = createAgentToolsMcpHost({ peerDiscovery: OFF_DISCOVERY, loggingConfig: silentLoggingConfig });
   const authority = host.sessionAuthorities
     .begin({ scopeIdentity: input.scopeIdentity ?? "test:agent-tools-mcp" })
     .complete({

@@ -5,6 +5,7 @@ import { AgentRunCommandCoordinator } from "../../../src/agent-execution/service
 import { AgentRunCommandRegistry } from "../../../src/agent-execution/services/agent-run-command-registry.js";
 import { AgentRunCommandStatusOverlayStore } from "../../../src/agent-execution/services/agent-run-command-status-overlay-store.js";
 import type { StandaloneRunCommandPort } from "../../../src/agent-execution/services/standalone-run-ports.js";
+import { NO_ELIGIBLE_STANDALONE_RUNS } from "../../helpers/explicit-host-collaborators.js";
 
 const createDeferred = <T>() => {
   let resolve!: (value: T) => void;
@@ -59,7 +60,7 @@ const buildCoordinator = (input: {
   };
   const coordinator = new AgentRunCommandCoordinator({
     agentRunService: agentRunService as never,
-    ...(input.standaloneRuns !== undefined ? { standaloneRuns: input.standaloneRuns } : {}),
+    standaloneRuns: input.standaloneRuns ?? NO_ELIGIBLE_STANDALONE_RUNS,
     registry,
     overlayStore,
     projectionService: projectionService as never,

@@ -12,6 +12,7 @@ import { CreateProjectTool, UpdateProjectTool, registerProjectTaskTools } from "
 import { buildProjectTaskToolSchema } from "../../../../src/agent-tools/project-tasks/project-task-tool-contract.js";
 import { MemberExecutionContext } from "../../../../src/agent-collaboration/execution/domain/member-execution-context.js";
 import { testMemberExecutionContext } from "../../../fixtures/current-team-run-fixtures.js";
+import { OFF_DISCOVERY } from "../../../helpers/explicit-host-collaborators.js";
 
 // project-tool-split AC-003 and remove-create-or-update-project AC-002: the same configured tool names give the same
 // Project tool exposure and the same descriptions/schemas on the AutoByteus (native), Codex and Claude (Agent Tools MCP)
@@ -32,7 +33,7 @@ describe("Project tool exposure and schemas across runtimes", () => {
     const agentDefinition = new AgentDefinition({ name: "Agent", description: "Parity.", toolNames });
     const runtimeToolExposure = resolveRuntimeAgentToolExposure(agentDefinition, context);
     const logger = { warn: vi.fn(), error: vi.fn() };
-    const autobyteusAll = resolveAutoByteusAgentTools({ agentDefinition, runtimeToolExposure, senderRunId: "run-worker", memberExecutionContext: context, logger })
+    const autobyteusAll = resolveAutoByteusAgentTools({ peerDiscovery: OFF_DISCOVERY, agentDefinition, runtimeToolExposure, senderRunId: "run-worker", memberExecutionContext: context, logger })
       .actualToolNames;
     // Codex and Claude both read the exposure through the Agent Tools MCP catalog; Claude also derives its own list.
     const catalog = new AgentToolMcpCatalog({ providers: [new ProjectTaskToolsMcpAdapterProvider()] });

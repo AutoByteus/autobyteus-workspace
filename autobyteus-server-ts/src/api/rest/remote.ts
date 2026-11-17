@@ -1,11 +1,10 @@
 import type { FastifyInstance, FastifyRequest } from "fastify";
 import type { ClientIdentity } from "../../node-access/domain/client-identity.js";
 import { getClientIdentity, registerOpenSocket } from "../security/node-access-gate.js";
-import { findProcessRemoteCollaboration } from "../../remote-collaboration/remote-collaboration-services.js";
+import type { RemoteCollaborationServices } from "../../remote-collaboration/remote-collaboration-services.js";
 import type { PeerGatewayResponse } from "../../remote-collaboration/channel/peer-gateway.js";
 import type { RunAgentObservation } from "../../agent-collaboration/execution/remote/run-agent-access.js";
 
-const UNAVAILABLE = { message: "Remote collaboration is not available on this server." };
 
 type PeerSocket = Readonly<{
   send(payload: string): void;
@@ -17,18 +16,15 @@ type PeerSocket = Readonly<{
 /**
  * The inter-node routes (`/rest/remote/*`): an HTTP binding of the peer gateway and of the pairing exchange only. The
  * node access gate admitted a paired peer by its signature (the exchange is exempt); every other rule lives behind
- * the gateway. A server without remote collaboration answers 404.
+ * the gateway. Registered by the studio with its remote collaboration (autobyteus-500 FU-011); a host without one has
+ * no such routes.
  */
-export async function registerRemoteCollaborationRoutes(app: FastifyInstance): Promise<void> {
+export async function registerRemoteCollaborationRoutes(app: FastifyInstance, remote: RemoteCollaborationServices): Promise<void> {
   const send = (reply: { code(status: number): { send(payload: unknown): unknown } }, response: PeerGatewayResponse<unknown>) =>
     reply.code(response.status).send(response.answer);
-  type Gateway = NonNullable<ReturnType<typeof findProcessRemoteCollaboration>>["gateway"];
+  type Gateway = RemoteCollaborationServices["gateway"];
   const post = (path: string, handle: (gateway: Gateway, body: unknown, caller: ClientIdentity | null) => Promise<PeerGatewayResponse<unknown>>) =>
-    app.post(path, async (request: FastifyRequest, reply) => {
-      const remote = findProcessRemoteCollaboration();
-      if (!remote) return reply.code(404).send(UNAVAILABLE);
-      return send(reply, await handle(remote.gateway, request.body, getClientIdentity(request)));
-    });
+    app.post(path, async (request: FastifyRequest, reply) => send(reply, await handle(remote.gateway, request.body, getClientIdentity(request))));
 
   post("/remote/delegated-runs", (gateway, body, caller) => gateway.startDelegatedRun(body, caller));
   post("/remote/messages", (gateway, body, caller) => gateway.deliverMessage(body, caller));
@@ -43,8 +39,6 @@ export async function registerRemoteCollaborationRoutes(app: FastifyInstance): P
 
   // autobyteus-437: the inviting node's side of peer pairing (exempt: the caller has no peer secret yet).
   app.post("/remote/peer-pairing-exchanges", async (request, reply) => {
-    const remote = findProcessRemoteCollaboration();
-    if (!remote) return reply.code(404).send(UNAVAILABLE);
     const answer = await remote.pairing.exchange(request.body);
     if ("peerSecret" in answer) return reply.code(201).send(answer);
     return reply.code(answer.statusCode).send({ code: answer.code, message: answer.message });
@@ -69,12 +63,6 @@ export async function registerRemoteCollaborationRoutes(app: FastifyInstance): P
     });
     socket.on("error", () => undefined);
     socket.once("message", (data) => {
-      const remote = findProcessRemoteCollaboration();
-      if (!remote) {
-        socket.send(JSON.stringify({ accepted: false, code: "REMOTE_COLLABORATION_OFF", message: UNAVAILABLE.message }));
-        socket.close(1000);
-        return;
-      }
       let body: unknown;
       try { body = JSON.parse(data.toString()); } catch { body = null; }
       // The opening `{nodeId}` is always the first frame (N-401): a run that is live when observed can produce a frame

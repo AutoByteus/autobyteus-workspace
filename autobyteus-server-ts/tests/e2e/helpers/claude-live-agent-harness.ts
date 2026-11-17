@@ -27,6 +27,7 @@ import {
 } from "../../helpers/claude-cli-executable-candidates.js";
 import { createTestRunWorkspaceSkills } from "../../fixtures/run-workspace-skills-fixtures.js";
 import { agentStreamFramesOf } from "./agent-stream-frames.js";
+import { NO_ELIGIBLE_STANDALONE_RUNS } from "../../helpers/explicit-host-collaborators.js";
 
 export type StreamMessage = { type?: string; payload?: Record<string, unknown> };
 
@@ -150,7 +151,7 @@ export const createClaudeLiveAgentHarness = async (input: {
     new AgentSessionManager(),
     agentRunService as never,
     undefined,
-    new AgentRunCommandCoordinator({
+    new AgentRunCommandCoordinator({ standaloneRuns: NO_ELIGIBLE_STANDALONE_RUNS,
       agentRunService: agentRunService as never,
       projectionService: statusProjectionService as never,
     }),

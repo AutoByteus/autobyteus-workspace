@@ -5,7 +5,8 @@ import type { DelegationRefusal, DelegationSource } from "../../src/agent-collab
 import type { AssignToExistingDelegatedRunInput, SpawnTaskInput, TaskDelegationContext, TaskDelegationOutcome } from "../../src/agent-collaboration/execution/task/task-delegation-command.js";
 import { RemoteDelegation } from "../../src/agent-collaboration/execution/remote/remote-delegation.js";
 import type { InMemoryTaskExecutionResources } from "../fixtures/task-execution-resource-fixtures.js";
-import { resolveRemoteRunChannel, type RemoteRunChannel } from "../../src/agent-collaboration/execution/remote/remote-run-channel.js";
+import type { RemoteRunChannel } from "../../src/agent-collaboration/execution/remote/remote-run-channel.js";
+import { NO_PEER_CHANNEL } from "./explicit-host-collaborators.js";
 
 const notInThisTest = async (): Promise<never> => { throw new Error("A local run is not started in this test."); };
 
@@ -28,10 +29,10 @@ export const testTaskSide = (tasks: InMemoryTaskExecutionResources, channel?: ()
     reachingAddress: async () => null,
     ownDelegations: { of: async () => null }, delegatorCatalog: { placementAt: async () => null }, conversationOf: async () => ({ entryAddress: "/entry", activity: { kind: "present" as const } }),
     deliverToRun: notInThisTest,
-    // A test that gives no channel uses the process's, as it did before the channel was required of the delegation.
-    channel: channel ?? (() => resolveRemoteRunChannel()),
+    // A test that gives no channel has no peer nodes (autobyteus-500 FU-011).
+    channel: channel ?? NO_PEER_CHANNEL,
   });
-  const remote = new RemoteDelegation({ delegation, tree, ...(channel ? { channel } : {}) });
+  const remote = new RemoteDelegation({ delegation, tree, channel: channel ?? NO_PEER_CHANNEL });
   const sourceOf = (root: DelegatingRoot, context: TaskDelegationContext) => root.delegationSource(context);
   return Object.freeze({
     tree, delegation, remote,

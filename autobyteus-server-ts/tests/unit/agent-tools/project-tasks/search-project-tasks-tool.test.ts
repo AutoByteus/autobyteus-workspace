@@ -14,6 +14,7 @@ import { PROJECT_TASK_TOOL_DESCRIPTIONS, buildProjectTaskToolSchema, parseSearch
 import { buildRuntimeAgentToolExposure } from "../../../../src/agent-execution/shared/runtime-agent-tool-exposure.js";
 import { AgentToolMcpCatalog } from "../../../../src/agent-tools/mcp/agent-tool-mcp-catalog.js";
 import { createFakeEmbeddingIndex } from "../../../helpers/fake-embedding-model.js";
+import { freshProcessTaskService } from "../../../helpers/explicit-host-collaborators.js";
 
 const provider = new ProjectTaskToolsMcpAdapterProvider();
 const mcp = async (args: Record<string, unknown>) => {
@@ -23,7 +24,7 @@ const mcp = async (args: Record<string, unknown>) => {
 };
 const native = (args: Record<string, unknown>) => new SearchProjectTasksTool().execute(null, args as never)
   .then((text) => JSON.parse(text as string), (error: Error) => ({ thrown: JSON.parse(error.message) }));
-const reset = () => { resetProjectServiceForTests(); releaseProjectTaskServiceProcessInstance(getProjectTaskService()); resetProjectStoreForTests(); resetProjectTaskContextStoreForTests(); };
+const reset = () => { resetProjectServiceForTests(); freshProcessTaskService(); resetProjectStoreForTests(); resetProjectTaskContextStoreForTests(); };
 
 describe("search_project_tasks tool", () => {
   let root: string, projectId: string, fake: Awaited<ReturnType<typeof createFakeEmbeddingIndex>>;

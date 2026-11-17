@@ -1,4 +1,5 @@
 import { ClosedTaskFence } from "../../agent-collaboration/execution/task/closed-task-fence.js";
+import type { RemoteRunChannelAccess } from "../../agent-collaboration/execution/remote/remote-run-channel.js";
 import type { RunTaskRecords } from "../../agent-collaboration/execution/task/task-execution-resource-port.js";
 import type { DelegationIndex } from "../../agent-collaboration/delegation/delegation-index.js";
 import { createAgentRootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
@@ -13,7 +14,6 @@ import { isStandaloneRootMessageEvent, type StandaloneRootEvent } from "../domai
 import type { StandaloneRunAgent, StandaloneRootMessagesFile } from "../domain/standalone-run-agent.js";
 import { StandaloneRootPersistenceCoordinator } from "./standalone-root-persistence-coordinator.js";
 import type { DelegatedFrom } from "../../run-history/store/agent-run-metadata-types.js";
-import type { RemoteRunChannel } from "../../agent-collaboration/execution/remote/remote-run-channel.js";
 
 export type StandaloneRootBuilderDependencies = Readonly<{
   taskRecords: RunTaskRecords;
@@ -25,7 +25,8 @@ export type StandaloneRootBuilderDependencies = Readonly<{
   agentRunManager?: AgentRunManager;
   collaboratorAdmission?: CollaboratorAdmission;
   /** This node's channel to peer nodes; the process channel when not given. */
-  remoteRunChannel?: () => RemoteRunChannel | null;
+  /** The host's channel to peer nodes (autobyteus-500 FU-011). */
+  remoteChannel: RemoteRunChannelAccess;
 }>;
 
 /** Builds one standalone root (its agent's handle, its own log's persistence, its event publisher) around its stored log. */
@@ -70,7 +71,7 @@ export class StandaloneRootBuilder {
       closedTasks: this.closedTasks,
       collaboratorAdmission: this.dependencies.collaboratorAdmission,
       delegatedFrom: input.delegatedFrom,
-      remoteRunChannel: this.dependencies.remoteRunChannel,
+      remoteChannel: this.dependencies.remoteChannel,
       agentRunManager: this.dependencies.agentRunManager,
       onTerminated: () => { if (run) input.onTerminated(run); },
     });

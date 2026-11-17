@@ -4,6 +4,7 @@ import {
   buildListAvailableAgentsParameterSchema,
   listAvailableAgentsFor,
 } from "../../agent-discovery/list-available-agents-contract.js";
+import type { PeerDiscoveryAccess } from "../../../agent-collaboration/execution/remote/peer-discovery-channel.js";
 import type { AgentToolMcpAdapterProvider, AgentToolMcpToolAdapter } from "../agent-tool-mcp-adapter.js";
 import { toAgentDiscoveryMcpResult } from "./agent-discovery-mcp-result.js";
 
@@ -13,6 +14,9 @@ import { toAgentDiscoveryMcpResult } from "./agent-discovery-mcp-result.js";
  * when the agent definition selects it.
  */
 export class ListAvailableAgentsMcpAdapterProvider implements AgentToolMcpAdapterProvider {
+  /** The host's discovery, from its composition (autobyteus-500 FU-011). */
+  constructor(private readonly peerDiscovery: PeerDiscoveryAccess) {}
+
   getAdapters(): AgentToolMcpToolAdapter[] {
     return [{
       definition: {
@@ -23,7 +27,7 @@ export class ListAvailableAgentsMcpAdapterProvider implements AgentToolMcpAdapte
       configuredMcpCollisionPolicy: "protect_static_adapter" as const,
       isAvailable: ({ sender }) => Boolean(sender?.memberExecutionContext?.collaboration.listAvailableAgents),
       execute: async ({ session, rawArguments }) =>
-        toAgentDiscoveryMcpResult(await listAvailableAgentsFor(session.sender.memberExecutionContext?.collaboration, rawArguments)),
+        toAgentDiscoveryMcpResult(await listAvailableAgentsFor(session.sender.memberExecutionContext?.collaboration, rawArguments, this.peerDiscovery())),
     }];
   }
 }

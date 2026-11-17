@@ -1,4 +1,5 @@
 import { AgentConversationActivityInspector } from "../../agent-memory/services/agent-conversation-activity-inspector.js";
+import { APPLICATION_HOST_STANDALONE_RUNS } from "../../agent-execution/services/standalone-run-ports.js";
 import { AgentMemoryLocationService } from "../../agent-memory/services/agent-memory-location-service.js";
 import { AgentRunMemoryRecorder } from "../../agent-memory/services/agent-run-memory-recorder.js";
 import { getAgentStreamSequences } from "../../services/agent-streaming/agent-stream-sequence.js";
@@ -134,6 +135,7 @@ export const buildApplicationExecutionScopeKernel = (
         // Application runs get no integration access in this step.
         integrationRunAccess: null,
         providerRelayAccess: input.providerRelayAccess,
+        peerDiscovery: input.peerDiscovery,
       });
     const agentRunManager = new AgentRunManager({
       autoByteusBackendFactory: providerFactories.autoByteus,
@@ -169,6 +171,7 @@ export const buildApplicationExecutionScopeKernel = (
       memoryDir: input.memoryDir,
       modelSelectionValidator: input.modelSelectionValidator,
       delegationIndex: input.delegationIndex,
+      remoteChannel: input.remoteChannel,
       viewStreams: input.viewStreams,
       taskRecords: input.taskRecords,
       flatTeamExecutionFactory: new FlatTeamExecutionFactory({
@@ -276,6 +279,8 @@ const buildRunServices = (
     agentRunIdentityAllocator,
     provisioningService,
     lifecycleService,
+    // Application runs are application-owned, never eligible standalone runs (DR-2).
+    standaloneRuns: APPLICATION_HOST_STANDALONE_RUNS,
   });
   const teamRunService = new TeamRunService({
     agentTeamRunManager: kernel.teamRunManager,

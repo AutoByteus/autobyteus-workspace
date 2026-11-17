@@ -1,11 +1,7 @@
 import type { AgentToolMcpSession } from "./agent-tool-mcp-session.js";
-import {
-  AgentToolMcpCatalog,
-  getAgentToolMcpCatalog,
-} from "./agent-tool-mcp-catalog.js";
+import type { AgentToolMcpCatalog } from "./agent-tool-mcp-catalog.js";
 import {
   AgentToolMcpToolExecutor,
-  getAgentToolMcpToolExecutor,
 } from "./agent-tool-mcp-tool-executor.js";
 import { AGENT_TOOLS_MCP_SERVER_NAME } from "./agent-tool-mcp-session.js";
 import {
@@ -30,29 +26,17 @@ type JsonRpcObject = Record<string, unknown>;
 const JSON_RPC_VERSION = "2.0";
 
 export class AgentToolsMcpMethodDispatcher {
-  private static instance: AgentToolsMcpMethodDispatcher | null = null;
   private readonly catalog: AgentToolMcpCatalog;
   private readonly toolExecutor: AgentToolMcpToolExecutor;
   private readonly resultMapper: AgentToolsMcpResultMapper;
 
-  static getInstance(): AgentToolsMcpMethodDispatcher {
-    if (!AgentToolsMcpMethodDispatcher.instance) {
-      AgentToolsMcpMethodDispatcher.instance = new AgentToolsMcpMethodDispatcher();
-    }
-    return AgentToolsMcpMethodDispatcher.instance;
-  }
-
-  static resetInstance(): void {
-    AgentToolsMcpMethodDispatcher.instance = null;
-  }
-
   constructor(deps: {
-    catalog?: AgentToolMcpCatalog;
+    catalog: AgentToolMcpCatalog;
     toolExecutor?: AgentToolMcpToolExecutor;
     resultMapper?: AgentToolsMcpResultMapper;
-  } = {}) {
-    this.catalog = deps.catalog ?? getAgentToolMcpCatalog();
-    this.toolExecutor = deps.toolExecutor ?? getAgentToolMcpToolExecutor();
+  }) {
+    this.catalog = deps.catalog;
+    this.toolExecutor = deps.toolExecutor ?? new AgentToolMcpToolExecutor({ catalog: deps.catalog });
     this.resultMapper = deps.resultMapper ?? getAgentToolsMcpResultMapper();
   }
 
@@ -206,13 +190,6 @@ export class AgentToolsMcpMethodDispatcher {
     return { kind: "json", statusCode, body };
   }
 }
-
-export const getAgentToolsMcpMethodDispatcher = (): AgentToolsMcpMethodDispatcher =>
-  AgentToolsMcpMethodDispatcher.getInstance();
-
-export const resetAgentToolsMcpMethodDispatcherForTests = (): void => {
-  AgentToolsMcpMethodDispatcher.resetInstance();
-};
 
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === "object" && value !== null && !Array.isArray(value);

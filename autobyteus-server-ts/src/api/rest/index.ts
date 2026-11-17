@@ -1,4 +1,5 @@
 import type { DelegationIndex } from "../../agent-collaboration/delegation/delegation-index.js";
+import type { RemoteCollaborationServices } from "../../remote-collaboration/remote-collaboration-services.js";
 import type { FastifyInstance } from "fastify";
 import { registerHealthRoutes } from "./health.js";
 import { registerFileRoutes } from "./files.js";
@@ -35,6 +36,8 @@ export async function registerRestRoutes(
     nodeAccess: Pick<NodeAccess, "setupCodes" | "ownerCredentials" | "mcpGatewayTokens">;
     /** The relationships between runs (SR-047): a context file of a run's child is found through its delegating run. */
     delegationIndex: Pick<DelegationIndex, "childrenOf">;
+    /** The studio's remote collaboration, behind `/rest/remote/*` (autobyteus-500 FU-011). */
+    remoteCollaboration: RemoteCollaborationServices;
   },
 ): Promise<void> {
   await registerHealthRoutes(app);
@@ -44,7 +47,7 @@ export async function registerRestRoutes(
   await registerNodeUpdateRoutes(app);
   await registerNodeDesktopRoutes(app);
   await registerMemorySyncRoutes(app);
-  await registerRemoteCollaborationRoutes(app);
+  await registerRemoteCollaborationRoutes(app, dependencies.remoteCollaboration);
   await registerFileRoutes(app);
   await registerMediaRoutes(app);
   await registerUploadRoutes(app);

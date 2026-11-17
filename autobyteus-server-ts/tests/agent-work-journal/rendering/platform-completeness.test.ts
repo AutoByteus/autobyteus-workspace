@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { platformToolConverters } from "../../../src/agent-work-journal/rendering/platform/platform-tool-converters.js";
 import { buildDefaultAgentToolMcpAdapterProviders } from "../../../src/agent-tools/mcp/providers/default-agent-tool-mcp-adapter-providers.js";
+import { OFF_DISCOVERY } from "../../helpers/explicit-host-collaborators.js";
 
 /**
  * AC-011: a platform tool without a neutral line fails here until someone decides (a converter, or an entry on
@@ -11,7 +12,7 @@ const GENERIC_ON_PURPOSE: Readonly<Record<string, string>> = {};
 /** Names tools had when earlier runs recorded them; they no longer exist, journals of those runs still hold them. */
 const RECORDED_HISTORY = ["create_or_update_task", "create_or_update_project", "manage_task"];
 
-const currentToolNames = (): string[] => buildDefaultAgentToolMcpAdapterProviders()
+const currentToolNames = (): string[] => buildDefaultAgentToolMcpAdapterProviders({ peerDiscovery: OFF_DISCOVERY })
   .flatMap((provider) => provider.getAdapters().map((adapter) => adapter.definition.name));
 
 describe("platform tool converters", () => {

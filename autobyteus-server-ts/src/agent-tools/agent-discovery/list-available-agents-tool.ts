@@ -11,7 +11,8 @@ import {
   buildListAvailableAgentsParameterSchema,
   listAvailableAgentsFor,
 } from "./list-available-agents-contract.js";
-import { agentDiscoveryToolText } from "./agent-discovery-refusal.js";
+import { agentDiscoveryToolText, boundPeerDiscovery } from "./agent-discovery-refusal.js";
+import type { PeerDiscoveryAccess } from "../../agent-collaboration/execution/remote/peer-discovery-channel.js";
 
 const OWNER = "server-owned-agent-discovery";
 
@@ -26,6 +27,8 @@ export class AutoByteusListAvailableAgentsTool extends BaseTool<unknown, Record<
   constructor(
     config?: ToolConfig,
     private readonly memberExecutionContext: MemberExecutionContext | null = null,
+    /** The host's discovery; `null` only for an unbound instance, which has no context and is refused first. */
+    private readonly peerDiscovery: PeerDiscoveryAccess | null = null,
   ) { super(config); }
 
   static getName() { return LIST_AVAILABLE_AGENTS_TOOL_NAME; }
@@ -33,7 +36,8 @@ export class AutoByteusListAvailableAgentsTool extends BaseTool<unknown, Record<
   static getArgumentSchema() { return buildListAvailableAgentsParameterSchema(); }
 
   protected async _execute(_context: unknown, args: Record<string, unknown> = {}): Promise<string> {
-    return agentDiscoveryToolText(await listAvailableAgentsFor(this.memberExecutionContext?.collaboration, args));
+    return agentDiscoveryToolText(await listAvailableAgentsFor(this.memberExecutionContext?.collaboration, args,
+      boundPeerDiscovery(this.memberExecutionContext?.collaboration, this.peerDiscovery, LIST_AVAILABLE_AGENTS_TOOL_NAME)));
   }
 }
 
@@ -55,9 +59,10 @@ export const ensureListAvailableAgentsToolRegistered = (): ToolDefinition => {
 
 export const createBoundListAvailableAgentsTool = (
   memberExecutionContext: MemberExecutionContext,
+  peerDiscovery: PeerDiscoveryAccess,
 ): AutoByteusListAvailableAgentsTool => {
   const definition = ensureListAvailableAgentsToolRegistered();
-  const tool = new AutoByteusListAvailableAgentsTool(undefined, memberExecutionContext);
+  const tool = new AutoByteusListAvailableAgentsTool(undefined, memberExecutionContext, peerDiscovery);
   tool.definition = definition;
   return tool;
 };

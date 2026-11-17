@@ -1,3 +1,4 @@
+import { buildDefaultAgentToolMcpAdapterProviders } from "../../../../src/agent-tools/mcp/providers/default-agent-tool-mcp-adapter-providers.js";
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
@@ -27,6 +28,7 @@ import { PublishedArtifactPublicationService } from "../../../../src/services/pu
 import { PublishedArtifactProjectionStore } from "../../../../src/services/published-artifacts/published-artifact-projection-store.js";
 import { PublishedArtifactSnapshotStore } from "../../../../src/services/published-artifacts/published-artifact-snapshot-store.js";
 import { AgentRunEventType } from "../../../../src/agent-execution/domain/agent-run-event.js";
+import { OFF_DISCOVERY } from "../../../helpers/explicit-host-collaborators.js";
 
 const sender = buildAgentRunMessageSenderContext({
   senderRunId: "mcp-sender-run",
@@ -184,7 +186,7 @@ describe("Agent Tools MCP tokenless route integration", () => {
       });
     });
     const dispatcher = new AgentToolsMcpMethodDispatcher({
-      catalog: new AgentToolMcpCatalog(),
+      catalog: new AgentToolMcpCatalog({ providers: buildDefaultAgentToolMcpAdapterProviders({ peerDiscovery: OFF_DISCOVERY }) }),
       toolExecutor: { executeAgentToolMcpCall } as unknown as AgentToolMcpToolExecutor,
     });
     await registerRoutes(app, registry, dispatcher);
