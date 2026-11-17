@@ -37,3 +37,4 @@ Read this first when picking the run back up. Only add rows.
 | 2026-11-17 08:57 | API-17 | Completed | Fail (not ours) | smoke on 8af6082a52: autobyteus 2/2 and no configured-skill failure (fixed); claude 3/3, codex 3/3, agy 2/2; grok 429 (waived); other: agy-linked-skills-transport afterAll 60 s hook timeout (E01 29.8 s vs 3.6 s alone); worktree-unchanged FAIL caused by my evidence writes during the run |
 | 2026-11-17 08:57 | API-17A | Completed | Pass | agy-linked-skills-transport alone: 10/10, tests 43.3 s (smoke step 109 s) |
 | 2026-11-17 08:57 | API-18 | Started | | release smoke rerun on a clean tree |
+| 2026-11-17 09:08 | API-18 | Completed | Pass (required) | smoke clean tree 40acfb7174: all required PASS except grok (waived); other: AGY E06/E07 30 s waits under load 175 (passed in API-17 and alone); worktree unchanged PASS |
