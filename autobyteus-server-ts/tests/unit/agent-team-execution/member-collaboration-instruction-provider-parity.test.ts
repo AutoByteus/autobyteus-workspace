@@ -65,7 +65,7 @@ describe("member collaboration instruction provider parity", () => {
     );
     expect(nativeAutoByteusPrompt).toContain("## Bash Operating Practice");
     expect(nativeAutoByteusPrompt).toContain("## File And Directory Practice");
-    expect(runtimeExposure.requestedToolNames).toEqual(["get_handoff_rules", "send_message_to", "delegate_task"]);
+    expect(runtimeExposure.requestedToolNames).toEqual(["get_handoff_rules", "send_message_to", "delegate_task", "search_memory"]);
   });
 
   it("does not inject the collaboration sections or intrinsic tools for standalone Agents without a member context", () => {
@@ -83,6 +83,7 @@ describe("member collaboration instruction provider parity", () => {
     }
     expect(providerSharedPrompt).not.toContain("## Working Environment");
     expect(nativeAutoByteusPrompt).toContain("## Working Environment");
-    expect(resolveRuntimeAgentToolExposure(agentDefinition, null).requestedToolNames).toEqual([]);
+    // No collaboration tool: only the platform-given search_memory, which every run has (autobyteus-496).
+    expect(resolveRuntimeAgentToolExposure(agentDefinition, null).requestedToolNames).toEqual(["search_memory"]);
   });
 });

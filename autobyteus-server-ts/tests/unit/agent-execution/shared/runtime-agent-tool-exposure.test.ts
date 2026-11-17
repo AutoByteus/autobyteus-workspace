@@ -41,6 +41,7 @@ describe("runtime-agent-tool-exposure", () => {
       "review_task_result",
       "send_message_to",
       "publish_artifacts",
+      "search_memory",
     ]);
     expect(exposure.enabledBrowserToolNames).toEqual(["open_tab", "read_page"]);
     expect(exposure.enabledMediaToolNames).toEqual(["generate_image"]);
@@ -58,6 +59,7 @@ describe("runtime-agent-tool-exposure", () => {
         "review_task_result",
         "send_message_to",
         "publish_artifacts",
+        "search_memory",
       ]),
     );
   });
@@ -83,26 +85,26 @@ describe("runtime-agent-tool-exposure", () => {
   it("does not expose artifact publication for old singular-only configs", () => {
     const exposure = buildRuntimeAgentToolExposure(["publish_artifact"]);
 
-    expect(exposure.requestedToolNames).toEqual(["publish_artifact"]);
+    expect(exposure.requestedToolNames).toEqual(["publish_artifact", "search_memory"]);
     expect(exposure.publishArtifactsEnabled).toBe(false);
   });
 
   it("exposes only the plural publication flag for mixed old/new configs", () => {
     const exposure = buildRuntimeAgentToolExposure(["publish_artifacts", "publish_artifact"]);
 
-    expect(exposure.requestedToolNames).toEqual(["publish_artifacts", "publish_artifact"]);
+    expect(exposure.requestedToolNames).toEqual(["publish_artifacts", "publish_artifact", "search_memory"]);
     expect(exposure.publishArtifactsEnabled).toBe(true);
   });
 
   it("adds no Task tool to an agent without a member context (no delegate_task either)", () => {
     const exposure = resolveRuntimeAgentToolExposure({ toolNames: ["run_bash"] }, null);
-    expect(exposure.requestedToolNames).toEqual(["run_bash"]);
+    expect(exposure.requestedToolNames).toEqual(["run_bash", "search_memory"]);
     expect(exposure.enabledProjectTaskToolNames).toEqual([]);
   });
 
-  it("resolves missing agent definitions to an empty exposure", () => {
+  it("resolves a missing agent definition to an exposure with only the platform-given tools", () => {
     expect(resolveRuntimeAgentToolExposure(null)).toEqual({
-      requestedToolNames: [],
+      requestedToolNames: ["search_memory"],
       enabledBrowserToolNames: [],
       enabledMediaToolNames: [],
       enabledTaskDelegationToolNames: [],
@@ -131,6 +133,7 @@ describe("runtime-agent-tool-exposure", () => {
       "send_message_to",
       "get_handoff_rules",
       "delegate_task",
+      "search_memory",
     ]);
     expect(exposure.enabledTaskDelegationToolNames).toEqual(["delegate_task"]);
     // REQ-004: no task tool is automatic, even where delegate_task is.
@@ -143,10 +146,39 @@ describe("runtime-agent-tool-exposure", () => {
     const host = new MemberExecutionContext({ ...memberExecutionContext, teamScoped: false, collaborationRole: "standalone_agent", inOrganization: false });
     expect(automaticCollaborationToolNames(host)).toEqual(["send_message_to", "delegate_task"]);
     const exposure = resolveRuntimeAgentToolExposure({ toolNames: ["delegate_task", "run_bash"] }, host);
-    expect(exposure.requestedToolNames).toEqual(["delegate_task", "run_bash", "send_message_to"]);
+    expect(exposure.requestedToolNames).toEqual(["delegate_task", "run_bash", "send_message_to", "search_memory"]);
     expect(exposure.enabledProjectTaskToolNames).toEqual([]);
     expect(exposure.getHandoffRulesEnabled).toBe(false);
     expect(exposure.sendMessageToEnabled).toBe(true);
     expect(automaticCollaborationToolNames(null)).toEqual([]);
+  });
+
+  describe("platform-given search_memory (autobyteus-496 AC-001)", () => {
+    it("gives search_memory to a definition that does not list it", () => {
+      const exposure = resolveRuntimeAgentToolExposure({ toolNames: ["run_bash"] }, null);
+      expect(exposure.requestedToolNames).toEqual(["run_bash", "search_memory"]);
+      expect(toRuntimeAgentToolNameSet(exposure).has("search_memory")).toBe(true);
+    });
+
+    it("gives it exactly once to a definition that lists it, in the configured position", () => {
+      const exposure = resolveRuntimeAgentToolExposure({ toolNames: ["search_memory", " search_memory ", "run_bash"] }, null);
+      expect(exposure.requestedToolNames).toEqual(["search_memory", "run_bash"]);
+    });
+
+    it("gives it to a definition with no tools and to a missing definition", () => {
+      expect(resolveRuntimeAgentToolExposure({ toolNames: [] }, null).requestedToolNames).toEqual(["search_memory"]);
+      expect(resolveRuntimeAgentToolExposure(null).requestedToolNames).toEqual(["search_memory"]);
+    });
+
+    it("keeps a member's automatic collaboration tools and adds search_memory after them", () => {
+      const exposure = resolveRuntimeAgentToolExposure({ toolNames: ["run_bash"] }, memberExecutionContext);
+      expect(exposure.requestedToolNames).toEqual([
+        "run_bash",
+        "get_handoff_rules",
+        "send_message_to",
+        "delegate_task",
+        "search_memory",
+      ]);
+    });
   });
 });

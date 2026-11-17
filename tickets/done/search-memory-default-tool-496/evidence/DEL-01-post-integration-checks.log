@@ -1,0 +1,24 @@
+# DEL-01 post-integration checks on the merged ticket branch
+# Merged state: 26c2bc2528 (ticket branch + origin/personal e4f4b3e176); Env: macOS Darwin 25.5.0 arm64, Node v22.23.1; date 2026-11-17
+# The two integrated base commits change only tickets/done/delegated-copies-outlive-delegator-461/*
+
+## pnpm -C autobyteus-server-ts typecheck
+[typecheck] server src (tsconfig.build.json): 0 errors, exit 0, 10.1s
+[typecheck] server tests (tsconfig.tests.json): 1012 errors, exit 2, 29.1s
+[typecheck] production errors: 0; test-file errors: 1012 in 316 files (baseline 1012 in 316 files)
+[typecheck] PASS
+exit 0
+
+## pnpm -C autobyteus-web typecheck
+[typecheck] Nuxt app (tsconfig.json): 60 errors, exit 2, 39.7s
+[typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 2.3s
+[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 0.6s
+[typecheck] cross-package tests (tsconfig.cross-package-tests.json): 0 errors, exit 0, 27.7s
+[typecheck] production errors: 0; test-file errors: 87 in 37 files (baseline 87 in 37 files)
+[typecheck] PASS
+exit 0
+
+## pnpm -C autobyteus-server-ts exec vitest run <the 12 unit test files changed since base a781007713> --no-watch
+ Test Files  12 passed (12)
+      Tests  186 passed (186)
+   Duration  32.06s (transform 4.60s, setup 344ms, import 12.57s, tests 17.32s, environment 1ms)

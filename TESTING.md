@@ -41,7 +41,7 @@ Run commands from the repository root. `pnpm -C <dir>` runs a package's script.
 | Docker starter | The starter in the server image (`autobyteus-server-ts/docker/starter/`): package selection, supervision, its socket and command, with fake server packages | `pnpm -C autobyteus-server-ts test:starter` |
 | Docker launcher (offline) | `scripts/public/docker/` bash/PowerShell launcher commands against a fake Docker, with a real `node` client against a real Unix socket where a case needs it; no daemon | `python3 -m unittest discover -s scripts/tests -p 'test_public_docker_launcher_*.py'` |
 | Server E2E | Real HTTP/GraphQL/WebSocket boundaries on a test-owned server and database (`tests/e2e/`). A suite that needs a prepared build output names it when it is missing | `pnpm test:e2e`, or one file with `vitest run` as above |
-| Gated runtime suites | Real or scripted runtimes and providers (`RUN_*` gates in `autobyteus-server-ts/tests/e2e/`) | The gate and command are in the test file |
+| Gated runtime suites | Real or scripted runtimes and providers (gates, usually `RUN_*`, in `autobyteus-server-ts/tests/e2e/`) | The gate and command are in the test file |
 | Release smoke | New runs with configured skills start on every runtime, in the user's skill setup | `python3 scripts/release_smoke.py`; see [RELEASE.md](RELEASE.md#release-smoke-check) |
 | Core library tests | `autobyteus-ts` runtime, tools, LLM layer (credential-free; live provider tests stay skipped without their gate) | `pnpm -C autobyteus-ts test`; one folder: `pnpm -C autobyteus-ts exec vitest run tests/unit` |
 | Core library MCP integration | The MCP client against the repository's tiny real MCP servers (Python via `uv`, else Node), stdio and HTTP; an opt-in check against a real `uv` server folder | `env -i PATH="$PATH" HOME=<temp> TMPDIR="$TMPDIR" pnpm -C autobyteus-ts exec vitest run tests/integration/tools/mcp`; the opt-in gate is in the file header |
@@ -296,7 +296,11 @@ or because Gradle's cache already holds a dependency the runner must download.
   test-made records with the released structure, covering each shape that exists, older
   ones included; the target is what the new build makes of it. Learn the structure by
   reading real user data (read-only) or what a released build wrote, and check that the
-  synthesized records have the same keys and shapes. Never copy real data into a test, and
+  synthesized records have the same keys and shapes. When the conversion carries a value the
+  released build combined from several fields (a saved edit of runtime, model and settings),
+  one record changes every one of those fields from the value it started with, so a field the
+  conversion drops shows as a difference; the runtime is read back where the user sees it (for
+  example the server's row data). Never copy real data into a test, and
   never run a migration, startup or conversion on real user data or a copy of it; use a
   test-owned data root, and never wake a converted run against real runtime sessions.
   Prove the conversion, that nothing is lost, and that a second start changes nothing.
@@ -334,7 +338,8 @@ environment variables: test setups delete inherited `*_API_KEY` variables.
   resolver or setup code (Gemini still takes its mode explicitly).
 - **Live test runs opt in; deterministic runs ignore it.** `autobyteus-ts` Vitest live tests
   also need `RUN_LIVE_PROVIDER_TESTS=1` (without it the setup removes the variable). Server
-  live suites use their `RUN_*` gate. `pnpm test:e2e`, server unit/integration and the default
+  live suites use the gate their file header names (usually a `RUN_*` flag; some take
+  `<NAME>_LIVE_E2E=<runtime>`). `pnpm test:e2e`, server unit/integration and the default
   `pnpm -C autobyteus-ts test` keep their own vaults even with the variable exported.
 - **A missing key is never a pass.** It is reported as a skip with its reason
   (`missing capability <secret id> (test vault <dir>)`), as is a classified provider refusal;

@@ -294,7 +294,8 @@ Tools are authorized and projected independently of prompt prose. Provider tool
 schemas—not an `Available Tools` section—define capability, arguments, path
 rules, and result shape.
 
-- A standalone run receives its explicitly configured effective tool set.
+- A standalone run receives its explicitly configured effective tool set plus
+  the platform-given `search_memory`, which every run has.
 - Every valid team member context automatically unions exactly
   `get_handoff_rules`, `send_message_to`, and `delegate_task` into runtime
   exposure, even when the selected agent definition omitted those names.

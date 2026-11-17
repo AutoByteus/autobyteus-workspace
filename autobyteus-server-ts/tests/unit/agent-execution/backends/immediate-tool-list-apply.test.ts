@@ -28,10 +28,11 @@ describe("AGY applyDefinitionTools", () => {
   it("replaces the session's exposure and reports the new names; a same list changes nothing", async () => {
     const { backend, runSessions } = setup();
     expect(backend.getToolNames()).toEqual(["alpha"]);
-    expect(await backend.applyDefinitionTools(definition(["alpha", "beta"]))).toEqual({ kind: "applied", toolNames: ["alpha", "beta"] });
+    // The platform-given search_memory is in every exposure (autobyteus-496).
+    expect(await backend.applyDefinitionTools(definition(["alpha", "beta"]))).toEqual({ kind: "applied", toolNames: ["alpha", "beta", "search_memory"] });
     expect(runSessions.replaceForRun).toHaveBeenCalledWith(expect.objectContaining({ runId: "run-agy" }));
-    expect(backend.getToolNames()).toEqual(["alpha", "beta"]);
-    expect(await backend.applyDefinitionTools(definition(["beta", "alpha"]))).toEqual({ kind: "unchanged", toolNames: ["alpha", "beta"] });
+    expect(backend.getToolNames()).toEqual(["alpha", "beta", "search_memory"]);
+    expect(await backend.applyDefinitionTools(definition(["beta", "alpha"]))).toEqual({ kind: "unchanged", toolNames: ["alpha", "beta", "search_memory"] });
     expect(runSessions.replaceForRun).toHaveBeenCalledOnce();
   });
 });
@@ -105,8 +106,8 @@ describe("Claude applyDefinitionTools", () => {
 
     expect(await backend.applyDefinitionTools(definition(["alpha"]))).toEqual({ kind: "unchanged", toolNames: ["alpha"] });
     expect(session.applyToolExposure).not.toHaveBeenCalled();
-    expect(await backend.applyDefinitionTools(definition(["alpha", "beta"]))).toEqual({ kind: "applied", toolNames: ["alpha", "beta"] });
+    expect(await backend.applyDefinitionTools(definition(["alpha", "beta"]))).toEqual({ kind: "applied", toolNames: ["alpha", "beta", "search_memory"] });
     expect(session.applyToolExposure).toHaveBeenCalledOnce();
-    expect(runtimeContext.runtimeToolExposure.requestedToolNames).toEqual(["alpha", "beta"]);
+    expect(runtimeContext.runtimeToolExposure.requestedToolNames).toEqual(["alpha", "beta", "search_memory"]);
   });
 });

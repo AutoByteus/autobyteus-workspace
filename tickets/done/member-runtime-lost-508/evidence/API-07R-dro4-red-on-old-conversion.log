@@ -1,0 +1,100 @@
+# API-07R (expected red): DRO-4 against a dist built with run-file-conversion.ts from 298bd7a60a (before the fix)
+# steps: git show 298bd7a60a:<run-file-conversion.ts> > <file>; pnpm -C autobyteus-server-ts build; env -i PATH="$PATH" HOME=<resolved temp> TMPDIR="$TMPDIR" USER="$USER" RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=$PWD/tests/fixtures/agy-failure-cli.mjs pnpm exec vitest run tests/e2e/app-data-migrations/delegated-runs-own-runs-startup.e2e.test.ts -t DRO-4 --no-watch; git checkout -- <file>; pnpm -C autobyteus-server-ts build
+# commit: tests 4ea7826b87 + DRO-4 edit; conversion source 298bd7a60a
+# environment: macOS 26.5.2, Node v22.23.1, pnpm 10.28.2
+# date: 2026-11-17T07:40Z
+
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+
+ RUN  v4.1.12 /Users/normy/autobyteus_org/autobyteus-worktrees/member-runtime-lost-508/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/member-runtime-lost-508/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+
+(node:30316) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/app-data-migrations/delegated-runs-own-runs-startup.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+ ❯ tests/e2e/app-data-migrations/delegated-runs-own-runs-startup.e2e.test.ts (3 tests | 1 failed | 2 skipped) 11968ms
+     ↓ DRO-3 DS-15: restart resume skips a delegated run whose Task entry is closed (the same busy run with its entry open is resumed, DRO-1)
+     ↓ DRO-1 converts every stored shape at startup, the converted runs open as runs of their own; DRO-2 a second start changes nothing
+     × DRO-4 (autobyteus-508): a Settings edit that names another agent runtime keeps that runtime, model and settings as the run's own Settings edit 11941ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/e2e/app-data-migrations/delegated-runs-own-runs-startup.e2e.test.ts > delegated runs own runs: the built server upgrades released app data at startup (autobyteus-461 API-E03) > DRO-4 (autobyteus-508): a Settings edit that names another agent runtime keeps that runtime, model and settings as the run's own Settings edit
+AssertionError: {"support_team_a100":{"address":"/support_team","launch":{"runtimeKind":"autobyteus","llmModelIdentifier":"sonnet","llmConfig":null,"source":null,"ownSource":true},"members":{"/coordinator":{"runtimeKind":"claude_agent_sdk","llmModelIdentifier":"sonnet","llmConfig":null,"source":null,"ownSource":false},"/operator":{"runtimeKind":"claude_agent_sdk","llmModelIdentifier":"gpt-6.1-terra","llmConfig":{"reasoning_effort":"high"},"source":null,"ownSource":false}}},"review_team_b200":{"address":"/review_team","launch":{"runtimeKind":"autobyteus","llmModelIdentifier":"sonnet","llmConfig":null,"source":null,"ownSource":true},"members":{"/lead":{"runtimeKind":"claude_agent_sdk","llmModelIdentifier":"gpt-6.1-terra","llmConfig":{"reasoning_effort":"high"},"source":null,"ownSource":false},"/checker":{"runtimeKind":"claude_agent_sdk","llmModelIdentifier":"opus","llmConfig":{"reasoning_effort":"high"},"source":null,"ownSource":false},"/scribe":{"runtimeKind":"claude_agent_sdk","llmModelIdentifier":"sonnet","llmConfig":null,"source":{"origin":"agent_default","fallbacks":[]},"ownSource":true}}},"outreach_team_c300":{"address":"/outreach_team","launch":{"runtimeKind":"autobyteus","llmModelIdentifier":"sonnet","llmConfig":null,"source":null,"ownSource":true},"members":{"/operator":{"runtimeKind":"claude_agent_sdk","llmModelIdentifier":"gpt-6.1-terra","llmConfig":{"reasoning_effort":"high"},"source":null,"ownSource":false}}},"summarizer_d400":{"address":"/summarizer","launch":{"runtimeKind":"claude_agent_sdk","llmModelIdentifier":"gpt-6.1-terra","llmConfig":{"reasoning_effort":"high"},"source":null,"ownSource":true},"members":{}},"summarizer_e500":{"address":"/summarizer","launch":{"runtimeKind":"claude_agent_sdk","llmModelIdentifier":"gpt-6.1-terra","llmConfig":{"reasoning_effort":"high"},"source":null,"ownSource":true},"members":{}}}: expected { '/coordinator': { …(5) }, …(1) } to deeply equal { '/coordinator': { …(5) }, …(1) }
+
+- Expected
++ Received
+
+@@ -9,13 +9,10 @@
+    "/operator": {
+      "llmConfig": {
+        "reasoning_effort": "high",
+      },
+      "llmModelIdentifier": "gpt-6.1-terra",
+-     "ownSource": true,
+-     "runtimeKind": "codex_app_server",
+-     "source": {
+-       "fallbacks": [],
+-       "origin": "settings",
+-     },
++     "ownSource": false,
++     "runtimeKind": "claude_agent_sdk",
++     "source": null,
+    },
+  }
+
+ ❯ tests/e2e/app-data-migrations/delegated-runs-own-runs-startup.e2e.test.ts:292:69
+    290|       evidence.dro4.managerRows = seen;
+    291|       // AC-001: the member's own edit, already made real on the new r…
+    292|       expect(seen[MEMBER_EDIT_TEAM]?.members, JSON.stringify(seen)).to…
+       |                                                                     ^
+    293|         "/coordinator": { runtimeKind: "claude_agent_sdk", llmModelIde…
+    294|         "/operator": { ...EDITED, source: SETTINGS, ownSource: true },
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 2 skipped (3)
+   Start at  08:40:23
+   Duration  25.41s (transform 9.97s, setup 71ms, import 12.81s, tests 11.97s, environment 0ms)
+
+# restore: source checked out (git diff 4ea7826b87 -- autobyteus-server-ts/src empty), dist rebuilt with the fix at 07:41Z (withEdit present)

@@ -117,8 +117,11 @@ start:
 ```text
 [Platform notice — tools updated]
 
-Your tools changed. Now available: get_project_task. No longer available: search_memory.
+Your tools changed. Now available: get_project_task. No longer available: open_tab.
 ```
+
+A run restored after `search_memory` became a platform-given tool hears "Now available:
+search_memory." once, when its seen record was written before that.
 
 - An idle run gets it combined into its next external input, through the
   single `AgentRunPlatformNotices` slot (tool list notices first, then skill

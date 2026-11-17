@@ -1,0 +1,106 @@
+{
+  "runtime": "agy",
+  "codeword": "quokka252742",
+  "cases": {
+    "first search": {
+      "entries": [
+        {
+          "kind": "message",
+          "role": "user",
+          "messageId": "e2e-becd341b-d0ac-4473-b533-de5d5f4a5aa8",
+          "dedupeKey": "agent_run_input:e2e:e2e-becd341b-d0ac-4473-b533-de5d5f4a5aa8",
+          "content": "CALL_TOOL:{\"name\":\"search_memory\",\"arguments\":{\"query\":\"quokka252742\"}}",
+          "media": null,
+          "ts": 1794894374.867
+        },
+        {
+          "kind": "message",
+          "role": "assistant",
+          "turnId": "d8190e55-ebba-452c-bd70-bed31f78bf55",
+          "content": "CALLED:{\"content\":[{\"type\":\"text\",\"text\":\"{\\\"results\\\":[{\\\"agent\\\":\\\"search-memory-plain-d7a0f3\\\",\\\"runId\\\":\\\"search_memory_plain_d7a0f3_19a7aced8a034d5fa1ce2718ad04e784\\\",\\\"workspace\\\":\\\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-memory-live-e2e-fxZxuo/workspace-earlier\\\",\\\"firstDay\\\":\\\"2026-11-17\\\",\\\"latestDay\\\":\\\"2026-11-17\\\",\\\"source\\\":\\\"search-memory-plain-d7a0f3 · run search_memory_plain_d7a0f3_19a7aced8a034d5fa1ce2718ad04e784 · 2026-11-17 · work_journal_active.md:5-6\\\",\\\"matches\\\":[{\\\"journalFile\\\":\\\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-memory-live-e2e-fxZxuo/memory/agents/search_memory_plain_d7a0f3_19a7aced8a034d5fa1ce2718ad04e784/work_journal/work_journal_active.md\\\",\\\"lines\\\":\\\"5-6\\\",\\\"day\\\":\\\"2026-11-17\\\",\\\"snippet\\\":\\\"[05:46:12] User: For the record: the lighthouse renovation codename is quokka252742. Reply with exactly: NOTED\\\\n[05:46:12] Agent: OK\\\",\\\"matchedBy\\\":\\\"text\\\",\\\"matchedWords\\\":[\\\"quokka252742\\\"]}]}]}\"}],\"structuredContent\":{\"results\":[{\"agent\":\"search-memory-plain-d7a0f3\",\"runId\":\"search_memory_plain_d7a0f3_19a7aced8a034d5fa1ce2718ad04e784\",\"workspace\":\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-memory-live-e2e-fxZxuo/workspace-earlier\",\"firstDay\":\"2026-11-17\",\"latestDay\":\"2026-11-17\",\"source\":\"search-memory-plain-d7a0f3 · run search_memory_plain_d7a0f3_19a7aced8a034d5fa1ce2718ad04e784 · 2026-11-17 · work_journal_active.md:5-6\",\"matches\":[{\"journalFile\":\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-memory-live-e2e-fxZxuo/memory/agents/search_memory_plain_d7a0f3_19a7aced8a034d5fa1ce2718ad04e784/work_journal/work_journal_active.md\",\"lines\":\"5-6\",\"day\":\"2026-11-17\",\"snippet\":\"[05:46:12] User: For the record: the lighthouse renovation codename is quokka252742. Reply with exactly: NOTED\\n[05:46:12] Agent: OK\",\"matchedBy\":\"text\",\"matchedWords\":[\"quokka252742\"]}]}]}}",
+          "media": null,
+          "ts": 1794894375.019
+        }
+      ],
+      "reply": "CALLED:{\"content\":[{\"type\":\"text\",\"text\":\"{\\\"results\\\":[{\\\"agent\\\":\\\"search-memory-plain-d7a0f3\\\",\\\"runId\\\":\\\"search_memory_plain_d7a0f3_19a7aced8a034d5fa1ce2718ad04e784\\\",\\\"workspace\\\":\\\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-memory-live-e2e-fxZxuo/workspace-earlier\\\",\\\"firstDay\\\":\\\"2026-11-17\\\",\\\"latestDay\\\":\\\"2026-11-17\\\",\\\"source\\\":\\\"search-memory-plain-d7a0f3 · run search_memory_plain_d7a0f3_19a7aced8a034d5fa1ce2718ad04e784 · 2026-11-17 · work_journal_active.md:5-6\\\",\\\"matches\\\":[{\\\"journalFile\\\":\\\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-memory-live-e2e-fxZxuo/memory/agents/search_memory_plain_d7a0f3_19a7aced8a034d5fa1ce2718ad04e784/work_journal/work_journal_active.md\\\",\\\"lines\\\":\\\"5-6\\\",\\\"day\\\":\\\"2026-11-17\\\",\\\"snippet\\\":\\\"[05:46:12] User: For the record: the lighthouse renovation codename is quokka252742. Reply with exactly: NOTED\\\\n[05:46:12] Agent: OK\\\",\\\"matchedBy\\\":\\\"text\\\",\\\"matchedWords\\\":[\\\"quokka252742\\\"]}]}]}\"}],\"structuredContent\":{\"results\":[{\"agent\":\"search-memory-plain-d7a0f3\",\"runId\":\"search_memory_plain_d7a0f3_19a7aced8a034d5fa1ce2718ad04e784\",\"workspace\":\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-memory-live-e2e-fxZxuo/workspace-earlier\",\"firstDay\":\"2026-11-17\",\"latestDay\":\"2026-11-17\",\"source\":\"search-memory-plain-d7a0f3 · run search_memory_plain_d7a0f3_19a7aced8a034d5fa1ce2718ad04e784 · 2026-11-17 · work_journal_active.md:5-6\",\"matches\":[{\"journalFile\":\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-memory-live-e2e-fxZxuo/memory/agents/search_memory_plain_d7a0f3_19a7aced8a034d5fa1ce2718ad04e784/work_journal/work_journal_active.md\",\"lines\":\"5-6\",\"day\":\"2026-11-17\",\"snippet\":\"[05:46:12] User: For the record: the lighthouse renovation codename is quokka252742. Reply with exactly: NOTED\\n[05:46:12] Agent: OK\",\"matchedBy\":\"text\",\"matchedWords\":[\"quokka252742\"]}]}]}}"
+    },
+    "second search": {
+      "entries": [
+        {
+          "kind": "message",
+          "role": "user",
+          "messageId": "e2e-d476948d-7355-4295-9187-68dc6609e2d9",
+          "dedupeKey": "agent_run_input:e2e:e2e-d476948d-7355-4295-9187-68dc6609e2d9",
+          "content": "CALL_TOOL:{\"name\":\"search_memory\",\"arguments\":{\"query\":\"quokka252742\"}}",
+          "media": null,
+          "ts": 1794894395.062
+        },
+        {
+          "kind": "message",
+          "role": "assistant",
+          "turnId": "99e7e288-a3f1-4a38-b070-d4a2bb863990",
+          "content": "CALLED:{\"content\":[{\"type\":\"text\",\"text\":\"{\\\"results\\\":[{\\\"agent\\\":\\\"search-memory-plain-d7a0f3\\\",\\\"runId\\\":\\\"search_memory_plain_d7a0f3_19a7aced8a034d5fa1ce2718ad04e784\\\",\\\"workspace\\\":\\\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-memory-live-e2e-fxZxuo/workspace-earlier\\\",\\\"firstDay\\\":\\\"2026-11-17\\\",\\\"latestDay\\\":\\\"2026-11-17\\\",\\\"source\\\":\\\"search-memory-plain-d7a0f3 · run search_memory_plain_d7a0f3_19a7aced8a034d5fa1ce2718ad04e784 · 2026-11-17 · work_journal_active.md:5-6\\\",\\\"matches\\\":[{\\\"journalFile\\\":\\\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-memory-live-e2e-fxZxuo/memory/agents/search_memory_plain_d7a0f3_19a7aced8a034d5fa1ce2718ad04e784/work_journal/work_journal_active.md\\\",\\\"lines\\\":\\\"5-6\\\",\\\"day\\\":\\\"2026-11-17\\\",\\\"snippet\\\":\\\"[05:46:12] User: For the record: the lighthouse renovation codename is quokka252742. Reply with exactly: NOTED\\\\n[05:46:12] Agent: OK\\\",\\\"matchedBy\\\":\\\"text\\\",\\\"matchedWords\\\":[\\\"quokka252742\\\"]}]}]}\"}],\"structuredContent\":{\"results\":[{\"agent\":\"search-memory-plain-d7a0f3\",\"runId\":\"search_memory_plain_d7a0f3_19a7aced8a034d5fa1ce2718ad04e784\",\"workspace\":\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-memory-live-e2e-fxZxuo/workspace-earlier\",\"firstDay\":\"2026-11-17\",\"latestDay\":\"2026-11-17\",\"source\":\"search-memory-plain-d7a0f3 · run search_memory_plain_d7a0f3_19a7aced8a034d5fa1ce2718ad04e784 · 2026-11-17 · work_journal_active.md:5-6\",\"matches\":[{\"journalFile\":\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-memory-live-e2e-fxZxuo/memory/agents/search_memory_plain_d7a0f3_19a7aced8a034d5fa1ce2718ad04e784/work_journal/work_journal_active.md\",\"lines\":\"5-6\",\"day\":\"2026-11-17\",\"snippet\":\"[05:46:12] User: For the record: the lighthouse renovation codename is quokka252742. Reply with exactly: NOTED\\n[05:46:12] Agent: OK\",\"matchedBy\":\"text\",\"matchedWords\":[\"quokka252742\"]}]}]}}",
+          "media": null,
+          "ts": 1794894395.075
+        }
+      ],
+      "reply": "CALLED:{\"content\":[{\"type\":\"text\",\"text\":\"{\\\"results\\\":[{\\\"agent\\\":\\\"search-memory-plain-d7a0f3\\\",\\\"runId\\\":\\\"search_memory_plain_d7a0f3_19a7aced8a034d5fa1ce2718ad04e784\\\",\\\"workspace\\\":\\\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-memory-live-e2e-fxZxuo/workspace-earlier\\\",\\\"firstDay\\\":\\\"2026-11-17\\\",\\\"latestDay\\\":\\\"2026-11-17\\\",\\\"source\\\":\\\"search-memory-plain-d7a0f3 · run search_memory_plain_d7a0f3_19a7aced8a034d5fa1ce2718ad04e784 · 2026-11-17 · work_journal_active.md:5-6\\\",\\\"matches\\\":[{\\\"journalFile\\\":\\\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-memory-live-e2e-fxZxuo/memory/agents/search_memory_plain_d7a0f3_19a7aced8a034d5fa1ce2718ad04e784/work_journal/work_journal_active.md\\\",\\\"lines\\\":\\\"5-6\\\",\\\"day\\\":\\\"2026-11-17\\\",\\\"snippet\\\":\\\"[05:46:12] User: For the record: the lighthouse renovation codename is quokka252742. Reply with exactly: NOTED\\\\n[05:46:12] Agent: OK\\\",\\\"matchedBy\\\":\\\"text\\\",\\\"matchedWords\\\":[\\\"quokka252742\\\"]}]}]}\"}],\"structuredContent\":{\"results\":[{\"agent\":\"search-memory-plain-d7a0f3\",\"runId\":\"search_memory_plain_d7a0f3_19a7aced8a034d5fa1ce2718ad04e784\",\"workspace\":\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-memory-live-e2e-fxZxuo/workspace-earlier\",\"firstDay\":\"2026-11-17\",\"latestDay\":\"2026-11-17\",\"source\":\"search-memory-plain-d7a0f3 · run search_memory_plain_d7a0f3_19a7aced8a034d5fa1ce2718ad04e784 · 2026-11-17 · work_journal_active.md:5-6\",\"matches\":[{\"journalFile\":\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-memory-live-e2e-fxZxuo/memory/agents/search_memory_plain_d7a0f3_19a7aced8a034d5fa1ce2718ad04e784/work_journal/work_journal_active.md\",\"lines\":\"5-6\",\"day\":\"2026-11-17\",\"snippet\":\"[05:46:12] User: For the record: the lighthouse renovation codename is quokka252742. Reply with exactly: NOTED\\n[05:46:12] Agent: OK\",\"matchedBy\":\"text\",\"matchedWords\":[\"quokka252742\"]}]}]}}"
+    },
+    "runs": {
+      "definitionToolNames": [],
+      "earlier": "search_memory_plain_d7a0f3_19a7aced8a034d5fa1ce2718ad04e784",
+      "asking": "search_memory_plain_d7a0f3_9de8b53284754b788d4d55c7fafd3776"
+    },
+    "tools/list list-plain": {
+      "toolNames": [],
+      "listed": [
+        "send_message_to",
+        "delegate_task",
+        "search_memory"
+      ]
+    },
+    "tools/list list-listing": {
+      "toolNames": [
+        "search_memory",
+        "list_projects"
+      ],
+      "listed": [
+        "search_memory",
+        "list_projects",
+        "send_message_to",
+        "delegate_task"
+      ]
+    },
+    "upgrade": {
+      "seenBefore": {
+        "version": 1,
+        "toolNames": [
+          "delegate_task",
+          "send_message_to"
+        ]
+      },
+      "seenAfter": {
+        "version": 1,
+        "toolNames": [
+          "delegate_task",
+          "search_memory",
+          "send_message_to"
+        ]
+      },
+      "firstInput": "ECHO:\"[Platform notice — tools updated]\\n\\nYour tools changed. Now available: search_memory.\\n\\nECHO_INPUT first after the upgrade\"",
+      "firstNotices": [
+        {
+          "kind": "system_task_notification",
+          "role": null,
+          "senderId": "system.tool_list_update_notifier",
+          "content": "[Platform notice — tools updated]\n\nYour tools changed. Now available: search_memory.",
+          "ts": 1794894403.979
+        }
+      ],
+      "secondInput": "ECHO:\"ECHO_INPUT second after the upgrade\"",
+      "secondNotices": [],
+      "call": "CALLED:{\"content\":[{\"type\":\"text\",\"text\":\"{\\\"wordsNotFound\\\":[\\\"upgrade\\\"],\\\"note\\\":\\\"No matches; try other words.\\\"}\"}],\"structuredContent\":{\"wordsNotFound\":[\"upgrade\"],\"note\":\"No matches; try other words.\"}}"
+    }
+  },
+  "model": "gemini-3.8-flash-low"
+}

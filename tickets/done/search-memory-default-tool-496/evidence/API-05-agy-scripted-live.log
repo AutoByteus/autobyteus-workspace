@@ -1,0 +1,477 @@
+# API-05/API-06 scripted AGY live suite
+# Command: env -i PATH HOME=<throwaway> TMPDIR SEARCH_MEMORY_LIVE_E2E=agy ANTIGRAVITY_CLI_COMMAND=<worktree>/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs SEARCH_MEMORY_E2E_EVIDENCE_DIR=<ticket>/evidence/live pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts --no-watch
+# Commit: code under test 5cdd6faf81 (+ the new suite, uncommitted at run time)
+# Env: macOS Darwin 25.5.0 arm64, Node v22.23.1; date 2026-11-17 06:47
+
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+
+ RUN  v4.1.12 /Users/normy/autobyteus_org/autobyteus-worktrees/search-memory-default-tool-496/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/search-memory-default-tool-496/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:62542) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on agy (real server, isolated data)
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/search-memory-default-tool-496/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/search-memory-default-tool-496/autobyteus-server-ts
+Custom app data directory set to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-memory-live-e2e-fxZxuo
+Updated config file path to /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-memory-live-e2e-fxZxuo/.env
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on agy (real server, isolated data)
+prisma:info Starting a sqlite pool with 21 connections.
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on agy (real server, isolated data)
+[2026-11-17T05:46:10.303Z] [INFO] [secret-management.vault] Secret vault: application database
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on agy (real server, isolated data)
+Loading environment from: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-memory-live-e2e-fxZxuo/.env
+◇ injected env (2) from ../../../../../../private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-memory-live-e2e-fxZxuo/.env // tip: ⌁ auth for agents [www.vestauth.com]
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/search-memory-default-tool-496/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/search-memory-default-tool-496/autobyteus-server-ts
+APP DATA DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-memory-live-e2e-fxZxuo
+DB DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-memory-live-e2e-fxZxuo/db
+LOGS DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-memory-live-e2e-fxZxuo/logs
+DOWNLOAD DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-memory-live-e2e-fxZxuo/download
+MEMORY DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-memory-live-e2e-fxZxuo/memory
+============================================================
+Initialized server settings service with 34 predefined settings
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on agy (real server, isolated data)
+AgentRunManager initialized.
+
+stderr | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on agy (real server, isolated data)
+Node access: local control socket not opened. The node's local control socket path is 117 bytes, longer than the 103 bytes a Unix socket path may have: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-memory-live-e2e-fxZxuo/node-access/local-control.sock. Use a shorter data folder path.
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on agy (real server, isolated data)
+AgentRunManager initialized.
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on agy (real server, isolated data)
+Loading workspace packages to trigger registration...
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on agy (real server, isolated data)
+Successfully loaded workspace packages.
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on agy (real server, isolated data)
+Creating temp workspace at: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-memory-live-e2e-fxZxuo/temp_workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-memory-live-e2e-fxZxuo/temp_workspace.
+Initialized TempWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-memory-live-e2e-fxZxuo/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on agy (real server, isolated data)
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on agy (real server, isolated data)
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on agy (real server, isolated data)
+Registered required tool unit: Core Tools
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on agy (real server, isolated data)
+Successfully registered tool definition: 'get_project_task'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'search_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+Successfully registered tool definition: 'delegate_task'
+Registered required tool unit: Project Task Tools
+Registered required tool unit: Task Delegation Tools
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on agy (real server, isolated data)
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on agy (real server, isolated data)
+Registered required tool unit: Media Tools
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on agy (real server, isolated data)
+Successfully registered tool definition: 'publish_artifacts'
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on agy (real server, isolated data)
+Registered required tool unit: Published Artifact Tools
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on agy (real server, isolated data)
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'list_peer_nodes'
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on agy (real server, isolated data)
+Registered required tool unit: Agent Discovery Tools
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on agy (real server, isolated data)
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on agy (real server, isolated data)
+Registered required tool unit: Agent Communication Tools
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on agy (real server, isolated data)
+Successfully registered tool definition: 'search_memory'
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on agy (real server, isolated data)
+Registered required tool unit: Memory Tools
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on agy (real server, isolated data)
+Successfully registered tool definition: 'list_available_agent_runtimes'
+Successfully registered tool definition: 'submit_launch_choices'
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on agy (real server, isolated data)
+Registered required tool unit: Agent Runtime Tools
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on agy (real server, isolated data)
+Registered required tool unit: Browser Tools
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on agy (real server, isolated data)
+Successfully registered tool definition: 'search_web'
+
+stderr | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on agy (real server, isolated data)
+Overwriting existing tool definition for name: 'search_web'
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on agy (real server, isolated data)
+Registered required tool unit: Search Tools
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on agy (real server, isolated data) > SM-agy: a run of a definition without search_memory finds an earlier run and leaves itself out
+Agent Definition created successfully with ID: search-memory-plain-d7a0f3
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on agy (real server, isolated data) > SM-agy: a run of a definition without search_memory finds an earlier run and leaves itself out
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-memory-live-e2e-fxZxuo/workspace-earlier
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-memory-live-e2e-fxZxuo/workspace-earlier.
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on agy (real server, isolated data) > SM-agy: a run of a definition without search_memory finds an earlier run and leaves itself out
+Created and registered workspace ID: agent_ws_c1cdb0949671016af7cf74d088a3a0ab83a61a838f725a39ed260f5c5b500280
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on agy (real server, isolated data) > SM-agy: a run of a definition without search_memory finds an earlier run and leaves itself out
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-memory-live-e2e-fxZxuo/workspace-earlier
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-memory-live-e2e-fxZxuo/workspace-earlier.
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on agy (real server, isolated data) > SM-agy: a run of a definition without search_memory finds an earlier run and leaves itself out
+Reusing registered workspace ID: agent_ws_c1cdb0949671016af7cf74d088a3a0ab83a61a838f725a39ed260f5c5b500280
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on agy (real server, isolated data) > SM-agy: a run of a definition without search_memory finds an earlier run and leaves itself out
+AGY compaction detection off for run search_memory_plain_d7a0f3_19a7aced8a034d5fa1ce2718ad04e784: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stderr | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on agy (real server, isolated data) > SM-agy: a run of a definition without search_memory finds an earlier run and leaves itself out
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on agy (real server, isolated data) > SM-agy: a run of a definition without search_memory finds an earlier run and leaves itself out
+Agent websocket attached for run search_memory_plain_d7a0f3_19a7aced8a034d5fa1ce2718ad04e784
+Created agent session ee710cbe-fc25-4513-ae4f-66990ffce08f for run search_memory_plain_d7a0f3_19a7aced8a034d5fa1ce2718ad04e784
+Agent WebSocket connected: session=ee710cbe-fc25-4513-ae4f-66990ffce08f, run=search_memory_plain_d7a0f3_19a7aced8a034d5fa1ce2718ad04e784
+
+stderr | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on agy (real server, isolated data) > SM-agy: a run of a definition without search_memory finds an earlier run and leaves itself out
+
+stderr | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on agy (real server, isolated data) > SM-agy: a run of a definition without search_memory finds an earlier run and leaves itself out
+
+stderr | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on agy (real server, isolated data) > SM-agy: a run of a definition without search_memory finds an earlier run and leaves itself out
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on agy (real server, isolated data) > SM-agy: a run of a definition without search_memory finds an earlier run and leaves itself out
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-memory-live-e2e-fxZxuo/workspace-asking
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-memory-live-e2e-fxZxuo/workspace-asking.
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on agy (real server, isolated data) > SM-agy: a run of a definition without search_memory finds an earlier run and leaves itself out
+Created and registered workspace ID: agent_ws_a8468b683a12350b50da1d40d9296a527d70d805f1bae4409da3c915ff15c308
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on agy (real server, isolated data) > SM-agy: a run of a definition without search_memory finds an earlier run and leaves itself out
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-memory-live-e2e-fxZxuo/workspace-asking
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-memory-live-e2e-fxZxuo/workspace-asking.
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on agy (real server, isolated data) > SM-agy: a run of a definition without search_memory finds an earlier run and leaves itself out
+Reusing registered workspace ID: agent_ws_a8468b683a12350b50da1d40d9296a527d70d805f1bae4409da3c915ff15c308
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on agy (real server, isolated data) > SM-agy: a run of a definition without search_memory finds an earlier run and leaves itself out
+AGY compaction detection off for run search_memory_plain_d7a0f3_9de8b53284754b788d4d55c7fafd3776: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stderr | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on agy (real server, isolated data) > SM-agy: a run of a definition without search_memory finds an earlier run and leaves itself out
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on agy (real server, isolated data) > SM-agy: a run of a definition without search_memory finds an earlier run and leaves itself out
+Agent websocket attached for run search_memory_plain_d7a0f3_9de8b53284754b788d4d55c7fafd3776
+Created agent session 8e49ba91-6673-430a-80cc-ac7b489a9084 for run search_memory_plain_d7a0f3_9de8b53284754b788d4d55c7fafd3776
+Agent WebSocket connected: session=8e49ba91-6673-430a-80cc-ac7b489a9084, run=search_memory_plain_d7a0f3_9de8b53284754b788d4d55c7fafd3776
+
+stderr | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on agy (real server, isolated data) > SM-agy: a run of a definition without search_memory finds an earlier run and leaves itself out
+
+stderr | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on agy (real server, isolated data) > SM-agy: a run of a definition without search_memory finds an earlier run and leaves itself out
+
+stderr | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on agy (real server, isolated data) > SM-agy: a run of a definition without search_memory finds an earlier run and leaves itself out
+
+stderr | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on agy (real server, isolated data) > SM-agy: a run of a definition without search_memory finds an earlier run and leaves itself out
+
+stderr | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on agy (real server, isolated data) > SM-agy: a run of a definition without search_memory finds an earlier run and leaves itself out
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on agy (real server, isolated data) > SM-agy-list: the run's Agent Tools MCP tools/list has search_memory once, listed or not
+Agent Definition created successfully with ID: search-memory-list-plain-70554e
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on agy (real server, isolated data) > SM-agy-list: the run's Agent Tools MCP tools/list has search_memory once, listed or not
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-memory-live-e2e-fxZxuo/workspace-list-plain
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-memory-live-e2e-fxZxuo/workspace-list-plain.
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on agy (real server, isolated data) > SM-agy-list: the run's Agent Tools MCP tools/list has search_memory once, listed or not
+Created and registered workspace ID: agent_ws_e76c2d05e766c23a0efa0542c47b4a7321b1ac9fd8773fc09a2f451e10c64f5c
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on agy (real server, isolated data) > SM-agy-list: the run's Agent Tools MCP tools/list has search_memory once, listed or not
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-memory-live-e2e-fxZxuo/workspace-list-plain
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-memory-live-e2e-fxZxuo/workspace-list-plain.
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on agy (real server, isolated data) > SM-agy-list: the run's Agent Tools MCP tools/list has search_memory once, listed or not
+Reusing registered workspace ID: agent_ws_e76c2d05e766c23a0efa0542c47b4a7321b1ac9fd8773fc09a2f451e10c64f5c
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on agy (real server, isolated data) > SM-agy-list: the run's Agent Tools MCP tools/list has search_memory once, listed or not
+AGY compaction detection off for run search_memory_list_plain_70554e_428ae12f1a334eacb5cd28a0cb78959c: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stderr | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on agy (real server, isolated data) > SM-agy-list: the run's Agent Tools MCP tools/list has search_memory once, listed or not
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on agy (real server, isolated data) > SM-agy-list: the run's Agent Tools MCP tools/list has search_memory once, listed or not
+Agent websocket attached for run search_memory_list_plain_70554e_428ae12f1a334eacb5cd28a0cb78959c
+Created agent session 0b210045-a554-4ebc-9de7-fb647eed18a5 for run search_memory_list_plain_70554e_428ae12f1a334eacb5cd28a0cb78959c
+Agent WebSocket connected: session=0b210045-a554-4ebc-9de7-fb647eed18a5, run=search_memory_list_plain_70554e_428ae12f1a334eacb5cd28a0cb78959c
+
+stderr | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on agy (real server, isolated data) > SM-agy-list: the run's Agent Tools MCP tools/list has search_memory once, listed or not
+
+stderr | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on agy (real server, isolated data) > SM-agy-list: the run's Agent Tools MCP tools/list has search_memory once, listed or not
+
+stderr | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on agy (real server, isolated data) > SM-agy-list: the run's Agent Tools MCP tools/list has search_memory once, listed or not
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on agy (real server, isolated data) > SM-agy-list: the run's Agent Tools MCP tools/list has search_memory once, listed or not
+Agent Definition created successfully with ID: search-memory-list-listing-9f93a9
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on agy (real server, isolated data) > SM-agy-list: the run's Agent Tools MCP tools/list has search_memory once, listed or not
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-memory-live-e2e-fxZxuo/workspace-list-listing
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-memory-live-e2e-fxZxuo/workspace-list-listing.
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on agy (real server, isolated data) > SM-agy-list: the run's Agent Tools MCP tools/list has search_memory once, listed or not
+Created and registered workspace ID: agent_ws_81cd7c78b1e2b85a5bf27a07287a88adfb11ac4db687898454cac26652749c96
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on agy (real server, isolated data) > SM-agy-list: the run's Agent Tools MCP tools/list has search_memory once, listed or not
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-memory-live-e2e-fxZxuo/workspace-list-listing
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-memory-live-e2e-fxZxuo/workspace-list-listing.
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on agy (real server, isolated data) > SM-agy-list: the run's Agent Tools MCP tools/list has search_memory once, listed or not
+Reusing registered workspace ID: agent_ws_81cd7c78b1e2b85a5bf27a07287a88adfb11ac4db687898454cac26652749c96
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on agy (real server, isolated data) > SM-agy-list: the run's Agent Tools MCP tools/list has search_memory once, listed or not
+AGY compaction detection off for run search_memory_list_listing_9f93a9_290549bbee1f4306be3fb7c766d50cd1: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stderr | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on agy (real server, isolated data) > SM-agy-list: the run's Agent Tools MCP tools/list has search_memory once, listed or not
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on agy (real server, isolated data) > SM-agy-list: the run's Agent Tools MCP tools/list has search_memory once, listed or not
+Agent websocket attached for run search_memory_list_listing_9f93a9_290549bbee1f4306be3fb7c766d50cd1
+Created agent session b5fdd04b-d492-4f9f-b35d-335dc0d07f47 for run search_memory_list_listing_9f93a9_290549bbee1f4306be3fb7c766d50cd1
+Agent WebSocket connected: session=b5fdd04b-d492-4f9f-b35d-335dc0d07f47, run=search_memory_list_listing_9f93a9_290549bbee1f4306be3fb7c766d50cd1
+
+stderr | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on agy (real server, isolated data) > SM-agy-list: the run's Agent Tools MCP tools/list has search_memory once, listed or not
+
+stderr | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on agy (real server, isolated data) > SM-agy-list: the run's Agent Tools MCP tools/list has search_memory once, listed or not
+
+stderr | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on agy (real server, isolated data) > SM-agy-list: the run's Agent Tools MCP tools/list has search_memory once, listed or not
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on agy (real server, isolated data) > SM-agy-upgrade: a run from before this build, restored, hears the notice once and has the tool
+Agent Definition created successfully with ID: search-memory-upgrade-7df5e2
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on agy (real server, isolated data) > SM-agy-upgrade: a run from before this build, restored, hears the notice once and has the tool
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-memory-live-e2e-fxZxuo/workspace-upgrade
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-memory-live-e2e-fxZxuo/workspace-upgrade.
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on agy (real server, isolated data) > SM-agy-upgrade: a run from before this build, restored, hears the notice once and has the tool
+Created and registered workspace ID: agent_ws_66dceab49ae69173d6775f3081936a5e1b4ac56e8b748809e7f8194a15beefb1
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on agy (real server, isolated data) > SM-agy-upgrade: a run from before this build, restored, hears the notice once and has the tool
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-memory-live-e2e-fxZxuo/workspace-upgrade
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-memory-live-e2e-fxZxuo/workspace-upgrade.
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on agy (real server, isolated data) > SM-agy-upgrade: a run from before this build, restored, hears the notice once and has the tool
+Reusing registered workspace ID: agent_ws_66dceab49ae69173d6775f3081936a5e1b4ac56e8b748809e7f8194a15beefb1
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on agy (real server, isolated data) > SM-agy-upgrade: a run from before this build, restored, hears the notice once and has the tool
+AGY compaction detection off for run search_memory_upgrade_7df5e2_fc1ad75835bf4d17807e4a12935668b7: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stderr | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on agy (real server, isolated data) > SM-agy-upgrade: a run from before this build, restored, hears the notice once and has the tool
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on agy (real server, isolated data) > SM-agy-upgrade: a run from before this build, restored, hears the notice once and has the tool
+Agent websocket attached for run search_memory_upgrade_7df5e2_fc1ad75835bf4d17807e4a12935668b7
+Created agent session e942beb5-0823-490e-9229-befab462d1a8 for run search_memory_upgrade_7df5e2_fc1ad75835bf4d17807e4a12935668b7
+Agent WebSocket connected: session=e942beb5-0823-490e-9229-befab462d1a8, run=search_memory_upgrade_7df5e2_fc1ad75835bf4d17807e4a12935668b7
+
+stderr | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on agy (real server, isolated data) > SM-agy-upgrade: a run from before this build, restored, hears the notice once and has the tool
+
+stderr | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on agy (real server, isolated data) > SM-agy-upgrade: a run from before this build, restored, hears the notice once and has the tool
+
+stderr | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on agy (real server, isolated data) > SM-agy-upgrade: a run from before this build, restored, hears the notice once and has the tool
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on agy (real server, isolated data) > SM-agy-upgrade: a run from before this build, restored, hears the notice once and has the tool
+Closed agent session e942beb5-0823-490e-9229-befab462d1a8
+Agent WebSocket disconnected: e942beb5-0823-490e-9229-befab462d1a8
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on agy (real server, isolated data) > SM-agy-upgrade: a run from before this build, restored, hears the notice once and has the tool
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-memory-live-e2e-fxZxuo/workspace-upgrade
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-memory-live-e2e-fxZxuo/workspace-upgrade.
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on agy (real server, isolated data) > SM-agy-upgrade: a run from before this build, restored, hears the notice once and has the tool
+Reusing registered workspace ID: agent_ws_66dceab49ae69173d6775f3081936a5e1b4ac56e8b748809e7f8194a15beefb1
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on agy (real server, isolated data) > SM-agy-upgrade: a run from before this build, restored, hears the notice once and has the tool
+AGY compaction detection off for run search_memory_upgrade_7df5e2_fc1ad75835bf4d17807e4a12935668b7: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stderr | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on agy (real server, isolated data) > SM-agy-upgrade: a run from before this build, restored, hears the notice once and has the tool
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on agy (real server, isolated data) > SM-agy-upgrade: a run from before this build, restored, hears the notice once and has the tool
+Agent websocket attached for run search_memory_upgrade_7df5e2_fc1ad75835bf4d17807e4a12935668b7
+Created agent session 652d00ee-3f3d-41e5-9442-6ba2317cb66f for run search_memory_upgrade_7df5e2_fc1ad75835bf4d17807e4a12935668b7
+Agent WebSocket connected: session=652d00ee-3f3d-41e5-9442-6ba2317cb66f, run=search_memory_upgrade_7df5e2_fc1ad75835bf4d17807e4a12935668b7
+
+stderr | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on agy (real server, isolated data) > SM-agy-upgrade: a run from before this build, restored, hears the notice once and has the tool
+
+stderr | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on agy (real server, isolated data) > SM-agy-upgrade: a run from before this build, restored, hears the notice once and has the tool
+
+stderr | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on agy (real server, isolated data) > SM-agy-upgrade: a run from before this build, restored, hears the notice once and has the tool
+
+stderr | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on agy (real server, isolated data) > SM-agy-upgrade: a run from before this build, restored, hears the notice once and has the tool
+
+stderr | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on agy (real server, isolated data) > SM-agy-upgrade: a run from before this build, restored, hears the notice once and has the tool
+
+stderr | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on agy (real server, isolated data) > SM-agy-upgrade: a run from before this build, restored, hears the notice once and has the tool
+
+stderr | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on agy (real server, isolated data) > SM-agy-upgrade: a run from before this build, restored, hears the notice once and has the tool
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on agy (real server, isolated data)
+Closed agent session 652d00ee-3f3d-41e5-9442-6ba2317cb66f
+Agent WebSocket disconnected: 652d00ee-3f3d-41e5-9442-6ba2317cb66f
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on agy (real server, isolated data)
+Closed agent session b5fdd04b-d492-4f9f-b35d-335dc0d07f47
+Agent WebSocket disconnected: b5fdd04b-d492-4f9f-b35d-335dc0d07f47
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on agy (real server, isolated data)
+Closed agent session 0b210045-a554-4ebc-9de7-fb647eed18a5
+Agent WebSocket disconnected: 0b210045-a554-4ebc-9de7-fb647eed18a5
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on agy (real server, isolated data)
+Closed agent session 8e49ba91-6673-430a-80cc-ac7b489a9084
+Agent WebSocket disconnected: 8e49ba91-6673-430a-80cc-ac7b489a9084
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on agy (real server, isolated data)
+Closed agent session ee710cbe-fc25-4513-ae4f-66990ffce08f
+Agent WebSocket disconnected: ee710cbe-fc25-4513-ae4f-66990ffce08f
+
+ ✓ tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts (3 tests) 43883ms
+     ✓ SM-agy: a run of a definition without search_memory finds an earlier run and leaves itself out  25176ms
+     ✓ SM-agy-list: the run's Agent Tools MCP tools/list has search_memory once, listed or not  4421ms
+     ✓ SM-agy-upgrade: a run from before this build, restored, hears the notice once and has the tool  8487ms
+
+ Test Files  1 passed (1)
+      Tests  3 passed (3)
+   Start at  06:45:58
+   Duration  55.26s (transform 7.17s, setup 61ms, import 10.35s, tests 43.88s, environment 0ms)
+

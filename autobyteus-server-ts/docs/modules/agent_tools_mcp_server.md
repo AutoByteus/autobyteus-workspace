@@ -299,8 +299,9 @@ one canonical AutoByteus tool name. The default adapter set
 - `search_memory` from `src/agent-tools/memory` (see [memory_search.md](./memory_search.md))
 
 The catalog filters by the session's resolved effective tool names. That set is
-the configured Agent tool set plus the automatic Team collaboration trio when a
-valid `MemberTeamContext` exists. A supported tool outside that effective set is
+the configured Agent tool set, plus the automatic Team collaboration trio when a
+valid `MemberTeamContext` exists, plus the platform-given `search_memory`, which
+every session has (`PLATFORM_GIVEN_TOOL_NAMES` in the shared exposure rule). A supported tool outside that effective set is
 absent from `tools/list` and rejected by `tools/call`.
 
 Configured MCP-origin tools are resolved from the shared `defaultToolRegistry`

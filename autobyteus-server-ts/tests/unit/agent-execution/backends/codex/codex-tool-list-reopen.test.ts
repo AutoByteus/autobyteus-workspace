@@ -18,6 +18,9 @@ import { createTestRunWorkspaceSkills } from "../../../../fixtures/run-workspace
 
 // The Codex reopen sequence (design: "Codex reopen sequence"), measured in evidence/probe/drive-codex-reopen.mjs.
 
+/** The tools a run of a definition with these names opens with: the exposure rule adds the platform-given search_memory. */
+const runTools = (...definitionToolNames: string[]): string[] => buildRuntimeAgentToolExposure(definitionToolNames).requestedToolNames;
+
 const createRunContext = (
   runId: string, threadId: string | null, toolNames: string[] = ["alpha"], extraAppServerConfig: Record<string, unknown> = {},
 ) => new AgentRunContext({
@@ -31,7 +34,7 @@ const createRunContext = (
       model: null, workingDirectory: "/tmp/codex-reopen", reasoningEffort: null, serviceTier: null,
       approvalPolicy: CodexApprovalPolicy.ON_REQUEST, sandbox: "workspace-write", baseInstructions: null,
       developerInstructions: null,
-      appServerConfig: { ...extraAppServerConfig, mcp_servers: { autobyteus_agent_tools: { enabled_tools: toolNames } } } as never,
+      appServerConfig: { ...extraAppServerConfig, mcp_servers: { autobyteus_agent_tools: { enabled_tools: runTools(...toolNames) } } } as never,
       dynamicTools: [],
     },
     runtimeToolExposure: buildRuntimeAgentToolExposure(toolNames),
@@ -106,7 +109,7 @@ describe("CodexThreadManager.reopenThread", () => {
 
 const createBackend = (input: { toolNames?: string[]; extraAppServerConfig?: Record<string, unknown> } = {}) => {
   const context = createRunContext("run-codex", "thread-1", input.toolNames ?? ["alpha"], input.extraAppServerConfig);
-  const runSessions = activatedAgentToolMcpRunSessionsStub("run-codex", input.toolNames ?? ["alpha"]);
+  const runSessions = activatedAgentToolMcpRunSessionsStub("run-codex", runTools(...(input.toolNames ?? ["alpha"])));
   let turns = 0;
   const thread = {
     workingDirectory: "/tmp/codex-reopen",
@@ -134,17 +137,17 @@ describe("CodexAgentRunBackend tool list changes", () => {
     const { backend, runSessions, threadManager, thread, definition, start } = createBackend();
 
     const applied = await backend.applyDefinitionTools(definition(["alpha", "beta"]));
-    expect(applied).toEqual({ kind: "on_next_turn", toolNames: ["alpha", "beta"] });
+    expect(applied).toEqual({ kind: "on_next_turn", toolNames: runTools("alpha", "beta") });
     expect(runSessions.replaceForRun).toHaveBeenCalledOnce();
-    expect(backend.getToolNames()).toEqual(["alpha"]);
+    expect(backend.getToolNames()).toEqual(runTools("alpha"));
 
     expect(await start()).toMatchObject({ forwarded: true, turnId: "turn-1" });
     expect(threadManager.reopenThread).toHaveBeenCalledOnce();
     expect(threadManager.reopenThread.mock.calls[0]![1]).toMatchObject({
-      mcp_servers: { autobyteus_agent_tools: { enabled_tools: ["alpha", "beta"] } },
+      mcp_servers: { autobyteus_agent_tools: { enabled_tools: runTools("alpha", "beta") } },
     });
     expect(threadManager.reopenThread.mock.invocationCallOrder[0]).toBeLessThan(thread.startInput.mock.invocationCallOrder[0]!);
-    expect(backend.getToolNames()).toEqual(["alpha", "beta"]);
+    expect(backend.getToolNames()).toEqual(runTools("alpha", "beta"));
 
     await start("again");
     expect(threadManager.reopenThread).toHaveBeenCalledOnce();
@@ -160,7 +163,7 @@ describe("CodexAgentRunBackend tool list changes", () => {
     await start();
     expect(threadManager.reopenThread.mock.calls[0]![1]).toMatchObject({
       ...integration,
-      mcp_servers: { autobyteus_agent_tools: { enabled_tools: ["alpha", "beta"] } },
+      mcp_servers: { autobyteus_agent_tools: { enabled_tools: runTools("alpha", "beta") } },
     });
   });
 
@@ -190,18 +193,18 @@ describe("CodexAgentRunBackend tool list changes", () => {
     });
     expect(thread.startInput).not.toHaveBeenCalled();
     expect(events).toEqual([]);
-    expect(backend.getToolNames()).toEqual(["alpha"]);
+    expect(backend.getToolNames()).toEqual(runTools("alpha"));
 
     expect(await start()).toMatchObject({ forwarded: true });
     expect(threadManager.reopenThread).toHaveBeenCalledTimes(2);
-    expect(backend.getToolNames()).toEqual(["alpha", "beta"]);
+    expect(backend.getToolNames()).toEqual(runTools("alpha", "beta"));
   });
 
   it("needs no reopen for a change reverted before the next turn start", async () => {
     const { backend, threadManager, definition, start } = createBackend();
     expect((await backend.applyDefinitionTools(definition(["alpha", "beta"]))).kind).toBe("on_next_turn");
-    expect(await backend.applyDefinitionTools(definition(["alpha"]))).toEqual({ kind: "unchanged", toolNames: ["alpha"] });
-    expect(await backend.applyDefinitionTools(definition(["alpha"]))).toEqual({ kind: "unchanged", toolNames: ["alpha"] });
+    expect(await backend.applyDefinitionTools(definition(["alpha"]))).toEqual({ kind: "unchanged", toolNames: runTools("alpha") });
+    expect(await backend.applyDefinitionTools(definition(["alpha"]))).toEqual({ kind: "unchanged", toolNames: runTools("alpha") });
     await start();
     expect(threadManager.reopenThread).not.toHaveBeenCalled();
   });
@@ -213,9 +216,9 @@ describe("CodexAgentRunBackend tool list changes", () => {
       await backend.applyDefinitionTools(definition(["alpha", "beta", "gamma"]));
     });
     await start();
-    expect(backend.getToolNames()).toEqual(["alpha", "beta"]);
+    expect(backend.getToolNames()).toEqual(runTools("alpha", "beta"));
     await start("again");
     expect(threadManager.reopenThread).toHaveBeenCalledTimes(2);
-    expect(backend.getToolNames()).toEqual(["alpha", "beta", "gamma"]);
+    expect(backend.getToolNames()).toEqual(runTools("alpha", "beta", "gamma"));
   });
 });

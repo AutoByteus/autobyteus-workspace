@@ -10,7 +10,14 @@ import { SEND_MESSAGE_TO_TOOL_NAME } from "../../agent-communication/services/se
 import { GET_HANDOFF_RULES_TOOL_NAME } from "../../agent-communication/services/get-handoff-rules-tool-contract.js";
 import { LIST_AVAILABLE_AGENTS_TOOL_NAME } from "../../agent-tools/agent-discovery/list-available-agents-contract.js";
 import { LIST_PEER_NODES_TOOL_NAME } from "../../agent-tools/agent-discovery/list-peer-nodes-contract.js";
+import { SEARCH_MEMORY_TOOL_NAME } from "../../agent-tools/memory/memory-tool-contract.js";
 import type { MemberExecutionContext } from "../../agent-collaboration/execution/domain/member-execution-context.js";
+
+/**
+ * Tools the platform gives every run on every runtime, whether or not its definition lists them
+ * (autobyteus-496: `search_memory`).
+ */
+export const PLATFORM_GIVEN_TOOL_NAMES: readonly string[] = Object.freeze([SEARCH_MEMORY_TOOL_NAME]);
 
 /**
  * Collaboration tools every member context always gets: `send_message_to` and `delegate_task` for every
@@ -74,6 +81,7 @@ export const buildRuntimeAgentToolExposure = (
   const requestedToolNames = Array.from(new Set([
     ...normalizedConfiguredNames,
     ...automaticCollaborationToolNames(memberExecutionContext),
+    ...PLATFORM_GIVEN_TOOL_NAMES,
   ]));
   const requestedToolNameSet = new Set(requestedToolNames);
 

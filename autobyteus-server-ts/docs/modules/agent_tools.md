@@ -73,6 +73,12 @@ then unions:
 - `get_handoff_rules` only when the context is Team-scoped (`teamScoped: true`:
   Team and Org members, and members of a task Team in any root).
 
+Last, for every run with or without a member context, the exposure adds the
+platform-given tools, `PLATFORM_GIVEN_TOOL_NAMES` (today only `search_memory`;
+see [Memory Search](./memory_search.md#entry-points)). Every run on every
+runtime has them, application-owned runs included, and a definition that also
+lists one gets it once, in its configured position.
+
 These tools apply even when the agent definition omitted them. Every
 user-facing standalone run that can host delegated copies (not an
 application-owned run) gets a host
@@ -83,8 +89,9 @@ turn. Every runtime reads the same list (AutoByteus through `requestedToolNames`
 Codex and Claude through `enabledProjectTaskToolNames` on the Agent Tools MCP
 surface). A task Agent directly
 under an Agent root is not Team-scoped and has no `get_handoff_rules`.
-Application-owned runs have no member context and keep their
-explicitly configured set. Browser, media, publishing, `list_available_agents`,
+Application-owned runs have no member context, so they get no collaboration
+tools and otherwise keep their explicitly configured set plus the
+platform-given tools. Browser, media, publishing, `list_available_agents`,
 `list_peer_nodes` and configured MCP-origin tools remain explicitly selected and availability-gated.
 `list_available_agent_runtimes` is explicitly selected too; it is always offered
 when selected (see [Agent Runtimes Tool](#agent-runtimes-tool)).

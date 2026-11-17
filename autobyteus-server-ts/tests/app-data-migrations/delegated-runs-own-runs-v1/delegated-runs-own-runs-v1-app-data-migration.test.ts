@@ -12,8 +12,9 @@ import { AgentRunMetadataStore } from "../../../src/run-history/store/agent-run-
 import { validateTeamRunExecutionTreePayload } from "../../../src/run-history/store/team-run-execution-tree-schema.js";
 import { parseTaskExecutionResourceFile } from "../../../src/projects/stores/task-execution-resource-schema.js";
 import {
-  E, I, LEGACY, M, MARKETING, ORG, P, PEER_STARTED, RESEARCH, T0, T1, T2,
-  exists, paths, put, readJson, releasedTeamOwnFile, writeReleasedWorld, type World,
+  E, I, LEGACY, M, MARKETING, MEMBER_EDIT_TEAM, ORG, P, PEER_STARTED, PENDING_SWITCH_AGENT, PENDING_SWITCH_TEAM, RESEARCH, SWITCHED_AGENT, T0, T1, T2,
+  TEAM_EDIT_TEAM, exists, paths, pendingSwitch, put, readJson, releasedTeamOwnFile, runtimeEdit, startedOn, writeReleasedRuntimeEdits,
+  writeReleasedWorld, type World,
 } from "../../fixtures/app-data-migrations/released-delegation-shape-fixtures.js";
 
 /**
@@ -41,6 +42,8 @@ const migrate = (w: World, invalidation = catalogs()) => {
 };
 const from = (kind: string, runId: string, delegatorAgentRunId?: string) =>
   ({ delegatingRun: { kind, runId }, ...(delegatorAgentRunId ? { delegatorAgentRunId } : {}) });
+/** The source a live Settings save records; a converted Settings edit records it too (autobyteus-508, REQ-002). */
+const SETTINGS_SOURCE = { origin: "settings", fallbacks: [] };
 const snapshot = async (root: string): Promise<Record<string, string>> => {
   const out: Record<string, string> = {};
   const walk = async (dir: string): Promise<void> => {
@@ -116,14 +119,16 @@ describe("20261111_delegated_runs_own_runs_v1", () => {
     expect(engineering).not.toHaveProperty("taskAgent");
     expect(engineering.delegatedFrom).toEqual(from("agent", M, M));
     expect(engineering.rootTeam).toMatchObject({ address: "/", coordinatorAddress: "/solution_designer", teamDefinitionName: "Software Engineering Team" });
-    expect(engineering.rootTeam.members.map((member: any) => [member.address, member.launchConfiguration.llmModelIdentifier, member.launchSource ?? null]))
+    // AC-004 (autobyteus-508): a model-only edit keeps the started runtime; an edited member records the Settings source.
+    expect(engineering.rootTeam.members.map((member: any) => [member.address, member.launchConfiguration.runtimeKind,
+      member.launchConfiguration.llmModelIdentifier, member.launchConfiguration.llmConfig, member.launchSource ?? null]))
       .toEqual([
         // followsTeam: the team-level edit is its own launch now.
-        ["/solution_designer", "haiku", null],
-        // its own edit wins and drops its source.
-        ["/code_reviewer", "opus", null],
+        ["/solution_designer", "autobyteus", "haiku", { temperature: 0.2 }, SETTINGS_SOURCE],
+        // its own edit wins, recorded as the user's Settings edit.
+        ["/code_reviewer", "autobyteus", "opus", { temperature: 0.2 }, SETTINGS_SOURCE],
         // untouched: keeps its source.
-        ["/tester", "sonnet", { origin: "agent_default", fallbacks: [] }],
+        ["/tester", "autobyteus", "sonnet", null, { origin: "agent_default", fallbacks: [] }],
       ]);
     for (const member of engineering.rootTeam.members) {
       expect(member).not.toHaveProperty("followsTeam");
@@ -137,6 +142,7 @@ describe("20261111_delegated_runs_own_runs_v1", () => {
     expect(loaded.rootTeam.address).toBe("/");
     expect(loaded.rootTeam.members.map((member) => member.address)).toEqual(["/solution_designer", "/code_reviewer", "/tester"]);
     expect(loaded.rootTeam.members[2]!.launchSource).toEqual({ origin: "agent_default", fallbacks: [] });
+    expect(loaded.rootTeam.members[0]!.launchSource).toEqual(SETTINGS_SOURCE);
     expect(loaded.delegatedFrom).toEqual(from("agent", M, M));
     // P: one hop, the team its delegator is part of; its name falls back to the definition ID.
     const product = await readJson(at.teamFile(P));
@@ -322,5 +328,89 @@ describe("20261111_delegated_runs_own_runs_v1", () => {
       { coordinatingRun: { kind: "agent", runId: M }, delegatorAgentRunId: M, address: "/late_team" }));
     expect(await fs.readFile(at.taskRecord(T1), "utf8")).toBe(entries);
     await expect(readJson(at.taskRecord(T1)).then((raw) => parseTaskExecutionResourceFile(raw, T1))).resolves.toBeTruthy();
+  });
+
+  /**
+   * autobyteus-508: a released Settings edit that names another agent runtime (autobyteus-348) is applied as one unit,
+   * as the released rule did (`selection.runtimeKind ?? started.runtimeKind`), and the edited run records the Settings
+   * source a live save records.
+   */
+  describe("a Settings edit that names another agent runtime (autobyteus-508)", () => {
+    const converted = async () => {
+      const w = await world();
+      await writeReleasedWorld(w);
+      await writeReleasedRuntimeEdits(w);
+      const result = await migrate(w);
+      expect(result.status).toBe("SUCCEEDED");
+      return { w, at: paths(w) };
+    };
+    const launchOf = (member: any) => [member.address, member.launchConfiguration.runtimeKind, member.launchConfiguration.llmModelIdentifier,
+      member.launchConfiguration.llmConfig, member.launchSource ?? null];
+    const EDITED = ["codex_app_server", "gpt-6.1-terra", runtimeEdit().llmConfig] as const;
+
+    it("a member's own edit: its runtime, model and settings, and the Settings source (AC-001)", async () => {
+      const { at } = await converted();
+      const team = await readJson(at.teamFile(MEMBER_EDIT_TEAM));
+      expect(team.rootTeam.members.map(launchOf)).toEqual([
+        ["/coordinator", "claude_agent_sdk", "sonnet", null, null],
+        ["/operator", ...EDITED, SETTINGS_SOURCE],
+      ]);
+      const operator = team.rootTeam.members[1];
+      expect(operator).not.toHaveProperty("userLaunchSelection");
+      expect(operator).not.toHaveProperty("followsTeam");
+      // Only the edited fields change: tool approval, workspace and the session it ran on stay.
+      expect(operator.launchConfiguration).toEqual({ ...startedOn(), runtimeKind: "codex_app_server", llmModelIdentifier: "gpt-6.1-terra",
+        llmConfig: runtimeEdit().llmConfig });
+      expect(operator.platformAgentRunId).toBe("codex_thread_7a03");
+      const loaded = validateTeamRunExecutionTreePayload(team, MEMBER_EDIT_TEAM);
+      expect(loaded.rootTeam.members[1]).toMatchObject({ launchConfiguration: { runtimeKind: "codex_app_server", llmModelIdentifier: "gpt-6.1-terra" },
+        launchSource: SETTINGS_SOURCE });
+    });
+
+    it("a team-level edit reaches a follower whole; a member's own edit wins with its runtime; an unedited member stays (AC-002)", async () => {
+      const { at } = await converted();
+      const team = await readJson(at.teamFile(TEAM_EDIT_TEAM));
+      expect(team.rootTeam.members.map(launchOf)).toEqual([
+        ["/lead", ...EDITED, SETTINGS_SOURCE],
+        ["/checker", "autobyteus", "opus", runtimeEdit().llmConfig, SETTINGS_SOURCE],
+        ["/scribe", "claude_agent_sdk", "sonnet", null, { origin: "agent_default", fallbacks: [] }],
+      ]);
+      // The team's default launch stays the one it started with (461), with no default source beside a team edit.
+      expect(team.rootTeam.defaultLaunchConfiguration).toMatchObject({ runtimeKind: "autobyteus", llmModelIdentifier: "sonnet" });
+      expect(team.rootTeam).not.toHaveProperty("defaultLaunchSource");
+      expect(validateTeamRunExecutionTreePayload(team, TEAM_EDIT_TEAM).rootTeam.members.map((member) => member.launchConfiguration.runtimeKind))
+        .toEqual(["codex_app_server", "autobyteus", "claude_agent_sdk"]);
+    });
+
+    it("a delegated agent run's edit: its runtime, model and settings, and the Settings source; it loads (AC-003)", async () => {
+      const { w, at } = await converted();
+      const file = await readJson(at.agentFile(SWITCHED_AGENT));
+      expect(file).not.toHaveProperty("taskAgent");
+      expect(file).toMatchObject({ address: "/summarizer", runtimeKind: "codex_app_server", llmModelIdentifier: "gpt-6.1-terra",
+        llmConfig: runtimeEdit().llmConfig, platformAgentRunId: "codex_thread_7a04", launchSource: SETTINGS_SOURCE, delegatedFrom: from("agent", M, M) });
+      expect(await new AgentRunMetadataStore(w.memory).readMetadataState(SWITCHED_AGENT)).toMatchObject({ kind: "present",
+        metadata: { runtimeKind: "codex_app_server", llmModelIdentifier: "gpt-6.1-terra", launchSource: SETTINGS_SOURCE } });
+    });
+
+    it("a pending switch stays beside the new runtime, from the started binding, for the next input to make real (AC-005)", async () => {
+      const { w, at } = await converted();
+      const operator = (await readJson(at.teamFile(PENDING_SWITCH_TEAM))).rootTeam.members[0];
+      expect(launchOf(operator)).toEqual(["/operator", ...EDITED, SETTINGS_SOURCE]);
+      expect(operator).toMatchObject({ platformAgentRunId: null, pendingRuntimeSwitch: pendingSwitch });
+      expect(validateTeamRunExecutionTreePayload(await readJson(at.teamFile(PENDING_SWITCH_TEAM)), PENDING_SWITCH_TEAM).rootTeam.members[0])
+        .toMatchObject({ launchConfiguration: { runtimeKind: "codex_app_server" }, pendingRuntimeSwitch: pendingSwitch });
+      const agent = await readJson(at.agentFile(PENDING_SWITCH_AGENT));
+      expect(agent).toMatchObject({ runtimeKind: "codex_app_server", llmModelIdentifier: "gpt-6.1-terra", platformAgentRunId: null,
+        launchSource: SETTINGS_SOURCE, pendingRuntimeSwitch: pendingSwitch });
+      expect(await new AgentRunMetadataStore(w.memory).readMetadataState(PENDING_SWITCH_AGENT)).toMatchObject({ kind: "present",
+        metadata: { runtimeKind: "codex_app_server", pendingRuntimeSwitch: pendingSwitch } });
+    });
+
+    it("a second start changes nothing", async () => {
+      const { w } = await converted();
+      const before = await snapshot(w.appData);
+      await expect(migrate(w)).resolves.toMatchObject({ status: "SUCCEEDED", summary: { migratedCount: 0 } });
+      expect(await snapshot(w.appData)).toEqual(before);
+    });
   });
 });

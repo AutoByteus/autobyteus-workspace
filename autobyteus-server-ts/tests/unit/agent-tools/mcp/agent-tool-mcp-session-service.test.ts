@@ -3,7 +3,11 @@ import { BaseTool } from "autobyteus-ts/tools/base-tool.js";
 import { ToolDefinition } from "autobyteus-ts/tools/registry/tool-definition.js";
 import { ToolOrigin } from "autobyteus-ts/tools/tool-origin.js";
 import { ParameterSchema } from "autobyteus-ts/utils/parameter-schema.js";
-import { buildRuntimeAgentToolExposure } from "../../../../src/agent-execution/shared/runtime-agent-tool-exposure.js";
+import {
+  buildRuntimeAgentToolExposure,
+  resolveRuntimeAgentToolExposure,
+} from "../../../../src/agent-execution/shared/runtime-agent-tool-exposure.js";
+import { SEARCH_MEMORY_TOOL_NAME } from "../../../../src/agent-tools/memory/memory-tool-contract.js";
 import { buildAgentRunMessageSenderContext } from "../../../../src/agent-communication/domain/agent-run-message-sender.js";
 import { SEND_MESSAGE_TO_TOOL_NAME } from "../../../../src/agent-communication/services/send-message-to-tool-contract.js";
 import { AgentToolMcpCatalog } from "../../../../src/agent-tools/mcp/agent-tool-mcp-catalog.js";
@@ -136,6 +140,31 @@ describe("AgentToolMcpSessionService", () => {
       ok: true,
       session: { enabledTools: [] },
     });
+  });
+
+  it("lists the platform-given search_memory for a definition that does not select it, once when it does (autobyteus-496 AC-001)", () => {
+    const registry = new AgentToolMcpSessionRegistry();
+    // The production adapter set, as every MCP runtime's Agent Tools session uses it.
+    const catalog = new AgentToolMcpCatalog();
+    const service = buildService(registry, catalog);
+    const activate = (runId: string, toolNames: string[]) => {
+      const result = service.activateForRun({
+        owner: { runId },
+        sender: buildSender(runId),
+        runtimeExposure: resolveRuntimeAgentToolExposure({ toolNames }, null),
+      });
+      if (result.kind !== "active") throw new Error("Expected active result.");
+      const session = registry.getSession(result.sessionId);
+      if (!session) throw new Error("Expected an active session.");
+      return { descriptor: result.descriptor, listed: catalog.listMcpToolsForSession(session, "2025-03-26").map((tool) => tool.name) };
+    };
+
+    const unselected = activate("run-default", []);
+    expect(unselected.descriptor.enabledTools).toEqual([SEARCH_MEMORY_TOOL_NAME]);
+    expect(unselected.listed).toEqual([SEARCH_MEMORY_TOOL_NAME]);
+
+    const selected = activate("run-explicit", [SEARCH_MEMORY_TOOL_NAME, "publish_artifacts"]);
+    expect(selected.listed.filter((name) => name === SEARCH_MEMORY_TOOL_NAME)).toHaveLength(1);
   });
 
   it("replaces a run's exposure as one new frozen record and notifies its streams", () => {
