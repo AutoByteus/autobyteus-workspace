@@ -75,3 +75,5 @@
 - Handoff: `Architecture Design Complete` (revised) → `/software_engineering_team/architecture_reviewer` (rule: Large or High)
 - Remaining gaps: ASM-001 (tests); FU-001 addendum to be sent with the result
 - Next action: architecture re-review
+
+Note (2026-11-17, informational, no new SR): architecture review ARCH-REV-002 passed against SR-003 (`design-review-report.md`). The reviewer delivered the implementation handoff to `/software_engineering_team/implementation_engineer`, and the Solution Designer did not forward it again. The FU-001 addendum went to `/project_task_manager` on 2026-11-17.
