@@ -113,7 +113,7 @@ const startAgent = async (steps: ChunkResponse[][], options: { autoExecuteTools?
   const notifier = agent.context.statusManager!.notifier;
   for (const type of [EventType.AGENT_TOOL_APPROVAL_REQUESTED, EventType.AGENT_TOOL_EXECUTION_SUCCEEDED, EventType.AGENT_TOOL_EXECUTION_FAILED,
     EventType.AGENT_DATA_SEGMENT_EVENT, EventType.AGENT_TURN_COMPLETED, EventType.AGENT_COMPACTION_STATUS_UPDATED]) {
-    notifier.subscribe(type, (payload: unknown) => events.push({ type, payload }));
+    notifier.subscribeFrom(notifier, type, (payload: unknown) => events.push({ type, payload }));
   }
   harness = { agent, llm, dir, events, calls, tools };
   return harness;

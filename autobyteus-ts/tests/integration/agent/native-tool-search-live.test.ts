@@ -119,13 +119,13 @@ for (const model of MODELS) {
       agent.start();
       expect(await waitForStatus(agent.context, (status) => status === AgentStatus.IDLE, 30_000)).toBe(true);
       const notifier = agent.context.statusManager!.notifier;
-      notifier.subscribe(EventType.AGENT_TOKEN_USAGE_UPDATED, (payload: any) => usages.push({
+      notifier.subscribeFrom(notifier, EventType.AGENT_TOKEN_USAGE_UPDATED, (payload: any) => usages.push({
         prompt: payload.latest_prompt_tokens ?? null, cacheRead: payload.usage?.cache_read_input_tokens ?? null,
       }));
-      notifier.subscribe(EventType.AGENT_ERROR_OUTPUT_GENERATION, (payload: any) => errors.push({
+      notifier.subscribeFrom(notifier, EventType.AGENT_ERROR_OUTPUT_GENERATION, (payload: any) => errors.push({
         code: String(payload?.code ?? ''), message: String(payload?.message ?? payload),
       }));
-      notifier.subscribe(EventType.AGENT_TURN_COMPLETED, () => { completed = true; });
+      notifier.subscribeFrom(notifier, EventType.AGENT_TURN_COMPLETED, () => { completed = true; });
 
       await agent.postUserMessage(new AgentInputUserMessage(USER));
       await waitForCondition(() => completed && agent!.context.state.activeTurn === null, 240_000, 100);
