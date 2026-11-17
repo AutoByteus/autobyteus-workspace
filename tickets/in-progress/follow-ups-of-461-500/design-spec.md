@@ -572,6 +572,11 @@ Dropped (D-10, SR-009): no change. The field is ignored residue in every older s
   - It reads the runtime's list through the same `readCatalog` and answers from `offeredModels` only.
   - `validate()` is not reused: for an unchanged selection it accepts the exact current model even when it is no longer offered (`run-model-selection-service.ts:79-83`, `findExactCurrent`).
   - It reads only the selected runtime's list (DESIGN.md §5, no unrelated discovery).
+  - **Bounded (SR-012, ARCH-REV-004 AR-002):**
+    - It reads with `deadline: createReadDeadline(AVAILABLE_AGENT_RUNTIMES_STEP_CAPS.modelsMs)`: 8 s, the existing budget for one runtime's model list (`available-agent-runtimes-service.ts:41-43`). Passing a deadline is the existing option `runtimeModelSelectionCatalog(runtime, workspaceRootPath, { deadline })` (`model-catalog-service.ts:179-190`; `runtime-management/read-deadline.ts`).
+    - A read that ends by its deadline (`isDeadlineExceeded(error)`) or by any other thrown read error answers `list_unreadable`, so the start proceeds as today.
+    - **The cost, stated:** CLI runtimes discover their list fresh on each read (Grok: an ACP handshake, `grok-build-model-catalog.ts:5-9`; Antigravity: `agy --help` and `agy models`; Codex: an app-server lease, `codex-model-catalog.ts:23-34`). Each restore or member activation of such a runtime adds one discovery, at most 8 s when the CLI hangs.
+    - **Test:** a CLI runtime's catalog slower than the budget (fake clock or a catalog awaiting past the deadline). The start proceeds, the refusal is not raised, and the added delay is bounded by the budget.
 - **The wording owner: `run-model-selection-refusal.ts`**, with one new builder: `storedModelNotOfferedRefusal({ agentName, runtimeKind, llmModelIdentifier })`. Code `RUN_MODEL_NOT_OFFERED`. Text (FR-1 … FR-4): "{Agent} can't start: its saved model '{model}' is not offered by {Runtime} now. Stop it, then choose a runtime and model for {Agent} in Settings."
 - **Both paths apply the same rule (Principle 1, "two paths, one capability"):**
   - `restoreStarted`: before `buildConfig`.
@@ -590,7 +595,7 @@ Dropped (D-10, SR-009): no change. The field is ignored residue in every older s
 - **Spine walk:**
   - (a) Team member, list read, model missing: Settings note on the member row; the user sends a message; the member activates; refused; the run's view shows the refusal; no runtime is started.
   - (b) Standalone run, same case: refused at restore.
-  - (c) List unreadable: starts as today.
+  - (c) List unreadable, or slower than its 8 s budget: starts as today, at most 8 s later.
   - (d) Model offered: unchanged.
   - (e) Peer-started run: its node runs the check (same code).
   - (f) A delegated run's member: path (a).

@@ -2,6 +2,7 @@
 
 | SR | Date | Kind | Summary | Status after |
 | --- | --- | --- | --- | --- |
+| SR-012 | 2026-11-17 | Design Impact (ARCH-REV-004 AR-002) | G-5's catalog read is bounded by the existing 8 s model-list budget; a deadline or read error answers `list_unreadable` (start proceeds); per-start CLI discovery cost stated; slow-catalog test | Approved; design `Ready` |
 | SR-011 | 2026-11-17 | Requirements and design (Task comment from the PM) | REQ-016 / AC-012 / D-12: a stored model its runtime no longer offers is marked per member and refused at start with one message; G-5. Base moved: 508 merged `d8dbeaa9ba` (same-ID fix of `20261111_delegated_runs_own_runs_v1`, `run-file-conversion.ts` only, no trace moves: M-7 unchanged) | Approved; G-5 to architecture review |
 | SR-010 | 2026-11-17 | Design Impact (ARCH-REV-002 AR-001) | G-2 revised: legacy-shaped rows are rebuilt in the v2 shape from the row and the current tree, never written back raw; G-1's writer refuses a reordering; REQ-013 / AC-010 reworded (same intent: the team stays listed) | Approved; design `Ready` |
 | SR-009 | 2026-11-17 | Requirements | D-10 decided: FU-028 dropped as not a defect (the user left it to the Solution Designer) | Approved; combined package to architecture review |
@@ -112,3 +113,10 @@
 - **Design:** G-5.
 - **Base check:** 508's change to `20261111_delegated_runs_own_runs_v1` touches `run-file-conversion.ts` only. FU-020's late-predecessor classification ("none") holds. The branch is rebased onto `origin/personal` before implementation continues.
 - **Next:** architecture review of G-5. The rest stays passed (ARCH-REV-003).
+
+### SR-012
+
+- **Trigger:** ARCH-REV-004, Fail, AR-002.
+- **Premise checked:** `runtimeModelSelectionCatalog` takes `{ deadline }` (`model-catalog-service.ts:179-190`). The only existing budget for a model-list read is `AVAILABLE_AGENT_RUNTIMES_STEP_CAPS.modelsMs` = 8 s (`available-agent-runtimes-service.ts:41-43`).
+- **Change:** G-5's `storedModelOffer` reads with that deadline, and a deadline or any read error means `list_unreadable`. The cost is stated, and a slow-catalog test is added. Intended behavior is unchanged: D-12 already said a slow or failed catalog never blocks a start.
+- **Next:** architecture review of SR-012.
