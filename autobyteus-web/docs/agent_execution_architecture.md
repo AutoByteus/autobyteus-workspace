@@ -105,7 +105,7 @@ The Pinia stores act as the primary interface for the UI components to interact 
 
 This store owns collaboration contexts, exact child selection and ephemeral
 Team disclosure beneath standalone Agent runs. Disclosure is keyed by
-`hostRunId` and `teamRunId`, not a displayed name or shared logical address.
+`runId` and `teamRunId`, not a displayed name or shared logical address.
 An absent choice means collapsed. Stored inspection and stream publication never open member lists; explicit
 toggles retain their choices across same-session refresh/reselection. Fresh
 frontend sessions start collapsed again. There is no automatic-opening helper,

@@ -169,23 +169,22 @@ message ID (CM-9); the run's view shows the messages of its own log.
   nodes (each by its Task entry, with its node, without statuses); it never restores or starts a run.
   A child on this node is a run of its own and is read by its own identity (its run, or its team
   run's member: conversation, trace pages, Agent Artifacts and file content; autobyteus-461
-  CR-461-022). `agentRunCollaborationMemberProjection(hostRunId, memberAddress, agentRunId)` reads a
+  CR-461-022). `agentRunCollaborationMemberProjection(runId, memberAddress, agentRunId)` reads a
   child on a peer node through this run, from its node (`StandaloneRootMemberViewProjectionService`,
   which answers only this run's peer children); a peer child's trace and files stay on its node.
   `collaboratorMentionCandidates(rootSubjectKind: "agent", rootRunId, focusedAgentRunId)` lists
-  the `@` options for one focused agent (the host or a child). `focusedAgentRunId` is required
+  the `@` options for one focused agent (the run's own agent or a child). `focusedAgentRunId` is required
   for Agent roots.
   `getStandaloneRunTokenUsageSummary(runId)` rolls the run's token usage up over the runs it
   delegated to (see [Token Usage](./token_usage.md#standalone-run-roll-up)).
-- **Context files.** A child's files use the owner kinds `agent_collaboration_member_draft` /
-  `agent_collaboration_member_final` (`{hostRunId, agentRunId}`), located among the runs this run
-  delegated to; the bytes live in the child's own run folder. Draft locators have the form
-  `/rest/drafts/agent-collaborations/:host/agent-runs/:agent/context-files/:file` and are read
-  and deleted through the universal `GET`/`DELETE /rest/drafts/*` routes (see
-  [File Rendering And Media Pipeline](../FILE_RENDERING_AND_MEDIA_PIPELINE.md#url--serving-strategy)).
-  Final files are served from `/rest/agent-collaborations/:host/agent-runs/:agent/context-files/:file`.
-  The host keeps the ordinary standalone owners.
-- **Message references.** `/rest/agent-collaborations/:host/communication/messages/:messageId/references/:referenceId/content`.
+- **Context files.** A delegated run's files are its own: an agent run's under `agent_draft` /
+  `agent_final` (`/rest/runs/:runId/context-files/:file`), a delegated team's members' under the
+  team-member owners (`/rest/team-runs/:teamRunId/agent-runs/:agentRunId/context-files/:file`), never
+  through the run that delegated it. The host-scoped owner kind and its
+  `/rest/agent-collaborations/…/context-files/…` routes are gone (autobyteus-500 FU-020); the stored
+  links of that form are converted by `20261117_delegated_run_own_attachment_links` and its follow-up,
+  with a backup of each rewritten trace file.
+- **Message references.** `/rest/agent-collaborations/:runId/communication/messages/:messageId/references/:referenceId/content`.
 
 ## Native Compaction And Stop
 

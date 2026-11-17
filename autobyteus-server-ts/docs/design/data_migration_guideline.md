@@ -561,6 +561,7 @@ mistakes, not approved designs.
 | `raw-trace-rotation-layout-migration-run.ts` | Preserve pending segments, publish and validate the domain manifest, then clean up the old layout. |
 | `remove-external-messaging-data-migration.ts` | Deletion without a backup followed an explicit feature-removal approval. It is not general permission to delete history. |
 | `team-run-metadata-member-tree-migration.ts`, `remove-global-skill-discovery-mode-migration.ts`, `team-communication-projection-address-migration.ts` | These back up changed files before replacing them. That records past behavior; it is not a default for similar rewrites. |
+| `delegated-run-own-attachment-links/` (autobyteus-500) | A stored link with a wrong owner name: the link's own folder and its file prove the owner, not the name it carries (it named an ancestor in half the founder's data). Scan exact folder depths so a predecessor's not-yet-moved data waits for the follow-up; a byte pre-check keeps the one-time pass at about 10 s for 8.7 GB. Its per-file backup is the founder's explicit rule for this rewrite (D-8), not a default. |
 
 ### Mistakes not to repeat
 

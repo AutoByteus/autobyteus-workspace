@@ -218,7 +218,6 @@ opening workspace files directly.
    - standalone run: `/runs/:runId/file-change-content?path=...`
    - team member: `/team-runs/:teamRunId/agent-runs/:agentRunId/file-change-content?path=...`
    - org member: `/agent-org-runs/:orgRunId/agent-runs/:agentRunId/file-change-content?memberAddress=...&path=...`
-   - delegated copy: `/agent-collaborations/:hostRunId/agent-runs/:agentRunId/file-change-content?memberAddress=...&path=...`
 
    The server reads only that owner's tree. A member's run id sent to the
    run-id route gets 404, so the viewer never uses it for members.
