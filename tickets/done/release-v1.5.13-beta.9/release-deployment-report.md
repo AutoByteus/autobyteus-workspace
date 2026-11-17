@@ -44,3 +44,16 @@ Status: **in progress: GO (2026-11-17); cutting.**
 - `release_smoke.py` (run 3): Claude 3/3, Codex 3/3, Grok 3/3, Antigravity 2/2, AutoByteus 2/2 PASS; the only failure is the waived stale e2e (`configured-skill-on-demand-loading.e2e.test.ts:291`). Models `claude: haiku`, `codex: gpt-5.6-luna`, `grok: grok-4.7`.
 - Evidence: `evidence/delivery/DR1-pretag2-*` (summaries; the full step logs stay in the temp folders the script printed).
 
+
+## Cutting And Rollout
+
+- Release commit `1fdca761aa` (`chore(release): bump workspace release version to 1.5.13-beta.9`, only `autobyteus-web/package.json`), annotated tag `v1.5.13-beta.9`, by `bash scripts/desktop-release.sh beta --branch finalize/release-v1.5.13-beta.9 --no-push`; Secret Gate `fb95f90e23..HEAD` PASS; `origin/personal` checked unchanged (`fc9da63bd2`); pushed `fc9da63bd2..1fdca761aa HEAD -> personal` and the tag.
+- Workflows: iOS App Store Connect Release `44123355591`, Android APK Release `44123355184`, Server Docker Release `44123354990`, Desktop Release `44123354947`.
+
+| Failed Run And Job | Classification | Log Lines That Show The Cause | Action | Result |
+| --- | --- | --- | --- | --- |
+| Desktop `44123354947` attempt 1, Build macOS ARM64 and Build macOS Intel x64: `cancelled` at 16:30:03Z | Platform (GitHub runner capacity) | check-run annotations: `The job was not acquired by Runner of type hosted even after multiple attempts`; `Due to capacity constraints, jobs targeting macOS arm64 runners may experience longer queue times.` No step ran. | `gh run rerun 44123354947 --failed` (16:38Z), after the user asked "Did you look at the Mac OS job": delivery's poll had stopped only on `failure` and missed `cancelled` (records 2026-11-17-R8 in the reflections; the poll now stops on any non-success) | attempt 2: both macOS builds success at 17:02Z (signing and notarization passed: the Apple agreement is in effect) |
+| Desktop attempt 2, Publish GitHub Release, "Wait for the server packages" | Not a failure of its own: the Server Docker Release had not published the six server packages within the 60-minute wait | `##[error]The server packages of v1.5.13-beta.9 did not appear within 60 minutes; missing: autobyteus-server-1.5.13-beta.9-linux-x64.tar.gz …` (18:06Z) | RELEASE.md Recovery "The server packages are missing": when all six are on the release, `gh run rerun 44123354947 --failed` (only the publish job) | pending |
+| Server Docker `44123354990`, Build and push default multi-arch image, in progress since 16:16Z (beta.6 53 min, beta.7 53 min, beta.8 32 min for the whole job) | Under investigation: GitHub's runners are at normal speed today (Desktop Linux x64 6 min vs 7, Windows 15 vs 18, Android 3 vs 3); the lockfile is unchanged; the only change to the image build is autobyteus-514's `claude-agent-sdk-binary-packaging.mjs` step (a full walk of the server package's `node_modules`, run per architecture, arm64 under QEMU; not run inside Docker by 514's validation) | the step log is available only when the job ends | waiting; FU-002 (sent ahead to the Solution Designer at the founder's word) | pending |
+
+- Android APK Release: success. iOS App Store Connect Release: success.
