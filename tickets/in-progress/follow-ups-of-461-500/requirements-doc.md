@@ -2,8 +2,8 @@
 
 ## Document Status
 
-- Status: `Approved` (SR-009): delivery 1 at SR-006, delivery 2 at SR-009
-- Current solution revision ID: `SR-009`
+- Status: `Approved` (SR-010): delivery 1 at SR-006, delivery 2 at SR-010
+- Current solution revision ID: `SR-010`
 - Package identifier: `follow-ups-of-461-500`
 - Request / ticket: Project Task `autobyteus-500` in Project `project_a1377344-25db-482a-97cc-ecfdb0fb495a`: "All follow-ups of autobyteus-461 in one Task"
 - Requested by: `/project_task_manager` (run `project_task_manager_7c8dce0c4a8b44f88e776a83809dee03`), at the founder's word (2026-11-17)
@@ -88,14 +88,14 @@
 | ID | Requirement | Follow-ups |
 | --- | --- | --- |
 | REQ-012 | The released migration order is recorded by the release and protected by a test: the released entries keep their order, and a new migration can only be appended, dated after the newest entry. Nobody updates a list by hand. The runner is unchanged (D-1, D-11) | FU-027 |
-| REQ-013 | A late `20260521_team_run_history_index_v2` (failed and retried, or waiting behind a failed prerequisite) keeps the rows of team runs whose folders exist, and removes only rows whose folder is gone: a same-ID repair | FU-029 |
+| REQ-013 | A late `20260521_team_run_history_index_v2` (failed and retried, or waiting behind a failed prerequisite) keeps every team run whose folder exists listed in history (its row kept, or rebuilt in the current row shape), and removes only rows whose folder is gone: a same-ID repair | FU-029 |
 | REQ-014 | The web probe's skill-improvement removal case asserts the migration's real rule: its data names the server helper run in a session, as the server test SID-2 does | FU-033 |
 | REQ-015 | FU-028: no change; dropped (D-10) | FU-028 |
 
 | AC | Requirement | Observable outcome |
 | --- | --- | --- |
 | AC-009 | REQ-012 | Moving a released entry, inserting one before it, or appending one dated earlier fails the order test; the release script writes the file and the release commit contains it; no hand step in `RELEASE.md` |
-| AC-010 | REQ-013 | On released-shape data where the migration runs after `team-run-execution-tree-v1`, every user-started and delegated team run whose folder exists keeps its exact row; a row whose folder is gone is removed; a second start changes nothing |
+| AC-010 | REQ-013 | On released-shape data where the migration runs late over a pre-v2 index, every user-started and delegated team run whose folder holds a current tree is listed through the current reader (a legacy row is rebuilt, a valid row is kept), a row whose folder is gone is removed, and a second start changes nothing |
 | AC-011 | REQ-014 | `skill-improvement-removal-cases` SIR-002 passes against the unchanged migration |
 
 ## Scope Guardrail

@@ -2,6 +2,7 @@
 
 | SR | Date | Kind | Summary | Status after |
 | --- | --- | --- | --- | --- |
+| SR-010 | 2026-11-17 | Design Impact (ARCH-REV-002 AR-001) | G-2 revised: legacy-shaped rows are rebuilt in the v2 shape from the row and the current tree, never written back raw; G-1's writer refuses a reordering; REQ-013 / AC-010 reworded (same intent: the team stays listed) | Approved; design `Ready` |
 | SR-009 | 2026-11-17 | Requirements | D-10 decided: FU-028 dropped as not a defect (the user left it to the Solution Designer) | Approved; combined package to architecture review |
 | SR-008 | 2026-11-17 | Requirements and design, delivery 2 (the user: stop implementation, design delivery 2 now) | REQ-012 … REQ-015; G-1 release-recorded order; G-2 same-ID repair of team index v2; G-3 probe data; D-10 (FU-028 not a defect, needs the user); delivery 1 naming additions from the implementation engineer's sizing | Delivery 2 `Ready for Approval` (D-10) |
 | SR-007 | 2026-11-17 | Requirements (scope reduced by the user) | FU-032 (audit of past migration order) dropped; delivery 2 = order guard, FU-028, FU-029, FU-033 | Approved |
@@ -88,3 +89,12 @@
 - **Decision:** FU-028 is dropped. No current code reads or writes the field, and no migration removes it, so the late writer leaves the same ignored residue as every older file (guideline §3).
 - **Approval:** delivery 2's requirements are approved by the Solution Designer at the user's word. The combined package (delivery 1 at SR-006 plus its SR-008 naming additions, and delivery 2) is `Large` / `High`.
 - **Next:** architecture review of the delivery 2 parts and the SR-008 additions.
+
+### SR-010
+
+- **Trigger:** ARCH-REV-002, Fail, AR-001 (`design-review-report.md`, Round 2).
+- **Premise checked against the code:** `team-run-history-index-store.ts:77-104` rejects the whole index, not one row, when any row is off-shape. That makes the defect worse than reported.
+- **Change:** G-2 now keeps only rows that pass the reader. It rebuilds legacy rows in the v2 shape from the row and the folder's current tree, with a field-source table, and omits a row only when the folder has no tree. Every row is written through `writeIndex`. G-1's writer refuses a reordered registry.
+- **Approval impact:** REQ-013's intent is unchanged (a team run that exists stays in history); its wording and AC-010 now state the observable outcome through the current reader. No renewed user approval is needed.
+- **Next:** architecture review, round 3.
+- **Design case:** the mistake was carrying over a premise ("kept exactly, like 461's `addRows`") without reading the reader that consumes the output. This is lesson 2 of the Solution Designer's reflections, recorded there.

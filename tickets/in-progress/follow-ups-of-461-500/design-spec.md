@@ -502,23 +502,47 @@ Requirements: REQ-012 … REQ-015, AC-009 … AC-011. FU-028 is dropped (D-10). 
   
   Checks 2 and 3 already exist. Check 1 now comes from the file.
 - **Rule 12:** the release script runs on the release machine, which has the workspace installed. The new step needs only what the server's unit test already needs to build the registry, and the CI gates don't run it. `pnpm release:test --ref <branch>` (already required by delivery 1's FU-023) covers the changed script.
+- **The writer refuses a reordering** (ARCH-REV-002 note): the script exits with an error and writes nothing when the registry does not start with the existing recorded list. So a release can't record a reordered list, even if the order test was skipped.
 - **Removed:** the `RELEASED` constant and its comment.
 - **The runner is unchanged.** Late runs are still handled per migration (guideline §4), as D-1 decided.
 
-## G-2: FU-029, a same-ID repair of `20260521_team_run_history_index_v2`
+## G-2: FU-029, a same-ID repair of `20260521_team_run_history_index_v2` (revised at SR-010 for ARCH-REV-002 AR-001)
 
-- At `team-run-history-index-v2-migration.ts:443-451`, an existing row whose ID was not rebuilt from `team_run_metadata.json` is:
-  - **kept exactly** (written back unchanged) when `agent_teams/{teamRunId}/` is a directory, with disposition `SKIPPED` and the message "kept: a team run in the current tree shape";
-  - removed as stale only when the directory is gone, as today.
-- The rows are written the way 461's `addRows` writes raw rows (`delegated-runs-own-runs-v1-app-data-migration.ts:291-313`), so a kept row isn't reshaped.
-- **Same ID:** this fixes installations where the migration is pending or failed. Terminal records stay skipped (guideline §7, "Correcting a released migration"). No new migration.
-- 461's follow-up `…_after_team_run_history_index_v2` stays. It then finds the delegated rows already present and adds nothing (idempotent by its own rule).
-- **Fixture:** released-shape data where `team-run-execution-tree-v1` ran (team folders with `team_run_execution_tree.json`, no metadata file) and the index migration runs late. It contains:
-  - a user-started team;
-  - a delegated team;
-  - a row whose folder is deleted.
+- **Why not "kept exactly":**
+  - The repair serves installations where this migration is pending or failed, so the index it reads is the pre-v2 one, and its rows may be legacy-shaped (`lastActivityAt`, no `createdAt`: `team-run-history-index-v2-migration.ts:259,265`).
+  - The current index reader rejects the **whole index** when any row has a key outside its set or misses a required field (`frozen/server/run-history/store/team-run-history-index-store.ts:77-104`). Read: the loop returns `null` for the list, not just for the row.
+  - So a single legacy row written back would hide every team run's history.
+- **The rule, at lines 443-451.** For each existing row whose ID was not rebuilt from `team_run_metadata.json`:
+  1. **The folder `agent_teams/{teamRunId}/` is gone:** the row is removed as stale, as today.
+  2. **The row already passes the reader's row rules** (the same key set and types as `team-run-history-index-store.ts:83-104`, applied by a small frozen validator beside the migration): it is kept, its values unchanged.
+  3. **Otherwise, the row is rebuilt as a v2 row** from the existing row and the folder's `team_run_execution_tree.json`. The tree is read tolerantly: only the fields below, with their types checked.
 
-  Expected: the first two rows are kept byte-equal, the third is removed, and a second start changes nothing.
+     | Field | Source, in order |
+     | --- | --- |
+     | `teamRunId` | the folder name (safe ID, as `safeTeamRunId`) |
+     | `teamDefinitionId` | tree `rootTeam.teamDefinitionId`; else the row's non-empty `teamDefinitionId`; else the item `FAILED` (no row written, as for metadata records at :399-406) |
+     | `teamDefinitionName` | the row's non-empty value; else tree `rootTeam.teamDefinitionName`; else the definition-name port (`resolveTeamDefinitionName`'s lookup); else the ID, with a warning |
+     | `workspaceRootPath` | tree `rootTeam.defaultLaunchConfiguration.workspaceRootPath`, canonicalized; else the row's; else `null` |
+     | `summary` | the row's non-empty `summary` (compacted); else `""`. The coordinator-trace rule needs the metadata file's member layout, which is gone. The current catalog shows a run without a summary as it does for 461's restored rows |
+     | `createdAt` | the row's `createdAt`; else tree `createdAt`; else the team directory's birthtime; else the row's `lastActivityAt` (warning); else the migration time (warning). These are the same candidates as `deriveCreatedAt`, without the metadata file |
+     | `archivedAt` | the row's; else tree `archivedAt`; else `null` |
+     | `terminatedAt` | the row's; else `null` |
+  4. **No readable tree** (missing or not JSON) and the row fails the reader's rules: the row is not written. Disposition `SKIPPED`, with a warning ("team folder without a current tree; row omitted"). The folder is untouched: such a run can't be opened by current code either.
+- **Every written row goes through the existing `TeamRunHistoryIndexStore.writeIndex` with `TeamRunIndexRowRecord` values** (its `normalizeRow`), so the written index always passes the reader. The earlier "write raw rows like 461's `addRows`" is withdrawn.
+- **Founder's data (read-only check):** all 400 sampled `team_run_execution_tree.json` files carry `createdAt`, `rootTeam.teamDefinitionId`, `rootTeam.teamDefinitionName` and `rootTeam.defaultLaunchConfiguration`.
+- **Same ID:** this fixes installations where the migration is pending or failed. Terminal records stay skipped (guideline §7). No new migration. 461's follow-up `…_after_team_run_history_index_v2` stays and adds nothing when the rows are present.
+- **Fixture (AC-010).** Released-shape data where `team-run-execution-tree-v1` ran and this migration runs late. A **pre-v2 index** holds:
+  - a legacy-shaped row (`lastActivityAt`, no `createdAt`) for a user-started team with a current tree;
+  - a v2-valid row for a delegated team;
+  - a row whose folder is deleted;
+  - a row for a folder without a tree.
+
+  Expected:
+  - the first row is rebuilt;
+  - the second row is kept with its values;
+  - the third and fourth rows are removed or omitted, with their dispositions;
+  - **both teams are listed through the current reader** (`TeamRunHistoryIndexStore.readIndex` and the run-history catalog);
+  - a second start changes nothing.
 
 ## G-3: FU-033, the probe's data
 
