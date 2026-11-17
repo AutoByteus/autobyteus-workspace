@@ -456,6 +456,13 @@ Each new text follows FR-1 … FR-4. The Code Reviewer checks the list against F
     - the move test accepts a move or rename, or a delete then an add, and also asserts the explorer's final tree (the source gone, the destination present);
     - a "no event" check makes a sentinel change after the ignored one and asserts that no ignored path arrived before the sentinel's event, instead of an 800 ms window.
   - The watcher code is unchanged.
+  - **SR-013 (cause completed):** the OS itself drops or holds file events under heavy load. Raw chokidar and Node's `fs.watch` both lose events without our code (investigation notes, "FU-021, continued"). No test can make the OS deliver them, so the test classifies the failure truthfully:
+    - **Environment probe:** when a wait reaches its hang guard, the test runs a raw `fs.watch` probe: a fresh temp dir, one write, at most 10 s.
+      - If the probe also gets no event, the case fails with "ENVIRONMENT: the OS delivered no file event within 10 s (FSEvents under load); this watcher result is not meaningful", plus the case's own diagnostics.
+      - If the probe gets its event, the case fails as a product failure, with the original message.
+    - **No retries, no skip, no longer waits.** The guard stays at 60 s.
+    - The rewrite already committed (`fb52bd332c`) stays.
+
   - **To prove it:** the file passes 5 of 5 runs alone and 3 of 3 runs under 10 busy loops (`yes > /dev/null`), after `pnpm test:integration:prepare`. Commands are in the investigation notes.
 
 ## Spine Walks Per Case (lesson 1)

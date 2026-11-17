@@ -77,3 +77,11 @@ Authorities read for design: `references/architecture-design.md`, `references/de
   - `autobyteus-web/tests/e2e/skill-improvement-removal-cases.mjs:214-251` creates `helper_run_5555` with `launchPurpose: 'server_helper'` and expects it deleted.
   - The migration deletes only helpers named in a session and the improver's runs (461's follow-up row).
   - The server test names it (`tests/app-data-migrations/remove-skill-improvement-data/remove-skill-improvement-data-migration.test.ts:87,187`, fixture `tests/fixtures/app-data-migrations/skill-improvement-data-fixtures.ts:18`).
+
+### FU-021, continued: the events are lost by the OS, not by our watcher (Reproduced, 2026-11-17)
+
+- **Trigger:** the implementation engineer's Design Impact (IR-001). With the tests asserting outcomes and a 60 s hang guard, 7 and 9 of 14 cases still failed. With a 180 s guard, a sentinel write produced no event for over 3 minutes (`evidence/implementation/IMP-008-*.log`).
+- **Probe 1, raw chokidar 4.0.3** (`/tmp/fu021-probe/raw-chokidar.mjs`): the server's own chokidar with the watcher's options (`awaitWriteFinish` 200/50), and none of our code. Five rounds, each with a fresh temp dir and one file write. Results: 646 ms, 3,223 ms, **no event within 60 s**, 1,761 ms, 902 ms. Load average 53 to 68.
+- **Probe 2, Node's own `fs.watch`** (recursive; FSEvents through libuv), no chokidar (`/tmp/fu021-probe/raw-fswatch.mjs`). Eight rounds: 236, 384, 3,585 and 1,203 ms, **none within 60 s**, 174 and 411 ms, **none within 60 s**.
+- **What is established:** on this machine under its sustained load, macOS file events are sometimes held for minutes or lost, below chokidar and our watcher. Our watcher code (one child process per workspace, `watcher-runtime-process-registry.ts`; chokidar in `chokidar-watcher-runtime.ts:44-66`) is not shown at fault.
+- **Product consequence (not this ticket):** under heavy system file activity, the File Explorer can miss a change until the next one in that folder. That is a platform limit. Reconciling with the disk (for example a rescan when the tree is opened) would be a feature, recorded as FU-500-06.

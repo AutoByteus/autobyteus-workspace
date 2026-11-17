@@ -2,8 +2,8 @@
 
 ## Document Status
 
-- Status: `Approved` (SR-011): delivery 1 at SR-006 plus REQ-016 (SR-011), delivery 2 at SR-010
-- Current solution revision ID: `SR-011`
+- Status: `Approved` (SR-013): delivery 1 at SR-006 plus REQ-016 (SR-011) and D-13 (SR-013), delivery 2 at SR-010
+- Current solution revision ID: `SR-013`
 - Package identifier: `follow-ups-of-461-500`
 - Request / ticket: Project Task `autobyteus-500` in Project `project_a1377344-25db-482a-97cc-ecfdb0fb495a`: "All follow-ups of autobyteus-461 in one Task"
 - Requested by: `/project_task_manager` (run `project_task_manager_7c8dce0c4a8b44f88e776a83809dee03`), at the founder's word (2026-11-17)
@@ -53,6 +53,7 @@
 | D-10 | FU-028: a late `20260901_agent_org_flat_team_families_v1` writes `launchConfiguration.skillAccessMode` | Solution Designer, at the user's word (2026-11-17: "you decide, I think now you have very good understanding of the project") | **Decided: dropped, as not a defect.** Evidence (investigation notes, "Delivery 2"): no current code reads or writes `skillAccessMode` (`git grep` outside `src/app-data-migrations` finds none); no migration removes the field: `20260706_remove_global_skill_discovery_mode` only rewrites the value `GLOBAL_DISCOVERY` (`remove-global-skill-discovery-mode-migration.ts:74-80`), so every older stored launch still carries the field, and the late writer's `"NONE"` (461 evidence `API-E01-r9-F53-team-run-retry-tree.txt`) is the same ignored residue. Removing it everywhere would be a migration for a representation only, which `data_migration_guideline.md` §3 rejects (an obsolete field is ignored on read and dropped on the next save) |
 | D-11 | Where the released order comes from (D-1: "learned from the latest release tag, not a hand-kept list") | Solution Designer | **Recorded by the release itself:** the release script writes the registry's IDs, in order, to a file in the release commit, so the tag holds exactly what it shipped; the order test reads that file. Reading old tags from git is not possible in a test (a registry is code, and CI clones may hold no tags) |
 | D-12 | The Task's comment of 2026-11-17 (from autobyteus-508 FU-001): a stored run or member whose saved model its saved runtime doesn't offer | Solution Designer, within the direction (the PM added it to group 4) | **Shown and refused clearly.** Settings marks each member, not only the root, with the existing "not offered" note. Activation of such a stored launch (a standalone run's restore, a member's activation) is refused with one message naming the agent, runtime and model, and saying how to repair it. It is refused only when the runtime's list was read and lacks the model. An unreadable list starts as today, so a slow or failed catalog never blocks a run whose model may be fine. The text follows FR-1 … FR-4 |
+| D-13 | FU-021: the OS loses file events under heavy load (Reproduced: raw chokidar 1/5 and Node `fs.watch` 2/8 rounds with no event within 60 s, none of our code) | Solution Designer, within the direction (the user informed) | The watcher test asserts outcomes and classifies a timeout: an environment probe tells "the OS delivered no file event" from a product failure. AC-005's watcher part is met where the OS delivers events. Making the File Explorer recover from OS-dropped events is a feature: follow-up FU-500-06 |
 | D-9 | FU-035: Grok's refused tool call reaches the agent only as "Tool execution failed." | Solution Designer | `Unclear` until reproduced. The text may be lost in our projection (`grok-build-tool-projection.ts:37`, which only affects what we display) or inside the Grok CLI (what the model sees, an external dependency). It is investigated with a live Grok run, under the Grok waiver rule: a usage limit alone is not a failure, only the founder's words decide |
 
 ## Requirements (delivery 1)
@@ -80,7 +81,7 @@
 | AC-002 | REQ-004, REQ-005 | A composition with a required owner missing fails at start, with the owner named; no class has an optional collaborator whose absence changes behavior |
 | AC-003 | REQ-006 | A team's and an org's token totals are read through queries that state the kind; there is no kind guessing |
 | AC-004 | REQ-007 | Each refusal of D-4's surfaces is listed with its new text; each says what happened, why and what to do; their outcomes are unchanged (the existing tests' outcome assertions pass) |
-| AC-005 | REQ-008 | The four gates pass repeatedly: the probe guard, the watcher test under a loaded full suite, the runtime-names test, the web type gate at its baseline |
+| AC-005 | REQ-008 | The four gates pass repeatedly: the probe guard, the runtime-names test, the web type gate at its baseline, and the watcher test on a machine whose OS delivers file events. When the OS does not (D-13), the watcher test fails with an ENVIRONMENT message, not as a product failure |
 | AC-006 | REQ-009 | An integration test sends on open to `/ws/agent-org/:id` and to the agent-collaboration stream, and receives `SESSION_NOT_READY` |
 | AC-007 | REQ-010 | A live Grok run shows the server's reason for a refused call, with a test (or, if the cause is in the Grok CLI, the founder decides, per D-9) |
 | AC-012 | REQ-016 | A team run whose member's saved model the member's runtime doesn't offer shows the note on that member row in Settings. Opening it and sending a message is refused with the D-12 text, and no runtime is started. The same holds for a standalone run's restore. With the list unreadable, the start proceeds as today |

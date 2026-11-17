@@ -2,6 +2,7 @@
 
 | SR | Date | Kind | Summary | Status after |
 | --- | --- | --- | --- | --- |
+| SR-013 | 2026-11-17 | Design Impact (the implementation engineer's IR-001, FU-021) | Cause completed: the OS loses file events under load (Reproduced with raw chokidar and Node `fs.watch`); the test classifies a timeout with an environment probe; AC-005's watcher part reworded (D-13); FU-500-06 | Approved; design `Ready` |
 | SR-012 | 2026-11-17 | Design Impact (ARCH-REV-004 AR-002) | G-5's catalog read is bounded by the existing 8 s model-list budget; a deadline or read error answers `list_unreadable` (start proceeds); per-start CLI discovery cost stated; slow-catalog test | Approved; design `Ready` |
 | SR-011 | 2026-11-17 | Requirements and design (Task comment from the PM) | REQ-016 / AC-012 / D-12: a stored model its runtime no longer offers is marked per member and refused at start with one message; G-5. Base moved: 508 merged `d8dbeaa9ba` (same-ID fix of `20261111_delegated_runs_own_runs_v1`, `run-file-conversion.ts` only, no trace moves: M-7 unchanged) | Approved; G-5 to architecture review |
 | SR-010 | 2026-11-17 | Design Impact (ARCH-REV-002 AR-001) | G-2 revised: legacy-shaped rows are rebuilt in the v2 shape from the row and the current tree, never written back raw; G-1's writer refuses a reordering; REQ-013 / AC-010 reworded (same intent: the team stays listed) | Approved; design `Ready` |
@@ -125,3 +126,10 @@
 
 - ARCH-REV-004 failed with AR-002; SR-012 resolved it. ARCH-REV-005: **Pass** (`design-review-report.md`). The reviewer sent G-5 to the implementation engineer.
 - Note to the implementation: the autobyteus runtime's catalog branch ignores the deadline (`model-catalog-service.ts:206-207`), so `storedModelOffer` races the whole read (`raceDeadline`), as `available-agent-runtimes-service.ts` does.
+
+### SR-013
+
+- **Trigger:** the implementation engineer's Design Impact on FU-021 (IR-001). Events were missing for over 3 minutes even with outcome assertions.
+- **Investigation (the Solution Designer):** raw chokidar 4.0.3 missed 1 of 5 events within 60 s, and Node's own `fs.watch` missed 2 of 8, with none of our code involved (load average 53 to 68 on 10 cores). SR-005's cause ("late, not lost") was incomplete. It rested on one case with a long wait (the 2026-11-17 note already said not every case was seen to arrive).
+- **Change:** D-13. AC-005's watcher part is met where the OS delivers events. The design adds an environment probe on a hang-guard timeout. FU-500-06 is recorded for the File Explorer's recovery from dropped OS events.
+- **Review:** a test-only design change inside the reviewed package, with no product, contract or persistence change. Recorded here, with no new architecture review round.
