@@ -56,3 +56,12 @@
 - **Change:** REQ-003 dropped; D-5 now "no change this round"; AC-001 no longer covers `TaskExecution…`; the design's N4 rename rows and change-sequence step removed; FU-500-01 covers stored and code names.
 - **Approval:** the user. **Classification:** unchanged (`Large`, `High`: the migration, the route removal, the composition changes).
 - **Next:** the architecture reviewer is told of the reduced scope.
+
+### Review of SR-005 / SR-006
+
+- ARCH-REV-001: **Pass** (`design-review-report.md`, `architecture-review-revision-record.md`). The classification stays `Large` / `High`. The reviewer sent the package to the implementation engineer.
+- The reviewer settled three "to verify" items:
+  - both hosts initialize `ProjectTaskService` through `composeCollaboration`;
+  - `delegated_copy_own_file_complete_v1` is classed `none`;
+  - `getAgentRunCommandCoordinator()` is called from `agent-stream-handler.ts:86, 502`.
+- Note to the implementation: M-1 matches exact folder depths and never descends into `agents/{run}/collaboration/…`.
