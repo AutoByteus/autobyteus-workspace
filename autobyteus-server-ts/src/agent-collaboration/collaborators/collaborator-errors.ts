@@ -24,6 +24,11 @@ export class CollaboratorAddError extends Error {
      * (the delegating node words it, supplement § 6). Absent for every other refusal.
      */
     readonly routerState?: CopyRouterState,
+    /**
+     * What the delegating agent can do next when this node refuses its own delegation (autobyteus-500 FU-030); a peer's
+     * refusal reaches the delegating node as the peer's reason, without it (the peer's settings are not the agent's).
+     */
+    readonly nextStep: string | null = null,
   ) {
     super(reason);
     this.name = "CollaboratorAddError";

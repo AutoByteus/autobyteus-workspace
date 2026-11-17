@@ -257,7 +257,7 @@ describe("catalog delegation placement (DS-001)", () => {
     await expect(resolveDelegationPlacement({
       port: delegationPort, senderAgentRunId: "pm", address: a("/product_team"), newDelegatedRunFolder: null, resolveInRun: notFound,
       catalogSource: async () => { throw new CollaboratorAddError("Product Team", "no model"); },
-    })).rejects.toMatchObject({ code: "COLLABORATION_TARGET_NOT_FOUND", message: "Product Team can't be delegated to: no model" });
+    })).rejects.toMatchObject({ code: "COLLABORATION_TARGET_NOT_FOUND", message: "Product Team can't be delegated to: no model." });
   });
 
   it("a catalog copy's placement carries its admission's launch notes; empty notes add no key (REQ-008, AR-002)", async () => {

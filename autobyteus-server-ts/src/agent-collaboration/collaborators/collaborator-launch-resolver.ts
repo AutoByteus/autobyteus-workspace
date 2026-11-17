@@ -325,8 +325,8 @@ const noUsableLayer = (plan: CollaboratorDefinitionPlan, fallbacks: readonly Lau
   for (const fallback of fallbacks) {
     if (fallback.reason === "model_unavailable") {
       // FU-030 (DLP-005): what happened and why (the model check's own words), then what to do.
-      throw new CollaboratorAddError(plan.name, `its default model cannot be used: ${fallback.detail.replace(/\.$/, "")}. `
-        + `Choose another model for ${plan.name} in its settings, or delegate to another agent.`, routerState);
+      throw new CollaboratorAddError(plan.name, `its default model cannot be used: ${fallback.detail.replace(/\.$/, "")}`, routerState,
+        `Choose another model for ${plan.name} in its settings, or delegate to another agent.`);
     }
     if (fallback.reason !== "incomplete") throw new CollaboratorAddError(plan.name, fallback.detail, routerState);
   }
