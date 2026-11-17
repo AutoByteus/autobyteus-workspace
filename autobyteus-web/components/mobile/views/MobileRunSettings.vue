@@ -1,7 +1,8 @@
 <template>
   <!-- Settings (autobyteus-458, UIS-003): the open run's runtime and model, changed while the run is stopped; a live run
        shows the desktop's small red stop icon at the right of its name first. The rows are New run's; the selection, Save
-       and the node's refusal are the desktop's saved-run settings (`useExistingRunConfigStore`). -->
+       and the node's refusal are the desktop's saved-run settings (`useExistingRunConfigStore`). Every run has it
+       (autobyteus-522): a run on another node shows one sentence instead of the rows and Save. -->
   <section class="fixed inset-0 z-20 flex h-[100dvh] flex-col bg-white text-slate-900" data-testid="mobile-run-settings">
     <MobileScreenBar :title="t('mobile.settings.title')" @back="$emit('back')" />
 
@@ -27,8 +28,11 @@
         </button>
       </div>
 
+      <!-- A run on another node: this node cannot change it (REQ-004). -->
+      <p v-if="scope.kind === 'remote'" class="py-3 text-[0.9375rem] leading-6 text-slate-600" data-testid="mobile-run-settings-remote">{{ t('mobile.settings.remoteRun', { node: remoteView.remote.value?.nodeName ?? '' }) }}</p>
+
       <MobileRuntimeModelRows
-        v-if="selection"
+        v-else-if="selection"
         :runtime-kind="selection.runtimeKind"
         :llm-model-identifier="selection.llmModelIdentifier"
         :seed-model-identifier="saved?.llmModelIdentifier ?? null"
@@ -42,7 +46,7 @@
       <p v-if="refusal" class="mt-3 rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-700" role="alert" data-testid="mobile-run-settings-error">{{ refusal }}</p>
     </div>
 
-    <div class="flex-shrink-0 border-t border-slate-100 bg-white px-4 pb-3 pt-2">
+    <div v-if="scope.kind !== 'remote'" class="flex-shrink-0 border-t border-slate-100 bg-white px-4 pb-3 pt-2">
       <button
         type="button"
         class="h-14 w-full rounded-2xl bg-blue-600 px-4 text-base font-bold text-white disabled:cursor-not-allowed disabled:opacity-50"
@@ -85,14 +89,15 @@ const draft = computed(() => store.draft);
  * context, which rebuilds an equal scope; a new one would read the run again (discarding the Save's own result) and
  * would count as another stop subject (hiding a failed stop's message).
  */
-const scope = computed<MobileRunSettingsScope | null>((previous) => {
+const scope = computed<MobileRunSettingsScope>((previous) => {
   const next = mobileRunSettingsScope(props.target);
-  return previous && next && JSON.stringify(previous) === JSON.stringify(next) ? previous : next;
+  return previous && JSON.stringify(previous) === JSON.stringify(next) ? previous : next;
 });
 
-// The run's saved settings are read from the node each time the screen opens and when another run is opened.
+// The run's saved settings are read from the node each time the screen opens and when another run is opened; a run on
+// another node has none here.
 watch(scope, (current) => {
-  if (!current) { store.clear(); return; }
+  if (current.kind === 'remote') { store.clear(); return; }
   if (current.kind === 'agent') void store.loadAgentCanonical(current.runId);
   else if (current.kind === 'team') void store.loadTeamCanonical(current.teamRunId);
   else void store.loadAgentOrgCanonical(current.orgRunId);
@@ -102,7 +107,7 @@ onBeforeUnmount(() => store.clear());
 /** The open run's own selection in the loaded draft: the run's for an agent run, its scope's in a Team or Org run. */
 const scopeOf = () => {
   const current = draft.value, open = scope.value;
-  if (!current || !open || current.kind !== open.kind) return null;
+  if (!current || open.kind === 'remote' || current.kind !== open.kind) return null;
   if (current.kind === 'agent') {
     if (open.kind !== 'agent' || current.runId !== open.runId) return null;
     const metadata = current.metadata;
@@ -125,7 +130,7 @@ const canEdit = computed(() => Boolean(draft.value && draft.value.editability.ed
 /** One row's change, written into the open run's own scope of the draft. */
 const change = (patch: Partial<ExistingAgentRunSelection>): void => {
   const current = selection.value, open = scope.value;
-  if (!current || !open || !canEdit.value) return;
+  if (!current || open.kind === 'remote' || !canEdit.value) return;
   const next: ExistingAgentRunSelection = { ...current, ...patch };
   if (open.kind === 'agent') store.updateAgentModelConfig({ llmModelIdentifier: next.llmModelIdentifier, llmConfig: next.llmConfig }, next.runtimeKind);
   else if (open.kind === 'team') store.updateTeamScopeModelConfig(open.address, next);
@@ -148,7 +153,7 @@ const save = async (): Promise<void> => {
  */
 const stopSubject = computed<RunStopSubject | null>(() => {
   const open = scope.value;
-  if (!open) return null;
+  if (open.kind === 'remote') return null;
   if (open.kind === 'agent') return { kind: 'agent', runId: open.runId };
   if (open.kind === 'team') return { kind: 'team', teamRunId: open.teamRunId };
   return { kind: 'agent_org', orgRunId: open.orgRunId };

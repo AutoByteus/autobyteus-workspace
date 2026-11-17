@@ -14,7 +14,7 @@
           </span>
         </span>
       </div>
-      <MobileRunMenu :show-messages="showMessages" :show-desktop="showDesktop" :show-settings="showSettings" @open-view="$emit('open-view', $event)" />
+      <MobileRunMenu :show-messages="showMessages" :show-desktop="showDesktop" @open-view="$emit('open-view', $event)" />
     </header>
 
     <div v-if="unreachable" class="min-h-0 flex-1 overflow-y-auto" data-testid="mobile-run-unreachable">
@@ -54,7 +54,6 @@ import { useTargetConversation } from '~/composables/workspace/useTargetConversa
 import type { ActiveAgentWorkspaceTarget } from '~/types/workspace/activeAgentWorkspaceTarget';
 import { useLocalization } from '~/composables/useLocalization';
 import { mobileRunSubjectLine } from '~/utils/mobile/mobileRunSubjectLine';
-import { mobileRunSettingsScope } from '~/utils/mobile/mobileRunSettingsScope';
 
 const props = defineProps<{ target: ActiveAgentWorkspaceTarget; parentName: string | null }>();
 defineEmits<{ (event: 'back'): void; (event: 'open-view', view: MobileView): void }>();
@@ -80,6 +79,4 @@ const showMessages = computed(() => MEMBER_KINDS.has(props.target.kind));
 /** The paired node's desktop, for a run on that node only: a remote run's screen is on another node (DEC-S3-2). */
 const { availability: desktopAvailability } = useNodeDesktopAvailability();
 const showDesktop = computed(() => desktopAvailability.value === 'available' && !remote.value);
-/** Settings (autobyteus-458): for a run of this node whose runtime and model it can change (`mobileRunSettingsScope`). */
-const showSettings = computed(() => mobileRunSettingsScope(props.target) !== null && !remote.value);
 </script>
