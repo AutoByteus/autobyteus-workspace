@@ -1,0 +1,7 @@
+# API-17 round 2 (web typecheck) at 92f4a1b3a6 + RR-09 (uncommitted at run time); node 22.23.1
+[typecheck] Nuxt app (tsconfig.json): 60 errors, exit 2, 45.3s
+[typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 3.0s
+[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 0.8s
+[typecheck] cross-package tests (tsconfig.cross-package-tests.json): 0 errors, exit 0, 29.3s
+[typecheck] production errors: 0; test-file errors: 87 in 37 files (baseline 87 in 37 files)
+[typecheck] PASS

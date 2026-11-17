@@ -27,3 +27,11 @@
 | 2026-11-17 13:19 | API-06 | Checkpoint | | RR-02 survivor evidence: command alive 13 s after the forced kill while the reminder says it was stopped (F-1) |
 | 2026-11-17 13:19 | API-01 | Checkpoint | | watcher retry not possible: fs.watch still 1-11 s / timeouts at load 112-199 |
 | 2026-11-17 13:19 | cleanup | Completed | | base worktree removed; no previous-release copies, data roots or tagged processes left; isolated instance stopped |
+| 2026-11-17 14:04 | round 2 | Started | | rerun after IR-002 (DEC-008, b78555d7bb); HEAD 92f4a1b3a6; rebuilding server |
+| 2026-11-17 14:07 | API-18 (RR-09) | Completed | Pass | live native gpt-5.4-mini after SIGKILL: reminder has the DEC-008 line; agent ran ps -p <pid>; "Yes — process 19048 is still running." |
+| 2026-11-17 14:07 | API-05..10, API-13/14, API-18 | Started | | round-2 full rerun RR-01..09 on dist of 92f4a1b3a6 (code b78555d7bb) |
+| 2026-11-17 14:15 | API-05..10, API-13/14, API-18 | Completed | Pass | round 2: all 9 passed on dist of 92f4a1b3a6 (full run + RR-01/RR-07 retries: start deadline under load; Claude haiku skipped the tool once and said so) |
+| 2026-11-17 14:15 | API-03, API-17 | Started | | DRO rerun; server and web typecheck |
+| 2026-11-17 14:20 | API-03, API-17 | Completed | Pass | DRO 3/3; server typecheck 1012 = baseline; web typecheck 87 = baseline |
+| 2026-11-17 14:20 | API-01 | Checkpoint | | fs.watch still [853,5360,7124,timeout>20000,5178] at load 85: watcher files not retried |
+| 2026-11-17 14:22 | round 2 | Completed | Pass | report, revision record API-REV-002, investigation round-2 plan written |

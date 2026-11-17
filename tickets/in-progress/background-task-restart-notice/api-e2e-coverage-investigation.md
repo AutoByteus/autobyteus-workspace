@@ -175,3 +175,11 @@ None.
 - Durable coverage added: `Yes`
 - Reroute Required: `No` (before execution)
 - Updated after execution (round 1): F-1 found by RR-02 (after a forced kill the background command keeps running while the reminder says it was stopped): `Requirement Gap`, routed through the failure-origin review. FU-002 recorded (pre-existing turn-id reuse after a restore makes the reminder card show twice). API-01's watcher failures traced to a saturated `fseventsd` (environment).
+
+## Round 2 Plan (API-REV-002)
+
+- Trigger: CRR-003 Pass; IR-002 `b78555d7bb` (DEC-008). Changed paths since round 1 (`cf5ce8d109..92f4a1b3a6`): `restart-notice.ts`, its unit test, RR-02's assertion in my suite (by the implementation engineer), ticket documents.
+- Stale tests made untrue by the change: searched `autobyteus-server-ts/tests`, `autobyteus-ts/tests`, `autobyteus-web`, `test-support` (gated files included) for the old line and the unexpected-stop cause; only RR-02 asserted the old line (rewritten, reviewed correct).
+- Rerun: RR-01..08 (every case builds a reminder through the changed function), API-03 DRO (its update wake builds one), both typechecks.
+- Still valid: API-04 (delivers no reminder), API-12 (base unchanged), API-15 (only the restart text, unchanged, reproved by RR-01/07/08).
+- New: API-18 (RR-09), the reviewer's optional live check: a native agent on a real model after a kill reacts to the DEC-008 line.
