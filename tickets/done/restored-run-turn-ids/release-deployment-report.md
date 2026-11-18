@@ -81,7 +81,19 @@
 
 ## Repository Finalization
 
-FINALIZATION
+- Bootstrap context source: `RELEASE.md` Finalization Target and the ticket's `handoff.md` (finalization `origin/personal`)
+- Ticket branch: `codex/restored-run-turn-ids`
+- Secret Gate before the first push: `scripts/check_secrets.sh origin/personal..HEAD` PASS (15 commits). Artifact hygiene PASS; no Windows-hostile character in this ticket's file names.
+- Ticket branch commit result: `dd4fdeb5b1` (docs sync, delivery records, round archived), on top of checkpoint `00ef33309a` and base merge `bca734f83e`
+- Ticket branch push result: pushed `origin/codex/restored-run-turn-ids` (new branch)
+- Finalization target remote / branch: `origin` / `personal`
+- Target advanced after verification / acceptance: `No` (`bd2053ee51` at every fetch)
+- Re-integration before final merge result: `Not needed`
+- Target branch update result: `finalize/restored-run-turn-ids` created from `origin/personal` @ `bd2053ee51`
+- Merge into target result: `--no-ff` merge `e9ee63beec`; its tree equals the ticket branch's `dd4fdeb5b1`. Secret Gate on the merged state: PASS
+- Push target branch result: `bd2053ee51..e9ee63beec  HEAD -> personal`
+- User's checkout of the target branch (`/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`): fast-forwarded with `git merge --ff-only origin/personal` after this record commit's push, when it is on `personal` with no local commits; the result is in the terminal message.
+- Repository finalization status: `Completed`
 
 ## Release / Publication / Deployment
 
@@ -91,7 +103,12 @@ FINALIZATION
 
 ## Post-Finalization Cleanup
 
-CLEANUP
+- Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/restored-run-turn-ids`
+- Plan, run after this record commit's push:
+  - `git worktree remove --force` (only untracked build output `*/dist/` remains);
+  - `git worktree prune`;
+  - delete the local branches `codex/restored-run-turn-ids` and `finalize/restored-run-turn-ids`.
+- Remote branch: `Not required` (the repository keeps pushed `codex/*` branches). The result is reported in the terminal message.
 
 ## Environment Or Persisted-Data Transition Notes
 
@@ -100,7 +117,9 @@ CLEANUP
 
 ## Verification Checks
 
-CHECKS
+- Secret Gate on the ticket commits: PASS (15 commits)
+- Secret Gate on the merged state: PASS
+- `python3 scripts/check_repository_artifact_hygiene.py`: PASS
 
 ## Rollback Criteria
 
@@ -108,4 +127,10 @@ CHECKS
 
 ## Final Status
 
-FINAL
+- Verification complete: `Yes` (from the evidence)
+- Repository finalization complete: `Yes` (`e9ee63beec` on `personal`; this record commit follows it)
+- Applicable release/deployment/rollout complete or not required: `Yes` (not required)
+- Applicable safe cleanup complete or not required: run after this record's push (Post-Finalization Cleanup); result in the terminal message
+- Unresolved blocker: `None`
+- Successful terminal package eligible for return: `Yes`
+- Terminal package sent to the Solution Designer: by `send_message_to` after this record's push

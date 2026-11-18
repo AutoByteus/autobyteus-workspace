@@ -7,7 +7,7 @@
 - Classification: `task_size: Medium`, `architectural_risk: High`. SR-001 was Medium / Low, direct implementation. The validation found F-1, a Design Impact (CRR-001), which led to SR-002 "One identity per notice".
 - Route after SR-002: architecture review (ARCH-REV-001 Pass) → IR-002 → code review (CRR-002 Pass) → API/E2E (API-REV-002 Pass, 94%) → test-code review (CRR-003 Pass) → delivery (DR-001).
 - Current Status: `Verified from evidence / finalized on personal; no release`
-- Branch: `codex/restored-run-turn-ids`, base `origin/personal` @ `2e9ac1e65b`. Integrated by merge of `bd2053ee51` as `bca734f83e`. Product code final at `ee5e87495f`.
+- Branch: `codex/restored-run-turn-ids`, base `origin/personal` @ `2e9ac1e65b`. Integrated by merge of `bd2053ee51` as `bca734f83e`. Product code final at `ee5e87495f`. Finalized: `--no-ff` merge `e9ee63beec` pushed to `origin/personal`.
 
 ## Delivery Summary
 
