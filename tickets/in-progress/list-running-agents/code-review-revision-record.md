@@ -8,6 +8,7 @@ The latest `code-review-report.md` is authoritative for its current result.
 | --- | --- | --- | --- | --- | --- |
 | CRR-001 | `code-review-report.md` | Implementation Review, round 1 (IR-001, `deacacf948`) | N/A | Fail (Local Fix) | CR-001, CR-002 |
 | CRR-002 | `code-review-report.md` | Implementation Review, round 2 (IR-002, `5f89ecbdf5`) | Fail (Local Fix) | Pass | CR-001, CR-002 (resolved) |
+| CRR-003 | `api-e2e-test-review-report.md` | Proportional test-code review after API/E2E Pass (API-REV-001, `9fc0df5db3`, `ec66ee7d01`) | N/A (first test review) | Pass | None |
 
 ## Revision Entries
 
@@ -63,3 +64,28 @@ None.
 - Material score or classification changes: overall 9.3 → 9.4; Runtime Correctness 9.0 → 9.4
 - Recommended recipient: API/E2E engineer (primary); implementation engineer (informational)
 - Remaining risks or uncertainty: two-server E2E (UNK-001); stale E2E assertions listed in the handoff; contract-story U9 timing.
+
+### CRR-003 — Proportional review of the API/E2E test changes
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/list-running-agents/tickets/in-progress/list-running-agents/api-e2e-test-review-report.md`
+- Review entry point and round: successful API/E2E test-code review, round 1
+- Review scope: `N/A` (test review)
+- Triggering role, report path, and finding or scenario IDs: API/E2E engineer, `api-e2e-execution-coverage-report.md` (API-REV-001); RC-47, RC-48, RC-49 and the updated RC-06/08/20/22/26/27/28, CPW-R2/M-11, contract stories U9/O9, the MCP routes schema test
+- Relevant solution revision IDs: SR-009
+- Relevant architecture-review revision IDs: ARCH-REV-004
+- Relevant implementation revision IDs: IR-002
+- Relevant API/E2E revision IDs: API-REV-001
+- Relevant delivery revision IDs: N/A
+- Prior authoritative result: N/A for test review (source review CRR-002 Pass)
+- Current authoritative result: Pass
+- What changed in the review result and why: the six changed durable test paths prove the approved rule through real triggers on built servers. Old-rule assertions are rewritten to the new behavior, not loosened. No finding.
+- Supported product scenario / material-premise basis changes: None.
+
+#### Prior Finding Resolution
+
+None.
+
+- New or remaining finding IDs: None
+- Material score or classification changes: N/A
+- Recommended recipient: delivery engineer
+- Remaining risks or uncertainty: BEH-007 is proven in process only (IMP-06); FU-001 … FU-005 stay outside this ticket.
