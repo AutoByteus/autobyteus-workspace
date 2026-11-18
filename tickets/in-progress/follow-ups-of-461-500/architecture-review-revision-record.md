@@ -13,6 +13,7 @@
 | ARCH-REV-007 | Round 7 / SR-014, FU-021 labels and proof; FU-035 sequencing | SR-014 | Pass | Pass | None (one note) |
 | ARCH-REV-008 | Round 8 / SR-015, G-5 revised for CRR-003 | SR-015 | Pass | Fail | AR-003 |
 | ARCH-REV-009 | Round 9 / SR-016, AR-003 answered | SR-016 | Fail | Pass | AR-003 (resolved) |
+| ARCH-REV-010 | Round 10 / SR-017, re-dated migrations after 491's release | SR-017 | Pass | Pass | None |
 
 ## Revision Entries
 
@@ -218,3 +219,22 @@ None open.
 - Material classification changes: none
 - Recommended recipient: Implementation Engineer; then a notice to the Solution Designer
 - Remaining risks or uncertainty: host-scoped models go unchecked while a sibling host is down (acceptable under D-12)
+
+### ARCH-REV-010 — SR-017: migrations re-dated after 491's released entry
+
+- Canonical design review report: same path as above
+- Review round and trigger: 10; SR-017 (`d11924928f`), the Delivery Engineer's Design Impact (`release-deployment-report.md`)
+- Triggering role, report path, and finding IDs: Solution Designer (from the Delivery Engineer); none
+- Relevant solution revision IDs: SR-017
+- Prior authoritative decision: `Pass` (ARCH-REV-009)
+- Current authoritative decision: `Pass`
+- What changed in the review result: the two unreleased migrations get new `20261119` IDs after 491's released `20261118` entry. 491 is classified `none` (verified on `origin/personal`: it deletes only two agent-definition folders), the JSON is seeded with beta.1's 46 IDs, and MO-1 is redone in the users' order.
+
+#### Prior Finding Resolution
+
+None open.
+
+- New or remaining finding IDs: none
+- Material classification changes: none
+- Recommended recipient: Implementation Engineer; then a notice to the Solution Designer
+- Remaining risks or uncertainty: none new

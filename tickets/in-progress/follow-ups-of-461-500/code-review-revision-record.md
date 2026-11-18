@@ -20,6 +20,8 @@
 | CRR-016 | `api-e2e-test-review-report.md` | Proportional test-code review / API-REV-006 (no test change) | Pass (CRR-015) | Not Applicable | None |
 | CRR-017 | `code-review-report.md` | Merge review, round 9 (Targeted Delta) / IR-009, base `53b72018ad` (491, 492) | Not Applicable (CRR-016) | Pass | None |
 | CRR-018 | `api-e2e-test-review-report.md` | Proportional test-code review / API-REV-007 (d33103b732) | Pass (CRR-017) | Pass | None |
+| CRR-019 | `code-review-report.md` | Implementation Review, round 10 (Targeted Delta) / IR-010 (SR-017 D-15; merge after v1.5.14-beta.1) | Pass (CRR-018) | Pass | None |
+| CRR-020 | `api-e2e-test-review-report.md` | Proportional test-code review / API-REV-008 (7a1f94d606) | Pass (CRR-019) | Pass | None |
 
 ### CRR-001: Implementation review of IR-001: Fail, Local Fix
 
@@ -495,5 +497,53 @@
   - FU-500-15 (a), the host's "off" answer reached by units only;
   - FU-500-15 (b), the runtimes' not-found codes differ, as on base;
   - FU-500-10 is resolved by 492;
+  - the closure doc notes (SIR-001 superseded; the FU-021 guard text);
+  - the residual risks as in CRR-006.
+
+### CRR-019: Review of IR-010 (the migration IDs after v1.5.14-beta.1): Pass
+
+- Review entry point and round: implementation review, round 10
+- Review scope: Targeted Delta, the merge `8a9b1a0aec` (the order test) and the rename `686f715446`
+- Triggering role, report path, and finding or scenario IDs: Implementation Engineer, `implementation-handoff.md` (IR-010, IMP-027)
+- Relevant solution revision IDs: SR-017 (D-15)
+- Relevant architecture-review revision IDs: ARCH-REV-010
+- Relevant implementation revision IDs: IR-010
+- Relevant API/E2E revision IDs: API-REV-007
+- Relevant delivery revision IDs: the integration after v1.5.14-beta.1
+- Prior authoritative result: Pass (CRR-018)
+- Current authoritative result: Pass
+- What changed in the review result and why:
+  - beta.1 released 491's `20261118` migration, so this ticket's never-released migrations are renamed to `20261119_*` and appended after it.
+  - `released-migration-order.json` equals beta.1's 46 IDs (checked against the tag's own list; beta.1 added only 491's migration). The one hand catch-up predates G-1 being on personal.
+  - The merge keeps G-1's JSON-reading order test.
+- Supported product scenario / material-premise basis changes: none
+- Prior finding resolution: N/A
+- New or remaining finding IDs: none
+- Material score or classification changes: none
+- Recommended recipient: `/api_e2e_engineer`
+- Remaining risks or uncertainty: MO-1 in the users' order (491 already applied) and the gated startup e2e are API/E2E's
+
+### CRR-020: Proportional test-code review after API-REV-008: Pass
+
+- Review entry point and round: successful API/E2E test-code review (round 8)
+- Review scope: `7a1f94d606` (ALM-1 as one journey: MO-1 from before beta.1, MO-2 from beta.1)
+- Triggering role, report path, and finding or scenario IDs: API/E2E Engineer, `api-e2e-execution-coverage-report.md` (API-REV-008)
+- Relevant solution revision IDs: SR-017 (D-15)
+- Relevant architecture-review revision IDs: ARCH-REV-010
+- Relevant implementation revision IDs: IR-010
+- Relevant API/E2E revision IDs: API-REV-008
+- Relevant delivery revision IDs: the integration after v1.5.14-beta.1
+- Prior authoritative result: Pass (CRR-019)
+- Current authoritative result: Pass
+- What changed in the review result and why:
+  - The renamed migrations are proven on both upgrade paths users will take: from before beta.1 (491's removal, then both of this ticket's) and from beta.1 (only this ticket's two, with 491's record untouched).
+  - Backups are under the new ID only; links open; a second start changes nothing.
+- Supported product scenario / material-premise basis changes: none
+- Prior finding resolution: N/A
+- New or remaining finding IDs: none
+- Material score or classification changes: N/A
+- Recommended recipient: `/delivery_engineer`
+- Remaining risks or uncertainty:
+  - MO-2 emulates beta.1 with this build (491's code is identical to the tag);
   - the closure doc notes (SIR-001 superseded; the FU-021 guard text);
   - the residual risks as in CRR-006.

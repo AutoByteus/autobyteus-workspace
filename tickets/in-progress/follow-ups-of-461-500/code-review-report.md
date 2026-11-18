@@ -1,6 +1,35 @@
 # Code Review Report: follow-ups-of-461-500 (autobyteus-500)
 
-The latest result is round 9, **CRR-017: Pass** (IR-009, the eighth base refresh, `53b72018ad`: 491 and 492). It comes first, then round 8 (CRR-015) and the earlier rounds. The test reviews CRR-005, CRR-006, CRR-009, CRR-012, CRR-014 and CRR-016 are in `api-e2e-test-review-report.md`.
+The latest result is round 10, **CRR-019: Pass** (IR-010: the merge after v1.5.14-beta.1, and the D-15 rename). It comes first, then round 9 (CRR-017) and the earlier rounds. The test reviews CRR-005 … CRR-018 are in `api-e2e-test-review-report.md`.
+
+## Round 10: Review Of IR-010, The Migration IDs After beta.1 (CRR-019)
+
+- **Scope:**
+  - `Targeted Delta Review` of the merge `8a9b1a0aec` (parents `ccb8b7b130` and `79845432556e`, which is `origin/personal`; no rebase) and the rename `686f715446`.
+  - Upstream: SR-017 / D-15, ARCH-REV-010 Pass.
+- **Why:** v1.5.14-beta.1 (`7bcac96466`, in the branch) released 491's `20261118_remove_retired_built_in_agents`. This ticket's unreleased `20261117_*` migrations would now be dated before the newest released entry, breaking the order rule (D-1). Renaming them is safe because they have never been released: no install has a ledger row for them.
+- **The released record: correct.**
+  - `git diff v1.5.13 v1.5.14-beta.1 -- src/app-data-migrations` adds only 491's migration (the registry and its folder). beta.1's own order test lists 46 IDs, equal to `released-migration-order.json` (I compared them).
+  - The record gained 491's entry by hand in the merge. That is a one-time catch-up, because beta.1 was cut before G-1's recorder was on personal; it matches the tag exactly. From here the release script writes it.
+  - The order test now expects at least 46 (`// v1.5.14-beta.1`).
+- **The merge's one conflict** (`app-data-migration-registry-order.test.ts`): it resolves to this ticket's JSON-reading test (G-1), and the base's hand-kept `RELEASED` list is removed. Correct; that is what G-1 replaces.
+- **The rename (D-15): correct and complete.**
+  - Both IDs become `20261119_*`.
+  - The follow-up's prerequisites name the main ID through its constant.
+  - The backup folder follows `this.id` (`app-data-migration-backups/20261119_…/`).
+  - The registry appends both after 491's released entry, main migration first. The registry comment states why the order is safe: 491's migration deletes definition folders under `config.getAgentsDir()`, and these rewrite only raw traces under `memory/`.
+  - The registration, 461-era order, late-predecessor and startup e2e tests, and `standalone_agent_run_root.md`, follow the rename.
+  - The late-predecessor table classifies 491's migration as `none`: it writes no trace and selects nothing by a link. That is correct.
+  - No `20261117_delegated_run` reference remains outside `tickets/`.
+- **Checks:** I didn't rerun IMP-027.
+  - Type gates at their baselines.
+  - Migration, order and release tests: 89 passed, 1 skipped.
+  - Server units, work journal, app-data migrations, architecture and release: 8479 passed, 0 failed.
+  - Web: 5822 passed.
+- **Findings:** none.
+- **Routing:** `Pass`, to `/api_e2e_engineer`: MO-1 in the users' order (491 applied as on beta.1, then this ticket's two on the next start), and the gated `delegated-run-own-attachment-links-startup.e2e`. Then the test review, then delivery.
+
+---
 
 ## Round 9: Merge Review Of IR-009, The Base `53b72018ad` (CRR-017)
 

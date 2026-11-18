@@ -9,11 +9,11 @@
 - Supplemental Task Artifacts Reviewed: `source-follow-ups-461.md` (leads); `follow-ups.md`; the handoff `handoff-architecture-review-sr005.md`
 - Relevant Solution Revision IDs: SR-005 … SR-014
 - Architecture Review Revision Record: `architecture-review-revision-record.md`
-- Current Architecture Review Revision ID: `ARCH-REV-009`
-- Current Review Round: 9
+- Current Architecture Review Revision ID: `ARCH-REV-010`
+- Current Review Round: 10
 - Trigger (latest): SR-015, G-5 revised for the code reviewer's CRR-003 after API/E2E round 1 failed. Round 1's trigger was SR-005 and SR-006.
 - Prior Review Round Reviewed: 1 (ARCH-REV-001, `Pass` for delivery 1 at SR-005/SR-006)
-- Latest Authoritative Round: 9
+- Latest Authoritative Round: 10
 - Current-State Evidence Basis: the branch at `3138978568` (base `origin/personal` `e4f4b3e176`). These were opened at their cited lines:
   - `agent-memory-layout.ts:76-114`;
   - `team-run-physical-scope.ts:52`;
@@ -29,6 +29,22 @@
   - the frozen `context-file-record-locators.ts:34-45`;
   - `migrations/delegated-copy-own-file-complete-v1/` (searched for renames and traces);
   - `studio-application-api-services.ts:136`.
+
+## Round 10: SR-017, a release shipped 491's migration first (D-15)
+
+- **Change reviewed** (commit `d11924928f`; design "SR-017"; the Delivery Engineer's Design Impact; `release-deployment-report.md`).
+  - `v1.5.14-beta.1` released `20261118_remove_retired_built_in_agents` (autobyteus-491) while this ticket's two unreleased migrations were dated and registered ahead of it. They are renamed `20261119_delegated_run_own_attachment_links` and `…_after_task_agent_own_run`, appended after 491's entry, and the backup folder follows the ID.
+  - 491 is classified `none` against M-7.
+  - `released-migration-order.json` becomes beta.1's 46 IDs.
+  - API/E2E redoes MO-1 in the users' order.
+- **Verified on `origin/personal` (`7984543255`).** `remove-retired-built-in-agents-migration.ts` deletes only the two agent-definition folders under `<agentsDir>`, with `fs.rm` (`:38-39`; description `:57`, "Their runs stay"), and the registry places it last (`:175`).
+- **Judgement: sound.**
+  - The unreleased IDs are the ones that move. Guideline §4 (append-only, dated later) is met without touching released entries, as REQ-012 and D-1 require.
+  - 491 and our migrations touch disjoint data (agent definitions against memory traces), so either order gives the same result and `none` is right. The classification test lists it.
+  - Seeding the JSON from beta.1's actual released set (the base's `RELEASED` at `1f835e3e7f`) keeps G-1's record truthful. G-1's own refusal would have caught the reordering that this avoids.
+  - G-2 is order-independent.
+  - Redoing MO-1 in the users' order, 491 first, is the right evidence.
+- **Decision (round 10):** `Pass`. The combined package (through SR-017) stands.
 
 ## Round 9: SR-016, AR-003 answered
 
@@ -344,7 +360,7 @@ One name per concept (Principle 15): `Pass — deviation recorded, reason holds`
 
 ## Review Decision
 
-`Pass` (round 9). AR-001, AR-002 and AR-003 are resolved. The combined package is ready for implementation; FU-035's live step follows as IR-002 (D-14).
+`Pass` (round 10). AR-001, AR-002 and AR-003 are resolved. The combined package is ready for implementation; FU-035's live step follows as IR-002 (D-14).
 
 ## Findings
 

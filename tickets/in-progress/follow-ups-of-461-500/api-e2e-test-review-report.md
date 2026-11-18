@@ -1,6 +1,19 @@
 # API/E2E Test Review Report: follow-ups-of-461-500 (autobyteus-500)
 
-The latest result is **CRR-018: Pass** (API-REV-007, the eighth merged state). CRR-016, CRR-014, CRR-012, CRR-009, CRR-006 and CRR-005 follow as history.
+The latest result is **CRR-020: Pass** (API-REV-008, the renamed migrations on both upgrade paths). CRR-018, CRR-016, CRR-014, CRR-012, CRR-009, CRR-006 and CRR-005 follow as history.
+
+## API-REV-008 (CRR-020)
+
+- **Scope:** `7a1f94d606` (`delegated-run-own-attachment-links-startup.e2e.test.ts`). Docs are in `c7fd70ec0b`.
+- **The change:** round 7's MO-1 asserted this ticket's migrations before 491's, which D-15 reverses. ALM-1's setup is now one `journey(from)` with two cases, each entering through a real built-server start over released-shape data:
+  - **MO-1, from before beta.1:** all three ledger rows are removed, and one first start must run 491's removal, then the main migration, then the follow-up. Asserted by `completedAt ≤ startedAt` on each step.
+  - **MO-2, from beta.1:** an emulated beta.1 start runs only 491's removal (its code is identical to the tag). Then this ticket's two rows are removed and the first start runs only the two `20261119` migrations. That they ran alone is proven by 491's record (attempts, startedAt, completedAt) equal to the beta.1 start's.
+  - **Both paths assert:** backups only under `20261119_delegated_run_own_attachment_links/`, holding the released bytes, none under the follow-up or any `20261117_` folder; converted traces byte-identical to what the current code writes; links opening and the removed route's 404; the compactor's run kept and listed, with AGY's own not-found answer; a second start changing nothing.
+- **The one limitation:** MO-2 emulates beta.1 with this build rather than the beta.1 binary. It's stated in the report, and acceptable, because 491's migration code is identical to the tag's.
+- **Checks:** names and intent clear (the two cases name their upgrade path); assertions prove AC-009 and AC-008 positively; one shared journey with no duplication; no skips beyond the env gate. Result 2/2; the order test and migration units 77/77.
+- **Result: Pass.** No findings. Recipient: `/delivery_engineer`.
+
+---
 
 ## API-REV-007 (CRR-018)
 
