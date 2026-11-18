@@ -1,0 +1,1705 @@
+{
+  "startedAt": "2026-11-18T17:25:43.002Z",
+  "result": "Pass",
+  "node": "v22.23.1",
+  "servers": {
+    "beta": {
+      "port": 50780,
+      "nodeId": "srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    },
+    "alpha": {
+      "port": 50779,
+      "nodeId": "srv_8hbtPQQn7bHQZ-m-eE_sQ7W07tr3O0fX",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    },
+    "delta": {
+      "port": 52862,
+      "nodeId": "srv_WY_poTuQiWQVhdS1O6GjbVnT60AeHjU7",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    }
+  },
+  "runs": {
+    "ptm": "project_task_manager_4e5d58e82a9b4aa8a558204990256316",
+    "writerRun": "release_notes_writer_738dc5ca0650490d9f67e31cee659c63",
+    "squadRun": "docs_review_team_0217649939f94235a0465bb788b8f682",
+    "reviewer": "release_notes_writer_e5fe73e5822740eeac56b6b50ed84681",
+    "memberDelegated": "fact_checker_5586f8a0c0e94bfba6133e1841f2d8cc",
+    "remoteAgentRun": "publisher_7a46580aac6a44a285541736eb230d2d",
+    "remoteTeamRun": "studio_team_bf68e5e95522408bb5f2dae990a65405",
+    "plain": [
+      "fact_checker_105c0250f0f648cfa1e25765766e81e8",
+      "fact_checker_740ead379e7a4a319570033d91cab580",
+      "fact_checker_9173e43e46524771856de68106eecfa3"
+    ],
+    "org": "delivery_org_d9ccc726835943daa5bddd42d22cbcb2",
+    "orgPlanner": "release_notes_writer_eb671de9a65b4397a6015d1a4b742b72",
+    "reviewOrg": "review_org_b33f547417bb40d0b994cb1dce55816e",
+    "reviewOrgCoordinator": {
+      "address": "/squad/reviewer",
+      "agentRunId": "release_notes_writer_14a5414e0430476496bfeaac8c97a49f",
+      "teamRunId": null
+    },
+    "delivery": "delivery_team_61fe4a66efa94602b5cfd0d958836f8b",
+    "deliveryLead": "fact_checker_e108e0d5b9c441c9b9ea4173e25c3b2e",
+    "deliveryMate": "release_notes_writer_f431e6bbca3945edbd7b496d571cff33",
+    "leadDelegated": "changelog_helper_2d1209df0a5a4aee9bb9394f4e1683ce",
+    "approver": "approver_b3c616ccba9d40838094324f5d6da916",
+    "taskA": "launch-2d4303-1",
+    "taskB": "launch-2d4303-2"
+  },
+  "cases": {
+    "MSP-78": {
+      "result": "Pass",
+      "seconds": 7.6,
+      "lateRun": "fact_checker_c1aa2151535b4169a06f51f8837e673b",
+      "task": {
+        "taskId": "b1c48ce0-4420-49a6-8d5b-db2de8c3108d/task-11",
+        "status": "running",
+        "command": "sleep 5 # background step 11",
+        "summary": null,
+        "startedAt": "2026-11-18T17:27:00.538Z"
+      },
+      "nodeAfterEnd": [
+        {
+          "taskId": "b1c48ce0-4420-49a6-8d5b-db2de8c3108d/task-11",
+          "status": "failed",
+          "command": "sleep 5 # background step 11",
+          "summary": "Command exited with code 1",
+          "startedAt": "2026-11-18T17:27:00.538Z"
+        }
+      ],
+      "listed": [
+        {
+          "status": "failed",
+          "text": "sleep 5 # background step 11Failedexit code 1Started 05:27 PM",
+          "end": "exit code 1"
+        }
+      ]
+    },
+    "MSP-80": {
+      "result": "Pass",
+      "seconds": 32.8,
+      "runId": "fact_checker_1a2a82ff4eb04a8a8cf6e87993f0d71c",
+      "screen": {
+        "name": "Fact Checker",
+        "subtitle": "Idle"
+      },
+      "rounds": {
+        "gap0": {
+          "stops": 1,
+          "acks": [
+            "accepted"
+          ],
+          "nodeAnswers": [
+            "accepted"
+          ],
+          "toasts": [],
+          "button": [
+            [
+              40,
+              "Stopping…",
+              true,
+              false
+            ],
+            [
+              66,
+              "Send message",
+              false,
+              false
+            ]
+          ],
+          "secondAt": 43,
+          "secondLabel": "Stopping…"
+        },
+        "gap150": {
+          "stops": 1,
+          "acks": [
+            "accepted"
+          ],
+          "nodeAnswers": [
+            "accepted"
+          ],
+          "toasts": [],
+          "button": [
+            [
+              39,
+              "Stopping…",
+              true,
+              false
+            ],
+            [
+              54,
+              "Send message",
+              false,
+              false
+            ]
+          ],
+          "secondAt": 171,
+          "secondLabel": "Send message"
+        }
+      },
+      "stale": {
+        "other": {
+          "state": "accepted",
+          "code": null
+        },
+        "labelWhenTapped": "Stop generation",
+        "stops": 1,
+        "acks": [
+          "accepted"
+        ],
+        "nodeAnswers": [
+          "accepted"
+        ],
+        "toasts": [],
+        "button": [
+          [
+            30,
+            "Stopping…",
+            true,
+            false
+          ],
+          [
+            1394,
+            "Send message",
+            false,
+            false
+          ]
+        ]
+      },
+      "refused": {
+        "stops": 1,
+        "acks": [
+          "failed:INTERRUPT_EXECUTION_FAILED"
+        ],
+        "nodeAnswers": [],
+        "toasts": [
+          "Could not stop Fact Checker. Please try again."
+        ],
+        "button": [],
+        "after": {
+          "label": "Stop generation",
+          "enabled": true
+        }
+      },
+      "notConnected": {
+        "offeredWhenDown": {
+          "label": "Stop generation",
+          "enabled": true
+        },
+        "stops": 0,
+        "acks": [],
+        "nodeAnswers": [],
+        "toasts": [
+          "Stop was not sent: not connected to the node. Check the connection and try again."
+        ],
+        "button": [],
+        "pressable": true
+      },
+      "refusedName": "Fact Checker",
+      "sends": 6,
+      "sendStalls": []
+    },
+    "MSP-81": {
+      "result": "Pass",
+      "seconds": 32.8,
+      "teamRunId": "delivery_team_6a466bb3779745f59a38f17ef4837680",
+      "lead": "fact_checker_dcd9515ea2484b7d9f98290ecdbd4065",
+      "screen": {
+        "name": "lead",
+        "subtitle": "Stopped · in Delivery Team"
+      },
+      "rounds": {
+        "gap0": {
+          "stops": 1,
+          "acks": [
+            "accepted"
+          ],
+          "nodeAnswers": [
+            "accepted"
+          ],
+          "toasts": [],
+          "button": [
+            [
+              33,
+              "Stopping…",
+              true,
+              false
+            ],
+            [
+              58,
+              "Send message",
+              false,
+              false
+            ]
+          ],
+          "secondAt": 35,
+          "secondLabel": "Stopping…"
+        },
+        "gap150": {
+          "stops": 1,
+          "acks": [
+            "accepted"
+          ],
+          "nodeAnswers": [
+            "accepted"
+          ],
+          "toasts": [],
+          "button": [
+            [
+              34,
+              "Stopping…",
+              true,
+              false
+            ],
+            [
+              51,
+              "Send message",
+              false,
+              false
+            ]
+          ],
+          "secondAt": 166,
+          "secondLabel": "Send message"
+        }
+      },
+      "stale": {
+        "other": {
+          "state": "accepted",
+          "code": null
+        },
+        "labelWhenTapped": "Stop generation",
+        "stops": 1,
+        "acks": [
+          "accepted"
+        ],
+        "nodeAnswers": [
+          "accepted"
+        ],
+        "toasts": [],
+        "button": [
+          [
+            26,
+            "Stopping…",
+            true,
+            false
+          ],
+          [
+            1396,
+            "Send message",
+            false,
+            false
+          ]
+        ]
+      },
+      "refused": {
+        "stops": 1,
+        "acks": [
+          "failed:INTERRUPT_EXECUTION_FAILED"
+        ],
+        "nodeAnswers": [],
+        "toasts": [
+          "Could not stop lead. Please try again."
+        ],
+        "button": [],
+        "after": {
+          "label": "Stop generation",
+          "enabled": true
+        }
+      },
+      "notConnected": {
+        "offeredWhenDown": {
+          "label": "Stop generation",
+          "enabled": true
+        },
+        "stops": 0,
+        "acks": [],
+        "nodeAnswers": [],
+        "toasts": [
+          "Stop was not sent: not connected to the node. Check the connection and try again."
+        ],
+        "button": [],
+        "pressable": true
+      },
+      "refusedName": "lead",
+      "sends": 6,
+      "sendStalls": []
+    },
+    "MSP-82": {
+      "result": "Pass",
+      "seconds": 56.6,
+      "orgRunId": "delivery_org_bc90059d3a094300a402dcedbd7bde36",
+      "planner": "release_notes_writer_47434c26bb5e4f568297494b3f2525b6",
+      "squadReviewer": "release_notes_writer_b8c005aee7eb4f0c9cb2ce8b99791b12",
+      "member": {
+        "screen": {
+          "name": "planner",
+          "subtitle": "Stopped · in Delivery Org"
+        },
+        "rounds": {
+          "gap0": {
+            "stops": 1,
+            "acks": [
+              "accepted"
+            ],
+            "nodeAnswers": [
+              "accepted"
+            ],
+            "toasts": [],
+            "button": [
+              [
+                41,
+                "Stopping…",
+                true,
+                false
+              ],
+              [
+                69,
+                "Send message",
+                false,
+                false
+              ]
+            ],
+            "secondAt": 42,
+            "secondLabel": "Stopping…"
+          },
+          "gap150": {
+            "stops": 1,
+            "acks": [
+              "accepted"
+            ],
+            "nodeAnswers": [
+              "accepted"
+            ],
+            "toasts": [],
+            "button": [
+              [
+                41,
+                "Stopping…",
+                true,
+                false
+              ],
+              [
+                73,
+                "Send message",
+                false,
+                false
+              ]
+            ],
+            "secondAt": 158,
+            "secondLabel": "Send message"
+          }
+        },
+        "stale": {
+          "other": {
+            "state": "accepted",
+            "code": null
+          },
+          "labelWhenTapped": "Stop generation",
+          "stops": 1,
+          "acks": [
+            "accepted"
+          ],
+          "nodeAnswers": [
+            "accepted"
+          ],
+          "toasts": [],
+          "button": [
+            [
+              29,
+              "Stopping…",
+              true,
+              false
+            ],
+            [
+              1393,
+              "Send message",
+              false,
+              false
+            ]
+          ]
+        },
+        "refused": {
+          "stops": 1,
+          "acks": [
+            "failed:INTERRUPT_EXECUTION_FAILED"
+          ],
+          "nodeAnswers": [],
+          "toasts": [
+            "Could not stop planner. Please try again."
+          ],
+          "button": [],
+          "after": {
+            "label": "Stop generation",
+            "enabled": true
+          }
+        },
+        "notConnected": {
+          "offeredWhenDown": {
+            "label": "Stop generation",
+            "enabled": false
+          },
+          "stops": 0,
+          "acks": [],
+          "nodeAnswers": [],
+          "toasts": [],
+          "button": [
+            [
+              13,
+              "Stop generation",
+              false,
+              false
+            ]
+          ],
+          "pressable": false
+        },
+        "refusedName": "planner"
+      },
+      "orgTeamMember": {
+        "screen": {
+          "name": "reviewer",
+          "subtitle": "Stopped · in squad"
+        },
+        "rounds": {
+          "gap0": {
+            "stops": 1,
+            "acks": [
+              "accepted"
+            ],
+            "nodeAnswers": [
+              "accepted"
+            ],
+            "toasts": [],
+            "button": [
+              [
+                37,
+                "Stopping…",
+                true,
+                false
+              ],
+              [
+                55,
+                "Send message",
+                false,
+                false
+              ]
+            ],
+            "secondAt": 38,
+            "secondLabel": "Stopping…"
+          },
+          "gap150": {
+            "stops": 1,
+            "acks": [
+              "accepted"
+            ],
+            "nodeAnswers": [
+              "accepted"
+            ],
+            "toasts": [],
+            "button": [
+              [
+                41,
+                "Stopping…",
+                true,
+                false
+              ],
+              [
+                59,
+                "Send message",
+                false,
+                false
+              ]
+            ],
+            "secondAt": 156,
+            "secondLabel": "Send message"
+          }
+        },
+        "stale": {
+          "other": {
+            "state": "accepted",
+            "code": null
+          },
+          "labelWhenTapped": "Stop generation",
+          "stops": 1,
+          "acks": [
+            "accepted"
+          ],
+          "nodeAnswers": [
+            "accepted"
+          ],
+          "toasts": [],
+          "button": [
+            [
+              28,
+              "Stopping…",
+              true,
+              false
+            ],
+            [
+              1389,
+              "Send message",
+              false,
+              false
+            ]
+          ]
+        },
+        "refused": {
+          "stops": 1,
+          "acks": [
+            "failed:INTERRUPT_EXECUTION_FAILED"
+          ],
+          "nodeAnswers": [],
+          "toasts": [
+            "Could not stop reviewer. Please try again."
+          ],
+          "button": [],
+          "after": {
+            "label": "Stop generation",
+            "enabled": true
+          }
+        },
+        "refusedName": "reviewer"
+      },
+      "sends": 11,
+      "sendStalls": []
+    },
+    "MSP-83": {
+      "result": "Pass",
+      "seconds": 50.5,
+      "delegator": "project_task_manager_0759b292ce31446688b0cc52c2d0e63b",
+      "agent": "release_notes_writer_aa0f14df133743c4ab7cdfd4ba4146d8",
+      "team": "docs_review_team_e86b6970399b409689dd0b024ece901f",
+      "reviewer": "release_notes_writer_4d17007b70b648e7ab2af0511ea3f4e9",
+      "taskAgent": {
+        "screen": {
+          "name": "release notes writer",
+          "subtitle": "Idle · in Project Task Manager"
+        },
+        "rounds": {
+          "gap0": {
+            "stops": 1,
+            "acks": [
+              "accepted"
+            ],
+            "nodeAnswers": [
+              "accepted"
+            ],
+            "toasts": [],
+            "button": [
+              [
+                39,
+                "Stopping…",
+                true,
+                false
+              ],
+              [
+                71,
+                "Send message",
+                false,
+                false
+              ]
+            ],
+            "secondAt": 41,
+            "secondLabel": "Stopping…"
+          },
+          "gap150": {
+            "stops": 1,
+            "acks": [
+              "accepted"
+            ],
+            "nodeAnswers": [
+              "accepted"
+            ],
+            "toasts": [],
+            "button": [
+              [
+                37,
+                "Stopping…",
+                true,
+                false
+              ],
+              [
+                65,
+                "Send message",
+                false,
+                false
+              ]
+            ],
+            "secondAt": 154,
+            "secondLabel": "Send message"
+          }
+        },
+        "stale": {
+          "other": {
+            "state": "accepted",
+            "code": null
+          },
+          "labelWhenTapped": "Stop generation",
+          "stops": 1,
+          "acks": [
+            "accepted"
+          ],
+          "nodeAnswers": [
+            "accepted"
+          ],
+          "toasts": [],
+          "button": [
+            [
+              24,
+              "Stopping…",
+              true,
+              false
+            ],
+            [
+              1389,
+              "Send message",
+              false,
+              false
+            ]
+          ]
+        },
+        "refused": {
+          "stops": 1,
+          "acks": [
+            "failed:INTERRUPT_EXECUTION_FAILED"
+          ],
+          "nodeAnswers": [],
+          "toasts": [
+            "Could not stop release notes writer. Please try again."
+          ],
+          "button": [],
+          "after": {
+            "label": "Stop generation",
+            "enabled": true
+          }
+        },
+        "refusedName": "release notes writer"
+      },
+      "taskTeamMember": {
+        "screen": {
+          "name": "reviewer",
+          "subtitle": "Idle · in docs review team"
+        },
+        "rounds": {
+          "gap0": {
+            "stops": 1,
+            "acks": [
+              "accepted"
+            ],
+            "nodeAnswers": [
+              "accepted"
+            ],
+            "toasts": [],
+            "button": [
+              [
+                40,
+                "Stopping…",
+                true,
+                false
+              ],
+              [
+                62,
+                "Send message",
+                false,
+                false
+              ]
+            ],
+            "secondAt": 41,
+            "secondLabel": "Stopping…"
+          },
+          "gap150": {
+            "stops": 1,
+            "acks": [
+              "accepted"
+            ],
+            "nodeAnswers": [
+              "accepted"
+            ],
+            "toasts": [],
+            "button": [
+              [
+                38,
+                "Stopping…",
+                true,
+                false
+              ],
+              [
+                70,
+                "Send message",
+                false,
+                false
+              ]
+            ],
+            "secondAt": 172,
+            "secondLabel": "Send message"
+          }
+        },
+        "stale": {
+          "other": {
+            "state": "accepted",
+            "code": null
+          },
+          "labelWhenTapped": "Stop generation",
+          "stops": 1,
+          "acks": [
+            "accepted"
+          ],
+          "nodeAnswers": [
+            "accepted"
+          ],
+          "toasts": [],
+          "button": [
+            [
+              29,
+              "Stopping…",
+              true,
+              false
+            ],
+            [
+              1391,
+              "Send message",
+              false,
+              false
+            ]
+          ]
+        },
+        "refused": {
+          "stops": 1,
+          "acks": [
+            "failed:INTERRUPT_EXECUTION_FAILED"
+          ],
+          "nodeAnswers": [],
+          "toasts": [
+            "Could not stop reviewer. Please try again."
+          ],
+          "button": [],
+          "after": {
+            "label": "Stop generation",
+            "enabled": true
+          }
+        },
+        "refusedName": "reviewer"
+      },
+      "sends": 10,
+      "sendStalls": []
+    },
+    "MSP-84": {
+      "result": "Pass",
+      "seconds": 162.5,
+      "delegator": "project_task_manager_0759b292ce31446688b0cc52c2d0e63b",
+      "remote": "publisher_2c9cc074768044df8474d971bcb14481",
+      "peer": {
+        "screen": {
+          "name": "publisher",
+          "subtitle": "Idle · in Project Task Manager"
+        },
+        "rounds": {
+          "gap0": {
+            "stops": 1,
+            "acks": [
+              "accepted"
+            ],
+            "nodeAnswers": [
+              "accepted"
+            ],
+            "toasts": [],
+            "button": [
+              [
+                23,
+                "Stopping…",
+                true,
+                false
+              ],
+              [
+                56,
+                "Send message",
+                false,
+                false
+              ]
+            ],
+            "secondAt": 24,
+            "secondLabel": "Stopping…"
+          },
+          "gap150": {
+            "stops": 1,
+            "acks": [
+              "accepted"
+            ],
+            "nodeAnswers": [
+              "accepted"
+            ],
+            "toasts": [],
+            "button": [
+              [
+                36,
+                "Stopping…",
+                true,
+                false
+              ],
+              [
+                62,
+                "Send message",
+                false,
+                false
+              ]
+            ],
+            "secondAt": 170,
+            "secondLabel": "Send message"
+          }
+        },
+        "stale": {
+          "other": {
+            "state": "accepted",
+            "code": null
+          },
+          "labelWhenTapped": "Stop generation",
+          "stops": 1,
+          "acks": [
+            "accepted"
+          ],
+          "nodeAnswers": [
+            "accepted"
+          ],
+          "toasts": [],
+          "button": [
+            [
+              26,
+              "Stopping…",
+              true,
+              false
+            ],
+            [
+              1404,
+              "Send message",
+              false,
+              false
+            ]
+          ]
+        },
+        "refused": {
+          "stops": 1,
+          "acks": [
+            "failed:INTERRUPT_EXECUTION_FAILED"
+          ],
+          "nodeAnswers": [],
+          "toasts": [
+            "Could not stop publisher. Please try again."
+          ],
+          "button": [],
+          "after": {
+            "label": "Stop generation",
+            "enabled": true
+          }
+        },
+        "notConnected": {
+          "offeredWhenDown": {
+            "label": "Stop generation",
+            "enabled": true
+          },
+          "stops": 0,
+          "acks": [],
+          "nodeAnswers": [],
+          "toasts": [
+            "Stop was not sent: not connected to the node. Check the connection and try again."
+          ],
+          "button": [],
+          "pressable": true
+        },
+        "refusedName": "publisher"
+      },
+      "betaDown": {
+        "afterStop": {
+          "label": null,
+          "enabled": false
+        },
+        "tapped": false,
+        "stopPressableAfterBetaStopped": false,
+        "stops": 0,
+        "acks": [],
+        "nodeAnswers": [],
+        "toasts": [],
+        "button": [
+          [
+            32,
+            "none",
+            false,
+            false
+          ]
+        ],
+        "screen": {
+          "state": "open",
+          "name": "publisher",
+          "subtitle": "Not reachable",
+          "chip": "beta-node",
+          "conversation": null,
+          "query": "?row=agent:project_task_manager_0759b292ce31446688b0cc52c2d0e63b/peer_agent:publisher_2c9cc074768044df8474d971bcb14481&screen=run"
+        },
+        "frames": [
+          "24 down /ws/run-status RUN_STATUS_CHANGED",
+          "25 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 ERROR PEER_RUN_STREAM_ENDED \"The stream of agent run 'publisher_2c9cc074768044df8474d971bcb14481' on its node ended.\"",
+          "27 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CLOSED by the other side",
+          "1045 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CONNECTED",
+          "1047 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 ERROR PEER_RUN_STREAM_ENDED \"Node \"beta-node\" could not be reached (fetch failed).\"",
+          "1047 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CLOSED by the other side",
+          "2058 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CONNECTED",
+          "2060 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 ERROR PEER_RUN_STREAM_ENDED \"Node \"beta-node\" could not be reached (fetch failed).\"",
+          "2061 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CLOSED by the other side",
+          "3071 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CONNECTED",
+          "3072 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 ERROR PEER_RUN_STREAM_ENDED \"Node \"beta-node\" could not be reached (fetch failed).\"",
+          "3073 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CLOSED by the other side",
+          "4082 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CONNECTED",
+          "4083 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 ERROR PEER_RUN_STREAM_ENDED \"Node \"beta-node\" could not be reached (fetch failed).\"",
+          "4084 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CLOSED by the other side",
+          "5092 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CONNECTED",
+          "5093 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 ERROR PEER_RUN_STREAM_ENDED \"Node \"beta-node\" could not be reached (fetch failed).\"",
+          "5093 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CLOSED by the other side",
+          "6107 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CONNECTED",
+          "6108 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 ERROR PEER_RUN_STREAM_ENDED \"Node \"beta-node\" could not be reached (fetch failed).\"",
+          "6110 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CLOSED by the other side",
+          "7123 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CONNECTED",
+          "7124 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 ERROR PEER_RUN_STREAM_ENDED \"Node \"beta-node\" could not be reached (fetch failed).\"",
+          "7125 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CLOSED by the other side",
+          "8135 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CONNECTED",
+          "8136 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 ERROR PEER_RUN_STREAM_ENDED \"Node \"beta-node\" could not be reached (fetch failed).\"",
+          "8137 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CLOSED by the other side",
+          "9142 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CONNECTED",
+          "9144 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 ERROR PEER_RUN_STREAM_ENDED \"Node \"beta-node\" could not be reached (fetch failed).\"",
+          "9144 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CLOSED by the other side",
+          "10154 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CONNECTED",
+          "10155 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 ERROR PEER_RUN_STREAM_ENDED \"Node \"beta-node\" could not be reached (fetch failed).\"",
+          "10155 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CLOSED by the other side",
+          "11161 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CONNECTED",
+          "11163 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 ERROR PEER_RUN_STREAM_ENDED \"Node \"beta-node\" could not be reached (fetch failed).\"",
+          "11164 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CLOSED by the other side",
+          "12173 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CONNECTED",
+          "12174 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 ERROR PEER_RUN_STREAM_ENDED \"Node \"beta-node\" could not be reached (fetch failed).\"",
+          "12175 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CLOSED by the other side",
+          "13183 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CONNECTED",
+          "13184 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 ERROR PEER_RUN_STREAM_ENDED \"Node \"beta-node\" could not be reached (fetch failed).\"",
+          "13185 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CLOSED by the other side",
+          "14198 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CONNECTED",
+          "14199 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 ERROR PEER_RUN_STREAM_ENDED \"Node \"beta-node\" could not be reached (fetch failed).\"",
+          "14200 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CLOSED by the other side",
+          "15216 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CONNECTED",
+          "15223 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 ERROR PEER_RUN_STREAM_ENDED \"Node \"beta-node\" could not be reached (fetch failed).\"",
+          "15224 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CLOSED by the other side",
+          "16233 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CONNECTED",
+          "16234 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 ERROR PEER_RUN_STREAM_ENDED \"Node \"beta-node\" could not be reached (fetch failed).\"",
+          "16235 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CLOSED by the other side",
+          "17245 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CONNECTED",
+          "17246 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 ERROR PEER_RUN_STREAM_ENDED \"Node \"beta-node\" could not be reached (fetch failed).\"",
+          "17247 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CLOSED by the other side",
+          "18253 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CONNECTED",
+          "18255 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 ERROR PEER_RUN_STREAM_ENDED \"Node \"beta-node\" could not be reached (fetch failed).\"",
+          "18256 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CLOSED by the other side",
+          "19260 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CONNECTED",
+          "19261 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 ERROR PEER_RUN_STREAM_ENDED \"Node \"beta-node\" could not be reached (fetch failed).\"",
+          "19262 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CLOSED by the other side",
+          "20274 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CONNECTED",
+          "20275 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 ERROR PEER_RUN_STREAM_ENDED \"Node \"beta-node\" could not be reached (fetch failed).\"",
+          "20276 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CLOSED by the other side",
+          "21288 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CONNECTED",
+          "21288 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 ERROR PEER_RUN_STREAM_ENDED \"Node \"beta-node\" could not be reached (fetch failed).\"",
+          "21289 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CLOSED by the other side",
+          "22307 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CONNECTED",
+          "22309 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 ERROR PEER_RUN_STREAM_ENDED \"Node \"beta-node\" could not be reached (fetch failed).\"",
+          "22311 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CLOSED by the other side",
+          "23324 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CONNECTED",
+          "23324 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 ERROR PEER_RUN_STREAM_ENDED \"Node \"beta-node\" could not be reached (fetch failed).\"",
+          "23325 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CLOSED by the other side",
+          "24335 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CONNECTED",
+          "24336 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 ERROR PEER_RUN_STREAM_ENDED \"Node \"beta-node\" could not be reached (fetch failed).\"",
+          "24337 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CLOSED by the other side",
+          "25345 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CONNECTED",
+          "25347 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 ERROR PEER_RUN_STREAM_ENDED \"Node \"beta-node\" could not be reached (fetch failed).\"",
+          "25347 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CLOSED by the other side",
+          "26358 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CONNECTED",
+          "26359 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 ERROR PEER_RUN_STREAM_ENDED \"Node \"beta-node\" could not be reached (fetch failed).\"",
+          "26362 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CLOSED by the other side",
+          "27378 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CONNECTED",
+          "27381 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 ERROR PEER_RUN_STREAM_ENDED \"Node \"beta-node\" could not be reached (fetch failed).\"",
+          "27382 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CLOSED by the other side",
+          "28391 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CONNECTED",
+          "28392 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 ERROR PEER_RUN_STREAM_ENDED \"Node \"beta-node\" could not be reached (fetch failed).\"",
+          "28393 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CLOSED by the other side",
+          "29407 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CONNECTED",
+          "29408 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 ERROR PEER_RUN_STREAM_ENDED \"Node \"beta-node\" could not be reached (fetch failed).\"",
+          "29408 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CLOSED by the other side",
+          "30416 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CONNECTED",
+          "30418 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 ERROR PEER_RUN_STREAM_ENDED \"Node \"beta-node\" could not be reached (fetch failed).\"",
+          "30419 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CLOSED by the other side",
+          "31436 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CONNECTED",
+          "31437 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 ERROR PEER_RUN_STREAM_ENDED \"Node \"beta-node\" could not be reached (fetch failed).\"",
+          "31438 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CLOSED by the other side",
+          "32448 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CONNECTED",
+          "32448 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 ERROR PEER_RUN_STREAM_ENDED \"Node \"beta-node\" could not be reached (fetch failed).\"",
+          "32449 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CLOSED by the other side",
+          "33466 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CONNECTED",
+          "33467 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 ERROR PEER_RUN_STREAM_ENDED \"Node \"beta-node\" could not be reached (fetch failed).\"",
+          "33468 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CLOSED by the other side",
+          "34477 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CONNECTED",
+          "34479 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 ERROR PEER_RUN_STREAM_ENDED \"Node \"beta-node\" could not be reached (fetch failed).\"",
+          "34480 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CLOSED by the other side",
+          "35494 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CONNECTED",
+          "35495 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 ERROR PEER_RUN_STREAM_ENDED \"Node \"beta-node\" could not be reached (fetch failed).\"",
+          "35496 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CLOSED by the other side",
+          "36504 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CONNECTED",
+          "36505 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 ERROR PEER_RUN_STREAM_ENDED \"Node \"beta-node\" could not be reached (fetch failed).\"",
+          "36506 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CLOSED by the other side",
+          "37513 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CONNECTED",
+          "37515 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 ERROR PEER_RUN_STREAM_ENDED \"Node \"beta-node\" could not be reached (fetch failed).\"",
+          "37516 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CLOSED by the other side",
+          "38525 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CONNECTED",
+          "38527 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 ERROR PEER_RUN_STREAM_ENDED \"Node \"beta-node\" could not be reached (fetch failed).\"",
+          "38527 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CLOSED by the other side",
+          "39537 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CONNECTED",
+          "39538 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 ERROR PEER_RUN_STREAM_ENDED \"Node \"beta-node\" could not be reached (fetch failed).\"",
+          "39538 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CLOSED by the other side",
+          "40555 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CONNECTED",
+          "40557 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 ERROR PEER_RUN_STREAM_ENDED \"Node \"beta-node\" could not be reached (fetch failed).\"",
+          "40558 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CLOSED by the other side",
+          "41563 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CONNECTED",
+          "41564 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 ERROR PEER_RUN_STREAM_ENDED \"Node \"beta-node\" could not be reached (fetch failed).\"",
+          "41565 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CLOSED by the other side",
+          "42579 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CONNECTED",
+          "42581 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 ERROR PEER_RUN_STREAM_ENDED \"Node \"beta-node\" could not be reached (fetch failed).\"",
+          "42581 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CLOSED by the other side",
+          "43596 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CONNECTED",
+          "43597 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 ERROR PEER_RUN_STREAM_ENDED \"Node \"beta-node\" could not be reached (fetch failed).\"",
+          "43597 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CLOSED by the other side",
+          "44605 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CONNECTED",
+          "44606 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 ERROR PEER_RUN_STREAM_ENDED \"Node \"beta-node\" could not be reached (fetch failed).\"",
+          "44606 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CLOSED by the other side",
+          "45616 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CONNECTED",
+          "45617 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 ERROR PEER_RUN_STREAM_ENDED \"Node \"beta-node\" could not be reached (fetch failed).\"",
+          "45617 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CLOSED by the other side",
+          "46624 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CONNECTED",
+          "46625 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 ERROR PEER_RUN_STREAM_ENDED \"Node \"beta-node\" could not be reached (fetch failed).\"",
+          "46626 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CLOSED by the other side",
+          "47634 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CONNECTED",
+          "47635 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 ERROR PEER_RUN_STREAM_ENDED \"Node \"beta-node\" could not be reached (fetch failed).\"",
+          "47636 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CLOSED by the other side",
+          "48645 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CONNECTED",
+          "48646 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 ERROR PEER_RUN_STREAM_ENDED \"Node \"beta-node\" could not be reached (fetch failed).\"",
+          "48646 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CLOSED by the other side",
+          "49656 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CONNECTED",
+          "49658 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 ERROR PEER_RUN_STREAM_ENDED \"Node \"beta-node\" could not be reached (fetch failed).\"",
+          "49658 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CLOSED by the other side",
+          "50674 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CONNECTED",
+          "50676 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 ERROR PEER_RUN_STREAM_ENDED \"Node \"beta-node\" could not be reached (fetch failed).\"",
+          "50676 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CLOSED by the other side",
+          "51682 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CONNECTED",
+          "51684 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 ERROR PEER_RUN_STREAM_ENDED \"Node \"beta-node\" could not be reached (fetch failed).\"",
+          "51684 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CLOSED by the other side",
+          "52694 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CONNECTED",
+          "52696 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 ERROR PEER_RUN_STREAM_ENDED \"Node \"beta-node\" could not be reached (fetch failed).\"",
+          "52696 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CLOSED by the other side",
+          "53706 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CONNECTED",
+          "53709 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 ERROR PEER_RUN_STREAM_ENDED \"Node \"beta-node\" could not be reached (fetch failed).\"",
+          "53709 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CLOSED by the other side",
+          "54730 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CONNECTED",
+          "54730 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 ERROR PEER_RUN_STREAM_ENDED \"Node \"beta-node\" could not be reached (fetch failed).\"",
+          "54731 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CLOSED by the other side",
+          "55743 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CONNECTED",
+          "55745 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 ERROR PEER_RUN_STREAM_ENDED \"Node \"beta-node\" could not be reached (fetch failed).\"",
+          "55745 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CLOSED by the other side",
+          "56752 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CONNECTED",
+          "56754 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 ERROR PEER_RUN_STREAM_ENDED \"Node \"beta-node\" could not be reached (fetch failed).\"",
+          "56755 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CLOSED by the other side",
+          "57763 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CONNECTED",
+          "57766 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 ERROR PEER_RUN_STREAM_ENDED \"Node \"beta-node\" could not be reached (fetch failed).\"",
+          "57767 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CLOSED by the other side",
+          "58779 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CONNECTED",
+          "58780 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 ERROR PEER_RUN_STREAM_ENDED \"Node \"beta-node\" could not be reached (fetch failed).\"",
+          "58781 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CLOSED by the other side",
+          "59790 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CONNECTED",
+          "59791 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 ERROR PEER_RUN_STREAM_ENDED \"Node \"beta-node\" could not be reached (fetch failed).\"",
+          "59791 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CLOSED by the other side",
+          "60805 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CONNECTED",
+          "60806 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 ERROR PEER_RUN_STREAM_ENDED \"Node \"beta-node\" could not be reached (fetch failed).\"",
+          "60806 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CLOSED by the other side",
+          "61810 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CONNECTED",
+          "61811 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 ERROR PEER_RUN_STREAM_ENDED \"Node \"beta-node\" could not be reached (fetch failed).\"",
+          "61812 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CLOSED by the other side",
+          "62826 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CONNECTED",
+          "62827 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 ERROR PEER_RUN_STREAM_ENDED \"Node \"beta-node\" could not be reached (fetch failed).\"",
+          "62828 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CLOSED by the other side",
+          "63839 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CONNECTED",
+          "63840 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 ERROR PEER_RUN_STREAM_ENDED \"Node \"beta-node\" could not be reached (fetch failed).\"",
+          "63840 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CLOSED by the other side",
+          "64851 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CONNECTED",
+          "64852 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 ERROR PEER_RUN_STREAM_ENDED \"Node \"beta-node\" could not be reached (fetch failed).\"",
+          "64852 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CLOSED by the other side",
+          "65865 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CONNECTED",
+          "65868 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 ERROR PEER_RUN_STREAM_ENDED \"Node \"beta-node\" could not be reached (fetch failed).\"",
+          "65868 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CLOSED by the other side",
+          "66874 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CONNECTED",
+          "66876 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 ERROR PEER_RUN_STREAM_ENDED \"Node \"beta-node\" could not be reached (fetch failed).\"",
+          "66876 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CLOSED by the other side",
+          "67884 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CONNECTED",
+          "67884 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 ERROR PEER_RUN_STREAM_ENDED \"Node \"beta-node\" could not be reached (fetch failed).\"",
+          "67885 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CLOSED by the other side",
+          "68892 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CONNECTED",
+          "68893 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 ERROR PEER_RUN_STREAM_ENDED \"Node \"beta-node\" could not be reached (fetch failed).\"",
+          "68893 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CLOSED by the other side",
+          "69902 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CONNECTED",
+          "69906 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 ERROR PEER_RUN_STREAM_ENDED \"Node \"beta-node\" could not be reached (fetch failed).\"",
+          "69907 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CLOSED by the other side",
+          "70912 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CONNECTED",
+          "70913 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 ERROR PEER_RUN_STREAM_ENDED \"Node \"beta-node\" could not be reached (fetch failed).\"",
+          "70914 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CLOSED by the other side",
+          "71923 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CONNECTED",
+          "71924 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 ERROR PEER_RUN_STREAM_ENDED \"Node \"beta-node\" could not be reached (fetch failed).\"",
+          "71924 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CLOSED by the other side",
+          "72932 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CONNECTED",
+          "72935 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 ERROR PEER_RUN_STREAM_ENDED \"Node \"beta-node\" could not be reached (fetch failed).\"",
+          "72936 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CLOSED by the other side",
+          "73945 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CONNECTED",
+          "73947 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 ERROR PEER_RUN_STREAM_ENDED \"Node \"beta-node\" could not be reached (fetch failed).\"",
+          "73947 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CLOSED by the other side",
+          "74955 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CONNECTED",
+          "74956 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 ERROR PEER_RUN_STREAM_ENDED \"Node \"beta-node\" could not be reached (fetch failed).\"",
+          "74956 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CLOSED by the other side",
+          "75964 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CONNECTED",
+          "75965 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 ERROR PEER_RUN_STREAM_ENDED \"Node \"beta-node\" could not be reached (fetch failed).\"",
+          "75966 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CLOSED by the other side",
+          "76976 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CONNECTED",
+          "76977 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 ERROR PEER_RUN_STREAM_ENDED \"Node \"beta-node\" could not be reached (fetch failed).\"",
+          "76978 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CLOSED by the other side",
+          "77992 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CONNECTED",
+          "77994 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 ERROR PEER_RUN_STREAM_ENDED \"Node \"beta-node\" could not be reached (fetch failed).\"",
+          "77995 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CLOSED by the other side",
+          "79005 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CONNECTED",
+          "79006 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 ERROR PEER_RUN_STREAM_ENDED \"Node \"beta-node\" could not be reached (fetch failed).\"",
+          "79007 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CLOSED by the other side",
+          "80015 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CONNECTED",
+          "80017 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 ERROR PEER_RUN_STREAM_ENDED \"Node \"beta-node\" could not be reached (fetch failed).\"",
+          "80018 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CLOSED by the other side",
+          "81034 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CONNECTED",
+          "81035 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 ERROR PEER_RUN_STREAM_ENDED \"Node \"beta-node\" could not be reached (fetch failed).\"",
+          "81036 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CLOSED by the other side",
+          "82044 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CONNECTED",
+          "82045 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 ERROR PEER_RUN_STREAM_ENDED \"Node \"beta-node\" could not be reached (fetch failed).\"",
+          "82046 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CLOSED by the other side",
+          "83056 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CONNECTED",
+          "83056 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 ERROR PEER_RUN_STREAM_ENDED \"Node \"beta-node\" could not be reached (fetch failed).\"",
+          "83057 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CLOSED by the other side",
+          "84063 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CONNECTED",
+          "84064 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 ERROR PEER_RUN_STREAM_ENDED \"Node \"beta-node\" could not be reached (fetch failed).\"",
+          "84065 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CLOSED by the other side",
+          "85080 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CONNECTED",
+          "85080 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 ERROR PEER_RUN_STREAM_ENDED \"Node \"beta-node\" could not be reached (fetch failed).\"",
+          "85081 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CLOSED by the other side",
+          "86093 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CONNECTED",
+          "86098 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 ERROR PEER_RUN_STREAM_ENDED \"Node \"beta-node\" could not be reached (fetch failed).\"",
+          "86099 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CLOSED by the other side",
+          "87110 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CONNECTED",
+          "87111 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 ERROR PEER_RUN_STREAM_ENDED \"Node \"beta-node\" could not be reached (fetch failed).\"",
+          "87112 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CLOSED by the other side",
+          "88125 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CONNECTED",
+          "88125 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 ERROR PEER_RUN_STREAM_ENDED \"Node \"beta-node\" could not be reached (fetch failed).\"",
+          "88126 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CLOSED by the other side",
+          "89135 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CONNECTED",
+          "89136 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 ERROR PEER_RUN_STREAM_ENDED \"Node \"beta-node\" could not be reached (fetch failed).\"",
+          "89137 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CLOSED by the other side",
+          "90141 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CONNECTED",
+          "90142 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 ERROR PEER_RUN_STREAM_ENDED \"Node \"beta-node\" could not be reached (fetch failed).\"",
+          "90142 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CLOSED by the other side",
+          "91154 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CONNECTED",
+          "91155 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 ERROR PEER_RUN_STREAM_ENDED \"Node \"beta-node\" could not be reached (fetch failed).\"",
+          "91156 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CLOSED by the other side",
+          "92164 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CONNECTED",
+          "92166 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 ERROR PEER_RUN_STREAM_ENDED \"Node \"beta-node\" could not be reached (fetch failed).\"",
+          "92166 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CLOSED by the other side",
+          "93172 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CONNECTED",
+          "93173 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 ERROR PEER_RUN_STREAM_ENDED \"Node \"beta-node\" could not be reached (fetch failed).\"",
+          "93174 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CLOSED by the other side",
+          "94182 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CONNECTED",
+          "94184 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 ERROR PEER_RUN_STREAM_ENDED \"Node \"beta-node\" could not be reached (fetch failed).\"",
+          "94186 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CLOSED by the other side",
+          "95195 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CONNECTED",
+          "95195 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 ERROR PEER_RUN_STREAM_ENDED \"Node \"beta-node\" could not be reached (fetch failed).\"",
+          "95196 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CLOSED by the other side",
+          "96203 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CONNECTED",
+          "96205 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 ERROR PEER_RUN_STREAM_ENDED \"Node \"beta-node\" could not be reached (fetch failed).\"",
+          "96205 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CLOSED by the other side",
+          "97215 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CONNECTED",
+          "97218 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 ERROR PEER_RUN_STREAM_ENDED \"Node \"beta-node\" could not be reached (fetch failed).\"",
+          "97219 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CLOSED by the other side",
+          "98238 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CONNECTED",
+          "98239 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 ERROR PEER_RUN_STREAM_ENDED \"Node \"beta-node\" could not be reached (fetch failed).\"",
+          "98240 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CLOSED by the other side",
+          "99256 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CONNECTED",
+          "99258 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 ERROR PEER_RUN_STREAM_ENDED \"Node \"beta-node\" could not be reached (fetch failed).\"",
+          "99259 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CLOSED by the other side",
+          "100274 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CONNECTED",
+          "100275 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 ERROR PEER_RUN_STREAM_ENDED \"Node \"beta-node\" could not be reached (fetch failed).\"",
+          "100275 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CLOSED by the other side",
+          "101283 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CONNECTED",
+          "101285 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 ERROR PEER_RUN_STREAM_ENDED \"Node \"beta-node\" could not be reached (fetch failed).\"",
+          "101286 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CLOSED by the other side",
+          "102293 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CONNECTED",
+          "102295 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 ERROR PEER_RUN_STREAM_ENDED \"Node \"beta-node\" could not be reached (fetch failed).\"",
+          "102295 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CLOSED by the other side",
+          "103304 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CONNECTED",
+          "103305 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 ERROR PEER_RUN_STREAM_ENDED \"Node \"beta-node\" could not be reached (fetch failed).\"",
+          "103305 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CLOSED by the other side",
+          "104313 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CONNECTED",
+          "104316 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 ERROR PEER_RUN_STREAM_ENDED \"Node \"beta-node\" could not be reached (fetch failed).\"",
+          "104317 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CLOSED by the other side",
+          "105320 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CONNECTED",
+          "105321 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 ERROR PEER_RUN_STREAM_ENDED \"Node \"beta-node\" could not be reached (fetch failed).\"",
+          "105321 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CLOSED by the other side",
+          "106335 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CONNECTED",
+          "106336 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 ERROR PEER_RUN_STREAM_ENDED \"Node \"beta-node\" could not be reached (fetch failed).\"",
+          "106336 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CLOSED by the other side",
+          "107343 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CONNECTED",
+          "107344 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 ERROR PEER_RUN_STREAM_ENDED \"Node \"beta-node\" could not be reached (fetch failed).\"",
+          "107345 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CLOSED by the other side",
+          "108352 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CONNECTED",
+          "108353 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 ERROR PEER_RUN_STREAM_ENDED \"Node \"beta-node\" could not be reached (fetch failed).\"",
+          "108354 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CLOSED by the other side",
+          "109363 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CONNECTED",
+          "109365 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 ERROR PEER_RUN_STREAM_ENDED \"Node \"beta-node\" could not be reached (fetch failed).\"",
+          "109367 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CLOSED by the other side",
+          "110387 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CONNECTED",
+          "110389 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 ERROR PEER_RUN_STREAM_ENDED \"Node \"beta-node\" could not be reached (fetch failed).\"",
+          "110389 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CLOSED by the other side",
+          "111404 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CONNECTED",
+          "111405 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 ERROR PEER_RUN_STREAM_ENDED \"Node \"beta-node\" could not be reached (fetch failed).\"",
+          "111405 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CLOSED by the other side",
+          "112414 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CONNECTED",
+          "112415 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 ERROR PEER_RUN_STREAM_ENDED \"Node \"beta-node\" could not be reached (fetch failed).\"",
+          "112416 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CLOSED by the other side",
+          "113421 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CONNECTED",
+          "113422 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 ERROR PEER_RUN_STREAM_ENDED \"Node \"beta-node\" could not be reached (fetch failed).\"",
+          "113422 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CLOSED by the other side",
+          "114435 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CONNECTED",
+          "114436 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 ERROR PEER_RUN_STREAM_ENDED \"Node \"beta-node\" could not be reached (fetch failed).\"",
+          "114437 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CLOSED by the other side",
+          "115449 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CONNECTED",
+          "115451 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 ERROR PEER_RUN_STREAM_ENDED \"Node \"beta-node\" could not be reached (fetch failed).\"",
+          "115452 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CLOSED by the other side",
+          "116466 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CONNECTED",
+          "116466 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 ERROR PEER_RUN_STREAM_ENDED \"Node \"beta-node\" could not be reached (fetch failed).\"",
+          "116468 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CLOSED by the other side",
+          "117471 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CONNECTED",
+          "117472 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 ERROR PEER_RUN_STREAM_ENDED \"Node \"beta-node\" could not be reached (fetch failed).\"",
+          "117472 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CLOSED by the other side",
+          "118484 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CONNECTED",
+          "118485 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 ERROR PEER_RUN_STREAM_ENDED \"Node \"beta-node\" could not be reached (fetch failed).\"",
+          "118486 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CLOSED by the other side",
+          "119494 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CONNECTED",
+          "119495 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 ERROR PEER_RUN_STREAM_ENDED \"Node \"beta-node\" could not be reached (fetch failed).\"",
+          "119495 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CLOSED by the other side",
+          "120504 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CONNECTED",
+          "120505 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 ERROR PEER_RUN_STREAM_ENDED \"Node \"beta-node\" could not be reached (fetch failed).\"",
+          "120507 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CLOSED by the other side",
+          "121514 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CONNECTED",
+          "121515 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 ERROR PEER_RUN_STREAM_ENDED \"Node \"beta-node\" could not be reached (fetch failed).\"",
+          "121516 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CLOSED by the other side",
+          "122521 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CONNECTED",
+          "122523 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 ERROR PEER_RUN_STREAM_ENDED \"Node \"beta-node\" could not be reached (fetch failed).\"",
+          "122523 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CLOSED by the other side",
+          "123532 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CONNECTED",
+          "123533 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 ERROR PEER_RUN_STREAM_ENDED \"Node \"beta-node\" could not be reached (fetch failed).\"",
+          "123534 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CLOSED by the other side",
+          "124539 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CONNECTED",
+          "124540 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 ERROR PEER_RUN_STREAM_ENDED \"Node \"beta-node\" could not be reached (fetch failed).\"",
+          "124542 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CLOSED by the other side",
+          "125554 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CONNECTED",
+          "125555 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 ERROR PEER_RUN_STREAM_ENDED \"Node \"beta-node\" could not be reached (fetch failed).\"",
+          "125556 down /ws/peer-run/srv_HFcvJU37P2iM2MdG88WGzQt19r-56EDy/agent/publisher_2c9cc074768044df8474d971bcb14481/publisher_2c9cc074768044df8474d971bcb14481 CLOSED by the other side"
+        ]
+      },
+      "sends": 7,
+      "sendStalls": []
+    },
+    "MSP-75": {
+      "result": "Pass",
+      "seconds": 21.5,
+      "runId": "build_runner_2024bf1eb5d641a88a35bfc8c2a70bf0",
+      "agentTimes": [
+        "2026-11-18 17:33 UTC",
+        "2026-11-18 17:33 UTC"
+      ],
+      "expectedCards": [
+        "18 Nov 2026, 18:33 CET",
+        "18 Nov 2026, 18:33 CET"
+      ],
+      "afterFirst": {
+        "cards": [
+          "[Platform notice — application restarted] The application restarted at 18 Nov 2026, 18:33 CET (reason: a restart). If you started any background tasks, the restart stopped them. Check what you still need: restart it, or continue your work."
+        ],
+        "inputs": [
+          1,
+          1,
+          0
+        ],
+        "replies": [
+          1,
+          1,
+          0
+        ]
+      },
+      "live": {
+        "cards": [
+          "[Platform notice — application restarted] The application restarted at 18 Nov 2026, 18:33 CET (reason: a restart). If you started any background tasks, the restart stopped them. Check what you still need: restart it, or continue your work.",
+          "[Platform notice — application restarted] The application restarted at 18 Nov 2026, 18:33 CET (reason: a restart). If you started any background tasks, the restart stopped them. Check what you still need: restart it, or continue your work."
+        ],
+        "inputs": [
+          1,
+          1,
+          1
+        ],
+        "replies": [
+          1,
+          1,
+          1
+        ]
+      },
+      "reloaded": {
+        "cards": [
+          "[Platform notice — application restarted] The application restarted at 18 Nov 2026, 18:33 CET (reason: a restart). If you started any background tasks, the restart stopped them. Check what you still need: restart it, or continue your work.",
+          "[Platform notice — application restarted] The application restarted at 18 Nov 2026, 18:33 CET (reason: a restart). If you started any background tasks, the restart stopped them. Check what you still need: restart it, or continue your work."
+        ],
+        "inputs": [
+          1,
+          1,
+          1
+        ],
+        "replies": [
+          1,
+          1,
+          1
+        ]
+      },
+      "requests": 5
+    },
+    "MSP-76": {
+      "result": "Pass",
+      "seconds": 14.1,
+      "key": "team:build_team_9f48ea1c21a9433d9c4506a84c11f977",
+      "runId": "build_team_9f48ea1c21a9433d9c4506a84c11f977",
+      "live": {
+        "cards": [
+          "[Platform notice — background tasks finished] pid 75571 sleep 4; echo MSP-76_BUILT: exit code 0 after 4s. Output: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-background-tasks/build_lead_d146883ba13e4772be4c9cc99e5c312f/call-1795023196395-75540.log. Last lines: MSP-76_BUILT"
+        ],
+        "started": 1,
+        "noted": 1
+      },
+      "reloaded": {
+        "cards": [
+          "[Platform notice — background tasks finished] pid 75571 sleep 4; echo MSP-76_BUILT: exit code 0 after 4s. Output: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-background-tasks/build_lead_d146883ba13e4772be4c9cc99e5c312f/call-1795023196395-75540.log. Last lines: MSP-76_BUILT"
+        ],
+        "started": 1,
+        "noted": 1
+      },
+      "requests": 3,
+      "noticeReachedAgent": true
+    },
+    "MSP-77": {
+      "result": "Pass",
+      "seconds": 14.4,
+      "key": "org:build_org_a9bc34d62a244f2788239b48820f41fc",
+      "runId": "build_org_a9bc34d62a244f2788239b48820f41fc",
+      "live": {
+        "cards": [
+          "[Platform notice — background tasks finished] pid 75670 sleep 4; echo MSP-77_BUILT: exit code 0 after 4s. Output: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-background-tasks/build_worker_2d5812fe3d5f4560ad5089413a0c5e6a/call-1795023210516-75639.log. Last lines: MSP-77_BUILT"
+        ],
+        "started": 1,
+        "noted": 1
+      },
+      "reloaded": {
+        "cards": [
+          "[Platform notice — background tasks finished] pid 75670 sleep 4; echo MSP-77_BUILT: exit code 0 after 4s. Output: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-background-tasks/build_worker_2d5812fe3d5f4560ad5089413a0c5e6a/call-1795023210516-75639.log. Last lines: MSP-77_BUILT"
+        ],
+        "started": 1,
+        "noted": 1
+      },
+      "requests": 3,
+      "noticeReachedAgent": true
+    }
+  },
+  "browserErrors": [
+    {
+      "case": "restored-run-setup",
+      "line": "phone-delta console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (401 /favicon.ico, no credential)"
+    },
+    {
+      "case": "restored-run-setup",
+      "line": "phone-delta console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (401 /favicon.ico, no credential)"
+    },
+    {
+      "case": "MSP-75",
+      "line": "phone-delta console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (401 /favicon.ico, no credential)"
+    },
+    {
+      "case": "MSP-75",
+      "line": "phone-delta console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (401 /favicon.ico, no credential)"
+    },
+    {
+      "case": "MSP-75",
+      "line": "phone-delta console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (401 /favicon.ico, no credential)"
+    },
+    {
+      "case": "MSP-75",
+      "line": "phone-delta console: WebSocket connection to 'ws://192.168.77.21:52862/ws/agent-package-definitions?access_token=…' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+      "known": true,
+      "cause": "delta restarted on purpose; the phone reconnects"
+    },
+    {
+      "case": "MSP-75",
+      "line": "phone-delta console: WebSocket connection to 'ws://192.168.77.21:52862/ws/agent/build_runner_2024bf1eb5d641a88a35bfc8c2a70bf0?access_token=…' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+      "known": true,
+      "cause": "delta restarted on purpose; the phone reconnects"
+    },
+    {
+      "case": "MSP-75",
+      "line": "phone-delta console: Agent WebSocket error: Error: WebSocket error\n    at t.onerror (http://192.168.77.21:52862/mobile/_nuxt/C0Oq6HzO.js:1167:5901)",
+      "known": true,
+      "cause": "delta restarted on purpose; the phone reconnects"
+    },
+    {
+      "case": "MSP-75",
+      "line": "phone-delta console: WebSocket connection to 'ws://192.168.77.21:52862/ws/agent-collaboration/build_runner_2024bf1eb5d641a88a35bfc8c2a70bf0?access_token=…' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+      "known": true,
+      "cause": "delta restarted on purpose; the phone reconnects"
+    },
+    {
+      "case": "MSP-75",
+      "line": "phone-delta console: WebSocket connection to 'ws://192.168.77.21:52862/ws/agent/build_runner_2024bf1eb5d641a88a35bfc8c2a70bf0?access_token=…' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+      "known": true,
+      "cause": "delta restarted on purpose; the phone reconnects"
+    },
+    {
+      "case": "MSP-75",
+      "line": "phone-delta console: Agent WebSocket error: Error: WebSocket error\n    at t.onerror (http://192.168.77.21:52862/mobile/_nuxt/C0Oq6HzO.js:1167:5901)",
+      "known": true,
+      "cause": "delta restarted on purpose; the phone reconnects"
+    },
+    {
+      "case": "MSP-75",
+      "line": "phone-delta console: WebSocket connection to 'ws://192.168.77.21:52862/ws/agent-package-definitions?access_token=…' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+      "known": true,
+      "cause": "delta restarted on purpose; the phone reconnects"
+    },
+    {
+      "case": "MSP-75",
+      "line": "phone-delta console: WebSocket connection to 'ws://192.168.77.21:52862/ws/agent-collaboration/build_runner_2024bf1eb5d641a88a35bfc8c2a70bf0?access_token=…' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+      "known": true,
+      "cause": "delta restarted on purpose; the phone reconnects"
+    },
+    {
+      "case": "MSP-75",
+      "line": "phone-delta console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "delta restarted on purpose; the phone reconnects"
+    },
+    {
+      "case": "MSP-76",
+      "line": "phone-delta console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "delta restarted on purpose; the phone reconnects"
+    },
+    {
+      "case": "MSP-76",
+      "line": "phone-delta console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "delta restarted on purpose; the phone reconnects"
+    },
+    {
+      "case": "MSP-76",
+      "line": "phone-delta console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "delta restarted on purpose; the phone reconnects"
+    },
+    {
+      "case": "MSP-76",
+      "line": "phone-delta console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (401 /favicon.ico, no credential)"
+    },
+    {
+      "case": "MSP-77",
+      "line": "phone-delta console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (401 /favicon.ico, no credential)"
+    },
+    {
+      "case": "MSP-77",
+      "line": "phone-delta console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (401 /favicon.ico, no credential)"
+    },
+    {
+      "case": "MSP-77",
+      "line": "phone-delta console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (401 /favicon.ico, no credential)"
+    },
+    {
+      "case": "MSP-77",
+      "line": "phone-delta console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (401 /favicon.ico, no credential)"
+    },
+    {
+      "case": "MSP-77",
+      "line": "phone-delta console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (401 /favicon.ico, no credential)"
+    },
+    {
+      "case": "MSP-77",
+      "line": "phone-delta console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (401 /favicon.ico, no credential)"
+    }
+  ],
+  "failedRequests": [],
+  "network": {},
+  "cleanup": {
+    "frontendExited": true,
+    "serversLeft": 0,
+    "rootRemoved": true
+  },
+  "error": null,
+  "restoredRun": {
+    "runId": "build_runner_2024bf1eb5d641a88a35bfc8c2a70bf0",
+    "agentTimes": [
+      "2026-11-18 17:33 UTC",
+      "2026-11-18 17:33 UTC"
+    ],
+    "expectedCards": [
+      "18 Nov 2026, 18:33 CET",
+      "18 Nov 2026, 18:33 CET"
+    ],
+    "afterFirst": {
+      "cards": [
+        "[Platform notice — application restarted] The application restarted at 18 Nov 2026, 18:33 CET (reason: a restart). If you started any background tasks, the restart stopped them. Check what you still need: restart it, or continue your work."
+      ],
+      "inputs": [
+        1,
+        1,
+        0
+      ],
+      "replies": [
+        1,
+        1,
+        0
+      ]
+    },
+    "live": {
+      "cards": [
+        "[Platform notice — application restarted] The application restarted at 18 Nov 2026, 18:33 CET (reason: a restart). If you started any background tasks, the restart stopped them. Check what you still need: restart it, or continue your work.",
+        "[Platform notice — application restarted] The application restarted at 18 Nov 2026, 18:33 CET (reason: a restart). If you started any background tasks, the restart stopped them. Check what you still need: restart it, or continue your work."
+      ],
+      "inputs": [
+        1,
+        1,
+        1
+      ],
+      "replies": [
+        1,
+        1,
+        1
+      ]
+    },
+    "reloaded": {
+      "cards": [
+        "[Platform notice — application restarted] The application restarted at 18 Nov 2026, 18:33 CET (reason: a restart). If you started any background tasks, the restart stopped them. Check what you still need: restart it, or continue your work.",
+        "[Platform notice — application restarted] The application restarted at 18 Nov 2026, 18:33 CET (reason: a restart). If you started any background tasks, the restart stopped them. Check what you still need: restart it, or continue your work."
+      ],
+      "inputs": [
+        1,
+        1,
+        1
+      ],
+      "replies": [
+        1,
+        1,
+        1
+      ]
+    },
+    "requests": 5
+  },
+  "noticeOnceMSP-76": {
+    "key": "team:build_team_9f48ea1c21a9433d9c4506a84c11f977",
+    "runId": "build_team_9f48ea1c21a9433d9c4506a84c11f977",
+    "live": {
+      "cards": [
+        "[Platform notice — background tasks finished] pid 75571 sleep 4; echo MSP-76_BUILT: exit code 0 after 4s. Output: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-background-tasks/build_lead_d146883ba13e4772be4c9cc99e5c312f/call-1795023196395-75540.log. Last lines: MSP-76_BUILT"
+      ],
+      "started": 1,
+      "noted": 1
+    },
+    "reloaded": {
+      "cards": [
+        "[Platform notice — background tasks finished] pid 75571 sleep 4; echo MSP-76_BUILT: exit code 0 after 4s. Output: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-background-tasks/build_lead_d146883ba13e4772be4c9cc99e5c312f/call-1795023196395-75540.log. Last lines: MSP-76_BUILT"
+      ],
+      "started": 1,
+      "noted": 1
+    },
+    "requests": 3,
+    "noticeReachedAgent": true
+  },
+  "noticeOnceMSP-77": {
+    "key": "org:build_org_a9bc34d62a244f2788239b48820f41fc",
+    "runId": "build_org_a9bc34d62a244f2788239b48820f41fc",
+    "live": {
+      "cards": [
+        "[Platform notice — background tasks finished] pid 75670 sleep 4; echo MSP-77_BUILT: exit code 0 after 4s. Output: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-background-tasks/build_worker_2d5812fe3d5f4560ad5089413a0c5e6a/call-1795023210516-75639.log. Last lines: MSP-77_BUILT"
+      ],
+      "started": 1,
+      "noted": 1
+    },
+    "reloaded": {
+      "cards": [
+        "[Platform notice — background tasks finished] pid 75670 sleep 4; echo MSP-77_BUILT: exit code 0 after 4s. Output: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-background-tasks/build_worker_2d5812fe3d5f4560ad5089413a0c5e6a/call-1795023210516-75639.log. Last lines: MSP-77_BUILT"
+      ],
+      "started": 1,
+      "noted": 1
+    },
+    "requests": 3,
+    "noticeReachedAgent": true
+  },
+  "summary": {
+    "cases": {
+      "MSP-78": "Pass",
+      "MSP-80": "Pass",
+      "MSP-81": "Pass",
+      "MSP-82": "Pass",
+      "MSP-83": "Pass",
+      "MSP-84": "Pass",
+      "MSP-75": "Pass",
+      "MSP-76": "Pass",
+      "MSP-77": "Pass"
+    },
+    "unknownBrowserErrors": 0
+  },
+  "finishedAt": "2026-11-18T17:33:46.020Z"
+}

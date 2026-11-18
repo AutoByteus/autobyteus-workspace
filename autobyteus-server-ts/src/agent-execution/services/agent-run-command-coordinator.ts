@@ -25,7 +25,6 @@ import { ServerMessage, ServerMessageType } from "../../services/agent-streaming
 import type { AgentRun } from "../domain/agent-run.js";
 import type { AgentOperationResult } from "../domain/agent-operation-result.js";
 import {
-  getProcessStandaloneRunCommandPort,
   type StandaloneRunCommandPort,
   type StandaloneRunPostResult,
 } from "./standalone-run-ports.js";
@@ -49,9 +48,9 @@ export class AgentRunCommandCoordinator {
     overlayStore?: AgentRunCommandStatusOverlayStore;
     projectionService?: AgentRunStatusProjectionService;
     broadcaster?: AgentStreamBroadcaster;
-    /** The owner of eligible standalone runs; defaults to the process port. */
-    standaloneRuns?: StandaloneRunCommandPort | null;
-  } = {}) {}
+    /** The owner of eligible standalone runs, from the composition (autobyteus-500 FU-011). */
+    standaloneRuns: StandaloneRunCommandPort;
+  }) {}
 
   async postUserMessage(
     input: AgentRunCommandCoordinatorInput,
@@ -65,7 +64,7 @@ export class AgentRunCommandCoordinator {
     const record = begin.record;
     // DS-15 (SR-070): a run whose Task is closed takes no input; a delegated run that cannot be restored is refused with
     // base's text (CR-461-070). Refused before anything is resolved, restored or shown.
-    const refusal = await this.standaloneRuns?.inputRefusal(record.runId) ?? null;
+    const refusal = await this.standaloneRuns.inputRefusal(record.runId) ?? null;
     if (refusal) return this.refuse(record, refusal);
     const activeRunAtStart = this.agentRunService.getAgentRun(record.runId);
     const requiresActivation = !activeRunAtStart;
@@ -124,7 +123,7 @@ export class AgentRunCommandCoordinator {
 
   /**
    * An eligible standalone run is activated, resolves its mentions (adds nothing) and posts inside its root's
-   * gate; any other run posts directly to its command-ready AgentRun (it hosts no delegated copies).
+   * gate; any other run posts directly to its command-ready AgentRun (it has no standalone run root).
    */
   private async post(record: AgentRunCommandRecord, input: AgentRunCommandCoordinatorInput): Promise<StandaloneRunPostResult> {
     const message = this.withCommandMetadata(input.message, record);
@@ -141,7 +140,7 @@ export class AgentRunCommandCoordinator {
       this.clearOverlayForCommand(record);
       input.onActiveRunReady?.(run);
     };
-    const owned = await this.standaloneRuns?.postUserMessage({
+    const owned = await this.standaloneRuns.postUserMessage({
       runId: record.runId, message, mentions: input.mentions, postOptions, onActiveRunReady,
     }) ?? null;
     if (owned) return owned;
@@ -347,8 +346,8 @@ export class AgentRunCommandCoordinator {
     return message.includes("not found") || message.includes("metadata is missing");
   }
 
-  private get standaloneRuns(): StandaloneRunCommandPort | null {
-    return this.deps.standaloneRuns === undefined ? getProcessStandaloneRunCommandPort() : this.deps.standaloneRuns;
+  private get standaloneRuns(): StandaloneRunCommandPort {
+    return this.deps.standaloneRuns;
   }
   private get agentRunService(): AgentRunService {
     return this.deps.agentRunService ?? getAgentRunService();
@@ -366,9 +365,3 @@ export class AgentRunCommandCoordinator {
     return this.deps.broadcaster ?? getAgentStreamBroadcaster();
   }
 }
-
-let cachedAgentRunCommandCoordinator: AgentRunCommandCoordinator | null = null;
-export const getAgentRunCommandCoordinator = (): AgentRunCommandCoordinator => {
-  cachedAgentRunCommandCoordinator ??= new AgentRunCommandCoordinator();
-  return cachedAgentRunCommandCoordinator;
-};

@@ -1,6 +1,7 @@
 import { computed } from 'vue'
 import { useRemoteRunView } from '~/composables/remoteRuns/useRemoteRunView'
 import type { ActiveAgentWorkspaceTarget } from '~/types/workspace/activeAgentWorkspaceTarget'
+import { targetDisplayName } from '~/utils/workspace/targetDisplayName'
 
 /**
  * The binding of one open target to its conversation (`AgentEventMonitor`), for every surface that shows it: the
@@ -8,15 +9,7 @@ import type { ActiveAgentWorkspaceTarget } from '~/types/workspace/activeAgentWo
  * name, whether the composer is read-only, the sender names of inter-agent messages and the remote-run view (278).
  */
 export const useTargetConversation = (target: () => ActiveAgentWorkspaceTarget) => {
-  /** A Team member: its agent's name, else its address's last part, else the Team's; any other agent: its name. */
-  const displayName = computed(() => {
-    const current = target()
-    const agentName = current.context.config.agentDefinitionName
-    if (!('team' in current)) return agentName || 'Agent'
-    return agentName
-      || current.team.focusedMemberAddress.split('/').at(-1)?.replace(/[_-]+/g, ' ')
-      || current.team.teamDefinitionName
-  })
+  const displayName = computed(() => targetDisplayName(target()))
 
   /**
    * Read-only unless the Org's own agents can still be continued: a submission in flight, an Org's direct agent or an

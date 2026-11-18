@@ -236,7 +236,9 @@ describe('saved selections of the removed remote AutoByteus provider', () => {
 
     const blocked = await restoreAgentRun(second.serverUrl, runId);
     expect(blocked.success).toBe(false);
-    expect(blocked.message).toContain('MODEL_IDENTIFIER_NOT_AVAILABLE');
+    // autobyteus-500 G-5 (REQ-016, D-12): the restore is refused before the runtime starts, naming the saved model and the
+    // repair (before, the runtime refused it: MODEL_IDENTIFIER_NOT_AVAILABLE).
+    expect(blocked.message).toContain(`can't start: its saved model '${REMOTE_LLM_IDENTIFIER}' is not offered by AutoByteus now. Stop it, then choose a runtime and model for`);
     expect(fs.readFileSync(metadataPath, 'utf8')).toBe(savedBytes);
     await expect(agentResume(second.serverUrl, runId)).resolves.toMatchObject({
       isActive: false,
@@ -252,7 +254,7 @@ describe('saved selections of the removed remote AutoByteus provider', () => {
     });
     const stillBlocked = await restoreAgentRun(third.serverUrl, runId);
     expect(stillBlocked.success).toBe(false);
-    expect(stillBlocked.message).toContain('MODEL_IDENTIFIER_NOT_AVAILABLE');
+    expect(stillBlocked.message).toContain(`can't start: its saved model '${REMOTE_LLM_IDENTIFIER}' is not offered by AutoByteus now.`);
     expect(fs.readFileSync(metadataPath, 'utf8')).toBe(savedBytes);
   }, 240_000);
 });

@@ -1,5 +1,5 @@
 import type { AgentPresentationMessage } from "@autobyteus/agent-presentation-contracts";
-import type { PairedAgentStatus } from "./paired-agent-access.js";
+import type { RunAgentStatusEntry } from "./run-agent-access.js";
 import type { DelegatingRunRef } from "../../../run-history/store/agent-run-metadata-types.js";
 import type { RemoteAgentLaunch } from "../../../run-history/domain/run-execution-tree-shared-records.js";
 import type { DelegationWork } from "../../../model-routing/domain/model-routing-types.js";
@@ -60,8 +60,8 @@ export type RemoteStartedRunRef = Readonly<{ kind: "agent" | "agent_team"; runId
 /** What the peer answered about one such run: its stored title and the live statuses of its own agents. */
 export type RemoteRunSummary = RemoteStartedRunRef & Readonly<{
   title: string | null;
-  /** Only the run's live agents (an Agent's host, a Team's members); an agent without one is offline. */
-  statuses: readonly PairedAgentStatus[];
+  /** Only the run's live agents (an Agent run's own agent, a Team's members); an agent without one is offline. */
+  statuses: readonly RunAgentStatusEntry[];
   /** Each agent's launch, from the run's own file on its node (SR-038). */
   launches: readonly RemoteAgentLaunch[];
 }>;
@@ -142,22 +142,8 @@ export interface RemoteRunChannel {
   observeAgentStream(nodeId: string, targetRoot: RemoteTargetRoot, agentRunId: string, observer: RemoteAgentStreamObserver): RemoteRunObservationStream;
 }
 
-let processChannel: RemoteRunChannel | null = null;
-
-/** Binds the process's channel once at composition (remote collaboration is composed in the studio server). */
-export const bindProcessRemoteRunChannel = (channel: RemoteRunChannel): void => {
-  if (!channel) throw new Error("A process RemoteRunChannel is required.");
-  if (processChannel) throw new Error("The process RemoteRunChannel is already initialized.");
-  processChannel = channel;
-};
-
-export const releaseProcessRemoteRunChannel = (channel: RemoteRunChannel): void => {
-  if (processChannel === channel) processChannel = null;
-};
-
-/** The process's channel; `null` where remote collaboration is not composed (nothing is ever sent then). */
-export const findProcessRemoteRunChannel = (): RemoteRunChannel | null => processChannel;
-
-/** A root's channel: the one it was given (tests, isolated roots), else the process's channel. */
-export const resolveRemoteRunChannel = (given?: () => RemoteRunChannel | null): RemoteRunChannel | null =>
-  given ? given() : findProcessRemoteRunChannel();
+/**
+ * A host's channel to its peer nodes, as its composition passes it (autobyteus-500 FU-011): the studio's peer client
+ * once remote collaboration is composed; `null` in a host that composes none (nothing is ever sent then).
+ */
+export type RemoteRunChannelAccess = () => RemoteRunChannel | null;

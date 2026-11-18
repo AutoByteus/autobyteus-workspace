@@ -366,11 +366,11 @@ suite("Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/sco
     // Agent root: the agent the user started delegates (its address reaches it → given); the task agent reports (run id only);
     // the task agent delegates further (a task agent sender → run id only); a task agent team member writes to the host from outside its team (run id only).
     const agentRoot = await h.startRoot("agent", ids);
-    const host = agentRoot.managerRunId, hostAddress = `/${segment(names.manager)}`;
+    const host = agentRoot.managerRunId, agentAddress = `/${segment(names.manager)}`;
     const a = (await agentRoot.calls(host, "/", callTool("delegate_task", { recipient_address: `/${segment(names.outsider)}`, description: "Task marker H1-A." }))).target_agent_run_id as string;
     await agentRoot.waitForTaskAgent(a);
     const taskA = await receivedWith(agentRoot, a, `/${segment(names.outsider)}`, "H1-A");
-    expect(taskA).toContain(`You have a new task from ${withAddress(hostAddress, host)}.`);
+    expect(taskA).toContain(`You have a new task from ${withAddress(agentAddress, host)}.`);
     expect(taskA).toContain("recipient_address set to that sender address or target_agent_run_id set to that sender run id (one of them, not both)");
     await agentRoot.calls(a, `/${segment(names.outsider)}`, callTool("send_message_to", { target_agent_run_id: host, content: "Report marker H1-R." }));
     const report = await receivedWith(agentRoot, host, "/", "H1-R");
@@ -391,7 +391,7 @@ suite("Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/sco
     const teamCopy = await agentRoot.waitForTaskAgent(squad.target_team_run_id as string);
     const coordAddress = teamCopy.members.find((m) => m.agentRunId === coord)!.address;
     const taskT = await receivedWith(agentRoot, coord, coordAddress, "H1-T");
-    expect(taskT).toContain(`You have a new task from ${withAddress(hostAddress, host)}.`);
+    expect(taskT).toContain(`You have a new task from ${withAddress(agentAddress, host)}.`);
     await agentRoot.calls(coord, coordAddress, callTool("send_message_to", { target_agent_run_id: host, content: "Team report marker H1-TR." }));
     const teamReport = await receivedWith(agentRoot, host, "/", "H1-TR");
     expect(teamReport).toContain(`You received a message from ${runIdOnly(coord)}.`);

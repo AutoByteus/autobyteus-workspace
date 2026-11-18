@@ -24,6 +24,7 @@ import { createNoopAgentToolMcpRunSessionDeactivator } from "../../fixtures/agen
 import { createAgentRunManagerInfrastructureFixture } from "../../fixtures/agent-run-manager-infrastructure-fixtures.js";
 import { testBackendFactory } from "../../fixtures/agent-run-preparation-fixtures.js";
 import { configureE2eStudioApplicationApiServices } from "../helpers/studio-application-api-services.js";
+import { NO_ELIGIBLE_STANDALONE_RUNS } from "../../helpers/explicit-host-collaborators.js";
 
 const workspaceHistoryHolder = vi.hoisted(() => ({ service: null as any }));
 
@@ -217,7 +218,7 @@ const startHarness = async (terminationAccepted: boolean): Promise<Harness & Run
     teamRunHistoryService: { listTeamRunHistory: vi.fn(async () => []) } as never,
   });
 
-  const agentRunService = new AgentRunService(memoryDir, {
+  const agentRunService = new AgentRunService(memoryDir, { standaloneRuns: NO_ELIGIBLE_STANDALONE_RUNS,
     agentRunManager: manager,
     historyCatalogService: catalogService,
     workspaceManager: {} as never,

@@ -4,10 +4,12 @@ import type { ContextFilePath } from '~/types/conversation'
 import type { ToolApprovalTarget } from '~/types/segments'
 import type { AgentRunReadSubject } from '~/types/agent/agentRunReadSubject'
 import type { CollaborationMessagesContextView } from './collaborationMessagesContextView'
+import type { InterruptOutcome } from '~/services/agentStreaming/protocol/agentCommandTypes'
 
 export interface AgentInteractionPort {
   send(content: string, contextPaths: readonly ContextFilePath[]): Promise<void>
-  interrupt(): Promise<void>
+  /** Sends one Stop for this target's run; resolves with its outcome. */
+  interrupt(): Promise<InterruptOutcome>
   decideTool(
     invocationId: string,
     approved: boolean,
@@ -87,7 +89,7 @@ export type ActiveAgentWorkspaceTarget =
   /** A task Agent brought into a standalone run (directly under the run). */
   | (WorkspaceTargetCore & Readonly<{
       kind: 'agent_run_task_agent'
-      host: Readonly<{ hostRunId: string }>
+      viewRun: Readonly<{ runId: string }>
       address: AgentTeamAddress
       agentRunId: string
       collaborationMessages: CollaborationMessagesContextView
@@ -95,7 +97,7 @@ export type ActiveAgentWorkspaceTarget =
   /** A member of a task Team brought into a standalone run. */
   | (WorkspaceTargetCore & Readonly<{
       kind: 'agent_run_task_team_member'
-      host: Readonly<{ hostRunId: string }>
+      viewRun: Readonly<{ runId: string }>
       address: AgentTeamAddress
       agentRunId: string
       collaborationMessages: CollaborationMessagesContextView

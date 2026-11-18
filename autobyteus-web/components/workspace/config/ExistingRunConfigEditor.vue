@@ -28,6 +28,7 @@
       :root-model-unavailable="modelUnavailable('/')"
       :members="view.members"
       :locked-models-for="lockedModelsFor"
+      :model-unavailable-for="modelUnavailable"
       :subject="settingsSubject"
       :show-group="showGroup"
       :subject-active="subjectActive"

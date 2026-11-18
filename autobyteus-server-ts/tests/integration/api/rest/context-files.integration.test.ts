@@ -174,7 +174,7 @@ describe("REST context-files routes", () => {
     app = fastify();
     // The size limits live in the route (autobyteus-workspace-6); the route takes the node's DelegationIndex (autobyteus-461).
     await app.register(multipart);
-    await app.register((scope) => registerContextFileRoutes(scope, noDelegations()), { prefix: "/rest" });
+    await app.register((scope) => registerContextFileRoutes(scope), { prefix: "/rest" });
   });
 
   afterEach(async () => {

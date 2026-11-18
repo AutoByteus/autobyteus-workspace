@@ -1,4 +1,6 @@
 import type { DelegationIndex } from "../../agent-collaboration/delegation/delegation-index.js";
+import type { ConfiguredAgentExecutionFactory } from "../../agent-collaboration/execution/backends/configured-agent-execution-factory.js";
+import type { RemoteRunChannelAccess } from "../../agent-collaboration/execution/remote/remote-run-channel.js";
 import type { RunTaskRecords } from "../../agent-collaboration/execution/task/task-execution-resource-port.js";
 import { ROOT_NOT_ACTIVE_MESSAGE } from "../../agent-collaboration/execution/task/task-delegation-command.js";
 import { CollaborationAgentActivationError } from "../../agent-collaboration/execution/domain/configured-agent-execution.js";
@@ -38,6 +40,8 @@ export class AgentOrgExecutionScopeBuilder {
     taskRecords: RunTaskRecords;
     /** The relationships between runs, from the Task entries (SR-047). */
     delegationIndex: DelegationIndex;
+    /** The host's channel to peer nodes (autobyteus-500 FU-011). */
+    remoteChannel: RemoteRunChannelAccess;
     /** Each run's view stream (SR-062). */
     viewStreams: RunViewStreams;
     orgDefinitions: Pick<AgentOrgDefinitionService, "getDefinitionById">;
@@ -46,6 +50,8 @@ export class AgentOrgExecutionScopeBuilder {
     memoryLocator?: AgentRunMemoryLocator;
     activityInspector?: AgentConversationActivityInspector;
     workspaceManager?: Pick<WorkspaceManager, "ensureWorkspaceByRootPath">;
+    /** Creates each member agent with the host's stored-model check (G-5). */
+    executionFactory: ConfiguredAgentExecutionFactory;
   }>) {}
 
   async build(input: Readonly<{
@@ -151,6 +157,7 @@ export class AgentOrgExecutionScopeBuilder {
       memoryLocator: this.dependencies.memoryLocator,
       activityInspector: this.dependencies.activityInspector,
       workspaceManager: this.dependencies.workspaceManager,
+      executionFactory: this.dependencies.executionFactory,
     });
     const teams = new RootTeamExecutionDirectory(this.dependencies.flatTeamExecutionFactory);
     const plans: Array<Readonly<{
@@ -194,6 +201,7 @@ export class AgentOrgExecutionScopeBuilder {
         messageFeed: this.dependencies.viewStreams.messages,
         taskRecords: this.dependencies.taskRecords,
         delegationIndex: this.dependencies.delegationIndex,
+        remoteChannel: this.dependencies.remoteChannel,
         memoryLocator: this.dependencies.memoryLocator,
         activityInspector: this.dependencies.activityInspector,
         onTerminated: input.onTerminated,

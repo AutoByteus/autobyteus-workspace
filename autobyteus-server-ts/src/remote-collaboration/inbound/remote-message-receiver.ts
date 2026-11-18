@@ -11,7 +11,7 @@ import type { RootExecutionIdentity } from "../../agent-collaboration/execution/
 import { remoteTargetNotRunning } from "../../agent-collaboration/execution/remote/remote-refusal-codes.js";
 import { targetIsTeamRunText } from "../../agent-collaboration/domain/agent-team-collaboration-llm-contract.js";
 import type { RunningAgents } from "../../agent-collaboration/running/running-agents.js";
-import type { PairedAgentAccess } from "../../agent-collaboration/execution/remote/paired-agent-access.js";
+import type { RunAgentAccess } from "../../agent-collaboration/execution/remote/run-agent-access.js";
 import type { PeerHandlerRefusal, RemoteMessageHandler } from "../channel/peer-gateway.js";
 import type { PeerNode } from "../domain/peer-node.js";
 import { REMOTE_REFUSAL } from "../domain/remote-refusals.js";
@@ -22,7 +22,7 @@ export type RemoteMessageRoot = Readonly<{ acceptRemoteMessage(input: RemoteInbo
 /** autobyteus-492: a live root (any kind) that admits a peer agent's message by run ID only, for an agent it runs now. */
 export type RemotePeerRunRoot = Readonly<{ acceptPeerRunMessage(input: RemoteInboundMessage): Promise<AgentOperationResult> }>;
 /** A root a peer started (a standalone root or a Team root), which also admits the work packet that starts it. */
-export type RemoteHostRoot = RemoteMessageRoot & Readonly<{ acceptRemoteWorkPacket(input: RemoteInboundWorkPacket): Promise<AgentOperationResult> }>;
+export type RemoteDelegationRoot = RemoteMessageRoot & Readonly<{ acceptRemoteWorkPacket(input: RemoteInboundWorkPacket): Promise<AgentOperationResult> }>;
 
 /**
  * The roots of this node by run ID, through the root managers' public resolve / restore APIs (A-05). `null`
@@ -34,14 +34,14 @@ export type RemoteRootDirectory = Readonly<{
    * anything. The root managers read their stores; this module parses no root files.
    */
   storedLinkCheck(targetRoot: RemoteTargetRoot, query: RemoteInboundQuery): Promise<StoredRemoteLinkCheck>;
-  standalone(hostRunId: string): Promise<RemoteHostRoot | null>;
-  team(teamRunId: string): Promise<RemoteHostRoot | null>;
+  standalone(agentRunId: string): Promise<RemoteDelegationRoot | null>;
+  team(teamRunId: string): Promise<RemoteDelegationRoot | null>;
   org(orgRunId: string): Promise<RemoteMessageRoot | null>;
   /**
    * autobyteus-278 (AR-401): a run a peer started, by its kind, as this node serves that peer's owner: each kind's
    * own source of output, commands and readiness, offered by its manager. Callers check the link first.
    */
-  pairedAgents(kind: "agent" | "agent_team"): PairedAgentAccess;
+  runAgents(kind: "agent" | "agent_team"): RunAgentAccess;
   /** autobyteus-492: the root as it is live now, never restored; `null` when it is not active. */
   liveRoot(root: RootExecutionIdentity): RemotePeerRunRoot | null;
 }>;
@@ -107,7 +107,7 @@ export class RemoteMessageReceiver implements RemoteMessageHandler {
     if (stored === "not_linked") return notLinked();
     if (stored !== "proceed") return notFound();
     if (request.kind === "work_packet") {
-      const root = await this.resolve(() => this.hostRoot(request.targetRoot));
+      const root = await this.resolve(() => this.delegationRoot(request.targetRoot));
       if (!root) return notFound();
       const accepted = await root.acceptRemoteWorkPacket({
         fromNodeId: from.nodeId, fromNodeName: from.name, senderAgentRunId: request.sender.agentRunId,
@@ -141,7 +141,7 @@ export class RemoteMessageReceiver implements RemoteMessageHandler {
   }
 
   /** The root a peer started: only Agents and Agent Teams are started for a peer. */
-  private hostRoot(root: RemoteTargetRoot): Promise<RemoteHostRoot | null> {
+  private delegationRoot(root: RemoteTargetRoot): Promise<RemoteDelegationRoot | null> {
     switch (root.kind) {
       case "agent": return this.roots.standalone(root.runId);
       case "agent_team": return this.roots.team(root.runId);
@@ -150,7 +150,7 @@ export class RemoteMessageReceiver implements RemoteMessageHandler {
   }
 
   private messageRoot(root: RemoteTargetRoot): Promise<RemoteMessageRoot | null> {
-    return root.kind === "agent_org" ? this.roots.org(root.runId) : this.hostRoot(root);
+    return root.kind === "agent_org" ? this.roots.org(root.runId) : this.delegationRoot(root);
   }
 
   /** A root that cannot be found, checked or restored is `null` (the sender reads "not found"). */

@@ -33,7 +33,7 @@ import type {
 import type { AvailableCollaboratorEntry } from "../../agent-collaboration/collaborators/available-collaborator-entry.js";
 import type { RunningAgentEntry } from "../../agent-collaboration/running/running-agent-entry.js";
 import type { RemoteAgentLaunch, RemoteAgentProjection, RemoteOwnerCommand, RemoteRunSummary } from "../../agent-collaboration/execution/remote/remote-run-channel.js";
-import type { PairedAgentObservation } from "../../agent-collaboration/execution/remote/paired-agent-access.js";
+import type { RunAgentObservation } from "../../agent-collaboration/execution/remote/run-agent-access.js";
 import type { RunObservationSink } from "../inbound/remote-run-view-provider.js";
 
 /** The answer of one inbound request: HTTP 200 with an accepted or refused answer, or 400 for a malformed body. */
@@ -85,10 +85,10 @@ export type RemoteRunViewHandler = Readonly<{
   summaries(request: RunSummariesRequest, from: PeerNode): Promise<Readonly<{ accepted: true; runs: readonly RemoteRunSummary[] }> | PeerHandlerRefusal>;
   projection(request: AgentProjectionRequest, from: PeerNode): Promise<Readonly<{ accepted: true; projection: RemoteAgentProjection }> | PeerHandlerRefusal>;
   command(request: OwnerCommandRequest, from: PeerNode): Promise<Readonly<{ accepted: true }> | PeerHandlerRefusal>;
-  observe(opening: RunObservationOpening, from: PeerNode, sink: RunObservationSink): Promise<Readonly<{ accepted: true; observation: PairedAgentObservation }> | PeerHandlerRefusal>;
+  observe(opening: RunObservationOpening, from: PeerNode, sink: RunObservationSink): Promise<Readonly<{ accepted: true; observation: RunAgentObservation }> | PeerHandlerRefusal>;
   /** autobyteus-461 SR-088: one agent's own stream snapshot, and its numbered frames. */
   agentStreamSnapshot(request: AgentProjectionRequest, from: PeerNode): Promise<Readonly<{ accepted: true; snapshot: unknown; status: unknown }> | PeerHandlerRefusal>;
-  observeAgentStream(opening: RunObservationOpening & Readonly<{ agentRunId: string }>, from: PeerNode, sink: RunObservationSink): Promise<Readonly<{ accepted: true; observation: PairedAgentObservation }> | PeerHandlerRefusal>;
+  observeAgentStream(opening: RunObservationOpening & Readonly<{ agentRunId: string }>, from: PeerNode, sink: RunObservationSink): Promise<Readonly<{ accepted: true; observation: RunAgentObservation }> | PeerHandlerRefusal>;
 }>;
 
 class MalformedRequestError extends Error {}

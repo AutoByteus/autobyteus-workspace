@@ -20,7 +20,7 @@ const HOST = { kind: 'agent' as const, runId: 'host-run' }
 const event = (change_sequence: number, value: unknown) => ({ type: 'ROOT_EXECUTION_EVENT', payload: { root_subject_kind: 'agent', root_run_id: 'host-run', change_sequence, event: value } })
 const setup = () => {
   let current = true
-  const options = { hostRunId: 'host-run', isCurrent: () => current, reportError: vi.fn(), publish: vi.fn() }
+  const options = { runId: 'host-run', isCurrent: () => current, reportError: vi.fn(), publish: vi.fn() }
   const service = new AgentRunCollaborationStreamingService(options); service.connect()
   const socket = Socket.instances.at(-1)!
   socket.frame({ type: 'CONNECTED', payload: { session_id: 's', root_subject_kind: 'agent', root_run_id: 'host-run' } })
@@ -73,7 +73,7 @@ it('a tree snapshot not at the view\'s base, or a sequence gap, closes the strea
 
 it('a snapshot after its owner retired is not published', () => {
   let current = true
-  const options = { hostRunId: 'host-run', isCurrent: () => current, reportError: vi.fn(), publish: vi.fn() }
+  const options = { runId: 'host-run', isCurrent: () => current, reportError: vi.fn(), publish: vi.fn() }
   const service = new AgentRunCollaborationStreamingService(options); service.connect()
   const socket = Socket.instances[0]!
   socket.frame({ type: 'CONNECTED', payload: { session_id: 's', root_subject_kind: 'agent', root_run_id: 'host-run' } })

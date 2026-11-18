@@ -73,7 +73,7 @@ export class TaskExecutionResourceService {
     return this.loading;
   }
 
-  /** In-process ordering per key: a Task ID (linking, closure) or a copy's key (see `serializeCopyInTask`). */
+  /** In-process ordering per key: a Task ID (linking, closure) or a copy's key (see `serializeDelegatedRunInTask`). */
   serialize<T>(key: string, operation: () => Promise<T>): Promise<T> {
     const previous = this.chains.get(key) ?? Promise.resolve();
     const next = previous.catch(() => undefined).then(operation);
@@ -87,7 +87,7 @@ export class TaskExecutionResourceService {
    * key first, then the Task ID. Closure takes only the Task ID, so no cycle exists. Copy keys
    * (`agent:…`, `team:…`) never equal a Task ID.
    */
-  serializeCopyInTask<T>(execution: TaskExecutionReference, taskId: () => string, operation: (taskId: string) => Promise<T>): Promise<T> {
+  serializeDelegatedRunInTask<T>(execution: TaskExecutionReference, taskId: () => string, operation: (taskId: string) => Promise<T>): Promise<T> {
     return this.serialize(taskExecutionReferenceKey(execution), () => {
       const resolved = taskId();
       return this.serialize(resolved, () => operation(resolved));
@@ -109,7 +109,7 @@ export class TaskExecutionResourceService {
     return taskId;
   }
   /**
-   * Existing-copy assignment commit (call under `serializeCopyInTask`): appends the copy's new
+   * Existing-copy assignment commit (call under `serializeDelegatedRunInTask`): appends the copy's new
    * `starting` entry to the Task file. The address is the one of the copy's previous assignment.
    */
   async assignExisting(location: TaskLocation, input: ExistingTaskExecutionAssignInput): Promise<void> {
@@ -177,7 +177,7 @@ export class TaskExecutionResourceService {
     assertTaskExecutionReopenable(this.files.get(location.taskId)!.file, execution, requestedBy);
   }
   /**
-   * Reactivation of the copy's last entry in its current Task (call under `serializeCopyInTask`):
+   * Reactivation of the copy's last entry in its current Task (call under `serializeDelegatedRunInTask`):
    * `closedAt` returns to `null` on that entry only. `false` when it was already open (nothing is written).
    */
   async reopenAssignment(location: TaskLocation, execution: TaskExecutionReference, requestedBy: string): Promise<boolean> {

@@ -70,8 +70,8 @@ const harness = (options: { current?: string | null; concurrency?: number; postD
       if (history.get(keyOf(root)) === "gone") return null;
       order.push(`restore:${keyOf(root)}`);
       const resolved = roots.get(keyOf(root)) ?? {
-        ensureHostReady: vi.fn(async () => { order.push(`ready:${root.rootRunId}`); live.add(root.rootRunId); return runOf(root.rootRunId); }),
-        postHostUserMessage: vi.fn(async (input: { message: AgentInputUserMessage; postOptions: AgentRunInputOptions }) => {
+        ensureAgentReady: vi.fn(async () => { order.push(`ready:${root.rootRunId}`); live.add(root.rootRunId); return runOf(root.rootRunId); }),
+        postAgentUserMessage: vi.fn(async (input: { message: AgentInputUserMessage; postOptions: AgentRunInputOptions }) => {
           const result = await post(root.rootRunId, "host", input.message, input.postOptions);
           return { kind: "posted", run: runOf(root.rootRunId), post: result };
         }),

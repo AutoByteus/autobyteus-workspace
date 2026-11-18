@@ -13,6 +13,7 @@ import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.j
 import { AgentRunConfig } from "../../../src/agent-execution/domain/agent-run-config.js";
 import { AgentRunActivationCandidate } from "../../../src/agent-execution/services/agent-run-activation-candidate.js";
 import { createStandaloneRunRootsFixture } from "../../fixtures/standalone-run-roots-fixture.js";
+import { OFFERED_STORED_MODEL_CHECKS } from "../../helpers/explicit-host-collaborators.js";
 
 const tempDirs = new Set<string>();
 
@@ -103,7 +104,7 @@ describe("memory layout and projection integration", () => {
           getBasePath: () => workspaceRootPath,
         }),
       } as never;
-      const lifecycleService = new StandaloneAgentRunLifecycleService(memoryDir, {
+      const lifecycleService = new StandaloneAgentRunLifecycleService(memoryDir, { storedModelChecks: OFFERED_STORED_MODEL_CHECKS,
         agentRunManager: agentRunManager as never,
         metadataService,
         historyCatalogService,

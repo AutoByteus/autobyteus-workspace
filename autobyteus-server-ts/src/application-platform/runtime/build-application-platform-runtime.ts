@@ -1,4 +1,7 @@
 import type { RunViewStreams } from "../../agent-collaboration/delegation/run-view-stream.js";
+import type { StoredModelOfferCheck } from "../../llm-management/services/run-model-selection-service.js";
+import type { PeerDiscoveryAccess } from "../../agent-collaboration/execution/remote/peer-discovery-channel.js";
+import type { RemoteRunChannelAccess } from "../../agent-collaboration/execution/remote/remote-run-channel.js";
 import type { RunTaskRecords } from "../../agent-collaboration/execution/task/task-execution-resource-port.js";
 import type { DelegationIndex } from "../../agent-collaboration/delegation/delegation-index.js";
 import type { AppConfig } from "../../config/app-config.js";
@@ -66,7 +69,7 @@ export type ApplicationPlatformBuildInput = Readonly<{
   llmProviderService: LlmProviderService;
   codexClientManager: CodexAppServerClientManager;
   requireCurrentModelIdentifier: (modelIdentifier: string) => Promise<void>;
-  modelSelectionValidator: RunModelSelectionValidator;
+  modelSelectionValidator: RunModelSelectionValidator & StoredModelOfferCheck;
   /** The relationships between runs, from the Task entries (SR-047). */
   delegationIndex: DelegationIndex;
   /** Each run's view stream, from the composition root (SR-062). */
@@ -77,6 +80,9 @@ export type ApplicationPlatformBuildInput = Readonly<{
   providerRelayAccess: ProviderRelayAccess | null;
   /** Ends application runs' passes; from the same host, non-null whenever `providerRelayAccess` is. */
   runPasses: RunPassRevocation | null;
+  /** The host's channel to peer nodes and its discovery (autobyteus-500 FU-011). */
+  remoteChannel: RemoteRunChannelAccess;
+  peerDiscovery: PeerDiscoveryAccess;
   selectedApplicationIds?: ReadonlySet<string> | null;
   staticAdapterToolNames: ReadonlySet<string>;
 }>;
@@ -123,6 +129,8 @@ export const buildApplicationPlatformRuntime = (
     agentProviderFactoryBuilder: input.agentProviderFactoryBuilder,
     providerRelayAccess: input.providerRelayAccess,
     runPasses: input.runPasses,
+    remoteChannel: input.remoteChannel,
+    peerDiscovery: input.peerDiscovery,
     workspaceManager: input.workspaceManager,
     bindingReader: bindingStore,
     artifactDeliverySink: artifactDeliveryQueue,

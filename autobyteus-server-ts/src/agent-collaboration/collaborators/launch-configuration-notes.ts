@@ -54,8 +54,10 @@ export const launchNotesOf = (sources: readonly LaunchConfigurationSourceWithNam
   sources.flatMap(({ name, subject, launch, source }) => {
     const runsOn = subject === "team" ? "its members without their own default run on" : "it runs on";
     const target = `${agentRuntimeName(launch.runtimeKind)} / ${launch.llmModelIdentifier}`;
-    const skipped = source.fallbacks.map((fallback) =>
-      `${name}: ${skippedText(fallback)}; ${runsOn} ${target} (${ORIGIN_LABEL[source.origin]}).`);
+    const skipped = source.fallbacks.map((fallback) => fallback.reason === "model_unavailable"
+      // FU-030 (DLP-003, DLP-004): what happened and why (the model check's words), what runs instead, and what to do.
+      ? `${name}: ${fallback.detail.replace(/\.$/, "")}, so ${runsOn} ${target} (${ORIGIN_LABEL[source.origin]}). Choose another model in ${name}'s settings to change it.`
+      : `${name}: ${skippedText(fallback)}; ${runsOn} ${target} (${ORIGIN_LABEL[source.origin]}).`);
     if (source.origin !== "model_router") return skipped;
     const reason = source.choiceReason.trim().replace(/([^.!?])$/, "$1.");
     return [`${name}: runs on ${target}, chosen by the Model Router (${source.taskKind}): ${reason}`, ...skipped];

@@ -5,6 +5,9 @@
  */
 export type ReadDeadline = Readonly<{ endsAt: number }>;
 
+/** The budget of one runtime's model-list read: the runtimes report's model step, and G-5's stored-model check at start. */
+export const MODEL_LIST_READ_MS = 8_000;
+
 /**
  * A step stopped by its own deadline. Its message names no command, path or output. A helper with its own classified
  * error (e.g. a discovery diagnostic) keeps it and carries this error as its `cause`.

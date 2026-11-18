@@ -148,7 +148,7 @@ describe("TaskDelegation.toNewRun", () => {
   it("D1: a sender with no Task assigns described work to a new Task with no Project; the run carries its origin; the entry, then the packet, then markStarted", async () => {
     const h = harness();
     const outcome = await h.delegate(M, M.rootRunId, { recipient_address: "/image_maker", description: "Draw the logo." });
-    expect(outcome).toEqual({ delegated: true, copy: { kind: "agent", agentRunId: "image_maker_33f0" }, taskId: "ad_hoc_task_1", launchNotes: ["note"] });
+    expect(outcome).toEqual({ delegated: true, delegatedRun: { kind: "agent", agentRunId: "image_maker_33f0" }, taskId: "ad_hoc_task_1", launchNotes: ["note"] });
     expect(h.starter.startAgent).toHaveBeenCalledWith({ source: agentPlacement.source, address: "/image_maker",
       delegatedFrom: { delegatingRun: { kind: "agent", runId: M.rootRunId }, delegatorAgentRunId: M.rootRunId } });
     expect(h.tasks.entry({ agentRunId: "image_maker_33f0" })).toMatchObject({ taskId: "ad_hoc_task_1", role: "assigned", start: "started",
@@ -165,7 +165,7 @@ describe("TaskDelegation.toNewRun", () => {
     const h = harness();
     h.tasks.addTask("project_task_440e", "Build it", "abc-1");
     const outcome = await h.delegate(M, M.rootRunId, { recipient_address: "/product_team", task_id: "abc-1" }, teamPlacement);
-    expect(outcome).toEqual({ delegated: true, copy: { kind: "team", teamRunId: "product_team_e03d", teamCoordinatorAgentRunId: "designer_1" } });
+    expect(outcome).toEqual({ delegated: true, delegatedRun: { kind: "team", teamRunId: "product_team_e03d", teamCoordinatorAgentRunId: "designer_1" } });
     expect(h.tasks.entry({ teamRunId: "product_team_e03d" })).toMatchObject({ taskId: "project_task_440e", role: "assigned", teamCoordinatorAgentRunId: "designer_1" });
   });
 
@@ -253,7 +253,7 @@ describe("TaskDelegation.toNewRun", () => {
         members: [{ address: "/research_team/lead", agentRunId: "lead_0c11" }, { address: "/research_team/analyst", agentRunId: "analyst_5d20" }], launches: [] });
       const h = peerHarness(channel);
       const { outcome } = await h.delegate();
-      expect(outcome).toEqual({ delegated: true, copy: { kind: "team", teamRunId: "research_team_77aa", teamCoordinatorAgentRunId: "lead_0c11" },
+      expect(outcome).toEqual({ delegated: true, delegatedRun: { kind: "team", teamRunId: "research_team_77aa", teamCoordinatorAgentRunId: "lead_0c11" },
         node: "Studio B", taskId: "ad_hoc_task_1" });
       expect(channel.startDelegatedRun).toHaveBeenCalledWith(expect.objectContaining({ nodeId: "node-b-1f0e", address: "/research_team",
         delegatorAgentRunId: M.rootRunId, delegatingRun: { kind: "agent", runId: M.rootRunId } }));
@@ -301,14 +301,14 @@ describe("TaskDelegation.toNewRun", () => {
         delegatorCatalog: { placementAt: async () => null }, conversationOf: vi.fn(async () => ({ entryAddress: "/solution_designer", activity })) });
       const give = (senderRun: RootExecutionIdentity, sender: string, copy: Record<string, string>, taskId = "abc-2") => delegation.toExistingRun({
         sender: createCollaborationMemberExecutionIdentity({ root: senderRun, memberAddress: `/${sender}` as never, agentRunId: sender }), senderRun,
-        assign: { copy: copy as never, taskId } });
+        assign: { delegatedRun: copy as never, taskId } });
       return { tasks, tree, give, deliverToRun };
     };
 
     it("its assigner gives it a second Task: a new assigned entry with the same delegatedFrom and address; the work is a task_assignment message between the runs", async () => {
       const h = await followUp();
       await expect(h.give(M, M.rootRunId, { teamRunId: E.rootRunId })).resolves.toEqual({ delegated: true,
-        copy: { kind: "team", teamRunId: E.rootRunId, teamCoordinatorAgentRunId: "solution_designer_65a9" } });
+        delegatedRun: { kind: "team", teamRunId: E.rootRunId, teamCoordinatorAgentRunId: "solution_designer_65a9" } });
       expect(h.tasks.assignments).toEqual([{ delegatedFrom: { delegatingRun: M, delegatorAgentRunId: M.rootRunId }, execution: { teamRunId: E.rootRunId },
         taskId: "T2", teamCoordinatorAgentRunId: "solution_designer_65a9" }]);
       expect(h.deliverToRun).toHaveBeenCalledWith(expect.objectContaining({ targetAgentRunId: "solution_designer_65a9", messageType: "task_assignment",
@@ -329,7 +329,7 @@ describe("TaskDelegation.toNewRun", () => {
         channel: () => null, recordCollaborating: vi.fn(async () => undefined), reachingAddress: async () => null, ownDelegations: { of: async () => null }, delegatorCatalog: { placementAt: async () => null },
         conversationOf: async () => ({ entryAddress: "/solution_designer", activity: { kind: "present" as const } }) });
       const give = (agentRunId: string) => delegation.toExistingRun({ sender: createCollaborationMemberExecutionIdentity({ root: M, memberAddress: `/${M.rootRunId}` as never, agentRunId: M.rootRunId }),
-        senderRun: M, assign: { copy: { agentRunId } as never, taskId: "abc-2" } });
+        senderRun: M, assign: { delegatedRun: { agentRunId } as never, taskId: "abc-2" } });
       await expect(give("reviewer_cd34")).resolves.toEqual({ delegated: false,
         message: "reviewer_cd34 is not one of your task agents. Use a run id that delegate_task returned to you, or delegate to a new task agent with recipient_address." });
       await expect(give("solution_designer_65a9")).resolves.toMatchObject({ delegated: false, message: expect.stringContaining(`is the coordinator of task agent team ${E.rootRunId}`) });
@@ -368,7 +368,7 @@ describe("TaskDelegation.toNewRun", () => {
       await expect(h.give(M, "someone_else", { teamRunId: E.rootRunId })).resolves.toEqual({ delegated: false,
         message: `${E.rootRunId} is not one of your task agents. Use a run id that delegate_task returned to you, or delegate to a new task agent with recipient_address.` });
       await expect(h.give(M, M.rootRunId, { teamRunId: E.rootRunId })).resolves.toEqual({ delegated: true,
-        copy: { kind: "team", teamRunId: E.rootRunId, teamCoordinatorAgentRunId: "solution_designer_65a9" } });
+        delegatedRun: { kind: "team", teamRunId: E.rootRunId, teamCoordinatorAgentRunId: "solution_designer_65a9" } });
       expect(h.tasks.assignments).toEqual([{ delegatedFrom: own.delegatedFrom, execution: { teamRunId: E.rootRunId }, taskId: "T2",
         recipientAddress: "/software_engineering_team", teamCoordinatorAgentRunId: "solution_designer_65a9" }]);
       expect(h.tasks.entry({ teamRunId: E.rootRunId })).toMatchObject({ taskId: "T2", recipientAddress: "/software_engineering_team", open: true });

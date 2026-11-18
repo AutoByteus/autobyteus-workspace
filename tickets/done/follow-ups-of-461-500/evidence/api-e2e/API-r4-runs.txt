@@ -1,0 +1,60 @@
+autobyteus-500 API/E2E round 4 (API-REV-004): the third merged state, on CRR-010. Head 44fec882bc; merge e93671cce0 of
+origin/personal 0570c47fd9; test fix 4db98c6d1a. Server dist rebuilt from it (05:36). Base 0570c47fd9 in its own worktree
+(install, build). Clean environment per run (env -i, a throwaway HOME, LANG); never the user's app or ~/.autobyteus. The Mac's
+load was 50-110 most of the round; the Linux container (Docker node:22-bookworm) separated load. The host application restarted
+once (an update to v1.5.13-beta.10) and stopped one run, which was run again. Raw logs: /tmp/api500/r4. Paths shortened to ~.
+
+What to look for: §1 the merge's focus (background counts, the peer path, the Org rows, the episodic catalog); §2 this ticket's
+cases; §4 F-4 with its base comparison.
+
+§1 The merge's focus
+  - background-task-status-count (RUN_BACKGROUND_TASK_STATUS_E2E=1, scripted AGY): BTS-01 native (counts 2, 1, 0 on the stream
+    and the feed, a reconnect snapshot), BTS-02 a Team (each member's count; the feed's Team state carries the sum), BTS-03
+    Antigravity (idle 1, then idle 0), BTS-06 end reasons: Pass (BTS-04/05 need the live Claude/Codex gates: not run).
+  - peer-background-task-status (RUN_PEER_BACKGROUND_STATUS_E2E=1): PBS-01 "the delegator's run-status feed shows the peer run
+    idle with 1 running background task, then 0": Pass.
+  - agent-command-correlated-status: Pass. episodic-catalog: 7/7 (493's catalog in the studio composition).
+  - Browser, team-status-live-probe: TS-008 (Agent and Team rows) Pass; new TS-009 (an Org run): the Org agent row
+    "manager, Background task running, /manager, <id>" with the active blue dot and the Org Team row "squad. Background task
+    running"; both back to "manager, idle, …" and "squad. Team status: Idle" when the steps exit: Pass (/tmp/api500/r4/ts3).
+
+§2 This ticket's cases on the merged state (focus batch, alone)
+  ODM-1, ALM-1, RSE-1, LTI-1, E-002 (4/4), SCP (6/6), DLC (3/3), RC 46/46, removed-remote-provider (2/2), project-task-boundaries
+  (18/18), delegated-team-lazy-member-activation: Pass. delegated-copy-model-change: DCM-001…003 failed twice inside sequences
+  ("Timed out waiting for team: tool result of /manager"), then 11/11 alone on the branch (base 11/11 alone): load.
+  Browser: G5-001…003, DLP-003/004/005, DCP-004 Pass; composer probe 12/12. SIR-002 failed its "every other file is
+  byte-identical" check on 'memory/episodic/index.md' (493's catalog, written at start); fixed (the derived catalog is left out
+  as the run history index already is): Pass. (Base fails SIR-002 earlier, on the probe data G-3 fixes.)
+
+§3 Full server E2E folder (detached, to the end) and the reruns
+  Full: Test Files 36 failed | 162 passed | 80 skipped (278); Tests 45 failed | 834 passed | 393 skipped (1272); 8961 s, load 50-110.
+  The 37 failing files alone on the branch: 18 pass. Of the other 19:
+  - the merged base's own (as round 3, FU-500-12 / FU-500-09): available-agent-runtimes, collaboration-prompt-wording,
+    agent-semantic-memory (6), request-origin-and-phone-routes (2), configured-skill-on-demand-loading;
+  - FSEvents: agent-package-definitions-live-refresh;
+  - load: 12 pass in the Linux container (stopped-run-model-config 5/5, runtime-switch-members-extended 5/5,
+    registered-package-definition-edit, agy-switch-back 3/3, provider-secret-lifecycle 6/6, agy-interrupt-resend 3/3,
+    removed-remote-provider-leftover, removed-remote-provider-saved-selection 2/2, stopped-org-workspace, mcp-http-error-status,
+    test-vault-selection 5/5, server-restart-secret-lifecycle); delegated-team-lazy-member-activation fails on base too at the
+    same load (an AGY discovery timeout);
+  - open-task-tree-upgrade-startup: F-4 (§4).
+  Integration (merged state, Mac): Tests 17 failed | 488 passed | 69 skipped; the failures are file-system-watcher (12) and
+  package-auto-refresh (5): FSEvents at load. Linux: the watcher 5/5 (below).
+
+§4 F-4: open-task-tree-upgrade-startup OT-2 (and OT-3, which needs OT-2's run)
+  Branch: "reading the trees wrote nothing: expected { …(122) } to deeply equal { …(118) }": the server start over the upgraded
+  data root changes memory/episodic/index.md and writes episodic/ot-checker-…/catalog.md, ot-manager-…, ot-researcher-…,
+  ot-writer-… (four new per-agent catalogs). OT-3 then: "the temporary Task's record: expected '' to be truthy".
+  Fails on the Mac (alone) and in the Linux container. Base 0570c47fd9 (alone, Mac): "Tests 3 passed (3)": its start writes no
+  episodic file there. The catalog's wiring is the same on both (build-studio-server differs only by `remote.channel`).
+  Origin not determined (Unclear): either the merged code now lets 493's catalog see these runs (then the derived catalog is
+  not the test's "read" and the check should leave memory/episodic out, as SIR-002's now does), or the merge changed what the
+  catalog reads.
+
+§5 AC-005 on this merged state: Linux, the watcher file 5 of 5, each "Tests 14 passed (14)", 0 labels.
+
+§6 F-4 resolved (CRR-011: test-side; the code reviewer's probe showed base 0570c47fd9 fails the same way under load, my base
+  pass was timing; 493's catalog start pass writes derived catalogs when the previous server stopped before its 5 s refresh).
+  open-task-tree-upgrade-startup OT-2's "a read writes nothing" now leaves the derived memory/episodic/ out (as SIR-002); the
+  later fingerprint compares own files and one run folder only, unchanged. Rerun (Mac, load 66-85): "Tests 3 passed (3)" (OT-1,
+  OT-2, OT-3) (/tmp/api500/r4/ott-fixed.log). Follow-up FU-500-13 for 493's area.

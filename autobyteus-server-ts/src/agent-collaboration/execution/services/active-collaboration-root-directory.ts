@@ -138,7 +138,7 @@ export class ActiveCollaborationRootDirectory {
   /**
    * The active root holding this agent run and its place there (autobyteus-285, restart resume); `null` when no
    * active root holds it (application- or system-owned runs). Reads only. One root holds a run; if several boundaries
-   * claim it, that is logged and the host claim wins.
+   * claim it, that is logged and the run's own agent's claim wins.
    */
   placeOf(agentRunIdInput: string): Readonly<{ root: RootExecutionIdentity; place: CollaborationRunPlace }> | null {
     const agentRunId = agentRunIdInput.trim();

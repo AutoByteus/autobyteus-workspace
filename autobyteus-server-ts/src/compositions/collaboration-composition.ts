@@ -202,7 +202,7 @@ export const composeCollaboration = async (input: Readonly<{
       activeTeamRun: (teamRunId) => runs.teamRunService.getActiveTeamRun(teamRunId),
       activeOrgRun: (orgRunId) => runs.agentOrgRunService.getActive(orgRunId) }, run.rootSubjectKind, run.rootRunId, viewer);
     const ownDelegations = new RunOwnDelegations({ files: runFiles, admission: () => getCollaboratorAdmission(), portOf });
-    const liveAgents = (kind: "agent" | "agent_team") => kind === "agent" ? runs.standaloneRootManager.pairedAgents : runs.teamRunService.pairedAgents;
+    const liveAgents = (kind: "agent" | "agent_team") => kind === "agent" ? runs.standaloneRootManager.runAgents : runs.teamRunService.runAgents;
     // An Org's own agents' statuses, for its own status (SR-086 G-A4).
     const orgAgents = new AgentOrgAgentStatuses({ getActive: (orgRunId) => runs.agentOrgRunService.getActive(orgRunId) });
     // Whether input may restore a delegated run (CR-461-070): the delegator's message and a team run's own stream.

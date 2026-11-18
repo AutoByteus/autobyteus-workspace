@@ -53,6 +53,9 @@ const cli = process.env.ANTIGRAVITY_CLI_COMMAND ?? "";
 const enabled = process.env.RUN_AGY_FAILURE_E2E === "1"
   && spawnSync(cli, ["--version"], { stdio: "ignore" }).status === 0;
 const suite = enabled ? describe : describe.skip;
+/** autobyteus-500 G-5 (REQ-016, D-12): a member whose saved model its runtime no longer offers is refused before its runtime
+ * starts, with the agent, model, runtime and repair named (before, AGY itself refused: AGY_MODEL_UNAVAILABLE). */
+const G5_REFUSAL = /can't start: its saved model '[^']+' is not offered by Antigravity CLI now\. Stop it, then choose a runtime and model for \S+ in Settings\./;
 /** Optional real-model case (Claude Agent SDK members); needs a logged-in `claude`. */
 const liveClaude = enabled && process.env.RUN_CLAUDE_E2E === "1" && spawnSync("claude", ["--version"], { stdio: "ignore" }).status === 0;
 
@@ -358,7 +361,7 @@ suite("Delegated Team copies start only the members that work reaches, in every 
       if (ownRead) return ownRead;
       if (kind === "agent" && agentRunId === rootId) return (await graphql(`query($id:String!){getRunProjection(runId:$id){conversation}}`,
         { id: agentRunId })).getRunProjection?.conversation;
-      if (kind === "agent") return (await graphql(`query($h:String!,$a:String!,$r:String!){agentRunCollaborationMemberProjection(hostRunId:$h,memberAddress:$a,agentRunId:$r){conversation}}`,
+      if (kind === "agent") return (await graphql(`query($h:String!,$a:String!,$r:String!){agentRunCollaborationMemberProjection(runId:$h,memberAddress:$a,agentRunId:$r){conversation}}`,
         { h: rootId, a: address, r: agentRunId })).agentRunCollaborationMemberProjection?.conversation;
       if (kind === "team") return (await graphql(`query($id:String!,$a:String!){getTeamMemberRunProjection(teamRunId:$id,agentRunId:$a){conversation}}`,
         { id: rootId, a: agentRunId })).getTeamMemberRunProjection?.conversation;
@@ -516,7 +519,7 @@ suite("Delegated Team copies start only the members that work reaches, in every 
       const failed = await memberCalls(root, copy, "lead", callTool("send_message_to", { recipient_address: copy.members.writer.address,
         content: "Please write. Marker WRITE-FIRST." }));
       expect(failed, `${kind} lead → writer ${JSON.stringify(failed)}`).toMatchObject({ accepted: false, code: "AGENT_RUN_ACTIVATION_FAILED" });
-      expect(failed.message).toMatch(/AGY_MODEL_UNAVAILABLE/);
+      expect(failed.message).toMatch(G5_REFUSAL);
       await root.signal("writer error", (e) => e.agentRunId === copy.members.writer.agentRunId && e.status === "error");
       // The writer's conversation shows the failure once (SR-004: one error card per failed start).
       // The writer's conversation shows the failure once (SR-004: one error card per failed start), on its own team's stream.
@@ -525,7 +528,7 @@ suite("Delegated Team copies start only the members that work reaches, in every 
           + JSON.stringify(own.frames.filter((f) => JSON.stringify(f).includes(copy.members.writer.agentRunId)).map((f) => f.type)).slice(0, 1_500) }); });
       await wait(1_000);
       expect(ownCards(), JSON.stringify(ownCards())).toHaveLength(1);
-      expect(JSON.stringify(ownCards()[0])).toMatch(/AGY_MODEL_UNAVAILABLE/);
+      expect(JSON.stringify(ownCards()[0])).toMatch(G5_REFUSAL);
       own.socket.close();
       expect(await launchesFor(runIdsOf(copy), failedFrom)).toEqual([]);
       await expectStatuses(root, copy, { lead: "idle", reviewer: "idle", writer: "error", tester: "offline" });
@@ -642,7 +645,7 @@ suite("Delegated Team copies start only the members that work reaches, in every 
     const from = (await launches()).length;
     const failed = await root.managerCalls(callTool("delegate_task", { recipient_address: "/broken", description: "Work for a broken Team." }));
     expect(failed.delegated ?? false, JSON.stringify(failed)).toBe(false);
-    expect(JSON.stringify(failed)).toMatch(/AGY_MODEL_UNAVAILABLE/);
+    expect(JSON.stringify(failed)).toMatch(G5_REFUSAL);
     await wait(2_000);
     const after = (await launches()).slice(from).filter((entry) => entry.runId !== root.managerRunId);
     expect(after, `${kind} launches for the failed copy`).toEqual([]);

@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 import { ActiveCollaborationRootDirectory } from "../../../../src/agent-collaboration/execution/services/active-collaboration-root-directory.js";
 import type { RootExecutionIdentity, RootSubjectKind } from "../../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
-import type { PairedAgentStatus } from "../../../../src/agent-collaboration/execution/remote/paired-agent-access.js";
+import type { RunAgentStatusEntry } from "../../../../src/agent-collaboration/execution/remote/run-agent-access.js";
 import { RunningAgents } from "../../../../src/agent-collaboration/running/running-agents.js";
 
 /**
@@ -9,14 +9,14 @@ import { RunningAgents } from "../../../../src/agent-collaboration/running/runni
  * from each root's own live statuses (never from run-ID membership), and the coordinator of a team that runs here.
  */
 const root = (rootSubjectKind: RootSubjectKind, rootRunId: string): RootExecutionIdentity => ({ rootSubjectKind, rootRunId }) as RootExecutionIdentity;
-const status = (agentRunId: string, value: PairedAgentStatus["status"]): PairedAgentStatus => ({ agentRunId, status: value, backgroundTasksRunning: 0 });
+const status = (agentRunId: string, value: RunAgentStatusEntry["status"]): RunAgentStatusEntry => ({ agentRunId, status: value, backgroundTasksRunning: 0 });
 
 const setup = () => {
   const directory = new ActiveCollaborationRootDirectory();
   const register = (identity: RootExecutionIdentity, members: readonly string[], extra: Record<string, unknown> = {}) =>
     directory.reserve(identity, { hasAgentExecution: (id: string) => members.includes(id), deliverExactAgentMessage: vi.fn(), deliverToPeerRun: vi.fn(), ...extra }).commit();
-  const statuses = new Map<string, readonly PairedAgentStatus[]>();
-  const running = new RunningAgents({ roots: directory, statuses: (kind) => ({ pairedAgentStatuses: (runId) => statuses.get(`${kind}:${runId}`) ?? [] }) });
+  const statuses = new Map<string, readonly RunAgentStatusEntry[]>();
+  const running = new RunningAgents({ roots: directory, statuses: (kind) => ({ runAgentStatuses: (runId) => statuses.get(`${kind}:${runId}`) ?? [] }) });
   return { directory, register, statuses, running };
 };
 

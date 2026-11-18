@@ -1,0 +1,36 @@
+autobyteus-500 API/E2E round 5 (API-REV-005): the fourth merged state, on CRR-013. Head d141a2e783; merge eecb228bd6 of
+origin/personal 24d438fa31 (v1.5.13-beta.10 plus 517, 524 round 2, 526). Server dist rebuilt from it. Clean environment per run
+(env -i, a throwaway HOME, LANG); never the user's app or ~/.autobyteus. Mac load 65-110. Raw logs: /tmp/api500/r5.
+
+What to look for: §1 a built server's stop; §2 restart resume with its notice, the Team member included (new RR-12); §3 this
+ticket's merged cases.
+
+Scope (proportional): the merge has 2 conflicts, in the restart resumer and the studio composition's start/stop. This round
+covers those paths, every built-server suite that restarts or resumes, and this ticket's cases. The full folder was not rerun
+(rounds 3 and 4 ran it to the end; every failure there was load, the merged base's own, or FSEvents).
+
+§1 A built server's stop (524: closeStudioProcessResources moved; stopStudioFileWatchesForProcessExit added)
+  - Temporary test (removed after the run): three times a built server with an imported local package (the package watcher
+    on its folder, a file edited) and the skills watcher, then SIGTERM: stops in 2461, 91 and 70 ms; no error, unhandled or
+    EPERM/EBADF line at shutdown ("SHUTDOWN [{"ms":2461,"errors":[]…},{"ms":91,…},{"ms":70,…}]").
+  - tests/unit/compositions: 17/17 (studio-file-watch-exit 2, studio-preclose-order 1, native-command-shutdown 2, …).
+  - Every built-server suite below stops its servers with SIGTERM; none reported a stop timeout or a non-zero exit.
+
+§2 Restart resume with its notice (526 passes the whole notice message; this ticket's readyAgent; the member path)
+  restart-reminder-built-server (RUN_RESTART_REMINDER_E2E=1): 8 passed, 4 skipped (the live RR-07…09, RR-11 needs a pre-526
+  build): RR-01 graceful restart (reminded once, "a restart"), RR-02 forced kill, RR-03 update (woken once, "an update to v…"),
+  RR-04 mid-turn (one reminder with the interrupted-turn line), RR-05 input at once (exactly one reminder), RR-06 Antigravity,
+  RR-10 (526: each turn its own id in the traces, live and in the conversation), and new RR-12: a native Team member idle with
+  a background task at an update restart is woken once with "an update to v<this release>", its next input carries no
+  reminder, and its conversation shows the notice once. DRO-1/DRO-3 (restart resume of a busy delegated Team's member; the
+  closed one skipped): 3/3.
+
+§3 This ticket's merged cases and the merge's other areas (one at a time)
+  ODM-1, ALM-1, RSE-1, LTI-1, E-002 (4/4), SCP (6/6), DLC (3/3), RC 46/46, removed-remote-provider (2/2), open-task-tree
+  (3/3), episodic-catalog (7/7), BTS-01…03,06, PBS-01, server-restart-secret, token-usage restart, mcp-http-auth-remote
+  (restart): 87 passed. unclean-shutdown-delegated-team-restore failed once in the sequence ("Timed out waiting for manager
+  delegates USR-1", load ~100), then 8/8 alone.
+  Browser: TS-008, TS-009 (the background rows) Pass; G5-001…003, DLP-005, DCP-004 Pass. SIR-002: first a fetch timeout (load),
+  then "every other file is byte-identical: ['restart-resume/busy-runs.json']": 448's restart-resume record, written live and
+  at each graceful stop, is runtime state; the check now leaves `restart-resume/` out with the other derived files: Pass
+  (and its second start changes nothing).

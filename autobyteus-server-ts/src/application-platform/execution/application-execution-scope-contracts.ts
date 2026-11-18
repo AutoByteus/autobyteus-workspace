@@ -1,4 +1,7 @@
 import type { RunViewStreams } from "../../agent-collaboration/delegation/run-view-stream.js";
+import type { StoredModelOfferCheck } from "../../llm-management/services/run-model-selection-service.js";
+import type { PeerDiscoveryAccess } from "../../agent-collaboration/execution/remote/peer-discovery-channel.js";
+import type { RemoteRunChannelAccess } from "../../agent-collaboration/execution/remote/remote-run-channel.js";
 import type { RunTaskRecords } from "../../agent-collaboration/execution/task/task-execution-resource-port.js";
 import type { DelegationIndex } from "../../agent-collaboration/delegation/delegation-index.js";
 import type { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
@@ -43,7 +46,7 @@ export type ApplicationExecutionScopeBuildInput = Readonly<{
   workspaceManager: WorkspaceManager;
   bindingReader: ApplicationPublishedArtifactBindingReader;
   artifactDeliverySink: ApplicationPublishedArtifactDeliverySink;
-  modelSelectionValidator: RunModelSelectionValidator;
+  modelSelectionValidator: RunModelSelectionValidator & StoredModelOfferCheck;
   /** The relationships between runs (the Task entries); an application's team roots read their own (SR-047). */
   delegationIndex: DelegationIndex;
   /** Each run's view stream, from the composition root (SR-062). */
@@ -55,6 +58,9 @@ export type ApplicationExecutionScopeBuildInput = Readonly<{
   providerRelayAccess: ProviderRelayAccess | null;
   /** Ends the scope's run passes; from the same host, non-null whenever `providerRelayAccess` is. */
   runPasses: RunPassRevocation | null;
+  /** The host's channel to peer nodes and its discovery (autobyteus-500 FU-011). */
+  remoteChannel: RemoteRunChannelAccess;
+  peerDiscovery: PeerDiscoveryAccess;
 }>;
 
 export type ApplicationAgentLaunchResult = Readonly<{

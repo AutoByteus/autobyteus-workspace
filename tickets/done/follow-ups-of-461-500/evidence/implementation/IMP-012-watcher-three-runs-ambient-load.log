@@ -1,0 +1,43 @@
+# IMP-012 FU-021 watcher integration test, 3 runs, ambient load (other worktrees' suites; not a controlled load)
+# Command (per run): cd autobyteus-server-ts && npx vitest run --no-watch tests/integration/file-explorer/file-system-watcher.integration.test.ts
+# Commit: 4277f1945e (test as committed; watcher code unchanged); macOS Darwin 25.5.0, 10 cores, Node v22; 2026-11-17 12:16-12:40 local
+# Labels: env = 'Error: ENVIRONMENT: ...' (probe got no event), product = 'Error: Timed out waiting for event (hang guard)' (probe got an event), other = assertion failures or test timeouts
+
+run 1: ⎯⎯⎯⎯⎯⎯⎯ Failed Tests 5 ⎯⎯⎯⎯⎯⎯⎯
+      Tests  5 failed | 9 passed (14) env=1 product=4 other=0 start=70.76 112.47 118.70 end=79.68 87.91 103.83
+run 2: ⎯⎯⎯⎯⎯⎯⎯ Failed Tests 6 ⎯⎯⎯⎯⎯⎯⎯
+      Tests  6 failed | 8 passed (14) env=3 product=3 other=0 start=79.68 87.91 103.83 end=67.26 77.27 91.91
+run 3: ⎯⎯⎯⎯⎯⎯⎯ Failed Tests 7 ⎯⎯⎯⎯⎯⎯⎯
+      Tests  7 failed | 7 passed (14) env=2 product=5 other=0 start=67.26 77.27 91.91 end=87.28 88.36 91.33
+
+## Failing case -> label -> which wait (all failures; every one reported 'changes before the guard: []' except where shown)
+run 1: does not emit events for pre-existing root .gitignore excluded directories  =>  ENVIRONMENT: the OS delivered no file event within 10 s (FSEvents under load); this watcher result is not meaningful; changes before the guard: []
+run 1: emits folder creation and deletion events  =>  Timed out waiting for event (hang guard); changes before the guard: []
+run 1: ignores default strategy paths like __pycache__  =>  Timed out waiting for event (hang guard); changes before the guard: []
+run 1: respects nested .gitignore files  =>  Timed out waiting for event (hang guard); changes before the guard: [{"type":"add","path":"sentinel-1794914378392-ik1ll1ziqvn.txt"},{"type":"modify","path":"sentinel-1794914378392-ik1ll1ziqvn.txt"},{"type":"delete"}
+run 1: captures rapid changes without dropping events  =>  Timed out waiting for event (hang guard); changes before the guard: []
+run 2: does not emit events for pre-existing nested .gitignore excluded directories  =>  ENVIRONMENT: the OS delivered no file event within 10 s (FSEvents under load); this watcher result is not meaningful; changes before the guard: []
+run 2: emits add + modify + delete events  =>  Timed out waiting for event (hang guard); changes before the guard: []
+run 2: returns one idle event stream without stopping other subscribers  =>  ENVIRONMENT: the OS delivered no file event within 10 s (FSEvents under load); this watcher result is not meaningful; changes before the guard: []
+run 2: emits folder creation and deletion events  =>  ENVIRONMENT: the OS delivered no file event within 10 s (FSEvents under load); this watcher result is not meaningful; changes before the guard: []
+run 2: ignores default strategy paths like __pycache__  =>  Timed out waiting for event (hang guard); changes before the guard: []
+run 2: ignores specific folders like .git and their contents  =>  Timed out waiting for event (hang guard); changes before the guard: []
+run 3: does not emit events for pre-existing nested .gitignore excluded directories  =>  Timed out waiting for event (hang guard); changes before the guard: []
+run 3: emits add + modify + delete events  =>  ENVIRONMENT: the OS delivered no file event within 10 s (FSEvents under load); this watcher result is not meaningful; changes before the guard: []
+run 3: emits move/rename event  =>  ENVIRONMENT: the OS delivered no file event within 10 s (FSEvents under load); this watcher result is not meaningful; changes before the guard: []
+run 3: emits file creation event with node metadata  =>  Timed out waiting for event (hang guard); changes before the guard: []
+run 3: ignores default strategy paths like __pycache__  =>  Timed out waiting for event (hang guard); changes before the guard: []
+run 3: respects nested .gitignore files  =>  Timed out waiting for event (hang guard); changes before the guard: []
+run 3: treats moves into ignored directories as deletes from the visible tree  =>  Timed out waiting for event (hang guard); changes before the guard: []
+
+## The __pycache__ case alone (-t __pycache__), 3 runs right after
+alone 1: ⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+Tests  1 failed | 13 skipped (14) × ignores default strategy paths like __pycache__ 64080ms
+alone 2: Tests  1 passed | 13 skipped (14) 
+alone 3: ⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+Tests  1 failed | 13 skipped (14) × ignores default strategy paths like __pycache__ 70137ms
+(load 89-111 during these)
+
+## Earlier runs of this commit's predecessors (kept for the record)
+- the probe on fb52bd332c's waits (before the per-test guard and named waits), run 1, load 62-99: 6 failed | 8 passed: env=3 product=1, plus 2 assertion failures from test defects (a late DELETE of the previous sentinel; a wait that took the first ADD), both fixed in 4277f1945e
+- with the defects fixed but a guard per wait, run 1, load 108-172: 13 failed | 1 passed: env=5 product=7, 1 test timeout at 90 s (two waits in sequence), fixed by the per-test guard

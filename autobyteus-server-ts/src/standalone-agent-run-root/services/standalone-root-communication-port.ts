@@ -6,7 +6,7 @@ import {
 import { buildRootCommunicationInputMessage } from "../../agent-collaboration/execution/communication/root-communication-runtime-builder.js";
 import type { CollaborationCommunicationMessage } from "../../agent-collaboration/execution/communication/collaboration-communication-message.js";
 import { messageLogOwners, type MessageLogOwner } from "../../run-history/store/message-log-owners.js";
-import type { StandaloneRootMessagesFile } from "../domain/standalone-root-host.js";
+import type { StandaloneRootMessagesFile } from "../domain/standalone-run-agent.js";
 import type { StandaloneRootPersistenceCoordinator } from "./standalone-root-persistence-coordinator.js";
 
 /** The Agent root's facts and effects for RootCommunicationEngine (messages with subjectKind `agent`). */
@@ -16,7 +16,7 @@ export const createStandaloneRootCommunicationPort = (input: Readonly<{
   persistence: StandaloneRootPersistenceCoordinator;
   isOpen(): boolean;
   isCurrentAgent: RootCommunicationPort["isCurrentAgent"];
-  /** The log an endpoint's messages belong to (the host's, or a task agent's own, D-4). */
+  /** The log an endpoint's messages belong to (the run's own agent's, or a task agent's own, D-4). */
   messageLogOwnerOf(agentRunId: string): MessageLogOwner;
   assertDeliveryAllowed: RootCommunicationPort["assertDeliveryAllowed"];
   reserveRecipientInput: RootCommunicationPort["reserveRecipientInput"];

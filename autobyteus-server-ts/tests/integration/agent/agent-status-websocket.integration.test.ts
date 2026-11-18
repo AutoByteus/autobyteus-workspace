@@ -1,3 +1,4 @@
+import { AgentRunCommandCoordinator } from "../../../src/agent-execution/services/agent-run-command-coordinator.js";
 import fastify from "fastify";
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import websocket from "@fastify/websocket";
@@ -26,6 +27,7 @@ import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.j
 import { AgentStreamHandler } from "../../../src/services/agent-streaming/agent-stream-handler.js";
 import { AgentSessionManager } from "../../../src/services/agent-streaming/agent-session-manager.js";
 import { lazyAgentStreamSequences } from "../../helpers/agent-stream-sequence-fixture.js";
+import { NO_ELIGIBLE_STANDALONE_RUNS } from "../../helpers/explicit-host-collaborators.js";
 
 type WsMessage = {
   type: string;
@@ -210,7 +212,7 @@ const openAgentApp = async (run: AgentRun) => {
       recordRunActivity: async () => {},
     } as never,
     undefined,
-    undefined,
+    new AgentRunCommandCoordinator({ standaloneRuns: NO_ELIGIBLE_STANDALONE_RUNS }),
     statusProjectionService,
     null,
     stream.sequences,
@@ -222,6 +224,8 @@ const openAgentApp = async (run: AgentRun) => {
     app,
     streamHandler,
     { connect: async () => null, handleMessage: async () => {}, disconnect: async () => {} } as never,
+    {} as never,
+    {} as never,
   );
   const address = await app.listen({ port: 0, host: "127.0.0.1" });
   const url = new URL(address);

@@ -487,8 +487,8 @@ startup into ordinary, unowned delegated runs of the same root (migration
   offers the host, and a task agent can mention it. A host self-mention is still
   rejected ("… is this run's own definition."). The `@` caller (Team, Org and
   collaboration stream handlers, and the standalone host path
-  `AgentRunCommandCoordinator.postUserMessage` → `StandaloneAgentRunRoot.postHostUserMessage` →
-  `StandaloneRootMessageDelivery.postToHost`) appends a `[Mentioned agents]` note, one
+  `AgentRunCommandCoordinator.postUserMessage` → `StandaloneAgentRunRoot.postAgentUserMessage` →
+  `StandaloneRootMessageDelivery.postToAgent`) appends a `[Mentioned agents]` note, one
   line per mention: `- <Name> (agent|agent team) at <address>[, in your team]: <guidance>`.
   The guidance depends on the presence: `not_in_run` → "delegate the task to it with
   delegate_task; it returns a run id to follow up with."; `in_run` → "talk with it using send_message_to, or delegate a task

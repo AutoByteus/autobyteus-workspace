@@ -10,6 +10,7 @@ import { AgentRunCommandCoordinator } from "../../../src/agent-execution/service
 import { AgentRunCommandRegistry } from "../../../src/agent-execution/services/agent-run-command-registry.js";
 import { AgentRunCommandStatusOverlayStore } from "../../../src/agent-execution/services/agent-run-command-status-overlay-store.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
+import { NO_ELIGIBLE_STANDALONE_RUNS } from "../../helpers/explicit-host-collaborators.js";
 
 // autobyteus-324 SR-010 (API-05): a single run's input that fails before it is sent (a tool-list
 // reopen failure) is shown on the run's stream as one ERROR frame, through the real command
@@ -73,7 +74,7 @@ const createRun = (behavior: Behavior) => {
 
 const buildCoordinator = (run: AgentRun) => {
   const frames: Array<{ type: string; payload: Record<string, unknown> }> = [];
-  const coordinator = new AgentRunCommandCoordinator({
+  const coordinator = new AgentRunCommandCoordinator({ standaloneRuns: NO_ELIGIBLE_STANDALONE_RUNS,
     agentRunService: {
       getAgentRun: vi.fn(() => run),
       getRunMetadata: vi.fn(async () => ({ startedAt: "2026-10-29T00:00:00Z" })),

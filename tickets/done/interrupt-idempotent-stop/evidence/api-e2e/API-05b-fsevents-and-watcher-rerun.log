@@ -1,0 +1,11 @@
+# API-05b FSEvents measurement + the two failing watcher files alone; commit 6b433e538d; 2026-11-18T12:12:26Z; Node v22.23.1
+## fseventsd CPU and load
+  480 143.3 /System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/FSEvents.framework/Versions/A/Support/fseventsd
+13:12  up 29 days, 22:51, 10 users, load averages: 59.36 52.70 58.85
+## node /tmp/api533/fsevents-measure.mjs (3 rounds: write-to-event, recursive watcher close block)
+[{"writeToEventMs":"none in 10000 ms","closeBlockMs":1203},{"writeToEventMs":6182,"closeBlockMs":4819},{"writeToEventMs":"none in 10000 ms","closeBlockMs":3566}]
+
+## 2026-11-18T17:06:39Z second measurement, before API-06e
+  480 167.4 /System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/FSEvents.framework/Versions/A/Support/fseventsd
+18:06  up 30 days,  3:45, 10 users, load averages: 55.43 42.67 44.75
+[{"writeToEventMs":2850,"closeBlockMs":118},{"writeToEventMs":"none in 10000 ms","closeBlockMs":0},{"writeToEventMs":"none in 10000 ms","closeBlockMs":1}]

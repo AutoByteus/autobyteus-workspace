@@ -113,7 +113,11 @@ const sourceOf = (value: Rec | null | undefined) => value ? { origin: value.orig
   layer: entry.layer, runtimeKind: f(entry, "runtimeKind"), model: f(entry, "llmModelIdentifier"), reason: entry.reason, detail: entry.detail })) } : null;
 /** The `launch_notes` sentence of the notes renderer (launch-configuration-notes.ts) for one skipped layer. */
 const noteText = (input: { name: string; layer: "agent" | "team"; runtime: string | null; model: string | null; detail: string;
-  runsOn: string; origin: string; team?: boolean }) => `${input.name}: its ${input.layer} default ${input.runtime ? agentRuntimeName(input.runtime) : "(no runtime)"} / `
+  runsOn: string; origin: string; team?: boolean }) => input.detail.includes(" is no longer offered by ")
+  // FU-030 (autobyteus-500): a model its runtime no longer offers: what happened, what runs instead, what to do.
+  ? `${input.name}: ${input.detail.replace(/\.$/, "")}, so ${input.team ? "its members without their own default run on" : "it runs on"} ${input.runsOn} `
+    + `(${input.origin}). Choose another model in ${input.name}'s settings to change it.`
+  : `${input.name}: its ${input.layer} default ${input.runtime ? agentRuntimeName(input.runtime) : "(no runtime)"} / `
   + `${input.model ?? "(no model)"} could not be used (${input.detail.replace(/\.$/, "")}); `
   + `${input.team ? "its members without their own default run on" : "it runs on"} ${input.runsOn} (${input.origin}).`;
 
@@ -299,7 +303,7 @@ suite("Delegated copies honor agent and team launch defaults in every root (real
       if (ownRead) return ownRead;
       if (kind === "agent" && agentRunId === rootId) return (await graphql(`query($id:String!){getRunProjection(runId:$id){conversation}}`,
         { id: agentRunId })).getRunProjection?.conversation;
-      if (kind === "agent") return (await graphql(`query($h:String!,$a:String!,$r:String!){agentRunCollaborationMemberProjection(hostRunId:$h,memberAddress:$a,agentRunId:$r){conversation}}`,
+      if (kind === "agent") return (await graphql(`query($h:String!,$a:String!,$r:String!){agentRunCollaborationMemberProjection(runId:$h,memberAddress:$a,agentRunId:$r){conversation}}`,
         { h: rootId, a: address, r: agentRunId })).agentRunCollaborationMemberProjection?.conversation;
       if (kind === "team") return (await graphql(`query($id:String!,$a:String!){getTeamMemberRunProjection(teamRunId:$id,agentRunId:$a){conversation}}`,
         { id: rootId, a: agentRunId })).getTeamMemberRunProjection?.conversation;
@@ -347,7 +351,7 @@ suite("Delegated copies honor agent and team launch defaults in every root (real
     ({ layer, runtimeKind, model, reason, detail });
   const squadFallbacks = () => ({
     offline: fallback("runtime_unavailable", "codex_app_server", "gpt-5.5", `Codex App Server command '${missingCodex}' is not available.`),
-    unoffered: fallback("model_unavailable", AGY, NOT_OFFERED, `'${NOT_OFFERED}' is not offered by ${agentRuntimeName(AGY)} now. Refresh the model list and choose again.`),
+    unoffered: fallback("model_unavailable", AGY, NOT_OFFERED, `'${NOT_OFFERED}' is no longer offered by ${agentRuntimeName(AGY)}.`),
     badsettings: fallback("model_settings_invalid", GROK, GROK_MODEL, "Its model settings are invalid: Value is not one of the supported options."),
     incomplete: fallback("incomplete", AGY, null, "It names no model."),
   });
@@ -363,7 +367,7 @@ suite("Delegated copies honor agent and team launch defaults in every root (real
     // DLC-001 (AC-001, AC-002 member layer, AC-005, AC-015 shape, REQ-002): a catalog Team copy, each agent resolved alone.
     const squad = await delegateTeam(root, "squad");
     const reasons = squadFallbacks();
-    const teamFallback = fallback("model_unavailable", AGY, TEAM_NOT_OFFERED, `'${TEAM_NOT_OFFERED}' is not offered by ${agentRuntimeName(AGY)} now. Refresh the model list and choose again.`, "team_default");
+    const teamFallback = fallback("model_unavailable", AGY, TEAM_NOT_OFFERED, `'${TEAM_NOT_OFFERED}' is no longer offered by ${agentRuntimeName(AGY)}.`, "team_default");
     const source = f(squad.copy, "source");
     record.squadSource = source;
     expect(launchOf(f(source, "defaultLaunchConfiguration")), JSON.stringify(f(source, "defaultLaunchConfiguration"))).toEqual(inheritedLaunch());
@@ -512,21 +516,23 @@ suite("Delegated copies honor agent and team launch defaults in every root (real
     expect(failures).toEqual([]);
   }, 600_000);
 
-  it("Agent root: with the root's model retired, an agent that needs the inherited layer cannot be delegated (today's text, nothing added), and an outside message is not found; a usable own default still starts; a user `@` mention admits nothing (AC-006)", async () => {
+  it("Agent root: with the root's model retired, an agent that needs the inherited layer cannot be delegated (the refusal says what to do, nothing added), and an outside message is not found; a usable own default still starts; a user `@` mention admits nothing (AC-006)", async () => {
     process.env["AGY_FAKE_EXTRA_MODELS"] = `${ALT},${RETIRING}`;
     const root = await startRoot("agent", RETIRING);
     // The root's AGY session starts on the retiring model, then the provider retires it.
     root.sendToManager("Hello. Marker ROOT-STARTED.");
     await until(async () => /ROOT-STARTED[\s\S]*OK/.test(await root.conversationText({ address: "/", agentRunId: root.managerRunId })), "root answered", 60_000);
     process.env["AGY_FAKE_EXTRA_MODELS"] = ALT;
-    const reason = `'${RETIRING}' is not offered by ${agentRuntimeName(AGY)} now. Refresh the model list and choose again.`;
+    // FU-030 / SR-015 R3 (CR-500-005): the inherited-layer refusal, with its next step.
+    const refusal = (name: string) => `${name} can't be delegated to: it would use this run's model '${RETIRING}', which ${agentRuntimeName(AGY)} `
+      + `no longer offers. Set a model for ${name} in its settings, or change this run's model, then delegate again.`;
     const before = await root.liveTree();
     const delegated = await root.managerCalls(callTool("delegate_task", { recipient_address: `/${segment(names.worker!)}`, description: "Plain work." }));
     expect(delegated.delegated ?? false, JSON.stringify(delegated)).toBe(false);
-    expect(JSON.stringify(delegated)).toContain(`${names.worker} cannot be delegated to: ${reason}`);
+    expect(JSON.stringify(delegated)).toContain(refusal(names.worker!));
     const team = await root.managerCalls(callTool("delegate_task", { recipient_address: `/${segment(names.squad!)}`, description: "Team work." }));
     expect(team.delegated ?? false, JSON.stringify(team)).toBe(false);
-    expect(JSON.stringify(team)).toContain(`${names.squad} cannot be delegated to: ${reason}`);
+    expect(JSON.stringify(team)).toContain(refusal(names.squad!));
     // Messaging never brings anyone in: an outside address is not found whatever the root's model, and nothing is added.
     const brought = await root.managerCalls(callTool("send_message_to", { recipient_address: `/${segment(names.unoffered!)}`, content: "Help." }));
     expect(brought, JSON.stringify(brought)).toMatchObject({ accepted: false, code: "COLLABORATION_TARGET_NOT_FOUND" });

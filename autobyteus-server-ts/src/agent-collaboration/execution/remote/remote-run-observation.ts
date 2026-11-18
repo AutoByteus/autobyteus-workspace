@@ -1,4 +1,4 @@
-import type { PairedAgentStatus } from "./paired-agent-access.js";
+import type { RunAgentStatusEntry } from "./run-agent-access.js";
 import type { PeerRunLink } from "./peer-run-link.js";
 import type { RemoteAgentLaunch, RemoteRunChannel } from "./remote-run-channel.js";
 
@@ -11,7 +11,7 @@ export type RemoteRunSummaryEvent = Readonly<{
   runId: string;
   reachable: boolean;
   title: string | null;
-  statuses: readonly PairedAgentStatus[];
+  statuses: readonly RunAgentStatusEntry[];
   /** Each agent's launch as its node has it (SR-038); none when it did not answer. */
   launches: readonly RemoteAgentLaunch[];
 }>;

@@ -5,6 +5,7 @@ import type {
   RemoteTargetRoot,
 } from "../../agent-collaboration/execution/remote/remote-run-channel.js";
 import { buildInterruptGenerationCommandAck } from "./interrupt-generation-command-ack.js";
+import { userInterruptOutcome } from "./user-interrupt-outcome.js";
 
 type Frame = Readonly<Record<string, unknown>>;
 export type PeerRunStreamSink = Readonly<{ send(message: Frame): void; close(code: number): void }>;
@@ -113,7 +114,7 @@ export class PeerRunStreamSession {
     const target = { target_kind: "standalone_run" as const, run_id: this.input.agentRunId };
     const receipt = await this.input.channel.ownerCommand(this.input.nodeId, this.input.targetRoot, this.input.agentRunId, { kind: "interrupt" });
     this.input.sink.send(message("AGENT_COMMAND_ACK", buildInterruptGenerationCommandAck({ commandId: payload.command_id, target,
-      result: receipt.accepted ? { accepted: true } : { accepted: false, code: receipt.code, message: receipt.message } }) as unknown as Record<string, unknown>));
+      result: userInterruptOutcome(receipt.accepted ? { accepted: true } : { accepted: false, code: receipt.code, message: receipt.message }) }) as unknown as Record<string, unknown>));
   }
 
   private end(reason: string): void {

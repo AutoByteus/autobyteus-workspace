@@ -270,9 +270,11 @@ export function registerSkillImprovementRemovalCases(h) {
     r.stillThere = []
     for (const rel of r.deleted) if (await exists(path.join(dataRoot, rel))) r.stillThere.push(rel)
     assert(r.stillThere.length === 0, 'every feature path is gone', r.stillThere)
-    // `memory/episodic/` holds the episodic catalogs (autobyteus-493): derived files the server rewrites at a start when
-    // the runs they list change (here: the deleted helper runs), as it keeps the history index it reads.
-    const expected = fx.without(r.before, [...r.deleted, 'memory/run_history_index.json', 'memory/episodic', '.env'])
+    // Derived files the server rewrites at start are not the migration's: the run history index, the episodic catalog
+    // (autobyteus-493: `memory/episodic/`, rebuilt from the run records, so removing the feature's runs changes it), and the
+    // restart-resume records (autobyteus-448: `restart-resume/`, written live and at every graceful stop).
+    const derived = Object.keys(r.before).filter((rel) => rel.startsWith('memory/episodic/') || rel.startsWith('restart-resume/'))
+    const expected = fx.without(r.before, [...r.deleted, 'memory/run_history_index.json', '.env', ...derived])
     const keptNow = (files) => Object.fromEntries(Object.entries(files).filter(([rel]) => rel in expected))
     const afterFirst = await dataSnapshot(fx.snapshot, dataRoot)
     r.changed = Object.keys(expected).filter((rel) => keptNow(afterFirst)[rel] !== expected[rel])

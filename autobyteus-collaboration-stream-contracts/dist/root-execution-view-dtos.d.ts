@@ -212,7 +212,7 @@ export declare const AgentRootExecutionViewDtoSchema: z.ZodObject<{
         execution_tree: z.ZodObject<{
             subjectKind: z.ZodLiteral<"agent">;
             createdAt: z.ZodString;
-            host: z.ZodObject<{
+            agent: z.ZodObject<{
                 address: z.ZodString;
                 agentRunId: z.ZodString;
                 agentDefinitionId: z.ZodString;
@@ -424,7 +424,7 @@ export declare const RootExecutionViewDtoSchema: z.ZodDiscriminatedUnion<[z.ZodO
         execution_tree: z.ZodObject<{
             subjectKind: z.ZodLiteral<"agent">;
             createdAt: z.ZodString;
-            host: z.ZodObject<{
+            agent: z.ZodObject<{
                 address: z.ZodString;
                 agentRunId: z.ZodString;
                 agentDefinitionId: z.ZodString;
@@ -1107,7 +1107,7 @@ export declare const CollaborationStreamServerMessageSchema: z.ZodDiscriminatedU
             execution_tree: z.ZodObject<{
                 subjectKind: z.ZodLiteral<"agent">;
                 createdAt: z.ZodString;
-                host: z.ZodObject<{
+                agent: z.ZodObject<{
                     address: z.ZodString;
                     agentRunId: z.ZodString;
                     agentDefinitionId: z.ZodString;

@@ -39,6 +39,7 @@ import {
   buildOpenBrowserToolPrompt,
   buildBrowserToolSurfacePrompt,
 } from "./browser-bridge-live-test-server.js";
+import { OFF_DISCOVERY } from "../../helpers/explicit-host-collaborators.js";
 
 const codexBinaryReady = spawnSync("codex", ["--version"], {
   stdio: "ignore",
@@ -199,7 +200,7 @@ const createFactory = async (input: {
 }) => {
   const inert = Object.freeze({}) as never;
   // Every run has an Agent Tools MCP session, so Codex always gets a live endpoint.
-  const host = createAgentToolsMcpHost({ loggingConfig: testLoggingConfig });
+  const host = createAgentToolsMcpHost({ peerDiscovery: OFF_DISCOVERY, loggingConfig: testLoggingConfig });
   const authority = host.sessionAuthorities.begin({
     scopeIdentity: `codex-live:${input.runId}`,
   }).complete({
@@ -249,7 +250,7 @@ const createFactory = async (input: {
       sdkClient: inert,
     },
   });
-  return builder.createForExecution({
+  return builder.createForExecution({ peerDiscovery: OFF_DISCOVERY,
     agentDefinitionService: {
       getAgentDefinitionById: async () => ({
         name: "Live Codex integration agent",

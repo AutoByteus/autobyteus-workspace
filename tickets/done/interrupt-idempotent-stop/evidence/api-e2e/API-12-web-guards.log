@@ -1,0 +1,8 @@
+# API-12 web guards with the new probe files; 2026-11-18T12:39:56Z; Node v22.23.1
+## pnpm -C autobyteus-web guard:web-boundary
+> node ./scripts/guard-web-boundary.mjs
+
+[guard:web-boundary] Passed.
+## guard:localization-boundary
+
+[guard:localization-boundary] Passed.

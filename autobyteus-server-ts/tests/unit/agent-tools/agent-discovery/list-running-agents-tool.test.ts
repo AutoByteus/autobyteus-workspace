@@ -2,6 +2,7 @@ import { describe, expect, it, vi } from "vitest";
 import { listRunningAgentsFor, LIST_RUNNING_AGENTS_TOOL_DESCRIPTION } from "../../../../src/agent-tools/agent-discovery/list-running-agents-contract.js";
 import type { RunningAgentEntry } from "../../../../src/agent-collaboration/running/running-agent-entry.js";
 import type { PeerDiscoveryChannel } from "../../../../src/agent-collaboration/execution/remote/peer-discovery-channel.js";
+import { REMOTE_COLLABORATION_OFF_DISCOVERY } from "../../../../src/agent-tools/agent-discovery/agent-discovery-refusal.js";
 import { runningAgentsOf } from "../../../../src/remote-collaboration/channel/peer-running-agents-answer.js";
 import { PeerNodeDiscovery } from "../../../../src/remote-collaboration/discovery/peer-node-discovery.js";
 import { peerRefusalText } from "../../../../src/remote-collaboration/domain/remote-refusals.js";
@@ -29,25 +30,26 @@ describe("list_running_agents", () => {
 
   it("without node: this node's listing, the caller's run left out by its own root identity, with the filters", async () => {
     const list = vi.fn(async () => [pm]);
-    await expect(listRunningAgentsFor(context(), { state: "idle", address: "/project_task_manager" }, { listing: () => ({ list }) }))
+    await expect(listRunningAgentsFor(context(), { state: "idle", address: "/project_task_manager" }, REMOTE_COLLABORATION_OFF_DISCOVERY, { listing: () => ({ list }) }))
       .resolves.toEqual({ agents: [pm] });
     expect(list).toHaveBeenCalledWith({ caller: { rootSubjectKind: "agent", rootRunId: "pm_a" }, filters: { address: "/project_task_manager", state: "idle" } });
   });
 
   it("with node: the peer's entries (with node), filtered here by the same rule; the peer's refusal is returned as it is", async () => {
     const peer = discovery([{ ...pm, node: "docker" }, { ...team, node: "docker" }]);
-    await expect(listRunningAgentsFor(context(), { node: " docker ", state: "running" }, { discovery: peer })).resolves.toEqual({ agents: [{ ...team, node: "docker" }] });
+    await expect(listRunningAgentsFor(context(), { node: " docker ", state: "running" }, peer)).resolves.toEqual({ agents: [{ ...team, node: "docker" }] });
     expect(peer.listRunningAgents).toHaveBeenCalledWith("docker");
     const refused = { accepted: false as const, code: "PEER_NOT_REGISTERED", message: "No peer node named \"nas\"." };
-    await expect(listRunningAgentsFor(context(), { node: "nas" }, { discovery: discovery(refused) })).resolves.toEqual(refused);
-    await expect(listRunningAgentsFor(context(), { node: "docker" }, { discovery: null })).resolves.toMatchObject({ accepted: false, code: "REMOTE_COLLABORATION_OFF" });
+    await expect(listRunningAgentsFor(context(), { node: "nas" }, discovery(refused))).resolves.toEqual(refused);
+    // autobyteus-500 FU-011: the host passes its discovery; with remote collaboration off, the explicit off value.
+    await expect(listRunningAgentsFor(context(), { node: "docker" }, REMOTE_COLLABORATION_OFF_DISCOVERY)).resolves.toMatchObject({ accepted: false, code: "REMOTE_COLLABORATION_OFF" });
   });
 
   it("validates node, address and state; needs a sender that can list available agents", async () => {
     for (const args of [{ node: "" }, { address: "pm" }, { state: "error" }]) {
-      await expect(listRunningAgentsFor(context(), args, { listing: () => ({ list: vi.fn() }) })).resolves.toMatchObject({ accepted: false, code: "VALIDATION_ERROR" });
+      await expect(listRunningAgentsFor(context(), args, REMOTE_COLLABORATION_OFF_DISCOVERY, { listing: () => ({ list: vi.fn() }) })).resolves.toMatchObject({ accepted: false, code: "VALIDATION_ERROR" });
     }
-    await expect(listRunningAgentsFor(context(false), {})).rejects.toMatchObject({ code: "COLLABORATION_CONTEXT_REQUIRED" });
+    await expect(listRunningAgentsFor(context(false), {}, REMOTE_COLLABORATION_OFF_DISCOVERY)).rejects.toMatchObject({ code: "COLLABORATION_CONTEXT_REQUIRED" });
   });
 });
 

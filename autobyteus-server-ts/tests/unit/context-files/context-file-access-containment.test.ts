@@ -58,7 +58,7 @@ const fixture = async (family: "team" | "org" | "standalone") => {
   // An unusable history payload must not be touched through indirect owner initialization.
   await put(path.join(directory, "raw_traces_active.jsonl"), "unusable history, not JSON");
   const layout = new ContextFileLayout({appDataDir: root, memoryDir});
-  const resolver = new ContextFileOwnerResolver({memoryDir, locations: createStoredCollaborationExecutionLocationService(memoryDir, noDelegations())});
+  const resolver = new ContextFileOwnerResolver({memoryDir, locations: createStoredCollaborationExecutionLocationService(memoryDir)});
   const read = new ContextFileReadService(layout, new ContextFileDraftCleanupService(layout), resolver);
   const local = new ContextFileLocalPathResolver({layout, ownerResolver: resolver, baseUrl: "http://localhost:8000"});
   return {root, memoryDir, directory, owner, file, read, local, layout, locator: buildFinalContextFileLocator(owner, filename)};

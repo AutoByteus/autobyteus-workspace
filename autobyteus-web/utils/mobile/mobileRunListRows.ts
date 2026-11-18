@@ -1,5 +1,5 @@
 import type { RunTreeRowDto } from '@autobyteus/collaboration-stream-contracts';
-import type { AgentOrgRunHistoryItem, RunHistoryTransientExecutionRow, TeamTreeNode } from '~/stores/runHistoryTypes';
+import type { AgentOrgRunHistoryItem, RunHistoryDelegatedRunRow, TeamTreeNode } from '~/stores/runHistoryTypes';
 import type { RunTreeRef } from '~/stores/runTreeStore';
 import { AgentStatus } from '~/types/agent/AgentStatus';
 import { agentOrgFirstMemberAddress } from '~/utils/agentOrgFirstMemberAddress';
@@ -58,7 +58,7 @@ export interface MobileRunListSources {
   backgroundTasksOf(row: RunTreeRowDto, id: string): number;
   isTreeRowExpanded(entry: RunListEntry, row: RunTreeRowDto): boolean;
   /** A Task worker row's current Task summary, if known (DEC-010). */
-  taskSummary(row: RunHistoryTransientExecutionRow): string | null;
+  taskSummary(row: RunHistoryDelegatedRunRow): string | null;
   isRunExpanded(runId: string): boolean;
   isTeamExpanded(teamRunId: string): boolean;
   isAgentOrgRunExpanded(rootRunId: string): boolean;

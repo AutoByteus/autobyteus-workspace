@@ -2172,7 +2172,7 @@ describe('RunSectionPanel', () => {
       opened = false;
 
       // A delegated Team is the shared delegated row (SR-084, FU-031).
-      const row = () => wrapper.get('[data-test="workspace-team-transient-execution-row"][data-transient-kind="task_team"]');
+      const row = () => wrapper.get('[data-test="workspace-team-transient-execution-row"][data-delegated-run-kind="task_team"]');
       const member = () => wrapper.find('[data-agent-run-id="agent-task-worker"]');
       expect(row().attributes('aria-expanded')).toBe('true');
       expect(row().find('[data-test="workspace-team-transient-disclosure"]').exists()).toBe(true);

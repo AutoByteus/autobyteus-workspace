@@ -42,7 +42,7 @@ export class DelegatorCatalog {
       return catalog ? sourcedPlacement(input.address as AgentTeamAddress, catalog.source, catalog) as LocalDelegationPlacement : null;
     } catch (cause) {
       if (cause instanceof CollaboratorAddError) {
-        throw new CollaborationContractError("COLLABORATION_TARGET_NOT_FOUND", `${cause.collaboratorName} cannot be delegated to: ${cause.reason}`);
+        throw new CollaborationContractError("COLLABORATION_TARGET_NOT_FOUND", `${cause.collaboratorName} can't be delegated to: ${cause.reason.replace(/\.$/, "")}.${cause.nextStep ? ` ${cause.nextStep}` : ""}`);
       }
       throw cause;
     }

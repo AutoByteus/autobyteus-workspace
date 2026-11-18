@@ -3,6 +3,7 @@ import { CollaborationContractError } from "../../agent-collaboration/domain/col
 import type { MemberCollaborationContext } from "../../agent-collaboration/execution/domain/member-execution-context.js";
 import { REMOTE_REFUSAL, REMOTE_ROOT_REFUSAL_TEXT } from "../../agent-collaboration/execution/remote/remote-refusal-codes.js";
 import type { RemoteChannelRefusal } from "../../agent-collaboration/execution/remote/remote-run-channel.js";
+import type { PeerDiscoveryAccess, PeerDiscoveryChannel } from "../../agent-collaboration/execution/remote/peer-discovery-channel.js";
 
 /**
  * A discovery tool's refusal (autobyteus-261): the code and the text the agent reads, from this node or the peer
@@ -19,6 +20,16 @@ export const remoteCollaborationOff = (): AgentDiscoveryRefusal =>
   Object.freeze({ accepted: false, code: REMOTE_REFUSAL.OFF, message: REMOTE_ROOT_REFUSAL_TEXT.off });
 
 /**
+ * The discovery of a host that composes no remote collaboration (the standalone application host): every query
+ * answers the "turned off" refusal. Passed by that host's composition (autobyteus-500 FU-011), never a missing binding.
+ */
+export const REMOTE_COLLABORATION_OFF_DISCOVERY: PeerDiscoveryChannel = Object.freeze({
+  listPeerNodes: async () => remoteCollaborationOff(),
+  listAvailableAgents: async (_node: string) => remoteCollaborationOff(),
+  listRunningAgents: async (_node: string) => remoteCollaborationOff(),
+});
+
+/**
  * The discovery tools' availability (the same rule for both): a sender whose member context can list available
  * agents, that is a run that can delegate.
  */
@@ -31,6 +42,20 @@ export const requireDiscoveryContext = (collaboration: MemberCollaborationContex
     );
   }
   return lister;
+};
+
+/**
+ * A native discovery tool's discovery: the one its run was bound with. An unbound tool (created by the registry, with
+ * no run) has no member context either, and gets the same refusal as a sender that cannot delegate.
+ */
+export const boundPeerDiscovery = (
+  collaboration: MemberCollaborationContext | null | undefined,
+  access: PeerDiscoveryAccess | null,
+  toolName: string,
+): PeerDiscoveryChannel => {
+  requireDiscoveryContext(collaboration, toolName);
+  if (!access) requireDiscoveryContext(null, toolName);
+  return access!();
 };
 
 /** The native tools' text: the result as JSON, or the refusal raised as the tool's error. */

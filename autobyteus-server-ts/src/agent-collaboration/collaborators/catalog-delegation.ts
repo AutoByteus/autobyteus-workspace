@@ -85,13 +85,13 @@ const placementInFolder = (placement: DelegationPlacement, folder: string | null
  *    answered a hosted copy), with the placement's snapshot;
  * 3. a listed catalog definition that is not in the run: a fresh copy with its source snapshot.
  * A catalog definition that cannot run returns its reason as a not-found delegation result.
- * A new copy with its own folder (`newCopyFolder`) runs there in both forms; `null` keeps the placement's or base's.
+ * A new copy with its own folder (`newDelegatedRunFolder`) runs there in both forms; `null` keeps the placement's or base's.
  */
 export const resolveDelegationPlacement = async (input: Readonly<{
   port: DelegationSourceIndexPort;
   senderAgentRunId: string;
   address: AgentTeamAddress;
-  newCopyFolder: string | null;
+  newDelegatedRunFolder: string | null;
   /** An in-run placement (the run's own configured one, else one its address step 2 reaches, SR-059). */
   resolveInRun(): Promise<DelegationPlacement>;
   catalogSource(workspaceRootPath: string | null): Promise<CatalogTaskSource | null>;
@@ -104,17 +104,17 @@ export const resolveDelegationPlacement = async (input: Readonly<{
     throw new CollaborationContractError("COLLABORATION_SELF_TARGET_REJECTED", ownTeamDelegationRefusedMessage(input.address));
   }
   try {
-    return placementInFolder(await input.resolveInRun(), input.newCopyFolder);
+    return placementInFolder(await input.resolveInRun(), input.newDelegatedRunFolder);
   } catch (error) {
     if (!(error instanceof CollaborationContractError) || error.code !== "COLLABORATION_TARGET_NOT_FOUND") throw error;
     let catalog: CatalogTaskSource | null;
     try {
-      catalog = await input.catalogSource(input.newCopyFolder);
+      catalog = await input.catalogSource(input.newDelegatedRunFolder);
     } catch (cause) {
       if (cause instanceof CollaboratorAddError) {
         throw new CollaborationContractError(
           "COLLABORATION_TARGET_NOT_FOUND",
-          `${cause.collaboratorName} cannot be delegated to: ${cause.reason}`,
+          `${cause.collaboratorName} can't be delegated to: ${cause.reason.replace(/\.$/, "")}.${cause.nextStep ? ` ${cause.nextStep}` : ""}`,
         );
       }
       throw cause;

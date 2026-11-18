@@ -1,6 +1,9 @@
 #!/usr/bin/env node
-// Interrupt result presentation (SR008): a Stop that fails, is accepted, or loses its socket before
-// the ACK is presented once and keeps the run state, for a standalone run and a Team member.
+// Interrupt result presentation (autobyteus-533 D-W3, D-W7; was SR008): after a press the composer shows
+// "Stopping…" (busy, disabled) and a second press sends nothing; an accepted Stop shows nothing and Stopping
+// ends with the run's status; a Stop whose socket is lost before its ACK stays Stopping through the reconnect
+// and shows nothing, then the rebind's status decides; a real failure shows one plain message naming the agent,
+// never its run id. For a standalone run and a Team member.
 // The probe owns a Nuxt dev server, headless Chrome, and a WebSocket server that speaks the current
 // agent and Team stream contracts; every GraphQL request, the health check and the
 // agent-package-definitions feed are answered by the probe.
@@ -151,6 +154,11 @@ const normalizeTarget = (kind, command) => kind === 'standalone'
 // member's stored projection is empty (its live context is built in the page).
 const graphqlAnswers = {
   GetRunFileChanges: () => ({ getRunFileChanges: [] }),
+  // Baseline fix (autobyteus-533): the window also reads the node's update-checks setting and the member's file changes.
+  GetUpdateChecksCapability: () => ({
+    updateChecksCapability: { enabled: true, settingKey: 'ENABLE_UPDATE_CHECKS', source: 'DEFAULT_ENABLED' },
+  }),
+  GetTeamMemberFileChanges: () => ({ getTeamMemberFileChanges: [] }),
   GetTeamMemberRunProjection: () => ({
     getTeamMemberRunProjection: {
       agentRunId: TEAM_MEMBER_RUN_ID,
@@ -222,16 +230,14 @@ const startWsServer = async () => {
         return;
       }
       const target = normalizeTarget(kind, command);
-      const accepted = mode === 'standalone-accepted';
+      const accepted = mode.endsWith('-accepted');
       const payload = {
         command_type: 'INTERRUPT_GENERATION',
         command_id: command.payload.command_id,
         state: accepted ? 'accepted' : 'failed',
         ...(!accepted ? {
-          code: kind === 'team' ? 'NO_ACTIVE_MEMBER_TURN' : 'NO_ACTIVE_TURN',
-          message: kind === 'team'
-            ? 'The Team member has no active provider turn.'
-            : 'The provider has no active turn.',
+          code: 'RUNTIME_COMMAND_FAILED',
+          message: `Failed to interrupt run for runtime 'codex_app_server': AgentRun '${kind === 'team' ? TEAM_MEMBER_RUN_ID : 'browser-agent-run'}' refused.`,
         } : {}),
         ...(kind === 'team' ? { agent_run_id: target.agent_run_id } : { target }),
       };
@@ -354,6 +360,8 @@ try {
       evidence.frames.push({ direction: 'connect', kind: 'agent-package-definitions' });
       ws.send(JSON.stringify({ type: 'connected' }));
     });
+    // Baseline fix (autobyteus-533): the window also opens the update-notifications stream (autobyteus-210).
+    await context.routeWebSocket(/\/ws\/update-notifications(\?|$)/, () => undefined);
     await context.route('**/graphql', (route) => {
       const operationName = route.request().postDataJSON()?.operationName ?? null;
       evidence.graphqlOperations.push(operationName);
@@ -398,18 +406,34 @@ try {
   const snapshot = (page) => page.evaluate(() => window.__interruptProbe.snapshot());
   const toastTexts = async (page) => (await snapshot(page)).toastMessages;
 
+  const STOP = 'button[title="Stop generation"]';
+  const STOPPING = 'button[title="Stopping…"]';
+  const stopsSent = (scenarioMode) => evidence.frames.filter((frame) =>
+    frame.mode === scenarioMode && frame.direction === 'client-to-server' && frame.message?.type === 'INTERRUPT_GENERATION');
+  /** Presses Stop, then presses the Stopping control again at once (a double click): only the first is sent. */
+  const doublePress = async (page) => {
+    await page.locator(STOP).click();
+    const stopping = page.locator(STOPPING);
+    await stopping.waitFor({ state: 'visible' });
+    assert.equal(await stopping.getAttribute('aria-busy'), 'true');
+    assert.equal(await stopping.isDisabled(), true);
+    await stopping.click({ force: true });
+  };
+
   mode = 'standalone-failed';
-  await runScenario('SR008-BR-001', async () => {
+  await runScenario('533-BR-001-standalone-refused', async () => {
     const { context, page } = await openFixture('standalone');
     try {
       const before = await snapshot(page);
-      await page.locator('button[title="Stop generation"]').click();
+      await page.locator(STOP).click();
       await waitFor('one standalone failure toast', async () => (await toastTexts(page)).length === 1);
+      await page.waitForTimeout(200);
       const after = await snapshot(page);
       const toasts = await toastTexts(page);
-      assert.match(toasts[0], /Could not stop browser-agent-run.*no active turn/i);
-      assert.match(await page.locator('.fixed.top-5.right-5').innerText(), /Could not stop browser-agent-run/i);
-      assert.equal(await page.locator('button[title="Stop generation"]').count(), 1);
+      assert.deepEqual(toasts, ['Could not stop browser-agent-definition. Please try again.']);
+      assert.doesNotMatch(toasts[0], /browser-agent-run|AgentRun|RUNTIME_COMMAND_FAILED/);
+      assert.match(await page.locator('.fixed.top-5.right-5').innerText(), /Could not stop browser-agent-definition/);
+      assert.equal(await page.locator(STOP).count(), 1);
       assert.equal(after.standaloneStatus, 'running');
       assert.equal(after.standaloneTranscriptCount, before.standaloneTranscriptCount);
       return { before, after, toasts };
@@ -419,16 +443,18 @@ try {
   });
 
   mode = 'standalone-accepted';
-  await runScenario('SR008-BR-002', async () => {
+  await runScenario('533-BR-002-standalone-double-press-accepted', async () => {
     const { context, page } = await openFixture('standalone');
     try {
       const before = await snapshot(page);
-      await page.locator('button[title="Stop generation"]').click();
+      await doublePress(page);
       await waitFor('accepted interrupt frame', () => evidence.frames.some((frame) =>
         frame.mode === mode && frame.direction === 'server-to-client' && frame.message?.payload?.state === 'accepted'));
       await page.waitForTimeout(200);
+      assert.equal(stopsSent(mode).length, 1);
       assert.equal((await toastTexts(page)).length, 0);
-      assert.equal(await page.locator('button[title="Stop generation"]').count(), 1);
+      assert.equal(await page.locator(STOPPING).count(), 1);
+      await page.screenshot({ path: path.join(outputDir, '533-BR-002-stopping.png') });
       const beforeTerminal = await snapshot(page);
       assert.equal(beforeTerminal.standaloneStatus, 'running');
       for (const socket of connections.standalone) {
@@ -438,54 +464,89 @@ try {
       const afterTerminal = await snapshot(page);
       assert.equal(afterTerminal.standaloneStatus, 'idle');
       assert.equal(afterTerminal.standaloneTranscriptCount, before.standaloneTranscriptCount);
-      return { before, beforeTerminal, afterTerminal };
+      assert.equal((await toastTexts(page)).length, 0);
+      return { before, beforeTerminal, afterTerminal, stopsSent: stopsSent(mode).length };
     } finally {
       await closeTrackedContext(context);
     }
   });
 
   mode = 'pending-disconnect';
-  await runScenario('SR008-BR-003', async () => {
+  await runScenario('533-BR-003-standalone-connection-lost-while-stopping', async () => {
     const { context, page } = await openFixture('standalone');
     try {
       const before = await snapshot(page);
-      await page.locator('button[title="Stop generation"]').click();
-      await waitFor('one disconnect toast', async () => (await toastTexts(page)).length === 1);
+      const connectsBefore = evidence.frames.filter((frame) => frame.direction === 'connect' && frame.kind === 'standalone').length;
+      await page.locator(STOP).click();
+      await waitFor('the probe socket close', () => evidence.frames.some((frame) =>
+        frame.direction === 'close' && frame.kind === 'standalone' && frame.reason === 'probe disconnect before ack'));
+      // Between the drop and the rebind the composer stays Stopping and a press sends nothing (D-W7).
+      assert.equal(await page.locator(STOPPING).count(), 1);
+      await page.locator(STOPPING).click({ force: true });
+      await page.waitForTimeout(200);
+      assert.equal(stopsSent(mode).length, 1);
+      assert.equal((await toastTexts(page)).length, 0);
+      // The same service reconnects (≥ 1 s); its first status (running) decides: Stop enabled again.
+      await waitFor('the standalone reconnect', () => evidence.frames.filter((frame) =>
+        frame.direction === 'connect' && frame.kind === 'standalone').length > connectsBefore);
+      await page.locator(STOP).waitFor({ state: 'visible' });
       await page.waitForTimeout(300);
       const toasts = await toastTexts(page);
-      assert.equal(toasts.length, 1);
-      assert.match(toasts[0], /Could not send Stop.*probe disconnect before ack/i);
-      assert.match(await page.locator('.fixed.top-5.right-5').innerText(), /Could not send Stop/i);
-      assert.equal(await page.locator('button[title="Stop generation"]').count(), 1);
+      assert.deepEqual(toasts, []);
       const after = await snapshot(page);
       assert.equal(after.standaloneStatus, 'running');
       assert.equal(after.standaloneTranscriptCount, before.standaloneTranscriptCount);
-      return { before, after, toasts };
+      return { before, after, toasts, stopsSent: stopsSent(mode).length };
     } finally {
       await closeTrackedContext(context);
     }
   });
 
   mode = 'team-failed';
-  await runScenario('SR008-BR-004', async () => {
+  await runScenario('533-BR-004-team-member-refused', async () => {
     const { context, page } = await openFixture('team');
     try {
       const before = await snapshot(page);
-      await page.locator('button[title="Stop generation"]').click();
+      await page.locator(STOP).click();
       await waitFor('one Team member failure toast', async () => (await toastTexts(page)).length === 1);
       const after = await snapshot(page);
       const toasts = await toastTexts(page);
-      assert.match(toasts[0], /Could not stop browser-task-team-critic-run.*no active provider turn/i);
-      assert.match(await page.locator('.fixed.top-5.right-5').innerText(), /Could not stop browser-task-team-critic-run/i);
-      assert.equal(await page.locator('button[title="Stop generation"]').count(), 1);
+      assert.deepEqual(toasts, ['Could not stop browser-critic-definition. Please try again.']);
+      assert.doesNotMatch(toasts[0], new RegExp(TEAM_MEMBER_RUN_ID));
+      assert.equal(await page.locator(STOP).count(), 1);
       assert.equal(after.teamIsActive, true);
       assert.equal(after.teamMemberStatus, 'running');
       assert.equal(after.teamTranscriptCount, before.teamTranscriptCount);
-      const sent = evidence.frames.find((frame) =>
-        frame.mode === mode && frame.direction === 'client-to-server' && frame.kind === 'team');
+      const sent = stopsSent(mode).find((frame) => frame.kind === 'team');
       assert.match(sent.message.payload.command_id, /^client_interrupt_/);
       assert.equal(sent.message.payload.agent_run_id, TEAM_MEMBER_RUN_ID);
       return { before, after, toasts, sent: sent.message };
+    } finally {
+      await closeTrackedContext(context);
+    }
+  });
+
+  mode = 'team-accepted';
+  await runScenario('533-BR-005-team-member-double-press-accepted', async () => {
+    const { context, page } = await openFixture('team');
+    try {
+      await doublePress(page);
+      await waitFor('accepted Team interrupt frame', () => evidence.frames.some((frame) =>
+        frame.mode === mode && frame.direction === 'server-to-client' && frame.message?.payload?.state === 'accepted'));
+      await page.waitForTimeout(200);
+      assert.equal(stopsSent(mode).length, 1);
+      assert.equal(await page.locator(STOPPING).count(), 1);
+      for (const socket of connections.team) {
+        sendTeamJson(socket, { type: 'AGENT_STATUS', payload: {
+          change_sequence: 1, agent_run_id: TEAM_MEMBER_RUN_ID, status: 'idle', trigger: null, tool_name: null,
+          error_message: null, error_details: null, background_tasks_running: 0, recoverableBlock: null,
+        } });
+      }
+      await page.locator('button[title="Send message"]').waitFor({ state: 'visible' });
+      const after = await snapshot(page);
+      assert.equal(after.teamMemberStatus, 'idle');
+      assert.equal((await toastTexts(page)).length, 0);
+      return { after, stopsSent: stopsSent(mode).length };
     } finally {
       await closeTrackedContext(context);
     }

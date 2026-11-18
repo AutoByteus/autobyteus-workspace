@@ -8,7 +8,7 @@ import type { ProviderCredentialSetting } from "../llm-management/llm-providers/
 import { ProviderUsageUnreadableError, type ProviderUsageReading } from "../llm-management/provider-usage/provider-usage-reader.js";
 import type { ProviderUsageReaders } from "../llm-management/provider-usage/provider-usage-readers.js";
 import {
-  createReadDeadline, DeadlineExceededError, isDeadlineExceeded, raceDeadline, timeLeft, type ReadDeadline,
+  createReadDeadline, DeadlineExceededError, isDeadlineExceeded, MODEL_LIST_READ_MS, raceDeadline, timeLeft, type ReadDeadline,
 } from "../runtime-management/read-deadline.js";
 import { RuntimeKind } from "../runtime-management/runtime-kind-enum.js";
 import type { AgentRuntimeSignInReader } from "../runtime-management/agent-runtimes/agent-runtime-sign-in-reader.js";
@@ -39,7 +39,7 @@ export type AvailableAgentRuntimesStepCaps = Readonly<{
 }>;
 
 export const AVAILABLE_AGENT_RUNTIMES_STEP_CAPS: AvailableAgentRuntimesStepCaps = Object.freeze({
-  installMs: 4_000, signInMs: 6_000, modelsMs: 8_000, limitsMs: 8_000,
+  installMs: 4_000, signInMs: 6_000, modelsMs: MODEL_LIST_READ_MS, limitsMs: 8_000,
   providerListMs: 4_000, providerModelsMs: 8_000, providerUsageMs: 8_000,
 });
 

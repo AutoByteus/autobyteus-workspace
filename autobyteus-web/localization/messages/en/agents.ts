@@ -100,8 +100,9 @@ const messages = {
   'agents.components.agents.GroupableTagInput.loading': 'Loading...',
   'agents.components.agents.GroupableTagInput.add': 'Add',
   'agents.components.agents.GroupableTagInput.remove': 'Remove',
-  'agents.store.interrupt.failed': 'Could not stop {{target}}: {{detail}}',
-  'agents.store.interrupt.transportFailed': 'Could not send Stop to {{target}}: {{detail}}',
+  'agents.interrupt.stopping': 'Stopping…',
+  'agents.interrupt.notSent': 'Stop was not sent: not connected to the node. Check the connection and try again.',
+  'agents.interrupt.failed': 'Could not stop {{name}}. Please try again.',
 } satisfies TranslationCatalog;
 
 export default messages;

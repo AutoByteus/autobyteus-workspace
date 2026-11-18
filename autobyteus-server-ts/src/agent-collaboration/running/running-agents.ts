@@ -1,13 +1,13 @@
-import type { PairedAgentAccess, PairedAgentStatus } from "../execution/remote/paired-agent-access.js";
+import type { RunAgentAccess, RunAgentStatusEntry } from "../execution/remote/run-agent-access.js";
 import type { RootExecutionIdentity, RootSubjectKind } from "../execution/domain/root-execution-identity.js";
 import type { ActiveCollaborationRootDirectory } from "../execution/services/active-collaboration-root-directory.js";
 
 /** A running agent of this node and the live root it runs in, with its status now. */
-export type RunningAgentPlace = Readonly<{ root: RootExecutionIdentity; status: PairedAgentStatus }>;
+export type RunningAgentPlace = Readonly<{ root: RootExecutionIdentity; status: RunAgentStatusEntry }>;
 
 /**
  * The one answer to "is this agent running on this node, and in which root" (autobyteus-492, design § Ownership Map). An
- * agent runs when its own live root reports it with a live status (`PairedAgentAccess.pairedAgentStatuses`, offline left
+ * agent runs when its own live root reports it with a live status (`RunAgentAccess.runAgentStatuses`, offline left
  * out): a host ended by idle shutdown, a Team member not started yet and a stopped run do not run, although a root may
  * still be registered. It combines the live roots (`ActiveCollaborationRootDirectory`) with each root kind's statuses;
  * callers never combine the two themselves. Reads only; never restores or starts anything.
@@ -16,7 +16,7 @@ export class RunningAgents {
   constructor(private readonly dependencies: Readonly<{
     roots: Pick<ActiveCollaborationRootDirectory, "liveRoots" | "resolve">;
     /** Each root kind's live statuses of its own agents (a standalone run's host; a Team's members; an Org's agents). */
-    statuses(kind: RootSubjectKind): Pick<PairedAgentAccess, "pairedAgentStatuses">;
+    statuses(kind: RootSubjectKind): Pick<RunAgentAccess, "runAgentStatuses">;
   }>) {}
 
   /**
@@ -34,8 +34,8 @@ export class RunningAgents {
   }
 
   /** The running agents of this live root, with their statuses now (an agent that is not live is left out). */
-  statusesOf(root: RootExecutionIdentity): readonly PairedAgentStatus[] {
-    return this.dependencies.statuses(root.rootSubjectKind).pairedAgentStatuses(root.rootRunId)
+  statusesOf(root: RootExecutionIdentity): readonly RunAgentStatusEntry[] {
+    return this.dependencies.statuses(root.rootSubjectKind).runAgentStatuses(root.rootRunId)
       .filter((agent) => agent.status !== "offline");
   }
 

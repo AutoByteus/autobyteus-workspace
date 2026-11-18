@@ -525,7 +525,7 @@ describe("AgentStreamHandler", () => {
     expect(agentRunService.activatePreparedRun).not.toHaveBeenCalled();
   });
 
-  it("keeps interrupt-generation active-only and does not activate a stopped agent run", async () => {
+  it("answers a Stop to a stopped agent run as nothing to stop, without activating it (autobyteus-533 AC-003)", async () => {
     const activeRun = createActiveRun();
     const agentRunService = createAgentRunService(activeRun);
     const commandCoordinator = createCommandCoordinator();
@@ -555,14 +555,14 @@ describe("AgentStreamHandler", () => {
 
     expect(commandCoordinator.postUserMessage).not.toHaveBeenCalled();
     expect(activeRun.interrupt).not.toHaveBeenCalled();
+    expect(agentRunService.restoreAgentRun).not.toHaveBeenCalled();
+    expect(agentRunService.activatePreparedRun).not.toHaveBeenCalled();
     expect(connection.send.mock.calls.map(([raw]) => JSON.parse(raw as string)).at(-1)).toEqual({
       type: ServerMessageType.AGENT_COMMAND_ACK,
       payload: {
         command_type: "INTERRUPT_GENERATION",
         command_id: "client_interrupt_missing",
-        state: "rejected",
-        code: "RUN_NOT_FOUND",
-        message: "Agent run 'agent-123' is not active.",
+        state: "accepted",
         target: { target_kind: "standalone_run", run_id: "agent-123" },
       },
     });
@@ -652,6 +652,37 @@ describe("AgentStreamHandler", () => {
       type: ServerMessageType.AGENT_COMMAND_ACK,
       payload: { command_id: "", state: "rejected", code: "INVALID_COMMAND_ID" },
     });
+  });
+
+  it.each([
+    ["NO_ACTIVE_TURN", "AgentRun 'agent-123' has no canonical active turn to interrupt."],
+    ["RUN_NOT_ACTIVE", "AgentRun 'agent-123' is not running."],
+  ])("answers a Stop whose run has nothing to stop (%s) as accepted (autobyteus-533 AC-001)", async (code, message) => {
+    const activeRun = createActiveRun({ interrupt: vi.fn().mockResolvedValue({ accepted: false, code, message }) });
+    const handler = new AgentStreamHandler(
+      new AgentSessionManager(), createAgentRunService(activeRun) as any, undefined, createCommandCoordinator() as any,
+      createStatusProjectionService() as any,
+      null, sequences, readStored,
+    );
+    const connection = { send: vi.fn(), close: vi.fn() };
+    const sessionId = await handler.connect(connection, "agent-123");
+    await vi.waitFor(() => expect(snapshotsOf(connection)).toHaveLength(1));
+    connection.send.mockClear();
+
+    await handler.handleMessage(sessionId!, JSON.stringify({
+      type: ClientMessageType.INTERRUPT_GENERATION,
+      payload: { command_id: "client_interrupt_nothing" },
+    }));
+
+    expect(connection.send.mock.calls.map(([raw]) => JSON.parse(raw as string))).toEqual([{
+      type: ServerMessageType.AGENT_COMMAND_ACK,
+      payload: {
+        command_type: "INTERRUPT_GENERATION",
+        command_id: "client_interrupt_nothing",
+        state: "accepted",
+        target: { target_kind: "standalone_run", run_id: "agent-123" },
+      },
+    }]);
   });
 
   it("maps interrupt provider failures without emitting lifecycle status", async () => {

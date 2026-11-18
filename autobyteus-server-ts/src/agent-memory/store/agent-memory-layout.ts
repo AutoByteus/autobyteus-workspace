@@ -35,8 +35,6 @@ const resolveSafePath = (rootDir: string, ...segments: string[]): string => {
 const definitionFolderName = (agentDefinitionId: string): string =>
   normalizePathSegment(encodeURIComponent(normalizeRequiredString(agentDefinitionId, "agentDefinitionId")), "agentDefinitionId");
 
-export const AGENT_RUN_COLLABORATION_DIR_NAME = "collaboration";
-
 /** The folder of agents' semantic memories, a sibling of the run folders; run tooling never walks it. */
 export const SEMANTIC_MEMORY_DIR_NAME = "semantic";
 
@@ -115,11 +113,6 @@ export class AgentMemoryLayout {
     return resolveSafePath(this.orgRootDir, normalizePathSegment(orgRunId, "orgRunId"));
   }
 
-  /** An Agent root keeps its package and child memory inside the host run directory. */
-  getAgentRunCollaborationDirPath(hostRunId: string): string {
-    return resolveSafePath(this.getStandaloneRunDirPath(hostRunId), AGENT_RUN_COLLABORATION_DIR_NAME);
-  }
-
   getRootExecutionDirPath(scopeInput: RootExecutionPhysicalScope): string {
     const scope = createRootExecutionPhysicalScope(scopeInput);
     const ancestors = scope.ancestorTeamRunIds.map((id, index) => normalizePathSegment(id, `ancestorTeamRunIds[${index}]`));
@@ -129,7 +122,8 @@ export class AgentMemoryLayout {
       case "agent_org":
         return resolveSafePath(this.orgRootDir, normalizePathSegment(scope.root.rootRunId, "rootRunId"), ...ancestors);
       case "agent":
-        return resolveSafePath(this.getAgentRunCollaborationDirPath(scope.root.rootRunId), ...ancestors);
+        // A run's memory is never inside another run (autobyteus-461, autobyteus-500 N6): an agent run has no members.
+        throw new Error(`Agent run '${scope.root.rootRunId}' has no member memory; its own memory is its run folder.`);
     }
   }
 

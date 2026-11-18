@@ -165,7 +165,7 @@ describe('delegatedLaunchDraftStore', () => {
     store.edit('agent:copy', { runtimeKind: 'codex_app_server', llmModelIdentifier: 'opus', llmConfig: null }, { runtimeKind: 'codex_app_server', llmModelIdentifier: 'sonnet', llmConfig: null })
     await expect(store.save({ running: () => true, nameOf: () => 'writer' }, async () => true)).resolves.toBe(false)
     expect(client.saveDelegatedRuns).not.toHaveBeenCalled()
-    expect(store.feedback).toEqual({ kind: 'error', message: 'writer is running. Stop it, then save again.' })
+    expect(store.feedback).toEqual({ kind: 'error', message: "writer is running, so its settings can't be saved now. Stop it, then save again." })
     expect(store.dirty).toBe(true)
   })
 

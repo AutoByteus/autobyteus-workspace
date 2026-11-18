@@ -16,6 +16,7 @@ import type { ApplicationExecutionScopeKernel } from "../../../src/application-p
 import { createCollaborationMemberExecutionIdentity, createTeamRootExecutionIdentity } from "../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { noDelegations, openTaskRecords } from "../../helpers/no-delegations.js";
+import { NO_PEER_CHANNEL, OFFERED_STORED_MODEL_OFFER, OFF_DISCOVERY } from "../../helpers/explicit-host-collaborators.js";
 
 const tempRoots: string[] = [];
 
@@ -81,9 +82,11 @@ const createScope = async () => {
     workspaceManager: {} as never,
     bindingReader: { getBinding: vi.fn(async () => null) },
     artifactDeliverySink: { accept: vi.fn(async () => undefined) },
-    modelSelectionValidator: { validate: vi.fn(), validateMany: vi.fn() },
+    modelSelectionValidator: { validate: vi.fn(), validateMany: vi.fn(), storedModelOffer: OFFERED_STORED_MODEL_OFFER },
     applicationAgentTools,
     providerRelayAccess: null,
+    remoteChannel: NO_PEER_CHANNEL,
+    peerDiscovery: OFF_DISCOVERY,
     runPasses: null,
     delegationIndex: noDelegations(), viewStreams: testViewStreams(),
     taskRecords: openTaskRecords(),

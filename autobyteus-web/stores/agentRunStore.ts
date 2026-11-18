@@ -8,10 +8,10 @@ import { CancelPreparedAgentRun, PrepareAgentRun, TerminateAgentRun } from '~/gr
 import { useAgentContextsStore } from '~/stores/agentContextsStore';
 import {
   AgentStreamingService,
-  type InterruptGenerationCommandAckPayload,
-  type InterruptCommandTransportFailure,
+  type InterruptOutcome,
   type SendMessageCommandAckPayload,
 } from '~/services/agentStreaming';
+import { INTERRUPT_NOT_SENT } from '~/services/agentStreaming/interruptCommandAdmission';
 import { createAgentRunStream, type AgentRunStream } from '~/services/agentStreaming/agentRunStreamReconnection';
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore';
 import { useWorkspaceStore } from '~/stores/workspace';
@@ -36,8 +36,6 @@ import {
   finalizeLocalSubmissionAttachments,
   retargetLocalUserSubmission,
 } from '~/services/runSubmission/localUserSubmission';
-import { useToasts } from '~/composables/useToasts';
-import { localizationRuntime } from '~/localization/runtime/localizationRuntime';
 import { createRandomId } from '~/utils/randomId';
 import { sameRunInstance } from '~/utils/runInstanceOwnership';
 
@@ -55,25 +53,6 @@ const createClientMessageId = (): string => `client_${createRandomId()}`;
 
 const createClientInterruptCommandId = (): string =>
   createClientMessageId().replace(/^client_/, 'client_interrupt_');
-
-const showInterruptCommandResult = (ack: InterruptGenerationCommandAckPayload): void => {
-  if (ack.state === 'accepted') return;
-  useToasts().addToast(localizationRuntime.translate('agents.store.interrupt.failed', {
-    target: ack.target.target_kind === 'standalone_run'
-      ? ack.target.run_id
-      : ack.target.agent_run_id,
-    detail: ack.message,
-  }), 'error');
-};
-
-const showInterruptTransportFailure = (failure: InterruptCommandTransportFailure): void => {
-  useToasts().addToast(localizationRuntime.translate('agents.store.interrupt.transportFailed', {
-    target: failure.target.target_kind === 'standalone_run'
-      ? failure.target.run_id
-      : failure.target.agent_run_id,
-    detail: failure.reason.message,
-  }), 'error');
-};
 
 // Each agent run's stream: its streaming service and its reconnection (autobyteus-434)
 const streamingServices = new Map<string, AgentRunStream>();
@@ -307,8 +286,6 @@ export const useAgentRunStore = defineStore('agentRun', {
       }
 
       const stream = createAgentRunStream(runId, useWindowNodeContextStore().getBoundEndpoints().agentWs, {
-        onInterruptCommandResult: showInterruptCommandResult,
-        onInterruptCommandTransportFailure: showInterruptTransportFailure,
         onSendMessageCommandAck: (ack: SendMessageCommandAckPayload) => {
           // A rejected send never activates the run.
           if (!ack.accepted) this.clearActivationPending(ack.run_id || runId);
@@ -389,20 +366,21 @@ export const useAgentRunStore = defineStore('agentRun', {
       }
     },
 
-    interruptGeneration(runId?: string): boolean {
+    /** Sends one Stop to the run's stream; resolves with its outcome (`not_sent` without a stream). */
+    interruptGeneration(runId?: string): Promise<InterruptOutcome> {
       const agentContextsStore = useAgentContextsStore();
       const resolvedRunId =
         (runId && runId.trim()) || agentContextsStore.activeRun?.state.runId;
 
       if (!resolvedRunId) {
         console.warn("Cannot interrupt generation: no active run ID.");
-        return false;
+        return Promise.resolve(INTERRUPT_NOT_SENT);
       }
 
       const service = streamingServices.get(resolvedRunId)?.service;
       if (!service) {
         console.warn(`Cannot interrupt generation: no streaming service for run '${resolvedRunId}'.`);
-        return false;
+        return Promise.resolve(INTERRUPT_NOT_SENT);
       }
 
       return service.interruptGeneration(createClientInterruptCommandId());
@@ -445,9 +423,9 @@ export const useAgentRunStore = defineStore('agentRun', {
         return true;
       }
 
-      let hostStop: ReturnType<ReturnType<typeof useAgentRunCollaborationStore>['beginHostTermination']> | undefined;
+      let runTermination: ReturnType<ReturnType<typeof useAgentRunCollaborationStore>['beginRunTermination']> | undefined;
       try {
-        hostStop = useAgentRunCollaborationStore().beginHostTermination(runId);
+        runTermination = useAgentRunCollaborationStore().beginRunTermination(runId);
         const client = getApolloClient();
         const { data, errors } = await client.mutate({
           mutation: TerminateAgentRun,
@@ -464,7 +442,7 @@ export const useAgentRunStore = defineStore('agentRun', {
         }
 
         if (!ownsRequest()) return false;
-        hostStop.confirm();
+        runTermination.confirm();
         if (context?.config.runtimeKind === 'autobyteus' && state) {
           state.compactionStatus = activities.applyConfirmedNativeTermination(runId,
             [...activityIds, ...activities.getNativeCompactionActivityIds(runId)], state.compactionStatus);
@@ -477,7 +455,7 @@ export const useAgentRunStore = defineStore('agentRun', {
         console.error(`Error terminating run '${runId}':`, error);
         return false;
       } finally {
-        hostStop?.finish();
+        runTermination?.finish();
       }
     },
 

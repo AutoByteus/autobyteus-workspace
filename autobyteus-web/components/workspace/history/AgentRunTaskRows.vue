@@ -13,7 +13,7 @@
     @after-leave="onRowLeaveSettled"
     @leave-cancelled="onRowLeaveSettled"
   >
-    <WorkspaceTransientExecutionRow
+    <WorkspaceDelegatedRunRow
       v-for="display in rows"
       :key="display.row.rowKey"
       :row="display.row"
@@ -34,11 +34,11 @@
 
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
-import WorkspaceTransientExecutionRow from '~/components/workspace/history/WorkspaceTransientExecutionRow.vue'
+import WorkspaceDelegatedRunRow from '~/components/workspace/history/WorkspaceDelegatedRunRow.vue'
 import { useLeavingTreeRows } from '~/components/workspace/history/useLeavingTreeRows'
 import { useLocalization } from '~/composables/useLocalization'
 import { useTaskWorkerTasks } from '~/composables/projects/useTaskWorkerTasks'
-import type { RunHistoryTransientExecutionRow } from '~/stores/runHistoryTypes'
+import type { RunHistoryDelegatedRunRow } from '~/stores/runHistoryTypes'
 import { useAgentRunCollaborationStore } from '~/stores/agentRunCollaborationStore'
 import { useRunTreeStore } from '~/stores/runTreeStore'
 import { useRunStatusStore } from '~/stores/runStatusStore'
@@ -96,17 +96,17 @@ const onRowLeaveSettled = (): void => {
   if (leaving.value === 0 && rows.value.length === 0) rendered.value = false
 }
 /** The row that shows the opened agent (CR-461-108): a delegated Team opened at its coordinator selects the coordinator's row. */
-const isSelected = (row: RunHistoryTransientExecutionRow): boolean =>
+const isSelected = (row: RunHistoryDelegatedRunRow): boolean =>
   props.runSelected && row.agentRunId !== null && collaboration.selectedChild(props.runId) === row.agentRunId
 
-const toggle = (row: RunHistoryTransientExecutionRow): void => collaboration.toggleTreeRow(props.runId, row.rowKey)
+const toggle = (row: RunHistoryDelegatedRunRow): void => collaboration.toggleTreeRow(props.runId, row.rowKey)
 
 /**
  * Opens the row where the server says (`openRunTarget`): a delegated agent's conversation, a delegated team at its
  * coordinator. The run is always (re)opened as well, so a click opens the conversation from any page, also when this
  * run is already the selected run (F-006); re-selecting the current run only navigates.
  */
-const select = (row: RunHistoryTransientExecutionRow): void => {
+const select = (row: RunHistoryDelegatedRunRow): void => {
   const display = rows.value.find((candidate) => candidate.row.rowKey === row.rowKey)
   if (display && openRunTarget(tree.value, display.tree)) emit('select-run')
 }

@@ -24,7 +24,7 @@ export type RunCollaboratorPortSources = Readonly<{
  * definition only, so a stored root's port has no step-2 reach), and a delegated run's delegator's catalog. An
  * Agent root's facts depend on the focused agent (the host never offers itself), so
  * `focusedAgentRunId` is required for `agent` and ignored for Team and Org roots.
- * `null` when the root does not exist or cannot host delegated copies.
+ * `null` when the root does not exist or is not collaboration-eligible.
  */
 export const collaboratorPortOf = async (
   sources: RunCollaboratorPortSources,
@@ -72,7 +72,7 @@ export const collaboratorPortOf = async (
 
 const emptyPort = (agentDefinitionId: string): CollaboratorRootPort => Object.freeze({
   isApplicationBound: false,
-  launchBase: () => { throw new Error("This run cannot host delegated copies."); },
+  launchBase: () => { throw new Error("This run cannot delegate: it is application- or system-owned."); },
   ownDefinition: () => Object.freeze({ kind: "agent", definitionId: agentDefinitionId }),
   inRunPlacementsByDefinition: async () => new Map(),
   addressesInUse: async () => new Set<string>(),

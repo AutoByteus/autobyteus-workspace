@@ -1,4 +1,5 @@
 import type { RunMessagesFeed } from "../../agent-collaboration/delegation/run-messages-feed.js";
+import type { RemoteRunChannelAccess } from "../../agent-collaboration/execution/remote/remote-run-channel.js";
 import { acceptWorkPacketIfAllowed } from "../../agent-collaboration/execution/task/task-delegation.js";
 import type { ClosedTaskFence } from "../../agent-collaboration/execution/task/closed-task-fence.js";
 import { ASSIGNER_ONLY_REACTIVATION_MESSAGE, type TaskExecutionOwner, type RunTaskRecords } from "../../agent-collaboration/execution/task/task-execution-resource-port.js";
@@ -6,7 +7,7 @@ import { TaskDelegationError } from "../../agent-collaboration/execution/task/ta
 import { runOwnTaskOf } from "../../agent-collaboration/delegation/run-own-task.js";
 import type { AgentRun } from "../../agent-execution/domain/agent-run.js";
 import type { AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
-import type { StandaloneHostTerminationResult, StandaloneRunPostInput, StandaloneRunPostResult } from "../../agent-execution/services/standalone-run-ports.js";
+import type { StandaloneRunAgentTerminationResult, StandaloneRunPostInput, StandaloneRunPostResult } from "../../agent-execution/services/standalone-run-ports.js";
 import type { AgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
 import { sameRootExecutionIdentity, type CollaborationMemberExecutionIdentity, type RootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import type { MemberLogicalMessageInput } from "../../agent-collaboration/execution/domain/member-execution-context.js";
@@ -26,9 +27,9 @@ import type { AvailableCollaborator } from "../../agent-collaboration/collaborat
 import type { TeamMemberExecutionCommand } from "../../agent-team-execution/domain/team-member-execution-command.js";
 import type { AgentLaunchConfiguration } from "../../agent-team-execution/domain/team-run-config.js";
 import { RootOperationGate } from "../../agent-collaboration/execution/services/root-operation-gate.js";
-import type { StandaloneRootHost, StandaloneRootMessagesFile } from "./standalone-root-host.js";
+import type { StandaloneRunAgent, StandaloneRootMessagesFile } from "./standalone-run-agent.js";
 import type { StandaloneRootEvent } from "./standalone-root-event.js";
-import type { StandaloneHostAgentHandle } from "./standalone-host-agent-handle.js";
+import type { StandaloneRunAgentHandle } from "./standalone-run-agent-handle.js";
 import { StandaloneRootIndex } from "../services/standalone-root-index.js";
 import { StandaloneRootCollaborators } from "../services/standalone-root-collaborators.js";
 import { createStandaloneRootCommunicationPort } from "../services/standalone-root-communication-port.js";
@@ -39,14 +40,13 @@ import { peerRunLinksOf } from "../../agent-collaboration/execution/remote/peer-
 import { RemoteRunLinks, type RemoteInboundMessage, type RemoteInboundWorkPacket } from "../../agent-collaboration/execution/remote/remote-run-links.js";
 import { RemoteMessageSend } from "../../agent-collaboration/execution/remote/remote-message-send.js";
 import { peerDelegatedFromOf, type DelegatedFrom } from "../../run-history/store/agent-run-metadata-types.js";
-import type { RemoteRunChannel } from "../../agent-collaboration/execution/remote/remote-run-channel.js";
 import type { AgentRunManager } from "../../agent-execution/services/agent-run-manager.js";
 import { DelegatedRunIdleShutdown } from "../services/delegated-run-idle-shutdown.js";
 import { TaskWorkerStatusNotice } from "../../agent-collaboration/execution/task/task-worker-status-notice.js";
 
 /** What a view of the run opens with: its own agent (the runs it delegated are its tree's rows, SR-084). */
 export type StandaloneRootPackageSnapshot = Readonly<{
-  host: StandaloneRootHost;
+  agent: StandaloneRunAgent;
   /** When the run started (its view tree's `createdAt`). */
   createdAt: string;
 }>;
@@ -68,16 +68,16 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
   /** autobyteus-278: the live facts of the runs this run delegated to other nodes (its stream viewers drive it). */
   private readonly delegatedIdle: DelegatedRunIdleShutdown | null;
   private readonly workerStatus: TaskWorkerStatusNotice | null;
-  private readonly hostReadyListeners = new Set<(run: AgentRun) => void>();
+  private readonly agentReadyListeners = new Set<(run: AgentRun) => void>();
   private termination: Promise<AgentOperationResult> | null = null;
   private inheritedLaunch: AgentLaunchConfiguration;
 
   constructor(private readonly options: Readonly<{
     root: RootExecutionIdentity;
-    host: StandaloneRootHost;
+    agent: StandaloneRunAgent;
     createdAt: string;
     messages: StandaloneRootMessagesFile;
-    hostHandle: StandaloneHostAgentHandle;
+    agentHandle: StandaloneRunAgentHandle;
     rootLaunchConfiguration: AgentLaunchConfiguration;
     persistence: StandaloneRootPersistenceCoordinator;
     publisher: RunViewStream<StandaloneRootEvent>;
@@ -93,91 +93,92 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
     collaboratorAdmission?: CollaboratorAdmission;
     /** The run's own origin (a delegated run, from its Task entry's delegator; a run a peer started, its back-link). */
     delegatedFrom?: DelegatedFrom | null;
-    remoteRunChannel?: () => RemoteRunChannel | null;
+    /** The host's channel to peer nodes (autobyteus-500 FU-011). */
+    remoteChannel: RemoteRunChannelAccess;
     agentRunManager?: Pick<AgentRunManager, "tryPrepareAgentRunTerminationIfQuiescent">;
     onTerminated?(): void;
   }>) {
-    const { root, host } = options;
-    if (root.rootSubjectKind !== "agent" || root.rootRunId !== host.agentRunId || options.messages.hostRunId !== host.agentRunId
-      || options.hostHandle.hostRunId !== host.agentRunId) {
+    const { root, agent } = options;
+    if (root.rootSubjectKind !== "agent" || root.rootRunId !== agent.agentRunId || options.messages.agentRunId !== agent.agentRunId
+      || options.agentHandle.agentRunId !== agent.agentRunId) {
       throw new Error("Agent root authorities do not correlate to one exact run.");
     }
     this.inheritedLaunch = options.rootLaunchConfiguration;
-    this.index = new StandaloneRootIndex(host);
-    this.operationGate = new RootOperationGate({ rootLabel: `Agent root '${this.hostRunId}'`, canEnter: () => this.isAdmitting() });
+    this.index = new StandaloneRootIndex(agent);
+    this.operationGate = new RootOperationGate({ rootLabel: `Agent root '${this.agentRunId}'`, canEnter: () => this.isAdmitting() });
     this.remoteLinks = new RemoteRunLinks({ peerRuns: () => peerRunLinksOf(root, options.delegationIndex),
-      backLink: ((peer) => peer ? { pairedAgentRunIds: () => [this.hostRunId], delegatedFrom: peer } : null)(peerDelegatedFromOf({ delegatedFrom: options.delegatedFrom })), // AR-016
-      channel: options.remoteRunChannel });
+      backLink: ((peer) => peer ? { pairedAgentRunIds: () => [this.agentRunId], delegatedFrom: peer } : null)(peerDelegatedFromOf({ delegatedFrom: options.delegatedFrom })), // AR-016
+      channel: options.remoteChannel });
     // DS-7: a delegated run shuts down when quiet; its next message restores it.
     this.delegatedIdle = options.delegatedFrom && options.agentRunManager ? new DelegatedRunIdleShutdown({
-      hostRunId: this.hostRunId, agentRunManager: options.agentRunManager,
+      agentRunId: this.agentRunId, agentRunManager: options.agentRunManager,
       runInGate: (operation) => this.operationGate.run(operation), ...options.taskExecutionIdleShutdown,
     }) : null;
-    this.workerStatus = options.delegatedFrom ? new TaskWorkerStatusNotice({ agentRunId: this.hostRunId }, options.taskRecords) : null;
-    this.collaborators = new StandaloneRootCollaborators({ admission: options.collaboratorAdmission, inheritedLaunch: () => this.inheritedLaunch, host,
+    this.workerStatus = options.delegatedFrom ? new TaskWorkerStatusNotice({ agentRunId: this.agentRunId }, options.taskRecords) : null;
+    this.collaborators = new StandaloneRootCollaborators({ admission: options.collaboratorAdmission, inheritedLaunch: () => this.inheritedLaunch, agent,
       reached: async () => [...(await options.delegationIndex.collaborationTreeOf(root).stepTwo())?.values() ?? []],
       reachedPlacementAt: (address) => options.delegationIndex.collaborationTreeOf(root).delegationPlacementAt(address) });
     this.delivery = new StandaloneRootMessageDelivery({
-      hostRunId: this.hostRunId, root, getIndex: () => this.index,
+      agentRunId: this.agentRunId, root, getIndex: () => this.index,
       recipients: new StandaloneRootRecipientResolver({ getIndex: () => this.index, collaborators: this.collaborators }),
-      collaborators: this.collaborators, getCommunication: () => this.communication, host: options.hostHandle,
+      collaborators: this.collaborators, getCommunication: () => this.communication, agent: options.agentHandle,
       remoteLinks: this.remoteLinks, remoteSend: new RemoteMessageSend({ engine: () => this.communication, links: this.remoteLinks }),
-      onHostReady: (run) => { this.delegatedIdle?.watch(run); this.workerStatus?.watch(run); this.hostReadyListeners.forEach((listener) => listener(run)); },
+      onAgentReady: (run) => { this.delegatedIdle?.watch(run); this.workerStatus?.watch(run); this.agentReadyListeners.forEach((listener) => listener(run)); },
       authorizeIdentity: (identity) => this.authorizeIdentity(identity),
     });
     this.communication = new RootCommunicationEngine(createStandaloneRootCommunicationPort({
       root, initial: options.messages, persistence: options.persistence, isOpen: () => this.isAdmitting(),
       // AR-020: a message to or from a peer run whose Task entry is closed is refused (its node keeps the run).
-      assertDeliveryAllowed: (sender, receiver) => this.assertPeerEntryOpen(this.index.isHost(sender) ? receiver : sender),
+      assertDeliveryAllowed: (sender, receiver) => this.assertPeerEntryOpen(this.index.isRunAgent(sender) ? receiver : sender),
       isCurrentAgent: (identity) => this.isCurrentAgent(identity),
       // The run's own log; every other agent (another run, or a peer's) keeps its own.
-      messageLogOwnerOf: (agentRunId) => this.index.isHost(agentRunId) ? OWN_RUN_LOG : OTHER_RUN_LOG,
+      messageLogOwnerOf: (agentRunId) => this.index.isRunAgent(agentRunId) ? OWN_RUN_LOG : OTHER_RUN_LOG,
       reserveRecipientInput: (agentRunId, message) => this.delivery.reserveAgentInput(agentRunId, message),
       messageFeed: options.messageFeed,
       presentCommittedMessage: (message) => this.delivery.presentCommittedCommunication(message),
     }));
   }
 
-  get hostRunId(): string { return this.options.host.agentRunId; }
-  get hostAddress(): AgentTeamAddress { return this.options.host.address; }
+  get agentRunId(): string { return this.options.agent.agentRunId; }
+  get agentAddress(): AgentTeamAddress { return this.options.agent.address; }
   get rootIdentity(): RootExecutionIdentity { return this.options.root; }
   isActive(): boolean { return this.lifecycle === "active"; }
   activate(): void {
-    if (this.lifecycle !== "activating") throw new Error(`Agent root '${this.hostRunId}' is not activatable.`);
+    if (this.lifecycle !== "activating") throw new Error(`Agent root '${this.agentRunId}' is not activatable.`);
     this.lifecycle = "active";
   }
   getCommunicationSnapshot(): StandaloneRootMessagesFile {
-    return Object.freeze({ schemaVersion: 1, subjectKind: "agent", hostRunId: this.hostRunId, messages: this.communication.getMessages() });
+    return Object.freeze({ schemaVersion: 1, subjectKind: "agent", agentRunId: this.agentRunId, messages: this.communication.getMessages() });
   }
   /** Run-ID membership: the run's own agent and its peer endpoints. */
   hasAgentExecution(agentRunId: string): boolean {
     const runId = agentRunId.trim();
-    return this.index.isHost(runId) || this.remoteLinks.has(runId);
+    return this.index.isRunAgent(runId) || this.remoteLinks.has(runId);
   }
 
   /** The run's agent's real live state (the view's `isActive`). */
-  isHostLive(): boolean { return this.options.hostHandle.readiness === "live"; }
+  isAgentLive(): boolean { return this.options.agentHandle.readiness === "live"; }
   /** The live agent, without making it ready. */
-  activeHostRun(): AgentRun | null { return this.options.hostHandle.getActiveRun(); }
+  activeAgentRun(): AgentRun | null { return this.options.agentHandle.getActiveRun(); }
   /** autobyteus-278: each time the agent is made ready (one restored after idle shutdown is a new AgentRun). */
-  onHostReady(listener: (run: AgentRun) => void): () => void {
-    this.hostReadyListeners.add(listener);
-    return () => { this.hostReadyListeners.delete(listener); };
+  onAgentReady(listener: (run: AgentRun) => void): () => void {
+    this.agentReadyListeners.add(listener);
+    return () => { this.agentReadyListeners.delete(listener); };
   }
   /** Makes the run's agent ready (activated, restored, or the live run). */
-  ensureHostReady(): Promise<AgentRun> {
-    return this.operationGate.run(async () => { this.assertAdmitting(); return this.delivery.readyHost(); });
+  ensureAgentReady(): Promise<AgentRun> {
+    return this.operationGate.run(async () => { this.assertAdmitting(); return this.delivery.readyAgent(); });
   }
   /**
    * A user's (or a peer owner's) message for the run's agent. At the gate head, the closed-Task fence (DS-15): a closed
    * run, or a delegated one while Task data cannot be read (CR-461-051), is refused before it is made ready. Then ready;
    * mentions resolved, nothing added; then posted.
    */
-  postHostUserMessage(input: Omit<StandaloneRunPostInput, "runId">): Promise<StandaloneRunPostResult> {
+  postAgentUserMessage(input: Omit<StandaloneRunPostInput, "runId">): Promise<StandaloneRunPostResult> {
     return this.operationGate.run(async () => {
       this.assertAdmitting();
       const refusal = this.options.closedTasks.refusal(this.options.root, Boolean(this.options.delegatedFrom));
-      return refusal ? { kind: "refused", refusal } : this.delivery.postToHost(input);
+      return refusal ? { kind: "refused", refusal } : this.delivery.postToAgent(input);
     });
   }
   resolveCollaboratorMentions(input: Readonly<{ focusedAgentRunId: string; mentions: readonly CollaboratorMention[] }>): Promise<RootCollaboratorAdmissionResult> {
@@ -199,7 +200,7 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
   }
   /** The Task this run works on (`get_project_task`'s read scope): its own entries, by its own identity; else null. */
   ownedTaskOf(_context: TaskDelegationContext): TaskExecutionOwner | null {
-    return runOwnTaskOf({ agentRunId: this.hostRunId }, this.options.delegationIndex);
+    return runOwnTaskOf({ agentRunId: this.agentRunId }, this.options.delegationIndex);
   }
 
   /** `send_message_to(address)` in this run (contract §2.3). */
@@ -257,7 +258,7 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
   ): Promise<RootSnapshotConnection<TSnapshot, StandaloneRootEvent>> {
     return this.options.publisher.openSnapshotConnection(() => {
       const rows = atBase();
-      return read(Object.freeze({ host: this.options.host, createdAt: this.options.createdAt }), rows);
+      return read(Object.freeze({ agent: this.options.agent, createdAt: this.options.createdAt }), rows);
     });
   }
 
@@ -270,14 +271,14 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
    * A closed Task's stop (CR-461-001): `stillClosed` is asked right before the gate closes (`stop` closes it before its
    * first await), so a reopen committed while the stop waited keeps the run: `null`, nothing stopped.
    */
-  stopForTaskClosure(stillClosed: () => boolean): Promise<StandaloneHostTerminationResult> | null {
+  stopForTaskClosure(stillClosed: () => boolean): Promise<StandaloneRunAgentTerminationResult> | null {
     return stillClosed() ? this.stop() : null;
   }
 
-  async stop(): Promise<StandaloneHostTerminationResult> {
+  async stop(): Promise<StandaloneRunAgentTerminationResult> {
     const ended = await this.terminate();
-    if (!ended.accepted) throw new Error(ended.message ?? `Agent root '${this.hostRunId}' did not finish stopping.`);
-    try { return await this.options.hostHandle.terminate(); } finally { this.workerStatus?.stopped(); }
+    if (!ended.accepted) throw new Error(ended.message ?? `Agent root '${this.agentRunId}' did not finish stopping.`);
+    try { return await this.options.agentHandle.terminate(); } finally { this.workerStatus?.stopped(); }
   }
 
   /** Closes the gate and the log, then unregisters (server shutdown and fail-stop end here; the agent is untouched). */
@@ -310,16 +311,16 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
   private authorizeIdentity(identity: CollaborationMemberExecutionIdentity): void {
     this.assertAdmitting();
     if (!this.isCurrentAgent(identity)) {
-      throw new Error(`AgentRun '${identity.agentRunId}' is not a live execution at '${identity.memberAddress}' in Agent root '${this.hostRunId}'.`);
+      throw new Error(`AgentRun '${identity.agentRunId}' is not a live execution at '${identity.memberAddress}' in Agent root '${this.agentRunId}'.`);
     }
   }
   private isCurrentAgent(identity: CollaborationMemberExecutionIdentity): boolean {
-    return sameRootExecutionIdentity(identity.root, this.options.root) && this.index.isHost(identity.agentRunId)
-      && identity.memberAddress === this.hostAddress && Boolean(this.options.hostHandle.getActiveRun()?.isActive());
+    return sameRootExecutionIdentity(identity.root, this.options.root) && this.index.isRunAgent(identity.agentRunId)
+      && identity.memberAddress === this.agentAddress && Boolean(this.options.agentHandle.getActiveRun()?.isActive());
   }
   private isAdmitting(): boolean { return this.lifecycle === "active"; }
   private assertAdmitting(): void {
-    if (!this.isAdmitting()) throw new Error(`Agent root '${this.hostRunId}' is not accepting commands.`);
+    if (!this.isAdmitting()) throw new Error(`Agent root '${this.agentRunId}' is not accepting commands.`);
   }
   private enterFailStop(): void {
     if (this.lifecycle === "terminated" || this.lifecycle === "fail_stop") return;

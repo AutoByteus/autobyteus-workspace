@@ -27,6 +27,7 @@ import {
   testMemberExecutionContext,
   testTeamRunConfig,
 } from "../../fixtures/current-team-run-fixtures.js";
+import { NO_PEER_CHANNEL, OFFERED_MODEL_EXECUTION_FACTORY, OFF_DISCOVERY } from "../../helpers/explicit-host-collaborators.js";
 
 const loggingConfig = Object.freeze({
   pinoLogLevel: "silent" as const,
@@ -115,7 +116,7 @@ describe("supported Team Agent Tools MCP lifecycle integration", () => {
     );
     tempDirs.push(memoryDir);
 
-    const host = createAgentToolsMcpHost({ loggingConfig });
+    const host = createAgentToolsMcpHost({ peerDiscovery: OFF_DISCOVERY, loggingConfig });
     const authority = host.sessionAuthorities.begin({
       scopeIdentity: "team-agent-tools-lifecycle",
     }).complete({
@@ -177,7 +178,7 @@ describe("supported Team Agent Tools MCP lifecycle integration", () => {
 
       let currentCycle = 0;
       let hasNativeConversationActivity = false;
-      const teamExecutionFactory = new FlatTeamExecutionFactory({
+      const teamExecutionFactory = new FlatTeamExecutionFactory({ executionFactory: OFFERED_MODEL_EXECUTION_FACTORY,
         agentRunManager,
         memoryLocator: new AgentRunMemoryLocator({ memoryDir }),
         activityInspector: {
@@ -186,7 +187,7 @@ describe("supported Team Agent Tools MCP lifecycle integration", () => {
             : { kind: "none" as const }),
         },
       });
-      const teamRunManager = new AgentTeamRunManager({ delegationIndex: noDelegations(), viewStreams: testViewStreams(), taskRecords: openTaskRecords(),
+      const teamRunManager = new AgentTeamRunManager({ remoteChannel: NO_PEER_CHANNEL, delegationIndex: noDelegations(), viewStreams: testViewStreams(), taskRecords: openTaskRecords(),
         memoryDir,
         flatTeamExecutionFactory: teamExecutionFactory,
         memberExecutionContextBuilder: {

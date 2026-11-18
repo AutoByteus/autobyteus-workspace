@@ -12,6 +12,7 @@ import { AgentSessionManager } from '../../../src/services/agent-streaming/agent
 import { RunViewStream } from '../../../src/agent-collaboration/delegation/run-view-stream.js';
 import { testAgentOrgExecutionTree,testOrgAgentNode } from '../../fixtures/current-agent-org-run-fixtures.js';
 import { testViewSources } from "../../helpers/child-rows-feed.js";
+import { OFFERED_STORED_MODEL_CHECKS } from "../../helpers/explicit-host-collaborators.js";
 
 // Real strict command decoding -> configured live handle -> AgentRun -> native core.
 // Root package hosting is test-owned; this is not a full root/API acceptance campaign.
@@ -23,7 +24,7 @@ async function ingress(kind:'agent_team'|'agent_org', f:Awaited<ReturnType<typeo
   tasks:{root,delegationSource:vi.fn(),ownedTaskOf:vi.fn(()=>null),submitTaskResult:vi.fn(),reviewTaskResult:vi.fn()}});
  const prepareNewAgentRun=vi.fn(async()=>({runId:f.run.runId,runtimeKind:'autobyteus',platformAgentRunId:null,
   commitPublication:()=>f.run,abort:async()=>({kind:'aborted'})}));
- const handle=new ConfiguredAgentExecutionHandle({identity,physicalScope:createRootExecutionPhysicalScope({root,ancestorTeamRunIds:[]}),
+ const handle=new ConfiguredAgentExecutionHandle({ storedModelChecks: OFFERED_STORED_MODEL_CHECKS,identity,physicalScope:createRootExecutionPhysicalScope({root,ancestorTeamRunIds:[]}),
   execution:{agentDefinitionId:'test',llmModelIdentifier:'parent',llmConfig:null,autoExecuteTools:false,runtimeKind:'autobyteus',workspaceRootPath:null,platformAgentRunId:null},
   activationMode:'fresh',memberExecutionContext,callbacks:{publishAgentEvent:vi.fn(),commitPlatformBindingChange:vi.fn()},
   agentRunManager:testActivationManager({newPreparation: prepareNewAgentRun,getActiveRun:()=>f.run}) as any,

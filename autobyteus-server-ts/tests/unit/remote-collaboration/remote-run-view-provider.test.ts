@@ -4,7 +4,7 @@ import { PeerGateway } from "../../../src/remote-collaboration/channel/peer-gate
 import type { PeerNode } from "../../../src/remote-collaboration/domain/peer-node.js";
 import type { RemoteRootDirectory } from "../../../src/remote-collaboration/inbound/remote-message-receiver.js";
 import { RemoteRunViewProvider } from "../../../src/remote-collaboration/inbound/remote-run-view-provider.js";
-import type { PairedAgentAccess, PairedAgentPresentationListener } from "../../../src/agent-collaboration/execution/remote/paired-agent-access.js";
+import type { RunAgentAccess, RunAgentPresentationListener } from "../../../src/agent-collaboration/execution/remote/run-agent-access.js";
 import { AgentStreamSequences } from "../../../src/services/agent-streaming/agent-stream-sequence.js";
 
 /** autobyteus-278: the running node's one inbound owner of what a peer's owner reads and drives (link check first). */
@@ -16,14 +16,14 @@ const TEAM = { kind: "agent_team" as const, runId: "team-run" };
 const status = { type: "AGENT_STATUS", payload: { status: "running", trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null } } as never;
 
 const harness = () => {
-  let listener: PairedAgentPresentationListener | null = null;
+  let listener: RunAgentPresentationListener | null = null;
   let ended: (() => void) | null = null;
   const observation = { close: vi.fn() };
-  const access: PairedAgentAccess = {
-    observePairedAgents: vi.fn(async (_runId: string, onPresentation: PairedAgentPresentationListener, onEnded: () => void) => {
+  const access: RunAgentAccess = {
+    observeRunAgents: vi.fn(async (_runId: string, onPresentation: RunAgentPresentationListener, onEnded: () => void) => {
       listener = onPresentation; ended = onEnded; return observation; }),
     executeOwnerCommand: vi.fn(async () => ({ accepted: true })),
-    pairedAgentStatuses: vi.fn(() => [{ agentRunId: "lead-run", status: "running" as const, backgroundTasksRunning: 0 }]),
+    runAgentStatuses: vi.fn(() => [{ agentRunId: "lead-run", status: "running" as const, backgroundTasksRunning: 0 }]),
   };
   // The run was started by alpha's delegation and pairs with the Team's members.
   const storedLinkCheck = vi.fn(async (root: { runId: string }, query: { kind: string; fromNodeId: string; targetAgentRunId?: string | null }) => {
@@ -31,7 +31,7 @@ const harness = () => {
     if (query.kind !== "owner" || query.fromNodeId !== ALPHA.nodeId) return "not_linked" as const;
     return query.targetAgentRunId === null || query.targetAgentRunId === "lead-run" ? "proceed" as const : "not_linked" as const;
   });
-  const roots = { storedLinkCheck, pairedAgents: () => access } as unknown as RemoteRootDirectory;
+  const roots = { storedLinkCheck, runAgents: () => access } as unknown as RemoteRootDirectory;
   const launches = [{ address: "/lead", runtimeKind: "autobyteus", llmModelIdentifier: "sonnet", source: { origin: "team_default" as const, fallbacks: [] } }];
   const views = { runTitle: vi.fn(async () => "Plan the October campaign"), runLaunches: vi.fn(async () => launches), agentProjection: vi.fn(async () => ({
     agentRunId: "lead-run", conversation: [], activities: [], summary: null, lastActivityAt: null, hasEarlierActiveTraceEvents: true,
@@ -49,7 +49,7 @@ const harness = () => {
     delegatedRuns: {} as never, messages: {} as never, availableAgents: {} as never, runningAgents: {} as never, runViews: provider,
   });
   return { access, storedLinkCheck, views, provider, gateway, observation,
-    emitLead: (event: unknown) => leadListeners.forEach((listener) => listener(event)), emit: (...args: Parameters<PairedAgentPresentationListener>) => listener?.(...args),
+    emitLead: (event: unknown) => leadListeners.forEach((listener) => listener(event)), emit: (...args: Parameters<RunAgentPresentationListener>) => listener?.(...args),
     /** The root kind reports the run ended (stop, terminate or delete by any path). */
     end: () => ended?.() };
 };
@@ -100,14 +100,14 @@ describe("RemoteRunViewProvider behind the gateway", () => {
   it("CR-461-090: an observation opens with each running agent's current status, read after its listener is attached; a stopped run sends none", async () => {
     const f = harness();
     const order: string[] = [];
-    vi.mocked(f.access.observePairedAgents).mockImplementationOnce(async () => { order.push("observe"); return f.observation; });
-    vi.mocked(f.access.pairedAgentStatuses).mockImplementationOnce(() => { order.push("read"); return [{ agentRunId: "lead-run", status: "idle", backgroundTasksRunning: 0 }]; });
+    vi.mocked(f.access.observeRunAgents).mockImplementationOnce(async () => { order.push("observe"); return f.observation; });
+    vi.mocked(f.access.runAgentStatuses).mockImplementationOnce(() => { order.push("read"); return [{ agentRunId: "lead-run", status: "idle", backgroundTasksRunning: 0 }]; });
     const sink = { send: vi.fn(), close: vi.fn() };
     await f.gateway.openRunObservation({ ...envelope(), targetRoot: TEAM }, peerCallerOfBody({ ...envelope(), targetRoot: TEAM }), sink);
     expect(order).toEqual(["observe", "read"]);
     expect(sink.send.mock.calls).toEqual([[{ agentRunId: "lead-run", message: { type: "AGENT_STATUS", payload: expect.objectContaining({ status: "idle" }) } }]]);
     // Not running: nothing to send; the peer reads it offline until it runs.
-    vi.mocked(f.access.pairedAgentStatuses).mockImplementationOnce(() => []);
+    vi.mocked(f.access.runAgentStatuses).mockImplementationOnce(() => []);
     const quiet = { send: vi.fn(), close: vi.fn() };
     await f.gateway.openRunObservation({ ...envelope(), targetRoot: TEAM }, peerCallerOfBody({ ...envelope(), targetRoot: TEAM }), quiet);
     expect(quiet.send).not.toHaveBeenCalled();
@@ -118,7 +118,7 @@ describe("RemoteRunViewProvider behind the gateway", () => {
     const sink = { send: vi.fn(), close: vi.fn() };
     const refused = await f.gateway.openRunObservation({ ...envelope(OTHER), targetRoot: TEAM }, peerCallerOfBody({ ...envelope(OTHER), targetRoot: TEAM }), sink);
     expect(refused.answer).toMatchObject({ accepted: false, code: "REMOTE_TARGET_NOT_PERMITTED", nodeId: SELF });
-    expect(f.access.observePairedAgents).not.toHaveBeenCalled();
+    expect(f.access.observeRunAgents).not.toHaveBeenCalled();
     const closing = await f.gateway.openRunObservation({ ...envelope(), targetRoot: TEAM }, peerCallerOfBody({ ...envelope(), targetRoot: TEAM }), sink);
     if (!closing.answer.accepted || !("observation" in closing.answer)) throw new Error("expected an observation");
     closing.answer.observation.close();
@@ -136,7 +136,7 @@ describe("RemoteRunViewProvider behind the gateway", () => {
     const sink = { send: vi.fn(), close: vi.fn() };
     const opened = await f.gateway.openRunObservation(body, peerCallerOfBody(body), sink);
     if (!opened.answer.accepted || !("observation" in opened.answer)) throw new Error("expected an observation");
-    expect(f.access.observePairedAgents).not.toHaveBeenCalled();
+    expect(f.access.observeRunAgents).not.toHaveBeenCalled();
     f.emitLead({ runId: "lead-run", eventType: "SEGMENT_START", payload: { id: "s", turn_id: "t", segment_type: "text" }, statusHint: null });
     expect(sink.send).toHaveBeenCalledWith(expect.objectContaining({ agentRunId: "lead-run", liveSequenceId: expect.any(String),
       frame: expect.objectContaining({ type: "SEGMENT_START", sequence: 1 }) }));

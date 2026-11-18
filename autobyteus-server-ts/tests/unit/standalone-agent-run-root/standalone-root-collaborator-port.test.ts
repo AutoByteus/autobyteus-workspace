@@ -5,7 +5,7 @@ import { AgentTeamDefinition, TeamMember } from "../../../src/agent-team-definit
 import { createCollaboratorAdmission } from "../../../src/agent-collaboration/collaborators/collaborator-definition-catalog.js";
 import type { CollaboratorDefinitionCatalog } from "../../../src/agent-collaboration/collaborators/collaborator-candidate-policy.js";
 import { standaloneRootCollaboratorPortFor } from "../../../src/standalone-agent-run-root/services/standalone-root-collaborators.js";
-import type { StandaloneRootHost } from "../../../src/standalone-agent-run-root/domain/standalone-root-host.js";
+import type { StandaloneRunAgent } from "../../../src/standalone-agent-run-root/domain/standalone-run-agent.js";
 import type { RunModelSelectionValidator } from "../../../src/llm-management/services/run-model-selection-service.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 
@@ -33,7 +33,7 @@ const launch = { runtimeKind: RuntimeKind.CODEX_APP_SERVER, llmModelIdentifier: 
 const HOST = "pm-run";
 const CHILD = "reviewer-copy-run";
 
-const treeOf = (host: { address: string; agentDefinitionId: string }): StandaloneRootHost =>
+const treeOf = (host: { address: string; agentDefinitionId: string }): StandaloneRunAgent =>
   ({ address: host.address as never, agentRunId: HOST, agentDefinitionId: host.agentDefinitionId });
 const pmTree = () => treeOf({ address: "/project_task_manager", agentDefinitionId: "pm" });
 

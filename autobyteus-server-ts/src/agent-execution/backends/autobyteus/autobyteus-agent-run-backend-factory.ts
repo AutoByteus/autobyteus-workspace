@@ -1,4 +1,5 @@
 import type { IntegrationRunAccess } from "../../../credential-proxy/integration-run-access.js";
+import type { PeerDiscoveryAccess } from "../../../agent-collaboration/execution/remote/peer-discovery-channel.js";
 import { integrationShellCustomData } from "./autobyteus-integration-shell-environment.js";
 import type { NativeCommandProcessScope } from "autobyteus-ts";
 import fs from "node:fs/promises";
@@ -106,6 +107,8 @@ export type AutoByteusAgentRunBackendFactoryOptions = {
   registries?: Partial<ProcessorRegistries>;
   waitForIdle?: AutoByteusAgentIdleWaiter;
   applicationAgentTools?: ApplicationAgentToolCapability | null;
+  /** The host's discovery for the discovery tools (autobyteus-500 FU-011). */
+  peerDiscovery: PeerDiscoveryAccess;
   /** The run's integration variables (`null`: this host's runs get no integration access). */
   integrationRunAccess?: IntegrationRunAccess | null;
   semanticMemory?: AgentSemanticMemory;
@@ -123,6 +126,7 @@ export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory 
   private readonly registries: ProcessorRegistries;
   private readonly waitForIdle: (agent: Agent, timeout?: number) => Promise<void>;
   private readonly applicationAgentTools: ApplicationAgentToolCapability | null;
+  private readonly peerDiscovery: PeerDiscoveryAccess;
 
   constructor(private readonly options: AutoByteusAgentRunBackendFactoryOptions) {
     if (!options.nativeCommandProcessScope) throw new Error("Native command host scope is required");
@@ -145,6 +149,7 @@ export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory 
     };
     this.waitForIdle = options.waitForIdle ?? waitForAgentToBeIdle;
     this.applicationAgentTools = options.applicationAgentTools ?? null;
+    this.peerDiscovery = options.peerDiscovery;
   }
 
   beginPreparation(request: AgentRunBackendPreparationRequest) {
@@ -329,6 +334,7 @@ export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory 
       memberExecutionContext: options.memberExecutionContext,
       applicationExecutionContext: options.applicationExecutionContext,
       capability: this.applicationAgentTools,
+      peerDiscovery: this.peerDiscovery,
       logger,
     });
     const resolvedPrompt = composeNativeAutoByteusPrompt({
@@ -512,6 +518,7 @@ export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory 
           memberExecutionContext: config.memberExecutionContext,
           applicationExecutionContext: config.applicationExecutionContext,
           capability: this.applicationAgentTools,
+      peerDiscovery: this.peerDiscovery,
           logger,
         }).tools,
       },

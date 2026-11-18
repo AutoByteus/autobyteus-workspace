@@ -2,7 +2,7 @@ import { NOT_AN_AGENT_OF_THIS_RUN, type CrossRunAcceptInput } from "../../agent-
 import { reachingAddressOf } from "../../agent-collaboration/collaborators/message-recipient-resolution.js";
 import type { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import { mentionViewerOf } from "../../agent-collaboration/collaborators/mention-viewer.js";
-import type { AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
+import { RUN_NOT_ACTIVE, type AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
 import type { AgentRunInputOptions, AgentRunInputReservationResult } from "../../agent-execution/input/agent-run-input-contract.js";
 import { getAgentTeamAddressBasename, type AgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
 import {
@@ -224,7 +224,7 @@ export class AgentOrgRunMessageDelivery {
     if (command.kind !== "post_message") {
       const result = this.isLiveAgent(agentRunId)
         ? await execute()
-        : { accepted: false, code: "RUN_NOT_ACTIVE", message: `AgentRun '${agentRunId}' is shut down in AgentOrg '${this.options.orgRunId}'.` };
+        : { accepted: false, code: RUN_NOT_ACTIVE, message: `AgentRun '${agentRunId}' is shut down in AgentOrg '${this.options.orgRunId}'.` };
       return Object.freeze({ result, executionKind: agent.executionKind });
     }
     const result = await execute();

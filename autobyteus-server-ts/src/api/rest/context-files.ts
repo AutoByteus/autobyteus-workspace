@@ -1,4 +1,3 @@
-import type { DelegationIndex } from "../../agent-collaboration/delegation/delegation-index.js";
 import fs from "node:fs";
 import type { FastifyInstance } from "fastify";
 import { lookup as lookupMime } from "mime-types";
@@ -23,7 +22,6 @@ import { ContextFileLayout } from "../../context-files/store/context-file-layout
 import {
   ContextFileOwnerResolver,
   OrgContextFileOwnerNotFoundError,
-  AgentCollaborationContextFileOwnerNotFoundError,
   StandaloneContextFileOwnerNotFoundError,
   TeamContextFileOwnerNotFoundError,
 } from "../../context-files/services/context-file-owner-resolver.js";
@@ -31,14 +29,13 @@ import { createStoredTeamRunExecutionTreeLocationService } from "../../run-histo
 import { appConfigProvider } from "../../config/app-config-provider.js";
 import { AgentOrgExecutionTreeLocationService } from "../../agent-org-execution/services/agent-org-execution-tree-location-service.js";
 import { CollaborationExecutionLocationService } from "../../agent-collaboration/execution/services/collaboration-execution-location-service.js";
-import { DelegatedChildLocations } from "../../agent-collaboration/execution/delegation/delegated-child-locations.js";
 import { sendUserFile, type UserFileContent } from "./user-file-reply.js";
 
 const logger = {
   error: (...args: unknown[]) => console.error(...args),
 };
 
-const buildServices = (tree: Pick<DelegationIndex, "childrenOf">) => {
+const buildServices = () => {
   const config = appConfigProvider.config;
   const memoryDir = config.getMemoryDir();
   const layout = new ContextFileLayout({
@@ -50,7 +47,6 @@ const buildServices = (tree: Pick<DelegationIndex, "childrenOf">) => {
     locations: new CollaborationExecutionLocationService({
       teams: createStoredTeamRunExecutionTreeLocationService(memoryDir),
       orgs: new AgentOrgExecutionTreeLocationService({ memoryDir }),
-      agents: new DelegatedChildLocations({ memoryDir, teams: createStoredTeamRunExecutionTreeLocationService(memoryDir), tree }),
     }),
   });
   const cleanupService = new ContextFileDraftCleanupService(layout);
@@ -72,8 +68,7 @@ const isContextFileOwnerNotFound = (error: unknown): boolean =>
   error instanceof DraftLocatorNotFoundError
   || error instanceof StandaloneContextFileOwnerNotFoundError
   || error instanceof TeamContextFileOwnerNotFoundError
-  || error instanceof OrgContextFileOwnerNotFoundError
-  || error instanceof AgentCollaborationContextFileOwnerNotFoundError;
+  || error instanceof OrgContextFileOwnerNotFoundError;
 
 /** The single HTTP error mapping of the draft read and delete routes. */
 const sendDraftRouteError = (error: unknown, reply: { code(status: number): { send(body: unknown): unknown } }) => {
@@ -89,8 +84,8 @@ const contextFileContent = (filePath: string): UserFileContent => ({
   body: fs.createReadStream(filePath),
 });
 
-export async function registerContextFileRoutes(app: FastifyInstance, tree: Pick<DelegationIndex, "childrenOf">): Promise<void> {
-  const { uploadService, finalizationService, readService } = buildServices(tree);
+export async function registerContextFileRoutes(app: FastifyInstance): Promise<void> {
+  const { uploadService, finalizationService, readService } = buildServices();
 
   /** The node's current per-type size limits, so a client can refuse an over-limit file before sending it. */
   app.get("/context-files/size-limits", async (_request, reply) => {
@@ -252,24 +247,4 @@ export async function registerContextFileRoutes(app: FastifyInstance, tree: Pick
       throw error;
     }
   });
-
-  type AgentCollaborationFileParams = { hostRunId: string; agentRunId: string; storedFilename: string };
-  app.get<{ Params: AgentCollaborationFileParams }>(
-    "/agent-collaborations/:hostRunId/agent-runs/:agentRunId/context-files/:storedFilename",
-    async (request, reply) => {
-      try {
-        const { hostRunId, agentRunId, storedFilename } = request.params;
-        const filePath = await readService.getFinalFilePath(
-          parseFinalContextFileOwnerDescriptor({ kind: "agent_collaboration_member_final", hostRunId, agentRunId }),
-          storedFilename,
-        );
-        if (!filePath) return reply.code(404).send({ detail: "File not found." });
-        return sendUserFile(reply, contextFileContent(filePath));
-      } catch (error) {
-        if (error instanceof AgentCollaborationContextFileOwnerNotFoundError) return reply.code(404).send({ detail: "File not found." });
-        if (error instanceof ContextFileDescriptorError) return reply.code(400).send({ detail: error.message });
-        throw error;
-      }
-    },
-  );
 }

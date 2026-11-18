@@ -14,11 +14,12 @@ import {
 } from "../../../src/projects/search/project-task-search-service.js";
 import { createFakeEmbeddingIndex, fakeModel } from "../../helpers/fake-embedding-model.js";
 import { withTaskRunResources } from "../../helpers/task-run-resources.js";
+import { freshProcessTaskService } from "../../helpers/explicit-host-collaborators.js";
 
 // SR-007: Settings' index status caches only inputs (fingerprints) and is computed fresh at every read; Task writes
 // index their Project in the background when the active model is on disk (REQ-011). Real Project files and Task
 // service (with its post-commit marks wired as in production); only the model is the deterministic stand-in.
-const reset = () => { resetProjectServiceForTests(); releaseProjectTaskServiceProcessInstance(getProjectTaskService()); resetProjectStoreForTests(); resetProjectTaskContextStoreForTests(); };
+const reset = () => { resetProjectServiceForTests(); freshProcessTaskService(); resetProjectStoreForTests(); resetProjectTaskContextStoreForTests(); };
 const MODEL_A = fakeModel("fake-model-a");
 const MODEL_B = fakeModel("fake-model-b");
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));

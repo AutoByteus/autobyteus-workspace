@@ -191,7 +191,11 @@ or because Gradle's cache already holds a dependency the runner must download.
   `autobyteus-server-ts/tests/helpers/os-latency-under-load.ts` (a wait ends as soon as its
   condition holds, so a long limit does not slow a passing run) and never compares an event's
   elapsed time with a fixed bound; a test that proves an event does *not* happen keeps its own
-  short quiet window.
+  short quiet window, or writes a sentinel change after the ignored one and checks that nothing
+  ignored arrived before the sentinel's event (the file-system watcher test, autobyteus-500). When
+  that test's limit runs out, it labels the failure `ENVIRONMENT` (a raw `fs.watch` got no event
+  either) or `INCONCLUSIVE` (a fresh stream got one): neither is a product verdict. Its proof is a
+  run where the OS delivers events, such as Linux in a container from the worktree.
 - **Green server suites.** Server `test:unit`, `test:integration` and `typecheck` are kept
   passing. Every failure there is a real failure: find its cause and fix or report it
   (Rule 9). Run `test:integration:prepare` once per worktree and after changing server or

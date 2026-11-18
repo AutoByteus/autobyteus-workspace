@@ -26,6 +26,7 @@ import { testAgentOrgExecutionTree, testOrgAgentNode, testOrgTeamNode } from "..
 import { observeConfiguredHandles } from "./task-publication-handles.js";
 import { InMemoryTaskExecutionResources } from "../../../fixtures/task-execution-resource-fixtures.js";
 import { agentOrgMessageEvent, isAgentOrgMessageEvent } from "../../../../src/agent-org-execution/domain/agent-org-run-event.js";
+import { NO_PEER_CHANNEL, OFFERED_MODEL_EXECUTION_FACTORY } from "../../../helpers/explicit-host-collaborators.js";
 
 /**
  * An AgentOrg (`/director`, mounted Team `/target` with `/target/lead` and `/target/writer`) over a
@@ -88,8 +89,8 @@ export const buildOrg = async (options: { runnable?: boolean } = {}) => {
     buildMemberExecutionContext: vi.fn(async () => ({} as never)), commitPlatformBindingChange: vi.fn(),
     publishAgentEvent: (identity, event) => run?.onAgentExecutionEvent(identity, event),
   };
-  const rootAgents = new RootAgentExecutionRegistry({ root, callbacks });
-  const teams = new RootTeamExecutionDirectory(new FlatTeamExecutionFactory());
+  const rootAgents = new RootAgentExecutionRegistry({ executionFactory: OFFERED_MODEL_EXECUTION_FACTORY, root, callbacks });
+  const teams = new RootTeamExecutionDirectory(new FlatTeamExecutionFactory({ executionFactory: OFFERED_MODEL_EXECUTION_FACTORY }));
   for (const member of tree.rootOrg.members) {
     if ("agentRunId" in member) {
       (await rootAgents.prepareConfigured(projectAgentOrgConfiguredAgentNode(member), "fresh")).commitAfterDurability();
@@ -100,7 +101,7 @@ export const buildOrg = async (options: { runnable?: boolean } = {}) => {
   }
   const publisher = new RunViewStream<AgentOrgRunEvent>({ isMessageEvent: isAgentOrgMessageEvent });
   let allocation = 0;
-  run = new AgentOrgRun({ root, tree, messages, rootAgents, teams, callbacks, persistence, publisher, messageFeed: messageFeedInto(publisher, agentOrgMessageEvent),
+  run = new AgentOrgRun({ remoteChannel: NO_PEER_CHANNEL, root, tree, messages, rootAgents, teams, callbacks, persistence, publisher, messageFeed: messageFeedInto(publisher, agentOrgMessageEvent),
     activityInspector: { inspect: vi.fn(() => ({ kind: "present" as const })) } as never,
     collaboratorAdmission: admission(options.runnable ?? true),
     // Production always binds the Task side; every delegated copy belongs to a Task.

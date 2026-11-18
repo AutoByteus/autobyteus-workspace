@@ -16,7 +16,9 @@ import { buildRuntimeAgentToolExposure, PLATFORM_GIVEN_TOOL_NAMES } from "../../
 import type { ScopedAgentToolMcpSessionAuthority } from "../../../src/agent-tools/mcp/agent-tool-mcp-session-authority.js";
 import { ListProjectsTool, ListProjectTasksTool, CreateProjectTool, UpdateProjectTool, CreateTaskTool, UpdateTaskTool, createBoundGetProjectTaskTool } from "../../../src/agent-tools/project-tasks/project-task-native-tools.js";
 import { registerProjectTaskTools } from "../../../src/agent-tools/project-tasks/project-task-native-tools.js";
-import { getProjectTaskService, releaseProjectTaskServiceProcessInstance } from "../../../src/projects/services/project-task-service.js";
+import { NO_RUN_SIDE_TASK_PORTS, releaseComposedProjectTaskService } from "../../helpers/explicit-host-collaborators.js";
+import { initializeProjectTaskServiceProcessInstance } from "../../../src/projects/services/project-task-service.js";
+import { composeTaskSide } from "../../../src/compositions/collaboration-composition.js";
 import { resetProjectServiceForTests } from "../../../src/projects/services/project-service.js";
 import { resetProjectStoreForTests } from "../../../src/projects/stores/project-store.js";
 import { resetProjectTaskContextStoreForTests } from "../../../src/projects/context/project-task-context-store.js";
@@ -62,7 +64,7 @@ const storedNameOf = (file: { path: string }) => path.basename(file.path);
 // Reader reconstruction: fresh Project readers and stores. The Project Task service is the composition's (autobyteus-461: it
 // carries the delegation tree as its entries listener, set by the composition root); it is released only with the server.
 const reset = (releaseTaskService = false) => {
-  if (releaseTaskService) releaseProjectTaskServiceProcessInstance(getProjectTaskService());
+  if (releaseTaskService) releaseComposedProjectTaskService();
   resetProjectServiceForTests(); resetProjectStoreForTests(); resetProjectTaskContextStoreForTests();
 };
 
@@ -1226,8 +1228,12 @@ describe("Project Task production HTTP boundaries", () => {
     const historyDir = path.join(root, "memory", "agents", "fixture-worker");
     await fs.mkdir(historyDir, {recursive: true}); await fs.writeFile(path.join(historyDir, "raw_traces_active.jsonl"), '{"sentinel":"owned history bytes"}\n');
     // The composed Task service reads Task entries once, at start (as production does); entries written to disk here are read
-    // as a restart reads them: the process instance is released and built again (autobyteus-461).
+    // as a restart reads them: the process instance is released and built again (autobyteus-461). Since autobyteus-500
+    // FU-011 there is no lazily made instance: the Task side is composed again from the entries on disk, as a restart does,
+    // with no running roots.
     reset(true);
+    initializeProjectTaskServiceProcessInstance({ ...NO_RUN_SIDE_TASK_PORTS,
+      taskExecutionResources: (await composeTaskSide({ appDataDir: root, memoryDir: path.join(root, "memory") })).resources });
     const businessBefore = (await call("list_project_tasks", {project_id: old.projectId})).structuredContent;
     expect(businessBefore.tasks[0].assignments).toEqual([{kind: "agent", agentRunId: "fixture-worker", assignedBy: "fixture-manager", outcome: "accepted"}]);
     // A short entry carries no closed assignments (REQ-007); get_project_task has none here, so it leaves the field out.

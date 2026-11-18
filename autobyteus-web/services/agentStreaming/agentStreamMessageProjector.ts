@@ -55,14 +55,6 @@ export type AgentStreamProjectionTarget =
       orgRunId: string;
       agentRunId: string;
       memberAddress: AgentTeamAddress;
-    }
-  | {
-      /** A task child of a standalone run's collaboration root. */
-      kind: 'agent_collaboration_member';
-      context: AgentContext;
-      hostRunId: string;
-      agentRunId: string;
-      memberAddress: AgentTeamAddress;
     };
 
 const conversationResult = (
@@ -234,7 +226,7 @@ export const dispatchAgentStreamMessage = (
   if (effects.navigation.kind !== 'NONE') {
     const currentStatus = target.context.state.currentStatus;
     // Root views (Org, Agent collaboration) own their own tree rows.
-    if (target.kind === 'agent_org_member' || target.kind === 'agent_collaboration_member') return effects;
+    if (target.kind === 'agent_org_member') return effects;
     useRunHistoryStore().applyRunNavigationEffect(
       target.kind === 'standalone'
         ? { kind: 'standalone', runId: target.runId, currentStatus }

@@ -13,7 +13,6 @@ import {
 } from "../../agent-execution/services/agent-run-service.js";
 import {
   AgentRunCommandCoordinator,
-  getAgentRunCommandCoordinator,
 } from "../../agent-execution/services/agent-run-command-coordinator.js";
 import {
   AgentRunStatusProjectionService,
@@ -35,6 +34,7 @@ import {
   buildInterruptGenerationCommandAck,
   normalizeInterruptCommandId,
 } from "./interrupt-generation-command-ack.js";
+import { NOTHING_TO_INTERRUPT, userInterruptOutcome } from "./user-interrupt-outcome.js";
 import { AgentStreamWebSocketEgress, type AgentStreamServerMessageSink } from "./websocket-egress/agent-stream-websocket-egress.js";
 import { createSequencedStreamEgressControlComposition } from "./websocket-egress/agent-stream-egress-control-composition.js";
 import { agentStreamSequencedShape } from "./websocket-egress/agent-stream-sequenced-shape.js";
@@ -83,7 +83,8 @@ export class AgentStreamHandler {
     sessionManager: AgentSessionManager = new AgentSessionManager(),
     agentRunService: AgentRunService = getAgentRunService(),
     broadcaster: AgentStreamBroadcaster = getAgentStreamBroadcaster(),
-    commandCoordinator: AgentRunCommandCoordinator = getAgentRunCommandCoordinator(),
+    /** The composed coordinator (the supervisor's; autobyteus-500 FU-011). */
+    commandCoordinator: AgentRunCommandCoordinator,
     statusProjectionService: AgentRunStatusProjectionService = getAgentRunStatusProjectionService(),
     private readonly follow: AgentRunFollowSources | null = null,
     /** Each active run's own stream sequence (SR-087), and its stored read for the snapshot. */
@@ -402,22 +403,14 @@ export class AgentStreamHandler {
       return;
     }
     if (!activeRun) {
-      logger.warn(`INTERRUPT_GENERATION rejected for missing agent run ${agentRunId}.`);
       sink?.send(new ServerMessage(
         ServerMessageType.AGENT_COMMAND_ACK,
-        buildInterruptGenerationCommandAck({
-          commandId,
-          target,
-          validationFailure: {
-            code: "RUN_NOT_FOUND",
-            message: `Agent run '${agentRunId}' is not active.`,
-          },
-        }),
+        buildInterruptGenerationCommandAck({ commandId, target, result: NOTHING_TO_INTERRUPT }),
       ));
       return;
     }
     try {
-      const result = await activeRun.interrupt(null);
+      const result = userInterruptOutcome(await activeRun.interrupt(null));
       sink?.send(new ServerMessage(
         ServerMessageType.AGENT_COMMAND_ACK,
         buildInterruptGenerationCommandAck({ commandId, target, result }),
@@ -491,18 +484,13 @@ export class AgentStreamHandler {
   }
 }
 
-let cachedAgentStreamHandler: AgentStreamHandler | null = null;
-
-export const getAgentStreamHandler = (): AgentStreamHandler => {
-  if (!cachedAgentStreamHandler) {
-    cachedAgentStreamHandler = new AgentStreamHandler(
-      new AgentSessionManager(),
-      getAgentRunService(),
-      getAgentStreamBroadcaster(),
-      getAgentRunCommandCoordinator(),
-      getAgentRunStatusProjectionService(),
-      { registrations: getActiveCollaborationRootDirectory(), roots: { getActive: (hostRunId) => getStandaloneAgentRunRootManager().getActive(hostRunId) } },
-    );
-  }
-  return cachedAgentStreamHandler;
-};
+/** The agent stream's handler of a host: the process's run services, with the coordinator its supervisor composed. */
+export const createAgentStreamHandler = (commandCoordinator: AgentRunCommandCoordinator): AgentStreamHandler =>
+  new AgentStreamHandler(
+    new AgentSessionManager(),
+    getAgentRunService(),
+    getAgentStreamBroadcaster(),
+    commandCoordinator,
+    getAgentRunStatusProjectionService(),
+    { registrations: getActiveCollaborationRootDirectory(), roots: { getActive: (agentRunId) => getStandaloneAgentRunRootManager().getActive(agentRunId) } },
+  );

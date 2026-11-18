@@ -1,0 +1,17 @@
+# DEL-04 delivery checks on the merged tree (ac410ad30b + delivery docs), 2026-11-18T17:22:46Z
+$ python3 scripts/check_repository_artifact_hygiene.py
+Repository artifact hygiene check passed.
+Tracked files scanned: 99339
+Path-length threshold: 200
+Longest tracked path: 200 chars: tickets/done/context-compaction-simplification-analysis/implementation-evidence/ir-004/sr031-continuation/contract-baseline/autobyteus-agent-presentation-contracts/dist/token-usage-presentation-dto.js
+exit: 0
+$ pnpm install --frozen-lockfile --lockfile-only
+Scope: all 13 workspace projects
+Done in 345ms using pnpm v10.28.2
+exit: 0
+$ git diff --name-only bd2053ee51 56848d6fe8 | grep build-input patterns (ticket changes, before the merge)
+autobyteus-web/package.json
+$ git diff bd2053ee51 56848d6fe8 -- autobyteus-web/package.json
+--- a/autobyteus-web/package.json
++++ b/autobyteus-web/package.json
++    "test:e2e:stop-generation": "node tests/e2e/stop-generation-probe.mjs",

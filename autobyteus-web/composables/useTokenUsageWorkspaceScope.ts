@@ -153,10 +153,10 @@ export function useTokenUsageWorkspaceScope() {
   watch([directIdentity, scopeKey], ([identity]) => { if (identity) void hydrateIdentity(identity); }, { immediate: true });
   // Every save of the host's exact summary (a model call, a reading-only update or a turn-end
   // remainder) advances its revision (D-9); the roll-up follows by refetching.
-  const standaloneHostRevision = computed(() => target.value?.kind === 'standalone_agent'
+  const standaloneRunRevision = computed(() => target.value?.kind === 'standalone_agent'
     ? meter.getRunSummary(target.value.context.state.runId)?.revision ?? null
     : null);
-  watch(standaloneHostRevision, (revision, previous) => {
+  watch(standaloneRunRevision, (revision, previous) => {
     const current = target.value;
     if (current?.kind !== 'standalone_agent' || revision === null || revision === previous) return;
     void meter.fetchStandaloneRunSummary(current.context.state.runId).catch((error: unknown) => {

@@ -113,20 +113,20 @@ const buildNode = async (input: Readonly<{ nodeId: string; peers: PeerNode[]; ne
     memoryDir, activeRootDirectory: directory,
     definitions: { getAgentDefinitionById: async (id) => definitions.find((definition) => definition.id === id) ?? null },
     orgInstruction: async () => null,
-    host: {
+    agentServices: {
       getActiveRun: (runId) => (runs.get(runId)?.active ? runs.get(runId) as never : null),
-      activateHost,
-      terminateHost: vi.fn(async (runId: string) => { runOf(runId).active = false; return { outcome: "terminated" as const, runtimeKind: null }; }),
+      activateRunAgent: activateHost,
+      terminateRunAgent: vi.fn(async (runId: string) => { runOf(runId).active = false; return { outcome: "terminated" as const, runtimeKind: null }; }),
       readMetadata: async (runId) => metadata.get(runId) ?? null,
     },
-    rootDependencies: { taskRecords: resources, delegationIndex: taskSide.tree, viewStreams: views, remoteRunChannel: () => client },
+    rootDependencies: { taskRecords: resources, delegationIndex: taskSide.tree, viewStreams: views, remoteChannel: () => client },
   });
   const admission = createCollaboratorAdmission({
     listAgentDefinitions: async () => definitions, listTeamDefinitions: async () => [], isAgentHidden: () => false,
     getAgentDefinition: async (id) => definitions.find((item) => item.id === id) ?? null, getTeamDefinition: async () => null,
   }, { validate: vi.fn(), validateMany: vi.fn() } as never, { getRuntimeAvailability: vi.fn() } as never);
   // As `composeRunningAgents` composes them, over this node's standalone roots.
-  const runningAgents = new RunningAgents({ roots: directory, statuses: () => manager.pairedAgents });
+  const runningAgents = new RunningAgents({ roots: directory, statuses: () => manager.runAgents });
   const listing = new RunningAgentsListing({
     running: runningAgents,
     runFiles: { listingFactsOf: async (run) => { const own = metadata.get(run.rootRunId); return own ? { kind: "agent", startedByPerson: !own.delegatedFrom,
@@ -150,7 +150,7 @@ const buildNode = async (input: Readonly<{ nodeId: string; peers: PeerNode[]; ne
     delegatedRuns: {} as never, availableAgents: {} as never, runViews: {} as never,
     messages: new RemoteMessageReceiver({
       storedLinkCheck: async (root, query) => root.kind === "agent" ? manager.storedRemoteLinkCheck(root.runId, query) : "not_found",
-      standalone: (runId) => manager.resolveRoot(runId), team: async () => null, org: async () => null, pairedAgents: () => manager.pairedAgents,
+      standalone: (runId) => manager.resolveRoot(runId), team: async () => null, org: async () => null, runAgents: () => manager.runAgents,
       liveRoot: (run) => activeRoot(run),
     }, { recordFirstMessage: async () => undefined }, new PeerStartedRunDecisions(), runningAgents),
     runningAgents: { list: async () => ({ accepted: true as const, agents: await listing.list({ caller: null }) }) },
@@ -171,7 +171,7 @@ const buildNode = async (input: Readonly<{ nodeId: string; peers: PeerNode[]; ne
       memberExecutionContext: { identity: identity(from) } as never }),
     targetAgentRunId: target, content, ...(node ? { node } : {}) });
   const list = (from: string, args: Record<string, unknown> = {}) => listRunningAgentsFor({ identity: identity(from), collaboration: { listAvailableAgents: vi.fn() } } as never,
-    args, { listing: () => listing, discovery });
+    args, discovery, { listing: () => listing });
   const log = (runId: string) => manager.getActive(runId)!.getCommunicationSnapshot().messages.map((message) =>
     `${message.senderAgentRunId}->${message.receiverAgentRunId}:${message.content}`);
   return { runOf, startPm, send, list, log, activateHost, viewPublications, requests, manager };

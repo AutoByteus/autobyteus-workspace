@@ -12,6 +12,7 @@ import { RemoteRunLinks } from "../../../src/agent-collaboration/execution/remot
 import type { RemoteRunChannel } from "../../../src/agent-collaboration/execution/remote/remote-run-channel.js";
 import type { PeerAgentRunLink, PeerTeamRunLink } from "../../../src/agent-collaboration/execution/remote/peer-run-link.js";
 import { InMemoryTaskExecutionResources } from "../../fixtures/task-execution-resource-fixtures.js";
+import { NO_PEER_CHANNEL } from "../../helpers/explicit-host-collaborators.js";
 
 /**
  * Design § Remote Messaging: Owners And Order (AR-005 … AR-008) and § Task Closure Of A Remote Run (AR-007):
@@ -84,7 +85,7 @@ describe("remote endpoint kinds (AR-006)", () => {
   });
 
   it("RemoteRunLinks holds membership only: both kinds by run ID, and the inbound link check by node, sender and target", () => {
-    const links = new RemoteRunLinks({ peerRuns: () => [link, teamLink], backLink: { pairedAgentRunIds: () => [HOST], delegatedFrom } });
+    const links = new RemoteRunLinks({ peerRuns: () => [link, teamLink], backLink: { pairedAgentRunIds: () => [HOST], delegatedFrom }, channel: NO_PEER_CHANNEL });
     expect(links.endpointFor(REMOTE)?.kind).toBe("delegated_run");
     expect(links.endpointFor(DELEGATOR)?.kind).toBe("delegator");
     expect(links.has(HOST)).toBe(false);

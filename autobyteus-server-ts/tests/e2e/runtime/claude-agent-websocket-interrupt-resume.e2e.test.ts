@@ -46,6 +46,7 @@ import { recordCase } from "../helpers/runtime-error-case-evidence.js";
 import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
 import { startAgentToolsMcpTestHost } from "../../helpers/agent-tools-mcp-test-host.js";
 import { createTestRunWorkspaceSkills } from "../../fixtures/run-workspace-skills-fixtures.js";
+import { NO_ELIGIBLE_STANDALONE_RUNS } from "../../helpers/explicit-host-collaborators.js";
 
 type SdkQueryCall = {
   prompt?: unknown;
@@ -425,7 +426,7 @@ const createClaudeWebSocketHarnessWithSdkClient = async (input: {
       };
     },
   };
-  const commandCoordinator = new AgentRunCommandCoordinator({
+  const commandCoordinator = new AgentRunCommandCoordinator({ standaloneRuns: NO_ELIGIBLE_STANDALONE_RUNS,
     agentRunService: agentRunService as never,
     projectionService: statusProjectionService as never,
   });
@@ -453,7 +454,7 @@ const createClaudeWebSocketHarnessWithSdkClient = async (input: {
   let socket: WebSocket | undefined;
   try {
     await app.register(websocket);
-    await registerAgentWebsocket(app, handler, dummyTeamHandler);
+    await registerAgentWebsocket(app, handler, dummyTeamHandler, {} as never, {} as never);
     const address = await app.listen({ port: 0, host: "127.0.0.1" });
     const url = new URL(address);
     socket = new WebSocket(`ws://${url.hostname}:${url.port}/ws/agent/${input.runId}`);

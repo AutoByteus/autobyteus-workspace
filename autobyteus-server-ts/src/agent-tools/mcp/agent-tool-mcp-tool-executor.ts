@@ -1,8 +1,5 @@
 import type { AgentToolMcpExecutionResult } from "./agent-tool-mcp-adapter.js";
-import {
-  AgentToolMcpCatalog,
-  getAgentToolMcpCatalog,
-} from "./agent-tool-mcp-catalog.js";
+import type { AgentToolMcpCatalog } from "./agent-tool-mcp-catalog.js";
 import type {
   AgentToolMcpSession,
   AgentToolMcpToolExecutionEvent,
@@ -15,22 +12,10 @@ export type ExecuteAgentToolMcpCallInput = {
 };
 
 export class AgentToolMcpToolExecutor {
-  private static instance: AgentToolMcpToolExecutor | null = null;
   private readonly catalog: AgentToolMcpCatalog;
 
-  static getInstance(): AgentToolMcpToolExecutor {
-    if (!AgentToolMcpToolExecutor.instance) {
-      AgentToolMcpToolExecutor.instance = new AgentToolMcpToolExecutor();
-    }
-    return AgentToolMcpToolExecutor.instance;
-  }
-
-  static resetInstance(): void {
-    AgentToolMcpToolExecutor.instance = null;
-  }
-
-  constructor(deps: { catalog?: AgentToolMcpCatalog } = {}) {
-    this.catalog = deps.catalog ?? getAgentToolMcpCatalog();
+  constructor(deps: { catalog: AgentToolMcpCatalog }) {
+    this.catalog = deps.catalog;
   }
 
   async executeAgentToolMcpCall(
@@ -104,13 +89,6 @@ export class AgentToolMcpToolExecutor {
     await session.toolExecutionObserver?.onToolError?.({ ...event, message });
   }
 }
-
-export const getAgentToolMcpToolExecutor = (): AgentToolMcpToolExecutor =>
-  AgentToolMcpToolExecutor.getInstance();
-
-export const resetAgentToolMcpToolExecutorForTests = (): void => {
-  AgentToolMcpToolExecutor.resetInstance();
-};
 
 const isExecutionResultAccepted = (result: AgentToolMcpExecutionResult): boolean =>
   result.kind === "operation_result" ? result.result.accepted : result.result.isError !== true;

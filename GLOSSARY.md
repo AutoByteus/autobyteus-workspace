@@ -7,6 +7,29 @@ it here in the same change. Collaboration words (Run, Unit, Team, Org, Task,
 delegated run, …) are defined in the
 [Collaboration Model § 1](autobyteus-server-ts/docs/design/collaboration_model.md#1-vocabulary).
 
+## Code Names
+
+- **Root** (in code names: `StandaloneAgentRunRoot`, `RootTeamRun`, `rootRunId`, …): a run at the top of its own
+  membership tree: an Agent run, a Team run above its sub-teams, or an Org run. Every delegated run is a root of its
+  own (CM-7). A root never holds another run (autobyteus-500).
+- **A run's agent** (`StandaloneRunAgent`): the one agent of a standalone Agent run. Code no longer calls it the run's
+  "host"; nothing is hosted.
+- **Delegated run** (code and UI rows): never a "copy" or a "transient execution" (autobyteus-500).
+
+### Known leftovers
+
+Stored names that still differ from the code's words. Each is kept this round by the user's decision, because renaming
+a stored name needs a data migration (DESIGN rule 10), and each is a follow-up:
+
+- The Task record: stored `agentRunResources` / `agentRun` (file `agent_run_resources.json`), named
+  `executionResources` / `execution` / `TaskExecution…` in code behind one mapping; it also holds team runs under
+  `agentRun` (FU-500-01).
+- The routing-decision log's `copyAddress` / `copyKind` for a delegated run's decision (FU-500-04).
+- Token usage records' `root_team_run_id` for a team member (FU-500-05).
+
+One visible text also still differs, kept because the run-settings UI/UX spec makes it normative: the Settings copy
+"Delegated copy", "Stop this copy …", "Select a copy …" and "Host run" (FU-500-07).
+
 ## Nodes
 
 - **Node:** one AutoByteus server: the desktop's embedded server, a server on

@@ -19,7 +19,7 @@
           <template v-if="subjectNode && !showGroup && (groupName || subjectNode.isCoordinator || subjectNode.badge || subjectNode.remoteNode)" #details>
             <span v-if="groupName" class="truncate" data-test="run-subject-group">{{ $t('runSettings.subject.inGroup', { name: groupName }) }}</span>
             <span v-if="subjectNode.isCoordinator" class="flex-shrink-0 rounded-full bg-gray-100 px-1.5 py-px text-[0.6875rem] font-medium text-gray-600">{{ $t('runSettings.members.coordinator') }}</span>
-            <span v-if="subjectNode.badge" class="flex-shrink-0 rounded-full bg-gray-100 px-1.5 py-px text-[0.6875rem] font-medium text-gray-600" data-test="run-member-badge">{{ $t('runSettings.delegated.copy') }}</span>
+            <span v-if="subjectNode.badge" class="flex-shrink-0 rounded-full bg-gray-100 px-1.5 py-px text-[0.6875rem] font-medium text-gray-600" data-test="run-member-badge">{{ $t('runSettings.delegated.delegatedRun') }}</span>
             <RemoteNodeChip v-if="subjectNode.remoteNode" :node-name="subjectNode.remoteNode" />
           </template>
         </RunSubjectHeader>
@@ -72,6 +72,7 @@
           :node="cardNode"
           :locked="subject.origin === 'member' ? memberLocked : DELEGATED_LOCKED"
           :locked-models="(subject.origin === 'member' ? lockedModelsFor : delegatedLockedModelsFor)?.(cardNode.key) ?? null"
+          :model-unavailable="subject.origin === 'member' ? modelUnavailableFor?.(cardNode.key) ?? false : false"
           @change="subject.origin === 'member' ? emit('change-member', cardNode!.key, $event) : emit('change-delegated', cardNode!.key, $event)"
         />
         <div v-else class="rounded-xl border border-gray-200 bg-white px-4 py-2 shadow-sm" data-test="existing-run-root-card">
@@ -86,7 +87,7 @@
           />
         </div>
         <!-- A hub's copies are in the left tree; each shows its own settings when it is selected there (DEC-004). -->
-        <p v-if="copiesHint" class="mt-2 text-xs text-gray-500" data-test="existing-run-copies-hint">{{ $t('runSettings.subject.selectCopyHint') }}</p>
+        <p v-if="copiesHint" class="mt-2 text-xs text-gray-500" data-test="existing-run-copies-hint">{{ $t('runSettings.subject.selectDelegatedRunHint') }}</p>
         <!-- A stopped run's Agent, member or delegated copy can switch its agent runtime; the switch is made by its next message. -->
         <p
           v-if="runtimeChangePending"
@@ -105,6 +106,7 @@
           :nodes="groupRows"
           :locked="groupNode ? DELEGATED_LOCKED : memberLocked"
           :locked-models-for="groupNode ? delegatedLockedModelsFor : lockedModelsFor"
+          :model-unavailable-for="groupNode ? null : modelUnavailableFor"
           read-only
           @change="(key, change) => groupNode ? emit('change-delegated', key, change) : emit('change-member', key, change)"
         />
@@ -175,6 +177,8 @@ const props = withDefaults(defineProps<{
   rootModelUnavailable?: boolean
   members?: readonly RunMemberNode[]
   lockedModelsFor?: ((key: string) => readonly ChatModelOption[] | null) | null
+  /** G-5 (REQ-016): whether a member's saved model is no longer offered by its runtime; the card shows the note. */
+  modelUnavailableFor?: ((key: string) => boolean) | null
   /** The agent to show, and its group. */
   subject?: SettingsSubject
   /** The group's settings show instead of the subject's. */
@@ -197,7 +201,7 @@ const props = withDefaults(defineProps<{
   saveError?: string | null
   /** The draft chooses another agent runtime than the saved one for the Agent, a member or a delegated copy. */
   runtimeChangePending?: boolean
-}>(), { runtimeChangePending: false, rootLockedModels: null, rootModelUnavailable: false, members: () => [], lockedModelsFor: null,
+}>(), { runtimeChangePending: false, rootLockedModels: null, rootModelUnavailable: false, members: () => [], lockedModelsFor: null, modelUnavailableFor: null,
   subject: () => ({ origin: 'none', subject: null, group: 'root' }), showGroup: false, subjectActive: false, copiesHint: false,
   delegatedLockedModelsFor: null, delegatedNotice: null, unsavedNames: () => [], saveError: null })
 

@@ -1,4 +1,5 @@
 import type { RunMessagesFeed } from "../../agent-collaboration/delegation/run-messages-feed.js";
+import type { RemoteRunChannelAccess } from "../../agent-collaboration/execution/remote/remote-run-channel.js";
 import type { ClosedTaskFence } from "../../agent-collaboration/execution/task/closed-task-fence.js";
 import type { RootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import { acceptWorkPacketIfAllowed } from "../../agent-collaboration/execution/task/task-delegation.js";
@@ -6,7 +7,7 @@ import { mentionViewerOf } from "../../agent-collaboration/collaborators/mention
 import { ASSIGNER_ONLY_REACTIVATION_MESSAGE, type RunTaskRecords } from "../../agent-collaboration/execution/task/task-execution-resource-port.js";
 import { runOwnTaskOf } from "../../agent-collaboration/delegation/run-own-task.js";
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
-import type { AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
+import { RUN_NOT_ACTIVE, type AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
 import { CollaborationContractError } from "../../agent-collaboration/domain/collaboration-contract-error.js";
 import { RootCommunicationEngine } from "../../agent-collaboration/execution/communication/root-communication-engine.js";
 import { createTeamCommunicationPort } from "../../services/team-communication/team-communication-port.js";
@@ -102,6 +103,8 @@ export class RootTeamRun {
     taskRecords: RunTaskRecords;
     /** The relationships between runs (the Task entries): its peer children and its own Task (SR-047). */
     delegationIndex: Pick<DelegationIndex, "peerChildrenOf" | "currentTaskOf" | "collaborationTreeOf">;
+    /** The host's channel to peer nodes (autobyteus-500 FU-011). */
+    remoteChannel: RemoteRunChannelAccess;
     /** The closed-Task input fence, from the tree and the Task records (DS-15, SR-070). */
     closedTasks: Pick<ClosedTaskFence, "refusal">;
     memoryLocator?: AgentRunMemoryLocator;
@@ -117,7 +120,7 @@ export class RootTeamRun {
       rootTeamRunId: this.teamRunId,
       canEnter: () => this.isAdmitting(),
     });
-    this.remoteLinks = new RemoteRunLinks(teamRunRemoteLinks(() => this.tree, options.delegationIndex));
+    this.remoteLinks = new RemoteRunLinks({ ...teamRunRemoteLinks(() => this.tree, options.delegationIndex), channel: options.remoteChannel });
     this.teamRunResolver = new TeamRunResolver({
       rootTeamRun: options.rootRun,
       getIndex: () => this.index,
@@ -329,7 +332,7 @@ export class RootTeamRun {
       if (refusal) return refusal;
       if (command.kind !== "post_message") {
         if (!this.isLiveAgent(agentRunId)) {
-          return { accepted: false, code: "RUN_NOT_ACTIVE", message: `AgentRun '${agentRunId}' is shut down in root '${this.teamRunId}'.` };
+          return { accepted: false, code: RUN_NOT_ACTIVE, message: `AgentRun '${agentRunId}' is shut down in root '${this.teamRunId}'.` };
         }
         return (await this.requireContainingTeamRun(agentRunId)).executeDirectAgentCommand(agentRunId, command);
       }

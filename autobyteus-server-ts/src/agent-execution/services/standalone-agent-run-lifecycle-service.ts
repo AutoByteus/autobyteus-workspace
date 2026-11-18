@@ -1,4 +1,5 @@
 import { readRunProjectContext } from "../domain/run-project-context.js";
+import { storedModelStartRefusal, type StoredModelStartChecks } from "../../llm-management/services/run-model-selection-refusal.js";
 import { RootRunPackageReadinessIndex } from "../../run-history/services/root-run-package-readiness-index.js";
 import type { AgentRun } from "../domain/agent-run.js";
 import { AgentRunConfig } from "../domain/agent-run-config.js";
@@ -23,7 +24,7 @@ import type { MemberExecutionContext } from "../../agent-collaboration/execution
 import { isCollaborationEligibleStandaloneRun } from "./standalone-agent-run-eligibility.js";
 import { buildRuntimeSwitch } from "../domain/runtime-switch.js";
 import type { RuntimeSwitchTicket, RuntimeSwitching } from "../domain/runtime-switch-memory-port.js";
-import type { StandaloneHostTerminationResult } from "./standalone-run-ports.js";
+import type { StandaloneRunAgentTerminationResult } from "./standalone-run-ports.js";
 import {
   StandaloneStoppedRunSelectionUpdater,
   type StoppedRunSelectionInput,
@@ -35,10 +36,10 @@ export type StandaloneAgentRunActivationResult = Readonly<{
 }>;
 
 /**
- * The host member context an activation attaches: required for a collaboration-eligible run
+ * The agent member context an activation attaches: required for a collaboration-eligible run
  * (its `StandaloneAgentRunRoot` builds it), absent for helpers and application-owned runs.
  */
-export type StandaloneHostActivationInput = Readonly<{
+export type StandaloneRunAgentActivationInput = Readonly<{
   memberExecutionContext: MemberExecutionContext | null;
 }>;
 
@@ -65,6 +66,7 @@ export class StandaloneAgentRunLifecycleService {
   /** The memory and notice ports of an agent runtime switch; none for runs that cannot switch (application-owned runs). */
   private readonly switching: RuntimeSwitching | null;
 
+  private readonly storedModelChecks: StoredModelStartChecks;
   constructor(
     memoryDir: string,
     deps: {
@@ -75,9 +77,13 @@ export class StandaloneAgentRunLifecycleService {
       tokenUsageReadiness?: Pick<TokenUsageCapability,
         "assertCurrentSchemaReady" | "assertExistingRunRestoreReady">;
       modelSelectionValidator: RunModelSelectionValidator;
+      /** G-5: a restored run's definition, then whether its stored model is still offered. */
+      storedModelChecks: StoredModelStartChecks;
       switching?: RuntimeSwitching | null;
     },
   ) {
+    if (!deps.storedModelChecks) throw new Error("StandaloneAgentRunLifecycleService needs the stored-model checks.");
+    this.storedModelChecks = deps.storedModelChecks;
     this.switching = deps.switching ?? null;
     this.readiness = new RootRunPackageReadinessIndex(memoryDir);
     this.agentRunManager = deps.agentRunManager ?? AgentRunManager.getInstance();
@@ -93,13 +99,20 @@ export class StandaloneAgentRunLifecycleService {
     });
   }
 
+  /** G-5 (REQ-016): a run whose saved model its runtime no longer offers is refused before its runtime starts. */
+  private async refuseStoredModelNotOffered(metadata: AgentRunMetadata): Promise<void> {
+    const refusal = await storedModelStartRefusal(this.storedModelChecks,
+      { ...metadata, agentName: metadata.address?.split("/").at(-1) || metadata.agentDefinitionId });
+    if (refusal) throw new AgentRunActivationError(refusal.code, refusal.message);
+  }
+
   /** The plain command path (helpers and application-owned runs): the live run, else its activation. */
   async resolveCommandReadyAgentRun(runId: string): Promise<AgentRun> {
     const normalized = requiredRunId(runId);
     await this.readiness.assertAdmitted("agent", normalized);
     const active = this.agentRunManager.getActiveRun(normalized);
     if (active) return active;
-    return (await this.activateHost(normalized, { memberExecutionContext: null })).run;
+    return (await this.activateRunAgent(normalized, { memberExecutionContext: null })).run;
   }
 
   /**
@@ -107,13 +120,13 @@ export class StandaloneAgentRunLifecycleService {
    * returns the live run. The only writer of `run_metadata.json`. An eligible run must be given
    * its root-built member context; activating it without one is a bypass of its root and fails.
    */
-  activateHost(runId: string, input: StandaloneHostActivationInput): Promise<StandaloneAgentRunActivationResult> {
+  activateRunAgent(runId: string, input: StandaloneRunAgentActivationInput): Promise<StandaloneAgentRunActivationResult> {
     const normalized = requiredRunId(runId);
     return this.withTransition(normalized, () => this.resolveInsideTransition(normalized, input));
   }
 
-  /** Stops the live host and records it terminated in the catalog; a host that is not running is left as is. */
-  async terminateHost(runId: string): Promise<StandaloneHostTerminationResult> {
+  /** Stops the run's live agent and records it terminated in the catalog; an agent that is not running is left as is. */
+  async terminateRunAgent(runId: string): Promise<StandaloneRunAgentTerminationResult> {
     const normalized = requiredRunId(runId);
     const active = this.agentRunManager.getActiveRun(normalized);
     if (!active) return Object.freeze({ outcome: "not_active", runtimeKind: null });
@@ -138,7 +151,7 @@ export class StandaloneAgentRunLifecycleService {
 
   private async resolveInsideTransition(
     runId: string,
-    input: StandaloneHostActivationInput,
+    input: StandaloneRunAgentActivationInput,
   ): Promise<StandaloneAgentRunActivationResult> {
     const active = this.agentRunManager.getActiveRun(runId);
     if (active) {
@@ -198,7 +211,7 @@ export class StandaloneAgentRunLifecycleService {
     }
   }
 
-  private async activateOnce(runId: string, input: StandaloneHostActivationInput): Promise<StandaloneAgentRunActivationResult> {
+  private async activateOnce(runId: string, input: StandaloneRunAgentActivationInput): Promise<StandaloneAgentRunActivationResult> {
     await this.readiness.assertAdmitted("agent", runId);
     const state = await this.metadataService.readMetadataState(runId);
     if (state.kind === "missing") throw new Error(`Run '${runId}' was not found.`);
@@ -206,8 +219,8 @@ export class StandaloneAgentRunLifecycleService {
     const metadata = state.metadata;
     if (isCollaborationEligibleStandaloneRun(metadata) !== Boolean(input.memberExecutionContext)) {
       throw new Error(isCollaborationEligibleStandaloneRun(metadata)
-        ? `Run '${runId}' is activated only by its standalone run root (its host member context is missing).`
-        : `Run '${runId}' cannot host delegated copies; it takes no member context.`);
+        ? `Run '${runId}' is activated only by its standalone run root (its agent's member context is missing).`
+        : `Run '${runId}' is not collaboration-eligible; it takes no member context.`);
     }
     // The explicit pending field decides, not a missing session ID.
     if (metadata.pendingRuntimeSwitch) return this.activateSwitched(metadata, input);
@@ -216,7 +229,7 @@ export class StandaloneAgentRunLifecycleService {
     return this.restoreStarted(metadata, input);
   }
 
-  private async activatePrepared(metadata: AgentRunMetadata, input: StandaloneHostActivationInput): Promise<StandaloneAgentRunActivationResult> {
+  private async activatePrepared(metadata: AgentRunMetadata, input: StandaloneRunAgentActivationInput): Promise<StandaloneAgentRunActivationResult> {
     this.tokenUsageReadiness.assertCurrentSchemaReady();
     const config = await this.buildConfig(metadata, input);
     const candidate = await this.agentRunManager.beginActivation({ kind: "new", runId: metadata.runId, config }).prepare();
@@ -246,7 +259,7 @@ export class StandaloneAgentRunLifecycleService {
    * confirmed are the records it wrote after the watermark removed, so the previous agent's file is what it was. A failure
    * after the marker leaves the metadata pending; sending again finds the marker and the segment and completes the switch.
    */
-  private async activateSwitched(metadata: AgentRunMetadata, input: StandaloneHostActivationInput): Promise<StandaloneAgentRunActivationResult> {
+  private async activateSwitched(metadata: AgentRunMetadata, input: StandaloneRunAgentActivationInput): Promise<StandaloneAgentRunActivationResult> {
     const runtimeSwitch = buildRuntimeSwitch(metadata);
     if (!this.switching || !runtimeSwitch) {
       // Fails closed before anything changes; the save of a switch is rejected for runs built without the port.
@@ -305,8 +318,9 @@ export class StandaloneAgentRunLifecycleService {
     }
   }
 
-  private async restoreStarted(metadata: AgentRunMetadata, input: StandaloneHostActivationInput): Promise<StandaloneAgentRunActivationResult> {
+  private async restoreStarted(metadata: AgentRunMetadata, input: StandaloneRunAgentActivationInput): Promise<StandaloneAgentRunActivationResult> {
     this.tokenUsageReadiness.assertExistingRunRestoreReady();
+    await this.refuseStoredModelNotOffered(metadata);
     const config = await this.buildConfig(metadata, input);
     let candidate: AgentRunActivationCandidate;
     if (isExternalProviderRuntimeKind(metadata.runtimeKind)) {
@@ -446,7 +460,7 @@ export class StandaloneAgentRunLifecycleService {
     throw error;
   }
 
-  private async buildConfig(metadata: AgentRunMetadata, input: StandaloneHostActivationInput): Promise<AgentRunConfig> {
+  private async buildConfig(metadata: AgentRunMetadata, input: StandaloneRunAgentActivationInput): Promise<AgentRunConfig> {
     const workspace = await this.workspaceManager.ensureWorkspaceByRootPath(metadata.workspaceRootPath);
     return new AgentRunConfig({
       runtimeKind: metadata.runtimeKind,

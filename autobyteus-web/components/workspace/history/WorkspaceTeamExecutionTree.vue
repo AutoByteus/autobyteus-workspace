@@ -25,7 +25,7 @@
         @activate="activateStableRow"
         @toggle="$emit('toggle', $event)"
       />
-      <WorkspaceTransientExecutionRow
+      <WorkspaceDelegatedRunRow
         v-else
         :row="displayRow.row"
         :team-status="displayRow.teamStatus ?? teamStatusOf(displayRow.row)"
@@ -51,7 +51,7 @@ import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
 import { useRunStatusStore } from '~/stores/runStatusStore';
 import { isTeamRow, runTreeDisplayRows } from '~/utils/runTree/runTreeDisplayRows';
 import WorkspaceStableExecutionRow from '~/components/workspace/history/WorkspaceStableExecutionRow.vue';
-import WorkspaceTransientExecutionRow from '~/components/workspace/history/WorkspaceTransientExecutionRow.vue';
+import WorkspaceDelegatedRunRow from '~/components/workspace/history/WorkspaceDelegatedRunRow.vue';
 import { useLeavingTreeRows } from '~/components/workspace/history/useLeavingTreeRows';
 import { teamBranchStatus } from '~/components/workspace/history/workspaceHistoryTeamBranchStatus';
 import type { TeamStatus } from '~/utils/workspaceTeamAggregateStatus';

@@ -1,0 +1,12 @@
+# IMP-04 server integration: agent websocket (rewritten NO_ACTIVE_TURN / inactive-run cases)
+# command: pnpm exec vitest run tests/integration/agent/agent-websocket.integration.test.ts --no-watch
+# commit: 45cae5ebd2
+# env: macOS, Node v22.23.1
+# date: 2026-11-18T11:35:59Z
+
+ Test Files  1 passed (1)
+      Tests  8 passed (8)
+
+Also run (same commit): team-conversation-target-websocket.integration.test.ts + team-agent-tools-mcp-lifecycle.integration.test.ts
+ Test Files  2 passed (2)
+      Tests  4 passed (4)

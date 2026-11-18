@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 import type { RootExecutionIdentity } from "../../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
-import type { PairedAgentStatus } from "../../../../src/agent-collaboration/execution/remote/paired-agent-access.js";
+import type { RunAgentStatusEntry } from "../../../../src/agent-collaboration/execution/remote/run-agent-access.js";
 import { RunningAgentsListing } from "../../../../src/agent-collaboration/running/running-agents-listing.js";
 import type { RunListingFacts } from "../../../../src/run-history/store/run-own-agents-reader.js";
 
@@ -9,7 +9,7 @@ import type { RunListingFacts } from "../../../../src/run-history/store/run-own-
  * person started whose entry agent runs, except the caller's; one entry each with exactly the REQ-002 fields.
  */
 const root = (rootSubjectKind: RootExecutionIdentity["rootSubjectKind"], rootRunId: string) => ({ rootSubjectKind, rootRunId }) as RootExecutionIdentity;
-const live = (agentRunId: string, status: PairedAgentStatus["status"]): PairedAgentStatus => ({ agentRunId, status, backgroundTasksRunning: 0 });
+const live = (agentRunId: string, status: RunAgentStatusEntry["status"]): RunAgentStatusEntry => ({ agentRunId, status, backgroundTasksRunning: 0 });
 
 const CALLER = root("agent", "pm_caller");
 const PM = root("agent", "pm_other");
@@ -28,7 +28,7 @@ const facts: Record<string, RunListingFacts | Error | null> = {
   pm_idle_shut: { kind: "agent", startedByPerson: true, definitionId: "pm", startedAt: null, workspace: null },
   pm_broken: new Error("run_metadata.json is not JSON"),
 };
-const statuses: Record<string, readonly PairedAgentStatus[]> = {
+const statuses: Record<string, readonly RunAgentStatusEntry[]> = {
   pm_caller: [live("pm_caller", "running")], pm_other: [live("pm_other", "idle")], team_product: [live("lead_1", "running"), live("writer_1", "idle")],
   copy_1: [live("copy_1", "running")], org_1: [live("org_agent", "idle")], pm_idle_shut: [], pm_broken: [live("pm_broken", "idle")],
 };

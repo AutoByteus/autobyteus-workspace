@@ -6,7 +6,7 @@ import type { AgentRunInputOptions, AgentRunInputReservationResult } from "../..
 import type { AgentRunManager } from "../../agent-execution/services/agent-run-manager.js";
 import type { AgentConversationActivityInspector } from "../../agent-memory/services/agent-conversation-activity-inspector.js";
 import type { WorkspaceManager } from "../../workspaces/workspace-manager.js";
-import { ConfiguredAgentExecutionFactory } from "../../agent-collaboration/execution/backends/configured-agent-execution-factory.js";
+import type { ConfiguredAgentExecutionFactory } from "../../agent-collaboration/execution/backends/configured-agent-execution-factory.js";
 import type {
   ConfiguredAgentExecutionHandle,
   PreparedConfiguredAgentActivation,
@@ -53,7 +53,7 @@ export class FlatTeamAgentExecutionHandle implements RetainedAgentExecutionContr
     memoryLocator?: AgentRunMemoryLocator;
     activityInspector?: AgentConversationActivityInspector;
     workspaceManager?: Pick<WorkspaceManager, "ensureWorkspaceByRootPath">;
-    executionFactory?: ConfiguredAgentExecutionFactory;
+    executionFactory: ConfiguredAgentExecutionFactory;
   }) { this.context = options.context; this.config = options.config; }
 
   isActive(): boolean { return this.handle?.isActive() ?? false; }
@@ -167,7 +167,7 @@ export class FlatTeamAgentExecutionHandle implements RetainedAgentExecutionContr
       }),
     });
     if (this.rootShutdownFenced) throw new Error(`AgentRun '${this.context.agentRunId}' construction cancelled.`);
-    const handle = (this.options.executionFactory ?? new ConfiguredAgentExecutionFactory()).create({
+    const handle = this.options.executionFactory.create({
       identity,
       physicalScope: this.options.teamContext.physicalScope,
       memoryPlacement: this.options.memoryPlacement,

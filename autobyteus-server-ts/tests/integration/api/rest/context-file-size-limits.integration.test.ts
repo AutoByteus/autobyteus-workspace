@@ -104,7 +104,7 @@ describe("context-file upload limits over real HTTP", () => {
     app = fastify();
     await app.register(multipart);
     // The route takes the node's DelegationIndex (autobyteus-461).
-    await app.register((scope) => registerContextFileRoutes(scope, noDelegations()), { prefix: "/rest" });
+    await app.register((scope) => registerContextFileRoutes(scope), { prefix: "/rest" });
     await app.register(registerProjectTaskContextRoutes, { prefix: "/rest" });
     await app.listen({ port: 0 }); port = (app.server.address() as { port: number }).port;
   });

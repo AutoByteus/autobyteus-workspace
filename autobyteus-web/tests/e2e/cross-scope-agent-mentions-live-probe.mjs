@@ -297,7 +297,7 @@ const findAgentRunRow = async (page, runId) => {
 }
 const taskRowsUnder = (page, runId) => page.locator(`${sel('workspace-agent-run-row')}[data-run-id="${runId}"] ~ ${sel('workspace-agent-run-task-tree')} ${sel('workspace-team-transient-execution-row')}`)
 const rowFacts = (locator) => locator.evaluateAll((els) => els.map((e) => ({
-  kind: e.getAttribute('data-transient-kind'), label: e.getAttribute('aria-label'), text: e.innerText.trim(),
+  kind: e.getAttribute('data-delegated-run-kind'), label: e.getAttribute('aria-label'), text: e.innerText.trim(),
   avatar: Boolean(e.querySelector('[data-test="workspace-task-agent-avatar"]')),
   dot: Boolean(e.querySelector('[data-test="workspace-transient-status-dot"]')),
   startedByVisible: /Started by/i.test(e.innerText),

@@ -47,7 +47,7 @@ export interface RunMemberNode {
   /** Notes on this row: an own default a fresh start could not use, or a copy's recorded fallbacks. */
   launchNotes: readonly RunMemberNote[]
   /** A delegated copy (read-only Settings rows): how it joined the run. */
-  badge?: 'delegated_copy'
+  badge?: 'delegated_run'
   /** A delegated copy: where its launch came from (absent once the user chose its model). */
   sourceKey?: RunMemberLaunchSource
   /** autobyteus-32: the Model Router's choice for this copy agent (its reason, task kind and where its decision is). */

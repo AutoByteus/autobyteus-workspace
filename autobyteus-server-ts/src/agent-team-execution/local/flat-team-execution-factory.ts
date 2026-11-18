@@ -1,4 +1,5 @@
 import type { AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
+import type { ConfiguredAgentExecutionFactory } from "../../agent-collaboration/execution/backends/configured-agent-execution-factory.js";
 import type { AgentRunManager } from "../../agent-execution/services/agent-run-manager.js";
 import type { AgentConversationActivityInspector } from "../../agent-memory/services/agent-conversation-activity-inspector.js";
 import type { WorkspaceManager } from "../../workspaces/workspace-manager.js";
@@ -23,11 +24,13 @@ export type PreparedFlatTeamExecution = Readonly<{
 /** Materializes one Agent-only Team below an explicit root/scope; owns no root package or registration. */
 export class FlatTeamExecutionFactory {
   constructor(private readonly dependencies: Readonly<{
+    /** Creates each member agent with the host's stored-model check (G-5). */
+    executionFactory: ConfiguredAgentExecutionFactory;
     agentRunManager?: AgentRunManager;
     memoryLocator?: AgentRunMemoryLocator;
     activityInspector?: AgentConversationActivityInspector;
     workspaceManager?: Pick<WorkspaceManager, "ensureWorkspaceByRootPath">;
-  }> = {}) {}
+  }>) {}
 
   beginMaterialization(input: Readonly<{
     physicalScope: RootExecutionPhysicalScope;

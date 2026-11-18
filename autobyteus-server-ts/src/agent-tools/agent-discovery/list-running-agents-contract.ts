@@ -1,6 +1,6 @@
 import { ParameterDefinition, ParameterSchema, ParameterType } from "autobyteus-ts/utils/parameter-schema.js";
 import type { MemberExecutionContext } from "../../agent-collaboration/execution/domain/member-execution-context.js";
-import { findProcessPeerDiscoveryChannel, type PeerDiscoveryChannel } from "../../agent-collaboration/execution/remote/peer-discovery-channel.js";
+import type { PeerDiscoveryChannel } from "../../agent-collaboration/execution/remote/peer-discovery-channel.js";
 import { RUNNING_AGENT_STATE_FILTERS, type RunningAgentEntry } from "../../agent-collaboration/running/running-agent-entry.js";
 import {
   getProcessRunningAgentsListing,
@@ -8,7 +8,7 @@ import {
   type RunningAgentsFilters,
   type RunningAgentsListing,
 } from "../../agent-collaboration/running/running-agents-listing.js";
-import { isAgentDiscoveryRefusal, remoteCollaborationOff, requireDiscoveryContext, type AgentDiscoveryRefusal } from "./agent-discovery-refusal.js";
+import { isAgentDiscoveryRefusal, requireDiscoveryContext, type AgentDiscoveryRefusal } from "./agent-discovery-refusal.js";
 
 export const LIST_RUNNING_AGENTS_TOOL_NAME = "list_running_agents";
 
@@ -58,12 +58,14 @@ const argumentsOf = (args: Readonly<Record<string, unknown>>): Readonly<{ node: 
 /**
  * The opt-in `list_running_agents` (autobyteus-492 DS-001, DS-002), for the same senders as `list_available_agents`. Without
  * `node`, this node's `RunningAgentsListing` (the caller's own run left out); with `node`, that peer's list through
- * `PeerDiscoveryChannel` (the same refusals as `list_available_agents` with `node`), filtered by the same rule. Reads only.
+ * the host's `PeerDiscoveryChannel` (autobyteus-500 FU-011: passed in, `REMOTE_COLLABORATION_OFF_DISCOVERY` when remote
+ * collaboration is off; the same refusals as `list_available_agents` with `node`), filtered by the same rule. Reads only.
  */
 export const listRunningAgentsFor = async (
   context: MemberExecutionContext | null | undefined,
-  args: Readonly<Record<string, unknown>> = {},
-  sources: Readonly<{ listing?: () => Pick<RunningAgentsListing, "list">; discovery?: PeerDiscoveryChannel | null }> = {},
+  args: Readonly<Record<string, unknown>>,
+  discovery: PeerDiscoveryChannel,
+  sources: Readonly<{ listing?: () => Pick<RunningAgentsListing, "list"> }> = {},
 ): Promise<ListRunningAgentsResult | AgentDiscoveryRefusal> => {
   requireDiscoveryContext(context?.collaboration, LIST_RUNNING_AGENTS_TOOL_NAME);
   const checked = argumentsOf(args);
@@ -72,8 +74,6 @@ export const listRunningAgentsFor = async (
     const listing = (sources.listing ?? getProcessRunningAgentsListing)();
     return Object.freeze({ agents: await listing.list({ caller: context!.identity.root, filters: checked.filters }) });
   }
-  const discovery = sources.discovery === undefined ? findProcessPeerDiscoveryChannel() : sources.discovery;
-  if (!discovery) return remoteCollaborationOff();
   const agents = await discovery.listRunningAgents(checked.node);
   return isAgentDiscoveryRefusal(agents) ? agents
     : Object.freeze({ agents: Object.freeze(agents.filter((entry) => matchesRunningAgentsFilters(entry, checked.filters))) });

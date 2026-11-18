@@ -28,8 +28,8 @@ export const composeRunningAgents = (input: Readonly<{
   const orgAgents = new AgentOrgAgentStatuses({ getActive: (orgRunId) => input.runs.agentOrgRunService.getActive(orgRunId) });
   const runningAgents = new RunningAgents({
     roots: input.activeRoots,
-    statuses: (kind) => kind === "agent" ? input.runs.standaloneRootManager.pairedAgents
-      : kind === "agent_team" ? input.runs.teamRunService.pairedAgents : orgAgents,
+    statuses: (kind) => kind === "agent" ? input.runs.standaloneRootManager.runAgents
+      : kind === "agent_team" ? input.runs.teamRunService.runAgents : orgAgents,
   });
   // The node-wide catalog addresses, as `list_available_agents` with `node` and a peer's delegation resolve them.
   const nodeCatalog = new NodeCatalogPort(input.tempWorkspaceDir);

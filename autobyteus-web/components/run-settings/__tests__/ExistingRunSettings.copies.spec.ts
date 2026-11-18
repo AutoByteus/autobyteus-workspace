@@ -157,7 +157,7 @@ describe('Settings: stop and change a copy (SR-007)', () => {
     const values = { workspace: null, runtimeKind: 'codex_app_server', llmModelIdentifier: 'sol', llmConfig: null, autoExecuteTools: true }
     const locked = { workspace: true, model: true, thinking: true, approval: true }
     const remote = { key: '/publisher@docker', kind: 'agent', name: 'publisher', agentRunId: 'remote-run', isCoordinator: false, values, parentValues: values,
-      fields: ['model', 'approval'], customized: {}, customizedOptionKeys: [], modelRequired: false, launchNotes: [], children: [], locked, remoteNode: 'docker', badge: 'delegated_copy' } as unknown as RunMemberNode
+      fields: ['model', 'approval'], customized: {}, customizedOptionKeys: [], modelRequired: false, launchNotes: [], children: [], locked, remoteNode: 'docker', badge: 'delegated_run' } as unknown as RunMemberNode
     wrapper = settings({ origin: 'delegated', subject: remote, group: null }, { isActive: true, state: 'read_only', canEdit: false })
     expect(wrapper.get('[data-test="run-subject-details"]').text()).toContain('docker')
     expect(card(wrapper).get('[data-test="run-setting-model"]').find('[data-test="run-setting-locked"]').exists()).toBe(true)
