@@ -244,7 +244,10 @@ suite("A top run's tree is built from its open Tasks: upgrade, start, load, save
       expect(ids, `${r.kind}: the run of the open Task`).toContain(run.ro);
       for (const gone of [run.rc, run.rg]) expect(ids, `${r.kind}: ${gone}`).not.toContain(gone);
     }
-    expect(await fingerprint(memory), "reading the trees wrote nothing").toEqual(before);
+    // autobyteus-493's episodic catalog (`memory/episodic/`) is derived data its start pass rebuilds by design; a refresh the
+    // previous server dropped on stop lands in this start (autobyteus-500 CRR-011). It is not the trees' read.
+    const notDerived = (fp: Record<string, string>) => Object.fromEntries(Object.entries(fp).filter(([file]) => !file.startsWith(`episodic${path.sep}`)));
+    expect(notDerived(await fingerprint(memory)), "reading the trees wrote nothing").toEqual(notDerived(before));
 
     // AC-010: loading and using the top runs reads no file of a closed run: their own files are unreadable meanwhile.
     if (modeBitsBlock) for (const r of runs.values()) await fs.chmod(ownFile(memory, r.rc), 0o000);
