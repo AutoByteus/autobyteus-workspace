@@ -1,0 +1,30 @@
+# API-02 the web spec changed after IMP-07; commit 6744d786c6 (code a0d81bbe18); 2026-11-18T17:07:22Z; Node v22.23.1
+# NUXT_TEST=true pnpm -C autobyteus-web exec vitest run stores/__tests__/agentOrgRetainedRecovery.spec.ts
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/interrupt-idempotent-stop/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/interrupt-idempotent-stop/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/interrupt-idempotent-stop/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/interrupt-idempotent-stop/autobyteus-web/stores/serverStore.ts" is used
+
+ RUN  v3.2.7 /Users/normy/autobyteus_org/autobyteus-worktrees/interrupt-idempotent-stop/autobyteus-web
+
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/interrupt-idempotent-stop/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/interrupt-idempotent-stop/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/interrupt-idempotent-stop/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/interrupt-idempotent-stop/autobyteus-web/stores/serverStore.ts" is used
+stderr | stores/__tests__/agentOrgRetainedRecovery.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | stores/__tests__/agentOrgRetainedRecovery.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stderr | stores/__tests__/agentOrgRetainedRecovery.spec.ts > RET-05: an activity conflict cannot partially publish; a later recovery preserves latest focus
+[agentOrg] Could not load 'agent-director' of 'org-run'. Error: The stored state of 'agent-director' changed while it was loading.
+    at MemberLoader.load [90m(/Users/normy/autobyteus_org/autobyteus-worktrees/interrupt-idempotent-stop/autobyteus-web/[39mservices/runHydration/memberLoader.ts:144:11[90m)[39m
+
+ ✓ stores/__tests__/agentOrgRetainedRecovery.spec.ts (20 tests) 117ms
+
+ Test Files  1 passed (1)
+      Tests  20 passed (20)
+   Start at  18:07:25
+   Duration  8.31s (transform 4.15s, setup 7.06s, collect 292ms, tests 117ms, environment 239ms, prepare 174ms)
+
+exit 0

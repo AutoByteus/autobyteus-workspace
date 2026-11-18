@@ -21,6 +21,8 @@ import type { CollaboratorMentionDto } from '~/utils/collaborators/collaboratorM
 import { createRandomId } from '~/utils/randomId'
 import { LiveStreamReconnectScheduler } from '~/services/liveStreamLifecycle/liveStreamReconnectScheduler'
 import { isCredentialRefusalClose } from '~/services/liveStreamLifecycle/credentialRefusalClose'
+import { InterruptsAwaitingRebind } from '~/services/agentStreaming/interruptCommandAdmission'
+import { AgentOrgConnectionLostError } from './agentOrgConnectionLostError'
 
 type CommandAck = Extract<CollaborationStreamServerMessage, { type: 'AGENT_COMMAND_ACK' }>
 type PendingCommand = Readonly<{
@@ -50,6 +52,8 @@ export class AgentOrgStreamingService {
   private processing: Promise<void> = Promise.resolve()
   private readonly readiness = new Set<{ resolve(): void; reject(error: Error): void }>()
   private readonly pending = new Map<string, PendingCommand>()
+  /** Stops lost with a connection that recovers: settled once the snapshot that makes the stream ready is applied. */
+  private readonly interruptsAwaitingRebind = new InterruptsAwaitingRebind()
   private nextGenerationId = 0
   private activeGeneration: StreamGeneration | null = null
   private released = false
@@ -135,7 +139,7 @@ export class AgentOrgStreamingService {
       if (shouldRecover && this.context) this.context.requireReopen(detail)
       this.rejectPending('AgentOrg stream closed before command acknowledgement.')
       // A credential refusal (autobyteus-435): connecting again would be refused again; a later connect starts over.
-      if (shouldRecover && isCredentialRefusalClose(event.code, event.reason)) this.reconnect.startOver()
+      if (shouldRecover && isCredentialRefusalClose(event.code, event.reason)) { this.reconnect.startOver(); this.interruptsAwaitingRebind.settle() }
       else if (shouldRecover) this.recoveryFailed(detail)
     }
   }
@@ -178,7 +182,8 @@ export class AgentOrgStreamingService {
     this.context = null
     this.recoveryCheckpoint = null
     this.recoveryFocus = null
-    this.rejectPending('AgentOrg context was released.')
+    // Released for good: closeSocket held its Stops; they end now.
+    this.interruptsAwaitingRebind.settle()
     this.settleReadiness(new Error('AgentOrg context was released.'))
   }
 
@@ -312,6 +317,7 @@ export class AgentOrgStreamingService {
       this.streamPhase = 'ready'
       this.reconnect.connected()
       this.settleReadiness()
+      this.interruptsAwaitingRebind.settle()
       return
     }
     if (!this.context || this.streamPhase !== 'ready') {
@@ -488,10 +494,12 @@ export class AgentOrgStreamingService {
     return true
   }
 
+  /** Commands lost with the connection fail; Stops are held until the rebind's snapshot (or a final close, D-W7). */
   private rejectPending(message: string): void {
     for (const pending of this.pending.values()) {
       clearTimeout(pending.timeout)
-      pending.reject(new Error(message))
+      if (pending.commandType === 'INTERRUPT_GENERATION') this.interruptsAwaitingRebind.hold(() => pending.reject(new AgentOrgConnectionLostError()))
+      else pending.reject(new Error(message))
     }
     this.pending.clear()
   }

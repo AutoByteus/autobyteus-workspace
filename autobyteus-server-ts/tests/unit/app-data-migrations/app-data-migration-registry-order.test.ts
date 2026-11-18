@@ -29,7 +29,7 @@ describe("app-data migration registry order (CR-461-048)", () => {
   const ids = new AppDataMigrationRegistry().listDefinitions().map((definition) => definition.id);
 
   it("the released order is recorded (a release writes it) and is not empty", () => {
-    expect(RELEASED.length).toBeGreaterThanOrEqual(45);
+    expect(RELEASED.length).toBeGreaterThanOrEqual(46); // v1.5.14-beta.1
     expect(new Set(RELEASED).size).toBe(RELEASED.length);
   });
 

@@ -1,0 +1,2 @@
+[typecheck] production errors: 0; test-file errors: 1008 in 315 files (baseline 1008 in 315 files)
+[typecheck] production errors: 0; test-file errors: 87 in 37 files (baseline 87 in 37 files)

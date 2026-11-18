@@ -1,0 +1,13 @@
+     ✓ E01: Chat (Daily Assistant, all installed skills) starts with a skill holding a local environment and reads it through the link (AC-001, AC-002, AC-006)  3351ms
+     ✓ E02: an all-installed run skips a skill the workspace already owns, with a warning, and keeps the others (AC-004)  491ms
+     ✓ E03: a named skill that cannot be used fails the run with the skill and reason, not a generic error (AC-005, REQ-006)  511ms
+     ✓ E04: in a Team with auto-approve stored off, a member's named-skill failure names the skill and reason, and the other member runs with skip-permissions (REQ-006, AC-006)  732ms
+     ✓ E05: an Org member launched with auto-approve stored off runs with skip-permissions (AC-006)  416ms
+     × E06: a child started by an AGY agent's delegate_task call, configured with auto-approve off, runs with skip-permissions (AC-006) 43769ms
+     ✓ E07: a linked run resumes after its skill folder was deleted, without that skill and with a warning (AC-008, AC-006)  16218ms
+     ✓ E08: a run created before this change, with a copied skill folder and auto-approve stored off, resumes as before (AC-009, AC-006)  994ms
+     ✓ E09: a brand-new run of an imported agent with a configured skill starts in a workspace with same-skill links and reaches the skill (release smoke)  500ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+Error: Timed out waiting for delegation result: ntRunId":"helper_973f6df7_860be12fe26e42a0915409178a7d3826"},"statusIds":["helper_973f6df7_860be12fe26e42a0915409178a7d3826"]}]}},{"type":"TEAM_RUN_LIFECYCLE","payload":{"is_active":true}},{"type":"AGENT_STATUS",
+    141|     throw new Error(`Timed out waiting for ${label}: ${JSON.stringify(…
+      Tests  1 failed | 9 passed (10)

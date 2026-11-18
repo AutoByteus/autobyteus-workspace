@@ -1,0 +1,59 @@
+2026-11-18T17:19:05.853Z debug [vite] connecting...
+2026-11-18T17:19:05.923Z debug [vite] connected.
+2026-11-18T17:19:10.162Z error Failed to load resource: the server responded with a status of 504 (Outdated Optimize Dep)
+2026-11-18T17:19:10.162Z warning [Vue Router warn]: uncaught error during route navigation:
+2026-11-18T17:19:10.162Z error TypeError: Failed to fetch dynamically imported module: http://127.0.0.1:49694/_nuxt/pages/workspace.vue
+2026-11-18T17:19:10.166Z error [nuxt] error caught during app initialization H3Error: Failed to fetch dynamically imported module: http://127.0.0.1:49694/_nuxt/pages/workspace.vue
+2026-11-18T17:19:10.166Z warning [Vue Router warn]: Unexpected error when starting the router: TypeError: Failed to fetch dynamically imported module: http://127.0.0.1:49694/_nuxt/pages/workspace.vue
+2026-11-18T17:19:10.169Z log serverStore: Initializing server config
+2026-11-18T17:19:10.169Z log serverStore: Not in Electron environment. Skipping server initialization.
+2026-11-18T17:19:11.124Z debug [vite] connecting...
+2026-11-18T17:19:11.244Z debug [vite] connected.
+2026-11-18T17:19:14.261Z log serverStore: Initializing server config
+2026-11-18T17:19:14.261Z log serverStore: Not in Electron environment. Skipping server initialization.
+2026-11-18T17:19:14.267Z info <Suspense> is an experimental feature and its API will likely change.
+2026-11-18T17:19:14.654Z log Workspace.vue: Mounted. Fetching server settings and loading profiles...
+2026-11-18T17:19:14.681Z log [useTerminalSession] Connecting to: ws://127.0.0.1:49693/ws/terminal/74988ab9-f6dc-4925-979c-ffdd70180556
+2026-11-18T17:19:14.696Z log [useTerminalSession] Connected
+2026-11-18T17:19:14.770Z log Agent WebSocket connected
+2026-11-18T17:19:14.801Z log Team WebSocket transport connected
+2026-11-18T17:19:18.371Z debug [vite] connecting...
+2026-11-18T17:19:18.394Z debug [vite] connected.
+2026-11-18T17:19:19.508Z log serverStore: Initializing server config
+2026-11-18T17:19:19.508Z log serverStore: Not in Electron environment. Skipping server initialization.
+2026-11-18T17:19:19.511Z info <Suspense> is an experimental feature and its API will likely change.
+2026-11-18T17:19:19.596Z log Workspace.vue: Mounted. Fetching server settings and loading profiles...
+2026-11-18T17:19:19.611Z log [useTerminalSession] Connecting to: ws://127.0.0.1:49693/ws/terminal/8117cd12-17f0-48c5-95f0-0e6ee5891d38
+2026-11-18T17:19:19.620Z log [useTerminalSession] Connected
+2026-11-18T17:19:19.647Z log Agent WebSocket connected
+2026-11-18T17:19:19.662Z log Team WebSocket transport connected
+2026-11-18T17:19:29.518Z log Download the Apollo DevTools for a better development experience: %s https://chrome.google.com/webstore/detail/apollo-client-developer-t/jdkknkkbebbapilgoeccciglkfbmbnfm
+2026-11-18T17:19:30.215Z log Agent WebSocket connected
+2026-11-18T17:19:42.214Z log Agent WebSocket connected
+2026-11-18T17:19:46.697Z log Agent WebSocket connected
+2026-11-18T17:19:52.298Z log Agent WebSocket connected
+2026-11-18T17:19:53.047Z log Agent WebSocket disconnected: the path dropped after the Stop reached the node
+2026-11-18T17:19:54.050Z log Team WebSocket transport connected
+2026-11-18T17:19:54.059Z log Agent WebSocket connected
+2026-11-18T17:19:54.962Z log Agent WebSocket connected
+2026-11-18T17:19:55.744Z log Agent WebSocket disconnected: the path dropped with the Stop on it
+2026-11-18T17:19:56.783Z log Team WebSocket transport connected
+2026-11-18T17:19:56.783Z log Agent WebSocket connected
+2026-11-18T17:19:59.979Z log Agent WebSocket connected
+2026-11-18T17:20:00.752Z log Agent WebSocket disconnected: the page's path is down
+2026-11-18T17:20:01.043Z warning Stop was not sent: the stream is disconnected.
+2026-11-18T17:20:01.761Z log Agent WebSocket disconnected: path down
+2026-11-18T17:20:02.705Z log Workspace.vue: Mounted. Fetching server settings and loading profiles...
+2026-11-18T17:20:03.777Z log Agent WebSocket disconnected: path down
+2026-11-18T17:20:04.296Z log Agent WebSocket disconnected: path down
+2026-11-18T17:20:04.683Z log Agent WebSocket disconnected: path down
+2026-11-18T17:20:07.698Z log Team WebSocket transport connected
+2026-11-18T17:20:09.687Z log Agent WebSocket connected
+2026-11-18T17:20:14.025Z warning Could not stop Stopper ae5c: [INTERRUPT_EXECUTION_FAILED] AgentRun 'stopper_ae5c_55410c71c0a744139b3ccce48c16e606' could not interrupt its canonical turn.
+2026-11-18T17:20:17.998Z log Workspace.vue: Mounted. Fetching server settings and loading profiles...
+2026-11-18T17:20:51.379Z log Team WebSocket transport connected
+2026-11-18T17:20:53.960Z log Team WebSocket transport connected
+2026-11-18T17:20:58.124Z warning Stop was not sent: the Team stream is disconnected.
+2026-11-18T17:21:01.315Z log Workspace.vue: Mounted. Fetching server settings and loading profiles...
+2026-11-18T17:21:04.680Z log Team WebSocket transport connected
+2026-11-18T17:21:09.023Z warning Could not stop lead: [INTERRUPT_EXECUTION_FAILED] AgentRun 'stop_lead_ae5c_d82832db91094ec9aabe21b31ad27a97' could not interrupt its canonical turn.

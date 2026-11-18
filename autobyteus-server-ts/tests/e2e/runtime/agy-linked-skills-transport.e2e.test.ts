@@ -375,17 +375,18 @@ suite("AGY linked skills and always auto-approve through the server (scripted CL
     cleanup.push(() => graphql("mutation($id: String!) { deleteAgentDefinition(id: $id) { success } }", { id: outsider.createAgentDefinition.id }));
     const args = { recipient_address: `/${outsiderName}`, description: "Reply OK." };
     sendE2eSendMessageCommand(socket, { agent_run_id: members.get("coordinator"), content: `DELEGATE:${JSON.stringify(args)}` });
-    const reply = await until(frames, "delegation result", (f) => JSON.stringify(f.payload).includes("DELEGATED:"));
+    // Loose waits for the delegated child's cold start on a loaded machine (measured 1–34 s alone); still bounded.
+    const reply = await until(frames, "delegation result", (f) => JSON.stringify(f.payload).includes("DELEGATED:"), 90_000);
     const childRunId = /target_agent_run_id\\+":\\+"([^"\\]+)/.exec(JSON.stringify(reply.payload))?.[1];
     expect(childRunId, JSON.stringify(reply.payload)).toBeTruthy();
     expect(childRunId).not.toBe(members.get("helper"));
-    const deadline = Date.now() + 30_000;
+    const deadline = Date.now() + 60_000;
     while (Date.now() < deadline && (await launchesFor(childRunId!)).length === 0) await wait(200);
     const [child] = await launchesFor(childRunId!);
     expect(child?.argv).toContain(SKIP_PERMISSIONS);
     expect((await launchesFor(members.get("coordinator")!))[0]?.argv).toContain(SKIP_PERMISSIONS);
     socket.close();
-  }, 90_000);
+  }, 180_000);
 
   it("E07: a linked run resumes after its skill folder was deleted, without that skill and with a warning (AC-008, AC-006)", async () => {
     const doomedRoot = await createSkill("doomed-skill", "DOOMED-5521");

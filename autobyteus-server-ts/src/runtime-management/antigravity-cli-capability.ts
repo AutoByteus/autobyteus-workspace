@@ -4,8 +4,10 @@ import { compareRuntimeVersions, extractRuntimeVersion } from "./agent-runtimes/
 
 const COMMAND = process.env.ANTIGRAVITY_CLI_COMMAND?.trim() || "agy";
 const REQUIRED_FLAGS = ["--agent", "--new-project", "--add-dir", "--conversation", "--input-format", "--output-format", "--dangerously-skip-permissions"];
-const SHORT_PROBE_TIMEOUT_MS = 3_000;
-const MODELS_TIMEOUT_MS = 15_000;
+// Room for a busy computer (e06-delegation-wait-margin): starting the CLI can take seconds under load. A caller's step
+// deadline still cuts a step shorter (`commandBound`).
+const SHORT_PROBE_TIMEOUT_MS = 10_000;
+const MODELS_TIMEOUT_MS = 30_000;
 const SHORT_OUTPUT_LIMIT = 64 * 1024;
 const MODELS_OUTPUT_LIMIT = 1024 * 1024;
 

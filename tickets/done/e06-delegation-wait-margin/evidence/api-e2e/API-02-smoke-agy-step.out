@@ -1,0 +1,65 @@
+# id: API-02-smoke-agy-step; commit db70126996; load at start 39.02 38.83 43.51; 2026-11-18T17:06:13Z
+# command: python3 tickets/in-progress/e06-delegation-wait-margin/evidence/api-e2e/scripts/smoke-agy-step.py <worktree> <evidence> (release_smoke.py's antigravity step, no live step)
+step antigravity: tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts; env keys ['ANTIGRAVITY_CLI_COMMAND', 'HOME', 'PATH', 'RUN_AGY_FAILURE_E2E', 'TMPDIR']
+{
+ "exit": 0,
+ "seconds": 36.3,
+ "passed": true,
+ "results": [
+  {
+   "title": "E01: Chat (Daily Assistant, all installed skills) starts wit",
+   "status": "passed"
+  },
+  {
+   "title": "E02: an all-installed run skips a skill the workspace alread",
+   "status": "passed"
+  },
+  {
+   "title": "E03: a named skill that cannot be used fails the run with th",
+   "status": "passed"
+  },
+  {
+   "title": "E04: in a Team with auto-approve stored off, a member's name",
+   "status": "passed"
+  },
+  {
+   "title": "E05: an Org member launched with auto-approve stored off run",
+   "status": "passed"
+  },
+  {
+   "title": "E06: a child started by an AGY agent's delegate_task call, c",
+   "status": "passed"
+  },
+  {
+   "title": "E07: a linked run resumes after its skill folder was deleted",
+   "status": "passed"
+  },
+  {
+   "title": "E08: a run created before this change, with a copied skill f",
+   "status": "passed"
+  },
+  {
+   "title": "E09: a brand-new run of an imported agent with a configured ",
+   "status": "passed"
+  },
+  {
+   "title": "E10: a brand-new team member with a configured skill starts ",
+   "status": "passed"
+  }
+ ],
+ "rows": [
+  {
+   "runtime": "antigravity",
+   "scenario": "brand-new run, linked workspace",
+   "passed": true,
+   "reason": ""
+  },
+  {
+   "runtime": "antigravity",
+   "scenario": "brand-new team member, linked workspace",
+   "passed": true,
+   "reason": ""
+  }
+ ]
+}
+# exit: 0

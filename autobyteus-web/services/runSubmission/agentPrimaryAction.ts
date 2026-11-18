@@ -2,6 +2,8 @@ import { AgentStatus } from '~/types/agent/AgentStatus';
 
 export type AgentPrimaryAction =
   | { kind: 'interrupt'; enabled: true }
+  /** A Stop was sent and the run still shows Running (autobyteus-533 REQ-003): nothing more is sent. */
+  | { kind: 'stopping'; enabled: false }
   | { kind: 'send'; enabled: true }
   | {
       kind: 'disabled';
@@ -13,6 +15,7 @@ export interface ResolveAgentPrimaryActionInput {
   hasContext: boolean;
   status: AgentStatus;
   submissionPending: boolean;
+  interruptPending: boolean;
   isUploading: boolean;
   hasDraft: boolean;
 }
@@ -24,7 +27,7 @@ export const resolveAgentPrimaryAction = (
     return { kind: 'disabled', enabled: false, reason: 'no_context' };
   }
   if (input.status === AgentStatus.Running) {
-    return { kind: 'interrupt', enabled: true };
+    return input.interruptPending ? { kind: 'stopping', enabled: false } : { kind: 'interrupt', enabled: true };
   }
   if (input.status === AgentStatus.Initializing) {
     return { kind: 'disabled', enabled: false, reason: 'initializing' };

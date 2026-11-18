@@ -7,6 +7,7 @@ const resolve = (overrides: Partial<Parameters<typeof resolveAgentPrimaryAction>
     hasContext: true,
     status: AgentStatus.Idle,
     submissionPending: false,
+    interruptPending: false,
     isUploading: false,
     hasDraft: true,
     ...overrides,
@@ -16,6 +17,11 @@ describe('resolveAgentPrimaryAction', () => {
   it('uses running as the sole interrupt action state', () => {
     expect(resolve({ status: AgentStatus.Running, submissionPending: true, hasDraft: false }))
       .toEqual({ kind: 'interrupt', enabled: true });
+  });
+
+  it('a Stop pending on a running run is Stopping, disabled (autobyteus-533 REQ-003); off Running it no longer matters', () => {
+    expect(resolve({ status: AgentStatus.Running, interruptPending: true })).toEqual({ kind: 'stopping', enabled: false });
+    expect(resolve({ status: AgentStatus.Idle, interruptPending: true })).toEqual({ kind: 'send', enabled: true });
   });
 
   it('keeps initializing and local submission pending disabled', () => {

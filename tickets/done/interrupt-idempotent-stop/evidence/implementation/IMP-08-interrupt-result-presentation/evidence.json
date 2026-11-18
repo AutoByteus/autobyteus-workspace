@@ -1,0 +1,702 @@
+{
+  "generatedAt": "2026-11-18T10:36:47.301Z",
+  "browserExecutable": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "frames": [
+    {
+      "direction": "connect",
+      "kind": "agent-package-definitions"
+    },
+    {
+      "direction": "connect",
+      "kind": "agent-package-definitions"
+    },
+    {
+      "direction": "connect",
+      "kind": "standalone",
+      "url": "/ws/agent/browser-agent-run",
+      "at": 1794998241419
+    },
+    {
+      "direction": "connect",
+      "kind": "team",
+      "url": "/ws/agent-team/browser-team-run",
+      "at": 1794998241440
+    },
+    {
+      "direction": "client-to-server",
+      "kind": "standalone",
+      "mode": "standalone-failed",
+      "message": {
+        "type": "INTERRUPT_GENERATION",
+        "payload": {
+          "command_id": "client_interrupt_886087da-3a21-482d-9f3b-a103b4a878d9"
+        }
+      }
+    },
+    {
+      "direction": "server-to-client",
+      "kind": "standalone",
+      "mode": "standalone-failed",
+      "message": {
+        "type": "AGENT_COMMAND_ACK",
+        "payload": {
+          "command_type": "INTERRUPT_GENERATION",
+          "command_id": "client_interrupt_886087da-3a21-482d-9f3b-a103b4a878d9",
+          "state": "failed",
+          "code": "RUNTIME_COMMAND_FAILED",
+          "message": "Failed to interrupt run for runtime 'codex_app_server': AgentRun 'browser-agent-run' refused.",
+          "target": {
+            "target_kind": "standalone_run",
+            "run_id": "browser-agent-run"
+          }
+        }
+      }
+    },
+    {
+      "direction": "close",
+      "kind": "standalone",
+      "code": 1001,
+      "reason": "",
+      "at": 1794998242209
+    },
+    {
+      "direction": "close",
+      "kind": "team",
+      "code": 1001,
+      "reason": "",
+      "at": 1794998242209
+    },
+    {
+      "direction": "connect",
+      "kind": "agent-package-definitions"
+    },
+    {
+      "direction": "connect",
+      "kind": "agent-package-definitions"
+    },
+    {
+      "direction": "connect",
+      "kind": "standalone",
+      "url": "/ws/agent/browser-agent-run",
+      "at": 1794998244674
+    },
+    {
+      "direction": "connect",
+      "kind": "team",
+      "url": "/ws/agent-team/browser-team-run",
+      "at": 1794998244691
+    },
+    {
+      "direction": "client-to-server",
+      "kind": "standalone",
+      "mode": "standalone-accepted",
+      "message": {
+        "type": "INTERRUPT_GENERATION",
+        "payload": {
+          "command_id": "client_interrupt_e9478ab2-e4ec-4613-9d60-1be41f217d86"
+        }
+      }
+    },
+    {
+      "direction": "server-to-client",
+      "kind": "standalone",
+      "mode": "standalone-accepted",
+      "message": {
+        "type": "AGENT_COMMAND_ACK",
+        "payload": {
+          "command_type": "INTERRUPT_GENERATION",
+          "command_id": "client_interrupt_e9478ab2-e4ec-4613-9d60-1be41f217d86",
+          "state": "accepted",
+          "target": {
+            "target_kind": "standalone_run",
+            "run_id": "browser-agent-run"
+          }
+        }
+      }
+    },
+    {
+      "direction": "close",
+      "kind": "team",
+      "code": 1001,
+      "reason": "",
+      "at": 1794998245350
+    },
+    {
+      "direction": "close",
+      "kind": "standalone",
+      "code": 1001,
+      "reason": "",
+      "at": 1794998245350
+    },
+    {
+      "direction": "connect",
+      "kind": "agent-package-definitions"
+    },
+    {
+      "direction": "connect",
+      "kind": "agent-package-definitions"
+    },
+    {
+      "direction": "connect",
+      "kind": "standalone",
+      "url": "/ws/agent/browser-agent-run",
+      "at": 1794998248594
+    },
+    {
+      "direction": "connect",
+      "kind": "team",
+      "url": "/ws/agent-team/browser-team-run",
+      "at": 1794998248608
+    },
+    {
+      "direction": "client-to-server",
+      "kind": "standalone",
+      "mode": "pending-disconnect",
+      "message": {
+        "type": "INTERRUPT_GENERATION",
+        "payload": {
+          "command_id": "client_interrupt_0c1cce74-7369-4b8b-a373-12e48ef6b0d2"
+        }
+      }
+    },
+    {
+      "direction": "close",
+      "kind": "standalone",
+      "code": 1011,
+      "reason": "probe disconnect before ack",
+      "at": 1794998248868
+    },
+    {
+      "direction": "connect",
+      "kind": "standalone",
+      "url": "/ws/agent/browser-agent-run",
+      "at": 1794998249917
+    },
+    {
+      "direction": "close",
+      "kind": "team",
+      "code": 1001,
+      "reason": "",
+      "at": 1794998250396
+    },
+    {
+      "direction": "close",
+      "kind": "standalone",
+      "code": 1001,
+      "reason": "",
+      "at": 1794998250396
+    },
+    {
+      "direction": "connect",
+      "kind": "agent-package-definitions"
+    },
+    {
+      "direction": "connect",
+      "kind": "agent-package-definitions"
+    },
+    {
+      "direction": "connect",
+      "kind": "standalone",
+      "url": "/ws/agent/browser-agent-run",
+      "at": 1794998254359
+    },
+    {
+      "direction": "connect",
+      "kind": "team",
+      "url": "/ws/agent-team/browser-team-run",
+      "at": 1794998254371
+    },
+    {
+      "direction": "client-to-server",
+      "kind": "team",
+      "mode": "team-failed",
+      "message": {
+        "type": "INTERRUPT_GENERATION",
+        "payload": {
+          "command_id": "client_interrupt_03d4ef7c-b499-4c5f-b96f-dd43eeb9c3ec",
+          "agent_run_id": "browser-task-team-critic-run"
+        }
+      }
+    },
+    {
+      "direction": "server-to-client",
+      "kind": "team",
+      "mode": "team-failed",
+      "message": {
+        "type": "AGENT_COMMAND_ACK",
+        "payload": {
+          "command_type": "INTERRUPT_GENERATION",
+          "command_id": "client_interrupt_03d4ef7c-b499-4c5f-b96f-dd43eeb9c3ec",
+          "state": "failed",
+          "code": "RUNTIME_COMMAND_FAILED",
+          "message": "Failed to interrupt run for runtime 'codex_app_server': AgentRun 'browser-task-team-critic-run' refused.",
+          "agent_run_id": "browser-task-team-critic-run"
+        }
+      }
+    },
+    {
+      "direction": "close",
+      "kind": "standalone",
+      "code": 1001,
+      "reason": "",
+      "at": 1794998254910
+    },
+    {
+      "direction": "close",
+      "kind": "team",
+      "code": 1001,
+      "reason": "",
+      "at": 1794998254910
+    },
+    {
+      "direction": "connect",
+      "kind": "agent-package-definitions"
+    },
+    {
+      "direction": "connect",
+      "kind": "agent-package-definitions"
+    },
+    {
+      "direction": "connect",
+      "kind": "standalone",
+      "url": "/ws/agent/browser-agent-run",
+      "at": 1794998260385
+    },
+    {
+      "direction": "connect",
+      "kind": "team",
+      "url": "/ws/agent-team/browser-team-run",
+      "at": 1794998260401
+    },
+    {
+      "direction": "client-to-server",
+      "kind": "team",
+      "mode": "team-accepted",
+      "message": {
+        "type": "INTERRUPT_GENERATION",
+        "payload": {
+          "command_id": "client_interrupt_836a8160-41d8-4f8e-91ab-fb2318b3a48d",
+          "agent_run_id": "browser-task-team-critic-run"
+        }
+      }
+    },
+    {
+      "direction": "server-to-client",
+      "kind": "team",
+      "mode": "team-accepted",
+      "message": {
+        "type": "AGENT_COMMAND_ACK",
+        "payload": {
+          "command_type": "INTERRUPT_GENERATION",
+          "command_id": "client_interrupt_836a8160-41d8-4f8e-91ab-fb2318b3a48d",
+          "state": "accepted",
+          "agent_run_id": "browser-task-team-critic-run"
+        }
+      }
+    },
+    {
+      "direction": "close",
+      "kind": "standalone",
+      "code": 1001,
+      "reason": "",
+      "at": 1794998261044
+    },
+    {
+      "direction": "close",
+      "kind": "team",
+      "code": 1001,
+      "reason": "",
+      "at": 1794998261044
+    }
+  ],
+  "graphqlOperations": [
+    "GetUpdateChecksCapability",
+    "GetTeamMemberRunProjection",
+    "GetTeamMemberFileChanges",
+    "GetUpdateChecksCapability",
+    "GetTeamMemberRunProjection",
+    "GetTeamMemberFileChanges",
+    "GetUpdateChecksCapability",
+    "GetTeamMemberRunProjection",
+    "GetTeamMemberFileChanges",
+    "GetUpdateChecksCapability",
+    "GetTeamMemberRunProjection",
+    "GetTeamMemberFileChanges",
+    "GetUpdateChecksCapability",
+    "GetTeamMemberRunProjection",
+    "GetTeamMemberFileChanges"
+  ],
+  "browserEvents": [
+    {
+      "type": "console:debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "type": "console:debug",
+      "text": "[vite] connected."
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Initializing server config"
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Not in Electron environment. Skipping server initialization."
+    },
+    {
+      "type": "console:info",
+      "text": "<Suspense> is an experimental feature and its API will likely change."
+    },
+    {
+      "type": "console:log",
+      "text": "Agent WebSocket connected"
+    },
+    {
+      "type": "console:log",
+      "text": "Team WebSocket transport connected"
+    },
+    {
+      "type": "console:warning",
+      "text": "Could not stop browser-agent-definition: [RUNTIME_COMMAND_FAILED] Failed to interrupt run for runtime 'codex_app_server': AgentRun 'browser-agent-run' refused."
+    },
+    {
+      "type": "console:debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "type": "console:debug",
+      "text": "[vite] connected."
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Initializing server config"
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Not in Electron environment. Skipping server initialization."
+    },
+    {
+      "type": "console:info",
+      "text": "<Suspense> is an experimental feature and its API will likely change."
+    },
+    {
+      "type": "console:log",
+      "text": "Agent WebSocket connected"
+    },
+    {
+      "type": "console:log",
+      "text": "Team WebSocket transport connected"
+    },
+    {
+      "type": "console:debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "type": "console:debug",
+      "text": "[vite] connected."
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Initializing server config"
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Not in Electron environment. Skipping server initialization."
+    },
+    {
+      "type": "console:info",
+      "text": "<Suspense> is an experimental feature and its API will likely change."
+    },
+    {
+      "type": "console:log",
+      "text": "Agent WebSocket connected"
+    },
+    {
+      "type": "console:log",
+      "text": "Team WebSocket transport connected"
+    },
+    {
+      "type": "console:log",
+      "text": "Agent WebSocket disconnected: probe disconnect before ack"
+    },
+    {
+      "type": "console:log",
+      "text": "Agent WebSocket connected"
+    },
+    {
+      "type": "console:debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "type": "console:debug",
+      "text": "[vite] connected."
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Initializing server config"
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Not in Electron environment. Skipping server initialization."
+    },
+    {
+      "type": "console:info",
+      "text": "<Suspense> is an experimental feature and its API will likely change."
+    },
+    {
+      "type": "console:log",
+      "text": "Agent WebSocket connected"
+    },
+    {
+      "type": "console:log",
+      "text": "Team WebSocket transport connected"
+    },
+    {
+      "type": "console:warning",
+      "text": "Could not stop browser-critic-definition: [RUNTIME_COMMAND_FAILED] Failed to interrupt run for runtime 'codex_app_server': AgentRun 'browser-task-team-critic-run' refused."
+    },
+    {
+      "type": "console:debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "type": "console:debug",
+      "text": "[vite] connected."
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Initializing server config"
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Not in Electron environment. Skipping server initialization."
+    },
+    {
+      "type": "console:info",
+      "text": "<Suspense> is an experimental feature and its API will likely change."
+    },
+    {
+      "type": "console:log",
+      "text": "Agent WebSocket connected"
+    },
+    {
+      "type": "console:log",
+      "text": "Team WebSocket transport connected"
+    }
+  ],
+  "scenarios": {
+    "533-BR-001-standalone-refused": {
+      "result": "Pass",
+      "details": {
+        "before": {
+          "selectedType": "agent",
+          "standaloneStatus": "running",
+          "standaloneTranscriptCount": 0,
+          "teamIsActive": true,
+          "teamSubscribed": true,
+          "teamMemberStatus": "running",
+          "teamTranscriptCount": 0,
+          "toastCount": 0,
+          "toastMessages": []
+        },
+        "after": {
+          "selectedType": "agent",
+          "standaloneStatus": "running",
+          "standaloneTranscriptCount": 0,
+          "teamIsActive": true,
+          "teamSubscribed": true,
+          "teamMemberStatus": "running",
+          "teamTranscriptCount": 0,
+          "toastCount": 1,
+          "toastMessages": [
+            "Could not stop browser-agent-definition. Please try again."
+          ]
+        },
+        "toasts": [
+          "Could not stop browser-agent-definition. Please try again."
+        ]
+      }
+    },
+    "533-BR-002-standalone-double-press-accepted": {
+      "result": "Pass",
+      "details": {
+        "before": {
+          "selectedType": "agent",
+          "standaloneStatus": "running",
+          "standaloneTranscriptCount": 0,
+          "teamIsActive": true,
+          "teamSubscribed": true,
+          "teamMemberStatus": "running",
+          "teamTranscriptCount": 0,
+          "toastCount": 0,
+          "toastMessages": []
+        },
+        "beforeTerminal": {
+          "selectedType": "agent",
+          "standaloneStatus": "running",
+          "standaloneTranscriptCount": 0,
+          "teamIsActive": true,
+          "teamSubscribed": true,
+          "teamMemberStatus": "running",
+          "teamTranscriptCount": 0,
+          "toastCount": 0,
+          "toastMessages": []
+        },
+        "afterTerminal": {
+          "selectedType": "agent",
+          "standaloneStatus": "idle",
+          "standaloneTranscriptCount": 0,
+          "teamIsActive": true,
+          "teamSubscribed": true,
+          "teamMemberStatus": "running",
+          "teamTranscriptCount": 0,
+          "toastCount": 0,
+          "toastMessages": []
+        },
+        "stopsSent": 1
+      }
+    },
+    "533-BR-003-standalone-connection-lost-while-stopping": {
+      "result": "Pass",
+      "details": {
+        "before": {
+          "selectedType": "agent",
+          "standaloneStatus": "running",
+          "standaloneTranscriptCount": 0,
+          "teamIsActive": true,
+          "teamSubscribed": true,
+          "teamMemberStatus": "running",
+          "teamTranscriptCount": 0,
+          "toastCount": 0,
+          "toastMessages": []
+        },
+        "after": {
+          "selectedType": "agent",
+          "standaloneStatus": "running",
+          "standaloneTranscriptCount": 0,
+          "teamIsActive": true,
+          "teamSubscribed": true,
+          "teamMemberStatus": "running",
+          "teamTranscriptCount": 0,
+          "toastCount": 0,
+          "toastMessages": []
+        },
+        "toasts": [],
+        "stopsSent": 1
+      }
+    },
+    "533-BR-004-team-member-refused": {
+      "result": "Pass",
+      "details": {
+        "before": {
+          "selectedType": "team",
+          "standaloneStatus": "running",
+          "standaloneTranscriptCount": 0,
+          "teamIsActive": true,
+          "teamSubscribed": true,
+          "teamMemberStatus": "running",
+          "teamTranscriptCount": 0,
+          "toastCount": 0,
+          "toastMessages": []
+        },
+        "after": {
+          "selectedType": "team",
+          "standaloneStatus": "running",
+          "standaloneTranscriptCount": 0,
+          "teamIsActive": true,
+          "teamSubscribed": true,
+          "teamMemberStatus": "running",
+          "teamTranscriptCount": 0,
+          "toastCount": 1,
+          "toastMessages": [
+            "Could not stop browser-critic-definition. Please try again."
+          ]
+        },
+        "toasts": [
+          "Could not stop browser-critic-definition. Please try again."
+        ],
+        "sent": {
+          "type": "INTERRUPT_GENERATION",
+          "payload": {
+            "command_id": "client_interrupt_03d4ef7c-b499-4c5f-b96f-dd43eeb9c3ec",
+            "agent_run_id": "browser-task-team-critic-run"
+          }
+        }
+      }
+    },
+    "533-BR-005-team-member-double-press-accepted": {
+      "result": "Pass",
+      "details": {
+        "after": {
+          "selectedType": "team",
+          "standaloneStatus": "running",
+          "standaloneTranscriptCount": 0,
+          "teamIsActive": true,
+          "teamSubscribed": true,
+          "teamMemberStatus": "idle",
+          "teamTranscriptCount": 0,
+          "toastCount": 0,
+          "toastMessages": []
+        },
+        "stopsSent": 1
+      }
+    }
+  },
+  "cleanup": {
+    "contexts": [
+      {
+        "id": "context-1",
+        "phase": "scenario",
+        "status": "closed"
+      },
+      {
+        "id": "context-2",
+        "phase": "scenario",
+        "status": "closed"
+      },
+      {
+        "id": "context-3",
+        "phase": "scenario",
+        "status": "closed"
+      },
+      {
+        "id": "context-4",
+        "phase": "scenario",
+        "status": "closed"
+      },
+      {
+        "id": "context-5",
+        "phase": "scenario",
+        "status": "closed"
+      }
+    ],
+    "browser": {
+      "status": "closed"
+    },
+    "webSocketServer": {
+      "status": "closed"
+    },
+    "nuxt": {
+      "status": "terminated",
+      "pid": 53883,
+      "exitCode": null,
+      "signalCode": "SIGTERM"
+    },
+    "nuxtLog": {
+      "status": "closed"
+    },
+    "fixtureRemoved": true,
+    "fixture": {
+      "status": "removed",
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/interrupt-idempotent-stop/autobyteus-web/pages/__interrupt-result-presentation-probe.vue"
+    },
+    "evidenceFile": {
+      "status": "written",
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/interrupt-idempotent-stop/tickets/in-progress/interrupt-idempotent-stop/evidence/implementation/IMP-08-interrupt-result-presentation/evidence.json"
+    }
+  },
+  "failures": [],
+  "wsPort": 55535,
+  "nuxtPort": 55536,
+  "completedAt": "2026-11-18T10:37:51.910Z"
+}

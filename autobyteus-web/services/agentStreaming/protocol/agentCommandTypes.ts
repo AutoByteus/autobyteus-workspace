@@ -1,5 +1,4 @@
 import type { AgentStatusPayload } from './messageTypes';
-import type { ConnectionState } from '../transport';
 
 export interface SendMessageCommandAckPayload {
   command_type: 'SEND_MESSAGE';
@@ -66,20 +65,20 @@ export type AgentCommandAckPayload =
   | SendMessageCommandAckPayload
   | InterruptGenerationCommandAckPayload;
 
+/**
+ * What became of one Stop (autobyteus-533 D-W1): the node accepted it (it stopped a turn or found nothing to stop);
+ * it was not sent (not connected); its answer was lost with the connection (the run's status decides); or the node
+ * or runtime refused it. `detail` is the node's text, for the console only.
+ */
+export type InterruptOutcome =
+  | Readonly<{ kind: 'accepted' }>
+  | Readonly<{ kind: 'not_sent' }>
+  | Readonly<{ kind: 'connection_lost' }>
+  | Readonly<{ kind: 'refused'; detail: string }>;
+
+/** A Stop sent and waiting for its answer; `settle` gives the sender its outcome, once. */
 export type PendingInterruptCommand = {
   commandId: string;
   target: InterruptCommandTarget;
-};
-
-export type InterruptCommandTransportFailure = {
-  commandId: string;
-  target: InterruptCommandTarget;
-  reason: {
-    code:
-      | 'INTERRUPT_TRANSPORT_NOT_CONNECTED'
-      | 'INTERRUPT_TRANSPORT_SEND_FAILED'
-      | 'INTERRUPT_TRANSPORT_DISCONNECTED';
-    connectionState: ConnectionState;
-    message: string;
-  };
+  settle(outcome: InterruptOutcome): void;
 };

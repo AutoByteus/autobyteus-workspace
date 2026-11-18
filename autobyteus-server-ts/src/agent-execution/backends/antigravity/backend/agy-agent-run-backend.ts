@@ -1,5 +1,5 @@
 import { randomUUID } from "node:crypto";
-import type { AgentOperationResult } from "../../../domain/agent-operation-result.js";
+import { NO_ACTIVE_TURN, type AgentOperationResult } from "../../../domain/agent-operation-result.js";
 import { AgentRunEventType, type AgentRunEvent } from "../../../domain/agent-run-event.js";
 import type {
   AgentRunBackend,
@@ -128,7 +128,7 @@ export class AgyAgentRunBackend implements AgentRunBackend {
   }
 
   async interrupt(turnId: string | null): Promise<AgentOperationResult> {
-    if (!turnId || this.turnId !== turnId) return { accepted: false, code: "NO_ACTIVE_TURN", message: "AGY has no matching active turn." };
+    if (!turnId || this.turnId !== turnId) return { accepted: false, code: NO_ACTIVE_TURN, message: "AGY has no matching active turn." };
     this.cancelled = true; this.active = false; this.processAlive = false;
     this.argumentLookup?.abort();
     const stopped = this.process.stop();

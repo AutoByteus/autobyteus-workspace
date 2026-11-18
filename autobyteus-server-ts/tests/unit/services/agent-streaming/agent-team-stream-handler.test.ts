@@ -344,14 +344,32 @@ describe("AgentTeamStreamHandler current root stream", () => {
       expect(sent(harness.connection).at(-1)).toMatchObject({ type: "RUN_TREE_CHANGED", payload: { change_sequence: 1, added: [{ key: "agent:checker" }] } });
     });
 
-    it("an interrupt or tool approval for a member of the stopped team is refused and restores nothing", async () => {
+    it("a Stop for a member of the stopped team finds nothing to stop (autobyteus-533 AC-003); a tool approval is refused; neither restores it", async () => {
       const harness = createHarness({ stopped: true });
       const sessionId = await harness.handler.connect(harness.connection, "team-run-root");
       sessions.push({ handler: harness.handler, id: sessionId! });
       await harness.handler.handleMessage(sessionId!, JSON.stringify({ type: "INTERRUPT_GENERATION", payload: { agent_run_id: "nested-task-agent-run-001", command_id: "c-1" } }));
-      expect(sent(harness.connection).at(-1)).toMatchObject({ type: "AGENT_COMMAND_ACK", payload: { state: "failed", code: "TEAM_RUN_STOPPED" } });
+      expect(sent(harness.connection).at(-1)).toEqual({ type: "AGENT_COMMAND_ACK", payload: {
+        command_type: "INTERRUPT_GENERATION", command_id: "c-1", state: "accepted", agent_run_id: "nested-task-agent-run-001" } });
+      const warn = vi.spyOn(console, "warn").mockImplementation(() => undefined);
+      await harness.handler.handleMessage(sessionId!, JSON.stringify({ type: "APPROVE_TOOL", payload: { agent_run_id: "nested-task-agent-run-001", invocation_id: "inv-1", reason: null } }));
+      expect(warn).toHaveBeenCalledWith(expect.stringContaining("[TEAM_RUN_STOPPED]"));
+      warn.mockRestore();
       expect(harness.teamRunService.restoreForInput).not.toHaveBeenCalled();
       expect(harness.executeAgentCommand).not.toHaveBeenCalled();
+    });
+
+    it.each([
+      [{ accepted: false, code: "NO_ACTIVE_TURN", message: "AgentRun 'm' has no canonical active turn to interrupt." }, { state: "accepted" }],
+      [{ accepted: false, code: "RUN_NOT_ACTIVE", message: "AgentRun 'm' is shut down in root 'team-run-root'." }, { state: "accepted" }],
+      [{ accepted: false, code: "RUNTIME_COMMAND_FAILED", message: "Failed to interrupt." }, { state: "failed", code: "RUNTIME_COMMAND_FAILED", message: "Failed to interrupt." }],
+      [{ accepted: false, code: "RUN_NOT_FOUND", message: "AgentRun 'm' is not in root 'team-run-root'." }, { state: "failed", code: "RUN_NOT_FOUND" }],
+    ])("a live member's Stop result %o is answered %o (autobyteus-533 AC-004, DEC-002)", async (commandResult, ack) => {
+      const harness = createHarness({ commandResult });
+      const sessionId = await harness.handler.connect(harness.connection, "team-run-root");
+      sessions.push({ handler: harness.handler, id: sessionId! });
+      await harness.handler.handleMessage(sessionId!, JSON.stringify({ type: "INTERRUPT_GENERATION", payload: { agent_run_id: "nested-task-agent-run-001", command_id: "c-r" } }));
+      expect(sent(harness.connection).at(-1)).toMatchObject({ type: "AGENT_COMMAND_ACK", payload: { command_id: "c-r", ...ack } });
     });
 
     it("SR-066 (ARCH-REV-039 note 1): a peer child's message and interrupt reach its node through its handle; the stopped team stays stopped", async () => {

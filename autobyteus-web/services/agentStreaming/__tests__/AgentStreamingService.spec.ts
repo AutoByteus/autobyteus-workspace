@@ -244,25 +244,23 @@ describe('AgentStreamingService', () => {
         expect((service as any).context).toBe(mockAgentContext);
     });
 
-    it('serializes and exactly matches an admitted standalone interrupt', () => {
+    it('serializes and exactly matches an admitted standalone interrupt, resolving its outcome', async () => {
         const callbacks = new Map<string, (payload?: any) => void>();
         const wsClient = {
             state: 'connected', connect: vi.fn(), disconnect: vi.fn(), send: vi.fn(), off: vi.fn(),
             on: vi.fn((event: string, callback: (payload?: any) => void) => callbacks.set(event, callback)),
         } as any;
-        const onResult = vi.fn();
-        const admittedService = new AgentStreamingService('ws://localhost:8000/ws/agent', {
-            wsClient,
-            onInterruptCommandResult: onResult,
-        });
+        const admittedService = new AgentStreamingService('ws://localhost:8000/ws/agent', { wsClient });
         mockAgentContext.state.currentStatus = AgentStatus.Running;
         admittedService.connect('run-1', mockAgentContext);
 
-        expect(admittedService.interruptGeneration('client_interrupt_1')).toBe(true);
+        const outcome = vi.fn();
+        void admittedService.interruptGeneration('client_interrupt_1').then(outcome);
         expect(JSON.parse(wsClient.send.mock.calls[0][0])).toEqual({
             type: 'INTERRUPT_GENERATION',
             payload: { command_id: 'client_interrupt_1' },
         });
+        vi.spyOn(console, 'warn').mockImplementation(() => undefined);
         callbacks.get('onMessage')?.(JSON.stringify({
             type: 'AGENT_COMMAND_ACK',
             payload: {
@@ -270,7 +268,8 @@ describe('AgentStreamingService', () => {
                 state: 'accepted', target: { target_kind: 'standalone_run', run_id: 'wrong-run' },
             },
         }));
-        expect(onResult).not.toHaveBeenCalled();
+        await Promise.resolve();
+        expect(outcome).not.toHaveBeenCalled();
         callbacks.get('onMessage')?.(JSON.stringify({
             type: 'AGENT_COMMAND_ACK',
             payload: {
@@ -278,7 +277,8 @@ describe('AgentStreamingService', () => {
                 state: 'accepted', target: { target_kind: 'standalone_run', run_id: 'run-1' },
             },
         }));
-        expect(onResult).toHaveBeenCalledTimes(1);
+        await Promise.resolve();
+        expect(outcome).toHaveBeenCalledWith({ kind: 'accepted' });
         expect(mockAgentContext.state.currentStatus).toBe(AgentStatus.Running);
 
         callbacks.get('onMessage')?.(JSON.stringify({
@@ -310,47 +310,96 @@ describe('AgentStreamingService', () => {
             expect.objectContaining({ type: 'error', code: 'ACTIVATION_FAILED' }));
     });
 
-    it.each(['disconnected', 'connecting', 'reconnecting'])('rejects standalone interrupt while %s without sending', (state) => {
+    it.each(['disconnected', 'connecting', 'reconnecting'])('answers a standalone interrupt while %s as not_sent without sending', async (state) => {
+        vi.spyOn(console, 'warn').mockImplementation(() => undefined);
         const wsClient = {
             state, connect: vi.fn(), disconnect: vi.fn(), send: vi.fn(), on: vi.fn(), off: vi.fn(),
         } as any;
-        const onFailure = vi.fn();
-        const blockedService = new AgentStreamingService('ws://localhost:8000/ws/agent', {
-            wsClient,
-            onInterruptCommandTransportFailure: onFailure,
-        });
+        const blockedService = new AgentStreamingService('ws://localhost:8000/ws/agent', { wsClient });
         blockedService.connect('run-1', mockAgentContext);
 
-        expect(blockedService.interruptGeneration(`client_interrupt_${state}`)).toBe(false);
+        await expect(blockedService.interruptGeneration(`client_interrupt_${state}`)).resolves.toEqual({ kind: 'not_sent' });
         expect(wsClient.send).not.toHaveBeenCalled();
-        expect(onFailure).toHaveBeenCalledWith(expect.objectContaining({
-            target: { target_kind: 'standalone_run', run_id: 'run-1' },
-            reason: expect.objectContaining({ code: 'INTERRUPT_TRANSPORT_NOT_CONNECTED', connectionState: state }),
-        }));
         expect((blockedService as any).pendingInterruptCommands.size).toBe(0);
     });
 
-    it('completes reentrant disconnect-plus-send-throw exactly once', () => {
-        const callbacks = new Map<string, (payload?: any) => void>();
+    it('settles a reentrant final disconnect-plus-send-throw exactly once', async () => {
+        vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+        const callbacks = new Map<string, (...payload: any[]) => void>();
         const wsClient = {
             state: 'connected', connect: vi.fn(), disconnect: vi.fn(), off: vi.fn(),
-            on: vi.fn((event: string, callback: (payload?: any) => void) => callbacks.set(event, callback)),
+            on: vi.fn((event: string, callback: (...payload: any[]) => void) => callbacks.set(event, callback)),
             send: vi.fn(() => {
-                callbacks.get('onDisconnect')?.('socket closed');
+                callbacks.get('onDisconnect')?.('socket closed', false);
                 throw new Error('native send failed');
             }),
         } as any;
-        const onFailure = vi.fn();
-        const failingService = new AgentStreamingService('ws://localhost:8000/ws/agent', {
-            wsClient,
-            onInterruptCommandTransportFailure: onFailure,
-        });
+        const failingService = new AgentStreamingService('ws://localhost:8000/ws/agent', { wsClient });
         failingService.connect('run-1', mockAgentContext);
 
-        expect(failingService.interruptGeneration('client_interrupt_throw')).toBe(false);
-        callbacks.get('onDisconnect')?.('again');
-        expect(onFailure).toHaveBeenCalledTimes(1);
+        await expect(failingService.interruptGeneration('client_interrupt_throw')).resolves.toEqual({ kind: 'connection_lost' });
+        callbacks.get('onDisconnect')?.('again', false);
         expect((failingService as any).pendingInterruptCommands.size).toBe(0);
+    });
+
+    describe('a Stop waiting when the connection is lost (autobyteus-533 D-W7)', () => {
+        const connectedService = () => {
+            const callbacks = new Map<string, (...payload: any[]) => void>();
+            const wsClient = {
+                state: 'connected', connect: vi.fn(), disconnect: vi.fn(), send: vi.fn(), off: vi.fn(),
+                on: vi.fn((event: string, callback: (...payload: any[]) => void) => callbacks.set(event, callback)),
+            } as any;
+            const streaming = new AgentStreamingService('ws://localhost:8000/ws/agent', { wsClient });
+            mockAgentContext.state.currentStatus = AgentStatus.Running;
+            streaming.connect('run-1', mockAgentContext);
+            const outcomes: string[] = [];
+            void streaming.interruptGeneration('client_interrupt_held').then((outcome) => outcomes.push(outcome.kind));
+            const frame = (message: unknown) => callbacks.get('onMessage')?.(JSON.stringify(message));
+            return { streaming, wsClient, callbacks, outcomes, frame };
+        };
+        const flush = () => new Promise((resolve) => setTimeout(resolve, 0));
+
+        it('is held across a retryable loss and settled connection_lost after the new connection\'s status is applied', async () => {
+            const { callbacks, outcomes, frame } = connectedService();
+            callbacks.get('onDisconnect')?.('network reset', true);
+            await flush();
+            expect(outcomes).toEqual([]);
+            frame({ type: 'CONNECTED', payload: { agent_id: 'run-1', session_id: 's-2' } });
+            await flush();
+            expect(outcomes).toEqual([]);
+            frame({ type: 'AGENT_STATUS', payload: { recoverableBlock: null, status: 'idle' } });
+            expect(mockAgentContext.state.currentStatus).toBe(AgentStatus.Idle);
+            await flush();
+            expect(outcomes).toEqual(['connection_lost']);
+        });
+
+        it('is held across a re-synchronization (dropConnection) the same way', async () => {
+            const { streaming, outcomes, frame } = connectedService();
+            streaming.dropConnection('Agent stream is re-synchronizing.');
+            await flush();
+            expect(outcomes).toEqual([]);
+            frame({ type: 'AGENT_STATUS', payload: { recoverableBlock: null, status: 'running' } });
+            await flush();
+            expect(outcomes).toEqual(['connection_lost']);
+        });
+
+        it.each([
+            ['a non-retryable loss', (s: ReturnType<typeof connectedService>) => s.callbacks.get('onDisconnect')?.('closed', false)],
+            ['disconnect()', (s: ReturnType<typeof connectedService>) => s.streaming.disconnect()],
+        ])('is settled at once on %s', async (_case, close) => {
+            const stream = connectedService();
+            close(stream);
+            await flush();
+            expect(stream.outcomes).toEqual(['connection_lost']);
+        });
+
+        it('a held Stop is settled at once when the stream is then closed for good', async () => {
+            const stream = connectedService();
+            stream.callbacks.get('onDisconnect')?.('network reset', true);
+            stream.streaming.disconnect();
+            await flush();
+            expect(stream.outcomes).toEqual(['connection_lost']);
+        });
     });
 
     it('serializes standalone send command identity on SEND_MESSAGE', () => {

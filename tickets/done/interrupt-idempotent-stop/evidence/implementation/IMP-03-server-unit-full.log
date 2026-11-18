@@ -1,0 +1,28 @@
+# IMP-03 server unit suite (full) and the cause of its 5 failures
+# command: pnpm -C autobyteus-server-ts test:unit ; then the two failing files alone ; then an FSEvents measurement (TESTING.md "File watching on a busy Mac")
+# commit: ff16e5de85..1f92302096 (server code as of ff16e5de85)
+# env: macOS, Node v22.23.1
+# date: 2026-11-18
+# result: 8376 passed, 5 failed: 4 agent-package folder-watcher timeouts (fseventsd busy) and 1 app-data-migration timeout under load (passes alone). None exercises changed code.
+
+Full run:
+ FAIL  tests/app-data-migrations/append-only-message-logs-v1/append-only-message-logs-v1-app-data-migration.test.ts > 20261018_append_only_message_logs_v1 > with task-agent-own-run in real runner order > own-run fails in start 1 after ours converted its waiting run's log, and its retry in start 2 reads the converted log; every task agent's log is complete (F-PENDING-OWN-RUN)
+ FAIL  tests/app-data-migrations/append-only-message-logs-v1/append-only-message-logs-v1-app-data-migration.test.ts > 20261018_append_only_message_logs_v1 > with task-agent-own-run in real runner order > own-run fails in start 1 after ours converted its waiting run's log, and its retry in start 2 reads the converted log; every task agent's log is complete (F-PENDING-OWN-RUN)
+ FAIL  tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts > AgentPackageFolderWatcher > reports definition changes per folder and ignores skills and other files
+ FAIL  tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts > AgentPackageFolderWatcher > moves a root to FOLDER_MISSING when it is renamed away and resumes watching when it returns
+ FAIL  tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts > AgentPackageFolderWatcher > starts a registered root that is missing as FOLDER_MISSING and arms it when it appears
+ FAIL  tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts > AgentPackageFolderWatcher catch-up request > allows another repair after a folder is added or removed
+ Test Files  2 failed | 1015 passed | 5 skipped (1022)
+      Tests  5 failed | 8376 passed | 9 skipped (8390)
+
+The two files alone:
+ FAIL  tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts > AgentPackageFolderWatcher > reports definition changes per folder and ignores skills and other files
+ FAIL  tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts > AgentPackageFolderWatcher > reports definition changes per folder and ignores skills and other files
+ FAIL  tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts > AgentPackageFolderWatcher > moves a root to FOLDER_MISSING when it is renamed away and resumes watching when it returns
+ FAIL  tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts > AgentPackageFolderWatcher > re-arms a root whose folder was replaced in place (GitHub update rename swap)
+ Test Files  1 failed | 1 passed (2)
+      Tests  3 failed | 32 passed (35)
+
+FSEvents measurement (node script: fs.watch a temp dir recursively, write one file, wait 10 s, close):
+{"writeToEventMs":"none in 10000 ms","closeBlockMs":14321}
+fseventsd CPU at the time: 137.6% then 153.6% (ps -Ao pcpu,comm)

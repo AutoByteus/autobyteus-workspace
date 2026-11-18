@@ -29,7 +29,9 @@ import {
   finalizeLocalSubmissionAttachments,
   type LocalUserSubmissionHandle,
 } from '~/services/runSubmission/localUserSubmission';
-import { buildClientInterruptCommandId, buildClientMessageId, showInterruptCommandResult, showInterruptTransportFailure } from '~/services/agentStreaming/teamRunCommandPresentation';
+import { buildClientInterruptCommandId, buildClientMessageId } from '~/services/agentStreaming/teamRunCommandIds';
+import { INTERRUPT_NOT_SENT } from '~/services/agentStreaming/interruptCommandAdmission';
+import type { InterruptOutcome } from '~/services/agentStreaming/protocol/agentCommandTypes';
 import {
   hydrateLiveTeamRunContext,
   type TeamRunHydrationCandidate,
@@ -107,8 +109,6 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
       }
       const wsEndpoint = useWindowNodeContextStore().getBoundEndpoints().teamWs;
       const service = new TeamStreamingService(wsEndpoint, {
-        onInterruptCommandResult: showInterruptCommandResult,
-        onInterruptCommandTransportFailure: showInterruptTransportFailure,
         onStreamRecoveryRequired: (notice) => {
           this.streamRecoveryNoticesByRootTeamRunId = {
             ...this.streamRecoveryNoticesByRootTeamRunId,
@@ -155,8 +155,6 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
       }
       const wsEndpoint = useWindowNodeContextStore().getBoundEndpoints().teamWs;
       const candidate = new TeamStreamingService(wsEndpoint, {
-        onInterruptCommandResult: showInterruptCommandResult,
-        onInterruptCommandTransportFailure: showInterruptTransportFailure,
         onStreamRecoveryRequired: (notice) => {
           this.streamRecoveryNoticesByRootTeamRunId = {
             ...this.streamRecoveryNoticesByRootTeamRunId,
@@ -364,13 +362,12 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
       if (!service) return;
       isApproved ? service.approveTool(invocationId, target, reason || undefined) : service.denyTool(invocationId, target, reason || undefined);
     },
-    interruptFocusedMemberGeneration(target: FocusedTeamMemberInterruptTarget): boolean {
+    /** Sends one Stop to a member through its Team's stream; resolves with its outcome (`not_sent` without one). */
+    interruptFocusedMemberGeneration(target: FocusedTeamMemberInterruptTarget): Promise<InterruptOutcome> {
       const team = useAgentTeamContextsStore().getTeamContextById(target.teamRunId);
-      if (!team?.view.hasAgentRun(target.agentRunId)) return false;
-      return teamStreamingServices.get(target.teamRunId)?.interruptGeneration(
-        buildClientInterruptCommandId(),
-        { agentRunId: target.agentRunId },
-      ) ?? false;
+      const service = teamStreamingServices.get(target.teamRunId);
+      if (!team?.view.hasAgentRun(target.agentRunId) || !service) return Promise.resolve(INTERRUPT_NOT_SENT);
+      return service.interruptGeneration(buildClientInterruptCommandId(), { agentRunId: target.agentRunId });
     },
     async hydrateRun(
       rootTeamRunId: string,

@@ -1,0 +1,33 @@
+ ❯ tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts (9 tests | 3 skipped) 126370ms
+       ✓ starts a new run in the linked workspace and continues it after restore, using the skill both times (AC-101, AC-102)  11568ms
+       ✓ starts a brand-new team member with configured skills on its first message (AC-105)  3680ms
+       ✓ refuses a configured-skill run on a different same-named workspace skill and lets an all-installed agent use it (AC-104)  6364ms
+       ✓ starts a new run in the linked workspace and continues it after restore, using the skill both times (AC-101, AC-102)  19472ms
+       ✓ starts a brand-new team member with configured skills on its first message (AC-105)  19853ms
+       ✓ refuses a configured-skill run on a different same-named workspace skill and lets an all-installed agent use it (AC-104)  6797ms
+       ↓ starts a new run in the linked workspace and continues it after restore, using the skill both times (AC-101, AC-102)
+       ↓ starts a brand-new team member with configured skills on its first message (AC-105)
+       ↓ refuses a configured-skill run on a different same-named workspace skill and lets an all-installed agent use it (AC-104)
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts > workspace skill links with real runtimes (REQ-105) > grok
+Error: [{"message":"Grok Build model discovery timed out; check the CLI and retry.","locations":[{"line":1,"column":21}],"path":["providerModelCatalogSnapshots"]}]
+ ❯ graphql tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts:88:66
+     86|     });
+     87|     const body = await response.json() as { data?: T; errors?: Array<{…
+     88|     if (!response.ok || !body.data || body.errors?.length) throw new E…
+       |                                                                  ^
+     89|     return body.data;
+     90|   };
+ ❯ tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts:223:23
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  6 passed | 3 skipped (9)
+   Start at  18:20:06
+   Duration  137.03s (transform 7.11s, setup 60ms, import 10.06s, tests 126.37s, environment 0ms)
+
+JSON report written to /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/release-smoke-t752vwm7/live.json
