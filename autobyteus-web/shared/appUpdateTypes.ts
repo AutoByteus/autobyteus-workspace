@@ -73,14 +73,14 @@ export interface AppUpdateNotification {
    * What automatic updates did with `version` (autobyteus-356): `AUTO_UPDATED` on a handled notification the app
    * installed by itself; `AUTO_FAILED` on a waiting one whose automatic download or install failed; null otherwise.
    */
-  outcome: AppUpdateAutomaticOutcome | null;
+  outcome: AppUpdateOutcome | null;
   /** The failure's reason when `outcome` is `AUTO_FAILED`; null otherwise. */
   outcomeReason: string | null;
   /** Which automatic step failed when `outcome` is `AUTO_FAILED` (`install`: not tried again for this version); null otherwise. */
   outcomeStep: 'download' | 'install' | null;
 }
 
-export type AppUpdateAutomaticOutcome = 'AUTO_UPDATED' | 'AUTO_FAILED';
+export type AppUpdateOutcome = 'AUTO_UPDATED' | 'AUTO_FAILED' | 'MANUAL_INSTALL_FAILED';
 
 export interface AppUpdateState {
   status: AppUpdateStatus;

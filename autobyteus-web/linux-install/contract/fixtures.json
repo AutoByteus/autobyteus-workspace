@@ -1,0 +1,77 @@
+{
+  "PublicKey": "6kpsY+KcUgq+9VB7Ey7F+ZVHdq6+vnuSQh7qaRRG0iw=",
+  "Cases": [
+    {
+      "Name": "canonical",
+      "Record": "eyJmb3JtYXQiOjEsInByb2R1Y3QiOiJhdXRvYnl0ZXVzLXBlcnNvbmFsLWRlc2t0b3AiLCJhcnRpZmFjdCI6IkFwcEltYWdlIiwib3MiOiJsaW51eCIsImFyY2giOiJ4NjQiLCJ2ZXJzaW9uIjoiMS41LjE0LWJldGEuMSIsImNoYW5uZWwiOiJiZXRhIiwic2l6ZSI6MTIsInNoYTI1NiI6IjAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAiLCJtaW5Xcml0ZXIiOjF9Cg==",
+      "Signature": "97E4CVjTEqQvglSKfOsSjPiGS5rLUQSwxutWfYTNILvYQ4wjmdiO3omIxDZNnbeflaJwOJhc3a6lgKqGsPobCw==",
+      "Valid": true
+    },
+    {
+      "Name": "duplicate",
+      "Record": "eyJmb3JtYXQiOjEsImZvcm1hdCI6MSwicHJvZHVjdCI6ImF1dG9ieXRldXMtcGVyc29uYWwtZGVza3RvcCIsImFydGlmYWN0IjoiQXBwSW1hZ2UiLCJvcyI6ImxpbnV4IiwiYXJjaCI6Ing2NCIsInZlcnNpb24iOiIxLjUuMTQtYmV0YS4xIiwiY2hhbm5lbCI6ImJldGEiLCJzaXplIjoxMiwic2hhMjU2IjoiMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMCIsIm1pbldyaXRlciI6MX0K",
+      "Signature": "HssZ0HXEmrw3SsZB4QGLF7Ddcd1P+WLZkfbtNj8G8H+PJq6AkvU6+SxtJXcIuOBT2o971E3T0OKrmafaiMIqCw==",
+      "Valid": false
+    },
+    {
+      "Name": "unknown",
+      "Record": "eyJleHRyYSI6MSwiZm9ybWF0IjoxLCJwcm9kdWN0IjoiYXV0b2J5dGV1cy1wZXJzb25hbC1kZXNrdG9wIiwiYXJ0aWZhY3QiOiJBcHBJbWFnZSIsIm9zIjoibGludXgiLCJhcmNoIjoieDY0IiwidmVyc2lvbiI6IjEuNS4xNC1iZXRhLjEiLCJjaGFubmVsIjoiYmV0YSIsInNpemUiOjEyLCJzaGEyNTYiOiIwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwIiwibWluV3JpdGVyIjoxfQo=",
+      "Signature": "4bDJkG3/9TDRA6U3rkVdXCMDp6K5/IyPAQ1QGaYHl57ZyraUUZPMhxWfkfsXTVqYlcSc82iJk6iKpRg0kZ0TDA==",
+      "Valid": false
+    },
+    {
+      "Name": "missing",
+      "Record": "eyJwcm9kdWN0IjoiYXV0b2J5dGV1cy1wZXJzb25hbC1kZXNrdG9wIiwiYXJ0aWZhY3QiOiJBcHBJbWFnZSIsIm9zIjoibGludXgiLCJhcmNoIjoieDY0IiwidmVyc2lvbiI6IjEuNS4xNC1iZXRhLjEiLCJjaGFubmVsIjoiYmV0YSIsInNpemUiOjEyLCJzaGEyNTYiOiIwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwIiwibWluV3JpdGVyIjoxfQo=",
+      "Signature": "pCA0gMp0LkvjbYI2qvDkzNjrvpzlgzL40mFf9AePfijg26ibwtq/pfvM6qlkkVAszAXy3E+JkLiyP3sLeR/cDw==",
+      "Valid": false
+    },
+    {
+      "Name": "float",
+      "Record": "eyJmb3JtYXQiOjEsInByb2R1Y3QiOiJhdXRvYnl0ZXVzLXBlcnNvbmFsLWRlc2t0b3AiLCJhcnRpZmFjdCI6IkFwcEltYWdlIiwib3MiOiJsaW51eCIsImFyY2giOiJ4NjQiLCJ2ZXJzaW9uIjoiMS41LjE0LWJldGEuMSIsImNoYW5uZWwiOiJiZXRhIiwic2l6ZSI6MTIuMCwic2hhMjU2IjoiMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMCIsIm1pbldyaXRlciI6MX0K",
+      "Signature": "5Nc6S3EECJc1N60qMF2/E+vbFDIH5PRrfjs/BPcKOo/VpVHg46KZFkVqUl/cAQ+oekja03DeiHMAws4XVvYcDg==",
+      "Valid": false
+    },
+    {
+      "Name": "channel",
+      "Record": "eyJmb3JtYXQiOjEsInByb2R1Y3QiOiJhdXRvYnl0ZXVzLXBlcnNvbmFsLWRlc2t0b3AiLCJhcnRpZmFjdCI6IkFwcEltYWdlIiwib3MiOiJsaW51eCIsImFyY2giOiJ4NjQiLCJ2ZXJzaW9uIjoiMS41LjE0LWJldGEuMSIsImNoYW5uZWwiOiJzdGFibGUiLCJzaXplIjoxMiwic2hhMjU2IjoiMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMCIsIm1pbldyaXRlciI6MX0K",
+      "Signature": "6yqA6FVKBQUeTboz9kTWm0SDVL7XaEeDuWvkzj0LSo5KYpTQotVcfYwmp/rNquNT8lnZdbjqAr3Cw2Gj6B0nCQ==",
+      "Valid": false
+    },
+    {
+      "Name": "version",
+      "Record": "eyJmb3JtYXQiOjEsInByb2R1Y3QiOiJhdXRvYnl0ZXVzLXBlcnNvbmFsLWRlc2t0b3AiLCJhcnRpZmFjdCI6IkFwcEltYWdlIiwib3MiOiJsaW51eCIsImFyY2giOiJ4NjQiLCJ2ZXJzaW9uIjoiMDEuNS4xNC1iZXRhLjEiLCJjaGFubmVsIjoiYmV0YSIsInNpemUiOjEyLCJzaGEyNTYiOiIwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwIiwibWluV3JpdGVyIjoxfQo=",
+      "Signature": "UbzVFvECoervKV/wDyphS1epQL/cZVYa4CGcrdAeDUcJecdnneVpdCwny2sxNQ7JnGZZ0OMKsf2AZXrOzT/eCg==",
+      "Valid": false
+    },
+    {
+      "Name": "writer",
+      "Record": "eyJmb3JtYXQiOjEsInByb2R1Y3QiOiJhdXRvYnl0ZXVzLXBlcnNvbmFsLWRlc2t0b3AiLCJhcnRpZmFjdCI6IkFwcEltYWdlIiwib3MiOiJsaW51eCIsImFyY2giOiJ4NjQiLCJ2ZXJzaW9uIjoiMS41LjE0LWJldGEuMSIsImNoYW5uZWwiOiJiZXRhIiwic2l6ZSI6MTIsInNoYTI1NiI6IjAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAiLCJtaW5Xcml0ZXIiOjJ9Cg==",
+      "Signature": "LhLmjDpAbbG7iKqhkTEcEKPtWu4PMZi3oDyn2CgcdVMcaFhxwxpzXYr2b1gMhig22dX7C57Qn3VFLtZn/DNmCQ==",
+      "Valid": false
+    },
+    {
+      "Name": "too-large",
+      "Record": "eyJmb3JtYXQiOjEsInByb2R1Y3QiOiJhdXRvYnl0ZXVzLXBlcnNvbmFsLWRlc2t0b3AiLCJhcnRpZmFjdCI6IkFwcEltYWdlIiwib3MiOiJsaW51eCIsImFyY2giOiJ4NjQiLCJ2ZXJzaW9uIjoiMS41LjE0LWJldGEuMSIsImNoYW5uZWwiOiJiZXRhIiwic2l6ZSI6MjE0NzQ4MzY0OSwic2hhMjU2IjoiMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMCIsIm1pbldyaXRlciI6MX0K",
+      "Signature": "wcgvLXpZgZ99VnfpelltLqulCegR1+02F+VWmV8BNqtewvqjxb3lt1yiO6XLbAXBLdSQSLnTRj0u1Yp/D1vqBw==",
+      "Valid": false
+    },
+    {
+      "Name": "no-newline",
+      "Record": "eyJmb3JtYXQiOjEsInByb2R1Y3QiOiJhdXRvYnl0ZXVzLXBlcnNvbmFsLWRlc2t0b3AiLCJhcnRpZmFjdCI6IkFwcEltYWdlIiwib3MiOiJsaW51eCIsImFyY2giOiJ4NjQiLCJ2ZXJzaW9uIjoiMS41LjE0LWJldGEuMSIsImNoYW5uZWwiOiJiZXRhIiwic2l6ZSI6MTIsInNoYTI1NiI6IjAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAiLCJtaW5Xcml0ZXIiOjF9",
+      "Signature": "Ad0CVONUSWqC+ZOU+yEmhS+eQwzrBWedOw6hcdWI5EnJxTnmof9Tr9s74NhYBVfocbCa/kZN5DiAq37j4gaWAQ==",
+      "Valid": false
+    },
+    {
+      "Name": "wrong-product",
+      "Record": "eyJmb3JtYXQiOjEsInByb2R1Y3QiOiJvdGhlciIsImFydGlmYWN0IjoiQXBwSW1hZ2UiLCJvcyI6ImxpbnV4IiwiYXJjaCI6Ing2NCIsInZlcnNpb24iOiIxLjUuMTQtYmV0YS4xIiwiY2hhbm5lbCI6ImJldGEiLCJzaXplIjoxMiwic2hhMjU2IjoiMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMCIsIm1pbldyaXRlciI6MX0K",
+      "Signature": "AwNEiaZ8GYi1A3vce8spx4h/gy1wKwk4LjKpoVDKzCz2JjXsS5gTuJqAaM34eoNWFImmC5DypcF+Pm/uQQZWBg==",
+      "Valid": false
+    },
+    {
+      "Name": "wrong-signature",
+      "Record": "eyJmb3JtYXQiOjEsInByb2R1Y3QiOiJhdXRvYnl0ZXVzLXBlcnNvbmFsLWRlc2t0b3AiLCJhcnRpZmFjdCI6IkFwcEltYWdlIiwib3MiOiJsaW51eCIsImFyY2giOiJ4NjQiLCJ2ZXJzaW9uIjoiMS41LjE0LWJldGEuMSIsImNoYW5uZWwiOiJiZXRhIiwic2l6ZSI6MTIsInNoYTI1NiI6IjAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAiLCJtaW5Xcml0ZXIiOjF9Cg==",
+      "Signature": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+      "Valid": false
+    }
+  ]
+}

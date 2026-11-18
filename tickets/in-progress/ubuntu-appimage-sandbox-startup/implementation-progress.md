@@ -1,0 +1,23 @@
+# Active implementation checkpoint — not a downstream handoff
+
+2026-11-18. IR-001 hold cleared by ARCH-REV-003 / SR-014 / DS-003. Current implementation round IR-002 is IN PROGRESS, Large/High. `manual-install-failure-clarification.md` is the designer's subsequent approved implementation clarification, not a new hold.
+
+Implemented so far (not final validation): native release verification/canonical fixtures, bounded initial acquisition, sealed helper custody, one-shot polkit enrollment/removal, nonroot writer with same-inode metadata, native client, native build/sign scripts, AppRun packaging hook/readiness handshake, managed session/coordinator wiring, deferred automatic policy and distinct manual refusal record/row. No release workflow signing/metadata gates yet. Test-only key/origin compilation is excluded from production default build.
+
+Native evidence IMP-05/06 is only a narrow implementation check: new Go helper + inert failure AppImage on disposable Noble, real tty auth, profile/socket/account creation and cleanup, root assets and service writer ownership, protected write refusal, separate prompt on uninstall. Two successive ONE-SHOT entries, not retained auth. It is NOT a production GUI/package/sandbox/update acceptance pass. Source changed after fixture build; pinned binary hashes identify the tested snapshot. Re-run affected paths before final handoff.
+
+Local results so far: Go package tests passed including release vectors, payload bounds, redirect/size rules, sealed custody and two inert same-inode transactions/replay/tamper refusals. JS shared-vector tests 12 pass. New session tests 8 pass and notification-record tests 17 pass. Existing appUpdater suite failed setup because .nuxt/tsconfig.json missing; preparing it before retry. Electron and packaging scoped tsc passed before latest notification additions; both root-required typechecks still needed. Initial offline pnpm install lacked @fastify/cors tarball; normal frozen install completed. Nested scripts need temporary corepack shim in PATH.
+
+## Resume commands / owned resources
+- Worktree remains this ticket branch; never touch the user's checkout/app/data.
+- Go `/tmp/autobyteus-5-toolchain/go/bin/go` (official 1.27.4 verified digest); prepend `/tmp/autobyteus-5-toolchain/bin` for pnpm child scripts. Node 22.23.2.
+- Disposable native key/artifacts `/tmp/autobyteus-5-native`; never publish or copy private key into repo. Test key generated locally, unrelated to production/server keys.
+- Disposable VM resources `/tmp/autobyteus-5-vm`; QEMU stopped after verified owned-installation uninstall; seed server stopped. Base cloud image/tooling retained for follow-on implementation checks. Guest key/password and overlay remain test-owned; remove at final cleanup. No host AppArmor/sysctl/package changes.
+- Application restart at 13:26 UTC interrupted downloads/install; processes were checked absent before resuming. Cloud image digest verified after resume; pnpm frozen install completed; test-native build retried after guard fix for stdin-module imports.
+
+## Work still required
+- Complete release workflow build-only key provisioning, final-byte signing, shared-fixture validator and publication order. No production credentials or publication authorized.
+- Strengthen unit/IPC/managed updater coverage and run both typechecks. Validate actual package hooks/Exec, executable-mode argv/signals and renderer isolation on affected disposable hosts.
+- Verify manual persistence failure observability, canonical relaunch/test-profile preservation, refused/unknown commit recovery and frontend notification rendering. Complete native rollback/refusal checks and real packaged authentication UI.
+- Update glossary/docs through owned boundaries; final implementation-handoff/revision record and commit/evidence ledger before routing Large/High to independent source review.
+- All real Ubuntu 22/24/26, native ARM64, clean CI, two genuine signed updates with synthetic data and no cached authorization gates remain. Independent broad/API/E2E validation belongs downstream. Nothing is implementation-complete or ready to merge.

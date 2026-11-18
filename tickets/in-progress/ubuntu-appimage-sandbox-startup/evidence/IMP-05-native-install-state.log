@@ -1,0 +1,24 @@
+Native implementation working-tree snapshot after 703b1bef5c; no acceptance/sign-off.
+Built with Go 1.27.4 linux/amd64, CGO_ENABLED=0, disposable Ed25519 key and desktop_test loopback origin.
+The AppImage carries an inert shell pre-main failure fixture, NOT the product Electron renderer/server.
+Later client/protocol/session and consent-text edits were not in this native fixture; rerun by impact.
+
+PASS: desktop UID denied direct image write
+writer status: {"record":"eyJmb3JtYXQiOjEsInByb2R1Y3QiOiJhdXRvYnl0ZXVzLXBlcnNvbmFsLWRlc2t0b3AiLCJhcnRpZmFjdCI6IkFwcEltYWdlIiwib3MiOiJsaW51eCIsImFyY2giOiJ4NjQiLCJ2ZXJzaW9uIjoiMS41LjEzIiwiY2hhbm5lbCI6InN0YWJsZSIsInNpemUiOjE0NzQ5NDE4LCJzaGEyNTYiOiIxMmI4ZTc5YmQ4ZWM5MWZjZTVhOWIxYzllOGNlMmEyZWZlYWU4YTYxNGU4ZDI0OTI1ZTVlZDBmZjJjOGJkN2RmIiwibWluV3JpdGVyIjoxfQo=","signature":"3ouKtWw7zcpkmdTnijLQpZ3ya1Oe3sDFEW/ESXIFuiOiRyidbviCePz5rmnaAv06S6x+fzDXaG1fKh4Kbe7XAw=="}
+
+MainPID=2262
+User=abdesk-1000
+NoNewPrivileges=yes
+ActiveState=active
+root 555 /opt/autobyteus-desktop/1000/support/provision
+root 555 /opt/autobyteus-desktop/1000/support/writer
+abdesk-1000 555 /opt/autobyteus-desktop/1000/app/AutoByteus.AppImage
+Nov 18 13:28:26 ab5-implementation polkitd[864]: Acquired the name org.freedesktop.PolicyKit1 on the system bus
+Nov 18 13:28:26 ab5-implementation systemd[1]: Started polkit.service - Authorization Manager.
+Nov 18 13:29:28 ab5-implementation polkitd[864]: Registered Authentication Agent for unix-process:2043:8087 (system bus name :1.34 [/usr/bin/pkttyagent --process 2043 --notify-fd 3], object path /org/freedesktop/PolicyKit1/AuthenticationAgent, locale C.UTF-8)
+Nov 18 13:29:28 ab5-implementation polkitd[864]: Operator of unix-process:2043:8087 successfully authenticated as unix-user:witness to gain ONE-SHOT authorization for action org.freedesktop.policykit.exec for unix-process:2043:8087 [./MyApp.AppImage] (owned by unix-user:witness)
+Nov 18 13:29:29 ab5-implementation polkitd[864]: Unregistered Authentication Agent for unix-process:2043:8087 (system bus name :1.34, object path /org/freedesktop/PolicyKit1/AuthenticationAgent, locale C.UTF-8) (disconnected from bus)
+127.0.0.1 - - [18/Nov/2026 13:29:28] "GET /AutoByteus/autobyteus-workspace/releases/download/v1.5.13/AutoByteus_personal_linux-x64-1.5.13.AppImage.release.json HTTP/1.1" 200 -
+127.0.0.1 - - [18/Nov/2026 13:29:28] "GET /AutoByteus/autobyteus-workspace/releases/download/v1.5.13/AutoByteus_personal_linux-x64-1.5.13.AppImage.release.json.sig HTTP/1.1" 200 -
+kernel.apparmor_restrict_unprivileged_userns = 1
+kernel.apparmor_restrict_unprivileged_unconfined = 0

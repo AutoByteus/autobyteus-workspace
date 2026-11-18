@@ -1,0 +1,12 @@
+Native implementation working-tree snapshot after 703b1bef5c; no acceptance/sign-off.
+Built with Go 1.27.4 linux/amd64, CGO_ENABLED=0, disposable Ed25519 key and desktop_test loopback origin.
+The AppImage carries an inert shell pre-main failure fixture, NOT the product Electron renderer/server.
+Later client/protocol/session and consent-text edits were not in this native fixture; rerun by impact.
+
+12b8e79bd8ec91fce5a9b1c9e8ce2a2efeae8a614e8d24925e5ed0ff2c8bd7df  /tmp/autobyteus-5-native/MyApp.AppImage
+45f405a8c15c27e4c27bd9f2ed6254721c5bf6dfa00590373187506c8b4efd5c  /tmp/autobyteus-5-native/test-out/autobyteus-provision
+7d9914ec9e89abc68ed7cd52a15c6859fcce389b51cb3447db23b668845042b2  /tmp/autobyteus-5-native/test-out/writer
+32cc6a6890a56631f1492289c3bfcab585a621c654a06793e9a489616aef3679  /tmp/autobyteus-5-native/test-out/AppRun
+Cloud image: verified Ubuntu cloud signing key and SHA256 04e8f2461a16a44e78a370284471f29616cdd9baf1893df25807b71f985b6c94.
+Guest Ubuntu 24.04.5 kernel 6.8.0-147-generic, UID 1000. QEMU 10.2.1 extracted locally; no host package installation.
+Builder app-builder-bin 5.0.0-alpha.10 replaced generated AppRun with byte-identical native AppRun; extracted desktop Exec=AppRun --autobyteus-appimage-desktop-entry %U.

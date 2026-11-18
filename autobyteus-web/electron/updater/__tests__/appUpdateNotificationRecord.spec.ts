@@ -21,9 +21,38 @@ describe('AppUpdateNotificationRecord', () => {
     new AppUpdateNotificationRecord(dir, '1.5.6', at('2026-10-20T10:00:00.000Z')).recordFound('1.5.7');
     expect(JSON.parse(fs.readFileSync(file(), 'utf8'))).toEqual({
       version: '1.5.7', fromVersion: '1.5.6', foundAt: '2026-10-20T10:00:00.000Z', read: false, handledVersion: null, handledAt: null,
-      automatic: null, automaticFailure: null, outcome: null,
+      automatic: null, automaticFailure: null, outcome: null, manualInstall: null, manualFailure: null,
     });
     expect(new AppUpdateNotificationRecord(dir, '1.5.6').toNotification(noLink)).toMatchObject({ version: '1.5.7', state: 'waiting' });
+  });
+
+  it('persists manual refusal independently of automatic blocking across restart and same-version checks', () => {
+    const record = new AppUpdateNotificationRecord(dir, '1.5.13');
+    record.recordFound('1.5.14');
+    record.recordAutomaticFailure('1.5.14', 'install', 'Previous automatic failure');
+    record.recordManualInstall('1.5.14'); record.recordManualInstallFailure('1.5.14');
+    const restarted = new AppUpdateNotificationRecord(dir, '1.5.13');
+    restarted.recordFound('1.5.14');
+    expect(restarted.blocksAutomatic('1.5.14')).toBe(true);
+    expect(restarted.toNotification(noLink)).toMatchObject({ outcome: 'MANUAL_INSTALL_FAILED', outcomeReason: 'refused', read: false });
+    restarted.recordManualInstall('1.5.14');
+    expect(new AppUpdateNotificationRecord(dir, '1.5.14').toNotification(noLink)).toMatchObject({ state: 'handled', outcome: null });
+  });
+
+  it('manual failure does not create an automatic block and a newer release clears its display', () => {
+    const record = new AppUpdateNotificationRecord(dir, '1.5.13');
+    record.recordManualInstallFailure('1.5.14');
+    expect(record.blocksAutomatic('1.5.14')).toBe(false);
+    record.recordFound('1.5.15');
+    expect(record.toNotification(noLink)?.outcome).toBeNull();
+  });
+
+  it('directly reads historical records without manual optional evidence', () => {
+    new AppUpdateNotificationRecord(dir, '1.5.13').recordFound('1.5.14');
+    const saved = JSON.parse(fs.readFileSync(file(), 'utf8'));
+    delete saved.manualInstall; delete saved.manualFailure;
+    fs.writeFileSync(file(), JSON.stringify(saved));
+    expect(new AppUpdateNotificationRecord(dir, '1.5.13').toNotification(noLink)).toMatchObject({ version: '1.5.14', outcome: null });
   });
 
   it('does not re-create the same waiting version (no change, no write)', () => {

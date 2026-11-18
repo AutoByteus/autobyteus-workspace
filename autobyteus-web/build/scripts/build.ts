@@ -310,6 +310,7 @@ const options: Configuration = {
   },
   linux: {
     target: ['AppImage'],
+    ...(buildFlavor === 'personal' ? { executableArgs: ['--autobyteus-appimage-desktop-entry'] } : {}),
     icon: 'build/icons', // Linux will use the icons directory containing multiple sizes
   }
 }

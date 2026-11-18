@@ -1,0 +1,114 @@
+import type { ApplicationShutdown } from './applicationShutdown'
+import type { ManagedStage, LinuxManagedInstall } from '../updater/linuxManagedInstall'
+
+type Settings = Readonly<{ automaticUpdate: boolean; updateChannel: 'stable' | 'beta' }>
+type SessionOptions = Readonly<{
+  writer: Pick<LinuxManagedInstall, 'stage' | 'activate' | 'status' | 'discard' | 'canonicalImage'>
+  shutdown: ApplicationShutdown
+  serverGone: () => boolean
+  initialSettings: Settings
+  notifyQuit: () => void
+  quit: () => void
+  exit: (code: number) => void
+  relaunch: (canonicalImage: string) => void
+  report: (error: unknown) => void
+}>
+export type ManagedUpdateEvent =
+  | { type: 'ready'; version: string }
+  | { type: 'invalidated' }
+  | { type: 'activating'; version: string; automatic: boolean }
+  | { type: 'stage-failed'; version: string; error: unknown }
+  | { type: 'activation-failed'; version: string; error: unknown; automatic: boolean; confirmedOld: boolean }
+
+/** Sole managed quit owner. Downloads never initiate shutdown; one independent quit or explicit restart does. */
+export class ManagedUpdateSession {
+  private generation = 0
+  private pending: ManagedStage | null = null
+  private intent: 'quit' | 'restart' | null = null
+  private passQuit = false
+  private listeners = new Set<(event: ManagedUpdateEvent) => void>()
+  private lastSettings: Settings
+  constructor(private readonly options: SessionOptions) { this.lastSettings = options.initialSettings }
+  onChange(listener: (event: ManagedUpdateEvent) => void): void { this.listeners.add(listener) }
+  private emit(event: ManagedUpdateEvent): void { for (const listener of this.listeners) listener(event) }
+  private discard(stage: ManagedStage): void { void this.options.writer.discard(stage).catch(this.options.report) }
+  async stageDownloaded(file: string, version: string): Promise<void> {
+    const generation = ++this.generation
+    const channel = this.lastSettings.updateChannel
+    if (this.pending) this.discard(this.pending)
+    this.pending = null
+    this.emit({ type: 'invalidated' })
+    try {
+      const stage = await this.options.writer.stage(file, version, channel)
+      if (generation !== this.generation || this.intent !== null || this.lastSettings.updateChannel !== channel) {
+        this.discard(stage); return
+      }
+      this.pending = stage
+      this.emit({ type: 'ready', version })
+    } catch (error) {
+      if (generation === this.generation) this.emit({ type: 'stage-failed', version, error })
+    }
+  }
+  settingsChanged(current: Settings): void {
+    if (current.updateChannel !== this.lastSettings.updateChannel || (!current.automaticUpdate && this.lastSettings.automaticUpdate)) {
+      ++this.generation
+      if (this.pending) this.discard(this.pending)
+      this.pending = null
+      this.emit({ type: 'invalidated' })
+    }
+    this.lastSettings = current
+  }
+  requestRestart(): { accepted: boolean } {
+    if (!this.pending || this.intent !== null) return { accepted: false }
+    this.intent = 'restart'
+    const stage = this.pending, generation = this.generation
+    void this.finish(stage, generation, false)
+    return { accepted: true }
+  }
+  willQuit(event: { preventDefault(): void }): void {
+    if (this.passQuit) return
+    event.preventDefault()
+    if (this.intent !== null) return
+    this.intent = 'quit'
+    // A late download cannot make this quit an install; capture readiness at this boundary.
+    const stage = this.lastSettings.automaticUpdate ? this.pending : null
+    this.options.notifyQuit()
+    void this.finish(stage, this.generation, true)
+  }
+  private async finish(stage: ManagedStage | null, generation: number, automatic: boolean): Promise<void> {
+    try {
+      try { await this.options.shutdown.stop() }
+      catch (error) {
+        if (automatic || !this.options.serverGone()) throw error
+        this.options.shutdown.acceptIncompleteStopForInstall()
+      }
+      if (!this.options.serverGone()) throw new Error('Embedded server exit is not confirmed; no activation or relaunch')
+      // No await separates preference/generation checks from activation dispatch.
+      const settings = this.lastSettings
+      if (stage && generation === this.generation && this.pending === stage && stage.channel === settings.updateChannel
+        && (!automatic || settings.automaticUpdate)) {
+        this.emit({ type: 'activating', version: stage.identity.version, automatic })
+        try {
+          const identity = await this.options.writer.activate(stage)
+          if (identity.sha256 !== stage.identity.sha256) throw new Error('Writer committed an unexpected release')
+        } catch (error) {
+          // Lost reply is ambiguous; status hashes the live inode before reporting old or new.
+          const actual = await this.options.writer.status()
+          if (actual.sha256 !== stage.identity.sha256) {
+            this.emit({ type: 'activation-failed', version: stage.identity.version, error, automatic, confirmedOld: actual.sha256 === stage.baseline })
+            if (actual.sha256 !== stage.baseline) throw new Error('Activation outcome requires repair')
+          }
+        }
+      }
+      this.passQuit = true
+      if (automatic) this.options.quit() // ordinary intentional quit never reopens
+      else { this.options.relaunch(this.options.writer.canonicalImage); this.options.exit(0) }
+    } catch (error) {
+      this.options.report(error)
+      if (stage) this.emit({ type: 'activation-failed', version: stage.identity.version, error, automatic, confirmedOld: false })
+      // Existing ordinary shutdown failure behavior is terminal. An unknown manual
+      // activation outcome must not create a second server or claim a successful restart.
+      if (automatic) this.options.exit(1)
+    }
+  }
+}
