@@ -301,8 +301,10 @@ export class AutoByteusAgentRunBackend implements AgentRunBackend {
         turnId,
         reason: "user_interrupt",
       });
+      // The turn asked for is gone. The runtime's turn id (another turn's, for turn_mismatch) is not this Stop's
+      // turn, so it is not passed on: the AgentRun would read it as a protocol violation.
       if (!result.accepted && TURN_GONE_STATUSES.has(result.status)) {
-        return { accepted: false, code: NO_ACTIVE_TURN, message: result.message, turnId: result.turnId ?? null };
+        return { accepted: false, code: NO_ACTIVE_TURN, message: result.message };
       }
       return {
         accepted: result.accepted,

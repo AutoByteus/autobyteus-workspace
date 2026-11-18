@@ -6,6 +6,8 @@ import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-u
 import { AgentRunConfig } from "../../../../../src/agent-execution/domain/agent-run-config.js";
 import { AgentRunContext } from "../../../../../src/agent-execution/domain/agent-run-context.js";
 import { AutoByteusAgentRunBackend } from "../../../../../src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend.js";
+import { AgentRunInterruptState } from "../../../../../src/agent-execution/domain/agent-run-interrupt-state.js";
+import { userInterruptOutcome } from "../../../../../src/services/agent-streaming/user-interrupt-outcome.js";
 import { stubAutoByteusRunTools } from "../../../../helpers/agent-tool-mcp-run-sessions-stub.js";
 
 const createBackend = (overrides: {
@@ -167,13 +169,31 @@ describe("AutoByteusAgentRunBackend", () => {
     });
   });
 
-  it.each(["no_active_turn", "already_settled", "turn_mismatch"])(
-    "answers the native %s interrupt result as NO_ACTIVE_TURN (autobyteus-533 AC-005)",
-    async (status) => {
+  // The native runtime's own shapes (autobyteus-ts agent-runtime.ts, turn-execution-scope.ts): no turn id for
+  // no_active_turn, the asked turn for already_settled, the *other* active turn for turn_mismatch.
+  it.each([
+    ["no_active_turn", null],
+    ["already_settled", "turn-1"],
+    ["turn_mismatch", "turn-2"],
+  ])("answers the native %s interrupt result as NO_ACTIVE_TURN, which the AgentRun applies and the Stop accepts (autobyteus-533 AC-005, CR-001)",
+    async (status, runtimeTurnId) => {
       const { backend } = createBackend({
-        agent: { currentStatus: "running", interrupt: vi.fn().mockResolvedValue({ accepted: false, status, turnId: null, message: "gone" }) },
+        agent: { currentStatus: "running", interrupt: vi.fn().mockResolvedValue({ accepted: false, status, turnId: runtimeTurnId, message: "gone" }) },
       });
-      await expect(backend.interrupt("turn-1")).resolves.toEqual({ accepted: false, code: "NO_ACTIVE_TURN", message: "gone", turnId: null });
+      const mapped = await backend.interrupt("turn-1");
+      expect(mapped).toEqual({ accepted: false, code: "NO_ACTIVE_TURN", message: "gone" });
+
+      // Through the AgentRun's interrupt state, as a user's Stop on turn-1 reaches the backend.
+      const state = new AgentRunInterruptState({
+        runId: "run-1",
+        backend: { interrupt: async () => mapped, getLifecycleSnapshot: () => null } as never,
+        dispatchQueue: { enqueue: async (_runId: string, work: () => unknown) => work() } as never,
+        lifecycleState: { reconcileRuntimeSnapshot: () => undefined, activeTurn: { kind: "IDENTIFIED", turnId: "turn-1" } } as never,
+        onReservationReleased: () => undefined,
+      });
+      const applied = await state.interrupt(null);
+      expect(applied).toMatchObject({ accepted: false, code: "NO_ACTIVE_TURN" });
+      expect(userInterruptOutcome(applied)).toEqual({ accepted: true });
     },
   );
 

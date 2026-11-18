@@ -1,0 +1,22 @@
+# IMP-11 CR-001 fix: native turn-gone answers through AgentRunInterruptState
+# command: pnpm exec vitest run tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend.test.ts --no-watch ; then the same with the old mapping (turnId kept) restored temporarily ; pnpm typecheck
+# commit: working tree on eb60ae71e2 (committed next as the CR-001 fix)
+# env: macOS, Node v22.23.1
+# date: 2026-11-18T11:51:19Z
+
+With the fix:
+      Tests  20 passed (20)
+
+With the old mapping (turnId: result.turnId kept), same tests:
+     x answers the native no_active_turn / already_settled / turn_mismatch interrupt result as NO_ACTIVE_TURN, which the AgentRun applies and the Stop accepts
+      Tests  3 failed | 17 passed (20)
+
+Server typecheck:
+[typecheck] server src (tsconfig.build.json): 0 errors, exit 0, 9.9s
+[typecheck] server tests (tsconfig.tests.json): 1012 errors, exit 2, 30.2s
+[typecheck] production errors: 0; test-file errors: 1012 in 316 files (baseline 1012 in 316 files)
+[typecheck] PASS
+
+Web typecheck (same tree):
+[typecheck] production errors: 0; test-file errors: 87 in 37 files (baseline 87 in 37 files)
+[typecheck] PASS

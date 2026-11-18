@@ -10,23 +10,23 @@
 - Supplemental task artifacts: `evidence/spine-validation/sr-003-stop-spines-by-run-kind.md`; `evidence/reproduction/`
 - Design review report: `design-review-report.md` (ARCH-REV-002 Pass)
 - Architecture review revision record: `architecture-review-revision-record.md`
-- Triggering rework report, revision record, or evidence: N/A (initial round)
+- Triggering rework report, revision record, or evidence: `code-review-report.md`, `code-review-revision-record.md` (CRR-001, CR-001)
 - Ticket folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/interrupt-idempotent-stop/tickets/in-progress/interrupt-idempotent-stop`
 - Worktree / branch: `/Users/normy/autobyteus_org/autobyteus-worktrees/interrupt-idempotent-stop`, `codex/interrupt-idempotent-stop`; code commits `ff16e5de85` (server), `1f92302096` (web), `45cae5ebd2` (probe baseline fix); documents and evidence in the commit that follows them (see `git log`). Base `origin/personal` `bd2053ee51`.
 
 ## Current Implementation Summary
 
-- Implementation cycle: `Initial`
+- Implementation cycle: `Rework`
 - Implementation revision record: `implementation-revision-record.md`
-- Current implementation revision ID: `IR-001`
+- Current implementation revision ID: `IR-002` (Local Fix CR-001; IR-001 initial)
 - Related solution revision IDs: `SR-003` (requirements `SR-002`)
 - Related architecture-review revision IDs: `ARCH-REV-002`
-- Related code-review revision IDs: `N/A`
+- Related code-review revision IDs: `CRR-001`
 - Related API/E2E revision IDs: `N/A`
 - Related delivery revision IDs: `N/A`
-- Triggering finding IDs: `N/A`
+- Triggering finding IDs: `CR-001`
 
-**Node.** One rule, `userInterruptOutcome` (`services/agent-streaming/user-interrupt-outcome.ts`), turns `NO_ACTIVE_TURN` and `RUN_NOT_ACTIVE` into `{accepted:true}` at the five user interrupt boundaries: `/ws/agent` (`agent-stream-handler.ts`), `/ws/agent-team` (`team-interrupt-generation-command-handler.ts`), `/ws/agent-org` (own agents and peer rows, interrupt only), `/ws/agent-collaboration` (peer rows), `/ws/peer-run` (relay). A not-running run / Team / Org answers `NOTHING_TO_INTERRUPT` for an interrupt; tool approval keeps its refusal. The domain `AgentRun.interrupt()` result is unchanged. Claude and Codex backends compare the runtime's active turn with `turnId` before calling the session/thread and answer `NO_ACTIVE_TURN`; native maps `no_active_turn`, `already_settled`, `turn_mismatch` to `NO_ACTIVE_TURN`. The contract is stated on `AgentRunBackend.interrupt`.
+**Node.** One rule, `userInterruptOutcome` (`services/agent-streaming/user-interrupt-outcome.ts`), turns `NO_ACTIVE_TURN` and `RUN_NOT_ACTIVE` into `{accepted:true}` at the five user interrupt boundaries: `/ws/agent` (`agent-stream-handler.ts`), `/ws/agent-team` (`team-interrupt-generation-command-handler.ts`), `/ws/agent-org` (own agents and peer rows, interrupt only), `/ws/agent-collaboration` (peer rows), `/ws/peer-run` (relay). A not-running run / Team / Org answers `NOTHING_TO_INTERRUPT` for an interrupt; tool approval keeps its refusal. The domain `AgentRun.interrupt()` result is unchanged. Claude and Codex backends compare the runtime's active turn with `turnId` before calling the session/thread and answer `NO_ACTIVE_TURN`; native maps `no_active_turn`, `already_settled`, `turn_mismatch` to `NO_ACTIVE_TURN`, without the runtime's turn id (IR-002, CR-001: for `turn_mismatch` it is the other active turn's id, which the AgentRun would read as a protocol violation). The contract is stated on `AgentRunBackend.interrupt`.
 
 **Web.** `runInterrupt` (`services/runInterrupt/runInterrupt.ts`) is the one owner of a Stop: it sets `AgentContext.interruptPending` (primary action `stopping`: spinner, "Stopping…", disabled, `aria-busy`), sends one Stop, watches the run's status from the press, and shows one plain localized message only for `not_sent` / `refused`, naming the agent with `targetDisplayName`. Every route returns `InterruptOutcome`. The streaming services hold a Stop lost with a recovering connection in `InterruptsAwaitingRebind` and settle it `connection_lost` after the rebind's status is applied, or at once on a final close (D-W7).
 
@@ -52,7 +52,7 @@
 | BEH-006/007 | Org member, peer run: accepted quiet; real failure shown | `orgInterruptOutcome`; peer route returns its stream's outcome; server Org/collaboration/peer-run boundaries apply the rule | Unit (Org service, Org store route, delegated/peer route, server handlers) |
 | BEH-008 | Disconnect while pending: Stopping across the reconnect; `connection_lost` after the rebind's status; no toast | `InterruptsAwaitingRebind` in `AgentStreamingService` (first `AGENT_STATUS`), `TeamStreamingService` (snapshot sets ready), `agentOrgStreamingService` (snapshot sets ready); final closes settle at once | Unit per service; composer journey (rebind running → Stop, idle → Send); probe 533-BR-003; browser real stack at 150 ms |
 | BEH-009/010 | Not connected; runtime failure: one plain message naming the agent | `runInterrupt` (`agents.interrupt.notSent`, `agents.interrupt.failed`) | Unit, composer journey, probe 533-BR-001/004; catalog spec en + zh-CN |
-| AC-005 | Turn gone inside the runtime → `NO_ACTIVE_TURN` → accepted | Claude, Codex, native backends | Unit per backend |
+| AC-005 | Turn gone inside the runtime → `NO_ACTIVE_TURN` → accepted | Claude, Codex, native backends | Unit per backend; native through a real `AgentRunInterruptState` and `userInterruptOutcome` with the runtime's real result shapes (IMP-11) |
 
 - Changes stayed within the requirements doc's Scope Guardrail: `Yes`
 
@@ -95,7 +95,7 @@ Web (`autobyteus-web`):
 - If challenged, routed as `Design Impact` (`Yes`/`No`/`N/A`): `N/A`
 - Evidence / notes: two placement corrections within the design's own decisions, not design changes:
   - D-S2 Team: the design names the not-running branch at `team-interrupt-generation-command-handler.ts:42-44`, but that branch is unreachable (its only caller always passes the routed member commands). A stopped Team answers `TEAM_RUN_STOPPED` from `agent-team-stream-handler.ts` `memberCommand`. The interrupt answer `NOTHING_TO_INTERRUPT` is applied there (tool approval keeps `TEAM_RUN_STOPPED`), and the handler's dead null branch and unused `teamRunId` input were removed.
-  - D-S3 native: `turn_mismatch` is mapped to `NO_ACTIVE_TURN` together with `no_active_turn` and `already_settled`, because D-S3 states the contract as "`turnId` is not the runtime's active turn", which is what `turn_mismatch` reports (Claude and Codex answer the same for another active turn).
+  - D-S3 native: `turn_mismatch` is mapped to `NO_ACTIVE_TURN` together with `no_active_turn` and `already_settled`, because D-S3 states the contract as "`turnId` is not the runtime's active turn", which is what `turn_mismatch` reports (Claude and Codex answer the same for another active turn). The mapped answer carries no turn id (IR-002, CR-001).
 
 ## Legacy / Compatibility Removal Check
 
@@ -141,6 +141,9 @@ Evidence folder: `tickets/in-progress/interrupt-idempotent-stop/evidence/impleme
 | IMP-09b | Same, rerun with browser console and socket capture (3 further full runs, plus one `--gaps 300,600,0`) | `45cae5ebd2` | macOS, Chrome | as IMP-09 | AC-002, AC-006, AC-010 | Pass | `IMP-09b-browser-stop-twice-loopback-rerun/` | all gaps `"toasts":""`; second taps up to ~150 ms land on `Stopping…` |
 | IMP-10 | Same with `--latency-ms 150 --gaps 0,150,300,450,700,1000` (phone on a remote path) | `45cae5ebd2` | macOS, Chrome, 150 ms each way | as IMP-09, plus loss and rebind | AC-008, AC-010 | Pass | `IMP-10-browser-stop-twice-latency-150ms/` | every gap `"toasts":""`; `"second":"Stopping… at 496ms"` (base: toasts at 0, 150, 300 ms) |
 
+| IMP-11 | CR-001: `vitest run tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend.test.ts`; the same with the old mapping restored temporarily; both typechecks | CR-001 fix commit (see `git log`, on `eb60ae71e2`) | macOS, Node 22 | native backend `interrupt` → `AgentRunInterruptState` → `userInterruptOutcome` | AC-005 | Pass | `IMP-11-cr001-native-turn-gone.log` | `Tests  20 passed (20)`; old mapping: `Tests  3 failed \| 17 passed (20)`; both typechecks `PASS` at baseline |
+
+- Rerun by impact for IR-002: only the native backend's `interrupt` and its test changed. IMP-02, IMP-04, IMP-07…IMP-10 are still valid (they don't exercise the native backend). IMP-03 covered the old native test; its file was rerun in IMP-11. IMP-05 and IMP-06 were rerun in IMP-11.
 - Not run, and why:
   - Phone case in `pnpm -C autobyteus-web test:e2e:mobile-shell` and a durable real-stack desktop probe replacing `tests/e2e/interrupt-twice-repro-scratch.mjs` (design step 5, AC-010): E2E coverage is owned by API/E2E. The scratch file is kept (with added console/socket capture) as their starting point; it must not be delivered as scratch.
   - Server `test:integration` (whole), `pnpm test:e2e` (whole): left to API/E2E; only the rewritten integration file and the new e2e ran.
