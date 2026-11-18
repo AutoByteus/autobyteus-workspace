@@ -302,6 +302,7 @@ export class AgentStreamHandler {
       sequence,
       sink: egress,
       readStored: this.readStored,
+      readInputState: () => activeRun.getInputStateSnapshot(),
       onFailure: (error) => this.failSnapshot(sessionId, activeRun.runId, error),
     }));
     this.subscribedRunsBySessionId.set(sessionId, activeRun);

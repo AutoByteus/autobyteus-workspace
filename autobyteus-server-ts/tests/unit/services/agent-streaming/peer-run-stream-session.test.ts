@@ -9,7 +9,7 @@ import { PeerRunStreamSession } from "../../../../src/services/agent-streaming/p
 const frame = (sequence: number | undefined, delta = `d${sequence}`) => ({ type: "SEGMENT_CONTENT", ...(sequence === undefined ? {} : { sequence }),
   payload: { id: "s1", turn_id: "t1", segment_type: "text", delta } });
 const snapshot = (base: number, liveSequenceId: string | null = "live-1") => ({ accepted: true as const,
-  snapshot: { stored: { conversation: [] }, turn_frames: [], base_sequence: base, live_sequence_id: liveSequenceId },
+  snapshot: { stored: { conversation: [] }, input_state: null, turn_frames: [], base_sequence: base, live_sequence_id: liveSequenceId },
   status: { type: "AGENT_STATUS", payload: { status: "running" } } });
 
 const harness = () => {
