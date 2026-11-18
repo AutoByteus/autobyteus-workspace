@@ -12,18 +12,18 @@
 - Design Review Report Reviewed As Context: `design-review-report.md` (ARCH-REV-002 Pass)
 - Architecture Review Revision Record Reviewed As Context: `architecture-review-revision-record.md`
 - Relevant Architecture Review Revision IDs: ARCH-REV-002
-- Implementation Handoff Reviewed As Context: `implementation-handoff.md`
+- Implementation Handoff Reviewed As Context: `implementation-handoff.md` (IR-002)
 - Implementation Revision Record Reviewed As Context: `implementation-revision-record.md`
-- Relevant Implementation Revision IDs: IR-001
+- Relevant Implementation Revision IDs: IR-001, IR-002
 - Code Review Revision Record: `code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-001`
-- Current Review Round: `1`
-- Review Scope: `Full Review`
-- Review Scope Evidence (round >1): N/A
-- Trigger: Implementation Engineer, IR-001 ready for source review
-- Prior Review Round Reviewed: N/A
-- Latest Authoritative Round: 1
-- Code reviewed: worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/interrupt-idempotent-stop`, branch `codex/interrupt-idempotent-stop`, `bd2053ee51..b271cc4ceb` (code commits `ff16e5de85`, `1f92302096`, `45cae5ebd2`)
+- Current Code Review Revision ID: `CRR-002`
+- Current Review Round: `2`
+- Review Scope: `Targeted Delta Review`
+- Review Scope Evidence (round >1): `git diff eb60ae71e2 71f9a5d13e` touches only `autobyteus-agent-run-backend.ts` (the turn-gone return, 2 lines) and its unit test, the files of CR-001; no spine, shared interface or other file changed. Round-1 evidence for every other check is carried forward.
+- Trigger: Implementation Engineer, IR-002 (CR-001 Local Fix)
+- Prior Review Round Reviewed: 1 (CRR-001, Fail — CR-001)
+- Latest Authoritative Round: 2
+- Code reviewed: worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/interrupt-idempotent-stop`, branch `codex/interrupt-idempotent-stop`, `bd2053ee51..71f9a5d13e` (code commits `ff16e5de85`, `1f92302096`, `45cae5ebd2`, CR-001 fix `71f9a5d13e`)
 - Failure-origin fields: N/A
 
 ## Routing Classification Review
@@ -58,7 +58,7 @@
 | BEH-006/007 | Confirmed | `orgInterruptOutcome.ts`; `delegatedRunsStore.ts:155-159` peer route; server Org `agent-org-stream-handler.ts:65-67,138,147-151,166`, collaboration `:186-188`, peer relay `peer-run-stream-session.ts:117` | — |
 | BEH-008 | Confirmed | `InterruptsAwaitingRebind` (`interruptCommandAdmission.ts:59-79`): agent `AgentStreamingService.ts:292-293,316-319,141-144`; Team `TeamStreamingService.ts:271-272,284-285,326-327,434,468-471`; Org `agentOrgStreamingService.ts:142,186,320,497-504`. No final give-up in `LiveStreamReconnectScheduler` (R-4 as designed) | — |
 | BEH-009/010 | Confirmed | `runInterrupt.ts:51-59`; texts `agents.interrupt.*` en/zh-CN | — |
-| AC-005 | Confirmed for Claude, Codex, ACP, AGY, native `no_active_turn` / `already_settled`; **not effective for native `turn_mismatch`** (CR-001) | `claude-agent-run-backend.ts:151-153`, `codex-agent-run-backend.ts:197-199`, `autobyteus-agent-run-backend.ts:102-103,304-306` | CR-001 |
+| AC-005 | Confirmed for every backend (round 2: native `turn_mismatch` now effective, CR-001 resolved) | `claude-agent-run-backend.ts:151-153`, `codex-agent-run-backend.ts:197-199`, `autobyteus-agent-run-backend.ts:102-103,304-308` (no runtime turn id on the mapped result) | — |
 
 ## Supported Product Scenario And Reachability Gate (Mandatory)
 
@@ -105,10 +105,10 @@
 | No unjustified duplication in changed scope | Pass | `agentRunStore.ts:52-55` keeps its own id builders alongside `teamRunCommandIds.ts` — pre-existing, unchanged by this diff | — |
 | Patch-on-patch complexity control | Pass | — | — |
 | Dead code removed in the touched files and modules | Pass | Presenters, callbacks, transport-failure type, old keys, Team null branch, unused imports removed; FU-003 recorded for the untouched approval handler | — |
-| Relevant test scenarios and assertions are clear and requirement-aligned | Fail | The native backend test fixes `turnId: null` for `turn_mismatch`, a shape the runtime never sends, so it passes while the production path does not (CR-001) | Use the runtime's real shape |
+| Relevant test scenarios and assertions are clear and requirement-aligned | Pass | Round 2: the native test uses the runtime's real shapes (null / asked turn / other turn) and runs the mapped result through a real `AgentRunInterruptState` and `userInterruptOutcome`; IMP-11 shows it fails with the old mapping (3 failed) | — |
 | Test fixtures/helpers are reasonably reusable and test structure remains coherent | Pass | Composer journey spec drives real stores and the real Team service | — |
 | No stale, duplicated, or compatibility-only tests retained in changed scope | Pass | Stale integration and probe cases rewritten (AC-011); CG-08 is a suggestion | — |
-| API/E2E readiness for the next workflow stage | Pass | After CR-001; scratch probe kept as API/E2E's starting point | — |
+| API/E2E readiness for the next workflow stage | Pass | CR-001 resolved; scratch probe kept as API/E2E's starting point | — |
 
 ## Source File Size And Structure Audit
 
@@ -121,7 +121,7 @@
 | `autobyteus-web/services/agentStreaming/TeamStreamingService.ts` | 435 | 435 | Pass | Pass | Pass | Pass | — | — |
 | `autobyteus-web/stores/agentRunStore.ts` | 449 | 429 | Pass | Pass | Pass | Pass | — | — |
 | `autobyteus-web/services/agentStreaming/AgentStreamingService.ts` | 375 | 357 | Pass | Pass | Pass | Pass | — | — |
-| `autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend.ts` | 374 | 379 | Pass | Pass | Pass | Pass | CR-001 | Local Fix |
+| `autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend.ts` | 374 | 381 | Pass | Pass | Pass | Pass | — (CR-001 resolved) | — |
 | All other changed source files (37) | ≤ 391 | ≤ 391 | Pass | Pass (largest delta: `interruptCommandAdmission.ts`, 125 changed lines) | Pass | Pass | — | — |
 
 ## Legacy / Backward-Compatibility Verdict
@@ -137,7 +137,7 @@
 
 ## Dead / Obsolete / Legacy Items Requiring Removal
 
-None in this ticket's scope beyond CR-001. `interrupt-twice-repro-scratch.mjs` stays until API/E2E replaces it with the durable probe (design step 5; requirements: "replaced by the durable probe").
+None in this ticket's scope. `interrupt-twice-repro-scratch.mjs` stays until API/E2E replaces it with the durable probe (design step 5; requirements: "replaced by the durable probe").
 
 ## Docs-Impact Verdict
 
@@ -158,6 +158,7 @@ None new beyond the candidate gate above.
 ## Review Scorecard (Mandatory)
 
 - Overall score: `9.4/10` (simple average; not the decision rule)
+- Round 2: Targeted Delta Review; categories 7, 8 and 10 rescored for the CR-001 fix, others carried forward.
 
 | Priority | Category | Score | Why This Score | What Is Weak / Holding It Down | What Should Improve |
 | --- | --- | --- | --- | --- | --- |
@@ -167,20 +168,23 @@ None new beyond the candidate gate above.
 | 4 | Separation of Concerns and File Placement | 9.4 | Small new files, each one concern; all files under the limit | — | — |
 | 5 | Shared-Structure / Data-Model Tightness and Reusable Owned Structures | 9.4 | One outcome type, one holder for three services | — | — |
 | 6 | Naming Quality and Local Readability | 9.4 | Consistent Stop/interrupt vocabulary; rename to `teamRunCommandIds` | — | — |
-| 7 | API/E2E Readiness | 9.3 | Strong unit/composer/probe coverage; real-stack evidence at loopback and 150 ms | Native `turn_mismatch` test fixture does not match the runtime (CR-001) | Real runtime shape in the fixture |
-| 8 | Runtime Correctness And Behavioral Fidelity | 8.8 | Server rule, backends, holder lifecycle and status watch correct for every traced path | Native `turn_mismatch` mapping is overridden by the domain into a protocol violation → a false "Could not stop" (CR-001) | Return the mapped result without the other turn's id |
+| 7 | API/E2E Readiness | 9.4 | Strong unit/composer/probe coverage; real-stack evidence at loopback and 150 ms; native turn-gone test now through the real interrupt state | AC-010 phone case and durable desktop probe still to come (API/E2E's) | — |
+| 8 | Runtime Correctness And Behavioral Fidelity | 9.3 | Server rule, backends (native included after CR-001), holder lifecycle and status watch correct for every traced path | CG-06 race accepted by design | — |
 | 9 | No Backward-Compatibility / No Legacy Retention | 9.5 | Clean cut; old keys, callbacks, type removed | — | — |
-| 10 | Cleanup Completeness | 9.3 | Dead branches and imports removed; FU-003 recorded | CR-001 leaves a mapping that never takes effect | Fixed by CR-001 |
+| 10 | Cleanup Completeness | 9.4 | Dead branches and imports removed; FU-003 recorded; no ineffective mapping left | — | — |
 
 ## Findings
 
-### CR-001 — Native `turn_mismatch` mapping never reaches `NO_ACTIVE_TURN` (Local Fix, implementation)
+No open findings (round 2). CR-001 is resolved; kept below for history.
+
+### CR-001 — Native `turn_mismatch` mapping never reaches `NO_ACTIVE_TURN` (Local Fix, implementation) — Resolved in IR-002 (`71f9a5d13e`)
 
 - Contract: AC-005 and the backend contract this change states on `AgentRunBackend.interrupt` (`agent-run-backend.ts:79-83`): a turn that is not, or no longer, the runtime's active turn answers `NO_ACTIVE_TURN`; D-S3; handoff placement note (2).
 - Problem: `autobyteus-agent-run-backend.ts:304-306` maps `turn_mismatch` to `NO_ACTIVE_TURN` but keeps `turnId: result.turnId`. For `turn_mismatch` the native runtime returns the *other* active turn's id (`autobyteus-ts/src/agent/runtime/agent-runtime.ts:198-205`: `turnId: activeTurn.turnId`). `AgentRunInterruptState.execute` (`agent-run-interrupt-state.ts:93-100`) replaces any result whose non-null `turnId` differs from the reservation's with `AGENT_RUN_INTERRUPT_PROVIDER_PROTOCOL_VIOLATION`. So the mapping never takes effect: the user gets `refused` and "Could not stop {name}", where Claude and Codex answer `NO_ACTIVE_TURN` (no turn id) and the Stop is quiet.
 - Why the test passes: `autobyteus-agent-run-backend.test.ts:170-177` mocks `turnId: null` for all three statuses, a shape the runtime does not send for `turn_mismatch`, and it tests the backend alone, not the result applied by `AgentRunInterruptState`.
 - Required action (bounded): for the turn-gone statuses, return `NO_ACTIVE_TURN` without the runtime's turn id (as Claude and Codex do), and make the test use the runtime's real shape (`turn_mismatch` with the other turn's id), asserting the result `AgentRunInterruptState` applies or, at least, that the backend's mapped result carries no foreign turn id. `no_active_turn` (`turnId: null`) and `already_settled` (same turn) already work.
 - Scope: this ticket (the change added the mapping, the contract comment and the test).
+- Resolution (round 2): `autobyteus-agent-run-backend.ts:304-308` returns `{ accepted: false, code: NO_ACTIVE_TURN, message }` with no runtime turn id; the test feeds each status its real runtime shape and asserts the result `AgentRunInterruptState` applies is `NO_ACTIVE_TURN` and `userInterruptOutcome` accepts it (IMP-11: 20/20; 3 fail with the old mapping). Dropping the turn id for `already_settled` changes nothing else: the domain reads `result.turnId` only for the protocol check (`agent-run-interrupt-state.ts:93-100`).
 
 ## Follow-ups
 
@@ -188,11 +192,11 @@ None new beyond the candidate gate above.
 
 ## Classification
 
-- `Local Fix` (implementation-owned): CR-001.
+- None (Pass). Round 1's `Local Fix` CR-001 is resolved.
 
 ## Recommended Recipient
 
-- Implementation Engineer (`/implementation_engineer`), per the rule "source review identifies an implementation-owned Local Fix". After the fix: source review (targeted delta), then API/E2E.
+- API/E2E Engineer (`/api_e2e_engineer`), per the rule "implementation review passes"; Implementation Engineer gets the informational pass notice.
 
 ## Residual Risks
 
@@ -203,11 +207,11 @@ None new beyond the candidate gate above.
 
 ## Latest Authoritative Result
 
-- Review Decision: `Fail`
+- Review Decision: `Pass`
 - Review Entry Point: `Implementation Review`
 - Supported Product Scenario Gate: `Pass`
 - Material-Premise Gate: `Pass`
-- Score Summary: 9.4 average; Runtime Correctness 8.8 (CR-001); all other categories ≥ 9.3
+- Score Summary: 9.4 average; every category ≥ 9.3
 - Failure Origin: N/A
-- Recommended Recipient: `/implementation_engineer` (Local Fix CR-001)
-- Notes: The four placement choices the implementer raised are accepted: (1) Team not-running answer in `memberCommand` with the dead branch removed — correct; (2) native `turn_mismatch` → `NO_ACTIVE_TURN` is within D-S3 but does not take effect (CR-001); (3) Org service at 473 effective lines — within the limit; (4) rename to `teamRunCommandIds.ts` — correct.
+- Recommended Recipient: `/api_e2e_engineer`
+- Notes: The four placement choices the implementer raised are accepted: (1) Team not-running answer in `memberCommand` with the dead branch removed — correct; (2) native `turn_mismatch` → `NO_ACTIVE_TURN` is within D-S3 and, after CR-001, takes effect; (3) Org service at 473 effective lines — within the limit; (4) rename to `teamRunCommandIds.ts` — correct.
