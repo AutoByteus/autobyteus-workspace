@@ -1,0 +1,14 @@
+# IMP-024 IR-008 AC-005 gate: file-system-watcher.integration.test.ts 5 of 5 on Linux inotify, on the merged commit
+# Commit: bb42531c7d (git archive of HEAD into the container); 2026-11-18 local
+# Environment: Docker node:22-bookworm on this Mac; Linux 6.12.54-linuxkit aarch64; 10 vCPU; node v22.23.5
+# Steps (script /tmp/r500/linux/run.sh): extract; corepack pnpm; pnpm install --frozen-lockfile; pnpm -C autobyteus-server-ts test:integration:prepare; npx vitest run --no-watch tests/integration/file-explorer/file-system-watcher.integration.test.ts x5
+
+install exit 0
+prepare exit 0
+run 1:  Test Files  1 passed (1)  Tests  14 passed (14)  labels=0 load=16.69 13.45 10.12
+run 2:  Test Files  1 passed (1)  Tests  14 passed (14)  labels=0 load=13.03 12.84 10.01
+run 3:  Test Files  1 passed (1)  Tests  14 passed (14)  labels=0 load=10.54 12.27 9.89
+run 4:  Test Files  1 passed (1)  Tests  14 passed (14)  labels=0 load=9.01 11.81 9.79
+run 5:  Test Files  1 passed (1)  Tests  14 passed (14)  labels=0 load=7.91 11.35 9.70
+
+labels = count of '^Error: (ENVIRONMENT|INCONCLUSIVE)' lines in that run's log (full logs: IMP-024-watcher-linux-run{1..5}.log)

@@ -197,3 +197,25 @@
 - **Limitations:**
   - The file-event tests couldn't pass while the OS dropped events; they're for API/E2E's Linux / quiet-machine runs.
   - Built-server stop and restart-resume E2E are API/E2E's.
+
+## IR-008 (seventh delivery base refresh: the watcher test after 517)
+
+- **Trigger:** the Delivery Engineer's "Fifth and sixth integration refreshes" (`50faf1c629`): merging `origin/personal`
+  `75048cbaf4` conflicted in one file, `file-system-watcher.integration.test.ts`, with 19 hunks. Both sides had
+  redesigned its waits.
+- **Prior result:** IR-007, Pass (CRR-013). **Current result:** merged and checked; to the merge review, then
+  API/E2E's Linux watcher run.
+- **Upstream revisions:** CRR-013, the delivery report. SR / ARCH-REV: unchanged; see the decision note below.
+- **Code delta** (`bb42531c7d`):
+  - 500's wait structure stays: outcome waits, the sentinel "no event" check, the ENVIRONMENT / INCONCLUSIVE labels.
+  - Its limits come from 517's helper: the guard is `OS_FILE_EVENT_WAIT_MS` (30 s); the test timeout is
+    `FILE_EVENT_TEST_TIMEOUT_MS` + 10 s; the hooks use `IN_PROCESS_SERVER_HOOK_TIMEOUT_MS`.
+  - TESTING.md's busy-Mac rule names the sentinel alternative and the labels.
+- **Decision note:** the guard is 30 s instead of SR-013's 60 s, to follow the project's shared limit (TESTING.md). The
+  waits aren't longer, and AC-005's gate is unaffected. If the reviewer reads it as a design choice, it goes to the
+  Solution Designer.
+- **Focused validation:**
+  - IMP-024: Linux, 5 of 5 runs, 14/14 each, 0 labels.
+  - IMP-025: both type gates pass; server units, architecture and restart-resume pass except the untouched folder
+    watcher; on the loaded Mac every watcher failure is labelled.
+- **Limitations:** a quiet macOS run is still "when available" (D-13b).

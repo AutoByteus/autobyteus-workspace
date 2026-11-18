@@ -1,8 +1,8 @@
 # Implementation Handoff: follow-ups-of-461-500 (delivery 1 + 2)
 
-Status: **IR-007 (the fourth delivery base refresh: `origin/personal` `24d438fa31` merged, `eecb228bd6`) ready for the
-code reviewer's merge review, then API/E2E on what the two conflict files carry (a built server's stop, restart resume
-and its notice).** See "IR-007: fourth base refresh" below; IR-006 was the third. Decided earlier at SR-014 (ARCH-REV-007):
+Status: **IR-008 (the seventh delivery base refresh: `origin/personal` `75048cbaf4` merged, `bb42531c7d`) ready for the
+code reviewer's merge review, then API/E2E's Linux watcher run.** See "IR-008: the watcher test after 517" below; IR-007
+was the fourth refresh. Delivery's merge of `f7b4d68711` (`f5a7d789c9`) needed no change from me. Decided earlier at SR-014 (ARCH-REV-007):
 - **FU-035 step 0 (REQ-010, AC-007), D-14:** not in this package. It runs as a later implementation round once Grok's
   24-hour usage window resets, with branch A or B and its own code review. Nothing is waived; FU-035 stays open.
 - **FU-021 (REQ-008, AC-005), D-13b:** done. A hang guard whose probe got nothing is ENVIRONMENT; one whose probe got
@@ -35,7 +35,7 @@ and its notice).** See "IR-007: fourth base refresh" below; IR-006 was the third
 
 - Implementation cycle: `Rework` (CRR-001 Local Fix)
 - Implementation revision record: `implementation-revision-record.md`
-- Current implementation revision ID: `IR-007` (deltas in `implementation-revision-record.md`; IR-001 is the baseline)
+- Current implementation revision ID: `IR-008` (deltas in `implementation-revision-record.md`; IR-001 is the baseline)
 - Related solution revision IDs: SR-006 … SR-014
 - Related architecture-review revision IDs: ARCH-REV-001, ARCH-REV-003, ARCH-REV-005, ARCH-REV-006, ARCH-REV-007
 - Related code-review revision IDs: CRR-001 (CR-500-001, CR-500-002), CRR-002 (Pass), CRR-003 (CR-500-003 … CR-500-005),
@@ -47,7 +47,8 @@ and its notice).** See "IR-007: fourth base refresh" below; IR-006 was the third
   the latest base.
 - Related solution / architecture revisions for IR-003: SR-015, SR-016; ARCH-REV-008, ARCH-REV-009.
 - Branch: `codex/follow-ups-of-461-500`, with `origin/personal` `ff13782f36` merged in `39325a1e50` (IR-004) and
-  `0570c47fd9` in `e93671cce0` (IR-006) and `24d438fa31` in `eecb228bd6` (IR-007).
+  `0570c47fd9` in `e93671cce0` (IR-006), `24d438fa31` in `eecb228bd6` (IR-007), `f7b4d68711` in `f5a7d789c9` (delivery)
+  and `75048cbaf4` in `bb42531c7d` (IR-008).
 
 Commits, oldest first, by the design's Change Sequence:
 
@@ -72,6 +73,7 @@ Commits, oldest first, by the design's Change Sequence:
 | G-5 fix | `d8ffc77c8b` | the 8 s model-list budget is `MODEL_LIST_READ_MS` in `read-deadline.ts`; `llm-management` no longer imports `available-agent-runtimes` (found by the full unit run) |
 | 8 | evidence only | FU-035 step 0: blocked by the Grok usage limit (IMP-011); a later round per D-14 |
 | IR-004 merge | `39325a1e50` | `origin/personal` `ff13782f36` merged (beta.8, beta.9, 448 part 1, 483, 458, 514, 515, 508); 4 conflicts resolved |
+| IR-008 merge | `bb42531c7d` | `origin/personal` `75048cbaf4` merged (v1.5.13 records, 517 FU-002 / FU-003); the watcher test's two wait designs combined; TESTING.md's rule names the sentinel check |
 | IR-007 merge | `eecb228bd6` | `origin/personal` `24d438fa31` merged (beta.10, 517, 524 round 2, 526); 2 conflicts resolved |
 | IR-006 merge | `e93671cce0` | `origin/personal` `0570c47fd9` merged (522, 524, 448 part 2, 493, 525); 13 conflicts resolved |
 | IR-006 fix | `4db98c6d1a` | the FU-011 host-owners test's complete supervisor input includes 493's `episodicCatalog` |
@@ -135,6 +137,36 @@ Not reworded this round: the other `send_message_to` / `delegate_task` results, 
 I reviewed them: their texts already say what happened and what to do, which `refusal-texts-vocabulary.test.ts` and
 `result-catalogue.test.ts` check. The Save refusal (`run-model-selection-refusal.ts`, "Refresh the model list and choose
 again. Saved settings were not changed.") is kept, because in the Settings it already names the next step.
+
+## IR-008: the watcher test after 517 (seventh base refresh)
+
+- **Merge:** `git merge --no-ff origin/personal` (`75048cbaf4`), commit `bb42531c7d`. One conflict, 19 hunks, in
+  `tests/integration/file-explorer/file-system-watcher.integration.test.ts`, which both sides had redesigned.
+  - 500 (FU-021, SR-013/014, D-13/13b): outcome waits under one hang guard per test, a sentinel check for "no event",
+    and the raw `fs.watch` probe's ENVIRONMENT / INCONCLUSIVE labels.
+  - 517 (`b55ce60b5e`, FU-002): event waits take the shared `OS_FILE_EVENT_WAIT_MS` from
+    `tests/helpers/os-latency-under-load.ts`; "no event" checks keep their short windows. TESTING.md ("File watching on
+    a busy Mac") now requires a test that waits for an OS file event to take its limits from that helper.
+- **Resolution, a deliberate combination:**
+  - 500's structure stays. AC-005 rests on it, and the sentinel check proves "no event" without a quiet window, so
+    517's 800 ms windows aren't taken.
+  - Its numbers come from 517's helper, as TESTING.md requires:
+    - the per-test guard: `OS_FILE_EVENT_WAIT_MS`, 30 s (was 60 s);
+    - the test timeout: `FILE_EVENT_TEST_TIMEOUT_MS` plus the 10 s environment probe, 55 s (was 90 s), so the probe
+      still labels a failure before vitest's timeout;
+    - the watcher start/close hooks: `IN_PROCESS_SERVER_HOOK_TIMEOUT_MS`.
+  - The first try used the helper's test timeout alone (45 s). On the loaded Mac (load 137) one test passed 45 s
+    unlabelled: guard, probe, and slow file operations together. Adding the probe's own 10 s fixed it, and every
+    loaded-Mac failure is labelled again (IMP-025).
+- **TESTING.md:** the busy-Mac rule now names the alternative to a quiet window: a sentinel change after the ignored
+  one, as this file does. It also says what its ENVIRONMENT / INCONCLUSIVE labels mean, and that its proof is a run
+  where the OS delivers events.
+- **Decision note:** the guard went from SR-013's 60 s to the project's shared 30 s. The waits are not longer
+  (SR-013: "no longer waits"), and on Linux events arrive in milliseconds, so AC-005's gate is unaffected (IMP-024
+  5/5). If the reviewer reads this as a design choice, it goes to the Solution Designer.
+- **AC-005 gate on the merged commit (IMP-024):** Linux (Docker `node:22-bookworm`, linuxkit 6.12 aarch64, 10 vCPU),
+  `test:integration:prepare`, then the file 5 times. Each run: "Tests 14 passed (14)", 0 ENVIRONMENT / INCONCLUSIVE
+  lines.
 
 ## IR-007: fourth base refresh (delivery Local Fix)
 
@@ -450,6 +482,8 @@ again. Saved settings were not changed.") is kept, because in the Settings it al
 | IMP-21 | IR-005: `pnpm -C autobyteus-server-ts typecheck`; `npx vitest run --testTimeout=60000 tests/architecture tests/unit/compositions <restart-resume tests> tests/unit/application-platform tests/unit/application-packages tests/unit/llm-management`; size recount against `ff13782f36` | `eb741a097e` | macOS | the studio composition | CR-500-007 | Pass | console | "production errors: 0; test-file errors: 1010 in 316 files (baseline 1010 in 316 files)"; "Test Files 57 passed (57)", "Tests 378 passed (378)"; `build-studio-server.ts` 485 |
 | IMP-22 | IR-006 on the merged state: server and web type gates; `npx vitest run --testTimeout=60000 --hookTimeout=60000 tests/unit tests/agent-work-journal tests/app-data-migrations tests/architecture tests/integration` (server); `npx vitest run` (web); size recount against `0570c47fd9` | `4db98c6d1a` | macOS, load 27–55 | everything, with the base | all | Pass, except watcher timing | `IMP-022-third-merge-checks.log` | server type gate "production errors: 0; test-file errors: 1010 in 316 files (baseline 1010 in 316 files)"; web type gate 87 in 37 = baseline; server "Tests 7 failed \| 8876 passed": `file-system-watcher` 1 ENVIRONMENT + 4 INCONCLUSIVE (D-13b) and the two untouched folder watchers; web "Tests 5767 passed"; no changed source file over 500 (studio 492) |
 | IMP-23 | IR-007 on the merged state: server and web type gates; `npx vitest run --testTimeout=60000 --hookTimeout=60000 tests/unit tests/agent-work-journal tests/app-data-migrations tests/architecture tests/integration` (server); restart-resume, compositions and package-auto-refresh rerun; a raw `fs.watch` probe; `npx vitest run` (web); size recount against `24d438fa31` | `eecb228bd6` | macOS, load 80–158 | everything, with the base | all | Pass, except file-event tests while the OS delivered no events | `IMP-023-fourth-merge-checks.log` | server type gate "production errors: 0; test-file errors: 1010 in 316 files (baseline …)"; web 87 in 37; server "Tests 16 failed \| 8880 passed", all file-event waits (file-system-watcher 4 ENVIRONMENT + 5 INCONCLUSIVE, folder watcher, package-auto-refresh); raw probe "[7889,3925,null,null,null]"; restart-resume and compositions pass; web "Tests 5776 passed"; studio 428 |
+| IMP-24 | IR-008 AC-005 gate: Docker `node:22-bookworm` Linux, git archive of `bb42531c7d`, frozen install, `test:integration:prepare`, the watcher file ×5 | `bb42531c7d` | Linux 6.12 linuxkit aarch64, 10 vCPU | FU-021 test after the merge | AC-005 | Pass | `IMP-024-watcher-linux-5of5.log`, `IMP-024-watcher-linux-run{1..5}.log` | "Tests 14 passed (14)" ×5; labels=0 ×5 |
+| IMP-25 | IR-008 Mac: server and web type gates; `tests/unit tests/agent-work-journal tests/architecture` + restart-resume; the watcher file once (evidence only) | `bb42531c7d` | macOS, load 34–137 | everything, with the base | all | Pass, except the untouched folder watcher | `IMP-025-seventh-merge-mac-checks.log` | type gates at baseline; "Tests 3 failed \| 7769 passed", 3 in `agent-package-folder-watcher`; watcher file: 8 ENVIRONMENT + 2 INCONCLUSIVE, none unlabelled |
 | IMP-13 | watcher test after the D-13b labels, 1 run | `a4e7f18e6d` | macOS, load 120–190 | FU-021 labels | FU-021 / D-13b | Fails as designed under load: labels only | `IMP-013-watcher-sr014-labels.log`, `IMP-013-watcher-sr014.full.log` | "env=1 inconclusive=6 other=0"; no "Timed out waiting for event (hang guard)" line |
 
 - Note for API/E2E (IMP-18): `tests/unit/e2e-helpers/team-stream-clients-wait-for-connected.test.ts` fails on API/E2E's
