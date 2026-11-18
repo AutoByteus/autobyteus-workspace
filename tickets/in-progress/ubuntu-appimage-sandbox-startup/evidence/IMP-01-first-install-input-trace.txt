@@ -1,0 +1,92 @@
+IMP-01 — first-install source/design trace
+Date: 2026-11-18T13:14:59.680321+00:00
+Commit: df2ed790ce1aadb4fc79d82f44fd7c019214991e
+Environment: Linux x64; read-only git source inspection, no runtime test
+Method: git show HEAD:<path>, numbered excerpts below.
+Result: CONFIRMED DS-002 requires detached final-byte record input but does not specify first-launch acquisition.
+This is a design trace, not proof of runtime failure or acceptance.
+Inference: embedding a manifest containing the final whole-image digest into that same image changes the digest; publication of sidecars alone does not obtain them for a lone downloaded file.
+Designer subsequently supplied DS-003 / SR-014 and explicitly held dependent implementation for delta review.
+
+COMMAND: git show HEAD:tickets/in-progress/ubuntu-appimage-sandbox-startup/design-spec.md
+7: 1. L1 (UC-001/002, BEH-001/002): file exec or desktop entry → AppRun-level pre-Electron launcher → select existing protected file for this login UID (never redirect to self) or attempt ordinary sandboxed startup → Chromium → existing UI/server as original user. Use a real bounded pre-main sandbox-capability child on the same artifact, or intercept the actual early, identified Chromium sandbox fatal; choose the latter to avoid probing on healthy launches. Observe only pre-main failure; unrelated crashes/long-lived app exits do not trigger installation. Propagate argv, streams, signals and exit status; measure zombie/child cleanup. A responsive packaged GUI, not a launcher stub, validates it. Desktop Exec must route through same launcher with no implicit bypass; inspect final generated file, not just builder options.
+8: 2. L2 (UC-005 / SCN-005): confirmed restricted-host startup failure → explain destination and privilege in terminal/desktop → explicit install → system authentication → one-shot install program creates protected artifacts → original user starts protected image → same data identity. On refusal/failed preflight leave no partial active install and report actionable diagnostic. On a managed file, never prompt in a retry loop: failed attachment is repair, not fresh setup. Older binaries not carrying this launcher cannot be intercepted. No auth on capable launch. A noninteractive caller cannot authorize setup implicitly.
+9: 3. L3 (UC-003 / BEH-003): server or tooling invocation → direct real Electron ELF in its supported mode → existing Node/server lifecycle, preserving arguments and signals. Do not prompt or reinterpret Node mode/explicit automation requests as interactive first launch.
+10: 4. U1 (UC-004 / BEH-004): release job → build actual per-arch AppImage → compute digest of final bytes → sign release record → validate complete artifacts → updater metadata last. App's existing check/download/channel/opt-in → protected install client stages request → OS-managed writer verifies immutable staged bytes → readiness → coordinator defers automatic activation to the next independently requested ordinary quit → atomic activation → fixed-path unprivileged relaunch on explicit restart, or next ordinary launch after normal quit; report running version, not just download success. Manual updates share verification. Current app/embedded server version pairing stays intact. Do not automatically terminate ongoing work to hit an update timer.
+11: 5. U2 return/local: staging refusal propagates to existing update failure notification before stop; opt-out cancels pending automatic activation, not normal operation. Installation lock serializes activation for the installation. On commit failure keep old file runnable and follow current recovery. Existing appUpdateInstallAttempt and automatic failure logic keep one authority; do not leave electron-updater's independent autoInstallOnAppQuit active for managed installs. No success notification until verified transition.
+12: ## Privilege and interface boundaries
+13: - AR-001 selected crossing, no alternative implicit: user intentionally starts the official downloaded release (initial trust assumption). The normal-user launcher reads only its bundled standalone native provisioner, verifies the expected build-pinned digest, snapshots the checked bytes in a kernel-sealed read-only executable file, checks all write/grow/shrink/sealing locks and retains the same open descriptor until the one-shot authorized child has exited. No writable mapping, path supplied by caller, on-disk mutable extraction, FD reuse, or privileged shell/interpreter. Root code consists only of the bootstrap program and its statically embedded fixed service/profile/menu templates, writer binary and public key. No commands or resources from the unverified AppImage run as root. Use autobyteus-web/linux-install/cmd/{launcher,provision,writer}/main.go and internal/release/record.go. Build writer first, embed in provision, then pin completed provision digest in launcher before packing AppImage; no circular signature on the final AppImage.
+14: - Ubuntu authorization: launcher explains the operation and exact helper path that the OS will display, then invokes system pkexec for the retained **parent's** read-only descriptor path, not a child-inherited descriptor. PKEXEC_UID is set by pkexec from the invoking real UID; provision requires effective UID zero and a valid nonzero local PKEXEC_UID, resolves account via OS, derives all destinations from that UID and fixed constants. No UID/path/env overrides. No generic auth exemption, retained grants, or custom password handling. In graphical sessions use Ubuntu's registered agent; on a real terminal without one use Ubuntu's ordinary separately registered pkttyagent tied to this launcher process, wait for readiness, then pkexec with internal agent disabled. A headless noninteractive process cannot enroll. The system dialog identifies the program by path and requested account, **not by verified publisher**. Authentication proves permission, not publisher identity. The launcher retains custody during the prompt without delegating mutable code or assuming a custom policy is already installed. Failed seal, unsupported execution, auth refusal/cancel or absence of suitable agent stops: no retries with weaker policy. SR-013 VM witnessed stock 24.04 polkit and normal one-shot password verification; 26.04 and graphical acceptance remain required.
+15: - Provisioning resource custody/order: parent supplies only bounded signed record, signature and final AppImage bytes through stdin (OS auth agent uses independent session/tty); bootstrap stages in root-private storage, verifies pinned desktop key, record, length/digest, arch and requested release before committing anything. No input path dereference, archive extraction, user-controlled service files or network trust injection. Set installer directories, service identity and protected immutable service assets; initialize writer store with first verified inode+attrs; install inactive socket/service and exact AppArmor profile; load profile then enable socket; return committed only when all ready. Parent then writes its own user-menu entry (never write into HOME as root) and launches canonical executable as that UID. Subsequent launch completes missing menu entry idempotently if parent was interrupted. On setup failure reverse only objects created by this attempt; leave existing managed installations intact, disable created socket and unload created policy before removing its files. Refusal before authorization writes no host state. Uninstall uses root-owned installed provisioner and same Ubuntu prompt; disable socket, stop owned writer, unload owned profile, remove only verified owned files/identity if unused; caller removes owned menu entry. No profile/data deletion. No host changing operation was part of the design VM witness.
+20: - autobyteus-web/build/scripts/build.ts + afterPack.ts: wire Linux launcher and packaging; platform configs/targets still AppImage x64 and arm64. Make desktop args explicit (builder empty list can reintroduce no-sandbox); assert resulting Exec. Ensure launcher placed on actual AppRun path, not only GUI main; never rename the executable used by process.execPath without verifying embedded Node contract. Keep Mac/Windows branches unchanged.
+21: - New autobyteus-web/linux-install/ native tooling and unit templates: separate unprivileged launch classification/redirect, one-shot privileged provisioning, nonroot signed activation writer. Use compiled, memory-safe native executables (Go stdlib for ed25519, hashing, unix sockets and streaming); build natively per supported arch, explicitly pin toolchain, no shell command assembly. Auth UI polkit, renderer-independent terminal/desktop diagnostics. Pass collaborators from entrypoints, no global lookup or callback-driven split transaction. Keep root install code separate from app-controlled IPC.
+22: - electron/updater/appUpdater.ts composition selects portable or protected by verified canonical installation context (not writable env alone); electron/updater/linuxManagedInstall.ts translates actual downloaded artifact event/file + signed release assets to writer transaction. No API exposing privilege to arbitrary renderer calls. Extend appUpdateInstallAttempt.ts for async verified staging/activation and safe unprivileged relaunch after coordination. Reuse NotificationRecord, automatic policy, channel and stop/recovery; adapt readiness so a downloaded managed file alone cannot initiate stop. Disable native opportunistic install on quit only in protected mode; keep electron-updater portable path elsewhere. Use signed attributes of the installed inode as commit authority; running app version is observation only. Peel new responsibilities off oversized existing files rather than growing them.
+23: - .github/workflows/release-desktop.yml, scripts/desktop-package/ and scripts/validate_linux_updater_metadata.py: derive signed exact-byte manifest after build, dedicated offline-managed/CI-restricted desktop signing identity; server private key NOT reused. Verify all release asset names/hashes/channels/architectures with pinned public key, expose manifest/signature alongside AppImage before metadata. Build-only CI uses disposable test trust domain; never publish on this Task. No production credentials committed/retrieved here. Release owner must provision production public anchor/secret through normal release administration; real publishing must fail closed absent these. Docs: install, refuse/repair/uninstall, automatic update semantics; RELEASE.md key provisioning/rotation and build-only release check via Delivery. Add managed install vocabulary to GLOSSARY.md when adding domain terms. No new hosted package repo, DEB, Docker-node updater or renderer redesign.
+39: ## DS-002: authenticated identity and atomic commit (AR-003)
+40: Single contract in linux-install/contract/desktop-release.md with shared positive/negative byte fixtures, Go reader internal/release/record.go; JS signer scripts/desktop-package/sign-release.mjs and CI validator consume same fixtures. Signed content example (digest illustrative):
+41: {"format":1,"product":"autobyteus-personal-desktop","artifact":"AppImage","os":"linux","arch":"x64","version":"1.5.14-beta.1","channel":"beta","size":339972678,"sha256":"0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef","minWriter":1}
+42: Signer emits compact UTF-8 JSON in shown order plus one LF. Detached .sig is standard base64 of 64-byte Ed25519 signature over exact manifest bytes, no newline. Bounded <=4 KiB manifest, reject duplicate/missing/unknown fields, nonintegers, invalid encoding, unsupported format/minWriter, mismatched target, wrong key, bytes/size/hash mismatch. Only accepted arch x64/arm64 = installed CPU, version exactly three nonnegative canonical SemVer integers optionally -beta.N; channel must agree with suffix; stable allows stable only, beta allows newer stable or beta per appUpdater.ts:378–380. Strict numerical SemVer ordering (stable greater than beta of same core), never equality/downgrade incl channel switch. Fixed ceiling 2 GiB per AppImage; check space, enforce bytes limit while receiving. No install path/command/origin/key in manifest. Use production desktop public key embedded in bootstrap and installed verifier; test key is separate build-only trust domain. CI signs after final packaging, verifies metadata version/size/hash/arch against actual final bytes and validates positive and rejection vectors before publishing feed last. Unprivileged client uses version/sidecar to request; only writer enforces trust, never trusts request's claim of installed version.
+43:
+44: Writer-authoritative committed state is the fixed regular **inode with two user xattrs on that same inode**: user.autobyteus.release = exact signed bytes, user.autobyteus.signature = raw signature. First provisioning verifies and writes file+xattrs, fsync then same-filesystem rename and parent fsync; require installed FS supports user xattrs/rename/fsync, check BEFORE publishing menu/profile. Incoming signed image staged privately under writer UID; verify, set attrs, read back, fsync before reporting receipt. Opaque stage ID bound to peer UID, current live digest, signed candidate and generation. At activate lock store, re-open live without following symlinks; verify its xattrs, use signed current record as sole version authority; compare expected digest, admissibility and channel again. After interruption or on new writer start, hash actual live bytes against signed metadata before trusting baseline. No second version file, unlink-first or symlink selector. rename incoming over live, fsync containing directory before ACK. Crash before rename leaves old image+old record; after rename one complete pair is visible; crash before fsync or lost ACK → status re-reads and verifies actual fixed inode, reports old/new identity; do not guess or report success prematurely. Incomplete/unverifiable committed pair → fail closed, explicit repair, not version zero. Pending files disposable on restart, conservative discard; never discard live. Write access only to service account; root code/keys/config outside writable store. Real filesystems must be tested, local inode feasibility probe is not power-loss validation.
+45: Example: bootstrap installs signed 1.5.13; on beta channel 1.5.14-beta.1 accepted from that digest, then 1.5.14 stable from beta digest; stale stage referencing 1.5.13, same-version alternate bytes, beta in stable mode or unauthenticated 1.5.15 all refused. Queries return writer's current signed identity, not client running version. Add client stage/activate/discard/status and contract golden vectors; no app-data migration. FS xattrs not preserved by arbitrary cp; supported installer writes them itself, external copies never count as authoritative managed installs.
+
+COMMAND: git show HEAD:autobyteus-web/build/scripts/build.ts
+114: function resolveUpdaterPublishConfig(): Configuration['publish'] {
+115:   const repositoryHint =
+116:     process.env.AUTOBYTEUS_UPDATER_REPOSITORY?.trim()
+117:     || process.env.GITHUB_REPOSITORY?.trim()
+118:     || resolveRepositoryFromGitRemote()
+119:
+120:   const resolvedRepo = repositoryHint ? parseGitHubRepo(repositoryHint) : null
+121:   if (!resolvedRepo) {
+122:     throw new Error(
+123:       'Unable to resolve GitHub updater repository. Set AUTOBYTEUS_UPDATER_REPOSITORY=owner/repo.'
+124:     )
+125:   }
+126:
+127:   return [
+128:     {
+129:       provider: 'github',
+130:       owner: resolvedRepo.owner,
+131:       repo: resolvedRepo.repo,
+132:     },
+133:   ]
+350: function linuxArtifactNameForTargetArch(arch: LinuxTargetArch): string {
+351:   return `${artifactBaseName}_linux-${arch}-\${version}.\${ext}`
+352: }
+
+COMMAND: git show HEAD:.github/workflows/release-desktop.yml
+667:
+668:       - name: Publish release assets with curated notes
+669:         if: ${{ steps.release_notes.outputs.has_curated_notes == 'true' }}
+670:         uses: softprops/action-gh-release@v2
+671:         with:
+672:           tag_name: ${{ needs.prepare-release.outputs.release_tag }}
+673:           target_commitish: ${{ needs.prepare-release.outputs.release_sha }}
+674:           draft: false
+675:           prerelease: ${{ needs.prepare-release.outputs.prerelease }}
+676:           body_path: ${{ steps.release_notes.outputs.release_notes_path }}
+677:           files: |
+678:             release-artifacts/**/*.dmg
+679:             release-artifacts/**/*.dmg.blockmap
+680:             release-artifacts/**/*.zip
+681:             release-artifacts/**/*.zip.blockmap
+682:             release-artifacts/**/*.exe
+683:             release-artifacts/**/*.AppImage
+684:
+685:       - name: Publish release assets with generated notes fallback
+686:         if: ${{ steps.release_notes.outputs.has_curated_notes != 'true' }}
+687:         uses: softprops/action-gh-release@v2
+688:         with:
+689:           tag_name: ${{ needs.prepare-release.outputs.release_tag }}
+690:           target_commitish: ${{ needs.prepare-release.outputs.release_sha }}
+691:           draft: false
+692:           prerelease: ${{ needs.prepare-release.outputs.prerelease }}
+693:           generate_release_notes: true
+694:           files: |
+695:             release-artifacts/**/*.dmg
+696:             release-artifacts/**/*.dmg.blockmap
+697:             release-artifacts/**/*.zip
+698:             release-artifacts/**/*.zip.blockmap
+699:             release-artifacts/**/*.exe
+700:             release-artifacts/**/*.AppImage
