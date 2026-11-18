@@ -3,7 +3,7 @@
 ## Document Status
 
 - Status: `Approved` (SR-014): delivery 1 at SR-006 plus REQ-016 (SR-011), D-13 (SR-013), D-13b and D-14 (SR-014); delivery 2 at SR-010
-- Current solution revision ID: `SR-014`
+- Current solution revision ID: `SR-017`
 - Package identifier: `follow-ups-of-461-500`
 - Request / ticket: Project Task `autobyteus-500` in Project `project_a1377344-25db-482a-97cc-ecfdb0fb495a`: "All follow-ups of autobyteus-461 in one Task"
 - Requested by: `/project_task_manager` (run `project_task_manager_7c8dce0c4a8b44f88e776a83809dee03`), at the founder's word (2026-11-17)
@@ -56,6 +56,7 @@
 | D-13 | FU-021: the OS loses file events under heavy load (Reproduced: raw chokidar 1/5 and Node `fs.watch` 2/8 rounds with no event within 60 s, none of our code) | Solution Designer, within the direction (the user informed) | The watcher test asserts outcomes and classifies a timeout: an environment probe tells "the OS delivered no file event" from a product failure. AC-005's watcher part is met where the OS delivers events. Making the File Explorer recover from OS-dropped events is a feature: follow-up FU-500-06 |
 | D-14 | FU-035 step 0 blocked by Grok's 24-hour free-usage limit (IMP-011: 429 `free-usage-exhausted`, 609,708 of 600,000 tokens) | Solution Designer (sequencing only; nothing is waived) | The rest goes to code review now. Step 0 runs when the window resets, as a later implementation round (IR-002) with its branch A or B, and its own code review. A usage limit is not a result: FU-035 stays open until a live run shows the cause. Waiving it needs the founder's own words |
 | D-13b | FU-021: no in-run classification can prove a product fault under load (IMP-012: the OS drops events per stream, so a probe on another stream that gets its event doesn't show the watcher's stream got its own) | Solution Designer | A hang-guard timeout says only what is known. ENVIRONMENT when the probe also got nothing. Otherwise "INCONCLUSIVE: the watcher saw no change, a fresh stream did; the OS can drop one stream's events under load (FU-500-06)". It never says "product failure". AC-005's watcher part is proven where the OS delivers file events reliably: the API/E2E engineer runs the file 5 of 5 on Linux (inotify, a Docker container from the worktree) and, when available, on a quiet macOS. Runs on a loaded macOS are recorded as evidence, not as the gate |
+| D-15 | The migration IDs after `v1.5.14-beta.1` released 491's `20261118_remove_retired_built_in_agents` ahead of this ticket's two | Solution Designer | New IDs dated `20261119`, appended after 491's entry. 491 is classified `none` against FU-020 (disjoint data). The released record becomes beta.1's 46 IDs (design SR-017) |
 | D-9 | FU-035: Grok's refused tool call reaches the agent only as "Tool execution failed." | Solution Designer | `Unclear` until reproduced. The text may be lost in our projection (`grok-build-tool-projection.ts:37`, which only affects what we display) or inside the Grok CLI (what the model sees, an external dependency). It is investigated with a live Grok run, under the Grok waiver rule: a usage limit alone is not a failure, only the founder's words decide |
 
 ## Requirements (delivery 1)

@@ -2,6 +2,7 @@
 
 | SR | Date | Kind | Summary | Status after |
 | --- | --- | --- | --- | --- |
+| SR-017 | 2026-11-18 | Design Impact (the Delivery Engineer: `v1.5.14-beta.1` released 491's migration first) | D-15: new IDs `20261119_…`, appended after `20261118_remove_retired_built_in_agents`; 491 classified `none` against FU-020 (agent-definition folders vs memory traces); `released-migration-order.json` = beta.1's 46; MO-1 redone in the users' order | Approved; design `Ready` |
 | SR-016 | 2026-11-17 | Design Impact (ARCH-REV-008 AR-003) | R1: any failed unit of the provider (or a failed state) means unreadable, because the status counts hosts while identifiers are host-scoped; listOptions's on-demand step inside the same race; a two-host test | Approved; design `Ready` |
 | SR-015 | 2026-11-17 | Design Impact (CRR-003: CR-500-003, CR-500-004; with the Local Fix CR-500-005) | G-5 revision: on-demand AutoByteus models loaded by `ModelAvailabilityService.loadOnDemandModel` before the check and the options read, under the deadline; G-5 skipped when the agent's definition is missing; the inherited-layer refusal's next step | Approved; design `Ready` |
 | SR-014 | 2026-11-17 | Decisions on IR-001 | D-14: FU-035 step 0 waits for Grok's usage window, as a later round; the rest goes to code review. D-13b: a timeout is labeled ENVIRONMENT or INCONCLUSIVE, never product; AC-005's watcher proof runs on Linux (inotify) and a quiet macOS | Approved |
@@ -171,3 +172,12 @@
 
 - ARCH-REV-008 failed with AR-003; SR-016 resolved it. ARCH-REV-009: **Pass** (`design-review-report.md`). The reviewer sent the package to the implementation engineer.
 - Accepted residual risk (D-12): while any host of a provider is down, its host-scoped models are not checked, and their start proceeds as at base. A per-host source status could refine this later; it isn't recorded as a follow-up, because no failure follows from it.
+
+### SR-017
+
+- **Trigger:** the Delivery Engineer's Design Impact (`release-deployment-report.md`, "Eighth state passed; ninth refresh blocked by a release").
+- **Premises read on `origin/personal` `2eb195603a`:**
+  - 491's migration (`remove-retired-built-in-agents-migration.ts`, 76 lines) and its registry entry (`app-data-migration-registry.ts:173-178`);
+  - `getAgentsDir()` = `<data>/agents` (`app-config.ts:355-356`).
+- **Change:** design "SR-017" (D-15).
+- **Next:** architecture review, then implementation, code review, an API/E2E round (MO-1 in the new order), and back to delivery.

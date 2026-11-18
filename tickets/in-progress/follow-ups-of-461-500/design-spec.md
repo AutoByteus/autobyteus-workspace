@@ -194,9 +194,9 @@ Rules:
 ### Migration Plan
 
 - **IDs:**
-  - `20261117_delegated_run_own_attachment_links`;
-  - its follow-up `20261117_delegated_run_own_attachment_links_after_task_agent_own_run`.
-  - Both are appended after `20261114_preserved_items_after_remove_skill_improvement_data` (guideline §4, "append-only").
+  - `20261119_delegated_run_own_attachment_links`;
+  - its follow-up `20261119_delegated_run_own_attachment_links_after_task_agent_own_run`.
+  - Both are appended after the last released entry. Since `v1.5.14-beta.1` (SR-017) that is `20261118_remove_retired_built_in_agents` (autobyteus-491), so both IDs are dated `20261119`, later than it (guideline §4, "append-only").
 - **Folder:** `src/app-data-migrations/migrations/delegated-run-own-attachment-links/`. Tests go in `tests/app-data-migrations/delegated-run-own-attachment-links/`.
 - **Imports:** only `domain/`, `frozen/` and node APIs (the boundary test).
 
@@ -231,7 +231,7 @@ The host is not checked: the probe shows it can be any ancestor (111 of 231). Ow
    - re-read the file and check that no admitted source link remains and the line count is unchanged.
 
 **M-5 Backup (the founder's rule, D-8).**
-- **What:** a byte copy of each file before its first rewrite, at `{appDataDir}/app-data-migration-backups/20261117_delegated_run_own_attachment_links/memory/{path relative to memoryDir}`, `fsync`ed before the replacement.
+- **What:** a byte copy of each file before its first rewrite, at `{appDataDir}/app-data-migration-backups/20261119_delegated_run_own_attachment_links/memory/{path relative to memoryDir}`, `fsync`ed before the replacement.
 - **Retry:** an existing backup is never overwritten. A retry after an interruption keeps the backup of the true original.
 - **Justification (guideline §7):**
   - its reader is the founder, for a manual restore;
@@ -254,7 +254,7 @@ The host is not checked: the probe shows it can be any ancestor (111 of 231). Ow
   - `delegated_runs_own_runs_v1` (message logs, line 228) and its nine follow-ups (461's steps, no trace moves);
   - `delegated_copy_own_file_complete_v1` (own-file metadata): **to verify** in its source that it doesn't move traces;
   - the project, identity, memory-sync and manifest migrations (other files).
-- **One follow-up:** `…_after_task_agent_own_run` has prerequisites `[20261017_task_agent_own_run_v1, 20261117_delegated_run_own_attachment_links]`. It is `requiredOnStartup`, has no `holdsBackCapabilities`, and runs the same definition (one parameterized class). It is idempotent by structure, because M-4's pre-check makes converted files `ALREADY_CURRENT`.
+- **One follow-up:** `…_after_task_agent_own_run` has prerequisites `[20261017_task_agent_own_run_v1, 20261119_delegated_run_own_attachment_links]`. It is `requiredOnStartup`, has no `holdsBackCapabilities`, and runs the same definition (one parameterized class). It is idempotent by structure, because M-4's pre-check makes converted files `ALREADY_CURRENT`.
 - **Test:** a registry test lists every earlier migration with its class (writer: one; none: the rest, each with its reason). It fails on an unclassified one, like 461's `delegated-runs-late-predecessors.test.ts:38-105`.
 
 **M-8 Derived data.**
@@ -671,3 +671,25 @@ All three points were checked against the code at `718a359cab`.
 ### Classification
 
 Unchanged: G-5 is Medium, and the package stays `Large` / `High`.
+
+
+## SR-017: a release shipped 491's migration first (the Delivery Engineer's Design Impact)
+
+- **Facts:**
+  - `v1.5.14-beta.1` (autobyteus-538, `origin/personal` `2eb195603a`) released 46 migrations, ending with `20261118_remove_retired_built_in_agents` (autobyteus-491). Its released set was recorded by hand in the old `RELEASED` list (`1f835e3e7f`).
+  - This ticket's two migrations are unreleased (no installation has run them), so their IDs can still change.
+- **D-15 (Solution Designer):**
+  - **New IDs:** `20261119_delegated_run_own_attachment_links` and `20261119_delegated_run_own_attachment_links_after_task_agent_own_run`. They are dated after the newest released entry (`20261118`), as the guideline's "later than" requires, and appended after 491's entry, main migration first. Prerequisites are unchanged, apart from the new main ID in the follow-up's list.
+  - **The backup folder** follows the new ID (M-5).
+  - **The released record:** `released-migration-order.json` becomes exactly beta.1's 46 IDs, in its order (the base's `RELEASED` list at `1f835e3e7f`). The merge conflict in `app-data-migration-registry-order.test.ts` resolves to this ticket's JSON-reading test, and the base's hand list is removed (G-1).
+- **491's classification against M-7: `none`.** Read on `origin/personal`:
+  - `remove-retired-built-in-agents-migration.ts:1-76` deletes only two agent-definition folders, `<agentsDir>/autobyteus-skill-evolver` and `<agentsDir>/autobyteus-memory-compactor` (registry lines 173-178). `getAgentsDir()` is `<data>/agents` (`app-config.ts:355-356`), not the memory folder.
+  - It writes no trace file and selects nothing by an attachment link. Its runs stay, in their own folders.
+  - Our migrations read and write only trace files under `<data>/memory/agents/` and `<data>/memory/agent_teams/` (M-1).
+  - The two touch disjoint data, so either order gives the same result, and no follow-up is needed.
+  - The registry classification test lists 491's ID as `none`, with this reason.
+- **Other parts:**
+  - G-2 (the same-ID repair of `20260521_team_run_history_index_v2`) doesn't depend on registry order.
+  - G-1's record script is unchanged. It refuses a registry that doesn't start with the recorded 46, so the reordering it would catch is the one avoided here.
+- **Evidence to redo:** API/E2E MO-1 in the order users will meet: 491 first, already applied as on beta.1, then this ticket's two on the next start. It needs a fixture with both retired agent folders and attachment links, checked for the same result as the reverse order. The registry-order and late-predecessor tests run on the new IDs.
+- **Release notes line (C-6, from CRR-003):** the first start after this update converts old attachment links once. Measured at 14.3 s plus 12.3 s on the API/E2E data; about 9 s on the founder's 8.6 GB in the read-only probe.
