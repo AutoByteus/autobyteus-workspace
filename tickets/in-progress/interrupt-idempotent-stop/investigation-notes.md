@@ -11,7 +11,7 @@
 - Finalization target remote / branch: `origin` / `personal` (RELEASE.md)
 - Bootstrap result: worktree created from the fetched `origin/personal`; `pnpm install --frozen-lockfile`, server `prebuild` and `build`, `nuxt prepare` all passed (Node v22.23.1).
 - Bootstrap blocker: None
-- Current solution revision ID: `SR-002`
+- Current solution revision ID: `SR-003`
 - Authorities read (requirements reading gate, 2026-11-18): `references/requirements-engineering.md`, `references/finding-the-cause.md`, `references/ticket-scope.md`; repository `AGENTS.md`, `TESTING.md`; `reflections/lessons.md`.
 - Investigation status: Requirements investigation complete (root cause reproduced and measured).
 
@@ -46,6 +46,7 @@
 | 2026-11-18 | Code | `services/runOpen/agentRunOpenCoordinator.ts:79-109`; `services/runStatus/agentRuntimeStatusState.ts:47-53`; server `agent-stream-handler.ts:245` | Stale status on open | Opening a live run whose stream is not yet bound uses `Running` as a placeholder until the stream's first `AGENT_STATUS` (sent on bind); a Stop in that window reaches an idle run | Read only |
 | 2026-11-18 | Doc | `autobyteus-web/docs/agent_execution_architecture.md:372-423`; `autobyteus-server-ts/docs/design/agent_websocket_streaming_protocol.md:331-341` | Documented contract | Docs state a rejected/failed result "creates one target-aware toast"; "Acceptance confirms request admission; later runtime events own terminal status" | Docs to update with the new outcome rule |
 | 2026-11-18 | Code | `autobyteus-web/tests/e2e/interrupt-result-presentation-probe.mjs:231`; server `tests/integration/agent/agent-websocket.integration.test.ts:621,665` | Existing tests | They assert today's `NO_ACTIVE_TURN` failure toast / ack; they become stale under this ticket | Rewrite in this ticket |
+| 2026-11-18 | Code (SR-003, ARCH-REV-001 AR-001) | `AgentStreamingService.ts:120-123,304-326`; `agentRunStreamReconnection.ts`; `liveStreamReconnectScheduler.ts:14,53-57`; `peerRunStreams.ts:10,32-35`; `TeamStreamingService.ts:132-140,281-287,312-323`; `agentOrgStreamingService.ts:133-140,312,446-454,491-496`; server `agent-stream-handler.ts:150-155`, `peer-run-stream-session.ts:78` | Where a waiting Stop goes on a connection loss | Every service drains waiting Stops at the drop; the same service reconnects (agent/peer first retry 1 s; Team/Org through their recovery) and the new connection brings the status first (agent/peer: `CONNECTED` + `AGENT_STATUS`; Team/Org: the snapshot that sets `ready`) | Design D-W7 |
 | 2026-11-18 | Command | `grep -rln "INTERRUPT_GENERATION\|NO_ACTIVE_TURN"` over SDKs, gateway, iOS, Android, applications | Other clients | None outside the web app (only a DTO in `autobyteus-collaboration-stream-contracts`) | — |
 
 ## Relevant Existing Behavior And Supported Product Paths

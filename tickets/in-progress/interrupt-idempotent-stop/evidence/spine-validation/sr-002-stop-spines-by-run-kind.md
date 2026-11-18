@@ -1,5 +1,7 @@
 # SR-002 spine re-walk: Stop for every run kind and state
 
+> Superseded by `sr-003-stop-spines-by-run-kind.md`: its connection-loss rows and "Restart / reconnect" section were wrong (ARCH-REV-001 AR-001: pending Stops are drained at the drop, not at the rebind). Kept as the SR-002 record.
+
 Walked on the design (design-spec.md, SR-002) against the base code cited there. Every row starts at the composer
 (`AgentUserInputTextArea`, the same component on desktop and phone: `MobileRunTargetView.vue:26` → `AgentEventMonitor`
 → `AgentUserInputForm` → `useComposerTarget` → `activeContextStore.interruptGeneration`).
