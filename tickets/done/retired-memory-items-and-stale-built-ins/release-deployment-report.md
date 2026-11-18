@@ -75,7 +75,7 @@ Failures on the merged-state run, each with its cause (TESTING.md Rule 9). None 
 - More evidence requested (from whom, what, result): `None`
 - User check needed: `No` for this finalization. The one thing only the founder can do, his approval and backup before the first start on his own node, is a gate on deploying and releasing, not on merging. Delivery finalizes and carries it to him.
 - User check reference, when needed: N/A for the merge
-- Re-verification after later re-integration: `Not needed` unless `origin/personal` advances before the push (see Repository Finalization)
+- Re-verification after later re-integration: `Not needed`: `origin/personal` did not advance before the push (see Repository Finalization)
 
 ## Release Decision
 
@@ -102,18 +102,18 @@ None: no release, no version bump, no tag.
 
 - Bootstrap context source: `RELEASE.md` Finalization Target (`origin`, `personal`; ticket branch `codex/<ticket-name>`; merge `--no-ff` from a `finalize/` branch in the ticket worktree) and the ticket's bootstrap (base `origin/personal` @ `2e9ac1e65b`).
 - Ticket branch: `codex/retired-memory-items-and-stale-built-ins`
-- Ticket branch commit result: FINAL_COMMIT_PENDING
-- Ticket branch push result: FINAL_PUSH_PENDING
+- Ticket branch commit result: `ba73af3286` (delivery docs sync, handoff summary, release notes, follow-ups, verification records, archive to `tickets/done/`), on top of the base-refresh merge `45b410675c`, the reviewer-documents checkpoint `7fcda317fa`, API/E2E `da95a6105c`, its test commits and the implementation commits up to `91ee1603a5`.
+- Ticket branch push result: `origin/codex/retired-memory-items-and-stale-built-ins` created (new branch) at `ba73af3286`. Secret Gate on `origin/personal..HEAD` (15 commits) `PASS` before the push; artifact hygiene `PASS` and licensing `PASS` (this ticket's evidence files have no `:` or other Windows-hostile character in their names; the longest committed path in the ticket is 126 characters).
 - Finalization target remote: `origin`
 - Finalization target branch: `personal`
-- Target advanced after verification / acceptance: FINAL_TARGET_PENDING
+- Target advanced after verification / acceptance: `No`: `origin/personal` was `75048cbaf4` at the start of delivery, after the checks, before the ticket's final commit, before the ticket push, before the finalize merge, after the merged-state gates and immediately before the target push.
 - Delivery-owned edits protected before re-integration: `Not needed`
-- Re-integration before final merge result: FINAL_REINT_PENDING
-- Target branch update result: FINAL_TARGET_UPDATE_PENDING
-- Merge into target result: FINAL_MERGE_PENDING
-- Push target branch result: FINAL_TARGET_PUSH_PENDING
-- User's checkout of the target branch (`/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`): FINAL_CHECKOUT_PENDING
-- Repository finalization status: FINAL_STATUS_PENDING
+- Re-integration before final merge result: `Not needed` (the verified state is the merged state)
+- Target branch update result: `finalize/retired-memory-items-and-stale-built-ins` created from `origin/personal` @ `75048cbaf4` in the ticket worktree (not in the main checkout).
+- Merge into target result: `--no-ff` merge `e58377895b`; its tree equals the ticket branch's `ba73af3286` (`git diff --stat codex/retired-memory-items-and-stale-built-ins HEAD` empty). Secret Gate on the merged state (16 commits) `PASS`; licensing `PASS`; artifact hygiene `PASS` (99003 tracked files).
+- Push target branch result: `75048cbaf4..e58377895b  HEAD -> personal`. This record commit follows it (fast-forward), and the ticket branch is fast-forwarded to it.
+- User's checkout of the target branch (`/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`): `Updated to e58377895b` after the merge push: it was on `personal` at `75048cbaf4` with no commit the remote lacks, `git fetch` then `git merge --ff-only origin/personal`, no stash, reset, checkout or commit; its 6 uncommitted files (other tickets' `tickets/done/` reports) are untouched. After this record's push the same fast-forward is repeated for the record commit; its result is in the terminal message.
+- Repository finalization status: `Completed`
 - Blocker (if applicable): None
 
 ## Release / Publication / Deployment
@@ -135,7 +135,7 @@ None: no release, no version bump, no tag.
 ## Post-Finalization Cleanup
 
 - Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/retired-memory-items-and-stale-built-ins`
-- Worktree cleanup result, worktree prune result, local branch cleanup result: FINAL_CLEANUP_PENDING
+- Worktree cleanup result, worktree prune result, local branch cleanup result: run after this record's push and the second update of the user's checkout (`git worktree remove` from the main checkout once the worktree's untracked and ignored files are confirmed to be build output and test data only and everything committed is pushed; `git worktree prune`; delete the local `codex/retired-memory-items-and-stale-built-ins` and the temporary `finalize/retired-memory-items-and-stale-built-ins`, both merged into `origin/personal`). The results are in the terminal message.
 - Remote branch cleanup result: `Not required` (the repository keeps pushed `codex/*` branches)
 - Blocker (if applicable): None
 
@@ -170,10 +170,10 @@ Revert the merge commit on `personal` (RELEASE.md, Rollback). A revert restores 
 ## Final Status
 
 - Verification complete (from the evidence, or the user's check where needed): `Yes` (REQ-007 is the founder's gate on his node, carried to him, not a verification gap)
-- Repository finalization complete: FINAL_YESNO_PENDING
+- Repository finalization complete: `Yes`
 - Applicable release/deployment/rollout complete or not required: `Yes` (not required)
-- Applicable safe cleanup complete or not required: FINAL_YESNO_PENDING
+- Applicable safe cleanup complete or not required: `Yes` after the steps above; the terminal message states the result
 - Unresolved blocker: `None`
-- Successful terminal package eligible for return: FINAL_YESNO_PENDING
-- Terminal package sent to the Solution Designer: FINAL_YESNO_PENDING
-- Terminal message/reference: FINAL_REF_PENDING
+- Successful terminal package eligible for return: `Yes`
+- Terminal package sent to the Solution Designer: `Yes`, after this record's push, the update of the user's checkout and the cleanup
+- Terminal message/reference: the `Delivery Completed` message to `/solution_designer` that follows this record
