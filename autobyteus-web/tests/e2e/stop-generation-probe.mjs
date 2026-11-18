@@ -289,8 +289,10 @@ try {
 
     await runCase(doubleId, async () => {
       const rounds = {};
-      for (const gap of gaps) {
-        await holdTurn(target, `${doubleId}-gap${gap}`);
+      for (const [index, gap] of gaps.entries()) {
+        // A gap given more than once is one round each.
+        const key = gaps.indexOf(gap) === index ? `gap${gap}` : `gap${gap}#${index}`;
+        await holdTurn(target, `${doubleId}-${key}`);
         const from = wire.log.length; const since = Date.now();
         const point = await center();
         await page.mouse.click(point.x, point.y);
@@ -303,8 +305,8 @@ try {
         await sleep(300);
         const seen = await observed(from, since);
         const secondLabel = [...seen.button].reverse().find(([at]) => at <= secondAt)?.[1] ?? null;
-        rounds[`gap${gap}`] = { ...seen, secondAt, secondLabel };
-        await page.screenshot({ path: path.join(outputDir, `${doubleId}-gap${gap}.png`) });
+        rounds[key] = { ...seen, secondAt, secondLabel };
+        await page.screenshot({ path: path.join(outputDir, `${doubleId}-${key.replace('#', '-')}.png`) });
       }
       const bad = Object.entries(rounds).filter(([, r]) => r.stops !== 1 || r.acks.join() !== 'accepted' || r.toasts.length || !sawStopping(r.button) || !endsOff(r.button));
       assert(!bad.length, 'every double press: one Stop sent, answered accepted, "Stopping…" seen, then not Running, no toast', { bad: Object.fromEntries(bad), rounds });
