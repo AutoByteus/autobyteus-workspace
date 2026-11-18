@@ -1,0 +1,310 @@
+{
+  "standalone": {
+    "idleRunNoTurn": {
+      "acks": [
+        {
+          "sentAtMs": 0,
+          "ackAtMs": 1,
+          "state": "failed",
+          "code": "NO_ACTIVE_TURN",
+          "message": "AgentRun 'stop_manager_43e3a9_61d1f81ad2e24d9d9f44759f352c2038' has no canonical active turn to interrupt."
+        }
+      ],
+      "turnEndAtMs": null,
+      "idleStatusAtMs": null,
+      "order": [
+        "1ms AGENT_COMMAND_ACK:failed",
+        "2ms AGENT_STREAM_SNAPSHOT"
+      ]
+    },
+    "gap0": {
+      "acks": [
+        {
+          "sentAtMs": 0,
+          "ackAtMs": 68,
+          "state": "accepted",
+          "code": null,
+          "message": null
+        },
+        {
+          "sentAtMs": 0,
+          "ackAtMs": 68,
+          "state": "accepted",
+          "code": null,
+          "message": null
+        }
+      ],
+      "turnEndAtMs": 44,
+      "idleStatusAtMs": 44,
+      "order": [
+        "44ms TURN_INTERRUPTED",
+        "44ms AGENT_STATUS:\"offline\"",
+        "44ms AGENT_INPUT_STATE",
+        "68ms AGENT_COMMAND_ACK:accepted",
+        "68ms AGENT_COMMAND_ACK:accepted"
+      ]
+    },
+    "gap5": {
+      "acks": [
+        {
+          "sentAtMs": 0,
+          "ackAtMs": 61,
+          "state": "accepted",
+          "code": null,
+          "message": null
+        },
+        {
+          "sentAtMs": 35,
+          "ackAtMs": 36,
+          "state": "rejected",
+          "code": "RUN_NOT_FOUND",
+          "message": "Agent run 'stop_manager_43e3a9_61d1f81ad2e24d9d9f44759f352c2038' is not active."
+        }
+      ],
+      "turnEndAtMs": 36,
+      "idleStatusAtMs": 36,
+      "order": [
+        "36ms TURN_INTERRUPTED",
+        "36ms AGENT_STATUS:\"offline\"",
+        "36ms AGENT_INPUT_STATE",
+        "36ms AGENT_COMMAND_ACK:rejected",
+        "61ms AGENT_COMMAND_ACK:accepted"
+      ]
+    },
+    "gap20": {
+      "acks": [
+        {
+          "sentAtMs": 0,
+          "ackAtMs": 57,
+          "state": "accepted",
+          "code": null,
+          "message": null
+        },
+        {
+          "sentAtMs": 33,
+          "ackAtMs": 33,
+          "state": "rejected",
+          "code": "RUN_NOT_FOUND",
+          "message": "Agent run 'stop_manager_43e3a9_61d1f81ad2e24d9d9f44759f352c2038' is not active."
+        }
+      ],
+      "turnEndAtMs": 33,
+      "idleStatusAtMs": 33,
+      "order": [
+        "33ms TURN_INTERRUPTED",
+        "33ms AGENT_STATUS:\"offline\"",
+        "33ms AGENT_INPUT_STATE",
+        "33ms AGENT_COMMAND_ACK:rejected",
+        "57ms AGENT_COMMAND_ACK:accepted"
+      ]
+    },
+    "gap50": {
+      "acks": [
+        {
+          "sentAtMs": 0,
+          "ackAtMs": 52,
+          "state": "accepted",
+          "code": null,
+          "message": null
+        },
+        {
+          "sentAtMs": 51,
+          "ackAtMs": 52,
+          "state": "rejected",
+          "code": "RUN_NOT_FOUND",
+          "message": "Agent run 'stop_manager_43e3a9_61d1f81ad2e24d9d9f44759f352c2038' is not active."
+        }
+      ],
+      "turnEndAtMs": 30,
+      "idleStatusAtMs": 30,
+      "order": [
+        "30ms TURN_INTERRUPTED",
+        "30ms AGENT_STATUS:\"offline\"",
+        "30ms AGENT_INPUT_STATE",
+        "52ms AGENT_COMMAND_ACK:rejected",
+        "52ms AGENT_COMMAND_ACK:accepted"
+      ]
+    },
+    "gap100": {
+      "acks": [
+        {
+          "sentAtMs": 1,
+          "ackAtMs": 56,
+          "state": "accepted",
+          "code": null,
+          "message": null
+        },
+        {
+          "sentAtMs": 100,
+          "ackAtMs": 101,
+          "state": "rejected",
+          "code": "RUN_NOT_FOUND",
+          "message": "Agent run 'stop_manager_43e3a9_61d1f81ad2e24d9d9f44759f352c2038' is not active."
+        }
+      ],
+      "turnEndAtMs": 31,
+      "idleStatusAtMs": 31,
+      "order": [
+        "31ms TURN_INTERRUPTED",
+        "31ms AGENT_STATUS:\"offline\"",
+        "31ms AGENT_INPUT_STATE",
+        "56ms AGENT_COMMAND_ACK:accepted",
+        "101ms AGENT_COMMAND_ACK:rejected"
+      ]
+    },
+    "gap250": {
+      "acks": [
+        {
+          "sentAtMs": 0,
+          "ackAtMs": 50,
+          "state": "accepted",
+          "code": null,
+          "message": null
+        },
+        {
+          "sentAtMs": 251,
+          "ackAtMs": 252,
+          "state": "rejected",
+          "code": "RUN_NOT_FOUND",
+          "message": "Agent run 'stop_manager_43e3a9_61d1f81ad2e24d9d9f44759f352c2038' is not active."
+        }
+      ],
+      "turnEndAtMs": 24,
+      "idleStatusAtMs": 24,
+      "order": [
+        "24ms TURN_INTERRUPTED",
+        "24ms AGENT_STATUS:\"offline\"",
+        "24ms AGENT_INPUT_STATE",
+        "50ms AGENT_COMMAND_ACK:accepted",
+        "252ms AGENT_COMMAND_ACK:rejected"
+      ]
+    },
+    "gap600": {
+      "acks": [
+        {
+          "sentAtMs": 0,
+          "ackAtMs": 55,
+          "state": "accepted",
+          "code": null,
+          "message": null
+        },
+        {
+          "sentAtMs": 602,
+          "ackAtMs": 602,
+          "state": "rejected",
+          "code": "RUN_NOT_FOUND",
+          "message": "Agent run 'stop_manager_43e3a9_61d1f81ad2e24d9d9f44759f352c2038' is not active."
+        }
+      ],
+      "turnEndAtMs": 30,
+      "idleStatusAtMs": 30,
+      "order": [
+        "30ms TURN_INTERRUPTED",
+        "30ms AGENT_STATUS:\"offline\"",
+        "30ms AGENT_INPUT_STATE",
+        "55ms AGENT_COMMAND_ACK:accepted",
+        "602ms AGENT_COMMAND_ACK:rejected"
+      ]
+    }
+  },
+  "teamMember": {
+    "statusFrameSample": [],
+    "idleMemberNoTurn": {
+      "acks": [
+        {
+          "sentAtMs": 0,
+          "ackAtMs": 1,
+          "state": "accepted",
+          "code": null,
+          "message": null
+        }
+      ],
+      "turnEndAtMs": null,
+      "idleStatusAtMs": null,
+      "order": [
+        "1ms AGENT_COMMAND_ACK:accepted"
+      ]
+    },
+    "gap0": {
+      "acks": [
+        {
+          "sentAtMs": 0,
+          "ackAtMs": 57,
+          "state": "accepted",
+          "code": null,
+          "message": null
+        },
+        {
+          "sentAtMs": 0,
+          "ackAtMs": 57,
+          "state": "accepted",
+          "code": null,
+          "message": null
+        }
+      ],
+      "turnEndAtMs": 32,
+      "idleStatusAtMs": 32,
+      "order": [
+        "32ms TURN_INTERRUPTED",
+        "32ms AGENT_STATUS:\"offline\"",
+        "32ms AGENT_INPUT_STATE",
+        "57ms AGENT_COMMAND_ACK:accepted",
+        "57ms AGENT_COMMAND_ACK:accepted"
+      ]
+    },
+    "gap20": {
+      "acks": [
+        {
+          "sentAtMs": 1,
+          "ackAtMs": 68,
+          "state": "accepted",
+          "code": null,
+          "message": null
+        },
+        {
+          "sentAtMs": 44,
+          "ackAtMs": 45,
+          "state": "failed",
+          "code": "NO_ACTIVE_TURN",
+          "message": "AgentRun 'stop_manager_43e3a9_7a2fd0dcab92498e84e7018b31c09dd9' has no canonical active turn to interrupt."
+        }
+      ],
+      "turnEndAtMs": 45,
+      "idleStatusAtMs": 45,
+      "order": [
+        "45ms TURN_INTERRUPTED",
+        "45ms AGENT_STATUS:\"offline\"",
+        "45ms AGENT_INPUT_STATE",
+        "45ms AGENT_COMMAND_ACK:failed",
+        "68ms AGENT_COMMAND_ACK:accepted"
+      ]
+    },
+    "gap100": {
+      "acks": [
+        {
+          "sentAtMs": 0,
+          "ackAtMs": 58,
+          "state": "accepted",
+          "code": null,
+          "message": null
+        },
+        {
+          "sentAtMs": 100,
+          "ackAtMs": 101,
+          "state": "failed",
+          "code": "NO_ACTIVE_TURN",
+          "message": "AgentRun 'stop_manager_43e3a9_7a2fd0dcab92498e84e7018b31c09dd9' has no canonical active turn to interrupt."
+        }
+      ],
+      "turnEndAtMs": 33,
+      "idleStatusAtMs": 33,
+      "order": [
+        "33ms TURN_INTERRUPTED",
+        "33ms AGENT_STATUS:\"offline\"",
+        "33ms AGENT_INPUT_STATE",
+        "58ms AGENT_COMMAND_ACK:accepted",
+        "101ms AGENT_COMMAND_ACK:failed"
+      ]
+    }
+  }
+}

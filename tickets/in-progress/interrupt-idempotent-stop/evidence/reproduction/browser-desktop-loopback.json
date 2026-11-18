@@ -1,0 +1,38 @@
+{
+  "latencyMs": 0,
+  "gaps": [
+    0,
+    60,
+    150,
+    300,
+    600
+  ],
+  "cases": {
+    "gap0": {
+      "firstClickMs": 28,
+      "second": "Stop generation at 46ms",
+      "toasts": "Could not stop stopper_95f2_ebf79fbbf6bd492f8a108c390a940d4c: Agent run 'stopper_95f2_ebf79fbbf6bd492f8a108c390a940d4c' is not active."
+    },
+    "gap60": {
+      "firstClickMs": 39,
+      "second": "Stop generation at 68ms",
+      "toasts": "Could not stop stopper_95f2_ebf79fbbf6bd492f8a108c390a940d4c: Agent run 'stopper_95f2_ebf79fbbf6bd492f8a108c390a940d4c' is not active."
+    },
+    "gap150": {
+      "firstClickMs": 29,
+      "second": "Send message at 158ms",
+      "toasts": ""
+    },
+    "gap300": {
+      "firstClickMs": 32,
+      "second": "Send message at 310ms",
+      "toasts": ""
+    },
+    "gap600": {
+      "firstClickMs": 35,
+      "second": "Send message at 610ms",
+      "toasts": ""
+    }
+  },
+  "errors": []
+}

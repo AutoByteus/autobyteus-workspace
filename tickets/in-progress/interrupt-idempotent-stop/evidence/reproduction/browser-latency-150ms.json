@@ -1,0 +1,62 @@
+{
+  "latencyMs": 150,
+  "gaps": [
+    0,
+    150,
+    300,
+    450,
+    700,
+    1000
+  ],
+  "cases": {
+    "gap0": {
+      "firstClickMs": 27,
+      "second": "Stop generation at 44ms",
+      "toasts": "Could not stop stopper_247b_e74da474e00c4a86bc43a118ddefa3a0: Agent run 'stopper_247b_e74da474e00c4a86bc43a118ddefa3a0' is not active."
+    },
+    "gap150": {
+      "firstClickMs": 80,
+      "second": "Stop generation at 165ms",
+      "toasts": "Could not send Stop to stopper_247b_e74da474e00c4a86bc43a118ddefa3a0: Interrupt was cancelled because the stream disconnected."
+    },
+    "gap300": {
+      "firstClickMs": 27,
+      "second": "Stop generation at 308ms",
+      "toasts": "Could not stop stopper_247b_e74da474e00c4a86bc43a118ddefa3a0: Agent run 'stopper_247b_e74da474e00c4a86bc43a118ddefa3a0' is not active."
+    },
+    "gap450": {
+      "firstClickMs": 28,
+      "second": "Send message at 457ms",
+      "toasts": ""
+    },
+    "gap700": {
+      "firstClickMs": 25,
+      "second": "Send message at 707ms",
+      "toasts": ""
+    },
+    "gap1000": {
+      "firstClickMs": 26,
+      "second": "Send message at 1009ms",
+      "toasts": ""
+    }
+  },
+  "sockets": [
+    "ws://127.0.0.1:64000/_nuxt/?token=4uDfBRKCLl--",
+    "ws://127.0.0.1:64010/ws/agent-package-definitions",
+    "ws://127.0.0.1:64010/ws/update-notifications",
+    "ws://127.0.0.1:64010/ws/terminal/04da21c4-1bfa-448c-a65c-890a3f5d35d5",
+    "ws://127.0.0.1:64010/ws/agent/stopper_247b_e74da474e00c4a86bc43a118ddefa3a0",
+    "ws://127.0.0.1:64000/_nuxt/?token=4uDfBRKCLl--",
+    "ws://127.0.0.1:64010/ws/agent-package-definitions",
+    "ws://127.0.0.1:64010/ws/update-notifications",
+    "ws://127.0.0.1:64010/ws/terminal/941a13ae-6a34-4d29-93e6-dc970eda0841",
+    "ws://127.0.0.1:64010/ws/agent/stopper_247b_e74da474e00c4a86bc43a118ddefa3a0",
+    "ws://127.0.0.1:64010/ws/agent-collaboration/stopper_247b_e74da474e00c4a86bc43a118ddefa3a0",
+    "ws://127.0.0.1:64010/ws/agent/stopper_247b_e74da474e00c4a86bc43a118ddefa3a0",
+    "ws://127.0.0.1:64010/ws/agent/stopper_247b_e74da474e00c4a86bc43a118ddefa3a0",
+    "ws://127.0.0.1:64010/ws/agent/stopper_247b_e74da474e00c4a86bc43a118ddefa3a0",
+    "ws://127.0.0.1:64010/ws/agent/stopper_247b_e74da474e00c4a86bc43a118ddefa3a0",
+    "ws://127.0.0.1:64010/ws/agent/stopper_247b_e74da474e00c4a86bc43a118ddefa3a0"
+  ],
+  "errors": []
+}
