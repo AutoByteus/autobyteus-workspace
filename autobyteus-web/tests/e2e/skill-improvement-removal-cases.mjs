@@ -230,11 +230,12 @@ export function registerSkillImprovementRemovalCases(h) {
       }
       await fx.put(path.join(memory, 'self_evolution', 'index.json'), { evol_01: { evolutionRunId: 'evol_01', status: 'completed', requestedAt: T0, evolverRunId: fx.EVOLVER_RUNS[0] } })
       await fx.put(path.join(memory, 'self_evolution', 'evolution_runs', 'evol_01', 'record.json'), { evolutionRunId: 'evol_01', status: 'completed', requestedAt: T0, evolverRunId: fx.EVOLVER_RUNS[0], errors: [] })
-      // F-3 / F-3b / F-4: session folders inside the real runs.
-      const session = (dir, name, file) => fx.put(path.join(dir, name, file), { target: { runId: path.basename(dir) }, state: { updatedAt: T0 } })
-      await session(path.join(memory, 'agents', r.runId), 'skill_improvement', 'improver_session.json')
-      await session(r.memberDir, 'skill_improvement', 'improver_session.json')
-      await session(r.leadDir, 'self_evolution', 'evolver_session.json')
+      // F-3 / F-3b / F-4: session folders inside the real runs, in the released shapes (`fx.session`). The real run's improver
+      // session names the server helper run and the first improver run: 20261020 takes helper runs only from improver
+      // sessions (autobyteus-280), so this is what makes the helper run feature data.
+      await fx.session(path.join(memory, 'agents', r.runId), 'skill_improvement', 'improver_session.json', { current: fx.SERVER_HELPER_RUN, prior: [fx.IMPROVER_RUNS[0]] })
+      await fx.session(r.memberDir, 'skill_improvement', 'improver_session.json')
+      await fx.session(r.leadDir, 'self_evolution', 'evolver_session.json')
       // History rows of the helper runs (and a stale evolver row) appended to the real index.
       const indexPath = path.join(memory, 'run_history_index.json')
       r.realRows = JSON.parse(await fs.readFile(indexPath, 'utf8'))
@@ -266,7 +267,9 @@ export function registerSkillImprovementRemovalCases(h) {
     r.stillThere = []
     for (const rel of r.deleted) if (await exists(path.join(dataRoot, rel))) r.stillThere.push(rel)
     assert(r.stillThere.length === 0, 'every feature path is gone', r.stillThere)
-    const expected = fx.without(r.before, [...r.deleted, 'memory/run_history_index.json', '.env'])
+    // `memory/episodic/` holds the episodic catalogs (autobyteus-493): derived files the server rewrites at a start when
+    // the runs they list change (here: the deleted helper runs), as it keeps the history index it reads.
+    const expected = fx.without(r.before, [...r.deleted, 'memory/run_history_index.json', 'memory/episodic', '.env'])
     const keptNow = (files) => Object.fromEntries(Object.entries(files).filter(([rel]) => rel in expected))
     const afterFirst = await dataSnapshot(fx.snapshot, dataRoot)
     r.changed = Object.keys(expected).filter((rel) => keptNow(afterFirst)[rel] !== expected[rel])
