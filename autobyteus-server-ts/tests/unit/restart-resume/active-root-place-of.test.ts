@@ -6,6 +6,7 @@ import type { RootExecutionIdentity } from "../../../src/agent-collaboration/exe
 const boundary = (members: readonly string[]) => ({
   hasAgentExecution: (id: string) => members.includes(id),
   deliverExactAgentMessage: vi.fn(),
+  deliverToPeerRun: vi.fn(),
 });
 const register = (directory: ActiveCollaborationRootDirectory, root: RootExecutionIdentity, b: ReturnType<typeof boundary>) =>
   directory.reserve(root, b).commit();

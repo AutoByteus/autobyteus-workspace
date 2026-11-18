@@ -3,6 +3,9 @@ import type { RemoteModelRoutingState, RemoteRefusalTarget } from "./remote-requ
 
 export { REMOTE_REFUSAL };
 
+/** `send_message_to`'s refusal of a team run's ID (R-12), which a peer also answers for a team that runs there (BEH-006). */
+const TARGET_IS_TEAM_RUN = "TARGET_IS_TEAM_RUN";
+
 /**
  * The texts an agent reads for refusals of remote collaboration (REQ-109); the codes are the one list next to
  * the channel port. A refusal that comes from the peer keeps the peer's code; this node words it for its
@@ -51,6 +54,11 @@ export const peerRefusalText = (node: string, code: string, detail: string, targ
       return `The Model Router on node "${node}" could not choose a runtime for ${routing.agentName ?? target?.name ?? "the target"}: ${detail.replace(/\.$/, "")}.`;
     case REMOTE_REFUSAL.TARGET_NOT_PERMITTED: return `Node "${node}" refused the message: that run is not linked with the sender.`;
     case REMOTE_REFUSAL.TARGET_NOT_FOUND: return `That run no longer exists on node "${node}".`;
+    // autobyteus-492: a message by run ID only (`run-messages`); the peer names the run ID it found no running agent for.
+    case REMOTE_REFUSAL.TARGET_NOT_RUNNING:
+      return `${detail.replace(/\.$/, "")} on node "${node}", so the message was not sent. A stopped agent is not woken. If you have list_running_agents, call it with node "${node}" to see what runs there.`;
+    // BEH-006 from a peer: its own refusal names the team's coordinator there; the agent keeps the node.
+    case TARGET_IS_TEAM_RUN: return `${detail} The team runs on node "${node}": send to its coordinator with node "${node}".`;
     case REMOTE_REFUSAL.NODE_IDENTITY_NOT_MIGRATED: return `Node "${node}"'s identity is waiting for its data migration, so it refused the request.`;
     case REMOTE_REFUSAL.PEER_NOT_PAIRED:
       return `This node and node "${node}" are not paired, so nothing was done there. The user can pair them again on the Nodes page.`;

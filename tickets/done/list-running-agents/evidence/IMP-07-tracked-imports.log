@@ -1,0 +1,13 @@
+# IMP-07
+# Command: python3 scripts/check_repository_artifact_hygiene.py --only tracked-imports ; then pnpm -C autobyteus-server-ts exec vitest run tests/architecture/tracked-imports.test.ts
+# Commit: deacacf948
+# Environment: macOS (Darwin 25.5.0), Node v22.23.1
+# Date: 2026-11-18
+
+## The checker
+Tracked-import check passed. Tracked files scanned: 98533
+
+## The vitest wrapper (its 5 s default timeout)
+     × finds no tracked code importing an untracked file in this repository 10985ms
+Error: Test timed out in 5000ms.
+      Tests  1 failed | 1 passed (2)

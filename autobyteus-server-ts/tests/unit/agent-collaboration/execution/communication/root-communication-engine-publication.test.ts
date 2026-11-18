@@ -26,12 +26,20 @@ describe("RootCommunicationEngine publication (SR-072)", () => {
   it("a message from another run is published at the receiver's commit, with the sender's run; the sender's commit does not publish it", async () => {
     const receiverPort = communicationPortDouble(team);
     await expect(new RootCommunicationEngine(receiverPort).acceptFromRun({ message, senderIdentity: member(manager, "manager"), senderDisplayName: "manager",
-      senderAddress: null, receiverIdentity: member(team, "lead"), receiverDisplayName: "lead", assertAllowed: () => undefined })).resolves.toMatchObject({ accepted: true });
+      senderAddress: null, receiverIdentity: member(team, "lead"), receiverDisplayName: "lead", assertAllowed: () => undefined, publishToViews: true })).resolves.toMatchObject({ accepted: true });
     expect(receiverPort.publishMessage).toHaveBeenCalledOnce();
     expect(receiverPort.publishMessage).toHaveBeenCalledWith(message, manager);
     const senderPort = communicationPortDouble(manager);
     await new RootCommunicationEngine(senderPort).commitSentToRun(message);
     expect(senderPort.commitMessageAppend).toHaveBeenCalledOnce();
     expect(senderPort.publishMessage).not.toHaveBeenCalled();
+  });
+
+  it("autobyteus-492 G-1 (DEC-014): a message between unrelated runs is committed to the receiver's log and delivered, but published to no run view", async () => {
+    const receiverPort = communicationPortDouble(team);
+    await expect(new RootCommunicationEngine(receiverPort).acceptFromRun({ message, senderIdentity: member(manager, "manager"), senderDisplayName: "manager",
+      senderAddress: null, receiverIdentity: member(team, "lead"), receiverDisplayName: "lead", assertAllowed: () => undefined, publishToViews: false })).resolves.toMatchObject({ accepted: true });
+    expect(receiverPort.commitMessageAppend).toHaveBeenCalledOnce();
+    expect(receiverPort.publishMessage).not.toHaveBeenCalled();
   });
 });

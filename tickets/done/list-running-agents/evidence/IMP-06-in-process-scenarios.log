@@ -1,0 +1,13 @@
+# IMP-06
+# Command: pnpm exec vitest run tests/unit/remote-collaboration/running-agents-messaging.test.ts --reporter=verbose
+# Commit: deacacf948
+# Environment: macOS (Darwin 25.5.0), Node v22.23.1, pnpm 10.28.2
+# Date: 2026-11-18
+
+ ✓ tests/unit/remote-collaboration/running-agents-messaging.test.ts > the run ID is the address (autobyteus-492), in process > PRB-002 / AC-005 (DS-003): two PMs a person started on one node message each other by run ID; both logs hold both messages; no run view shows them 241ms
+ ✓ tests/unit/remote-collaboration/running-agents-messaging.test.ts > the run ID is the address (autobyteus-492), in process > AC-007 (REQ-010, DEC-003): a stopped run is refused not running and is not woken 6ms
+ ✓ tests/unit/remote-collaboration/running-agents-messaging.test.ts > the run ID is the address (autobyteus-492), in process > AC-001, AC-004 (DS-001, DS-002): A's PM lists A's other PM (not itself), and B's running PM with node 7ms
+ ✓ tests/unit/remote-collaboration/running-agents-messaging.test.ts > the run ID is the address (autobyteus-492), in process > AC-006 (DS-004, DS-005): A's PM messages B's PM with node; B's PM answers with node from the header; each node's logs hold both 110ms
+ ✓ tests/unit/remote-collaboration/running-agents-messaging.test.ts > the run ID is the address (autobyteus-492), in process > entry-form row 8: a run ID that does not run on the peer is refused with this node's name for it; the peer wakes nothing; nothing is logged 17ms
+ ✓ tests/unit/remote-collaboration/running-agents-messaging.test.ts > the run ID is the address (autobyteus-492), in process > a run ID of a peer without node is not running here, and the refusal says to pass node 8ms
+      Tests  6 passed (6)

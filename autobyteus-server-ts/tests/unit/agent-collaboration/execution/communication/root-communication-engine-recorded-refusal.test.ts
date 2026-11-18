@@ -21,7 +21,7 @@ const closingAt = (check: number) => {
   return () => { calls += 1; if (calls >= check) throw CLOSED; };
 };
 const accept = (engine: RootCommunicationEngine, assertAllowed: () => void) => engine.acceptFromRun({ message, senderIdentity: member(manager, "manager"),
-  senderDisplayName: "manager", senderAddress: null, receiverIdentity: member(team, "lead"), receiverDisplayName: "lead", assertAllowed });
+  senderDisplayName: "manager", senderAddress: null, receiverIdentity: member(team, "lead"), receiverDisplayName: "lead", assertAllowed, publishToViews: true });
 
 describe("RootCommunicationEngine: a refusal after the receiver's durable write (SR-076)", () => {
   it("the Task closing after the write: the record is kept and shown, and the refusal says the receiver recorded it", async () => {

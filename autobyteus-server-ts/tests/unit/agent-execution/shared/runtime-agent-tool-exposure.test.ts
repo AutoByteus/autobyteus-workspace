@@ -114,6 +114,7 @@ describe("runtime-agent-tool-exposure", () => {
       publishArtifactsEnabled: false,
       listAvailableAgentsEnabled: false,
       listPeerNodesEnabled: false,
+      listRunningAgentsEnabled: false,
     });
   });
 

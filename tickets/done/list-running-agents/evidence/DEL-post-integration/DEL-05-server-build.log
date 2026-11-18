@@ -1,0 +1,5 @@
+# Command (worktree root): pnpm -C autobyteus-server-ts build  (exit 0 at the end)
+(Use `node --trace-warnings ...` to show where the warning was created)
+Built-in agents bootstrap smoke check passed.
+Sanitized built-module/bootstrap smoke passed without DATABASE_URL.
+exit=0

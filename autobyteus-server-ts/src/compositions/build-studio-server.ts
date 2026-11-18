@@ -40,6 +40,7 @@ import { getGeneralProcessPublishedArtifactPublisher } from "../services/publish
 import { StudioRunModelConfigService } from "../run-history/services/studio-run-model-config-service.js";
 import { composeStudioRemoteCollaboration } from "./remote-collaboration-composition.js";
 import { createCollaborationRootResolver } from "./collaboration-root-resolver.js";
+import { composeRunningAgents } from "./running-agents-composition.js";
 import { composeCollaboration, composeTaskSide, type Collaboration, type TaskSide } from "./collaboration-composition.js";
 import { findProcessRemoteRunChannel } from "../agent-collaboration/execution/remote/remote-run-channel.js";
 import { composeRestartResume, type RestartResume } from "./restart-resume-composition.js";
@@ -302,6 +303,9 @@ export const buildStudioServer = async (input: {
     // One root resolution for inbound remote messages and restart resume (autobyteus-285 D5).
     const rootResolver = createCollaborationRootResolver({ standaloneRoots: getStandaloneAgentRunRootManager(),
       teamRuns: generalProcessRunSupervisor.teamRunService, orgRuns: generalProcessRunSupervisor.agentOrgRunService });
+    // autobyteus-492: this node's running agents, used by the peer receiver and gateway and by messages between runs.
+    const running = composeRunningAgents({ memoryDir: input.appConfig.getMemoryDir(), tempWorkspaceDir: input.appConfig.getTempWorkspaceDir(),
+      activeRoots: getActiveCollaborationRootDirectory(), runs: generalProcessRunSupervisor, agentDefinitions: hostDefinitionServices.agentDefinitionService });
     const remoteCollaboration = composeStudioRemoteCollaboration({
       appDataDir: input.appConfig.getAppDataDir(), memoryDir: input.appConfig.getMemoryDir(),
       tempWorkspaceDir: input.appConfig.getTempWorkspaceDir(),
@@ -309,11 +313,13 @@ export const buildStudioServer = async (input: {
       teamRuns: generalProcessRunSupervisor.teamRunService,
       orgRuns: generalProcessRunSupervisor.agentOrgRunService,
       rootResolver,
+      running,
     });
     releaseRemoteCollaboration = remoteCollaboration.release;
     // autobyteus-461 SR-047 steps 4–8: the Task service, delegation and messages between runs, the views' owners, their consumers.
     const currentCollaboration = collaboration = await composeCollaboration({ memoryDir: input.appConfig.getMemoryDir(), taskSide,
-      runs: generalProcessRunSupervisor, rootResolver, activeRoots: getActiveCollaborationRootDirectory(), remoteChannel: findProcessRemoteRunChannel, episodicCatalog: currentEpisodicCatalog });
+      runs: generalProcessRunSupervisor, rootResolver, activeRoots: getActiveCollaborationRootDirectory(), remoteChannel: findProcessRemoteRunChannel, episodicCatalog: currentEpisodicCatalog,
+      running });
     currentEpisodicCatalog.start({ taskTitles: currentCollaboration.tasks });
     // autobyteus-437: the node access gate (every request needs a credential) and its credential services.
     const currentNodeAccess = nodeAccess = await startNodeAccess({ appDataDir: input.appConfig.getAppDataDir(), remoteCollaboration: remoteCollaboration.services });

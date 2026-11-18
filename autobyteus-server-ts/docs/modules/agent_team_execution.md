@@ -663,12 +663,15 @@ team run's coordinator). A team run's ID is refused by
 `src/agent-communication`. `GlobalAgentRunMessageRouter` sends a run-ID target
 that is one of the sender's own team's members through the root
 (`deliverExactAgentMessage`): it also reaches a not-yet-activated configured member
-(which then activates lazily), and is recorded as ordinary Team Communication. A
-run a Task relates to the sender's run goes root to root
-(`CrossRunMessageDelivery`, which wakes a stopped run with its conversation; see
-[Agent Communication](./agent_communication.md#target_agent_run_id-global-direct-route));
-any other target uses the global live-only path, which rejects an inactive target
-with `TARGET_AGENT_RUN_NOT_ACTIVE`.
+(which then activates lazily), and is recorded as ordinary Team Communication. Any
+other run of this node goes root to root (`CrossRunMessageDelivery`): a run a Task
+relates to the sender's run is woken with its conversation when stopped, any other
+only while it runs, never woken (CM-13, autobyteus-492; see
+[Agent Communication](./agent_communication.md#target_agent_run_id-global-direct-route)),
+and with `node`, the run of a paired peer goes through the peer path. A target the
+cross-run path does not reach (a sender or target without a collaboration root) uses
+the global live-only path, which rejects an inactive target with
+`TARGET_AGENT_RUN_NOT_ACTIVE`.
 
 ## Canonical Team Events And WebSocket Projection
 

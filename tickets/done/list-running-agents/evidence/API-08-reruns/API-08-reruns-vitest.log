@@ -1,0 +1,22 @@
+# API-08 reruns: contract stories after the fixture fix (U9 message ID collabmsg_U9) and the O9 driver
+# Run b: -t '§5\.[23] ' (fixture with collabmsg_U9, before the O9 driver); run c: -t '§5\.3 ' (with the O9 driver). Same env as run 1 (env -i, scripted AGY, Node 22.23.1, macOS 26); 2026-11-18
+# Fixture check: python3 -I autobyteus-server-ts/tests/fixtures/collaboration-contract/export_contract_states.py <461 model dir> autobyteus-server-ts/tests/fixtures/collaboration-contract/contract-states.json --check -> 'contract-states.json matches the model'
+# Base fixture vs base model (origin/personal): MISMATCH (O9 added to the model by 7163160ece, fixture not regenerated) — so O9 had no driver
+
+## run b
+     ↓ §5.1 S0 … S27: a standalone agent delegates on its node and to a peer node
+     ✓ §5.2 U0 … U11: a team the user starts delegates  493426ms
+     × §5.3 O0 … O8: an org the user starts delegates 321072ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+Error: no driver for O9
+    283|       if (!driver) throw new Error(`no driver for ${state.id}`);
+ Test Files  1 failed (1)
+      Tests  1 failed | 1 passed | 1 skipped (3)
+EXIT 1
+
+## run c
+ ✓ tests/e2e/projects/collaboration-contract-stories.e2e.test.ts (3 tests | 2 skipped) 365943ms
+     ✓ §5.3 O0 … O9: an org the user starts delegates  365786ms
+ Test Files  1 passed (1)
+      Tests  1 passed | 2 skipped (3)
+EXIT 0

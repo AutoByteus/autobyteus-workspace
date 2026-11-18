@@ -255,8 +255,8 @@ Rules every role follows:
   Agent Identity and before the collaboration sections for every role that has
   one.
 
-`send_message_to`, `delegate_task`, `list_available_agents`, `get_handoff_rules`
-and the Project Task tools carry one description each, shared by the native
+`send_message_to`, `delegate_task`, `list_available_agents`, `list_running_agents`,
+`get_handoff_rules` and the Project Task tools carry one description each, shared by the native
 tools and the Agent Tools MCP server (constants in
 `agent-team-collaboration-llm-contract.ts` and the tool contract files), so the
 prompt says who the agent can reach and when to message, and the tool
@@ -265,13 +265,14 @@ are unchanged. Refusal and result texts (for example a message to an address
 that is not in the run, a delegation to your own team, a Task that is closed)
 use the same vocabulary and say what to do next; their codes are unchanged. Every
 such refusal reaches the agent as the tool's refusal result, including the
-cross-Task and closed-Task refusals of `send_message_to` (the communication
+closed-Task and not-running refusals of `send_message_to` (the communication
 engine returns them instead of throwing, so they no longer surface as an MCP
 internal error). An invalid `recipient_address` is converted to the agent's text
 at the `send_message_to` / `delegate_task` boundary, one text per tool (answer by sender run id for
 `send_message_to`; `list_available_agents` for `delegate_task`); the address validator
 keeps its own text for definition and configuration callers. Every result and refusal
-text is catalogued once (wording §7.3, M-01..M-45) and checked against the source by
+text is catalogued once (wording §7.3, M-01..M-50; the different-Task refusal M-06 was withdrawn
+by autobyteus-492, M-46..M-50 are the `node` refusals) and checked against the source by
 `tests/unit/agent-collaboration/result-catalogue.test.ts`.
 
 Agent/team authors should not copy dynamic member addresses or tool schemas into

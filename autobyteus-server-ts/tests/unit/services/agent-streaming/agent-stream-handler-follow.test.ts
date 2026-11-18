@@ -17,7 +17,7 @@ import { createAgentRootExecutionIdentity } from "../../../../src/agent-collabor
 const RUN = "child-run";
 const stopped = { status: "offline", isActive: false, shouldConnectStream: false, lastKnownStatus: "IDLE",
   statusSource: "HISTORICAL_METADATA", statusPayload: { status: "offline", agent_id: RUN } };
-const boundary = { hasAgentExecution: () => true, deliverExactAgentMessage: async () => ({ accepted: true as const }) };
+const boundary = { hasAgentExecution: () => true, deliverExactAgentMessage: async () => ({ accepted: true as const }), deliverToPeerRun: async () => ({ accepted: true as const }) };
 
 const fakeRun = () => {
   const listeners = new Set<(event: unknown) => void>();

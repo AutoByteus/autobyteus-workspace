@@ -13,6 +13,7 @@ const mocks = vi.hoisted(() => {
     initialize: vi.fn(),
     getLogsDir: () => path.join(dirs.root, "logs"),
     getMemoryDir: () => path.join(dirs.root, "memory"),
+    getTempWorkspaceDir: () => path.join(dirs.root, "temp_workspace"),
     getAppDataDir: () => dirs.root,
     get: () => undefined,
     getBaseUrl: () => "http://localhost:8000",

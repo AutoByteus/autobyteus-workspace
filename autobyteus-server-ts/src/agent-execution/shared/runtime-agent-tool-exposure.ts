@@ -10,6 +10,7 @@ import { SEND_MESSAGE_TO_TOOL_NAME } from "../../agent-communication/services/se
 import { GET_HANDOFF_RULES_TOOL_NAME } from "../../agent-communication/services/get-handoff-rules-tool-contract.js";
 import { LIST_AVAILABLE_AGENTS_TOOL_NAME } from "../../agent-tools/agent-discovery/list-available-agents-contract.js";
 import { LIST_PEER_NODES_TOOL_NAME } from "../../agent-tools/agent-discovery/list-peer-nodes-contract.js";
+import { LIST_RUNNING_AGENTS_TOOL_NAME } from "../../agent-tools/agent-discovery/list-running-agents-contract.js";
 import { SEARCH_MEMORY_TOOL_NAME } from "../../agent-tools/memory/memory-tool-contract.js";
 import type { MemberExecutionContext } from "../../agent-collaboration/execution/domain/member-execution-context.js";
 
@@ -48,6 +49,8 @@ export type RuntimeAgentToolExposure = {
   listAvailableAgentsEnabled: boolean;
   /** Opt-in only (autobyteus-261 DEC-401): selected by the agent definition, never added automatically. */
   listPeerNodesEnabled: boolean;
+  /** Opt-in only (autobyteus-492 REQ-001): selected by the agent definition, never added automatically. */
+  listRunningAgentsEnabled: boolean;
 };
 
 /** Whether two exposures select the same tools (each is derived from its requested names). */
@@ -63,7 +66,8 @@ export const isSameRuntimeAgentToolExposure = (
     && left.getHandoffRulesEnabled === right.getHandoffRulesEnabled
     && left.publishArtifactsEnabled === right.publishArtifactsEnabled
     && left.listAvailableAgentsEnabled === right.listAvailableAgentsEnabled
-    && left.listPeerNodesEnabled === right.listPeerNodesEnabled;
+    && left.listPeerNodesEnabled === right.listPeerNodesEnabled
+    && left.listRunningAgentsEnabled === right.listRunningAgentsEnabled;
 };
 
 export const resolveRuntimeAgentToolExposure = (agentDefinition: {
@@ -102,6 +106,7 @@ export const buildRuntimeAgentToolExposure = (
     publishArtifactsEnabled: requestedToolNameSet.has(PUBLISH_ARTIFACTS_TOOL_NAME),
     listAvailableAgentsEnabled: requestedToolNameSet.has(LIST_AVAILABLE_AGENTS_TOOL_NAME),
     listPeerNodesEnabled: requestedToolNameSet.has(LIST_PEER_NODES_TOOL_NAME),
+    listRunningAgentsEnabled: requestedToolNameSet.has(LIST_RUNNING_AGENTS_TOOL_NAME),
   };
 };
 

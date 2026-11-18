@@ -40,7 +40,7 @@ const createRouter = (targetRun: AgentRun | null) => {
     getActiveRun: vi.fn(() => targetRun),
   };
   return {
-    router: new GlobalAgentRunMessageRouter({ crossRun: { route: async () => null }, coordinators: { teamCoordinatorOf: async () => null }, agentRunManager }),
+    router: new GlobalAgentRunMessageRouter({ crossRun: { route: async () => null, closedPeerRunRefusal: async () => null }, channel: () => null, coordinators: { teamCoordinatorOf: async () => null }, agentRunManager }),
     agentRunManager,
   };
 };
@@ -131,8 +131,8 @@ describe("GlobalAgentRunMessageRouter", () => {
     }));
     const activeRootDirectory = new ActiveCollaborationRootDirectory();
     const hasAgentExecution = vi.fn((agentRunId: string) => agentRunId === "same-root-target");
-    activeRootDirectory.reserve(memberExecutionContext.identity.root, { hasAgentExecution, deliverExactAgentMessage }).commit();
-    const router = new GlobalAgentRunMessageRouter({ crossRun: { route: async () => null }, coordinators: { teamCoordinatorOf: async () => null },
+    activeRootDirectory.reserve(memberExecutionContext.identity.root, { hasAgentExecution, deliverExactAgentMessage, deliverToPeerRun: vi.fn() }).commit();
+    const router = new GlobalAgentRunMessageRouter({ crossRun: { route: async () => null, closedPeerRunRefusal: async () => null }, channel: () => null, coordinators: { teamCoordinatorOf: async () => null },
       agentRunManager: { getActiveRun: vi.fn(() => target.run) },
       activeRootDirectory,
     });
@@ -169,9 +169,10 @@ describe("GlobalAgentRunMessageRouter", () => {
     activeRootDirectory.reserve(memberExecutionContext.identity.root, {
       hasAgentExecution: (agentRunId: string) => agentRunId === "dormant-child",
       deliverExactAgentMessage,
+      deliverToPeerRun: vi.fn(),
     }).commit();
     const getActiveRun = vi.fn(() => null);
-    const router = new GlobalAgentRunMessageRouter({ crossRun: { route: async () => null }, coordinators: { teamCoordinatorOf: async () => null }, agentRunManager: { getActiveRun }, activeRootDirectory });
+    const router = new GlobalAgentRunMessageRouter({ crossRun: { route: async () => null, closedPeerRunRefusal: async () => null }, channel: () => null, coordinators: { teamCoordinatorOf: async () => null }, agentRunManager: { getActiveRun }, activeRootDirectory });
 
     await expect(router.deliver({
       sender: sameRootSender,
@@ -200,10 +201,11 @@ describe("GlobalAgentRunMessageRouter", () => {
     activeRootDirectory.reserve(memberExecutionContext.identity.root, {
       hasAgentExecution: (agentRunId: string) => agentRunId === "copy-lead",
       teamCoordinatorOf: (teamRunId: string) => teamRunId === "copy-team" ? "copy-lead" : null,
+      deliverToPeerRun: vi.fn(),
       deliverExactAgentMessage,
     }).commit();
     const getActiveRun = vi.fn(() => null);
-    const router = new GlobalAgentRunMessageRouter({ crossRun: { route: async () => null }, coordinators: { teamCoordinatorOf: async () => null }, agentRunManager: { getActiveRun }, activeRootDirectory });
+    const router = new GlobalAgentRunMessageRouter({ crossRun: { route: async () => null, closedPeerRunRefusal: async () => null }, channel: () => null, coordinators: { teamCoordinatorOf: async () => null }, agentRunManager: { getActiveRun }, activeRootDirectory });
     const refusal = { accepted: false, code: "TARGET_IS_TEAM_RUN",
       message: "copy-team is a task agent team's run id, and send_message_to talks with agents. To talk with the team, use its coordinator's run id: copy-lead." };
 
@@ -233,7 +235,7 @@ describe("GlobalAgentRunMessageRouter", () => {
     expect(result).toEqual({
       accepted: false,
       code: "TARGET_AGENT_RUN_NOT_ACTIVE",
-      message: "No running agent has the run id 'preallocated-or-recoverable-run', so the message was not sent. Use an exact run id you were given: a sender run id (from a message or your new task), or a run id delegate_task returned to you.",
+      message: "No running agent has the run id 'preallocated-or-recoverable-run', so the message was not sent. A stopped agent is not woken. Use an exact run id you were given: a sender run id (from a message or your new task), a run id delegate_task returned to you, or one list_running_agents lists. For an agent on another node, also pass node.",
     });
   });
 
@@ -273,25 +275,73 @@ describe("GlobalAgentRunMessageRouter", () => {
     expect(target.postUserMessage).toHaveBeenCalledTimes(1);
   });
 
-  it("autobyteus-461 R-9: an agent of another run that no Task relates to the sender's run (legacy, a deleted Task's run) is refused, also when live", async () => {
+  it("autobyteus-492 (R-9 removed): an agent of a collaboration root that no live root runs is not running for a collaboration sender; nothing is posted", async () => {
     const senderContext = testMemberExecutionContext({ rootTeamRunId: "eng", memberAddress: "/coder", agentRunId: "coder" });
     const targetContext = testMemberExecutionContext({ rootTeamRunId: "legacy-team", memberAddress: "/lead", agentRunId: "legacy-lead" });
     const target = createTargetRun({ runId: "legacy-lead" });
     (target.run as unknown as { config: unknown }).config = { memberExecutionContext: targetContext };
-    const crossRun = { route: vi.fn(async () => null) };
+    const crossRun = { route: vi.fn(async () => null), closedPeerRunRefusal: vi.fn(async () => null) };
     const router = new GlobalAgentRunMessageRouter({ agentRunManager: { getActiveRun: vi.fn(() => target.run) },
-      activeRootDirectory: new ActiveCollaborationRootDirectory(), crossRun, coordinators: { teamCoordinatorOf: async () => null } });
+      activeRootDirectory: new ActiveCollaborationRootDirectory(), crossRun, coordinators: { teamCoordinatorOf: async () => null }, channel: () => null });
     const collaborationSender = buildAgentRunMessageSenderContext({ senderRunId: "coder", senderName: "Coder",
       runtimeKind: RuntimeKind.CODEX_APP_SERVER, memberExecutionContext: senderContext });
-    await expect(router.deliver({ sender: collaborationSender, targetAgentRunId: "legacy-lead", content: "Hi" })).resolves.toEqual({
-      accepted: false, code: "TASK_AGENT_RESOURCE_CONFLICT", message: "You can't message this agent: it works on a different Task." });
+    await expect(router.deliver({ sender: collaborationSender, targetAgentRunId: "legacy-lead", content: "Hi" })).resolves.toMatchObject({
+      accepted: false, code: "TARGET_AGENT_RUN_NOT_ACTIVE" });
     expect(crossRun.route).toHaveBeenCalledOnce();
     expect(target.postUserMessage).not.toHaveBeenCalled();
   });
 
+  describe("autobyteus-492 DS-004: send_message_to with node", () => {
+    const senderContext = testMemberExecutionContext({ rootTeamRunId: "eng", memberAddress: "/coder", agentRunId: "coder" });
+    const collaborationSender = buildAgentRunMessageSenderContext({ senderRunId: "coder", senderName: "Coder",
+      runtimeKind: RuntimeKind.CODEX_APP_SERVER, memberExecutionContext: senderContext });
+    const setup = (options: { closed?: boolean; peer?: "found" | "refused"; channel?: boolean; root?: boolean } = {}) => {
+      const deliverToPeerRun = vi.fn(async () => ({ accepted: true as const, message: "Delivered message to pm_b on node \"docker\"." }));
+      const directory = new ActiveCollaborationRootDirectory();
+      if (options.root !== false) directory.reserve(senderContext.identity.root, { hasAgentExecution: () => false, deliverExactAgentMessage: vi.fn(), deliverToPeerRun }).commit();
+      const closed = { accepted: false as const, code: "TASK_AGENT_RESOURCE_CLOSED", message: "closed" };
+      const crossRun = { route: vi.fn(async () => null), closedPeerRunRefusal: vi.fn(async () => options.closed ? closed : null) };
+      const findPeer = vi.fn(async (name: string) => options.peer === "refused"
+        ? { accepted: false as const, code: "PEER_NOT_REGISTERED", message: `No peer node named "${name}".` } : { nodeId: "srv_b", name });
+      const router = new GlobalAgentRunMessageRouter({ agentRunManager: { getActiveRun: vi.fn(() => null) }, activeRootDirectory: directory, crossRun,
+        coordinators: { teamCoordinatorOf: async () => null }, channel: () => options.channel === false ? null : { findPeer } as never });
+      return { router, deliverToPeerRun, crossRun, findPeer };
+    };
+    const send = (router: GlobalAgentRunMessageRouter, sender = collaborationSender) =>
+      router.deliver({ sender, targetAgentRunId: "pm_b", node: "docker", content: "Hello B", referenceFiles: [] });
+
+    it("the peer by name, this node's closed-Task admission, then the sender's root sends it to that node's ID; only the sender's root is asked", async () => {
+      const h = setup();
+      await expect(send(h.router)).resolves.toMatchObject({ accepted: true, agentRunId: "pm_b" });
+      expect(h.findPeer).toHaveBeenCalledWith("docker");
+      expect(h.crossRun.closedPeerRunRefusal).toHaveBeenCalledWith({ nodeId: "srv_b", agentRunId: "pm_b" });
+      expect(h.deliverToPeerRun).toHaveBeenCalledWith(expect.objectContaining({ nodeId: "srv_b", targetAgentRunId: "pm_b", content: "Hello B",
+        sender: expect.objectContaining({ identity: senderContext.identity, displayName: "Coder" }) }));
+      expect(h.crossRun.route).not.toHaveBeenCalled();
+    });
+
+    it("entry-form row 13 with node (AR-001): a run this node's Tasks closed is refused before anything is sent", async () => {
+      const h = setup({ closed: true });
+      await expect(send(h.router)).resolves.toEqual({ accepted: false, code: "TASK_AGENT_RESOURCE_CLOSED", message: "closed" });
+      expect(h.deliverToPeerRun).not.toHaveBeenCalled();
+    });
+
+    it("row 9: an unknown peer and the switch off give today's peer refusals; row 10: a sender without a collaboration run is refused", async () => {
+      const refused = setup({ peer: "refused" });
+      await expect(send(refused.router)).resolves.toMatchObject({ accepted: false, code: "PEER_NOT_REGISTERED" });
+      expect(refused.crossRun.closedPeerRunRefusal).not.toHaveBeenCalled();
+      await expect(send(setup({ channel: false }).router)).resolves.toMatchObject({ accepted: false, code: "REMOTE_COLLABORATION_OFF" });
+      const plain = setup();
+      await expect(send(plain.router, sender)).resolves.toEqual({ accepted: false, code: "COLLABORATION_CONTEXT_REQUIRED",
+        message: "send_message_to with node needs an agent run that collaborates, so nothing was sent to another node." });
+      expect(plain.findPeer).not.toHaveBeenCalled();
+      await expect(send(setup({ root: false }).router)).resolves.toMatchObject({ accepted: false, code: "COLLABORATION_ROOT_NOT_ACTIVE" });
+    });
+  });
+
   it("R-12 (SR-071): a team run's ID is answered with its coordinator's run ID whether the team runs or not (nothing live here)", async () => {
     const teamCoordinatorOf = vi.fn(async (teamRunId: string) => teamRunId === "stopped-team" ? "stopped-lead" : null);
-    const router = new GlobalAgentRunMessageRouter({ crossRun: { route: async () => null }, coordinators: { teamCoordinatorOf }, agentRunManager: { getActiveRun: vi.fn(() => null) },
+    const router = new GlobalAgentRunMessageRouter({ crossRun: { route: async () => null, closedPeerRunRefusal: async () => null }, channel: () => null, coordinators: { teamCoordinatorOf }, agentRunManager: { getActiveRun: vi.fn(() => null) },
       activeRootDirectory: new ActiveCollaborationRootDirectory() });
     await expect(router.deliver({ sender, targetAgentRunId: "stopped-team", content: "Hi." })).resolves.toEqual({ accepted: false, code: "TARGET_IS_TEAM_RUN",
       message: "stopped-team is a task agent team's run id, and send_message_to talks with agents. To talk with the team, use its coordinator's run id: stopped-lead." });

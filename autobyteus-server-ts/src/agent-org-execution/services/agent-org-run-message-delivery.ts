@@ -15,7 +15,7 @@ import type { TaskDelegationContext } from "../../agent-collaboration/execution/
 import type { DelegationSource } from "../../agent-collaboration/execution/task/member-task-capability.js";
 import { localPlacement } from "../../agent-collaboration/execution/task/task-delegation.js";
 import type { RootCommunicationEngine } from "../../agent-collaboration/execution/communication/root-communication-engine.js";
-import type { ExactAgentMessageInput } from "../../agent-collaboration/execution/services/active-collaboration-root-directory.js";
+import type { ExactAgentMessageInput, PeerRunMessageInput } from "../../agent-collaboration/execution/services/active-collaboration-root-directory.js";
 import type { RunViewStream } from "../../agent-collaboration/delegation/run-view-stream.js";
 import type { RootAgentExecutionRegistry } from "../../agent-collaboration/execution/backends/root-agent-execution-registry.js";
 import type { RootTeamExecutionDirectory } from "../../agent-collaboration/execution/backends/root-team-execution-directory.js";
@@ -29,7 +29,8 @@ import type { AgentOrgExecutionIndex, AgentOrgIndexedAgentExecution } from "./ag
 import type { TeamMemberExecutionCommand } from "../../agent-team-execution/domain/team-member-execution-command.js";
 import type { AgentOrgRecipientResolver } from "./agent-org-recipient-resolver.js";
 import type { AgentOrgRunCollaborators } from "./agent-org-run-collaborators.js";
-import { REMOTE_REFUSAL } from "../../agent-collaboration/execution/remote/remote-refusal-codes.js";
+import { REMOTE_REFUSAL, remoteTargetNotRunning } from "../../agent-collaboration/execution/remote/remote-refusal-codes.js";
+import { unlinkedRunEndpoint } from "../../agent-collaboration/execution/remote/remote-endpoint.js";
 import type { RemoteInboundMessage, RemoteRunLinks } from "../../agent-collaboration/execution/remote/remote-run-links.js";
 import type { RemoteMessageSend } from "../../agent-collaboration/execution/remote/remote-message-send.js";
 
@@ -75,6 +76,27 @@ export class AgentOrgRunMessageDelivery {
     return this.options.getCommunication().acceptFromRun({ ...input,
       receiverIdentity: this.identityFor(receiver.agentRunId, receiver.address),
       receiverDisplayName: getAgentTeamAddressBasename(receiver.address) ?? receiver.agentRunId });
+  }
+
+  /** DS-004: `send_message_to(node, run ID)` from an agent of this org to an agent of a peer node. */
+  deliverToPeerRun(input: PeerRunMessageInput): Promise<AgentOperationResult> {
+    const sender = input.sender.identity;
+    this.options.authorizeIdentity(sender);
+    return this.options.remoteSend.sendToPeerRun({ sender, nodeId: input.nodeId, targetAgentRunId: input.targetAgentRunId,
+      content: input.content, messageType: input.messageType, referenceFiles: input.referenceFiles });
+  }
+
+  /** DS-004 on the receiving node: a peer agent's message by run ID only, for an agent of this org while it runs (never woken). */
+  acceptPeerRunMessage(input: RemoteInboundMessage): Promise<AgentOperationResult> {
+    const receiver = this.options.getIndex().getAgent(input.message.receiverAgentRunId);
+    if (!receiver || !this.isLiveAgent(receiver.agentRunId)) return Promise.resolve(remoteTargetNotRunning(input.message.receiverAgentRunId));
+    return this.options.getCommunication().acceptFromRemote({
+      message: input.message,
+      endpoint: unlinkedRunEndpoint({ nodeId: input.fromNodeId, agentRunId: input.message.senderAgentRunId, pairedAgentRunId: receiver.agentRunId }),
+      receiverIdentity: this.identityFor(receiver.agentRunId, receiver.address),
+      receiverDisplayName: getAgentTeamAddressBasename(receiver.address) ?? receiver.agentRunId,
+      senderNodeName: input.fromNodeName,
+    });
   }
 
   /** The inbound order: the link check, then the paired agent is woken or restored (N-8), then the engine admits it. */

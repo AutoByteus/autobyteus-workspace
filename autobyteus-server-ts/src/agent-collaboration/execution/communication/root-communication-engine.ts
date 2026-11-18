@@ -24,7 +24,6 @@ import { buildRemoteCommunicationInputMessage } from "./root-communication-runti
 import { REMOTE_REFUSAL, REMOTE_ROOT_REFUSAL_TEXT } from "../remote/remote-refusal-codes.js";
 import type { RemoteEndpoint } from "../remote/remote-endpoint.js";
 
-const DELIVERY_REFUSAL_CODES: ReadonlySet<string> = new Set(["TASK_AGENT_RESOURCE_CLOSED", "TASK_AGENT_RESOURCE_CONFLICT"]);
 const NOT_HERE = "The agent with that run id is not running here, so the message was not sent. Use an exact run id you were given.";
 /** A recipient that stopped accepting input after the durable write (its slot can no longer be committed). */
 const RECIPIENT_STOPPED: Refusal = Object.freeze({ accepted: false, code: "AGENT_RUN_NOT_ACCEPTING_INPUT", message: "AgentRun is not accepting input." });
@@ -40,7 +39,7 @@ export type RecordedRunRefusal = Refusal & Readonly<{ recordedByReceiver: true }
 export const isRecordedRunRefusal = (result: AgentOperationResult): result is AgentOperationResult & RecordedRunRefusal =>
   !result.accepted && (result as Partial<RecordedRunRefusal>).recordedByReceiver === true;
 
-/** A message from a local agent of this root to a remote endpoint it is paired with (CM-11). */
+/** A message from a local agent of this root to a remote endpoint: one it is paired with (CM-11), or a peer agent by run ID (CM-13). */
 export type RemoteSendInput = Readonly<{
   senderIdentity: CollaborationMemberExecutionIdentity;
   endpoint: RemoteEndpoint;
@@ -77,9 +76,11 @@ export type RunAcceptInput = Readonly<{
   receiverDisplayName: string;
   /** The gate-head re-check of the Task rule, read from the Task side (AR-017); throws a Task refusal. */
   assertAllowed(): void;
+  /** Whether the message enters run views: related runs `true`; unrelated runs `false` (autobyteus-492 G-1, DEC-014). */
+  publishToViews: boolean;
 }>;
 
-/** A message a peer node accepted from its run, for a local agent of this root that is paired with it. */
+/** A message a peer node accepted from its run, for a local agent of this root: linked (CM-11), or by run ID (CM-13). */
 export type RemoteAcceptInput = Readonly<{
   message: CollaborationCommunicationMessage;
   endpoint: RemoteEndpoint;
@@ -123,7 +124,7 @@ export class RootCommunicationEngine {
       return { accepted: false, code: "COLLABORATION_SELF_TARGET_REJECTED", message: "You can't send a message to yourself." };
     }
     const assertAllowed = () => this.port.assertDeliveryAllowed(input.senderIdentity.agentRunId, input.receiverIdentity.agentRunId);
-    // The Task-scope refusal (a different Task, or a closed one) is an ordinary refusal the agent reads
+    // The Task-scope refusal (a closed Task) is an ordinary refusal the agent reads
     // (SR-003 T-4). The same refusal is given when the scope closes under the lock or after the save (DEC-005).
     const scope = this.refuseOutsideTaskScope(assertAllowed);
     if (scope) return scope;
@@ -148,8 +149,9 @@ export class RootCommunicationEngine {
 
   /**
    * Outbound, step 1 (DS-002 on the delegating node, DS-003 on the receiving node): the checks and the message
-   * ID, with no state change. The root's delivery applied the endpoint's pair rule before; it transmits after.
-   * The Task check uses the endpoint's run ID, whose Task chain the endpoint kind gives (`ownershipChain`).
+   * ID, with no state change. `RemoteMessageSend` chose the endpoint before (linked, or `unlinked_run`); it transmits after.
+   * The Task check is the root's own (`assertDeliveryAllowed`): the closed-Task fence of the root's linked endpoint with
+   * the remote run ID, whichever endpoint carries the message.
    */
   prepareRemoteSend(input: RemoteSendInput): PreparedRemoteSend {
     const refuse = (refusal: Refusal): PreparedRemoteSend => Object.freeze({ ok: false as const, refusal });
@@ -290,7 +292,7 @@ export class RootCommunicationEngine {
       content: message.content, messageType: message.messageType, referenceFiles: message.referenceFiles }, message });
     // The receiver's commit publishes a message between runs, once, into the views of both runs and those above (SR-072).
     const { result, recorded } = await this.commitReserved(message, inputMessage, input.receiverIdentity.agentRunId, input.receiverDisplayName,
-      input.assertAllowed, input.senderIdentity.root);
+      input.assertAllowed, input.publishToViews ? input.senderIdentity.root : null);
     return !result.accepted && recorded ? Object.freeze({ accepted: false as const, code: result.code ?? "", message: result.message ?? "", recordedByReceiver: true as const }) : result;
   }
 
@@ -382,8 +384,11 @@ export class RootCommunicationEngine {
   }
 }
 
-/** The Task-scope refusals the agent reads (closed, or a different Task), with the error's own text (C-2). */
+/**
+ * The Task-scope refusal the agent reads, with the error's own text (C-2): a run whose Task is closed. A different Task is no
+ * reason to refuse a message (autobyteus-492 CM-13).
+ */
 const taskScopeRefusalOf = (error: unknown): TaskScopeRefusal | null =>
-  error instanceof TaskDelegationError && DELIVERY_REFUSAL_CODES.has(error.code)
+  error instanceof TaskDelegationError && error.code === "TASK_AGENT_RESOURCE_CLOSED"
     ? Object.freeze({ accepted: false as const, code: error.code, message: error.message })
     : null;
