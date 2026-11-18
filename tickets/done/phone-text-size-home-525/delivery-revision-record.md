@@ -41,14 +41,14 @@
 - Delivery round and trigger: second delivery round; API/E2E handoff after the merged-base rerun (API-REV-003, `Pass`, final confidence 95%), requested by DR-001 and carried out by implementation (IR-003: merge `65d67674a9`, probe `6abbcc7bef`) and API/E2E (`8ff33be443`).
 - Triggering upstream report, verification, or evidence: `api-e2e-execution-coverage-report.md` (round 3), `api-e2e-revision-record.md`, `evidence/api-e2e/README.md` and its `r3-*` folders; `implementation-handoff.md` IR-003 (IMP-08a…f).
 - Prior authoritative result: DR-001 (`Blocked` at the base refresh; the integration is now done).
-- Current authoritative result: `Delivery Completed` once finalization is recorded in `release-deployment-report.md`: verified from evidence, docs synced, finalized on `personal`, no release.
+- Current authoritative result: `Delivery Completed`: verified from evidence, docs synced, finalized on `personal` (merge `b91eb0ddaa`, pushed 2026-11-18), no release.
 - Docs sync report: `docs-sync-report.md` (Updated: `autobyteus-web/docs/remote_access.md`, `autobyteus-web/docs/content_rendering.md`)
 - Handoff summary: `handoff-summary.md`
 - Release/publication/deployment report: `release-deployment-report.md`
 - Integration and post-integration verification: `origin/personal` moved again to `93f3b9cde8` (22 commits: autobyteus-493, `autobyteus-server-ts` source, tests and docs, `GLOSSARY.md`, archived tickets; no web, `autobyteus-ts`, contract or build-input change). Clean merge `537fba6d9e`. Both typechecks at their baselines (`evidence/DEL-merged-base/DEL-01`, `DEL-02`) and the phone probe `MSP-66, 60, 74, 73` on a rebuilt server and phone bundle of the merged state: `Pass` on the second run (`DEL-04`); the first run stopped in stack setup under host load before any case (`DEL-03`).
 - Verification (evidence judgement or user check) and finalization state: evidence `Sufficient`: every critical acceptance criterion proven directly (`release-deployment-report.md`, Verification). The founder's own view on a phone is not a condition of the merge (his word: release only after it); it gates the release.
-- Terminal return to the Solution Designer: `Not yet eligible` (until the record commit after the push)
-- Terminal return message/reference: see the terminal message
+- Terminal return to the Solution Designer: `Sent` (after the record commit's push and the cleanup)
+- Terminal return message/reference: `send_message_to` the Solution Designer, `Delivery Completed`, 2026-11-18. Merge `b91eb0ddaa` on `personal`.
 - Why this baseline or delivery revision was recorded: the first completed delivery result of the ticket.
 - Next recipient/action: the Solution Designer verifies the receipt and returns `Terminal`; a release (beta) waits for the founder's word after he has seen the result on a phone-size page.
 - Remaining blockers, rollback concerns, or untested scope: none blocking. Not tested: a physical phone, the iOS shell, other WebView versions. A release is rolled back by reverting the merge and cutting a new release (RELEASE.md Rollback); this change stores nothing new (`autobyteus.phone.textSize` is unchanged), so there is no data to convert.

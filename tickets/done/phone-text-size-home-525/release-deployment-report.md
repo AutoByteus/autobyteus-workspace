@@ -140,3 +140,40 @@ Revert the merge on `personal` (RELEASE.md Rollback). There is no data to conver
 - Successful terminal package eligible for return: see "Repository Finalization Record"
 - Terminal package sent to the Solution Designer: see "Repository Finalization Record"
 - Terminal message/reference: see "Repository Finalization Record"
+
+## Repository Finalization Record
+
+Written after the push, in the record commit that follows the merge (fast-forward on `personal`).
+
+- Bootstrap context source: `RELEASE.md` Finalization Target (`origin`, `personal`; ticket branch `codex/<ticket-name>`; merge `--no-ff` from a `finalize/` branch in the ticket worktree) and the ticket's bootstrap (base `origin/personal` @ `ff13782f36`).
+- Ticket branch: `codex/phone-text-size-home-525`
+- Ticket branch commit result: `5d2575915d` (delivery docs sync, handoff summary, release notes, verification records, archive to `tickets/done/`), on top of the base-refresh merges `65d67674a9` (implementation, after DR-001) and `537fba6d9e` (delivery), API/E2E `8ff33be443` and the implementation commits up to `12ecf1bf29`.
+- Ticket branch push result: `origin/codex/phone-text-size-home-525` created (new branch) at `5d2575915d`. Secret Gate on `origin/personal..codex/phone-text-size-home-525` (18 commits) `PASS` before the push; artifact hygiene `PASS` (the ticket's evidence file names have no `:` or other Windows-hostile character; the longest ticket path is 124 characters).
+- Finalization target remote: `origin`
+- Finalization target branch: `personal`
+- Target advanced after verification / acceptance: `Yes`, twice before the final merge: `ff13782f36` → `3f19d41aa7` (DR-001: conflicts, integrated by implementation, rerun by API/E2E) and `3f19d41aa7` → `93f3b9cde8` (clean, delivery's checks above). No further advance: `origin/personal` was `93f3b9cde8` at the fetches before the ticket commit, before the ticket push, before the finalize merge and immediately before the target push.
+- Delivery-owned edits protected before re-integration: `Completed` (committed before each push; the second refresh came before any delivery edit)
+- Re-integration before final merge result: `Not needed` after `537fba6d9e` (the target did not advance again)
+- Target branch update result: `finalize/phone-text-size-home-525` created from `origin/personal` @ `93f3b9cde8` in the ticket worktree (not in the main checkout).
+- Merge into target result: `--no-ff` merge `b91eb0ddaa`; its tree equals the ticket branch's `5d2575915d` (`git diff --stat codex/phone-text-size-home-525 HEAD` empty). Secret Gate on the merged state (19 commits) `PASS`; licensing `PASS`; artifact hygiene `PASS` (98425 tracked files).
+- Push target branch result: `93f3b9cde8..b91eb0ddaa  HEAD -> personal`. This record commit follows it (fast-forward).
+- User's checkout of the target branch (`/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`): updated after this record's push; the result is in the terminal message.
+- Repository finalization status: `Completed`
+- Blocker (if applicable): `None`
+
+### Cleanup (after this record's push and the update of the user's checkout)
+
+- Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/phone-text-size-home-525`
+- Worktree, worktree prune, local branch (`codex/phone-text-size-home-525` and the temporary `finalize/phone-text-size-home-525`, both merged into `origin/personal`): run after this record; the results are in the terminal message.
+- Remote branch cleanup result: `Not required` (the repository keeps pushed `codex/*` branches)
+
+### Final Status
+
+- Verification complete: `Yes`
+- Repository finalization complete: `Yes`
+- Applicable release/deployment/rollout complete or not required: `Yes` (not required: no release; the founder's word is pending)
+- Applicable safe cleanup complete or not required: see Cleanup above and the terminal message
+- Unresolved blocker: `None`
+- Successful terminal package eligible for return: `Yes`
+- Terminal package sent to the Solution Designer: `Yes` (after this commit's push and the cleanup)
+- Terminal message/reference: `send_message_to` the Solution Designer, `Delivery Completed`, 2026-11-18.
