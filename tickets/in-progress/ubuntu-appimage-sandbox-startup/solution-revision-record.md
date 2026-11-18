@@ -124,3 +124,6 @@ SR-007 Draft → Draft. User asked for AppImage unattended opt-in upgrades and a
 
 ## SR-009 — Scoped trial result
 User-run SR-008 external prerequisite cleared. See investigation SR-009 and evidence/sr-009. REQ-001/002/003 and partial AC-004 supported on one host, not final acceptance. REQ-005/007, AC-006/008 still need genuine update proof. No approval/design/routing change; Draft remains. Next investigate actual updater and permanent path trust.
+
+## SR-010 — First-start experience and security decision
+User accepts one-time system password prompt for scoped setup and expects no repeated involvement. Draft → Draft, current first-run intended behavior confirmed; previous SR-009 proof stands. REQ-001–003/005/007, AC-001/004/008 updated. Bundled updater path semantics read. Security/operational choice (account-writable path exception vs protected installation with authenticated unattended updates) remains material. No design/implementation approval or release.
