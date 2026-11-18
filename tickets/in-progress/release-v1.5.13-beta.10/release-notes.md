@@ -1,6 +1,6 @@
 ## What you need to do
 - **Nothing to set up.** Update the desktop app and your nodes as usual.
-- **The first start after the update builds the agents' run catalogs once.** It writes new files only under `episodic/` in the memory folder, one catalog per agent plus an index, in about 12 seconds for around 4,000 runs. Nothing in any run folder is changed, and the catalogs can be deleted at any time: they are rebuilt at the next start. Old team runs whose saved team structure is missing are left out of the catalogs, with one warning per such run in the server log (three on our test machine); nothing else is affected.
+- **The first start after the update builds the agents' run catalogs once.** It writes new files only under `episodic/` in the memory folder, one catalog per agent plus an index, in about 12 seconds for around 4,000 runs. Nothing in any run folder is changed, and the catalogs can be deleted at any time: they are rebuilt at the next start. On a long-used installation, the server log can show, at each start, one warning for each old team run that was saved without its team structure; those runs are left out of the catalogs and are otherwise unaffected.
 - **Text size on the phone moved.** It is now in the run list's **⋮** → **On this phone** and covers every phone screen. The size you chose before is kept.
 - **Reviewing tool calls on the AutoByteus runtime:** a tool other than the four base tools now asks for approval twice, first for the search, then for the tool. Running tools automatically is unchanged.
 
