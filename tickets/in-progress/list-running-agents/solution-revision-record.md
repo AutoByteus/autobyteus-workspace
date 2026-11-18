@@ -7,6 +7,7 @@
 | SR-001 | Requirements | Initial coherent baseline (Task autobyteus-492 with the founder's comments of 2026-11-18 and the PM's message on roots) | PRB-001, PRB-002 | N/A | Ready for Approval | BEH-001…008, REQ-001…012, AC-001…009 | Four decisions put to the founder |
 | SR-002 | Requirements | The founder's two answers in the Solution Designer's conversation, 2026-11-18 | DEC-001, DEC-002 | Ready for Approval | Approved | BEH-003…005, UC-003/004, REQ-008…011, AC-005…008, SCN-003…006, DEC-001…004, DEC-011 | "The run ID is the address"; approved |
 | SR-003 | Mixed | The founder's third and fourth messages, 2026-11-18 (clarifications 5, 6); design draft | DEC-012 | Approved (SR-002) → Ready for Approval (clarification 5) | Approved; design Ready | BEH-006, REQ-002, REQ-011, REQ-013, AC-002, AC-010, DEC-004, DEC-006, DEC-012 | Team run ID reaches its coordinator; list only user-started; design complete |
+| SR-004 | Mixed | The founder's question, 2026-11-18: team run ID or coordinator's run ID? | DEC-012 | Approved (SR-003) | Approved; design Ready | BEH-006, REQ-002, REQ-011, REQ-012, REQ-013 (withdrawn), AC-002, AC-010 (withdrawn), DEC-004, DEC-006, DEC-012 | Today's rule kept: message a team through its coordinator's run ID; the list gives it |
 
 ## Revision Entries
 
@@ -55,3 +56,13 @@
 - Approval: the founder (`User`), his words above; reference this conversation.
 - Design: `design-spec.md` written (SR-003 basis); classification `Large` / `High`.
 - Next action: handoff per the rules (architecture review expected for Large/High).
+
+### SR-004 — A team is messaged through its coordinator (today's rule kept)
+
+- Phase and classification: Mixed (`Refinement`, user change to intended behavior; design revision).
+- Trigger: the founder, 2026-11-18 (voice), asked my opinion: should a team run ID reach the coordinator, or keep today's behavior, the list giving the coordinator's run ID? "I think it's better to message the coordinator directly instead of messaging the team." I recommended keeping today's rule (reasons in DEC-012); he stated the same preference.
+- IDs affected: BEH-006 (preserved again, also from a peer), REQ-002 (`coordinator_agent_run_id` on Team entries and team units), REQ-011, REQ-012, REQ-013 and AC-010 withdrawn, AC-002, DEC-004, DEC-006, DEC-012.
+- Intended behavior changed: `Yes` (back to today's team-run-ID refusal).
+- Approval: the founder (`User`), his words above.
+- Design: team-run-ID resolution removed from the router and the removal plan; `RunningAgents.teamCoordinatorOf` gives the peer's refusal its guidance. Classification unchanged (`Large` / `High`).
+- Review impact: the architecture review in progress reviews SR-004 (the reviewer was told).

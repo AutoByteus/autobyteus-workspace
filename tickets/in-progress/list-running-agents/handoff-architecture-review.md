@@ -2,7 +2,7 @@
 
 - Result: `Architecture Design Complete`, `task_size=Large`, `architectural_risk=High` → independent architecture review.
 - Package: `list-running-agents`; Project Task `autobyteus-492` (Project `project_a1377344-25db-482a-97cc-ecfdb0fb495a`), delegated by `/project_task_manager` (run `project_task_manager_7c8dce0c4a8b44f88e776a83809dee03`) for the founder.
-- Current revision: `SR-003`.
+- Current revision: `SR-004` (was SR-003 at the first message).
 - Worktree / branch: `/Users/normy/autobyteus_org/autobyteus-worktrees/list-running-agents`, `codex/list-running-agents`; base `origin/personal` at `bd2053ee51`; finalization target `origin/personal`. Release only on the founder's word.
 - Ticket folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/list-running-agents/tickets/in-progress/list-running-agents/`
 
@@ -14,13 +14,14 @@ The founder wants a tool "list running agents", the pair of `list_available_agen
 
 1. "As long as you know the target's agent run ID you should be able to send a message to it … doesn't matter if you're a task agent, a member in a task agent team, or from a remote node." (DEC-001, DEC-002)
 2. "send_message_to also adds this node ID, then the target agent run ID … the same for delegate_task." (DEC-007)
-3. "If you know the agent run ID or the agent team run ID, then you should be able to use send_message_to … list_running_agents should only return the standalone ones [started by the user]." (DEC-012, REQ-001)
+3. "… list_running_agents should only return the standalone ones [started by the user]." (REQ-001)
+4. Asked whether a team run ID should reach the coordinator: "I think it's better to message the coordinator directly instead of messaging the team." (DEC-012, SR-004: today's rule kept; the list gives `coordinator_agent_run_id`)
 
 Decided by the Solution Designer within that direction (founder informed): a stopped run is not woken by a sender no Task relates to (DEC-003); a closed Task's run stays closed (DEC-011); entry shapes and fields (DEC-004/005/008/009/010).
 
 ## What the design does (see `design-spec.md`)
 
-- **Message rule ("the run ID is the address"):** `send_message_to(run ID)` reaches any running agent of another local run (DS-003, replacing `TASK_AGENT_RESOURCE_CONFLICT`); with the new `node` field, any running agent of a paired node (DS-004: an `unlinked_run` endpoint + new peer request `POST /rest/remote/run-messages`); a teammate of a delegator reaches the linked remote run too (DS-006). A team run ID reaches its coordinator (DEC-012). Task-related wake/reopen, the closed-Task refusal and links are unchanged.
+- **Message rule ("the run ID is the address"):** `send_message_to(run ID)` reaches any running agent of another local run (DS-003, replacing `TASK_AGENT_RESOURCE_CONFLICT`); with the new `node` field, any running agent of a paired node (DS-004: an `unlinked_run` endpoint + new peer request `POST /rest/remote/run-messages`); a teammate of a delegator reaches the linked remote run too (DS-006). A team is messaged through its coordinator's run ID, as today; a peer gives the same `TARGET_IS_TEAM_RUN` guidance (DEC-012, SR-004). Task-related wake/reopen, the closed-Task refusal and links are unchanged.
 - **List:** opt-in tool `list_running_agents({node?, address?, state?})`: running runs a person started (Agent, Team, Org with its units), with run ID, name, address, state, start time, Project; from a peer through new `POST /rest/remote/running-agents`. No content.
 - **One owner of "running":** `RunningAgents` (live root directory + per-kind live statuses), used by local delivery, the peer receiver and the listing.
 
@@ -36,7 +37,7 @@ Decided by the Solution Designer within that direction (founder informed): a sto
 - The entry-form table (design § Concrete Examples): every sender/target kind, local and remote.
 - `RunningAgents` as the one definition of "running" (idle-shut-down hosts are not running).
 - Splitting `run-messages` from linked `messages` (different subject: no `targetRoot`, never restores).
-- The removal plan (CONFLICT branch, R-9, outbound pair refusal, `TARGET_IS_TEAM_RUN`) and the test fixtures that encode the old rule.
+- The removal plan (CONFLICT branch, R-9, outbound pair refusal) and the test fixtures that encode the old rule.
 
 ## Open risks
 

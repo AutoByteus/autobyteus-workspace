@@ -2,8 +2,8 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: `SR-003`
-- Approved requirements baseline: `requirements-doc.md` at SR-003, approved by the founder (DEC-001, DEC-002, DEC-012; his three answers of 2026-11-18 in the Solution Designer's conversation) and by the Solution Designer within his direction (DEC-003 … DEC-011, founder informed).
+- Current solution revision ID: `SR-004`
+- Approved requirements baseline: `requirements-doc.md` at SR-004, approved by the founder (DEC-001, DEC-002, DEC-012; his answers of 2026-11-18 in the Solution Designer's conversation) and by the Solution Designer within his direction (DEC-003 … DEC-011, founder informed).
 - Behavior-defining supplements: None.
 - User approval of the design: `Not required` (the Task asks for investigation and design, then build; it does not ask for design approval).
 - Design status: `Ready`
@@ -51,7 +51,7 @@ Constraints the target keeps: CM-9 (each run logs its own side), the closed-Task
 
 ## Intended Change
 
-Make "the run ID is the address" true: any agent messages any running agent by its run ID, or any running team by the team's run ID (its coordinator receives it), on this node, or with `node` on a paired node, and the receiver answers the same way; add `list_running_agents` to find the run IDs of running runs a person started, here or on a paired node. Task-related wake, reopen and the closed-Task rule stay.
+Make "the run ID is the address" true: any agent messages any running agent by its run ID (a team through its coordinator's run ID, as today), on this node, or with `node` on a paired node, and the receiver answers the same way; add `list_running_agents` to find the run IDs of running runs a person started, here or on a paired node. Task-related wake, reopen and the closed-Task rule stay.
 
 ## Change Scope (Mandatory)
 
@@ -61,8 +61,7 @@ Make "the run ID is the address" true: any agent messages any running agent by i
   | --- | --- | --- |
   | Message rule (CM-5, CM-11) | `collaboration_model.md` CM-5, CM-11, §4, §5 | Rewrite: new CM-13 "The run ID is the address"; CM-5/CM-11 keep Task wake/reopen/closed and links |
   | Message rule | `agent_communication.md`, `agent_tools.md`, `remote_collaboration.md`, `projects.md` (message scope lines) | Update to the new rule |
-  | Message rule | `send_message_to` tool description and field texts (`agent-team-collaboration-llm-contract.ts:12-20`) | Add `node`; "a team's own run id is refused" → "a team's run id reaches its coordinator"; "Unknown run ids are rejected" → "a run id that is not running is refused" |
-| Team-run-ID rule | `delegate_task` result text (`target_team_coordinator_agent_run_id` "talk with the team through this run id", l. 31), `agent_tools.md`, `agent_communication.md` R-12 | Both IDs reach the team; texts updated |
+  | Message rule | `send_message_to` tool description and field texts (`agent-team-collaboration-llm-contract.ts:12-20`) | Add `node`; "Unknown run ids are rejected" → "a run id that is not running is refused" |
   | `TARGET_AGENT_RUN_NOT_ACTIVE` text | agents reading it | Add: "For an agent on another node, also pass node." |
   | `RemoteMessageTransmission` / `DeliverRemoteMessageRequest` | `PeerClient.deliverMessage`, `PeerGateway` parsers | New union member and path; existing kinds unchanged |
   | `RemoteEndpoint` union | `RemoteRunLinks.endpoints/endpointFor/inboundEndpoint`, roots' `assertPeerEntryOpen` | The new kind is never stored in or returned by `RemoteRunLinks`; it exists only for one send or accept, so these readers are unaffected |
@@ -80,7 +79,7 @@ Make "the run ID is the address" true: any agent messages any running agent by i
 | BEH-003 | Contract | REQ-008, REQ-010; AC-005, AC-007, AC-008 | `send_message_to(run ID)` | CONFLICT refusal | Delivered to a running agent; never wakes | DS-003 |
 | BEH-004 | Contract | REQ-009; AC-006 | `send_message_to(node, run ID)` | Unknown | Delivered to a running agent of the peer | DS-004, DS-005, DS-006 |
 | BEH-005 | Contract | REQ-010, REQ-011; AC-007, AC-008 | Message to a Task-related or closed run | Wake / reopen / CLOSED | Preserved | Existing CrossRun path (unchanged branch) |
-| BEH-006 | Contract | REQ-013; AC-010 | `send_message_to(team run ID)` | Refused with coordinator (R-12) | Delivered to its coordinator (DEC-012), local or with `node` | Router step before DS-003; on B `RunningAgents.rootOf`; then DS-003 / DS-004 |
+| BEH-006 | Contract | REQ-011; AC-002 | `send_message_to(team run ID)` | Refused with coordinator (R-12) | Preserved; across nodes the peer gives the same refusal (`TARGET_IS_TEAM_RUN` with the coordinator's run ID) when the team runs there; the list gives `coordinator_agent_run_id` | Router l. 92-102 (local); `RemoteMessageReceiver.acceptRunMessage` via `RunningAgents.teamCoordinatorOf` (peer) |
 | BEH-007 | Contract | REQ-010 | Message to a working agent | Queued | Preserved (same reservation path) | DS-003, DS-004 |
 | BEH-008 | Contract | REQ-011 | `delegate_task` | New copy | Preserved | — |
 
@@ -93,7 +92,6 @@ None.
 - Change posture: `Behavior Change` (with a new tool).
 - Current design issue found: `Yes`.
 - Structural triggers:
-  - **Team run ID (P1, several forms):** a team run ID is resolved to its coordinator in one step of the router (local) and in `RunningAgents` (peer), before any routing, so every later row applies to the coordinator unchanged.
   - **Several kinds or forms (P1):** fires. Senders: a standalone host, a Team member, an Org agent, a task agent, a member of a task agent team; targets: the same kinds, local or on a peer, running or not, linked or not. Response: the entry-form table below (Concrete Examples) traces each.
   - **Repeated coordination (P13):** fires. "Is this agent running, and in which root" is needed by local delivery, the peer receiver and the listing. Response: one owner, `RunningAgents`.
   - **Split sequence (P2, P13; Case 1):** checked. The remote send keeps one owner of the order (`RemoteMessageSend`); the new unlinked endpoint is data, not a callback.
@@ -163,7 +161,7 @@ None.
 
 ## Ownership Map
 
-- `RunningAgents` (new): the one answer to "is this agent running on this node, and in which root" (`rootOf(agentRunId)`; a running team's run ID answers with its coordinator) and "which agents of this live root run, with their status" (`statusesOf(root)`). Combines `ActiveCollaborationRootDirectory` (`placeOf`, `liveRoots`) with the per-kind `PairedAgentAccess.pairedAgentStatuses`. Reads only; never restores.
+- `RunningAgents` (new): the one answer to "is this agent running on this node, and in which root" (`rootOf(agentRunId)`), and the coordinator of a running team by its run ID (`teamCoordinatorOf`, from `ActiveCollaborationRootDirectory.findTeamCoordinator`) for the peer's refusal guidance and "which agents of this live root run, with their status" (`statusesOf(root)`). Combines `ActiveCollaborationRootDirectory` (`placeOf`, `liveRoots`) with the per-kind `PairedAgentAccess.pairedAgentStatuses`. Reads only; never restores.
 - `RunningAgentsListing` (new): the listing rule (which roots, which fields, filters) and entry building. Owns the entry shape for both the tool and the peer answer.
 - `CrossRunMessageDelivery`: owns the order of a message between two local runs, now for related and unrelated pairs; owns the admission result (`related` / `reopened` / `unrelated`; CLOSED throws as today).
 - `GlobalAgentRunMessageRouter`: owns the order of target resolution for a run-ID message, now including `node` (peer resolution, then the sender's root).
@@ -188,7 +186,6 @@ None.
 | `throw TASK_AGENT_RESOURCE_CONFLICT` in `CrossRunMessageDelivery.admit` (`:163`) | Unrelated runs are no longer refused | `unrelated` admission result + running-only delivery | `OTHER_TASK_REFUSAL` (`:44`) becomes unused → remove with its import in the router |
 | R-9 branch in the router (`global-agent-run-message-router.ts:129-130`) | A member-context target is delivered through its root (DS-003) or is not running | Not-running refusal for a member-context target no live root holds | The direct post stays only for targets without a member context (unchanged) |
 | Outbound pair refusal `if (!endpoint.allowsSender(...)) return endpoint.refusals.notPermitted` (`remote-message-send.ts:35`) | Any agent may message; an unpaired sender goes unlinked | DS-006 | `allowsSender` and `refusals` on endpoints: remove when no reader remains (implementation verifies; `REMOTE_ROOT_REFUSAL_TEXT.notPermitted` likewise) |
-| `TARGET_IS_TEAM_RUN` refusal in the router (`global-agent-run-message-router.ts:92-102`) | A team run ID now reaches its coordinator (DEC-012) | Router step "team run ID → coordinator run ID" (live directory `findTeamCoordinator`, else the tree's `teamCoordinatorOf`), then the agent-run-ID routing; on a peer, `RunningAgents.rootOf` resolves a running team's run ID to its coordinator the same way | Its test (`global-agent-run-message-router.test.ts:194`, R-12) rewritten |
 | `TASK_AGENT_RESOURCE_CONFLICT` in the engine's `DELIVERY_REFUSAL_CODES` (`root-communication-engine.ts:27`) | No message path throws it after this change | — | Dead: verify no message path throws it (`assertDeliveryAllowed` throws only CLOSED: `standalone-agent-run-root.ts:298-300`, and Team/Org likewise) |
 | Tests asserting R-9 and the CONFLICT refusal for unrelated runs | Behavior replaced | Tests of DS-003 | `global-agent-run-message-router.test.ts:276`, `cross-run-message-delivery.test.ts` cases, contract fixture rows that encode R-7 for messages (`tests/fixtures/collaboration-contract/contract-states.json`) |
 
@@ -239,7 +236,7 @@ DS-005 (above). No events are added; delivered messages publish as today (the re
 | Interface | Subject | Responsibility | Identity Shape | Notes |
 | --- | --- | --- | --- | --- |
 | `list_running_agents({node?, address?, state?})` | running runs started by a person | Discovery for messaging | peer name; catalog address; `running`/`idle` | Opt-in; same availability as `list_available_agents` |
-| Result `{ agents: Entry[] }` | entry | — | Agent `{run_id, kind:"agent", name, address?, state, started_at, project?, node?}`; Team `{run_id, kind:"agent_team", name, address?, state, started_at, project?, node?}` (`state` = its coordinator's); Org `{run_id, kind:"agent_org", name, units:[Unit], started_at, node?}`; Unit `{kind:"agent" | "agent_team", address, run_id, state}` (a mounted team's `run_id` is its team run ID) | `state`: `running` (running or initializing), `idle`, `error`; absent fields are left out (autobyteus-260 rule) |
+| Result `{ agents: Entry[] }` | entry | — | Agent `{run_id, kind:"agent", name, address?, state, started_at, project?, node?}`; Team `{run_id, kind:"agent_team", name, address?, coordinator_agent_run_id, state, started_at, project?, node?}` (`state` = its coordinator's); Org `{run_id, kind:"agent_org", name, units:[Unit], started_at, node?}`; Unit `{kind:"agent", address, run_id, state}` or `{kind:"agent_team", address, run_id, coordinator_agent_run_id, state}` | `state`: `running` (running or initializing), `idle`, `error`; absent fields are left out (autobyteus-260 rule) |
 | `send_message_to({..., node?})` | message | `node` only with `target_agent_run_id` | peer name + agent run ID | `node` with `recipient_address` → `INVALID_TOOL_ARGUMENTS` |
 | `RunningAgents.rootOf(agentRunId)` | running agent | `{root, status} \| null` | agent run ID | Read-only |
 | `RunningAgents.statusesOf(root)` | a live root's running agents | statuses | `RootExecutionIdentity` | Read-only |
@@ -267,7 +264,7 @@ DS-005 (above). No events are added; delivered messages publish as today (the re
 | --- | --- | --- | --- | --- | --- |
 | The tool | `list_running_agents` | Yes | Pair of `list_available_agents` (both list agents and teams) | Low | — |
 | Running | "running agent" | Yes | New in CM § 1 | Low | Add to § 1 |
-| Team run ID as address | `run_id` | Yes | As `target_team_run_id` of `delegate_task` (the team's run ID) | Low | — |
+| Coordinator ID | `coordinator_agent_run_id` | Yes | As `target_team_coordinator_agent_run_id` of `delegate_task` | Low | — |
 | Endpoint kind | `unlinked_run` | Yes | "link" = Task entry / `delegatedFrom` (CM-10) | Low | — |
 | Request kind | `run-messages` / `run_message` | Yes | Beside `messages` (linked) | Medium | Doc comment states the difference |
 
@@ -311,7 +308,7 @@ See Final File Responsibility Mapping (no extraction changed the draft).
 
 | Structure | One Meaning Per Field | Redundant Removed | Overlap Risk | Action |
 | --- | --- | --- | --- | --- |
-| `RunningAgentEntry` (kind union) | Yes | Yes: one ID per run (`run_id`); `send_message_to` resolves a team's coordinator itself | Low | Union by `kind`, not optional-field soup |
+| `RunningAgentEntry` (kind union) | Yes | Yes: `run_id` names the run; `coordinator_agent_run_id` only on Team entries and team units (the ID messages take) | Low | Union by `kind`, not optional-field soup |
 
 ## Final File Responsibility Mapping
 
@@ -376,7 +373,7 @@ All other changes extend existing files (table above).
 | 8 | any | not running on P | P | Refused `REMOTE_TARGET_NOT_RUNNING` "… is not running on node P …" |
 | 9 | any | anything | unknown / switch off / unreachable | Today's peer refusal texts (as `delegate_task` with `node`) |
 | 10 | no collaboration root (application-owned) | any | — | As today (direct post); with `node`: refused, needs a collaboration root |
-| 11 | any | a team run ID (user-started Team, task agent team, Org's mounted team), local or with `node` | — / P | **Its coordinator receives it**, by rows 1–8 applied to the coordinator's run ID (DEC-012); an Org run ID: refused "message one of its units" |
+| 11 | any | a team run ID | — or P | As today: refused `TARGET_IS_TEAM_RUN` with the coordinator's run ID (on P: the same, when the team runs there; else not running) |
 | 12 | any | a run whose Tasks are all closed | — | As today `TASK_AGENT_RESOURCE_CLOSED` (assigner may reopen) |
 
 **Unlinked endpoint (data, not a callback; avoids Case 1):**
@@ -395,7 +392,7 @@ All other changes extend existing files (table above).
   { "run_id": "project_task_manager_7c8d…", "kind": "agent", "name": "Project Task Manager", "address": "/project_task_manager",
     "state": "idle", "started_at": "2026-11-14T09:12:03Z", "project": "AutoByteus", "node": "docker-node" },
   { "run_id": "team_…", "kind": "agent_team", "name": "Product Team", "address": "/product_team",
-    "state": "running", "started_at": "…" } ] }
+    "coordinator_agent_run_id": "product_lead_…", "state": "running", "started_at": "…" } ] }
 ```
 
 ## Backward-Compatibility Rejection Log (Mandatory)
@@ -431,4 +428,4 @@ All other changes extend existing files (table above).
 
 - Reproduction to start from: PRB-002 as a server test — two user-started standalone roots on one node; `send_message_to` from one to the other must be delivered and logged in both runs (it is refused `TASK_AGENT_RESOURCE_CONFLICT` today).
 - Keep agent-facing texts in the wording authority (`agent-team-collaboration-llm-contract.ts`, `domain/remote-refusals.ts`); refusal codes in `remote-refusal-codes.ts`.
-- The tool description of `list_running_agents` says: for messages only (start work with `delegate_task`); message an Agent or a Team by its `run_id` (a team's coordinator receives it), an Org by one of its units' `run_id`; on another node pass `node` to `send_message_to`; stopped runs are not listed and are not woken.
+- The tool description of `list_running_agents` says: for messages only (start work with `delegate_task`); message an Agent by `run_id`, a Team by `coordinator_agent_run_id`, an Org through one of its units (`run_id`, or a team unit's `coordinator_agent_run_id`); on another node pass `node` to `send_message_to`; stopped runs are not listed and are not woken.
