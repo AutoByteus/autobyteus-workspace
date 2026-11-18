@@ -209,3 +209,22 @@ None open from round 6. This round's own first results:
   - the founder's own data;
   - LM Studio and Ollama emulated;
   - FU-500-09, FU-500-11 … 15.
+
+### API-REV-008: round 8 (CRR-019): the attachment-link migrations after v1.5.14-beta.1, on both upgrade paths; Pass
+
+- Triggering role, report path, and round: `/code_reviewer`, `code-review-report.md` (round 10, CRR-019 Pass on IR-010; head `70a98c72d8`: merge `8a9b1a0aec`, rename `686f715446`), API/E2E round 8.
+- Triggering finding or case IDs: SR-017 / D-15: this ticket's migrations are renamed `20261119_…` and appended after 491's `20261118_…`, which v1.5.14-beta.1 released. The reviewer asked for MO-1 in the users' order (from beta.1), the upgrade from before beta.1, ALM-1 on the renamed IDs, and the order test.
+- Why this revision was recorded: round 7's MO-1 asserted ours before 491's; the released order is the reverse.
+- Coverage decisions or durable test paths changed:
+  - `delegated-run-own-attachment-links-startup.e2e.test.ts`: one journey, two cases. MO-1 (from before beta.1) asserts 491's removal completes before the main migration starts. New MO-2 (from beta.1: 491's removal already ran) asserts only our two run, main then follow-up, and 491's record is unchanged. Both assert no backup folder under the former `20261117_` IDs.
+
+#### Prior Failure Resolution
+
+None open (round 7: Pass).
+
+- Canonical artifacts and sections updated: the execution report (Round, Routing, Cases, AC proof, Durable Coverage, Result); the progress log; `evidence/api-e2e/API-r8-runs.txt`.
+- Prior result and confidence: `Pass` / 95% (round 7)
+- Current result and confidence: `Pass` / 95%
+- New or remaining failure IDs: none
+- Recommended owner: the Code Reviewer, for the proportional test-code review of the MO-1/MO-2 change, then delivery.
+- Remaining risks, blocked evidence, or untested scope: as in API-REV-007 (the application host's "turned off" discovery answer by units only; quiet macOS; M-6 cold cache; the founder's own data; LM Studio and Ollama emulated; FU-500-09, FU-500-11 … 15). MO-2 emulates beta.1's start with this build (491's migration code is identical to the tag v1.5.14-beta.1), not the beta.1 binary.

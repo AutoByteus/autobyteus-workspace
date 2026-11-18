@@ -5,8 +5,13 @@ This report records what ran and the result. The plan is in `api-e2e-coverage-in
 ## Round
 
 - Coverage investigation: `api-e2e-coverage-investigation.md`
-- API/E2E revision record and current revision ID: `api-e2e-revision-record.md` / `API-REV-007`
+- API/E2E revision record and current revision ID: `api-e2e-revision-record.md` / `API-REV-008`
 - Test progress log: `api-e2e-test-progress.md`
+- **Round 8 (CRR-019; head `70a98c72d8`: merge `8a9b1a0aec` after v1.5.14-beta.1, rename `686f715446`, SR-017 D-15):**
+  - The attachment-link migrations renamed to `20261119_…`, after 491's released `20261118_…`.
+  - MO-1 (from before beta.1) asserts the new order: 491's removal, then main, then follow-up. New MO-2 (from beta.1): only our two run, main then follow-up, and 491's record is untouched. Backups land under the new ID's folder, and none under the former IDs.
+  - Order and migration units 77/77.
+  - Evidence: `evidence/api-e2e/API-r8-runs.txt`. **Result: `Pass`, 95%.**
 - **Round 7, the eighth merged state (CRR-017; head `2037a3be5a`, merge `5eb8246076` of `53b72018ad`: 491, 492; test fix `8e8c21c2c4`):**
   - The migration order on one first start (new MO-1 in ALM-1's file): this ticket's two `20261117` migrations, then 491's `20261118`, each with its status; the retired copies gone, the compactor's run kept and listed; a second start unchanged.
   - `list_running_agents` on the native tool and Agent Tools MCP (new LRN-1/LRN-2): local, `node`, switch off; the application host by the same-senders rule.
@@ -47,6 +52,7 @@ This report records what ran and the result. The plan is in `api-e2e-coverage-in
 ## Routing Classification
 
 - Task size: `Large`; Architectural risk: `High`; Input route: `Reviewed`.
+- Result route (round 8): `Pass` → Code Reviewer, proportional test-code review of MO-1's order and the new MO-2, then delivery.
 - Result route (round 7): `Pass` → Code Reviewer, proportional test-code review of round 7's test changes (MO-1, LRN-1/2, the RC suite's `calls()`), then delivery.
 - Result route (round 6): `Pass` → Code Reviewer (no test change of mine), then delivery.
 - Result route (round 5): `Pass` → Code Reviewer, proportional test-code review of RR-12 and the SIR-002 change, then delivery.
@@ -98,6 +104,9 @@ This report records what ran and the result. The plan is in `api-e2e-coverage-in
 | LRN-2 (r7) | AC-002 (FU-011), 492 DS-001 | the standalone application host | the same file | ENV-M7, B7 | Pass | §2 | native "not found or configured", MCP "not enabled" for both tools: the same outcome | Base the same; FU-500-15 (a) |
 | MSG-492 (r7) | 492 DEC-001 with this ticket's names and owners | unrelated-run delivery, not running, Task-related, the peer receiver | `remote-delegation-two-server` (whole), CPW, contract stories, MCP routes integration, units | ENV-M7 | Pass (after a test fix) | §3 | 49/49 (RC-47/48/49/06/08/22/10/11/23/27/28/19 ✓); CPW 14/14; §5.1–5.3 ✓; 14/14; 487/487 | RC-19 timed out twice in the whole file: the `calls()` helper counted replies in a view capped at 100 events; fixed, 740 ms |
 | MERGED-CASES (r7) | AC-006, AC-008, AC-011, AC-012 | this ticket's cases | ALM-1, ODM-1, RSE-1, E-001…004; probe G5-001…003, DLP-005, DCP-004, SIR-001, SIR-002 | ENV-M7 | Pass | §1, §4 | focus 6/6; "Summary: 7 Pass, 0 Fail" | SIR-001 passes for the first time (492) |
+| MO-1 (r8) | AC-009, AC-008; SR-017 D-15 | from before beta.1: all three on one first start | ALM-1's file | ENV-M7 at `70a98c72d8` | Pass | API-r8-runs.txt §1 | removal .431→.435, main .436→.472, follow-up .474→.482 | Round 7's order (ours first) is replaced by the released order |
+| MO-2 (r8) | AC-009, AC-008; SR-017 D-15 | from beta.1: 491's removal already ran | ALM-1's file | ENV-M7 at `70a98c72d8` | Pass | §1 | only ours run, main then follow-up; 491's record unchanged; backups under `20261119_…`, none under `20261117_` | |
+| MIG-ORDER (r8) | AC-009 | order test (reads the record), migration units | `vitest run tests/unit/app-data-migrations tests/app-data-migrations/…` | ENV-M7 at `70a98c72d8` | Pass | §2 | "Tests 77 passed (77)" | |
 | GATES (r7) | — | typecheck, static check | `pnpm -C autobyteus-server-ts typecheck`; CONNECTED check | ENV-M7 | Pass | §5 | "1006 in 315 files (baseline 1006 in 315 files)"; 3/3 | |
 
 ### Findings
@@ -132,7 +141,7 @@ This report records what ran and the result. The plan is in `api-e2e-coverage-in
 | AC-006 (not ready) | Yes | NOTREADY-INT, NOTREADY-REAL | Proven | |
 | AC-007 (Grok) | — | — | Out of this package | IR-003 |
 | AC-008 (attachments) | Yes | MIG-ATTACH, MIG-UNITS, MIG-COST | Proven (the founder's own data: Only The User Can Check) | Needs his approval (D-8) |
-| AC-009 (order) | Yes | MIG-UNITS (order test), IMP-07, IMP-09; r7: MO-1, MIG-ORDER | Proven | With 491's `20261118` after both on one first start; the release-commit part is delivery's |
+| AC-009 (order) | Yes | MIG-UNITS (order test), IMP-07, IMP-09; r7: MO-1, MIG-ORDER; r8: MO-1, MO-2, MIG-ORDER | Proven | r8: renamed `20261119_…` after 491's released `20261118_…`, on both upgrade paths (before beta.1, from beta.1); the release-commit part is delivery's |
 | AC-010 (late v2) | Yes | LTI-1, MIG-UNITS | Proven | |
 | AC-011 (SIR-002) | Yes | TEXT-PROBES (SIR-002) | Proven | |
 | AC-012 (stored model) | Yes | G5-001 … G5-003 (r1, r2), ODM-1 (r2), E-002 (r2) | Proven (r2) | Includes on-demand AutoByteus models after restarts and a removed agent on both paths; FU-500-11 is a Settings observation outside it |
@@ -186,6 +195,7 @@ This report records what ran and the result. The plan is in `api-e2e-coverage-in
 | `autobyteus-server-ts/tests/unit/e2e-helpers/team-stream-clients-wait-for-connected.test.ts` (r2) | Updated | STREAM-CHECK | a named exemption for RSE-1, which sends early on purpose; a case keeps each exemption current |
 | `autobyteus-server-ts/tests/e2e/app-data-migrations/delegated-run-own-attachment-links-startup.e2e.test.ts` (r7) | Updated | MO-1 | 491's retired copies and a compactor run in the same data; the third ledger row; order, statuses, the run kept, its continuation's answer |
 | `autobyteus-server-ts/tests/e2e/remote-collaboration/list-running-agents-native-and-mcp.e2e.test.ts` (r7) | Added | LRN-1, LRN-2 | |
+| `autobyteus-server-ts/tests/e2e/app-data-migrations/delegated-run-own-attachment-links-startup.e2e.test.ts` (r8) | Updated | MO-1, MO-2 | one journey, two upgrade paths; MO-1 asserts 491's removal first; MO-2 new; no backup under the former IDs |
 | `autobyteus-server-ts/tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts` `calls()` (r7) | Updated | MSG-492 | waits for the newest reply entry not in view before the call (the view holds the last 100 events); no assertion changed |
 
 - Not changed by me: E-002, DLC and SCP-E2E-006's assertions (they stated the behavior F-1 … F-3 broke; they pass in round 2). The DLP-005 e2e and probe assertions of the new text are the implementation's (IR-003).
@@ -219,6 +229,7 @@ This report records what ran and the result. The plan is in `api-e2e-coverage-in
 
 ## Latest Authoritative Result
 
+- Result (round 8, `70a98c72d8`): `Pass`, 95%. Both upgrade paths run the migrations in the released order (MO-1, MO-2); backups follow the new ID; order and migration units 77/77. Test change: ALM-1's file (MO-1's order, MO-2).
 - Result (round 7, the eighth merged state `5eb8246076` + `8e8c21c2c4`): `Pass`, 95%.
   - The migration order on one first start, `list_running_agents` on both routes (local, peer, off; the application host), 492's messaging (49/49), this ticket's cases and the probes (7/7) pass.
   - Test changes: MO-1 (ALM-1's file), LRN-1/LRN-2 (new), the RC suite's `calls()` (a test-side defect RC-19 exposed).
@@ -247,6 +258,7 @@ This report records what ran and the result. The plan is in `api-e2e-coverage-in
   - on-demand hosts emulated (LM Studio, Ollama);
   - FU-500-09, FU-500-11 … 15 outside this ticket (FU-500-10 resolved by 492);
   - the host's "turned off" discovery answer is reached by units only (FU-500-15 a).
+- Next recipient from `get_handoff_rules` (round 8): the Code Reviewer, for the proportional test-code review of the MO-1/MO-2 change, then delivery.
 - Next recipient from `get_handoff_rules` (round 7): the Code Reviewer, for the proportional test-code review of round 7's test changes, then delivery.
 - Next recipient from `get_handoff_rules` (round 6): the Code Reviewer (no test changes to review this round), then delivery.
 - Next recipient from `get_handoff_rules` (round 5): the Code Reviewer, for the proportional test-code review of round 5's test changes, then delivery.

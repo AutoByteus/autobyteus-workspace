@@ -75,3 +75,9 @@ My progress log while tests run. Read it first when picking the run back up. Row
 | 2026-11-18 17:56 | PROBES (r7) | Started | | G5-001..003, DLP-005, DCP-004, SIR-001, SIR-002; /tmp/api500/r7/probe.log |
 | 2026-11-18 18:01 | PROBES (r7) | Completed | Pass | 7/7; SIR-001 now Pass (492 DEC-001 resolves FU-500-10) |
 | 2026-11-18 18:10 | ROUND 7 | Completed | Pass | 95%; MO-1, LRN-1/2 added; RC calls() fixed (49/49); probes 7/7; FU-500-15 |
+| 2026-11-18 19:12 | ROUND 8 | Started | | CRR-019 (head 70a98c72d8: merge 8a9b1a0aec after v1.5.14-beta.1, rename 686f715446); MO-1 order now 491 first; new MO-2 (from beta.1) |
+| 2026-11-18 19:12 | BUILD (r8) | Started | | /tmp/api500/r8/build.log |
+| 2026-11-18 19:09 | BUILD (r8) | Completed | Pass | exit 0; dist holds the 20261119 IDs |
+| 2026-11-18 19:09 | MO-1, MO-2, ORDER (r8) | Started | | /tmp/api500/r8/alm.log, units.log |
+| 2026-11-18 19:12 | MO-1, MO-2, ORDER (r8) | Completed | Pass | 2/2 (released order on both paths; no former-ID backups); units 77/77; typecheck baseline |
+| 2026-11-18 19:14 | ROUND 8 | Completed | Pass | 95% |
