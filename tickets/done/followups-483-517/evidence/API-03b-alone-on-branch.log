@@ -1,0 +1,34 @@
+# API-03b: the two files that still failed in API-03, each alone on the branch (2a553b5473); pnpm exec vitest run <file> --no-watch (AUTOBYTEUS_*_ROOTS unset); 2026-11-18T12:31:59Z
+## tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts
+load: 120.88 113.50 87.32; fseventsd: 144.5
+ ❯ tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts (22 tests | 4 failed) 154333ms
+ FAIL  tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts > AgentPackageFolderWatcher > reports definition changes per folder and ignores skills and other files
+Error: Timed out waiting for the monitor.
+     46|     if (Date.now() - started > timeoutMs) throw new Error("Timed out w…
+ ❯ tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts:85:5
+ FAIL  tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts > AgentPackageFolderWatcher > moves a root to FOLDER_MISSING when it is renamed away and resumes watching when it returns
+Error: Timed out waiting for the monitor.
+     46|     if (Date.now() - started > timeoutMs) throw new Error("Timed out w…
+ ❯ tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts:100:5
+ FAIL  tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts > AgentPackageFolderWatcher > re-arms a root whose folder was replaced in place (GitHub update rename swap)
+Error: Timed out waiting for the monitor.
+     46|     if (Date.now() - started > timeoutMs) throw new Error("Timed out w…
+ ❯ tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts:137:5
+ FAIL  tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts > AgentPackageFolderWatcher > starts a registered root that is missing as FOLDER_MISSING and arms it when it appears
+Error: Timed out waiting for the monitor.
+     46|     if (Date.now() - started > timeoutMs) throw new Error("Timed out w…
+ ❯ tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts:148:5
+      Tests  4 failed | 18 passed (22)
+   Duration  155.26s (transform 127ms, setup 88ms, import 90ms, tests 154.33s, environment 0ms)
+## tests/integration/file-explorer/file-system-watcher.integration.test.ts
+load: 70.20 98.46 85.79; fseventsd: 159.6
+ ❯ tests/integration/file-explorer/file-system-watcher.integration.test.ts (14 tests | 5 failed) 184206ms
+ FAIL  tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits move/rename event
+ FAIL  tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits folder creation and deletion events
+ FAIL  tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > respects root .gitignore files
+ FAIL  tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > treats moves into ignored directories as deletes from the visible tree
+ FAIL  tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits delete events even if the in-memory node is missing
+Error: Timed out waiting for event
+     28|       reject(new Error("Timed out waiting for event"));
+      Tests  5 failed | 9 passed (14)
+   Duration  184.99s (transform 189ms, setup 68ms, import 151ms, tests 184.21s, environment 0ms)
