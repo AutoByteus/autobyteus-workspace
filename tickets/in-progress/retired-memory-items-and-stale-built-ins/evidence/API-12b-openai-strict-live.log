@@ -1,0 +1,6 @@
+# API-12b live openai-read-file-strict-live (baseline fix: the hand-built runtime sets its tool search, autobyteus-515) | commit 24582b576c + fix | Node v22.23.1 | 2026-11-18T10:56:34Z | AUTOBYTEUS_TEST_VAULT RUN_LIVE_PROVIDER_TESTS=1 OPENAI_STRICT_LIVE_RECORD
+ ✓ tests/integration/agent/openai-read-file-strict-live.test.ts > OpenAI gpt-5.4-mini tool arguments through a native agent (live, strict: false) > reads a synthesized image through read_file with only path and names its color 4808ms
+ ✓ tests/integration/agent/openai-read-file-strict-live.test.ts > OpenAI gpt-5.4-mini tool arguments through a native agent (live, strict: false) > calls write_file with an absolute path without inventing base_dir 5223ms
+ Test Files  1 passed (1)
+      Tests  2 passed (2)
+exit 0

@@ -1,0 +1,7 @@
+# API-12a LM Studio gated memory flows (baseline fixes: helper reloads LM Studio models; memory-llm-flow allows a reasoning record) | commit cbdf02f15a + fixes | Node v22.23.1 | 2026-11-18T09:15:04Z | LMSTUDIO_HOSTS=http://127.0.0.1:1234 LMSTUDIO_TARGET_TEXT_MODEL=google/gemma-4-26b-a4b | lms ps before: model loaded by this run's run 3 (google/gemma-4-26b-a4b)
+ ✓ tests/integration/agent/memory-llm-flow.test.ts > Memory assembler with LM Studio > ingests memory around LLM responses 10881ms
+ ✓ tests/integration/agent/memory-tool-call-flow.test.ts > Memory tool call flow (LM Studio) > ingests tool calls/results and follow-up responses 12204ms
+ Test Files  2 passed (2)
+      Tests  2 passed (2)
+exit 0
+lms ps after unload: No models are currently loaded.

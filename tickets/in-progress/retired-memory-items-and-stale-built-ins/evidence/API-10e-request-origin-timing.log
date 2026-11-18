@@ -1,0 +1,52 @@
+## retired-memory-items-and-stale-built-ins run 1 load 58.03 75.92 81.84
+ ✓ tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes > NAS-15 NAS-17 refuses a foreign or null (opaque HT… 19ms
+ ✓ tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes > accepts each allowed-origin class and refuses near… 2833ms
+ ✓ tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes > refuses foreign-origin HTTP and preflights and gra… 8ms
+ ✓ tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes > NAS-09 refuses a phone credential on WebSocket rou… 10ms
+ ✓ tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes > NAS-05 accepts a phone credential on every phone W… 1223ms
+ ✓ tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes > NAS-29 logs every refusal once with its code, reda… 4ms
+ ✓ tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes > NAS-10 keeps today's refusal of a phone credential… 41ms
+ ✓ tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes > refuses a request addressed to a name that is not … 16ms
+ ✓ tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes > accepts every allowed-host class, configured name … 880ms
+ ✓ tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes > warns once at start about invalid entries of the t… 0ms
+ ✓ tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes > refuses unlisted localhost pages on HTTP, WebSocke… 8ms
+      Tests  11 passed (11)
+## ec491-api-e2e-base run 1 load 60.92 74.04 80.85
+ ✓ tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes > NAS-15 NAS-17 refuses a foreign or null (opaque HT… 16ms
+ × tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes > accepts each allowed-origin class and refuses near… 12047ms
+ ✓ tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes > refuses foreign-origin HTTP and preflights and gra… 8ms
+ ✓ tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes > NAS-09 refuses a phone credential on WebSocket rou… 15ms
+ ✓ tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes > NAS-05 accepts a phone credential on every phone W… 1242ms
+ ✓ tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes > NAS-29 logs every refusal once with its code, reda… 5ms
+ ✓ tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes > NAS-10 keeps today's refusal of a phone credential… 25ms
+ × tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes > refuses a request addressed to a name that is not … 1240ms
+ ✓ tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes > accepts every allowed-host class, configured name … 832ms
+ ✓ tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes > warns once at start about invalid entries of the t… 0ms
+ ✓ tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes > refuses unlisted localhost pages on HTTP, WebSocke… 5ms
+      Tests  2 failed | 9 passed (11)
+## retired-memory-items-and-stale-built-ins run 2 load 55.79 71.68 79.77
+ ✓ tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes > NAS-15 NAS-17 refuses a foreign or null (opaque HT… 24ms
+ ✓ tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes > accepts each allowed-origin class and refuses near… 2854ms
+ ✓ tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes > refuses foreign-origin HTTP and preflights and gra… 7ms
+ ✓ tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes > NAS-09 refuses a phone credential on WebSocket rou… 9ms
+ ✓ tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes > NAS-05 accepts a phone credential on every phone W… 1223ms
+ ✓ tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes > NAS-29 logs every refusal once with its code, reda… 5ms
+ ✓ tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes > NAS-10 keeps today's refusal of a phone credential… 16ms
+ ✓ tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes > refuses a request addressed to a name that is not … 6ms
+ ✓ tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes > accepts every allowed-host class, configured name … 831ms
+ ✓ tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes > warns once at start about invalid entries of the t… 0ms
+ ✓ tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes > refuses unlisted localhost pages on HTTP, WebSocke… 5ms
+      Tests  11 passed (11)
+## ec491-api-e2e-base run 2 load 45.65 67.30 77.84
+ × tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes > NAS-15 NAS-17 refuses a foreign or null (opaque HT… 9933ms
+ ✓ tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes > accepts each allowed-origin class and refuses near… 2842ms
+ ✓ tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes > refuses foreign-origin HTTP and preflights and gra… 7ms
+ ✓ tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes > NAS-09 refuses a phone credential on WebSocket rou… 11ms
+ ✓ tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes > NAS-05 accepts a phone credential on every phone W… 1233ms
+ ✓ tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes > NAS-29 logs every refusal once with its code, reda… 5ms
+ ✓ tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes > NAS-10 keeps today's refusal of a phone credential… 21ms
+ ✓ tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes > refuses a request addressed to a name that is not … 9ms
+ ✓ tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes > accepts every allowed-host class, configured name … 833ms
+ ✓ tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes > warns once at start about invalid entries of the t… 0ms
+ ✓ tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes > refuses unlisted localhost pages on HTTP, WebSocke… 5ms
+      Tests  1 failed | 10 passed (11)
