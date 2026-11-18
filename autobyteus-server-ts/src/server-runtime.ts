@@ -211,7 +211,9 @@ async function initializeConfiguredServer(options: ServerOptions, shutdown: Serv
     // interrupts anything. Neither throws.
     previousSession = await restartResumer.takePreviousSession();
     recorder.startSession();
-    shutdown.setCleanup(async () => { await recorder.record(); await app.close(); });
+    // The process exits after this cleanup: the file watches end without closing their OS watches, which the exit
+    // releases (autobyteus-524 FU-007); then the app closes.
+    shutdown.setCleanup(async () => { await recorder.record(); studioServer.stopFileWatchesForProcessExit(); await app.close(); });
     prismaInitializationStarted = false;
     vaultInitializationStarted = false;
     shutdown.checkpoint();

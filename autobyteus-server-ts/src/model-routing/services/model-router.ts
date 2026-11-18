@@ -1,3 +1,4 @@
+import { randomUUID } from "node:crypto";
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import { platformInputPrefaceMetadata } from "autobyteus-ts/agent/message/platform-input-preface-metadata.js";
 import { SYSTEM_TASK_NOTIFICATION_SUPPRESSION_METADATA_KEY } from "autobyteus-ts/agent/message/system-task-notification-metadata.js";
@@ -197,16 +198,18 @@ export class ModelRouter implements ModelRouterPort {
     const text = buildRoutingRequestText({ requestId, request, knowledge, taskKinds });
     let ended!: () => void;
     const turnEnded = new Promise<void>((resolve) => { ended = resolve; });
+    // The request's one notice id: on its message, its stored trace and its published notice (autobyteus-526).
+    const noticeId = randomUUID();
     const result = await run.postUserMessage(new AgentInputUserMessage(text, SenderType.SYSTEM, null, {
       sender_id: MODEL_ROUTER_REQUEST_SENDER_ID,
       [SYSTEM_TASK_NOTIFICATION_SUPPRESSION_METADATA_KEY]: true,
-      ...platformInputPrefaceMetadata({ content: text, senderId: MODEL_ROUTER_REQUEST_SENDER_ID, originalContent: null }),
+      ...platformInputPrefaceMetadata({ content: text, senderId: MODEL_ROUTER_REQUEST_SENDER_ID, originalContent: null, noticeId }),
     }), {
       lifecycleObserver: (fact) => {
         if (fact.kind === "forwarded") {
           void run.publishEvent({
             eventType: AgentRunEventType.SYSTEM_TASK_NOTIFICATION, runId: run.runId, statusHint: null,
-            payload: { sender_id: MODEL_ROUTER_REQUEST_SENDER_ID, content: text, ...(fact.turnId ? { turn_id: fact.turnId } : {}) },
+            payload: { sender_id: MODEL_ROUTER_REQUEST_SENDER_ID, content: text, message_id: noticeId, ...(fact.turnId ? { turn_id: fact.turnId } : {}) },
           }).catch(() => undefined);
           return;
         }

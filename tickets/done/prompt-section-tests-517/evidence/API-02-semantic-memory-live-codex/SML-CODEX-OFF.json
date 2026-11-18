@@ -1,0 +1,17 @@
+{
+  "runId": "sm_live_plain_codex_1cb92211_4fb7c452400e49eeb6bae49314d943fa",
+  "reply": "OK",
+  "wire": {
+    "method": "thread/start",
+    "sandbox": "workspace-write",
+    "approvalPolicy": "on-request",
+    "cwd": "/Users/normy/.autobyteus-e2e/semantic-memory-live-X2RdWg/ws-codex-plain",
+    "configKeys": [
+      "mcp_servers"
+    ],
+    "sandbox_workspace_write": null,
+    "semanticSection": null
+  },
+  "folderExists": false,
+  "baseInstructionsTail": " with `exec_command`. When it outlasts its wait, it keeps running in its session.\n- To wait for it, call `write_stdin` on that same session with empty input and a long `yield_time_ms`, as often as needed, instead of starting it again.\n- Do not wait with loops of `sleep` or short repeated checks, and never start the same command again while it still runs, or a second command that only waits for it."
+}

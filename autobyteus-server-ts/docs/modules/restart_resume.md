@@ -142,6 +142,9 @@ These runs you delegated were resumed too and are working: <names>.   (the wake,
 ```
 
 The reason is `an update to v<version>`, `a restart`, or `an unexpected stop (a crash, a forced quit or a power loss)`.
+The time is UTC for the agent (it knows no zone of the node); the conversation card (`SystemTaskNotificationSegment`,
+desktop and phone) shows it in the viewer's own time zone, e.g. `18 Nov 2026, 06:41 CET` (autobyteus-526,
+`autobyteus-web/utils/restartReminderLocalTime.ts`); the stored and model-facing text stay UTC.
 After an unexpected stop the background-task line is instead (DEC-008; a crash runs no cleanup, so a native command
 group can outlive the server):
 

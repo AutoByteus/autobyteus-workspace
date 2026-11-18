@@ -64,6 +64,7 @@ describe('AIMessage.vue', () => {
       type: 'system_task_notification' as const,
       senderId: 'system_task_runner',
       content: 'You have a new task.',
+      messageId: null,
     };
     const messageWithNotificationSegment: AIMessageType = {
       ...baseMessage,

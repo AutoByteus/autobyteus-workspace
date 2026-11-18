@@ -1,4 +1,5 @@
 import fs from 'node:fs';
+import { RawTraceItem } from '../../../src/memory/models/raw-trace-item.js';
 import os from 'node:os';
 import path from 'node:path';
 import { afterEach, describe, expect, it } from 'vitest';
@@ -89,8 +90,11 @@ afterEach(() => {
 
 describe('platform input preface metadata', () => {
   it('round-trips the tag and rejects a malformed one', () => {
-    const metadata = platformInputPrefaceMetadata({ content: NOTICE, senderId: SENDER, originalContent: 'Do the task.' });
-    expect(readPlatformInputPreface(metadata)).toEqual({ content: NOTICE, senderId: SENDER, originalContent: 'Do the task.' });
+    const metadata = platformInputPrefaceMetadata({ content: NOTICE, senderId: SENDER, originalContent: 'Do the task.', noticeId: 'notice-1' });
+    expect(readPlatformInputPreface(metadata)).toEqual({ content: NOTICE, senderId: SENDER, originalContent: 'Do the task.', noticeId: 'notice-1' });
+    // autobyteus-526: a message stored before notice ids reads with none.
+    expect(readPlatformInputPreface({ platform_input_preface: { content: NOTICE, sender_id: SENDER, original_content: null } }))
+      .toEqual({ content: NOTICE, senderId: SENDER, originalContent: null, noticeId: null });
     expect(readPlatformInputPreface({ platform_input_preface: { content: '', sender_id: SENDER, original_content: null } })).toBeNull();
     expect(readPlatformInputPreface({ platform_input_preface: { content: NOTICE, sender_id: SENDER, original_content: 3 } })).toBeNull();
     expect(readPlatformInputPreface({})).toBeNull();
@@ -108,7 +112,7 @@ describe('native memory for an input carrying a platform notice (SR-004, N-1)', 
   it('records one system notice and the input unchanged, and links the combined working-context entry to both traces', async () => {
     const combined = new AgentInputUserMessage(`${NOTICE}\n\nPlease review PR 12.`, SenderType.USER, null, {
       message_id: 'msg-1',
-      ...platformInputPrefaceMetadata({ content: NOTICE, senderId: SENDER, originalContent: 'Please review PR 12.' }),
+      ...platformInputPrefaceMetadata({ content: NOTICE, senderId: SENDER, originalContent: 'Please review PR 12.', noticeId: 'notice-1' }),
     });
     const { traces, userEntry } = await ingestAndAssemble(combined);
 
@@ -117,6 +121,10 @@ describe('native memory for an input carrying a platform notice (SR-004, N-1)', 
       ['user', 'Please review PR 12.', null],
     ]);
     expect(traces[1]!.messageId).toBe('msg-1');
+    // autobyteus-526: the notice trace keeps the notice's one id (the same as on its published notice), stored too.
+    expect(traces[0]!.messageId).toBe('notice-1');
+    expect(traces[0]!.toDict().message_id).toBe('notice-1');
+    expect(RawTraceItem.fromDict(traces[0]!.toDict()).messageId).toBe('notice-1');
     // The model saw both together.
     expect(userEntry.content).toBe(`${NOTICE}\n\nPlease review PR 12.`);
     // N-1: linked explicitly to exactly the notice trace and the user trace (content lookup cannot match).
@@ -125,10 +133,10 @@ describe('native memory for an input carrying a platform notice (SR-004, N-1)', 
 
   it('records a notice-only message as one system notice and no user message', async () => {
     const notice = new AgentInputUserMessage(NOTICE, SenderType.SYSTEM, null,
-      platformInputPrefaceMetadata({ content: NOTICE, senderId: SENDER, originalContent: null }));
+      platformInputPrefaceMetadata({ content: NOTICE, senderId: SENDER, originalContent: null, noticeId: 'notice-2' }));
     const { traces, userEntry } = await ingestAndAssemble(notice);
 
-    expect(traces.map((trace) => trace.traceType)).toEqual(['system_task_notification']);
+    expect(traces.map((trace) => [trace.traceType, trace.messageId])).toEqual([['system_task_notification', 'notice-2']]);
     expect(userEntry.content).toBe(NOTICE);
     expect(linkedTraceIds(userEntry)).toEqual([traces[0]!.id]);
   });

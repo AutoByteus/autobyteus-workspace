@@ -249,6 +249,7 @@ export class ClaudeSessionEventConverter {
         return [this.createEvent(claudeEventName, AgentRunEventType.SYSTEM_TASK_NOTIFICATION, {
           sender_id: senderId,
           content,
+          message_id: asString(payload.message_id) ?? null,
           ...(turnId ? { turn_id: turnId } : {}),
         })];
       }

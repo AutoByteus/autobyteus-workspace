@@ -1,0 +1,5 @@
+# IMP-04 prompt unit tests, the five backend prompt tests, member-collaboration parity (AC-002)
+# command: cd autobyteus-server-ts && pnpm exec vitest run tests/unit/agent-execution/prompt tests/unit/agent-execution/backends/claude/backend/claude-session-bootstrapper.test.ts tests/unit/agent-execution/backends/codex/backend/codex-thread-bootstrapper.test.ts tests/unit/agent-execution/backends/antigravity/agy-agent-run-backend-factory.test.ts tests/unit/agent-execution/backends/acp/acp-agent-run-backend-factory.test.ts tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts tests/unit/agent-team-execution/member-collaboration-instruction-provider-parity.test.ts --no-watch
+# commit: 2e9ac1e65b + working-tree test changes (product unchanged); node v22.23.1; 2026-11-18T05:20:49Z
+ Test Files  9 passed (9)
+      Tests  164 passed (164)

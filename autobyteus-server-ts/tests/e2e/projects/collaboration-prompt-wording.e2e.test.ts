@@ -65,12 +65,16 @@ const expectedCollaboration = (row: Row): string => {
   if (row.orgLine) body = body.replace(TEAMMATE_BULLET, views.orgBullet.slice(views.orgBullet.indexOf(TEAMMATE_BULLET)).trim());
   return `${instruction}${body}`;
 };
-/** The collaboration part of a composed prompt: from the first collaboration heading to the working environment. */
+/**
+ * The collaboration part of a composed prompt: from the first collaboration heading to the next section that is not
+ * part of it, the working environment or the runtime's Long-Running Commands section (autobyteus-483), whichever comes
+ * first. On AGY the composed prompt ends with Long-Running Commands and the capsule's Working Environment follows it.
+ */
 const collaborationPart = (prompt: string): string => {
   const starts = ["## Team Instruction", "## AgentTeam Addressing", "## Working With Other Agents"].map((heading) => prompt.indexOf(heading)).filter((i) => i >= 0);
   const start = Math.min(...starts);
-  const end = prompt.indexOf("\n\n## Working Environment", start);
-  return (end < 0 ? prompt.slice(start) : prompt.slice(start, end)).trim();
+  const ends = ["\n\n## Working Environment", "\n\n## Long-Running Commands\n"].map((heading) => prompt.indexOf(heading, start)).filter((i) => i >= 0);
+  return (ends.length ? prompt.slice(start, Math.min(...ends)) : prompt.slice(start)).trim();
 };
 
 suite("Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)", () => {

@@ -1,0 +1,15 @@
+# DEL-04 (autobyteus-524 r2 delivery): built-server SIGTERM stop probe on the merged state (AC-002)
+# Server rebuilt on the merged state first: pnpm -C autobyteus-server-ts build -> exit 0 (bootstrap smoke checks passed); dist/server-runtime.js contains the stopFileWatchesForProcessExit call (1 match)
+# Command: env -i PATH HOME=<temp> TMPDIR=<temp> node evidence/built-server-stop-probe.mjs <worktree> 10 3000
+# Commit: be94117935; load average 72 / 73 / 65 before, 75 / 74 / 66 after; fseventsd 153 % CPU at the time of the latency probe; 2026-11-18
+round 1 startedMs 2863 stopMs 56 outcome "exit 0" exitCode 0
+round 2 startedMs 2256 stopMs 48 outcome "exit 0" exitCode 0
+round 3 startedMs 2044 stopMs 53 outcome "exit 0" exitCode 0
+round 4 startedMs 2037 stopMs 56 outcome "exit 0" exitCode 0
+round 5 startedMs 2069 stopMs 56 outcome "exit 0" exitCode 0
+round 6 startedMs 2001 stopMs 49 outcome "exit 0" exitCode 0
+round 7 startedMs 1734 stopMs 51 outcome "exit 0" exitCode 0
+round 8 startedMs 1831 stopMs 48 outcome "exit 0" exitCode 0
+round 9 startedMs 1683 stopMs 75 outcome "exit 0" exitCode 0
+round 10 startedMs 1731 stopMs 47 outcome "exit 0" exitCode 0
+# 10 of 10 exit 0; stopMs 47-75 (before the change: 640-4008 ms in IMP-02; 354-12462 ms with the exit call removed in API-01)

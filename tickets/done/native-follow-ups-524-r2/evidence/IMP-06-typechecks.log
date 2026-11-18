@@ -1,0 +1,13 @@
+# IMP-06 typechecks
+# Command: pnpm -C autobyteus-server-ts typecheck; pnpm -C autobyteus-web typecheck
+# Commit: 2e5b0198e2 content
+# Environment: macOS (darwin 25.5), Node v22.23.1; 
+# Date: 2026-11-18
+
+## server
+[typecheck] server tests (tsconfig.tests.json): 1012 errors, exit 2, 43.6s
+[typecheck] production errors: 0; test-file errors: 1012 in 316 files (baseline 1012 in 316 files)
+[typecheck] PASS
+## web
+[typecheck] production errors: 0; test-file errors: 87 in 37 files (baseline 87 in 37 files)
+[typecheck] PASS

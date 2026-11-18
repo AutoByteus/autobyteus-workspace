@@ -1,0 +1,64 @@
+{
+  "runId": "restart_reminder_bf6b0d63_7ad3f17a5f8d4ca78c6258ba8d2e42d6",
+  "entry": {
+    "root": {
+      "rootSubjectKind": "agent",
+      "rootRunId": "restart_reminder_bf6b0d63_7ad3f17a5f8d4ca78c6258ba8d2e42d6"
+    },
+    "agentRunId": "restart_reminder_bf6b0d63_7ad3f17a5f8d4ca78c6258ba8d2e42d6",
+    "place": "host",
+    "status": "idle",
+    "backgroundTasks": true,
+    "recordedAt": "2026-11-18T07:00:53.180Z",
+    "version": "0.0.0-previous"
+  },
+  "stopped": {
+    "entries": [
+      {
+        "root": {
+          "rootSubjectKind": "agent",
+          "rootRunId": "restart_reminder_bf6b0d63_7ad3f17a5f8d4ca78c6258ba8d2e42d6"
+        },
+        "agentRunId": "restart_reminder_bf6b0d63_7ad3f17a5f8d4ca78c6258ba8d2e42d6",
+        "place": "host",
+        "status": "idle",
+        "backgroundTasks": true,
+        "recordedAt": "2026-11-18T07:00:53.261Z",
+        "version": "0.0.0-previous"
+      }
+    ],
+    "shutdownAt": "2026-11-18T07:00:53.262Z"
+  },
+  "requestsBeforeRestart": 2,
+  "inputSentAt": null,
+  "reminders": null,
+  "requests": [
+    {
+      "at": 1794985251436,
+      "lastRole": "user",
+      "lastUser": "CASE:RR-03 Start the build in the background.",
+      "toolResults": []
+    },
+    {
+      "at": 1794985251598,
+      "lastRole": "tool",
+      "lastUser": "CASE:RR-03 Start the build in the background.",
+      "toolResults": [
+        "{\"pid\":6956,\"status\":\"running\",\"effectiveCwd\":\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/restart-reminder-e2e-xxWZAY/workspace\",\"outputFile\":\"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-background-tasks/restart_reminder_bf6b0d63_7ad3f17a5f8d4ca78c6258ba8d2e42d6/call-1794985251574-6926.log\"}"
+      ]
+    },
+    {
+      "at": 1794985266606,
+      "lastRole": "user",
+      "lastUser": "[Platform notice — application restarted]\n\nThe application restarted at 2026-11-18 07:01 UTC (reason: an update to v1.5.13-beta.10).\nIf you started any background tasks, the restart stopped them. Check what you still need: restart it, or continue your work.",
+      "toolResults": []
+    },
+    {
+      "at": 1794985274832,
+      "lastRole": "user",
+      "lastUser": "CASE:RR-03 And now?",
+      "toolResults": []
+    }
+  ],
+  "version": "1.5.13-beta.10"
+}

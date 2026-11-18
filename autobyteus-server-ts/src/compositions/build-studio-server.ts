@@ -8,7 +8,6 @@ import fastify, { LogController, type FastifyInstance } from "fastify";
 import { installClientConnectionClose } from "../shutdown/client-connection-close.js";
 import multipart from "@fastify/multipart";
 import websocket from "@fastify/websocket";
-import { shutdownPrisma } from "repository_prisma";
 import type { AppConfig } from "../config/app-config.js";
 import type { LoggingConfig } from "../config/logging-config.js";
 import { getFastifyLoggerOptions } from "../logging/runtime-logger-bootstrap.js";
@@ -28,10 +27,6 @@ import { ApplicationCapabilityService } from "../application-capability/services
 import { buildApplicationPlatformRuntime } from "../application-platform/runtime/build-application-platform-runtime.js";
 import type { ApplicationPlatformRuntime } from "../application-platform/runtime/application-platform-runtime.js";
 import { configureStudioApplicationApiServices } from "../api/graphql/studio-application-api-services.js";
-import { stopMemorySyncWorker } from "../memory-sync/source/memory-sync-worker.js";
-import { shutdownMemorySearch } from "../memory-search/memory-search.js";
-import { stopDefaultAgentRunEventPipeline } from "../agent-execution/events/default-agent-run-event-pipeline.js";
-import { getSecretVaultRuntime } from "../secret-management/secret-vault-runtime.js";
 import {
   createAgentToolsMcpHost,
   type AgentToolsMcpHost,
@@ -79,6 +74,7 @@ import {
 } from "../context-files/domain/context-file-path-environment.js";
 import { getActiveCollaborationRootDirectory } from "../agent-collaboration/execution/services/active-collaboration-root-directory.js";
 import { composeAgentPackageDefinitionFeed, type AgentPackageDefinitionFeed } from "./agent-package-definition-feed-composition.js";
+import { closeStudioProcessResources, stopStudioFileWatchesForProcessExit, type StudioApiHandle } from "./studio-process-resources.js";
 import { createPlatformNoticeSources, type PlatformNoticeSources } from "./platform-notice-sources.js";
 import { getWorkJournalService } from "../agent-work-journal/services/work-journal-service.js";
 import { createEpisodicCatalog, type EpisodicCatalog } from "../agent-episodic-catalog/services/episodic-catalog.js";
@@ -99,77 +95,9 @@ export type StudioServer = Readonly<{
   packageRegistryService: ApplicationPackageRegistryService;
   /** autobyteus-285: the busy-run recorder (shutdown) and the resumer (startup). */
   restartResume: RestartResume;
+  /** Process shutdown only, right before the close: ends the file watches and leaves their OS watches to the exit. */
+  stopFileWatchesForProcessExit(): void;
 }>;
-
-type StudioApiHandle = ReturnType<typeof configureStudioApplicationApiServices>;
-
-const closeStudioProcessResources = async (input: {
-  hostDefinitionServices: HostDefinitionServices;
-  agentPackageDefinitionFeed: AgentPackageDefinitionFeed | null;
-  agentToolsMcpHost: AgentToolsMcpHost | null;
-  credentialProxyHost: CredentialProxyHost | null;
-  generalProcessAuthority: ScopedAgentToolMcpSessionAuthority | null;
-  generalProcessRunSupervisor: GeneralProcessRunSupervisor | null;
-  platformNotices: PlatformNoticeSources | null;
-  updateNotifications: UpdateNotifications | null;
-  studioApiHandle: StudioApiHandle | null;
-  agentRuntimeStatus: AgentRuntimeStatusHandle | null;
-}): Promise<void> => {
-  stopMemorySyncWorker();
-  shutdownMemorySearch();
-  try {
-    input.updateNotifications?.close();
-  } catch (error) {
-    console.warn("UPDATE_NOTIFICATIONS_CLOSE_FAILED", error);
-  }
-  try {
-    // Vendor update/sign-in processes started from Settings → Agent Runtimes end with the server (QR-003).
-    await input.agentRuntimeStatus?.close();
-  } catch (error) {
-    console.warn("AGENT_RUNTIME_STATUS_CLOSE_FAILED", error);
-  }
-  // Platform notices stop first, so none go out and no run is changed while runs stop.
-  await input.platformNotices?.close();
-  try {
-    await input.generalProcessRunSupervisor?.close();
-  } finally {
-    try {
-      input.generalProcessAuthority?.close();
-    } finally {
-      try {
-        await input.agentToolsMcpHost?.close();
-      } finally {
-        try {
-          if (input.credentialProxyHost) setProcessProviderRelayAccess(null);
-          await input.credentialProxyHost?.close();
-        } catch (error) {
-          console.warn("CREDENTIAL_PROXY_CLOSE_FAILED", error);
-        }
-        try {
-          input.studioApiHandle?.close();
-        } finally {
-          try {
-            await stopDefaultAgentRunEventPipeline();
-          } finally {
-            try {
-              try {
-                await input.agentPackageDefinitionFeed?.close();
-              } finally {
-                input.hostDefinitionServices.close();
-              }
-            } finally {
-              try {
-                await getSecretVaultRuntime().close();
-              } finally {
-                await shutdownPrisma();
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-};
 
 const createStudioApplicationServices = (input: {
   appConfig: AppConfig;
@@ -283,9 +211,14 @@ export const buildStudioServer = async (input: {
     });
   };
 
-  input.onCleanupOwnershipTransferred?.(() => nativeShutdown.close(async () => {
-    try { await applicationRuntime?.lifecycle.stop(); } finally { await closeProcessResources(); }
-  }));
+  const stopFileWatchesForProcessExit = (): void => stopStudioFileWatchesForProcessExit({ agentPackageDefinitionFeed, platformNotices });
+  // The process-shutdown cleanup until the app exists: the process exits after it.
+  input.onCleanupOwnershipTransferred?.(() => {
+    stopFileWatchesForProcessExit();
+    return nativeShutdown.close(async () => {
+      try { await applicationRuntime?.lifecycle.stop(); } finally { await closeProcessResources(); }
+    });
+  });
 
   try {
     const workspaceManager = getWorkspaceManager();
@@ -485,6 +418,7 @@ export const buildStudioServer = async (input: {
         applicationRuntime: currentApplicationRuntime,
         packageRegistryService: packages.packageRegistryService,
         restartResume,
+        stopFileWatchesForProcessExit,
       });
     } catch (error) {
       await app.close();

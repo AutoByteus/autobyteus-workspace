@@ -79,6 +79,8 @@ type RuntimeMemoryUserTraceInput = Omit<RuntimeMemoryNonToolTraceInput, "traceTy
 export type RuntimeMemorySystemTaskNotificationTraceInput = RuntimeMemoryTraceInputBase & {
   traceType: "system_task_notification";
   senderId: string;
+  /** The notice's one id (autobyteus-526), the same as on its published notice; absent when it has none. */
+  messageId?: string;
   media?: never;
   toolName?: never;
   toolCallId?: never;

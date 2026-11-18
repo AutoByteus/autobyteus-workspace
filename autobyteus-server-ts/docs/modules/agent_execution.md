@@ -329,7 +329,15 @@ callers record `terminatedAt`, so runs stopped by a shutdown stay resumable.
 
 **Bounded server shutdown.** `ServerProcessShutdown` (`src/shutdown/`) gives the
 server's own cleanup (`app.close()`) at most 10 s
-(`SERVER_SHUTDOWN_TIMEOUT_MS`), counted from when startup has settled. It then
+(`SERVER_SHUTDOWN_TIMEOUT_MS`), counted from when startup has settled. That
+cleanup (`server-runtime.ts`) records the busy runs, then ends the package-folder
+and skill-folder watchers (`studioServer.stopFileWatchesForProcessExit()`), then
+calls `app.close()`. The watcher stop ends event handling without closing the OS
+watches: closing a recursive watch blocks the main thread for seconds while
+macOS's file-event service is busy, and the process exit that follows releases
+them. Every other close of these watchers (an in-process server closed by a
+test, the startup-failure path, a package folder removed while the server runs)
+still closes the OS watches. It then
 always runs one process-tree sweep (`server-process-tree-sweep.ts`): it records
 the server's descendants in its own process group and the groups led by a
 descendant, sends SIGTERM, waits up to 1.5 s, SIGKILLs the recorded
@@ -586,11 +594,21 @@ the agent runtime hand-over first).
     already are or carry a preface never take one.
   - The provider message becomes the preface text, a blank line, then the
     input unchanged (sender, context files, recording attachments, metadata),
-    tagged `platform_input_preface { content, sender_id, original_content }`.
+    tagged `platform_input_preface { content, sender_id, original_content, notice_id }`.
     It is one dispatch, so one turn.
+  - Every platform notice has one id (autobyteus-526): the preface's `id` here,
+    the in-flight id for a notice-only input (tool list, skill, background
+    task), the wake's `message_id` for the restart reminder, one per request for
+    the Model Router and one per Claude background notice. The same id is the
+    message's `notice_id`, the stored notice trace's `message_id`, the
+    projection entry's `messageId` and the published notice's `message_id` on
+    the agent, collaboration and team streams, so the web shows the notice once
+    (its live copy and a snapshot's stored copy). A notice without one carries
+    `message_id: null` (traces stored before, a native unsuppressed SYSTEM
+    input, a task input shown as a notice).
   - The preface is settled `delivered` only when the dispatch is forwarded. On
     delivery, `AgentRun` publishes `SYSTEM_TASK_NOTIFICATION` with the
-    preface's sender and the turn ID. Every other outcome (not forwarded,
+    preface's sender, its id as `message_id` and the turn ID. Every other outcome (not forwarded,
     failed, uncertain, `undeliveredRetryAsStart`) returns it.
   - A failing port never affects the input.
   - Admission state and the backend dispatch contract are unchanged.

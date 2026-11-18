@@ -1,0 +1,9 @@
+# IMP-00 reproduction before the fix
+# command: cd autobyteus-server-ts && pnpm exec vitest run tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts --no-watch
+# commit: 2e9ac1e65b; node v22.23.1; macOS 26.5.2; 2026-11-18T05:15:53Z
+     × keeps ordinary native tools and configured skill reads explicit in the same active run 625ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+ FAIL  tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > keeps ordinary native tools and configured skill reads explicit in the same active run
+ ❯ tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts:291:70
+ Test Files  1 failed (1)
+      Tests  1 failed | 3 passed (4)

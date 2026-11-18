@@ -109,13 +109,14 @@ describe("system task notification memory trace (REQ-003, ARCH-F-004)", () => {
     const { accumulator, readTraces } = await setup();
     const notice = "[Platform notice — skill updated]\n\nYour skill package `deep-research` is no longer available.\n\nDo not rely on a skill that is no longer available.";
     accumulator.recordRunEvent(event(AgentRunEventType.TURN_STARTED, { turn_id: "turn-4" }));
-    accumulator.recordForwardedUserMessage(forwarded(buildSkillUpdateNoticeMessage(notice), "turn-4"));
+    accumulator.recordForwardedUserMessage(forwarded(buildSkillUpdateNoticeMessage(notice, "notice-4"), "turn-4"));
     accumulator.recordRunEvent(event(AgentRunEventType.SYSTEM_TASK_NOTIFICATION, {
-      sender_id: SKILL_UPDATE_NOTICE_SENDER_ID, content: notice, turn_id: "turn-4",
+      sender_id: SKILL_UPDATE_NOTICE_SENDER_ID, content: notice, turn_id: "turn-4", message_id: "notice-4",
     }));
 
-    expect(readTraces().map((trace) => [trace.traceType, trace.senderId])).toEqual([
-      ["system_task_notification", SKILL_UPDATE_NOTICE_SENDER_ID],
+    // autobyteus-526: the recorded notice keeps the published notice's one id.
+    expect(readTraces().map((trace) => [trace.traceType, trace.senderId, trace.messageId])).toEqual([
+      ["system_task_notification", SKILL_UPDATE_NOTICE_SENDER_ID, "notice-4"],
     ]);
   });
 });
