@@ -36,20 +36,25 @@ describe("AgyBackgroundTaskMonitor (DS-003)", () => {
     expect(emitted).toEqual([[running, { ...running, taskId: `${conversation}/task-4`, kind: "other", description: "browser_subagent", command: null }]]);
   });
 
-  // autobyteus-473: a viewer that opens the run later starts from the tasks running now (RSK-001: ended ones are gone).
-  it("lists the tasks running now, until each exits or AGY stops", async () => {
+  // autobyteus-473/517 (REQ-003): a viewer that opens the run later starts from every task of the run, running and
+  // ended, each as its latest snapshot, like the Claude and native views.
+  it("lists every task of the run with its latest snapshot: running, then ended by its exit or by AGY's stop", async () => {
     const { monitor, scans } = setup();
     expect(monitor.list()).toEqual([]);
-    monitor.track([daemon]);
-    expect(monitor.list()).toEqual([running]);
-    scans.push({ settledFiles: ["m.json"], exits: [{ stepIndex: 2, exitCode: 0, summary: "The command exited with code 0." }], problem: null });
+    const second = { stepIndex: 5, toolName: "run_command", commandLine: "pnpm test" };
+    monitor.track([daemon, second]);
+    const secondRunning = { ...running, taskId: `${conversation}/task-5`, description: "pnpm test", command: "pnpm test" };
+    expect(monitor.list()).toEqual([running, secondRunning]);
+    scans.push({ settledFiles: ["m.json"], exits: [{ stepIndex: 2, exitCode: 3, summary: "The command exited with code 3." }], problem: null });
     await vi.advanceTimersByTimeAsync(0);
-    expect(monitor.list()).toEqual([]);
+    const failed = { ...running, status: "failed", summary: "The command exited with code 3.", exitCode: 3 };
+    expect(monitor.list()).toEqual([failed, secondRunning]);
+    // A later turn that reports the ended step open again does not bring it back as running.
+    monitor.track([daemon]);
+    expect(monitor.list()).toEqual([failed, secondRunning]);
 
-    const stopped = setup();
-    stopped.monitor.track([daemon]);
-    stopped.monitor.stopAll();
-    expect(stopped.monitor.list()).toEqual([]);
+    monitor.stopAll();
+    expect(monitor.list()).toEqual([failed, { ...secondRunning, status: "stopped", endReason: "run_ended" }]);
   });
 
   it("lists a running task from track until its exit, and none after AGY stops (the view the running count derives from)", async () => {
