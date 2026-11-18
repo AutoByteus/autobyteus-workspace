@@ -1,0 +1,56 @@
+autobyteus-500 API/E2E round 3 (API-REV-003): the merged state, at the Delivery Engineer's request. Worktree head 2f10dbe1bb;
+code eb741a097e (merge 39325a1e50 of origin/personal ff13782f36; no src change after it). Server dist built by delivery from
+it (01:07). The base is ff13782f36 in its own worktree (install, build). Clean environment per run (env -i, a throwaway HOME,
+LANG); never the user's app or ~/.autobyteus. The Mac's load was 5-12 this night (fseventsd ~170% CPU and an unrelated VM
+~210% throughout). Raw logs: /tmp/api500/r3. Paths shortened to ~.
+
+What to look for: §1 the full folder completed; §2 every branch-only failure explained; §3 the merged base's own failures;
+§4 integration; §5 AC-005 on Linux; §6 the browser.
+
+§1 Full server E2E folder, merged state, once, detached (no tool time limit)
+  `vitest run tests/e2e` with RUN_AGY_FAILURE_E2E=1 and the scripted AGY CLI:
+  Test Files 30 failed | 167 passed | 78 skipped (275); Tests 38 failed | 838 passed | 382 skipped (1258); 7186 s.
+  This ticket's cases all pass in it: ALM-1, RSE-1, ODM-1, LTI-1, E-002 (4/4), SCP (6/6), DCM (11/11), DTL, DLC (3/3),
+  remote-delegation (46/46, RC-14/15/17/18/19/45/46 included), removed-remote-provider, the FU-011 harnesses (projects-graphql,
+  embedding-settings, project-task-search, project-task-search-model-unavailable), AOML.
+  Most of delivery's DEL-01 list passes here (team-run-config-graphql, stopped-run-model-config, runtime-switch-members,
+  qwen-configuration, custom-provider, memory-sync, update-notifications, team-run-v1, registered-package-definition-edit,
+  agy-linked-skills): DEL-01 ran at load for 2 h and stopped.
+
+§2 The 30 failing files, one at a time on the branch, then on base ff13782f36 (/tmp/api500/r3/branch-alone.log, base-alone.log)
+  - Pass alone on both (load in the full run): 19 files (agy-* transports, mcp-*, secret lifecycles, integrations, token
+    restart, model-metadata, controlled-org-publication, personal-tools, delegated-copy-project-folder, work-journal,
+    search-files, project-task-comments-live, agent-runtimes-graphql, server-restart-secret).
+  - Fail alone on the branch only, then pass in a second alone run (load): delegation-forest-restore (3/3),
+    unclean-shutdown-delegated-team-restore (8/8), project-mutation-node-locality (1/1), provider-secret-lifecycle (6/6),
+    mcp-secrets-in-vault (3/3) (/tmp/api500/r3/branch-only2.log); agent-package-definitions-live-refresh 8 passed, 2 skipped
+    alone (FSEvents).
+  - project-task-boundaries E-007 (branch only, deterministic): "TypeError: Cannot read properties of undefined (reading '0')"
+    at `businessBefore.tasks[0]`. Cause, test-side and mine: its mid-test "release and build again" relied on the process getter
+    making a new instance lazily (autobyteus-461); FU-011 removed that, and my round-1 update released the service without
+    composing a new one (in round 1 the file stopped earlier, at a base-side check, so E-007 was not reached). Fixed: the Task
+    side is composed again from the entries on disk, as a restart does. 18 passed (18) (/tmp/api500/r3/boundaries.log).
+
+§3 Fail on the merged base ff13782f36 too (the same tests, alone): FU-500-12 (and FU-500-09)
+  collaboration-prompt-wording CPW-P1…P3 (the prompt's new "Long-Running Commands" section); configured-skill-on-demand-loading
+  (a new prompt section); agent-semantic-memory SM-03…07, SM-10 (the same six); request-origin-and-phone-routes (2:
+  "expected [ …(20) ] to have a length of 14", a 5 s timeout); available-agent-runtimes-graphql AAR-01…04.
+
+§4 Integration suites (`vitest run tests/integration`, merged state): Test Files 2 failed | 83 passed | 20 skipped (105);
+  Tests 2 failed | 503 passed | 69 skipped (574); 342 s.
+  - file-system-watcher: 1 failure, INCONCLUSIVE (macOS; see §5).
+  - package-auto-refresh: 1 failure (hook timeout). Alone on the Mac: 2 failed | 13 passed (FSEvents cases AC-006, AC-011);
+    on base the same file: 2 failed | 13 passed (AC-005, AC-006). In Linux: 14 passed, 1 failed: the EACCES case, which a
+    root container cannot produce. Not this ticket (FSEvents; the watcher is unchanged).
+
+§5 AC-005 on the merged state
+  - Linux (Docker node:22-bookworm, a tarball of the working tree, frozen install, test:integration:prepare): the watcher file
+    5 of 5, each "Tests 14 passed (14)", 0 ENVIRONMENT / INCONCLUSIVE lines, container load ~5.
+  - macOS at load 5-7 (fseventsd ~170% CPU, a VM ~210%): run 1 14/14; runs 2-5 fail 5, 2, 3, 3 cases, every one INCONCLUSIVE
+    (0 ENVIRONMENT, 0 unlabeled, 0 timeouts). Not a quiet macOS: evidence only (D-13b).
+
+§6 Browser probes on the merged web (Nuxt dev, the merged server)
+  delegated-launch-defaults-probe --cases G5-001,G5-002,G5-003,DLP-005,DLP-003,DLP-004,DCP-004,SIR-002: 8 Pass, 0 Fail.
+  composer-context-file-removal-probe: Pass, 12/12.
+
+§7 Type gate: server production 0; tests 1010 in 316 files = baseline (with the E-007 fix).

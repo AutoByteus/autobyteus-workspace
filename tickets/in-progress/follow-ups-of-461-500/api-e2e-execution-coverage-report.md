@@ -5,8 +5,15 @@ This report records what ran and the result. The plan is in `api-e2e-coverage-in
 ## Round
 
 - Coverage investigation: `api-e2e-coverage-investigation.md`
-- API/E2E revision record and current revision ID: `api-e2e-revision-record.md` / `API-REV-002`
+- API/E2E revision record and current revision ID: `api-e2e-revision-record.md` / `API-REV-003`
 - Test progress log: `api-e2e-test-progress.md`
+- **Round 3, the merged state (the Delivery Engineer's request after DEL-01; head `2f10dbe1bb`, code `eb741a097e` = the merge of `origin/personal` `ff13782f36`):**
+  - the full server E2E folder once, run to the end (detached);
+  - every failing file alone on the branch and on base `ff13782f36` (its own worktree);
+  - the integration suites;
+  - AC-005 on Linux again, and the browser probes on the merged web.
+  - Evidence: `evidence/api-e2e/API-r3-runs.txt`; raw logs `/tmp/api500/r3`.
+  - Result: `Pass` after one test fix of mine (E-007); every other failure is load or the merged base's own (FU-500-12).
 - **Round 2 (CRR-004 Pass; head `c22af3b892`, code `7eb78a701b`, IR-003):** F-1 … F-3 rerun; AutoByteus models loaded on demand across real restarts (new ODM-1); a retired agent on the member path; G5-001 … 003 and DLP-005 again; LE-F1 live; the static-check exemption for RSE-1. Evidence: `evidence/api-e2e/API-r2-runs.txt`; raw logs `/tmp/api500/r2`. Round 1's text below is kept where round 2 did not change it; the Findings table carries both rounds.
 - Round and trigger (round 1): round 1, on CRR-002 (Pass after CRR-001's Local Fix IR-002). Code under test: `cc8dbce099` (merge base `9695d310c5`), plus this round's test-only changes. Server `dist` rebuilt from `cc8dbce099`.
 - Scope: the code reviewer's list (AC-005 on Linux, FU-020 on real-shaped data and C-6, G-5 with its browser render, FU-036 on the org and collaboration streams, the FU-030 text assertions, G-1/G-2), plus the full server E2E folder (499 files changed, composition rewired) and the touched browser probes.
@@ -16,8 +23,8 @@ This report records what ran and the result. The plan is in `api-e2e-coverage-in
 ## Routing Classification
 
 - Task size: `Large`; Architectural risk: `High`; Input route: `Reviewed`.
-- Result route (round 2): `Pass` → Code Reviewer, proportional test-code review (round 1: `Fail` → failure-origin review, CRR-003).
-- Proportional test-code review decision: `Required` (`c0770ea7b0` and round 2's test commit).
+- Result route (round 3): `Pass` → Code Reviewer, proportional test-code review of round 3's test change (E-007), then delivery. Round 2: `Pass` (CRR-005, CR-500-006 fixed); round 1: `Fail` (CRR-003).
+- Proportional test-code review decision: `Required` (`c0770ea7b0`, `a7e76ca248`, `73bfba186c` reviewed; round 3's test commit).
 
 ## Tested Builds And Environments
 
@@ -27,6 +34,8 @@ This report records what ran and the result. The plan is in `api-e2e-coverage-in
 | ENV-2 | as ENV-1 | Docker `node:22-bookworm`, Linux 6.12 (linuxkit) arm64, 10 vCPU, load ~6–12 | A tarball of the worktree; `pnpm install --frozen-lockfile`; `test:integration:prepare` | Real inotify; used for the AC-005 gate and to separate load from defects |
 | ENV-3 | as ENV-1 | as ENV-1 | Probe stacks: built server, Nuxt dev, headless Chrome | Probe-owned roots, ports and HOME |
 | ENV-B | base `9695d310c5` | as ENV-1 | Its own worktree, install and build | For comparisons only |
+| ENV-M (r3) | merged `eb741a097e` (head `2f10dbe1bb`) | macOS as ENV-1, load 5–12 (fseventsd ~170%, an unrelated VM ~210%) | Server E2E, integration, probes; dist built by delivery | `env -i`, throwaway HOME, LANG |
+| ENV-MB (r3) | base `ff13782f36` | as ENV-M | Its own worktree `500-base-ff13782f`, install and build | Comparisons only |
 
 ## Cases
 
@@ -62,6 +71,12 @@ This report records what ran and the result. The plan is in `api-e2e-coverage-in
 | F-2 | Delegation refusal when the run's own (inherited) model was retired (DLP-005, DLC) | FU-030 DLP-005: "… can't be delegated to: its default model cannot be used: '…' is no longer offered by …. Choose another model for … in its settings, or delegate to another agent." (the updated tests and the handoff's table) | "… can't be delegated to: 'dlc-retiring-model' is no longer offered by Antigravity CLI." — no next step (REQ-007) | (old text) | `Local Fix`: `collaborator-launch-resolver.ts:173` throws `CollaboratorAddError(plan.name, verdicts.inherited.detail)` with no FU-030 wording; only `:328` (own default layer) has it. If the design meant another text for the inherited layer, `Unclear` |
 | F-3 | After a restart with one copy's Task file damaged, the native mate (AutoByteus on emulated LM Studio, on no Task) is sent get_project_task through the team view (SCP-E2E-006) | Answered as on base | No answer within 90 s and no model request. Correction (CRR-003): it did get a `RUN_MODEL_NOT_OFFERED` ERROR frame; my helper waited for a tool result and printed only the last frames | Pass 2/2 | Origin (CRR-003): G-5 read the AutoByteus list before the on-demand provider was loaded (CR-500-003) |
 
+- **Round 3, the merged state:**
+  - FULL-SERVER-M: 275 files, 167 passed, 78 skipped, 30 failed (38 tests), run to the end in 7186 s.
+  - Alone on the branch and on base: 19 files pass on both (load); five branch-only failures pass in a second alone run (load); the package watcher passes alone (FSEvents).
+  - The merged base fails the same way in collaboration-prompt-wording, configured-skill-on-demand-loading, agent-semantic-memory (6), request-origin-and-phone-routes (2) and available-agent-runtimes (4): FU-500-12, FU-500-09.
+  - One branch-only failure was mine: project-task-boundaries E-007. Its mid-test "release and build again" relied on the lazy process getter FU-011 removed; my round-1 update released without composing a new one. Fixed: the Task side is composed again from disk, 18/18.
+  - INTEGRATION-M: 503 passed, 2 failed (both FSEvents on macOS; the base fails package-auto-refresh the same way). WATCH-LINUX-M 5/5. Probes on the merged web: 8/8 and the composer 12/12.
 - **Round 2: F-1, F-2 and F-3 are resolved** (IR-003: CR-500-004, CR-500-005, CR-500-003). E-002 4/4; the DLC F-2 case and probe DLP-005 pass with "… it would use this run's model '…', which … no longer offers. Set a model for … in its settings, or change this run's model, then delegate again."; SCP-E2E-006 6/6; ODM-1 covers the cause of F-3 directly.
 
 - Stale tests this ticket made untrue, updated (Durable Coverage below) and passing.
@@ -76,7 +91,7 @@ This report records what ran and the result. The plan is in `api-e2e-coverage-in
 | AC-002 (composition) | Yes | FULL-SERVER (both hosts start); IMP-06 units | Proven | The stale harnesses (FU-011) show the getters now refuse before composition |
 | AC-003 (token totals) | Yes | FULL-SERVER (token suites) | Proven | |
 | AC-004 (refusal texts) | Yes | TEXT-E2E, TEXT-PROBES, DLC-INHERITED, LE-F1 | Proven (r2) | F-2 resolved; live on Claude |
-| AC-005 (gates) | Yes | WATCH-LINUX, GATES | Proven (quiet macOS Not Tested) | D-13b: Linux is the gate |
+| AC-005 (gates) | Yes | WATCH-LINUX (r1, and r3 on the merged state: 5/5), GATES | Proven (quiet macOS Not Tested) | D-13b: Linux is the gate. r3's macOS at load 5–7 with fseventsd busy: 1/5, every failure INCONCLUSIVE (evidence only) |
 | AC-006 (not ready) | Yes | NOTREADY-INT, NOTREADY-REAL | Proven | |
 | AC-007 (Grok) | — | — | Out of this package | IR-003 |
 | AC-008 (attachments) | Yes | MIG-ATTACH, MIG-UNITS, MIG-COST | Proven (the founder's own data: Only The User Can Check) | Needs his approval (D-8) |
@@ -146,7 +161,8 @@ This report records what ran and the result. The plan is in `api-e2e-coverage-in
 
 | Item | Owned By This Run | Cleanup Action | Result |
 | --- | --- | --- | --- |
-| Docker containers `api500-watch`, `api500-c2`, `api500-c3`, `api500-c4` | Yes | `--rm` (c3 was removed by `docker rm -f`) | Removed |
+| Docker containers `api500-watch`, `api500-c2`, `api500-c3`, `api500-c4`, `api500-c5` | Yes | `--rm` (c3 was removed by `docker rm -f`) | Removed |
+| Base worktrees `500-base-9695d310` (r1, r2) and `500-base-ff13782f` (r3) | Yes | `git worktree remove` after this round | Removed (see Latest Authoritative Result) |
 | Temporary base copy of ODM-1 (r2) | Yes | deleted after the run | Removed |
 | Base worktree `500-base-9695d310` | Yes | kept for the next round's comparisons | Kept |
 | Temporary cost test, E-002 and SCP-006 debug lines | Yes | deleted / reverted | Removed (git diff clean for those) |
@@ -161,11 +177,15 @@ This report records what ran and the result. The plan is in `api-e2e-coverage-in
 
 ## Latest Authoritative Result
 
-- Result (round 2): `Pass`. Confidence 95%. F-1 … F-3 resolved; no new finding. Round 1 was `Fail` (86%).
+- Result (round 3, the merged state `eb741a097e`): `Pass`. Confidence 95% (unchanged).
+  - The full server folder ran to the end; every failure is load (passes alone), the merged base's own (FU-500-12, FU-500-09), or FSEvents on macOS.
+  - One test fix of mine (E-007, `project-task-boundaries`).
+  - Integration 503 passed; AC-005 on Linux 5/5; the merged web's probes 8/8 and 12/12.
+  - Round 2: `Pass` 95%; round 1: `Fail` 86%.
 - Residual risks:
-  - quiet macOS for the watcher (Not Tested; Linux 5 of 5 is the gate);
+  - quiet macOS for the watcher (Not Tested; the Mac's fseventsd stayed busy even at load 5–7; Linux 5 of 5 is the gate);
   - M-6 cold-cache cost (warm only);
   - the founder's own data (only he can approve);
   - on-demand hosts emulated (LM Studio, Ollama);
-  - FU-500-09 … 11 outside this ticket.
-- Next recipient from `get_handoff_rules`: the Code Reviewer, for the proportional test-code review, then delivery.
+  - FU-500-09 … 12 outside this ticket.
+- Next recipient from `get_handoff_rules`: the Code Reviewer, for the proportional test-code review of round 3's change, then delivery.

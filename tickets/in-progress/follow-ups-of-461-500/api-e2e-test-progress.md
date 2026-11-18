@@ -33,3 +33,10 @@ My progress log while tests run. Read it first when picking the run back up. Row
 | 2026-11-17 21:39 | G5-001..003, DLP-005, DLP-003/004 | Completed | Pass | 6/6 /tmp/api500/r2/probe |
 | 2026-11-17 21:39 | ROUND 2 | Completed | Pass | 95% |
 | 2026-11-17 21:45 | ODM-1 (CR-500-006) | Completed | Pass | positive assertions; lead options unconditional |
+| 2026-11-18 01:53 | ROUND 3 | Started | | merged state 2f10dbe1bb (code eb741a097e, base ff13782f36); dist built by delivery 01:07 |
+| 2026-11-18 01:53 | WATCH-MAC | Completed | Evidence only | load 5-7 but fseventsd 169%, a VM 214%: 1/5 pass, 13 failures all INCONCLUSIVE, 0 ENVIRONMENT, 0 unlabeled; not quiet (D-13b) |
+| 2026-11-18 01:53 | FULL-SERVER (r3) | Started | | tests/e2e, detached, /tmp/api500/r3/full-e2e.log |
+| 2026-11-18 03:54 | FULL-SERVER (r3) | Checkpoint | | full run done 03:45: 275 files, 167 passed / 78 skipped / 30 failed (38 tests), 7186 s, load ~7-10. Sequential: the 30 alone on the branch, then on base ff13782f36 (/tmp/api500/r3/seq-summary.log) |
+| 2026-11-18 04:24 | FULL-SERVER (r3) | Completed | Pass after one test fix | branch-only alone: 5 load, E-007 my FU-011 harness gap (fixed, 18/18); base-side: AAR-01..04, CPW-P1..P3, NAS x2, configured-skill, SM x6, DCF-E2E-007; INTEGRATION started |
+| 2026-11-18 04:40 | INTEGRATION (r3) | Completed | Pass (base-side/FSEvents only) | 503 passed, 2 failed: watcher INCONCLUSIVE (macOS), package-auto-refresh FSEvents (base fails 2 too); Linux: watcher 5/5, refresh 14/15 (root-only EACCES case) |
+| 2026-11-18 04:52 | PROBES (r3) | Completed | Pass | merged web: 8/8, composer 12/12; WATCH-LINUX-M 5/5; ROUND 3 Pass |

@@ -62,3 +62,31 @@ None (the first round).
   - the lead's Settings options: unconditional.
 - Rerun: Pass (`API-r2-runs.txt` §6). The result stays `Pass` / 95%.
 - Optional suggestion not taken: detecting "no composition yet" without the getter's text needs a new query function in `project-task-service.ts` (product code) for tests only; the helper rethrows any other error, so a changed text fails loudly.
+
+### API-REV-003: round 3, the merged state (the Delivery Engineer's request): Pass after one test fix
+
+- Triggering role, report path, and round: `/delivery_engineer`, `release-deployment-report.md` and `evidence/delivery/DEL-01-merged-state-server-e2e-summary.txt` (the merged state `eb741a097e`, its server E2E stopped at 2 h with 21 files failing), API/E2E round 3.
+- Triggering finding or case IDs: DEL-01's failing files.
+- Why this revision was recorded: validation of the merged code, which API-REV-002 did not cover.
+- Coverage decisions or durable test paths changed:
+  - `project-task-boundaries.e2e.test.ts` E-007: the mid-test "release and build again" now composes the Task side again from disk (FU-011 removed the lazy process instance it relied on; my round-1 harness update released without rebuilding).
+  - `follow-ups.md`: FU-500-12.
+
+#### Prior Failure Resolution
+
+- DEL-01's list, by file:
+  - pass in the full merged run or alone (load): remote-delegation-two-server, team-run-config-graphql, stopped-run-model-config, runtime-switch-members, qwen-configuration, custom-provider-readable-id, memory-sync, update-notifications, team-run-v1, registered-package-definition-edit, agy-linked-skills, delegated-team-lazy-member-activation;
+  - fail on the merged base too: collaboration-prompt-wording, agent-semantic-memory, request-origin-and-phone-routes, available-agent-runtimes, configured-skill-on-demand-loading (FU-500-12, FU-500-09);
+  - project-task-boundaries: E-007 fixed (mine); the package watcher is FSEvents (passes alone).
+
+- Canonical artifacts and sections updated: the execution report (Round, Routing, Environments, Findings, AC-005, Cleanup, Result); the progress log; `evidence/api-e2e/API-r3-runs.txt`; `follow-ups.md`.
+- Prior result and confidence: `Pass` / 95% (pre-merge)
+- Current result and confidence: `Pass` / 95% (merged state)
+- New or remaining failure IDs: none
+- Recommended owner: the Code Reviewer (the E-007 test change), then delivery.
+- Remaining risks, blocked evidence, or untested scope:
+  - quiet macOS (Not Tested);
+  - M-6 cold cache;
+  - the founder's own data;
+  - LM Studio and Ollama emulated;
+  - FU-500-09 … 12.
