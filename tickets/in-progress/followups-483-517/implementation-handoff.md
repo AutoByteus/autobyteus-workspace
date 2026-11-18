@@ -4,7 +4,7 @@ Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/followups-483-517`, b
 
 ## Upstream Artifact Package
 
-- Upstream review applicability and handoff-rule result: direct route (`task_size=Small`, `architectural_risk=Low`). This round returns to `/solution_designer` with a **Design Impact** on AC-001 (rule: "implementation identifies a Design Impact … that must be resolved in the requirements or design").
+- Upstream review applicability and handoff-rule result: direct route (`task_size=Small`, `architectural_risk=Low`). IR-001 returned a Design Impact; SR-002 resolved it. IR-002 → `get_handoff_rules` → `/api_e2e_engineer` (direct API/E2E).
 - Requirements doc: `tickets/in-progress/followups-483-517/requirements-doc.md` (SR-001; REQ-004/FU-004 not in scope)
 - Investigation notes: `tickets/in-progress/followups-483-517/investigation-notes.md`
 - Solution revision record: `tickets/in-progress/followups-483-517/solution-revision-record.md`
@@ -13,8 +13,8 @@ Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/followups-483-517`, b
 
 ## Current Implementation Summary
 
-- Implementation cycle `Initial`; revision record `tickets/in-progress/followups-483-517/implementation-revision-record.md`; current `IR-001`; related `SR-001`; others `N/A`.
-- Commits: `1224f6498c` FU-003, `b55ce60b5e` FU-002, `807951b6e0` FU-005, then the ticket-documents commit.
+- Implementation cycle `Rework` (after the SR-002 decision); revision record `tickets/in-progress/followups-483-517/implementation-revision-record.md`; current `IR-002`; related `SR-001`, `SR-002`; others `N/A`; triggering finding: the IR-001 Design Impact (resolved).
+- Commits: `1224f6498c` FU-003, `b55ce60b5e` FU-002, `807951b6e0` FU-005, `e61300a086` IR-001 documents, then the IR-002 commit (test change + documents).
 
 ### FU-003 — Antigravity view keeps ended tasks (REQ-003) — done
 
@@ -40,7 +40,20 @@ Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/followups-483-517`, b
 - **Extension of DEC-002 (flag for the Solution Designer):** in `agent-package-definitions-live-refresh.e2e.test.ts` the elapsed-time bound appears four times, not only in DCF-E2E-002 (`:387`). It also appears in DCF-E2E-009 (`broken`, `cleared`) and the creator case (`Date.now() - writtenAt`). Each compares OS file-event latency with 5 s, the same defect DEC-002 removes, and DCF-E2E-002 cannot pass under load without its bound gone (base failed it with "expected 24175 to be less than 5000"). All four are removed; the measured times stay in the evidence records.
 - `vitest.config.ts` unchanged; the fixed settle sleeps unchanged.
 
-## Design Impact — AC-001 cannot be fully met by test waits
+## IR-002 — SR-002 resolution: option (a) + (c) done
+
+The Solution Designer resolved the Design Impact below (SR-002). AC-001 is refined: every base failure whose cause is a test wait or an elapsed bound passes on the branch, and the rest are recorded with their cause. FU-001 and FU-002 are in `follow-ups.md`. Test-only work this round:
+
+- **DCF-E2E-002:** the `waitFor` for the broken-Team diagnostic accepts only the diagnostic of the final state: `DEFINITION_CONTRACT_INVALID`, `definitionPath` = `team.md`, `usingLastGood: false`. Before, it took the first diagnostic for that Team, which on a busy machine can be read between the test's two writes.
+- **DCF-E2E-005:** test timeout `60_000 + 2 * OS_FILE_EVENT_WAIT_MS` (120 s). That is its own import, check and update work (the 60 s it already had) plus its two file-event waits ("Update published", root re-armed). It is **not** `FILE_EVENT_TEST_TIMEOUT_MS` (45 s), which is below its existing 60 s and would have shortened it.
+- **Results (IMP-07, load ~26–50, `fseventsd` 160–168%; the load had dropped since IMP-03):**
+  - DCF-E2E-002 and DCF-E2E-005 alone: `Tests  2 passed`.
+  - The whole live-refresh suite: 7 passed, 1 failed. The failure is **DCF-E2E-003**: after the package root is renamed back, the watcher stays `FOLDER_MISSING` for the whole 30 s ("WATCHING again: not met within 30000 ms"). It reproduces alone.
+  - The **base** test file fails the same case earlier, at its 5 s wait for `FOLDER_MISSING`.
+  - Cause: the restored root's event is not seen within 30 s. That is product behaviour of the agent-package folder watcher under load, the same class as FU-001, and it passed in IMP-03's branch run. Recorded as **FU-003** in `follow-ups.md`.
+- Accepted by the Solution Designer as done: the four 5 s elapsed bounds removed in the live-refresh suite; the *Run Workspace Choice On Start Surfaces* move.
+
+## Design Impact (IR-001, resolved by SR-002) — AC-001 cannot be fully met by test waits
 
 AC-001: "the listed tests pass under an imposed load where base fails". Measured (IMP-03, IMP-04): under the same load, **base: 24 failed in 6 files; branch: 9 failed in 3 files**. The four files with only wait causes are fixed: both unit files, `package-auto-refresh` and `studio-server-http-contract`. What remains is not a wait:
 
@@ -59,7 +72,7 @@ By the design's own escalation rule ("events never arrive: record as cause, do n
 ## Routing Classification (Mandatory)
 
 - `Small` / `Low` (design-spec) — `Confirmed` for the code delivered. The open question is AC-001's scope (above), not risk.
-- Selected route: `Solution Designer` (Design Impact); self-review: `Yes`.
+- Selected route: IR-001 `Solution Designer` (Design Impact, resolved by SR-002); IR-002 `Direct API/E2E`. Self-review: `Yes`.
 
 ## Reviewed Behavior Implementation Trace
 
@@ -87,7 +100,8 @@ Evidence: `tickets/in-progress/followups-483-517/evidence/`. macOS 26.5.2, 10 co
 | IMP-03 | `evidence/run-fu002-base-vs-branch.sh` (the seven files at base `24d438fa31`, then at the branch, one vitest run each) | `807951b6e0` | FU-002 | AC-001 | Partly met | `IMP-03-fu002-base-vs-branch.log` | base `Tests  24 failed \| 54 passed`, load 128.75…, fseventsd 157.5; branch `Tests  9 failed \| 69 passed`, load 104.06…, fseventsd 147.7–172.0 |
 | IMP-04 | the three still-failing files alone; DCF-E2E-002 alone; Grok `afterAll` timed (temporary 600 s limit and timing, reverted) | `807951b6e0` | causes of the 9 | AC-001 | Diagnosed | `IMP-04-remaining-failures-diagnosis.log` | `Timed out waiting for event`; `expected [ 'move', 'rename' ] to include 'delete'`; `app.close done at 296921 ms`; DCF-E2E-002 `1 passed` alone |
 | IMP-05 | `python3 tickets/in-progress/followups-483-517/evidence/check-doc-anchors.py .` (base, branch, and a negative control) | `807951b6e0` | doc links into settings.md / agent_execution_architecture.md, repository-wide | AC-004 | Pass | `IMP-05-link-check.log`, `check-doc-anchors.py` | branch `checked 50 links … RESULT PASS`; control `RESULT FAIL (1 broken)` |
-| IMP-06 | `pnpm -C autobyteus-server-ts typecheck` | `807951b6e0` | server src + tests | — | Pass | `IMP-06-server-typecheck.log` | `(baseline 1012 in 316 files)`, `PASS` |
+| IMP-06 | `pnpm -C autobyteus-server-ts typecheck` (rerun after the IR-002 change) | IR-002 commit content | server src + tests | — | Pass | `IMP-06-server-typecheck.log` | `(baseline 1012 in 316 files)`, `PASS` |
+| IMP-07 | live-refresh e2e: `-t "DCF-E2E-00(2\|5)"` alone; the whole suite; DCF-E2E-003 alone; the base test file's DCF-E2E-003 alone | IR-002 commit content (base file `24d438fa31` for the last) | the (c) changes; DCF-E2E-003 cause | AC-001 (refined) | Pass for (c); DCF-E2E-003 → FU-003 | `IMP-07-dcf-002-005.log` | `Tests  2 passed \| 8 skipped`; suite `1 failed \| 7 passed`; `WATCHING again: not met within 30000 ms`; base `FOLDER_MISSING: not met within 5000 ms` |
 
 - Not run: the web typecheck (no web code changed; docs only). No live AGY run reading `currentTasks` after an exit (the design allows unit plus a probe; left to API/E2E for durable coverage).
 

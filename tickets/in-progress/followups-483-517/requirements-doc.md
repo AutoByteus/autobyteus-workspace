@@ -3,7 +3,7 @@
 ## Document Status
 
 - Status: `Approved` for REQ-001, REQ-002, REQ-003, REQ-005 (FU-002, FU-003, FU-005); REQ-004 (FU-004) `Ready for Approval` — DEC-003 needs the user
-- Current solution revision ID: `SR-001`
+- Current solution revision ID: `SR-002`
 - Package identifier: `followups-483-517`
 - Request / ticket: Project Task `autobyteus-517` (part of `autobyteus-530`), round 2: FU-002, FU-003, FU-004, FU-005
 - Requested by: `/project_task_manager`; started on the user's word in the Solution Designer's conversation (2026-11-18)
@@ -70,7 +70,7 @@ As the template.
 
 | ID | REQ | Expected | Verification |
 | --- | --- | --- | --- |
-| AC-001 | REQ-001, REQ-002 | The listed tests pass under an imposed load (e.g. CPU hogs plus a file-event backlog) where base fails, and pass alone | run base vs branch under the same load |
+| AC-001 | REQ-001, REQ-002 | (SR-002) Under the same load, every failure of base whose cause is a test wait or an elapsed bound passes on the branch; the remaining failures have a recorded cause outside the tests (an OS event that never arrives within the shared wait; the watcher's move pairing under load; an in-process server close stalling for minutes), recorded as follow-ups; each listed test passes alone | run base vs branch under the same load; diagnose each remaining failure |
 | AC-002 | REQ-003 | After a task exits (and after AGY stops), `current()` still lists it with status, exit code / `run_ended`; panel opened late shows it | unit + the AGY live background suite or a probe |
 | AC-003 | REQ-004 | The Grok section matches the probe; prompt tests (TESTING.md row) pass | unit + prompt tests |
 | AC-004 | REQ-005 | No Level 1–3 copy in `settings.md`; a link check over all docs finds no broken `settings.md#…` / `agent_execution_architecture.md#…` anchor | link check |

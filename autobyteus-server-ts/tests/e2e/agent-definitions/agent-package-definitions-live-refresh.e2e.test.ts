@@ -362,7 +362,11 @@ describe("Agent package definitions live refresh at the real server/wire boundar
     const brokenTeam = path.join(root, "agent-teams", "broken-team", "team.md");
     await write(brokenTeam, "no front matter");
     await write(path.join(root, "agent-teams", "broken-team", "team-config.json"), "{}");
-    const unavailable = await waitFor(() => diagnostics("AGENT_TEAM"), (list) => list.some((entry) => entry.definitionId === "broken-team"), "invalid Team diagnostic");
+    // The two files are written apart; on a busy machine the first may be read alone. Wait for the diagnostic of the
+    // final state (both written), not the first one for this Team.
+    const finalDiagnostic = (entry: Record<string, any>) => entry.definitionId === "broken-team"
+      && entry.code === "DEFINITION_CONTRACT_INVALID" && entry.definitionPath === brokenTeam && entry.usingLastGood === false;
+    const unavailable = await waitFor(() => diagnostics("AGENT_TEAM"), (list) => list.some(finalDiagnostic), "invalid Team diagnostic");
     expect(unavailable.value.find((entry) => entry.definitionId === "broken-team")).toMatchObject({
       code: "DEFINITION_CONTRACT_INVALID", definitionPath: brokenTeam, usingLastGood: false });
     expect((await teams()).map((entry) => entry.id)).toEqual(expect.arrayContaining(["squad", "crew"]));
@@ -484,7 +488,8 @@ describe("Agent package definitions live refresh at the real server/wire boundar
     await graphql(`mutation($id:String!){ removeAgentPackage(packageId:$id){ packageId } }`, { id: row.packageId });
     expect((await agents()).map((entry) => entry.id)).not.toContain("gh-alpha");
     evidence.dcf005 = { githubRequests, updateFrames: changed(other, mark), autoRefreshAfterUpdate: after.value?.autoRefresh };
-  }, 60_000);
+    // Its own import, check and update work (60 s), plus its two OS file-event waits (Update published, root re-armed).
+  }, 60_000 + 2 * OS_FILE_EVENT_WAIT_MS);
 
   it("DCF-E2E-010 (SR-009/DSN-005): the renamed contract is a clean cut; the retired route and GraphQL names are gone", async () => {
     // The new route greets every connection (covered above); the retired route is not served at all.
