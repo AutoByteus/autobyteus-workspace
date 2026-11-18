@@ -21,11 +21,11 @@ describe('live compaction input projection',()=>{
   expect(c.conversation.messages[0]).toMatchObject({messageId:'A',text:'real A',pendingInput:{state:'held'},contextFilePaths:[{locator:'/workspace/plan.md'}]});
   handleAgentStatus({status:'error',background_tasks_running:0,recoverableBlock:block},c);
   expect(c.conversation.messages[1].isComplete).toBe(false);
-  expect(resolveAgentPrimaryAction({hasContext:true,status:c.state.currentStatus,submissionPending:false,isUploading:false,hasDraft:true})).toEqual({kind:'send',enabled:true});
+  expect(resolveAgentPrimaryAction({hasContext:true,status:c.state.currentStatus,submissionPending:false,interruptPending:false,isUploading:false,hasDraft:true})).toEqual({kind:'send',enabled:true});
   expect(handleAgentInputState(snapshot(1,[]),c)).toBe(false);
   handleAgentInputState(snapshot(2,[entry('A','forwarded'),entry('B','queued')],{...block,state:'recovering'}),c);
   expect(c.conversation.messages[0].pendingInput.state).toBe('forwarded');
-  expect(resolveAgentPrimaryAction({hasContext:true,status:c.state.currentStatus,submissionPending:false,isUploading:false,hasDraft:true}).kind).toBe('interrupt');
+  expect(resolveAgentPrimaryAction({hasContext:true,status:c.state.currentStatus,submissionPending:false,interruptPending:false,isUploading:false,hasDraft:true}).kind).toBe('interrupt');
   handleAgentInputState(snapshot(3,[],null),c);expect(c.conversation.messages[0].pendingInput).toBeUndefined();
  });
  it('preserves consumed A and run-level error with no active input; a new runtime clears stale badges without replay',()=>{

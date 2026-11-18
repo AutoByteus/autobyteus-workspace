@@ -21,6 +21,8 @@ export class AgentContext {
   /** `@` mentions chosen for the next live-run message; a mention counts only while its `@Name` is in the text. */
   public requestedMentions: RequestedCollaboratorMention[];
   public submissionPending: boolean;
+  /** A Stop was pressed and the run's status has not left Running yet ("Stopping…"); owned by `runInterrupt`. */
+  public interruptPending: boolean;
   /** The last send was rejected because a mentioned collaborator could not be added; the draft was kept. */
   public collaboratorAddFailure: CollaboratorAddFailure | null;
 
@@ -34,6 +36,7 @@ export class AgentContext {
     this.requestedSkillNames = [];
     this.requestedMentions = [];
     this.submissionPending = false;
+    this.interruptPending = false;
     this.collaboratorAddFailure = null;
   }
   

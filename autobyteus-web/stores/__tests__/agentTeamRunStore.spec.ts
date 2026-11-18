@@ -300,11 +300,10 @@ describe('agentTeamRunStore current rooted execution contract', () => {
     expect(service).toBeTruthy()
     expect(TeamStreamingService).toHaveBeenCalledWith(
       'ws://node-a.example/ws/agent-team',
-      expect.objectContaining({
-        onInterruptCommandResult: expect.any(Function),
-        onInterruptCommandTransportFailure: expect.any(Function),
-      }),
+      expect.objectContaining({ onStreamRecoveryRequired: expect.any(Function) }),
     )
+    expect((TeamStreamingService as unknown as { mock: { calls: unknown[][] } }).mock.calls.at(-1)?.[1])
+      .not.toHaveProperty('onInterruptCommandResult')
     expect(mockConnect).toHaveBeenCalledWith('team-connect', team)
   })
 
@@ -958,20 +957,21 @@ describe('agentTeamRunStore current rooted execution contract', () => {
     expect(mockDenyTool).toHaveBeenCalledWith('inv-exact', explicit, 'no')
   })
 
-  it('interrupts only an AgentRun in the exact current Team execution', () => {
+  it('interrupts only an AgentRun in the exact current Team execution, passing its outcome on', async () => {
     const team = twoMemberTeam({ teamRunId: 'team-interrupt' })
     setActiveTeam(team)
     const store = useAgentTeamRunStore()
     store.connectToTeamStream('team-interrupt')
-    expect(store.interruptFocusedMemberGeneration({
+    mockInterruptGeneration.mockResolvedValueOnce({ kind: 'accepted' })
+    await expect(store.interruptFocusedMemberGeneration({
       teamRunId: 'team-interrupt',
       agentRunId: 'team-interrupt-worker-run',
-    })).toBe(true)
+    })).resolves.toEqual({ kind: 'accepted' })
     expect(mockInterruptGeneration).toHaveBeenCalledWith(expect.any(String), { agentRunId: 'team-interrupt-worker-run' })
-    expect(store.interruptFocusedMemberGeneration({
+    await expect(store.interruptFocusedMemberGeneration({
       teamRunId: 'team-interrupt',
       agentRunId: 'foreign-run',
-    })).toBe(false)
+    })).resolves.toEqual({ kind: 'not_sent' })
     expect(mockInterruptGeneration).toHaveBeenCalledTimes(1)
   })
 })

@@ -32,6 +32,7 @@ vi.mock('../agentOrgContextHydration', () => ({
 }))
 
 import { AgentOrgStreamingService } from '../agentOrgStreamingService'
+import { AgentOrgConnectionLostError } from '../agentOrgConnectionLostError'
 import { useCollaborationParticipantMessagesStore } from '~/services/collaborationMessages/collaborationParticipantMessages'
 
 class TestWebSocket {
@@ -494,7 +495,7 @@ describe('AgentOrgStreamingService', () => {
 
   it.each([
     ['command type', 'SEND_MESSAGE', 'agent-run'],
-    ['target AgentRun', 'INTERRUPT_GENERATION', 'other-agent-run'],
+    ['target AgentRun', 'APPROVE_TOOL', 'other-agent-run'],
   ] as const)('fails closed and rejects the pending command for a miscorrelated ACK %s', async (
     _mismatch,
     commandType,
@@ -515,7 +516,7 @@ describe('AgentOrgStreamingService', () => {
     socket.emit(snapshot)
     await vi.waitFor(() => expect(mocks.hydrate).toHaveBeenCalled())
 
-    const rejected = service.interrupt('agent-run')
+    const rejected = service.decideTool('agent-run', 'invocation-1', true, null)
     await vi.waitFor(() => expect(socket.sent).toHaveLength(1))
     const command = JSON.parse(socket.sent[0]!)
     socket.emit({
@@ -650,16 +651,74 @@ describe('AgentOrgStreamingService reconnect scheduling', () => {
     expect(publish).toHaveBeenCalledTimes(1)
     hidePage()
     await vi.advanceTimersByTimeAsync(30_000)
-    const pendingInterrupt = service.interrupt('agent-run')
-    const rejected = expect(pendingInterrupt).rejects.toThrow('AgentOrg stream is re-synchronizing.')
+    const pendingDecision = service.decideTool('agent-run', 'invocation-1', true, null)
+    const rejected = expect(pendingDecision).rejects.toThrow('AgentOrg stream is re-synchronizing.')
+    // autobyteus-533 D-W7: a Stop waiting there is held until the recovery's snapshot is applied.
+    const stopSettled = vi.fn()
+    service.interrupt('agent-run').catch(stopSettled)
     showPage()
     await rejected
     expect(initial.closeCalls).toEqual([{ code: 1000, reason: 'AgentOrg stream re-synchronizing' }])
     await flush()
     expect(mocks.query).toHaveBeenCalledTimes(1) // the recovery's checkpoint
     expect(TestWebSocket.instances).toHaveLength(2)
+    expect(stopSettled).not.toHaveBeenCalled()
     await synchronize(TestWebSocket.instances[1]!)
     expect(publish).toHaveBeenCalledTimes(2)
     expect(service.isReady()).toBe(true)
+    expect(stopSettled).toHaveBeenCalledWith(expect.any(AgentOrgConnectionLostError))
+  })
+
+  describe('a Stop waiting when the connection is lost (autobyteus-533 D-W7)', () => {
+    const waitingStop = async () => {
+      service.connect()
+      await synchronize(TestWebSocket.instances[0]!)
+      const settled = vi.fn()
+      service.interrupt('agent-run').then(() => settled('accepted'), (error) => settled(error))
+      await flush()
+      return settled
+    }
+
+    it('an unintentional close holds it through the recovery, then settles it AgentOrgConnectionLostError once the snapshot is ready', async () => {
+      const settled = await waitingStop()
+      TestWebSocket.instances[0]!.emitClose()
+      await vi.advanceTimersByTimeAsync(1_000)
+      expect(settled).not.toHaveBeenCalled()
+      expect(TestWebSocket.instances).toHaveLength(2)
+      await synchronize(TestWebSocket.instances[1]!)
+      expect(service.isReady()).toBe(true)
+      expect(settled).toHaveBeenCalledOnce()
+      expect(settled).toHaveBeenCalledWith(expect.any(AgentOrgConnectionLostError))
+    })
+
+    it('a fail-closed protocol failure holds it the same way (recovery follows)', async () => {
+      const settled = await waitingStop()
+      TestWebSocket.instances[0]!.emit({ type: 'ROOT_EXECUTION_EVENT', payload: {
+        root_subject_kind: 'not-org', root_run_id: 'org-run', change_sequence: 5, event: {},
+      } })
+      await flush()
+      expect(settled).not.toHaveBeenCalled()
+    })
+
+    it('a release (disconnect) settles it at once', async () => {
+      const settled = await waitingStop()
+      service.disconnect()
+      await flush()
+      expect(settled).toHaveBeenCalledWith(expect.any(AgentOrgConnectionLostError))
+    })
+
+    it('a credential-refusal close settles it at once (no reconnect follows)', async () => {
+      const settled = await waitingStop()
+      TestWebSocket.instances[0]!.emitClose(4401, 'NODE_CREDENTIAL_REQUIRED')
+      await flush()
+      expect(settled).toHaveBeenCalledWith(expect.any(AgentOrgConnectionLostError))
+    })
+
+    it('a command timeout with the connection open is a real failure, not a lost connection', async () => {
+      const settled = await waitingStop()
+      await vi.advanceTimersByTimeAsync(15_000)
+      expect(settled).toHaveBeenCalledWith(expect.objectContaining({ message: expect.stringContaining('timed out') }))
+      expect(settled.mock.calls[0]![0]).not.toBeInstanceOf(AgentOrgConnectionLostError)
+    })
   })
 })

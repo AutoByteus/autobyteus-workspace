@@ -23,6 +23,8 @@ import type { ActiveAgentWorkspaceTarget } from '~/types/workspace/activeAgentWo
 import { teamCollaborationMessagesView } from '~/services/teamExecution/teamCollaborationMessagesView';
 import { teamWorkspaceContextViewOf } from '~/services/teamExecution/teamWorkspaceContextView';
 import { useDelegatedRunsStore } from './delegatedRunsStore';
+import { runInterrupt } from '~/services/runInterrupt/runInterrupt';
+import { targetDisplayName } from '~/utils/workspace/targetDisplayName';
 
 /**
  * @store useActiveContextStore
@@ -67,7 +69,7 @@ export const useActiveContextStore = defineStore('activeContext', () => {
         ...(collaborationMessages ? { collaborationMessages } : {}),
         interaction: Object.freeze({
           send: async () => { await agentRunStore.sendUserInputAndSubscribe(); },
-          interrupt: async () => { await agentRunStore.interruptGeneration(context.state.runId); },
+          interrupt: () => agentRunStore.interruptGeneration(context.state.runId),
           decideTool: async (invocationId: string, approved: boolean, reason: string | null) => {
             await agentRunStore.postToolExecutionApproval(context.state.runId, invocationId, approved, reason);
           },
@@ -105,9 +107,9 @@ export const useActiveContextStore = defineStore('activeContext', () => {
             send: async (content: string, paths: readonly ContextFilePath[]) => {
               await agentTeamRunStore.sendMessageToFocusedMember(content, [...paths]);
             },
-            interrupt: async () => { await agentTeamRunStore.interruptFocusedMemberGeneration({
+            interrupt: () => agentTeamRunStore.interruptFocusedMemberGeneration({
               teamRunId: team.view.getRootTeamRunId(), agentRunId: context.state.runId,
-            }); },
+            }),
             decideTool: async (
               invocationId: string,
               approved: boolean,
@@ -229,6 +231,7 @@ export const useActiveContextStore = defineStore('activeContext', () => {
       hasContext: true,
       status: context.state.currentStatus,
       submissionPending: context.submissionPending,
+      interruptPending: context.interruptPending,
       isUploading: contextFileUploadStore.isUploading,
       hasDraft: hasSendableDraft(context),
     });
@@ -248,7 +251,8 @@ export const useActiveContextStore = defineStore('activeContext', () => {
     }
   };
 
-  const interruptGeneration = () => {
+  /** The composer's Stop: one Stop for the active target's run, through `runInterrupt` (a press while Stopping sends nothing). */
+  const interruptGeneration = async (): Promise<void> => {
     const context = activeAgentContext.value;
     _assertContext(context);
 
@@ -256,6 +260,7 @@ export const useActiveContextStore = defineStore('activeContext', () => {
       hasContext: true,
       status: context.state.currentStatus,
       submissionPending: context.submissionPending,
+      interruptPending: context.interruptPending,
       isUploading: contextFileUploadStore.isUploading,
       hasDraft: hasSendableDraft(context),
     });
@@ -268,7 +273,8 @@ export const useActiveContextStore = defineStore('activeContext', () => {
     if (!target || target.access !== 'live' || target.context !== context) {
       throw new Error('Cannot interrupt generation: Active workspace target is stale.');
     }
-    return target.interaction.interrupt();
+    const { interaction } = target;
+    await runInterrupt({ context, interrupt: () => interaction.interrupt(), agentName: targetDisplayName(target) });
   };
 
   return {

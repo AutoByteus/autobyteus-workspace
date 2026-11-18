@@ -200,7 +200,8 @@ run to serve a view.
   sent, live root followed), and only then is the message posted, so the
   `MEMBER_INPUT_MESSAGE` echo that settles the web's send arrives as an ordinary live
   event (SR-048); the Org stream acknowledges `SEND_MESSAGE` (`AGENT_COMMAND_ACK`).
-  An interrupt or a tool approval for an agent of a stopped run is refused
+  An interrupt for an agent of a stopped run finds nothing to stop and is
+  answered `accepted` (it restores nothing); a tool approval is refused
   (`TEAM_RUN_STOPPED` on the team stream, `AGENT_ORG_STOPPED` on the Org stream).
 - **Delegated runs' output.** A view carries no delegated run's output: each
   delegated run's statuses, output and commands are on its own stream (rule 2),
@@ -340,6 +341,20 @@ is `RETRY_PEERS` on `/ws/run-status` (it replaced `REFRESH_REMOTE_TASK_EXECUTION
 `message`. A client accepts the response only when both match its pending
 command. Acceptance confirms request admission; later runtime events own
 terminal status.
+
+**A user's Stop with nothing to stop is accepted** (autobyteus-533), on every
+stream that takes `INTERRUPT_GENERATION` (`/ws/agent`, `/ws/agent-team`,
+`/ws/agent-org`, `/ws/agent-collaboration`, `/ws/peer-run`): the run has no
+active turn, its turn ended in the runtime before the interrupt reached it
+(every backend answers `NO_ACTIVE_TURN` then), or the run, Team or Org is not
+running (`RUN_NOT_ACTIVE`, or not active on this node). Its goal, nothing
+generating, holds, so the answer is `accepted` and the run is not started or
+restored. One rule applies it at these command boundaries
+(`userInterruptOutcome`, `services/agent-streaming/user-interrupt-outcome.ts`);
+the domain `AgentRun.interrupt()` keeps answering `NO_ACTIVE_TURN` to its
+internal callers (termination, the root shutdown fence). Every other answer that
+is not `accepted` is a real failure. A malformed command or a target that is not
+a member of the addressed root stays rejected.
 
 ## Connection And Restore
 

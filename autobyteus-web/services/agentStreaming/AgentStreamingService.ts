@@ -13,7 +13,7 @@ import {
   type ServerMessage,
   type ClientMessage,
   type InterruptGenerationCommandAckPayload,
-  type InterruptCommandTransportFailure,
+  type InterruptOutcome,
   type PendingInterruptCommand,
   type SendMessageCommandAckPayload,
 } from './protocol';
@@ -25,9 +25,9 @@ import { parseAgentStreamMessage } from './protocol/agentStreamEnvelope';
 import { AgentStreamSequencing } from './agentStreamSequencing';
 import { applyAgentStreamSnapshot } from './agentStreamSnapshotApplication';
 import {
-  drainPendingInterruptTransportFailures,
-  interruptCommandTargetsEqual,
-  tryAdmitInterruptCommand,
+  admitInterruptCommand,
+  InterruptsAwaitingRebind,
+  settlePendingInterruptAck,
 } from './interruptCommandAdmission';
 
 const shouldLogStreaming = (): boolean => {
@@ -50,8 +50,6 @@ const summarizeDelta = (delta: string, maxLen = 120): string => {
 export interface AgentStreamingServiceOptions {
   /** Custom WebSocket client for testing */
   wsClient?: IWebSocketClient;
-  onInterruptCommandResult?: (ack: InterruptGenerationCommandAckPayload) => void;
-  onInterruptCommandTransportFailure?: (failure: InterruptCommandTransportFailure) => void;
   /** Every SEND_MESSAGE acknowledgement, before it is projected onto the conversation. */
   onSendMessageCommandAck?: (ack: SendMessageCommandAckPayload) => void;
 }
@@ -71,10 +69,10 @@ export class AgentStreamingService {
   private wsEndpoint: string;
   private runId: string | null = null;
   private readonly pendingInterruptCommands = new Map<string, PendingInterruptCommand>();
+  /** Stops lost with a connection this service reconnects: settled once the new connection's status is applied. */
+  private readonly interruptsAwaitingRebind = new InterruptsAwaitingRebind();
   /** Held sends (with `@` mentions) waiting for their admission ack, by message ID. */
   private readonly pendingAdmissions = new Map<string, { resolve(): void; reject(error: Error): void }>();
-  private readonly onInterruptCommandResult: (ack: InterruptGenerationCommandAckPayload) => void;
-  private readonly onInterruptCommandTransportFailure: (failure: InterruptCommandTransportFailure) => void;
   private readonly onSendMessageCommandAck: (ack: SendMessageCommandAckPayload) => void;
   private readonly connectionListeners = new Set<(event: AgentStreamConnectionEvent) => void>();
   /** Where the view is in the run's own stream: set by each snapshot, continued by its numbered frames (SR-087). */
@@ -89,9 +87,6 @@ export class AgentStreamingService {
   constructor(wsEndpoint: string, options: AgentStreamingServiceOptions = {}) {
     this.wsClient = options.wsClient || new WebSocketClient();
     this.wsEndpoint = wsEndpoint;
-    this.onInterruptCommandResult = options.onInterruptCommandResult ?? (() => undefined);
-    this.onInterruptCommandTransportFailure = options.onInterruptCommandTransportFailure
-      ?? (() => undefined);
     this.onSendMessageCommandAck = options.onSendMessageCommandAck ?? (() => undefined);
   }
 
@@ -114,12 +109,12 @@ export class AgentStreamingService {
   }
 
   /**
-   * A quiet close for a re-synchronization: the loss bookkeeping (pending admissions and interrupts
-   * rejected) without the loss notification; the context stays attached.
+   * A quiet close for a re-synchronization: the loss bookkeeping (pending admissions rejected, waiting
+   * Stops held until the rebind) without the loss notification; the context stays attached.
    */
   dropConnection(reason: string): void {
     this.wsClient.disconnect();
-    this.rejectInFlight(reason);
+    this.rejectInFlight(reason, true);
   }
 
   /**
@@ -144,7 +139,9 @@ export class AgentStreamingService {
    * Disconnect from the WebSocket stream.
    */
   disconnect(): void {
-    this.drainPendingInterruptCommands('Interrupt was cancelled because the stream disconnected.');
+    // Closed for good: no rebind follows, so every waiting or held Stop settles now (autobyteus-533 D-W7).
+    this.interruptsAwaitingRebind.holdPending(this.pendingInterruptCommands);
+    this.interruptsAwaitingRebind.settle();
     this.wsClient.off('onMessage', this.handleMessage);
     this.wsClient.off('onConnect', this.handleConnect);
     this.wsClient.off('onDisconnect', this.handleDisconnect);
@@ -231,25 +228,19 @@ export class AgentStreamingService {
     this.wsClient.send(serializeClientMessage(message));
   }
 
-  /**
-   * Interrupt the current generation.
-   */
-  interruptGeneration(commandId: string): boolean {
+  /** Stops the current generation; resolves with the Stop's outcome (it never rejects). */
+  interruptGeneration(commandId: string): Promise<InterruptOutcome> {
     const normalizedCommandId = commandId.trim();
-    const entry: PendingInterruptCommand = {
-      commandId: normalizedCommandId,
-      target: { target_kind: 'standalone_run', run_id: this.runId ?? '' },
-    };
     const message: ClientMessage = {
       type: 'INTERRUPT_GENERATION',
       payload: { command_id: normalizedCommandId },
     };
-    return tryAdmitInterruptCommand({
+    return admitInterruptCommand({
       pending: this.pendingInterruptCommands,
-      entry,
+      commandId: normalizedCommandId,
+      target: { target_kind: 'standalone_run', run_id: this.runId ?? '' },
       getConnectionState: () => this.wsClient.state,
       send: () => this.wsClient.send(serializeClientMessage(message)),
-      onTransportFailure: this.onInterruptCommandTransportFailure,
     });
   }
 
@@ -298,6 +289,8 @@ export class AgentStreamingService {
     if (message.type === 'CONNECTED') this.notifyConnection({ kind: 'bound' });
     this.logMessage(message);
     this.dispatchMessage(message, this.context);
+    // The new connection's status is on the context: Stops lost with the old one end, and the status decides.
+    if (message.type === 'AGENT_STATUS') this.interruptsAwaitingRebind.settle();
   }
 
   /** A gap in the run's frames: close, and let the owner open the stream again for a fresh snapshot. */
@@ -316,14 +309,14 @@ export class AgentStreamingService {
   private handleDisconnect = (reason: string | undefined, retryable: boolean): void => {
     console.log('Agent WebSocket disconnected:', reason);
     this.sequencing.clear();
-    this.rejectInFlight(reason);
+    this.rejectInFlight(reason, retryable);
     this.notifyConnection({ kind: 'lost', retryable });
   };
 
-  private rejectInFlight(reason: string | undefined): void {
-    this.drainPendingInterruptCommands(
-      reason || 'Interrupt result was lost because the stream disconnected.',
-    );
+  /** A loss: admissions fail; waiting Stops are held until the rebind when it recovers, else settled now. */
+  private rejectInFlight(reason: string | undefined, recovers: boolean): void {
+    this.interruptsAwaitingRebind.holdPending(this.pendingInterruptCommands);
+    if (!recovers) this.interruptsAwaitingRebind.settle();
     for (const pending of this.pendingAdmissions.values()) {
       pending.reject(new Error(reason || 'Message admission was interrupted because the stream disconnected.'));
     }
@@ -339,25 +332,13 @@ export class AgentStreamingService {
   };
 
   private handleInterruptCommandAck(ack: InterruptGenerationCommandAckPayload): void {
-    const pending = this.pendingInterruptCommands.get(ack.command_id);
-    if (!pending || !interruptCommandTargetsEqual(pending.target, ack.target)) {
-      console.warn('Ignoring unmatched interrupt command acknowledgement.', ack);
-      return;
-    }
-    this.pendingInterruptCommands.delete(ack.command_id);
-    this.onInterruptCommandResult(ack);
-  }
-
-  private drainPendingInterruptCommands(message: string): void {
-    drainPendingInterruptTransportFailures({
-      pending: this.pendingInterruptCommands,
-      reason: {
-        code: 'INTERRUPT_TRANSPORT_DISCONNECTED',
-        connectionState: this.wsClient.state,
-        message,
-      },
-      onTransportFailure: this.onInterruptCommandTransportFailure,
+    const settled = settlePendingInterruptAck(this.pendingInterruptCommands, {
+      commandId: ack.command_id,
+      target: ack.target,
+      accepted: ack.state === 'accepted',
+      detail: ack.state === 'accepted' ? '' : `[${ack.code}] ${ack.message}`,
     });
+    if (!settled) console.warn('Ignoring unmatched interrupt command acknowledgement.', ack);
   }
 
   private logMessage(message: ServerMessage): void {

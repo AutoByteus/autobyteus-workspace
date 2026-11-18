@@ -75,7 +75,8 @@ describe('delegatedRunsStore', () => {
     store.ensureOpen(agent); await flush()
     const { interaction } = store.bindingOf(agent)!
     await interaction.send('ignored: the composer wrote the draft on the run\'s own context', [])
-    await interaction.interrupt()
+    io.agentRuns.interruptGeneration.mockResolvedValueOnce({ kind: 'refused', detail: 'x' })
+    await expect(interaction.interrupt()).resolves.toEqual({ kind: 'refused', detail: 'x' })
     await interaction.decideTool('invocation', true, null)
     await store.stop(agent)
     expect(io.agentRuns.sendUserInputAndSubscribe).toHaveBeenCalledWith('child-run')
@@ -93,7 +94,8 @@ describe('delegatedRunsStore', () => {
     const binding = store.bindingOf(member)!
     expect(binding).toMatchObject({ workspaceRootPath: '/team-ws', browse: { kind: 'teamMember', teamRunId: 'child-team', memberAddress: '/reviewer', agentRunId: 'reviewer-run' } })
     await binding.interaction.send('hello', [])
-    await binding.interaction.interrupt()
+    io.teamRuns.interruptFocusedMemberGeneration.mockResolvedValueOnce({ kind: 'accepted' })
+    await expect(binding.interaction.interrupt()).resolves.toEqual({ kind: 'accepted' })
     await binding.interaction.decideTool('invocation', false, 'no')
     await store.stop(member)
     const target = { teamRunId: 'child-team', agentRunId: 'reviewer-run' }
@@ -147,5 +149,17 @@ describe('delegatedRunsStore', () => {
     expect(ids.messageId).toMatch(/^peer_msg_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/)
     expect(ids.dedupeKey).toBe(ids.messageId)
     expect(service.interruptGeneration).toHaveBeenCalledWith(expect.stringMatching(/^peer_interrupt_/))
+  })
+
+  it('a peer run\'s Stop returns its stream\'s outcome; with no open stream it is not sent (autobyteus-533 D-W1)', async () => {
+    const peer = { kind: 'peer' as const, nodeId: 'node-b', runKind: 'agent' as const, runId: 'gamma-run', agentRunId: 'gamma-run', address: '/gamma' }
+    const store = useDelegatedRunsStore()
+    store.ensureOpen(peer)
+    await store.whenOpen(peer)
+    const interaction = store.bindingOf(peer)!.interaction
+    Object.assign(peerStreams.opened.get('gamma-run')!, { service: { interruptGeneration: vi.fn(async () => ({ kind: 'connection_lost' })) } })
+    await expect(interaction.interrupt()).resolves.toEqual({ kind: 'connection_lost' })
+    peerStreams.opened.delete('gamma-run')
+    await expect(interaction.interrupt()).resolves.toEqual({ kind: 'not_sent' })
   })
 })

@@ -124,8 +124,9 @@ try {
     if (gap >= 0) {
       await sleep(Math.max(0, gap - (Date.now() - t0)));
       // A user's second tap lands wherever the button was: click the same point whatever it shows now.
-      const box = await page.locator('button[aria-label="Send message"], button[aria-label="Stop generation"]').first().boundingBox();
-      const label = await page.locator('button[aria-label="Send message"], button[aria-label="Stop generation"]').first().getAttribute('aria-label');
+      const primary = page.locator('button[aria-label="Send message"], button[aria-label="Stop generation"], button[aria-label="Stopping…"]').first();
+      const box = await primary.boundingBox();
+      const label = await primary.getAttribute('aria-label');
       if (box) { await page.mouse.click(box.x + box.width / 2, box.y + box.height / 2); second = `${label} at ${Date.now() - t0}ms`; }
     }
     await sleep(2500);

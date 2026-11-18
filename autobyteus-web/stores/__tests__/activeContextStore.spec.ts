@@ -82,7 +82,7 @@ describe('activeContextStore interrupt routing', () => {
 
     const interruptFocusedMember = vi
       .spyOn(teamRunStore, 'interruptFocusedMemberGeneration')
-      .mockReturnValue(true);
+      .mockResolvedValue({ kind: 'accepted' });
 
     await activeContextStore.interruptGeneration();
 
@@ -103,7 +103,7 @@ describe('activeContextStore interrupt routing', () => {
     agentContextsStore.runs.set('agent-run-1', agentContext);
     selectionStore.selectRun('agent-run-1', 'agent');
 
-    const interruptAgent = vi.spyOn(agentRunStore, 'interruptGeneration').mockReturnValue(true);
+    const interruptAgent = vi.spyOn(agentRunStore, 'interruptGeneration').mockResolvedValue({ kind: 'accepted' });
     const interruptTeam = vi.spyOn(teamRunStore, 'interruptFocusedMemberGeneration');
 
     await activeContextStore.interruptGeneration();
@@ -128,7 +128,7 @@ describe('activeContextStore interrupt routing', () => {
     activeTeam.view.focusAgent(solutionDesigner.state.runId);
     const interruptFocusedMember = vi
       .spyOn(teamRunStore, 'interruptFocusedMemberGeneration')
-      .mockReturnValue(true);
+      .mockResolvedValue({ kind: 'accepted' });
 
     expect(activeContextStore.activeAgentContext?.state.runId).toBe('team-1::solution_designer');
     await activeContextStore.interruptGeneration();

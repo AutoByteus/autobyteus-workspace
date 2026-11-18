@@ -13,7 +13,7 @@ export type {
   AgentCommandAckPayload,
   InterruptCommandTarget,
   InterruptGenerationCommandAckPayload,
-  InterruptCommandTransportFailure,
+  InterruptOutcome,
   PendingInterruptCommand,
   SendMessageCommandAckPayload,
 } from './agentCommandTypes';

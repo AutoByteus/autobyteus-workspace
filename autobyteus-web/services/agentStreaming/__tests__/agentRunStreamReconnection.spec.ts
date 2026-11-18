@@ -194,27 +194,24 @@ describe('AgentRunStreamReconnection', () => {
     expect(ws.connects).toBe(3);
   });
 
-  it('P-005 and N-6: an owner-opened stream re-syncs after ≥ 30 s hidden; pending admissions and interrupts are rejected', async () => {
-    const interruptFailures: unknown[] = [];
-    stream.reconnection.dispose();
-    stream.service.disconnect();
-    stream = createAgentRunStream(runId, 'ws://node.test/ws/agent', {
-      wsClient: ws, onInterruptCommandTransportFailure: (failure) => interruptFailures.push(failure),
-    });
+  it('P-005 and N-6: an owner-opened stream re-syncs after ≥ 30 s hidden; pending admissions are rejected and a waiting Stop is held until the rebind\'s status (autobyteus-533 D-W7)', async () => {
     openAsOwner();
     const admission = stream.service.sendMessageAwaitingAdmission('hi @helper', [], [], { messageId: 'm-1', dedupeKey: 'm-1' });
     const admissionRejected = expect(admission).rejects.toThrow('Agent stream is re-synchronizing.');
-    expect(stream.service.interruptGeneration('interrupt-1')).toBe(true);
+    const outcomes: string[] = [];
+    void stream.service.interruptGeneration('interrupt-1').then((outcome) => outcomes.push(outcome.kind));
 
     hidePage();
     await vi.advanceTimersByTimeAsync(30_000);
     showPage();
     await admissionRejected;
-    expect(interruptFailures).toEqual([expect.objectContaining({
-      reason: expect.objectContaining({ message: 'Agent stream is re-synchronizing.' }),
-    })]);
     await flush();
     expect(ws.connects).toBe(2);
+    expect(outcomes).toEqual([]);
+    ws.open();
+    ws.message('AGENT_STATUS', { recoverableBlock: null, status: 'idle' });
+    await flush();
+    expect(outcomes).toEqual(['connection_lost']);
   });
 
   it('a short hide (< 30 s) of a connected stream does nothing', async () => {

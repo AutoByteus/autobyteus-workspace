@@ -342,3 +342,28 @@ it('RET-01/05: a stopped Org keeps its service; its stored-mode snapshot makes i
   expect(read).toMatchObject({ variables: { orgRunId: 'org-run' }, fetchPolicy: 'network-only', context: { queryDeduplication: false } })
   connect.mockRestore()
 })
+
+it('autobyteus-533: an Org agent\'s Stop returns its outcome: accepted on its ack; held across a loss and connection_lost after the rebind\'s snapshot', async () => {
+  const socket = await open()
+  const target = store.activeTargetFor('org-run')!
+  if (target.access !== 'live') throw new Error('expected live target')
+  const agentRunId = target.context.state.runId
+  const ackFor = (stream: Socket) => {
+    const command = JSON.parse(stream.sent.at(-1)!).payload
+    stream.emit({ type: 'AGENT_COMMAND_ACK', payload: { root_subject_kind: 'agent_org', root_run_id: 'org-run', command_id: command.command_id,
+      command_type: 'INTERRUPT_GENERATION', target_agent_run_id: agentRunId, state: 'accepted', code: null, message: null } })
+  }
+  const accepted = target.interaction.interrupt()
+  ackFor(socket)
+  await expect(accepted).resolves.toEqual({ kind: 'accepted' })
+
+  const outcomes: string[] = []
+  void target.interaction.interrupt().then((outcome) => outcomes.push(outcome.kind))
+  socket.close(); await firstRetry()
+  expect(outcomes).toEqual([])
+  const next = Socket.instances.at(-1)!
+  expect(next).not.toBe(socket)
+  next.emit({ type: 'CONNECTED', payload: { root_subject_kind: 'agent_org', root_run_id: 'org-run', session_id: 's2' } })
+  next.emit({ type: 'ROOT_EXECUTION_VIEW_SNAPSHOT', payload: envelope(true) }); await tick()
+  expect(outcomes).toEqual(['connection_lost'])
+})

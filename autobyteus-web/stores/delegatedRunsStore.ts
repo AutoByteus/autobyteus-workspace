@@ -16,6 +16,7 @@ import { useAgentTeamContextsStore } from './agentTeamContextsStore'
 import { useAgentTeamRunStore } from './agentTeamRunStore'
 import { useWorkspaceStore } from './workspace'
 import { createPeerRunStreams } from '~/services/peerRuns/peerRunStreams'
+import { INTERRUPT_NOT_SENT } from '~/services/agentStreaming/interruptCommandAdmission'
 import { useWindowNodeContextStore } from './windowNodeContextStore'
 import { createRandomId } from '~/utils/randomId'
 
@@ -123,7 +124,7 @@ export const useDelegatedRunsStore = defineStore('delegatedRuns', () => {
       return Object.freeze({
         // The composer writes the draft on the run's own context; its own send reads it there.
         send: async () => { await runs.sendUserInputAndSubscribe(subject.agentRunId) },
-        interrupt: async () => { runs.interruptGeneration(subject.agentRunId) },
+        interrupt: () => runs.interruptGeneration(subject.agentRunId),
         decideTool: async (invocationId: string, approved: boolean, reason: string | null) => {
           await runs.postToolExecutionApproval(subject.agentRunId, invocationId, approved, reason)
         },
@@ -135,7 +136,7 @@ export const useDelegatedRunsStore = defineStore('delegatedRuns', () => {
       send: async (content: string, paths: readonly ContextFilePath[]) => {
         await teams.sendMessageToFocusedMember(content, [...paths], { member })
       },
-      interrupt: async () => { teams.interruptFocusedMemberGeneration(member) },
+      interrupt: () => teams.interruptFocusedMemberGeneration(member),
       decideTool: async (invocationId: string, approved: boolean, reason: string | null, target?: ToolApprovalTarget | null) => {
         await teams.postToolExecutionApproval(invocationId, approved, reason, target ?? null, subject.teamRunId)
       },
@@ -151,7 +152,11 @@ export const useDelegatedRunsStore = defineStore('delegatedRuns', () => {
       await stream.service.sendMessageAwaitingAdmission(content, [], [], { messageId, dedupeKey: messageId })
       stream.context.requirement = ''
     },
-    interrupt: async () => { peers.streamOf(subject)?.service.interruptGeneration(`peer_interrupt_${createRandomId()}`) },
+    interrupt: async () => {
+      const stream = peers.streamOf(subject)
+      if (!stream) return INTERRUPT_NOT_SENT
+      return stream.service.interruptGeneration(`peer_interrupt_${createRandomId()}`)
+    },
     decideTool: async () => undefined,
   })
 
