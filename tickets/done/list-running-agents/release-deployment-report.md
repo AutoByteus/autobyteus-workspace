@@ -42,7 +42,7 @@
 
 - Post-integration verification result: `Passed`
 - Delivery edits started only after the integrated state was current: `Yes` for the docs and records written after refresh 1 (`3c2a6f11f5`); refresh 2 changed no file they describe (docs-sync report § Scope).
-- Handoff state current with latest tracked remote base: `Yes` (fetch before the push, in Repository Finalization).
+- Handoff state current with latest tracked remote base: `Yes` (`be11a62449` at the fetch before each push).
 
 ## Verification
 
@@ -65,7 +65,7 @@
 
 - More evidence requested: `None`. Weigh these gaps: API-04b not run (macOS delivered no file events while measured) and the environment failures API/E2E recorded (FU-005). Neither reaches code this ticket changed; delivery's integrated unit run met the same kind of failure once and it passes alone.
 - User check needed: `No`. Nothing is unreachable without the user, and none was asked for.
-- Re-verification after later re-integration: refresh 2 (above) with the same relevant check. A third refresh, if needed, is recorded under Repository Finalization.
+- Re-verification after later re-integration: refresh 2 (above) with the same relevant check. No third refresh was needed (Repository Finalization).
 
 ## Release Decision
 
@@ -91,9 +91,18 @@
 
 - Bootstrap context source: `RELEASE.md` Finalization Target (`origin/personal`) and the ticket's recorded bootstrap
 - Ticket branch: `codex/list-running-agents`
-- Secret Gate before the first push: `scripts/check_secrets.sh origin/personal..codex/list-running-agents`; the result is in the record below.
-- Artifact hygiene: `python3 scripts/check_repository_artifact_hygiene.py` passed before the archive move (98978 tracked files) and is rerun after it; `python3 scripts/check_licensing.py` passed.
-- Finalization is recorded in the "Finalization Record" section appended after the merge.
+- Secret Gate before the first push: `scripts/check_secrets.sh origin/personal..codex/list-running-agents` PASS (29 commits). Artifact hygiene PASS (99084 tracked files, after the archive move); licensing PASS; no Windows-hostile character in this ticket's file names.
+- Ticket branch commit result: `ac1454ed6f` (delivery records, archive), on top of base merge `736526af88`, checkpoint `3c2a6f11f5`, base merge `df6992e0c1`, checkpoint `437bcacae3`
+- Ticket branch push result: pushed `origin/codex/list-running-agents` (new branch)
+- Finalization target remote / branch: `origin` / `personal`
+- Target advanced after verification / acceptance: `No` after the second refresh (`be11a62449` at every fetch before the push)
+- Delivery-owned edits protected before re-integration: `Completed` (checkpoint commits `437bcacae3`, `3c2a6f11f5`)
+- Re-integration before final merge result: `Not needed` (the target did not advance after `736526af88`)
+- Target branch update result: `finalize/list-running-agents` created from `origin/personal` @ `be11a62449` in the ticket worktree (RELEASE.md Finalization Target)
+- Merge into target result: `--no-ff` merge `002b4d781a`; its tree equals the ticket branch's `ac1454ed6f` (`git diff --stat codex/list-running-agents HEAD` empty). Secret Gate on the merged state: PASS (30 commits)
+- Push target branch result: `be11a62449..002b4d781a  HEAD -> personal`
+- User's checkout of the target branch (`/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`): fast-forwarded with `git merge --ff-only origin/personal` after this record commit's push when it is on `personal` with no local commits; the result is in the terminal message.
+- Repository finalization status: `Completed`
 
 ## Release / Publication / Deployment
 
@@ -114,7 +123,7 @@
 
 ## Verification Checks
 
-- Secret Gate on the ticket commits and on the merged state: see the Finalization Record.
+- Secret Gate on the ticket commits (29 commits) and on the merged state (30 commits): PASS.
 - `python3 scripts/check_repository_artifact_hygiene.py`, `python3 scripts/check_licensing.py`: PASS.
 
 ## Rollback Criteria
@@ -124,9 +133,9 @@
 ## Final Status
 
 - Verification complete (from the evidence): `Yes`
-- Repository finalization complete: see the Finalization Record
+- Repository finalization complete: `Yes` (`002b4d781a` on `personal`; this record commit follows it)
 - Applicable release/deployment/rollout complete or not required: `Yes` (not required)
-- Applicable safe cleanup complete or not required: see the Finalization Record
+- Applicable safe cleanup complete or not required: run after this record's push (Post-Finalization Cleanup); the result is in the terminal message
 - Unresolved blocker: `None`
-- Successful terminal package eligible for return: after the record commit's push and cleanup
+- Successful terminal package eligible for return: `Yes`
 - Terminal package sent to the Solution Designer: by `send_message_to` after the record commit's push

@@ -19,7 +19,7 @@
 - Release/publication/deployment report: `release-deployment-report.md`
 - Integration and post-integration verification: `origin/personal` moved twice during delivery. Merged as `df6992e0c1` (49 commits) and `736526af88` (17 commits, autobyteus-491), no conflicts. After each: both typechecks PASS; refresh 1 whole server unit suite (one load-bound real-file-event timeout in a file identical to `personal`, which passes alone) and the two-server suite's 14 relevant cases on a rebuilt server; refresh 2 213 files / 1554 targeted tests and the same 14 cases again.
 - Verification and finalization state: every critical acceptance criterion directly proven by API/E2E on built servers; no user check needed; the founder's release decision is "on his word", none given, so no release.
-- Terminal return to the Solution Designer: `Not yet eligible` at the time of this commit; sent after the record commit's push (the Finalization Record in `release-deployment-report.md` and the terminal message hold the result).
+- Terminal return to the Solution Designer: `Sent` after the record commit's push; the terminal message holds the user's-checkout result and the cleanup result.
 - Why this baseline was recorded: first delivery of the ticket.
 - Next recipient/action: the Solution Designer verifies the package and sends the follow-ups FU-001 … FU-006.
 - Remaining blockers, rollback concerns, or untested scope: none blocking. BEH-007 on built servers, and the user's real paired nodes, were not tested (`handoff-summary.md` § Residual Risks For The User).
