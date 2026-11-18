@@ -6,7 +6,6 @@ import { LLMRequestAssembler } from '../../../src/agent/llm-request-assembler.js
 import { LLMUserMessage } from '../../../src/llm/user-message.js';
 import { MemoryManager } from '../../../src/memory/memory-manager.js';
 import { FileMemoryStore } from '../../../src/memory/store/file-store.js';
-import { MemoryType } from '../../../src/memory/models/memory-types.js';
 import { createLmstudioLLM, hasLmstudioConfig } from '../helpers/lmstudio-llm-helper.js';
 
 const runIntegration = hasLmstudioConfig() ? describe : describe.skip;
@@ -50,8 +49,11 @@ runIntegration('Memory assembler with LM Studio', () => {
 
       memoryManager.ingestAssistantResponse(response, turnId, 'LLMCompleteResponseReceivedEvent');
 
-      const rawItems = store.list(MemoryType.RAW_TRACE);
-      expect(rawItems).toHaveLength(2);
+      // One user and one assistant record; a model that reasons also records its reasoning.
+      const traceTypes = store.listTurnRawTracesOrdered().map((item) => item.traceType);
+      expect(traceTypes.filter((type) => type === 'user')).toHaveLength(1);
+      expect(traceTypes.filter((type) => type === 'assistant')).toHaveLength(1);
+      expect(traceTypes.every((type) => ['user', 'assistant', 'reasoning'].includes(type))).toBe(true);
     } finally {
       fs.rmSync(tempDir, { recursive: true, force: true });
     }

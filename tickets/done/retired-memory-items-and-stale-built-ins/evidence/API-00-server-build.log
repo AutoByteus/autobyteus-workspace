@@ -1,0 +1,7 @@
+# API-00 pnpm -C autobyteus-server-ts build | commit 53eb3521f1 (code 91ee1603a5) | Node v22.23.1 | 2026-11-18T08:15:28Z
+AgentFactory (Singleton) initialized.
+(node:10300) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+Built-in agents bootstrap smoke check passed.
+Sanitized built-module/bootstrap smoke passed without DATABASE_URL.
+exit 0

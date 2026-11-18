@@ -138,7 +138,8 @@ across all controls.
 
 There is no strategy or compactor-agent selector. The active-context token override has an explicit
 public numeric-setting exception; other credential-name checks stay in force.
-Old strategy settings and old Memory Compactor files are not imported/deleted.
+Old strategy settings are not imported. The retired built-in Memory Compactor's installed folder is deleted at
+startup (`20261118_remove_retired_built_in_agents`); its runs stay.
 The card retains full-width controls and stacked navigation on narrow screens.
 
 See [core memory design](../../autobyteus-ts/docs/agent_memory_design.md) for

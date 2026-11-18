@@ -1,0 +1,56 @@
+# IMP-01 AC-001 grep: retired memory item names in live code, tests, test-support and docs
+# command: git grep -nE '<pattern>' -- . ':!tickets' ':!**/tickets/**' ':!**/dist/**'  (tracked files only; node_modules untracked)
+# pattern: EpisodicItem|SemanticItem|MemoryType\.(EPISODIC|SEMANTIC)|\bRetriever\b|MemoryBundle|COMPACTED_MEMORY_CATEGORY_|EPISODIC_MEMORY_FILE_NAME|SEMANTIC_MEMORY_FILE_NAME|episodic\.jsonl|semantic\.jsonl
+# commit: ef0e56caf3
+# date: 2026-11-18T07:38:52Z
+
+GLOSSARY.md:176:  It is not the memory of a run, and not the retired `semantic.jsonl` rows of
+GLOSSARY.md:189:  copy of the journals, and not the retired `episodic.jsonl` rows of old run
+autobyteus-server-ts/docs/modules/agent_episodic_catalog.md:13:[GLOSSARY.md § Memory](../../../GLOSSARY.md#memory). It is unrelated to the retired `episodic.jsonl` rows of old run
+autobyteus-server-ts/docs/modules/agent_memory.md:47:  Unrelated to the `episodic.jsonl` rows below.
+autobyteus-server-ts/docs/modules/agent_memory.md:78:- `episodic.jsonl` and `semantic.jsonl` — historical compacted output rows; current direct compaction does not append them, and the server no longer reads them (the 
+autobyteus-server-ts/docs/modules/agent_memory.md:122:`episodic.jsonl`, `semantic.jsonl`, and `compacted_memory_manifest.json` removed.
+autobyteus-server-ts/src/app-data-migrations/frozen/autobyteus-ts/memory/store/memory-file-names.ts:2:export const EPISODIC_MEMORY_FILE_NAME = 'episodic.jsonl';
+autobyteus-server-ts/src/app-data-migrations/frozen/autobyteus-ts/memory/store/memory-file-names.ts:3:export const SEMANTIC_MEMORY_FILE_NAME = 'semantic.jsonl';
+autobyteus-server-ts/src/app-data-migrations/frozen/autobyteus-ts/memory/store/run-memory-file-store.ts:8:  EPISODIC_MEMORY_FILE_NAME,
+autobyteus-server-ts/src/app-data-migrations/frozen/autobyteus-ts/memory/store/run-memory-file-store.ts:10:  SEMANTIC_MEMORY_FILE_NAME,
+autobyteus-server-ts/src/app-data-migrations/frozen/autobyteus-ts/memory/store/run-memory-file-store.ts:32:    if (memoryType === MemoryType.EPISODIC) {
+autobyteus-server-ts/src/app-data-migrations/frozen/autobyteus-ts/memory/store/run-memory-file-store.ts:33:      return path.join(this.runDir, EPISODIC_MEMORY_FILE_NAME);
+autobyteus-server-ts/src/app-data-migrations/frozen/autobyteus-ts/memory/store/run-memory-file-store.ts:35:    if (memoryType === MemoryType.SEMANTIC) {
+autobyteus-server-ts/src/app-data-migrations/frozen/autobyteus-ts/memory/store/run-memory-file-store.ts:36:      return path.join(this.runDir, SEMANTIC_MEMORY_FILE_NAME);
+autobyteus-server-ts/src/app-data-migrations/migrations/migrate-native-working-context-snapshots-v5/migrate-native-working-context-snapshots-v5-migration.ts:12:  EPISODIC_MEMORY_FILE_NAME,
+autobyteus-server-ts/src/app-data-migrations/migrations/migrate-native-working-context-snapshots-v5/migrate-native-working-context-snapshots-v5-migration.ts:13:  SEMANTIC_MEMORY_FILE_NAME,
+autobyteus-server-ts/src/app-data-migrations/migrations/migrate-native-working-context-snapshots-v5/migrate-native-working-context-snapshots-v5-migration.ts:32:  EPISODIC_MEMORY_FILE_NAME,
+autobyteus-server-ts/src/app-data-migrations/migrations/migrate-native-working-context-snapshots-v5/migrate-native-working-context-snapshots-v5-migration.ts:33:  SEMANTIC_MEMORY_FILE_NAME,
+autobyteus-server-ts/tests/app-data-migrations/migrate-native-working-context-snapshots-v5/migrate-native-working-context-snapshots-v5-migration.test.ts:46:const obsoleteFiles = ["episodic.jsonl", "semantic.jsonl", "comp
+autobyteus-server-ts/tests/app-data-migrations/raw-trace-active-file-name/raw-trace-active-file-name-migration.test.ts:104:        "agents/run-imported/semantic.jsonl": {
+autobyteus-server-ts/tests/app-data-migrations/raw-trace-active-file-name/raw-trace-active-file-name-migration.test.ts:106:          relativePath: "run-imported/semantic.jsonl",
+autobyteus-server-ts/tests/app-data-migrations/raw-trace-active-file-name/raw-trace-active-file-name-migration.test.ts:128:      "agents/run-imported/semantic.jsonl",
+autobyteus-server-ts/tests/app-data-migrations/remove-retired-built-in-agents/remove-retired-built-in-agents-migration.test.ts:141:      "memory/agents/old_run_1/episodic.jsonl": "{\"id\":\"ep-1\",\"summary\":\"old\"}\n"
+autobyteus-server-ts/tests/app-data-migrations/remove-retired-built-in-agents/remove-retired-built-in-agents-migration.test.ts:142:      "memory/agents/old_run_1/semantic.jsonl": "{\"id\":\"sem-1\",\"fact\":\"old\"}\n",
+autobyteus-server-ts/tests/e2e/app-data-migrations/remove-retired-built-in-agents-startup.e2e.test.ts:15://   every other agent folder and every run folder, the old compactor runs and old `episodic.jsonl`/`semantic.jsonl
+autobyteus-server-ts/tests/e2e/app-data-migrations/remove-retired-built-in-agents-startup.e2e.test.ts:77:  await put(path.join(memory, "agents", OLD_ITEMS_RUN, "episodic.jsonl"), `${JSON.stringify({ id: "ep_1", ts: 1, su
+autobyteus-server-ts/tests/e2e/app-data-migrations/remove-retired-built-in-agents-startup.e2e.test.ts:78:  await put(path.join(memory, "agents", OLD_ITEMS_RUN, "semantic.jsonl"), `${JSON.stringify({ id: "sem_1", ts: 1, c
+autobyteus-server-ts/tests/e2e/app-data-migrations/remove-retired-built-in-agents-startup.e2e.test.ts:142:    for (const rel of [`memory/agents/${OLD_ITEMS_RUN}/episodic.jsonl`, `memory/agents/${OLD_ITEMS_RUN}/semantic.j
+autobyteus-server-ts/tests/unit/agent-memory/agent-memory-service.test.ts:45:    writeJsonl(path.join(agentDir, "episodic.jsonl"), [{ episode: "a" }]);
+autobyteus-server-ts/tests/unit/agent-memory/agent-memory-service.test.ts:46:    writeJsonl(path.join(agentDir, "semantic.jsonl"), [{ fact: "b" }]);
+autobyteus-ts/docs/agent_memory_design.md:15:The retired compactor's item files (`episodic.jsonl`, `semantic.jsonl`) and the
+autobyteus-ts/docs/agent_memory_design.md:360:The retired `episodic.jsonl` and `semantic.jsonl` and the historical
+autobyteus-ts/tests/integration/agent/runtime/agent-runtime-compaction.test.ts:134:   expect(written.filter(file=>file==='episodic.jsonl'||file==='semantic.jsonl')).toEqual([]);
+autobyteus-ts/tests/integration/agent/runtime/agent-runtime.test.ts:814:        'episodic.jsonl',
+autobyteus-ts/tests/integration/agent/runtime/agent-runtime.test.ts:815:        'semantic.jsonl',
+autobyteus-ts/tests/unit/memory/pending-compaction-executor.test.ts:22:    for (const file of ['episodic.jsonl', 'semantic.jsonl', 'compaction_lineage.jsonl']) expect(fs.existsSync(path.join(h.store.agentDir, file))).toB
+test-support/live-e2e/live-e2e-harness.ts:1002:          || ['episodic.jsonl', 'semantic.jsonl', 'compaction_lineage.jsonl'].some((name) => persistedFileNames.includes(name))) {
+
+# Classification (REQ-001 exceptions):
+# - frozen migration code: src/app-data-migrations/frozen/autobyteus-ts/memory/store/* (untouched)
+# - released migration and its test: migrate-native-working-context-snapshots-v5 (untouched)
+# - tests that name the old file names only as data on disk that is ignored or kept, or to prove nothing writes
+#   them: raw-trace-active-file-name test (fixture paths), remove-retired-built-in-agents unit and startup E2E
+#   (old item files kept byte-identical), agent-memory-service.test.ts (old files not read),
+#   agent-runtime-compaction.test.ts, agent-runtime.test.ts, pending-compaction-executor.test.ts and the live-E2E
+#   harness (no such file is written)
+# - docs that call them retired / unread / kept, or describe the released v5 migration: GLOSSARY.md:189,
+#   agent_episodic_catalog.md:13, agent_memory.md:47, :78, :122, agent_memory_design.md:15, :360
+# Live source code (autobyteus-ts/src, server src outside frozen/migrations, web, test-support): no class or
+# constant names. Result: Pass.

@@ -11,7 +11,6 @@ import { toModelToolName } from '../agent/tool-search/call-tool.js';
 import type { ContextFileReference } from '../agent/message/context-file-reference.js';
 import { RawTraceItem, type RawTraceItemOptions } from './models/raw-trace-item.js';
 import { toolCallIdentityKey } from './models/tool-call-identity.js';
-import { MemoryType } from './models/memory-types.js';
 import { MemoryStore } from './store/base-store.js';
 import type { SystemInstructionCaptureResult } from './models/system-instruction-trace.js';
 import { TurnTracker } from './turn-tracker.js';
@@ -95,7 +94,6 @@ export type OperationBoundaryNoteInput = { scope: MemoryProjectionScope; reason?
 export class MemoryManager {
   store: MemoryStore;
   turnTracker: TurnTracker;
-  memoryTypes = MemoryType;
   private readonly workingContextController: MemoryManagerWorkingContextController;
   workingContextSnapshotStore: WorkingContextSnapshotStore | null;
   private readonly compactionCoordinator: MemoryManagerCompactionCoordinator;
