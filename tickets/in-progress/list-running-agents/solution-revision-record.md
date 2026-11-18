@@ -102,3 +102,14 @@
 - Response: the reviewer's fix (a). The peer-run branch calls the same owner's `closedPeerRunRefusal` before returning `null`. The bounded spine, entry-form row 13, the Ownership Map and the test list are updated. Requirements unchanged.
 - Intended behavior changed: `No`. Classification unchanged (`Large` / `High`).
 - Next action: ARCH-REV-003.
+
+### SR-008 — Design validation walkthrough (G-1, G-2)
+
+- Phase and classification: Mixed (`Design Impact` found by the Solution Designer; a requirement clarification within the direction).
+- Trigger: the founder, 2026-11-18: "validate by yourself for each use case … based on your data flow spine design … whether your design works or not". The walkthrough is in `design-spec.md` § Design Validation Walkthrough.
+- Findings:
+  - G-1: a message between unrelated local runs would be published live to both runs' views (`run-messages-feed.ts:26-43`) but dropped by the stored Team-tab read (`collaboration-participant-messages.ts:81-88`). Fix: not in run views, live or stored, like remote messages (`RunAcceptInput.publishToViews`); REQ-011 and DEC-014 state it.
+  - G-2: the receiver's live root must come from `CollaborationRootResolver.resolveActive` (the root, with `acceptFromRun`), not `ActiveCollaborationRootDirectory.resolve` (a message boundary without it).
+- Every other premise held (table in the design).
+- Intended behavior changed: clarified (run views), within the direction; the founder informed.
+- Classification unchanged: `Large` / `High`. Review impact: the design passed ARCH-REV-003 at SR-007 and implementation started; SR-008 goes back to the architecture reviewer (ARCH-REV-004), who routes the delta on.

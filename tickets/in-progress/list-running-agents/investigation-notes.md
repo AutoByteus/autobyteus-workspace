@@ -11,7 +11,7 @@
 - Finalization target remote / branch: `origin/personal`
 - Bootstrap result: worktree created from the freshly fetched `origin/personal`
 - Bootstrap blocker: None
-- Current solution revision ID: `SR-007`
+- Current solution revision ID: `SR-008`
 - Authorities read (requirements reading gate, 2026-11-18): `references/requirements-engineering.md`, `references/finding-the-cause.md`, `references/ticket-scope.md`
 - Investigation status: requirements and architecture investigation complete
 
