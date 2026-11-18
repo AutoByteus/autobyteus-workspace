@@ -1,0 +1,45 @@
+{
+  "latencyMs": 0,
+  "gaps": [
+    0,
+    60,
+    150,
+    300,
+    600
+  ],
+  "cases": {
+    "gap0": {
+      "firstClickMs": 142,
+      "second": "Stopping… at 251ms",
+      "toasts": ""
+    },
+    "gap60": {
+      "firstClickMs": 82,
+      "second": "Stopping… at 172ms",
+      "toasts": ""
+    },
+    "gap150": {
+      "firstClickMs": 44,
+      "second": "Send message at 187ms",
+      "toasts": ""
+    }
+  },
+  "sockets": [
+    "ws://127.0.0.1:55958/_nuxt/?token=<redacted>",
+    "ws://127.0.0.1:55958/_nuxt/?token=<redacted>",
+    "ws://127.0.0.1:55957/ws/agent-package-definitions",
+    "ws://127.0.0.1:55957/ws/update-notifications",
+    "ws://127.0.0.1:55957/ws/terminal/1c3f5bbc-8248-48ba-92b6-dff01fce9659",
+    "ws://127.0.0.1:55957/ws/agent/stopper_d918_16b91cf5ba1e496d9663ca40bb57777f",
+    "ws://127.0.0.1:55958/_nuxt/?token=<redacted>",
+    "ws://127.0.0.1:55957/ws/agent-package-definitions",
+    "ws://127.0.0.1:55957/ws/update-notifications",
+    "ws://127.0.0.1:55957/ws/terminal/669be243-df2c-4b7b-9c4e-232dd1c3a4cf",
+    "ws://127.0.0.1:55957/ws/agent/stopper_d918_16b91cf5ba1e496d9663ca40bb57777f",
+    "ws://127.0.0.1:55957/ws/agent-collaboration/stopper_d918_16b91cf5ba1e496d9663ca40bb57777f",
+    "ws://127.0.0.1:55957/ws/agent/stopper_d918_16b91cf5ba1e496d9663ca40bb57777f",
+    "ws://127.0.0.1:55957/ws/agent/stopper_d918_16b91cf5ba1e496d9663ca40bb57777f",
+    "ws://127.0.0.1:55957/ws/agent/stopper_d918_16b91cf5ba1e496d9663ca40bb57777f"
+  ],
+  "failure": "Error: Timed out: Stop shown\n    at until (file:///Users/normy/autobyteus_org/autobyteus-worktrees/interrupt-idempotent-stop/autobyteus-web/tests/e2e/interrupt-twice-repro-scratch.mjs:33:9)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/interrupt-idempotent-stop/autobyteus-web/tests/e2e/interrupt-twice-repro-scratch.mjs:118:5"
+}

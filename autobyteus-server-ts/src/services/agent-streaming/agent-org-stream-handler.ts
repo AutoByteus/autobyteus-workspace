@@ -13,6 +13,8 @@ import { composeCollaboratorMentionNote } from "@autobyteus/agent-presentation-c
 import { toCollaboratorMentions } from "../../agent-collaboration/collaborators/collaborator-admission.js";
 import { createRootExecutionStreamEgress, type RootExecutionStreamEgress } from "./websocket-egress/root-execution-stream-egress.js";
 import { OrgRunNotFoundError, OrgRunNotRestorableError, OrgViewSession, type OrgViewSources } from "./org-view-session.js";
+import { userInterruptOutcome } from "./user-interrupt-outcome.js";
+import type { AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
 
 /** A command for one agent of the Org (every client command but Retry). */
 type AgentCommand = CollaborationStreamClientMessage;
@@ -60,12 +62,16 @@ const agentCommandOf = (message: Exclude<AgentCommand, { type: "SEND_MESSAGE" }>
   ? { kind: "interrupt" as const }
   : { kind: "approve_tool" as const, invocationId: message.payload.invocation_id, approved: message.type === "APPROVE_TOOL", reason: message.payload.reason };
 
+/** A user's Stop finds nothing to stop when the agent's turn or run is gone (autobyteus-533 REQ-001); an approval's result is as it is. */
+const commandOutcome = (message: Exclude<AgentCommand, { type: "SEND_MESSAGE" }>, result: AgentOperationResult): AgentOperationResult =>
+  message.type === "INTERRUPT_GENERATION" ? userInterruptOutcome(result) : result;
+
 /**
  * Native AgentOrg stream `/ws/agent-org/:orgRunId` (autobyteus-461 DS-8, SR-046): one view session per connection
  * (`OrgViewSession`), active or stopped, which never restores the run to serve the view. Commands are for the Org's own
  * agents (a peer run's through the run, autobyteus-278); a delegated run is reached by its own stream (SR-061 rule 2). A
  * message to one of the Org's own agents restores a stopped Org through its service, on that
- * first input; an interrupt or tool approval for an agent of a stopped Org is refused.
+ * first input; an interrupt for an agent of a stopped Org finds nothing to stop, and a tool approval is refused.
  */
 export class AgentOrgStreamHandler {
   private readonly sessions = new Map<string, { egress: RootExecutionStreamEgress; view: OrgViewSession }>();
@@ -129,7 +135,7 @@ export class AgentOrgStreamHandler {
       // A peer row's command goes to its handle (SR-066): the Org stays as it is.
       const peer = this.sources.rows.peerRunOf(target);
       if (peer) {
-        const result = message.type !== "SEND_MESSAGE" ? await executePeerCommand(peer, target, agentCommandOf(message))
+        const result = message.type !== "SEND_MESSAGE" ? commandOutcome(message, await executePeerCommand(peer, target, agentCommandOf(message)))
           : message.payload.mentions?.length ? PEER_MENTIONS_REFUSAL
           : await executePeerCommand(peer, target, { kind: "post_message", message: userMessage(message.payload, message.payload.content) });
         session.egress.send(commandAck(message, result.accepted ? "accepted" : "rejected",
@@ -138,6 +144,11 @@ export class AgentOrgStreamHandler {
       }
       let run = this.service.getActive(orgRunId);
       if (!run) {
+        if (message.type === "INTERRUPT_GENERATION") {
+          // Nothing to stop: the Org is stopped (autobyteus-533 REQ-001). It is not restored.
+          session.egress.send(commandAck(message, "accepted", null, null));
+          return;
+        }
         if (message.type !== "SEND_MESSAGE") {
           session.egress.send(commandAck(message, "rejected", "AGENT_ORG_STOPPED", `AgentOrg run '${orgRunId}' is stopped. A message to one of its agents starts it.`));
           return;
@@ -152,7 +163,7 @@ export class AgentOrgStreamHandler {
         run = restored;
       }
       if (message.type !== "SEND_MESSAGE") {
-        const result = await run.executeAgentCommand(target, agentCommandOf(message));
+        const result = commandOutcome(message, await run.executeAgentCommand(target, agentCommandOf(message)));
         session.egress.send(commandAck(message, result.accepted ? "accepted" : "rejected",
           result.accepted ? null : result.code ?? "AGENT_ORG_COMMAND_REJECTED", result.message ?? null));
         return;

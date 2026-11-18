@@ -1,0 +1,51 @@
+2026-11-18T13:20:37.771Z debug [vite] connecting...
+2026-11-18T13:20:37.862Z debug [vite] connected.
+2026-11-18T13:20:42.168Z log serverStore: Initializing server config
+2026-11-18T13:20:42.169Z log serverStore: Not in Electron environment. Skipping server initialization.
+2026-11-18T13:20:42.172Z info <Suspense> is an experimental feature and its API will likely change.
+2026-11-18T13:20:42.789Z log Workspace.vue: Mounted. Fetching server settings and loading profiles...
+2026-11-18T13:20:42.810Z log [useTerminalSession] Connecting to: ws://127.0.0.1:60443/ws/terminal/5661079d-aacb-4ff5-a6c3-66fef3bf7735
+2026-11-18T13:20:42.830Z log [useTerminalSession] Connected
+2026-11-18T13:20:42.920Z log Agent WebSocket connected
+2026-11-18T13:20:42.992Z log Team WebSocket transport connected
+2026-11-18T13:20:46.551Z debug [vite] connecting...
+2026-11-18T13:20:46.575Z debug [vite] connected.
+2026-11-18T13:20:47.374Z log serverStore: Initializing server config
+2026-11-18T13:20:47.375Z log serverStore: Not in Electron environment. Skipping server initialization.
+2026-11-18T13:20:47.379Z info <Suspense> is an experimental feature and its API will likely change.
+2026-11-18T13:20:47.478Z log Workspace.vue: Mounted. Fetching server settings and loading profiles...
+2026-11-18T13:20:47.490Z log [useTerminalSession] Connecting to: ws://127.0.0.1:60443/ws/terminal/1ca258f3-3fd6-43d0-b5c1-c6e00daf635b
+2026-11-18T13:20:47.497Z log [useTerminalSession] Connected
+2026-11-18T13:20:47.540Z log Agent WebSocket connected
+2026-11-18T13:20:47.572Z log Team WebSocket transport connected
+2026-11-18T13:20:57.390Z log Download the Apollo DevTools for a better development experience: %s https://chrome.google.com/webstore/detail/apollo-client-developer-t/jdkknkkbebbapilgoeccciglkfbmbnfm
+2026-11-18T13:20:58.331Z log Agent WebSocket connected
+2026-11-18T13:21:03.260Z log Agent WebSocket connected
+2026-11-18T13:21:15.910Z log Agent WebSocket connected
+2026-11-18T13:21:20.221Z log Agent WebSocket connected
+2026-11-18T13:21:24.228Z log Agent WebSocket connected
+2026-11-18T13:21:28.297Z log Agent WebSocket connected
+2026-11-18T13:21:32.747Z log Agent WebSocket connected
+2026-11-18T13:21:45.542Z log Agent WebSocket connected
+2026-11-18T13:21:49.597Z log Agent WebSocket connected
+2026-11-18T13:21:53.912Z log Agent WebSocket connected
+2026-11-18T13:21:58.584Z log Agent WebSocket connected
+2026-11-18T13:22:03.190Z log Agent WebSocket connected
+2026-11-18T13:22:15.960Z log Agent WebSocket connected
+2026-11-18T13:22:20.631Z log Agent WebSocket connected
+2026-11-18T13:22:25.019Z log Agent WebSocket connected
+2026-11-18T13:23:36.168Z log Agent WebSocket connected
+2026-11-18T13:23:41.320Z log Agent WebSocket connected
+2026-11-18T13:23:50.910Z log Agent WebSocket connected
+2026-11-18T13:23:55.271Z log Agent WebSocket connected
+2026-11-18T13:23:59.479Z log Agent WebSocket connected
+2026-11-18T13:24:03.941Z log Agent WebSocket connected
+2026-11-18T13:24:08.530Z log Agent WebSocket connected
+2026-11-18T13:24:12.994Z log Agent WebSocket connected
+2026-11-18T13:24:29.014Z log Agent WebSocket connected
+2026-11-18T13:24:35.865Z log Agent WebSocket connected
+2026-11-18T13:24:40.475Z log Agent WebSocket connected
+2026-11-18T13:24:45.499Z log Agent WebSocket connected
+2026-11-18T13:24:50.186Z log Agent WebSocket connected
+2026-11-18T13:24:55.278Z log Agent WebSocket connected
+2026-11-18T13:25:00.550Z log Workspace.vue: Mounted. Fetching server settings and loading profiles...

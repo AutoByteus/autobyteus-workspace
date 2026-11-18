@@ -128,7 +128,7 @@ describe('agentRunStore', () => {
         mockConnectionState.value = 'connected';
         mockSendMessage.mockReset();
         mockInterruptGeneration.mockReset();
-        mockInterruptGeneration.mockReturnValue(true);
+        mockInterruptGeneration.mockResolvedValue({ kind: 'accepted' });
         mockServiceOptions.value = null;
         addToastMock.mockReset();
         llmProviderConfigStoreMock.knownModels = ['gpt-4-fallback'];
@@ -595,7 +595,7 @@ describe('agentRunStore', () => {
         expect(mockContextsStore.removeRun).not.toHaveBeenCalled();
     });
 
-    it('interruptGeneration should signal the active stream without clearing submission pending optimistically', () => {
+    it('interruptGeneration should signal the active stream without clearing submission pending optimistically', async () => {
         const store = useAgentRunStore();
         mockAgentContext.state.runId = 'agent-1';
         mockAgentContext.submissionPending = true;
@@ -603,36 +603,35 @@ describe('agentRunStore', () => {
         store.connectToAgentStream('agent-1');
         const result = store.interruptGeneration('agent-1');
 
-        expect(result).toBe(true);
+        await expect(result).resolves.toEqual({ kind: 'accepted' });
         expect(mockInterruptGeneration).toHaveBeenCalledWith(
           expect.stringMatching(/^client_interrupt_/),
         );
         expect(mockAgentContext.submissionPending).toBe(true);
     });
 
-    it('shows one result toast without fabricating lifecycle or transcript state', () => {
+    it('passes a Stop\'s outcome on and presents nothing itself (autobyteus-533 D-W3)', async () => {
         const store = useAgentRunStore();
         mockAgentContext.state.runId = 'agent-toast-1';
         mockAgentContext.state.currentStatus = AgentStatus.Running;
         mockAgentContext.state.conversation.messages = [];
         store.connectToAgentStream('agent-toast-1');
+        expect(mockServiceOptions.value).not.toHaveProperty('onInterruptCommandResult');
+        expect(mockServiceOptions.value).not.toHaveProperty('onInterruptCommandTransportFailure');
+        mockInterruptGeneration.mockResolvedValueOnce({ kind: 'refused', detail: '[PROVIDER_REJECTED] Provider refused the interrupt.' });
 
-        mockServiceOptions.value.onInterruptCommandResult({
-          command_type: 'INTERRUPT_GENERATION',
-          command_id: 'client_interrupt_toast',
-          state: 'failed',
-          code: 'PROVIDER_REJECTED',
-          message: 'Provider refused the interrupt.',
-          target: { target_kind: 'standalone_run', run_id: 'agent-toast-1' },
-        });
+        await expect(store.interruptGeneration('agent-toast-1'))
+          .resolves.toEqual({ kind: 'refused', detail: '[PROVIDER_REJECTED] Provider refused the interrupt.' });
 
-        expect(addToastMock).toHaveBeenCalledTimes(1);
-        expect(addToastMock).toHaveBeenCalledWith(
-          expect.stringContaining('Provider refused the interrupt.'),
-          'error',
-        );
+        expect(addToastMock).not.toHaveBeenCalled();
         expect(mockAgentContext.state.currentStatus).toBe(AgentStatus.Running);
         expect(mockAgentContext.state.conversation.messages).toHaveLength(0);
+    });
+
+    it('answers a Stop for a run without a stream as not_sent', async () => {
+        vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+        await expect(useAgentRunStore().interruptGeneration('run-without-stream')).resolves.toEqual({ kind: 'not_sent' });
+        expect(mockInterruptGeneration).not.toHaveBeenCalled();
     });
 
     describe('activation pending marker (D-14)', () => {

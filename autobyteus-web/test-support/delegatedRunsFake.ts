@@ -31,7 +31,7 @@ export const fakeDelegatedRunsStore = () => ({
       workspaceRootPath: '/own-ws',
       browse: subject.kind === 'agent' ? { kind: 'run', runId: subject.agentRunId }
         : { kind: 'teamMember', teamRunId: subject.teamRunId, memberAddress: subject.memberAddress, agentRunId: subject.agentRunId },
-      interaction: { send: ownRuns.send, interrupt: vi.fn(async () => undefined), decideTool: vi.fn(async () => undefined) },
+      interaction: { send: ownRuns.send, interrupt: vi.fn(async () => ({ kind: 'accepted' as const })), decideTool: vi.fn(async () => undefined) },
     }
   },
 })

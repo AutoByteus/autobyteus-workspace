@@ -559,9 +559,14 @@ caller policy is used.
 exact team-member requests carry a fresh client `command_id`; the originating
 WebSocket receives one discriminated `AGENT_COMMAND_ACK` with `accepted`,
 `rejected`, or `failed`, the same command id, and the exact standalone-run or
-team-member target. Missing/inactive targets and provider rejection are result
-arms rather than fabricated lifecycle events. Accepted means only that the
-runtime accepted the interrupt request: later `TURN_INTERRUPTED`/terminal
+team-member target. A Stop with nothing to stop (no active turn, the turn
+already ended in the runtime, or the run not running) is `accepted`; a malformed
+command or a target that is not a member stays `rejected`, and a runtime failure
+is `failed`. These are result arms rather than fabricated lifecycle events (see
+"A user's Stop with nothing to stop is accepted" in
+[Agent WebSocket Streaming Protocol](../design/agent_websocket_streaming_protocol.md)).
+Accepted means the runtime accepted the interrupt request or there was nothing
+to stop: later `TURN_INTERRUPTED`/terminal
 `AGENT_STATUS` remains responsible for clearing running/Stop state. A closed
 socket cannot receive a server result, so client disconnect completion is a
 separate local transport failure, not a synthetic acknowledgement.

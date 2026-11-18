@@ -1,0 +1,292 @@
+# API-06 whole server E2E with the scripted AGY gate; commit 6744d786c6 (code a0d81bbe18); 2026-11-18T14:18:44Z; macOS 26.5.2, Node v22.23.1; load 84.08 73.89 68.47
+# env -i PATH HOME=<temp> TMPDIR RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<worktree>/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs pnpm test:e2e
+# Excerpt of API-06-server-e2e-whole.log (full log gzipped beside it: API-06-server-e2e-whole.log.gz): the summary, the files, and each failed test with its first error line.
+
+ ✓ tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts (46 tests) 549812ms
+ ✓ tests/e2e/projects/project-task-boundaries.e2e.test.ts (18 tests) 18069ms
+ ✓ tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts (9 tests | 2 skipped) 240256ms
+ ✓ tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts (4 tests) 97579ms
+ ❯ tests/e2e/projects/collaboration-contract-stories.e2e.test.ts (3 tests | 1 failed) 1327119ms
+ ✓ tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts (7 tests | 1 skipped) 100273ms
+ ✓ tests/e2e/projects/delegated-copy-model-change.e2e.test.ts (11 tests) 48545ms
+ ✓ tests/e2e/projects/projects-graphql.e2e.test.ts (13 tests) 1982ms
+ ✓ tests/e2e/runtime/runtime-switch-native-built-server.e2e.test.ts (9 tests) 54646ms
+ ❯ tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts (10 tests | 2 failed) 74812ms
+ ✓ tests/e2e/memory/episodic-catalog.e2e.test.ts (7 tests) 276560ms
+ ✓ tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts (3 tests | 1 skipped) 118040ms
+ ❯ tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts (3 tests | 1 failed) 69521ms
+ ✓ tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts (8 tests) 330ms
+ ✓ tests/e2e/app-data-migrations/append-only-message-logs-startup.e2e.test.ts (2 tests) 33295ms
+ ✓ tests/e2e/run-history/stopped-run-model-config-graphql.e2e.test.ts (5 tests) 60742ms
+ ❯ tests/e2e/runtime/runtime-switch-members-extended-built-server.e2e.test.ts (5 tests | 5 skipped) 9991ms
+ ✓ tests/e2e/token-usage/token-usage-ledger-graphql.e2e.test.ts (4 tests) 186ms
+ ✓ tests/e2e/run-history/run-projection-toolcalls-graphql.e2e.test.ts (6 tests) 229ms
+ ❯ tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts (1 test | 1 failed) 199452ms
+ ✓ tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts (6 tests) 956ms
+ ✓ tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts (3 tests) 110785ms
+ ✓ tests/e2e/projects/project-change-feed.e2e.test.ts (7 tests) 44341ms
+ ✓ tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts (3 tests) 23925ms
+ ❯ tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts (14 tests | 1 failed) 89391ms
+ ✓ tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts (9 tests) 877ms
+ ✓ tests/e2e/secret-management/custom-provider-readable-id-startup-migration.e2e.test.ts (5 tests) 51050ms
+ ✓ tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts (9 tests | 1 skipped) 936ms
+ ✓ tests/e2e/projects/unclean-shutdown-delegated-team-restore.e2e.test.ts (8 tests) 26599ms
+ ✓ tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts (10 tests) 23539ms
+ ✓ tests/e2e/update-notifications/update-notifications-live.e2e.test.ts (12 tests) 71821ms
+ ✓ tests/e2e/runtime/available-agent-runtimes-graphql.e2e.test.ts (6 tests) 38274ms
+ ✓ tests/e2e/model-routing/model-routing-delegation.e2e.test.ts (9 tests) 403133ms
+ ✓ tests/e2e/runtime/runtime-switch-members-built-server.e2e.test.ts (5 tests) 33580ms
+ ✓ tests/e2e/workspaces/archive-run-history-graphql.e2e.test.ts (6 tests) 2480ms
+ ✓ tests/e2e/projects/get-project-task-worker-scope.e2e.test.ts (6 tests) 29355ms
+ ✓ tests/e2e/runtime/agy-skill-definition-changes-transport.e2e.test.ts (3 tests | 1 skipped) 59162ms
+ ✓ tests/e2e/projects/projects-startup-migration.e2e.test.ts (6 tests) 36566ms
+ ✓ tests/e2e/app-data-migrations/task-agent-own-run-startup.e2e.test.ts (3 tests) 23484ms
+ ❯ tests/e2e/node-access/node-access-model.e2e.test.ts (23 tests | 1 failed) 15691ms
+ ✓ tests/e2e/projects/delegated-copy-member-contact-host.e2e.test.ts (1 test) 26150ms
+ ✓ tests/e2e/projects/task-closure-root-visibility.e2e.test.ts (3 tests) 27807ms
+ ✓ tests/e2e/server-settings/server-settings-graphql.e2e.test.ts (12 tests) 116ms
+ ✓ tests/e2e/media/server-owned-media-tools.e2e.test.ts (7 tests) 93ms
+ ❯ tests/e2e/agent-team-definitions/registered-package-definition-edit.e2e.test.ts (8 tests | 1 failed) 31081ms
+ ❯ tests/e2e/runtime/agy-switch-back-built-server.e2e.test.ts (3 tests | 3 skipped) 6730ms
+ ✓ tests/e2e/workspaces/workspaces-graphql.e2e.test.ts (13 tests) 118ms
+ ✓ tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts (3 tests) 94708ms
+ ❯ tests/e2e/projects/task-agent-several-tasks.e2e.test.ts (4 tests | 4 skipped) 47296ms
+ ✓ tests/e2e/projects/delegated-copy-project-folder.e2e.test.ts (8 tests) 54400ms
+ ❯ tests/e2e/personal-settings/package-personal-settings.e2e.test.ts (7 tests) 97999ms
+ ✓ tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts (9 tests) 19902ms
+ ✓ tests/e2e/runtime/agent-runtimes-graphql.e2e.test.ts (14 tests) 20539ms
+     ✓ AR-04 Update that exits 0 without a newer version is a failure with the vendor's text, version unchanged (AC-003)  716ms
+ ✓ tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts (9 tests) 375ms
+ ✓ tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts (4 tests) 1578ms
+ ✓ tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts (4 tests) 17006ms
+ ✓ tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts (6 tests) 505ms
+ ✓ tests/e2e/app-data-migrations/collaborators-to-delegated-runs-startup.e2e.test.ts (1 test) 7799ms
+ ❯ tests/e2e/run-history/open-task-tree-upgrade-startup.e2e.test.ts (3 tests | 2 failed) 26450ms
+ ❯ tests/e2e/projects/project-task-parts-live.e2e.test.ts (3 tests | 3 skipped) 23695ms
+ ✓ tests/e2e/projects/project-run-history.e2e.test.ts (9 tests) 48234ms
+ ✓ tests/e2e/app-data-migrations/node-vocabulary-stored-names-startup.e2e.test.ts (3 tests) 18638ms
+ ✓ tests/e2e/runtime/autobyteus-anthropic-stored-config-edit-launch.e2e.test.ts (5 tests) 34089ms
+ ✓ tests/e2e/app-data-migrations/remove-built-in-project-task-manager-startup.e2e.test.ts (4 tests) 21593ms
+ ✓ tests/e2e/app-data-migrations/delegated-runs-own-runs-startup.e2e.test.ts (3 tests) 25048ms
+ ✓ tests/e2e/memory/memory-collaboration-graphql.e2e.test.ts (8 tests) 348ms
+ ✓ tests/e2e/runtime/stopped-run-edit-root-built-server.e2e.test.ts (1 test) 78192ms
+ ✓ tests/e2e/projects/collaboration-model-contract.e2e.test.ts (3 tests) 39594ms
+ ✓ tests/e2e/token-usage/token-usage-ledger-provider-semantics.e2e.test.ts (3 tests) 206ms
+ ✓ tests/e2e/token-usage/token-usage-unit-prices-graphql.e2e.test.ts (2 tests) 151ms
+ ✓ tests/e2e/memory-sync/memory-sync-api.e2e.test.ts (1 test) 465ms
+ ✓ tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts (11 tests) 10046ms
+ ❯ tests/e2e/agent-definitions/internal-agents.e2e.test.ts (5 tests | 1 failed) 22230ms
+ ✓ tests/e2e/remote-access/phone-access-running-routes.e2e.test.ts (3 tests) 476ms
+ ✓ tests/e2e/llm-management/qwen-configuration-lifecycle-graphql.e2e.test.ts (1 test) 9505ms
+ ✓ tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts (7 tests) 18576ms
+ ✓ tests/e2e/runtime/agy-context-files-transport.e2e.test.ts (4 tests) 5584ms
+stdout | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay) > ends the turn as interrupted with an explicit runtime error when the Grok process exits mid-turn (QR-006)
+stdout | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay) > ends the turn as interrupted with an explicit runtime error when the Grok process exits mid-turn (QR-006)
+stdout | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay) > ends the turn as interrupted with an explicit runtime error when the Grok process exits mid-turn (QR-006)
+stdout | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay) > ends the turn as interrupted with an explicit runtime error when the Grok process exits mid-turn (QR-006)
+stderr | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay) > ends the turn as interrupted with an explicit runtime error when the Grok process exits mid-turn (QR-006)
+stdout | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay) > ends the turn as interrupted with an explicit runtime error when the Grok process exits mid-turn (QR-006)
+stderr | tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay) > ends the turn as interrupted with an explicit runtime error when the Grok process exits mid-turn (QR-006)
+ ❯ tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts (6 tests) 18780ms
+     ✓ ends the turn as interrupted with an explicit runtime error when the Grok process exits mid-turn (QR-006) 185ms
+ ✓ tests/e2e/memory/memory-view-graphql.e2e.test.ts (6 tests) 132ms
+ ✓ tests/e2e/agent/agent-command-correlated-status.e2e.test.ts (1 test) 176ms
+ ✓ tests/e2e/agent-definitions/agent-definitions-graphql.e2e.test.ts (7 tests) 169ms
+ ✓ tests/e2e/runtime/autobyteus-native-tool-search.e2e.test.ts (1 test) 77005ms
+ ✓ tests/e2e/projects/daily-assistant-collaborator.e2e.test.ts (6 tests) 12407ms
+ ✓ tests/e2e/projects/project-task-context-files-delegation.e2e.test.ts (1 test) 7546ms
+ ✓ tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts (6 tests | 5 skipped) 5346ms
+ ✓ tests/e2e/projects/owner-scoped-member-file-changes.e2e.test.ts (2 tests) 23378ms
+ ✓ tests/e2e/projects/project-task-comments-live.e2e.test.ts (4 tests) 8376ms
+ ✓ tests/e2e/runtime/agy-native-image-multi-artifact-preview.e2e.test.ts (2 tests) 15071ms
+ ✓ tests/e2e/token-usage/token-usage-analytics-graphql.e2e.test.ts (5 tests) 231ms
+ ✓ tests/e2e/context-files/context-file-size-limits-built-server.e2e.test.ts (8 tests | 1 skipped) 3548ms
+ ✓ tests/e2e/memory/work-journal-neutral-vocabulary.e2e.test.ts (5 tests) 598ms
+ ✓ tests/e2e/memory-sync/memory-sync-multiprocess.e2e.test.ts (1 test) 34592ms
+ ✓ tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts (8 tests | 6 skipped) 10166ms
+ ✓ tests/e2e/memory-sync/memory-sync-large-files.e2e.test.ts (4 tests) 31256ms
+ ✓ tests/e2e/secret-management/provider-secret-lifecycle-graphql.e2e.test.ts (6 tests) 5147ms
+ ✓ tests/e2e/runtime/agy-interrupt-resend-transport.e2e.test.ts (3 tests) 16172ms
+ ✓ tests/e2e/projects/delegator-view-follows-child.e2e.test.ts (3 tests) 37982ms
+ ✓ tests/e2e/agent-team-runs/team-run-config-graphql.e2e.test.ts (7 tests) 29305ms
+ ✓ tests/e2e/tool-management/mcp-http-auth-remote-server.e2e.test.ts (2 tests) 5614ms
+ ✓ tests/e2e/token-usage/astra-fable-token-usage-accounting-graphql.e2e.test.ts (4 tests) 117ms
+ ✓ tests/e2e/projects/embedding-settings.e2e.test.ts (6 tests) 9505ms
+ ✓ tests/e2e/app-data-migrations/project-task-titles-startup.e2e.test.ts (1 test) 5955ms
+ ✓ tests/e2e/node-desktop/node-desktop-routes.e2e.test.ts (9 tests) 538ms
+ ✓ tests/e2e/projects/own-stream-turns-read-once.e2e.test.ts (2 tests) 17020ms
+ ✓ tests/e2e/runtime/agy-mcp-tool-call-transport.e2e.test.ts (1 test) 5759ms
+ ✓ tests/e2e/app-data-migrations/raw-trace-manifest-runtime-names-startup.e2e.test.ts (2 tests) 9360ms
+ ✓ tests/e2e/workspaces/workspace-run-history-graphql.e2e.test.ts (6 tests) 89ms
+ ✓ tests/e2e/app-data-migrations/remove-skill-improvement-data-startup.e2e.test.ts (3 tests) 16175ms
+ ✓ tests/e2e/runtime/agy-native-tool-arguments-transport.e2e.test.ts (4 tests) 9380ms
+ ✓ tests/e2e/secret-management/removed-remote-provider-leftover-startup.e2e.test.ts (1 test) 8552ms
+ ❯ tests/e2e/projects/project-task-search.e2e.test.ts (4 tests | 1 failed) 14027ms
+ ✓ tests/e2e/runtime/application-reload-repair.e2e.test.ts (5 tests) 20896ms
+ ✓ tests/e2e/token-usage/token-usage-provider-name-snapshot-backfill-startup.e2e.test.ts (3 tests) 210ms
+ ✓ tests/e2e/runtime/agent-runtimes-running-agents.e2e.test.ts (4 tests) 18919ms
+     ✓ RA-02 Application launch readiness for Claude: signed out (JSON + exit 1) keeps today's reason, signed in is runnable  1816ms
+ ✓ tests/e2e/update-notifications/agent-runtime-update-notifications.e2e.test.ts (3 tests) 25545ms
+ ✓ tests/e2e/skills/github-skill-sources-graphql.e2e.test.ts (29 tests) 4076ms
+ ✓ tests/e2e/projects/closed-run-attachments.e2e.test.ts (1 test) 12576ms
+ ✓ tests/e2e/tool-management/mcp-http-redirect-and-transport.e2e.test.ts (2 tests) 11986ms
+ ✓ tests/e2e/token-usage/claude-sdk-selected-model-graphql.e2e.test.ts (3 tests) 177ms
+ ✓ tests/e2e/agent/standalone-error-termination-lifecycle.e2e.test.ts (2 tests) 194ms
+ ✓ tests/e2e/runtime/grok-build-compaction-replay.e2e.test.ts (3 tests) 15406ms
+ ✓ tests/e2e/projects/project-task-search-model-unavailable.e2e.test.ts (2 tests) 4106ms
+ ✓ tests/e2e/token-usage/gpt56-token-usage-accounting-graphql.e2e.test.ts (6 tests) 130ms
+ ✓ tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts (5 tests) 107279ms
+ ✓ tests/e2e/projects/closed-task-input-fence.e2e.test.ts (3 tests) 22534ms
+ ❯ tests/e2e/runtime/work-journal-restore-transport.e2e.test.ts (1 test) 13019ms
+ ✓ tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts (2 tests) 8076ms
+ ✓ tests/e2e/tool-management/mcp-secrets-in-vault.e2e.test.ts (3 tests) 6524ms
+ ✓ tests/e2e/llm-management/custom-provider-model-metadata-graphql.e2e.test.ts (3 tests) 2152ms
+ ✓ tests/e2e/runtime/agy-skill-update-notice-transport.e2e.test.ts (2 tests) 38976ms
+ ✓ tests/e2e/agent-org-runs/controlled-org-publication-http.e2e.test.ts (1 test) 15966ms
+ ✓ tests/e2e/agent-definitions/json-file-persistence-contract.e2e.test.ts (1 test) 173ms
+ ✓ tests/e2e/runtime/agy-failure-transport.e2e.test.ts (25 tests | 1 skipped) 23051ms
+ ✓ tests/e2e/skills/skills-graphql.e2e.test.ts (5 tests) 95ms
+ ✓ tests/e2e/memory-sync/raw-trace-manifest-runtime-names-sync.e2e.test.ts (1 test) 8907ms
+ ✓ tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts (3 tests) 2773ms
+ ✓ tests/e2e/media/gemini-speech-voice-tool.e2e.test.ts (13 tests) 42ms
+ ✓ tests/e2e/app-data-migrations/remove-work-trace-exports-startup.e2e.test.ts (1 test) 4630ms
+ ✓ tests/e2e/runtime/tool-list-reopen-failure.e2e.test.ts (1 test) 15364ms
+ ✓ tests/e2e/token-usage/gemini-native-pricing-graphql.e2e.test.ts (5 tests) 124ms
+ ✓ tests/e2e/run-history/removed-remote-provider-saved-selection-graphql.e2e.test.ts (2 tests) 9784ms
+ ✓ tests/e2e/token-usage/token-usage-record-restart-graphql.e2e.test.ts (1 test) 4326ms
+ ✓ tests/e2e/runtime/agy-native-image-step-output.e2e.test.ts (4 tests) 5149ms
+ ✓ tests/e2e/secret-management/current-database-import-lifecycle.e2e.test.ts (1 test) 2834ms
+ ✓ tests/e2e/agent-org-runs/stopped-org-workspace-graphql.e2e.test.ts (1 test) 4414ms
+ ✓ tests/e2e/token-usage/agy-token-usage-upgrade-continuation.e2e.test.ts (2 tests) 120ms
+stdout | tests/e2e/runtime/codex-runtime-exit-resend.e2e.test.ts
+ ↓ tests/e2e/runtime/codex-runtime-exit-resend.e2e.test.ts (1 test | 1 skipped)
+Owned built-node cleanup: both children exited 0; four listeners closed; both private roots removed.
+ ✓ tests/e2e/projects/project-mutation-node-locality.e2e.test.ts (1 test) 14471ms
+ ✓ tests/e2e/projects/delegation-forest-restore.e2e.test.ts (3 tests) 31112ms
+ ❯ tests/e2e/runtime/agy-background-task-transport.e2e.test.ts (2 tests | 1 failed) 16249ms
+ ✓ tests/e2e/token-usage/token-usage-custom-provider-model-value-backfill-startup.e2e.test.ts (2 tests) 78ms
+ ✓ tests/e2e/run-history/removed-skill-access-mode-history-graphql.e2e.test.ts (1 test) 2962ms
+ ✓ tests/e2e/app-data-migrations/agent-org-token-continuation.e2e.test.ts (2 tests) 543ms
+ ✓ tests/e2e/runtime/agy-token-usage-transport.e2e.test.ts (1 test) 6413ms
+ ✓ tests/e2e/runtime/agy-compaction-rotation-transport.e2e.test.ts (1 test) 6448ms
+ ✓ tests/e2e/node-files/node-files.e2e.test.ts (5 tests) 852ms
+ ✓ tests/e2e/file-explorer/file-explorer-path-boundary.e2e.test.ts (2 tests) 91ms
+ ✓ tests/e2e/tool-management/mcp-http-error-status.e2e.test.ts (4 tests) 5184ms
+ ✓ tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts (6 tests) 3347ms
+ ✓ tests/e2e/secret-management/test-vault-selection.e2e.test.ts (5 tests) 14633ms
+ ❯ tests/e2e/runtime/work-journal-neutral-vocabulary-scripted-agy.e2e.test.ts (1 test | 1 failed) 13899ms
+ ✓ tests/e2e/credential-proxy/integrations-graphql.e2e.test.ts (5 tests) 5160ms
+ ✓ tests/e2e/agent-org-runs/scoped-org-history-graphql.e2e.test.ts (1 test) 7769ms
+ ❯ tests/e2e/projects/team-tab-subtree-messages.e2e.test.ts (1 test | 1 failed) 21559ms
+ ✓ tests/e2e/tool-management/mcp-bulk-import.e2e.test.ts (2 tests) 3073ms
+ ✓ tests/e2e/file-explorer/file-operations-graphql.e2e.test.ts (2 tests) 82ms
+ ✓ tests/e2e/projects/background-step-stop-own-view.e2e.test.ts (1 test) 28951ms
+ ✓ tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts (4 tests) 849ms
+ ✓ tests/e2e/memory/imported-team-memory-graphql.e2e.test.ts (1 test) 146ms
+ ✓ tests/e2e/token-usage/token-usage-model-list.e2e.test.ts (2 tests) 64ms
+ ✓ tests/e2e/app-data-migrations/late-team-history-index-v2-startup.e2e.test.ts (1 test) 8158ms
+ ✓ tests/e2e/secret-management/secret-vault-independent-process-initialization.e2e.test.ts (1 test) 564ms
+ ✓ tests/e2e/projects/hand-started-run-refusal.e2e.test.ts (1 test) 15244ms
+ ✓ tests/e2e/runtime/agy-compaction-gate-off-transport.e2e.test.ts (1 test) 9725ms
+ ✓ tests/e2e/secret-management/environment-key-source.e2e.test.ts (3 tests) 3257ms
+ ✓ tests/e2e/file-explorer/file-explorer-graphql.e2e.test.ts (3 tests) 95ms
+ ❯ tests/e2e/agent-run/stop-nothing-to-stop.e2e.test.ts (2 tests | 1 failed) 18283ms
+ ✓ tests/e2e/runtime/application-import-codex-launch.e2e.test.ts (2 tests) 12388ms
+ ✓ tests/e2e/llm-management/model-metadata-provenance-graphql.e2e.test.ts (3 tests) 2477ms
+ ✓ tests/e2e/memory/memory-search-graphql.e2e.test.ts (2 tests) 99ms
+ ✓ tests/e2e/secret-management/server-restart-secret-lifecycle.e2e.test.ts (1 test) 9952ms
+ ✓ tests/e2e/runtime/agy-runtime-availability-graphql.e2e.test.ts (3 tests) 2668ms
+ ✓ tests/e2e/agent-definitions/general-agent-identity.e2e.test.ts (2 tests) 106ms
+ ✓ tests/e2e/file-explorer/search-content-http.e2e.test.ts (6 tests) 188ms
+ ✓ tests/e2e/mcp/mcp-gateway-token.e2e.test.ts (4 tests) 2514ms
+ ✓ tests/e2e/agent-team-runs/task-delegation-api-surface.e2e.test.ts (3 tests) 1991ms
+ ✓ tests/e2e/memory/memory-explorer-graphql.e2e.test.ts (1 test) 108ms
+ ✓ tests/e2e/runtime/team-task-event-current-contract.e2e.test.ts (2 tests) 6ms
+ ✓ tests/e2e/remote-collaboration/peer-host-refused.e2e.test.ts (1 test) 2384ms
+ ✓ tests/e2e/workspaces/search-files-through-gate.e2e.test.ts (1 test) 2714ms
+ ✓ tests/e2e/runtime/runtime-capability-graphql.e2e.test.ts (4 tests) 853ms
+ ✓ tests/e2e/tool-management/tool-catalog-cleanup.e2e.test.ts (1 test) 91ms
+ ✓ tests/e2e/workspaces/workspace-path-refusal-run-launch.e2e.test.ts (1 test) 2815ms
+ ✓ tests/e2e/llm-management/gemini-3-8-catalog-http.e2e.test.ts (1 test) 2362ms
+ ✓ tests/e2e/memory-sync/memory-sync-held-back-graphql.e2e.test.ts (1 test) 716ms
+ ✓ tests/e2e/prompts/prompts-graphql.e2e.test.ts (1 test) 62ms
+ ✓ tests/e2e/runtime/team-run-current-graphql-documents.e2e.test.ts (1 test) 53ms
+ ❯ tests/e2e/personal-settings/package-personal-settings.e2e.test.ts:211:3
+ ❯ tests/e2e/projects/project-task-parts-live.e2e.test.ts:148:46
+ ❯ tests/e2e/projects/task-agent-several-tasks.e2e.test.ts:164:18
+ ❯ tests/e2e/runtime/agy-background-task-transport.e2e.test.ts:64:3
+ ❯ tests/e2e/runtime/agy-switch-back-built-server.e2e.test.ts:206:12
+ ❯ tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts:80:3
+ ❯ tests/e2e/runtime/runtime-switch-members-extended-built-server.e2e.test.ts:227:12
+ ❯ tests/e2e/runtime/work-journal-restore-transport.e2e.test.ts:75:3
+ ❯ tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts:387:114
+ ❯ tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts:687:30
+ ❯ tests/e2e/agent-definitions/internal-agents.e2e.test.ts:178:3
+ ❯ tests/e2e/agent-run/stop-nothing-to-stop.e2e.test.ts:111:46
+ ❯ tests/e2e/agent-team-definitions/registered-package-definition-edit.e2e.test.ts:238:3
+ ❯ tests/e2e/projects/collaboration-contract-stories.e2e.test.ts:788:5
+ ❯ tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts:137:18
+ ❯ tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts:512:22
+ ❯ tests/e2e/projects/project-task-search.e2e.test.ts:80:3
+ ❯ tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts:560:44
+ ❯ tests/e2e/projects/team-tab-subtree-messages.e2e.test.ts:87:18
+ ❯ tests/e2e/run-history/open-task-tree-upgrade-startup.e2e.test.ts:247:74
+ ❯ tests/e2e/run-history/open-task-tree-upgrade-startup.e2e.test.ts:321:55
+ ❯ tests/e2e/node-access/node-access-model.e2e.test.ts:224:3
+ ❯ tests/e2e/runtime/agy-background-task-transport.e2e.test.ts:106:17
+ ❯ tests/e2e/runtime/work-journal-neutral-vocabulary-scripted-agy.e2e.test.ts:94:76
+ Test Files  21 failed | 175 passed | 80 skipped (276)
+      Tests  16 failed | 866 passed | 389 skipped (1271)
+   Duration  6862.07s (transform 25.84s, setup 7.17s, import 485.33s, tests 6338.52s, environment 14ms)
+ ELIFECYCLE  Command failed with exit code 1.
+e2e exit 1
+
+## Failed tests, first error line
+ FAIL  tests/e2e/personal-settings/package-personal-settings.e2e.test.ts > Personal settings of package definitions at the real server boundary (fake GitHub, real update pipeline)
+    -> Error: Hook timed out in 10000ms.
+ FAIL  tests/e2e/projects/project-task-parts-live.e2e.test.ts > Project Task parts: a parent's close stops its parts' live task agents; the feed carries the parent (real HTTP/WS/scoped MCP, scripted AGY actor)
+    -> AssertionError: AgyDiscoveryError: Antigravity model discovery timed out; check the CLI and retry.: expected false to be true // Object.is equality
+ FAIL  tests/e2e/projects/task-agent-several-tasks.e2e.test.ts > A task agent with several Tasks: parts on one copy, sub-work ownership, give-back, wake (real HTTP/WS/scoped MCP, scripted AGY)
+    -> Error: Timed out waiting for agent-collaboration stream ready
+ FAIL  tests/e2e/runtime/agy-background-task-transport.e2e.test.ts > AGY background (daemon) tool steps through app WebSocket and history
+    -> Error: Hook timed out in 10000ms.
+ FAIL  tests/e2e/runtime/agy-switch-back-built-server.e2e.test.ts > switching back to Antigravity: Org member, delegated copy and Team member
+    -> Error: TEST_GRAPHQL_REQUEST_FAILED
+ FAIL  tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay)
+    -> Error: Hook timed out in 10000ms.
+ FAIL  tests/e2e/runtime/runtime-switch-members-extended-built-server.e2e.test.ts > agent runtime switch of Org members and delegated copies: failed starts, restarts, Grok and native targets
+    -> Error: TEST_GRAPHQL_REQUEST_FAILED
+ FAIL  tests/e2e/runtime/work-journal-restore-transport.e2e.test.ts > Work Journal kept current, closed files written once, and rebuilt for an older run on restore
+    -> Error: Hook timed out in 10000ms.
+ FAIL  tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-002 (AC-001…005, AC-007, REQ-009, REQ-014): an imported package's files on disk reach Gr
+    -> AssertionError: expected 5295 to be less than 5000
+ FAIL  tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the r
+    -> AssertionError: expected [ 'Daily Assistant', …(7) ] to include 'APAR Fresh Scout'
+ FAIL  tests/e2e/agent-definitions/internal-agents.e2e.test.ts > Internal agents: hidden unless "Show internal agents" is on (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > IA-01 the agent list leaves the internal agent out while hidden and lists it wi
+    -> Error: Test timed out in 5000ms.
+ FAIL  tests/e2e/agent-run/stop-nothing-to-stop.e2e.test.ts > autobyteus-533: a Stop with nothing to stop is accepted (scripted AGY) > standalone agent run
+    -> AssertionError: AgyDiscoveryError: Antigravity model discovery timed out; check the CLI and retry.: expected false to be true // Object.is equality
+ FAIL  tests/e2e/agent-team-definitions/registered-package-definition-edit.e2e.test.ts > Registered package Teams and Orgs are edited and saved into the package (real HTTP/GraphQL/WS, package import, scoped MCP; scripted AGY) > RPE-001 (AC-001, REQ-001, REQ-00
+    -> Error: Test timed out in 5000ms.
+ FAIL  tests/e2e/projects/collaboration-contract-stories.e2e.test.ts > The collaboration contract's stories, run against the built server (autobyteus-461 acceptance test) > §5.2 U0 … U11: a team the user starts delegates
+    -> Error: U0: no result of update_task by solution_designer_7a33; the stream answered: ["ERROR {\"code\":\"COLLABORATION_AGENT_ACTIVATION_FAILED\",\"message\":\"Antigravity model discovery timed out; check the CLI and retry.\",\"error_scope\":\"runtime\",\"error_effect\":\"terminal\",\"turn_id\":null,\
+ FAIL  tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-P1 Agent root: the host is a standalone agent; a task agent delegated to an outside
+    -> Error: Timed out waiting for agent-collaboration stream ready
+ FAIL  tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies run
+    -> AssertionError: expected [ Array(1) ] to deeply equal []
+ FAIL  tests/e2e/projects/project-task-search.e2e.test.ts > Project Task search over the production HTTP and MCP boundaries > answers exact matches at once, reports preparation, then adds meaning matches without a new query text
+    -> Error: Test timed out in 5000ms.
+ FAIL  tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts > Idle shutdown keeps delegated copies with running background tasks in every root (real HTTP/WS/scoped MCP and AGY monitor, scripted AGY actor) > background copies outlive the grace period and are 
+    -> AssertionError: expected [ Array(1) ] to deeply equal []
+ FAIL  tests/e2e/projects/team-tab-subtree-messages.e2e.test.ts > The Team tab: one in-view rule over the open subtree, live and read (real HTTP/WS/scoped MCP, scripted AGY actor) > TT-1 / TT-2: a two-hop message in the top run's tab live and after a reload; a
+    -> AssertionError: AgyDiscoveryError: Antigravity model discovery timed out; check the CLI and retry.: expected false to be true // Object.is equality
+ FAIL  tests/e2e/run-history/open-task-tree-upgrade-startup.e2e.test.ts > A top run's tree is built from its open Tasks: upgrade, start, load, save and restarts (built server, scripted AGY) > OT-2 an upgraded data root: admitted at start; trees hold open runs 
+    -> AssertionError: reading the trees wrote nothing: expected { …(122) } to deeply equal { …(118) }
+ FAIL  tests/e2e/run-history/open-task-tree-upgrade-startup.e2e.test.ts > A top run's tree is built from its open Tasks: upgrade, start, load, save and restarts (built server, scripted AGY) > OT-3 a Task record that cannot be read hides its run with a warning 
+    -> AssertionError: the temporary Task's record: expected '' to be truthy
+ FAIL  tests/e2e/node-access/node-access-model.e2e.test.ts > Node access model (NA-1…NA-15): every request needs a key > NAS-01 the launch owner credential opens GraphQL, REST and a WebSocket route
+    -> Error: Test timed out in 5000ms.
+ FAIL  tests/e2e/runtime/agy-background-task-transport.e2e.test.ts > AGY background (daemon) tool steps through app WebSocket and history > closes a never-finished daemon step as a succeeded background task before TURN_COMPLETED and replays it
+    -> AssertionError: AgyDiscoveryError: Antigravity model discovery timed out; check the CLI and retry.: expected false to be true // Object.is equality
+ FAIL  tests/e2e/runtime/work-journal-neutral-vocabulary-scripted-agy.e2e.test.ts > Work Journal neutral vocabulary on a real (scripted) runtime > the platform and server-qualified tools of AGY call steps are journalled in neutral words
+    -> AssertionError: AgyDiscoveryError: Antigravity model discovery timed out; check the CLI and retry.: expected false to be true // Object.is equality

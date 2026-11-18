@@ -1,0 +1,22 @@
+# IMP-07 web unit and component suite (full), and the web guards
+# command: NUXT_TEST=true pnpm -C autobyteus-web exec vitest run ; pnpm -C autobyteus-web guard:web-boundary / guard:localization-boundary / audit:localization-literals
+# commit: web code as of 1f92302096
+# env: macOS, Node v22.23.1
+# date: 2026-11-18
+# result: 5809 passed, 1 failed: CollaborationMessagesOrgRoot.integration.spec.ts timed out at 5000 ms under the full run's load; alone 3/3 pass (2398 ms). Not Stop code (FU-004).
+
+Full run:
+     → Test timed out in 5000ms.
+ FAIL  components/workspace/collaboration/__tests__/CollaborationMessagesOrgRoot.integration.spec.ts > Collaboration messages on a large Agent Org root > applies a live communication message with one projection and identity work bounded by the visible rows
+Error: Test timed out in 5000ms.
+ Test Files  1 failed | 770 passed (771)
+      Tests  1 failed | 5809 passed | 2 skipped (5812)
+
+Alone (NUXT_TEST=true pnpm exec vitest run components/workspace/collaboration/__tests__/CollaborationMessagesOrgRoot.integration.spec.ts):
+ ✓ … applies a live communication message with one projection and identity work bounded by the visible rows  2398ms
+      Tests  3 passed (3)
+
+Guards (localization-boundary rerun after moving the Stop text checks into localization/messages/__tests__/stopInterruptCatalog.spec.ts):
+guard:web-boundary: [guard:web-boundary] Passed.
+guard:localization-boundary: [guard:localization-boundary] Passed.
+audit:localization-literals: exit 0

@@ -96,7 +96,7 @@ The Pinia stores act as the primary interface for the UI components to interact 
   - `sendUserInputAndSubscribe()`: After validation, immediately begins a local user submission by appending the user message, clearing the composer/staged context files, and setting `isSending`. For a new temporary run it calls `PrepareAgentRun` to create a durable prepared run identity without starting runtime, promotes the local context to that run id, finalizes attachments, opens the WebSocket stream, and sends `SEND_MESSAGE` with required `message_id` / `dedupe_key`. Existing inactive runs do not call `RestoreAgentRun` before send; backend `SEND_MESSAGE` owns restore/start/send lifecycle. Finalized attachment locators reconcile onto the same canonical reactive UserMessage retained by the submission handle and visible conversation, updating its mounted chip rather than a raw alias or duplicate row. The current first text Send/Open scope is recorded below; storage and opener behavior are unchanged. The visible lifecycle status remains backend-owned and comes from streamed `AGENT_STATUS` / `AGENT_COMMAND_ACK.status` payloads, not a frontend lifecycle placeholder.
   - Activation-pending marker (`markActivationPending` / `clearActivationPending` / `isActivationPending`): a send to a run the client does not consider live (a first send, marked with the permanent id right after promotion, or a resume of an Offline/Error run) is marked before the stream connects. History reconcile (`reconcileDiscoveredActiveRuns`) skips a marked run: a snapshot taken before activation must not disconnect it or apply Offline cleanup. The marker ends when a snapshot lists the run as active (`isActive || shouldConnectStream`), on a handled send failure (including the connect timeout), on a rejected `SEND_MESSAGE` ack (`AgentStreamingService` `onSendMessageCommandAck`), and on terminate/close. Live `AGENT_STATUS` events never end it: the backend reports `offline` as soon as the stream connects, before `SEND_MESSAGE`. `submissionPending` keeps its UI meaning and is not a reconcile guard. The workspace branch of `fetchRunHistoryTree` carries a request generation, like the Agent Org branch, so an older snapshot is never applied or reconciled after a newer one.
   - `connectToAgentStream(runId)`: Listens for real-time events specific to an agent run via WebSocket. For standalone runs, connect attaches to a durable run identity and receives backend status projection without forcing runtime restore; the later `SEND_MESSAGE` command performs backend-owned activation/restore when needed.
-  - `interruptGeneration()`: Generates a fresh `client_interrupt_*` command id and asks `AgentStreamingService` to admit the backend `INTERRUPT_GENERATION` control command. Its boolean result means connected-socket admission only. A matching rejected/failed server result or local not-connected/send/disconnect completion produces one localized error toast; accepted produces no success toast or optimistic idle. `isSending` is cleared only by later backend lifecycle/status handling after the runtime settles the active turn.
+  - `interruptGeneration()`: Generates a fresh `client_interrupt_*` command id, sends the backend `INTERRUPT_GENERATION` control command through `AgentStreamingService`, and resolves with the Stop's `InterruptOutcome` (`not_sent` when the run has no stream). It presents nothing: `runInterrupt` owns what the user sees (see Interrupt dispatch below).
   - `terminateRun(runId)`: Sends backend `TerminateAgentRun` for persisted runs before local teardown, then disconnects the stream, marks the run inactive in history, and refreshes the history tree. A stop reports success when the node stopped the run: the local teardown still belongs to the run unless a known start instance differs from the current one, so an input-state that arrives during the stop (the interrupt's) does not count as another run (`sameRunInstance`, `utils/runInstanceOwnership.ts`; the same rule for a Team's members in `agentTeamRunStore`; autobyteus-458 REQ-011). Row-level terminate actions delegate here without selecting the row; follow-up chat recovery still uses the restore-aware send path rather than treating terminate as a local-only close.
   - `postToolExecutionApproval()`: Sends user decisions (Approve/Deny) for "Awaiting Approval" tool calls through the backend active-runtime approval command; it is not a restore or turn-starting operation.
   - `closeAgent()`: Cleans up local state and unsubscribes.
@@ -190,8 +190,10 @@ for the user interaction contract.
     fallback.
   - `interruptFocusedMemberGeneration()`: emits `INTERRUPT_GENERATION` with a
     fresh command id and the exact execution address. `TeamStreamingService`
-    completes the pending command only when `AGENT_COMMAND_ACK` matches both.
-    Accepted acknowledgement is admission, not an optimistic status change.
+    settles the pending command with its `InterruptOutcome` only when
+    `AGENT_COMMAND_ACK` matches both (`runInterrupt` presents it; see Interrupt
+    dispatch). Accepted acknowledgement is admission, not an optimistic status
+    change.
   - `postToolExecutionApproval()`: reuses the exact execution address captured
     from the authoritative `agent_execution` event. It never rebuilds a target
     from current focus or invocation-id/display aliases.
@@ -370,17 +372,35 @@ invocation ids. Authoritative lifecycle remains the backend's later
 A visible tool card is not by itself approval authority.
 
 Interrupt dispatch and interrupt result are control traffic, not lifecycle or
-transcript events. Both streaming services register the fresh command id and
-exact target before send, reject non-connected states locally, roll back a
-synchronous send failure, and delete-guard acknowledgement/disconnect completion
-so each admitted command completes at most once. Team acknowledgement matching
-runs before member/task projection. A rejected/failed result or local transport
-failure creates one target-aware toast; it does not append an `ErrorSegment`,
-change agent/member/root activity, retry, or fabricate a server acknowledgement.
-An accepted result means provider/runtime admission only. The frontend keeps the
-affected single run or focused team member in its current sending state until
-`TURN_COMPLETED`, `AGENT_STATUS`, or terminal stream handling clears that state,
-so Stop remains visible until the provider cancellation boundary has settled.
+transcript events (autobyteus-533). The composer's Stop, on desktop and phone and
+for every run kind, goes `activeContextStore.interruptGeneration` → `runInterrupt`
+(`services/runInterrupt/runInterrupt.ts`) → the target's
+`AgentInteractionPort.interrupt()`, which resolves with an `InterruptOutcome`:
+`accepted`, `not_sent`, `connection_lost` or `refused` (the route of each run kind:
+`agentRunStore` and `agentTeamRunStore` over their streaming services,
+`orgInterruptOutcome` over the Org stream, the peer run's own `AgentStreamingService`).
+
+- `runInterrupt` is the one owner of what the user sees. The press sets
+  `AgentContext.interruptPending`, so `resolveAgentPrimaryAction` answers
+  `stopping` (the button shows a spinner, "Stopping…", disabled) and a second
+  press sends nothing. Stopping ends with the run's status (the first status
+  that is not `running`, watched from the press), or with `not_sent`, `refused` or
+  `connection_lost`. `accepted` (the node stopped a turn, or found nothing to stop)
+  and `connection_lost` show nothing; `not_sent` and `refused` show one plain
+  message naming the agent as the view does (`targetDisplayName`), never a run id;
+  the node's detail goes to the console.
+- The streaming services register the command id and exact target before send,
+  answer `not_sent` for a non-connected stream or a send that throws, and settle
+  each Stop once from its matching acknowledgement. They present nothing. A Stop
+  waiting when the connection is lost is held (`InterruptsAwaitingRebind`) while
+  the same service reconnects, and settled `connection_lost` only after the
+  rebind's status is applied (agent and peer: the new connection's first
+  `AGENT_STATUS`; Team and Org: the snapshot that makes the stream ready), so the
+  composer stays Stopping until the current status decides; it is settled at once
+  when the stream is closed for good (`disconnect()`, a non-retryable loss, a Team
+  stream that needs reopening, an Org release or credential refusal).
+- Nothing about a Stop appends an `ErrorSegment`, changes agent/member/root
+  activity, retries, or fabricates a server acknowledgement.
 
 `SEND_MESSAGE` acceptance is likewise admission rather than completion. Once an
 exact live AgentRun exists, the server owns one ordered FIFO and may retain an
@@ -1886,7 +1906,7 @@ Incoming events are routed based on their `type`:
 | `TURN_STARTED`            | inline lifecycle handling                          | Marks a new turn boundary in the protocol; current clients treat it as an observable lifecycle checkpoint. |
 | `TURN_COMPLETED`          | `agentStatusHandler.handleTurnCompleted`           | Marks the current AI message complete for that turn without waiting only for idle inference. |
 | `AGENT_STATUS`            | `agentStatusHandler.handleAgentStatus`             | Updates run/member status (`offline`, `initializing`, `idle`, `running`, or `error`) and its running background task count (`background_tasks_running`); no legacy transition-field names. Team payloads with explicit task-agent or task-team identity update the transient task execution projection and remove it after terminal cleanup; projection routing must not depend on generated run-id patterns or structural team names alone. |
-| `AGENT_COMMAND_ACK`       | command-specific correlation before generic dispatch | Handles the discriminated `SEND_MESSAGE` and `INTERRUPT_GENERATION` arms separately. Send acknowledgements preserve their status/error behavior. Interrupt acknowledgements must match command id plus exact standalone/team-member target; accepted only clears pending correlation, while rejected/failed invoke one store-owned localized toast without lifecycle or transcript mutation. |
+| `AGENT_COMMAND_ACK`       | command-specific correlation before generic dispatch | Handles the discriminated `SEND_MESSAGE` and `INTERRUPT_GENERATION` arms separately. Send acknowledgements preserve their status/error behavior. Interrupt acknowledgements must match command id plus exact standalone/team-member target; the streaming service settles the Stop as `accepted` (also for a Stop that found nothing to stop) or `refused`, without lifecycle or transcript mutation; `runInterrupt` alone presents it (no toast for `accepted`, one localized toast for `refused`). |
 | `TEAM_RUN_LIFECYCLE`      | `teamHandler.handleTeamRunLifecycle`                | Validates `team_run_id` and updates only root `AgentTeamContext.isActive`; subscription and exact member status remain independent. |
 | `COMPACTION_STATUS`       | `agentStatusHandler.handleCompactionStatus`        | Normalizes compaction lifecycle payloads into latest run state plus `kind: 'compaction'` activity rows (`requested`, `started`, `completed`, `failed`, `stopped`). |
 | `SYSTEM_INSTRUCTIONS_SUPPLIED` | `systemInstructionActivityHandler.handleSystemInstructionsSupplied` | Upserts one completed `kind: 'system_instruction'` Activity row by raw trace ID without mutating conversation, Event Monitor, or lifecycle. |

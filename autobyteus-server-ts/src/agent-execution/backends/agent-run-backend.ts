@@ -76,6 +76,10 @@ export interface AgentRunBackend {
     approved: boolean,
     reason?: string | null,
   ): Promise<AgentOperationResult>;
+  /**
+   * Interrupts the runtime's turn `turnId` (the canonical active turn the AgentRun passes). Answers `NO_ACTIVE_TURN`
+   * when `turnId` is not, or is no longer, the runtime's active turn; any other refusal is a real failure.
+   */
   interrupt(turnId: string | null): Promise<AgentOperationResult>;
   terminate(): Promise<AgentOperationResult>;
   /**

@@ -35,6 +35,7 @@ import {
   buildInterruptGenerationCommandAck,
   normalizeInterruptCommandId,
 } from "./interrupt-generation-command-ack.js";
+import { NOTHING_TO_INTERRUPT, userInterruptOutcome } from "./user-interrupt-outcome.js";
 import { AgentStreamWebSocketEgress, type AgentStreamServerMessageSink } from "./websocket-egress/agent-stream-websocket-egress.js";
 import { createSequencedStreamEgressControlComposition } from "./websocket-egress/agent-stream-egress-control-composition.js";
 import { agentStreamSequencedShape } from "./websocket-egress/agent-stream-sequenced-shape.js";
@@ -402,22 +403,14 @@ export class AgentStreamHandler {
       return;
     }
     if (!activeRun) {
-      logger.warn(`INTERRUPT_GENERATION rejected for missing agent run ${agentRunId}.`);
       sink?.send(new ServerMessage(
         ServerMessageType.AGENT_COMMAND_ACK,
-        buildInterruptGenerationCommandAck({
-          commandId,
-          target,
-          validationFailure: {
-            code: "RUN_NOT_FOUND",
-            message: `Agent run '${agentRunId}' is not active.`,
-          },
-        }),
+        buildInterruptGenerationCommandAck({ commandId, target, result: NOTHING_TO_INTERRUPT }),
       ));
       return;
     }
     try {
-      const result = await activeRun.interrupt(null);
+      const result = userInterruptOutcome(await activeRun.interrupt(null));
       sink?.send(new ServerMessage(
         ServerMessageType.AGENT_COMMAND_ACK,
         buildInterruptGenerationCommandAck({ commandId, target, result }),

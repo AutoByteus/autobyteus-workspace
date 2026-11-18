@@ -6,7 +6,7 @@ import { mentionViewerOf } from "../../agent-collaboration/collaborators/mention
 import { ASSIGNER_ONLY_REACTIVATION_MESSAGE, type RunTaskRecords } from "../../agent-collaboration/execution/task/task-execution-resource-port.js";
 import { runOwnTaskOf } from "../../agent-collaboration/delegation/run-own-task.js";
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
-import type { AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
+import { RUN_NOT_ACTIVE, type AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
 import { CollaborationContractError } from "../../agent-collaboration/domain/collaboration-contract-error.js";
 import { RootCommunicationEngine } from "../../agent-collaboration/execution/communication/root-communication-engine.js";
 import { createTeamCommunicationPort } from "../../services/team-communication/team-communication-port.js";
@@ -329,7 +329,7 @@ export class RootTeamRun {
       if (refusal) return refusal;
       if (command.kind !== "post_message") {
         if (!this.isLiveAgent(agentRunId)) {
-          return { accepted: false, code: "RUN_NOT_ACTIVE", message: `AgentRun '${agentRunId}' is shut down in root '${this.teamRunId}'.` };
+          return { accepted: false, code: RUN_NOT_ACTIVE, message: `AgentRun '${agentRunId}' is shut down in root '${this.teamRunId}'.` };
         }
         return (await this.requireContainingTeamRun(agentRunId)).executeDirectAgentCommand(agentRunId, command);
       }

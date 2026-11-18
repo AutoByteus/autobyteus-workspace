@@ -19,6 +19,7 @@ import type { StandaloneAgentRunRoot } from "../../standalone-agent-run-root/dom
 import { projectAgentCollaborationEvent, projectAgentCollaborationView } from "./agent-collaboration-view-projector.js";
 import type { WebSocketConnection } from "./agent-team-stream-handler.js";
 import { createRootExecutionStreamEgress, type RootExecutionStreamEgress } from "./websocket-egress/root-execution-stream-egress.js";
+import { userInterruptOutcome } from "./user-interrupt-outcome.js";
 
 /** A command for one agent of the root (every client command but Retry). */
 type AgentCommand = CollaborationStreamClientMessage;
@@ -182,9 +183,9 @@ export class AgentCollaborationStreamHandler {
           result.accepted ? null : result.code ?? "AGENT_ROOT_COMMAND_REJECTED", result.message ?? null));
         return;
       }
-      const result = await executePeerCommand(peer, target, message.type === "INTERRUPT_GENERATION"
-        ? { kind: "interrupt" }
-        : { kind: "approve_tool", invocationId: message.payload.invocation_id, approved: message.type === "APPROVE_TOOL", reason: message.payload.reason });
+      const result = message.type === "INTERRUPT_GENERATION"
+        ? userInterruptOutcome(await executePeerCommand(peer, target, { kind: "interrupt" }))
+        : await executePeerCommand(peer, target, { kind: "approve_tool", invocationId: message.payload.invocation_id, approved: message.type === "APPROVE_TOOL", reason: message.payload.reason });
       session.egress.send(commandAck(message, result.accepted ? "accepted" : "rejected",
         result.accepted ? null : result.code ?? "AGENT_ROOT_COMMAND_REJECTED", result.message ?? null));
     } catch (cause) {

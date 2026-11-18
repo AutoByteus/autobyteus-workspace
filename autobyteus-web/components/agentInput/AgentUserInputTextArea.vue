@@ -41,8 +41,10 @@
 
       <MessagePrimaryActionButton
         class="absolute bottom-2 right-2"
-        :kind="primaryAction.kind === 'interrupt' ? 'interrupt' : 'send'"
+        :kind="primaryAction.kind === 'interrupt' || primaryAction.kind === 'stopping' ? 'interrupt' : 'send'"
         :disabled="isActionDisabled"
+        :busy="primaryAction.kind === 'stopping'"
+        :title="primaryAction.kind === 'stopping' ? t('agents.interrupt.stopping') : null"
         @activate="handlePrimaryAction"
       />
 
@@ -132,11 +134,13 @@ const internalRequirement = ref('');
 
 const targetContext = computed<AgentContext | null>(() => props.target?.context ?? null);
 const submissionPending = computed(() => targetContext.value?.submissionPending ?? false);
+const interruptPending = computed(() => targetContext.value?.interruptPending ?? false);
 
 const primaryAction = computed(() => resolveAgentPrimaryAction({
   hasContext: Boolean(targetContext.value),
   status: targetContext.value?.state.currentStatus ?? AgentStatus.Offline,
   submissionPending: submissionPending.value,
+  interruptPending: interruptPending.value,
   isUploading: contextFileUploadStore.isUploading,
   // With skill tagging (a standalone run), a skill tag also makes a draft, as in Chat. Context files alone never do.
   hasDraft: props.skillTagging && targetContext.value
@@ -311,9 +315,9 @@ const handleSend = async () => {
   }
 };
 
-const handleStop = () => {
+const handleStop = async () => {
   try {
-    void props.target?.interrupt?.();
+    await props.target?.interrupt?.();
   } catch (error) {
     console.error('Error interrupting generation:', error);
   }
@@ -325,7 +329,7 @@ const handlePrimaryAction = () => {
     return;
   }
   if (action.kind === 'interrupt') {
-    handleStop();
+    void handleStop();
     return;
   }
   void handleSend();

@@ -19,6 +19,7 @@ import { orgMemberLoadTarget, stageAgentOrgExecutionContext } from '~/services/a
 import { memberLoader } from '~/services/runHydration/memberLoader'
 import { rebuildOfView, useCollaborationParticipantMessagesStore } from '~/services/collaborationMessages/collaborationParticipantMessages'
 import { AgentOrgStreamingService } from '~/services/agentOrgExecution/agentOrgStreamingService'
+import { orgInterruptOutcome } from '~/services/runInterrupt/orgInterruptOutcome'
 import { acceptLocalSubmission, beginLocalUserSubmission, failLocalSubmission, finalizeLocalSubmissionAttachments, type LocalUserSubmissionHandle } from '~/services/runSubmission/localUserSubmission'
 import { upsertUserMessageByIdentity } from '~/services/agentStreaming/handlers/userMessageProjection'
 import { readAgentOrgRunInspection } from '~/services/agentOrgExecution/agentOrgRunInspection'
@@ -373,7 +374,7 @@ export const useAgentOrgContextsStore = defineStore('agentOrgContexts', () => {
     const capability: WorkspaceAccess = access === 'continuable' ? { access, continuation: { send } }
       : access === 'live' ? { access, interaction: {
         send,
-        interrupt: () => liveService().interrupt(agentRunId),
+        interrupt: () => orgInterruptOutcome(liveService(), agentRunId),
         decideTool: (invocationId, approved, reason) => liveService().decideTool(agentRunId, invocationId, approved, reason),
       } } : { access: 'read_only' }
     return Object.freeze({ ...target, ...capability })
