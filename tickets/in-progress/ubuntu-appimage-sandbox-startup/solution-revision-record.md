@@ -130,3 +130,6 @@ User accepts one-time system password prompt for scoped setup and expects no rep
 
 ## SR-011 — Protected installation chosen
 User agreed to the proposed installed copy at a specific location like other Ubuntu applications. Current product direction at top of requirements supersedes open SR-010 location question. UC-001/002/004/005; REQ-001–003/005/007. No new test, no global security or release authorization. Feasibility of protected unattended updates remains open, not a request for another location approval.
+
+## SR-012 — Approved baseline and DS-001
+Prior Draft → Approved for design/implementation subject to independent architecture review. User authorized proceeding with one-time scoped protected installation; designer informed user of consolidated approval after SR-012 mechanism feasibility. All BEH/REQ/AC preserved or revised to chosen path, historical A/B material archived. Design DS-001 Large/High, first-install and update trust/OS matrix explicit risk gates. No new release or host modification. Refreshed personal source. See design-spec, investigation notes and probe evidence.
