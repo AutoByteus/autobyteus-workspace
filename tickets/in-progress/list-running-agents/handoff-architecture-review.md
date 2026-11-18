@@ -23,7 +23,7 @@ Decided by the Solution Designer within that direction (founder informed): a sto
 ## What the design does (see `design-spec.md`)
 
 - **Message rule ("the run ID is the address"):** `send_message_to(run ID)` reaches any running agent of another local run (DS-003, replacing `TASK_AGENT_RESOURCE_CONFLICT`); with the new `node` field, any running agent of a paired node (DS-004: an `unlinked_run` endpoint + new peer request `POST /rest/remote/run-messages`); a teammate of a delegator reaches the linked remote run too (DS-006). A team is messaged through its coordinator's run ID, as today; a peer gives the same `TARGET_IS_TEAM_RUN` guidance (DEC-012, SR-004). Task-related wake/reopen, the closed-Task refusal and links are unchanged.
-- **List:** opt-in tool `list_running_agents({node?, address?, state?})`: running runs a person started (Agent, Team, Org with its units), with run ID, name, address, state, start time, Project; from a peer through new `POST /rest/remote/running-agents`. No content.
+- **List:** opt-in tool `list_running_agents({node?, address?, state?})`: running Agent and Team runs a person started (no Org runs, SR-005; a Team entry gives `coordinator_agent_run_id`), with run ID, name, address, state, start time, Project; from a peer through new `POST /rest/remote/running-agents`. No content.
 - **One owner of "running":** `RunningAgents` (live root directory + per-kind live statuses), used by local delivery, the peer receiver and the listing.
 
 ## Evidence
