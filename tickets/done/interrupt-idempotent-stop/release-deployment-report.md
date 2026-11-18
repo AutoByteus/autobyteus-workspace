@@ -105,7 +105,7 @@ None (no release).
 - Bootstrap context source: the Solution Designer's bootstrap (worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/interrupt-idempotent-stop`, branch `codex/interrupt-idempotent-stop`, base `origin/personal`) and `RELEASE.md` "Finalization Target".
 - Ticket branch: `codex/interrupt-idempotent-stop`
 - Finalization target remote / branch: `origin` / `personal`, `--no-ff` merge from a `finalize/interrupt-idempotent-stop` branch (RELEASE.md).
-- The outcome (commits, push, the user's checkout, cleanup) is in the "Finalization Record" at the end of this report, written after the push.
+- The outcome (commits, push, the user's checkout, cleanup) is in the "Finalization Record" at the end of this report, written after the push. Merge `a7f0996bd5` on `origin/personal`.
 
 ## Release / Publication / Deployment
 
@@ -132,10 +132,23 @@ Revert the merge commit on `personal` (`git revert -m 1 <merge>`). Nothing persi
 ## Final Status
 
 - Verification complete (from the evidence, or the user's check where needed): `Yes`
-- Repository finalization complete: see the Finalization Record
+- Repository finalization complete: `Yes` (Finalization Record below)
 - Applicable release/deployment/rollout complete or not required: `Yes` (not required)
-- Applicable safe cleanup complete or not required: see the Finalization Record
+- Applicable safe cleanup complete or not required: run after the record commit's push (Finalization Record, last two bullets); its result is in the terminal message
 - Unresolved blocker: `None`
-- Successful terminal package eligible for return: after the Finalization Record
-- Terminal package sent to the Solution Designer: see the Finalization Record
-- Terminal message/reference: see the Finalization Record
+- Successful terminal package eligible for return: `Yes`
+- Terminal package sent to the Solution Designer: by `send_message_to` after the record commit's push and the cleanup
+- Terminal message/reference: the `send_message_to` message to the Solution Designer, address from `get_handoff_rules`
+
+## Finalization Record
+
+Written after the push of the merge, the way earlier tickets recorded theirs.
+
+- Ticket branch `codex/interrupt-idempotent-stop`: committed (tip `fa1b2a8325` before the merge) and pushed to `origin` (`[new branch]`); Secret Gate on `origin/personal..codex/interrupt-idempotent-stop`: `PASS`, 23 commits.
+- Target refreshed before the merge: `git fetch origin personal` showed `2eb195603a`, which the ticket branch already contained (merge `b1684a5378`); it had not moved again at the push.
+- Merge: on `finalize/interrupt-idempotent-stop` (from `origin/personal` `2eb195603a`), `git merge --no-ff codex/interrupt-idempotent-stop` = `a7f0996bd5` (parents `2eb195603a` and `fa1b2a8325`; the merged tree equals the ticket branch's tree). Secret Gate on the merged state: `PASS`, 24 commits. Hygiene check on the archived tree: passed.
+- Push: `git push origin HEAD:personal` `2eb195603a..a7f0996bd5`; `origin/personal` = `a7f0996bd5` afterwards.
+- Release: none (no tag, no version bump, no pipeline).
+- This record: committed on `finalize/interrupt-idempotent-stop` and pushed to `origin/personal` as the commit that follows `a7f0996bd5`.
+- The user's checkout (`/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`, on `personal`, no local commits, uncommitted edits in other tickets' archived files): `git fetch`, then `git merge --ff-only origin/personal` after this record's push, only if git accepts it; nothing is stashed, reset or checked out there. The result (commit, or why not) is in the terminal message.
+- Cleanup, after this record's push: `git worktree remove --force /Users/normy/autobyteus_org/autobyteus-worktrees/interrupt-idempotent-stop` (only untracked build output `*/dist/` remains), `git worktree prune`, delete the local branches `finalize/interrupt-idempotent-stop` and `codex/interrupt-idempotent-stop`. Remote branch: `Not required` (the repository keeps pushed `codex/*` branches). The result is in the terminal message.
