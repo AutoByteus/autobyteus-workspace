@@ -1,0 +1,121 @@
+{
+ "cases": [
+  {
+   "width": 412,
+   "step": "standard",
+   "label": "agent run",
+   "entries": [
+    "Artifacts",
+    "Files",
+    "Activity",
+    "VNC Viewer",
+    "Settings"
+   ],
+   "ids": [
+    "mobile-run-menu-artifacts",
+    "mobile-run-menu-files",
+    "mobile-run-menu-activity",
+    "mobile-run-menu-desktop",
+    "mobile-run-menu-settings"
+   ],
+   "box": {
+    "left": 116,
+    "right": 404,
+    "width": 412
+   },
+   "sideways": false,
+   "settingsOpened": true,
+   "vncOpened": true,
+   "shot": "API-08-412-standard-agent-run-menu.png"
+  },
+  {
+   "width": 412,
+   "step": "standard",
+   "label": "Team lead",
+   "entries": [
+    "Artifacts",
+    "Files",
+    "Messages",
+    "Activity",
+    "VNC Viewer",
+    "Settings"
+   ],
+   "ids": [
+    "mobile-run-menu-artifacts",
+    "mobile-run-menu-files",
+    "mobile-run-menu-messages",
+    "mobile-run-menu-activity",
+    "mobile-run-menu-desktop",
+    "mobile-run-menu-settings"
+   ],
+   "box": {
+    "left": 116,
+    "right": 404,
+    "width": 412
+   },
+   "sideways": false,
+   "settingsOpened": true,
+   "vncOpened": true,
+   "shot": "API-08-412-standard-Team-lead-menu.png"
+  },
+  {
+   "width": 360,
+   "step": "largest",
+   "label": "agent run",
+   "entries": [
+    "Artifacts",
+    "Files",
+    "Activity",
+    "VNC Viewer",
+    "Settings"
+   ],
+   "ids": [
+    "mobile-run-menu-artifacts",
+    "mobile-run-menu-files",
+    "mobile-run-menu-activity",
+    "mobile-run-menu-desktop",
+    "mobile-run-menu-settings"
+   ],
+   "box": {
+    "left": 9.890625,
+    "right": 350.125,
+    "width": 360
+   },
+   "sideways": false,
+   "settingsOpened": true,
+   "vncOpened": true,
+   "shot": "API-08-360-largest-agent-run-menu.png"
+  },
+  {
+   "width": 360,
+   "step": "largest",
+   "label": "Team lead",
+   "entries": [
+    "Artifacts",
+    "Files",
+    "Messages",
+    "Activity",
+    "VNC Viewer",
+    "Settings"
+   ],
+   "ids": [
+    "mobile-run-menu-artifacts",
+    "mobile-run-menu-files",
+    "mobile-run-menu-messages",
+    "mobile-run-menu-activity",
+    "mobile-run-menu-desktop",
+    "mobile-run-menu-settings"
+   ],
+   "box": {
+    "left": 9.890625,
+    "right": 350.125,
+    "width": 360
+   },
+   "sideways": false,
+   "settingsOpened": true,
+   "vncOpened": true,
+   "shot": "API-08-360-largest-Team-lead-menu.png"
+  }
+ ],
+ "errors": []
+}
