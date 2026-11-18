@@ -24,6 +24,12 @@ import { buildE2eClientCommandIds } from "../helpers/websocket-command-helpers.j
 //   code wrote; its backup holds the released bytes; every converted link opens its file through `/rest/runs/…` and
 //   `/rest/team-runs/…/agent-runs/…`; the old route is gone; the deleted file's link is kept as it is, with a warning.
 //   A second start changes nothing.
+// - MO-1 (the same data, autobyteus-491 merged): the data folder also holds the installed copies of the retired built-in
+//   Skill Self-Evolver and Memory Compactor that earlier builds left, and a real run of the Memory Compactor; its ledger row
+//   is removed too. The one first start runs all three new migrations in the registry's order (both attachment-link
+//   migrations, then 491's `20261118_remove_retired_built_in_agents`), each with its status; the copies are gone; the
+//   compactor's run stays listed and continuing it gets the AGY runtime's own answer for a deleted agent
+//   ("AGY_AGENT_DEFINITION_MISSING: …", as for any removed agent); the second start runs none of them again.
 // Prerequisite: `pnpm -C autobyteus-server-ts build` for the current worktree.
 // Run: env -i PATH="$PATH" HOME="$(mktemp -d)" TMPDIR="$TMPDIR" RUN_AGY_FAILURE_E2E=1 \
 //   ANTIGRAVITY_CLI_COMMAND=$PWD/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs \
@@ -33,6 +39,9 @@ const enabled = process.env.RUN_AGY_FAILURE_E2E === "1" && spawnSync(cli, ["--ve
 const suite = enabled ? describe : describe.skip;
 const MIGRATION = "20261117_delegated_run_own_attachment_links";
 const FOLLOW_UP = "20261117_delegated_run_own_attachment_links_after_task_agent_own_run";
+const REMOVAL = "20261118_remove_retired_built_in_agents";
+const EVOLVER_ID = "autobyteus-skill-evolver";
+const COMPACTOR_ID = "autobyteus-memory-compactor";
 const PNG = Buffer.from("89504e470d0a1a0a0000000d4948445200000001000000010806000000" +
   "1f15c4890000000d49444154789c6360000002000154a24f5d0000000049454e44ae426082", "hex");
 type Attachment = { storedFilename: string; displayName: string; locator: string };
@@ -77,13 +86,53 @@ suite("Delegated runs' stored attachment links become their own links at the fir
     return entries.filter((entry) => entry.isFile()).map((entry) => path.relative(dir, path.join(entry.parentPath, entry.name))).sort();
   };
 
-  it("ALM-1 the first start converts each delegated run's stored link to its own, with a backup; links open; a second start changes nothing", async () => {
+  /** The retired built-ins' installed copies as earlier builds left them (the shapes of 491's RRB-1). */
+  const writeRetiredCopies = async () => {
+    const put = async (rel: string, text: string) => {
+      await fs.mkdir(path.dirname(path.join(root, rel)), { recursive: true });
+      await fs.writeFile(path.join(root, rel), text);
+    };
+    await put(`agents/${EVOLVER_ID}/agent.md`, "---\nname: Skill Self-Evolver\n---\n\nEvolve.\n");
+    await put(`agents/${EVOLVER_ID}/agent-config.json`, `${JSON.stringify({ skillNames: ["retrospective-skill-coach"] })}\n`);
+    await put(`agents/${EVOLVER_ID}/skills/retrospective-skill-coach/SKILL.md`, "# coach\n");
+    await put(`agents/${COMPACTOR_ID}/agent.md`, "---\nname: Memory Compactor\n---\n\nCompact.\n");
+    await put(`agents/${COMPACTOR_ID}/agent-config.json`, "{}\n");
+  };
+  const exists = (rel: string) => fs.lstat(path.join(root, rel)).then(() => true, () => false);
+  const historyRunIds = async (s: BuiltStudio): Promise<string[]> =>
+    ((await s.gql("{listWorkspaceRunHistory(limitPerAgent:50){agentDefinitions{runs{runId}}}}")).listWorkspaceRunHistory as Rec[])
+      .flatMap((group) => (group.agentDefinitions as Rec[]).flatMap((definition) => (definition.runs as Rec[]).map((run) => String(run.runId))));
+  /** The owner's message to a standalone run through its composer socket: the frames until `settled` holds. */
+  const ownerMessage = async (s: BuiltStudio, runId: string, content: string, settled: (frames: Array<{ type: string; payload: Rec }>) => boolean) => {
+    const socket = new WebSocket(`${s.url.replace(/^http/, "ws")}/ws/agent/${runId}`);
+    s.sockets.push(socket);
+    const frames: Array<{ type: string; payload: Rec }> = [];
+    socket.on("message", (raw: unknown) => { try { frames.push(...agentStreamFramesOf(JSON.parse(String(raw)) as Rec)); } catch { /* not a frame */ } });
+    await new Promise<void>((resolve, reject) => { socket.once("open", () => resolve()); socket.once("error", reject); });
+    await waitConnected(frames);
+    socket.send(JSON.stringify({ type: "SEND_MESSAGE", payload: { ...buildE2eClientCommandIds(), agent_run_id: runId, content } }));
+    await until(() => settled(frames) || null, `the answer to ${runId}`, 90_000);
+    socket.close();
+    return frames;
+  };
+
+  it("ALM-1 the first start converts each delegated run's stored link to its own, with a backup; links open; a second start changes nothing; MO-1 491's removal runs after both in that start", async () => {
     root = await fs.realpath(await fs.mkdtemp(path.join(os.tmpdir(), "attachment-links-e2e-")));
     const workspace = path.join(root, "workspace");
     for (const dir of ["home", "workspace"]) await fs.mkdir(path.join(root, dir));
     await fs.writeFile(path.join(root, ".env"), "APP_ENV=test\nAUTOBYTEUS_SERVER_HOST=http://127.0.0.1:8000\n");
+    // MO-1: the fresh install records every migration; the retired copies then appear as an earlier build had left them
+    // (their removal already recorded, so this build serves them until that ledger row goes, below).
+    server = await startBuiltStudio(root, env());
+    await server.stop();
+    await writeRetiredCopies();
     server = await startBuiltStudio(root, env());
     let s = server;
+    expect(((await s.gql("{agentDefinitions{id}}")).agentDefinitions as Rec[]).map((d) => d.id), "the retired copy is served")
+      .toContain(COMPACTOR_ID);
+    const compactorRun = await createRoot(s, "agent", { manager: COMPACTOR_ID }, workspace);
+    await ownerMessage(s, compactorRun.rootId, "Compact my notes.",
+      (frames) => frames.some((f) => f.type === "TURN_COMPLETED" || (f.type === "AGENT_STATUS" && f.payload.status === "idle")));
     const tag = randomUUID().slice(0, 6);
     const agent = async (name: string) => (await s.gql(`mutation($input:CreateAgentDefinitionInput!){createAgentDefinition(input:$input){id}}`,
       { input: { name, role: "assistant", description: name, instructions: "Follow the request.", toolNames: [] } })).createAgentDefinition.id as string;
@@ -167,7 +216,8 @@ suite("Delegated runs' stored attachment links become their own links at the fir
       expect(Buffer.from(await response.arrayBuffer()).equals(bytes), locator).toBe(true);
     }
     for (const mutation of [`terminateAgentRun(agentRunId:"${child}"){success}`, `terminateAgentTeamRun(teamRunId:"${team}"){success}`,
-      `terminateAgentRun(agentRunId:"${agentRoot.rootId}"){success}`]) await s.gql(`mutation{${mutation}}`).catch(() => undefined);
+      `terminateAgentRun(agentRunId:"${agentRoot.rootId}"){success}`, `terminateAgentRun(agentRunId:"${compactorRun.rootId}"){success}`])
+      await s.gql(`mutation{${mutation}}`).catch(() => undefined);
     await s.stop();
 
     // The released shape: each stored own link named the child through its delegator, the run that hosted it then.
@@ -191,7 +241,7 @@ suite("Delegated runs' stored attachment links become their own links at the fir
     // A file the user removed: its link cannot be admitted (M-3 b) and stays as it is.
     await fs.rm(path.join(childFolder, "context_files", goneFiles[0]!.storedFilename));
     const db = new DatabaseSync(path.join(root, "db", "production.db"));
-    for (const id of [MIGRATION, FOLLOW_UP]) {
+    for (const id of [MIGRATION, FOLLOW_UP, REMOVAL]) {
       expect(db.prepare("SELECT status FROM app_data_migration_records WHERE migration_id = ?").get(id), `${id} ran on the fresh install`).toBeTruthy();
       db.prepare("DELETE FROM app_data_migration_records WHERE migration_id = ?").run(id);
     }
@@ -208,6 +258,24 @@ suite("Delegated runs' stored attachment links become their own links at the fir
     // The two trace files holding converted links are migrated; the kept link is the warning (the status).
     expect(String(first?.summary)).toMatch(/^Scanned \d+; migrated 2; skipped \d+; failed 0\.$/);
     expect(String(firstFollowUp?.summary)).toMatch(/^Scanned \d+; migrated 0; skipped \d+; failed 0\.$/);
+    // MO-1: 491's removal runs in the same start, after both, and removes exactly the two copies.
+    const firstRemoval = await migration(s, REMOVAL);
+    console.log(`MO-1 first start: ${JSON.stringify({ removal: firstRemoval })}`);
+    expect(firstRemoval, JSON.stringify(firstRemoval)).toMatchObject({ status: "SUCCEEDED", attempts: 1, summary: "Scanned 2; migrated 2; skipped 0; failed 0." });
+    const at = (record: Rec | undefined, field: "startedAt" | "completedAt") => Date.parse(String(record?.[field]));
+    expect(at(first, "completedAt"), "the follow-up starts after the attachment-link migration").toBeLessThanOrEqual(at(firstFollowUp, "startedAt"));
+    expect(at(firstFollowUp, "completedAt"), "491's removal starts after both").toBeLessThanOrEqual(at(firstRemoval, "startedAt"));
+    for (const gone of [`agents/${EVOLVER_ID}`, `agents/${COMPACTOR_ID}`]) expect(await exists(gone), gone).toBe(false);
+    expect(((await s.gql("{agentDefinitions{id}}")).agentDefinitions as Rec[]).map((d) => d.id)).not.toContain(COMPACTOR_ID);
+    expect(await exists(`memory/agents/${compactorRun.rootId}/run_metadata.json`), "the compactor's run stays").toBe(true);
+    expect(await historyRunIds(s), "the compactor's run stays listed").toContain(compactorRun.rootId);
+    const refused = await ownerMessage(s, compactorRun.rootId, "Compact more.", (frames) => frames.some((f) => f.type === "AGENT_COMMAND_ACK"));
+    const ack = refused.find((f) => f.type === "AGENT_COMMAND_ACK")!.payload;
+    // The AGY runtime's own answer for a deleted agent (its backend's, since the AGY baseline; AutoByteus answers
+    // RUN_NOT_FOUND "AgentDefinition with ID … not found", E-002): it names the missing definition, never G-5's model text.
+    expect(ack, JSON.stringify(ack)).toMatchObject({ accepted: false, code: "ACTIVATION_FAILED", run_id: compactorRun.rootId,
+      message: `AGY_AGENT_DEFINITION_MISSING: ${COMPACTOR_ID}` });
+    expect(refused.some((f) => f.type === "ASSISTANT_COMPLETE"), "nothing answered").toBe(false);
     const goneLink = hostScoped(goneFiles[0]!, child);
     for (const [file, text] of current) {
       const expected = text.includes(goneFiles[0]!.locator) ? replaceValues(text, new Map([[goneFiles[0]!.locator, goneLink]])).next : text;
@@ -239,6 +307,10 @@ suite("Delegated runs' stored attachment links become their own links at the fir
       .toEqual({ attempts: first?.attempts, completedAt: first?.completedAt, status: first?.status });
     expect({ attempts: secondFollowUp?.attempts, completedAt: secondFollowUp?.completedAt })
       .toEqual({ attempts: firstFollowUp?.attempts, completedAt: firstFollowUp?.completedAt });
+    const secondRemoval = await migration(s, REMOVAL);
+    expect({ attempts: secondRemoval?.attempts, completedAt: secondRemoval?.completedAt })
+      .toEqual({ attempts: firstRemoval?.attempts, completedAt: firstRemoval?.completedAt });
+    expect(await historyRunIds(s), "the compactor's run is still listed").toContain(compactorRun.rootId);
     for (const file of await traceFiles()) {
       if (!before.has(file)) continue;
       expect(await fs.readFile(file, "utf8"), `${file} unchanged by the second start`).toBe(before.get(file));

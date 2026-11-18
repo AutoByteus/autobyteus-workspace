@@ -464,16 +464,23 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
         command_id: randomUUID(), message_id: randomUUID(), dedupe_key: randomUUID(), content, context_file_paths: [], image_urls: [] } }));
     },
   });
-  /** The actor calls one actual agent tool; returns the tool result it reports and how long the call took. */
+  /**
+   * The actor calls one actual agent tool; returns the tool result it reports and how long the call took. The run view
+   * holds only the most recent events (`RECENT_RUN_PROJECTION_EVENT_LIMIT`), so a long-lived actor's count of results can
+   * stay the same as old entries leave the window: the new result is the newest reply entry that was not there before.
+   */
   const calls = async (actor: Actor, name: string, args: Rec, ms = 90_000): Promise<Rec & { elapsedMs: number }> => {
-    const before = calledResults(await actor.conversation()).length;
+    const replies = (conversation: unknown) => (Array.isArray(conversation) ? conversation : [])
+      .filter((entry) => stringsOf(entry).some((value) => value.includes("CALLED:"))).map((entry) => JSON.stringify(entry));
+    const before = new Set(replies(await actor.conversation()));
     const started = Date.now();
     await actor.send(callTool(name, args));
-    let results: string[] = [];
-    await until(async () => { results = calledResults(await actor.conversation()); return results.length > before; },
+    let fresh: string[] = [];
+    await until(async () => { fresh = replies(await actor.conversation()).filter((entry) => !before.has(entry)); return fresh.length > 0; },
       `${actor.label} result of ${name} ${JSON.stringify(args).slice(0, 160)}`, ms)
-      .catch(async (error) => { throw new Error(`${error}; conversation tail: ${JSON.stringify(stringsOf(await actor.conversation()).slice(-6)).slice(0, 1500)}`); });
-    return { ...toolResult(results[before]!), elapsedMs: Date.now() - started };
+      .catch(async (error) => { const now = await actor.conversation();
+        throw new Error(`${error}; entries in view: ${Array.isArray(now) ? now.length : 0}; conversation tail: ${JSON.stringify(stringsOf(now).slice(-6)).slice(0, 1500)}`); });
+    return { ...toolResult(calledResults([JSON.parse(fresh[0]!)])[0]!), elapsedMs: Date.now() - started };
   };
   /** 269: a run's title in beta's history (`summary`), as beta's run history lists it; `null` when the run is not listed. */
   const betaTitle = async (kind: "agent" | "team", id: string): Promise<string | null> => {
