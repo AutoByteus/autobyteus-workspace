@@ -24,12 +24,16 @@ import { buildE2eClientCommandIds } from "../helpers/websocket-command-helpers.j
 //   code wrote; its backup holds the released bytes; every converted link opens its file through `/rest/runs/…` and
 //   `/rest/team-runs/…/agent-runs/…`; the old route is gone; the deleted file's link is kept as it is, with a warning.
 //   A second start changes nothing.
-// - MO-1 (the same data, autobyteus-491 merged): the data folder also holds the installed copies of the retired built-in
-//   Skill Self-Evolver and Memory Compactor that earlier builds left, and a real run of the Memory Compactor; its ledger row
-//   is removed too. The one first start runs all three new migrations in the registry's order (both attachment-link
-//   migrations, then 491's `20261118_remove_retired_built_in_agents`), each with its status; the copies are gone; the
-//   compactor's run stays listed and continuing it gets the AGY runtime's own answer for a deleted agent
-//   ("AGY_AGENT_DEFINITION_MISSING: …", as for any removed agent); the second start runs none of them again.
+// The same data also holds the installed copies of the retired built-in Skill Self-Evolver and Memory Compactor that
+// earlier builds left, and a real run of the Memory Compactor (autobyteus-491's `20261118_remove_retired_built_in_agents`,
+// released in v1.5.14-beta.1; this ticket's two migrations are `20261119_…`, after it: SR-017, D-15). Two upgrade paths:
+// - MO-1, from a release before beta.1: all three are pending. The one first start runs them in the registry's order:
+//   491's removal, then the attachment-link migration, then its follow-up.
+// - MO-2, from beta.1: 491's removal already ran there (its row SUCCEEDED, the copies gone; emulated by a start of this
+//   build with only that row pending). The first start runs only the two `20261119_…` migrations, main then follow-up;
+//   491's row is untouched.
+// In both: the copies are gone; the compactor's run stays listed and continuing it gets the AGY runtime's own answer for a
+// deleted agent ("AGY_AGENT_DEFINITION_MISSING: …"); backups land under the new ID's folder; the second start runs none.
 // Prerequisite: `pnpm -C autobyteus-server-ts build` for the current worktree.
 // Run: env -i PATH="$PATH" HOME="$(mktemp -d)" TMPDIR="$TMPDIR" RUN_AGY_FAILURE_E2E=1 \
 //   ANTIGRAVITY_CLI_COMMAND=$PWD/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs \
@@ -116,7 +120,7 @@ suite("Delegated runs' stored attachment links become their own links at the fir
     return frames;
   };
 
-  it("ALM-1 the first start converts each delegated run's stored link to its own, with a backup; links open; a second start changes nothing; MO-1 491's removal runs after both in that start", async () => {
+  const journey = async (from: "before-beta.1" | "beta.1") => {
     root = await fs.realpath(await fs.mkdtemp(path.join(os.tmpdir(), "attachment-links-e2e-")));
     const workspace = path.join(root, "workspace");
     for (const dir of ["home", "workspace"]) await fs.mkdir(path.join(root, dir));
@@ -240,12 +244,27 @@ suite("Delegated runs' stored attachment links become their own links at the fir
     expect([...current.keys()].some((file) => file.includes(`${path.sep}${team}${path.sep}${leadRun}${path.sep}`)), "the lead's member trace").toBe(true);
     // A file the user removed: its link cannot be admitted (M-3 b) and stays as it is.
     await fs.rm(path.join(childFolder, "context_files", goneFiles[0]!.storedFilename));
-    const db = new DatabaseSync(path.join(root, "db", "production.db"));
-    for (const id of [MIGRATION, FOLLOW_UP, REMOVAL]) {
-      expect(db.prepare("SELECT status FROM app_data_migration_records WHERE migration_id = ?").get(id), `${id} ran on the fresh install`).toBeTruthy();
-      db.prepare("DELETE FROM app_data_migration_records WHERE migration_id = ?").run(id);
+    const deleteRows = (ids: string[]) => {
+      const db = new DatabaseSync(path.join(root, "db", "production.db"));
+      for (const id of ids) {
+        expect(db.prepare("SELECT status FROM app_data_migration_records WHERE migration_id = ?").get(id), `${id} ran on the fresh install`).toBeTruthy();
+        db.prepare("DELETE FROM app_data_migration_records WHERE migration_id = ?").run(id);
+      }
+      db.close();
+    };
+    let removalOnBeta1: Rec | undefined;
+    if (from === "beta.1") {
+      // MO-2: beta.1's start ran 491's removal (and has no attachment-link migration): the copies go, its row is recorded.
+      deleteRows([REMOVAL]);
+      server = await startBuiltStudio(root, env());
+      removalOnBeta1 = await migration(server, REMOVAL);
+      expect(removalOnBeta1, JSON.stringify(removalOnBeta1)).toMatchObject({ status: "SUCCEEDED", summary: "Scanned 2; migrated 2; skipped 0; failed 0." });
+      for (const gone of [`agents/${EVOLVER_ID}`, `agents/${COMPACTOR_ID}`]) expect(await exists(gone), gone).toBe(false);
+      await server.stop();
+      deleteRows([MIGRATION, FOLLOW_UP]);
+    } else {
+      deleteRows([MIGRATION, FOLLOW_UP, REMOVAL]);
     }
-    db.close();
 
     // The first start of the release.
     server = await startBuiltStudio(root, env());
@@ -258,13 +277,18 @@ suite("Delegated runs' stored attachment links become their own links at the fir
     // The two trace files holding converted links are migrated; the kept link is the warning (the status).
     expect(String(first?.summary)).toMatch(/^Scanned \d+; migrated 2; skipped \d+; failed 0\.$/);
     expect(String(firstFollowUp?.summary)).toMatch(/^Scanned \d+; migrated 0; skipped \d+; failed 0\.$/);
-    // MO-1: 491's removal runs in the same start, after both, and removes exactly the two copies.
     const firstRemoval = await migration(s, REMOVAL);
-    console.log(`MO-1 first start: ${JSON.stringify({ removal: firstRemoval })}`);
+    console.log(`${from === "beta.1" ? "MO-2" : "MO-1"} first start: ${JSON.stringify({ removal: firstRemoval })}`);
     expect(firstRemoval, JSON.stringify(firstRemoval)).toMatchObject({ status: "SUCCEEDED", attempts: 1, summary: "Scanned 2; migrated 2; skipped 0; failed 0." });
     const at = (record: Rec | undefined, field: "startedAt" | "completedAt") => Date.parse(String(record?.[field]));
     expect(at(first, "completedAt"), "the follow-up starts after the attachment-link migration").toBeLessThanOrEqual(at(firstFollowUp, "startedAt"));
-    expect(at(firstFollowUp, "completedAt"), "491's removal starts after both").toBeLessThanOrEqual(at(firstRemoval, "startedAt"));
+    if (from === "beta.1") {
+      // MO-2: 491's row is beta.1's, untouched by this start; ours ran after it.
+      expect({ attempts: firstRemoval?.attempts, startedAt: firstRemoval?.startedAt, completedAt: firstRemoval?.completedAt })
+        .toEqual({ attempts: removalOnBeta1?.attempts, startedAt: removalOnBeta1?.startedAt, completedAt: removalOnBeta1?.completedAt });
+    }
+    // MO-1 (and MO-2, a start earlier): 491's removal completes before the attachment-link migration starts.
+    expect(at(firstRemoval, "completedAt"), "491's removal runs first").toBeLessThanOrEqual(at(first, "startedAt"));
     for (const gone of [`agents/${EVOLVER_ID}`, `agents/${COMPACTOR_ID}`]) expect(await exists(gone), gone).toBe(false);
     expect(((await s.gql("{agentDefinitions{id}}")).agentDefinitions as Rec[]).map((d) => d.id)).not.toContain(COMPACTOR_ID);
     expect(await exists(`memory/agents/${compactorRun.rootId}/run_metadata.json`), "the compactor's run stays").toBe(true);
@@ -285,6 +309,9 @@ suite("Delegated runs' stored attachment links become their own links at the fir
     }
     expect(await backupsOf(MIGRATION)).toHaveLength(current.size);
     expect(await backupsOf(FOLLOW_UP), "the follow-up found nothing left to convert").toEqual([]);
+    // SR-017 D-15: the backups follow the migration's ID; nothing is written under the IDs it had before the rename.
+    expect((await fs.readdir(path.join(root, "app-data-migration-backups"))).filter((dir) => dir.startsWith("20261117_")),
+      "no backup under the former IDs").toEqual([]);
     expect((await filesHolding("/rest/agent-collaborations/")).length, "only the removed file's link stays host-scoped").toBe(1);
     for (const [locator, bytes] of bytesOf) {
       if (locator === goneFiles[0]!.locator) continue;
@@ -318,5 +345,12 @@ suite("Delegated runs' stored attachment links become their own links at the fir
     expect(await backupsOf(MIGRATION)).toEqual(backupsBefore);
     await s.stop();
     server = null;
-  }, 600_000);
+    await fs.rm(root, { recursive: true, force: true });
+    root = "";
+  };
+
+  it("ALM-1 / MO-1 from a release before beta.1: one first start runs 491's removal, then both attachment-link migrations; links convert with backups and open; a second start changes nothing",
+    () => journey("before-beta.1"), 600_000);
+  it("ALM-1 / MO-2 from beta.1 (491's removal already ran): the first start runs only the two 20261119 migrations, main then follow-up; links convert with backups and open; a second start changes nothing",
+    () => journey("beta.1"), 600_000);
 });
