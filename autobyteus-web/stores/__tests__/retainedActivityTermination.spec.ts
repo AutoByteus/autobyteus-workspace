@@ -46,7 +46,7 @@ const setup = () => {
       base_change_sequence: 0, live_sequence_id: liveSequenceId, last_message_change_sequence: 0,
       execution_tree: team.view.getExecutionTree(),
       agent_input_states: [], agent_statuses: team.view.listAgentContextEntries().map(e => ({
-        agent_run_id: e.agentRunId, member_address: e.memberAddress, status,
+        agent_run_id: e.agentRunId, member_address: e.memberAddress, status, background_tasks_running: 0,
         trigger: null, tool_name: null, error_message: null, error_details: null,
         recoverableBlock: null,
       })),

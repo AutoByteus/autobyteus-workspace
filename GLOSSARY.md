@@ -202,6 +202,20 @@ One visible text also still differs, kept because the run-settings UI/UX spec ma
 - **Work Journal:** a run's readable Markdown record, rendered from its raw
   traces by the journal service; one file per raw-trace segment
   (`work_journal/`).
+- **Episodic catalog** (of an agent): the system-maintained list of an agent
+  definition's runs on this node, oldest first, pointing to their Work
+  Journals: `<memory>/episodic/<encoded agent definition ID>/catalog.md`, the
+  sibling of the agent's semantic folder with the same name, plus the node
+  overview `<memory>/episodic/index.md`. Each entry (a **catalog entry**) gives
+  the run's start and last activity, run ID, its Project Task's title, its
+  workspace and its journal files; never a quote of a conversation. It is not a
+  copy of the journals, and not the retired `episodic.jsonl` rows of old run
+  folders ([agent_episodic_catalog.md](autobyteus-server-ts/docs/modules/agent_episodic_catalog.md)).
+- **Discovered run:** one run folder as run-folder discovery attributes it from
+  its records: names, workspace, runtime, recorded start, root and its
+  attribution (`DiscoveredRun`): attributed to an agent definition, unattributed
+  (no record names one), or unreadable (the record that would name it cannot be
+  read). Memory search keeps a memory run of it.
 - **Memory search:** finding past work in the memory of every run on this
   node, today through their Work Journals: the tool `search_memory` and the
   Memory page's Search. It points to where the work is; it does not answer from
@@ -438,6 +452,13 @@ One visible text also still differs, kept because the run-settings UI/UX spec ma
   the run's next input. Delivered exactly once.
 - **Busy run** (restart record): a run that was mid-turn or had a running
   background task when the node recorded it (`busy-runs.json`).
+- **Background task running** (status shown): what desktop and phone lists and
+  headers show for an `idle` agent whose run has running background tasks ("N
+  background tasks running" for several; zh-CN "后台任务运行中"), with the active,
+  non-pulsing blue dot and no Stop button (autobyteus-448). It comes from the
+  status's running background task count (`background_tasks_running`); a Team shows
+  its agents' sum, ranked busy > background > error > idle > offline. A run in a turn
+  shows "Running". Codex always counts 0 (its background-task view is a snapshot).
 - **Usage limit:** a runtime's or provider's own limit on use (a 5-hour or
   weekly window, a billing period, a money balance), read from the runtime or
   provider. It is not the launch check of whether a runtime is usable.

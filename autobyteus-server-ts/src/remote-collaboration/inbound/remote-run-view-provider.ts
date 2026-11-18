@@ -124,7 +124,7 @@ export class RemoteRunViewProvider {
     if (!observation) return notFound();
     // CR-461-090: the stream carries changes only, so it opens with each running agent's current status, read after the
     // listener is attached (no change falls between them). A run that is not running has none: its peer reads offline.
-    for (const live of agents.runAgentStatuses(run.runId)) sink.send({ agentRunId: live.agentRunId, message: runAgentStatusFrame(live.status) });
+    for (const live of agents.runAgentStatuses(run.runId)) sink.send({ agentRunId: live.agentRunId, message: runAgentStatusFrame(live.status, live.backgroundTasksRunning) });
     return Object.freeze({ accepted: true as const, observation });
   }
 
@@ -141,7 +141,7 @@ export class RemoteRunViewProvider {
       const snapshot: AgentStreamSnapshotPayload = await peerAgentStreamSnapshot(this.sequences, request.agentRunId,
         () => this.views.agentProjection(run, request.agentRunId));
       const live = this.roots.runAgents(run.kind).runAgentStatuses(run.runId).find((agent) => agent.agentRunId === request.agentRunId);
-      return Object.freeze({ accepted: true as const, snapshot, status: runAgentStatusFrame(live?.status ?? "offline") });
+      return Object.freeze({ accepted: true as const, snapshot, status: runAgentStatusFrame(live?.status ?? "offline", live?.backgroundTasksRunning ?? 0) });
     } catch (error) {
       return refusal(REMOTE_REFUSAL.TARGET_NOT_FOUND, error instanceof Error ? error.message : String(error));
     }

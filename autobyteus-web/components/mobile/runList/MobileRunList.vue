@@ -1,8 +1,9 @@
 <template>
-  <!-- The phone's only main screen (UIS-001, VIS-001…004, 021…025): the node button, the not-reachable banner, the
-       unsupported-route notice, your runs with their delegated work, the fold and the round "+". -->
+  <!-- The phone's only main screen (UIS-001, VIS-001…004, 021…025): the node button and the "On this phone" ⋮
+       (autobyteus-525), the not-reachable banner, the unsupported-route notice, your runs with their delegated work, the
+       fold and the round "+". -->
   <section class="fixed inset-0 flex h-[100dvh] flex-col bg-white text-slate-900" data-testid="mobile-run-list">
-    <header class="flex h-14 flex-shrink-0 items-center border-b border-slate-200 bg-white pl-2 pr-3">
+    <header class="flex h-14 flex-shrink-0 items-center gap-1 border-b border-slate-200 bg-white pl-2 pr-1">
       <button
         type="button"
         class="flex h-12 min-w-0 items-center gap-2.5 rounded-xl pl-2 pr-3 text-left active:bg-slate-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
@@ -21,6 +22,7 @@
         </span>
         <Icon icon="heroicons:chevron-down-20-solid" class="h-4 w-4 flex-shrink-0 text-slate-400" aria-hidden="true" />
       </button>
+      <MobileOnThisPhoneMenu class="ml-auto" />
     </header>
 
     <div v-if="!connected" class="flex flex-shrink-0 items-center gap-3 border-b border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900" role="alert" data-testid="mobile-node-offline-banner" :data-connection="connection">
@@ -94,6 +96,7 @@ export type MobileRunListConnection = 'connected' | 'unreachable' | 'phone_acces
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
 import { Icon } from '@iconify/vue';
 import MobileUnsupportedFeatureNotice from '~/components/mobile/MobileUnsupportedFeatureNotice.vue';
+import MobileOnThisPhoneMenu from '~/components/mobile/runList/MobileOnThisPhoneMenu.vue';
 import MobileRunRow from '~/components/mobile/runList/MobileRunRow.vue';
 import { useMobileRunOpening } from '~/composables/mobile/useMobileRunOpening';
 import type { useMobileRunTree } from '~/composables/mobile/useMobileRunTree';

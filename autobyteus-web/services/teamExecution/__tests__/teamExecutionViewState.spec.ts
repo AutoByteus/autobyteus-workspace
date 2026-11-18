@@ -61,7 +61,7 @@ const createStateFixture = (input: { rootActive?: boolean; executionTree?: TeamR
 const createState = () => createStateFixture().state;
 
 const status = (agent_run_id: string, member_address: string, value: AgentStatus) =>
-  ({ agent_run_id, member_address, status: value, trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null });
+  ({ agent_run_id, member_address, status: value, background_tasks_running: 0, trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null });
 const snapshot = (input: { base?: number; root?: string; statuses?: ReturnType<typeof status>[] } = {}) => ({
   type: 'TEAM_EXECUTION_VIEW_SNAPSHOT' as const,
   payload: { root_team_run_id: input.root ?? 'root-team-1', base_change_sequence: input.base ?? 4, live_sequence_id: 'live-1',

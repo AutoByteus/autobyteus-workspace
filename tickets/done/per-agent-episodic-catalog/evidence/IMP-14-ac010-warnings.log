@@ -1,0 +1,37 @@
+# IMP-14 stderr of the probe (two starts = two discovery instances; root ids and reasons only)
+RUN_FOLDER_DISCOVERY_RECORD_UNREADABLE {
+  root: 'agent_team:team_northstar-operating-company_6af4b5ba',
+  record: 'team_run_execution_tree.json',
+  reason: 'ROOT_RUN_PACKAGE_MISSING_TREE: Execution tree is missing; package preserved.',
+  runFolders: 6
+}
+RUN_FOLDER_DISCOVERY_RECORD_UNREADABLE {
+  root: 'agent_team:team_software-engineering-team_359ede01',
+  record: 'team_run_execution_tree.json',
+  reason: 'ROOT_RUN_PACKAGE_MISSING_TREE: Execution tree is missing; package preserved.',
+  runFolders: 1
+}
+RUN_FOLDER_DISCOVERY_RECORD_UNREADABLE {
+  root: 'agent_team:team_video-tutorial-creation-team_48955b3c',
+  record: 'team_run_execution_tree.json',
+  reason: 'ROOT_RUN_PACKAGE_MISSING_TREE: Execution tree is missing; package preserved.',
+  runFolders: 2
+}
+RUN_FOLDER_DISCOVERY_RECORD_UNREADABLE {
+  root: 'agent_team:team_northstar-operating-company_6af4b5ba',
+  record: 'team_run_execution_tree.json',
+  reason: 'ROOT_RUN_PACKAGE_MISSING_TREE: Execution tree is missing; package preserved.',
+  runFolders: 6
+}
+RUN_FOLDER_DISCOVERY_RECORD_UNREADABLE {
+  root: 'agent_team:team_software-engineering-team_359ede01',
+  record: 'team_run_execution_tree.json',
+  reason: 'ROOT_RUN_PACKAGE_MISSING_TREE: Execution tree is missing; package preserved.',
+  runFolders: 1
+}
+RUN_FOLDER_DISCOVERY_RECORD_UNREADABLE {
+  root: 'agent_team:team_video-tutorial-creation-team_48955b3c',
+  record: 'team_run_execution_tree.json',
+  reason: 'ROOT_RUN_PACKAGE_MISSING_TREE: Execution tree is missing; package preserved.',
+  runFolders: 2
+}

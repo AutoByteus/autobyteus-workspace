@@ -1,0 +1,221 @@
+{
+  "ids": {
+    "D": "ec-writer-62ab7b",
+    "H": "ec-host-62ab7b",
+    "E": "ec-solo-62ab7b",
+    "T": "ec-squad-62ab7b",
+    "O": "ec-org-62ab7b",
+    "L": "team-local-agent:ec_local_team_62ab7b:lead",
+    "LT": "ec_local_team_62ab7b",
+    "project": "project_3c3f9c5d-275d-441b-8c60-9bb5f815eb60",
+    "P1": "project_task_6b566901-e1b1-4064-8a64-1f511afc93ff",
+    "P2": "project_task_2a93e39d-a9fe-4e38-baee-86d006ab9e69"
+  },
+  "names": {
+    "D": "EC Writer 62ab7b",
+    "H": "EC Host 62ab7b",
+    "E": "EC Solo 62ab7b",
+    "T": "EC Squad 62ab7b",
+    "P1key": "ec-project-62ab7b-1",
+    "P2key": "ec-project-62ab7b-2"
+  },
+  "runs": {
+    "A": "ec_writer_62ab7b_470c365db38d41a08e4a8de000e019e5",
+    "H": "ec_host_62ab7b_563801d436b3431b80a94c0291b015f3",
+    "copy1": "ec_writer_62ab7b_5f9a5271119a44478bdee48fbd0e65ee",
+    "copy2": "ec_writer_62ab7b_275b010f1a4c498688ab21e2ad475442",
+    "TT": "ec_squad_62ab7b_7aa762f0d996487d8d67c7b95040cadb",
+    "TTmanager": "ec_host_62ab7b_accacca6d213431a85ad3548895f81d5",
+    "TTmate": "ec_writer_62ab7b_7f13de756ddb43399b53af2f596d2745",
+    "T1": "ec_squad_62ab7b_3dee15ac58744a62abd2b3a62101cde5",
+    "T1manager": "ec_host_62ab7b_c84d7a6b482c42cea1aaeba981dad99c",
+    "T1mate": "ec_writer_62ab7b_cd53386105224f47a2000cec4d5fcc51",
+    "O1": "ec_org_62ab7b_83fda928ce5a4ee7ac29fe64b6787472",
+    "O1manager": "ec_host_62ab7b_20cf55e087ce4106ab3fc0151bd142ac",
+    "O1writer": "ec_writer_62ab7b_2050569026174a1fbc6aa4639a6ef6ec",
+    "L1": "ec_local_team_62ab7b_16add485433d423bb6e6b5bd02a9d2d7",
+    "L1lead": "ec_lead_62ab7b_a1f711b8f99e43c797855ad835a33011",
+    "L1mate": "ec_writer_62ab7b_100df68f93584bbe9150b1f347b87a15",
+    "E": "ec_solo_62ab7b_1230e033548b433991ddf2282edf46e6",
+    "A2": "ec_writer_62ab7b_c81a40c334d84c76aa0e5f6b791027b6",
+    "A3": "ec_writer_62ab7b_86069b19726f44e69e64f1197e578726",
+    "T2": "ec_squad_62ab7b_26a3e1f0b454482088b7c192f1583b3a",
+    "T2manager": "ec_host_62ab7b_04bff6c1084448a3b5d2243227fb89d8",
+    "T2mate": "ec_writer_62ab7b_b43e4ddb331d4d19b5de76b7ccb29f05",
+    "O2": "ec_org_62ab7b_d3b62c255f7b4b50837c98edc6245930",
+    "O2writer": "ec_writer_62ab7b_46a87c281e0644bcb65ea41d33089d62",
+    "T3": "ec_squad_62ab7b_bfb03857c8164bbeb6c7d8cebdf2803a",
+    "T3mate": "ec_writer_62ab7b_c116e8ddf31d4529b7463d6ab7934104",
+    "A4": "ec_writer_62ab7b_1c66b5234fa1483499ff79107174cbb5"
+  },
+  "titles": {
+    "P1": "EC P1 launch checklist 62ab7b",
+    "P2": "EC P2 launch checklist 62ab7b"
+  },
+  "ec01Reached": {
+    "user": true,
+    "reply": true,
+    "call": true,
+    "result": true,
+    "summary": true
+  },
+  "ec01": {
+    "files": {
+      "ec-host-62ab7b/catalog.md": "# Episodic catalog: manager\n\n4 runs, oldest first.\nMaintained by the system: do not edit. Each run's Work Journal stays in its run folder; this catalog only points to it and quotes no conversation.\n\n## 2026-11-17 19:34 → 2026-11-17 19:34 UTC · ec_host_62ab7b_20cf55e087ce4106ab3fc0151bd142ac\n- Workspace: `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/episodic-catalog-e2e-Z2iFRn/workspace`\n- Journal: `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/episodic-catalog-e2e-Z2iFRn/memory/agent_orgs/ec_org_62ab7b_83fda928ce5a4ee7ac29fe64b6787472/ec_host_62ab7b_20cf55e087ce4106ab3fc0151bd142ac/work_journal`\n  - work_journal_active.md · 2026-11-17 19:34 – 2026-11-17 19:34 · 3 KB\n\n## 2026-11-17 19:34 → 2026-11-17 19:34 UTC · ec_host_62ab7b_563801d436b3431b80a94c0291b015f3\n- Workspace: `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/episodic-catalog-e2e-Z2iFRn/workspace`\n- Journal: `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/episodic-catalog-e2e-Z2iFRn/memory/agents/ec_host_62ab7b_563801d436b3431b80a94c0291b015f3/work_journal`\n  - work_journal_active.md · 2026-11-17 19:34 – 2026-11-17 19:34 · 3 KB\n\n## 2026-11-17 19:34 → 2026-11-17 19:34 UTC · ec_host_62ab7b_accacca6d213431a85ad3548895f81d5\n- About: EC P2 launch checklist 62ab7b\n- Workspace: `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/episodic-catalog-e2e-Z2iFRn/workspace`\n- Journal: `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/episodic-catalog-e2e-Z2iFRn/memory/agent_teams/ec_squad_62ab7b_7aa762f0d996487d8d67c7b95040cadb/ec_host_62ab7b_accacca6d213431a85ad3548895f81d5/work_journal`\n  - work_journal_active.md · 2026-11-17 19:34 – 2026-11-17 19:34 · 2 KB\n\n## 2026-11-17 19:34 → 2026-11-17 19:34 UTC · ec_host_62ab7b_c84d7a6b482c42cea1aaeba981dad99c\n- Workspace: `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/episodic-catalog-e2e-Z2iFRn/workspace`\n- Journal: `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/episodic-catalog-e2e-Z2iFRn/memory/agent_teams/ec_squad_62ab7b_3dee15ac58744a62abd2b3a62101cde5/ec_host_62ab7b_c84d7a6b482c42cea1aaeba981dad99c/work_journal`\n  - work_journal_active.md · 2026-11-17 19:34 – 2026-11-17 19:34 · 3 KB\n",
+      "ec-solo-62ab7b/catalog.md": "# Episodic catalog: EC Solo 62ab7b\n\n1 run, oldest first.\nMaintained by the system: do not edit. Each run's Work Journal stays in its run folder; this catalog only points to it and quotes no conversation.\n\n## 2026-11-17 19:34 → 2026-11-17 19:34 UTC · ec_solo_62ab7b_1230e033548b433991ddf2282edf46e6\n- Workspace: `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/episodic-catalog-e2e-Z2iFRn/workspace`\n- Journal: `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/episodic-catalog-e2e-Z2iFRn/memory/agents/ec_solo_62ab7b_1230e033548b433991ddf2282edf46e6/work_journal`\n  - work_journal_active.md · 2026-11-17 19:34 – 2026-11-17 19:34 · 3 KB\n",
+      "ec-writer-62ab7b/catalog.md": "# Episodic catalog: mate\n\n7 runs, oldest first.\nMaintained by the system: do not edit. Each run's Work Journal stays in its run folder; this catalog only points to it and quotes no conversation.\n\n## 2026-11-17 19:34 → 2026-11-17 19:34 UTC · ec_writer_62ab7b_100df68f93584bbe9150b1f347b87a15\n- Workspace: `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/episodic-catalog-e2e-Z2iFRn/workspace`\n- Journal: `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/episodic-catalog-e2e-Z2iFRn/memory/agent_teams/ec_local_team_62ab7b_16add485433d423bb6e6b5bd02a9d2d7/ec_writer_62ab7b_100df68f93584bbe9150b1f347b87a15/work_journal`\n  - work_journal_active.md · 2026-11-17 19:34 – 2026-11-17 19:34 · 3 KB\n\n## 2026-11-17 19:34 → 2026-11-17 19:34 UTC · ec_writer_62ab7b_2050569026174a1fbc6aa4639a6ef6ec\n- Workspace: `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/episodic-catalog-e2e-Z2iFRn/workspace`\n- Journal: `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/episodic-catalog-e2e-Z2iFRn/memory/agent_orgs/ec_org_62ab7b_83fda928ce5a4ee7ac29fe64b6787472/ec_writer_62ab7b_2050569026174a1fbc6aa4639a6ef6ec/work_journal`\n  - work_journal_active.md · 2026-11-17 19:34 – 2026-11-17 19:34 · 3 KB\n\n## 2026-11-17 19:34 → 2026-11-17 19:34 UTC · ec_writer_62ab7b_275b010f1a4c498688ab21e2ad475442\n- Workspace: `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/episodic-catalog-e2e-Z2iFRn/workspace`\n- Journal: `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/episodic-catalog-e2e-Z2iFRn/memory/agents/ec_writer_62ab7b_275b010f1a4c498688ab21e2ad475442/work_journal`\n  - work_journal_active.md · 2026-11-17 19:34 – 2026-11-17 19:34 · 995 B\n\n## 2026-11-17 19:34 → 2026-11-17 19:34 UTC · ec_writer_62ab7b_470c365db38d41a08e4a8de000e019e5\n- Workspace: `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/episodic-catalog-e2e-Z2iFRn/workspace`\n- Journal: `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/episodic-catalog-e2e-Z2iFRn/memory/agents/ec_writer_62ab7b_470c365db38d41a08e4a8de000e019e5/work_journal`\n  - work_journal_active.md · 2026-11-17 19:34 – 2026-11-17 19:34 · 679 B\n\n## 2026-11-17 19:34 → 2026-11-17 19:34 UTC · ec_writer_62ab7b_5f9a5271119a44478bdee48fbd0e65ee\n- About: EC P1 launch checklist 62ab7b\n- Workspace: `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/episodic-catalog-e2e-Z2iFRn/workspace`\n- Journal: `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/episodic-catalog-e2e-Z2iFRn/memory/agents/ec_writer_62ab7b_5f9a5271119a44478bdee48fbd0e65ee/work_journal`\n  - work_journal_active.md · 2026-11-17 19:34 – 2026-11-17 19:34 · 2 KB\n\n## 2026-11-17 19:34 → 2026-11-17 19:34 UTC · ec_writer_62ab7b_7f13de756ddb43399b53af2f596d2745\n- About: EC P2 launch checklist 62ab7b\n- Workspace: `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/episodic-catalog-e2e-Z2iFRn/workspace`\n- Journal: `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/episodic-catalog-e2e-Z2iFRn/memory/agent_teams/ec_squad_62ab7b_7aa762f0d996487d8d67c7b95040cadb/ec_writer_62ab7b_7f13de756ddb43399b53af2f596d2745/work_journal`\n  - work_journal_active.md · 2026-11-17 19:34 – 2026-11-17 19:34 · 551 B\n\n## 2026-11-17 19:34 → 2026-11-17 19:34 UTC · ec_writer_62ab7b_cd53386105224f47a2000cec4d5fcc51\n- Workspace: `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/episodic-catalog-e2e-Z2iFRn/workspace`\n- Journal: `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/episodic-catalog-e2e-Z2iFRn/memory/agent_teams/ec_squad_62ab7b_3dee15ac58744a62abd2b3a62101cde5/ec_writer_62ab7b_cd53386105224f47a2000cec4d5fcc51/work_journal`\n  - work_journal_active.md · 2026-11-17 19:34 – 2026-11-17 19:34 · 3 KB\n",
+      "index.md": "# Episodic catalogs on this node\n\nOne folder per agent; each holds catalog.md.\n\n- EC Solo 62ab7b · `ec-solo-62ab7b/catalog.md` · 1 run · last activity 2026-11-17 19:34 UTC\n- manager · `ec-host-62ab7b/catalog.md` · 4 runs · last activity 2026-11-17 19:34 UTC\n- manager · `team-local-agent%3Aec_local_team_62ab7b%3Alead/catalog.md` · 1 run · last activity 2026-11-17 19:34 UTC\n- mate · `ec-writer-62ab7b/catalog.md` · 7 runs · last activity 2026-11-17 19:34 UTC\n",
+      "team-local-agent%3Aec_local_team_62ab7b%3Alead/catalog.md": "# Episodic catalog: manager\n\n1 run, oldest first.\nMaintained by the system: do not edit. Each run's Work Journal stays in its run folder; this catalog only points to it and quotes no conversation.\n\n## 2026-11-17 19:34 → 2026-11-17 19:34 UTC · ec_lead_62ab7b_a1f711b8f99e43c797855ad835a33011\n- Workspace: `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/episodic-catalog-e2e-Z2iFRn/workspace`\n- Journal: `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/episodic-catalog-e2e-Z2iFRn/memory/agent_teams/ec_local_team_62ab7b_16add485433d423bb6e6b5bd02a9d2d7/ec_lead_62ab7b_a1f711b8f99e43c797855ad835a33011/work_journal`\n  - work_journal_active.md · 2026-11-17 19:34 – 2026-11-17 19:34 · 3 KB\n"
+    }
+  },
+  "ec02": {
+    "updateMs": 5028,
+    "addMs": 5050,
+    "burstMs": 6113,
+    "burstTurns": [
+      {
+        "sentMs": 3,
+        "journalMs": 68
+      },
+      {
+        "sentMs": 2076,
+        "journalMs": 2086
+      },
+      {
+        "sentMs": 4090,
+        "journalMs": 4097
+      },
+      {
+        "sentMs": 6103,
+        "journalMs": 6110
+      }
+    ],
+    "distinctJournalVersions": 4,
+    "catalogRewrites": 1
+  },
+  "ec03": {
+    "archived": [
+      {
+        "success": true,
+        "message": "Run 'ec_writer_62ab7b_c81a40c334d84c76aa0e5f6b791027b6' archived."
+      },
+      {
+        "success": true,
+        "message": "Team run 'ec_squad_62ab7b_3dee15ac58744a62abd2b3a62101cde5' archived."
+      },
+      {
+        "success": true,
+        "message": "AgentOrg run 'ec_org_62ab7b_83fda928ce5a4ee7ac29fe64b6787472' archived."
+      }
+    ],
+    "refused": {
+      "success": false,
+      "message": "Run is active. Terminate it before deleting history."
+    },
+    "deleted": [
+      {
+        "success": true,
+        "message": "Run 'ec_writer_62ab7b_86069b19726f44e69e64f1197e578726' deleted permanently."
+      },
+      {
+        "success": true,
+        "message": "Team run 'ec_squad_62ab7b_26a3e1f0b454482088b7c192f1583b3a' deleted permanently."
+      },
+      {
+        "success": true,
+        "message": "AgentOrg run 'ec_org_62ab7b_d3b62c255f7b4b50837c98edc6245930' deleted permanently."
+      }
+    ],
+    "deleteMs": 5102,
+    "catalogs": {
+      "ec-host-62ab7b/catalog.md": "# Episodic catalog: manager\n\n4 runs, oldest first.\nMaintained by the system: do not edit. Each run's Work Journal stays in its run folder; this catalog only points to it and quotes no conversation.\n\n## 2026-11-17 19:34 → 2026-11-17 19:34 UTC · ec_host_62ab7b_20cf55e087ce4106ab3fc0151bd142ac\n- Workspace: `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/episodic-catalog-e2e-Z2iFRn/workspace`\n- Journal: `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/episodic-catalog-e2e-Z2iFRn/memory/agent_orgs/ec_org_62ab7b_83fda928ce5a4ee7ac29fe64b6787472/ec_host_62ab7b_20cf55e087ce4106ab3fc0151bd142ac/work_journal`\n  - work_journal_active.md · 2026-11-17 19:34 – 2026-11-17 19:34 · 3 KB\n\n## 2026-11-17 19:34 → 2026-11-17 19:34 UTC · ec_host_62ab7b_563801d436b3431b80a94c0291b015f3\n- Workspace: `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/episodic-catalog-e2e-Z2iFRn/workspace`\n- Journal: `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/episodic-catalog-e2e-Z2iFRn/memory/agents/ec_host_62ab7b_563801d436b3431b80a94c0291b015f3/work_journal`\n  - work_journal_active.md · 2026-11-17 19:34 – 2026-11-17 19:34 · 3 KB\n\n## 2026-11-17 19:34 → 2026-11-17 19:34 UTC · ec_host_62ab7b_accacca6d213431a85ad3548895f81d5\n- About: EC P2 launch checklist 62ab7b\n- Workspace: `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/episodic-catalog-e2e-Z2iFRn/workspace`\n- Journal: `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/episodic-catalog-e2e-Z2iFRn/memory/agent_teams/ec_squad_62ab7b_7aa762f0d996487d8d67c7b95040cadb/ec_host_62ab7b_accacca6d213431a85ad3548895f81d5/work_journal`\n  - work_journal_active.md · 2026-11-17 19:34 – 2026-11-17 19:34 · 2 KB\n\n## 2026-11-17 19:34 → 2026-11-17 19:34 UTC · ec_host_62ab7b_c84d7a6b482c42cea1aaeba981dad99c\n- Workspace: `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/episodic-catalog-e2e-Z2iFRn/workspace`\n- Journal: `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/episodic-catalog-e2e-Z2iFRn/memory/agent_teams/ec_squad_62ab7b_3dee15ac58744a62abd2b3a62101cde5/ec_host_62ab7b_c84d7a6b482c42cea1aaeba981dad99c/work_journal`\n  - work_journal_active.md · 2026-11-17 19:34 – 2026-11-17 19:34 · 3 KB\n",
+      "ec-solo-62ab7b/catalog.md": "# Episodic catalog: EC Solo 62ab7b\n\n1 run, oldest first.\nMaintained by the system: do not edit. Each run's Work Journal stays in its run folder; this catalog only points to it and quotes no conversation.\n\n## 2026-11-17 19:34 → 2026-11-17 19:34 UTC · ec_solo_62ab7b_1230e033548b433991ddf2282edf46e6\n- Workspace: `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/episodic-catalog-e2e-Z2iFRn/workspace`\n- Journal: `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/episodic-catalog-e2e-Z2iFRn/memory/agents/ec_solo_62ab7b_1230e033548b433991ddf2282edf46e6/work_journal`\n  - work_journal_active.md · 2026-11-17 19:34 – 2026-11-17 19:34 · 3 KB\n",
+      "ec-writer-62ab7b/catalog.md": "# Episodic catalog: mate\n\n9 runs, oldest first.\nMaintained by the system: do not edit. Each run's Work Journal stays in its run folder; this catalog only points to it and quotes no conversation.\n\n## 2026-11-17 19:34 → 2026-11-17 19:34 UTC · ec_writer_62ab7b_100df68f93584bbe9150b1f347b87a15\n- Workspace: `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/episodic-catalog-e2e-Z2iFRn/workspace`\n- Journal: `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/episodic-catalog-e2e-Z2iFRn/memory/agent_teams/ec_local_team_62ab7b_16add485433d423bb6e6b5bd02a9d2d7/ec_writer_62ab7b_100df68f93584bbe9150b1f347b87a15/work_journal`\n  - work_journal_active.md · 2026-11-17 19:34 – 2026-11-17 19:34 · 3 KB\n\n## 2026-11-17 19:34 → 2026-11-17 19:34 UTC · ec_writer_62ab7b_2050569026174a1fbc6aa4639a6ef6ec\n- Workspace: `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/episodic-catalog-e2e-Z2iFRn/workspace`\n- Journal: `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/episodic-catalog-e2e-Z2iFRn/memory/agent_orgs/ec_org_62ab7b_83fda928ce5a4ee7ac29fe64b6787472/ec_writer_62ab7b_2050569026174a1fbc6aa4639a6ef6ec/work_journal`\n  - work_journal_active.md · 2026-11-17 19:34 – 2026-11-17 19:34 · 3 KB\n\n## 2026-11-17 19:34 → 2026-11-17 19:34 UTC · ec_writer_62ab7b_275b010f1a4c498688ab21e2ad475442\n- Workspace: `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/episodic-catalog-e2e-Z2iFRn/workspace`\n- Journal: `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/episodic-catalog-e2e-Z2iFRn/memory/agents/ec_writer_62ab7b_275b010f1a4c498688ab21e2ad475442/work_journal`\n  - work_journal_active.md · 2026-11-17 19:34 – 2026-11-17 19:34 · 995 B\n\n## 2026-11-17 19:34 → 2026-11-17 19:35 UTC · ec_writer_62ab7b_470c365db38d41a08e4a8de000e019e5\n- Workspace: `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/episodic-catalog-e2e-Z2iFRn/workspace`\n- Journal: `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/episodic-catalog-e2e-Z2iFRn/memory/agents/ec_writer_62ab7b_470c365db38d41a08e4a8de000e019e5/work_journal`\n  - work_journal_active.md · 2026-11-17 19:34 – 2026-11-17 19:35 · 13 KB\n\n## 2026-11-17 19:34 → 2026-11-17 19:34 UTC · ec_writer_62ab7b_5f9a5271119a44478bdee48fbd0e65ee\n- About: EC P1 launch checklist 62ab7b\n- Workspace: `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/episodic-catalog-e2e-Z2iFRn/workspace`\n- Journal: `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/episodic-catalog-e2e-Z2iFRn/memory/agents/ec_writer_62ab7b_5f9a5271119a44478bdee48fbd0e65ee/work_journal`\n  - work_journal_active.md · 2026-11-17 19:34 – 2026-11-17 19:34 · 2 KB\n\n## 2026-11-17 19:34 → 2026-11-17 19:34 UTC · ec_writer_62ab7b_7f13de756ddb43399b53af2f596d2745\n- About: EC P2 launch checklist 62ab7b\n- Workspace: `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/episodic-catalog-e2e-Z2iFRn/workspace`\n- Journal: `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/episodic-catalog-e2e-Z2iFRn/memory/agent_teams/ec_squad_62ab7b_7aa762f0d996487d8d67c7b95040cadb/ec_writer_62ab7b_7f13de756ddb43399b53af2f596d2745/work_journal`\n  - work_journal_active.md · 2026-11-17 19:34 – 2026-11-17 19:34 · 551 B\n\n## 2026-11-17 19:34 → 2026-11-17 19:34 UTC · ec_writer_62ab7b_c81a40c334d84c76aa0e5f6b791027b6\n- Workspace: `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/episodic-catalog-e2e-Z2iFRn/workspace`\n- Journal: `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/episodic-catalog-e2e-Z2iFRn/memory/agents/ec_writer_62ab7b_c81a40c334d84c76aa0e5f6b791027b6/work_journal`\n  - work_journal_active.md · 2026-11-17 19:34 – 2026-11-17 19:34 · 3 KB\n\n## 2026-11-17 19:34 → 2026-11-17 19:34 UTC · ec_writer_62ab7b_cd53386105224f47a2000cec4d5fcc51\n- Workspace: `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/episodic-catalog-e2e-Z2iFRn/workspace`\n- Journal: `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/episodic-catalog-e2e-Z2iFRn/memory/agent_teams/ec_squad_62ab7b_3dee15ac58744a62abd2b3a62101cde5/ec_writer_62ab7b_cd53386105224f47a2000cec4d5fcc51/work_journal`\n  - work_journal_active.md · 2026-11-17 19:34 – 2026-11-17 19:34 · 3 KB\n\n## 2026-11-17 19:35 → 2026-11-17 19:35 UTC · ec_writer_62ab7b_c116e8ddf31d4529b7463d6ab7934104\n- Workspace: `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/episodic-catalog-e2e-Z2iFRn/workspace`\n- Journal: `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/episodic-catalog-e2e-Z2iFRn/memory/agent_teams/ec_squad_62ab7b_bfb03857c8164bbeb6c7d8cebdf2803a/ec_writer_62ab7b_c116e8ddf31d4529b7463d6ab7934104/work_journal`\n  - work_journal_active.md · 2026-11-17 19:35 – 2026-11-17 19:35 · 3 KB\n",
+      "index.md": "# Episodic catalogs on this node\n\nOne folder per agent; each holds catalog.md.\n\n- EC Solo 62ab7b · `ec-solo-62ab7b/catalog.md` · 1 run · last activity 2026-11-17 19:34 UTC\n- manager · `ec-host-62ab7b/catalog.md` · 4 runs · last activity 2026-11-17 19:34 UTC\n- manager · `team-local-agent%3Aec_local_team_62ab7b%3Alead/catalog.md` · 1 run · last activity 2026-11-17 19:34 UTC\n- mate · `ec-writer-62ab7b/catalog.md` · 9 runs · last activity 2026-11-17 19:35 UTC\n",
+      "team-local-agent%3Aec_local_team_62ab7b%3Alead/catalog.md": "# Episodic catalog: manager\n\n1 run, oldest first.\nMaintained by the system: do not edit. Each run's Work Journal stays in its run folder; this catalog only points to it and quotes no conversation.\n\n## 2026-11-17 19:34 → 2026-11-17 19:34 UTC · ec_lead_62ab7b_a1f711b8f99e43c797855ad835a33011\n- Workspace: `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/episodic-catalog-e2e-Z2iFRn/workspace`\n- Journal: `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/episodic-catalog-e2e-Z2iFRn/memory/agent_teams/ec_local_team_62ab7b_16add485433d423bb6e6b5bd02a9d2d7/ec_lead_62ab7b_a1f711b8f99e43c797855ad835a33011/work_journal`\n  - work_journal_active.md · 2026-11-17 19:34 – 2026-11-17 19:34 · 3 KB\n"
+    }
+  },
+  "ec04": {
+    "healedMs": 5039,
+    "failures": [
+      "EPISODIC_CATALOG_WRITE_FAILED {\"file\":\"ec-writer-62ab7b\",\"error\":\"EACCES: permission denied, open '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/episodic-catalog-e2e-Z2iFRn/memory/episodic/ec-writer-62ab7b/catalog.md.7553ec84ab8c.tmp'\"}",
+      "EPISODIC_CATALOG_WRITE_FAILED {\"file\":\"index\",\"error\":\"EACCES: permission denied, open '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/episodic-catalog-e2e-Z2iFRn/memory/episodic/index.md.7c094cb4eb53.tmp'\"}"
+    ],
+    "turnsDuringFailure": [
+      {
+        "work_journal_active.md": 2850
+      },
+      {
+        "work_journal_active.md": 5390
+      }
+    ]
+  },
+  "ec05Stale": {
+    "stoppedAfterMs": 9883,
+    "staleAfterStop": true,
+    "catalogUnchangedSinceTurn": true
+  },
+  "ec05": {
+    "listeningMs": 5795,
+    "leadRestoredMs": 3,
+    "written": [
+      "ec-solo-62ab7b/catalog.md",
+      "ec-writer-62ab7b/catalog.md",
+      "index.md",
+      "team-local-agent%3Aec_local_team_62ab7b%3Alead/catalog.md"
+    ],
+    "outsideEpisodicChanged": [
+      "run_history_index.json",
+      "run_history_index.json.backup-2026-11-17T19-38-04-641Z",
+      "team_run_history_index.json",
+      "team_run_history_index.json.backup-2026-11-17T19-38-04-616Z"
+    ],
+    "migrationLines": [
+      "Running Prisma migrations...",
+      "27 migrations found in prisma/migrations",
+      "No pending migrations to apply.",
+      "Database migrations completed successfully.",
+      "[2026-11-17T19:38:04.811Z] [WARN] [server.runtime] Studio app-data migration '20260824_team_run_execution_tree_v2' is FAILED: 4 TeamRun execution trees could not be upgraded to V2.",
+      "[2026-11-17T19:38:04.811Z] [WARN] [server.runtime] Studio app-data migration '20260731_migrate_native_working_context_snapshots_v5' is FAILED: 2 native snapshot migration items failed.",
+      "[2026-11-17T19:38:04.811Z] [WARN] [server.runtime] Studio app-data migration '20261018_append_only_message_logs_v1' is FAILED: Waiting for 20260901_agent_org_flat_team_families_v1, 20260926_team_context_file_execution_locators_v1; the next start continues."
+    ],
+    "serverLines": [],
+    "catalogs": {
+      "ec-host-62ab7b/catalog.md": "# Episodic catalog: manager\n\n4 runs, oldest first.\nMaintained by the system: do not edit. Each run's Work Journal stays in its run folder; this catalog only points to it and quotes no conversation.\n\n## 2026-11-17 19:34 → 2026-11-17 19:34 UTC · ec_host_62ab7b_20cf55e087ce4106ab3fc0151bd142ac\n- Workspace: `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/episodic-catalog-e2e-Z2iFRn/workspace`\n- Journal: `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/episodic-catalog-e2e-Z2iFRn/memory/agent_orgs/ec_org_62ab7b_83fda928ce5a4ee7ac29fe64b6787472/ec_host_62ab7b_20cf55e087ce4106ab3fc0151bd142ac/work_journal`\n  - work_journal_active.md · 2026-11-17 19:34 – 2026-11-17 19:34 · 3 KB\n\n## 2026-11-17 19:34 → 2026-11-17 19:34 UTC · ec_host_62ab7b_563801d436b3431b80a94c0291b015f3\n- Workspace: `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/episodic-catalog-e2e-Z2iFRn/workspace`\n- Journal: `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/episodic-catalog-e2e-Z2iFRn/memory/agents/ec_host_62ab7b_563801d436b3431b80a94c0291b015f3/work_journal`\n  - work_journal_active.md · 2026-11-17 19:34 – 2026-11-17 19:34 · 3 KB\n\n## 2026-11-17 19:34 → 2026-11-17 19:34 UTC · ec_host_62ab7b_accacca6d213431a85ad3548895f81d5\n- About: EC P2 launch checklist 62ab7b\n- Workspace: `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/episodic-catalog-e2e-Z2iFRn/workspace`\n- Journal: `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/episodic-catalog-e2e-Z2iFRn/memory/agent_teams/ec_squad_62ab7b_7aa762f0d996487d8d67c7b95040cadb/ec_host_62ab7b_accacca6d213431a85ad3548895f81d5/work_journal`\n  - work_journal_active.md · 2026-11-17 19:34 – 2026-11-17 19:34 · 2 KB\n\n## 2026-11-17 19:34 → 2026-11-17 19:34 UTC · ec_host_62ab7b_c84d7a6b482c42cea1aaeba981dad99c\n- Workspace: `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/episodic-catalog-e2e-Z2iFRn/workspace`\n- Journal: `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/episodic-catalog-e2e-Z2iFRn/memory/agent_teams/ec_squad_62ab7b_3dee15ac58744a62abd2b3a62101cde5/ec_host_62ab7b_c84d7a6b482c42cea1aaeba981dad99c/work_journal`\n  - work_journal_active.md · 2026-11-17 19:34 – 2026-11-17 19:34 · 3 KB\n",
+      "ec-solo-62ab7b/catalog.md": "# Episodic catalog: ec-solo-62ab7b\n\n0 runs.\nMaintained by the system: do not edit. Each run's Work Journal stays in its run folder; this catalog only points to it and quotes no conversation.\n",
+      "ec-writer-62ab7b/catalog.md": "# Episodic catalog: EC Writer 62ab7b\n\n9 runs, oldest first.\nMaintained by the system: do not edit. Each run's Work Journal stays in its run folder; this catalog only points to it and quotes no conversation.\n\n## 2026-11-17 19:34 → 2026-11-17 19:34 UTC · ec_writer_62ab7b_100df68f93584bbe9150b1f347b87a15\n- Workspace: `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/episodic-catalog-e2e-Z2iFRn/workspace`\n- Journal: `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/episodic-catalog-e2e-Z2iFRn/memory/agent_teams/ec_local_team_62ab7b_16add485433d423bb6e6b5bd02a9d2d7/ec_writer_62ab7b_100df68f93584bbe9150b1f347b87a15/work_journal`\n  - work_journal_active.md · 2026-11-17 19:34 – 2026-11-17 19:34 · 3 KB\n\n## 2026-11-17 19:34 → 2026-11-17 19:34 UTC · ec_writer_62ab7b_2050569026174a1fbc6aa4639a6ef6ec\n- Workspace: `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/episodic-catalog-e2e-Z2iFRn/workspace`\n- Journal: `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/episodic-catalog-e2e-Z2iFRn/memory/agent_orgs/ec_org_62ab7b_83fda928ce5a4ee7ac29fe64b6787472/ec_writer_62ab7b_2050569026174a1fbc6aa4639a6ef6ec/work_journal`\n  - work_journal_active.md · 2026-11-17 19:34 – 2026-11-17 19:34 · 3 KB\n\n## 2026-11-17 19:34 → 2026-11-17 19:34 UTC · ec_writer_62ab7b_275b010f1a4c498688ab21e2ad475442\n- Workspace: `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/episodic-catalog-e2e-Z2iFRn/workspace`\n- Journal: `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/episodic-catalog-e2e-Z2iFRn/memory/agents/ec_writer_62ab7b_275b010f1a4c498688ab21e2ad475442/work_journal`\n  - work_journal_active.md · 2026-11-17 19:34 – 2026-11-17 19:34 · 995 B\n\n## 2026-11-17 19:34 → 2026-11-17 19:37 UTC · ec_writer_62ab7b_470c365db38d41a08e4a8de000e019e5\n- Workspace: `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/episodic-catalog-e2e-Z2iFRn/workspace`\n- Journal: `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/episodic-catalog-e2e-Z2iFRn/memory/agents/ec_writer_62ab7b_470c365db38d41a08e4a8de000e019e5/work_journal`\n  - work_journal_active.md · 2026-11-17 19:34 – 2026-11-17 19:37 · 18 KB\n\n## 2026-11-17 19:34 → 2026-11-17 19:34 UTC · ec_writer_62ab7b_5f9a5271119a44478bdee48fbd0e65ee\n- About: EC P1 launch checklist 62ab7b\n- Workspace: `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/episodic-catalog-e2e-Z2iFRn/workspace`\n- Journal: `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/episodic-catalog-e2e-Z2iFRn/memory/agents/ec_writer_62ab7b_5f9a5271119a44478bdee48fbd0e65ee/work_journal`\n  - work_journal_active.md · 2026-11-17 19:34 – 2026-11-17 19:34 · 2 KB\n\n## 2026-11-17 19:34 → 2026-11-17 19:34 UTC · ec_writer_62ab7b_7f13de756ddb43399b53af2f596d2745\n- About: EC P2 launch checklist 62ab7b\n- Workspace: `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/episodic-catalog-e2e-Z2iFRn/workspace`\n- Journal: `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/episodic-catalog-e2e-Z2iFRn/memory/agent_teams/ec_squad_62ab7b_7aa762f0d996487d8d67c7b95040cadb/ec_writer_62ab7b_7f13de756ddb43399b53af2f596d2745/work_journal`\n  - work_journal_active.md · 2026-11-17 19:34 – 2026-11-17 19:34 · 551 B\n\n## 2026-11-17 19:34 → 2026-11-17 19:34 UTC · ec_writer_62ab7b_cd53386105224f47a2000cec4d5fcc51\n- Workspace: `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/episodic-catalog-e2e-Z2iFRn/workspace`\n- Journal: `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/episodic-catalog-e2e-Z2iFRn/memory/agent_teams/ec_squad_62ab7b_3dee15ac58744a62abd2b3a62101cde5/ec_writer_62ab7b_cd53386105224f47a2000cec4d5fcc51/work_journal`\n  - work_journal_active.md · 2026-11-17 19:34 – 2026-11-17 19:34 · 3 KB\n\n## 2026-11-17 19:35 → 2026-11-17 19:35 UTC · ec_writer_62ab7b_c116e8ddf31d4529b7463d6ab7934104\n- Workspace: `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/episodic-catalog-e2e-Z2iFRn/workspace`\n- Journal: `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/episodic-catalog-e2e-Z2iFRn/memory/agent_teams/ec_squad_62ab7b_bfb03857c8164bbeb6c7d8cebdf2803a/ec_writer_62ab7b_c116e8ddf31d4529b7463d6ab7934104/work_journal`\n  - work_journal_active.md · 2026-11-17 19:35 – 2026-11-17 19:35 · 3 KB\n\n## 2026-11-17 19:37 → 2026-11-17 19:37 UTC · ec_writer_62ab7b_1c66b5234fa1483499ff79107174cbb5\n- Workspace: `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/episodic-catalog-e2e-Z2iFRn/workspace`\n- Journal: `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/episodic-catalog-e2e-Z2iFRn/memory/agents/ec_writer_62ab7b_1c66b5234fa1483499ff79107174cbb5/work_journal`\n  - work_journal_active.md · 2026-11-17 19:37 – 2026-11-17 19:37 · 8 KB\n",
+      "index.md": "# Episodic catalogs on this node\n\nOne folder per agent; each holds catalog.md.\n\n- EC Writer 62ab7b · `ec-writer-62ab7b/catalog.md` · 9 runs · last activity 2026-11-17 19:37 UTC\n- ec-solo-62ab7b · `ec-solo-62ab7b/catalog.md` · 0 runs · no activity\n- manager · `ec-host-62ab7b/catalog.md` · 4 runs · last activity 2026-11-17 19:34 UTC\n- manager · `team-local-agent%3Aec_local_team_62ab7b%3Alead/catalog.md` · 1 run · last activity 2026-11-17 19:34 UTC\n",
+      "team-local-agent%3Aec_local_team_62ab7b%3Alead/catalog.md": "# Episodic catalog: manager\n\n1 run, oldest first.\nMaintained by the system: do not edit. Each run's Work Journal stays in its run folder; this catalog only points to it and quotes no conversation.\n\n## 2026-11-17 19:34 → 2026-11-17 19:34 UTC · ec_lead_62ab7b_a1f711b8f99e43c797855ad835a33011\n- Workspace: `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/episodic-catalog-e2e-Z2iFRn/workspace`\n- Journal: `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/episodic-catalog-e2e-Z2iFRn/memory/agent_teams/ec_local_team_62ab7b_16add485433d423bb6e6b5bd02a9d2d7/ec_lead_62ab7b_a1f711b8f99e43c797855ad835a33011/work_journal`\n  - work_journal_active.md · 2026-11-17 19:34 – 2026-11-17 19:34 · 3 KB\n"
+    }
+  },
+  "ec06": {
+    "listeningMs": 3341,
+    "builtWithinMs": 8439,
+    "outsideEpisodicChanged": [],
+    "t3Warnings": [
+      "RUN_FOLDER_DISCOVERY_RECORD_UNREADABLE {\n  root: 'agent_team:ec_squad_62ab7b_bfb03857c8164bbeb6c7d8cebdf2803a',\n  record: 'team_run_execution_tree.json',\n  reason: 'ROOT_RUN_PACKAGE_CURRENT_VALIDATION_FAILED: Unterminated string in JSON at position 941 (line 27 column 25)',\n  runFolders: 1\n}"
+    ],
+    "copy2LeftOut": [
+      "EPISODIC_CATALOG_RUN_LEFT_OUT {\n  root: 'agent:ec_writer_62ab7b_275b010f1a4c498688ab21e2ad475442',\n  run: 'agents/ec_writer_62ab7b_275b010f1a4c498688ab21e2ad475442',\n  reason: 'work_journal_manifest.json is not JSON: Unterminated string in JSON at position 203 (line 7 column 44)'\n}"
+    ],
+    "aMetadataWarnings": [
+      "RUN_FOLDER_DISCOVERY_RECORD_UNREADABLE {\n  root: 'agent:ec_writer_62ab7b_470c365db38d41a08e4a8de000e019e5',\n  record: 'run_metadata.json',\n  reason: 'Unterminated string in JSON at position 378 (line 5 column 157)',\n  runFolders: 1\n}"
+    ],
+    "serverLines": [
+      "RUN_FOLDER_DISCOVERY_RECORD_UNREADABLE {",
+      "RUN_FOLDER_DISCOVERY_RECORD_UNREADABLE {",
+      "EPISODIC_CATALOG_RUN_LEFT_OUT {"
+    ],
+    "catalogs": {
+      "ec-host-62ab7b/catalog.md": "# Episodic catalog: manager\n\n4 runs, oldest first.\nMaintained by the system: do not edit. Each run's Work Journal stays in its run folder; this catalog only points to it and quotes no conversation.\n\n## 2026-11-17 19:34 UTC · ec_host_62ab7b_20cf55e087ce4106ab3fc0151bd142ac\n- Workspace: `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/episodic-catalog-e2e-Z2iFRn/workspace`\n- Journal: no journal yet (run folder `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/episodic-catalog-e2e-Z2iFRn/memory/agent_orgs/ec_org_62ab7b_83fda928ce5a4ee7ac29fe64b6787472/ec_host_62ab7b_20cf55e087ce4106ab3fc0151bd142ac`)\n\n## 2026-11-17 19:34 → 2026-11-17 19:34 UTC · ec_host_62ab7b_563801d436b3431b80a94c0291b015f3\n- Workspace: `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/episodic-catalog-e2e-Z2iFRn/workspace`\n- Journal: `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/episodic-catalog-e2e-Z2iFRn/memory/agents/ec_host_62ab7b_563801d436b3431b80a94c0291b015f3/work_journal`\n  - work_journal_active.md · 2026-11-17 19:34 – 2026-11-17 19:34 · 3 KB\n\n## 2026-11-17 19:34 → 2026-11-17 19:34 UTC · ec_host_62ab7b_accacca6d213431a85ad3548895f81d5\n- About: EC P2 launch checklist 62ab7b\n- Workspace: `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/episodic-catalog-e2e-Z2iFRn/workspace`\n- Journal: `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/episodic-catalog-e2e-Z2iFRn/memory/agent_teams/ec_squad_62ab7b_7aa762f0d996487d8d67c7b95040cadb/ec_host_62ab7b_accacca6d213431a85ad3548895f81d5/work_journal`\n  - work_journal_active.md · 2026-11-17 19:34 – 2026-11-17 19:34 · 2 KB\n\n## 2026-11-17 19:34 → 2026-11-17 19:34 UTC · ec_host_62ab7b_c84d7a6b482c42cea1aaeba981dad99c\n- Workspace: `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/episodic-catalog-e2e-Z2iFRn/workspace`\n- Journal: `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/episodic-catalog-e2e-Z2iFRn/memory/agent_teams/ec_squad_62ab7b_3dee15ac58744a62abd2b3a62101cde5/ec_host_62ab7b_c84d7a6b482c42cea1aaeba981dad99c/work_journal`\n  - work_journal_active.md · 2026-11-17 19:34 – 2026-11-17 19:34 · 3 KB\n",
+      "ec-writer-62ab7b/catalog.md": "# Episodic catalog: EC Writer 62ab7b\n\n6 runs, oldest first.\nMaintained by the system: do not edit. Each run's Work Journal stays in its run folder; this catalog only points to it and quotes no conversation.\n\n## 2026-11-17 19:34 → 2026-11-17 19:34 UTC · ec_writer_62ab7b_100df68f93584bbe9150b1f347b87a15\n- Workspace: `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/episodic-catalog-e2e-Z2iFRn/workspace`\n- Journal: `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/episodic-catalog-e2e-Z2iFRn/memory/agent_teams/ec_local_team_62ab7b_16add485433d423bb6e6b5bd02a9d2d7/ec_writer_62ab7b_100df68f93584bbe9150b1f347b87a15/work_journal`\n  - work_journal_active.md · 2026-11-17 19:34 – 2026-11-17 19:34 · 3 KB\n\n## 2026-11-17 19:34 → 2026-11-17 19:34 UTC · ec_writer_62ab7b_2050569026174a1fbc6aa4639a6ef6ec\n- Workspace: `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/episodic-catalog-e2e-Z2iFRn/workspace`\n- Journal: `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/episodic-catalog-e2e-Z2iFRn/memory/agent_orgs/ec_org_62ab7b_83fda928ce5a4ee7ac29fe64b6787472/ec_writer_62ab7b_2050569026174a1fbc6aa4639a6ef6ec/work_journal`\n  - work_journal_active.md · 2026-11-17 19:34 – 2026-11-17 19:34 · 3 KB\n\n## 2026-11-17 19:34 → 2026-11-17 19:34 UTC · ec_writer_62ab7b_5f9a5271119a44478bdee48fbd0e65ee\n- About: EC P1 launch checklist 62ab7b\n- Workspace: `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/episodic-catalog-e2e-Z2iFRn/workspace`\n- Journal: `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/episodic-catalog-e2e-Z2iFRn/memory/agents/ec_writer_62ab7b_5f9a5271119a44478bdee48fbd0e65ee/work_journal`\n  - work_journal_active.md · 2026-11-17 19:34 – 2026-11-17 19:34 · 2 KB\n\n## 2026-11-17 19:34 → 2026-11-17 19:34 UTC · ec_writer_62ab7b_7f13de756ddb43399b53af2f596d2745\n- About: EC P2 launch checklist 62ab7b\n- Workspace: `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/episodic-catalog-e2e-Z2iFRn/workspace`\n- Journal: `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/episodic-catalog-e2e-Z2iFRn/memory/agent_teams/ec_squad_62ab7b_7aa762f0d996487d8d67c7b95040cadb/ec_writer_62ab7b_7f13de756ddb43399b53af2f596d2745/work_journal`\n  - work_journal_active.md · 2026-11-17 19:34 – 2026-11-17 19:34 · 551 B\n\n## 2026-11-17 19:34 → 2026-11-17 19:34 UTC · ec_writer_62ab7b_cd53386105224f47a2000cec4d5fcc51\n- Workspace: `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/episodic-catalog-e2e-Z2iFRn/workspace`\n- Journal: `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/episodic-catalog-e2e-Z2iFRn/memory/agent_teams/ec_squad_62ab7b_3dee15ac58744a62abd2b3a62101cde5/ec_writer_62ab7b_cd53386105224f47a2000cec4d5fcc51/work_journal`\n  - work_journal_active.md · 2026-11-17 19:34 – 2026-11-17 19:34 · 3 KB\n\n## 2026-11-17 19:37 → 2026-11-17 19:37 UTC · ec_writer_62ab7b_1c66b5234fa1483499ff79107174cbb5\n- Workspace: `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/episodic-catalog-e2e-Z2iFRn/workspace`\n- Journal: `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/episodic-catalog-e2e-Z2iFRn/memory/agents/ec_writer_62ab7b_1c66b5234fa1483499ff79107174cbb5/work_journal`\n  - work_journal_active.md · 2026-11-17 19:37 – 2026-11-17 19:37 · 8 KB\n",
+      "index.md": "# Episodic catalogs on this node\n\nOne folder per agent; each holds catalog.md.\n\n- EC Writer 62ab7b · `ec-writer-62ab7b/catalog.md` · 6 runs · last activity 2026-11-17 19:37 UTC\n- manager · `ec-host-62ab7b/catalog.md` · 4 runs · last activity 2026-11-17 19:34 UTC\n- manager · `team-local-agent%3Aec_local_team_62ab7b%3Alead/catalog.md` · 1 run · last activity 2026-11-17 19:34 UTC\n",
+      "team-local-agent%3Aec_local_team_62ab7b%3Alead/catalog.md": "# Episodic catalog: manager\n\n1 run, oldest first.\nMaintained by the system: do not edit. Each run's Work Journal stays in its run folder; this catalog only points to it and quotes no conversation.\n\n## 2026-11-17 19:34 → 2026-11-17 19:34 UTC · ec_lead_62ab7b_a1f711b8f99e43c797855ad835a33011\n- Workspace: `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/episodic-catalog-e2e-Z2iFRn/workspace`\n- Journal: `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/episodic-catalog-e2e-Z2iFRn/memory/agent_teams/ec_local_team_62ab7b_16add485433d423bb6e6b5bd02a9d2d7/ec_lead_62ab7b_a1f711b8f99e43c797855ad835a33011/work_journal`\n  - work_journal_active.md · 2026-11-17 19:34 – 2026-11-17 19:34 · 3 KB\n"
+    }
+  },
+  "ec07": {
+    "listeningMs": 4151,
+    "changed": [],
+    "outsideEpisodicChanged": []
+  }
+}

@@ -131,7 +131,8 @@ export class ConfiguredAgentExecutionHandle implements RetainedAgentExecutionCon
     return ["initializing", "running", "error"].includes(this.getStatusSnapshot().details.status);
   }
   getStatusSnapshot(): CollaborationAgentStatusSnapshot {
-    return this.overlay.get(() => this.agentRun?.getStatusSnapshot() ?? { status: "offline" });
+    // A member without a run is offline: no background tasks running.
+    return this.overlay.get(() => this.agentRun?.getStatusSnapshot() ?? { status: "offline", background_tasks_running: 0 });
   }
   getInputStateSnapshots() {
     return this.agentRun?.isActive()

@@ -12,12 +12,12 @@
     data-test="mobile-run-row"
     :data-depth="row.depth"
   >
-    <span v-for="level in row.depth" :key="level" class="absolute inset-y-0 w-px bg-slate-200" :style="{ left: `${railLeft(level)}px` }" aria-hidden="true" />
+    <span v-for="level in row.depth" :key="level" class="absolute inset-y-0 w-px bg-slate-200" :style="{ left: `${railLeft(level)}rem` }" aria-hidden="true" />
     <button
       type="button"
       class="flex min-w-0 flex-1 items-start gap-3 text-left active:bg-slate-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-blue-500"
       :class="[row.depth === 0 ? 'min-h-[4rem] py-3' : 'min-h-[3.5rem] py-2.5', row.hasChildren ? 'pr-0' : 'pr-4']"
-      :style="{ paddingLeft: `${contentLeft}px` }"
+      :style="{ paddingLeft: `${contentLeft}rem` }"
       :aria-label="accessibleLabel"
       data-testid="mobile-run-open"
       @click="$emit('open', row)"
@@ -34,7 +34,7 @@
           <Icon v-else-if="row.avatar === 'org'" icon="heroicons:building-office-2-20-solid" :class="row.depth === 0 ? 'h-5 w-5' : 'h-4 w-4'" />
           <template v-else>{{ initials }}</template>
         </span>
-        <span class="absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full ring-2" :class="[dotClass, open ? 'ring-blue-50' : 'ring-white']" data-testid="mobile-run-status-dot" :data-status="shownStatus" />
+        <span class="absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full ring-2" :class="[dotClass, open ? 'ring-blue-50' : 'ring-white']" data-testid="mobile-run-status-dot" :data-status="presentation.kind === 'background' ? 'background' : shownStatus" />
       </span>
       <span class="min-w-0 flex-1">
         <span class="block truncate text-[0.9375rem] leading-5 text-slate-900" :class="row.avatar === 'agent' ? 'font-medium' : 'font-semibold'" data-testid="mobile-run-name">{{ row.name }}</span>
@@ -66,23 +66,29 @@ import { computed } from 'vue';
 import { Icon } from '@iconify/vue';
 import RemoteNodeChip from '~/components/workspace/remote/RemoteNodeChip.vue';
 import type { MobileRunTreeRow } from '~/utils/mobile/mobileRunListRows';
-import { agentStatusDotClass } from '~/utils/workspaceStatusDotPresentation';
-import { mobileRunStatusLabel } from '~/utils/mobile/mobileRunStatusLabel';
+import { agentActivityPresentation } from '~/utils/agentActivityPresentation';
+import { mobileRunActivityLabel } from '~/utils/mobile/mobileRunStatusLabel';
+import { useLocalization } from '~/composables/useLocalization';
 
 const props = defineProps<{ row: MobileRunTreeRow; open: boolean; age: string }>();
 defineEmits<{ (event: 'open', row: MobileRunTreeRow): void; (event: 'toggle', row: MobileRunTreeRow): void }>();
+const { t } = useLocalization();
 
-// The rail of level k sits under the avatar's center of its group's row: 34px under a top-level row, 20px deeper.
-const railLeft = (level: number): number => 34 + (level - 1) * 21;
-const contentLeft = computed(() => (props.row.depth === 0 ? 16 : railLeft(props.row.depth) + 9));
+// The rail of level k sits under the avatar's center of its group's row: 34 px under a top-level row, 21 px deeper
+// (at the Standard Text size). In rem, so the rails and indents follow the avatars at every Text size (autobyteus-525).
+const railLeft = (level: number): number => 2.125 + (level - 1) * 1.3125;
+const contentLeft = computed(() => (props.row.depth === 0 ? 1 : railLeft(props.row.depth) + 0.5625));
 const unreachable = computed(() => props.row.remote?.reachable === false);
 const shownStatus = computed(() => (unreachable.value ? 'error' : props.row.status));
-const dotClass = computed(() => agentStatusDotClass(shownStatus.value));
+/** An unreachable run shows the error dot; otherwise its activity (autobyteus-448: idle with background tasks is active). */
+const activity = computed(() => ({ status: shownStatus.value, backgroundTasksRunning: unreachable.value ? 0 : props.row.backgroundTasksRunning }));
+const presentation = computed(() => agentActivityPresentation(activity.value));
+const dotClass = computed(() => presentation.value.dotClass);
 const disclosureNoun = computed(() => (props.row.avatar === 'agent' ? 'delegated work' : 'members'));
 const initials = computed(() => props.row.name.replace(/[_-]+/g, ' ').split(/\s+/).filter(Boolean).slice(0, 2)
   .map((word) => word[0]?.toUpperCase() ?? '').join('') || 'AI');
 const accessibleLabel = computed(() => [
   props.row.name, props.row.title, props.row.remote ? `Runs on ${props.row.remote.nodeName}` : '',
-  unreachable.value ? 'Not reachable' : mobileRunStatusLabel(props.row.status),
+  unreachable.value ? 'Not reachable' : mobileRunActivityLabel({ status: props.row.status, backgroundTasksRunning: props.row.backgroundTasksRunning }, t),
 ].filter(Boolean).join(', '));
 </script>

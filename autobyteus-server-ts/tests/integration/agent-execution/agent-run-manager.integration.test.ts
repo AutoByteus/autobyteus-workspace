@@ -46,7 +46,7 @@ const createBackend = (input: {
     runId: input.runId,
     runtimeKind: input.runtimeKind,
     inputCapabilities: { activeTurnAppend: "unsupported" },
-    compactionRecovery: { kind: "unsupported" },
+    compactionRecovery: { kind: "unsupported" }, backgroundTaskInspection: { kind: "unsupported" } as const,
     getContext: () => context,
     isActive: () => state.active,
     getPlatformAgentRunId: () => state.platformAgentRunId,

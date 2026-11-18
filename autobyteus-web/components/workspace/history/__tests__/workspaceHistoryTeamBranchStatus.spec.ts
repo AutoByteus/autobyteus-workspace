@@ -191,7 +191,7 @@ describe('teamBranchStatus', () => {
 describe('teamRunStatus and teamDefinitionGroupStatus (SR-086 G-A4)', () => {
   beforeEach(() => setActivePinia(createPinia()));
   const answer = (runs: Record<string, string>) => useRunStatusStore().apply({ type: 'RUN_STATUS_SNAPSHOT', payload: {
-    runs: Object.entries(runs).map(([runId, status]) => ({ kind: 'agent_team' as const, runId, answer: 'ok' as const, node: null, status: status as never, agents: [] })) } });
+    runs: Object.entries(runs).map(([runId, status]) => ({ kind: 'agent_team' as const, runId, answer: 'ok' as const, node: null, status: status as never, backgroundTasksRunning: 0, agents: [] })) } });
 
   it('reads a run\'s own status as its root computed it, never its rows; offline until its node answered', () => {
     expect(teamRunStatus({ teamRunId: 'idle-run' })).toBe(AgentStatus.Offline);

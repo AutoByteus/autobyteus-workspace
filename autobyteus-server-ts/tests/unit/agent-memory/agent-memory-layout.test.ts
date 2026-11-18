@@ -50,6 +50,17 @@ describe("AgentMemoryLayout", () => {
     )).toThrow("ancestorTeamRunIds[0] is invalid");
   });
 
+  it("names an agent's episodic folder exactly as its semantic folder, under episodic/ (REQ-001)", () => {
+    expect(layout.getEpisodicRootDirPath()).toBe(path.join(memoryDir, "episodic"));
+    for (const id of ["project-task-manager", "team-local-agent:software-engineering-team:solution-designer"]) {
+      expect(path.basename(layout.getAgentEpisodicDirPath(id))).toBe(path.basename(layout.getAgentSemanticMemoryDirPath(id)));
+    }
+    expect(layout.getAgentEpisodicDirPath("team-local-agent:software-engineering-team:solution-designer"))
+      .toBe(path.join(memoryDir, "episodic", "team-local-agent%3Asoftware-engineering-team%3Asolution-designer"));
+    expect(() => layout.getAgentEpisodicDirPath("  ")).toThrow("agentDefinitionId is required");
+    expect(() => layout.getAgentEpisodicDirPath("..")).toThrow("agentDefinitionId is invalid");
+  });
+
   it("guards against path traversal in standalone run segments", () => {
     expect(() => layout.getStandaloneRunDirPath("../escape")).toThrow("agentRunId is invalid");
     expect(() => layout.getStandaloneRunDirPath("nested/agent")).toThrow("agentRunId is invalid");

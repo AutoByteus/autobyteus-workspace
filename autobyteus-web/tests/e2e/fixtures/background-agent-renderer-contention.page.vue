@@ -256,7 +256,7 @@ const switchSurface = async (surface: 'files' | 'teams') => {
 };
 const dispatchWindow = (target: AgentStreamProjectionTarget, index: number) => {
   const runId = target.context.state.runId;
-  dispatchAgentStreamMessage({ type: 'AGENT_STATUS', payload: { status: 'running', agent_id: runId } } as ServerMessage, target);
+  dispatchAgentStreamMessage({ type: 'AGENT_STATUS', payload: { status: 'running', background_tasks_running: 0, agent_id: runId } } as ServerMessage, target);
   dispatchAgentStreamMessage({
     type: 'SEGMENT_CONTENT',
     payload: {
@@ -332,7 +332,7 @@ const runNoEffectCheck = () => {
   const target = loadTargets[0]!;
   const before = loadSnapshot();
   dispatchAgentStreamMessage({ type: 'CONNECTED', payload: { agent_id: target.context.state.runId, session_id: 'probe' } } as ServerMessage, target);
-  dispatchAgentStreamMessage({ type: 'AGENT_STATUS', payload: { status: 'running', agent_id: target.context.state.runId } } as ServerMessage, target);
+  dispatchAgentStreamMessage({ type: 'AGENT_STATUS', payload: { status: 'running', background_tasks_running: 0, agent_id: target.context.state.runId } } as ServerMessage, target);
   const after = loadSnapshot();
   return {
     topologyDelta: after.topologyRevision - before.topologyRevision,

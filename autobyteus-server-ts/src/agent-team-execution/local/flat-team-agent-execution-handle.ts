@@ -64,7 +64,7 @@ export class FlatTeamAgentExecutionHandle implements RetainedAgentExecutionContr
     return [createTeamAgentStatusSnapshot({
       execution: this.identity(),
       details: status ? { ...status.details, toolName: null, errorDetails: null } : {
-        status: "offline", trigger: null, toolName: null, errorMessage: null, errorDetails: null, recoverableBlock: null,
+        status: "offline", backgroundTasksRunning: 0, trigger: null, toolName: null, errorMessage: null, errorDetails: null, recoverableBlock: null,
       },
     })];
   }

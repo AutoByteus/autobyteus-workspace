@@ -108,13 +108,13 @@ describe('agentStatusHandler', () => {
 
   describe('handleAgentStatus', () => {
     it('updates currentStatus', () => {
-      const payload: AgentStatusPayload = { status: 'running' };
+      const payload: AgentStatusPayload = { status: 'running', background_tasks_running: 0 };
       handleAgentStatus(payload, mockContext);
       expect(mockContext.state.currentStatus).toBe(AgentStatus.Running);
     });
 
     it('sets submissionPending to false when status is Idle', () => {
-      const payload: AgentStatusPayload = { status: 'idle' };
+      const payload: AgentStatusPayload = { status: 'idle', background_tasks_running: 0 };
       handleAgentStatus(payload, mockContext);
       expect(mockContext.submissionPending).toBe(false);
     });
@@ -123,7 +123,7 @@ describe('agentStatusHandler', () => {
       const aiMsg = { type: 'ai', isComplete: false };
       mockContext.conversation.messages.push(aiMsg);
       
-      const payload: AgentStatusPayload = { status: 'idle' };
+      const payload: AgentStatusPayload = { status: 'idle', background_tasks_running: 0 };
       handleAgentStatus(payload, mockContext);
       
       expect(aiMsg.isComplete).toBe(true);
@@ -137,7 +137,7 @@ describe('agentStatusHandler', () => {
         const aiMsg = { type: 'ai', isComplete: false, segments: [textSegment] };
         mockContext.conversation.messages.push(aiMsg);
 
-        handleAgentStatus({ status }, mockContext);
+        handleAgentStatus({ status, background_tasks_running: 0 }, mockContext);
 
         expect(getStreamSegmentIdentity(textSegment)?.presentationComplete).toBe(true);
         expect(aiMsg.isComplete).toBe(true);

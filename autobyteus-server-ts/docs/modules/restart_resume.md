@@ -9,7 +9,7 @@ extending autobyteus-285).
 
 - **Who is told.** Runs held by a collaboration root (standalone runs' agents and Team and Org members; a delegated run is one
   of these in its own root, autobyteus-461) that were `initializing` or `running`, or `idle` with a running background
-  task (`AgentRun.hasRunningBackgroundTasks()`: AutoByteus, Claude and Antigravity report it; Codex is asked through its
+  task (`AgentRun.hasRunningBackgroundTasks()`, from `runningBackgroundTaskCount` over its background-task view: AutoByteus, Claude and Antigravity report it; Codex is asked through its
   background-task view at a graceful stop only; Grok Build and DeepSeek (ACP) report none, so their runs are told only
   when mid-turn). Application-owned and system-owned runs (the Application platform, the Model Router agent) recover by
   their owners.

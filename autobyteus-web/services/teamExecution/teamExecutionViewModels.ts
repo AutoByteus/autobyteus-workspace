@@ -22,6 +22,8 @@ export interface TeamExecutionNavigationRow {
   readonly agentRunId: string | null;
   readonly teamRunId: string | null;
   readonly currentStatus: AgentStatus | null;
+  /** The member's running background tasks, from its status (autobyteus-448); 0 for a team row. */
+  readonly backgroundTasksRunning: number;
   readonly focusable: boolean;
   readonly expandable: boolean;
   readonly coordinator: boolean;

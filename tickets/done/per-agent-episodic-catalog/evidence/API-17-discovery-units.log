@@ -1,0 +1,4 @@
+# API-17 units reaching discovery outside IMP-16's scope, plus the discovery unit test | commit 91ea06d8d0 (code 1324c3e8f4) | Node v22.23.1 | 2026-11-17T22:59:00Z
+ Test Files  3 passed (3)
+      Tests  34 passed (34)
+exit 0

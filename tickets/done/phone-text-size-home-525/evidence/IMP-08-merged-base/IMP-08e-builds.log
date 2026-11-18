@@ -1,0 +1,7 @@
+# IMP-08e pnpm -C autobyteus-web build:mobile-web (and pnpm -C autobyteus-server-ts build for the probe); commit 65d67674a9 (merge of origin/personal 3f19d41aa7); macOS node v22.23.1; 2026-11-18
+│
+└  ✨ You can now deploy dist/public to any static hosting!
+Mobile web assets written to /Users/normy/autobyteus_org/autobyteus-worktrees/phone-text-size-home-525/autobyteus-web/dist-mobile/public
+exit=0
+Built-in agents bootstrap smoke check passed.
+Sanitized built-module/bootstrap smoke passed without DATABASE_URL.

@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 import { AgentOrgRunService } from "../../../src/agent-org-execution/services/agent-org-run-service.js";
-import { noWorkGuard } from "../../helpers/no-delegations.js";
+import { noWorkGuard, noEpisodicCatalog } from "../../helpers/no-delegations.js";
 import { testAgentOrgExecutionTree, testOrgAgentNode } from "../../fixtures/current-agent-org-run-fixtures.js";
 
 /**
@@ -12,9 +12,9 @@ const tree = testAgentOrgExecutionTree({ orgRunId: "org", members: [testOrgAgent
 const activeInspection = {
   orgRunId: "org", isActive: true, baseChangeSequence: 3, liveSequenceId: "live-1", lastMessageChangeSequence: 2,
   snapshot: { tree, inputStates: [], statuses: [{ execution: { memberAddress: "/ceo", agentRunId: "ceo_run" },
-    details: { status: "idle", trigger: null, errorMessage: null, recoverableBlock: null } }] },
+    details: { status: "idle", backgroundTasksRunning: 0, trigger: null, errorMessage: null, recoverableBlock: null } }] },
 };
-const serviceWith = (inspection = activeInspection) => new AgentOrgRunService({ workGuard: noWorkGuard(),
+const serviceWith = (inspection = activeInspection) => new AgentOrgRunService({ workGuard: noWorkGuard(), episodicCatalog: noEpisodicCatalog(),
   manager: { getInspection: vi.fn(async () => inspection) } } as never);
 
 describe("an Org's inspection with a delegated child (SR-083)", () => {

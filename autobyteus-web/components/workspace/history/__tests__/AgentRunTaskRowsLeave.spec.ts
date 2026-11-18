@@ -10,7 +10,7 @@ vi.mock('~/stores/agentRunCollaborationStore', () => ({
   }),
 }))
 vi.mock('~/stores/runStatusStore', () => ({ useRunStatusStore: () => ({
-  hold: () => () => undefined, treeRevisionOf: () => 0, isRunLive: () => false, statusOf: () => 'idle', runStateOf: () => null }) }))
+  hold: () => () => undefined, treeRevisionOf: () => 0, isRunLive: () => false, statusOf: () => 'idle', backgroundTasksOf: () => 0, runStateOf: () => null }) }))
 
 import AgentRunTaskRows from '../AgentRunTaskRows.vue'
 import { useRunTreeStore } from '~/stores/runTreeStore'

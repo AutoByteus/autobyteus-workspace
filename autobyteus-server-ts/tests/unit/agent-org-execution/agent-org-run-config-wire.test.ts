@@ -1,4 +1,4 @@
-import { noWorkGuard } from "../../helpers/no-delegations.js";
+import { noWorkGuard, noEpisodicCatalog } from "../../helpers/no-delegations.js";
 import { describe, expect, it, vi } from "vitest";
 import { agentOrgExecutionTreeDtoSchema } from "@autobyteus/collaboration-stream-contracts";
 import { AgentOrgRunService } from "../../../src/agent-org-execution/services/agent-org-run-service.js";
@@ -24,7 +24,7 @@ const pendingTree = () => {
   return base as never;
 };
 
-const serviceFor = (tree: unknown) => new AgentOrgRunService({ workGuard: noWorkGuard(), manager: {
+const serviceFor = (tree: unknown) => new AgentOrgRunService({ workGuard: noWorkGuard(), episodicCatalog: noEpisodicCatalog(), manager: {
   getRunConfig: vi.fn().mockResolvedValue({ orgRunId: "org", executionTree: tree, isActive: false, editability: { editable: true, reason: null } }),
   updateStoppedRunConfig: vi.fn().mockResolvedValue({ success: true, outcome: "UPDATED", message: "ok", canonical: tree, isActive: false,
     editability: { editable: true, reason: null }, fieldErrors: [] }),
@@ -57,7 +57,7 @@ describe("the Org tree on the wire while members have a pending runtime switch",
   });
 
   it("a result without a tree stays without one", async () => {
-    const service = new AgentOrgRunService({ workGuard: noWorkGuard(), manager: { updateStoppedRunConfig: vi.fn().mockResolvedValue({ success: false, outcome: "NOT_FOUND",
+    const service = new AgentOrgRunService({ workGuard: noWorkGuard(), episodicCatalog: noEpisodicCatalog(), manager: { updateStoppedRunConfig: vi.fn().mockResolvedValue({ success: false, outcome: "NOT_FOUND",
       message: "x", canonical: null, isActive: false, editability: { editable: false, reason: "UNAVAILABLE" }, fieldErrors: [] }) } } as never);
     await expect(service.updateStoppedRunConfig({ orgRunId: "org" } as never)).resolves.toMatchObject({ canonical: null });
   });

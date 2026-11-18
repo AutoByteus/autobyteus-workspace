@@ -1,0 +1,7 @@
+# IMP-05 terminal integration and tool-approval-flow (files whose cleanup hooks changed)
+# Command: env -u AUTOBYTEUS_TEST_VAULT npx vitest run tests/integration/agent/tool-approval-flow.test.ts tests/integration/tools/terminal
+# Commit: 80483cce9d content
+# Environment: macOS (darwin 25.5), 10-core, Node v22.23.1; load ~200
+# Date: 2026-11-17
+
+Result: Test Files  7 passed (7) / Tests  54 passed (54)

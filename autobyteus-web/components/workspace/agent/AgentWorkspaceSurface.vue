@@ -15,7 +15,7 @@
         <h4 class="truncate text-base font-medium text-gray-800" :title="headerFullTitle" data-test="agent-workspace-title">{{ headerTitle }}</h4>
         <!-- autobyteus-278: the node that runs this run, next to its name. -->
         <RemoteNodeChip v-if="remote" :node-name="remote.nodeName" size="header" />
-        <AgentStatusDisplay :status="target.context.state.currentStatus" />
+        <AgentStatusDisplay :status="target.context.state.currentStatus" :background-tasks-running="target.context.state.backgroundTasksRunning" />
       </div>
       <WorkspaceHeaderActions
         v-if="showHeaderActions && remoteView.headerActionsAllowed.value"

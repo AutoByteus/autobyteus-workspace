@@ -1,4 +1,4 @@
-import { noDelegations, noWorkGuard } from "../../../helpers/no-delegations.js";
+import { noDelegations, noWorkGuard, noEpisodicCatalog } from "../../../helpers/no-delegations.js";
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
@@ -121,7 +121,7 @@ describe("first mixed collaboration history after restart", () => {
       withInactiveHistoryMutation: vi.fn(),
     };
     const teamCatalog = new TeamRunHistoryCatalogService(memoryDir, { teamRunManager: teamManager });
-    const teamHistory = new TeamRunHistoryService(memoryDir, { tree: noDelegations(), workGuard: noWorkGuard(),
+    const teamHistory = new TeamRunHistoryService(memoryDir, { tree: noDelegations(), workGuard: noWorkGuard(), episodicCatalog: noEpisodicCatalog(),
       catalogService: teamCatalog,
       teamRunManager: teamManager as never,
       liveProjectionService: {

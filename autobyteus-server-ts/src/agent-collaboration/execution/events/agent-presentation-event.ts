@@ -25,6 +25,8 @@ export type AgentPresentationContextPath = Readonly<{
 
 export type AgentPresentationStatusDetails = Readonly<{
   status: "offline" | "initializing" | "idle" | "running" | "error";
+  /** Background tasks the agent has running (autobyteus-448); 0 when it has none or its runtime cannot say. */
+  backgroundTasksRunning: number;
   trigger: string | null;
   toolName: string | null;
   errorMessage: string | null;

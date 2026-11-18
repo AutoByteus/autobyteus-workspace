@@ -181,6 +181,8 @@ export class AgentRunStatusProjectionService {
       shouldConnectStream: false,
       statusPayload: buildAgentStatusPayload({
         status: input.status,
+        // A run that is not live has no background tasks running.
+        backgroundTasksRunning: 0,
         agentId: input.runId,
       }),
       command: null,

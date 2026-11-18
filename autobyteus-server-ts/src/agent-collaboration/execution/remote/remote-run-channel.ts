@@ -1,4 +1,5 @@
-import type { AgentPresentationMessage, RemoteAgentStatus } from "@autobyteus/agent-presentation-contracts";
+import type { AgentPresentationMessage } from "@autobyteus/agent-presentation-contracts";
+import type { RunAgentStatusEntry } from "./run-agent-access.js";
 import type { DelegatingRunRef } from "../../../run-history/store/agent-run-metadata-types.js";
 import type { RemoteAgentLaunch } from "../../../run-history/domain/run-execution-tree-shared-records.js";
 import type { DelegationWork } from "../../../model-routing/domain/model-routing-types.js";
@@ -47,7 +48,7 @@ export type RemoteStartedRunRef = Readonly<{ kind: "agent" | "agent_team"; runId
 export type RemoteRunSummary = RemoteStartedRunRef & Readonly<{
   title: string | null;
   /** Only the run's live agents (an Agent run's own agent, a Team's members); an agent without one is offline. */
-  statuses: readonly Readonly<{ agentRunId: string; status: RemoteAgentStatus }>[];
+  statuses: readonly RunAgentStatusEntry[];
   /** Each agent's launch, from the run's own file on its node (SR-038). */
   launches: readonly RemoteAgentLaunch[];
 }>;

@@ -9,7 +9,8 @@ import type {
   MemoryIndexStepName,
   MemoryRun,
 } from "../domain/memory-search-models.js";
-import type { MemoryRunDiscovery } from "../runs/memory-run-discovery.js";
+import type { RunFolderDiscovery } from "../../agent-memory/services/run-folder-discovery.js";
+import { toMemoryRun } from "../runs/memory-run-mapping.js";
 import type { MemorySearchStore } from "../store/memory-search-store.js";
 import { makeJournalsCurrent } from "./journals-step.js";
 import { indexRunJournals } from "./run-journal-indexer.js";
@@ -36,7 +37,7 @@ type Journals = Pick<WorkJournalService, "ensureCurrent" | "rendererRevision" | 
 
 export type MemoryIndexPipelineDependencies = Readonly<{
   store: MemorySearchStore;
-  discovery: Pick<MemoryRunDiscovery, "findRuns" | "folderRun">;
+  discovery: Pick<RunFolderDiscovery, "findRuns">;
   journals: Journals;
   embeddings: () => Embeddings;
   /** The active embedding model, resolved from the setting (no model work). */
@@ -266,7 +267,7 @@ export class MemoryIndexPipeline {
     if (request.kind === "runs" && [...request.memoryDirs].every((dir) => known.has(dir))) {
       runs = [...request.memoryDirs].map((dir) => known.get(dir)!);
     } else {
-      const found = await this.deps.discovery.findRuns();
+      const found = (await this.deps.discovery.findRuns()).map(toMemoryRun);
       const foundDirs = new Set(found.map((run) => path.resolve(run.memoryDir)));
       for (const run of found) store.upsertRun(run);
       if (request.kind !== "runs") {

@@ -35,7 +35,7 @@ const status = (memberAddress: string, agentRunId: string): CollaborationAgentSt
     memberAddress: assertAgentTeamAddress(memberAddress),
     agentRunId,
   }),
-  details: { status: "idle", trigger: null, errorMessage: null, recoverableBlock: null },
+  details: { status: "idle", backgroundTasksRunning: 0, trigger: null, errorMessage: null, recoverableBlock: null },
   statusHint: "IDLE",
 });
 

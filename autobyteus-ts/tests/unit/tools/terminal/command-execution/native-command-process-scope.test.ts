@@ -112,3 +112,33 @@ it('framing preserves no-newline output, split frames and invalid control-like b
   expect(seen).toEqual([{ kind: 'READY', pid: 42 }, { kind: 'FOREGROUND_DONE', exitCode: 3, jobPids: [11, 12] },
     { kind: 'JOB_ENDED', pid: 11, status: 143 }]);
 });
+
+// autobyteus-524 AC-005: the scope's default deadlines are the named limits.
+(process.platform === 'win32' ? it.skip : it)('uses the named limits as its default deadlines', async () => {
+  const observer = new ProcessGroupObserver(), scope = new NativeCommandProcessScope(observer);
+  const establish = vi.spyOn(observer, 'establish'), snapshot = vi.spyOn(observer, 'snapshot'), signal = vi.spyOn(observer, 'signal');
+  const near = (deadline: number, since: number, limit: number) => {
+    expect(deadline - since).toBeGreaterThanOrEqual(limit); expect(deadline - since).toBeLessThan(limit + 5_000);
+  };
+  try {
+    const startedAt = Date.now();
+    const handle = await scope.start(new NonInteractiveShellResolver().resolve('sleep 60', process.cwd()));
+    near(establish.mock.calls[0]![2], startedAt, 30_000);
+    snapshot.mockClear();
+    const inspectedAt = Date.now();
+    await scope.members(handle);
+    near(snapshot.mock.calls[0]![1]!, inspectedAt, 10_000);
+    const stoppedAt = Date.now();
+    expect(await scope.stop(handle, 'explicit-stop')).toEqual({ outcome: 'stopped' });
+    near(signal.mock.calls[0]![2], stoppedAt, 30_000);
+    const second = await scope.start(new NonInteractiveShellResolver().resolve('sleep 60', process.cwd()));
+    const stop = vi.spyOn(scope, 'stop');
+    const closedAt = Date.now();
+    expect((await scope.close()).outcomes).toEqual([{ outcome: 'stopped' }]);
+    expect(stop.mock.calls[0]![0]).toBe(second);
+    near(stop.mock.calls[0]![2]!, closedAt, 3_000);
+  } finally {
+    establish.mockRestore(); snapshot.mockRestore(); signal.mockRestore();
+    await scope.close();
+  }
+});

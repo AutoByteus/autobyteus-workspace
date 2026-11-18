@@ -411,7 +411,7 @@ describe('activeContextStore selected workspace recovery', () => {
           root_team_run_id: 'team-1', base_change_sequence: 1, live_sequence_id: 'live-1', last_message_change_sequence: 0, execution_tree: tree,
           agent_input_states: [], agent_statuses: team.view.listAgentContextEntries().map(entry => ({
             agent_run_id: entry.agentRunId, member_address: entry.memberAddress,
-            status: 'offline', trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null,
+            status: 'offline', background_tasks_running: 0, trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null,
           })),
         } }).disposition).toBe('applied');
       }

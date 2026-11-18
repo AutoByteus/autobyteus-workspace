@@ -1,0 +1,153 @@
+{
+  "startedAt": "2026-11-17T19:48:30.011Z",
+  "result": "Pass",
+  "node": "v22.23.1",
+  "servers": {
+    "alpha": {
+      "port": 56837,
+      "nodeId": "srv_J5_YAArt9h_SIHfWu9wOWXiC8kKsjX5E",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    },
+    "beta": {
+      "port": 56838,
+      "nodeId": "srv_joFmiWWSZ9RYqEcxoXlnKcApzBKJtr8a",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    }
+  },
+  "runs": {
+    "ptm": "project_task_manager_749b4ec63e854c41ae7aabe4a9591f0e",
+    "writerRun": "release_notes_writer_c8f1ba543ec94555a0c3e7113034ebb8",
+    "squadRun": "docs_review_team_8917938b95034d3181dc9ff4ea212ade",
+    "reviewer": "release_notes_writer_97e41abdbc6d4f24ade6f7f8bc954b86",
+    "memberDelegated": "fact_checker_223dac497e8d4c3ebd9215766b42fbcd",
+    "remoteAgentRun": "publisher_8c55182159b546b0ad74d338e9098101",
+    "remoteTeamRun": "studio_team_b785cd65414c4280939731e07f1739a4",
+    "plain": [
+      "fact_checker_6cbf37335e4f42858fda77cdc80e748f",
+      "fact_checker_d85d9802cbb345cb956d19f0551c2d54",
+      "fact_checker_071c83cb685e4c0cbcc8d6482e2c6814"
+    ],
+    "org": "delivery_org_953efc81461a4989be28b89beda1ee8b",
+    "orgPlanner": "release_notes_writer_ae8964800d0f47528a07bdc08b2c8aa9",
+    "reviewOrg": "review_org_3fc3b2311b9b4715a51ea85e3c5bc104",
+    "reviewOrgCoordinator": {
+      "address": "/squad/reviewer",
+      "agentRunId": "release_notes_writer_e42390dff6f64ef1bab1ad44ce2b0025",
+      "teamRunId": null
+    },
+    "delivery": "delivery_team_29d303e28b3c4c07b83cfe7eece9b20b",
+    "deliveryLead": "fact_checker_c41bcfbe4c9b4087a11817929088b2ee",
+    "deliveryMate": "release_notes_writer_b0ac6ce8cf5442939f7337d76deea051",
+    "leadDelegated": "changelog_helper_3edf5f36bfde45cdb50fba487f641fd6",
+    "approver": "approver_fecca61bc60e4a08be4d5f8d858dc0d2",
+    "taskA": "launch-032237-1",
+    "taskB": "launch-032237-2"
+  },
+  "cases": {
+    "MSP-R522B": {
+      "result": "Pass",
+      "seconds": 217.5,
+      "before": {
+        "lead": {
+          "address": "/lead",
+          "runtime": "antigravity_cli",
+          "model": "gemini-3.8-flash-low"
+        },
+        "helper": {
+          "runtimeKind": "antigravity_cli",
+          "llmModelIdentifier": "gemini-3.8-flash-low"
+        }
+      },
+      "screen": {
+        "name": "changelog helper",
+        "subtitle": "Stopped · in lead"
+      },
+      "opened": {
+        "subject": "changelog helperStopped · in lead",
+        "runtime": "Antigravity CLI",
+        "model": "Gemini test",
+        "saveDisabled": true,
+        "stop": false,
+        "error": null
+      },
+      "changed": {
+        "subject": "changelog helperStopped · in lead",
+        "runtime": "Grok Build",
+        "model": "Grok 4.7",
+        "saveDisabled": false,
+        "stop": false,
+        "error": null
+      },
+      "afterSaveScreen": {
+        "subject": null,
+        "runtime": null,
+        "model": null,
+        "saveDisabled": null,
+        "stop": false,
+        "error": null
+      },
+      "after": {
+        "lead": {
+          "address": "/lead",
+          "runtime": "grok_build",
+          "model": "grok-4.7"
+        },
+        "helper": {
+          "runtimeKind": "antigravity_cli",
+          "llmModelIdentifier": "gemini-3.8-flash-low"
+        }
+      },
+      "orgTaskTeam": {
+        "id": null,
+        "rows": [
+          "org_agent:planner:own",
+          "org_team:squad:own",
+          "team_member:reviewer:child",
+          "team_member:editor:child"
+        ]
+      },
+      "orgListRows": [
+        {
+          "key": "org:ORG",
+          "name": "Delivery Org",
+          "depth": 0
+        },
+        {
+          "key": "org:ORG/org_agent:delivery_org_953efc81461a4989be28b89beda1ee8b:release_notes_writer_ae8964800d0f47528a07bdc08b2c8aa9",
+          "name": "planner",
+          "depth": 1
+        },
+        {
+          "key": "org:ORG/org_team:docs_review_team_fab1f33b188246f7a92f6cb90eb2138e",
+          "name": "squad",
+          "depth": 1
+        }
+      ],
+      "orgOpenError": "row /changelog helper/i under org:delivery_org_953efc81461a4989be28b89beda1ee8b"
+    }
+  },
+  "browserErrors": [],
+  "failedRequests": [],
+  "network": {},
+  "cleanup": {
+    "frontendExited": true,
+    "serversLeft": 0,
+    "rootRemoved": true
+  },
+  "error": null,
+  "summary": {
+    "cases": {
+      "MSP-R522B": "Pass"
+    },
+    "unknownBrowserErrors": 0
+  },
+  "finishedAt": "2026-11-17T19:53:32.889Z"
+}

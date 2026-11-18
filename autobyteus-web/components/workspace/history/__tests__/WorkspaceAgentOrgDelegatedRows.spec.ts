@@ -54,7 +54,7 @@ describe('Org history delegated rows (SR-084)', () => {
 
   it('gives the mounted team and a delegated team one Team status dot each; a delegated team\'s is its run\'s own (SR-086 G-A4)', async () => {
     const { wrapper } = mountOrg();
-    useRunStatusStore().apply({ type: 'RUN_STATUS_SNAPSHOT', payload: { runs: [{ kind: 'agent_team', runId: 'team-task', answer: 'ok', node: null, status: 'running', agents: [] }] } });
+    useRunStatusStore().apply({ type: 'RUN_STATUS_SNAPSHOT', payload: { runs: [{ kind: 'agent_team', runId: 'team-task', answer: 'ok', node: null, status: 'running', backgroundTasksRunning: 0, agents: [] }] } });
     await nextTick();
     expect(wrapper.get('[data-test="agent-org-team-row-team-configured"]').findAll('[data-test="team-aggregate-status-dot"]')).toHaveLength(1);
     const team = wrapper.get('[data-test="workspace-team-transient-execution-row"][data-delegated-run-kind="task_team"]');

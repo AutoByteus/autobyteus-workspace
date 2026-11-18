@@ -306,7 +306,7 @@ export class FlatTeamExecutionManager {
         memberAddress: address,
         agentRunId,
       })),
-      details: createTeamAgentStatusDetails({ status: "offline" }),
+      details: createTeamAgentStatusDetails({ status: "offline", backgroundTasksRunning: 0 }),
     });
   }
 

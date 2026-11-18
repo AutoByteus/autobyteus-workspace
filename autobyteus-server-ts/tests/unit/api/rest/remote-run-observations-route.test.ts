@@ -22,7 +22,7 @@ import { registerTestNodeAccess } from "../../../helpers/node-access-test-gate.j
 
 const SELF = "srv_beta_0000000000000000000000000000";
 const ALPHA: PeerNode = { nodeId: "srv_alpha_000000000000000000000000000", name: "alpha", baseUrl: "http://alpha:29700", addedAt: "2026-10-20T09:00:00.000Z", paired: true };
-const statusOf = (value: string) => ({ type: "AGENT_STATUS", payload: { status: value, trigger: null, tool_name: null, error_message: null,
+const statusOf = (value: string) => ({ type: "AGENT_STATUS", payload: { status: value, background_tasks_running: 0, trigger: null, tool_name: null, error_message: null,
   error_details: null, recoverableBlock: null } }) as never;
 /** What a live run's subscription sends at once (its current state), before the gateway has answered. */
 const inputState = statusOf("running");

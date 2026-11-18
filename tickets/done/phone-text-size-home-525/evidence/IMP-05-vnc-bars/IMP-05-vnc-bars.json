@@ -1,0 +1,1410 @@
+[
+ {
+  "lang": "en",
+  "width": 360,
+  "step": "small",
+  "mode": {
+   "left": 236.1,
+   "right": 314.1,
+   "w": 78.1,
+   "h": 31.8
+  },
+  "root": "14.1176px",
+  "viewport": 360,
+  "headerScroll": 360,
+  "rowScroll": 360,
+  "title": {
+   "left": 45.9,
+   "right": 236.1,
+   "w": 190.2,
+   "h": 21.2
+  },
+  "titleCut": false,
+  "fullScreen": {
+   "left": 314.1,
+   "right": 356.5,
+   "w": 42.3,
+   "h": 42.3
+  },
+  "status": {
+   "left": 30,
+   "right": 345.9,
+   "w": 315.9,
+   "h": 17.6
+  },
+  "statusEllipsis": false,
+  "keyboard": null,
+  "clipboard": null,
+  "clean": true,
+  "shot": "IMP-05-en-360-small-view.png"
+ },
+ {
+  "lang": "en",
+  "width": 360,
+  "step": "small",
+  "mode": {
+   "left": 249.3,
+   "right": 314.1,
+   "w": 64.9,
+   "h": 31.8
+  },
+  "root": "14.1176px",
+  "viewport": 360,
+  "headerScroll": 360,
+  "rowScroll": 360,
+  "title": {
+   "left": 45.9,
+   "right": 249.3,
+   "w": 203.4,
+   "h": 21.2
+  },
+  "titleCut": false,
+  "fullScreen": {
+   "left": 314.1,
+   "right": 356.5,
+   "w": 42.3,
+   "h": 42.3
+  },
+  "status": {
+   "left": 30,
+   "right": 175.7,
+   "w": 145.7,
+   "h": 17.6
+  },
+  "statusEllipsis": false,
+  "keyboard": {
+   "left": 182.8,
+   "right": 260.1,
+   "w": 77.4,
+   "h": 31.8
+  },
+  "clipboard": {
+   "left": 267.2,
+   "right": 345.9,
+   "w": 78.7,
+   "h": 31.8
+  },
+  "clean": true,
+  "shot": "IMP-05-en-360-small-control.png"
+ },
+ {
+  "lang": "en",
+  "width": 360,
+  "step": "standard",
+  "mode": {
+   "left": 220.6,
+   "right": 308,
+   "w": 87.4,
+   "h": 36
+  },
+  "root": "16px",
+  "viewport": 360,
+  "headerScroll": 360,
+  "rowScroll": 360,
+  "title": {
+   "left": 52,
+   "right": 220.6,
+   "w": 168.6,
+   "h": 24
+  },
+  "titleCut": false,
+  "fullScreen": {
+   "left": 308,
+   "right": 356,
+   "w": 48,
+   "h": 48
+  },
+  "status": {
+   "left": 34,
+   "right": 344,
+   "w": 310,
+   "h": 20
+  },
+  "statusEllipsis": false,
+  "keyboard": null,
+  "clipboard": null,
+  "clean": true,
+  "shot": "IMP-05-en-360-standard-view.png"
+ },
+ {
+  "lang": "en",
+  "width": 360,
+  "step": "standard",
+  "mode": {
+   "left": 235.3,
+   "right": 308,
+   "w": 72.7,
+   "h": 36
+  },
+  "root": "16px",
+  "viewport": 360,
+  "headerScroll": 360,
+  "rowScroll": 360,
+  "title": {
+   "left": 52,
+   "right": 235.3,
+   "w": 183.3,
+   "h": 24
+  },
+  "titleCut": false,
+  "fullScreen": {
+   "left": 308,
+   "right": 356,
+   "w": 48,
+   "h": 48
+  },
+  "status": {
+   "left": 34,
+   "right": 153.1,
+   "w": 119.1,
+   "h": 20
+  },
+  "statusEllipsis": true,
+  "keyboard": {
+   "left": 161.1,
+   "right": 247.9,
+   "w": 86.8,
+   "h": 36
+  },
+  "clipboard": {
+   "left": 255.9,
+   "right": 344,
+   "w": 88.1,
+   "h": 36
+  },
+  "clean": true,
+  "shot": "IMP-05-en-360-standard-control.png"
+ },
+ {
+  "lang": "en",
+  "width": 360,
+  "step": "large",
+  "mode": {
+   "left": 205.3,
+   "right": 301.9,
+   "w": 96.6,
+   "h": 40.2
+  },
+  "root": "17.8824px",
+  "viewport": 360,
+  "headerScroll": 360,
+  "rowScroll": 360,
+  "title": {
+   "left": 58.1,
+   "right": 205.3,
+   "w": 147.2,
+   "h": 26.8
+  },
+  "titleCut": false,
+  "fullScreen": {
+   "left": 301.9,
+   "right": 355.5,
+   "w": 53.6,
+   "h": 53.6
+  },
+  "status": {
+   "left": 38,
+   "right": 342.1,
+   "w": 304.1,
+   "h": 22.4
+  },
+  "statusEllipsis": false,
+  "keyboard": null,
+  "clipboard": null,
+  "clean": true,
+  "shot": "IMP-05-en-360-large-view.png"
+ },
+ {
+  "lang": "en",
+  "width": 360,
+  "step": "large",
+  "mode": {
+   "left": 221.5,
+   "right": 301.9,
+   "w": 80.4,
+   "h": 40.2
+  },
+  "root": "17.8824px",
+  "viewport": 360,
+  "headerScroll": 360,
+  "rowScroll": 360,
+  "title": {
+   "left": 58.1,
+   "right": 221.5,
+   "w": 163.3,
+   "h": 26.8
+  },
+  "titleCut": false,
+  "fullScreen": {
+   "left": 301.9,
+   "right": 355.5,
+   "w": 53.6,
+   "h": 53.6
+  },
+  "status": {
+   "left": 38,
+   "right": 130.8,
+   "w": 92.8,
+   "h": 22.4
+  },
+  "statusEllipsis": true,
+  "keyboard": {
+   "left": 139.8,
+   "right": 235.8,
+   "w": 96,
+   "h": 40.2
+  },
+  "clipboard": {
+   "left": 244.7,
+   "right": 342.1,
+   "w": 97.4,
+   "h": 40.2
+  },
+  "clean": true,
+  "shot": "IMP-05-en-360-large-control.png"
+ },
+ {
+  "lang": "en",
+  "width": 360,
+  "step": "largest",
+  "mode": {
+   "left": 190.2,
+   "right": 295.8,
+   "w": 105.6,
+   "h": 44.5
+  },
+  "root": "19.7647px",
+  "viewport": 360,
+  "headerScroll": 360,
+  "rowScroll": 360,
+  "title": {
+   "left": 64.2,
+   "right": 190.2,
+   "w": 126,
+   "h": 29.6
+  },
+  "titleCut": true,
+  "fullScreen": {
+   "left": 295.8,
+   "right": 355.1,
+   "w": 59.3,
+   "h": 59.3
+  },
+  "status": {
+   "left": 42,
+   "right": 340.3,
+   "w": 298.3,
+   "h": 24.7
+  },
+  "statusEllipsis": false,
+  "keyboard": null,
+  "clipboard": null,
+  "clean": true,
+  "shot": "IMP-05-en-360-largest-view.png"
+ },
+ {
+  "lang": "en",
+  "width": 360,
+  "step": "largest",
+  "mode": {
+   "left": 207.8,
+   "right": 295.8,
+   "w": 88,
+   "h": 44.5
+  },
+  "root": "19.7647px",
+  "viewport": 360,
+  "headerScroll": 360,
+  "rowScroll": 360,
+  "title": {
+   "left": 64.2,
+   "right": 207.8,
+   "w": 143.6,
+   "h": 29.6
+  },
+  "titleCut": false,
+  "fullScreen": {
+   "left": 295.8,
+   "right": 355.1,
+   "w": 59.3,
+   "h": 59.3
+  },
+  "status": {
+   "left": 42,
+   "right": 109,
+   "w": 67,
+   "h": 24.7
+  },
+  "statusEllipsis": true,
+  "keyboard": {
+   "left": 118.8,
+   "right": 223.9,
+   "w": 105.1,
+   "h": 44.5
+  },
+  "clipboard": {
+   "left": 233.8,
+   "right": 340.3,
+   "w": 106.5,
+   "h": 44.5
+  },
+  "clean": true,
+  "shot": "IMP-05-en-360-largest-control.png"
+ },
+ {
+  "lang": "en",
+  "width": 412,
+  "step": "small",
+  "mode": {
+   "left": 288.1,
+   "right": 366.1,
+   "w": 78.1,
+   "h": 31.8
+  },
+  "root": "14.1176px",
+  "viewport": 412,
+  "headerScroll": 412,
+  "rowScroll": 412,
+  "title": {
+   "left": 45.9,
+   "right": 288.1,
+   "w": 242.2,
+   "h": 21.2
+  },
+  "titleCut": false,
+  "fullScreen": {
+   "left": 366.1,
+   "right": 408.5,
+   "w": 42.3,
+   "h": 42.3
+  },
+  "status": {
+   "left": 30,
+   "right": 397.9,
+   "w": 367.9,
+   "h": 17.6
+  },
+  "statusEllipsis": false,
+  "keyboard": null,
+  "clipboard": null,
+  "clean": true,
+  "shot": "IMP-05-en-412-small-view.png"
+ },
+ {
+  "lang": "en",
+  "width": 412,
+  "step": "small",
+  "mode": {
+   "left": 301.3,
+   "right": 366.1,
+   "w": 64.9,
+   "h": 31.8
+  },
+  "root": "14.1176px",
+  "viewport": 412,
+  "headerScroll": 412,
+  "rowScroll": 412,
+  "title": {
+   "left": 45.9,
+   "right": 301.3,
+   "w": 255.4,
+   "h": 21.2
+  },
+  "titleCut": false,
+  "fullScreen": {
+   "left": 366.1,
+   "right": 408.5,
+   "w": 42.3,
+   "h": 42.3
+  },
+  "status": {
+   "left": 30,
+   "right": 227.7,
+   "w": 197.7,
+   "h": 17.6
+  },
+  "statusEllipsis": false,
+  "keyboard": {
+   "left": 234.8,
+   "right": 312.1,
+   "w": 77.4,
+   "h": 31.8
+  },
+  "clipboard": {
+   "left": 319.2,
+   "right": 397.9,
+   "w": 78.7,
+   "h": 31.8
+  },
+  "clean": true,
+  "shot": "IMP-05-en-412-small-control.png"
+ },
+ {
+  "lang": "en",
+  "width": 412,
+  "step": "standard",
+  "mode": {
+   "left": 272.6,
+   "right": 360,
+   "w": 87.4,
+   "h": 36
+  },
+  "root": "16px",
+  "viewport": 412,
+  "headerScroll": 412,
+  "rowScroll": 412,
+  "title": {
+   "left": 52,
+   "right": 272.6,
+   "w": 220.6,
+   "h": 24
+  },
+  "titleCut": false,
+  "fullScreen": {
+   "left": 360,
+   "right": 408,
+   "w": 48,
+   "h": 48
+  },
+  "status": {
+   "left": 34,
+   "right": 396,
+   "w": 362,
+   "h": 20
+  },
+  "statusEllipsis": false,
+  "keyboard": null,
+  "clipboard": null,
+  "clean": true,
+  "shot": "IMP-05-en-412-standard-view.png"
+ },
+ {
+  "lang": "en",
+  "width": 412,
+  "step": "standard",
+  "mode": {
+   "left": 287.3,
+   "right": 360,
+   "w": 72.7,
+   "h": 36
+  },
+  "root": "16px",
+  "viewport": 412,
+  "headerScroll": 412,
+  "rowScroll": 412,
+  "title": {
+   "left": 52,
+   "right": 287.3,
+   "w": 235.3,
+   "h": 24
+  },
+  "titleCut": false,
+  "fullScreen": {
+   "left": 360,
+   "right": 408,
+   "w": 48,
+   "h": 48
+  },
+  "status": {
+   "left": 34,
+   "right": 205.1,
+   "w": 171.1,
+   "h": 20
+  },
+  "statusEllipsis": false,
+  "keyboard": {
+   "left": 213.1,
+   "right": 299.9,
+   "w": 86.8,
+   "h": 36
+  },
+  "clipboard": {
+   "left": 307.9,
+   "right": 396,
+   "w": 88.1,
+   "h": 36
+  },
+  "clean": true,
+  "shot": "IMP-05-en-412-standard-control.png"
+ },
+ {
+  "lang": "en",
+  "width": 412,
+  "step": "large",
+  "mode": {
+   "left": 257.3,
+   "right": 353.9,
+   "w": 96.6,
+   "h": 40.2
+  },
+  "root": "17.8824px",
+  "viewport": 412,
+  "headerScroll": 412,
+  "rowScroll": 412,
+  "title": {
+   "left": 58.1,
+   "right": 257.3,
+   "w": 199.2,
+   "h": 26.8
+  },
+  "titleCut": false,
+  "fullScreen": {
+   "left": 353.9,
+   "right": 407.5,
+   "w": 53.6,
+   "h": 53.6
+  },
+  "status": {
+   "left": 38,
+   "right": 394.1,
+   "w": 356.1,
+   "h": 22.4
+  },
+  "statusEllipsis": false,
+  "keyboard": null,
+  "clipboard": null,
+  "clean": true,
+  "shot": "IMP-05-en-412-large-view.png"
+ },
+ {
+  "lang": "en",
+  "width": 412,
+  "step": "large",
+  "mode": {
+   "left": 273.5,
+   "right": 353.9,
+   "w": 80.4,
+   "h": 40.2
+  },
+  "root": "17.8824px",
+  "viewport": 412,
+  "headerScroll": 412,
+  "rowScroll": 412,
+  "title": {
+   "left": 58.1,
+   "right": 273.5,
+   "w": 215.3,
+   "h": 26.8
+  },
+  "titleCut": false,
+  "fullScreen": {
+   "left": 353.9,
+   "right": 407.5,
+   "w": 53.6,
+   "h": 53.6
+  },
+  "status": {
+   "left": 38,
+   "right": 182.8,
+   "w": 144.8,
+   "h": 22.4
+  },
+  "statusEllipsis": false,
+  "keyboard": {
+   "left": 191.8,
+   "right": 287.8,
+   "w": 96,
+   "h": 40.2
+  },
+  "clipboard": {
+   "left": 296.7,
+   "right": 394.1,
+   "w": 97.4,
+   "h": 40.2
+  },
+  "clean": true,
+  "shot": "IMP-05-en-412-large-control.png"
+ },
+ {
+  "lang": "en",
+  "width": 412,
+  "step": "largest",
+  "mode": {
+   "left": 242.2,
+   "right": 347.8,
+   "w": 105.6,
+   "h": 44.5
+  },
+  "root": "19.7647px",
+  "viewport": 412,
+  "headerScroll": 412,
+  "rowScroll": 412,
+  "title": {
+   "left": 64.2,
+   "right": 242.2,
+   "w": 178,
+   "h": 29.6
+  },
+  "titleCut": false,
+  "fullScreen": {
+   "left": 347.8,
+   "right": 407.1,
+   "w": 59.3,
+   "h": 59.3
+  },
+  "status": {
+   "left": 42,
+   "right": 392.3,
+   "w": 350.3,
+   "h": 24.7
+  },
+  "statusEllipsis": false,
+  "keyboard": null,
+  "clipboard": null,
+  "clean": true,
+  "shot": "IMP-05-en-412-largest-view.png"
+ },
+ {
+  "lang": "en",
+  "width": 412,
+  "step": "largest",
+  "mode": {
+   "left": 259.8,
+   "right": 347.8,
+   "w": 88,
+   "h": 44.5
+  },
+  "root": "19.7647px",
+  "viewport": 412,
+  "headerScroll": 412,
+  "rowScroll": 412,
+  "title": {
+   "left": 64.2,
+   "right": 259.8,
+   "w": 195.6,
+   "h": 29.6
+  },
+  "titleCut": false,
+  "fullScreen": {
+   "left": 347.8,
+   "right": 407.1,
+   "w": 59.3,
+   "h": 59.3
+  },
+  "status": {
+   "left": 42,
+   "right": 161,
+   "w": 119,
+   "h": 24.7
+  },
+  "statusEllipsis": true,
+  "keyboard": {
+   "left": 170.8,
+   "right": 275.9,
+   "w": 105.1,
+   "h": 44.5
+  },
+  "clipboard": {
+   "left": 285.8,
+   "right": 392.3,
+   "w": 106.5,
+   "h": 44.5
+  },
+  "clean": true,
+  "shot": "IMP-05-en-412-largest-control.png"
+ },
+ {
+  "lang": "zh",
+  "width": 360,
+  "step": "small",
+  "mode": {
+   "left": 257.4,
+   "right": 314.1,
+   "w": 56.7,
+   "h": 31.8
+  },
+  "root": "14.1176px",
+  "viewport": 360,
+  "headerScroll": 360,
+  "rowScroll": 360,
+  "title": {
+   "left": 45.9,
+   "right": 257.4,
+   "w": 211.6,
+   "h": 21.2
+  },
+  "titleCut": false,
+  "fullScreen": {
+   "left": 314.1,
+   "right": 356.5,
+   "w": 42.3,
+   "h": 42.3
+  },
+  "status": {
+   "left": 30,
+   "right": 345.9,
+   "w": 315.9,
+   "h": 17.6
+  },
+  "statusEllipsis": false,
+  "keyboard": null,
+  "clipboard": null,
+  "clean": true,
+  "shot": "IMP-05-zh-360-small-view.png"
+ },
+ {
+  "lang": "zh",
+  "width": 360,
+  "step": "small",
+  "mode": {
+   "left": 269.3,
+   "right": 314.1,
+   "w": 44.9,
+   "h": 31.8
+  },
+  "root": "14.1176px",
+  "viewport": 360,
+  "headerScroll": 360,
+  "rowScroll": 360,
+  "title": {
+   "left": 45.9,
+   "right": 269.3,
+   "w": 223.4,
+   "h": 21.2
+  },
+  "titleCut": false,
+  "fullScreen": {
+   "left": 314.1,
+   "right": 356.5,
+   "w": 42.3,
+   "h": 42.3
+  },
+  "status": {
+   "left": 30,
+   "right": 230.2,
+   "w": 200.3,
+   "h": 17.6
+  },
+  "statusEllipsis": false,
+  "keyboard": {
+   "left": 237.3,
+   "right": 282.1,
+   "w": 44.9,
+   "h": 31.8
+  },
+  "clipboard": {
+   "left": 289.2,
+   "right": 345.9,
+   "w": 56.7,
+   "h": 31.8
+  },
+  "clean": true,
+  "shot": "IMP-05-zh-360-small-control.png"
+ },
+ {
+  "lang": "zh",
+  "width": 360,
+  "step": "standard",
+  "mode": {
+   "left": 243.7,
+   "right": 308,
+   "w": 64.3,
+   "h": 36
+  },
+  "root": "16px",
+  "viewport": 360,
+  "headerScroll": 360,
+  "rowScroll": 360,
+  "title": {
+   "left": 52,
+   "right": 243.7,
+   "w": 191.7,
+   "h": 24
+  },
+  "titleCut": false,
+  "fullScreen": {
+   "left": 308,
+   "right": 356,
+   "w": 48,
+   "h": 48
+  },
+  "status": {
+   "left": 34,
+   "right": 344,
+   "w": 310,
+   "h": 20
+  },
+  "statusEllipsis": false,
+  "keyboard": null,
+  "clipboard": null,
+  "clean": true,
+  "shot": "IMP-05-zh-360-standard-view.png"
+ },
+ {
+  "lang": "zh",
+  "width": 360,
+  "step": "standard",
+  "mode": {
+   "left": 257.2,
+   "right": 308,
+   "w": 50.8,
+   "h": 36
+  },
+  "root": "16px",
+  "viewport": 360,
+  "headerScroll": 360,
+  "rowScroll": 360,
+  "title": {
+   "left": 52,
+   "right": 257.2,
+   "w": 205.2,
+   "h": 24
+  },
+  "titleCut": false,
+  "fullScreen": {
+   "left": 308,
+   "right": 356,
+   "w": 48,
+   "h": 48
+  },
+  "status": {
+   "left": 34,
+   "right": 212.9,
+   "w": 178.9,
+   "h": 20
+  },
+  "statusEllipsis": false,
+  "keyboard": {
+   "left": 220.9,
+   "right": 271.7,
+   "w": 50.8,
+   "h": 36
+  },
+  "clipboard": {
+   "left": 279.7,
+   "right": 344,
+   "w": 64.3,
+   "h": 36
+  },
+  "clean": true,
+  "shot": "IMP-05-zh-360-standard-control.png"
+ },
+ {
+  "lang": "zh",
+  "width": 360,
+  "step": "large",
+  "mode": {
+   "left": 230.1,
+   "right": 301.9,
+   "w": 71.8,
+   "h": 40.2
+  },
+  "root": "17.8824px",
+  "viewport": 360,
+  "headerScroll": 360,
+  "rowScroll": 360,
+  "title": {
+   "left": 58.1,
+   "right": 230.1,
+   "w": 172,
+   "h": 26.8
+  },
+  "titleCut": false,
+  "fullScreen": {
+   "left": 301.9,
+   "right": 355.5,
+   "w": 53.6,
+   "h": 53.6
+  },
+  "status": {
+   "left": 38,
+   "right": 342.1,
+   "w": 304.1,
+   "h": 22.4
+  },
+  "statusEllipsis": false,
+  "keyboard": null,
+  "clipboard": null,
+  "clean": true,
+  "shot": "IMP-05-zh-360-large-view.png"
+ },
+ {
+  "lang": "zh",
+  "width": 360,
+  "step": "large",
+  "mode": {
+   "left": 245.1,
+   "right": 301.9,
+   "w": 56.8,
+   "h": 40.2
+  },
+  "root": "17.8824px",
+  "viewport": 360,
+  "headerScroll": 360,
+  "rowScroll": 360,
+  "title": {
+   "left": 58.1,
+   "right": 245.1,
+   "w": 187,
+   "h": 26.8
+  },
+  "titleCut": false,
+  "fullScreen": {
+   "left": 301.9,
+   "right": 355.5,
+   "w": 53.6,
+   "h": 53.6
+  },
+  "status": {
+   "left": 38,
+   "right": 195.6,
+   "w": 157.7,
+   "h": 22.4
+  },
+  "statusEllipsis": false,
+  "keyboard": {
+   "left": 204.6,
+   "right": 261.4,
+   "w": 56.8,
+   "h": 40.2
+  },
+  "clipboard": {
+   "left": 270.3,
+   "right": 342.1,
+   "w": 71.8,
+   "h": 40.2
+  },
+  "clean": true,
+  "shot": "IMP-05-zh-360-large-control.png"
+ },
+ {
+  "lang": "zh",
+  "width": 360,
+  "step": "largest",
+  "mode": {
+   "left": 214.7,
+   "right": 295.8,
+   "w": 81,
+   "h": 44.5
+  },
+  "root": "19.7647px",
+  "viewport": 360,
+  "headerScroll": 360,
+  "rowScroll": 360,
+  "title": {
+   "left": 64.2,
+   "right": 214.7,
+   "w": 150.5,
+   "h": 29.6
+  },
+  "titleCut": false,
+  "fullScreen": {
+   "left": 295.8,
+   "right": 355.1,
+   "w": 59.3,
+   "h": 59.3
+  },
+  "status": {
+   "left": 42,
+   "right": 340.3,
+   "w": 298.3,
+   "h": 24.7
+  },
+  "statusEllipsis": false,
+  "keyboard": null,
+  "clipboard": null,
+  "clean": true,
+  "shot": "IMP-05-zh-360-largest-view.png"
+ },
+ {
+  "lang": "zh",
+  "width": 360,
+  "step": "largest",
+  "mode": {
+   "left": 231.9,
+   "right": 295.8,
+   "w": 63.9,
+   "h": 44.5
+  },
+  "root": "19.7647px",
+  "viewport": 360,
+  "headerScroll": 360,
+  "rowScroll": 360,
+  "title": {
+   "left": 64.2,
+   "right": 231.9,
+   "w": 167.7,
+   "h": 29.6
+  },
+  "titleCut": false,
+  "fullScreen": {
+   "left": 295.8,
+   "right": 355.1,
+   "w": 59.3,
+   "h": 59.3
+  },
+  "status": {
+   "left": 42,
+   "right": 175.5,
+   "w": 133.6,
+   "h": 24.7
+  },
+  "statusEllipsis": false,
+  "keyboard": {
+   "left": 185.4,
+   "right": 249.3,
+   "w": 63.9,
+   "h": 44.5
+  },
+  "clipboard": {
+   "left": 259.2,
+   "right": 340.3,
+   "w": 81,
+   "h": 44.5
+  },
+  "clean": true,
+  "shot": "IMP-05-zh-360-largest-control.png"
+ },
+ {
+  "lang": "zh",
+  "width": 412,
+  "step": "small",
+  "mode": {
+   "left": 309.4,
+   "right": 366.1,
+   "w": 56.7,
+   "h": 31.8
+  },
+  "root": "14.1176px",
+  "viewport": 412,
+  "headerScroll": 412,
+  "rowScroll": 412,
+  "title": {
+   "left": 45.9,
+   "right": 309.4,
+   "w": 263.6,
+   "h": 21.2
+  },
+  "titleCut": false,
+  "fullScreen": {
+   "left": 366.1,
+   "right": 408.5,
+   "w": 42.3,
+   "h": 42.3
+  },
+  "status": {
+   "left": 30,
+   "right": 397.9,
+   "w": 367.9,
+   "h": 17.6
+  },
+  "statusEllipsis": false,
+  "keyboard": null,
+  "clipboard": null,
+  "clean": true,
+  "shot": "IMP-05-zh-412-small-view.png"
+ },
+ {
+  "lang": "zh",
+  "width": 412,
+  "step": "small",
+  "mode": {
+   "left": 321.3,
+   "right": 366.1,
+   "w": 44.9,
+   "h": 31.8
+  },
+  "root": "14.1176px",
+  "viewport": 412,
+  "headerScroll": 412,
+  "rowScroll": 412,
+  "title": {
+   "left": 45.9,
+   "right": 321.3,
+   "w": 275.4,
+   "h": 21.2
+  },
+  "titleCut": false,
+  "fullScreen": {
+   "left": 366.1,
+   "right": 408.5,
+   "w": 42.3,
+   "h": 42.3
+  },
+  "status": {
+   "left": 30,
+   "right": 282.2,
+   "w": 252.3,
+   "h": 17.6
+  },
+  "statusEllipsis": false,
+  "keyboard": {
+   "left": 289.3,
+   "right": 334.1,
+   "w": 44.9,
+   "h": 31.8
+  },
+  "clipboard": {
+   "left": 341.2,
+   "right": 397.9,
+   "w": 56.7,
+   "h": 31.8
+  },
+  "clean": true,
+  "shot": "IMP-05-zh-412-small-control.png"
+ },
+ {
+  "lang": "zh",
+  "width": 412,
+  "step": "standard",
+  "mode": {
+   "left": 295.7,
+   "right": 360,
+   "w": 64.3,
+   "h": 36
+  },
+  "root": "16px",
+  "viewport": 412,
+  "headerScroll": 412,
+  "rowScroll": 412,
+  "title": {
+   "left": 52,
+   "right": 295.7,
+   "w": 243.7,
+   "h": 24
+  },
+  "titleCut": false,
+  "fullScreen": {
+   "left": 360,
+   "right": 408,
+   "w": 48,
+   "h": 48
+  },
+  "status": {
+   "left": 34,
+   "right": 396,
+   "w": 362,
+   "h": 20
+  },
+  "statusEllipsis": false,
+  "keyboard": null,
+  "clipboard": null,
+  "clean": true,
+  "shot": "IMP-05-zh-412-standard-view.png"
+ },
+ {
+  "lang": "zh",
+  "width": 412,
+  "step": "standard",
+  "mode": {
+   "left": 309.2,
+   "right": 360,
+   "w": 50.8,
+   "h": 36
+  },
+  "root": "16px",
+  "viewport": 412,
+  "headerScroll": 412,
+  "rowScroll": 412,
+  "title": {
+   "left": 52,
+   "right": 309.2,
+   "w": 257.2,
+   "h": 24
+  },
+  "titleCut": false,
+  "fullScreen": {
+   "left": 360,
+   "right": 408,
+   "w": 48,
+   "h": 48
+  },
+  "status": {
+   "left": 34,
+   "right": 264.9,
+   "w": 230.9,
+   "h": 20
+  },
+  "statusEllipsis": false,
+  "keyboard": {
+   "left": 272.9,
+   "right": 323.7,
+   "w": 50.8,
+   "h": 36
+  },
+  "clipboard": {
+   "left": 331.7,
+   "right": 396,
+   "w": 64.3,
+   "h": 36
+  },
+  "clean": true,
+  "shot": "IMP-05-zh-412-standard-control.png"
+ },
+ {
+  "lang": "zh",
+  "width": 412,
+  "step": "large",
+  "mode": {
+   "left": 282.1,
+   "right": 353.9,
+   "w": 71.8,
+   "h": 40.2
+  },
+  "root": "17.8824px",
+  "viewport": 412,
+  "headerScroll": 412,
+  "rowScroll": 412,
+  "title": {
+   "left": 58.1,
+   "right": 282.1,
+   "w": 224,
+   "h": 26.8
+  },
+  "titleCut": false,
+  "fullScreen": {
+   "left": 353.9,
+   "right": 407.5,
+   "w": 53.6,
+   "h": 53.6
+  },
+  "status": {
+   "left": 38,
+   "right": 394.1,
+   "w": 356.1,
+   "h": 22.4
+  },
+  "statusEllipsis": false,
+  "keyboard": null,
+  "clipboard": null,
+  "clean": true,
+  "shot": "IMP-05-zh-412-large-view.png"
+ },
+ {
+  "lang": "zh",
+  "width": 412,
+  "step": "large",
+  "mode": {
+   "left": 297.1,
+   "right": 353.9,
+   "w": 56.8,
+   "h": 40.2
+  },
+  "root": "17.8824px",
+  "viewport": 412,
+  "headerScroll": 412,
+  "rowScroll": 412,
+  "title": {
+   "left": 58.1,
+   "right": 297.1,
+   "w": 239,
+   "h": 26.8
+  },
+  "titleCut": false,
+  "fullScreen": {
+   "left": 353.9,
+   "right": 407.5,
+   "w": 53.6,
+   "h": 53.6
+  },
+  "status": {
+   "left": 38,
+   "right": 247.6,
+   "w": 209.7,
+   "h": 22.4
+  },
+  "statusEllipsis": false,
+  "keyboard": {
+   "left": 256.6,
+   "right": 313.4,
+   "w": 56.8,
+   "h": 40.2
+  },
+  "clipboard": {
+   "left": 322.3,
+   "right": 394.1,
+   "w": 71.8,
+   "h": 40.2
+  },
+  "clean": true,
+  "shot": "IMP-05-zh-412-large-control.png"
+ },
+ {
+  "lang": "zh",
+  "width": 412,
+  "step": "largest",
+  "mode": {
+   "left": 266.7,
+   "right": 347.8,
+   "w": 81,
+   "h": 44.5
+  },
+  "root": "19.7647px",
+  "viewport": 412,
+  "headerScroll": 412,
+  "rowScroll": 412,
+  "title": {
+   "left": 64.2,
+   "right": 266.7,
+   "w": 202.5,
+   "h": 29.6
+  },
+  "titleCut": false,
+  "fullScreen": {
+   "left": 347.8,
+   "right": 407.1,
+   "w": 59.3,
+   "h": 59.3
+  },
+  "status": {
+   "left": 42,
+   "right": 392.3,
+   "w": 350.3,
+   "h": 24.7
+  },
+  "statusEllipsis": false,
+  "keyboard": null,
+  "clipboard": null,
+  "clean": true,
+  "shot": "IMP-05-zh-412-largest-view.png"
+ },
+ {
+  "lang": "zh",
+  "width": 412,
+  "step": "largest",
+  "mode": {
+   "left": 283.9,
+   "right": 347.8,
+   "w": 63.9,
+   "h": 44.5
+  },
+  "root": "19.7647px",
+  "viewport": 412,
+  "headerScroll": 412,
+  "rowScroll": 412,
+  "title": {
+   "left": 64.2,
+   "right": 283.9,
+   "w": 219.7,
+   "h": 29.6
+  },
+  "titleCut": false,
+  "fullScreen": {
+   "left": 347.8,
+   "right": 407.1,
+   "w": 59.3,
+   "h": 59.3
+  },
+  "status": {
+   "left": 42,
+   "right": 227.5,
+   "w": 185.6,
+   "h": 24.7
+  },
+  "statusEllipsis": false,
+  "keyboard": {
+   "left": 237.4,
+   "right": 301.3,
+   "w": 63.9,
+   "h": 44.5
+  },
+  "clipboard": {
+   "left": 311.2,
+   "right": 392.3,
+   "w": 81,
+   "h": 44.5
+  },
+  "clean": true,
+  "shot": "IMP-05-zh-412-largest-control.png"
+ }
+]

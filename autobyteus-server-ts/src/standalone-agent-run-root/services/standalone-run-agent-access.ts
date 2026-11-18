@@ -94,6 +94,8 @@ export class StandaloneRunAgentAccess implements RunAgentAccess {
 
   runAgentStatuses(runId: string): readonly RunAgentStatusEntry[] {
     const run = this.roots.getActive(runId)?.activeAgentRun();
-    return run?.isActive() ? [{ agentRunId: runId, status: normalizeAgentApiStatus(run.getStatusSnapshot().status) }] : [];
+    if (!run?.isActive()) return [];
+    const snapshot = run.getStatusSnapshot();
+    return [{ agentRunId: runId, status: normalizeAgentApiStatus(snapshot.status), backgroundTasksRunning: snapshot.background_tasks_running }];
   }
 }

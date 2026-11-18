@@ -67,7 +67,7 @@ type FakeRun = {
   listeners: Set<(event: unknown) => void>;
   subscribeToEvents(listener: (event: unknown) => void): () => void;
   emit(event: unknown): void;
-  getStatusSnapshot(): { status: string };
+  getStatusSnapshot(): { status: string; background_tasks_running: number };
   interrupt: ReturnType<typeof vi.fn>;
 };
 const fakeRun = (runId: string): FakeRun => {
@@ -76,7 +76,7 @@ const fakeRun = (runId: string): FakeRun => {
     listeners: new Set(),
     subscribeToEvents: (listener) => { run.listeners.add(listener); return () => run.listeners.delete(listener); },
     emit: (event) => run.listeners.forEach((listener) => listener(event)),
-    getStatusSnapshot: () => ({ status: "idle" }),
+    getStatusSnapshot: () => ({ status: "idle", background_tasks_running: 0 }),
     interrupt: vi.fn(async () => ({ accepted: true })),
     isActive: () => run.active,
     // A reserved input is admitted only by its commit (a cancelled reservation delivers nothing).
@@ -418,7 +418,7 @@ describe("remote delegation between two standalone runs, in process (slice 1 ste
     await statusConnection.subscribe([{ kind: "agent", runId: "publisher_r1" }]);
     await settle();
     expect(runStatus.peerSummaryOf("publisher_r1")).toEqual({ nodeId: B_ID, runId: "publisher_r1", reachable: true,
-      title: "Publish the video draft.", statuses: [{ agentRunId: "publisher_r1", status: "idle" }],
+      title: "Publish the video draft.", statuses: [{ agentRunId: "publisher_r1", status: "idle", backgroundTasksRunning: 0 }],
       // SR-038: the run's launches, from B's own file.
       launches: [expect.objectContaining({ address: "/publisher", runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK, llmModelIdentifier: "sonnet" })] });
     // CR-461-090: the run was already idle before A observed it: B's stream opens with its current status, so A reads it.

@@ -24,6 +24,7 @@ export class MemberCommandStatusOverlayStore {
     if (input.status === "initializing" && current !== "offline" && current !== "idle") return false;
     const details = createTeamAgentStatusDetails({
       status: input.status,
+      backgroundTasksRunning: 0, // a member command overlay: no run activity yet
       trigger: "member_command",
       errorMessage: input.errorMessage ?? null,
     });
@@ -50,6 +51,7 @@ export class MemberCommandStatusOverlayStore {
       execution: input.binding,
       details: createTeamAgentStatusDetails({
         status: fallback.status,
+        backgroundTasksRunning: fallback.background_tasks_running,
       }),
     });
   }

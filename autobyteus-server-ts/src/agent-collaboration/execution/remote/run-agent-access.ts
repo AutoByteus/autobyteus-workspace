@@ -8,10 +8,14 @@ export type RunAgentPresentationListener = (agentRunId: string, message: AgentPr
 export type RunAgentObservation = Readonly<{ close(): void }>;
 /** The node whose owner sends a command, by this node's name for it (the peer's registered name). */
 export type RemoteOwner = Readonly<{ nodeName: string }>;
-export type RunAgentStatusEntry = Readonly<{ agentRunId: string; status: RemoteAgentStatus }>;
-/** A paired agent's status as a presentation message: its current status when followed, or `offline` when its run ends. */
-export const runAgentStatusFrame = (status: string): AgentPresentationMessage => ({ type: "AGENT_STATUS", payload: {
-  status, trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null,
+/** A live run agent's status and how many background tasks it has running (autobyteus-448). */
+export type RunAgentStatusEntry = Readonly<{ agentRunId: string; status: RemoteAgentStatus; backgroundTasksRunning: number }>;
+/**
+ * A run agent's status as a presentation message: its current status and background task count when followed, or
+ * `offline` with `0` when its run ends.
+ */
+export const runAgentStatusFrame = (status: string, backgroundTasksRunning: number): AgentPresentationMessage => ({ type: "AGENT_STATUS", payload: {
+  status, background_tasks_running: backgroundTasksRunning, trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null,
 } } as AgentPresentationMessage);
 
 /**

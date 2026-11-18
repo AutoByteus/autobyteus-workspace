@@ -86,7 +86,7 @@ const echo = () => {
   } })
 }
 const status = (value: string) => presentation({ type: 'AGENT_STATUS', payload: {
-  status: value, trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null,
+  status: value, trigger: null, tool_name: null, error_message: null, error_details: null, background_tasks_running: 0, recoverableBlock: null,
 } })
 
 /** The Org's tree at the snapshot's base, as its stream gives it after each snapshot (SR-084). */

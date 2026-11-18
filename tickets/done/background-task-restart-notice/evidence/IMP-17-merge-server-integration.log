@@ -1,0 +1,243 @@
+
+ RUN  v4.1.12 /Users/normy/autobyteus_org/autobyteus-worktrees/background-task-restart-notice/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/background-task-restart-notice/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+(node:21420) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/integration/agent-package-definitions/package-auto-refresh.integration.test.ts > package auto-refresh: the next delegation sees current definitions > autobyteus-324: a tool list edit on disk and an in-app save each signal an agent definition change
+Agent Definition with ID planner updated successfully.
+
+stderr | tests/integration/agent-package-definitions/package-auto-refresh.integration.test.ts > package auto-refresh: the next delegation sees current definitions > CR-001/REQ-015: an unreadable package folder at startup does not block startup or other packages
+AGENT_PACKAGE_DEFINITIONS_PACKAGE_FOLDER_UNREADABLE:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/apar-integration-AHY14g/locked-package: EACCES: permission denied, scandir '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/apar-integration-AHY14g/locked-package/agents'
+
+stderr | tests/integration/agent-package-definitions/package-auto-refresh.integration.test.ts > package auto-refresh: the next delegation sees current definitions > CR-001/REQ-015: an unreadable package folder at startup does not block startup or other packages
+AGENT_PACKAGE_DEFINITIONS_PACKAGE_FOLDER_UNREADABLE:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/apar-integration-AHY14g/locked-package: EACCES: permission denied, scandir '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/apar-integration-AHY14g/locked-package/agents'
+
+stderr | tests/integration/agent-package-definitions/package-auto-refresh.integration.test.ts > package auto-refresh: the next delegation sees current definitions > CR-001/REQ-015: an unreadable package folder at startup does not block startup or other packages
+AGENT_PACKAGE_DEFINITIONS_PACKAGE_FOLDER_UNREADABLE:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/apar-integration-AHY14g/locked-package: EACCES: permission denied, scandir '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/apar-integration-AHY14g/locked-package/agents'
+
+stderr | tests/integration/agent-package-definitions/package-auto-refresh.integration.test.ts > package auto-refresh: the next delegation sees current definitions > CR-001/REQ-015: an unreadable package folder at startup does not block startup or other packages
+AGENT_PACKAGE_DEFINITIONS_PACKAGE_FOLDER_UNREADABLE:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/apar-integration-AHY14g/locked-package: EACCES: permission denied, scandir '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/apar-integration-AHY14g/locked-package/agents'
+
+stderr | tests/integration/agent-package-definitions/package-auto-refresh.integration.test.ts > package auto-refresh: the next delegation sees current definitions > CR-001/REQ-015: an unreadable package folder at startup does not block startup or other packages
+AGENT_PACKAGE_DEFINITIONS_PACKAGE_FOLDER_UNREADABLE:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/apar-integration-AHY14g/locked-package: EACCES: permission denied, scandir '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/apar-integration-AHY14g/locked-package/agents'
+
+stdout | tests/integration/agent-package-definitions/package-auto-refresh.integration.test.ts
+AgentFactory (Singleton) initialized.
+
+ ❯ tests/integration/agent-package-definitions/package-auto-refresh.integration.test.ts (15 tests | 8 failed) 310136ms
+     × AC-001/AC-015(a): a new agent and a new Team written on disk are listed and delegable within 5 s, without Reload 53262ms
+     × autobyteus-324: a tool list edit on disk and an in-app save each signal an agent definition change 16981ms
+     × AC-016: a lookup inside the settle window applies the detected change first 12113ms
+     × AC-002/AC-015(b)/QR-004: edits reach every reader; other agents never disappear during the refresh 16592ms
+     × AC-006: a 50-file burst is coalesced into a bounded number of publications 62658ms
+     × AC-012: a root renamed away keeps its definitions and reports FOLDER_MISSING; restoring it resumes watching 21475ms
+     × CR-001/REQ-015: an unreadable package folder at startup does not block startup or other packages 20704ms
+     × DSN-003: a broken team-local agent keeps its last good version and its Team stays launchable 13908ms
+(node:90200) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:90513) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:90598) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:90682) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:90747) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:90777) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:90830) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:90865) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:90877) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:90888) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:90909) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:90956) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:91020) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:91053) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:91081) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:91298) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:91520) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:91532) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:91539) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:91550) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:91650) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:91653) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:91662) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:91671) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:91709) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:92008) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:92494) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:92517) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:92535) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:92581) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:92901) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:92962) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 8 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/integration/agent-package-definitions/package-auto-refresh.integration.test.ts > package auto-refresh: the next delegation sees current definitions > AC-001/AC-015(a): a new agent and a new Team written on disk are listed and delegable within 5 s, without Reload
+AssertionError: expected 16603 to be less than 5000
+ ❯ tests/integration/agent-package-definitions/package-auto-refresh.integration.test.ts:148:30
+    146|
+    147|     const listed = await waitFor(listAvailable, (names) => names.inclu…
+    148|     expect(listed.elapsedMs).toBeLessThan(AC_BOUND_MS);
+       |                              ^
+    149|     expect((await policy().requireAdmissible(port, { kind: "agent", de…
+    150|     expect((await policy().requireAdmissible(port, { kind: "agent_team…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/9]⎯
+
+ FAIL  tests/integration/agent-package-definitions/package-auto-refresh.integration.test.ts > package auto-refresh: the next delegation sees current definitions > AC-001/AC-015(a): a new agent and a new Team written on disk are listed and delegable within 5 s, without Reload
+ FAIL  tests/integration/agent-package-definitions/package-auto-refresh.integration.test.ts > package auto-refresh: the next delegation sees current definitions > autobyteus-324: a tool list edit on disk and an in-app save each signal an agent definition change
+ FAIL  tests/integration/agent-package-definitions/package-auto-refresh.integration.test.ts > package auto-refresh: the next delegation sees current definitions > AC-016: a lookup inside the settle window applies the detected change first
+ FAIL  tests/integration/agent-package-definitions/package-auto-refresh.integration.test.ts > package auto-refresh: the next delegation sees current definitions > AC-002/AC-015(b)/QR-004: edits reach every reader; other agents never disappear during the refresh
+ FAIL  tests/integration/agent-package-definitions/package-auto-refresh.integration.test.ts > package auto-refresh: the next delegation sees current definitions > AC-006: a 50-file burst is coalesced into a bounded number of publications
+ FAIL  tests/integration/agent-package-definitions/package-auto-refresh.integration.test.ts > package auto-refresh: the next delegation sees current definitions > CR-001/REQ-015: an unreadable package folder at startup does not block startup or other packages
+ FAIL  tests/integration/agent-package-definitions/package-auto-refresh.integration.test.ts > package auto-refresh: the next delegation sees current definitions > DSN-003: a broken team-local agent keeps its last good version and its Team stays launchable
+Error: Hook timed out in 10000ms.
+If this is a long-running hook, pass a timeout value as the last argument or configure it globally with "hookTimeout".
+ ❯ tests/integration/agent-package-definitions/package-auto-refresh.integration.test.ts:133:1
+    131| });
+    132|
+    133| afterEach(async () => {
+       | ^
+    134|   await feed?.close();
+    135|   host?.close();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/9]⎯
+
+ FAIL  tests/integration/agent-package-definitions/package-auto-refresh.integration.test.ts > package auto-refresh: the next delegation sees current definitions > AC-012: a root renamed away keeps its definitions and reports FOLDER_MISSING; restoring it resumes watching
+Error: Condition not met within 5000 ms; last value: "FOLDER_MISSING"
+ ❯ waitFor tests/integration/agent-package-definitions/package-auto-refresh.integration.test.ts:62:49
+     60|     const value = await read();
+     61|     if (accept(value)) return { value, elapsedMs: Date.now() - started…
+     62|     if (Date.now() - started > timeoutMs) throw new Error(`Condition n…
+       |                                                 ^
+     63|     await new Promise((resolve) => setTimeout(resolve, 50));
+     64|   }
+ ❯ tests/integration/agent-package-definitions/package-auto-refresh.integration.test.ts:328:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/9]⎯
+
+
+ Test Files  1 failed | 29 passed | 5 skipped (35)
+      Tests  8 failed | 171 passed | 36 skipped (215)
+   Start at  21:54:34
+   Duration  454.93s (transform 21.20s, setup 1.81s, import 108.21s, tests 337.58s, environment 2ms)
+

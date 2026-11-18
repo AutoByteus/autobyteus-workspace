@@ -64,7 +64,7 @@ const createHarness = (options: {
     getPlatformAgentRunId: () => "platform-run-1",
     isActive: () => snapshot.availability === "active",
     getLifecycleSnapshot: () => snapshot,
-    hasRunningBackgroundTasks: vi.fn(() => false),
+    backgroundTaskInspection: { kind: "unsupported" } as const,
     subscribeToSourceEventBatches: vi.fn().mockImplementation((next: typeof sourceListener) => {
       sourceListener = next;
       return () => { sourceListener = null; };

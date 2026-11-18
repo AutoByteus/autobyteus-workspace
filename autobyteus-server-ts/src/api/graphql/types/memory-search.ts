@@ -1,8 +1,8 @@
 import path from "node:path";
 import { Arg, Field, Int, Mutation, ObjectType, Query, Resolver } from "type-graphql";
+import type { MemoryRunSubject as DomainSubject } from "../../../agent-memory/domain/discovered-run.js";
 import type {
   MemoryIndexStatus as DomainIndexStatus,
-  MemoryRunSubject as DomainSubject,
   MemorySearchMatch as DomainMatch,
   MemorySearchRunResult as DomainRunResult,
 } from "../../../memory-search/domain/memory-search-models.js";

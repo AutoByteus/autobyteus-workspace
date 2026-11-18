@@ -1,4 +1,4 @@
-import { beforeDeadline } from './command-deadline.js';
+import { beforeDeadline, COMMAND_OBSERVATION_LIMIT_MS } from './command-deadline.js';
 import { execFile } from 'node:child_process';
 import { HOST_PROCESS_TARGET, type ProcessExecutionTarget, type OwnedCommandGroup, type ObservedProcess } from './process-identity.js';
 export type { ObservedProcess } from './process-identity.js';
@@ -26,7 +26,7 @@ export class ProcessGroupObserver {
    * Concurrent callers share one read. `fresh` starts a read now instead: a read already in flight may have begun
    * before the process the caller looks for existed.
    */
-  snapshot(target: ProcessExecutionTarget = HOST_PROCESS_TARGET, deadline = Date.now() + 500, fresh = false): Promise<ObservedProcess[]> {
+  snapshot(target: ProcessExecutionTarget = HOST_PROCESS_TARGET, deadline = Date.now() + COMMAND_OBSERVATION_LIMIT_MS, fresh = false): Promise<ObservedProcess[]> {
     const key = JSON.stringify(target);
     const existing = this.pending.get(key);
     if (existing && !fresh) return beforeDeadline(existing, deadline);
@@ -37,7 +37,8 @@ export class ProcessGroupObserver {
     return beforeDeadline(promise, deadline);
   }
   private async read(target: ProcessExecutionTarget, deadline: number): Promise<ObservedProcess[]> {
-    const timeout = Math.min(500, deadline - Date.now());
+    // One run has no limit of its own: the step's deadline bounds it (a busy machine runs `ps` for seconds).
+    const timeout = deadline - Date.now();
     if (timeout <= 0) throw new Error('Process observation deadline exceeded');
     if (target.kind === 'host' && process.platform === 'win32') throw new Error('Host process groups unavailable on Windows');
     const { stdout } = await this.runner(target.kind === 'wsl' ? target.wslExecutable : 'ps',
@@ -71,6 +72,6 @@ export class ProcessGroupObserver {
     if (group.target.kind === 'host') process.kill(-group.anchor.pid, signal === 'TERM' ? 'SIGTERM' : 'SIGKILL');
     else await this.runner(group.target.wslExecutable,
       ['-d', group.target.distro, '--exec', '/bin/kill', `-${signal}`, '--', `-${group.anchor.pid}`],
-      { encoding: 'utf8', timeout: Math.max(1, Math.min(500, deadline - Date.now())), maxBuffer: 32768 });
+      { encoding: 'utf8', timeout: Math.max(1, deadline - Date.now()), maxBuffer: 32768 });
   }
 }

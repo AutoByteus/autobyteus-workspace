@@ -79,6 +79,7 @@ export declare const runStatusServerMessageSchema: z.ZodDiscriminatedUnion<[z.Zo
                     idle: "idle";
                     running: "running";
                 }>;
+                backgroundTasksRunning: z.ZodNumber;
             }, z.core.$strict>>;
             answer: z.ZodEnum<{
                 ok: "ok";
@@ -93,6 +94,7 @@ export declare const runStatusServerMessageSchema: z.ZodDiscriminatedUnion<[z.Zo
                 idle: "idle";
                 running: "running";
             }>>;
+            backgroundTasksRunning: z.ZodNumber;
         }, z.core.$strict>>;
     }, z.core.$strict>;
 }, z.core.$strict>, z.ZodObject<{
@@ -117,6 +119,7 @@ export declare const runStatusServerMessageSchema: z.ZodDiscriminatedUnion<[z.Zo
             idle: "idle";
             running: "running";
         }>>;
+        backgroundTasksRunning: z.ZodNumber;
     }, z.core.$strict>;
 }, z.core.$strict>, z.ZodObject<{
     type: z.ZodLiteral<"RUN_STATUS_CHANGED">;
@@ -135,6 +138,7 @@ export declare const runStatusServerMessageSchema: z.ZodDiscriminatedUnion<[z.Zo
             idle: "idle";
             running: "running";
         }>;
+        backgroundTasksRunning: z.ZodNumber;
     }, z.core.$strict>;
 }, z.core.$strict>, z.ZodObject<{
     type: z.ZodLiteral<"RUN_TREE_CHANGED">;

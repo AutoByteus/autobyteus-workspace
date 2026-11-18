@@ -1,0 +1,21 @@
+# R4-07 restart suite on the merged build: RUN_RESTART_REMINDER_E2E=1 RUN_RESTART_REMINDER_LIVE_E2E=1 + test vault; real HOME
+## full run (load 215)
+     ✓ RR-01: graceful restart: recorded live, reminded once with the next input as 'a restart', nothing woken; an idle run without a task gets nothing  96591ms
+     ✓ RR-02: forced kill: no shutdownAt; the next input carries 'an unexpected stop'  47688ms
+     ✓ RR-03: update: the idle run is woken with 'an update to' this release, and its next input carries nothing  65941ms
+     ✓ RR-04: update with a run mid-turn that also has a background task: one reminder with the interrupted-turn line  81345ms
+     × RR-05: update with input sent the moment the node answers: exactly one reminder between the wake and the input 31162ms
+     ✓ RR-06: Antigravity idle with an open daemon step is recorded and reminded with its next input  31960ms
+     × RR-07 (live): Claude idle with a background Bash command is recorded and reminded with its next input 41863ms
+     ✓ RR-08 (live): Codex idle with a background terminal is recorded at the graceful stop and reminded with its next input  90336ms
+     ✓ RR-09 (live): a native agent killed while its build runs is told the build may still run untracked, and checks it  38625ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+AssertionError: RR-05 precondition: the background command started: expected 'Error: Error executing tool \'run_bas…' to contain '"status":"running"'
+Received: "Error: Error executing tool 'run_bash' (ID: call-900e35ef-316): Error: Background command did not start: Command did not start: Command control deadline exceeded"
+AssertionError: expected null not to be null
+      Tests  2 failed | 7 passed (9)
+## RR-05 precondition: 'Command did not start: Command control deadline exceeded' under load (FU-003 of autobyteus-333). RR-07 precondition: haiku answered STARTED without calling Bash (its own reply says so, RR-07 first attempt in this folder was overwritten by the retry). Retry:
+ ✓ tests/e2e/restart-resume/restart-reminder-built-server.e2e.test.ts (9 tests | 7 skipped) 142781ms
+     ✓ RR-05: update with input sent the moment the node answers: exactly one reminder between the wake and the input  68451ms
+     ✓ RR-07 (live): Claude idle with a background Bash command is recorded and reminded with its next input  73925ms
+      Tests  2 passed | 7 skipped (9)

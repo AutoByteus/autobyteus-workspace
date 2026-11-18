@@ -194,7 +194,7 @@ export class RootTeamRun {
       .filter((agent) => !reported.has(agent.agentRunId))
       .map((agent) => createTeamAgentStatusSnapshot({
         execution: createCollaborationMemberExecutionIdentity({ root, memberAddress: agent.address, agentRunId: agent.agentRunId }),
-        details: createTeamAgentStatusDetails({ status: "offline" }),
+        details: createTeamAgentStatusDetails({ status: "offline", backgroundTasksRunning: 0 }),
       }));
     return Object.freeze([...live, ...dormant]);
   }

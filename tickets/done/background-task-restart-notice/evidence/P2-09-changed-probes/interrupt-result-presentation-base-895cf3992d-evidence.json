@@ -1,0 +1,748 @@
+{
+  "generatedAt": "2026-11-17T17:28:23.129Z",
+  "browserExecutable": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "frames": [
+    {
+      "direction": "connect",
+      "kind": "agent-package-definitions"
+    },
+    {
+      "direction": "connect",
+      "kind": "agent-package-definitions"
+    },
+    {
+      "direction": "connect",
+      "kind": "standalone",
+      "url": "/ws/agent/browser-agent-run",
+      "at": 1794936520801
+    },
+    {
+      "direction": "connect",
+      "kind": "team",
+      "url": "/ws/agent-team/browser-team-run",
+      "at": 1794936520812
+    },
+    {
+      "direction": "connect",
+      "kind": "standalone",
+      "url": "/ws/update-notifications",
+      "at": 1794936520824
+    },
+    {
+      "direction": "client-to-server",
+      "kind": "standalone",
+      "mode": "standalone-failed",
+      "message": {
+        "type": "INTERRUPT_GENERATION",
+        "payload": {
+          "command_id": "client_interrupt_b78dccad-e890-4f14-8068-406bcbde764f"
+        }
+      }
+    },
+    {
+      "direction": "server-to-client",
+      "kind": "standalone",
+      "mode": "standalone-failed",
+      "message": {
+        "type": "AGENT_COMMAND_ACK",
+        "payload": {
+          "command_type": "INTERRUPT_GENERATION",
+          "command_id": "client_interrupt_b78dccad-e890-4f14-8068-406bcbde764f",
+          "state": "failed",
+          "code": "NO_ACTIVE_TURN",
+          "message": "The provider has no active turn.",
+          "target": {
+            "target_kind": "standalone_run",
+            "run_id": "browser-agent-run"
+          }
+        }
+      }
+    },
+    {
+      "direction": "close",
+      "kind": "standalone",
+      "code": 1001,
+      "reason": "",
+      "at": 1794936521088
+    },
+    {
+      "direction": "close",
+      "kind": "standalone",
+      "code": 1001,
+      "reason": "",
+      "at": 1794936521088
+    },
+    {
+      "direction": "close",
+      "kind": "team",
+      "code": 1001,
+      "reason": "",
+      "at": 1794936521088
+    },
+    {
+      "direction": "connect",
+      "kind": "agent-package-definitions"
+    },
+    {
+      "direction": "connect",
+      "kind": "agent-package-definitions"
+    },
+    {
+      "direction": "connect",
+      "kind": "standalone",
+      "url": "/ws/agent/browser-agent-run",
+      "at": 1794936521956
+    },
+    {
+      "direction": "connect",
+      "kind": "team",
+      "url": "/ws/agent-team/browser-team-run",
+      "at": 1794936521967
+    },
+    {
+      "direction": "connect",
+      "kind": "standalone",
+      "url": "/ws/update-notifications",
+      "at": 1794936521978
+    },
+    {
+      "direction": "client-to-server",
+      "kind": "standalone",
+      "mode": "standalone-accepted",
+      "message": {
+        "type": "INTERRUPT_GENERATION",
+        "payload": {
+          "command_id": "client_interrupt_e1c5eeb2-a7a6-4a1b-ab1b-738624cf8900"
+        }
+      }
+    },
+    {
+      "direction": "server-to-client",
+      "kind": "standalone",
+      "mode": "standalone-accepted",
+      "message": {
+        "type": "AGENT_COMMAND_ACK",
+        "payload": {
+          "command_type": "INTERRUPT_GENERATION",
+          "command_id": "client_interrupt_e1c5eeb2-a7a6-4a1b-ab1b-738624cf8900",
+          "state": "accepted",
+          "target": {
+            "target_kind": "standalone_run",
+            "run_id": "browser-agent-run"
+          }
+        }
+      }
+    },
+    {
+      "direction": "close",
+      "kind": "team",
+      "code": 1001,
+      "reason": "",
+      "at": 1794936522330
+    },
+    {
+      "direction": "close",
+      "kind": "standalone",
+      "code": 1001,
+      "reason": "",
+      "at": 1794936522330
+    },
+    {
+      "direction": "close",
+      "kind": "standalone",
+      "code": 1001,
+      "reason": "",
+      "at": 1794936522330
+    },
+    {
+      "direction": "connect",
+      "kind": "agent-package-definitions"
+    },
+    {
+      "direction": "connect",
+      "kind": "agent-package-definitions"
+    },
+    {
+      "direction": "connect",
+      "kind": "standalone",
+      "url": "/ws/agent/browser-agent-run",
+      "at": 1794936523073
+    },
+    {
+      "direction": "connect",
+      "kind": "team",
+      "url": "/ws/agent-team/browser-team-run",
+      "at": 1794936523084
+    },
+    {
+      "direction": "connect",
+      "kind": "standalone",
+      "url": "/ws/update-notifications",
+      "at": 1794936523097
+    },
+    {
+      "direction": "client-to-server",
+      "kind": "standalone",
+      "mode": "pending-disconnect",
+      "message": {
+        "type": "INTERRUPT_GENERATION",
+        "payload": {
+          "command_id": "client_interrupt_3f2300c8-132c-4f01-9426-83ff51438af8"
+        }
+      }
+    },
+    {
+      "direction": "close",
+      "kind": "standalone",
+      "code": 1011,
+      "reason": "probe disconnect before ack",
+      "at": 1794936523208
+    },
+    {
+      "direction": "close",
+      "kind": "standalone",
+      "code": 1001,
+      "reason": "",
+      "at": 1794936523641
+    },
+    {
+      "direction": "close",
+      "kind": "team",
+      "code": 1001,
+      "reason": "",
+      "at": 1794936523641
+    },
+    {
+      "direction": "connect",
+      "kind": "agent-package-definitions"
+    },
+    {
+      "direction": "connect",
+      "kind": "agent-package-definitions"
+    },
+    {
+      "direction": "connect",
+      "kind": "standalone",
+      "url": "/ws/agent/browser-agent-run",
+      "at": 1794936524388
+    },
+    {
+      "direction": "connect",
+      "kind": "team",
+      "url": "/ws/agent-team/browser-team-run",
+      "at": 1794936524399
+    },
+    {
+      "direction": "connect",
+      "kind": "standalone",
+      "url": "/ws/update-notifications",
+      "at": 1794936524410
+    },
+    {
+      "direction": "client-to-server",
+      "kind": "team",
+      "mode": "team-failed",
+      "message": {
+        "type": "INTERRUPT_GENERATION",
+        "payload": {
+          "command_id": "client_interrupt_9b4c4beb-1547-42f7-86eb-3f6f773452f2",
+          "agent_run_id": "browser-task-team-critic-run"
+        }
+      }
+    },
+    {
+      "direction": "server-to-client",
+      "kind": "team",
+      "mode": "team-failed",
+      "message": {
+        "type": "AGENT_COMMAND_ACK",
+        "payload": {
+          "command_type": "INTERRUPT_GENERATION",
+          "command_id": "client_interrupt_9b4c4beb-1547-42f7-86eb-3f6f773452f2",
+          "state": "failed",
+          "code": "NO_ACTIVE_MEMBER_TURN",
+          "message": "The Team member has no active provider turn.",
+          "agent_run_id": "browser-task-team-critic-run"
+        }
+      }
+    },
+    {
+      "direction": "close",
+      "kind": "standalone",
+      "code": 1001,
+      "reason": "",
+      "at": 1794936524712
+    },
+    {
+      "direction": "close",
+      "kind": "standalone",
+      "code": 1001,
+      "reason": "",
+      "at": 1794936524712
+    },
+    {
+      "direction": "close",
+      "kind": "team",
+      "code": 1001,
+      "reason": "",
+      "at": 1794936524712
+    }
+  ],
+  "graphqlOperations": [
+    "GetUpdateChecksCapability",
+    "GetTeamMemberRunProjection",
+    "GetTeamMemberFileChanges",
+    "GetUpdateChecksCapability",
+    "GetTeamMemberRunProjection",
+    "GetTeamMemberFileChanges",
+    "GetUpdateChecksCapability",
+    "GetTeamMemberRunProjection",
+    "GetTeamMemberFileChanges",
+    "GetUpdateChecksCapability",
+    "GetTeamMemberRunProjection",
+    "GetTeamMemberFileChanges"
+  ],
+  "browserEvents": [
+    {
+      "type": "console:debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "type": "console:debug",
+      "text": "[vite] connected."
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Initializing server config"
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Not in Electron environment. Skipping server initialization."
+    },
+    {
+      "type": "console:info",
+      "text": "<Suspense> is an experimental feature and its API will likely change."
+    },
+    {
+      "type": "console:error",
+      "text": "WebSocket connection to 'ws://127.0.0.1:65534/ws/update-notifications' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "type": "console:log",
+      "text": "Agent WebSocket connected"
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to load resource: the server responded with a status of 500 (Internal Server Error)"
+    },
+    {
+      "type": "console:log",
+      "text": "Team WebSocket transport connected"
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to load resource: the server responded with a status of 500 (Internal Server Error)"
+    },
+    {
+      "type": "console:warning",
+      "text": "Ignored an unrecognized update notifications change frame."
+    },
+    {
+      "type": "console:warning",
+      "text": "Ignored an unrecognized update notifications change frame."
+    },
+    {
+      "type": "console:debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "type": "console:debug",
+      "text": "[vite] connected."
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Initializing server config"
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Not in Electron environment. Skipping server initialization."
+    },
+    {
+      "type": "console:info",
+      "text": "<Suspense> is an experimental feature and its API will likely change."
+    },
+    {
+      "type": "console:error",
+      "text": "WebSocket connection to 'ws://127.0.0.1:65534/ws/update-notifications' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "type": "console:log",
+      "text": "Agent WebSocket connected"
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to load resource: the server responded with a status of 500 (Internal Server Error)"
+    },
+    {
+      "type": "console:log",
+      "text": "Team WebSocket transport connected"
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to load resource: the server responded with a status of 500 (Internal Server Error)"
+    },
+    {
+      "type": "console:warning",
+      "text": "Ignored an unrecognized update notifications change frame."
+    },
+    {
+      "type": "console:warning",
+      "text": "Ignored an unrecognized update notifications change frame."
+    },
+    {
+      "type": "console:warning",
+      "text": "Ignored an unrecognized update notifications change frame."
+    },
+    {
+      "type": "console:debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "type": "console:debug",
+      "text": "[vite] connected."
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Initializing server config"
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Not in Electron environment. Skipping server initialization."
+    },
+    {
+      "type": "console:info",
+      "text": "<Suspense> is an experimental feature and its API will likely change."
+    },
+    {
+      "type": "console:error",
+      "text": "WebSocket connection to 'ws://127.0.0.1:65534/ws/update-notifications' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "type": "console:log",
+      "text": "Agent WebSocket connected"
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to load resource: the server responded with a status of 500 (Internal Server Error)"
+    },
+    {
+      "type": "console:log",
+      "text": "Team WebSocket transport connected"
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to load resource: the server responded with a status of 500 (Internal Server Error)"
+    },
+    {
+      "type": "console:warning",
+      "text": "Ignored an unrecognized update notifications change frame."
+    },
+    {
+      "type": "console:warning",
+      "text": "Ignored an unrecognized update notifications change frame."
+    },
+    {
+      "type": "console:log",
+      "text": "Agent WebSocket disconnected: probe disconnect before ack"
+    },
+    {
+      "type": "console:debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "type": "console:debug",
+      "text": "[vite] connected."
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Initializing server config"
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Not in Electron environment. Skipping server initialization."
+    },
+    {
+      "type": "console:info",
+      "text": "<Suspense> is an experimental feature and its API will likely change."
+    },
+    {
+      "type": "console:error",
+      "text": "WebSocket connection to 'ws://127.0.0.1:65534/ws/update-notifications' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "type": "console:log",
+      "text": "Agent WebSocket connected"
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to load resource: the server responded with a status of 500 (Internal Server Error)"
+    },
+    {
+      "type": "console:log",
+      "text": "Team WebSocket transport connected"
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to load resource: the server responded with a status of 500 (Internal Server Error)"
+    },
+    {
+      "type": "console:warning",
+      "text": "Ignored an unrecognized update notifications change frame."
+    },
+    {
+      "type": "console:warning",
+      "text": "Ignored an unrecognized update notifications change frame."
+    }
+  ],
+  "scenarios": {
+    "SR008-BR-001": {
+      "result": "Pass",
+      "details": {
+        "before": {
+          "selectedType": "agent",
+          "standaloneStatus": "running",
+          "standaloneTranscriptCount": 0,
+          "teamIsActive": true,
+          "teamSubscribed": true,
+          "teamMemberStatus": "running",
+          "teamTranscriptCount": 0,
+          "toastCount": 0,
+          "toastMessages": []
+        },
+        "after": {
+          "selectedType": "agent",
+          "standaloneStatus": "running",
+          "standaloneTranscriptCount": 0,
+          "teamIsActive": true,
+          "teamSubscribed": true,
+          "teamMemberStatus": "running",
+          "teamTranscriptCount": 0,
+          "toastCount": 1,
+          "toastMessages": [
+            "Could not stop browser-agent-run: The provider has no active turn."
+          ]
+        },
+        "toasts": [
+          "Could not stop browser-agent-run: The provider has no active turn."
+        ]
+      }
+    },
+    "SR008-BR-002": {
+      "result": "Pass",
+      "details": {
+        "before": {
+          "selectedType": "agent",
+          "standaloneStatus": "running",
+          "standaloneTranscriptCount": 0,
+          "teamIsActive": true,
+          "teamSubscribed": true,
+          "teamMemberStatus": "running",
+          "teamTranscriptCount": 0,
+          "toastCount": 0,
+          "toastMessages": []
+        },
+        "beforeTerminal": {
+          "selectedType": "agent",
+          "standaloneStatus": "running",
+          "standaloneTranscriptCount": 0,
+          "teamIsActive": true,
+          "teamSubscribed": true,
+          "teamMemberStatus": "running",
+          "teamTranscriptCount": 0,
+          "toastCount": 0,
+          "toastMessages": []
+        },
+        "afterTerminal": {
+          "selectedType": "agent",
+          "standaloneStatus": "idle",
+          "standaloneTranscriptCount": 0,
+          "teamIsActive": true,
+          "teamSubscribed": true,
+          "teamMemberStatus": "running",
+          "teamTranscriptCount": 0,
+          "toastCount": 0,
+          "toastMessages": []
+        }
+      }
+    },
+    "SR008-BR-003": {
+      "result": "Pass",
+      "details": {
+        "before": {
+          "selectedType": "agent",
+          "standaloneStatus": "running",
+          "standaloneTranscriptCount": 0,
+          "teamIsActive": true,
+          "teamSubscribed": true,
+          "teamMemberStatus": "running",
+          "teamTranscriptCount": 0,
+          "toastCount": 0,
+          "toastMessages": []
+        },
+        "after": {
+          "selectedType": "agent",
+          "standaloneStatus": "running",
+          "standaloneTranscriptCount": 0,
+          "teamIsActive": true,
+          "teamSubscribed": true,
+          "teamMemberStatus": "running",
+          "teamTranscriptCount": 0,
+          "toastCount": 1,
+          "toastMessages": [
+            "Could not send Stop to browser-agent-run: probe disconnect before ack"
+          ]
+        },
+        "toasts": [
+          "Could not send Stop to browser-agent-run: probe disconnect before ack"
+        ]
+      }
+    },
+    "SR008-BR-004": {
+      "result": "Pass",
+      "details": {
+        "before": {
+          "selectedType": "team",
+          "standaloneStatus": "running",
+          "standaloneTranscriptCount": 0,
+          "teamIsActive": true,
+          "teamSubscribed": true,
+          "teamMemberStatus": "running",
+          "teamTranscriptCount": 0,
+          "toastCount": 0,
+          "toastMessages": []
+        },
+        "after": {
+          "selectedType": "team",
+          "standaloneStatus": "running",
+          "standaloneTranscriptCount": 0,
+          "teamIsActive": true,
+          "teamSubscribed": true,
+          "teamMemberStatus": "running",
+          "teamTranscriptCount": 0,
+          "toastCount": 1,
+          "toastMessages": [
+            "Could not stop browser-task-team-critic-run: The Team member has no active provider turn."
+          ]
+        },
+        "toasts": [
+          "Could not stop browser-task-team-critic-run: The Team member has no active provider turn."
+        ],
+        "sent": {
+          "type": "INTERRUPT_GENERATION",
+          "payload": {
+            "command_id": "client_interrupt_9b4c4beb-1547-42f7-86eb-3f6f773452f2",
+            "agent_run_id": "browser-task-team-critic-run"
+          }
+        }
+      }
+    }
+  },
+  "cleanup": {
+    "contexts": [
+      {
+        "id": "context-1",
+        "phase": "scenario",
+        "status": "closed"
+      },
+      {
+        "id": "context-2",
+        "phase": "scenario",
+        "status": "closed"
+      },
+      {
+        "id": "context-3",
+        "phase": "scenario",
+        "status": "closed"
+      },
+      {
+        "id": "context-4",
+        "phase": "scenario",
+        "status": "closed"
+      }
+    ],
+    "browser": {
+      "status": "closed"
+    },
+    "webSocketServer": {
+      "status": "closed"
+    },
+    "nuxt": {
+      "status": "terminated",
+      "pid": 60789,
+      "exitCode": null,
+      "signalCode": "SIGTERM"
+    },
+    "nuxtLog": {
+      "status": "closed"
+    },
+    "fixtureRemoved": true,
+    "fixture": {
+      "status": "removed",
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/api448-p2base-895cf3992d/autobyteus-web/pages/__interrupt-result-presentation-probe.vue"
+    },
+    "evidenceFile": {
+      "status": "written",
+      "path": "/tmp/api448c/base-probe-interrupt-result-presentation-1794936502/evidence.json"
+    }
+  },
+  "failures": [
+    {
+      "id": "graphql-harness",
+      "message": "Unexpected GraphQL operation 'GetUpdateChecksCapability'",
+      "stack": "Error: Unexpected GraphQL operation 'GetUpdateChecksCapability'\n    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/api448-p2base-895cf3992d/autobyteus-web/tests/e2e/interrupt-result-presentation-probe.mjs:362:42\n    at RouteHandler._handleInternal (/Users/normy/autobyteus_org/autobyteus-worktrees/api448-p2base-895cf3992d/node_modules/.pnpm/playwright-core@1.58.2/node_modules/playwright-core/lib/client/network.js:695:7)\n    at RouteHandler._handleImpl (/Users/normy/autobyteus_org/autobyteus-worktrees/api448-p2base-895cf3992d/node_modules/.pnpm/playwright-core@1.58.2/node_modules/playwright-core/lib/client/network.js:662:25)\n    at /Users/normy/autobyteus_org/autobyteus-worktrees/api448-p2base-895cf3992d/node_modules/.pnpm/playwright-core@1.58.2/node_modules/playwright-core/lib/client/network.js:656:55\n    at AsyncLocalStorage.run (node:internal/async_local_storage/async_hooks:91:14)\n    at Zone.run (/Users/normy/autobyteus_org/autobyteus-worktrees/api448-p2base-895cf3992d/node_modules/.pnpm/playwright-core@1.58.2/node_modules/playwright-core/lib/server/utils/zones.js:42:36)\n    at NodeZone.run (/Users/normy/autobyteus_org/autobyteus-worktrees/api448-p2base-895cf3992d/node_modules/.pnpm/playwright-core@1.58.2/node_modules/playwright-core/lib/server/utils/nodePlatform.js:58:23)\n    at RouteHandler.handle (/Users/normy/autobyteus_org/autobyteus-worktrees/api448-p2base-895cf3992d/node_modules/.pnpm/playwright-core@1.58.2/node_modules/playwright-core/lib/client/network.js:656:34)\n    at BrowserContext._onRoute (/Users/normy/autobyteus_org/autobyteus-worktrees/api448-p2base-895cf3992d/node_modules/.pnpm/playwright-core@1.58.2/node_modules/playwright-core/lib/client/browserContext.js:216:42)\n    at Proxy.<anonymous> (/Users/normy/autobyteus_org/autobyteus-worktrees/api448-p2base-895cf3992d/node_modules/.pnpm/playwright-core@1.58.2/node_modules/playwright-core/lib/client/browserContext.js:84:51)"
+    },
+    {
+      "id": "graphql-harness",
+      "message": "Unexpected GraphQL operation 'GetTeamMemberFileChanges'",
+      "stack": "Error: Unexpected GraphQL operation 'GetTeamMemberFileChanges'\n    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/api448-p2base-895cf3992d/autobyteus-web/tests/e2e/interrupt-result-presentation-probe.mjs:362:42\n    at RouteHandler._handleInternal (/Users/normy/autobyteus_org/autobyteus-worktrees/api448-p2base-895cf3992d/node_modules/.pnpm/playwright-core@1.58.2/node_modules/playwright-core/lib/client/network.js:695:7)\n    at RouteHandler._handleImpl (/Users/normy/autobyteus_org/autobyteus-worktrees/api448-p2base-895cf3992d/node_modules/.pnpm/playwright-core@1.58.2/node_modules/playwright-core/lib/client/network.js:662:25)\n    at /Users/normy/autobyteus_org/autobyteus-worktrees/api448-p2base-895cf3992d/node_modules/.pnpm/playwright-core@1.58.2/node_modules/playwright-core/lib/client/network.js:656:55\n    at AsyncLocalStorage.run (node:internal/async_local_storage/async_hooks:91:14)\n    at Zone.run (/Users/normy/autobyteus_org/autobyteus-worktrees/api448-p2base-895cf3992d/node_modules/.pnpm/playwright-core@1.58.2/node_modules/playwright-core/lib/server/utils/zones.js:42:36)\n    at NodeZone.run (/Users/normy/autobyteus_org/autobyteus-worktrees/api448-p2base-895cf3992d/node_modules/.pnpm/playwright-core@1.58.2/node_modules/playwright-core/lib/server/utils/nodePlatform.js:58:23)\n    at RouteHandler.handle (/Users/normy/autobyteus_org/autobyteus-worktrees/api448-p2base-895cf3992d/node_modules/.pnpm/playwright-core@1.58.2/node_modules/playwright-core/lib/client/network.js:656:34)\n    at BrowserContext._onRoute (/Users/normy/autobyteus_org/autobyteus-worktrees/api448-p2base-895cf3992d/node_modules/.pnpm/playwright-core@1.58.2/node_modules/playwright-core/lib/client/browserContext.js:216:42)\n    at Proxy.<anonymous> (/Users/normy/autobyteus_org/autobyteus-worktrees/api448-p2base-895cf3992d/node_modules/.pnpm/playwright-core@1.58.2/node_modules/playwright-core/lib/client/browserContext.js:84:51)"
+    },
+    {
+      "id": "graphql-harness",
+      "message": "Unexpected GraphQL operation 'GetUpdateChecksCapability'",
+      "stack": "Error: Unexpected GraphQL operation 'GetUpdateChecksCapability'\n    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/api448-p2base-895cf3992d/autobyteus-web/tests/e2e/interrupt-result-presentation-probe.mjs:362:42\n    at RouteHandler._handleInternal (/Users/normy/autobyteus_org/autobyteus-worktrees/api448-p2base-895cf3992d/node_modules/.pnpm/playwright-core@1.58.2/node_modules/playwright-core/lib/client/network.js:695:7)\n    at RouteHandler._handleImpl (/Users/normy/autobyteus_org/autobyteus-worktrees/api448-p2base-895cf3992d/node_modules/.pnpm/playwright-core@1.58.2/node_modules/playwright-core/lib/client/network.js:662:25)\n    at /Users/normy/autobyteus_org/autobyteus-worktrees/api448-p2base-895cf3992d/node_modules/.pnpm/playwright-core@1.58.2/node_modules/playwright-core/lib/client/network.js:656:55\n    at AsyncLocalStorage.run (node:internal/async_local_storage/async_hooks:91:14)\n    at Zone.run (/Users/normy/autobyteus_org/autobyteus-worktrees/api448-p2base-895cf3992d/node_modules/.pnpm/playwright-core@1.58.2/node_modules/playwright-core/lib/server/utils/zones.js:42:36)\n    at NodeZone.run (/Users/normy/autobyteus_org/autobyteus-worktrees/api448-p2base-895cf3992d/node_modules/.pnpm/playwright-core@1.58.2/node_modules/playwright-core/lib/server/utils/nodePlatform.js:58:23)\n    at RouteHandler.handle (/Users/normy/autobyteus_org/autobyteus-worktrees/api448-p2base-895cf3992d/node_modules/.pnpm/playwright-core@1.58.2/node_modules/playwright-core/lib/client/network.js:656:34)\n    at BrowserContext._onRoute (/Users/normy/autobyteus_org/autobyteus-worktrees/api448-p2base-895cf3992d/node_modules/.pnpm/playwright-core@1.58.2/node_modules/playwright-core/lib/client/browserContext.js:216:42)\n    at Proxy.<anonymous> (/Users/normy/autobyteus_org/autobyteus-worktrees/api448-p2base-895cf3992d/node_modules/.pnpm/playwright-core@1.58.2/node_modules/playwright-core/lib/client/browserContext.js:84:51)"
+    },
+    {
+      "id": "graphql-harness",
+      "message": "Unexpected GraphQL operation 'GetTeamMemberFileChanges'",
+      "stack": "Error: Unexpected GraphQL operation 'GetTeamMemberFileChanges'\n    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/api448-p2base-895cf3992d/autobyteus-web/tests/e2e/interrupt-result-presentation-probe.mjs:362:42\n    at RouteHandler._handleInternal (/Users/normy/autobyteus_org/autobyteus-worktrees/api448-p2base-895cf3992d/node_modules/.pnpm/playwright-core@1.58.2/node_modules/playwright-core/lib/client/network.js:695:7)\n    at RouteHandler._handleImpl (/Users/normy/autobyteus_org/autobyteus-worktrees/api448-p2base-895cf3992d/node_modules/.pnpm/playwright-core@1.58.2/node_modules/playwright-core/lib/client/network.js:662:25)\n    at /Users/normy/autobyteus_org/autobyteus-worktrees/api448-p2base-895cf3992d/node_modules/.pnpm/playwright-core@1.58.2/node_modules/playwright-core/lib/client/network.js:656:55\n    at AsyncLocalStorage.run (node:internal/async_local_storage/async_hooks:91:14)\n    at Zone.run (/Users/normy/autobyteus_org/autobyteus-worktrees/api448-p2base-895cf3992d/node_modules/.pnpm/playwright-core@1.58.2/node_modules/playwright-core/lib/server/utils/zones.js:42:36)\n    at NodeZone.run (/Users/normy/autobyteus_org/autobyteus-worktrees/api448-p2base-895cf3992d/node_modules/.pnpm/playwright-core@1.58.2/node_modules/playwright-core/lib/server/utils/nodePlatform.js:58:23)\n    at RouteHandler.handle (/Users/normy/autobyteus_org/autobyteus-worktrees/api448-p2base-895cf3992d/node_modules/.pnpm/playwright-core@1.58.2/node_modules/playwright-core/lib/client/network.js:656:34)\n    at BrowserContext._onRoute (/Users/normy/autobyteus_org/autobyteus-worktrees/api448-p2base-895cf3992d/node_modules/.pnpm/playwright-core@1.58.2/node_modules/playwright-core/lib/client/browserContext.js:216:42)\n    at Proxy.<anonymous> (/Users/normy/autobyteus_org/autobyteus-worktrees/api448-p2base-895cf3992d/node_modules/.pnpm/playwright-core@1.58.2/node_modules/playwright-core/lib/client/browserContext.js:84:51)"
+    },
+    {
+      "id": "graphql-harness",
+      "message": "Unexpected GraphQL operation 'GetUpdateChecksCapability'",
+      "stack": "Error: Unexpected GraphQL operation 'GetUpdateChecksCapability'\n    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/api448-p2base-895cf3992d/autobyteus-web/tests/e2e/interrupt-result-presentation-probe.mjs:362:42\n    at RouteHandler._handleInternal (/Users/normy/autobyteus_org/autobyteus-worktrees/api448-p2base-895cf3992d/node_modules/.pnpm/playwright-core@1.58.2/node_modules/playwright-core/lib/client/network.js:695:7)\n    at RouteHandler._handleImpl (/Users/normy/autobyteus_org/autobyteus-worktrees/api448-p2base-895cf3992d/node_modules/.pnpm/playwright-core@1.58.2/node_modules/playwright-core/lib/client/network.js:662:25)\n    at /Users/normy/autobyteus_org/autobyteus-worktrees/api448-p2base-895cf3992d/node_modules/.pnpm/playwright-core@1.58.2/node_modules/playwright-core/lib/client/network.js:656:55\n    at AsyncLocalStorage.run (node:internal/async_local_storage/async_hooks:91:14)\n    at Zone.run (/Users/normy/autobyteus_org/autobyteus-worktrees/api448-p2base-895cf3992d/node_modules/.pnpm/playwright-core@1.58.2/node_modules/playwright-core/lib/server/utils/zones.js:42:36)\n    at NodeZone.run (/Users/normy/autobyteus_org/autobyteus-worktrees/api448-p2base-895cf3992d/node_modules/.pnpm/playwright-core@1.58.2/node_modules/playwright-core/lib/server/utils/nodePlatform.js:58:23)\n    at RouteHandler.handle (/Users/normy/autobyteus_org/autobyteus-worktrees/api448-p2base-895cf3992d/node_modules/.pnpm/playwright-core@1.58.2/node_modules/playwright-core/lib/client/network.js:656:34)\n    at BrowserContext._onRoute (/Users/normy/autobyteus_org/autobyteus-worktrees/api448-p2base-895cf3992d/node_modules/.pnpm/playwright-core@1.58.2/node_modules/playwright-core/lib/client/browserContext.js:216:42)\n    at Proxy.<anonymous> (/Users/normy/autobyteus_org/autobyteus-worktrees/api448-p2base-895cf3992d/node_modules/.pnpm/playwright-core@1.58.2/node_modules/playwright-core/lib/client/browserContext.js:84:51)"
+    },
+    {
+      "id": "graphql-harness",
+      "message": "Unexpected GraphQL operation 'GetTeamMemberFileChanges'",
+      "stack": "Error: Unexpected GraphQL operation 'GetTeamMemberFileChanges'\n    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/api448-p2base-895cf3992d/autobyteus-web/tests/e2e/interrupt-result-presentation-probe.mjs:362:42\n    at RouteHandler._handleInternal (/Users/normy/autobyteus_org/autobyteus-worktrees/api448-p2base-895cf3992d/node_modules/.pnpm/playwright-core@1.58.2/node_modules/playwright-core/lib/client/network.js:695:7)\n    at RouteHandler._handleImpl (/Users/normy/autobyteus_org/autobyteus-worktrees/api448-p2base-895cf3992d/node_modules/.pnpm/playwright-core@1.58.2/node_modules/playwright-core/lib/client/network.js:662:25)\n    at /Users/normy/autobyteus_org/autobyteus-worktrees/api448-p2base-895cf3992d/node_modules/.pnpm/playwright-core@1.58.2/node_modules/playwright-core/lib/client/network.js:656:55\n    at AsyncLocalStorage.run (node:internal/async_local_storage/async_hooks:91:14)\n    at Zone.run (/Users/normy/autobyteus_org/autobyteus-worktrees/api448-p2base-895cf3992d/node_modules/.pnpm/playwright-core@1.58.2/node_modules/playwright-core/lib/server/utils/zones.js:42:36)\n    at NodeZone.run (/Users/normy/autobyteus_org/autobyteus-worktrees/api448-p2base-895cf3992d/node_modules/.pnpm/playwright-core@1.58.2/node_modules/playwright-core/lib/server/utils/nodePlatform.js:58:23)\n    at RouteHandler.handle (/Users/normy/autobyteus_org/autobyteus-worktrees/api448-p2base-895cf3992d/node_modules/.pnpm/playwright-core@1.58.2/node_modules/playwright-core/lib/client/network.js:656:34)\n    at BrowserContext._onRoute (/Users/normy/autobyteus_org/autobyteus-worktrees/api448-p2base-895cf3992d/node_modules/.pnpm/playwright-core@1.58.2/node_modules/playwright-core/lib/client/browserContext.js:216:42)\n    at Proxy.<anonymous> (/Users/normy/autobyteus_org/autobyteus-worktrees/api448-p2base-895cf3992d/node_modules/.pnpm/playwright-core@1.58.2/node_modules/playwright-core/lib/client/browserContext.js:84:51)"
+    },
+    {
+      "id": "graphql-harness",
+      "message": "Unexpected GraphQL operation 'GetUpdateChecksCapability'",
+      "stack": "Error: Unexpected GraphQL operation 'GetUpdateChecksCapability'\n    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/api448-p2base-895cf3992d/autobyteus-web/tests/e2e/interrupt-result-presentation-probe.mjs:362:42\n    at RouteHandler._handleInternal (/Users/normy/autobyteus_org/autobyteus-worktrees/api448-p2base-895cf3992d/node_modules/.pnpm/playwright-core@1.58.2/node_modules/playwright-core/lib/client/network.js:695:7)\n    at RouteHandler._handleImpl (/Users/normy/autobyteus_org/autobyteus-worktrees/api448-p2base-895cf3992d/node_modules/.pnpm/playwright-core@1.58.2/node_modules/playwright-core/lib/client/network.js:662:25)\n    at /Users/normy/autobyteus_org/autobyteus-worktrees/api448-p2base-895cf3992d/node_modules/.pnpm/playwright-core@1.58.2/node_modules/playwright-core/lib/client/network.js:656:55\n    at AsyncLocalStorage.run (node:internal/async_local_storage/async_hooks:91:14)\n    at Zone.run (/Users/normy/autobyteus_org/autobyteus-worktrees/api448-p2base-895cf3992d/node_modules/.pnpm/playwright-core@1.58.2/node_modules/playwright-core/lib/server/utils/zones.js:42:36)\n    at NodeZone.run (/Users/normy/autobyteus_org/autobyteus-worktrees/api448-p2base-895cf3992d/node_modules/.pnpm/playwright-core@1.58.2/node_modules/playwright-core/lib/server/utils/nodePlatform.js:58:23)\n    at RouteHandler.handle (/Users/normy/autobyteus_org/autobyteus-worktrees/api448-p2base-895cf3992d/node_modules/.pnpm/playwright-core@1.58.2/node_modules/playwright-core/lib/client/network.js:656:34)\n    at BrowserContext._onRoute (/Users/normy/autobyteus_org/autobyteus-worktrees/api448-p2base-895cf3992d/node_modules/.pnpm/playwright-core@1.58.2/node_modules/playwright-core/lib/client/browserContext.js:216:42)\n    at Proxy.<anonymous> (/Users/normy/autobyteus_org/autobyteus-worktrees/api448-p2base-895cf3992d/node_modules/.pnpm/playwright-core@1.58.2/node_modules/playwright-core/lib/client/browserContext.js:84:51)"
+    },
+    {
+      "id": "graphql-harness",
+      "message": "Unexpected GraphQL operation 'GetTeamMemberFileChanges'",
+      "stack": "Error: Unexpected GraphQL operation 'GetTeamMemberFileChanges'\n    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/api448-p2base-895cf3992d/autobyteus-web/tests/e2e/interrupt-result-presentation-probe.mjs:362:42\n    at RouteHandler._handleInternal (/Users/normy/autobyteus_org/autobyteus-worktrees/api448-p2base-895cf3992d/node_modules/.pnpm/playwright-core@1.58.2/node_modules/playwright-core/lib/client/network.js:695:7)\n    at RouteHandler._handleImpl (/Users/normy/autobyteus_org/autobyteus-worktrees/api448-p2base-895cf3992d/node_modules/.pnpm/playwright-core@1.58.2/node_modules/playwright-core/lib/client/network.js:662:25)\n    at /Users/normy/autobyteus_org/autobyteus-worktrees/api448-p2base-895cf3992d/node_modules/.pnpm/playwright-core@1.58.2/node_modules/playwright-core/lib/client/network.js:656:55\n    at AsyncLocalStorage.run (node:internal/async_local_storage/async_hooks:91:14)\n    at Zone.run (/Users/normy/autobyteus_org/autobyteus-worktrees/api448-p2base-895cf3992d/node_modules/.pnpm/playwright-core@1.58.2/node_modules/playwright-core/lib/server/utils/zones.js:42:36)\n    at NodeZone.run (/Users/normy/autobyteus_org/autobyteus-worktrees/api448-p2base-895cf3992d/node_modules/.pnpm/playwright-core@1.58.2/node_modules/playwright-core/lib/server/utils/nodePlatform.js:58:23)\n    at RouteHandler.handle (/Users/normy/autobyteus_org/autobyteus-worktrees/api448-p2base-895cf3992d/node_modules/.pnpm/playwright-core@1.58.2/node_modules/playwright-core/lib/client/network.js:656:34)\n    at BrowserContext._onRoute (/Users/normy/autobyteus_org/autobyteus-worktrees/api448-p2base-895cf3992d/node_modules/.pnpm/playwright-core@1.58.2/node_modules/playwright-core/lib/client/browserContext.js:216:42)\n    at Proxy.<anonymous> (/Users/normy/autobyteus_org/autobyteus-worktrees/api448-p2base-895cf3992d/node_modules/.pnpm/playwright-core@1.58.2/node_modules/playwright-core/lib/client/browserContext.js:84:51)"
+    },
+    {
+      "id": "browser-console:error",
+      "message": "12 console:error event(s): WebSocket connection to 'ws://127.0.0.1:65534/ws/update-notifications' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED | Failed to load resource: the server responded with a status of 500 (Internal Server Error) | Failed to load resource: the server responded with a status of 500 (Internal Server Error) | WebSocket connection to 'ws://127.0.0.1:65534/ws/update-notifications' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED | Failed to load resource: the server responded with a status of 500 (Internal Server Error) | Failed to load resource: the server responded with a status of 500 (Internal Server Error) | WebSocket connection to 'ws://127.0.0.1:65534/ws/update-notifications' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED | Failed to load resource: the server responded with a status of 500 (Internal Server Error) | Failed to load resource: the server responded with a status of 500 (Internal Server Error) | WebSocket connection to 'ws://127.0.0.1:65534/ws/update-notifications' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED | Failed to load resource: the server responded with a status of 500 (Internal Server Error) | Failed to load resource: the server responded with a status of 500 (Internal Server Error)",
+      "stack": "Error: 12 console:error event(s): WebSocket connection to 'ws://127.0.0.1:65534/ws/update-notifications' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED | Failed to load resource: the server responded with a status of 500 (Internal Server Error) | Failed to load resource: the server responded with a status of 500 (Internal Server Error) | WebSocket connection to 'ws://127.0.0.1:65534/ws/update-notifications' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED | Failed to load resource: the server responded with a status of 500 (Internal Server Error) | Failed to load resource: the server responded with a status of 500 (Internal Server Error) | WebSocket connection to 'ws://127.0.0.1:65534/ws/update-notifications' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED | Failed to load resource: the server responded with a status of 500 (Internal Server Error) | Failed to load resource: the server responded with a status of 500 (Internal Server Error) | WebSocket connection to 'ws://127.0.0.1:65534/ws/update-notifications' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED | Failed to load resource: the server responded with a status of 500 (Internal Server Error) | Failed to load resource: the server responded with a status of 500 (Internal Server Error)\n    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/api448-p2base-895cf3992d/autobyteus-web/tests/e2e/interrupt-result-presentation-probe.mjs:567:45"
+    }
+  ],
+  "wsPort": 57479,
+  "nuxtPort": 57480,
+  "completedAt": "2026-11-17T17:28:45.059Z"
+}

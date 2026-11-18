@@ -75,6 +75,16 @@ describe("ad-hoc Tasks (no Project)", () => {
       .resolves.toEqual({ taskId });
   });
 
+  it("gives a Project Task's title by its long ID, never its description; no title for a Task with no Project or one not there (autobyteus-493)", async () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => undefined);
+    const projectTask = await tasks.createTask({ projectId, title: "Ship the catalog", description: "SECRET description text" });
+    expect(await tasks.taskTitleOf(projectTask.taskId)).toBe("Ship the catalog");
+    const { taskId: adHocTaskId } = await delegate("copy-1");
+    expect(await tasks.taskTitleOf(adHocTaskId)).toBeNull();
+    expect(await tasks.taskTitleOf("task_gone")).toBeNull();
+    expect(warn).not.toHaveBeenCalled();
+  });
+
   it("each described delegation gets its own Task", async () => {
     const first = await delegate("copy-1");
     const second = await delegate("copy-2");

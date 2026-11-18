@@ -107,16 +107,18 @@ describe('MobileRunScreen', () => {
     expect(router.currentRoute.value.query.screen).toBeUndefined();
   });
 
-  // autobyteus-458: Settings after Activity for a run whose runtime and model the phone changes (an agent run, a Team member);
-  // a delegated copy (a task agent or a task team's member) has none.
+  // autobyteus-522: Settings after Activity for every run, whatever its kind, a run on another node too (its screen says it
+  // can be changed only on that node).
   it.each([
-    ['standalone_agent', false, true], ['agent_run_task_agent', false, false], ['standalone_team_member', true, true], ['agent_run_task_team_member', true, false],
-  ])('the ⋮ menu of a %s offers Messages=%s, Settings=%s', async (kind, messages, settings) => {
+    ['standalone_agent', false, false], ['agent_run_task_agent', false, false], ['standalone_team_member', true, false],
+    ['agent_run_task_team_member', true, false], ['agent_run_task_agent', false, true],
+  ])('the ⋮ menu of a %s offers Messages=%s and Settings (remote=%s)', async (kind, messages, onOtherNode) => {
+    remote.onOtherNode = onOtherNode;
     active.state!.target = targetOf(kind, 'r', 'Agent');
     const { wrapper } = await mountScreen();
     await wrapper.get('[data-testid="mobile-run-menu-button"]').trigger('click');
     const items = wrapper.findAll('[role="menuitem"]').map((item) => item.text());
-    expect(items).toEqual(['Artifacts', 'Files', ...(messages ? ['Messages'] : []), 'Activity', ...(settings ? ['Settings'] : [])]);
+    expect(items).toEqual(['Artifacts', 'Files', ...(messages ? ['Messages'] : []), 'Activity', 'Settings']);
   });
 
   it.each([

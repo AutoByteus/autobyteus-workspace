@@ -1,4 +1,4 @@
-import { noDelegations, noWorkGuard } from "../../helpers/no-delegations.js";
+import { noDelegations, noWorkGuard, noEpisodicCatalog } from "../../helpers/no-delegations.js";
 import "reflect-metadata";
 import os from "node:os";
 import path from "node:path";
@@ -90,7 +90,7 @@ const createErrorBackend = (accepted: boolean): RuntimeFixture => {
         phase: active ? "error" : "idle",
         currentTurn: { kind: "NONE" },
       }),
-      hasRunningBackgroundTasks: () => false,
+      backgroundTaskInspection: { kind: "unsupported" } as const,
       subscribeToSourceEventBatches: () => () => undefined,
       dispatchUserInput: vi.fn(async () => ({ accepted: true as const, turnId: "fixture-turn" })),
       approveToolInvocation: vi.fn(async () => ({ accepted: true as const })),
@@ -206,7 +206,7 @@ const startHarness = async (terminationAccepted: boolean): Promise<Harness & Run
   const statusProjectionService = new AgentRunStatusProjectionService({
     agentRunManager: manager,
   });
-  const historyService = new AgentRunHistoryService(memoryDir, { tree: noDelegations(), workGuard: noWorkGuard(),
+  const historyService = new AgentRunHistoryService(memoryDir, { tree: noDelegations(), workGuard: noWorkGuard(), episodicCatalog: noEpisodicCatalog(),
     catalogService,
     agentRunManager: manager,
     statusProjectionService,

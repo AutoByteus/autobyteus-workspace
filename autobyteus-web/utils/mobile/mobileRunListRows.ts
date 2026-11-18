@@ -5,7 +5,8 @@ import { AgentStatus } from '~/types/agent/AgentStatus';
 import { agentOrgFirstMemberAddress } from '~/utils/agentOrgFirstMemberAddress';
 import type { RunListEntry } from '~/utils/runListProjection';
 import type { RunTreeRow } from '~/utils/runTreeProjection';
-import { teamRunStatus } from '~/components/workspace/history/workspaceHistoryTeamBranchStatus';
+import { agentRunBackgroundTasks, teamRunBackgroundTasks, teamRunStatus } from '~/components/workspace/history/workspaceHistoryTeamBranchStatus';
+import { teamActivityOf, type TeamStatus } from '~/utils/workspaceTeamAggregateStatus';
 import { formatRunLabel, formatTeamRunLabel } from '~/components/workspace/history/workspaceHistoryRunLabels';
 import { isTeamRow, runTreeDisplayRows, type RunTreeDisplayRow } from '~/utils/runTree/runTreeDisplayRows';
 
@@ -34,6 +35,8 @@ export type MobileRunTreeRow = Readonly<{
   title: string;
   /** The shared status (`AgentStatus`, a Team's own status). */
   status: string;
+  /** Background tasks running (autobyteus-448): an agent's own, a Team's sum; shown with `status` by `agentActivityPresentation`. */
+  backgroundTasksRunning: number;
   /** A run another node runs (278): its node, and whether the node answers. */
   remote: Readonly<{ nodeName: string; reachable: boolean }> | null;
   hasChildren: boolean;
@@ -51,6 +54,8 @@ export interface MobileRunListSources {
   treeRows(entry: RunListEntry): readonly RunTreeRowDto[];
   /** A row's status by the ID the server named: an agent's, or a team run's own. */
   statusOf(row: RunTreeRowDto, id: string): AgentStatus | string | null;
+  /** A row's running background tasks by the same ID (autobyteus-448): an agent's own, a team run's sum. */
+  backgroundTasksOf(row: RunTreeRowDto, id: string): number;
   isTreeRowExpanded(entry: RunListEntry, row: RunTreeRowDto): boolean;
   /** A Task worker row's current Task summary, if known (DEC-010). */
   taskSummary(row: RunHistoryDelegatedRunRow): string | null;
@@ -70,6 +75,12 @@ export const treeDisplayRowsOf = (entry: RunListEntry, sources: Pick<MobileRunLi
     topRunId: entry.runId, isExpanded: (row) => sources.isTreeRowExpanded(entry, row), statusOf: sources.statusOf,
   });
 
+/** A row's shown status and count: an agent's own; a Team's by the Team rule (busy > background > error > idle > offline). */
+const activityOf = (team: boolean, status: string, backgroundTasksRunning: number): Pick<MobileRunTreeRow, 'status' | 'backgroundTasksRunning'> => {
+  const shown = team ? teamActivityOf(status as TeamStatus, backgroundTasksRunning) : { status, backgroundTasksRunning };
+  return { status: String(shown.status ?? AgentStatus.Offline), backgroundTasksRunning: shown.backgroundTasksRunning ?? 0 };
+};
+
 const treeRowsOf = (entry: RunListEntry, sources: MobileRunListSources): MobileRunTreeRow[] => treeDisplayRowsOf(entry, sources).map((display) => {
   const tree = display.tree;
   const team = isTeamRow(tree);
@@ -78,7 +89,8 @@ const treeRowsOf = (entry: RunListEntry, sources: MobileRunListSources): MobileR
   return Object.freeze({
     key: `${entry.key}/${tree.key}`, depth: display.row.depth + 1, avatar: team ? 'team' : 'agent', name: tree.name,
     title: sources.taskSummary(display.row) || peer?.title || '',
-    status: String((team ? display.teamStatus : display.row.currentStatus) ?? AgentStatus.Offline),
+    ...activityOf(team, String((team ? display.teamStatus : display.row.currentStatus) ?? AgentStatus.Offline),
+      tree.statusIds[0] ? sources.backgroundTasksOf(tree, tree.statusIds[0]) : 0),
     remote: peer ? Object.freeze({ nodeName: peer.nodeName, reachable: peer.reachable !== false }) : null,
     hasChildren: display.row.hasChildren, expanded: sources.isTreeRowExpanded(entry, tree),
     fold: display.row.hasChildren ? Object.freeze({ kind: 'treeRow', entry, row: tree }) : null,
@@ -91,15 +103,17 @@ const treeRowsOf = (entry: RunListEntry, sources: MobileRunListSources): MobileR
 const topLevelRow = (entry: RunListEntry, hasChildren: boolean, expanded: boolean): MobileRunTreeRow => {
   const base = { key: entry.key, depth: 0, name: entry.name, remote: null, hasChildren, expanded, lastActivityAt: entry.lastActivityAt };
   if (entry.kind === 'agent') {
-    return Object.freeze({ ...base, avatar: 'agent', title: formatRunLabel(entry.run.summary), status: String(entry.run.currentStatus || AgentStatus.Offline),
+    return Object.freeze({ ...base, avatar: 'agent', title: formatRunLabel(entry.run.summary),
+      ...activityOf(false, String(entry.run.currentStatus || AgentStatus.Offline), agentRunBackgroundTasks(entry.runId)),
       fold: hasChildren ? Object.freeze({ kind: 'run', runId: entry.runId }) : null, open: Object.freeze({ kind: 'agentRun', run: entry.run }) });
   }
   if (entry.kind === 'team') {
-    return Object.freeze({ ...base, avatar: 'team', title: formatTeamRunLabel(entry.team), status: teamRunStatus(entry.team),
+    return Object.freeze({ ...base, avatar: 'team', title: formatTeamRunLabel(entry.team),
+      ...activityOf(true, teamRunStatus(entry.team), teamRunBackgroundTasks(entry.team)),
       fold: hasChildren ? Object.freeze({ kind: 'team', teamRunId: entry.runId }) : null, open: Object.freeze({ kind: 'team', team: entry.team }) });
   }
   return Object.freeze({ ...base, avatar: 'org', title: entry.orgRun.summary || '',
-    status: entry.isActive ? AgentStatus.Running : AgentStatus.Offline,
+    status: entry.isActive ? AgentStatus.Running : AgentStatus.Offline, backgroundTasksRunning: 0,
     fold: hasChildren ? Object.freeze({ kind: 'orgRun', rootRunId: entry.runId }) : null,
     // It opens its first configured member (DEC-012): an Org without one has nothing to open.
     open: agentOrgFirstMemberAddress(entry.orgRun) ? Object.freeze({ kind: 'orgRun', orgRun: entry.orgRun }) : null });

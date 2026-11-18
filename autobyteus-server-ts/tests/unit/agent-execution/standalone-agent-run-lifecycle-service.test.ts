@@ -803,7 +803,7 @@ describe("StandaloneAgentRunLifecycleService previous runtime release", () => {
       runId: context.runId,
       runtimeKind: RuntimeKind.CODEX_APP_SERVER,
       inputCapabilities: { activeTurnAppend: "unsupported" },
-      compactionRecovery: { kind: "unsupported" },
+      compactionRecovery: { kind: "unsupported" }, backgroundTaskInspection: { kind: "unsupported" } as const,
       getContext: () => context,
       getPlatformAgentRunId: () => THREAD_ID,
       isActive: () => active,

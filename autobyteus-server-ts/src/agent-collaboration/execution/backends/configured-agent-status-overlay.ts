@@ -17,6 +17,7 @@ export class ConfiguredAgentStatusOverlay {
     const snapshot = createCollaborationAgentStatusSnapshot({
       execution: this.identity,
       status,
+      backgroundTasksRunning: 0, // a member command overlay: no run activity yet
       trigger: "member_command",
       errorMessage,
     });
@@ -31,7 +32,8 @@ export class ConfiguredAgentStatusOverlay {
     const current = fallback();
     return createCollaborationAgentStatusSnapshot({
       execution: this.identity,
-      status: current.status, recoverableBlock: current.recoverableBlock ?? null,
+      status: current.status, backgroundTasksRunning: current.background_tasks_running,
+      recoverableBlock: current.recoverableBlock ?? null,
     });
   }
 

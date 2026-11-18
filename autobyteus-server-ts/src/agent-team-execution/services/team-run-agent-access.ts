@@ -87,7 +87,7 @@ export class TeamRunAgentAccess implements RunAgentAccess {
     // A restore after idle shutdown is a new root: follow it. A stop ends the observation (DS-006).
     const offLifecycle = this.teamRuns.subscribeToLifecycle(teamRunId, (snapshot) => {
       if (snapshot.ending === "stopped") { close(); onEnded(); return; }
-      if (snapshot.ending === "idle_shutdown" && !closed) for (const agentRunId of members) onPresentation(agentRunId, runAgentStatusFrame("offline"));
+      if (snapshot.ending === "idle_shutdown" && !closed) for (const agentRunId of members) onPresentation(agentRunId, runAgentStatusFrame("offline", 0));
       attach(snapshot.isActive ? this.teamRuns.getManagedTeamRun(teamRunId) : null);
     });
     return Object.freeze({ close });
@@ -115,6 +115,7 @@ export class TeamRunAgentAccess implements RunAgentAccess {
     const members = new Set(peerStartedTeamMembers(root.getExecutionTreeSnapshot()).map((member) => member.agentRunId));
     return root.getLeafAgentStatusSnapshots()
       .filter((snapshot) => members.has(snapshot.execution.agentRunId))
-      .map((snapshot) => ({ agentRunId: snapshot.execution.agentRunId, status: snapshot.details.status }));
+      .map((snapshot) => ({ agentRunId: snapshot.execution.agentRunId, status: snapshot.details.status,
+        backgroundTasksRunning: snapshot.details.backgroundTasksRunning }));
   }
 }

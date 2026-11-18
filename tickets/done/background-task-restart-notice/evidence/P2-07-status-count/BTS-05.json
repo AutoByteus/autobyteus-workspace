@@ -1,0 +1,23 @@
+{
+  "runId": "bts_codex_6589e422_7d7bface9a3f48bd8e00c4c722c81508",
+  "path": [
+    "idle:0",
+    "initializing:0",
+    "running:0",
+    "idle:0"
+  ],
+  "view": {
+    "__typename": "AgentBackgroundTaskSnapshot",
+    "tasks": [
+      {
+        "status": "running"
+      }
+    ]
+  },
+  "fed": [
+    {
+      "status": "idle",
+      "count": 0
+    }
+  ]
+}

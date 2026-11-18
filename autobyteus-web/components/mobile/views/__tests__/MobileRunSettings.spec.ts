@@ -7,7 +7,7 @@ import { enableAutoUnmount, flushPromises, mount } from '@vue/test-utils';
 import { defineComponent, h, reactive, ref } from 'vue';
 import { createPinia, setActivePinia } from 'pinia';
 
-const mocks = vi.hoisted(() => ({ store: null as any, stop: { subject: null as any, onStopped: null as any, shell: null as any, stop: null as any, pending: null as any, error: null as any } }));
+const mocks = vi.hoisted(() => ({ remoteNode: null as string | null, store: null as any, stop: { subject: null as any, onStopped: null as any, shell: null as any, stop: null as any, pending: null as any, error: null as any } }));
 vi.mock('~/stores/existingRunConfigStore', () => ({ useExistingRunConfigStore: () => mocks.store }));
 vi.mock('~/composables/runSettings/useRunStopAction', () => ({
   useRunStopAction: (subject: any, options: any) => {
@@ -19,7 +19,7 @@ vi.mock('~/composables/runSettings/useRunStopAction', () => ({
 }));
 vi.mock('~/composables/remoteRuns/useRemoteRunView', async () => {
   const { computed: c } = await import('vue');
-  return { useRemoteRunView: () => ({ remote: c(() => null), unreachable: c(() => false), headerActionsAllowed: c(() => true), composerPlaceholder: (l: string | null) => l, retry: vi.fn() }) };
+  return { useRemoteRunView: () => ({ remote: c(() => (mocks.remoteNode ? { nodeName: mocks.remoteNode, reachable: true } : null)), unreachable: c(() => false), headerActionsAllowed: c(() => true), composerPlaceholder: (l: string | null) => l, retry: vi.fn() }) };
 });
 
 import MobileRunSettings from '../MobileRunSettings.vue';
@@ -79,6 +79,7 @@ const rows = (wrapper: any) => wrapper.getComponent(RowsStub);
 
 beforeEach(() => {
   setActivePinia(createPinia());
+  mocks.remoteNode = null;
   mocks.stop.pending = ref(false);
   mocks.stop.error = ref<string | null>(null);
   mocks.stop.stop = vi.fn(async () => { await mocks.stop.onStopped?.(); });
@@ -140,7 +141,7 @@ describe('the phone Settings for the open run (autobyteus-458)', () => {
     expect(mocks.store.loadAgentCanonical).toHaveBeenCalledTimes(1);
     expect(wrapper.emitted('back')).toHaveLength(1);
 
-    await wrapper.setProps({ target: { ...target, context: contextOf('run-b', 'offline') } });
+    await wrapper.setProps({ target: { ...target, context: contextOf('run-b', 'offline'), browse: { kind: 'run', runId: 'run-b' } } });
     await flushPromises();
     expect(mocks.store.loadAgentCanonical).toHaveBeenLastCalledWith('run-b');
   });
@@ -201,7 +202,8 @@ describe('the phone Settings for the open run (autobyteus-458)', () => {
       planner: { scopesByAddress: { '/': { originalSelection: memberSelection, draftSelection: { ...memberSelection } },
         '/content_creator': { originalSelection: memberSelection, draftSelection: { ...memberSelection } } } } });
     mocks.store = makeStore(draft);
-    const target = { kind: 'standalone_team_member', access: 'live', context: contextOf('member-1', 'offline'), browse: { kind: 'run', runId: 'member-1' },
+    const target = { kind: 'standalone_team_member', access: 'live', context: contextOf('member-1', 'offline'),
+      browse: { kind: 'teamMember', teamRunId: 'team-1', memberAddress: '/content_creator', agentRunId: 'member-1' },
       workspaceRootPath: null, team: { rootRunId: 'team-1', focusedMemberAddress: '/content_creator', teamDefinitionName: 'Marketing Team' },
       collaborationMessages: { memberIdentityByAgentRunId: () => ({}) } };
     const wrapper = await mountSettings(target, 'Marketing Team');
@@ -217,7 +219,8 @@ describe('the phone Settings for the open run (autobyteus-458)', () => {
     const memberSelection = { runtimeKind: 'autobyteus', llmModelIdentifier: 'qwen-3', llmConfig: null };
     mocks.store = makeStore(reactive({ kind: 'agent_org', orgRunId: 'org-1', isActive: false, editability: { editable: true, reason: null },
       planner: { scopesByAddress: { '/research/lead': { originalSelection: memberSelection, draftSelection: { ...memberSelection } } } } }));
-    const target = { kind: 'agent_org_team_member', access: 'live', context: contextOf('member-2', 'offline'), browse: { kind: 'run', runId: 'member-2' },
+    const target = { kind: 'agent_org_team_member', access: 'live', context: contextOf('member-2', 'offline'),
+      browse: { kind: 'agentOrgMember', orgRunId: 'org-1', memberAddress: '/research/lead', agentRunId: 'member-2' },
       workspaceRootPath: null, root: { orgRunId: 'org-1' }, address: '/research/lead',
       team: { rootRunId: 'org-1', focusedMemberAddress: '/lead', teamDefinitionName: 'Research' }, collaborationMessages: { memberIdentityByAgentRunId: () => ({}) } };
     const wrapper = await mountSettings(target);
@@ -228,6 +231,53 @@ describe('the phone Settings for the open run (autobyteus-458)', () => {
     expect(mocks.stop.subject.value).toEqual({ kind: 'agent_org', orgRunId: 'org-1' });
     // CR-001: the stop runs on the phone's shell; the phone keeps its own route (Settings stays open).
     expect(mocks.stop.shell).toBe('mobile');
+  });
+
+  // autobyteus-522: every run, decided by the run that holds the opened agent (`browse`).
+  it('a task team\'s member: its address in the task team\'s own run; the stop stops that task team', async () => {
+    const memberSelection = { runtimeKind: 'antigravity_cli', llmModelIdentifier: 'gemini-3.8-flash-low', llmConfig: null };
+    mocks.store = makeStore(reactive({ kind: 'team', teamRunId: 'task-team-1', isActive: false, editability: { editable: true, reason: null },
+      planner: { scopesByAddress: { '/reviewer': { originalSelection: memberSelection, draftSelection: { ...memberSelection } } } } }));
+    const target = { kind: 'agent_run_task_team_member', access: 'live', context: contextOf('reviewer-1', 'offline'),
+      browse: { kind: 'teamMember', teamRunId: 'task-team-1', memberAddress: '/reviewer', agentRunId: 'reviewer-1' }, workspaceRootPath: null };
+    const wrapper = await mountSettings(target, 'docs review team');
+    expect(mocks.store.loadTeamCanonical).toHaveBeenCalledWith('task-team-1');
+    rows(wrapper).vm.$emit('update:runtimeKind', 'grok_build');
+    await flushPromises();
+    expect(mocks.store.updateTeamScopeModelConfig).toHaveBeenCalledWith('/reviewer', { ...memberSelection, runtimeKind: 'grok_build' });
+    expect(mocks.stop.subject.value).toEqual({ kind: 'team', teamRunId: 'task-team-1' });
+  });
+
+  it('REQ-005 a task agent opened under a standalone Team\'s member: its own run, never the member that delegated it', async () => {
+    mocks.store = makeStore({ ...agentDraft(), runId: 'helper-1' });
+    const target = { kind: 'standalone_team_member', access: 'live', context: contextOf('helper-1', 'offline'), browse: { kind: 'run', runId: 'helper-1' },
+      workspaceRootPath: null, team: { rootRunId: 'team-1', focusedMemberAddress: '/lead', teamDefinitionName: 'Delivery Team' },
+      collaborationMessages: { memberIdentityByAgentRunId: () => ({}) } };
+    const wrapper = await mountSettings(target, 'lead');
+    expect(mocks.store.loadAgentCanonical).toHaveBeenCalledWith('helper-1');
+    expect(mocks.store.loadTeamCanonical).not.toHaveBeenCalled();
+    rows(wrapper).vm.$emit('update:runtimeKind', 'grok_build');
+    await flushPromises();
+    expect(mocks.store.updateAgentModelConfig).toHaveBeenCalledWith({ llmModelIdentifier: agentSelection.llmModelIdentifier, llmConfig: null }, 'grok_build');
+    expect(mocks.store.updateTeamScopeModelConfig).not.toHaveBeenCalled();
+    expect(mocks.stop.subject.value).toEqual({ kind: 'agent', runId: 'helper-1' });
+  });
+
+  it('REQ-004 a run on another node: its name and status line, the sentence naming the node; no rows, no Save, no stop', async () => {
+    mocks.remoteNode = 'beta-node';
+    mocks.store = makeStore(agentDraft(true));
+    const target = { kind: 'agent_run_task_agent', access: 'live', context: contextOf('peer-1', 'idle'),
+      browse: { kind: 'peerRun', nodeId: 'beta', runId: 'peer-1', agentRunId: 'peer-1' }, workspaceRootPath: null };
+    const wrapper = await mountSettings(target, 'Project Task Manager');
+    expect(wrapper.get('[data-testid="mobile-run-settings-status"]').text()).toBe('Idle · in Project Task Manager');
+    expect(wrapper.get('[data-testid="mobile-run-settings-remote"]').text())
+      .toBe('This run is on beta-node. Its runtime and model can be changed only on that node.');
+    expect(wrapper.findComponent(RowsStub).exists()).toBe(false);
+    expect(wrapper.find('[data-testid="mobile-run-settings-save"]').exists()).toBe(false);
+    expect(wrapper.find('[data-testid="mobile-run-settings-stop"]').exists()).toBe(false);
+    expect(mocks.store.loadAgentCanonical).not.toHaveBeenCalled();
+    expect(mocks.store.clear).toHaveBeenCalled();
+    expect(mocks.stop.subject.value).toBeNull();
   });
 
   it('leaving clears the store (unsaved choices are dropped)', async () => {

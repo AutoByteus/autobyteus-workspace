@@ -81,7 +81,7 @@
         @click="selectAgentRun(run)"
       >
         <div class="min-w-0 flex items-center">
-          <StatusDot class="mr-2" :status="run.currentStatus" />
+          <StatusDot class="mr-2" :status="run.currentStatus" :background-tasks-running="agentRunBackgroundTasks(run.runId)" />
           <span class="truncate">
             {{ formatRunLabel(run.summary) }}
           </span>
@@ -176,6 +176,7 @@
         <TeamAggregateStatusDot
           class="mr-1.5"
           :status="teamDefinitionGroupStatus(group.runs)"
+          :background-tasks-running="teamDefinitionGroupBackgroundTasks(group.runs)"
         />
         <span
           class="mr-1.5 inline-flex h-5 w-5 flex-shrink-0 items-center justify-center overflow-hidden rounded-full bg-gray-200 text-[0.625rem] font-semibold text-gray-600"
@@ -242,6 +243,7 @@
               <TeamAggregateStatusDot
                 class="mr-1.5"
                 :status="teamRunStatus(team)"
+                :background-tasks-running="teamRunBackgroundTasks(team)"
               />
               <span class="truncate font-medium">{{ formatTeamRunLabel(team) }}</span>
             </button>
@@ -317,7 +319,7 @@ import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
 import { Icon } from '@iconify/vue';
 import StatusDot from '~/components/workspace/common/StatusDot.vue';
 import TeamAggregateStatusDot from '~/components/workspace/history/TeamAggregateStatusDot.vue';
-import { teamDefinitionGroupStatus, teamRunStatus } from '~/components/workspace/history/workspaceHistoryTeamBranchStatus';
+import { agentRunBackgroundTasks, teamDefinitionGroupBackgroundTasks, teamDefinitionGroupStatus, teamRunBackgroundTasks, teamRunStatus } from '~/components/workspace/history/workspaceHistoryTeamBranchStatus';
 import { useHeldRunStates } from '~/composables/useHeldRunStates';
 import WorkspaceTeamExecutionTree from '~/components/workspace/history/WorkspaceTeamExecutionTree.vue';
 import WorkspaceAgentOrgHistoryCollection from '~/components/workspace/history/WorkspaceAgentOrgHistoryCollection.vue';

@@ -356,6 +356,7 @@ describe("AgentStreamHandler", () => {
     const backend = {
       inputCapabilities: { activeTurnAppend: "unsupported" as const },
       compactionRecovery: { kind: "unsupported" as const },
+      backgroundTaskInspection: { kind: "unsupported" as const },
       runId,
       runtimeKind: "codex_app_server",
       getContext: () => context,
@@ -387,7 +388,7 @@ describe("AgentStreamHandler", () => {
       createCommandCoordinator({ activeRun }) as any,
       createStatusProjectionService(buildProjection({
         status: "idle",
-        statusPayload: { status: "idle", agent_id: runId },
+        statusPayload: { status: "idle", background_tasks_running: 0, agent_id: runId },
       })) as any,
       null, sequences, readStored,
     );
@@ -407,6 +408,7 @@ describe("AgentStreamHandler", () => {
       type: ServerMessageType.AGENT_STATUS,
       payload: {
         status: "offline",
+        background_tasks_running: 0,
         agent_id: runId,
         recoverableBlock: null,
       },

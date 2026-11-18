@@ -88,8 +88,8 @@ const tokenUsageDetails = (agentRunId: string): TeamTokenUsageDetails => ({
 const teamAgentEvent = (agentRunId: string, kind: "status" | "start" | "content" | Boundary, value = "", status: "running" | "idle" = "running"): TeamAgentEvent => {
   const segment = { segmentId: segmentId(agentRunId.endsWith("a") ? "A" : "B"), turnId };
   switch (kind) {
-    case "status": return { eventType: "AGENT_STATUS", statusHint: status, details: createTeamAgentStatusDetails({ status, trigger: null }) } as TeamAgentEvent;
-    case "terminal_status": return { eventType: "AGENT_STATUS", statusHint: "idle", details: createTeamAgentStatusDetails({ status: "idle", trigger: null }) } as TeamAgentEvent;
+    case "status": return { eventType: "AGENT_STATUS", statusHint: status, details: createTeamAgentStatusDetails({ status, backgroundTasksRunning: 0, trigger: null }) } as TeamAgentEvent;
+    case "terminal_status": return { eventType: "AGENT_STATUS", statusHint: "idle", details: createTeamAgentStatusDetails({ status: "idle", backgroundTasksRunning: 0, trigger: null }) } as TeamAgentEvent;
     case "start": return { eventType: "SEGMENT_START", statusHint: "running", details: { ...segment, segmentType: "text", metadata: null } };
     case "content": return { eventType: "SEGMENT_CONTENT", statusHint: "running", details: { ...segment, segmentType: "text", delta: value } };
     case "segment_end": return { eventType: "SEGMENT_END", statusHint: "running", details: { ...segment, metadata: null, interrupted: false, reason: null, failed: false, error: null } };
@@ -182,7 +182,7 @@ const orgScenario: Scenario = {
     const tree = testAgentOrgExecutionTree({ orgRunId: rootRunId, members });
     const statuses = members.map((member) => ({
       execution: createCollaborationMemberExecutionIdentity({ root: createAgentOrgRootExecutionIdentity(rootRunId), memberAddress: member.address, agentRunId: member.agentRunId }),
-      details: { status: "idle" as const, trigger: null, errorMessage: null, recoverableBlock: null }, statusHint: "IDLE" as const,
+      details: { status: "idle" as const, backgroundTasksRunning: 0, trigger: null, errorMessage: null, recoverableBlock: null }, statusHint: "IDLE" as const,
     }));
     const snapshot = { tree, messages: { schemaVersion: 1 as const, subjectKind: "agent_org" as const, orgRunId: rootRunId, messages: [] }, statuses, inputStates: [] };
     const run = { orgRunId: rootRunId, isActive: () => true, getExecutionTreeSnapshot: () => tree,

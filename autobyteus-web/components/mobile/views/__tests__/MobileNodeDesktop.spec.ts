@@ -87,6 +87,21 @@ describe('MobileNodeDesktop', () => {
     expect(wrapper.get('[data-testid="mobile-node-desktop-mode"]').attributes('aria-pressed')).toBe('true');
   });
 
+  // autobyteus-525 DEC-008: in Control, Keyboard and Clipboard sit at the status row's end, after the status text; the
+  // bar keeps ←, the title, the mode switch and full screen, so it fits a 360 px phone at every Text size.
+  it('in Control, Keyboard and Clipboard are at the end of the status row, not in the bar', async () => {
+    const { wrapper } = await mountView();
+    session.current.connectionStatus.value = 'connected';
+    session.current.mode.value = 'control';
+    await flushPromises();
+    const ids = (selector: string) => wrapper.get(selector).findAll('[data-testid]').map((element) => element.attributes('data-testid'));
+    expect(ids('[data-testid="mobile-node-desktop-status-bar"]')).toEqual(
+      ['mobile-node-desktop-status', 'mobile-node-desktop-keyboard', 'mobile-node-desktop-clipboard-open']);
+    expect(ids('[data-testid="mobile-screen-bar"]')).toEqual(
+      ['mobile-screen-back', 'mobile-screen-title', 'mobile-node-desktop-mode', 'mobile-node-desktop-full-screen']);
+    expect(wrapper.get('[data-testid="mobile-node-desktop-status"]').classes()).toEqual(expect.arrayContaining(['min-w-0', 'flex-1', 'truncate']));
+  });
+
   it('shows "too many viewers" with Retry, which opens View only (AC-021)', async () => {
     const { wrapper } = await mountView();
     session.current.connectionStatus.value = 'disconnected';

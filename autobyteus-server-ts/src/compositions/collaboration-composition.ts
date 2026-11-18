@@ -1,3 +1,4 @@
+import type { EpisodicCatalog } from "../agent-episodic-catalog/services/episodic-catalog.js";
 import type { RootExecutionIdentity } from "../agent-collaboration/execution/domain/root-execution-identity.js";
 import { DelegatorCatalog } from "../agent-collaboration/execution/task/delegator-catalog.js";
 import { RunOwnDelegations } from "../agent-collaboration/execution/task/run-own-delegation.js";
@@ -147,6 +148,8 @@ export const composeCollaboration = async (input: Readonly<{
   activeRoots: Pick<ActiveCollaborationRootDirectory, "resolve" | "onRegistrationChanged">;
   /** This node's channel to its peers (`null` where it has none). */
   remoteChannel: () => RemoteRunChannel | null;
+  /** The episodic catalogs, told by the agent run history service after a committed delete (autobyteus-493). */
+  episodicCatalog: Pick<EpisodicCatalog, "runDeleted">;
 }>): Promise<Collaboration> => {
   const { memoryDir, taskSide, runs } = input;
   const { tree, resources } = taskSide;
@@ -261,7 +264,7 @@ export const composeCollaboration = async (input: Readonly<{
     releases.push(setProcessStandaloneRootMemberViewProjectionService(new StandaloneRootMemberViewProjectionService({ peerRunOf })));
     releases.push(setProcessTeamMemberRunViewProjectionService(new TeamMemberRunViewProjectionService({ memoryDir, tree, peerRunOf })));
     releases.push(setProcessAgentOrgMemberRunViewProjectionService(new AgentOrgMemberRunViewProjectionService({ memoryDir, tree, peerRunOf })));
-    const agentRunHistory = new AgentRunHistoryService(memoryDir, { tree, workGuard: runs.delegatedWorkGuard });
+    const agentRunHistory = new AgentRunHistoryService(memoryDir, { tree, workGuard: runs.delegatedWorkGuard, episodicCatalog: input.episodicCatalog });
     releases.push(setProcessAgentRunHistoryService(agentRunHistory));
     releases.push(setProcessTeamRunHistoryService(runs.teamRunHistoryService));
     releases.push(setProcessWorkspaceRunHistoryService(new WorkspaceRunHistoryService({ tree,

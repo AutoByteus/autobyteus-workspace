@@ -112,6 +112,20 @@ export class ProjectTaskService implements TaskExecutionResourcePort {
   }
   /** A Project Task's key by its long ID (it names a worker's own Task in `get_project_task`'s refusal). */
   async taskKeyOf(taskId: string): Promise<string> { return (await this.references.byId(taskId)).task.taskKey; }
+  /**
+   * A Project Task's title by its long ID (an episodic catalog entry's "About"), never its description; null for a Task
+   * with no Project or one no longer there, and for one that cannot be read (logged).
+   */
+  async taskTitleOf(taskId: string): Promise<string | null> {
+    try {
+      return (await this.references.byId(taskId)).task.title;
+    } catch (error) {
+      if (!(error instanceof ProjectError && error.code === "TASK_NOT_FOUND")) {
+        console.warn("PROJECT_TASK_TITLE_UNREADABLE", { taskId, error: error instanceof Error ? error.message : String(error) });
+      }
+      return null;
+    }
+  }
   /** The Manager's read of open and closed assignments per Task; `unavailable` when a Task's data can't be read. */
   async assignments(taskIds: readonly string[]): Promise<Map<string, TaskAssignmentViews | "unavailable">> {
     return new Map(await Promise.all(taskIds.map(async (taskId) => [taskId, await this.resources.assignments(taskId)] as const)));

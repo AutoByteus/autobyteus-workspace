@@ -76,6 +76,7 @@ export class CollaborationAgentPresentationEventAdapter {
         eventType: "AGENT_STATUS",
         details: Object.freeze({
           status: rawEvent.snapshot.details.status,
+          backgroundTasksRunning: rawEvent.snapshot.details.backgroundTasksRunning,
           trigger: rawEvent.snapshot.details.trigger,
           toolName: null,
           errorMessage: rawEvent.snapshot.details.errorMessage,

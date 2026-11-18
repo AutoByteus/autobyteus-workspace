@@ -20,6 +20,13 @@ const asRecord = (value: unknown): Record<string, unknown> | null =>
   value && typeof value === "object" && !Array.isArray(value) ? value as Record<string, unknown> : null;
 
 const JOURNAL_FILE_NAME = /^work_journal_(\d{6}|active)\.md$/;
+const errorMessage = (error: unknown): string => (error instanceof Error ? error.message : String(error));
+
+/** What a manifest says about a run's journal files, read for their names only. */
+export type ManifestJournalFileNames =
+  | Readonly<{ kind: "none" }>
+  | Readonly<{ kind: "unreadable"; reason: string }>
+  | Readonly<{ kind: "names"; names: readonly string[] }>;
 const SHA256_HEX = /^[0-9a-f]{64}$/;
 
 /** A manifest entry with every field known and valid, else null (that file is simply re-rendered). */
@@ -76,6 +83,32 @@ export class WorkJournalStore {
     };
   }
 
+  /**
+   * The journal file names the manifest lists, in its order, whatever else each entry records: a names-only read. An
+   * entry the projection above drops (it must be rendered again) still names a journal file on disk. `none`: there is
+   * no manifest; `unreadable`: there is one, but it cannot be read or holds no list of files.
+   */
+  async readManifestJournalFileNames(memoryDir: string): Promise<ManifestJournalFileNames> {
+    let text: string;
+    try {
+      text = await fs.readFile(this.manifestPath(memoryDir), "utf-8");
+    } catch (error) {
+      if ((error as NodeJS.ErrnoException)?.code === "ENOENT") return { kind: "none" };
+      return { kind: "unreadable", reason: errorMessage(error) };
+    }
+    let parsed: unknown;
+    try {
+      parsed = JSON.parse(text);
+    } catch (error) {
+      return { kind: "unreadable", reason: `${WORK_JOURNAL_MANIFEST_FILE_NAME} is not JSON: ${errorMessage(error)}` };
+    }
+    const files = asRecord(parsed)?.files;
+    if (!Array.isArray(files)) return { kind: "unreadable", reason: `${WORK_JOURNAL_MANIFEST_FILE_NAME} lists no files.` };
+    const names = files.map((file) => asRecord(file)?.journal_file)
+      .filter((name): name is string => typeof name === "string" && JOURNAL_FILE_NAME.test(name));
+    return { kind: "names", names: [...new Set(names)] };
+  }
+
   /** The exact manifest shape, nothing more (no generation time, no paths). */
   async writeManifest(memoryDir: string, manifest: WorkJournalManifest): Promise<void> {
     const exact: WorkJournalManifest = {
@@ -103,6 +136,22 @@ export class WorkJournalStore {
       return await fs.readFile(this.filePath(memoryDir, journalFile), "utf-8");
     } catch {
       return null;
+    }
+  }
+
+  /** The first `bytes` bytes of a journal file and its size; null when it does not exist. */
+  async readJournalFileHead(memoryDir: string, journalFile: string, bytes: number): Promise<{ head: string; sizeBytes: number } | null> {
+    let handle: fs.FileHandle | null = null;
+    try {
+      handle = await fs.open(this.filePath(memoryDir, journalFile), "r");
+      const { size } = await handle.stat();
+      const buffer = Buffer.alloc(Math.min(bytes, size));
+      const { bytesRead } = await handle.read(buffer, 0, buffer.length, 0);
+      return { head: buffer.subarray(0, bytesRead).toString("utf-8"), sizeBytes: size };
+    } catch {
+      return null;
+    } finally {
+      await handle?.close().catch(() => undefined);
     }
   }
 

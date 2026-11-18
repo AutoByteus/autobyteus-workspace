@@ -106,9 +106,7 @@ class ScriptedAgentRunBackend implements AgentRunBackend {
     return () => this.sourceListeners.delete(listener);
   }
 
-  hasRunningBackgroundTasks(): boolean {
-    return false;
-  }
+  readonly backgroundTaskInspection = { kind: "unsupported" } as const;
 
   async dispatchUserInput(): Promise<AgentRunBackendInputDispatchResult> {
     throw new Error("dispatchUserInput is not used by this harness.");
@@ -602,6 +600,7 @@ describe("Agent status WebSocket contract integration", () => {
       // The ended turn's late content stays undisplayed and gets no chat notice (REQ-003).
       expect(run.getStatusSnapshot()).toEqual({
         status: "running",
+        background_tasks_running: 0,
         agent_id: run.runId,
         recoverableBlock: null,
       });

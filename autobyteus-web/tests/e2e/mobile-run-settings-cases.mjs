@@ -1,6 +1,6 @@
 // The readable phone conversation, Text size and Settings for a run's runtime and model (autobyteus-506, autobyteus-458).
 // Cases of `pnpm -C autobyteus-web test:e2e:mobile-shell`, run by `mobile-shell-probe.mjs` on its paired phone page
-// (`--cases=MSP-66,MSP-60,MSP-61,MSP-62,MSP-63,MSP-64,MSP-65` runs only these). Every run here is the cases' own, on alpha, on the
+// (`--cases=MSP-66,MSP-60,MSP-74,MSP-61,MSP-62,MSP-63,MSP-64,MSP-65` runs only these). Every run here is the cases' own, on alpha, on the
 // scripted Antigravity runtime (one model) and the scripted Grok Build runtime (`grok-4.7`). MSP-66 was MSP-59 before the merge
 // with autobyteus-483, which took MSP-59 (`mobile-background-tasks-cases.mjs`); earlier 458 records name it MSP-59.
 //
@@ -8,8 +8,16 @@
 //                  from the left; one 22 px avatar and the speaker's name per turn; 17 px text with a 1.5 line height; the
 //                  composer box 8 px above the screen's bottom. The mate's conversation: the lead's message to it keeps
 //                  its arrow, and a tap on the arrow shows its `agent_message` line, as on the desktop (SR-004).
-//   MSP-60 AC-002  ⋮ → Text size: Small, Large, Largest reflow the conversation at once (15, 19, 21 px); the step survives
-//                  a reload; back to Standard.
+//   MSP-60 autobyteus-525 AC-001…004  The run list's ⋮ → On this phone → Text size: Small, Large, Largest scale the run
+//                  list at once (root 16 × step/17 px) with the menu open; Esc closes it (focus back on ⋮); the conversation
+//                  at 21 px; the run's ⋮ has no Text size; after a reload the step applies from the first screen; back to
+//                  Standard.
+//   MSP-74 autobyteus-525 AC-005  Largest at 412 and 360 px: the run list, its menu, the connection sheet, the unpair
+//                  confirmation, New run and its agent sheet, the conversation, the run's ⋮, Artifacts, Files, a code file
+//                  (17 px), Messages, Activity, Settings, the setup page, a pairing link's page and "Connected to …": no
+//                  sideways scroll, nothing past the edge, no text cut without an ellipsis; screenshots `MSP-74-*.png`. Also
+//                  the screens the merged base added: a remote run's Settings (autobyteus-522) and a run idle with a
+//                  background task, its row and run screen (autobyteus-448; a plain run of the stack, 150 s task).
 //   MSP-61 AC-004  The stopped Team's lead: ⋮ → Settings shows "Stopped · in <Team>"; Runtime → Grok Build clears the model;
 //                  Model → grok-4.7; Save returns to the conversation; the node holds the new selection; Settings again
 //                  shows it; a message from the phone continues the run on it.
@@ -26,11 +34,12 @@ import { randomUUID } from 'node:crypto';
 /**
  * @param probe `runCase`, `page` (the paired phone), `stack`, `alpha`, `sel`, `toList`, `openRow`, `ensureUnfolded`,
  *   `rowsOf`, `childRow`, `menuOpen`, `runScreen`, `shot`, `sendOver`, `waitFor`, `sleep`, `assert`, `selected`, `phoneNet` (the
- *   phone's GraphQL operations, as the probe records them).
+ *   phone's GraphQL operations, as the probe records them), `openPhone`, `pairingFor`, `phoneOrigin`.
  */
 export const runRunSettingsCases = async (probe) => {
-  const { runCase, page, stack, alpha, sel, toList, openRow, ensureUnfolded, rowsOf, childRow, menuOpen, runScreen, shot, sendOver, waitFor, sleep, assert, phoneNet } = probe;
-  const ids = ['MSP-66', 'MSP-60', 'MSP-61', 'MSP-62', 'MSP-63', 'MSP-64', 'MSP-65'];
+  const { runCase, page, stack, alpha, sel, toList, openRow, ensureUnfolded, rowsOf, childRow, menuOpen, runScreen, shot, sendOver, waitFor, sleep, assert, phoneNet,
+    openPhone, pairingFor, phoneOrigin } = probe;
+  const ids = ['MSP-66', 'MSP-60', 'MSP-74', 'MSP-61', 'MSP-62', 'MSP-63', 'MSP-64', 'MSP-65'];
   if (probe.selected && !ids.some(id => probe.selected.has(id))) return;
 
   const gql = (query, variables) => alpha.gql(query, variables);
@@ -116,7 +125,7 @@ export const runRunSettingsCases = async (probe) => {
     const feedStyle = feed ? getComputedStyle(feed) : null;
     return {
       width: innerWidth, height: innerHeight, phone: monitor?.classList.contains('phone-conversation') ?? false,
-      textSize: monitor?.getAttribute('data-text-size') ?? null,
+      textSize: document.documentElement.getAttribute('data-phone-text-size'),
       fontSize: feedStyle ? parseFloat(feedStyle.fontSize) : null, lineHeight: feedStyle ? parseFloat(feedStyle.lineHeight) : null,
       bodies: rows.map((row) => { const r = row.querySelector('.conv-body').getBoundingClientRect(); return { left: Math.round(r.left), width: Math.round(r.width), speaker: row.getAttribute('data-speaker') }; }),
       speakers: rows.flatMap((row) => [...row.querySelectorAll('.conv-speaker')].filter(visible).map((s) => s.textContent.trim())),
@@ -193,34 +202,251 @@ export const runRunSettingsCases = async (probe) => {
     return details;
   });
 
+  // The phone's Text size on the run list (autobyteus-525): the root font size, a run name and the conversation, read at once.
+  const sizes = () => page.evaluate(() => {
+    const px = (element) => (element ? parseFloat(getComputedStyle(element).fontSize) : null);
+    const feed = document.querySelector('[data-testid="mobile-run-conversation"] .conv-feed');
+    const name = [...document.querySelectorAll('[data-testid="mobile-run-tree"] [data-testid="mobile-run-name"]')].find((element) => element.getBoundingClientRect().width > 0);
+    return { step: document.documentElement.getAttribute('data-phone-text-size'), root: px(document.documentElement), runName: px(name), feed: px(feed),
+      menuOpen: Boolean(document.querySelector('[data-testid="mobile-on-this-phone-menu"]')),
+      pressed: document.querySelector('[data-testid="mobile-text-size"] [aria-pressed="true"]')?.getAttribute('data-testid') ?? null };
+  });
+  const homeMenu = async () => {
+    if (!(await page.locator(sel('mobile-on-this-phone-menu')).count())) await page.locator(sel('mobile-on-this-phone-button')).click();
+    await page.locator(sel('mobile-on-this-phone-menu')).waitFor({ timeout: 10_000 });
+  };
+  const closeHomeMenu = async () => {
+    await page.keyboard.press('Escape');
+    await page.locator(sel('mobile-on-this-phone-menu')).waitFor({ state: 'detached', timeout: 5_000 }).catch(() => undefined);
+    if (await page.locator(sel('mobile-on-this-phone-menu')).count()) await page.mouse.click(5, 400);
+  };
+  /** The step chosen on the run list's "On this phone" menu; the menu is closed afterwards. */
+  const chooseTextSize = async (step) => {
+    await backToList();
+    await homeMenu();
+    await page.locator(sel(`mobile-text-size-${step}`)).click();
+    await closeHomeMenu();
+  };
+
   await runCase('MSP-60', async () => {
-    await openTeam();
-    const sizes = {};
+    // autobyteus-525 AC-001, AC-003, AC-004: the run list's ⋮ → On this phone → Text size: each step scales the run list at
+    // once (root 16 × step/17 px) with the menu still open; Esc closes it, the focus back on ⋮; the conversation is the
+    // step's px; the run's ⋮ has no Text size (AC-002); the step is applied from the first screen after a reload.
+    await backToList();
+    const before = await sizes();
+    await homeMenu();
+    const menu = await page.evaluate(() => ({ title: document.querySelector('[data-testid="mobile-on-this-phone-title"]')?.textContent?.trim() ?? null,
+      group: document.querySelector('[data-testid="mobile-text-size"]')?.getAttribute('aria-label') ?? null }));
+    const steps = {};
     for (const step of ['small', 'large', 'largest']) {
-      await page.locator(sel('mobile-run-menu-button')).click();
       await page.locator(sel(`mobile-text-size-${step}`)).click();
-      sizes[step] = (await layout()).fontSize; // behind the open menu, at once
-      await page.keyboard.press('Escape');
-      await page.locator(sel('mobile-run-menu')).waitFor({ state: 'detached', timeout: 5_000 }).catch(() => undefined);
-      if (await page.locator(sel('mobile-run-menu')).count()) await page.mouse.click(5, 400);
+      steps[step] = await sizes(); // the run list behind the open menu, at once
     }
-    await shot(page, 'MSP-60-largest');
+    await shot(page, 'MSP-60-home-menu-largest');
+    await page.keyboard.press('Escape');
+    await page.locator(sel('mobile-on-this-phone-menu')).waitFor({ state: 'detached', timeout: 5_000 }).catch(() => undefined);
+    const focusBack = await page.evaluate(() => document.activeElement?.getAttribute('data-testid') ?? null);
+    await shot(page, 'MSP-60-list-largest');
+    await openTeam();
+    await sleep(500);
+    const conversation = await sizes();
+    await menuOpen(page);
+    const runMenu = await page.evaluate(() => ({ entries: [...document.querySelectorAll('[data-testid="mobile-run-menu"] [role="menuitem"]')].map((item) => item.textContent.trim()),
+      textSize: document.querySelectorAll('[data-testid="mobile-run-menu"] [data-testid^="mobile-text-size"]').length }));
+    await shot(page, 'MSP-60-run-menu-largest');
+    await page.keyboard.press('Escape');
+    // QR-001: the root size when the first phone screen appears after a reload (recorded by a script that runs before the app).
+    await page.addInitScript(() => {
+      const record = () => {
+        if (window.__firstScreenRoot || !document.querySelector('[data-testid="mobile-run-list"], [data-testid="mobile-run-screen"], [data-testid="mobile-pairing-bootstrap"]')) return;
+        window.__firstScreenRoot = { root: getComputedStyle(document.documentElement).fontSize, step: document.documentElement.getAttribute('data-phone-text-size') };
+      };
+      new MutationObserver(record).observe(document, { childList: true, subtree: true });
+    });
     await page.reload({ waitUntil: 'domcontentloaded' });
     await page.locator(sel('mobile-run-conversation')).waitFor({ timeout: 60_000 });
-    const afterReload = await layout();
-    await page.locator(sel('mobile-run-menu-button')).click();
-    const pressed = await page.locator(sel('mobile-text-size-largest')).getAttribute('aria-pressed');
-    await page.locator(sel('mobile-text-size-standard')).click();
-    const standard = (await layout()).fontSize;
-    await page.mouse.click(5, 400);
+    await sleep(500);
+    const afterReload = { ...(await sizes()), firstScreen: await page.evaluate(() => window.__firstScreenRoot ?? null) };
     // A fresh start on the run list: after a reload on a run screen, ← goes to the entry before it, here the pairing link,
     // which pairs again (existing behaviour, recorded as a follow-up of autobyteus-458).
     await page.goto(new URL('/mobile/', page.url()).href, { waitUntil: 'domcontentloaded' });
     await page.locator(`${sel('mobile-run-tree')}:visible`).waitFor({ timeout: 60_000 });
-    const details = { sizes, afterReload: { fontSize: afterReload.fontSize, textSize: afterReload.textSize }, pressed, standard };
-    assert(sizes.small === 15 && sizes.large === 19 && sizes.largest === 21, 'AC-002 each step reflows the conversation at once', details);
-    assert(afterReload.fontSize === 21 && afterReload.textSize === 'largest' && pressed === 'true', 'AC-002 the step survives a reload', details);
-    assert(standard === 17, 'back to Standard', details);
+    await homeMenu();
+    const reopened = await sizes();
+    await page.locator(sel('mobile-text-size-standard')).click();
+    const standard = await sizes();
+    await closeHomeMenu();
+    const details = { before, menu, steps, focusBack, conversation, runMenu, afterReload, reopened, standard };
+    const near = (value, expected) => value !== null && Math.abs(value - expected) <= 0.05;
+    assert(before.step === 'standard' && near(before.root, 16) && near(before.runName, 15), 'AC-006 Standard: root 16 px, run name 15 px, as before', details);
+    assert(menu.title === 'On this phone' && menu.group === 'Text size', 'AC-001 the run list\'s ⋮ opens "On this phone" with the Text size group', details);
+    assert(['small', 'large', 'largest'].every((step) => steps[step].step === step && steps[step].menuOpen && steps[step].pressed === `mobile-text-size-${step}`),
+      'AC-001 each step applies at once with the menu still open, the step marked', details);
+    assert(near(steps.small.root, 16 * 15 / 17) && near(steps.large.root, 16 * 19 / 17) && near(steps.largest.root, 16 * 21 / 17), 'AC-003 the root is 16 × step/17 px', details);
+    assert(near(steps.largest.runName, 15 * 21 / 17) && near(steps.small.runName, 15 * 15 / 17), 'AC-003 the run list scales with the step', details);
+    assert(focusBack === 'mobile-on-this-phone-button', 'AC-001 Esc closes the menu and the focus goes back to ⋮', details);
+    assert(near(conversation.feed, 21), 'AC-003 the conversation is 21 px at Largest', details);
+    assert(runMenu.textSize === 0 && runMenu.entries.length > 0 && !runMenu.entries.includes('Text size'), 'AC-002 the run\'s ⋮ has no Text size', details);
+    assert(afterReload.step === 'largest' && near(afterReload.feed, 21) && afterReload.firstScreen?.step === 'largest' && near(parseFloat(afterReload.firstScreen.root), 16 * 21 / 17),
+      'AC-004, QR-001 the step survives a reload and applies from the first screen', details);
+    assert(reopened.pressed === 'mobile-text-size-largest' && standard.step === 'standard' && near(standard.root, 16), 'AC-004 the kept step is marked; back to Standard', details);
+    return details;
+  });
+
+  // autobyteus-525 AC-005, REQ-007: what a phone screen shows past its width. Sideways scroll of the document; elements
+  // past the screen's edge (outside a box that scrolls sideways by design: code, tables, file content; an element parked
+  // wholly left of the screen is hidden on purpose); text cut off without an ellipsis (a 1 px screen-reader-only label
+  // is not shown text).
+  const fit = (target) => target.evaluate(() => {
+    const width = innerWidth;
+    const shown = (el) => { const r = el.getBoundingClientRect(); const s = getComputedStyle(el); return r.width > 0 && r.height > 0 && s.visibility !== 'hidden' && s.display !== 'none'; };
+    const scrollsSideways = (el) => { for (let p = el.parentElement; p; p = p.parentElement) { if (/(auto|scroll)/.test(getComputedStyle(p).overflowX)) return true; } return false; };
+    const name = (el) => `${el.tagName.toLowerCase()}${el.getAttribute('data-testid') ? `[${el.getAttribute('data-testid')}]` : ''} "${(el.textContent || el.getAttribute('aria-label') || '').replace(/\s+/g, ' ').trim().slice(0, 40)}"`;
+    const past = []; const cut = [];
+    for (const el of document.querySelectorAll('body *')) {
+      if (!shown(el) || el.closest('svg') || el.closest('[data-testid="mobile-node-desktop-picture"]') || el.closest('.monaco-editor')) continue;
+      const r = el.getBoundingClientRect();
+      if ((r.right > width + 1 || r.left < -1) && r.right > 0 && !scrollsSideways(el)) past.push(`${name(el)} ${Math.round(r.left)}…${Math.round(r.right)}`);
+      const s = getComputedStyle(el);
+      const ownText = [...el.childNodes].some((node) => node.nodeType === 3 && node.textContent.trim());
+      if (ownText && el.clientWidth > 1 && el.scrollWidth > el.clientWidth + 1 && s.overflowX === 'hidden' && s.textOverflow !== 'ellipsis') cut.push(`${name(el)} ${el.scrollWidth}>${el.clientWidth}`);
+    }
+    const de = document.documentElement;
+    return { sideways: de.scrollWidth > de.clientWidth, past: past.slice(0, 12), cut: cut.slice(0, 12) };
+  });
+  const clean = (result) => !result.sideways && result.past.length === 0 && result.cut.length === 0;
+
+  await runCase('MSP-74', async () => {
+    // autobyteus-525 AC-005: every phone screen at Largest, 412 and 360 px wide: screenshots for review and the fit check.
+    // Not covered here: VNC Viewer (alpha has no node desktop; its controls are rem like every phone screen).
+    await chooseTextSize('largest');
+    const screens = {};
+    const record = async (target, key) => {
+      await sleep(400);
+      screens[key] = await fit(target);
+      await shot(target, `MSP-74-${key}`);
+    };
+    // The topmost screen's ←: an opened file's bar lies over the Files screen's bar.
+    const back = async () => { await page.locator(`${sel('mobile-screen-back')}:visible`).last().click(); await sleep(400); };
+    let monaco = null;
+    let cleanup = null;
+    try {
+      for (const [width, height] of [[412, 915], [360, 780]]) {
+        await page.setViewportSize({ width, height });
+        await backToList();
+        await record(page, `${width}-run-list`);
+        await homeMenu();
+        await record(page, `${width}-on-this-phone-menu`);
+        await closeHomeMenu();
+        await page.locator(sel('mobile-node-button')).click();
+        await page.locator(sel('mobile-connection-sheet')).waitFor({ timeout: 10_000 });
+        await record(page, `${width}-connection-sheet`);
+        await page.locator(sel('mobile-unpair')).click();
+        await page.locator(sel('mobile-unpair-confirm')).waitFor({ timeout: 10_000 });
+        await record(page, `${width}-unpair-confirm`);
+        await page.locator(sel('mobile-unpair-confirm')).getByRole('button', { name: 'Cancel', exact: true }).click();
+        if (await page.locator(sel('mobile-connection-sheet')).count()) await page.locator(sel('mobile-sheet-close')).first().click();
+        await page.locator(sel('mobile-connection-sheet')).waitFor({ state: 'detached', timeout: 10_000 }).catch(() => undefined);
+        await page.locator(sel('mobile-new-run-button')).click();
+        await page.locator(sel('mobile-new-run')).waitFor({ timeout: 10_000 });
+        await sleep(800);
+        await record(page, `${width}-new-run`);
+        await page.locator(sel('mobile-run-target-select-toggle')).click();
+        await page.locator(sel('mobile-run-target-select-sheet')).waitFor({ timeout: 10_000 });
+        await record(page, `${width}-new-run-agent-sheet`);
+        await page.locator(`${sel('mobile-run-target-select-sheet')} ${sel('mobile-sheet-close')}`).click();
+        await page.locator(sel('mobile-run-target-select-sheet')).waitFor({ state: 'detached', timeout: 10_000 });
+        await page.locator(sel('mobile-new-run-close')).click();
+        await page.locator(sel('mobile-new-run')).waitFor({ state: 'detached', timeout: 10_000 });
+        await page.locator(`${sel('mobile-run-tree')}:visible`).waitFor({ timeout: 10_000 });
+        await openTeam();
+        await sleep(600);
+        await record(page, `${width}-conversation`);
+        await menuOpen(page);
+        await record(page, `${width}-run-menu`);
+        await page.keyboard.press('Escape');
+        for (const [view, root] of [['artifacts', 'mobile-artifacts'], ['files', 'mobile-files'], ['messages', 'mobile-messages'], ['activity', 'mobile-activity'], ['settings', 'mobile-run-settings']]) {
+          await menuOpen(page, view);
+          await page.locator(sel(root)).waitFor({ timeout: 20_000 });
+          await sleep(800);
+          await record(page, `${width}-${view}`);
+          if (view === 'files') {
+            await page.locator(sel('mobile-files-row')).filter({ hasText: 'src' }).first().click();
+            await page.locator(sel('mobile-files-row')).filter({ hasText: 'app.ts' }).first().click();
+            await page.locator(`${sel('mobile-file-viewer')} .monaco-editor .view-line`).first().waitFor({ timeout: 30_000 });
+            await record(page, `${width}-file-viewer`);
+            monaco ??= await page.evaluate(() => parseFloat(getComputedStyle(document.querySelector('[data-testid="mobile-file-viewer"] .monaco-editor .view-line')).fontSize));
+            await back();
+            if (!(await page.locator(`${sel('mobile-files')}:visible`).count())) await back();
+          }
+          await back();
+          await page.locator(`${sel('mobile-run-conversation')}:visible`).waitFor({ timeout: 10_000 }).catch(() => undefined);
+        }
+        // The setup screens on a phone that is not paired, at Largest: the page that asks for a pairing link, the pairing
+        // link's page and "Connected to …" right after the tap.
+        const unpaired = await openPhone({ width, height, label: `phone-largest-${width}` });
+        await unpaired.context.addInitScript(() => window.localStorage.setItem('autobyteus.phone.textSize', 'largest'));
+        await unpaired.page.goto(`${phoneOrigin()}/mobile`, { waitUntil: 'domcontentloaded', timeout: 120_000 });
+        await unpaired.page.locator(sel('mobile-pairing-bootstrap')).waitFor({ timeout: 60_000 });
+        await record(unpaired.page, `${width}-setup`);
+        await unpaired.page.goto(await pairingFor(phoneOrigin()), { waitUntil: 'domcontentloaded', timeout: 120_000 });
+        await unpaired.page.locator(sel('mobile-pair-button')).waitFor({ timeout: 60_000 });
+        await record(unpaired.page, `${width}-pairing-link`);
+        await unpaired.page.locator(sel('mobile-pair-button')).click();
+        await unpaired.page.locator(sel('mobile-post-pair-checking')).waitFor({ timeout: 30_000 }).catch(() => undefined);
+        if (await unpaired.page.locator(sel('mobile-post-pair-checking')).count()) await record(unpaired.page, `${width}-connected-to`);
+        await unpaired.context.close();
+      }
+      // The screens the merged base added (autobyteus-522, autobyteus-448), at Largest, 412 and 360 px: the Settings of a run
+      // on another node (the sentence naming its node, MSP-72's run) and a run idle with a background task (its row and its
+      // run screen say "Background task running"; a plain run of the stack, not MSP-73's).
+      const ptmKey = `agent:${stack.ptm}`;
+      const showOlder = async () => {
+        const fold = page.locator(sel('mobile-run-list-show-older'));
+        if ((await fold.count()) && (await fold.innerText()).startsWith('Show older')) await fold.click();
+      };
+      const backgroundKey = `agent:${stack.plain[2]}`;
+      await page.setViewportSize({ width: 412, height: 915 });
+      await backToList();
+      await showOlder();
+      await openRow(page, backgroundKey);
+      const box = page.locator(`${sel('mobile-run-conversation')} textarea`).last();
+      const send = page.locator(`${sel('mobile-run-conversation')} button[aria-label="Send message"]`).last();
+      await waitFor('Send enabled', async () => {
+        if (!(await box.inputValue().catch(() => ''))) await box.fill('Start the docs server. BACKGROUND_STEP:{"seconds":150,"exitCode":0}').catch(() => undefined);
+        return (await send.count()) > 0 && await send.isEnabled();
+      }, 20_000);
+      await send.click();
+      await waitFor('the run screen says Background task running', async () => (await runScreen(page)).subtitle === 'Background task running', 45_000);
+      for (const [width, height] of [[412, 915], [360, 780]]) {
+        await page.setViewportSize({ width, height });
+        await backToList();
+        await showOlder();
+        await page.locator(`${sel(`mobile-run-row-${backgroundKey}`)} [data-status="background"]`).waitFor({ timeout: 20_000 });
+        await page.locator(sel(`mobile-run-row-${backgroundKey}`)).scrollIntoViewIfNeeded();
+        await record(page, `${width}-background-row`);
+        await openRow(page, backgroundKey);
+        await record(page, `${width}-background-run-screen`);
+        await backToList();
+        await ensureUnfolded(page, ptmKey);
+        const publisher = childRow(await rowsOf(page), ptmKey, 'publisher', 1);
+        assert(publisher, 'the PTM\'s publisher row (a run on beta)', await rowsOf(page));
+        await openRow(page, publisher.key);
+        await menuOpen(page, 'settings');
+        await page.locator(sel('mobile-run-settings-remote')).waitFor({ timeout: 20_000 });
+        await record(page, `${width}-remote-run-settings`);
+        await back();
+      }
+    } finally {
+      await page.setViewportSize({ width: 390, height: 844 });
+      await chooseTextSize('standard').catch((error) => { cleanup = error.message.split('\n')[0]; });
+    }
+    const details = { monacoPx: monaco, cleanup, screens };
+    const unclean = Object.entries(screens).filter(([, result]) => !clean(result)).map(([key]) => key);
+    assert(Object.keys(screens).length >= 36, 'AC-005 every listed phone screen was reached at both widths', details);
+    assert(unclean.length === 0, `AC-005 at Largest no sideways scroll, nothing past the edge, no text cut without an ellipsis: ${unclean.join(', ')}`, details);
+    assert(monaco === 17, 'REQ-006 the file viewer\'s code text is 17 px at Largest', details);
+    assert(cleanup === null, 'back to Standard after the sweep', details);
     return details;
   });
 

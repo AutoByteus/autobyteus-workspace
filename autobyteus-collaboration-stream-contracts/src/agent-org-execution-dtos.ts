@@ -81,6 +81,8 @@ export const agentOrgCommunicationMessageDtoSchema = z.object({
 export const agentOrgAgentStatusDtoSchema = z.object({
   member_address: agentAddressSchema, agent_run_id: nonEmptyStringSchema,
   status: z.enum(["offline", "initializing", "idle", "running", "error"]),
+  /** Background tasks the agent has running (work beyond its turn; autobyteus-448). */
+  background_tasks_running: z.number().int().nonnegative(),
   trigger: nullableText, tool_name: nullableText, error_message: nullableText, error_details: nullableText,
   recoverableBlock: compactionRecoveryBlockSchema.nullable(),
 }).strict();

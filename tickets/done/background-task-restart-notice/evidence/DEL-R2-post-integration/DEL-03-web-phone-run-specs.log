@@ -1,0 +1,64 @@
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/background-task-restart-notice/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/background-task-restart-notice/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/background-task-restart-notice/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/background-task-restart-notice/autobyteus-web/stores/serverStore.ts" is used
+
+ RUN  v3.2.7 /Users/normy/autobyteus_org/autobyteus-worktrees/background-task-restart-notice/autobyteus-web
+
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/background-task-restart-notice/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/background-task-restart-notice/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/background-task-restart-notice/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/background-task-restart-notice/autobyteus-web/stores/serverStore.ts" is used
+stderr | components/mobile/runScreen/__tests__/MobileRunMenu.textSize.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/mobile/runScreen/__tests__/MobileRunScreen.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | utils/mobile/__tests__/mobileRunSettingsScope.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | utils/mobile/__tests__/mobileRunListRows.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/mobile/views/__tests__/MobileRunSettings.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/mobile/runScreen/__tests__/MobileRunMenu.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | utils/mobile/__tests__/mobileRunListRows.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/mobile/views/__tests__/MobileRunSettings.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/mobile/runScreen/__tests__/MobileRunMenu.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | utils/mobile/__tests__/mobileRunSettingsScope.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/mobile/runScreen/__tests__/MobileRunScreen.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/mobile/runScreen/__tests__/MobileRunMenu.textSize.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ utils/mobile/__tests__/mobileRunSettingsScope.spec.ts (7 tests) 3ms
+ ✓ components/mobile/runScreen/__tests__/MobileRunMenu.spec.ts (3 tests) 24ms
+ ✓ components/mobile/runScreen/__tests__/MobileRunMenu.textSize.spec.ts (3 tests) 162ms
+ ✓ components/mobile/views/__tests__/MobileRunSettings.spec.ts (13 tests) 141ms
+ ✓ utils/mobile/__tests__/mobileRunListRows.spec.ts (4 tests) 7ms
+ ✓ components/mobile/runScreen/__tests__/MobileRunScreen.spec.ts (20 tests) 132ms
+
+ Test Files  6 passed (6)
+      Tests  50 passed (50)
+   Start at  23:50:28
+   Duration  12.66s (transform 5.78s, setup 65.44s, collect 1.69s, tests 468ms, environment 2.22s, prepare 1.44s)
+
+exit=0

@@ -81,6 +81,7 @@ import { getActiveCollaborationRootDirectory } from "../agent-collaboration/exec
 import { composeAgentPackageDefinitionFeed, type AgentPackageDefinitionFeed } from "./agent-package-definition-feed-composition.js";
 import { createPlatformNoticeSources, type PlatformNoticeSources } from "./platform-notice-sources.js";
 import { getWorkJournalService } from "../agent-work-journal/services/work-journal-service.js";
+import { createEpisodicCatalog, type EpisodicCatalog } from "../agent-episodic-catalog/services/episodic-catalog.js";
 import { readPendingRuntimeHandover } from "../agent-memory/services/runtime-handover-reader.js";
 import { RuntimeSwitchRecorder } from "../agent-memory/services/runtime-switch-recorder.js";
 import { RuntimeHandoverNoticeService } from "../runtime-handover-notices/services/runtime-handover-notice-service.js";
@@ -258,10 +259,12 @@ export const buildStudioServer = async (input: {
   let collaboration: Collaboration | null = null;
   let nodeAccess: NodeAccess | null = null;
   let releaseModelRouting: (() => void) | null = null;
+  let episodicCatalog: EpisodicCatalog | null = null;
   let processResourcesClosed = false;
   const closeProcessResources = async (): Promise<void> => {
     if (processResourcesClosed) return;
     processResourcesClosed = true;
+    await episodicCatalog?.stop();
     await nodeAccess?.close();
     releaseRemoteCollaboration?.();
     collaboration?.release();
@@ -315,6 +318,9 @@ export const buildStudioServer = async (input: {
     });
     // autobyteus-461 SR-047 steps 1–2: the Task records, the tree, the run side's records (steps 4–8 follow the run services).
     const taskSide = await composeTaskSide({ appDataDir: input.appConfig.getAppDataDir(), memoryDir: input.appConfig.getMemoryDir() });
+    // autobyteus-493: the run services (steps 3–8) tell the episodic catalogs about deletes; they start after step 8.
+    const currentEpisodicCatalog = episodicCatalog = createEpisodicCatalog({ memoryDir: input.appConfig.getMemoryDir(),
+      journals: getWorkJournalService(), tasks: taskSide.tree });
     platformNotices = createPlatformNoticeSources({
       agentDefinitionService: hostDefinitionServices.agentDefinitionService,
       definitionChanges: hostDefinitionServices.agentDefinitionChanges,
@@ -340,7 +346,7 @@ export const buildStudioServer = async (input: {
       providerRelayAccess: credentialProxyHost.providerRelayAccess,
       runPasses: credentialProxyHost.runPasses,
       modelSelectionValidator,
-      taskRecords: taskSide.taskRecords, delegationIndex: taskSide.tree, viewStreams: taskSide.viewStreams,
+      taskRecords: taskSide.taskRecords, delegationIndex: taskSide.tree, viewStreams: taskSide.viewStreams, episodicCatalog: currentEpisodicCatalog,
       // One notice slot: the agent runtime hand-over first (a pending tool list notice must not delay it by one input),
       // then the restart reminder, tool list updates, skill notices and background task notices (one notice per input).
       platformInputNotices: new AgentRunPlatformNotices([runtimeHandoverNotices, restartReminders, ...platformNotices.sources]),
@@ -363,7 +369,8 @@ export const buildStudioServer = async (input: {
     remote.bind(remoteCollaboration.services);
     // autobyteus-461 SR-047 steps 4–8: the Task service, delegation and messages between runs, the views' owners, their consumers.
     const currentCollaboration = collaboration = await composeCollaboration({ memoryDir: input.appConfig.getMemoryDir(), taskSide,
-      runs: generalProcessRunSupervisor, rootResolver, activeRoots: getActiveCollaborationRootDirectory(), remoteChannel: remote.channel });
+      runs: generalProcessRunSupervisor, rootResolver, activeRoots: getActiveCollaborationRootDirectory(), remoteChannel: remote.channel, episodicCatalog: currentEpisodicCatalog });
+    currentEpisodicCatalog.start({ taskTitles: currentCollaboration.tasks });
     // autobyteus-437: the node access gate (every request needs a credential) and its credential services.
     const currentNodeAccess = nodeAccess = await startNodeAccess({ appDataDir: input.appConfig.getAppDataDir(), remoteCollaboration: remoteCollaboration.services });
     const restartResume = composeRestartResume({ appDataDir: input.appConfig.getAppDataDir(), rootResolver, tree: taskSide.tree, closedTasks: taskSide.closedTasks,

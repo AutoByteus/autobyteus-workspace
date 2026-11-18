@@ -42,6 +42,9 @@ Memory files live under the configured memory root:
   (see [Memory Sync](../features/memory_sync.md#sync-behavior)).
 - Agents' semantic memories: `memory/semantic/<encodeURIComponent(agentDefinitionId)>/` (see
   [Semantic Memory](#semantic-memory)); not a run folder.
+- Agents' episodic catalogs: `memory/episodic/<encodeURIComponent(agentDefinitionId)>/catalog.md` and the node
+  overview `memory/episodic/index.md` (see [Agent Episodic Catalog](agent_episodic_catalog.md)); not a run folder.
+  Unrelated to the `episodic.jsonl` rows below.
 
 One placement rule decides an agent's memory folder (`agent-memory/domain/agent-run-memory-placement.ts`):
 a part of its run (`run_part`, by its physical scope). Writers decide it when they build an agent; readers derive
@@ -72,7 +75,7 @@ Common files/directories:
 - `raw_traces_manifest.json` — completed raw-trace archive descriptors owned by `RawTraceArchiveManager`. Each segment's `runtime_kind` is the `RuntimeKind` value of the runtime that compacted (for example `codex_app_server`, `autobyteus`), or `null` when none was recorded.
   A segment archived by an agent runtime switch has `boundary_type: runtime_switch` and the previous agent runtime's `runtime_kind`; it holds only that agent runtime's records (the switch marker, a `system_task_notification` record from sender `system.runtime_handover`, carries the switch key as `correlation_id`). `RuntimeSwitchRecorder` writes it; see [run history](run_history.md).
 - `raw_traces_<zero-padded-index>.jsonl` — immutable raw-trace archives. Native compaction prepares selected new activity before snapshot commit; a failed preparation/publication can leave copied archive evidence without a successful new summary.
-- `episodic.jsonl` and `semantic.jsonl` — historical compacted output rows; current direct compaction does not append them, and the server no longer reads them (the memory view and the Memory page dropped them). Existing files stay on disk; the library code is FU-003 of `work-journal-search`.
+- `episodic.jsonl` and `semantic.jsonl` — historical compacted output rows; current direct compaction does not append them, and the server no longer reads them (the memory view and the Memory page dropped them). Existing files stay on disk; the library code is FU-003 of `work-journal-search`. These retired rows are unrelated to the [episodic catalog](agent_episodic_catalog.md); autobyteus-491 removes the library code.
 - `compaction_lineage.jsonl` — historical append-only lineage, not current continuation authority and not a normal compaction/restore dependency.
 - `working_context_snapshot.json` — native continuation state: versionless `{agent_id, messages}` with finalized messages and provenance. The normal reader ignores obsolete root version/extras but requires current shapes, identity and repairable tool facts. Codex/Claude recording does not write it. The memory view does not show it; it still counts as memory for listing a run.
 - `seen_skill_versions.json` — the skill file versions this run was last given, used by [Skill Update Notices](./skill_update_notices.md) on every runtime. It is additive and disposable: missing or invalid means "nothing seen", and the root-package validators tolerate it.
@@ -606,6 +609,9 @@ above.
 - Task-team source: `src/agent-memory/services/task-team-root-memory-source.ts`
 - Conversation activity guard: `src/agent-memory/services/agent-conversation-activity-inspector.ts`
 - Memory layout owner: `src/agent-memory/store/agent-memory-layout.ts`
+- Run-folder discovery (every run folder, attributed from its records; memory search and the episodic catalog):
+  `src/agent-memory/services/run-folder-discovery.ts`, `src/agent-memory/domain/discovered-run.ts`
+- Episodic catalog: [agent_episodic_catalog.md](agent_episodic_catalog.md)
 - Semantic memory owner: `src/agent-memory/services/agent-semantic-memory.ts`
 - Team memory topology reader: `src/run-history/services/team-run-memory-topology-reader.ts`
 - Explorer GraphQL types/resolver: `src/api/graphql/types/memory-explorer-schema.ts`, `src/api/graphql/types/memory-explorer.ts`

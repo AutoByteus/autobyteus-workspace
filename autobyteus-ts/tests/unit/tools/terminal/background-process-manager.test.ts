@@ -6,10 +6,13 @@ import path from 'node:path';
 import { BackgroundProcessManager, backgroundTaskOutcome, type BackgroundTaskState } from '../../../../src/tools/terminal/background-process-manager.js';
 import { BackgroundProcessCleanupStep } from '../../../../src/agent/shutdown-steps/background-process-cleanup-step.js';
 import type { AgentContext } from '../../../../src/agent/context/agent-context.js';
+import { COMMAND_SCOPE_SHUTDOWN_BUDGET_MS, COMMAND_STOP_LIMIT_MS } from '../../../../src/tools/terminal/command-execution/command-deadline.js';
 
 const runPosix = process.platform === 'win32' ? describe.skip : describe;
 const cleanups: Array<() => Promise<unknown>> = [];
-afterEach(async () => { for (const cleanup of cleanups.splice(0).reverse()) await cleanup(); });
+// Each cleanup stops its commands until confirmed gone (up to the stop limit on a busy machine), then closes the scope.
+afterEach(async () => { for (const cleanup of cleanups.splice(0).reverse()) await cleanup(); },
+  COMMAND_STOP_LIMIT_MS + COMMAND_SCOPE_SHUTDOWN_BUDGET_MS + 5_000);
 
 async function fixture() {
   const cwd = await mkdtemp(path.join(os.tmpdir(), 'bg-manager-test-'));
@@ -41,7 +44,7 @@ runPosix('BackgroundProcessManager', () => {
     manager.onChange(change => changes.push(change));
     const { started } = await manager.run('(sleep 0.2; exit 3) & sleep 30 & echo two', cwd, { background: false });
     expect(started.map(t => [t.command, t.effectiveCwd])).toEqual([[expect.any(String), cwd], [expect.any(String), cwd]]);
-    expect(manager.hasRunning()).toBe(true);
+    expect(manager.list().some((s) => !s.end)).toBe(true);
     await ended(manager, started[0].pid);
     const listed = manager.list();
     expect(listed.map(s => [s.task.pid, s.end?.outcome ?? null])).toEqual([[started[0].pid, { exitCode: 3 }], [started[1].pid, null]]);
@@ -80,7 +83,7 @@ runPosix('BackgroundProcessManager', () => {
     await manager.stopAllForRunEnd();
     const { started } = await pending;
     expect(started).toEqual([]);
-    expect(manager.hasRunning()).toBe(false);
+    expect(manager.list().some((s) => !s.end)).toBe(false);
   });
 
   it('the shutdown step stops the run\'s commands and never fails the shutdown', async () => {
@@ -88,7 +91,7 @@ runPosix('BackgroundProcessManager', () => {
     const context = { agentId: 'step-test', _backgroundProcessManager: manager } as unknown as AgentContext;
     await manager.run('sleep 30', cwd, { background: true });
     expect(await new BackgroundProcessCleanupStep().execute(context)).toBe(true);
-    expect(manager.hasRunning()).toBe(false);
+    expect(manager.list().some((s) => !s.end)).toBe(false);
     const broken = { agentId: 'broken', _backgroundProcessManager: Object.assign(Object.create(BackgroundProcessManager.prototype), {
       stopAllForRunEnd: () => Promise.reject(new Error('boom')) }) } as unknown as AgentContext;
     expect(await new BackgroundProcessCleanupStep().execute(broken)).toBe(true);

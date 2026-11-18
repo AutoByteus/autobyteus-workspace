@@ -122,9 +122,7 @@ class ScriptedAgentRunBackend implements AgentRunBackend {
     return this.lifecycleSnapshot;
   }
 
-  hasRunningBackgroundTasks(): boolean {
-    return false;
-  }
+  readonly backgroundTaskInspection = { kind: "unsupported" } as const;
 
   subscribeToSourceEventBatches(listener: AgentRunSourceEventBatchListener): () => void {
     this.listeners.add(listener);
@@ -442,7 +440,7 @@ describe("Agent command-correlated status overlay e2e", () => {
       });
       expect(await waitForBufferedMessage(firstMessages, 1)).toEqual({
         type: "AGENT_STATUS",
-        payload: { status: "idle", agent_id: runId, recoverableBlock: null },
+        payload: { status: "idle", agent_id: runId, recoverableBlock: null, background_tasks_running: 0 },
       });
 
       const firstSendStart = firstMessages.length;
@@ -456,7 +454,7 @@ describe("Agent command-correlated status overlay e2e", () => {
         ),
       ).toEqual({
         type: "AGENT_STATUS",
-        payload: { status: "initializing", agent_id: runId, recoverableBlock: null },
+        payload: { status: "initializing", agent_id: runId, recoverableBlock: null, background_tasks_running: 0 },
       });
       await firstBackend.emitTurnStarted("turn-first");
       await waitForMessageAfter(
@@ -494,7 +492,7 @@ describe("Agent command-correlated status overlay e2e", () => {
       });
       expect(await waitForBufferedMessage(secondMessages, 1)).toEqual({
         type: "AGENT_STATUS",
-        payload: { status: "offline", agent_id: runId, recoverableBlock: null },
+        payload: { status: "offline", agent_id: runId, recoverableBlock: null, background_tasks_running: 0 },
       });
       expect(harness.agentRunService.restoreAgentRun).not.toHaveBeenCalled();
 
@@ -509,7 +507,7 @@ describe("Agent command-correlated status overlay e2e", () => {
         ),
       ).toEqual({
         type: "AGENT_STATUS",
-        payload: { status: "initializing", agent_id: runId, recoverableBlock: null },
+        payload: { status: "initializing", agent_id: runId, recoverableBlock: null, background_tasks_running: 0 },
       });
       expect(harness.agentRunService.resolveCommandReadyAgentRun).toHaveBeenCalledWith(runId);
 

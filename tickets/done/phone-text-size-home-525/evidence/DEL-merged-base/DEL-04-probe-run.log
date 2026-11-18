@@ -1,0 +1,14 @@
+
+> autobyteus@1.5.13-beta.9 test:e2e:mobile-shell /Users/normy/autobyteus_org/autobyteus-worktrees/phone-text-size-home-525/autobyteus-web
+> node tests/e2e/mobile-shell-probe.mjs --output-dir=/tmp/del525/probe2 --cases=MSP-66,MSP-60,MSP-74,MSP-73
+
+[mobile-shell] MSP-73 …
+[mobile-shell] MSP-73 Pass
+[mobile-shell] MSP-66 …
+[mobile-shell] MSP-66 Pass
+[mobile-shell] MSP-60 …
+[mobile-shell] MSP-60 Pass
+[mobile-shell] MSP-74 …
+[mobile-shell] MSP-74 Pass
+mobile-shell probe: Pass
+exit 0

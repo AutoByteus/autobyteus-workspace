@@ -174,6 +174,7 @@ describe("AgentOrgRun termination retry after a failed attempt", () => {
       const backendInterrupt = vi.fn(async () => ({ accepted: false, code: "AGENT_RUN_INTERRUPT_REJECTED", message: "no active turn" }));
       const agentRun = new AgentRun({ context, providerInputNormalizer: { normalizeForProvider: (dispatch) => dispatch }, backend: {
         runId: "lead-run", runtimeKind: "codex_app_server", compactionRecovery: { kind: "unsupported" },
+        backgroundTaskInspection: { kind: "unsupported" },
         inputCapabilities: { activeTurnAppend: "unsupported" }, getContext: () => context, getPlatformAgentRunId: () => "p",
         isActive: () => true, getLifecycleSnapshot: () => snapshot,
         subscribeToSourceEventBatches: (next: typeof publish) => { publish = next; return () => { publish = null; }; },

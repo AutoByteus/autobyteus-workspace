@@ -87,6 +87,7 @@ export class AgentOrgExecutionContext {
         throw new Error(`AgentOrg status '${status.agent_run_id}' has no exact context identity.`)
       }
       this.contexts.get(status.agent_run_id)!.state.currentStatus = status.status as AgentStatus
+      this.contexts.get(status.agent_run_id)!.state.backgroundTasksRunning = status.background_tasks_running
       this.contexts.get(status.agent_run_id)!.state.recoverableBlock = status.recoverableBlock
     }
     for (const entry of input.view.agent_input_states) {
@@ -263,7 +264,7 @@ export class AgentOrgExecutionContext {
     this.view = { ...this.view, is_active: active }
     if (!active) {
       this.commitView({ ...this.view, agent_statuses: this.view.agent_statuses.map((status: AgentOrgStatus) =>
-        ({ ...status, status: 'offline', recoverableBlock: null })) })
+        ({ ...status, status: 'offline', background_tasks_running: 0, recoverableBlock: null })) })
       this.contexts.forEach((context) => applyOfflineOrTerminalCleanup(context))
       this.phase = 'historical'
     }

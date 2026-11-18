@@ -18,7 +18,8 @@ pipeline, journal chunk, journal card, Words / Meaning, memory run.
 - `memory-search.ts`: `MemorySearch`, the subsystem's **only public boundary** (tools, GraphQL, startup), and
   `getMemorySearch()` / `shutdownMemorySearch()`.
 - `pipeline/`: `MemoryIndexPipeline` (the indexing pipeline), the Journals step and the per-run text indexer.
-- `runs/memory-run-discovery.ts`: Find runs.
+- `runs/memory-run-mapping.ts`: a discovered run as the index keeps it (`MemoryRun`). The runs themselves come from
+  `RunFolderDiscovery` (`src/agent-memory/services/run-folder-discovery.ts`), which the episodic catalog shares.
 - `index/`: text normalization (`memory-text-normalizer.ts`), `journal-chunker.ts`, `journal-card-builder.ts`.
 - `store/memory-search-store.ts`: the index file (SQLite).
 - `search/`: `MemorySearchService` (the search sequence) and `secret-masker.ts`.
@@ -64,7 +65,7 @@ memory.runFolderMemoryDir(runKey); // the folder of a RUN_FOLDER run, or null
 
 One `MemoryIndexPipeline` builds and updates the memory index. Steps, in order:
 
-1. **Find runs** (`MemoryRunDiscovery`): every run folder with raw traces under `memory/` (not `work_journal/`,
+1. **Find runs** (`RunFolderDiscovery`, mapped to `MemoryRun`): every run folder with raw traces under `memory/` (not `work_journal/`,
    not `imports/`), named from the records of its time: run-history catalog and metadata for agent runs (delegated
    or not), team and org execution trees for their members, else the folder's name. A delegated run is a run of its
    own in the standard folders (autobyteus-461), so no separate task-team source is read. A run's

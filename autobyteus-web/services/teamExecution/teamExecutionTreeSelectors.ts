@@ -58,14 +58,15 @@ export const projectNavigationRows = (input: {
       key: rootKey, kind: 'configured_team' as const, address: '/' as AgentTeamAddress,
       displayName: root.team_definition_name, accessibleName: root.team_definition_name,
       depth: 0, parentKey: null, agentRunId: null, teamRunId: root.team_run_id,
-      currentStatus: null, focusable: false, expandable: root.members.length > 0, coordinator: false,
+      currentStatus: null, backgroundTasksRunning: 0, focusable: false, expandable: root.members.length > 0, coordinator: false,
     }),
     ...root.members.map((member) => {
       const label = teamMemberName(input.tree, member.address);
       return Object.freeze({
         key: agentRowKey(member.agent_run_id), kind: 'configured_agent' as const, address: member.address,
         displayName: label, accessibleName: label, depth: 1, parentKey: rootKey, agentRunId: member.agent_run_id,
-        teamRunId: null, currentStatus: status(member.agent_run_id), focusable: true, expandable: false,
+        teamRunId: null, currentStatus: status(member.agent_run_id),
+        backgroundTasksRunning: input.contexts.get(member.agent_run_id)?.state.backgroundTasksRunning ?? 0, focusable: true, expandable: false,
         coordinator: member.address === root.coordinator_address,
       });
     }),

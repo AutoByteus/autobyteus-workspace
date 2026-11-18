@@ -1,0 +1,17 @@
+# API-16 pnpm -C autobyteus-server-ts typecheck (with tests/e2e/memory/episodic-catalog.e2e.test.ts) | commit 89f35132ed + new test | Node v22.23.1 | 2026-11-17T18:40:31Z
+
+✔ Generated Prisma Client (v5.22.0) to ./../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client in 198ms
+
+Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+
+Help us improve the Prisma ORM for everyone. Share your feedback in a short 2-min survey: https://pris.ly/orm/survey/release-5-22
+
+
+> autobyteus-server-ts@0.1.1 typecheck /Users/normy/autobyteus_org/autobyteus-worktrees/per-agent-episodic-catalog/autobyteus-server-ts
+> node ./scripts/typecheck.mjs
+
+[typecheck] server src (tsconfig.build.json): 0 errors, exit 0, 11.7s
+[typecheck] server tests (tsconfig.tests.json): 1012 errors, exit 2, 39.8s
+[typecheck] production errors: 0; test-file errors: 1012 in 316 files (baseline 1012 in 316 files)
+[typecheck] PASS
+exit 0

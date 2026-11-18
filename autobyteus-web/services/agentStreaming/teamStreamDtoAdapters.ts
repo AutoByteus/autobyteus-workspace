@@ -138,7 +138,7 @@ export const toAgentProjectionMessage = (message: TeamAgentProjectionMessage, ag
     case 'TURN_STARTED': return { type: message.type, payload: { turn_id: message.payload.turn_id } };
     case 'TURN_COMPLETED': return { type: message.type, payload: { turn_id: message.payload.turn_id, reason: message.payload.reason } };
     case 'TURN_INTERRUPTED': return { type: message.type, payload: { turn_id: message.payload.turn_id, reason: message.payload.reason } };
-    case 'AGENT_STATUS': return { type: message.type, payload: { status: message.payload.status, trigger: message.payload.trigger, tool_name: message.payload.tool_name, error_message: message.payload.error_message, error_details: message.payload.error_details, recoverableBlock: message.payload.recoverableBlock } };
+    case 'AGENT_STATUS': return { type: message.type, payload: { status: message.payload.status, background_tasks_running: message.payload.background_tasks_running, trigger: message.payload.trigger, tool_name: message.payload.tool_name, error_message: message.payload.error_message, error_details: message.payload.error_details, recoverableBlock: message.payload.recoverableBlock } };
     case 'TOKEN_USAGE_UPDATED': {
       const { change_sequence: _sequence, agent_run_id: _run, ...payload } = message.payload;
       return { type: message.type, payload: { ...payload, run_id: exactAgentRunId } };

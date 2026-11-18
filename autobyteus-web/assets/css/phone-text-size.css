@@ -1,0 +1,8 @@
+/* The phone's Text size (autobyteus-525): the phone scales every screen through the root font size, which rem sizes
+   follow. A shared component that sets its text in fixed px does not follow; this file gives such text its rem size on
+   the phone only (`data-phone-text-size` is on the root on the phone page only), so the desktop keeps its own sizes.
+   Imported by `MobileRemoteAccessShell.vue`. Each rule names the phone screens and components it serves. */
+
+/* 11 px status chips: the compaction chip in the conversation (`CompactionStatusRow.vue`) and the system-instruction
+   item's labels in Activity (`SystemInstructionActivityItem.vue`). */
+html[data-phone-text-size] .text-\[11px\] { font-size: 0.6875rem; }

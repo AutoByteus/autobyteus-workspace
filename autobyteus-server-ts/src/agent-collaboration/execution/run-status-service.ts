@@ -1,5 +1,6 @@
 import type { AgentPresentationMessage } from "@autobyteus/agent-presentation-contracts";
 import { foldTeamAggregateStatus, type RunAgentStatus, type RunStatusAnswer, type RunStatusRunRef, type RunStatusServerMessage } from "@autobyteus/collaboration-stream-contracts";
+import { backgroundTasksRunningOf } from "../../agent-execution/domain/agent-status-payload.js";
 import type { RemoteRunSummaryEvent } from "./remote/remote-run-observation.js";
 import type { RootExecutionIdentity } from "./domain/root-execution-identity.js";
 import type { ActiveCollaborationRootDirectory } from "./services/active-collaboration-root-directory.js";
@@ -24,27 +25,36 @@ export type RunStatusSources = Readonly<{
   summaryChanged(run: RootExecutionIdentity): void;
 }>;
 
-/** A run's own state (SR-086 G-A2 … G-A4): the node's answer, the peer node when it did not answer, the run's own status. */
-export type RunState = Readonly<{ answer: RunStatusAnswer; node: string | null; status: RunAgentStatus | null }>;
+/**
+ * A run's own state (SR-086 G-A2 … G-A4): the node's answer, the peer node when it did not answer, the run's own status,
+ * and how many background tasks its own agents have running (autobyteus-448: the sum; 0 unless answered).
+ */
+export type RunState = Readonly<{ answer: RunStatusAnswer; node: string | null; status: RunAgentStatus | null; backgroundTasksRunning: number }>;
+/** One agent's answer: its status and how many background tasks it has running (autobyteus-448). */
+export type RunAgentAnswer = Readonly<{ status: RunAgentStatus; backgroundTasksRunning: number }>;
 
 const STATUSES: readonly RunAgentStatus[] = ["offline", "idle", "error", "initializing", "running"];
 const toStatus = (value: unknown): RunAgentStatus => {
   const normalized = typeof value === "string" ? value.trim().toLowerCase() : "";
   return (STATUSES as readonly string[]).includes(normalized) ? normalized as RunAgentStatus : "offline";
 };
-const statusOfFrame = (message: AgentPresentationMessage): RunAgentStatus | null =>
-  message.type === "AGENT_STATUS" ? toStatus((message.payload as { status?: unknown }).status) : null;
+const OFFLINE: RunAgentAnswer = Object.freeze({ status: "offline", backgroundTasksRunning: 0 });
+const answerOf = (status: unknown, backgroundTasksRunning: unknown): RunAgentAnswer => Object.freeze({
+  status: toStatus(status), backgroundTasksRunning: backgroundTasksRunningOf(backgroundTasksRunning),
+});
+const answerOfFrame = (message: AgentPresentationMessage): RunAgentAnswer | null =>
+  message.type === "AGENT_STATUS" ? answerOf(message.payload.status, message.payload.background_tasks_running) : null;
 const keyOf = (ref: Pick<RunStatusRunRef, "kind" | "runId">): string => `${ref.kind}:${ref.runId}`;
 
 type Listener = Readonly<{
-  statusChanged(ref: RunStatusRunRef, agentRunId: string, status: RunAgentStatus): void;
+  statusChanged(ref: RunStatusRunRef, agentRunId: string, answer: RunAgentAnswer): void;
   stateChanged(ref: RunStatusRunRef, state: RunState): void;
   treeChanged(ref: RunStatusRunRef): void;
 }>;
 
 /** One subscribed run: its agents' answers, from the run itself, held while any connection holds it (counted). */
 export class RunStatusEntry {
-  readonly answers = new Map<string, RunAgentStatus>();
+  readonly answers = new Map<string, RunAgentAnswer>();
   readonly listeners = new Set<Listener>();
   holders = 0;
   readonly ready: Promise<void>;
@@ -114,12 +124,14 @@ export class RunStatusEntry {
   /**
    * The run's own state (G-A4): an agent run's own agent's status; a Team's or an Org's from its own agents by the one
    * team status rule (base's), on the server, never derived by a client. No status unless the node answered for it.
+   * Its background task count: its own agent's, or the sum over a Team's or an Org's own agents (autobyteus-448).
    */
   get state(): RunState {
-    const status = this.answer !== "ok" ? null
-      : this.ref.kind === "agent" ? this.answers.get(this.ref.runId) ?? "offline"
-      : foldTeamAggregateStatus([...this.answers.values()], "live");
-    return Object.freeze({ answer: this.answer, node: this.unreachableNode, status });
+    if (this.answer !== "ok") return Object.freeze({ answer: this.answer, node: this.unreachableNode, status: null, backgroundTasksRunning: 0 });
+    const answers = this.ref.kind === "agent" ? [this.answers.get(this.ref.runId) ?? OFFLINE] : [...this.answers.values()];
+    const status = this.ref.kind === "agent" ? answers[0]!.status : foldTeamAggregateStatus(answers.map((agent) => agent.status), "live");
+    const backgroundTasksRunning = answers.reduce((sum, agent) => sum + agent.backgroundTasksRunning, 0);
+    return Object.freeze({ answer: this.answer, node: this.unreachableNode, status, backgroundTasksRunning });
   }
 
   /** A peer run's latest answer from its node (G-B2), kept while the run is held; its row's launches come from it. */
@@ -157,20 +169,22 @@ export class RunStatusEntry {
   private tellState(again = false): void {
     const state = this.state;
     const told = this.told;
-    if (!again && told && told.answer === state.answer && told.node === state.node && told.status === state.status) return;
+    if (!again && told && told.answer === state.answer && told.node === state.node && told.status === state.status
+      && told.backgroundTasksRunning === state.backgroundTasksRunning) return;
     this.told = state;
     for (const listener of [...this.listeners]) listener.stateChanged(this.ref, state);
   }
 
-  private set(agentRunId: string, status: RunAgentStatus): void {
-    if (this.closed || this.answers.get(agentRunId) === status) return;
-    this.answers.set(agentRunId, status);
-    for (const listener of [...this.listeners]) listener.statusChanged(this.ref, agentRunId, status);
+  private set(agentRunId: string, answer: RunAgentAnswer): void {
+    const current = this.answers.get(agentRunId);
+    if (this.closed || (current?.status === answer.status && current.backgroundTasksRunning === answer.backgroundTasksRunning)) return;
+    this.answers.set(agentRunId, answer);
+    for (const listener of [...this.listeners]) listener.statusChanged(this.ref, agentRunId, answer);
     this.tellState();
   }
 
   private allOffline(): void {
-    for (const agentRunId of [...this.answers.keys()]) this.set(agentRunId, "offline");
+    for (const agentRunId of [...this.answers.keys()]) this.set(agentRunId, OFFLINE);
   }
 
   private async start(): Promise<void> {
@@ -185,7 +199,7 @@ export class RunStatusEntry {
    */
   private async startLocal(kind: RunStatusRunRef["kind"]): Promise<void> {
     const root: RootExecutionIdentity = { rootSubjectKind: kind, rootRunId: this.ref.runId } as RootExecutionIdentity;
-    for (const agent of await this.sources.agentsOf(root)) if (!this.answers.has(agent.agentRunId)) this.answers.set(agent.agentRunId, "offline");
+    for (const agent of await this.sources.agentsOf(root)) if (!this.answers.has(agent.agentRunId)) this.answers.set(agent.agentRunId, OFFLINE);
     if (this.closed) return;
     // A run this node has no file of and no root for is not one of its runs (G-A2); its registration answers it later.
     if (this.answers.size === 0 && !this.sources.registrations.resolve(root)) this.answer = "not_found";
@@ -197,12 +211,12 @@ export class RunStatusEntry {
       stop();
       const mine = generation;
       const opened = await access.observeRunAgents(this.ref.runId, (agentRunId, message) => {
-        const status = mine === generation ? statusOfFrame(message) : null;
-        if (status) this.set(agentRunId, status);
+        const answer = mine === generation ? answerOfFrame(message) : null;
+        if (answer) this.set(agentRunId, answer);
       }, () => { if (mine === generation) { observation = null; this.allOffline(); } });
       if (this.closed || mine !== generation) { opened?.close(); return; }
       observation = opened;
-      for (const live of access.runAgentStatuses(this.ref.runId)) this.set(live.agentRunId, toStatus(live.status));
+      for (const live of access.runAgentStatuses(this.ref.runId)) this.set(live.agentRunId, answerOf(live.status, live.backgroundTasksRunning));
     };
     this.releases.push(this.sources.registrations.onRegistrationChanged(root, (registered) => {
       if (registered && this.answer === "not_found") { this.answer = "ok"; this.tellState(); }
@@ -221,7 +235,7 @@ export class RunStatusEntry {
     this.peerNodeId = peer.link.nodeId;
     this.peer = peer;
     const ids = peer.link.kind === "agent" ? [peer.link.agentRunId] : peer.link.members.map((member) => member.agentRunId);
-    for (const agentRunId of ids) this.answers.set(agentRunId, "offline");
+    for (const agentRunId of ids) this.answers.set(agentRunId, OFFLINE);
     let stream: Readonly<{ close(): void }> | null = null;
     const observe = (): void => {
       if (this.closed || stream) return;
@@ -234,8 +248,8 @@ export class RunStatusEntry {
       };
       current = peer.observe({
         onFrame: (agentRunId, message) => {
-          const status = !ended && ids.includes(agentRunId) ? statusOfFrame(message) : null;
-          if (status) this.set(agentRunId, status);
+          const answer = !ended && ids.includes(agentRunId) ? answerOfFrame(message) : null;
+          if (answer) this.set(agentRunId, answer);
         },
         onEnd: () => { ended = true; if (current) end(); },
       });
@@ -347,11 +361,11 @@ export class RunStatusConnection implements Listener {
     }
     await Promise.all(added.map((entry) => entry.ready));
     // One synchronous step: a change after it reaches this connection; one before it is in the answers read here.
-    const snapshot: Array<RunStatusRunRef & RunState & { agents: { agentRunId: string; status: RunAgentStatus }[] }> = [];
+    const snapshot: Array<RunStatusRunRef & RunState & { agents: ({ agentRunId: string } & RunAgentAnswer)[] }> = [];
     for (const entry of added) {
       if (this.closed || this.held.get(keyOf(entry.ref)) !== entry) continue;
       entry.listeners.add(this);
-      snapshot.push({ ...entry.ref, ...entry.stateForSnapshot(), agents: [...entry.answers].map(([agentRunId, status]) => ({ agentRunId, status })) });
+      snapshot.push({ ...entry.ref, ...entry.stateForSnapshot(), agents: [...entry.answers].map(([agentRunId, answer]) => ({ agentRunId, ...answer })) });
     }
     if (snapshot.length) this.send({ type: "RUN_STATUS_SNAPSHOT", payload: { runs: snapshot } });
   }
@@ -378,8 +392,8 @@ export class RunStatusConnection implements Listener {
     this.held.clear();
   }
 
-  statusChanged(ref: RunStatusRunRef, agentRunId: string, status: RunAgentStatus): void {
-    this.send({ type: "RUN_STATUS_CHANGED", payload: { ...ref, agentRunId, status } });
+  statusChanged(ref: RunStatusRunRef, agentRunId: string, answer: RunAgentAnswer): void {
+    this.send({ type: "RUN_STATUS_CHANGED", payload: { ...ref, agentRunId, ...answer } });
   }
 
   stateChanged(ref: RunStatusRunRef, state: RunState): void {

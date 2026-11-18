@@ -1,0 +1,7 @@
+# IMP-16 (IR-003) discovery, memory search, catalog and journal unit tests
+# command: pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-memory tests/unit/memory-search tests/unit/agent-episodic-catalog tests/agent-work-journal --no-watch
+# commit: 1324c3e8f4
+# environment: macOS, node v22.23.1
+# date: 2026-11-17T22:46:27Z
+ Test Files  41 passed | 1 skipped (42)
+      Tests  407 passed | 2 skipped (409)

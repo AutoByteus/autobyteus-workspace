@@ -31,20 +31,29 @@ const resolveSafePath = (rootDir: string, ...segments: string[]): string => {
   return candidate;
 };
 
+/** One agent definition's folder name under `semantic/` and `episodic/`: the URI-encoded definition ID. */
+const definitionFolderName = (agentDefinitionId: string): string =>
+  normalizePathSegment(encodeURIComponent(normalizeRequiredString(agentDefinitionId, "agentDefinitionId")), "agentDefinitionId");
+
 /** The folder of agents' semantic memories, a sibling of the run folders; run tooling never walks it. */
 export const SEMANTIC_MEMORY_DIR_NAME = "semantic";
+
+/** The folder of agents' episodic catalogs, a sibling of the semantic folder; run tooling never walks it. */
+export const EPISODIC_MEMORY_DIR_NAME = "episodic";
 
 export class AgentMemoryLayout {
   private readonly standaloneRootDir: string;
   private readonly teamRootDir: string;
   private readonly orgRootDir: string;
   private readonly semanticRootDir: string;
+  private readonly episodicRootDir: string;
 
   constructor(memoryDir: string) {
     this.standaloneRootDir = path.join(memoryDir, "agents");
     this.teamRootDir = path.join(memoryDir, "agent_teams");
     this.orgRootDir = path.join(memoryDir, "agent_orgs");
     this.semanticRootDir = path.join(memoryDir, SEMANTIC_MEMORY_DIR_NAME);
+    this.episodicRootDir = path.join(memoryDir, EPISODIC_MEMORY_DIR_NAME);
   }
 
   getStandaloneRootDirPath(): string {
@@ -65,8 +74,17 @@ export class AgentMemoryLayout {
    * name on every desktop OS.
    */
   getAgentSemanticMemoryDirPath(agentDefinitionId: string): string {
-    const id = normalizeRequiredString(agentDefinitionId, "agentDefinitionId");
-    return resolveSafePath(this.semanticRootDir, normalizePathSegment(encodeURIComponent(id), "agentDefinitionId"));
+    return resolveSafePath(this.semanticRootDir, definitionFolderName(agentDefinitionId));
+  }
+
+  /** `<memory>/episodic/`: every agent's episodic folder and the node overview `index.md`. */
+  getEpisodicRootDirPath(): string {
+    return this.episodicRootDir;
+  }
+
+  /** The episodic folder of one agent definition: `<memory>/episodic/<encoded definition ID>`, named as its semantic folder. */
+  getAgentEpisodicDirPath(agentDefinitionId: string): string {
+    return resolveSafePath(this.episodicRootDir, definitionFolderName(agentDefinitionId));
   }
 
   getStandaloneRunDirPath(agentRunId: string): string {

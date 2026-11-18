@@ -12,6 +12,7 @@ This directory mirrors the module documentation layout used in `autobyteus-serve
 | Agent Definition | [agent_definition.md](./agent_definition.md) |
 | Agent Execution | [agent_execution.md](./agent_execution.md) |
 | Agent Memory | [agent_memory.md](./agent_memory.md) |
+| Agent Episodic Catalog (each agent's runs on the node, in time order, pointing to their Work Journals) | [agent_episodic_catalog.md](./agent_episodic_catalog.md) |
 | Agent Work Journal | [agent_work_journal.md](./agent_work_journal.md) |
 | Agent Packages | [agent_packages.md](./agent_packages.md) |
 | Agent Runtimes (Settings -> Agent Runtimes: versions, updates and sign-in of Codex, Claude, Antigravity, Grok) | [agent_runtimes.md](./agent_runtimes.md) |

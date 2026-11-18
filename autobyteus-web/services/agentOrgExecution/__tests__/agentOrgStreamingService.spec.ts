@@ -104,7 +104,7 @@ const snapshot = {
       },
       agent_input_states: [], agent_statuses: [{
         member_address: '/direct', agent_run_id: 'agent-run', status: 'idle', trigger: null,
-        tool_name: null, error_message: null, error_details: null, recoverableBlock: null,
+        tool_name: null, error_message: null, error_details: null, background_tasks_running: 0, recoverableBlock: null,
       }],
     },
   },

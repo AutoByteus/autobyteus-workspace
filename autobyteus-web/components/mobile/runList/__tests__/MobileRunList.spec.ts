@@ -8,7 +8,7 @@ import { useRunListStore } from '~/stores/runListStore';
 import { createMobileTestRouter } from '~/composables/mobile/__tests__/mobileTestRouter';
 
 const row = (patch: Partial<MobileRunTreeRow>): MobileRunTreeRow => ({
-  key: 'agent:a', depth: 0, avatar: 'agent', name: 'Project Task Manager', title: 'Dispatch the approved Task', status: 'running', remote: null,
+  key: 'agent:a', depth: 0, avatar: 'agent', name: 'Project Task Manager', title: 'Dispatch the approved Task', status: 'running', backgroundTasksRunning: 0, remote: null,
   hasChildren: false, expanded: false, fold: null, open: { kind: 'agentRun', run: { runId: 'a' } as never }, lastActivityAt: '2026-11-06T10:00:00.000Z', ...patch,
 });
 
@@ -44,6 +44,24 @@ describe('MobileRunList', () => {
     expect(toggle).toHaveBeenCalledTimes(2);
     expect(items[1]!.get('[data-testid="mobile-run-toggle"]').attributes('aria-label')).toBe('Show members of Software Engineering Team');
     expect(items.every((item) => !/Archive|Delete|Stop/.test(item.text()))).toBe(true);
+    // autobyteus-525 REQ-006: the indent and the rails in rem (16/34/43 px at Standard), so they follow the avatars at
+    // every Text size; the header carries the "On this phone" ⋮ at its right.
+    expect(items[0]!.get('[data-testid="mobile-run-open"]').attributes('style')).toBe('padding-left: 1rem;');
+    expect(items[2]!.get('[data-testid="mobile-run-open"]').attributes('style')).toBe('padding-left: 2.6875rem;');
+    expect(items[2]!.get('span[aria-hidden="true"].absolute').attributes('style')).toBe('left: 2.125rem;');
+    expect(wrapper.get('header [data-testid="mobile-on-this-phone-button"]').attributes('aria-label')).toBe('On this phone');
+  });
+
+  it('a row two levels deep has two rails, 1.3125rem apart (21 px at Standard)', async () => {
+    setActivePinia(createPinia());
+    vi.spyOn(useRunListStore(), 'entries', 'get').mockReturnValue([{}] as never);
+    const rows = ref([row({ key: 'agent:a/agent:b/agent:c', depth: 2, name: 'Deep', title: '', lastActivityAt: null })]);
+    const tree = { rows: computed(() => rows.value), openRowKey: computed(() => null), toggle: vi.fn(), setTeamExpanded: vi.fn(), toggleTeam: vi.fn(), expandTeamMemberAncestors: vi.fn() };
+    const wrapper = mount(MobileRunList, { props: { tree: tree as never, nodeName: 'n', connection: 'connected' }, global: { plugins: [await createMobileTestRouter()] } });
+    await flushPromises();
+    const item = wrapper.get('[role="treeitem"]');
+    expect(item.findAll('span.absolute.inset-y-0').map((rail) => rail.attributes('style'))).toEqual(['left: 2.125rem;', 'left: 3.4375rem;']);
+    expect(item.get('[data-testid="mobile-run-open"]').attributes('style')).toBe('padding-left: 4rem;');
   });
 
   it.each([
@@ -90,5 +108,23 @@ describe('MobileRunList', () => {
       await wrapper.get('[data-testid="mobile-node-offline-check"]').trigger('click');
       expect(wrapper.emitted('open-connection')).toHaveLength(1);
     }
+  });
+
+  it('autobyteus-448: a run idle with background tasks running shows the active dot and names them; a running one stays "Running"', async () => {
+    setActivePinia(createPinia());
+    vi.spyOn(useRunListStore(), 'entries', 'get').mockReturnValue([{}] as never);
+    const rows = ref([row({ status: 'idle', backgroundTasksRunning: 2 }), row({ key: 'agent:b', status: 'running', backgroundTasksRunning: 1 })]);
+    const tree = { rows: computed(() => rows.value), openRowKey: computed(() => null), toggle: vi.fn(), setTeamExpanded: vi.fn(), toggleTeam: vi.fn(), expandTeamMemberAncestors: vi.fn() };
+    const router = await createMobileTestRouter();
+    const wrapper = mount(MobileRunList, { props: { tree: tree as never, nodeName: 'AutoByteus Desktop', connection: 'connected' }, global: { plugins: [router] } });
+    await flushPromises();
+    const [idle, running] = wrapper.findAll('[role="treeitem"]');
+    const dot = idle!.get('[data-testid="mobile-run-status-dot"]');
+    expect(dot.attributes('data-status')).toBe('background');
+    expect(dot.classes()).toContain('bg-blue-500');
+    expect(dot.classes()).not.toContain('animate-pulse');
+    expect(idle!.html()).toContain('2 background tasks running');
+    expect(running!.get('[data-testid="mobile-run-status-dot"]').attributes('data-status')).toBe('running');
+    expect(running!.html()).toContain('Running');
   });
 });
