@@ -56,3 +56,4 @@ Decided by the Solution Designer within that direction (founder informed): a sto
 - `get_handoff_rules` 2026-11-18: rule "Architecture Design Complete with task_size=Large or architectural_risk=High" → `/architecture_reviewer`.
 - ARCH-REV-003, 2026-11-18: Pass for SR-007 (bd52ef4e15); no findings open. The reviewer handed off to `/implementation_engineer` (informational; recorded, no further routing by the Solution Designer).
 - SR-008, 2026-11-18: the Solution Designer's walkthrough found G-1 (unrelated messages in run views) and G-2 (`resolveActive`); fixed in the design; sent for ARCH-REV-004. Implementation had started on SR-007.
+- ARCH-REV-004, 2026-11-18: Pass for SR-008 (111ebbc096); AR-008 (Low) corrected in SR-009 (wording). The reviewer handed the SR-008 delta to `/implementation_engineer`.

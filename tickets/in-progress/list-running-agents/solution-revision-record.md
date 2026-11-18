@@ -113,3 +113,11 @@
 - Every other premise held (table in the design).
 - Intended behavior changed: clarified (run views), within the direction; the founder informed.
 - Classification unchanged: `Large` / `High`. Review impact: the design passed ARCH-REV-003 at SR-007 and implementation started; SR-008 goes back to the architecture reviewer (ARCH-REV-004), who routes the delta on.
+
+### SR-009 — `resolveActive` is a target, not existing code (ARCH-REV-004 AR-008)
+
+- Phase and classification: Design, editorial correction (no behavior or structure change).
+- Trigger: ARCH-REV-004 Pass with AR-008 (Low, non-blocking): `CollaborationRootResolver.resolveActive` exists neither at HEAD nor at the base; it is in the implementation engineer's uncommitted diff, which the Solution Designer read in the shared worktree during the SR-008 walkthrough.
+- Verified: `git show HEAD:autobyteus-server-ts/src/compositions/collaboration-root-resolver.ts` has `resolveOrRestore` only (77 lines).
+- Changes: the Dependency Rules line and the walkthrough row state it as a target; `src/compositions/collaboration-root-resolver.ts` added to the file mapping (Modify: `resolveActive`; `standaloneRoots` gains `getActive`). `docs/design-cases.md` Case 5 records the lesson.
+- Review impact: none (the reviewer passed SR-008 and asked for this wording in the next revision).
