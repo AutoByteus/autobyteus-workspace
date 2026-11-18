@@ -121,3 +121,6 @@
 
 ## SR-008 — 2026-11-18: AppImage-first scoped permission experiment
 SR-007 Draft → Draft. User asked for AppImage unattended opt-in upgrades and a reversible configuration trial before changing format. Current authority added to requirements; previous A/B options historical. SCN-001/002/004/005; BEH-001/002/004/005; REQ-001–003/005/007. Ubuntu 26/currently downloaded x64 baseline reproduced; exact-path profile parsed but not loaded. No approval of permanent privilege, fallback, DEB or architecture. Next: user's interactive execution, inspect renderer, replacement and removal controls; then separately verify real updates and resolve path trust. No implementation/release handoff.
+
+## SR-009 — Scoped trial result
+User-run SR-008 external prerequisite cleared. See investigation SR-009 and evidence/sr-009. REQ-001/002/003 and partial AC-004 supported on one host, not final acceptance. REQ-005/007, AC-006/008 still need genuine update proof. No approval/design/routing change; Draft remains. Next investigate actual updater and permanent path trust.

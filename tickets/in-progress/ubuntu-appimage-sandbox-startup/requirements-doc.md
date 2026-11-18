@@ -150,3 +150,5 @@ Architecture must start only after DEC-003 selection and approval recorded. Map 
 
 ## SR-007 Clarification Authority
 User 2026-11-17: “if it asks user to admin permission then user still have to get involved. i meant when user opt for automatic upgrade”. This establishes the required outcome, not approval to deploy an APT repository, install a privileged service, change host policy or select DEB. Updated skill SKILL.md and requirements-engineering.md re-read; saved Task autobyteus-5 read in full, still IN_PROGRESS with no new comments. October runtime/source evidence has not been refreshed against November product releases. No architecture or source implementation is authorized.
+
+SR-009 feasibility update (evidence only, no change of intent): exact-path AppImage configuration worked in this one Ubuntu 26 x64 experiment, including sandboxed renderer evidence after same-path replacement. Not proof of safe permanent configuration or unattended upgrades. SR-008 Draft remains unapproved.

@@ -1,0 +1,14 @@
+159920
+NSpid:	159920
+CapEff:	0000000000000000
+NoNewPrivs:	0
+Seccomp:	0
+Seccomp_filters:	0
+/tmp/ab-aa-x28c4419/AutoByteus.AppImage (unconfined)
+160191
+NSpid:	160191	4	1
+CapEff:	0000000000000000
+NoNewPrivs:	1
+Seccomp:	2
+Seccomp_filters:	1
+/tmp/ab-aa-x28c4419/AutoByteus.AppImage (unconfined)

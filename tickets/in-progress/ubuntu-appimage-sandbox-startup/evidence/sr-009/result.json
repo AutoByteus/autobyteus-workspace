@@ -1,0 +1,677 @@
+{
+  "artifact": "AutoByteus_personal_linux-x64-1.5.13-beta.9.AppImage",
+  "kernel": "7.0.0-43-generic",
+  "before": {
+    "kernel.unprivileged_userns_clone": "1",
+    "user.max_user_namespaces": "123849",
+    "kernel.apparmor_restrict_unprivileged_userns": "1",
+    "kernel.apparmor_restrict_unprivileged_unconfined": "1"
+  },
+  "runs": [
+    {
+      "stage": "before",
+      "exit": 1,
+      "sandbox_fatal": true,
+      "fatal_lines": [
+        "[159444:1118/134042.862743:FATAL:sandbox/linux/suid/client/setuid_sandbox_host.cc:166] The SUID sandbox helper binary was found, but is not configured correctly. Rather than run without sandboxing I'm aborting now. You need to make sure that /tmp/ab-aa-x28c4419/before/tmp/.mount_AutoByVvTjE0/chrome-sandbox is owned by root and has mode 4755."
+      ],
+      "listener_seen": false,
+      "processes": [
+        {
+          "pid": "159444",
+          "role": "untyped",
+          "bypass": false,
+          "label": "unconfined",
+          "namespaces": {
+            "user": null,
+            "pid": null,
+            "net": null
+          },
+          "status": {
+            "NSpid": "159444",
+            "NoNewPrivs": "0",
+            "Seccomp": "0",
+            "Seccomp_filters": "0",
+            "CapEff": "0000000800000000"
+          }
+        }
+      ],
+      "inode": 8905
+    },
+    {
+      "stage": "permitted",
+      "exit": 1,
+      "sandbox_fatal": false,
+      "fatal_lines": [],
+      "listener_seen": true,
+      "processes": [
+        {
+          "pid": "159478",
+          "role": "untyped",
+          "bypass": false,
+          "label": "/tmp/ab-aa-x28c4419/AutoByteus.AppImage (unconfined)",
+          "namespaces": {
+            "user": "user:[4026531837]",
+            "pid": "pid:[4026531836]",
+            "net": "net:[4026531833]"
+          },
+          "status": {
+            "NSpid": "159478",
+            "NoNewPrivs": "0",
+            "Seccomp": "0",
+            "Seccomp_filters": "0",
+            "CapEff": "0000000000000000"
+          }
+        },
+        {
+          "pid": "159482",
+          "role": "untyped",
+          "bypass": false,
+          "label": "/tmp/ab-aa-x28c4419/AutoByteus.AppImage (unconfined)",
+          "namespaces": {
+            "user": "user:[4026531837]",
+            "pid": "pid:[4026531836]",
+            "net": "net:[4026531833]"
+          },
+          "status": {
+            "NSpid": "159482",
+            "NoNewPrivs": "0",
+            "Seccomp": "0",
+            "Seccomp_filters": "0",
+            "CapEff": "0000000000000000"
+          }
+        },
+        {
+          "pid": "159487",
+          "role": "untyped",
+          "bypass": false,
+          "label": "/tmp/ab-aa-x28c4419/AutoByteus.AppImage (unconfined)",
+          "namespaces": {
+            "user": "user:[4026531837]",
+            "pid": "pid:[4026531836]",
+            "net": "net:[4026531833]"
+          },
+          "status": {
+            "NSpid": "159487",
+            "NoNewPrivs": "1",
+            "Seccomp": "0",
+            "Seccomp_filters": "0",
+            "CapEff": "0000000000000000"
+          }
+        },
+        {
+          "pid": "159488",
+          "role": "untyped",
+          "bypass": false,
+          "label": "/tmp/ab-aa-x28c4419/AutoByteus.AppImage (unconfined)",
+          "namespaces": {
+            "user": "user:[4026532760]",
+            "pid": "pid:[4026532769]",
+            "net": "net:[4026532770]"
+          },
+          "status": {
+            "NSpid": "159488\t1",
+            "NoNewPrivs": "1",
+            "Seccomp": "0",
+            "Seccomp_filters": "0",
+            "CapEff": "0000000000000000"
+          }
+        },
+        {
+          "pid": "159490",
+          "role": "untyped",
+          "bypass": false,
+          "label": "/tmp/ab-aa-x28c4419/AutoByteus.AppImage (unconfined)",
+          "namespaces": {
+            "user": "user:[4026532760]",
+            "pid": "pid:[4026532769]",
+            "net": "net:[4026532770]"
+          },
+          "status": {
+            "NSpid": "159490\t3",
+            "NoNewPrivs": "1",
+            "Seccomp": "0",
+            "Seccomp_filters": "0",
+            "CapEff": "0000000000200000"
+          }
+        },
+        {
+          "pid": "159522",
+          "role": "untyped",
+          "bypass": false,
+          "label": "/tmp/ab-aa-x28c4419/AutoByteus.AppImage (unconfined)",
+          "namespaces": {
+            "user": "user:[4026531837]",
+            "pid": "pid:[4026531836]",
+            "net": "net:[4026531833]"
+          },
+          "status": {
+            "NSpid": "159522",
+            "NoNewPrivs": "1",
+            "Seccomp": "2",
+            "Seccomp_filters": "1",
+            "CapEff": "0000000000000000"
+          }
+        },
+        {
+          "pid": "159528",
+          "role": "untyped",
+          "bypass": false,
+          "label": "/tmp/ab-aa-x28c4419/AutoByteus.AppImage (unconfined)",
+          "namespaces": {
+            "user": "user:[4026531837]",
+            "pid": "pid:[4026531836]",
+            "net": "net:[4026531833]"
+          },
+          "status": {
+            "NSpid": "159528",
+            "NoNewPrivs": "0",
+            "Seccomp": "0",
+            "Seccomp_filters": "0",
+            "CapEff": "0000000000000000"
+          }
+        },
+        {
+          "pid": "159530",
+          "role": "untyped",
+          "bypass": false,
+          "label": "/tmp/ab-aa-x28c4419/AutoByteus.AppImage (unconfined)",
+          "namespaces": {
+            "user": "user:[4026531837]",
+            "pid": "pid:[4026531836]",
+            "net": "net:[4026531833]"
+          },
+          "status": {
+            "NSpid": "159530",
+            "NoNewPrivs": "0",
+            "Seccomp": "0",
+            "Seccomp_filters": "0",
+            "CapEff": "0000000000000000"
+          }
+        },
+        {
+          "pid": "159581",
+          "role": "untyped",
+          "bypass": false,
+          "label": "/tmp/ab-aa-x28c4419/AutoByteus.AppImage (unconfined)",
+          "namespaces": {
+            "user": "user:[4026531837]",
+            "pid": "pid:[4026531836]",
+            "net": "net:[4026531833]"
+          },
+          "status": {
+            "NSpid": "159581",
+            "NoNewPrivs": "0",
+            "Seccomp": "0",
+            "Seccomp_filters": "0",
+            "CapEff": "0000000000000000"
+          }
+        },
+        {
+          "pid": "159582",
+          "role": "untyped",
+          "bypass": false,
+          "label": null,
+          "namespaces": {
+            "user": null,
+            "pid": null,
+            "net": null
+          },
+          "status": {
+            "NSpid": "",
+            "NoNewPrivs": "",
+            "Seccomp": "",
+            "Seccomp_filters": "",
+            "CapEff": ""
+          }
+        },
+        {
+          "pid": "159583",
+          "role": "untyped",
+          "bypass": false,
+          "label": "/tmp/ab-aa-x28c4419/AutoByteus.AppImage (unconfined)",
+          "namespaces": {
+            "user": "user:[4026531837]",
+            "pid": "pid:[4026531836]",
+            "net": "net:[4026531833]"
+          },
+          "status": {
+            "NSpid": "159583",
+            "NoNewPrivs": "0",
+            "Seccomp": "0",
+            "Seccomp_filters": "0",
+            "CapEff": "0000000000000000"
+          }
+        },
+        {
+          "pid": "159603",
+          "role": "untyped",
+          "bypass": false,
+          "label": "/tmp/ab-aa-x28c4419/AutoByteus.AppImage (unconfined)",
+          "namespaces": {
+            "user": "user:[4026531837]",
+            "pid": "pid:[4026531836]",
+            "net": "net:[4026531833]"
+          },
+          "status": {
+            "NSpid": "159603",
+            "NoNewPrivs": "0",
+            "Seccomp": "0",
+            "Seccomp_filters": "0",
+            "CapEff": "0000000000000000"
+          }
+        },
+        {
+          "pid": "159613",
+          "role": "untyped",
+          "bypass": false,
+          "label": "/tmp/ab-aa-x28c4419/AutoByteus.AppImage (unconfined)",
+          "namespaces": {
+            "user": "user:[4026531837]",
+            "pid": "pid:[4026531836]",
+            "net": "net:[4026531833]"
+          },
+          "status": {
+            "NSpid": "159613",
+            "NoNewPrivs": "1",
+            "Seccomp": "2",
+            "Seccomp_filters": "1",
+            "CapEff": "0000000000000000"
+          }
+        },
+        {
+          "pid": "159630",
+          "role": "untyped",
+          "bypass": false,
+          "label": "/tmp/ab-aa-x28c4419/AutoByteus.AppImage (unconfined)",
+          "namespaces": {
+            "user": "user:[4026531837]",
+            "pid": "pid:[4026531836]",
+            "net": "net:[4026531833]"
+          },
+          "status": {
+            "NSpid": "159630",
+            "NoNewPrivs": "0",
+            "Seccomp": "0",
+            "Seccomp_filters": "0",
+            "CapEff": "0000000000000000"
+          }
+        },
+        {
+          "pid": "159683",
+          "role": "untyped",
+          "bypass": false,
+          "label": "/tmp/ab-aa-x28c4419/AutoByteus.AppImage (unconfined)",
+          "namespaces": {
+            "user": "user:[4026531837]",
+            "pid": "pid:[4026531836]",
+            "net": "net:[4026531833]"
+          },
+          "status": {
+            "NSpid": "159683",
+            "NoNewPrivs": "0",
+            "Seccomp": "0",
+            "Seccomp_filters": "0",
+            "CapEff": "0000000000000000"
+          }
+        },
+        {
+          "pid": "159720",
+          "role": "untyped",
+          "bypass": false,
+          "label": "/tmp/ab-aa-x28c4419/AutoByteus.AppImage (unconfined)",
+          "namespaces": {
+            "user": "user:[4026532760]",
+            "pid": "pid:[4026532767]",
+            "net": "net:[4026532770]"
+          },
+          "status": {
+            "NSpid": "159720\t4\t1",
+            "NoNewPrivs": "1",
+            "Seccomp": "2",
+            "Seccomp_filters": "1",
+            "CapEff": "0000000000000000"
+          }
+        }
+      ],
+      "inode": 8905
+    },
+    {
+      "stage": "replaced",
+      "exit": 1,
+      "sandbox_fatal": false,
+      "fatal_lines": [],
+      "listener_seen": true,
+      "processes": [
+        {
+          "pid": "159920",
+          "role": "untyped",
+          "bypass": false,
+          "label": "/tmp/ab-aa-x28c4419/AutoByteus.AppImage (unconfined)",
+          "namespaces": {
+            "user": "user:[4026531837]",
+            "pid": "pid:[4026531836]",
+            "net": "net:[4026531833]"
+          },
+          "status": {
+            "NSpid": "159920",
+            "NoNewPrivs": "0",
+            "Seccomp": "0",
+            "Seccomp_filters": "0",
+            "CapEff": "0000000000000000"
+          }
+        },
+        {
+          "pid": "159924",
+          "role": "untyped",
+          "bypass": false,
+          "label": "/tmp/ab-aa-x28c4419/AutoByteus.AppImage (unconfined)",
+          "namespaces": {
+            "user": "user:[4026531837]",
+            "pid": "pid:[4026531836]",
+            "net": "net:[4026531833]"
+          },
+          "status": {
+            "NSpid": "159924",
+            "NoNewPrivs": "0",
+            "Seccomp": "0",
+            "Seccomp_filters": "0",
+            "CapEff": "0000000000000000"
+          }
+        },
+        {
+          "pid": "159928",
+          "role": "untyped",
+          "bypass": false,
+          "label": "/tmp/ab-aa-x28c4419/AutoByteus.AppImage (unconfined)",
+          "namespaces": {
+            "user": "user:[4026531837]",
+            "pid": "pid:[4026531836]",
+            "net": "net:[4026531833]"
+          },
+          "status": {
+            "NSpid": "159928",
+            "NoNewPrivs": "1",
+            "Seccomp": "0",
+            "Seccomp_filters": "0",
+            "CapEff": "0000000000000000"
+          }
+        },
+        {
+          "pid": "159929",
+          "role": "untyped",
+          "bypass": false,
+          "label": "/tmp/ab-aa-x28c4419/AutoByteus.AppImage (unconfined)",
+          "namespaces": {
+            "user": "user:[4026532760]",
+            "pid": "pid:[4026532769]",
+            "net": "net:[4026532770]"
+          },
+          "status": {
+            "NSpid": "159929\t1",
+            "NoNewPrivs": "1",
+            "Seccomp": "0",
+            "Seccomp_filters": "0",
+            "CapEff": "0000000000000000"
+          }
+        },
+        {
+          "pid": "159931",
+          "role": "untyped",
+          "bypass": false,
+          "label": "/tmp/ab-aa-x28c4419/AutoByteus.AppImage (unconfined)",
+          "namespaces": {
+            "user": "user:[4026532760]",
+            "pid": "pid:[4026532769]",
+            "net": "net:[4026532770]"
+          },
+          "status": {
+            "NSpid": "159931\t3",
+            "NoNewPrivs": "1",
+            "Seccomp": "0",
+            "Seccomp_filters": "0",
+            "CapEff": "0000000000200000"
+          }
+        },
+        {
+          "pid": "159962",
+          "role": "untyped",
+          "bypass": false,
+          "label": "/tmp/ab-aa-x28c4419/AutoByteus.AppImage (unconfined)",
+          "namespaces": {
+            "user": "user:[4026531837]",
+            "pid": "pid:[4026531836]",
+            "net": "net:[4026531833]"
+          },
+          "status": {
+            "NSpid": "159962",
+            "NoNewPrivs": "1",
+            "Seccomp": "2",
+            "Seccomp_filters": "1",
+            "CapEff": "0000000000000000"
+          }
+        },
+        {
+          "pid": "159968",
+          "role": "untyped",
+          "bypass": false,
+          "label": "/tmp/ab-aa-x28c4419/AutoByteus.AppImage (unconfined)",
+          "namespaces": {
+            "user": "user:[4026531837]",
+            "pid": "pid:[4026531836]",
+            "net": "net:[4026531833]"
+          },
+          "status": {
+            "NSpid": "159968",
+            "NoNewPrivs": "0",
+            "Seccomp": "0",
+            "Seccomp_filters": "0",
+            "CapEff": "0000000000000000"
+          }
+        },
+        {
+          "pid": "159970",
+          "role": "untyped",
+          "bypass": false,
+          "label": "/tmp/ab-aa-x28c4419/AutoByteus.AppImage (unconfined)",
+          "namespaces": {
+            "user": "user:[4026531837]",
+            "pid": "pid:[4026531836]",
+            "net": "net:[4026531833]"
+          },
+          "status": {
+            "NSpid": "159970",
+            "NoNewPrivs": "0",
+            "Seccomp": "0",
+            "Seccomp_filters": "0",
+            "CapEff": "0000000000000000"
+          }
+        },
+        {
+          "pid": "159981",
+          "role": "untyped",
+          "bypass": false,
+          "label": null,
+          "namespaces": {
+            "user": null,
+            "pid": null,
+            "net": null
+          },
+          "status": {
+            "NSpid": "",
+            "NoNewPrivs": "",
+            "Seccomp": "",
+            "Seccomp_filters": "",
+            "CapEff": ""
+          }
+        },
+        {
+          "pid": "159983",
+          "role": "untyped",
+          "bypass": false,
+          "label": null,
+          "namespaces": {
+            "user": null,
+            "pid": null,
+            "net": null
+          },
+          "status": {
+            "NSpid": "",
+            "NoNewPrivs": "",
+            "Seccomp": "",
+            "Seccomp_filters": "",
+            "CapEff": ""
+          }
+        },
+        {
+          "pid": "159984",
+          "role": "untyped",
+          "bypass": false,
+          "label": null,
+          "namespaces": {
+            "user": null,
+            "pid": null,
+            "net": null
+          },
+          "status": {
+            "NSpid": "",
+            "NoNewPrivs": "",
+            "Seccomp": "",
+            "Seccomp_filters": "",
+            "CapEff": ""
+          }
+        },
+        {
+          "pid": "159985",
+          "role": "untyped",
+          "bypass": false,
+          "label": null,
+          "namespaces": {
+            "user": null,
+            "pid": null,
+            "net": null
+          },
+          "status": {
+            "NSpid": "",
+            "NoNewPrivs": "",
+            "Seccomp": "",
+            "Seccomp_filters": "",
+            "CapEff": ""
+          }
+        },
+        {
+          "pid": "160043",
+          "role": "untyped",
+          "bypass": false,
+          "label": "/tmp/ab-aa-x28c4419/AutoByteus.AppImage (unconfined)",
+          "namespaces": {
+            "user": "user:[4026531837]",
+            "pid": "pid:[4026531836]",
+            "net": "net:[4026531833]"
+          },
+          "status": {
+            "NSpid": "160043",
+            "NoNewPrivs": "0",
+            "Seccomp": "0",
+            "Seccomp_filters": "0",
+            "CapEff": "0000000000000000"
+          }
+        },
+        {
+          "pid": "160056",
+          "role": "untyped",
+          "bypass": false,
+          "label": "/tmp/ab-aa-x28c4419/AutoByteus.AppImage (unconfined)",
+          "namespaces": {
+            "user": "user:[4026531837]",
+            "pid": "pid:[4026531836]",
+            "net": "net:[4026531833]"
+          },
+          "status": {
+            "NSpid": "160056",
+            "NoNewPrivs": "1",
+            "Seccomp": "2",
+            "Seccomp_filters": "1",
+            "CapEff": "0000000000000000"
+          }
+        },
+        {
+          "pid": "160068",
+          "role": "untyped",
+          "bypass": false,
+          "label": "/tmp/ab-aa-x28c4419/AutoByteus.AppImage (unconfined)",
+          "namespaces": {
+            "user": "user:[4026531837]",
+            "pid": "pid:[4026531836]",
+            "net": "net:[4026531833]"
+          },
+          "status": {
+            "NSpid": "160068",
+            "NoNewPrivs": "0",
+            "Seccomp": "0",
+            "Seccomp_filters": "0",
+            "CapEff": "0000000000000000"
+          }
+        },
+        {
+          "pid": "160121",
+          "role": "untyped",
+          "bypass": false,
+          "label": "/tmp/ab-aa-x28c4419/AutoByteus.AppImage (unconfined)",
+          "namespaces": {
+            "user": "user:[4026531837]",
+            "pid": "pid:[4026531836]",
+            "net": "net:[4026531833]"
+          },
+          "status": {
+            "NSpid": "160121",
+            "NoNewPrivs": "0",
+            "Seccomp": "0",
+            "Seccomp_filters": "0",
+            "CapEff": "0000000000000000"
+          }
+        },
+        {
+          "pid": "160191",
+          "role": "untyped",
+          "bypass": false,
+          "label": "/tmp/ab-aa-x28c4419/AutoByteus.AppImage (unconfined)",
+          "namespaces": {
+            "user": "user:[4026532760]",
+            "pid": "pid:[4026532767]",
+            "net": "net:[4026532770]"
+          },
+          "status": {
+            "NSpid": "160191\t4\t1",
+            "NoNewPrivs": "1",
+            "Seccomp": "2",
+            "Seccomp_filters": "1",
+            "CapEff": "0000000000000000"
+          }
+        }
+      ],
+      "inode": 9269
+    },
+    {
+      "stage": "removed",
+      "exit": 1,
+      "sandbox_fatal": true,
+      "fatal_lines": [
+        "[160392:1118/134152.369849:FATAL:sandbox/linux/suid/client/setuid_sandbox_host.cc:166] The SUID sandbox helper binary was found, but is not configured correctly. Rather than run without sandboxing I'm aborting now. You need to make sure that /tmp/ab-aa-x28c4419/removed/tmp/.mount_AutoByEC7g30/chrome-sandbox is owned by root and has mode 4755."
+      ],
+      "listener_seen": false,
+      "processes": [],
+      "inode": 9269
+    }
+  ],
+  "profile": "abi <abi/4.0>,\n\"/tmp/ab-aa-x28c4419/AutoByteus.AppImage\" flags=(unconfined) {\n  userns,\n}\n",
+  "sha256": "5bf3637074a4fbf3d5689bc47bda2a75371fab033cd287114d622cb724af36d8",
+  "parser_preflight": true,
+  "removed": true,
+  "after": {
+    "kernel.unprivileged_userns_clone": "1",
+    "user.max_user_namespaces": "123849",
+    "kernel.apparmor_restrict_unprivileged_userns": "1",
+    "kernel.apparmor_restrict_unprivileged_unconfined": "1"
+  }
+}
