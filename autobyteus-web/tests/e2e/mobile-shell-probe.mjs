@@ -162,8 +162,8 @@
 //                  no draft: `mobile-context-file-size-cases.mjs` (its own node eta).
 //   MSP-60…66, MSP-74 autobyteus-458/506/525  The readable phone conversation at 412 and 360 px (body width − 24, 17 px / 1.5, one
 //                  avatar and speaker line per turn, composer 8 px above the bottom; another agent's message keeps its arrow
-//                  and type line, as on the desktop); the run list's ⋮ → On this phone → Text size (the whole phone at
-//                  16 × step/17 px, the conversation 15/19/21 px, kept over a reload) and every phone screen at Largest;
+//                  and type line, as on the desktop); the run list's ⋮ → Text size (three steps; the whole phone at
+//                  16 × step/17 px, the conversation 17/19/21 px, kept over a reload) and every phone screen at Largest;
 //                  ⋮ → Settings on a stopped Team member (Runtime → Grok Build, its model, Save back, the node holds it,
 //                  the run continues on it), a refused Save (the run woken before Save: the node's words in the red card), a
 //                  live idle and a working run (the red stop icon, one tap, the rows open): `mobile-run-settings-cases.mjs`
