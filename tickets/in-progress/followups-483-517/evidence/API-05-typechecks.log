@@ -1,0 +1,11 @@
+# API-05: pnpm -C autobyteus-server-ts typecheck; pnpm -C autobyteus-web typecheck; HEAD 2a553b5473 + BTS-03/MSP-78 edits; node v22.23.1; 2026-11-18T12:38:09Z
+[typecheck] server src (tsconfig.build.json): 0 errors, exit 0, 13.3s
+[typecheck] server tests (tsconfig.tests.json): 1012 errors, exit 2, 34.9s
+[typecheck] production errors: 0; test-file errors: 1012 in 316 files (baseline 1012 in 316 files)
+[typecheck] PASS
+[typecheck] Nuxt app (tsconfig.json): 60 errors, exit 2, 49.5s
+[typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 3.0s
+[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 0.7s
+[typecheck] cross-package tests (tsconfig.cross-package-tests.json): 0 errors, exit 0, 32.0s
+[typecheck] production errors: 0; test-file errors: 87 in 37 files (baseline 87 in 37 files)
+[typecheck] PASS

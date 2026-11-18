@@ -1,0 +1,19 @@
+# API-02: pnpm -C autobyteus-server-ts build; pnpm -C autobyteus-web build:mobile-web; pnpm -C autobyteus-web test:e2e:mobile-shell --output-dir=<probe> --cases=MSP-47,MSP-48,MSP-49,MSP-59,MSP-78; HEAD 2a553b5473 + MSP-78; 2026-11-18T12:40:53Z; load 72.38 75.90 78.85
+server build exit 0
+mobile build exit 0
+
+> autobyteus@1.5.13-beta.10 test:e2e:mobile-shell /Users/normy/autobyteus_org/autobyteus-worktrees/followups-483-517/autobyteus-web
+> node tests/e2e/mobile-shell-probe.mjs --output-dir=/Users/normy/autobyteus_org/autobyteus-worktrees/followups-483-517/tickets/in-progress/followups-483-517/evidence/API-02-phone/probe --cases=MSP-47,MSP-48,MSP-49,MSP-59,MSP-78
+
+[mobile-shell] MSP-47 …
+[mobile-shell] MSP-47 Pass
+[mobile-shell] MSP-48 …
+[mobile-shell] MSP-48 Pass
+[mobile-shell] MSP-49 …
+[mobile-shell] MSP-49 Pass
+[mobile-shell] MSP-59 …
+[mobile-shell] MSP-59 Pass
+[mobile-shell] MSP-78 …
+[mobile-shell] MSP-78 Pass
+mobile-shell probe: Pass
+# exit: 0
