@@ -64,6 +64,15 @@ func Menu(p install.Paths, remove bool) error {
 		}
 		return os.Remove(name)
 	}
+	// Completing a missing owned entry is idempotent; never overwrite a user's modified shortcut.
+	if actual, e := os.ReadFile(name); e == nil {
+		if string(actual) != content {
+			return fmt.Errorf("desktop entry modified; left intact: %s", name)
+		}
+		return nil
+	} else if !os.IsNotExist(e) {
+		return e
+	}
 	if err = os.MkdirAll(directory, 0755); err != nil {
 		return err
 	}

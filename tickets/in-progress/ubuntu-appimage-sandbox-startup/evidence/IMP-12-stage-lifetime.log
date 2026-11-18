@@ -45,3 +45,17 @@ IMP-12 expanded discard/supersede/channel/restart coverage
 --- PASS: TestMissingIdentityRefusesBaseline (0.00s)
 PASS
 ok  	autobyteus.local/desktop/linux-install/internal/store	0.009s
+IMP-12 f1a88a2672, cached same-release automatic re-stage through actual AppUpdater/session/record
+
+> autobyteus@1.5.13 test:electron /home/ryan-ai/hdd_drive/autobyteus_org/autobyteus-worktrees/ubuntu-appimage-sandbox-startup/autobyteus-web
+> vitest --config ./electron/vitest.config.ts run electron/updater/__tests__/appUpdater.spec.ts -t 'lost managed receipt'
+
+
+ RUN  v3.2.7 /home/ryan-ai/hdd_drive/autobyteus_org/autobyteus-worktrees/ubuntu-appimage-sandbox-startup/autobyteus-web/electron
+
+ ✓ updater/__tests__/appUpdater.spec.ts (38 tests | 37 skipped) 172ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed | 37 skipped (38)
+   Start at  14:57:54
+   Duration  1.17s (transform 200ms, setup 0ms, collect 231ms, tests 172ms, environment 0ms, prepare 77ms)

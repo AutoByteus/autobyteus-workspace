@@ -27,3 +27,20 @@ requires repair, never version-zero admission.
 First-install acquisition uses only build-pinned exact tagged identity and
 bounded HTTPS sidecars (DS-003); never adjacent files or latest metadata.
 Production and disposable build-only keys are separate trust domains.
+
+## Local transaction lifetime
+
+Writer IPC is one bounded JSON-line request, followed by signed-size payload and
+EOF for stage/provision. A stage receipt names one opaque, single-use transaction
+and the expected live digest; it never names a destination or executable command.
+Completed stages have no wall-clock TTL. Consumption, discard, replacement,
+writer restart or committed-baseline change invalidates them. Transfer deadlines
+still bound incomplete requests. Activation re-verifies both inodes and admission.
+
+The writer emits `code: "STAGE_GONE"` only for an absent/superseded receipt, not
+channel/baseline/admission/integrity failures. The client preserves that typed
+refusal. After confirmed old-baseline status, the session drops readiness and
+only the matching provisional attempt marker. An ordinary quit still exits;
+the next eligible automatic check may re-stage the cached release without a
+permanent failure block. A manual restart exposes a localized retryable refusal
+and safely reopens the old canonical image. Unknown status never means old.

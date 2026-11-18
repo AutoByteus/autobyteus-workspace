@@ -62,6 +62,10 @@ test('signing/metadata CLI binds exact final bytes, canonical asset, version, ar
     writeFileSync(metadata, yaml);
     const validate = () => spawnSync('python3', [resolve('scripts/validate_linux_updater_metadata.py'), '--metadata', metadata, '--arch-token', 'linux-x64', '--image', image, '--public-key', publicPath], { encoding: 'utf8' });
     assert.equal(validate().status, 0);
+    writeFileSync(metadata, yaml.replace(/^path:.*$/m, 'path: wrong-linux-x64.AppImage'));
+    assert.notEqual(validate().status, 0);
+    writeFileSync(metadata, yaml.replace(/^sha512:.*$/m, 'sha512: wrong'));
+    assert.notEqual(validate().status, 0);
     writeFileSync(metadata, yaml.replace('version: 1.5.14', 'version: 1.5.15'));
     assert.notEqual(validate().status, 0); writeFileSync(metadata, yaml);
     writeFileSync(image, Buffer.from('same size malicious replacement'));

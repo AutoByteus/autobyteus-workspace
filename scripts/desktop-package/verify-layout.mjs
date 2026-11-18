@@ -6,7 +6,7 @@ import { mkdtempSync, readFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { resolve, join } from 'node:path';
 const [image, publicPath] = process.argv.slice(2);
-if (!image || ![3,4].includes(process.argv.length)) throw Error('Usage: verify-layout.mjs IMAGE');
+if (!image || ![3,4].includes(process.argv.length)) throw Error('Usage: verify-layout.mjs IMAGE [PUBLIC_KEY_FILE]');
 const directory=mkdtempSync(join(tmpdir(),'autobyteus-layout-'));
 try {
   for (const file of ['AppRun','autobyteus','autobyteus.desktop','autobyteus-provision','autobyteus-install-client']) {

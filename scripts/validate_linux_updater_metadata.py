@@ -154,15 +154,22 @@ def main() -> int:
             raise ValueError("--public-key requires --image")
         if args.image:
             text = args.metadata.read_text(encoding="utf-8")
-            entry = next((e for e in _file_entries(text) if e.get("url") == args.image.name), None)
-            if entry is None:
+            entries = _file_entries(text)
+            entry = entries[0] if len(entries) == 1 else None
+            if entry is None or entry.get("url") != args.image.name:
                 raise ValueError("Metadata does not name this exact final artifact")
             digest = hashlib.sha512()
             with args.image.open("rb") as image:
                 for chunk in iter(lambda: image.read(1024 * 1024), b""):
                     digest.update(chunk)
-            if entry.get("sha512") != base64.b64encode(digest.digest()).decode("ascii") or int(entry.get("size", -1)) != args.image.stat().st_size:
+            encoded_digest = base64.b64encode(digest.digest()).decode("ascii")
+            if entry.get("sha512") != encoded_digest or int(entry.get("size", -1)) != args.image.stat().st_size:
                 raise ValueError("Metadata hash/size differs from final artifact")
+            if _top_level_path(text) not in (None, args.image.name):
+                raise ValueError("Top-level metadata path differs from final artifact")
+            top_hash = re.search(r"^sha512:\s*(.+)$", text, re.M)
+            if top_hash and _strip_yaml_scalar(top_hash.group(1)) != encoded_digest:
+                raise ValueError("Top-level metadata digest differs from final artifact")
             if args.public_key:
                 record = json.loads(Path(str(args.image) + ".release.json").read_text(encoding="utf-8"))
                 version_line = re.search(r"^version:\s*(.+)$", text, re.M)

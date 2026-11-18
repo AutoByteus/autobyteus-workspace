@@ -1,0 +1,54 @@
+{
+  "check": "IMP-14",
+  "commit": "f1a88a2672",
+  "date": "2026-11-18T13:59:43.597Z",
+  "surface": "Nuxt temporary page importing unchanged production components",
+  "errors": [],
+  "requests": [],
+  "states": [
+    {
+      "name": "ready-wide",
+      "text": "AutoByteusUpdate automaticallyNew versions install when you next quit the app. The app will not close or reopen by itself. Switch off to update by hand.New: AutoByteus1.5.131.5.14·this minuteInstall and restartReady for your next quit. AutoByteus will not reopen automatically.",
+      "width": 384,
+      "scrollWidth": 382,
+      "overflow": false
+    },
+    {
+      "name": "refused-wide",
+      "text": "AutoByteusUpdate automaticallyNew versions install when you next quit the app. The app will not close or reopen by itself. Switch off to update by hand.New: AutoByteus1.5.131.5.14·this minuteDownloadUpdate failed The update was refused. Your previous version is still installed. Download the update again to retry.",
+      "width": 384,
+      "scrollWidth": 382,
+      "overflow": false
+    },
+    {
+      "name": "lost-narrow",
+      "text": "AutoByteusUpdate automaticallyNew versions install when you next quit the app. The app will not close or reopen by itself. Switch off to update by hand.New: AutoByteus1.5.131.5.14·this minuteDownloadUpdate failed The pending update is no longer ready. Your installed version is unchanged. Download it again, or let the next automatic check retry.",
+      "width": 342,
+      "scrollWidth": 340,
+      "overflow": false
+    },
+    {
+      "name": "lost-narrow-zh",
+      "text": "AutoByteus自动更新新版本将在你下次退出应用时安装。应用不会自行关闭或重新打开。关闭此选项可手动更新。新: AutoByteus1.5.131.5.14·此刻下载更新失败 待安装的更新已失效，当前安装版本未变。请重新下载，或等待下次自动检查重试。",
+      "width": 342,
+      "scrollWidth": 340,
+      "overflow": false
+    },
+    {
+      "name": "ready-narrow-zh",
+      "text": "AutoByteus自动更新新版本将在你下次退出应用时安装。应用不会自行关闭或重新打开。关闭此选项可手动更新。新: AutoByteus1.5.131.5.14·此刻安装并重启已准备好在你下次退出时安装。AutoByteus 不会自动重新打开。",
+      "width": 342,
+      "scrollWidth": 340,
+      "overflow": false
+    }
+  ],
+  "cleanup": true,
+  "interactions": [
+    "keyboard Space changes switch",
+    "Install action forwarded once",
+    "Download retry action forwarded",
+    "localized ready/refusal/receipt-loss states"
+  ],
+  "visualInspection": "Viewed ready/refusal and narrow Chinese captures: established row/switch styling retained, clear failure hierarchy, no clipping/overflow; keyboard toggle and forwarded action clicks checked. OS auth UI and real install IPC remain unverified.",
+  "temporaryRouteRemoved": true
+}
