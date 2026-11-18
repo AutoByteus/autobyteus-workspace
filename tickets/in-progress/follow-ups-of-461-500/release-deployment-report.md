@@ -52,3 +52,14 @@ Deliver `codex/follow-ups-of-461-500` (Project Task `autobyteus-500`, follow-ups
   - `src/restart-resume/restart-resumer.ts` (1 line): 526 (`6517199e36`) passes the whole `message` to `restartNoticeLifecycleObserver` (one notice id); this ticket renamed `host` → `readyAgent`.
   - `src/compositions/build-studio-server.ts` (1 large hunk, `closeStudioProcessResources`): 524 round 2 (`2e5b0198e2`) ends the file watches without their OS close at shutdown; this ticket's restructure of the same function; the 500-line limit applies.
 - Routed to the implementation engineer (Local Fix) with a targeted route: merge review, then API/E2E on the shutdown and restart-resume paths only.
+
+## Fifth and sixth integration refreshes (2026-11-18)
+
+- Round 5 (API-REV-005) Pass at 95%, CRR-013 and CRR-014 Pass on the fourth merged state (`eecb228bd6`).
+- Refresh 5, by delivery: `origin/personal` `24d438fa31` → `f7b4d68711` (534 phone text size; stable `v1.5.13`'s release commit). No server change; one overlapping file, `autobyteus-web/tests/e2e/mobile-shell-probe.mjs`, auto-merged. Merged clean as `f5a7d789c9`. Checks on it:
+  - the probe's start-up duplicate-ID scan, run alone: 14 sources, 75 case IDs, duplicates 0;
+  - `pnpm -C autobyteus-web typecheck`: PASS, production 0, tests 87 in 37 files (baseline);
+  - 534's web specs: 6 files, 40 tests passed.
+- Build-only release run on `f5a7d789c9` (run 44306459004): Windows, Linux x64, Linux ARM64, macOS Intel success; **macOS ARM64 cancelled**: "The job was not acquired by Runner of type hosted even after multiple attempts" with the ARM64 capacity annotation. Classification: **platform** (RELEASE.md's own example). Not rerun on this commit, because refresh 6 supersedes it; to run on the final merged commit.
+- Docs sync: `Updated` (`docs-sync-report.md`, `00f7a4bc7b`); handoff summary and release-notes fix `241b6718ad`.
+- Refresh 6: `origin/personal` `f7b4d68711` → `75048cbaf4` (v1.5.13's release records and the merges that followed its tag: 517 FU-002/FU-003). No change under `src/app-data-migrations/`. Merge attempt: **1 conflict, 19 hunks**, in `autobyteus-server-ts/tests/integration/file-explorer/file-system-watcher.integration.test.ts`: this ticket's FU-021 (outcome waits under one 60 s hang guard, the ENVIRONMENT / INCONCLUSIVE probe; AC-005's Linux 5/5 gate) against 517's `b55ce60b5e` (waits take the shared `OS_FILE_EVENT_WAIT_MS` from `tests/helpers/os-latency-under-load.ts`). Aborted; branch clean at `00f7a4bc7b`. Routed to the implementation engineer.
