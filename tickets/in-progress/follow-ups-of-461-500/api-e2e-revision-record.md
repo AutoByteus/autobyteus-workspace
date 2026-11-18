@@ -90,3 +90,34 @@ None (the first round).
   - the founder's own data;
   - LM Studio and Ollama emulated;
   - FU-500-09 … 12.
+
+### API-REV-004: round 4, the third merged state (CRR-010): the merge's focus proven; F-4 open; Fail
+
+- Triggering role, report path, and round: `/code_reviewer`, `code-review-report.md` (round 6, CRR-010 Pass on IR-006; head `44fec882bc`), API/E2E round 4.
+- Triggering finding or case IDs: the merge of `0570c47fd9`: 448 part 2's background-task counts through this ticket's names, 493's episodic catalog.
+- Why this revision was recorded: validation of the third merged state.
+- Coverage decisions or durable test paths changed:
+  - `team-status-live-probe.mjs`: new TS-009 (the Org agent row and the Org Team row with a background task);
+  - `skill-improvement-removal-cases.mjs` SIR-002: leaves 493's derived `memory/episodic/` out of the byte-identity check, as the run history index already is.
+
+#### Prior Failure Resolution
+
+None open from round 3.
+
+- New finding **F-4**:
+  - `open-task-tree-upgrade-startup` OT-2 fails ("reading the trees wrote nothing"): on the branch, the start writes 493's episodic catalog files; OT-3 fails with it, because it needs OT-2's run.
+  - It fails on the Mac and in Linux; base `0570c47fd9` passes 3/3.
+  - Origin `Unclear`.
+
+- Canonical artifacts and sections updated: the execution report (Round, Routing, Result); the progress log; `evidence/api-e2e/API-r4-runs.txt`.
+- Prior result and confidence: `Pass` / 95% (round 3)
+- Current result and confidence: `Fail` / 90%
+- New or remaining failure IDs: F-4
+- Recommended owner: the Code Reviewer, for failure-origin review.
+- Remaining risks, blocked evidence, or untested scope:
+  - BTS-04/05 (live Claude/Codex gates, not run);
+  - quiet macOS;
+  - M-6 cold cache;
+  - the founder's own data;
+  - LM Studio and Ollama emulated;
+  - FU-500-09 … 12.

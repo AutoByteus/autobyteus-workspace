@@ -40,3 +40,9 @@ My progress log while tests run. Read it first when picking the run back up. Row
 | 2026-11-18 04:24 | FULL-SERVER (r3) | Completed | Pass after one test fix | branch-only alone: 5 load, E-007 my FU-011 harness gap (fixed, 18/18); base-side: AAR-01..04, CPW-P1..P3, NAS x2, configured-skill, SM x6, DCF-E2E-007; INTEGRATION started |
 | 2026-11-18 04:40 | INTEGRATION (r3) | Completed | Pass (base-side/FSEvents only) | 503 passed, 2 failed: watcher INCONCLUSIVE (macOS), package-auto-refresh FSEvents (base fails 2 too); Linux: watcher 5/5, refresh 14/15 (root-only EACCES case) |
 | 2026-11-18 04:52 | PROBES (r3) | Completed | Pass | merged web: 8/8, composer 12/12; WATCH-LINUX-M 5/5; ROUND 3 Pass |
+| 2026-11-18 05:38 | ROUND 4 | Started | | CRR-010 merge of 0570c47fd9 (head 44fec882bc, merge e93671cce0, fix 4db98c6d1a); dist rebuilt 05:36; TS-009 added (Org background rows) |
+| 2026-11-18 05:38 | FOCUS, TS-008/009, PROBES | Started | | chain /tmp/api500/r4/chain.log |
+| 2026-11-18 06:57 | FOCUS, TS, PROBES (r4) | Completed | Pass after test fixes | focus: this ticket's cases, episodic 7/7, BTS-01..03,06, PBS-01 pass; DCM-001..003 failed 2x in sequences, 11/11 alone (base 11/11); TS-009 added, label fix, TS-008/009 Pass; SIR-002 fixed for 493's derived memory/episodic (base fails earlier on G-3's data); G5 3/3, DLP, DCP-004, composer 12/12; app restart killed one run (rerun) |
+| 2026-11-18 06:57 | FULL-SERVER, INTEGRATION (r4) | Started | | chain2 /tmp/api500/r4/chain2.log |
+| 2026-11-18 11:05 | FULL-SERVER, INTEGRATION (r4) | Completed | Fail (F-4) | full 36 failed at load 50-110; alone 18 pass; Linux 12/13 pass + watcher 5/5; base-side as r3; DTL fails on base at the same load; F-4 open-task-tree OT-2/3 (base 3/3) |
+| 2026-11-18 11:05 | ROUND 4 | Completed | Fail | F-4 to the code reviewer |
