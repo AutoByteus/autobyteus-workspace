@@ -11,7 +11,8 @@ import {
   buildListRunningAgentsParameterSchema,
   listRunningAgentsFor,
 } from "./list-running-agents-contract.js";
-import { agentDiscoveryToolText } from "./agent-discovery-refusal.js";
+import { agentDiscoveryToolText, boundPeerDiscovery } from "./agent-discovery-refusal.js";
+import type { PeerDiscoveryAccess } from "../../agent-collaboration/execution/remote/peer-discovery-channel.js";
 
 const OWNER = "server-owned-agent-discovery";
 
@@ -26,6 +27,8 @@ export class AutoByteusListRunningAgentsTool extends BaseTool<unknown, Record<st
   constructor(
     config?: ToolConfig,
     private readonly memberExecutionContext: MemberExecutionContext | null = null,
+    /** The host's discovery (autobyteus-500 FU-011); `null` only for an unbound instance, which has no context and is refused first. */
+    private readonly peerDiscovery: PeerDiscoveryAccess | null = null,
   ) { super(config); }
 
   static getName() { return LIST_RUNNING_AGENTS_TOOL_NAME; }
@@ -33,7 +36,8 @@ export class AutoByteusListRunningAgentsTool extends BaseTool<unknown, Record<st
   static getArgumentSchema() { return buildListRunningAgentsParameterSchema(); }
 
   protected async _execute(_context: unknown, args: Record<string, unknown> = {}): Promise<string> {
-    return agentDiscoveryToolText(await listRunningAgentsFor(this.memberExecutionContext, args));
+    return agentDiscoveryToolText(await listRunningAgentsFor(this.memberExecutionContext, args,
+      boundPeerDiscovery(this.memberExecutionContext?.collaboration, this.peerDiscovery, LIST_RUNNING_AGENTS_TOOL_NAME)));
   }
 }
 
@@ -55,9 +59,10 @@ export const ensureListRunningAgentsToolRegistered = (): ToolDefinition => {
 
 export const createBoundListRunningAgentsTool = (
   memberExecutionContext: MemberExecutionContext,
+  peerDiscovery: PeerDiscoveryAccess,
 ): AutoByteusListRunningAgentsTool => {
   const definition = ensureListRunningAgentsToolRegistered();
-  const tool = new AutoByteusListRunningAgentsTool(undefined, memberExecutionContext);
+  const tool = new AutoByteusListRunningAgentsTool(undefined, memberExecutionContext, peerDiscovery);
   tool.definition = definition;
   return tool;
 };

@@ -13,8 +13,8 @@ import { createRoot, killBuiltStudios, managerOf, startBuiltStudio, terminateRoo
 // only the external AGY CLI is scripted. No user data.
 // - LTI-1: a standalone Agent run delegates a Team (461's shape: the team's own history row, written at its creation); a
 //   Team the user started is beside it. The install then meets v2 late: its ledger row and its follow-up's are removed (as on
-//   an install where v2 had not finished), and the server starts again. v2 rebuilds the team index and drops the current
-//   teams' rows (base's behavior, FU-029: recorded for the user-started team); its follow-up
+//   an install where v2 had not finished), and the server starts again. v2 rebuilds the team index and keeps the current
+//   teams' rows (autobyteus-500 G-2, FU-029: asserted for the user-started team; base dropped it); its follow-up
 //   (`20261114_preserved_items_after_team_run_history_index_v2`) restores the delegated team's row in the same start: the row
 //   is in the index again, and the delegated team's stopped-run Settings save, which needs its row (DS-11, TC-5), works.
 // Prerequisite: `pnpm -C autobyteus-server-ts build` for the current worktree.
@@ -97,7 +97,10 @@ suite("A late team history index v2: its follow-up restores the delegated team r
     expect(v2?.status, JSON.stringify(v2)).toMatch(/^SUCCEEDED/);
     expect(followUp?.status, JSON.stringify(followUp)).toMatch(/^SUCCEEDED/);
     const userRowKept = await hasRow(userTeam.rootId);
-    console.log(`LTI-1: late v2 ${JSON.stringify(v2)}; follow-up ${JSON.stringify(followUp)}; the user-started team's row after v2 (base FU-029): ${userRowKept}`);
+    console.log(`LTI-1: late v2 ${JSON.stringify(v2)}; follow-up ${JSON.stringify(followUp)}; the user-started team's row after v2: ${userRowKept}`);
+    // autobyteus-500 G-2 (FU-029, AC-010): a late v2 keeps every team run whose folder holds a current tree; base dropped
+    // the user-started team's row here.
+    expect(userRowKept, `the user-started team's row is kept; rows: ${JSON.stringify(await indexRows()).slice(0, 800)}`).toBe(true);
     // The follow-up restored the delegated team's row in the same start.
     expect(await hasRow(delegatedTeam), `the delegated team's row is restored; rows: ${JSON.stringify(await indexRows()).slice(0, 800)}; before: ${JSON.stringify(delegatedRowBefore)}`).toBe(true);
     // Its stopped-run Settings save, which needs its row, works.

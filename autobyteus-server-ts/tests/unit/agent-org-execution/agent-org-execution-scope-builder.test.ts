@@ -13,6 +13,7 @@ import { AgentOrgRunPersistenceCoordinator } from "../../../src/agent-org-execut
 import { validateAgentOrgStatePackage } from "../../../src/agent-org-execution/services/agent-org-state-package-validator.js";
 import { AgentOrgRunExecutionTreeStore } from "../../../src/run-history/store/agent-org-run-execution-tree-store.js";
 import { testAgentOrgExecutionTree, testOrgAgentNode } from "../../fixtures/current-agent-org-run-fixtures.js";
+import { NO_PEER_CHANNEL, OFFERED_MODEL_EXECUTION_FACTORY } from "../../helpers/explicit-host-collaborators.js";
 
 const roots: string[] = [];
 afterEach(() => { while (roots.length) rmSync(roots.pop()!, { recursive: true, force: true }); });
@@ -81,7 +82,7 @@ describe("AgentOrgExecutionScopeBuilder restore", () => {
       enterPersistenceFailStop: vi.fn(),
     });
     const enclosingDefinitionLookup = vi.fn(() => { throw new Error("Restore must not read fresh enclosing instructions"); });
-    const builder = new AgentOrgExecutionScopeBuilder({ delegationIndex: noDelegations(), viewStreams: testViewStreams(), taskRecords: openTaskRecords(),
+    const builder = new AgentOrgExecutionScopeBuilder({ executionFactory: OFFERED_MODEL_EXECUTION_FACTORY, remoteChannel: NO_PEER_CHANNEL, delegationIndex: noDelegations(), viewStreams: testViewStreams(), taskRecords: openTaskRecords(),
       flatTeamExecutionFactory: {} as never,
       orgDefinitions: { getDefinitionById: enclosingDefinitionLookup } as never,
       teamDefinitions: { getDefinitionById: enclosingDefinitionLookup } as never,

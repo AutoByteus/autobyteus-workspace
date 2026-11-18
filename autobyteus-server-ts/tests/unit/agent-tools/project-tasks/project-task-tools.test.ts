@@ -19,6 +19,7 @@ import { PROJECT_TASK_TOOL_NAMES, buildProjectTaskToolSchema, isProjectTaskToolN
 import { ToolDefinition } from "autobyteus-ts/tools/registry/tool-definition.js";
 import { ToolOrigin } from "autobyteus-ts/tools/tool-origin.js";
 import { defaultToolRegistry } from "autobyteus-ts/tools/registry/tool-registry.js";
+import { freshProcessTaskService } from "../../../helpers/explicit-host-collaborators.js";
 const provider = new ProjectTaskToolsMcpAdapterProvider();
 const mcp = async (name: string, args: Record<string, unknown>) => {
   const result = await provider.getAdapters().find((a) => a.definition.name === name)!.execute({rawArguments: args, session: {} as never});
@@ -48,14 +49,14 @@ describe("Project data tools — actual native preparation/execute and selected 
   beforeEach(async () => {
     root = await fs.mkdtemp(path.join(os.tmpdir(), "project-tools-unit-"));
     appConfigProvider.resetForTests(); appConfigProvider.initialize({appDataDir: root});
-    resetProjectServiceForTests(); releaseProjectTaskServiceProcessInstance(getProjectTaskService()); resetProjectStoreForTests(); resetProjectTaskContextStoreForTests();
+    resetProjectServiceForTests(); freshProcessTaskService(); resetProjectStoreForTests(); resetProjectTaskContextStoreForTests();
     registerProjectTaskTools();
     projectId = (await getProjectService().createProject({name: "Tools fixture"})).projectId;
   });
   afterEach(async () => {
     vi.restoreAllMocks();
     await fs.rm(root, {recursive: true, force: true});
-    appConfigProvider.resetForTests(); resetProjectServiceForTests(); releaseProjectTaskServiceProcessInstance(getProjectTaskService()); resetProjectStoreForTests(); resetProjectTaskContextStoreForTests();
+    appConfigProvider.resetForTests(); resetProjectServiceForTests(); freshProcessTaskService(); resetProjectStoreForTests(); resetProjectTaskContextStoreForTests();
   });
 
   it.each(PROJECT_TOOL_NAMES)("protects the selected Project tool %s from configured MCP collision and rejects unselected calls", name => {

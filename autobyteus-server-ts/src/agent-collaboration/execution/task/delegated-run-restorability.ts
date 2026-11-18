@@ -3,7 +3,7 @@ import { createStoredTeamRunExecutionTreeLocationService } from "../../../run-hi
 import type { RunOwnAgentsReader } from "../../../run-history/store/run-own-agents-reader.js";
 import type { DelegationIndex } from "../../delegation/delegation-index.js";
 import type { RootExecutionIdentity } from "../domain/root-execution-identity.js";
-import type { PairedAgentAccess } from "../remote/paired-agent-access.js";
+import type { RunAgentAccess } from "../remote/run-agent-access.js";
 import type { RunOwnDelegations } from "./run-own-delegation.js";
 import { createRunConversationAvailability, taskExecutionConversationUnavailable, type RunConversationAvailability } from "./run-conversation-availability.js";
 import type { TaskExecutionReference } from "./task-execution-reference.js";
@@ -57,7 +57,7 @@ export const createDelegatedRunRestorability = (input: Readonly<{
   memoryDir: string;
   tree: Pick<DelegationIndex, "tasksOf">;
   ownDelegations: Pick<RunOwnDelegations, "of">;
-  liveAgents(kind: "agent" | "agent_team"): Pick<PairedAgentAccess, "pairedAgentStatuses">;
+  liveAgents(kind: "agent" | "agent_team"): Pick<RunAgentAccess, "runAgentStatuses">;
 }>): DelegatedRunRestorability => new DelegatedRunRestorability({
   tree: () => input.tree,
   ownDelegations: input.ownDelegations,

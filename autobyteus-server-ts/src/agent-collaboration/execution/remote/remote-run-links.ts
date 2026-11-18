@@ -6,7 +6,7 @@ import type { CollaborationCommunicationMessage } from "../communication/collabo
 import { REMOTE_REFUSAL, REMOTE_ROOT_REFUSAL_TEXT } from "./remote-refusal-codes.js";
 import { delegatedRunEndpoint, delegatedTeamEndpoints, delegatorEndpoint, type LinkedRemoteEndpoint, type RemoteEndpoint } from "./remote-endpoint.js";
 import {
-  resolveRemoteRunChannel,
+  type RemoteRunChannelAccess,
   type RemoteChannelRefusal,
   type RemoteDeliveryReceipt,
   type RemoteOwnerCommand,
@@ -64,7 +64,9 @@ export const storedRemoteLinkCheck = (
   stored: Omit<RemoteRunLinksOptions, "channel"> | Readonly<{ run: RootExecutionIdentity; tree: Pick<DelegationIndex, "peerChildrenOf"> }> | null,
   query: RemoteInboundQuery,
 ): StoredRemoteLinkCheck => !stored ? "not_found"
-  : new RemoteRunLinks("run" in stored ? { peerRuns: () => peerRunLinksOf(stored.run, stored.tree) } : stored).admitsInbound(query) ? "proceed" : "not_linked";
+  // A stored check only reads the links; it sends nothing, so it has no channel.
+  : new RemoteRunLinks({ ...("run" in stored ? { peerRuns: () => peerRunLinksOf(stored.run, stored.tree) } : stored), channel: () => null })
+    .admitsInbound(query) ? "proceed" : "not_linked";
 
 /** The peer accepted the message; `peerName` is this owner's label for it, named in the sender's result. */
 export type RemoteDeliveryAnswer = Readonly<{ accepted: true; peerName: string }> | RemoteChannelRefusal;
@@ -74,10 +76,10 @@ export type RemoteRunLinksOptions = Readonly<{
   peerRuns(): readonly PeerRunLink[];
   /**
    * Receiving node: the back-link of a root a peer delegated to (`delegatedFrom`) and the local agents it pairs
-   * with (a standalone root's host; every member of a Team root); `null` otherwise.
+   * with (a standalone run's own agent; every member of a Team root); `null` otherwise.
    */
   backLink?: Readonly<{ pairedAgentRunIds(): readonly string[]; delegatedFrom: PeerDelegatedFrom }> | null;
-  channel?(): RemoteRunChannel | null;
+  channel: RemoteRunChannelAccess;
 }>;
 
 /**
@@ -181,6 +183,6 @@ export class RemoteRunLinks {
   }
 
   private channel(): RemoteRunChannel | null {
-    return resolveRemoteRunChannel(this.options.channel);
+    return this.options.channel();
   }
 }

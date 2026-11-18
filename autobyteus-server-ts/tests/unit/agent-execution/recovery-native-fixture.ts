@@ -20,6 +20,7 @@ import { AgentRunCommandRegistry } from '../../../src/agent-execution/services/a
 import { stubAutoByteusRunTools } from "../../helpers/agent-tool-mcp-run-sessions-stub.js";
 import { CompactionAttempts } from "../../helpers/compaction-summary-request.js";
 import type { LLMInvocationOptions } from 'autobyteus-ts/llm/base.js';
+import { NO_ELIGIBLE_STANDALONE_RUNS } from "../../helpers/explicit-host-collaborators.js";
 
 export const summary = COMPACTION_SUMMARY_HEADINGS.map(h => `## ${h}\n- Preserve the approved scope; do not deploy.`).join('\n\n');
 export async function eventually(check: () => unknown) {
@@ -70,7 +71,7 @@ export async function createRecoveryFixture(postResponse = false) {
   const normalizer=new AgentRunProviderInputNormalizer({ resolve:()=>null });
   const run=new AgentRun({context,backend,providerInputNormalizer:normalizer,commandObservers:[{onUserMessageForwarded:forwarded}]});
   const registry=new AgentRunCommandRegistry();
-  const coordinator=new AgentRunCommandCoordinator({ registry, agentRunService: {
+  const coordinator=new AgentRunCommandCoordinator({ standaloneRuns: NO_ELIGIBLE_STANDALONE_RUNS, registry, agentRunService: {
     getAgentRun:()=>run, resolveCommandReadyAgentRun:async()=>run, recordRunActivity:async()=>{},
   } as any, overlayStore:{clear:()=>{},getOverlay:()=>null} as any,
     projectionService:{getRunStatusProjection:()=>({statusPayload:run.getStatusSnapshot()})} as any,

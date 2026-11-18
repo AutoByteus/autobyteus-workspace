@@ -11,7 +11,7 @@ export const agentRootView = (): MutableView => ({
   is_active: true,
   execution_tree: {
     subjectKind: 'agent', createdAt: created,
-    host: { address: '/research_assistant', agentRunId: 'host-run', agentDefinitionId: 'research-assistant' },
+    agent: { address: '/research_assistant', agentRunId: 'host-run', agentDefinitionId: 'research-assistant' },
   },
 } as MutableView)
 

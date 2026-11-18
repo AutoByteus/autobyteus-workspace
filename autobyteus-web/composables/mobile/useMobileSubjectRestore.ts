@@ -8,8 +8,8 @@ import { useMobileRunOpeningStore } from '~/stores/mobileRunOpeningStore';
 import { useRunHistoryStore } from '~/stores/runHistoryStore';
 import { agentRunIdOfRowKey } from '~/utils/runListProjection';
 
-/** A delegated row of an agent run, `agent:<hostRunId>/<rowKey>`: its row exists once the host's view is published. */
-const delegatedHostOf = (key: string): string | null => {
+/** A delegated row of an agent run, `agent:<runId>/<rowKey>`: its row exists once the host's view is published. */
+const treeRunOf = (key: string): string | null => {
   const slash = key.indexOf('/');
   return slash > 0 ? agentRunIdOfRowKey(key.slice(0, slash)) : null;
 };
@@ -65,7 +65,7 @@ export function useMobileSubjectRestore(input: {
       await nextTick();
       if (!isCurrent()) return;
       if (history.error) return await toList();
-      const host = delegatedHostOf(key);
+      const host = treeRunOf(key);
       if (host && !collaboration.contextFor(host)) {
         await collaboration.inspect(host);
         if (!isCurrent()) return;

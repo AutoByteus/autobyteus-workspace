@@ -20,10 +20,15 @@ export class CollaboratorAddError extends Error {
     readonly collaboratorName: string,
     readonly reason: string,
     /**
-     * A `defaults_only` copy refused because no layer could run it: why the node's Model Router did not choose either
+     * A `defaults_only` delegated run refused because no layer could run it: why the node's Model Router did not choose either
      * (the delegating node words it, supplement § 6). Absent for every other refusal.
      */
-    readonly routerState?: CopyRouterState,
+    readonly routerState?: DelegatedRunRouterState,
+    /**
+     * What the delegating agent can do next when this node refuses its own delegation (autobyteus-500 FU-030); a peer's
+     * refusal reaches the delegating node as the peer's reason, without it (the peer's settings are not the agent's).
+     */
+    readonly nextStep: string | null = null,
   ) {
     super(reason);
     this.name = "CollaboratorAddError";
@@ -31,7 +36,7 @@ export class CollaboratorAddError extends Error {
 }
 
 /** Why the node's Model Router did not choose for an agent no layer covers: Model Routing is off, or why it is not active. */
-export type CopyRouterState = Readonly<{ kind: "off" }> | Readonly<{ kind: "not_active"; reason: string }>;
+export type DelegatedRunRouterState = Readonly<{ kind: "off" }> | Readonly<{ kind: "not_active"; reason: string }>;
 
 /**
  * A target with no configured default runtime and model where there is nothing to inherit (the
@@ -39,14 +44,14 @@ export type CopyRouterState = Readonly<{ kind: "off" }> | Readonly<{ kind: "not_
  * add failure, so every existing caller still sees `CollaboratorAddError`.
  */
 export class CollaboratorNoDefaultLaunchError extends CollaboratorAddError {
-  constructor(collaboratorName: string, readonly targetKind: "agent" | "agent_team", routerState: CopyRouterState) {
+  constructor(collaboratorName: string, readonly targetKind: "agent" | "agent_team", routerState: DelegatedRunRouterState) {
     super(collaboratorName, `There is no default runtime configured for the target ${targetKind === "agent" ? "agent" : "agent team"} ${collaboratorName}`, routerState);
     this.name = "CollaboratorNoDefaultLaunchError";
   }
 }
 
 /**
- * A `defaults_only` copy whose agents the node's Model Router could not choose for (supplement § 5): nothing starts.
+ * A `defaults_only` delegated run whose agents the node's Model Router could not choose for (supplement § 5): nothing starts.
  * `agentName` is the first agent it was asked about; `failure` the router's reason.
  */
 export class CollaboratorRouterFailedError extends CollaboratorAddError {

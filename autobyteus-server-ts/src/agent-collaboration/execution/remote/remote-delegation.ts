@@ -5,7 +5,7 @@ import { assertAgentTeamAddress } from "../../domain/agent-team-address.js";
 import type { RemoteAgentPlacement } from "../../collaborators/catalog-delegation.js";
 import type { SpawnTaskInput, TaskDelegationOutcome } from "../task/task-delegation-command.js";
 import { REMOTE_ROOT_REFUSAL_TEXT } from "./remote-refusal-codes.js";
-import { resolveRemoteRunChannel, type RemoteAgentLaunch, type RemoteRunChannel } from "./remote-run-channel.js";
+import type { RemoteAgentLaunch, RemoteRunChannel, RemoteRunChannelAccess } from "./remote-run-channel.js";
 import { launchNotesOf } from "../../collaborators/launch-configuration-notes.js";
 import { getAgentTeamAddressBasename } from "../../domain/agent-team-address.js";
 import { peerRunIdOf, peerRunLinksOf, type PeerRunLink } from "./peer-run-link.js";
@@ -32,7 +32,7 @@ export class RemoteDelegation {
   constructor(private readonly options: Readonly<{
     delegation: Pick<TaskDelegation, "toPeerRun">;
     tree: Pick<DelegationIndex, "peerChildrenOf">;
-    channel?(): RemoteRunChannel | null;
+    channel: RemoteRunChannelAccess;
   }>) {}
 
   /**
@@ -69,6 +69,6 @@ export class RemoteDelegation {
   }
 
   private channel(): RemoteRunChannel | null {
-    return resolveRemoteRunChannel(this.options.channel);
+    return this.options.channel();
   }
 }

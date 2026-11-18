@@ -6,7 +6,7 @@
 // (the probe runs autobyteus-server-ts/dist/app.js), and Chrome.
 // Owners are real: a standalone Manager on the AGY runtime with the repository's scripted CLI
 // (autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs) calls the actual `delegate_task` tool, which creates a
-// delegated Agent copy and a delegated Team copy (the draft owner kind `agent_collaboration_member_draft`).
+// delegated agent run and a delegated team run (each its own run: `agent_draft` and `team_member_draft`, autobyteus-500).
 // A standalone Team run and an Org run (with a nested team and a delegated task agent) cover the other kinds.
 // Cases:
 //   CF-001 universal `GET`/`DELETE /rest/drafts/*` over real HTTP for every owner kind, the status mapping,
@@ -335,8 +335,7 @@ const contextFileSnapshot = async () => {
 const ownerDir = (owner) => {
   if (owner.kind === 'agent_draft') return path.join(draftRoot(), 'agent-runs', owner.draftRunId, 'context_files');
   if (owner.kind === 'team_member_draft') return path.join(draftRoot(), 'team-runs', owner.teamDraftId, 'members', encodeURIComponent(owner.memberAddress), 'context_files');
-  if (owner.kind === 'org_member_draft') return path.join(draftRoot(), 'agent-org-runs', owner.orgRunId, 'agent-runs', owner.agentRunId, 'context_files');
-  return path.join(draftRoot(), 'agent-collaborations', owner.hostRunId, 'agent-runs', owner.agentRunId, 'context_files');
+  return path.join(draftRoot(), 'agent-org-runs', owner.orgRunId, 'agent-runs', owner.agentRunId, 'context_files');
 };
 /**
  * A delegated run's composer drafts under its own run (autobyteus-461 rule 2, CR-461-106): an Agent copy's under its agent run,
@@ -355,7 +354,6 @@ const universalRoutes = async () => {
     { kind: 'agent_draft', draftRunId: world.agentRoot },
     { kind: 'team_member_draft', teamDraftId: world.teamRoot, memberAddress: '/squad/reviewer' },
     { kind: 'org_member_draft', orgRunId: world.orgRoot, agentRunId: world.orgManager },
-    { kind: 'agent_collaboration_member_draft', hostRunId: world.agentRoot, agentRunId: world.agentCopy },
   ];
   const perKind = [];
   for (const owner of owners) {
@@ -391,16 +389,14 @@ const universalRoutes = async () => {
     // Invalid owner or file → 400 {detail}.
     { path: `/rest/drafts/team-runs/${world.teamRoot}/members/no-root/context-files/ctx_a__b.txt`, expect: [400] },
     { path: `/rest/drafts/agent-org-runs/${world.orgRoot}/agent-runs/%20padded/context-files/ctx_a__b.txt`, expect: [400] },
-    { path: `/rest/drafts/${collab}/a%2Fb/context-files/ctx_a__b.txt`, expect: [400] },
     { path: `/rest/drafts/agent-runs/${world.agentRoot}/context-files/%2E%2E%2Fctx_s1__sentinel.txt`, expect: [400] },
     { path: `/rest/drafts/agent-runs/${world.agentRoot}/context-files/..%2F..%2Fcontext_files%2Fctx_s1__sentinel.txt`, expect: [400] },
     { path: `/rest/drafts/agent-org-runs/${world.orgRoot}/agent-runs/%2E%2E/context-files/ctx_s3__sentinel.txt`, expect: [400] },
-    { path: `/rest/drafts/${collab}/%2E%2E/context-files/ctx_a__b.txt`, expect: [400] },
     // Absent owner → 404.
     { path: `/rest/drafts/agent-org-runs/${world.orgRoot}/agent-runs/unknown-member/context-files/ctx_a__b.txt`, expect: [404] },
     { path: `/rest/drafts/agent-org-runs/missing-org/agent-runs/${world.orgManager}/context-files/ctx_a__b.txt`, expect: [404] },
-    { path: `/rest/drafts/${collab}/unknown-child/context-files/ctx_a__b.txt`, expect: [404] },
-    { path: `/rest/drafts/agent-collaborations/missing-host/agent-runs/${world.agentCopy}/context-files/ctx_a__b.txt`, expect: [404] },
+    // autobyteus-500 FU-020: the host-scoped owner kind is gone; its paths are not draft locators.
+    { path: `/rest/drafts/${collab}/${world.agentCopy}/context-files/ctx_a__b.txt`, expect: [404] },
     // Not a draft locator (literal dot segments are not normalized over raw HTTP) → 404.
     { path: '/rest/drafts/unknown-runs/x/context-files/ctx_a__b.txt', expect: [404] },
     { path: `/rest/drafts/agent-runs/${world.agentRoot}/context-files/../../agent-runs/victim/context-files/ctx_s3__sentinel.txt`, expect: [404] },
@@ -465,7 +461,8 @@ const universalRoutes = async () => {
     body: JSON.stringify({ pairingCode: session.payload?.pairingCode, deviceName: 'probe phone', serverBaseUrl }) })).json();
   const credential = exchange.credential ?? exchange.accessToken ?? exchange.token;
   assert(typeof credential === 'string' && credential.length > 8, 'pairing exchange returned no credential', { exchangeKeys: Object.keys(exchange), session });
-  const collabOwner = owners[3];
+  // autobyteus-500 FU-020: a delegated agent run's draft owner is its own run.
+  const collabOwner = { kind: 'agent_draft', draftRunId: world.agentCopy };
   const forged = `${credential.slice(0, -4)}xxxx`;
   const viaBearer = await uploadDraft(collabOwner, 'phone.txt', 'phone bytes', { Authorization: `Bearer ${credential}` });
   const forgedDelete = await rawRequest('DELETE', viaBearer.locator, { Authorization: `Bearer ${forged}` });
@@ -534,7 +531,7 @@ const childRow = (page, agentRunId) => page.locator(`[data-test="workspace-team-
 const openAgentCopy = async (page) => { await openAgentRoot(page); await childRow(page, world.agentCopy).click(); await centerTray(page).waitFor({ timeout: 30000 }); };
 const openTeamCopyMember = async (page, agentRunId = world.teamCopyCoordinator.agentRunId) => {
   await openAgentRoot(page);
-  const teamRow = page.locator('[data-test="workspace-team-transient-execution-row"][data-transient-kind="task_team"]').first();
+  const teamRow = page.locator('[data-test="workspace-team-transient-execution-row"][data-delegated-run-kind="task_team"]').first();
   await teamRow.waitFor({ state: 'visible', timeout: 30000 });
   if ((await teamRow.getAttribute('aria-expanded')) === 'false') await teamRow.locator('[data-test="workspace-team-transient-disclosure"]').click();
   await childRow(page, agentRunId).waitFor({ state: 'visible', timeout: 30000 });

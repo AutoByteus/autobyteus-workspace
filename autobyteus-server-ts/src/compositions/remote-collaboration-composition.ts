@@ -3,10 +3,6 @@ import { PeerStartedRunDecisions } from "../remote-collaboration/inbound/peer-st
 import type { AgentRunService } from "../agent-execution/services/agent-run-service.js";
 import type { AgentOrgRunService } from "../agent-org-execution/services/agent-org-run-service.js";
 import type { TeamRunService } from "../agent-team-execution/services/team-run-service.js";
-import {
-  bindProcessRemoteRunChannel,
-  releaseProcessRemoteRunChannel,
-} from "../agent-collaboration/execution/remote/remote-run-channel.js";
 import { RemoteDelegationReceiver } from "../remote-collaboration/inbound/remote-delegation-receiver.js";
 import { RemoteMessageReceiver, type RemoteRootDirectory } from "../remote-collaboration/inbound/remote-message-receiver.js";
 import { RemoteRunViewProvider } from "../remote-collaboration/inbound/remote-run-view-provider.js";
@@ -15,10 +11,6 @@ import { getTeamMemberRunViewProjectionService } from "../run-history/services/t
 import { DelegatedRunStarter } from "../agent-collaboration/execution/delegation/delegated-run-starter.js";
 import { RemoteTeamRunStarter } from "../remote-collaboration/inbound/remote-team-run-starter.js";
 import { RemoteCatalogLister } from "../remote-collaboration/inbound/remote-catalog-lister.js";
-import {
-  bindProcessPeerDiscoveryChannel,
-  releaseProcessPeerDiscoveryChannel,
-} from "../agent-collaboration/execution/remote/peer-discovery-channel.js";
 import {
   bindProcessRemoteCollaboration,
   composeRemoteCollaboration,
@@ -31,11 +23,30 @@ import { getStandaloneAgentRunRootManager } from "../standalone-agent-run-root/s
 import { createRootExecutionIdentity, type RootSubjectKind } from "../agent-collaboration/execution/domain/root-execution-identity.js";
 import type { CollaborationRootResolver } from "./collaboration-root-resolver.js";
 import { PeerStartedRunLaunches } from "../remote-collaboration/inbound/peer-started-run-launches.js";
+import type { RemoteRunChannelAccess } from "../agent-collaboration/execution/remote/remote-run-channel.js";
+import type { PeerDiscoveryAccess } from "../agent-collaboration/execution/remote/peer-discovery-channel.js";
 import type { RunningAgentsComposition } from "./running-agents-composition.js";
 
 /**
- * Binds this node's remote collaboration (CM-10 … CM-12) around the process's run services: the settings,
- * the peer client as the roots' `RemoteRunChannel`, and the peer gateway behind `/rest/remote/*`. Inbound
+ * autobyteus-500 FU-011: the studio composes remote collaboration after the run services it serves, so the tools and
+ * roots composed before it read its peer client and discovery on use, through this binding. A call happens only once the
+ * server serves; one before `bind` is a startup error.
+ */
+export const createLateRemoteCollaborationBinding = () => {
+  let composed: RemoteCollaborationServices | null = null;
+  const read = (): RemoteCollaborationServices => {
+    if (!composed) throw new Error("Remote collaboration is used before the studio composed it.");
+    return composed;
+  };
+  const channel: RemoteRunChannelAccess = () => read().client;
+  const discovery: PeerDiscoveryAccess = () => read().discovery;
+  return Object.freeze({ channel, discovery, bind: (services: RemoteCollaborationServices) => { composed = services; } });
+};
+export type LateRemoteCollaborationBinding = ReturnType<typeof createLateRemoteCollaborationBinding>;
+
+/**
+ * Composes this node's remote collaboration (CM-10 … CM-12) around the process's run services: the settings,
+ * the peer client (the roots' `RemoteRunChannel`), the discovery, and the peer gateway behind `/rest/remote/*`. Inbound
  * messages reach roots only through their managers' public resolve / restore APIs. Returns the services (the node
  * access gate takes the peer verifier and the peer revocations from them) and its release.
  */
@@ -45,7 +56,7 @@ export const composeStudioRemoteCollaboration = (input: Readonly<{
   tempWorkspaceDir: string;
   agentRuns: Pick<AgentRunService, "prepareAgentRun" | "recordRunTitle" | "readRunTitle">;
   teamRuns: Pick<TeamRunService, "storedRemoteLinkCheck" | "createTeamRun" | "terminateTeamRun" | "recordRunTitle"
-    | "readRunTitle" | "pairedAgents">;
+    | "readRunTitle" | "runAgents">;
   orgRuns: Pick<AgentOrgRunService, "storedRemoteLinkCheck">;
   /** The node's one root resolution (autobyteus-285 D5); the receivers keep their own "not found" handling. */
   rootResolver: CollaborationRootResolver;
@@ -62,13 +73,13 @@ export const composeStudioRemoteCollaboration = (input: Readonly<{
         case "agent_org": return input.orgRuns.storedRemoteLinkCheck(root.runId, query);
       }
     },
-    standalone: async (hostRunId) => { const found = await resolve("agent", hostRunId); return found?.kind === "agent" ? found.root : null; },
+    standalone: async (agentRunId) => { const found = await resolve("agent", agentRunId); return found?.kind === "agent" ? found.root : null; },
     team: async (teamRunId) => { const found = await resolve("agent_team", teamRunId); return found?.kind === "agent_team" ? found.root : null; },
     org: async (orgRunId) => { const found = await resolve("agent_org", orgRunId); return found?.kind === "agent_org" ? found.root : null; },
-    pairedAgents: (kind) => kind === "agent" ? getStandaloneAgentRunRootManager().pairedAgents : input.teamRuns.pairedAgents,
+    runAgents: (kind) => kind === "agent" ? getStandaloneAgentRunRootManager().runAgents : input.teamRuns.runAgents,
     liveRoot: (root) => input.rootResolver.resolveActive(root)?.root ?? null,
   };
-  // autobyteus-32: decisions of copies started for a peer, held until the peer's work packet arrives.
+  // autobyteus-32: decisions of delegated runs started for a peer, held until the peer's work packet arrives.
   const peerStartedRunDecisions = new PeerStartedRunDecisions();
   const services = composeRemoteCollaboration({
     config: { getAppDataDir: () => input.appDataDir },
@@ -105,14 +116,8 @@ export const composeStudioRemoteCollaboration = (input: Readonly<{
     }),
   });
   bindProcessRemoteCollaboration(services);
-  const release = () => {
-    releaseProcessPeerDiscoveryChannel(services.discovery);
-    releaseProcessRemoteRunChannel(services.client);
-    releaseProcessRemoteCollaboration(services);
-  };
-  try {
-    bindProcessRemoteRunChannel(services.client);
-    bindProcessPeerDiscoveryChannel(services.discovery);
-  } catch (error) { release(); throw error; }
+  // The process binding serves only the GraphQL resolvers (framework edge, FU-500-02); the roots, the discovery tools
+  // and the routes get the services from the composition (autobyteus-500 FU-011).
+  const release = () => releaseProcessRemoteCollaboration(services);
   return Object.freeze({ services, release });
 };

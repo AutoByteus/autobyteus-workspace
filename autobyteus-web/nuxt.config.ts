@@ -261,9 +261,12 @@ const baseConfig: NuxtConfig = {
 
   // Keep Nuxt's source scanning focused on app source folders, and the dev watcher out of the bundled server
   // dependencies (large trees that can exhaust Linux inotify limits).
+  // The layouts' tests are not app source: Nuxt would otherwise scan them, and the web type gate counted their errors
+  // twice (autobyteus-500 FU-023).
   ignore: [
     '**/electron-dist/**',
-    '**/resources/**'
+    '**/resources/**',
+    'layouts/__tests__/**'
   ]
 }
 

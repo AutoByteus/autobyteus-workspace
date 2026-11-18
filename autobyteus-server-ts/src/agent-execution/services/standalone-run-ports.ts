@@ -18,8 +18,8 @@ import type { StandaloneAgentRunActivationResult } from "./standalone-agent-run-
  * standalone run, so the caller keeps its plain path for helpers and application-owned runs.
  */
 
-export type StandaloneHostTerminationResult = Readonly<{
-  /** `terminated`: the live host stopped and was recorded; `not_active`: nothing was running; `rejected`: it did not stop. */
+export type StandaloneRunAgentTerminationResult = Readonly<{
+  /** `terminated`: the live agent stopped and was recorded; `not_active`: nothing was running; `rejected`: it did not stop. */
   outcome: "terminated" | "not_active" | "rejected";
   runtimeKind: RuntimeKind | null;
 }>;
@@ -27,12 +27,12 @@ export type StandaloneHostTerminationResult = Readonly<{
 export type StandaloneRootStopResult = Readonly<{
   /** A registered root existed and ended (children first). */
   rootEnded: boolean;
-  host: StandaloneHostTerminationResult;
+  agent: StandaloneRunAgentTerminationResult;
 }>;
 
 export type StandaloneRunLifecyclePort = Readonly<{
-  /** Create, activate, restore and resolve: the run's root, then its host made ready with its member context. */
-  resolveRootAndEnsureHost(runId: string): Promise<StandaloneAgentRunActivationResult | null>;
+  /** Create, activate, restore and resolve: the run's root, then its agent made ready with its member context. */
+  resolveRootAndEnsureAgent(runId: string): Promise<StandaloneAgentRunActivationResult | null>;
   /** Explicit Stop: the run's own agent. */
   stopRoot(runId: string): Promise<StandaloneRootStopResult | null>;
   /**
@@ -50,7 +50,7 @@ export type StandaloneRunPostInput = Readonly<{
   mentions?: readonly CollaboratorMention[];
   /** Passed through to `AgentRun.postUserMessage` unchanged (e.g. the command `lifecycleObserver`). */
   postOptions: AgentRunInputOptions;
-  /** Called with the live host before anything is admitted or posted (e.g. to bind the host stream). */
+  /** Called with the live agent before anything is admitted or posted (e.g. to bind the agent's stream). */
   onActiveRunReady?: (run: AgentRun) => void;
 }>;
 
@@ -67,21 +67,21 @@ export type StandaloneRunCommandPort = Readonly<{
    * SR-070), then whether a delegated run can be restored (CR-461-070); `null` when it takes input (or is not eligible).
    */
   inputRefusal(runId: string): Promise<RunInputRefusal | null>;
-  /** In the root's gate: the fence again, host ready, `onActiveRunReady`, mention admission, then the post. */
+  /** In the root's gate: the fence again, agent ready, `onActiveRunReady`, mention admission, then the post. */
   postUserMessage(input: StandaloneRunPostInput): Promise<StandaloneRunPostResult | null>;
 }>;
 
-let processCommandPort: StandaloneRunCommandPort | null = null;
-
-export const bindProcessStandaloneRunCommandPort = (port: StandaloneRunCommandPort): void => {
-  if (!port) throw new Error("A process StandaloneRunCommandPort is required.");
-  if (processCommandPort) throw new Error("The process StandaloneRunCommandPort is already initialized.");
-  processCommandPort = port;
-};
-
-export const releaseProcessStandaloneRunCommandPort = (port: StandaloneRunCommandPort): void => {
-  if (processCommandPort === port) processCommandPort = null;
-};
-
-/** The process port, or null in a process that hosts no eligible standalone runs. */
-export const getProcessStandaloneRunCommandPort = (): StandaloneRunCommandPort | null => processCommandPort;
+/**
+ * The standalone runs of a process whose runs are never eligible (an application execution scope: its runs are
+ * application-owned, `standalone-agent-run-eligibility.ts`). Every answer is "not eligible" (`null`), so the run is
+ * stopped, activated and posted to directly, by the same branch an ineligible run takes in the studio. Passed by that
+ * composition (autobyteus-500 FU-018), never decided by a missing collaborator.
+ */
+export const APPLICATION_HOST_STANDALONE_RUNS: StandaloneRunLifecyclePort & StandaloneRunCommandPort = Object.freeze({
+  resolveRootAndEnsureAgent: async () => null,
+  stopRoot: async () => null,
+  stopRootForTaskClosure: async () => null,
+  refreshInheritedLaunch: async () => undefined,
+  inputRefusal: async () => null,
+  postUserMessage: async () => null,
+});

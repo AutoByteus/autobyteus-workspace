@@ -6,6 +6,7 @@ import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.j
 import { CodexThreadEventConverter } from "../../../src/agent-execution/backends/codex/events/codex-thread-event-converter.js";
 import { CodexThreadEventName } from "../../../src/agent-execution/backends/codex/events/codex-thread-event-name.js";
 import { AgentRunEventType } from "../../../src/agent-execution/domain/agent-run-event.js";
+import { NO_ELIGIBLE_STANDALONE_RUNS } from "../../helpers/explicit-host-collaborators.js";
 
 describe("AgentRunService termination", () => {
   const createSubject = (options: { metadata?: Record<string, unknown> | null } = {}) => {
@@ -29,7 +30,7 @@ describe("AgentRunService termination", () => {
       AgentRunProvisioningService.prototype,
     ) as AgentRunProvisioningService;
 
-    const service = new AgentRunService("/tmp/agent-run-service-test", {
+    const service = new AgentRunService("/tmp/agent-run-service-test", { standaloneRuns: NO_ELIGIBLE_STANDALONE_RUNS,
       agentRunManager: agentRunManager as never,
       metadataService: metadataService as never,
       historyCatalogService: historyCatalogService as never,
@@ -211,7 +212,7 @@ describe("AgentRunService termination", () => {
   it("an eligible run's Stop goes to its root (children, then host) and maps the host outcome", async () => {
     const agentRunManager = { getActiveRun: vi.fn(), terminateAgentRun: vi.fn(async () => true) };
     const historyCatalogService = { recordRunTerminated: vi.fn(async () => undefined) };
-    const standaloneRuns = { resolveRootAndEnsureHost: vi.fn(), stopRoot: vi.fn(), stopRootForTaskClosure: vi.fn(), refreshInheritedLaunch: vi.fn() };
+    const standaloneRuns = { resolveRootAndEnsureAgent: vi.fn(), stopRoot: vi.fn(), stopRootForTaskClosure: vi.fn(), refreshInheritedLaunch: vi.fn() };
     const service = new AgentRunService("/tmp/agent-run-service-test", {
       agentRunManager: agentRunManager as never,
       metadataService: {} as never,
@@ -220,22 +221,22 @@ describe("AgentRunService termination", () => {
       lifecycleService: {} as never,
       standaloneRuns,
     });
-    standaloneRuns.stopRoot.mockResolvedValueOnce({ rootEnded: true, host: { outcome: "terminated", runtimeKind: RuntimeKind.CODEX_APP_SERVER } });
+    standaloneRuns.stopRoot.mockResolvedValueOnce({ rootEnded: true, agent: { outcome: "terminated", runtimeKind: RuntimeKind.CODEX_APP_SERVER } });
     await expect(service.terminateAgentRun("run-1")).resolves.toMatchObject({ success: true, route: "runtime", runtimeKind: RuntimeKind.CODEX_APP_SERVER });
 
     // The host runtime already died: the root's children were stopped, so the run is recorded terminated.
-    standaloneRuns.stopRoot.mockResolvedValueOnce({ rootEnded: true, host: { outcome: "not_active", runtimeKind: null } });
+    standaloneRuns.stopRoot.mockResolvedValueOnce({ rootEnded: true, agent: { outcome: "not_active", runtimeKind: null } });
     await expect(service.terminateAgentRun("run-1")).resolves.toMatchObject({ success: true, route: "runtime", runtimeKind: null });
     expect(historyCatalogService.recordRunTerminated).toHaveBeenLastCalledWith({ runId: "run-1" });
 
-    standaloneRuns.stopRoot.mockResolvedValueOnce({ rootEnded: false, host: { outcome: "not_active", runtimeKind: null } });
+    standaloneRuns.stopRoot.mockResolvedValueOnce({ rootEnded: false, agent: { outcome: "not_active", runtimeKind: null } });
     await expect(service.terminateAgentRun("run-1")).resolves.toMatchObject({ success: false, route: "not_found" });
-    standaloneRuns.stopRoot.mockResolvedValueOnce({ rootEnded: true, host: { outcome: "rejected", runtimeKind: RuntimeKind.AUTOBYTEUS } });
+    standaloneRuns.stopRoot.mockResolvedValueOnce({ rootEnded: true, agent: { outcome: "rejected", runtimeKind: RuntimeKind.AUTOBYTEUS } });
     await expect(service.terminateAgentRun("run-1")).resolves.toMatchObject({ success: false, route: "not_found", runtimeKind: RuntimeKind.AUTOBYTEUS });
     expect(agentRunManager.terminateAgentRun).not.toHaveBeenCalled();
     expect(historyCatalogService.recordRunTerminated).toHaveBeenCalledOnce();
 
-    // A run that cannot host delegated copies stops on the plain path.
+    // A run that is not collaboration-eligible stops on the plain path.
     standaloneRuns.stopRoot.mockResolvedValueOnce(null);
     agentRunManager.getActiveRun.mockReturnValue({ runtimeKind: RuntimeKind.AUTOBYTEUS });
     await expect(service.terminateAgentRun("run-1")).resolves.toMatchObject({ success: true, route: "native" });

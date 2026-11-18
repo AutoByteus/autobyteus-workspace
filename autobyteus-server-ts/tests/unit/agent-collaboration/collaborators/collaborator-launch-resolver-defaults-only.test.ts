@@ -91,7 +91,7 @@ describe("CollaboratorLaunchResolver with the defaults_only base", () => {
     await expect(offRuntime).rejects.not.toBeInstanceOf(CollaboratorNoDefaultLaunchError);
     await expect(offRuntime).rejects.toMatchObject({ collaboratorName: "Publisher", reason: "Codex is not installed." });
     await expect(setup({ verdict: () => "model_unavailable" }).resolver.resolve([agentPlan(sol())], base))
-      .rejects.toMatchObject({ reason: "'sol-6.1' is not offered by Codex App Server now. Refresh the model list and choose again." });
+      .rejects.toMatchObject({ reason: "its default model cannot be used: 'sol-6.1' is no longer offered by Codex App Server", nextStep: "Choose another model for Publisher in its settings, or delegate to another agent." });
     await expect(setup({ verdict: () => "invalid" }).resolver.resolve([agentPlan(sol())], base))
       .rejects.toMatchObject({ reason: "Its model settings are invalid: effort must be one of low, high" });
   });

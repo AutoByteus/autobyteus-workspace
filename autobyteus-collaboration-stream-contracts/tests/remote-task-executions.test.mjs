@@ -11,5 +11,5 @@ test("a view carries no remote rows or their summaries: a peer run is a row of t
 });
 
 test("a view takes no Retry: a peer row's Retry goes over /ws/run-status (autobyteus-461 SR-090)", () => {
-  assert.throws(() => CollaborationStreamClientMessageSchema.parse({ type: "REFRESH_REMOTE_TASK_EXECUTIONS", payload: { root_subject_kind: "agent", root_run_id: "host-run" } }));
+  assert.throws(() => CollaborationStreamClientMessageSchema.parse({ type: "REFRESH_REMOTE_TASK_EXECUTIONS", payload: { root_subject_kind: "agent", root_run_id: "agent-run" } }));
 });

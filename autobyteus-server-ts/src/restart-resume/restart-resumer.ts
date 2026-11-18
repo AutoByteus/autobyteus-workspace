@@ -178,8 +178,8 @@ export class RestartResumer {
       const resolved = await this.dependencies.rootResolver.resolveOrRestore(entry.root);
       if (!resolved) return this.failed(label, "its root is not on this node");
       if (entry.place === "host" && resolved.kind !== "agent") return this.failed(label, "its root is not a standalone root");
-      // Restore without posting: a host is made ready now; a member starts on the reminder itself.
-      const host = entry.place === "host" && resolved.kind === "agent" ? await resolved.root.ensureHostReady() : null;
+      // Restore without posting: the run's agent is made ready now; a member starts on the reminder itself.
+      const readyAgent = entry.place === "host" && resolved.kind === "agent" ? await resolved.root.ensureAgentReady() : null;
       const after = await this.dependencies.rootHistory(entry.root);
       if (after !== "present") return this.skipped(label, `${describeState(after)} (after the restore)`);
       // Exactly once (REQ-005): input that came first already carried the reminder, so there is none to claim.
@@ -187,12 +187,12 @@ export class RestartResumer {
       if (!claim) return this.skipped(label, "its next input carried the reminder");
       const message = buildRestartNotice({ agentRunId: entry.agentRunId, facts: claim.reminder, resumedDelegated });
       const postOptions: AgentRunInputOptions = {
-        lifecycleObserver: restartNoticeLifecycleObserver(() => host ?? this.dependencies.liveRuns.getActiveRun(entry.agentRunId), message),
+        lifecycleObserver: restartNoticeLifecycleObserver(() => readyAgent ?? this.dependencies.liveRuns.getActiveRun(entry.agentRunId), message),
         onlyAsFirstInput: true,
       };
-      // A standalone root has one agent, its host; a Team or Org root posts to its member.
+      // A standalone root has one agent, its own; a Team or Org root posts to its member.
       const result = resolved.kind === "agent"
-        ? host ? postedResult(await resolved.root.postHostUserMessage({ message, postOptions }))
+        ? readyAgent ? postedResult(await resolved.root.postAgentUserMessage({ message, postOptions }))
           : { accepted: false as const, code: "RUN_NOT_FOUND", message: `AgentRun '${entry.agentRunId}' is not this Agent run's agent.` }
         : await resolved.root.executeAgentCommand(entry.agentRunId, { kind: "post_message", message, postOptions });
       if (result.accepted) {
@@ -224,7 +224,7 @@ export class RestartResumer {
 const describeState = (state: RootHistoryState): string =>
   `its root is ${state === "gone" ? "no longer in history" : state}`;
 
-/** A host post's outcome as an operation result; a mention admission does not apply to the notice. */
-const postedResult = (posted: Awaited<ReturnType<StandaloneAgentRunRoot["postHostUserMessage"]>>): AgentOperationResult =>
+/** An agent post's outcome as an operation result; a mention admission does not apply to the notice. */
+const postedResult = (posted: Awaited<ReturnType<StandaloneAgentRunRoot["postAgentUserMessage"]>>): AgentOperationResult =>
   posted.kind === "posted" ? posted.post
     : { accepted: false, code: "RESTART_RESUME_NOT_POSTED", message: posted.kind === "admission_failed" ? posted.message : posted.kind };

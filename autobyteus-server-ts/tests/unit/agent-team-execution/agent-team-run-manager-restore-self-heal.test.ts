@@ -7,6 +7,7 @@ import { AgentTeamRunManager } from "../../../src/agent-team-execution/services/
 import { FlatTeamExecutionFactory } from "../../../src/agent-team-execution/local/flat-team-execution-factory.js";
 import { MemberExecutionContextBuilder } from "../../../src/agent-team-execution/services/member-team-context-builder.js";
 import { ActiveCollaborationRootDirectory } from "../../../src/agent-collaboration/execution/services/active-collaboration-root-directory.js";
+import { NO_PEER_CHANNEL, OFFERED_MODEL_EXECUTION_FACTORY } from "../../helpers/explicit-host-collaborators.js";
 
 const materialized = vi.hoisted(() => [] as unknown[]);
 vi.mock("../../../src/run-history/services/team-run-package-catalog.js", () => ({
@@ -38,9 +39,9 @@ vi.mock("../../../src/agent-team-execution/services/team-root-materializer.js", 
   }),
 }));
 
-const createManager = () => new AgentTeamRunManager({ delegationIndex: noDelegations(), viewStreams: testViewStreams(), taskRecords: openTaskRecords(),
+const createManager = () => new AgentTeamRunManager({ remoteChannel: NO_PEER_CHANNEL, delegationIndex: noDelegations(), viewStreams: testViewStreams(), taskRecords: openTaskRecords(),
   memoryDir: "/tmp/agent-team-run-manager-self-heal",
-  flatTeamExecutionFactory: new FlatTeamExecutionFactory(),
+  flatTeamExecutionFactory: new FlatTeamExecutionFactory({ executionFactory: OFFERED_MODEL_EXECUTION_FACTORY }),
   memberExecutionContextBuilder: new MemberExecutionContextBuilder({ getDefinitionById: async () => null } as never, NOT_DELEGATED),
   modelSelectionValidator: { validateMany: async () => [], validate: async () => ({ kind: "valid" as const }) } as never,
   activeRootDirectory: new ActiveCollaborationRootDirectory(),

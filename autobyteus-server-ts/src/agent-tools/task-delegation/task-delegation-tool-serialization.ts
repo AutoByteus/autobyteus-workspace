@@ -34,8 +34,8 @@ export const toDelegateTaskResult = (outcome: TaskDelegationOutcome): DelegateTa
     ...(outcome.taskId ? { task_id: outcome.taskId } : {}),
     ...(outcome.launchNotes?.length ? { launch_notes: [...outcome.launchNotes] } : {}),
   };
-  return outcome.copy.kind === "agent"
-    ? { delegated: true, target_kind: "agent", target_agent_run_id: outcome.copy.agentRunId, ...extras }
-    : { delegated: true, target_kind: "team", target_team_run_id: outcome.copy.teamRunId,
-      target_team_coordinator_agent_run_id: outcome.copy.teamCoordinatorAgentRunId, ...extras };
+  return outcome.delegatedRun.kind === "agent"
+    ? { delegated: true, target_kind: "agent", target_agent_run_id: outcome.delegatedRun.agentRunId, ...extras }
+    : { delegated: true, target_kind: "team", target_team_run_id: outcome.delegatedRun.teamRunId,
+      target_team_coordinator_agent_run_id: outcome.delegatedRun.teamCoordinatorAgentRunId, ...extras };
 };

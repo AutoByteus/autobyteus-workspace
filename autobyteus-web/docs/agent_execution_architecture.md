@@ -105,7 +105,7 @@ The Pinia stores act as the primary interface for the UI components to interact 
 
 This store owns collaboration contexts, exact child selection and ephemeral
 Team disclosure beneath standalone Agent runs. Disclosure is keyed by
-`hostRunId` and `teamRunId`, not a displayed name or shared logical address.
+`runId` and `teamRunId`, not a displayed name or shared logical address.
 An absent choice means collapsed. Stored inspection and stream publication never open member lists; explicit
 toggles retain their choices across same-session refresh/reselection. Fresh
 frontend sessions start collapsed again. There is no automatic-opening helper,
@@ -535,7 +535,7 @@ These replaced the client-side folds over delegated rows
 
 `TeamAggregateStatusDot` draws the status before the unchanged slate
 people-group icon on stable rows (`WorkspaceStableExecutionRow`), transient task
-rows (`WorkspaceTransientExecutionRow`, `team-status` prop), Org Team rows and
+rows (`WorkspaceDelegatedRunRow`, `team-status` prop), Org Team rows and
 the TEAMS run and group rows. The dot is non-interactive. Each row's accessible
 label and tooltip state the status in words. A restored Team run that is alive
 but has no started member reads gray while its Stop button remains. Stop,
@@ -611,7 +611,7 @@ with their existing reduced opacity and cursor; even on hover they remain gray
 on a transparent background. Each control keeps its existing transition and
 native button semantics: roots retain native focus, copies their focus-visible
 ring, pending pulse and reduced-motion override. This applies under Agent,
-Team and Org roots (`WorkspaceTransientExecutionRow`,
+Team and Org roots (`WorkspaceDelegatedRunRow`,
 `WorkspaceAgentOrgHistoryCollection`). It stops only that delegated run, as its own
 ordinary Stop (`terminateAgentRun` / `terminateAgentTeamRun`; it replaced
 `stopDelegatedExecution`); the runs it delegated keep working. The copy stays
@@ -859,7 +859,7 @@ rows (see [Run trees](#run-trees-autobyteus-461)).
   then live frames), into a context with no local definition
   (`peerAgentContext.ts`). Its browse subject is `peerRun`: its files are read on
   its node; a message or an interrupt goes to its node.
-- **Row** (`WorkspaceTransientExecutionRow`, `row.remote = {runId, nodeName}`).
+- **Row** (`WorkspaceDelegatedRunRow`, `row.remote = {runId, nodeName}`).
   The `RemoteNodeChip` sits between the status dot and the identity. Members of a
   remote Team carry no chip of their own. Under the row:
   - the Task line, or else the node's title;

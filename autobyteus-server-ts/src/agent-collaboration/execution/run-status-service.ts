@@ -4,13 +4,13 @@ import { backgroundTasksRunningOf } from "../../agent-execution/domain/agent-sta
 import type { RemoteRunSummaryEvent } from "./remote/remote-run-observation.js";
 import type { RootExecutionIdentity } from "./domain/root-execution-identity.js";
 import type { ActiveCollaborationRootDirectory } from "./services/active-collaboration-root-directory.js";
-import type { PairedAgentAccess, PairedAgentObservation } from "./remote/paired-agent-access.js";
+import type { RunAgentAccess, RunAgentObservation } from "./remote/run-agent-access.js";
 import type { PeerRun, PeerRunOf } from "./remote/peer-runs.js";
 
 /** Where a run's statuses come from: the run itself (its own root, or its peer's handle), never its delegator. */
 export type RunStatusSources = Readonly<{
   /** A local run's own agents: their live statuses and changes, while its root runs (an Org's own agents too, G-A4). */
-  agents(kind: "agent" | "agent_team" | "agent_org"): Pick<PairedAgentAccess, "observePairedAgents" | "pairedAgentStatuses">;
+  agents(kind: "agent" | "agent_team" | "agent_org"): Pick<RunAgentAccess, "observeRunAgents" | "runAgentStatuses">;
   /** Whether a run's root runs, and when that changes. */
   registrations: Pick<ActiveCollaborationRootDirectory, "onRegistrationChanged" | "resolve">;
   /** A local run's agents, from its own file (offline until its root says otherwise). */
@@ -204,19 +204,19 @@ export class RunStatusEntry {
     // A run this node has no file of and no root for is not one of its runs (G-A2); its registration answers it later.
     if (this.answers.size === 0 && !this.sources.registrations.resolve(root)) this.answer = "not_found";
     const access = this.sources.agents(kind);
-    let observation: PairedAgentObservation | null = null;
+    let observation: RunAgentObservation | null = null;
     let generation = 0;
     const stop = (): void => { generation += 1; observation?.close(); observation = null; };
     const observe = async (): Promise<void> => {
       stop();
       const mine = generation;
-      const opened = await access.observePairedAgents(this.ref.runId, (agentRunId, message) => {
+      const opened = await access.observeRunAgents(this.ref.runId, (agentRunId, message) => {
         const answer = mine === generation ? answerOfFrame(message) : null;
         if (answer) this.set(agentRunId, answer);
       }, () => { if (mine === generation) { observation = null; this.allOffline(); } });
       if (this.closed || mine !== generation) { opened?.close(); return; }
       observation = opened;
-      for (const live of access.pairedAgentStatuses(this.ref.runId)) this.set(live.agentRunId, answerOf(live.status, live.backgroundTasksRunning));
+      for (const live of access.runAgentStatuses(this.ref.runId)) this.set(live.agentRunId, answerOf(live.status, live.backgroundTasksRunning));
     };
     this.releases.push(this.sources.registrations.onRegistrationChanged(root, (registered) => {
       if (registered && this.answer === "not_found") { this.answer = "ok"; this.tellState(); }

@@ -1,6 +1,6 @@
 import type { CatalogTaskSource, CollaboratorAdmission } from "../../agent-collaboration/collaborators/collaborator-admission.js";
 import {
-  CollaboratorAddError, CollaboratorNoDefaultLaunchError, CollaboratorRouterFailedError, type CopyRouterState,
+  CollaboratorAddError, CollaboratorNoDefaultLaunchError, CollaboratorRouterFailedError, type DelegatedRunRouterState,
 } from "../../agent-collaboration/collaborators/collaborator-errors.js";
 import type { RemoteAgentLaunch } from "../../agent-collaboration/execution/remote/remote-run-channel.js";
 import type { TaskExecutionSource } from "../../run-history/domain/run-execution-tree-shared-records.js";
@@ -20,7 +20,7 @@ type Admission = Pick<CollaboratorAdmission, "catalogDefinitionAt" | "catalogTas
 const refuse = (code: string, message: string, target?: RemoteRefusalTarget, routing: Pick<PeerHandlerRefusal, "modelRouting" | "agentName"> = {}): PeerHandlerRefusal =>
   Object.freeze({ accepted: false, code, message, ...(target ? { target: Object.freeze({ kind: target.kind, name: target.name }) } : {}), ...routing });
 
-const modelRoutingOf = (state: CopyRouterState | undefined): Pick<PeerHandlerRefusal, "modelRouting"> => !state ? {}
+const modelRoutingOf = (state: DelegatedRunRouterState | undefined): Pick<PeerHandlerRefusal, "modelRouting"> => !state ? {}
   : { modelRouting: (state.kind === "off" ? { state: "off" } : { state: "not_active", reason: state.reason }) as RemoteModelRoutingState };
 
 /** Each agent's launch as the delegating node shows it (autobyteus-32 REQ-009): the Agent, or every Team member. */

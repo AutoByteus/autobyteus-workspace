@@ -31,7 +31,7 @@ describe('the composer draft owner (CR-461-106)', () => {
       { kind: 'team_member_draft', teamDraftId: 'task-team', memberAddress: '/coordinator' }],
     ['an agent run a Team delegated', target('standalone_team_member', { kind: 'run', runId: 'team-worker' }, { team: { rootRunId: 'team-1', focusedMemberAddress: '/lead' } }),
       { kind: 'agent_draft', draftRunId: 'team-worker' }],
-    ['an agent run an agent run delegated', target('agent_run_task_agent', { kind: 'run', runId: 'child-1' }, { host: { hostRunId: 'host-1' } }),
+    ['an agent run an agent run delegated', target('agent_run_task_agent', { kind: 'run', runId: 'child-1' }, { viewRun: { runId: 'host-1' } }),
       { kind: 'agent_draft', draftRunId: 'child-1' }],
   ])('%s: its own run\'s owner', (_label, value, owner) => {
     expect(ownerOf(value)).toEqual(owner)

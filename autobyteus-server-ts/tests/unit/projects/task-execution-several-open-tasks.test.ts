@@ -15,6 +15,7 @@ import { ProjectTaskContextStore } from "../../../src/projects/context/project-t
 import { createRootExecutionIdentity } from "../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import type { TaskExecutionReleaseRequest } from "../../../src/agent-collaboration/execution/task/task-execution-resource-port.js";
 import { taskRunResources } from "../../helpers/task-run-resources.js";
+import { NO_RUN_SIDE_TASK_PORTS } from "../../helpers/explicit-host-collaborators.js";
 
 const hostRoot = createRootExecutionIdentity({ rootSubjectKind: "agent", rootRunId: "manager-root" });
 
@@ -50,7 +51,7 @@ describe("a task agent with several open Tasks", () => {
     projectId = (await new ProjectService({ store, workspaceLookup: { listRegisteredWorkspaceRootPaths: async () => [] } }).createProject({ name: "P" })).projectId;
     release = vi.fn<TaskExecutionReleaseRequest>(async (execution) => ({ execution, stopped: true }));
     resources = taskRunResources(new TaskExecutionResourceStore(layout));
-    tasks = new ProjectTaskService({ store, contextStore: new ProjectTaskContextStore(layout), requestRelease: (releases = trackReleases(release)).request, taskExecutionResources: resources });
+    tasks = new ProjectTaskService({ ...NO_RUN_SIDE_TASK_PORTS, store, contextStore: new ProjectTaskContextStore(layout), requestRelease: (releases = trackReleases(release)).request, taskExecutionResources: resources });
     await tasks.load();
   });
   afterEach(async () => { await releases.settled(); vi.restoreAllMocks(); await fs.rm(root, { recursive: true, force: true }); });

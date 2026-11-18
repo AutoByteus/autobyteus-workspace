@@ -707,7 +707,7 @@ const storedHas = async (node, ids, marker) => {
   const reads = [];
   if (ids.runId) reads.push(['query($id:String!){getRunProjection(runId:$id){conversation}}', { id: ids.runId }, data => data.getRunProjection?.conversation]);
   if (ids.teamRunId && ids.agentRunId) reads.push(['query($id:String!,$a:String!){getTeamMemberRunProjection(teamRunId:$id,agentRunId:$a){conversation}}', { id: ids.teamRunId, a: ids.agentRunId }, data => data.getTeamMemberRunProjection?.conversation]);
-  if (ids.hostRunId) reads.push(['query($h:String!,$m:String!,$a:String!){agentRunCollaborationMemberProjection(hostRunId:$h,memberAddress:$m,agentRunId:$a){conversation}}', { h: ids.hostRunId, m: ids.memberAddress, a: ids.agentRunId }, data => data.agentRunCollaborationMemberProjection?.conversation]);
+  if (ids.runId) reads.push(['query($h:String!,$m:String!,$a:String!){agentRunCollaborationMemberProjection(runId:$h,memberAddress:$m,agentRunId:$a){conversation}}', { h: ids.runId, m: ids.memberAddress, a: ids.agentRunId }, data => data.agentRunCollaborationMemberProjection?.conversation]);
   if (ids.orgRunId) reads.push(['query($id:String!,$a:String!,$m:String!){getAgentOrgMemberRunProjection(orgRunId:$id,memberAddress:$m,agentRunId:$a){conversation}}', { id: ids.orgRunId, a: ids.agentRunId, m: ids.memberAddress }, data => data.getAgentOrgMemberRunProjection?.conversation]);
   for (const [query, variables, pick] of reads) {
     const text = JSON.stringify(pick(await node.gql(query, variables).catch(() => ({}))) ?? '');
@@ -992,7 +992,7 @@ const runCases = async () => {
       // autobyteus-461 rule 2: a delegated agent run is its own run; its conversation is read by its own run ID.
       { kind: 'task agent', key: () => `${ptmKey}/agent:${stack.writerRun}`, name: 'release notes writer', parent: 'Project Task Manager', ids: { runId: stack.writerRun } },
       { kind: 'task-team member', key: async () => childRow(await rowsOf(page), squadKey, 'reviewer', 2)?.key, name: 'reviewer', parent: 'docs review team',
-        ids: { hostRunId: stack.ptm, memberAddress: '/docs_review_team/reviewer', agentRunId: stack.reviewer, teamRunId: stack.squadRun } },
+        ids: { runId: stack.ptm, memberAddress: '/docs_review_team/reviewer', agentRunId: stack.reviewer, teamRunId: stack.squadRun } },
       { kind: 'Team run (its coordinator)', key: () => `team:${stack.delivery}`, name: 'lead', parent: 'Delivery Team', ids: { teamRunId: stack.delivery, agentRunId: stack.deliveryLead, runId: stack.deliveryLead } },
       { kind: 'Org run (its first member)', key: () => `org:${stack.org}`, name: 'planner', parent: 'Delivery Org', ids: { orgRunId: stack.org, agentRunId: stack.orgPlanner, memberAddress: '/planner', runId: stack.orgPlanner } },
       { kind: 'Org run (first member a Team: its coordinator)', key: () => `org:${stack.reviewOrg}`, name: 'reviewer', parent: '(squad|Review Org)',

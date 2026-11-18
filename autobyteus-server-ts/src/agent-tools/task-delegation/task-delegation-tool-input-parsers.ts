@@ -1,11 +1,11 @@
 import { z } from "zod";
-import type { AssignToExistingCopyInput, SpawnTaskInput } from "../../agent-collaboration/execution/task/task-delegation-command.js";
+import type { AssignToExistingDelegatedRunInput, SpawnTaskInput } from "../../agent-collaboration/execution/task/task-delegation-command.js";
 import { CollaborationContractError } from "../../agent-collaboration/domain/collaboration-contract-error.js";
 
-/** `delegate_task` input by subject: a new copy from an address, or an existing copy by its own ID. */
+/** `delegate_task` input by subject: a new delegated run from an address, or an existing delegated run by its own ID. */
 export type DelegateTaskToolInput =
   | Readonly<{ subject: "new_copy"; input: SpawnTaskInput }>
-  | Readonly<{ subject: "existing_copy"; input: AssignToExistingCopyInput }>;
+  | Readonly<{ subject: "existing_delegated_run"; input: AssignToExistingDelegatedRunInput }>;
 
 const nonEmptyString = (fieldName: string) =>
   z.string({ error: `${fieldName} is required` }).trim().min(1, `${fieldName} is required`);
@@ -22,18 +22,18 @@ const DescribedTaskInputSchema = z.object({
 
 const LinkedTaskInputSchema = z.object({ recipient_address: z.string(), task_id: nonEmptyString("task_id"), node: PeerNodeSchema }).strict();
 
-const EXISTING_COPY_TASK_ID = "task_id (the saved Task to give)";
-const ExistingTeamCopyInputSchema = z.object({
-  target_team_run_id: nonEmptyString("target_team_run_id"), task_id: nonEmptyString(EXISTING_COPY_TASK_ID),
+const EXISTING_DELEGATED_RUN_TASK_ID = "task_id (the saved Task to give)";
+const ExistingTeamDelegatedRunInputSchema = z.object({
+  target_team_run_id: nonEmptyString("target_team_run_id"), task_id: nonEmptyString(EXISTING_DELEGATED_RUN_TASK_ID),
 }).strict();
-const ExistingAgentCopyInputSchema = z.object({
-  target_agent_run_id: nonEmptyString("target_agent_run_id"), task_id: nonEmptyString(EXISTING_COPY_TASK_ID),
+const ExistingAgentDelegatedRunInputSchema = z.object({
+  target_agent_run_id: nonEmptyString("target_agent_run_id"), task_id: nonEmptyString(EXISTING_DELEGATED_RUN_TASK_ID),
 }).strict();
 
 const parseZodIssues = (error: z.ZodError): string =>
   error.issues.map((issue) => issue.message).join("; ");
 
-const parseExistingCopyInput = (rawArguments: Record<string, unknown>): DelegateTaskToolInput => {
+const parseExistingDelegatedRunInput = (rawArguments: Record<string, unknown>): DelegateTaskToolInput => {
   if (Object.hasOwn(rawArguments, "target_team_run_id") && Object.hasOwn(rawArguments, "target_agent_run_id")) {
     throw new Error("Invalid delegate_task input: supply exactly one of target_team_run_id (a task agent team) or target_agent_run_id (a task agent).");
   }
@@ -42,20 +42,20 @@ const parseExistingCopyInput = (rawArguments: Record<string, unknown>): Delegate
     throw new Error(`Invalid delegate_task input: with target_team_run_id or target_agent_run_id, supply only that run id and task_id (not ${extra.join(", ")}).`);
   }
   if (Object.hasOwn(rawArguments, "target_team_run_id")) {
-    const result = ExistingTeamCopyInputSchema.safeParse(rawArguments);
+    const result = ExistingTeamDelegatedRunInputSchema.safeParse(rawArguments);
     if (!result.success) throw new Error(`Invalid delegate_task input: ${parseZodIssues(result.error)}`);
-    return { subject: "existing_copy", input: { copy: { teamRunId: result.data.target_team_run_id }, taskId: result.data.task_id } };
+    return { subject: "existing_delegated_run", input: { delegatedRun: { teamRunId: result.data.target_team_run_id }, taskId: result.data.task_id } };
   }
-  const result = ExistingAgentCopyInputSchema.safeParse(rawArguments);
+  const result = ExistingAgentDelegatedRunInputSchema.safeParse(rawArguments);
   if (!result.success) throw new Error(`Invalid delegate_task input: ${parseZodIssues(result.error)}`);
-  return { subject: "existing_copy", input: { copy: { agentRunId: result.data.target_agent_run_id }, taskId: result.data.task_id } };
+  return { subject: "existing_delegated_run", input: { delegatedRun: { agentRunId: result.data.target_agent_run_id }, taskId: result.data.task_id } };
 };
 
 export const parseDelegateTaskInput = (
   rawArguments: Record<string, unknown>,
 ): DelegateTaskToolInput => {
   if (Object.hasOwn(rawArguments, "target_team_run_id") || Object.hasOwn(rawArguments, "target_agent_run_id")) {
-    return parseExistingCopyInput(rawArguments);
+    return parseExistingDelegatedRunInput(rawArguments);
   }
   const result = (Object.hasOwn(rawArguments, "task_id") ? LinkedTaskInputSchema : DescribedTaskInputSchema).safeParse(rawArguments);
   if (!result.success) {

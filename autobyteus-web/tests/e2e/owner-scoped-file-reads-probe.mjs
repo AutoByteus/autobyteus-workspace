@@ -246,7 +246,7 @@ const seed = async () => {
   const hubTree = () => readRunTree(gql, 'agent', hub.runId);
   toHub(delegateWriter('copy-notes.md'));
   const copy = await newTaskAgent('copy', hubTree, []);
-  await recorded('delegated copy', { kind: 'standaloneMember', hostRunId: hub.runId, memberAddress: copy.address, agentRunId: copy.agentRunId }, 'copy-notes.md');
+  await recorded('delegated copy', { kind: 'standaloneMember', runId: hub.runId, memberAddress: copy.address, agentRunId: copy.agentRunId }, 'copy-notes.md');
 
   // Team run: configured member file, team task agent file.
   const teamRun = (await gql('mutation($input:CreateAgentTeamRunInput!){createAgentTeamRun(input:$input){success message teamRunId}}', { input: { teamDefinitionId: ids.team,

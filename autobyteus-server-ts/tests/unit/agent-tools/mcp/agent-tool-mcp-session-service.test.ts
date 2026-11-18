@@ -1,3 +1,4 @@
+import { buildDefaultAgentToolMcpAdapterProviders } from "../../../../src/agent-tools/mcp/providers/default-agent-tool-mcp-adapter-providers.js";
 import { describe, expect, it, vi } from "vitest";
 import { BaseTool } from "autobyteus-ts/tools/base-tool.js";
 import { ToolDefinition } from "autobyteus-ts/tools/registry/tool-definition.js";
@@ -26,6 +27,7 @@ import {
 } from "../../../fixtures/current-team-run-fixtures.js";
 import type { ApplicationAgentToolCapability } from "../../../../src/application-agent-tools/services/application-agent-tool-capability.js";
 import type { ApplicationAgentToolRoute } from "../../../../src/application-agent-tools/domain/application-agent-tool-route.js";
+import { OFF_DISCOVERY } from "../../../helpers/explicit-host-collaborators.js";
 
 const createPublisher = () => ({ publishManyForRun: vi.fn(async () => []) });
 
@@ -145,7 +147,7 @@ describe("AgentToolMcpSessionService", () => {
   it("lists the platform-given search_memory for a definition that does not select it, once when it does (autobyteus-496 AC-001)", () => {
     const registry = new AgentToolMcpSessionRegistry();
     // The production adapter set, as every MCP runtime's Agent Tools session uses it.
-    const catalog = new AgentToolMcpCatalog();
+    const catalog = new AgentToolMcpCatalog({ providers: buildDefaultAgentToolMcpAdapterProviders({ peerDiscovery: OFF_DISCOVERY }) });
     const service = buildService(registry, catalog);
     const activate = (runId: string, toolNames: string[]) => {
       const result = service.activateForRun({

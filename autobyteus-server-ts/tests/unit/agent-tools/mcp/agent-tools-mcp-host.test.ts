@@ -3,6 +3,7 @@ import { buildAgentRunMessageSenderContext } from "../../../../src/agent-communi
 import { buildRuntimeAgentToolExposure } from "../../../../src/agent-execution/shared/runtime-agent-tool-exposure.js";
 import { createAgentToolsMcpHost } from "../../../../src/agent-tools/mcp/agent-tools-mcp-host.js";
 import { buildDefaultAgentToolMcpAdapterProviders } from "../../../../src/agent-tools/mcp/providers/default-agent-tool-mcp-adapter-providers.js";
+import { OFF_DISCOVERY } from "../../../helpers/explicit-host-collaborators.js";
 
 const loggingConfig = {
   pinoLogLevel: "silent" as const,
@@ -22,7 +23,7 @@ const createActivationInput = (runId: string) => ({
 
 describe("AgentToolsMcpHost", () => {
   it("owns one one-shot loopback listener and publishes only ready descriptors", async () => {
-    const host = createAgentToolsMcpHost({ loggingConfig });
+    const host = createAgentToolsMcpHost({ peerDiscovery: OFF_DISCOVERY, loggingConfig });
     const authority = host.sessionAuthorities.begin({ scopeIdentity: "application:test" })
       .complete({
         executionCapabilities: {
@@ -83,8 +84,8 @@ describe("AgentToolsMcpHost", () => {
   });
 
   it("exposes one immutable snapshot of every registered static adapter name", async () => {
-    const host = createAgentToolsMcpHost({ loggingConfig });
-    const expected = buildDefaultAgentToolMcpAdapterProviders()
+    const host = createAgentToolsMcpHost({ peerDiscovery: OFF_DISCOVERY, loggingConfig });
+    const expected = buildDefaultAgentToolMcpAdapterProviders({ peerDiscovery: OFF_DISCOVERY })
       .flatMap((provider) => provider.getAdapters())
       .map((adapter) => adapter.definition.name)
       .sort((left, right) => left.localeCompare(right));

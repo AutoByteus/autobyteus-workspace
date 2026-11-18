@@ -40,10 +40,6 @@ const SERVER_DRAFTS: { [K in DraftOwnerKind]: { owner: Extract<DraftContextFileO
     owner: { kind: 'org_member_draft', orgRunId: 'org-1', agentRunId: 'member-1' },
     locator: '/rest/drafts/agent-org-runs/org-1/agent-runs/member-1/context-files/ctx_o1__notes.txt',
   },
-  agent_collaboration_member_draft: {
-    owner: { kind: 'agent_collaboration_member_draft', hostRunId: 'host-1', agentRunId: 'child-1' },
-    locator: '/rest/drafts/agent-collaborations/host-1/agent-runs/child-1/context-files/ctx_c1__notes.txt',
-  },
 };
 
 const mountComposer = (target: ContextAttachmentComposerTarget<null>) => {
@@ -73,7 +69,7 @@ describe('useContextAttachmentComposer draft removal', () => {
 
   it('covers every draft owner kind', () => {
     expect(Object.keys(SERVER_DRAFTS).sort()).toEqual([
-      'agent_collaboration_member_draft', 'agent_draft', 'org_member_draft', 'team_member_draft',
+      'agent_draft', 'org_member_draft', 'team_member_draft',
     ]);
   });
 

@@ -10,7 +10,7 @@ const harness = (live: readonly string[] = []) => {
   const inspect = vi.fn((_input: { agentRunId: string; memoryDir: string }) => ({ kind: "none" as const }));
   const findAgent = vi.fn(async () => ({ memberAddress: "/lead", memoryDir: "/m/agent_teams/eng/lead" }));
   const availability = createRunConversationAvailability({ memoryDir: "/m", inspector: { inspect },
-    liveAgents: () => ({ pairedAgentStatuses: () => live.map((agentRunId) => ({ agentRunId, status: "running" })) as never }),
+    liveAgents: () => ({ runAgentStatuses: () => live.map((agentRunId) => ({ agentRunId, status: "running" })) as never }),
     teamMembers: { findAgent: findAgent as never } });
   return { availability, inspect, findAgent };
 };

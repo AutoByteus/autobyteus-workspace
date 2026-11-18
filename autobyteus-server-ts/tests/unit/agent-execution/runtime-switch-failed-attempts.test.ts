@@ -8,6 +8,7 @@ import { StandaloneAgentRunLifecycleService } from "../../../src/agent-execution
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import type { AgentRunMetadata } from "../../../src/run-history/store/agent-run-metadata-types.js";
 import { turnRecords } from "../../agent-work-journal/raw-trace-folder-fixtures.js";
+import { OFFERED_STORED_MODEL_CHECKS } from "../../helpers/explicit-host-collaborators.js";
 
 vi.mock("../../../src/run-history/services/root-run-package-readiness-index.js", () => ({
   RootRunPackageReadinessIndex: class { assertAdmitted = async () => undefined; },
@@ -58,7 +59,7 @@ describe("failed attempts of a switch, with the real recorder and files", () => 
       newPreparation: vi.fn(async () => prepareScript.shift()!()),
       restorePreparation: vi.fn(), platformPreparation: vi.fn(),
     });
-    const service = new StandaloneAgentRunLifecycleService("/unused", {
+    const service = new StandaloneAgentRunLifecycleService("/unused", { storedModelChecks: OFFERED_STORED_MODEL_CHECKS,
       agentRunManager: manager as never,
       metadataService: { readMetadataState: vi.fn(async () => ({ kind: "present" as const, metadata: stored })) } as never,
       historyCatalogService: { recordRunStarted: vi.fn(async (input: AgentRunMetadata & { clearPendingRuntimeSwitch?: boolean }) => {
@@ -87,12 +88,12 @@ describe("failed attempts of a switch, with the real recorder and files", () => 
     const before = fs.readFileSync(activePath(), "utf8");
     const { service, getStored } = lifecycle([startFailsAfterInstruction("instruction-1"), preparesNative("instruction-2")]);
 
-    await expect(service.activateHost(RUN_ID, HOST)).rejects.toThrow("native start failed");
+    await expect(service.activateRunAgent(RUN_ID, HOST)).rejects.toThrow("native start failed");
     expect(fs.readFileSync(activePath(), "utf8")).toBe(before);
     expect(fs.existsSync(path.join(runDir, "raw_traces_manifest.json"))).toBe(false);
     expect(getStored().pendingRuntimeSwitch).toBeDefined();
 
-    await service.activateHost(RUN_ID, HOST);
+    await service.activateRunAgent(RUN_ID, HOST);
     const archived = lines(path.join(runDir, "raw_traces_000001.jsonl"));
     expect(archived.map((record) => record.trace_type)).toEqual(["user", "tool_call", "tool_result", "assistant"]);
     expect(archived.map((record) => record.content)).not.toContain("instruction-1");
@@ -109,10 +110,10 @@ describe("failed attempts of a switch, with the real recorder and files", () => 
     vi.spyOn(RuntimeSwitchRecorder.prototype, "record").mockImplementationOnce(() => { throw new Error("disk full"); });
     const { service } = lifecycle([preparesNative("instruction-1"), preparesNative("instruction-2")]);
 
-    await expect(service.activateHost(RUN_ID, HOST)).rejects.toThrow("disk full");
+    await expect(service.activateRunAgent(RUN_ID, HOST)).rejects.toThrow("disk full");
     expect(fs.readFileSync(activePath(), "utf8")).toBe(before);
 
-    await service.activateHost(RUN_ID, HOST);
+    await service.activateRunAgent(RUN_ID, HOST);
     expect(lines(path.join(runDir, "raw_traces_000001.jsonl"))).toHaveLength(4);
     expect(lines(activePath()).filter((record) => record.trace_type === "system_task_notification")).toHaveLength(1);
     expect(JSON.parse(fs.readFileSync(path.join(runDir, "raw_traces_manifest.json"), "utf8")).segments).toHaveLength(1);
@@ -122,7 +123,7 @@ describe("failed attempts of a switch, with the real recorder and files", () => 
     writeEra(turnRecords("t1", "ls", "a"));
     const before = fs.readFileSync(activePath(), "utf8");
     const { service } = lifecycle([startFailsAfterInstruction("abandoned-instruction")]);
-    await expect(service.activateHost(RUN_ID, HOST)).rejects.toThrow("native start failed");
+    await expect(service.activateRunAgent(RUN_ID, HOST)).rejects.toThrow("native start failed");
     // the user undoes the switch instead of sending again: nothing of the abandoned agent runtime is in the file
     expect(fs.readFileSync(activePath(), "utf8")).toBe(before);
   });
@@ -130,7 +131,7 @@ describe("failed attempts of a switch, with the real recorder and files", () => 
   it("a failed attempt on a run that already switched once discards too (the file starts with the earlier marker)", async () => {
     writeEra(turnRecords("t1", "ls", "a"));
     const first = lifecycle([preparesNative("instruction-1")]);
-    await first.service.activateHost(RUN_ID, HOST);
+    await first.service.activateRunAgent(RUN_ID, HOST);
     fs.appendFileSync(activePath(), JSON.stringify({ id: "rt_native_reply", ts: 100, trace_type: "assistant", content: "native reply", turn_id: "turn_0001", seq: 1 }) + "\n");
     const before = fs.readFileSync(activePath(), "utf8");
 
@@ -139,7 +140,7 @@ describe("failed attempts of a switch, with the real recorder and files", () => 
       runtimeKind: RuntimeKind.CODEX_APP_SERVER, llmModelIdentifier: "gpt-5", pendingRuntimeSwitch: {
         switchId: "switch-2",
         from: { runtimeKind: RuntimeKind.AUTOBYTEUS, llmModelIdentifier: "native-model", llmConfig: null, platformAgentRunId: NATIVE_SESSION } } }));
-    await expect(second.service.activateHost(RUN_ID, HOST)).rejects.toThrow("native start failed");
+    await expect(second.service.activateRunAgent(RUN_ID, HOST)).rejects.toThrow("native start failed");
     expect(fs.readFileSync(activePath(), "utf8")).toBe(before);
   });
 });

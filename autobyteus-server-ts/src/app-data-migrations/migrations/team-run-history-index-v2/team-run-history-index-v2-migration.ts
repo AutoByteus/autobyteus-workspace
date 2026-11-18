@@ -24,6 +24,7 @@ import type {
 } from "../../frozen/team-run-metadata-types.js";
 import { compactSummary, extractSummaryFromRawTraces } from "../../frozen/server/run-history/services/run-history-service-helpers.js";
 import type { DefinitionNameLookup } from "../../domain/definition-name-lookup.js";
+import { repairExistingTeamRows } from "./existing-team-row-repair.js";
 import type { RunHistoryCatalogInvalidation } from "../../domain/run-history-catalog-invalidation.js";
 
 const MIGRATION_ID = "20260521_team_run_history_index_v2";
@@ -357,7 +358,6 @@ export class TeamRunHistoryIndexV2AppDataMigration implements AppDataMigrationDe
     const migrationTime = new Date().toISOString();
     const existing = await readExistingIndex(indexPath);
     const records = await listMetadataRecords(this.memoryDir);
-    const indexedTeamRunIds = new Set<string>();
     const rowsById = new Map<string, TeamRunIndexRowRecord>();
     const details: AppDataMigrationItemDetail[] = [];
 
@@ -371,7 +371,6 @@ export class TeamRunHistoryIndexV2AppDataMigration implements AppDataMigrationDe
     }
 
     for (const record of records) {
-      indexedTeamRunIds.add(record.teamRunId);
       if (record.skipped) {
         details.push({
           itemId: record.teamRunId,
@@ -441,16 +440,9 @@ export class TeamRunHistoryIndexV2AppDataMigration implements AppDataMigrationDe
       });
     }
 
-    for (const teamRunId of existing.rowsById.keys()) {
-      if (!indexedTeamRunIds.has(teamRunId)) {
-        details.push({
-          itemId: teamRunId,
-          filePath: indexPath,
-          status: "SKIPPED",
-          message: "Removed stale existing team index row because no metadata directory was found.",
-        });
-      }
-    }
+    // autobyteus-500 G-2 (FU-029): a row without metadata is kept, rebuilt or removed by its folder (same-ID repair).
+    await repairExistingTeamRows({ memoryDir: this.memoryDir, migrationTime, definitionNames: this.definitionNames, details, rowsById,
+      indexPath }, existing.rowsById, new Set(rowsById.keys()));
 
     const summaryBeforeWrite = buildSummary(details);
     const status = summaryBeforeWrite.failedCount > 0

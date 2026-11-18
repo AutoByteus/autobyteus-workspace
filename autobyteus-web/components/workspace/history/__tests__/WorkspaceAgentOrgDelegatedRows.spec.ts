@@ -46,8 +46,8 @@ describe('Org history delegated rows (SR-084)', () => {
     expect(wrapper.find('[data-test="agent-org-agent-row-agent-director"]').exists()).toBe(true);
     expect(wrapper.find('[data-test="agent-org-team-row-team-configured"]').exists()).toBe(true);
     const [worker, team] = delegatedRows(wrapper);
-    expect(worker!.attributes()).toMatchObject({ 'data-transient-kind': 'task_agent', 'data-agent-run-id': 'agent-worker-task', 'aria-level': '2' });
-    expect(team!.attributes()).toMatchObject({ 'data-transient-kind': 'task_team', 'aria-level': '2' });
+    expect(worker!.attributes()).toMatchObject({ 'data-delegated-run-kind': 'task_agent', 'data-agent-run-id': 'agent-worker-task', 'aria-level': '2' });
+    expect(team!.attributes()).toMatchObject({ 'data-delegated-run-kind': 'task_team', 'aria-level': '2' });
     expect(wrapper.text()).not.toContain('Started by');
     expect(worker!.attributes('aria-label')).toContain('Started by director');
   });
@@ -57,13 +57,13 @@ describe('Org history delegated rows (SR-084)', () => {
     useRunStatusStore().apply({ type: 'RUN_STATUS_SNAPSHOT', payload: { runs: [{ kind: 'agent_team', runId: 'team-task', answer: 'ok', node: null, status: 'running', backgroundTasksRunning: 0, agents: [] }] } });
     await nextTick();
     expect(wrapper.get('[data-test="agent-org-team-row-team-configured"]').findAll('[data-test="team-aggregate-status-dot"]')).toHaveLength(1);
-    const team = wrapper.get('[data-test="workspace-team-transient-execution-row"][data-transient-kind="task_team"]');
+    const team = wrapper.get('[data-test="workspace-team-transient-execution-row"][data-delegated-run-kind="task_team"]');
     expect(team.get('[data-test="team-aggregate-status-dot"]').attributes('data-status')).toBe(AgentStatus.Running);
   });
 
   it('a delegated team starts expanded; its click opens its coordinator without folding it; its chevron folds it (CR-461-108)', async () => {
     const { wrapper, actions } = mountOrg();
-    const team = () => wrapper.get('[data-test="workspace-team-transient-execution-row"][data-transient-kind="task_team"]');
+    const team = () => wrapper.get('[data-test="workspace-team-transient-execution-row"][data-delegated-run-kind="task_team"]');
     expect(team().attributes('aria-expanded')).toBe('true');
     expect(wrapper.find('[data-agent-run-id="agent-task-worker"]').exists()).toBe(true);
     await team().trigger('click');

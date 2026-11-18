@@ -19,7 +19,7 @@ export const messagePlacement = (
   receiver: Object.freeze({ agentRunId: receiver.agentRunId, address: receiver.address as AgentTeamAddress }),
 });
 
-/** One concrete team instance (configured placement or task copy) containing a sender. */
+/** One concrete team instance (configured placement or delegated team run) containing a sender. */
 export type SenderTeamInstance = Readonly<{ teamRunId: string; address: AgentTeamAddress }>;
 
 /** The index facts every root supplies for message resolution and for the own-Team delegation rule. */
@@ -28,7 +28,7 @@ export interface MessageRecipientIndexPort {
   teamInstancesOf(senderAgentRunId: string): readonly SenderTeamInstance[];
   /**
    * Inside one instance: its coordinator for the instance's own address, else its member Agent
-   * at `address` (never a task copy hosted by the instance). Null when the instance has none.
+   * at `address` (never a run the instance delegated to). Null when the instance has none.
    */
   memberOfInstance(teamRunId: string, address: AgentTeamAddress): CollaborationMessagePlacement | null;
   /** Run-wide: a configured placement, or the run's own agent (Agent roots). */
@@ -56,7 +56,7 @@ export const isInsideSenderTeamInstances = (
  * The one `send_message_to(address)` resolution (DS-002), called inside the root gate. Messaging
  * only resolves; it never creates a run (CM-4).
  * (1) The sender's own team instances, deepest first: an address inside an instance resolves
- * only within that instance (AR-003, no fall-through), so parallel copies never cross.
+ * only within that instance (AR-003, no fall-through), so parallel team runs never cross.
  * (2) Run-wide standing placements. Anything else is `COLLABORATION_TARGET_NOT_FOUND` with
  * guidance to use `delegate_task` for an outside Agent or Team.
  */
@@ -66,7 +66,7 @@ export const resolveMessageRecipient = (input: Readonly<{
   address: AgentTeamAddress;
 }>): CollaborationMessagePlacement => {
   const port = input.port();
-  // Own-instance misses cannot fall through to an identically addressed parallel copy.
+  // Own-instance misses cannot fall through to an identically addressed parallel team run.
   for (const instance of port.teamInstancesOf(input.senderAgentRunId)) {
     if (!isWithinTeamInstance(input.address, instance)) continue;
     const placement = port.memberOfInstance(instance.teamRunId, input.address);

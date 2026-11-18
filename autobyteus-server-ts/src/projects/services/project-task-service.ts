@@ -28,7 +28,7 @@ import { NO_PART_CLOSURE, TaskPartClosure, type PartClosureResult } from "./task
 import { TaskAssignmentEligibility, terminalAssignment } from "./task-assignment-eligibility.js";
 import { TaskReferences } from "./task-references.js";
 import { readDelegatedTaskIdentity } from "./task-identity-reader.js";
-import { projectFolderForNewCopy } from "./project-new-copy-folder.js";
+import { projectFolderForNewDelegatedRun } from "./project-new-delegated-run-folder.js";
 import { bestEffortContextCleanup, TaskContextOwnership } from "./task-context-ownership.js";
 import type { ProjectTaskSearchCleanup } from "../search/project-task-search-service.js";
 import { resolveContextFileSizeLimits } from "../../config/context-file-size-limit-settings.js";
@@ -47,18 +47,18 @@ type Dependencies = {
   createId?: () => string;
   /** The process authority over agent run resources; bound once by the composition. */
   taskExecutionResources?: TaskExecutionResourceService;
-  /** Exact-root stop request; absent means no runtime is asked to stop anything. */
-  requestRelease?: TaskExecutionReleaseRequest;
+  /** The stop request of a closed Task's runs (composition-bound; autobyteus-500 FU-018). */
+  requestRelease: TaskExecutionReleaseRequest;
   /** Told after each committed Task write (the `/ws/projects` feed); defaults to the process publisher. */
   changes?: ProjectChangeMarks;
-  /** A Task root's live status from its hosting root (composition-bound); absent means `offline`. */
-  workerStatus?: TaskWorkerStatusResolver;
-  /** The run at the top of a worker's tree, where its row is listed (SR-080, composition-bound); absent means no card opens. */
-  topRun?: TaskTopRunResolver;
-  /** A worker's name, as its row and its own view name it (SR-091, composition-bound); absent means no name. */
-  displayName?: TaskDisplayNameResolver;
-  /** Search index cleanup after a committed delete (composition-bound; never throws or waits); absent means no index. */
-  searchCleanup?: ProjectTaskSearchCleanup;
+  /** A Task worker's live status from its own run (composition-bound). */
+  workerStatus: TaskWorkerStatusResolver;
+  /** The run at the top of a worker's tree, where its row is listed (SR-080, composition-bound). */
+  topRun: TaskTopRunResolver;
+  /** A worker's name, as its row and its own view name it (SR-091, composition-bound). */
+  displayName: TaskDisplayNameResolver;
+  /** Search index cleanup after a committed delete (composition-bound; never throws or waits). */
+  searchCleanup: ProjectTaskSearchCleanup;
 };
 const compareTasks = (a: Pick<ProjectTask, "taskId" | "updatedAt">, b: Pick<ProjectTask, "taskId" | "updatedAt">): number => b.updatedAt.localeCompare(a.updatedAt) || a.taskId.localeCompare(b.taskId);
 const noContext = (): PreparedTaskContext => ({ files: [], consumed: [] });
@@ -76,7 +76,7 @@ export class ProjectTaskService implements TaskExecutionResourcePort {
   private readonly resources: TaskExecutionResourceService;
   private readonly release: TaskExecutionResourceRelease;
   private readonly adHocTasks: AdHocTaskStore;
-  constructor(private readonly deps: Dependencies = {}) {
+  constructor(private readonly deps: Dependencies) {
     this.adHocTasks = deps.adHocTasks ?? new AdHocTaskStore();
     // Agent run resources live beside the Task metadata in the same layouts.
     this.resources = deps.taskExecutionResources
@@ -86,7 +86,7 @@ export class ProjectTaskService implements TaskExecutionResourcePort {
     this.resources.setCommitListener((location) => this.changes.taskChanged(location));
   }
   private get changes(): ProjectChangeMarks { return this.deps.changes ?? getProjectChangePublisher(); }
-  private get workerStatus(): TaskWorkerStatusResolver { return this.deps.workerStatus ?? (() => null); }
+  private get workerStatus(): TaskWorkerStatusResolver { return this.deps.workerStatus; }
   private get store() { return this.deps.store ?? getProjectStore(); }
   private get context() { return this.deps.contextStore ?? getProjectTaskContextStore(); }
   private get references() { return new TaskReferences(() => this.store); }
@@ -94,7 +94,7 @@ export class ProjectTaskService implements TaskExecutionResourcePort {
   private get relations() { return new TaskRelationWrites(() => this.store, () => this.changes, this.references); }
   /** A part closes through this service's own update, with the cascade off (a part has no parts). */
   private get partClosure() { return new TaskPartClosure(() => this.store, (projectId, taskId, status) => this.update(projectId, taskId, { status }, noContextChange, false)); }
-  private get views() { return new ProjectTaskViews(this.context, this.resources, this.workerStatus, this.deps.topRun ?? null, this.deps.displayName ?? null); }
+  private get views() { return new ProjectTaskViews(this.context, this.resources, this.workerStatus, this.deps.topRun, this.deps.displayName); }
   private get eligibility() { return new TaskAssignmentEligibility(() => this.store, this.adHocTasks, this.resources); }
   private nowIso(): string { return (this.deps.now?.() ?? new Date()).toISOString(); }
 
@@ -247,7 +247,7 @@ export class ProjectTaskService implements TaskExecutionResourcePort {
     await this.resources.removeRecord(location);
     if (!(await this.store.deleteTask(command.projectId, command.taskId))) return false;
     this.changes.taskRemoved({ projectId: command.projectId, taskId: command.taskId });
-    this.deps.searchCleanup?.forgetTask(command.projectId, command.taskId);
+    this.deps.searchCleanup.forgetTask(command.projectId, command.taskId);
     await this.relations.removeDeleted(command.projectId, command.taskId);
     return true;
   }
@@ -295,7 +295,7 @@ export class ProjectTaskService implements TaskExecutionResourcePort {
     return { taskId: task.taskId, taskReference: task.taskKey, projectId, title: task.title, description: task.description, comments: task.comments.map((comment) => comment.text), referenceFiles };
   }
   describeTask(taskId: string) { return readDelegatedTaskIdentity(this.references, this.adHocTasks, taskId); }
-  projectFolderForNewCopy(projectId: string): Promise<string | null> { return projectFolderForNewCopy(this.store, projectId); }
+  projectFolderForNewDelegatedRun(projectId: string): Promise<string | null> { return projectFolderForNewDelegatedRun(this.store, projectId); }
   async linkNewTaskExecution(input: NewTaskExecutionLinkInput): Promise<{ taskId: string }> {
     if (input.role !== "assigned") return { taskId: await this.resources.linkInherited(input) };
     if (input.adHocTask) return { taskId: await this.linkAdHocTask(input, input.adHocTask) };
@@ -328,7 +328,7 @@ export class ProjectTaskService implements TaskExecutionResourcePort {
   async reopenAssignment(input: TaskExecutionReopenInput): Promise<TaskExecutionReopenResult> {
     await this.reopenLocation(input.execution);
     // The copy's current Task is read under the copy's ordering (an assignment of the copy cannot move it meanwhile).
-    return this.resources.serializeCopyInTask(input.execution, () => this.resources.locationOf(input.execution)?.taskId ?? "", async () => {
+    return this.resources.serializeDelegatedRunInTask(input.execution, () => this.resources.locationOf(input.execution)?.taskId ?? "", async () => {
       const location = await this.reopenLocation(input.execution);
       this.resources.assertReopenable(location, input.execution, input.requestedBy);
       await this.eligibility.assertReopenTaskNotTerminal(location, input.execution);
@@ -340,17 +340,17 @@ export class ProjectTaskService implements TaskExecutionResourcePort {
     await this.resources.load();
     this.resources.assertAllReadable();
     const { projectId } = await this.references.byId(input.taskId);
-    this.eligibility.assertCopyAssignable(input, await this.eligibility.assertAssignableTask(projectId, input.taskId));
+    this.eligibility.assertDelegatedRunAssignable(input, await this.eligibility.assertAssignableTask(projectId, input.taskId));
   }
   openTaskReferencesOf(execution: TaskExecutionReference, exceptTaskId: string): Promise<string[]> { return this.eligibility.openTaskReferencesOf(execution, exceptTaskId); }
   /** The existing-copy commit: every condition re-checked under the copy's and then the Task's serialization. */
   async assignExistingTaskExecution(input: ExistingTaskExecutionAssignInput): Promise<void> {
     await this.resources.load();
     const { projectId } = await this.references.byId(input.taskId);
-    await this.resources.serializeCopyInTask(input.execution, () => input.taskId, async () => {
+    await this.resources.serializeDelegatedRunInTask(input.execution, () => input.taskId, async () => {
       this.resources.assertAllReadable();
       const task = await this.eligibility.assertAssignableTask(projectId, input.taskId);
-      this.eligibility.assertCopyAssignable({ execution: input.execution, requestedBy: input.delegatedFrom.delegatorAgentRunId, taskId: input.taskId,
+      this.eligibility.assertDelegatedRunAssignable({ execution: input.execution, requestedBy: input.delegatedFrom.delegatorAgentRunId, taskId: input.taskId,
         ...(input.recipientAddress ? { ownDelegatorAgentRunId: input.delegatedFrom.delegatorAgentRunId } : {}) }, task);
       await this.resources.assignExisting({ projectId, taskId: input.taskId }, input);
     });
@@ -462,10 +462,13 @@ export class ProjectTaskService implements TaskExecutionResourcePort {
 }
 
 let singleton: ProjectTaskService | null = null;
-/** The process instance; an uninitialized process (tests, tool-only contexts) gets an unbound instance. */
-export const getProjectTaskService = (): ProjectTaskService => singleton ??= new ProjectTaskService();
+/** The process instance, initialized by the composition (`composeCollaboration`, both hosts); it throws before (FU-011). */
+export const getProjectTaskService = (): ProjectTaskService => {
+  if (!singleton) throw new Error("The process ProjectTaskService is created by the composition (composeCollaboration).");
+  return singleton;
+};
 /** Called once by the process composition before any getProjectTaskService(); fails fast otherwise. */
-export const initializeProjectTaskServiceProcessInstance = (deps: Pick<Dependencies, "taskExecutionResources" | "adHocTasks" | "requestRelease" | "workerStatus" | "topRun" | "displayName" | "searchCleanup" | "changes">): ProjectTaskService => {
+export const initializeProjectTaskServiceProcessInstance = (deps: Pick<Dependencies, "taskExecutionResources" | "adHocTasks" | "workerStatus" | "topRun" | "displayName" | "searchCleanup" | "changes"> & Required<Pick<Dependencies, "requestRelease">>): ProjectTaskService => {
   if (singleton) throw new Error("The process ProjectTaskService is already initialized.");
   return singleton = new ProjectTaskService(deps);
 };

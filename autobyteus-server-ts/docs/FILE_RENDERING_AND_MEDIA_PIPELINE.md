@@ -65,8 +65,8 @@ The actual artifact/output files remain where the runtime wrote them.
   A draft locator is the attachment's identity and its address. One draft locator codec in
   `context-files/domain/context-file-owner-types.ts` (`buildDraftContextFileLocator` plus its
   exact inverse `parseDraftContextFileLocator`) owns the path shape of every draft owner kind
-  (`agent_draft`, `team_member_draft`, `org_member_draft`,
-  `agent_collaboration_member_draft`). The REST layer registers exactly one
+  (`agent_draft`, `team_member_draft`, `org_member_draft`; a delegated run uses its own run's
+  kind, autobyteus-500). The REST layer registers exactly one
   `GET /rest/drafts/*` and one `DELETE /rest/drafts/*`, which parse the raw request path
   with that codec. `ContextFileLocalPathResolver` resolves draft locators through the same
   codec. Every draft owner kind is therefore both readable and deletable. A new owner kind
@@ -86,7 +86,7 @@ The actual artifact/output files remain where the runtime wrote them.
   trust boundary for every context-file entry point: upload, finalize, draft GET/DELETE,
   final GETs and runtime locator resolution.
   - Every owner ID of every draft and final owner kind (`draftRunId`, `teamDraftId`,
-    `runId`, `teamRunId`, `orgRunId`, `hostRunId`, `agentRunId`) is a safe identity. It
+    `runId`, `teamRunId`, `orgRunId`, `agentRunId`) is a safe identity. It
     must be non-empty, have no surrounding whitespace, contain no `/`, `\` or control
     characters, and not be `.` or `..`. IDs are never trimmed into validity. `memberAddress`
     keeps its canonical team-address validation.

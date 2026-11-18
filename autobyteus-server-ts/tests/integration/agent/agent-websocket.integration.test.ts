@@ -16,6 +16,7 @@ import { registerAgentWebsocket } from "../../../src/api/websocket/agent.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import type { AgentRunMetadata } from "../../../src/run-history/store/agent-run-metadata-types.js";
 import { lazyAgentStreamSequences } from "../../helpers/agent-stream-sequence-fixture.js";
+import { NO_ELIGIBLE_STANDALONE_RUNS } from "../../helpers/explicit-host-collaborators.js";
 
 class FakeRuntimeRun {
   readonly runtimeKind = RuntimeKind.CODEX_APP_SERVER;
@@ -278,7 +279,7 @@ const startAgentWsHarness = async (options: {
     overlayStore,
     commandRegistry: registry,
   });
-  const commandCoordinator = new AgentRunCommandCoordinator({
+  const commandCoordinator = new AgentRunCommandCoordinator({ standaloneRuns: NO_ELIGIBLE_STANDALONE_RUNS,
     agentRunService: agentRunService as any,
     registry,
     overlayStore,
@@ -307,6 +308,8 @@ const startAgentWsHarness = async (options: {
       handleMessage: async () => {},
       disconnect: async () => {},
     } as any,
+    {} as never,
+    {} as never,
   );
   const address = await app.listen({ port: 0, host: "127.0.0.1" });
   const url = new URL(address);
@@ -758,6 +761,8 @@ describe("Agent websocket backend-owned command lifecycle integration", () => {
         handleMessage: async () => {},
         disconnect: async () => {},
       } as unknown as Parameters<typeof registerAgentWebsocket>[2],
+      {} as never,
+      {} as never,
     );
 
     const address = await app.listen({ port: 0, host: "127.0.0.1" });

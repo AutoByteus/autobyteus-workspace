@@ -1,0 +1,78 @@
+# Delivery post-integration check: server E2E folder on the merged state
+# Code: fa4ac92497 (merge 39325a1e50 of origin/personal ff13782f36; code eb741a097e; later commits docs only)
+# Env: macOS, Node v22.23.1, env -i PATH HOME=<resolved temp> TMPDIR USER LANG RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<worktree>/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs
+# Command: pnpm -C autobyteus-server-ts exec vitest run tests/e2e --no-watch (after install, prebuild, build: all exit 0)
+# Stopped at the 2-hour background limit before the end: 105 files reported (66 passed, 39 skipped, 21 with failures, 48 failing tests).
+
+## Files with failures
+ ❯ tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts (4 tests | 4 failed) 121285ms
+ ❯ tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts (10 tests | 2 failed) 191262ms
+ ❯ tests/e2e/projects/project-task-boundaries.e2e.test.ts (18 tests | 1 failed) 15801ms
+ ❯ tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts (46 tests | 7 failed) 857017ms
+ ❯ tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts (3 tests | 1 failed | 1 skipped) 152368ms
+ ❯ tests/e2e/run-history/stopped-run-model-config-graphql.e2e.test.ts (5 tests | 2 failed) 51064ms
+ ❯ tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts (14 tests | 3 failed) 65173ms
+ ❯ tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts (9 tests | 7 failed) 51945ms
+ ❯ tests/e2e/llm-management/qwen-configuration-lifecycle-graphql.e2e.test.ts (1 test | 1 failed) 15364ms
+ ❯ tests/e2e/agent-team-runs/team-run-config-graphql.e2e.test.ts (7 tests | 5 failed) 109217ms
+ ❯ tests/e2e/secret-management/custom-provider-readable-id-startup-migration.e2e.test.ts (5 tests | 2 failed) 70507ms
+ ❯ tests/e2e/agent-team-definitions/registered-package-definition-edit.e2e.test.ts (8 tests | 2 failed) 149496ms
+ ❯ tests/e2e/memory-sync/memory-sync-held-back-graphql.e2e.test.ts (1 test) 12764ms
+ ❯ tests/e2e/runtime/runtime-switch-members-extended-built-server.e2e.test.ts (5 tests | 5 skipped) 24149ms
+ ❯ tests/e2e/runtime/available-agent-runtimes-graphql.e2e.test.ts (6 tests | 4 failed) 145696ms
+ ❯ tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts (10 tests | 1 failed) 67929ms
+ ❯ tests/e2e/update-notifications/update-notifications-live.e2e.test.ts (12 tests) 189840ms
+ ❯ tests/e2e/runtime/runtime-switch-members-built-server.e2e.test.ts (5 tests | 3 failed) 41754ms
+ ❯ tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts (4 tests | 1 failed) 352ms
+ ❯ tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts (11 tests | 2 failed) 12590ms
+ ❯ tests/e2e/runtime/agy-context-files-transport.e2e.test.ts (4 tests) 13689ms
+
+## Failing tests
+     × migrates the exact supported cohort, serves history and new work, and remains immutable on relaunch 37281ms
+     × isolates mixed root and token warnings and fails closed on an unreadable history index without changing the released root 15086ms
+     × keeps the server healthy after failed consolidation, admits a new current run, and imports disjoint legacy rows on restart retry 55384ms
+     × rejects a legacy/current run-ID overlap before source cleanup while preserving both stores 13532ms
+     × DCF-E2E-002 (AC-001…005, AC-007, REQ-009, REQ-014): an imported package's files on disk reach GraphQL and the feed without Reload 19432ms
+     × DCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools 910ms
+     × E-007: current Projects/Tasks/context/assignments/history/registry/folders survive metadata/list patches and reader reconstruction 143ms
+     × RC-45 461 CR-461-094 (SR-083): a peer run's status on alpha's /ws/run-status follows again after beta's outage, once beta answers for another run the window shows (no Retry of that run) 943ms
+     × RC-46 461 G-D1 (SR-088, SR-089, CR-461-099) and SR-090: with the delegator stopped, a peer Agent and a peer Team's member open by their own identity on alpha's /ws/peer-run: the snapshot, live output once each, a message, an interrupt, the files; Retry on /ws/run-status settles while beta is down and once it is back 649ms
+     × RC-14 AC-106: a follow-up to a remote run whose history was deleted on beta is refused with 'not found' 151ms
+     × RC-15 QR-102: a partitioned or stopped peer is refused within the bound and the tool call never hangs; nothing is left on alpha 240008ms
+     × RC-17 245 RU-1: after the owner changes Publisher's default to a model beta does not offer, new delegations are refused with that reason and a run already started still exchanges both ways 2ms
+     × RC-18 AC-101/SCN-107: turning the switch off on beta, then on alpha, refuses new requests with 'turned off' 1ms
+     × RC-19 AC-102: after a peer is removed, new requests in either direction are refused and run history stays 4ms
+     × in every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree 127234ms
+     × updates only a stopped standalone run config and restores the same current package after restart 25812ms
+     × updates exact stopped Team scopes and preserves the current V2 package across restart 3860ms
+     × CPW-P1 Agent root: the host is a standalone agent; a task agent delegated to an outside agent, and a task agent team, get theirs 14060ms
+     × CPW-P2 Team root: members of a user-started team (with and without handoff rules); a task agent of the team 4742ms
+     × CPW-P3 Org root: the direct agent, a member of the organization's team, a task agent, a task agent with handoff rules and a task agent team 1933ms
+     × SM-01 (AC-007): a user's own agent is switched on and off in its agent-config.json, other fields kept, and reads create no folder 7965ms
+       × SM-03 (AC-005): a run of an agent without the setting has no section and creates no semantic folder 6259ms
+       × SM-04 (AC-001): a run under Project A is told its folder after the Project section; the folder exists outside the workspace and the package 283ms
+       × SM-05 (AC-003, AC-004): a run under Project B, the agent as a shared team member and as a delegated copy are told the same folder 236ms
+       × SM-06 (AC-006): a team-local agent with the same local name, enabled in its package file, has its own folder 319ms
+       × SM-07 (AC-008): off → a new run has no section and the folder and document stay; on → the same folder again 1ms
+       × SM-10 (AC-001): the Memory page, memory search and memory sync do not list memory/semantic 5ms
+     × commits one probed pair durably, compensates failures, restarts, and routes every exact Qwen model 15363ms
+     × persists the team and exact-Agent configurations and restores them after process restart 18122ms
+     × rejects a 'missing' 'Team' runtime before workspace or run side effects 12986ms
+     × rejects a 'blank' 'Team' runtime before workspace or run side effects 24981ms
+     × rejects a 'blank' 'Agent' runtime before workspace or run side effects 30021ms
+     × rejects a 'unsupported' 'Agent' runtime before workspace or run side effects 13781ms
+     × orders the real multiversion transition, preserves token identity, and restores selectors through same-name recreation 14828ms
+     × serves while the custom-provider migrations cannot finish: custom providers refuse with the capability code while built-in runs start; Settings retries after the fix make them available without a restart (needs POSIX mode bits that bind: not root, not Windows) 18440ms
+     × RPE-001 (AC-001, REQ-001, REQ-003): the Team edit page's save writes the description into the package and the default runtime/model into the personal settings 16017ms
+     × RPE-002 (AC-003): a stale revision conflicts and leaves the package unchanged 63395ms
+     × AAR-01 lists the four runtimes and AutoByteus' keyed providers, each with models and live limits, read with 0 tokens (AC-001, AC-003…AC-007, AC-009) 20810ms
+     × AAR-02 leaves out signed-out and missing runtimes and providers without a key; marks a sign-in it could not check (REQ-002, REQ-007) 3534ms
+     × AAR-03 slow steps end at their own deadlines: the answer arrives within 20 s, the hung processes are stopped and the next read works (AC-008, AC-011) 14063ms
+     × AAR-04 over Agent Tools MCP: a Codex run whose definition lists the tool gets the same report; one whose definition does not, does not; several readers at once share one read and all get Codex (AC-002, AC-012, AC-013) 42328ms
+     × E01: Chat (Daily Assistant, all installed skills) starts with a skill holding a local environment and reads it through the link (AC-001, AC-002, AC-006) 30113ms
+     × MS-03: after a server restart the member keeps its agent runtime with no pending field, restores and answers, and the earlier segments are unchanged 15049ms
+     × MS-05: a Team member native -> Antigravity -> native -> Antigravity: the fourth hop back to Antigravity completes on a fresh capsule, with one segment and one marker per switch (autobyteus-440) 8ms
+     × MS-04: Org members, a direct Agent and an Agent of a mounted Team, switched in one save: each switches by its own first message with its own segment and marker 2ms
+     × keeps ordinary native tools and configured skill reads explicit in the same active run 58ms
+     × accepts each allowed-origin class and refuses near misses (AC-002) 5008ms
+     × refuses a request addressed to a name that is not the node's on every entry form, before any route (416 AC-001) 629ms

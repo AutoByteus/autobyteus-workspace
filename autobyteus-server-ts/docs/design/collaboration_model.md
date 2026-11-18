@@ -25,6 +25,10 @@ listed in [Current State Versus Target](#5-current-state-versus-target).
   own agent.
 - **Delegated run**: an ordinary Agent or Team run started by `delegate_task`
   to do one Task's work. It is a root of its own (CM-7).
+- **Root** (in code names): a run at the top of its own membership tree: an
+  Agent run, a Team run above its sub-teams, or an Org run. A root never holds
+  another run. **A run's agent** is the one agent of a standalone Agent run
+  (`StandaloneRunAgent`); code never calls it a "host" (autobyteus-500).
 - **Delegator**: the agent that called `delegate_task`. The **delegating run**
   is the run that agent is a part of: one hop, never the top of a chain.
 - **Entry agent**: the agent a message to a run enters through: an Agent run's

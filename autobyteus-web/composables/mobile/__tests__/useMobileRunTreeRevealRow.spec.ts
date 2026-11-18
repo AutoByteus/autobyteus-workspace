@@ -19,7 +19,7 @@ import { createMobileTestRouter, withSetup } from './mobileTestRouter';
 /** A Team run whose member `lead` has a delegated task Team `review` with a member `checker` (depth-ordered rows). */
 const teamEntry = () => {
   const row = (rowKey: string, depth: number, hasChildren: boolean, agentRunId: string | null) => ({
-    kind: 'transient_execution', transientKind: 'task_agent', rowKey, depth, hasChildren, agentRunId, memberAddress: `/${rowKey}`,
+    kind: 'delegated_run', delegatedRunKind: 'task_agent', rowKey, depth, hasChildren, agentRunId, memberAddress: `/${rowKey}`,
     displayName: rowKey, memberKind: hasChildren ? 'agent_team' : 'agent', currentStatus: 'idle', teamRunIdForNode: null,
   });
   const executionRows = [row('lead', 0, true, 'lead-run'), row('review', 1, true, null), row('checker', 2, false, 'checker-run'), row('writer', 0, false, 'writer-run')];

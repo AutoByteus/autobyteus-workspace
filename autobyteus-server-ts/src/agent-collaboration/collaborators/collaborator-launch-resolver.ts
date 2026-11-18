@@ -1,4 +1,5 @@
 import type { AgentLaunchConfiguration } from "../../agent-team-execution/domain/team-run-config.js";
+import { agentRuntimeName } from "@autobyteus/agent-presentation-contracts";
 import type { DefaultLaunchConfig } from "../../launch-preferences/default-launch-config.js";
 import {
   LaunchModelCheckError,
@@ -30,7 +31,7 @@ import {
   CollaboratorAddError,
   CollaboratorNoDefaultLaunchError,
   CollaboratorRouterFailedError,
-  type CopyRouterState,
+  type DelegatedRunRouterState,
 } from "./collaborator-errors.js";
 import type { CollaboratorLaunchBase } from "./collaborator-root-port.js";
 
@@ -157,7 +158,7 @@ export class CollaboratorLaunchResolver {
         routerFailure = routerFallback("router_failed", outcome.reason);
       }
     }
-    const routerState: CopyRouterState = !routing ? { kind: "off" } : { kind: "not_active", reason: routerFailure?.detail ?? routing.notActiveReason ?? "" };
+    const routerState: DelegatedRunRouterState = !routing ? { kind: "off" } : { kind: "not_active", reason: routerFailure?.detail ?? routing.notActiveReason ?? "" };
     // A routed launch takes the workspace and auto-approve every candidate takes (§ 3.3), with the model's default settings.
     const context = launchContextOf(base);
 
@@ -170,7 +171,7 @@ export class CollaboratorLaunchResolver {
       }
       const fallbacks = routerFailure ? [...planned.fallbacks, routerFailure] : planned.fallbacks;
       if (!inherited) return noUsableLayer(plan, planned.fallbacks, routerState);
-      if (verdicts.inherited?.usable === false) throw new CollaboratorAddError(plan.name, verdicts.inherited.detail);
+      if (verdicts.inherited?.usable === false) throw inheritedLayerRefusal(plan, inherited, verdicts.inherited);
       return { launch: inherited, source: source("inherited", fallbacks) };
     };
 
@@ -318,11 +319,27 @@ const agentSlots = (plans: readonly CollaboratorDefinitionPlan[]): AgentSlot[] =
   : plan.members.map((member) => ({ key: member, address: member.address, name: member.name, description: member.description, role: member.role })));
 
 /**
+ * FU-030 / SR-015 R3 (DLP-005): an agent that would use its delegating run's model, which can't be used. What happened
+ * and why, then what to do: a model of its own, or another model for the delegating run.
+ */
+const inheritedLayerRefusal = (plan: CollaboratorDefinitionPlan, launch: AgentLaunchConfiguration,
+  verdict: Extract<InheritedLaunchVerdict, { usable: false }>): CollaboratorAddError => new CollaboratorAddError(plan.name,
+  verdict.modelNoLongerOffered
+    ? `it would use this run's model '${launch.llmModelIdentifier}', which ${agentRuntimeName(launch.runtimeKind)} no longer offers`
+    : verdict.detail,
+  undefined, `Set a model for ${plan.name} in its settings, or change this run's model, then delegate again.`);
+
+/**
  * No layer covers an agent of `plan` (`defaults_only`): a complete configured layer that could not be used gives its
  * reason; nothing complete configured is "no default runtime". Both carry why the Model Router did not choose.
  */
-const noUsableLayer = (plan: CollaboratorDefinitionPlan, fallbacks: readonly LaunchConfigurationFallback[], routerState: CopyRouterState): never => {
+const noUsableLayer = (plan: CollaboratorDefinitionPlan, fallbacks: readonly LaunchConfigurationFallback[], routerState: DelegatedRunRouterState): never => {
   for (const fallback of fallbacks) {
+    if (fallback.reason === "model_unavailable") {
+      // FU-030 (DLP-005): what happened and why (the model check's own words), then what to do.
+      throw new CollaboratorAddError(plan.name, `its default model cannot be used: ${fallback.detail.replace(/\.$/, "")}`, routerState,
+        `Choose another model for ${plan.name} in its settings, or delegate to another agent.`);
+    }
     if (fallback.reason !== "incomplete") throw new CollaboratorAddError(plan.name, fallback.detail, routerState);
   }
   throw new CollaboratorNoDefaultLaunchError(plan.name, plan.kind, routerState);

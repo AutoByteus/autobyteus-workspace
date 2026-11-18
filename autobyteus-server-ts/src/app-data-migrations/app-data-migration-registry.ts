@@ -1,4 +1,5 @@
 import { TeamContextFileExecutionLocatorsV1AppDataMigration } from "./migrations/team-context-file-execution-locators-v1/team-context-file-execution-locators-v1-app-data-migration.js";
+import { createDelegatedRunOwnAttachmentLinksMigrations } from "./migrations/delegated-run-own-attachment-links/delegated-run-own-attachment-links-app-data-migration.js";
 import path from "node:path";
 import { appConfigProvider } from "../config/app-config-provider.js";
 import { getSecretVaultRuntime } from "../secret-management/secret-vault-runtime.js";
@@ -171,11 +172,16 @@ const registeredMigrations = (): AppDataMigrationDefinition[] => {
     // NOT_RUN holds back only its own.
     ...createDelegatedRunsPreservedItemsMigrations(appDataDir, memoryDir, liveDefinitionNames, liveRunHistoryCatalogs, ledger),
     // autobyteus-491: deletes the installed folders of the retired built-in Skill Self-Evolver and Memory Compactor;
-    // their runs stay. Depends on nothing; no later migration reads agent folders.
+    // their runs stay. Depends on nothing; no later migration reads agent folders. (Released in v1.5.14-beta.1.)
     new RemoveRetiredBuiltInAgentsMigration([
       { itemId: "skillSelfEvolverDir", dirPath: path.join(config.getAgentsDir(), "autobyteus-skill-evolver") },
       { itemId: "memoryCompactorDir", dirPath: path.join(config.getAgentsDir(), "autobyteus-memory-compactor") },
     ]),
+    // autobyteus-500 FU-020 (SR-017 D-15: dated and appended after 491's released entry): a delegated run's stored
+    // attachment links name its own run (a backup of each file first), then its follow-up after
+    // 20261017_task_agent_own_run_v1, the one later writer of a scanned folder (M-7). 491's migration touches
+    // definition folders under agents/, these only raw traces under memory/: either order gives the same result.
+    ...createDelegatedRunOwnAttachmentLinksMigrations(appDataDir, memoryDir),
   ];
 };
 

@@ -15,7 +15,7 @@ import { isCredentialRefusalClose } from '~/services/liveStreamLifecycle/credent
 type Phase = 'disconnected' | 'awaiting_connected' | 'awaiting_snapshot' | 'ready'
 
 /**
- * The live stream of a standalone run's collaboration root (`/ws/agent-collaboration/:hostRunId`): its view, its Team
+ * The live stream of a standalone run's collaboration root (`/ws/agent-collaboration/:runId`): its view, its Team
  * tab's messages and its tree (autobyteus-461 SR-084). Connecting never restores the run's agent. Each snapshot
  * republishes the context; the tree's snapshot and changes feed `runTreeStore`.
  */
@@ -37,7 +37,7 @@ export class AgentRunCollaborationStreamingService {
   })
 
   constructor(private readonly options: Readonly<{
-    hostRunId: string
+    runId: string
     isCurrent(): boolean
     publish(context: AgentRunCollaborationContext): void
     reportError(message: string): void
@@ -58,7 +58,7 @@ export class AgentRunCollaborationStreamingService {
   }
 
   private openSocket(): void {
-    const endpoint = `${useWindowNodeContextStore().getBoundEndpoints().agentCollaborationWs}/${encodeURIComponent(this.options.hostRunId)}`
+    const endpoint = `${useWindowNodeContextStore().getBoundEndpoints().agentCollaborationWs}/${encodeURIComponent(this.options.runId)}`
     const socket = new WebSocket(buildAuthenticatedWebSocketUrl(endpoint, getActiveRemoteAccessCredential() ?? ''))
     this.socket = socket
     this.phase = 'awaiting_connected'
@@ -75,9 +75,9 @@ export class AgentRunCollaborationStreamingService {
       // close while the view is not current (its run being stopped, its node changing) is not a loss to recover from.
       if (!this.released) useRunTreeStore().streamEnded(this.treeRef)
       if (!this.options.isCurrent()) return
-      // 4004: this run cannot host delegated copies; a credential refusal: the node refuses this client. Retrying
+      // 4004: this run cannot delegate (application- or system-owned); a credential refusal: the node refuses this client. Retrying
       // cannot help either.
-      const finalClose = event.code === 4004 ? 'This run cannot host delegated copies.'
+      const finalClose = event.code === 4004 ? 'This run has no delegation view: it is application- or system-owned, so it cannot delegate.'
         : isCredentialRefusalClose(event.code, event.reason) ? 'The node refused this connection\'s credential.' : null
       if (!this.intentionalClose && !finalClose) this.recoveryFailed('The Agent collaboration stream closed.')
       else if (finalClose) this.reconnect.startOver()
@@ -92,7 +92,7 @@ export class AgentRunCollaborationStreamingService {
     this.context = null
   }
 
-  private get treeRef() { return { kind: 'agent' as const, runId: this.options.hostRunId } }
+  private get treeRef() { return { kind: 'agent' as const, runId: this.options.runId } }
 
   private processFrame(socket: WebSocket, raw: string): void {
     if (this.socket !== socket || !this.options.isCurrent()) return
@@ -113,8 +113,8 @@ export class AgentRunCollaborationStreamingService {
       this.options.reportError(message.payload.message)
       return
     }
-    if (message.payload.root_subject_kind !== 'agent' || message.payload.root_run_id !== this.options.hostRunId) {
-      throw new Error(`Agent collaboration stream correlation mismatch for '${this.options.hostRunId}'.`)
+    if (message.payload.root_subject_kind !== 'agent' || message.payload.root_run_id !== this.options.runId) {
+      throw new Error(`Agent collaboration stream correlation mismatch for '${this.options.runId}'.`)
     }
     if (message.type === 'CONNECTED') {
       if (this.phase !== 'awaiting_connected') throw new Error('Agent collaboration CONNECTED arrived out of order.')
@@ -125,7 +125,7 @@ export class AgentRunCollaborationStreamingService {
       if (this.phase !== 'awaiting_snapshot' || message.payload.root_subject_kind !== 'agent') {
         throw new Error('Agent collaboration snapshot arrived out of order.')
       }
-      const candidate = shallowReactive(new AgentRunCollaborationContext({ hostRunId: this.options.hostRunId, view: message.payload.root_agent }))
+      const candidate = shallowReactive(new AgentRunCollaborationContext({ runId: this.options.runId, view: message.payload.root_agent }))
       this.options.publish(candidate)
       this.context = candidate
       this.phase = 'ready'
@@ -145,7 +145,7 @@ export class AgentRunCollaborationStreamingService {
       const sequence = message.payload.change_sequence
       this.context.applyEvent(sequence, message.payload.event)
       // The Team tab's lists are consistent through it (SR-004).
-      useCollaborationParticipantMessagesStore().advance('agent', this.options.hostRunId, this.context.view.live_sequence_id, sequence)
+      useCollaborationParticipantMessagesStore().advance('agent', this.options.runId, this.context.view.live_sequence_id, sequence)
       return
     }
     // The run's own agent started or stopped: the view says so and its stream continues (SR-045).

@@ -19,6 +19,7 @@ import { AgentRunContext } from "../../../src/agent-execution/domain/agent-run-c
 import type { AutoByteusAgentRunBackend } from "../../../src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend.js";
 import { registerTools } from "autobyteus-ts/tools/register-tools.js";
 import { defaultToolRegistry } from "autobyteus-ts/tools/registry/tool-registry.js";
+import { OFF_DISCOVERY } from "../../helpers/explicit-host-collaborators.js";
 
 class DummyLLM extends BaseLLM {
   protected async _sendMessagesToLLM(_messages: Message[]): Promise<CompleteResponse> {
@@ -86,7 +87,7 @@ describe("AutoByteusAgentRunBackendFactory integration", () => {
     const activeIds = agentFactory.listActiveAgentIds();
     await Promise.all(activeIds.map((id) => agentFactory.removeAgent(id).catch(() => false)));
 
-    backendFactory = new AutoByteusAgentRunBackendFactory({ nativeCommandProcessScope: new NativeCommandProcessScope(),
+    backendFactory = new AutoByteusAgentRunBackendFactory({ peerDiscovery: OFF_DISCOVERY, nativeCommandProcessScope: new NativeCommandProcessScope(),
       agentFactory: agentFactory as any,
       agentDefinitionService: {
         getAgentDefinitionById: async () => persistedAgentDefinition,

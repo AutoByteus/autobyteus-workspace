@@ -17,6 +17,7 @@ import {
 } from "../../../../src/available-agent-runtimes/available-agent-runtimes-service.js";
 import type { AvailableAgentRuntimesReport } from "../../../../src/available-agent-runtimes/available-agent-runtimes-report.js";
 import { testMemberExecutionContext } from "../../../fixtures/current-team-run-fixtures.js";
+import { OFF_DISCOVERY } from "../../../helpers/explicit-host-collaborators.js";
 
 const REPORT: AvailableAgentRuntimesReport = {
   checkedAt: "2026-10-25T10:00:00.000Z",
@@ -61,7 +62,7 @@ describe("list_available_agent_runtimes", () => {
     expect(automaticCollaborationToolNames(testMemberExecutionContext())).not.toContain(LIST_AVAILABLE_AGENT_RUNTIMES_TOOL_NAME);
     expect(catalog().resolveConfiguredSupportedToolNames(mcpContext(["read_file"]))).toEqual([]);
     registerAgentRuntimesTools();
-    const resolved = resolveAutoByteusAgentTools({ agentDefinition: { name: "Assistant", toolNames: [] } as never,
+    const resolved = resolveAutoByteusAgentTools({ peerDiscovery: OFF_DISCOVERY, agentDefinition: { name: "Assistant", toolNames: [] } as never,
       runtimeToolExposure: buildRuntimeAgentToolExposure([], null), senderRunId: "run-a", memberExecutionContext: null,
       logger: { warn: vi.fn(), error: vi.fn() } });
     expect(resolved.actualToolNames).not.toContain(LIST_AVAILABLE_AGENT_RUNTIMES_TOOL_NAME);
@@ -73,7 +74,7 @@ describe("list_available_agent_runtimes", () => {
     expect(defaultToolRegistry.getToolDefinition(LIST_AVAILABLE_AGENT_RUNTIMES_TOOL_NAME)?.description)
       .toBe(LIST_AVAILABLE_AGENT_RUNTIMES_TOOL_DESCRIPTION);
     // No team or member context needed: a standalone agent gets it too.
-    const resolved = resolveAutoByteusAgentTools({ agentDefinition: { name: "Router", toolNames: [LIST_AVAILABLE_AGENT_RUNTIMES_TOOL_NAME] } as never,
+    const resolved = resolveAutoByteusAgentTools({ peerDiscovery: OFF_DISCOVERY, agentDefinition: { name: "Router", toolNames: [LIST_AVAILABLE_AGENT_RUNTIMES_TOOL_NAME] } as never,
       runtimeToolExposure: buildRuntimeAgentToolExposure([LIST_AVAILABLE_AGENT_RUNTIMES_TOOL_NAME], null), senderRunId: "run-a",
       memberExecutionContext: null, logger: { warn: vi.fn(), error: vi.fn() } });
     expect(resolved.actualToolNames).toEqual([LIST_AVAILABLE_AGENT_RUNTIMES_TOOL_NAME]);
@@ -86,7 +87,7 @@ describe("list_available_agent_runtimes", () => {
 
   it("over Agent Tools MCP (Claude, Codex, Antigravity, Grok): the same report by the same rule, when the definition lists it (AC-002)", async () => {
     bindService();
-    expect(buildDefaultAgentToolMcpAdapterProviders().some((provider) => provider instanceof ListAvailableAgentRuntimesMcpAdapterProvider)).toBe(true);
+    expect(buildDefaultAgentToolMcpAdapterProviders({ peerDiscovery: OFF_DISCOVERY }).some((provider) => provider instanceof ListAvailableAgentRuntimesMcpAdapterProvider)).toBe(true);
     expect(catalog().resolveConfiguredSupportedToolNames(mcpContext([LIST_AVAILABLE_AGENT_RUNTIMES_TOOL_NAME])))
       .toEqual([LIST_AVAILABLE_AGENT_RUNTIMES_TOOL_NAME]);
     const [adapter] = new ListAvailableAgentRuntimesMcpAdapterProvider().getAdapters();

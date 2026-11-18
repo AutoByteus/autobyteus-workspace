@@ -13,7 +13,6 @@ import {
 } from "../../agent-execution/services/agent-run-service.js";
 import {
   AgentRunCommandCoordinator,
-  getAgentRunCommandCoordinator,
 } from "../../agent-execution/services/agent-run-command-coordinator.js";
 import {
   AgentRunStatusProjectionService,
@@ -84,7 +83,8 @@ export class AgentStreamHandler {
     sessionManager: AgentSessionManager = new AgentSessionManager(),
     agentRunService: AgentRunService = getAgentRunService(),
     broadcaster: AgentStreamBroadcaster = getAgentStreamBroadcaster(),
-    commandCoordinator: AgentRunCommandCoordinator = getAgentRunCommandCoordinator(),
+    /** The composed coordinator (the supervisor's; autobyteus-500 FU-011). */
+    commandCoordinator: AgentRunCommandCoordinator,
     statusProjectionService: AgentRunStatusProjectionService = getAgentRunStatusProjectionService(),
     private readonly follow: AgentRunFollowSources | null = null,
     /** Each active run's own stream sequence (SR-087), and its stored read for the snapshot. */
@@ -484,18 +484,13 @@ export class AgentStreamHandler {
   }
 }
 
-let cachedAgentStreamHandler: AgentStreamHandler | null = null;
-
-export const getAgentStreamHandler = (): AgentStreamHandler => {
-  if (!cachedAgentStreamHandler) {
-    cachedAgentStreamHandler = new AgentStreamHandler(
-      new AgentSessionManager(),
-      getAgentRunService(),
-      getAgentStreamBroadcaster(),
-      getAgentRunCommandCoordinator(),
-      getAgentRunStatusProjectionService(),
-      { registrations: getActiveCollaborationRootDirectory(), roots: { getActive: (hostRunId) => getStandaloneAgentRunRootManager().getActive(hostRunId) } },
-    );
-  }
-  return cachedAgentStreamHandler;
-};
+/** The agent stream's handler of a host: the process's run services, with the coordinator its supervisor composed. */
+export const createAgentStreamHandler = (commandCoordinator: AgentRunCommandCoordinator): AgentStreamHandler =>
+  new AgentStreamHandler(
+    new AgentSessionManager(),
+    getAgentRunService(),
+    getAgentStreamBroadcaster(),
+    commandCoordinator,
+    getAgentRunStatusProjectionService(),
+    { registrations: getActiveCollaborationRootDirectory(), roots: { getActive: (agentRunId) => getStandaloneAgentRunRootManager().getActive(agentRunId) } },
+  );

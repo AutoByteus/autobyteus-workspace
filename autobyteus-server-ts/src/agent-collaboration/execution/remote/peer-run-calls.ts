@@ -1,5 +1,5 @@
 import type { AgentOperationResult } from "../../../agent-execution/domain/agent-operation-result.js";
-import type { PairedAgentStatus } from "./paired-agent-access.js";
+import type { RunAgentStatusEntry } from "./run-agent-access.js";
 import { peerRunIdOf, type PeerRunLink } from "./peer-run-link.js";
 import { REMOTE_REFUSAL, REMOTE_ROOT_REFUSAL_TEXT } from "./remote-refusal-codes.js";
 import type {
@@ -55,7 +55,7 @@ export type PeerRunStatus = Readonly<{
   runId: string;
   reachable: boolean;
   title: string | null;
-  statuses: readonly PairedAgentStatus[];
+  statuses: readonly RunAgentStatusEntry[];
   launches: readonly RemoteAgentLaunch[];
 }>;
 

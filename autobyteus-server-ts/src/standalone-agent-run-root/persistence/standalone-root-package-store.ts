@@ -1,4 +1,4 @@
-import type { StandaloneRootMessagesFile } from "../domain/standalone-root-host.js";
+import type { StandaloneRootMessagesFile } from "../domain/standalone-run-agent.js";
 import {
   getAtomicRunPackageFileCommitWriter,
   type AtomicRunPackageFileCommitWriter,
@@ -19,9 +19,9 @@ export class StandaloneRootPackageStore {
   }
 
   /** The run's log; `null` without one. */
-  async readMessagesLog(runDir: string, hostRunId: string): Promise<StandaloneRootMessagesFile | null> {
+  async readMessagesLog(runDir: string, agentRunId: string): Promise<StandaloneRootMessagesFile | null> {
     const messages = await this.log(runDir).read();
-    return messages ? Object.freeze({ schemaVersion: 1, subjectKind: "agent", hostRunId, messages }) : null;
+    return messages ? Object.freeze({ schemaVersion: 1, subjectKind: "agent", agentRunId, messages }) : null;
   }
 
   logExists(runDir: string): Promise<boolean> { return this.log(runDir).exists(); }

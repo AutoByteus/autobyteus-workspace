@@ -317,9 +317,9 @@ try {
     const current = await state(page);
     assert(current.ancestors.join('|') === 'team:sibling-task-team', 'Wrong actual Team ancestry', current);
     assert(await nested.getAttribute('aria-level') === '2', 'Nested task Agent escaped task-Team depth');
-    const member = page.locator('[data-transient-kind="task_team_child"][data-member-address="/Research/Analyst"]');
+    const member = page.locator('[data-delegated-run-kind="task_team_child"][data-member-address="/Research/Analyst"]');
     assert(await member.getAttribute('aria-level') === '2' && await member.getAttribute('aria-expanded') === null, 'Task-Team member has phantom task child');
-    const teamRow = page.locator('[data-transient-kind="task_team"]');
+    const teamRow = page.locator('[data-delegated-run-kind="task_team"]');
     await teamRow.getByRole('button').click();
     assert(await afterLeave(async () => await nested.count() === 0), 'Task-Team collapse does not hide descendants');
     await teamRow.getByRole('button').click();
@@ -355,7 +355,7 @@ try {
     await page.goto(`${baseUrl}${routePath}?mode=empty`, { waitUntil: 'domcontentloaded' });
     await worker.waitFor({ state: 'visible' });
     assert(await page.locator('[role="treeitem"]').count() === 2, 'No-task regular list changed');
-    assert(await page.locator('[data-transient-kind]').count() === 0, 'No-task list synthesized transient rows');
+    assert(await page.locator('[data-delegated-run-kind]').count() === 0, 'No-task list synthesized transient rows');
     await worker.click();
     await selectedConversation('sibling-worker');
     return { retained, empty: await state(page) };

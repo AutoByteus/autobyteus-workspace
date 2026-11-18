@@ -26,7 +26,7 @@ class Socket {
 describe('AgentRunCollaborationStreamingService reconnect', () => {
   let view: ReturnType<typeof agentRootView>
   let options: {
-    hostRunId: string; isCurrent: () => boolean; reportError: ReturnType<typeof vi.fn>; publish: ReturnType<typeof vi.fn>
+    runId: string; isCurrent: () => boolean; reportError: ReturnType<typeof vi.fn>; publish: ReturnType<typeof vi.fn>
   }
   let service: AgentRunCollaborationStreamingService
   let visibleError: string | null
@@ -47,7 +47,7 @@ describe('AgentRunCollaborationStreamingService reconnect', () => {
     view = agentRootView()
     visibleError = null
     // As the store: an accepted snapshot publishes and clears the reported error (N-1).
-    options = { hostRunId: 'host-run', isCurrent: () => true,
+    options = { runId: 'host-run', isCurrent: () => true,
       reportError: vi.fn((message: string) => { visibleError = message }),
       publish: vi.fn(() => { visibleError = null }) }
     service = new AgentRunCollaborationStreamingService(options)
@@ -104,7 +104,7 @@ describe('AgentRunCollaborationStreamingService reconnect', () => {
     expect(Socket.instances).toHaveLength(2)
   })
 
-  it('does not retry a 4004 close (this run cannot host delegated copies)', async () => {
+  it('does not retry a 4004 close (this run cannot delegate)', async () => {
     service.connect()
     Socket.instances[0]!.lose(4004)
     await vi.advanceTimersByTimeAsync(120_000)

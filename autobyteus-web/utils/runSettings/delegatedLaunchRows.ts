@@ -203,7 +203,7 @@ export const treeDelegatedLaunchNodes = (rows: readonly RunTreeRowDto[], top: Ru
       const agentRunId = target?.agentRunId ?? row.statusIds[0]!
       result.push(build.agent({ key: row.key, address: row.address ?? '', name: row.name, agentRunId, started: launchOf(row.launch), target: `agent:${agentRunId}`,
         stop: remoteNode ? null : { agentRunId }, running: live([agentRunId]), remoteNode,
-        origin: { source: sourceOf(row.launch?.source), ownNotes: true, badge: 'delegated_copy', decision: locatorOf(delegatorOf(row), row.address ?? '', row.address ?? '') } }))
+        origin: { source: sourceOf(row.launch?.source), ownNotes: true, badge: 'delegated_run', decision: locatorOf(delegatorOf(row), row.address ?? '', row.address ?? '') } }))
       continue
     }
     const teamRunId = target?.runId ?? row.key.slice(row.key.indexOf(':') + 1)
@@ -217,7 +217,7 @@ export const treeDelegatedLaunchNodes = (rows: readonly RunTreeRowDto[], top: Ru
     })
     result.push(build.team({ key: row.key, address: row.address ?? '', name: row.name, started: launchOf(row.launch ?? memberRows.find((member) => member.openTarget?.agentRunId === target?.agentRunId)?.launch),
       target: `team:${teamRunId}`, stop: remoteNode ? null : { teamRunId }, running, remoteNode,
-      origin: { source: sourceOf(row.launch?.source), ownNotes: true, badge: 'delegated_copy', decision: null } }, members))
+      origin: { source: sourceOf(row.launch?.source), ownNotes: true, badge: 'delegated_run', decision: null } }, members))
   }
   return result
 }

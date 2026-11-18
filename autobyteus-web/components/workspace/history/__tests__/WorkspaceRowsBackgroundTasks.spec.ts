@@ -1,10 +1,10 @@
 import { mount } from '@vue/test-utils';
 import { createPinia, setActivePinia } from 'pinia';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import WorkspaceTransientExecutionRow from '../WorkspaceTransientExecutionRow.vue';
+import WorkspaceDelegatedRunRow from '../WorkspaceDelegatedRunRow.vue';
 import TeamAggregateStatusDot from '../TeamAggregateStatusDot.vue';
 import AgentStatusDisplay from '~/components/workspace/agent/AgentStatusDisplay.vue';
-import type { RunHistoryTransientExecutionRow } from '~/stores/runHistoryTypes';
+import type { RunHistoryDelegatedRunRow } from '~/stores/runHistoryTypes';
 import { AgentStatus } from '~/types/agent/AgentStatus';
 import { useRunStatusStore } from '~/stores/runStatusStore';
 
@@ -17,13 +17,13 @@ vi.mock('@iconify/vue', () => ({ Icon: { props: ['icon'], template: '<span :data
  * autobyteus-448 DEC-004 (REQ-006, AC-005): the rows read each run's running background tasks from the run-status feed
  * (its node's answer), as they read its status. A Team row shows its agents' sum by the Team rule.
  */
-const teamRow: RunHistoryTransientExecutionRow = {
-  kind: 'transient_execution', transientKind: 'task_team', rowKey: 'team:squad', teamRunId: 'manager-run',
+const teamRow: RunHistoryDelegatedRunRow = {
+  kind: 'delegated_run', delegatedRunKind: 'task_team', rowKey: 'team:squad', teamRunId: 'manager-run',
   memberAddress: '/squad', agentRunId: null, teamRunIdForNode: 'squad', memberKind: 'agent_team',
   displayName: 'squad', currentStatus: null, delegatedBy: 'manager', depth: 0, hasChildren: true, remote: null,
 };
-const agentRow: RunHistoryTransientExecutionRow = {
-  ...teamRow, transientKind: 'task_agent', rowKey: 'agent:worker', agentRunId: 'worker', teamRunIdForNode: null, memberKind: 'agent',
+const agentRow: RunHistoryDelegatedRunRow = {
+  ...teamRow, delegatedRunKind: 'task_agent', rowKey: 'agent:worker', agentRunId: 'worker', teamRunIdForNode: null, memberKind: 'agent',
   displayName: 'worker', currentStatus: AgentStatus.Idle, hasChildren: false,
 };
 
@@ -35,7 +35,7 @@ describe('rows with background tasks running (autobyteus-448)', () => {
     useRunStatusStore().apply({ type: 'RUN_STATUS_SNAPSHOT', payload: { runs: [{ kind: 'agent_team', runId: 'squad', answer: 'ok', node: null,
       status: 'idle', backgroundTasksRunning: 1, agents: [
         { agentRunId: 'lead', status: 'idle', backgroundTasksRunning: 1 }, { agentRunId: 'dev', status: 'idle', backgroundTasksRunning: 0 }] }] } });
-    const wrapper = mount(WorkspaceTransientExecutionRow, { props: { row: teamRow, teamStatus: AgentStatus.Idle, hasChildren: true } });
+    const wrapper = mount(WorkspaceDelegatedRunRow, { props: { row: teamRow, teamStatus: AgentStatus.Idle, hasChildren: true } });
     const dot = wrapper.get('[data-test="team-aggregate-status-dot"]');
     expect(dot.attributes('data-status')).toBe('background');
     expect(dot.attributes('aria-label')).toBe('Background task running');
@@ -58,7 +58,7 @@ describe('rows with background tasks running (autobyteus-448)', () => {
 
   it('an agent row reads its own count by its run ID; its accessible status names it', () => {
     useRunStatusStore().apply({ type: 'RUN_STATUS_CHANGED', payload: { kind: 'agent', runId: 'worker', agentRunId: 'worker', status: 'idle', backgroundTasksRunning: 2 } });
-    const wrapper = mount(WorkspaceTransientExecutionRow, { props: { row: agentRow } });
+    const wrapper = mount(WorkspaceDelegatedRunRow, { props: { row: agentRow } });
     expect(wrapper.get('[data-test="workspace-transient-status-dot"]').classes()).toContain('bg-blue-500');
     expect(wrapper.html()).toContain('2 background tasks running');
   });

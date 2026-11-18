@@ -1,11 +1,8 @@
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { defaultToolRegistry } from "autobyteus-ts/tools/registry/tool-registry.js";
+import { REMOTE_COLLABORATION_OFF_DISCOVERY } from "../../../../src/agent-tools/agent-discovery/agent-discovery-refusal.js";
 import { availableCollaboratorEntry } from "../../../../src/agent-collaboration/collaborators/available-collaborator-entry.js";
-import {
-  bindProcessPeerDiscoveryChannel,
-  releaseProcessPeerDiscoveryChannel,
-  type PeerDiscoveryChannel,
-} from "../../../../src/agent-collaboration/execution/remote/peer-discovery-channel.js";
+import type { PeerDiscoveryChannel } from "../../../../src/agent-collaboration/execution/remote/peer-discovery-channel.js";
 import {
   LIST_AVAILABLE_AGENTS_NODE_DESCRIPTION,
   LIST_AVAILABLE_AGENTS_TOOL_DESCRIPTION,
@@ -26,6 +23,7 @@ import { automaticCollaborationToolNames, buildRuntimeAgentToolExposure } from "
 import { resolveAutoByteusAgentTools } from "../../../../src/agent-execution/backends/autobyteus/autobyteus-agent-tool-resolver.js";
 import { resolveClaudeSessionToolingOptions } from "../../../../src/agent-execution/backends/claude/session/claude-session-tooling-options.js";
 import { testMemberExecutionContext } from "../../../fixtures/current-team-run-fixtures.js";
+import { OFF_DISCOVERY } from "../../../helpers/explicit-host-collaborators.js";
 
 /**
  * autobyteus-261 on the asking node's tool edge: `list_available_agents` with `node`, the opt-in `list_peer_nodes`,
@@ -48,9 +46,6 @@ const discovery = (): PeerDiscoveryChannel & { listPeerNodes: ReturnType<typeof 
 });
 const withLister = () => testMemberExecutionContext({ listAvailableAgents: vi.fn(async () => local) });
 
-const bound: PeerDiscoveryChannel[] = [];
-const bind = (channel: PeerDiscoveryChannel) => { bindProcessPeerDiscoveryChannel(channel); bound.push(channel); return channel; };
-afterEach(() => { bound.splice(0).forEach(releaseProcessPeerDiscoveryChannel); });
 
 describe("the one entry builder (DEC-405)", () => {
   it("keeps name, kind and address, and a description only when it has one", () => {
@@ -78,7 +73,7 @@ describe("list_available_agents with node (BEH-402)", () => {
     await expect(listAvailableAgentsFor(context.collaboration, { node: "nas" }, d)).resolves.toEqual(unknownNode);
     await expect(listAvailableAgentsFor(context.collaboration, { node: " " }, d)).resolves.toMatchObject({ accepted: false, code: "VALIDATION_ERROR" });
     await expect(listAvailableAgentsFor(context.collaboration, { node: 3 }, d)).resolves.toMatchObject({ accepted: false, code: "VALIDATION_ERROR" });
-    await expect(listAvailableAgentsFor(context.collaboration, { node: "beta" }, null)).resolves.toEqual(off);
+    await expect(listAvailableAgentsFor(context.collaboration, { node: "beta" }, REMOTE_COLLABORATION_OFF_DISCOVERY)).resolves.toEqual(off);
     expect(context.collaboration.listAvailableAgents).not.toHaveBeenCalled();
   });
 
@@ -96,7 +91,7 @@ describe("list_peer_nodes (BEH-401, DEC-401)", () => {
   it("lists the peers with their status; 'turned off' when nothing is composed; needs a run that can delegate", async () => {
     const d = discovery();
     await expect(listPeerNodesFor(withLister().collaboration, d)).resolves.toEqual({ nodes: [{ name: "beta", status: "available" }, { name: "docker", status: "unavailable" }] });
-    await expect(listPeerNodesFor(withLister().collaboration, null)).resolves.toEqual(off);
+    await expect(listPeerNodesFor(withLister().collaboration, REMOTE_COLLABORATION_OFF_DISCOVERY)).resolves.toEqual(off);
     d.listPeerNodes.mockResolvedValueOnce(off);
     await expect(listPeerNodesFor(withLister().collaboration, d)).resolves.toEqual(off);
     await expect(listPeerNodesFor(testMemberExecutionContext().collaboration, d)).rejects.toMatchObject({ code: "COLLABORATION_CONTEXT_REQUIRED" });
@@ -105,7 +100,8 @@ describe("list_peer_nodes (BEH-401, DEC-401)", () => {
 
   it("is opt-in on every runtime: never automatic; native, MCP and Claude expose it only when selected and the run can delegate", async () => {
     const context = withLister();
-    bind(discovery());
+    // The host's discovery, as its composition passes it (autobyteus-500 FU-011).
+    const hostDiscovery = discovery();
     expect(automaticCollaborationToolNames(context)).not.toContain(LIST_PEER_NODES_TOOL_NAME);
     expect(buildRuntimeAgentToolExposure(["list_available_agents"], context).listPeerNodesEnabled).toBe(false);
     const exposure = buildRuntimeAgentToolExposure([" list_peer_nodes ", "list_available_agents"], context);
@@ -113,7 +109,7 @@ describe("list_peer_nodes (BEH-401, DEC-401)", () => {
 
     registerAgentDiscoveryTools();
     expect(defaultToolRegistry.getToolDefinition(LIST_PEER_NODES_TOOL_NAME)?.description).toBe(LIST_PEER_NODES_TOOL_DESCRIPTION);
-    const resolved = resolveAutoByteusAgentTools({ agentDefinition: { name: "Assistant", toolNames: ["list_peer_nodes", "list_available_agents"] } as never,
+    const resolved = resolveAutoByteusAgentTools({ peerDiscovery: () => hostDiscovery, agentDefinition: { name: "Assistant", toolNames: ["list_peer_nodes", "list_available_agents"] } as never,
       runtimeToolExposure: exposure, senderRunId: "run-a", memberExecutionContext: context, logger: { warn: vi.fn(), error: vi.fn() } });
     expect(resolved.actualToolNames).toEqual(expect.arrayContaining([LIST_PEER_NODES_TOOL_NAME, LIST_AVAILABLE_AGENTS_TOOL_NAME]));
     const tool = (name: string) => resolved.tools.find((candidate) => (candidate.constructor as { getName?: () => string }).getName?.() === name)! as unknown as
@@ -122,13 +118,13 @@ describe("list_peer_nodes (BEH-401, DEC-401)", () => {
     expect(JSON.parse(await tool(LIST_AVAILABLE_AGENTS_TOOL_NAME)._execute(null, { node: "beta" }))).toEqual({ agents: remote });
     // A refusal is the native tool's error, with its text.
     await expect(tool(LIST_AVAILABLE_AGENTS_TOOL_NAME)._execute(null, { node: "nas" })).rejects.toThrow(unknownNode.message);
-    const skipped = resolveAutoByteusAgentTools({ agentDefinition: { name: "Assistant", toolNames: ["list_peer_nodes"] } as never,
+    const skipped = resolveAutoByteusAgentTools({ peerDiscovery: OFF_DISCOVERY, agentDefinition: { name: "Assistant", toolNames: ["list_peer_nodes"] } as never,
       runtimeToolExposure: exposure, senderRunId: "run-a", memberExecutionContext: testMemberExecutionContext(), logger: { warn: vi.fn(), error: vi.fn() } });
     expect(skipped.actualToolNames).not.toContain(LIST_PEER_NODES_TOOL_NAME);
 
-    expect(buildDefaultAgentToolMcpAdapterProviders().some((provider) => provider instanceof ListPeerNodesMcpAdapterProvider)).toBe(true);
-    const [nodes] = new ListPeerNodesMcpAdapterProvider().getAdapters();
-    const [agents] = new ListAvailableAgentsMcpAdapterProvider().getAdapters();
+    expect(buildDefaultAgentToolMcpAdapterProviders({ peerDiscovery: OFF_DISCOVERY }).some((provider) => provider instanceof ListPeerNodesMcpAdapterProvider)).toBe(true);
+    const [nodes] = new ListPeerNodesMcpAdapterProvider(() => hostDiscovery).getAdapters();
+    const [agents] = new ListAvailableAgentsMcpAdapterProvider(() => hostDiscovery).getAdapters();
     const availability = (memberExecutionContext: typeof context | null) => nodes!.isAvailable({ runtimeExposure: exposure,
       sender: memberExecutionContext ? { memberExecutionContext } as never : null, executionContext: {} as never, applicationAgentTools: null });
     expect([availability(context), availability(testMemberExecutionContext()), availability(null)]).toEqual([true, false, false]);

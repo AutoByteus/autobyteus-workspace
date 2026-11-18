@@ -63,7 +63,7 @@ describe("collaborationParticipantMessages", () => {
       message("m2", "manager", "not-delegated-from-this-run"),
       message("m3", "manager", REMOTE_RUN_ID),
     ];
-    const own = (runId: string, log: readonly unknown[]) => ({ host: { agentRunId: runId, address: `/${runId}` }, messages: { schemaVersion: 1, subjectKind: "agent", hostRunId: runId, messages: log } });
+    const own = (runId: string, log: readonly unknown[]) => ({ agent: { agentRunId: runId, address: `/${runId}` }, messages: { schemaVersion: 1, subjectKind: "agent", agentRunId: runId, messages: log } });
     const result = await withDelegatedSolo(() => withHubRecords(async (runId) => runId === "solo" ? own("solo", [messages[0]]) : own("manager", messages),
       () => readCollaborationParticipantMessages({ rootKind: "agent", rootRunId: "manager", agentRunId: "manager" })));
     expect(result.messages.map((entry) => entry.messageId)).toEqual(["m1"]);
@@ -72,7 +72,7 @@ describe("collaborationParticipantMessages", () => {
   });
 
   it("rejects a non-participant: a closed delegated run's agent (not a row of the view), a remote run's agent and an unknown run (AR-004)", async () => {
-    const records = async (runId: string) => ({ host: { agentRunId: runId, address: `/${runId}` }, messages: { schemaVersion: 1, subjectKind: "agent", hostRunId: runId, messages: [] } });
+    const records = async (runId: string) => ({ agent: { agentRunId: runId, address: `/${runId}` }, messages: { schemaVersion: 1, subjectKind: "agent", agentRunId: runId, messages: [] } });
     for (const agentRunId of ["solo", REMOTE_RUN_ID, "not-in-this-run"]) {
       await expect(withDelegatedSolo(() => withHubRecords(records, () => readCollaborationParticipantMessages({ rootKind: "agent", rootRunId: "manager", agentRunId }))))
         .rejects.toThrow(`AgentRun '${agentRunId}' is not a participant of agent run 'manager'.`);
@@ -127,7 +127,7 @@ describe("collaborationParticipantMessages", () => {
     const w2 = message("w2", "worker", "helper", "2026-11-01T00:00:02.000Z");
     const w3 = message("w3", "manager", "helper", "2026-11-01T00:00:03.000Z");
     const logs: Record<string, unknown[]> = { manager: [w1, w3], worker: [w1, w2], helper: [w2, w3] };
-    const records = async (runId: string) => ({ host: { agentRunId: runId, address: `/${runId}` }, messages: { schemaVersion: 1, subjectKind: "agent", hostRunId: runId, messages: logs[runId] ?? [] } });
+    const records = async (runId: string) => ({ agent: { agentRunId: runId, address: `/${runId}` }, messages: { schemaVersion: 1, subjectKind: "agent", agentRunId: runId, messages: logs[runId] ?? [] } });
     const read = (agentRunId: string) => withStudioServices({ delegatedRunAgents: new DelegatedRunAgentsReader(treeBelow(["worker", "helper"], ["worker", "helper"])) },
       () => withHubRecords(records, () => readCollaborationParticipantMessages({ rootKind: "agent", rootRunId: "manager", agentRunId })));
     expect((await read("manager")).messages.map((entry) => entry.messageId)).toEqual(["w1", "w3"]);
@@ -143,7 +143,7 @@ describe("collaborationParticipantMessages", () => {
     const w2 = message("w2", "worker", "helper", "2026-11-01T00:00:02.000Z");
     const w3 = message("w3", "manager", "helper", "2026-11-01T00:00:03.000Z");
     const logs: Record<string, unknown[]> = { worker: [w2], helper: [w2, w3] };
-    const records = async (runId: string) => ({ host: { agentRunId: runId, address: `/${runId}` }, messages: { schemaVersion: 1, subjectKind: "agent", hostRunId: runId, messages: logs[runId] ?? [] } });
+    const records = async (runId: string) => ({ agent: { agentRunId: runId, address: `/${runId}` }, messages: { schemaVersion: 1, subjectKind: "agent", agentRunId: runId, messages: logs[runId] ?? [] } });
     const read = (agentRunId: string) => withStudioServices({ delegatedRunAgents: new DelegatedRunAgentsReader(treeBelow(["helper"], ["helper"])) },
       () => withHubRecords(records, () => readCollaborationParticipantMessages({ rootKind: "agent", rootRunId: "worker", agentRunId })));
     expect((await read("helper")).messages.map((entry) => entry.messageId)).toEqual(["w2"]);

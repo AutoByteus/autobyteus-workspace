@@ -20,6 +20,8 @@ import { AgentCollaborationStreamHandler } from "../../services/agent-streaming/
 import type { StandaloneAgentRunRootManager } from "../../standalone-agent-run-root/services/standalone-agent-run-root-manager.js";
 import { AgentTeamSession, AgentTeamStreamHandler } from "../../services/agent-streaming/agent-team-stream-handler.js";
 import { AgentSessionManager } from "../../services/agent-streaming/agent-session-manager.js";
+import type { AgentStreamHandler } from "../../services/agent-streaming/agent-stream-handler.js";
+import type { RemoteRunChannel } from "../../agent-collaboration/execution/remote/remote-run-channel.js";
 import type { RunViewSources } from "../../compositions/run-view-composition.js";
 
 export async function registerWebsocketRoutes(
@@ -35,6 +37,10 @@ export async function registerWebsocketRoutes(
     views: RunViewSources;
     /** autobyteus-461 SR-082, SR-083: each run's statuses by run ID, and its rows' change notice. */
     runStatus: RunStatusService;
+    /** The studio's channel to peer nodes, for `/ws/peer-run` (autobyteus-500 FU-011). */
+    remoteChannel: RemoteRunChannel;
+    /** The agent stream's handler, with the composed command coordinator (autobyteus-500 FU-011). */
+    agentStreamHandler: AgentStreamHandler;
   },
 ): Promise<void> {
   await registerFileExplorerWebsocket(app);
@@ -42,13 +48,13 @@ export async function registerWebsocketRoutes(
   await registerNodeDesktopWebsocket(app);
   await registerProjectChangesWebsocket(app);
   await registerRunStatusWebsocket(app, dependencies.runStatus);
-  await registerPeerRunWebsocket(app);
+  await registerPeerRunWebsocket(app, dependencies.remoteChannel);
   await registerUpdateNotificationsWebsocket(app);
   await registerAgentPackageDefinitionsWebsocket(app, dependencies.agentPackageDefinitionChangeHub);
   const { views } = dependencies;
   await registerAgentWebsocket(
     app,
-    undefined,
+    dependencies.agentStreamHandler,
     new AgentTeamStreamHandler(new AgentSessionManager(AgentTeamSession), dependencies.teamRunService,
       { streams: views.streams, rows: views.rows, registrations: views.registrations, closedTasks: views.closedTasks,
         restorability: views.restorability, readStoredTree: views.readStoredTeamTree }),

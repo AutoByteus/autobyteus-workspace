@@ -19,6 +19,7 @@ import { LLMConfig } from "autobyteus-ts/llm/utils/llm-config.js";
 import { CompleteResponse, ChunkResponse } from "autobyteus-ts/llm/utils/response-types.js";
 import { Message } from "autobyteus-ts/llm/utils/messages.js";
 import { createStandaloneRunRootsFixture } from "../../fixtures/standalone-run-roots-fixture.js";
+import { OFFERED_STORED_MODEL_CHECKS, OFF_DISCOVERY } from "../../helpers/explicit-host-collaborators.js";
 
 const unavailableBackendFactory: AgentRunBackendFactory = Object.freeze({
   createBackend: () => Promise.reject(new Error("Backend factory is outside this test scenario.")),
@@ -76,7 +77,7 @@ describe("AgentRunService real memory layout integration", () => {
     const activeIds = factory.listActiveAgentIds();
     await Promise.all(activeIds.map((id) => factory.removeAgent(id).catch(() => false)));
 
-    const autoByteusBackendFactory = new AutoByteusAgentRunBackendFactory({ nativeCommandProcessScope: new NativeCommandProcessScope(),
+    const autoByteusBackendFactory = new AutoByteusAgentRunBackendFactory({ peerDiscovery: OFF_DISCOVERY, nativeCommandProcessScope: new NativeCommandProcessScope(),
       agentFactory: factory as any,
       agentDefinitionService: {
         getAgentDefinitionById: async () =>
@@ -140,7 +141,7 @@ describe("AgentRunService real memory layout integration", () => {
             }
           : null,
     } as any;
-    const lifecycleService = new StandaloneAgentRunLifecycleService(memoryDir, {
+    const lifecycleService = new StandaloneAgentRunLifecycleService(memoryDir, { storedModelChecks: OFFERED_STORED_MODEL_CHECKS,
       agentRunManager: manager,
       workspaceManager,
       modelSelectionValidator: {

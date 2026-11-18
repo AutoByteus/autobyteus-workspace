@@ -4,7 +4,7 @@ import type { AgentRunInputOptions, AgentRunInputReservationResult } from "../..
 import type { AgentRunManager } from "../../../agent-execution/services/agent-run-manager.js";
 import type { AgentConversationActivityInspector } from "../../../agent-memory/services/agent-conversation-activity-inspector.js";
 import type { WorkspaceManager } from "../../../workspaces/workspace-manager.js";
-import { ConfiguredAgentExecutionFactory } from "./configured-agent-execution-factory.js";
+import type { ConfiguredAgentExecutionFactory } from "./configured-agent-execution-factory.js";
 import type { ConfiguredAgentExecutionHandle } from "./configured-agent-execution-handle.js";
 import type { AgentRunMemoryLocator } from "../services/agent-run-memory-locator.js";
 import { createCollaborationMemberExecutionIdentity, createRootExecutionPhysicalScope, type RootExecutionIdentity } from "../domain/root-execution-identity.js";
@@ -34,7 +34,7 @@ export class RootAgentExecutionRegistry {
     memoryLocator?: AgentRunMemoryLocator;
     activityInspector?: AgentConversationActivityInspector;
     workspaceManager?: Pick<WorkspaceManager, "ensureWorkspaceByRootPath">;
-    executionFactory?: ConfiguredAgentExecutionFactory;
+    executionFactory: ConfiguredAgentExecutionFactory;
   }>) {}
 
   listHandles(): readonly ConfiguredAgentExecutionHandle[] { return Object.freeze([...this.active.values()]); }
@@ -115,7 +115,7 @@ export class RootAgentExecutionRegistry {
       ...(sourceNode.pendingRuntimeSwitch ? { pendingRuntimeSwitch: sourceNode.pendingRuntimeSwitch } : {}),
     });
     const memberExecutionContext = await callbacks.buildMemberExecutionContext({ identity, physicalScope, execution, sourceNode });
-    return (this.options.executionFactory ?? new ConfiguredAgentExecutionFactory()).create({
+    return this.options.executionFactory.create({
       identity,
       physicalScope,
       memoryPlacement: runPartPlacement(physicalScope),

@@ -25,7 +25,7 @@ const setup = (stored: StoredRemoteLinkCheck = "proceed") => {
     standalone: vi.fn(async () => roots.standalone),
     team: vi.fn(async () => roots.team),
     org: vi.fn(async () => roots.org),
-    pairedAgents: vi.fn() as never,
+    runAgents: vi.fn() as never,
     liveRoot: vi.fn(() => liveRoot),
   } satisfies RemoteRootDirectory;
   const liveRoot = { acceptPeerRunMessage: vi.fn(async () => ({ accepted: true as const })) };

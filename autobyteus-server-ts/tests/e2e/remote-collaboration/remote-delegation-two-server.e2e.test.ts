@@ -464,16 +464,23 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
         command_id: randomUUID(), message_id: randomUUID(), dedupe_key: randomUUID(), content, context_file_paths: [], image_urls: [] } }));
     },
   });
-  /** The actor calls one actual agent tool; returns the tool result it reports and how long the call took. */
+  /**
+   * The actor calls one actual agent tool; returns the tool result it reports and how long the call took. The run view
+   * holds only the most recent events (`RECENT_RUN_PROJECTION_EVENT_LIMIT`), so a long-lived actor's count of results can
+   * stay the same as old entries leave the window: the new result is the newest reply entry that was not there before.
+   */
   const calls = async (actor: Actor, name: string, args: Rec, ms = 90_000): Promise<Rec & { elapsedMs: number }> => {
-    const before = calledResults(await actor.conversation()).length;
+    const replies = (conversation: unknown) => (Array.isArray(conversation) ? conversation : [])
+      .filter((entry) => stringsOf(entry).some((value) => value.includes("CALLED:"))).map((entry) => JSON.stringify(entry));
+    const before = new Set(replies(await actor.conversation()));
     const started = Date.now();
     await actor.send(callTool(name, args));
-    let results: string[] = [];
-    await until(async () => { results = calledResults(await actor.conversation()); return results.length > before; },
+    let fresh: string[] = [];
+    await until(async () => { fresh = replies(await actor.conversation()).filter((entry) => !before.has(entry)); return fresh.length > 0; },
       `${actor.label} result of ${name} ${JSON.stringify(args).slice(0, 160)}`, ms)
-      .catch(async (error) => { throw new Error(`${error}; conversation tail: ${JSON.stringify(stringsOf(await actor.conversation()).slice(-6)).slice(0, 1500)}`); });
-    return { ...toolResult(results[before]!), elapsedMs: Date.now() - started };
+      .catch(async (error) => { const now = await actor.conversation();
+        throw new Error(`${error}; entries in view: ${Array.isArray(now) ? now.length : 0}; conversation tail: ${JSON.stringify(stringsOf(now).slice(-6)).slice(0, 1500)}`); });
+    return { ...toolResult(calledResults([JSON.parse(fresh[0]!)])[0]!), elapsedMs: Date.now() - started };
   };
   /** 269: a run's title in beta's history (`summary`), as beta's run history lists it; `null` when the run is not listed. */
   const betaTitle = async (kind: "agent" | "team", id: string): Promise<string | null> => {
@@ -988,7 +995,8 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
       ["/half_set", "NO_DEFAULT_RUNTIME", `There is no default runtime configured for the target agent Half Set on node "${node}", and Model Routing is off on node "${node}".`],
       // AC-203: the default's runtime is unavailable on beta; the default's model is not offered there.
       ["/codex_writer", "AGENT_CANNOT_RUN", new RegExp(`^The Agent Codex Writer on node "${node}" cannot run there: .+`)],
-      ["/fragile", "AGENT_CANNOT_RUN", `The Agent Fragile on node "${node}" cannot run there: 'no-such-model' is not offered by Antigravity CLI now. Refresh the model list and choose again, and Model Routing is off on node "${node}".`],
+      // autobyteus-500 FU-030: a peer's refusal keeps only the peer's reason (its next step names the peer's settings).
+      ["/fragile", "AGENT_CANNOT_RUN", `The Agent Fragile on node "${node}" cannot run there: its default model cannot be used: 'no-such-model' is no longer offered by Antigravity CLI, and Model Routing is off on node "${node}".`],
       // AC-204: the Model Router (never a collaborator, 455 REQ-002), an Agent Org, a team-local Agent and an unknown address
       // are not delegable targets.
       ["/model_router", "AGENT_NOT_FOUND", notFound("/model_router")],
@@ -1947,7 +1955,7 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     const liveSeen = opened.liveSince(beforeLive, "RC31-LIVE-ANSWER");
 
     // DS-003: the stored conversation of the remote agent, read through alpha.
-    const projected = JSON.stringify((await alpha.gql(`query($h:String!,$a:String!,$r:String!){agentRunCollaborationMemberProjection(hostRunId:$h,memberAddress:$a,agentRunId:$r){conversation}}`,
+    const projected = JSON.stringify((await alpha.gql(`query($h:String!,$a:String!,$r:String!){agentRunCollaborationMemberProjection(runId:$h,memberAddress:$a,agentRunId:$r){conversation}}`,
       { h: delegator.runId, a: "/publisher", r: r9 })).agentRunCollaborationMemberProjection?.conversation ?? null);
     expect(projected).toContain("TREE-PACKET");
     expect(projected).toContain("LIVE-FROM-BETA-OWNER");
@@ -1966,7 +1974,7 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
       `the owner's heading, then the message: ${JSON.stringify(ownerEntries[0]!.content)}`).toBe(true);
     const ownerEntry = ownerEntries[0];
     await until(() => opened.liveSince(beforeOwner, "RC31-OWNER-ANSWER"), "the owner's answer live on alpha's /ws/peer-run", 15_000);
-    const reread = JSON.stringify((await alpha.gql(`query($h:String!,$a:String!,$r:String!){agentRunCollaborationMemberProjection(hostRunId:$h,memberAddress:$a,agentRunId:$r){conversation}}`,
+    const reread = JSON.stringify((await alpha.gql(`query($h:String!,$a:String!,$r:String!){agentRunCollaborationMemberProjection(runId:$h,memberAddress:$a,agentRunId:$r){conversation}}`,
       { h: delegator.runId, a: "/publisher", r: r9 })).agentRunCollaborationMemberProjection?.conversation ?? null);
     expect(reread.split("OWNER-FROM-ALPHA").length - 1, "N-405: one user message in alpha's view of it").toBe(1);
     const logsAfter = await Promise.all([alpha, beta].map(async (node) => (await walkFiles(node.memory)).filter((file) => /communication_messages.*\.jsonl$/.test(file)).map((file) => fs.readFileSync(file, "utf8")).join("\n")));
@@ -2125,7 +2133,7 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     const interrupted = await ackOf(soloView, rootCommand(soloView, soloRoot, "INTERRUPT_GENERATION", a1));
     expect(interrupted, JSON.stringify(interrupted)).toMatchObject({ command_type: "INTERRUPT_GENERATION", state: "accepted" });
     // The stored conversation, read through alpha with the delegator stopped.
-    const stored = JSON.stringify((await alpha.gql(`query($h:String!,$a:String!,$r:String!){agentRunCollaborationMemberProjection(hostRunId:$h,memberAddress:$a,agentRunId:$r){conversation}}`,
+    const stored = JSON.stringify((await alpha.gql(`query($h:String!,$a:String!,$r:String!){agentRunCollaborationMemberProjection(runId:$h,memberAddress:$a,agentRunId:$r){conversation}}`,
       { h: solo.runId, a: "/publisher", r: a1 })).agentRunCollaborationMemberProjection?.conversation ?? null);
     expect(stored).toContain("A16-OWNER-SOLO");
     // The owner's message to the peer Team's coordinator.
@@ -2889,7 +2897,7 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
       expect(unreachableRow.peer, JSON.stringify(unreachableRow)).toMatchObject({ nodeName: LABEL.beta });
       expect((unreachableRow.peer as Rec).reachable, "not reachable (false, or no answer yet)").not.toBe(true);
       const projectionStarted = Date.now();
-      const read = await alpha.gqlRaw(`query($h:String!,$a:String!,$r:String!){agentRunCollaborationMemberProjection(hostRunId:$h,memberAddress:$a,agentRunId:$r){conversation}}`,
+      const read = await alpha.gqlRaw(`query($h:String!,$a:String!,$r:String!){agentRunCollaborationMemberProjection(runId:$h,memberAddress:$a,agentRunId:$r){conversation}}`,
         { h: delegatorId, a: "/publisher", r: r9 });
       projectionError = { errors: read.errors?.map((error) => error.message), data: read.data, elapsedMs: Date.now() - projectionStarted };
       expect(Date.now() - projectionStarted, "the read answers within the bound").toBeLessThan(25_000);
@@ -3150,7 +3158,8 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     expect(updated.defaultLaunchConfig).toEqual({ runtimeKind: "antigravity_cli", llmModelIdentifier: "retired-model" });
     const runsBefore = await remoteRunDirs();
     const refused = await delegateRemote(solo, "After the default changed.");
-    expect(textOf(refused)).toBe(`The Agent Publisher on node "${LABEL.beta}" cannot run there: 'retired-model' is not offered by Antigravity CLI now. Refresh the model list and choose again, and Model Routing is off on node "${LABEL.beta}".`);
+    // autobyteus-500 FU-030: a peer's refusal keeps only the peer's reason.
+    expect(textOf(refused)).toBe(`The Agent Publisher on node "${LABEL.beta}" cannot run there: its default model cannot be used: 'retired-model' is no longer offered by Antigravity CLI, and Model Routing is off on node "${LABEL.beta}".`);
     expect(await remoteRunDirs()).toEqual(runsBefore);
     expect(await calls(solo, "send_message_to", { target_agent_run_id: ids.r1, content: "AFTER-DEFAULT-CHANGE-FOLLOWUP" })).toMatchObject({ accepted: true });
     await receives(composeOnBeta(ids.r1), "AFTER-DEFAULT-CHANGE-FOLLOWUP");

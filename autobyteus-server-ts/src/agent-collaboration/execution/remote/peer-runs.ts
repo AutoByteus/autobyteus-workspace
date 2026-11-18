@@ -3,7 +3,6 @@ import { peerRunIdOf, peerRunLinksOf } from "./peer-run-link.js";
 import type { PeerChannel } from "./peer-run-calls.js";
 import { PeerAgentRun } from "./peer-agent-run.js";
 import { PeerTeamRun } from "./peer-team-run.js";
-import { findProcessRemoteRunChannel } from "./remote-run-channel.js";
 import type { AgentOperationResult } from "../../../agent-execution/domain/agent-operation-result.js";
 import type { TeamMemberExecutionCommand } from "../../../agent-team-execution/domain/team-member-execution-command.js";
 import { remoteOwnerCommandOf } from "./remote-child-commands.js";
@@ -21,7 +20,7 @@ export type PeerRunOf = (id: string) => PeerRun | null;
  */
 export const createPeerRunOf = (
   tree: Pick<DelegationIndex, "peerRunNamed" | "parentOf" | "peerChildrenOf">,
-  channel: PeerChannel = findProcessRemoteRunChannel,
+  channel: PeerChannel,
 ): PeerRunOf => (id) => {
   const run = tree.peerRunNamed(id.trim());
   const parent = run ? tree.parentOf(run) : null;

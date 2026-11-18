@@ -183,13 +183,13 @@ export class TeamRunMessageDelivery {
   }
 
   /** `delegate_task(address)`: refuses the sender's own Team (CM-1), then a configured Agent (the team's, else one step 2 reaches), then the catalog. */
-  resolveDelegationPlacement(sender: CollaborationMemberExecutionIdentity, recipientAddress: string, work: DelegationWork, newCopyFolder: string | null): Promise<TeamDelegationPlacement> {
+  resolveDelegationPlacement(sender: CollaborationMemberExecutionIdentity, recipientAddress: string, work: DelegationWork, newDelegatedRunFolder: string | null): Promise<TeamDelegationPlacement> {
     const address = this.recipients.requireNonRootAddress(recipientAddress);
     return resolveDelegationPlacement({
       port: this.options.getIndex(),
       senderAgentRunId: sender.agentRunId,
       address,
-      newCopyFolder,
+      newDelegatedRunFolder,
       resolveInRun: async () => {
         try {
           return this.recipients.resolveInRunDelegationPlacement(this.options.getIndex(), address);

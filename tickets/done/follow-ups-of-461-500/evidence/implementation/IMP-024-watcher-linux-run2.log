@@ -1,0 +1,481 @@
+
+ RUN  v4.1.12 /w/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/w/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > does not emit events for pre-existing root .gitignore excluded directories
+Starting directory traversal for: '/tmp/autobyteus-server-ts-watch-HeUHqg' with max_depth=null
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > does not emit events for pre-existing root .gitignore excluded directories
+Directory traversal for '/tmp/autobyteus-server-ts-watch-HeUHqg' completed in 0.0040 seconds.
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > does not emit events for pre-existing root .gitignore excluded directories
+FileSystemWatcher initialized for '/tmp/autobyteus-server-ts-watch-HeUHqg' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > does not emit events for pre-existing root .gitignore excluded directories
+Started filesystem watcher for workspace /tmp/autobyteus-server-ts-watch-HeUHqg
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > does not emit events for pre-existing root .gitignore excluded directories
+Starting directory traversal for: '/tmp/autobyteus-server-ts-watch-KmzWAl' with max_depth=null
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > does not emit events for pre-existing root .gitignore excluded directories
+Directory traversal for '/tmp/autobyteus-server-ts-watch-KmzWAl' completed in 0.0700 seconds.
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > does not emit events for pre-existing root .gitignore excluded directories
+FileSystemWatcher initialized for '/tmp/autobyteus-server-ts-watch-KmzWAl' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > does not emit events for pre-existing root .gitignore excluded directories
+Started filesystem watcher for workspace /tmp/autobyteus-server-ts-watch-KmzWAl
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > does not emit events for pre-existing root .gitignore excluded directories
+Watcher detected creation: /tmp/autobyteus-server-ts-watch-KmzWAl/sentinel-1795009785181-fhwnluvvp1r.txt
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > does not emit events for pre-existing root .gitignore excluded directories
+Watcher detected deletion: /tmp/autobyteus-server-ts-watch-KmzWAl/sentinel-1795009785181-fhwnluvvp1r.txt
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > does not emit events for pre-existing root .gitignore excluded directories
+Logically stopped filesystem watcher for workspace /tmp/autobyteus-server-ts-watch-KmzWAl
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > does not emit events for pre-existing root .gitignore excluded directories
+Logically stopped filesystem watcher for workspace /tmp/autobyteus-server-ts-watch-HeUHqg
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > does not emit events for pre-existing nested .gitignore excluded directories
+Starting directory traversal for: '/tmp/autobyteus-server-ts-watch-NvRinY' with max_depth=null
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > does not emit events for pre-existing nested .gitignore excluded directories
+Directory traversal for '/tmp/autobyteus-server-ts-watch-NvRinY' completed in 0.0030 seconds.
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > does not emit events for pre-existing nested .gitignore excluded directories
+FileSystemWatcher initialized for '/tmp/autobyteus-server-ts-watch-NvRinY' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > does not emit events for pre-existing nested .gitignore excluded directories
+Started filesystem watcher for workspace /tmp/autobyteus-server-ts-watch-NvRinY
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > does not emit events for pre-existing nested .gitignore excluded directories
+Starting directory traversal for: '/tmp/autobyteus-server-ts-watch-6oBme0' with max_depth=null
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > does not emit events for pre-existing nested .gitignore excluded directories
+Directory traversal for '/tmp/autobyteus-server-ts-watch-6oBme0' completed in 0.0030 seconds.
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > does not emit events for pre-existing nested .gitignore excluded directories
+FileSystemWatcher initialized for '/tmp/autobyteus-server-ts-watch-6oBme0' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > does not emit events for pre-existing nested .gitignore excluded directories
+Started filesystem watcher for workspace /tmp/autobyteus-server-ts-watch-6oBme0
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > does not emit events for pre-existing nested .gitignore excluded directories
+Watcher detected creation: /tmp/autobyteus-server-ts-watch-6oBme0/sentinel-1795009786355-nzutcqxbj7r.txt
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > does not emit events for pre-existing nested .gitignore excluded directories
+Watcher detected deletion: /tmp/autobyteus-server-ts-watch-6oBme0/sentinel-1795009786355-nzutcqxbj7r.txt
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > does not emit events for pre-existing nested .gitignore excluded directories
+Logically stopped filesystem watcher for workspace /tmp/autobyteus-server-ts-watch-6oBme0
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > does not emit events for pre-existing nested .gitignore excluded directories
+Logically stopped filesystem watcher for workspace /tmp/autobyteus-server-ts-watch-NvRinY
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits add + modify + delete events
+Starting directory traversal for: '/tmp/autobyteus-server-ts-watch-ClpDyv' with max_depth=null
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits add + modify + delete events
+Directory traversal for '/tmp/autobyteus-server-ts-watch-ClpDyv' completed in 0.0010 seconds.
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits add + modify + delete events
+FileSystemWatcher initialized for '/tmp/autobyteus-server-ts-watch-ClpDyv' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits add + modify + delete events
+Started filesystem watcher for workspace /tmp/autobyteus-server-ts-watch-ClpDyv
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits add + modify + delete events
+Watcher detected creation: /tmp/autobyteus-server-ts-watch-ClpDyv/watch.txt
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits add + modify + delete events
+Watcher detected modification: /tmp/autobyteus-server-ts-watch-ClpDyv/watch.txt
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits add + modify + delete events
+Watcher detected deletion: /tmp/autobyteus-server-ts-watch-ClpDyv/watch.txt
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits add + modify + delete events
+Logically stopped filesystem watcher for workspace /tmp/autobyteus-server-ts-watch-ClpDyv
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > returns one idle event stream without stopping other subscribers
+Starting directory traversal for: '/tmp/autobyteus-server-ts-watch-nKcRG2' with max_depth=null
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > returns one idle event stream without stopping other subscribers
+Directory traversal for '/tmp/autobyteus-server-ts-watch-nKcRG2' completed in 0.0010 seconds.
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > returns one idle event stream without stopping other subscribers
+FileSystemWatcher initialized for '/tmp/autobyteus-server-ts-watch-nKcRG2' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > returns one idle event stream without stopping other subscribers
+Started filesystem watcher for workspace /tmp/autobyteus-server-ts-watch-nKcRG2
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > returns one idle event stream without stopping other subscribers
+Watcher detected creation: /tmp/autobyteus-server-ts-watch-nKcRG2/second-subscriber-still-live.txt
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > returns one idle event stream without stopping other subscribers
+Logically stopped filesystem watcher for workspace /tmp/autobyteus-server-ts-watch-nKcRG2
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits move/rename event
+Starting directory traversal for: '/tmp/autobyteus-server-ts-watch-Xo4OTu' with max_depth=null
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits move/rename event
+Directory traversal for '/tmp/autobyteus-server-ts-watch-Xo4OTu' completed in 0.0010 seconds.
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits move/rename event
+FileSystemWatcher initialized for '/tmp/autobyteus-server-ts-watch-Xo4OTu' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits move/rename event
+Started filesystem watcher for workspace /tmp/autobyteus-server-ts-watch-Xo4OTu
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits move/rename event
+Watcher detected creation: /tmp/autobyteus-server-ts-watch-Xo4OTu/source.txt
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits move/rename event
+Watcher detected move from /tmp/autobyteus-server-ts-watch-Xo4OTu/source.txt to /tmp/autobyteus-server-ts-watch-Xo4OTu/renamed.txt
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits move/rename event
+Starting directory traversal for: '/tmp/autobyteus-server-ts-watch-Xo4OTu' with max_depth=null
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits move/rename event
+Directory traversal for '/tmp/autobyteus-server-ts-watch-Xo4OTu' completed in 0.0020 seconds.
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits move/rename event
+Logically stopped filesystem watcher for workspace /tmp/autobyteus-server-ts-watch-Xo4OTu
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits file creation event with node metadata
+Starting directory traversal for: '/tmp/autobyteus-server-ts-watch-N2cUin' with max_depth=null
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits file creation event with node metadata
+Directory traversal for '/tmp/autobyteus-server-ts-watch-N2cUin' completed in 0.0000 seconds.
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits file creation event with node metadata
+FileSystemWatcher initialized for '/tmp/autobyteus-server-ts-watch-N2cUin' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits file creation event with node metadata
+Started filesystem watcher for workspace /tmp/autobyteus-server-ts-watch-N2cUin
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits file creation event with node metadata
+Watcher detected creation: /tmp/autobyteus-server-ts-watch-N2cUin/new_file.txt
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits file creation event with node metadata
+Logically stopped filesystem watcher for workspace /tmp/autobyteus-server-ts-watch-N2cUin
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits folder creation and deletion events
+Starting directory traversal for: '/tmp/autobyteus-server-ts-watch-NfLU4u' with max_depth=null
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits folder creation and deletion events
+Directory traversal for '/tmp/autobyteus-server-ts-watch-NfLU4u' completed in 0.0010 seconds.
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits folder creation and deletion events
+FileSystemWatcher initialized for '/tmp/autobyteus-server-ts-watch-NfLU4u' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits folder creation and deletion events
+Started filesystem watcher for workspace /tmp/autobyteus-server-ts-watch-NfLU4u
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits folder creation and deletion events
+Watcher detected creation: /tmp/autobyteus-server-ts-watch-NfLU4u/new_folder
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits folder creation and deletion events
+Starting directory traversal for: '/tmp/autobyteus-server-ts-watch-NfLU4u' with max_depth=null
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits folder creation and deletion events
+Directory traversal for '/tmp/autobyteus-server-ts-watch-NfLU4u' completed in 0.0030 seconds.
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits folder creation and deletion events
+Watcher detected deletion: /tmp/autobyteus-server-ts-watch-NfLU4u/new_folder
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits folder creation and deletion events
+Logically stopped filesystem watcher for workspace /tmp/autobyteus-server-ts-watch-NfLU4u
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > ignores default strategy paths like __pycache__
+Starting directory traversal for: '/tmp/autobyteus-server-ts-watch-pOUS2X' with max_depth=null
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > ignores default strategy paths like __pycache__
+Directory traversal for '/tmp/autobyteus-server-ts-watch-pOUS2X' completed in 0.0010 seconds.
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > ignores default strategy paths like __pycache__
+FileSystemWatcher initialized for '/tmp/autobyteus-server-ts-watch-pOUS2X' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > ignores default strategy paths like __pycache__
+Started filesystem watcher for workspace /tmp/autobyteus-server-ts-watch-pOUS2X
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > ignores default strategy paths like __pycache__
+Watcher detected creation: /tmp/autobyteus-server-ts-watch-pOUS2X/sentinel-1795009792109-5bc3nwj2tnv.txt
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > ignores default strategy paths like __pycache__
+Watcher detected deletion: /tmp/autobyteus-server-ts-watch-pOUS2X/sentinel-1795009792109-5bc3nwj2tnv.txt
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > ignores default strategy paths like __pycache__
+Logically stopped filesystem watcher for workspace /tmp/autobyteus-server-ts-watch-pOUS2X
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > ignores specific folders like .git and their contents
+Starting directory traversal for: '/tmp/autobyteus-server-ts-watch-MqDZLP' with max_depth=null
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > ignores specific folders like .git and their contents
+Directory traversal for '/tmp/autobyteus-server-ts-watch-MqDZLP' completed in 0.0060 seconds.
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > ignores specific folders like .git and their contents
+FileSystemWatcher initialized for '/tmp/autobyteus-server-ts-watch-MqDZLP' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > ignores specific folders like .git and their contents
+Started filesystem watcher for workspace /tmp/autobyteus-server-ts-watch-MqDZLP
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > ignores specific folders like .git and their contents
+Watcher detected creation: /tmp/autobyteus-server-ts-watch-MqDZLP/sentinel-1795009793283-i6qi9qba22.txt
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > ignores specific folders like .git and their contents
+Watcher detected deletion: /tmp/autobyteus-server-ts-watch-MqDZLP/sentinel-1795009793283-i6qi9qba22.txt
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > ignores specific folders like .git and their contents
+Watcher detected creation: /tmp/autobyteus-server-ts-watch-MqDZLP/sentinel-1795009794315-jrwf8408hrr.txt
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > ignores specific folders like .git and their contents
+Watcher detected deletion: /tmp/autobyteus-server-ts-watch-MqDZLP/sentinel-1795009794315-jrwf8408hrr.txt
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > ignores specific folders like .git and their contents
+Logically stopped filesystem watcher for workspace /tmp/autobyteus-server-ts-watch-MqDZLP
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > respects nested .gitignore files
+Starting directory traversal for: '/tmp/autobyteus-server-ts-watch-NElTIG' with max_depth=null
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > respects nested .gitignore files
+Directory traversal for '/tmp/autobyteus-server-ts-watch-NElTIG' completed in 0.0010 seconds.
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > respects nested .gitignore files
+FileSystemWatcher initialized for '/tmp/autobyteus-server-ts-watch-NElTIG' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > respects nested .gitignore files
+Started filesystem watcher for workspace /tmp/autobyteus-server-ts-watch-NElTIG
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > respects nested .gitignore files
+Watcher detected creation: /tmp/autobyteus-server-ts-watch-NElTIG/project
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > respects nested .gitignore files
+Watcher detected creation: /tmp/autobyteus-server-ts-watch-NElTIG/project/.gitignore
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > respects nested .gitignore files
+Watcher detected creation: /tmp/autobyteus-server-ts-watch-NElTIG/sentinel-1795009796189-qq9u78r3u2.txt
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > respects nested .gitignore files
+Watcher detected deletion: /tmp/autobyteus-server-ts-watch-NElTIG/sentinel-1795009796189-qq9u78r3u2.txt
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > respects nested .gitignore files
+Watcher detected creation: /tmp/autobyteus-server-ts-watch-NElTIG/project/main.ts
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > respects nested .gitignore files
+Logically stopped filesystem watcher for workspace /tmp/autobyteus-server-ts-watch-NElTIG
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > respects root .gitignore files
+Starting directory traversal for: '/tmp/autobyteus-server-ts-watch-2YPGc4' with max_depth=null
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > respects root .gitignore files
+Directory traversal for '/tmp/autobyteus-server-ts-watch-2YPGc4' completed in 0.0020 seconds.
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > respects root .gitignore files
+FileSystemWatcher initialized for '/tmp/autobyteus-server-ts-watch-2YPGc4' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > respects root .gitignore files
+Started filesystem watcher for workspace /tmp/autobyteus-server-ts-watch-2YPGc4
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > respects root .gitignore files
+Watcher detected creation: /tmp/autobyteus-server-ts-watch-2YPGc4/.gitignore
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > respects root .gitignore files
+Watcher detected creation: /tmp/autobyteus-server-ts-watch-2YPGc4/sentinel-1795009798039-3mkwgsfmief.txt
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > respects root .gitignore files
+Watcher detected deletion: /tmp/autobyteus-server-ts-watch-2YPGc4/sentinel-1795009798039-3mkwgsfmief.txt
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > respects root .gitignore files
+Logically stopped filesystem watcher for workspace /tmp/autobyteus-server-ts-watch-2YPGc4
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > captures rapid changes without dropping events
+Starting directory traversal for: '/tmp/autobyteus-server-ts-watch-M9SC8B' with max_depth=null
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > captures rapid changes without dropping events
+Directory traversal for '/tmp/autobyteus-server-ts-watch-M9SC8B' completed in 0.0020 seconds.
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > captures rapid changes without dropping events
+FileSystemWatcher initialized for '/tmp/autobyteus-server-ts-watch-M9SC8B' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > captures rapid changes without dropping events
+Started filesystem watcher for workspace /tmp/autobyteus-server-ts-watch-M9SC8B
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > captures rapid changes without dropping events
+Watcher detected creation: /tmp/autobyteus-server-ts-watch-M9SC8B/another_folder
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > captures rapid changes without dropping events
+Watcher detected creation: /tmp/autobyteus-server-ts-watch-M9SC8B/another_file.txt
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > captures rapid changes without dropping events
+Logically stopped filesystem watcher for workspace /tmp/autobyteus-server-ts-watch-M9SC8B
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > treats moves into ignored directories as deletes from the visible tree
+Starting directory traversal for: '/tmp/autobyteus-server-ts-watch-srcSOd' with max_depth=null
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > treats moves into ignored directories as deletes from the visible tree
+Directory traversal for '/tmp/autobyteus-server-ts-watch-srcSOd' completed in 0.0010 seconds.
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > treats moves into ignored directories as deletes from the visible tree
+FileSystemWatcher initialized for '/tmp/autobyteus-server-ts-watch-srcSOd' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > treats moves into ignored directories as deletes from the visible tree
+Started filesystem watcher for workspace /tmp/autobyteus-server-ts-watch-srcSOd
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > treats moves into ignored directories as deletes from the visible tree
+Watcher detected creation: /tmp/autobyteus-server-ts-watch-srcSOd/.gitignore
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > treats moves into ignored directories as deletes from the visible tree
+Watcher detected creation: /tmp/autobyteus-server-ts-watch-srcSOd/main.js
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > treats moves into ignored directories as deletes from the visible tree
+Watcher detected creation: /tmp/autobyteus-server-ts-watch-srcSOd/sentinel-1795009800471-x0pd2502rac.txt
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > treats moves into ignored directories as deletes from the visible tree
+Watcher detected deletion: /tmp/autobyteus-server-ts-watch-srcSOd/sentinel-1795009800471-x0pd2502rac.txt
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > treats moves into ignored directories as deletes from the visible tree
+Watcher detected deletion: /tmp/autobyteus-server-ts-watch-srcSOd/main.js
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > treats moves into ignored directories as deletes from the visible tree
+Logically stopped filesystem watcher for workspace /tmp/autobyteus-server-ts-watch-srcSOd
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits delete events even if the in-memory node is missing
+Starting directory traversal for: '/tmp/autobyteus-server-ts-watch-jywrED' with max_depth=null
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits delete events even if the in-memory node is missing
+Directory traversal for '/tmp/autobyteus-server-ts-watch-jywrED' completed in 0.0010 seconds.
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits delete events even if the in-memory node is missing
+FileSystemWatcher initialized for '/tmp/autobyteus-server-ts-watch-jywrED' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits delete events even if the in-memory node is missing
+Started filesystem watcher for workspace /tmp/autobyteus-server-ts-watch-jywrED
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits delete events even if the in-memory node is missing
+Watcher detected creation: /tmp/autobyteus-server-ts-watch-jywrED/ghost_file.txt
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits delete events even if the in-memory node is missing
+Starting directory traversal for: '/tmp/autobyteus-server-ts-watch-jywrED' with max_depth=null
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits delete events even if the in-memory node is missing
+Directory traversal for '/tmp/autobyteus-server-ts-watch-jywrED' completed in 0.0010 seconds.
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits delete events even if the in-memory node is missing
+Watcher detected deletion: /tmp/autobyteus-server-ts-watch-jywrED/ghost_file.txt
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits delete events even if the in-memory node is missing
+Logically stopped filesystem watcher for workspace /tmp/autobyteus-server-ts-watch-jywrED
+
+ ✓ tests/integration/file-explorer/file-system-watcher.integration.test.ts (14 tests) 18436ms
+     ✓ does not emit events for pre-existing root .gitignore excluded directories  1521ms
+     ✓ does not emit events for pre-existing nested .gitignore excluded directories  1165ms
+     ✓ emits add + modify + delete events  1555ms
+     ✓ returns one idle event stream without stopping other subscribers  616ms
+     ✓ emits move/rename event  1078ms
+     ✓ emits file creation event with node metadata  554ms
+     ✓ emits folder creation and deletion events  815ms
+     ✓ ignores default strategy paths like __pycache__  1148ms
+     ✓ ignores specific folders like .git and their contents  2187ms
+     ✓ respects nested .gitignore files  2161ms
+     ✓ respects root .gitignore files  1569ms
+     ✓ captures rapid changes without dropping events  357ms
+     ✓ treats moves into ignored directories as deletes from the visible tree  2624ms
+     ✓ emits delete events even if the in-memory node is missing  1083ms
+
+ Test Files  1 passed (1)
+      Tests  14 passed (14)
+   Start at  13:49:38
+   Duration  24.53s (transform 1.67s, setup 148ms, import 1.56s, tests 18.44s, environment 0ms)
+

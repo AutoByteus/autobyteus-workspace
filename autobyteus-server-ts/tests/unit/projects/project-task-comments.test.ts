@@ -16,6 +16,7 @@ import type { ProjectChangeMessage } from "../../../src/projects/changes/project
 import { createRootExecutionIdentity } from "../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import type { TaskExecutionReleaseRequest } from "../../../src/agent-collaboration/execution/task/task-execution-resource-port.js";
 import { taskRunResources } from "../../helpers/task-run-resources.js";
+import { NO_RUN_SIDE_TASK_PORTS } from "../../helpers/explicit-host-collaborators.js";
 
 const hostRoot = createRootExecutionIdentity({ rootSubjectKind: "agent", rootRunId: "manager-root" });
 
@@ -42,7 +43,7 @@ describe("Project Task comments (services)", () => {
     emitted = [];
     release = vi.fn<TaskExecutionReleaseRequest>(async (execution) => ({ execution, stopped: true }));
     projects = new ProjectService({ store, workspaceLookup: { listRegisteredWorkspaceRootPaths: async () => [] }, changes: publisher, now });
-    tasks = new ProjectTaskService({ store, adHocTasks: new AdHocTaskStore(adHocLayout), contextStore: new ProjectTaskContextStore(layout), now,
+    tasks = new ProjectTaskService({ ...NO_RUN_SIDE_TASK_PORTS, store, adHocTasks: new AdHocTaskStore(adHocLayout), contextStore: new ProjectTaskContextStore(layout), now,
       requestRelease: (releases = trackReleases(release)).request, taskExecutionResources: taskRunResources(new TaskExecutionResourceStore(layout, adHocLayout)), changes: publisher });
     publisher.bind({
       readProject: (id) => projects.getProject(id),

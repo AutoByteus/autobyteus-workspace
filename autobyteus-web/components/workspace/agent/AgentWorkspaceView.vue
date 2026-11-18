@@ -43,13 +43,13 @@ const target = computed(() => {
   return current && (current.kind === 'standalone_agent' || current.kind === 'agent_run_task_agent'
     || current.kind === 'agent_run_task_team_member') ? current : null
 })
-const isHost = computed(() => target.value?.kind === 'standalone_agent')
+const isStandaloneRun = computed(() => target.value?.kind === 'standalone_agent')
 useAgentRunCollaborationSync()
 
 const composerOptions = useChatComposerOptions(computed(() => target.value?.context.config.agentDefinitionId ?? null))
 const skillTagging = computed<SkillTaggingCapability | null>(() => {
   const config = target.value?.context.config
-  if (!config || !isHost.value) return null
+  if (!config || !isStandaloneRun.value) return null
   return {
     skills: composerOptions.skillOptions.value,
     allInstalled: composerOptions.skillsAllInstalled.value,
@@ -62,7 +62,7 @@ const skillTagging = computed<SkillTaggingCapability | null>(() => {
 /** F-04: a delegated copy view names its agent in the box, like the Org's delegated-Agent view. */
 const childPlaceholder = computed(() => {
   const config = target.value?.context.config
-  if (!config || isHost.value) return null
+  if (!config || isStandaloneRun.value) return null
   return t('chat.run.placeholderAgent', { agent: config.agentDefinitionName || '' })
 })
 

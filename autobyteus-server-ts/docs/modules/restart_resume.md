@@ -7,7 +7,7 @@ After any restart, every agent run that was mid-turn or waiting for a background
 by an update or a restart, possibly still running and no longer tracked after an unexpected stop (autobyteus-448,
 extending autobyteus-285).
 
-- **Who is told.** Runs held by a collaboration root (standalone hosts and Team and Org members; a delegated run is one
+- **Who is told.** Runs held by a collaboration root (standalone runs' agents and Team and Org members; a delegated run is one
   of these in its own root, autobyteus-461) that were `initializing` or `running`, or `idle` with a running background
   task (`AgentRun.hasRunningBackgroundTasks()`, from `runningBackgroundTaskCount` over its background-task view: AutoByteus, Claude and Antigravity report it; Codex is asked through its
   background-task view at a graceful stop only; Grok Build and DeepSeek (ACP) report none, so their runs are told only
@@ -111,13 +111,13 @@ dispatch was not forwarded): pending again.
 2. At most 3 posts run at once. A root waiting for the runs it delegated to holds no slot.
 3. A cheap pre-filter, before restoring: skip a run that is already live, a run whose Task is closed, and a run whose
    root was stopped on purpose (`terminatedAt`), archived or deleted.
-4. **Restore without posting**, through the root: `resolveOrRestore(root)`; a standalone host is then made ready
-   (`ensureHostReady`); a member starts on the reminder itself. Restoring posts no input.
+4. **Restore without posting**, through the root: `resolveOrRestore(root)`; a standalone run's agent is then made
+   ready (`ensureAgentReady`); a member starts on the reminder itself. Restoring posts no input.
 5. **Re-check after the restore**: the root's history must still show no `terminatedAt` and no archive. This check is
    final: archiving refuses an active run or root.
 6. **Claim the reminder.** None to claim means an input reached the run first and carried it: nothing is posted.
 7. **Post it as an input the run admits only as its first** (`onlyAsFirstInput`), through the root so its fences apply:
-   a standalone host by `root.postHostUserMessage({ message, postOptions })`, a member by
+   a standalone run's agent by `root.postAgentUserMessage({ message, postOptions })`, a member by
    `root.executeAgentCommand(id, { kind: "post_message", message, postOptions })`.
 8. Accepted: the claim is settled delivered. Refused (`AGENT_RUN_INPUT_NOT_FIRST`: an input reached the run first while
    the reminder was claimed) or failed: it is returned, pending again, so the run's next input carries it.

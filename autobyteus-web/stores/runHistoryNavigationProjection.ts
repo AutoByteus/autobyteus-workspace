@@ -122,8 +122,8 @@ const equalTeamExecution = (a: RunHistoryTeamExecutionRow, b: RunHistoryTeamExec
     || a.rowKey !== b.rowKey || a.memberKind !== b.memberKind || a.displayName !== b.displayName
     || a.depth !== b.depth || a.hasChildren !== b.hasChildren) return false;
   if (a.kind === 'stable_member' && b.kind === 'stable_member') return equalTeamMember(a.row, b.row);
-  return a.kind === 'transient_execution' && b.kind === 'transient_execution'
-    && a.transientKind === b.transientKind && a.currentStatus === b.currentStatus
+  return a.kind === 'delegated_run' && b.kind === 'delegated_run'
+    && a.delegatedRunKind === b.delegatedRunKind && a.currentStatus === b.currentStatus
     && a.delegatedBy === b.delegatedBy;
 };
 

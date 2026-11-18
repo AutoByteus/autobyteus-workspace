@@ -22,17 +22,17 @@ import type { AgentLaunchConfiguration } from "../../agent-team-execution/domain
 import { peerDelegatedFromOf, type AgentRunMetadata } from "../../run-history/store/agent-run-metadata-types.js";
 import { StandaloneRootPackageStore } from "../persistence/standalone-root-package-store.js";
 import type { StandaloneAgentRunRoot, StandaloneRootPackageSnapshot } from "../domain/standalone-agent-run-root.js";
-import { StandaloneHostAgentHandle, type StandaloneHostActivationBackend } from "../domain/standalone-host-agent-handle.js";
-import { emptyStandaloneRootMessages, type StandaloneRootHost, type StandaloneRootMessagesFile } from "../domain/standalone-root-host.js";
-import { StandaloneHostMemberContextBuilder } from "./standalone-host-member-context-builder.js";
+import { StandaloneRunAgentHandle, type StandaloneRunAgentActivationBackend } from "../domain/standalone-run-agent-handle.js";
+import { emptyStandaloneRootMessages, type StandaloneRunAgent, type StandaloneRootMessagesFile } from "../domain/standalone-run-agent.js";
+import { StandaloneRunAgentContextBuilder } from "./standalone-run-agent-context-builder.js";
 import { createAgentRootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import { StandaloneRootBuilder, type StandaloneRootBuilderDependencies } from "./standalone-root-builder.js";
-import type { PairedAgentAccess } from "../../agent-collaboration/execution/remote/paired-agent-access.js";
-import { StandalonePairedAgentAccess } from "./standalone-paired-agent-access.js";
+import type { RunAgentAccess } from "../../agent-collaboration/execution/remote/run-agent-access.js";
+import { StandaloneRunAgentAccess } from "./standalone-run-agent-access.js";
 
 /** Host facts and mechanics the manager needs from the standalone side; wired at process composition. */
-export type StandaloneRootHostServices = StandaloneHostActivationBackend & Readonly<{
-  readMetadata(hostRunId: string): Promise<AgentRunMetadata | null>;
+export type StandaloneRunAgentServices = StandaloneRunAgentActivationBackend & Readonly<{
+  readMetadata(agentRunId: string): Promise<AgentRunMetadata | null>;
 }>;
 
 export class StandaloneRootUnavailableError extends Error {
@@ -44,12 +44,12 @@ export class StandaloneRootUnavailableError extends Error {
 }
 
 export type StandaloneRootCollaborationRecordsSnapshot = Readonly<{
-  host: StandaloneRootHost;
+  agent: StandaloneRunAgent;
   messages: StandaloneRootMessagesFile;
 }>;
 
 export type StandaloneRootInspection = Readonly<{
-  hostRunId: string;
+  agentRunId: string;
   isActive: boolean;
   snapshot: StandaloneRootPackageSnapshot;
   baseChangeSequence: number;
@@ -82,11 +82,11 @@ export class StandaloneAgentRunRootManager implements StandaloneRunCommandPort, 
   private readonly pending = new Map<string, Promise<StandaloneAgentRunRoot>>();
   /** A stop in progress per run (its root's end and its agent's), which a resolution waits for (CR-461-001). */
   private readonly ending = new Map<string, Promise<void>>();
-  private readonly hostContexts: StandaloneHostMemberContextBuilder;
+  private readonly agentContexts: StandaloneRunAgentContextBuilder;
   private readonly roots: StandaloneRootBuilder;
   private admissionOpen = true;
   /** autobyteus-278: a run a peer started, as this node serves that peer's owner (behind `RemoteRootDirectory`). */
-  readonly pairedAgents: PairedAgentAccess = new StandalonePairedAgentAccess(this);
+  readonly runAgents: RunAgentAccess = new StandaloneRunAgentAccess(this);
   /** autobyteus-278 (DS-006): who learns that a run ended by Stop, terminate or history delete/archive (not idle shutdown). */
   private readonly endListeners = new Map<string, Set<() => void>>();
   private readonly closedTasks: ClosedTaskEntryFence;
@@ -94,7 +94,7 @@ export class StandaloneAgentRunRootManager implements StandaloneRunCommandPort, 
 
   constructor(private readonly options: Readonly<{
     memoryDir: string;
-    host: StandaloneRootHostServices;
+    agentServices: StandaloneRunAgentServices;
     definitions: Pick<AgentDefinitionService, "getAgentDefinitionById">;
     /** An org definition's authored instruction, read fresh: an org copy reads its org's (SR-058). */
     orgInstruction(orgDefinitionId: string): Promise<string | null>;
@@ -108,27 +108,27 @@ export class StandaloneAgentRunRootManager implements StandaloneRunCommandPort, 
     this.roots = new StandaloneRootBuilder({ ...options.rootDependencies, packageStore: this.store });
     this.closedTasks = new ClosedTaskEntryFence({ fence: new ClosedTaskFence({ tree: options.rootDependencies.delegationIndex, tasks: options.rootDependencies.taskRecords }),
       tasks: options.rootDependencies.taskRecords, files: new RunOwnAgentsReader(options.memoryDir) });
-    // A delegated agent run's restore check (CR-461-070): its host's liveness is this manager's.
+    // A delegated agent run's restore check (CR-461-070): its agent's liveness is this manager's.
     this.restorability = createDelegatedRunRestorability({ memoryDir: options.memoryDir, tree: options.rootDependencies.delegationIndex,
-      ownDelegations: agentRunOwnDelegations(new RunOwnAgentsReader(options.memoryDir)), liveAgents: () => this.pairedAgents });
-    this.hostContexts = new StandaloneHostMemberContextBuilder({
+      ownDelegations: agentRunOwnDelegations(new RunOwnAgentsReader(options.memoryDir)), liveAgents: () => this.runAgents });
+    this.agentContexts = new StandaloneRunAgentContextBuilder({
       definitions: options.definitions,
       tree: options.rootDependencies.delegationIndex,
       orgInstruction: options.orgInstruction,
-      getActiveRoot: (hostRunId) => this.getActive(hostRunId),
-      readStoredHostAddress: async (hostRunId) => (await this.options.host.readMetadata(hostRunId))?.address ?? null, // contract §3.3
+      getActiveRoot: (agentRunId) => this.getActive(agentRunId),
+      readStoredAgentAddress: async (agentRunId) => (await this.options.agentServices.readMetadata(agentRunId))?.address ?? null, // contract §3.3
     });
   }
 
-  getActive(hostRunId: string): StandaloneAgentRunRoot | null {
-    const root = this.active.get(hostRunId.trim()) ?? null;
+  getActive(agentRunId: string): StandaloneAgentRunRoot | null {
+    const root = this.active.get(agentRunId.trim()) ?? null;
     return root?.isActive() ? root : null;
   }
 
   /** A root is registered (or loading) for the run, whether or not its agent is running. */
-  hasRoot(hostRunIdInput: string): boolean {
-    const hostRunId = hostRunIdInput.trim();
-    return this.active.has(hostRunId) || this.pending.has(hostRunId);
+  hasRoot(agentRunIdInput: string): boolean {
+    const agentRunId = agentRunIdInput.trim();
+    return this.active.has(agentRunId) || this.pending.has(agentRunId);
   }
 
   /**
@@ -136,39 +136,39 @@ export class StandaloneAgentRunRootManager implements StandaloneRunCommandPort, 
    * A run that is stopping is waited for, then loaded again: a delivery during a stop wakes the run after it, and the
    * run never has two roots (CR-461-001).
    */
-  async resolveRoot(hostRunIdInput: string): Promise<StandaloneAgentRunRoot | null> {
-    const hostRunId = hostRunIdInput.trim();
-    await this.untilEnded(hostRunId);
-    const existing = this.getActive(hostRunId);
+  async resolveRoot(agentRunIdInput: string): Promise<StandaloneAgentRunRoot | null> {
+    const agentRunId = agentRunIdInput.trim();
+    await this.untilEnded(agentRunId);
+    const existing = this.getActive(agentRunId);
     if (existing) return existing;
-    const metadata = await this.options.host.readMetadata(hostRunId);
-    if (!metadata) throw new StandaloneRootUnavailableError(`Agent run '${hostRunId}' was not found.`);
+    const metadata = await this.options.agentServices.readMetadata(agentRunId);
+    if (!metadata) throw new StandaloneRootUnavailableError(`Agent run '${agentRunId}' was not found.`);
     if (!isCollaborationEligibleStandaloneRun(metadata)) return null;
-    await this.untilEnded(hostRunId);
-    const registered = this.getActive(hostRunId);
+    await this.untilEnded(agentRunId);
+    const registered = this.getActive(agentRunId);
     if (registered) return registered;
-    const inFlight = this.pending.get(hostRunId);
+    const inFlight = this.pending.get(agentRunId);
     if (inFlight) return inFlight;
     if (!this.admissionOpen) throw new StandaloneRootUnavailableError("Agent root admission is closed for process shutdown.");
     const attempt = this.load(metadata);
-    this.pending.set(hostRunId, attempt);
+    this.pending.set(agentRunId, attempt);
     try {
       return await attempt;
     } finally {
-      if (this.pending.get(hostRunId) === attempt) this.pending.delete(hostRunId);
+      if (this.pending.get(agentRunId) === attempt) this.pending.delete(agentRunId);
     }
   }
 
   /** N-303 / N-304: a peer's request checked against the run's links (back-link included); it loads nothing. */
-  async storedRemoteLinkCheck(hostRunIdInput: string, query: RemoteInboundQuery): Promise<StoredRemoteLinkCheck> {
-    const hostRunId = hostRunIdInput.trim();
-    if (query.kind !== "owner" && this.hasRoot(hostRunId)) return "proceed";
-    const metadata = await this.options.host.readMetadata(hostRunId);
+  async storedRemoteLinkCheck(agentRunIdInput: string, query: RemoteInboundQuery): Promise<StoredRemoteLinkCheck> {
+    const agentRunId = agentRunIdInput.trim();
+    if (query.kind !== "owner" && this.hasRoot(agentRunId)) return "proceed";
+    const metadata = await this.options.agentServices.readMetadata(agentRunId);
     if (!metadata || !isCollaborationEligibleStandaloneRun(metadata)) return "not_found";
     const delegatedFrom = peerDelegatedFromOf(metadata); // AR-016: only a run a peer started has a peer delegator
     return storedRemoteLinkCheck(delegatedFrom
-      ? { peerRuns: () => [], backLink: { pairedAgentRunIds: () => [hostRunId], delegatedFrom } }
-      : { run: createAgentRootExecutionIdentity(hostRunId), tree: this.options.rootDependencies.delegationIndex }, query);
+      ? { peerRuns: () => [], backLink: { pairedAgentRunIds: () => [agentRunId], delegatedFrom } }
+      : { run: createAgentRootExecutionIdentity(agentRunId), tree: this.options.rootDependencies.delegationIndex }, query);
   }
 
   /**
@@ -188,104 +188,104 @@ export class StandaloneAgentRunRootManager implements StandaloneRunCommandPort, 
     const root = await this.resolveRoot(input.runId);
     if (!root) return null;
     const { runId: _runId, ...command } = input;
-    return root.postHostUserMessage(command);
+    return root.postAgentUserMessage(command);
   }
 
   /** `StandaloneRunLifecyclePort`: create, activate, restore and resolve of an eligible run. */
-  async resolveRootAndEnsureHost(hostRunId: string): Promise<StandaloneAgentRunActivationResult | null> {
-    const root = await this.resolveRoot(hostRunId);
+  async resolveRootAndEnsureAgent(agentRunId: string): Promise<StandaloneAgentRunActivationResult | null> {
+    const root = await this.resolveRoot(agentRunId);
     if (!root) return null;
-    const run = await root.ensureHostReady();
-    const metadata = await this.options.host.readMetadata(root.hostRunId);
-    if (!metadata) throw new StandaloneRootUnavailableError(`Agent run '${root.hostRunId}' metadata is unavailable.`);
+    const run = await root.ensureAgentReady();
+    const metadata = await this.options.agentServices.readMetadata(root.agentRunId);
+    if (!metadata) throw new StandaloneRootUnavailableError(`Agent run '${root.agentRunId}' metadata is unavailable.`);
     root.setInheritedLaunch(launchConfigurationOf(metadata));
     return Object.freeze({ run, metadata });
   }
 
   /** `StandaloneRunLifecyclePort`: a saved edit of the stopped run reaches the registered root's inherited launch. */
-  async refreshInheritedLaunch(hostRunIdInput: string): Promise<void> {
-    const hostRunId = hostRunIdInput.trim();
-    const root = await this.pending.get(hostRunId)?.catch(() => undefined) ?? this.active.get(hostRunId);
+  async refreshInheritedLaunch(agentRunIdInput: string): Promise<void> {
+    const agentRunId = agentRunIdInput.trim();
+    const root = await this.pending.get(agentRunId)?.catch(() => undefined) ?? this.active.get(agentRunId);
     if (!root) return;
-    const metadata = await this.options.host.readMetadata(hostRunId);
+    const metadata = await this.options.agentServices.readMetadata(agentRunId);
     if (metadata && isCollaborationEligibleStandaloneRun(metadata)) root.setInheritedLaunch(launchConfigurationOf(metadata));
   }
 
   /** Stop (DS-4, TC-1): the run's own agent only, then the root unregisters. Null for a run that is not eligible. */
-  stopRoot(hostRunIdInput: string): Promise<StandaloneRootStopResult | null> {
-    const hostRunId = hostRunIdInput.trim();
-    return this.whileEnding(hostRunId, () => this.stopRootNow(hostRunId));
+  stopRoot(agentRunIdInput: string): Promise<StandaloneRootStopResult | null> {
+    const agentRunId = agentRunIdInput.trim();
+    return this.whileEnding(agentRunId, () => this.stopRootNow(agentRunId));
   }
 
-  private async stopRootNow(hostRunId: string): Promise<StandaloneRootStopResult | null> {
-    await this.pending.get(hostRunId)?.catch(() => undefined);
-    const root = this.active.get(hostRunId);
+  private async stopRootNow(agentRunId: string): Promise<StandaloneRootStopResult | null> {
+    await this.pending.get(agentRunId)?.catch(() => undefined);
+    const root = this.active.get(agentRunId);
     if (!root) {
-      const metadata = await this.options.host.readMetadata(hostRunId);
+      const metadata = await this.options.agentServices.readMetadata(agentRunId);
       if (!metadata || !isCollaborationEligibleStandaloneRun(metadata)) return null;
-      const stopped = Object.freeze({ rootEnded: false, host: await this.options.host.terminateHost(hostRunId) });
-      this.notifyEnded(hostRunId);
+      const stopped = Object.freeze({ rootEnded: false, agent: await this.options.agentServices.terminateRunAgent(agentRunId) });
+      this.notifyEnded(agentRunId);
       return stopped;
     }
-    const host = await root.stop();
+    const agent = await root.stop();
     this.unregister(root);
-    this.notifyEnded(hostRunId);
-    return Object.freeze({ rootEnded: true, host });
+    this.notifyEnded(agentRunId);
+    return Object.freeze({ rootEnded: true, agent });
   }
 
   /** A closed Task's stop (CR-461-001): as `stopRoot`, unless the run's Task entry is open again where its gate closes. */
-  stopRootForTaskClosure(hostRunIdInput: string, stillClosed: () => boolean): Promise<StandaloneRootStopResult | "kept_open" | null> {
-    const hostRunId = hostRunIdInput.trim();
-    return this.whileEnding(hostRunId, () => this.stopRootForTaskClosureNow(hostRunId, stillClosed));
+  stopRootForTaskClosure(agentRunIdInput: string, stillClosed: () => boolean): Promise<StandaloneRootStopResult | "kept_open" | null> {
+    const agentRunId = agentRunIdInput.trim();
+    return this.whileEnding(agentRunId, () => this.stopRootForTaskClosureNow(agentRunId, stillClosed));
   }
 
-  private async stopRootForTaskClosureNow(hostRunId: string, stillClosed: () => boolean): Promise<StandaloneRootStopResult | "kept_open" | null> {
-    await this.pending.get(hostRunId)?.catch(() => undefined);
-    const root = this.active.get(hostRunId);
+  private async stopRootForTaskClosureNow(agentRunId: string, stillClosed: () => boolean): Promise<StandaloneRootStopResult | "kept_open" | null> {
+    await this.pending.get(agentRunId)?.catch(() => undefined);
+    const root = this.active.get(agentRunId);
     if (!root) {
-      const metadata = await this.options.host.readMetadata(hostRunId);
+      const metadata = await this.options.agentServices.readMetadata(agentRunId);
       if (!metadata || !isCollaborationEligibleStandaloneRun(metadata)) return null;
       if (!stillClosed()) return "kept_open";
-      const stopped = Object.freeze({ rootEnded: false, host: await this.options.host.terminateHost(hostRunId) });
-      this.notifyEnded(hostRunId);
+      const stopped = Object.freeze({ rootEnded: false, agent: await this.options.agentServices.terminateRunAgent(agentRunId) });
+      this.notifyEnded(agentRunId);
       return stopped;
     }
     const stopping = root.stopForTaskClosure(stillClosed);
     if (!stopping) return "kept_open";
-    const host = await stopping;
+    const agent = await stopping;
     this.unregister(root);
-    this.notifyEnded(hostRunId);
-    return Object.freeze({ rootEnded: true, host });
+    this.notifyEnded(agentRunId);
+    return Object.freeze({ rootEnded: true, agent });
   }
 
   /** History delete or archive: ends the run's root as a Stop does. Idempotent. */
-  endRoot(hostRunIdInput: string): Promise<void> {
-    const hostRunId = hostRunIdInput.trim();
-    return this.whileEnding(hostRunId, async () => {
-      await this.pending.get(hostRunId)?.catch(() => undefined);
-      const root = this.active.get(hostRunId);
+  endRoot(agentRunIdInput: string): Promise<void> {
+    const agentRunId = agentRunIdInput.trim();
+    return this.whileEnding(agentRunId, async () => {
+      await this.pending.get(agentRunId)?.catch(() => undefined);
+      const root = this.active.get(agentRunId);
       if (!root) return;
       await root.stop();
       this.unregister(root);
-      this.notifyEnded(hostRunId);
+      this.notifyEnded(agentRunId);
     });
   }
 
   /** Marks the run as stopping from the call on (before any await), so a resolution meanwhile waits for the stop. */
-  private whileEnding<T>(hostRunId: string, stop: () => Promise<T>): Promise<T> {
-    const previous = this.ending.get(hostRunId);
+  private whileEnding<T>(agentRunId: string, stop: () => Promise<T>): Promise<T> {
+    const previous = this.ending.get(agentRunId);
     const stopping = (previous ? previous.then(stop) : stop());
     const marker = stopping.then(() => undefined, () => undefined);
-    this.ending.set(hostRunId, marker);
-    void marker.then(() => { if (this.ending.get(hostRunId) === marker) this.ending.delete(hostRunId); });
+    this.ending.set(agentRunId, marker);
+    void marker.then(() => { if (this.ending.get(agentRunId) === marker) this.ending.delete(agentRunId); });
     return stopping;
   }
 
   /** Waits while the run is stopping, or while its root ends by itself (a fail-stop); returns at once otherwise. */
-  private async untilEnded(hostRunId: string): Promise<void> {
+  private async untilEnded(agentRunId: string): Promise<void> {
     for (;;) {
-      const stopping = this.ending.get(hostRunId);
-      const terminating = this.active.get(hostRunId);
+      const stopping = this.ending.get(agentRunId);
+      const terminating = this.active.get(agentRunId);
       if (stopping) await stopping;
       else if (terminating && !terminating.isActive()) {
         await terminating.terminate().catch(() => undefined);
@@ -298,20 +298,20 @@ export class StandaloneAgentRunRootManager implements StandaloneRunCommandPort, 
    * autobyteus-278: `listener` runs once the run has ended by Stop, terminate or history delete/archive, after its agent
    * stopped. Idle shutdown does not end a run: its root stays and its agent returns.
    */
-  onRunEnded(hostRunIdInput: string, listener: () => void): () => void {
-    const hostRunId = hostRunIdInput.trim();
-    const listeners = this.endListeners.get(hostRunId) ?? new Set<() => void>();
+  onRunEnded(agentRunIdInput: string, listener: () => void): () => void {
+    const agentRunId = agentRunIdInput.trim();
+    const listeners = this.endListeners.get(agentRunId) ?? new Set<() => void>();
     listeners.add(listener);
-    this.endListeners.set(hostRunId, listeners);
+    this.endListeners.set(agentRunId, listeners);
     return () => {
       listeners.delete(listener);
-      if (!listeners.size && this.endListeners.get(hostRunId) === listeners) this.endListeners.delete(hostRunId);
+      if (!listeners.size && this.endListeners.get(agentRunId) === listeners) this.endListeners.delete(agentRunId);
     };
   }
 
-  private notifyEnded(hostRunId: string): void {
-    for (const listener of [...this.endListeners.get(hostRunId) ?? []]) {
-      try { listener(); } catch (error) { console.error(`Agent run '${hostRunId}': an end listener failed:`, error); }
+  private notifyEnded(agentRunId: string): void {
+    for (const listener of [...this.endListeners.get(agentRunId) ?? []]) {
+      try { listener(); } catch (error) { console.error(`Agent run '${agentRunId}': an end listener failed:`, error); }
     }
   }
 
@@ -319,12 +319,12 @@ export class StandaloneAgentRunRootManager implements StandaloneRunCommandPort, 
   async stopAll(): Promise<void> {
     this.admissionOpen = false;
     const errors: unknown[] = [];
-    for (const hostRunId of [...this.active.keys()]) {
-      const root = this.active.get(hostRunId);
+    for (const agentRunId of [...this.active.keys()]) {
+      const root = this.active.get(agentRunId);
       if (!root) continue;
       try {
         const result = await root.terminate();
-        if (!result.accepted) throw new Error(result.message ?? `Agent root '${hostRunId}' did not finish stopping.`);
+        if (!result.accepted) throw new Error(result.message ?? `Agent root '${agentRunId}' did not finish stopping.`);
         this.unregister(root);
       } catch (error) { errors.push(error); }
     }
@@ -332,66 +332,66 @@ export class StandaloneAgentRunRootManager implements StandaloneRunCommandPort, 
   }
 
   /** The live root's view snapshot, else the stopped run's own agent; null for a run that is not eligible. Never restores. */
-  async getInspection(hostRunIdInput: string): Promise<StandaloneRootInspection | null> {
-    const hostRunId = hostRunIdInput.trim();
-    const active = this.getActive(hostRunId);
+  async getInspection(agentRunIdInput: string): Promise<StandaloneRootInspection | null> {
+    const agentRunId = agentRunIdInput.trim();
+    const active = this.getActive(agentRunId);
     if (active) {
       const connection = await active.openPackageSnapshotConnection();
       try {
-        return Object.freeze({ hostRunId, isActive: true, snapshot: connection.snapshot,
+        return Object.freeze({ agentRunId, isActive: true, snapshot: connection.snapshot,
           baseChangeSequence: connection.baseChangeSequence, liveSequenceId: connection.liveSequenceId,
           lastMessageChangeSequence: connection.lastMessageChangeSequence });
       } finally { connection.close(); }
     }
-    const metadata = await this.options.host.readMetadata(hostRunId);
+    const metadata = await this.options.agentServices.readMetadata(agentRunId);
     if (!metadata || !isCollaborationEligibleStandaloneRun(metadata)) return null;
-    return Object.freeze({ hostRunId, isActive: false, baseChangeSequence: 0, liveSequenceId: null, lastMessageChangeSequence: null,
-      snapshot: Object.freeze({ host: await this.hostOf(metadata), createdAt: metadata.startedAt ?? new Date(0).toISOString() }) });
+    return Object.freeze({ agentRunId, isActive: false, baseChangeSequence: 0, liveSequenceId: null, lastMessageChangeSequence: null,
+      snapshot: Object.freeze({ agent: await this.agentOf(metadata), createdAt: metadata.startedAt ?? new Date(0).toISOString() }) });
   }
 
   /** The run's messages (autobyteus-358: the one log reader): the live root's, else its own stored log. */
-  async getCollaborationRecordsSnapshot(hostRunIdInput: string): Promise<StandaloneRootCollaborationRecordsSnapshot> {
-    const hostRunId = hostRunIdInput.trim();
-    const active = this.getActive(hostRunId);
-    const metadata = await this.options.host.readMetadata(hostRunId);
-    if (!metadata) throw new StandaloneRootUnavailableError(`Agent run '${hostRunId}' was not found.`);
-    if (active) return Object.freeze({ host: await this.hostOf(metadata), messages: active.getCommunicationSnapshot() });
-    const messages = await this.store.readMessagesLog(this.layout.getStandaloneRunDirPath(hostRunId), hostRunId);
-    return Object.freeze({ host: await this.hostOf(metadata), messages: messages ?? emptyStandaloneRootMessages(hostRunId) });
+  async getCollaborationRecordsSnapshot(agentRunIdInput: string): Promise<StandaloneRootCollaborationRecordsSnapshot> {
+    const agentRunId = agentRunIdInput.trim();
+    const active = this.getActive(agentRunId);
+    const metadata = await this.options.agentServices.readMetadata(agentRunId);
+    if (!metadata) throw new StandaloneRootUnavailableError(`Agent run '${agentRunId}' was not found.`);
+    if (active) return Object.freeze({ agent: await this.agentOf(metadata), messages: active.getCommunicationSnapshot() });
+    const messages = await this.store.readMessagesLog(this.layout.getStandaloneRunDirPath(agentRunId), agentRunId);
+    return Object.freeze({ agent: await this.agentOf(metadata), messages: messages ?? emptyStandaloneRootMessages(agentRunId) });
   }
 
-  private async hostOf(metadata: AgentRunMetadata): Promise<StandaloneRootHost> {
-    return Object.freeze({ address: await this.hostContexts.resolveHostAddress(metadata), agentRunId: metadata.runId, agentDefinitionId: metadata.agentDefinitionId });
+  private async agentOf(metadata: AgentRunMetadata): Promise<StandaloneRunAgent> {
+    return Object.freeze({ address: await this.agentContexts.resolveAgentAddress(metadata), agentRunId: metadata.runId, agentDefinitionId: metadata.agentDefinitionId });
   }
 
   private async load(metadata: AgentRunMetadata): Promise<StandaloneAgentRunRoot> {
-    const hostRunId = metadata.runId;
-    const runDir = this.layout.getStandaloneRunDirPath(hostRunId);
+    const agentRunId = metadata.runId;
+    const runDir = this.layout.getStandaloneRunDirPath(agentRunId);
     const root = this.roots.build({
-      host: await this.hostOf(metadata),
+      agent: await this.agentOf(metadata),
       createdAt: metadata.startedAt ?? new Date().toISOString(),
-      messages: await this.store.readMessagesLog(runDir, hostRunId) ?? emptyStandaloneRootMessages(hostRunId),
+      messages: await this.store.readMessagesLog(runDir, agentRunId) ?? emptyStandaloneRootMessages(agentRunId),
       runDir,
       rootLaunchConfiguration: launchConfigurationOf(metadata),
       delegatedFrom: metadata.delegatedFrom ?? null,
-      hostHandle: new StandaloneHostAgentHandle({
-        hostRunId,
-        backend: this.options.host,
+      agentHandle: new StandaloneRunAgentHandle({
+        agentRunId,
+        backend: this.options.agentServices,
         // Built per activation from the current metadata: a reopened run keeps its stable address.
         buildMemberExecutionContext: async () => {
-          const current = await this.options.host.readMetadata(hostRunId);
-          if (!current) throw new StandaloneRootUnavailableError(`Agent run '${hostRunId}' was not found.`);
-          return this.hostContexts.build(current);
+          const current = await this.options.agentServices.readMetadata(agentRunId);
+          if (!current) throw new StandaloneRootUnavailableError(`Agent run '${agentRunId}' was not found.`);
+          return this.agentContexts.build(current);
         },
       }),
       onTerminated: (terminated) => this.unregister(terminated),
     });
     const reservation = this.directory.reserve(root.rootIdentity, root);
     try {
-      this.active.set(hostRunId, root);
+      this.active.set(agentRunId, root);
       reservation.commit();
     } catch (error) {
-      this.active.delete(hostRunId);
+      this.active.delete(agentRunId);
       reservation.release();
       await root.terminate().catch(() => undefined);
       throw error;
@@ -400,8 +400,8 @@ export class StandaloneAgentRunRootManager implements StandaloneRunCommandPort, 
   }
 
   private unregister(root: StandaloneAgentRunRoot): void {
-    if (this.active.get(root.hostRunId) !== root) return;
-    this.active.delete(root.hostRunId);
+    if (this.active.get(root.agentRunId) !== root) return;
+    this.active.delete(root.agentRunId);
     this.directory.unregister(root.rootIdentity, root);
   }
 }

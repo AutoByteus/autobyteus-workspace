@@ -5,8 +5,8 @@ import {
 } from "../../domain/agent-team-address.js";
 
 /**
- * `agent`: a standalone Agent run hosting delegated copies; its `rootRunId` is the
- * host AgentRun ID.
+ * `agent`: a standalone Agent run; its `rootRunId` is its own
+ * AgentRun ID.
  */
 export type RootSubjectKind = "agent_team" | "agent_org" | "agent";
 

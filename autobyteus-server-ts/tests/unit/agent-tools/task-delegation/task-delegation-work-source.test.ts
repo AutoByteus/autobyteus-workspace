@@ -21,9 +21,9 @@ describe('one strict delegation work source at the shared native/MCP parser', ()
 describe('existing-copy mode: a copy\'s own ID with task_id (REQ-002)', () => {
   it('names a Team copy by its team run ID and an Agent copy by its agent run ID', () => {
     expect(parseDelegateTaskInput({ target_team_run_id: ' team-9 ', task_id: ' task-B ' }))
-      .toEqual({ subject: 'existing_copy', input: { copy: { teamRunId: 'team-9' }, taskId: 'task-B' } });
+      .toEqual({ subject: 'existing_delegated_run', input: { delegatedRun: { teamRunId: 'team-9' }, taskId: 'task-B' } });
     expect(parseDelegateTaskInput({ target_agent_run_id: 'agent-1', task_id: 'task-B' }))
-      .toEqual({ subject: 'existing_copy', input: { copy: { agentRunId: 'agent-1' }, taskId: 'task-B' } });
+      .toEqual({ subject: 'existing_delegated_run', input: { delegatedRun: { agentRunId: 'agent-1' }, taskId: 'task-B' } });
   });
   it('requires exactly one copy ID', () => {
     expect(() => parseDelegateTaskInput({ target_team_run_id: 't', target_agent_run_id: 'a', task_id: 'B' }))

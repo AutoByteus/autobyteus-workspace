@@ -35,6 +35,7 @@ import { loadAgentCustomizations } from "../../../src/startup/agent-customizatio
 import { AgentToolRegistryReadiness } from "../../../src/startup/agent-tool-loader.js";
 import { getGeneralProcessPublishedArtifactPublisher } from "../../../src/services/published-artifacts/published-artifact-publication-service.js";
 import { configureE2eStudioApplicationApiServices } from "../helpers/studio-application-api-services.js";
+import { OFF_DISCOVERY } from "../../helpers/explicit-host-collaborators.js";
 
 /**
  * Native AutoByteus at the factory level, with a deterministic LLM (no provider call): configured skills are
@@ -190,7 +191,7 @@ describe("Configured skill on-demand loading active native runtime e2e", () => {
       getName: () => "Configured Skill Workspace",
       getBasePath: () => input.workspaceRoot ?? workspaceRoot,
     };
-    const factory = new AutoByteusAgentRunBackendFactory({ nativeCommandProcessScope: new NativeCommandProcessScope(),
+    const factory = new AutoByteusAgentRunBackendFactory({ peerDiscovery: OFF_DISCOVERY, nativeCommandProcessScope: new NativeCommandProcessScope(),
       agentDefinitionService: AgentDefinitionService.getInstance(),
       skillService: SkillService.getInstance(),
       agentFactory: new AgentFactory(),

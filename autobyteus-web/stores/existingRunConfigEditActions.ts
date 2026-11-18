@@ -85,7 +85,7 @@ export const existingRunConfigEditActions = {
   /**
    * After a lifecycle change (the stop icon) or a committed Save: read the run's canonical settings again, so
    * editability comes from the server, through the same loader as Refresh. After a Save a hub's view is read again (a
-   * stopped hub's is re-read when it stops: `syncHost`).
+   * stopped hub's is re-read when it stops: `syncRun`).
    */
   async reloadCanonical(this: any, committed = false): Promise<boolean> {
     const target = this.loadTarget

@@ -166,21 +166,21 @@ const buildNode = async (input: Readonly<{
     activeRootDirectory: new ActiveCollaborationRootDirectory(),
     definitions: { getAgentDefinitionById: async (id) => definitions.find((definition) => definition.id === id) ?? null },
     orgInstruction: async () => null,
-    host: {
+    agentServices: {
       getActiveRun: (runId) => (runs.get(runId)?.active ? runs.get(runId) as never : null),
-      activateHost: vi.fn(async (runId: string) => {
+      activateRunAgent: vi.fn(async (runId: string) => {
         const run = runOf(runId); run.active = true;
         const current = metadata.get(runId)!;
         if (!current.startedAt) metadata.set(runId, { ...current, startedAt: T0 });
         return { run: run as never, metadata: metadata.get(runId)! };
       }),
-      terminateHost: vi.fn(async (runId: string) => { runOf(runId).active = false; return { outcome: "terminated" as const, runtimeKind: null }; }),
+      terminateRunAgent: vi.fn(async (runId: string) => { runOf(runId).active = false; return { outcome: "terminated" as const, runtimeKind: null }; }),
       readMetadata: async (runId) => metadata.get(runId) ?? null,
     },
     rootDependencies: {
       taskRecords: resources,
       delegationIndex: taskSide.tree, viewStreams: testViewStreams(),
-      remoteRunChannel: () => client,
+      remoteChannel: () => client,
     },
   });
   let prepared = 0;
@@ -213,7 +213,7 @@ const buildNode = async (input: Readonly<{
       standalone: (runId) => manager.resolveRoot(runId),
       team: async () => null,
       org: async () => null,
-      pairedAgents: () => manager.pairedAgents,
+      runAgents: () => manager.runAgents,
       liveRoot: () => null,
     }, { recordFirstMessage: async (root, content) => { if (!titles.has(root.runId)) titles.set(root.runId, content); } }, new PeerStartedRunDecisions(),
     { rootOf: () => null, teamCoordinatorOf: () => null }),
@@ -221,7 +221,7 @@ const buildNode = async (input: Readonly<{
     runningAgents: { list: async () => ({ accepted: true as const, agents: [] }) },
     runViews: new RemoteRunViewProvider({
       storedLinkCheck: async (root, query) => root.kind === "agent" ? manager.storedRemoteLinkCheck(root.runId, query) : "not_found",
-      pairedAgents: () => manager.pairedAgents,
+      runAgents: () => manager.runAgents,
     } as never, {
       runTitle: async (run) => titles.get(run.runId) ?? null,
       // SR-038: the run's launches, read from its own file (here the in-memory metadata).
@@ -235,12 +235,12 @@ const buildNode = async (input: Readonly<{
   return { nodeId: input.nodeId, memoryDir, metadata, runs, runOf, resources, manager, models, titles, taskSide, channel: () => client };
 };
 
-const hostIdentity = (runId: string, address: string) => createCollaborationMemberExecutionIdentity({
+const agentIdentity = (runId: string, address: string) => createCollaborationMemberExecutionIdentity({
   root: createAgentRootExecutionIdentity(runId), memberAddress: address, agentRunId: runId,
 });
 const send = async (node: Node, from: { runId: string; address: string }, target: string, content: string, referenceFiles: string[] = []) => {
   const root = (await node.manager.resolveRoot(from.runId))!;
-  return root.deliverExactAgentMessage({ sender: { kind: "agent", identity: hostIdentity(from.runId, from.address), displayName: "agent" } as never,
+  return root.deliverExactAgentMessage({ sender: { kind: "agent", identity: agentIdentity(from.runId, from.address), displayName: "agent" } as never,
     targetAgentRunId: target, content, referenceFiles });
 };
 const logLines = async (file: string) => (await fs.readFile(file, "utf8")).split("\n").filter(Boolean).map((line) => JSON.parse(line));
@@ -259,13 +259,13 @@ const twoNodes = async (options: { bEnabled?: () => boolean } = {}) => {
 const delegator = { runId: DELEGATOR, address: "/assistant" };
 // delegate_task on the tool path (SR-049): the delegator's root answers for its own run, the delegation goes on outside it.
 const delegate = async (a: Node, input: Record<string, unknown> = {}) => a.taskSide.delegate((await a.manager.resolveRoot(DELEGATOR))!,
-  { identity: hostIdentity(DELEGATOR, "/assistant") }, { recipient_address: "/publisher", description: "Publish the video draft.", node: "docker", ...input } as never);
+  { identity: agentIdentity(DELEGATOR, "/assistant") }, { recipient_address: "/publisher", description: "Publish the video draft.", node: "docker", ...input } as never);
 
 describe("remote delegation between two standalone runs, in process (slice 1 step 5)", () => {
   it("A delegates to B's shared Agent by its catalog address; B prepares a standalone run with the back-link, A links it, then sends the work packet", async () => {
     const { a, b } = await twoNodes();
     const outcome = await delegate(a);
-    expect(outcome).toEqual({ delegated: true, copy: { kind: "agent", agentRunId: "publisher_r1" }, node: "docker", taskId: "ad_hoc_task_1" });
+    expect(outcome).toEqual({ delegated: true, delegatedRun: { kind: "agent", agentRunId: "publisher_r1" }, node: "docker", taskId: "ad_hoc_task_1" });
 
     // B: an ordinary standalone run with the Agent's default, the temp workspace, auto-approve on (autobyteus-245) and
     // `delegatedFrom`, activated by the packet.
@@ -285,7 +285,7 @@ describe("remote delegation between two standalone runs, in process (slice 1 ste
     expect(a.resources.entry({ agentRunId: "publisher_r1" })).toMatchObject({ taskId: "ad_hoc_task_1", role: "assigned", start: "started", open: true,
       nodeId: B_ID, recipientAddress: "/publisher",
       delegatedFrom: { delegatingRun: { rootSubjectKind: "agent", rootRunId: DELEGATOR }, delegatorAgentRunId: DELEGATOR } });
-    await expect(fs.access(path.join(new AgentMemoryLayout(a.memoryDir).getAgentRunCollaborationDirPath(DELEGATOR), "collaboration_tree.json"))).rejects.toThrow();
+    await expect(fs.access(path.join(path.join(a.memoryDir, "agents", DELEGATOR, "collaboration"), "collaboration_tree.json"))).rejects.toThrow();
     // autobyteus-278, SR-084: A's run tree lists it as a peer row under the delegator, never among the local copies.
     const runTree = new RunTreeView({ tree: a.taskSide.tree, ownTreeOf: async () => ({ kind: "agent", agentRunId: DELEGATOR, address: "/assistant" }),
       projection: createChildRowProjection({ memoryDir: a.memoryDir, tree: a.taskSide.tree, channel: () => null, peerSummaryOf: () => null }) });
@@ -353,14 +353,14 @@ describe("remote delegation between two standalone runs, in process (slice 1 ste
     await expect(delegate(a, { recipient_address: "/unknown" })).resolves.toEqual({ delegated: false, message: 'Node "docker" has no Agent or Agent Team at /unknown that can be delegated to. If you have list_available_agents, call it with this node to see what it offers.' });
     b.models.available = false;
     await expect(delegate(a)).resolves.toEqual({ delegated: false,
-      message: `The Agent Publisher on node "docker" cannot run there: 'sonnet' is not offered by Claude Agent SDK now. Refresh the model list and choose again, and Model Routing is off on node "docker".` });
+      message: `The Agent Publisher on node "docker" cannot run there: its default model cannot be used: 'sonnet' is no longer offered by Claude Agent SDK, and Model Routing is off on node "docker".` });
     b.models.available = true;
     bOn = false;
     await expect(delegate(a)).resolves.toEqual({ delegated: false, message: 'Remote collaboration is turned off on node "docker", so it refused the request.' });
     expect(b.metadata.size).toBe(0);
     expect(a.resources.entries.size).toBe(0);
     expect(a.resources.adHocTaskIds()).toEqual([]);
-    await expect(fs.access(new AgentMemoryLayout(a.memoryDir).getAgentRunCollaborationDirPath(DELEGATOR))).rejects.toThrow();
+    await expect(fs.access(path.join(a.memoryDir, "agents", DELEGATOR, "collaboration"))).rejects.toThrow();
   });
 
   it("refuses files on a follow-up, a saved Task for the remote run, and messages from a run that is not linked (AC-107, AC-108, AR-003)", async () => {
@@ -370,7 +370,7 @@ describe("remote delegation between two standalone runs, in process (slice 1 ste
     expect(b.runOf("publisher_r1").received).toEqual([]);
     const rootA = (await a.manager.resolveRoot(DELEGATOR))!;
     a.resources.addTask("task-B");
-    await expect(a.taskSide.assign(rootA, { identity: hostIdentity(DELEGATOR, "/assistant") }, { copy: { agentRunId: "publisher_r1" }, taskId: "task-B" }))
+    await expect(a.taskSide.assign(rootA, { identity: agentIdentity(DELEGATOR, "/assistant") }, { delegatedRun: { agentRunId: "publisher_r1" }, taskId: "task-B" }))
       .resolves.toEqual({ delegated: false, message: expect.stringContaining("can't be given to an agent on another node") });
     expect(a.resources.assignments).toEqual([]);
     // A message that claims to be from a run B never linked with A's delegator is refused by A's link check.

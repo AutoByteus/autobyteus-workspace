@@ -48,14 +48,14 @@ const commandAck = (
 });
 
 /**
- * Agent-run stream `/ws/agent-collaboration/:hostRunId` (design DS-8; SR-061 … SR-063, SR-084): the run's view, from its
+ * Agent-run stream `/ws/agent-collaboration/:agentRunId` (design DS-8; SR-061 … SR-063, SR-084): the run's view, from its
  * one `RunViewStream`: the snapshot and its tree (read with the base), then every frame after it in order (the run's own
  * events, and its tree's changes). Its rows' statuses are each run's own (`/ws/run-status`, SR-083). Connecting resolves the run's root and never
  * starts its agent. A delegated run is reached by its own stream (rule 2); a peer run's commands go through the root to
  * its node, as at base. Commands for the run's own agent stay on `/ws/agent/:runId`.
  */
 export class AgentCollaborationStreamHandler {
-  private readonly sessions = new Map<string, { egress: RootExecutionStreamEgress; hostRunId: string; close(): void }>();
+  private readonly sessions = new Map<string, { egress: RootExecutionStreamEgress; agentRunId: string; close(): void }>();
 
   constructor(
     private readonly roots: Pick<StandaloneAgentRunRootManager, "resolveRoot" | "getActive">,
@@ -64,20 +64,20 @@ export class AgentCollaborationStreamHandler {
   ) {}
 
   /** The run's root; opening a view never starts its agent (DS-8, REQ-004): it starts on its first input. */
-  private async readyRoot(hostRunId: string): Promise<StandaloneAgentRunRoot> {
-    const root = await this.roots.resolveRoot(hostRunId);
-    if (!root) throw new StandaloneRootUnavailableError(`Agent run '${hostRunId}' is not a collaboration run.`);
+  private async readyRoot(agentRunId: string): Promise<StandaloneAgentRunRoot> {
+    const root = await this.roots.resolveRoot(agentRunId);
+    if (!root) throw new StandaloneRootUnavailableError(`Agent run '${agentRunId}' is not a collaboration run.`);
     return root;
   }
 
-  async connect(connection: WebSocketConnection, hostRunIdInput: string): Promise<string | null> {
-    const hostRunId = hostRunIdInput.trim();
+  async connect(connection: WebSocketConnection, agentRunIdInput: string): Promise<string | null> {
+    const agentRunId = agentRunIdInput.trim();
     // Every message to this socket leaves through its egress; an ERROR or ROOT_LIFECYCLE sent
     // before a close flushes pending content first.
-    const egress = createRootExecutionStreamEgress(connection, `agent root '${hostRunId}'`);
+    const egress = createRootExecutionStreamEgress(connection, `agent root '${agentRunId}'`);
     let root;
     try {
-      root = await this.readyRoot(hostRunId);
+      root = await this.readyRoot(agentRunId);
     } catch (cause) {
       egress.send(error("AGENT_ROOT_UNAVAILABLE", cause instanceof Error ? cause.message : String(cause)));
       egress.dispose();
@@ -98,17 +98,17 @@ export class AgentCollaborationStreamHandler {
     }
     try {
       egress.send(CollaborationStreamServerMessageSchema.parse({
-        type: "CONNECTED", payload: { root_subject_kind: "agent", root_run_id: hostRunId, session_id: sessionId },
+        type: "CONNECTED", payload: { root_subject_kind: "agent", root_run_id: agentRunId, session_id: sessionId },
       }));
       egress.send(CollaborationStreamServerMessageSchema.parse({
         type: "ROOT_EXECUTION_VIEW_SNAPSHOT",
-        payload: projectAgentCollaborationView({ hostRunId, isActive: root.isHostLive(), snapshot: barrier.snapshot.own,
+        payload: projectAgentCollaborationView({ agentRunId, isActive: root.isAgentLive(), snapshot: barrier.snapshot.own,
           baseChangeSequence: barrier.baseChangeSequence, liveSequenceId: barrier.liveSequenceId,
           lastMessageChangeSequence: barrier.lastMessageChangeSequence }),
       }));
       // The run's tree at the same base (SR-084); its changes follow as numbered `run_tree_changed` events.
       const tree = barrier.snapshot.tree;
-      egress.send(CollaborationStreamServerMessageSchema.parse({ type: "RUN_TREE_SNAPSHOT", payload: { root_subject_kind: "agent", root_run_id: hostRunId,
+      egress.send(CollaborationStreamServerMessageSchema.parse({ type: "RUN_TREE_SNAPSHOT", payload: { root_subject_kind: "agent", root_run_id: agentRunId,
         base_change_sequence: barrier.baseChangeSequence, rows: tree.current } }));
       // Every frame after the base, in order; the tree is read again on its notice, when the notice is sent.
       let open = true;
@@ -118,10 +118,10 @@ export class AgentCollaborationStreamHandler {
           if (isRunTreeChangedEvent(event.event)) {
             const change = await tree.next();
             if (open) egress.send(CollaborationStreamServerMessageSchema.parse({ type: "ROOT_EXECUTION_EVENT", payload: { root_subject_kind: "agent",
-              root_run_id: hostRunId, change_sequence: event.changeSequence, event: { kind: "run_tree_changed", ...change } } }));
+              root_run_id: agentRunId, change_sequence: event.changeSequence, event: { kind: "run_tree_changed", ...change } } }));
             return;
           }
-          const projected = projectAgentCollaborationEvent(hostRunId, event);
+          const projected = projectAgentCollaborationEvent(agentRunId, event);
           if (projected && open) egress.send(CollaborationStreamServerMessageSchema.parse({ type: "ROOT_EXECUTION_EVENT", payload: projected }));
         } catch (cause) {
           egress.send(error("AGENT_ROOT_STREAM_PROJECTION_FAILED", cause instanceof Error ? cause.message : String(cause)));
@@ -130,16 +130,16 @@ export class AgentCollaborationStreamHandler {
         }
         if (event.event.kind === "lifecycle") {
           egress.send(CollaborationStreamServerMessageSchema.parse({
-            type: "ROOT_LIFECYCLE", payload: { root_subject_kind: "agent", root_run_id: hostRunId, is_active: event.event.isActive },
+            type: "ROOT_LIFECYCLE", payload: { root_subject_kind: "agent", root_run_id: agentRunId, is_active: event.event.isActive },
           }));
           if (!event.event.isActive) queueMicrotask(() => { this.disconnect(sessionId); connection.close(1000); });
         }
       }));
       // The run's own agent's state (SR-045): a stopped run's view keeps its stream; its agent starts on its first input.
       egress.send(CollaborationStreamServerMessageSchema.parse({
-        type: "ROOT_LIFECYCLE", payload: { root_subject_kind: "agent", root_run_id: hostRunId, is_active: root.isHostLive() },
+        type: "ROOT_LIFECYCLE", payload: { root_subject_kind: "agent", root_run_id: agentRunId, is_active: root.isAgentLive() },
       }));
-      this.sessions.set(sessionId, { egress, hostRunId, close: () => { open = false; unsubscribe(); egress.dispose(); } });
+      this.sessions.set(sessionId, { egress, agentRunId, close: () => { open = false; unsubscribe(); egress.dispose(); } });
       return sessionId;
     } catch (cause) {
       barrier.close();
@@ -162,7 +162,7 @@ export class AgentCollaborationStreamHandler {
     }
     const message: AgentCommand = parsed;
     try {
-      if (message.payload.root_subject_kind !== "agent" || message.payload.root_run_id !== session.hostRunId) {
+      if (message.payload.root_subject_kind !== "agent" || message.payload.root_run_id !== session.agentRunId) {
         throw new Error("Agent-root command root correlation mismatch.");
       }
       // The view takes commands for its peer rows only, through each one's handle (SR-066): a delegated run on this node

@@ -17,6 +17,7 @@ import { createRootExecutionIdentity } from "../../../src/agent-collaboration/ex
 import type { TaskExecutionReleaseRequest } from "../../../src/agent-collaboration/execution/task/task-execution-resource-port.js";
 import type { TaskExecutionReference } from "../../../src/agent-collaboration/execution/task/task-execution-reference.js";
 import { taskRunResources } from "../../helpers/task-run-resources.js";
+import { NO_RUN_SIDE_TASK_PORTS } from "../../helpers/explicit-host-collaborators.js";
 
 const hostRoot = createRootExecutionIdentity({ rootSubjectKind: "agent", rootRunId: "manager-root" });
 const agent: TaskExecutionReference = { agentRunId: "writer" };
@@ -36,7 +37,7 @@ describe("ProjectTaskService.currentTasksOfTaskWorkers", () => {
     projects = new ProjectService({ store, changes, workspaceLookup: { listRegisteredWorkspaceRootPaths: async () => [] } });
     projectId = (await projects.createProject({ name: "Desktop App" })).projectId;
     const requestRelease = vi.fn<TaskExecutionReleaseRequest>(async (execution) => ({ execution, stopped: true }));
-    tasks = new ProjectTaskService({ store, adHocTasks: new AdHocTaskStore(adHocLayout), contextStore: new ProjectTaskContextStore(layout), changes,
+    tasks = new ProjectTaskService({ ...NO_RUN_SIDE_TASK_PORTS, store, adHocTasks: new AdHocTaskStore(adHocLayout), contextStore: new ProjectTaskContextStore(layout), changes,
       requestRelease: (releases = trackReleases(requestRelease)).request, taskExecutionResources: taskRunResources(new TaskExecutionResourceStore(layout, adHocLayout)) });
     await tasks.load();
   });

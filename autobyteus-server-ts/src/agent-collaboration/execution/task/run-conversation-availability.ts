@@ -2,7 +2,7 @@ import type { AgentConversationActivity, AgentConversationActivityInspector } fr
 import { AgentMemoryLayout } from "../../../agent-memory/store/agent-memory-layout.js";
 import { createServerLogger } from "../../../logging/server-app-logger.js";
 import type { TeamRunExecutionTreeLocationService } from "../../../run-history/services/team-run-execution-tree-location-service.js";
-import type { PairedAgentAccess } from "../remote/paired-agent-access.js";
+import type { RunAgentAccess } from "../remote/run-agent-access.js";
 import { TaskDelegationError } from "./task-delegation-command.js";
 import type { TaskExecutionReference } from "./task-execution-reference.js";
 
@@ -19,13 +19,13 @@ export type RunConversationAvailability = Readonly<{ entryAddress: string; activ
 export const createRunConversationAvailability = (input: Readonly<{
   memoryDir: string;
   inspector: Pick<AgentConversationActivityInspector, "inspect">;
-  liveAgents(kind: "agent" | "agent_team"): Pick<PairedAgentAccess, "pairedAgentStatuses">;
+  liveAgents(kind: "agent" | "agent_team"): Pick<RunAgentAccess, "runAgentStatuses">;
   teamMembers: Pick<TeamRunExecutionTreeLocationService, "findAgent">;
 }>) => {
   const layout = new AgentMemoryLayout(input.memoryDir);
   return async (execution: TaskExecutionReference, entry: Readonly<{ agentRunId: string; address: string }>): Promise<RunConversationAvailability> => {
     const [kind, runId] = "agentRunId" in execution ? ["agent", execution.agentRunId] as const : ["agent_team", execution.teamRunId] as const;
-    if (input.liveAgents(kind).pairedAgentStatuses(runId).some((agent) => agent.agentRunId === entry.agentRunId)) {
+    if (input.liveAgents(kind).runAgentStatuses(runId).some((agent) => agent.agentRunId === entry.agentRunId)) {
       return { entryAddress: entry.address, activity: { kind: "present" } };
     }
     if (kind === "agent") {

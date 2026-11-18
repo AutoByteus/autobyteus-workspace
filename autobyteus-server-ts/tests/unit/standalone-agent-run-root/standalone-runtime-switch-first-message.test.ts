@@ -4,6 +4,7 @@ import { StandaloneAgentRunLifecycleService } from "../../../src/agent-execution
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import type { AgentRunMetadata } from "../../../src/run-history/store/agent-run-metadata-types.js";
 import { HOST, buildManager, cleanupDirectories, metadata } from "./helpers/standalone-root-harness.js";
+import { OFFERED_STORED_MODEL_CHECKS } from "../../helpers/explicit-host-collaborators.js";
 
 vi.mock("../../../src/run-history/services/root-run-package-readiness-index.js", () => ({
   RootRunPackageReadinessIndex: class { assertAdmitted = async () => undefined; },
@@ -22,7 +23,7 @@ const PENDING = {
 };
 
 describe("the first message after a saved agent runtime switch, through the real root and host handle", () => {
-  it("builds the host member context, then the lifecycle makes the switch with it: fresh session, marker, commit without the pending field", async () => {
+  it("builds the agent member context, then the lifecycle makes the switch with it: fresh session, marker, commit without the pending field", async () => {
     const f = await buildManager();
     f.host.crash();
     const pending: AgentRunMetadata = metadata(f.memoryDir, { runtimeKind: RuntimeKind.CODEX_APP_SERVER, llmModelIdentifier: "gpt-5", platformAgentRunId: null, pendingRuntimeSwitch: PENDING });
@@ -50,7 +51,7 @@ describe("the first message after a saved agent runtime switch, through the real
       record: vi.fn(() => { order.push("record"); }),
       discard: vi.fn(() => { order.push("discard"); }),
     };
-    const lifecycle = new StandaloneAgentRunLifecycleService("/unused", {
+    const lifecycle = new StandaloneAgentRunLifecycleService("/unused", { storedModelChecks: OFFERED_STORED_MODEL_CHECKS,
       agentRunManager: manager as never,
       metadataService: { readMetadataState: vi.fn(async () => ({ kind: "present" as const, metadata: stored })) } as never,
       historyCatalogService: { recordRunStarted: vi.fn(async (input: AgentRunMetadata & { clearPendingRuntimeSwitch?: boolean }) => {
@@ -64,13 +65,13 @@ describe("the first message after a saved agent runtime switch, through the real
       modelSelectionValidator: { validate: vi.fn() } as never,
       switching: { memory },
     });
-    f.restores.mockImplementation(async (hostRunId, input) => {
+    f.restores.mockImplementation(async (agentRunId, input) => {
       f.contexts.push(input.memberExecutionContext!);
-      const result = await lifecycle.activateHost(hostRunId, input);
+      const result = await lifecycle.activateRunAgent(agentRunId, input);
       return result as never;
     });
 
-    const root = (await f.manager.resolveRootAndEnsureHost(HOST))!;
+    const root = (await f.manager.resolveRootAndEnsureAgent(HOST))!;
 
     expect(root).toBeTruthy();
     expect(f.contexts[0]?.identity).toMatchObject({ agentRunId: HOST, memberAddress: "/research_assistant" });

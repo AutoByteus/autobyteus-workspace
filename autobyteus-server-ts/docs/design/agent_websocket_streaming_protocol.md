@@ -12,7 +12,7 @@ commands, segment/error semantics, presentation cadence, and close behavior.
 - standalone Agent: `/ws/agent/:runId` (the Agent's own chat);
 - AgentTeam: `/ws/agent-team/:teamRunId` (`@autobyteus/team-stream-contracts`);
 - AgentOrg: `/ws/agent-org/:orgRunId`, and
-- delegated agents of a standalone run: `/ws/agent-collaboration/:hostRunId`,
+- delegated agents of a standalone run: `/ws/agent-collaboration/:runId`,
   both with the `ROOT_EXECUTION_EVENT` envelope of
   `@autobyteus/collaboration-stream-contracts`.
 

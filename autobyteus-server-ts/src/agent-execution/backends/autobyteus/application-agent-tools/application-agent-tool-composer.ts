@@ -1,4 +1,5 @@
 import type { BaseTool } from "autobyteus-ts/tools/base-tool.js";
+import type { PeerDiscoveryAccess } from "../../../../agent-collaboration/execution/remote/peer-discovery-channel.js";
 import type { ApplicationExecutionContext } from "@autobyteus/application-sdk-contracts";
 import type { AgentDefinition } from "../../../../agent-definition/domain/models.js";
 import type { MemberExecutionContext } from "../../../../agent-collaboration/execution/domain/member-execution-context.js";
@@ -20,6 +21,7 @@ export const resolveApplicationAwareAgentTools = (input: Readonly<{
   memberExecutionContext?: MemberExecutionContext | null;
   applicationExecutionContext?: ApplicationExecutionContext | null;
   capability?: ApplicationAgentToolCapability | null;
+  peerDiscovery: PeerDiscoveryAccess;
   logger?: { warn: (...args: unknown[]) => void; error: (...args: unknown[]) => void };
 }>): AutoByteusAgentToolResolution => {
   if (!input.applicationExecutionContext || !input.capability) {
@@ -30,6 +32,7 @@ export const resolveApplicationAwareAgentTools = (input: Readonly<{
       senderName: input.agentDefinition.name,
       runtimeKind: input.runtimeKind,
       memberExecutionContext: input.memberExecutionContext,
+      peerDiscovery: input.peerDiscovery,
       logger: input.logger,
     });
   }
@@ -57,6 +60,7 @@ export const resolveApplicationAwareAgentTools = (input: Readonly<{
     senderName: input.agentDefinition.name,
     runtimeKind: input.runtimeKind,
     memberExecutionContext: input.memberExecutionContext,
+    peerDiscovery: input.peerDiscovery,
     logger: input.logger,
   });
   const projector = new ApplicationAgentToolNativeSchemaProjector();

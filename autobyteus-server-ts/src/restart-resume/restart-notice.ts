@@ -60,8 +60,8 @@ export const buildRestartNoticeText = (input: RestartReminderFacts & Readonly<{ 
 
 /**
  * The wake after an update (autobyteus-285 D4): a SYSTEM input from `system.restart_resume`, in the shape of the
- * platform's other notices. The native runtime emits no notification for it; the resumer (host) or the member
- * presentation shows it as a system notice. `message_id` / `dedupe_key` are display and projection keys only.
+ * platform's other notices. The native runtime emits no notification for it; the resumer (a run's own agent) or the
+ * member presentation shows it as a system notice. `message_id` / `dedupe_key` are display and projection keys only.
  */
 export const buildRestartNotice = (input: Readonly<{
   agentRunId: string;

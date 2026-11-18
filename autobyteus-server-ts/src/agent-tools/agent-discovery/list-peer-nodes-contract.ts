@@ -1,11 +1,10 @@
 import { ParameterSchema } from "autobyteus-ts/utils/parameter-schema.js";
 import type { MemberCollaborationContext } from "../../agent-collaboration/execution/domain/member-execution-context.js";
 import {
-  findProcessPeerDiscoveryChannel,
   type PeerNodeStatus,
   type PeerDiscoveryChannel,
 } from "../../agent-collaboration/execution/remote/peer-discovery-channel.js";
-import { isAgentDiscoveryRefusal, remoteCollaborationOff, requireDiscoveryContext, type AgentDiscoveryRefusal } from "./agent-discovery-refusal.js";
+import { isAgentDiscoveryRefusal, requireDiscoveryContext, type AgentDiscoveryRefusal } from "./agent-discovery-refusal.js";
 
 export const LIST_PEER_NODES_TOOL_NAME = "list_peer_nodes";
 
@@ -24,10 +23,9 @@ export const buildListPeerNodesParameterSchema = (): ParameterSchema => new Para
  */
 export const listPeerNodesFor = async (
   collaboration: MemberCollaborationContext | null | undefined,
-  discovery: PeerDiscoveryChannel | null = findProcessPeerDiscoveryChannel(),
+  discovery: PeerDiscoveryChannel,
 ): Promise<ListPeerNodesResult | AgentDiscoveryRefusal> => {
   requireDiscoveryContext(collaboration, LIST_PEER_NODES_TOOL_NAME);
-  if (!discovery) return remoteCollaborationOff();
   const nodes = await discovery.listPeerNodes();
   return isAgentDiscoveryRefusal(nodes) ? nodes : Object.freeze({ nodes });
 };

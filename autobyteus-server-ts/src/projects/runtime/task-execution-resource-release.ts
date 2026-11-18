@@ -7,7 +7,8 @@ import type { ReleasableRun } from "../services/task-execution-resource-service.
  * persisted: failures are logged and repeating DONE or CANCELLED requests the stop again.
  */
 export class TaskExecutionResourceRelease {
-  constructor(private readonly request?: TaskExecutionReleaseRequest) {}
+  /** The composition's stop request (autobyteus-500 FU-018: required in every host). */
+  constructor(private readonly request: TaskExecutionReleaseRequest) {}
 
   release(taskId: string, runs: readonly ReleasableRun[]): void {
     for (const run of runs) void this.stop(taskId, run);
@@ -19,7 +20,7 @@ export class TaskExecutionResourceRelease {
       return;
     }
     try {
-      const pending = this.request?.(run) ?? null;
+      const pending = this.request(run);
       // Not active: nothing runs, and its next message is refused by the closed Task.
       if (!pending) return;
       const result = await pending;

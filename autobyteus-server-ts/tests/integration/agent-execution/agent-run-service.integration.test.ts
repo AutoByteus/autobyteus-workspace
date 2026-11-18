@@ -5,6 +5,7 @@ import { AgentRunProvisioningService } from "../../../src/agent-execution/servic
 import { StandaloneAgentRunLifecycleService } from "../../../src/agent-execution/services/standalone-agent-run-lifecycle-service.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import type { AgentRunMetadata } from "../../../src/run-history/store/agent-run-metadata-types.js";
+import { NO_ELIGIBLE_STANDALONE_RUNS, OFFERED_STORED_MODEL_CHECKS, OFFERED_STORED_MODEL_OFFER } from "../../helpers/explicit-host-collaborators.js";
 
 // Run history here is an in-memory harness, so the file-backed package readiness index cannot
 // see it. Admission is modelled as granted and observed (as in the lifecycle unit tests).
@@ -127,7 +128,7 @@ const createLifecycleService = (
   agentRunManager: object,
   history: ReturnType<typeof createRunHistoryHarness>,
   workspaces: ReturnType<typeof workspaceManager>,
-) => new StandaloneAgentRunLifecycleService(memoryDir, {
+) => new StandaloneAgentRunLifecycleService(memoryDir, { storedModelChecks: OFFERED_STORED_MODEL_CHECKS,
   agentRunManager: agentRunManager as never,
   metadataService: history.metadataService as never,
   historyCatalogService: history.historyCatalogService as never,
@@ -145,8 +146,8 @@ const createLifecycleService = (
  */
 const hostMemberContext = (runId: string) => ({ identity: { agentRunId: runId }, teamScoped: false }) as never;
 const standaloneRootPort = (lifecycleService: StandaloneAgentRunLifecycleService) => ({
-  resolveRootAndEnsureHost: vi.fn((runId: string) =>
-    lifecycleService.activateHost(runId, { memberExecutionContext: hostMemberContext(runId) })),
+  resolveRootAndEnsureAgent: vi.fn((runId: string) =>
+    lifecycleService.activateRunAgent(runId, { memberExecutionContext: hostMemberContext(runId) })),
   stopRoot: vi.fn(async () => null),
   stopRootForTaskClosure: vi.fn(async () => null),
   refreshInheritedLaunch: vi.fn(async () => undefined),
@@ -327,7 +328,7 @@ describe("AgentRunService integration", () => {
     const history = createRunHistoryHarness([persisted]);
     const agentRunManager = { getActiveRun: vi.fn(() => activeRun) };
     const workspaces = workspaceManager();
-    const service = new AgentRunService("/tmp/memory", {
+    const service = new AgentRunService("/tmp/memory", { standaloneRuns: NO_ELIGIBLE_STANDALONE_RUNS,
       agentRunManager: agentRunManager as never,
       metadataService: history.metadataService as never,
       historyCatalogService: history.historyCatalogService as never,
@@ -356,7 +357,7 @@ describe("AgentRunService integration", () => {
     };
     const history = createRunHistoryHarness();
     const workspaces = workspaceManager();
-    const service = new AgentRunService("/tmp/memory", {
+    const service = new AgentRunService("/tmp/memory", { standaloneRuns: NO_ELIGIBLE_STANDALONE_RUNS,
       agentRunManager: agentRunManager as never,
       metadataService: history.metadataService as never,
       historyCatalogService: history.historyCatalogService as never,
@@ -390,7 +391,7 @@ describe("AgentRunService integration", () => {
       hasActiveRun: vi.fn(() => false),
     };
     const workspaces = workspaceManager();
-    const service = new AgentRunService("/tmp/memory", {
+    const service = new AgentRunService("/tmp/memory", { standaloneRuns: NO_ELIGIBLE_STANDALONE_RUNS,
       agentRunManager: agentRunManager as never,
       metadataService: history.metadataService as never,
       historyCatalogService: history.historyCatalogService as never,
@@ -423,7 +424,7 @@ describe("AgentRunService integration", () => {
       newPreparation: vi.fn(),
     });
     const workspaces = workspaceManager();
-    const service = new AgentRunService("/tmp/memory", {
+    const service = new AgentRunService("/tmp/memory", { standaloneRuns: NO_ELIGIBLE_STANDALONE_RUNS,
       agentRunManager: agentRunManager as never,
       metadataService: history.metadataService as never,
       historyCatalogService: history.historyCatalogService as never,

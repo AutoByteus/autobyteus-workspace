@@ -12,9 +12,12 @@ import { afterAll, afterEach, beforeAll, describe, expect, it } from "vitest";
 import type { graphql as graphqlFn, GraphQLSchema } from "graphql";
 import { buildGraphqlSchema } from "../../../src/api/graphql/schema.js";
 import { registerAgentWebsocket } from "../../../src/api/websocket/agent.js";
+import { createAgentStreamHandler } from "../../../src/services/agent-streaming/agent-stream-handler.js";
+import { AgentRunCommandCoordinator } from "../../../src/agent-execution/services/agent-run-command-coordinator.js";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { getCodexAppServerClientManager } from "../../../src/runtime-management/codex/client/codex-app-server-client-manager.js";
 import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
+import { NO_ELIGIBLE_STANDALONE_RUNS } from "../../helpers/explicit-host-collaborators.js";
 
 const codexBinaryReady = spawnSync("codex", ["--version"], { stdio: "ignore" }).status === 0;
 const liveCodexTestsEnabled = process.env.RUN_CODEX_E2E === "1";
@@ -353,7 +356,7 @@ describeCodexRuntime("Codex single-agent run history title e2e (live runtime)", 
   }> => {
     const app = fastify();
     await app.register(websocket);
-    await registerAgentWebsocket(app, undefined, {} as never);
+    await registerAgentWebsocket(app, createAgentStreamHandler(new AgentRunCommandCoordinator({ standaloneRuns: NO_ELIGIBLE_STANDALONE_RUNS })), {} as never, {} as never, {} as never);
     const address = await app.listen({ port: 0, host: "127.0.0.1" });
     const url = new URL(address);
     const socket = new WebSocket(`ws://${url.hostname}:${url.port}/ws/agent/${runId}`);

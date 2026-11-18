@@ -48,13 +48,13 @@ export type DelegatedTeamEndpoint = RemoteEndpointCore & Readonly<{
 
 /**
  * On the node that runs a delegated run (B): its delegator on the peer, built from the root's `delegatedFrom`.
- * Its rules apply to every local agent the back-link pairs with (the host of a standalone root; every member of
+ * Its rules apply to every local agent the back-link pairs with (the agent of a standalone run; every member of
  * a Team root); there is no Task on this node (N-11). Its messages name the coordinating run as their root.
  */
 export type DelegatorEndpoint = RemoteEndpointCore & Readonly<{
   kind: "delegator";
   delegatedFrom: PeerDelegatedFrom;
-  /** N-6: the work packet comes from the delegator on its node, for a paired agent (the host, or the coordinator). */
+  /** N-6: the work packet comes from the delegator on its node, for a paired agent (a run's own agent, or the coordinator). */
   admitsWorkPacket(fromNodeId: string, senderAgentRunId: string, targetAgentRunId: string): boolean;
 }>;
 

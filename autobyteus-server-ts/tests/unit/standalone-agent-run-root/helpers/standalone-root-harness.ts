@@ -17,6 +17,7 @@ import { RuntimeKind } from "../../../../src/runtime-management/runtime-kind-enu
 import type { MemberExecutionContext } from "../../../../src/agent-collaboration/execution/domain/member-execution-context.js";
 import type { RunModelSelectionValidator } from "../../../../src/llm-management/services/run-model-selection-service.js";
 import { InMemoryTaskExecutionResources } from "../../../fixtures/task-execution-resource-fixtures.js";
+import { NO_PEER_CHANNEL } from "../../../helpers/explicit-host-collaborators.js";
 
 /** A standalone run's root with real persistence: its agent is a double that records reservations and restores. */
 export const allAvailable = { getRuntimeAvailability: async (runtimeKind) => ({ runtimeKind, enabled: true, reason: null }) };
@@ -111,10 +112,10 @@ export const buildManager = async (taskExecutionResources: InMemoryTaskExecution
     activeRootDirectory: directory,
     definitions: { getAgentDefinitionById: (id) => catalog.getAgentDefinition(id) },
     orgInstruction: async () => null,
-    host: {
+    agentServices: {
       getActiveRun: () => (host.run.isActive() ? host.run as never : null),
-      activateHost: restores,
-      terminateHost: vi.fn(async () => {
+      activateRunAgent: restores,
+      terminateRunAgent: vi.fn(async () => {
         await heldTermination;
         const wasActive = host.run.isActive();
         host.crash();
@@ -122,12 +123,12 @@ export const buildManager = async (taskExecutionResources: InMemoryTaskExecution
       }),
       readMetadata: async () => currentMetadata,
     },
-    rootDependencies: { taskRecords: taskExecutionResources, delegationIndex, viewStreams: testViewStreams(), collaboratorAdmission: createCollaboratorAdmission(catalog, runnable, allAvailable) },
+    rootDependencies: { remoteChannel: NO_PEER_CHANNEL, taskRecords: taskExecutionResources, delegationIndex, viewStreams: testViewStreams(), collaboratorAdmission: createCollaboratorAdmission(catalog, runnable, allAvailable) },
   });
-  const hostIdentity = createCollaborationMemberExecutionIdentity({
+  const agentIdentity = createCollaborationMemberExecutionIdentity({
     root: createAgentRootExecutionIdentity(HOST), memberAddress: "/research_assistant", agentRunId: HOST,
   });
-  return { manager, memoryDir, host, restores, contexts, directory, hostIdentity, store: new StandaloneRootPackageStore(),
+  return { manager, memoryDir, host, restores, contexts, directory, agentIdentity, store: new StandaloneRootPackageStore(),
     setMetadata: (extra: Partial<AgentRunMetadata>) => { currentMetadata = metadata(memoryDir, extra); },
     /** Holds the agent's next termination until the returned release is called. */
     holdTermination: () => { let release!: () => void; heldTermination = new Promise((resolve) => { release = resolve; }); return () => { heldTermination = null; release(); }; } };

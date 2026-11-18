@@ -117,9 +117,7 @@ export const releaseProcessRemoteCollaboration = (services: RemoteCollaborationS
   if (processServices === services) processServices = null;
 };
 
-/** The process's remote collaboration (API edge); `null` where it is not composed. */
-export const findProcessRemoteCollaboration = (): RemoteCollaborationServices | null => processServices;
-
+/** The process's remote collaboration, for the GraphQL resolvers (framework edge, FU-500-02); it throws where none is composed. */
 export const getProcessRemoteCollaboration = (): RemoteCollaborationServices => {
   if (!processServices) throw new Error("Remote collaboration is not available on this server.");
   return processServices;

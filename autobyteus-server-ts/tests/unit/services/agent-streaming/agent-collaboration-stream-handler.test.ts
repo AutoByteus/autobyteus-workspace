@@ -19,12 +19,12 @@ const fakeRoot = (feed: ReturnType<typeof followTestChildRows>, hostLive = true)
   const stream = feed.streams.streamOf(identity);
   return {
     rootIdentity: identity,
-    ensureHostReady: vi.fn(async () => ({ runId: HOST })),
-    isHostLive: () => hostLive,
+    ensureAgentReady: vi.fn(async () => ({ runId: HOST })),
+    isAgentLive: () => hostLive,
     remoteChildren: { viewerAttached: vi.fn(), viewerDetached: vi.fn(), refresh: vi.fn(async () => undefined) },
     // The run's view stream's snapshot connection, as the root opens it (SR-063): the rows at the base, then its own parts.
     openViewSnapshotConnection: vi.fn((atBase: () => unknown, read: (own: unknown, rows: unknown) => unknown) =>
-      stream.openSnapshotConnection(() => { const rows = atBase(); return read({ host, createdAt }, rows); })),
+      stream.openSnapshotConnection(() => { const rows = atBase(); return read({ agent: host, createdAt }, rows); })),
     resolveCollaboratorMentions: vi.fn(),
     executeAgentCommand: vi.fn(async () => ({ accepted: true })),
     stream,
@@ -51,7 +51,7 @@ describe("AgentCollaborationStreamHandler", () => {
     const resolveRoot = vi.fn(async () => root as never);
     const { wire } = await connect({ resolveRoot, getActive: () => null }, feed);
     expect(resolveRoot).toHaveBeenCalledWith(HOST);
-    expect(root.ensureHostReady).not.toHaveBeenCalled();
+    expect(root.ensureAgentReady).not.toHaveBeenCalled();
     expect(wire.map((message) => message.type)).toEqual(["CONNECTED", "ROOT_EXECUTION_VIEW_SNAPSHOT", "RUN_TREE_SNAPSHOT", "ROOT_LIFECYCLE"]);
     expect(wire[1]).toMatchObject({ payload: { root_subject_kind: "agent", root_run_id: HOST,
       root_agent: { is_active: true, live_sequence_id: root.stream.liveSequenceId } } });
@@ -118,7 +118,7 @@ describe("AgentCollaborationStreamHandler", () => {
     await handler.handleMessage(sessionId, send({ command_id: "c5", target_agent_run_id: "local-child-run" }));
     expect(wire.at(-1)).toMatchObject({ payload: { state: "rejected", code: "RUN_NOT_FOUND" } });
     expect(root.executeAgentCommand).not.toHaveBeenCalled();
-    expect(root.ensureHostReady).not.toHaveBeenCalled();
+    expect(root.ensureAgentReady).not.toHaveBeenCalled();
     await handler.handleMessage(sessionId, send({ root_subject_kind: "agent_org", command_id: "c3" }));
     expect(wire.at(-1)).toMatchObject({ payload: { state: "failed", code: "AGENT_ROOT_COMMAND_FAILED" } });
   });
@@ -156,7 +156,7 @@ describe("AgentCollaborationStreamHandler", () => {
       const rows = atBase();
       // A delegation committed while the run's own parts are read: after the base, so a frame after the snapshot.
       feed.report({ run: hostRun, added: [delegatedChild("writer")], removed: [] });
-      return read({ host, createdAt }, rows);
+      return read({ agent: host, createdAt }, rows);
     }));
     const { wire } = await connect({ resolveRoot: async () => root as never, getActive: () => null }, feed);
     await feed.settled();

@@ -298,7 +298,7 @@ run's host, or a Team run's members.
     frame is `{nodeId}` (or a refusal, then close). After it come `{agentRunId, message}` frames, one presentation
     message of one paired agent each. A frame the run produces while it is being subscribed (a live run's current
     state) waits in the route and follows `{nodeId}`.
-    - An Agent run is followed from host to host across idle shutdown (`StandaloneAgentRunRoot.onHostReady`).
+    - An Agent run is followed from host to host across idle shutdown (`StandaloneAgentRunRoot.onAgentReady`).
     - A Team run is followed through its root publisher, filtered to its members, and across a restore after idle
       shutdown (the manager's lifecycle notifications).
     - B ends the stream when the run is stopped, terminated or deleted by any path: B's own window, GraphQL,
@@ -308,9 +308,9 @@ run's host, or a Team run's members.
 - **B's owner.** `RemoteRunViewProvider` (`inbound/remote-run-view-provider.ts`) first checks the run's stored
   back-link: `RemoteRootDirectory.storedLinkCheck` with the query kind `owner` (`{fromNodeId, targetAgentRunId}`),
   which admits the node in `delegatedFrom.nodeId` and, when an agent is named, only a paired agent. It then calls
-  the root kind's `PairedAgentAccess` behind `RemoteRootDirectory.pairedAgents(kind)`:
-  - `StandalonePairedAgentAccess` on `StandaloneAgentRunRootManager`;
-  - `TeamPairedAgentAccess` on `TeamRunService`.
+  the root kind's `RunAgentAccess` behind `RemoteRootDirectory.runAgents(kind)`:
+  - `StandaloneRunAgentAccess` on `StandaloneAgentRunRootManager`;
+  - `TeamRunAgentAccess` on `TeamRunService`.
 
   Titles come from the run services' `readRunTitle`, and projections from the agent and Team-member projection
   services. A refusal is `REMOTE_TARGET_NOT_PERMITTED` or `REMOTE_TARGET_NOT_FOUND`.

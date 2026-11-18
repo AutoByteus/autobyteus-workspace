@@ -19,9 +19,9 @@ export async function registerAgentCollaborationReferenceRoutes(
 ): Promise<void> {
   const content = options.contentService ?? new AgentOrgReferenceContentService({
     // The hub's records owner (autobyteus-358): its live messages, or its stored log; never its view.
-    getCollaborationRecordsSnapshot: async (hostRunId) => {
+    getCollaborationRecordsSnapshot: async (runId) => {
       try {
-        return await getStandaloneAgentRunRootManager().getCollaborationRecordsSnapshot(hostRunId);
+        return await getStandaloneAgentRunRootManager().getCollaborationRecordsSnapshot(runId);
       } catch (error) {
         if (error instanceof StandaloneRootUnavailableError) {
           throw new AgentOrgReferenceContentError("REFERENCE_NOT_FOUND", "Agent collaboration reference was not found.");
@@ -30,12 +30,12 @@ export async function registerAgentCollaborationReferenceRoutes(
       }
     },
   });
-  app.get<{ Params: { hostRunId: string; messageId: string; referenceId: string } }>(
-    "/agent-collaborations/:hostRunId/communication/messages/:messageId/references/:referenceId/content",
+  app.get<{ Params: { runId: string; messageId: string; referenceId: string } }>(
+    "/agent-collaborations/:runId/communication/messages/:messageId/references/:referenceId/content",
     async (request, reply) => {
       try {
         const resolved = await content.resolveCommunication({
-          orgRunId: request.params.hostRunId, messageId: request.params.messageId, referenceId: request.params.referenceId,
+          orgRunId: request.params.runId, messageId: request.params.messageId, referenceId: request.params.referenceId,
         });
         reply.header("cache-control", "no-store");
         return sendUserFile(reply, { mimeType: resolved.mimeType, body: resolved.stream });
