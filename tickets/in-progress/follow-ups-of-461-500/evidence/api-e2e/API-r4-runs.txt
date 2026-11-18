@@ -52,3 +52,9 @@ cases; §4 F-4 with its base comparison.
   catalog reads.
 
 §5 AC-005 on this merged state: Linux, the watcher file 5 of 5, each "Tests 14 passed (14)", 0 labels.
+
+§6 F-4 resolved (CRR-011: test-side; the code reviewer's probe showed base 0570c47fd9 fails the same way under load, my base
+  pass was timing; 493's catalog start pass writes derived catalogs when the previous server stopped before its 5 s refresh).
+  open-task-tree-upgrade-startup OT-2's "a read writes nothing" now leaves the derived memory/episodic/ out (as SIR-002); the
+  later fingerprint compares own files and one run folder only, unchanged. Rerun (Mac, load 66-85): "Tests 3 passed (3)" (OT-1,
+  OT-2, OT-3) (/tmp/api500/r4/ott-fixed.log). Follow-up FU-500-13 for 493's area.

@@ -12,7 +12,8 @@ This report records what ran and the result. The plan is in `api-e2e-coverage-in
   - this ticket's cases and the browser cases;
   - the full server folder to the end, every failing file alone, the Linux container and base `0570c47fd9`; integration; AC-005 on Linux.
   - Evidence: `evidence/api-e2e/API-r4-runs.txt`; raw logs `/tmp/api500/r4`.
-  - Result: `Fail` on one finding, **F-4**. `open-task-tree-upgrade-startup` OT-2/OT-3 fail on the branch and pass on base: the start writes 493's episodic catalog files that base does not. Everything else passes, or is load, the merged base's own, or FSEvents.
+  - First result: `Fail` on one finding, **F-4**. `open-task-tree-upgrade-startup` OT-2/OT-3: the start writes 493's episodic catalog files inside the "a read writes nothing" window. Everything else passes, or is load, the merged base's own, or FSEvents.
+  - F-4 resolved (CRR-011): test-side, and present on base too (my base pass was timing). OT-2 leaves the derived `memory/episodic/` out; OT-1 … OT-3 3/3. FU-500-13 is for 493's area. **Final round-4 result: `Pass`, 95%.**
 - **Round 3, the merged state (the Delivery Engineer's request after DEL-01; head `2f10dbe1bb`, code `eb741a097e` = the merge of `origin/personal` `ff13782f36`):**
   - the full server E2E folder once, run to the end (detached);
   - every failing file alone on the branch and on base `ff13782f36` (its own worktree);
@@ -29,7 +30,7 @@ This report records what ran and the result. The plan is in `api-e2e-coverage-in
 ## Routing Classification
 
 - Task size: `Large`; Architectural risk: `High`; Input route: `Reviewed`.
-- Result route (round 4): `Fail` (F-4) → Code Reviewer, failure-origin review; the round's test changes (TS-009, SIR-002) are for its review too. Round 3: `Pass` (E-007 reviewed with it).
+- Result route (round 4, final): `Pass` → Code Reviewer, proportional test-code review of round 4's test changes (TS-009, SIR-002, OT-2), then delivery. First result `Fail` (F-4) → failure-origin review CRR-011 (test-side). Round 3: `Pass` (E-007 reviewed with it).
 - Result route (round 3): `Pass` → Code Reviewer, proportional test-code review of round 3's test change (E-007), then delivery. Round 2: `Pass` (CRR-005, CR-500-006 fixed); round 1: `Fail` (CRR-003).
 - Proportional test-code review decision: `Required` (`c0770ea7b0`, `a7e76ca248`, `73bfba186c` reviewed; round 3's test commit).
 
@@ -184,7 +185,7 @@ This report records what ran and the result. The plan is in `api-e2e-coverage-in
 
 ## Latest Authoritative Result
 
-- Result (round 4, the third merged state `e93671cce0` + `4db98c6d1a`): `Fail` on **F-4**. Confidence 90%: the merge's focus and this ticket's cases are proven; one branch-only difference is unexplained.
+- Result (round 4, the third merged state `e93671cce0` + `4db98c6d1a`), final: `Pass`, 95%. F-4 resolved (CRR-011: test-side and on base too; OT-2 leaves the derived `memory/episodic/` out, OT-1 … OT-3 3/3; FU-500-13). First result: `Fail` on F-4, 90%:
   - **F-4:** `open-task-tree-upgrade-startup` OT-2 fails ("reading the trees wrote nothing"), and OT-3 with it.
     - On the branch, the start over the upgraded data root changes `memory/episodic/index.md` and writes four agents' `catalog.md` (493).
     - It fails on the Mac and in Linux; base `0570c47fd9` passes 3/3.
@@ -205,4 +206,4 @@ This report records what ran and the result. The plan is in `api-e2e-coverage-in
   - the founder's own data (only he can approve);
   - on-demand hosts emulated (LM Studio, Ollama);
   - FU-500-09 … 12 outside this ticket.
-- Next recipient from `get_handoff_rules` (round 4): the Code Reviewer, for F-4's failure-origin review (and the round's test changes).
+- Next recipient from `get_handoff_rules` (round 4, final): the Code Reviewer, for the proportional test-code review of `696acc408c` and the OT-2 change, then delivery.

@@ -121,3 +121,9 @@ None open from round 3.
   - the founder's own data;
   - LM Studio and Ollama emulated;
   - FU-500-09 … 12.
+
+#### Addendum: F-4 resolved (CRR-011)
+
+- Origin: test-side and present on base `0570c47fd9` too (the code reviewer reproduced it there). 493's episodic catalog rebuilds at start when the previous server stopped before its refresh; my earlier base pass was timing.
+- Fix: OT-2's "a read writes nothing" leaves the derived `memory/episodic/` out. OT-1 … OT-3 3/3. FU-500-13 records 493's start-pass timing for its area.
+- Result: `Pass` / 95%.

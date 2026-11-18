@@ -46,3 +46,5 @@ My progress log while tests run. Read it first when picking the run back up. Row
 | 2026-11-18 06:57 | FULL-SERVER, INTEGRATION (r4) | Started | | chain2 /tmp/api500/r4/chain2.log |
 | 2026-11-18 11:05 | FULL-SERVER, INTEGRATION (r4) | Completed | Fail (F-4) | full 36 failed at load 50-110; alone 18 pass; Linux 12/13 pass + watcher 5/5; base-side as r3; DTL fails on base at the same load; F-4 open-task-tree OT-2/3 (base 3/3) |
 | 2026-11-18 11:05 | ROUND 4 | Completed | Fail | F-4 to the code reviewer |
+| 2026-11-18 11:16 | F-4 (r4) | Completed | Pass | OT-2 leaves derived memory/episodic out (CRR-011); OT-1..3 3/3; FU-500-13 |
+| 2026-11-18 11:16 | ROUND 4 | Completed | Pass | 95% |
