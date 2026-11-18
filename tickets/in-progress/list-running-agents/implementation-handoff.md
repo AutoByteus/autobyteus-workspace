@@ -14,16 +14,16 @@
 
 ## Current Implementation Summary
 
-- Implementation cycle: `Initial`
+- Implementation cycle: `Rework` (IR-002: CRR-001 Local Fixes CR-001, CR-002)
 - Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/list-running-agents/tickets/in-progress/list-running-agents/implementation-revision-record.md`
-- Current implementation revision ID: `IR-001`
+- Current implementation revision ID: `IR-002`
 - Related solution revision IDs: `SR-007`, `SR-008`, `SR-009`
 - Related architecture-review revision IDs: `ARCH-REV-003`, `ARCH-REV-004`
-- Related code-review revision IDs: `N/A`
+- Related code-review revision IDs: `CRR-001` (`code-review-report.md`, `code-review-revision-record.md`)
 - Related API/E2E revision IDs: `N/A`
 - Related delivery revision IDs: `N/A`
-- Triggering finding IDs: `N/A`
-- Code commit: `deacacf948` on `codex/list-running-agents` (base `origin/personal` `bd2053ee51`). Ticket documents and evidence: the commit after it.
+- Triggering finding IDs: CR-001, CR-002 (IR-002)
+- Code commit: `deacacf948` on `codex/list-running-agents` (base `origin/personal` `bd2053ee51`); IR-002 Local Fix `5f89ecbdf5` (the 461 contract model's row 13, two comments). Ticket documents and evidence: the commits after each.
 
 What it does: `send_message_to(target_agent_run_id)` reaches any running agent of this node (a different Task is no longer refused); with the new `node` field it reaches any running agent of a paired peer (`POST /rest/remote/run-messages`, a one-message `unlinked_run` endpoint). A message no Task relates reaches only a running agent, in its active root, never woken, and stays out of run views (G-1). Task-related wake, reopen and the closed-Task refusal are unchanged; `closedPeerRunRefusal` refuses a fenced peer run with and without `node`. `RunningAgents` is the one "running" owner (from each root's own live statuses). The opt-in `list_running_agents` lists the running Agent and Team runs a person started, here or on a peer (`POST /rest/remote/running-agents`, read strictly), on every runtime.
 
@@ -136,6 +136,9 @@ Evidence folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/list-running-
 | IMP-04 | `vitest run` tracked-imports + every changed area (`agent-collaboration`, `agent-communication`, `remote-collaboration`, `agent-tools`, the three roots, `restart-resume`, `services/agent-streaming`, `agent-execution/shared`, `standalone-application-host`, `api/rest`) | `deacacf948` | same | the changed owners and their callers | BEH-002 … BEH-007, AC-001 … AC-008 (unit level) | Pass (first run 237/237 files; a second run hit only IMP-07's timeout) | `IMP-04-changed-areas-unit.log` | `Tests  1 failed \| 1759 passed` (the timed-out wrapper) |
 | IMP-05 | `python3 -I …/export_contract_states.py <461 model> …/contract-states.json --check` | `deacacf948` | Python 3 | contract fixture vs. the updated model | REQ-008, REQ-010 (U9, S27) | Pass | `IMP-05-contract-fixture-check.log` | `contract-states.json matches the model` |
 | IMP-06 | `vitest run tests/unit/remote-collaboration/running-agents-messaging.test.ts` | `deacacf948` | same | real standalone roots, router, CrossRun, RunningAgents, listing, PeerClient/Gateway/Receiver (only `fetch` replaced) | PRB-002/AC-005, AC-006, AC-004, AC-001, AC-007, rows 8/9, G-1 | Pass | `IMP-06-in-process-scenarios.log` | `Tests  6 passed (6)` |
+| IMP-05 (IR-002 rerun) | the same `--check` against the fixed model | `5f89ecbdf5` | Python 3 | contract fixture vs. the model after CR-001 | REQ-011, AC-008 row 13 | Pass (fixture unchanged) | `IMP-05-contract-fixture-check.log` (IR-001 run); output identical | `contract-states.json matches the model` |
+| IMP-08 | `python3 -I evidence/IMP-08-row13-probe.py <461 model> S18`, then `S19` | `5f89ecbdf5` | Python 3 | the model's cross-node admission (CR-001) | REQ-011, AC-008 row 13, DEC-011 | Pass | `IMP-08-row13-probe.log`, `IMP-08-row13-probe.py` | after S19 all four senders of A `REFUSED TASK_AGENT_RESOURCE_CLOSED`; after S18 all `DELIVERED` |
+| IMP-09 | `vitest run tests/unit/agent-collaboration/execution/communication` | `5f89ecbdf5` | macOS, Node 22.23.1 | the engine and append files whose comments changed | — | Pass | — (comment-only change) | `Tests  23 passed (23)` |
 | IMP-07 | `python3 scripts/check_repository_artifact_hygiene.py --only tracked-imports`; the vitest wrapper | `deacacf948` | same | new files tracked | — | Checker Pass; wrapper times out (FU-003) | `IMP-07-tracked-imports.log` | `Tracked-import check passed. Tracked files scanned: 98533` |
 
 Also done, not as a separate row: a mutation check (the unrelated branch's `rootOf` forced to `null`) made IMP-06's PRB-002 case fail, then the code was restored (diff empty).
