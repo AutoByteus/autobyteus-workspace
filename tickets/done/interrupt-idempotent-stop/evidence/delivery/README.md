@@ -1,7 +1,7 @@
 # Delivery evidence — autobyteus-533 (interrupt-idempotent-stop)
 
 Checks the Delivery Engineer ran on the integrated tree (`origin/personal` `53b72018ad` merged into the ticket branch as
-`ac410ad30b`, then the case-ID renumbering commit), 2026-11-18. macOS 26.5.2, Node v22.23.1, headless Chrome, a shared machine
+`ac410ad30b`, then the case-ID renumbering commit; `DEL-06` after the second merge, `b1684a5378`), 2026-11-18. macOS 26.5.2, Node v22.23.1, headless Chrome, a shared machine
 at load 40–50. The API/E2E evidence is in `../api-e2e/` (index: `../api-e2e/README.md`) and is not repeated here.
 
 **Phone case IDs.** API/E2E's evidence and reports name this ticket's phone cases `MSP-75…79`. The merge brought in other
@@ -20,3 +20,4 @@ Only the IDs, the screenshot names and the comments changed. `DEL-05` runs them 
 | `DEL-03-server-integration-agent-websocket.log` | the websocket integration file | `test:integration:prepare`, then `vitest run tests/integration/agent/agent-websocket.integration.test.ts` | `Tests 8 passed (8)` |
 | `DEL-04-hygiene-lockfile-build-inputs.log` | hygiene, lockfile, build inputs | `scripts/check_repository_artifact_hygiene.py`; `pnpm install --frozen-lockfile --lockfile-only`; the build-input path list | passed; consistent; `autobyteus-web/package.json` (one script line) is the only build-input path |
 | `DEL-05-phone-probe-merged-state/` | the renumbered phone cases beside the base's cases | `pnpm -C autobyteus-web build:mobile-web`, then `pnpm -C autobyteus-web test:e2e:mobile-shell --cases=MSP-75,MSP-76,MSP-77,MSP-78,MSP-80,MSP-81,MSP-82,MSP-83,MSP-84` | `mobile-shell-probe.json` `"result": "Pass"`, MSP-75…78 (base) and MSP-80…84 (this ticket) all Pass, no duplicate-ID entry, no unknown browser error; `DEL-05-mobile-web-build.log` (exit 0); 3 screenshots |
+| `DEL-06-second-refresh/` | after a second base refresh (`origin/personal` `2eb195603a`, merge `b1684a5378`) | both typechecks; `pnpm -C autobyteus-server-ts build`; `pnpm -C autobyteus-web test:e2e:stop-generation` | typechecks at baseline `PASS`; build exit 0; `stop-generation-evidence.json` `"result": "Pass"`, SGD-01…08 Pass |
