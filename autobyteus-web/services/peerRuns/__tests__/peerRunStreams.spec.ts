@@ -32,7 +32,7 @@ describe('peer run streams', () => {
     expect(io.sockets.map((socket) => socket.url)).toEqual(['ws://node-a.test/ws/peer-run/node-b/agent_team/team-b/member-b'])
     const socket = io.sockets[0]!
     socket.frame({ type: 'CONNECTED', payload: { agent_id: 'member-b', session_id: 's' } })
-    socket.frame({ type: 'AGENT_STREAM_SNAPSHOT', payload: { base_sequence: 2, live_sequence_id: 'live-b', turn_frames: [
+    socket.frame({ type: 'AGENT_STREAM_SNAPSHOT', payload: { input_state: null, base_sequence: 2, live_sequence_id: 'live-b', turn_frames: [
       { type: 'SEGMENT_START', payload: { id: 's1', turn_id: 't1', segment_type: 'text' }, sequence: 1 },
       { type: 'SEGMENT_CONTENT', payload: { id: 's1', turn_id: 't1', segment_type: 'text', delta: 'from node B ' }, sequence: 2 }],
       stored: { runId: 'member-b', conversation: [{ kind: 'message', role: 'user', content: 'the task', ts: 1 }], activities: [], hasEarlierActiveTraceEvents: false } } })

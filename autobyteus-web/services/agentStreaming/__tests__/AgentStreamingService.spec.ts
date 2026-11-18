@@ -62,6 +62,9 @@ describe('AgentStreamingService', () => {
 
     it('holds a mention send until its ack: resolves on acceptance, rejects a failed add without an error segment', async () => {
         service.connect('test-agent-id', mockAgentContext);
+        // A send leaves only on a bound stream: the socket is open and the node's CONNECTED arrived (autobyteus-540).
+        (service as any).wsClient.state = 'connected';
+        (service as any).handleMessage(JSON.stringify({ type: 'CONNECTED', payload: { agent_id: 'test-agent-id', session_id: 's-1' } }));
         const ack = (messageId: string, extra: Record<string, unknown>) => (service as any).handleMessage(JSON.stringify({
             type: 'AGENT_COMMAND_ACK',
             payload: { command_type: 'SEND_MESSAGE', run_id: 'test-agent-id', message_id: messageId, dedupe_key: messageId, duplicate: false, ...extra },
@@ -403,7 +406,10 @@ describe('AgentStreamingService', () => {
     });
 
     it('serializes standalone send command identity on SEND_MESSAGE', () => {
-        service.sendMessage('hello', ['ctx-1'], ['img-1'], {
+        service.connect('test-agent-id', mockAgentContext);
+        (service as any).wsClient.state = 'connected';
+        (service as any).handleMessage(JSON.stringify({ type: 'CONNECTED', payload: { agent_id: 'test-agent-id', session_id: 's-1' } }));
+        void service.sendMessage('hello', ['ctx-1'], ['img-1'], {
             messageId: 'client-msg-1',
             dedupeKey: 'agent_run_input:run-1:client-msg-1',
         });

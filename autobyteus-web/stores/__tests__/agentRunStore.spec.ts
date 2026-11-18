@@ -68,13 +68,18 @@ vi.mock('~/utils/apolloClient', () => ({
 }));
 
 // The store builds each run's stream through `createAgentRunStream`, which constructs the service from its own module.
-vi.mock('~/services/agentStreaming/AgentStreamingService', () => ({
+vi.mock('~/services/agentStreaming/AgentStreamingService', async () => {
+  const { MessageNotDeliveredError } = await import('~/services/runSubmission/messageNotDelivered');
+  return {
   AgentStreamingService: vi.fn().mockImplementation((_endpoint, options) => {
     mockServiceOptions.value = options;
     return {
     get connectionState() {
       return mockConnectionState.value;
     },
+    // Bound when the socket is 'connected' here; otherwise not within the wait (autobyteus-540 D-1).
+    whenBound: vi.fn((timeoutMs: number) => mockConnectionState.value === 'connected' ? Promise.resolve()
+      : new Promise<void>((_resolve, reject) => setTimeout(() => reject(new MessageNotDeliveredError('not_sent', 'not bound')), timeoutMs))),
     connect: mockConnect,
     disconnect: mockDisconnect,
     attachContext: mockAttachContext,
@@ -86,7 +91,8 @@ vi.mock('~/services/agentStreaming/AgentStreamingService', () => ({
     dropConnection: vi.fn(),
     };
   }),
-}));
+  };
+});
 
 vi.mock('~/composables/useToasts', () => ({
   useToasts: () => ({ addToast: addToastMock }),
@@ -127,6 +133,7 @@ describe('agentRunStore', () => {
         vi.clearAllMocks();
         mockConnectionState.value = 'connected';
         mockSendMessage.mockReset();
+        mockSendMessage.mockResolvedValue(undefined);
         mockInterruptGeneration.mockReset();
         mockInterruptGeneration.mockResolvedValue({ kind: 'accepted' });
         mockServiceOptions.value = null;

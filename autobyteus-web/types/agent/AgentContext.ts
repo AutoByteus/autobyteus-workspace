@@ -3,6 +3,7 @@ import type { AgentRunState } from './AgentRunState';
 import type { ContextFilePath, Conversation, AIMessage } from '~/types/conversation';
 import type { RequestedCollaboratorMention } from '~/utils/collaborators/collaboratorMentionText';
 import type { CollaboratorAddFailure } from '~/services/collaborators/collaboratorAddFailures';
+import type { MessageNotDeliveredCertainty } from '~/services/runSubmission/messageNotDelivered';
 
 /**
  * A container class that holds the complete context for a single agent run.
@@ -25,6 +26,8 @@ export class AgentContext {
   public interruptPending: boolean;
   /** The last send was rejected because a mentioned collaborator could not be added; the draft was kept. */
   public collaboratorAddFailure: CollaboratorAddFailure | null;
+  /** The last send did not reach the node, or may not have (autobyteus-540): its draft came back; the notice shows. */
+  public messageNotDelivered: MessageNotDeliveredCertainty | null;
 
   constructor(config: AgentRunConfig, state: AgentRunState) {
     this.config = config;
@@ -38,6 +41,7 @@ export class AgentContext {
     this.submissionPending = false;
     this.interruptPending = false;
     this.collaboratorAddFailure = null;
+    this.messageNotDelivered = null;
   }
   
   // --- Start: New helper getters (Facade) ---

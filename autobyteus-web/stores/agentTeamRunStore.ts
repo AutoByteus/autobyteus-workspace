@@ -32,6 +32,7 @@ import {
 import { buildClientInterruptCommandId, buildClientMessageId } from '~/services/agentStreaming/teamRunCommandIds';
 import { INTERRUPT_NOT_SENT } from '~/services/agentStreaming/interruptCommandAdmission';
 import type { InterruptOutcome } from '~/services/agentStreaming/protocol/agentCommandTypes';
+import { MessageNotDeliveredError } from '~/services/runSubmission/messageNotDelivered';
 import {
   hydrateLiveTeamRunContext,
   type TeamRunHydrationCandidate,
@@ -136,7 +137,8 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
         if (service.connectionState === ConnectionState.CONNECTED && service.isReady) return service;
         await new Promise((resolve) => setTimeout(resolve, 50));
       }
-      throw new Error(`Timed out waiting for Team stream handshake for '${rootTeamRunId}'.`);
+      // Nothing was sent: the message comes back to the box (autobyteus-540 D-5).
+      throw new MessageNotDeliveredError('not_sent', `Timed out waiting for Team stream handshake for '${rootTeamRunId}'.`);
     },
     async replaceFailedTeamStream(input: {
       rootTeamRunId: string;
@@ -342,8 +344,9 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
         acceptLocalSubmission(localSubmission);
       } catch (error) {
         if (localSubmission) {
-          // A rejected add posted nothing: the notice shows and the draft stays as typed.
-          if (failLocalSubmission(localSubmission, error) === 'kept_draft') return;
+          // A rejected add posted nothing: the notice shows and the draft stays as typed. A message that did not reach
+          // the root comes back with its notice, the member's status unchanged (autobyteus-540 D-4, D-5).
+          if (failLocalSubmission(localSubmission, error) !== 'failed') return;
           localSubmission.context.requirement = text;
           localSubmission.context.contextFilePaths = retryAttachments;
           localSubmission.context.requestedMentions = [...mentions];

@@ -41,6 +41,8 @@
       <slot name="composerContext" />
       <!-- A mentioned unit that could not be involved in this run (REQ-008); hidden otherwise. -->
       <CollaboratorAddFailureNotice />
+      <!-- A message that did not reach the node (autobyteus-540): its draft is back below; hidden otherwise. -->
+      <MessageNotDeliveredNotice />
       <slot name="composer">
         <AgentUserInputForm :before-send="beforeSend" :skill-tagging="skillTagging" :placeholder="composerPlaceholder" />
       </slot>
@@ -57,6 +59,7 @@ import '~/assets/css/phone-conversation.css';
 import type { Conversation } from '~/types/conversation';
 import AgentUserInputForm from '~/components/agentInput/AgentUserInputForm.vue';
 import CollaboratorAddFailureNotice from '~/components/agentInput/CollaboratorAddFailureNotice.vue';
+import MessageNotDeliveredNotice from '~/components/agentInput/MessageNotDeliveredNotice.vue';
 import type { SkillTaggingCapability } from '~/composables/agentInput/useSkillTagMenu';
 import AgentConversationFeed from '~/components/workspace/agent/AgentConversationFeed.vue';
 import { useAgentActivityStore } from '~/stores/agentActivityStore';

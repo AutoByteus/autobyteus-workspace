@@ -7,14 +7,17 @@ import {
   resetRecentEventMonitorBaseline,
 } from '~/services/eventMonitor/recentEventMonitorMutationCoordinator';
 import { overlayPendingUserMessages } from './handlers/userMessageProjection';
+import { handleAgentInputState } from './handlers/agentInputStateHandler';
 import type { ServerMessage } from './protocol';
 import type { AgentStreamSnapshotPayload } from './protocol/agentStreamEnvelope';
 
 /**
  * Applies an agent run's own stream snapshot (autobyteus-461 SR-087): its stored part replaces what the view shows
- * (config and status stay; held or queued input stays shown), then its unconfirmed turns' frames replay through the
- * stream handlers, so their open segments get their stream identities. Each turn so comes from one source; the frames
- * after the base continue it. The run's file changes are read again alongside (their own read, not the stream's).
+ * (config and status stay), then the run's input state, then its unconfirmed turns' frames replay through the stream
+ * handlers, so their open segments get their stream identities. Each turn so comes from one source; the frames after
+ * the base continue it. The input state the snapshot carries is the node's current queued and held input
+ * (autobyteus-540 D-8): it replaces what the page showed as pending; without one (a stopped run, a peer's relay) the
+ * page keeps showing the pending input it had. The run's file changes are read again alongside (their own read).
  */
 export const applyAgentStreamSnapshot = (
   runId: string,
@@ -37,9 +40,14 @@ export const applyAgentStreamSnapshot = (
     runId, expectedRevision: stored.expectedActivityRevision, activities: stored.activities,
   }]);
   const conversation = stored.conversation;
-  overlayPendingUserMessages(conversation, context.state.conversation);
+  if (snapshot.input_state === null) overlayPendingUserMessages(conversation, context.state.conversation);
   resetRecentEventMonitorBaseline(context);
   context.state.conversation = conversation;
+  if (snapshot.input_state !== null) {
+    // The node's current input state, at whatever revision: the frames after the base keep later ones in order.
+    context.state.inputProjection = null;
+    handleAgentInputState(snapshot.input_state, context);
+  }
   context.state.hasEarlierActiveTraceEvents = stored.hasEarlierActiveTraceEvents;
   context.state.markEventMonitorPresentationChanged();
   primeRecentEventMonitorBaseline(context);

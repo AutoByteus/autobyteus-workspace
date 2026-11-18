@@ -167,7 +167,15 @@ describe('TeamStreamingService exact AgentRun command selection', () => {
     })).toThrow("AgentRun 'worker-run' already has a pending Team message admission.");
     expect(wsClient.send).toHaveBeenCalledTimes(1);
     callbacks.get('onDisconnect')?.('socket closed');
-    await expect(admission).rejects.toThrow('socket closed');
+    // Lost before admission: it may or may not have reached the root (autobyteus-540 D-5).
+    await expect(admission).rejects.toMatchObject({ name: 'MessageNotDeliveredError', certainty: 'unknown', message: 'socket closed' });
+  });
+
+  it('a send the socket refuses is not sent (autobyteus-540 D-5)', async () => {
+    const { service, wsClient } = createHarness();
+    wsClient.send.mockImplementationOnce(() => { throw new Error('socket is closing'); });
+    await expect(service.sendMessage('never left', 'worker-run', [], [], { messageId: 'm-x', dedupeKey: 'd-x' }))
+      .rejects.toMatchObject({ name: 'MessageNotDeliveredError', certainty: 'not_sent' });
   });
 
   it.each(['worker-run', 'reviewer-run'])('serializes INTERRUPT_GENERATION only with current AgentRun %s', (agentRunId) => {

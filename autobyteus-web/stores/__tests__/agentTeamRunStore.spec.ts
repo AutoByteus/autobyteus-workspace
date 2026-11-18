@@ -680,6 +680,48 @@ describe('agentTeamRunStore current rooted execution contract', () => {
     ])
   })
 
+  it.each([
+    ['not_sent', []],
+    ['unknown', [expect.objectContaining({ type: 'user', text: 'did it arrive' })]],
+  ] as const)('a %s send comes back to the box with its notice; the member keeps its status and gets no error segment (autobyteus-540 D-4, D-5)', async (certainty, shown) => {
+    const team = twoMemberTeam({ teamRunId: 'team-lost', focusedMemberAddress: '/worker' })
+    setActiveTeam(team)
+    vi.spyOn(console, 'warn').mockImplementation(() => undefined)
+    const { MessageNotDeliveredError } = await import('~/services/runSubmission/messageNotDelivered')
+    mockSendMessage.mockRejectedValueOnce(new MessageNotDeliveredError(certainty, 'socket closed'))
+    const worker = team.view.getAgentContext('team-lost-worker-run')!
+    const statusBefore = worker.state.currentStatus
+
+    await useAgentTeamRunStore().sendMessageToFocusedMember('did it arrive', [])
+
+    expect(worker.requirement).toBe('did it arrive')
+    expect(worker.messageNotDelivered).toBe(certainty)
+    expect(worker.submissionPending).toBe(false)
+    expect(worker.state.currentStatus).toBe(statusBefore)
+    expect(worker.state.conversation.messages).toEqual(shown)
+  })
+
+  it('a Team stream not ready within 10 s: nothing is sent; the draft is back with the not-sent notice (autobyteus-540 D-5)', async () => {
+    vi.useFakeTimers()
+    try {
+      const team = twoMemberTeam({ teamRunId: 'team-unready', focusedMemberAddress: '/worker' })
+      setActiveTeam(team)
+      vi.spyOn(console, 'warn').mockImplementation(() => undefined)
+      mockIsReady.value = false
+      const sending = useAgentTeamRunStore().sendMessageToFocusedMember('wait for me', [])
+      await vi.advanceTimersByTimeAsync(10_100)
+      await sending
+      const worker = team.view.getAgentContext('team-unready-worker-run')!
+      expect(mockSendMessage).not.toHaveBeenCalled()
+      expect(worker.requirement).toBe('wait for me')
+      expect(worker.messageNotDelivered).toBe('not_sent')
+      expect(worker.state.conversation.messages).toEqual([])
+    } finally {
+      mockIsReady.value = true
+      vi.useRealTimers()
+    }
+  })
+
   it('launches a flat mixed-runtime draft with exact direct memberAddress inputs and focus', async () => {
     const { configStore } = configureSelectedFlatLaunchDraft()
     configStore.setPendingInput('/review_lead', {

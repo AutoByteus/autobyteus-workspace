@@ -21,8 +21,8 @@ import type { CollaboratorMentionDto } from '~/utils/collaborators/collaboratorM
 import { createRandomId } from '~/utils/randomId'
 import { LiveStreamReconnectScheduler } from '~/services/liveStreamLifecycle/liveStreamReconnectScheduler'
 import { isCredentialRefusalClose } from '~/services/liveStreamLifecycle/credentialRefusalClose'
-import { InterruptsAwaitingRebind } from '~/services/agentStreaming/interruptCommandAdmission'
-import { AgentOrgConnectionLostError } from './agentOrgConnectionLostError'
+import { HeldUntilRebind } from '~/services/agentStreaming/heldUntilRebind'
+import { AgentOrgConnectionLostError, orgCommandFailure } from './agentOrgConnectionLostError'
 
 type CommandAck = Extract<CollaborationStreamServerMessage, { type: 'AGENT_COMMAND_ACK' }>
 type PendingCommand = Readonly<{
@@ -53,7 +53,7 @@ export class AgentOrgStreamingService {
   private readonly readiness = new Set<{ resolve(): void; reject(error: Error): void }>()
   private readonly pending = new Map<string, PendingCommand>()
   /** Stops lost with a connection that recovers: settled once the snapshot that makes the stream ready is applied. */
-  private readonly interruptsAwaitingRebind = new InterruptsAwaitingRebind()
+  private readonly interruptsAwaitingRebind = new HeldUntilRebind()
   private nextGenerationId = 0
   private activeGeneration: StreamGeneration | null = null
   private released = false
@@ -206,7 +206,7 @@ export class AgentOrgStreamingService {
   sendPrepared(input: Readonly<{ agentRunId: string; content: string;
     attachments: readonly ContextFilePath[]; messageId: string; dedupeKey: string;
     mentions?: readonly CollaboratorMentionDto[] }>): Promise<void> {
-    const context = this.requireReadyContext()
+    const context = this.requireReadyContext('SEND_MESSAGE')
     context.index.requireAgent(input.agentRunId)
     return this.command({ type: 'SEND_MESSAGE', payload: {
       ...this.commandRoot(input.agentRunId), content: input.content,
@@ -235,14 +235,14 @@ export class AgentOrgStreamingService {
     }
   }
 
-  private requireReadyContext(): AgentOrgExecutionContext {
+  private requireReadyContext(commandType: CollaborationStreamClientMessage['type']): AgentOrgExecutionContext {
     // Ready is the stream's own: open, with its snapshot applied, the Org active or stopped (autobyteus-461 SR-045).
-    if (!this.isReady()) throw new Error('AgentOrg interaction stream is not ready.')
+    if (!this.isReady()) throw orgCommandFailure(commandType, 'not_sent', 'AgentOrg interaction stream is not ready.')
     return this.context!
   }
 
   private async command(message: CollaborationStreamClientMessage): Promise<void> {
-    this.requireReadyContext()
+    this.requireReadyContext(message.type)
     const socket = this.socket!
     return new Promise<void>((resolve, reject) => {
       const timeout = setTimeout(() => {
@@ -261,7 +261,7 @@ export class AgentOrgStreamingService {
       } catch (cause) {
         clearTimeout(timeout)
         this.pending.delete(message.payload.command_id)
-        reject(cause)
+        reject(orgCommandFailure(message.type, 'not_sent', this.detail(cause)))
       }
     })
   }
@@ -494,12 +494,12 @@ export class AgentOrgStreamingService {
     return true
   }
 
-  /** Commands lost with the connection fail; Stops are held until the rebind's snapshot (or a final close, D-W7). */
+  /** Commands lost with the connection fail (a message: `unknown`, 540 D-5); Stops are held until the rebind (D-W7). */
   private rejectPending(message: string): void {
     for (const pending of this.pending.values()) {
       clearTimeout(pending.timeout)
       if (pending.commandType === 'INTERRUPT_GENERATION') this.interruptsAwaitingRebind.hold(() => pending.reject(new AgentOrgConnectionLostError()))
-      else pending.reject(new Error(message))
+      else pending.reject(orgCommandFailure(pending.commandType, 'unknown', message))
     }
     this.pending.clear()
   }

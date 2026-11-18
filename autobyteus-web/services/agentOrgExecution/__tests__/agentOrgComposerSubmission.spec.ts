@@ -286,13 +286,16 @@ describe('Org shared composer -> exact interaction -> correlated stream', () => 
     expect(context.contextFilePaths).toEqual([attachment('new-only')])
   })
 
-  it('handles a synchronous transport failure and retires its pending command', async () => {
+  it('handles a synchronous transport failure and retires its pending command: the draft comes back with the not-sent notice (autobyteus-540 D-5)', async () => {
     const { active, context } = await open()
     context.requirement = 'retry transport'
+    vi.spyOn(console, 'warn').mockImplementation(() => undefined)
     vi.spyOn(socket, 'send').mockImplementationOnce(() => { throw new Error('transport failed') })
-    await expect(active.send()).rejects.toThrow('transport failed')
+    await expect(active.send()).resolves.toBeUndefined()
     expect(context.requirement).toBe('retry transport')
     expect(context.submissionPending).toBe(false)
+    expect(context.messageNotDelivered).toBe('not_sent')
+    expect(context.conversation.messages.filter((message) => message.type === 'user')).toEqual([])
     expect(mocks.historyRefresh).not.toHaveBeenCalled()
     // A subsequent ordinary user send remains possible; no automatic retry.
     const next = active.send()
@@ -316,8 +319,11 @@ describe('Org shared composer -> exact interaction -> correlated stream', () => 
         : { getAgentOrgMemberRunProjection: { agentRunId: variables.agentRunId, memberAddress: variables.memberAddress,
           conversation: [], activities: [], hasEarlierActiveTraceEvents: false } },
     }))
+    vi.spyOn(console, 'warn').mockImplementation(() => undefined)
     socket.close()
-    expect(await outcome).toBeInstanceOf(Error)
+    // Lost before its ack: it may or may not have reached the node; a newer draft is kept (autobyteus-540 D-4, D-5).
+    expect(await outcome).toBeUndefined()
+    expect(context.messageNotDelivered).toBe('unknown')
     await vi.waitFor(() => expect(Socket.instances).toHaveLength(2), { timeout: 2_500 }) // the first retry waits 1 s (autobyteus-434)
     socket = Socket.instances[1]!
     socket.emit({ type: 'CONNECTED', payload: { root_subject_kind: 'agent_org', root_run_id: 'org-run', session_id: 'recovery' } })
@@ -332,6 +338,7 @@ describe('Org shared composer -> exact interaction -> correlated stream', () => 
     expect(replacement.getAgentContext('agent-director')!.requirement).toBe('unsent next')
     expect(replacement.getAgentContext('agent-director')!.contextFilePaths).toEqual([attachment('next')])
     expect(replacement.getAgentContext('agent-director')!.submissionPending).toBe(false)
+    expect(replacement.getAgentContext('agent-director')!.messageNotDelivered).toBe('unknown')
     expect(replacement.getAgentContext('agent-director')!.conversation.messages).toEqual([])
     expect(socket.sent).toEqual([])
     expect(mocks.historyRefresh).toHaveBeenCalledOnce() // Accepted recovery snapshot, not an input-frame refresh.

@@ -1,4 +1,5 @@
 import { ConnectionState } from './transport';
+import type { HeldUntilRebind } from './heldUntilRebind';
 import type {
   InterruptCommandTarget,
   InterruptOutcome,
@@ -50,32 +51,10 @@ export function settlePendingInterruptAck(
   return true;
 }
 
-/**
- * Stops whose answer was lost with a connection that recovers (autobyteus-533 D-W7). Their stream holds them at a
- * retryable loss, so the run's composer stays "Stopping…", and settles them `connection_lost` once the rebind's status
- * is applied (then the run's current status decides), or at once when the stream is closed for good. No answer can
- * arrive for a held Stop: its socket is gone.
- */
-export class InterruptsAwaitingRebind {
-  private held: Array<() => void> = [];
-
-  /** Holds one lost Stop; `settleConnectionLost` gives it its `connection_lost` outcome. */
-  hold(settleConnectionLost: () => void): void {
-    this.held.push(settleConnectionLost);
-  }
-
-  /** Moves every waiting Stop of `pending` here. */
-  holdPending(pending: Map<string, PendingInterruptCommand>): void {
-    for (const entry of pending.values()) this.hold(() => entry.settle(INTERRUPT_CONNECTION_LOST));
-    pending.clear();
-  }
-
-  /** Settles every held Stop, once: after the rebind's status is applied, or at a final close. */
-  settle(): void {
-    const held = this.held;
-    this.held = [];
-    for (const settleConnectionLost of held) settleConnectionLost();
-  }
+/** Moves every Stop waiting in `pending` to `holder`; each settles `connection_lost` when the holder settles (D-W7). */
+export function holdPendingInterrupts(holder: HeldUntilRebind, pending: Map<string, PendingInterruptCommand>): void {
+  for (const entry of pending.values()) holder.hold(() => entry.settle(INTERRUPT_CONNECTION_LOST));
+  pending.clear();
 }
 
 export const interruptCommandTargetsEqual = (
