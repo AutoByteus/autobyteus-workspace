@@ -190,8 +190,10 @@ for the user interaction contract.
     fallback.
   - `interruptFocusedMemberGeneration()`: emits `INTERRUPT_GENERATION` with a
     fresh command id and the exact execution address. `TeamStreamingService`
-    completes the pending command only when `AGENT_COMMAND_ACK` matches both.
-    Accepted acknowledgement is admission, not an optimistic status change.
+    settles the pending command with its `InterruptOutcome` only when
+    `AGENT_COMMAND_ACK` matches both (`runInterrupt` presents it; see Interrupt
+    dispatch). Accepted acknowledgement is admission, not an optimistic status
+    change.
   - `postToolExecutionApproval()`: reuses the exact execution address captured
     from the authoritative `agent_execution` event. It never rebuilds a target
     from current focus or invocation-id/display aliases.
@@ -1904,7 +1906,7 @@ Incoming events are routed based on their `type`:
 | `TURN_STARTED`            | inline lifecycle handling                          | Marks a new turn boundary in the protocol; current clients treat it as an observable lifecycle checkpoint. |
 | `TURN_COMPLETED`          | `agentStatusHandler.handleTurnCompleted`           | Marks the current AI message complete for that turn without waiting only for idle inference. |
 | `AGENT_STATUS`            | `agentStatusHandler.handleAgentStatus`             | Updates run/member status (`offline`, `initializing`, `idle`, `running`, or `error`) and its running background task count (`background_tasks_running`); no legacy transition-field names. Team payloads with explicit task-agent or task-team identity update the transient task execution projection and remove it after terminal cleanup; projection routing must not depend on generated run-id patterns or structural team names alone. |
-| `AGENT_COMMAND_ACK`       | command-specific correlation before generic dispatch | Handles the discriminated `SEND_MESSAGE` and `INTERRUPT_GENERATION` arms separately. Send acknowledgements preserve their status/error behavior. Interrupt acknowledgements must match command id plus exact standalone/team-member target; accepted only clears pending correlation, while rejected/failed invoke one store-owned localized toast without lifecycle or transcript mutation. |
+| `AGENT_COMMAND_ACK`       | command-specific correlation before generic dispatch | Handles the discriminated `SEND_MESSAGE` and `INTERRUPT_GENERATION` arms separately. Send acknowledgements preserve their status/error behavior. Interrupt acknowledgements must match command id plus exact standalone/team-member target; the streaming service settles the Stop as `accepted` (also for a Stop that found nothing to stop) or `refused`, without lifecycle or transcript mutation; `runInterrupt` alone presents it (no toast for `accepted`, one localized toast for `refused`). |
 | `TEAM_RUN_LIFECYCLE`      | `teamHandler.handleTeamRunLifecycle`                | Validates `team_run_id` and updates only root `AgentTeamContext.isActive`; subscription and exact member status remain independent. |
 | `COMPACTION_STATUS`       | `agentStatusHandler.handleCompactionStatus`        | Normalizes compaction lifecycle payloads into latest run state plus `kind: 'compaction'` activity rows (`requested`, `started`, `completed`, `failed`, `stopped`). |
 | `SYSTEM_INSTRUCTIONS_SUPPLIED` | `systemInstructionActivityHandler.handleSystemInstructionsSupplied` | Upserts one completed `kind: 'system_instruction'` Activity row by raw trace ID without mutating conversation, Event Monitor, or lifecycle. |
