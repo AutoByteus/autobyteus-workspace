@@ -181,3 +181,7 @@
   - `getAgentsDir()` = `<data>/agents` (`app-config.ts:355-356`).
 - **Change:** design "SR-017" (D-15).
 - **Next:** architecture review, then implementation, code review, an API/E2E round (MO-1 in the new order), and back to delivery.
+
+### Review of SR-017
+
+- ARCH-REV-010: **Pass** (`design-review-report.md`). The reviewer verified 491's `none` on `origin/personal` (`remove-retired-built-in-agents-migration.ts:38-57`; registry `:175`) and sent the package to the implementation engineer.
