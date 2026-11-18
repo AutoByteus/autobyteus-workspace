@@ -37,8 +37,8 @@ import { buildE2eClientCommandIds } from "../helpers/websocket-command-helpers.j
 const cli = process.env.ANTIGRAVITY_CLI_COMMAND ?? "";
 const enabled = process.env.RUN_AGY_FAILURE_E2E === "1" && spawnSync(cli, ["--version"], { stdio: "ignore" }).status === 0;
 const suite = enabled ? describe : describe.skip;
-const MIGRATION = "20261117_delegated_run_own_attachment_links";
-const FOLLOW_UP = "20261117_delegated_run_own_attachment_links_after_task_agent_own_run";
+const MIGRATION = "20261119_delegated_run_own_attachment_links";
+const FOLLOW_UP = "20261119_delegated_run_own_attachment_links_after_task_agent_own_run";
 const REMOVAL = "20261118_remove_retired_built_in_agents";
 const EVOLVER_ID = "autobyteus-skill-evolver";
 const COMPACTOR_ID = "autobyteus-memory-compactor";

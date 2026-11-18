@@ -54,7 +54,7 @@ const backupOf = (w: World, file: string, id = DELEGATED_RUN_OWN_ATTACHMENT_LINK
 const read = (file: string) => fs.readFile(file, "utf8");
 const exists = (file: string) => fs.access(file).then(() => true, () => false);
 
-describe("20261117_delegated_run_own_attachment_links", () => {
+describe("20261119_delegated_run_own_attachment_links", () => {
   it("F-1, F-2, F-3, F-9: converts an agent run's and team members' links (active and segment files, nested sub-team, file_attachments), with a backup first", async () => {
     const w = await world();
     // F-1: an agent run's own folder; the host is an ancestor two hops up (the folder proves the owner).
@@ -188,13 +188,12 @@ describe("20261117_delegated_run_own_attachment_links", () => {
 });
 
 describe("the follow-up after 20261017_task_agent_own_run_v1 (M-7, S-3b)", () => {
-  it("is registered right after the migration, both after every 461 migration, required on startup, with no capability held back", () => {
+  it("is registered right after the migration, both after the newest released entry (SR-017), required on startup, with no capability held back", () => {
     const ids = new AppDataMigrationRegistry().listDefinitions().map((definition) => definition.id);
     const at = ids.indexOf(DELEGATED_RUN_OWN_ATTACHMENT_LINKS_MIGRATION_ID);
-    expect(ids.slice(at - 1, at + 2)).toEqual(["20261114_preserved_items_after_remove_skill_improvement_data",
+    // v1.5.14-beta.1 released autobyteus-491's migration last; ours are appended after it, main migration first.
+    expect(ids.slice(at - 1)).toEqual(["20261118_remove_retired_built_in_agents",
       DELEGATED_RUN_OWN_ATTACHMENT_LINKS_MIGRATION_ID, DELEGATED_RUN_OWN_ATTACHMENT_LINKS_AFTER_TASK_AGENT_OWN_RUN_MIGRATION_ID]);
-    // Only later-dated unreleased migrations follow (autobyteus-491's deletes definition folders, nothing these read).
-    expect(ids.slice(at + 2)).toEqual(["20261118_remove_retired_built_in_agents"]);
     expect(new AppDataMigrationRegistry().getDefinition(DELEGATED_RUN_OWN_ATTACHMENT_LINKS_AFTER_TASK_AGENT_OWN_RUN_MIGRATION_ID)).toMatchObject({
       requiredOnStartup: true, prerequisiteMigrationIds: ["20261017_task_agent_own_run_v1", DELEGATED_RUN_OWN_ATTACHMENT_LINKS_MIGRATION_ID] });
     expect(new AppDataMigrationRegistry().getDefinition(DELEGATED_RUN_OWN_ATTACHMENT_LINKS_MIGRATION_ID)?.holdsBackCapabilities).toBeUndefined();
@@ -264,9 +263,11 @@ const LATE_PREDECESSORS: Readonly<Record<string, Readonly<{ kind: "writer" | "no
     "20261114_preserved_items_after_org_flat_team_families_v1", "20261114_preserved_items_after_collaborators_to_delegated_runs_v1",
     "20261114_preserved_items_after_team_run_history_index_v2", "20261114_preserved_items_after_remove_skill_improvement_data",
   ].map((id) => [id, { kind: "none" as const, reason: "461's steps on its own items; no trace moves" }])),
+  // SR-017 (D-15): released in v1.5.14-beta.1 ahead of ours.
+  "20261118_remove_retired_built_in_agents": { kind: "none", reason: "deletes two agent-definition folders under <agentsDir>; writes no trace, selects nothing by an attachment link; its runs stay" },
 };
 
-describe("every late predecessor of 20261117_delegated_run_own_attachment_links (M-7)", () => {
+describe("every late predecessor of 20261119_delegated_run_own_attachment_links (M-7)", () => {
   it("every migration registered before ours is classified once; the one writer has the follow-up", () => {
     const ids = new AppDataMigrationRegistry().listDefinitions().map((definition) => definition.id);
     expect(Object.keys(LATE_PREDECESSORS).sort()).toEqual(ids.slice(0, ids.indexOf(DELEGATED_RUN_OWN_ATTACHMENT_LINKS_MIGRATION_ID)).sort());

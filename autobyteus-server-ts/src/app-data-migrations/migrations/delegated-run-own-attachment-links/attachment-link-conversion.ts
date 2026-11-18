@@ -3,7 +3,7 @@ import path from "node:path";
 import { assertStoredFilename } from "../../frozen/server/context-files/domain/context-file-owner-types.js";
 
 /**
- * The one fixed mapping of `20261117_delegated_run_own_attachment_links` (design M-2, M-3): a stored link that named a
+ * The one fixed mapping of `20261119_delegated_run_own_attachment_links` (design M-2, M-3): a stored link that named a
  * delegated child through the run that hosted it, `/rest/agent-collaborations/{host}/agent-runs/{child}/context-files/{file}`,
  * becomes the child's own link, derived from the folder that holds the trace:
  * - `memory/agents/{child}/` → `/rest/runs/{child}/context-files/{file}`;

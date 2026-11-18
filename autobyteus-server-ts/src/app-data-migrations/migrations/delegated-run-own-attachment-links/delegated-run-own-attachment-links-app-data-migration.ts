@@ -15,9 +15,9 @@ import type {
 import { convertAttachmentLink, HOST_SCOPED_MARKER, type LinkOwnerFolder } from "./attachment-link-conversion.js";
 import { listAttachmentLinkFolders } from "./attachment-link-folders.js";
 
-export const DELEGATED_RUN_OWN_ATTACHMENT_LINKS_MIGRATION_ID = "20261117_delegated_run_own_attachment_links";
+export const DELEGATED_RUN_OWN_ATTACHMENT_LINKS_MIGRATION_ID = "20261119_delegated_run_own_attachment_links";
 export const DELEGATED_RUN_OWN_ATTACHMENT_LINKS_AFTER_TASK_AGENT_OWN_RUN_MIGRATION_ID =
-  "20261117_delegated_run_own_attachment_links_after_task_agent_own_run";
+  "20261119_delegated_run_own_attachment_links_after_task_agent_own_run";
 const TASK_AGENT_OWN_RUN_V1_MIGRATION_ID = "20261017_task_agent_own_run_v1";
 /** At most this many examples of links left as they are, in the warnings (the counts are complete). */
 const WARNING_EXAMPLES = 20;
@@ -35,7 +35,7 @@ const syncFile = async (filePath: string): Promise<void> => {
 };
 
 /**
- * `20261117_delegated_run_own_attachment_links` and its follow-up (design FU-020, M-1 … M-10; D-8): every stored
+ * `20261119_delegated_run_own_attachment_links` and its follow-up (design FU-020, M-1 … M-10; D-8): every stored
  * attachment link that names a delegated child through the run that hosted it becomes the child's own link. Per trace
  * file: a byte pre-check; the frozen locator transform (only `media.*[]` and `file_attachments[].uri`; unchanged lines
  * keep their bytes); a byte copy of the original before its first rewrite (never overwritten, so a retry keeps the true

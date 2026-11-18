@@ -183,7 +183,7 @@ message ID (CM-9); the run's view shows the messages of its own log.
   team-member owners (`/rest/team-runs/:teamRunId/agent-runs/:agentRunId/context-files/:file`), never
   through the run that delegated it. The host-scoped owner kind and its
   `/rest/agent-collaborations/…/context-files/…` routes are gone (autobyteus-500 FU-020); the stored
-  links of that form are converted by `20261117_delegated_run_own_attachment_links` and its follow-up,
+  links of that form are converted by `20261119_delegated_run_own_attachment_links` and its follow-up,
   with a backup of each rewritten trace file.
 - **Message references.** `/rest/agent-collaborations/:runId/communication/messages/:messageId/references/:referenceId/content`.
 

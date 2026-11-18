@@ -171,16 +171,17 @@ const registeredMigrations = (): AppDataMigrationDefinition[] => {
     // converts what that predecessor produces after ours ran (with our migration's builders); a predecessor FAILED or
     // NOT_RUN holds back only its own.
     ...createDelegatedRunsPreservedItemsMigrations(appDataDir, memoryDir, liveDefinitionNames, liveRunHistoryCatalogs, ledger),
-    // autobyteus-500 FU-020: a delegated run's stored attachment links name its own run (a backup of each file first),
-    // then its follow-up after 20261017_task_agent_own_run_v1, the one later writer of a scanned folder (M-7).
-    ...createDelegatedRunOwnAttachmentLinksMigrations(appDataDir, memoryDir),
     // autobyteus-491: deletes the installed folders of the retired built-in Skill Self-Evolver and Memory Compactor;
-    // their runs stay. Depends on nothing; no later migration reads agent folders. (After 500's attachment-link
-    // migrations: they rewrite raw traces under memory/, this deletes definition folders under agents/; nothing shared.)
+    // their runs stay. Depends on nothing; no later migration reads agent folders. (Released in v1.5.14-beta.1.)
     new RemoveRetiredBuiltInAgentsMigration([
       { itemId: "skillSelfEvolverDir", dirPath: path.join(config.getAgentsDir(), "autobyteus-skill-evolver") },
       { itemId: "memoryCompactorDir", dirPath: path.join(config.getAgentsDir(), "autobyteus-memory-compactor") },
     ]),
+    // autobyteus-500 FU-020 (SR-017 D-15: dated and appended after 491's released entry): a delegated run's stored
+    // attachment links name its own run (a backup of each file first), then its follow-up after
+    // 20261017_task_agent_own_run_v1, the one later writer of a scanned folder (M-7). 491's migration touches
+    // definition folders under agents/, these only raw traces under memory/: either order gives the same result.
+    ...createDelegatedRunOwnAttachmentLinksMigrations(appDataDir, memoryDir),
   ];
 };
 
