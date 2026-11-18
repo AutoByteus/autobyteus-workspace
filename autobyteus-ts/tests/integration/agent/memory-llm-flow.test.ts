@@ -49,8 +49,11 @@ runIntegration('Memory assembler with LM Studio', () => {
 
       memoryManager.ingestAssistantResponse(response, turnId, 'LLMCompleteResponseReceivedEvent');
 
-      const rawItems = store.listTurnRawTracesOrdered();
-      expect(rawItems).toHaveLength(2);
+      // One user and one assistant record; a model that reasons also records its reasoning.
+      const traceTypes = store.listTurnRawTracesOrdered().map((item) => item.traceType);
+      expect(traceTypes.filter((type) => type === 'user')).toHaveLength(1);
+      expect(traceTypes.filter((type) => type === 'assistant')).toHaveLength(1);
+      expect(traceTypes.every((type) => ['user', 'assistant', 'reasoning'].includes(type))).toBe(true);
     } finally {
       fs.rmSync(tempDir, { recursive: true, force: true });
     }
