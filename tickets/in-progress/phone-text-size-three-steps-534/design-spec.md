@@ -2,7 +2,7 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: `SR-001`
+- Current solution revision ID: `SR-002` (adds Settings last in the run's ⋮, the founder's request)
 - Approved requirements: `requirements-doc.md` at SR-001, Solution Designer within the direction, user informed 2026-11-18
 - Supplements: None
 - User approval of the design: `Not required`
@@ -35,7 +35,7 @@ Three steps; no visible "On this phone"; a saved Small reads as Standard.
 
 ## Change Scope (Mandatory)
 
-- In scope: UC-001, UC-002. Files below.
+- In scope: UC-001, UC-002, UC-003. Files below.
 - Derived consumers of `PHONE_TEXT_SIZE_STEPS` (Principle 11): `MobileOnThisPhoneMenu.vue` (renders the list → 3 buttons); `isPhoneTextSizeStep` → reader (saved `small` → Standard); `phoneTextSizeMetrics` (unchanged for the three); `PhoneTextSizeStep` type (narrows: TypeScript flags any remaining `'small'` use); `data-phone-text-size` attribute (never `small` again; no CSS selects it).
 - Deliberately left alone: store, DOM writer, plugin 06, `phone-text-size.css`, `phone-conversation.css`, every phone screen, the desktop, the menu's ⋮ button and behavior, the component name `MobileOnThisPhoneMenu` and the `mobile.onThisPhone.*` namespace (still the menu of this phone's preferences; the founder removed the visible words, not the concept).
 - Follow-ups: None.
@@ -188,6 +188,14 @@ Existing files only; no new folder.
 ## Change / Refactor Sequence
 
 1. Steps list; catalogs; menu markup. 2. Unit tests. 3. Probe MSP-60; run MSP-60 and MSP-74 on the phone bundle (`pnpm -C autobyteus-web test:e2e:mobile-shell`, TESTING.md l.65–67). 4. Screenshots of the control and the run list at Standard, Large, Largest.
+
+## Run Menu Order (SR-002)
+
+- Owner: `components/mobile/runScreen/MobileRunMenu.vue` (the only place that orders the run's ⋮ entries; read: script l.10–23).
+- Change: build the entries as `VIEWS` filtered by their show rules (Artifacts, Files, Messages, Activity, VNC Viewer), then Settings appended last for every run. Remove the "insert after Activity" branch; update the template comment and the JSDoc ("…; Settings last, for every run (autobyteus-522, autobyteus-534)").
+- Tests: `MobileRunMenu.spec.ts` (three prop cases: Settings last; with VNC: `[…, 'Activity', 'VNC Viewer', 'Settings']`), `MobileRunScreen.spec.ts` l.137 (VNC case), any probe expectation with VNC Viewer before/after Settings (`mobile-shell-probe.mjs` l.1443/1450 already end with Settings; check `mobile-every-run-settings-cases.mjs` and the 407/VNC probe cases); MSP-60 run-menu assertion unaffected.
+- Docs (delivery): `autobyteus-web/docs/remote_access.md` l.24–25 "right after Activity" → "the last entry".
+- No other owner, screen or route changes; the open-view handling is by id, not by position.
 
 ## Key Tradeoffs
 

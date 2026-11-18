@@ -29,3 +29,10 @@ Unit (three steps; saved `small` → Standard, root 100 %, no throw, other key a
 ## Route record
 
 `get_handoff_rules` 2026-11-18: Small/Medium + Low → `/implementation_engineer`.
+
+## SR-002 (2026-11-18) — Settings last in the run's ⋮
+
+- The founder asked directly (with a screenshot): in the run's ⋮ menu, Settings goes to the bottom, below VNC Viewer. Approved by the founder's own words.
+- Build: `design-spec.md` "Run Menu Order (SR-002)": `MobileRunMenu.vue` appends Settings last; tests and probe expectations with VNC Viewer updated.
+- IR-001 (`d4a14666a4`) stays; add this change on top. The API/E2E round started on IR-001 should cover SR-001 and SR-002 together after this implementation round.
+- Route: Small + Low → `/implementation_engineer`.

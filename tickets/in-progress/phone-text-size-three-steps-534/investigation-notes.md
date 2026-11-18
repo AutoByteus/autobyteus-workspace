@@ -10,7 +10,7 @@
 - Resolved base: `origin/personal` @ `bd2053ee51` (fetched 2026-11-18); contains 525's merge `b91eb0ddaa`, released in `v1.5.13-beta.10`
 - Finalization target: `origin/personal`
 - Bootstrap result: worktree created; Bootstrap blocker: None
-- Current solution revision ID: `SR-001`
+- Current solution revision ID: `SR-002`
 - Authorities read (requirements gate): `references/requirements-engineering.md`, `references/ticket-scope.md`, `references/finding-the-cause.md` (read in this conversation, 2026-11-17, for autobyteus-525; unchanged since)
 - Investigation status: Complete
 
@@ -40,6 +40,7 @@
 | BEH-001 | User | Run list ⋮ | Menu: "On this phone" heading, "Text size" label, four "A" (Small, Standard, Large, Largest) | `MobileOnThisPhoneMenu.vue` | High (Read) |
 | BEH-002 | User | Phone page start with a saved step | The saved step applies from the first screen; an unknown value → Standard | `phoneTextSizeSteps.ts:34-42` | High (Read; 525 API-06 measured carry-over) |
 | BEH-003 | User | Any phone screen | Scales by step/17 | 525 evidence | High (Measured in 525) |
+| BEH-004 | User | Run ⋮ | Entries Artifacts, Files, [Messages], Activity, Settings, [VNC Viewer]: `MobileRunMenu.vue` `VIEWS` + Settings inserted right after Activity (autobyteus-522) | `components/mobile/runScreen/MobileRunMenu.vue` script l.10–23; the founder's screenshot 2026-11-18 11:33 | High (Read) |
 
 ## Persisted Data And State Facts
 
@@ -63,6 +64,12 @@
 - The only owners touched: the steps module (list), the menu component, two catalogs. The store, DOM writer, plugin, CSS and every screen are unchanged: they compute from the step's px, and Standard/Large/Largest keep their px.
 - `isPhoneTextSizeStep` is the single validity rule; removing `small` from the list is enough for the reader. An explicit `small → standard` branch would keep a removed step's name in current code (Principle 8; DESIGN.md "prefer tolerant readers").
 - Menu accessibility: with the visible heading gone, the menu takes `aria-label` from `mobile.onThisPhone.title` (not shown); the button keeps it. The group stays a `role="group"` labelled "Text size", now visibly its header, so a Language group can be added below it with its own header-label and no menu heading.
+
+### SR-002 — Settings last in the run's ⋮ (2026-11-18)
+
+- The founder (direct, in the Solution Designer's conversation, with a screenshot of a Team member's ⋮: Artifacts, Files, Messages, Activity, Settings, VNC Viewer): put Settings at the bottom, below VNC Viewer; settings normally sit below the other entries.
+- Read: `MobileRunMenu.vue` builds the list from `VIEWS` and inserts Settings after Activity (comment "Settings for every run (autobyteus-522)").
+- Tests/probes asserting the current order: `components/mobile/runScreen/__tests__/MobileRunMenu.spec.ts` l.19–21; `MobileRunScreen.spec.ts` l.121, 137; `tests/e2e/mobile-shell-probe.mjs` l.1443, 1450 (no VNC there: Settings already last); `tests/e2e/mobile-every-run-settings-cases.mjs` (entries read by test id; check its expectations). Docs: `autobyteus-web/docs/remote_access.md` l.24–25 ("right after Activity").
 
 ## Requirement Implications
 

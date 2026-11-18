@@ -3,14 +3,14 @@
 ## Document Status
 
 - Status: `Approved`
-- Current solution revision ID: `SR-001`
+- Current solution revision ID: `SR-002`
 - Package identifier: `phone-text-size-three-steps-534`
 - Request / ticket: autobyteus-534 (Project `project_a1377344-25db-482a-97cc-ecfdb0fb495a`), follow-up of autobyteus-525
 - Requested by: `/project_task_manager` (run `project_task_manager_7c8dce0c4a8b44f88e776a83809dee03`), carrying the founder's words of 2026-11-18
 - Requirements owner: Solution Designer (run `solution_designer_c3a8302c63ea42e1a077547eaa960a4b`)
 - Date: 2026-11-18
-- Approved by and reference: `Solution Designer within the direction (user informed)`; reference: SR-001 and the message to the user in the Solution Designer's conversation, 2026-11-18
-- Exact approved baseline: this document at SR-001
+- Approved by and reference: SR-001 `Solution Designer within the direction (user informed)`, the message to the user in the Solution Designer's conversation, 2026-11-18; SR-002 (UC-003, REQ-005, AC-005) `User`: the founder's own request in the Solution Designer's conversation, 2026-11-18 ("put the setting at the bottom below the vnc… normally settings are below other entries", with a screenshot of the run's ⋮ menu)
+- Exact approved baseline: this document at SR-002
 - Behavior-defining supplements: None
 
 ## Problem And Desired Outcome
@@ -26,6 +26,7 @@
 | BEH-001 | User | SCN-001 | "On this phone" heading, "Text size" label, four steps | "Text size" header, three steps (Standard, Large, Largest) | ⋮ place, menu opens/closes as today, applies at once, menu stays open, focus on the chosen step, 44 px targets | Notes BEH-001 |
 | BEH-002 | User | SCN-002 | Saved step applies; unknown → Standard | A saved Small applies as Standard, silently; other settings untouched | Storage key and the three remaining values | Notes BEH-002 |
 | BEH-003 | User | SCN-003 | Screens scale by step/17 | Unchanged for the three steps | Every screen's sizes at Standard, Large, Largest; desktop | Notes BEH-003 |
+| BEH-004 | User | SCN-004 | The run's ⋮: Artifacts, Files, Messages (when it applies), Activity, Settings, VNC Viewer (when it applies) | Settings is the last entry: … Activity, VNC Viewer (when it applies), Settings | Which entries show and when; each entry's screen | Notes BEH-004 |
 
 ## Scope Guardrail (Mandatory)
 
@@ -35,6 +36,7 @@
 | --- | --- | --- |
 | UC-001 | Choose one of three Text size steps on the run list's ⋮ | SCN-001 |
 | UC-002 | Open the phone with a Small saved by beta.10 | SCN-002 |
+| UC-003 | Open a run's ⋮ and find Settings at the bottom | SCN-004 |
 
 ### Out Of Scope
 
@@ -68,6 +70,7 @@ None.
 | REQ-001 | The phone has three Text size steps: Standard 17 px (default and smallest), Large 19 px, Largest 21 px. Small no longer exists anywhere the steps are listed (the control, the step list, translation keys, tests, probe cases, phone docs). | BEH-001 | Must | The founder | N/A | Task (a) |
 | REQ-002 | The run list's ⋮ menu shows no "On this phone" text; its only header is "Text size", followed by the three "A" buttons. A later Language row can join the same menu below with its own label and no menu heading. | BEH-001 | Must | The founder | N/A | Task (c); DEC-002 |
 | REQ-003 | A phone whose saved step is Small opens at Standard on every screen, with no error and no change to any other stored setting; the Standard button is marked. | BEH-002 | Must | beta.10 phones may hold Small | N/A | Task (b); DEC-001 |
+| REQ-005 | In the run's ⋮ menu, Settings is always the last entry, below VNC Viewer when VNC Viewer is shown; the other entries keep their order (Artifacts, Files, Messages, Activity, VNC Viewer) and their show rules. | BEH-004 | Must | The founder: settings normally sit below the other entries | N/A | The founder, 2026-11-18 (SR-002) |
 | REQ-004 | Standard, Large and Largest render every phone screen as they do today (autobyteus-525); the desktop is unchanged. | BEH-003 | Must | Preserved | N/A | Task (d), (e) |
 
 ## Acceptance Criteria
@@ -77,6 +80,7 @@ None.
 | AC-001 | REQ-001, REQ-002 | BEH-001 / SCN-001 | Run list → ⋮ | The menu shows the header "Text size" and three buttons labelled (aria) Standard, Large, Largest; no "On this phone" text; the saved step is marked and focused; a tap applies at once, the menu stays open; Esc/outside closes it | zh-CN: header "文字大小" (existing key), buttons 标准 / 大 / 特大; no "本机设置" text | Unit + probe MSP-60 + screenshots of the control at the three steps |
 | AC-002 | REQ-003 | BEH-002 / SCN-002 | `autobyteus.phone.textSize = small` saved, page opened | First screen at Standard (root 16 px, conversation 17 px), Standard marked, no console error; other localStorage keys unchanged | — | Unit (reader and store) + probe start with a saved `small` |
 | AC-003 | REQ-004 | BEH-003 / SCN-003 | Standard, Large, Largest | Run list, conversation, Files, Activity, Settings, VNC bar, dialogs as in 525 (sizes and clean layout); desktop unchanged | — | Probe MSP-60 / MSP-74 rerun; run list screenshots at the three steps; desktop unit tests unchanged |
+| AC-005 | REQ-005 | BEH-004 / SCN-004 | A run's ⋮ opened (a Team member on the node with a node desktop; a standalone agent; a run without VNC Viewer) | Entries in order: Artifacts, Files, [Messages], Activity, [VNC Viewer], Settings — Settings last in every case | — | Unit (menu and run screen) + probe order assertions |
 | AC-004 | REQ-001 | — | Source | No `small` step, no `mobile.onThisPhone.textSize.small` key (en, zh-CN), no Small in tests, probe or phone docs | — | grep + catalog test |
 
 ## Relevant Scenarios And Journeys
@@ -85,6 +89,7 @@ None.
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | SCN-001 | User | The founder | Pick a readable size | Run list ⋮ | Paired | Open ⋮ → tap Large | Whole phone at Large | — | Supported Normal | His words 2026-11-18 | REQ-001, 002; AC-001 |
 | SCN-002 | User | A phone user who chose Small in beta.9/10 | Keep using the phone after the update | Open the updated page | `small` saved | Open | Standard everywhere | — | Supported Normal (beta.10 shipped Small) | Notes "Persisted Data" | REQ-003; AC-002 |
+| SCN-004 | User | The founder | Open a run's settings | Run ⋮ | A run open | Tap ⋮ → Settings (last) | Settings opens | — | Supported Normal | His words and screenshot 2026-11-18 | REQ-005; AC-005 |
 | SCN-003 | User | Any phone user | Read every screen | Any screen | A step | Navigate | As today | — | Supported Normal | 525 evidence | REQ-004; AC-003 |
 
 ## UI, Interaction, And Experience Requirements
@@ -136,6 +141,7 @@ None.
 | REQ-002 | UC-001 | BEH-001 | AC-001 | SCN-001 |
 | REQ-003 | UC-002 | BEH-002 | AC-002 | SCN-002 |
 | REQ-004 | — | BEH-003 | AC-003 | SCN-003 |
+| REQ-005 | UC-003 | BEH-004 | AC-005 | SCN-004 |
 
 ## Architecture Phase Input
 
