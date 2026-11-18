@@ -2,7 +2,7 @@
 
 ## Document Status
 
-- Status: `Approved`
+- Status: `Ready for Approval` (SR-003 proposed: the founder narrowed the new message targets to the running runs a person started, 2026-11-18; his confirmation of the reading is pending)
 - Current solution revision ID: `SR-002`
 - Package identifier: `list-running-agents`
 - Request / ticket: Project Task `autobyteus-492`, Project `project_a1377344-25db-482a-97cc-ecfdb0fb495a`
