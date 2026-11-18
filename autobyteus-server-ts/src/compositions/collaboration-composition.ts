@@ -65,6 +65,8 @@ import type { CollaborationRootResolver } from "./collaboration-root-resolver.js
 import { composeProjectRunLinks } from "./project-run-links-composition.js";
 import { createRunViewSources, type RunViewSources } from "./run-view-composition.js";
 import { createPeerRunOf } from "../agent-collaboration/execution/remote/peer-runs.js";
+import { bindProcessRunningAgentsListing } from "../agent-collaboration/running/running-agents-listing.js";
+import type { RunningAgentsComposition } from "./running-agents-composition.js";
 
 /**
  * The Task service's post-commit marks: the `/ws/projects` publisher, and Project Task search for Task writes and
@@ -150,6 +152,8 @@ export const composeCollaboration = async (input: Readonly<{
   remoteChannel: () => RemoteRunChannel | null;
   /** The episodic catalogs, told by the agent run history service after a committed delete (autobyteus-493). */
   episodicCatalog: Pick<EpisodicCatalog, "runDeleted">;
+  /** This node's running agents and their listing (autobyteus-492), created before remote collaboration. */
+  running: RunningAgentsComposition;
 }>): Promise<Collaboration> => {
   const { memoryDir, taskSide, runs } = input;
   const { tree, resources } = taskSide;
@@ -215,6 +219,9 @@ export const composeCollaboration = async (input: Readonly<{
           ? { prepareSendToRun: (send) => root.prepareSendToRun!(send), commitSentToRun: (message) => root.commitSentToRun!(message) } : null;
       },
       receiverRoot: async (run) => (await input.rootResolver.resolveOrRestore(run))?.root ?? null,
+      // autobyteus-492 DS-003: a message by run ID alone reaches only a running agent, in its live root, never restored.
+      runningAgents: input.running.runningAgents,
+      activeReceiverRoot: (run) => input.rootResolver.resolveActive(run)?.root ?? null,
     });
     const delegation = new TaskDelegation({
       deliverToRun: (message) => crossRun.route(message),
@@ -260,7 +267,9 @@ export const composeCollaboration = async (input: Readonly<{
     releases.push(setProcessTaskDelegationToolService(new TaskDelegationToolService({ delegation,
       remote: new RemoteDelegation({ delegation, tree, channel: input.remoteChannel }) })));
     releases.push(SendMessageToDispatcher.setProcessInstance(new SendMessageToDispatcher({
-      globalRouter: new GlobalAgentRunMessageRouter({ crossRun, coordinators: tree }), tree })));
+      globalRouter: new GlobalAgentRunMessageRouter({ crossRun, coordinators: tree, channel: input.remoteChannel }), tree })));
+    // autobyteus-492: `list_running_agents` without `node`, on every runtime (bound before any run starts).
+    releases.push(bindProcessRunningAgentsListing(input.running.listing));
     releases.push(setProcessStandaloneRootMemberViewProjectionService(new StandaloneRootMemberViewProjectionService({ peerRunOf })));
     releases.push(setProcessTeamMemberRunViewProjectionService(new TeamMemberRunViewProjectionService({ memoryDir, tree, peerRunOf })));
     releases.push(setProcessAgentOrgMemberRunViewProjectionService(new AgentOrgMemberRunViewProjectionService({ memoryDir, tree, peerRunOf })));

@@ -314,7 +314,7 @@ it("a message from a run the Org delegated to is presented and the Org stays up,
   await tasks.markStarted({ teamRunId: "dev-team-copy" });
   const senderLog: string[] = [];
   let next = 0;
-  const delivery = new CrossRunMessageDelivery({ runFiles: { delegationOfAgent: async () => null }, restorability: { refusal: async () => null }, tree: () => tree, tasks: () => tasks, senderAddress: async () => null,
+  const delivery = new CrossRunMessageDelivery({ runningAgents: { rootOf: () => null }, activeReceiverRoot: () => null, runFiles: { delegationOfAgent: async () => null }, restorability: { refusal: async () => null }, tree: () => tree, tasks: () => tasks, senderAddress: async () => null,
     senderRoot: () => ({
       prepareSendToRun: (input: { senderIdentity: { agentRunId: string }; receiverAgentRunId: string; content: string }) => ({ ok: true as const,
         message: { messageId: `cross-${++next}`, senderAgentRunId: input.senderIdentity.agentRunId, receiverAgentRunId: input.receiverAgentRunId,

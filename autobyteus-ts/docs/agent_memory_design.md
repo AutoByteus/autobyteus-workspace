@@ -11,9 +11,11 @@ Native memory separates three authorities:
   rewriting canonical evidence.
 
 A native compaction now produces one validated Markdown summary body. Current
-continuation authority is `working_context_snapshot.json`, not an episodic or
-semantic bundle or a lineage head. Existing category and lineage files remain
-historical data; normal compaction and restore neither consult nor append them.
+continuation authority is `working_context_snapshot.json`, not a lineage head.
+The retired compactor's item files (`episodic.jsonl`, `semantic.jsonl`) and the
+lineage file are historical data: retired, unread and kept on disk. This library
+has no code for the retired items; normal compaction and restore neither consult
+nor append these files.
 There is no new manifest, compaction pointer, or compatibility strategy branch.
 External Codex/Claude provider sessions remain their own continuation authority.
 
@@ -141,7 +143,9 @@ acceptance does not guarantee model factual fidelity or future continuation.
 The former structured-JSON strategy, registry/resolver, category normalization,
 child-agent runner and built-in Memory Compactor synchronization are removed
 from this path. Old `AUTOBYTEUS_COMPACTION_STRATEGY` and compactor-agent selector
-values are inert; old on-disk agent configuration is not imported or deleted.
+values are inert; old on-disk agent configuration is not imported. The server's
+startup migration `20261118_remove_retired_built_in_agents` deletes the retired
+built-in Memory Compactor's installed definition; its runs stay.
 
 ## 3. Composition, Planning And Thresholds
 
@@ -304,8 +308,8 @@ writes its raw recovery trace under the real tool. A raw trace without
 `called_through` (a direct call, or any run written before tool search) is read
 as it always was.
 
-Every memory JSONL file (active raw traces, episodic, semantic, archive
-segments) is read with one line rule, `src/memory/store/jsonl-log-file.ts`,
+Every memory JSONL file (active raw traces, archive segments) is read with one
+line rule, `src/memory/store/jsonl-log-file.ts`,
 working on byte offsets, never on decoded strings:
 
 - Zero bytes and whitespace at the start or end of a line, and lines made only
@@ -361,8 +365,9 @@ snapshots keep the same key and value shape.
 
 Current native writes use `working_context_snapshot.json`, active raw traces,
 `raw_traces_manifest.json` and immutable `raw_traces_<index>.jsonl` archives.
-`episodic.jsonl`, `semantic.jsonl` and `compaction_lineage.jsonl` are not current
-write/restore dependencies; existing files remain inspectable historical data.
+The retired `episodic.jsonl` and `semantic.jsonl` and the historical
+`compaction_lineage.jsonl` are not current write/restore dependencies: nothing
+reads or writes them, and existing files stay on disk as historical data.
 There is no new migration for the direct summary/versionless-writer cutover.
 
 The already-registered server migration
@@ -540,7 +545,7 @@ an AutoByteus `WorkingContext` snapshot and do not execute AutoByteus direct
 working-context compaction. Provider thread/session state remains the
 continuation authority. Provider/session compaction boundaries can append
 provenance markers and rotate raw traces; they do not run native
-compression, write episodic/semantic memory, resolve or inject AutoByteus compacted
+compression, write compaction output, resolve or inject AutoByteus compacted
 memory, or change provider session state. The server owns the
 metadata-classified, best-effort startup cleanup for pre-cutover external
 snapshot copies. A separate exact-native startup migration converts eligible

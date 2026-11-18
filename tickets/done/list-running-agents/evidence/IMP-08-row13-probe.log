@@ -1,0 +1,17 @@
+# IMP-08
+# Command: python3 -I tickets/in-progress/list-running-agents/evidence/IMP-08-row13-probe.py tickets/done/delegated-copies-outlive-delegator-461/evidence/collaboration-model S18 ; then … S19
+# Commit: 5f89ecbdf5
+# Environment: macOS (Darwin 25.5.0), Python 3.9.6
+# Date: 2026-11-18
+# Row 14 (a sender in another run on B) has no run to send from in the §5.1 story (B holds only research_team_77aa).
+
+after S18: A's entries for B's research_team_77aa: ['open']
+  row 13, the delegator (M): project_task_manager_7c8d -> lead_0c11: DELIVERED
+  row 13, another run of A (team 0218): solution_designer_65a9 -> lead_0c11: DELIVERED
+  row 13, another run of A (agent run): image_maker_33f0 -> lead_0c11: DELIVERED
+  row 13, another run of A (product team): product_designer_1a2b -> lead_0c11: DELIVERED
+after S19: A's entries for B's research_team_77aa: ['closed']
+  row 13, the delegator (M): project_task_manager_7c8d -> lead_0c11: REFUSED TASK_AGENT_RESOURCE_CLOSED
+  row 13, another run of A (team 0218): solution_designer_65a9 -> lead_0c11: REFUSED TASK_AGENT_RESOURCE_CLOSED
+  row 13, another run of A (agent run): image_maker_33f0 -> lead_0c11: REFUSED TASK_AGENT_RESOURCE_CLOSED
+  row 13, another run of A (product team): product_designer_1a2b -> lead_0c11: REFUSED TASK_AGENT_RESOURCE_CLOSED

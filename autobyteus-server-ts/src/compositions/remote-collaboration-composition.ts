@@ -25,6 +25,7 @@ import type { CollaborationRootResolver } from "./collaboration-root-resolver.js
 import { PeerStartedRunLaunches } from "../remote-collaboration/inbound/peer-started-run-launches.js";
 import type { RemoteRunChannelAccess } from "../agent-collaboration/execution/remote/remote-run-channel.js";
 import type { PeerDiscoveryAccess } from "../agent-collaboration/execution/remote/peer-discovery-channel.js";
+import type { RunningAgentsComposition } from "./running-agents-composition.js";
 
 /**
  * autobyteus-500 FU-011: the studio composes remote collaboration after the run services it serves, so the tools and
@@ -59,6 +60,8 @@ export const composeStudioRemoteCollaboration = (input: Readonly<{
   orgRuns: Pick<AgentOrgRunService, "storedRemoteLinkCheck">;
   /** The node's one root resolution (autobyteus-285 D5); the receivers keep their own "not found" handling. */
   rootResolver: CollaborationRootResolver;
+  /** autobyteus-492: this node's running agents (messages by run ID) and their listing (a peer's `running-agents`). */
+  running: RunningAgentsComposition;
 }>): Readonly<{ services: RemoteCollaborationServices; release: () => void }> => {
   const resolve = (rootSubjectKind: RootSubjectKind, rootRunId: string) =>
     input.rootResolver.resolveOrRestore(createRootExecutionIdentity({ rootSubjectKind, rootRunId }));
@@ -74,6 +77,7 @@ export const composeStudioRemoteCollaboration = (input: Readonly<{
     team: async (teamRunId) => { const found = await resolve("agent_team", teamRunId); return found?.kind === "agent_team" ? found.root : null; },
     org: async (orgRunId) => { const found = await resolve("agent_org", orgRunId); return found?.kind === "agent_org" ? found.root : null; },
     runAgents: (kind) => kind === "agent" ? getStandaloneAgentRunRootManager().runAgents : input.teamRuns.runAgents,
+    liveRoot: (root) => input.rootResolver.resolveActive(root)?.root ?? null,
   };
   // autobyteus-32: decisions of delegated runs started for a peer, held until the peer's work packet arrives.
   const peerStartedRunDecisions = new PeerStartedRunDecisions();
@@ -90,8 +94,10 @@ export const composeStudioRemoteCollaboration = (input: Readonly<{
         recordFirstMessage: (root, content) => root.kind === "agent" ? input.agentRuns.recordRunTitle(root.runId, content)
           : root.kind === "agent_team" ? input.teamRuns.recordRunTitle(root.runId, content)
             : Promise.resolve(),
-      }, peerStartedRunDecisions),
+      }, peerStartedRunDecisions, input.running.runningAgents),
       availableAgents: new RemoteCatalogLister({ policy: () => getCollaboratorAdmission().policy, catalogPort: services.catalogPort }),
+      // autobyteus-492: this node's running runs a person started, for a peer (no caller here).
+      runningAgents: { list: async () => Object.freeze({ accepted: true as const, agents: await input.running.listing.list({ caller: null }) }) },
       // autobyteus-278: what the peer's owner reads and drives here, for runs its delegation started.
       runViews: new RemoteRunViewProvider(roots, {
         runTitle: (run) => run.kind === "agent" ? input.agentRuns.readRunTitle(run.runId) : input.teamRuns.readRunTitle(run.runId),

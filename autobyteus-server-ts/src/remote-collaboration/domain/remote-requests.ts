@@ -7,6 +7,7 @@ import type {
   RemoteStartedRunRef,
 } from "../../agent-collaboration/execution/remote/remote-run-channel.js";
 import type { DelegatingRunRef } from "../../run-history/store/agent-run-metadata-types.js";
+import type { RunningAgentEntry } from "../../agent-collaboration/running/running-agent-entry.js";
 
 /**
  * The inter-node contract (design § Contract Between Nodes; CM-12). Every request carries the envelope; every
@@ -20,6 +21,13 @@ export const REMOTE_MESSAGES_PATH = "/rest/remote/messages";
 export const REMOTE_AVAILABILITY_PATH = "/rest/remote/availability";
 /** autobyteus-261: what the called node offers for delegation (the envelope only). */
 export const REMOTE_AVAILABLE_AGENTS_PATH = "/rest/remote/available-agents";
+/**
+ * autobyteus-492: a message to a running agent of the called node by its run ID only (no link; `run_message`). Unlike
+ * `messages` (a linked run, its root named, which may wake it), it names no root and reaches only an agent that runs now.
+ */
+export const REMOTE_RUN_MESSAGES_PATH = "/rest/remote/run-messages";
+/** autobyteus-492: the running runs a person started on the called node (the envelope only). */
+export const REMOTE_RUNNING_AGENTS_PATH = "/rest/remote/running-agents";
 
 /** autobyteus-278: the titles and statuses of runs the caller's delegation started (one request per node). */
 export const REMOTE_RUN_SUMMARIES_PATH = "/rest/remote/run-summaries";
@@ -72,6 +80,16 @@ export type DeliverRemoteMessageRequest = RemoteEnvelope & Readonly<{
   createdAt: string;
 }>;
 
+/** autobyteus-492: one message from an agent of the caller to a running agent of the called node, by run IDs only. */
+export type DeliverRunMessageRequest = RemoteEnvelope & Readonly<{
+  messageId: string;
+  sender: Readonly<{ agentRunId: string }>;
+  target: Readonly<{ agentRunId: string }>;
+  content: string;
+  messageType: string;
+  createdAt: string;
+}>;
+
 /** The target definition a refusal is about, on the responder: its kind and its name (autobyteus-261 DEC-407). */
 export type RemoteRefusalTarget = Readonly<{ kind: "agent" | "agent_team"; name: string }>;
 
@@ -109,6 +127,8 @@ export type AvailabilityAnswer = Readonly<{ accepted: true; nodeId: string }> | 
  * name, kind, address and description (when it has one; REQ-403, REQ-405).
  */
 export type AvailableAgentsAnswer = Readonly<{ accepted: true; nodeId: string; agents: readonly AvailableCollaboratorEntry[] }> | RemoteRefusalAnswer;
+/** autobyteus-492: the called node's running runs a person started, each entry without `node` (REQ-002, REQ-007). */
+export type RunningAgentsAnswer = Readonly<{ accepted: true; nodeId: string; agents: readonly RunningAgentEntry[] }> | RemoteRefusalAnswer;
 
 /** autobyteus-278: runs the caller's delegation started; the answer omits every other run. */
 export type RunSummariesRequest = RemoteEnvelope & Readonly<{ runs: readonly RemoteStartedRunRef[] }>;

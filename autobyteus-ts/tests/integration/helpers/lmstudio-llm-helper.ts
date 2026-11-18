@@ -1,5 +1,6 @@
 import { LLMFactory } from '../../../src/llm/llm-factory.js';
 import { LLMRuntime } from '../../../src/llm/runtimes.js';
+import { LLMProvider } from '../../../src/llm/providers.js';
 import type { BaseLLM } from '../../../src/llm/base.js';
 
 const DEFAULT_TEXT_MODEL = 'qwen/qwen3.5-35b-a3b';
@@ -22,6 +23,8 @@ const resolveModelId = async (options?: { forceFactoryDiscovery?: boolean }): Pr
   }
 
   await LLMFactory.reinitialize();
+  // The registry's initialization holds the built-in models only; LM Studio's are registered by reloading that provider.
+  await LLMFactory.reloadModels(LLMProvider.LMSTUDIO);
   const models = await LLMFactory.listModelsByRuntime(LLMRuntime.LMSTUDIO);
   if (!models.length) {
     return null;

@@ -42,6 +42,7 @@ const unknownNode = { accepted: false as const, code: "PEER_NOT_REGISTERED", mes
 const discovery = (): PeerDiscoveryChannel & { listPeerNodes: ReturnType<typeof vi.fn>; listAvailableAgents: ReturnType<typeof vi.fn> } => ({
   listPeerNodes: vi.fn(async () => [{ name: "beta", status: "available" as const }, { name: "docker", status: "unavailable" as const }]),
   listAvailableAgents: vi.fn(async (node: string) => node === "beta" ? remote : unknownNode),
+  listRunningAgents: vi.fn(async () => []),
 });
 const withLister = () => testMemberExecutionContext({ listAvailableAgents: vi.fn(async () => local) });
 

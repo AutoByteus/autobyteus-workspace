@@ -1,0 +1,4 @@
+{
+  "runId": "daily_assistant_7b6e7d8245f043518739d5238e39d95d",
+  "listAvailableAgentsResult": "{\\\"content\\\":[{\\\"type\\\":\\\"text\\\",\\\"text\\\":\\\"{\\\\\\\"agents\\\\\\\":[{\\\\\\\"name\\\\\\\":\\\\\\\"My Agent\\\\\\\",\\\\\\\"kind\\\\\\\":\\\\\\\"agent\\\\\\\",\\\\\\\"address\\\\\\\":\\\\\\\"/my_agent\\\\\\\"}]}\\\"}],\\\"structuredContent\\\":{\\\"agents\\\":[{\\\"name\\\":\\\"My Agent\\\",\\\"kind\\\":\\\"agent\\\",\\\"address\\\":\\\"/my_agent\\\"}]}}"
+}

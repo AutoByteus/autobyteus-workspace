@@ -30,6 +30,9 @@ export async function registerRemoteCollaborationRoutes(app: FastifyInstance, re
   post("/remote/messages", (gateway, body, caller) => gateway.deliverMessage(body, caller));
   post("/remote/availability", (gateway, body, caller) => gateway.checkAvailability(body, caller));
   post("/remote/available-agents", (gateway, body, caller) => gateway.listAvailableAgents(body, caller));
+  // autobyteus-492: a message to a running agent by its run ID only, and the running runs a person started.
+  post("/remote/run-messages", (gateway, body, caller) => gateway.deliverRunMessage(body, caller));
+  post("/remote/running-agents", (gateway, body, caller) => gateway.listRunningAgents(body, caller));
   // autobyteus-278: what a peer's owner reads and drives on this node, for runs its delegation started.
   post("/remote/run-summaries", (gateway, body, caller) => gateway.runSummaries(body, caller));
   post("/remote/agent-projection", (gateway, body, caller) => gateway.agentProjection(body, caller));

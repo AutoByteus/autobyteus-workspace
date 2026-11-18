@@ -22,6 +22,7 @@ const mocks = vi.hoisted(() => {
     initialize: vi.fn(),
     getLogsDir: () => "/tmp/standalone-lifecycle/logs",
     getMemoryDir: () => "/tmp/standalone-lifecycle/memory",
+    getTempWorkspaceDir: () => "/tmp/standalone-lifecycle/temp_workspace",
     getAppDataDir: () => "/tmp/standalone-lifecycle",
     get: () => undefined,
     getBaseUrl: () => "http://localhost:8000",

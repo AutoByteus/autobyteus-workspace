@@ -65,6 +65,7 @@ const harness = (options: { current?: string | null; concurrency?: number; postD
   };
   const roots = new Map<string, Record<string, ReturnType<typeof vi.fn>>>();
   const rootResolver = {
+    resolveActive: vi.fn(() => null),
     resolveOrRestore: vi.fn(async (root: RootExecutionIdentity) => {
       if (history.get(keyOf(root)) === "gone") return null;
       order.push(`restore:${keyOf(root)}`);

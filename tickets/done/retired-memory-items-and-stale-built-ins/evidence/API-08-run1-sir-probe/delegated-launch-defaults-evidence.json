@@ -1,0 +1,102 @@
+{
+  "startedAt": "2026-11-18T08:35:55.549Z",
+  "cases": {
+    "SIR-001": {
+      "title": "BEH-003: send_message_to by run id through real tool calls: standalone → standalone delivered, unknown run not active, Team member → member, a Team copy's run id refused naming its coordinator, its coordinator reached",
+      "result": "Fail",
+      "ms": 20490,
+      "error": "standalone → standalone should be DELIVERED",
+      "details": "{\"content\":[{\"type\":\"text\",\"text\":\"{\"accepted\":false,\"code\":\"TASK_AGENT_RESOURCE_CONFLICT\",\"message\":\"You can't message this agent: it works on a different Task.\"}\"}],\"structuredContent\":{\"accepted\":false,\"code\":\"TASK_AGENT_RESOURCE_CONFLICT\",\"message\":\"You can't message this agent: it works on a different Task.\"},\"isError\":true}\n\nContext Files (0)\n(drag, paste, or upload)\nProjects\nFiles\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\nBackground Tasks\nCurrent count unavailable\nActivity\n0 Events\nNo activity history yet."
+    },
+    "SIR-002": {
+      "title": "AC-003/AC-004: an upgrade around real runs deletes exactly the feature data once; other files and .env byte-identical; a second start changes nothing; runs listed and resumed; no feature UI; retired keys refused",
+      "result": "Fail",
+      "ms": 33962,
+      "error": "every feature path is gone",
+      "details": [
+        "memory/agents/helper_run_5555"
+      ]
+    }
+  },
+  "processes": [
+    {
+      "label": "backend",
+      "pid": 69015
+    },
+    {
+      "label": "frontend",
+      "pid": 69813
+    },
+    {
+      "label": "backend-upgraded",
+      "pid": 79879
+    }
+  ],
+  "cleanup": [
+    {
+      "pid": 79879,
+      "stop": "SIGKILL"
+    },
+    {
+      "pid": 69813,
+      "stop": "SIGTERM"
+    },
+    {
+      "pid": 69015,
+      "stop": "already-exited"
+    },
+    {
+      "removed": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-e3X75T"
+    }
+  ],
+  "observations": [],
+  "ownedRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-e3X75T",
+  "backendUrl": "http://127.0.0.1:59919",
+  "frontUrl": "http://127.0.0.1:59920",
+  "definitions": {
+    "ids": {
+      "manager": "manager-f5eb",
+      "lead": "lead-3a53",
+      "worker": "worker-986a",
+      "plain": "plain-cebb",
+      "engineer": "engineer-bd1d",
+      "reviewer": "reviewer-6ec2",
+      "writer": "writer-6b24",
+      "offline": "offline-e19d",
+      "unoffered": "unoffered-2147",
+      "badsettings": "badsettings-bae8",
+      "incomplete": "incomplete-b76d",
+      "build": "build-team-eb15",
+      "pair": "pair-team-917c",
+      "squad": "squad-team-709d",
+      "home": "home-team-8992",
+      "launchOrg": "launchorg-org-7d6b",
+      "hostOrg": "hostorg-org-bd18"
+    },
+    "names": {
+      "manager": "Manager f5eb",
+      "lead": "Lead 3a53",
+      "worker": "Worker 986a",
+      "plain": "Plain cebb",
+      "engineer": "Engineer bd1d",
+      "reviewer": "Reviewer 6ec2",
+      "writer": "Writer 6b24",
+      "offline": "Offline e19d",
+      "unoffered": "Unoffered 2147",
+      "badsettings": "Badsettings bae8",
+      "incomplete": "Incomplete b76d",
+      "build": "Build Team eb15",
+      "pair": "Pair Team 917c",
+      "squad": "Squad Team 709d",
+      "home": "Home Team 8992",
+      "launchOrg": "LaunchOrg Org 7d6b",
+      "hostOrg": "HostOrg Org bd18"
+    }
+  },
+  "browserErrors": [],
+  "summary": {
+    "pass": 0,
+    "fail": 2
+  },
+  "completedAt": "2026-11-18T08:37:56.611Z"
+}

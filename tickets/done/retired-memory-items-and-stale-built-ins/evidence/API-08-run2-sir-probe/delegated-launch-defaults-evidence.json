@@ -1,0 +1,95 @@
+{
+  "startedAt": "2026-11-18T08:39:47.093Z",
+  "cases": {
+    "SIR-002": {
+      "title": "AC-003/AC-004: an upgrade around real runs deletes exactly the feature data once; other files and .env byte-identical; a second start changes nothing; runs listed and resumed; no feature UI; retired keys refused",
+      "result": "Fail",
+      "ms": 37400,
+      "error": "every other file is byte-identical",
+      "details": [
+        "memory/episodic/index.md"
+      ]
+    }
+  },
+  "processes": [
+    {
+      "label": "backend",
+      "pid": 93666
+    },
+    {
+      "label": "frontend",
+      "pid": 94658
+    },
+    {
+      "label": "backend-upgraded",
+      "pid": 5162
+    }
+  ],
+  "cleanup": [
+    {
+      "pid": 5162,
+      "stop": "SIGKILL"
+    },
+    {
+      "pid": 94658,
+      "stop": "SIGTERM"
+    },
+    {
+      "pid": 93666,
+      "stop": "already-exited"
+    },
+    {
+      "removed": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-FM1yS3"
+    }
+  ],
+  "observations": [],
+  "ownedRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-FM1yS3",
+  "backendUrl": "http://127.0.0.1:61106",
+  "frontUrl": "http://127.0.0.1:61107",
+  "definitions": {
+    "ids": {
+      "manager": "manager-45c8",
+      "lead": "lead-e177",
+      "worker": "worker-69cd",
+      "plain": "plain-d5c0",
+      "engineer": "engineer-24d1",
+      "reviewer": "reviewer-c071",
+      "writer": "writer-c455",
+      "offline": "offline-d02c",
+      "unoffered": "unoffered-8af5",
+      "badsettings": "badsettings-0137",
+      "incomplete": "incomplete-bc80",
+      "build": "build-team-50ad",
+      "pair": "pair-team-e72a",
+      "squad": "squad-team-8526",
+      "home": "home-team-5f05",
+      "launchOrg": "launchorg-org-2904",
+      "hostOrg": "hostorg-org-e45d"
+    },
+    "names": {
+      "manager": "Manager 45c8",
+      "lead": "Lead e177",
+      "worker": "Worker 69cd",
+      "plain": "Plain d5c0",
+      "engineer": "Engineer 24d1",
+      "reviewer": "Reviewer c071",
+      "writer": "Writer c455",
+      "offline": "Offline d02c",
+      "unoffered": "Unoffered 8af5",
+      "badsettings": "Badsettings 0137",
+      "incomplete": "Incomplete bc80",
+      "build": "Build Team 50ad",
+      "pair": "Pair Team e72a",
+      "squad": "Squad Team 8526",
+      "home": "Home Team 5f05",
+      "launchOrg": "LaunchOrg Org 2904",
+      "hostOrg": "HostOrg Org e45d"
+    }
+  },
+  "browserErrors": [],
+  "summary": {
+    "pass": 0,
+    "fail": 1
+  },
+  "completedAt": "2026-11-18T08:41:47.172Z"
+}

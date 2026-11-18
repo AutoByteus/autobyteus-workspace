@@ -18502,7 +18502,7 @@
      "results": [],
      "refused": {
       "code": "TARGET_AGENT_RUN_NOT_ACTIVE",
-      "message": "No running agent has the run id 'project_task_manager_7c8d', so the message was not sent. Use an exact run id you were given: a sender run id (from a message or your new task), or a run id delegate_task returned to you."
+      "message": "No running agent has the run id 'project_task_manager_7c8d', so the message was not sent. A stopped agent is not woken. Use an exact run id you were given: a sender run id (from a message or your new task), a run id delegate_task returned to you, or one list_running_agents lists. For an agent on another node, also pass node."
      },
      "receiverSees": [],
      "disk": {
@@ -22025,17 +22025,23 @@
     },
     {
      "id": "U9",
-     "title": "Refused: runs of different open Tasks",
+     "title": "Delivered: runs of different open Tasks (autobyteus-492, CM-13)",
      "cases": [
       "R-7"
      ],
      "call": "`send_message_to(target_agent_run_id: \"image_maker_44a1\", content: \"…\")`, by `research_agent_8f80`",
-     "results": [],
-     "refused": {
-      "code": "TASK_AGENT_RESOURCE_CONFLICT",
-      "message": "You can't message image_maker_44a1: it isn't part of your Task. Only runs that work on the same Task can message each other by run id."
-     },
-     "receiverSees": [],
+     "results": [
+      {
+       "accepted": true,
+       "code": "DELIVERED",
+       "message": "Message delivered.",
+       "target_agent_run_id": "image_maker_44a1"
+      }
+     ],
+     "refused": null,
+     "receiverSees": [
+      "You received a message from the agent with sender run id \"research_agent_8f80\"."
+     ],
      "disk": {
       "A:memory/agent_teams/software_engineering_team_73d7/team_run_execution_tree.json": {
        "schemaVersion": 1,
@@ -22303,6 +22309,15 @@
         "messageType": "agent_message",
         "referenceFiles": [],
         "createdAt": "2026-11-01T13:00:00.000Z"
+       },
+       {
+        "messageId": "collabmsg_U9",
+        "senderAgentRunId": "research_agent_8f80",
+        "receiverAgentRunId": "image_maker_44a1",
+        "content": "…",
+        "messageType": "agent_message",
+        "referenceFiles": [],
+        "createdAt": "2026-11-01T14:50:00.000Z"
        }
       ],
       "A:memory/agent_teams/software_engineering_team_73d7/solution_designer_7a33/ (memory)": "created",
@@ -22391,7 +22406,18 @@
         }
        ]
       },
-      "A:memory/agents/research_agent_8f80/ (memory)": "created"
+      "A:memory/agents/research_agent_8f80/ (memory)": "created",
+      "A:memory/agents/research_agent_8f80/communication_messages_active.jsonl": [
+       {
+        "messageId": "collabmsg_U9",
+        "senderAgentRunId": "research_agent_8f80",
+        "receiverAgentRunId": "image_maker_44a1",
+        "content": "…",
+        "messageType": "agent_message",
+        "referenceFiles": [],
+        "createdAt": "2026-11-01T14:50:00.000Z"
+       }
+      ]
      },
      "trees": {
       "A": [
@@ -22804,6 +22830,15 @@
         "messageType": "agent_message",
         "referenceFiles": [],
         "createdAt": "2026-11-01T13:00:00.000Z"
+       },
+       {
+        "messageId": "collabmsg_U9",
+        "senderAgentRunId": "research_agent_8f80",
+        "receiverAgentRunId": "image_maker_44a1",
+        "content": "…",
+        "messageType": "agent_message",
+        "referenceFiles": [],
+        "createdAt": "2026-11-01T14:50:00.000Z"
        }
       ],
       "A:memory/agent_teams/software_engineering_team_73d7/solution_designer_7a33/ (memory)": "created",
@@ -22892,7 +22927,18 @@
         }
        ]
       },
-      "A:memory/agents/research_agent_8f80/ (memory)": "created"
+      "A:memory/agents/research_agent_8f80/ (memory)": "created",
+      "A:memory/agents/research_agent_8f80/communication_messages_active.jsonl": [
+       {
+        "messageId": "collabmsg_U9",
+        "senderAgentRunId": "research_agent_8f80",
+        "receiverAgentRunId": "image_maker_44a1",
+        "content": "…",
+        "messageType": "agent_message",
+        "referenceFiles": [],
+        "createdAt": "2026-11-01T14:50:00.000Z"
+       }
+      ]
      },
      "trees": {
       "A": [
@@ -23265,6 +23311,15 @@
         "createdAt": "2026-11-01T13:00:00.000Z"
        },
        {
+        "messageId": "collabmsg_U9",
+        "senderAgentRunId": "research_agent_8f80",
+        "receiverAgentRunId": "image_maker_44a1",
+        "content": "…",
+        "messageType": "agent_message",
+        "referenceFiles": [],
+        "createdAt": "2026-11-01T14:50:00.000Z"
+       },
+       {
         "messageId": "collabmsg_U4",
         "senderAgentRunId": "solution_designer_7a33",
         "receiverAgentRunId": "image_maker_44a1",
@@ -23361,6 +23416,17 @@
        ]
       },
       "A:memory/agents/research_agent_8f80/ (memory)": "created",
+      "A:memory/agents/research_agent_8f80/communication_messages_active.jsonl": [
+       {
+        "messageId": "collabmsg_U9",
+        "senderAgentRunId": "research_agent_8f80",
+        "receiverAgentRunId": "image_maker_44a1",
+        "content": "…",
+        "messageType": "agent_message",
+        "referenceFiles": [],
+        "createdAt": "2026-11-01T14:50:00.000Z"
+       }
+      ],
       "A:projects/project_8f21/tasks/project_task_8d8d/agent_run_resources.json": {
        "taskId": "project_task_8d8d",
        "agentRunResources": [
@@ -25358,6 +25424,470 @@
       }
      ],
      "refused": null,
+     "receiverSees": [],
+     "disk": {
+      "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json": {
+       "subjectKind": "agent_org",
+       "createdAt": "2026-11-01T10:00:00.000Z",
+       "archivedAt": null,
+       "applicationBinding": null,
+       "handoffs": [
+        {
+         "from": "/dev_team/dev_lead",
+         "to": "/ceo_agent",
+         "rules": [
+          "When the release is ready …"
+         ]
+        }
+       ],
+       "rootOrg": {
+        "address": "/",
+        "orgDefinitionId": "company-org",
+        "orgDefinitionName": "Company Org",
+        "orgRunId": "company_org_9d00",
+        "defaultLaunchConfiguration": {
+         "…": "…"
+        },
+        "members": [
+         {
+          "address": "/ceo_agent",
+          "agentDefinitionId": "ceo-agent",
+          "agentRunId": "ceo_agent_1f2e",
+          "launchConfiguration": {
+           "…": "…"
+          }
+         },
+         {
+          "address": "/cto",
+          "agentDefinitionId": "cto",
+          "agentRunId": "cto_2a3b",
+          "launchConfiguration": {
+           "…": "…"
+          }
+         },
+         {
+          "address": "/Teacher",
+          "agentDefinitionId": "Teacher",
+          "agentRunId": "Teacher_5c6d",
+          "launchConfiguration": {
+           "…": "…"
+          }
+         },
+         {
+          "address": "/dev_team",
+          "teamDefinitionId": "dev-team",
+          "teamRunId": "dev_team_6b70",
+          "coordinatorAddress": "/dev_team/dev_lead",
+          "members": [
+           {
+            "address": "/dev_team/dev_lead",
+            "agentDefinitionId": "dev-lead",
+            "agentRunId": "dev_lead_4c3d",
+            "launchConfiguration": {
+             "…": "…"
+            }
+           },
+           {
+            "address": "/dev_team/qa",
+            "agentDefinitionId": "qa",
+            "agentRunId": "qa_8e9f",
+            "launchConfiguration": {
+             "…": "…"
+            }
+           }
+          ]
+         }
+        ]
+       }
+      },
+      "A:memory/agent_org_run_history_index.json": [
+       {
+        "orgRunId": "company_org_9d00",
+        "orgDefinitionId": "company-org",
+        "orgDefinitionName": "Company Org",
+        "workspaceRootPath": "/Users/me/projects/x",
+        "summary": "…",
+        "createdAt": "2026-11-01T10:00:00.000Z",
+        "archivedAt": null,
+        "terminatedAt": null
+       }
+      ],
+      "A:projects/project_8f21/tasks/project_task_4d4d/task.json": {
+       "taskId": "project_task_4d4d",
+       "projectId": "project_8f21",
+       "taskKey": "demo-4",
+       "title": "Run the study program",
+       "description": "…",
+       "status": "IN_PROGRESS",
+       "dependsOnTaskIds": [],
+       "partOfTaskId": null,
+       "createdAt": "2026-11-01T10:05:00.000Z",
+       "updatedAt": "2026-11-01T10:05:00.000Z",
+       "contextFiles": [],
+       "comments": []
+      },
+      "A:projects/project_8f21/tasks/project_task_5e5e/task.json": {
+       "taskId": "project_task_5e5e",
+       "projectId": "project_8f21",
+       "taskKey": "demo-5",
+       "title": "Prepare the release notes",
+       "description": "…",
+       "status": "IN_PROGRESS",
+       "dependsOnTaskIds": [],
+       "partOfTaskId": null,
+       "createdAt": "2026-11-01T10:06:00.000Z",
+       "updatedAt": "2026-11-01T10:06:00.000Z",
+       "contextFiles": [],
+       "comments": []
+      },
+      "A:memory/agent_orgs/company_org_9d00/agent_org_communication_messages_active.jsonl": [
+       {
+        "messageId": "collabmsg_O1",
+        "senderAgentRunId": "ceo_agent_1f2e",
+        "receiverAgentRunId": "cto_2a3b",
+        "content": "Plan the quarter …",
+        "messageType": "agent_message",
+        "referenceFiles": [],
+        "createdAt": "2026-11-01T11:00:00.000Z"
+       },
+       {
+        "messageId": "collabmsg_O2",
+        "senderAgentRunId": "ceo_agent_1f2e",
+        "receiverAgentRunId": "dev_lead_4c3d",
+        "content": "Ship the fix …",
+        "messageType": "agent_message",
+        "referenceFiles": [],
+        "createdAt": "2026-11-01T11:10:00.000Z"
+       },
+       {
+        "messageId": "collabmsg_O3",
+        "senderAgentRunId": "dev_lead_4c3d",
+        "receiverAgentRunId": "qa_8e9f",
+        "content": "Please test …",
+        "messageType": "agent_message",
+        "referenceFiles": [],
+        "createdAt": "2026-11-01T11:20:00.000Z"
+       },
+       {
+        "messageId": "collabmsg_O4",
+        "senderAgentRunId": "dev_lead_9a01",
+        "receiverAgentRunId": "ceo_agent_1f2e",
+        "content": "The release is ready …",
+        "messageType": "agent_message",
+        "referenceFiles": [],
+        "createdAt": "2026-11-01T13:00:00.000Z"
+       },
+       {
+        "messageId": "collabmsg_O5",
+        "senderAgentRunId": "dev_lead_9a01",
+        "receiverAgentRunId": "Teacher_5c6d",
+        "content": "Need a review …",
+        "messageType": "agent_message",
+        "referenceFiles": [],
+        "createdAt": "2026-11-01T13:10:00.000Z"
+       }
+      ],
+      "A:memory/agent_orgs/company_org_9d00/cto_2a3b/ (memory)": "created",
+      "A:memory/agent_orgs/company_org_9d00/dev_team_6b70/dev_lead_4c3d/ (memory)": "created",
+      "A:memory/agent_orgs/company_org_9d00/dev_team_6b70/qa_8e9f/ (memory)": "created",
+      "A:memory/agent_teams/dev_team_9a9a/team_run_execution_tree.json": {
+       "schemaVersion": 1,
+       "createdAt": "2026-11-01T12:00:00.000Z",
+       "archivedAt": null,
+       "applicationBinding": null,
+       "handoffs": [
+        {
+         "from": "/dev_lead",
+         "to": "/ceo_agent",
+         "rules": [
+          "When the release is ready …"
+         ]
+        }
+       ],
+       "rootTeam": {
+        "address": "/",
+        "teamDefinitionId": "dev-team",
+        "teamDefinitionName": "Dev Team",
+        "teamRunId": "dev_team_9a9a",
+        "coordinatorAddress": "/dev_lead",
+        "defaultLaunchConfiguration": {
+         "…": "…"
+        },
+        "members": [
+         {
+          "address": "/dev_lead",
+          "agentDefinitionId": "dev-lead",
+          "role": "…",
+          "description": "…",
+          "agentRunId": "dev_lead_9a01",
+          "platformAgentRunId": "…",
+          "launchConfiguration": {
+           "…": "…"
+          }
+         },
+         {
+          "address": "/qa",
+          "agentDefinitionId": "qa",
+          "role": "…",
+          "description": "…",
+          "agentRunId": "qa_9a02",
+          "platformAgentRunId": "…",
+          "launchConfiguration": {
+           "…": "…"
+          }
+         }
+        ]
+       },
+       "delegatedFrom": {
+        "delegatingRun": {
+         "kind": "agent_org",
+         "runId": "company_org_9d00"
+        },
+        "delegatorAgentRunId": "ceo_agent_1f2e"
+       }
+      },
+      "A:memory/team_run_history_index.json": [
+       {
+        "teamRunId": "dev_team_9a9a",
+        "teamDefinitionId": "dev-team",
+        "teamDefinitionName": "Dev Team",
+        "workspaceRootPath": "/Users/me/projects/x",
+        "summary": "…",
+        "createdAt": "2026-11-01T12:00:00.000Z",
+        "archivedAt": null,
+        "terminatedAt": null
+       }
+      ],
+      "A:projects/project_8f21/tasks/project_task_4d4d/agent_run_resources.json": {
+       "taskId": "project_task_4d4d",
+       "agentRunResources": [
+        {
+         "role": "assigned",
+         "delegatedFrom": {
+          "delegatingRun": {
+           "kind": "agent_org",
+           "runId": "company_org_9d00"
+          },
+          "delegatorAgentRunId": "ceo_agent_1f2e"
+         },
+         "recipientAddress": "/dev_team",
+         "agentRun": {
+          "kind": "team",
+          "teamRunId": "dev_team_9a9a",
+          "coordinatorAgentRunId": "dev_lead_9a01"
+         },
+         "linkedAt": "2026-11-01T12:00:00.000Z",
+         "start": "started",
+         "closedAt": null
+        }
+       ]
+      },
+      "A:memory/agent_teams/dev_team_9a9a/dev_lead_9a01/ (memory)": "created",
+      "A:memory/agent_teams/dev_team_9a9a/team_communication_messages_active.jsonl": [
+       {
+        "messageId": "collabmsg_O4",
+        "senderAgentRunId": "dev_lead_9a01",
+        "receiverAgentRunId": "ceo_agent_1f2e",
+        "content": "The release is ready …",
+        "messageType": "agent_message",
+        "referenceFiles": [],
+        "createdAt": "2026-11-01T13:00:00.000Z"
+       },
+       {
+        "messageId": "collabmsg_O5",
+        "senderAgentRunId": "dev_lead_9a01",
+        "receiverAgentRunId": "Teacher_5c6d",
+        "content": "Need a review …",
+        "messageType": "agent_message",
+        "referenceFiles": [],
+        "createdAt": "2026-11-01T13:10:00.000Z"
+       }
+      ],
+      "A:memory/agent_orgs/company_org_9d00/ceo_agent_1f2e/ (memory)": "created",
+      "A:memory/agent_orgs/company_org_9d00/Teacher_5c6d/ (memory)": "created",
+      "A:memory/agents/release_agent_66c3/run_metadata.json": {
+       "runId": "release_agent_66c3",
+       "agentDefinitionId": "release-agent",
+       "address": "/release_agent",
+       "workspaceRootPath": "/Users/me/projects/x",
+       "memoryDir": "…/memory/agents/release_agent_66c3",
+       "llmModelIdentifier": "…",
+       "llmConfig": {
+        "…": "…"
+       },
+       "autoExecuteTools": true,
+       "runtimeKind": "…",
+       "platformAgentRunId": "…",
+       "startedAt": "2026-11-01T14:00:00.000Z",
+       "launchSource": {
+        "origin": "agent_default",
+        "fallbacks": []
+       },
+       "delegatedFrom": {
+        "delegatingRun": {
+         "kind": "agent_org",
+         "runId": "company_org_9d00"
+        },
+        "delegatorAgentRunId": "dev_lead_4c3d"
+       }
+      },
+      "A:memory/run_history_index.json": [
+       {
+        "runId": "release_agent_66c3",
+        "agentDefinitionId": "release-agent",
+        "agentName": "Release Agent",
+        "workspaceRootPath": "/Users/me/projects/x",
+        "summary": "…",
+        "createdAt": "2026-11-01T14:00:00.000Z",
+        "archivedAt": null,
+        "terminatedAt": null
+       }
+      ],
+      "A:projects/project_8f21/tasks/project_task_5e5e/agent_run_resources.json": {
+       "taskId": "project_task_5e5e",
+       "agentRunResources": [
+        {
+         "role": "assigned",
+         "delegatedFrom": {
+          "delegatingRun": {
+           "kind": "agent_org",
+           "runId": "company_org_9d00"
+          },
+          "delegatorAgentRunId": "dev_lead_4c3d"
+         },
+         "recipientAddress": "/release_agent",
+         "agentRun": {
+          "kind": "agent",
+          "agentRunId": "release_agent_66c3"
+         },
+         "linkedAt": "2026-11-01T14:00:00.000Z",
+         "start": "started",
+         "closedAt": null
+        }
+       ]
+      },
+      "A:memory/agents/release_agent_66c3/ (memory)": "created"
+     },
+     "trees": {
+      "A": [
+       {
+        "run": {
+         "kind": "agent_org",
+         "runId": "company_org_9d00"
+        },
+        "tree": {
+         "kind": "agent_org",
+         "runId": "company_org_9d00"
+        },
+        "parent": null,
+        "tasks": [],
+        "agents": [
+         {
+          "agentRunId": "Teacher_5c6d",
+          "address": "/Teacher"
+         },
+         {
+          "agentRunId": "ceo_agent_1f2e",
+          "address": "/ceo_agent"
+         },
+         {
+          "agentRunId": "cto_2a3b",
+          "address": "/cto"
+         },
+         {
+          "agentRunId": "dev_lead_4c3d",
+          "address": "/dev_team/dev_lead"
+         },
+         {
+          "agentRunId": "qa_8e9f",
+          "address": "/dev_team/qa"
+         }
+        ]
+       },
+       {
+        "run": {
+         "kind": "agent_team",
+         "runId": "dev_team_9a9a"
+        },
+        "tree": {
+         "kind": "agent_org",
+         "runId": "company_org_9d00"
+        },
+        "parent": {
+         "kind": "agent_org",
+         "runId": "company_org_9d00"
+        },
+        "delegatorAgentRunId": "ceo_agent_1f2e",
+        "tasks": [
+         {
+          "taskId": "project_task_4d4d",
+          "role": "assigned",
+          "open": true,
+          "assigner": {
+           "kind": "agent_org",
+           "runId": "company_org_9d00"
+          }
+         }
+        ],
+        "agents": [
+         {
+          "agentRunId": "dev_lead_9a01",
+          "address": "/dev_lead"
+         },
+         {
+          "agentRunId": "qa_9a02",
+          "address": "/qa"
+         }
+        ]
+       },
+       {
+        "run": {
+         "kind": "agent",
+         "runId": "release_agent_66c3"
+        },
+        "tree": {
+         "kind": "agent_org",
+         "runId": "company_org_9d00"
+        },
+        "parent": {
+         "kind": "agent_org",
+         "runId": "company_org_9d00"
+        },
+        "delegatorAgentRunId": "dev_lead_4c3d",
+        "tasks": [
+         {
+          "taskId": "project_task_5e5e",
+          "role": "assigned",
+          "open": true,
+          "assigner": {
+           "kind": "agent_org",
+           "runId": "company_org_9d00"
+          }
+         }
+        ],
+        "agents": [
+         {
+          "agentRunId": "release_agent_66c3",
+          "address": "/release_agent"
+         }
+        ]
+       }
+      ]
+     }
+    },
+    {
+     "id": "O9",
+     "title": "The copy's lead uses its team's old name: corrected, never the org's own member",
+     "cases": [
+      "A-5",
+      "A-6"
+     ],
+     "call": "`send_message_to(recipient_address: \"/dev_team/qa\", content: \"Please test …\")`, by `dev_lead_9a01` (a member of the copy, O5)",
+     "results": [],
+     "refused": {
+      "code": "COLLABORATION_TARGET_NOT_FOUND",
+      "message": "/dev_team/qa is no longer an address: your team is addressed from its own root. Use /qa."
+     },
      "receiverSees": [],
      "disk": {
       "A:memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json": {

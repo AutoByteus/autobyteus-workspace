@@ -196,8 +196,8 @@ One visible text also still differs, kept because the run-settings UI/UX spec ma
   team member, delegated run, in any Project) is told its path and shares it;
   the agent and its skills write and organize it, and the system never deletes
   it. An agent has one when `semanticMemoryEnabled` is on in its definition.
-  It is not the memory of a run, and not the `semantic.jsonl` rows of old run
-  folders or the library's early `SemanticItem` code
+  It is not the memory of a run, and not the retired `semantic.jsonl` rows of
+  old run folders (unread, kept on disk)
   ([agent_memory.md](autobyteus-server-ts/docs/modules/agent_memory.md)).
 - **Work Journal:** a run's readable Markdown record, rendered from its raw
   traces by the journal service; one file per raw-trace segment

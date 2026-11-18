@@ -1,5 +1,6 @@
 import type { AvailableCollaboratorEntry } from "../../collaborators/available-collaborator-entry.js";
 import type { RemoteChannelRefusal } from "./remote-run-channel.js";
+import type { RunningAgentEntry } from "../../running/running-agent-entry.js";
 
 /** A registered peer as an agent reads it (autobyteus-261 DEC-402): its name (the `node` value) and its status now. */
 export type PeerNodeStatus = Readonly<{ name: string; status: "available" | "unavailable" }>;
@@ -14,6 +15,11 @@ export interface PeerDiscoveryChannel {
   listPeerNodes(): Promise<readonly PeerNodeStatus[] | RemoteChannelRefusal>;
   /** What the peer named `node` offers for delegation; a refusal with the same texts as `delegate_task`. */
   listAvailableAgents(node: string): Promise<readonly AvailableCollaboratorEntry[] | RemoteChannelRefusal>;
+  /**
+   * autobyteus-492 DS-002: the running runs a person started on the peer named `node`, asked now, each entry with `node`;
+   * the same refusals as `listAvailableAgents`.
+   */
+  listRunningAgents(node: string): Promise<readonly RunningAgentEntry[] | RemoteChannelRefusal>;
 }
 
 /**

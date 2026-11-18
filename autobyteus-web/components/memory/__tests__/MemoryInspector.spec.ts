@@ -18,14 +18,14 @@ describe('MemoryInspector', () => {
     expect(mountIt().text()).toContain('Select a memory entry');
   });
 
-  it('has two run tabs, Work Journal first and selected by default; no Working Context, Episodic or Semantic tab', () => {
+  it('has two run tabs, Work Journal first and selected by default; no Working Context tab', () => {
     const { store, mountIt } = mountInspector();
     store.target = { kind: 'agent_run', runId: 'run-1', agentDisplayName: 'Codex', workspaceRootPath: '/w/app' };
     store.activeTab = 'journal';
     const wrapper = mountIt();
     expect(tabLabels(wrapper)).toEqual(['Work Journal', 'Raw Traces']);
     expect(wrapper.find('[role="tab"][aria-selected="true"]').text()).toBe('Work Journal');
-    expect(wrapper.text()).not.toMatch(/working context|episodic|semantic/i);
+    expect(wrapper.text()).not.toMatch(/working context/i);
     expect(wrapper.find('[data-test="work-journal"]').exists()).toBe(true);
   });
 

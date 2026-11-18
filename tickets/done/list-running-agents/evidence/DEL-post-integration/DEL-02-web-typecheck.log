@@ -1,0 +1,9 @@
+# Command (worktree root): pnpm -C autobyteus-web typecheck
+# Merged state df6992e0c1
+[typecheck] Nuxt app (tsconfig.json): 60 errors, exit 2, 68.0s
+[typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 2.8s
+[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 1.1s
+[typecheck] cross-package tests (tsconfig.cross-package-tests.json): 0 errors, exit 0, 56.3s
+[typecheck] production errors: 0; test-file errors: 87 in 37 files (baseline 87 in 37 files)
+[typecheck] PASS
+exit=0

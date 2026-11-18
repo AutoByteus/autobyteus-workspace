@@ -9,15 +9,34 @@
 export const SEND_MESSAGE_TO_LLM_DESCRIPTION = [
   "Send a self-contained request, result, question or blocker to an agent or agent team that already exists. Use exactly one selector, never both:",
   "- recipient_address: an exact address beginning with '/'. A team's address reaches its coordinator. An address inside your own team reaches the member of your own team.",
-  "- target_agent_run_id: an agent's run id. For a task agent team, use its coordinator's run id; a team's own run id is refused.",
-  "send_message_to never creates an agent; to have work done by a new agent, use delegate_task. It returns the run id of the agent that received the message as target_agent_run_id, or leaves it out, with the reason, when the message can't be delivered.",
+  "- target_agent_run_id: the run id of any running agent. For an agent team, use its coordinator's run id; a team's own run id is refused. For an agent on another node, also pass node.",
+  "send_message_to never creates an agent and never wakes a stopped one; to have work done by a new agent, use delegate_task. The message waits for the receiver's current turn. It returns the run id of the agent that received the message as target_agent_run_id, or leaves it out, with the reason, when the message can't be delivered.",
 ].join("\n");
 
 export const SEND_MESSAGE_TO_RECIPIENT_ADDRESS_DESCRIPTION =
   "An exact address beginning with '/'. Relative addresses, bare names and '/' alone are not valid.";
 
 export const SEND_MESSAGE_TO_TARGET_AGENT_RUN_ID_DESCRIPTION =
-  "An agent's run id. Unknown run ids are rejected.";
+  "An agent's run id. A run id that is not running is refused.";
+
+export const SEND_MESSAGE_TO_NODE_DESCRIPTION =
+  "Optional, only with target_agent_run_id: the name of a peer node registered on this node, when the agent runs on that node. A message you received from another node names its node: pass it to reply.";
+
+/** `node` needs a sender inside a collaboration run (the run that sends it to the peer and keeps its message log). */
+export const SEND_MESSAGE_TO_NODE_NEEDS_COLLABORATION_RUN =
+  "send_message_to with node needs an agent run that collaborates, so nothing was sent to another node.";
+
+/** `node` with `recipient_address`: an address names an agent of this node's runs only. */
+export const SEND_MESSAGE_TO_NODE_WITH_ADDRESS =
+  "send_message_to takes node only with target_agent_run_id: an address can't name an agent on another node. Use the agent's run id with node.";
+
+/** The refusal of a run ID no running agent of this node has (REQ-010, PRB-001). */
+export const targetAgentNotRunningText = (targetAgentRunId: string): string =>
+  `No running agent has the run id '${targetAgentRunId}', so the message was not sent. A stopped agent is not woken. Use an exact run id you were given: a sender run id (from a message or your new task), a run id delegate_task returned to you, or one list_running_agents lists. For an agent on another node, also pass node.`;
+
+/** A team run's ID given to `send_message_to` (R-12, SR-071; BEH-006): talk with the team through its coordinator. */
+export const targetIsTeamRunText = (teamRunId: string, coordinatorAgentRunId: string): string =>
+  `${teamRunId} is a task agent team's run id, and send_message_to talks with agents. To talk with the team, use its coordinator's run id: ${coordinatorAgentRunId}.`;
 
 export const DELEGATE_TASK_LLM_DESCRIPTION = [
   "Delegate a task to an agent or agent team. Use exactly one mode:",

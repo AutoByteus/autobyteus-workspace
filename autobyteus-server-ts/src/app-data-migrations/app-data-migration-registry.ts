@@ -37,6 +37,7 @@ import { ProjectsPerFolderV1AppDataMigration } from "./migrations/projects-per-f
 import { ProjectTaskKeysV1AppDataMigration } from "./migrations/project-task-keys-v1/project-task-keys-v1-app-data-migration.js";
 import { ProjectTaskTitlesAppDataMigration } from "./migrations/project-task-titles/project-task-titles-app-data-migration.js";
 import { RemoveBuiltInProjectTaskManagerMigration } from "./migrations/remove-built-in-project-task-manager/remove-built-in-project-task-manager-migration.js";
+import { RemoveRetiredBuiltInAgentsMigration } from "./migrations/remove-retired-built-in-agents/remove-retired-built-in-agents-migration.js";
 import { TaskAgentOwnRunV1AppDataMigration } from "./migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.js";
 import { CollaboratorsToDelegatedRunsV1AppDataMigration } from "./migrations/collaborators-to-delegated-runs-v1/collaborators-to-delegated-runs-v1-app-data-migration.js";
 import { AppendOnlyMessageLogsV1AppDataMigration } from "./migrations/append-only-message-logs-v1/append-only-message-logs-v1-app-data-migration.js";
@@ -173,6 +174,13 @@ const registeredMigrations = (): AppDataMigrationDefinition[] => {
     // autobyteus-500 FU-020: a delegated run's stored attachment links name its own run (a backup of each file first),
     // then its follow-up after 20261017_task_agent_own_run_v1, the one later writer of a scanned folder (M-7).
     ...createDelegatedRunOwnAttachmentLinksMigrations(appDataDir, memoryDir),
+    // autobyteus-491: deletes the installed folders of the retired built-in Skill Self-Evolver and Memory Compactor;
+    // their runs stay. Depends on nothing; no later migration reads agent folders. (After 500's attachment-link
+    // migrations: they rewrite raw traces under memory/, this deletes definition folders under agents/; nothing shared.)
+    new RemoveRetiredBuiltInAgentsMigration([
+      { itemId: "skillSelfEvolverDir", dirPath: path.join(config.getAgentsDir(), "autobyteus-skill-evolver") },
+      { itemId: "memoryCompactorDir", dirPath: path.join(config.getAgentsDir(), "autobyteus-memory-compactor") },
+    ]),
   ];
 };
 

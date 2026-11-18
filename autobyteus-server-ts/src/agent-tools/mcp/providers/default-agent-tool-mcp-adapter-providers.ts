@@ -8,6 +8,7 @@ import { TaskDelegationToolsMcpAdapterProvider } from "./task-delegation-tools-m
 import { GetHandoffRulesMcpAdapterProvider } from "./get-handoff-rules-mcp-adapter-provider.js";
 import { ListAvailableAgentsMcpAdapterProvider } from "./list-available-agents-mcp-adapter-provider.js";
 import { ListPeerNodesMcpAdapterProvider } from "./list-peer-nodes-mcp-adapter-provider.js";
+import { ListRunningAgentsMcpAdapterProvider } from "./list-running-agents-mcp-adapter-provider.js";
 import { ListAvailableAgentRuntimesMcpAdapterProvider } from "./list-available-agent-runtimes-mcp-adapter-provider.js";
 import { ModelRoutingToolsMcpAdapterProvider } from "./model-routing-tools-mcp-adapter-provider.js";
 
@@ -24,6 +25,7 @@ export const buildDefaultAgentToolMcpAdapterProviders = (input: Readonly<{ peerD
   new PublishArtifactsMcpAdapterProvider(),
   new ListAvailableAgentsMcpAdapterProvider(input.peerDiscovery),
   new ListPeerNodesMcpAdapterProvider(input.peerDiscovery),
+  new ListRunningAgentsMcpAdapterProvider(input.peerDiscovery),
   new ListAvailableAgentRuntimesMcpAdapterProvider(),
   new ModelRoutingToolsMcpAdapterProvider(),
   new ProjectTaskToolsMcpAdapterProvider(),

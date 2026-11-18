@@ -1,0 +1,12 @@
+# API-08 pnpm -C autobyteus-web test:e2e:skill-improvement-removal --output-dir evidence/API-08-sir-probe | commit 53eb3521f1 (code 91ee1603a5) + SIR-002 Memory Compactor | Node v22.23.1 | 2026-11-18T08:35:54Z | load 106.16 93.59 87.66
+
+> autobyteus@1.5.13-beta.10 test:e2e:skill-improvement-removal /Users/normy/autobyteus_org/autobyteus-worktrees/retired-memory-items-and-stale-built-ins/autobyteus-web
+> node tests/e2e/delegated-launch-defaults-probe.mjs --cases SIR-001,SIR-002 --output-dir /Users/normy/autobyteus_org/autobyteus-worktrees/retired-memory-items-and-stale-built-ins/tickets/in-progress/retired-memory-items-and-stale-built-ins/evidence/API-08-sir-probe
+
+(node:68973) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+SIR-001 Fail BEH-003: send_message_to by run id through real tool calls: standalone → standalone delivered, unknown run not active, Team member → member, a Team copy's run id refused naming its coordinator, its coordinator reached — standalone → standalone should be DELIVERED
+SIR-002 Fail AC-003/AC-004: an upgrade around real runs deletes exactly the feature data once; other files and .env byte-identical; a second start changes nothing; runs listed and resumed; no feature UI; retired keys refused — every feature path is gone
+Summary: 0 Pass, 2 Fail
+ ELIFECYCLE  Command failed with exit code 1.
+exit 1

@@ -12,12 +12,21 @@ import {
   getActiveCollaborationRootDirectory,
 } from "../../agent-collaboration/execution/services/active-collaboration-root-directory.js";
 import { sameRootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
-import { otherTaskRefusal, type CrossRunMessageDelivery } from "../../agent-collaboration/communication/cross-run-message-delivery.js";
+import type { CrossRunMessageDelivery } from "../../agent-collaboration/communication/cross-run-message-delivery.js";
 import type { DelegationIndex } from "../../agent-collaboration/delegation/delegation-index.js";
+import type { RemoteRunChannel } from "../../agent-collaboration/execution/remote/remote-run-channel.js";
+import { REMOTE_REFUSAL, REMOTE_ROOT_REFUSAL_TEXT } from "../../agent-collaboration/execution/remote/remote-refusal-codes.js";
+import {
+  SEND_MESSAGE_TO_NODE_NEEDS_COLLABORATION_RUN,
+  targetAgentNotRunningText,
+  targetIsTeamRunText,
+} from "../../agent-collaboration/domain/agent-team-collaboration-llm-contract.js";
 
 export type GlobalAgentRunMessageDeliveryInput = {
   sender: AgentRunMessageSenderContext;
   targetAgentRunId: string;
+  /** autobyteus-492: the paired peer node the target runs on, by this node's name for it; absent for this node. */
+  node?: string;
   content: string;
   messageType?: string | null;
   referenceFiles?: string[] | null;
@@ -43,14 +52,26 @@ const normalizeMessageType = (value: string | null | undefined): string => {
 const normalizeReferenceFiles = (referenceFiles: string[] | null | undefined): string[] =>
   Array.isArray(referenceFiles) ? [...referenceFiles] : [];
 
+const notRunning = (targetAgentRunId: string): AgentOperationResult =>
+  ({ accepted: false, code: "TARGET_AGENT_RUN_NOT_ACTIVE", message: targetAgentNotRunningText(targetAgentRunId) });
+
+/**
+ * `send_message_to(target_agent_run_id)`: the order of target resolution for a run-ID message (autobyteus-492: the run ID
+ * is the address, CM-13). Without `node`: the sender's own root; another run of this node (`CrossRunMessageDelivery`:
+ * Task-related, or any running agent); a team run's ID (refused with its coordinator's); a live run without a
+ * collaboration root (a direct post); else "not running". With `node`: the peer, the closed-Task admission of this node
+ * (`closedPeerRunRefusal`), then the sender's root, which sends it to that node.
+ */
 export class GlobalAgentRunMessageRouter {
   constructor(private readonly deps: {
     agentRunManager?: ActiveRunLookup;
     activeRootDirectory?: ActiveCollaborationRootDirectory;
-    /** Messages between two runs of this node (DS-2); created by the composition root. */
-    crossRun: Pick<CrossRunMessageDelivery, "route">;
+    /** Messages between two runs of this node (DS-2, DS-003) and the closed-Task admission of a peer run; the composition root's. */
+    crossRun: Pick<CrossRunMessageDelivery, "route" | "closedPeerRunRefusal">;
     /** A team run's coordinator when the team does not run (R-12, SR-071): the tree, its one owner. */
     coordinators: Pick<DelegationIndex, "teamCoordinatorOf">;
+    /** This node's channel to its peers (`null` where it has none): `findPeer` for `node` (DS-004). */
+    channel(): RemoteRunChannel | null;
   }) {}
 
   async deliver(input: GlobalAgentRunMessageDeliveryInput): Promise<AgentOperationResult> {
@@ -58,6 +79,7 @@ export class GlobalAgentRunMessageRouter {
     const content = normalizeRequired(input.content, "content");
     const messageType = normalizeMessageType(input.messageType);
     const referenceFiles = normalizeReferenceFiles(input.referenceFiles);
+    if (input.node !== undefined) return this.deliverToPeer(input, input.node, targetAgentRunId, content, messageType, referenceFiles);
 
     // A sender inside a collaboration root reaches every AgentRun of that root
     // through the root boundary, which restores a shut-down delegated child first.
@@ -80,8 +102,8 @@ export class GlobalAgentRunMessageRouter {
       return result.accepted ? { ...result, agentRunId: targetAgentRunId } : result;
     }
 
-    // DS-2: an agent of another run that a Task relates to the sender's run (CrossRunMessageDelivery: the tree's rule,
-    // the receiver restored when stopped, both runs' logs).
+    // DS-2, DS-003: an agent of another run of this node: Task-related (CrossRunMessageDelivery: the tree's rule, the
+    // receiver restored when stopped), or any other agent while it runs (never woken); both runs' logs.
     const crossRun = input.sender.memberExecutionContext ? this.deps.crossRun : null;
     if (crossRun) {
       const routed = await crossRun.route({ sender: input.sender.memberExecutionContext!.identity, senderDisplayName: input.sender.senderName,
@@ -93,23 +115,11 @@ export class GlobalAgentRunMessageRouter {
     // team runs or not (R-12, SR-071).
     const coordinator = this.activeRootDirectory.findTeamCoordinator(targetAgentRunId) ?? await this.deps.coordinators.teamCoordinatorOf(targetAgentRunId);
     if (coordinator) {
-      const result = {
-        accepted: false,
-        code: "TARGET_IS_TEAM_RUN",
-        message: `${targetAgentRunId} is a task agent team's run id, and send_message_to talks with agents. To talk with the team, use its coordinator's run id: ${coordinator}.`,
-      } satisfies AgentOperationResult;
-      return result;
+      return { accepted: false, code: "TARGET_IS_TEAM_RUN", message: targetIsTeamRunText(targetAgentRunId, coordinator) };
     }
 
     const targetRun = this.agentRunManager.getActiveRun(targetAgentRunId);
-    if (!targetRun) {
-      const result = {
-        accepted: false,
-        code: "TARGET_AGENT_RUN_NOT_ACTIVE",
-        message: `No running agent has the run id '${targetAgentRunId}', so the message was not sent. Use an exact run id you were given: a sender run id (from a message or your new task), or a run id delegate_task returned to you.`,
-      } satisfies AgentOperationResult;
-      return result;
-    }
+    if (!targetRun) return notRunning(targetAgentRunId);
 
     const senderTeam = input.sender.memberExecutionContext;
     const targetTeam = targetRun.config.memberExecutionContext;
@@ -119,15 +129,11 @@ export class GlobalAgentRunMessageRouter {
       sameRootExecutionIdentity(senderTeam.identity.root, targetTeam.identity.root)
     ) {
       // The sender's root is not active, so same-root delivery is unavailable.
-      const result = {
-        accepted: false,
-        code: "COLLABORATION_ROOT_NOT_ACTIVE",
-        message: ROOT_NOT_ACTIVE_MESSAGE,
-      } satisfies AgentOperationResult;
-      return result;
+      return { accepted: false, code: "COLLABORATION_ROOT_NOT_ACTIVE", message: ROOT_NOT_ACTIVE_MESSAGE };
     }
-    // R-9 (contract §2.2): another run that no Task relates to the sender's run (a legacy run, a deleted Task's run).
-    if (senderTeam && targetTeam && crossRun) return { accepted: false, code: "TASK_AGENT_RESOURCE_CONFLICT", message: otherTaskRefusal(targetAgentRunId) };
+    // An agent of a collaboration root that no live root runs (CrossRunMessageDelivery found none): not running for a
+    // collaboration sender. A direct post stays only between runs without a collaboration root on one side.
+    if (senderTeam && targetTeam) return notRunning(targetAgentRunId);
 
     const messageId = buildDirectAgentRunMessageId();
     const createdAt = new Date().toISOString();
@@ -173,6 +179,29 @@ export class GlobalAgentRunMessageRouter {
         ? `Message was accepted by ${targetAgentRunId}, but outward event publication failed: ${String(publicationError)}`
         : postResult.message ?? `Delivered message to ${targetAgentRunId}.`,
     };
+  }
+
+  /**
+   * DS-004: `send_message_to(node, run ID)`. The peer by this node's name for it (the same refusals as `delegate_task`
+   * with `node`), this node's closed-Task admission of that run (AR-001), then the sender's root sends it to that node.
+   */
+  private async deliverToPeer(input: GlobalAgentRunMessageDeliveryInput, node: string, targetAgentRunId: string, content: string,
+    messageType: string, referenceFiles: string[]): Promise<AgentOperationResult> {
+    const context = input.sender.memberExecutionContext;
+    if (!context) return { accepted: false, code: "COLLABORATION_CONTEXT_REQUIRED", message: SEND_MESSAGE_TO_NODE_NEEDS_COLLABORATION_RUN };
+    const channel = this.deps.channel();
+    if (!channel) return { accepted: false, code: REMOTE_REFUSAL.OFF, message: REMOTE_ROOT_REFUSAL_TEXT.off };
+    const peer = await channel.findPeer(node.trim());
+    if ("accepted" in peer) return peer;
+    const closed = await this.deps.crossRun.closedPeerRunRefusal({ nodeId: peer.nodeId, agentRunId: targetAgentRunId });
+    if (closed) return closed;
+    const senderRoot = this.activeRootDirectory.resolve(context.identity.root);
+    if (!senderRoot) return { accepted: false, code: "COLLABORATION_ROOT_NOT_ACTIVE", message: ROOT_NOT_ACTIVE_MESSAGE };
+    const result = await senderRoot.deliverToPeerRun({
+      sender: Object.freeze({ kind: "agent", identity: context.identity, displayName: input.sender.senderName }),
+      nodeId: peer.nodeId, targetAgentRunId, content, messageType, referenceFiles,
+    });
+    return result.accepted ? { ...result, agentRunId: targetAgentRunId } : result;
   }
 
   private get agentRunManager(): ActiveRunLookup {

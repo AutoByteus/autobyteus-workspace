@@ -25,6 +25,11 @@ export type ResolvedRoot =
  */
 export type CollaborationRootResolver = Readonly<{
   resolveOrRestore(root: RootExecutionIdentity): Promise<ResolvedRoot | null>;
+  /**
+   * autobyteus-492: the run's active root as it is now, never restored (a message by run ID alone reaches only a running
+   * agent, DEC-003); `null` when it is not active.
+   */
+  resolveActive(root: RootExecutionIdentity): ResolvedRoot | null;
 }>;
 
 /** The managers' "no such admitted package" codes; every other failure is a restore failure. */
@@ -49,7 +54,7 @@ const activeOrRestored = async <T>(active: () => T | null, restore: () => Promis
 };
 
 export const createCollaborationRootResolver = (input: Readonly<{
-  standaloneRoots: Pick<StandaloneAgentRunRootManager, "resolveRoot">;
+  standaloneRoots: Pick<StandaloneAgentRunRootManager, "resolveRoot" | "getActive">;
   teamRuns: Pick<TeamRunService, "getActiveTeamRun" | "restoreTeamRun">;
   orgRuns: Pick<AgentOrgRunService, "getActive" | "restore">;
 }>): CollaborationRootResolver => Object.freeze({
@@ -72,6 +77,13 @@ export const createCollaborationRootResolver = (input: Readonly<{
     } catch (error) {
       if (isNotFound(error)) return null;
       throw error;
+    }
+  },
+  resolveActive(root: RootExecutionIdentity): ResolvedRoot | null {
+    switch (root.rootSubjectKind) {
+      case "agent": { const active = input.standaloneRoots.getActive(root.rootRunId); return active ? Object.freeze({ kind: "agent", root: active }) : null; }
+      case "agent_team": { const active = input.teamRuns.getActiveTeamRun(root.rootRunId); return active ? Object.freeze({ kind: "agent_team", root: active }) : null; }
+      case "agent_org": { const active = input.orgRuns.getActive(root.rootRunId); return active ? Object.freeze({ kind: "agent_org", root: active }) : null; }
     }
   },
 });

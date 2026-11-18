@@ -23,7 +23,8 @@ const messageBody = (overrides: Record<string, unknown> = {}) => ({
 
 const gateway = (input: { enabled?: boolean; registered?: boolean } = {}) => {
   const delegatedRuns = { start: vi.fn(async () => ({ accepted: true as const, kind: "agent" as const, agentRunId: "publisher_7f3" })) };
-  const messages = { accept: vi.fn(async () => ({ accepted: true as const })) };
+  const messages = { accept: vi.fn(async () => ({ accepted: true as const })), acceptRunMessage: vi.fn(async () => ({ accepted: true as const })) };
+  const runningAgents = { list: vi.fn(async () => ({ accepted: true as const, agents: [{ kind: "agent" as const, name: "PM", agent_run_id: "pm_b", state: "idle" as const }] })) };
   const availableAgents = { list: vi.fn(async () => ({ accepted: true as const, agents: [{ name: "Publisher", kind: "agent" as const, address: "/publisher" }] })) };
   const gate = new PeerGateway({
     ownNodeId: async () => SELF,
@@ -32,8 +33,10 @@ const gateway = (input: { enabled?: boolean; registered?: boolean } = {}) => {
     delegatedRuns,
     messages,
     availableAgents,
+    runningAgents,
+    runViews: {} as never,
   });
-  return { gate, delegatedRuns, messages, availableAgents };
+  return { gate, delegatedRuns, messages, availableAgents, runningAgents };
 };
 
 describe("PeerGateway", () => {
@@ -115,5 +118,46 @@ describe("PeerGateway", () => {
     const refused = gateway({ enabled: false });
     await refused.gate.listAvailableAgents(envelope, PEER_CALLER);
     expect(refused.availableAgents.list).not.toHaveBeenCalled();
+  });
+
+  describe("autobyteus-492: run-messages and running-agents", () => {
+    const runMessageBody = (overrides: Record<string, unknown> = {}) => ({
+      fromNodeId: PEER.nodeId, toNodeId: SELF, messageId: "collabmsg_9", sender: { agentRunId: "pm_a" }, target: { agentRunId: "pm_b" },
+      content: "hello B", messageType: "agent_message", createdAt: "2026-11-18T10:00:00.000Z", ...overrides,
+    });
+
+    it("a message by run ID is parsed without a root and handed to the receiver's acceptRunMessage, with the calling peer", async () => {
+      const f = gateway();
+      await expect(f.gate.deliverRunMessage(runMessageBody(), PEER_CALLER)).resolves.toEqual({ status: 200, answer: { accepted: true, nodeId: SELF } });
+      expect(f.messages.acceptRunMessage).toHaveBeenCalledWith({ fromNodeId: PEER.nodeId, toNodeId: SELF, messageId: "collabmsg_9",
+        sender: { agentRunId: "pm_a" }, target: { agentRunId: "pm_b" }, content: "hello B", messageType: "agent_message", createdAt: "2026-11-18T10:00:00.000Z" }, PEER);
+      expect(f.messages.accept).not.toHaveBeenCalled();
+    });
+
+    it("a malformed message by run ID is 400; nothing is dispatched", async () => {
+      const f = gateway();
+      await expect(f.gate.deliverRunMessage(runMessageBody({ messageId: undefined }), PEER_CALLER)).resolves.toMatchObject({ status: 400,
+        answer: { accepted: false, code: "REMOTE_REQUEST_INVALID" } });
+      await expect(f.gate.deliverRunMessage(runMessageBody({ target: "pm_b" }), PEER_CALLER)).resolves.toMatchObject({ status: 400 });
+      expect(f.messages.acceptRunMessage).not.toHaveBeenCalled();
+    });
+
+    it("QR-003: both new requests pass the same admission first: an unauthenticated caller, a switch off and an unregistered peer are refused before any handler", async () => {
+      const f = gateway();
+      await expect(f.gate.deliverRunMessage(runMessageBody(), null)).resolves.toMatchObject({ status: 200, answer: { accepted: false, code: "PEER_IDENTITY_MISMATCH" } });
+      await expect(f.gate.listRunningAgents({ fromNodeId: PEER.nodeId, toNodeId: SELF }, null)).resolves.toMatchObject({ answer: { accepted: false, code: "PEER_IDENTITY_MISMATCH" } });
+      await expect(gateway({ enabled: false }).gate.listRunningAgents({ fromNodeId: PEER.nodeId, toNodeId: SELF }, PEER_CALLER))
+        .resolves.toMatchObject({ answer: { accepted: false, code: "REMOTE_COLLABORATION_OFF" } });
+      await expect(gateway({ registered: false }).gate.deliverRunMessage(runMessageBody(), PEER_CALLER))
+        .resolves.toMatchObject({ answer: { accepted: false, code: "PEER_NOT_REGISTERED" } });
+      expect(f.messages.acceptRunMessage).not.toHaveBeenCalled();
+      expect(f.runningAgents.list).not.toHaveBeenCalled();
+    });
+
+    it("the running runs: the envelope only, answered with this node's ID", async () => {
+      const f = gateway();
+      await expect(f.gate.listRunningAgents({ fromNodeId: PEER.nodeId, toNodeId: SELF }, PEER_CALLER)).resolves.toEqual({ status: 200,
+        answer: { accepted: true, nodeId: SELF, agents: [{ kind: "agent", name: "PM", agent_run_id: "pm_b", state: "idle" }] } });
+    });
   });
 });

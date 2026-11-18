@@ -329,9 +329,11 @@ describe("Agent Tools MCP tokenless route integration", () => {
         content: { type: "string", description: expect.stringContaining("Self-contained work request, result, or specific blocker") },
         recipient_address: { type: "string", description: expect.stringContaining("An exact address beginning with '/'") },
         target_agent_run_id: { type: "string", description: expect.stringContaining("An agent's run id") },
+        // autobyteus-492 REQ-009: the optional peer node of an agent on another node.
+        node: { type: "string", description: expect.stringContaining("Optional, only with target_agent_run_id: the name of a peer node") },
       });
       expect(Object.keys(sendTool.inputSchema.properties ?? {}).sort()).toEqual([
-        "content", "message_type", "recipient_address", "reference_files", "target_agent_run_id",
+        "content", "message_type", "node", "recipient_address", "reference_files", "target_agent_run_id",
       ]);
       expect(sendTool.inputSchema.required).toEqual(["content"]);
       await expect(client.ping()).resolves.toEqual({});

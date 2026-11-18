@@ -1,0 +1,502 @@
+{
+  "startedAt": "2026-11-18T08:42:28.496Z",
+  "cases": {
+    "SIR-002": {
+      "title": "AC-003/AC-004: an upgrade around real runs deletes exactly the feature data once; other files and .env byte-identical; a second start changes nothing; runs listed and resumed; no feature UI; retired keys refused",
+      "result": "Pass",
+      "ms": 88307,
+      "details": {
+        "freshRecord": {
+          "migrationId": "20261020_remove_skill_improvement_data",
+          "status": "SUCCEEDED",
+          "attempts": 1,
+          "summary": "Scanned 0; migrated 0; skipped 0; failed 0.",
+          "errorMessage": null
+        },
+        "names": {
+          "agent": "Upgrade Agent b0aa",
+          "team": "Upgrade Team b0aa"
+        },
+        "teamDefinitionId": "upgrade-team-b0aa",
+        "runId": "upgrade_agent_b0aa_e26fb944109144de8f8674ddbadf2bcc",
+        "teamRunId": "upgrade_team_b0aa_6e5095b4db9a4a9da11836d263114847",
+        "members": {
+          "lead": "upgrade_lead_b0aa_a3e293377c0f473d88e16de794c38b90",
+          "member": "upgrade_member_b0aa_10dff10d75be4a1f9d0e7280c43d7682"
+        },
+        "agentSession": "88ed7612-4806-4dad-895a-ceb5c010b117",
+        "memberDir": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-g7uTTn/server-data/memory/agent_teams/upgrade_team_b0aa_6e5095b4db9a4a9da11836d263114847/upgrade_member_b0aa_10dff10d75be4a1f9d0e7280c43d7682",
+        "leadDir": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-g7uTTn/server-data/memory/agent_teams/upgrade_team_b0aa_6e5095b4db9a4a9da11836d263114847/upgrade_lead_b0aa_a3e293377c0f473d88e16de794c38b90",
+        "envBefore": "APP_ENV=development\nDB_TYPE=sqlite\nDATABASE_URL=file:///var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-g7uTTn/server-data/db/probe.db\nAUTOBYTEUS_SERVER_HOST=http://127.0.0.1:61505\nENABLE_APPLICATIONS=false",
+        "envWithKeys": "APP_ENV=development\nENABLE_SKILL_IMPROVEMENT=true\nDB_TYPE=sqlite\nAUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID=autobyteus-retrospective-skill-improver\nDATABASE_URL=file:///var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-g7uTTn/server-data/db/probe.db\nENABLE_SELF_EVOLUTION=false\nAUTOBYTEUS_SERVER_HOST=http://127.0.0.1:61505\nENABLE_APPLICATIONS=false",
+        "realRows": [
+          {
+            "runId": "upgrade_agent_b0aa_e26fb944109144de8f8674ddbadf2bcc",
+            "agentDefinitionId": "upgrade-agent-b0aa",
+            "agentName": "Upgrade Agent b0aa",
+            "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-g7uTTn/server-data/temp_workspace",
+            "summary": "Hello. Marker SIR2-A.",
+            "createdAt": "2026-11-18T08:43:39.365Z",
+            "archivedAt": null,
+            "terminatedAt": null
+          }
+        ],
+        "deleted": [
+          "memory/skill_improvement",
+          "memory/self_evolution",
+          "memory/agents/retrospective_skill_improver_1111",
+          "memory/agents/retrospective_skill_improver_2222",
+          "memory/agents/retrospective_skill_improver_3333",
+          "memory/agents/helper_run_5555",
+          "memory/agents/upgrade_agent_b0aa_e26fb944109144de8f8674ddbadf2bcc/skill_improvement",
+          "memory/agent_teams/upgrade_team_b0aa_6e5095b4db9a4a9da11836d263114847/upgrade_member_b0aa_10dff10d75be4a1f9d0e7280c43d7682/skill_improvement",
+          "memory/agent_teams/upgrade_team_b0aa_6e5095b4db9a4a9da11836d263114847/upgrade_lead_b0aa_a3e293377c0f473d88e16de794c38b90/self_evolution",
+          "agents/autobyteus-retrospective-skill-improver",
+          "agents/autobyteus-skill-evolver",
+          "agents/autobyteus-memory-compactor"
+        ],
+        "before": {
+          ".env": "4668c7769f14a1a61c155004e1dafc06b1d35ed54161822c043fc8358bc98690",
+          "agent-orgs/": "dir",
+          "agent-orgs/hostorg-org-5c43/": "dir",
+          "agent-orgs/hostorg-org-5c43/org-config.json": "3e6b3013826a6317671400fb199551116824a9deb8e8fa8274637d5afe94b54b",
+          "agent-orgs/hostorg-org-5c43/org.md": "13057e63ad15516129d45109cd3d0dc99634b75eb7e2dee388fc3e095c77f3ef",
+          "agent-orgs/launchorg-org-fb12/": "dir",
+          "agent-orgs/launchorg-org-fb12/org-config.json": "2f63b10a5ca897852672ca1bb7f879f0c1dd10a84caca4cc4c1e27558fdae69d",
+          "agent-orgs/launchorg-org-fb12/org.md": "d0e20b7261dcce007c3d0e4b4f0f882130571784a2a7c156cfa68764a11dc234",
+          "agent-teams/": "dir",
+          "agent-teams/build-team-4eec/": "dir",
+          "agent-teams/build-team-4eec/team-config.json": "e8229dea3d176662ea5bb578b70457f88928ead37fc5dcc46b9133c55f3f6ef0",
+          "agent-teams/build-team-4eec/team.md": "fe6e51ac872affc16b3fcd9ac9383f1790e65fe241e194507b4023ab92b1bb55",
+          "agent-teams/home-team-6ced/": "dir",
+          "agent-teams/home-team-6ced/team-config.json": "61827ed2574c8013da1a63de4ee3f9d42021be9d0c1f9c560c1b0e077d0d8532",
+          "agent-teams/home-team-6ced/team.md": "175eceb88ae9a32de8eee4e0798963e36ddd98ed45bd5e44e3c133b939f2db46",
+          "agent-teams/pair-team-e317/": "dir",
+          "agent-teams/pair-team-e317/team-config.json": "69b2efd1bd7bdddf97341b5974ae7b4ba5cb75b44b63d8f80f01ac0a761b5eed",
+          "agent-teams/pair-team-e317/team.md": "af9e1cf07b2e6b290c5d5ce91d72a386b2b7c414ab121a2bf7007f92c6012f71",
+          "agent-teams/squad-team-6a57/": "dir",
+          "agent-teams/squad-team-6a57/team-config.json": "b490c9d2db2916e32261efe9175698255cbbd8b03939010ddc9f2f6b7a961948",
+          "agent-teams/squad-team-6a57/team.md": "3e5dc1bb6b017aaa5eca6724538a6ad107e435a39a1c0611e5c7a62b3b8b51d4",
+          "agent-teams/upgrade-team-b0aa/": "dir",
+          "agent-teams/upgrade-team-b0aa/team-config.json": "75ce9b6e8b334a6bb533385cd3935df065cc78dc058a129d5bcb84d849f80f2e",
+          "agent-teams/upgrade-team-b0aa/team.md": "17003bdaef4225f920298b43eabd52138e3d87da130935903b23c44bc950540b",
+          "agents/": "dir",
+          "agents/autobyteus-daily-assistant/": "dir",
+          "agents/autobyteus-daily-assistant/agent-config.json": "75cde68ed0f77ba6b1739c9b0f5ea8e6c3b146ecc0febd9345d3a8bce7be00a3",
+          "agents/autobyteus-daily-assistant/agent.md": "49ed6e909ef92a470fb8b3fce84f471334cd125ff50adf2f5e6aff60389d07b7",
+          "agents/autobyteus-memory-compactor/": "dir",
+          "agents/autobyteus-memory-compactor/agent-config.json": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356",
+          "agents/autobyteus-memory-compactor/agent.md": "ae1fb685f34056d952ec7fde0a25973ab38d7c39ab50b9dd706ba7b8bfe5b19e",
+          "agents/autobyteus-model-router/": "dir",
+          "agents/autobyteus-model-router/agent-config.json": "f8a88f281c2c8bf5fb7c14c46ba5b483f6e3e5a9af06153b556548e1c39bbb14",
+          "agents/autobyteus-model-router/agent.md": "e4b55a3fafa3bd5a009ac87fcdd6fd8945021eda317307f74f8043cbf7509c5f",
+          "agents/autobyteus-retrospective-skill-improver/": "dir",
+          "agents/autobyteus-retrospective-skill-improver/agent-config.json": "2ae716a6349b6108e0c634e24dadc51e404394279e8a51c703f13702aeaafb4b",
+          "agents/autobyteus-retrospective-skill-improver/agent.md": "34bd8efa74d76726e14db75c3552b3b10a4a0d22676b63e25387b1a6fc996702",
+          "agents/autobyteus-retrospective-skill-improver/skills/": "dir",
+          "agents/autobyteus-retrospective-skill-improver/skills/retrospective-skill-improver/": "dir",
+          "agents/autobyteus-retrospective-skill-improver/skills/retrospective-skill-improver/SKILL.md": "6504f2de0a1febf7492c3b98f93d9ab49558eb364607a706f02fe9a75aa7f75b",
+          "agents/autobyteus-skill-evolver/": "dir",
+          "agents/autobyteus-skill-evolver/agent.md": "566f785eb795ef4399e7fc121eccb27245afcf9386d24f4740ab35c58a864f80",
+          "agents/badsettings-c7ad/": "dir",
+          "agents/badsettings-c7ad/agent-config.json": "ad2d34bc67ae1645f7d1d98ee381ef8bbd4b829c1fbe273f6b3b15c27ff637f7",
+          "agents/badsettings-c7ad/agent.md": "4441ed2943a6fe8c4982dbebb7a0595a25ba23e965bf3532cd6058b57b83a007",
+          "agents/engineer-6181/": "dir",
+          "agents/engineer-6181/agent-config.json": "45deb1cbb8e14ca868846495fe080bed60c166c92533300ff1aea6f042ba7d1b",
+          "agents/engineer-6181/agent.md": "3f4ca52c9a9aa4a67e517057e7e20cb99cb7f598221c6c8e3169a3bef21ecdab",
+          "agents/incomplete-6841/": "dir",
+          "agents/incomplete-6841/agent-config.json": "fd8601fff83f776d46ee21dd059d79b17d6d791418b6b8c8f4682dd391893ca1",
+          "agents/incomplete-6841/agent.md": "b15f9e0a3420ab79a7ea1489a323a45f62210ec25f6e71dceef1c90440faf6de",
+          "agents/lead-387a/": "dir",
+          "agents/lead-387a/agent-config.json": "20e71a5ed2f26c579b63c6aba919cf058fb5ec1957fe1d727541219f9e9e924e",
+          "agents/lead-387a/agent.md": "4579ee6de29ce7a7f537d3f45e6d4829a400900849ce9ea32e8f3a3ea7485710",
+          "agents/manager-5320/": "dir",
+          "agents/manager-5320/agent-config.json": "20e71a5ed2f26c579b63c6aba919cf058fb5ec1957fe1d727541219f9e9e924e",
+          "agents/manager-5320/agent.md": "12aacf285fc2320bbd1bfd0b2a3f37f19c738f2f434117bd24578f64b4342214",
+          "agents/offline-39dc/": "dir",
+          "agents/offline-39dc/agent-config.json": "d222fb3e308e38b19c79abc4a6a414f7d252fcc6c1f1a1d4fa9b67a9bcec4615",
+          "agents/offline-39dc/agent.md": "1711846ac27b9b2ba25a7d0a20c24839810e96d538d2e959504e5f5f7da7418b",
+          "agents/plain-3d9a/": "dir",
+          "agents/plain-3d9a/agent-config.json": "20e71a5ed2f26c579b63c6aba919cf058fb5ec1957fe1d727541219f9e9e924e",
+          "agents/plain-3d9a/agent.md": "28f5b46574acb1e37f49b615bb366c560700a27b3a2fc9fb04f39e57b09c8b0f",
+          "agents/reviewer-edb2/": "dir",
+          "agents/reviewer-edb2/agent-config.json": "10ef0f3f8cfee6f26092862b66c585e41f9948d9eae5445f317c3af6720071e4",
+          "agents/reviewer-edb2/agent.md": "451d00814163bbc473a480f28fa0c41f3a448c2c3a814c6f80de9298eefdd500",
+          "agents/unoffered-e7be/": "dir",
+          "agents/unoffered-e7be/agent-config.json": "6c55bdace40b6f7f5136bb34114d4aae6f65e441ed66c37a6110066773d4660c",
+          "agents/unoffered-e7be/agent.md": "be404bb4ce41245f4df66b1800eb4bfb1c4e6a11ccbe0608ef2eacd5d517671e",
+          "agents/upgrade-agent-b0aa/": "dir",
+          "agents/upgrade-agent-b0aa/agent-config.json": "20e71a5ed2f26c579b63c6aba919cf058fb5ec1957fe1d727541219f9e9e924e",
+          "agents/upgrade-agent-b0aa/agent.md": "3f57e22eb218b4d01377f3007a8df2b885808290e56cd6474749e49db87a9a66",
+          "agents/upgrade-lead-b0aa/": "dir",
+          "agents/upgrade-lead-b0aa/agent-config.json": "20e71a5ed2f26c579b63c6aba919cf058fb5ec1957fe1d727541219f9e9e924e",
+          "agents/upgrade-lead-b0aa/agent.md": "2b70ae8ab1f9a7c14f9c5bba48e975e05d99217beaf2b6dc5cfe2515ce16922a",
+          "agents/upgrade-member-b0aa/": "dir",
+          "agents/upgrade-member-b0aa/agent-config.json": "20e71a5ed2f26c579b63c6aba919cf058fb5ec1957fe1d727541219f9e9e924e",
+          "agents/upgrade-member-b0aa/agent.md": "32a0be4fb09f644ab1b608e0835846338f96277f665f353431c101c986faea07",
+          "agents/worker-13c7/": "dir",
+          "agents/worker-13c7/agent-config.json": "20e71a5ed2f26c579b63c6aba919cf058fb5ec1957fe1d727541219f9e9e924e",
+          "agents/worker-13c7/agent.md": "f1c9b337ddd2caa779cddd57d6b2bf3a35db42eb3a3cc08ae93d83993eba9cc3",
+          "agents/writer-d5a6/": "dir",
+          "agents/writer-d5a6/agent-config.json": "10ef0f3f8cfee6f26092862b66c585e41f9948d9eae5445f317c3af6720071e4",
+          "agents/writer-d5a6/agent.md": "1535c1086ab61381b7fdaa8b731d16f81b35c479afbd9b02a551a04a0b16c39c",
+          "application-packages/": "dir",
+          "application-packages/platform/": "dir",
+          "application-packages/platform/applications/": "dir",
+          "application-packages/platform/applications/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "applications/": "dir",
+          "applications/_global/": "dir",
+          "applications/_global/db/": "dir",
+          "applications/_global/db/orchestration.sqlite": "f0d160fdecd1e7847acba3025eb2c852a52766e6880e3730a4eb6640b8f52a4d",
+          "download/": "dir",
+          "llm/": "dir",
+          "memory/": "dir",
+          "memory/agent_teams/": "dir",
+          "memory/agent_teams/upgrade_team_b0aa_6e5095b4db9a4a9da11836d263114847/": "dir",
+          "memory/agent_teams/upgrade_team_b0aa_6e5095b4db9a4a9da11836d263114847/team_communication_messages_active.jsonl": "cd3829d7e09047f7bebc235f2a6e20cad5f4c1f9d940931fde218730e198fe66",
+          "memory/agent_teams/upgrade_team_b0aa_6e5095b4db9a4a9da11836d263114847/team_run_execution_tree.json": "dfb1d0c4a1b0a3ddc544df6c83c0c9a4fe644bcceb784a383bee3f94595123c6",
+          "memory/agent_teams/upgrade_team_b0aa_6e5095b4db9a4a9da11836d263114847/upgrade_lead_b0aa_a3e293377c0f473d88e16de794c38b90/": "dir",
+          "memory/agent_teams/upgrade_team_b0aa_6e5095b4db9a4a9da11836d263114847/upgrade_lead_b0aa_a3e293377c0f473d88e16de794c38b90/agy-project/": "dir",
+          "memory/agent_teams/upgrade_team_b0aa_6e5095b4db9a4a9da11836d263114847/upgrade_lead_b0aa_a3e293377c0f473d88e16de794c38b90/agy-project/.agents/": "dir",
+          "memory/agent_teams/upgrade_team_b0aa_6e5095b4db9a4a9da11836d263114847/upgrade_lead_b0aa_a3e293377c0f473d88e16de794c38b90/agy-project/.agents/agents/": "dir",
+          "memory/agent_teams/upgrade_team_b0aa_6e5095b4db9a4a9da11836d263114847/upgrade_lead_b0aa_a3e293377c0f473d88e16de794c38b90/agy-project/.agents/agents/autobyteus-baa36bc5308bde4c/": "dir",
+          "memory/agent_teams/upgrade_team_b0aa_6e5095b4db9a4a9da11836d263114847/upgrade_lead_b0aa_a3e293377c0f473d88e16de794c38b90/agy-project/.agents/agents/autobyteus-baa36bc5308bde4c/agent.md": "899531e8c8599c403465f591fb74e0df7223cb9e1cd80e9706b61f0182746c17",
+          "memory/agent_teams/upgrade_team_b0aa_6e5095b4db9a4a9da11836d263114847/upgrade_lead_b0aa_a3e293377c0f473d88e16de794c38b90/agy-project/.agents/mcp_config.json": "117fbae03de372282eaf2a6278f04ab11801f1c207a30f2ec613706ae2ced23f",
+          "memory/agent_teams/upgrade_team_b0aa_6e5095b4db9a4a9da11836d263114847/upgrade_lead_b0aa_a3e293377c0f473d88e16de794c38b90/agy-project/.agents/skills/": "dir",
+          "memory/agent_teams/upgrade_team_b0aa_6e5095b4db9a4a9da11836d263114847/upgrade_lead_b0aa_a3e293377c0f473d88e16de794c38b90/agy-project/manifest.json": "41be1ae1a9bd0f4644dda642a02db561950684a7fc74ad23d333e58da5eca841",
+          "memory/agent_teams/upgrade_team_b0aa_6e5095b4db9a4a9da11836d263114847/upgrade_lead_b0aa_a3e293377c0f473d88e16de794c38b90/raw_traces_active.jsonl": "7ee816df85ff629399874f60b68da39d042fb5664f799c1af0f5cbcc115edfee",
+          "memory/agent_teams/upgrade_team_b0aa_6e5095b4db9a4a9da11836d263114847/upgrade_lead_b0aa_a3e293377c0f473d88e16de794c38b90/seen_skill_versions.json": "1410831f099de6212dcd908b62d62df171dfccda3b7cbfbde9f5dda4ff608dfc",
+          "memory/agent_teams/upgrade_team_b0aa_6e5095b4db9a4a9da11836d263114847/upgrade_lead_b0aa_a3e293377c0f473d88e16de794c38b90/seen_tool_names.json": "67add5bab1640afefcabc3df47048d7fd0cbfc32802c0128846d87adaf135cc4",
+          "memory/agent_teams/upgrade_team_b0aa_6e5095b4db9a4a9da11836d263114847/upgrade_lead_b0aa_a3e293377c0f473d88e16de794c38b90/self_evolution/": "dir",
+          "memory/agent_teams/upgrade_team_b0aa_6e5095b4db9a4a9da11836d263114847/upgrade_lead_b0aa_a3e293377c0f473d88e16de794c38b90/self_evolution/evolver_session.json": "62c2097f2d3739ccf2d78c0d1ee3329f1eaf0a26677801c4107f2db2e504bc3a",
+          "memory/agent_teams/upgrade_team_b0aa_6e5095b4db9a4a9da11836d263114847/upgrade_lead_b0aa_a3e293377c0f473d88e16de794c38b90/work_journal/": "dir",
+          "memory/agent_teams/upgrade_team_b0aa_6e5095b4db9a4a9da11836d263114847/upgrade_lead_b0aa_a3e293377c0f473d88e16de794c38b90/work_journal/work_journal_active.md": "c22e47e1159337cb0987fb86a7cb81463f3a0df2ab77e4828402d81c705eb4ec",
+          "memory/agent_teams/upgrade_team_b0aa_6e5095b4db9a4a9da11836d263114847/upgrade_lead_b0aa_a3e293377c0f473d88e16de794c38b90/work_journal/work_journal_manifest.json": "762f8d9a208c8ee3fcbf13df5846957d55014249a4f47c4e2170b134e81340c4",
+          "memory/agent_teams/upgrade_team_b0aa_6e5095b4db9a4a9da11836d263114847/upgrade_member_b0aa_10dff10d75be4a1f9d0e7280c43d7682/": "dir",
+          "memory/agent_teams/upgrade_team_b0aa_6e5095b4db9a4a9da11836d263114847/upgrade_member_b0aa_10dff10d75be4a1f9d0e7280c43d7682/agy-project/": "dir",
+          "memory/agent_teams/upgrade_team_b0aa_6e5095b4db9a4a9da11836d263114847/upgrade_member_b0aa_10dff10d75be4a1f9d0e7280c43d7682/agy-project/.agents/": "dir",
+          "memory/agent_teams/upgrade_team_b0aa_6e5095b4db9a4a9da11836d263114847/upgrade_member_b0aa_10dff10d75be4a1f9d0e7280c43d7682/agy-project/.agents/agents/": "dir",
+          "memory/agent_teams/upgrade_team_b0aa_6e5095b4db9a4a9da11836d263114847/upgrade_member_b0aa_10dff10d75be4a1f9d0e7280c43d7682/agy-project/.agents/agents/autobyteus-9dfbaf6f25c61ca4/": "dir",
+          "memory/agent_teams/upgrade_team_b0aa_6e5095b4db9a4a9da11836d263114847/upgrade_member_b0aa_10dff10d75be4a1f9d0e7280c43d7682/agy-project/.agents/agents/autobyteus-9dfbaf6f25c61ca4/agent.md": "dc1958e71fc3e448287ec3ff6be56ad2a026e9b68f196a27c310a2b69e615816",
+          "memory/agent_teams/upgrade_team_b0aa_6e5095b4db9a4a9da11836d263114847/upgrade_member_b0aa_10dff10d75be4a1f9d0e7280c43d7682/agy-project/.agents/mcp_config.json": "606ef5c8f14b869d1b16029460d30938f8116f84b0fe6f47bc04d5a90359eb70",
+          "memory/agent_teams/upgrade_team_b0aa_6e5095b4db9a4a9da11836d263114847/upgrade_member_b0aa_10dff10d75be4a1f9d0e7280c43d7682/agy-project/.agents/skills/": "dir",
+          "memory/agent_teams/upgrade_team_b0aa_6e5095b4db9a4a9da11836d263114847/upgrade_member_b0aa_10dff10d75be4a1f9d0e7280c43d7682/agy-project/manifest.json": "49616ab43f590c5131b79f81cdd9888285a96b0fb202e670e452a2e2116d0322",
+          "memory/agent_teams/upgrade_team_b0aa_6e5095b4db9a4a9da11836d263114847/upgrade_member_b0aa_10dff10d75be4a1f9d0e7280c43d7682/raw_traces_active.jsonl": "5dea20480e0098e2423ad5cd2031c0752b661be94d856814084e004a8c3fb263",
+          "memory/agent_teams/upgrade_team_b0aa_6e5095b4db9a4a9da11836d263114847/upgrade_member_b0aa_10dff10d75be4a1f9d0e7280c43d7682/seen_skill_versions.json": "1410831f099de6212dcd908b62d62df171dfccda3b7cbfbde9f5dda4ff608dfc",
+          "memory/agent_teams/upgrade_team_b0aa_6e5095b4db9a4a9da11836d263114847/upgrade_member_b0aa_10dff10d75be4a1f9d0e7280c43d7682/seen_tool_names.json": "67add5bab1640afefcabc3df47048d7fd0cbfc32802c0128846d87adaf135cc4",
+          "memory/agent_teams/upgrade_team_b0aa_6e5095b4db9a4a9da11836d263114847/upgrade_member_b0aa_10dff10d75be4a1f9d0e7280c43d7682/skill_improvement/": "dir",
+          "memory/agent_teams/upgrade_team_b0aa_6e5095b4db9a4a9da11836d263114847/upgrade_member_b0aa_10dff10d75be4a1f9d0e7280c43d7682/skill_improvement/improver_session.json": "afccb6890202cbe516edc2a529b7c65c148406bf9cb10d0ff6f2fcfd4f127115",
+          "memory/agent_teams/upgrade_team_b0aa_6e5095b4db9a4a9da11836d263114847/upgrade_member_b0aa_10dff10d75be4a1f9d0e7280c43d7682/work_journal/": "dir",
+          "memory/agent_teams/upgrade_team_b0aa_6e5095b4db9a4a9da11836d263114847/upgrade_member_b0aa_10dff10d75be4a1f9d0e7280c43d7682/work_journal/work_journal_active.md": "69d3c2a18eb89ada7fd9c8de13fdf14d72f895ef39a07f1571728df9750d8174",
+          "memory/agent_teams/upgrade_team_b0aa_6e5095b4db9a4a9da11836d263114847/upgrade_member_b0aa_10dff10d75be4a1f9d0e7280c43d7682/work_journal/work_journal_manifest.json": "67cefcbcbdc5ad95948b6e9d144b0fa66974ca6d7aae8e8e22d3d70eaea90253",
+          "memory/agents/": "dir",
+          "memory/agents/helper_run_5555/": "dir",
+          "memory/agents/helper_run_5555/raw_traces_active.jsonl": "2a24c0519fa6d51144b786c7a345dee36ef93667b918f2e84f6d66a80879ac58",
+          "memory/agents/helper_run_5555/run_metadata.json": "db7acdb07ec8e7a7e10ef7d5a4d9aef95f67c056f3e384def80e6e54fe8e3aea",
+          "memory/agents/retrospective_skill_improver_1111/": "dir",
+          "memory/agents/retrospective_skill_improver_1111/raw_traces_active.jsonl": "737c9ec6e1b47dad1b4ecf8e8067c0c1da27198ba80205630b3de9761a56e6f3",
+          "memory/agents/retrospective_skill_improver_1111/run_metadata.json": "2fc12910337200bd43b891e5a7b68d1da130d0cecc04dc6df0318a18a888edd7",
+          "memory/agents/retrospective_skill_improver_2222/": "dir",
+          "memory/agents/retrospective_skill_improver_2222/raw_traces_active.jsonl": "8f68e9eab6613a1588ddfa88b862148c3c84ee0cd4fdc508f34913644caa51d7",
+          "memory/agents/retrospective_skill_improver_2222/run_metadata.json": "28e3ad55f5e5ac46f857e9424e75fef47a5b5406c530ed17098290e81820fba2",
+          "memory/agents/retrospective_skill_improver_3333/": "dir",
+          "memory/agents/retrospective_skill_improver_3333/raw_traces_active.jsonl": "7dd1686eecd3f8406619b167894ef516bf98e11ac85c0eb0b256a5957cb62af7",
+          "memory/agents/retrospective_skill_improver_3333/run_metadata.json": "648674c17063e6f89c9dbc63e4e940076376604cc28ea10950b1db6c9b1a7f98",
+          "memory/agents/upgrade_agent_b0aa_e26fb944109144de8f8674ddbadf2bcc/": "dir",
+          "memory/agents/upgrade_agent_b0aa_e26fb944109144de8f8674ddbadf2bcc/agy-project/": "dir",
+          "memory/agents/upgrade_agent_b0aa_e26fb944109144de8f8674ddbadf2bcc/agy-project/.agents/": "dir",
+          "memory/agents/upgrade_agent_b0aa_e26fb944109144de8f8674ddbadf2bcc/agy-project/.agents/agents/": "dir",
+          "memory/agents/upgrade_agent_b0aa_e26fb944109144de8f8674ddbadf2bcc/agy-project/.agents/agents/autobyteus-fe0e413930f57d1c/": "dir",
+          "memory/agents/upgrade_agent_b0aa_e26fb944109144de8f8674ddbadf2bcc/agy-project/.agents/agents/autobyteus-fe0e413930f57d1c/agent.md": "6dde37ca607fb7785edd1509326516764aac54dbf613772602d702079fc61e6e",
+          "memory/agents/upgrade_agent_b0aa_e26fb944109144de8f8674ddbadf2bcc/agy-project/.agents/mcp_config.json": "33336ee696c8d9eb6592b0a7fe082ff7d6cc5a232fd77abdcde16f4c6f2bb2d8",
+          "memory/agents/upgrade_agent_b0aa_e26fb944109144de8f8674ddbadf2bcc/agy-project/.agents/skills/": "dir",
+          "memory/agents/upgrade_agent_b0aa_e26fb944109144de8f8674ddbadf2bcc/agy-project/manifest.json": "a0d20b49eaf7bfa45ab523fae750be829d52fd08db259b3dbfaa11f59559cb06",
+          "memory/agents/upgrade_agent_b0aa_e26fb944109144de8f8674ddbadf2bcc/raw_traces_active.jsonl": "3c13bb7b7ed37db1473790c1cc7aac73c6bc9b264546ce9ed3e96c5bd6b166b1",
+          "memory/agents/upgrade_agent_b0aa_e26fb944109144de8f8674ddbadf2bcc/run_metadata.json": "cf1afff37f6c9a4426c5c2fa3d9d1c58ce08d5b5f469898842744e2b96dc2647",
+          "memory/agents/upgrade_agent_b0aa_e26fb944109144de8f8674ddbadf2bcc/seen_skill_versions.json": "1410831f099de6212dcd908b62d62df171dfccda3b7cbfbde9f5dda4ff608dfc",
+          "memory/agents/upgrade_agent_b0aa_e26fb944109144de8f8674ddbadf2bcc/seen_tool_names.json": "ac9bf0d1400d37a7881ef493090cc2106f3c96bfab32858dce600877699640e9",
+          "memory/agents/upgrade_agent_b0aa_e26fb944109144de8f8674ddbadf2bcc/skill_improvement/": "dir",
+          "memory/agents/upgrade_agent_b0aa_e26fb944109144de8f8674ddbadf2bcc/skill_improvement/improver_session.json": "453ba01597ba24ed677f0754dd4d3fa2bb9646e00fabddd70d4240b57035fe0a",
+          "memory/agents/upgrade_agent_b0aa_e26fb944109144de8f8674ddbadf2bcc/work_journal/": "dir",
+          "memory/agents/upgrade_agent_b0aa_e26fb944109144de8f8674ddbadf2bcc/work_journal/work_journal_active.md": "6c9d792c86ce8c667dafa68c4ccec3c0c76b455560dbfb29ce0f7c9fe0e41a52",
+          "memory/agents/upgrade_agent_b0aa_e26fb944109144de8f8674ddbadf2bcc/work_journal/work_journal_manifest.json": "b3a562377920c1e56a6c4102a115e82c386da526991813c6b7bb549cffeff847",
+          "memory/episodic/": "dir",
+          "memory/episodic/index.md": "4cd2abe519d33ceab0a5c6daf90ad8d693f83dc7dc85ef4170ce1eaa1d452a3d",
+          "memory/episodic/upgrade-agent-b0aa/": "dir",
+          "memory/episodic/upgrade-agent-b0aa/catalog.md": "09bc50d6b25058cacdb128ce9b54d6996b9eb19804d69d297a9cd31d6a5fb530",
+          "memory/run_history_index.json": "42648ed6cdd3741aceb4095a1d80c2fc54a28befa06a2fe11a1434ba4ea46441",
+          "memory/self_evolution/": "dir",
+          "memory/self_evolution/evolution_runs/": "dir",
+          "memory/self_evolution/evolution_runs/evol_01/": "dir",
+          "memory/self_evolution/evolution_runs/evol_01/record.json": "2e7267183409d6759f78350ed5bdf674ad8a9865703e5691f328ff2631fea704",
+          "memory/self_evolution/index.json": "331bae40f0d8517f1061ab5a861bdf7ab17572a365399793e62323ead8a512b8",
+          "memory/skill_improvement/": "dir",
+          "memory/skill_improvement/improvement_runs/": "dir",
+          "memory/skill_improvement/improvement_runs/impr_01/": "dir",
+          "memory/skill_improvement/improvement_runs/impr_01/record.json": "30756286220517dc3833b3626f2807c3ee72928ae13d6349d64395e3df8ef243",
+          "memory/skill_improvement/improvement_runs/impr_02/": "dir",
+          "memory/skill_improvement/improvement_runs/impr_02/record.json": "885b248c2020bb28e2f885eebf53b73b422a35fdd8cc9508f510d5982c83a4dd",
+          "memory/skill_improvement/improvement_runs/impr_03/": "dir",
+          "memory/skill_improvement/improvement_runs/impr_03/record.json": "abefd4afa02816708df3bc3e9d0a5b6fe3559361f61a9feb9eae6d9807060779",
+          "memory/skill_improvement/index.json": "02c9aa96dde7d512cdd25394975bda7ed2604f0165842212cc0ae11e5781be77",
+          "memory/team_run_history_index.json": "968ce59c61a9800d190de8dbf2c173d8c319ab03e8cd2ec6b32c27c6cde98587",
+          "memory-search/": "dir",
+          "memory-search/memory-search.sqlite": "27e0824e065b89281d4bfb0d9dc1987a63a1ae7289c5ca317e933b737b2acf43",
+          "skills/": "dir",
+          "temp_workspace/": "dir"
+        },
+        "firstRecord": {
+          "migrationId": "20261020_remove_skill_improvement_data",
+          "status": "SUCCEEDED",
+          "attempts": 1,
+          "summary": "Scanned 11; migrated 11; skipped 0; failed 0.",
+          "errorMessage": null
+        },
+        "stillThere": [],
+        "changed": [],
+        "rowsChanged": [],
+        "helperRowsLeft": [],
+        "envAfter": "APP_ENV=development\nDB_TYPE=sqlite\nDATABASE_URL=file:///var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-g7uTTn/server-data/db/probe.db\nAUTOBYTEUS_SERVER_HOST=http://127.0.0.1:61505\nENABLE_APPLICATIONS=false",
+        "counts": {
+          "featurePaths": 12,
+          "keptFiles": 139
+        },
+        "secondRecord": {
+          "migrationId": "20261020_remove_skill_improvement_data",
+          "status": "SUCCEEDED",
+          "attempts": 1,
+          "summary": "Scanned 11; migrated 11; skipped 0; failed 0.",
+          "errorMessage": null
+        },
+        "secondChanged": [],
+        "secondAdded": [],
+        "history": {
+          "agentRuns": [
+            "upgrade_agent_b0aa_e26fb944109144de8f8674ddbadf2bcc"
+          ],
+          "teamRuns": [
+            "upgrade_team_b0aa_6e5095b4db9a4a9da11836d263114847"
+          ]
+        },
+        "agentIds": [
+          {
+            "id": "autobyteus-daily-assistant",
+            "name": "Daily Assistant"
+          },
+          {
+            "id": "badsettings-c7ad",
+            "name": "Badsettings c7ad"
+          },
+          {
+            "id": "engineer-6181",
+            "name": "Engineer 6181"
+          },
+          {
+            "id": "incomplete-6841",
+            "name": "Incomplete 6841"
+          },
+          {
+            "id": "lead-387a",
+            "name": "Lead 387a"
+          },
+          {
+            "id": "manager-5320",
+            "name": "Manager 5320"
+          },
+          {
+            "id": "offline-39dc",
+            "name": "Offline 39dc"
+          },
+          {
+            "id": "plain-3d9a",
+            "name": "Plain 3d9a"
+          },
+          {
+            "id": "reviewer-edb2",
+            "name": "Reviewer edb2"
+          },
+          {
+            "id": "unoffered-e7be",
+            "name": "Unoffered e7be"
+          },
+          {
+            "id": "upgrade-agent-b0aa",
+            "name": "Upgrade Agent b0aa"
+          },
+          {
+            "id": "upgrade-lead-b0aa",
+            "name": "Upgrade Lead b0aa"
+          },
+          {
+            "id": "upgrade-member-b0aa",
+            "name": "Upgrade Member b0aa"
+          },
+          {
+            "id": "worker-13c7",
+            "name": "Worker 13c7"
+          },
+          {
+            "id": "writer-d5a6",
+            "name": "Writer d5a6"
+          }
+        ],
+        "agentsPage": {
+          "selfEvolver": 0,
+          "memoryCompactor": 0,
+          "traces": {
+            "text": false,
+            "hooks": 0
+          }
+        },
+        "memoryPage": {
+          "traces": {
+            "text": false,
+            "hooks": 0
+          },
+          "helperIds": []
+        },
+        "basics": {
+          "cards": [
+            "applications-feature-toggle-card"
+          ],
+          "traces": {
+            "text": false,
+            "hooks": 0
+          }
+        },
+        "advancedKeys": [
+          "APP_ENV",
+          "AUTOBYTEUS_MEMORY_DIR",
+          "AUTOBYTEUS_SERVER_HOST",
+          "DATABASE_URL",
+          "DB_TYPE",
+          "ENABLE_APPLICATIONS"
+        ],
+        "refusal": "Error updating server setting: SERVER_SETTING_UPDATE_REJECTED",
+        "serverReason": "response: {\"updateServerSetting\":\"Error updating server setting: SERVER_SETTING_UPDATE_REJECTED\"}",
+        "envAfterRefusal": "APP_ENV=development\nDB_TYPE=sqlite\nDATABASE_URL=file:///var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-g7uTTn/server-data/db/probe.db\nAUTOBYTEUS_SERVER_HOST=http://127.0.0.1:61505\nENABLE_APPLICATIONS=false",
+        "settingsAfterRefusal": [],
+        "agentComposer": {
+          "composer": 1,
+          "traces": {
+            "text": false,
+            "hooks": 0
+          }
+        },
+        "agentResumed": [
+          [
+            "gemini-3.8-flash-low",
+            "88ed7612-4806-4dad-895a-ceb5c010b117"
+          ]
+        ],
+        "sidebarRuns": {
+          "team": 1,
+          "helpers": 0
+        },
+        "memberComposer": {
+          "composer": 1,
+          "traces": {
+            "text": false,
+            "hooks": 0
+          }
+        },
+        "memberResumed": [
+          [
+            "gemini-3.8-flash-low",
+            "cee75219-c781-4d22-bca4-4f3a3f1d2420"
+          ]
+        ],
+        "memberSession": "cee75219-c781-4d22-bca4-4f3a3f1d2420"
+      }
+    }
+  },
+  "processes": [
+    {
+      "label": "backend",
+      "pid": 13362
+    },
+    {
+      "label": "frontend",
+      "pid": 14776
+    },
+    {
+      "label": "backend-upgraded",
+      "pid": 17047
+    },
+    {
+      "label": "backend-second-start",
+      "pid": 18861
+    }
+  ],
+  "cleanup": [
+    {
+      "pid": 18861,
+      "stop": "SIGKILL"
+    },
+    {
+      "pid": 17047,
+      "stop": "already-exited"
+    },
+    {
+      "pid": 14776,
+      "stop": "SIGTERM"
+    },
+    {
+      "pid": 13362,
+      "stop": "already-exited"
+    },
+    {
+      "removed": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-g7uTTn"
+    }
+  ],
+  "observations": [],
+  "ownedRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-g7uTTn",
+  "backendUrl": "http://127.0.0.1:61505",
+  "frontUrl": "http://127.0.0.1:61506",
+  "definitions": {
+    "ids": {
+      "manager": "manager-5320",
+      "lead": "lead-387a",
+      "worker": "worker-13c7",
+      "plain": "plain-3d9a",
+      "engineer": "engineer-6181",
+      "reviewer": "reviewer-edb2",
+      "writer": "writer-d5a6",
+      "offline": "offline-39dc",
+      "unoffered": "unoffered-e7be",
+      "badsettings": "badsettings-c7ad",
+      "incomplete": "incomplete-6841",
+      "build": "build-team-4eec",
+      "pair": "pair-team-e317",
+      "squad": "squad-team-6a57",
+      "home": "home-team-6ced",
+      "launchOrg": "launchorg-org-fb12",
+      "hostOrg": "hostorg-org-5c43"
+    },
+    "names": {
+      "manager": "Manager 5320",
+      "lead": "Lead 387a",
+      "worker": "Worker 13c7",
+      "plain": "Plain 3d9a",
+      "engineer": "Engineer 6181",
+      "reviewer": "Reviewer edb2",
+      "writer": "Writer d5a6",
+      "offline": "Offline 39dc",
+      "unoffered": "Unoffered e7be",
+      "badsettings": "Badsettings c7ad",
+      "incomplete": "Incomplete 6841",
+      "build": "Build Team 4eec",
+      "pair": "Pair Team e317",
+      "squad": "Squad Team 6a57",
+      "home": "Home Team 6ced",
+      "launchOrg": "LaunchOrg Org fb12",
+      "hostOrg": "HostOrg Org 5c43"
+    }
+  },
+  "browserErrors": [],
+  "summary": {
+    "pass": 1,
+    "fail": 0
+  },
+  "completedAt": "2026-11-18T08:50:39.382Z"
+}

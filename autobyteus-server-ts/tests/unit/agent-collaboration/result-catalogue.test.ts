@@ -4,7 +4,7 @@ import { describe, expect, it } from "vitest";
 
 /**
  * The complete catalogue of results and refusals an agent can read from `send_message_to` and
- * `delegate_task` (wording §7.3, M-01..M-45; SR-014; M-43, "still works on Task …", was withdrawn when a task
+ * `delegate_task` (wording §7.3, M-01..M-50; SR-014; M-43, "still works on Task …", was withdrawn when a task
  * agent became able to hold several open Tasks, task-agent-several-tasks). Each text is written here exactly once and
  * checked two ways: every fixed part of it is present in the server source (so the code says what
  * the catalogue says), and none of it uses a word the agent should not read (wording §2). The
@@ -17,12 +17,13 @@ const CATALOGUE: readonly (readonly [string, string, string])[] = [
   ["M-03", "send_message_to", "send_message_to needs one of recipient_address or target_agent_run_id. To answer a message or report your task result, use send_message_to with target_agent_run_id set to the sender run id."],
   ["M-04", "send_message_to", "'<address>' is not a valid address (<detail>). An address is exact and begins with '/', for example /team/agent. To answer a message or report your task result, use send_message_to with target_agent_run_id set to the sender run id."],
   ["M-05", "send_message_to", "<run id> is a task agent team's run id, and send_message_to talks with agents. To talk with the team, use its coordinator's run id: <coordinator run id>."],
-  ["M-06", "send_message_to", "You can't message <run>: it isn't part of your Task. Only runs that work on the same Task can message each other by run id."],
+  // M-06 ("You can't message this agent: it works on a different Task.") was withdrawn by autobyteus-492: the run ID is the
+  // address, and a different Task is no reason to refuse a message (CM-13).
   ["M-07", "send_message_to", "This task agent's Task is closed. Only the agent that assigned the Task can continue it: set the Task to TODO or IN_PROGRESS, then message the task agent's run id (for a task agent team, its coordinator's run id)."],
   ["M-08", "send_message_to", "This Task is <status>. The agent that assigned it can set the Task to TODO or IN_PROGRESS and then message this run id again."],
   ["M-09", "send_message_to", "This task agent's current Task is <current task_id> (<status>); setting Task <reopened task_id> to TODO or IN_PROGRESS does not reach it. To have this task agent continue Task <reopened task_id>, call delegate_task with target_agent_run_id \"<run id>\" and task_id \"<reopened task_id>\"."],
   ["M-10", "send_message_to", "This task agent never started, so there is nothing to continue. Delegate the task again."],
-  ["M-11", "send_message_to", "No running agent has the run id '<run id>', so the message was not sent. Use an exact run id you were given: a sender run id (from a message or your new task), or a run id delegate_task returned to you."],
+  ["M-11", "send_message_to", "No running agent has the run id '<run id>', so the message was not sent. A stopped agent is not woken. Use an exact run id you were given: a sender run id (from a message or your new task), a run id delegate_task returned to you, or one list_running_agents lists. For an agent on another node, also pass node."],
   ["M-12", "send_message_to", "The agent '<run id>' did not accept the message: <reason>."],
   ["M-13", "send_message_to", "You can't send a message to yourself."],
   ["M-14", "send_message_to", "The agent with that run id is not running here, so the message was not sent. Use an exact run id you were given."],
@@ -55,6 +56,13 @@ const CATALOGUE: readonly (readonly [string, string, string])[] = [
   ["M-42", "delegate_task", "Only the agent that gave this task agent its most recent Task can give it a new one. Delegate Task <task_id> to a new task agent with recipient_address instead."],
   ["M-44", "delegate_task", "This task agent already has Task <task_id>. To continue it, set Task <task_id> to TODO or IN_PROGRESS, then message the task agent's run id (for a task agent team, its coordinator's run id)."],
   ["M-45", "delegate_task", "This task agent never started, so it has no conversation to continue. Delegate Task <task_id> to a new task agent with recipient_address instead."],
+  // autobyteus-492: send_message_to with node.
+  ["M-46", "send_message_to", "send_message_to takes node only with target_agent_run_id: an address can't name an agent on another node. Use the agent's run id with node."],
+  ["M-47", "send_message_to", "send_message_to with node needs an agent run that collaborates, so nothing was sent to another node."],
+  // The other node's refusal (M-50, or M-05 for a team that runs there), worded with this node's name for that node.
+  ["M-48", "send_message_to", "<M-50 without its final period> on node \"<node>\", so the message was not sent. A stopped agent is not woken. If you have list_running_agents, call it with node \"<node>\" to see what runs there."],
+  ["M-49", "send_message_to", "<M-05> The team runs on node \"<node>\": send to its coordinator with node \"<node>\"."],
+  ["M-50", "send_message_to (the other node's text)", "No running agent has the run id '<run id>'."],
 ];
 
 const SRC = path.resolve("src");
@@ -80,9 +88,9 @@ describe("result and refusal catalogue (wording §7.3, SR-014)", () => {
   // M-30 ("Tasks are not available here …") was withdrawn with the process binding (autobyteus-461 SR-047, SR-052): every host
   // composes the Task side and its delegation, so no delegation finds none. M-37 (a team member's run ID) was withdrawn by
   // SR-071: a member's run ID gets base's M-34.
-  it("lists M-01 to M-45 once each, without the withdrawn M-43, M-16, M-17, M-30 and M-37 (autobyteus-461)", () => {
-    expect(CATALOGUE.map(([id]) => id)).toEqual(Array.from({ length: 45 }, (_unused, index) => `M-${String(index + 1).padStart(2, "0")}`)
-      .filter((id) => id !== "M-43" && id !== "M-16" && id !== "M-17" && id !== "M-30" && id !== "M-37"));
+  it("lists M-01 to M-50 once each, without the withdrawn M-43, M-16, M-17, M-30, M-37 and M-06 (autobyteus-492)", () => {
+    expect(CATALOGUE.map(([id]) => id)).toEqual(Array.from({ length: 50 }, (_unused, index) => `M-${String(index + 1).padStart(2, "0")}`)
+      .filter((id) => id !== "M-43" && id !== "M-16" && id !== "M-17" && id !== "M-30" && id !== "M-37" && id !== "M-06"));
   });
 
   const source = normalizedSource();

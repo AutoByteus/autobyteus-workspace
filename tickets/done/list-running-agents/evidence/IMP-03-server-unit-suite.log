@@ -1,0 +1,24 @@
+# IMP-03
+# Command: pnpm -C autobyteus-server-ts test:unit
+# Commit: deacacf948 (run just before the commit; later edits: contract fixture JSON, the 461 model, docs only)
+# Environment: macOS (Darwin 25.5.0), Node v22.23.1, pnpm 10.28.2
+# Date: 2026-11-18
+
+     × reports definition changes per folder and ignores skills and other files 9817ms
+     × moves a root to FOLDER_MISSING when it is renamed away and resumes watching when it returns 6532ms
+     × re-arms a root whose folder was replaced in place (GitHub update rename swap) 9044ms
+     × starts a registered root that is missing as FOLDER_MISSING and arms it when it appears 5009ms
+     × canonicalizes absolute and relative FILE_CHANGE references to one workspace row 36ms
+     × finds no tracked code importing an untracked file in this repository 5298ms
+ FAIL  tests/architecture/tracked-imports.test.ts > tracked imports > finds no tracked code importing an untracked file in this repository
+     25|   it("finds no tracked code importing an untracked file in this reposi…
+ FAIL  tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts > AgentPackageFolderWatcher > reports definition changes per folder and ignores skills and other files
+ FAIL  tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts > AgentPackageFolderWatcher > moves a root to FOLDER_MISSING when it is renamed away and resumes watching when it returns
+ FAIL  tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts > AgentPackageFolderWatcher > re-arms a root whose folder was replaced in place (GitHub update rename swap)
+ FAIL  tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts > AgentPackageFolderWatcher > starts a registered root that is missing as FOLDER_MISSING and arms it when it appears
+Error: Timed out waiting for the monitor.
+     44|     if (Date.now() - started > timeoutMs) throw new Error("Timed out w…
+ FAIL  tests/unit/services/run-file-changes/run-file-change-service.test.ts > RunFileChangeService > canonicalizes absolute and relative FILE_CHANGE references to one workspace row
+Error: ENOTEMPTY: directory not empty, rmdir '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-file-changes-JPTQ99'
+ Test Files  3 failed | 1017 passed | 5 skipped (1025)
+      Tests  6 failed | 8382 passed | 9 skipped (8397)

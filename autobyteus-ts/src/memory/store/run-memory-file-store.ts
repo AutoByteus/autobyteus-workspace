@@ -4,7 +4,6 @@ import crypto from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
 
-import { MemoryType, MemoryItem } from '../models/memory-types.js';
 import { RawTraceItem } from '../models/raw-trace-item.js';
 import {
   parseSystemInstructionTraceRecord,
@@ -16,12 +15,7 @@ import {
 import { WorkingContext } from '../working-context.js';
 import { WorkingContextSnapshotSerializer } from '../working-context-snapshot-serializer.js';
 import type { SnapshotMetadata } from '../working-context-snapshot-serializer.js';
-import {
-  EPISODIC_MEMORY_FILE_NAME,
-  RAW_TRACES_ACTIVE_MEMORY_FILE_NAME,
-  SEMANTIC_MEMORY_FILE_NAME,
-  WORKING_CONTEXT_SNAPSHOT_FILE_NAME,
-} from './memory-file-names.js';
+import { RAW_TRACES_ACTIVE_MEMORY_FILE_NAME, WORKING_CONTEXT_SNAPSHOT_FILE_NAME } from './memory-file-names.js';
 import { replaceFileDurably } from './durable-file-replace.js';
 import {
   jsonlLogEndsCleanly,
@@ -88,21 +82,8 @@ export class RunMemoryFileStore {
     this.archiveManager = new RawTraceArchiveManager(this.runDir);
   }
 
-  getFilePath(memoryType: MemoryType): string {
-    if (memoryType === MemoryType.RAW_TRACE) {
-      return path.join(this.runDir, RAW_TRACES_ACTIVE_MEMORY_FILE_NAME);
-    }
-    if (memoryType === MemoryType.EPISODIC) {
-      return path.join(this.runDir, EPISODIC_MEMORY_FILE_NAME);
-    }
-    if (memoryType === MemoryType.SEMANTIC) {
-      return path.join(this.runDir, SEMANTIC_MEMORY_FILE_NAME);
-    }
-    throw new Error(`Unknown memory type: ${memoryType}`);
-  }
-
   getRawTracesPath(): string {
-    return this.getFilePath(MemoryType.RAW_TRACE);
+    return path.join(this.runDir, RAW_TRACES_ACTIVE_MEMORY_FILE_NAME);
   }
 
   getRawTracesArchiveDirPath(): string {
@@ -121,9 +102,10 @@ export class RunMemoryFileStore {
     return path.join(this.runDir, WORKING_CONTEXT_SNAPSHOT_FILE_NAME);
   }
 
-  add(items: Iterable<MemoryItem>): void {
+  /** Appends each raw trace to the active raw-trace file. */
+  add(items: Iterable<RawTraceItem>): void {
     for (const item of items) {
-      this.appendJsonlRecord(this.getFilePath(item.memoryType), item.toDict());
+      this.appendJsonlRecord(this.getRawTracesPath(), item.toDict());
     }
   }
 
@@ -160,16 +142,19 @@ export class RunMemoryFileStore {
     return { trace, created: true };
   }
 
-  /** Reads a file for use: its damaged end, if any, is cut first. */
-  readMemoryDicts(memoryType: MemoryType, limit?: number): Record<string, unknown>[] {
-    const filePath = this.getFilePath(memoryType);
+  /**
+   * Reads the active raw-trace file for use: its damaged end, if any, is cut first, and the file is then known to end
+   * cleanly, so later appends need no check.
+   */
+  private readRawTraceRecords(): Record<string, unknown>[] {
+    const filePath = this.getRawTracesPath();
     const records = repairJsonlDamagedEnd(filePath);
     this.verifiedEndPaths.add(filePath);
-    return typeof limit === 'number' ? records.slice(-limit) : records;
+    return records;
   }
 
   listTurnRawTracesOrdered(limit?: number): RawTraceItem[] {
-    const records = this.readMemoryDicts(MemoryType.RAW_TRACE)
+    const records = this.readRawTraceRecords()
       .filter((record) => record.trace_type !== SYSTEM_INSTRUCTION_TRACE_TYPE);
     const selected = typeof limit === 'number' ? records.slice(-limit) : records;
     return selected.map((record) => RawTraceItem.fromDict(record));
@@ -183,7 +168,7 @@ export class RunMemoryFileStore {
   }
 
   listRawTraceDicts(): Record<string, unknown>[] {
-    return this.readMemoryDicts(MemoryType.RAW_TRACE);
+    return this.readRawTraceRecords();
   }
 
   readRawTraceArchiveManifest(): RawTraceArchiveManifest {

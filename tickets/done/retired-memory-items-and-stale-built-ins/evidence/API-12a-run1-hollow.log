@@ -1,0 +1,12 @@
+# API-12a LM Studio gated memory flows | commit cbdf02f15a (autobyteus-ts as 9f9ad727b5) | Node v22.23.1 | 2026-11-18T09:06:34Z | LMSTUDIO_HOSTS=http://127.0.0.1:1234 LMSTUDIO_TARGET_TEXT_MODEL=google/gemma-4-26b-a4b | lms ps before: none loaded
+ ✓ tests/integration/agent/memory-tool-call-flow.test.ts > Memory tool call flow (LM Studio) > ingests tool calls/results and follow-up responses 2ms
+ ✓ tests/integration/agent/memory-llm-flow.test.ts > Memory assembler with LM Studio > ingests memory around LLM responses 1ms
+ Test Files  2 passed (2)
+      Tests  2 passed (2)
+exit 0
+lms ps after:
+No models are currently loaded.
+
+To load a model, run:
+
+    lms load <model path>

@@ -22,7 +22,7 @@ import { findAgyRunCapsule } from "../helpers/agy-run-capsule.js";
 // Matching: `…` in the model matches anything (a dict holding the key `…` allows other keys); an ISO timestamp matches any ISO
 // timestamp (null must stay null); a model ID (run, agent, message, Task, node, definition) binds to the server's ID the first
 // time it is compared and must agree afterwards; a file the model removed must not exist.
-// - §5.1 (S0 … S24) on node A with a paired peer node B; §5.2 (U0 … U8) and §5.3 (O0 … O8) each on a fresh node.
+// - §5.1 (S0 … S27) on node A with a paired peer node B; §5.2 (U0 … U11) and §5.3 (O0 … O9) each on a fresh node.
 // A difference is a code defect or a contract defect; the contract's model decides which (design "Validation").
 // Prerequisite: `pnpm -C autobyteus-server-ts build` for this worktree.
 // Run: env -i PATH="$PATH" HOME="$(cd "$(mktemp -d)" && pwd -P)" TMPDIR="$TMPDIR" RUN_AGY_FAILURE_E2E=1 \
@@ -827,7 +827,7 @@ suite("The collaboration contract's stories, run against the built server (autob
   }, 900_000);
 
   // ---- §5.3: the org (O) ----------------------------------------------------------------------------------------------------
-  it("§5.3 O0 … O8: an org the user starts delegates", async () => {
+  it("§5.3 O0 … O9: an org the user starts delegates", async () => {
     const story = FIXTURE.stories.find((s) => s.section === "5.3")!;
     const O = "company_org_9d00", CEO = "ceo_agent_1f2e", DL = "dev_lead_4c3d", COPY = "dev_team_9a9a", COPY_DL = "dev_lead_9a01";
     await runStory(story, {
@@ -855,6 +855,9 @@ suite("The collaboration contract's stories, run against the built server (autob
       },
       O7: async (ctx) => { await ctx.call(COPY_DL, "send_message_to", { recipient_address: "/Teacher", content: "Need a review …" }); },
       O8: async (ctx) => { const r = await ctx.call(DL, "delegate_task", { recipient_address: "/release_agent", task_id: key(ctx, "demo-5") }); await ctx.bindRun("release_agent_66c3", r.target_agent_run_id as string); },
+      // O9 (461 SR-081, CR-461-081): the copy's lead names its teammate under the team's old name; corrected to the copy's own
+      // address, never the org's own mounted member. The model gained O9 before the fixture was last regenerated (autobyteus-492).
+      O9: async (ctx) => { await ctx.call(COPY_DL, "send_message_to", { recipient_address: "/dev_team/qa", content: "Please test …" }); },
     }, async (ctx) => { await catalog(ctx); });
   }, 900_000);
 });

@@ -21,7 +21,6 @@ import { LLMConfig } from '../../../../src/llm/utils/llm-config.js';
 import { buildLlmTokenUsageObservation } from '../../../../src/llm/utils/llm-token-usage-observation.js';
 import { ChunkResponse, CompleteResponse } from '../../../../src/llm/utils/response-types.js';
 import { MemoryManager } from '../../../../src/memory/memory-manager.js';
-import { MemoryType } from '../../../../src/memory/models/memory-types.js';
 import { CompactionPolicy } from '../../../../src/memory/policies/compaction-policy.js';
 import { FileMemoryStore } from '../../../../src/memory/store/file-store.js';
 import { createEnabledMemoryCompactionConfiguration } from '../../../../src/memory/compaction/memory-compaction-configuration.js';
@@ -146,8 +145,6 @@ describe('LlmPhase disabled automatic compaction', () => {
       expect(captureCompactionBaseline).not.toHaveBeenCalled();
       expect(memoryManager.hasPendingCompaction()).toBe(false);
       expect(memoryManager.getPendingCompactionGate()).toEqual({ kind: 'none' });
-      expect(memoryManager.store.list(MemoryType.EPISODIC)).toEqual([]);
-      expect(memoryManager.store.list(MemoryType.SEMANTIC)).toEqual([]);
       expect(notifyAgentCompactionStatus).not.toHaveBeenCalled();
       expect(notifyAgentTokenUsageUpdated).toHaveBeenCalledWith(expect.objectContaining({
         latest_prompt_tokens: observedPromptTokens,

@@ -26,6 +26,7 @@ export const remoteCollaborationOff = (): AgentDiscoveryRefusal =>
 export const REMOTE_COLLABORATION_OFF_DISCOVERY: PeerDiscoveryChannel = Object.freeze({
   listPeerNodes: async () => remoteCollaborationOff(),
   listAvailableAgents: async (_node: string) => remoteCollaborationOff(),
+  listRunningAgents: async (_node: string) => remoteCollaborationOff(),
 });
 
 /**

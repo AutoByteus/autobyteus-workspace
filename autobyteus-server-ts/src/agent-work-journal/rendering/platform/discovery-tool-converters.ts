@@ -8,6 +8,7 @@ import { actionLine, messageParts, quoted, readLine, textItems, type PlatformToo
 
 const listAvailableAgents: PlatformToolConverter = (_call, result) => readLine("List available agents", result);
 const listPeerNodes: PlatformToolConverter = (_call, result) => readLine("List peer nodes", result);
+const listRunningAgents: PlatformToolConverter = (_call, result) => readLine("List running agents", result);
 const listAvailableAgentRuntimes: PlatformToolConverter = (_call, result) => readLine("List available agent runtimes", result);
 
 const searchMemory: PlatformToolConverter = (call, result) =>
@@ -35,6 +36,7 @@ const submitLaunchChoices: PlatformToolConverter = (call, result) => {
 export const discoveryToolConverters: ReadonlyMap<string, PlatformToolConverter> = new Map([
   ["list_available_agents", listAvailableAgents],
   ["list_peer_nodes", listPeerNodes],
+  ["list_running_agents", listRunningAgents],
   ["list_available_agent_runtimes", listAvailableAgentRuntimes],
   ["search_memory", searchMemory],
   ["publish_artifacts", publishArtifacts],

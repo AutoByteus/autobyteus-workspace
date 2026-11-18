@@ -1,0 +1,6 @@
+# API-08 node tests/e2e/delegated-launch-defaults-probe.mjs --cases SIR-002 | commit 53eb3521f1 (code 91ee1603a5) + SIR-002 Memory Compactor + baseline fixes | Node v22.23.1 | 2026-11-18T08:42:28Z | load 80.21 91.63 90.00
+(node:13039) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+SIR-002 Pass AC-003/AC-004: an upgrade around real runs deletes exactly the feature data once; other files and .env byte-identical; a second start changes nothing; runs listed and resumed; no feature UI; retired keys refused
+Summary: 1 Pass, 0 Fail
+exit 0

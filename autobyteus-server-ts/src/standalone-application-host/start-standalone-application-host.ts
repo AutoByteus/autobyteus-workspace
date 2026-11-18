@@ -69,6 +69,7 @@ import { composeCollaboration, composeTaskSide, type Collaboration } from "../co
 import { createEpisodicCatalog, type EpisodicCatalog } from "../agent-episodic-catalog/services/episodic-catalog.js";
 import { getWorkJournalService } from "../agent-work-journal/services/work-journal-service.js";
 import { createCollaborationRootResolver } from "../compositions/collaboration-root-resolver.js";
+import { composeRunningAgents } from "../compositions/running-agents-composition.js";
 import { getActiveCollaborationRootDirectory } from "../agent-collaboration/execution/services/active-collaboration-root-directory.js";
 import { createPlatformNoticeSources, type PlatformNoticeSources } from "../compositions/platform-notice-sources.js";
 import { AgentRunPlatformNotices } from "../agent-execution/domain/agent-run-platform-notices.js";
@@ -289,7 +290,10 @@ export const startStandaloneApplicationHost = async (
       activeRoots: getActiveCollaborationRootDirectory(),
       // This host has no peer nodes (ARCH-REV-027: its real equivalent, as at base).
       remoteChannel: () => null,
-      episodicCatalog: currentEpisodicCatalog });
+      episodicCatalog: currentEpisodicCatalog,
+      // autobyteus-492: this node's running agents (messages by run ID and list_running_agents).
+      running: composeRunningAgents({ memoryDir: processResources.appConfig.getMemoryDir(), tempWorkspaceDir: processResources.appConfig.getTempWorkspaceDir(),
+        activeRoots: getActiveCollaborationRootDirectory(), runs: generalProcessRunSupervisor, agentDefinitions: hostDefinitionServices.agentDefinitionService }) });
     currentEpisodicCatalog.start({ taskTitles: collaboration.tasks });
     const applicationRuntime = buildApplicationPlatformRuntime({
       appConfig: processResources.appConfig,

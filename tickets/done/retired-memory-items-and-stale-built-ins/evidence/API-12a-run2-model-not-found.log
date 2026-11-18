@@ -1,0 +1,15 @@
+# API-12a LM Studio gated memory flows, explicit model | commit cbdf02f15a (autobyteus-ts as 9f9ad727b5) | Node v22.23.1 | 2026-11-18T09:12:58Z | LMSTUDIO_HOSTS=http://127.0.0.1:1234 LMSTUDIO_MODEL_ID=google/gemma-4-26b-a4b | lms ps before: No models are currently loaded.
+ × tests/integration/agent/memory-llm-flow.test.ts > Memory assembler with LM Studio > ingests memory around LLM responses 4ms
+ × tests/integration/agent/memory-tool-call-flow.test.ts > Memory tool call flow (LM Studio) > ingests tool calls/results and follow-up responses 4ms
+Error: Model with identifier 'google/gemma-4-26b-a4b' not found.
+    250|     throw new Error(`Model with identifier '${modelIdentifier}' not fo…
+Error: Model with identifier 'google/gemma-4-26b-a4b' not found.
+    250|     throw new Error(`Model with identifier '${modelIdentifier}' not fo…
+ Test Files  2 failed (2)
+      Tests  2 failed (2)
+exit 1
+lms ps after:
+No models are currently loaded.
+
+To load a model, run:
+

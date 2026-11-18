@@ -314,10 +314,6 @@ Optional compaction settings:
 - `AUTOBYTEUS_COMPACTION_TRIGGER_RATIO`
   - decimal trigger ratio for post-response compaction checks
   - default runtime behavior is `0.8`
-- `AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID`
-  - agent definition id for the memory compactor agent
-  - on startup, the product-managed built-in compactor agent `autobyteus-memory-compactor` is synced from the bundled template and selected when this setting is blank
-  - configure a custom selected agent's instructions, runtime, model, and model config in the normal agent editor or package source; blank runtime/model defaults inherit from the triggering parent run, and required compaction fails clearly only when no selected definition exists or a required field is absent from both the selected definition and parent run
 - `AUTOBYTEUS_ACTIVE_CONTEXT_TOKENS_OVERRIDE`
   - optional lower effective context ceiling in tokens
   - useful when a provider fails before its advertised maximum context
@@ -332,14 +328,12 @@ docker run -d \
   -p 8001:8000 \
   -e AUTOBYTEUS_SERVER_HOST=http://localhost:8001 \
   -e AUTOBYTEUS_COMPACTION_TRIGGER_RATIO=0.8 \
-  -e AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID=your-compactor-agent-definition-id \
   -e AUTOBYTEUS_ACTIVE_CONTEXT_TOKENS_OVERRIDE=64000 \
   -e AUTOBYTEUS_COMPACTION_DEBUG_LOGS=true \
   autobyteus/autobyteus-server:latest
 ```
 
-These settings affect subsequent runtime budget checks and visible compactor-agent
-runs. They do not interrupt an already in-flight model stream.
+These settings affect subsequent runtime budget checks. They do not interrupt an already in-flight model stream.
 
 For LM Studio and Ollama, the runtime also hardens long-running local requests
 in code: idle transport body/header timeouts are disabled for those adapters,

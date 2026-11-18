@@ -41,6 +41,7 @@ import type { TaskExecutionIdleTimers } from "../../agent-collaboration/executio
 import { OTHER_RUN_LOG, OWN_RUN_LOG } from "../../run-history/store/message-log-owners.js";
 import { peerRunLinksOf } from "../../agent-collaboration/execution/remote/peer-run-link.js";
 import { RemoteRunLinks, type RemoteInboundMessage, type RemoteInboundWorkPacket } from "../../agent-collaboration/execution/remote/remote-run-links.js";
+import type { PeerRunMessageInput } from "../../agent-collaboration/execution/services/active-collaboration-root-directory.js";
 import { teamRunRemoteLinks } from "./team-run-remote-links.js";
 import { DelegatedTeamIdleShutdown } from "../services/delegated-team-idle-shutdown.js";
 import type { PreparedLocalExecutionTermination } from "../../agent-collaboration/execution/domain/prepared-local-execution-termination.js";
@@ -290,9 +291,18 @@ export class RootTeamRun {
     return this.materializationGate.run(() => this.delivery.deliverExact(input, () => this.delivery.deliverToRunId(input)));
   }
 
+  /** autobyteus-492 DS-004: to an agent of a peer node by its run ID. */
+  deliverToPeerRun(input: PeerRunMessageInput): Promise<AgentOperationResult> {
+    return this.materializationGate.run(() => this.delivery.deliverToPeerRun(input));
+  }
+
   /** A message from a linked run on a peer node, admitted by its peer gateway (DS-003). */
   acceptRemoteMessage(input: RemoteInboundMessage): Promise<AgentOperationResult> {
     return this.materializationGate.run(async () => { this.assertAdmitting(); return this.delivery.acceptRemoteMessage(input); });
+  }
+  /** autobyteus-492 DS-004: a peer agent's message by run ID only, while the member runs (never woken). */
+  acceptPeerRunMessage(input: RemoteInboundMessage): Promise<AgentOperationResult> {
+    return this.materializationGate.run(async () => { this.assertAdmitting(); return this.delivery.acceptPeerRunMessage(input); });
   }
 
   /** N-6 for a Team a peer started: the delegator's work packet starts the coordinator with the task notification. */

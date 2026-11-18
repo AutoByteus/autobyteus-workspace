@@ -30,7 +30,6 @@ import { buildFinish, type LlmFinishReason } from '../../../src/llm/utils/llm-re
 import { buildLlmTokenUsageObservation } from '../../../src/llm/utils/llm-token-usage-observation.js';
 import type { Message } from '../../../src/llm/utils/messages.js';
 import { ChunkResponse, CompleteResponse } from '../../../src/llm/utils/response-types.js';
-import { MemoryType } from '../../../src/memory/models/memory-types.js';
 import { COMPACTION_SUMMARY_HEADINGS } from '../../../src/memory/compaction/compaction-summary-parser.js';
 import { createEnabledMemoryCompactionConfiguration } from '../../../src/memory/compaction/memory-compaction-configuration.js';
 import { CompactionPolicy } from '../../../src/memory/policies/compaction-policy.js';
@@ -38,6 +37,8 @@ import { ParameterDefinition, ParameterSchema, ParameterType } from '../../../sr
 import { FunctionalTool } from '../../../src/tools/functional-tool.js';
 import { defaultToolRegistry } from '../../../src/tools/registry/tool-registry.js';
 import { resetAgentFactory, waitForCondition, waitForStatus } from './runtime/runtime-test-harness.js';
+import { FileMemoryStore } from '../../../src/memory/store/file-store.js';
+import { RawTraceItem } from '../../../src/memory/models/raw-trace-item.js';
 
 // ---- scripted LLM ------------------------------------------------------------------------
 
@@ -168,7 +169,8 @@ const finalState = (agent: Agent) => {
       reasoning: message.reasoning_content ?? null,
       tool: message.tool_payload ? JSON.parse(JSON.stringify(message.tool_payload)) : null,
     })),
-    rawTraces: (memory.store.list(MemoryType.RAW_TRACE) as any[]).map((trace) => ({
+    // Every record of the active file, system instructions included.
+    rawTraces: (memory.store as FileMemoryStore).listRawTraceDicts().map((record) => RawTraceItem.fromDict(record)).map((trace) => ({
       traceType: trace.traceType,
       sourceEvent: trace.sourceEvent ?? null,
       turnId: trace.turnId,

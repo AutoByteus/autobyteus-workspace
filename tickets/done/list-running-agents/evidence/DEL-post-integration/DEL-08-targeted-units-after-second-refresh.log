@@ -1,0 +1,7 @@
+# Command (worktree root): pnpm -C autobyteus-server-ts exec vitest run tests/unit/{agent-collaboration,agent-communication,remote-collaboration,agent-tools,agent-org-execution,agent-team-execution,standalone-agent-run-root,restart-resume} tests/app-data-migrations/app-data-migration-registry-order.test.ts tests/app-data-migrations/remove-retired-built-in-agents tests/architecture --no-watch
+# Merged state 736526af88
+ Test Files  213 passed (213)
+      Tests  1554 passed (1554)
+   Start at  15:14:35
+   Duration  198.19s (transform 13.14s, setup 8.60s, import 110.20s, tests 50.62s, environment 14ms)
+exit=0

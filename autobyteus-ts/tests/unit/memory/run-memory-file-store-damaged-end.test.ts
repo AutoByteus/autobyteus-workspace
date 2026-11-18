@@ -8,7 +8,6 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { MemoryType, type MemoryItem } from '../../../src/memory/models/memory-types.js';
 import { RawTraceItem } from '../../../src/memory/models/raw-trace-item.js';
 import { RunMemoryFileStore } from '../../../src/memory/store/run-memory-file-store.js';
 import { WorkingContextSnapshotStore } from '../../../src/memory/store/working-context-snapshot-store.js';
@@ -28,11 +27,6 @@ const runDir = () => {
 
 const trace = (id: string, ts: number, traceType: string, content: string) => new RawTraceItem({
   id, ts, turnId: 'turn-1', seq: ts, traceType, content, sourceEvent: 'test',
-});
-
-const episodic = (id: string): MemoryItem => ({
-  memoryType: MemoryType.EPISODIC,
-  toDict: () => ({ id, summary: `summary ${id}` }),
 });
 
 const silenceWarnings = () => vi.spyOn(console, 'warn').mockImplementation(() => undefined);
@@ -121,20 +115,15 @@ describe('RunMemoryFileStore damaged end', () => {
     expect(ids(new RunMemoryFileStore(dir).listRawTraceDicts())).toEqual(['rt-1', 'rt-2', 'rt-3', 'rt-4']);
   });
 
-  it('checks each memory file of the store separately (AC-004)', () => {
+  it('checks a damaged end before a batch appended through add, as before a single raw trace (AC-004)', () => {
     silenceWarnings();
     const dir = runDir();
     writeIntactLog(dir);
-    const writer = new RunMemoryFileStore(dir);
-    writer.add([episodic('ep-1')]);
-    damageEnd(writer.getFilePath(MemoryType.EPISODIC), Buffer.alloc(50, 0));
+    damageEnd(new RunMemoryFileStore(dir).getRawTracesPath(), Buffer.alloc(50, 0));
     const second = new RunMemoryFileStore(dir);
-    second.appendRawTrace(trace('rt-3', 3, 'user', 'weiter'));
-    second.add([episodic('ep-2')]);
+    second.add([trace('rt-3', 3, 'user', 'weiter'), trace('rt-4', 4, 'assistant', 'gut')]);
 
-    const reader = new RunMemoryFileStore(dir);
-    expect(ids(reader.readMemoryDicts(MemoryType.EPISODIC))).toEqual(['ep-1', 'ep-2']);
-    expect(ids(reader.listRawTraceDicts())).toEqual(['rt-1', 'rt-2', 'rt-3']);
+    expect(ids(new RunMemoryFileStore(dir).listRawTraceDicts())).toEqual(['rt-1', 'rt-2', 'rt-3', 'rt-4']);
   });
 
   it('keeps a system-instruction record appended after a damaged end (AC-004)', () => {
