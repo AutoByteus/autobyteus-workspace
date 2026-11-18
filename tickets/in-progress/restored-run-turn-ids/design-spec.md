@@ -2,7 +2,7 @@
 
 ## Solution And Approval Basis
 
-- Revision `SR-001`; requirements `requirements-doc.md` approved by the Solution Designer within the Task's direction (user informed), 2026-11-18
+- Revision `SR-002` (revised for CRR-001 / API-E2E F-1; SR-001 implemented at 10217e9a0b, cbea910d08); requirements `requirements-doc.md` approved by the Solution Designer within the Task's direction (user informed), 2026-11-18
 - Design status: `Ready`; user approval of the design: `Not required`
 - Authorities read (2026-11-18): `references/architecture-design.md`, `references/design-principles.md` (current version), `/DESIGN.md`
 - Conflicts: none
@@ -15,10 +15,10 @@
 
 ## Task Size And Architectural Risk
 
-- Task size: `Medium` (one owner in `autobyteus-ts` memory, one web component, tests and the isolated-node/desktop/phone validation)
+- Task size: `Medium` (SR-001's two changes, plus one notice identity carried through the preface metadata, the stored trace, the projection, the live notice payload and the web notice segment)
 - Size rationale: two small, local changes in existing owners; no contract, route or store shape change
-- Architectural risk: `Low`
-- Risk rationale: the id format and every reader stay as they are; the numbering of new turns of restored runs continues instead of restarting; the card change is presentation only; stored data untouched
+- Architectural risk: `High` (SR-002)
+- Risk rationale: a field is added to the live `SYSTEM_TASK_NOTIFICATION` payload and the projection's notice entries (strict wire contracts), stored notice traces gain their `message_id` (additive, existing field), and every notice producer is touched; SR-001's parts stay Low
 - Escalation trigger: if validation shows the conversation still merges turns with distinct ids, or a reader depends on a restored run restarting at `turn_0001`, return a Design Impact
 
 ## Intended Change
@@ -59,3 +59,44 @@ None.
 
 - Start from the 448 reproduction: `evidence/API-15-desktop/run-traces-turn-ids.txt` in `tickets/done/background-task-restart-notice/` (turn ids reused after each restart); a unit test on `MemoryManager` with a store holding `turn_0001..3` (one archived) must fail on base.
 - Validation (API/E2E): isolated node, native run restarted twice; before (base `2e9ac1e65b`) and after; desktop and phone conversation, live and after a reload; also open a run restored before the fix and report what it shows (DEC-003); the card's local time with the viewer zone set (e.g. `TZ=Europe/Berlin`).
+
+
+## SR-002 — One identity per notice (CRR-001 / API-E2E F-1)
+
+### Cause (read, with the validation evidence; investigation notes U-1)
+
+A notice reaches the web on two paths, and nothing ties them together: the snapshot's stored part keeps it (notices have no turn, `keepsStored`) and its live frame arrives with only `sender_id` and `content`. The 461 contract says the web matches notices by `messageId`, but no notice carries one on any path. Turn ids are not involved (base shows the same counts).
+
+### Intended Change
+
+Every platform notice has one id, `messageId`, given where the notice is made, and the same id travels with every copy:
+
+| Step | Owner (file) | Change |
+| --- | --- | --- |
+| 1 | `autobyteus-ts/src/agent/message/platform-input-preface-metadata.ts` | `PlatformInputPreface` gains `noticeId: string` (required); `platformInputPrefaceMetadata` writes `notice_id`; `readPlatformInputPreface` reads it (a stored message without it reads `null`: tolerant, older metadata) |
+| 2 | `autobyteus-ts/src/agent/input-processor/memory-ingest-input-processor.ts` L54-62 | the `system_task_notification` trace is appended with `messageId: preface.noticeId` (`RawTraceItem.messageId` exists) |
+| 3 | server notice producers: `agent-run-input-preface-dispatch.ts` (preface: `noticeId = preface.id`), restart reminder wake (`restart-notice.ts`), tool list (`tool-list-update-notice-builder.ts`), skill (`skill-update-notice-builder.ts`), background tasks (`background-task-notice-builder.ts`), model router (`model-router.ts` L200-210), Claude background notice (`claude-session.ts` L428, recorded by the server memory recorder from the same event) | each makes one id per notice, puts it in the message's preface metadata (when the notice is an input) and in the published `SYSTEM_TASK_NOTIFICATION` payload as `message_id`. The runtime hand-over marker keeps its existing rule (its echo is not numbered) |
+| 4 | server memory recorder for external runtimes (`runtime-memory-event-accumulator.ts`) | records the notice with the event's `message_id` |
+| 5 | projection: `raw-trace-to-historical-replay-events.ts` L201-210, `historical-replay-events-to-conversation.ts` L64-71, `run-projection-types.ts` | notice replay events and conversation entries carry `messageId` when stored |
+| 6 | wire: agent stream `SYSTEM_TASK_NOTIFICATION` payload (`agent-run-event-message-mapper.ts`, web `messageParser.ts`/`messageTypes.ts`), collaboration presentation (`collaboration-agent-presentation-adapter.ts` L369, `agent-presentation-event.ts` L137, contracts), team stream (`team-agent-event.ts` L122) | `message_id` (nullable for notices without one, e.g. old traces) |
+| 7 | web: `SystemTaskNotificationSegment` type gains `messageId: string \| null`; `systemTaskNotificationHandler.ts` does not add a notice whose `messageId` the conversation already shows; hydration (`runProjectionConversation.ts` L275-281) sets it | the one rule: a notice id is shown once |
+
+A notice without an id (traces written before this change) is shown as today (no dedupe): they never had a live copy after their run ended.
+
+### Example (one restart, desktop live then reload)
+
+1. Restart; input sent; the preface dispatch makes `noticeId = n1`; the native memory stores the notice with `message_id: n1`; the live frame `{sender_id, content, message_id: n1}` arrives → one card.
+2. A snapshot is taken (reload or reconnect): its stored part holds the notice `messageId: n1` → one card; the replayed or later live frame with `n1` is skipped → still one card.
+
+### Persisted Data (SR-002)
+
+Stored notice traces gain `message_id` (an existing optional field). `Directly Usable — No Migration`: older traces read as today.
+
+### Change Scope (SR-002)
+
+Adds step 1-7 files to SR-001's. Left alone: the snapshot's keep rule (notices stay kept, as 461 designed); user and inter-agent messages (already matched by `messageId`).
+
+### Guidance (SR-002)
+
+- Reproduction: `MSP-75` (phone, fails until fixed) and `evidence/V-04-desktop/` (desktop live and reload) in this ticket folder.
+- Keep SR-001's code (turn ids, local time): validated (AC-001 RR-10, AC-003, RR-11).

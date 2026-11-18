@@ -32,4 +32,8 @@ A restored native run restarts its turn numbering at 1, so its new turns reuse i
 
 ## Unknowns
 
-- U-1: the exact merging layer (see Cause); not needed for the source fix.
+- U-1 (resolved in SR-002, from CRR-001 / API-E2E F-1): the doubled card does not depend on turn ids (base shows the same counts). Read, with the validation evidence:
+  - the snapshot keeps every stored entry without a turn (`agent-stream-sequence.ts` `keepsStored`: `turnId === null || …`); notices reach the conversation without a turn by design (`historical-replay-events-to-conversation.ts` L5-8: "notices carry none: they are always kept, and the web matches them by `messageId`") and without a message id (L64-71; replay event L201-210);
+  - the live notice frame carries only `sender_id` and `content` (RR-10 frame order: `SYSTEM_TASK_NOTIFICATION {sender_id, content}` before `TURN_STARTED`); the web notice segment has neither turn nor id (`systemTaskNotificationHandler.ts` L13-21; hydration `runProjectionConversation.ts` L275-281);
+  - so whenever a notice reaches the web on two paths (a snapshot's stored part and its live frame; desktop reload of a live run; phone live after a restart), both show. The 461 contract's "matched by messageId" is not met for notices: none carries one.
+  - the stored trace can hold an id already (`raw-trace-item.ts` `messageId`, L30, L108, L136); user inputs use it.
