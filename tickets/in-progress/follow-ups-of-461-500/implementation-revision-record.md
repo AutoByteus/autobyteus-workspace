@@ -148,3 +148,27 @@
   - Recount against `ff13782f36`: no changed source file is over 500 (studio 485, handle 499, AutoByteus backend
     factory 496).
 - **Limitations:** none new.
+
+## IR-006 (third delivery base refresh)
+
+- **Trigger:** the Delivery Engineer's "Third integration refresh" (`release-deployment-report.md`, `0af5a64677`):
+  merging `origin/personal` `0570c47fd9` conflicted in 13 files. A Local Fix.
+- **Prior result:** IR-005, Pass (CRR-008); API-REV-003 Pass. **Current result:** merged and checked; to the code
+  reviewer's merge review, then API/E2E on the merged state.
+- **Upstream revisions:** CRR-008, CRR-009, API-REV-003, the delivery report. SR / ARCH-REV: unchanged.
+- **Code delta:**
+  - `e93671cce0`: the merge.
+    - 448 part 2's background-task count goes into 500's run-agent names.
+    - The deleted `standalone-paired-agent-access.ts`: 448's change moves to `standalone-run-agent-access.ts`.
+    - The base's new `peer-run-calls.ts` / `remote-run-observation.ts` and its new web spec follow 500's names.
+    - 493's episodic catalog goes into 500's composition; the dead `AGENT_RUN_COLLABORATION_DIR_NAME` stays removed.
+    - Detail in the handoff, "IR-006: third base refresh".
+  - `4db98c6d1a`: the FU-011 host-owners test's complete supervisor input includes 493's required `episodicCatalog`.
+- **Focused validation:** IMP-22.
+  - Both type gates pass.
+  - Server: 8876 passed; only watcher timing failed, and `file-system-watcher` labels its failures ENVIRONMENT or
+    INCONCLUSIVE.
+  - Web: 5767 passed.
+  - No changed source file is over 500.
+- **Limitations:** server E2E suites were not run on the merge; they're for API/E2E round 4, which the Delivery Engineer
+  asked to target what the merge touches.

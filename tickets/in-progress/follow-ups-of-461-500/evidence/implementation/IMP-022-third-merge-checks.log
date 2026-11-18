@@ -1,0 +1,28 @@
+# IMP-022 IR-006: checks on the merged state (origin/personal 0570c47fd9 merged in e93671cce0; test fix 4db98c6d1a)
+# Commit: 4db98c6d1a; macOS Darwin 25.5.0, Node v22; 2026-11-18 local; load average 27-55
+
+## pnpm -C autobyteus-server-ts typecheck
+[typecheck] production errors: 0; test-file errors: 1010 in 316 files (baseline 1010 in 316 files)
+[typecheck] PASS
+
+## node autobyteus-web/scripts/typecheck.mjs
+[typecheck] production errors: 0; test-file errors: 87 in 37 files (baseline 87 in 37 files)
+[typecheck] PASS
+
+## cd autobyteus-server-ts && npx vitest run --no-watch --testTimeout=60000 --hookTimeout=60000 tests/unit tests/agent-work-journal tests/app-data-migrations tests/architecture tests/integration
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 7 ⎯⎯⎯⎯⎯⎯⎯
+ Test Files  3 failed | 1105 passed | 25 skipped (1133)
+      Tests  7 failed | 8876 passed | 78 skipped (8961)
+   5  FAIL  tests/integration/file-explorer/file-system-watcher.integration.test.ts
+   1  FAIL  tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts
+   1  FAIL  tests/unit/skill-update-notices/skill-folder-watcher.test.ts
+Labels of the failures:
+   1 AssertionError: expected "vi.fn()" to not be called at all, 
+   1 Error: ENVIRONMENT: the OS delivered no file event within 10
+   4 Error: INCONCLUSIVE: the watcher saw no change; a fresh fs.w
+   1 Error: Timed out waiting for the monitor.
+(file-system-watcher: 1 ENVIRONMENT + 4 INCONCLUSIVE, the D-13b labels; the two folder watchers are untouched by this ticket)
+
+## cd autobyteus-web && npx vitest run
+ Test Files  767 passed (767)
+      Tests  5767 passed | 2 skipped (5769)
