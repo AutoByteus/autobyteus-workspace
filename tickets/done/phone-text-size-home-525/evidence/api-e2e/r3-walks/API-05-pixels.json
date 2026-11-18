@@ -1,0 +1,74 @@
+{
+ "activity": {
+  "pixels": 0,
+  "bboxCss": null
+ },
+ "artifacts": {
+  "pixels": 0,
+  "bboxCss": null
+ },
+ "connection-sheet": {
+  "pixels": 665,
+  "bboxCss": [
+   44,
+   19,
+   386,
+   630
+  ]
+ },
+ "conversation": {
+  "pixels": 0,
+  "bboxCss": null
+ },
+ "file-viewer": {
+  "pixels": 0,
+  "bboxCss": null
+ },
+ "files": {
+  "pixels": 0,
+  "bboxCss": null
+ },
+ "new-run-agent-sheet": {
+  "pixels": 0,
+  "bboxCss": null
+ },
+ "new-run": {
+  "pixels": 0,
+  "bboxCss": null
+ },
+ "run-list": {
+  "pixels": 543,
+  "bboxCss": [
+   346,
+   18,
+   386,
+   778
+  ]
+ },
+ "run-menu": {
+  "pixels": 15535,
+  "bboxCss": [
+   116,
+   254,
+   396,
+   350
+  ]
+ },
+ "settings": {
+  "pixels": 0,
+  "bboxCss": null
+ },
+ "setup": {
+  "pixels": 0,
+  "bboxCss": null
+ },
+ "unpair-confirm": {
+  "pixels": 669,
+  "bboxCss": [
+   44,
+   19,
+   386,
+   630
+  ]
+ }
+}

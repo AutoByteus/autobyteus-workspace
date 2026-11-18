@@ -1,0 +1,5 @@
+# API-02 full web unit suite; commit 66691f49d6 (code 7c7f3d2e79); 2026-11-17T22:25:45Z; macOS, Node v22.23.1; command: pnpm -C autobyteus-web test:nuxt --run
+ Test Files  765 passed (765)
+      Tests  5743 passed | 2 skipped (5745)
+   Duration  529.53s (transform 49.45s, setup 3634.51s, collect 360.89s, tests 128.26s, environment 240.79s, prepare 155.08s)
+(excerpt; the full log of    50419 lines is kept outside the repository: every file passed)

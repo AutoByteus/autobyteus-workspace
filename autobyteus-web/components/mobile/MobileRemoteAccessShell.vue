@@ -21,6 +21,8 @@ import { useRoute } from 'vue-router';
 import MobilePairedShell from '~/components/mobile/MobilePairedShell.vue';
 import MobilePairingBootstrap from '~/components/mobile/MobilePairingBootstrap.vue';
 import MobileUnsupportedFeatureNotice from '~/components/mobile/MobileUnsupportedFeatureNotice.vue';
+// The phone's Text size for shared components that set their text in fixed px (autobyteus-525).
+import '~/assets/css/phone-text-size.css';
 import { useMobileNodeSessionStore } from '~/stores/mobileNodeSessionStore';
 import type { MobileFeatureId } from '~/utils/mobileFeatureGates';
 import { getShellBridge } from '~/utils/remoteAccess/shellBridge';

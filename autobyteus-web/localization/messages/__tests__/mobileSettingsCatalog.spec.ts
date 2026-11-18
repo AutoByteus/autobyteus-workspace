@@ -1,14 +1,15 @@
 import { describe, expect, it } from 'vitest';
 import { getCatalog } from '~/localization/runtime/catalogRegistry';
 
-// autobyteus-458 REQ-009 / AC-007: the phone's Settings and Text size texts, English and Chinese.
+// autobyteus-458 REQ-009 / AC-007: the phone's run Settings texts; autobyteus-525 REQ-009 / AC-008: the run list's
+// "On this phone" menu with the Text size. English and Chinese.
 const KEYS = [
   'mobile.settings.menuEntry', 'mobile.settings.title', 'mobile.settings.stopRun', 'mobile.settings.save',
-  'mobile.settings.textSize', 'mobile.settings.textSize.small', 'mobile.settings.textSize.standard',
-  'mobile.settings.textSize.large', 'mobile.settings.textSize.largest',
+  'mobile.onThisPhone.title', 'mobile.onThisPhone.close', 'mobile.onThisPhone.textSize', 'mobile.onThisPhone.textSize.small',
+  'mobile.onThisPhone.textSize.standard', 'mobile.onThisPhone.textSize.large', 'mobile.onThisPhone.textSize.largest',
 ] as const;
 
-describe('mobile.settings catalog', () => {
+describe('mobile.settings and mobile.onThisPhone catalogs', () => {
   it('carries every key in English and Chinese', () => {
     const en = getCatalog('en') as Record<string, string>;
     const zh = getCatalog('zh-CN') as Record<string, string>;
@@ -16,6 +17,10 @@ describe('mobile.settings catalog', () => {
       expect(en[key], key).toBeTruthy();
       expect(zh[key], key).toBeTruthy();
     }
-    expect(KEYS.map((key) => en[key])).toEqual(['Settings', 'Settings', 'Stop run', 'Save', 'Text size', 'Small', 'Standard', 'Large', 'Largest']);
+    expect(KEYS.map((key) => en[key])).toEqual(['Settings', 'Settings', 'Stop run', 'Save', 'On this phone', 'Close menu', 'Text size', 'Small', 'Standard', 'Large', 'Largest']);
+    expect(zh['mobile.onThisPhone.title']).toBe('本机设置');
+    // The Text size texts moved: the run's Settings no longer carries them.
+    expect(Object.keys(en).filter((key) => key.startsWith('mobile.settings.textSize'))).toEqual([]);
+    expect(Object.keys(zh).filter((key) => key.startsWith('mobile.settings.textSize'))).toEqual([]);
   });
 });

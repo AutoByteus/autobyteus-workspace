@@ -1,0 +1,1050 @@
+{
+ "header": "IMP-08f phone probe; pnpm -C autobyteus-web test:e2e:mobile-shell --output-dir=<fresh> --cases=MSP-66,MSP-60,MSP-74,MSP-67,MSP-68,MSP-69,MSP-70,MSP-71,MSP-72,MSP-73; commit 6abbcc7bef (product code = merge 65d67674a9; bundle and server built at 65d67674a9); macOS headless Chrome; 2026-11-18",
+ "result": "Pass",
+ "cases": {
+  "MSP-66": {
+   "360": {
+    "width": 360,
+    "height": 780,
+    "phone": true,
+    "textSize": "standard",
+    "fontSize": 17,
+    "lineHeight": 25.5,
+    "bodies": [
+     {
+      "left": 12,
+      "width": 336,
+      "speaker": "user"
+     },
+     {
+      "left": 12,
+      "width": 336,
+      "speaker": "agent"
+     },
+     {
+      "left": 12,
+      "width": 336,
+      "speaker": "user"
+     },
+     {
+      "left": 12,
+      "width": 336,
+      "speaker": "agent"
+     },
+     {
+      "left": 12,
+      "width": 336,
+      "speaker": "user"
+     },
+     {
+      "left": 12,
+      "width": 336,
+      "speaker": "agent"
+     }
+    ],
+    "speakers": [
+     "You",
+     "lead",
+     "You",
+     "lead",
+     "You",
+     "lead"
+    ],
+    "avatars": [
+     22,
+     22,
+     22,
+     22,
+     22,
+     22
+    ],
+    "composerGap": 8
+   },
+   "412": {
+    "width": 412,
+    "height": 915,
+    "phone": true,
+    "textSize": "standard",
+    "fontSize": 17,
+    "lineHeight": 25.5,
+    "bodies": [
+     {
+      "left": 12,
+      "width": 388,
+      "speaker": "user"
+     },
+     {
+      "left": 12,
+      "width": 388,
+      "speaker": "agent"
+     },
+     {
+      "left": 12,
+      "width": 388,
+      "speaker": "user"
+     },
+     {
+      "left": 12,
+      "width": 388,
+      "speaker": "agent"
+     },
+     {
+      "left": 12,
+      "width": 388,
+      "speaker": "user"
+     },
+     {
+      "left": 12,
+      "width": 388,
+      "speaker": "agent"
+     }
+    ],
+    "speakers": [
+     "You",
+     "lead",
+     "You",
+     "lead",
+     "You",
+     "lead"
+    ],
+    "avatars": [
+     22,
+     22,
+     22,
+     22,
+     22,
+     22
+    ],
+    "composerGap": 8
+   },
+   "result": "Pass",
+   "seconds": 5.6,
+   "interAgent": {
+    "arrow": {
+     "visible": true,
+     "box": {
+      "x": 376,
+      "y": 102,
+      "width": 20,
+      "height": 20
+     }
+    },
+    "typeLineBefore": 0,
+    "typeLine": "agent_message",
+    "messageBox": {
+     "x": 12,
+     "y": 100,
+     "width": 388,
+     "height": 72.0625
+    }
+   }
+  },
+  "MSP-60": {
+   "result": "Pass",
+   "seconds": 3.4,
+   "before": {
+    "step": "standard",
+    "root": 16,
+    "runName": 15,
+    "feed": null,
+    "menuOpen": false,
+    "pressed": null
+   },
+   "menu": {
+    "title": "On this phone",
+    "group": "Text size"
+   },
+   "steps": {
+    "small": {
+     "step": "small",
+     "root": 14.1176,
+     "runName": 13.2353,
+     "feed": null,
+     "menuOpen": true,
+     "pressed": "mobile-text-size-small"
+    },
+    "large": {
+     "step": "large",
+     "root": 17.8824,
+     "runName": 16.7647,
+     "feed": null,
+     "menuOpen": true,
+     "pressed": "mobile-text-size-large"
+    },
+    "largest": {
+     "step": "largest",
+     "root": 19.7647,
+     "runName": 18.5294,
+     "feed": null,
+     "menuOpen": true,
+     "pressed": "mobile-text-size-largest"
+    }
+   },
+   "focusBack": "mobile-on-this-phone-button",
+   "conversation": {
+    "step": "largest",
+    "root": 19.7647,
+    "runName": null,
+    "feed": 21,
+    "menuOpen": false,
+    "pressed": null
+   },
+   "runMenu": {
+    "entries": [
+     "Artifacts",
+     "Files",
+     "Messages",
+     "Activity",
+     "Settings"
+    ],
+    "textSize": 0
+   },
+   "afterReload": {
+    "step": "largest",
+    "root": 19.7647,
+    "runName": null,
+    "feed": 21,
+    "menuOpen": false,
+    "pressed": null,
+    "firstScreen": {
+     "root": "19.7647px",
+     "step": "largest"
+    }
+   },
+   "reopened": {
+    "step": "largest",
+    "root": 19.7647,
+    "runName": 18.5294,
+    "feed": null,
+    "menuOpen": true,
+    "pressed": "mobile-text-size-largest"
+   },
+   "standard": {
+    "step": "standard",
+    "root": 16,
+    "runName": 15,
+    "feed": null,
+    "menuOpen": true,
+    "pressed": "mobile-text-size-standard"
+   }
+  },
+  "MSP-74": {
+   "result": "Pass",
+   "seconds": 48.6,
+   "monacoPx": 17,
+   "cleanup": null,
+   "screens": {
+    "412-run-list": {
+     "sideways": false,
+     "past": [],
+     "cut": []
+    },
+    "412-on-this-phone-menu": {
+     "sideways": false,
+     "past": [],
+     "cut": []
+    },
+    "412-connection-sheet": {
+     "sideways": false,
+     "past": [],
+     "cut": []
+    },
+    "412-unpair-confirm": {
+     "sideways": false,
+     "past": [],
+     "cut": []
+    },
+    "412-new-run": {
+     "sideways": false,
+     "past": [],
+     "cut": []
+    },
+    "412-new-run-agent-sheet": {
+     "sideways": false,
+     "past": [],
+     "cut": []
+    },
+    "412-conversation": {
+     "sideways": false,
+     "past": [],
+     "cut": []
+    },
+    "412-run-menu": {
+     "sideways": false,
+     "past": [],
+     "cut": []
+    },
+    "412-artifacts": {
+     "sideways": false,
+     "past": [],
+     "cut": []
+    },
+    "412-files": {
+     "sideways": false,
+     "past": [],
+     "cut": []
+    },
+    "412-file-viewer": {
+     "sideways": false,
+     "past": [],
+     "cut": []
+    },
+    "412-messages": {
+     "sideways": false,
+     "past": [],
+     "cut": []
+    },
+    "412-activity": {
+     "sideways": false,
+     "past": [],
+     "cut": []
+    },
+    "412-settings": {
+     "sideways": false,
+     "past": [],
+     "cut": []
+    },
+    "412-setup": {
+     "sideways": false,
+     "past": [],
+     "cut": []
+    },
+    "412-pairing-link": {
+     "sideways": false,
+     "past": [],
+     "cut": []
+    },
+    "412-connected-to": {
+     "sideways": false,
+     "past": [],
+     "cut": []
+    },
+    "360-run-list": {
+     "sideways": false,
+     "past": [],
+     "cut": []
+    },
+    "360-on-this-phone-menu": {
+     "sideways": false,
+     "past": [],
+     "cut": []
+    },
+    "360-connection-sheet": {
+     "sideways": false,
+     "past": [],
+     "cut": []
+    },
+    "360-unpair-confirm": {
+     "sideways": false,
+     "past": [],
+     "cut": []
+    },
+    "360-new-run": {
+     "sideways": false,
+     "past": [],
+     "cut": []
+    },
+    "360-new-run-agent-sheet": {
+     "sideways": false,
+     "past": [],
+     "cut": []
+    },
+    "360-conversation": {
+     "sideways": false,
+     "past": [],
+     "cut": []
+    },
+    "360-run-menu": {
+     "sideways": false,
+     "past": [],
+     "cut": []
+    },
+    "360-artifacts": {
+     "sideways": false,
+     "past": [],
+     "cut": []
+    },
+    "360-files": {
+     "sideways": false,
+     "past": [],
+     "cut": []
+    },
+    "360-file-viewer": {
+     "sideways": false,
+     "past": [],
+     "cut": []
+    },
+    "360-messages": {
+     "sideways": false,
+     "past": [],
+     "cut": []
+    },
+    "360-activity": {
+     "sideways": false,
+     "past": [],
+     "cut": []
+    },
+    "360-settings": {
+     "sideways": false,
+     "past": [],
+     "cut": []
+    },
+    "360-setup": {
+     "sideways": false,
+     "past": [],
+     "cut": []
+    },
+    "360-pairing-link": {
+     "sideways": false,
+     "past": [],
+     "cut": []
+    },
+    "360-connected-to": {
+     "sideways": false,
+     "past": [],
+     "cut": []
+    },
+    "412-background-row": {
+     "sideways": false,
+     "past": [],
+     "cut": []
+    },
+    "412-background-run-screen": {
+     "sideways": false,
+     "past": [],
+     "cut": []
+    },
+    "412-remote-run-settings": {
+     "sideways": false,
+     "past": [],
+     "cut": []
+    },
+    "360-background-row": {
+     "sideways": false,
+     "past": [],
+     "cut": []
+    },
+    "360-background-run-screen": {
+     "sideways": false,
+     "past": [],
+     "cut": []
+    },
+    "360-remote-run-settings": {
+     "sideways": false,
+     "past": [],
+     "cut": []
+    }
+   }
+  },
+  "MSP-67": {
+   "result": "Pass",
+   "seconds": 7.1,
+   "entries": [
+    "artifacts",
+    "files",
+    "messages",
+    "activity",
+    "settings"
+   ],
+   "stop": {
+    "live": {
+     "open": true,
+     "subject": "reviewerIdle · in docs review team",
+     "status": "Idle · in docs review team",
+     "runtime": "Antigravity CLI",
+     "model": "Gemini test",
+     "rows": true,
+     "runtimeDisabled": true,
+     "save": true,
+     "saveDisabled": true,
+     "stop": true,
+     "remote": null,
+     "error": null
+    },
+    "stopped": {
+     "open": true,
+     "subject": "reviewerStopped · in docs review team",
+     "status": "Stopped · in docs review team",
+     "runtime": "Antigravity CLI",
+     "model": "Gemini test",
+     "rows": true,
+     "runtimeDisabled": false,
+     "save": true,
+     "saveDisabled": true,
+     "stop": false,
+     "remote": null,
+     "error": null
+    }
+   },
+   "before": {
+    "ptm": {
+     "isActive": true,
+     "runtimeKind": "antigravity_cli",
+     "model": "gemini-3.8-flash-low"
+    },
+    "team": {
+     "isActive": true,
+     "members": {
+      "/reviewer": {
+       "agentRunId": "release_notes_writer_a1b90b617a254be8ab2afc8e7e6dcceb",
+       "runtimeKind": "antigravity_cli",
+       "model": "gemini-3.8-flash-low"
+      },
+      "/editor": {
+       "agentRunId": "fact_checker_98d04baf1e3044a19b9da2366e6c724e",
+       "runtimeKind": "antigravity_cli",
+       "model": "gemini-3.8-flash-low"
+      }
+     }
+    }
+   },
+   "afterStop": {
+    "ptm": {
+     "isActive": true,
+     "runtimeKind": "antigravity_cli",
+     "model": "gemini-3.8-flash-low"
+    },
+    "team": false
+   },
+   "saved": {
+    "chosen": {
+     "open": true,
+     "subject": "reviewerStopped · in docs review team",
+     "status": "Stopped · in docs review team",
+     "runtime": "Grok Build",
+     "model": "Grok 4.7",
+     "rows": true,
+     "runtimeDisabled": false,
+     "save": true,
+     "saveDisabled": false,
+     "stop": false,
+     "remote": null,
+     "error": null
+    },
+    "back": true
+   },
+   "after": {
+    "/reviewer": {
+     "agentRunId": "release_notes_writer_a1b90b617a254be8ab2afc8e7e6dcceb",
+     "runtimeKind": "grok_build",
+     "model": "grok-4.7"
+    },
+    "/editor": {
+     "agentRunId": "fact_checker_98d04baf1e3044a19b9da2366e6c724e",
+     "runtimeKind": "antigravity_cli",
+     "model": "gemini-3.8-flash-low"
+    }
+   },
+   "again": {
+    "open": true,
+    "subject": "reviewerStopped · in docs review team",
+    "status": "Stopped · in docs review team",
+    "runtime": "Grok Build",
+    "model": "Grok 4.7",
+    "rows": true,
+    "runtimeDisabled": false,
+    "save": true,
+    "saveDisabled": true,
+    "stop": false,
+    "remote": null,
+    "error": null
+   },
+   "continued": {
+    "isActive": true,
+    "reviewer": {
+     "agentRunId": "release_notes_writer_a1b90b617a254be8ab2afc8e7e6dcceb",
+     "runtimeKind": "grok_build",
+     "model": "grok-4.7"
+    }
+   }
+  },
+  "MSP-68": {
+   "result": "Pass",
+   "seconds": 3.2,
+   "entries": [
+    "artifacts",
+    "files",
+    "activity",
+    "settings"
+   ],
+   "stop": {
+    "live": {
+     "open": true,
+     "subject": "release notes writerIdle · in Project Task Manager",
+     "status": "Idle · in Project Task Manager",
+     "runtime": "Antigravity CLI",
+     "model": "Gemini test",
+     "rows": true,
+     "runtimeDisabled": true,
+     "save": true,
+     "saveDisabled": true,
+     "stop": true,
+     "remote": null,
+     "error": null
+    },
+    "stopped": {
+     "open": true,
+     "subject": "release notes writerStopped · in Project Task Manager",
+     "status": "Stopped · in Project Task Manager",
+     "runtime": "Antigravity CLI",
+     "model": "Gemini test",
+     "rows": true,
+     "runtimeDisabled": false,
+     "save": true,
+     "saveDisabled": true,
+     "stop": false,
+     "remote": null,
+     "error": null
+    }
+   },
+   "before": {
+    "ptm": {
+     "isActive": true,
+     "runtimeKind": "antigravity_cli",
+     "model": "gemini-3.8-flash-low"
+    },
+    "agent": {
+     "isActive": true,
+     "runtimeKind": "antigravity_cli",
+     "model": "gemini-3.8-flash-low"
+    }
+   },
+   "afterStop": {
+    "ptm": {
+     "isActive": true,
+     "runtimeKind": "antigravity_cli",
+     "model": "gemini-3.8-flash-low"
+    },
+    "agent": {
+     "isActive": false,
+     "runtimeKind": "antigravity_cli",
+     "model": "gemini-3.8-flash-low"
+    }
+   },
+   "saved": {
+    "chosen": {
+     "open": true,
+     "subject": "release notes writerStopped · in Project Task Manager",
+     "status": "Stopped · in Project Task Manager",
+     "runtime": "Grok Build",
+     "model": "Grok 4.7",
+     "rows": true,
+     "runtimeDisabled": false,
+     "save": true,
+     "saveDisabled": false,
+     "stop": false,
+     "remote": null,
+     "error": null
+    },
+    "back": true
+   },
+   "after": {
+    "ptm": {
+     "isActive": true,
+     "runtimeKind": "antigravity_cli",
+     "model": "gemini-3.8-flash-low"
+    },
+    "agent": {
+     "isActive": false,
+     "runtimeKind": "grok_build",
+     "model": "grok-4.7"
+    }
+   }
+  },
+  "MSP-69": {
+   "result": "Pass",
+   "seconds": 5.5,
+   "screen": {
+    "name": "changelog helper",
+    "subtitle": "Stopped · in lead"
+   },
+   "before": {
+    "lead": {
+     "agentRunId": "fact_checker_9a1d842b14d640f1abf7b92b41da33d3",
+     "runtimeKind": "antigravity_cli",
+     "model": "gemini-3.8-flash-low"
+    },
+    "helper": {
+     "isActive": false,
+     "runtimeKind": "antigravity_cli",
+     "model": "gemini-3.8-flash-low"
+    }
+   },
+   "opened": {
+    "open": true,
+    "subject": "changelog helperStopped · in lead",
+    "status": "Stopped · in lead",
+    "runtime": "Antigravity CLI",
+    "model": "Gemini test",
+    "rows": true,
+    "runtimeDisabled": false,
+    "save": true,
+    "saveDisabled": true,
+    "stop": false,
+    "remote": null,
+    "error": null
+   },
+   "saved": {
+    "chosen": {
+     "open": true,
+     "subject": "changelog helperStopped · in lead",
+     "status": "Stopped · in lead",
+     "runtime": "Grok Build",
+     "model": "Grok 4.7",
+     "rows": true,
+     "runtimeDisabled": false,
+     "save": true,
+     "saveDisabled": false,
+     "stop": false,
+     "remote": null,
+     "error": null
+    },
+    "back": true
+   },
+   "after": {
+    "lead": {
+     "agentRunId": "fact_checker_9a1d842b14d640f1abf7b92b41da33d3",
+     "runtimeKind": "antigravity_cli",
+     "model": "gemini-3.8-flash-low"
+    },
+    "helper": {
+     "isActive": false,
+     "runtimeKind": "grok_build",
+     "model": "grok-4.7"
+    }
+   }
+  },
+  "MSP-70": {
+   "result": "Pass",
+   "seconds": 8.8,
+   "taskAgent": "changelog_helper_100b4ed481604d9cb7562413e4cf6cc8",
+   "taskTeam": "delivery_team_29add0b0bb9a4b4796545e179ff5cb56",
+   "agentEntries": [
+    "artifacts",
+    "files",
+    "activity",
+    "settings"
+   ],
+   "agentStop": {
+    "live": {
+     "open": true,
+     "subject": "changelog helperIdle",
+     "status": "Idle",
+     "runtime": "Antigravity CLI",
+     "model": "Gemini test",
+     "rows": true,
+     "runtimeDisabled": true,
+     "save": true,
+     "saveDisabled": true,
+     "stop": true,
+     "remote": null,
+     "error": null
+    },
+    "stopped": {
+     "open": true,
+     "subject": "changelog helperStopped",
+     "status": "Stopped",
+     "runtime": "Antigravity CLI",
+     "model": "Gemini test",
+     "rows": true,
+     "runtimeDisabled": false,
+     "save": true,
+     "saveDisabled": true,
+     "stop": false,
+     "remote": null,
+     "error": null
+    }
+   },
+   "orgAfterAgentStop": true,
+   "agentSaved": {
+    "chosen": {
+     "open": true,
+     "subject": "changelog helperStopped",
+     "status": "Stopped",
+     "runtime": "Grok Build",
+     "model": "Grok 4.7",
+     "rows": true,
+     "runtimeDisabled": false,
+     "save": true,
+     "saveDisabled": false,
+     "stop": false,
+     "remote": null,
+     "error": null
+    },
+    "back": true
+   },
+   "afterAgent": {
+    "org": {
+     "isActive": true,
+     "members": {
+      "/planner": {
+       "agentRunId": "release_notes_writer_9d76cb0f40af41baa7c71a8f4b711555",
+       "runtimeKind": "antigravity_cli",
+       "model": "gemini-3.8-flash-low"
+      },
+      "/squad/reviewer": {
+       "agentRunId": "release_notes_writer_2032af9b9b034b82a9c3dbc9e28c0668",
+       "runtimeKind": "antigravity_cli",
+       "model": "gemini-3.8-flash-low"
+      },
+      "/squad/editor": {
+       "agentRunId": "fact_checker_c115c1cd59384d9a9801efa20bc97649",
+       "runtimeKind": "antigravity_cli",
+       "model": "gemini-3.8-flash-low"
+      }
+     }
+    },
+    "agent": {
+     "isActive": false,
+     "runtimeKind": "grok_build",
+     "model": "grok-4.7"
+    }
+   },
+   "memberEntries": [
+    "artifacts",
+    "files",
+    "messages",
+    "activity",
+    "settings"
+   ],
+   "memberStop": {
+    "live": {
+     "open": true,
+     "subject": "leadIdle",
+     "status": "Idle",
+     "runtime": "Antigravity CLI",
+     "model": "Gemini test",
+     "rows": true,
+     "runtimeDisabled": true,
+     "save": true,
+     "saveDisabled": true,
+     "stop": true,
+     "remote": null,
+     "error": null
+    },
+    "stopped": {
+     "open": true,
+     "subject": "leadStopped",
+     "status": "Stopped",
+     "runtime": "Antigravity CLI",
+     "model": "Gemini test",
+     "rows": true,
+     "runtimeDisabled": false,
+     "save": true,
+     "saveDisabled": true,
+     "stop": false,
+     "remote": null,
+     "error": null
+    }
+   },
+   "orgAfterTeamStop": true,
+   "memberSaved": {
+    "chosen": {
+     "open": true,
+     "subject": "leadStopped",
+     "status": "Stopped",
+     "runtime": "Grok Build",
+     "model": "Grok 4.7",
+     "rows": true,
+     "runtimeDisabled": false,
+     "save": true,
+     "saveDisabled": false,
+     "stop": false,
+     "remote": null,
+     "error": null
+    },
+    "back": true
+   },
+   "before": {
+    "org": {
+     "/planner": {
+      "agentRunId": "release_notes_writer_9d76cb0f40af41baa7c71a8f4b711555",
+      "runtimeKind": "antigravity_cli",
+      "model": "gemini-3.8-flash-low"
+     },
+     "/squad/reviewer": {
+      "agentRunId": "release_notes_writer_2032af9b9b034b82a9c3dbc9e28c0668",
+      "runtimeKind": "antigravity_cli",
+      "model": "gemini-3.8-flash-low"
+     },
+     "/squad/editor": {
+      "agentRunId": "fact_checker_c115c1cd59384d9a9801efa20bc97649",
+      "runtimeKind": "antigravity_cli",
+      "model": "gemini-3.8-flash-low"
+     }
+    },
+    "team": {
+     "/lead": {
+      "agentRunId": "fact_checker_65bbad83368645cda060262cda29b1ce",
+      "runtimeKind": "antigravity_cli",
+      "model": "gemini-3.8-flash-low"
+     },
+     "/mate": {
+      "agentRunId": "release_notes_writer_a7eabc75a0f74f0e9637553ad9f22119",
+      "runtimeKind": "antigravity_cli",
+      "model": "gemini-3.8-flash-low"
+     }
+    }
+   },
+   "after": {
+    "org": {
+     "/planner": {
+      "agentRunId": "release_notes_writer_9d76cb0f40af41baa7c71a8f4b711555",
+      "runtimeKind": "antigravity_cli",
+      "model": "gemini-3.8-flash-low"
+     },
+     "/squad/reviewer": {
+      "agentRunId": "release_notes_writer_2032af9b9b034b82a9c3dbc9e28c0668",
+      "runtimeKind": "antigravity_cli",
+      "model": "gemini-3.8-flash-low"
+     },
+     "/squad/editor": {
+      "agentRunId": "fact_checker_c115c1cd59384d9a9801efa20bc97649",
+      "runtimeKind": "antigravity_cli",
+      "model": "gemini-3.8-flash-low"
+     }
+    },
+    "team": {
+     "/lead": {
+      "agentRunId": "fact_checker_65bbad83368645cda060262cda29b1ce",
+      "runtimeKind": "grok_build",
+      "model": "grok-4.7"
+     },
+     "/mate": {
+      "agentRunId": "release_notes_writer_a7eabc75a0f74f0e9637553ad9f22119",
+      "runtimeKind": "antigravity_cli",
+      "model": "gemini-3.8-flash-low"
+     }
+    }
+   }
+  },
+  "MSP-71": {
+   "result": "Pass",
+   "seconds": 1.9,
+   "squadReviewer": "/squad/reviewer",
+   "opened": {
+    "open": true,
+    "subject": "reviewerStopped · in squad",
+    "status": "Stopped · in squad",
+    "runtime": "Antigravity CLI",
+    "model": "Gemini test",
+    "rows": true,
+    "runtimeDisabled": false,
+    "save": true,
+    "saveDisabled": true,
+    "stop": false,
+    "remote": null,
+    "error": null
+   },
+   "saved": {
+    "chosen": {
+     "open": true,
+     "subject": "reviewerStopped · in squad",
+     "status": "Stopped · in squad",
+     "runtime": "Grok Build",
+     "model": "Grok 4.7",
+     "rows": true,
+     "runtimeDisabled": false,
+     "save": true,
+     "saveDisabled": false,
+     "stop": false,
+     "remote": null,
+     "error": null
+    },
+    "back": true
+   },
+   "before": {
+    "/planner": {
+     "agentRunId": "release_notes_writer_9d76cb0f40af41baa7c71a8f4b711555",
+     "runtimeKind": "antigravity_cli",
+     "model": "gemini-3.8-flash-low"
+    },
+    "/squad/reviewer": {
+     "agentRunId": "release_notes_writer_2032af9b9b034b82a9c3dbc9e28c0668",
+     "runtimeKind": "antigravity_cli",
+     "model": "gemini-3.8-flash-low"
+    },
+    "/squad/editor": {
+     "agentRunId": "fact_checker_c115c1cd59384d9a9801efa20bc97649",
+     "runtimeKind": "antigravity_cli",
+     "model": "gemini-3.8-flash-low"
+    }
+   },
+   "after": {
+    "/planner": {
+     "agentRunId": "release_notes_writer_9d76cb0f40af41baa7c71a8f4b711555",
+     "runtimeKind": "antigravity_cli",
+     "model": "gemini-3.8-flash-low"
+    },
+    "/squad/reviewer": {
+     "agentRunId": "release_notes_writer_2032af9b9b034b82a9c3dbc9e28c0668",
+     "runtimeKind": "grok_build",
+     "model": "grok-4.7"
+    },
+    "/squad/editor": {
+     "agentRunId": "fact_checker_c115c1cd59384d9a9801efa20bc97649",
+     "runtimeKind": "antigravity_cli",
+     "model": "gemini-3.8-flash-low"
+    }
+   }
+  },
+  "MSP-72": {
+   "result": "Pass",
+   "seconds": 1.5,
+   "screen": {
+    "name": "publisher",
+    "subtitle": "Idle · in Project Task Manager",
+    "chip": "beta-node"
+   },
+   "entries": [
+    "artifacts",
+    "files",
+    "activity",
+    "settings"
+   ],
+   "remote": {
+    "open": true,
+    "subject": "publisherIdle · in Project Task Manager",
+    "status": "Idle · in Project Task Manager",
+    "runtime": null,
+    "model": null,
+    "rows": false,
+    "runtimeDisabled": null,
+    "save": false,
+    "saveDisabled": null,
+    "stop": false,
+    "remote": "This run is on beta-node. Its runtime and model can be changed only on that node.",
+    "error": null
+   },
+   "back": {
+    "settings": 0,
+    "screen": "open"
+   }
+  },
+  "MSP-73": {
+   "result": "Pass",
+   "seconds": 37.7,
+   "headerDot": "h-2.5 w-2.5 flex-shrink-0 rounded-full bg-blue-500",
+   "stop": 0,
+   "send": 1,
+   "settings": {
+    "status": "Background task running",
+    "dotClass": "h-2.5 w-2.5 flex-shrink-0 rounded-full bg-blue-500",
+    "runtime": "Antigravity CLI",
+    "runStop": true
+   },
+   "row": {
+    "status": "background",
+    "dotClass": "absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full ring-2 bg-blue-500 ring-blue-50",
+    "label": "Fact Checker, Plain run 2. Marker PLAIN-2., Background task running"
+   },
+   "after": "Idle"
+  }
+ },
+ "browserErrors": [],
+ "cleanup": {
+  "frontendExited": true,
+  "serversLeft": 0,
+  "rootRemoved": true
+ }
+}

@@ -27,6 +27,7 @@ import nodesPageMessages from './nodesPage';
 import remoteRunsMessages from './remoteRuns';
 import mobileNodeDesktopMessages from './mobileNodeDesktop';
 import mobileSettingsMessages from './mobileSettings';
+import mobileOnThisPhoneMessages from './mobileOnThisPhone';
 import embeddingSettingsMessages from './embeddingSettings';
 import agentRuntimesSettingsMessages from './agentRuntimesSettings';
 import modelRoutingSettingsMessages from './modelRoutingSettings';
@@ -76,6 +77,7 @@ const enMessages: TranslationCatalog = {
   ...remoteRunsMessages,
   ...mobileNodeDesktopMessages,
   ...mobileSettingsMessages,
+  ...mobileOnThisPhoneMessages,
   ...embeddingSettingsMessages,
   ...agentRuntimesSettingsMessages,
   ...modelRoutingSettingsMessages,

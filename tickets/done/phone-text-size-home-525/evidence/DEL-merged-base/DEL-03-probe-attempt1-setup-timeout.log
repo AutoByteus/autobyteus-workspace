@@ -1,0 +1,9 @@
+mobile-shell probe: Fail
+Error: alpha: [{"message":"No address answered as that node; the first tried was http://127.0.0.1:62103.","locations":[{"line":1,"column":74}],"path":["acceptPeerInvite"],"extensions":{"code":"PEER_UNREACHABLE","address":"http://127.0.0.1:62103","reason":"timeout","loopbackInContainer":false,"attempts":[{"address":"http://127.0.0.1:62103","result":"timeout"},{"address":"http://host.docker.internal:62103","result":"not_found"},{"address":"http://192.168.2.158:62103","result":"refused"},{"address":"http://100.127.30.107:62103","result":"refused"},{"address":"http://[fd7a:115c:a1e0::4336:1e6b]:62103","result":"timeout"},{"address":"http://[2003:ca:5706:4882:8c4:9661:1190:c7a7]:62103","result":"refused"},{"address":"http://[2003:ca:5706:4882:e0b2:c2e3:8c4a:8840]:62103","result":"refused"},{"address":"http://[2003:ca:5706:4893:865:ff98:d598:d027]:62103","result":"refused"},{"address":"http://[2003:ca:5706:4893:7549:b398:6383:24ac]:62103","result":"refused"}]}}]
+    at node.gql (file:///Users/normy/autobyteus_org/autobyteus-worktrees/phone-text-size-home-525/autobyteus-web/tests/e2e/mobile-shell-probe.mjs:322:36)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async pairNodes (file:///Users/normy/autobyteus_org/autobyteus-worktrees/phone-text-size-home-525/autobyteus-web/tests/e2e/fixtures/probe-node-access.mjs:66:20)
+    at async setUp (file:///Users/normy/autobyteus_org/autobyteus-worktrees/phone-text-size-home-525/autobyteus-web/tests/e2e/mobile-shell-probe.mjs:376:3)
+    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/phone-text-size-home-525/autobyteus-web/tests/e2e/mobile-shell-probe.mjs:2637:3
+ ELIFECYCLE  Command failed with exit code 1.
+chain exit 1

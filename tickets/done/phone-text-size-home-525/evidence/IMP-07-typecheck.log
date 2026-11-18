@@ -1,0 +1,7 @@
+# IMP-07 pnpm -C autobyteus-web typecheck; commit 12ecf1bf29; macOS node v22.23.1; 2026-11-17
+[typecheck] Nuxt app (tsconfig.json): 60 errors, exit 2, 50.3s
+[typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 2.6s
+[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 0.8s
+[typecheck] cross-package tests (tsconfig.cross-package-tests.json): 0 errors, exit 0, 28.0s
+[typecheck] production errors: 0; test-file errors: 87 in 37 files (baseline 87 in 37 files)
+[typecheck] PASS

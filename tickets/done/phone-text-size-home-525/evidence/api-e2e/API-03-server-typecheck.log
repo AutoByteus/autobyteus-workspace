@@ -1,0 +1,9 @@
+# API-03 server typecheck; commit 66691f49d6 (code 7c7f3d2e79); 2026-11-17T22:34:52Z; macOS, Node v22.23.1; command: pnpm -C autobyteus-server-ts typecheck
+
+> autobyteus-server-ts@0.1.1 typecheck /Users/normy/autobyteus_org/autobyteus-worktrees/phone-text-size-home-525/autobyteus-server-ts
+> node ./scripts/typecheck.mjs
+
+[typecheck] server src (tsconfig.build.json): 0 errors, exit 0, 11.7s
+[typecheck] server tests (tsconfig.tests.json): 1012 errors, exit 2, 33.7s
+[typecheck] production errors: 0; test-file errors: 1012 in 316 files (baseline 1012 in 316 files)
+[typecheck] PASS

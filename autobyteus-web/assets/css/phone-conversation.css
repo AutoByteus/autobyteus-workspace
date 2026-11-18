@@ -1,5 +1,6 @@
 /* The phone's conversation (autobyteus-506, built in autobyteus-458): the event monitor inside the phone runtime gets
-   `.phone-conversation` and `--pc-size` (the Text size step); the desktop never gets the class. Layout numbers are for a
+   `.phone-conversation`; the desktop never gets the class. Its text is `1.0625rem`: the phone's Text size sets the root
+   to 16 px × step/17 (autobyteus-525), so the feed is exactly the step's 15/17/19/21 px. Layout numbers are for a
    412 px wide phone: 12 px side margin, text column 388 px (the width minus 24 px). Another agent's message is the
    desktop's, unchanged (its arrow and message-type line; the founder's correction, autobyteus-458 SR-004). */
 
@@ -15,7 +16,7 @@
 .phone-conversation.phone-conversation > .shrink-0 { padding: 0 var(--pc-gap); }
 
 /* ---- rows ---- */
-.phone-conversation .conv-feed { font-size: var(--pc-size); line-height: var(--pc-lh); }
+.phone-conversation .conv-feed { font-size: 1.0625rem; line-height: var(--pc-lh); }
 .phone-conversation .conv-row { padding: 10px var(--pc-gap); }
 .phone-conversation .conv-row + .conv-row[data-speaker="user"] { padding-top: 14px; }
 

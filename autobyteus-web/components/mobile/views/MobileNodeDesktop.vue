@@ -21,24 +21,6 @@
             {{ t('mobile.nodeDesktop.fit') }}
           </button>
           <button
-            v-if="mode === 'control' && isConnected"
-            type="button"
-            :class="barButtonClass"
-            data-testid="mobile-node-desktop-keyboard"
-            @click="openKeyboard"
-          >
-            {{ t('mobile.nodeDesktop.keyboard') }}
-          </button>
-          <button
-            v-if="mode === 'control' && isConnected"
-            type="button"
-            :class="barButtonClass"
-            data-testid="mobile-node-desktop-clipboard-open"
-            @click="clipboardOpen = true"
-          >
-            {{ t('mobile.nodeDesktop.clipboard') }}
-          </button>
-          <button
             type="button"
             :class="[barButtonClass, mode === 'control' ? 'bg-amber-100 text-amber-900' : 'bg-emerald-50 text-emerald-800']"
             :aria-pressed="mode === 'control'"
@@ -62,6 +44,27 @@
       <div class="flex min-h-[2.5rem] flex-shrink-0 items-center gap-2 border-b border-slate-200 px-4 py-1" data-testid="mobile-node-desktop-status-bar">
         <span class="h-2.5 w-2.5 flex-shrink-0 rounded-full" :class="statusDotClass" aria-hidden="true" />
         <span class="min-w-0 flex-1 truncate text-sm text-slate-600" role="status" data-testid="mobile-node-desktop-status">{{ statusText }}</span>
+        <!-- Control, connected: Keyboard and Clipboard sit here, at the row's end, at every Text size; the bar above keeps
+             back, the title, the mode switch and full screen (autobyteus-525 DEC-008: all four did not fit a 360 px
+             phone at Large and Largest). The status text gives way with an ellipsis. -->
+        <button
+          v-if="mode === 'control' && isConnected"
+          type="button"
+          :class="barButtonClass"
+          data-testid="mobile-node-desktop-keyboard"
+          @click="openKeyboard"
+        >
+          {{ t('mobile.nodeDesktop.keyboard') }}
+        </button>
+        <button
+          v-if="mode === 'control' && isConnected"
+          type="button"
+          :class="barButtonClass"
+          data-testid="mobile-node-desktop-clipboard-open"
+          @click="clipboardOpen = true"
+        >
+          {{ t('mobile.nodeDesktop.clipboard') }}
+        </button>
         <button
           v-if="offer"
           type="button"

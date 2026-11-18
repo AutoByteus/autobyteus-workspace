@@ -1,0 +1,416 @@
+{
+ "header": "IMP-02 phone probe; command: pnpm -C autobyteus-web test:e2e:mobile-shell --output-dir=<fresh> --cases=MSP-66,MSP-60,MSP-67; commit 7c7f3d2e79; phone bundle from build:mobile-web on that commit; macOS, headless Chrome; 2026-11-17",
+ "result": "Pass",
+ "cases": {
+  "MSP-66": {
+   "360": {
+    "width": 360,
+    "height": 780,
+    "phone": true,
+    "textSize": "standard",
+    "fontSize": 17,
+    "lineHeight": 25.5,
+    "bodies": [
+     {
+      "left": 12,
+      "width": 336,
+      "speaker": "user"
+     },
+     {
+      "left": 12,
+      "width": 336,
+      "speaker": "agent"
+     },
+     {
+      "left": 12,
+      "width": 336,
+      "speaker": "user"
+     },
+     {
+      "left": 12,
+      "width": 336,
+      "speaker": "agent"
+     },
+     {
+      "left": 12,
+      "width": 336,
+      "speaker": "user"
+     },
+     {
+      "left": 12,
+      "width": 336,
+      "speaker": "agent"
+     }
+    ],
+    "speakers": [
+     "You",
+     "lead",
+     "You",
+     "lead",
+     "You",
+     "lead"
+    ],
+    "avatars": [
+     22,
+     22,
+     22,
+     22,
+     22,
+     22
+    ],
+    "composerGap": 8
+   },
+   "412": {
+    "width": 412,
+    "height": 915,
+    "phone": true,
+    "textSize": "standard",
+    "fontSize": 17,
+    "lineHeight": 25.5,
+    "bodies": [
+     {
+      "left": 12,
+      "width": 388,
+      "speaker": "user"
+     },
+     {
+      "left": 12,
+      "width": 388,
+      "speaker": "agent"
+     },
+     {
+      "left": 12,
+      "width": 388,
+      "speaker": "user"
+     },
+     {
+      "left": 12,
+      "width": 388,
+      "speaker": "agent"
+     },
+     {
+      "left": 12,
+      "width": 388,
+      "speaker": "user"
+     },
+     {
+      "left": 12,
+      "width": 388,
+      "speaker": "agent"
+     }
+    ],
+    "speakers": [
+     "You",
+     "lead",
+     "You",
+     "lead",
+     "You",
+     "lead"
+    ],
+    "avatars": [
+     22,
+     22,
+     22,
+     22,
+     22,
+     22
+    ],
+    "composerGap": 8
+   },
+   "result": "Pass",
+   "seconds": 7.3,
+   "interAgent": {
+    "arrow": {
+     "visible": true,
+     "box": {
+      "x": 376,
+      "y": 102,
+      "width": 20,
+      "height": 20
+     }
+    },
+    "typeLineBefore": 0,
+    "typeLine": "agent_message",
+    "messageBox": {
+     "x": 12,
+     "y": 100,
+     "width": 388,
+     "height": 72.0625
+    }
+   }
+  },
+  "MSP-60": {
+   "result": "Pass",
+   "seconds": 8.1,
+   "before": {
+    "step": "standard",
+    "root": 16,
+    "runName": 15,
+    "feed": null,
+    "menuOpen": false,
+    "pressed": null
+   },
+   "menu": {
+    "title": "On this phone",
+    "group": "Text size"
+   },
+   "steps": {
+    "small": {
+     "step": "small",
+     "root": 14.1176,
+     "runName": 13.2353,
+     "feed": null,
+     "menuOpen": true,
+     "pressed": "mobile-text-size-small"
+    },
+    "large": {
+     "step": "large",
+     "root": 17.8824,
+     "runName": 16.7647,
+     "feed": null,
+     "menuOpen": true,
+     "pressed": "mobile-text-size-large"
+    },
+    "largest": {
+     "step": "largest",
+     "root": 19.7647,
+     "runName": 18.5294,
+     "feed": null,
+     "menuOpen": true,
+     "pressed": "mobile-text-size-largest"
+    }
+   },
+   "focusBack": "mobile-on-this-phone-button",
+   "conversation": {
+    "step": "largest",
+    "root": 19.7647,
+    "runName": null,
+    "feed": 21,
+    "menuOpen": false,
+    "pressed": null
+   },
+   "runMenu": {
+    "entries": [
+     "Artifacts",
+     "Files",
+     "Messages",
+     "Activity",
+     "Settings"
+    ],
+    "textSize": 0
+   },
+   "afterReload": {
+    "step": "largest",
+    "root": 19.7647,
+    "runName": null,
+    "feed": 21,
+    "menuOpen": false,
+    "pressed": null,
+    "firstScreen": {
+     "root": "19.7647px",
+     "step": "largest"
+    }
+   },
+   "reopened": {
+    "step": "largest",
+    "root": 19.7647,
+    "runName": 18.5294,
+    "feed": null,
+    "menuOpen": true,
+    "pressed": "mobile-text-size-largest"
+   },
+   "standard": {
+    "step": "standard",
+    "root": 16,
+    "runName": 15,
+    "feed": null,
+    "menuOpen": true,
+    "pressed": "mobile-text-size-standard"
+   }
+  },
+  "MSP-67": {
+   "result": "Pass",
+   "seconds": 50.7,
+   "monacoPx": 17,
+   "cleanup": null,
+   "screens": {
+    "412-run-list": {
+     "sideways": false,
+     "past": [],
+     "cut": []
+    },
+    "412-on-this-phone-menu": {
+     "sideways": false,
+     "past": [],
+     "cut": []
+    },
+    "412-connection-sheet": {
+     "sideways": false,
+     "past": [],
+     "cut": []
+    },
+    "412-unpair-confirm": {
+     "sideways": false,
+     "past": [],
+     "cut": []
+    },
+    "412-new-run": {
+     "sideways": false,
+     "past": [],
+     "cut": []
+    },
+    "412-new-run-agent-sheet": {
+     "sideways": false,
+     "past": [],
+     "cut": []
+    },
+    "412-conversation": {
+     "sideways": false,
+     "past": [],
+     "cut": []
+    },
+    "412-run-menu": {
+     "sideways": false,
+     "past": [],
+     "cut": []
+    },
+    "412-artifacts": {
+     "sideways": false,
+     "past": [],
+     "cut": []
+    },
+    "412-files": {
+     "sideways": false,
+     "past": [],
+     "cut": []
+    },
+    "412-file-viewer": {
+     "sideways": false,
+     "past": [],
+     "cut": []
+    },
+    "412-messages": {
+     "sideways": false,
+     "past": [],
+     "cut": []
+    },
+    "412-activity": {
+     "sideways": false,
+     "past": [],
+     "cut": []
+    },
+    "412-settings": {
+     "sideways": false,
+     "past": [],
+     "cut": []
+    },
+    "412-setup": {
+     "sideways": false,
+     "past": [],
+     "cut": []
+    },
+    "412-pairing-link": {
+     "sideways": false,
+     "past": [],
+     "cut": []
+    },
+    "412-connected-to": {
+     "sideways": false,
+     "past": [],
+     "cut": []
+    },
+    "360-run-list": {
+     "sideways": false,
+     "past": [],
+     "cut": []
+    },
+    "360-on-this-phone-menu": {
+     "sideways": false,
+     "past": [],
+     "cut": []
+    },
+    "360-connection-sheet": {
+     "sideways": false,
+     "past": [],
+     "cut": []
+    },
+    "360-unpair-confirm": {
+     "sideways": false,
+     "past": [],
+     "cut": []
+    },
+    "360-new-run": {
+     "sideways": false,
+     "past": [],
+     "cut": []
+    },
+    "360-new-run-agent-sheet": {
+     "sideways": false,
+     "past": [],
+     "cut": []
+    },
+    "360-conversation": {
+     "sideways": false,
+     "past": [],
+     "cut": []
+    },
+    "360-run-menu": {
+     "sideways": false,
+     "past": [],
+     "cut": []
+    },
+    "360-artifacts": {
+     "sideways": false,
+     "past": [],
+     "cut": []
+    },
+    "360-files": {
+     "sideways": false,
+     "past": [],
+     "cut": []
+    },
+    "360-file-viewer": {
+     "sideways": false,
+     "past": [],
+     "cut": []
+    },
+    "360-messages": {
+     "sideways": false,
+     "past": [],
+     "cut": []
+    },
+    "360-activity": {
+     "sideways": false,
+     "past": [],
+     "cut": []
+    },
+    "360-settings": {
+     "sideways": false,
+     "past": [],
+     "cut": []
+    },
+    "360-setup": {
+     "sideways": false,
+     "past": [],
+     "cut": []
+    },
+    "360-pairing-link": {
+     "sideways": false,
+     "past": [],
+     "cut": []
+    },
+    "360-connected-to": {
+     "sideways": false,
+     "past": [],
+     "cut": []
+    }
+   }
+  }
+ },
+ "browserErrors": [],
+ "cleanup": {
+  "frontendExited": true,
+  "serversLeft": 0,
+  "rootRemoved": true
+ }
+}

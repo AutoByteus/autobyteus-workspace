@@ -1,16 +1,18 @@
-// The run screen's ⋮ menu entries (autobyteus-458, autobyteus-522): Settings for every run, right after Activity; Messages
-// and VNC Viewer when they apply.
+// The run screen's ⋮ menu (autobyteus-458, autobyteus-522, autobyteus-525 REQ-003): Settings for every run, right after
+// Activity; Messages and VNC Viewer when they apply; no Text size (the phone's Text size is on the run list).
 import { afterEach, describe, expect, it } from 'vitest';
 import { enableAutoUnmount, mount } from '@vue/test-utils';
 import MobileRunMenu from '../MobileRunMenu.vue';
 
 enableAutoUnmount(afterEach);
 
-const entriesOf = async (props: { showMessages: boolean; showDesktop: boolean }) => {
+const mountMenu = async (props: { showMessages: boolean; showDesktop: boolean }) => {
   const wrapper = mount(MobileRunMenu, { props });
   await wrapper.get('[data-testid="mobile-run-menu-button"]').trigger('click');
-  return wrapper.findAll('[role="menuitem"]').map((item) => item.text());
+  return wrapper;
 };
+const entriesOf = async (props: { showMessages: boolean; showDesktop: boolean }) =>
+  (await mountMenu(props)).findAll('[role="menuitem"]').map((item) => item.text());
 
 describe('the run menu\'s entries', () => {
   it.each([
@@ -19,5 +21,12 @@ describe('the run menu\'s entries', () => {
     [{ showMessages: true, showDesktop: true }, ['Artifacts', 'Files', 'Messages', 'Activity', 'Settings', 'VNC Viewer']],
   ])('%j: Settings after Activity, always (autobyteus-522)', async (props, entries) => {
     expect(await entriesOf(props)).toEqual(entries);
+  });
+
+  it('has no Text size, and fits the phone\'s width (autobyteus-525)', async () => {
+    const wrapper = await mountMenu({ showMessages: true, showDesktop: true });
+    expect(wrapper.find('[data-testid="mobile-text-size"]').exists()).toBe(false);
+    expect(wrapper.text()).not.toContain('Text size');
+    expect(wrapper.get('[data-testid="mobile-run-menu"]').classes()).toContain('max-w-[calc(100vw-1rem)]');
   });
 });
